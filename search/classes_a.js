@@ -35,13 +35,14 @@ var searchData=
   ['lodwriter_32',['LodWriter',['../classLodWriter.html',1,'']]],
   ['logcategory_33',['LogCategory',['../classLogCategory.html',1,'']]],
   ['logger_34',['Logger',['../classLogger.html',1,'']]],
-  ['logmessage_35',['LogMessage',['../structBufferLogSink_1_1LogMessage.html',1,'BufferLogSink']]],
-  ['logsink_36',['LogSink',['../classLogSink.html',1,'']]],
-  ['logsource_37',['LogSource',['../classLogSource.html',1,'']]],
-  ['logstate_38',['LogState',['../structFFmpegLogProxy_1_1LogState.html',1,'FFmpegLogProxy']]],
-  ['longcivilduration_39',['LongCivilDuration',['../structLongCivilDuration.html',1,'']]],
-  ['lua_5fnk_5fproperty_40',['lua_nk_property',['../structlua__nk__property.html',1,'']]],
-  ['lua_5fnk_5fstyle_41',['lua_nk_style',['../structlua__nk__style.html',1,'']]],
-  ['luaitemquerytable_42',['LuaItemQueryTable',['../classLuaItemQueryTable.html',1,'']]],
-  ['luaitemquerytable_3c_20character_20_3e_43',['LuaItemQueryTable&lt; Character &gt;',['../classLuaItemQueryTable.html',1,'']]]
+  ['loggerbindings_35',['LoggerBindings',['../classLoggerBindings.html',1,'']]],
+  ['logmessage_36',['LogMessage',['../structBufferLogSink_1_1LogMessage.html',1,'BufferLogSink']]],
+  ['logsink_37',['LogSink',['../classLogSink.html',1,'']]],
+  ['logsource_38',['LogSource',['../classLogSource.html',1,'']]],
+  ['logstate_39',['LogState',['../structFFmpegLogProxy_1_1LogState.html',1,'FFmpegLogProxy']]],
+  ['longcivilduration_40',['LongCivilDuration',['../structLongCivilDuration.html',1,'']]],
+  ['lua_5fnk_5fproperty_41',['lua_nk_property',['../structlua__nk__property.html',1,'']]],
+  ['lua_5fnk_5fstyle_42',['lua_nk_style',['../structlua__nk__style.html',1,'']]],
+  ['luaitemquerytable_43',['LuaItemQueryTable',['../classLuaItemQueryTable.html',1,'']]],
+  ['luaitemquerytable_3c_20character_20_3e_44',['LuaItemQueryTable&lt; Character &gt;',['../classLuaItemQueryTable.html',1,'']]]
 ];

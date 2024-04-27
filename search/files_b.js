@@ -44,8 +44,10 @@ var searchData=
   ['logenums_2eh_41',['LogEnums.h',['../LogEnums_8h.html',1,'']]],
   ['logger_2ecpp_42',['Logger.cpp',['../Logger_8cpp.html',1,'']]],
   ['logger_2eh_43',['Logger.h',['../Logger_8h.html',1,'']]],
-  ['logsink_2ecpp_44',['LogSink.cpp',['../LogSink_8cpp.html',1,'']]],
-  ['logsink_2eh_45',['LogSink.h',['../LogSink_8h.html',1,'']]],
-  ['logsource_2eh_46',['LogSource.h',['../LogSource_8h.html',1,'']]],
-  ['luaitemquerytable_2eh_47',['LuaItemQueryTable.h',['../LuaItemQueryTable_8h.html',1,'']]]
+  ['loggerbindings_2ecpp_44',['LoggerBindings.cpp',['../LoggerBindings_8cpp.html',1,'']]],
+  ['loggerbindings_2eh_45',['LoggerBindings.h',['../LoggerBindings_8h.html',1,'']]],
+  ['logsink_2ecpp_46',['LogSink.cpp',['../LogSink_8cpp.html',1,'']]],
+  ['logsink_2eh_47',['LogSink.h',['../LogSink_8h.html',1,'']]],
+  ['logsource_2eh_48',['LogSource.h',['../LogSource_8h.html',1,'']]],
+  ['luaitemquerytable_2eh_49',['LuaItemQueryTable.h',['../LuaItemQueryTable_8h.html',1,'']]]
 ];
