@@ -187,9 +187,6 @@ void GUIWindow::Release() {
 
     lWindowList.remove(this);
 
-    if (this->eWindowType == WINDOW_GameUI)
-        nuklear->Release(WINDOW_GameUI);
-
     logger->trace("Release window: {}", toString(eWindowType));
 }
 
@@ -1094,7 +1091,6 @@ void UI_Create() {
 
     if (pPrimaryWindow) pPrimaryWindow->Release();
 
-    nuklear->Create(WINDOW_GameUI);
     pPrimaryWindow = new GUIWindow(WINDOW_GameUI, {0, 0}, render->GetRenderDimensions());
     pPrimaryWindow->CreateButton({7, 8}, {460, 343}, 1, 0, UIMSG_MouseLeftClickInGame, 0);
 

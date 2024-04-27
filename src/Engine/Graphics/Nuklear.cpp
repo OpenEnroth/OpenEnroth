@@ -30,10 +30,17 @@
 
 #include "Utility/DataPath.h"
 
+/*TODO(Gerark) - We need to keep a "global" lua state pointer here for now
+because I just realized there are 2 instance of Nuklear alive at the same time
+Better to work on this cleanup in another branch*/
 lua_State *lua = nullptr;
 Nuklear *nuklear = nullptr;
 
 Nuklear::Nuklear() {
+}
+
+void Nuklear::setLuaState(lua_State* luaState) {
+    lua = luaState;
 }
 
 enum WIN_STATE {
@@ -42,17 +49,7 @@ enum WIN_STATE {
     WINDOW_TEMPLATE_ERROR
 };
 
-struct hotkey {
-    PlatformKey key;
-    bool mod_control;
-    bool mod_shift;
-    bool mod_alt;
-    int callback;
-    WindowType winType;
-};
-
 struct nk_tex_font font_default;
-std::vector<struct hotkey> hotkeys;
 
 struct img {
     GraphicsImage *asset;
@@ -732,9 +729,6 @@ bool Nuklear::Create(WindowType winType) {
     if (!nuklear || !nuklear->ctx)
         return false;
 
-    if (!lua)
-        LuaInit();
-
     return LuaLoadTemplate(winType);
 }
 
@@ -746,32 +740,6 @@ bool lua_error_check(WindowType winType, lua_State *L, int err) {
     }
 
     return false;
-}
-
-int Nuklear::KeyEvent(PlatformKey key) {
-    for (auto it = hotkeys.begin(); it < hotkeys.end(); it++) {
-        struct hotkey hk = *it;
-        if (hk.key == key) {
-            if (hk.mod_control && !engine->keyboardInputHandler->IsKeyHeld(PlatformKey::KEY_CONTROL))
-                continue;
-
-            if (hk.mod_shift && !engine->keyboardInputHandler->IsKeyHeld(PlatformKey::KEY_SHIFT))
-                continue;
-
-            if (hk.mod_alt && !engine->keyboardInputHandler->IsKeyHeld(PlatformKey::KEY_ALT))
-                continue;
-
-            lua_rawgeti(lua, LUA_REGISTRYINDEX, hk.callback);
-            lua_pushlightuserdata(lua, (void *)&wins[hk.winType]);
-            int err = lua_pcall(lua, 1, 1, 0);
-            if (lua_error_check(hk.winType, lua, err)) {
-                return false;
-            }
-            return lua_toboolean(lua, -1) != 0;
-        }
-    }
-
-    return 0;
 }
 
 int lua_handle_error(lua_State *L) {
@@ -847,17 +815,6 @@ bool Nuklear::Reload() {
         }
     }
 
-    for (auto itk = hotkeys.begin(); itk < hotkeys.end(); itk++) {
-        struct hotkey hk = *itk;
-        luaL_unref(lua, LUA_REGISTRYINDEX, hk.callback);
-        logger->info("Nuklear: hotkey '{}' is unset", GetDisplayName(hk.key));
-    }
-    hotkeys.clear();
-    hotkeys.swap(hotkeys);
-
-    LuaRelease();
-    LuaInit();
-
     for (int w = WINDOW_MainMenu; w != WINDOW_DebugMenu; w++) {
         if (wins[w].state == WINDOW_INITIALIZED || wins[w].state == WINDOW_TEMPLATE_ERROR) {
             if (!Create(WindowType(w)))
@@ -878,12 +835,6 @@ void Nuklear::Destroy() {
     for (auto it = lua_nk_styles.begin(); it < lua_nk_styles.end(); it++) {
         it->props.clear();
     }
-    for (auto itk = hotkeys.begin(); itk < hotkeys.end(); itk++) {
-        struct hotkey hk = *itk;
-        luaL_unref(lua, LUA_REGISTRYINDEX, hk.callback);
-        logger->info("Nuklear: hotkey '{}' is unset", GetDisplayName(hk.key));
-    }
-    hotkeys.clear();
     lua_nk_styles.clear();
     delete nuklear->ctx;
 }
@@ -1060,24 +1011,6 @@ bool Nuklear::LuaLoadTemplate(WindowType winType) {
     logger->info("Nuklear: lua template '{}' loaded", name);
 
     return true;
-}
-
-static int lua_log_info(lua_State *L) {
-    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 2));
-
-    const char *str = lua_tostring(lua, 2);
-    logger->info("Nuklear LUA: {}", str);
-
-    return 0;
-}
-
-static int lua_log_warning(lua_State *L) {
-    lua_check_ret(lua_check_args(L, lua_gettop(L) >= 2));
-
-    const char *str = lua_tostring(lua, 2);
-    logger->warning("Nuklear LUA: {}", str);
-
-    return 0;
 }
 
 static int lua_nk_parse_vec2(lua_State *L, int idx, struct nk_vec2 *vec) {
@@ -1562,9 +1495,9 @@ static int lua_nk_parse_style_button(struct context *w, lua_State *L, int idx, n
     }
 
     if (lua_istable(L, idx)) {
-        lua_pushvalue(lua, idx);
-        lua_pushnil(lua);
-        while (lua_next(lua, -2)) {
+        lua_pushvalue(L, idx);
+        lua_pushnil(L);
+        while (lua_next(L, -2)) {
             const char *key = luaL_checkstring(L, -2);
 
             for (auto itp = buttons_styles.begin(); itp < buttons_styles.end(); itp++) {
@@ -2249,7 +2182,7 @@ static int lua_nk_edit_string(lua_State *L) {
 
     nk_flags flags = 0;
     lua_check_ret(lua_nk_parse_edit_string_options(L, 2, &flags));
-    const char *text = lua_tostring(lua, 3);
+    const char *text = lua_tostring(L, 3);
     size_t len = NK_CLAMP(0, strlen(text), MAX_BUFFER_SIZE - 1);
     memcpy(buffer, text, len);
     buffer[len] = '\0';
@@ -2257,7 +2190,7 @@ static int lua_nk_edit_string(lua_State *L) {
 
     nk_flags resultFlags = nk_edit_string_zero_terminated(nuklear->ctx, flags, buffer, MAX_BUFFER_SIZE - 1, nk_filter_default);
 
-    lua_pushstring(lua, buffer);
+    lua_pushstring(L, buffer);
     lua_nk_push_edit_string_result_flag(L, resultFlags);
 
     return 2;
@@ -2973,7 +2906,7 @@ static int lua_nk_style_from_table(lua_State *L) {
                 table[NK_COLOR_WINDOW] = color;
         }
     }
-    lua_pop(lua, 1);
+    lua_pop(L, 1);
 
     nk_style_from_table(nuklear->ctx, table);
 
@@ -3436,89 +3369,6 @@ static int lua_window_dimensions(lua_State *L) {
     return 4;
 }
 
-static int lua_set_hotkey(lua_State *L) {
-    lua_check_ret(lua_check_args(L, lua_gettop(L) == 6));
-
-    struct context *w = (struct context *)lua_touserdata(L, 1);
-    PlatformKey gameKey;
-    const char *key = luaL_checkstring(L, 2);
-    bool key_control = lua_toboolean(L, 3);
-    bool key_shift = lua_toboolean(L, 4);
-    bool key_alt = lua_toboolean(L, 5);
-    if (!TryParseDisplayName(key, &gameKey)) {
-        return luaL_argerror(L, 2, lua_pushfstring(L, "key '%s' is unknown", key));
-    }
-
-    if (lua_isfunction(L, 6)) {
-        struct hotkey hk;
-        hk.key = gameKey;
-        hk.mod_control = key_control;
-        hk.mod_shift = key_shift;
-        hk.mod_alt = key_alt;
-        hk.callback = luaL_ref(L, LUA_REGISTRYINDEX);
-        hk.winType = w->winType;
-
-        for (auto itk = hotkeys.begin(); itk < hotkeys.end(); itk++) {
-            struct hotkey ithk = *itk;
-            if (ithk.key == hk.key) {
-                luaL_unref(L, LUA_REGISTRYINDEX, ithk.callback);
-                ithk.callback = hk.callback;
-                logger->info("Nuklear: hotkey '{}' is reset", key);
-
-                return 0;
-            }
-        }
-
-        hotkeys.push_back(hk);
-        logger->info("Nuklear: hotkey '{}' is set", key);
-
-        return 0;
-    }
-
-    return luaL_argerror(L, 3, lua_pushfstring(L, "callback is wrong"));
-}
-
-static int lua_unset_hotkey(lua_State *L) {
-    lua_check_ret(lua_check_args(L, lua_gettop(L) == 2));
-
-    struct context *w = (struct context *)lua_touserdata(L, 1);
-    PlatformKey gameKey;
-    const char *key = luaL_checkstring(L, 2);
-    if (!TryParseDisplayName(key, &gameKey)) {
-        return luaL_argerror(L, 2, lua_pushfstring(L, "key '%s' is unknown", key));
-    }
-
-    for (auto itk = hotkeys.begin(); itk < hotkeys.end(); itk++) {
-        struct hotkey hk = *itk;
-        if (hk.winType == w->winType && gameKey == hk.key) {
-            luaL_unref(lua, LUA_REGISTRYINDEX, hk.callback);
-            logger->info("Nuklear: hotkey '{}' is unset", key);
-            hotkeys.erase(itk);
-            return 0;
-        }
-    }
-
-    return 0;
-}
-
-static int lua_unset_hotkeys(lua_State *L) {
-    lua_check_ret(lua_check_args(L, lua_gettop(L) == 1));
-
-    struct context *w = (struct context *)lua_touserdata(L, 1);
-    for (auto itk = hotkeys.begin(); itk < hotkeys.end();) {
-        struct hotkey hk = *itk;
-        if (hk.winType == w->winType) {
-            luaL_unref(lua, LUA_REGISTRYINDEX, hk.callback);
-            logger->info("Nuklear: hotkey '{}' is unset", GetDisplayName(hk.key));
-            itk = hotkeys.erase(itk);
-        } else {
-            ++itk;
-        }
-    }
-
-    return 0;
-}
-
 static int lua_nk_scroll_new(lua_State *L) {
     lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 1 && lua_gettop(L) <= 2));
 
@@ -3546,129 +3396,7 @@ static int lua_nk_scroll_set(lua_State *L) {
     return 0;
 }
 
-static int lua_dev_config_set(lua_State *L) {
-    lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 2 && lua_gettop(L) <= 3));
-
-    int valueIndex = 3;
-    const char *configName{};
-    AnyConfigEntry* configEntry{};
-    if (lua_gettop(L) > 2) {
-        const char *sectionName = luaL_checkstring(L, 1);
-        configName = luaL_checkstring(L, 2);
-        ConfigSection* section = engine->config->section(sectionName);
-        if (section != nullptr) {
-            configEntry = section->entry(configName);
-        } else {
-            return luaL_argerror(L, 2, lua_pushfstring(L, "invalid section name: '%s'", sectionName));
-        }
-    } else {
-        configName = luaL_checkstring(L, 1);
-        for (auto&& section : engine->config->sections()) {
-            configEntry = section->entry(configName);
-            if (configEntry != nullptr) {
-                break;
-            }
-        }
-        valueIndex = 2;
-    }
-
-    if (configEntry != nullptr) {
-        configEntry->setString(luaL_checkstring(L, valueIndex));
-    } else {
-        return luaL_argerror(L, 1, lua_pushfstring(L, "invalid config entry name: '%s'", configName));
-    }
-
-    return 0;
-}
-
-static int lua_dev_config_get(lua_State *L) {
-    lua_check_ret(lua_check_args_count(L, lua_gettop(L) >= 1 && lua_gettop(L) <= 2));
-
-    const char *configName{};
-    AnyConfigEntry* configEntry{};
-    if (lua_gettop(L) > 1) {
-        const char *sectionName = luaL_checkstring(L, 1);
-        configName = luaL_checkstring(L, 2);
-        ConfigSection* section = engine->config->section(sectionName);
-        if (section != nullptr) {
-            configEntry = section->entry(configName);
-        } else {
-            return luaL_argerror(L, 2, lua_pushfstring(L, "invalid section name: '%s'", sectionName));
-        }
-    } else {
-        configName = luaL_checkstring(L, 1);
-        for (auto&& section : engine->config->sections()) {
-            configEntry = section->entry(configName);
-            if (configEntry != nullptr) {
-                break;
-            }
-        }
-    }
-
-    if (configEntry != nullptr) {
-        lua_pushstring(L, configEntry->string().c_str());
-    } else {
-        return luaL_argerror(L, 1, lua_pushfstring(L, "invalid config entry name: '%s'", configName));
-    }
-
-    return 1;
-}
-
-static bool load_init_lua_file(const char *file) {
-    int status = luaL_loadfile(lua, makeDataPath("scripts", file).c_str());
-    if (status) {
-        logger->warning("Nuklear: couldn't load init template: {}", lua_tostring(lua, -1));
-        lua_pop(lua, 1);
-        return false;
-    }
-
-    int err = lua_pcall(lua, 0, 0, 0);
-    if (lua_error_check(lua, err)) {
-        return false;
-    }
-
-    lua_getfield(lua, LUA_GLOBALSINDEX, "ui_init");
-    lua_pushlightuserdata(lua, (void *)&wins[WINDOW_null]);
-    err = lua_pcall(lua, 1, 0, 0);
-    if (lua_error_check(lua, err)) {
-        return false;
-    }
-
-    return true;
-}
-
-static bool lua_init_lua_files(const std::vector<std::string> &files) {
-    bool result = true;
-    for (auto&& file : files) {
-        result &= load_init_lua_file(file.c_str());
-    }
-
-    return result;
-}
-
-bool Nuklear::LuaInit() {
-    lua = luaL_newstate();
-
-    lua_gc(lua, LUA_GCSTOP, 0);
-    luaL_openlibs(lua);
-    lua_gc(lua, LUA_GCRESTART, -1);
-
-    lua_getglobal(lua, "package");
-    lua_pushfstring(lua, makeDataPath("scripts", "?.lua").c_str());
-    lua_setfield(lua, -2, "path");
-    lua_pushstring(lua, "");
-    lua_setfield(lua, -2, "cpath");
-    lua_pop(lua, 1);
-
-    static const luaL_Reg log[] = {
-        { "info", lua_log_info },
-        { "warning", lua_log_warning },
-        { NULL, NULL }
-    };
-
-    luaL_newlib(lua, log);
-    lua_setglobal(lua, "log");
-
+void Nuklear::initBindings() {
     static const luaL_Reg ui[] = {
         { "nk_begin", lua_nk_begin },
         { "nk_button_color", lua_nk_button_color },
@@ -3775,14 +3503,6 @@ bool Nuklear::LuaInit() {
     luaL_newlib(lua, window);
     lua_setglobal(lua, "window");
 
-    static const luaL_Reg dev[] = {
-        { "config_set", lua_dev_config_set },
-        { "config_get", lua_dev_config_get },
-        { NULL, NULL }
-    };
-    luaL_newlib(lua, dev);
-    lua_setglobal(lua, "dev");
-
     static const luaL_Reg nk_scroll[] = {
         { "new", lua_nk_scroll_new },
         { "set", lua_nk_scroll_set },
@@ -3797,19 +3517,6 @@ bool Nuklear::LuaInit() {
     lua_settable(lua, -3);
     luaL_openlib(lua, nullptr, nk_scroll, 0);
     lua_pop(lua, -1);
-
-    static const luaL_Reg hotkeys[] = {
-        { "set_hotkey", lua_set_hotkey },
-        { "unset_hotkey", lua_unset_hotkey },
-        { "unset_hotkeys", lua_unset_hotkeys },
-        { NULL, NULL }
-    };
-    luaL_newlib(lua, hotkeys);
-    lua_setglobal(lua, "hotkeys");
-
-    for (auto&& callback : _initLuaLibCallbacks) {
-        callback(lua);
-    }
 
     lua_pushinteger(lua, NUKLEAR_STAGE_PRE);
     lua_setglobal(lua, "NUKLEAR_STAGE_PRE");
@@ -3831,22 +3538,8 @@ bool Nuklear::LuaInit() {
     lua_setglobal(lua, "NK_EDIT_DEACTIVATED");
     lua_pushinteger(lua, NK_EDIT_COMMITED);
     lua_setglobal(lua, "NK_EDIT_COMMITED");
-
-    return lua_init_lua_files(_initLuaFiles);
-}
-
-void Nuklear::addInitLuaFile(const char *lua_file) {
-    _initLuaFiles.push_back(lua_file);
-}
-
-void Nuklear::addInitLuaLibs(std::function<void(lua_State *)> callback) {
-    _initLuaLibCallbacks.push_back(callback);
 }
 
 bool Nuklear::isInitialized(WindowType winType) const {
     return wins[winType].state == WIN_STATE::WINDOW_INITIALIZED;
-}
-
-lua_State* Nuklear::getLuaState() {
-    return lua;
 }

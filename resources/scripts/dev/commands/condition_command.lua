@@ -1,15 +1,15 @@
-local MM = require "mmbindings"
+local game = require "core.game".bindings
 local CommandUtilities = require "dev.commands.command_utils"
 local Utilities = require "utils"
 
 local function showPartyConditions()
-    local count = MM.party.get_party_size()
+    local count = game.party.getPartySize()
     local message = "Party Conditions\n"
     for i = 1, count do
-        local info = MM.party.get_character_info(i, { "condition", "name" })
+        local info = game.party.getCharacterInfo(i, { "condition", "name" })
         local conditionString = ""
         for key, _ in pairs(info.condition) do
-            conditionString = conditionString .. Utilities.enumToString(MM.CharacterCondition, key) .. " "
+            conditionString = conditionString .. Utilities.enumToString(game.CharacterCondition, key) .. " "
         end
 
         if Utilities.isEmpty(conditionString) then
@@ -28,8 +28,8 @@ end
 local function setCondition(conditionName, characterIndex)
     characterIndex = CommandUtilities.characterOrCurrent(characterIndex)
 
-    MM.party.set_character_info(characterIndex, { condition = MM.CharacterCondition[conditionName] })
-    local info = MM.party.get_character_info(characterIndex, { "name" })
+    game.party.setCharacterInfo(characterIndex, { condition = game.CharacterCondition[conditionName] })
+    local info = game.party.getCharacterInfo(characterIndex, { "name" })
 
     local message = "Set condition " .. conditionName .. " to " .. info.name
     return message, true
@@ -37,14 +37,14 @@ end
 
 local function clearCondition(conditionName, characterIndex)
     if conditionName == nil then
-        local count = MM.party.get_party_size()
+        local count = game.party.getPartySize()
         for i = 1, count do
-            MM.party.clear_condition(i)
+            game.party.clearCondition(i)
         end
         return "All conditions cleared", true
     else
         characterIndex = CommandUtilities.characterOrCurrent(characterIndex)
-        MM.party.clear_condition(characterIndex, MM.CharacterCondition[conditionName])
+        game.party.clearCondition(characterIndex, game.CharacterCondition[conditionName])
         return "Condition " .. conditionName .. " cleared", true
     end
 end

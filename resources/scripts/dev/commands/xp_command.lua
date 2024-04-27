@@ -1,13 +1,13 @@
 local Utilities = require "dev.commands.command_utils"
-local MM = require "mmbindings"
+local game = require "core.game".bindings
 
 ---Function that gives to the party a "xp" amount of Experience points and play the award animation on all characters
 ---@param xp integer - number of experience points to give to the party
 ---@return string    - the message sent back to the console
 ---@return boolean   - flag that tells if the command has been successful
 local givePartyXp = function (xp)
-    MM.party.give_party_xp(xp)
-    MM.party.play_all_characters_award_sound()
+    game.party.givePartyXp(xp)
+    game.party.playAllCharactersAwardSound()
     return "Party gained " .. xp .. " xp", true
 end
 

@@ -1,12 +1,12 @@
 local Utilities = require "dev.commands.command_utils"
-local MM = require "mmbindings"
+local game = require "core.game".bindings
 
 local function showCharsHp()
-    local count = MM.party.get_party_size()
+    local count = game.party.getPartySize()
     local message = ""
     for i = 1, count do
-        local info = MM.party.get_character_info(i, { "name", "hp", "max_hp" })
-        message = message .. info.name .. ": " .. info.hp .. "/" .. info.max_hp .. "\n"
+        local info = game.party.getCharacterInfo(i, { "name", "hp", "maxHp" })
+        message = message .. info.name .. ": " .. info.hp .. "/" .. info.maxHp .. "\n"
     end
     return message, true
 end
@@ -14,11 +14,11 @@ end
 local function fullHeal(charIndex)
     charIndex = Utilities.characterOrCurrent(charIndex)
 
-    local info = MM.party.get_character_info(charIndex, { "name", "max_hp", "max_mana" })
-    MM.party.clear_condition(charIndex)
-    MM.party.set_character_info(charIndex, {
-        hp = info.max_hp,
-        mana = info.max_mana
+    local info = game.party.getCharacterInfo(charIndex, { "name", "maxHp", "maxMana" })
+    game.party.clearCondition(charIndex)
+    game.party.setCharacterInfo(charIndex, {
+        hp = info.maxHp,
+        mana = info.maxMana
     })
     return info.name .. "'s hp and mana are restored.", true
 end

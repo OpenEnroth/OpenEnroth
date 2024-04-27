@@ -1,7 +1,12 @@
-local GameCommands = require "dev.commands.game_commands"
+--[[
+ Initialize all the core scripts and bindings
+]]
+require "core.input"
+require "core.error"
+require "core.game"
+require "core.logger"
+require "core.nuklear"
 
--- TODO(Gerark) - Fix ui_init entry point in c++
----@diagnostic disable-next-line: name-style-check, lowercase-global
-function ui_init()
-    GameCommands.registerGameCommands()
-end
+-- Register all the game console commands
+local GameCommands = require "dev.commands.game_commands"
+GameCommands.registerGameCommands()

@@ -19,6 +19,7 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -184,22 +185,14 @@ void Engine::drawHUD() {
     render->BeginScene2D();
     nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_DebugMenu, 1);
 
-    nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_GameUI, 1);
-    if (nuklear->Mode(WINDOW_GameUI) == nuklear->NUKLEAR_MODE_EXCLUSIVE) {
-        nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
-    } else {
-        DrawGUI();
-        GUI_UpdateWindows();
-        pParty->updateCharactersAndHirelingsEmotions();
-
-        // if (v4)
-    }
+    DrawGUI();
+    GUI_UpdateWindows();
+    pParty->updateCharactersAndHirelingsEmotions();
 
     // mouse->DrawPickedItem();
     mouse->DrawCursor();
     mouse->Activate();
 
-    nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_GameUI, 1);
     nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_DebugMenu, 1);
 }
 

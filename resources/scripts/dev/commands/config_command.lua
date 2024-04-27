@@ -1,3 +1,5 @@
+local config = require "core.config".bindings
+
 ---Get the value of a configEntry
 ---@param configName string    - config entry name
 ---@param sectionName? string  - section of the config entry
@@ -7,10 +9,10 @@ local function getConfig(configName, sectionName)
     local value = nil
     local message = ""
     if sectionName ~= nil then
-        value = dev.config_get(sectionName, configName)
+        value = config.getConfig(sectionName, configName)
         message = "[" .. sectionName .. "] - " .. configName .. ": "
     else
-        value = dev.config_get(configName)
+        value = config.getConfig(configName)
         message = configName .. ": "
     end
     return message .. tostring(value), true
@@ -34,12 +36,12 @@ local function setConfig(configName, param2, param3)
     end
 
     if sectionName ~= nil then
-        dev.config_set(sectionName, configName, value)
-        value = dev.config_get(sectionName, configName)
+        config.setConfig(sectionName, configName, value)
+        value = config.getConfig(sectionName, configName)
         message = "[" .. sectionName .. "] - " .. configName .. ": "
     else
-        dev.config_set(configName, value)
-        value = dev.config_get(configName)
+        config.setConfig(configName, value)
+        value = config.getConfig(configName)
         message = configName .. ": "
     end
     return message .. tostring(value), true

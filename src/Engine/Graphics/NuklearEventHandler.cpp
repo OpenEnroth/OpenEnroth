@@ -8,13 +8,7 @@
 NuklearEventHandler::NuklearEventHandler() : PlatformEventFilter(EVENTS_ALL) {}
 
 bool NuklearEventHandler::keyPressEvent(const PlatformKeyEvent *event) {
-    PlatformKey key = event->key;
-    PlatformModifiers mods = event->mods;
-
-    if (nuklear->KeyEvent(key))
-        return true;
-
-    return KeyEvent(key, mods, true);
+    return KeyEvent(event->key, event->mods, true);
 }
 
 bool NuklearEventHandler::keyReleaseEvent(const PlatformKeyEvent *event) {

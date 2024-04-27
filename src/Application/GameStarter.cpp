@@ -13,7 +13,6 @@
 #include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Nuklear.h"
-#include "Engine/Graphics/NuklearLogSink.h"
 #include "Engine/Graphics/NuklearEventHandler.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
@@ -34,6 +33,14 @@
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/Platform/Null/NullPlatform.h"
 
+#include "Scripting/ConfigBindings.h"
+#include "Scripting/GameLuaBindings.h"
+#include "Scripting/LoggerBindings.h"
+#include "Scripting/InputBindings.h"
+#include "Scripting/NuklearBindings.h"
+#include "Scripting/InputScriptEventHandler.h"
+#include "Scripting/ScriptingSystem.h"
+
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 
@@ -43,7 +50,6 @@
 #include "GameKeyboardController.h"
 #include "GameWindowHandler.h"
 #include "GameTraceHandler.h"
-#include "GameLuaBindings.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init environment.
@@ -129,8 +135,6 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (!_renderer->Initialize())
         throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
 
-    _gameLuaBindings = std::make_unique<GameLuaBindings>();
-
     // Init Nuklear - depends on renderer.
     _nuklear = Nuklear::Initialize();
     if (!_nuklear)
@@ -138,9 +142,6 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     ::nuklear = _nuklear.get();
     if (_nuklear) {
         _application->installComponent(std::make_unique<NuklearEventHandler>());
-        _nuklear->addInitLuaFile("init.lua");
-        _nuklear->addInitLuaLibs([this](lua_State* luaState) { _gameLuaBindings->init(luaState); });
-        _defaultLogSink->addLogSink(NuklearLogSink::createNuklearLogSink());
     }
 
     // Init io.
@@ -157,6 +158,14 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
 
     // Init game.
     _game = std::make_unique<Game>(_application.get(), _config);
+
+    _scriptingSystem = std::make_unique<ScriptingSystem>("scripts", "init.lua", *_application, *_defaultLogSink);
+    _scriptingSystem->addBindings<LoggerBindings>("Log");
+    _scriptingSystem->addBindings<GameLuaBindings>("Game");
+    _scriptingSystem->addBindings<ConfigBindings>("Config");
+    _scriptingSystem->addBindings<InputBindings>("Input", *_application->component<InputScriptEventHandler>());
+    _scriptingSystem->addBindings<NuklearBindings>("Nuklear", _engine->nuklear.get());
+    _scriptingSystem->executeEntryPoint();
 }
 
 GameStarter::~GameStarter() {

@@ -3,9 +3,12 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 set(SCRIPTS_SOURCES
     console.lua
     init.lua
-    logger.lua
-    mmbindings.lua
     utils.lua
+    core/error.lua
+    core/input.lua
+    core/game.lua
+    core/config.lua
+    core/logger.lua
     dev/ui_debug_hud.lua
     dev/commands/alignment_command.lua
     dev/commands/class_command.lua
