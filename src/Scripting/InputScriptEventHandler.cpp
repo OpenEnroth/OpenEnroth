@@ -2,15 +2,18 @@
 
 #include <Library/Logger/Logger.h>
 
-InputScriptEventHandler::InputScriptEventHandler() : PlatformEventFilter({ EVENT_KEY_PRESS }) {
+InputScriptEventHandler::InputScriptEventHandler(sol::state_view &solState) : PlatformEventFilter({ EVENT_KEY_PRESS }), _solState(solState) {
 }
 
 bool InputScriptEventHandler::keyPressEvent(const PlatformKeyEvent *event) {
     bool isHandled = false;
-    sol::safe_function function = _scriptFunctionProvider("_globalOnKeyPress");
+    sol::safe_function function = _solState["_globalOnKeyPress"];
     if (function.valid()) {
         try {
-            function.set_error_handler(_scriptFunctionProvider("_errorHandler"));
+            sol::function errorHandler = _solState["_globalErrorHandler"];
+            if (errorHandler.valid()) {
+                function.set_error_handler(errorHandler);
+            }
             auto result = function(event->key);
             if (result.valid()) {
                 return result;
@@ -20,8 +23,4 @@ bool InputScriptEventHandler::keyPressEvent(const PlatformKeyEvent *event) {
         }
     }
     return false;
-}
-
-void InputScriptEventHandler::setScriptFunctionProvider(const ScriptFunctionProvider &scriptFunctionProvider) {
-    _scriptFunctionProvider = scriptFunctionProvider;
 }
