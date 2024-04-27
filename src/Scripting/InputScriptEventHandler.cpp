@@ -1,6 +1,7 @@
 #include "InputScriptEventHandler.h"
 
 #include <Library/Logger/Logger.h>
+#include <memory>
 
 InputScriptEventHandler::InputScriptEventHandler(std::weak_ptr<sol::state_view> solState) : PlatformEventFilter({ EVENT_KEY_PRESS }), _solState(solState) {
 }

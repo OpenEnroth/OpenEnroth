@@ -1,8 +1,8 @@
 #pragma once
 
+#include <Library/Platform/Filters/PlatformEventFilter.h>
+#include <memory>
 #include <sol/sol.hpp>
-
-#include "Library/Platform/Filters/PlatformEventFilter.h"
 
 class InputScriptEventHandler : public PlatformEventFilter {
  public:
