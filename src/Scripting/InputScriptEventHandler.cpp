@@ -1,4 +1,5 @@
 #include "InputScriptEventHandler.h"
+#include "ScriptingSystem.h"
 
 #include <Library/Logger/Logger.h>
 #include <memory>
@@ -21,7 +22,7 @@ bool InputScriptEventHandler::keyPressEvent(const PlatformKeyEvent *event) {
                     return result;
                 }
             } catch (const sol::error &e) {
-                logger->error("[Script] An unexpected error has occurred: ", e.what());
+                logger->error(ScriptingSystem::LogCategory, "An unexpected error has occurred: ", e.what());
             }
         }
     }

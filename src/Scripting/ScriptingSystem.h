@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Library/Logger/LogCategory.h>
+
 #include <string_view>
 #include <string>
 #include <vector>
@@ -25,6 +27,8 @@ class ScriptingSystem {
         auto bindings = std::make_unique<TBindings>(std::forward<TArgs>(args) ...);
         _addBindings(bindingTableName, std::move(bindings));
     }
+
+    static LogCategory LogCategory;
 
  private:
     void _initBaseLibraries();

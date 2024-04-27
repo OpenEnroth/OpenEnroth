@@ -14,7 +14,7 @@
 #include "InputScriptEventHandler.h"
 #include "ScriptLogSink.h"
 
-static LogCategory scriptingLogCategory("Script");
+LogCategory ScriptingSystem::LogCategory("Script");
 
 ScriptingSystem::ScriptingSystem(std::string_view scriptFolder, std::string_view entryPointFile, PlatformApplication &platformApplication, DistLogSink &distLogSink)
     : _scriptFolder(scriptFolder), _entryPointFile(entryPointFile), _platformApplication(platformApplication) {
@@ -35,7 +35,7 @@ void ScriptingSystem::executeEntryPoint() {
     try {
         _solState->script_file(makeDataPath(_scriptFolder, _entryPointFile));
     } catch (const sol::error &e) {
-        logger->error(scriptingLogCategory, "An unexpected error has occurred: {}", e.what());
+        logger->error(LogCategory, "An unexpected error has occurred: {}", e.what());
     }
 }
 
