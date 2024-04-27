@@ -61,8 +61,9 @@ void ScriptingSystem::_initPackageTable(std::string_view scriptFolder) {
 }
 
 void ScriptingSystem::_addBindings(std::string_view bindingTableName, std::unique_ptr<IBindings> bindings) {
-    (*_solState)["require" + std::string(bindingTableName) + "Bindings"] = [this, bindingsPtr = bindings.get()]() {
-        return bindingsPtr->createBindingTable(*_solState);
+    (*_solState)[bindingTableName] = bindings->createBindingTable(*_solState);
+    (*_solState)["require" + std::string(bindingTableName) + "Bindings"] = [this, bindingTableName]() -> sol::table {
+        return (*_solState)[bindingTableName];
     };
     _bindings.insert({ bindingTableName.data(), std::move(bindings) });
 }
