@@ -5,6 +5,7 @@ require "core.input"
 require "core.error"
 require "core.game"
 require "core.logger"
+require "core.nuklear"
 
 -- Register all the game console commands
 local GameCommands = require "dev.commands.game_commands"
