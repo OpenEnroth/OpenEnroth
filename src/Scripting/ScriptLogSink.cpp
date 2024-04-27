@@ -13,7 +13,7 @@ void ScriptLogSink::write(const LogCategory& category, LogLevel level, std::stri
     if (!_solState.expired()) {
         sol::protected_function logSink = (*_solState.lock())["_globalLogSink"];
         if (logSink) {
-            logSink(toString(level).c_str(), message);
+            logSink(toString(level), message);
         }
     }
 }
