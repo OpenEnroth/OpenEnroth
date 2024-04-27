@@ -6,17 +6,11 @@
 #include <functional>
 #include <string>
 
-ConfigBindings::ConfigBindings(const sol::state_view &solState) : _solState(solState) {
-}
-
-sol::table ConfigBindings::getBindingTable() {
-    if (!_bindingTable) {
-        _bindingTable = _solState.create_table_with(
-            "setConfig", sol::overload(setConfigValue1, setConfigValue2),
-            "getConfig", sol::overload(getConfigValue1, getConfigValue2)
-        );
-    }
-    return *_bindingTable;
+sol::table ConfigBindings::createBindingTable(sol::state_view &solState) {
+    return solState.create_table_with(
+        "setConfig", sol::overload(setConfigValue1, setConfigValue2),
+        "getConfig", sol::overload(getConfigValue1, getConfigValue2)
+    );
 }
 
 bool ConfigBindings::setConfigValue1(std::string_view sectionName, std::string_view configName, std::string_view value) {

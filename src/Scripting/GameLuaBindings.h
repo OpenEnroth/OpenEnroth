@@ -12,20 +12,18 @@ class Character;
 
 class GameLuaBindings : public IBindings {
  public:
-    explicit GameLuaBindings(const sol::state_view &luaState);
+    GameLuaBindings();
     ~GameLuaBindings() override;
-    virtual sol::table getBindingTable() override;
+    virtual sol::table createBindingTable(sol::state_view &solState) override;
 
  private:
-    void _registerAudioBindings(sol::table &table);
-    void _registerRenderBindings(sol::table &table);
-    void _registerMiscBindings(sol::table &table);
-    void _registerPartyBindings(sol::table &table);
-    void _registerItemBindings(sol::table &table);
-    void _registerSerializationBindings(sol::table &table);
-    void _registerEnums(sol::table &table);
+    void _registerAudioBindings(sol::state_view &solState, sol::table &table);
+    void _registerRenderBindings(sol::state_view &solState, sol::table &table);
+    void _registerMiscBindings(sol::state_view &solState, sol::table &table);
+    void _registerPartyBindings(sol::state_view &solState, sol::table &table);
+    void _registerItemBindings(sol::state_view &solState, sol::table &table);
+    void _registerSerializationBindings(sol::state_view &solState, sol::table &table);
+    void _registerEnums(sol::state_view &solState, sol::table &table);
 
-    sol::state_view _luaState;
-    std::optional<sol::table> _bindingTable;
-    LuaItemQueryTable<Character> _characterInfoQueryTable;
+    std::unique_ptr<LuaItemQueryTable<Character>> _characterInfoQueryTable;
 };
