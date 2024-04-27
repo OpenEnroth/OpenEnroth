@@ -13,13 +13,13 @@ InputBindings::InputBindings(InputScriptEventHandler &inputScriptEventHandler)
     });*/
 }
 
-sol::table InputBindings::createBindingTable(sol::state_view &solState) {
+sol::table InputBindings::createBindingTable(sol::state_view &solState) const {
     sol::table table = solState.create_table();
     _fillTableWithEnums(table);
     return table;
 }
 
-void InputBindings::_fillTableWithEnums(sol::table &table) {
+void InputBindings::_fillTableWithEnums(sol::table &table) const {
     table.new_enum<false>("PlatformKey",
         /*
         "KEY_CHAR", PlatformKey::KEY_CHAR,

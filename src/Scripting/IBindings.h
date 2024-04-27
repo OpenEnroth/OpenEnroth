@@ -5,5 +5,5 @@
 class IBindings {
  public:
     virtual ~IBindings() = default;
-    virtual sol::table createBindingTable(sol::state_view &solState) = 0;
+    virtual sol::table createBindingTable(sol::state_view &solState) const = 0;
 };

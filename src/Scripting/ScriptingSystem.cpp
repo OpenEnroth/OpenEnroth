@@ -58,7 +58,6 @@ void ScriptingSystem::_initPackageTable(std::string_view scriptFolder) {
     sol::table packageTable = (*_solState)["package"];
     packageTable["path"] = makeDataPath(scriptFolder, "?.lua");
     packageTable["cpath"] = ""; //Reset the path for any c loaders
-    //packageTable["package"]
 }
 
 void ScriptingSystem::_addBindings(std::string_view bindingTableName, std::unique_ptr<IBindings> bindings) {

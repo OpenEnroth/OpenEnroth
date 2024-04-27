@@ -6,7 +6,7 @@
 #include <functional>
 #include <string>
 
-sol::table ConfigBindings::createBindingTable(sol::state_view &solState) {
+sol::table ConfigBindings::createBindingTable(sol::state_view &solState) const {
     return solState.create_table_with(
         "setConfig", sol::overload(setConfigValue1, setConfigValue2),
         "getConfig", sol::overload(getConfigValue1, getConfigValue2)

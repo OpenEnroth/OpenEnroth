@@ -6,7 +6,7 @@
 
 class ConfigBindings : public IBindings {
  public:
-    virtual sol::table createBindingTable(sol::state_view &solState) override;
+    virtual sol::table createBindingTable(sol::state_view &solState) const override;
 
  private:
     [[nodiscard]] static bool setConfigValue1(std::string_view sectionName, std::string_view configName, std::string_view value);
