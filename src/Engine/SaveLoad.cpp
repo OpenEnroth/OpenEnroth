@@ -180,7 +180,8 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path,
     //    render->Present();
     //}
 
-    LodWriter lodWriter(path, makeSaveLodInfo());
+    std::string tempPath = fmt::format("{}.tmp", path);
+    LodWriter lodWriter(tempPath, makeSaveLodInfo());
 
     if (resetWorld) {
         // New game - copy ddm & dlv files.
@@ -239,9 +240,11 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path,
     // 2. Writing additional duplicate entry at the end of a saves LOD file.
     // Our code doesn't support duplicate entries, so we just add a dummy entry
     lodWriter.write("z.bin", Blob::fromString("dummy"));
+    lodWriter.close();
+
+    std::filesystem::rename(tempPath, path);
 
     pSave_LOD->close();
-    lodWriter.close();
     pSave_LOD->open(Blob::copy(Blob::fromFile(path)), path, LOD_ALLOW_DUPLICATES);
 
     pParty->pos.x = pPositionX;
