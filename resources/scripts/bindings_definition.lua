@@ -100,6 +100,8 @@
 --- @field error fun(message:string)
 --- @field critical fun(message:string)
 
+--- @class NuklearBindings
+
 ---@return GameBindings
 function requireGameBindings() return {} end
 
@@ -111,6 +113,9 @@ function requireInputBindings() return {} end
 
 ---@return ConfigBindings
 function requireConfigBindings() return {} end
+
+---@return NuklearBindings
+function requireNuklearBindings() return {} end
 
 --- NUKLEAR META DOCS
 
