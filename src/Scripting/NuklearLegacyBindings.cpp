@@ -1,7 +1,6 @@
 #include "NuklearLegacyBindings.h"
 
 #include <Engine/AssetsManager.h>
-#include <Engine/Graphics/NuklearUtils.h>
 #include <Engine/Graphics/Image.h>
 #include <Engine/Graphics/Renderer/Renderer.h>
 #include <Library/Color/ColorTable.h>
@@ -11,8 +10,61 @@
 #include <cstdio>
 #include <lua.hpp>
 
+struct nk_context *NuklearLegacyBindings::_context{};
+std::vector<struct lua_nk_style> NuklearLegacyBindings::_styles;
+
+void NuklearLegacyBindings::init(struct nk_context *context, lua_State *lua) {
+    setContext(context);
+    initStyles();
+    initBindings(lua);
+}
+
 void NuklearLegacyBindings::setContext(struct nk_context *context) {
     _context = context;
+}
+
+#define lua_foreach(_lua, _idx) for (lua_pushnil(_lua); lua_next(_lua, _idx); lua_pop(_lua, 1))
+#define lua_check_ret(_func) { int _ret = _func; if (_ret) return _ret; }
+
+int lua_check_args_count(lua_State *L, bool condition) {
+    if (!condition)
+        return luaL_argerror(L, -2, lua_pushfstring(L, "invalid arguments count"));
+
+    return 0;
+}
+
+int lua_check_args(lua_State *L, bool condition) {
+    if (lua_gettop(L) == 0)
+        return luaL_argerror(L, 1, lua_pushfstring(L, "context is absent"));
+
+    if (!lua_isuserdata(L, 1))
+        return luaL_argerror(L, 1, lua_pushfstring(L, "context is invalid"));
+
+    return lua_check_args_count(L, condition);
+}
+
+bool lua_to_boolean(lua_State *L, int idx) {
+    bool value{};
+    if (lua_isnil(L, idx)) {
+        return false;
+    } else if (lua_isboolean(L, idx)) {
+        value = lua_toboolean(L, idx);
+    } else {
+        std::string_view strVal = lua_tostring(L, idx);
+        value = strVal != "false" && strVal != "0";
+    }
+
+    return value;
+}
+
+bool lua_error_check(lua_State *L, int err) {
+    if (err != 0) {
+        logger->error("Nuklear: LUA error: {}\n", lua_tostring(L, -1));
+        lua_pop(L, 1);
+        return true;
+    }
+
+    return false;
 }
 
 int NuklearLegacyBindings::lua_nk_parse_vec2(lua_State *L, int idx, struct nk_vec2 *vec) {
@@ -2376,7 +2428,6 @@ void NuklearLegacyBindings::initBindings(lua_State* lua) {
         { "nk_label", lua_nk_label },
         { "nk_label_colored", lua_nk_label_colored },
         { "nk_load_image", lua_nk_load_image },
-        { "nk_layout_row", lua_nk_layout_row },
         { "nk_layout_row_begin", lua_nk_layout_row_begin },
         { "nk_layout_row_dynamic", lua_nk_layout_row_dynamic },
         { "nk_layout_row_push", lua_nk_layout_row_push },
@@ -2438,13 +2489,6 @@ void NuklearLegacyBindings::initBindings(lua_State* lua) {
     };
     luaL_newlib(lua, ui);
     lua_setglobal(lua, "ui");
-
-    static const luaL_Reg window[] = {
-        { "dimensions", lua_window_dimensions },
-        { NULL, NULL }
-    };
-    luaL_newlib(lua, window);
-    lua_setglobal(lua, "window");
 
     static const luaL_Reg nk_scroll[] = {
         { "new", lua_nk_scroll_new },

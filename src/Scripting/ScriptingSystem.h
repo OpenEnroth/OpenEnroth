@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Library/Logger/LogCategory.h>
+
 #include <string_view>
 #include <string>
 #include <vector>
@@ -8,34 +10,34 @@
 #include <utility>
 #include <sol/sol.hpp>
 
+class DistLogSink;
 class IBindings;
+class PlatformApplication;
+class ScriptLogSink;
 
 class ScriptingSystem {
  public:
-    ScriptingSystem(
-        std::string_view scriptFolder,
-        const std::vector<std::string> &entryPointFiles
-    );
+    ScriptingSystem(std::string_view scriptFolder, std::string_view entryPointFile, PlatformApplication &platformApplication, DistLogSink &distLogSink);
+    ~ScriptingSystem();
 
-    static std::unique_ptr<ScriptingSystem> create(
-        std::string_view scriptFolder,
-        const std::vector<std::string> &entryPointFiles);
-
-    void executeEntryPoints();
+    void executeEntryPoint();
 
     template<typename TBindings, typename ...TArgs>
     void addBindings(std::string_view bindingTableName, TArgs &&... args) {
-        auto bindings = std::make_unique<TBindings>(_solState, std::forward<TArgs>(args) ...);
-        _addBindings(bindingTableName, std::move(bindings));
+        auto bindings = std::make_unique<TBindings>(std::forward<TArgs>(args) ...);
+        _bindings.insert({ "bindings." + std::string(bindingTableName), std::move(bindings)});
     }
+
+    static LogCategory ScriptingLogCategory;
 
  private:
     void _initBaseLibraries();
     void _initPackageTable(std::string_view scriptFolder);
-    void _addBindings(std::string_view name, std::unique_ptr<IBindings> bindings);
+    void _initBindingFunction();
 
-    sol::state _solState;
+    std::shared_ptr<sol::state> _solState;
     std::unordered_map<std::string, std::unique_ptr<IBindings>> _bindings;
-    std::vector<std::string> _entryPointFiles;
     std::string _scriptFolder;
+    std::string _entryPointFile;
+    PlatformApplication &_platformApplication;
 };

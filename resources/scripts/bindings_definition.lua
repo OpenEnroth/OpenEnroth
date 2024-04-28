@@ -100,17 +100,15 @@
 --- @field error fun(message:string)
 --- @field critical fun(message:string)
 
----@return GameBindings
-function requireGameBindings() return {} end
+--- @class NuklearBindings
 
----@return LogBindings
-function requireLogBindings() return {} end
+--- @class DebugView
+--- @field init fun()
+--- @field close fun()
+--- @field update fun(ctx: NuklearContext)
 
----@return InputBindings
-function requireInputBindings() return {} end
-
----@return ConfigBindings
-function requireConfigBindings() return {} end
+--- @class DebugViewBindings
+--- @field addView fun(view: DebugView)
 
 --- NUKLEAR META DOCS
 

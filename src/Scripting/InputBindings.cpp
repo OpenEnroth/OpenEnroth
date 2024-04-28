@@ -6,25 +6,21 @@
 
 #include "InputScriptEventHandler.h"
 
-InputBindings::InputBindings(const sol::state_view &solState, InputScriptEventHandler &inputScriptEventHandler)
-    : _solState(solState)
-    , _inputScriptEventHandler(inputScriptEventHandler) {
-    _inputScriptEventHandler.setScriptFunctionProvider([this](std::string_view functionName) {
+InputBindings::InputBindings(InputScriptEventHandler &inputScriptEventHandler)
+    : _inputScriptEventHandler(inputScriptEventHandler) {
+    /*_inputScriptEventHandler.setScriptFunctionProvider([this](std::string_view functionName) {
         return _solState[functionName];
-    });
+    });*/
 }
 
-sol::table InputBindings::getBindingTable() {
-    if (!_bindingTable) {
-        //We're not yet exposing functions in the input binding table but we'll do soon
-        _bindingTable = _solState.create_table();
-        _fillTableWithEnums();
-    }
-    return _bindingTable;
+sol::table InputBindings::createBindingTable(sol::state_view &solState) const {
+    sol::table table = solState.create_table();
+    _fillTableWithEnums(table);
+    return table;
 }
 
-void InputBindings::_fillTableWithEnums() {
-    _bindingTable.new_enum<false>("PlatformKey",
+void InputBindings::_fillTableWithEnums(sol::table &table) const {
+    table.new_enum<false>("PlatformKey",
         /*
         "KEY_CHAR", PlatformKey::KEY_CHAR,
         "KEY_F1", PlatformKey::KEY_F1,

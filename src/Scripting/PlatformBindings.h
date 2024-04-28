@@ -6,13 +6,11 @@ class PlatformApplication;
 
 class PlatformBindings : public IBindings {
  public:
-    explicit PlatformBindings(const sol::state_view &solState, PlatformApplication &platformApplication);
+    explicit PlatformBindings(PlatformApplication &platformApplication);
     ~PlatformBindings();
 
-    sol::table getBindingTable() override;
+    virtual sol::table createBindingTable(sol::state_view &solState) const override;
 
  private:
-    sol::state_view _solState;
-    sol::table _bindingTable;
     PlatformApplication &_platformApplication;
 };

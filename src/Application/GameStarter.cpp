@@ -32,6 +32,15 @@
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/Platform/Null/NullPlatform.h"
 
+#include "Scripting/ConfigBindings.h"
+#include "Scripting/GameLuaBindings.h"
+#include "Scripting/InputBindings.h"
+#include "Scripting/InputScriptEventHandler.h"
+#include "Scripting/LoggerBindings.h"
+#include "Scripting/NuklearBindings.h"
+#include "Scripting/PlatformBindings.h"
+#include "Scripting/ScriptingSystem.h"
+
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 
@@ -42,16 +51,6 @@
 #include "GameKeyboardController.h"
 #include "GameWindowHandler.h"
 #include "GameTraceHandler.h"
-
-#include "Scripting/ConfigBindings.h"
-#include "Scripting/GameLuaBindings.h"
-#include "Scripting/InputBindings.h"
-#include "Scripting/InputScriptEventHandler.h"
-#include "Scripting/LoggerBindings.h"
-#include "Scripting/NuklearBindings.h"
-#include "Scripting/PlatformBindings.h"
-#include "Scripting/ScriptingSystem.h"
-
 #include "RenderStatsDebugView.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
@@ -154,25 +153,25 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     );
     ::mouse = EngineIocContainer::ResolveMouse();
 
+    _debugViewSystem = DebugViewSystem::create(*_renderer, *_config, *_application);
+
     // Init engine.
-    _engine = std::make_unique<Engine>(_config);
+    _engine = std::make_unique<Engine>(_config, *_debugViewSystem);
     ::engine = _engine.get();
     _engine->Initialize();
 
     // Init game.
     _game = std::make_unique<Game>(_application.get(), _config);
 
-    _application->installComponent(std::make_unique<InputScriptEventHandler>());
-    _scriptingSystem = ScriptingSystem::create("scripts", { "init.lua" });
-    _scriptingSystem->addBindings<LoggerBindings>("Log", *_defaultLogSink);
-    _scriptingSystem->addBindings<GameLuaBindings>("Game");
-    _scriptingSystem->addBindings<ConfigBindings>("Config");
+    _scriptingSystem = std::make_unique<ScriptingSystem>("scripts", "init.lua", *_application, *_defaultLogSink);
+    _scriptingSystem->addBindings<LoggerBindings>("log");
+    _scriptingSystem->addBindings<GameLuaBindings>("game");
+    _scriptingSystem->addBindings<ConfigBindings>("config");
     _scriptingSystem->addBindings<PlatformBindings>("Platform", *_application);
-    _scriptingSystem->addBindings<InputBindings>("Input", *_application->component<InputScriptEventHandler>());
-    _scriptingSystem->addBindings<NuklearBindings>("Nuklear", _engine->nuklear.get());
-    _scriptingSystem->executeEntryPoints();
+    _scriptingSystem->addBindings<InputBindings>("input", *_application->component<InputScriptEventHandler>());
+    _scriptingSystem->addBindings<NuklearBindings>("nuklear", _engine->nuklear.get());
+    _scriptingSystem->executeEntryPoint();
 
-    _debugViewSystem = DebugViewSystem::create(*_renderer, *_config, *_application);
     _debugViewSystem->addView<RenderStatsDebugView>("RenderStats", *_renderer);
 }
 

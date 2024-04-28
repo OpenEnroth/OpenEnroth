@@ -31,26 +31,6 @@ local function historyNext()
     return false
 end
 
-local unregisterFromInput = function () end
-
----@param _ NuklearContext
----@return table
----@diagnostic disable-next-line: name-style-check
-function ui_init(_)
-    Console.scroll:set(0, 0)
-    if #Console.messages == 0 then
-        Console:addMessage("Type \"help\" on the command line to get a list of all the commands", { 255, 255, 255, 128 })
-    end
-    unregisterFromInput = Input.listener.registerKeyPressBulk({
-        { key = Input.bindings.PlatformKey.KEY_UP,   callback = historyPrev },
-        { key = Input.bindings.PlatformKey.KEY_DOWN, callback = historyNext }
-    })
-    return {
-        draw = ui_draw,
-        release = ui_release
-    }
-end
-
 ---@param ctx NuklearContext
 local function drawFooter(ctx)
     ui.nk_style_push(ctx, "button", "normal", getColorAlpha(baseColor))
@@ -132,19 +112,31 @@ local function drawConsole(ctx)
     end
 end
 
----
+local unregisterFromInput = function () end
+
+local DebugView = {}
+
+DebugView.init = function ()
+    Console.scroll:set(0, 0)
+    if #Console.messages == 0 then
+        Console:addMessage("Type \"help\" on the command line to get a list of all the commands", { 255, 255, 255, 128 })
+    end
+    unregisterFromInput = Input.listener.registerKeyPressBulk({
+        { key = Input.bindings.PlatformKey.KEY_UP,   callback = historyPrev },
+        { key = Input.bindings.PlatformKey.KEY_DOWN, callback = historyNext }
+    })
+end
+
 ---@param ctx NuklearContext
----@diagnostic disable-next-line: name-style-check
-function ui_draw(ctx)
+DebugView.update = function (ctx)
     local show = config.getConfig("debug", "show_console")
     if show == "true" then
         drawConsole(ctx)
     end
 end
 
----
----@param _ NuklearContext
----@diagnostic disable-next-line: name-style-check
-function ui_release(_)
+DebugView.close = function ()
     unregisterFromInput()
 end
+
+return DebugView

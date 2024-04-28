@@ -42,6 +42,7 @@ struct IndoorLocation;
 struct OutdoorLocation;
 struct LightsStack_StationaryLight_;
 struct LightsStack_MobileLight_;
+class DebugViewSystem;
 
 enum class GameState {
     GAME_STATE_PLAYING = 0,
@@ -67,7 +68,7 @@ struct PersistentVariables {
 
 class Engine {
  public:
-    explicit Engine(std::shared_ptr<GameConfig> config);
+    explicit Engine(std::shared_ptr<GameConfig> config, DebugViewSystem &debugViewSystem);
     virtual ~Engine();
 
     static void LogEngineBuildInfo();
@@ -129,6 +130,7 @@ class Engine {
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
     TeleportPoint _teleportPoint;
+    DebugViewSystem &_debugViewSystem;
 
     std::unique_ptr<GUIMessageQueue> _messageQueue;
     std::unique_ptr<GameResourceManager> _gameResourceManager;

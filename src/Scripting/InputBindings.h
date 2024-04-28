@@ -6,13 +6,11 @@ class InputScriptEventHandler;
 
 class InputBindings : public IBindings {
  public:
-    explicit InputBindings(const sol::state_view &solState, InputScriptEventHandler &inputScriptEventHandler);
-    sol::table getBindingTable() override;
+    explicit InputBindings(InputScriptEventHandler &inputScriptEventHandler);
+    virtual sol::table createBindingTable(sol::state_view &solState) const override;
 
  private:
-    void _fillTableWithEnums();
+    void _fillTableWithEnums(sol::table &table) const;
 
-    sol::state_view _solState;
-    sol::table _bindingTable;
     InputScriptEventHandler &_inputScriptEventHandler;
 };

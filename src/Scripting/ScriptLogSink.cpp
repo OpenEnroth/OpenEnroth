@@ -6,12 +6,14 @@
 
 #include "Library/Serialization/Serialization.h"
 
-ScriptLogSink::ScriptLogSink(const sol::state_view &solState) : _solState(solState) {
+ScriptLogSink::ScriptLogSink(std::weak_ptr<sol::state_view> solState) : _solState(solState) {
 }
 
 void ScriptLogSink::write(const LogCategory& category, LogLevel level, std::string_view message) {
-    sol::protected_function logSink = _solState["_globalLogSink"];
-    if (logSink) {
-        logSink(toString(level).c_str(), message.data());
+    if (!_solState.expired()) {
+        sol::protected_function logSink = (*_solState.lock())["_globalLogSink"];
+        if (logSink) {
+            logSink(toString(level).c_str(), message);
+        }
     }
 }

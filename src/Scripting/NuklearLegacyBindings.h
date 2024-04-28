@@ -45,9 +45,7 @@ struct lua_nk_style {
 
 class NuklearLegacyBindings {
  public:
-    static void initBindings(lua_State *lua);
-    static void initStyles();
-    static void setContext(struct nk_context *context);
+    static void init(struct nk_context *context, lua_State *lua);
 
  private:
     struct img {
@@ -60,6 +58,9 @@ class NuklearLegacyBindings {
         std::vector<struct nk_tex_font *> fonts;
     };
 
+    static void initBindings(lua_State *lua);
+    static void initStyles();
+    static void setContext(struct nk_context *context);
     static int lua_nk_parse_vec2(lua_State *L, int idx, struct nk_vec2 *vec);
     static int lua_nk_is_hex(char c);
     static int lua_nk_parse_ratio(lua_State *L, int idx, std::vector<float> *ratio);
@@ -114,7 +115,6 @@ class NuklearLegacyBindings {
     static int lua_nk_layout_reset_min_row_height(lua_State *L);
     static int lua_nk_label(lua_State *L);
     static int lua_nk_label_colored(lua_State *L);
-    static int lua_nk_layout_row(lua_State *L);
     static int lua_nk_layout_row_dynamic(lua_State *L);
     static int lua_nk_layout_row_static(lua_State *L);
     static int lua_nk_layout_row_begin(lua_State *L);
@@ -172,7 +172,6 @@ class NuklearLegacyBindings {
     static int lua_nk_window_set_bounds(lua_State *L);
     static int lua_nk_window_get_position(lua_State *L);
     static int lua_nk_load_image(lua_State *L);
-    static int lua_window_dimensions(lua_State *L);
     static int lua_nk_scroll_new(lua_State *L);
     static int lua_nk_scroll_set(lua_State *L);
     static void lua_nk_push_edit_string_result_flag(lua_State *L, nk_flags flags);

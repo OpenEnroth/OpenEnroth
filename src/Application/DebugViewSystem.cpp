@@ -10,6 +10,8 @@
 
 #include "DebugView.h"
 
+#include <nuklear_config.h> // NOLINT: not a C system header.
+
 #include <memory>
 #include <utility>
 
@@ -18,8 +20,6 @@ DebugViewSystem::DebugViewSystem(Renderer &render, bool useOGLES, PlatformApplic
     platformApplication.installComponent(std::make_unique<DebugViewEventHandler>(_nuklear->getContext()));
 
     _renderer = std::make_unique<NuklearDebugViewRenderer>(_nuklear->getContext(), useOGLES);
-    int i = 0;
-    _renderer->render({}, i);
     render.setDebugViewRenderer(_renderer.get());
 
     _unregisterDependencies = [&render, &platformApplication]() {
@@ -42,7 +42,9 @@ void DebugViewSystem::_addView(std::string_view viewName, std::unique_ptr<DebugV
 }
 
 void DebugViewSystem::update() {
+    nk_input_end(_nuklear->getContext());
     for (auto &viewPair : _views) {
         viewPair.second->update(*_nuklear);
     }
+    nk_input_begin(_nuklear->getContext());
 }

@@ -64,6 +64,8 @@
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
 
+#include "Application/DebugViewSystem.h"
+
 #include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -181,7 +183,7 @@ void Engine::drawWorld() {
 }
 
 void Engine::drawDebugView() {
-
+    _debugViewSystem.update();
 }
 
 void Engine::drawHUD() {
@@ -416,7 +418,7 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
 }
 
 //----- (0044E4B7) --------------------------------------------------------
-Engine::Engine(std::shared_ptr<GameConfig> config) {
+Engine::Engine(std::shared_ptr<GameConfig> config, DebugViewSystem &debugViewSystem) : _debugViewSystem(debugViewSystem) {
     this->config = config;
     this->bloodsplat_container = EngineIocContainer::ResolveBloodsplatContainer();
     this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
