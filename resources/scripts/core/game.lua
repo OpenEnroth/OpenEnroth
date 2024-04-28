@@ -1,4 +1,5 @@
-local gameBindings = requireGameBindings()
+---@type GameBindings
+local GameBindings = require "bindings.game"
 return {
-    bindings = gameBindings
+    bindings = GameBindings
 }
