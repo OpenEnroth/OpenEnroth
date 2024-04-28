@@ -33,6 +33,7 @@
 #include "Library/Platform/Null/NullPlatform.h"
 
 #include "Scripting/ConfigBindings.h"
+#include "Scripting/DebugViewBindings.h"
 #include "Scripting/GameLuaBindings.h"
 #include "Scripting/InputBindings.h"
 #include "Scripting/InputScriptEventHandler.h"
@@ -138,15 +139,6 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (!_renderer->Initialize())
         throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
 
-    // Init Nuklear - depends on renderer.
-    //_nuklear = Nuklear::Initialize();
-    //if (!_nuklear)
-    //    logger->error("Nuklear failed to initialize");
-    //::nuklear = _nuklear.get();
-    //if (_nuklear) {
-    //    _application->installComponent(std::make_unique<NuklearEventHandler>());
-    //}
-
     // Init io.
     ::keyboardActionMapping = std::make_shared<Io::KeyboardActionMapping>(_config);;
     ::keyboardInputHandler = std::make_shared<Io::KeyboardInputHandler>(_application->component<GameKeyboardController>(),
@@ -171,6 +163,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _scriptingSystem->addBindings<PlatformBindings>("platform", *_application);
     _scriptingSystem->addBindings<InputBindings>("input", *_application->component<InputScriptEventHandler>());
     _scriptingSystem->addBindings<NuklearBindings>("nuklear", _engine->nuklear.get());
+    _scriptingSystem->addBindings<DebugViewBindings>("debugView");
     _scriptingSystem->executeEntryPoint();
 
     _debugViewSystem->addView<RenderStatsDebugView>("RenderStats", *_renderer);

@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(SCRIPTING_SOURCES
         ConfigBindings.cpp
+        DebugViewBindings.cpp
         GameLuaBindings.cpp
         InputBindings.cpp
         InputScriptEventHandler.cpp
@@ -14,6 +15,7 @@ set(SCRIPTING_SOURCES
 
 set(SCRIPTING_HEADERS
         ConfigBindings.h
+        DebugViewBindings.h
         GameLuaBindings.h
         InputBindings.h
         InputScriptEventHandler.h
