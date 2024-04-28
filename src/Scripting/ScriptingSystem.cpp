@@ -56,14 +56,19 @@ void ScriptingSystem::_initBaseLibraries() {
     );
 }
 
-/* Internal lua function used as package loader for the Bindings table.
-* 
-* Usage in lua: 
-*   local gameBindings = require "bindings.game" -- If the module starts with 'bindings.' we try to load/create the binding table
-*   gameBindings.doSomething()
-* 
-* TODO(Gerark) I'm asking in the sol2 repo if there's a way to avoid a lua_CFunction and use the sol2 approach instead.
-* Here's the question: https://github.com/ThePhD/sol2/issues/1601 */
+/**
+ * @brief Internal Lua function used as package loader for the Bindings table.
+ *
+ * Usage in Lua:
+ *   local gameBindings = require "bindings.game" -- If the module starts with 'bindings.' we try to load/create the binding table
+ *   gameBindings.doSomething()
+ *
+ * @param luaState The Lua state.
+ * @return int Returns 1 if the binding table is loaded, otherwise returns 0.
+ *
+ * @todo(Gerark) I'm asking in the sol2 repo if there's a way to avoid a lua_CFunction and use the sol2 approach instead.
+ * Here's the question: [link to the question](https://github.com/ThePhD/sol2/issues/1601)
+ */
 int _loadBindingTableThroughRequire(lua_State *luaState) {
     std::string path = sol::stack::get<std::string>(luaState, 1);
     std::string_view prefix = "bindings.";

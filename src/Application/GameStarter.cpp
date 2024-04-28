@@ -51,6 +51,7 @@
 #include "GameKeyboardController.h"
 #include "GameWindowHandler.h"
 #include "GameTraceHandler.h"
+
 #include "RenderStatsDebugView.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
@@ -167,7 +168,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _scriptingSystem->addBindings<LoggerBindings>("log");
     _scriptingSystem->addBindings<GameLuaBindings>("game");
     _scriptingSystem->addBindings<ConfigBindings>("config");
-    _scriptingSystem->addBindings<PlatformBindings>("Platform", *_application);
+    _scriptingSystem->addBindings<PlatformBindings>("platform", *_application);
     _scriptingSystem->addBindings<InputBindings>("input", *_application->component<InputScriptEventHandler>());
     _scriptingSystem->addBindings<NuklearBindings>("nuklear", _engine->nuklear.get());
     _scriptingSystem->executeEntryPoint();
