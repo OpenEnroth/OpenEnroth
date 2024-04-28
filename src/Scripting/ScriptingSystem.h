@@ -10,6 +10,7 @@
 #include <utility>
 #include <sol/sol.hpp>
 
+class LogSink;
 class DistLogSink;
 class IBindings;
 class PlatformApplication;
@@ -17,8 +18,10 @@ class ScriptLogSink;
 
 class ScriptingSystem {
  public:
-    ScriptingSystem(std::string_view scriptFolder, std::string_view entryPointFile, PlatformApplication &platformApplication, DistLogSink &distLogSink);
+    ScriptingSystem(std::string_view scriptFolder, std::string_view entryPointFile, PlatformApplication &platformApplication);
     ~ScriptingSystem();
+
+    LogSink *scriptingLogSink() const;
 
     void executeEntryPoint();
 
@@ -35,7 +38,8 @@ class ScriptingSystem {
     void _initPackageTable(std::string_view scriptFolder);
     void _initBindingFunction();
 
-    std::shared_ptr<sol::state> _solState;
+    std::unique_ptr<sol::state> _solState;
+    std::unique_ptr<LogSink> _scriptingLogSink;
     std::unordered_map<std::string, std::unique_ptr<IBindings>> _bindings;
     std::string _scriptFolder;
     std::string _entryPointFile;
