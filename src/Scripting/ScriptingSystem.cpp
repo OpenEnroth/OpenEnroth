@@ -9,6 +9,7 @@
 #include <vector>
 #include <memory>
 #include <utility>
+#include <unordered_map>
 
 #include "IBindings.h"
 #include "InputScriptEventHandler.h"
@@ -25,6 +26,7 @@ ScriptingSystem::ScriptingSystem(std::string_view scriptFolder, std::string_view
 
     _initBaseLibraries();
     _initPackageTable(scriptFolder);
+    _initBindingFunction();
 }
 
 ScriptingSystem::~ScriptingSystem() {
@@ -54,16 +56,45 @@ void ScriptingSystem::_initBaseLibraries() {
     );
 }
 
+/**
+ * @brief Internal Lua function used as package loader for the Bindings table.
+ *
+ * Usage in Lua:
+ *   local gameBindings = require "bindings.game" -- If the module starts with 'bindings.' we try to load/create the binding table
+ *   gameBindings.doSomething()
+ *
+ * @param luaState The Lua state.
+ * @return int Returns 1 if the binding table is loaded, otherwise returns 0.
+ *
+ * @todo(Gerark) I'm asking in the sol2 repo if there's a way to avoid a lua_CFunction and use the sol2 approach instead.
+ * Here's the question: [link to the question](https://github.com/ThePhD/sol2/issues/1601)
+ */
+int _loadBindingTableThroughRequire(lua_State *luaState) {
+    std::string path = sol::stack::get<std::string>(luaState, 1);
+    std::string_view prefix = "bindings.";
+    if (path.starts_with(prefix)) {
+        // When requesting a module, Lua expects us to place a code chunk on the stack.
+        // We utilize loadbuffer to load this chunk, after which the Lua VM promptly executes it.
+        std::string script = fmt::format("return _createBindingTable('{}')", path);
+        luaL_loadbuffer(luaState, script.data(), script.size(), path.c_str());
+        return 1;
+    }
+    return 0;
+}
+
 void ScriptingSystem::_initPackageTable(std::string_view scriptFolder) {
     sol::table packageTable = (*_solState)["package"];
     packageTable["path"] = makeDataPath(scriptFolder, "?.lua");
     packageTable["cpath"] = ""; //Reset the path for any c loaders
+    _solState->add_package_loader(_loadBindingTableThroughRequire);
 }
 
-void ScriptingSystem::_addBindings(std::string_view bindingTableName, std::unique_ptr<IBindings> bindings) {
-    (*_solState)[bindingTableName] = bindings->createBindingTable(*_solState);
-    (*_solState)["require" + std::string(bindingTableName) + "Bindings"] = [this, bindingTableName]() -> sol::table {
-        return (*_solState)[bindingTableName];
+void ScriptingSystem::_initBindingFunction() {
+    (*_solState)["_createBindingTable"] = [this](std::string tableName) {
+        if (auto itr = _bindings.find(tableName); itr != _bindings.end()) {
+            return itr->second->createBindingTable(*_solState);
+        }
+        logger->warning(ScriptingLogCategory, "Can't find a binding table with name: {}", tableName);
+        return _solState->create_table();
     };
-    _bindings.insert({ bindingTableName.data(), std::move(bindings) });
 }

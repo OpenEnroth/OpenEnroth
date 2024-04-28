@@ -1,4 +1,5 @@
-local configBindings = requireConfigBindings()
+--- @type ConfigBindings
+local ConfigBindings = require "bindings.config"
 return {
-    bindings = configBindings
+    bindings = ConfigBindings
 }

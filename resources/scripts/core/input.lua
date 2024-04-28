@@ -1,3 +1,5 @@
+---@type InputBindings
+local InputBindings = require "bindings.input"
 local inputListener = {}
 
 ---@type table<PlatformKey, table<integer, fun()>>
@@ -65,8 +67,7 @@ _globalOnKeyPress = function (keyPressed)
     return false
 end
 
-local inputBindings = requireInputBindings()
 return {
-    bindings = inputBindings,
+    bindings = InputBindings,
     listener = inputListener
 }

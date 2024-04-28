@@ -1,4 +1,5 @@
-local logBindings = requireLogBindings()
+--- @type LogBindings
+local LogBindings = require "bindings.log"
 
 ---@type function[]
 local callbacks = {}
@@ -32,6 +33,6 @@ local logListener = {
 }
 
 return {
-    bindings = logBindings,
+    bindings = LogBindings,
     listener = logListener
 }
