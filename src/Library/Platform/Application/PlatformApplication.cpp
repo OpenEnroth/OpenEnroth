@@ -12,8 +12,6 @@
 #include "Library/Platform/Proxy/ProxyOpenGLContext.h"
 #include "Library/Platform/Filters/FilteringEventHandler.h"
 
-#include "Utility/ScopeGuard.h"
-
 class ApplicationProxy : public ProxyPlatform, public ProxyEventLoop, public ProxyWindow, public ProxyOpenGLContext {
  public:
     ApplicationProxy() {}
@@ -32,35 +30,6 @@ class ApplicationProxy : public ProxyPlatform, public ProxyEventLoop, public Pro
         assert(false && "use PlatformApplication::initializeOpenGLContext");
         return nullptr;
     }
-
-    virtual void exec(PlatformEventHandler *eventHandler) override {
-        assert(!inEventLoop); // Nested event loops are not supported.
-        assert(pendingDeletions.empty());
-
-        inEventLoop = true;
-        MM_AT_SCOPE_EXIT(
-            inEventLoop = false;
-            pendingDeletions.clear();
-        );
-
-        ProxyEventLoop::exec(eventHandler);
-    }
-
-    virtual void processMessages(PlatformEventHandler *eventHandler, int count) override {
-        assert(!inEventLoop); // Nested event loops are not supported.
-        assert(pendingDeletions.empty());
-
-        inEventLoop = true;
-        MM_AT_SCOPE_EXIT(
-            inEventLoop = false;
-            pendingDeletions.clear();
-        );
-
-        ProxyEventLoop::processMessages(eventHandler, count);
-    }
-
-    bool inEventLoop = false;
-    std::vector<std::shared_ptr<void>> pendingDeletions;
 };
 
 template<class T>
@@ -206,12 +175,4 @@ void PlatformApplication::removeComponentInternal(PlatformApplicationAware *awar
     assert(aware->application() == this);
     aware->removeNotify();
     aware->deinitialize();
-}
-
-void PlatformApplication::deleteOutsideEventLoop(std::shared_ptr<void> component) {
-    if (!_rootProxy->inEventLoop) {
-        component.reset();
-    } else {
-        _rootProxy->pendingDeletions.emplace_back(std::move(component));
-    }
 }
