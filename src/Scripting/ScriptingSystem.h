@@ -25,7 +25,7 @@ class ScriptingSystem {
     template<typename TBindings, typename ...TArgs>
     void addBindings(std::string_view bindingTableName, TArgs &&... args) {
         auto bindings = std::make_unique<TBindings>(std::forward<TArgs>(args) ...);
-        _addBindings(bindingTableName, std::move(bindings));
+        _bindings.insert({ "bindings." + std::string(bindingTableName), std::move(bindings)});
     }
 
     static LogCategory ScriptingLogCategory;
@@ -33,7 +33,7 @@ class ScriptingSystem {
  private:
     void _initBaseLibraries();
     void _initPackageTable(std::string_view scriptFolder);
-    void _addBindings(std::string_view name, std::unique_ptr<IBindings> bindings);
+    void _initBindingFunction();
 
     std::shared_ptr<sol::state> _solState;
     std::unordered_map<std::string, std::unique_ptr<IBindings>> _bindings;
