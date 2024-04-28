@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fea94bc</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;25edb68</span>
    </div>
   </td>
  </tr>
@@ -150,6 +150,7 @@ Coding style</h1>
 <li><code>*</code> and <code>&amp;</code> in type declarations should be preceded by a space. So it's <code>char *string</code>, and not <code>char* string</code>.</li>
 </ul>
 <p >Language features:</p><ul>
+<li>Use <code>using Alias = Type</code> instead of <code>typedef Type Alias</code>.</li>
 <li>Use <code>enum class</code>es followed by <code>using enum</code> statements instead of ordinary <code>enum</code>s. This provides type safety without changing the syntax. For flags, use <code><a class="el" href="classFlags.html">Flags</a></code> class.</li>
 <li>It's OK to use plain <code>enum</code>s if you really need to have implicit casts to integer types, but this is a very rare use case. If you're using <code>enum</code> values to index into some array, consider using <code>enum class</code> coupled with <code><a class="el" href="classIndexedArray.html">IndexedArray</a></code>.</li>
 <li>Make your code speak for itself when it comes to ownership. If a function takes ownership of one of its parameters, it should take <code>std::unique_ptr</code> by value. If it allocates its result and passes ownership to the caller, then it should return <code>std::unique_ptr</code>.</li>

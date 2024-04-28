@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fea94bc</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;25edb68</span>
    </div>
   </td>
  </tr>
@@ -123,7 +123,7 @@ Private Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Type-erased storage for components.</p>
 <p >Note that the storage takes ownership of the inserted components, and they are removed &amp; destroyed only when the storage itself is destroyed.</p>
-<p >There used to be a non-owning interface here, but in the end it just made very little sense. Non-owning interface means that we'll also need <code>erase</code> / <code>remove</code> methods. And looking at it a user might then conclude that since we're providing both <code>insert</code> and <code>remove</code>, then it should be OK to dynamically insert &amp; remove components, which is totally NOT OK. Storage itself doesn't care about insertion order, but the enclosing <code><a class="el" href="classPlatformApplication.html">PlatformApplication</a></code> maintains proxy and event filter chains, for which insertion order matters. Letting the user insert &amp; remove components on the fly will result in hard to debug problems with components ending up in the wrong place. </p>
+<p >While this class offers <code>remove</code> method, its usage is discouraged. The reason is that even though the storage itself doesn't care about insertion order, the enclosing <code><a class="el" href="classPlatformApplication.html">PlatformApplication</a></code> maintains proxy and event filter chains, for which insertion order matters. So inserting &amp; removing components on the fly will likely result in hard to debug problems with components ending up in the wrong place. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a3e3d545442e928081abda940efedf3ab" name="a3e3d545442e928081abda940efedf3ab"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3e3d545442e928081abda940efedf3ab">&#9670;&#160;</a></span>PlatformComponentStorage()</h2>
