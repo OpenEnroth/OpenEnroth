@@ -32,6 +32,7 @@ class TestControllerTickCallback : public ProxyOpenGLContext {
             for (const auto &callback : _controller->_tapeCallbacks)
                 callback();
 
+        // This call potentially destroys `this`. Which is totally safe X). See `TestController::~TestController`.
         ProxyOpenGLContext::swapBuffers();
     }
 
@@ -55,6 +56,10 @@ TestController::~TestController() {
     assert(engine->callObserver == &_callObserver);
     engine->callObserver = nullptr;
 
+    // This call destroys the `TestControllerTickCallback`. There is a slight problem with that - the fact that we are
+    // here means that the main thread is currently paused inside the `swapBuffers` call, somewhere up the stack
+    // is a frame for `TestControllerTickCallback::swapBuffers`, and we're destroying the object it's called on.
+    // `TestControllerTickCallback::swapBuffers` is tail-calling, so this should work.
     application->removeComponent<TestControllerTickCallback>();
 }
 

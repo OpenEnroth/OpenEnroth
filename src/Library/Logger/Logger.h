@@ -81,7 +81,7 @@ class Logger {
 
     // Default category API.
 
-    bool shouldLog(LogLevel level) const {
+    [[nodiscard]] bool shouldLog(LogLevel level) const {
         return level >= *_defaultCategory._level;
     }
 
