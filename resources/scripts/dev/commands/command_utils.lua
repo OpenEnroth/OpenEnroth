@@ -25,7 +25,11 @@ CommandUtilities.changeCharProperty = function (key, op, playAward, conversion)
     ---@return string, boolean
     return function (value, charIndex)
         if conversion then
-            value = conversion(value)
+            local convertedValue = conversion(value)
+            if not convertedValue then
+                return "Value can't be converted properly. Value: " .. value, false
+            end
+            value = convertedValue
         end
 
         charIndex = CommandUtilities.characterOrCurrent(charIndex)
@@ -95,7 +99,11 @@ end
 CommandUtilities.changeProperty = function (get, set, op, propName, conversion, serializer)
     return function (value)
         if conversion then
-            value = conversion(value)
+            local convertedValue = conversion(value)
+            if not convertedValue then
+                return "Value can't be converted properly. Value: " .. value, false
+            end
+            value = convertedValue
         end
 
         local message = ""
