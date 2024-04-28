@@ -15,13 +15,12 @@ class DistLogSink;
 class IBindings;
 class PlatformApplication;
 class ScriptLogSink;
+class DistLogSink;
 
 class ScriptingSystem {
  public:
-    ScriptingSystem(std::string_view scriptFolder, std::string_view entryPointFile, PlatformApplication &platformApplication);
+    ScriptingSystem(std::string_view scriptFolder, std::string_view entryPointFile, PlatformApplication &platformApplication, DistLogSink &distLogSink);
     ~ScriptingSystem();
-
-    LogSink *scriptingLogSink() const;
 
     void executeEntryPoint();
 
@@ -44,4 +43,5 @@ class ScriptingSystem {
     std::string _scriptFolder;
     std::string _entryPointFile;
     PlatformApplication &_platformApplication;
+    DistLogSink &_distLogSink;
 };
