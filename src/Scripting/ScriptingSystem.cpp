@@ -70,7 +70,7 @@ int _loadBindingTableThroughRequire(lua_State *luaState) {
     if (path.starts_with(prefix)) {
         // When requesting a module, Lua expects us to place a code chunk on the stack.
         // We utilize loadbuffer to load this chunk, after which the Lua VM promptly executes it.
-        std::string script = std::format("return _createBindingTable('{}')", path);
+        std::string script = fmt::format("return _createBindingTable('{}')", path);
         luaL_loadbuffer(luaState, script.data(), script.size(), path.c_str());
         return 1;
     }
