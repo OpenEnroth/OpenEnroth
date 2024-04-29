@@ -169,7 +169,7 @@ void NuklearOverlayRenderer::_cleanup() {
     memset(&_state->dev, 0, sizeof(_state->dev));
 }
 
-void NuklearOverlayRenderer::render(const Sizei &outputPresent, int &drawCalls) {
+void NuklearOverlayRenderer::render(const Sizei &outputPresent, int *drawCalls) {
     if (!_context->begin)
         return;
 
@@ -268,7 +268,7 @@ void NuklearOverlayRenderer::render(const Sizei &outputPresent, int &drawCalls) 
                 (GLint)(cmd->clip_rect.w * scale.x),
                 (GLint)(cmd->clip_rect.h * scale.y));
             glDrawElements(GL_TRIANGLES, (GLsizei)cmd->elem_count, GL_UNSIGNED_SHORT, offset);
-            ++drawCalls;
+            ++(*drawCalls);
             offset += cmd->elem_count;
         }
         nk_clear(_context);

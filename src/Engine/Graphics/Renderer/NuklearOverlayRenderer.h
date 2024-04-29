@@ -20,7 +20,7 @@ class NuklearOverlayRenderer : public IOverlayRenderer {
  public:
     NuklearOverlayRenderer(nk_context *context, bool useOGLES);
     ~NuklearOverlayRenderer();
-    virtual void render(const Sizei &outputPresent, int &drawCalls) override;
+    virtual void render(const Sizei &outputPresent, int *drawCalls) override;
     virtual void reloadShaders() override;
 
  private:

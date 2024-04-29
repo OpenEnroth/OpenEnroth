@@ -3196,7 +3196,7 @@ void OpenGLRenderer::Present() {
 
 void OpenGLRenderer::_renderOverlay(Sizei size) {
     if (_overlayRenderer) {
-        _overlayRenderer->render(size, drawcalls);
+        _overlayRenderer->render(size, &drawcalls);
     }
 }
 
