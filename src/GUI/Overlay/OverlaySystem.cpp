@@ -5,6 +5,7 @@
 #include <Engine/Graphics/Renderer/NuklearOverlayRenderer.h>
 #include <Engine/Graphics/Renderer/Renderer.h>
 #include <Library/Platform/Application/PlatformApplication.h>
+#include <Library/Logger/Logger.h>
 #include <Scripting/NuklearLegacyBindings.h>
 
 #include "Overlay.h"
@@ -13,6 +14,8 @@
 
 #include <memory>
 #include <utility>
+
+LogCategory OverlaySystem::OverlayLogCategory("Overlay");
 
 OverlaySystem::OverlaySystem(Renderer &render, RendererType rendererType, PlatformApplication &platformApplication) {
     _nuklearContext = std::make_unique<nk_context>();
@@ -37,13 +40,16 @@ OverlaySystem::~OverlaySystem() {
 }
 
 void OverlaySystem::addOverlay(std::string_view name, std::unique_ptr<Overlay> overlay) {
+    if (!_overlays.contains(name.data())) {
+        logger->error(OverlayLogCategory, "Can't add overlay \"{}\". Another overlay with the same name already exists.", name);
+        return;
+    }
+
     _overlays.insert({ name.data(), std::move(overlay) });
 }
 
 void OverlaySystem::removeOverlay(std::string_view name) {
-    if (auto itr = _overlays.find(name.data()); itr != _overlays.end()) {
-        _overlays.erase(itr);
-    }
+    _overlays.erase(name.data());
 }
 
 void OverlaySystem::update() {
