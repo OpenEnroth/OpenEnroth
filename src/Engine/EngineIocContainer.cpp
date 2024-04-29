@@ -4,7 +4,6 @@
 
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Vis.h"
 
@@ -42,14 +41,6 @@ std::shared_ptr<Mouse> EngineIocContainer::ResolveMouse() {
     return mouse;
 }
 
-std::shared_ptr<Nuklear> EngineIocContainer::ResolveNuklear() {
-    if (!nuklear) {
-        nuklear = std::make_shared<Nuklear>();
-    }
-
-    return nuklear;
-}
-
 std::shared_ptr<ParticleEngine> EngineIocContainer::ResolveParticleEngine() {
     if (!particle_engine) {
         particle_engine = std::make_shared<ParticleEngine>();
@@ -69,6 +60,5 @@ DecalBuilder *EngineIocContainer::decal_builder = nullptr;
 BloodsplatContainer *EngineIocContainer::bloodspalt_container = nullptr;
 SpellFxRenderer *EngineIocContainer::spell_fx_renderer = nullptr;
 std::shared_ptr<Mouse> EngineIocContainer::mouse = nullptr;
-std::shared_ptr<Nuklear> EngineIocContainer::nuklear = nullptr;
 std::shared_ptr<ParticleEngine> EngineIocContainer::particle_engine = nullptr;
 Vis *EngineIocContainer::vis = nullptr;

@@ -1,22 +1,22 @@
-#include "DebugViewEventHandler.h"
+#include "OverlayEventHandler.h"
 
 #include <nuklear_config.h>
 #include <cstring>
 
-DebugViewEventHandler::DebugViewEventHandler(struct nk_context *context)
+OverlayEventHandler::OverlayEventHandler(struct nk_context *context)
     : PlatformEventFilter(EVENTS_ALL)
     , _context(context) {
 }
 
-bool DebugViewEventHandler::keyPressEvent(const PlatformKeyEvent *event) {
+bool OverlayEventHandler::keyPressEvent(const PlatformKeyEvent *event) {
     return keyEvent(event->key, event->mods, true);
 }
 
-bool DebugViewEventHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
+bool OverlayEventHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
     return keyEvent(event->key, event->mods, false);
 }
 
-bool DebugViewEventHandler::keyEvent(PlatformKey key, PlatformModifiers mods, bool keyPressed) {
+bool OverlayEventHandler::keyEvent(PlatformKey key, PlatformModifiers mods, bool keyPressed) {
     if (key == PlatformKey::KEY_SHIFT) {
         nk_input_key(_context, NK_KEY_SHIFT, keyPressed);
     } else if (key == PlatformKey::KEY_DELETE) {
@@ -69,23 +69,23 @@ bool DebugViewEventHandler::keyEvent(PlatformKey key, PlatformModifiers mods, bo
     return nk_item_is_any_active(_context);
 }
 
-bool DebugViewEventHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
+bool OverlayEventHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
     nk_input_motion(_context, event->pos.x, event->pos.y);
     return nk_item_is_any_active(_context);
 }
 
-bool DebugViewEventHandler::mousePressEvent(const PlatformMouseEvent *event) {
+bool OverlayEventHandler::mousePressEvent(const PlatformMouseEvent *event) {
     if (event->button == BUTTON_LEFT && event->isDoubleClick)
         nk_input_button(_context, NK_BUTTON_DOUBLE, event->pos.x, event->pos.y, true);
 
     return mouseEvent(event->button, event->pos, true);
 }
 
-bool DebugViewEventHandler::mouseReleaseEvent(const PlatformMouseEvent *event) {
+bool OverlayEventHandler::mouseReleaseEvent(const PlatformMouseEvent *event) {
     return mouseEvent(event->button, event->pos, false);
 }
 
-bool DebugViewEventHandler::mouseEvent(PlatformMouseButton button, const Pointi &pos, bool down) {
+bool OverlayEventHandler::mouseEvent(PlatformMouseButton button, const Pointi &pos, bool down) {
     /* mouse button */
     if (button == BUTTON_LEFT) {
         nk_input_button(_context, NK_BUTTON_LEFT, pos.x, pos.y, down);
@@ -97,12 +97,12 @@ bool DebugViewEventHandler::mouseEvent(PlatformMouseButton button, const Pointi 
     return nk_item_is_any_active(_context);
 }
 
-bool DebugViewEventHandler::wheelEvent(const PlatformWheelEvent *event) {
+bool OverlayEventHandler::wheelEvent(const PlatformWheelEvent *event) {
     nk_input_scroll(_context, nk_vec2(event->angleDelta.x, event->angleDelta.y));
     return nk_item_is_any_active(_context);
 }
 
-bool DebugViewEventHandler::textInputEvent(const PlatformTextInputEvent *event) {
+bool OverlayEventHandler::textInputEvent(const PlatformTextInputEvent *event) {
     nk_glyph glyph;
     memcpy(glyph, event->text.c_str(), NK_UTF_SIZE);
     nk_input_glyph(_context, glyph);

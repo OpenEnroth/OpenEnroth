@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IDebugViewRenderer.h"
+#include "IOverlayRenderer.h"
 
 #include <Engine/Graphics/Renderer/OpenGLShader.h>
 
@@ -16,10 +16,10 @@ struct nk_tex_font {
 
 class GraphicsImage;
 
-class NuklearDebugViewRenderer : public IDebugViewRenderer {
+class NuklearOverlayRenderer : public IOverlayRenderer {
  public:
-    NuklearDebugViewRenderer(nk_context *context, bool useOGLES);
-    ~NuklearDebugViewRenderer();
+    NuklearOverlayRenderer(nk_context *context, bool useOGLES);
+    ~NuklearOverlayRenderer();
     void render(const Sizei &outputPresent, int &drawCalls) override;
     void reloadShaders() override;
 

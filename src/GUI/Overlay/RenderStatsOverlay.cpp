@@ -1,26 +1,23 @@
-#include "RenderStatsDebugView.h"
+#include "RenderStatsOverlay.h"
 
 #include <Engine/Graphics/Renderer/Renderer.h>
-#include <Engine/Graphics/Nuklear.h>
-
 #include <Engine/Party.h>
 
 #include <nuklear_config.h> // NOLINT: not a C system header.
 
-RenderStatsDebugView::RenderStatsDebugView(Renderer& renderer) : _renderer(renderer) {
+RenderStatsOverlay::RenderStatsOverlay(Renderer& renderer) : _renderer(renderer) {
 }
 
-void RenderStatsDebugView::update(Nuklear &nuklear) {
+void RenderStatsOverlay::update(nk_context &context) {
     static int i = 0;
     ++i;
-    nk_context *context = nuklear.getContext();
 
-    nk_begin(context, "Test", nk_rect(100, 100, 100, 100), NK_WINDOW_MOVABLE | NK_WINDOW_CLOSABLE | NK_WINDOW_SCALABLE);
+    nk_begin(&context, "Test", nk_rect(100, 100, 100, 100), NK_WINDOW_MOVABLE | NK_WINDOW_CLOSABLE | NK_WINDOW_SCALABLE);
     auto partyPosition = fmt::format("Party position:         {:.2f} {:.2f} {:.2f}", pParty->pos.x, pParty->pos.y, pParty->pos.z);
-    nk_layout_row_dynamic(context, 0, 1);
-    nk_label_colored(context, partyPosition.c_str(), NK_TEXT_ALIGN_CENTERED, { 255, 255, 255, 255 });
+    nk_layout_row_dynamic(&context, 0, 1);
+    nk_label_colored(&context, partyPosition.c_str(), NK_TEXT_ALIGN_CENTERED, { 255, 255, 255, 255 });
 
-    nk_end(context);
+    nk_end(&context);
 
     /*
     if (render_framerate) {

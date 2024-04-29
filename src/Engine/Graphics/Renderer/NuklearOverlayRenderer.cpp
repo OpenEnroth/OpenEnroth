@@ -1,4 +1,4 @@
-#include "NuklearDebugViewRenderer.h"
+#include "NuklearOverlayRenderer.h"
 
 #include <Library/Logger/Logger.h>
 #include <Engine/Graphics/Image.h>
@@ -36,7 +36,7 @@ struct nk_state {
 constexpr int maxVertexBuffer = 512 * 1024;
 constexpr int maxElementBuffer = 512 * 1024;
 
-NuklearDebugViewRenderer::NuklearDebugViewRenderer(nk_context *context, bool useOGLES)
+NuklearOverlayRenderer::NuklearOverlayRenderer(nk_context *context, bool useOGLES)
     : _state(std::make_unique<nk_state>())
     , _context(context)
     , _useOGLES(useOGLES) {
@@ -64,11 +64,11 @@ NuklearDebugViewRenderer::NuklearDebugViewRenderer(nk_context *context, bool use
     nk_buffer_init_default(&_state->dev.cmds);
 }
 
-NuklearDebugViewRenderer::~NuklearDebugViewRenderer() {
+NuklearOverlayRenderer::~NuklearOverlayRenderer() {
     _cleanup();
 }
 
-bool NuklearDebugViewRenderer::_createDevice() {
+bool NuklearOverlayRenderer::_createDevice() {
     _shader.build("nuklear", "glnuklear", _useOGLES);
     if (_shader.ID == 0) {
         logger->warning("Nuklear shader failed to compile!");
@@ -112,7 +112,7 @@ bool NuklearDebugViewRenderer::_createDevice() {
     return true;
 }
 
-struct nk_tex_font *NuklearDebugViewRenderer::_loadFont(const char *font_path, size_t font_size) {
+struct nk_tex_font *NuklearOverlayRenderer::_loadFont(const char *font_path, size_t font_size) {
     const void *image;
     int w, h;
     GLuint texid;
@@ -153,7 +153,7 @@ struct nk_tex_font *NuklearDebugViewRenderer::_loadFont(const char *font_path, s
     return font;
 }
 
-void NuklearDebugViewRenderer::_cleanup() {
+void NuklearOverlayRenderer::_cleanup() {
     glDeleteTextures(1, &_defaultFont->texid);
     delete _defaultFont;
 
@@ -169,7 +169,7 @@ void NuklearDebugViewRenderer::_cleanup() {
     memset(&_state->dev, 0, sizeof(_state->dev));
 }
 
-void NuklearDebugViewRenderer::render(const Sizei &outputPresent, int &drawCalls) {
+void NuklearOverlayRenderer::render(const Sizei &outputPresent, int &drawCalls) {
     if (!_context->begin)
         return;
 
@@ -282,7 +282,7 @@ void NuklearDebugViewRenderer::render(const Sizei &outputPresent, int &drawCalls
     glDisable(GL_BLEND);
 }
 
-void NuklearDebugViewRenderer::reloadShaders() {
+void NuklearOverlayRenderer::reloadShaders() {
     if (_shader.ID != 0) {
         std::string name = "Nuklear";
         std::string message = "shader failed to reload!\nPlease consult the log and issue a bug report!";
@@ -298,11 +298,11 @@ void NuklearDebugViewRenderer::reloadShaders() {
     }
 }
 
-struct nk_image NuklearDebugViewRenderer::loadImage(GraphicsImage *img) {
+struct nk_image NuklearOverlayRenderer::loadImage(GraphicsImage *img) {
     GLuint texid = img->renderId().value();
     return nk_image_id(texid);
 }
 
-void NuklearDebugViewRenderer::unloadImage(GraphicsImage *img) {
+void NuklearOverlayRenderer::unloadImage(GraphicsImage *img) {
     img->releaseRenderId();
 }

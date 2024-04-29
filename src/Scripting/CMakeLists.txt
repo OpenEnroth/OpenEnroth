@@ -2,12 +2,11 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(SCRIPTING_SOURCES
         ConfigBindings.cpp
-        DebugViewBindings.cpp
+        OverlayBindings.cpp
         GameLuaBindings.cpp
         InputBindings.cpp
         InputScriptEventHandler.cpp
         LoggerBindings.cpp
-        NuklearBindings.cpp
         NuklearLegacyBindings.cpp
         PlatformBindings.cpp
         ScriptingSystem.cpp
@@ -15,12 +14,11 @@ set(SCRIPTING_SOURCES
 
 set(SCRIPTING_HEADERS
         ConfigBindings.h
-        DebugViewBindings.h
+        OverlayBindings.h
         GameLuaBindings.h
         InputBindings.h
         InputScriptEventHandler.h
         LoggerBindings.h
-        NuklearBindings.h
         NuklearLegacyBindings.h
         LuaItemQueryTable.h
         PlatformBindings.h
@@ -37,4 +35,5 @@ target_link_libraries(scripting
         PRIVATE
         libluajit
         sol2
-        nuklear)
+        nuklear
+        gui_overlay)

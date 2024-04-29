@@ -4,9 +4,9 @@
 
 struct nk_context;
 
-class DebugViewEventHandler : public PlatformEventFilter {
+class OverlayEventHandler : public PlatformEventFilter {
  public:
-    explicit DebugViewEventHandler(struct nk_context* context);
+    explicit OverlayEventHandler(struct nk_context* context);
 
  private:
     virtual bool keyPressEvent(const PlatformKeyEvent *event) override;

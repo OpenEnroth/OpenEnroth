@@ -42,7 +42,7 @@ struct IndoorLocation;
 struct OutdoorLocation;
 struct LightsStack_StationaryLight_;
 struct LightsStack_MobileLight_;
-class DebugViewSystem;
+class OverlaySystem;
 
 enum class GameState {
     GAME_STATE_PLAYING = 0,
@@ -68,7 +68,7 @@ struct PersistentVariables {
 
 class Engine {
  public:
-    explicit Engine(std::shared_ptr<GameConfig> config, DebugViewSystem &debugViewSystem);
+    explicit Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem);
     virtual ~Engine();
 
     static void LogEngineBuildInfo();
@@ -93,7 +93,7 @@ class Engine {
     void Draw();
     void drawWorld();
     void drawHUD();
-    void drawDebugView();
+    void drawOverlay();
     void DrawGUI();
     void ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     void SecondaryInitialization();
@@ -120,7 +120,6 @@ class Engine {
     SpellFxRenderer *spell_fx_renedrer = nullptr;
     EngineCallObserver *callObserver = nullptr;
     std::shared_ptr<Io::Mouse> mouse;
-    std::shared_ptr<Nuklear> nuklear;
     std::shared_ptr<ParticleEngine> particle_engine;
     Vis *vis = nullptr;
     std::shared_ptr<Io::KeyboardInputHandler> keyboardInputHandler;
@@ -130,7 +129,7 @@ class Engine {
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
     TeleportPoint _teleportPoint;
-    DebugViewSystem &_debugViewSystem;
+    OverlaySystem &_overlaySystem;
 
     std::unique_ptr<GUIMessageQueue> _messageQueue;
     std::unique_ptr<GameResourceManager> _gameResourceManager;

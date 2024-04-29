@@ -1,14 +1,5 @@
 -- @meta
--- A meta file is here only to extract types and definitions. Any value assigned has no meaning except for helping with the definition
-
--- TODO(Gerark) most of these definitions must be changed on the c++ to follow the correct naming convention and we should
--- use a better way to generate these without adding them manually
----@diagnostic disable: name-style-check
-
---- Table containing functionalities to change debug info ( like config values )
----@class ConfigBindings
----@field setConfig fun(section: string, configName: string, value: any): boolean
----@field getConfig fun(section: string, configName?: string): string
+-- This meta file is here only to extract types and definitions for Lua Language Server.
 
 ---@alias PlatformKey integer
 
@@ -102,47 +93,50 @@
 
 --- @class NuklearBindings
 
---- @class DebugView
+--- @class PlatformWindow
+--- @field dimensions fun(): integer, integer
+
+--- @class PlatformBindings
+--- @field window PlatformWindow
+
+--- CONFIG Bindings
+---@class ConfigBindings
+---@field setConfig fun(section: string, configName: string, value: any): boolean
+---@field getConfig fun(section: string, configName?: string): string
+
+--- OVERLAY Bindings
+--- @class Overlay
 --- @field init fun()
 --- @field close fun()
 --- @field update fun(ctx: NuklearContext)
 
---- @class DebugViewBindings
---- @field addView fun(view: DebugView)
+--- @class OverlayBindings
+--- @field addOverlay fun(name: string, view: Overlay)
+--- @field removeOverlay fun(name: string)
+--- @field nk Nuklear
 
---- NUKLEAR META DOCS
-
---- @alias NuklearStageType integer
-
---- @type NuklearStageType
-NUKLEAR_STAGE_PRE = 0
---- @type NuklearStageType
-NUKLEAR_STAGE_POST = 0
-
---- Context for nuklear
+--- NUKLEAR Bindings
 ---@class NuklearContext
-NuklearContext = {}
 
---- Table containing functionalities to check the window state
---- TODO(Gerark) Change this by providing access through a module
----@class window
----@field dimensions fun(ctx: NuklearContext): integer, integer
-window = {}
-
---- TODO(Gerark) Change this by providing access through a module ( or just swap nuklear to mygui with an existing lua lib integration :D )
----@class nk_scroll
----@field new fun(x: integer, y: integer): table
-nk_scroll = {}
-
----@type integer
-NK_EDIT_COMMITED = 0
----@type integer
-NK_EDIT_INACTIVE = 0
----@type integer
-NK_EDIT_ACTIVE = 0
-
----@type integer
-NUKLEAR_MODE_SHARED = 0
+---@class Nuklear
+---@field style_push fun(ctx: NuklearContext, element: string, styleName: string, value: any)
+---@field style_pop fun(ctx: NuklearContext, element: string, styleName: string)
+---@field layout_row_begin fun(ctx: NuklearContext, layout: string, height: number, columns: integer)
+---@field layout_row_push fun(ctx: NuklearContext, height: number)
+---@field button_label fun(ctx: NuklearContext, text: string): boolean
+---@field edit_string fun(ctx: NuklearContext, options: table, text: string) : string, table
+---@field layout_row_end fun(ctx: NuklearContext)
+---@field window_end fun(ctx: NuklearContext)
+---@field window_set_bounds fun(ctx: NuklearContext, windowName: string, bounds: Rect)
+---@field window_is_hidden fun(ctx: NuklearContext, windowName: string): boolean
+---@field window_begin fun(ctx: NuklearContext, windowName: string, size: Rect, options: table<string>): boolean
+---@field layout_row_dynamic fun(ctx: NuklearContext, height: number, columns: integer)
+---@field group_scrolled_begin fun(ctx: NuklearContext, scrollPosition: nk_scroll, groupName: string, options: table<string>): boolean
+---@field label_colored fun(ctx: NuklearContext, text: string, color: table)
+---@field group_scrolled_end fun(ctx: NuklearContext)
+---@field checkbox_label fun(ctx: NuklearContext, text: string, isChecked: boolean): boolean
+---@field window_is_hovered fun(ctx: NuklearContext): boolean
+---@field EditState EditStateEnum
 
 --- @class Rect
 --- @field x number
@@ -150,24 +144,15 @@ NUKLEAR_MODE_SHARED = 0
 --- @field w number
 --- @field h number
 
---- Table containing Nuklear functions
---- TODO(Gerark) Change this by providing access through a module
----@class ui
----@field nk_style_push fun(ctx: NuklearContext, element: string, styleName: string, value: any)
----@field nk_style_pop fun(ctx: NuklearContext, element: string, styleName: string)
----@field nk_layout_row_begin fun(ctx: NuklearContext, layout: string, height: number, columns: integer)
----@field nk_layout_row_push fun(ctx: NuklearContext, height: number)
----@field nk_button_label fun(ctx: NuklearContext, text: string): boolean
----@field nk_edit_string fun(ctx: NuklearContext, options: table, text: string) : string, table
----@field nk_layout_row_end fun(ctx: NuklearContext)
----@field nk_end fun(ctx: NuklearContext)
----@field nk_window_set_bounds fun(ctx: NuklearContext, windowName: string, bounds: Rect)
----@field nk_window_is_hidden fun(ctx: NuklearContext, windowName: string): boolean
----@field nk_begin fun(ctx: NuklearContext, windowName: string, size: Rect, options: table<string>): boolean
----@field nk_layout_row_dynamic fun(ctx: NuklearContext, height: number, columns: integer)
----@field nk_group_scrolled_begin fun(ctx: NuklearContext, scrollPosition: nk_scroll, groupName: string, options: table<string>): boolean
----@field nk_label_colored fun(ctx: NuklearContext, text: string, color: table)
----@field nk_group_scrolled_end fun(ctx: NuklearContext)
----@field nk_checkbox_label fun(ctx: NuklearContext, text: string, isChecked: boolean): boolean
----@field nk_window_is_hovered fun(ctx: NuklearContext): boolean
-ui = {}
+---@alias EditState integer
+
+---@class EditStateEnum
+---@field NK_EDIT_COMMITED EditState
+---@field NK_EDIT_INACTIVE EditState
+---@field NK_EDIT_ACTIVE EditState
+
+--- TODO(Gerark) Change this by providing access through a module ( or just swap nuklear to mygui with an existing lua lib integration :D )
+---@class nk_scroll
+---@field new fun(x: integer, y: integer): table
+---@diagnostic disable-next-line: name-style-check
+nk_scroll = {}

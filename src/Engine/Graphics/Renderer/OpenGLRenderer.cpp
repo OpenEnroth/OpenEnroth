@@ -20,7 +20,7 @@
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightsStack.h"
-#include "Engine/Graphics/Renderer/IDebugViewRenderer.h"
+#include "Engine/Graphics/Renderer/IOverlayRenderer.h"
 #include "OpenGLShader.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
@@ -3181,20 +3181,23 @@ void OpenGLRenderer::Present() {
         glBlitFramebuffer(0, 0, outputRender.w, outputRender.h, rect.x, rect.y, rect.w + rect.x, rect.h + rect.y, GL_COLOR_BUFFER_BIT, filter);
         glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 
-        /* TODO: nuklear is expected to render at native resolution otherwise when scaled will look awful.
-         * So as a hack we call it there, but that way it will work for POST stage only.
-         * We should evaluate if we will ever need nuklear to not waste time on fixing it properly. */
-        if (_debugViewRenderer) {
-            _debugViewRenderer->render(outputPresent, drawcalls);
-        }
+        _renderOverlay(outputPresent);
 
         glEnable(GL_SCISSOR_TEST);
         glViewport(0, 0, outputRender.w, outputRender.h);
+    } else {
+        _renderOverlay(outputPresent);
     }
     openGLContext->swapBuffers();
 
     if (engine->config->graphics.FPSLimit.value() > 0)
         _frameLimiter.tick(engine->config->graphics.FPSLimit.value());
+}
+
+void OpenGLRenderer::_renderOverlay(Sizei size) {
+    if (_overlayRenderer) {
+        _overlayRenderer->render(size, drawcalls);
+    }
 }
 
 GLshaderverts *outbuildshaderstore[16] = { nullptr };
@@ -4969,8 +4972,8 @@ void OpenGLRenderer::ReloadShaders() {
     forceperVAO = forceperVBO = 0;
     forceperstorecnt = 0;
 
-    if (_debugViewRenderer) {
-        _debugViewRenderer->reloadShaders();
+    if (_overlayRenderer) {
+        _overlayRenderer->reloadShaders();
     }
 }
 

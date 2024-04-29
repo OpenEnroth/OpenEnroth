@@ -10,16 +10,10 @@
 #include <cstdio>
 #include <lua.hpp>
 
-struct nk_context *NuklearLegacyBindings::_context{};
+nk_context *NuklearLegacyBindings::_context{};
 std::vector<struct lua_nk_style> NuklearLegacyBindings::_styles;
 
-void NuklearLegacyBindings::init(struct nk_context *context, lua_State *lua) {
-    setContext(context);
-    initStyles();
-    initBindings(lua);
-}
-
-void NuklearLegacyBindings::setContext(struct nk_context *context) {
+void NuklearLegacyBindings::setContext(nk_context *context) {
     _context = context;
 }
 
@@ -2393,103 +2387,107 @@ int NuklearLegacyBindings::lua_nk_scroll_set(lua_State *L) {
 }
 
 void NuklearLegacyBindings::initBindings(lua_State* lua) {
+    initStyles();
+    initNkScrollType(lua);
     static const luaL_Reg ui[] = {
-        { "nk_begin", lua_nk_begin },
-        { "nk_button_color", lua_nk_button_color },
-        { "nk_button_image", lua_nk_button_image },
-        { "nk_button_label", lua_nk_button_label },
-        { "nk_button_set_behavior", lua_nk_button_set_behavior },
-        { "nk_button_symbol", lua_nk_button_symbol },
-        { "nk_chart_begin", lua_nk_chart_begin },
-        { "nk_chart_end", lua_nk_chart_end },
-        { "nk_chart_push", lua_nk_chart_push },
-        { "nk_checkbox", lua_nk_checkbox },
-        { "nk_checkbox_label", lua_nk_checkbox },
-        { "nk_color_picker", lua_nk_color_picker },
-        { "nk_color_update", lua_nk_color_update },
-        { "nk_combo", lua_nk_combo },
-        { "nk_combo_begin_color", lua_nk_combo_begin_color },
-        { "nk_combo_begin_image", lua_nk_combo_begin_image },
-        { "nk_combo_begin_label", lua_nk_combo_begin_label },
-        { "nk_combo_begin_symbol", lua_nk_combo_begin_symbol },
-        { "nk_combo_close", lua_nk_combo_close },
-        { "nk_combo_item_image", lua_nk_combo_item_image },
-        { "nk_combo_item_label", lua_nk_combo_item_label },
-        { "nk_combo_item_symbol", lua_nk_combo_item_symbol },
-        { "nk_combo_end", lua_nk_combo_end },
-        { "nk_edit_string", lua_nk_edit_string },
-        { "nk_end", lua_nk_end },
-        { "nk_group_begin", lua_nk_group_begin },
-        { "nk_group_end", lua_nk_group_end },
-        { "nk_group_scrolled_begin", lua_nk_group_scrolled_begin },
-        { "nk_group_scrolled_end", lua_nk_group_scrolled_end },
-        { "nk_group_set_scroll", lua_nk_group_set_scroll },
-        { "nk_image_dimensions", lua_nk_image_dimensions },
-        { "nk_label", lua_nk_label },
-        { "nk_label_colored", lua_nk_label_colored },
-        { "nk_load_image", lua_nk_load_image },
-        { "nk_layout_row_begin", lua_nk_layout_row_begin },
-        { "nk_layout_row_dynamic", lua_nk_layout_row_dynamic },
-        { "nk_layout_row_push", lua_nk_layout_row_push },
-        { "nk_layout_row_static", lua_nk_layout_row_static },
-        { "nk_layout_row_end", lua_nk_layout_row_end },
-        { "nk_layout_space_begin", lua_nk_layout_space_begin},
-        { "nk_layout_space_end", lua_nk_layout_space_end },
-        { "nk_layout_space_push", lua_nk_layout_space_push },
-        { "nk_layout_reset_min_row_height", lua_nk_layout_reset_min_row_height },
-        { "nk_menu_begin_image", lua_nk_menu_begin_image },
-        { "nk_menu_begin_label", lua_nk_menu_begin_label },
-        { "nk_menu_begin_symbol", lua_nk_menu_begin_symbol },
-        { "nk_menu_end", lua_nk_menu_end },
-        { "nk_menu_item_image", lua_nk_menu_item_image },
-        { "nk_menu_item_label", lua_nk_menu_item_label },
-        { "nk_menu_item_symbol", lua_nk_menu_item_symbol },
-        { "nk_menubar_begin", lua_nk_menubar_begin },
-        { "nk_menubar_end", lua_nk_menubar_end },
-        { "nk_option_label", lua_nk_option_label },
-        { "nk_popup_begin", lua_nk_popup_begin },
-        { "nk_popup_end", lua_nk_popup_end },
-        { "nk_progress", lua_nk_progress },
-        { "nk_property_float", lua_nk_property_float },
-        { "nk_property_int", lua_nk_property_int },
-        { "nk_propertyd", lua_nk_propertyd },
-        { "nk_propertyf", lua_nk_propertyf },
-        { "nk_propertyi", lua_nk_propertyi },
-        { "nk_selectable_image", lua_nk_selectable_image },
-        { "nk_selectable_label", lua_nk_selectable_label },
-        { "nk_selectable_symbol", lua_nk_selectable_symbol },
-        { "nk_slide_float", lua_nk_slide_float },
-        { "nk_slide_int", lua_nk_slide_int },
-        { "nk_slider_float", lua_nk_slider_float },
-        { "nk_slider_int", lua_nk_slider_int },
-        { "nk_spacer", lua_nk_spacer },
-        { "nk_style_default", lua_nk_style_default },
-        { "nk_style_from_table", lua_nk_style_from_table },
-        { "nk_style_get", lua_nk_style_get },
-        { "nk_style_pop", lua_nk_style_pop },
-        { "nk_style_push", lua_nk_style_push },
-        { "nk_style_set", lua_nk_style_set },
-        { "nk_style_set_font", lua_nk_style_set_font },
-        { "nk_style_set_font_default", lua_nk_style_set_font_default },
-        { "nk_tree_element_pop", lua_nk_tree_element_pop },
-        { "nk_tree_element_push", lua_nk_tree_element_push },
-        { "nk_tree_pop", lua_nk_tree_pop },
-        { "nk_tree_push", lua_nk_tree_push },
-        { "nk_tree_state_pop", lua_nk_tree_state_pop },
-        { "nk_tree_state_push", lua_nk_tree_state_push },
-        { "nk_window_is_closed", lua_nk_window_is_closed },
-        { "nk_window_is_hidden", lua_nk_window_is_hidden },
-        { "nk_window_is_hovered", lua_nk_window_is_hovered },
-        { "nk_window_get_size", lua_nk_window_get_size },
-        { "nk_window_set_size", lua_nk_window_set_size },
-        { "nk_window_get_position", lua_nk_window_get_position },
-        { "nk_window_set_position", lua_nk_window_set_position },
-        { "nk_window_set_bounds", lua_nk_window_set_bounds },
+        { "window_begin", lua_nk_begin },
+        { "button_color", lua_nk_button_color },
+        { "button_image", lua_nk_button_image },
+        { "button_label", lua_nk_button_label },
+        { "button_set_behavior", lua_nk_button_set_behavior },
+        { "button_symbol", lua_nk_button_symbol },
+        { "chart_begin", lua_nk_chart_begin },
+        { "chart_end", lua_nk_chart_end },
+        { "chart_push", lua_nk_chart_push },
+        { "checkbox", lua_nk_checkbox },
+        { "checkbox_label", lua_nk_checkbox },
+        { "color_picker", lua_nk_color_picker },
+        { "color_update", lua_nk_color_update },
+        { "combo", lua_nk_combo },
+        { "combo_begin_color", lua_nk_combo_begin_color },
+        { "combo_begin_image", lua_nk_combo_begin_image },
+        { "combo_begin_label", lua_nk_combo_begin_label },
+        { "combo_begin_symbol", lua_nk_combo_begin_symbol },
+        { "combo_close", lua_nk_combo_close },
+        { "combo_item_image", lua_nk_combo_item_image },
+        { "combo_item_label", lua_nk_combo_item_label },
+        { "combo_item_symbol", lua_nk_combo_item_symbol },
+        { "combo_end", lua_nk_combo_end },
+        { "edit_string", lua_nk_edit_string },
+        { "window_end", lua_nk_end },
+        { "group_begin", lua_nk_group_begin },
+        { "group_end", lua_nk_group_end },
+        { "group_scrolled_begin", lua_nk_group_scrolled_begin },
+        { "group_scrolled_end", lua_nk_group_scrolled_end },
+        { "group_set_scroll", lua_nk_group_set_scroll },
+        { "image_dimensions", lua_nk_image_dimensions },
+        { "label", lua_nk_label },
+        { "label_colored", lua_nk_label_colored },
+        { "load_image", lua_nk_load_image },
+        { "layout_row_begin", lua_nk_layout_row_begin },
+        { "layout_row_dynamic", lua_nk_layout_row_dynamic },
+        { "layout_row_push", lua_nk_layout_row_push },
+        { "layout_row_static", lua_nk_layout_row_static },
+        { "layout_row_end", lua_nk_layout_row_end },
+        { "layout_space_begin", lua_nk_layout_space_begin},
+        { "layout_space_end", lua_nk_layout_space_end },
+        { "layout_space_push", lua_nk_layout_space_push },
+        { "layout_reset_min_row_height", lua_nk_layout_reset_min_row_height },
+        { "menu_begin_image", lua_nk_menu_begin_image },
+        { "menu_begin_label", lua_nk_menu_begin_label },
+        { "menu_begin_symbol", lua_nk_menu_begin_symbol },
+        { "menu_end", lua_nk_menu_end },
+        { "menu_item_image", lua_nk_menu_item_image },
+        { "menu_item_label", lua_nk_menu_item_label },
+        { "menu_item_symbol", lua_nk_menu_item_symbol },
+        { "menubar_begin", lua_nk_menubar_begin },
+        { "menubar_end", lua_nk_menubar_end },
+        { "option_label", lua_nk_option_label },
+        { "popup_begin", lua_nk_popup_begin },
+        { "popup_end", lua_nk_popup_end },
+        { "progress", lua_nk_progress },
+        { "property_float", lua_nk_property_float },
+        { "property_int", lua_nk_property_int },
+        { "propertyd", lua_nk_propertyd },
+        { "propertyf", lua_nk_propertyf },
+        { "propertyi", lua_nk_propertyi },
+        { "selectable_image", lua_nk_selectable_image },
+        { "selectable_label", lua_nk_selectable_label },
+        { "selectable_symbol", lua_nk_selectable_symbol },
+        { "slide_float", lua_nk_slide_float },
+        { "slide_int", lua_nk_slide_int },
+        { "slider_float", lua_nk_slider_float },
+        { "slider_int", lua_nk_slider_int },
+        { "spacer", lua_nk_spacer },
+        { "style_default", lua_nk_style_default },
+        { "style_from_table", lua_nk_style_from_table },
+        { "style_get", lua_nk_style_get },
+        { "style_pop", lua_nk_style_pop },
+        { "style_push", lua_nk_style_push },
+        { "style_set", lua_nk_style_set },
+        { "style_set_font", lua_nk_style_set_font },
+        { "style_set_font_default", lua_nk_style_set_font_default },
+        { "tree_element_pop", lua_nk_tree_element_pop },
+        { "tree_element_push", lua_nk_tree_element_push },
+        { "tree_pop", lua_nk_tree_pop },
+        { "tree_push", lua_nk_tree_push },
+        { "tree_state_pop", lua_nk_tree_state_pop },
+        { "tree_state_push", lua_nk_tree_state_push },
+        { "window_is_closed", lua_nk_window_is_closed },
+        { "window_is_hidden", lua_nk_window_is_hidden },
+        { "window_is_hovered", lua_nk_window_is_hovered },
+        { "window_get_size", lua_nk_window_get_size },
+        { "window_set_size", lua_nk_window_set_size },
+        { "window_get_position", lua_nk_window_get_position },
+        { "window_set_position", lua_nk_window_set_position },
+        { "window_set_bounds", lua_nk_window_set_bounds },
         { NULL, NULL }
     };
     luaL_newlib(lua, ui);
-    lua_setglobal(lua, "ui");
+    lua_setglobal(lua, "_nuklear_legacy_ui");
+}
 
+void NuklearLegacyBindings::initNkScrollType(lua_State *lua) {
     static const luaL_Reg nk_scroll[] = {
         { "new", lua_nk_scroll_new },
         { "set", lua_nk_scroll_set },
@@ -2504,17 +2502,6 @@ void NuklearLegacyBindings::initBindings(lua_State* lua) {
     lua_settable(lua, -3);
     luaL_openlib(lua, nullptr, nk_scroll, 0);
     lua_pop(lua, -1);
-
-    lua_pushinteger(lua, NK_EDIT_ACTIVE);
-    lua_setglobal(lua, "NK_EDIT_ACTIVE");
-    lua_pushinteger(lua, NK_EDIT_INACTIVE);
-    lua_setglobal(lua, "NK_EDIT_INACTIVE");
-    lua_pushinteger(lua, NK_EDIT_ACTIVATED);
-    lua_setglobal(lua, "NK_EDIT_ACTIVATED");
-    lua_pushinteger(lua, NK_EDIT_DEACTIVATED);
-    lua_setglobal(lua, "NK_EDIT_DEACTIVATED");
-    lua_pushinteger(lua, NK_EDIT_COMMITED);
-    lua_setglobal(lua, "NK_EDIT_COMMITED");
 }
 
 #define PUSH_STYLE(element, component, property, type) element.push_back({ #property, &_context->style.component.property, type});

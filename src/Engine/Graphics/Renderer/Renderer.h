@@ -26,7 +26,7 @@ class Vis;
 struct Lightmap;
 struct Decal;
 struct Polygon;
-class IDebugViewRenderer;
+class IOverlayRenderer;
 
 bool PauseGameDrawing();
 
@@ -183,7 +183,7 @@ class Renderer {
     virtual void ReloadShaders() = 0;
     virtual void DoRenderBillboards_D3D() = 0;
 
-    virtual void setDebugViewRenderer(IDebugViewRenderer *debugViewRenderer) = 0;
+    virtual void setOverlayRenderer(IOverlayRenderer *overlayRenderer) = 0;
 
     std::shared_ptr<GameConfig> config = nullptr;
     int *pActiveZBuffer;

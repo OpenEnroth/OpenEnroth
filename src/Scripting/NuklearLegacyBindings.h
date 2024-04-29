@@ -1,11 +1,13 @@
 #pragma once
 
-#include <Engine/Graphics/Renderer/NuklearDebugViewRenderer.h>
-#include <nuklear_config.h> // NOLINT: not a C system header.
+#include <Engine/Graphics/Renderer/NuklearOverlayRenderer.h>
+
 #include <vector>
 
+#include <sol/sol.hpp>
+#include <nuklear_config.h> // NOLINT: not a C system header.
+
 class GraphicsImage;
-class Nuklear;
 struct lua_State;
 
 enum lua_nk_color_type {
@@ -45,7 +47,8 @@ struct lua_nk_style {
 
 class NuklearLegacyBindings {
  public:
-    static void init(struct nk_context *context, lua_State *lua);
+    static void initBindings(lua_State *lua);
+    static void setContext(nk_context *context);
 
  private:
     struct img {
@@ -58,9 +61,8 @@ class NuklearLegacyBindings {
         std::vector<struct nk_tex_font *> fonts;
     };
 
-    static void initBindings(lua_State *lua);
     static void initStyles();
-    static void setContext(struct nk_context *context);
+    static void initNkScrollType(lua_State *lua);
     static int lua_nk_parse_vec2(lua_State *L, int idx, struct nk_vec2 *vec);
     static int lua_nk_is_hex(char c);
     static int lua_nk_parse_ratio(lua_State *L, int idx, std::vector<float> *ratio);

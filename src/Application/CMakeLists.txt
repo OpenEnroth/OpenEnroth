@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(APPLICATION_SOURCES
-        DebugViewSystem.cpp
-        DebugViewEventHandler.cpp
         Game.cpp
         GameConfig.cpp
         GameKeyboardController.cpp
@@ -12,13 +10,9 @@ set(APPLICATION_SOURCES
         GameStarter.cpp
         GameTraceHandler.cpp
         GameWindowHandler.cpp
-        GameIocContainer.cpp
-        RenderStatsDebugView.cpp)
+        GameIocContainer.cpp)
 
 set(APPLICATION_HEADERS
-        DebugView.h
-        DebugViewSystem.h
-        DebugViewEventHandler.h
         Game.h
         GameConfig.h
         GameKeyboardController.h
@@ -29,8 +23,7 @@ set(APPLICATION_HEADERS
         GameStarterOptions.h
         GameTraceHandler.h
         GameWindowHandler.h
-        GameIocContainer.h
-        RenderStatsDebugView.h)
+        GameIocContainer.h)
 
 add_library(application STATIC ${APPLICATION_SOURCES} ${APPLICATION_HEADERS})
 target_check_style(application)
@@ -53,8 +46,4 @@ target_link_libraries(application
         library_platform_implementation
         library_environment_implementation
         scripting
-        utility
-        PRIVATE
-        libluajit
-        sol2
-        nuklear)
+        utility)

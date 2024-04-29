@@ -838,6 +838,6 @@ void BaseRenderer::updateRenderDimensions() {
         outputRender = outputPresent;
 }
 
-void BaseRenderer::setDebugViewRenderer(IDebugViewRenderer *debugViewRenderer) {
-    _debugViewRenderer = debugViewRenderer;
+void BaseRenderer::setOverlayRenderer(IOverlayRenderer *overlayRenderer) {
+    _overlayRenderer = overlayRenderer;
 }

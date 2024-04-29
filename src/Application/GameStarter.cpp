@@ -12,7 +12,6 @@
 #include "Engine/Random/Random.h"
 #include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
@@ -22,6 +21,9 @@
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Components/Random/EngineRandomComponent.h"
+
+#include "GUI/Overlay/OverlaySystem.h"
+#include "GUI/Overlay/RenderStatsOverlay.h"
 
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -33,27 +35,23 @@
 #include "Library/Platform/Null/NullPlatform.h"
 
 #include "Scripting/ConfigBindings.h"
-#include "Scripting/DebugViewBindings.h"
+#include "Scripting/OverlayBindings.h"
 #include "Scripting/GameLuaBindings.h"
 #include "Scripting/InputBindings.h"
 #include "Scripting/InputScriptEventHandler.h"
 #include "Scripting/LoggerBindings.h"
-#include "Scripting/NuklearBindings.h"
 #include "Scripting/PlatformBindings.h"
 #include "Scripting/ScriptingSystem.h"
 
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 
-#include "DebugViewSystem.h"
 #include "GamePathResolver.h"
 #include "GameConfig.h"
 #include "Game.h"
 #include "GameKeyboardController.h"
 #include "GameWindowHandler.h"
 #include "GameTraceHandler.h"
-
-#include "RenderStatsDebugView.h"
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init environment.
@@ -146,10 +144,10 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     );
     ::mouse = EngineIocContainer::ResolveMouse();
 
-    _debugViewSystem = DebugViewSystem::create(*_renderer, *_config, *_application);
+    _overlaySystem = std::make_unique<OverlaySystem>(*_renderer, *_config, *_application);
 
     // Init engine.
-    _engine = std::make_unique<Engine>(_config, *_debugViewSystem);
+    _engine = std::make_unique<Engine>(_config, *_overlaySystem);
     ::engine = _engine.get();
     _engine->Initialize();
 
@@ -162,17 +160,14 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _scriptingSystem->addBindings<ConfigBindings>("config");
     _scriptingSystem->addBindings<PlatformBindings>("platform", *_application);
     _scriptingSystem->addBindings<InputBindings>("input", *_application->component<InputScriptEventHandler>());
-    _scriptingSystem->addBindings<NuklearBindings>("nuklear", _engine->nuklear.get());
-    _scriptingSystem->addBindings<DebugViewBindings>("debugView");
+    _scriptingSystem->addBindings<OverlayBindings>("overlay", *_overlaySystem);
     _scriptingSystem->executeEntryPoint();
 
-    _debugViewSystem->addView<RenderStatsDebugView>("RenderStats", *_renderer);
+    _overlaySystem->addOverlay("RenderStats", std::make_unique<RenderStatsOverlay>(*_renderer));
 }
 
 GameStarter::~GameStarter() {
     ::engine = nullptr;
-
-    //::nuklear = nullptr;
 
     ::render = nullptr;
 

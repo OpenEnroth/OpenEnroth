@@ -138,6 +138,7 @@ class OpenGLRenderer : public BaseRenderer {
     void DrawForcePerVerts();
 
     void SetFogParametersGL();
+    void _renderOverlay(Sizei size);
 
     FrameLimiter _frameLimiter;
 
