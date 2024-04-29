@@ -40,7 +40,7 @@ OverlaySystem::~OverlaySystem() {
 }
 
 void OverlaySystem::addOverlay(std::string_view name, std::unique_ptr<Overlay> overlay) {
-    if (!_overlays.contains(name.data())) {
+    if (_overlays.contains(name.data())) {
         logger->error(OverlayLogCategory, "Can't add overlay \"{}\". Another overlay with the same name already exists.", name);
         return;
     }
