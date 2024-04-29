@@ -7046,8 +7046,8 @@ void Character::_42ECB5_CharacterAttacksActor() {
     } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
         melee_attack = true;
 
-        Vec3i a3 = actor->pos.toInt() - pParty->pos.toInt();
-        normalize_to_fixpoint(&a3.x, &a3.y, &a3.z);
+        Vec3f a3 = actor->pos - pParty->pos;
+        a3.normalize();
 
         Actor::DamageMonsterFromParty(Pid(OBJECT_Character, pParty->activeCharacterIndex() - 1),
                                       target_id, &a3);

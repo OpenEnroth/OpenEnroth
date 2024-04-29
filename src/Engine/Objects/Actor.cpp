@@ -3011,8 +3011,7 @@ void Actor::InitializeActors() {
     }
 }
 //----- (00439474) --------------------------------------------------------
-void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
-                                   Vec3i *pVelocity) {
+void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, Vec3f *pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
     Duration extraRecoveryTime;           // qax@125
@@ -3269,12 +3268,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
     }
     if (knockbackValue > 10) knockbackValue = 10;
     if (supertypeForMonsterId(pMonster->monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
-        pVelocity->x = fixpoint_mul(knockbackValue, pVelocity->x);
-        pVelocity->y = fixpoint_mul(knockbackValue, pVelocity->y);
-        pVelocity->z = fixpoint_mul(knockbackValue, pVelocity->z);
-        pMonster->velocity.x = 50 * (short)pVelocity->x;
-        pMonster->velocity.y = 50 * (short)pVelocity->y;
-        pMonster->velocity.z = 50 * (short)pVelocity->z;
+        pMonster->velocity = 50 * knockbackValue * (*pVelocity);
     }
     Actor::AddOnDamageOverlay(uActorID_Monster, 1, v61);
 }
@@ -4617,8 +4611,11 @@ void evaluateAoeDamage() {
                         if (Check_LineOfSight(pActors[actorID].pos.toInt() + Vec3i(0, 0, 50), attack.pos.toInt())) {
                             normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
                             switch (attackerType) {
-                                case OBJECT_Character:
-                                    Actor::DamageMonsterFromParty(attack.pid, actorID, &attackVector);
+                                case OBJECT_Character: {
+                                    Vec3f attVF = Vec3f(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
+                                    attVF.normalize();
+                                    Actor::DamageMonsterFromParty(attack.pid, actorID, &attVF);
+                                }
                                     break;
                                 case OBJECT_Actor:
                                     if (pSpriteObj && pActors[attackerId].GetActorsRelation(&pActors[actorID]) != HOSTILITY_FRIENDLY) {

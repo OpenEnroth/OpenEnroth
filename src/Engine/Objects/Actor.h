@@ -158,7 +158,7 @@ class Actor {
 
     static void Arena_summon_actor(MonsterId monster_id, Vec3i pos);
     static void DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
-                                       Vec3i *pVelocity);
+                                       Vec3f *pVelocity);
     static void MakeActorAIList_ODM();
     static int MakeActorAIList_BLV();
     static void UpdateActorAI();

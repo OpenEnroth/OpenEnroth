@@ -1359,7 +1359,7 @@ void RegeneratePartyHealthMana() {
     // care about immolation if you're traveling, or if you're in jail? You won't be getting several ticks here during
     // normal gameplay.
     if (pParty->ImmolationActive()) {
-        Vec3i cords;
+        Vec3f cords;
 
         SpriteObject spellSprite;
         spellSprite.containing_item.Reset();
