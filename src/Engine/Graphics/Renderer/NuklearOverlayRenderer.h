@@ -1,8 +1,7 @@
 #pragma once
 
-#include "IOverlayRenderer.h"
-
 #include <Engine/Graphics/Renderer/OpenGLShader.h>
+#include <Library/Geometry/Size.h>
 
 #include <memory>
 
@@ -16,20 +15,20 @@ struct nk_tex_font {
 
 class GraphicsImage;
 
-class NuklearOverlayRenderer : public IOverlayRenderer {
+class NuklearOverlayRenderer {
  public:
-    NuklearOverlayRenderer(nk_context *context, bool useOGLES);
+    NuklearOverlayRenderer();
     ~NuklearOverlayRenderer();
-    virtual void render(const Sizei &outputPresent, int *drawCalls) override;
-    virtual void reloadShaders() override;
+    void render(nk_context *context, const Sizei &outputPresent, bool useOGLES, int *drawCalls);
+    void reloadShaders(bool useOGLES);
 
  private:
+    void _initialize(nk_context *context);
     bool _createDevice();
     struct nk_tex_font* _loadFont(const char *font_path, size_t font_size);
     void _cleanup();
 
     std::unique_ptr<nk_state> _state;
-    nk_context *_context;
     bool _useOGLES;
     OpenGLShader _shader;
     nk_tex_font *_defaultFont;

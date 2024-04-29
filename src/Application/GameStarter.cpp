@@ -145,7 +145,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     );
     ::mouse = EngineIocContainer::ResolveMouse();
 
-    _overlaySystem = std::make_unique<OverlaySystem>(*_renderer, rendererType, *_application);
+    _overlaySystem = std::make_unique<OverlaySystem>(*_renderer, *_application);
 
     // Init engine.
     _engine = std::make_unique<Engine>(_config, *_overlaySystem);

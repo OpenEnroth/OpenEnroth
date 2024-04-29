@@ -16,6 +16,7 @@
 #include "OpenGLShader.h"
 
 class PlatformOpenGLContext;
+class NuklearOverlayRenderer;
 struct nk_state;
 
 class OpenGLRenderer : public BaseRenderer {
@@ -128,6 +129,10 @@ class OpenGLRenderer : public BaseRenderer {
     virtual bool Reinitialize(bool firstInit) override;
     virtual void ReloadShaders() override;
 
+    virtual void flushAndScale() override;
+    virtual void swapBuffers() override;
+    virtual void drawOverlays(nk_context *context) override;
+
  protected:
     virtual void DoRenderBillboards_D3D() override;
     void SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1);
@@ -138,7 +143,6 @@ class OpenGLRenderer : public BaseRenderer {
     void DrawForcePerVerts();
 
     void SetFogParametersGL();
-    void _renderOverlay(Sizei size);
 
     FrameLimiter _frameLimiter;
 
@@ -223,6 +227,8 @@ class OpenGLRenderer : public BaseRenderer {
     int fogend{};
 
     float gamma{};
+
+    std::unique_ptr<NuklearOverlayRenderer> _overlayRenderer;
 };
 
 

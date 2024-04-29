@@ -36,10 +36,16 @@ struct nk_state {
 constexpr int maxVertexBuffer = 512 * 1024;
 constexpr int maxElementBuffer = 512 * 1024;
 
-NuklearOverlayRenderer::NuklearOverlayRenderer(nk_context *context, bool useOGLES)
-    : _state(std::make_unique<nk_state>())
-    , _context(context)
-    , _useOGLES(useOGLES) {
+NuklearOverlayRenderer::NuklearOverlayRenderer() {
+}
+
+NuklearOverlayRenderer::~NuklearOverlayRenderer() {
+    _cleanup();
+}
+
+void NuklearOverlayRenderer::_initialize(nk_context *context) {
+    _state = std::make_unique<nk_state>();
+
     if (!_createDevice()) {
         logger->warning("Nuklear device creation failed");
         _cleanup();
@@ -55,17 +61,13 @@ NuklearOverlayRenderer::NuklearOverlayRenderer(nk_context *context, bool useOGLE
         return;
     }
 
-    if (!nk_init_default(_context, &_state->dev.atlas.default_font->handle)) {
+    if (!nk_init_default(context, &_state->dev.atlas.default_font->handle)) {
         logger->warning("Nuklear initialization failed");
         _cleanup();
         return;
     }
 
     nk_buffer_init_default(&_state->dev.cmds);
-}
-
-NuklearOverlayRenderer::~NuklearOverlayRenderer() {
-    _cleanup();
 }
 
 bool NuklearOverlayRenderer::_createDevice() {
@@ -169,8 +171,11 @@ void NuklearOverlayRenderer::_cleanup() {
     memset(&_state->dev, 0, sizeof(_state->dev));
 }
 
-void NuklearOverlayRenderer::render(const Sizei &outputPresent, int *drawCalls) {
-    if (!_context->begin)
+void NuklearOverlayRenderer::render(nk_context *context, const Sizei &outputPresent, bool useOGLES, int *drawCalls) {
+    if (!_state)
+        _initialize(context);
+
+    if (!context->begin)
         return;
 
     int width, height;
@@ -223,7 +228,7 @@ void NuklearOverlayRenderer::render(const Sizei &outputPresent, int *drawCalls) 
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, maxElementBuffer, NULL, GL_STREAM_DRAW);
 
         /* load vertices/elements directly into vertex/element buffer */
-        if (_useOGLES) {
+        if (useOGLES) {
             vertices = glMapBufferRange(GL_ARRAY_BUFFER, 0, maxVertexBuffer, GL_MAP_WRITE_BIT);
             elements = glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, maxElementBuffer, GL_MAP_WRITE_BIT);
         } else {
@@ -254,13 +259,13 @@ void NuklearOverlayRenderer::render(const Sizei &outputPresent, int *drawCalls) 
             /* setup buffers to load vertices and elements */
             nk_buffer_init_fixed(&vbuf, vertices, (nk_size)maxVertexBuffer);
             nk_buffer_init_fixed(&ebuf, elements, (nk_size)maxElementBuffer);
-            nk_convert(_context, &_state->dev.cmds, &vbuf, &ebuf, &config);
+            nk_convert(context, &_state->dev.cmds, &vbuf, &ebuf, &config);
         }
         glUnmapBuffer(GL_ARRAY_BUFFER);
         glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 
         /* iterate over and execute each draw command */
-        nk_draw_foreach(cmd, _context, &_state->dev.cmds) {
+        nk_draw_foreach(cmd, context, &_state->dev.cmds) {
             if (!cmd->elem_count) continue;
             glBindTexture(GL_TEXTURE_2D, (GLuint)cmd->texture.id);
             glScissor((GLint)(cmd->clip_rect.x * scale.x),
@@ -271,7 +276,7 @@ void NuklearOverlayRenderer::render(const Sizei &outputPresent, int *drawCalls) 
             ++(*drawCalls);
             offset += cmd->elem_count;
         }
-        nk_clear(_context);
+        nk_clear(context);
         nk_buffer_clear(&_state->dev.cmds);
     }
 
@@ -282,11 +287,11 @@ void NuklearOverlayRenderer::render(const Sizei &outputPresent, int *drawCalls) 
     glDisable(GL_BLEND);
 }
 
-void NuklearOverlayRenderer::reloadShaders() {
+void NuklearOverlayRenderer::reloadShaders(bool useOGLES) {
     if (_shader.ID != 0) {
         std::string name = "Nuklear";
         std::string message = "shader failed to reload!\nPlease consult the log and issue a bug report!";
-        if (!_shader.reload(name, _useOGLES)) {
+        if (!_shader.reload(name, useOGLES)) {
             logger->warning("{} {}", name, message);
         } else {
             _state->dev.uniform_tex = glGetUniformLocation(_shader.ID, "Texture");

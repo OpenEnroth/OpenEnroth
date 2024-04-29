@@ -139,3 +139,7 @@ void NullRenderer::DrawTwodVerts() {}
 void NullRenderer::ReloadShaders() {}
 
 void NullRenderer::DoRenderBillboards_D3D() {}
+
+void NullRenderer::drawOverlays(nk_context *) {}
+void NullRenderer::flushAndScale() {}
+void NullRenderer::swapBuffers() {}
