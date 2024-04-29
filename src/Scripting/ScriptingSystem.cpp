@@ -18,11 +18,11 @@
 LogCategory ScriptingSystem::ScriptingLogCategory("Script");
 
 ScriptingSystem::ScriptingSystem(std::string_view scriptFolder, std::string_view entryPointFile, PlatformApplication &platformApplication, DistLogSink &distLogSink)
-    : _scriptFolder(scriptFolder), _entryPointFile(entryPointFile), _platformApplication(platformApplication) {
-    _solState = std::make_shared<sol::state>();
-    _platformApplication.installComponent(std::make_unique<InputScriptEventHandler>(_solState));
-
-    distLogSink.addLogSink(std::make_unique<ScriptLogSink>(_solState));
+    : _scriptFolder(scriptFolder), _entryPointFile(entryPointFile), _platformApplication(platformApplication), _distLogSink(distLogSink) {
+    _solState = std::make_unique<sol::state>();
+    _scriptingLogSink = std::make_unique<ScriptLogSink>(*_solState);
+    _platformApplication.installComponent(std::make_unique<InputScriptEventHandler>(*_solState));
+    _distLogSink.addLogSink(_scriptingLogSink.get());
 
     _initBaseLibraries();
     _initPackageTable(scriptFolder);
@@ -31,6 +31,7 @@ ScriptingSystem::ScriptingSystem(std::string_view scriptFolder, std::string_view
 
 ScriptingSystem::~ScriptingSystem() {
     _platformApplication.removeComponent<InputScriptEventHandler>();
+    _distLogSink.removeLogSink(_scriptingLogSink.get());
 }
 
 void ScriptingSystem::executeEntryPoint() {

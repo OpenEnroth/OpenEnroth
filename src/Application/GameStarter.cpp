@@ -58,8 +58,9 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
 
     // Init logger.
     _bufferLogSink = std::make_unique<BufferLogSink>();
-    _defaultLogSink = std::make_unique<DistLogSink>();
-    _defaultLogSink->addLogSink(LogSink::createDefaultSink());
+    _rootLogSink = std::make_unique<DistLogSink>();
+    _defaultLogSink = LogSink::createDefaultSink();
+    _rootLogSink->addLogSink(_defaultLogSink.get());
     _logger = std::make_unique<Logger>(LOG_TRACE, _bufferLogSink.get());
     Engine::LogEngineBuildInfo();
 
@@ -84,7 +85,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     } else {
         _logger->setLevel(_config->debug.LogLevel.value());
     }
-    _logger->setSink(_defaultLogSink.get());
+    _logger->setSink(_rootLogSink.get());
     _bufferLogSink->flush(_logger.get());
 
     // Create platform.
@@ -154,7 +155,8 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     // Init game.
     _game = std::make_unique<Game>(_application.get(), _config);
 
-    _scriptingSystem = std::make_unique<ScriptingSystem>("scripts", "init.lua", *_application, *_defaultLogSink);
+    // Init scripting system.
+    _scriptingSystem = std::make_unique<ScriptingSystem>("scripts", "init.lua", *_application, *_rootLogSink);
     _scriptingSystem->addBindings<LoggerBindings>("log");
     _scriptingSystem->addBindings<GameLuaBindings>("game");
     _scriptingSystem->addBindings<ConfigBindings>("config");

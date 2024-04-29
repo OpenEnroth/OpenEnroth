@@ -30,18 +30,6 @@ class ApplicationProxy : public ProxyPlatform, public ProxyEventLoop, public Pro
         assert(false && "use PlatformApplication::initializeOpenGLContext");
         return nullptr;
     }
-
-    virtual void exec(PlatformEventHandler *eventHandler) override {
-        pendingDeletions.clear();
-        ProxyEventLoop::exec(eventHandler);
-    }
-
-    virtual void processMessages(PlatformEventHandler *eventHandler, int count) override {
-        pendingDeletions.clear();
-        ProxyEventLoop::processMessages(eventHandler, count);
-    }
-
-    std::vector<std::shared_ptr<void>> pendingDeletions;
 };
 
 template<class T>
@@ -187,8 +175,4 @@ void PlatformApplication::removeComponentInternal(PlatformApplicationAware *awar
     assert(aware->application() == this);
     aware->removeNotify();
     aware->deinitialize();
-}
-
-void PlatformApplication::deleteLater(std::shared_ptr<void> component) {
-    _rootProxy->pendingDeletions.emplace_back(std::move(component));
 }

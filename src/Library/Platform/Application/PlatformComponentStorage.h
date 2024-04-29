@@ -18,12 +18,10 @@ class PlatformApplicationAware;
  * Note that the storage takes ownership of the inserted components, and they are removed & destroyed only when the
  * storage itself is destroyed.
  *
- * There used to be a non-owning interface here, but in the end it just made very little sense. Non-owning interface
- * means that we'll also need `erase` / `remove` methods. And looking at it a user might then conclude that since
- * we're providing both `insert` and `remove`, then it should be OK to dynamically insert & remove components, which
- * is totally NOT OK. Storage itself doesn't care about insertion order, but the enclosing `PlatformApplication`
- * maintains proxy and event filter chains, for which insertion order matters. Letting the user insert & remove
- * components on the fly will result in hard to debug problems with components ending up in the wrong place.
+ * While this class offers `remove` method, its usage is discouraged. The reason is that even though the storage itself
+ * doesn't care about insertion order, the enclosing `PlatformApplication` maintains proxy and event filter chains,
+ * for which insertion order matters. So inserting & removing components on the fly will likely result in hard to debug
+ * problems with components ending up in the wrong place.
  */
 class PlatformComponentStorage {
  public:
