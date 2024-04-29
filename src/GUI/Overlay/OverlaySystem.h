@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Engine/Graphics/Renderer/RendererEnums.h>
+
 #include <unordered_map>
 #include <string>
 #include <memory>
@@ -21,7 +23,7 @@ struct nk_context;
  */
 class OverlaySystem {
  public:
-    OverlaySystem(Renderer& render, GameConfig& gameConfig, PlatformApplication &platformApplication);
+    OverlaySystem(Renderer& render, RendererType rendererType, PlatformApplication &platformApplication);
     ~OverlaySystem();
 
     void addOverlay(std::string_view name, std::unique_ptr<Overlay> overlay);

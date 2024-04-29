@@ -14,13 +14,15 @@
 #include <memory>
 #include <utility>
 
-OverlaySystem::OverlaySystem(Renderer &render, GameConfig &gameConfig, PlatformApplication &platformApplication) {
+OverlaySystem::OverlaySystem(Renderer &render, RendererType rendererType, PlatformApplication &platformApplication) {
     _nuklearContext = std::make_unique<nk_context>();
     platformApplication.installComponent(std::make_unique<OverlayEventHandler>(_nuklearContext.get()));
 
-    const bool useOGLES = gameConfig.graphics.Renderer.value() == RENDERER_OPENGL_ES;
-    _renderer = std::make_unique<NuklearOverlayRenderer>(_nuklearContext.get(), useOGLES);
-    render.setOverlayRenderer(_renderer.get());
+    if (rendererType != RENDERER_NULL) {
+        const bool useOGLES = rendererType == RENDERER_OPENGL_ES;
+        _renderer = std::make_unique<NuklearOverlayRenderer>(_nuklearContext.get(), useOGLES);
+        render.setOverlayRenderer(_renderer.get());
+    }
 
     _unregisterDependencies = [&render, &platformApplication]() {
         platformApplication.removeComponent<OverlayEventHandler>();

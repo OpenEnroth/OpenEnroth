@@ -131,7 +131,8 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _application->component<GameWindowHandler>()->UpdateWindowFromConfig(_config.get());
 
     // Init renderer.
-    _renderer = RendererFactory().createRenderer(_options.headless ? RENDERER_NULL : _config->graphics.Renderer.value(), _config);
+    auto rendererType = _options.headless ? RENDERER_NULL : _config->graphics.Renderer.value();
+    _renderer = RendererFactory().createRenderer(rendererType, _config);
     ::render = _renderer.get();
     if (!_renderer->Initialize())
         throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
@@ -143,7 +144,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     );
     ::mouse = EngineIocContainer::ResolveMouse();
 
-    _overlaySystem = std::make_unique<OverlaySystem>(*_renderer, *_config, *_application);
+    _overlaySystem = std::make_unique<OverlaySystem>(*_renderer, rendererType, *_application);
 
     // Init engine.
     _engine = std::make_unique<Engine>(_config, *_overlaySystem);
