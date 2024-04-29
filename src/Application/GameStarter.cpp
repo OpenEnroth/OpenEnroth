@@ -132,7 +132,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _application->component<GameWindowHandler>()->UpdateWindowFromConfig(_config.get());
 
     // Init renderer.
-    auto rendererType = _options.headless ? RENDERER_NULL : _config->graphics.Renderer.value();
+    RendererType rendererType = _options.headless ? RENDERER_NULL : _config->graphics.Renderer.value();
     _renderer = RendererFactory().createRenderer(rendererType, _config);
     ::render = _renderer.get();
     if (!_renderer->Initialize())

@@ -2,6 +2,8 @@
 
 #include <Engine/Graphics/Renderer/RendererEnums.h>
 
+#include <Library/Logger/LogCategory.h>
+
 #include <unordered_map>
 #include <string>
 #include <memory>
@@ -30,6 +32,8 @@ class OverlaySystem {
     void removeOverlay(std::string_view name);
 
     void update();
+
+    static LogCategory OverlayLogCategory;
 
  private:
     std::unordered_map<std::string, std::unique_ptr<Overlay>> _overlays;
