@@ -156,7 +156,7 @@ class Actor {
     int _43B3E0_CalcDamage(ActorAbility dmgSource);
     static void AddOnDamageOverlay(unsigned int uActorID, int overlayType, int damage);
 
-    static void Arena_summon_actor(MonsterId monster_id, Vec3i pos);
+    static void Arena_summon_actor(MonsterId monster_id, Vec3f pos);
     static void DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
                                        Vec3f *pVelocity);
     static void MakeActorAIList_ODM();
@@ -217,8 +217,8 @@ class Actor {
     uint16_t pitchAngle = 0;
     int sectorId = 0;
     Duration currentActionLength = 0_ticks;
-    Vec3i initialPosition;
-    Vec3i guardingPosition;
+    Vec3f initialPosition;
+    Vec3f guardingPosition;
     uint16_t tetherDistance = 256;
     AIState aiState = Standing;
     ActorAnimation currentActionAnimation = ANIM_Standing;

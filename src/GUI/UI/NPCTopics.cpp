@@ -368,7 +368,7 @@ void prepareArenaFight(ArenaLevel level) {
 
     for (int i = 0; i < monstersNum; ++i) {
         Vec2i pos = pMonsterArenaPlacements[i];
-        Actor::Arena_summon_actor(grng->randomSample(monsterIds), Vec3i(pos.x, pos.y, 1));
+        Actor::Arena_summon_actor(grng->randomSample(monsterIds), Vec3f(pos.x, pos.y, 1));
     }
     pAudioPlayer->playUISound(SOUND_51heroism03);
 }

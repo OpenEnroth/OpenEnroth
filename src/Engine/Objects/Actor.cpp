@@ -3274,14 +3274,14 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, Vec3f 
 }
 
 //----- (004BBF61) --------------------------------------------------------
-void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
+void Actor::Arena_summon_actor(MonsterId monster_id, Vec3f pos) {
     Actor *actor = AllocateActor(true);
     if (!actor)
         return;
 
     int v16 = 0;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        v16 = pIndoor->GetSector(pos);
+        v16 = pIndoor->GetSector(pos.toInt());
 
     actor->name = pMonsterStats->infos[monster_id].name;
     actor->currentHP = (short)pMonsterStats->infos[monster_id].hp;
@@ -3291,7 +3291,7 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
     actor->height = pMonsterList->monsters[monster_id].monsterHeight;
     actor->moveSpeed = pMonsterList->monsters[monster_id].movementSpeed;
     actor->initialPosition = pos;
-    actor->pos = pos.toFloat();
+    actor->pos = pos;
     actor->attributes |= ACTOR_AGGRESSOR;
     actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
     actor->monsterInfo.treasureLevel = ITEM_TREASURE_LEVEL_INVALID;
@@ -4251,7 +4251,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->initialPosition.x = pParty->pos.x + TrigLUT.cos(angle) * radius;
     actor->initialPosition.y = pParty->pos.y + TrigLUT.sin(angle) * radius;
     actor->initialPosition.z = pParty->pos.z;
-    actor->pos = actor->initialPosition.toFloat();
+    actor->pos = actor->initialPosition;
     actor->tetherDistance = 256;
     actor->sectorId = partySectorId;
     actor->PrepareSprites(0);
