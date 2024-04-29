@@ -41,15 +41,15 @@ end
 --- It basically returns the key of the corresponding row
 ---
 --- Example:
---- game.SkillType = {
+--- Game.SkillType = {
 ---    Club = 0,
 ---    Sword = 1,
 ---    Dagger = 2,
 --- }
---- local result = enumToString(game.SkillType, 2)
+--- local result = enumToString(Game.SkillType, 2)
 --- The value of variable "result" is "Dagger"
 ---
----@param enumTable table<string, integer> - The enum table ( ex: game.SkillType, game.SkillMastery )
+---@param enumTable table<string, integer> - The enum table ( ex: Game.SkillType, Game.SkillMastery )
 ---@param valueToConvert integer - The input is the enumeration value
 ---@return string
 Utilities.enumToString = function (enumTable, valueToConvert)

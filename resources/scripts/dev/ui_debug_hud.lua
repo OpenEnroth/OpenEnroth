@@ -3,11 +3,10 @@
 -- It takes care of showing the debug tools. Currently the only debug tool in use is the console
 
 local Console = require "console"
-local Input = require "core.input"
-local config = require "core.config".bindings
----@type PlatformBindings
+local InputListener = require "core.input_listener"
+local Input = require "bindings.input"
+local Config = require "bindings.config"
 local Platform = require "bindings.platform"
----@type OverlayBindings
 local Overlay = require "bindings.overlay"
 local nk = Overlay.nk
 
@@ -111,7 +110,7 @@ local function drawConsole(ctx)
     nk.style_pop(ctx, "window", "fixed_background")
 
     if nk.window_is_hidden(ctx, "Debug Console") then
-        config.setConfig("debug", "show_console", false)
+        Config.setConfig("debug", "show_console", false)
     end
 end
 
@@ -124,15 +123,15 @@ ConsoleOverlay.init = function ()
     if #Console.messages == 0 then
         Console:addMessage("Type \"help\" on the command line to get a list of all the commands", { 255, 255, 255, 128 })
     end
-    unregisterFromInput = Input.listener.registerKeyPressBulk({
-        { key = Input.bindings.PlatformKey.KEY_UP,   callback = historyPrev },
-        { key = Input.bindings.PlatformKey.KEY_DOWN, callback = historyNext }
+    unregisterFromInput = InputListener.registerKeyPressBulk({
+        { key = Input.PlatformKey.KEY_UP,   callback = historyPrev },
+        { key = Input.PlatformKey.KEY_DOWN, callback = historyNext }
     })
 end
 
 ---@param ctx NuklearContext
 ConsoleOverlay.update = function (ctx)
-    local show = config.getConfig("debug", "show_console")
+    local show = Config.getConfig("debug", "show_console")
     if show == "true" then
         drawConsole(ctx)
     end

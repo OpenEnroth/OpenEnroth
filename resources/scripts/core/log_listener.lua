@@ -1,6 +1,3 @@
---- @type LogBindings
-local LogBindings = require "bindings.log"
-
 ---@type function[]
 local callbacks = {}
 
@@ -24,7 +21,7 @@ end
 
 ---@class LogListener
 ---@field register fun(callback: function)
-local logListener = {
+local LogListener = {
     ---Register a callback function accepting a log message ( look at the logsink function above )
     ---@param callback function
     register = function (callback)
@@ -32,7 +29,4 @@ local logListener = {
     end
 }
 
-return {
-    bindings = LogBindings,
-    listener = logListener
-}
+return LogListener

@@ -1,12 +1,12 @@
 local Utilities = require "dev.commands.command_utils"
-local game = require "core.game".bindings
+local Game = require "bindings.game"
 
 local subCommands = {
-    get = Utilities.showProperty(game.party.getFood, "food"),
-    set = Utilities.changeProperty(game.party.getFood, game.party.setFood, Utilities.opType.set, "food", tonumber),
-    add = Utilities.changeProperty(game.party.getFood, game.party.setFood, Utilities.opType.add, "food", tonumber),
-    rem = Utilities.changeProperty(game.party.getFood, game.party.setFood, Utilities.opType.rem, "food", tonumber),
-    default = Utilities.showProperty(game.party.getFood, "food")
+    get = Utilities.showProperty(Game.party.getFood, "food"),
+    set = Utilities.changeProperty(Game.party.getFood, Game.party.setFood, Utilities.opType.set, "food", tonumber),
+    add = Utilities.changeProperty(Game.party.getFood, Game.party.setFood, Utilities.opType.add, "food", tonumber),
+    rem = Utilities.changeProperty(Game.party.getFood, Game.party.setFood, Utilities.opType.rem, "food", tonumber),
+    default = Utilities.showProperty(Game.party.getFood, "food")
 }
 
 return {

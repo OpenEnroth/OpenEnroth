@@ -1,22 +1,22 @@
 local Utilities = require "dev.commands.command_utils"
-local game = require "core.game".bindings
+local Game = require "bindings.game"
 
 local function becomeLich(charIndex)
     charIndex = Utilities.characterOrCurrent(charIndex)
-    local info = game.party.getCharacterInfo(charIndex, { "name", "class" })
-    if info.class == game.ClassType.Lich then
+    local info = Game.party.getCharacterInfo(charIndex, { "name", "class" })
+    if info.class == Game.ClassType.Lich then
         return info.name .. " is already a Lich!!", false
     end
 
-    game.party.setCharacterInfo(charIndex, {
-        class = game.ClassType.Lich
+    Game.party.setCharacterInfo(charIndex, {
+        class = Game.ClassType.Lich
     })
 
     local lichJar = {
-        id = game.ItemType.LichJarFull,
+        id = Game.ItemType.LichJarFull,
         holder = tonumber(charIndex)
     }
-    game.party.addCustomItemToInventory(charIndex, lichJar)
+    Game.party.addCustomItemToInventory(charIndex, lichJar)
     return info.name .. " became a Lich.", true
 end
 

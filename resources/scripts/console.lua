@@ -3,7 +3,7 @@
 local CommandManager = require "dev.commands.command_manager"
 ---@type Nuklear
 local nk = require "bindings.overlay".nk
-local logListener = require "core.logger".listener
+local LogListener = require "core.log_listener"
 
 local successColor = { 64, 146, 222, 255 }
 local defaultColor = { 160, 160, 160, 255 }
@@ -219,6 +219,6 @@ local function onLog(level, message)
     Console:addMessage("[" .. level .. "] " .. message, getColorByLogLevel(level), "log")
 end
 
-logListener.register(onLog)
+LogListener.register(onLog)
 
 return Console

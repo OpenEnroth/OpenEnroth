@@ -1,4 +1,6 @@
 {
+    "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
+    "addonManager.enable": true,
     "diagnostics": {
         "disable": [],
         "globals": [],
@@ -78,7 +80,8 @@
     "runtime": {
         "version": "Lua 5.4",
         "path": [
-            "./resources/scripts/?.lua"
+            "./resources/scripts/?.lua",
+            "./luaDefinition/?.lua"
         ],
         "pathStrict": false
     },
@@ -92,7 +95,10 @@
             "/.vscode",
             "/meta"
         ],
-        "checkThirdParty": false
+        "checkThirdParty": false,
+        "library": [
+            "luaDefinition/bindings_definition.lua"
+        ]
     },
     "typeFormat": {
         "config": {
@@ -172,16 +178,18 @@
         "remove_call_expression_list_finish_comma": "false",
         "end_statement_with_semicolon": "keep"
     },
-    "nameStyle.config": {
-        "local_name_style": "camel_case",
-        "function_param_name_style": "camel_case",
-        "function_name_style": "camel_case",
-        "local_function_name_style": "camel_case",
-        "table_field_name_style": "camel_case",
-        "global_variable_name_style": "pascal_case",
-        "module_name_style": "pascal_case",
-        "require_module_name_style": "pascal_case",
-        "class_name_style": "pascal_case",
-        "const_variable_name_style": "pascal_case"
+    "nameStyle": {
+        "config": {
+            "local_name_style": "camel_case",
+            "function_param_name_style": "camel_case",
+            "function_name_style": "camel_case",
+            "local_function_name_style": "camel_case",
+            "table_field_name_style": "camel_case",
+            "global_variable_name_style": "pascal_case",
+            "module_name_style": "pascal_case",
+            "require_module_name_style": "pascal_case",
+            "class_name_style": "pascal_case",
+            "const_variable_name_style": "pascal_case"
+        }
     }
 }

@@ -1,11 +1,11 @@
 local Utilities = require "dev.commands.command_utils"
-local game = require "core.game".bindings
+local Game = require "bindings.game"
 
 local subCommands = {
-    get = Utilities.showProperty(game.party.getAlignment, "alignment", game.serialize.partyAlignment),
-    set = Utilities.changeProperty(game.party.getAlignment, game.party.setAlignment, Utilities.opType.set, "alignment",
-        game.deserialize.partyAlignment, game.serialize.partyAlignment),
-    default = Utilities.showProperty(game.party.getAlignment, "alignment", game.serialize.partyAlignment)
+    get = Utilities.showProperty(Game.party.getAlignment, "alignment", Game.serialize.partyAlignment),
+    set = Utilities.changeProperty(Game.party.getAlignment, Game.party.setAlignment, Utilities.opType.set, "alignment",
+        Game.deserialize.partyAlignment, Game.serialize.partyAlignment),
+    default = Utilities.showProperty(Game.party.getAlignment, "alignment", Game.serialize.partyAlignment)
 }
 
 return {
