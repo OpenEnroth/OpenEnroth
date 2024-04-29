@@ -1252,14 +1252,10 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
 }
 
 void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid) {
-    Vec3i velocity;
-
     if (pid.type() == OBJECT_Character) {
-        velocity = pSpriteObjects[uLayingItemID].vVelocity.toInt();
-        normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
         DamageCharacterFromMonster(Pid(OBJECT_Item, uLayingItemID), pSpriteObjects[uLayingItemID].spellCasterAbility, -1);
     } else if (pid.type() == OBJECT_Actor) {
-        velocity = pSpriteObjects[uLayingItemID].vVelocity.toInt();
+        Vec3i velocity = pSpriteObjects[uLayingItemID].vVelocity.toInt();
         normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
         switch (pSpriteObjects[uLayingItemID].spell_caster_pid.type()) {
             case OBJECT_Actor:
@@ -1271,8 +1267,11 @@ void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid) {
                 Actor::DamageMonsterFromParty(Pid(OBJECT_Item, uLayingItemID), pid.id(), &velF);
             }
                 break;
-            case OBJECT_Item:
-                ItemDamageFromActor(Pid(OBJECT_Item, uLayingItemID), pid.id(), &velocity);
+            case OBJECT_Item: {
+                Vec3f velF = pSpriteObjects[uLayingItemID].vVelocity;
+                velF.normalize();
+                ItemDamageFromActor(Pid(OBJECT_Item, uLayingItemID), pid.id(), &velF);
+            }
                 break;
             default:
                 break;

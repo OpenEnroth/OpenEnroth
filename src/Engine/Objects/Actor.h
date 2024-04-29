@@ -262,8 +262,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
  */
 void evaluateAoeDamage();
 double sub_43AE12(signed int a1);
-void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
-                         Vec3i *pVelocity);
+void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, Vec3f *pVelocity);
 
 // TODO: in original binary almost all calls are with appendOnly=true, only Spawn_Light_Elemental uses
 // appendOnly=false. And this actually makes sense as actor ids can be stored in all kinds of places (e.g. inside

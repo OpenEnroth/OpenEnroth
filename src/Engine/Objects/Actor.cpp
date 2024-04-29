@@ -4622,8 +4622,11 @@ void evaluateAoeDamage() {
                                         Actor::ActorDamageFromMonster(attack.pid, actorID, &attackVector, pSpriteObj->spellCasterAbility);
                                     }
                                     break;
-                                case OBJECT_Item:
-                                    ItemDamageFromActor(attack.pid, actorID, &attackVector);
+                                case OBJECT_Item: {
+                                    Vec3f attVF = Vec3f(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
+                                    attVF.normalize();
+                                    ItemDamageFromActor(attack.pid, actorID, &attVF);
+                                }
                                     break;
                                 default:
                                     assert(false);
@@ -4664,8 +4667,7 @@ double sub_43AE12(signed int a1) {
 }
 
 //----- (0043B057) --------------------------------------------------------
-void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
-                         Vec3i *pVelocity) {
+void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, Vec3f *pVelocity) {
     int v6;      // eax@4
     int damage;  // edi@4
     int a2a;     // [sp+Ch] [bp-4h]@8
@@ -4688,20 +4690,10 @@ void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
                         Actor::Die(uActorID);
                     a2a = 20 * damage /
                           (signed int)pActors[uActorID].monsterInfo.hp;
-                    if (20 * damage /
-                            (signed int)pActors[uActorID].monsterInfo.hp >
-                        10)
+                    if (a2a > 10)
                         a2a = 10;
                     if (supertypeForMonsterId(pActors[uActorID].monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
-                        pVelocity->x = fixpoint_mul(a2a, pVelocity->x);
-                        pVelocity->y = fixpoint_mul(a2a, pVelocity->y);
-                        pVelocity->z = fixpoint_mul(a2a, pVelocity->z);
-                        pActors[uActorID].velocity.x =
-                            50 * (short)pVelocity->x;
-                        pActors[uActorID].velocity.y =
-                            50 * (short)pVelocity->y;
-                        pActors[uActorID].velocity.z =
-                            50 * (short)pVelocity->z;
+                        pActors[uActorID].velocity = 50 * a2a * (*pVelocity);
                     }
                     Actor::AddOnDamageOverlay(uActorID, 1, damage);
                 } else {
