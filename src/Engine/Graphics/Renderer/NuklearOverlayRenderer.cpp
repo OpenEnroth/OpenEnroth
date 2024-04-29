@@ -297,12 +297,3 @@ void NuklearOverlayRenderer::reloadShaders() {
         }
     }
 }
-
-struct nk_image NuklearOverlayRenderer::loadImage(GraphicsImage *img) {
-    GLuint texid = img->renderId().value();
-    return nk_image_id(texid);
-}
-
-void NuklearOverlayRenderer::unloadImage(GraphicsImage *img) {
-    img->releaseRenderId();
-}

@@ -2,6 +2,7 @@
 
 #include <Engine/AssetsManager.h>
 #include <Engine/Graphics/Image.h>
+#include <Engine/Graphics/Renderer/NuklearOverlayRenderer.h>
 #include <Engine/Graphics/Renderer/Renderer.h>
 #include <Library/Color/ColorTable.h>
 #include <Library/Logger/Logger.h>
@@ -12,6 +13,16 @@
 
 nk_context *NuklearLegacyBindings::_context{};
 std::vector<struct lua_nk_style> NuklearLegacyBindings::_styles;
+
+struct img {
+    GraphicsImage *asset;
+    struct nk_image nk;
+};
+
+struct context {
+    std::vector<struct img *> imgs;
+    std::vector<struct nk_tex_font *> fonts;
+};
 
 void NuklearLegacyBindings::setContext(nk_context *context) {
     _context = context;

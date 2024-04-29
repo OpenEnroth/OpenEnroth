@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Engine/Graphics/Renderer/NuklearOverlayRenderer.h>
-
 #include <vector>
 
 #include <sol/sol.hpp>
@@ -51,16 +49,6 @@ class NuklearLegacyBindings {
     static void setContext(nk_context *context);
 
  private:
-    struct img {
-        GraphicsImage *asset;
-        struct nk_image nk;
-    };
-
-    struct context {
-        std::vector<struct img *> imgs;
-        std::vector<struct nk_tex_font *> fonts;
-    };
-
     static void initStyles();
     static void initNkScrollType(lua_State *lua);
     static int lua_nk_parse_vec2(lua_State *L, int idx, struct nk_vec2 *vec);

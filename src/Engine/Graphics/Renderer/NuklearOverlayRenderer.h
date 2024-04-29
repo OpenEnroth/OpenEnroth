@@ -23,9 +23,6 @@ class NuklearOverlayRenderer : public IOverlayRenderer {
     void render(const Sizei &outputPresent, int &drawCalls) override;
     void reloadShaders() override;
 
-    struct nk_image loadImage(GraphicsImage *img);
-    void unloadImage(GraphicsImage *img);
-
  private:
     bool _createDevice();
     struct nk_tex_font* _loadFont(const char *font_path, size_t font_size);

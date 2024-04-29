@@ -1,10 +1,10 @@
 #pragma once
 
+#include <string>
+
 #include "Overlay.h"
 
 #include <sol/sol.hpp>
-
-#include <string>
 
 class ScriptedOverlay: public Overlay {
  public:
