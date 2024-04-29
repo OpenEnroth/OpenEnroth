@@ -1257,7 +1257,7 @@ void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid) {
     if (pid.type() == OBJECT_Character) {
         velocity = pSpriteObjects[uLayingItemID].vVelocity.toInt();
         normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
-        DamageCharacterFromMonster(Pid(OBJECT_Item, uLayingItemID), pSpriteObjects[uLayingItemID].spellCasterAbility, &velocity, -1);
+        DamageCharacterFromMonster(Pid(OBJECT_Item, uLayingItemID), pSpriteObjects[uLayingItemID].spellCasterAbility, -1);
     } else if (pid.type() == OBJECT_Actor) {
         velocity = pSpriteObjects[uLayingItemID].vVelocity.toInt();
         normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);

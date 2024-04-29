@@ -6366,7 +6366,7 @@ bool IsDwarfPresentInParty(bool a1) {
 }
 
 //----- (00439FCB) --------------------------------------------------------
-void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, Vec3i *pPos, signed int targetchar) {
+void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int targetchar) {
     // target character? if any
 
     SpellId spellId;

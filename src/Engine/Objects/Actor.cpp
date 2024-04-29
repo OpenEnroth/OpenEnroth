@@ -4558,7 +4558,7 @@ void evaluateAoeDamage() {
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
                         if (Check_LineOfSight(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel), attack.pos.toInt())) {
-                            DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, stru_50C198.which_player_to_attack(&pActors[attackerId]));
+                            DamageCharacterFromMonster(attack.pid, attack.attackSpecial, stru_50C198.which_player_to_attack(&pActors[attackerId]));
                         }
                     }
                 }
@@ -4590,7 +4590,7 @@ void evaluateAoeDamage() {
                 if (Check_LineOfSight(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel), attack.pos.toInt())) {
                     for (int i = 0; i < pParty->pCharacters.size(); i++) {
                         if (pParty->pCharacters[i].conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
-                            DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, i);
+                            DamageCharacterFromMonster(attack.pid, attack.attackSpecial, i);
                         }
                     }
                 }
