@@ -12,8 +12,7 @@ set(ENGINE_GRAPHICS_RENDERER_SOURCES
         )
 
 set(ENGINE_GRAPHICS_RENDERER_HEADERS
-        BaseRenderer.h        
-        IOverlayRenderer.h
+        BaseRenderer.h
         NuklearOverlayRenderer.h
         NullRenderer.h
         OpenGLRenderer.h

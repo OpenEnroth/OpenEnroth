@@ -837,7 +837,3 @@ void BaseRenderer::updateRenderDimensions() {
     else
         outputRender = outputPresent;
 }
-
-void BaseRenderer::setOverlayRenderer(IOverlayRenderer *overlayRenderer) {
-    _overlayRenderer = overlayRenderer;
-}

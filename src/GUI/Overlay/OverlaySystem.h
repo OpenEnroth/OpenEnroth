@@ -3,6 +3,7 @@
 #include <Engine/Graphics/Renderer/RendererEnums.h>
 
 #include <Library/Logger/LogCategory.h>
+#include <Utility/TransparentFunctors.h>
 
 #include <unordered_map>
 #include <string>
@@ -12,7 +13,6 @@
 
 class Overlay;
 class GameConfig;
-class IOverlayRenderer;
 class PlatformApplication;
 class Renderer;
 struct nk_context;
@@ -25,19 +25,21 @@ struct nk_context;
  */
 class OverlaySystem {
  public:
-    OverlaySystem(Renderer& render, RendererType rendererType, PlatformApplication &platformApplication);
+    OverlaySystem(Renderer& render, PlatformApplication &platformApplication);
     ~OverlaySystem();
 
     void addOverlay(std::string_view name, std::unique_ptr<Overlay> overlay);
     void removeOverlay(std::string_view name);
 
+    void drawOverlays();
     void update();
 
     static LogCategory OverlayLogCategory;
 
  private:
-    std::unordered_map<std::string, std::unique_ptr<Overlay>> _overlays;
-    std::unique_ptr<IOverlayRenderer> _renderer;
+    std::unordered_map<TransparentString, std::unique_ptr<Overlay>, TransparentStringHash, TransparentStringEquals> _overlays;
+    Renderer &_renderer;
+    PlatformApplication &_application;
     std::unique_ptr<nk_context> _nuklearContext;
     std::function<void()> _unregisterDependencies;
 };

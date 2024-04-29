@@ -20,7 +20,6 @@
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightsStack.h"
-#include "Engine/Graphics/Renderer/IOverlayRenderer.h"
 #include "OpenGLShader.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
@@ -50,6 +49,8 @@
 
 #include "Utility/Format.h"
 #include "Utility/Memory/MemSet.h"
+
+#include "NuklearOverlayRenderer.h"
 
 #ifndef LOWORD
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
@@ -3148,7 +3149,7 @@ void OpenGLRenderer::DrawTextNew(int x, int y, int width, int h, float u1, float
     if (textvertscnt > 9990) EndTextNew();
 }
 
-void OpenGLRenderer::Present() {
+void OpenGLRenderer::flushAndScale() {
     // flush any undrawn items
     DrawTwodVerts();
     EndLines2D();
@@ -3180,24 +3181,24 @@ void OpenGLRenderer::Present() {
         glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
         glBlitFramebuffer(0, 0, outputRender.w, outputRender.h, rect.x, rect.y, rect.w + rect.x, rect.h + rect.y, GL_COLOR_BUFFER_BIT, filter);
         glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    }
+}
 
-        _renderOverlay(outputPresent);
-
+void OpenGLRenderer::swapBuffers() {
+    if (outputRender != outputPresent) {
         glEnable(GL_SCISSOR_TEST);
         glViewport(0, 0, outputRender.w, outputRender.h);
-    } else {
-        _renderOverlay(outputPresent);
     }
+
     openGLContext->swapBuffers();
 
     if (engine->config->graphics.FPSLimit.value() > 0)
         _frameLimiter.tick(engine->config->graphics.FPSLimit.value());
 }
 
-void OpenGLRenderer::_renderOverlay(Sizei size) {
-    if (_overlayRenderer) {
-        _overlayRenderer->render(size, &drawcalls);
-    }
+void OpenGLRenderer::Present() {
+    flushAndScale();
+    swapBuffers();
 }
 
 GLshaderverts *outbuildshaderstore[16] = { nullptr };
@@ -4616,6 +4617,8 @@ bool OpenGLRenderer::Initialize() {
 
         gladSetGLPostCallback(GL_Check_Errors);
 
+        _overlayRenderer = std::make_unique<NuklearOverlayRenderer>();
+
         return Reinitialize(true);
     }
 
@@ -4973,7 +4976,13 @@ void OpenGLRenderer::ReloadShaders() {
     forceperstorecnt = 0;
 
     if (_overlayRenderer) {
-        _overlayRenderer->reloadShaders();
+        _overlayRenderer->reloadShaders(OpenGLES);
+    }
+}
+
+void OpenGLRenderer::drawOverlays(nk_context *context) {
+    if (_overlayRenderer) {
+        _overlayRenderer->render(context, outputPresent, OpenGLES, &drawcalls);
     }
 }
 

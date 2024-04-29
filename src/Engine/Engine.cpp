@@ -182,6 +182,7 @@ void Engine::drawWorld() {
 
 void Engine::drawOverlay() {
     _overlaySystem.update();
+    _overlaySystem.drawOverlays();
 }
 
 void Engine::drawHUD() {
@@ -201,8 +202,10 @@ void Engine::drawHUD() {
 void Engine::Draw() {
     drawWorld();
     drawHUD();
-    drawOverlay();
-    render->Present();
+    _overlaySystem.update();
+    render->flushAndScale();
+    _overlaySystem.drawOverlays();
+    render->swapBuffers();
 }
 
 

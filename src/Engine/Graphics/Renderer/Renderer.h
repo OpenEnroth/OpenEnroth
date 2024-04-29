@@ -26,7 +26,7 @@ class Vis;
 struct Lightmap;
 struct Decal;
 struct Polygon;
-class IOverlayRenderer;
+struct nk_context;
 
 bool PauseGameDrawing();
 
@@ -183,7 +183,9 @@ class Renderer {
     virtual void ReloadShaders() = 0;
     virtual void DoRenderBillboards_D3D() = 0;
 
-    virtual void setOverlayRenderer(IOverlayRenderer *overlayRenderer) = 0;
+    virtual void flushAndScale() = 0;
+    virtual void swapBuffers() = 0;
+    virtual void drawOverlays(nk_context *context) = 0;
 
     std::shared_ptr<GameConfig> config = nullptr;
     int *pActiveZBuffer;
