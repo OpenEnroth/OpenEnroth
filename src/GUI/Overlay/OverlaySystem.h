@@ -32,11 +32,12 @@ class OverlaySystem {
     void removeOverlay(std::string_view name);
 
     void drawOverlays();
-    void update();
 
     static LogCategory OverlayLogCategory;
 
  private:
+    void _update();
+
     std::unordered_map<TransparentString, std::unique_ptr<Overlay>, TransparentStringHash, TransparentStringEquals> _overlays;
     Renderer &_renderer;
     PlatformApplication &_application;

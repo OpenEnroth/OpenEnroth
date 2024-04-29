@@ -43,10 +43,11 @@ void OverlaySystem::removeOverlay(std::string_view name) {
 }
 
 void OverlaySystem::drawOverlays() {
+    _update();
     _renderer.drawOverlays(_nuklearContext.get());
 }
 
-void OverlaySystem::update() {
+void OverlaySystem::_update() {
     auto context = _nuklearContext.get();
 
     if (context->style.font != nullptr) {
