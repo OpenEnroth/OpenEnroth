@@ -4,5 +4,5 @@
 
 class ExampleOverlay : public Overlay {
  public:
-    void update(nk_context *context) override;
+    virtual void update(nk_context *context) override;
 };

@@ -13,9 +13,11 @@ class PlatformApplication;
 class Renderer;
 struct nk_context;
 
-/**
- * @brief This system oversees all debugging UI elements. Any console or debug information, referred to as Overlay, is
- * registered within the system and will be displayed by using the immediate mode nuklear library.
+/** 
+ * @brief An Overlay is a screen built in Immediate Mode GUI ( nuklear ) which is displayed on top of any other ui and it's 
+ * mainly used for debug purposes ( Console, Render Stats, Debug View Buttons, etc... ).
+ * 
+ * The Overlay System is the class responsible to keep track of all the registered Overlays and update them accordingly.
  */
 class OverlaySystem {
  public:
