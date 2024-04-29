@@ -13,7 +13,6 @@ set(UTILITY_SOURCES
         Streams/InputStream.cpp
         Streams/MemoryInputStream.cpp
         Streams/StringOutputStream.cpp
-        Streams/TempFileOutputStream.cpp
         String.cpp
         UnicodeCrt.cpp)
 
@@ -41,7 +40,6 @@ set(UTILITY_HEADERS
         Streams/MemoryInputStream.h
         Streams/OutputStream.h
         Streams/StringOutputStream.h
-        Streams/TempFileOutputStream.h
         Win/Unicode.h
         Workaround/ToUnderlying.h
         String.h

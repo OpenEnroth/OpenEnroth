@@ -7,7 +7,7 @@
 #include "Library/Serialization/Serialization.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
 
-#include "Utility/Streams/TempFileOutputStream.h"
+#include "Utility/Streams/FileOutputStream.h"
 #include "Utility/String.h"
 
 #include "LodSnapshots.h"
@@ -27,7 +27,7 @@ LodWriter::~LodWriter() {
 }
 
 void LodWriter::open(std::string_view path, LodInfo info) {
-    std::unique_ptr<OutputStream> ownedStream = std::make_unique<TempFileOutputStream>(path); // If this throws, no field is overwritten.
+    std::unique_ptr<OutputStream> ownedStream = std::make_unique<FileOutputStream>(path); // If this throws, no field is overwritten.
     open(ownedStream.get(), path, std::move(info));
     _ownedStream = std::move(ownedStream);
 }

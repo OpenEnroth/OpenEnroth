@@ -10,6 +10,7 @@ class Environment;
 class Logger;
 class BufferLogSink;
 class DistLogSink;
+class LogSink;
 class PlatformApplication;
 class GameConfig;
 class Renderer;
@@ -44,7 +45,8 @@ class GameStarter {
     GameStarterOptions _options;
     std::unique_ptr<Environment> _environment;
     std::unique_ptr<BufferLogSink> _bufferLogSink;
-    std::unique_ptr<DistLogSink> _defaultLogSink;
+    std::unique_ptr<LogSink> _defaultLogSink;
+    std::unique_ptr<DistLogSink> _rootLogSink;
     std::unique_ptr<Logger> _logger;
     std::shared_ptr<GameConfig> _config;
     std::unique_ptr<Platform> _platform;

@@ -1,15 +1,15 @@
 #pragma once
 
-#include <Library/Logger/LogSink.h>
+#include <sol/state_view.hpp>
 
-#include <memory>
-#include <optional>
-#include <sol/sol.hpp>
+#include "Library/Logger/LogSink.h"
 
 class ScriptLogSink : public LogSink {
  public:
-    explicit ScriptLogSink(std::weak_ptr<sol::state_view> solState);
-    void write(const LogCategory& category, LogLevel level, std::string_view message) override;
+    explicit ScriptLogSink(sol::state_view solState);
+
+    virtual void write(const LogCategory& category, LogLevel level, std::string_view message) override;
+
  private:
-    std::weak_ptr<sol::state_view> _solState;
+    sol::state_view _solState;
 };

@@ -61,9 +61,8 @@ class PlatformApplication {
     }
 
     template<class T>
-    void removeComponent() {
-        // Can't delete the component here because it might be in use.
-        deleteLater(_components.remove<T>());
+    std::unique_ptr<T> removeComponent() {
+        return _components.remove<T>();
     }
 
     const PlatformComponentStorage *components() const {
@@ -93,8 +92,6 @@ class PlatformApplication {
     void removeComponentInternal(PlatformEventFilter *eventFilter);
     void installComponentInternal(PlatformApplicationAware *aware);
     void removeComponentInternal(PlatformApplicationAware *aware);
-
-    void deleteLater(std::shared_ptr<void> component);
 
  private:
     Platform *_platform;

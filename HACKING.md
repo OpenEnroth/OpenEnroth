@@ -101,6 +101,7 @@ Code formatting:
 * `*` and `&` in type declarations should be preceded by a space. So it's `char *string`, and not `char* string`.
 
 Language features:
+* Use `using Alias = Type` instead of `typedef Type Alias`.
 * Use `enum class`es followed by `using enum` statements instead of ordinary `enum`s. This provides type safety without changing the syntax. For flags, use `Flags` class.
 * It's OK to use plain `enum`s if you really need to have implicit casts to integer types, but this is a very rare use case. If you're using `enum` values to index into some array, consider using `enum class` coupled with `IndexedArray`.
 * Make your code speak for itself when it comes to ownership. If a function takes ownership of one of its parameters, it should take `std::unique_ptr` by value. If it allocates its result and passes ownership to the caller, then it should return `std::unique_ptr`.
