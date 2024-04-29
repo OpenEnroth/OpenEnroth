@@ -25,10 +25,10 @@ ScriptedOverlay::~ScriptedOverlay() {
     }
 }
 
-void ScriptedOverlay::update(nk_context &context) {
+void ScriptedOverlay::update(nk_context *context) {
     auto updateFunction = _prepareFunction(_updateFunctionReference);
     if (updateFunction.valid()) {
-        updateFunction(&context);
+        updateFunction(context);
     }
 }
 

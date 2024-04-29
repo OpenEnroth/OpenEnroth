@@ -48,7 +48,7 @@ void OverlaySystem::update() {
     auto context = _nuklearContext.get();
     nk_input_end(context);
     for (auto &&[name, overlay] : _overlays) {
-        overlay->update(*context);
+        overlay->update(context);
     }
     nk_input_begin(context);
 }

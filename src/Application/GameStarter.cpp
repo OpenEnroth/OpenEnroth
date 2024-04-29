@@ -23,7 +23,6 @@
 #include "Engine/Components/Random/EngineRandomComponent.h"
 
 #include "GUI/Overlay/OverlaySystem.h"
-#include "GUI/Overlay/RenderStatsOverlay.h"
 
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -162,8 +161,6 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _scriptingSystem->addBindings<InputBindings>("input", *_application->component<InputScriptEventHandler>());
     _scriptingSystem->addBindings<OverlayBindings>("overlay", *_overlaySystem);
     _scriptingSystem->executeEntryPoint();
-
-    _overlaySystem->addOverlay("RenderStats", std::make_unique<RenderStatsOverlay>(*_renderer));
 }
 
 GameStarter::~GameStarter() {
