@@ -5,14 +5,16 @@
 
 #include <nuklear_config.h> // NOLINT: not a C system header.
 
-ScriptedOverlay::ScriptedOverlay(sol::state_view &solState, sol::table luaOverlay)
-    : _solState(solState) {
+ScriptedOverlay::ScriptedOverlay(std::string_view name, sol::state_view &solState, sol::table luaOverlay)
+    : _name(name), _solState(solState) {
     _addFunctionToRegistry(luaOverlay, _closeFunctionReference, "close");
     _addFunctionToRegistry(luaOverlay, _updateFunctionReference, "update");
     sol::protected_function initFunction = luaOverlay["init"];
     if (initFunction.valid()) {
         _setErrorHandler(initFunction);
         initFunction();
+    } else {
+        _logMissingFunctionWarning("init");
     }
 }
 
@@ -30,9 +32,11 @@ void ScriptedOverlay::update(nk_context &context) {
     }
 }
 
-void ScriptedOverlay::_addFunctionToRegistry(sol::table &table, sol::reference &ref, const char *functionName) {
+void ScriptedOverlay::_addFunctionToRegistry(sol::table &table, sol::reference &ref, std::string_view functionName) {
     if (sol::protected_function function = table[functionName]; function.valid()) {
         ref = sol::make_reference(_solState, function);
+    } else {
+        _logMissingFunctionWarning(functionName);
     }
 }
 
@@ -48,4 +52,8 @@ void ScriptedOverlay::_setErrorHandler(sol::protected_function &function) {
     if (errorHandler.valid()) {
         function.set_error_handler(errorHandler);
     }
+}
+
+void ScriptedOverlay::_logMissingFunctionWarning(std::string_view functionName) {
+    logger->warning(ScriptingSystem::ScriptingLogCategory, "Missing [{}] function for the Scripted Overlay: {}", functionName, _name);
 }

@@ -27,7 +27,7 @@ sol::table OverlayBindings::createBindingTable(sol::state_view &solState) const 
 
     return solState.create_table_with(
         "addOverlay", [this, &solState](std::string_view name, sol::table view) {
-            _overlaySystem.addOverlay(name, std::make_unique<ScriptedOverlay>(solState, view));
+            _overlaySystem.addOverlay(name, std::make_unique<ScriptedOverlay>(name, solState, view));
         },
         "removeOverlay", [this](std::string_view name) {
             _overlaySystem.removeOverlay(name);
