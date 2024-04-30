@@ -3866,6 +3866,7 @@ bool Actor::DoesDmgTypeDoDamage(DamageType uType) {
             break;
         case DAMAGE_MIND:
             resist = this->monsterInfo.resMind;
+            break;
         case DAMAGE_BODY:
             resist = this->monsterInfo.resBody;
             break;
