@@ -95,10 +95,7 @@
             "/.vscode",
             "/meta"
         ],
-        "checkThirdParty": false,
-        "library": [
-            "luaDefinition/bindings_definition.lua"
-        ]
+        "checkThirdParty": false
     },
     "typeFormat": {
         "config": {

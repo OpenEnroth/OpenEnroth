@@ -18,8 +18,8 @@ function(source_check_lua_style TARGET)
         
         set(LOG_OUTPUT_DIR "${CMAKE_BINARY_DIR}/lls-check/${TARGET}")
         add_custom_target(${TARGET_NAME}
-                COMMAND Python::Interpreter ${OE_LLS_CHECK_COMMAND} ${OE_LUALANGUAGESERVER_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR} ${LOG_OUTPUT_DIR} "${PROJECT_SOURCE_DIR}/.luarc.json"
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+                COMMAND Python::Interpreter ${OE_LLS_CHECK_COMMAND} ${OE_LUALANGUAGESERVER_COMMAND} ${PROJECT_SOURCE_DIR} ${LOG_OUTPUT_DIR} "${PROJECT_SOURCE_DIR}/.luarc.json"
+                WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
         add_dependencies(check_style ${TARGET_NAME})
         set_property(TARGET ${TARGET_NAME} PROPERTY FOLDER "check_style")
