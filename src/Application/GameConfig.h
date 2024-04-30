@@ -2,6 +2,9 @@
 
 #include <string>
 #include <algorithm>
+#include <utility>
+#include <memory>
+#include <vector>
 
 #include "Engine/Graphics/Renderer/RendererEnums.h"
 
@@ -10,6 +13,7 @@
 #include "Library/Config/Config.h"
 #include "Engine/Random/RandomEnums.h"
 #include "Library/Logger/LogEnums.h"
+#include "Utility/Format.h"
 
 #ifdef __ANDROID__
 #define ConfigRenderer RENDERER_OPENGL_ES
@@ -605,5 +609,23 @@ class GameConfig : public Config {
     };
 
     Window window{ this };
+
+
+    class CheatCommands : public ConfigSection {
+     public:
+        explicit CheatCommands(GameConfig *config) : ConfigSection(config, "cheat_commands") {
+            const int maxNumberOfCommands = 32;
+            for (int i = 0; i < maxNumberOfCommands; ++i) {
+                std::string name = fmt::format("command{:02}", i + 1);
+                auto item = std::make_unique<String>(this, name.c_str(), "lua return 'Empty Command'", "Cheat Command");
+                CommandList.push_back(std::move(item));
+            }
+        }
+
+        Int CommandsNumber{ this, "commands_number", 32, "Number of defined console commands"};
+        std::vector<std::unique_ptr<String>> CommandList;
+    };
+
+    CheatCommands commands{ this };
 };
 

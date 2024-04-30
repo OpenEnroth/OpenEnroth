@@ -104,8 +104,12 @@ end
 
 --- Send a message from command line to the message list
 ---@param console Console
-Console.send = function (console)
-    local text = console.editTB.text
+---@param text? string If text is nil the current commandline text is used instead
+Console.send = function (console, text)
+    if not text then
+        text = console.editTB.text
+    end
+
     console:addHistory(text)
     console:addMessage(text, defaultColor)
     local message, isSuccess = CommandManager.execute(text)
