@@ -43,8 +43,10 @@ void OverlaySystem::removeOverlay(std::string_view name) {
 }
 
 void OverlaySystem::drawOverlays() {
-    _update();
-    _renderer.drawOverlays(_nuklearContext.get());
+    if (_isEnabled) {
+        _update();
+        _renderer.drawOverlays(_nuklearContext.get());
+    }
 }
 
 void OverlaySystem::_update() {
@@ -57,4 +59,12 @@ void OverlaySystem::_update() {
         }
         nk_input_begin(context);
     }
+}
+
+bool OverlaySystem::isEnabled() const {
+    return _isEnabled;
+}
+
+void OverlaySystem::setEnabled(bool enable) {
+    _isEnabled = enable;
 }

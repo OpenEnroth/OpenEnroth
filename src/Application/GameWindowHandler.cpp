@@ -318,7 +318,7 @@ void GameWindowHandler::OnKey(PlatformKey key) {
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
             OnToggleFullscreen();
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Console, key)) {
-            engine->_messageQueue->addMessageCurrentFrame(UIMSG_OpenDebugMenu, window_SpeakInHouse != 0, 0);
+            engine->toggleOverlays();
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ReloadShaders, key) && current_screen_type == SCREEN_GAME) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_DebugReloadShader, window_SpeakInHouse != 0, 0);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::QuickSave, key) && current_screen_type == SCREEN_GAME) {

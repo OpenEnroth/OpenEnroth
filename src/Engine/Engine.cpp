@@ -490,6 +490,11 @@ Vis_PIDAndDepth Engine::PickMouseNormal() {
     return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_items_filter, &vis_face_filter);
 }
 
+void Engine::toggleOverlays() {
+    bool isEnabled = _overlaySystem.isEnabled();
+    _overlaySystem.setEnabled(!isEnabled);
+}
+
 /*
 Result::Code Game::PickKeyboard(bool bOutline, struct unnamed_F93E6C *a3, struct
 unnamed_F93E6C *a4)
