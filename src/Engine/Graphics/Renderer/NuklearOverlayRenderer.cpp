@@ -156,19 +156,21 @@ struct nk_tex_font *NuklearOverlayRenderer::_loadFont(const char *font_path, siz
 }
 
 void NuklearOverlayRenderer::_cleanup() {
-    glDeleteTextures(1, &_defaultFont->texid);
-    delete _defaultFont;
+    if (_state) {
+        glDeleteTextures(1, &_defaultFont->texid);
+        delete _defaultFont;
 
-    nk_font_atlas_clear(&_state->dev.atlas);
+        nk_font_atlas_clear(&_state->dev.atlas);
 
-    glDeleteProgram(_shader.ID);
-    glDeleteBuffers(1, &_state->dev.vbo);
-    glDeleteBuffers(1, &_state->dev.ebo);
-    glDeleteVertexArrays(1, &_state->dev.vao);
+        glDeleteProgram(_shader.ID);
+        glDeleteBuffers(1, &_state->dev.vbo);
+        glDeleteBuffers(1, &_state->dev.ebo);
+        glDeleteVertexArrays(1, &_state->dev.vao);
 
-    nk_buffer_free(&_state->dev.cmds);
+        nk_buffer_free(&_state->dev.cmds);
 
-    memset(&_state->dev, 0, sizeof(_state->dev));
+        memset(&_state->dev, 0, sizeof(_state->dev));
+    }
 }
 
 void NuklearOverlayRenderer::render(nk_context *context, const Sizei &outputPresent, bool useOGLES, int *drawCalls) {
