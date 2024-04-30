@@ -2,7 +2,7 @@ require "core.error"
 
 --- @type OverlayBindings
 local Overlay = require "bindings.overlay"
-local ConsoleOverlay = require "dev.ui_debug_hud"
+local ConsoleOverlay = require "dev.console_overlay"
 local CheatOverlay = require "dev.cheat_command_overlay"
 local GameCommands = require "dev.commands.game_commands"
 

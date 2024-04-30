@@ -1,7 +1,3 @@
--- Screen: Console
--- This is a script tight to the GUIWindow_DebugMenu flag
--- It takes care of showing the debug tools. Currently the only debug tool in use is the console
-
 local Console = require "console"
 local InputListener = require "core.input_listener"
 local Input = require "bindings.input"
