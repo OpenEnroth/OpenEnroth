@@ -944,6 +944,9 @@ void Nuklear::LuaRelease() {
 }
 
 bool Nuklear::LuaLoadTemplate(WindowType winType) {
+    if (!lua)
+        return false;
+
     std::string name;
 
     if (!wins[winType].tmpl) {
