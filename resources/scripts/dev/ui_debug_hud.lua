@@ -10,12 +10,12 @@ local Platform = require "bindings.platform"
 local Overlay = require "bindings.overlay"
 local nk = Overlay.nk
 
-local isWindowHovered = false
+local isWindowMaximized = false
 local baseColor = { 32, 32, 32, 255 }
 local messageBkgColor = { 16, 16, 16, 255 }
 
 local function getColorAlpha(col)
-    local a = isWindowHovered and 200 or 64
+    local a = isWindowMaximized and 200 or 64
     return { col[1], col[2], col[3], a }
 end
 
@@ -74,12 +74,12 @@ end
 ---@param ctx NuklearContext
 local function drawConsole(ctx)
     local mainWinW, mainWinH = Platform.window.dimensions()
-    Console:updateWindowSize(isWindowHovered, mainWinW, mainWinH)
+    Console:updateWindowSize(isWindowMaximized, mainWinW, mainWinH)
     nk.window_set_bounds(ctx, "Debug Console", Console.rect)
     nk.style_push(ctx, "window", "fixed_background", getColorAlpha(messageBkgColor))
     if nk.window_begin(ctx, "Debug Console", Console.rect, { "movable", "scalable" }) then
-        isWindowHovered = nk.window_is_hovered(ctx)
-        if isWindowHovered then
+        isWindowMaximized = nk.window_is_hovered(ctx) or not Console.autoMinimize
+        if isWindowMaximized then
             nk.layout_row_dynamic(ctx, Console.rect.h - Console.footerHeight - 28, 1)
             nk.style_push(ctx, "window", "min_row_height_padding", 1)
             if nk.group_scrolled_begin(ctx, Console.scroll, "Messages", { "scrollbar" }) then
@@ -100,8 +100,9 @@ local function drawConsole(ctx)
             end
             nk.style_pop(ctx, "window", "min_row_height_padding")
 
-            nk.layout_row_dynamic(ctx, 20, 1)
+            nk.layout_row_dynamic(ctx, 20, 2)
             Console.logEnabled = nk.checkbox_label(ctx, "Show Log", Console.logEnabled)
+            Console.autoMinimize = nk.checkbox_label(ctx, "Auto Hide", Console.autoMinimize)
         end
 
         drawFooter(ctx)
