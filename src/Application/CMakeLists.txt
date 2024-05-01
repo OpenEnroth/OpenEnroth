@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 set(APPLICATION_SOURCES
         Game.cpp
         GameConfig.cpp
-        GameFSM.cpp
         GameKeyboardController.cpp
         GameMenu.cpp
         GameOver.cpp
@@ -16,7 +15,6 @@ set(APPLICATION_SOURCES
 set(APPLICATION_HEADERS
         Game.h
         GameConfig.h
-        GameFSM.h
         GameKeyboardController.h
         GameMenu.h
         GameOver.h
@@ -39,9 +37,11 @@ target_link_libraries(application
         engine_graphics
         engine_graphics_level
         engine_graphics_renderer
+        game_states
         gui
         io
         library_config
+        library_fsm
         library_lod
         media
         library_platform_null
@@ -49,3 +49,5 @@ target_link_libraries(application
         library_environment_implementation
         scripting
         utility)
+
+add_subdirectory(GameStates)
