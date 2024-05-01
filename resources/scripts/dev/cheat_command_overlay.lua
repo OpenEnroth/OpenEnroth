@@ -39,8 +39,8 @@ local function createCheatCommandEntry(configValue)
 
     local drawFunction = defaultDrawCommandEntry
 
-    -- If the command to run is changing the value of a Boolean ConfigEntry we apply a special
-    -- style based on the current boolean value
+    -- In case the command is changing a config we're going to display a visual indication
+    -- based on the boolean value ( green or red background )
     local arguments = Utilities.splitString(command, " ")
     if arguments[1] == "config" and arguments[2] == "toggle" then
         local configName = arguments[3]
@@ -66,10 +66,12 @@ local function createCheatCommandEntry(configValue)
 end
 
 CheatOverlay.init = function ()
-    local numberOfCommands = Config.getConfig("cheat_commands", "commands_number")
+    local numberOfCommands = 40
     for i = 1, numberOfCommands do
         local command = Config.getConfig("cheat_commands", string.format("command%02d", i))
-        table.insert(availableCommands, createCheatCommandEntry(command))
+        if command and not Utilities.isEmpty(command) then
+            table.insert(availableCommands, createCheatCommandEntry(command))
+        end
     end
 end
 

@@ -613,17 +613,8 @@ class GameConfig : public Config {
 
     class CheatCommands : public ConfigSection {
      public:
-        explicit CheatCommands(GameConfig *config) : ConfigSection(config, "cheat_commands") {
-            const int maxNumberOfCommands = 32;
-            for (int i = 0; i < maxNumberOfCommands; ++i) {
-                std::string name = fmt::format("command{:02}", i + 1);
-                auto item = std::make_unique<String>(this, name.c_str(), "lua return 'Empty Command'",
-                    "Cheat Command. Example: 'xp add 1000|Give 1000 xp to current Character'");
-                CommandList.push_back(std::move(item));
-            }
-        }
+        explicit CheatCommands(GameConfig *config);
 
-        Int CommandsNumber{ this, "commands_number", 32, "Number of defined console commands"};
         std::vector<std::unique_ptr<String>> CommandList;
     };
 
