@@ -46,15 +46,6 @@ InputListener.registerKeyPressBulk = function (items)
     end
 end
 
-local catchAllInput = false
-
----In some case we want to catch all input coming to the scripting side.
----This is mostly a little hack to deal with TextBox provided by nuklear and the way how input is catched in this cases.
----@param catchAll any
-InputListener.setCatchAllInput = function (catchAll)
-    catchAllInput = catchAll
-end
-
 ---The _globalOnKeyPress function is a OE special function called from c++
 ---when a new keyPress event is triggered
 ---@param keyPressed PlatformKey
@@ -71,7 +62,7 @@ _globalOnKeyPress = function (keyPressed)
             end
         end
     end
-    return catchAllInput
+    return false
 end
 
 return InputListener

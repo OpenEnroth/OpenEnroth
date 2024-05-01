@@ -4,7 +4,6 @@ local CommandManager = require "dev.commands.command_manager"
 ---@type Nuklear
 local nk = require "bindings.overlay".nk
 local LogListener = require "core.log_listener"
-local InputListener = require "core.input_listener"
 
 local successColor = { 64, 146, 222, 255 }
 local defaultColor = { 160, 160, 160, 255 }
@@ -41,8 +40,7 @@ local Console = {
         state = {},                                  -- state of the text box element ( active, deactivated and so on... )
         placeholderText = "Write something here...", -- the placeholder text shown when the text box is empty
         showPlaceholder = false,                     -- flag that tells if we need to show the placeholder during the current draw
-        textColor = editTextColor,
-        wasActive = false
+        textColor = editTextColor
     },
     messages = {},                 -- each message being sent to the console is stored in this table
     history = {},                  -- the history of commands being executed. Useful to navigate back to previously written commands
@@ -171,14 +169,6 @@ Console.updateTextBox = function (console, text, state)
     elseif state[nk.EditState.NK_EDIT_ACTIVE] and textBox.showPlaceholder then
         textBox.text = ""
         textBox.showPlaceholder = false
-    end
-
-    if not textBox.wasActive and state[nk.EditState.NK_EDIT_ACTIVE] then
-        InputListener.setCatchAllInput(true)
-        textBox.wasActive = true
-    elseif textBox.wasActive and state[nk.EditState.NK_EDIT_INACTIVE] then
-        InputListener.setCatchAllInput(false)
-        textBox.wasActive = false
     end
 
     textBox.textColor = textBox.show_placeholder and placeHolderColor or editTextColor
