@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 set(APPLICATION_SOURCES
         Game.cpp
         GameConfig.cpp
+        GameFSM.cpp
         GameKeyboardController.cpp
         GameMenu.cpp
         GameOver.cpp
@@ -15,6 +16,7 @@ set(APPLICATION_SOURCES
 set(APPLICATION_HEADERS
         Game.h
         GameConfig.h
+        GameFSM.h
         GameKeyboardController.h
         GameMenu.h
         GameOver.h
