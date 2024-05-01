@@ -3325,6 +3325,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                         else if (face.uAttributes & FACE_FlowLeft)
                             attribflags |= 0x1000;
 
+                        if (face.uAttributes & FACE_IsLava)
+                            attribflags |= 0x4000;
+
                         // loop while running down animlength with frame animtimes
                         do {
                             // check if tile->name is already in list
@@ -3540,6 +3543,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                 else if (face.uAttributes & FACE_FlowLeft)
                                     attribflags |= 0x1000;
 
+                                if (face.uAttributes & FACE_IsLava)
+                                    attribflags |= 0x4000;
+
                                 if (face.uAttributes & FACE_OUTLINED || (face.uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
                                     attribflags |= 0x00010000;
 
@@ -3613,8 +3619,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     glUniformMatrix4fv(glGetUniformLocation(outbuildshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
 
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
-    // TODO(pskelton): check tickcount usage here
-    glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimer"), GLint(platform->tickCount() >> 4));
+    glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimer"), GLint(pMiscTimer->time().realtimeMilliseconds() >> 4));
 
     glUniform1f(glGetUniformLocation(outbuildshader.ID, "gamma"), gamma);
 
@@ -3941,6 +3946,9 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 else if (face->uAttributes & FACE_FlowLeft)
                     attribflags |= 0x1000;
 
+                if (face->uAttributes & FACE_IsLava)
+                    attribflags |= 0x4000;
+
                 if (face->uAttributes & (FACE_OUTLINED | FACE_IsSecret))
                     attribflags |= 0x00010000;
 
@@ -4181,6 +4189,9 @@ void OpenGLRenderer::DrawIndoorFaces() {
                             else if (face->uAttributes & FACE_FlowLeft)
                                 attribflags |= 0x1000;
 
+                            if (face->uAttributes & FACE_IsLava)
+                                attribflags |= 0x4000;
+
                             if (face->uAttributes & FACE_OUTLINED || (face->uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
                                 attribflags |= 0x00010000;
 
@@ -4303,10 +4314,10 @@ void OpenGLRenderer::DrawIndoorFaces() {
         //// set view
         glUniformMatrix4fv(glGetUniformLocation(bspshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
 
-        glUniform1f(glGetUniformLocation(bspshader.ID, "gamma"), gamma);
         glUniform1i(glGetUniformLocation(bspshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
-        // TODO(pskelton): check tickcount usage here
-        glUniform1i(glGetUniformLocation(bspshader.ID, "flowtimer"), GLint(platform->tickCount() >> 4));
+        glUniform1i(glGetUniformLocation(bspshader.ID, "flowtimer"), GLint(pMiscTimer->time().realtimeMilliseconds() >> 4));
+
+        glUniform1f(glGetUniformLocation(bspshader.ID, "gamma"), gamma);
 
         // set texture unit location
         glUniform1i(glGetUniformLocation(bspshader.ID, "textureArray0"), GLint(0));

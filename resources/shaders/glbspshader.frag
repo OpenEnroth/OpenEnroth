@@ -58,7 +58,6 @@ vec3 CalcSunLight(Sunlight light, vec3 normal, vec3 viewDir, vec3 thisfragcol);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main() {
-
     vec3 fragnorm = normalize(vsNorm);
     vec3 fragviewdir = normalize(CameraPos - vsPos);
 
@@ -66,6 +65,7 @@ void main() {
     vec2 texcoords = vec2(0.0);
     vec2 texuvmod = vec2(0.0);
     vec2 deltas = vec2(0.0);
+    vec3 texsize = textureSize(textureArray0,0);
 
     // texture flow mods
     if (abs(vsNorm.z) >= 0.9) {
@@ -82,10 +82,46 @@ void main() {
         texuvmod.x = 1.0;
     }
 
-    deltas.x = texuvmod.x * float(flowtimer & int(textureSize(textureArray0,0).x-1));
-    deltas.y = texuvmod.y * float(flowtimer & int(textureSize(textureArray0,0).y-1));
-    texcoords.x = (deltas.x + texuv.x) / float(textureSize(textureArray0,0).x);
-    texcoords.y = (deltas.y + texuv.y) / float(textureSize(textureArray0,0).y);
+    // lava movement
+    if ((vsAttrib & 0x4000) > 0) {
+        // flowtimer comes in 1/16th of milliseconds
+        const float accelerationtime = 1000.0 / 16.0;
+        const float consttime = 2000.0 / 16.0;
+        const float acceleration = 0.05;
+        const float constspeed = accelerationtime * acceleration;
+        const float accelerationdist = acceleration * accelerationtime * accelerationtime / 2.0;
+        const float constdist = constspeed * consttime;
+        float curpos;
+        float lavaperiod = mod(float(flowtimer), accelerationtime * 4.0 + consttime * 2.0); // 2 accelerations, 2 deceleraions, 2 periods of constant speed
+        if (lavaperiod < accelerationtime) { // 1s acceleration
+            float modetime = lavaperiod;
+            curpos = acceleration * modetime * modetime / 2.0;
+        } else if (lavaperiod < (accelerationtime + consttime)) { // 2s constant speed
+            float modetime = lavaperiod - accelerationtime;
+            curpos = accelerationdist;
+            curpos = curpos + constspeed * modetime;
+        } else if (lavaperiod < (accelerationtime * 3.0 + consttime)) { // 1s deceleration and 1s acceleration in reverse
+            float modetime = lavaperiod - accelerationtime - consttime;
+            curpos = accelerationdist + constdist;
+            curpos = curpos + constspeed * modetime - acceleration * modetime * modetime / 2.0;
+        } else if (lavaperiod < (accelerationtime * 3.0 + consttime * 2.0)) { // 2s constant speed
+            float modetime = lavaperiod - accelerationtime * 3.0 - consttime;
+            curpos = accelerationdist + constdist;
+            curpos = curpos - constspeed * modetime;
+        } else { // 1s deceleration
+            float modetime = lavaperiod - accelerationtime * 3.0 - consttime * 2.0;
+            curpos = accelerationdist;
+            curpos = curpos - constspeed * modetime + acceleration * modetime * modetime / 2.0;
+        }
+        deltas.x = 0.0;
+        deltas.y = mod(curpos, texsize.y);
+    } else {
+        deltas.x = texuvmod.x * mod(float(flowtimer), texsize.x);
+        deltas.y = texuvmod.y * mod(float(flowtimer), texsize.y);
+    }
+
+    texcoords.x = (deltas.x + texuv.x) / float(texsize.x);
+    texcoords.y = (deltas.y + texuv.y) / float(texsize.y);
     fragcol = texture(textureArray0, vec3(texcoords.x,texcoords.y,olayer.y));
 
     vec4 toplayer = texture(textureArray0, vec3(texcoords.x,texcoords.y,0));
