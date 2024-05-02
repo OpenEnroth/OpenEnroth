@@ -11,22 +11,47 @@
 #include <string_view>
 #include <string>
 #include <unordered_map>
+#include <vector>
+#include <utility>
 
-using FSMTransitions = std::unordered_map<TransparentString, std::string, TransparentStringHash, TransparentStringEquals>;
+struct FSMTransitionTarget {
+    std::string stateName;
+    std::function<bool()> condition{};
+};
+
+using FSMTransitions = std::unordered_map<TransparentString, std::vector<FSMTransitionTarget>, TransparentStringHash, TransparentStringEquals>;
 
 class FSM : public FSMTransitionHandler, public FSMEventHandler {
  public:
     FSM();
-    void setInitialState(std::string_view stateName);
+
+    /*
+    * @brief Update the FSM current state or execute any pending transition.
+    */
     void update();
-    [[nodiscard]] bool isDone() const;
+
+    /*
+    * @brief Check if the FSM has reached its internal _Exit state. When the FSM reach the _Exit state it means 
+    */
+    [[nodiscard]] bool hasReachedExitState() const;
 
     void addState(std::string_view name, std::unique_ptr<FSMState> state, FSMTransitions transitions);
     virtual void executeTransition(std::string_view transition) override;
     virtual void exitFromFSM() override;
 
+    /*
+    * @brief Set the next state to be reached in the FSM. The transition won't occur immediately but will be executed during the next FSM::update() call.
+    * The jumpToState function does not require a previously defined transition connecting the current state to the target state. The jump is unconditional.
+    * Since the actual transition occurs during the next FSM::update() call, subsequent calls to FSM::jumpToState, FSM::executeTransition, or FSM::exitFromFSM
+    * will overwrite the target state.
+    * @param stateName The name of the state to transition to. This name must belong to a state that has been previously added through FSM::addState.
+    */
+    void jumpToState(std::string_view stateName);
+
  private:
     struct StateEntry {
+        StateEntry(std::string_view name, std::unique_ptr<FSMState> state, FSMTransitions transitions)
+            : name(name), state(std::move(state)), transitions(std::move(transitions)) {}
         std::string name;
         std::unique_ptr<FSMState> state;
         FSMTransitions transitions;
@@ -54,8 +79,7 @@ class FSM : public FSMTransitionHandler, public FSMEventHandler {
     std::unordered_map<TransparentString, std::unique_ptr<StateEntry>, TransparentStringHash, TransparentStringEquals> _states;
     StateEntry *_currentState{};
     StateEntry *_nextState{};
-    StateEntry _nullState;
-    bool _exitFromFSM{};
+    bool _hasReachedExitState{};
 
     static const LogCategory fsmLogCategory;
 };

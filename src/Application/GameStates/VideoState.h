@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Library/Fsm/FSM.h>
+#include <Library/Fsm/FSMState.h>
 #include <GUI/GUIEnums.h>
 
 #include <string>
