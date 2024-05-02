@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['release_0',['RELEASE',['../UIGame_8cpp.html#a944433111e32fb8b7cebac19321b7c3b',1,'UIGame.cpp']]]
+  ['skill_5fto_5flearning_5fdialogue_5fid_0',['SKILL_TO_LEARNING_DIALOGUE_ID',['../GUIDialogues_8h.html#a0e0a2fa14fb92490ed6695b55d7e55ef',1,'GUIDialogues.h']]]
 ];

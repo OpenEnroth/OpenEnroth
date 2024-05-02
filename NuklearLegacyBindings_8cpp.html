@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Graphics/NuklearUtils.h File Reference</title>
+<title>OpenEnroth: src/Scripting/NuklearLegacyBindings.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;47d5e9b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;36a92a3</span>
    </div>
   </td>
  </tr>
@@ -69,34 +69,55 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_32f76bd42096cb3656f6b4adb3ae4055.html">Graphics</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_6e232b759d489f630412e22c99aac6d0.html">Scripting</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">NuklearUtils.h File Reference</div></div>
+  <div class="headertitle"><div class="title">NuklearLegacyBindings.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;lua.hpp&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="NuklearLegacyBindings_8h.html">NuklearLegacyBindings.h</a>&quot;</code><br />
+<code>#include &lt;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="Engine_2Graphics_2Image_8h.html">Engine/Graphics/Image.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="NuklearOverlayRenderer_8h.html">Engine/Graphics/Renderer/NuklearOverlayRenderer.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="Renderer_8h.html">Engine/Graphics/Renderer/Renderer.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="ColorTable_8h.html">Library/Color/ColorTable.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;cstdio&gt;</code><br />
+<code>#include &lt;lua.hpp&gt;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structimg.html">img</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcontext.html">context</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ae7c1ec4a95f8b65957124ca9aac05c6e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearUtils_8h.html#ae7c1ec4a95f8b65957124ca9aac05c6e">lua_foreach</a>(_lua,  _idx)&#160;&#160;&#160;for (lua_pushnil(_lua); lua_next(_lua, _idx); lua_pop(_lua, 1))</td></tr>
+<tr class="memitem:ae7c1ec4a95f8b65957124ca9aac05c6e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearLegacyBindings_8cpp.html#ae7c1ec4a95f8b65957124ca9aac05c6e">lua_foreach</a>(_lua,  _idx)&#160;&#160;&#160;for (lua_pushnil(_lua); lua_next(_lua, _idx); lua_pop(_lua, 1))</td></tr>
 <tr class="separator:ae7c1ec4a95f8b65957124ca9aac05c6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a866e79e85e70be1fb6fe49e708f21b63"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearUtils_8h.html#a866e79e85e70be1fb6fe49e708f21b63">lua_check_ret</a>(_func)&#160;&#160;&#160;{ int _ret = _func; if (_ret) return _ret; }</td></tr>
+<tr class="memitem:a866e79e85e70be1fb6fe49e708f21b63"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearLegacyBindings_8cpp.html#a866e79e85e70be1fb6fe49e708f21b63">lua_check_ret</a>(_func)&#160;&#160;&#160;{ int _ret = _func; if (_ret) return _ret; }</td></tr>
 <tr class="separator:a866e79e85e70be1fb6fe49e708f21b63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f5a6c5cc1842c3640a4cb0a0dc76854"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearLegacyBindings_8cpp.html#a5f5a6c5cc1842c3640a4cb0a0dc76854">PUSH_BUTTON_STYLE</a>(element,  style,  property,  type)&#160;&#160;&#160;<a class="el" href="Json__ut_8cpp.html#af19d1c5cd4d9f162a9fbacd6a02c9241">element.push_back</a>({ #property, &amp;style-&gt;property, type});</td></tr>
+<tr class="separator:a5f5a6c5cc1842c3640a4cb0a0dc76854"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a490cd12bf8b674234597e901e4125896"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearLegacyBindings_8cpp.html#a490cd12bf8b674234597e901e4125896">PUSH_STYLE</a>(element,  component,  property,  type)&#160;&#160;&#160;<a class="el" href="Json__ut_8cpp.html#af19d1c5cd4d9f162a9fbacd6a02c9241">element.push_back</a>({ #property, &amp;_context-&gt;style.component.property, type});</td></tr>
+<tr class="separator:a490cd12bf8b674234597e901e4125896"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7ea528e580ae443a4384ec665a810d2b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearUtils_8h.html#a7ea528e580ae443a4384ec665a810d2b">lua_check_args_count</a> (lua_State *L, bool condition)</td></tr>
+<tr class="memitem:a7ea528e580ae443a4384ec665a810d2b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearLegacyBindings_8cpp.html#a7ea528e580ae443a4384ec665a810d2b">lua_check_args_count</a> (lua_State *L, bool condition)</td></tr>
 <tr class="separator:a7ea528e580ae443a4384ec665a810d2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15d0d0ab42d5194969d5ae5e6817bf3e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearUtils_8h.html#a15d0d0ab42d5194969d5ae5e6817bf3e">lua_check_args</a> (lua_State *L, bool condition)</td></tr>
+<tr class="memitem:a15d0d0ab42d5194969d5ae5e6817bf3e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearLegacyBindings_8cpp.html#a15d0d0ab42d5194969d5ae5e6817bf3e">lua_check_args</a> (lua_State *L, bool condition)</td></tr>
 <tr class="separator:a15d0d0ab42d5194969d5ae5e6817bf3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2f433f25a72cf3c7e999645d85e3bd5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearUtils_8h.html#ac2f433f25a72cf3c7e999645d85e3bd5">lua_to_boolean</a> (lua_State *L, int idx)</td></tr>
+<tr class="memitem:ac2f433f25a72cf3c7e999645d85e3bd5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearLegacyBindings_8cpp.html#ac2f433f25a72cf3c7e999645d85e3bd5">lua_to_boolean</a> (lua_State *L, int idx)</td></tr>
 <tr class="separator:ac2f433f25a72cf3c7e999645d85e3bd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1bb09a6eeba54546dfe1d79e389ad412"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearUtils_8h.html#a1bb09a6eeba54546dfe1d79e389ad412">lua_error_check</a> (lua_State *L, int err)</td></tr>
+<tr class="memitem:a1bb09a6eeba54546dfe1d79e389ad412"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearLegacyBindings_8cpp.html#a1bb09a6eeba54546dfe1d79e389ad412">lua_error_check</a> (lua_State *L, int err)</td></tr>
 <tr class="separator:a1bb09a6eeba54546dfe1d79e389ad412"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
@@ -140,6 +161,86 @@ Functions</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td>&#160;&#160;&#160;for (lua_pushnil(_lua); lua_next(_lua, _idx); lua_pop(_lua, 1))</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5f5a6c5cc1842c3640a4cb0a0dc76854" name="a5f5a6c5cc1842c3640a4cb0a0dc76854"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f5a6c5cc1842c3640a4cb0a0dc76854">&#9670;&#160;</a></span>PUSH_BUTTON_STYLE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PUSH_BUTTON_STYLE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">element, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">style, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">property, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">type&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="Json__ut_8cpp.html#af19d1c5cd4d9f162a9fbacd6a02c9241">element.push_back</a>({ #property, &amp;style-&gt;property, type});</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a490cd12bf8b674234597e901e4125896" name="a490cd12bf8b674234597e901e4125896"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a490cd12bf8b674234597e901e4125896">&#9670;&#160;</a></span>PUSH_STYLE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PUSH_STYLE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">element, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">component, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">property, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">type&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="Json__ut_8cpp.html#af19d1c5cd4d9f162a9fbacd6a02c9241">element.push_back</a>({ #property, &amp;_context-&gt;style.component.property, type});</td>
         </tr>
       </table>
 </div><div class="memdoc">

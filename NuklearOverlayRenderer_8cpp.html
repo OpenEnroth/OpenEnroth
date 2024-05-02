@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Graphics/Nuklear.h File Reference</title>
+<title>OpenEnroth: src/Engine/Graphics/Renderer/NuklearOverlayRenderer.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;47d5e9b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;36a92a3</span>
    </div>
   </td>
  </tr>
@@ -69,73 +69,44 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_32f76bd42096cb3656f6b4adb3ae4055.html">Graphics</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_32f76bd42096cb3656f6b4adb3ae4055.html">Graphics</a></li><li class="navelem"><a class="el" href="dir_830ed4d1387d7eaf00a15c3f615e93f6.html">Renderer</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#define-members">Macros</a> &#124;
 <a href="#var-members">Variables</a>  </div>
-  <div class="headertitle"><div class="title">Nuklear.h File Reference</div></div>
+  <div class="headertitle"><div class="title">NuklearOverlayRenderer.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;memory&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="NuklearOverlayRenderer_8h.html">NuklearOverlayRenderer.h</a>&quot;</code><br />
+<code>#include &lt;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&gt;</code><br />
+<code>#include &lt;<a class="el" href="Engine_2Graphics_2Image_8h.html">Engine/Graphics/Image.h</a>&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
-<code>#include &lt;functional&gt;</code><br />
-<code>#include &quot;<a class="el" href="PlatformEnums_8h.html">Library/Platform/Interface/PlatformEnums.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="GUIEnums_8h.html">GUI/GUIEnums.h</a>&quot;</code><br />
+<code>#include &lt;glad/gl.h&gt;</code><br />
+<code>#include &lt;glm/glm.hpp&gt;</code><br />
+<code>#include &lt;nuklear_config.h&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNuklear.html">Nuklear</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnk__vertex.html">nk_vertex</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:ab055c92f5fb816790b03b45124adfe6a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8h.html#ab055c92f5fb816790b03b45124adfe6a">NUKLEAR_MAX_VERTEX_MEMORY</a>&#160;&#160;&#160;512 * 1024</td></tr>
-<tr class="separator:ab055c92f5fb816790b03b45124adfe6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7921fe5aa4eea6dc18d70a63c5ef7644"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8h.html#a7921fe5aa4eea6dc18d70a63c5ef7644">NUKLEAR_MAX_ELEMENT_MEMORY</a>&#160;&#160;&#160;128 * 1024</td></tr>
-<tr class="separator:a7921fe5aa4eea6dc18d70a63c5ef7644"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnk__device.html">nk_device</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnk__state.html">nk_state</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a42ad0e46621e49c3eeb3e1d16d0aa4e1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classNuklear.html">Nuklear</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Nuklear_8h.html#a42ad0e46621e49c3eeb3e1d16d0aa4e1">nuklear</a></td></tr>
-<tr class="separator:a42ad0e46621e49c3eeb3e1d16d0aa4e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab804ea7fc81c8c957cd4ef7e17ea0de9"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearOverlayRenderer_8cpp.html#ab804ea7fc81c8c957cd4ef7e17ea0de9">maxVertexBuffer</a> = 512 * 1024</td></tr>
+<tr class="separator:ab804ea7fc81c8c957cd4ef7e17ea0de9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4af79663b4a75d4e01d6b76db77b1b46"><td class="memItemLeft" align="right" valign="top">constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="NuklearOverlayRenderer_8cpp.html#a4af79663b4a75d4e01d6b76db77b1b46">maxElementBuffer</a> = 512 * 1024</td></tr>
+<tr class="separator:a4af79663b4a75d4e01d6b76db77b1b46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a7921fe5aa4eea6dc18d70a63c5ef7644" name="a7921fe5aa4eea6dc18d70a63c5ef7644"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7921fe5aa4eea6dc18d70a63c5ef7644">&#9670;&#160;</a></span>NUKLEAR_MAX_ELEMENT_MEMORY</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define NUKLEAR_MAX_ELEMENT_MEMORY&#160;&#160;&#160;128 * 1024</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab055c92f5fb816790b03b45124adfe6a" name="ab055c92f5fb816790b03b45124adfe6a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab055c92f5fb816790b03b45124adfe6a">&#9670;&#160;</a></span>NUKLEAR_MAX_VERTEX_MEMORY</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define NUKLEAR_MAX_VERTEX_MEMORY&#160;&#160;&#160;512 * 1024</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a42ad0e46621e49c3eeb3e1d16d0aa4e1" name="a42ad0e46621e49c3eeb3e1d16d0aa4e1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a42ad0e46621e49c3eeb3e1d16d0aa4e1">&#9670;&#160;</a></span>nuklear</h2>
+<a id="a4af79663b4a75d4e01d6b76db77b1b46" name="a4af79663b4a75d4e01d6b76db77b1b46"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4af79663b4a75d4e01d6b76db77b1b46">&#9670;&#160;</a></span>maxElementBuffer</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -144,12 +115,34 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classNuklear.html">Nuklear</a>* nuklear</td>
+          <td class="memname">constexpr int maxElementBuffer = 512 * 1024</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab804ea7fc81c8c957cd4ef7e17ea0de9" name="ab804ea7fc81c8c957cd4ef7e17ea0de9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab804ea7fc81c8c957cd4ef7e17ea0de9">&#9670;&#160;</a></span>maxVertexBuffer</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr int maxVertexBuffer = 512 * 1024</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">constexpr</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
