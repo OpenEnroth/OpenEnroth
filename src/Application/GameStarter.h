@@ -14,10 +14,10 @@ class LogSink;
 class PlatformApplication;
 class GameConfig;
 class Renderer;
-class Nuklear;
 class Engine;
 class Game;
 class GameLuaBindings;
+class OverlaySystem;
 class ScriptingSystem;
 class EngineController;
 
@@ -53,7 +53,7 @@ class GameStarter {
     std::unique_ptr<PlatformApplication> _application;
     std::unique_ptr<Renderer> _renderer;
     std::unique_ptr<ScriptingSystem> _scriptingSystem;
-    std::unique_ptr<Nuklear> _nuklear;
+    std::unique_ptr<OverlaySystem> _overlaySystem;
     std::unique_ptr<Engine> _engine;
     std::shared_ptr<Game> _game;
 };

@@ -1,6 +1,8 @@
 --- Module that takes care of the state of the debug console
 
 local CommandManager = require "dev.commands.command_manager"
+---@type Nuklear
+local nk = require "bindings.overlay".nk
 local logListener = require "core.logger".listener
 
 local successColor = { 64, 146, 222, 255 }
@@ -153,12 +155,12 @@ Console.updateText = function (console, text, state)
     local textBox = console.editTB
     textBox.text = text
     textBox.state = state
-    if state[NK_EDIT_COMMITED] and text ~= "" then
+    if state[nk.EditState.NK_EDIT_COMMITED] and text ~= "" then
         console:send()
-    elseif state[NK_EDIT_INACTIVE] and text == "" then
+    elseif state[nk.EditState.NK_EDIT_INACTIVE] and text == "" then
         textBox.showPlaceholder = true
         textBox.text = textBox.placeholderText
-    elseif state[NK_EDIT_ACTIVE] and textBox.showPlaceholder then
+    elseif state[nk.EditState.NK_EDIT_ACTIVE] and textBox.showPlaceholder then
         textBox.text = ""
         textBox.showPlaceholder = false
     end

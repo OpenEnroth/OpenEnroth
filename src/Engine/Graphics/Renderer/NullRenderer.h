@@ -11,15 +11,6 @@ class NullRenderer : public BaseRenderer {
     virtual bool Initialize() override;
     virtual bool Reinitialize(bool firstInit) override;
 
-    virtual bool NuklearInitialize(struct nk_tex_font *tfont) override;
-    virtual bool NuklearCreateDevice() override;
-    virtual bool NuklearRender(/*enum nk_anti_aliasing*/ int AA, int max_vertex_buffer, int max_element_buffer) override;
-    virtual void NuklearRelease() override;
-    virtual struct nk_tex_font *NuklearFontLoad(const char *font_path, size_t font_size) override;
-    virtual void NuklearFontFree(struct nk_tex_font *tfont) override;
-    virtual struct nk_image NuklearImageLoad(GraphicsImage *img) override;
-    virtual void NuklearImageFree(GraphicsImage *img) override;
-
     virtual RgbaImage ReadScreenPixels() override;
     virtual void ClearTarget(Color uColor) override;
     virtual void Present() override;
@@ -116,4 +107,8 @@ class NullRenderer : public BaseRenderer {
     virtual void ReloadShaders() override;
 
     virtual void DoRenderBillboards_D3D() override;
+
+    virtual void flushAndScale() override;
+    virtual void swapBuffers() override;
+    virtual void drawOverlays(nk_context *context) override;
 };

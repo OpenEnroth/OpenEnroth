@@ -36,7 +36,7 @@ target_link_libraries(application
         engine_components_trace
         engine_graphics
         engine_graphics_level
-        engine_graphics_renderer        
+        engine_graphics_renderer
         gui
         io
         library_config
@@ -46,7 +46,4 @@ target_link_libraries(application
         library_platform_implementation
         library_environment_implementation
         scripting
-        utility
-	PRIVATE
-	libluajit
-    sol2)
+        utility)

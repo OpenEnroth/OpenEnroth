@@ -23,3 +23,4 @@ target_check_style(gui)
 target_link_libraries(gui PUBLIC gui_ui engine utility)
 
 add_subdirectory(UI)
+add_subdirectory(Overlay)

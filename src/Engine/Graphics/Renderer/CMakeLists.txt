@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(ENGINE_GRAPHICS_RENDERER_SOURCES
         BaseRenderer.cpp
+        NuklearOverlayRenderer.cpp
         NullRenderer.cpp
         OpenGLRenderer.cpp
         OpenGLShader.cpp
@@ -12,6 +13,7 @@ set(ENGINE_GRAPHICS_RENDERER_SOURCES
 
 set(ENGINE_GRAPHICS_RENDERER_HEADERS
         BaseRenderer.h
+        NuklearOverlayRenderer.h
         NullRenderer.h
         OpenGLRenderer.h
         OpenGLShader.h
@@ -37,7 +39,6 @@ target_link_libraries(engine_graphics_renderer
         OpenGL::GL
         engine_graphics
         PRIVATE
-        libluajit
         glad
         nuklear)
 

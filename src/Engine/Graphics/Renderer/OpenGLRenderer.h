@@ -16,6 +16,7 @@
 #include "OpenGLShader.h"
 
 class PlatformOpenGLContext;
+class NuklearOverlayRenderer;
 struct nk_state;
 
 class OpenGLRenderer : public BaseRenderer {
@@ -30,15 +31,6 @@ class OpenGLRenderer : public BaseRenderer {
     virtual ~OpenGLRenderer();
 
     virtual bool Initialize() override;
-
-    virtual bool NuklearInitialize(struct nk_tex_font *tfont) override;
-    virtual bool NuklearCreateDevice() override;
-    virtual bool NuklearRender(/*enum nk_anti_aliasing*/ int AA, int max_vertex_buffer, int max_element_buffer) override;
-    virtual void NuklearRelease() override;
-    virtual struct nk_tex_font *NuklearFontLoad(const char *font_path, size_t font_size) override;
-    virtual void NuklearFontFree(struct nk_tex_font *tfont) override;
-    virtual struct nk_image NuklearImageLoad(GraphicsImage *img) override;
-    virtual void NuklearImageFree(GraphicsImage *img) override;
 
     virtual RgbaImage ReadScreenPixels() override;
     virtual void ClearTarget(Color uColor) override;
@@ -137,6 +129,10 @@ class OpenGLRenderer : public BaseRenderer {
     virtual bool Reinitialize(bool firstInit) override;
     virtual void ReloadShaders() override;
 
+    virtual void flushAndScale() override;
+    virtual void swapBuffers() override;
+    virtual void drawOverlays(nk_context *context) override;
+
  protected:
     virtual void DoRenderBillboards_D3D() override;
     void SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1);
@@ -179,7 +175,6 @@ class OpenGLRenderer : public BaseRenderer {
     OpenGLShader billbshader;
     OpenGLShader decalshader;
     OpenGLShader forcepershader;
-    OpenGLShader nuklearshader;
 
     // terrain shader
     GLuint terrainVBO{}, terrainVAO{};
@@ -233,7 +228,7 @@ class OpenGLRenderer : public BaseRenderer {
 
     float gamma{};
 
-    std::unique_ptr<nk_state> nk;
+    std::unique_ptr<NuklearOverlayRenderer> _overlayRenderer;
 };
 
 

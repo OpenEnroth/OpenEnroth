@@ -26,6 +26,7 @@ class Vis;
 struct Lightmap;
 struct Decal;
 struct Polygon;
+struct nk_context;
 
 bool PauseGameDrawing();
 
@@ -41,15 +42,6 @@ class Renderer {
     virtual ~Renderer();
 
     virtual bool Initialize() = 0;
-
-    virtual bool NuklearInitialize(struct nk_tex_font *tfont) = 0;
-    virtual bool NuklearCreateDevice() = 0;
-    virtual bool NuklearRender(/*enum nk_anti_aliasing*/ int AA, int max_vertex_buffer, int max_element_buffer) = 0;
-    virtual void NuklearRelease() = 0;
-    virtual struct nk_tex_font *NuklearFontLoad(const char *font_path, size_t font_size) = 0;
-    virtual void NuklearFontFree(struct nk_tex_font *tfont) = 0;
-    virtual struct nk_image NuklearImageLoad(GraphicsImage *img) = 0;
-    virtual void NuklearImageFree(GraphicsImage *img) = 0;
 
     virtual void ClearBlack() = 0;
     virtual void PresentBlackScreen() = 0;
@@ -190,6 +182,10 @@ class Renderer {
     virtual bool Reinitialize(bool firstInit = false) = 0;
     virtual void ReloadShaders() = 0;
     virtual void DoRenderBillboards_D3D() = 0;
+
+    virtual void flushAndScale() = 0;
+    virtual void swapBuffers() = 0;
+    virtual void drawOverlays(nk_context *context) = 0;
 
     std::shared_ptr<GameConfig> config = nullptr;
     int *pActiveZBuffer;

@@ -18,7 +18,6 @@
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
@@ -1880,7 +1879,6 @@ void Game::gameLoop() {
     pIcons_LOD->reserveLoadedTextures();
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
 
-    nuklear->Create(WINDOW_DebugMenu);
     while (true) {
         engine->_messageQueue->clear();
 
@@ -2068,5 +2066,4 @@ void Game::gameLoop() {
         break;
     }
     current_screen_type = SCREEN_VIDEO;
-    nuklear->Release(WINDOW_DebugMenu);
 }

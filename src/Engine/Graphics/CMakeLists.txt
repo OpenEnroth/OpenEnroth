@@ -18,9 +18,6 @@ set(ENGINE_GRAPHICS_SOURCES
         LightmapBuilder.cpp
         LightsStack.cpp
         LocationFunctions.cpp
-        Nuklear.cpp
-        NuklearEventHandler.cpp
-        NuklearUtils.cpp
         Outdoor.cpp
         Overlays.cpp
         PaletteManager.cpp
@@ -52,9 +49,6 @@ set(ENGINE_GRAPHICS_HEADERS
         LocationFunctions.h
         LocationInfo.h
         LocationTime.h
-        Nuklear.h
-        NuklearEventHandler.h
-        NuklearUtils.h
         Outdoor.h
         Overlays.h
         PaletteManager.h

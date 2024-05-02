@@ -38,7 +38,7 @@ void ScriptingSystem::executeEntryPoint() {
     try {
         _solState->script_file(makeDataPath(_scriptFolder, _entryPointFile));
     } catch (const sol::error &e) {
-        logger->error(ScriptingLogCategory, "An unexpected error has occurred: {}", e.what());
+        logger->warning(ScriptingLogCategory, "An unexpected error has occurred: {}", e.what());
     }
 }
 

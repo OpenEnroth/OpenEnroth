@@ -147,8 +147,3 @@ struct SoftwareBillboard {
     Pid object_pid;
     int paletteID;
 };
-
-struct nk_tex_font {
-    uint32_t texid;
-    struct nk_font *font;
-};

@@ -12,8 +12,6 @@
 #include "Engine/Random/Random.h"
 #include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/Nuklear.h"
-#include "Engine/Graphics/NuklearEventHandler.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
@@ -23,6 +21,8 @@
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Components/Random/EngineRandomComponent.h"
+
+#include "GUI/Overlay/OverlaySystem.h"
 
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -34,11 +34,12 @@
 #include "Library/Platform/Null/NullPlatform.h"
 
 #include "Scripting/ConfigBindings.h"
+#include "Scripting/OverlayBindings.h"
 #include "Scripting/GameLuaBindings.h"
-#include "Scripting/LoggerBindings.h"
 #include "Scripting/InputBindings.h"
-#include "Scripting/NuklearBindings.h"
 #include "Scripting/InputScriptEventHandler.h"
+#include "Scripting/LoggerBindings.h"
+#include "Scripting/PlatformBindings.h"
 #include "Scripting/ScriptingSystem.h"
 
 #include "Utility/DataPath.h"
@@ -131,19 +132,11 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _application->component<GameWindowHandler>()->UpdateWindowFromConfig(_config.get());
 
     // Init renderer.
-    _renderer = RendererFactory().createRenderer(_options.headless ? RENDERER_NULL : _config->graphics.Renderer.value(), _config);
+    RendererType rendererType = _options.headless ? RENDERER_NULL : _config->graphics.Renderer.value();
+    _renderer = RendererFactory().createRenderer(rendererType, _config);
     ::render = _renderer.get();
     if (!_renderer->Initialize())
         throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
-
-    // Init Nuklear - depends on renderer.
-    _nuklear = Nuklear::Initialize();
-    if (!_nuklear)
-        logger->error("Nuklear failed to initialize");
-    ::nuklear = _nuklear.get();
-    if (_nuklear) {
-        _application->installComponent(std::make_unique<NuklearEventHandler>());
-    }
 
     // Init io.
     ::keyboardActionMapping = std::make_shared<Io::KeyboardActionMapping>(_config);;
@@ -152,8 +145,10 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     );
     ::mouse = EngineIocContainer::ResolveMouse();
 
+    _overlaySystem = std::make_unique<OverlaySystem>(*_renderer, *_application);
+
     // Init engine.
-    _engine = std::make_unique<Engine>(_config);
+    _engine = std::make_unique<Engine>(_config, *_overlaySystem);
     ::engine = _engine.get();
     _engine->Initialize();
 
@@ -165,15 +160,14 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _scriptingSystem->addBindings<LoggerBindings>("log");
     _scriptingSystem->addBindings<GameLuaBindings>("game");
     _scriptingSystem->addBindings<ConfigBindings>("config");
+    _scriptingSystem->addBindings<PlatformBindings>("platform", *_application);
     _scriptingSystem->addBindings<InputBindings>("input", *_application->component<InputScriptEventHandler>());
-    _scriptingSystem->addBindings<NuklearBindings>("nuklear", _engine->nuklear.get());
+    _scriptingSystem->addBindings<OverlayBindings>("overlay", *_overlaySystem);
     _scriptingSystem->executeEntryPoint();
 }
 
 GameStarter::~GameStarter() {
     ::engine = nullptr;
-
-    ::nuklear = nullptr;
 
     ::render = nullptr;
 

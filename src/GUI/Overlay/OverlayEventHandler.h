@@ -2,9 +2,11 @@
 
 #include "Library/Platform/Filters/PlatformEventFilter.h"
 
-class NuklearEventHandler : public PlatformEventFilter {
+struct nk_context;
+
+class OverlayEventHandler : public PlatformEventFilter {
  public:
-    NuklearEventHandler();
+    explicit OverlayEventHandler(struct nk_context* context);
 
  private:
     virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
@@ -15,6 +17,8 @@ class NuklearEventHandler : public PlatformEventFilter {
     virtual bool wheelEvent(const PlatformWheelEvent *event) override;
     virtual bool textInputEvent(const PlatformTextInputEvent *event) override;
 
-    bool KeyEvent(PlatformKey key, PlatformModifiers mods, bool down);
-    bool MouseEvent(PlatformMouseButton button, const Pointi &pos, bool down);
+    bool keyEvent(PlatformKey key, PlatformModifiers mods, bool down);
+    bool mouseEvent(PlatformMouseButton button, const Pointi &pos, bool down);
+
+    struct nk_context *_context;
 };

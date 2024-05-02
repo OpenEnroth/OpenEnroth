@@ -19,7 +19,6 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Graphics/Nuklear.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -71,6 +70,7 @@
 #include "GUI/UI/UIPopup.h"
 #include "GUI/UI/UIMessageScroll.h"
 #include "GUI/GUIMessageQueue.h"
+#include "GUI/Overlay/OverlaySystem.h"
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/SoundList.h"
@@ -180,10 +180,13 @@ void Engine::drawWorld() {
     }
 }
 
+void Engine::drawOverlay() {
+    _overlaySystem.drawOverlays();
+}
+
 void Engine::drawHUD() {
     // 2d from now on
     render->BeginScene2D();
-    nuklear->Draw(nuklear->NUKLEAR_STAGE_PRE, WINDOW_DebugMenu, 1);
 
     DrawGUI();
     GUI_UpdateWindows();
@@ -192,16 +195,15 @@ void Engine::drawHUD() {
     // mouse->DrawPickedItem();
     mouse->DrawCursor();
     mouse->Activate();
-
-    nuklear->Draw(nuklear->NUKLEAR_STAGE_POST, WINDOW_DebugMenu, 1);
 }
 
 //----- (0044103C) --------------------------------------------------------
 void Engine::Draw() {
     drawWorld();
     drawHUD();
-
-    render->Present();
+    render->flushAndScale();
+    drawOverlay();
+    render->swapBuffers();
 }
 
 
@@ -415,13 +417,12 @@ int Engine::_44ED0A_saturate_face_blv(BLVFace *a2, int *a3, signed int a4) {
 }
 
 //----- (0044E4B7) --------------------------------------------------------
-Engine::Engine(std::shared_ptr<GameConfig> config) {
+Engine::Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem) : _overlaySystem(overlaySystem) {
     this->config = config;
     this->bloodsplat_container = EngineIocContainer::ResolveBloodsplatContainer();
     this->decal_builder = EngineIocContainer::ResolveDecalBuilder();
     this->spell_fx_renedrer = EngineIocContainer::ResolveSpellFxRenderer();
     this->mouse = EngineIocContainer::ResolveMouse();
-    this->nuklear = EngineIocContainer::ResolveNuklear();
     this->particle_engine = EngineIocContainer::ResolveParticleEngine();
     this->vis = EngineIocContainer::ResolveVis();
 
