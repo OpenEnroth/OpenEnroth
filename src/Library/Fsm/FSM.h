@@ -16,8 +16,9 @@ using FSMTransitions = std::unordered_map<TransparentString, std::string, Transp
 class FSM : public FSMTransitionHandler {
  public:
     FSM();
-    void start(std::string_view stateName);
-    bool update();
+    void setInitialState(std::string_view stateName);
+    void update();
+    [[nodiscard]] bool isDone() const;
 
     void addState(std::string_view name, std::unique_ptr<FSMState> state, FSMTransitions transitions);
     virtual void executeTransition(std::string_view transition) override;

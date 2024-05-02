@@ -18,7 +18,7 @@ FSM::FSM() {
     addState("ExitFSM", std::make_unique<ExitFromFSMState>(), {});
 }
 
-void FSM::start(std::string_view stateName) {
+void FSM::setInitialState(std::string_view stateName) {
     if (StateEntry *entry = _getStateByName(stateName)) {
         _nextState = entry;
     } else {
@@ -26,7 +26,7 @@ void FSM::start(std::string_view stateName) {
     }
 }
 
-bool FSM::update() {
+void FSM::update() {
     if (_nextState) {
         _currentState->state->exit();
         _currentState = _nextState;
@@ -35,6 +35,9 @@ bool FSM::update() {
     }
 
     _currentState->state->update();
+}
+
+bool FSM::isDone() const {
     return _exitFromFSM;
 }
 
@@ -73,4 +76,5 @@ FSM::StateEntry *FSM::_getStateByName(std::string_view stateName) {
 
 void FSM::exitFromFSM() {
     _exitFromFSM = true;
+    _nextState = &_nullState;
 }

@@ -17,11 +17,8 @@ class VideoStateInputHandler: public PlatformEventFilter {
     }
 
     virtual bool mousePressEvent(const PlatformMouseEvent *event) override {
-        if (event->button == BUTTON_LEFT) {
-            _videoState.stopVideo();
-            return true;
-        }
-        return false;
+        _videoState.stopVideo();
+        return true;
     }
 
     virtual bool keyPressEvent(const PlatformKeyEvent *event) override {
