@@ -2,10 +2,12 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(GAME_STATES_SOURCES
         GameFSMBuilder.cpp
+        LoadState.cpp
         VideoState.cpp)
 
 set(GAME_STATES_HEADERS
         GameFSMBuilder.h
+        LoadState.h
         VideoState.h)
 
 add_library(game_states STATIC ${GAME_STATES_SOURCES} ${GAME_STATES_HEADERS})
