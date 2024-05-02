@@ -66,7 +66,7 @@ void main() {
     vec2 texcoords = vec2(1.0);
     vec2 texuvmod = vec2(0.0);
     vec2 deltas = vec2(0.0);
-    vec3 texsize = textureSize(textureArray0,0);
+    ivec3 texsize = textureSize(textureArray0,0);
 
     // texture flow mods
     if (abs(vsNorm.z) >= 0.9) {
@@ -93,7 +93,7 @@ void main() {
         const float accelerationdist = acceleration * accelerationtime * accelerationtime / 2.0;
         const float constdist = constspeed * consttime;
         float curpos;
-        float lavaperiod = mod(flowtimer, accelerationtime * 4.0 + consttime * 2.0); // 2 accelerations, 2 deceleraions, 2 periods of constant speed
+        float lavaperiod = mod(float(flowtimer), accelerationtime * 4.0 + consttime * 2.0); // 2 accelerations, 2 deceleraions, 2 periods of constant speed
         if (lavaperiod < accelerationtime) { // 1s acceleration
             float modetime = lavaperiod;
             curpos = acceleration * modetime * modetime / 2.0;
@@ -115,10 +115,10 @@ void main() {
             curpos = curpos - constspeed * modetime + acceleration * modetime * modetime / 2.0;
         }
         deltas.x = 0.0;
-        deltas.y = mod(curpos, texsize.y);
+        deltas.y = mod(curpos, float(texsize.y));
     } else {
-        deltas.x = texuvmod.x * mod(float(flowtimer), texsize.x);
-        deltas.y = texuvmod.y * mod(float(flowtimer), texsize.y);
+        deltas.x = texuvmod.x * mod(float(flowtimer), float(texsize.x));
+        deltas.y = texuvmod.y * mod(float(flowtimer), float(texsize.y));
     }
 
     texcoords.x = (deltas.x + texuv.x) / float(texsize.x);
