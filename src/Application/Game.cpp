@@ -137,7 +137,7 @@ int Game::run() {
     std::unique_ptr<FSM> fsm = GameFSMBuilder::buildFSM();
     GameWindowHandler* gameWindowHandler = ::application->component<GameWindowHandler>();
     gameWindowHandler->addFSMEventHandler(fsm.get());
-    while(!fsm->isDone()) {
+    while(!fsm->hasReachedExitState()) {
         render->ClearBlack();
         render->BeginScene2D();
 
