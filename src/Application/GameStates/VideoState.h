@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Library/Fsm/FSM.h>
-#include <Library/Platform/Filters/PlatformEventFilter.h>
 #include <GUI/GUIEnums.h>
 
 #include <string>
@@ -16,10 +15,13 @@ class VideoState : public FSMState {
     virtual void enter() override;
     virtual void exit() override;
 
-    void stopVideo();
-
  private:
+    virtual bool mousePressEvent(const PlatformMouseEvent *event) override;
+    virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
+    void _skipVideo();
+
     std::string _videoFileName;
     std::shared_ptr<IMovie> _movie;
     ScreenType _previousScreenType{};
+    bool _isPaused{};
 };

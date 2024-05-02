@@ -1,12 +1,14 @@
 #include "GameFSMBuilder.h"
 
+#include <utility>
+#include <memory>
+
 #include "VideoState.h"
 
 std::unique_ptr<FSM> GameFSMBuilder::buildFSM() {
     // Sequence of video being played when the game starts
     auto fsm = std::make_unique<FSM>();
     _buildIntroVideoSequence(*fsm);
-
     fsm->setInitialState("3DOVideo");
     return std::move(fsm);
 }

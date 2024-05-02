@@ -2,7 +2,9 @@
 
 #include <memory>
 #include <tuple>
+#include <vector>
 
+#include "Library/FSM/FSMEventHandler.h"
 #include "Library/Platform/Interface/PlatformEnums.h"
 #include "Library/Platform/Filters/PlatformEventFilter.h"
 #include "Library/Platform/Application/PlatformApplicationAware.h"
@@ -24,6 +26,9 @@ class GameWindowHandler : public PlatformEventFilter, private PlatformApplicatio
     void UpdateConfigFromWindow(GameConfig *config);
     std::tuple<int, Pointi, Sizei> GetWindowConfigPosition(const GameConfig *config);
     std::tuple<int, Pointi, Sizei> GetWindowRelativePosition(Pointi *position = nullptr);
+
+    void addFSMEventHandler(FSMEventHandler *fsmEventHandler);
+    void removeFSMEventHandler(FSMEventHandler *fsmEventHandler);
 
  private:
     friend class PlatformIntrospection;
@@ -70,5 +75,6 @@ class GameWindowHandler : public PlatformEventFilter, private PlatformApplicatio
 
  private:
     std::shared_ptr<Io::Mouse> mouse = nullptr;
+    std::vector<FSMEventHandler *> _fsmEventHandlers;
     bool _closing = false;
 };

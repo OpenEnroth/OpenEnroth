@@ -3,42 +3,15 @@
 #include <Engine/Engine.h>
 #include <Engine/EngineGlobals.h>
 #include <Engine/Time/Timer.h>
-#include <Library/Platform/Application/PlatformApplication.h>
 #include <Media/Audio/AudioPlayer.h>
 #include <Media/MediaPlayer.h>
 
 #include <GUI/GUIWindow.h>
 
-class VideoStateInputHandler: public PlatformEventFilter {
- public:
-    VideoStateInputHandler(VideoState &videoState)
-        : PlatformEventFilter({EVENT_MOUSE_BUTTON_PRESS, EVENT_KEY_PRESS})
-        , _videoState(videoState) {
-    }
-
-    virtual bool mousePressEvent(const PlatformMouseEvent *event) override {
-        _videoState.stopVideo();
-        return true;
-    }
-
-    virtual bool keyPressEvent(const PlatformKeyEvent *event) override {
-        if (!event->isAutoRepeat) {
-            _videoState.stopVideo();
-            return true;
-        }
-        return false;
-    }
-
- private:
-    VideoState &_videoState;
-};
-
 VideoState::VideoState(std::string_view videoFileName) : _videoFileName(videoFileName) {
 }
 
 void VideoState::enter() {
-    ::application->installComponent(std::make_unique<VideoStateInputHandler>(*this));
-
     if (engine->config->debug.NoVideo.value()) {
         return;
     }
@@ -65,24 +38,36 @@ void VideoState::enter() {
 }
 
 void VideoState::update() {
-    if (_movie) {
-        bool isOver = _movie->renderFrame();
-        if (isOver) {
-            executeTransition("videoEnd");
-        }
-    } else {
+    if (!_movie)
         executeTransition("videoEnd");
-    }
+
+    bool isOver = _movie->renderFrame();
+    if (isOver)
+        executeTransition("videoEnd");
 }
 
-void VideoState::stopVideo() {
+void VideoState::_skipVideo() {
     executeTransition("videoEnd");
 }
 
 void VideoState::exit() {
-    ::application->removeComponent<VideoStateInputHandler>();
     _movie = nullptr;
     // restore the screen type that was set before the video started
     current_screen_type = _previousScreenType;
     platform->setCursorShown(true);
+}
+
+bool VideoState::mousePressEvent(const PlatformMouseEvent *event) {
+    // We skip the video if we press any mouse button
+    _skipVideo();
+    return true;
+}
+
+bool VideoState::keyPressEvent(const PlatformKeyEvent *event) {
+    // We skip the video if we press any key button
+    if (!event->isAutoRepeat) {
+        _skipVideo();
+        return true;
+    }
+    return false;
 }

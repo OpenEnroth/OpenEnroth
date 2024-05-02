@@ -133,19 +133,23 @@ int Game::run() {
     window->activate();
     ::eventLoop->processMessages(eventHandler);
 
-    // This FSM will become the game FSM but for now we'll use it only to show the intro videos as a proof of concept
+    // Right now This FSM is used only to show the intro videos as a proof of concept
     std::unique_ptr<FSM> fsm = GameFSMBuilder::buildFSM();
+    GameWindowHandler* gameWindowHandler = ::application->component<GameWindowHandler>();
+    gameWindowHandler->addFSMEventHandler(fsm.get());
     while(!fsm->isDone()) {
-        ::eventLoop->processMessages(eventHandler);
         render->ClearBlack();
         render->BeginScene2D();
 
         fsm->update();
 
         render->Present();
-    }
 
-    ShowMM7IntroVideo_and_LoadingScreen();
+        MessageLoopWithWait();
+    }
+    gameWindowHandler->removeFSMEventHandler(fsm.get());
+
+    //ShowMM7IntroVideo_and_LoadingScreen();
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 

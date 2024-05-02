@@ -2,9 +2,11 @@
 
 #include <string_view>
 
+#include "FSMEventHandler.h"
+
 class FSMTransitionHandler;
 
-class FSMState {
+class FSMState: public FSMEventHandler {
  public:
     virtual ~FSMState() = default;
     virtual void update() = 0;
