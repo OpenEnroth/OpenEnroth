@@ -265,18 +265,18 @@ class AVVideoStream : public AVStreamWrapper {
     int height = 0;
 };
 
-static Recti calculateVideoRectangle(const PMovie &pMovie_Track) {
+static Recti calculateVideoRectangle(const IMovie &movie) {
     Sizei scaleSize;
     if (render->GetPresentDimensions() != render->GetRenderDimensions())
         scaleSize = render->GetRenderDimensions();
     else
         scaleSize = window->size();
-    float ratio_width = (float)scaleSize.w / pMovie_Track->GetWidth();
-    float ratio_height = (float)scaleSize.h / pMovie_Track->GetHeight();
+    float ratio_width = (float)scaleSize.w / movie.GetWidth();
+    float ratio_height = (float)scaleSize.h / movie.GetHeight();
     float ratio = std::min(ratio_width, ratio_height);
 
-    float w = pMovie_Track->GetWidth() * ratio;
-    float h = pMovie_Track->GetHeight() * ratio;
+    float w = movie.GetWidth() * ratio;
+    float h = movie.GetHeight() * ratio;
 
     Recti rect;
     rect.x = (float)scaleSize.w / 2 - w / 2;
@@ -308,7 +308,14 @@ class Movie : public IMovie {
         _blob = Blob();
     }
 
-    virtual ~Movie() { Close(); }
+    virtual ~Movie() {
+        if (_texture != nullptr) {
+            _texture->Release();
+        }
+
+        while (!_binkBuffer.empty()) _binkBuffer.pop();
+        Close();
+    }
 
     void Close() {
         ReleaseAVCodec();
@@ -542,7 +549,7 @@ class Movie : public IMovie {
 
                 // update texture
                 render->Update_Texture(tex);
-                render->DrawImage(tex, calculateVideoRectangle(pMovie_Track));
+                render->DrawImage(tex, calculateVideoRectangle(*pMovie_Track));
                 render->Present();
             }
 
@@ -585,7 +592,111 @@ class Movie : public IMovie {
 
     virtual bool IsPlaying() const override { return playing; }
 
+    virtual bool prepare() override {
+        _texture = GraphicsImage::Create(GetWidth(), GetHeight());
+        if (GetFormat() == "bink") {
+            // loop through once and add all audio packets to queue
+            while (av_read_frame(format_ctx, &_binkPacket) >= 0) {
+                if (_binkPacket.stream_index == audio.stream_idx) {
+                    std::shared_ptr<Blob> buffer = audio.decode_frame(&_binkPacket);
+                    if (buffer) _binkBuffer.push(buffer);
+                }
+            }
+            logger->trace("Audio Packets Queued");
+
+            // reset video to start
+            int err = avformat_seek_file(format_ctx, -1, 0, 0, 0, AVSEEK_FLAG_BACKWARD);
+            //int err = av_seek_frame(format_ctx, -1, 0, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
+            if (err < 0) {
+                logger->warning("Seek to start failed! - Exit Movie");
+                return false;
+            }
+            start_time = std::chrono::system_clock::now();
+            logger->trace("Video stream reset");
+
+            _lastVideoPts = -1;
+            _currentTime = std::chrono::system_clock::now();
+            _audioUpdateRate = (30.0f * video.frame_len) / 1000.0f;
+        }
+        return true;
+    }
+
+    virtual bool renderFrame() override {
+        std::shared_ptr<Blob> buffer;
+        if (GetFormat() == "bink") {
+            if (av_read_frame(format_ctx, &_binkPacket) >= 0) {
+                int desired_frame_number{};
+                do {
+                    // get playback time - and wait till we need the next frame
+                    _currentTime = std::chrono::system_clock::now();
+                    playback_time = (std::chrono::duration_cast<std::chrono::milliseconds>(_currentTime - start_time)).count();
+                    desired_frame_number = (int)((playback_time / video.frame_len));
+                    std::this_thread::sleep_for(5ms);
+                } while (_lastVideoPts == desired_frame_number);
+
+                // ignore audio packets
+                if (_binkPacket.stream_index == audio.stream_idx) {
+                    return false;
+                }
+
+                if (_binkPacket.stream_index == video.stream_idx) {
+                    // check if anymore sound frames still in decoder
+                    buffer = audio.decode_frame(NULL);
+                    if (buffer) _binkBuffer.push(buffer);
+
+                    // stream required sound frames
+                    // nwc and intro are 15fps vid but need 30fps sound
+                    // jvc is 10fps video but need 30 fps sound
+                    for (int i = 0; i < _audioUpdateRate; i++) {
+                        if (!_binkBuffer.empty()) {
+                            provider->Stream16(audio_data_in_device,
+                                _binkBuffer.front()->size() / 2,
+                                _binkBuffer.front()->data());
+                            _binkBuffer.pop();
+                        }
+                    }
+
+                    // Decode video frame and show
+                    _lastVideoPts = _binkPacket.pts;
+                    video.decode_frame(&_binkPacket);
+                    std::shared_ptr<Blob> tmp_buf = video.last_frame;
+
+                    _renderTexture(*tmp_buf);
+                }
+
+                av_packet_unref(&_binkPacket);
+
+                // exit movie
+                if (!playing) return true;
+            } else {
+                // hold for frame length at end of packets
+                std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(video.frame_len)));
+                return true;
+            }
+        } else {
+            std::this_thread::sleep_for(2ms);
+
+            std::shared_ptr<Blob> buffer = GetFrame();
+            if (!buffer) {
+                return true;
+            }
+
+            _renderTexture(*buffer);
+        }
+
+        return false;
+    }
+
  protected:
+    void _renderTexture(Blob &buffer) {
+        // update pixels from buffer
+        _texture->rgba() = RgbaImage::copy(_texture->width(), _texture->height(), static_cast<const Color *>(buffer.data()));
+
+        // update texture
+        render->Update_Texture(_texture);
+        render->DrawImage(_texture, calculateVideoRectangle(*this));
+    }
+
     static int s_read(void *opaque, uint8_t *buf, int buf_size) {
         return static_cast<Movie *>(opaque)->read(buf, buf_size);
     }
@@ -641,6 +752,17 @@ class Movie : public IMovie {
 
     Blob _blob;
     MemoryInputStream _stream;
+
+    GraphicsImage *_texture{};
+
+    // Bink video properties
+    AVPacket _binkPacket;
+    // Bink decoded audio buffer
+    std::queue<std::shared_ptr<Blob>, std::deque<std::shared_ptr<Blob>>> _binkBuffer;
+    int _lastVideoPts = -1;
+    int _desiredFrameNumber;
+    std::chrono::system_clock::time_point _currentTime;
+    int _audioUpdateRate;
 };
 
 void MPlayer::Initialize() {
@@ -713,6 +835,25 @@ void MPlayer::HouseMovieLoop() {
     }
 }
 
+std::shared_ptr<IMovie> MPlayer::loadFullScreenMovie(std::string_view movieFileName) {
+    Blob blob = LoadMovie(movieFileName);
+    if (!blob) {
+        return nullptr;
+    }
+
+    std::shared_ptr<Movie> pMovie = std::make_shared<Movie>();
+    if (!pMovie->LoadFromLOD(blob)) {
+        return nullptr;
+    }
+
+    bool setupSuccess = pMovie->prepare();
+    if (!setupSuccess) {
+        return nullptr;
+    }
+
+    return std::dynamic_pointer_cast<IMovie>(pMovie);
+}
+
 void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
     if (engine->config->debug.NoVideo.value()) {
         return;
@@ -737,16 +878,11 @@ void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
 
     pMovie_Track->Play();
 
-    Sizei wSize = window->size();
-    Sizei scaleSize;
-
-    // create texture
-    GraphicsImage *tex = GraphicsImage::Create(pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
-
     if (pMovie->GetFormat() == "bink") {
         logger->trace("bink file");
         pMovie->PlayBink();
     } else {
+        GraphicsImage *tex = GraphicsImage::Create(pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
         while (true) {
             MessageLoopWithWait();
 
@@ -765,14 +901,12 @@ void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
 
             // update texture
             render->Update_Texture(tex);
-            render->DrawImage(tex, calculateVideoRectangle(pMovie_Track));
+            render->DrawImage(tex, calculateVideoRectangle(*pMovie_Track));
 
             render->Present();
         }
+        tex->Release();
     }
-
-    // release texture
-    tex->Release();
 
     current_screen_type = SCREEN_GAME;
     pMovie_Track = nullptr;

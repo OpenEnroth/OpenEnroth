@@ -1,5 +1,8 @@
 #include "FSM.h"
 
+#include "NullState.h"
+#include "ExitFromFSMState.h"
+
 #include <Library/Logger/Logger.h>
 
 #include <memory>
@@ -12,6 +15,7 @@ FSM::FSM() {
     _nullState.name = "NullState";
     _nullState.state = std::make_unique<NullState>();
     _currentState = &_nullState;
+    addState("ExitFSM", std::make_unique<ExitFromFSMState>(), {});
 }
 
 void FSM::start(std::string_view stateName) {
@@ -26,8 +30,8 @@ bool FSM::update() {
     if (_nextState) {
         _currentState->state->exit();
         _currentState = _nextState;
-        _currentState->state->enter();
         _nextState = nullptr;
+        _currentState->state->enter();
     }
 
     _currentState->state->update();

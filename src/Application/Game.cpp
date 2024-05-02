@@ -145,15 +145,20 @@ int Game::run() {
         { "videoEnd", "IntroVideo" }
     });
     videoFSM.addState("IntroVideo", std::make_unique<VideoState>("Intro"), {
-        { "videoEnd", "Exit" }
+        { "videoEnd", "ExitFSM" }
     });
-    videoFSM.addState("Exit", std::make_unique<ExitFromFSMState>(), {});
 
     videoFSM.start("3DOVideo");
+
     bool exitFromFSM = false;
     while(!exitFromFSM) {
         ::eventLoop->processMessages(eventHandler);
+        render->ClearBlack();
+        render->BeginScene2D();
+
         exitFromFSM = videoFSM.update();
+
+        render->Present();
     }
 
     //ShowMM7IntroVideo_and_LoadingScreen();

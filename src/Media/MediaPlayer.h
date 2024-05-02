@@ -34,6 +34,8 @@ class MPlayer {
     bool IsMoviePlaying() const;
     bool StopMovie();
 
+    std::shared_ptr<IMovie> loadFullScreenMovie(std::string_view pFilename);
+
  protected:
     std::unique_ptr<FFmpegLogProxy> logProxy;
     VidReader might_list;

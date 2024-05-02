@@ -19,5 +19,8 @@ class IMovie {
     virtual std::shared_ptr<Blob> GetFrame() = 0;
     virtual std::string GetFormat() = 0;
     virtual void PlayBink() = 0;
+
+    virtual bool prepare() = 0;
+    virtual bool renderFrame() = 0;
 };
 typedef std::shared_ptr<IMovie> PMovie;
