@@ -1,6 +1,7 @@
 #include "GameFSMBuilder.h"
 
 #include <Engine/Engine.h>
+#include <Library/Fsm/FSMBuilder.h>
 
 #include <utility>
 #include <memory>
@@ -8,9 +9,10 @@
 #include "VideoState.h"
 
 std::unique_ptr<FSM> GameFSMBuilder::buildFSM() {
-    // Sequence of video being played when the game starts
-    auto fsm = std::make_unique<FSM>();
-    _buildIntroVideoSequence(*fsm);
+    FSMBuilder fsmBuilder;
+    _buildIntroVideoSequence(fsmBuilder);
+
+    auto fsm = fsmBuilder.build();
     _setStartingState(*fsm);
     return std::move(fsm);
 }
@@ -26,22 +28,19 @@ void GameFSMBuilder::_setStartingState(FSM &fsm) {
     }
 }
 
-void GameFSMBuilder::_buildIntroVideoSequence(FSM &fsm) {
-    fsm.addState("3DOVideo", std::make_unique<VideoState>("3dologo"), {
-        { "videoEnd", {{ "NWCVideo" }} }
-    });
-    fsm.addState("NWCVideo", std::make_unique<VideoState>("new world logo"), {
-        { "videoEnd", {{ "JVCVideo" }} }
-    });
-    fsm.addState("JVCVideo", std::make_unique<VideoState>("jvc"), {
-        // In this case when we're triggering the videoEnd transition we can move to 2 different states one of them has a transition
-        { "videoEnd", {
-            { "IntroVideo", []() { return !engine->config->debug.NoIntro.value(); }},
-            { "_Exit" }
-        }}
-    });
+void GameFSMBuilder::_buildIntroVideoSequence(FSMBuilder &builder) {
+    builder
+    .state<VideoState>("3DOVideo", "3dologo")
+        .on("videoEnd").jumpTo("NWCVideo")
 
-    fsm.addState("IntroVideo", std::make_unique<VideoState>("Intro"), {
-        { "videoEnd", {{ "_Exit" }} }
-    });
+    .state<VideoState>("NWCVideo", "new world logo")
+        .on("videoEnd").jumpTo("JVCVideo")
+
+    .state<VideoState>("JVCVideo", "jvc")
+        .on("videoEnd")
+            .jumpTo([]() { return !engine->config->debug.NoIntro.value(); }, "IntroVideo")
+            .jumpTo("_Exit")
+
+    .state<VideoState>("IntroVideo", "Intro")
+        .on("videoEnd").jumpTo("_Exit");
 }

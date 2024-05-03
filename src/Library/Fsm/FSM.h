@@ -35,7 +35,6 @@ class FSM : public FSMTransitionHandler, public FSMEventHandler {
     */
     [[nodiscard]] bool hasReachedExitState() const;
 
-    void addState(std::string_view name, std::unique_ptr<FSMState> state, FSMTransitions transitions);
     virtual void executeTransition(std::string_view transition) override;
     virtual void exitFromFSM() override;
 
@@ -48,15 +47,15 @@ class FSM : public FSMTransitionHandler, public FSMEventHandler {
     */
     void jumpToState(std::string_view stateName);
 
- private:
     struct StateEntry {
-        StateEntry(std::string_view name, std::unique_ptr<FSMState> state, FSMTransitions transitions)
-            : name(name), state(std::move(state)), transitions(std::move(transitions)) {}
         std::string name;
         std::unique_ptr<FSMState> state;
         FSMTransitions transitions;
     };
 
+    void addState(std::unique_ptr<StateEntry> stateEntry);
+
+ private:
     virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
     virtual bool keyReleaseEvent(const PlatformKeyEvent *event) override;
     virtual bool mouseMoveEvent(const PlatformMouseEvent *event) override;
@@ -75,6 +74,7 @@ class FSM : public FSMTransitionHandler, public FSMEventHandler {
     virtual bool textInputEvent(const PlatformTextInputEvent *event) override;
 
     StateEntry *_getStateByName(std::string_view stateName);
+    void _createDefaultStates();
 
     std::unordered_map<TransparentString, std::unique_ptr<StateEntry>, TransparentStringHash, TransparentStringEquals> _states;
     StateEntry *_currentState{};

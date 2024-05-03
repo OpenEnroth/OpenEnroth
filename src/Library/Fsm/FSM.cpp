@@ -12,12 +12,10 @@
 const LogCategory FSM::fsmLogCategory("FSM");
 
 FSM::FSM() {
-    // Internal default states - They are prefixed with an underscore to denote them as internal.
-    addState("_Null", std::make_unique<NullState>(), {});
-    addState("_Exit", std::make_unique<ExitFromFSMState>(), {});
-
+    _createDefaultStates();
     // By default, the FSM attempts to reach the _Exit state.
-    // This occurs if an FSM has no custom states, although it's very unlikely to happen. Nevertheless, we still need to account for this possibility.
+    // This occurs if an FSM has no custom states or the user doesn't provide a different state
+    // Although it's very unlikely to happen we still need to account for this possibility.
     jumpToState("_Exit");
 }
 
@@ -44,13 +42,9 @@ bool FSM::hasReachedExitState() const {
     return _hasReachedExitState;
 }
 
-void FSM::addState(std::string_view name, std::unique_ptr<FSMState> state, FSMTransitions transitions) {
-    state->setTransitionHandler(this);
-    auto stateEntry = std::make_unique<StateEntry>(name, std::move(state), std::move(transitions));
-    if (_states.empty()) {
-        _currentState = stateEntry.get();
-    }
-    _states.insert({ name, std::move(stateEntry) });
+void FSM::addState(std::unique_ptr<StateEntry> stateEntry) {
+    stateEntry->state->setTransitionHandler(this);
+    _states.insert({ stateEntry->name, std::move(stateEntry) });
 }
 
 void FSM::executeTransition(std::string_view transition) {
@@ -162,4 +156,18 @@ bool FSM::nativeEvent(const PlatformNativeEvent *event) {
 
 bool FSM::textInputEvent(const PlatformTextInputEvent *event) {
     return _currentState->state->textInputEvent(event);
+}
+
+void FSM::_createDefaultStates() {
+    // Internal default states - They are prefixed with an underscore to denote them as internal.
+    auto nullStateEntry = std::make_unique<FSM::StateEntry>();
+    nullStateEntry->name = "_Null";
+    nullStateEntry->state = std::make_unique<NullState>();
+    _currentState = nullStateEntry.get();
+    addState(std::move(nullStateEntry));
+
+    auto exitStateEntry = std::make_unique<FSM::StateEntry>();
+    exitStateEntry->name = "_Exit";
+    exitStateEntry->state = std::make_unique<ExitFromFSMState>();
+    addState(std::move(exitStateEntry));
 }
