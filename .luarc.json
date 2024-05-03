@@ -80,7 +80,7 @@
         "version": "Lua 5.4",
         "path": [
             "./resources/scripts/?.lua",
-            "./luaDefinition/?.lua"
+            "./resources/scripts/_definitions/?.lua"
         ],
         "pathStrict": false
     },
