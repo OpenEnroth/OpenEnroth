@@ -19,7 +19,7 @@ class PlatformApplicationAware {
     }
 
     template<class T>
-    T *component() {
+    T *component() const {
         assert(_application); // Should be installed.
         return _componentStorage->require<T>();
     }

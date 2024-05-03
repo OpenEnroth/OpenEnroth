@@ -2,6 +2,7 @@
 
 class Menu;
 
+// TODO(captainurist): this is a legacy class, drop.
 class GameIocContainer {
  public:
      static Menu *ResolveGameMenu();
