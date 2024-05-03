@@ -44,7 +44,7 @@ uniform int waterframe;
 uniform Sunlight sun;
 uniform vec3 CameraPos;
 uniform int flowtimer;
-uniform int flowtimerms;
+uniform int flowtimerms; // TODO(Nik-RE-dev): use a single timer for everything
 uniform int watertiles;
 uniform float gamma;
 
@@ -90,9 +90,6 @@ void main() {
         float lavaperiod = mod(float(flowtimerms), 8000.0);
         float lavaradians = lavaperiod * radians(360.0) / 8000.0;
         float curpos = sin(lavaradians);
-        if (curpos < 0.0) {
-            curpos = curpos + 1.0;
-        }
         deltas.x = 0.0;
         deltas.y = float(texsize.y) * curpos;
     } else {
