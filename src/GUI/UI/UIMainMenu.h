@@ -11,6 +11,7 @@ class GUIWindow_MainMenu : public GUIWindow {
 
     virtual void Update() override;
 
+    void processMessage(UIMessageType messageType);
     void EventLoop();
 
     /**

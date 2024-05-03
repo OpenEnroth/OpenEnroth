@@ -137,27 +137,28 @@ int Game::run() {
     std::unique_ptr<FSM> fsm = GameFSMBuilder::buildFSM();
     GameWindowHandler* gameWindowHandler = ::application->component<GameWindowHandler>();
     gameWindowHandler->addFSMEventHandler(fsm.get());
-    while(!fsm->hasReachedExitState()) {
-        render->ClearBlack();
-        render->BeginScene2D();
+    // Need to have this do/while external loop till we remove entirely all the states
+    do {
+        while (!fsm->hasReachedExitState()) {
+            render->ClearBlack();
+            render->BeginScene2D();
 
-        fsm->update();
+            fsm->update();
 
-        render->Present();
+            render->Present();
 
-        MessageLoopWithWait();
-    }
-    gameWindowHandler->removeFSMEventHandler(fsm.get());
+            MessageLoopWithWait();
+        }
+        gameWindowHandler->removeFSMEventHandler(fsm.get());
 
-    // logger->Warning("MM: entering main loop");
-    while (true) {
-        GUIWindow_MainMenu::loop();
         uGameState = GAME_STATE_PLAYING;
-
         if (!loop()) {
             break;
+        } else {
+            fsm->reset();
+            fsm->jumpToState("MainMenu");
         }
-    }
+    } while (true);
 
     return 0;
 }

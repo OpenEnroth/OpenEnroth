@@ -171,3 +171,9 @@ void FSM::_createDefaultStates() {
     exitStateEntry->state = std::make_unique<ExitFromFSMState>();
     addState(std::move(exitStateEntry));
 }
+
+void FSM::reset() {
+    _hasReachedExitState = false;
+    _currentState = _getStateByName("_Null");
+    jumpToState("_Exit");
+}

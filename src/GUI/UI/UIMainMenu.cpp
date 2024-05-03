@@ -81,6 +81,26 @@ void GUIWindow_MainMenu::Update() {
     }
 }
 
+void GUIWindow_MainMenu::processMessage(UIMessageType message) {
+    // Play the sound and change visual connected to the related button
+    switch (message) {
+    case UIMSG_MainMenu_ShowPartyCreationWnd:
+        new OnButtonClick2({ 495, 172 }, { 0, 0 }, pBtnNew);
+        break;
+    case UIMSG_MainMenu_ShowLoadWindow:
+        new OnButtonClick2({ 495, 227 }, { 0, 0 }, pBtnLoad);
+        break;
+    case UIMSG_ShowCredits:
+        new OnButtonClick2({ 495, 282 }, { 0, 0 }, pBtnCredits);
+        break;
+    case UIMSG_ExitToWindows:
+        new OnButtonClick2({ 495, 337 }, { 0, 0 }, pBtnExit);
+        break;
+    default:
+        break;
+    }
+}
+
 void GUIWindow_MainMenu::EventLoop() {
     while (engine->_messageQueue->haveMessages()) {
         UIMessageType pUIMessageType;

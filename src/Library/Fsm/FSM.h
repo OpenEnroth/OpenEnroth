@@ -54,6 +54,7 @@ class FSM : public FSMTransitionHandler, public FSMEventHandler {
     };
 
     void addState(std::unique_ptr<StateEntry> stateEntry);
+    void reset();
 
  private:
     virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
