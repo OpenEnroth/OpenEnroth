@@ -133,7 +133,7 @@ int Game::run() {
     window->activate();
     ::eventLoop->processMessages(eventHandler);
 
-    // Right now This FSM is used only to show the intro videos as a proof of concept
+    // This FSM is used only to show the intro videos and perform the second initialization
     std::unique_ptr<FSM> fsm = GameFSMBuilder::buildFSM();
     GameWindowHandler* gameWindowHandler = ::application->component<GameWindowHandler>();
     gameWindowHandler->addFSMEventHandler(fsm.get());
@@ -148,15 +148,6 @@ int Game::run() {
         MessageLoopWithWait();
     }
     gameWindowHandler->removeFSMEventHandler(fsm.get());
-
-    //ShowMM7IntroVideo_and_LoadingScreen();
-
-    dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
-
-    GUIWindow_MainMenu::drawCopyrightAndInit([&] {
-        engine->SecondaryInitialization();
-        FinalInitialization();
-    });
 
     // logger->Warning("MM: entering main loop");
     while (true) {
