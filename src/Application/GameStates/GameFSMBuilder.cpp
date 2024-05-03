@@ -21,13 +21,15 @@ std::unique_ptr<FSM> GameFSMBuilder::buildFSM() {
 
 void GameFSMBuilder::_setStartingState(FSM &fsm) {
     GameConfig::Debug &debugConfig = engine->config->debug;
+    std::string_view initialState = "LoadStep2";
     if (!debugConfig.NoVideo.value()) {
         if (!debugConfig.NoLogo.value()) {
-            fsm.jumpToState("3DOVideo");
+            initialState = "3DOVideo";
         } else if (!debugConfig.NoIntro.value()) {
-            fsm.jumpToState("IntroVideo");
+            initialState = "IntroVideo";
         }
     }
+    fsm.jumpToState(initialState);
 }
 
 void GameFSMBuilder::_buildIntroVideoSequence(FSMBuilder &builder) {
