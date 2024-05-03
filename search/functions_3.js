@@ -147,7 +147,7 @@ var searchData=
   ['commontaperecorder_144',['CommonTapeRecorder',['../classCommonTapeRecorder.html#a6a8c280a0e3c056444821d65f3d75e93',1,'CommonTapeRecorder']]],
   ['compactlayingitemslist_145',['CompactLayingItemsList',['../SpriteObject_8h.html#aaba2939e1540dd4a568dbcdb4591117b',1,'CompactLayingItemsList():&#160;SpriteObject.cpp'],['../SpriteObject_8cpp.html#aaba2939e1540dd4a568dbcdb4591117b',1,'CompactLayingItemsList():&#160;SpriteObject.cpp']]],
   ['comparevariable_146',['CompareVariable',['../classCharacter.html#a06b6243ed925265a4083d136a18fa98b',1,'Character']]],
-  ['component_147',['component',['../classPlatformApplicationAware.html#a17a6f851e67d4dafbdddf82ef9200700',1,'PlatformApplicationAware::component()'],['../classPlatformApplication.html#adee816bd26e6f10caa78b9cd8ccad3f1',1,'PlatformApplication::component() const']]],
+  ['component_147',['component',['../classPlatformApplicationAware.html#a139345c435dcae5ef689ae7c4ede10d9',1,'PlatformApplicationAware::component()'],['../classPlatformApplication.html#adee816bd26e6f10caa78b9cd8ccad3f1',1,'PlatformApplication::component() const']]],
   ['components_148',['components',['../classPlatformApplication.html#a4728d738fbc348e25ab14bbc86f52079',1,'PlatformApplication']]],
   ['compress_149',['compress',['../namespacezlib.html#a641c9dc4e29b4f2007eb0712eff6ca2e',1,'zlib']]],
   ['concat_150',['concat',['../classBlob.html#aa30234d5645520d53ac02d1472249222',1,'Blob']]],
