@@ -879,109 +879,101 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
 // way
 void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
                              AIDirection *pOut, int PreferedZ) {
-    float v31;        // st7@45
-    float v32;        // st6@45
-    float v33;        // st7@45
-    Vec3i out1;
-    Vec3i out2;
-    float a4a;        // [sp+58h] [bp+Ch]@45
+    Vec3f out1;
+    Vec3f out2;
 
     int id1 = uObj1ID.id();
     int id2 = uObj2ID.id();
     switch (uObj1ID.type()) {
         case OBJECT_Item: {
-            out1 = pSpriteObjects[id1].vPosition.toInt();
+            out1 = pSpriteObjects[id1].vPosition;
             break;
         }
         case OBJECT_Actor: {
-            out1 = (pActors[id1].pos + Vec3f(0, 0, pActors[id1].height * 0.75f)).toIntTrunc();
+            out1 = (pActors[id1].pos + Vec3f(0, 0, pActors[id1].height * 0.75f));
             break;
         }
         case OBJECT_Character: {
-            out1 = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
+            out1 = pParty->pos + Vec3f(0, 0, pParty->height / 3);
             if (id1 == 0) {
                 // Do nothing.
             } else if (id1 == 4) {
-                out1 += Vec3i::fromPolar(24, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(24, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 3) {
-                out1 += Vec3i::fromPolar(8, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(8, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 2) {
-                out1 += Vec3i::fromPolar(8, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(8, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 1) {
-                out1 += Vec3i::fromPolar(24, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(24, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
             }
             break;
         }
         case OBJECT_Decoration: {
-            out1 = pLevelDecorations[id1].vPosition.toInt();
+            out1 = pLevelDecorations[id1].vPosition;
             break;
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out1 = pIndoor->pFaces[id1].pBounding.center();
+                out1 = pIndoor->pFaces[id1].pBounding.center().toFloat();
             }
             break;
         }
         default: {
-            out1 = Vec3i();
+            out1 = Vec3f();
             break;
         }
     }
 
     switch (uObj2ID.type()) {
         case OBJECT_Item: {
-            out2 = pSpriteObjects[id2].vPosition.toInt();
+            out2 = pSpriteObjects[id2].vPosition;
             break;
         }
         case OBJECT_Actor: {
-            out2 = (pActors[id2].pos + Vec3f(0, 0, pActors[id2].height * 0.75f)).toIntTrunc();
+            out2 = (pActors[id2].pos + Vec3f(0, 0, pActors[id2].height * 0.75f));
             break;
         }
         case OBJECT_Character: {
             if (!PreferedZ)
                 PreferedZ = pParty->eyeLevel;
 
-            out2 = pParty->pos.toInt() + Vec3i(0, 0, PreferedZ);
+            out2 = pParty->pos + Vec3f(0, 0, PreferedZ);
             break;
         }
         case OBJECT_Decoration: {
-            out2 = pLevelDecorations[id2].vPosition.toInt();
+            out2 = pLevelDecorations[id2].vPosition;
             break;
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out2 = pIndoor->pFaces[id2].pBounding.center();
+                out2 = pIndoor->pFaces[id2].pBounding.center().toFloat();
             }
             break;
         }
         default: {
-            out2 = Vec3i();
+            out2 = Vec3f();
             break;
         }
     }
 
-    v31 = out2.x - out1.x;
-    v32 = out2.y - out1.y;
-    a4a = out2.z - out1.z;
-    float outx2 = v32 * v32;
-    float outy2 = v31 * v31;
-    v33 = sqrt(a4a * a4a + outy2 + outx2);
-    if (v33 <= 1.0) {
-        pOut->vDirection.x = 65536;
-        pOut->vDirection.y = 0;
-        pOut->vDirection.z = 0;
+    Vec3f dir = out2 - out1;
+    float length = dir.length();
+    float deltaX = out2.x - out1.x;
+    float deltaY = out2.y - out1.y;
+    float deltaZ = out2.z - out1.z;
+    if (length <= 1.0) {
+        pOut->vDirection = Vec3f(1, 0, 0);
         pOut->uDistance = 1;
         pOut->uDistanceXZ = 1;
         pOut->uYawAngle = 0;
         pOut->uPitchAngle = 0;
     } else {
-        pOut->vDirection.x = (int32_t)(1.0 / v33 * v31 * 65536.0);
-        pOut->vDirection.y = (int32_t)(1.0 / v33 * v32 * 65536.0);
-        pOut->vDirection.z = (int32_t)(1.0 / v33 * a4a * 65536.0);
-        pOut->uDistance = (unsigned)v33;
-        pOut->uDistanceXZ = (unsigned)sqrt(outy2 + outx2);
-        pOut->uYawAngle = TrigLUT.atan2(v31, v32);
-        pOut->uPitchAngle = TrigLUT.atan2(pOut->uDistanceXZ, a4a);
+        dir.normalize();
+        pOut->vDirection = dir;
+        pOut->uDistance = length;
+        pOut->uDistanceXZ = std::sqrt(deltaX * deltaX + deltaY * deltaY);
+        pOut->uYawAngle = TrigLUT.atan2(deltaX, deltaY);
+        pOut->uPitchAngle = TrigLUT.atan2(pOut->uDistanceXZ, deltaZ);
     }
 }
 
@@ -1543,8 +1535,8 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
             ypos = pParty->pos.y;
             zpos = pParty->pos.z + pParty->eyeLevel;
         } else {
-            xpos = pDir->vDirection.x;
-            ypos = pDir->vDirection.x;
+            xpos = pDir->vDirection.x * 65536; // make a target point at distance
+            ypos = pDir->vDirection.y * 65536;
         }
     }
     //v19 = v3->uActorHeight;
@@ -1952,7 +1944,7 @@ void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
         } else {
             if (v5->moveSpeed)
                 v5->currentActionLength = Duration::fromTicks(
-                    (signed int)(a4->uDistanceXZ << 7) / v5->moveSpeed);
+                    (signed int)(a4->uDistanceXZ * 128) / v5->moveSpeed);
             else
                 v5->currentActionLength = 0_ticks;
             if (v5->currentActionLength > 256_ticks) v5->currentActionLength = 256_ticks;
@@ -2012,7 +2004,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
         v13 = v7->moveSpeed;
         if (v13)
             v7->currentActionLength = Duration::fromTicks(
-                (signed int)(v10->uDistanceXZ << 7) / v13);
+                (signed int)(v10->uDistanceXZ * 128) / v13);
         else
             v7->currentActionLength = 0_ticks;
         if (v7->currentActionLength > 32_ticks) v7->currentActionLength = 32_ticks;
@@ -2064,7 +2056,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
     } else {
         v12 = v6->moveSpeed;
         if (v12)
-            v6->currentActionLength = Duration::fromTicks((a4->uDistanceXZ << 7) / v12);
+            v6->currentActionLength = Duration::fromTicks((a4->uDistanceXZ * 128) / v12);
         else
             v6->currentActionLength = 0_ticks;
         if (v6->currentActionLength > 128_ticks) v6->currentActionLength = 128_ticks;

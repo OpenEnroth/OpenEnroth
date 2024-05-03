@@ -31,9 +31,9 @@ struct stru319 {
 extern stru319 stru_50C198;  // idb
 
 struct AIDirection {
-    Vec3f vDirection{};
-    unsigned int uDistance = 0;
-    unsigned int uDistanceXZ = 0;
+    Vec3f vDirection;
+    float uDistance = 0;
+    float uDistanceXZ = 0;
     unsigned int uYawAngle = 0;
     /*un*/signed int uPitchAngle = 0;
 };
