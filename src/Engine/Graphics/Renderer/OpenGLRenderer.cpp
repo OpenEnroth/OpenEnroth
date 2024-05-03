@@ -3620,6 +3620,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
     glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimer"), GLint(pMiscTimer->time().realtimeMilliseconds() >> 4));
+    glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimerms"), GLint(pMiscTimer->time().realtimeMilliseconds()));
 
     glUniform1f(glGetUniformLocation(outbuildshader.ID, "gamma"), gamma);
 
@@ -4316,6 +4317,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
         glUniform1i(glGetUniformLocation(bspshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
         glUniform1i(glGetUniformLocation(bspshader.ID, "flowtimer"), GLint(pMiscTimer->time().realtimeMilliseconds() >> 4));
+        glUniform1i(glGetUniformLocation(bspshader.ID, "flowtimerms"), GLint(pMiscTimer->time().realtimeMilliseconds()));
 
         glUniform1f(glGetUniformLocation(bspshader.ID, "gamma"), gamma);
 

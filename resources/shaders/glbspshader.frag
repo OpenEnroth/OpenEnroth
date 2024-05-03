@@ -44,6 +44,7 @@ uniform int waterframe;
 uniform Sunlight sun;
 uniform vec3 CameraPos;
 uniform int flowtimer;
+uniform int flowtimerms;
 uniform int watertiles;
 uniform float gamma;
 
@@ -84,37 +85,15 @@ void main() {
 
     // lava movement
     if ((vsAttrib & 0x4000) > 0) {
-        // flowtimer comes in 1/16th of milliseconds
-        const float accelerationtime = 1000.0 / 16.0;
-        const float consttime = 2000.0 / 16.0;
-        const float acceleration = 0.05;
-        const float constspeed = accelerationtime * acceleration;
-        const float accelerationdist = acceleration * accelerationtime * accelerationtime / 2.0;
-        const float constdist = constspeed * consttime;
-        float curpos;
-        float lavaperiod = mod(float(flowtimer), accelerationtime * 4.0 + consttime * 2.0); // 2 accelerations, 2 deceleraions, 2 periods of constant speed
-        if (lavaperiod < accelerationtime) { // 1s acceleration
-            float modetime = lavaperiod;
-            curpos = acceleration * modetime * modetime / 2.0;
-        } else if (lavaperiod < (accelerationtime + consttime)) { // 2s constant speed
-            float modetime = lavaperiod - accelerationtime;
-            curpos = accelerationdist;
-            curpos = curpos + constspeed * modetime;
-        } else if (lavaperiod < (accelerationtime * 3.0 + consttime)) { // 1s deceleration and 1s acceleration in reverse
-            float modetime = lavaperiod - accelerationtime - consttime;
-            curpos = accelerationdist + constdist;
-            curpos = curpos + constspeed * modetime - acceleration * modetime * modetime / 2.0;
-        } else if (lavaperiod < (accelerationtime * 3.0 + consttime * 2.0)) { // 2s constant speed
-            float modetime = lavaperiod - accelerationtime * 3.0 - consttime;
-            curpos = accelerationdist + constdist;
-            curpos = curpos - constspeed * modetime;
-        } else { // 1s deceleration
-            float modetime = lavaperiod - accelerationtime * 3.0 - consttime * 2.0;
-            curpos = accelerationdist;
-            curpos = curpos - constspeed * modetime + acceleration * modetime * modetime / 2.0;
+        // Texture makes full circle in 8 seconds
+        float lavaperiod = mod(float(flowtimerms), 8000.0);
+        float lavaradians = lavaperiod * radians(360.0) / 8000.0;
+        float curpos = sin(lavaradians);
+        if (curpos < 0.0) {
+            curpos = curpos + 1.0;
         }
         deltas.x = 0.0;
-        deltas.y = mod(curpos, float(texsize.y));
+        deltas.y = float(texsize.y) * curpos;
     } else {
         deltas.x = texuvmod.x * mod(float(flowtimer), float(texsize.x));
         deltas.y = texuvmod.y * mod(float(flowtimer), float(texsize.y));
