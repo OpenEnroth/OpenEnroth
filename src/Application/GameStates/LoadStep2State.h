@@ -2,9 +2,9 @@
 
 #include <Library/Fsm/FSMState.h>
 
-class LoadState : public FSMState {
+class LoadStep2State : public FSMState {
  public:
-    explicit LoadState();
+    LoadStep2State();
     virtual void update() override;
     virtual void enter() override;
     virtual void exit() override;

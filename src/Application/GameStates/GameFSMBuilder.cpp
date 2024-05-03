@@ -34,7 +34,6 @@ void GameFSMBuilder::_buildIntroVideoSequence(FSM &fsm) {
         { "videoEnd", {{ "JVCVideo" }} }
     });
     fsm.addState("JVCVideo", std::make_unique<VideoState>("jvc"), {
-        // In this case when we're triggering the videoEnd transition we can move to 2 different states one of them has a transition
         { "videoEnd", {
             { "IntroVideo", []() { return !engine->config->debug.NoIntro.value(); }},
             { "_Exit" }
