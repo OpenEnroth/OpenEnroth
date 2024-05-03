@@ -1,45 +1,45 @@
-local game = require "core.game".bindings
+local Game = require "bindings.game"
 local CommandUtilities = require "dev.commands.command_utils"
 local Utilities = require "utils"
 
 local function setSkill(skillName, level, masteryName, charIndex)
     charIndex = CommandUtilities.characterOrCurrent(charIndex)
-    game.party.setCharacterInfo(charIndex, {
-        skill = { id = game.SkillType[skillName], level = tonumber(level), mastery = game.SkillMastery[masteryName] }
+    Game.party.setCharacterInfo(charIndex, {
+        skill = { id = Game.SkillType[skillName], level = tonumber(level), mastery = Game.SkillMastery[masteryName] }
     })
-    local info = game.party.getCharacterInfo(charIndex, { "name" })
+    local info = Game.party.getCharacterInfo(charIndex, { "name" })
     return info.name .. " " .. skillName .. " skill updated", true
 end
 
 local function setSkillMastery(skillName, masteryName, charIndex)
     charIndex = CommandUtilities.characterOrCurrent(charIndex)
-    game.party.setCharacterInfo(charIndex, {
-        skill = { id = game.SkillType[skillName], mastery = game.SkillMastery[masteryName] }
+    Game.party.setCharacterInfo(charIndex, {
+        skill = { id = Game.SkillType[skillName], mastery = Game.SkillMastery[masteryName] }
     })
-    local info = game.party.getCharacterInfo(charIndex, { "name" })
+    local info = Game.party.getCharacterInfo(charIndex, { "name" })
     return info.name .. " " .. skillName .. " skill updated", true
 end
 
 local function setSkillLevel(skillName, level, charIndex)
     charIndex = CommandUtilities.characterOrCurrent(charIndex)
-    game.party.setCharacterInfo(charIndex, {
-        skill = { id = game.SkillType[skillName], level = tonumber(level) }
+    Game.party.setCharacterInfo(charIndex, {
+        skill = { id = Game.SkillType[skillName], level = tonumber(level) }
     })
-    local info = game.party.getCharacterInfo(charIndex, { "name" })
+    local info = Game.party.getCharacterInfo(charIndex, { "name" })
     return info.name .. " " .. skillName .. " skill updated", true
 end
 
 ---@return string
 ---@return boolean
 local function getSkills()
-    local count = game.party.getPartySize()
+    local count = Game.party.getPartySize()
     local message = "Party Skills\n\n"
     for i = 1, count do
-        local info = game.party.getCharacterInfo(i, { "name", "skills" })
+        local info = Game.party.getCharacterInfo(i, { "name", "skills" })
         message = message .. info.name .. ": \n\n"
         for skillId, skillValue in pairs(info.skills) do
-            local skillName = Utilities.enumToString(game.SkillType, skillId)
-            local skillMasteryName = Utilities.enumToString(game.SkillMastery, skillValue.mastery)
+            local skillName = Utilities.enumToString(Game.SkillType, skillId)
+            local skillMasteryName = Utilities.enumToString(Game.SkillMastery, skillValue.mastery)
             message = message ..
                 skillName .. ": " .. skillMasteryName .. " - Level " .. tostring(skillValue.level) .. "\n"
         end
@@ -56,18 +56,18 @@ local function getSkillMastery(skills, skillId)
             return skill.mastery
         end
     end
-    return game.SkillMastery.None
+    return Game.SkillMastery.None
 end
 
 local function learnAllSkills()
-    local count = game.party.getPartySize()
+    local count = Game.party.getPartySize()
     for charIndex = 1, count do
-        local info = game.party.getCharacterInfo(charIndex, { "skills", "class" })
-        for _, skillId in pairs(game.SkillType) do
-            if game.misc.canClassLearn(info.class, skillId) then
-                if getSkillMastery(info.skills, skillId) == game.SkillMastery.None then
-                    game.party.setCharacterInfo(charIndex, {
-                        skill = { id = skillId, mastery = game.SkillMastery.Novice, level = 1 }
+        local info = Game.party.getCharacterInfo(charIndex, { "skills", "class" })
+        for _, skillId in pairs(Game.SkillType) do
+            if Game.misc.canClassLearn(info.class, skillId) then
+                if getSkillMastery(info.skills, skillId) == Game.SkillMastery.None then
+                    Game.party.setCharacterInfo(charIndex, {
+                        skill = { id = skillId, mastery = Game.SkillMastery.Novice, level = 1 }
                     })
                 end
             end

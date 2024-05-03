@@ -1,11 +1,4 @@
---[[
- Initialize all the core scripts and bindings
-]]
-require "core.input"
 require "core.error"
-require "core.game"
-require "core.logger"
-require "core.config"
 
 --- @type OverlayBindings
 local Overlay = require "bindings.overlay"
@@ -15,7 +8,6 @@ local GameCommands = require "dev.commands.game_commands"
 GameCommands.registerGameCommands()
 
 Overlay.addOverlay("console", ConsoleOverlay)
-
 
 --[[
     Here's a little example of how to create a simple Overlay to render

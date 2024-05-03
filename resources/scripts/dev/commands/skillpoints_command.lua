@@ -1,9 +1,9 @@
 local Utilities = require "dev.commands.command_utils"
-local game = require "core.game".bindings
+local Game = require "bindings.game"
 
 local function addSpParty(skillPoints)
     local addSpToChar = Utilities.changeCharProperty("sp", Utilities.opType.add, true, tonumber)
-    local count = game.party.getPartySize()
+    local count = Game.party.getPartySize()
     local message = ""
     local allCallSucceeded = true
     for i = 1, count do

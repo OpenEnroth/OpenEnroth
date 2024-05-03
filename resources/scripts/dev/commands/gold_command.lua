@@ -1,12 +1,12 @@
 local Utilities = require "dev.commands.command_utils"
-local game = require "core.game".bindings
+local Game = require "bindings.game"
 
 local subCommands = {
-    get = Utilities.showProperty(game.party.getGold, "gold"),
-    set = Utilities.changeProperty(game.party.getGold, game.party.setGold, Utilities.opType.set, "gold", tonumber),
-    add = Utilities.changeProperty(game.party.getGold, game.party.setGold, Utilities.opType.add, "gold", tonumber),
-    rem = Utilities.changeProperty(game.party.getGold, game.party.setGold, Utilities.opType.rem, "gold", tonumber),
-    default = Utilities.showProperty(game.party.getGold, "gold")
+    get = Utilities.showProperty(Game.party.getGold, "gold"),
+    set = Utilities.changeProperty(Game.party.getGold, Game.party.setGold, Utilities.opType.set, "gold", tonumber),
+    add = Utilities.changeProperty(Game.party.getGold, Game.party.setGold, Utilities.opType.add, "gold", tonumber),
+    rem = Utilities.changeProperty(Game.party.getGold, Game.party.setGold, Utilities.opType.rem, "gold", tonumber),
+    default = Utilities.showProperty(Game.party.getGold, "gold")
 }
 
 return {

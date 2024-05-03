@@ -1,14 +1,14 @@
-local game = require "core.game".bindings
+local Game = require "bindings.game"
 
 local addItemToInventory = function (itemId, characterIndex)
     if not characterIndex then
-        characterIndex = game.party.getActiveCharacter()
+        characterIndex = Game.party.getActiveCharacter()
     end
 
-    local item = game.items.getItemInfo(itemId)
+    local item = Game.items.getItemInfo(itemId)
     if item then
-        local result = game.party.addItemToInventory(characterIndex, itemId)
-        local character = game.party.getCharacterInfo(characterIndex, { "name" })
+        local result = Game.party.addItemToInventory(characterIndex, itemId)
+        local character = Game.party.getCharacterInfo(characterIndex, { "name" })
         if result then
             return character.name .. " gained item: " .. item.name, true
         else
@@ -21,13 +21,13 @@ local addItemToInventory = function (itemId, characterIndex)
 end
 
 local addRandomItemToInventory = function (characterIndex, filterFunction)
-    local itemId = game.items.getRandomItem(filterFunction)
+    local itemId = Game.items.getRandomItem(filterFunction)
     return addItemToInventory(itemId, characterIndex)
 end
 
 local filterItemByMinLevel = function (minLevel)
     return function (itemId)
-        return game.items.getItemInfo(itemId).level >= minLevel
+        return Game.items.getItemInfo(itemId).level >= minLevel
     end
 end
 

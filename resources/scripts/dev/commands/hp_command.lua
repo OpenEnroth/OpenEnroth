@@ -1,11 +1,11 @@
 local Utilities = require "dev.commands.command_utils"
-local game = require "core.game".bindings
+local Game = require "bindings.game"
 
 local function showCharsHp()
-    local count = game.party.getPartySize()
+    local count = Game.party.getPartySize()
     local message = ""
     for i = 1, count do
-        local info = game.party.getCharacterInfo(i, { "name", "hp", "maxHp" })
+        local info = Game.party.getCharacterInfo(i, { "name", "hp", "maxHp" })
         message = message .. info.name .. ": " .. info.hp .. "/" .. info.maxHp .. "\n"
     end
     return message, true
@@ -14,9 +14,9 @@ end
 local function fullHeal(charIndex)
     charIndex = Utilities.characterOrCurrent(charIndex)
 
-    local info = game.party.getCharacterInfo(charIndex, { "name", "maxHp", "maxMana" })
-    game.party.clearCondition(charIndex)
-    game.party.setCharacterInfo(charIndex, {
+    local info = Game.party.getCharacterInfo(charIndex, { "name", "maxHp", "maxMana" })
+    Game.party.clearCondition(charIndex)
+    Game.party.setCharacterInfo(charIndex, {
         hp = info.maxHp,
         mana = info.maxMana
     })

@@ -5,10 +5,8 @@ set(SCRIPTS_SOURCES
     init.lua
     utils.lua
     core/error.lua
-    core/input.lua
-    core/game.lua
-    core/config.lua
-    core/logger.lua
+    core/input_listener.lua
+    core/log_listener.lua
     dev/ui_debug_hud.lua
     dev/commands/alignment_command.lua
     dev/commands/class_command.lua
