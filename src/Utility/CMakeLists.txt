@@ -23,7 +23,7 @@ set(UTILITY_HEADERS
         Exception.h
         FileSystem.h
         Flags.h
-        Format.h
+        String/Format.h
         Types.h
         IndexedArray.h
         Math/Float.h

@@ -26,7 +26,7 @@
 #include "Library/Serialization/EnumSerialization.h"
 
 #include "Utility/String/Ascii.h"
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 #include "Utility/UnicodeCrt.h"

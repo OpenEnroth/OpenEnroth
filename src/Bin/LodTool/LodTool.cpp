@@ -7,7 +7,7 @@
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Serialization/Serialization.h"
 
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 #include "Utility/String.h"
 #include "Utility/UnicodeCrt.h"
 

@@ -20,7 +20,7 @@
 #include "Library/Trace/EventTrace.h"
 
 #include "Utility/Streams/FileInputStream.h"
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 #include "Utility/UnicodeCrt.h"
 #include "Utility/String.h"
 #include "Utility/Types.h"
