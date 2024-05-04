@@ -50,6 +50,7 @@ class FSM : public FSMTransitionHandler, public FSMEventHandler {
         std::string name;
         std::unique_ptr<FSMState> state;
         FSMTransitions transitions;
+        bool hasExited{};
     };
 
     void addState(std::unique_ptr<StateEntry> stateEntry);

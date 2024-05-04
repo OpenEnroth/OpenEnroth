@@ -1,25 +1,23 @@
 #include "GUI/UI/UICredits.h"
 
+#include <Engine/EngineGlobals.h>
+#include <Engine/Graphics/Renderer/Renderer.h>
+#include <Engine/Graphics/Image.h>
+#include <Engine/AssetsManager.h>
+#include <Engine/Engine.h>
+#include <Engine/GameResourceManager.h>
+
 #include <string>
 
-#include "Engine/EngineGlobals.h"
-#include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/Image.h"
-#include "Engine/AssetsManager.h"
-#include "Engine/Engine.h"
-#include "Engine/GameResourceManager.h"
-
 #include "GUI/GUIFont.h"
-#include "GUI/GUIWindow.h"
-#include "GUI/GUIMessageQueue.h"
 
-#include "Media/Audio/AudioPlayer.h"
+GUICredits::GUICredits(std::function<void()> onReachEndOfCredits)
+    : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDimensions())
+    , _onReachEndOfCredits(onReachEndOfCredits) {
+    _fontQuick = GUIFont::LoadFont("quick.fnt", "FONTPAL");
+    _fontCChar = GUIFont::LoadFont("cchar.fnt", "FONTPAL");
 
-GUICredits::GUICredits() : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDimensions()) {
-    pFontQuick = GUIFont::LoadFont("quick.fnt", "FONTPAL");
-    pFontCChar = GUIFont::LoadFont("cchar.fnt", "FONTPAL");
-
-    mm6title = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
+    _mm6TitleTexture = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
 
     std::string text{ engine->_gameResourceManager->getEventsFile("credits.txt").string_view() };
 
@@ -29,22 +27,22 @@ GUICredits::GUICredits() : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDi
     credit_window.uFrameX = 389;
     credit_window.uFrameY = 19;
 
-    width = 250;
-    height = pFontQuick->GetStringHeight2(pFontCChar.get(), text, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
-    cred_texture = GraphicsImage::Create(width, height);
+    int width = 250;
+    int height = _fontQuick->GetStringHeight2(_fontCChar.get(), text, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
+    _creditsTexture = GraphicsImage::Create(width, height);
 
-    pFontQuick->DrawCreditsEntry(pFontCChar.get(), 0, credit_window.uFrameHeight, width, height, colorTable.CornFlowerBlue, colorTable.Primrose, text, cred_texture);
+    _fontQuick->DrawCreditsEntry(_fontCChar.get(), 0, credit_window.uFrameHeight, width, height, colorTable.CornFlowerBlue, colorTable.Primrose, text, _creditsTexture);
 
-    render->Update_Texture(cred_texture);
+    render->Update_Texture(_creditsTexture);
 
-    move_Y = 0;
+    _moveY = 0;
 
     CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Escape);
 }
 
 GUICredits::~GUICredits() {
-    mm6title->Release();
-    cred_texture->Release();
+    _mm6TitleTexture->Release();
+    _creditsTexture->Release();
 }
 
 void GUICredits::Update() {
@@ -54,60 +52,16 @@ void GUICredits::Update() {
     credit_window.uFrameX = 389;
     credit_window.uFrameY = 19;
 
-    render->DrawTextureNew(0, 0, mm6title);
+    render->DrawTextureNew(0, 0, _mm6TitleTexture);
     render->SetUIClipRect(credit_window.uFrameX, credit_window.uFrameY,
     credit_window.uFrameX + credit_window.uFrameWidth,
     credit_window.uFrameY + credit_window.uFrameHeight);
-    render->DrawTextureOffset(credit_window.uFrameX, credit_window.uFrameY, 0, move_Y, cred_texture);
+    render->DrawTextureOffset(credit_window.uFrameX, credit_window.uFrameY, 0, _moveY, _creditsTexture);
     render->ResetUIClipRect();
 
-    move_Y += 0.25;
+    _moveY += 0.25;
 
-    if (move_Y >= cred_texture->height()) {
-        SetCurrentMenuID(MENU_MAIN);
+    if (_moveY >= _creditsTexture->height()) {
+        _onReachEndOfCredits();
     }
-}
-
-void GUICredits::EventLoop() {
-    while (engine->_messageQueue->haveMessages()) {
-        UIMessageType pUIMessageType;
-        int pParam;
-        int param2;
-        engine->_messageQueue->popMessage(&pUIMessageType, &pParam, &param2);
-
-        switch (pUIMessageType) {  // For buttons of window MainMenu
-            case UIMSG_Escape:
-                SetCurrentMenuID(MENU_MAIN);
-                break;
-            default:
-                break;
-        }
-    }
-}
-
-void GUICredits::ExecuteCredits() {
-    engine->_messageQueue->clear();
-
-    pAudioPlayer->MusicPlayTrack(MUSIC_CREDITS);
-
-    GUICredits *pWindow_Credits = new GUICredits();
-    current_screen_type = SCREEN_CREATORS;
-    SetCurrentMenuID(MENU_CREDITSPROC);
-
-    while (GetCurrentMenuID() == MENU_CREDITSPROC) {
-        MessageLoopWithWait();
-
-        render->BeginScene2D();
-        {
-            pWindow_Credits->EventLoop();
-            GUI_UpdateWindows();
-        }
-        render->Present();
-    }
-
-    pAudioPlayer->MusicStop();
-    pAudioPlayer->stopSounds();
-
-    pWindow_Credits->Release();
-    delete pWindow_Credits;
 }

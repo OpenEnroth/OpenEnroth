@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(GAME_STATES_SOURCES
+        CreditsState.cpp
         GameFSMBuilder.cpp
         LoadStep2State.cpp
         MainMenuState.cpp
         VideoState.cpp)
 
 set(GAME_STATES_HEADERS
+        CreditsState.h
         GameFSMBuilder.h
         LoadStep2State.h
         MainMenuState.h

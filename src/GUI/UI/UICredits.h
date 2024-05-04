@@ -8,22 +8,17 @@ class GUIFont;
 
 class GUICredits : public GUIWindow {
  public:
-    GUICredits();
+    explicit GUICredits(std::function<void()> onReachEndOfCredits);
     virtual ~GUICredits();
 
     virtual void Update() override;
 
-    static void ExecuteCredits();
-    void EventLoop();
+ private:
+    std::unique_ptr<GUIFont> _fontQuick;
+    std::unique_ptr<GUIFont> _fontCChar;
 
- protected:
-    std::unique_ptr<GUIFont> pFontQuick;
-    std::unique_ptr<GUIFont> pFontCChar;
-
-    GraphicsImage *mm6title;
-
-    int width;
-    int height;
-    GraphicsImage *cred_texture;
-    float move_Y;
+    GraphicsImage *_mm6TitleTexture;
+    GraphicsImage *_creditsTexture;
+    float _moveY;
+    std::function<void()> _onReachEndOfCredits;
 };

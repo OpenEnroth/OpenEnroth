@@ -208,10 +208,6 @@ bool Game::loop() {
                 break;
             }
             assert(false && "Invalid game state");
-        } else if (GetCurrentMenuID() == MENU_CREDITS) {
-            pAudioPlayer->MusicStop();
-            GUICredits::ExecuteCredits();
-            break;
         } else if (GetCurrentMenuID() == MENU_5 || GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
             uGameState = GAME_STATE_PLAYING;
             gameLoop();
