@@ -1,8 +1,5 @@
 #include "FSM.h"
 
-#include "NullState.h"
-#include "ExitFromFSMState.h"
-
 #include <Library/Logger/Logger.h>
 
 #include <memory>
@@ -10,32 +7,42 @@
 #include <string>
 
 const LogCategory FSM::fsmLogCategory("FSM");
+const std::string_view FSM::exitState = "_Exit";
 
 FSM::FSM() {
-    _createDefaultStates();
-    // By default, the FSM attempts to reach the _Exit state.
-    // This occurs if an FSM has no custom states or the user doesn't provide a different state
-    // Although it's very unlikely to happen we still need to account for this possibility.
-    jumpToState("_Exit");
+    // By default, when the FSM has no states, it's treated as if it reached the exit state
+    _hasReachedExitState = true;
 }
 
 void FSM::jumpToState(std::string_view stateName) {
-    if (StateEntry *entry = _getStateByName(stateName)) {
-        _nextState = entry;
-    } else {
-        logger->warning(fsmLogCategory, "Cannot jump to state [{}]. The state does not exist.", stateName);
+    _hasReachedExitState = stateName == exitState;
+    if (!_hasReachedExitState) {
+        if (StateEntry *entry = _getStateByName(stateName)) {
+            _nextState = entry;
+        } else {
+            logger->warning(fsmLogCategory, "Cannot jump to state [{}]. The state does not exist.", stateName);
+        }
     }
 }
 
 void FSM::update() {
-    if (_nextState) {
-        _currentState->state->exit();
-        _currentState = _nextState;
-        _nextState = nullptr;
-        _currentState->state->enter();
-    }
+    if (!_hasReachedExitState) {
+        if (_nextState) {
+            if (_currentState) {
+                _currentState->state->exit();
+            }
+            _currentState = _nextState;
+            _nextState = nullptr;
+            _currentState->state->enter();
+        }
 
-    _currentState->state->update();
+        _currentState->state->update();
+
+        if (_hasReachedExitState) {
+            _currentState->state->exit();
+            _currentState = nullptr;
+        }
+    }
 }
 
 bool FSM::hasReachedExitState() const {
@@ -71,15 +78,7 @@ void FSM::executeTransition(std::string_view transition) {
         return;
     }
 
-    // Find the next state now that we have a name cadidate
-    std::string &targetStateName = transitionTarget->stateName;
-    StateEntry *stateEntry = _getStateByName(targetStateName);
-    if (stateEntry) {
-        _nextState = stateEntry;
-    } else {
-        logger->warning(fsmLogCategory, "Failed to transition to state [{}] during execution of transition [{}] from state [{}]. The target state does not exist.",
-            targetStateName, transition, _currentState->name);
-    }
+    jumpToState(transitionTarget->stateName);
 }
 
 FSM::StateEntry *FSM::_getStateByName(std::string_view stateName) {
@@ -87,11 +86,6 @@ FSM::StateEntry *FSM::_getStateByName(std::string_view stateName) {
         return itr->second.get();
     }
     return nullptr;
-}
-
-void FSM::exitFromFSM() {
-    _hasReachedExitState = true;
-    jumpToState("_Null");
 }
 
 bool FSM::keyPressEvent(const PlatformKeyEvent *event) {
@@ -156,24 +150,4 @@ bool FSM::nativeEvent(const PlatformNativeEvent *event) {
 
 bool FSM::textInputEvent(const PlatformTextInputEvent *event) {
     return _currentState->state->textInputEvent(event);
-}
-
-void FSM::_createDefaultStates() {
-    // Internal default states - They are prefixed with an underscore to denote them as internal.
-    auto nullStateEntry = std::make_unique<FSM::StateEntry>();
-    nullStateEntry->name = "_Null";
-    nullStateEntry->state = std::make_unique<NullState>();
-    _currentState = nullStateEntry.get();
-    addState(std::move(nullStateEntry));
-
-    auto exitStateEntry = std::make_unique<FSM::StateEntry>();
-    exitStateEntry->name = "_Exit";
-    exitStateEntry->state = std::make_unique<ExitFromFSMState>();
-    addState(std::move(exitStateEntry));
-}
-
-void FSM::reset() {
-    _hasReachedExitState = false;
-    _currentState = _getStateByName("_Null");
-    jumpToState("_Exit");
 }

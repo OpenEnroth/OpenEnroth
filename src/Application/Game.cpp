@@ -159,7 +159,6 @@ int Game::run() {
         if (!loop()) {
             break;
         } else {
-            fsm->reset();
             fsm->jumpToState("MainMenu");
         }
     } while (true);

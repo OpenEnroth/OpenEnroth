@@ -13,7 +13,7 @@
 std::unique_ptr<FSM> GameFSMBuilder::buildFSM() {
     FSMBuilder fsmBuilder;
     _buildIntroVideoSequence(fsmBuilder);
-
+    _buildMainMenu(fsmBuilder);
     auto fsm = fsmBuilder.build();
     _setStartingState(*fsm);
     return std::move(fsm);
@@ -43,17 +43,20 @@ void GameFSMBuilder::_buildIntroVideoSequence(FSMBuilder &builder) {
     .state<VideoState>("JVCVideo", "jvc")
         .on("videoEnd")
             .jumpTo([]() { return !engine->config->debug.NoIntro.value(); }, "IntroVideo")
-            .jumpTo("_Exit")
+            .jumpTo(FSM::exitState)
 
     .state<VideoState>("IntroVideo", "Intro")
         .on("videoEnd").jumpTo("LoadStep2")
 
     .state<LoadStep2State>("LoadStep2")
-        .on("done").jumpTo("MainMenu")
+        .on("done").jumpTo("MainMenu");
+}
 
+void GameFSMBuilder::_buildMainMenu(FSMBuilder &builder) {
+    builder
     .state<MainMenuState>("MainMenu")
-        .on("newGame").jumpTo("_Exit")
-        .on("loadGame").jumpTo("_Exit")
-        .on("credits").jumpTo("_Exit")
-        .on("exit").jumpTo("_Exit");
+        .on("newGame").jumpTo(FSM::exitState)
+        .on("loadGame").jumpTo(FSM::exitState)
+        .on("credits").jumpTo(FSM::exitState)
+        .on("exit").jumpTo(FSM::exitState);
 }
