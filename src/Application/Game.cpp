@@ -171,12 +171,9 @@ bool Game::loop() {
         if (uGameState == GAME_FINISHED ||
             GetCurrentMenuID() == MENU_EXIT_GAME) {
             return false;
-        } else if (GetCurrentMenuID() == MENU_SAVELOAD) {
-            MainMenuLoad_Loop();
-            if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
-                uGameState = GAME_STATE_PLAYING;
-                gameLoop();
-            }
+        } else if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
+            uGameState = GAME_STATE_PLAYING;
+            gameLoop();
             if (uGameState == GAME_STATE_NEWGAME_OUT_GAMEMENU) {
                 SetCurrentMenuID(MENU_NEWGAME);
                 uGameState = GAME_STATE_PLAYING;

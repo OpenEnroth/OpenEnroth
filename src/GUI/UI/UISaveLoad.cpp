@@ -124,6 +124,7 @@ void GUIWindow_Save::Update() {
 }
 
 GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0, 0}) {
+    isLoadSlotClicked = false;
     current_screen_type = SCREEN_LOADGAME;
 
     saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
@@ -236,6 +237,59 @@ void GUIWindow_Load::Update() {
         render->DrawTextureNew(351 / 640.0f, 302 / 480.0f, saveload_ui_x_u);
     }
     UI_DrawSaveLoad(false);
+}
+
+void GUIWindow_Load::slotSelected(int slotIndex) {
+    // main menu save/load wnd   clicking on savegame lines
+    if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
+        keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
+    assert(current_screen_type != SCREEN_SAVEGAME); // No savegame in main menu
+    if (isLoadSlotClicked && pSavegameList->selectedSlot == slotIndex + pSavegameList->saveListPosition) {
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
+    } else {
+        pSavegameList->selectedSlot = slotIndex + pSavegameList->saveListPosition;
+        isLoadSlotClicked = true;
+    }
+}
+
+void GUIWindow_Load::loadButtonPressed() {
+    new OnSaveLoad({ pGUIWindow_CurrentMenu->uFrameX + 241, pGUIWindow_CurrentMenu->uFrameY + 302 }, { 61, 28 }, pBtnLoadSlot);
+}
+
+void GUIWindow_Load::downArrowPressed(int maxSlots) {
+    if (pSavegameList->saveListPosition + 7 < maxSlots) {
+        ++pSavegameList->saveListPosition;
+    }
+    new OnButtonClick2({ pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 323 }, { 0, 0 }, pBtnDownArrow);
+}
+
+void GUIWindow_Load::upArrowPressed() {
+    --pSavegameList->saveListPosition;
+    if (pSavegameList->saveListPosition < 0)
+        pSavegameList->saveListPosition = 0;
+    new OnButtonClick2({ pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197 }, { 0, 0 }, pBtnArrowUp);
+}
+
+void GUIWindow_Load::cancelButtonPressed() {
+    new OnCancel3({ pGUIWindow_CurrentMenu->uFrameX + 350, pGUIWindow_CurrentMenu->uFrameY + 302 }, { 61, 28 }, pBtnCancel);
+}
+
+void GUIWindow_Load::scroll(int maxSlots) {
+    // pskelton add for scroll click
+    if (maxSlots < 7) {
+        // Too few saves to scroll yet
+        return;
+    }
+    int mx{}, my{};
+    mouse->GetClickPos(&mx, &my);
+    // 276 is offset down from top (216 + 60 frame)
+    my -= 276;
+    // 107 is total height of bar
+    float fmy = static_cast<float>(my) / 107.0f;
+    int newlistpost = std::round((maxSlots - 7) * fmy);
+    newlistpost = std::clamp(newlistpost, 0, (maxSlots - 7));
+    pSavegameList->saveListPosition = newlistpost;
+    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 }
 
 static void UI_DrawSaveLoad(bool save) {
