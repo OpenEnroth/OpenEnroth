@@ -14,7 +14,7 @@ set(UTILITY_SOURCES
         Streams/MemoryInputStream.cpp
         Streams/StringOutputStream.cpp
         String/Ascii.cpp
-        String.cpp
+        String/Transformations.cpp
         UnicodeCrt.cpp)
 
 set(UTILITY_HEADERS
@@ -42,10 +42,10 @@ set(UTILITY_HEADERS
         Streams/OutputStream.h
         Streams/StringOutputStream.h
         String/Ascii.h
+        String/TransparentFunctors.h
+        String/Transformations.h
         Win/Unicode.h
         Workaround/ToUnderlying.h
-        String.h
-        String/TransparentFunctors.h
         Unaligned.h
         UnicodeCrt.h)
 
@@ -70,8 +70,8 @@ if(OE_BUILD_TESTS)
             Tests/IndexedArray_ut.cpp
             Tests/IndexedBitset_ut.cpp
             Tests/Segment_ut.cpp
-            Tests/String_ut.cpp
             Tests/UnicodeCrt_ut.cpp
+            String/Tests/Transformations_ut.cpp
             String/Tests/TransparentFunctors_ut.cpp
             String/Tests/Ascii_ut.cpp)
 

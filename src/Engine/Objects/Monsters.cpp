@@ -11,7 +11,7 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/Exception.h"
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 
 MonsterStats *pMonsterStats;
 MonsterList *pMonsterList;

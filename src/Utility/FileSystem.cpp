@@ -4,8 +4,6 @@
 
 #include "Utility/String/Ascii.h"
 
-#include "String.h"
-
 std::filesystem::path expandUserPath(std::string_view path, std::string_view home) {
     if (path.starts_with("~/"))
         return std::filesystem::path(home) / path.substr(2);

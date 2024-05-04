@@ -18,7 +18,7 @@
 
 #include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 
 static void strtokSkipLines(int n) {
     for (int i = 0; i < n; ++i) {

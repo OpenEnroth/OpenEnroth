@@ -4,7 +4,7 @@
 
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Ascii.h"
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 
 IndexedArray<BuildingDesc, HOUSE_FIRST, HOUSE_LAST> buildingTable;
 

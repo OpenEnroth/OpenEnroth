@@ -3,7 +3,7 @@
 #include <string>
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 
 StorylineText *pStorylineText;
 

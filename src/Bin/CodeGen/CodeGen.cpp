@@ -30,7 +30,7 @@
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 #include "Utility/UnicodeCrt.h"
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 
 #include "CodeGenEnums.h"
 #include "CodeGenMap.h"

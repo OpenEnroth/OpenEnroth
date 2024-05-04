@@ -1,11 +1,11 @@
-#include "String.h"
+#include "Transformations.h"
 
 #include <cassert>
 #include <vector>
 #include <algorithm>
 #include <string>
 
-#include "Utility/String/Format.h"
+#include "Format.h"
 
 std::vector<char *> tokenize(char *input, const char separator) {
     std::vector<char *> retVect;

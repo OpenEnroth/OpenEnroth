@@ -9,7 +9,7 @@
 
 #include "Utility/String/Format.h"
 #include "Utility/String/Ascii.h"
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 #include "Utility/UnicodeCrt.h"
 
 int runLs(const LodToolOptions &options) {

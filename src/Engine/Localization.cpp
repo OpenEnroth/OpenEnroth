@@ -6,7 +6,7 @@
 #include "Engine/Engine.h"
 #include "Engine/GameResourceManager.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 
 Localization *localization = nullptr;
 

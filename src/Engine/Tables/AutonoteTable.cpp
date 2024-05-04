@@ -4,7 +4,7 @@
 
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Ascii.h"
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 
 std::array<Autonote, 196> pAutonoteTxt;
 
