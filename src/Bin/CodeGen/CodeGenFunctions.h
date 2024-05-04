@@ -8,7 +8,7 @@
 #include <string>
 #include <algorithm>
 
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 
 inline std::string toUpperCaseEnum(std::string_view string) {
     std::string result;

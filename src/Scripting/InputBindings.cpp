@@ -1,8 +1,9 @@
 #include "InputBindings.h"
 
-#include <Library/Logger/Logger.h>
 #include <string>
 #include <optional>
+
+#include "Library/Logger/Logger.h"
 
 #include "InputScriptEventHandler.h"
 

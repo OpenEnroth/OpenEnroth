@@ -13,7 +13,7 @@
 
 #include "Library/Snd/SndReader.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/FileInputStream.h"
 

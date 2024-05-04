@@ -5,7 +5,7 @@
 #include "Engine/Engine.h"
 #include "Level/Decoration.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 
 #include "Sprites.h"
 
@@ -21,7 +21,7 @@ uint16_t DecorationList::GetDecorIdByName(std::string_view pName) {
 
     if (pDecorations.size() > 1) {
         for (unsigned uID = 1; uID < pDecorations.size(); ++uID) {
-            if (noCaseEquals(pName, pDecorations[uID].name))
+            if (ascii::noCaseEquals(pName, pDecorations[uID].name))
                 return uID;
         }
     }

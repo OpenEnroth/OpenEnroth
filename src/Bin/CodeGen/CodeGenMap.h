@@ -10,8 +10,8 @@
 #include <algorithm>
 
 #include "Utility/Workaround/ToUnderlying.h"
-#include "Utility/Format.h"
-#include "Utility/TransparentFunctors.h"
+#include "Utility/String/Format.h"
+#include "Utility/String/TransparentFunctors.h"
 
 #include "CodeGenFunctions.h"
 

@@ -1,15 +1,15 @@
 #include "ScriptingSystem.h"
 
-#include <Utility/DataPath.h>
-#include <Library/Logger/Logger.h>
-#include <Library/Logger/DistLogSink.h>
-#include <Library/Platform/Application/PlatformApplication.h>
-
 #include <string>
 #include <vector>
 #include <memory>
 #include <utility>
 #include <unordered_map>
+
+#include "Library/Logger/Logger.h"
+#include "Library/Logger/DistLogSink.h"
+#include "Library/Platform/Application/PlatformApplication.h"
+#include "Utility/DataPath.h"
 
 #include "IBindings.h"
 #include "InputScriptEventHandler.h"
@@ -38,7 +38,7 @@ void ScriptingSystem::executeEntryPoint() {
     try {
         _solState->script_file(makeDataPath(_scriptFolder, _entryPointFile));
     } catch (const sol::error &e) {
-        logger->error(ScriptingLogCategory, "An unexpected error has occurred: {}", e.what());
+        logger->warning(ScriptingLogCategory, "An unexpected error has occurred: {}", e.what());
     }
 }
 

@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <cstring>
 
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 
 #include "Colorf.h"
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Library/Logger/LogCategory.h>
-
 #include <string_view>
 #include <string>
 #include <vector>
@@ -9,6 +7,8 @@
 #include <memory>
 #include <utility>
 #include <sol/sol.hpp>
+
+#include "Library/Logger/LogCategory.h"
 
 class LogSink;
 class DistLogSink;

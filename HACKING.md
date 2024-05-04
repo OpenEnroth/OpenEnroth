@@ -109,7 +109,8 @@ Language features:
 * For string function parameters, use `std::string_view` passed by value. 
   * In general, you shouldn't bother optimizing code paths where you might save an allocation by moving in an `std::string` or passing it by const reference, the performance benefits are almost always negligible.
   * Use `TransparentString*` classes if you need to index into a string map using `std::string_view` keys.
-  * However, feel free to use `std::string` or `const std::string &` parameters where it makes your code simpler (e.g. by avoiding jumping through hoops if you'll need to create an intermediate `std::string` object anyway). 
+  * However, feel free to use `std::string` or `const std::string &` parameters where it makes your code simpler (e.g. by avoiding jumping through hoops if you'll need to create an intermediate `std::string` object anyway).
+  * C++ is notoriously bad when it comes to string concatenation (you can't concatenate `std::string_view` with a string literal using `operator+`, and never will). In most cases you should be fine just using `fmt::format` for this. If `fmt::format` looks like an overkill, use `join` from `Utility/String/Transformations.h`.
 * We generally refrain from using namespaces because OpenEnroth is a relatively small codebase, and we don't need the measures advocated by the Google style guide to prevent name clashes.
   * We don't put user-facing classes into namespaces because it ultimately leads to code where you have `ns1::Context` and `ns2::Context`, and when coupled with a bit of `using` here and there this makes the code harder to read and reason about. Please spend some time coming up with good names for your classes instead.
   * We sometimes use namespaces to group related functions, e.g. see `namespace lod`.

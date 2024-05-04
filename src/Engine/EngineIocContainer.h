@@ -11,6 +11,7 @@ class ParticleEngine;
 struct SpellFxRenderer;
 class Vis;
 
+// TODO(captainurist): this is a legacy class, drop.
 class EngineIocContainer {
  public:
     static DecalBuilder *ResolveDecalBuilder();

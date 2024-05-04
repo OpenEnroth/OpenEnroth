@@ -8,7 +8,7 @@
 #include "Library/Snapshots/SnapshotSerialization.h"
 
 #include "Utility/Streams/FileOutputStream.h"
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 
 #include "LodSnapshots.h"
 
@@ -104,5 +104,5 @@ void LodWriter::write(std::string_view filename, const Blob &data) {
 void LodWriter::write(std::string_view filename, Blob &&data) {
     assert(isOpen());
 
-    _files.insert_or_assign(toLower(filename), std::move(data));
+    _files.insert_or_assign(ascii::toLower(filename), std::move(data));
 }

@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Engine/Graphics/Renderer/OpenGLShader.h>
-#include <Library/Geometry/Size.h>
-
 #include <memory>
+
+#include "Engine/Graphics/Renderer/OpenGLShader.h"
+#include "Library/Geometry/Size.h"
 
 struct nk_state;
 struct nk_context;
@@ -29,7 +29,7 @@ class NuklearOverlayRenderer {
     void _cleanup();
 
     std::unique_ptr<nk_state> _state;
-    bool _useOGLES;
+    bool _useOGLES = false;
     OpenGLShader _shader;
-    nk_tex_font *_defaultFont;
+    nk_tex_font *_defaultFont = nullptr;
 };

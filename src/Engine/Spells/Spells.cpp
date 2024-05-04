@@ -18,6 +18,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Utility/Math/TrigLut.h"
+#include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
 
 SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
@@ -476,7 +477,7 @@ bool SpellBuff::Apply(Time expire_time, CharacterSkillMastery uSkillMastery,
 }
 
 void SpellStats::Initialize(const Blob &spells) {
-    std::map<std::string, DamageType, NoCaseLess> spellSchoolMaps;
+    std::map<std::string, DamageType, ascii::NoCaseLess> spellSchoolMaps; // TODO(captainurist): #enum, use enum serialization
     spellSchoolMaps["fire"] = DAMAGE_FIRE;
     spellSchoolMaps["air"] = DAMAGE_AIR;
     spellSchoolMaps["water"] = DAMAGE_WATER;

@@ -12,7 +12,7 @@
 #include "Engine/PartyEnums.h"
 
 #include "Utility/IndexedArray.h"
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 
 // TODO(captainurist): #enum
 #define LSTR_AC                               0   // "AC"
