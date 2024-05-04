@@ -29,6 +29,7 @@
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
+#include "Utility/String/Ascii.h"
 
 int membershipOrTrainingApproved;
 int topicEventId; // event id of currently viewed scripted NPC event
@@ -783,7 +784,7 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
     } else if (topic == DIALOGUE_USE_HIRED_NPC_ABILITY) {
         int hirelingId;
         for (hirelingId = 0; hirelingId < pParty->pHirelings.size(); hirelingId++) {
-            if (noCaseEquals(pParty->pHirelings[hirelingId].name, npcData->name)) {
+            if (ascii::noCaseEquals(pParty->pHirelings[hirelingId].name, npcData->name)) { // TODO(captainurist): #unicode
                 break;
             }
         }
@@ -805,9 +806,9 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
                     }
                 }
             }
-            if (noCaseEquals(pParty->pHirelings[0].name, npcData->name)) {
+            if (ascii::noCaseEquals(pParty->pHirelings[0].name, npcData->name)) { // TODO(captainurist): #unicode
                 pParty->pHirelings[0] = NPCData();
-            } else if (noCaseEquals(pParty->pHirelings[1].name, npcData->name)) {
+            } else if (ascii::noCaseEquals(pParty->pHirelings[1].name, npcData->name)) { // TODO(captainurist): #unicode
                 pParty->pHirelings[1] = NPCData();
             }
             pParty->hirelingScrollPosition = 0;

@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Engine/Graphics/Renderer/OpenGLShader.h>
-#include <Library/Geometry/Size.h>
-
 #include <memory>
+
+#include "Engine/Graphics/Renderer/OpenGLShader.h"
+#include "Library/Geometry/Size.h"
 
 struct nk_state;
 struct nk_context;

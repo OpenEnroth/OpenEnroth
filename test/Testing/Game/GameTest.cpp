@@ -9,7 +9,7 @@
 
 #include "Library/Platform/Application/PlatformApplication.h"
 
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 
 static EngineController *globalEngineController = nullptr;
 static TestController *globalTestController = nullptr;

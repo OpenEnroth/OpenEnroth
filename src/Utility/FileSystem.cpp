@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "String.h"
+#include "Utility/String/Ascii.h"
 
 std::filesystem::path expandUserPath(std::string_view path, std::string_view home) {
     if (path.starts_with("~/"))
@@ -27,7 +27,7 @@ std::filesystem::path makeCaseInsensitivePath(std::filesystem::path path) {
         std::error_code error;
         for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(result, error)) {
             std::string entryName = entry.path().filename().string();
-            if (noCaseEquals(entryName, part.string())) {
+            if (ascii::noCaseEquals(entryName, part.string())) {
                 foundPart = entryName;
                 break;
             }

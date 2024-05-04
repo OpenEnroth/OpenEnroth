@@ -1,14 +1,15 @@
 #include "NuklearOverlayRenderer.h"
 
-#include <Library/Logger/Logger.h>
-#include <Engine/Graphics/Image.h>
-
 #include <memory>
 #include <string>
 
 #include <glad/gl.h> // NOLINT: not a C system header.
 #include <glm/glm.hpp>
+
 #include <nuklear_config.h> // NOLINT: not a C system header.
+
+#include "Library/Logger/Logger.h"
+#include "Engine/Graphics/Image.h"
 
 struct nk_vertex {
     float position[2]{};

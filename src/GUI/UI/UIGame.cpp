@@ -51,7 +51,7 @@
 
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 
 #include "Library/Logger/Logger.h"
 

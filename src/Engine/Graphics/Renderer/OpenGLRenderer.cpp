@@ -47,7 +47,7 @@
 #include "Library/Logger/Logger.h"
 #include "Library/Geometry/Size.h"
 
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 #include "Utility/Memory/MemSet.h"
 
 #include "NuklearOverlayRenderer.h"

@@ -48,7 +48,7 @@
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
 
-#include "Utility/Memory/FreeDeleter.h"
+#include "Utility/String/Ascii.h"
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
 #include "Utility/Exception.h"
@@ -287,7 +287,7 @@ void IndoorLocation::Release() {
 // index of special transfer message, 0 otherwise
 unsigned int IndoorLocation::GetLocationIndex(std::string_view locationName) {
     for (unsigned i = 0; i < _4E6BDC_loc_names.size(); ++i)
-        if (noCaseEquals(locationName, _4E6BDC_loc_names[i]))
+        if (ascii::noCaseEquals(locationName, _4E6BDC_loc_names[i]))
             return i + 1;
     return 0;
 }
