@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b7e9d74</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e04f0ff</span>
    </div>
   </td>
  </tr>
@@ -74,11 +74,16 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">GameConfig.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="GameConfig_8h.html">GameConfig.h</a>&quot;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 <code>#include &quot;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EnumSerialization_8h.html">Library/Serialization/EnumSerialization.h</a>&quot;</code><br />
 </div><table class="memberdecls">
@@ -86,6 +91,11 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:a0fa866d16a53781aa4510ee8708479ae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameConfig_8cpp.html#a0fa866d16a53781aa4510ee8708479ae">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS</a> (<a class="el" href="PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14">PlatformWindowMode</a>, <a class="el" href="EnumSerializer_8h.html#aaa929f83398f109dfbff9789108b159ba2144545143b2322969cdd90988e5b4bc">CASE_INSENSITIVE</a>, { {<a class="el" href="PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14ac1aeae4a2f4ef2ed71913aca8cd3567d">WINDOW_MODE_WINDOWED</a>, &quot;windowed&quot;}, {<a class="el" href="PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14a4d14dfdf051204c1817964b9edf9a93d">WINDOW_MODE_BORDERLESS</a>, &quot;borderless&quot;}, {<a class="el" href="PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14ae4f4a7a36f5f76e695faf80a8d08fd76">WINDOW_MODE_FULLSCREEN</a>, &quot;fullscreen&quot;}, {<a class="el" href="PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14a268885e2d6128e2f9d4c602e959eccfd">WINDOW_MODE_FULLSCREEN_BORDERLESS</a>, &quot;fullscreen_borderless&quot;}, {<a class="el" href="PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14a268885e2d6128e2f9d4c602e959eccfd">WINDOW_MODE_FULLSCREEN_BORDERLESS</a>, &quot;borderless_fullscreen&quot;}, {<a class="el" href="PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14ac1aeae4a2f4ef2ed71913aca8cd3567d">WINDOW_MODE_WINDOWED</a>, &quot;0&quot;}, {<a class="el" href="PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14a4d14dfdf051204c1817964b9edf9a93d">WINDOW_MODE_BORDERLESS</a>, &quot;1&quot;}, {<a class="el" href="PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14ae4f4a7a36f5f76e695faf80a8d08fd76">WINDOW_MODE_FULLSCREEN</a>, &quot;2&quot;}, {<a class="el" href="PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14a268885e2d6128e2f9d4c602e959eccfd">WINDOW_MODE_FULLSCREEN_BORDERLESS</a>, &quot;3&quot;} })</td></tr>
 <tr class="separator:a0fa866d16a53781aa4510ee8708479ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a98da9d536ee81abb6b4d30c8d8b80dd0"><td class="memItemLeft" align="right" valign="top">static constexpr std::initializer_list&lt; const char * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameConfig_8cpp.html#a98da9d536ee81abb6b4d30c8d8b80dd0">defaultCommands</a></td></tr>
+<tr class="separator:a98da9d536ee81abb6b4d30c8d8b80dd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a0fa866d16a53781aa4510ee8708479ae" name="a0fa866d16a53781aa4510ee8708479ae"></a>
@@ -118,6 +128,29 @@ Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a98da9d536ee81abb6b4d30c8d8b80dd0" name="a98da9d536ee81abb6b4d30c8d8b80dd0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a98da9d536ee81abb6b4d30c8d8b80dd0">&#9670;&#160;</a></span>defaultCommands</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr std::initializer_list&lt;const char *&gt; defaultCommands</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
