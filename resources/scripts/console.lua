@@ -27,6 +27,7 @@ local editTextColor = { 255, 255, 255, 255 }
 ---@field separateEveryNCharacters number --hack for a lacking text wrapping support in nuklear
 ---@field isExpanded boolean
 ---@field logEnabled boolean
+---@field autoMinimize boolean
 local Console = {
     rect = {
         x = 8,
@@ -49,6 +50,7 @@ local Console = {
     padding = 5,
     footerHeight = 50,             -- the footer is the section containing the bottom part of the console ( command line + send button )
     logEnabled = false,            -- flag that tells if the log messages should be displayed in the console
+    autoMinimize = true,           -- Minimize console when the mouse is not hover it
     maxMessagesCount = 400,        -- to avoid storing all the messages we can set a limit
     maxHistoryCount = 40,          -- to avoid storing all the commands history we can set a limit
     characterWidth = 7.3,          --hack for a lacking text wrapping support in nuklear
@@ -104,8 +106,12 @@ end
 
 --- Send a message from command line to the message list
 ---@param console Console
-Console.send = function (console)
-    local text = console.editTB.text
+---@param text? string If text is nil the current commandline text is used instead
+Console.send = function (console, text)
+    if not text then
+        text = console.editTB.text
+    end
+
     console:addHistory(text)
     console:addMessage(text, defaultColor)
     local message, isSuccess = CommandManager.execute(text)
@@ -170,13 +176,13 @@ end
 
 ---
 ---@param console Console
----@param isWindowHovered boolean
+---@param isWindowMaximized boolean
 ---@param w integer
 ---@param h integer
 ---@diagnostic disable-next-line: unused-local
-Console.updateWindowSize = function (console, isWindowHovered, w, h)
+Console.updateWindowSize = function (console, isWindowMaximized, w, h)
     local consoleWidth = console.isExpanded and 600 or 400
-    if isWindowHovered then
+    if isWindowMaximized then
         console.rect.x = console.padding
         console.rect.y = console.padding
         console.rect.w = consoleWidth

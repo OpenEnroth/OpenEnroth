@@ -3,11 +3,18 @@ require "core.error"
 --- @type OverlayBindings
 local Overlay = require "bindings.overlay"
 local ConsoleOverlay = require "dev.ui_debug_hud"
+local CheatOverlay = require "dev.cheat_command_overlay"
 local GameCommands = require "dev.commands.game_commands"
 
 GameCommands.registerGameCommands()
 
 Overlay.addOverlay("console", ConsoleOverlay)
+
+-- Disabling this by default for now till we get rid of the old debug view ( most probably happening on a different branch )
+local enableCheatOverlay = false
+if enableCheatOverlay then
+    Overlay.addOverlay("cheatTable", CheatOverlay)
+end
 
 --[[
     Here's a little example of how to create a simple Overlay to render

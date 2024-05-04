@@ -11,7 +11,7 @@
 --- @field serialize SerializeBindings
 --- @field deserialize DeserializeBindings
 --- @field render RenderBindings
---- @field PartyAlignment table<string, integer>
+--- @field PartyAlignment PartyAlignmentEnum
 --- @field CharacterCondition table<string, integer>
 --- @field SkillType table<string, integer>
 --- @field SkillMastery table<string, integer>
@@ -38,8 +38,8 @@
 --- @field setGold fun(amount: integer)
 --- @field getFood fun(): integer
 --- @field setFood fun(amount: integer)
---- @field getAlignment fun(): integer
---- @field setAlignment fun(alignment: integer)
+--- @field getAlignment fun(): PartyAlignment
+--- @field setAlignment fun(alignment: PartyAlignment)
 --- @field givePartyXp fun(amount: integer)
 --- @field getPartySize fun(): integer
 --- @field getActiveCharacter fun(): integer
@@ -58,3 +58,11 @@
 --- @class ItemsBindings
 --- @field getItemInfo fun(itemId: integer):ItemInfo
 --- @field getRandomItem fun(filter: fun(item: table)?):integer
+
+
+--- @alias PartyAlignment integer
+
+--- @class PartyAlignmentEnum
+--- @field Good PartyAlignment
+--- @field Neutral PartyAlignment
+--- @field Evil PartyAlignment

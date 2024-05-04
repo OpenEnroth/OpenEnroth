@@ -1,4 +1,5 @@
 local Config = require "bindings.config"
+local Utilities = require "utils"
 
 ---Get the value of a configEntry
 ---@param configName string    - config entry name
@@ -47,9 +48,20 @@ local function setConfig(configName, param2, param3)
     return message .. tostring(value), true
 end
 
+---Toggle the boolean config value
+---@param configName string - name of the configEntry
+---@return string            - the message sent back to the console
+---@return boolean           - flag that tells if the command has been successful
+local function toggleConfig(configName)
+    local currentValueStr = Config.getConfig(configName)
+    local value = Utilities.toBoolean(currentValueStr)
+    return setConfig(configName, tostring(not value))
+end
+
 local subCommands = {
     get = getConfig,
     set = setConfig,
+    toggle = toggleConfig,
 }
 
 return {

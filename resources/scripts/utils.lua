@@ -27,7 +27,7 @@ end
 --- Split the string according to the separator. Uses regex identifier
 ---@param str string - base string
 ---@param separator string - separator to be used
----@return table - list of splitted strings
+---@return table<integer, string> - list of splitted strings
 Utilities.splitString = function (str, separator)
     local result = {}
     for value in str:gmatch("([^" .. separator .. "]+)") do

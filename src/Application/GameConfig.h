@@ -2,6 +2,9 @@
 
 #include <string>
 #include <algorithm>
+#include <utility>
+#include <memory>
+#include <vector>
 
 #include "Engine/Graphics/Renderer/RendererEnums.h"
 
@@ -605,5 +608,16 @@ class GameConfig : public Config {
     };
 
     Window window{ this };
-};
 
+
+    class CheatCommands : public ConfigSection {
+     public:
+        explicit CheatCommands(GameConfig *config);
+
+     private:
+        void _addCommand(int commandIndex, const std::string& defaultValue);
+        std::vector<std::unique_ptr<String>> CommandList;
+    };
+
+    CheatCommands commands{ this };
+};
