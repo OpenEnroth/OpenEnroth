@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <string>
 
+#include "Utility/String/Ascii.h"
 #include "Utility/String.h"
 
 bool detail::EnumSerializationTable::trySerialize(uint64_t src, std::string *dst) const {
@@ -24,7 +25,7 @@ bool detail::EnumSerializationTable::tryDeserialize(std::string_view src, uint64
     };
 
     if (_caseSensitivity == CASE_INSENSITIVE) {
-        return DoTryDeserialize(toLower(src), dst);
+        return DoTryDeserialize(ascii::toLower(src), dst);
     } else {
         return DoTryDeserialize(src, dst);
     }
@@ -110,7 +111,7 @@ void detail::EnumSerializationTable::insert(uint64_t value, std::string_view nam
 
     std::string storedName;
     if (_caseSensitivity == CASE_INSENSITIVE) {
-        storedName = toLower(name);
+        storedName = ascii::toLower(name);
     } else {
         storedName = name;
     }

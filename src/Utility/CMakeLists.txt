@@ -13,6 +13,7 @@ set(UTILITY_SOURCES
         Streams/InputStream.cpp
         Streams/MemoryInputStream.cpp
         Streams/StringOutputStream.cpp
+        String/Ascii.cpp
         String.cpp
         UnicodeCrt.cpp)
 
@@ -40,6 +41,7 @@ set(UTILITY_HEADERS
         Streams/MemoryInputStream.h
         Streams/OutputStream.h
         Streams/StringOutputStream.h
+        String/Ascii.h
         Win/Unicode.h
         Workaround/ToUnderlying.h
         String.h
@@ -70,7 +72,8 @@ if(OE_BUILD_TESTS)
             Tests/Segment_ut.cpp
             Tests/String_ut.cpp
             Tests/UnicodeCrt_ut.cpp
-            Tests/TransparentFunctors_ut.cpp)
+            Tests/TransparentFunctors_ut.cpp
+            String/Tests/Ascii_ut.cpp)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_link_libraries(test_utility PUBLIC testing_unit utility)

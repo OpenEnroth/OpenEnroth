@@ -7,7 +7,7 @@
 
 #include "Library/LodFormats/LodFormats.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
 
 #include "AssetsManager.h"
@@ -47,7 +47,7 @@ void LodSpriteCache::releaseUnreserved() {
 }
 
 Sprite *LodSpriteCache::loadSprite(std::string_view pContainerName) {
-    std::string name = toLower(pContainerName);
+    std::string name = ascii::toLower(pContainerName);
 
     Sprite *result = valuePtr(_spriteByName, name);
     if (result)

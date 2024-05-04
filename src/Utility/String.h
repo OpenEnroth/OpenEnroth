@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-std::string toLower(std::string_view text);
-std::string toUpper(std::string_view text);
 std::vector<char*> tokenize(char *input, const char separator);
 
 /**
@@ -42,17 +40,6 @@ inline std::string_view trim(std::string_view s) {
         r--;
     return s.substr(l, r - l);
 }
-
-bool noCaseStartsWith(std::string_view s, std::string_view prefix);
-bool noCaseEquals(std::string_view a, std::string_view b);
-bool noCaseLess(std::string_view a, std::string_view b);
-
-struct NoCaseLess {
-    using is_transparent = void; // This is a transparent comparator.
-    bool operator()(std::string_view a, std::string_view b) const {
-        return noCaseLess(a, b);
-    }
-};
 
 /**
  * @param s                             String to transform.

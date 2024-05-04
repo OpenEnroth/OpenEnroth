@@ -5,44 +5,6 @@
 
 #include "Utility/String.h"
 
-UNIT_TEST(String, toLowerUpper) {
-    EXPECT_EQ(toLower("123"), "123");
-    EXPECT_EQ(toLower("ABCd"), "abcd");
-    EXPECT_EQ(toLower("z"), "z");
-    EXPECT_EQ(toUpper("123"), "123");
-    EXPECT_EQ(toUpper("ABCd"), "ABCD");
-    EXPECT_EQ(toUpper("Z"), "Z");
-
-    // toLower/toUpper should do nothing for non-ascii chars.
-    for (int i = 128; i < 255; i++) {
-        const char string[2] = { static_cast<char>(i), 0 };
-        EXPECT_EQ(toLower(string), string);
-        EXPECT_EQ(toUpper(string), string);
-    }
-}
-
-UNIT_TEST(String, iequals) {
-    EXPECT_FALSE(noCaseEquals("abc", "abcd"));
-    EXPECT_FALSE(noCaseEquals("abd", "abc"));
-    EXPECT_TRUE(noCaseEquals("abc\0\0", "abc"));
-    EXPECT_TRUE(noCaseEquals("ABC", "abc"));
-    EXPECT_TRUE(noCaseEquals("Abc", "abC"));
-    EXPECT_TRUE(noCaseEquals("123ab..?z", "123Ab..?Z"));
-    EXPECT_TRUE(noCaseEquals("", ""));
-    EXPECT_FALSE(noCaseEquals("", "Z"));
-    EXPECT_FALSE(noCaseEquals("@", "`")); // \x40 vs \x60
-}
-
-UNIT_TEST(String, iless) {
-    EXPECT_TRUE(noCaseLess("A", "AB"));
-    EXPECT_FALSE(noCaseLess("AB", "A"));
-    EXPECT_TRUE(noCaseLess("a", "B"));
-    EXPECT_FALSE(noCaseLess("B", "a"));
-    EXPECT_FALSE(noCaseLess("b", "B"));
-    EXPECT_FALSE(noCaseLess("B", "b"));
-    EXPECT_TRUE(noCaseLess("@", "`"));
-}
-
 UNIT_TEST(String, toPrintable) {
     EXPECT_EQ(toPrintable("123\xFF", '.'), "123.");
 }
@@ -81,4 +43,8 @@ UNIT_TEST(String, split) {
 UNIT_TEST(String, join) {
     EXPECT_EQ(join("", '/', std::string_view("123"), std::string("321")), "/123321");
 }
+
+
+
+
 

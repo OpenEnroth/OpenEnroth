@@ -25,11 +25,12 @@
 #include "Library/Lod/LodReader.h"
 #include "Library/Serialization/EnumSerialization.h"
 
+#include "Utility/String/Ascii.h"
 #include "Utility/Format.h"
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
-#include "Utility/String.h"
 #include "Utility/UnicodeCrt.h"
+#include "Utility/String.h"
 
 #include "CodeGenEnums.h"
 #include "CodeGenMap.h"
@@ -167,7 +168,7 @@ int runMapIdCodeGen(const CodeGenOptions &options, GameResourceManager *resource
 
 const MapInfo &mapInfoByFileName(const MapStats &mapStats, std::string_view fileName) {
     auto pos = std::find_if(mapStats.pInfos.begin(), mapStats.pInfos.end(), [&] (const MapInfo &mapInfo) {
-        return noCaseEquals(mapInfo.fileName, fileName);
+        return ascii::noCaseEquals(mapInfo.fileName, fileName);
     });
     if (pos == mapStats.pInfos.end())
         throw Exception("Unrecognized map '{}'", fileName);

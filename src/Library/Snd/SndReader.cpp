@@ -10,7 +10,7 @@
 #include "Library/Snapshots/SnapshotSerialization.h"
 
 #include "Utility/Streams/BlobInputStream.h"
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 #include "Utility/Exception.h"
 
 #include "SndSnapshots.h"
@@ -34,7 +34,7 @@ void SndReader::open(std::string_view path) {
 
     std::unordered_map<std::string, SndEntry> files;
     for (SndEntry &entry : entries) {
-        std::string name = toLower(entry.name);
+        std::string name = ascii::toLower(entry.name);
         if (files.contains(name))
             throw Exception("File '{}' is not a valid SND: contains duplicate entries for '{}'", path, name);
 
@@ -60,13 +60,13 @@ void SndReader::close() {
 bool SndReader::exists(std::string_view filename) const {
     assert(isOpen());
 
-    return _files.contains(toLower(filename));
+    return _files.contains(ascii::toLower(filename));
 }
 
 Blob SndReader::read(std::string_view filename) const {
     assert(isOpen());
 
-    const auto pos = _files.find(toLower(filename));
+    const auto pos = _files.find(ascii::toLower(filename));
     if (pos == _files.cend())
         throw Exception("Entry '{}' doesn't exist in SND file '{}'", filename, _path);
     const SndEntry &entry = pos->second;

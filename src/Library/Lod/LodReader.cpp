@@ -12,6 +12,7 @@
 
 #include "Utility/Streams/BlobInputStream.h"
 #include "Utility/Exception.h"
+#include "Utility/String/Ascii.h"
 #include "Utility/String.h"
 
 #include "LodSnapshots.h"
@@ -104,7 +105,7 @@ void LodReader::open(Blob blob, std::string_view path, LodOpenFlags openFlags) {
     BlobInputStream dirStream(blob.subBlob(rootEntry.dataOffset, rootEntry.dataSize));
     std::unordered_map<std::string, LodRegion> files;
     for (const LodEntry &entry : parseFileEntries(dirStream, rootEntry, version, path)) {
-        std::string name = toLower(entry.name);
+        std::string name = ascii::toLower(entry.name);
         if (files.contains(name)) {
             if (openFlags & LOD_ALLOW_DUPLICATES) {
                 continue; // Only the first entry is kept in this case.
@@ -139,13 +140,13 @@ void LodReader::close() {
 bool LodReader::exists(std::string_view filename) const {
     assert(isOpen());
 
-    return _files.contains(toLower(filename));
+    return _files.contains(ascii::toLower(filename));
 }
 
 Blob LodReader::read(std::string_view filename) const {
     assert(isOpen());
 
-    const auto pos = _files.find(toLower(filename));
+    const auto pos = _files.find(ascii::toLower(filename));
     if (pos == _files.cend())
         throw Exception("Entry '{}' doesn't exist in LOD file '{}'", filename, _path);
 

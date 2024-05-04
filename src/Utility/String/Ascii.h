@@ -1,0 +1,30 @@
+#pragma once
+
+#include <string>
+#include <string_view>
+
+namespace ascii {
+
+inline char toLower(char c) {
+    return ((((c) >= 'A') && ((c) <= 'Z')) ? ((c) - 'A' + 'a') : (c));
+}
+
+inline char toUpper(char c) {
+    return ((((c) >= 'a') && ((c) <= 'z')) ? ((c) - 'a' + 'A') : (c));
+}
+
+std::string toLower(std::string_view text);
+std::string toUpper(std::string_view text);
+
+bool noCaseStartsWith(std::string_view s, std::string_view prefix);
+bool noCaseEquals(std::string_view a, std::string_view b);
+bool noCaseLess(std::string_view a, std::string_view b);
+
+struct NoCaseLess {
+    using is_transparent = void; // This is a transparent comparator.
+    bool operator()(std::string_view a, std::string_view b) const {
+        return noCaseLess(a, b);
+    }
+};
+
+} // namespace ascii
