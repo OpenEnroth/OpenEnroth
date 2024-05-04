@@ -17,7 +17,6 @@ class FSMState: public FSMEventHandler {
 
  protected:
     void executeTransition(std::string_view transition);
-    void exitFromFSM();
 
  private:
     FSMTransitionHandler *_transitionHandler;

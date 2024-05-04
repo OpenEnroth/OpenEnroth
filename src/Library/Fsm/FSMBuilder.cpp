@@ -18,13 +18,13 @@ FSMBuilder &FSMBuilder::state(std::string_view stateName, std::unique_ptr<FSMSta
 FSMBuilder &FSMBuilder::on(std::string_view transitionName) {
     _latestOnTransition.clear();
     if (_states.empty()) {
-        logger->warning("Can't create a transition with name [{}]. No state has been setup in the FSMBuilder",
+        logger->warning(FSM::fsmLogCategory, "Can't create a transition with name [{}]. No state has been setup in the FSMBuilder",
             transitionName);
         return *this;
     }
 
     if (_states.back()->transitions.contains(transitionName)) {
-        logger->warning("Can't create a transition with the same name [{}]. State [{}]",
+        logger->warning(FSM::fsmLogCategory, "Can't create a transition with the same name [{}]. State [{}]",
             transitionName, _states.back()->name);
         return *this;
     }
@@ -40,13 +40,13 @@ FSMBuilder &FSMBuilder::jumpTo(std::string_view targetState) {
 
 FSMBuilder &FSMBuilder::jumpTo(std::function<bool()> condition, std::string_view targetState) {
     if (_states.empty()) {
-        logger->warning("Can't add a target state to jumpTo. No state has been setup in the FSMBuilder. TargetState [{}]",
+        logger->warning(FSM::fsmLogCategory, "Can't add a target state to jumpTo. No state has been setup in the FSMBuilder. TargetState [{}]",
             targetState);
         return *this;
     }
 
     if (_latestOnTransition.empty()) {
-        logger->warning("Can't add a target state to jumpTo. No 'on' event has been defined yet. State [{}], TargetState [{}]",
+        logger->warning(FSM::fsmLogCategory, "Can't add a target state to jumpTo. No 'on' event has been defined yet. State [{}], TargetState [{}]",
             _states.back()->name, targetState);
         return *this;
     }

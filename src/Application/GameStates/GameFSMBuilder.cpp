@@ -39,8 +39,8 @@ void GameFSMBuilder::_buildIntroVideoSequence(FSMBuilder &builder) {
     .state<VideoState>("JVCVideo", "jvc")
         .on("videoEnd")
             .jumpTo([]() { return !engine->config->debug.NoIntro.value(); }, "IntroVideo")
-            .jumpTo("_Exit")
+            .jumpTo(FSM::exitState)
 
     .state<VideoState>("IntroVideo", "Intro")
-        .on("videoEnd").jumpTo("_Exit");
+        .on("videoEnd").jumpTo(FSM::exitState);
 }

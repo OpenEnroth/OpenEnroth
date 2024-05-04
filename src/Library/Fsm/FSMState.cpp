@@ -9,7 +9,3 @@ void FSMState::setTransitionHandler(FSMTransitionHandler *transitionHandler) {
 void FSMState::executeTransition(std::string_view transition) {
     _transitionHandler->executeTransition(transition);
 }
-
-void FSMState::exitFromFSM() {
-    _transitionHandler->exitFromFSM();
-}

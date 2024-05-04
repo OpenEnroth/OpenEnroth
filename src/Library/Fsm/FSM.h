@@ -36,12 +36,11 @@ class FSM : public FSMTransitionHandler, public FSMEventHandler {
     [[nodiscard]] bool hasReachedExitState() const;
 
     virtual void executeTransition(std::string_view transition) override;
-    virtual void exitFromFSM() override;
 
     /*
     * @brief Set the next state to be reached in the FSM. The transition won't occur immediately but will be executed during the next FSM::update() call.
     * The jumpToState function does not require a previously defined transition connecting the current state to the target state. The jump is unconditional.
-    * Since the actual transition occurs during the next FSM::update() call, subsequent calls to FSM::jumpToState, FSM::executeTransition, or FSM::exitFromFSM
+    * Since the actual transition occurs during the next FSM::update() call, subsequent calls to FSM::jumpToState or FSM::executeTransition,
     * will overwrite the target state.
     * @param stateName The name of the state to transition to. This name must belong to a state that has been previously added through FSM::addState.
     */
@@ -54,6 +53,9 @@ class FSM : public FSMTransitionHandler, public FSMEventHandler {
     };
 
     void addState(std::unique_ptr<StateEntry> stateEntry);
+
+    static const LogCategory fsmLogCategory;
+    static const std::string_view exitState;
 
  private:
     virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
@@ -80,6 +82,4 @@ class FSM : public FSMTransitionHandler, public FSMEventHandler {
     StateEntry *_currentState{};
     StateEntry *_nextState{};
     bool _hasReachedExitState{};
-
-    static const LogCategory fsmLogCategory;
 };
