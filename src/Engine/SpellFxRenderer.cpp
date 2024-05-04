@@ -4,7 +4,6 @@
 
 #include "Engine/OurMath.h"
 #include "Engine/Time/Timer.h"
-#include "Engine/stru160.h"
 #include "Engine/Party.h"
 #include "Engine/AssetsManager.h"
 
@@ -108,90 +107,24 @@ bool sr_42620A(RenderVertexSoft *p) { // maybe near clipping on projectiles
 }
 
 //----- (004775C4) --------------------------------------------------------
-SpellFX_Billboard::~SpellFX_Billboard() {
-    delete[] pArray1;
-    pArray1 = nullptr;
-
-    delete[] pArray2;
-    pArray2 = nullptr;
-}
-
-//----- (00478211) --------------------------------------------------------
-void SpellFX_Billboard::Initialize(int a2) {
-    uNumVec4sInArray1 = 66;
-    pArray1 = new stru16x[66];
-
-    uNumVec3sInArray2 = 128;
-    pArray2 = new stru160[128];
-
-    for (unsigned i = 0; i < uNumVec4sInArray1; ++i) {
-        pArray1[i].field_0 = array_4EB8B8[i].field_0;
-        pArray1[i].field_4 = array_4EB8B8[i].field_4;
-        pArray1[i].field_8 = array_4EB8B8[i].field_8;
-        pArray1[i].field_C = a2;
-    }
-
-    for (unsigned i = 0; i < uNumVec3sInArray2; ++i) {
-        pArray2[i].field_0 = array_4EBBD0_x[3 * i];
-        pArray2[i].field_4 = array_4EBBD0_x[(3 * i)+1];
-        pArray2[i].field_8 = array_4EBBD0_x[(3 * i)+2];
-    }
-
-    // doesnt copy over properly
-    // memcpy(pArray2, array_4EBBD0_x.data() /*array_4EBBD0*/,
-   //        uNumVec3sInArray2 * sizeof(stru160));
-}
+SpellFX_Billboard::~SpellFX_Billboard() {}
 
 //----- (0047829F) --------------------------------------------------------
-void SpellFX_Billboard::_47829F_sphere_particle(
-    float x_offset, float y_offset, float z_offset, float scale, Color diffuse) {
-    int v7 = 0;
-
-    // offsets are centrepoints
-
+void SpellFX_Billboard::_47829F_sphere_particle(Vec3f center, float scale, Color diffuse) {
     // 66 total verts points - held in array1
     // 128 triangles using 66 diff verts
 
+    for (unsigned int i = 0; i < sphereVertInd.size() / 3; ++i) {  // indicies for triangle in sphere
+        int ind = i * 3;
 
-    for (unsigned int i = 0; i < uNumVec3sInArray2; ++i) {  // indicies for triangle in sphere
-        // for (unsigned int j = 0; j < 3; ++j) {
-        //    field_14[j].x =
-        //        x_offset +
-        //        scale * *(&pArray1->field_0 +
-        //                  4 * *(int *)((char *)&pArray2->field_0 + v7));
-        //    field_14[j].y =
-        //        y_offset +
-        //        scale * *(&pArray1->field_4 +
-        //                  4 * *(int *)((char *)&pArray2->field_0 + v7));
-        //    field_14[j].z =
-        //        z_offset +
-        //        scale * *(&pArray1->field_8 +
-        //                  4 * *(int *)((char *)&pArray2->field_0 + v7));
-        //    // int v10 = *(int *)((char *)&pArray2->field_0 + v7);
-
-        //    field_14[j].diffuse =
-        //        *((int *)&pArray1[1].field_0 +
-        //          4 * (*(int *)((char *)&pArray2->field_0 + v7)));
-        //    v7 += 4;
-        //}
-
-
-        field_14[0].x = x_offset + scale * pArray1[int(pArray2[i].field_0)].field_0;
-        field_14[0].y = y_offset + scale * pArray1[int(pArray2[i].field_0)].field_4;
-        field_14[0].z = z_offset + scale * pArray1[int(pArray2[i].field_0)].field_8;
+        field_14[0].pos = center + scale * sphereVertPos[sphereVertInd[ind + 0]];
         field_14[0].diffuse = diffuse;
 
-        field_14[1].x = x_offset + scale * pArray1[int(pArray2[i].field_4)].field_0;
-        field_14[1].y = y_offset + scale * pArray1[int(pArray2[i].field_4)].field_4;
-        field_14[1].z = z_offset + scale * pArray1[int(pArray2[i].field_4)].field_8;
+        field_14[1].pos = center + scale * sphereVertPos[sphereVertInd[ind + 1]];
         field_14[1].diffuse = diffuse;
 
-        field_14[2].x = x_offset + scale * pArray1[int(pArray2[i].field_8)].field_0;
-        field_14[2].y = y_offset + scale * pArray1[int(pArray2[i].field_8)].field_4;
-        field_14[2].z = z_offset + scale * pArray1[int(pArray2[i].field_8)].field_8;
+        field_14[2].pos = center + scale * sphereVertPos[sphereVertInd[ind + 2]];
         field_14[2].diffuse = diffuse;
-
-
 
         uNumVertices = 3;
         if (SpellFXViewTransform() && SpellFXViewClip()) {
@@ -378,10 +311,7 @@ void SpellFxRenderer::_4A7688_fireball_collision_particle(SpriteObject *a2) {
         particle_engine->AddParticle(&local_0);
     }
 
-    pStru1->_47829F_sphere_particle((float)a2->vPosition.x,
-                                    (float)a2->vPosition.y,
-                                    (float)a2->vPosition.z,
-                                    floorf(0.5f + (512.0 * v3)),
+    _spellFXSphereInstance->_47829F_sphere_particle(a2->vPosition, floorf(0.5f + (512.0 * v3)),
                                     ModulateColor(colorTable.OrangeyRed, v4));
 }
 
@@ -394,9 +324,7 @@ void SpellFxRenderer::_4A77FD_implosion_particle_d3d(SpriteObject *a1) {
         v5 = v4 * 1.333333333333333;
     }
 
-    pStru1->_47829F_sphere_particle(a1->vPosition.x,
-                                    a1->vPosition.y,
-                                    a1->vPosition.z,
+    _spellFXSphereInstance->_47829F_sphere_particle(a1->vPosition,
                                     floorf(0.5f + (512.f - v4 * 512.f)),
                                     ModulateColor(colorTable.MediumGrey, v5));
 }
@@ -1296,36 +1224,34 @@ int SpellFX_Billboard::SpellFXNearClipAdjust(float NearClip) {  // near clip adj
     if (!uNumVertices) return 0;
 
     // copies first vert to position 4
-    field_64[uNumVertices].x = field_64[0].x;
-    field_64[uNumVertices].y = field_64[0].y;
-    field_64[uNumVertices].z = field_64[0].z;
+    field_64[uNumVertices].pos = field_64[0].pos;
     field_64[uNumVertices].diffuse = field_64[0].diffuse;
 
-    bool currvert = (field_64[0].x <= NearClip);
+    bool currvert = (field_64[0].pos.x <= NearClip);
     bool nextvert = false;
     int ProducedVerts = 0;
     double Tmult;
 
     for (int i = 0; i  < uNumVertices; ++i) {  // cycle through
-       nextvert = (field_64[i + 1].x <= NearClip);
+       nextvert = (field_64[i + 1].pos.x <= NearClip);
 
        if (currvert ^ nextvert) {  // XOR
            if (nextvert) {  // adjust verts and copy out
-               Tmult = (NearClip - field_64[i].x) / (field_64[i + 1].x - field_64[i].x);
+               Tmult = (NearClip - field_64[i].pos.x) / (field_64[i + 1].pos.x - field_64[i].pos.x);
 
                // x view = nearclip
-               field_B4[ProducedVerts].x = NearClip;
-               field_B4[ProducedVerts].y = (field_64[i + 1].y - field_64[i].y) * Tmult + field_64[i].y;
-               field_B4[ProducedVerts].z = (field_64[i + 1].z - field_64[i].z) * Tmult + field_64[i].z;
+               field_B4[ProducedVerts].pos.x = NearClip;
+               field_B4[ProducedVerts].pos.y = (field_64[i + 1].pos.y - field_64[i].pos.y) * Tmult + field_64[i].pos.y;
+               field_B4[ProducedVerts].pos.z = (field_64[i + 1].pos.z - field_64[i].pos.z) * Tmult + field_64[i].pos.z;
                field_B4[ProducedVerts].diffuse = field_64[i].diffuse;  // (field_64[(i+1) * 4 + 3] - field_64[i * 4 + 3]) * Tmult + field_64[i * 4 + 3];
 
            } else {  // currvert
-               Tmult = (NearClip - field_64[i].x) / (field_64[i].x - field_64[i + 1].x);
+               Tmult = (NearClip - field_64[i].pos.x) / (field_64[i].pos.x - field_64[i + 1].pos.x);
 
                // x view = nearclip
-               field_B4[ProducedVerts].x = NearClip;
-               field_B4[ProducedVerts].y = (field_64[i].y - field_64[i + 1].y) * Tmult + field_64[i].y;
-               field_B4[ProducedVerts].z = (field_64[i].z - field_64[i + 1].z) * Tmult + field_64[i].z;
+               field_B4[ProducedVerts].pos.x = NearClip;
+               field_B4[ProducedVerts].pos.y = (field_64[i].pos.y - field_64[i + 1].pos.y) * Tmult + field_64[i].pos.y;
+               field_B4[ProducedVerts].pos.z = (field_64[i].pos.z - field_64[i + 1].pos.z) * Tmult + field_64[i].pos.z;
                field_B4[ProducedVerts].diffuse = field_64[i].diffuse;  // (field_64[i * 4 + 3] - field_64[(i+1) * 4 + 3]) * Tmult + field_64[i * 4 + 3];
            }
            ++ProducedVerts;
@@ -1334,9 +1260,7 @@ int SpellFX_Billboard::SpellFXNearClipAdjust(float NearClip) {  // near clip adj
        if (!nextvert) {
            // copy out - vert doesnt need adjusting
 
-           field_B4[ProducedVerts].x = field_64[i + 1].x;
-           field_B4[ProducedVerts].y = field_64[i + 1].y;
-           field_B4[ProducedVerts].z = field_64[i + 1].z;
+           field_B4[ProducedVerts].pos = field_64[i + 1].pos;
            field_B4[ProducedVerts].diffuse = field_64[i + 1].diffuse;
 
            ++ProducedVerts;
@@ -1355,35 +1279,33 @@ int SpellFX_Billboard::SpellFXFarClipAdjust(float farclip) {  // far clip adjust
     if (!uNumVertices) return 0;
 
     // copies first vert to position 4
-    field_64[uNumVertices].x = field_64[0].x;
-    field_64[uNumVertices].y = field_64[0].y;
-    field_64[uNumVertices].z = field_64[0].z;
+    field_64[uNumVertices].pos = field_64[0].pos;
     field_64[uNumVertices].diffuse = field_64[0].diffuse;
 
-    bool currvert = (field_64[0].x >= farclip);
+    bool currvert = (field_64[0].pos.x >= farclip);
     bool nextvert = false;
     int ProducedVerts = 0;
     double Tmult;
 
     for (int i = 0; i < uNumVertices; ++i) {  // cycle through
-        nextvert = field_64[i + 1].x >= farclip;
+        nextvert = field_64[i + 1].pos.x >= farclip;
 
         if (currvert ^ nextvert) {  // XOR
             if (nextvert) {  // adjust verts and copy out
-                Tmult = (farclip - field_64[i].x) / (field_64[i + 1].x - field_64[i].x);
+                Tmult = (farclip - field_64[i].pos.x) / (field_64[i + 1].pos.x - field_64[i].pos.x);
 
                 // x view = nearclip
-                field_B4[ProducedVerts].x = farclip;
-                field_B4[ProducedVerts].y = (field_64[i + 1].y - field_64[i].y) * Tmult + field_64[i].y;
-                field_B4[ProducedVerts].z = (field_64[i + 1].z - field_64[i].z) * Tmult + field_64[i].z;
+                field_B4[ProducedVerts].pos.x = farclip;
+                field_B4[ProducedVerts].pos.y = (field_64[i + 1].pos.y - field_64[i].pos.y) * Tmult + field_64[i].pos.y;
+                field_B4[ProducedVerts].pos.z = (field_64[i + 1].pos.z - field_64[i].pos.z) * Tmult + field_64[i].pos.z;
                 field_B4[ProducedVerts].diffuse = field_64[i].diffuse;  // (field_64[(i+1) * 4 + 3] - field_64[i * 4 + 3]) * Tmult + field_64[i * 4 + 3];
             } else {  // currvert
-                Tmult = (farclip - field_64[i].x) / (field_64[i].x - field_64[i + 1].x);
+                Tmult = (farclip - field_64[i].pos.x) / (field_64[i].pos.x - field_64[i + 1].pos.x);
 
                 // x view = nearclip
-                field_B4[ProducedVerts].x = farclip;
-                field_B4[ProducedVerts].y = (field_64[i].y - field_64[i + 1].y) * Tmult + field_64[i].y;
-                field_B4[ProducedVerts].z = (field_64[i].z - field_64[i + 1].z) * Tmult + field_64[i].z;
+                field_B4[ProducedVerts].pos.x = farclip;
+                field_B4[ProducedVerts].pos.y = (field_64[i].pos.y - field_64[i + 1].pos.y) * Tmult + field_64[i].pos.y;
+                field_B4[ProducedVerts].pos.z = (field_64[i].pos.z - field_64[i + 1].pos.z) * Tmult + field_64[i].pos.z;
                 field_B4[ProducedVerts].diffuse = field_64[i * 4 + 3].diffuse;  // (field_64[i * 4 + 3] - field_64[(i+1) * 4 + 3]) * Tmult + field_64[i * 4 + 3];
             }
             ++ProducedVerts;
@@ -1392,9 +1314,7 @@ int SpellFX_Billboard::SpellFXFarClipAdjust(float farclip) {  // far clip adjust
         if (!nextvert) {
             // copy out - vert doesnt need adjusting
 
-            field_B4[ProducedVerts].x = field_64[i + 1].x;
-            field_B4[ProducedVerts].y = field_64[i + 1].y;
-            field_B4[ProducedVerts].z = field_64[i + 1].z;
+            field_B4[ProducedVerts].pos = field_64[i + 1].pos;
             field_B4[ProducedVerts].diffuse = field_64[i + 1].diffuse;
 
             ++ProducedVerts;
@@ -1414,12 +1334,12 @@ int SpellFX_Billboard::SpellFXViewTransform() {  // view transform
     if (this->uNumVertices > 0) {
         for (int v2 = 0; v2 < this->uNumVertices; ++v2) {
             // view tranfrom
-            pCamera3D->ViewTransform(field_14[v2].x, field_14[v2].y, field_14[v2].z, &ViewPosX, &ViewPosY, &ViewPosZ);
+            pCamera3D->ViewTransform(field_14[v2].pos.x, field_14[v2].pos.y, field_14[v2].pos.z, &ViewPosX, &ViewPosY, &ViewPosZ);
 
             // load into field 64
-            field_64[v2].x = ViewPosX;
-            field_64[v2].y = ViewPosY;
-            field_64[v2].z = ViewPosZ;
+            field_64[v2].pos.x = ViewPosX;
+            field_64[v2].pos.y = ViewPosY;
+            field_64[v2].pos.z = ViewPosZ;
             field_64[v2].diffuse = field_14[v2].diffuse;
         }
     }
@@ -1441,8 +1361,8 @@ bool SpellFX_Billboard::SpellFXViewClip() {
     }
 
     for (int v6 = 0; v6 < this->uNumVertices; v6++) {
-        if (NearClip >= field_64[v6].x || field_64[v6].x >= FarClip) {
-            if (NearClip < field_64[v6].x)
+        if (NearClip >= field_64[v6].pos.x || field_64[v6].pos.x >= FarClip) {
+            if (NearClip < field_64[v6].pos.x)
                 NeedFarClip = 1;
             else
                 NeedNearClip = 1;
@@ -1458,9 +1378,7 @@ bool SpellFX_Billboard::SpellFXViewClip() {
 
         // no clipping required- copy out
         for (int i = 0; i < uNumVertices; ++i) {
-            field_B4[i].x = field_64[i].x;
-            field_B4[i].y = field_64[i].y;
-            field_B4[i].z = field_64[i].z;
+            field_B4[i].pos = field_64[i].pos;
             field_B4[i].diffuse = field_64[i].diffuse;
         }
         return this->uNumVertices != 0;
@@ -1478,13 +1396,13 @@ int SpellFX_Billboard::SpellFXProject() {  // project to billboard coords
 
     for (int i = 0; i < this->uNumVertices; i++) {
         pCamera3D->Project(
-            round_to_int(this->field_B4[i].x),
-            round_to_int(this->field_B4[i].y),
-            round_to_int(this->field_B4[i].z), &Yproj, &Xproj);
+            round_to_int(this->field_B4[i].pos.x),
+            round_to_int(this->field_B4[i].pos.y),
+            round_to_int(this->field_B4[i].pos.z), &Yproj, &Xproj);
 
-        field_104[i].x = (float)Yproj;
-        field_104[i].y = (float)Xproj;
-        field_104[i].z = field_B4[i].x;
+        field_104[i].pos.x = (float)Yproj;
+        field_104[i].pos.y = (float)Xproj;
+        field_104[i].pos.z = field_B4[i].pos.x;
         field_104[i].diffuse = field_B4[i].diffuse;
 
         if (true)
