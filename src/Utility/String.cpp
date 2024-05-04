@@ -114,6 +114,17 @@ std::string replaceAll(std::string_view text, std::string_view what, std::string
     return result;
 }
 
+std::string replaceAll(std::string_view text, char what, char replacement) {
+    std::string result;
+    result = text;
+
+    for (char &c : result)
+        if (c == what)
+            c = replacement;
+
+    return result;
+}
+
 void splitString(std::string_view s, char sep, std::vector<std::string_view> *result) {
     result->clear();
     if(s.empty())
