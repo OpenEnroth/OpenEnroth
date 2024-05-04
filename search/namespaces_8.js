@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['win_0',['win',['../namespacewin.html',1,'']]]
+  ['tags_0',['tags',['../namespacetags.html',1,'']]]
 ];

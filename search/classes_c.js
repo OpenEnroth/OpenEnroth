@@ -4,7 +4,7 @@ var searchData=
   ['nk_5fstate_1',['nk_state',['../structnk__state.html',1,'']]],
   ['nk_5ftex_5ffont_2',['nk_tex_font',['../structnk__tex__font.html',1,'']]],
   ['nk_5fvertex_3',['nk_vertex',['../structnk__vertex.html',1,'']]],
-  ['nocaseless_4',['NoCaseLess',['../structNoCaseLess.html',1,'']]],
+  ['nocaseless_4',['NoCaseLess',['../structascii_1_1NoCaseLess.html',1,'ascii']]],
   ['npcdata_5',['NPCData',['../structNPCData.html',1,'']]],
   ['npcdata_5fmm7_6',['NPCData_MM7',['../structNPCData__MM7.html',1,'']]],
   ['npcgreeting_7',['NPCGreeting',['../structNPCGreeting.html',1,'']]],

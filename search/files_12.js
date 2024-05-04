@@ -70,11 +70,8 @@ var searchData=
   ['standardserialization_2eh_67',['StandardSerialization.h',['../StandardSerialization_8h.html',1,'']]],
   ['storylinetexttable_2ecpp_68',['StorylineTextTable.cpp',['../StorylineTextTable_8cpp.html',1,'']]],
   ['storylinetexttable_2eh_69',['StorylineTextTable.h',['../StorylineTextTable_8h.html',1,'']]],
-  ['string_2ecpp_70',['String.cpp',['../String_8cpp.html',1,'']]],
-  ['string_2eh_71',['String.h',['../String_8h.html',1,'']]],
-  ['string_5fut_2ecpp_72',['String_ut.cpp',['../String__ut_8cpp.html',1,'']]],
-  ['stringoutputstream_2ecpp_73',['StringOutputStream.cpp',['../StringOutputStream_8cpp.html',1,'']]],
-  ['stringoutputstream_2eh_74',['StringOutputStream.h',['../StringOutputStream_8h.html',1,'']]],
-  ['stru160_2eh_75',['stru160.h',['../stru160_8h.html',1,'']]],
-  ['stru314_2eh_76',['stru314.h',['../stru314_8h.html',1,'']]]
+  ['stringoutputstream_2ecpp_70',['StringOutputStream.cpp',['../StringOutputStream_8cpp.html',1,'']]],
+  ['stringoutputstream_2eh_71',['StringOutputStream.h',['../StringOutputStream_8h.html',1,'']]],
+  ['stru160_2eh_72',['stru160.h',['../stru160_8h.html',1,'']]],
+  ['stru314_2eh_73',['stru314.h',['../stru314_8h.html',1,'']]]
 ];

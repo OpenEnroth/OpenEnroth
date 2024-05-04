@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5c146f5</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b7e9d74</span>
    </div>
   </td>
  </tr>
@@ -159,6 +159,7 @@ Coding style</h1>
 <li>In general, you shouldn't bother optimizing code paths where you might save an allocation by moving in an <code>std::string</code> or passing it by const reference, the performance benefits are almost always negligible.</li>
 <li>Use <code>TransparentString*</code> classes if you need to index into a string map using <code>std::string_view</code> keys.</li>
 <li>However, feel free to use <code>std::string</code> or <code>const std::string &amp;</code> parameters where it makes your code simpler (e.g. by avoiding jumping through hoops if you'll need to create an intermediate <code>std::string</code> object anyway).</li>
+<li>C++ is notoriously bad when it comes to string concatenation (you can't concatenate <code>std::string_view</code> with a string literal using <code>operator+</code>, and never will). In most cases you should be fine just using <code>fmt::format</code> for this. If <code>fmt::format</code> looks like an overkill, use <code>join</code> from <code><a class="el" href="Transformations_8h.html">Utility/String/Transformations.h</a></code>.</li>
 </ul>
 </li>
 <li>We generally refrain from using namespaces because OpenEnroth is a relatively small codebase, and we don't need the measures advocated by the Google style guide to prevent name clashes.<ul>

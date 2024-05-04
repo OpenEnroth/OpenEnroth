@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['castspellinfohelpers_0',['CastSpellInfoHelpers',['../namespaceCastSpellInfoHelpers.html',1,'']]]
+  ['ascii_0',['ascii',['../namespaceascii.html',1,'']]]
 ];
