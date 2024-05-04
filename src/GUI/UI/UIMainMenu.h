@@ -12,19 +12,8 @@ class GUIWindow_MainMenu : public GUIWindow {
     virtual void Update() override;
 
     void processMessage(UIMessageType messageType);
-    void EventLoop();
-
-    /**
-     * @brief Performs secondary initialization while showing copyright window.
-     *
-     * @param initFunc     Pointer to code which is executed while copyright window is showed.
-     */
-    static void drawCopyrightAndInit(std::function<void()> initFunc);
-    static void loop();
 
  protected:
-    static void drawMM7CopyrightWindow();
-
     GUIButton *pBtnExit;
     GUIButton *pBtnCredits;
     GUIButton *pBtnLoad;

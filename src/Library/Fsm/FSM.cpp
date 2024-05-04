@@ -30,16 +30,19 @@ void FSM::update() {
         if (_nextState) {
             if (_currentState) {
                 _currentState->state->exit();
+                _currentState->hasExited = true;
             }
             _currentState = _nextState;
             _nextState = nullptr;
             _currentState->state->enter();
+            _currentState->hasExited = false;
         }
 
         _currentState->state->update();
 
         if (_hasReachedExitState) {
             _currentState->state->exit();
+            _currentState->hasExited = true;
             _currentState = nullptr;
         }
     }
@@ -55,6 +58,12 @@ void FSM::addState(std::unique_ptr<StateEntry> stateEntry) {
 }
 
 void FSM::executeTransition(std::string_view transition) {
+    // Check if we have a valid current state
+    if (!_currentState) {
+        logger->warning(fsmLogCategory, "Cannot execute transition. No current state to transit from. Transition [{}].", transition);
+        return;
+    }
+
     // Look for the correct transition
     FSMTransitions &transitions = _currentState->transitions;
     auto itr = transitions.find(transition);
@@ -89,65 +98,113 @@ FSM::StateEntry *FSM::_getStateByName(std::string_view stateName) {
 }
 
 bool FSM::keyPressEvent(const PlatformKeyEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->keyPressEvent(event);
 }
 
 bool FSM::keyReleaseEvent(const PlatformKeyEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->keyReleaseEvent(event);
 }
 
 bool FSM::mouseMoveEvent(const PlatformMouseEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->mouseMoveEvent(event);
 }
 
 bool FSM::mousePressEvent(const PlatformMouseEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->mousePressEvent(event);
 }
 
 bool FSM::mouseReleaseEvent(const PlatformMouseEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->mouseReleaseEvent(event);
 }
 
 bool FSM::wheelEvent(const PlatformWheelEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->wheelEvent(event);
 }
 
 bool FSM::moveEvent(const PlatformMoveEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->moveEvent(event);
 }
 
 bool FSM::resizeEvent(const PlatformResizeEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->resizeEvent(event);
 }
 
 bool FSM::activationEvent(const PlatformWindowEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->activationEvent(event);
 }
 
 bool FSM::closeEvent(const PlatformWindowEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->closeEvent(event);
 }
 
 bool FSM::gamepadConnectionEvent(const PlatformGamepadEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->gamepadConnectionEvent(event);
 }
 
 bool FSM::gamepadKeyPressEvent(const PlatformGamepadKeyEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->gamepadKeyPressEvent(event);
 }
 
 bool FSM::gamepadKeyReleaseEvent(const PlatformGamepadKeyEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->gamepadKeyReleaseEvent(event);
 }
 
 bool FSM::gamepadAxisEvent(const PlatformGamepadAxisEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->gamepadAxisEvent(event);
 }
 
 bool FSM::nativeEvent(const PlatformNativeEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->nativeEvent(event);
 }
 
 bool FSM::textInputEvent(const PlatformTextInputEvent *event) {
+    if (!_currentState || _currentState->hasExited) {
+        return false;
+    }
     return _currentState->state->textInputEvent(event);
 }
