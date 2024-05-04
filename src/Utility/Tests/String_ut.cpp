@@ -77,3 +77,8 @@ UNIT_TEST(String, split) {
     splitString("", ';', &v);
     EXPECT_TRUE(v.empty());
 }
+
+UNIT_TEST(String, join) {
+    EXPECT_EQ(join("", '/', std::string_view("123"), std::string("321")), "/123321");
+}
+

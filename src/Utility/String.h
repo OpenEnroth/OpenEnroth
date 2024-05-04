@@ -85,3 +85,31 @@ inline std::vector<std::string_view> splitString(const char *s, char sep) {
 }
 
 std::vector<std::string_view> splitString(std::string &&s, char sep) = delete; // Don't dangle!
+
+namespace detail {
+
+template<class T>
+constexpr bool is_bounded_char_array_v = false;
+
+template<std::size_t N>
+constexpr bool is_bounded_char_array_v<char[N]> = true;
+
+} // namespace detail
+
+template<class T>
+concept JoinableToString =
+    std::is_same_v<std::remove_cvref_t<T>, char> ||
+    std::is_same_v<std::remove_cvref_t<T>, std::string_view> ||
+    std::is_same_v<std::remove_cvref_t<T>, std::string> ||
+    std::is_same_v<std::remove_cvref_t<T>, const char *> ||
+    detail::is_bounded_char_array_v<std::remove_cvref_t<T>>;
+
+template<JoinableToString... Joinables> requires (sizeof...(Joinables) > 0)
+std::string join(Joinables &&... joinables) {
+    std::string result;
+    int _[] = {
+        ((result += joinables), 0)...
+    };
+    return result;
+}
+
