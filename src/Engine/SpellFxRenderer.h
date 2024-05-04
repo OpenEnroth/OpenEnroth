@@ -42,7 +42,7 @@ struct SpellFX_Billboard {
     bool SpellFXViewClip();
     int SpellFXProject();
     void _47829F_sphere_particle(Vec3f center, float scale, Color diffuse);
-    
+
     // billboard quad vertex
     struct local_01 {
         Vec3f pos;
