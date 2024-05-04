@@ -6,14 +6,6 @@
 #include <utility>
 #include <string>
 
-class NullState {
- public:
-    virtual void enter() {}
-    virtual void update() {}
-    virtual void exit() {}
-};
-
-const NullState nullState;
 const LogCategory FSM::fsmLogCategory("FSM");
 const std::string_view FSM::exitState = "_Exit";
 
