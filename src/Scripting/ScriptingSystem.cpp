@@ -1,15 +1,15 @@
 #include "ScriptingSystem.h"
 
-#include <Utility/DataPath.h>
-#include <Library/Logger/Logger.h>
-#include <Library/Logger/DistLogSink.h>
-#include <Library/Platform/Application/PlatformApplication.h>
-
 #include <string>
 #include <vector>
 #include <memory>
 #include <utility>
 #include <unordered_map>
+
+#include "Library/Logger/Logger.h"
+#include "Library/Logger/DistLogSink.h"
+#include "Library/Platform/Application/PlatformApplication.h"
+#include "Utility/DataPath.h"
 
 #include "IBindings.h"
 #include "InputScriptEventHandler.h"

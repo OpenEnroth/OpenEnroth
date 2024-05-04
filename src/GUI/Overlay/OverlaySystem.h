@@ -1,15 +1,13 @@
 #pragma once
 
-#include <Engine/Graphics/Renderer/RendererEnums.h>
-
-#include <Library/Logger/LogCategory.h>
-#include <Utility/String/TransparentFunctors.h>
-
 #include <unordered_map>
 #include <string>
 #include <memory>
 #include <utility>
 #include <functional>
+
+#include "Library/Logger/LogCategory.h"
+#include "Utility/String/TransparentFunctors.h"
 
 class Overlay;
 class GameConfig;
