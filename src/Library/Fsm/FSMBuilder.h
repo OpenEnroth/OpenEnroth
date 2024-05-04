@@ -7,6 +7,19 @@
 
 #include "FSM.h"
 
+/*
+* @brief Helper class used to build an FSM in a more concise way
+* 
+* Example:
+*     FSMBuilder builder;
+*     builder
+*         .state<MainMenuState>("MainMenu")
+*             .on("newGame").jumpTo("PartyCreation")
+* 
+*         .state<PartyCreationState>("PartyCreation")
+*             .on("exitButton").jumpTo("_Exit")
+*             .on("createParty").jumpTo("StartGame")
+*/
 class FSMBuilder {
  public:
     template<typename TState, typename ...TArgs>

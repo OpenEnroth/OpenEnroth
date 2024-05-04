@@ -42,11 +42,11 @@ void GameFSMBuilder::_buildIntroVideoSequence(FSMBuilder &builder) {
     .state<VideoState>("JVCVideo", "jvc")
         .on("videoEnd")
             .jumpTo([]() { return !engine->config->debug.NoIntro.value(); }, "IntroVideo")
-            .jumpTo("_Exit")
+            .jumpTo(FSM::exitState)
 
     .state<VideoState>("IntroVideo", "Intro")
         .on("videoEnd").jumpTo("LoadStep2")
 
     .state<LoadStep2State>("LoadStep2")
-        .on("done").jumpTo("_Exit");
+        .on("done").jumpTo(FSM::exitState);
 }
