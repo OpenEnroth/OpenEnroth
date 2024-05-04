@@ -42,13 +42,6 @@ inline std::string_view trim(std::string_view s) {
 }
 
 /**
- * @param s                             String to transform.
- * @param placeholder                   Character to replace all non-printable chars with.
- * @return                              Passed string, with all non-printable characters replaced with `placeholder`.
- */
-std::string toPrintable(std::string_view s, char placeholder = ' ');
-
-/**
  * `toHexDump("0123", 2)` is `"3132 3334"`.
  *
  * @param s                             String to convert.

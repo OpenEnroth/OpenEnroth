@@ -13,7 +13,6 @@
 #include "Utility/Streams/BlobInputStream.h"
 #include "Utility/Exception.h"
 #include "Utility/String/Ascii.h"
-#include "Utility/String.h"
 
 #include "LodSnapshots.h"
 #include "LodEnums.h"
@@ -23,10 +22,10 @@ static LodHeader parseHeader(InputStream &stream, std::string_view path, LodVers
     deserialize(stream, &header, tags::via<LodHeader_MM6>);
 
     if (header.signature != "LOD")
-        throw Exception("File '{}' is not a valid LOD: expected signature '{}', got '{}'", path, "LOD", toPrintable(header.signature));
+        throw Exception("File '{}' is not a valid LOD: expected signature '{}', got '{}'", path, "LOD", ascii::toPrintable(header.signature));
 
     if (!tryDeserialize(header.version, version))
-        throw Exception("File '{}' is not a valid LOD: version '{}' is not recognized", path, toPrintable(header.version));
+        throw Exception("File '{}' is not a valid LOD: version '{}' is not recognized", path, ascii::toPrintable(header.version));
 
     // While LOD structure itself support multiple directories, all LOD files associated with
     // vanilla MM6/7/8 games use a single directory.

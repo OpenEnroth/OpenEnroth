@@ -8,6 +8,7 @@
 #include "Library/Serialization/Serialization.h"
 
 #include "Utility/String/Format.h"
+#include "Utility/String/Ascii.h"
 #include "Utility/String.h"
 #include "Utility/UnicodeCrt.h"
 
@@ -42,7 +43,7 @@ int runDump(const LodToolOptions &options) {
         for (size_t offset = 0; offset < data.size(); offset += 16) {
             std::string_view chunk = data.string_view().substr(offset, 16);
 
-            fmt::println("    {:08X}: {: <40}  {}", offset, toHexDump(chunk), toPrintable(chunk, '.'));
+            fmt::println("    {:08X}: {: <40}  {}", offset, toHexDump(chunk), ascii::toPrintable(chunk, '.'));
         }
     }
 

@@ -33,7 +33,7 @@ UNIT_TEST(Ascii, noCaseEquals) {
     EXPECT_FALSE(ascii::noCaseEquals("@", "`")); // \x40 vs \x60
 }
 
-UNIT_TEST(String, noCaseLess) {
+UNIT_TEST(Ascii, noCaseLess) {
     EXPECT_TRUE(ascii::noCaseLess("A", "AB"));
     EXPECT_FALSE(ascii::noCaseLess("AB", "A"));
     EXPECT_TRUE(ascii::noCaseLess("a", "B"));
@@ -43,6 +43,9 @@ UNIT_TEST(String, noCaseLess) {
     EXPECT_TRUE(ascii::noCaseLess("@", "`"));
 }
 
+UNIT_TEST(Ascii, toPrintable) {
+    EXPECT_EQ(ascii::toPrintable("123\xFF", '.'), "123.");
+}
 
 
 

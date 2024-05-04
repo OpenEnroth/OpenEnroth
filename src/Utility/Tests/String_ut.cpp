@@ -5,10 +5,6 @@
 
 #include "Utility/String.h"
 
-UNIT_TEST(String, toPrintable) {
-    EXPECT_EQ(toPrintable("123\xFF", '.'), "123.");
-}
-
 UNIT_TEST(String, toHexDump) {
     EXPECT_EQ(toHexDump("1234", 2), "3132 3334");
     EXPECT_EQ(toHexDump("0000"), "30303030");

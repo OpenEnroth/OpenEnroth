@@ -20,14 +20,6 @@ std::vector<char *> tokenize(char *input, const char separator) {
     return retVect;
 }
 
-std::string toPrintable(std::string_view s, char placeholder) {
-    std::string result(s.size(), placeholder);
-    for (size_t i = 0; i < s.size(); i++)
-        if (s[i] >= '\x20' && s[i] <= '\x7E') // Ascii printable chars are in [0x20, 0x7E].
-            result[i] = s[i];
-    return result;
-}
-
 std::string toHexDump(std::string_view s, size_t groupSize) {
     std::string result;
     for (size_t i = 0; i < s.size(); i++) {
