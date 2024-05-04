@@ -3,7 +3,7 @@
 #include <Engine/Graphics/Renderer/RendererEnums.h>
 
 #include <Library/Logger/LogCategory.h>
-#include <Utility/TransparentFunctors.h>
+#include <Utility/String/TransparentFunctors.h>
 
 #include <unordered_map>
 #include <string>

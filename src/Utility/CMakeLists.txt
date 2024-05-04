@@ -45,7 +45,7 @@ set(UTILITY_HEADERS
         Win/Unicode.h
         Workaround/ToUnderlying.h
         String.h
-        TransparentFunctors.h
+        String/TransparentFunctors.h
         Unaligned.h
         UnicodeCrt.h)
 
@@ -72,7 +72,7 @@ if(OE_BUILD_TESTS)
             Tests/Segment_ut.cpp
             Tests/String_ut.cpp
             Tests/UnicodeCrt_ut.cpp
-            Tests/TransparentFunctors_ut.cpp
+            String/Tests/TransparentFunctors_ut.cpp
             String/Tests/Ascii_ut.cpp)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
