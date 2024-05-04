@@ -157,8 +157,10 @@ struct nk_tex_font *NuklearOverlayRenderer::_loadFont(const char *font_path, siz
 
 void NuklearOverlayRenderer::_cleanup() {
     if (_state) {
-        glDeleteTextures(1, &_defaultFont->texid);
-        delete _defaultFont;
+        if (_defaultFont) {
+            glDeleteTextures(1, &_defaultFont->texid);
+            delete _defaultFont;
+        }
 
         nk_font_atlas_clear(&_state->dev.atlas);
 
