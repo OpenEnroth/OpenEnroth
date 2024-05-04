@@ -10,7 +10,7 @@
 #include "LoadStep2State.h"
 #include "MainMenuState.h"
 #include "CreditsState.h"
-#include "LoadSaveSlotState.h"
+#include "LoadSlotState.h"
 
 std::unique_ptr<FSM> GameFSMBuilder::buildFSM() {
     FSMBuilder fsmBuilder;
@@ -62,7 +62,7 @@ void GameFSMBuilder::_buildMainMenu(FSMBuilder &builder) {
         .on("credits").jumpTo("Credits")
         .on("exit").jumpTo(FSM::exitState)
 
-    .state<LoadSaveSlotState>("LoadGame")
+    .state<LoadSlotState>("LoadGame")
         .on("slotConfirmed").jumpTo(FSM::exitState)
         .on("back").jumpTo("MainMenu")
 

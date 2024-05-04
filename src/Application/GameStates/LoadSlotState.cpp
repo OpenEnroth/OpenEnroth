@@ -1,4 +1,4 @@
-#include "LoadSaveSlotState.h"
+#include "LoadSlotState.h"
 
 #include <Engine/Engine.h>
 #include <Engine/Graphics/Renderer/Renderer.h>
@@ -9,18 +9,18 @@
 
 #include <memory>
 
-LoadSaveSlotState::LoadSaveSlotState() {
+LoadSlotState::LoadSlotState() {
 }
 
-void LoadSaveSlotState::enter() {
+void LoadSlotState::enter() {
     current_screen_type = SCREEN_LOADGAME;
     bool isInGame = false;
     _uiLoadSaveSlot = std::make_unique<GUIWindow_Load>(isInGame);
-    // Unfortunately there's a need to set this global pointer without refactoring the entire SaveLoad UI ( not worth it right now )
+    // Unfortunately there's a need to set this global pointer if we don't want to refactor the entire SaveLoad UI ( not worth it right now )
     pGUIWindow_CurrentMenu = _uiLoadSaveSlot.get();
 }
 
-void LoadSaveSlotState::update() {
+void LoadSlotState::update() {
     while (engine->_messageQueue->haveMessages()) {
         UIMessageType message;
         int param1, param2;
@@ -69,13 +69,13 @@ void LoadSaveSlotState::update() {
     }
 }
 
-void LoadSaveSlotState::exit() {
+void LoadSlotState::exit() {
     pGUIWindow_CurrentMenu = nullptr;
     _uiLoadSaveSlot->Release();
     _uiLoadSaveSlot.reset();
 }
 
-void LoadSaveSlotState::_goBack() {
+void LoadSlotState::_goBack() {
     // One day we'll be able to get rid of this. We shouldn't know from a state where we're going.
     // That's why we trigger a "back" transition few lines below
     SetCurrentMenuID(MENU_MAIN);
