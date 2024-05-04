@@ -37,5 +37,3 @@ class GUIWindow_MainMenu : public GUIWindow {
     GraphicsImage *ui_mainmenu_credits;
     GraphicsImage *ui_mainmenu_exit;
 };
-
-extern GUIWindow_MainMenu *pWindow_MainMenu;

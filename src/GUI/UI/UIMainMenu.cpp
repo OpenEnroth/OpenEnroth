@@ -16,8 +16,6 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
-
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
     GUIWindow(WINDOW_MainMenu, {0, 0}, render->GetRenderDimensions()) {
     main_menu_background = assets->getImage_PCXFromIconsLOD("title.pcx");
@@ -49,12 +47,11 @@ void GUIWindow_MainMenu::Update() {
     render->DrawTextureNew(0, 0, main_menu_background);
 
     Pointi pt = mouse->GetCursorPos();
-    GUIWindow *pWindow = this;
 
     GraphicsImage *pTexture = nullptr;
-    if (!pGameOverWindow) {  // ???
-        for (GUIButton *pButton : pWindow->vButtons) {
-            if (pButton->Contains(pt.x, pt.y) && pWindow == pWindow_MainMenu) {
+    if (!pGameOverWindow) {  // Really why???
+        for (GUIButton *pButton : vButtons) {
+            if (pButton->Contains(pt.x, pt.y)) {
                 auto pControlParam = pButton->msg_param;
                 int pY = 0;
                 switch (pControlParam) {  // backlight for buttons
@@ -170,33 +167,4 @@ void GUIWindow_MainMenu::drawCopyrightAndInit(std::function<void()> initFunc) {
 
         tex->Release();
     }
-}
-
-void GUIWindow_MainMenu::loop() {
-    pAudioPlayer->stopSounds();
-    pAudioPlayer->MusicPlayTrack(MUSIC_MAIN_MENU);
-
-    current_screen_type = SCREEN_GAME;
-
-    pGUIWindow_BranchlessDialogue = nullptr;
-
-    pWindow_MainMenu = new GUIWindow_MainMenu();
-
-    SetCurrentMenuID(MENU_MAIN);
-    // window->Activate();
-
-    while (GetCurrentMenuID() == MENU_MAIN) {
-        MessageLoopWithWait();
-
-        render->BeginScene2D();
-        {
-            pWindow_MainMenu->EventLoop();
-            GUI_UpdateWindows();
-        }
-        render->Present();
-    }
-
-    pWindow_MainMenu->Release();
-    delete pWindow_MainMenu;
-    pWindow_MainMenu = nullptr;
 }

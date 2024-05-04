@@ -1,8 +1,8 @@
 #pragma once
 
-#include <memory>
-
 #include <Library/Fsm/FSMState.h>
+
+#include <memory>
 
 class GUIWindow_MainMenu;
 

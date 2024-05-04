@@ -6,7 +6,7 @@
 #include <GUI/GUIWindow.h>
 #include <GUI/UI/UIMainMenu.h>
 
-#include <thread>
+#include <memory>
 
 MainMenuState::MainMenuState() {
 }
@@ -29,7 +29,7 @@ void MainMenuState::update() {
     while (engine->_messageQueue->haveMessages()) {
         UIMessageType messageType;
         engine->_messageQueue->popMessage(&messageType, nullptr, nullptr);
-        
+
         _mainMenuUI->processMessage(messageType);
 
         switch (messageType) {
@@ -56,7 +56,6 @@ void MainMenuState::update() {
             break;
         }
     }
-    _mainMenuUI->Update();
 }
 
 void MainMenuState::exit() {
