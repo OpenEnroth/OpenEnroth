@@ -18,10 +18,10 @@ class VideoState : public FSMState {
  private:
     virtual bool mousePressEvent(const PlatformMouseEvent *event) override;
     virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
-    void _skipVideo();
 
     std::string _videoFileName;
     std::shared_ptr<IMovie> _movie;
     ScreenType _previousScreenType{};
     bool _isPaused{};
+    bool _skipVideo{};
 };

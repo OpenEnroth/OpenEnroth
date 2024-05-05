@@ -9,11 +9,6 @@
 const LogCategory FSM::fsmLogCategory("FSM");
 const std::string_view FSM::exitState = "_Exit";
 
-FSM::FSM() {
-    // By default, when the FSM has no states, it's treated as if it reached the exit state
-    _hasReachedExitState = true;
-}
-
 void FSM::jumpToState(std::string_view stateName) {
     _hasReachedExitState = stateName == exitState;
     if (!_hasReachedExitState) {
@@ -53,7 +48,7 @@ void FSM::addState(std::unique_ptr<StateEntry> stateEntry) {
     _states.insert({ stateEntry->name, std::move(stateEntry) });
 }
 
-void FSM::executeTransition(std::string_view transition) {
+void FSM::scheduleTransition(std::string_view transition) {
     // Look for the correct transition
     FSMTransitions &transitions = _currentState->transitions;
     auto itr = transitions.find(transition);

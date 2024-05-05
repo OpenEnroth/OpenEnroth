@@ -12,12 +12,15 @@ VideoState::VideoState(std::string_view videoFileName) : _videoFileName(videoFil
 }
 
 void VideoState::enter() {
+    _skipVideo = false;
     if (engine->config->debug.NoVideo.value()) {
+        _skipVideo = true;
         return;
     }
 
     _movie = pMediaPlayer->loadFullScreenMovie(_videoFileName.c_str());
     if (!_movie) {
+        _skipVideo = true;
         return;
     }
 
@@ -38,16 +41,12 @@ void VideoState::enter() {
 }
 
 void VideoState::update() {
-    if (!_movie)
-        executeTransition("videoEnd");
+    if (!_movie || _skipVideo)
+        _scheduleTransition("videoEnd");
 
     bool isOver = _movie->renderFrame();
     if (isOver)
-        executeTransition("videoEnd");
-}
-
-void VideoState::_skipVideo() {
-    executeTransition("videoEnd");
+        _scheduleTransition("videoEnd");
 }
 
 void VideoState::exit() {
@@ -59,14 +58,14 @@ void VideoState::exit() {
 
 bool VideoState::mousePressEvent(const PlatformMouseEvent *event) {
     // We skip the video if we press any mouse button
-    _skipVideo();
+    _skipVideo = true;
     return true;
 }
 
 bool VideoState::keyPressEvent(const PlatformKeyEvent *event) {
     // We skip the video if we press any key button
     if (!event->isAutoRepeat) {
-        _skipVideo();
+        _skipVideo = true;
         return true;
     }
     return false;
