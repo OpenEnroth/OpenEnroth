@@ -7,11 +7,8 @@
 #include <memory>
 
 #include "VideoState.h"
-<<<<<<< HEAD
 #include "LoadStep2State.h"
-=======
 #include "StartState.h"
->>>>>>> origin/fsm/first-prototype
 
 std::unique_ptr<FSM> GameFSMBuilder::buildFSM() {
     FSMBuilder fsmBuilder;
@@ -25,7 +22,7 @@ std::unique_ptr<FSM> GameFSMBuilder::buildFSM() {
 void GameFSMBuilder::_buildIntroVideoSequence(FSMBuilder &builder) {
     builder
     .state<StartState>("Start")
-        .on("skipVideo").jumpTo(FSM::exitState)
+        .on("skipVideo").jumpTo("LoadStep2")
         .on("skipLogo").jumpTo("IntroVideo")
         .on("noSkip").jumpTo("3DOVideo")
 

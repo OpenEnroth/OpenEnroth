@@ -6,9 +6,8 @@ class GraphicsImage;
 
 class LoadStep2State : public FSMState {
  public:
-    LoadStep2State();
-    virtual void update() override;
-    virtual void enter() override;
+    virtual FSMAction update() override;
+    virtual FSMAction enter() override;
     virtual void exit() override;
 
  private:
