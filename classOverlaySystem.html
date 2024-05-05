@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e04f0ff</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1395dcc</span>
    </div>
   </td>
  </tr>
@@ -94,6 +94,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:adc6a2fea70a5c196ce4d0ae8053bd664"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a916742fc76e010906cdd3dc2161de71a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOverlaySystem.html#a916742fc76e010906cdd3dc2161de71a">removeOverlay</a> (std::string_view name)</td></tr>
 <tr class="separator:a916742fc76e010906cdd3dc2161de71a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47eeb8aad4401e7d7cfd129b3db132f8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOverlaySystem.html#a47eeb8aad4401e7d7cfd129b3db132f8">isEnabled</a> () const</td></tr>
+<tr class="separator:a47eeb8aad4401e7d7cfd129b3db132f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1093592803a4f9ebb27c51e3db998ed7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOverlaySystem.html#a1093592803a4f9ebb27c51e3db998ed7">setEnabled</a> (bool enable)</td></tr>
+<tr class="separator:a1093592803a4f9ebb27c51e3db998ed7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52b490cb36b7181e430846be50f0cfc2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOverlaySystem.html#a52b490cb36b7181e430846be50f0cfc2">drawOverlays</a> ()</td></tr>
 <tr class="separator:a52b490cb36b7181e430846be50f0cfc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -119,6 +123,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a50c53583eadd78d400d2339704d0698f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa79a7af67dc747bb43fef077eb9bf10e"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOverlaySystem.html#aa79a7af67dc747bb43fef077eb9bf10e">_unregisterDependencies</a></td></tr>
 <tr class="separator:aa79a7af67dc747bb43fef077eb9bf10e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e2cced875a5943b332ac0bba962aed5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOverlaySystem.html#a0e2cced875a5943b332ac0bba962aed5">_isEnabled</a> {}</td></tr>
+<tr class="separator:a0e2cced875a5943b332ac0bba962aed5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >An <a class="el" href="classOverlay.html">Overlay</a> is a screen built in Immediate Mode GUI ( nuklear ) which is displayed on top of any other ui and it's mainly used for debug purposes ( Console, Render Stats, Debug View Buttons, etc... ). </p>
@@ -240,6 +246,23 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a47eeb8aad4401e7d7cfd129b3db132f8" name="a47eeb8aad4401e7d7cfd129b3db132f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47eeb8aad4401e7d7cfd129b3db132f8">&#9670;&#160;</a></span>isEnabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool OverlaySystem::isEnabled </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a916742fc76e010906cdd3dc2161de71a" name="a916742fc76e010906cdd3dc2161de71a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a916742fc76e010906cdd3dc2161de71a">&#9670;&#160;</a></span>removeOverlay()</h2>
 
@@ -251,6 +274,24 @@ Private Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1093592803a4f9ebb27c51e3db998ed7" name="a1093592803a4f9ebb27c51e3db998ed7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1093592803a4f9ebb27c51e3db998ed7">&#9670;&#160;</a></span>setEnabled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void OverlaySystem::setEnabled </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enable</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -270,6 +311,28 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classPlatformApplication.html">PlatformApplication</a>&amp; OverlaySystem::_application</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0e2cced875a5943b332ac0bba962aed5" name="a0e2cced875a5943b332ac0bba962aed5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e2cced875a5943b332ac0bba962aed5">&#9670;&#160;</a></span>_isEnabled</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool OverlaySystem::_isEnabled {}</td>
         </tr>
       </table>
   </td>
