@@ -328,9 +328,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         case EVENT_SpeakNPC:
             if (_canShowMessages) {
-                Actor actor = Actor();
-                actor.npcId = ir.data.npc_descr.npc_id;
-                initializeNPCDialogue(&actor, false);
+                initializeNPCDialogue(ir.data.npc_descr.npc_id, false);
             } else {
                 bDialogueUI_InitializeActor_NPC_ID = ir.data.npc_descr.npc_id;
             }

@@ -35,7 +35,7 @@ class GUIWindow_Dialogue : public GUIWindow {
     DialogueId _displayedDialogue = DIALOGUE_MAIN;
 };
 
-void initializeNPCDialogue(Actor *actor, int bPlayerSaysHello);
+void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor = nullptr);
 
 void selectNPCDialogueOption(DialogueId option);
 

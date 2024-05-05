@@ -30,20 +30,22 @@
 
 using Io::TextInputType;
 
+Actor *currentSpeakingActor = nullptr;
+
 const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil> dialogueBackgroundResourceByAlignment = {
     {PartyAlignment_Good, "evt02-b"},
     {PartyAlignment_Neutral, "evt02"},
     {PartyAlignment_Evil, "evt02-c"}
 };
 
-void initializeNPCDialogue(Actor *actor, int bPlayerSaysHello) {
+void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
     currentAddressingAwardBit = -1;
     pNPCStats->dword_AE336C_LastMispronouncedNameFirstLetter = -1;
     pEventTimer->setPaused(true);
     pMiscTimer->setPaused(true);
-    sDialogue_SpeakingActorNPC_ID = actor->npcId;
-    pDialogue_SpeakingActor = actor;
-    NPCData *pNPCInfo = getNPCData(actor->npcId);
+    sDialogue_SpeakingActorNPC_ID = npcId;
+    currentSpeakingActor = actor;
+    NPCData *pNPCInfo = getNPCData(npcId);
     if (!(pNPCInfo->uFlags & NPC_GREETED_SECOND)) {
         if (pNPCInfo->uFlags & NPC_GREETED_FIRST) {
             pNPCInfo->uFlags &= ~NPC_GREETED_FIRST;
@@ -165,6 +167,7 @@ void GUIWindow_Dialogue::Release() {
     }
 
     current_screen_type = prev_screen_type;
+    currentSpeakingActor = nullptr;
     pParty->switchToNextActiveCharacter();
     GUIWindow::Release();
 }
@@ -399,8 +402,8 @@ void selectNPCDialogueOption(DialogueId option) {
 
     if (option == DIALOGUE_HIRE_FIRE) {
         if (speakingNPC->Hired()) {
-            if (sDialogue_SpeakingActorNPC_ID >= 0) {
-                pDialogue_SpeakingActor->aiState = Removed;
+            if (currentSpeakingActor && currentSpeakingActor->npcId >= 0) {
+                currentSpeakingActor->aiState = Removed;
             }
         }
     }
