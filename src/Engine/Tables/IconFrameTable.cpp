@@ -2,7 +2,7 @@
 
 #include "Engine/AssetsManager.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 
 GraphicsImage *Icon::GetTexture() {
     if (!this->img) {
@@ -19,7 +19,7 @@ Icon *IconFrameTable::GetIcon(unsigned int idx) {
 
 Icon *IconFrameTable::GetIcon(const char *pIconName) {
     for (unsigned int i = 0; i < pIcons.size(); i++) {
-        if (noCaseEquals(pIconName, this->pIcons[i].GetAnimationName()))
+        if (ascii::noCaseEquals(pIconName, this->pIcons[i].GetAnimationName()))
             return &this->pIcons[i];
     }
     return nullptr;
@@ -28,7 +28,7 @@ Icon *IconFrameTable::GetIcon(const char *pIconName) {
 //----- (00494F3A) --------------------------------------------------------
 unsigned int IconFrameTable::FindIcon(std::string_view pIconName) {
     for (size_t i = 0; i < pIcons.size(); i++) {
-        if (noCaseEquals(pIconName, this->pIcons[i].GetAnimationName()))
+        if (ascii::noCaseEquals(pIconName, this->pIcons[i].GetAnimationName()))
             return i;
     }
     return 0;

@@ -1,6 +1,6 @@
 #include "LoggerBindings.h"
 
-#include <Library/Logger/Logger.h>
+#include "Library/Logger/Logger.h"
 
 sol::table LoggerBindings::createBindingTable(sol::state_view &solState) const {
     return solState.create_table_with(

@@ -11,7 +11,7 @@
 #include "Library/Snapshots/SnapshotSerialization.h"
 
 #include "Utility/Streams/BlobInputStream.h"
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 #include "Utility/Exception.h"
 
 #include "VidSnapshots.h"
@@ -38,7 +38,7 @@ void VidReader::open(std::string_view path) {
     for (size_t i = 0; i < entries.size(); i++) {
         const VidEntry &entry = entries[i];
 
-        std::string name = toLower(entry.name);
+        std::string name = ascii::toLower(entry.name);
         if (files.contains(name))
             throw Exception("File '{}' is not a valid VID: contains duplicate entries for '{}'", path, name);
 
@@ -70,13 +70,13 @@ void VidReader::close() {
 bool VidReader::exists(std::string_view filename) const {
     assert(isOpen());
 
-    return _files.contains(toLower(filename));
+    return _files.contains(ascii::toLower(filename));
 }
 
 Blob VidReader::read(std::string_view filename) const {
     assert(isOpen());
 
-    const auto pos = _files.find(toLower(filename));
+    const auto pos = _files.find(ascii::toLower(filename));
     if (pos == _files.cend())
         throw Exception("Entry '{}' doesn't exist in VID file '{}'", filename, _path);
     const VidRegion &region = pos->second;

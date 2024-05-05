@@ -26,7 +26,7 @@ RgbaImage NullRenderer::ReadScreenPixels() {
 void NullRenderer::ClearTarget(Color uColor) {}
 
 void NullRenderer::Present() {
-    openGLContext->swapBuffers();
+    swapBuffers();
 }
 
 bool NullRenderer::InitializeFullscreen() {
@@ -142,4 +142,6 @@ void NullRenderer::DoRenderBillboards_D3D() {}
 
 void NullRenderer::drawOverlays(nk_context *) {}
 void NullRenderer::flushAndScale() {}
-void NullRenderer::swapBuffers() {}
+void NullRenderer::swapBuffers() {
+    openGLContext->swapBuffers();
+}

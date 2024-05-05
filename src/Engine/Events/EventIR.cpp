@@ -12,7 +12,7 @@
 
 #include "Library/Serialization/Serialization.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 #include "Utility/Exception.h"
 
 static std::string getVariableSetStr(VariableType type, int value) {

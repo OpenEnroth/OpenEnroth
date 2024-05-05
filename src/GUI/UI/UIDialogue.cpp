@@ -3,8 +3,6 @@
 #include <vector>
 #include <string>
 
-#include "Engine/Events/Processor.h"
-#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Level/Decoration.h"
@@ -22,12 +20,13 @@
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
-#include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/NPCTopics.h"
 
 #include "Io/KeyboardInputHandler.h"
 
 #include "Media/Audio/AudioPlayer.h"
+
+#include "Utility/String/Ascii.h"
 
 using Io::TextInputType;
 
@@ -385,9 +384,9 @@ void selectNPCDialogueOption(DialogueId option) {
                 if (pNPCStats->pNPCData[i].Hired() && speakingNPC->name == pNPCStats->pNPCData[i].name)
                     pNPCStats->pNPCData[i].uFlags &= ~NPC_HIRED;
             }
-            if (noCaseEquals(pParty->pHirelings[0].name, speakingNPC->name))
+            if (ascii::noCaseEquals(pParty->pHirelings[0].name, speakingNPC->name)) // TODO(captainurist): #unicode this is not ascii
                 pParty->pHirelings[0] = NPCData();
-            else if (noCaseEquals(pParty->pHirelings[1].name, speakingNPC->name))
+            else if (ascii::noCaseEquals(pParty->pHirelings[1].name, speakingNPC->name)) // TODO(captainurist): #unicode this is not ascii
                 pParty->pHirelings[1] = NPCData();
             pParty->hirelingScrollPosition = 0;
             pParty->CountHirelings();

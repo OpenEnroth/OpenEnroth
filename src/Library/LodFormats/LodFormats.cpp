@@ -15,7 +15,7 @@
 #include "Utility/Streams/MemoryInputStream.h"
 #include "Utility/Streams/BlobInputStream.h"
 #include "Utility/Memory/Blob.h"
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 #include "Utility/Exception.h"
 
 static void deserialize(InputStream &src, Palette *dst) {
@@ -50,7 +50,7 @@ static std::optional<LodFileFormat> checkImage(const Blob &blob, std::string_vie
 
     std::string name;
     reconstruct(header.name, &name);
-    if (!fileName.empty() && toLower(name) != toLower(fileName))
+    if (!fileName.empty() && ascii::toLower(name) != ascii::toLower(fileName))
         return {};
 
     if (header.size == 0 && header.dataSize == 0 && header.width == 0 && header.height == 0 &&
@@ -84,7 +84,7 @@ static std::optional<LodFileFormat> checkSprite(const Blob &blob, std::string_vi
 
     std::string name;
     reconstruct(header.name, &name);
-    if (!fileName.empty() && toLower(name) != toLower(fileName))
+    if (!fileName.empty() && ascii::toLower(name) != ascii::toLower(fileName))
         return {};
 
     if (header.dataSize > 0 && header.width > 0 && header.height > 0 &&

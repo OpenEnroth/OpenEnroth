@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "Utility/TransparentFunctors.h"
+#include "Utility/String/TransparentFunctors.h"
 
 #include "ConfigFwd.h"
 #include "ConfigSection.h"

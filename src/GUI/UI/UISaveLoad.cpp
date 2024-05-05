@@ -29,6 +29,7 @@
 #include "Library/Lod/LodReader.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
 
+#include "Utility/String/Ascii.h"
 #include "Utility/DataPath.h"
 
 using Io::TextInputType;
@@ -175,7 +176,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
         pLODFile.open(str, LOD_ALLOW_DUPLICATES);
         deserialize(pLODFile.read("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
 
-        if (noCaseEquals(pSavegameList->pFileList[i], localization->GetString(LSTR_AUTOSAVE_MM7))) {
+        if (ascii::noCaseEquals(pSavegameList->pFileList[i], localization->GetString(LSTR_AUTOSAVE_MM7))) { // TODO(captainurist): #unicode might not be ascii
             pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_AUTOSAVE);
         }
 

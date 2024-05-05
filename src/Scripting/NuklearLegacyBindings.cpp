@@ -1,15 +1,16 @@
 #include "NuklearLegacyBindings.h"
 
-#include <Engine/AssetsManager.h>
-#include <Engine/Graphics/Image.h>
-#include <Engine/Graphics/Renderer/NuklearOverlayRenderer.h>
-#include <Engine/Graphics/Renderer/Renderer.h>
-#include <Library/Color/ColorTable.h>
-#include <Library/Logger/Logger.h>
-
 #include <vector>
 #include <cstdio>
+
 #include <lua.hpp>
+
+#include "Engine/AssetsManager.h"
+#include "Engine/Graphics/Image.h"
+#include "Engine/Graphics/Renderer/NuklearOverlayRenderer.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
+#include "Library/Color/ColorTable.h"
+#include "Library/Logger/Logger.h"
 
 nk_context *NuklearLegacyBindings::_context{};
 std::vector<struct lua_nk_style> NuklearLegacyBindings::_styles;

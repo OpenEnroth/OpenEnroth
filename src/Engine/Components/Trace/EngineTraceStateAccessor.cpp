@@ -11,7 +11,7 @@
 
 #include "Library/Trace/EventTrace.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 
 static bool shouldSkip(const GameConfig *config, const ConfigSection *section, const AnyConfigEntry *entry) {
     return
@@ -66,7 +66,7 @@ void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config, const Conf
 
 EventTraceGameState EngineTraceStateAccessor::makeGameState() {
     EventTraceGameState result;
-    result.locationName = toLower(pCurrentMapName);
+    result.locationName = ascii::toLower(pCurrentMapName);
     result.partyPosition = pParty->pos.toInt();
     for (const Character &character : pParty->pCharacters) {
         EventTraceCharacterState &traceCharacter = result.characters.emplace_back();

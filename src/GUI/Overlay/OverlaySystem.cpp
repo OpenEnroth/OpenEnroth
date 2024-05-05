@@ -1,18 +1,18 @@
 #include "OverlaySystem.h"
-#include "OverlayEventHandler.h"
-
-#include <Application/GameConfig.h>
-#include <Engine/Graphics/Renderer/Renderer.h>
-#include <Library/Platform/Application/PlatformApplication.h>
-#include <Library/Logger/Logger.h>
-#include <Scripting/NuklearLegacyBindings.h>
-
-#include "Overlay.h"
-
-#include <nuklear_config.h> // NOLINT: not a C system header.
 
 #include <memory>
 #include <utility>
+
+#include <nuklear_config.h> // NOLINT: not a C system header.
+
+#include "Application/GameConfig.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
+#include "Library/Platform/Application/PlatformApplication.h"
+#include "Library/Logger/Logger.h"
+#include "Scripting/NuklearLegacyBindings.h"
+
+#include "Overlay.h"
+#include "OverlayEventHandler.h"
 
 LogCategory OverlaySystem::OverlayLogCategory("Overlay");
 
@@ -48,14 +48,16 @@ void OverlaySystem::drawOverlays() {
 }
 
 void OverlaySystem::_update() {
+    if (_isEnabled) {
+        return;
+    }
+
     auto context = _nuklearContext.get();
 
     if (context->style.font != nullptr) {
         nk_input_end(context);
-        if (_isEnabled) {
-            for (auto &&[name, overlay] : _overlays) {
-                overlay->update(context);
-            }
+        for (auto &&[name, overlay] : _overlays) {
+            overlay->update(context);
         }
         nk_input_begin(context);
     }

@@ -1,9 +1,9 @@
 #include "ExampleOverlay.h"
 
-#include <Engine/Graphics/Renderer/Renderer.h>
-#include <Engine/Party.h>
-
 #include <nuklear_config.h> // NOLINT: not a C system header.
+
+#include "Engine/Graphics/Renderer/Renderer.h"
+#include "Engine/Party.h"
 
 void ExampleOverlay::update(nk_context *ctx) {
     nk_begin(ctx, "Party Position", nk_rect(100, 100, 320, 80), NK_WINDOW_SCALABLE | NK_WINDOW_TITLE | NK_WINDOW_MOVABLE);

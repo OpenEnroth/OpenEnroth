@@ -44,6 +44,7 @@ uniform int waterframe;
 uniform Sunlight sun;
 uniform vec3 CameraPos;
 uniform int flowtimer;
+uniform int flowtimerms; // TODO(Nik-RE-dev): use a single timer for everything
 uniform int watertiles;
 uniform float gamma;
 
@@ -58,7 +59,6 @@ vec3 CalcSunLight(Sunlight light, vec3 normal, vec3 viewDir, vec3 thisfragcol);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main() {
-
     vec3 fragnorm = normalize(vsNorm);
     vec3 fragviewdir = normalize(CameraPos - vsPos);
 
@@ -66,6 +66,7 @@ void main() {
     vec2 texcoords = vec2(0.0);
     vec2 texuvmod = vec2(0.0);
     vec2 deltas = vec2(0.0);
+    ivec3 texsize = textureSize(textureArray0,0);
 
     // texture flow mods
     if (abs(vsNorm.z) >= 0.9) {
@@ -82,10 +83,21 @@ void main() {
         texuvmod.x = 1.0;
     }
 
-    deltas.x = texuvmod.x * float(flowtimer & int(textureSize(textureArray0,0).x-1));
-    deltas.y = texuvmod.y * float(flowtimer & int(textureSize(textureArray0,0).y-1));
-    texcoords.x = (deltas.x + texuv.x) / float(textureSize(textureArray0,0).x);
-    texcoords.y = (deltas.y + texuv.y) / float(textureSize(textureArray0,0).y);
+    // lava movement
+    if ((vsAttrib & 0x4000) > 0) {
+        // Texture makes full circle in 8 seconds
+        float lavaperiod = mod(float(flowtimerms), 8000.0);
+        float lavaradians = lavaperiod * radians(360.0) / 8000.0;
+        float curpos = sin(lavaradians);
+        deltas.x = 0.0;
+        deltas.y = float(texsize.y) * curpos;
+    } else {
+        deltas.x = texuvmod.x * mod(float(flowtimer), float(texsize.x));
+        deltas.y = texuvmod.y * mod(float(flowtimer), float(texsize.y));
+    }
+
+    texcoords.x = (deltas.x + texuv.x) / float(texsize.x);
+    texcoords.y = (deltas.y + texuv.y) / float(texsize.y);
     fragcol = texture(textureArray0, vec3(texcoords.x,texcoords.y,olayer.y));
 
     vec4 toplayer = texture(textureArray0, vec3(texcoords.x,texcoords.y,0));

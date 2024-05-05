@@ -13,7 +13,6 @@
 #include "Library/Config/Config.h"
 #include "Engine/Random/RandomEnums.h"
 #include "Library/Logger/LogEnums.h"
-#include "Utility/Format.h"
 
 #ifdef __ANDROID__
 #define ConfigRenderer RENDERER_OPENGL_ES
@@ -613,6 +612,8 @@ class GameConfig : public Config {
      public:
         explicit CheatCommands(GameConfig *config);
 
+     private:
+        void _addCommand(int commandIndex, const std::string& defaultValue);
         std::vector<std::unique_ptr<String>> CommandList;
     };
 

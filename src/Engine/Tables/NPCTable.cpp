@@ -8,7 +8,7 @@
 #include "Engine/GameResourceManager.h"
 #include "Engine/Random/Random.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 
 std::array<NPCTopic, 789> pNPCTopics;
 NPCStats *pNPCStats = nullptr;

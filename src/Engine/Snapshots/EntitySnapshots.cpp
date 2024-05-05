@@ -34,7 +34,7 @@
 #include "Library/Snapshots/CommonSnapshots.h"
 
 #include "Utility/Memory/MemSet.h"
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
 
 /**
@@ -223,10 +223,10 @@ void reconstruct(const Planei_MM7 &src, Planef *dst) {
 
 void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
     reconstruct(src.iconName, &dst->icon_name);
-    dst->icon_name = toLower(dst->icon_name);
+    dst->icon_name = ascii::toLower(dst->icon_name);
 
     reconstruct(src.textureName, &dst->texture_name);
-    dst->texture_name = toLower(dst->texture_name);
+    dst->texture_name = ascii::toLower(dst->texture_name);
 
     for (unsigned int i = 0; i < 8; ++i)
         dst->hw_sprites[i] = nullptr;
@@ -259,10 +259,10 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
 
 void reconstruct(const TileDesc_MM7 &src, TileDesc *dst) {
     reconstruct(src.tileName, &dst->name);
-    dst->name = toLower(dst->name);
+    dst->name = ascii::toLower(dst->name);
 
-    if (noCaseStartsWith(dst->name, "wtrdr"))
-        dst->name.insert(0, "h");  // mm7 uses hd water tiles with legacy names
+    if (ascii::noCaseStartsWith(dst->name, "wtrdr"))
+        dst->name.insert(0, "h"); // mm7 uses hd water tiles with legacy names
 
     dst->uTileID = src.tileId;
     dst->tileset = static_cast<Tileset>(src.tileSet);
@@ -272,7 +272,7 @@ void reconstruct(const TileDesc_MM7 &src, TileDesc *dst) {
 
 void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
     reconstruct(src.textureName, &dst->name);
-    dst->name = toLower(dst->name);
+    dst->name = ascii::toLower(dst->name);
 
     dst->animationDuration = Duration::fromTicks(src.animLength * 8);
     dst->frameDuration = Duration::fromTicks(src.animTime * 8);
