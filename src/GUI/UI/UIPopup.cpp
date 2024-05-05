@@ -702,7 +702,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     // Draw name and profession
     std::string str;
     if (pActors[uActorID].npcId) {
-        str = NameAndTitle(GetNPCData(pActors[uActorID].npcId));
+        str = NameAndTitle(getNPCData(pActors[uActorID].npcId));
     } else {
         str = GetDisplayName(&pActors[uActorID]);
     }
@@ -1717,7 +1717,7 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
         buf.Prepare();
 
         if (_this + pParty->hirelingScrollPosition < buf.Size()) {
-            NPCData *pNPC = GetNPCData(-1 - pParty->hirelingScrollPosition - _this);
+            NPCData *pNPC = getNPCData(-1 - pParty->hirelingScrollPosition - _this);
             std::string pText;
 
             if (pNPC) {

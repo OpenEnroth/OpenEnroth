@@ -6135,7 +6135,7 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             return;
         case VAR_NPCs2:
             npcIndex = 0;
-            GetNPCData(sDialogue_SpeakingActorNPC_ID, &npcIndex);
+            getNPCData(sDialogue_SpeakingActorNPC_ID, &npcIndex);
             if (npcIndex == pValue) {
                 npcIdToDismissAfterDialogue = pValue;
             } else {

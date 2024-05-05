@@ -27,8 +27,7 @@ static const Segment<Condition> standardConditionsExcludeDead = {CONDITION_CURSE
 // All conditions including dead character ones, but still excluding zombie
 static const Segment<Condition> standardConditionsIncludeDead = {CONDITION_CURSED, CONDITION_ERADICATED};
 
-//----- (00445B2C) --------------------------------------------------------
-NPCData *GetNPCData(signed int npcid, int *npc_indx) {
+NPCData *getNPCData(signed int npcid, int *npc_indx) {
     NPCData *result;
     int outIdx = -1;
 
