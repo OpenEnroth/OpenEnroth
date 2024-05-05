@@ -9,7 +9,7 @@
 #include <type_traits>
 
 #include "Utility/Flags.h"
-#include "Utility/TransparentFunctors.h"
+#include "Utility/String/TransparentFunctors.h"
 
 enum class CaseSensitivity {
     CASE_SENSITIVE,

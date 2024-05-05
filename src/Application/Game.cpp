@@ -83,7 +83,8 @@
 #include "Library/Logger/Logger.h"
 #include "Library/Fsm/FSM.h"
 
-#include "Utility/Format.h"
+#include "Utility/String/Ascii.h"
+#include "Utility/String/Format.h"
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 
@@ -782,7 +783,7 @@ void Game::processQueuedMessages() {
                 if (engine->_teleportPoint.isValid()) {
                     if (!engine->_teleportPoint.getTeleportMap().starts_with('0')) {
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
-                        bool leavingArena = noCaseEquals(pCurrentMapName, "d05.blv");
+                        bool leavingArena = ascii::noCaseEquals(pCurrentMapName, "d05.blv");
                         onMapLeave();
                         Transition_StopSound_Autosave(engine->_teleportPoint.getTeleportMap(), MAP_START_POINT_PARTY);
                         if (leavingArena)

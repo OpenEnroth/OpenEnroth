@@ -81,6 +81,7 @@
 #include "Library/Logger/Logger.h"
 #include "Library/BuildInfo/BuildInfo.h"
 
+#include "Utility/String/Ascii.h"
 #include "Utility/DataPath.h"
 
 /*
@@ -572,7 +573,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     engine->SetUnderwater(Is_out15odm_underwater());
 
     pParty->floor_face_id = 0; // TODO(captainurist): drop?
-    if (noCaseEquals(mapExt, "blv"))
+    if (ascii::noCaseEquals(mapExt, "blv"))
         PrepareToLoadBLV(bLoading);
     else
         PrepareToLoadODM(bLoading, 0);

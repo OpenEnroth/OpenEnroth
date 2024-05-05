@@ -12,7 +12,7 @@
 
 #include "Library/Cli/CliApp.h"
 
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 
 OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     OpenEnrothOptions result;

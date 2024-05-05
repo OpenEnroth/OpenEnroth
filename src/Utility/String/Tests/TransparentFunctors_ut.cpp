@@ -5,7 +5,7 @@
 
 #include "Testing/Unit/UnitTest.h"
 
-#include "Utility/TransparentFunctors.h"
+#include "Utility/String/TransparentFunctors.h"
 #include "Utility/MapAccess.h"
 
 template<class Map>

@@ -16,7 +16,7 @@
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIStatusBar.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 
 CommonTapeRecorder::CommonTapeRecorder(TestController *controller) : _controller(controller) {
     assert(controller);
@@ -76,7 +76,7 @@ TestTape<int> CommonTapeRecorder::deaths() {
 }
 
 TestTape<std::string> CommonTapeRecorder::map() {
-    return custom([] { return toLower(pCurrentMapName); });
+    return custom([] { return ascii::toLower(pCurrentMapName); });
 }
 
 TestTape<ScreenType> CommonTapeRecorder::screen() {

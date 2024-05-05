@@ -19,6 +19,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/String/Ascii.h"
+
 std::array<int, 5> lloydsBeaconsPreviewXs = {{61, 281, 61, 281, 171}};
 std::array<int, 5> lloydsBeaconsPreviewYs = {{84, 84, 228, 228, 155}};
 std::array<int, 5> lloydsBeacons_SomeXs = {{59, 279, 59, 279, 169}};
@@ -195,7 +197,7 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
     }
     pAudioPlayer->playSpellSound(SPELL_WATER_LLOYDS_BEACON, false, SOUND_MODE_UI);
     if (_recallingBeacon) {
-        if (toLower(pCurrentMapName) != toLower(pMapStats->pInfos[character.vBeacons[beaconId].mapId].fileName)) {
+        if (ascii::toLower(pCurrentMapName) != ascii::toLower(pMapStats->pInfos[character.vBeacons[beaconId].mapId].fileName)) {
             // TODO(Nik-RE-dev): need separate function for teleportation to other maps
             AutoSave();
             onMapLeave();

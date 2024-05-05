@@ -5,7 +5,7 @@
 #include "Engine/AssetsManager.h"
 
 #include "Library/Logger/Logger.h"
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 
 TextureFrameTable *pTextureFrameTable;
 
@@ -17,7 +17,7 @@ GraphicsImage *TextureFrame::GetTexture() {
 }
 
 int64_t TextureFrameTable::FindTextureByName(std::string_view Str2) {
-    std::string name = toLower(Str2);
+    std::string name = ascii::toLower(Str2);
 
     for (size_t i = 0; i < textures.size(); ++i)
         if (textures[i].name == name)
