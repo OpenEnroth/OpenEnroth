@@ -422,7 +422,7 @@ void Localization::InitializeAttributeNames() {
     strtok(this->attribute_desc_raw.data(), "\r");
     for (int i = 0; i < 26; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
-        auto tokens = splitString(test_string, '\t');
+        auto tokens = split(test_string, '\t');
         assert(tokens.size() == 2 && "Invalid number of tokens");
         switch (i) {
             case 0:

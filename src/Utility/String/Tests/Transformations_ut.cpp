@@ -20,20 +20,21 @@ UNIT_TEST(StringTransformations, replaceAll) {
 UNIT_TEST(StringTransformations, split) {
     std::vector<std::string_view> v;
 
-    splitString("aa;bb;cc", ';', &v);
+    split("aa;bb;cc", ';', &v);
     std::vector<std::string_view> r0 = {"aa", "bb", "cc"};
     EXPECT_EQ(v, r0);
 
-    splitString("ABC", ';', &v);
+    split("ABC", ';', &v);
     std::vector<std::string_view> r1 = {"ABC"};
     EXPECT_EQ(v, r1);
 
-    splitString("AB", 'B', &v);
+    split("AB", 'B', &v);
     std::vector<std::string_view> r2 = {"A", ""};
     EXPECT_EQ(v, r2);
 
-    splitString("", ';', &v);
-    EXPECT_TRUE(v.empty());
+    split("", ';', &v);
+    std::vector<std::string_view> r3 = {""};
+    EXPECT_EQ(v, r3);
 }
 
 UNIT_TEST(StringTransformations, join) {
