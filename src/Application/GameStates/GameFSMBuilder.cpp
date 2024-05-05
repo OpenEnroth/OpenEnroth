@@ -7,29 +7,25 @@
 #include <memory>
 
 #include "VideoState.h"
+#include "StartState.h"
 
 std::unique_ptr<FSM> GameFSMBuilder::buildFSM() {
     FSMBuilder fsmBuilder;
     _buildIntroVideoSequence(fsmBuilder);
 
     auto fsm = fsmBuilder.build();
-    _setStartingState(*fsm);
-    return std::move(fsm);
-}
-
-void GameFSMBuilder::_setStartingState(FSM &fsm) {
-    GameConfig::Debug &debugConfig = engine->config->debug;
-    if (!debugConfig.NoVideo.value()) {
-        if (!debugConfig.NoLogo.value()) {
-            fsm.jumpToState("3DOVideo");
-        } else if (!debugConfig.NoIntro.value()) {
-            fsm.jumpToState("IntroVideo");
-        }
-    }
+    fsm->jumpToState("Start");
+    return fsm;
 }
 
 void GameFSMBuilder::_buildIntroVideoSequence(FSMBuilder &builder) {
     builder
+        .on("Test")
+    .state<StartState>("Start")
+        .on("skipVideo").jumpTo(FSM::exitState)
+        .on("skipLogo").jumpTo("IntroVideo")
+        .on("noSkip").jumpTo("3DOVideo")
+
     .state<VideoState>("3DOVideo", "3dologo")
         .on("videoEnd").jumpTo("NWCVideo")
 

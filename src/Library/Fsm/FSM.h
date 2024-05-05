@@ -4,7 +4,6 @@
 #include <Library/Logger/LogCategory.h>
 
 #include "FSMEventHandler.h"
-#include "FSMTransitionHandler.h"
 #include "FSMState.h"
 
 #include <memory>
@@ -20,7 +19,7 @@ struct FSMTransitionTarget {
 
 using FSMTransitions = std::unordered_map<TransparentString, std::vector<FSMTransitionTarget>, TransparentStringHash, TransparentStringEquals>;
 
-class FSM : public FSMTransitionHandler, public FSMEventHandler {
+class FSM : public FSMEventHandler {
  public:
     /**
      * @brief Updates the current state of the FSM or executes any pending transitions.
@@ -35,7 +34,7 @@ class FSM : public FSMTransitionHandler, public FSMEventHandler {
     /**
      * @brief Sets the next state to be reached in the FSM. The transition does not occur immediately but will be executed during the next FSM::update() call.
      * The jumpToState function allows unconditional transitions without requiring a previously defined transition connecting the current state to the target state.
-     * Subsequent calls to FSM::jumpToState or FSM::executeTransition will overwrite the target state since the actual transition happens during the next FSM::update() call.
+     * Subsequent calls to FSM::jumpToState or FSM::scheduleTransition will overwrite the target state since the actual transition happens during the next FSM::update() call.
      * @param stateName The name of the state to transition to. This name must belong to a state that has been previously added through FSM::addState.
      */
     void jumpToState(std::string_view stateName);
@@ -54,30 +53,17 @@ class FSM : public FSMTransitionHandler, public FSMEventHandler {
 
     void addState(std::unique_ptr<StateEntry> stateEntry);
 
+    void scheduleTransition(std::string_view transition);
+
     static const LogCategory fsmLogCategory;
 
  private:
     // FSMEventHandler implementation
-    virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
-    virtual bool keyReleaseEvent(const PlatformKeyEvent *event) override;
-    virtual bool mouseMoveEvent(const PlatformMouseEvent *event) override;
-    virtual bool mousePressEvent(const PlatformMouseEvent *event) override;
-    virtual bool mouseReleaseEvent(const PlatformMouseEvent *event) override;
-    virtual bool wheelEvent(const PlatformWheelEvent *event) override;
-    virtual bool moveEvent(const PlatformMoveEvent *event) override;
-    virtual bool resizeEvent(const PlatformResizeEvent *event) override;
-    virtual bool activationEvent(const PlatformWindowEvent *event) override;
-    virtual bool closeEvent(const PlatformWindowEvent *event) override;
-    virtual bool gamepadConnectionEvent(const PlatformGamepadEvent *event) override;
-    virtual bool gamepadKeyPressEvent(const PlatformGamepadKeyEvent *event) override;
-    virtual bool gamepadKeyReleaseEvent(const PlatformGamepadKeyEvent *event) override;
-    virtual bool gamepadAxisEvent(const PlatformGamepadAxisEvent *event) override;
-    virtual bool nativeEvent(const PlatformNativeEvent *event) override;
-    virtual bool textInputEvent(const PlatformTextInputEvent *event) override;
+    virtual bool event(const PlatformEvent *event) override;
 
-    // FSMTransitionHandler implementation
-    virtual void scheduleTransition(std::string_view transition) override;
-
+    void _performPendingTransition();
+    void _updateCurrentState();
+    void _performAction(FSMAction &action);
     StateEntry *_getStateByName(std::string_view stateName);
 
     std::unordered_map<TransparentString, std::unique_ptr<StateEntry>, TransparentStringHash, TransparentStringEquals> _states;

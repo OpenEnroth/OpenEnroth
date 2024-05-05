@@ -501,31 +501,16 @@ void GameWindowHandler::handleKeyRelease(PlatformKey key) {
 
 bool GameWindowHandler::keyPressEvent(const PlatformKeyEvent *event) {
     handleKeyPress(event->key, event->mods, event->isAutoRepeat);
-    for (auto &fsmEventHandler : _fsmEventHandlers) {
-        if (fsmEventHandler->keyPressEvent(event)) {
-            return true;
-        }
-    }
     return false;
 }
 
 bool GameWindowHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
     handleKeyRelease(event->key);
-    for (auto &fsmEventHandler : _fsmEventHandlers) {
-        if (fsmEventHandler->keyReleaseEvent(event)) {
-            return true;
-        }
-    }
     return false;
 }
 
 bool GameWindowHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
     OnMouseMove(MapToRender(event->pos), event->buttons & BUTTON_LEFT, event->buttons & BUTTON_RIGHT);
-    for (auto &fsmEventHandler : _fsmEventHandlers) {
-        if (fsmEventHandler->mouseMoveEvent(event)) {
-            return true;
-        }
-    }
     return false;
 }
 
@@ -544,11 +529,6 @@ bool GameWindowHandler::mousePressEvent(const PlatformMouseEvent *event) {
             OnMouseRightClick(position);
         }
     }
-    for (auto &fsmEventHandler : _fsmEventHandlers) {
-        if (fsmEventHandler->mousePressEvent(event)) {
-            return true;
-        }
-    }
     return false;
 }
 
@@ -558,20 +538,10 @@ bool GameWindowHandler::mouseReleaseEvent(const PlatformMouseEvent *event) {
     } else if (event->button == BUTTON_RIGHT) {
         OnMouseRightUp();
     }
-    for (auto &fsmEventHandler : _fsmEventHandlers) {
-        if (fsmEventHandler->mouseReleaseEvent(event)) {
-            return true;
-        }
-    }
     return false;
 }
 
 bool GameWindowHandler::wheelEvent(const PlatformWheelEvent *event) {
-    for (auto &fsmEventHandler : _fsmEventHandlers) {
-        if (fsmEventHandler->wheelEvent(event)) {
-            return true;
-        }
-    }
     return false;
 }
 
@@ -587,21 +557,11 @@ bool GameWindowHandler::moveEvent(const PlatformMoveEvent *event) {
         engine->config->window.PositionY.setValue(relativePos.y);
         engine->config->window.Display.setValue(display);
     }
-    for (auto &fsmEventHandler : _fsmEventHandlers) {
-        if (fsmEventHandler->moveEvent(event)) {
-            return true;
-        }
-    }
     return false;
 }
 
 bool GameWindowHandler::resizeEvent(const PlatformResizeEvent *event) {
     render->Reinitialize();
-    for (auto &fsmEventHandler : _fsmEventHandlers) {
-        if (fsmEventHandler->resizeEvent(event)) {
-            return true;
-        }
-    }
     return false;
 }
 
@@ -610,11 +570,6 @@ bool GameWindowHandler::activationEvent(const PlatformWindowEvent *event) {
         OnActivated();
     } else if (event->type == EVENT_WINDOW_DEACTIVATE) {
         OnDeactivated();
-    }
-    for (auto &fsmEventHandler : _fsmEventHandlers) {
-        if (fsmEventHandler->activationEvent(event)) {
-            return true;
-        }
     }
     return false;
 }
@@ -631,11 +586,6 @@ bool GameWindowHandler::closeEvent(const PlatformWindowEvent *event) {
         game->goToMainMenu();
         game->pressGuiButton("MainMenu_ExitGame");
     });
-    for (auto &fsmEventHandler : _fsmEventHandlers) {
-        if (fsmEventHandler->closeEvent(event)) {
-            return true;
-        }
-    }
     return false;
 }
 
@@ -643,31 +593,16 @@ bool GameWindowHandler::gamepadConnectionEvent(const PlatformGamepadEvent *event
     logger->info("Gamepad {}, model='{}', serial='{}'",
                  event->type == EVENT_GAMEPAD_CONNECTED ? "connected" : "disconnected",
                  event->gamepad->model(), event->gamepad->serial());
-    for (auto &fsmEventHandler : _fsmEventHandlers) {
-        if (fsmEventHandler->gamepadConnectionEvent(event)) {
-            return true;
-        }
-    }
     return false;
 }
 
 bool GameWindowHandler::gamepadKeyPressEvent(const PlatformGamepadKeyEvent *event) {
     handleKeyPress(event->key, 0, false);
-    for (auto &fsmEventHandler : _fsmEventHandlers) {
-        if (fsmEventHandler->gamepadKeyPressEvent(event)) {
-            return true;
-        }
-    }
     return false;
 }
 
 bool GameWindowHandler::gamepadKeyReleaseEvent(const PlatformGamepadKeyEvent *event) {
     handleKeyRelease(event->key);
-    for (auto &fsmEventHandler : _fsmEventHandlers) {
-        if (fsmEventHandler->gamepadKeyReleaseEvent(event)) {
-            return true;
-        }
-    }
     return false;
 }
 
@@ -696,11 +631,17 @@ bool GameWindowHandler::gamepadAxisEvent(const PlatformGamepadAxisEvent *event) 
     } else {
         handleKeyRelease(key);
     }
-    for (auto &fsmEventHandler : _fsmEventHandlers) {
-        if (fsmEventHandler->gamepadAxisEvent(event)) {
+
+    return false;
+}
+
+bool GameWindowHandler::event(const PlatformEvent *event) {
+    if (PlatformEventFilter::event(event))
+        return true;
+
+    for (auto &fsmEventHandler : _fsmEventHandlers)
+        if (fsmEventHandler->event(event))
             return true;
-        }
-    }
 
     return false;
 }

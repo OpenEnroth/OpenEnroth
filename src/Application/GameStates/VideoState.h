@@ -11,8 +11,8 @@ class IMovie;
 class VideoState : public FSMState {
  public:
     explicit VideoState(std::string_view videoFileName);
-    virtual void update() override;
-    virtual void enter() override;
+    virtual FSMAction update() override;
+    virtual FSMAction enter() override;
     virtual void exit() override;
 
  private:

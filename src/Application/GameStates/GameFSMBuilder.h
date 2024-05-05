@@ -11,5 +11,4 @@ class GameFSMBuilder {
 
  private:
     static void _buildIntroVideoSequence(FSMBuilder &fsmBuilder);
-    static void _setStartingState(FSM &fsm);
 };

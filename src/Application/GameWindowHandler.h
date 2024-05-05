@@ -58,6 +58,7 @@ class GameWindowHandler : public PlatformEventFilter, private PlatformApplicatio
     void handleKeyPress(PlatformKey key, PlatformModifiers mods, bool isAutoRepeat);
     void handleKeyRelease(PlatformKey key);
 
+    virtual bool event(const PlatformEvent *event) override;
     virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
     virtual bool keyReleaseEvent(const PlatformKeyEvent *event) override;
     virtual bool mouseMoveEvent(const PlatformMouseEvent *event) override;
