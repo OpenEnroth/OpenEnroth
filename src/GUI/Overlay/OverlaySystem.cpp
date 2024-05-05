@@ -48,14 +48,16 @@ void OverlaySystem::drawOverlays() {
 }
 
 void OverlaySystem::_update() {
+    if (_isEnabled) {
+        return;
+    }
+
     auto context = _nuklearContext.get();
 
     if (context->style.font != nullptr) {
         nk_input_end(context);
-        if (_isEnabled) {
-            for (auto &&[name, overlay] : _overlays) {
-                overlay->update(context);
-            }
+        for (auto &&[name, overlay] : _overlays) {
+            overlay->update(context);
         }
         nk_input_begin(context);
     }
