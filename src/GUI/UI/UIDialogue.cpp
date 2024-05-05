@@ -30,6 +30,7 @@
 
 using Io::TextInputType;
 
+int speakingNpcId;
 Actor *currentSpeakingActor = nullptr;
 
 const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil> dialogueBackgroundResourceByAlignment = {
@@ -43,7 +44,7 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
     pNPCStats->dword_AE336C_LastMispronouncedNameFirstLetter = -1;
     pEventTimer->setPaused(true);
     pMiscTimer->setPaused(true);
-    sDialogue_SpeakingActorNPC_ID = npcId;
+    speakingNpcId = npcId;
     currentSpeakingActor = actor;
     NPCData *pNPCInfo = getNPCData(npcId);
     if (!(pNPCInfo->uFlags & NPC_GREETED_SECOND)) {
@@ -93,7 +94,7 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
             }
         }
     }
-    if (sDialogue_SpeakingActorNPC_ID < 0) v9 = 4;
+    if (speakingNpcId < 0) v9 = 4;
 #endif
 
     pDialogueWindow = new GUIWindow_Dialogue(DIALOG_WINDOW_FULL);
@@ -114,11 +115,11 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
                                    localization->GetString(LSTR_DIALOGUE_EXIT), {ui_exit_cancel_button_background});
 
     int text_line_height = assets->pFontArrus->GetHeight() - 3;
-    NPCData *speakingNPC = getNPCData(sDialogue_SpeakingActorNPC_ID);
+    NPCData *speakingNPC = getNPCData(speakingNpcId);
     std::vector<DialogueId> optionList;
 
     if (type == DIALOG_WINDOW_FULL) {
-        if (getNPCType(sDialogue_SpeakingActorNPC_ID) == NPC_TYPE_QUEST) {
+        if (getNPCType(speakingNpcId) == NPC_TYPE_QUEST) {
             optionList = prepareScriptedNPCDialogueTopics(speakingNPC);
         } else if (speakingNPC->is_joinable) {
             optionList = {DIALOGUE_PROFESSION_DETAILS, DIALOGUE_HIRE_FIRE};
@@ -179,8 +180,8 @@ void GUIWindow_Dialogue::Update() {
 
     // Window title(Заголовок окна)----
     GUIWindow window = *pDialogueWindow;
-    NPCData *pNPC = getNPCData(sDialogue_SpeakingActorNPC_ID);
-    NpcType npcType = getNPCType(sDialogue_SpeakingActorNPC_ID);
+    NPCData *pNPC = getNPCData(speakingNpcId);
+    NpcType npcType = getNPCType(speakingNpcId);
     window.uFrameWidth -= 10;
     window.uFrameZ -= 10;
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
@@ -346,7 +347,7 @@ void BuildHireableNpcDialogue() {
 }
 
 void selectNPCDialogueOption(DialogueId option) {
-    NPCData *speakingNPC = getNPCData(sDialogue_SpeakingActorNPC_ID);
+    NPCData *speakingNPC = getNPCData(speakingNpcId);
 
     ((GUIWindow_Dialogue*)pDialogueWindow)->setDisplayedDialogueType(option);
 

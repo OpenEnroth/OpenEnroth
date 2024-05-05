@@ -45,6 +45,7 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIMessageScroll.h"
 #include "GUI/UI/UISpell.h"
+#include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/Books/AutonotesBook.h"
 
 #include "Library/Logger/Logger.h"
@@ -6135,7 +6136,7 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             return;
         case VAR_NPCs2:
             npcIndex = 0;
-            getNPCData(sDialogue_SpeakingActorNPC_ID, &npcIndex);
+            getNPCData(speakingNpcId, &npcIndex);
             if (npcIndex == pValue) {
                 npcIdToDismissAfterDialogue = pValue;
             } else {

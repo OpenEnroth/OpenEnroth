@@ -39,4 +39,5 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor = nullp
 
 void selectNPCDialogueOption(DialogueId option);
 
+extern int speakingNpcId;
 extern const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil> dialogueBackgroundResourceByAlignment;

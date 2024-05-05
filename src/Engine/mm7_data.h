@@ -89,7 +89,6 @@ extern std::array<GraphicsImage *, 14> party_buff_icons;
 extern unsigned int uIconIdx_FlySpell;
 extern unsigned int uIconIdx_WaterWalk;
 
-extern signed int sDialogue_SpeakingActorNPC_ID;
 extern int uCurrentHouse_Animation;
 
 extern std::string branchless_dialogue_str;

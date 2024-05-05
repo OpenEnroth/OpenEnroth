@@ -38,6 +38,7 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIPopup.h"
+#include "GUI/UI/UIDialogue.h"
 
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
@@ -436,7 +437,7 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, s
 }
 
 void DialogueEnding() {
-    sDialogue_SpeakingActorNPC_ID = 0;
+    speakingNpcId = 0;
     if (pDialogueWindow) {
         pDialogueWindow->Release();
     }
