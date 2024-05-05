@@ -3,7 +3,7 @@ var searchData=
   ['jail_2ecpp_0',['Jail.cpp',['../Jail_8cpp.html',1,'']]],
   ['jail_2eh_1',['Jail.h',['../Jail_8h.html',1,'']]],
   ['jazzberryjam_2',['JazzberryJam',['../classColorTable.html#a064068157c526aa27ca8c5d98a6d880f',1,'ColorTable']]],
-  ['join_3',['join',['../Transformations_8h.html#a6f647795bd210b8edbc5c1a311207025',1,'Transformations.h']]],
+  ['join_3',['join',['../Transformations_8h.html#a0c3a95d4e9cfe05bfa92cb06d5c8c531',1,'join(const Strings &amp;strings, char sep):&#160;Transformations.h'],['../Transformations_8h.html#a6f647795bd210b8edbc5c1a311207025',1,'join(Joinables &amp;&amp;... joinables):&#160;Transformations.h']]],
   ['joinabletostring_4',['JoinableToString',['../conceptJoinableToString.html',1,'']]],
   ['joined_5',['joined',['../classCombinedSkillValue.html#a2df8715a7459c3bde0d6c7ef6af5b36b',1,'CombinedSkillValue']]],
   ['joinguildoptionstring_6',['joinGuildOptionString',['../NPCTopics_8cpp.html#a77d3f6210b78215deab2595d625c2971',1,'NPCTopics.cpp']]],
