@@ -95,3 +95,21 @@ std::string join(Joinables &&... joinables) {
     return result;
 }
 
+template<class Strings>
+    requires JoinableToString<typename Strings::value_type> && // We can use std::ranges::range_value_t, but I'd rather not bring in <ranges>
+             (!JoinableToString<Strings>)
+std::string join(const Strings &strings, char sep) {
+    std::string result;
+
+    auto pos = strings.begin();
+    if (pos == strings.end())
+        return result;
+    result += *pos++;
+
+    while (pos != strings.end()) {
+        result += sep;
+        result += *pos++;
+    }
+
+    return result;
+}
