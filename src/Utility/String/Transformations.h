@@ -54,19 +54,19 @@ std::string replaceAll(std::string_view text, std::string_view what, std::string
 
 std::string replaceAll(std::string_view text, char what, char replacement);
 
-void splitString(std::string_view s, char sep, std::vector<std::string_view> *result);
+void split(std::string_view s, char sep, std::vector<std::string_view> *result);
 
-inline std::vector<std::string_view> splitString(std::string_view s, char sep) {
+inline std::vector<std::string_view> split(std::string_view s, char sep) {
     std::vector<std::string_view> result;
-    splitString(s, sep, &result);
+    split(s, sep, &result);
     return result;
 }
 
-inline std::vector<std::string_view> splitString(const char *s, char sep) {
-    return splitString(std::string_view(s), sep);
+inline std::vector<std::string_view> split(const char *s, char sep) {
+    return split(std::string_view(s), sep);
 }
 
-std::vector<std::string_view> splitString(std::string &&s, char sep) = delete; // Don't dangle!
+std::vector<std::string_view> split(std::string &&s, char sep) = delete; // Don't dangle!
 
 namespace detail {
 
@@ -95,3 +95,21 @@ std::string join(Joinables &&... joinables) {
     return result;
 }
 
+template<class Strings>
+    requires JoinableToString<typename Strings::value_type> && // We can use std::ranges::range_value_t, but I'd rather not bring in <ranges>
+             (!JoinableToString<Strings>)
+std::string join(const Strings &strings, char sep) {
+    std::string result;
+
+    auto pos = strings.begin();
+    if (pos == strings.end())
+        return result;
+    result += *pos++;
+
+    while (pos != strings.end()) {
+        result += sep;
+        result += *pos++;
+    }
+
+    return result;
+}

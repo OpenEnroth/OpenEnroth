@@ -49,8 +49,8 @@ static void printTraceDiff(std::string_view current, std::string_view canonical)
     size_t pos = *std::ranges::find_if(std::views::iota(0), [&] (size_t i) { return canonical[i] != current[i]; });
     size_t line = std::ranges::count(std::string_view(canonical.data(), pos), '\n'); // 0-indexed.
 
-    std::vector<std::string_view> canonicalLines = splitString(canonical, '\n');
-    std::vector<std::string_view> currentLines = splitString(current, '\n');
+    std::vector<std::string_view> canonicalLines = split(canonical, '\n');
+    std::vector<std::string_view> currentLines = split(current, '\n');
 
     fmt::println(stderr, "Canonical:");
     printLines(canonicalLines, line, 2);
