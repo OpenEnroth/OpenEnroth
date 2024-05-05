@@ -27,60 +27,31 @@ static const Segment<Condition> standardConditionsExcludeDead = {CONDITION_CURSE
 // All conditions including dead character ones, but still excluding zombie
 static const Segment<Condition> standardConditionsIncludeDead = {CONDITION_CURSED, CONDITION_ERADICATED};
 
-//----- (004459F9) --------------------------------------------------------
-NPCData *GetNPCData(signed int npcid) {
-    NPCData *result;
-
-    if (npcid >= 0) {
-        if (npcid < 5000) {
-            if (npcid >= 501) {
-                logger->warning("NPC id exceeds MAX_DATA!");
-            }
-            return &pNPCStats->pNPCData[npcid];  // - 1];
-        }
-        return &pNPCStats->pAdditionalNPC[npcid - 5000];
-    }
-
-    if (npcid >= 5000) return &pNPCStats->pAdditionalNPC[npcid - 5000];
-    if (sDialogue_SpeakingActorNPC_ID >= 0) {
-        result = 0;
-    } else {
-        FlatHirelings buf;
-        buf.Prepare();
-
-        result = buf.Get(std::abs(sDialogue_SpeakingActorNPC_ID) - 1);
-    }
-    return result;
-}
-
 //----- (00445B2C) --------------------------------------------------------
-NPCData *GetNewNPCData(signed int npcid, int *npc_indx) {
+NPCData *GetNPCData(signed int npcid, int *npc_indx) {
     NPCData *result;
+    int outIdx = -1;
 
     if (npcid >= 0) {
         if (npcid < 5000) {
             if (npcid >= 501) {
                 logger->warning("NPC id exceeds MAX_DATA!");
             }
-            *npc_indx = npcid;
-            return &pNPCStats->pNPCData[npcid];
+            outIdx = npcid;
+            result = &pNPCStats->pNPCData[npcid];
+        } else {
+            outIdx = npcid - 5000;
+            result = &pNPCStats->pAdditionalNPC[npcid - 5000];
         }
-        *npc_indx = npcid - 5000;
-        return &pNPCStats->pAdditionalNPC[npcid - 5000];
-    }
-    if (npcid >= 5000) {
-        *npc_indx = npcid - 5000;
-        return &pNPCStats->pAdditionalNPC[npcid - 5000];
-    }
-    if (sDialogue_SpeakingActorNPC_ID >= 0) {
-        *npc_indx = 0;
-        result = nullptr;
     } else {
         FlatHirelings buf;
         buf.Prepare();
 
-        result = buf.Get(std::abs(sDialogue_SpeakingActorNPC_ID) - 1);
+        result = buf.Get(std::abs(npcid) - 1);
     }
+
+    if (npc_indx)
+        *npc_indx = outIdx;
     return result;
 }
 

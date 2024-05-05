@@ -28,8 +28,7 @@ bool CheckHiredNPCSpeciality(NpcProfession prof);
 int UseNPCSkill(NpcProfession profession, int id);
 
 const std::string &GetProfessionActionText(NpcProfession prof);
-NPCData *GetNPCData(signed int npcid);
-NPCData *GetNewNPCData(signed int npcid, int *npc_indx);
+NPCData *GetNPCData(signed int npcid, int *npc_indx = nullptr);
 
 /**
  * @offset 0x445C8B
