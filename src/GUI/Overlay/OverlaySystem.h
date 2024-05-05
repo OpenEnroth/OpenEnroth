@@ -29,6 +29,9 @@ class OverlaySystem {
     void addOverlay(std::string_view name, std::unique_ptr<Overlay> overlay);
     void removeOverlay(std::string_view name);
 
+    bool isEnabled() const;
+    void setEnabled(bool enable);
+
     void drawOverlays();
 
     static LogCategory OverlayLogCategory;
@@ -41,4 +44,5 @@ class OverlaySystem {
     PlatformApplication &_application;
     std::unique_ptr<nk_context> _nuklearContext;
     std::function<void()> _unregisterDependencies;
+    bool _isEnabled{};
 };

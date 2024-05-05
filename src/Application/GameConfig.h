@@ -83,8 +83,6 @@ class GameConfig : public Config {
 
         Bool NoMargaret = {this, "no_margareth", false, "Disable Margaret's tour messages on Emerald Island."};
 
-        Bool ShowConsole = {this, "show_console", false, "Toggle console visibility."};
-
         ConfigEntry<::LogLevel> LogLevel = {this, "log_level", LOG_ERROR,
                                             "Default log level. One of 'trace', 'debug', 'info', 'warning', 'error' and 'critical'."};
 
@@ -306,7 +304,7 @@ class GameConfig : public Config {
         Key WaitHour = {this, "wait_hour", PlatformKey::KEY_GAMEPAD_X, "Wait hour in Rest menu"};
         Key Wait5Minutes = {this, "wait_5_minutes", PlatformKey::KEY_GAMEPAD_A, "Wait 5 minutes in Rest menu"};
         Key Screenshot = {this, "screenshot", PlatformKey::KEY_NONE, "Make screenshot key"};
-        Key Console = {this, "console", PlatformKey::KEY_NONE, "Open console key (currently it is opening debug menu)"};
+        Key Console = {this, "console", PlatformKey::KEY_NONE, "Show/Hide overlays"};
         Key ToggleMouseGrab = {this, "toggle_mouse_grab", PlatformKey::KEY_NONE, "Toggle mouse grab key"};
         Key ToggleBorderless = {this, "toggle_borderless", PlatformKey::KEY_NONE, "Toggle window borderless key"};
         Key ToggleFullscreen = {this, "toggle_fullscreen", PlatformKey::KEY_NONE, "Toggle window fullscreen key"};
@@ -490,7 +488,7 @@ class GameConfig : public Config {
         Key WaitHour = {this, "wait_hour", PlatformKey::KEY_H, "Wait hour in Rest menu"};
         Key Wait5Minutes = {this, "wait_5_minutes", PlatformKey::KEY_M, "Wait 5 minutes in Rest menu"};
         Key Screenshot = {this, "screenshot", PlatformKey::KEY_F2, "Make screenshot key"};
-        Key Console = {this, "console", PlatformKey::KEY_TILDE, "Open console key (currently it is opening debug menu)"};
+        Key Console = {this, "console", PlatformKey::KEY_TILDE, "Show/Hide overlays"};
         Key ToggleMouseGrab = {this, "toggle_mouse_grab", PlatformKey::KEY_F1, "Toggle mouse grab key"};
         Key ToggleBorderless = {this, "toggle_borderless", PlatformKey::KEY_F3, "Toggle window borderless key"};
         Key ToggleFullscreen = {this, "toggle_fullscreen", PlatformKey::KEY_F4, "Toggle window fullscreen key"};

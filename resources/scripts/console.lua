@@ -157,7 +157,7 @@ end
 ---@param console Console
 ---@param text string
 ---@param state table
-Console.updateText = function (console, text, state)
+Console.updateTextBox = function (console, text, state)
     local textBox = console.editTB
     textBox.text = text
     textBox.state = state

@@ -107,6 +107,8 @@ class Engine {
     inline bool IsFog() const { return is_fog; }
     inline void SetFog(bool is_fog) { this->is_fog = is_fog; } // fog off rather than on??
 
+    void toggleOverlays();
+
     bool is_underwater = false;
     bool is_saturate_faces = false;
     bool is_fog = false; // keeps track of whether fog enabled in d3d

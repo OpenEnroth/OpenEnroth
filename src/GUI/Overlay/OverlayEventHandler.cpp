@@ -66,12 +66,13 @@ bool OverlayEventHandler::keyEvent(PlatformKey key, PlatformModifiers mods, bool
         else
             nk_input_key(_context, NK_KEY_RIGHT, keyPressed);
     }
-    return nk_item_is_any_active(_context);
+    return _context->last_widget_state & NK_WIDGET_STATE_MODIFIED ||
+        _context->text_edit.active;
 }
 
 bool OverlayEventHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
     nk_input_motion(_context, event->pos.x, event->pos.y);
-    return nk_item_is_any_active(_context);
+    return _context->last_widget_state & NK_WIDGET_STATE_MODIFIED;
 }
 
 bool OverlayEventHandler::mousePressEvent(const PlatformMouseEvent *event) {

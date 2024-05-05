@@ -213,38 +213,7 @@ enum UIMessageType : uint32_t {
 
     UIMSG_SaveLoadScroll = 970,
 
-    UIMSG_DebugSpecialItem = 971,
-    UIMSG_DebugGenItem = 972,
-    UIMSG_DebugLich = 973,
-    UIMSG_DebugSeasonsChange = 974,
-    UIMSG_DebugShowFPS = 975,
-    UIMSG_DebugPickedFace = 976,
-    UIMSG_DebugPortalLines = 977,
-    UIMSG_DebugKillChar = 978,
-    UIMSG_DebugEradicate = 979,
-    UIMSG_DebugNoDamage = 980,
-    UIMSG_DebugFullHeal = 981,
-    UIMSG_DebugSnow = 982,
-    UIMSG_DebugFog = 983,
-    UIMSG_DebugNoActors = 984,
-    UIMSG_DebugTurboSpeed = 985,
-    UIMSG_DebugLightmap = 986,
-    UIMSG_DebugTerrain = 987,
-    UIMSG_DebugAllMagic = 988,
-    UIMSG_DebugWizardEye = 989,
-    UIMSG_DebugCycleAlign = 990,
-    UIMSG_DebugTakeFood = 991,
-    UIMSG_DebugGiveFood = 992,
-    UIMSG_DebugTakeGold = 993,
-    UIMSG_DebugLearnSkills = 994,
-    UIMSG_DebugGiveSkillP = 995,
-    UIMSG_DebugGiveEXP = 996,
-    UIMSG_DebugGiveGold = 997,
-    UIMSG_DebugTownPortal = 998,
-    UIMSG_OpenDebugMenu = 999,
     UIMSG_DebugReloadShader = 1000,
-    UIMSG_DebugConsole = 1001,
-    UIMSG_DebugUnused = 1002,
 
     UIMSG_QuickSave = 2000,
     UIMSG_QuickLoad = 2001,
@@ -372,7 +341,6 @@ enum WindowType {
     WINDOW_Credits,               // new addition, because i wasnt able to find real value for this
     WINDOW_Save,                  // new addition, because i wasnt able to find real value for this
     WINDOW_Load,                  // new addition, because i wasnt able to find real value for this
-    WINDOW_DebugMenu,
     // =======
     // ToString (below) is updated until this point
 };

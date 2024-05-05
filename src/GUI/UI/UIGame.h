@@ -44,14 +44,6 @@ class GUIWindow_GameVideoOptions : public GUIWindow {
     virtual void Update() override;
 };
 
-class GUIWindow_DebugMenu : public GUIWindow {
- public:
-     GUIWindow_DebugMenu();
-     virtual ~GUIWindow_DebugMenu() {}
-
-     virtual void Update() override;
-};
-
 class GraphicsImage;
 extern GraphicsImage *game_ui_statusbar;
 extern GraphicsImage *game_ui_rightframe;

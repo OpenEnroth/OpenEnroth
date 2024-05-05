@@ -48,6 +48,10 @@ void OverlaySystem::drawOverlays() {
 }
 
 void OverlaySystem::_update() {
+    if (_isEnabled) {
+        return;
+    }
+
     auto context = _nuklearContext.get();
 
     if (context->style.font != nullptr) {
@@ -57,4 +61,12 @@ void OverlaySystem::_update() {
         }
         nk_input_begin(context);
     }
+}
+
+bool OverlaySystem::isEnabled() const {
+    return _isEnabled;
+}
+
+void OverlaySystem::setEnabled(bool enable) {
+    _isEnabled = enable;
 }

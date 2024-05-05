@@ -1,11 +1,6 @@
--- Screen: Console
--- This is a script tight to the GUIWindow_DebugMenu flag
--- It takes care of showing the debug tools. Currently the only debug tool in use is the console
-
 local Console = require "console"
 local InputListener = require "core.input_listener"
 local Input = require "bindings.input"
-local Config = require "bindings.config"
 local Platform = require "bindings.platform"
 local Overlay = require "bindings.overlay"
 local nk = Overlay.nk
@@ -52,7 +47,7 @@ local function drawFooter(ctx)
     nk.layout_row_push(ctx, 0.80);
     local text, state = nk.edit_string(ctx, { "commit_on_enter" }, Console:getText())
 
-    Console:updateText(text, state)
+    Console:updateTextBox(text, state)
 
     nk.layout_row_push(ctx, 0.15);
     if nk.button_label(ctx, "Send") then
@@ -109,10 +104,6 @@ local function drawConsole(ctx)
     end
     nk.window_end(ctx)
     nk.style_pop(ctx, "window", "fixed_background")
-
-    if nk.window_is_hidden(ctx, "Debug Console") then
-        Config.setConfig("debug", "show_console", false)
-    end
 end
 
 local unregisterFromInput = function () end
@@ -132,10 +123,7 @@ end
 
 ---@param ctx NuklearContext
 ConsoleOverlay.update = function (ctx)
-    local show = Config.getConfig("debug", "show_console")
-    if show == "true" then
-        drawConsole(ctx)
-    end
+    drawConsole(ctx)
 end
 
 ConsoleOverlay.close = function ()

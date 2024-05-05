@@ -7,7 +7,8 @@ set(SCRIPTS_SOURCES
     core/error.lua
     core/input_listener.lua
     core/log_listener.lua
-    dev/ui_debug_hud.lua
+    dev/cheat_command_overlay.lua
+    dev/console_overlay.lua
     dev/commands/alignment_command.lua
     dev/commands/class_command.lua
     dev/commands/cls_command.lua
