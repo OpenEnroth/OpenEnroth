@@ -20,7 +20,6 @@ std::unique_ptr<FSM> GameFSMBuilder::buildFSM() {
 
 void GameFSMBuilder::_buildIntroVideoSequence(FSMBuilder &builder) {
     builder
-        .on("Test")
     .state<StartState>("Start")
         .on("skipVideo").jumpTo(FSM::exitState)
         .on("skipLogo").jumpTo("IntroVideo")
