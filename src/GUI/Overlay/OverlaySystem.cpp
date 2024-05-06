@@ -27,7 +27,6 @@ OverlaySystem::OverlaySystem(Renderer &renderer, PlatformApplication &platformAp
 
 OverlaySystem::~OverlaySystem() {
     _application.removeComponent<OverlayEventHandler>();
-    ImGui::DestroyContext();
 }
 
 void OverlaySystem::addOverlay(std::string_view name, std::unique_ptr<Overlay> overlay) {
