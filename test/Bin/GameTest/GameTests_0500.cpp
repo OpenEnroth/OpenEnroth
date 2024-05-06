@@ -722,13 +722,13 @@ GAME_TEST(Issues, Issue808) {
 GAME_TEST(Issues, Issue814) {
     // Test that compare variable for autonotes do not assert
     test.playTraceFromTestData("issue_814.mm7", "issue_814.json"); // Should not assert
-    EXPECT_EQ(pParty->pCharacters[0].uIntelligenceBonus, 25);
+    EXPECT_EQ(pParty->pCharacters[0]._statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE], 25);
 }
 
 GAME_TEST(Issues, Issue815) {
     // Test that subtract variable for character bits work
     test.playTraceFromTestData("issue_815.mm7", "issue_815.json");
-    EXPECT_EQ(pParty->pCharacters[0].uIntelligenceBonus, 25);
+    EXPECT_EQ(pParty->pCharacters[0]._statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE], 25);
 }
 
 GAME_TEST(Issues, Issue816) {

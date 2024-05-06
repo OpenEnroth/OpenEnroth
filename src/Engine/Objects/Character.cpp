@@ -272,25 +272,25 @@ int CharacterCreation_GetUnspentAttributePointCount() {
         for (CharacterAttributeType statNum : allStatAttributes()) {
             switch (statNum) {
                 case CHARACTER_ATTRIBUTE_MIGHT:
-                    CurrentStatValue = character.uMight;
+                    CurrentStatValue = character._stats[CHARACTER_ATTRIBUTE_MIGHT];
                     break;
                 case CHARACTER_ATTRIBUTE_INTELLIGENCE:
-                    CurrentStatValue = character.uIntelligence;
+                    CurrentStatValue = character._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE];
                     break;
                 case CHARACTER_ATTRIBUTE_PERSONALITY:
-                    CurrentStatValue = character.uPersonality;
+                    CurrentStatValue = character._stats[CHARACTER_ATTRIBUTE_PERSONALITY];
                     break;
                 case CHARACTER_ATTRIBUTE_ENDURANCE:
-                    CurrentStatValue = character.uEndurance;
+                    CurrentStatValue = character._stats[CHARACTER_ATTRIBUTE_ENDURANCE];
                     break;
                 case CHARACTER_ATTRIBUTE_ACCURACY:
-                    CurrentStatValue = character.uAccuracy;
+                    CurrentStatValue = character._stats[CHARACTER_ATTRIBUTE_ACCURACY];
                     break;
                 case CHARACTER_ATTRIBUTE_SPEED:
-                    CurrentStatValue = character.uSpeed;
+                    CurrentStatValue = character._stats[CHARACTER_ATTRIBUTE_SPEED];
                     break;
                 case CHARACTER_ATTRIBUTE_LUCK:
-                    CurrentStatValue = character.uLuck;
+                    CurrentStatValue = character._stats[CHARACTER_ATTRIBUTE_LUCK];
                     break;
             }
 
@@ -907,38 +907,38 @@ char Character::getLearningPercent() const {
 
 //----- (0048C855) --------------------------------------------------------
 int Character::GetBaseMight() const {
-    return this->uMight + GetItemsBonus(CHARACTER_ATTRIBUTE_MIGHT);
+    return this->_stats[CHARACTER_ATTRIBUTE_MIGHT] + GetItemsBonus(CHARACTER_ATTRIBUTE_MIGHT);
 }
 
 //----- (0048C86C) --------------------------------------------------------
 int Character::GetBaseIntelligence() const {
-    return this->uIntelligence +
+    return this->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] +
            GetItemsBonus(CHARACTER_ATTRIBUTE_INTELLIGENCE);
 }
 
 //----- (0048C883) --------------------------------------------------------
 int Character::GetBasePersonality() const {
-    return this->uPersonality + GetItemsBonus(CHARACTER_ATTRIBUTE_PERSONALITY);
+    return this->_stats[CHARACTER_ATTRIBUTE_PERSONALITY] + GetItemsBonus(CHARACTER_ATTRIBUTE_PERSONALITY);
 }
 
 //----- (0048C89A) --------------------------------------------------------
 int Character::GetBaseEndurance() const {
-    return this->uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
+    return this->_stats[CHARACTER_ATTRIBUTE_ENDURANCE] + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
 }
 
 //----- (0048C8B1) --------------------------------------------------------
 int Character::GetBaseAccuracy() const {
-    return this->uAccuracy + GetItemsBonus(CHARACTER_ATTRIBUTE_ACCURACY);
+    return this->_stats[CHARACTER_ATTRIBUTE_ACCURACY] + GetItemsBonus(CHARACTER_ATTRIBUTE_ACCURACY);
 }
 
 //----- (0048C8C8) --------------------------------------------------------
 int Character::GetBaseSpeed() const {
-    return this->uSpeed + GetItemsBonus(CHARACTER_ATTRIBUTE_SPEED);
+    return this->_stats[CHARACTER_ATTRIBUTE_SPEED] + GetItemsBonus(CHARACTER_ATTRIBUTE_SPEED);
 }
 
 //----- (0048C8DF) --------------------------------------------------------
 int Character::GetBaseLuck() const {
-    return this->uLuck + GetItemsBonus(CHARACTER_ATTRIBUTE_LUCK);
+    return this->_stats[CHARACTER_ATTRIBUTE_LUCK] + GetItemsBonus(CHARACTER_ATTRIBUTE_LUCK);
 }
 
 //----- (0048C8F6) --------------------------------------------------------
@@ -955,39 +955,32 @@ int Character::GetActualLevel() const {
 
 //----- (0048C93C) --------------------------------------------------------
 int Character::GetActualMight() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_MIGHT, &Character::uMight,
-                              &Character::uMightBonus);
+    return GetActualAttribute(CHARACTER_ATTRIBUTE_MIGHT);
 }
 
 //----- (0048C9C2) --------------------------------------------------------
 int Character::GetActualIntelligence() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_INTELLIGENCE,
-                              &Character::uIntelligence,
-                              &Character::uIntelligenceBonus);
+    return GetActualAttribute(CHARACTER_ATTRIBUTE_INTELLIGENCE);
 }
 
 //----- (0048CA3F) --------------------------------------------------------
 int Character::GetActualPersonality() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_PERSONALITY,
-                              &Character::uPersonality, &Character::uPersonalityBonus);
+    return GetActualAttribute(CHARACTER_ATTRIBUTE_PERSONALITY);
 }
 
 //----- (0048CABC) --------------------------------------------------------
 int Character::GetActualEndurance() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_ENDURANCE,
-                              &Character::uEndurance, &Character::uEnduranceBonus);
+    return GetActualAttribute(CHARACTER_ATTRIBUTE_ENDURANCE);
 }
 
 //----- (0048CB39) --------------------------------------------------------
 int Character::GetActualAccuracy() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_ACCURACY, &Character::uAccuracy,
-                              &Character::uAccuracyBonus);
+    return GetActualAttribute(CHARACTER_ATTRIBUTE_ACCURACY);
 }
 
 //----- (0048CBB6) --------------------------------------------------------
 int Character::GetActualSpeed() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_SPEED, &Character::uSpeed,
-                              &Character::uSpeedBonus);
+    return GetActualAttribute(CHARACTER_ATTRIBUTE_SPEED);
 }
 
 //----- (0048CC33) --------------------------------------------------------
@@ -1000,15 +993,15 @@ int Character::GetActualLuck() const {
 
     if (CheckHiredNPCSpeciality(Psychic)) npc_luck_bonus += 10;
 
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_LUCK, &Character::uLuck,
-                              &Character::uLuckBonus) +
+    return GetActualAttribute(CHARACTER_ATTRIBUTE_LUCK) +
            npc_luck_bonus;
 }
 
 //----- (new function) --------------------------------------------------------
-int Character::GetActualAttribute(CharacterAttributeType attrId,
-                               unsigned short Character::*attrValue,
-                               unsigned short Character::*attrBonus) const {
+int Character::GetActualAttribute(CharacterAttributeType attrId) const {
+    int attrValue = _stats[attrId];
+    int attrBonus = _statBonuses[attrId];
+
     unsigned uActualAge = this->sAgeModifier + GetBaseAge();
     unsigned uAgeingMultiplier = 100;
 
@@ -1025,8 +1018,8 @@ int Character::GetActualAttribute(CharacterAttributeType attrId,
     int magicBonus = GetMagicalBonus(attrId);
     int itemBonus = GetItemsBonus(attrId);
 
-    return uConditionMult * uAgeingMultiplier * this->*attrValue / 100 / 100 +
-           magicBonus + itemBonus + this->*attrBonus;
+    return uConditionMult * uAgeingMultiplier * attrValue / 100 / 100 +
+           magicBonus + itemBonus + attrBonus;
 }
 
 //----- (0048CCF5) --------------------------------------------------------
@@ -1621,7 +1614,7 @@ int Character::receiveDamage(signed int amount, DamageType dmg_type) {
     }
 
     if (health < 1) {  // character unconscious or if too hurt - dead
-        if ((health + uEndurance + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1) ||
+        if ((health + _stats[CHARACTER_ATTRIBUTE_ENDURANCE] + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1) ||
             pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
             SetCondUnconsciousWithBlockCheck(false);
         } else {
@@ -3232,13 +3225,13 @@ CharacterSex Character::GetSexByVoice() const {
 //----- (00490188) --------------------------------------------------------
 void Character::SetInitialStats() {
     Race race = GetRace();
-    uMight = StatTable[race][CHARACTER_ATTRIBUTE_MIGHT].uBaseValue;
-    uIntelligence = StatTable[race][CHARACTER_ATTRIBUTE_INTELLIGENCE].uBaseValue;
-    uPersonality = StatTable[race][CHARACTER_ATTRIBUTE_PERSONALITY].uBaseValue;
-    uEndurance = StatTable[race][CHARACTER_ATTRIBUTE_ENDURANCE].uBaseValue;
-    uAccuracy = StatTable[race][CHARACTER_ATTRIBUTE_ACCURACY].uBaseValue;
-    uSpeed = StatTable[race][CHARACTER_ATTRIBUTE_SPEED].uBaseValue;
-    uLuck = StatTable[race][CHARACTER_ATTRIBUTE_LUCK].uBaseValue;
+    _stats[CHARACTER_ATTRIBUTE_MIGHT] = StatTable[race][CHARACTER_ATTRIBUTE_MIGHT].uBaseValue;
+    _stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = StatTable[race][CHARACTER_ATTRIBUTE_INTELLIGENCE].uBaseValue;
+    _stats[CHARACTER_ATTRIBUTE_PERSONALITY] = StatTable[race][CHARACTER_ATTRIBUTE_PERSONALITY].uBaseValue;
+    _stats[CHARACTER_ATTRIBUTE_ENDURANCE] = StatTable[race][CHARACTER_ATTRIBUTE_ENDURANCE].uBaseValue;
+    _stats[CHARACTER_ATTRIBUTE_ACCURACY] = StatTable[race][CHARACTER_ATTRIBUTE_ACCURACY].uBaseValue;
+    _stats[CHARACTER_ATTRIBUTE_SPEED] = StatTable[race][CHARACTER_ATTRIBUTE_SPEED].uBaseValue;
+    _stats[CHARACTER_ATTRIBUTE_LUCK] = StatTable[race][CHARACTER_ATTRIBUTE_LUCK].uBaseValue;
 }
 
 //----- (004901FC) --------------------------------------------------------
@@ -3344,28 +3337,28 @@ void Character::DecreaseAttribute(CharacterAttributeType eAttribute) {
     pDroppedStep = StatTable[raceId][eAttribute].uDroppedStep;
     uMinValue = pBaseValue - 2;
     pStep = StatTable[raceId][eAttribute].uBaseStep;
-    unsigned short *AttrToChange = nullptr;
+    int *AttrToChange = nullptr;
     switch (eAttribute) {
         case CHARACTER_ATTRIBUTE_MIGHT:
-            AttrToChange = &this->uMight;
+            AttrToChange = &this->_stats[CHARACTER_ATTRIBUTE_MIGHT];
             break;
         case CHARACTER_ATTRIBUTE_INTELLIGENCE:
-            AttrToChange = &this->uIntelligence;
+            AttrToChange = &this->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE];
             break;
         case CHARACTER_ATTRIBUTE_PERSONALITY:
-            AttrToChange = &this->uPersonality;
+            AttrToChange = &this->_stats[CHARACTER_ATTRIBUTE_PERSONALITY];
             break;
         case CHARACTER_ATTRIBUTE_ENDURANCE:
-            AttrToChange = &this->uEndurance;
+            AttrToChange = &this->_stats[CHARACTER_ATTRIBUTE_ENDURANCE];
             break;
         case CHARACTER_ATTRIBUTE_ACCURACY:
-            AttrToChange = &this->uAccuracy;
+            AttrToChange = &this->_stats[CHARACTER_ATTRIBUTE_ACCURACY];
             break;
         case CHARACTER_ATTRIBUTE_SPEED:
-            AttrToChange = &this->uSpeed;
+            AttrToChange = &this->_stats[CHARACTER_ATTRIBUTE_SPEED];
             break;
         case CHARACTER_ATTRIBUTE_LUCK:
-            AttrToChange = &this->uLuck;
+            AttrToChange = &this->_stats[CHARACTER_ATTRIBUTE_LUCK];
             break;
     }
     if (*AttrToChange <= pBaseValue) pStep = pDroppedStep;
@@ -3381,7 +3374,7 @@ void Character::IncreaseAttribute(CharacterAttributeType eAttribute) {
     signed int result;       // eax@18
     int baseValue;           // [sp+Ch] [bp-8h]@1
     signed int droppedStep;  // [sp+10h] [bp-4h]@1
-    unsigned short *statToChange;
+    int *statToChange;
 
     Race raceId = GetRace();
     maxValue = StatTable[raceId][eAttribute].uMaxValue;
@@ -3391,25 +3384,25 @@ void Character::IncreaseAttribute(CharacterAttributeType eAttribute) {
     CharacterCreation_GetUnspentAttributePointCount();
     switch (eAttribute) {
         case CHARACTER_ATTRIBUTE_MIGHT:
-            statToChange = &this->uMight;
+            statToChange = &this->_stats[CHARACTER_ATTRIBUTE_MIGHT];
             break;
         case CHARACTER_ATTRIBUTE_INTELLIGENCE:
-            statToChange = &this->uIntelligence;
+            statToChange = &this->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE];
             break;
         case CHARACTER_ATTRIBUTE_PERSONALITY:
-            statToChange = &this->uPersonality;
+            statToChange = &this->_stats[CHARACTER_ATTRIBUTE_PERSONALITY];
             break;
         case CHARACTER_ATTRIBUTE_ENDURANCE:
-            statToChange = &this->uEndurance;
+            statToChange = &this->_stats[CHARACTER_ATTRIBUTE_ENDURANCE];
             break;
         case CHARACTER_ATTRIBUTE_ACCURACY:
-            statToChange = &this->uAccuracy;
+            statToChange = &this->_stats[CHARACTER_ATTRIBUTE_ACCURACY];
             break;
         case CHARACTER_ATTRIBUTE_SPEED:
-            statToChange = &this->uSpeed;
+            statToChange = &this->_stats[CHARACTER_ATTRIBUTE_SPEED];
             break;
         case CHARACTER_ATTRIBUTE_LUCK:
-            statToChange = &this->uLuck;
+            statToChange = &this->_stats[CHARACTER_ATTRIBUTE_LUCK];
             break;
         default:
             assert(false);
@@ -3431,13 +3424,13 @@ void Character::resetTempBonuses() {
     // this is also used during party rest and heal so only buffs and bonuses are reset
     this->sLevelModifier = 0;
     this->sACModifier = 0;
-    this->uLuckBonus = 0;
-    this->uAccuracyBonus = 0;
-    this->uSpeedBonus = 0;
-    this->uEnduranceBonus = 0;
-    this->uPersonalityBonus = 0;
-    this->uIntelligenceBonus = 0;
-    this->uMightBonus = 0;
+    this->_statBonuses[CHARACTER_ATTRIBUTE_LUCK] = 0;
+    this->_statBonuses[CHARACTER_ATTRIBUTE_ACCURACY] = 0;
+    this->_statBonuses[CHARACTER_ATTRIBUTE_SPEED] = 0;
+    this->_statBonuses[CHARACTER_ATTRIBUTE_ENDURANCE] = 0;
+    this->_statBonuses[CHARACTER_ATTRIBUTE_PERSONALITY] = 0;
+    this->_statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 0;
+    this->_statBonuses[CHARACTER_ATTRIBUTE_MIGHT] = 0;
     this->sResFireBonus = 0;
     this->sResAirBonus = 0;
     this->sResWaterBonus = 0;
@@ -3467,25 +3460,25 @@ Color Character::GetStatColor(CharacterAttributeType uStat) const {
     int base_attribute_value = StatTable[GetRace()][uStat].uBaseValue;
     switch (uStat) {
         case CHARACTER_ATTRIBUTE_MIGHT:
-            attribute_value = uMight;
+            attribute_value = _stats[CHARACTER_ATTRIBUTE_MIGHT];
             break;
         case CHARACTER_ATTRIBUTE_INTELLIGENCE:
-            attribute_value = uIntelligence;
+            attribute_value = _stats[CHARACTER_ATTRIBUTE_INTELLIGENCE];
             break;
         case CHARACTER_ATTRIBUTE_PERSONALITY:
-            attribute_value = uPersonality;
+            attribute_value = _stats[CHARACTER_ATTRIBUTE_PERSONALITY];
             break;
         case CHARACTER_ATTRIBUTE_ENDURANCE:
-            attribute_value = uEndurance;
+            attribute_value = _stats[CHARACTER_ATTRIBUTE_ENDURANCE];
             break;
         case CHARACTER_ATTRIBUTE_ACCURACY:
-            attribute_value = uAccuracy;
+            attribute_value = _stats[CHARACTER_ATTRIBUTE_ACCURACY];
             break;
         case CHARACTER_ATTRIBUTE_SPEED:
-            attribute_value = uSpeed;
+            attribute_value = _stats[CHARACTER_ATTRIBUTE_SPEED];
             break;
         case CHARACTER_ATTRIBUTE_LUCK:
-            attribute_value = uLuck;
+            attribute_value = _stats[CHARACTER_ATTRIBUTE_LUCK];
             break;
         default:
             assert(false);
@@ -3752,49 +3745,49 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_PURE_LUCK:
                 if (!playerAffected->pure_luck_used) {
-                    playerAffected->uLuck += 50;
+                    playerAffected->_stats[CHARACTER_ATTRIBUTE_LUCK] += 50;
                     playerAffected->pure_luck_used = 1;
                 }
                 break;
 
             case ITEM_POTION_PURE_SPEED:
                 if (!playerAffected->pure_speed_used) {
-                    playerAffected->uSpeed += 50;
+                    playerAffected->_stats[CHARACTER_ATTRIBUTE_SPEED] += 50;
                     playerAffected->pure_speed_used = 1;
                 }
                 break;
 
             case ITEM_POTION_PURE_INTELLECT:
                 if (!playerAffected->pure_intellect_used) {
-                    playerAffected->uIntelligence += 50;
+                    playerAffected->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] += 50;
                     playerAffected->pure_intellect_used = 1;
                 }
                 break;
 
             case ITEM_POTION_PURE_ENDURANCE:
                 if (!playerAffected->pure_endurance_used) {
-                    playerAffected->uEndurance += 50;
+                    playerAffected->_stats[CHARACTER_ATTRIBUTE_ENDURANCE] += 50;
                     playerAffected->pure_endurance_used = 1;
                 }
                 break;
 
             case ITEM_POTION_PURE_PERSONALITY:
                 if (!playerAffected->pure_personality_used) {
-                    playerAffected->uPersonality += 50;
+                    playerAffected->_stats[CHARACTER_ATTRIBUTE_PERSONALITY] += 50;
                     playerAffected->pure_personality_used = 1;
                 }
                 break;
 
             case ITEM_POTION_PURE_ACCURACY:
                 if (!playerAffected->pure_accuracy_used) {
-                    playerAffected->uAccuracy += 50;
+                    playerAffected->_stats[CHARACTER_ATTRIBUTE_ACCURACY] += 50;
                     playerAffected->pure_accuracy_used = 1;
                 }
                 break;
 
             case ITEM_POTION_PURE_MIGHT:
                 if (!playerAffected->pure_might_used) {
-                    playerAffected->uMight += 50;
+                    playerAffected->_stats[CHARACTER_ATTRIBUTE_MIGHT] += 50;
                     playerAffected->pure_might_used = 1;
                 }
                 break;
@@ -3928,31 +3921,31 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             std::string status;
             switch (pParty->uCurrentMonth) {
                 case 0: // Jan
-                    playerAffected->uMight += value;
+                    playerAffected->_stats[CHARACTER_ATTRIBUTE_MIGHT] += value;
                     status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_MIGHT), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 1: // Feb
-                    playerAffected->uIntelligence += value;
+                    playerAffected->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] += value;
                     status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_INTELLIGENCE), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 2: // Mar
-                    playerAffected->uPersonality += value;
+                    playerAffected->_stats[CHARACTER_ATTRIBUTE_PERSONALITY] += value;
                     status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_PERSONALITY), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 3: // Apr
-                    playerAffected->uEndurance += value;
+                    playerAffected->_stats[CHARACTER_ATTRIBUTE_ENDURANCE] += value;
                     status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_ENDURANCE), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 4: // May
-                    playerAffected->uAccuracy += value;
+                    playerAffected->_stats[CHARACTER_ATTRIBUTE_ACCURACY] += value;
                     status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_ACCURACY), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 5: // Jun
-                    playerAffected->uSpeed += value;
+                    playerAffected->_stats[CHARACTER_ATTRIBUTE_SPEED] += value;
                     status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_SPEED), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 6: // Jul
-                    playerAffected->uLuck += value;
+                    playerAffected->_stats[CHARACTER_ATTRIBUTE_LUCK] += value;
                     status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(CHARACTER_ATTRIBUTE_LUCK), localization->GetString(LSTR_PERMANENT));
                     break;
                 case 7: // Aug
@@ -4145,33 +4138,33 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
         case VAR_FixedFood:
             return pParty->GetFood() >= pValue;
         case VAR_MightBonus:
-            return this->uMightBonus >= pValue;
+            return this->_statBonuses[CHARACTER_ATTRIBUTE_MIGHT] >= pValue;
         case VAR_IntellectBonus:
-            return this->uIntelligenceBonus >= pValue;
+            return this->_statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE] >= pValue;
         case VAR_PersonalityBonus:
-            return this->uPersonalityBonus >= pValue;
+            return this->_statBonuses[CHARACTER_ATTRIBUTE_PERSONALITY] >= pValue;
         case VAR_EnduranceBonus:
-            return this->uEnduranceBonus >= pValue;
+            return this->_statBonuses[CHARACTER_ATTRIBUTE_ENDURANCE] >= pValue;
         case VAR_SpeedBonus:
-            return this->uSpeedBonus >= pValue;
+            return this->_statBonuses[CHARACTER_ATTRIBUTE_SPEED] >= pValue;
         case VAR_AccuracyBonus:
-            return this->uAccuracyBonus >= pValue;
+            return this->_statBonuses[CHARACTER_ATTRIBUTE_ACCURACY] >= pValue;
         case VAR_LuckBonus:
-            return this->uLuckBonus >= pValue;
+            return this->_statBonuses[CHARACTER_ATTRIBUTE_LUCK] >= pValue;
         case VAR_BaseMight:
-            return this->uMight >= pValue;
+            return this->_stats[CHARACTER_ATTRIBUTE_MIGHT] >= pValue;
         case VAR_BaseIntellect:
-            return this->uIntelligence >= pValue;
+            return this->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] >= pValue;
         case VAR_BasePersonality:
-            return this->uPersonality >= pValue;
+            return this->_stats[CHARACTER_ATTRIBUTE_PERSONALITY] >= pValue;
         case VAR_BaseEndurance:
-            return this->uEndurance >= pValue;
+            return this->_stats[CHARACTER_ATTRIBUTE_ENDURANCE] >= pValue;
         case VAR_BaseSpeed:
-            return this->uSpeed >= pValue;
+            return this->_stats[CHARACTER_ATTRIBUTE_SPEED] >= pValue;
         case VAR_BaseAccuracy:
-            return this->uAccuracy >= pValue;
+            return this->_stats[CHARACTER_ATTRIBUTE_ACCURACY] >= pValue;
         case VAR_BaseLuck:
-            return this->uLuck >= pValue;
+            return this->_stats[CHARACTER_ATTRIBUTE_LUCK] >= pValue;
         case VAR_ActualMight:
             return GetActualMight() >= pValue;
         case VAR_ActualIntellect:
@@ -4620,66 +4613,66 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_BaseMight:
-            this->uMight = (uint8_t)var_value;
+            this->_stats[CHARACTER_ATTRIBUTE_MIGHT] = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseIntellect:
-            this->uIntelligence = (uint8_t)var_value;
+            this->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BasePersonality:
-            this->uPersonality = (uint8_t)var_value;
+            this->_stats[CHARACTER_ATTRIBUTE_PERSONALITY] = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseEndurance:
-            this->uEndurance = (uint8_t)var_value;
+            this->_stats[CHARACTER_ATTRIBUTE_ENDURANCE] = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseSpeed:
-            this->uSpeed = (uint8_t)var_value;
+            this->_stats[CHARACTER_ATTRIBUTE_SPEED] = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseAccuracy:
-            this->uAccuracy = (uint8_t)var_value;
+            this->_stats[CHARACTER_ATTRIBUTE_ACCURACY] = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseLuck:
-            this->uLuck = (uint8_t)var_value;
+            this->_stats[CHARACTER_ATTRIBUTE_LUCK] = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_MightBonus:
         case VAR_ActualMight:
-            this->uMightBonus = (uint8_t)var_value;
+            this->_statBonuses[CHARACTER_ATTRIBUTE_MIGHT] = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_IntellectBonus:
         case VAR_ActualIntellect:
-            this->uIntelligenceBonus = (uint8_t)var_value;
+            this->_statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE] = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
-            this->uPersonalityBonus = (uint8_t)var_value;
+            this->_statBonuses[CHARACTER_ATTRIBUTE_PERSONALITY] = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_EnduranceBonus:
         case VAR_ActualEndurance:
-            this->uEnduranceBonus = (uint8_t)var_value;
+            this->_statBonuses[CHARACTER_ATTRIBUTE_ENDURANCE] = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_SpeedBonus:
         case VAR_ActualSpeed:
-            this->uSpeedBonus = (uint8_t)var_value;
+            this->_statBonuses[CHARACTER_ATTRIBUTE_SPEED] = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_AccuracyBonus:
         case VAR_ActualAccuracy:
-            this->uAccuracyBonus = (uint8_t)var_value;
+            this->_statBonuses[CHARACTER_ATTRIBUTE_ACCURACY] = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_LuckBonus:
         case VAR_ActualLuck:
-            this->uLuckBonus = (uint8_t)var_value;
+            this->_statBonuses[CHARACTER_ATTRIBUTE_LUCK] = (uint8_t)var_value;
             PlayAwardSound_Anim_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_FireResistance:
@@ -5217,31 +5210,31 @@ void Character::AddVariable(VariableType var_type, signed int val) {
             pParty->partyFindsGold(val, GOLD_RECEIVE_NOSHARE_MSG);
             return;
         case VAR_BaseMight:
-            this->uMight = std::min(this->uMight + val, 255);
+            this->_stats[CHARACTER_ATTRIBUTE_MIGHT] = std::min(this->_stats[CHARACTER_ATTRIBUTE_MIGHT] + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseIntellect:
-            this->uIntelligence = std::min(this->uIntelligence + val, 255);
+            this->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = std::min(this->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BasePersonality:
-            this->uPersonality = std::min(this->uPersonality + val, 255);
+            this->_stats[CHARACTER_ATTRIBUTE_PERSONALITY] = std::min(this->_stats[CHARACTER_ATTRIBUTE_PERSONALITY] + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseEndurance:
-            this->uEndurance = std::min(this->uEndurance + val, 255);
+            this->_stats[CHARACTER_ATTRIBUTE_ENDURANCE] = std::min(this->_stats[CHARACTER_ATTRIBUTE_ENDURANCE] + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseSpeed:
-            this->uSpeed = std::min(this->uSpeed + val, 255);
+            this->_stats[CHARACTER_ATTRIBUTE_SPEED] = std::min(this->_stats[CHARACTER_ATTRIBUTE_SPEED] + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseAccuracy:
-            this->uAccuracy = std::min(this->uAccuracy + val, 255);
+            this->_stats[CHARACTER_ATTRIBUTE_ACCURACY] = std::min(this->_stats[CHARACTER_ATTRIBUTE_ACCURACY] + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseLuck:
-            this->uLuck = std::min(this->uLuck + val, 255);
+            this->_stats[CHARACTER_ATTRIBUTE_LUCK] = std::min(this->_stats[CHARACTER_ATTRIBUTE_LUCK] + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_FixedFood:
@@ -5251,37 +5244,37 @@ void Character::AddVariable(VariableType var_type, signed int val) {
             return;
         case VAR_MightBonus:
         case VAR_ActualMight:
-            this->uMightBonus = std::min(this->uMightBonus + val, 255);
+            this->_statBonuses[CHARACTER_ATTRIBUTE_MIGHT] = std::min(this->_statBonuses[CHARACTER_ATTRIBUTE_MIGHT] + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_IntellectBonus:
         case VAR_ActualIntellect:
-            this->uIntelligenceBonus = std::min(this->uIntelligenceBonus + val, 255);
+            this->_statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE] = std::min(this->_statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE] + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
-            this->uPersonalityBonus = std::min(this->uPersonalityBonus + val, 255);
+            this->_statBonuses[CHARACTER_ATTRIBUTE_PERSONALITY] = std::min(this->_statBonuses[CHARACTER_ATTRIBUTE_PERSONALITY] + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_EnduranceBonus:
         case VAR_ActualEndurance:
-            this->uEnduranceBonus = std::min(this->uEnduranceBonus + val, 255);
+            this->_statBonuses[CHARACTER_ATTRIBUTE_ENDURANCE] = std::min(this->_statBonuses[CHARACTER_ATTRIBUTE_ENDURANCE] + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_SpeedBonus:
         case VAR_ActualSpeed:
-            this->uSpeedBonus = std::min(this->uSpeedBonus + val, 255);
+            this->_statBonuses[CHARACTER_ATTRIBUTE_SPEED] = std::min(this->_statBonuses[CHARACTER_ATTRIBUTE_SPEED] + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_AccuracyBonus:
         case VAR_ActualAccuracy:
-            this->uAccuracyBonus = std::min(this->uAccuracyBonus + val, 255);
+            this->_statBonuses[CHARACTER_ATTRIBUTE_ACCURACY] = std::min(this->_statBonuses[CHARACTER_ATTRIBUTE_ACCURACY] + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_LuckBonus:
         case VAR_ActualLuck:
-            this->uLuckBonus = std::min(this->uLuckBonus + val, 255);
+            this->_statBonuses[CHARACTER_ATTRIBUTE_LUCK] = std::min(this->_statBonuses[CHARACTER_ATTRIBUTE_LUCK] + val, 255);
             PlayAwardSound_Anim97_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_FireResistance:
@@ -5768,65 +5761,65 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             return;
         case VAR_MightBonus:
         case VAR_ActualMight:
-            this->uMightBonus -= (uint16_t)pValue;
+            this->_statBonuses[CHARACTER_ATTRIBUTE_MIGHT] -= (uint16_t)pValue;
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_IntellectBonus:
         case VAR_ActualIntellect:
-            this->uIntelligenceBonus -= (uint16_t)pValue;
+            this->_statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE] -= (uint16_t)pValue;
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_PersonalityBonus:
         case VAR_ActualPersonality:
-            this->uPersonalityBonus -= (uint16_t)pValue;
+            this->_statBonuses[CHARACTER_ATTRIBUTE_PERSONALITY] -= (uint16_t)pValue;
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_EnduranceBonus:
         case VAR_ActualEndurance:
-            this->uEnduranceBonus -= (uint16_t)pValue;
+            this->_statBonuses[CHARACTER_ATTRIBUTE_ENDURANCE] -= (uint16_t)pValue;
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_SpeedBonus:
         case VAR_ActualSpeed:
-            this->uSpeedBonus -= (uint16_t)pValue;
+            this->_statBonuses[CHARACTER_ATTRIBUTE_SPEED] -= (uint16_t)pValue;
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_AccuracyBonus:
         case VAR_ActualAccuracy:
-            this->uAccuracyBonus -= (uint16_t)pValue;
+            this->_statBonuses[CHARACTER_ATTRIBUTE_ACCURACY] -= (uint16_t)pValue;
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_LuckBonus:
         case VAR_ActualLuck:
-            this->uLuckBonus -= (uint16_t)pValue;
+            this->_statBonuses[CHARACTER_ATTRIBUTE_LUCK] -= (uint16_t)pValue;
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_BaseMight:
-            this->uMight -= (uint16_t)pValue;
+            this->_stats[CHARACTER_ATTRIBUTE_MIGHT] -= (uint16_t)pValue;
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseIntellect:
-            this->uIntelligence -= (uint16_t)pValue;
+            this->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] -= (uint16_t)pValue;
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BasePersonality:
-            this->uPersonality -= (uint16_t)pValue;
+            this->_stats[CHARACTER_ATTRIBUTE_PERSONALITY] -= (uint16_t)pValue;
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseEndurance:
-            this->uEndurance -= (uint16_t)pValue;
+            this->_stats[CHARACTER_ATTRIBUTE_ENDURANCE] -= (uint16_t)pValue;
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseSpeed:
-            this->uSpeed -= (uint16_t)pValue;
+            this->_stats[CHARACTER_ATTRIBUTE_SPEED] -= (uint16_t)pValue;
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseAccuracy:
-            this->uAccuracy -= (uint16_t)pValue;
+            this->_stats[CHARACTER_ATTRIBUTE_ACCURACY] -= (uint16_t)pValue;
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_BaseLuck:
-            this->uLuck -= (uint16_t)pValue;
+            this->_stats[CHARACTER_ATTRIBUTE_LUCK] -= (uint16_t)pValue;
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BASE_INC);
             return;
         case VAR_FireResistance:
@@ -7351,13 +7344,13 @@ void Character::Zero() {
     uVoiceID = uPrevVoiceID = 0;
     uSkillPoints = 0;
     // Stats
-    uMight = uMightBonus = 0;
-    uIntelligence = uIntelligenceBonus = 0;
-    uPersonality = uPersonalityBonus = 0;
-    uEndurance = uEnduranceBonus = 0;
-    uSpeed = uSpeedBonus = 0;
-    uAccuracy = uAccuracyBonus = 0;
-    uLuck = uLuckBonus = 0;
+    _stats[CHARACTER_ATTRIBUTE_MIGHT] = _statBonuses[CHARACTER_ATTRIBUTE_MIGHT] = 0;
+    _stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = _statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 0;
+    _stats[CHARACTER_ATTRIBUTE_PERSONALITY] = _statBonuses[CHARACTER_ATTRIBUTE_PERSONALITY] = 0;
+    _stats[CHARACTER_ATTRIBUTE_ENDURANCE] = _statBonuses[CHARACTER_ATTRIBUTE_ENDURANCE] = 0;
+    _stats[CHARACTER_ATTRIBUTE_SPEED] = _statBonuses[CHARACTER_ATTRIBUTE_SPEED] = 0;
+    _stats[CHARACTER_ATTRIBUTE_ACCURACY] = _statBonuses[CHARACTER_ATTRIBUTE_ACCURACY] = 0;
+    _stats[CHARACTER_ATTRIBUTE_LUCK] = _statBonuses[CHARACTER_ATTRIBUTE_LUCK] = 0;
     // HP MP AC
     health = uFullHealthBonus = _health_related = 0;
     mana = uFullManaBonus = _mana_related = 0;

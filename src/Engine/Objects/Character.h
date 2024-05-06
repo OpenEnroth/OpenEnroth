@@ -123,9 +123,7 @@ class Character {
      * @offset 0x4680ED
      */
     void useItem(int targetCharacter, bool isPortraitClick);
-    int GetActualAttribute(CharacterAttributeType attrId,
-                           unsigned short Character::*attrValue,
-                           unsigned short Character::*attrBonus) const;
+    int GetActualAttribute(CharacterAttributeType attrId) const;
     int GetBaseMight() const;
     int GetBaseIntelligence() const;
     int GetBasePersonality() const;
@@ -376,20 +374,8 @@ class Character {
     CharacterSex uSex;
     CharacterClass classType;
     uint8_t uCurrentFace;
-    uint16_t uMight;
-    uint16_t uMightBonus;
-    uint16_t uIntelligence;
-    uint16_t uIntelligenceBonus;
-    uint16_t uPersonality;
-    uint16_t uPersonalityBonus;
-    uint16_t uEndurance;
-    uint16_t uEnduranceBonus;
-    uint16_t uSpeed;
-    uint16_t uSpeedBonus;
-    uint16_t uAccuracy;
-    uint16_t uAccuracyBonus;
-    uint16_t uLuck;
-    uint16_t uLuckBonus;
+    IndexedArray<int, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> _stats;
+    IndexedArray<int, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> _statBonuses;
     int16_t sACModifier;
     uint16_t uLevel;
     int16_t sLevelModifier;
