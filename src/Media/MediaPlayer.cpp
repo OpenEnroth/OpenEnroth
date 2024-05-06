@@ -636,6 +636,10 @@ class Movie : public IMovie {
 
                 // ignore audio packets
                 if (_binkPacket.stream_index == audio.stream_idx) {
+                    // but still render the last frame
+                    if (video.last_frame) {
+                        _renderTexture(*video.last_frame);
+                    }
                     return false;
                 }
 
@@ -659,9 +663,7 @@ class Movie : public IMovie {
                     // Decode video frame and show
                     _lastVideoPts = _binkPacket.pts;
                     video.decode_frame(&_binkPacket);
-                    std::shared_ptr<Blob> tmp_buf = video.last_frame;
-
-                    _renderTexture(*tmp_buf);
+                    _renderTexture(*video.last_frame);
                 }
 
                 av_packet_unref(&_binkPacket);
