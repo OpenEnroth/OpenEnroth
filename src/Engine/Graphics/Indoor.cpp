@@ -428,7 +428,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
                 continue;
 
             // add found faces into store
-            if (pFace->Contains(Vec3i(sX, sY, 0), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
+            if (pFace->Contains(Vec3f(sX, sY, 0), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
                 FoundFaceStore[NumFoundFaceStore++] = uFaceID;
             if (NumFoundFaceStore >= 5)
                 break; // TODO(captainurist): we do get here sometimes (e.g. in dragon cave), increase limit?
@@ -586,7 +586,7 @@ void BLVFace::Flatten(FlatFace *points, int model_idx, FaceAttributes override_p
     }
 }
 
-bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttributes override_plane) const {
+bool BLVFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttributes override_plane) const {
     assert(!override_plane ||
             override_plane == FACE_XY_PLANE || override_plane == FACE_YZ_PLANE || override_plane == FACE_XZ_PLANE);
 
@@ -604,8 +604,8 @@ bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttribute
     FlatFace points;
     Flatten(&points, model_idx, plane);
 
-    int u;
-    int v;
+    float u;
+    float v;
     if (plane & FACE_XY_PLANE) {
         u = pos.x;
         v = pos.y;
@@ -624,7 +624,7 @@ bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttribute
         if ((points.v[i] > v) == (points.v[j] > v))
             continue;
 
-        int edge_x = points.u[i] + (points.u[j] - points.u[i]) * (v - points.v[i]) / (points.v[j] - points.v[i]);
+        float edge_x = points.u[i] + (points.u[j] - points.u[i]) * (v - points.v[i]) / (points.v[j] - points.v[i]);
         if (u < edge_x)
             inside = !inside;
     }
@@ -635,19 +635,19 @@ bool BLVFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttribute
     // check that the point in question lies on the same side relative to all of the polygon's edges.
     int sign = 0;
     for (int i = 0, j = this->uNumVertices - 1; i < this->uNumVertices; j = i++) {
-        int a_u = points.u[j] - points.u[i];
-        int a_v = points.v[j] - points.v[i];
-        int b_u = u - points.u[i];
-        int b_v = v - points.v[i];
-        int cross_product = a_u * b_v - a_v * b_u; // That's |a| * |b| * sin(a,b)
-        if (cross_product == 0)
+        float a_u = points.u[j] - points.u[i];
+        float a_v = points.v[j] - points.v[i];
+        float b_u = u - points.u[i];
+        float b_v = v - points.v[i];
+        float cross_product = a_u * b_v - a_v * b_u; // That's |a| * |b| * sin(a,b)
+        if (abs(cross_product) < FLT_EPSILON)
             continue;
 
         if (slack > 0) {
             // distance(point, line) = (a x b) / |a|,
             // so the condition below just checks that distance is less than slack.
-            int64_t a_len_sqr = a_u * a_u + a_v * a_v;
-            if (static_cast<int64_t>(cross_product) * cross_product < a_len_sqr * slack * slack)
+            float a_len_sqr = a_u * a_u + a_v * a_v;
+            if (cross_product * cross_product < a_len_sqr * slack * slack)
                 continue;
         }
 
@@ -1085,7 +1085,7 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
         if (pFloor->Ethereal())
             continue;
 
-        if (!pFloor->Contains(pos.toInt(), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
+        if (!pFloor->Contains(pos, MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
             continue;
 
         // TODO: Does POLYGON_Ceiling really belong here?
@@ -1116,7 +1116,7 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
             if (portal->uPolygonType != POLYGON_Floor)
                 continue;
 
-            if(!portal->Contains(pos.toInt(), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
+            if(!portal->Contains(pos, MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
                 continue;
 
             blv_floor_z[FacesFound] = -29000;
@@ -1377,7 +1377,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
                 // less than zero means intersection is behind target point
                 // greater than dist means intersection is behind the caster
                 if (IntersectionDist >= 0.0 && IntersectionDist <= dist) {
-                    Vec3i pos = target + (IntersectionDist * dir).toInt();
+                    Vec3f pos = target.toFloat() + (IntersectionDist * dir);
                     if (face->Contains(pos, MODEL_INDOOR)) {
                         return true;
                     }
@@ -1430,7 +1430,7 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
                     // less than zero means intersection is behind target point
                     // greater than dist means intersection is behind the caster
                     if (IntersectionDist >= 0.0 && IntersectionDist <= dist) {
-                        Vec3i pos = target + (IntersectionDist * dir).toInt();
+                        Vec3f pos = target.toFloat() + (IntersectionDist * dir);
                         if (face.Contains(pos, model.index)) {
                             return true;
                         }

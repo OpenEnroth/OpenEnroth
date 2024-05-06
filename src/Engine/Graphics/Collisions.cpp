@@ -141,7 +141,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
         assert(fuzzyIsNull(face->facePlane.signedDistanceTo(projected_pos), COLLISIONS_EPS)); // TODO(captainurist): move into face->Contains.
 
         // collision point is in face so can return
-        if (face->Contains(projected_pos.toInt(), model_idx)) {
+        if (face->Contains(projected_pos, model_idx)) {
             *out_move_distance = move_distance;
             *out_collision_point = projected_pos;
             //logger->warning("Error: collide with face md: {}", move_distance);
@@ -252,7 +252,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &d
     if (move_distance > *out_move_distance)
         return false; // No correction needed.
 
-    if (!face->Contains(new_pos.toInt(), model_idx))
+    if (!face->Contains(new_pos, model_idx))
         return false;
 
     *out_move_distance = move_distance;

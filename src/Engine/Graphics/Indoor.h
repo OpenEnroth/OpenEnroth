@@ -63,8 +63,8 @@ struct BLVMapOutline {  // 0C
 };
 
 struct FlatFace {
-    std::array<int32_t, 104> u;
-    std::array<int32_t, 104> v;
+    std::array<float, 104> u;
+    std::array<float, 104> v;
 };
 
 /*   93 */
@@ -123,7 +123,7 @@ struct BLVFace {  // 60h
      * @return                          Whether the point lies inside this polygon, if projected on the face's
      *                                  primary plane.
      */
-    bool Contains(const Vec3i &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
+    bool Contains(const Vec3f &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
 
     Planef facePlane;
     PlaneZCalcf zCalc;

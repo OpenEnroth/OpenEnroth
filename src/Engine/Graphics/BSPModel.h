@@ -55,7 +55,7 @@ struct ODMFace {
     /**
      * @see BLVFace::Contains
      */
-    bool Contains(const Vec3i &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
+    bool Contains(const Vec3f &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
 
     unsigned int index = 0;
     Planef facePlane;

@@ -4167,9 +4167,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
             if (intersect < 0) continue;
 
             // check if point along ray is in portal face
-            Vec3i pos = Vec3i(pos1.x + (rayxnorm * intersect) + 0.5,
-                pos1.y + (rayynorm * intersect) + 0.5,
-                pos1.z + (rayznorm * intersect) + 0.5);
+            Vec3f pos = pos1 + Vec3f(rayxnorm, rayynorm, rayznorm) * intersect;
             if (!portalface->Contains(pos, MODEL_INDOOR)) {
                 // not visible through this portal
                 continue;
