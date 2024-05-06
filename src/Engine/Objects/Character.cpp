@@ -884,38 +884,41 @@ char Character::getLearningPercent() const {
 
 //----- (0048C855) --------------------------------------------------------
 int Character::GetBaseMight() const {
-    return this->_stats[CHARACTER_ATTRIBUTE_MIGHT] + GetItemsBonus(CHARACTER_ATTRIBUTE_MIGHT);
+    return GetBaseStat(CHARACTER_ATTRIBUTE_MIGHT);
 }
 
 //----- (0048C86C) --------------------------------------------------------
 int Character::GetBaseIntelligence() const {
-    return this->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] +
-           GetItemsBonus(CHARACTER_ATTRIBUTE_INTELLIGENCE);
+    return GetBaseStat(CHARACTER_ATTRIBUTE_INTELLIGENCE);
 }
 
 //----- (0048C883) --------------------------------------------------------
 int Character::GetBasePersonality() const {
-    return this->_stats[CHARACTER_ATTRIBUTE_PERSONALITY] + GetItemsBonus(CHARACTER_ATTRIBUTE_PERSONALITY);
+    return GetBaseStat(CHARACTER_ATTRIBUTE_PERSONALITY);
 }
 
 //----- (0048C89A) --------------------------------------------------------
 int Character::GetBaseEndurance() const {
-    return this->_stats[CHARACTER_ATTRIBUTE_ENDURANCE] + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
+    return GetBaseStat(CHARACTER_ATTRIBUTE_ENDURANCE);
 }
 
 //----- (0048C8B1) --------------------------------------------------------
 int Character::GetBaseAccuracy() const {
-    return this->_stats[CHARACTER_ATTRIBUTE_ACCURACY] + GetItemsBonus(CHARACTER_ATTRIBUTE_ACCURACY);
+    return GetBaseStat(CHARACTER_ATTRIBUTE_ACCURACY);
 }
 
 //----- (0048C8C8) --------------------------------------------------------
 int Character::GetBaseSpeed() const {
-    return this->_stats[CHARACTER_ATTRIBUTE_SPEED] + GetItemsBonus(CHARACTER_ATTRIBUTE_SPEED);
+    return GetBaseStat(CHARACTER_ATTRIBUTE_SPEED);
 }
 
 //----- (0048C8DF) --------------------------------------------------------
 int Character::GetBaseLuck() const {
-    return this->_stats[CHARACTER_ATTRIBUTE_LUCK] + GetItemsBonus(CHARACTER_ATTRIBUTE_LUCK);
+    return GetBaseStat(CHARACTER_ATTRIBUTE_LUCK);
+}
+
+int Character::GetBaseStat(CharacterAttributeType stat) const {
+    return this->_stats[stat] + GetItemsBonus(stat);
 }
 
 //----- (0048C8F6) --------------------------------------------------------

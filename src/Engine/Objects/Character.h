@@ -131,7 +131,8 @@ class Character {
     int GetBaseAccuracy() const;
     int GetBaseSpeed() const;
     int GetBaseLuck() const;
-    
+    int GetBaseStat(CharacterAttributeType stat) const;
+
     int GetBaseLevel() const;
     int GetActualLevel() const;
 
