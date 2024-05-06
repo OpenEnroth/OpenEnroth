@@ -15,14 +15,10 @@
 #include "SdlEnumTranslation.h"
 #include "SdlOpenGLContext.h"
 
-#include <backends/imgui_impl_sdl2.h>
-
 SdlWindow::SdlWindow(SdlPlatformSharedState *state, SDL_Window *window, uint32_t id): _state(state), _window(window), _id(id) {
     assert(state);
     assert(window);
     assert(id);
-
-    ImGui_ImplSDL2_InitForOpenGL(window, nullptr);
 }
 
 SdlWindow::~SdlWindow() {

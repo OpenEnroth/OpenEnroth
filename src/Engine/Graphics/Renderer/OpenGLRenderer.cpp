@@ -40,6 +40,8 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineCallObserver.h"
 
+#include <backends/imgui_impl_opengl3.h>
+
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Image/ImageFunctions.h"
@@ -195,7 +197,10 @@ OpenGLRenderer::OpenGLRenderer(
     clip_z = 0;
 }
 
-OpenGLRenderer::~OpenGLRenderer() { logger->info("RenderGl - Destructor"); }
+OpenGLRenderer::~OpenGLRenderer() {
+    logger->info("RenderGl - Destructor");
+    ImGui_ImplOpenGL3_Shutdown();
+}
 
 void OpenGLRenderer::Release() { logger->info("RenderGL - Release"); }
 
@@ -4631,6 +4636,7 @@ bool OpenGLRenderer::Initialize() {
         gladSetGLPostCallback(GL_Check_Errors);
 
         _overlayRenderer = std::make_unique<NuklearOverlayRenderer>();
+        ImGui_ImplOpenGL3_Init();
 
         return Reinitialize(true);
     }
@@ -4991,6 +4997,16 @@ void OpenGLRenderer::ReloadShaders() {
     if (_overlayRenderer) {
         _overlayRenderer->reloadShaders(OpenGLES);
     }
+}
+
+void OpenGLRenderer::beginOverlays() {
+    ImGui_ImplOpenGL3_NewFrame();
+    openGLContext->startOverlayFrame();
+}
+
+void OpenGLRenderer::endOverlays() {
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void OpenGLRenderer::drawOverlays(nk_context *context) {

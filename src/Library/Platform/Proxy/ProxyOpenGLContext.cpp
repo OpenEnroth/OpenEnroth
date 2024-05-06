@@ -10,6 +10,10 @@ bool ProxyOpenGLContext::unbind() {
     return nonNullBase()->unbind();
 }
 
+void ProxyOpenGLContext::startOverlayFrame() {
+    nonNullBase()->startOverlayFrame();
+}
+
 void ProxyOpenGLContext::swapBuffers() {
     nonNullBase()->swapBuffers();
 }

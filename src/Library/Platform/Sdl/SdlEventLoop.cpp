@@ -2,6 +2,8 @@
 
 #include <SDL.h>
 
+#include <backends/imgui_impl_sdl2.h>
+
 #include <algorithm>
 #include <cassert>
 #include <vector>
@@ -16,8 +18,6 @@
 #include "SdlEnumTranslation.h"
 #include "SdlWindow.h"
 #include "SdlGamepad.h"
-
-#include <backends/imgui_impl_sdl2.h>
 
 SdlEventLoop::SdlEventLoop(SdlPlatformSharedState *state): _state(state) {
     assert(state);

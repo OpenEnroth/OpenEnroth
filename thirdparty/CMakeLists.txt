@@ -61,7 +61,7 @@ if(NOT OE_BUILD_PLATFORM STREQUAL "android")
     endif()
 endif()
 
-#Create the imgui library here since the submodule doesn't come with any build automation config
+# Create the imgui libraries here since the submodule doesn't come with any build automation config
 set(IMGUI_SOURCES
   imgui/imgui_draw.cpp
   imgui/imgui.cpp
@@ -69,8 +69,6 @@ set(IMGUI_SOURCES
   imgui/imgui_draw.cpp
   imgui/imgui_tables.cpp
   imgui/imgui_widgets.cpp
-  imgui/backends/imgui_impl_opengl3.cpp
-  imgui/backends/imgui_impl_sdl2.cpp
   )
 
 set(IMGUI_HEADERS
@@ -80,10 +78,20 @@ set(IMGUI_HEADERS
   imgui/imstb_rectpack.h
   imgui/imstb_textedit.h
   imgui/imstb_truetype.h
+  )
+add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS})
+target_include_directories(imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+set(IMGUI_BACKEND_SOURCES
+  imgui/backends/imgui_impl_opengl3.cpp
+  imgui/backends/imgui_impl_sdl2.cpp
+  )
+
+set(IMGUI_BACKEND_HEADERS
   imgui/backends/imgui_impl_opengl3.h
   imgui/backends/imgui_impl_sdl2.h
   )
 
-add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS})
-target_link_libraries(imgui PRIVATE SDL2::SDL2OE)
-target_include_directories(imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
+add_library(imgui_backend STATIC ${IMGUI_BACKEND_SOURCES} ${IMGUI_BACKEND_HEADERS})
+target_link_libraries(imgui_backend PRIVATE SDL2::SDL2OE PUBLIC imgui)
+target_include_directories(imgui_backend PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/imgui ${CMAKE_CURRENT_SOURCE_DIR})

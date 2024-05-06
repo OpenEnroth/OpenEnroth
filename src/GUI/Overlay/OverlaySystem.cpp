@@ -15,8 +15,6 @@
 #include "OverlayEventHandler.h"
 
 #include <imgui.h>
-#include <backends/imgui_impl_opengl3.h>
-#include <backends/imgui_impl_sdl2.h>
 
 LogCategory OverlaySystem::OverlayLogCategory("Overlay");
 
@@ -25,17 +23,11 @@ OverlaySystem::OverlaySystem(Renderer &renderer, PlatformApplication &platformAp
     , _application(platformApplication) {
     _nuklearContext = std::make_unique<nk_context>();
     _application.installComponent(std::make_unique<OverlayEventHandler>(_nuklearContext.get()));
-
-    ImGui_ImplOpenGL3_Init();
-
     NuklearLegacyBindings::setContext(_nuklearContext.get());
 }
 
 OverlaySystem::~OverlaySystem() {
     _application.removeComponent<OverlayEventHandler>();
-
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
 }
 
@@ -56,13 +48,9 @@ void OverlaySystem::drawOverlays() {
     _update();
     _renderer.drawOverlays(_nuklearContext.get());
 
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame();
-    ImGui::NewFrame();
+    _renderer.beginOverlays();
     ImGui::ShowDemoWindow();
-
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    _renderer.endOverlays();
 }
 
 void OverlaySystem::_update() {
