@@ -1068,10 +1068,10 @@ void PrepareToLoadBLV(bool bLoading) {
 }
 
 //----- (0046CEC3) --------------------------------------------------------
-int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
+float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
     // stores faces and floor z levels
     int FacesFound = 0;
-    int blv_floor_z[5] = { 0 };
+    float blv_floor_z[5] = { 0 };
     int blv_floor_id[5] = { 0 };
 
     BLVSector *pSector = &pIndoor->pSectors[uSectorID];
@@ -1085,7 +1085,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
         if (pFloor->Ethereal())
             continue;
 
-        if (!pFloor->Contains(pos, MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
+        if (!pFloor->Contains(pos.toInt(), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
             continue;
 
         // TODO: Does POLYGON_Ceiling really belong here?
@@ -1095,7 +1095,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
         //     actor.z = z + 1;
         //
         // And if this z is ceiling z, then this will place the actor above the ceiling.
-        int z_calc;
+        float z_calc;
         if (pFloor->uPolygonType == POLYGON_Floor || pFloor->uPolygonType == POLYGON_Ceiling) {
             z_calc = pIndoor->pVertices[pFloor->pVertexIDs[0]].z;
         } else {
@@ -1116,7 +1116,7 @@ int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
             if (portal->uPolygonType != POLYGON_Floor)
                 continue;
 
-            if(!portal->Contains(pos, MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
+            if(!portal->Contains(pos.toInt(), MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
                 continue;
 
             blv_floor_z[FacesFound] = -29000;
@@ -1145,10 +1145,10 @@ int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID) {
     }
 
     // multiple faces found - pick nearest
-    int result = blv_floor_z[0];
+    float result = blv_floor_z[0];
     int faceId = blv_floor_id[0];
     for (unsigned i = 1; i < FacesFound; ++i) {
-        int v38 = blv_floor_z[i];
+        float v38 = blv_floor_z[i];
 
         if (std::abs(pos.z - v38) <= std::abs(pos.z - result)) {
             result = blv_floor_z[i];
@@ -1975,7 +1975,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             mon_sectorID = pIndoor->GetSector(enc_spawn_point.vPosition);
             if (mon_sectorID == party_sectorID) {
                 // check proposed floor level
-                indoor_floor_level = BLV_GetFloorLevel(enc_spawn_point.vPosition.toInt(), mon_sectorID);
+                indoor_floor_level = BLV_GetFloorLevel(enc_spawn_point.vPosition, mon_sectorID);
                 enc_spawn_point.vPosition.z = indoor_floor_level;
                 if (indoor_floor_level != -30000) {
                     // break if spanwn point is okay
@@ -2070,7 +2070,7 @@ void FindBillboardsLightLevels_BLV() {
 
 int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID) {
     if (*pSectorID != 0) {
-        int result = BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
+        int result = BLV_GetFloorLevel(pos.toFloat(), *pSectorID, pFaceID);
         if (result != -30000 && result <= pos.z + 50)
             return result;
     }
@@ -2082,7 +2082,7 @@ int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID) {
         return -30000;
     }
 
-    return BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
+    return BLV_GetFloorLevel(pos.toFloat(), *pSectorID, pFaceID);
 }
 
 //----- (0047272C) --------------------------------------------------------

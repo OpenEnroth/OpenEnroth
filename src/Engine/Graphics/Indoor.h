@@ -294,7 +294,7 @@ void BLV_UpdateUserInputAndOther();
  *                                      If wrong sector is supplied or actor is out of bounds, `-30000` is
  *                                      returned.
  */
-int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID = nullptr);
+float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID = nullptr);
 void BLV_UpdateDoors();
 void UpdateActors_BLV();
 void BLV_ProcessPartyActions();
