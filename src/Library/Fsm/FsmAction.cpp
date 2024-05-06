@@ -1,12 +1,26 @@
 #include "FsmAction.h"
-#include "Fsm.h"
 
-void FsmActionNone::execute(Fsm &fsm) {
+#include <string>
+
+FsmAction FsmAction::none() {
+    return {};
 }
 
-FsmActionTransition::FsmActionTransition(std::string_view transitionName) : _transitionName(transitionName) {
+FsmAction FsmAction::transition(std::string_view transitionName) {
+    FsmAction result;
+    result._transitionName = transitionName;
+    return result;
 }
 
-void FsmActionTransition::execute(Fsm &fsm) {
-    fsm.scheduleTransition(_transitionName);
+FsmAction::operator bool() const {
+    return !_transitionName.empty();
+}
+
+bool FsmAction::operator!() const {
+    return _transitionName.empty();
+}
+
+const std::string &FsmAction::transitionName() const {
+    assert(!!*this);
+    return _transitionName;
 }

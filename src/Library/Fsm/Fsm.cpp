@@ -52,7 +52,9 @@ void Fsm::_updateCurrentState() {
 }
 
 void Fsm::_performAction(FsmAction &action) {
-    std::visit([this](auto &&action) { action.execute(*this); }, action);
+    if (action) {
+        _scheduleTransition(action.transitionName());
+    }
 }
 
 bool Fsm::hasReachedExitState() const {
@@ -63,7 +65,7 @@ void Fsm::addState(std::unique_ptr<StateEntry> stateEntry) {
     _states.insert({ stateEntry->name, std::move(stateEntry) });
 }
 
-void Fsm::scheduleTransition(std::string_view transition) {
+void Fsm::_scheduleTransition(std::string_view transition) {
     // Look for the correct transition
     FsmTransitions &transitions = _currentState->transitions;
     auto itr = transitions.find(transition);

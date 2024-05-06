@@ -1,11 +1,11 @@
 #include "StartState.h"
 
 FsmAction StartState::enter() {
-    return FsmActionTransition("proceed");
+    return FsmAction::transition("proceed");
 }
 
 FsmAction StartState::update() {
-    return FsmActionNone();
+    return FsmAction::none();
 }
 
 void StartState::exit() {

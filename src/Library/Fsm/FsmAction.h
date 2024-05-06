@@ -1,22 +1,18 @@
 #pragma once
 
+#include <string_view>
 #include <string>
-#include <variant>
+#include <cassert>
 
-class Fsm;
-
-class FsmActionNone {
+class FsmAction {
  public:
-    void execute(Fsm &fsm);
-};
+    static FsmAction none();
+    static FsmAction transition(std::string_view transitionName);
 
-class FsmActionTransition {
- public:
-    explicit FsmActionTransition(std::string_view transitionName);
-    void execute(Fsm &fsm);
+    operator bool() const;
+    bool operator!() const;
+    const std::string &transitionName() const;
 
  private:
     std::string _transitionName;
 };
-
-using FsmAction = std::variant<FsmActionNone, FsmActionTransition>;

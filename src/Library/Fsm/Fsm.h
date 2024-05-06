@@ -53,8 +53,6 @@ class Fsm : public FsmEventHandler {
 
     void addState(std::unique_ptr<StateEntry> stateEntry);
 
-    void scheduleTransition(std::string_view transition);
-
     static const LogCategory fsmLogCategory;
 
  private:
@@ -64,6 +62,7 @@ class Fsm : public FsmEventHandler {
     void _performPendingTransition();
     void _updateCurrentState();
     void _performAction(FsmAction &action);
+    void _scheduleTransition(std::string_view transition);
     StateEntry *_getStateByName(std::string_view stateName);
 
     std::unordered_map<TransparentString, std::unique_ptr<StateEntry>, TransparentStringHash, TransparentStringEquals> _states;
