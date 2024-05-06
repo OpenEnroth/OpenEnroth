@@ -41,6 +41,9 @@ add_library(inicpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/inifile_cpp/include/ini
 target_include_directories(inicpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/inifile_cpp/include)
 add_library(inicpp::inicpp ALIAS inicpp)
 
+# small_vector
+add_subdirectory(small_vector)
+
 # spdlog
 set(SPDLOG_FMT_EXTERNAL ON)
 set(SPDLOG_DISABLE_DEFAULT_LOGGER ON)
