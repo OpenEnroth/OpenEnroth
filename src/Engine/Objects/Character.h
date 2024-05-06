@@ -123,7 +123,7 @@ class Character {
      * @offset 0x4680ED
      */
     void useItem(int targetCharacter, bool isPortraitClick);
-    int GetActualAttribute(CharacterAttributeType attrId) const;
+
     int GetBaseMight() const;
     int GetBaseIntelligence() const;
     int GetBasePersonality() const;
@@ -131,8 +131,10 @@ class Character {
     int GetBaseAccuracy() const;
     int GetBaseSpeed() const;
     int GetBaseLuck() const;
+    
     int GetBaseLevel() const;
     int GetActualLevel() const;
+
     int GetActualMight() const;
     int GetActualIntelligence() const;
     int GetActualPersonality() const;
@@ -140,6 +142,8 @@ class Character {
     int GetActualAccuracy() const;
     int GetActualSpeed() const;
     int GetActualLuck() const;
+    int GetActualStat(CharacterAttributeType stat) const;
+
     int GetActualAttack(bool onlyMainHandDmg) const;
     int GetMeleeDamageMinimal() const;
     int GetMeleeDamageMaximal() const;

@@ -932,52 +932,43 @@ int Character::GetActualLevel() const {
 
 //----- (0048C93C) --------------------------------------------------------
 int Character::GetActualMight() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_MIGHT);
+    return GetActualStat(CHARACTER_ATTRIBUTE_MIGHT);
 }
 
 //----- (0048C9C2) --------------------------------------------------------
 int Character::GetActualIntelligence() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_INTELLIGENCE);
+    return GetActualStat(CHARACTER_ATTRIBUTE_INTELLIGENCE);
 }
 
 //----- (0048CA3F) --------------------------------------------------------
 int Character::GetActualPersonality() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_PERSONALITY);
+    return GetActualStat(CHARACTER_ATTRIBUTE_PERSONALITY);
 }
 
 //----- (0048CABC) --------------------------------------------------------
 int Character::GetActualEndurance() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_ENDURANCE);
+    return GetActualStat(CHARACTER_ATTRIBUTE_ENDURANCE);
 }
 
 //----- (0048CB39) --------------------------------------------------------
 int Character::GetActualAccuracy() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_ACCURACY);
+    return GetActualStat(CHARACTER_ATTRIBUTE_ACCURACY);
 }
 
 //----- (0048CBB6) --------------------------------------------------------
 int Character::GetActualSpeed() const {
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_SPEED);
+    return GetActualStat(CHARACTER_ATTRIBUTE_SPEED);
 }
 
 //----- (0048CC33) --------------------------------------------------------
 int Character::GetActualLuck() const {
-    signed int npc_luck_bonus = 0;
-
-    if (CheckHiredNPCSpeciality(Fool)) npc_luck_bonus = 5;
-
-    if (CheckHiredNPCSpeciality(ChimneySweep)) npc_luck_bonus += 20;
-
-    if (CheckHiredNPCSpeciality(Psychic)) npc_luck_bonus += 10;
-
-    return GetActualAttribute(CHARACTER_ATTRIBUTE_LUCK) +
-           npc_luck_bonus;
+    return GetActualStat(CHARACTER_ATTRIBUTE_LUCK);
 }
 
 //----- (new function) --------------------------------------------------------
-int Character::GetActualAttribute(CharacterAttributeType attrId) const {
-    int attrValue = _stats[attrId];
-    int attrBonus = _statBonuses[attrId];
+int Character::GetActualStat(CharacterAttributeType stat) const {
+    int attrValue = _stats[stat];
+    int attrBonus = _statBonuses[stat];
 
     unsigned uActualAge = this->sAgeModifier + GetBaseAge();
     unsigned uAgeingMultiplier = 100;
@@ -985,18 +976,28 @@ int Character::GetActualAttribute(CharacterAttributeType attrId) const {
     for (unsigned i = 0; i < 4; ++i) {
         if (uActualAge >=
             pAgeingTable[i])  // is the character old enough to need attrib adjust
-            uAgeingMultiplier = pAgingAttributeModifier[attrId][i];
+            uAgeingMultiplier = pAgingAttributeModifier[stat][i];
         else
             break;
     }
 
     int uConditionMult = pConditionAttributeModifier
-        [attrId][std::to_underlying(GetMajorConditionIdx())];  // weak from disease or poison ect
-    int magicBonus = GetMagicalBonus(attrId);
-    int itemBonus = GetItemsBonus(attrId);
+        [stat][std::to_underlying(GetMajorConditionIdx())];  // weak from disease or poison ect
+    int magicBonus = GetMagicalBonus(stat);
+    int itemBonus = GetItemsBonus(stat);
+
+    int npcBonus = 0;
+    if (stat == CHARACTER_ATTRIBUTE_LUCK) {
+        if (CheckHiredNPCSpeciality(Fool))
+            npcBonus += 5;
+        if (CheckHiredNPCSpeciality(ChimneySweep))
+            npcBonus += 20;
+        if (CheckHiredNPCSpeciality(Psychic))
+            npcBonus += 10;
+    }
 
     return uConditionMult * uAgeingMultiplier * attrValue / 100 / 100 +
-           magicBonus + itemBonus + attrBonus;
+           magicBonus + itemBonus + attrBonus + npcBonus;
 }
 
 //----- (0048CCF5) --------------------------------------------------------
