@@ -72,6 +72,13 @@ EventTraceGameState EngineTraceStateAccessor::makeGameState() {
         EventTraceCharacterState &traceCharacter = result.characters.emplace_back();
         traceCharacter.hp = character.health;
         traceCharacter.mp = character.mana;
+        traceCharacter.might = character.GetActualMight();
+        traceCharacter.intelligence = character.GetActualIntelligence();
+        traceCharacter.personality = character.GetActualPersonality();
+        traceCharacter.endurance = character.GetActualEndurance();
+        traceCharacter.accuracy = character.GetActualAccuracy();
+        traceCharacter.speed = character.GetActualSpeed();
+        traceCharacter.luck = character.GetActualLuck();
     }
     return result;
 }
