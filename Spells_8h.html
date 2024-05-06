@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f12715c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a3f686e</span>
    </div>
   </td>
  </tr>
@@ -87,6 +87,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="CharacterEnums_8h.html">Engine/Objects/CharacterEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpriteEnums_8h.html">Engine/Objects/SpriteEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Duration_8h.html">Engine/Time/Duration.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Vec_8h.html">Library/Geometry/Vec.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpellEnums_8h.html">SpellEnums.h</a>&quot;</code><br />
 </div><table class="memberdecls">
@@ -107,8 +108,8 @@ Functions</h2></td></tr>
 <tr class="separator:acdf98ab5ca456bbf73afad1cd1fd5830"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25e4caf05a134cb8208361987df54890"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a25e4caf05a134cb8208361987df54890">IsSpellQuickCastableOnShiftClick</a> (<a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a> uSpellID)</td></tr>
 <tr class="separator:a25e4caf05a134cb8208361987df54890"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a08f6b0fa3ccbcfa2b2a595ddea88ed7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a08f6b0fa3ccbcfa2b2a595ddea88ed7e">eventCastSpell</a> (<a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a> uSpellID, <a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2a">CharacterSkillMastery</a> skillMastery, int skillLevel, int fromx, int fromy, int fromz, int tox, int toy, int toz)</td></tr>
-<tr class="separator:a08f6b0fa3ccbcfa2b2a595ddea88ed7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1eb745a442487d4fbc155fb50ad2945f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a1eb745a442487d4fbc155fb50ad2945f">eventCastSpell</a> (<a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a> uSpellID, <a class="el" href="CharacterEnums_8h.html#acabc944d4fe41d7186df3033b0607d2a">CharacterSkillMastery</a> skillMastery, int skillLevel, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> from, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> to)</td></tr>
+<tr class="separator:a1eb745a442487d4fbc155fb50ad2945f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62540915ac345d20b7cab6c85713f3c6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Spells_8h.html#a62540915ac345d20b7cab6c85713f3c6">armageddonProgress</a> ()</td></tr>
 <tr class="separator:a62540915ac345d20b7cab6c85713f3c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -184,8 +185,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a08f6b0fa3ccbcfa2b2a595ddea88ed7e" name="a08f6b0fa3ccbcfa2b2a595ddea88ed7e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a08f6b0fa3ccbcfa2b2a595ddea88ed7e">&#9670;&#160;</a></span>eventCastSpell()</h2>
+<a id="a1eb745a442487d4fbc155fb50ad2945f" name="a1eb745a442487d4fbc155fb50ad2945f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1eb745a442487d4fbc155fb50ad2945f">&#9670;&#160;</a></span>eventCastSpell()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -211,38 +212,14 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>fromx</em>, </td>
+          <td class="paramtype"><a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>&#160;</td>
+          <td class="paramname"><em>from</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>fromy</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>fromz</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>tox</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>toy</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>toz</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>&#160;</td>
+          <td class="paramname"><em>to</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

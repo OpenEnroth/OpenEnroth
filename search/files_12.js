@@ -72,6 +72,5 @@ var searchData=
   ['storylinetexttable_2eh_69',['StorylineTextTable.h',['../StorylineTextTable_8h.html',1,'']]],
   ['stringoutputstream_2ecpp_70',['StringOutputStream.cpp',['../StringOutputStream_8cpp.html',1,'']]],
   ['stringoutputstream_2eh_71',['StringOutputStream.h',['../StringOutputStream_8h.html',1,'']]],
-  ['stru160_2eh_72',['stru160.h',['../stru160_8h.html',1,'']]],
-  ['stru314_2eh_73',['stru314.h',['../stru314_8h.html',1,'']]]
+  ['stru314_2eh_72',['stru314.h',['../stru314_8h.html',1,'']]]
 ];
