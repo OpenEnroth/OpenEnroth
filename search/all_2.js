@@ -229,7 +229,7 @@ var searchData=
   ['build_226',['build',['../classOpenGLShader.html#a954f24bf2ab0e9b0d15c72d4d160c6c3',1,'OpenGLShader']]],
   ['build_5fdecal_5fgeometry_227',['Build_Decal_Geometry',['../structDecalBuilder.html#a9db5824d6fc2df43e8fe5ef3ef092dad',1,'DecalBuilder']]],
   ['buildandapplydecals_228',['BuildAndApplyDecals',['../structDecalBuilder.html#afc571fc403c716d8fbe394aa76555632',1,'DecalBuilder']]],
-  ['builddialoguestring_229',['BuildDialogueString',['../GUIWindow_8h.html#af69448782c1bcec07ddc3f59e35ebc33',1,'BuildDialogueString(std::string_view str, int uPlayerID, ItemGen *a3=nullptr, HouseId houseId=HOUSE_INVALID, ShopScreen shop_screen=SHOP_SCREEN_INVALID, Time *a6=nullptr):&#160;GUIWindow.cpp'],['../GUIWindow_8cpp.html#ad75627d1da22ba8740bacadf83b3b171',1,'BuildDialogueString(std::string_view str, int uPlayerID, ItemGen *a3, HouseId houseId, ShopScreen shop_screen, Time *a6):&#160;GUIWindow.cpp']]],
+  ['builddialoguestring_229',['BuildDialogueString',['../GUIWindow_8h.html#a90095a1706b327ce5406ea3092f1e577',1,'BuildDialogueString(std::string_view str, int uPlayerID, NPCData *npc, ItemGen *item=nullptr, HouseId houseId=HOUSE_INVALID, ShopScreen shop_screen=SHOP_SCREEN_INVALID, Time *a6=nullptr):&#160;GUIWindow.cpp'],['../GUIWindow_8cpp.html#acfc5666e7a375b4686f084d63eb901be',1,'BuildDialogueString(std::string_view str, int uPlayerID, NPCData *npc, ItemGen *item, HouseId houseId, ShopScreen shop_screen, Time *a6):&#160;GUIWindow.cpp']]],
   ['buildhireablenpcdialogue_230',['BuildHireableNpcDialogue',['../UIDialogue_8cpp.html#aebeda10c8f32f8d077763c3183820cd1',1,'UIDialogue.cpp']]],
   ['buildinfo_2ecpp_231',['BuildInfo.cpp',['../BuildInfo_8cpp.html',1,'']]],
   ['buildinfo_2eh_232',['BuildInfo.h',['../BuildInfo_8h.html',1,'']]],

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a3f686e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;718fcaf</span>
    </div>
   </td>
  </tr>
@@ -99,13 +99,15 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ae4a1d939d9c971bf794d285125276b13"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIDialogue_8h.html#ae4a1d939d9c971bf794d285125276b13">initializeNPCDialogue</a> (<a class="el" href="classActor.html">Actor</a> *actor, int bPlayerSaysHello)</td></tr>
-<tr class="separator:ae4a1d939d9c971bf794d285125276b13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b60ba4cc84c7cee8a7ea41b478d4f0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIDialogue_8h.html#a9b60ba4cc84c7cee8a7ea41b478d4f0e">initializeNPCDialogue</a> (int npcId, int bPlayerSaysHello, <a class="el" href="classActor.html">Actor</a> *actor=nullptr)</td></tr>
+<tr class="separator:a9b60ba4cc84c7cee8a7ea41b478d4f0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02b5bf267ea1221aa5b5855723854e6b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIDialogue_8h.html#a02b5bf267ea1221aa5b5855723854e6b">selectNPCDialogueOption</a> (<a class="el" href="GUIDialogues_8h.html#a5351d2555183e79b94e2c0fe6ca4e9a7">DialogueId</a> option)</td></tr>
 <tr class="separator:a02b5bf267ea1221aa5b5855723854e6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:aa7d5108cc766a045236da2a495432318"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIDialogue_8h.html#aa7d5108cc766a045236da2a495432318">speakingNpcId</a></td></tr>
+<tr class="separator:aa7d5108cc766a045236da2a495432318"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae97887ee351409b4df1326cbd1ecc3f1"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; std::string, <a class="el" href="PartyEnums_8h.html#a1d55b380c0ae0f422472f1de19d01e36a138a01d401a68aab61b07b596bb532a7">PartyAlignment_Good</a>, <a class="el" href="PartyEnums_8h.html#a1d55b380c0ae0f422472f1de19d01e36a5a3e1b0ba1793049451900a1e065630d">PartyAlignment_Evil</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIDialogue_8h.html#ae97887ee351409b4df1326cbd1ecc3f1">dialogueBackgroundResourceByAlignment</a></td></tr>
 <tr class="separator:ae97887ee351409b4df1326cbd1ecc3f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -139,8 +141,8 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ae4a1d939d9c971bf794d285125276b13" name="ae4a1d939d9c971bf794d285125276b13"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae4a1d939d9c971bf794d285125276b13">&#9670;&#160;</a></span>initializeNPCDialogue()</h2>
+<a id="a9b60ba4cc84c7cee8a7ea41b478d4f0e" name="a9b60ba4cc84c7cee8a7ea41b478d4f0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b60ba4cc84c7cee8a7ea41b478d4f0e">&#9670;&#160;</a></span>initializeNPCDialogue()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -148,14 +150,20 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void initializeNPCDialogue </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classActor.html">Actor</a> *&#160;</td>
-          <td class="paramname"><em>actor</em>, </td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>npcId</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>bPlayerSaysHello</em>&#160;</td>
+          <td class="paramname"><em>bPlayerSaysHello</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classActor.html">Actor</a> *&#160;</td>
+          <td class="paramname"><em>actor</em> = <code>nullptr</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -197,6 +205,28 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;std::string, <a class="el" href="PartyEnums_8h.html#a1d55b380c0ae0f422472f1de19d01e36a138a01d401a68aab61b07b596bb532a7">PartyAlignment_Good</a>, <a class="el" href="PartyEnums_8h.html#a1d55b380c0ae0f422472f1de19d01e36a5a3e1b0ba1793049451900a1e065630d">PartyAlignment_Evil</a>&gt; dialogueBackgroundResourceByAlignment</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa7d5108cc766a045236da2a495432318" name="aa7d5108cc766a045236da2a495432318"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7d5108cc766a045236da2a495432318">&#9670;&#160;</a></span>speakingNpcId</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int speakingNpcId</td>
         </tr>
       </table>
   </td>
