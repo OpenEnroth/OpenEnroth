@@ -270,30 +270,7 @@ int CharacterCreation_GetUnspentAttributePointCount() {
         Race raceId = character.GetRace();
 
         for (CharacterAttributeType statNum : allStatAttributes()) {
-            switch (statNum) {
-                case CHARACTER_ATTRIBUTE_MIGHT:
-                    CurrentStatValue = character._stats[CHARACTER_ATTRIBUTE_MIGHT];
-                    break;
-                case CHARACTER_ATTRIBUTE_INTELLIGENCE:
-                    CurrentStatValue = character._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE];
-                    break;
-                case CHARACTER_ATTRIBUTE_PERSONALITY:
-                    CurrentStatValue = character._stats[CHARACTER_ATTRIBUTE_PERSONALITY];
-                    break;
-                case CHARACTER_ATTRIBUTE_ENDURANCE:
-                    CurrentStatValue = character._stats[CHARACTER_ATTRIBUTE_ENDURANCE];
-                    break;
-                case CHARACTER_ATTRIBUTE_ACCURACY:
-                    CurrentStatValue = character._stats[CHARACTER_ATTRIBUTE_ACCURACY];
-                    break;
-                case CHARACTER_ATTRIBUTE_SPEED:
-                    CurrentStatValue = character._stats[CHARACTER_ATTRIBUTE_SPEED];
-                    break;
-                case CHARACTER_ATTRIBUTE_LUCK:
-                    CurrentStatValue = character._stats[CHARACTER_ATTRIBUTE_LUCK];
-                    break;
-            }
-
+            CurrentStatValue = character._stats[statNum];
             StatBaseValue = StatTable[raceId][statNum].uBaseValue;
 
             if (CurrentStatValue >= StatBaseValue) {  // bonus or penalty increase
@@ -3225,13 +3202,8 @@ CharacterSex Character::GetSexByVoice() const {
 //----- (00490188) --------------------------------------------------------
 void Character::SetInitialStats() {
     Race race = GetRace();
-    _stats[CHARACTER_ATTRIBUTE_MIGHT] = StatTable[race][CHARACTER_ATTRIBUTE_MIGHT].uBaseValue;
-    _stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = StatTable[race][CHARACTER_ATTRIBUTE_INTELLIGENCE].uBaseValue;
-    _stats[CHARACTER_ATTRIBUTE_PERSONALITY] = StatTable[race][CHARACTER_ATTRIBUTE_PERSONALITY].uBaseValue;
-    _stats[CHARACTER_ATTRIBUTE_ENDURANCE] = StatTable[race][CHARACTER_ATTRIBUTE_ENDURANCE].uBaseValue;
-    _stats[CHARACTER_ATTRIBUTE_ACCURACY] = StatTable[race][CHARACTER_ATTRIBUTE_ACCURACY].uBaseValue;
-    _stats[CHARACTER_ATTRIBUTE_SPEED] = StatTable[race][CHARACTER_ATTRIBUTE_SPEED].uBaseValue;
-    _stats[CHARACTER_ATTRIBUTE_LUCK] = StatTable[race][CHARACTER_ATTRIBUTE_LUCK].uBaseValue;
+    for (CharacterAttributeType stat : allStatAttributes())
+        _stats[stat] = StatTable[race][stat].uBaseValue;
 }
 
 //----- (004901FC) --------------------------------------------------------
@@ -3337,30 +3309,7 @@ void Character::DecreaseAttribute(CharacterAttributeType eAttribute) {
     pDroppedStep = StatTable[raceId][eAttribute].uDroppedStep;
     uMinValue = pBaseValue - 2;
     pStep = StatTable[raceId][eAttribute].uBaseStep;
-    int *AttrToChange = nullptr;
-    switch (eAttribute) {
-        case CHARACTER_ATTRIBUTE_MIGHT:
-            AttrToChange = &this->_stats[CHARACTER_ATTRIBUTE_MIGHT];
-            break;
-        case CHARACTER_ATTRIBUTE_INTELLIGENCE:
-            AttrToChange = &this->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE];
-            break;
-        case CHARACTER_ATTRIBUTE_PERSONALITY:
-            AttrToChange = &this->_stats[CHARACTER_ATTRIBUTE_PERSONALITY];
-            break;
-        case CHARACTER_ATTRIBUTE_ENDURANCE:
-            AttrToChange = &this->_stats[CHARACTER_ATTRIBUTE_ENDURANCE];
-            break;
-        case CHARACTER_ATTRIBUTE_ACCURACY:
-            AttrToChange = &this->_stats[CHARACTER_ATTRIBUTE_ACCURACY];
-            break;
-        case CHARACTER_ATTRIBUTE_SPEED:
-            AttrToChange = &this->_stats[CHARACTER_ATTRIBUTE_SPEED];
-            break;
-        case CHARACTER_ATTRIBUTE_LUCK:
-            AttrToChange = &this->_stats[CHARACTER_ATTRIBUTE_LUCK];
-            break;
-    }
+    int *AttrToChange = &this->_stats[eAttribute];
     if (*AttrToChange <= pBaseValue) pStep = pDroppedStep;
     if (*AttrToChange - pStep >= uMinValue) *AttrToChange -= pStep;
 }
@@ -3374,7 +3323,6 @@ void Character::IncreaseAttribute(CharacterAttributeType eAttribute) {
     signed int result;       // eax@18
     int baseValue;           // [sp+Ch] [bp-8h]@1
     signed int droppedStep;  // [sp+10h] [bp-4h]@1
-    int *statToChange;
 
     Race raceId = GetRace();
     maxValue = StatTable[raceId][eAttribute].uMaxValue;
@@ -3382,32 +3330,7 @@ void Character::IncreaseAttribute(CharacterAttributeType eAttribute) {
     baseValue = StatTable[raceId][eAttribute].uBaseValue;
     droppedStep = StatTable[raceId][eAttribute].uDroppedStep;
     CharacterCreation_GetUnspentAttributePointCount();
-    switch (eAttribute) {
-        case CHARACTER_ATTRIBUTE_MIGHT:
-            statToChange = &this->_stats[CHARACTER_ATTRIBUTE_MIGHT];
-            break;
-        case CHARACTER_ATTRIBUTE_INTELLIGENCE:
-            statToChange = &this->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE];
-            break;
-        case CHARACTER_ATTRIBUTE_PERSONALITY:
-            statToChange = &this->_stats[CHARACTER_ATTRIBUTE_PERSONALITY];
-            break;
-        case CHARACTER_ATTRIBUTE_ENDURANCE:
-            statToChange = &this->_stats[CHARACTER_ATTRIBUTE_ENDURANCE];
-            break;
-        case CHARACTER_ATTRIBUTE_ACCURACY:
-            statToChange = &this->_stats[CHARACTER_ATTRIBUTE_ACCURACY];
-            break;
-        case CHARACTER_ATTRIBUTE_SPEED:
-            statToChange = &this->_stats[CHARACTER_ATTRIBUTE_SPEED];
-            break;
-        case CHARACTER_ATTRIBUTE_LUCK:
-            statToChange = &this->_stats[CHARACTER_ATTRIBUTE_LUCK];
-            break;
-        default:
-            assert(false);
-            return;
-    }
+    int *statToChange = &this->_stats[eAttribute];
     if (*statToChange < baseValue) {
         tmp = baseStep;
         baseStep = droppedStep;
@@ -3424,13 +3347,7 @@ void Character::resetTempBonuses() {
     // this is also used during party rest and heal so only buffs and bonuses are reset
     this->sLevelModifier = 0;
     this->sACModifier = 0;
-    this->_statBonuses[CHARACTER_ATTRIBUTE_LUCK] = 0;
-    this->_statBonuses[CHARACTER_ATTRIBUTE_ACCURACY] = 0;
-    this->_statBonuses[CHARACTER_ATTRIBUTE_SPEED] = 0;
-    this->_statBonuses[CHARACTER_ATTRIBUTE_ENDURANCE] = 0;
-    this->_statBonuses[CHARACTER_ATTRIBUTE_PERSONALITY] = 0;
-    this->_statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 0;
-    this->_statBonuses[CHARACTER_ATTRIBUTE_MIGHT] = 0;
+    this->_statBonuses.fill(0);
     this->sResFireBonus = 0;
     this->sResAirBonus = 0;
     this->sResWaterBonus = 0;
@@ -3455,36 +3372,9 @@ void Character::resetTempBonuses() {
 
 //----- (004907E7) --------------------------------------------------------
 Color Character::GetStatColor(CharacterAttributeType uStat) const {
-    int attribute_value;  // edx@1
-
     int base_attribute_value = StatTable[GetRace()][uStat].uBaseValue;
-    switch (uStat) {
-        case CHARACTER_ATTRIBUTE_MIGHT:
-            attribute_value = _stats[CHARACTER_ATTRIBUTE_MIGHT];
-            break;
-        case CHARACTER_ATTRIBUTE_INTELLIGENCE:
-            attribute_value = _stats[CHARACTER_ATTRIBUTE_INTELLIGENCE];
-            break;
-        case CHARACTER_ATTRIBUTE_PERSONALITY:
-            attribute_value = _stats[CHARACTER_ATTRIBUTE_PERSONALITY];
-            break;
-        case CHARACTER_ATTRIBUTE_ENDURANCE:
-            attribute_value = _stats[CHARACTER_ATTRIBUTE_ENDURANCE];
-            break;
-        case CHARACTER_ATTRIBUTE_ACCURACY:
-            attribute_value = _stats[CHARACTER_ATTRIBUTE_ACCURACY];
-            break;
-        case CHARACTER_ATTRIBUTE_SPEED:
-            attribute_value = _stats[CHARACTER_ATTRIBUTE_SPEED];
-            break;
-        case CHARACTER_ATTRIBUTE_LUCK:
-            attribute_value = _stats[CHARACTER_ATTRIBUTE_LUCK];
-            break;
-        default:
-            assert(false);
-            return Color();
-    }
 
+    int attribute_value = _stats[uStat];
     if (attribute_value == base_attribute_value)
         return ui_character_stat_default_color;
     else if (attribute_value > base_attribute_value)
@@ -7344,13 +7234,8 @@ void Character::Zero() {
     uVoiceID = uPrevVoiceID = 0;
     uSkillPoints = 0;
     // Stats
-    _stats[CHARACTER_ATTRIBUTE_MIGHT] = _statBonuses[CHARACTER_ATTRIBUTE_MIGHT] = 0;
-    _stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = _statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 0;
-    _stats[CHARACTER_ATTRIBUTE_PERSONALITY] = _statBonuses[CHARACTER_ATTRIBUTE_PERSONALITY] = 0;
-    _stats[CHARACTER_ATTRIBUTE_ENDURANCE] = _statBonuses[CHARACTER_ATTRIBUTE_ENDURANCE] = 0;
-    _stats[CHARACTER_ATTRIBUTE_SPEED] = _statBonuses[CHARACTER_ATTRIBUTE_SPEED] = 0;
-    _stats[CHARACTER_ATTRIBUTE_ACCURACY] = _statBonuses[CHARACTER_ATTRIBUTE_ACCURACY] = 0;
-    _stats[CHARACTER_ATTRIBUTE_LUCK] = _statBonuses[CHARACTER_ATTRIBUTE_LUCK] = 0;
+    _stats.fill(0);
+    _statBonuses.fill(0);
     // HP MP AC
     health = uFullHealthBonus = _health_related = 0;
     mana = uFullManaBonus = _mana_related = 0;

@@ -469,14 +469,14 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[3].name = localization->GetString(LSTR_PC_NAME_ALEXIS);
     this->pCharacters[3].uPrevFace = 10;
     this->pCharacters[3].uCurrentFace = 10;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_ENDURANCE] = 13;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_ACCURACY] = 13;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_SPEED] = 13;
     this->pCharacters[3].uPrevVoiceID = 10;
     this->pCharacters[3].uVoiceID = 10;
     this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_MIGHT] = 5;
     this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 30;
     this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_PERSONALITY] = 9;
+    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_ENDURANCE] = 13;
+    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_ACCURACY] = 13;
+    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_SPEED] = 13;
     this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_LUCK] = 7;
     this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
     this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR] = CombinedSkillValue::novice();
