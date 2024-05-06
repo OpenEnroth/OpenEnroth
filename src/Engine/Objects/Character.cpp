@@ -1595,7 +1595,7 @@ int Character::receiveDamage(signed int amount, DamageType dmg_type) {
     }
 
     if (health < 1) {  // character unconscious or if too hurt - dead
-        if ((health + _stats[CHARACTER_ATTRIBUTE_ENDURANCE] + GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) >= 1) ||
+        if ((health + GetBaseEndurance() >= 1) ||
             pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
             SetCondUnconsciousWithBlockCheck(false);
         } else {
