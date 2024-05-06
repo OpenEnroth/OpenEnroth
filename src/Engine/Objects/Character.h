@@ -383,13 +383,7 @@ class Character {
     IndexedArray<CombinedSkillValue, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> pActiveSkills;
     IndexedBitset<1, 512> _achievedAwardsBits;
     IndexedArray<bool, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> bHaveSpell;
-    int pure_luck_used;
-    int pure_speed_used;
-    int pure_intellect_used;
-    int pure_endurance_used;
-    int pure_personality_used;
-    int pure_accuracy_used;
-    int pure_might_used;
+    IndexedArray<bool, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> _pureStatPotionUsed;
     std::array<ItemGen, INVENTORY_SLOT_COUNT> pInventoryItemList;
     std::array<int, INVENTORY_SLOT_COUNT> pInventoryMatrix; // 0 => empty cell
                                                             // positive => subtract 1 to get an index into pInventoryItemList.

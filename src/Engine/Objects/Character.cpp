@@ -3634,53 +3634,19 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                 break;
 
             case ITEM_POTION_PURE_LUCK:
-                if (!playerAffected->pure_luck_used) {
-                    playerAffected->_stats[CHARACTER_ATTRIBUTE_LUCK] += 50;
-                    playerAffected->pure_luck_used = 1;
-                }
-                break;
-
             case ITEM_POTION_PURE_SPEED:
-                if (!playerAffected->pure_speed_used) {
-                    playerAffected->_stats[CHARACTER_ATTRIBUTE_SPEED] += 50;
-                    playerAffected->pure_speed_used = 1;
-                }
-                break;
-
             case ITEM_POTION_PURE_INTELLECT:
-                if (!playerAffected->pure_intellect_used) {
-                    playerAffected->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] += 50;
-                    playerAffected->pure_intellect_used = 1;
-                }
-                break;
-
             case ITEM_POTION_PURE_ENDURANCE:
-                if (!playerAffected->pure_endurance_used) {
-                    playerAffected->_stats[CHARACTER_ATTRIBUTE_ENDURANCE] += 50;
-                    playerAffected->pure_endurance_used = 1;
-                }
-                break;
-
             case ITEM_POTION_PURE_PERSONALITY:
-                if (!playerAffected->pure_personality_used) {
-                    playerAffected->_stats[CHARACTER_ATTRIBUTE_PERSONALITY] += 50;
-                    playerAffected->pure_personality_used = 1;
-                }
-                break;
-
             case ITEM_POTION_PURE_ACCURACY:
-                if (!playerAffected->pure_accuracy_used) {
-                    playerAffected->_stats[CHARACTER_ATTRIBUTE_ACCURACY] += 50;
-                    playerAffected->pure_accuracy_used = 1;
+            case ITEM_POTION_PURE_MIGHT: {
+                CharacterAttributeType stat = statForPureStatPotion(pParty->pPickedItem.uItemID);
+                if (!playerAffected->_pureStatPotionUsed[stat]) {
+                    playerAffected->_stats[stat] += 50;
+                    playerAffected->_pureStatPotionUsed[stat] = true;
                 }
                 break;
-
-            case ITEM_POTION_PURE_MIGHT:
-                if (!playerAffected->pure_might_used) {
-                    playerAffected->_stats[CHARACTER_ATTRIBUTE_MIGHT] += 50;
-                    playerAffected->pure_might_used = 1;
-                }
-                break;
+            }
 
             case ITEM_POTION_REJUVENATION:
                 playerAffected->sAgeModifier = 0;
@@ -7298,13 +7264,7 @@ void Character::Zero() {
     _expression21_animtime = 0_ticks;
     _expression21_frameset = 0;
     // Black potions
-    pure_luck_used = 0;
-    pure_speed_used = 0;
-    pure_intellect_used = 0;
-    pure_endurance_used = 0;
-    pure_personality_used = 0;
-    pure_accuracy_used = 0;
-    pure_might_used = 0;
+    _pureStatPotionUsed.fill(false);
 }
 
 bool Character::matchesAttackPreference(MonsterAttackPreference preference) const {
