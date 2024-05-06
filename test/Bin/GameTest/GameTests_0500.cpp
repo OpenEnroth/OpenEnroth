@@ -110,9 +110,11 @@ GAME_TEST(Issues, Issue520) {
 
 GAME_TEST(Issues, Issue521) {
     // 500 endurance leads to asserts in Character::SetRecoveryTime
+    auto enduranceTape = charTapes.stat(0, CHARACTER_ATTRIBUTE_ENDURANCE);
     auto hpsTape = charTapes.hps();
     auto activeCharTape = tapes.activeCharacterIndex();
     test.playTraceFromTestData("issue_521.mm7", "issue_521.json");
+    EXPECT_EQ(enduranceTape, tape(500)); // First char is beefy.
     EXPECT_LT(hpsTape.delta().max(), 0); // All chars took damage.
     EXPECT_EQ(activeCharTape, tape(1)); // First char didn't flinch.
 }
