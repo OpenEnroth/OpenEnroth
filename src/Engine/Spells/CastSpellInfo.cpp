@@ -264,7 +264,7 @@ void CastSpellInfoHelpers::castSpell() {
                 if (i) {
                     pSpellSprite.vPosition.z += 32;
                 }
-                pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                 int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                 if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
                     pParty->bTurnBasedModeOn) {
@@ -283,7 +283,7 @@ void CastSpellInfoHelpers::castSpell() {
             // &pParty->pCharacters[pCastSpell->uPlayerID].spellbook.pDarkSpellbook.bIsSpellAvailable[36
             // *
             // pParty->pCharacters[pCastSpell->uPlayerID].pEquipment[ITEM_SLOT_MAIN_HAND] + 5], );
-            pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+            pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
             pSpellSprite.uAttributes |= SPRITE_MISSILE;
             if (pParty->bTurnBasedModeOn) {
                 pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
@@ -378,7 +378,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = (short)target_direction.uYawAngle;
@@ -444,7 +444,7 @@ void CastSpellInfoHelpers::castSpell() {
                     int monster_id = spell_targeted_at.id();
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pActors[monster_id].pos;
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
@@ -476,7 +476,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
@@ -502,7 +502,7 @@ void CastSpellInfoHelpers::castSpell() {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     // TODO(pskelton): was pParty->uPartyHeight / 2
                     pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
@@ -528,7 +528,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
@@ -647,7 +647,7 @@ void CastSpellInfoHelpers::castSpell() {
                         pActors[monster_id].buffs[ACTOR_BUFF_CHARM].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = pActors[monster_id].pos + Vec3f(0, 0, pActors[monster_id].height);
-                        pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                        pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                         pSpellSprite.spell_target_pid = spell_targeted_at;
                         pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                         pSpellSprite.uFacing = target_direction.uYawAngle;
@@ -664,7 +664,7 @@ void CastSpellInfoHelpers::castSpell() {
                     // This calculation was moved to spell impact processing function
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
@@ -1086,7 +1086,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     if (pParty->bTurnBasedModeOn) {
@@ -1274,7 +1274,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     if (pParty->bTurnBasedModeOn) {
@@ -1574,7 +1574,7 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = pParty->_viewYaw;
@@ -1998,7 +1998,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = pActors[monster_id].pos + Vec3f(0, 0, pActors[monster_id].height);
-                        pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                        pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                         pSpellSprite.spell_target_pid = spell_targeted_at;
                         pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                         pSpellSprite.uFacing = target_direction.uYawAngle;
@@ -2047,7 +2047,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pActors[monster_id].pos + Vec3f(0, 0, pActors[monster_id].height);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
@@ -2083,7 +2083,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pActors[monster_id].pos + Vec3f(0, 0, pActors[monster_id].height);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;
@@ -2700,7 +2700,7 @@ void CastSpellInfoHelpers::castSpell() {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     // TODO(pskelton): was pParty->uPartyHeight / 2
                     pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     if (pParty->bTurnBasedModeOn) {
@@ -2768,7 +2768,7 @@ void CastSpellInfoHelpers::castSpell() {
                         .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pActors[monster_id].pos + Vec3f(0, 0, pActors[monster_id].height);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
                     pSpellSprite.uFacing = target_direction.uYawAngle;

@@ -178,8 +178,8 @@ void PrepareDrawLists_BLV() {
 
 //----- (004407D9) --------------------------------------------------------
 void BLVRenderParams::Reset() {
-    this->uPartySectorID = pIndoor->GetSector(pParty->pos.toInt());
-    this->uPartyEyeSectorID = pIndoor->GetSector(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel));
+    this->uPartySectorID = pIndoor->GetSector(pParty->pos);
+    this->uPartyEyeSectorID = pIndoor->GetSector(pParty->pos + Vec3f(0, 0, pParty->eyeLevel));
 
     if (!this->uPartySectorID) {
         assert(false);  // shouldnt happen, please provide savegame
@@ -375,7 +375,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
 }
 
 //----- (0049AC17) --------------------------------------------------------
-int IndoorLocation::GetSector(int sX, int sY, int sZ) {
+int IndoorLocation::GetSector(float sX, float sY, float sZ) {
     if (uCurrentlyLoadedLevelType != LEVEL_INDOOR)
         return 0;
 
@@ -1341,9 +1341,9 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
     for (int sectargetrflip = 0; sectargetrflip < 2; sectargetrflip++) {
         int SectargetrID = 0;
         if (sectargetrflip)
-            SectargetrID = pIndoor->GetSector(target);
+            SectargetrID = pIndoor->GetSector(target.toFloat());
         else
-            SectargetrID = pIndoor->GetSector(from);
+            SectargetrID = pIndoor->GetSector(from.toFloat());
 
         // loop over sectargetr faces
         for (int FaceLoop = 0; FaceLoop < pIndoor->pSectors[SectargetrID].uNumFaces; ++FaceLoop) {
@@ -1972,7 +1972,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             enc_spawn_point.uMonsterIndex = enc_index;
 
             // get proposed sector
-            mon_sectorID = pIndoor->GetSector(enc_spawn_point.vPosition.toInt());
+            mon_sectorID = pIndoor->GetSector(enc_spawn_point.vPosition);
             if (mon_sectorID == party_sectorID) {
                 // check proposed floor level
                 indoor_floor_level = BLV_GetFloorLevel(enc_spawn_point.vPosition.toInt(), mon_sectorID);
@@ -2004,7 +2004,7 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i p
     a1.vPosition = pos.toFloat();
     a1.uFacing = facing;
     a1.uAttributes = 0;
-    a1.uSectorID = pIndoor->GetSector(a1.vPosition.toInt());
+    a1.uSectorID = pIndoor->GetSector(a1.vPosition);
     a1.timeSinceCreated = 0_ticks;
     return a1.Create(0, 0, 0, 0);
 }
@@ -2051,7 +2051,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
     a1a.spell_target_pid = Pid();
     a1a.spell_caster_pid = Pid();
     a1a.timeSinceCreated = 0_ticks;
-    a1a.uSectorID = pIndoor->GetSector(a2->vPosition.toInt());
+    a1a.uSectorID = pIndoor->GetSector(a2->vPosition);
     a1a.Create(0, 0, 0, 0);
 }
 
@@ -2075,7 +2075,7 @@ int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID) {
             return result;
     }
 
-    *pSectorID = pIndoor->GetSector(pos);
+    *pSectorID = pIndoor->GetSector(pos.toFloat());
     if (*pSectorID == 0) {
         if (pFaceID)
             *pFaceID = -1;

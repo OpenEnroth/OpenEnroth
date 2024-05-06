@@ -205,9 +205,9 @@ struct IndoorLocation {
      * @param sZ                        Z coordinate.
      * @return                          Sector id at (X,Y,Z), or zero if (X,Y,Z) is outside the level bounds.
      */
-    int GetSector(int sX, int sY, int sZ);
-
-    int GetSector(const Vec3i &pos) {
+    int GetSector(float sX, float sY, float sZ);
+    // TODO(pskelton): do we need both still?
+    int GetSector(const Vec3f &pos) {
         return GetSector(pos.x, pos.y, pos.z);
     }
 

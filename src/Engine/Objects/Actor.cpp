@@ -257,7 +257,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uFacing = (short)pDir->uYawAngle;
             sprite.uSoundID = 0;
             sprite.uAttributes = 0;
-            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition.toInt());
+            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
             sprite.timeSinceCreated = 0_ticks;
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
             sprite.spell_target_pid = Pid();
@@ -386,7 +386,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
             sprite.uAttributes = 0;
-            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition.toInt());
+            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
             sprite.timeSinceCreated = 0_ticks;
             sprite.spell_target_pid = Pid();
@@ -639,7 +639,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
             sprite.uAttributes = 0;
-            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition.toInt());
+            sprite.uSectorID = pIndoor->GetSector(sprite.vPosition);
             sprite.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
             sprite.timeSinceCreated = 0_ticks;
             sprite.spell_target_pid = Pid();
@@ -799,7 +799,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
     a1.uFacing = pDir->uYawAngle;
     a1.uSoundID = 0;
     a1.uAttributes = 0;
-    a1.uSectorID = pIndoor->GetSector(a1.vPosition.toInt());
+    a1.uSectorID = pIndoor->GetSector(a1.vPosition);
     a1.timeSinceCreated = 0_ticks;
     a1.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
     a1.spell_target_pid = Pid();
@@ -851,7 +851,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     a1.uFacing = 0;
     a1.uSoundID = 0;
     a1.uAttributes = 0;
-    a1.uSectorID = pIndoor->GetSector(a1.vPosition.toInt());
+    a1.uSectorID = pIndoor->GetSector(a1.vPosition);
     a1.timeSinceCreated = 0_ticks;
     a1.spell_caster_pid = Pid(OBJECT_Actor, uActorID);
     a1.spell_target_pid = Pid();
@@ -2432,7 +2432,7 @@ void Actor::SummonMinion(int summonerId) {
 
     actorSector = 0;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        actorSector = pIndoor->GetSector(this->pos.toInt());
+        actorSector = pIndoor->GetSector(this->pos);
 
     v19 = this->ally;
     if (this->ally == MONSTER_TYPE_INVALID) {
@@ -3273,7 +3273,7 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3f pos) {
 
     int v16 = 0;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        v16 = pIndoor->GetSector(pos.toInt());
+        v16 = pIndoor->GetSector(pos);
 
     actor->name = pMonsterStats->infos[monster_id].name;
     actor->currentHP = (short)pMonsterStats->infos[monster_id].hp;
@@ -4057,7 +4057,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     switch (uObjID.type()) {
         case OBJECT_Decoration:
             pos1 = pLevelDecorations[obj1_pid].vPosition;
-            obj1_sector = pIndoor->GetSector(pos1.toInt());
+            obj1_sector = pIndoor->GetSector(pos1);
             break;
         case OBJECT_Actor:
             pos1 = pActors[obj1_pid].pos + Vec3f(0, 0, pActors[obj1_pid].height * 0.69999999);
@@ -4079,7 +4079,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     switch (uObj2ID.type()) {
         case OBJECT_Decoration:
             pos2 = pLevelDecorations[obj2_pid].vPosition;
-            obj2_sector = pIndoor->GetSector(pos2.toInt());
+            obj2_sector = pIndoor->GetSector(pos2);
             break;
         case OBJECT_Character:
             pos2 = pParty->pos + Vec3f(0, 0, pParty->eyeLevel);
@@ -4256,7 +4256,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->currentActionLength = 256_ticks;
     actor->UpdateAnimation();
 
-    int sectorId = pIndoor->GetSector(actor->pos.toInt());
+    int sectorId = pIndoor->GetSector(actor->pos);
     int zlevel;
     int zdiff;
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR ||
@@ -4419,7 +4419,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
     a4 = spawn->vPosition.y;
     a3 = spawn->vPosition.z;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        pSector = pIndoor->GetSector(spawn->vPosition.toInt());
+        pSector = pIndoor->GetSector(spawn->vPosition);
     v53 = 0;
     v52 = (((uCurrentlyLoadedLevelType != LEVEL_OUTDOOR) - 1) & 0x40) + 64;
 

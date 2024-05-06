@@ -655,7 +655,7 @@ bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
     pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(sprite);
     pSpellObject.vPosition = pos;
     pSpellObject.uAttributes = attributes;
-    pSpellObject.uSectorID = pIndoor->GetSector(pos.toInt());
+    pSpellObject.uSectorID = pIndoor->GetSector(pos);
     pSpellObject.containing_item.Reset();
     if (item) {
         pSpellObject.containing_item = *item;
@@ -692,7 +692,7 @@ void SpriteObject::createSplashObject(Vec3f pos) {
     sprite.uType = SPRITE_WATER_SPLASH;
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
     sprite.vPosition = pos;
-    sprite.uSectorID = pIndoor->GetSector(pos.toInt());
+    sprite.uSectorID = pIndoor->GetSector(pos);
     int objID = sprite.Create(0, 0, 0, 0);
     if (objID != -1) {
         pAudioPlayer->playSound(SOUND_splash, SOUND_MODE_PID, Pid(OBJECT_Item, objID));
