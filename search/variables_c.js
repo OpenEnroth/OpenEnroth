@@ -45,8 +45,8 @@ var searchData=
   ['localization_42',['localization',['../Localization_8h.html#acce22610cffe19ad6cc8f577cd611b8b',1,'localization():&#160;Localization.cpp'],['../Localization_8cpp.html#acce22610cffe19ad6cc8f577cd611b8b',1,'localization():&#160;Localization.cpp']]],
   ['localization_5fraw_43',['localization_raw',['../classLocalization.html#affad899cbacc16fdd0fcae13b97b68a3',1,'Localization']]],
   ['localization_5fstrings_44',['localization_strings',['../classLocalization.html#ab6b3d6d6edcc41a470abf7701b8c1bb9',1,'Localization']]],
-  ['location2d_45',['Location2D',['../structNPCData.html#ac47df05161d15a3228421ecfb1377522',1,'NPCData']]],
-  ['location2d_46',['location2d',['../structNPCData__MM7.html#aee53060c3df409618fc2a3a18ba7b2d9',1,'NPCData_MM7']]],
+  ['location2d_45',['location2d',['../structNPCData__MM7.html#aee53060c3df409618fc2a3a18ba7b2d9',1,'NPCData_MM7']]],
+  ['location2d_46',['Location2D',['../structNPCData.html#ac47df05161d15a3228421ecfb1377522',1,'NPCData']]],
   ['location_5ffile_5fdescription_47',['location_file_description',['../structOutdoorLocation.html#aa6e2db54629c256934e756cbc261ce84',1,'OutdoorLocation']]],
   ['location_5ffilename_48',['location_filename',['../structOutdoorLocation.html#a4d180e73f255ff66b9a5506d5456b276',1,'OutdoorLocation']]],
   ['location_5fid_49',['location_id',['../classEventIR.html#a68e570453deb1acee6499fb7e06156dc',1,'EventIR']]],
@@ -55,7 +55,7 @@ var searchData=
   ['locationname_52',['locationName',['../structSaveGameHeader.html#acb1cbc81d63c796021c8168af826a9eb',1,'SaveGameHeader::locationName()'],['../structSaveGameHeader__MM7.html#a57370fba612310335c948e1dc4836a04',1,'SaveGameHeader_MM7::locationName()'],['../structEventTraceGameState.html#a39bfde90b90ad78ec06f34ea6689dd30',1,'EventTraceGameState::locationName()']]],
   ['locationtime_53',['locationTime',['../structIndoorDelta__MM7.html#ad3d5a2a5272cfe2d80d75e4d6f623d1b',1,'IndoorDelta_MM7::locationTime()'],['../structOutdoorDelta__MM7.html#ac971f9b8b99fb56292f595f9aea0dd3b',1,'OutdoorDelta_MM7::locationTime()']]],
   ['lock_54',['lock',['../structEngineControlStateHandle_1_1SharedData.html#add9c4ba908195cae9d4a8d7440c3bc98',1,'EngineControlStateHandle::SharedData']]],
-  ['lod_55',['lod',['../classPaletted__Img__Loader.html#af490040ac9a8d4dc399b9c9fe8504189',1,'Paletted_Img_Loader::lod()'],['../classColorKey__LOD__Loader.html#a680b896c311e9efbf4038f5ab8fdf97f',1,'ColorKey_LOD_Loader::lod()'],['../classImage16bit__LOD__Loader.html#a043f9e9984811b01ab03c356c9d286ad',1,'Image16bit_LOD_Loader::lod()'],['../classAlpha__LOD__Loader.html#afc539b1bcfd73ffb90e4f102ccb9afd2',1,'Alpha_LOD_Loader::lod()'],['../classSprites__LOD__Loader.html#a525e83fe7e932f9ac21e50567f7fa9f8',1,'Sprites_LOD_Loader::lod()'],['../classBitmaps__LOD__Loader.html#a671a1391de0c7f87cf57e1a87fb975fd',1,'Bitmaps_LOD_Loader::lod()'],['../classPCX__LOD__Raw__Loader.html#a6f063b4fd8019db728cd39b6ed736d8e',1,'PCX_LOD_Raw_Loader::lod()'],['../classPCX__File__Loader.html#acf620f2507cf4afc3d705ac27a2a2393',1,'PCX_File_Loader::lod()']]],
+  ['lod_55',['lod',['../classPaletted__Img__Loader.html#af490040ac9a8d4dc399b9c9fe8504189',1,'Paletted_Img_Loader::lod()'],['../classColorKey__LOD__Loader.html#a680b896c311e9efbf4038f5ab8fdf97f',1,'ColorKey_LOD_Loader::lod()'],['../classImage16bit__LOD__Loader.html#a043f9e9984811b01ab03c356c9d286ad',1,'Image16bit_LOD_Loader::lod()'],['../classAlpha__LOD__Loader.html#afc539b1bcfd73ffb90e4f102ccb9afd2',1,'Alpha_LOD_Loader::lod()'],['../classPCX__File__Loader.html#acf620f2507cf4afc3d705ac27a2a2393',1,'PCX_File_Loader::lod()'],['../classSprites__LOD__Loader.html#a525e83fe7e932f9ac21e50567f7fa9f8',1,'Sprites_LOD_Loader::lod()'],['../classBitmaps__LOD__Loader.html#a671a1391de0c7f87cf57e1a87fb975fd',1,'Bitmaps_LOD_Loader::lod()'],['../classPCX__LOD__Raw__Loader.html#a6f063b4fd8019db728cd39b6ed736d8e',1,'PCX_LOD_Raw_Loader::lod()']]],
   ['lodpath_56',['lodPath',['../structLodToolOptions.html#a3d71a81cc917f0ea95681bebce946c04',1,'LodToolOptions']]],
   ['logger_57',['logger',['../Logger_8h.html#a0009c186c3629201f6c24eded36605f4',1,'logger():&#160;Logger.cpp'],['../Logger_8cpp.html#a0009c186c3629201f6c24eded36605f4',1,'logger():&#160;Logger.cpp']]],
   ['loglevel_58',['logLevel',['../structGameStarterOptions.html#a0f10a75962d64c75e8572bc240d7ab41',1,'GameStarterOptions']]],
@@ -64,7 +64,7 @@ var searchData=
   ['lookdown_61',['LookDown',['../classGameConfig_1_1Keybindings.html#ab7dbb802c1707e55d0b234568735cbd7',1,'GameConfig::Keybindings::LookDown()'],['../classGameConfig_1_1Gamepad.html#aeb89f9886bf7e0cf5ed1a4a926c9db11',1,'GameConfig::Gamepad::LookDown()']]],
   ['lookup_62',['LookUp',['../classGameConfig_1_1Keybindings.html#a1bad450852fa7c7a37c1c58551b61087',1,'GameConfig::Keybindings::LookUp()'],['../classGameConfig_1_1Gamepad.html#a93f16c188361599586cbc508329d9f2e',1,'GameConfig::Gamepad::LookUp()']]],
   ['looping_63',['looping',['../classMovie.html#a21205753ca24cc7089b27c57254f053d',1,'Movie']]],
-  ['luck_64',['luck',['../structPlayer__MM7.html#a6efb049f1788e948fbb549f8c1acb964',1,'Player_MM7']]],
+  ['luck_64',['luck',['../structPlayer__MM7.html#a6efb049f1788e948fbb549f8c1acb964',1,'Player_MM7::luck()'],['../structEventTraceCharacterState.html#aa5dde8f2aef73c37c8ca2529f48fbb46',1,'EventTraceCharacterState::luck()']]],
   ['luckbonus_65',['luckBonus',['../structPlayer__MM7.html#a786129c8a7dae2d33d5d22a59b9852ed',1,'Player_MM7']]],
   ['lwindowlist_66',['lWindowList',['../GUIWindow_8cpp.html#aa00d8b3e2304a6143a2e364ccfeb696c',1,'lWindowList():&#160;GUIWindow.cpp'],['../GUIWindow_8h.html#aa00d8b3e2304a6143a2e364ccfeb696c',1,'lWindowList():&#160;GUIWindow.cpp']]]
 ];

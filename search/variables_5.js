@@ -35,7 +35,7 @@ var searchData=
   ['end_32',['end',['../structLodSpriteLine__MM6.html#af526a2e154517b38d34343c4f7f7963c',1,'LodSpriteLine_MM6']]],
   ['endstate_33',['endState',['../structEventTraceHeader.html#a9a785975c799c059d601e99525723b0c',1,'EventTraceHeader']]],
   ['endtime_34',['endTime',['../structNPCSacrificeStatus.html#a5686e4589428b29d80c506d820d436c0',1,'NPCSacrificeStatus']]],
-  ['endurance_35',['endurance',['../structPlayer__MM7.html#a3d167b53c9da50e80f66e0bbc3987751',1,'Player_MM7']]],
+  ['endurance_35',['endurance',['../structPlayer__MM7.html#a3d167b53c9da50e80f66e0bbc3987751',1,'Player_MM7::endurance()'],['../structEventTraceCharacterState.html#a41f71bd390546ced77d494d8bb3ecc23',1,'EventTraceCharacterState::endurance()']]],
   ['endurancebonus_36',['enduranceBonus',['../structPlayer__MM7.html#a8075edef8ce6826e470fde0433720daa',1,'Player_MM7']]],
   ['engine_37',['engine',['../Engine_8cpp.html#a04ee0d142e98779501ddb0ea5f687ac7',1,'engine():&#160;Engine.cpp'],['../Engine_8h.html#a04ee0d142e98779501ddb0ea5f687ac7',1,'engine():&#160;Engine.cpp']]],
   ['enginerandomcomponent_38',['EngineRandomComponent',['../classdetail_1_1RandomEnginePtr.html#a6c67765f69161f6b82048329fb33bcfa',1,'detail::RandomEnginePtr']]],
