@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#include <imgui/backends/imgui_impl_sdl2.h>
+#include <imgui/backends/imgui_impl_sdl2.h> // NOLINT: not a C system header.
 
 #include "SdlPlatformSharedState.h"
 

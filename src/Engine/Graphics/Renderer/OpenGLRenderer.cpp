@@ -40,7 +40,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineCallObserver.h"
 
-#include <backends/imgui_impl_opengl3.h>
+#include <imgui/backends/imgui_impl_opengl3.h> // NOLINT: not a C system header.
 
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Serialization/EnumSerialization.h"
@@ -195,6 +195,13 @@ OpenGLRenderer::OpenGLRenderer(
     clip_x = 0;
     clip_y = 0;
     clip_z = 0;
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
 }
 
 OpenGLRenderer::~OpenGLRenderer() {
@@ -5002,6 +5009,7 @@ void OpenGLRenderer::ReloadShaders() {
 void OpenGLRenderer::beginOverlays() {
     ImGui_ImplOpenGL3_NewFrame();
     openGLContext->startOverlayFrame();
+    ImGui::NewFrame();
 }
 
 void OpenGLRenderer::endOverlays() {

@@ -44,3 +44,7 @@
 [submodule "thirdparty/sol2"]
 	path = thirdparty/sol2
 	url = https://github.com/ThePhD/sol2.git
+[submodule "thirdparty/imgui/imgui"]
+	path = thirdparty/imgui/imgui
+	url = https://github.com/ocornut/imgui.git
+	branch = docking

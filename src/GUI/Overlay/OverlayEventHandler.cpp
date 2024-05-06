@@ -1,9 +1,8 @@
 #include "OverlayEventHandler.h"
 
 #include <nuklear_config.h>
-#include <cstring>
-
 #include <imgui.h>
+#include <cstring>
 
 OverlayEventHandler::OverlayEventHandler(struct nk_context *context)
     : PlatformEventFilter(EVENTS_ALL)

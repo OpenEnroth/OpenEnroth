@@ -3,6 +3,7 @@
 #include <memory>
 #include <utility>
 
+#include <imgui.h> // NOLINT: not a C system header.
 #include <nuklear_config.h> // NOLINT: not a C system header.
 
 #include "Application/GameConfig.h"
@@ -13,8 +14,6 @@
 
 #include "Overlay.h"
 #include "OverlayEventHandler.h"
-
-#include <imgui.h>
 
 LogCategory OverlaySystem::OverlayLogCategory("Overlay");
 
