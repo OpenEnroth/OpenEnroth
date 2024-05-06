@@ -640,7 +640,7 @@ bool BLVFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttribute
         float b_u = u - points.u[i];
         float b_v = v - points.v[i];
         float cross_product = a_u * b_v - a_v * b_u; // That's |a| * |b| * sin(a,b)
-        if (abs(cross_product) < FLT_EPSILON)
+        if (fuzzyIsNull(cross_product))
             continue;
 
         if (slack > 0) {
@@ -1284,7 +1284,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 }
 
 //----- (00407A1C) --------------------------------------------------------
-bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from - true on clear
+bool Check_LineOfSight(const Vec3f &target, const Vec3f &from) {  // target from - true on clear
     int AngleToTarget = TrigLUT.atan2(from.x - target.x, from.y - target.y);
     bool LOS_Obscurred = false;
     bool LOS_Obscurred2 = false;
@@ -1296,14 +1296,14 @@ bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from
 
         if (LOS_ObscurredStr) {
             // offset 32 to side and check LOS
-            Vec3i targetmod = target + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
-            Vec3i frommod = from + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
+            Vec3f targetmod = target + Vec3f::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
+            Vec3f frommod = from + Vec3f::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
             LOS_Obscurred2 = Check_LOS_Obscurred_Indoors(targetmod, frommod);
 
             if (LOS_Obscurred2) {
                 // offset other side and repeat check
-                targetmod = target + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
-                frommod = from + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
+                targetmod = target + Vec3f::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
+                frommod = from + Vec3f::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
                 LOS_Obscurred = Check_LOS_Obscurred_Indoors(targetmod, frommod);
             }
         }
@@ -1314,14 +1314,14 @@ bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from
 
         if (LOS_ObscurredStr) {
             // offset 32 to side and check LOS
-            Vec3i targetmod = target + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
-            Vec3i frommod = from + Vec3i::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
+            Vec3f targetmod = target + Vec3f::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
+            Vec3f frommod = from + Vec3f::fromPolar(32, AngleToTarget + TrigLUT.uIntegerHalfPi, 0);
             LOS_Obscurred2 = Check_LOS_Obscurred_Outdoors_Bmodels(targetmod, frommod);
 
             if (LOS_Obscurred2) {
                 // offset other side and repeat check
-                targetmod = target + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
-                frommod = from + Vec3i::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
+                targetmod = target + Vec3f::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
+                frommod = from + Vec3f::fromPolar(32, AngleToTarget - TrigLUT.uIntegerHalfPi, 0);
                 LOS_Obscurred = Check_LOS_Obscurred_Outdoors_Bmodels(targetmod, frommod);
             }
         }
@@ -1331,19 +1331,19 @@ bool Check_LineOfSight(const Vec3i &target, const Vec3i &from) {  // target from
     return result;  // true if LOS clear
 }
 
-bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // true if obscurred
-    Vec3f dir = (from - target).toFloat();
+bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from) {  // true if obscurred
+    Vec3f dir = from - target;
     float dist = dir.length();
     dir.normalize();
 
-    BBoxi bbox = BBoxi::forPoints(from, target);
+    BBoxf bbox = BBoxf::forPoints(from, target);
 
     for (int sectargetrflip = 0; sectargetrflip < 2; sectargetrflip++) {
         int SectargetrID = 0;
         if (sectargetrflip)
-            SectargetrID = pIndoor->GetSector(target.toFloat());
+            SectargetrID = pIndoor->GetSector(target);
         else
-            SectargetrID = pIndoor->GetSector(from.toFloat());
+            SectargetrID = pIndoor->GetSector(from);
 
         // loop over sectargetr faces
         for (int FaceLoop = 0; FaceLoop < pIndoor->pSectors[SectargetrID].uNumFaces; ++FaceLoop) {
@@ -1361,7 +1361,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
             if (!bbox.intersects(face->pBounding))
                 continue;
 
-            float NegFacePlaceDist = -face->facePlane.signedDistanceTo(target.toFloat());
+            float NegFacePlaceDist = -face->facePlane.signedDistanceTo(target);
             // are we on same side of plane
             if (dirDotNormal <= 0) {
                 if (NegFacePlaceDist > 0)
@@ -1377,7 +1377,7 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
                 // less than zero means intersection is behind target point
                 // greater than dist means intersection is behind the caster
                 if (IntersectionDist >= 0.0 && IntersectionDist <= dist) {
-                    Vec3f pos = target.toFloat() + (IntersectionDist * dir);
+                    Vec3f pos = target + (IntersectionDist * dir);
                     if (face->Contains(pos, MODEL_INDOOR)) {
                         return true;
                     }
@@ -1389,12 +1389,12 @@ bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from) {  // t
     return false;
 }
 
-bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from) {  // true is obscurred
-    Vec3f dir = (from - target).toFloat();
+bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from) {  // true is obscurred
+    Vec3f dir = from - target;
     float dist = dir.length();
     dir.normalize();
 
-    BBoxi bbox = BBoxi::forPoints(from, target);
+    BBoxf bbox = BBoxf::forPoints(from, target);
 
     for (BSPModel &model : pOutdoor->pBModels) {
         if (CalcDistPointToLine(target.x, target.y, from.x, from.y, model.vPosition.x, model.vPosition.y) <= model.sBoundingRadius + 128) {
@@ -1411,7 +1411,7 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
                     continue;
 
                 // point target plane distacne
-                float NegFacePlaceDist = -face.facePlane.signedDistanceTo(target.toFloat());
+                float NegFacePlaceDist = -face.facePlane.signedDistanceTo(target);
 
                 // are we on same side of plane
                 if (dirDotNormal <= 0) {
@@ -1430,7 +1430,7 @@ bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from
                     // less than zero means intersection is behind target point
                     // greater than dist means intersection is behind the caster
                     if (IntersectionDist >= 0.0 && IntersectionDist <= dist) {
-                        Vec3f pos = target.toFloat() + (IntersectionDist * dir);
+                        Vec3f pos = target + IntersectionDist * dir;
                         if (face.Contains(pos, model.index)) {
                             return true;
                         }

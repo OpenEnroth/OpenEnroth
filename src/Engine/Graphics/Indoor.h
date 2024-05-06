@@ -338,28 +338,28 @@ int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID = nullptr);
 int GetApproximateIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID = nullptr);
 
 /**
- * @param target                         Vec3i of position to check line of sight to
- * @param from                           Vec3i of position to check line of sight from
+ * @param target                         Vec3f of position to check line of sight to
+ * @param from                           Vec3f of position to check line of sight from
  *
  * @return                              True if line of sight clear to target
  */
-bool Check_LineOfSight(const Vec3i &target, const Vec3i &from);
+bool Check_LineOfSight(const Vec3f &target, const Vec3f &from);
 
 
 /**
- * @param target                         Vec3i of position to check line of sight to
- * @param from                           Vec3i of position to check line of sight from
+ * @param target                         Vec3f of position to check line of sight to
+ * @param from                           Vec3f of position to check line of sight from
  *
  * @return                              True if line of sight obscurred by level geometery
  */
-bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from);
+bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from);
 
 /**
- * @param target                         Vec3i of position to check line of sight to
- * @param from                           Vec3i of position to check line of sight from
+ * @param target                         Vec3f of position to check line of sight to
+ * @param from                           Vec3f of position to check line of sight from
  *
  * @return                              True if line of sight obscurred by outdoor models
  */
-bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from);
+bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from);
 
 extern BspRenderer *pBspRenderer;
