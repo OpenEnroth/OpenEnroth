@@ -443,7 +443,7 @@ void OutdoorLocation::UpdateFog() {
 int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3i &pos) {
     bool is_on_water = false;
     int bmodel_standing_on_pid = 0;
-    ODM_GetFloorLevel(pos, pParty->height, &is_on_water, &bmodel_standing_on_pid, 0);
+    ODM_GetFloorLevel(pos.toFloat(), pParty->height, &is_on_water, &bmodel_standing_on_pid, 0);
     if (pParty->isAirborne() || bmodel_standing_on_pid || is_on_water) {
         return 2;
     }
@@ -1437,11 +1437,11 @@ void OutdoorLocation::PrepareActorsDrawList() {
     }
 }
 
-int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
+float ODM_GetFloorLevel(const Vec3f &pos, int unused, bool *pIsOnWater,
                       int *faceId, int bWaterWalk) {
     std::array<int, 20> current_Face_id{};                   // dword_721110
     std::array<int, 20> current_BModel_id{};                 // dword_721160
-    std::array<int, 20> odm_floor_level{};                   // idb
+    std::array<float, 20> odm_floor_level{};                   // idb
     current_BModel_id[0] = -1;
     current_Face_id[0] = -1;
     odm_floor_level[0] = GetTerrainHeightsAroundParty2(pos.x, pos.y, pIsOnWater, bWaterWalk);
@@ -1469,7 +1469,7 @@ int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
                 continue;
 
             int slack = engine->config->gameplay.FloorChecksEps.value();
-            if (!face.Contains(pos, model.index, slack, FACE_XY_PLANE))
+            if (!face.Contains(pos.toInt(), model.index, slack, FACE_XY_PLANE))
                 continue;
 
             int floor_level;
@@ -1493,7 +1493,7 @@ int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
         return odm_floor_level[0]; // No bmodels, just the terrain.
     }
 
-    int current_floor_level = odm_floor_level[0];
+    float current_floor_level = odm_floor_level[0];
     int current_idx = 0;
     for (unsigned i = 1; i < surface_count; ++i) {
         if (current_floor_level <= pos.z + 5) {
@@ -1636,7 +1636,7 @@ void ODM_ProcessPartyActions() {
     int floorFaceId = 0;
     bool partyIsOnWater = false;
 
-    int floorZ = ODM_GetFloorLevel(pParty->pos.toInt(), pParty->height,
+    float floorZ = ODM_GetFloorLevel(pParty->pos, pParty->height,
                                    &partyIsOnWater, &floorFaceId, waterWalkActive);
     bool partyNotOnModel = floorFaceId == 0;
     int currentGroundLevel = floorZ + 1;
@@ -2129,8 +2129,8 @@ void ODM_ProcessPartyActions() {
     }
 
     // new ground level
-    int newFloorLevel = ODM_GetFloorLevel(partyNewPos.toInt(), pParty->height, &partyIsOnWater, &floorFaceId, waterWalkActive);
-    int newGroundLevel = newFloorLevel + 1;
+    float newFloorLevel = ODM_GetFloorLevel(partyNewPos, pParty->height, &partyIsOnWater, &floorFaceId, waterWalkActive);
+    float newGroundLevel = newFloorLevel + 1;
 
     // Falling damage
     if (!triggerID ||
@@ -2320,7 +2320,7 @@ void UpdateActors_ODM() {
         bool Slope_High = IsTerrainSlopeTooHigh(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y);
         int Model_On_PID = 0;
         bool uIsOnWater = false;
-        int Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].pos.toInt(), pActors[Actor_ITR].height, &uIsOnWater, &Model_On_PID, Water_Walk);
+        float Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].pos, pActors[Actor_ITR].height, &uIsOnWater, &Model_On_PID, Water_Walk);
         bool Actor_On_Terrain = Model_On_PID == 0;
 
         bool uIsAboveFloor = (pActors[Actor_ITR].pos.z > (Floor_Level + 1));

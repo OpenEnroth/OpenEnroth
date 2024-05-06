@@ -148,7 +148,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
     bool isHighSlope = IsTerrainSlopeTooHigh(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y);
     int bmodelPid = 0;
     bool onWater = false;
-    int level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition.toInt(), object->uHeight, &onWater, &bmodelPid, 0);
+    float level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition, object->uHeight, &onWater, &bmodelPid, 0);
     bool isAboveGround = pSpriteObjects[uLayingItemID].vPosition.z > level + 1;
     if (!isAboveGround && onWater) {
         int splashZ = level + 60;
@@ -254,7 +254,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         bool collisionOnWater = false;
         int collisionBmodelPid = 0;
         Vec3i collisionPos = collision_state.new_position_lo.toInt() - Vec3i(0, 0, collision_state.radius_lo + 1);
-        int collisionLevel = ODM_GetFloorLevel(collisionPos, object->uHeight, &collisionOnWater, &collisionBmodelPid, 0);
+        float collisionLevel = ODM_GetFloorLevel(collisionPos.toFloat(), object->uHeight, &collisionOnWater, &collisionBmodelPid, 0);
         // TOOD(Nik-RE-dev): why initail "onWater" is used?
         if (onWater && collisionZ < (collisionLevel + 60)) {
             int splashZ = level + 60;
