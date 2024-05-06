@@ -3,6 +3,8 @@
 #include <nuklear_config.h>
 #include <cstring>
 
+#include <imgui.h>
+
 OverlayEventHandler::OverlayEventHandler(struct nk_context *context)
     : PlatformEventFilter(EVENTS_ALL)
     , _context(context) {
@@ -67,7 +69,7 @@ bool OverlayEventHandler::keyEvent(PlatformKey key, PlatformModifiers mods, bool
             nk_input_key(_context, NK_KEY_RIGHT, keyPressed);
     }
     return _context->last_widget_state & NK_WIDGET_STATE_MODIFIED ||
-        _context->text_edit.active;
+        _context->text_edit.active || ImGui::GetIO().WantCaptureKeyboard;
 }
 
 bool OverlayEventHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
@@ -95,12 +97,12 @@ bool OverlayEventHandler::mouseEvent(PlatformMouseButton button, const Pointi &p
     } else if (button == BUTTON_RIGHT) {
         nk_input_button(_context, NK_BUTTON_RIGHT, pos.x, pos.y, down);
     }
-    return nk_item_is_any_active(_context);
+    return nk_item_is_any_active(_context) || ImGui::GetIO().WantCaptureMouse;
 }
 
 bool OverlayEventHandler::wheelEvent(const PlatformWheelEvent *event) {
     nk_input_scroll(_context, nk_vec2(event->angleDelta.x, event->angleDelta.y));
-    return nk_item_is_any_active(_context);
+    return nk_item_is_any_active(_context) || ImGui::GetIO().WantCaptureMouse;
 }
 
 bool OverlayEventHandler::textInputEvent(const PlatformTextInputEvent *event) {

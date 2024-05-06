@@ -17,6 +17,8 @@
 #include "SdlWindow.h"
 #include "SdlGamepad.h"
 
+#include <backends/imgui_impl_sdl2.h>
+
 SdlEventLoop::SdlEventLoop(SdlPlatformSharedState *state): _state(state) {
     assert(state);
     _state->registerEventLoop(this);
@@ -50,8 +52,8 @@ void SdlEventLoop::processMessages(PlatformEventHandler *eventHandler, int count
 
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
+        ImGui_ImplSDL2_ProcessEvent(&e);
         dispatchEvent(eventHandler, &e);
-
         count--;
         if (count == 0)
             break; // Note: count == -1 will never get here, as intended.

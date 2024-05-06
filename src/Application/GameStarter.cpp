@@ -52,6 +52,8 @@
 #include "GameWindowHandler.h"
 #include "GameTraceHandler.h"
 
+#include <imgui.h>
+
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init environment.
     _environment = Environment::createStandardEnvironment();
@@ -102,6 +104,13 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
 
     // Init global data path.
     initDataPath(_platform.get(), _options.dataPath);
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    //io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
 
     // Create application.
     _application = std::make_unique<PlatformApplication>(_platform.get());

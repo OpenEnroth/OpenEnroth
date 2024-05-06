@@ -46,4 +46,5 @@ target_link_libraries(application
         library_platform_implementation
         library_environment_implementation
         scripting
-        utility)
+        utility
+        imgui)
