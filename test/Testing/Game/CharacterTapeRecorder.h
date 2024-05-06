@@ -47,6 +47,7 @@ class CharacterTapeRecorder {
     TestTape<int> level(int characterIndex);
     TestMultiTape<int> levels();
 
+    TestTape<int> skillLevel(int characterIndex, CharacterSkillType skill);
     TestMultiTape<int> skillLevels(CharacterSkillType skill);
 
     TestTape<bool> hasSkill(int characterIndex, CharacterSkillType skill);
@@ -55,7 +56,11 @@ class CharacterTapeRecorder {
     TestTape<Condition> condition(int characterIndex);
     TestMultiTape<Condition> conditions();
 
+    TestTape<int> resistance(int characterIndex, CharacterAttributeType resistance);
     TestMultiTape<int> resistances(CharacterAttributeType resistance);
+
+    TestTape<int> stat(int characterIndex, CharacterAttributeType stat);
+    TestMultiTape<int> stats(CharacterAttributeType stat);
 
     TestTape<bool> hasBuff(int characterIndex, CharacterBuff buff);
     TestMultiTape<bool> haveBuffs(CharacterBuff buff);
