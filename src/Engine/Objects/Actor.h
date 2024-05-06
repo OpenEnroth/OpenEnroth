@@ -158,7 +158,7 @@ class Actor {
 
     static void Arena_summon_actor(MonsterId monster_id, Vec3f pos);
     static void DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
-                                       Vec3f *pVelocity);
+                                       const Vec3f &pVelocity);
     static void MakeActorAIList_ODM();
     static int MakeActorAIList_BLV();
     static void UpdateActorAI();
@@ -262,7 +262,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
  */
 void evaluateAoeDamage();
 double sub_43AE12(signed int a1);
-void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, Vec3f *pVelocity);
+void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, const Vec3f &pVelocity);
 
 // TODO: in original binary almost all calls are with appendOnly=true, only Spawn_Light_Elemental uses
 // appendOnly=false. And this actually makes sense as actor ids can be stored in all kinds of places (e.g. inside

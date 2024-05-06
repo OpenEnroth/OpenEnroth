@@ -1264,13 +1264,13 @@ void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid) {
             case OBJECT_Character: {
                 Vec3f velF = pSpriteObjects[uLayingItemID].vVelocity;
                 velF.normalize();
-                Actor::DamageMonsterFromParty(Pid(OBJECT_Item, uLayingItemID), pid.id(), &velF);
+                Actor::DamageMonsterFromParty(Pid(OBJECT_Item, uLayingItemID), pid.id(), velF);
             }
                 break;
             case OBJECT_Item: {
                 Vec3f velF = pSpriteObjects[uLayingItemID].vVelocity;
                 velF.normalize();
-                ItemDamageFromActor(Pid(OBJECT_Item, uLayingItemID), pid.id(), &velF);
+                ItemDamageFromActor(Pid(OBJECT_Item, uLayingItemID), pid.id(), velF);
             }
                 break;
             default:

@@ -25,10 +25,6 @@ struct SpellFX_Billboard {
      */
     inline SpellFX_Billboard() {
         uNumVertices = 0;
-        //uNumVec4sInArray1 = 0;
-        //uNumVec3sInArray2 = 0;
-        //spherePosAndColor = nullptr;
-        //sphereVertIndicies = nullptr;
     }
 
     /**
@@ -48,13 +44,6 @@ struct SpellFX_Billboard {
         Vec3f pos;
         Color diffuse;
     };
-
-    // for spheres
-    //Color sphereDiffuse;
-    //unsigned int uNumVec4sInArray1;
-    //stru16x *spherePosAndColor;
-    //unsigned int uNumVec3sInArray2;
-    //stru160 *sphereVertIndicies;
 
     // spellfx verts
     int uNumVertices;

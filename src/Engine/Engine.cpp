@@ -1359,8 +1359,6 @@ void RegeneratePartyHealthMana() {
     // care about immolation if you're traveling, or if you're in jail? You won't be getting several ticks here during
     // normal gameplay.
     if (pParty->ImmolationActive()) {
-        Vec3f cords;
-
         SpriteObject spellSprite;
         spellSprite.containing_item.Reset();
         spellSprite.spell_level = pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].power;
@@ -1384,7 +1382,7 @@ void RegeneratePartyHealthMana() {
             spellSprite.vPosition.y = pActors[actorID].pos.y;
             spellSprite.vPosition.z = pActors[actorID].pos.z;
             spellSprite.spell_target_pid = Pid(OBJECT_Actor, actorID);
-            Actor::DamageMonsterFromParty(Pid(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, &cords);
+            Actor::DamageMonsterFromParty(Pid(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, Vec3f());
         }
     }
 

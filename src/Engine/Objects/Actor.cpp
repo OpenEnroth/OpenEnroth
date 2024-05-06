@@ -3003,7 +3003,7 @@ void Actor::InitializeActors() {
     }
 }
 //----- (00439474) --------------------------------------------------------
-void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, Vec3f *pVelocity) {
+void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const Vec3f &pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
     Duration extraRecoveryTime;           // qax@125
@@ -3260,7 +3260,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, Vec3f 
     }
     if (knockbackValue > 10) knockbackValue = 10;
     if (supertypeForMonsterId(pMonster->monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
-        pMonster->velocity = 50 * knockbackValue * (*pVelocity);
+        pMonster->velocity = 50 * knockbackValue * pVelocity;
     }
     Actor::AddOnDamageOverlay(uActorID_Monster, 1, v61);
 }
@@ -4607,7 +4607,7 @@ void evaluateAoeDamage() {
                                 case OBJECT_Character: {
                                     Vec3f attVF = Vec3f(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
                                     attVF.normalize();
-                                    Actor::DamageMonsterFromParty(attack.pid, actorID, &attVF);
+                                    Actor::DamageMonsterFromParty(attack.pid, actorID, attVF);
                                 }
                                     break;
                                 case OBJECT_Actor:
@@ -4618,7 +4618,7 @@ void evaluateAoeDamage() {
                                 case OBJECT_Item: {
                                     Vec3f attVF = Vec3f(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
                                     attVF.normalize();
-                                    ItemDamageFromActor(attack.pid, actorID, &attVF);
+                                    ItemDamageFromActor(attack.pid, actorID, attVF);
                                 }
                                     break;
                                 default:
@@ -4660,33 +4660,29 @@ double sub_43AE12(signed int a1) {
 }
 
 //----- (0043B057) --------------------------------------------------------
-void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, Vec3f *pVelocity) {
-    int v6;      // eax@4
-    int damage;  // edi@4
-    int a2a;     // [sp+Ch] [bp-4h]@8
-
-    if (!pActors[uActorID].IsNotAlive()) {
+void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, const Vec3f &pVelocity) {
+     if (!pActors[uActorID].IsNotAlive()) {
         if (uObjID.type() == OBJECT_Item) {
             if (pSpriteObjects[uObjID.id()].uSpellID != SPELL_NONE) {
-                v6 = CalcSpellDamage(
+                int spellDamage = CalcSpellDamage(
                     pSpriteObjects[uObjID.id()].uSpellID,
                     pSpriteObjects[uObjID.id()].spell_level,
                     pSpriteObjects[uObjID.id()].spell_skill,
                     pActors[uActorID].currentHP);
-                damage = pActors[uActorID].CalcMagicalDamageToActor(
-                    DAMAGE_FIRE, v6);
+                int damage = pActors[uActorID].CalcMagicalDamageToActor(DAMAGE_FIRE, spellDamage);
                 pActors[uActorID].currentHP -= damage;
-                if (damage) {
+
+                if (damage > 0) {
                     if (pActors[uActorID].currentHP > 0)
                         Actor::AI_Stun(uActorID, uObjID, 0);
                     else
                         Actor::Die(uActorID);
-                    a2a = 20 * damage /
-                          (signed int)pActors[uActorID].monsterInfo.hp;
-                    if (a2a > 10)
-                        a2a = 10;
+
+                    int knockback = 20 * damage / (signed int)pActors[uActorID].monsterInfo.hp;
+                    if (knockback > 10)
+                        knockback = 10;
                     if (supertypeForMonsterId(pActors[uActorID].monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
-                        pActors[uActorID].velocity = 50 * a2a * (*pVelocity);
+                        pActors[uActorID].velocity = 50 * knockback * pVelocity;
                     }
                     Actor::AddOnDamageOverlay(uActorID, 1, damage);
                 } else {
