@@ -26,7 +26,7 @@ class MPlayer {
     void Initialize();
     void Unload();
 
-    // TODO(Gerark) Remove this method once we move all the Video to be played in the FSM
+    // TODO(Gerark) Remove this method once we move all the Video to be played in the Fsm
     void PlayFullscreenMovie(std::string_view pMovieName);
 
     void OpenHouseMovie(std::string_view pMovieName, bool bLoop);

@@ -5,18 +5,18 @@
 StartState::StartState() {
 }
 
-FSMAction StartState::enter() {
+FsmAction StartState::enter() {
     auto &debug = engine->config->debug;
     if(debug.NoVideo.value() || (debug.NoLogo.value() && debug.NoIntro.value()))
-        return FSMActionTransition("skipVideo");
+        return FsmActionTransition("skipVideo");
     else if (debug.NoLogo.value())
-        return FSMActionTransition("skipLogo");
+        return FsmActionTransition("skipLogo");
 
-    return FSMActionTransition("noSkip");
+    return FsmActionTransition("noSkip");
 }
 
-FSMAction StartState::update() {
-    return FSMActionNone();
+FsmAction StartState::update() {
+    return FsmActionNone();
 }
 
 void StartState::exit() {

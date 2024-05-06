@@ -2,7 +2,7 @@
 
 #include <Library/Platform/Filters/PlatformEventFilter.h>
 
-class FSMEventHandler : public PlatformEventFilter {
+class FsmEventHandler : public PlatformEventFilter {
  public:
-    FSMEventHandler() : PlatformEventFilter(EVENTS_ALL) {}
+    FsmEventHandler() : PlatformEventFilter(EVENTS_ALL) {}
 };

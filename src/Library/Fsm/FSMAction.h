@@ -3,20 +3,20 @@
 #include <string>
 #include <variant>
 
-class FSM;
+class Fsm;
 
-class FSMActionNone {
+class FsmActionNone {
  public:
-    void execute(FSM &fsm);
+    void execute(Fsm &fsm);
 };
 
-class FSMActionTransition {
+class FsmActionTransition {
  public:
-    explicit FSMActionTransition(std::string_view transitionName);
-    void execute(FSM &fsm);
+    explicit FsmActionTransition(std::string_view transitionName);
+    void execute(Fsm &fsm);
 
  private:
     std::string _transitionName;
 };
 
-using FSMAction = std::variant<FSMActionNone, FSMActionTransition>;
+using FsmAction = std::variant<FsmActionNone, FsmActionTransition>;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Library/Fsm/FSMState.h>
+#include <Library/Fsm/FsmState.h>
 #include <GUI/GUIEnums.h>
 
 #include <string>
@@ -8,11 +8,11 @@
 
 class IMovie;
 
-class VideoState : public FSMState {
+class VideoState : public FsmState {
  public:
     explicit VideoState(std::string_view videoFileName);
-    virtual FSMAction update() override;
-    virtual FSMAction enter() override;
+    virtual FsmAction update() override;
+    virtual FsmAction enter() override;
     virtual void exit() override;
 
  private:

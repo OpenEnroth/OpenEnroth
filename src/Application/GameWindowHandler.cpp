@@ -646,10 +646,10 @@ bool GameWindowHandler::event(const PlatformEvent *event) {
     return false;
 }
 
-void GameWindowHandler::addFSMEventHandler(FSMEventHandler *fsmEventHandler) {
+void GameWindowHandler::addFsmEventHandler(FsmEventHandler *fsmEventHandler) {
     _fsmEventHandlers.push_back(fsmEventHandler);
 }
 
-void GameWindowHandler::removeFSMEventHandler(FSMEventHandler *fsmEventHandler) {
+void GameWindowHandler::removeFsmEventHandler(FsmEventHandler *fsmEventHandler) {
     std::erase(_fsmEventHandlers, fsmEventHandler);
 }

@@ -81,7 +81,7 @@
 
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
-#include "Library/Fsm/FSM.h"
+#include "Library/Fsm/Fsm.h"
 
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Format.h"
@@ -91,7 +91,7 @@
 #include "GameIocContainer.h"
 #include "GameWindowHandler.h"
 #include "GameMenu.h"
-#include "GameStates/GameFSMBuilder.h"
+#include "GameStates/GameFsmBuilder.h"
 
 void ShowMM7IntroVideo_and_LoadingScreen();
 
@@ -134,10 +134,10 @@ int Game::run() {
     window->activate();
     ::eventLoop->processMessages(eventHandler);
 
-    // Right now This FSM is used only to show the intro videos as a proof of concept
-    std::unique_ptr<FSM> fsm = GameFSMBuilder::buildFSM();
+    // Right now This Fsm is used only to show the intro videos as a proof of concept
+    std::unique_ptr<Fsm> fsm = GameFsmBuilder::buildFsm();
     GameWindowHandler* gameWindowHandler = ::application->component<GameWindowHandler>();
-    gameWindowHandler->addFSMEventHandler(fsm.get());
+    gameWindowHandler->addFsmEventHandler(fsm.get());
     while(!fsm->hasReachedExitState()) {
         render->ClearBlack();
         render->BeginScene2D();
@@ -148,7 +148,7 @@ int Game::run() {
 
         MessageLoopWithWait();
     }
-    gameWindowHandler->removeFSMEventHandler(fsm.get());
+    gameWindowHandler->removeFsmEventHandler(fsm.get());
 
     //ShowMM7IntroVideo_and_LoadingScreen();
 

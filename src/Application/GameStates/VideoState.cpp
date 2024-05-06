@@ -11,15 +11,15 @@
 VideoState::VideoState(std::string_view videoFileName) : _videoFileName(videoFileName) {
 }
 
-FSMAction VideoState::enter() {
+FsmAction VideoState::enter() {
     _skipVideo = false;
     if (engine->config->debug.NoVideo.value()) {
-        return FSMActionTransition("videoEnd");
+        return FsmActionTransition("videoEnd");
     }
 
     _movie = pMediaPlayer->loadFullScreenMovie(_videoFileName.c_str());
     if (!_movie) {
-        return FSMActionTransition("videoEnd");
+        return FsmActionTransition("videoEnd");
     }
 
     // Stop the event timer and audio before playing a video
@@ -36,18 +36,18 @@ FSMAction VideoState::enter() {
 
     // Actually, calling Play() does not play something but just setup some internal flags.
     _movie->Play();
-    return FSMActionNone();
+    return FsmActionNone();
 }
 
-FSMAction VideoState::update() {
+FsmAction VideoState::update() {
     if (!_movie || _skipVideo)
-        return FSMActionTransition("videoEnd");
+        return FsmActionTransition("videoEnd");
 
     bool isOver = _movie->renderFrame();
     if (isOver)
-        return FSMActionTransition("videoEnd");
+        return FsmActionTransition("videoEnd");
 
-    return FSMActionNone();
+    return FsmActionNone();
 }
 
 void VideoState::exit() {

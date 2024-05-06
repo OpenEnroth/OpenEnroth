@@ -1,12 +1,12 @@
-#include "FSMAction.h"
-#include "FSM.h"
+#include "FsmAction.h"
+#include "Fsm.h"
 
-void FSMActionNone::execute(FSM &fsm) {
+void FsmActionNone::execute(Fsm &fsm) {
 }
 
-FSMActionTransition::FSMActionTransition(std::string_view transitionName) : _transitionName(transitionName) {
+FsmActionTransition::FsmActionTransition(std::string_view transitionName) : _transitionName(transitionName) {
 }
 
-void FSMActionTransition::execute(FSM &fsm) {
+void FsmActionTransition::execute(Fsm &fsm) {
     fsm.scheduleTransition(_transitionName);
 }

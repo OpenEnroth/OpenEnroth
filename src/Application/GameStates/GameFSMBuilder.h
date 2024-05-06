@@ -2,13 +2,13 @@
 
 #include <memory>
 
-class FSM;
-class FSMBuilder;
+class Fsm;
+class FsmBuilder;
 
-class GameFSMBuilder {
+class GameFsmBuilder {
  public:
-    static std::unique_ptr<FSM> buildFSM();
+    static std::unique_ptr<Fsm> buildFsm();
 
  private:
-    static void _buildIntroVideoSequence(FSMBuilder &fsmBuilder);
+    static void _buildIntroVideoSequence(FsmBuilder &fsmBuilder);
 };
