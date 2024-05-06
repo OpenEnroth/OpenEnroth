@@ -75,6 +75,8 @@ void reconstruct(uint16_t src, Pid *dst);
 void snapshot(const Vec3i &src, Vec3s *dst);
 void reconstruct(const Vec3s &src, Vec3i *dst);
 
+void snapshot(const Vec3f &src, Vec3s *dst);
+void reconstruct(const Vec3s &src, Vec3f *dst);
 
 #pragma pack(push, 1)
 

@@ -47,7 +47,7 @@ struct LloydBeacon {
     }
 
     Time uBeaconTime = Time();
-    Vec3i _partyPos = Vec3i(0, 0, 0);
+    Vec3f _partyPos;
     int16_t _partyViewYaw = 0;
     int16_t _partyViewPitch = 0;
     uint16_t unknown = 0;
@@ -123,9 +123,7 @@ class Character {
      * @offset 0x4680ED
      */
     void useItem(int targetCharacter, bool isPortraitClick);
-    int GetActualAttribute(CharacterAttributeType attrId,
-                           unsigned short Character::*attrValue,
-                           unsigned short Character::*attrBonus) const;
+
     int GetBaseMight() const;
     int GetBaseIntelligence() const;
     int GetBasePersonality() const;
@@ -133,8 +131,11 @@ class Character {
     int GetBaseAccuracy() const;
     int GetBaseSpeed() const;
     int GetBaseLuck() const;
+    int GetBaseStat(CharacterAttributeType stat) const;
+
     int GetBaseLevel() const;
     int GetActualLevel() const;
+
     int GetActualMight() const;
     int GetActualIntelligence() const;
     int GetActualPersonality() const;
@@ -142,6 +143,8 @@ class Character {
     int GetActualAccuracy() const;
     int GetActualSpeed() const;
     int GetActualLuck() const;
+    int GetActualStat(CharacterAttributeType stat) const;
+
     int GetActualAttack(bool onlyMainHandDmg) const;
     int GetMeleeDamageMinimal() const;
     int GetMeleeDamageMaximal() const;
@@ -360,7 +363,7 @@ class Character {
     int getCharacterIndex();
 
     static void _42ECB5_CharacterAttacksActor();
-    static void _42FA66_do_explosive_impact(Vec3i pos, int a4, int16_t a5, int actchar);
+    static void _42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int actchar);
     void cleanupBeacons();
     bool setBeacon(int index, Duration duration);
 
@@ -376,20 +379,8 @@ class Character {
     CharacterSex uSex;
     CharacterClass classType;
     uint8_t uCurrentFace;
-    uint16_t uMight;
-    uint16_t uMightBonus;
-    uint16_t uIntelligence;
-    uint16_t uIntelligenceBonus;
-    uint16_t uPersonality;
-    uint16_t uPersonalityBonus;
-    uint16_t uEndurance;
-    uint16_t uEnduranceBonus;
-    uint16_t uSpeed;
-    uint16_t uSpeedBonus;
-    uint16_t uAccuracy;
-    uint16_t uAccuracyBonus;
-    uint16_t uLuck;
-    uint16_t uLuckBonus;
+    IndexedArray<int, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> _stats;
+    IndexedArray<int, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> _statBonuses;
     int16_t sACModifier;
     uint16_t uLevel;
     int16_t sLevelModifier;
@@ -397,13 +388,7 @@ class Character {
     IndexedArray<CombinedSkillValue, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> pActiveSkills;
     IndexedBitset<1, 512> _achievedAwardsBits;
     IndexedArray<bool, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> bHaveSpell;
-    int pure_luck_used;
-    int pure_speed_used;
-    int pure_intellect_used;
-    int pure_endurance_used;
-    int pure_personality_used;
-    int pure_accuracy_used;
-    int pure_might_used;
+    IndexedArray<bool, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> _pureStatPotionUsed;
     std::array<ItemGen, INVENTORY_SLOT_COUNT> pInventoryItemList;
     std::array<int, INVENTORY_SLOT_COUNT> pInventoryMatrix; // 0 => empty cell
                                                             // positive => subtract 1 to get an index into pInventoryItemList.
@@ -464,7 +449,7 @@ class Character {
     char uNumFireSpikeCasts;
 };
 
-void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, Vec3i *pPos, signed int a4);
+void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int a4);
 bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int CharacterCreation_GetUnspentAttributePointCount();

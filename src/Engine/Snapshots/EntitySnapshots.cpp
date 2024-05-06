@@ -177,14 +177,14 @@ void reconstruct(const Vec3s &src, Vec3i *dst) {
     dst->z = src.z;
 }
 
-void snapshot(const Vec3f& src, Vec3s* dst) {
+void snapshot(const Vec3f &src, Vec3s *dst) {
     // TODO(captainurist): do we need to check for overflows here?
     dst->x = src.x;
     dst->y = src.y;
     dst->z = src.z;
 }
 
-void reconstruct(const Vec3s& src, Vec3f* dst) {
+void reconstruct(const Vec3s &src, Vec3f *dst) {
     dst->x = src.x;
     dst->y = src.y;
     dst->z = src.z;
@@ -737,20 +737,20 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->sex = std::to_underlying(src.uSex);
     dst->classType = std::to_underlying(src.classType);
     dst->currentFace = src.uCurrentFace;
-    dst->might = src.uMight;
-    dst->mightBonus = src.uMightBonus;
-    dst->intelligence = src.uIntelligence;
-    dst->intelligenceBonus = src.uIntelligenceBonus;
-    dst->personality = src.uPersonality;
-    dst->personalityBonus = src.uPersonalityBonus;
-    dst->endurance = src.uEndurance;
-    dst->enduranceBonus = src.uEnduranceBonus;
-    dst->speed = src.uSpeed;
-    dst->speedBonus = src.uSpeedBonus;
-    dst->accuracy = src.uAccuracy;
-    dst->accuracyBonus = src.uAccuracyBonus;
-    dst->luck = src.uLuck;
-    dst->luckBonus = src.uLuckBonus;
+    dst->might = src._stats[CHARACTER_ATTRIBUTE_MIGHT];
+    dst->mightBonus = src._statBonuses[CHARACTER_ATTRIBUTE_MIGHT];
+    dst->intelligence = src._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE];
+    dst->intelligenceBonus = src._statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE];
+    dst->personality = src._stats[CHARACTER_ATTRIBUTE_PERSONALITY];
+    dst->personalityBonus = src._statBonuses[CHARACTER_ATTRIBUTE_PERSONALITY];
+    dst->endurance = src._stats[CHARACTER_ATTRIBUTE_ENDURANCE];
+    dst->enduranceBonus = src._statBonuses[CHARACTER_ATTRIBUTE_ENDURANCE];
+    dst->speed = src._stats[CHARACTER_ATTRIBUTE_SPEED];
+    dst->speedBonus = src._statBonuses[CHARACTER_ATTRIBUTE_SPEED];
+    dst->accuracy = src._stats[CHARACTER_ATTRIBUTE_ACCURACY];
+    dst->accuracyBonus = src._statBonuses[CHARACTER_ATTRIBUTE_ACCURACY];
+    dst->luck = src._stats[CHARACTER_ATTRIBUTE_LUCK];
+    dst->luckBonus = src._statBonuses[CHARACTER_ATTRIBUTE_LUCK];
     dst->acModifier = src.sACModifier;
     dst->level = src.uLevel;
     dst->levelModifier = src.sLevelModifier;
@@ -760,13 +760,13 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     snapshot(src._achievedAwardsBits, &dst->achievedAwardsBits, tags::reverseBits);
     snapshot(src.bHaveSpell, &dst->haveSpell);
 
-    dst->pureLuckUsed = src.pure_luck_used;
-    dst->pureSpeedUsed = src.pure_speed_used;
-    dst->pureIntellectUsed = src.pure_intellect_used;
-    dst->pureEnduranceUsed = src.pure_endurance_used;
-    dst->purePersonalityUsed = src.pure_personality_used;
-    dst->pureAccuracyUsed = src.pure_accuracy_used;
-    dst->pureMightUsed = src.pure_might_used;
+    dst->pureLuckUsed = src._pureStatPotionUsed[CHARACTER_ATTRIBUTE_LUCK];
+    dst->pureSpeedUsed = src._pureStatPotionUsed[CHARACTER_ATTRIBUTE_SPEED];
+    dst->pureIntellectUsed = src._pureStatPotionUsed[CHARACTER_ATTRIBUTE_INTELLIGENCE];
+    dst->pureEnduranceUsed = src._pureStatPotionUsed[CHARACTER_ATTRIBUTE_ENDURANCE];
+    dst->purePersonalityUsed = src._pureStatPotionUsed[CHARACTER_ATTRIBUTE_PERSONALITY];
+    dst->pureAccuracyUsed = src._pureStatPotionUsed[CHARACTER_ATTRIBUTE_ACCURACY];
+    dst->pureMightUsed = src._pureStatPotionUsed[CHARACTER_ATTRIBUTE_MIGHT];
 
     snapshot(src.pInventoryItemList, &dst->inventoryItems);
     snapshot(src.pInventoryMatrix, &dst->inventoryMatrix);
@@ -978,20 +978,20 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     }
 
     dst->uCurrentFace = src.currentFace;
-    dst->uMight = src.might;
-    dst->uMightBonus = src.mightBonus;
-    dst->uIntelligence = src.intelligence;
-    dst->uIntelligenceBonus = src.intelligenceBonus;
-    dst->uPersonality = src.personality;
-    dst->uPersonalityBonus = src.personalityBonus;
-    dst->uEndurance = src.endurance;
-    dst->uEnduranceBonus = src.enduranceBonus;
-    dst->uSpeed = src.speed;
-    dst->uSpeedBonus = src.speedBonus;
-    dst->uAccuracy = src.accuracy;
-    dst->uAccuracyBonus = src.accuracyBonus;
-    dst->uLuck = src.luck;
-    dst->uLuckBonus = src.luckBonus;
+    dst->_stats[CHARACTER_ATTRIBUTE_MIGHT] = src.might;
+    dst->_statBonuses[CHARACTER_ATTRIBUTE_MIGHT] = src.mightBonus;
+    dst->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = src.intelligence;
+    dst->_statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE] = src.intelligenceBonus;
+    dst->_stats[CHARACTER_ATTRIBUTE_PERSONALITY] = src.personality;
+    dst->_statBonuses[CHARACTER_ATTRIBUTE_PERSONALITY] = src.personalityBonus;
+    dst->_stats[CHARACTER_ATTRIBUTE_ENDURANCE] = src.endurance;
+    dst->_statBonuses[CHARACTER_ATTRIBUTE_ENDURANCE] = src.enduranceBonus;
+    dst->_stats[CHARACTER_ATTRIBUTE_SPEED] = src.speed;
+    dst->_statBonuses[CHARACTER_ATTRIBUTE_SPEED] = src.speedBonus;
+    dst->_stats[CHARACTER_ATTRIBUTE_ACCURACY] = src.accuracy;
+    dst->_statBonuses[CHARACTER_ATTRIBUTE_ACCURACY] = src.accuracyBonus;
+    dst->_stats[CHARACTER_ATTRIBUTE_LUCK] = src.luck;
+    dst->_statBonuses[CHARACTER_ATTRIBUTE_LUCK] = src.luckBonus;
     dst->sACModifier = src.acModifier;
     dst->uLevel = src.level;
     dst->sLevelModifier = src.levelModifier;
@@ -1001,13 +1001,13 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     reconstruct(src.achievedAwardsBits, &dst->_achievedAwardsBits, tags::reverseBits);
     reconstruct(src.haveSpell, &dst->bHaveSpell);
 
-    dst->pure_luck_used = src.pureLuckUsed;
-    dst->pure_speed_used = src.pureSpeedUsed;
-    dst->pure_intellect_used = src.pureIntellectUsed;
-    dst->pure_endurance_used = src.pureEnduranceUsed;
-    dst->pure_personality_used = src.purePersonalityUsed;
-    dst->pure_accuracy_used = src.pureAccuracyUsed;
-    dst->pure_might_used = src.pureMightUsed;
+    dst->_pureStatPotionUsed[CHARACTER_ATTRIBUTE_LUCK] = src.pureLuckUsed;
+    dst->_pureStatPotionUsed[CHARACTER_ATTRIBUTE_SPEED] = src.pureSpeedUsed;
+    dst->_pureStatPotionUsed[CHARACTER_ATTRIBUTE_INTELLIGENCE] = src.pureIntellectUsed;
+    dst->_pureStatPotionUsed[CHARACTER_ATTRIBUTE_ENDURANCE] = src.pureEnduranceUsed;
+    dst->_pureStatPotionUsed[CHARACTER_ATTRIBUTE_PERSONALITY] = src.purePersonalityUsed;
+    dst->_pureStatPotionUsed[CHARACTER_ATTRIBUTE_ACCURACY] = src.pureAccuracyUsed;
+    dst->_pureStatPotionUsed[CHARACTER_ATTRIBUTE_MIGHT] = src.pureMightUsed;
 
     reconstruct(src.inventoryItems, &dst->pInventoryItemList);
     reconstruct(src.inventoryMatrix, &dst->pInventoryMatrix);
@@ -1506,7 +1506,7 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
 }
 
 void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
-    dst->vPosition = src.vPosition;
+    dst->vPosition = src.vPosition.toFloat();
     dst->uRadius = src.uRadius;
     dst->uKind = static_cast<ObjectType>(src.uKind);
     if (dst->uKind == OBJECT_Actor) {

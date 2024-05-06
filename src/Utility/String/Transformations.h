@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstring>
+#include <algorithm> // For std::find.
 #include <string>
 #include <vector>
 
@@ -54,19 +55,41 @@ std::string replaceAll(std::string_view text, std::string_view what, std::string
 
 std::string replaceAll(std::string_view text, char what, char replacement);
 
-void splitString(std::string_view s, char sep, std::vector<std::string_view> *result);
+/**
+ * Splits the provided string `s` using separator `sep`, passing `std::string_view` chunks into `consumer`.
+ *
+ * This function doesn't discard empty chunks, so at least one chunk will always be passed to `consumer` - splitting an
+ * empty string produces a single empty chunk.
+ *
+ * @param s                             String to split.
+ * @param sep                           Separator character.
+ * @param consumer                      Lambda to pass `std::string_view` chunks into.
+ */
+template<class Consumer>
+void split(std::string_view s, char sep, Consumer &&consumer) {
+    const char *pos = s.data();
+    const char *end = s.data() + s.size();
+    while (pos != end + 1) {
+        const char *next = std::find(pos, end, sep);
 
-inline std::vector<std::string_view> splitString(std::string_view s, char sep) {
+        consumer(std::string_view(pos, next));
+        pos = next + 1;
+    }
+}
+
+void split(std::string_view s, char sep, std::vector<std::string_view> *result);
+
+inline std::vector<std::string_view> split(std::string_view s, char sep) {
     std::vector<std::string_view> result;
-    splitString(s, sep, &result);
+    split(s, sep, &result);
     return result;
 }
 
-inline std::vector<std::string_view> splitString(const char *s, char sep) {
-    return splitString(std::string_view(s), sep);
+inline std::vector<std::string_view> split(const char *s, char sep) {
+    return split(std::string_view(s), sep);
 }
 
-std::vector<std::string_view> splitString(std::string &&s, char sep) = delete; // Don't dangle!
+std::vector<std::string_view> split(std::string &&s, char sep) = delete; // Don't dangle!
 
 namespace detail {
 
@@ -95,3 +118,21 @@ std::string join(Joinables &&... joinables) {
     return result;
 }
 
+template<class Strings>
+    requires JoinableToString<typename Strings::value_type> && // We can use std::ranges::range_value_t, but I'd rather not bring in <ranges>
+             (!JoinableToString<Strings>)
+std::string join(const Strings &strings, char sep) {
+    std::string result;
+
+    auto pos = strings.begin();
+    if (pos == strings.end())
+        return result;
+    result += *pos++;
+
+    while (pos != strings.end()) {
+        result += sep;
+        result += *pos++;
+    }
+
+    return result;
+}

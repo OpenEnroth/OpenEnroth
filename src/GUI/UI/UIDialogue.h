@@ -35,8 +35,9 @@ class GUIWindow_Dialogue : public GUIWindow {
     DialogueId _displayedDialogue = DIALOGUE_MAIN;
 };
 
-void initializeNPCDialogue(Actor *actor, int bPlayerSaysHello);
+void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor = nullptr);
 
 void selectNPCDialogueOption(DialogueId option);
 
+extern int speakingNpcId;
 extern const IndexedArray<std::string, PartyAlignment_Good, PartyAlignment_Evil> dialogueBackgroundResourceByAlignment;

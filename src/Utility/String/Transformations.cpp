@@ -59,18 +59,10 @@ std::string replaceAll(std::string_view text, char what, char replacement) {
     return result;
 }
 
-void splitString(std::string_view s, char sep, std::vector<std::string_view> *result) {
+void split(std::string_view s, char sep, std::vector<std::string_view> *result) {
     result->clear();
-    if(s.empty())
-        return;
-
     result->reserve(16);
-    const char *pos = s.data();
-    const char *end = s.data() + s.size();
-    while (pos != end + 1) {
-        const char *next = std::find(pos, end, sep);
-
-        result->emplace_back(pos, next);
-        pos = next + 1;
-    }
+    split(s, sep, [&result] (std::string_view part) {
+        result->push_back(part);
+    });
 }

@@ -5,19 +5,15 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time/Time.h"
 #include "Engine/mm7_data.h"
 
-#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouses.h"
-
-#include "Io/Mouse.h"
 
 #include "Media/Audio/AudioPlayer.h"
 

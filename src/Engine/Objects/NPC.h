@@ -28,8 +28,13 @@ bool CheckHiredNPCSpeciality(NpcProfession prof);
 int UseNPCSkill(NpcProfession profession, int id);
 
 const std::string &GetProfessionActionText(NpcProfession prof);
-NPCData *GetNPCData(signed int npcid);
-NPCData *GetNewNPCData(signed int npcid, int *npc_indx);
+
+/**
+ * @offset 0x4459F9
+ * @param npcId        If positive, means ID of NPC (quest or hireable). If negative, then it's absolute value minus one is index of party hireling.
+ * @return             Pointer to NPC data structure
+ */
+NPCData *getNPCData(int npcId);
 
 /**
  * @offset 0x445C8B
