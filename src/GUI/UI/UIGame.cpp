@@ -30,7 +30,6 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Spells/Spells.h"
-#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Time/Timer.h"
@@ -51,7 +50,6 @@
 
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
-#include "Utility/String/Transformations.h"
 
 #include "Library/Logger/Logger.h"
 
@@ -1529,10 +1527,10 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
         for (unsigned i = 0; i < uNumBlueFacesInBLVMinimap; ++i) {
             BLVMapOutline *pOutline = &pIndoor->pMapOutlines[pBlueFacesInBLVMinimapIDs[i]];
-            int pX = uCenterX + fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].x - (int)pParty->pos.x);
-            int pY = uCenterY - fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].y - (int)pParty->pos.y);
-            int pZ = uCenterX + fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].x - (int)pParty->pos.x);
-            int pW = uCenterY - fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].y - (int)pParty->pos.y);
+            int pX = uCenterX + uZoom * (pIndoor->pVertices[pOutline->uVertex1ID].x - pParty->pos.x) / 65536.0f;
+            int pY = uCenterY - uZoom * (pIndoor->pVertices[pOutline->uVertex1ID].y - pParty->pos.y) / 65536.0f;
+            int pZ = uCenterX + uZoom * (pIndoor->pVertices[pOutline->uVertex2ID].x - pParty->pos.x) / 65536.0f;
+            int pW = uCenterY - uZoom * (pIndoor->pVertices[pOutline->uVertex2ID].y - pParty->pos.y) / 65536.0f;
             render->RasterLine2D(pX, pY, pZ, pW, ui_game_minimap_outline_color);
         }
     }

@@ -51,7 +51,6 @@ set(ENGINE_HEADERS
         TeleportPoint.h
         GameResourceManager.h
         mm7_data.h
-        stru160.h
         stru314.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})

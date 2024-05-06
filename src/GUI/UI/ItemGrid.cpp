@@ -1,5 +1,6 @@
-#include <cassert>
 #include "ItemGrid.h"
+
+#include <cassert>
 
 static inline int roundIntDownToBase(int i, int base) {
     return i - i % base;

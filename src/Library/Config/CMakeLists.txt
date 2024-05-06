@@ -22,4 +22,4 @@ target_link_libraries(library_config
         utility
         library_serialization
         PRIVATE
-        mini::mini)
+        inicpp::inicpp)

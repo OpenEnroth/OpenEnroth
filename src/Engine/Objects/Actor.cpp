@@ -879,109 +879,101 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
 // way
 void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
                              AIDirection *pOut, int PreferedZ) {
-    float v31;        // st7@45
-    float v32;        // st6@45
-    float v33;        // st7@45
-    Vec3i out1;
-    Vec3i out2;
-    float a4a;        // [sp+58h] [bp+Ch]@45
+    Vec3f out1;
+    Vec3f out2;
 
     int id1 = uObj1ID.id();
     int id2 = uObj2ID.id();
     switch (uObj1ID.type()) {
         case OBJECT_Item: {
-            out1 = pSpriteObjects[id1].vPosition.toInt();
+            out1 = pSpriteObjects[id1].vPosition;
             break;
         }
         case OBJECT_Actor: {
-            out1 = (pActors[id1].pos + Vec3f(0, 0, pActors[id1].height * 0.75f)).toIntTrunc();
+            out1 = (pActors[id1].pos + Vec3f(0, 0, pActors[id1].height * 0.75f));
             break;
         }
         case OBJECT_Character: {
-            out1 = pParty->pos.toInt() + Vec3i(0, 0, pParty->height / 3);
+            out1 = pParty->pos + Vec3f(0, 0, pParty->height / 3);
             if (id1 == 0) {
                 // Do nothing.
             } else if (id1 == 4) {
-                out1 += Vec3i::fromPolar(24, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(24, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 3) {
-                out1 += Vec3i::fromPolar(8, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(8, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 2) {
-                out1 += Vec3i::fromPolar(8, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(8, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 1) {
-                out1 += Vec3i::fromPolar(24, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(24, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
             }
             break;
         }
         case OBJECT_Decoration: {
-            out1 = pLevelDecorations[id1].vPosition.toInt();
+            out1 = pLevelDecorations[id1].vPosition;
             break;
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out1 = pIndoor->pFaces[id1].pBounding.center();
+                out1 = pIndoor->pFaces[id1].pBounding.center().toFloat();
             }
             break;
         }
         default: {
-            out1 = Vec3i();
+            out1 = Vec3f();
             break;
         }
     }
 
     switch (uObj2ID.type()) {
         case OBJECT_Item: {
-            out2 = pSpriteObjects[id2].vPosition.toInt();
+            out2 = pSpriteObjects[id2].vPosition;
             break;
         }
         case OBJECT_Actor: {
-            out2 = (pActors[id2].pos + Vec3f(0, 0, pActors[id2].height * 0.75f)).toIntTrunc();
+            out2 = (pActors[id2].pos + Vec3f(0, 0, pActors[id2].height * 0.75f));
             break;
         }
         case OBJECT_Character: {
             if (!PreferedZ)
                 PreferedZ = pParty->eyeLevel;
 
-            out2 = pParty->pos.toInt() + Vec3i(0, 0, PreferedZ);
+            out2 = pParty->pos + Vec3f(0, 0, PreferedZ);
             break;
         }
         case OBJECT_Decoration: {
-            out2 = pLevelDecorations[id2].vPosition.toInt();
+            out2 = pLevelDecorations[id2].vPosition;
             break;
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out2 = pIndoor->pFaces[id2].pBounding.center();
+                out2 = pIndoor->pFaces[id2].pBounding.center().toFloat();
             }
             break;
         }
         default: {
-            out2 = Vec3i();
+            out2 = Vec3f();
             break;
         }
     }
 
-    v31 = out2.x - out1.x;
-    v32 = out2.y - out1.y;
-    a4a = out2.z - out1.z;
-    float outx2 = v32 * v32;
-    float outy2 = v31 * v31;
-    v33 = sqrt(a4a * a4a + outy2 + outx2);
-    if (v33 <= 1.0) {
-        pOut->vDirection.x = 65536;
-        pOut->vDirection.y = 0;
-        pOut->vDirection.z = 0;
+    Vec3f dir = out2 - out1;
+    float length = dir.length();
+    float deltaX = out2.x - out1.x;
+    float deltaY = out2.y - out1.y;
+    float deltaZ = out2.z - out1.z;
+    if (length <= 1.0) {
+        pOut->vDirection = Vec3f(1, 0, 0);
         pOut->uDistance = 1;
         pOut->uDistanceXZ = 1;
         pOut->uYawAngle = 0;
         pOut->uPitchAngle = 0;
     } else {
-        pOut->vDirection.x = (int32_t)(1.0 / v33 * v31 * 65536.0);
-        pOut->vDirection.y = (int32_t)(1.0 / v33 * v32 * 65536.0);
-        pOut->vDirection.z = (int32_t)(1.0 / v33 * a4a * 65536.0);
-        pOut->uDistance = (unsigned)v33;
-        pOut->uDistanceXZ = (unsigned)sqrt(outy2 + outx2);
-        pOut->uYawAngle = TrigLUT.atan2(v31, v32);
-        pOut->uPitchAngle = TrigLUT.atan2(pOut->uDistanceXZ, a4a);
+        dir.normalize();
+        pOut->vDirection = dir;
+        pOut->uDistance = length;
+        pOut->uDistanceXZ = std::sqrt(deltaX * deltaX + deltaY * deltaY);
+        pOut->uYawAngle = TrigLUT.atan2(deltaX, deltaY);
+        pOut->uPitchAngle = TrigLUT.atan2(pOut->uDistanceXZ, deltaZ);
     }
 }
 
@@ -1543,8 +1535,8 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
             ypos = pParty->pos.y;
             zpos = pParty->pos.z + pParty->eyeLevel;
         } else {
-            xpos = pDir->vDirection.x;
-            ypos = pDir->vDirection.x;
+            xpos = pDir->vDirection.x * 65536; // make a target point at distance
+            ypos = pDir->vDirection.y * 65536;
         }
     }
     //v19 = v3->uActorHeight;
@@ -1952,7 +1944,7 @@ void Actor::AI_Flee(unsigned int uActorID, Pid sTargetPid,
         } else {
             if (v5->moveSpeed)
                 v5->currentActionLength = Duration::fromTicks(
-                    (signed int)(a4->uDistanceXZ << 7) / v5->moveSpeed);
+                    (signed int)(a4->uDistanceXZ * 128) / v5->moveSpeed);
             else
                 v5->currentActionLength = 0_ticks;
             if (v5->currentActionLength > 256_ticks) v5->currentActionLength = 256_ticks;
@@ -2012,7 +2004,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
         v13 = v7->moveSpeed;
         if (v13)
             v7->currentActionLength = Duration::fromTicks(
-                (signed int)(v10->uDistanceXZ << 7) / v13);
+                (signed int)(v10->uDistanceXZ * 128) / v13);
         else
             v7->currentActionLength = 0_ticks;
         if (v7->currentActionLength > 32_ticks) v7->currentActionLength = 32_ticks;
@@ -2064,7 +2056,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
     } else {
         v12 = v6->moveSpeed;
         if (v12)
-            v6->currentActionLength = Duration::fromTicks((a4->uDistanceXZ << 7) / v12);
+            v6->currentActionLength = Duration::fromTicks((a4->uDistanceXZ * 128) / v12);
         else
             v6->currentActionLength = 0_ticks;
         if (v6->currentActionLength > 128_ticks) v6->currentActionLength = 128_ticks;
@@ -3011,8 +3003,7 @@ void Actor::InitializeActors() {
     }
 }
 //----- (00439474) --------------------------------------------------------
-void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
-                                   Vec3i *pVelocity) {
+void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const Vec3f &pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
     Duration extraRecoveryTime;           // qax@125
@@ -3269,25 +3260,20 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
     }
     if (knockbackValue > 10) knockbackValue = 10;
     if (supertypeForMonsterId(pMonster->monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
-        pVelocity->x = fixpoint_mul(knockbackValue, pVelocity->x);
-        pVelocity->y = fixpoint_mul(knockbackValue, pVelocity->y);
-        pVelocity->z = fixpoint_mul(knockbackValue, pVelocity->z);
-        pMonster->velocity.x = 50 * (short)pVelocity->x;
-        pMonster->velocity.y = 50 * (short)pVelocity->y;
-        pMonster->velocity.z = 50 * (short)pVelocity->z;
+        pMonster->velocity = 50 * knockbackValue * pVelocity;
     }
     Actor::AddOnDamageOverlay(uActorID_Monster, 1, v61);
 }
 
 //----- (004BBF61) --------------------------------------------------------
-void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
+void Actor::Arena_summon_actor(MonsterId monster_id, Vec3f pos) {
     Actor *actor = AllocateActor(true);
     if (!actor)
         return;
 
     int v16 = 0;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        v16 = pIndoor->GetSector(pos);
+        v16 = pIndoor->GetSector(pos.toInt());
 
     actor->name = pMonsterStats->infos[monster_id].name;
     actor->currentHP = (short)pMonsterStats->infos[monster_id].hp;
@@ -3297,7 +3283,7 @@ void Actor::Arena_summon_actor(MonsterId monster_id, Vec3i pos) {
     actor->height = pMonsterList->monsters[monster_id].monsterHeight;
     actor->moveSpeed = pMonsterList->monsters[monster_id].movementSpeed;
     actor->initialPosition = pos;
-    actor->pos = pos.toFloat();
+    actor->pos = pos;
     actor->attributes |= ACTOR_AGGRESSOR;
     actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
     actor->monsterInfo.treasureLevel = ITEM_TREASURE_LEVEL_INVALID;
@@ -3872,6 +3858,7 @@ bool Actor::DoesDmgTypeDoDamage(DamageType uType) {
             break;
         case DAMAGE_MIND:
             resist = this->monsterInfo.resMind;
+            break;
         case DAMAGE_BODY:
             resist = this->monsterInfo.resBody;
             break;
@@ -4065,19 +4052,19 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     // get object 1 info
     int obj1_pid = uObjID.id();
     int obj1_sector;
-    Vec3i pos1;
+    Vec3f pos1;
 
     switch (uObjID.type()) {
         case OBJECT_Decoration:
-            pos1 = pLevelDecorations[obj1_pid].vPosition.toInt();
-            obj1_sector = pIndoor->GetSector(pos1);
+            pos1 = pLevelDecorations[obj1_pid].vPosition;
+            obj1_sector = pIndoor->GetSector(pos1.toInt());
             break;
         case OBJECT_Actor:
-            pos1 = pActors[obj1_pid].pos.toInt() + Vec3i(0, 0, pActors[obj1_pid].height * 0.69999999);
+            pos1 = pActors[obj1_pid].pos + Vec3f(0, 0, pActors[obj1_pid].height * 0.69999999);
             obj1_sector = pActors[obj1_pid].sectorId;
             break;
         case OBJECT_Item:
-            pos1 = pSpriteObjects[obj1_pid].vPosition.toInt();
+            pos1 = pSpriteObjects[obj1_pid].vPosition;
             obj1_sector = pSpriteObjects[obj1_pid].uSectorID;
             break;
         default:
@@ -4087,23 +4074,23 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     // get object 2 info
     int obj2_pid = uObj2ID.id();
     int obj2_sector;
-    Vec3i pos2;
+    Vec3f pos2;
 
     switch (uObj2ID.type()) {
         case OBJECT_Decoration:
-            pos2 = pLevelDecorations[obj2_pid].vPosition.toInt();
-            obj2_sector = pIndoor->GetSector(pos2);
+            pos2 = pLevelDecorations[obj2_pid].vPosition;
+            obj2_sector = pIndoor->GetSector(pos2.toInt());
             break;
         case OBJECT_Character:
-            pos2 = pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel);
+            pos2 = pParty->pos + Vec3f(0, 0, pParty->eyeLevel);
             obj2_sector = pBLVRenderParams->uPartyEyeSectorID;
             break;
         case OBJECT_Actor:
-            pos2 = pActors[obj2_pid].pos.toInt() + Vec3i(0, 0, pActors[obj2_pid].height * 0.69999999);
+            pos2 = pActors[obj2_pid].pos + Vec3f(0, 0, pActors[obj2_pid].height * 0.69999999);
             obj2_sector = pActors[obj2_pid].sectorId;
             break;
         case OBJECT_Item:
-            pos2 = pSpriteObjects[obj2_pid].vPosition.toInt();
+            pos2 = pSpriteObjects[obj2_pid].vPosition;
             obj2_sector = pSpriteObjects[obj2_pid].uSectorID;
             break;
         default:
@@ -4130,14 +4117,14 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
     float rayznorm = dist_z / dist_3d;
 
     // extents for boundary checks
-    BBoxi bbox = BBoxi::forPoints(pos1, pos2);
+    BBoxf bbox = BBoxf::forPoints(pos1, pos2);
 
     // search starts for object
     int sectors_visited = 0;
     int current_sector = obj1_sector;
     int next_sector = 0;
     BLVFace *portalface;
-    Vec3i *portalverts;
+    Vec3f *portalverts;
 
     // loop through portals
     for (int current_portal = 0; current_portal < pIndoor->pSectors[current_sector].uNumPortals; current_portal++) {
@@ -4145,7 +4132,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
         portalverts = &pIndoor->pVertices[*portalface->pVertexIDs];
 
         // ray ob1 to portal dot normal
-        float obj1portaldot = dot(portalface->facePlane.normal, (*portalverts - pos1).toFloat());
+        float obj1portaldot = dot(portalface->facePlane.normal, *portalverts - pos1);
 
         // flip norm if we are not looking out from current sector
         if (current_sector != portalface->uSectorID) obj1portaldot = -obj1portaldot;
@@ -4168,7 +4155,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
         float facenotparallel = v32 + v33 + v34;
         if (facenotparallel) {
             // point to plance distance
-            float pointplanedist = -portalface->facePlane.signedDistanceTo(pos1.toFloat());
+            float pointplanedist = -portalface->facePlane.signedDistanceTo(pos1);
 
             // epsilon check?
             if (std::abs(pointplanedist) / 16384.0 > std::abs(facenotparallel)) continue;
@@ -4257,7 +4244,7 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
     actor->initialPosition.x = pParty->pos.x + TrigLUT.cos(angle) * radius;
     actor->initialPosition.y = pParty->pos.y + TrigLUT.sin(angle) * radius;
     actor->initialPosition.z = pParty->pos.z;
-    actor->pos = actor->initialPosition.toFloat();
+    actor->pos = actor->initialPosition;
     actor->tetherDistance = 256;
     actor->sectorId = partySectorId;
     actor->PrepareSprites(0);
@@ -4432,7 +4419,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
     a4 = spawn->vPosition.y;
     a3 = spawn->vPosition.z;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
-        pSector = pIndoor->GetSector(spawn->vPosition);
+        pSector = pIndoor->GetSector(spawn->vPosition.toInt());
     v53 = 0;
     v52 = (((uCurrentlyLoadedLevelType != LEVEL_OUTDOOR) - 1) & 0x40) + 64;
 
@@ -4564,7 +4551,7 @@ void evaluateAoeDamage() {
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
                         if (Check_LineOfSight(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel), attack.pos.toInt())) {
-                            DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, stru_50C198.which_player_to_attack(&pActors[attackerId]));
+                            DamageCharacterFromMonster(attack.pid, attack.attackSpecial, stru_50C198.which_player_to_attack(&pActors[attackerId]));
                         }
                     }
                 }
@@ -4596,7 +4583,7 @@ void evaluateAoeDamage() {
                 if (Check_LineOfSight(pParty->pos.toInt() + Vec3i(0, 0, pParty->eyeLevel), attack.pos.toInt())) {
                     for (int i = 0; i < pParty->pCharacters.size(); i++) {
                         if (pParty->pCharacters[i].conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
-                            DamageCharacterFromMonster(attack.pid, attack.attackSpecial, &attackVector, i);
+                            DamageCharacterFromMonster(attack.pid, attack.attackSpecial, i);
                         }
                     }
                 }
@@ -4617,16 +4604,22 @@ void evaluateAoeDamage() {
                         if (Check_LineOfSight(pActors[actorID].pos.toInt() + Vec3i(0, 0, 50), attack.pos.toInt())) {
                             normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
                             switch (attackerType) {
-                                case OBJECT_Character:
-                                    Actor::DamageMonsterFromParty(attack.pid, actorID, &attackVector);
+                                case OBJECT_Character: {
+                                    Vec3f attVF = Vec3f(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
+                                    attVF.normalize();
+                                    Actor::DamageMonsterFromParty(attack.pid, actorID, attVF);
+                                }
                                     break;
                                 case OBJECT_Actor:
                                     if (pSpriteObj && pActors[attackerId].GetActorsRelation(&pActors[actorID]) != HOSTILITY_FRIENDLY) {
                                         Actor::ActorDamageFromMonster(attack.pid, actorID, &attackVector, pSpriteObj->spellCasterAbility);
                                     }
                                     break;
-                                case OBJECT_Item:
-                                    ItemDamageFromActor(attack.pid, actorID, &attackVector);
+                                case OBJECT_Item: {
+                                    Vec3f attVF = Vec3f(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
+                                    attVF.normalize();
+                                    ItemDamageFromActor(attack.pid, actorID, attVF);
+                                }
                                     break;
                                 default:
                                     assert(false);
@@ -4667,44 +4660,29 @@ double sub_43AE12(signed int a1) {
 }
 
 //----- (0043B057) --------------------------------------------------------
-void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
-                         Vec3i *pVelocity) {
-    int v6;      // eax@4
-    int damage;  // edi@4
-    int a2a;     // [sp+Ch] [bp-4h]@8
-
-    if (!pActors[uActorID].IsNotAlive()) {
+void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, const Vec3f &pVelocity) {
+     if (!pActors[uActorID].IsNotAlive()) {
         if (uObjID.type() == OBJECT_Item) {
             if (pSpriteObjects[uObjID.id()].uSpellID != SPELL_NONE) {
-                v6 = CalcSpellDamage(
+                int spellDamage = CalcSpellDamage(
                     pSpriteObjects[uObjID.id()].uSpellID,
                     pSpriteObjects[uObjID.id()].spell_level,
                     pSpriteObjects[uObjID.id()].spell_skill,
                     pActors[uActorID].currentHP);
-                damage = pActors[uActorID].CalcMagicalDamageToActor(
-                    DAMAGE_FIRE, v6);
+                int damage = pActors[uActorID].CalcMagicalDamageToActor(DAMAGE_FIRE, spellDamage);
                 pActors[uActorID].currentHP -= damage;
-                if (damage) {
+
+                if (damage > 0) {
                     if (pActors[uActorID].currentHP > 0)
                         Actor::AI_Stun(uActorID, uObjID, 0);
                     else
                         Actor::Die(uActorID);
-                    a2a = 20 * damage /
-                          (signed int)pActors[uActorID].monsterInfo.hp;
-                    if (20 * damage /
-                            (signed int)pActors[uActorID].monsterInfo.hp >
-                        10)
-                        a2a = 10;
+
+                    int knockback = 20 * damage / (signed int)pActors[uActorID].monsterInfo.hp;
+                    if (knockback > 10)
+                        knockback = 10;
                     if (supertypeForMonsterId(pActors[uActorID].monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
-                        pVelocity->x = fixpoint_mul(a2a, pVelocity->x);
-                        pVelocity->y = fixpoint_mul(a2a, pVelocity->y);
-                        pVelocity->z = fixpoint_mul(a2a, pVelocity->z);
-                        pActors[uActorID].velocity.x =
-                            50 * (short)pVelocity->x;
-                        pActors[uActorID].velocity.y =
-                            50 * (short)pVelocity->y;
-                        pActors[uActorID].velocity.z =
-                            50 * (short)pVelocity->z;
+                        pActors[uActorID].velocity = 50 * knockback * pVelocity;
                     }
                     Actor::AddOnDamageOverlay(uActorID, 1, damage);
                 } else {

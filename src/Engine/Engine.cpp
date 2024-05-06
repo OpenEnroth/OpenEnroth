@@ -8,7 +8,6 @@
 #include "Engine/AssetsManager.h"
 
 #include "Engine/Events/Processor.h"
-#include "Engine/Events/RawEvent.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
@@ -63,7 +62,6 @@
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
 
-#include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIStatusBar.h"
@@ -1174,8 +1172,7 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
         if (character.timeToRecovery && recoveryTimeDt > 0_ticks)
             character.Recover(recoveryTimeDt);
 
-        if (character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
-            character.health + character.uEndurance >= 1 ||
+        if (character.GetBaseEndurance() + character.health >= 1 ||
             character.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
             if (character.health < 1)
                 character.SetCondition(CONDITION_UNCONSCIOUS, 0);
@@ -1364,8 +1361,6 @@ void RegeneratePartyHealthMana() {
     // care about immolation if you're traveling, or if you're in jail? You won't be getting several ticks here during
     // normal gameplay.
     if (pParty->ImmolationActive()) {
-        Vec3i cords;
-
         SpriteObject spellSprite;
         spellSprite.containing_item.Reset();
         spellSprite.spell_level = pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].power;
@@ -1389,7 +1384,7 @@ void RegeneratePartyHealthMana() {
             spellSprite.vPosition.y = pActors[actorID].pos.y;
             spellSprite.vPosition.z = pActors[actorID].pos.z;
             spellSprite.spell_target_pid = Pid(OBJECT_Actor, actorID);
-            Actor::DamageMonsterFromParty(Pid(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, &cords);
+            Actor::DamageMonsterFromParty(Pid(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, Vec3f());
         }
     }
 
@@ -1487,7 +1482,7 @@ void RegeneratePartyHealthMana() {
 
         // Knock out / kill chars due to hp drain.
         if (character.health <= 0) {
-            int enduranceCheck = character.health + character.uEndurance + character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
+            int enduranceCheck = character.health + character.GetBaseEndurance();
             Condition targetCondition = enduranceCheck >= 1 || character.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active() ? CONDITION_UNCONSCIOUS : CONDITION_DEAD;
             if (!character.conditions.Has(targetCondition))
                 character.conditions.Set(targetCondition, pParty->GetPlayingTime());

@@ -469,19 +469,19 @@ bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step,
     // p(t) = p0 + tu;
     Intersection->vWorldPosition = origin + t * step;
 
-    if (!CheckIntersectFace(pFace, Intersection->vWorldPosition.toInt(), pBModelID))
+    if (!CheckIntersectFace(pFace, Intersection->vWorldPosition, pBModelID))
         return false;
 
     return true;
 }
 
 //----- (004C1D2B) --------------------------------------------------------
-bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3i IntersectPoint, signed int sModelID) {
-    if (!pFace->pBounding.contains(IntersectPoint))
+bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3f IntersectPoint, signed int sModelID) {
+    if (!pFace->pBounding.contains(IntersectPoint.toInt()))
         return false;
 
     // sModelID == -1 means we're indoor, and -1 == MODEL_INDOOR, so this call just works.
-    if (!pFace->Contains(IntersectPoint, sModelID))
+    if (!pFace->Contains(IntersectPoint.toInt(), sModelID))
         return false;
 
     if (engine->config->debug.ShowPickedFace.value())

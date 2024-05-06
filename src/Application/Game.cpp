@@ -39,7 +39,6 @@
 #include "Engine/Random/Random.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
-#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/FrameTableInc.h"
 #include "Engine/Time/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -270,7 +269,7 @@ void Game_StartDialogue(int actor_id) {
     if (pParty->hasActiveCharacter()) {
         engine->_messageQueue->clear();
 
-        initializeNPCDialogue(&pActors[actor_id], true);
+        initializeNPCDialogue(pActors[actor_id].npcId, true, &pActors[actor_id]);
     }
 }
 
@@ -289,9 +288,7 @@ void Game_StartHirelingDialogue(int hireling_id) {
         if (buf.GetSacrificeStatus(index) && buf.GetSacrificeStatus(index)->inProgress)
             return; // Hireling is being dark sacrificed.
 
-        Actor actor;
-        actor.npcId += -1 - pParty->hirelingScrollPosition - hireling_id;
-        initializeNPCDialogue(&actor, true);
+        initializeNPCDialogue(-1 - pParty->hirelingScrollPosition - hireling_id, true);
     }
 }
 
@@ -361,10 +358,7 @@ void Game::processQueuedMessages() {
     bool playButtonSoundOnEscape = true;
 
     if (bDialogueUI_InitializeActor_NPC_ID) {
-        // Actor::Actor(&actor);
-        Actor actor = Actor();
-        actor.npcId = bDialogueUI_InitializeActor_NPC_ID;
-        initializeNPCDialogue(&actor, false);
+        initializeNPCDialogue(bDialogueUI_InitializeActor_NPC_ID, false);
         bDialogueUI_InitializeActor_NPC_ID = 0;
     }
 
