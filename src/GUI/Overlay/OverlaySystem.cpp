@@ -47,13 +47,15 @@ void OverlaySystem::drawOverlays() {
     _update();
     _renderer.drawOverlays(_nuklearContext.get());
 
-    _renderer.beginOverlays();
-    ImGui::ShowDemoWindow();
-    _renderer.endOverlays();
+    if (!_isEnabled) {
+        _renderer.beginOverlays();
+        //ImGui::ShowDemoWindow();
+        _renderer.endOverlays();
+    }
 }
 
 void OverlaySystem::_update() {
-    if (_isEnabled) {
+    if (!_isEnabled) {
         return;
     }
 
