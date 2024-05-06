@@ -48,3 +48,6 @@
 [submodule "thirdparty/backward_cpp"]
 	path = thirdparty/backward_cpp
 	url = https://github.com/OpenEnroth/backward-cpp.git
+[submodule "thirdparty/small_vector"]
+	path = thirdparty/small_vector
+	url = https://github.com/gharveymn/small_vector.git
