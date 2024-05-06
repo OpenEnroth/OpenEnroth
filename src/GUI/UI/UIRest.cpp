@@ -12,7 +12,6 @@
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIRest.h"
-#include "GUI/GUIFont.h"
 
 GraphicsImage *rest_ui_btn_4 = nullptr;
 GraphicsImage *rest_ui_btn_exit = nullptr;

@@ -63,6 +63,10 @@ TestMultiTape<int> CharacterTapeRecorder::levels() {
     return custom(std::bind(&Character::GetActualLevel, _1));
 }
 
+TestTape<int> CharacterTapeRecorder::skillLevel(int characterIndex, CharacterSkillType skill) {
+    return custom(characterIndex, std::bind(&Character::actualSkillLevel, _1, skill));
+}
+
 TestMultiTape<int> CharacterTapeRecorder::skillLevels(CharacterSkillType skill) {
     return custom(std::bind(&Character::actualSkillLevel, _1, skill));
 }
@@ -83,8 +87,20 @@ TestMultiTape<Condition> CharacterTapeRecorder::conditions() {
     return custom(std::bind(&Character::GetMajorConditionIdx, _1));
 }
 
+TestTape<int> CharacterTapeRecorder::resistance(int characterIndex, CharacterAttributeType resistance) {
+    return custom(characterIndex, std::bind(&Character::GetActualResistance, _1, resistance));
+}
+
 TestMultiTape<int> CharacterTapeRecorder::resistances(CharacterAttributeType resistance) {
     return custom(std::bind(&Character::GetActualResistance, _1, resistance));
+}
+
+TestTape<int> CharacterTapeRecorder::stat(int characterIndex, CharacterAttributeType stat) {
+    return custom(characterIndex, std::bind(&Character::GetActualStat, _1, stat));
+}
+
+TestMultiTape<int> CharacterTapeRecorder::stats(CharacterAttributeType stat) {
+    return custom(std::bind(&Character::GetActualStat, _1, stat));
 }
 
 TestTape<bool> CharacterTapeRecorder::hasBuff(int characterIndex, CharacterBuff buff) {

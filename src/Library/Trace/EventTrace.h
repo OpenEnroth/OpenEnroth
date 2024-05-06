@@ -14,6 +14,13 @@
 struct EventTraceCharacterState {
     int hp = 0;
     int mp = 0;
+    int might = 0;
+    int intelligence = 0;
+    int personality = 0;
+    int endurance = 0;
+    int accuracy = 0;
+    int speed = 0;
+    int luck = 0;
 };
 
 struct EventTraceGameState {

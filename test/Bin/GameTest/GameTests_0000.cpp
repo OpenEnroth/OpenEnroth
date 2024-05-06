@@ -308,25 +308,25 @@ GAME_TEST(Issues, Issue293a) {
     auto totalItemsTape = tapes.totalItemCount();
     auto conditionsTape = charTapes.conditions();
     test.playTraceFromTestData("issue_293a.mm7", "issue_293a.json", [] {
-        EXPECT_EQ(pParty->pCharacters[0].uMight, 30);
-        EXPECT_EQ(pParty->pCharacters[0].uIntelligence, 5);
-        EXPECT_EQ(pParty->pCharacters[0].uPersonality, 5);
-        EXPECT_EQ(pParty->pCharacters[0].uEndurance, 13);
-        EXPECT_EQ(pParty->pCharacters[0].uSpeed, 14);
-        EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 13);
-        EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
+        EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_MIGHT], 30);
+        EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE], 5);
+        EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_PERSONALITY], 5);
+        EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_ENDURANCE], 13);
+        EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_SPEED], 14);
+        EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_ACCURACY], 13);
+        EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_LUCK], 7);
     });
 
     EXPECT_EQ(totalItemsTape.delta(), +1);
     EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD},
                                                {CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK}));
-    EXPECT_EQ(pParty->pCharacters[0].uMight, 30);
-    EXPECT_EQ(pParty->pCharacters[0].uIntelligence, 7); // +2
-    EXPECT_EQ(pParty->pCharacters[0].uPersonality, 5);
-    EXPECT_EQ(pParty->pCharacters[0].uEndurance, 13);
-    EXPECT_EQ(pParty->pCharacters[0].uSpeed, 14);
-    EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 15); // +2
-    EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
+    EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_MIGHT], 30);
+    EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE], 7); // +2
+    EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_PERSONALITY], 5);
+    EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_ENDURANCE], 13);
+    EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_SPEED], 14);
+    EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_ACCURACY], 15); // +2
+    EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_LUCK], 7);
 }
 
 GAME_TEST(Issues, Issue293b) {
@@ -371,7 +371,7 @@ GAME_TEST(Prs, Pr314_742) {
     test.playTraceFromTestData("pr_314.mm7", "pr_314.json");
 
     for (int i = 0; i < 4; i++)
-        EXPECT_EQ(pParty->pCharacters[i].uLuck, 20);
+        EXPECT_EQ(pParty->pCharacters[i]._stats[CHARACTER_ATTRIBUTE_LUCK], 20);
 
     EXPECT_EQ(pParty->pCharacters[0].classType, CLASS_MONK);
     EXPECT_EQ(pParty->pCharacters[1].classType, CLASS_THIEF);
@@ -423,7 +423,7 @@ GAME_TEST(Issues, Issue355) {
     auto healthTape = charTapes.hps();
     test.playTraceFromTestData("issue_355.mm7", "issue_355.json");
     auto damageRange = healthTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
-    // 2d3+0 with a non-random engine can't roll 2 or 6, so all values should be in [3, 5]. Luck roll can drop this to [1..
+    // 2d3+0 with a sequential engine can't roll 2 or 6, so all values should be in [3, 5]. Luck roll can drop this to 1...
     EXPECT_EQ(damageRange, tape(3 /*1*/, 5));
 }
 

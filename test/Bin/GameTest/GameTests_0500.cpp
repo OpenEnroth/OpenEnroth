@@ -110,10 +110,12 @@ GAME_TEST(Issues, Issue520) {
 
 GAME_TEST(Issues, Issue521) {
     // 500 endurance leads to asserts in Character::SetRecoveryTime
-    auto healthTape = tapes.totalHp();
+    auto enduranceTape = charTapes.stat(0, CHARACTER_ATTRIBUTE_ENDURANCE);
+    auto hpsTape = charTapes.hps();
     auto activeCharTape = tapes.activeCharacterIndex();
     test.playTraceFromTestData("issue_521.mm7", "issue_521.json");
-    EXPECT_LT(healthTape.delta(), 0); // Party took fall damage.
+    EXPECT_EQ(enduranceTape, tape(500)); // First char is beefy.
+    EXPECT_LT(hpsTape.delta().max(), 0); // All chars took damage.
     EXPECT_EQ(activeCharTape, tape(1)); // First char didn't flinch.
 }
 
@@ -722,13 +724,13 @@ GAME_TEST(Issues, Issue808) {
 GAME_TEST(Issues, Issue814) {
     // Test that compare variable for autonotes do not assert
     test.playTraceFromTestData("issue_814.mm7", "issue_814.json"); // Should not assert
-    EXPECT_EQ(pParty->pCharacters[0].uIntelligenceBonus, 25);
+    EXPECT_EQ(pParty->pCharacters[0]._statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE], 25);
 }
 
 GAME_TEST(Issues, Issue815) {
     // Test that subtract variable for character bits work
     test.playTraceFromTestData("issue_815.mm7", "issue_815.json");
-    EXPECT_EQ(pParty->pCharacters[0].uIntelligenceBonus, 25);
+    EXPECT_EQ(pParty->pCharacters[0]._statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE], 25);
 }
 
 GAME_TEST(Issues, Issue816) {

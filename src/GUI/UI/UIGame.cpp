@@ -30,7 +30,6 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Spells/Spells.h"
-#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Time/Timer.h"
@@ -51,7 +50,6 @@
 
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
-#include "Utility/String/Transformations.h"
 
 #include "Library/Logger/Logger.h"
 
