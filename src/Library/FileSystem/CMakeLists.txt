@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
+
+add_subdirectory(Trie)
+add_subdirectory(Directory)
+add_subdirectory(Interface)
+add_subdirectory(Lowercase)
+add_subdirectory(Masking)
+add_subdirectory(Memory)
+add_subdirectory(Merging)
+add_subdirectory(Null)

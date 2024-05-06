@@ -21,11 +21,15 @@ class SplitViewIterator {
     SplitViewIterator(const char *begin, const char *end, char sep) : _pos(begin), _end(end), _sep(sep) {}
 
     SplitViewIterator &operator++() {
-        return *this; // This is an input iterator, all the work is done in `operator*`.
+        // This is an input iterator, all the work is done in `operator*`.
+        return *this;
     }
 
-    SplitViewIterator operator++(int) {
-        return *this; // This is an input iterator, all the work is done in `operator*`.
+    SplitViewIterator &operator++(int) {
+        // Now this is bad and evil. We're returning a reference from postfix operator++, which we shouldn't.
+        // However, we don't want to store current chunk inside the iterator, and we want to do all the work in
+        // operator*, so this is our only option.
+        return *this;
     }
 
     std::string_view operator*() const {
