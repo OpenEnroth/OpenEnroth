@@ -2428,8 +2428,6 @@ std::array<GraphicsImage *, 14> party_buff_icons;
 unsigned int uIconIdx_FlySpell;
 unsigned int uIconIdx_WaterWalk;
 
-Actor *pDialogue_SpeakingActor;
-int sDialogue_SpeakingActorNPC_ID;
 int uCurrentHouse_Animation;
 std::string branchless_dialogue_str;
 int dword_5B65C4_cancelEventProcessing;
