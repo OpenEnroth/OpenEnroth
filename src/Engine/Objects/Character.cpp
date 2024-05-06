@@ -2926,9 +2926,7 @@ CombinedSkillValue Character::getActualSkillValue(CharacterSkillType skill) cons
 int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
                     // TODO(_): move the individual implementations to attribute
                     // classes once possible ?? check
-    int armsMasterBonus;
-
-    armsMasterBonus = 0;
+    int armsMasterBonus = 0;
     int armmaster_skill = getActualSkillValue(CHARACTER_SKILL_ARMSMASTER).level();
     if (armmaster_skill > 0) {
         int multiplier = 0;
@@ -2948,17 +2946,19 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
                 return multiplier * bowSkillLevel;
             }
             return 0;
-            break;
+
         case CHARACTER_ATTRIBUTE_HEALTH: {
             int base_value = pBaseHealthPerLevelByClass[classType];
             int attrib_modif = GetBodybuilding();
             return base_value * attrib_modif;
-        } break;
+        }
+
         case CHARACTER_ATTRIBUTE_MANA: {
             int base_value = pBaseManaPerLevelByClass[classType];
             int attrib_modif = GetMeditation();
             return base_value * attrib_modif;
-        } break;
+        }
+
         case CHARACTER_ATTRIBUTE_AC_BONUS: {
             bool wearingArmor = false;
             bool wearingLeather = false;
@@ -2967,8 +2967,7 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
             for (ItemSlot j : allItemSlots()) {
                 const ItemGen *currItem = GetItem(j);
                 if (currItem != nullptr && (!currItem->IsBroken())) {
-                    CharacterSkillType itemSkillType =
-                        (CharacterSkillType)currItem->GetPlayerSkillType();
+                    CharacterSkillType itemSkillType = currItem->GetPlayerSkillType();
                     int currArmorSkillLevel = 0;
                     int multiplier = 0;
                     switch (itemSkillType) {
@@ -3021,7 +3020,8 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
                 ACSum += multiplier * dodgeValue.level();
             }
             return ACSum;
-        } break;
+        }
+
         case CHARACTER_ATTRIBUTE_ATTACK:
             if (this->IsUnarmed()) {
                 int unarmedSkill =
@@ -3053,7 +3053,6 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
                 }
             }
             return 0;
-            break;
 
         case CHARACTER_ATTRIBUTE_RANGED_ATTACK:
             for (ItemSlot i : allItemSlots()) {
@@ -3073,7 +3072,6 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
                 }
             }
             return 0;
-            break;
 
         case CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS:
             if (this->IsUnarmed()) {
@@ -3129,8 +3127,9 @@ int Character::GetSkillBonus(CharacterAttributeType inSkill) const {
                 }
             }
             return 0;
-            break;
+
         default:
+            assert(false);
             return 0;
     }
 }
