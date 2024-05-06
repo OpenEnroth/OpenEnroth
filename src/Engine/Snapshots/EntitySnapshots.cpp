@@ -177,14 +177,14 @@ void reconstruct(const Vec3s &src, Vec3i *dst) {
     dst->z = src.z;
 }
 
-void snapshot(const Vec3f& src, Vec3s* dst) {
+void snapshot(const Vec3f &src, Vec3s *dst) {
     // TODO(captainurist): do we need to check for overflows here?
     dst->x = src.x;
     dst->y = src.y;
     dst->z = src.z;
 }
 
-void reconstruct(const Vec3s& src, Vec3f* dst) {
+void reconstruct(const Vec3s &src, Vec3f *dst) {
     dst->x = src.x;
     dst->y = src.y;
     dst->z = src.z;
@@ -1506,7 +1506,7 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
 }
 
 void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
-    dst->vPosition = src.vPosition;
+    dst->vPosition = src.vPosition.toFloat();
     dst->uRadius = src.uRadius;
     dst->uKind = static_cast<ObjectType>(src.uKind);
     if (dst->uKind == OBJECT_Actor) {

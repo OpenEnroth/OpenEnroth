@@ -69,7 +69,7 @@ static bool checkSeason(Season season) {
  * @offset 0x448CF4
  */
 static void spawnMonsters(int16_t typeindex, int16_t level, int count,
-                          Vec3i pos, int group, unsigned int uUniqueName) {
+                          Vec3f pos, int group, unsigned int uUniqueName) {
     MapId mapId = pMapStats->GetMapInfo(pCurrentMapName);
     SpawnPoint pSpawnPoint;
 
@@ -318,13 +318,13 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         case EVENT_SummonMonsters:
             spawnMonsters(ir.data.monster_descr.type, ir.data.monster_descr.level, ir.data.monster_descr.count,
-                          Vec3i(ir.data.monster_descr.x, ir.data.monster_descr.y, ir.data.monster_descr.z),
+                          Vec3f(ir.data.monster_descr.x, ir.data.monster_descr.y, ir.data.monster_descr.z),
                           ir.data.monster_descr.group, ir.data.monster_descr.name_id);
             break;
         case EVENT_CastSpell:
             eventCastSpell(ir.data.spell_descr.spell_id, ir.data.spell_descr.spell_mastery, ir.data.spell_descr.spell_level,
-                           ir.data.spell_descr.fromx, ir.data.spell_descr.fromy, ir.data.spell_descr.fromz,
-                           ir.data.spell_descr.tox, ir.data.spell_descr.toy, ir.data.spell_descr.toz);
+                         Vec3f(ir.data.spell_descr.fromx, ir.data.spell_descr.fromy, ir.data.spell_descr.fromz),
+                         Vec3f(ir.data.spell_descr.tox, ir.data.spell_descr.toy, ir.data.spell_descr.toz));
             break;
         case EVENT_SpeakNPC:
             if (_canShowMessages) {

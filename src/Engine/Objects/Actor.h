@@ -31,9 +31,9 @@ struct stru319 {
 extern stru319 stru_50C198;  // idb
 
 struct AIDirection {
-    Vec3f vDirection{};
-    unsigned int uDistance = 0;
-    unsigned int uDistanceXZ = 0;
+    Vec3f vDirection;
+    float uDistance = 0;
+    float uDistanceXZ = 0;
     unsigned int uYawAngle = 0;
     /*un*/signed int uPitchAngle = 0;
 };
@@ -156,9 +156,9 @@ class Actor {
     int _43B3E0_CalcDamage(ActorAbility dmgSource);
     static void AddOnDamageOverlay(unsigned int uActorID, int overlayType, int damage);
 
-    static void Arena_summon_actor(MonsterId monster_id, Vec3i pos);
+    static void Arena_summon_actor(MonsterId monster_id, Vec3f pos);
     static void DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
-                                       Vec3i *pVelocity);
+                                       const Vec3f &pVelocity);
     static void MakeActorAIList_ODM();
     static int MakeActorAIList_BLV();
     static void UpdateActorAI();
@@ -217,8 +217,8 @@ class Actor {
     uint16_t pitchAngle = 0;
     int sectorId = 0;
     Duration currentActionLength = 0_ticks;
-    Vec3i initialPosition;
-    Vec3i guardingPosition;
+    Vec3f initialPosition;
+    Vec3f guardingPosition;
     uint16_t tetherDistance = 256;
     AIState aiState = Standing;
     ActorAnimation currentActionAnimation = ANIM_Standing;
@@ -262,8 +262,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
  */
 void evaluateAoeDamage();
 double sub_43AE12(signed int a1);
-void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
-                         Vec3i *pVelocity);
+void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, const Vec3f &pVelocity);
 
 // TODO: in original binary almost all calls are with appendOnly=true, only Spawn_Light_Elemental uses
 // appendOnly=false. And this actually makes sense as actor ids can be stored in all kinds of places (e.g. inside

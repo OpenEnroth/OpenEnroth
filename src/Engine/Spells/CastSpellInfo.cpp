@@ -403,11 +403,10 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     int monster_id = spell_targeted_at.id();
-                    Vec3i spell_velocity = Vec3i(0, 0, 0);
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pActors[monster_id].pos + Vec3f(0, 0, pActors[monster_id].height / 2);
                     pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, monster_id);
-                    Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
+                    Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, Vec3f());
                     break;
                 }
 
@@ -422,12 +421,11 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int monster_id = spell_targeted_at.id();
                     if (pActors[monster_id].DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
-                        Vec3i spell_velocity = Vec3i(0, 0, 0);
                         pActors[monster_id].massDistortionTime = pMiscTimer->time();
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = pActors[monster_id].pos;
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, monster_id);
-                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
+                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, Vec3f());
                     }
                     break;
                 }
@@ -444,7 +442,6 @@ void CastSpellInfoHelpers::castSpell() {
                     // v730 = spell_targeted_at >> 3;
                     // HIDWORD(spellduration) = (int)&pActors[spell_targeted_at.id()];
                     int monster_id = spell_targeted_at.id();
-                    Vec3i spell_velocity = Vec3i(0, 0, 0);
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pActors[monster_id].pos;
                     pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition.toInt());
@@ -459,7 +456,7 @@ void CastSpellInfoHelpers::castSpell() {
                         setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
-                    Actor::DamageMonsterFromParty(Pid(OBJECT_Item, obj_id), monster_id, &spell_velocity);
+                    Actor::DamageMonsterFromParty(Pid(OBJECT_Item, obj_id), monster_id, Vec3f());
                     break;
                 }
 
@@ -887,11 +884,10 @@ void CastSpellInfoHelpers::castSpell() {
                     int monster_id = spell_targeted_at.id();
                     float dist = (pActors[monster_id].pos - pParty->pos).length();
                     if (dist <= meleeRange) {
-                        Vec3i spell_velocity = Vec3i(0, 0, 0);
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = pActors[monster_id].pos - Vec3f(0, 0, pActors[monster_id].height * -0.8);
                         pSpellSprite.spell_target_pid = spell_targeted_at;
-                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, &spell_velocity);
+                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, Vec3f());
                     } else {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
@@ -1028,10 +1024,9 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     for (Actor *actor : render->getActorsInViewport(4096)) {
-                        Vec3i spell_velocity = Vec3i(0, 0, 0);
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
-                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, &spell_velocity);
+                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, Vec3f());
                         spell_fx_renderer->RenderAsSprite(&pSpellSprite);
                     }
                     spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.OrangeyRed, 64_ticks);
@@ -2406,7 +2401,6 @@ void CastSpellInfoHelpers::castSpell() {
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_LIGHT_DISPEL_MAGIC_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    Vec3i spell_velocity = Vec3i(0, 0, 0);
                     // Spell damage processing was removed because Dispel Magic does not do damage
                     for (Actor *actor : render->getActorsInViewport(4096)) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
@@ -2498,11 +2492,10 @@ void CastSpellInfoHelpers::castSpell() {
                     // ++pSpellSprite.uType;
                     pSpellSprite.uType = SPRITE_SPELL_LIGHT_PRISMATIC_LIGHT_1;
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    Vec3i spell_velocity = Vec3i(0, 0, 0);
                     for (Actor *actor : render->getActorsInViewport(4096)) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
-                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, &spell_velocity);
+                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, Vec3f());
                     }
                     spell_fx_renderer->_4A8BFC_prismatic_light();
                     break;
@@ -2856,12 +2849,11 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_SOULDRINKER:
                 {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    Vec3i spell_velocity = Vec3i(0, 0, 0);
                     std::vector<Actor*> actorsInViewport = render->getActorsInViewport(pCamera3D->GetMouseInfoDepth());
                     for (Actor *actor : actorsInViewport) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
-                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, &spell_velocity);
+                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, Vec3f());
                     }
                     int drained_health = (actorsInViewport.size() * (7 * spell_level + 25));
                     int active_pl_num = 0;

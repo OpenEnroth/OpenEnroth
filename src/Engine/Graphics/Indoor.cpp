@@ -729,8 +729,8 @@ void BLV_UpdateDoors() {
 
         for (int j = 0; j < door->uNumFaces; ++j) {
             BLVFace *face = &pIndoor->pFaces[door->pFaceIDs[j]];
-            const Vec3i &facePoint = pIndoor->pVertices[face->pVertexIDs[0]];
-            face->facePlane.dist = -dot(facePoint.toFloat(), face->facePlane.normal);
+            const Vec3f &facePoint = pIndoor->pVertices[face->pVertexIDs[0]];
+            face->facePlane.dist = -dot(facePoint, face->facePlane.normal);
             face->zCalc.init(face->facePlane);
 
             Vec3f v;
@@ -745,7 +745,7 @@ void BLV_UpdateDoors() {
             float maxU = std::numeric_limits<float>::min();
             float maxV = std::numeric_limits<float>::min();
             for (unsigned k = 0; k < face->uNumVertices; ++k) {
-                Vec3f point = pIndoor->pVertices[face->pVertexIDs[k]].toFloat();
+                Vec3f point = pIndoor->pVertices[face->pVertexIDs[k]];
                 float pointU = dot(point, u);
                 float pointV = dot(point, v);
                 minU = std::min(minU, pointU);
@@ -1936,7 +1936,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             enc_spawn_point.uMonsterIndex = enc_index;
 
             // get proposed floor level
-            enc_spawn_point.vPosition.z = ODM_GetFloorLevel(enc_spawn_point.vPosition, 0, &bInWater, &modelPID, 0);
+            enc_spawn_point.vPosition.z = ODM_GetFloorLevel(enc_spawn_point.vPosition.toInt(), 0, &bInWater, &modelPID, 0);
 
             // check spawn point is not in a model
             for (BSPModel &model : pOutdoor->pBModels) {
@@ -1972,10 +1972,10 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             enc_spawn_point.uMonsterIndex = enc_index;
 
             // get proposed sector
-            mon_sectorID = pIndoor->GetSector(enc_spawn_point.vPosition);
+            mon_sectorID = pIndoor->GetSector(enc_spawn_point.vPosition.toInt());
             if (mon_sectorID == party_sectorID) {
                 // check proposed floor level
-                indoor_floor_level = BLV_GetFloorLevel(enc_spawn_point.vPosition, mon_sectorID);
+                indoor_floor_level = BLV_GetFloorLevel(enc_spawn_point.vPosition.toInt(), mon_sectorID);
                 enc_spawn_point.vPosition.z = indoor_floor_level;
                 if (indoor_floor_level != -30000) {
                     // break if spanwn point is okay
@@ -2027,7 +2027,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
             return;
 
         if (v5 >= 60) {
-            DropTreasureAt(v13, grng->randomSample(allSpawnableRandomItemTypes()), a2->vPosition, 0);
+            DropTreasureAt(v13, grng->randomSample(allSpawnableRandomItemTypes()), a2->vPosition.toInt(), 0);
             return;
         }
 
@@ -2044,14 +2044,14 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
     a1a.uAttributes = 0;
     a1a.uSoundID = 0;
     a1a.uFacing = 0;
-    a1a.vPosition = a2->vPosition.toFloat();
+    a1a.vPosition = a2->vPosition;
     a1a.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
     a1a.spell_level = 0;
     a1a.uSpellID = SPELL_NONE;
     a1a.spell_target_pid = Pid();
     a1a.spell_caster_pid = Pid();
     a1a.timeSinceCreated = 0_ticks;
-    a1a.uSectorID = pIndoor->GetSector(a2->vPosition);
+    a1a.uSectorID = pIndoor->GetSector(a2->vPosition.toInt());
     a1a.Create(0, 0, 0, 0);
 }
 

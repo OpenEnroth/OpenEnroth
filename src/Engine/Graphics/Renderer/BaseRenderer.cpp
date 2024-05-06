@@ -657,8 +657,8 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
 
     float depth = 1000000.0;
     for (unsigned i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
-        if (a1->field_104[i].z < depth) {
-            depth = a1->field_104[i].z;
+        if (a1->field_104[i].pos.z < depth) {
+            depth = a1->field_104[i].pos.z;
         }
     }
 
@@ -676,14 +676,12 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
     pBillboardRenderListD3D[v5].pQuads[3].pos.z = 0.0f;
 
     for (unsigned int i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
-        pBillboardRenderListD3D[v5].pQuads[i].pos.x = a1->field_104[i].x;
-        pBillboardRenderListD3D[v5].pQuads[i].pos.y = a1->field_104[i].y;
-        pBillboardRenderListD3D[v5].pQuads[i].pos.z = a1->field_104[i].z;
+        pBillboardRenderListD3D[v5].pQuads[i].pos = a1->field_104[i].pos;
 
-        float rhw = 1.f / a1->field_104[i].z;
-        float z = 1.f - 1.f / (a1->field_104[i].z * 1000.f / pCamera3D->GetFarClip());
+        float rhw = 1.f / a1->field_104[i].pos.z;
+        float z = 1.f - 1.f / (a1->field_104[i].pos.z * 1000.f / pCamera3D->GetFarClip());
 
-        double v10 = a1->field_104[i].z;
+        double v10 = a1->field_104[i].pos.z;
         v10 *= 1000.f / pCamera3D->GetFarClip();
 
         pBillboardRenderListD3D[v5].pQuads[i].rhw = rhw;

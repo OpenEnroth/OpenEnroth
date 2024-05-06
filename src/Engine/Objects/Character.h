@@ -47,7 +47,7 @@ struct LloydBeacon {
     }
 
     Time uBeaconTime = Time();
-    Vec3i _partyPos = Vec3i(0, 0, 0);
+    Vec3f _partyPos;
     int16_t _partyViewYaw = 0;
     int16_t _partyViewPitch = 0;
     uint16_t unknown = 0;
@@ -360,7 +360,7 @@ class Character {
     int getCharacterIndex();
 
     static void _42ECB5_CharacterAttacksActor();
-    static void _42FA66_do_explosive_impact(Vec3i pos, int a4, int16_t a5, int actchar);
+    static void _42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int actchar);
     void cleanupBeacons();
     bool setBeacon(int index, Duration duration);
 
@@ -464,7 +464,7 @@ class Character {
     char uNumFireSpikeCasts;
 };
 
-void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, Vec3i *pPos, signed int a4);
+void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int a4);
 bool IsDwarfPresentInParty(bool b);
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
 int CharacterCreation_GetUnspentAttributePointCount();
