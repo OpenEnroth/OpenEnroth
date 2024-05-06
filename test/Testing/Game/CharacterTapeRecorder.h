@@ -8,6 +8,16 @@
 
 #include "TestController.h"
 
+/**
+ * Tape recorder for character properties.
+ *
+ * Plural methods return a tape of vectors, with one element for each character in party. Singular methods take a
+ * 0-based character index and return a tape for this character.
+ *
+ * For example:
+ * - `hp(0)` returns a tape of health points for the 1st character.
+ * - `hps()` returns a tape where each element is a vector of four `int`s - health points for the whole party.
+ */
 class CharacterTapeRecorder {
  public:
     explicit CharacterTapeRecorder(TestController *controller);
