@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2b5728d</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8c27f16</span>
    </div>
   </td>
  </tr>
@@ -82,6 +82,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;cstring&gt;</code><br />
+<code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 </div><table class="memberdecls">
@@ -111,6 +112,9 @@ Functions</h2></td></tr>
 <tr class="separator:ad7be334215e4c19823a702e50687e9b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abce37d02d8240d54edb96502ca178a49"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#abce37d02d8240d54edb96502ca178a49">replaceAll</a> (std::string_view text, char what, char replacement)</td></tr>
 <tr class="separator:abce37d02d8240d54edb96502ca178a49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3f1aed79fdcf0920dbf12c22e09e7c4"><td class="memTemplParams" colspan="2">template&lt;class Consumer &gt; </td></tr>
+<tr class="memitem:ae3f1aed79fdcf0920dbf12c22e09e7c4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#ae3f1aed79fdcf0920dbf12c22e09e7c4">split</a> (std::string_view <a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, char sep, Consumer &amp;&amp;consumer)</td></tr>
+<tr class="separator:ae3f1aed79fdcf0920dbf12c22e09e7c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3810690177cb57539130f0de5c96f8ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#a3810690177cb57539130f0de5c96f8ac">split</a> (std::string_view <a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, char sep, std::vector&lt; std::string_view &gt; *result)</td></tr>
 <tr class="separator:a3810690177cb57539130f0de5c96f8ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5d077992d827516cafb44a6126ffc06"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string_view &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#aa5d077992d827516cafb44a6126ffc06">split</a> (std::string_view <a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, char sep)</td></tr>
@@ -293,7 +297,7 @@ requires (sizeof...(Joinables) &gt; 0)</div>
 </div>
 </div>
 <a id="ae7cd7d83eab1926c0dfe4285211b8951" name="ae7cd7d83eab1926c0dfe4285211b8951"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae7cd7d83eab1926c0dfe4285211b8951">&#9670;&#160;</a></span>split() <span class="overload">[1/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7cd7d83eab1926c0dfe4285211b8951">&#9670;&#160;</a></span>split() <span class="overload">[1/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -329,7 +333,7 @@ requires (sizeof...(Joinables) &gt; 0)</div>
 </div>
 </div>
 <a id="a77debccb9efa601e8f2d18ab08aa9bd9" name="a77debccb9efa601e8f2d18ab08aa9bd9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a77debccb9efa601e8f2d18ab08aa9bd9">&#9670;&#160;</a></span>split() <span class="overload">[2/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a77debccb9efa601e8f2d18ab08aa9bd9">&#9670;&#160;</a></span>split() <span class="overload">[2/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -365,7 +369,7 @@ requires (sizeof...(Joinables) &gt; 0)</div>
 </div>
 </div>
 <a id="aa5d077992d827516cafb44a6126ffc06" name="aa5d077992d827516cafb44a6126ffc06"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5d077992d827516cafb44a6126ffc06">&#9670;&#160;</a></span>split() <span class="overload">[3/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5d077992d827516cafb44a6126ffc06">&#9670;&#160;</a></span>split() <span class="overload">[3/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -400,8 +404,54 @@ requires (sizeof...(Joinables) &gt; 0)</div>
 
 </div>
 </div>
+<a id="ae3f1aed79fdcf0920dbf12c22e09e7c4" name="ae3f1aed79fdcf0920dbf12c22e09e7c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3f1aed79fdcf0920dbf12c22e09e7c4">&#9670;&#160;</a></span>split() <span class="overload">[4/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Consumer &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void split </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>s</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>sep</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Consumer &amp;&amp;&#160;</td>
+          <td class="paramname"><em>consumer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Splits the provided string <code>s</code> using separator <code>sep</code>, passing <code>std::string_view</code> chunks into <code>consumer</code>.</p>
+<p >This function doesn't discard empty chunks, so at least one chunk will always be passed to <code>consumer</code> - splitting an empty string produces a single empty chunk.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>String to split. </td></tr>
+    <tr><td class="paramname">sep</td><td>Separator character. </td></tr>
+    <tr><td class="paramname">consumer</td><td>Lambda to pass <code>std::string_view</code> chunks into. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a3810690177cb57539130f0de5c96f8ac" name="a3810690177cb57539130f0de5c96f8ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3810690177cb57539130f0de5c96f8ac">&#9670;&#160;</a></span>split() <span class="overload">[4/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3810690177cb57539130f0de5c96f8ac">&#9670;&#160;</a></span>split() <span class="overload">[5/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
