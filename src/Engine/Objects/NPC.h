@@ -30,9 +30,9 @@ int UseNPCSkill(NpcProfession profession, int id);
 const std::string &GetProfessionActionText(NpcProfession prof);
 
 /**
- * @offset 0x445B2C
- * @param npcId                Id of the NPC.
- * @return                     Pointer to NPC data structure
+ * @offset 0x4459F9
+ * @param npcId        If positive, means ID of NPC (quest or hireable). If negative, then it's absolute value minus one is index of party hireling.
+ * @return             Pointer to NPC data structure
  */
 NPCData *getNPCData(int npcId);
 
