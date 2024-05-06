@@ -8,7 +8,6 @@
 #include "Engine/AssetsManager.h"
 
 #include "Engine/Events/Processor.h"
-#include "Engine/Events/RawEvent.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/DecorationList.h"
@@ -63,7 +62,6 @@
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
 
-#include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIStatusBar.h"
