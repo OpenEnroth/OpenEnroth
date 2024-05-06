@@ -31,8 +31,10 @@ const std::string &GetProfessionActionText(NpcProfession prof);
 
 /**
  * @offset 0x445B2C
+ * @param npcId                Id of the NPC.
+ * @return                     Pointer to NPC data structure
  */
-NPCData *getNPCData(signed int npcid, int *npc_indx = nullptr);
+NPCData *getNPCData(int npcId);
 
 /**
  * @offset 0x445C8B

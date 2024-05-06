@@ -5669,7 +5669,6 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
     LocationInfo *locationHeader;  // eax@90
     int randGold;
     int randFood;
-    int npcIndex;
 
     if (VarNum >= VAR_MapPersistentVariable_0 && VarNum <= VAR_MapPersistentVariable_74) {
         engine->_persistentVariables.mapVars[std::to_underlying(VarNum) - std::to_underlying(VAR_MapPersistentVariable_0)] -= pValue;
@@ -6135,9 +6134,7 @@ void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
             _characterEventBits.reset(pValue);
             return;
         case VAR_NPCs2:
-            npcIndex = 0;
-            getNPCData(speakingNpcId, &npcIndex);
-            if (npcIndex == pValue) {
+            if (getNPCType(speakingNpcId) == NPC_TYPE_QUEST && speakingNpcId == pValue) {
                 npcIdToDismissAfterDialogue = pValue;
             } else {
                 npcIdToDismissAfterDialogue = 0;

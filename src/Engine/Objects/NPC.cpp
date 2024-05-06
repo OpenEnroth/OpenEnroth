@@ -27,31 +27,22 @@ static const Segment<Condition> standardConditionsExcludeDead = {CONDITION_CURSE
 // All conditions including dead character ones, but still excluding zombie
 static const Segment<Condition> standardConditionsIncludeDead = {CONDITION_CURSED, CONDITION_ERADICATED};
 
-NPCData *getNPCData(signed int npcid, int *npc_indx) {
-    NPCData *result;
-    int outIdx = -1;
-
-    if (npcid >= 0) {
-        if (npcid < 5000) {
-            if (npcid >= 501) {
+NPCData *getNPCData(int npcId) {
+    if (npcId >= 0) {
+        if (npcId < 5000) {
+            if (npcId >= 501) {
                 logger->warning("NPC id exceeds MAX_DATA!");
             }
-            outIdx = npcid;
-            result = &pNPCStats->pNPCData[npcid];
+            return &pNPCStats->pNPCData[npcId];
         } else {
-            outIdx = npcid - 5000;
-            result = &pNPCStats->pAdditionalNPC[npcid - 5000];
+            return &pNPCStats->pAdditionalNPC[npcId - 5000];
         }
     } else {
         FlatHirelings buf;
         buf.Prepare();
 
-        result = buf.Get(std::abs(npcid) - 1);
+        return buf.Get(std::abs(npcId) - 1);
     }
-
-    if (npc_indx)
-        *npc_indx = outIdx;
-    return result;
 }
 
 //----- (00476387) --------------------------------------------------------
