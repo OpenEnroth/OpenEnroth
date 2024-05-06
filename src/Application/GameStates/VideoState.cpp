@@ -8,12 +8,17 @@
 
 #include <GUI/GUIWindow.h>
 
-VideoState::VideoState(std::string_view videoFileName) : _videoFileName(videoFileName) {
+const std::string_view VideoState::LOGO_GROUP("Logo");
+const std::string_view VideoState::INTRO_GROUP("Intro");
+
+VideoState::VideoState(std::string_view videoFileName, std::string_view videoGroup) : _videoFileName(videoFileName), _videoGroup(videoGroup) {
 }
 
 FsmAction VideoState::enter() {
     _skipVideo = false;
-    if (engine->config->debug.NoVideo.value()) {
+    if (engine->config->debug.NoVideo.value() ||
+        (engine->config->debug.NoIntro.value() && _videoGroup == INTRO_GROUP) ||
+        (engine->config->debug.NoLogo.value() && _videoGroup == LOGO_GROUP)) {
         return FsmActionTransition("videoEnd");
     }
 
