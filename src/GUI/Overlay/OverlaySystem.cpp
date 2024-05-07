@@ -46,7 +46,7 @@ void OverlaySystem::drawOverlays() {
     _update();
     _renderer.drawOverlays(_nuklearContext.get());
 
-    if (!_isEnabled) {
+    if (_isEnabled) {
         _renderer.beginOverlays();
         //ImGui::ShowDemoWindow();
         _renderer.endOverlays();
