@@ -20,7 +20,7 @@ struct IndoorLocation;
 struct MapInfo;
 
 struct BLVLight {
-    Vec3i vPosition;
+    Vec3f vPosition;
     int16_t uRadius = 0;
     char uRed = 0;
     char uGreen = 0;
