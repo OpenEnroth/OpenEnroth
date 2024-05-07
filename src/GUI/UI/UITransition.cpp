@@ -71,11 +71,11 @@ void GUIWindow_Transition::Release() {
 
 //----- (00444839) --------------------------------------------------------
 GUIWindow_Transition::GUIWindow_Transition(HouseId transitionHouse, unsigned exit_pic_id,
-                                           Vec3i pos, int yaw,
+                                           Vec3f pos, int yaw,
                                            int pitch, int zspeed,
                                            std::string_view locationName)
     : GUIWindow(WINDOW_Transition, {0, 0}, render->GetRenderDimensions()) {
-    engine->_teleportPoint.setTeleportTarget(pos.toFloat(), yaw, pitch, zspeed);
+    engine->_teleportPoint.setTeleportTarget(pos, yaw, pitch, zspeed);
     engine->_teleportPoint.setTeleportMap(locationName);
     uCurrentHouse_Animation = std::to_underlying(transitionHouse); // TODO(Nik-RE-dev): is this correct?
     pEventTimer->setPaused(true);
