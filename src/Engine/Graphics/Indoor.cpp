@@ -1996,12 +1996,12 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 }
 
 //----- (00450521) --------------------------------------------------------
-int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i pos, uint16_t facing) {
+int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing) {
     SpriteObject a1;
     pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
     a1.uType = pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
-    a1.vPosition = pos.toFloat();
+    a1.vPosition = pos;
     a1.uFacing = facing;
     a1.uAttributes = 0;
     a1.uSectorID = pIndoor->GetSector(a1.vPosition);
@@ -2027,7 +2027,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
             return;
 
         if (v5 >= 60) {
-            DropTreasureAt(v13, grng->randomSample(allSpawnableRandomItemTypes()), a2->vPosition.toInt(), 0);
+            DropTreasureAt(v13, grng->randomSample(allSpawnableRandomItemTypes()), a2->vPosition, 0);
             return;
         }
 
