@@ -647,9 +647,11 @@ bool GameWindowHandler::event(const PlatformEvent *event) {
 }
 
 void GameWindowHandler::addFsmEventHandler(FsmEventHandler *fsmEventHandler) {
+    assert(std::ranges::find(_fsmEventHandlers, fsmEventHandler) == _fsmEventHandlers.end());
     _fsmEventHandlers.push_back(fsmEventHandler);
 }
 
 void GameWindowHandler::removeFsmEventHandler(FsmEventHandler *fsmEventHandler) {
+    assert(std::ranges::find(_fsmEventHandlers, fsmEventHandler) != _fsmEventHandlers.end());
     std::erase(_fsmEventHandlers, fsmEventHandler);
 }
