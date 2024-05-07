@@ -788,7 +788,7 @@ void UpdateActors_BLV() {
             continue;
 
         int uFaceID;
-        int floorZ = GetIndoorFloorZ(actor.pos.toInt(), &actor.sectorId, &uFaceID);
+        float floorZ = GetIndoorFloorZ(actor.pos, &actor.sectorId, &uFaceID);
 
         if (actor.sectorId == 0 || floorZ <= -30000)
             continue;
@@ -1557,13 +1557,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     int sectorId = pBLVRenderParams->uPartySectorID;
     int faceId = -1;
-    int floorZ = GetIndoorFloorZ(pParty->pos.toInt() + Vec3i(0, 0, pParty->radius), &sectorId, &faceId);
+    float floorZ = GetIndoorFloorZ(pParty->pos + Vec3f(0, 0, pParty->radius), &sectorId, &faceId);
 
     if (pParty->bFlying)  // disable flight
         pParty->bFlying = false;
 
     if (floorZ == -30000 || faceId == -1) {
-        floorZ = GetApproximateIndoorFloorZ(pParty->pos.toInt() + Vec3i(0, 0, pParty->radius), &sectorId, &faceId);
+        floorZ = GetApproximateIndoorFloorZ(pParty->pos + Vec3f(0, 0, pParty->radius), &sectorId, &faceId);
         if (floorZ == -30000 || faceId == -1) {
             assert(false);  // level built with errors
             return;
@@ -2068,35 +2068,35 @@ void FindBillboardsLightLevels_BLV() {
     }
 }
 
-int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID) {
+float GetIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID) {
     if (*pSectorID != 0) {
-        int result = BLV_GetFloorLevel(pos.toFloat(), *pSectorID, pFaceID);
+        int result = BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
         if (result != -30000 && result <= pos.z + 50)
             return result;
     }
 
-    *pSectorID = pIndoor->GetSector(pos.toFloat());
+    *pSectorID = pIndoor->GetSector(pos);
     if (*pSectorID == 0) {
         if (pFaceID)
             *pFaceID = -1;
         return -30000;
     }
 
-    return BLV_GetFloorLevel(pos.toFloat(), *pSectorID, pFaceID);
+    return BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
 }
 
 //----- (0047272C) --------------------------------------------------------
-int GetApproximateIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID) {
-    std::array<Vec3i, 5> attempts = {{
-        pos + Vec3i(-2, 0, 40),
-        pos + Vec3i(2, 0, 40),
-        pos + Vec3i(0, -2, 40),
-        pos + Vec3i(0, 2, 40),
-        pos + Vec3i(0, 0, 140)
+float GetApproximateIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID) {
+    std::array<Vec3f, 5> attempts = {{
+        pos + Vec3f(-2, 0, 40),
+        pos + Vec3f(2, 0, 40),
+        pos + Vec3f(0, -2, 40),
+        pos + Vec3f(0, 2, 40),
+        pos + Vec3f(0, 0, 140)
     }};
 
-    int result;
-    for (const Vec3i &attempt : attempts) {
+    float result = -30000;
+    for (const Vec3f &attempt : attempts) {
         *pSectorID = 0; // Make sure GetIndoorFloorZ recalculates sector id from provided coordinates.
         result = GetIndoorFloorZ(attempt, pSectorID, pFaceID);
         if (result != -30000)

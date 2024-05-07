@@ -325,7 +325,7 @@ void FindBillboardsLightLevels_BLV();
  * @return                              Z coordinate for the floor at (X, Y), or `-30000` if actor is outside the
  *                                      level boundaries.
  */
-int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID = nullptr);
+float GetIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID = nullptr);
 
 /**
  * @offset 0x0047272C.
@@ -335,7 +335,7 @@ int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID = nullptr);
  *
  * @see GetIndoorFloorZ
  */
-int GetApproximateIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID = nullptr);
+float GetApproximateIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID = nullptr);
 
 /**
  * @param target                         Vec3f of position to check line of sight to

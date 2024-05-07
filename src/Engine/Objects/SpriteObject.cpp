@@ -348,7 +348,7 @@ void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
     }
 
     int uFaceID;
-    int floor_lvl = GetIndoorFloorZ(pSpriteObject->vPosition.toInt(), &pSpriteObject->uSectorID, &uFaceID);
+    float floor_lvl = GetIndoorFloorZ(pSpriteObject->vPosition, &pSpriteObject->uSectorID, &uFaceID);
     if (floor_lvl <= -30000) {
         SpriteObject::OnInteraction(uLayingItemID);
         return;

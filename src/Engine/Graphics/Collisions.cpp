@@ -610,7 +610,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         Vec3f newPos = actor.pos + collision_state.adjusted_move_distance * collision_state.direction;
         int newFaceID = -1;
-        int newFloorZ = GetIndoorFloorZ(newPos.toInt(), &collision_state.uSectorID, &newFaceID);
+        float newFloorZ = GetIndoorFloorZ(newPos, &collision_state.uSectorID, &newFaceID);
         if (newFloorZ == -30000)
             break; // New pos is out of bounds, running more iterations won't help.
 
@@ -873,7 +873,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         // Adjust the collision position with the same offset
         collision_state.collisionPos -= closestdist * collision_state.direction;
 
-        int adjusted_floor_z = GetIndoorFloorZ((adjusted_pos + Vec3f(0, 0, collision_state.radius_lo)).toInt(), &collision_state.uSectorID, faceId);
+        float adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3f(0, 0, collision_state.radius_lo), &collision_state.uSectorID, faceId);
         if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128) {
             // intended world position isnt valid so dont move there
             return; // TODO: whaaa?
