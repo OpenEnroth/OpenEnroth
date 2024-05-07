@@ -195,21 +195,11 @@ OpenGLRenderer::OpenGLRenderer(
     clip_x = 0;
     clip_y = 0;
     clip_z = 0;
-
-    // TODO(Gerark) This is a remporary ImGUI initialization that will be moved elsewhere once nuklear is replaced. 
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
 }
 
 OpenGLRenderer::~OpenGLRenderer() {
     logger->info("RenderGl - Destructor");
     ImGui_ImplOpenGL3_Shutdown();
-    // TODO(Gerark) Move the destruction of the context together with the initialization code
-    ImGui::DestroyContext();
 }
 
 void OpenGLRenderer::Release() { logger->info("RenderGL - Release"); }

@@ -3,7 +3,7 @@
 #include <memory>
 #include <utility>
 
-#include <imgui.h> // NOLINT: not a C system header.
+#include <imgui/imgui.h> // NOLINT: not a C system header.
 #include <nuklear_config.h> // NOLINT: not a C system header.
 
 #include "Application/GameConfig.h"

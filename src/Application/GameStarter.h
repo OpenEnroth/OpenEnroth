@@ -10,6 +10,7 @@ class Environment;
 class Logger;
 class BufferLogSink;
 class DistLogSink;
+class ImGuiWrapper;
 class LogSink;
 class PlatformApplication;
 class GameConfig;
@@ -49,6 +50,7 @@ class GameStarter {
     std::unique_ptr<DistLogSink> _rootLogSink;
     std::unique_ptr<Logger> _logger;
     std::shared_ptr<GameConfig> _config;
+    std::unique_ptr<ImGuiWrapper> _imGuiWrapper;
     std::unique_ptr<Platform> _platform;
     std::unique_ptr<PlatformApplication> _application;
     std::unique_ptr<Renderer> _renderer;

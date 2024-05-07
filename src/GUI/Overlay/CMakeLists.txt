@@ -1,12 +1,14 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(OVERLAY_SOURCES
+        ImGuiWrapper.cpp
         OverlayEventHandler.cpp
         OverlaySystem.cpp
         ExampleOverlay.cpp
         ScriptedOverlay.cpp)
 
 set(OVERLAY_HEADERS
+        ImGuiWrapper.h
         Overlay.h
         OverlayEventHandler.h
         OverlaySystem.h
@@ -21,7 +23,7 @@ target_link_libraries(gui_overlay
     engine
     utility
     PRIVATE
-    nuklear
     imgui
+    nuklear
     scripting
 )
