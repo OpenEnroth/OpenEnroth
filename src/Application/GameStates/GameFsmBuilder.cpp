@@ -23,17 +23,15 @@ void GameFsmBuilder::_buildIntroVideoSequence(FsmBuilder &builder) {
     .state<StartState>("Start")
         .on("proceed").jumpTo("3DOVideo")
 
-    .state<VideoState>("3DOVideo", "3dologo", VideoState::LOGO_GROUP)
+    .state<VideoState>("3DOVideo", VideoState::VIDEO_LOGO, "3dologo")
         .on("videoEnd").jumpTo("NWCVideo")
 
-    .state<VideoState>("NWCVideo", "new world logo", VideoState::LOGO_GROUP)
+    .state<VideoState>("NWCVideo", VideoState::VIDEO_LOGO, "new world logo")
         .on("videoEnd").jumpTo("JVCVideo")
 
-    .state<VideoState>("JVCVideo", "jvc", VideoState::LOGO_GROUP)
-        .on("videoEnd")
-            .jumpTo([]() { return !engine->config->debug.NoIntro.value(); }, "IntroVideo")
-            .jumpTo(Fsm::exitState)
+    .state<VideoState>("JVCVideo", VideoState::VIDEO_LOGO, "jvc")
+        .on("videoEnd").jumpTo("IntroVideo")
 
-    .state<VideoState>("IntroVideo", "Intro", VideoState::INTRO_GROUP)
+    .state<VideoState>("IntroVideo", VideoState::VIDEO_INTRO, "Intro")
         .on("videoEnd").jumpTo(Fsm::exitState);
 }
