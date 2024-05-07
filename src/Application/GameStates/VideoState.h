@@ -2,11 +2,10 @@
 
 #include <Library/Fsm/FsmState.h>
 #include <GUI/GUIEnums.h>
+#include <Media/Movie.h>
 
 #include <string>
 #include <memory>
-
-class IMovie;
 
 class VideoState : public FsmState {
  public:
