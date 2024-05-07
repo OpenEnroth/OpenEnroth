@@ -48,7 +48,7 @@ void OverlaySystem::drawOverlays() {
 }
 
 void OverlaySystem::_update() {
-    if (_isEnabled) {
+    if (!_isEnabled) {
         return;
     }
 
