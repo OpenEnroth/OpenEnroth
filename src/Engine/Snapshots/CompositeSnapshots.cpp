@@ -312,7 +312,7 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     dst->field_40 = srcData.field_40;
     dst->sCenterX = srcData.sCenterX;
     dst->sCenterY = srcData.sCenterY;
-    dst->vPosition = srcData.vPosition;
+    dst->vPosition = srcData.vPosition.toFloat();
     dst->pBoundingBox.x1 = srcData.sMinX;
     dst->pBoundingBox.y1 = srcData.sMinY;
     dst->pBoundingBox.z1 = srcData.sMinZ;
@@ -325,7 +325,7 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     dst->sSomeOtherMaxX = srcData.sSomeOtherMaxX;
     dst->sSomeOtherMaxY = srcData.sSomeOtherMaxY;
     dst->sSomeOtherMaxZ = srcData.sSomeOtherMaxZ;
-    dst->vBoundingCenter = srcData.vBoundingCenter;
+    dst->vBoundingCenter = srcData.vBoundingCenter.toFloat();
     dst->sBoundingRadius = srcData.sBoundingRadius;
 
     reconstruct(srcExtras.vertices, &dst->pVertices);
@@ -380,7 +380,7 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
         reconstruct(std::forward_as_tuple(src.models[i], src.modelExtras[i]), &model);
 
         // Recalculate bounding spheres, the ones stored in data files are borked.
-        model.vBoundingCenter = model.pBoundingBox.center();
+        model.vBoundingCenter = model.pBoundingBox.center().toFloat();
         model.sBoundingRadius = model.pBoundingBox.size().toFloat().length() / 2.0f;
     }
 

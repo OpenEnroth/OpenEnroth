@@ -313,10 +313,10 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     if (dist < model->sBoundingRadius + reachable_depth) *reachable = true;
 
     // to avoid small objects not showing up give a more generous radius
-    float radius{ static_cast<float>(model->sBoundingRadius) };
+    float radius{ model->sBoundingRadius };
     if (radius < 512.0f) radius = 512.0f;
 
-    return IsSphereInFrustum(model->vBoundingCenter.toFloat(), radius);
+    return IsSphereInFrustum(model->vBoundingCenter, radius);
 }
 
 bool IsSphereInFrustum(Vec3f center, float radius, Planef *frustum) {
