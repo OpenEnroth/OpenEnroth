@@ -1,8 +1,11 @@
 #pragma once
 
+#include <Library/Fsm/FsmTypes.h>
+
 #include <memory>
 #include <string>
 #include <vector>
+#include <functional>
 #include <utility>
 
 #include "Fsm.h"
@@ -34,9 +37,10 @@ class FsmBuilder {
     FsmBuilder &jumpTo(std::string_view targetState);
     FsmBuilder &jumpTo(std::function<bool()> condition, std::string_view targetState);
 
-    std::unique_ptr<Fsm> build();
+    std::unique_ptr<Fsm> build(std::string_view startStateName);
 
  private:
-    std::vector<std::unique_ptr<Fsm::StateEntry>> _states;
+    FsmStateEntries _states;
+    FsmStateEntry *_latestState;
     std::string _latestOnTransition;
 };

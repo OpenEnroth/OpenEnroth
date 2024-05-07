@@ -8,7 +8,7 @@
 
 #include <GUI/GUIWindow.h>
 
-VideoState::VideoState(VideoState::Type type, std::string_view videoFileName) : _type(type), _videoFileName(videoFileName){
+VideoState::VideoState(VideoState::Type type, std::string_view videoFileName) : _type(type), _videoFileName(videoFileName) {
 }
 
 FsmAction VideoState::enter() {

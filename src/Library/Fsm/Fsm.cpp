@@ -2,17 +2,21 @@
 
 #include <Library/Logger/Logger.h>
 
-#include <memory>
 #include <utility>
 #include <string>
+#include <memory>
 
 const LogCategory Fsm::fsmLogCategory("Fsm");
 const std::string_view Fsm::exitState = "_Exit";
 
+Fsm::Fsm(FsmStateEntries states, std::string_view startStateName) : _states(std::move(states)) {
+    jumpToState(startStateName);
+}
+
 void Fsm::jumpToState(std::string_view stateName) {
     _hasReachedExitState = stateName == exitState;
     if (!_hasReachedExitState) {
-        if (StateEntry *entry = _getStateByName(stateName)) {
+        if (FsmStateEntry *entry = _getStateByName(stateName)) {
             _nextState = entry;
         } else {
             logger->warning(fsmLogCategory, "Cannot jump to state [{}]. The state does not exist.", stateName);
@@ -61,10 +65,6 @@ bool Fsm::hasReachedExitState() const {
     return _hasReachedExitState;
 }
 
-void Fsm::addState(std::unique_ptr<StateEntry> stateEntry) {
-    _states.insert({ stateEntry->name, std::move(stateEntry) });
-}
-
 void Fsm::_scheduleTransition(std::string_view transition) {
     // Look for the correct transition
     FsmTransitions &transitions = _currentState->transitions;
@@ -92,7 +92,7 @@ void Fsm::_scheduleTransition(std::string_view transition) {
     jumpToState(transitionTarget->stateName);
 }
 
-Fsm::StateEntry *Fsm::_getStateByName(std::string_view stateName) {
+FsmStateEntry *Fsm::_getStateByName(std::string_view stateName) {
     if (auto itr = _states.find(stateName); itr != _states.end()) {
         return itr->second.get();
     }

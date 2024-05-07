@@ -4,23 +4,15 @@
 #include <Library/Logger/LogCategory.h>
 
 #include "FsmEventHandler.h"
-#include "FsmState.h"
+#include "FsmTypes.h"
 
-#include <memory>
-#include <functional>
 #include <string>
-#include <vector>
-#include <unordered_map>
-
-struct FsmTransitionTarget {
-    std::string stateName;
-    std::function<bool()> condition{};
-};
-
-using FsmTransitions = std::unordered_map<TransparentString, std::vector<FsmTransitionTarget>, TransparentStringHash, TransparentStringEquals>;
+#include <memory>
 
 class Fsm : public FsmEventHandler {
  public:
+    Fsm(FsmStateEntries states, std::string_view startStateName);
+
     /**
      * @brief Updates the current state of the Fsm or executes any pending transitions.
      */
@@ -45,14 +37,6 @@ class Fsm : public FsmEventHandler {
      */
     static const std::string_view exitState;
 
-    struct StateEntry {
-        std::string name;
-        std::unique_ptr<FsmState> state;
-        FsmTransitions transitions;
-    };
-
-    void addState(std::unique_ptr<StateEntry> stateEntry);
-
     static const LogCategory fsmLogCategory;
 
  private:
@@ -63,11 +47,11 @@ class Fsm : public FsmEventHandler {
     void _updateCurrentState();
     void _performAction(FsmAction &action);
     void _scheduleTransition(std::string_view transition);
-    StateEntry *_getStateByName(std::string_view stateName);
+    [[nodiscard]] FsmStateEntry *_getStateByName(std::string_view stateName);
 
-    std::unordered_map<TransparentString, std::unique_ptr<StateEntry>, TransparentStringHash, TransparentStringEquals> _states;
-    StateEntry *_currentState{};
-    StateEntry *_nextState{};
+    FsmStateEntries _states;
+    FsmStateEntry *_currentState{};
+    FsmStateEntry *_nextState{};
 
     // By default, when the Fsm has no states, it's treated as if it reached already the Fsm::exitState state
     bool _hasReachedExitState{true};

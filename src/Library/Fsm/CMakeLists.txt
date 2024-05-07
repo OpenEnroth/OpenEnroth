@@ -11,7 +11,8 @@ set(Fsm_HEADERS
         FsmAction.h
         FsmBuilder.h
         FsmEventHandler.h
-        FsmState.h)
+        FsmState.h
+        FsmTypes.h)
 
 add_library(library_fsm STATIC ${Fsm_SOURCES} ${Fsm_HEADERS})
 target_link_libraries(library_fsm PUBLIC utility library_logger)

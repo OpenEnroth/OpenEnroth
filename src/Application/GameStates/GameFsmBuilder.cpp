@@ -12,9 +12,7 @@
 std::unique_ptr<Fsm> GameFsmBuilder::buildFsm() {
     FsmBuilder fsmBuilder;
     _buildIntroVideoSequence(fsmBuilder);
-
-    auto fsm = fsmBuilder.build();
-    fsm->jumpToState("Start");
+    auto fsm = fsmBuilder.build("Start");
     return fsm;
 }
 
