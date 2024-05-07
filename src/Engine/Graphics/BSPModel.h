@@ -102,7 +102,7 @@ class BSPModel {
     Vec3i vBoundingCenter {};
     int32_t sBoundingRadius = 0;
 
-    std::vector<Vec3i> pVertices;
+    std::vector<Vec3f> pVertices;
     std::vector<ODMFace> pFaces;
     std::vector<uint16_t> pFacesOrdering;
     std::vector<BSPNode> pNodes;

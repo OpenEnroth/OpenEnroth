@@ -72,9 +72,9 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
             }
         }
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        const std::vector<Vec3i> &v = pOutdoor->model(pid).pVertices;
+        const std::vector<Vec3f> &v = pOutdoor->model(pid).pVertices;
         for (unsigned i = 0; i < face->uNumVertices; ++i)
-            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->pVertexIDs[i]].toFloat();
+            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->pVertexIDs[i]];
     } else {
         assert(false);
     }

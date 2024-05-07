@@ -328,7 +328,7 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     dst->vBoundingCenter = srcData.vBoundingCenter;
     dst->sBoundingRadius = srcData.sBoundingRadius;
 
-    dst->pVertices = srcExtras.vertices;
+    reconstruct(srcExtras.vertices, &dst->pVertices);
     reconstruct(srcExtras.faces, &dst->pFaces);
 
     for (size_t i = 0; i < dst->pFaces.size(); i++)
