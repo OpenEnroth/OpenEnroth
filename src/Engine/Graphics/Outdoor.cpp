@@ -452,14 +452,13 @@ int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3i &pos) {
         case Tileset_Grass:
             return 1;
         case Tileset_Snow:
+        case Tileset_Swamp:
             return 3;
+        case Tileset_CooledLava:
+        case Tileset_Badlands:
+            return 4;
         case Tileset_Desert:
             return 5;
-        case Tileset_CooledLava:
-        case Tileset_Dirt:
-            return 4;
-        case Tileset_Water:
-            return 3;
         default:
             return 2;
     }
