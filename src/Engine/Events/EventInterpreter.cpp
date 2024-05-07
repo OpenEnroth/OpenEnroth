@@ -198,7 +198,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 savedEventStep = step + 1;
                 return -1;
             }
-            engine->_teleportPoint.setTeleportTarget(Vec3i(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
+            engine->_teleportPoint.setTeleportTarget(Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
                                                      (ir.data.move_map_descr.yaw != -1) ? (ir.data.move_map_descr.yaw & TrigLUT.uDoublePiMask) : -1,
                                                      ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed);
             if (ir.str[0] == '0') { // teleport within map
