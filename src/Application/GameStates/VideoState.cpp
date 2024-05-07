@@ -13,6 +13,8 @@ VideoState::VideoState(VideoState::Type type, std::string_view videoFileName) : 
 
 FsmAction VideoState::enter() {
     _skipVideo = false;
+    _previousScreenType = current_screen_type;
+
     if (engine->config->debug.NoVideo.value() ||
         (engine->config->debug.NoIntro.value() && _type == Type::VIDEO_INTRO) ||
         (engine->config->debug.NoLogo.value() && _type == Type::VIDEO_LOGO)) {
@@ -33,7 +35,6 @@ FsmAction VideoState::enter() {
     platform->setCursorShown(false);
 
     // Wish we could get rid of this type of screen states
-    _previousScreenType = current_screen_type;
     current_screen_type = SCREEN_VIDEO;
 
     // Actually, calling Play() does not play something but just setup some internal flags.

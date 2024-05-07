@@ -43,6 +43,10 @@ FsmBuilder &FsmBuilder::jumpTo(std::string_view targetState) {
     return jumpTo(nullptr, targetState);
 }
 
+FsmBuilder &FsmBuilder::exitFsm() {
+    return jumpTo(nullptr, Fsm::exitState);
+}
+
 FsmBuilder &FsmBuilder::jumpTo(std::function<bool()> condition, std::string_view targetState) {
     if (!_latestState) {
         logger->error(Fsm::fsmLogCategory, "Can't add a target state to jumpTo. No state has been setup in the FsmBuilder. TargetState [{}]",

@@ -10,54 +10,36 @@ const LogCategory Fsm::fsmLogCategory("Fsm");
 const std::string_view Fsm::exitState = "_Exit";
 
 Fsm::Fsm(FsmStateEntries states, std::string_view startStateName) : _states(std::move(states)) {
-    jumpToState(startStateName);
-}
-
-void Fsm::jumpToState(std::string_view stateName) {
-    _hasReachedExitState = stateName == exitState;
-    if (!_hasReachedExitState) {
-        if (FsmStateEntry *entry = _getStateByName(stateName)) {
-            _nextState = entry;
-        } else {
-            logger->warning(fsmLogCategory, "Cannot jump to state [{}]. The state does not exist.", stateName);
-        }
-    }
+    _goToState(startStateName);
 }
 
 void Fsm::update() {
     if (_hasReachedExitState)
         return;
 
-    _performPendingTransition();
-    _updateCurrentState();
+    FsmAction action = _currentState->state->update();
+    _performAction(action);
+}
 
-    //We can reach the end state while performing the transitions or update the current state
-    if (_hasReachedExitState) {
+void Fsm::_goToState(std::string_view stateName) {
+    FsmStateEntry *nextState = nullptr;
+    if (!(nextState = _getStateByName(stateName))) {
+        logger->warning(fsmLogCategory, "Cannot jump to state [{}]. The state does not exist.", stateName);
+        return;
+    }
+
+    if (_currentState) {
         _currentState->state->exit();
     }
-}
-
-void Fsm::_performPendingTransition() {
-    //We add a loop to resolve any pass-through transition
-    while (_nextState) {
-        if (_currentState) {
-            _currentState->state->exit();
-        }
-        _currentState = _nextState;
-        _nextState = nullptr;
-        auto action = _currentState->state->enter();
-        _performAction(action);
-    }
-}
-
-void Fsm::_updateCurrentState() {
-    auto action = _currentState->state->update();
+    _currentState = nextState;
+    nextState = nullptr;
+    FsmAction action = _currentState->state->enter();
     _performAction(action);
 }
 
 void Fsm::_performAction(FsmAction &action) {
     if (action) {
-        _scheduleTransition(action.transitionName());
+        _executeTransition(action.transitionName());
     }
 }
 
@@ -65,7 +47,7 @@ bool Fsm::hasReachedExitState() const {
     return _hasReachedExitState;
 }
 
-void Fsm::_scheduleTransition(std::string_view transition) {
+void Fsm::_executeTransition(std::string_view transition) {
     // Look for the correct transition
     FsmTransitions &transitions = _currentState->transitions;
     auto itr = transitions.find(transition);
@@ -89,7 +71,13 @@ void Fsm::_scheduleTransition(std::string_view transition) {
         return;
     }
 
-    jumpToState(transitionTarget->stateName);
+    _hasReachedExitState = transitionTarget->stateName == exitState;
+    if (_hasReachedExitState) {
+        _currentState->state->exit();
+        return;
+    }
+
+    _goToState(transitionTarget->stateName);
 }
 
 FsmStateEntry *Fsm::_getStateByName(std::string_view stateName) {

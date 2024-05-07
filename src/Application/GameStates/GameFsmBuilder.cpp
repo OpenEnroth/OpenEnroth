@@ -31,5 +31,5 @@ void GameFsmBuilder::_buildIntroVideoSequence(FsmBuilder &builder) {
         .on("videoEnd").jumpTo("IntroVideo")
 
     .state<VideoState>("IntroVideo", VideoState::VIDEO_INTRO, "Intro")
-        .on("videoEnd").jumpTo(Fsm::exitState);
+        .on("videoEnd").exitFsm();
 }

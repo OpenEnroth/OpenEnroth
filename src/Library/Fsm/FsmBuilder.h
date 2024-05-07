@@ -20,7 +20,7 @@
 *             .on("newGame").jumpTo("PartyCreation")
 * 
 *         .state<PartyCreationState>("PartyCreation")
-*             .on("exitButton").jumpTo("_Exit")
+*             .on("exitButton").exitFsm()
 *             .on("createParty").jumpTo("StartGame")
 */
 class FsmBuilder {
@@ -34,6 +34,8 @@ class FsmBuilder {
 
     FsmBuilder &state(std::string_view stateName, std::unique_ptr<FsmState> state);
     FsmBuilder &on(std::string_view transitionName);
+
+    FsmBuilder &exitFsm();
     FsmBuilder &jumpTo(std::string_view targetState);
     FsmBuilder &jumpTo(std::function<bool()> condition, std::string_view targetState);
 
