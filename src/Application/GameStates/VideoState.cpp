@@ -54,7 +54,7 @@ FsmAction VideoState::update() {
 }
 
 void VideoState::exit() {
-    _movie = nullptr;
+    _movie.reset();
     // restore the screen type that was set before the video started
     current_screen_type = _previousScreenType;
     platform->setCursorShown(true);

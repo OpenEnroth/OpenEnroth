@@ -837,23 +837,23 @@ void MPlayer::HouseMovieLoop() {
     }
 }
 
-std::shared_ptr<IMovie> MPlayer::loadFullScreenMovie(std::string_view movieFileName) {
+std::unique_ptr<IMovie> MPlayer::loadFullScreenMovie(std::string_view movieFileName) {
     Blob blob = LoadMovie(movieFileName);
     if (!blob) {
         return nullptr;
     }
 
-    std::shared_ptr<Movie> pMovie = std::make_shared<Movie>();
-    if (!pMovie->LoadFromLOD(blob)) {
+    auto movie = std::make_unique<Movie>();
+    if (!movie->LoadFromLOD(blob)) {
         return nullptr;
     }
 
-    bool setupSuccess = pMovie->prepare();
+    bool setupSuccess = movie->prepare();
     if (!setupSuccess) {
         return nullptr;
     }
 
-    return std::dynamic_pointer_cast<IMovie>(pMovie);
+    return movie;
 }
 
 void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
