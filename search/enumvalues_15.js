@@ -1,8 +1,8 @@
 var searchData=
 [
   ['value_5f0_0',['VALUE_0',['../Json__ut_8cpp.html#a6391cb104127d8e1737f9b9af4981691a154621ec0e7785920905c1d30afa6f1e',1,'Json_ut.cpp']]],
-  ['value_5f1_1',['VALUE_1',['../Json__ut_8cpp.html#a6391cb104127d8e1737f9b9af4981691a45b2127147301f58b0823ad51e502f09',1,'VALUE_1():&#160;Json_ut.cpp'],['../Serialization__ut_8cpp.html#a94beb900defc123803319b326e764a0da45b2127147301f58b0823ad51e502f09',1,'VALUE_1():&#160;Serialization_ut.cpp']]],
-  ['value_5f2_2',['VALUE_2',['../Json__ut_8cpp.html#a6391cb104127d8e1737f9b9af4981691a2bba4c9e55bcf1bc48f663fd77ba3ea6',1,'VALUE_2():&#160;Json_ut.cpp'],['../Serialization__ut_8cpp.html#a94beb900defc123803319b326e764a0da2bba4c9e55bcf1bc48f663fd77ba3ea6',1,'VALUE_2():&#160;Serialization_ut.cpp']]],
+  ['value_5f1_1',['VALUE_1',['../Serialization__ut_8cpp.html#a94beb900defc123803319b326e764a0da45b2127147301f58b0823ad51e502f09',1,'VALUE_1():&#160;Serialization_ut.cpp'],['../Json__ut_8cpp.html#a6391cb104127d8e1737f9b9af4981691a45b2127147301f58b0823ad51e502f09',1,'VALUE_1():&#160;Json_ut.cpp']]],
+  ['value_5f2_2',['VALUE_2',['../Serialization__ut_8cpp.html#a94beb900defc123803319b326e764a0da2bba4c9e55bcf1bc48f663fd77ba3ea6',1,'VALUE_2():&#160;Serialization_ut.cpp'],['../Json__ut_8cpp.html#a6391cb104127d8e1737f9b9af4981691a2bba4c9e55bcf1bc48f663fd77ba3ea6',1,'VALUE_2():&#160;Json_ut.cpp']]],
   ['value_5f3_3',['VALUE_3',['../Serialization__ut_8cpp.html#a94beb900defc123803319b326e764a0da638b13f96946bceb1cc6362f1e838d32',1,'Serialization_ut.cpp']]],
   ['var_5faccuracybonus_4',['VAR_AccuracyBonus',['../EventEnums_8h.html#ac62972ff1b21a037e56530cde67309abaa4d89872651e08485e982ac89de7eda5',1,'EventEnums.h']]],
   ['var_5facmodifier_5',['VAR_ACModifier',['../EventEnums_8h.html#ac62972ff1b21a037e56530cde67309abada4b4e45a706fc8c64c6924f8d409a53',1,'EventEnums.h']]],
@@ -170,8 +170,10 @@ var searchData=
   ['var_5fwaterresistancebonus_167',['VAR_WaterResistanceBonus',['../EventEnums_8h.html#ac62972ff1b21a037e56530cde67309abad80c6af8b2a7d4da9a98204331267962',1,'EventEnums.h']]],
   ['var_5fwaterskill_168',['VAR_WaterSkill',['../EventEnums_8h.html#ac62972ff1b21a037e56530cde67309aba9e2c15c6e217d85d39ada18ff5b10b03',1,'EventEnums.h']]],
   ['var_5fweak_169',['VAR_Weak',['../EventEnums_8h.html#ac62972ff1b21a037e56530cde67309aba89654157052c3757d66807b200bb7d74',1,'EventEnums.h']]],
-  ['visobjecttype_5fany_170',['VisObjectType_Any',['../Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5ea6e5027b8211b576257b46eddd73d4668',1,'Vis.h']]],
-  ['visobjecttype_5fface_171',['VisObjectType_Face',['../Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eaa5dcb89edb2bb28bc49c43e75fe5704b',1,'Vis.h']]],
-  ['visobjecttype_5fsprite_172',['VisObjectType_Sprite',['../Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5ea69c9865283843d6e6121b3e460821db2',1,'Vis.h']]],
-  ['visselectflags_5f1_173',['VisSelectFlags_1',['../Vis_8h.html#a2865df6bc80c1bc4152df5c77cd624a4a5c7d954cb041efc30f76ac2d7a4c92c4',1,'Vis.h']]]
+  ['video_5fintro_170',['VIDEO_INTRO',['../classVideoState.html#ad2923dbe1291a5770745db97471f7166ac0b47118859473c500d8bf0fd307f0ee',1,'VideoState']]],
+  ['video_5flogo_171',['VIDEO_LOGO',['../classVideoState.html#ad2923dbe1291a5770745db97471f7166a498a80ed4c7ed9a804b92cb073920d85',1,'VideoState']]],
+  ['visobjecttype_5fany_172',['VisObjectType_Any',['../Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5ea6e5027b8211b576257b46eddd73d4668',1,'Vis.h']]],
+  ['visobjecttype_5fface_173',['VisObjectType_Face',['../Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5eaa5dcb89edb2bb28bc49c43e75fe5704b',1,'Vis.h']]],
+  ['visobjecttype_5fsprite_174',['VisObjectType_Sprite',['../Vis_8h.html#ae18f1a9725894d10f4422f0ec7f3bc5ea69c9865283843d6e6121b3e460821db2',1,'Vis.h']]],
+  ['visselectflags_5f1_175',['VisSelectFlags_1',['../Vis_8h.html#a2865df6bc80c1bc4152df5c77cd624a4a5c7d954cb041efc30f76ac2d7a4c92c4',1,'Vis.h']]]
 ];

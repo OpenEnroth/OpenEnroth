@@ -68,9 +68,11 @@ var searchData=
   ['stacktraceoncrash_2eh_65',['StackTraceOnCrash.h',['../StackTraceOnCrash_8h.html',1,'']]],
   ['standardserialization_2ecpp_66',['StandardSerialization.cpp',['../StandardSerialization_8cpp.html',1,'']]],
   ['standardserialization_2eh_67',['StandardSerialization.h',['../StandardSerialization_8h.html',1,'']]],
-  ['storylinetexttable_2ecpp_68',['StorylineTextTable.cpp',['../StorylineTextTable_8cpp.html',1,'']]],
-  ['storylinetexttable_2eh_69',['StorylineTextTable.h',['../StorylineTextTable_8h.html',1,'']]],
-  ['stringoutputstream_2ecpp_70',['StringOutputStream.cpp',['../StringOutputStream_8cpp.html',1,'']]],
-  ['stringoutputstream_2eh_71',['StringOutputStream.h',['../StringOutputStream_8h.html',1,'']]],
-  ['stru314_2eh_72',['stru314.h',['../stru314_8h.html',1,'']]]
+  ['startstate_2ecpp_68',['StartState.cpp',['../StartState_8cpp.html',1,'']]],
+  ['startstate_2eh_69',['StartState.h',['../StartState_8h.html',1,'']]],
+  ['storylinetexttable_2ecpp_70',['StorylineTextTable.cpp',['../StorylineTextTable_8cpp.html',1,'']]],
+  ['storylinetexttable_2eh_71',['StorylineTextTable.h',['../StorylineTextTable_8h.html',1,'']]],
+  ['stringoutputstream_2ecpp_72',['StringOutputStream.cpp',['../StringOutputStream_8cpp.html',1,'']]],
+  ['stringoutputstream_2eh_73',['StringOutputStream.h',['../StringOutputStream_8h.html',1,'']]],
+  ['stru314_2eh_74',['stru314.h',['../stru314_8h.html',1,'']]]
 ];
