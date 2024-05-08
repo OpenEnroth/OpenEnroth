@@ -80,6 +80,7 @@
 
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
+#include "Library/Fsm/Fsm.h"
 
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Format.h"
@@ -89,6 +90,7 @@
 #include "GameIocContainer.h"
 #include "GameWindowHandler.h"
 #include "GameMenu.h"
+#include "GameStates/GameFsmBuilder.h"
 
 void ShowMM7IntroVideo_and_LoadingScreen();
 
@@ -131,7 +133,23 @@ int Game::run() {
     window->activate();
     ::eventLoop->processMessages(eventHandler);
 
-    ShowMM7IntroVideo_and_LoadingScreen();
+    // Right now This Fsm is used only to show the intro videos as a proof of concept
+    std::unique_ptr<Fsm> fsm = GameFsmBuilder::buildFsm();
+    GameWindowHandler* gameWindowHandler = ::application->component<GameWindowHandler>();
+    gameWindowHandler->addFsmEventHandler(fsm.get());
+    while(!fsm->hasReachedExitState()) {
+        render->ClearBlack();
+        render->BeginScene2D();
+
+        fsm->update();
+
+        render->Present();
+
+        MessageLoopWithWait();
+    }
+    gameWindowHandler->removeFsmEventHandler(fsm.get());
+
+    //ShowMM7IntroVideo_and_LoadingScreen();
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 

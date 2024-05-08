@@ -228,6 +228,12 @@ void OpenGLRenderer::BltBackToFontFast(int a2, int a3, Recti *a4) {
 }
 
 void OpenGLRenderer::ClearTarget(Color uColor) {
+    /* TODO(Gerark) Should we bind to the framebuffer before clearing?
+    if (outputRender != outputPresent) {
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+    }
+    */
+
     glClearColor(0, 0, 0, 0/*0.9f, 0.5f, 0.1f, 1.0f*/);
     glClearDepthf(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
