@@ -719,12 +719,9 @@ void BLV_UpdateDoors() {
 
         // adjust verts to how open the door is
         for (int j = 0; j < door->uNumVertices; ++j) {
-            pIndoor->pVertices[door->pVertexIDs[j]].x =
-                fixpoint_mul(door->vDirection.x, openDistance) + door->pXOffsets[j];
-            pIndoor->pVertices[door->pVertexIDs[j]].y =
-                fixpoint_mul(door->vDirection.y, openDistance) + door->pYOffsets[j];
-            pIndoor->pVertices[door->pVertexIDs[j]].z =
-                fixpoint_mul(door->vDirection.z, openDistance) + door->pZOffsets[j];
+            pIndoor->pVertices[door->pVertexIDs[j]].x = door->vDirection.x * openDistance + door->pXOffsets[j];
+            pIndoor->pVertices[door->pVertexIDs[j]].y = door->vDirection.y * openDistance + door->pYOffsets[j];
+            pIndoor->pVertices[door->pVertexIDs[j]].z = door->vDirection.z * openDistance + door->pZOffsets[j];
         }
 
         for (int j = 0; j < door->uNumFaces; ++j) {
@@ -769,8 +766,8 @@ void BLV_UpdateDoors() {
             }
 
             if (face->uAttributes & FACE_TexMoveByDoor) {
-                float udot = dot(door->vDirection.toFloatFromFixpoint(), u);
-                float vdot = dot(door->vDirection.toFloatFromFixpoint(), v);
+                float udot = dot(door->vDirection, u);
+                float vdot = dot(door->vDirection, v);
                 extras->sTextureDeltaU = -udot * openDistance + door->pDeltaUs[j];
                 extras->sTextureDeltaV = -vdot * openDistance + door->pDeltaVs[j];
             }

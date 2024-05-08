@@ -34,7 +34,7 @@ struct BLVDoor {  // 50h
     DoorAttributes uAttributes;
     uint32_t uDoorID;
     Duration uTimeSinceTriggered;
-    Vec3i vDirection; // Fixpoint direction vector
+    Vec3f vDirection; // Float direction vector
     int32_t uMoveLength;
     int32_t uCloseSpeed; // In map units per real-time second.
     int32_t uOpenSpeed; // In map units per real-time second.
