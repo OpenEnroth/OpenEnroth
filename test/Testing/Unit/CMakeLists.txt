@@ -7,7 +7,7 @@ if(OE_BUILD_TESTS)
             UnitTest.h)
 
     add_library(testing_unit ${TESTING_UNIT_SOURCES} ${TESTING_UNIT_HEADERS})
-    target_link_libraries(testing_unit PUBLIC GTest::gtest)
+    target_link_libraries(testing_unit PUBLIC GTest::gtest GTest::gmock)
 
     target_check_style(testing_unit)
 endif()

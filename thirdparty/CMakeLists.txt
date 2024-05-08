@@ -46,7 +46,7 @@ add_subdirectory(spdlog)
 # googletest
 if(OE_BUILD_TESTS)
     set(INSTALL_GTEST OFF)
-    set(BUILD_GMOCK OFF)
+    set(BUILD_GMOCK ON)
     add_subdirectory(googletest)
 endif()
 
