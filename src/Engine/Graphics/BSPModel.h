@@ -72,8 +72,7 @@ struct ODMFace {
 
     int16_t sTextureDeltaU = 0;
     int16_t sTextureDeltaV = 0;
-    // TODO(pskelton): Geometry should be float
-    BBoxi pBoundingBox;
+    BBoxf pBoundingBox;
     int16_t sCogNumber = 0;
     int16_t sCogTriggeredID = 0;
     int16_t sCogTriggerType = 0;

@@ -138,8 +138,7 @@ struct BLVFace {  // 60h
 
     int uSectorID = 0;
     int uBackSectorID = 0;
-    // TODO(pskelton): Geometry should be float
-    BBoxi pBounding;
+    BBoxf pBounding;
     PolygonType uPolygonType = POLYGON_Invalid;
     uint8_t uNumVertices = 0;
 };

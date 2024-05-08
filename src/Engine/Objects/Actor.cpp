@@ -914,7 +914,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out1 = pIndoor->pFaces[id1].pBounding.center().toFloat();
+                out1 = pIndoor->pFaces[id1].pBounding.center();
             }
             break;
         }
@@ -946,7 +946,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
         case OBJECT_Face: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                out2 = pIndoor->pFaces[id2].pBounding.center().toFloat();
+                out2 = pIndoor->pFaces[id2].pBounding.center();
             }
             break;
         }
@@ -1543,7 +1543,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
     v7.y = v3->pos.y;
     v7.x = v3->pos.x;
     if (Check_LineOfSight(Vec3f(xpos, ypos, zpos), v7)
-        // || Check_LineOfSight(v7.x, v7.y, v7.z, Vec3i(xpos, ypos, zpos))
+        // || Check_LineOfSight(v7.x, v7.y, v7.z, Vec3f(xpos, ypos, zpos))
         ) {
         if (pDir == nullptr) {
             Actor::GetDirectionInfo(Pid(OBJECT_Actor, uActorID), sTargetPid,
