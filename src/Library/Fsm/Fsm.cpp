@@ -1,11 +1,11 @@
 #include "Fsm.h"
 
 #include <fmt/format.h>
+#include <Utility/Exception.h>
 
 #include <utility>
 #include <string>
 #include <memory>
-#include <exception>
 
 const LogCategory Fsm::fsmLogCategory("Fsm");
 const std::string_view Fsm::exitState = "_Exit";
@@ -25,7 +25,7 @@ void Fsm::update() {
 void Fsm::_goToState(std::string_view stateName) {
     FsmStateEntry *nextState = nullptr;
     if (!(nextState = _getStateByName(stateName))) {
-        throw std::exception(fmt::format("Cannot jump to state [{}]. The state does not exist.", stateName).c_str());
+        throw Exception(fmt::format("Cannot jump to state [{}]. The state does not exist.", stateName).c_str());
     }
 
     if (_currentState) {
@@ -52,7 +52,7 @@ void Fsm::_executeTransition(std::string_view transition) {
     FsmTransitions &transitions = _currentState->transitions;
     auto itr = transitions.find(transition);
     if (itr == transitions.end()) {
-        throw std::exception(fmt::format("Cannot execute transition from state [{}]. Transition [{}] does not exist.",
+        throw Exception(fmt::format("Cannot execute transition from state [{}]. Transition [{}] does not exist.",
             _currentState->name, transition).c_str());
     }
 
@@ -65,7 +65,7 @@ void Fsm::_executeTransition(std::string_view transition) {
         }
     }
     if (!transitionTarget) {
-        throw std::exception(fmt::format("Cannot execute transition [{}] from state [{}]. No condition evaluated to true",
+        throw Exception(fmt::format("Cannot execute transition [{}] from state [{}]. No condition evaluated to true",
             transition, _currentState->name).c_str());
     }
 
