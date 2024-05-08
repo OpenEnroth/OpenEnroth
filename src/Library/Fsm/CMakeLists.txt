@@ -20,13 +20,9 @@ target_check_style(library_fsm)
 
 if(OE_BUILD_TESTS)
     set(TEST_LIBRARY_FSM_SOURCES
-            Tests/Fsm_ut.cpp
-            Tests/FsmTestUtils.cpp)
+            Tests/Fsm_ut.cpp)
 
-    set(TEST_LIBRARY_FSM_HEADERS
-            Tests/FsmTestUtils.h)
-
-    add_library(test_library_fsm OBJECT ${TEST_LIBRARY_FSM_SOURCES} ${TEST_LIBRARY_FSM_HEADERS})
+    add_library(test_library_fsm OBJECT ${TEST_LIBRARY_FSM_SOURCES})
     target_link_libraries(test_library_fsm PUBLIC testing_unit utility library_fsm)
 
     target_check_style(test_library_fsm)

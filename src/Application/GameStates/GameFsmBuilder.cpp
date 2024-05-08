@@ -19,7 +19,7 @@ std::unique_ptr<Fsm> GameFsmBuilder::buildFsm() {
 void GameFsmBuilder::_buildIntroVideoSequence(FsmBuilder &builder) {
     builder
     .state<StartState>("Start")
-        .on("proceed").jumpTo("3DSOVideo")
+        .on("proceed").jumpTo("3DOVideo")
 
     .state<VideoState>("3DOVideo", VideoState::VIDEO_LOGO, "3dologo")
         .on("videoEnd").jumpTo("NWCVideo")
