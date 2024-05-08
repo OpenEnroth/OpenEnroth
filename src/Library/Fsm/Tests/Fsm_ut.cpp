@@ -23,7 +23,7 @@ class FsmTest : public testing::Test {
 };
 
 class MockFsmState : public FsmState {
-    public:
+ public:
     MOCK_METHOD(FsmAction, enter, (), (override));
     MOCK_METHOD(FsmAction, update, (), (override));
     MOCK_METHOD(void, exit, (), (override));
