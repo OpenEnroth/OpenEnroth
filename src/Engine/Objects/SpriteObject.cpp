@@ -113,7 +113,7 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     return sprite_slot;
 }
 
-static void createSpriteTrailParticle(Vec3i pos, ObjectDescFlags flags) {
+static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
     Particle_sw particle;
     memset(&particle, 0, sizeof(Particle_sw));
     particle.x = pos.x;
@@ -195,7 +195,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             if (pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr() < 400) {
                 pSpriteObjects[uLayingItemID].vVelocity.x = 0;
                 pSpriteObjects[uLayingItemID].vVelocity.y = 0;
-                createSpriteTrailParticle(pSpriteObjects[uLayingItemID].vPosition.toInt(), object->uFlags);
+                createSpriteTrailParticle(pSpriteObjects[uLayingItemID].vPosition, object->uFlags);
                 return;
             }
         }
@@ -271,7 +271,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             //pSpriteObjects[uLayingItemID].vPosition.y = collision_state.new_position_lo.y;
             //pSpriteObjects[uLayingItemID].vPosition.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             pSpriteObjects[uLayingItemID].uSectorID = collision_state.uSectorID;
-            createSpriteTrailParticle(pSpriteObjects[uLayingItemID].vPosition.toInt(), object->uFlags);
+            createSpriteTrailParticle(pSpriteObjects[uLayingItemID].vPosition, object->uFlags);
             return;
         }
         // v60 = ((uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.x) >> 16);
@@ -415,7 +415,7 @@ LABEL_25:
                 if (!(pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE)) {
                     return;
                 }
-                createSpriteTrailParticle(pSpriteObject->vPosition.toInt(), pObject->uFlags);
+                createSpriteTrailParticle(pSpriteObject->vPosition, pObject->uFlags);
                 return;
             }
             // v40 = (uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.x) >> 16;
@@ -505,7 +505,7 @@ LABEL_25:
             if (!(pObject->uFlags & OBJECT_DESC_NO_SPRITE)) {
                 return;
             }
-            createSpriteTrailParticle(pSpriteObject->vPosition.toInt(), pObject->uFlags);
+            createSpriteTrailParticle(pSpriteObject->vPosition, pObject->uFlags);
             return;
         }
         // TODO(Nik-RE-dev): is this correct?
@@ -632,8 +632,8 @@ bool SpriteObject::applyShrinkRayAoe() {
     for (Actor &actor : pActors) {
         // TODO(Nik-RE-dev): paralyzed actor will not be affected?
         if (actor.CanAct()) {
-            int distanceSq = (actor.pos.toInt() - this->vPosition.toInt() + Vec3i(0, 0, actor.height / 2)).lengthSqr();
-            int checkDistanceSq = (effectDistance + actor.radius) * (effectDistance + actor.radius);
+            float distanceSq = (actor.pos - this->vPosition + Vec3f(0, 0, actor.height / 2)).lengthSqr();
+            float checkDistanceSq = (effectDistance + actor.radius) * (effectDistance + actor.radius);
 
             if (distanceSq <= checkDistanceSq) {
                 if (actor.DoesDmgTypeDoDamage(DAMAGE_DARK)) {
