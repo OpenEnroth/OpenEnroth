@@ -440,10 +440,10 @@ void OutdoorLocation::UpdateFog() {
     fFogDensity = GetFogDensityByTime();
 }
 
-int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3i &pos) {
+int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos) {
     bool is_on_water = false;
     int bmodel_standing_on_pid = 0;
-    ODM_GetFloorLevel(pos.toFloat(), pParty->height, &is_on_water, &bmodel_standing_on_pid, 0);
+    ODM_GetFloorLevel(pos, pParty->height, &is_on_water, &bmodel_standing_on_pid, 0);
     if (pParty->isAirborne() || bmodel_standing_on_pid || is_on_water) {
         return 2;
     }

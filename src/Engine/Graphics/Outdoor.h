@@ -117,7 +117,7 @@ struct OutdoorLocation {
     void MessWithLUN();
     void UpdateSunlightVectors();
     void UpdateFog();
-    int getNumFoodRequiredToRestInCurrentPos(const Vec3i &pos);
+    int getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos);
     void SetFog();
     void Draw();
 
