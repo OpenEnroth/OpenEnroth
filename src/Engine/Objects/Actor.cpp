@@ -2320,7 +2320,7 @@ void Actor::Remove() { this->aiState = Removed; }
 
 //----- (0043B1B0) --------------------------------------------------------
 void Actor::ActorDamageFromMonster(Pid attacker_id,
-                                   unsigned int actor_id, Vec3i *pVelocity,
+                                   unsigned int actor_id, const Vec3f &pVelocity,
                                    ActorAbility a4) {
     int v4;            // ebx@1
     int dmgToRecv;     // qax@8
@@ -2391,18 +2391,7 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
                         20 * finalDmg / pActors[actor_id].monsterInfo.hp;
                     if (pushDistance > 10) pushDistance = 10;
                     if (supertypeForMonsterId(pActors[actor_id].monsterInfo.id) != MONSTER_SUPERTYPE_TREANT) {
-                        pVelocity->x =
-                            (int32_t)fixpoint_mul(pushDistance, pVelocity->x);
-                        pVelocity->y =
-                            (int32_t)fixpoint_mul(pushDistance, pVelocity->y);
-                        pVelocity->z =
-                            (int32_t)fixpoint_mul(pushDistance, pVelocity->z);
-                        pActors[actor_id].velocity.x =
-                            50 * (short)pVelocity->x;
-                        pActors[actor_id].velocity.y =
-                            50 * (short)pVelocity->y;
-                        pActors[actor_id].velocity.z =
-                            50 * (short)pVelocity->z;
+                        pActors[actor_id].velocity = 50 * pushDistance * pVelocity;
                     }
                     Actor::AddOnDamageOverlay(actor_id, 1, finalDmg);
                 } else {
@@ -4525,7 +4514,7 @@ void evaluateAoeDamage() {
     for (AttackDescription &attack : attackList) {
         ObjectType attackerType = attack.pid.type();
         int attackerId = attack.pid.id();
-        Vec3i attackVector = Vec3i(0, 0, 0);
+        //Vec3i attackVector = Vec3i(0, 0, 0);
 
         // attacker is an item (sprite)
         if (attackerType == OBJECT_Item) {
@@ -4558,14 +4547,14 @@ void evaluateAoeDamage() {
                     int distanceSq = distanceVec.lengthSqr();
                     int attackRange = attack.attackRange + actor->radius;
                     int attackRangeSq = attackRange * attackRange;
-                    attackVector = Vec3i(distanceVec.x, distanceVec.y, actor->pos.z);
+                    Vec3f attackVector = Vec3f(distanceVec.x, distanceVec.y, actor->pos.z);
+                    attackVector.normalize();
 
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
                         if (Check_LineOfSight(actor->pos + Vec3f(0, 0, 50), attack.pos)) {
-                            normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
-                            Actor::ActorDamageFromMonster(attack.pid, targetId, &attackVector, attack.attackSpecial);
+                            Actor::ActorDamageFromMonster(attack.pid, targetId, attackVector, attack.attackSpecial);
                         }
                     }
                 }
@@ -4593,30 +4582,24 @@ void evaluateAoeDamage() {
                     int attackRange = attack.attackRange + pActors[actorID].radius;
                     int attackRangeSq = attackRange * attackRange;
                     // TODO: using absolute Z here is BS, it's used as speed in ItemDamageFromActor
-                    attackVector = Vec3i(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
+                    Vec3f attVF = Vec3f(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
+                    attVF.normalize();
 
                     // check range
                     if (distanceSq < attackRangeSq) {
                         // check line of sight
                         if (Check_LineOfSight(pActors[actorID].pos + Vec3f(0, 0, 50), attack.pos)) {
-                            normalize_to_fixpoint(&attackVector.x, &attackVector.y, &attackVector.z);
                             switch (attackerType) {
-                                case OBJECT_Character: {
-                                    Vec3f attVF = Vec3f(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
-                                    attVF.normalize();
+                                case OBJECT_Character:
                                     Actor::DamageMonsterFromParty(attack.pid, actorID, attVF);
-                                }
                                     break;
                                 case OBJECT_Actor:
                                     if (pSpriteObj && pActors[attackerId].GetActorsRelation(&pActors[actorID]) != HOSTILITY_FRIENDLY) {
-                                        Actor::ActorDamageFromMonster(attack.pid, actorID, &attackVector, pSpriteObj->spellCasterAbility);
+                                        Actor::ActorDamageFromMonster(attack.pid, actorID, attVF, pSpriteObj->spellCasterAbility);
                                     }
                                     break;
-                                case OBJECT_Item: {
-                                    Vec3f attVF = Vec3f(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
-                                    attVF.normalize();
+                                case OBJECT_Item:
                                     ItemDamageFromActor(attack.pid, actorID, attVF);
-                                }
                                     break;
                                 default:
                                     assert(false);
