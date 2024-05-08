@@ -97,6 +97,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BBoxs_MM7)
 void snapshot(const BBoxi &src, BBoxs_MM7 *dst);
 void reconstruct(const BBoxs_MM7 &src, BBoxi *dst);
 
+void snapshot(const BBoxf &src, BBoxs_MM7 *dst);
+void reconstruct(const BBoxs_MM7 &src, BBoxf *dst);
 
 struct Planef_MM7 {
     Vec3f normal;

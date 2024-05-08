@@ -187,7 +187,7 @@ struct BLVSector {  // 0x74
     int16_t uMinAmbientLightLevel;  // might be supposed to be max ambient dim actually
     int16_t uFirstBSPNode;
     int16_t exit_tag;
-    BBoxi pBounding;
+    BBoxf pBounding;
 };
 
 /*   89 */

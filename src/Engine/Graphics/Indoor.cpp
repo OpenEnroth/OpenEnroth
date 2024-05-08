@@ -397,7 +397,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
 
         BLVSector *pSector = &pSectors[i];
 
-        if (!pSector->pBounding.intersectsCuboid(Vec3i(sX, sY, sZ), Vec3i(5, 5, 64)))
+        if (!pSector->pBounding.intersectsCuboid(Vec3f(sX, sY, sZ), Vec3f(5, 5, 64)))
             continue;  // outside sector bounding
 
         if (!backupboundingsector) backupboundingsector = i;
