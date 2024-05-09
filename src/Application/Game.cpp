@@ -958,7 +958,7 @@ void Game::processQueuedMessages() {
                 v53 = std::to_underlying(buildingTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
                 if (v53 < 0) {
                     v54 = std::abs(v53) - 1;
-                    engine->_teleportPoint.setTeleportTarget(Vec3i(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
+                    engine->_teleportPoint.setTeleportTarget(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
                 }
                 houseDialogPressEscape();
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
@@ -1012,7 +1012,7 @@ void Game::processQueuedMessages() {
 
                 // change map to Harmondale
                 pCurrentMapName = "out02.odm";
-                engine->_teleportPoint.setTeleportTarget(pParty->pos.toInt(), pParty->_viewYaw, pParty->_viewPitch, 0);
+                engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
                 PrepareWorld(1);
                 Actor::InitializeActors();
 
@@ -1863,7 +1863,7 @@ void Game::gameLoop() {
                 // change map
                 if (pCurrentMapName != Source) {
                     pCurrentMapName = Source;
-                    engine->_teleportPoint.setTeleportTarget(pParty->pos.toInt(), pParty->_viewYaw, pParty->_viewPitch, 0);
+                    engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
                     PrepareWorld(1);
                 }
                 pMiscTimer->setPaused(false);

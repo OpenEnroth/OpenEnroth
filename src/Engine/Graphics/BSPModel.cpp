@@ -37,7 +37,7 @@ bool ODMFace::HasEventHint() {
     return hasEventHint(this->sCogTriggeredID);
 }
 
-bool ODMFace::Contains(const Vec3i &pos, int model_idx, int slack, FaceAttributes override_plane) const {
+bool ODMFace::Contains(const Vec3f &pos, int model_idx, int slack, FaceAttributes override_plane) const {
     BLVFace face;
     face.uAttributes = this->uAttributes;
     face.uNumVertices = this->uNumVertices;

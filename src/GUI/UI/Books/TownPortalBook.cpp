@@ -24,7 +24,7 @@
 #include "Library/Geometry/Rect.h"
 
 struct TownPortalData {
-    Vec3i pos;
+    Vec3f pos;
     int viewYaw;
     int viewPitch;
     MapId mapInfoID;
@@ -34,12 +34,12 @@ struct TownPortalData {
 static const int TOWN_PORTAL_DESTINATION_COUNT = 6;
 
 std::array<TownPortalData, TOWN_PORTAL_DESTINATION_COUNT> townPortalList = {{
-    {Vec3i( -5121,   2107,    1), 1536, 0, MAP_CASTLE_HARMONDALE,   QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
-    {Vec3i(-15148, -10240, 1473),    0, 0, MAP_TULAREAN_FOREST,     QBIT_FOUNTAIN_IN_PIERPONT_ACTIVATED},
-    {Vec3i(-10519,   5375,  753),  512, 0, MAP_ERATHIA,             QBIT_FOUNTAIN_IN_STEADWICK_ACTIVATED},
-    {Vec3i(  3114, -11055,  513),    0, 0, MAP_MOUNT_NIGHON,        QBIT_FOUNTAIN_IN_MOUNT_NIGHON_ACTIVATED},
-    {Vec3i(  -158,   7624,    1),  512, 0, MAP_CELESTE,             QBIT_FOUNTAIN_IN_CELESTIA_ACTIVATED},
-    {Vec3i( -1837,  -4247,   65),   65, 0, MAP_PIT,                 QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED}
+    {Vec3f( -5121,   2107,    1), 1536, 0, MAP_CASTLE_HARMONDALE,   QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
+    {Vec3f(-15148, -10240, 1473),    0, 0, MAP_TULAREAN_FOREST,     QBIT_FOUNTAIN_IN_PIERPONT_ACTIVATED},
+    {Vec3f(-10519,   5375,  753),  512, 0, MAP_ERATHIA,             QBIT_FOUNTAIN_IN_STEADWICK_ACTIVATED},
+    {Vec3f(  3114, -11055,  513),    0, 0, MAP_MOUNT_NIGHON,        QBIT_FOUNTAIN_IN_MOUNT_NIGHON_ACTIVATED},
+    {Vec3f(  -158,   7624,    1),  512, 0, MAP_CELESTE,             QBIT_FOUNTAIN_IN_CELESTIA_ACTIVATED},
+    {Vec3f( -1837,  -4247,   65),   65, 0, MAP_PIT,                 QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED}
 }};
 
 static std::array<Recti, TOWN_PORTAL_DESTINATION_COUNT> townPortalButtonsPos = {{
@@ -120,7 +120,7 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
     // if in current map
     // TODO(Nik-RE-dev): need separate function for teleportation to other maps
     if (pMapStats->GetMapInfo(pCurrentMapName) == townPortalList[townId].mapInfoID) {
-        pParty->pos = townPortalList[townId].pos.toFloat();
+        pParty->pos = townPortalList[townId].pos;
         pParty->uFallStartZ = pParty->pos.z;
         pParty->_viewYaw = townPortalList[townId].viewYaw;
         pParty->_viewPitch = townPortalList[townId].viewPitch;

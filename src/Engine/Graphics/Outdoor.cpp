@@ -440,7 +440,7 @@ void OutdoorLocation::UpdateFog() {
     fFogDensity = GetFogDensityByTime();
 }
 
-int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3i &pos) {
+int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos) {
     bool is_on_water = false;
     int bmodel_standing_on_pid = 0;
     ODM_GetFloorLevel(pos, pParty->height, &is_on_water, &bmodel_standing_on_pid, 0);
@@ -1436,11 +1436,11 @@ void OutdoorLocation::PrepareActorsDrawList() {
     }
 }
 
-int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
+float ODM_GetFloorLevel(const Vec3f &pos, int unused, bool *pIsOnWater,
                       int *faceId, int bWaterWalk) {
     std::array<int, 20> current_Face_id{};                   // dword_721110
     std::array<int, 20> current_BModel_id{};                 // dword_721160
-    std::array<int, 20> odm_floor_level{};                   // idb
+    std::array<float, 20> odm_floor_level{};                   // idb
     current_BModel_id[0] = -1;
     current_Face_id[0] = -1;
     odm_floor_level[0] = GetTerrainHeightsAroundParty2(pos.x, pos.y, pIsOnWater, bWaterWalk);
@@ -1492,7 +1492,7 @@ int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
         return odm_floor_level[0]; // No bmodels, just the terrain.
     }
 
-    int current_floor_level = odm_floor_level[0];
+    float current_floor_level = odm_floor_level[0];
     int current_idx = 0;
     for (unsigned i = 1; i < surface_count; ++i) {
         if (current_floor_level <= pos.z + 5) {
@@ -1522,9 +1522,9 @@ int ODM_GetFloorLevel(const Vec3i &pos, int unused, bool *pIsOnWater,
 // not sure if right- or left-handed coordinate space assumed, so this could be
 // normal of inverse normal
 // for a right-handed system, that would be an inverse normal
-// out as FP
+// out as normalised float vec
 //----- (0046DCC8) --------------------------------------------------------
-void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3i *out) {
+void ODM_GetTerrainNormalAt(float pos_x, float pos_y, Vec3f *out) {
     unsigned grid_x = WorldPosToGridCellX(pos_x);
     unsigned grid_y = WorldPosToGridCellY(pos_y);
 
@@ -1564,9 +1564,9 @@ void ODM_GetTerrainNormalAt(int pos_x, int pos_y, Vec3i *out) {
     Vec3f n = cross(side2, side1);
     float mag = n.length();
     if (fabsf(mag) < 1e-6f) {
-        *out = Vec3i(0, 0, 65536);
+        *out = Vec3f(0, 0, 1);
     } else {
-        *out = (n / mag).toFixpoint();
+        *out = n / mag;
     }
 }
 //----- (0046BE0A) --------------------------------------------------------
@@ -1635,7 +1635,7 @@ void ODM_ProcessPartyActions() {
     int floorFaceId = 0;
     bool partyIsOnWater = false;
 
-    int floorZ = ODM_GetFloorLevel(pParty->pos.toInt(), pParty->height,
+    float floorZ = ODM_GetFloorLevel(pParty->pos, pParty->height,
                                    &partyIsOnWater, &floorFaceId, waterWalkActive);
     bool partyNotOnModel = floorFaceId == 0;
     int currentGroundLevel = floorZ + 1;
@@ -1991,13 +1991,11 @@ void ODM_ProcessPartyActions() {
             // gradually sliding downwards. nice trick
             partyNewPos.z = currentGroundLevel;
             if (partyAtHighSlope) {
-                Vec3i v98;
+                Vec3f v98;
                 ODM_GetTerrainNormalAt(partyNewPos.x, partyNewPos.y, &v98);
-                int v35 = partyInputSpeed.z + (8 * -(pEventTimer->dt().ticks() * (int)GetGravityStrength()));
-                float dot = std::abs(partyInputSpeed.x * v98.x + partyInputSpeed.y * v98.y + v35 * v98.z) / 65536.0f;
-                partyInputSpeed.x += dot * v98.x / 65536.0f;
-                partyInputSpeed.y += dot * v98.y / 65536.0f;
-                partyInputSpeed.z = v35 + dot * v98.z / 65536.0f;
+                partyInputSpeed.z += (8 * -(pEventTimer->dt().ticks() * (int)GetGravityStrength()));
+                float dotp = std::abs(dot(partyInputSpeed, v98));
+                partyInputSpeed += dotp * v98;
             }
         }
     }
@@ -2128,8 +2126,8 @@ void ODM_ProcessPartyActions() {
     }
 
     // new ground level
-    int newFloorLevel = ODM_GetFloorLevel(partyNewPos.toInt(), pParty->height, &partyIsOnWater, &floorFaceId, waterWalkActive);
-    int newGroundLevel = newFloorLevel + 1;
+    float newFloorLevel = ODM_GetFloorLevel(partyNewPos, pParty->height, &partyIsOnWater, &floorFaceId, waterWalkActive);
+    float newGroundLevel = newFloorLevel + 1;
 
     // Falling damage
     if (!triggerID ||
@@ -2238,7 +2236,7 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
                 continue;
 
             int slack = engine->config->gameplay.FloorChecksEps.value();
-            if (!face.Contains(Vec3i(Party_X, Party_Y, 0), model.index, slack, FACE_XY_PLANE))
+            if (!face.Contains(Vec3f(Party_X, Party_Y, 0), model.index, slack, FACE_XY_PLANE))
                 continue;
 
             if (ceiling_count >= 20)
@@ -2319,7 +2317,7 @@ void UpdateActors_ODM() {
         bool Slope_High = IsTerrainSlopeTooHigh(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y);
         int Model_On_PID = 0;
         bool uIsOnWater = false;
-        int Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].pos.toInt(), pActors[Actor_ITR].height, &uIsOnWater, &Model_On_PID, Water_Walk);
+        float Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].pos, pActors[Actor_ITR].height, &uIsOnWater, &Model_On_PID, Water_Walk);
         bool Actor_On_Terrain = Model_On_PID == 0;
 
         bool uIsAboveFloor = (pActors[Actor_ITR].pos.z > (Floor_Level + 1));
@@ -2377,17 +2375,16 @@ void UpdateActors_ODM() {
         // GRAVITY
         if (!uIsAboveFloor || uIsFlying) {
             if (Slope_High && !uIsAboveFloor && Actor_On_Terrain) {
-                Vec3i Terrain_Norm;
+                Vec3f Terrain_Norm;
                 pActors[Actor_ITR].pos.z = Floor_Level;
                 ODM_GetTerrainNormalAt(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y, &Terrain_Norm);
-                Vec3f normf = Terrain_Norm.toFloatFromFixpoint();
                 int Gravity = GetGravityStrength();
 
                 pActors[Actor_ITR].velocity.z += -16 * pEventTimer->dt().ticks() * Gravity; //TODO(pskelton): common gravity code extract
-                float v73 = std::abs(dot(normf, pActors[Actor_ITR].velocity)) * 2.0f;
+                float v73 = std::abs(dot(Terrain_Norm, pActors[Actor_ITR].velocity)) * 2.0f;
 
-                pActors[Actor_ITR].velocity.x += v73 * normf.x;
-                pActors[Actor_ITR].velocity.y += v73 * normf.y;
+                pActors[Actor_ITR].velocity.x += v73 * Terrain_Norm.x;
+                pActors[Actor_ITR].velocity.y += v73 * Terrain_Norm.y;
                 pActors[Actor_ITR].yawAngle -= 32;
                 // pActors[Actor_ITR].vVelocity.z += fixpoint_mul(v73, Terrain_Norm.z);
             }

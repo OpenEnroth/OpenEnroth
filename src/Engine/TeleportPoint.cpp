@@ -7,13 +7,13 @@ void TeleportPoint::invalidate() {
     _targetMap.clear();
 }
 
-void TeleportPoint::setTeleportTarget(Vec3i pos, int yaw, int pitch, int zSpeed) {
-    _pos = pos.toFloat();
+void TeleportPoint::setTeleportTarget(Vec3f pos, int yaw, int pitch, int zSpeed) {
+    _pos = pos;
     _yaw = yaw;
     _pitch = pitch;
     _zSpeed = zSpeed;
 
-    _teleportValid = !!(pos.x | pos.y | pos.z | (_yaw != -1) | _pitch | _zSpeed);
+    _teleportValid = (pos.lengthSqr() >= 1.0f) || (_yaw != -1) || _pitch || _zSpeed;
 }
 
 void TeleportPoint::doTeleport(bool keepOnZero) {

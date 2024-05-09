@@ -113,7 +113,7 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     return sprite_slot;
 }
 
-static void createSpriteTrailParticle(Vec3i pos, ObjectDescFlags flags) {
+static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
     Particle_sw particle;
     memset(&particle, 0, sizeof(Particle_sw));
     particle.x = pos.x;
@@ -148,7 +148,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
     bool isHighSlope = IsTerrainSlopeTooHigh(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y);
     int bmodelPid = 0;
     bool onWater = false;
-    int level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition.toInt(), object->uHeight, &onWater, &bmodelPid, 0);
+    float level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition, object->uHeight, &onWater, &bmodelPid, 0);
     bool isAboveGround = pSpriteObjects[uLayingItemID].vPosition.z > level + 1;
     if (!isAboveGround && onWater) {
         int splashZ = level + 60;
@@ -163,14 +163,13 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         if (isAboveGround) {
             pSpriteObjects[uLayingItemID].vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
         } else if (isHighSlope) {
-            Vec3i norm;
-            ODM_GetTerrainNormalAt(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, &norm);
-            Vec3f normf = norm.toFloatFromFixpoint();
+            Vec3f normf;
+            ODM_GetTerrainNormalAt(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, &normf);
             pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
             pSpriteObjects[uLayingItemID].vVelocity.z -= (pEventTimer->dt().ticks() * GetGravityStrength());
 
-            float dotFix = std::abs(dot(normf, pSpriteObjects[uLayingItemID].vVelocity));
-            pSpriteObjects[uLayingItemID].vVelocity += dotFix * normf;
+            float dotp = std::abs(dot(normf, pSpriteObjects[uLayingItemID].vVelocity));
+            pSpriteObjects[uLayingItemID].vVelocity += dotp * normf;
         } else {
             if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
                 if (pSpriteObjects[uLayingItemID].vPosition.z < level) {
@@ -195,7 +194,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             if (pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr() < 400) {
                 pSpriteObjects[uLayingItemID].vVelocity.x = 0;
                 pSpriteObjects[uLayingItemID].vVelocity.y = 0;
-                createSpriteTrailParticle(pSpriteObjects[uLayingItemID].vPosition.toInt(), object->uFlags);
+                createSpriteTrailParticle(pSpriteObjects[uLayingItemID].vPosition, object->uFlags);
                 return;
             }
         }
@@ -254,7 +253,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         bool collisionOnWater = false;
         int collisionBmodelPid = 0;
         Vec3i collisionPos = collision_state.new_position_lo.toInt() - Vec3i(0, 0, collision_state.radius_lo + 1);
-        int collisionLevel = ODM_GetFloorLevel(collisionPos, object->uHeight, &collisionOnWater, &collisionBmodelPid, 0);
+        float collisionLevel = ODM_GetFloorLevel(collisionPos.toFloat(), object->uHeight, &collisionOnWater, &collisionBmodelPid, 0);
         // TOOD(Nik-RE-dev): why initail "onWater" is used?
         if (onWater && collisionZ < (collisionLevel + 60)) {
             int splashZ = level + 60;
@@ -271,7 +270,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             //pSpriteObjects[uLayingItemID].vPosition.y = collision_state.new_position_lo.y;
             //pSpriteObjects[uLayingItemID].vPosition.z = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
             pSpriteObjects[uLayingItemID].uSectorID = collision_state.uSectorID;
-            createSpriteTrailParticle(pSpriteObjects[uLayingItemID].vPosition.toInt(), object->uFlags);
+            createSpriteTrailParticle(pSpriteObjects[uLayingItemID].vPosition, object->uFlags);
             return;
         }
         // v60 = ((uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.x) >> 16);
@@ -348,7 +347,7 @@ void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
     }
 
     int uFaceID;
-    int floor_lvl = GetIndoorFloorZ(pSpriteObject->vPosition.toInt(), &pSpriteObject->uSectorID, &uFaceID);
+    float floor_lvl = GetIndoorFloorZ(pSpriteObject->vPosition, &pSpriteObject->uSectorID, &uFaceID);
     if (floor_lvl <= -30000) {
         SpriteObject::OnInteraction(uLayingItemID);
         return;
@@ -415,7 +414,7 @@ LABEL_25:
                 if (!(pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE)) {
                     return;
                 }
-                createSpriteTrailParticle(pSpriteObject->vPosition.toInt(), pObject->uFlags);
+                createSpriteTrailParticle(pSpriteObject->vPosition, pObject->uFlags);
                 return;
             }
             // v40 = (uint64_t)(collision_state.adjusted_move_distance * (signed int64_t)collision_state.direction.x) >> 16;
@@ -505,7 +504,7 @@ LABEL_25:
             if (!(pObject->uFlags & OBJECT_DESC_NO_SPRITE)) {
                 return;
             }
-            createSpriteTrailParticle(pSpriteObject->vPosition.toInt(), pObject->uFlags);
+            createSpriteTrailParticle(pSpriteObject->vPosition, pObject->uFlags);
             return;
         }
         // TODO(Nik-RE-dev): is this correct?
@@ -632,8 +631,8 @@ bool SpriteObject::applyShrinkRayAoe() {
     for (Actor &actor : pActors) {
         // TODO(Nik-RE-dev): paralyzed actor will not be affected?
         if (actor.CanAct()) {
-            int distanceSq = (actor.pos.toInt() - this->vPosition.toInt() + Vec3i(0, 0, actor.height / 2)).lengthSqr();
-            int checkDistanceSq = (effectDistance + actor.radius) * (effectDistance + actor.radius);
+            float distanceSq = (actor.pos - this->vPosition + Vec3f(0, 0, actor.height / 2)).lengthSqr();
+            float checkDistanceSq = (effectDistance + actor.radius) * (effectDistance + actor.radius);
 
             if (distanceSq <= checkDistanceSq) {
                 if (actor.DoesDmgTypeDoDamage(DAMAGE_DARK)) {
@@ -655,7 +654,7 @@ bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
     pSpellObject.uObjectDescID = pObjectList->ObjectIDByItemID(sprite);
     pSpellObject.vPosition = pos;
     pSpellObject.uAttributes = attributes;
-    pSpellObject.uSectorID = pIndoor->GetSector(pos.toInt());
+    pSpellObject.uSectorID = pIndoor->GetSector(pos);
     pSpellObject.containing_item.Reset();
     if (item) {
         pSpellObject.containing_item = *item;
@@ -692,7 +691,7 @@ void SpriteObject::createSplashObject(Vec3f pos) {
     sprite.uType = SPRITE_WATER_SPLASH;
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
     sprite.vPosition = pos;
-    sprite.uSectorID = pIndoor->GetSector(pos.toInt());
+    sprite.uSectorID = pIndoor->GetSector(pos);
     int objID = sprite.Create(0, 0, 0, 0);
     if (objID != -1) {
         pAudioPlayer->playSound(SOUND_splash, SOUND_MODE_PID, Pid(OBJECT_Item, objID));
@@ -1255,23 +1254,17 @@ void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid) {
     if (pid.type() == OBJECT_Character) {
         DamageCharacterFromMonster(Pid(OBJECT_Item, uLayingItemID), pSpriteObjects[uLayingItemID].spellCasterAbility, -1);
     } else if (pid.type() == OBJECT_Actor) {
-        Vec3i velocity = pSpriteObjects[uLayingItemID].vVelocity.toInt();
-        normalize_to_fixpoint(&velocity.x, &velocity.y, &velocity.z);
+        Vec3f velF = pSpriteObjects[uLayingItemID].vVelocity;
+        velF.normalize();
         switch (pSpriteObjects[uLayingItemID].spell_caster_pid.type()) {
             case OBJECT_Actor:
-                Actor::ActorDamageFromMonster(Pid(OBJECT_Item, uLayingItemID), pid.id(), &velocity, pSpriteObjects[uLayingItemID].spellCasterAbility);
+                Actor::ActorDamageFromMonster(Pid(OBJECT_Item, uLayingItemID), pid.id(), velF, pSpriteObjects[uLayingItemID].spellCasterAbility);
                 break;
-            case OBJECT_Character: {
-                Vec3f velF = pSpriteObjects[uLayingItemID].vVelocity;
-                velF.normalize();
+            case OBJECT_Character:
                 Actor::DamageMonsterFromParty(Pid(OBJECT_Item, uLayingItemID), pid.id(), velF);
-            }
                 break;
-            case OBJECT_Item: {
-                Vec3f velF = pSpriteObjects[uLayingItemID].vVelocity;
-                velF.normalize();
+            case OBJECT_Item:
                 ItemDamageFromActor(Pid(OBJECT_Item, uLayingItemID), pid.id(), velF);
-            }
                 break;
             default:
                 break;

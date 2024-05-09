@@ -288,12 +288,12 @@ void Engine::DrawGUI() {
         } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             int uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
-            int floor_level = BLV_GetFloorLevel(pParty->pos.toInt()/* + Vec3i(0,0,40) */, sector_id, &uFaceID);
+            float floor_level = BLV_GetFloorLevel(pParty->pos/* + Vec3f(0,0,40) */, sector_id, &uFaceID);
             floor_level_str = fmt::format("BLV_GetFloorLevel: {}   face_id {}\n", floor_level, uFaceID);
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             bool on_water = false;
             int bmodel_pid;
-            int floor_level = ODM_GetFloorLevel(pParty->pos.toInt(), 0, &on_water, &bmodel_pid, false);
+            float floor_level = ODM_GetFloorLevel(pParty->pos, 0, &on_water, &bmodel_pid, false);
             floor_level_str = fmt::format(
                 "ODM_GetFloorLevel: {}   on_water: {}  on: {}\n",
                 floor_level, on_water ? "true" : "false",

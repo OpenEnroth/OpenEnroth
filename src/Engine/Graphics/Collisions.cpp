@@ -141,7 +141,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
         assert(fuzzyIsNull(face->facePlane.signedDistanceTo(projected_pos), COLLISIONS_EPS)); // TODO(captainurist): move into face->Contains.
 
         // collision point is in face so can return
-        if (face->Contains(projected_pos.toInt(), model_idx)) {
+        if (face->Contains(projected_pos, model_idx)) {
             *out_move_distance = move_distance;
             *out_collision_point = projected_pos;
             //logger->warning("Error: collide with face md: {}", move_distance);
@@ -162,7 +162,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
         if (model_idx == MODEL_INDOOR) {
             vertPos = pIndoor->pVertices[face->pVertexIDs[i]];
         } else {
-            vertPos = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]].toFloat();
+            vertPos = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]];
         }
 
         b = 2.0f * (dot(dir, pos - vertPos));
@@ -183,8 +183,8 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
             vert1 = pIndoor->pVertices[face->pVertexIDs[i]];
             vert2 = pIndoor->pVertices[face->pVertexIDs[i2]];
         } else {
-            vert1 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]].toFloat();
-            vert2 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i2]].toFloat();
+            vert1 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]];
+            vert2 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i2]];
         }
 
         // collide with line between the two verts
@@ -252,7 +252,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &d
     if (move_distance > *out_move_distance)
         return false; // No correction needed.
 
-    if (!face->Contains(new_pos.toInt(), model_idx))
+    if (!face->Contains(new_pos, model_idx))
         return false;
 
     *out_move_distance = move_distance;
@@ -610,7 +610,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         Vec3f newPos = actor.pos + collision_state.adjusted_move_distance * collision_state.direction;
         int newFaceID = -1;
-        int newFloorZ = GetIndoorFloorZ(newPos.toInt(), &collision_state.uSectorID, &newFaceID);
+        float newFloorZ = GetIndoorFloorZ(newPos, &collision_state.uSectorID, &newFaceID);
         if (newFloorZ == -30000)
             break; // New pos is out of bounds, running more iterations won't help.
 
@@ -747,7 +747,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         Vec3f newPos = actor.pos + collision_state.adjusted_move_distance * collision_state.direction;
         bool isOnWater = false;
         int modelPid = 0;
-        int newFloorZ = ODM_GetFloorLevel(newPos.toInt(), actor.height, &isOnWater, &modelPid, 0);
+        float newFloorZ = ODM_GetFloorLevel(newPos, actor.height, &isOnWater, &modelPid, 0);
         if (isOnWater) {
             if (actor.pos.z < newFloorZ + 60) {
                 if (actor.aiState == Dead || actor.aiState == Dying ||
@@ -873,7 +873,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         // Adjust the collision position with the same offset
         collision_state.collisionPos -= closestdist * collision_state.direction;
 
-        int adjusted_floor_z = GetIndoorFloorZ((adjusted_pos + Vec3f(0, 0, collision_state.radius_lo)).toInt(), &collision_state.uSectorID, faceId);
+        float adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3f(0, 0, collision_state.radius_lo), &collision_state.uSectorID, faceId);
         if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128) {
             // intended world position isnt valid so dont move there
             return; // TODO: whaaa?
@@ -1011,11 +1011,11 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             collision_state.collisionPos -= closestdist * collision_state.direction;
         }
 
-        int allnewfloor = ODM_GetFloorLevel(newPosLow.toInt(), pParty->height, partyIsOnWater, floorFaceId, 0);
+        float allnewfloor = ODM_GetFloorLevel(newPosLow, pParty->height, partyIsOnWater, floorFaceId, 0);
         int party_y_pid;
-        int x_advance_floor = ODM_GetFloorLevel(Vec3i(newPosLow.x, partyNewPos->y, newPosLow.z), pParty->height, partyIsOnWater, &party_y_pid, 0);
+        float x_advance_floor = ODM_GetFloorLevel(Vec3f(newPosLow.x, partyNewPos->y, newPosLow.z), pParty->height, partyIsOnWater, &party_y_pid, 0);
         int party_x_pid;
-        int y_advance_floor = ODM_GetFloorLevel(Vec3i(partyNewPos->x, newPosLow.y, newPosLow.z), pParty->height, partyIsOnWater, &party_x_pid, 0);
+        float y_advance_floor = ODM_GetFloorLevel(Vec3f(partyNewPos->x, newPosLow.y, newPosLow.z), pParty->height, partyIsOnWater, &party_x_pid, 0);
         bool terr_slope_advance_x = IsTerrainSlopeTooHigh(newPosLow.x, partyNewPos->y);
         bool terr_slope_advance_y = IsTerrainSlopeTooHigh(partyNewPos->x, newPosLow.y);
 
