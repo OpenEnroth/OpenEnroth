@@ -5,7 +5,6 @@
 
 --- @class GameBindings
 --- @field party PartyBindings
---- @field audio AudioBindings
 --- @field misc MiscBindings
 --- @field items ItemsBindings
 --- @field serialize SerializeBindings

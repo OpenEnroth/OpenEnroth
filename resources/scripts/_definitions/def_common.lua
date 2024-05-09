@@ -17,6 +17,9 @@
 --- @field playSound fun(soundId: integer, soundPlaybackMode: integer)
 --- @field playMusic fun(musicId: integer)
 
+--- @class RendererBindings
+--- @field reloadShaders fun()
+
 --- @class SerializeBindings
 --- @field partyAlignment fun(alignment: integer): string
 
