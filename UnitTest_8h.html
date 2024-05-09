@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7502c3f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2a931f4</span>
    </div>
   </td>
  </tr>
@@ -79,11 +79,14 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;gtest/gtest.h&gt;</code><br />
+<code>#include &lt;gmock/gmock.h&gt;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a579745b3264f45ddfb9f9950e09070ea"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UnitTest_8h.html#a579745b3264f45ddfb9f9950e09070ea">UNIT_TEST</a>(SuiteName,  TestName)&#160;&#160;&#160;    TEST(SuiteName, TestName)</td></tr>
 <tr class="separator:a579745b3264f45ddfb9f9950e09070ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a756ac5da96161e72e1eac78933c9d318"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UnitTest_8h.html#a756ac5da96161e72e1eac78933c9d318">UNIT_TEST_FIXTURE</a>(ClassName,  TestName)&#160;&#160;&#160;    TEST_F(ClassName, TestName)</td></tr>
+<tr class="separator:a756ac5da96161e72e1eac78933c9d318"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="a579745b3264f45ddfb9f9950e09070ea" name="a579745b3264f45ddfb9f9950e09070ea"></a>
@@ -108,6 +111,34 @@ Macros</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td>&#160;&#160;&#160;    TEST(SuiteName, TestName)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a756ac5da96161e72e1eac78933c9d318" name="a756ac5da96161e72e1eac78933c9d318"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a756ac5da96161e72e1eac78933c9d318">&#9670;&#160;</a></span>UNIT_TEST_FIXTURE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define UNIT_TEST_FIXTURE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">ClassName, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">TestName&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;    TEST_F(ClassName, TestName)</td>
         </tr>
       </table>
 </div><div class="memdoc">
