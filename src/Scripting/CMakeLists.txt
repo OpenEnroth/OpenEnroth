@@ -3,25 +3,27 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 set(SCRIPTING_SOURCES
         ConfigBindings.cpp
         OverlayBindings.cpp
-        GameLuaBindings.cpp
+        GameBindings.cpp
         InputBindings.cpp
         InputScriptEventHandler.cpp
         LoggerBindings.cpp
         NuklearLegacyBindings.cpp
         PlatformBindings.cpp
+        RendererBindings.cpp
         ScriptingSystem.cpp
         ScriptLogSink.cpp)
 
 set(SCRIPTING_HEADERS
         ConfigBindings.h
         OverlayBindings.h
-        GameLuaBindings.h
+        GameBindings.h
         InputBindings.h
         InputScriptEventHandler.h
         LoggerBindings.h
         NuklearLegacyBindings.h
         LuaItemQueryTable.h
         PlatformBindings.h
+        RendererBindings.h
         ScriptingSystem.h
         ScriptLogSink.h)
 

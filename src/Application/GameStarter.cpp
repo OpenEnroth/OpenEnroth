@@ -35,7 +35,7 @@
 
 #include "Scripting/ConfigBindings.h"
 #include "Scripting/OverlayBindings.h"
-#include "Scripting/GameLuaBindings.h"
+#include "Scripting/GameBindings.h"
 #include "Scripting/InputBindings.h"
 #include "Scripting/InputScriptEventHandler.h"
 #include "Scripting/LoggerBindings.h"
@@ -158,7 +158,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     // Init scripting system.
     _scriptingSystem = std::make_unique<ScriptingSystem>("scripts", "init.lua", *_application, *_rootLogSink);
     _scriptingSystem->addBindings<LoggerBindings>("log");
-    _scriptingSystem->addBindings<GameLuaBindings>("game");
+    _scriptingSystem->addBindings<GameBindings>("game");
     _scriptingSystem->addBindings<ConfigBindings>("config");
     _scriptingSystem->addBindings<PlatformBindings>("platform", *_application);
     _scriptingSystem->addBindings<InputBindings>("input", *_application->component<InputScriptEventHandler>());

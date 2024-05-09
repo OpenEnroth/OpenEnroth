@@ -1,4 +1,4 @@
-#include "GameLuaBindings.h"
+#include "GameBindings.h"
 
 #include <string_view>
 #include <memory>
@@ -21,15 +21,15 @@
 Character *getCharacterByIndex(int characterIndex);
 sol::table createCharacterConditionTable(sol::state_view &luaState, const Character &character);
 sol::table createCharacterSkillsTable(sol::state_view &luaState, const Character &character);
-std::unique_ptr<LuaItemQueryTable<Character>> GameLuaBindings::_characterInfoQueryTable;
+std::unique_ptr<LuaItemQueryTable<Character>> GameBindings::_characterInfoQueryTable;
 
-GameLuaBindings::GameLuaBindings() = default;
-GameLuaBindings::~GameLuaBindings() {
+GameBindings::GameBindings() = default;
+GameBindings::~GameBindings() {
     // TODO(Gerark) This static variable must be moved elsewhere
     _characterInfoQueryTable = nullptr;
 }
 
-sol::table GameLuaBindings::createBindingTable(sol::state_view &solState) const {
+sol::table GameBindings::createBindingTable(sol::state_view &solState) const {
     /** TODO(Gerark) exposing the info/stats of a character this way might suggest we should expose the Character class directly to lua.
     *   The idea is to wait till we'll talk about serious modding/scripting and not taking a direction upfront
     *   TODO(Gerark) This check is also a hack to avoid initializing the static characterInfoTable. multiple times,
@@ -59,7 +59,7 @@ sol::table GameLuaBindings::createBindingTable(sol::state_view &solState) const 
     return table;
 }
 
-void GameLuaBindings::_registerMiscBindings(sol::state_view &solState, sol::table &table) const {
+void GameBindings::_registerMiscBindings(sol::state_view &solState, sol::table &table) const {
     //TODO(Gerark) We shouldn't have a misc table but it will disappear soon
     table["misc"] = solState.create_table_with(
         "goToScreen", [](int screenIndex) {
@@ -71,7 +71,7 @@ void GameLuaBindings::_registerMiscBindings(sol::state_view &solState, sol::tabl
     );
 }
 
-void GameLuaBindings::_registerPartyBindings(sol::state_view &solState, sol::table &table) const {
+void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table &table) const {
     table["party"] = solState.create_table_with(
         "getGold", []() {
             return pParty->GetGold();
@@ -189,7 +189,7 @@ void GameLuaBindings::_registerPartyBindings(sol::state_view &solState, sol::tab
     );
 }
 
-void GameLuaBindings::_registerAudioBindings(sol::state_view &solState, sol::table &table) const {
+void GameBindings::_registerAudioBindings(sol::state_view &solState, sol::table &table) const {
     table["audio"] = solState.create_table_with(
         "playSound", [](SoundId soundId, SoundPlaybackMode mode) {
             pAudioPlayer->playSound(soundId, mode);
@@ -200,7 +200,7 @@ void GameLuaBindings::_registerAudioBindings(sol::state_view &solState, sol::tab
     );
 }
 
-void GameLuaBindings::_registerItemBindings(sol::state_view &solState, sol::table &table) const {
+void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &table) const {
     typedef std::function<bool(ItemId)> FilteItemFunction;
 
     auto createItemTable = [&solState](const ItemDesc &itemDesc) {
@@ -233,7 +233,7 @@ void GameLuaBindings::_registerItemBindings(sol::state_view &solState, sol::tabl
     );
 }
 
-void GameLuaBindings::_registerSerializationBindings(sol::state_view &solState, sol::table &table) const {
+void GameBindings::_registerSerializationBindings(sol::state_view &solState, sol::table &table) const {
     //Exposing serializations and deserializations functions to lua
     //Useful for converting command line strings to the correct types
     table["deserialize"] = solState.create_table_with(
@@ -249,7 +249,7 @@ void GameLuaBindings::_registerSerializationBindings(sol::state_view &solState, 
     );
 }
 
-void GameLuaBindings::_registerRenderBindings(sol::state_view &solState, sol::table &table) const {
+void GameBindings::_registerRenderBindings(sol::state_view &solState, sol::table &table) const {
     table["render"] = solState.create_table_with(
         "reloadShaders", [](std::string_view alignment) {
             render->ReloadShaders();
@@ -257,7 +257,7 @@ void GameLuaBindings::_registerRenderBindings(sol::state_view &solState, sol::ta
     );
 }
 
-void GameLuaBindings::_registerEnums(sol::state_view &solState, sol::table &table) const {
+void GameBindings::_registerEnums(sol::state_view &solState, sol::table &table) const {
     //TODO(captainurist): Use serialization tables to automate this.
     table.new_enum<false>("PartyAlignment",
         "Good", PartyAlignment::PartyAlignment_Good,

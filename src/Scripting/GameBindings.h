@@ -10,10 +10,10 @@ struct lua_State;
 
 class Character;
 
-class GameLuaBindings : public IBindings {
+class GameBindings : public IBindings {
  public:
-    GameLuaBindings();
-    ~GameLuaBindings() override;
+    GameBindings();
+    ~GameBindings() override;
     virtual sol::table createBindingTable(sol::state_view &solState) const override;
 
  private:
