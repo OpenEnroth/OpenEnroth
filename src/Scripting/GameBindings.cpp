@@ -52,7 +52,6 @@ sol::table GameBindings::createBindingTable(sol::state_view &solState) const {
     _registerMiscBindings(solState, table);
     _registerPartyBindings(solState, table);
     _registerItemBindings(solState, table);
-    _registerSerializationBindings(solState, table);
     _registerEnums(solState, table);
     return table;
 }
@@ -216,22 +215,6 @@ void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &
                 return grng->randomSample(itemsToRandomizeOn);
             }
             return grng->randomSample(allSpawnableItems());
-        })
-    );
-}
-
-void GameBindings::_registerSerializationBindings(sol::state_view &solState, sol::table &table) const {
-    //Exposing serializations and deserializations functions to lua
-    //Useful for converting command line strings to the correct types
-    table["deserialize"] = sol::as_function(solState.create_table_with(
-        "partyAlignment", [](std::string_view alignment) {
-            return fromString<PartyAlignment>(alignment);
-        })
-    );
-
-    table["serialize"] = solState.create_table_with(
-        "partyAlignment", sol::as_function([](PartyAlignment alignment) {
-            return toString(alignment);
         })
     );
 }

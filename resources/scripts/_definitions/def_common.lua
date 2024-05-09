@@ -11,7 +11,7 @@
 
 --- @class MiscBindings
 --- @field goToScreen fun(screenId: integer)
---- @field canClassLearn fun(classType: integer, skillType: integer)
+--- @field canClassLearn fun(classType: ClassType, skillType: SkillType)
 
 --- @class AudioBindings
 --- @field playSound fun(soundId: integer, soundPlaybackMode: integer)
@@ -19,12 +19,6 @@
 
 --- @class RendererBindings
 --- @field reloadShaders fun()
-
---- @class SerializeBindings
---- @field partyAlignment fun(alignment: integer): string
-
---- @class DeserializeBindings
---- @field partyAlignment fun(alignment: string): integer
 
 --- @class LogBindings
 --- @field info fun(message:string)
