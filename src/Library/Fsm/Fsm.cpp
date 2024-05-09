@@ -1,6 +1,6 @@
 #include "Fsm.h"
 
-#include <Library/Logger/Logger.h>
+#include <Utility/Exception.h>
 
 #include <utility>
 #include <string>
@@ -24,8 +24,7 @@ void Fsm::update() {
 void Fsm::_goToState(std::string_view stateName) {
     FsmStateEntry *nextState = nullptr;
     if (!(nextState = _getStateByName(stateName))) {
-        logger->warning(fsmLogCategory, "Cannot jump to state [{}]. The state does not exist.", stateName);
-        return;
+        throw Exception("Cannot jump to state [{}]. The state does not exist.", stateName);
     }
 
     if (_currentState) {
@@ -52,9 +51,7 @@ void Fsm::_executeTransition(std::string_view transition) {
     FsmTransitions &transitions = _currentState->transitions;
     auto itr = transitions.find(transition);
     if (itr == transitions.end()) {
-        logger->warning(fsmLogCategory, "Cannot execute transition from state [{}]. Transition [{}] does not exist.",
-            _currentState->name, transition);
-        return;
+        throw Exception("Cannot execute transition from state [{}]. Transition [{}] does not exist.", _currentState->name, transition);
     }
 
     // Check if there's at least one transition condition that evaluates to true
@@ -66,9 +63,7 @@ void Fsm::_executeTransition(std::string_view transition) {
         }
     }
     if (!transitionTarget) {
-        logger->warning(fsmLogCategory, "Cannot execute transition [{}] from state [{}]. No condition evaluated to true",
-            transition, _currentState->name);
-        return;
+        throw Exception("Cannot execute transition [{}] from state [{}]. No condition evaluated to true", transition, _currentState->name);
     }
 
     _hasReachedExitState = transitionTarget->stateName == exitState;

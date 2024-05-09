@@ -43,6 +43,5 @@ class Fsm : public FsmEventHandler {
     FsmStateEntries _states;
     FsmStateEntry *_currentState{};
 
-    // By default, when the Fsm has no states, it's treated as if it reached already the Fsm::exitState state
-    bool _hasReachedExitState{true};
+    bool _hasReachedExitState{};
 };
