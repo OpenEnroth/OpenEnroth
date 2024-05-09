@@ -49,16 +49,11 @@ end
 --- local result = enumToString(Game.SkillType, 2)
 --- The value of variable "result" is "Dagger"
 ---
----@param enumTable PartyAlignmentEnum
----@param value PartyAlignment
+---@param enumTable any
+---@param value any
 ---@return string
----@overload fun(enumTable:CharacterConditionEnum, v:CharacterCondition) : string
----@overload fun(enumTable:SkillMasteryEnum, v:SkillMastery) : string
----@overload fun(enumTable:SkillTypeEnum, v:SkillType) : string
----@overload fun(enumTable:ClassTypeEnum, v:ClassType) : string
----@overload fun(enumTable:ItemTypeEnum, v:ItemType) : string
 function enumToString(enumTable, value)
-    ---@cast enumTable table<string, AnyGameEnumValue>
+    ---@cast enumTable table<string, any>
     for k, v in pairs(enumTable) do
         if v == value then
             return k
