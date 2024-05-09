@@ -6,8 +6,6 @@
 #include "LuaItemQueryTable.h"
 #include "IBindings.h"
 
-struct lua_State;
-
 class Character;
 
 class GameBindings : public IBindings {
@@ -17,8 +15,6 @@ class GameBindings : public IBindings {
     virtual sol::table createBindingTable(sol::state_view &solState) const override;
 
  private:
-    void _registerAudioBindings(sol::state_view &solState, sol::table &table) const;
-    void _registerRenderBindings(sol::state_view &solState, sol::table &table) const;
     void _registerMiscBindings(sol::state_view &solState, sol::table &table) const;
     void _registerPartyBindings(sol::state_view &solState, sol::table &table) const;
     void _registerItemBindings(sol::state_view &solState, sol::table &table) const;

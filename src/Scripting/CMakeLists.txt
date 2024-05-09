@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(SCRIPTING_SOURCES
+        AudioBindings.cpp
         ConfigBindings.cpp
         OverlayBindings.cpp
         GameBindings.cpp
@@ -14,6 +15,7 @@ set(SCRIPTING_SOURCES
         ScriptLogSink.cpp)
 
 set(SCRIPTING_HEADERS
+        AudioBindings.h
         ConfigBindings.h
         OverlayBindings.h
         GameBindings.h

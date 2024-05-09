@@ -52,9 +52,7 @@ sol::table GameBindings::createBindingTable(sol::state_view &solState) const {
     _registerMiscBindings(solState, table);
     _registerPartyBindings(solState, table);
     _registerItemBindings(solState, table);
-    _registerAudioBindings(solState, table);
     _registerSerializationBindings(solState, table);
-    _registerRenderBindings(solState, table);
     _registerEnums(solState, table);
     return table;
 }
@@ -62,69 +60,69 @@ sol::table GameBindings::createBindingTable(sol::state_view &solState) const {
 void GameBindings::_registerMiscBindings(sol::state_view &solState, sol::table &table) const {
     //TODO(Gerark) We shouldn't have a misc table but it will disappear soon
     table["misc"] = solState.create_table_with(
-        "goToScreen", [](int screenIndex) {
-            SetCurrentMenuID(MenuType(screenIndex));
-        },
-        "canClassLearn", [](CharacterClass classType, CharacterSkillType skillType) {
-            return skillMaxMasteryPerClass[classType][skillType] > CHARACTER_SKILL_MASTERY_NONE;
-        }
+        "goToScreen", sol::as_function([](int screenIndex) {
+        SetCurrentMenuID(MenuType(screenIndex));
+    }),
+        "canClassLearn", sol::as_function([](CharacterClass classType, CharacterSkillType skillType) {
+        return skillMaxMasteryPerClass[classType][skillType] > CHARACTER_SKILL_MASTERY_NONE;
+    })
     );
 }
 
 void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table &table) const {
     table["party"] = solState.create_table_with(
-        "getGold", []() {
+        "getGold", sol::as_function([]() {
             return pParty->GetGold();
-        },
-        "setGold", [](int amount) {
+        }),
+        "setGold", sol::as_function([](int amount) {
             pParty->SetGold(amount);
-        },
-        "getFood", []() {
+        }),
+        "getFood", sol::as_function([]() {
             return pParty->GetFood();
-        },
-        "setFood", [](int food) {
+        }),
+        "setFood", sol::as_function([](int food) {
             pParty->SetFood(food);
-        },
-        "getAlignment", []() {
+        }),
+        "getAlignment", sol::as_function([]() {
             return pParty->alignment;
-        },
-        "setAlignment", [](PartyAlignment alignment) {
+        }),
+        "setAlignment", sol::as_function([](PartyAlignment alignment) {
             pParty->alignment = alignment;
             SetUserInterface(pParty->alignment);
-        },
-        "givePartyXp", [](int amount) {
+        }),
+        "givePartyXp", sol::as_function([](int amount) {
             pParty->GivePartyExp(amount);
-        },
-        "getPartySize", []() {
+        }),
+        "getPartySize", sol::as_function([]() {
             return pParty->pCharacters.size();
-        },
-        "getActiveCharacter", []() {
-            if(pParty->hasActiveCharacter()) {
+        }),
+        "getActiveCharacter", sol::as_function([]() {
+            if (pParty->hasActiveCharacter()) {
                 int index = pParty->activeCharacterIndex();
                 assert(index != 0); //keep an assert here in case we change the 1-based index to 0 in the future so we can adjust it accordingly
                 return index; //a 1-based index is totally fine for lua
             } else {
                 return 0;
             }
-        },
-        "getCharacterInfo", [this, &solState](int characterIndex, QueryTable queryTable) {
-            if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+        }),
+        "getCharacterInfo", sol::as_function([this, &solState](int characterIndex, QueryTable queryTable) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
                 return _characterInfoQueryTable->createTable(*character, queryTable);
             }
             return sol::make_object(solState, sol::lua_nil);
-        },
-        "setCharacterInfo", [](int characterIndex, const sol::object &info) {
-            if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+        }),
+        "setCharacterInfo", sol::as_function([](int characterIndex, const sol::object &info) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
                 const sol::table &table = info.as<sol::table>();
                 for (auto &&val : table) {
                     std::string_view key = val.first.as<std::string_view>();
                     if (key == "xp") {
                         character->experience = val.second.as<int>();
-                    } else if(key == "sp") {
+                    } else if (key == "sp") {
                         character->uSkillPoints = val.second.as<int>();
-                    } else if(key == "hp") {
+                    } else if (key == "hp") {
                         character->health = val.second.as<int>();
-                    } else if(key == "mana") {
+                    } else if (key == "mana") {
                         character->mana = val.second.as<int>();
                     } else if (key == "class") {
                         character->classType = val.second.as<CharacterClass>();
@@ -145,58 +143,47 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
                     }
                 }
             }
-        },
-        "addItemToInventory", [](int characterIndex, ItemId itemId) {
-            if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+        }),
+        "addItemToInventory", sol::as_function([](int characterIndex, ItemId itemId) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
                 return character->AddItem(-1, itemId) != 0;
             }
             return false;
-        },
-        "addCustomItemToInventory", [](int characterIndex, sol::table itemTable) {
-            if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+        }),
+        "addCustomItemToInventory", sol::as_function([](int characterIndex, sol::table itemTable) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
                 ItemGen item;
                 for (auto &&pair : itemTable) {
                     std::string_view key = pair.first.as<std::string_view>();
                     if (key == "id") {
                         item.uItemID = pair.second.as<ItemId>();
-                    } else if(key == "holder") {
+                    } else if (key == "holder") {
                         item.uHolderPlayer = pair.second.as<int>() - 1; // character index in lua is 1-based
                     }
                 }
                 return character->AddItem2(-1, &item) != 0;
             }
             return false;
-        },
-        "playAllCharactersAwardSound", []() {
+        }),
+        "playAllCharactersAwardSound", sol::as_function([]() {
             for (auto &&character : pParty->pCharacters) {
                 character.PlayAwardSound_Anim();
             }
-        },
-        "playCharacterAwardSound", [](int characterIndex) {
-            if(Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+        }),
+        "playCharacterAwardSound", sol::as_function([](int characterIndex) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
                 character->PlayAwardSound_Anim();
             }
-        },
-        "clearCondition", [](int characterIndex, std::optional<Condition> conditionToClear) {
-            if(Character* character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+        }),
+        "clearCondition", sol::as_function([](int characterIndex, std::optional<Condition> conditionToClear) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
                 if (conditionToClear) {
                     character->conditions.Reset(*conditionToClear);
                 } else {
                     character->conditions.ResetAll();
                 }
             }
-        }
-    );
-}
-
-void GameBindings::_registerAudioBindings(sol::state_view &solState, sol::table &table) const {
-    table["audio"] = solState.create_table_with(
-        "playSound", [](SoundId soundId, SoundPlaybackMode mode) {
-            pAudioPlayer->playSound(soundId, mode);
-        },
-        "playMusic", [](MusicId musicId) {
-            pAudioPlayer->MusicPlayTrack(musicId);
-        }
+        })
     );
 }
 
@@ -211,16 +198,16 @@ void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &
     };
 
     table["items"] = solState.create_table_with(
-        "getItemInfo", [&solState, createItemTable](ItemId itemId) {
-            if(itemId >= ITEM_FIRST_VALID && itemId <= ITEM_LAST_VALID) {
+        "getItemInfo", sol::as_function([&solState, createItemTable](ItemId itemId) {
+            if (itemId >= ITEM_FIRST_VALID && itemId <= ITEM_LAST_VALID) {
                 const ItemDesc &itemDesc = pItemTable->pItems[itemId];
                 return sol::object(solState, createItemTable(itemDesc));
             }
             return sol::make_object(solState, sol::lua_nil);
-        },
+        }),
         // The getRandomItem function accept an optional filter function to exclude some items from the randomization
-        "getRandomItem", [](const FilteItemFunction &filter) {
-            if(filter) {
+        "getRandomItem", sol::as_function([](const FilteItemFunction &filter) {
+            if (filter) {
                 std::vector<ItemId> itemsToRandomizeOn;
                 Segment<ItemId> &&spawnableItems = allSpawnableItems();
                 for (ItemId itemId : spawnableItems | std::views::filter(filter)) {
@@ -229,31 +216,23 @@ void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &
                 return grng->randomSample(itemsToRandomizeOn);
             }
             return grng->randomSample(allSpawnableItems());
-        }
+        })
     );
 }
 
 void GameBindings::_registerSerializationBindings(sol::state_view &solState, sol::table &table) const {
     //Exposing serializations and deserializations functions to lua
     //Useful for converting command line strings to the correct types
-    table["deserialize"] = solState.create_table_with(
+    table["deserialize"] = sol::as_function(solState.create_table_with(
         "partyAlignment", [](std::string_view alignment) {
             return fromString<PartyAlignment>(alignment);
-        }
+        })
     );
 
     table["serialize"] = solState.create_table_with(
-        "partyAlignment", [](PartyAlignment alignment) {
+        "partyAlignment", sol::as_function([](PartyAlignment alignment) {
             return toString(alignment);
-        }
-    );
-}
-
-void GameBindings::_registerRenderBindings(sol::state_view &solState, sol::table &table) const {
-    table["render"] = solState.create_table_with(
-        "reloadShaders", [](std::string_view alignment) {
-            render->ReloadShaders();
-        }
+        })
     );
 }
 
