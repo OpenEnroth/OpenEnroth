@@ -233,6 +233,12 @@ void OpenGLRenderer::BltBackToFontFast(int a2, int a3, Recti *a4) {
 }
 
 void OpenGLRenderer::ClearTarget(Color uColor) {
+    /* TODO(Gerark) Should we bind to the framebuffer before clearing?
+    if (outputRender != outputPresent) {
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+    }
+    */
+
     glClearColor(0, 0, 0, 0/*0.9f, 0.5f, 0.1f, 1.0f*/);
     glClearDepthf(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -3481,7 +3487,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                 if (!model.pFaces.empty()) {
                     for (ODMFace &face : model.pFaces) {
                         if (!face.Invisible()) {
-                            array_73D150[0].vWorldPosition = model.pVertices[face.pVertexIDs[0]].toFloat();
+                            array_73D150[0].vWorldPosition = model.pVertices[face.pVertexIDs[0]];
 
                             if (pCamera3D->is_face_faced_to_cameraODM(&face, &array_73D150[0])) {
                                 int texunit = 0;
@@ -3866,7 +3872,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
 
                 // kludge for getting lights in  visible sectors
-                pStationaryLightsStack->pLights[lightscnt].uSectorID = pIndoor->GetSector(test.vPosition.toInt());
+                pStationaryLightsStack->pLights[lightscnt].uSectorID = pIndoor->GetSector(test.vPosition);
 
                 if (pStationaryLightsStack->pLights[lightscnt].uSectorID == 0) cntnosect++;
             }

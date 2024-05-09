@@ -80,6 +80,7 @@
 
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
+#include "Library/Fsm/Fsm.h"
 
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Format.h"
@@ -89,6 +90,7 @@
 #include "GameIocContainer.h"
 #include "GameWindowHandler.h"
 #include "GameMenu.h"
+#include "GameStates/GameFsmBuilder.h"
 
 void ShowMM7IntroVideo_and_LoadingScreen();
 
@@ -131,7 +133,23 @@ int Game::run() {
     window->activate();
     ::eventLoop->processMessages(eventHandler);
 
-    ShowMM7IntroVideo_and_LoadingScreen();
+    // Right now This Fsm is used only to show the intro videos as a proof of concept
+    std::unique_ptr<Fsm> fsm = GameFsmBuilder::buildFsm();
+    GameWindowHandler* gameWindowHandler = ::application->component<GameWindowHandler>();
+    gameWindowHandler->addFsmEventHandler(fsm.get());
+    while(!fsm->hasReachedExitState()) {
+        render->ClearBlack();
+        render->BeginScene2D();
+
+        fsm->update();
+
+        render->Present();
+
+        MessageLoopWithWait();
+    }
+    gameWindowHandler->removeFsmEventHandler(fsm.get());
+
+    //ShowMM7IntroVideo_and_LoadingScreen();
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 
@@ -940,7 +958,7 @@ void Game::processQueuedMessages() {
                 v53 = std::to_underlying(buildingTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
                 if (v53 < 0) {
                     v54 = std::abs(v53) - 1;
-                    engine->_teleportPoint.setTeleportTarget(Vec3i(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
+                    engine->_teleportPoint.setTeleportTarget(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
                 }
                 houseDialogPressEscape();
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
@@ -994,7 +1012,7 @@ void Game::processQueuedMessages() {
 
                 // change map to Harmondale
                 pCurrentMapName = "out02.odm";
-                engine->_teleportPoint.setTeleportTarget(pParty->pos.toInt(), pParty->_viewYaw, pParty->_viewPitch, 0);
+                engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
                 PrepareWorld(1);
                 Actor::InitializeActors();
 
@@ -1845,7 +1863,7 @@ void Game::gameLoop() {
                 // change map
                 if (pCurrentMapName != Source) {
                     pCurrentMapName = Source;
-                    engine->_teleportPoint.setTeleportTarget(pParty->pos.toInt(), pParty->_viewYaw, pParty->_viewPitch, 0);
+                    engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
                     PrepareWorld(1);
                 }
                 pMiscTimer->setPaused(false);

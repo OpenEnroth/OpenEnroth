@@ -204,7 +204,7 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
             pCurrentMapName = pMapStats->pInfos[character.vBeacons[beaconId].mapId].fileName;
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
-            engine->_teleportPoint.setTeleportTarget(character.vBeacons[beaconId]._partyPos.toInt(), character.vBeacons[beaconId]._partyViewYaw, character.vBeacons[beaconId]._partyViewPitch, 0);
+            engine->_teleportPoint.setTeleportTarget(character.vBeacons[beaconId]._partyPos, character.vBeacons[beaconId]._partyViewYaw, character.vBeacons[beaconId]._partyViewPitch, 0);
         } else {
             pParty->pos = character.vBeacons[beaconId]._partyPos;
             pParty->uFallStartZ = pParty->pos.z;

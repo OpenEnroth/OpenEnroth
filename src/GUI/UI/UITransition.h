@@ -18,7 +18,7 @@ class GUIWindow_Travel : public GUIWindow {
 
 class GUIWindow_Transition : public GUIWindow {
  public:
-    GUIWindow_Transition(HouseId transitionHouse, uint32_t exit_pic_id, Vec3i pos, int yaw, int pitch, int zspeed, std::string_view locationName);
+    GUIWindow_Transition(HouseId transitionHouse, uint32_t exit_pic_id, Vec3f pos, int yaw, int pitch, int zspeed, std::string_view locationName);
     virtual ~GUIWindow_Transition() {}
 
     virtual void Update() override;

@@ -563,7 +563,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
             spell_sprites.uObjectDescID = pObjectList->ObjectIDByItemID(spell_sprites.uType);
             spell_sprites.vPosition = from;
             spell_sprites.uAttributes = SPRITE_IGNORE_RANGE;
-            spell_sprites.uSectorID = pIndoor->GetSector(from.toInt());
+            spell_sprites.uSectorID = pIndoor->GetSector(from);
             spell_sprites.field_60_distance_related_prolly_lod = distance_to_target;
             spell_sprites.timeSinceCreated = 0_ticks;
             spell_sprites.spell_caster_pid = Pid(OBJECT_Item, 1000); // 8000 | OBJECT_Item;

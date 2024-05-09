@@ -541,7 +541,9 @@ bool GameWindowHandler::mouseReleaseEvent(const PlatformMouseEvent *event) {
     return false;
 }
 
-bool GameWindowHandler::wheelEvent(const PlatformWheelEvent *) { return false; }
+bool GameWindowHandler::wheelEvent(const PlatformWheelEvent *event) {
+    return false;
+}
 
 bool GameWindowHandler::moveEvent(const PlatformMoveEvent *event) {
     /* Remember window position after move. Move position event is also triggered on toggling fullscreen. And we should save current window position prior to entering fullscreen.
@@ -584,7 +586,6 @@ bool GameWindowHandler::closeEvent(const PlatformWindowEvent *event) {
         game->goToMainMenu();
         game->pressGuiButton("MainMenu_ExitGame");
     });
-
     return false;
 }
 
@@ -632,4 +633,25 @@ bool GameWindowHandler::gamepadAxisEvent(const PlatformGamepadAxisEvent *event) 
     }
 
     return false;
+}
+
+bool GameWindowHandler::event(const PlatformEvent *event) {
+    if (PlatformEventFilter::event(event))
+        return true;
+
+    for (auto &fsmEventHandler : _fsmEventHandlers)
+        if (fsmEventHandler->event(event))
+            return true;
+
+    return false;
+}
+
+void GameWindowHandler::addFsmEventHandler(FsmEventHandler *fsmEventHandler) {
+    assert(std::ranges::find(_fsmEventHandlers, fsmEventHandler) == _fsmEventHandlers.end());
+    _fsmEventHandlers.push_back(fsmEventHandler);
+}
+
+void GameWindowHandler::removeFsmEventHandler(FsmEventHandler *fsmEventHandler) {
+    assert(std::ranges::find(_fsmEventHandlers, fsmEventHandler) != _fsmEventHandlers.end());
+    std::erase(_fsmEventHandlers, fsmEventHandler);
 }

@@ -134,7 +134,7 @@ class Actor {
     static void AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                                SpellId uSpellID, ActorAbility a4, CombinedSkillValue uSkill);
     static void ActorDamageFromMonster(Pid attacker_id, unsigned int actor_id,
-                                       Vec3i *pVelocity, ActorAbility a4);
+                                       const Vec3f &pVelocity, ActorAbility a4);
 
     static unsigned short GetObjDescId(SpellId spellId);
 

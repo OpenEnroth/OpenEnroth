@@ -27,12 +27,12 @@ sol::table OverlayBindings::createBindingTable(sol::state_view &solState) const 
     );
 
     return solState.create_table_with(
-        "addOverlay", [this, &solState](std::string_view name, sol::table view) {
+        "addOverlay", sol::as_function([this, &solState](std::string_view name, sol::table view) {
             _overlaySystem.addOverlay(name, std::make_unique<ScriptedOverlay>(name, solState, view));
-        },
-        "removeOverlay", [this](std::string_view name) {
+        }),
+        "removeOverlay", sol::as_function([this](std::string_view name) {
             _overlaySystem.removeOverlay(name);
-        },
+        }),
         "nk", nuklearTable
     );
 }

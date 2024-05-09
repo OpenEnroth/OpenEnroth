@@ -37,9 +37,11 @@ target_link_libraries(application
         engine_graphics
         engine_graphics_level
         engine_graphics_renderer
+        game_states
         gui
         io
         library_config
+        library_fsm
         library_lod
         media
         library_platform_null
@@ -48,3 +50,5 @@ target_link_libraries(application
         scripting
         utility
         imgui)
+
+add_subdirectory(GameStates)
