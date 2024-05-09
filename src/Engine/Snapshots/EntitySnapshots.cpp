@@ -190,6 +190,19 @@ void reconstruct(const Vec3s &src, Vec3f *dst) {
     dst->z = src.z;
 }
 
+void snapshot(const Vec3f &src, Vec3i *dst) {
+    // TODO(captainurist): do we need to check for overflows here?
+    dst->x = src.x;
+    dst->y = src.y;
+    dst->z = src.z;
+}
+
+void reconstruct(const Vec3i &src, Vec3f *dst) {
+    dst->x = src.x;
+    dst->y = src.y;
+    dst->z = src.z;
+}
+
 void snapshot(const BBoxi &src, BBoxs_MM7 *dst) {
     // TODO(captainurist): do we need to check for overflows here?
     dst->x1 = src.x1;
@@ -201,6 +214,25 @@ void snapshot(const BBoxi &src, BBoxs_MM7 *dst) {
 }
 
 void reconstruct(const BBoxs_MM7 &src, BBoxi *dst) {
+    dst->x1 = src.x1;
+    dst->x2 = src.x2;
+    dst->y1 = src.y1;
+    dst->y2 = src.y2;
+    dst->z1 = src.z1;
+    dst->z2 = src.z2;
+}
+
+void snapshot(const BBoxf& src, BBoxs_MM7* dst) {
+    // TODO(captainurist): do we need to check for overflows here?
+    dst->x1 = src.x1;
+    dst->x2 = src.x2;
+    dst->y1 = src.y1;
+    dst->y2 = src.y2;
+    dst->z1 = src.z1;
+    dst->z2 = src.z2;
+}
+
+void reconstruct(const BBoxs_MM7& src, BBoxf* dst) {
     dst->x1 = src.x1;
     dst->x2 = src.x2;
     dst->y1 = src.y1;
@@ -1386,7 +1418,7 @@ void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
     dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->uDoorID = src.uDoorID;
     dst->uTimeSinceTriggered = src.uTimeSinceTriggered.ticks();
-    dst->vDirection = src.vDirection;
+    dst->vDirection = src.vDirection.toFixpoint();
     dst->uMoveLength = src.uMoveLength;
     dst->uCloseSpeed = src.uCloseSpeed;
     dst->uOpenSpeed = src.uOpenSpeed;
@@ -1401,7 +1433,7 @@ void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
     dst->uAttributes = static_cast<DoorAttributes>(src.uAttributes);
     dst->uDoorID = src.uDoorID;
     dst->uTimeSinceTriggered = Duration::fromTicks(src.uTimeSinceTriggered);
-    dst->vDirection = src.vDirection;
+    dst->vDirection = src.vDirection.toFloatFromFixpoint();
     dst->uMoveLength = src.uMoveLength;
     dst->uCloseSpeed = src.uCloseSpeed;
     dst->uOpenSpeed = src.uOpenSpeed;

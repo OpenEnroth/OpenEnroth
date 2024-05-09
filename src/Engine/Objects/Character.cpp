@@ -6980,7 +6980,7 @@ void Character::_42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int a
     a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
     a1a.vPosition = pos;
     a1a.uAttributes = 0;
-    a1a.uSectorID = pIndoor->GetSector(pos.toInt());
+    a1a.uSectorID = pIndoor->GetSector(pos);
     a1a.timeSinceCreated = 0_ticks;
     a1a.spell_target_pid = Pid();
     a1a.field_60_distance_related_prolly_lod = 0;

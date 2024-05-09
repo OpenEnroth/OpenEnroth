@@ -20,7 +20,7 @@ struct IndoorLocation;
 struct MapInfo;
 
 struct BLVLight {
-    Vec3i vPosition;
+    Vec3f vPosition;
     int16_t uRadius = 0;
     char uRed = 0;
     char uGreen = 0;
@@ -34,7 +34,7 @@ struct BLVDoor {  // 50h
     DoorAttributes uAttributes;
     uint32_t uDoorID;
     Duration uTimeSinceTriggered;
-    Vec3i vDirection; // Fixpoint direction vector
+    Vec3f vDirection; // Float direction vector
     int32_t uMoveLength;
     int32_t uCloseSpeed; // In map units per real-time second.
     int32_t uOpenSpeed; // In map units per real-time second.
@@ -63,8 +63,8 @@ struct BLVMapOutline {  // 0C
 };
 
 struct FlatFace {
-    std::array<int32_t, 104> u;
-    std::array<int32_t, 104> v;
+    std::array<float, 104> u;
+    std::array<float, 104> v;
 };
 
 /*   93 */
@@ -123,7 +123,7 @@ struct BLVFace {  // 60h
      * @return                          Whether the point lies inside this polygon, if projected on the face's
      *                                  primary plane.
      */
-    bool Contains(const Vec3i &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
+    bool Contains(const Vec3f &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
 
     Planef facePlane;
     PlaneZCalcf zCalc;
@@ -138,8 +138,7 @@ struct BLVFace {  // 60h
 
     int uSectorID = 0;
     int uBackSectorID = 0;
-    // TODO(pskelton): Geometry should be float
-    BBoxi pBounding;
+    BBoxf pBounding;
     PolygonType uPolygonType = POLYGON_Invalid;
     uint8_t uNumVertices = 0;
 };
@@ -187,7 +186,7 @@ struct BLVSector {  // 0x74
     int16_t uMinAmbientLightLevel;  // might be supposed to be max ambient dim actually
     int16_t uFirstBSPNode;
     int16_t exit_tag;
-    BBoxi pBounding;
+    BBoxf pBounding;
 };
 
 /*   89 */
@@ -205,9 +204,9 @@ struct IndoorLocation {
      * @param sZ                        Z coordinate.
      * @return                          Sector id at (X,Y,Z), or zero if (X,Y,Z) is outside the level bounds.
      */
-    int GetSector(int sX, int sY, int sZ);
-
-    int GetSector(const Vec3i &pos) {
+    int GetSector(float sX, float sY, float sZ);
+    // TODO(pskelton): do we need both still?
+    int GetSector(const Vec3f &pos) {
         return GetSector(pos.x, pos.y, pos.z);
     }
 
@@ -294,7 +293,7 @@ void BLV_UpdateUserInputAndOther();
  *                                      If wrong sector is supplied or actor is out of bounds, `-30000` is
  *                                      returned.
  */
-int BLV_GetFloorLevel(const Vec3i &pos, int uSectorID, int *pFaceID = nullptr);
+float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID = nullptr);
 void BLV_UpdateDoors();
 void UpdateActors_BLV();
 void BLV_ProcessPartyActions();
@@ -307,7 +306,7 @@ int CalcDistPointToLine(int a1, int a2, int a3, int a4, int a5, int a6);
 void PrepareDrawLists_BLV();
 void PrepareToLoadBLV(bool bLoading);
 int SpawnEncounterMonsters(MapInfo *a1, int a2);
-int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3i pos, uint16_t facing);
+int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing);
 void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2);
 
 void FindBillboardsLightLevels_BLV();
@@ -325,7 +324,7 @@ void FindBillboardsLightLevels_BLV();
  * @return                              Z coordinate for the floor at (X, Y), or `-30000` if actor is outside the
  *                                      level boundaries.
  */
-int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID = nullptr);
+float GetIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID = nullptr);
 
 /**
  * @offset 0x0047272C.
@@ -335,31 +334,31 @@ int GetIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID = nullptr);
  *
  * @see GetIndoorFloorZ
  */
-int GetApproximateIndoorFloorZ(const Vec3i &pos, int *pSectorID, int *pFaceID = nullptr);
+float GetApproximateIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID = nullptr);
 
 /**
- * @param target                         Vec3i of position to check line of sight to
- * @param from                           Vec3i of position to check line of sight from
+ * @param target                         Vec3f of position to check line of sight to
+ * @param from                           Vec3f of position to check line of sight from
  *
  * @return                              True if line of sight clear to target
  */
-bool Check_LineOfSight(const Vec3i &target, const Vec3i &from);
+bool Check_LineOfSight(const Vec3f &target, const Vec3f &from);
 
 
 /**
- * @param target                         Vec3i of position to check line of sight to
- * @param from                           Vec3i of position to check line of sight from
+ * @param target                         Vec3f of position to check line of sight to
+ * @param from                           Vec3f of position to check line of sight from
  *
  * @return                              True if line of sight obscurred by level geometery
  */
-bool Check_LOS_Obscurred_Indoors(const Vec3i &target, const Vec3i &from);
+bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from);
 
 /**
- * @param target                         Vec3i of position to check line of sight to
- * @param from                           Vec3i of position to check line of sight from
+ * @param target                         Vec3f of position to check line of sight to
+ * @param from                           Vec3f of position to check line of sight from
  *
  * @return                              True if line of sight obscurred by outdoor models
  */
-bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3i &target, const Vec3i &from);
+bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from);
 
 extern BspRenderer *pBspRenderer;

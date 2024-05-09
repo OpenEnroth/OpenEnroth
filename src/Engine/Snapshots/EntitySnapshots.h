@@ -78,6 +78,9 @@ void reconstruct(const Vec3s &src, Vec3i *dst);
 void snapshot(const Vec3f &src, Vec3s *dst);
 void reconstruct(const Vec3s &src, Vec3f *dst);
 
+void snapshot(const Vec3f &src, Vec3i *dst);
+void reconstruct(const Vec3i &src, Vec3f *dst);
+
 #pragma pack(push, 1)
 
 struct BBoxs_MM7 {
@@ -94,6 +97,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BBoxs_MM7)
 void snapshot(const BBoxi &src, BBoxs_MM7 *dst);
 void reconstruct(const BBoxs_MM7 &src, BBoxi *dst);
 
+void snapshot(const BBoxf &src, BBoxs_MM7 *dst);
+void reconstruct(const BBoxs_MM7 &src, BBoxf *dst);
 
 struct Planef_MM7 {
     Vec3f normal;
