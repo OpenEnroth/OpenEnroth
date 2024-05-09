@@ -49,7 +49,7 @@ end
 --- local result = enumToString(Game.SkillType, 2)
 --- The value of variable "result" is "Dagger"
 ---
----@param enumTable any
+---@param enumTable any - The enum table ( ex: Game.SkillType, Game.SkillMastery )
 ---@param value any
 ---@return string
 function enumToString(enumTable, value)
@@ -63,7 +63,7 @@ function enumToString(enumTable, value)
     return ""
 end
 
----@param enumTable any
+---@param enumTable any - The enum table ( ex: Game.SkillType, Game.SkillMastery )
 ---@param valueStr string
 ---@return any
 function stringToEnum(enumTable, valueStr)

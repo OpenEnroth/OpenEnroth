@@ -44,8 +44,7 @@ local function clearCondition(conditionName, characterIndex)
         return "All conditions cleared", true
     else
         characterIndex = CommandUtilities.characterOrCurrent(characterIndex)
-        local v = stringToEnum(Game.CharacterCondition, conditionName)
-        Game.party.clearCondition(characterIndex, v)
+        Game.party.clearCondition(characterIndex, stringToEnum(Game.CharacterCondition, conditionName))
         return "Condition " .. conditionName .. " cleared", true
     end
 end
