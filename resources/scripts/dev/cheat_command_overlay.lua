@@ -93,9 +93,9 @@ local function drawColumnItem(entry, columnIndex, itemsPerRow)
     return columnIndex + 1 < itemsPerRow and columnIndex + 1 or 0
 end
 
-local function BeginTable(name, columnSize)
-    local w, h = imgui.GetWindowSize()
-    imgui.BeginTable("buttonTable", math.max(1, math.floor(w / columnSize)))
+local function beginTable(name, columnSize)
+    local w, _ = imgui.GetWindowSize()
+    imgui.BeginTable(name, math.max(1, math.floor(w / columnSize)))
 end
 
 CheatOverlay.update = function ()
@@ -103,7 +103,7 @@ CheatOverlay.update = function ()
     imgui.SetNextWindowSize(300, screenH - 10, imgui.ImGuiCond.FirstUseEver);
     imgui.SetNextWindowPos(screenW - 305, 5, imgui.ImGuiCond.FirstUseEver);
     if imgui.Begin("Debug Menu") then
-        BeginTable("buttonTable", 150)
+        beginTable("buttonTable", 150)
         local columnIndex = 0
         for _, entry in pairs(availableCommands) do
             columnIndex = drawColumnItem(entry, columnIndex, imgui.TableGetColumnCount())

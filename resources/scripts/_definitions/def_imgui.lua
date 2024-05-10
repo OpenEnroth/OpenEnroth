@@ -1,16 +1,33 @@
 --- @meta
 
+--- @diagnostic disable: duplicate-doc-field
+
 --- @class ImGuiBindings
---- @field Begin fun()
+--- @field Begin fun() : boolean
+--- @field Begin fun(name:string) : boolean
+--- @field Begin fun(name:string, isOpen:boolean) : boolean, boolean
 --- @field End fun()
+--- Window
+--- @field GetWindowSize fun() : number, number
+--- @field SetNextWindowSize fun(w: number, h: number)
+--- @field SetNextWindowSize fun(w: number, h: number, cond:ImGuiCond)
+--- @field SetNextWindowPos fun(x: number, h: number)
+--- @field SetNextWindowPos fun(x: number, h: number, cond:ImGuiCond)
 --- Button
 --- @field Button fun() : boolean
---- @field Button fun(text:string, width:integer, height: integer) : boolean
+--- @field Button fun(text:string, width:number, height: number) : boolean
 --- Table
---- @field BeginTable fun()
+--- @field BeginTable fun(name:string, columns:integer)
 --- @field EndTable fun()
+--- @field TableNextRow fun()
+--- @field TableSetColumnIndex fun(column:integer)
+--- @field TableGetColumnCount fun(): integer
+--- Style
+--- @field PushStyleColor fun(col:ImGuiCol, r: number, g: number, b: number, a: number)
+--- @field PopStyleColor fun()
 --- Enums
 --- @field ImGuiCol ImGuiColEnum
+--- @field ImGuiCond ImGuiCondEnum
 
 --- @enum ImGuiCol
 --- @class ImGuiColEnum
@@ -69,3 +86,11 @@
 --- @field NavWindowingHighlight ImGuiCol
 --- @field NavWindowingDimBg ImGuiCol
 --- @field ModalWindowDimBg ImGuiCol
+
+--- @enum ImGuiCond
+--- @class ImGuiCondEnum
+--- @field None ImGuiCond
+--- @field Always ImGuiCond
+--- @field Once ImGuiCond
+--- @field FirstUseEver ImGuiCond
+--- @field Appearing ImGuiCond
