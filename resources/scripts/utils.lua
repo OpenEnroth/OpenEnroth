@@ -62,4 +62,25 @@ Utilities.enumToString = function (enumTable, valueToConvert)
     return ""
 end
 
+---@class Color
+---@field r number
+---@field g number
+---@field b number
+---@field a number
+
+---Create a table with r,g,b,a fields
+---@param r number
+---@param g number
+---@param b number
+---@param a number
+---@return Color
+Utilities.color = function (r, g, b, a)
+    return {
+        r = r,
+        g = g,
+        b = b,
+        a = a
+    }
+end
+
 return Utilities

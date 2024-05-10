@@ -1,10 +1,11 @@
 #include "OverlayBindings.h"
 
 #include "NuklearLegacyBindings.h"
-//#include "ImGuiBindings.h"
 
 #include <GUI/Overlay/OverlaySystem.h>
 #include <GUI/Overlay/ScriptedOverlay.h>
+
+#include "ImGuiBindings.h"
 
 #include <memory>
 
@@ -26,7 +27,7 @@ sol::table OverlayBindings::createBindingTable(sol::state_view &solState) const 
         "NK_EDIT_COMMITED", NK_EDIT_COMMITED
     );
 
-    return solState.create_table_with(
+    sol::table table = solState.create_table_with(
         "addOverlay", sol::as_function([this, &solState](std::string_view name, sol::table view) {
             _overlaySystem.addOverlay(name, std::make_unique<ScriptedOverlay>(name, solState, view));
         }),
@@ -35,4 +36,7 @@ sol::table OverlayBindings::createBindingTable(sol::state_view &solState) const 
         }),
         "nk", nuklearTable
     );
+    sol_ImGui::Init(solState, table);
+
+    return table;
 }

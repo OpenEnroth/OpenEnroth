@@ -16,6 +16,7 @@ set(SCRIPTING_HEADERS
         ConfigBindings.h
         OverlayBindings.h
         GameLuaBindings.h
+        ImGuiBindings.h
         InputBindings.h
         InputScriptEventHandler.h
         LoggerBindings.h

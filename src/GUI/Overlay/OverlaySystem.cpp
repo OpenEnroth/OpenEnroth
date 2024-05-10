@@ -45,12 +45,6 @@ void OverlaySystem::removeOverlay(std::string_view name) {
 void OverlaySystem::drawOverlays() {
     _update();
     _renderer.drawOverlays(_nuklearContext.get());
-
-    if (_isEnabled) {
-        _renderer.beginOverlays();
-        //ImGui::ShowDemoWindow();
-        _renderer.endOverlays();
-    }
 }
 
 void OverlaySystem::_update() {
@@ -60,6 +54,8 @@ void OverlaySystem::_update() {
 
     auto context = _nuklearContext.get();
 
+    _renderer.beginOverlays();
+    ImGui::ShowDemoWindow();
     if (context->style.font != nullptr) {
         nk_input_end(context);
         for (auto &&[name, overlay] : _overlays) {
@@ -67,6 +63,7 @@ void OverlaySystem::_update() {
         }
         nk_input_begin(context);
     }
+    _renderer.endOverlays();
 }
 
 bool OverlaySystem::isEnabled() const {

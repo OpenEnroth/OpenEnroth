@@ -55,3 +55,4 @@
 --- @field addOverlay fun(name: string, view: Overlay)
 --- @field removeOverlay fun(name: string)
 --- @field nk Nuklear
+--- @field imgui ImGuiBindings
