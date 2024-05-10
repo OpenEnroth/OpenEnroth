@@ -1,11 +1,11 @@
 var searchData=
 [
   ['game_0',['Game',['../classGame.html',1,'']]],
-  ['gameconfig_1',['GameConfig',['../classGameConfig.html',1,'']]],
-  ['gamefsmbuilder_2',['GameFsmBuilder',['../classGameFsmBuilder.html',1,'']]],
-  ['gameioccontainer_3',['GameIocContainer',['../classGameIocContainer.html',1,'']]],
-  ['gamekeyboardcontroller_4',['GameKeyboardController',['../classGameKeyboardController.html',1,'']]],
-  ['gameluabindings_5',['GameLuaBindings',['../classGameLuaBindings.html',1,'']]],
+  ['gamebindings_1',['GameBindings',['../classGameBindings.html',1,'']]],
+  ['gameconfig_2',['GameConfig',['../classGameConfig.html',1,'']]],
+  ['gamefsmbuilder_3',['GameFsmBuilder',['../classGameFsmBuilder.html',1,'']]],
+  ['gameioccontainer_4',['GameIocContainer',['../classGameIocContainer.html',1,'']]],
+  ['gamekeyboardcontroller_5',['GameKeyboardController',['../classGameKeyboardController.html',1,'']]],
   ['gamepad_6',['Gamepad',['../classGameConfig_1_1Gamepad.html',1,'GameConfig']]],
   ['gameplay_7',['Gameplay',['../classGameConfig_1_1Gameplay.html',1,'GameConfig']]],
   ['gameresourcemanager_8',['GameResourceManager',['../classGameResourceManager.html',1,'']]],
