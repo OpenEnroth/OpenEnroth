@@ -188,5 +188,8 @@
         "require_module_name_style": "pascal_case",
         "class_name_style": "pascal_case",
         "const_variable_name_style": "pascal_case"
-    }
+    },
+    "spell.dict": [
+        "imgui"
+    ]
 }

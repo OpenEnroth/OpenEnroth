@@ -1675,14 +1675,17 @@ inline void InitEnums(sol::table &table) {
         "PlotLinesHovered", ImGuiCol_PlotLinesHovered,
         "PlotHistogram", ImGuiCol_PlotHistogram,
         "PlotHistogramHovered", ImGuiCol_PlotHistogramHovered,
+        "TableHeaderBg", ImGuiCol_TableHeaderBg,
+        "TableBorderStrong", ImGuiCol_TableBorderStrong,
+        "TableBorderLight", ImGuiCol_TableBorderLight,
+        "TableRowBg", ImGuiCol_TableRowBg,
+        "TableRowBgAlt", ImGuiCol_TableRowBgAlt,
         "TextSelectedBg", ImGuiCol_TextSelectedBg,
         "DragDropTarget", ImGuiCol_DragDropTarget,
         "NavHighlight", ImGuiCol_NavHighlight,
         "NavWindowingHighlight", ImGuiCol_NavWindowingHighlight,
         "NavWindowingDimBg", ImGuiCol_NavWindowingDimBg,
-        "ModalWindowDimBg", ImGuiCol_ModalWindowDimBg,
-        "ModalWindowDarkening", ImGuiCol_ModalWindowDimBg,
-        "COUNT", ImGuiCol_COUNT
+        "ModalWindowDimBg", ImGuiCol_ModalWindowDimBg
     );
 
     table.new_enum("ImGuiStyleVar",

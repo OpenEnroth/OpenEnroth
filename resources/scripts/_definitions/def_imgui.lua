@@ -3,6 +3,69 @@
 --- @class ImGuiBindings
 --- @field Begin fun()
 --- @field End fun()
+--- Button
+--- @field Button fun() : boolean
+--- @field Button fun(text:string, width:integer, height: integer) : boolean
 --- Table
 --- @field BeginTable fun()
 --- @field EndTable fun()
+--- Enums
+--- @field ImGuiCol ImGuiColEnum
+
+--- @enum ImGuiCol
+--- @class ImGuiColEnum
+--- @field Text ImGuiCol
+--- @field TextDisabled ImGuiCol
+--- @field WindowBg ImGuiCol
+--- @field ChildBg ImGuiCol
+--- @field PopupBg ImGuiCol
+--- @field Border ImGuiCol
+--- @field BorderShadow ImGuiCol
+--- @field FrameBg ImGuiCol
+--- @field FrameBgHovered ImGuiCol
+--- @field FrameBgActive ImGuiCol
+--- @field TitleBg ImGuiCol
+--- @field TitleBgActive ImGuiCol
+--- @field TitleBgCollapsed ImGuiCol
+--- @field MenuBarBg ImGuiCol,
+--- @field ScrollbarBg ImGuiCol
+--- @field ScrollbarGrab ImGuiCol
+--- @field ScrollbarGrabHovered ImGuiCol
+--- @field ScrollbarGrabActive ImGuiCol
+--- @field CheckMark ImGuiCol
+--- @field SliderGrab ImGuiCol
+--- @field SliderGrabActive ImGuiCol
+--- @field Button ImGuiCol
+--- @field ButtonHovered ImGuiCol
+--- @field ButtonActive ImGuiCol
+--- @field Header ImGuiCol
+--- @field HeaderHovered ImGuiCol
+--- @field HeaderActive ImGuiCol
+--- @field Separator ImGuiCol
+--- @field SeparatorHovered ImGuiCol
+--- @field SeparatorActive ImGuiCol
+--- @field ResizeGrip ImGuiCol
+--- @field ResizeGripHovered ImGuiCol
+--- @field ResizeGripActive ImGuiCol
+--- @field Tab ImGuiCol
+--- @field TabHovered ImGuiCol
+--- @field TabActive ImGuiCol
+--- @field TabUnfocused ImGuiCol
+--- @field TabUnfocusedActive ImGuiCol
+--- @field DockingPreview ImGuiCol
+--- @field DockingEmptyBg ImGuiCol
+--- @field PlotLines ImGuiCol
+--- @field PlotLinesHovered ImGuiCol
+--- @field PlotHistogram ImGuiCol
+--- @field PlotHistogramHovered ImGuiCol
+--- @field TableHeaderBg ImGuiCol
+--- @field TableBorderStrong ImGuiCol
+--- @field TableBorderLight ImGuiCol
+--- @field TableRowBg ImGuiCol
+--- @field TableRowBgAlt ImGuiCol
+--- @field TextSelectedBg ImGuiCol
+--- @field DragDropTarget ImGuiCol
+--- @field NavHighlight ImGuiCol
+--- @field NavWindowingHighlight ImGuiCol
+--- @field NavWindowingDimBg ImGuiCol
+--- @field ModalWindowDimBg ImGuiCol
