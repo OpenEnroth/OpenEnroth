@@ -182,12 +182,18 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
                     character->conditions.ResetAll();
                 }
             }
+        }),
+        "getQBit", sol::as_function([](QuestBit qbit) {
+            return pParty->_questBits.test(qbit);
+        }),
+        "setQBit", sol::as_function([](QuestBit qbit, bool value) {
+            pParty->_questBits.set(qbit, value);
         })
     );
 }
 
 void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &table) const {
-    typedef std::function<bool(ItemId)> FilteItemFunction;
+    using FilterItemFunction = std::function<bool(ItemId)>;
 
     auto createItemTable = [&solState](const ItemDesc &itemDesc) {
         return solState.create_table_with(
@@ -205,7 +211,7 @@ void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &
             return sol::make_object(solState, sol::lua_nil);
         }),
         // The getRandomItem function accept an optional filter function to exclude some items from the randomization
-        "getRandomItem", sol::as_function([](const FilteItemFunction &filter) {
+        "getRandomItem", sol::as_function([](const FilterItemFunction &filter) {
             if (filter) {
                 std::vector<ItemId> itemsToRandomizeOn;
                 Segment<ItemId> &&spawnableItems = allSpawnableItems();
@@ -336,6 +342,11 @@ void GameBindings::_registerEnums(sol::state_view &solState, sol::table &table) 
         "Wizard", CLASS_WIZARD,
         "Archmage", CLASS_ARCHAMGE,
         "Lich", CLASS_LICH
+    );
+
+    table.new_enum<false>("QBits",
+        "DarkPath", QBIT_DARK_PATH,
+        "LightPath", QBIT_LIGHT_PATH
     );
 
     // Let's not expose all the item types for now. I feel like it's too early.
