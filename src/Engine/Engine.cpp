@@ -122,7 +122,7 @@ Engine *engine;
 GameState uGameState;
 
 void Engine::drawWorld() {
-    engine->SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
+    engine->SetSaturateFaces(pParty->checkPartyPerceptionAgainstCurrentMap());
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
     pCamera3D->_viewYaw = pParty->_viewYaw;
@@ -559,8 +559,6 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
                                                       // maxExt == pCurrentMapName.
 
     Level_LoadEvtAndStr(mapName);
-
-    uLevelMapStatsID = pMapStats->GetMapInfo(pCurrentMapName);
 
     // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?
     attackList.clear();

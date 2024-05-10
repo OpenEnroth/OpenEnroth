@@ -1126,19 +1126,22 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
 
 //----- (00438CF3) --------------------------------------------------------
 void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
-    if (uLevelMapStatsID == MAP_INVALID || !pActors[uActorID].IsPeasant()) return;
-
-    if ((uLevelMapStatsID == MAP_BRACADA_DESERT || uLevelMapStatsID == MAP_CELESTE) && pParty->isPartyEvil())
+    if (engine->_currentLoadedMapId == MAP_INVALID || !pActors[uActorID].IsPeasant())
         return;
 
-    if ((uLevelMapStatsID == MAP_DEYJA || uLevelMapStatsID == MAP_PIT) && pParty->isPartyGood())
+    if ((engine->_currentLoadedMapId == MAP_BRACADA_DESERT || engine->_currentLoadedMapId == MAP_CELESTE) && pParty->isPartyEvil())
         return;
 
-    pParty->uFine += 100 * (pMapStats->pInfos[uLevelMapStatsID].baseStealingFine +
+    if ((engine->_currentLoadedMapId == MAP_DEYJA || engine->_currentLoadedMapId == MAP_PIT) && pParty->isPartyGood())
+        return;
+
+    pParty->uFine += 100 * (pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine +
                             pActors[uActorID].monsterInfo.level +
                             pParty->GetPartyReputation());
-    if (pParty->uFine < 0) pParty->uFine = 0;
-    if (pParty->uFine > 4000000) pParty->uFine = 4000000;
+    if (pParty->uFine < 0)
+        pParty->uFine = 0;
+    if (pParty->uFine > 4000000)
+        pParty->uFine = 4000000;
 
     if (currentLocationInfo().reputation < 10000)
         currentLocationInfo().reputation++;
