@@ -1,5 +1,4 @@
 local CommandUtils = require "dev.commands.command_utils"
-local Utilities = require "utils"
 local Game = require "bindings.game"
 
 local function cycleAlignment()
@@ -12,16 +11,27 @@ local function cycleAlignment()
         alignment = Game.PartyAlignment.Good
     end
     Game.party.setAlignment(alignment)
-    return string.format("Alignment changed to %s", Utilities.enumToString(Game.PartyAlignment, alignment)), true
+    return
+        string.format("Alignment changed to %s", enumToString(Game.PartyAlignment, alignment)),
+        true
+end
+
+local getter = Game.party.getAlignment
+local setter = Game.party.setAlignment
+
+local serializer = function (value)
+    return enumToString(Game.PartyAlignment, value)
+end
+
+local deserializer = function (strValue)
+    return stringToEnum(Game.PartyAlignment, strValue)
 end
 
 local subCommands = {
-    get = CommandUtils.showProperty(Game.party.getAlignment, "alignment", Game.serialize.partyAlignment),
-    set = CommandUtils.changeProperty(Game.party.getAlignment, Game.party.setAlignment, CommandUtils.opType.set,
-        "alignment",
-        Game.deserialize.partyAlignment, Game.serialize.partyAlignment),
+    get = CommandUtils.showProperty(getter, "alignment", serializer),
+    set = CommandUtils.changeProperty(getter, setter, CommandUtils.opType.set, "alignment", deserializer, serializer),
     cycle = cycleAlignment,
-    default = CommandUtils.showProperty(Game.party.getAlignment, "alignment", Game.serialize.partyAlignment)
+    default = CommandUtils.showProperty(getter, "alignment", serializer)
 }
 
 return {

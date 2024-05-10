@@ -1,7 +1,7 @@
 local nk = require "bindings.overlay".nk
 local window = require "bindings.platform".window
 local Config = require "bindings.config"
-local Game = require "bindings.game"
+local Audio = require "bindings.audio"
 local Console = require "console"
 local Utilities = require "utils"
 
@@ -87,7 +87,7 @@ CheatOverlay.update = function (ctx)
         if entry:draw(ctx) then
             --TODO(Gerark) I should expose the audio enum instead of using magic number
             -- It should look like this: Audio.playSound(SOUND_StartMainChoice02, SOUND_MODE_UI)
-            Game.audio.playSound(75, 1)
+            Audio.playSound(75, 1)
             Console:send(entry.command)
         end
     end
