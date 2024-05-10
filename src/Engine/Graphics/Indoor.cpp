@@ -673,8 +673,8 @@ bool BLVFaceExtra::HasEventHint() {
 //----- (0046F228) --------------------------------------------------------
 void BLV_UpdateDoors() {
     SoundId eDoorSoundID = SOUND_wood_door0101;
-    if (dword_6BE13C_uCurrentlyLoadedLocationID != MAP_INVALID)
-        eDoorSoundID = pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
+    if (engine->_currentLoadedMapId != MAP_INVALID)
+        eDoorSoundID = pDoorSoundIDsByLocationID[engine->_currentLoadedMapId];
 
     // loop over all doors
     for (unsigned i = 0; i < pIndoor->pDoors.size(); ++i) {
@@ -905,7 +905,7 @@ void PrepareToLoadBLV(bool bLoading) {
     } else {
         map_info = nullptr;
     }
-    dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
+    engine->_currentLoadedMapId = map_id;
 
     pStationaryLightsStack->uNumLightsActive = 0;
     pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);

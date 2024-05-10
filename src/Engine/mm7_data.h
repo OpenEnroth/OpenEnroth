@@ -105,7 +105,6 @@ extern float fWalkSpeedMultiplier;
 extern float fBackwardWalkSpeedMultiplier;
 extern float fTurnSpeedMultiplier;
 extern std::string pCurrentMapName; // TODO(captainurist): replace with MAP_TYPE & drop!
-extern MapId dword_6BE13C_uCurrentlyLoadedLocationID;
 extern MapId uLevelMapStatsID;
 
 // TODO(captainurist): #enum

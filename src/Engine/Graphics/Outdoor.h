@@ -214,6 +214,7 @@ void ODM_ProcessPartyActions();
 char Is_out15odm_underwater();
 void SetUnderwaterFog();
 void sub_487DA9();
+void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2);
 void ODM_LoadAndInitialize(std::string_view pLevelFilename,
                            ODMRenderParams *thisa);
 Color GetLevelFogColor();

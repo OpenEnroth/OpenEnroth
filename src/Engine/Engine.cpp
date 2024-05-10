@@ -547,7 +547,6 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
 //----- (00464866) --------------------------------------------------------
 void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     // char *v3;         // eax@1
-    MapId v5;  // eax@3
 
     // v9 = bLoading;
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
@@ -561,9 +560,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
     Level_LoadEvtAndStr(mapName);
 
-    v5 = pMapStats->GetMapInfo(pCurrentMapName);
-
-    uLevelMapStatsID = v5;
+    uLevelMapStatsID = pMapStats->GetMapInfo(pCurrentMapName);
 
     // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?
     attackList.clear();
@@ -845,26 +842,6 @@ void MM7Initialization() {
     pViewport->SetScreen(viewparams->uScreen_topL_X, viewparams->uScreen_topL_Y,
                          viewparams->uScreen_BttmR_X,
                          viewparams->uScreen_BttmR_Y);
-}
-
-// TODO(pskelton): move to outdoor?
-//----- (004610AA) --------------------------------------------------------
-void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
-    pGameLoadingUI_ProgressBar->Reset(27);
-    uCurrentlyLoadedLevelType = LEVEL_OUTDOOR;
-
-    ODM_LoadAndInitialize(pCurrentMapName, a2);
-    if (!bLoading)
-        TeleportToStartingPoint(uLevel_StartingPointType);
-
-    viewparams->_443365();
-    PlayLevelMusic();
-
-    //  level decoration sound
-    for (int decorIdx : decorationsWithSound) {
-        const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[decorIdx].uDecorationDescID);
-        pAudioPlayer->playSound(decoration->uSoundID, SOUND_MODE_PID, Pid(OBJECT_Decoration, decorIdx));
-    }
 }
 
 //----- (00464479) --------------------------------------------------------

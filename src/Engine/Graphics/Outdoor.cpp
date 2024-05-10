@@ -2464,10 +2464,28 @@ void UpdateActors_ODM() {
     }
 }
 
+//----- (004610AA) --------------------------------------------------------
+void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
+    pGameLoadingUI_ProgressBar->Reset(27);
+    uCurrentlyLoadedLevelType = LEVEL_OUTDOOR;
+
+    ODM_LoadAndInitialize(pCurrentMapName, a2);
+    if (!bLoading)
+        TeleportToStartingPoint(uLevel_StartingPointType);
+
+    viewparams->_443365();
+    PlayLevelMusic();
+
+    //  level decoration sound
+    for (int decorIdx : decorationsWithSound) {
+        const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[decorIdx].uDecorationDescID);
+        pAudioPlayer->playSound(decoration->uSoundID, SOUND_MODE_PID, Pid(OBJECT_Decoration, decorIdx));
+    }
+}
+
 //----- (0047A384) --------------------------------------------------------
 void ODM_LoadAndInitialize(std::string_view pFilename, ODMRenderParams *thisa) {
     MapInfo *map_info;            // edi@4
-    // size_t v7;              // eax@19
 
     // thisa->AllocSoftwareDrawBuffers();
     pWeather->bRenderSnow = false;
@@ -2475,14 +2493,14 @@ void ODM_LoadAndInitialize(std::string_view pFilename, ODMRenderParams *thisa) {
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
     pParty->_delayedReactionTimer = 0_ticks;
-    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId map_id = pMapStats->GetMapInfo(pFilename);
     unsigned int respawn_interval = 0;
     if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];
         respawn_interval = map_info->respawnIntervalDays;
     }
     day_attrib &= ~MAP_WEATHER_FOGGY;
-    dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
+    engine->_currentLoadedMapId = map_id;
     bool outdoor_was_respawned;
     pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().toDays() + 1,
         respawn_interval, &outdoor_was_respawned);
@@ -2523,6 +2541,7 @@ void ODM_LoadAndInitialize(std::string_view pFilename, ODMRenderParams *thisa) {
 
     MM7Initialization();
 }
+
 // returns 0xXXYYZZ fog color
 Color GetLevelFogColor() {
     if (engine->IsUnderwater()) {
