@@ -513,7 +513,7 @@ LABEL_25:
 }
 
 void SpriteObject::explosionTraps() {
-    MapInfo *pMapInfo = &pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)];
+    MapInfo *pMapInfo = &pMapStats->pInfos[engine->_currentLoadedMapId];
     int dir_x = std::abs(pParty->pos.x - this->vPosition.x);
     int dir_y = std::abs(pParty->pos.y - this->vPosition.y);
     int dir_z = std::abs(pParty->pos.z + pParty->eyeLevel - this->vPosition.z);

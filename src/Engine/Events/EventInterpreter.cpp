@@ -70,7 +70,6 @@ static bool checkSeason(Season season) {
  */
 static void spawnMonsters(int16_t typeindex, int16_t level, int count,
                           Vec3f pos, int group, unsigned int uUniqueName) {
-    MapId mapId = pMapStats->GetMapInfo(pCurrentMapName);
     SpawnPoint pSpawnPoint;
 
     pSpawnPoint.vPosition = pos;
@@ -79,10 +78,10 @@ static void spawnMonsters(int16_t typeindex, int16_t level, int count,
     pSpawnPoint.uKind = OBJECT_Actor;
     pSpawnPoint.uMonsterIndex = typeindex + 2 * level + level;
 
-    if (mapId != MAP_INVALID) {
+    if (engine->_currentLoadedMapId != MAP_INVALID) {
         AIDirection direction;
         int oldNumActors = pActors.size();
-        SpawnEncounter(&pMapStats->pInfos[mapId], &pSpawnPoint, 0, count, 0);
+        SpawnEncounter(&pMapStats->pInfos[engine->_currentLoadedMapId], &pSpawnPoint, 0, count, 0);
         Actor::GetDirectionInfo(Pid(OBJECT_Actor, oldNumActors), Pid::character(0), &direction, 1);
         for (int i = oldNumActors; i < pActors.size(); ++i) {
             pActors[i].PrepareSprites(0);

@@ -1271,17 +1271,15 @@ bool Actor::IsPeasant() {
 //----- (0042EBEE) --------------------------------------------------------
 void Actor::StealFrom(unsigned int uActorID) {
     Character *pPlayer;     // edi@1
-    int v4;              // ebx@2
-    MapId v5;     // eax@2
+    int v4 = 0;              // ebx@2
     LocationInfo *v6;  // esi@4
     Duration v8;              // [sp+8h] [bp-4h]@6
 
     pPlayer = &pParty->pCharacters[pParty->activeCharacterIndex() - 1];
     if (pPlayer->CanAct()) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
-        v4 = 0;
-        v5 = pMapStats->GetMapInfo(pCurrentMapName);
-        if (v5 != MAP_INVALID) v4 = pMapStats->pInfos[v5].baseStealingFine;
+        if (engine->_currentLoadedMapId != MAP_INVALID)
+            v4 = pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine;
         v6 = &currentLocationInfo();
         pPlayer->StealFromActor(uActorID, v4, v6->reputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);

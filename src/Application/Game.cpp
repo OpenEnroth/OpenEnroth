@@ -1244,7 +1244,7 @@ void Game::processQueuedMessages() {
                     for (Character &character : pParty->pCharacters) {
                         character.conditions.Set(CONDITION_SLEEP, pParty->GetPlayingTime());
                     }
-                    MapId mapIdx = pMapStats->GetMapInfo(pCurrentMapName);
+                    MapId mapIdx = engine->_currentLoadedMapId;
                     assert(mapIdx != MAP_INVALID);
                     // Was this, which made exactly zero sense:
                     // if (mapIdx == MAP_INVALID)

@@ -81,7 +81,6 @@ GUIWindow_Transition::GUIWindow_Transition(HouseId transitionHouse, unsigned exi
     pEventTimer->setPaused(true);
     current_screen_type = SCREEN_CHANGE_LOCATION;
 
-    mapid = pMapStats->GetMapInfo(pCurrentMapName);
     _mapName = locationName;
 
     game_ui_dialogue_background = assets->getImage_Solid(dialogueBackgroundResourceByAlignment[pParty->alignment]);
@@ -113,8 +112,8 @@ GUIWindow_Transition::GUIWindow_Transition(HouseId transitionHouse, unsigned exi
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
         }
     } else if (!IndoorLocation::GetLocationIndex(locationName)) { // transfer to outdoors - no special message
-        if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID) {
-            transition_button_label = localization->FormatString(LSTR_FMT_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].name);
+        if (engine->_currentLoadedMapId != MAP_INVALID) {
+            transition_button_label = localization->FormatString(LSTR_FMT_LEAVE_S, pMapStats->pInfos[engine->_currentLoadedMapId].name);
             if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].uRoomSoundId)
                 playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
@@ -149,8 +148,8 @@ GUIWindow_Travel::GUIWindow_Travel() : GUIWindow(WINDOW_ChangeLocation, {0, 0}, 
     game_ui_dialogue_background = assets->getImage_Solid(dialogueBackgroundResourceByAlignment[pParty->alignment]);
 
     transition_ui_icon = assets->getImage_Solid("outside");
-    if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID) {
-        transition_button_label = localization->FormatString( LSTR_FMT_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].name);
+    if (engine->_currentLoadedMapId != MAP_INVALID) {
+        transition_button_label = localization->FormatString(LSTR_FMT_LEAVE_S, pMapStats->pInfos[engine->_currentLoadedMapId].name);
     } else {
         transition_button_label = localization->GetString(LSTR_DIALOGUE_EXIT);
     }
@@ -192,7 +191,7 @@ void GUIWindow_Travel::Update() {
             str = localization->FormatString(LSTR_FMT_IT_TAKES_D_DAYS_TO_S, getTravelTime(), pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].name);
         }
         str += "\n \n";
-        str += localization->FormatString(LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S, pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].name);
+        str += localization->FormatString(LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S, pMapStats->pInfos[engine->_currentLoadedMapId].name);
 
         travel_window.DrawTitleText(assets->pFontCreate.get(), 0, (212 - assets->pFontCreate->CalcTextHeight(str, travel_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
     }
@@ -206,7 +205,7 @@ void GUIWindow_Transition::Update() {
     render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
     render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
 
-    MapId map_id = mapid;
+    MapId map_id = engine->_currentLoadedMapId;
     // TODO(captainurist): mm7 map names never starts with ' ', what is this check?
     if ((pMovie_Track || IndoorLocation::GetLocationIndex(_mapName)) && !engine->_teleportPoint.getTeleportMap().starts_with(' ')) {
         map_id = pMapStats->GetMapInfo(_mapName);
