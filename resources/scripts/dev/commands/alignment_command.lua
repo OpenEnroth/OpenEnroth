@@ -6,6 +6,7 @@ local function cycleAlignment()
     local alignment = Game.party.getAlignment()
     if alignment == Game.PartyAlignment.Good then
         alignment = Game.PartyAlignment.Neutral
+        Game.party.setQBit(Game.QBits.DarkPath, false)
         Game.party.setQBit(Game.QBits.LightPath, false)
     elseif alignment == Game.PartyAlignment.Neutral then
         alignment = Game.PartyAlignment.Evil
