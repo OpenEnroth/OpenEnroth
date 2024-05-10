@@ -187,7 +187,7 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
 }
 
 void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &table) const {
-    typedef std::function<bool(ItemId)> FilteItemFunction;
+    using FilterItemFunction = std::function<bool(ItemId)>;
 
     auto createItemTable = [&solState](const ItemDesc &itemDesc) {
         return solState.create_table_with(
@@ -205,7 +205,7 @@ void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &
             return sol::make_object(solState, sol::lua_nil);
         }),
         // The getRandomItem function accept an optional filter function to exclude some items from the randomization
-        "getRandomItem", sol::as_function([](const FilteItemFunction &filter) {
+        "getRandomItem", sol::as_function([](const FilterItemFunction &filter) {
             if (filter) {
                 std::vector<ItemId> itemsToRandomizeOn;
                 Segment<ItemId> &&spawnableItems = allSpawnableItems();
