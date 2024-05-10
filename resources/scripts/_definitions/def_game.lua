@@ -16,6 +16,7 @@
 --- @field SkillType table<string, integer>
 --- @field SkillMastery table<string, integer>
 --- @field ClassType table<string, integer>
+--- @field QBits table<string, integer>
 --- @field ItemType table<string, integer>
 
 --- @class SkillEntry
@@ -50,6 +51,8 @@
 --- @field playAllCharactersAwardSound fun()
 --- @field playCharacterAwardSound fun(charIndex: integer)
 --- @field clearCondition fun(charIndex: integer, condition: integer?)
+--- @field getQBit fun(qbit: integer?):boolean
+--- @field setQBit fun(qbit: integer?, value: boolean)
 
 --- @class ItemInfo
 --- @field name string

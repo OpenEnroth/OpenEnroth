@@ -206,6 +206,15 @@ void GameLuaBindings::_registerPartyBindings(sol::state_view &solState, sol::tab
         }
     });
 
+    partyTable["getQBit"].set_function([](QuestBit qbit) {
+        return pParty->_questBits.test(qbit);
+    });
+
+    partyTable["setQBit"].set_function([](QuestBit qbit, bool value) {
+        pParty->_questBits.set(qbit, value);
+    });
+
+
     table["party"] = partyTable;
 }
 
@@ -399,6 +408,11 @@ void GameLuaBindings::_registerEnums(sol::state_view &solState, sol::table &tabl
         "Wizard", CLASS_WIZARD,
         "Archmage", CLASS_ARCHAMGE,
         "Lich", CLASS_LICH
+    );
+
+    table.new_enum<false>("QBits",
+        "DarkPath", QBIT_DARK_PATH,
+        "LightPath", QBIT_LIGHT_PATH
     );
 
     // Let's not expose all the item types for now. I feel like it's too early.
