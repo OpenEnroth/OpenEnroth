@@ -1,4 +1,4 @@
-#include "GameLuaBindings.h"
+#include "GameBindings.h"
 
 #include <string_view>
 #include <memory>
@@ -21,15 +21,15 @@
 Character *getCharacterByIndex(int characterIndex);
 sol::table createCharacterConditionTable(sol::state_view &luaState, const Character &character);
 sol::table createCharacterSkillsTable(sol::state_view &luaState, const Character &character);
-std::unique_ptr<LuaItemQueryTable<Character>> GameLuaBindings::_characterInfoQueryTable;
+std::unique_ptr<LuaItemQueryTable<Character>> GameBindings::_characterInfoQueryTable;
 
-GameLuaBindings::GameLuaBindings() = default;
-GameLuaBindings::~GameLuaBindings() {
+GameBindings::GameBindings() = default;
+GameBindings::~GameBindings() {
     // TODO(Gerark) This static variable must be moved elsewhere
     _characterInfoQueryTable = nullptr;
 }
 
-sol::table GameLuaBindings::createBindingTable(sol::state_view &solState) const {
+sol::table GameBindings::createBindingTable(sol::state_view &solState) const {
     /** TODO(Gerark) exposing the info/stats of a character this way might suggest we should expose the Character class directly to lua.
     *   The idea is to wait till we'll talk about serious modding/scripting and not taking a direction upfront
     *   TODO(Gerark) This check is also a hack to avoid initializing the static characterInfoTable. multiple times,
@@ -52,179 +52,142 @@ sol::table GameLuaBindings::createBindingTable(sol::state_view &solState) const 
     _registerMiscBindings(solState, table);
     _registerPartyBindings(solState, table);
     _registerItemBindings(solState, table);
-    _registerAudioBindings(solState, table);
-    _registerSerializationBindings(solState, table);
-    _registerRenderBindings(solState, table);
     _registerEnums(solState, table);
     return table;
 }
 
-void GameLuaBindings::_registerMiscBindings(sol::state_view &solState, sol::table &table) const {
+void GameBindings::_registerMiscBindings(sol::state_view &solState, sol::table &table) const {
     //TODO(Gerark) We shouldn't have a misc table but it will disappear soon
-    sol::table miscTable = solState.create_table();
-
-    miscTable["goToScreen"].set_function([](int screenIndex) {
+    table["misc"] = solState.create_table_with(
+        "goToScreen", sol::as_function([](int screenIndex) {
         SetCurrentMenuID(MenuType(screenIndex));
-    });
-
-    miscTable["canClassLearn"].set_function([](CharacterClass classType, CharacterSkillType skillType) {
+    }),
+        "canClassLearn", sol::as_function([](CharacterClass classType, CharacterSkillType skillType) {
         return skillMaxMasteryPerClass[classType][skillType] > CHARACTER_SKILL_MASTERY_NONE;
-    });
-
-    table["misc"] = miscTable;
+    })
+    );
 }
 
-void GameLuaBindings::_registerPartyBindings(sol::state_view &solState, sol::table &table) const {
-    sol::table partyTable = solState.create_table();
-
-    partyTable["getGold"].set_function([]() {
-        return pParty->GetGold();
-    });
-
-    partyTable["setGold"].set_function([](int amount) {
-        pParty->SetGold(amount);
-    });
-
-    partyTable["getFood"].set_function([]() {
-        return pParty->GetFood();
-    });
-
-    partyTable["setFood"].set_function([](int food) {
-        pParty->SetFood(food);
-    });
-
-    partyTable["getAlignment"].set_function([]() {
-        return pParty->alignment;
-    });
-
-    partyTable["setAlignment"].set_function([](PartyAlignment alignment) {
-        pParty->alignment = alignment;
-        SetUserInterface(pParty->alignment);
-    });
-
-    partyTable["givePartyXp"].set_function([](int amount) {
-        pParty->GivePartyExp(amount);
-    });
-
-    partyTable["getPartySize"].set_function([]() {
-        return pParty->pCharacters.size();
-    });
-
-    partyTable["getActiveCharacter"].set_function([]() {
-        if (pParty->hasActiveCharacter()) {
-            int index = pParty->activeCharacterIndex();
-            assert(index != 0); // keep an assert here in case we change the 1-based index to 0 in the future so we can adjust it accordingly
-            return index; // a 1-based index is totally fine for lua
-        } else {
-            return 0;
-        }
-    });
-
-    partyTable["getCharacterInfo"].set_function([this, &solState](int characterIndex, QueryTable queryTable) {
-        if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
-            return _characterInfoQueryTable->createTable(*character, queryTable);
-        }
-        return sol::make_object(solState, sol::lua_nil);
-    });
-
-    partyTable["setCharacterInfo"].set_function([](int characterIndex, const sol::object &info) {
-        if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
-            const sol::table &table = info.as<sol::table>();
-            for (auto &&val : table) {
-                std::string_view key = val.first.as<std::string_view>();
-                if (key == "xp") {
-                    character->experience = val.second.as<int>();
-                } else if (key == "sp") {
-                    character->uSkillPoints = val.second.as<int>();
-                } else if (key == "hp") {
-                    character->health = val.second.as<int>();
-                } else if (key == "mana") {
-                    character->mana = val.second.as<int>();
-                } else if (key == "class") {
-                    character->classType = val.second.as<CharacterClass>();
-                } else if (key == "condition") {
-                    character->SetCondition(val.second.as<Condition>(), false);
-                } else if (key == "skill") {
-                    sol::table skillValueTable = val.second.as<sol::table>();
-                    CombinedSkillValue current = character->getActualSkillValue(skillValueTable["id"]);
-                    auto level = skillValueTable.get<std::optional<int>>("level");
-                    auto mastery = skillValueTable.get<std::optional<CharacterSkillMastery>>("mastery");
-                    CombinedSkillValue skillValue(
-                        level ? *level : current.level(),
-                        mastery ? *mastery : current.mastery()
-                    );
-                    character->setSkillValue(skillValueTable["id"], skillValue);
-                } else {
-                    logger->warning("Invalid key for set_character_info. Used key: {}", key);
-                }
-            }
-        }
-    });
-
-    partyTable["addItemToInventory"].set_function([](int characterIndex, ItemId itemId) {
-        if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
-            return character->AddItem(-1, itemId) != 0;
-        }
-        return false;
-    });
-
-    partyTable["addCustomItemToInventory"].set_function([](int characterIndex, sol::table itemTable) {
-        if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
-            ItemGen item;
-            for (auto &&pair : itemTable) {
-                std::string_view key = pair.first.as<std::string_view>();
-                if (key == "id") {
-                    item.uItemID = pair.second.as<ItemId>();
-                } else if (key == "holder") {
-                    item.uHolderPlayer = pair.second.as<int>() - 1; // character index in lua is 1-based
-                }
-            }
-            return character->AddItem2(-1, &item) != 0;
-        }
-        return false;
-    });
-
-    partyTable["playAllCharactersAwardSound"].set_function([]() {
-        for (auto &&character : pParty->pCharacters) {
-            character.PlayAwardSound_Anim();
-        }
-    });
-
-    partyTable["playCharacterAwardSound"].set_function([](int characterIndex) {
-        if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
-            character->PlayAwardSound_Anim();
-        }
-    });
-
-    partyTable["clearCondition"].set_function([](int characterIndex, std::optional<Condition> conditionToClear) {
-        if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
-            if (conditionToClear) {
-                character->conditions.Reset(*conditionToClear);
+void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table &table) const {
+    table["party"] = solState.create_table_with(
+        "getGold", sol::as_function([]() {
+            return pParty->GetGold();
+        }),
+        "setGold", sol::as_function([](int amount) {
+            pParty->SetGold(amount);
+        }),
+        "getFood", sol::as_function([]() {
+            return pParty->GetFood();
+        }),
+        "setFood", sol::as_function([](int food) {
+            pParty->SetFood(food);
+        }),
+        "getAlignment", sol::as_function([]() {
+            return pParty->alignment;
+        }),
+        "setAlignment", sol::as_function([](PartyAlignment alignment) {
+            pParty->alignment = alignment;
+            SetUserInterface(pParty->alignment);
+        }),
+        "givePartyXp", sol::as_function([](int amount) {
+            pParty->GivePartyExp(amount);
+        }),
+        "getPartySize", sol::as_function([]() {
+            return pParty->pCharacters.size();
+        }),
+        "getActiveCharacter", sol::as_function([]() {
+            if (pParty->hasActiveCharacter()) {
+                int index = pParty->activeCharacterIndex();
+                assert(index != 0); //keep an assert here in case we change the 1-based index to 0 in the future so we can adjust it accordingly
+                return index; //a 1-based index is totally fine for lua
             } else {
-                character->conditions.ResetAll();
+                return 0;
             }
-        }
-    });
-
-    table["party"] = partyTable;
+        }),
+        "getCharacterInfo", sol::as_function([this, &solState](int characterIndex, QueryTable queryTable) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+                return _characterInfoQueryTable->createTable(*character, queryTable);
+            }
+            return sol::make_object(solState, sol::lua_nil);
+        }),
+        "setCharacterInfo", sol::as_function([](int characterIndex, const sol::object &info) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+                const sol::table &table = info.as<sol::table>();
+                for (auto &&val : table) {
+                    std::string_view key = val.first.as<std::string_view>();
+                    if (key == "xp") {
+                        character->experience = val.second.as<int>();
+                    } else if (key == "sp") {
+                        character->uSkillPoints = val.second.as<int>();
+                    } else if (key == "hp") {
+                        character->health = val.second.as<int>();
+                    } else if (key == "mana") {
+                        character->mana = val.second.as<int>();
+                    } else if (key == "class") {
+                        character->classType = val.second.as<CharacterClass>();
+                    } else if (key == "condition") {
+                        character->SetCondition(val.second.as<Condition>(), false);
+                    } else if (key == "skill") {
+                        sol::table skillValueTable = val.second.as<sol::table>();
+                        CombinedSkillValue current = character->getActualSkillValue(skillValueTable["id"]);
+                        auto level = skillValueTable.get<std::optional<int>>("level");
+                        auto mastery = skillValueTable.get<std::optional<CharacterSkillMastery>>("mastery");
+                        CombinedSkillValue skillValue(
+                            level ? *level : current.level(),
+                            mastery ? *mastery : current.mastery()
+                        );
+                        character->setSkillValue(skillValueTable["id"], skillValue);
+                    } else {
+                        logger->warning("Invalid key for set_character_info. Used key: {}", key);
+                    }
+                }
+            }
+        }),
+        "addItemToInventory", sol::as_function([](int characterIndex, ItemId itemId) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+                return character->AddItem(-1, itemId) != 0;
+            }
+            return false;
+        }),
+        "addCustomItemToInventory", sol::as_function([](int characterIndex, sol::table itemTable) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+                ItemGen item;
+                for (auto &&pair : itemTable) {
+                    std::string_view key = pair.first.as<std::string_view>();
+                    if (key == "id") {
+                        item.uItemID = pair.second.as<ItemId>();
+                    } else if (key == "holder") {
+                        item.uHolderPlayer = pair.second.as<int>() - 1; // character index in lua is 1-based
+                    }
+                }
+                return character->AddItem2(-1, &item) != 0;
+            }
+            return false;
+        }),
+        "playAllCharactersAwardSound", sol::as_function([]() {
+            for (auto &&character : pParty->pCharacters) {
+                character.PlayAwardSound_Anim();
+            }
+        }),
+        "playCharacterAwardSound", sol::as_function([](int characterIndex) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+                character->PlayAwardSound_Anim();
+            }
+        }),
+        "clearCondition", sol::as_function([](int characterIndex, std::optional<Condition> conditionToClear) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+                if (conditionToClear) {
+                    character->conditions.Reset(*conditionToClear);
+                } else {
+                    character->conditions.ResetAll();
+                }
+            }
+        })
+    );
 }
 
-void GameLuaBindings::_registerAudioBindings(sol::state_view &solState, sol::table &table) const {
-    sol::table audioTable = solState.create_table();
-
-    audioTable["playSound"].set_function([](SoundId soundId, SoundPlaybackMode mode) {
-        pAudioPlayer->playSound(soundId, mode);
-    });
-
-    audioTable["playMusic"].set_function([](MusicId musicId) {
-        pAudioPlayer->MusicPlayTrack(musicId);
-    });
-
-    table["audio"] = audioTable;
-}
-
-void GameLuaBindings::_registerItemBindings(sol::state_view &solState, sol::table &table) const {
-    typedef std::function<bool(ItemId)> FilterItemFunction;
+void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &table) const {
+    typedef std::function<bool(ItemId)> FilteItemFunction;
 
     auto createItemTable = [&solState](const ItemDesc &itemDesc) {
         return solState.create_table_with(
@@ -233,56 +196,30 @@ void GameLuaBindings::_registerItemBindings(sol::state_view &solState, sol::tabl
         );
     };
 
-    sol::table itemsTable = solState.create_table();
-
-    itemsTable["getItemInfo"].set_function([&solState, createItemTable](ItemId itemId) {
-        if (itemId >= ITEM_FIRST_VALID && itemId <= ITEM_LAST_VALID) {
-            const ItemDesc &itemDesc = pItemTable->pItems[itemId];
-            return sol::object(solState, createItemTable(itemDesc));
-        }
-        return sol::make_object(solState, sol::lua_nil);
-    });
-
-    itemsTable["getRandomItem"].set_function([](const FilterItemFunction &filter) {
-        if (filter) {
-            std::vector<ItemId> itemsToRandomizeOn;
-            Segment<ItemId> &&spawnableItems = allSpawnableItems();
-            for (ItemId itemId : spawnableItems | std::views::filter(filter)) {
-                itemsToRandomizeOn.push_back(itemId);
+    table["items"] = solState.create_table_with(
+        "getItemInfo", sol::as_function([&solState, createItemTable](ItemId itemId) {
+            if (itemId >= ITEM_FIRST_VALID && itemId <= ITEM_LAST_VALID) {
+                const ItemDesc &itemDesc = pItemTable->pItems[itemId];
+                return sol::object(solState, createItemTable(itemDesc));
             }
-            return grng->randomSample(itemsToRandomizeOn);
-        }
-        return grng->randomSample(allSpawnableItems());
-    });
-
-    table["items"] = itemsTable;
+            return sol::make_object(solState, sol::lua_nil);
+        }),
+        // The getRandomItem function accept an optional filter function to exclude some items from the randomization
+        "getRandomItem", sol::as_function([](const FilteItemFunction &filter) {
+            if (filter) {
+                std::vector<ItemId> itemsToRandomizeOn;
+                Segment<ItemId> &&spawnableItems = allSpawnableItems();
+                for (ItemId itemId : spawnableItems | std::views::filter(filter)) {
+                    itemsToRandomizeOn.push_back(itemId);
+                }
+                return grng->randomSample(itemsToRandomizeOn);
+            }
+            return grng->randomSample(allSpawnableItems());
+        })
+    );
 }
 
-void GameLuaBindings::_registerSerializationBindings(sol::state_view &solState, sol::table &table) const {
-    //Exposing serializations and deserializations functions to lua
-    //Useful for converting command line strings to the correct types
-    sol::table deserializeTable = solState.create_table();
-    deserializeTable["partyAlignment"].set_function([](std::string_view alignment) {
-        return fromString<PartyAlignment>(alignment);
-    });
-    table["deserialize"] = deserializeTable;
-
-    sol::table serializeTable = solState.create_table();
-    serializeTable["partyAlignment"].set_function([](PartyAlignment alignment) {
-        return toString(alignment);
-    });
-    table["serialize"] = serializeTable;
-}
-
-void GameLuaBindings::_registerRenderBindings(sol::state_view &solState, sol::table &table) const {
-    sol::table renderTable = solState.create_table();
-    renderTable["reloadShaders"].set_function([]() {
-        render->ReloadShaders();
-    });
-    table["render"] = renderTable;
-}
-
-void GameLuaBindings::_registerEnums(sol::state_view &solState, sol::table &table) const {
+void GameBindings::_registerEnums(sol::state_view &solState, sol::table &table) const {
     //TODO(captainurist): Use serialization tables to automate this.
     table.new_enum<false>("PartyAlignment",
         "Good", PartyAlignment::PartyAlignment_Good,

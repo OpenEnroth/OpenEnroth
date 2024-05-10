@@ -17,7 +17,7 @@ class GameConfig;
 class Renderer;
 class Engine;
 class Game;
-class GameLuaBindings;
+class GameBindings;
 class OverlaySystem;
 class ScriptingSystem;
 class EngineController;

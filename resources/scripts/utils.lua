@@ -49,17 +49,32 @@ end
 --- local result = enumToString(Game.SkillType, 2)
 --- The value of variable "result" is "Dagger"
 ---
----@param enumTable table<string, integer> - The enum table ( ex: Game.SkillType, Game.SkillMastery )
----@param valueToConvert integer - The input is the enumeration value
+---@param enumTable any - The enum table ( ex: Game.SkillType, Game.SkillMastery )
+---@param value any
 ---@return string
-Utilities.enumToString = function (enumTable, valueToConvert)
+function enumToString(enumTable, value)
+    ---@cast enumTable table<string, any>
     for k, v in pairs(enumTable) do
-        if v == valueToConvert then
+        if v == value then
             return k
         end
     end
 
     return ""
+end
+
+---@param enumTable any - The enum table ( ex: Game.SkillType, Game.SkillMastery )
+---@param valueStr string
+---@return any
+function stringToEnum(enumTable, valueStr)
+    ---@cast enumTable table<string, any>
+    for k, v in pairs(enumTable) do
+        if k == valueStr then
+            return v
+        end
+    end
+
+    return 0
 end
 
 ---@class Color

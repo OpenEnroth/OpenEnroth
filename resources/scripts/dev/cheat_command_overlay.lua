@@ -2,7 +2,7 @@ local Overlay = require "bindings.overlay"
 local imgui = Overlay.imgui
 local window = require "bindings.platform".window
 local Config = require "bindings.config"
-local Game = require "bindings.game"
+local Audio = require "bindings.audio"
 local Console = require "console"
 local Utilities = require "utils"
 
@@ -87,7 +87,7 @@ local function drawColumnItem(entry, columnIndex, itemsPerRow)
     if entry:draw() then
         --TODO(Gerark) I should expose the audio enum instead of using magic number
         -- It should look like this: Audio.playSound(SOUND_StartMainChoice02, SOUND_MODE_UI)
-        Game.audio.playSound(75, 1)
+        Audio.playSound(75, 1)
         Console:send(entry.command)
     end
     return columnIndex + 1 < itemsPerRow and columnIndex + 1 or 0
