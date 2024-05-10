@@ -13,8 +13,12 @@ add_subdirectory(nuklear)
 add_subdirectory(cli11)
 add_subdirectory(nlohmann_json)
 add_subdirectory(mio)
-add_subdirectory(glob)
 add_subdirectory(sol2)
+
+# glob
+# not adding a subdirectory because it will download more libraries at build tree generaion stage
+add_library(Glob INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/glob/single_include/glob/glob.hpp)
+target_include_directories(Glob INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/glob/single_include)
 
 # fmt
 add_subdirectory(fmt)

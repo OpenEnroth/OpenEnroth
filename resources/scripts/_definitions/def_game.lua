@@ -10,6 +10,7 @@
 --- @field SkillMastery SkillMasteryEnum | table<string, SkillMastery>
 --- @field ClassType ClassTypeEnum | table<string, ClassType>
 --- @field ItemType ItemTypeEnum | table<string, ItemType>
+--- @field QBits table<string, QBits>
 
 --- @class SkillEntry
 --- @field id SkillType
@@ -53,6 +54,8 @@
 --- @field playAllCharactersAwardSound fun()
 --- @field playCharacterAwardSound fun(charIndex: integer)
 --- @field clearCondition fun(charIndex: integer, condition: CharacterCondition?)
+--- @field getQBit fun(qbit: QBits):boolean
+--- @field setQBit fun(qbit: QBits, value: boolean)
 
 --- @class ItemInfo
 --- @field name string
@@ -186,3 +189,8 @@
 --- @enum ItemType
 --- @class ItemTypeEnum
 --- @field LichJarFull ItemType
+
+--- @enum QBits
+--- @class QBitsEnum
+--- @field DarkPath QBits
+--- @field LightPath QBits

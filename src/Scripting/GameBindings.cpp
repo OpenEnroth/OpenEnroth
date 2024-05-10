@@ -182,6 +182,12 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
                     character->conditions.ResetAll();
                 }
             }
+        }),
+        "getQBit", sol::as_function([](QuestBit qbit) {
+            return pParty->_questBits.test(qbit);
+        }),
+        "setQBit", sol::as_function([](QuestBit qbit, bool value) {
+            pParty->_questBits.set(qbit, value);
         })
     );
 }
@@ -336,6 +342,11 @@ void GameBindings::_registerEnums(sol::state_view &solState, sol::table &table) 
         "Wizard", CLASS_WIZARD,
         "Archmage", CLASS_ARCHAMGE,
         "Lich", CLASS_LICH
+    );
+
+    table.new_enum<false>("QBits",
+        "DarkPath", QBIT_DARK_PATH,
+        "LightPath", QBIT_LIGHT_PATH
     );
 
     // Let's not expose all the item types for now. I feel like it's too early.
