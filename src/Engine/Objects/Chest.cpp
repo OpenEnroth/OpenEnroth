@@ -45,7 +45,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
     int pDepth;
     bool flag_shout;
     SpriteId pSpriteID[4];
-    Vec3i pOut;
+    Vec3f pOut;
     int yawAngle{};
     int pitchAngle{};
     SpriteObject pSpellObject;
@@ -70,17 +70,17 @@ bool Chest::open(int uChestID, Pid objectPid) {
             int pRandom = grng->random(4); // Not sure if this should be grng or vrng, so we'd rather err on the side of safety.
             int objId = objectPid.id();
 
-            Vec3i objectPos;
+            Vec3f objectPos;
             if (chest->position) {
-                objectPos = *chest->position;
+                objectPos = (*chest->position).toFloat();
             } else if (objectPid.type() == OBJECT_Decoration) {
-                objectPos = pLevelDecorations[objId].vPosition.toInt() +
-                    Vec3i(0, 0, pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
+                objectPos = pLevelDecorations[objId].vPosition +
+                    Vec3f(0, 0, pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
             } else if (objectPid.type() == OBJECT_Face) {
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                    objectPos = pOutdoor->face(objectPid).pBoundingBox.center().toInt();
+                    objectPos = pOutdoor->face(objectPid).pBoundingBox.center();
                 } else {
-                    objectPos = pIndoor->pFaces[objId].pBounding.center().toInt();
+                    objectPos = pIndoor->pFaces[objId].pBounding.center();
                 }
             }
 
@@ -100,7 +100,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             if (length_vector < pDepth) {
                 pDepth = length_vector;
             }
-            pOut = objectPos + Vec3i::fromPolar(pDepth, yawAngle, pitchAngle);
+            pOut = objectPos + Vec3f::fromPolar(pDepth, yawAngle, pitchAngle);
 
             pSpellObject.containing_item.Reset();
             pSpellObject.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
@@ -114,11 +114,11 @@ bool Chest::open(int uChestID, Pid objectPid) {
             SpriteFrame *frame = pSpellObject.getSpriteFrame();
             if (frame->uFlags & 0x20) {
                 // centering
-                pOut += Vec3i(0, 0, frame->hw_sprites[0]->texture->height() / 4);
+                pOut += Vec3f(0, 0, frame->hw_sprites[0]->texture->height() / 4);
             } else {
-                pOut -= Vec3i(0, 0, (frame->hw_sprites[0]->texture->height() - 64) / 2);
+                pOut -= Vec3f(0, 0, (frame->hw_sprites[0]->texture->height() - 64) / 2);
             }
-            pSpellObject.vPosition = pOut.toFloat();
+            pSpellObject.vPosition = pOut;
 
             pSpellObject.uSoundID = 0;
             pSpellObject.uAttributes = SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER;
