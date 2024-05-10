@@ -2,7 +2,10 @@
     "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
     "diagnostics": {
         "disable": [],
-        "globals": [],
+        "globals": [
+            "enumToString",
+            "stringToEnum"
+        ],
         "groupFileStatus": {
             "ambiguity": "Any",
             "await": "Any",

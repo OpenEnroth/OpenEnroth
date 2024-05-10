@@ -14,13 +14,13 @@ local ManaCommand = require "dev.commands.mana_command"
 local SkillsCommand = require "dev.commands.skills_command"
 local ClassCommand = require "dev.commands.class_command"
 
-local Game = require "bindings.game"
+local Renderer = require "bindings.renderer"
 
 local reloadShadersCommand = {
     name = "reload_shaders",
     description = "Reload all shaders",
     callback = function ()
-        Game.render.reloadShaders()
+        Renderer.reloadShaders()
         return "", true
     end
 }
