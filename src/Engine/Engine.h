@@ -130,6 +130,7 @@ class Engine {
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
     MapId _currentLoadedMapId = MAP_INVALID;
+    MapId _transitionMapId = MAP_INVALID;
     TeleportPoint _teleportPoint;
     OverlaySystem &_overlaySystem;
 

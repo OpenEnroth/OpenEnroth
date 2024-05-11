@@ -553,23 +553,24 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     pGameLoadingUI_ProgressBar->Initialize(_1_fullscreen_loading_2_box == 1
                                                ? GUIProgressBar::TYPE_Fullscreen
                                                : GUIProgressBar::TYPE_Box);
-    size_t pos = pCurrentMapName.rfind('.');
-    std::string mapName = pCurrentMapName.substr(0, pos);
-    std::string mapExt = pCurrentMapName.substr(pos + 1);  // This magically works even when pos == std::string::npos, in this case
-                                                      // maxExt == pCurrentMapName.
+    std::string mapToLoad = pMapStats->pInfos[engine->_transitionMapId].fileName;
+    size_t pos = mapToLoad.rfind('.');
+    std::string mapName = mapToLoad.substr(0, pos);
+    std::string mapExt = mapToLoad.substr(pos + 1);  // This magically works even when pos == std::string::npos, in this case
+                                                      // maxExt == mapToLoad.
 
     Level_LoadEvtAndStr(mapName);
 
     // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?
     attackList.clear();
 
-    engine->SetUnderwater(Is_out15odm_underwater());
+    engine->SetUnderwater(engine->_transitionMapId == MAP_SHOALS);
 
     pParty->floor_face_id = 0; // TODO(captainurist): drop?
     if (ascii::noCaseEquals(mapExt, "blv"))
-        PrepareToLoadBLV(pCurrentMapName, bLoading);
+        PrepareToLoadBLV(mapToLoad, bLoading);
     else
-        PrepareToLoadODM(pCurrentMapName, bLoading, 0);
+        PrepareToLoadODM(mapToLoad, bLoading, 0);
 
     pNPCStats->setNPCNamesOnLoad();
     engine->_461103_load_level_sub();
@@ -584,10 +585,10 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
         }
     }
     bDialogueUI_InitializeActor_NPC_ID = 0;
+    engine->_transitionMapId = MAP_INVALID;
     onMapLoad();
     pGameLoadingUI_ProgressBar->Progress();
-    memset(&render->pBillboardRenderListD3D, 0,
-           sizeof(render->pBillboardRenderListD3D));
+    memset(&render->pBillboardRenderListD3D, 0, sizeof(render->pBillboardRenderListD3D));
     pGameLoadingUI_ProgressBar->Release();
 }
 
@@ -882,7 +883,6 @@ void Engine::_461103_load_level_sub() {
     pParty->arenaState = ARENA_STATE_INITIAL;
     pParty->arenaLevel = ARENA_LEVEL_INVALID;
     pNPCStats->uNewlNPCBufPos = 0;
-    MapId mapId = pMapStats->GetMapInfo(pCurrentMapName);
 
     for (size_t i = 0; i < pActors.size(); ++i) {
         MonsterTier tier = monsterTierForMonsterId(pActors[i].monsterInfo.id);
@@ -895,7 +895,7 @@ void Engine::_461103_load_level_sub() {
         if (isPeasant(pActors[i].monsterInfo.id)) {
             pNPCStats->InitializeAdditionalNPCs(
                 &pNPCStats->pAdditionalNPC[pNPCStats->uNewlNPCBufPos],
-                pActors[i].monsterInfo.id, HOUSE_INVALID, mapId);
+                pActors[i].monsterInfo.id, HOUSE_INVALID, engine->_currentLoadedMapId);
             pActors[i].npcId = pNPCStats->uNewlNPCBufPos + 5000;
             pNPCStats->uNewlNPCBufPos++;
             continue;
@@ -1507,12 +1507,12 @@ void Transition_StopSound_Autosave(std::string_view pMapName,
 
     // pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
 
-    if (pCurrentMapName != pMapName) {
+    if (engine->_currentLoadedMapId != pMapStats->GetMapInfo(pMapName)) {
         AutoSave();
     }
 
     uGameState = GAME_STATE_CHANGE_LOCATION;
-    pCurrentMapName = pMapName;
+    engine->_transitionMapId = pMapStats->GetMapInfo(pMapName);
     uLevel_StartingPointType = start_point;
 }
 

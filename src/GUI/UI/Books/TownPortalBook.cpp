@@ -128,7 +128,7 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
         onMapLeave();
         dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
         uGameState = GAME_STATE_CHANGE_LOCATION;
-        pCurrentMapName = pMapStats->pInfos[townPortalList[townId].mapInfoID].fileName;
+        engine->_transitionMapId = townPortalList[townId].mapInfoID;
         engine->_teleportPoint.setTeleportTarget(townPortalList[townId].pos, townPortalList[townId].viewYaw, townPortalList[townId].viewPitch, 0);
         Actor::InitializeActors();
     }

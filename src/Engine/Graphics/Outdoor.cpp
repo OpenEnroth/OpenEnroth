@@ -250,7 +250,7 @@ bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
         ::day_attrib = this->loc_time.day_attrib;
         ::day_fogrange_1 = this->loc_time.day_fogrange_1;
         ::day_fogrange_2 = this->loc_time.day_fogrange_2;
-        if (Is_out15odm_underwater())
+        if (engine->_currentLoadedMapId == MAP_SHOALS)
             SetUnderwaterFog();
 
         return true;
@@ -495,7 +495,8 @@ void OutdoorLocation::SetFog() {
         ::day_attrib &= ~MAP_WEATHER_FOGGY;
     }
 
-    if (Is_out15odm_underwater()) SetUnderwaterFog();
+    if (map_id == MAP_SHOALS)
+        SetUnderwaterFog();
     pOutdoor->loc_time.day_fogrange_1 = ::day_fogrange_1;
     pOutdoor->loc_time.day_fogrange_2 = ::day_fogrange_2;
     pOutdoor->loc_time.day_attrib = ::day_attrib;
@@ -2270,11 +2271,6 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
         *pFaceID = 0;
         return ceiling_height_level[result_idx];
     }
-}
-
-//----- (00464839) --------------------------------------------------------
-char Is_out15odm_underwater() {
-    return (pCurrentMapName == "out15.odm");
 }
 
 //----- (00464851) --------------------------------------------------------

@@ -890,7 +890,7 @@ void PrepareToLoadBLV(std::string_view filename, bool bLoading) {
     pBLVRenderParams->uPartyEyeSectorID = 0;
     engine->_currentLoadedMapId = map_id;
 
-    engine->SetUnderwater(Is_out15odm_underwater());
+    engine->SetUnderwater(map_id == MAP_SHOALS);
 
     if ((map_id == MAP_SHOALS) || (map_id == MAP_LINCOLN)) {
         bNoNPCHiring = true;

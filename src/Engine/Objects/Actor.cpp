@@ -2954,14 +2954,16 @@ void Actor::InitializeActors() {
     bool bPit = false;
     bool good = false;
     bool evil = false;
-    if (pCurrentMapName == "d25.blv") {  // the Celestia
+    if (engine->_currentLoadedMapId == MAP_CELESTE) {
         bCelestia = true;
     }
-    if (pCurrentMapName == "d26.blv") {  // the Pit
+    if (engine->_currentLoadedMapId == MAP_PIT) {
         bPit = true;
     }
-    if (pParty->isPartyGood()) good = true;
-    if (pParty->isPartyEvil()) evil = true;
+    if (pParty->isPartyGood())
+        good = true;
+    if (pParty->isPartyEvil())
+        evil = true;
 
     ai_near_actors_targets_pid.fill(Pid());
 
