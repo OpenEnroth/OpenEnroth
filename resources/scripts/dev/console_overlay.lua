@@ -3,7 +3,8 @@ local InputListener = require "core.input_listener"
 local Input = require "bindings.input"
 local Platform = require "bindings.platform"
 local Overlay = require "bindings.overlay"
-local nk = Overlay.nk
+local Utilities = require "utils"
+local imgui = Overlay.imgui
 
 local isWindowMaximized = false
 local baseColor = { 32, 32, 32, 255 }
@@ -30,80 +31,76 @@ local function historyNext()
     return false
 end
 
----@param ctx NuklearContext
-local function drawFooter(ctx)
-    nk.style_push(ctx, "button", "normal", getColorAlpha(baseColor))
-    nk.style_push(ctx, "edit", "normal", getColorAlpha(baseColor))
-    nk.style_push(ctx, "edit", "text_normal", Console:getTextColor())
-    nk.style_push(ctx, "edit", "text_active", Console:getTextColor())
-    nk.style_push(ctx, "edit", "text_hover", Console:getTextColor())
+local scrollToBottom = false
 
-    nk.layout_row_begin(ctx, "dynamic", 0, 3)
-    nk.layout_row_push(ctx, 0.05);
-    if nk.button_label(ctx, Console.isExpanded and "<" or ">") then
+local function drawCommandLineRow()
+    if imgui.Button(Console.isExpanded and "<" or ">") then
         Console.isExpanded = not Console.isExpanded
     end
+    imgui.SameLine()
 
-    nk.layout_row_push(ctx, 0.80);
-    local text, state = nk.edit_string(ctx, { "commit_on_enter" }, Console:getText())
+    local text, changed = imgui.InputTextWithHint("##Input", "Write something here...", Console.text,
+        imgui.ImGuiInputTextFlags.EnterReturnsTrue)
+    Console.text = text
 
-    Console:updateTextBox(text, state)
+    if changed then
+        if not Utilities.isEmpty(Console.text) then
+            Console:send()
+            scrollToBottom = true
+            imgui.SetKeyboardFocusHere(-1)
+        end
+    end
 
-    nk.layout_row_push(ctx, 0.15);
-    if nk.button_label(ctx, "Send") then
-        if not Console.editTB.showPlaceholder then
+    imgui.SameLine()
+    if imgui.Button("Send") then
+        if not Utilities.isEmpty(Console.text) then
+            scrollToBottom = true
             Console:send()
         end
     end
-
-    nk.layout_row_end(ctx)
-
-    nk.style_pop(ctx, "button", "normal")
-    nk.style_pop(ctx, "edit", "normal")
-    nk.style_pop(ctx, "edit", "text_normal")
-    nk.style_pop(ctx, "edit", "text_active")
-    nk.style_pop(ctx, "edit", "text_hover")
 end
 
----
----@param ctx NuklearContext
-local function drawConsole(ctx)
-    local mainWinW, mainWinH = Platform.window.dimensions()
-    Console:updateWindowSize(isWindowMaximized, mainWinW, mainWinH)
-    nk.window_set_bounds(ctx, "Debug Console", Console.rect)
-    nk.style_push(ctx, "window", "fixed_background", getColorAlpha(messageBkgColor))
-    if nk.window_begin(ctx, "Debug Console", Console.rect, { "movable", "scalable" }) then
-        isWindowMaximized = nk.window_is_hovered(ctx) or not Console.autoMinimize
-        if isWindowMaximized then
-            nk.layout_row_dynamic(ctx, Console.rect.h - Console.footerHeight - 28, 1)
-            nk.style_push(ctx, "window", "min_row_height_padding", 1)
-            if nk.group_scrolled_begin(ctx, Console.scroll, "Messages", { "scrollbar" }) then
-                nk.layout_row_dynamic(ctx, 0, 1)
-                for i = 1, #Console.messages do
-                    local message = Console.messages[i]
-                    if message.source ~= "log" or Console.logEnabled then
-                        -- we must split the message every N characters because the wrap features on Nuklear does not work properly
-                        local n = Console.separateEveryNCharacters
-                        for j = 1, #message.text, n do
-                            ---@cast n integer
-                            local split = string.sub(message.text, j, j + n - 1)
-                            nk.label_colored(ctx, split, message.col)
-                        end
-                    end
-                end
-                nk.group_scrolled_end(ctx)
-            end
-            nk.style_pop(ctx, "window", "min_row_height_padding")
+local function drawOptionsRow()
+    Console.logEnabled = imgui.Checkbox("Show Log", Console.logEnabled)
+    imgui.SameLine()
+    Console.autoMinimize = imgui.Checkbox("Auto Hide", Console.autoMinimize)
+end
 
-            nk.layout_row_dynamic(ctx, 20, 2)
-            Console.logEnabled = nk.checkbox_label(ctx, "Show Log", Console.logEnabled)
-            Console.autoMinimize = nk.checkbox_label(ctx, "Auto Hide", Console.autoMinimize)
+local function drawMessages()
+    imgui.BeginChild("Messages", 0, -(imgui.GetFrameHeightWithSpacing() * 2), true)
+    for i = 1, #Console.messages do
+        local message = Console.messages[i]
+        if message.source ~= "log" or Console.logEnabled then
+            imgui.PushStyleColor(imgui.ImGuiCol.Text, message.col.r, message.col.g, message.col.b,
+                message.col.a)
+            imgui.TextUnformatted(message.text)
+            imgui.PopStyleColor()
         end
-
-        drawFooter(ctx)
     end
-    nk.window_end(ctx)
-    nk.style_pop(ctx, "window", "fixed_background")
+    if scrollToBottom then
+        imgui.SetScrollHereY(1.0);
+        scrollToBottom = false
+    end
+    imgui.EndChild()
+end
+
+local function drawConsole()
+    local mainWinW, mainWinH = Platform.window.dimensions()
+    Console:updateWindowSize(isWindowMaximized, mainWinW, mainWinH, 35)
+
+    imgui.SetNextWindowPos(Console.rect.x, Console.rect.y)
+    imgui.SetNextWindowSize(Console.rect.w, Console.rect.h)
+    local _, drawWindow = imgui.Begin("Debug Console", true, imgui.ImGuiWindowFlags.NoTitleBar)
+    if drawWindow then
+        local flags = imgui.ImGuiHoveredFlags.RootAndChildWindows
+        isWindowMaximized = imgui.IsWindowHovered(flags) or Console.autoMinimize
+        if isWindowMaximized then
+            drawMessages()
+            drawOptionsRow()
+        end
+    end
+    drawCommandLineRow()
+    imgui.End()
 end
 
 local unregisterFromInput = function () end
@@ -113,7 +110,8 @@ local ConsoleOverlay = {}
 ConsoleOverlay.init = function ()
     Console.scroll:set(0, 0)
     if #Console.messages == 0 then
-        Console:addMessage("Type \"help\" on the command line to get a list of all the commands", { 255, 255, 255, 128 })
+        Console:addMessage("Type \"help\" on the command line to get a list of all the commands",
+            Utilities.color(1, 1, 1, 0.5))
     end
     unregisterFromInput = InputListener.registerKeyPressBulk({
         { key = Input.PlatformKey.KEY_UP,   callback = historyPrev },
@@ -121,9 +119,8 @@ ConsoleOverlay.init = function ()
     })
 end
 
----@param ctx NuklearContext
-ConsoleOverlay.update = function (ctx)
-    drawConsole(ctx)
+ConsoleOverlay.update = function ()
+    drawConsole()
 end
 
 ConsoleOverlay.close = function ()

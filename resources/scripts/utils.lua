@@ -98,4 +98,11 @@ Utilities.color = function (r, g, b, a)
     }
 end
 
+---@param table table<any, any>
+Utilities.printTable = function (table)
+    for k, v in pairs(table) do
+        print(k, v)
+    end
+end
+
 return Utilities
