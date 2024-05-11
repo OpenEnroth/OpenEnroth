@@ -873,14 +873,14 @@ void UpdateActors_BLV() {
 }
 
 //----- (00460A78) --------------------------------------------------------
-void PrepareToLoadBLV(bool bLoading) {
+void PrepareToLoadBLV(std::string_view filename, bool bLoading) {
     unsigned int respawn_interval;  // ebx@1
     MapInfo *map_info;              // edi@9
     bool v28;                       // zf@81
     bool alertStatus;                        // [sp+404h] [bp-10h]@1
     bool indoor_was_respawned = true;                      // [sp+40Ch] [bp-8h]@1
 
-    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId map_id = pMapStats->GetMapInfo(filename);
 
     respawn_interval = 0;
     pGameLoadingUI_ProgressBar->Reset(0x20u);
@@ -909,7 +909,7 @@ void PrepareToLoadBLV(bool bLoading) {
     }
 
     pStationaryLightsStack->uNumLightsActive = 0;
-    pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);
+    pIndoor->Load(filename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();

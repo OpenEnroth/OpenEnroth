@@ -567,9 +567,9 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
     pParty->floor_face_id = 0; // TODO(captainurist): drop?
     if (ascii::noCaseEquals(mapExt, "blv"))
-        PrepareToLoadBLV(bLoading);
+        PrepareToLoadBLV(pCurrentMapName, bLoading);
     else
-        PrepareToLoadODM(bLoading, 0);
+        PrepareToLoadODM(pCurrentMapName, bLoading, 0);
 
     pNPCStats->setNPCNamesOnLoad();
     engine->_461103_load_level_sub();
@@ -1091,7 +1091,8 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
                 }
             }
         }
-        if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) pOutdoor->SetFog();
+        if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
+            pOutdoor->SetFog();
 
         for (Character &character : pParty->pCharacters) {
             character.uNumDivineInterventionCastsThisDay = 0;

@@ -92,18 +92,18 @@ GUIWindow_Transition::GUIWindow_Transition(HouseId transitionHouse, unsigned exi
         if (!IndoorLocation::GetLocationIndex(locationName))
             pMediaPlayer->OpenHouseMovie(pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].video_name, 1);
 
-        std::string v15 = std::string(locationName);
+        std::string destMap = std::string(locationName);
         if (locationName[0] == '0') {
-            v15 = pCurrentMapName;
+            destMap = pMapStats->pInfos[engine->_currentLoadedMapId].fileName;
         }
-        if (pMapStats->GetMapInfo(v15) != MAP_INVALID) {
-            transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].name);
+        if (pMapStats->GetMapInfo(destMap) != MAP_INVALID) {
+            transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(destMap)].name);
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
                 pParty->activeCharacter().playReaction(SPEECH_LEAVE_DUNGEON);
             if (IndoorLocation::GetLocationIndex(locationName))
                 uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
         } else {
-            transition_button_label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(v15)].name);
+            transition_button_label = localization->GetString(LSTR_DIALOGUE_EXIT);
             if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].uRoomSoundId)
                 playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())

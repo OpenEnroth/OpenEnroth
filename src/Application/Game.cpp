@@ -861,7 +861,8 @@ void Game::processQueuedMessages() {
 
                     if (Is_out15odm_underwater() || (pCurrentMapName == "d47.blv"))
                         bNoNPCHiring = 1;
-                    PrepareToLoadODM(1u, (ODMRenderParams *)1);
+
+                    PrepareToLoadODM(pCurrentMapName, 1u, (ODMRenderParams *)1);
                     bDialogueUI_InitializeActor_NPC_ID = 0;
                     onMapLoad();
                     pOutdoor->SetFog();
