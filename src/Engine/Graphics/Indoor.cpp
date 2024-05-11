@@ -342,7 +342,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
                 respawn_interval_days = 0x1BAF800;
 
-            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pCurrentMapName != "d29.dlv")
+            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pMapStats->GetMapInfo(filename) != MAP_CASTLE_HARMONDALE)
                 respawnTimed = true;
         } catch (const Exception &e) {
             logger->error("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
@@ -880,16 +880,19 @@ void PrepareToLoadBLV(bool bLoading) {
     bool alertStatus;                        // [sp+404h] [bp-10h]@1
     bool indoor_was_respawned = true;                      // [sp+40Ch] [bp-8h]@1
 
+    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
+
     respawn_interval = 0;
     pGameLoadingUI_ProgressBar->Reset(0x20u);
     bNoNPCHiring = false;
     uCurrentlyLoadedLevelType = LEVEL_INDOOR;
     pBLVRenderParams->uPartySectorID = 0;
     pBLVRenderParams->uPartyEyeSectorID = 0;
+    engine->_currentLoadedMapId = map_id;
 
     engine->SetUnderwater(Is_out15odm_underwater());
 
-    if ((pCurrentMapName == "out15.odm") || (pCurrentMapName == "d23.blv")) {
+    if ((map_id == MAP_SHOALS) || (map_id == MAP_LINCOLN)) {
         bNoNPCHiring = true;
     }
     //pPaletteManager->pPalette_tintColor[0] = 0;
@@ -897,7 +900,6 @@ void PrepareToLoadBLV(bool bLoading) {
     //pPaletteManager->pPalette_tintColor[2] = 0;
     //pPaletteManager->RecalculateAll();
     pParty->_delayedReactionTimer = 0_ticks;
-    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];
         respawn_interval = pMapStats->pInfos[map_id].respawnIntervalDays;
@@ -905,7 +907,6 @@ void PrepareToLoadBLV(bool bLoading) {
     } else {
         map_info = nullptr;
     }
-    engine->_currentLoadedMapId = map_id;
 
     pStationaryLightsStack->uNumLightsActive = 0;
     pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);

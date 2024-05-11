@@ -777,7 +777,7 @@ void Game::processQueuedMessages() {
                 if (engine->_teleportPoint.isValid()) {
                     if (!engine->_teleportPoint.getTeleportMap().starts_with('0')) {
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
-                        bool leavingArena = ascii::noCaseEquals(pCurrentMapName, "d05.blv");
+                        bool leavingArena = engine->_currentLoadedMapId == MAP_ARENA;
                         onMapLeave();
                         Transition_StopSound_Autosave(engine->_teleportPoint.getTeleportMap(), MAP_START_POINT_PARTY);
                         if (leavingArena)
@@ -1652,7 +1652,7 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_QuickSave:
-                if (pCurrentMapName == "d05.blv") {
+                if (engine->_currentLoadedMapId == MAP_ARENA) {
                     engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_ARENA);
                     pAudioPlayer->playUISound(SOUND_error);
                 } else {

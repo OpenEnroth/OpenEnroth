@@ -196,7 +196,7 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
     }
     pAudioPlayer->playSpellSound(SPELL_WATER_LLOYDS_BEACON, false, SOUND_MODE_UI);
     if (_recallingBeacon) {
-        if (ascii::toLower(pCurrentMapName) != ascii::toLower(pMapStats->pInfos[character.vBeacons[beaconId].mapId].fileName)) {
+        if (engine->_currentLoadedMapId != character.vBeacons[beaconId].mapId) {
             // TODO(Nik-RE-dev): need separate function for teleportation to other maps
             AutoSave();
             onMapLeave();

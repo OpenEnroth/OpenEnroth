@@ -145,9 +145,9 @@ void LoadGame(int uSlot) {
 
 SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path, std::string_view title) {
     assert(isAutoSave || !title.empty());
-    assert(pCurrentMapName != "d05.blv" || isAutoSave); // No manual saves in Arena.
+    assert(engine->_currentLoadedMapId != MAP_ARENA || isAutoSave); // No manual saves in Arena.
 
-    if (pCurrentMapName == "d05.blv") { // arena
+    if (engine->_currentLoadedMapId == MAP_ARENA) {
         return {};
     }
 
@@ -262,7 +262,7 @@ void AutoSave() {
 }
 
 void DoSavegame(int uSlot) {
-    assert(pCurrentMapName != "d05.blv"); // Not Arena.
+    assert(engine->_currentLoadedMapId != MAP_ARENA); // Not Arena.
 
     pSavegameList->pSavegameHeader[uSlot] = SaveGame(false, false, makeDataPath("saves", fmt::format("save{:03}.mm7", uSlot)),
                                                      pSavegameList->pSavegameHeader[uSlot].name);
@@ -345,7 +345,7 @@ void SaveNewGame() {
 }
 
 void QuickSaveGame() {
-    assert(pCurrentMapName != "d05.blv"); // Not Arena.
+    assert(engine->_currentLoadedMapId != MAP_ARENA); // Not Arena.
     pSavegameList->Initialize();
 
     engine->config->gameplay.QuickSavesCount.cycleIncrement();

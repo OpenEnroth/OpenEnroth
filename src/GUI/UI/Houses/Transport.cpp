@@ -157,7 +157,7 @@ void GUIWindow_Transport::transportDialogue() {
     const TransportInfo *pTravel = &transportSchedule[transportRoutes[houseId()][choice_id]];
 
     if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
-        if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].fileName) {
+        if (engine->_currentLoadedMapId != pTravel->uMapInfoID) {
             AutoSave();
             pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].fileName;
 

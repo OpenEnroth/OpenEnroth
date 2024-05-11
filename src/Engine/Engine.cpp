@@ -573,8 +573,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
     pNPCStats->setNPCNamesOnLoad();
     engine->_461103_load_level_sub();
-    if ((pCurrentMapName == "d11.blv") ||
-        (pCurrentMapName == "d10.blv")) {
+    if (engine->_currentLoadedMapId == MAP_BREEDING_ZONE || engine->_currentLoadedMapId == MAP_WALLS_OF_MIST) {
         // spawning grounds & walls of mist - no loot & exp from monsters
 
         for (unsigned i = 0; i < pActors.size(); ++i) {
@@ -1519,7 +1518,7 @@ void Transition_StopSound_Autosave(std::string_view pMapName,
 //----- (0044C28F) --------------------------------------------------------
 void TeleportToNWCDungeon() {
     // return if we are already in the NWC dungeon
-    if ("nwc.blv" == pCurrentMapName) {
+    if (engine->_currentLoadedMapId == MAP_STRANGE_TEMPLE) {
         return;
     }
 
