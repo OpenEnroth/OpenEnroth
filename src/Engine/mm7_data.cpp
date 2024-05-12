@@ -2410,8 +2410,6 @@ SpellId dword_507B00_spell_info_to_draw_in_popup;
 int dword_507CC0_activ_ch;
 bool OpenedTelekinesis;
 int enchantingActiveCharacter;
-unsigned int uIconID_TurnHour;
-int uIconID_CharacterFrame;  // idb
 int uSpriteID_Spell11;  // idb
 bool IsEnchantingInProgress;
 Duration ItemEnchantmentTimer;

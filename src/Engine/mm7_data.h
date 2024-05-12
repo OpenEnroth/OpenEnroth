@@ -73,8 +73,6 @@ extern SpellId dword_507B00_spell_info_to_draw_in_popup;
 extern int dword_507CC0_activ_ch;
 extern bool OpenedTelekinesis;
 extern int enchantingActiveCharacter;
-extern unsigned int uIconID_TurnHour;
-extern int uIconID_CharacterFrame;  // idb
 extern int uSpriteID_Spell11;  // idb
 extern bool IsEnchantingInProgress; // 50C9A0 Indicates that inventory window is opened for enchant-like spell
 extern Duration ItemEnchantmentTimer; // 50C9A8 Timer for enchanting animation for item in inventory
