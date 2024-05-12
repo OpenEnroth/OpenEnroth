@@ -2,8 +2,6 @@
 
 #include <SDL.h>
 
-#include <imgui/backends/imgui_impl_sdl2.h> // NOLINT: not a C system header.
-
 #include <algorithm>
 #include <cassert>
 #include <vector>
@@ -65,10 +63,7 @@ void SdlEventLoop::waitForMessages() {
 }
 
 void SdlEventLoop::dispatchEvent(PlatformEventHandler *eventHandler, const SDL_Event *event) {
-#ifdef MM_PLATFORM_SEND_NATIVE_EVENTS
     dispatchNativeEvent(eventHandler, event);
-#endif
-    ImGui_ImplSDL2_ProcessEvent(event);
 
     switch(event->type) {
     case SDL_QUIT:

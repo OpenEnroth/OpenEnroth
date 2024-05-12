@@ -48,7 +48,7 @@ void OverlaySystem::drawOverlays() {
 
     if (_isEnabled) {
         _renderer.beginOverlays();
-        //ImGui::ShowDemoWindow();
+        ImGui::ShowDemoWindow();
         _renderer.endOverlays();
     }
 }

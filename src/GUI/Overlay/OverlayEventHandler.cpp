@@ -1,5 +1,6 @@
 #include "OverlayEventHandler.h"
 
+#include <imgui/backends/imgui_impl_sdl2.h>
 #include <nuklear_config.h>
 #include <imgui/imgui.h>
 #include <cstring>
@@ -68,7 +69,7 @@ bool OverlayEventHandler::keyEvent(PlatformKey key, PlatformModifiers mods, bool
             nk_input_key(_context, NK_KEY_RIGHT, keyPressed);
     }
     return _context->last_widget_state & NK_WIDGET_STATE_MODIFIED ||
-        _context->text_edit.active || ImGui::GetIO().WantCaptureKeyboard;
+        _context->text_edit.active || (ImGui::GetCurrentContext() && ImGui::GetIO().WantCaptureKeyboard);
 }
 
 bool OverlayEventHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
@@ -96,12 +97,12 @@ bool OverlayEventHandler::mouseEvent(PlatformMouseButton button, const Pointi &p
     } else if (button == BUTTON_RIGHT) {
         nk_input_button(_context, NK_BUTTON_RIGHT, pos.x, pos.y, down);
     }
-    return nk_item_is_any_active(_context) || ImGui::GetIO().WantCaptureMouse;
+    return nk_item_is_any_active(_context) || (ImGui::GetCurrentContext() && ImGui::GetIO().WantCaptureMouse);
 }
 
 bool OverlayEventHandler::wheelEvent(const PlatformWheelEvent *event) {
     nk_input_scroll(_context, nk_vec2(event->angleDelta.x, event->angleDelta.y));
-    return nk_item_is_any_active(_context) || ImGui::GetIO().WantCaptureMouse;
+    return nk_item_is_any_active(_context) || (ImGui::GetCurrentContext() && ImGui::GetIO().WantCaptureMouse);
 }
 
 bool OverlayEventHandler::textInputEvent(const PlatformTextInputEvent *event) {
@@ -109,4 +110,11 @@ bool OverlayEventHandler::textInputEvent(const PlatformTextInputEvent *event) {
     memcpy(glyph, event->text.c_str(), NK_UTF_SIZE);
     nk_input_glyph(_context, glyph);
     return nk_item_is_any_active(_context);
+}
+
+bool OverlayEventHandler::nativeEvent(const PlatformNativeEvent *event) {
+    // Here we're assuming the native event is coming from SDL
+    const SDL_Event *sdlEvent = reinterpret_cast<const SDL_Event *>(event->nativeEvent);
+    ImGui_ImplSDL2_ProcessEvent(sdlEvent);
+    return false;
 }
