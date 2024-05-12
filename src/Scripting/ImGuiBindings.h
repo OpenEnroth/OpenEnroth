@@ -90,7 +90,6 @@ inline std::tuple<float, float> GetContentRegionMax() { const auto vec2{ ImGui::
 inline std::tuple<float, float> GetContentRegionAvail() { const auto vec2{ ImGui::GetContentRegionAvail() };  return std::make_tuple(vec2.x, vec2.y); }
 inline std::tuple<float, float> GetWindowContentRegionMin() { const auto vec2{ ImGui::GetWindowContentRegionMin() };  return std::make_tuple(vec2.x, vec2.y); }
 inline std::tuple<float, float> GetWindowContentRegionMax() { const auto vec2{ ImGui::GetWindowContentRegionMax() };  return std::make_tuple(vec2.x, vec2.y); }
-//inline float GetWindowContentRegionWidth() { return ImGui:GetWindowContentRegionWidth(); }
 
 // Windows Scrolling
 inline float GetScrollX() { return ImGui::GetScrollX(); }
@@ -919,28 +918,52 @@ inline void VSliderScalar() { /* TODO: VSliderScalar(...) ==> UNSUPPORTED */ }
 
 // Widgets: Input with Keyboard
 
-static int resizeStringCallback(ImGuiInputTextCallbackData *data) {
+struct InputTestUserData {
+    std::string *stringData{};
+    sol::function *scriptCallback{};
+};
+
+static int inputTextCallback(ImGuiInputTextCallbackData *data) {
     if (data->EventFlag == ImGuiInputTextFlags_CallbackResize) {
-        std::string *stringData = (std::string *)data->UserData;
+        InputTestUserData *userData = (InputTestUserData *)data->UserData;
+        IM_ASSERT(userData->stringData);
+        std::string *stringData = userData->stringData;
         IM_ASSERT(stringData->data() == data->Buf);
         stringData->resize(data->BufTextLen);
         data->Buf = (char *)stringData->data();
+    } else if (data->EventFlag == ImGuiInputTextFlags_CallbackHistory) {
+        InputTestUserData *userData = (InputTestUserData *)data->UserData;
+        IM_ASSERT(userData->stringData);
+        std::string *stringData = userData->stringData;
+        int step = 0;
+        if (data->EventKey == ImGuiKey_UpArrow) {
+            step = -1;
+        } else if (data->EventKey == ImGuiKey_DownArrow) {
+            step = 1;
+        }
+        IM_ASSERT(userData->scriptCallback);
+        *stringData = userData->scriptCallback->call(data->EventFlag, step);
+        data->DeleteChars(0, data->BufTextLen);
+        data->InsertChars(0, stringData->data());
     }
     return 0;
 }
 
-inline std::tuple<std::string, bool> InputText(const std::string &label, std::string text, ImGuiInputTextFlags flags) {
-    bool selected = ImGui::InputText(label.c_str(), text.data(), text.capacity() + 1, flags | ImGuiInputTextFlags_CallbackResize, resizeStringCallback, &text);
+inline std::tuple<std::string, bool> InputText(const std::string &label, std::string text, ImGuiInputTextFlags flags, sol::function callback) {
+    InputTestUserData userData{ &text, callback.valid() ? &callback : nullptr };
+    bool selected = ImGui::InputText(label.c_str(), text.data(), text.capacity() + 1, flags | ImGuiInputTextFlags_CallbackResize, inputTextCallback, &userData);
     return { text, selected };
 }
 
-inline std::tuple<std::string, bool> InputTextMultiline(const std::string &label, std::string text, float sizeX, float sizeY, ImGuiInputTextFlags flags) {
-    bool selected = ImGui::InputTextMultiline(label.c_str(), text.data(), text.capacity() + 1, { sizeX, sizeY }, flags | ImGuiInputTextFlags_CallbackResize, resizeStringCallback, (void *)(&text));
+inline std::tuple<std::string, bool> InputTextMultiline(const std::string &label, std::string text, float sizeX, float sizeY, ImGuiInputTextFlags flags, sol::function callback) {
+    InputTestUserData userData{ &text, callback.valid() ? &callback : nullptr };
+    bool selected = ImGui::InputTextMultiline(label.c_str(), text.data(), text.capacity() + 1, { sizeX, sizeY }, flags | ImGuiInputTextFlags_CallbackResize, inputTextCallback, &userData);
     return std::make_tuple(text, selected);
 }
 
-inline std::tuple<std::string, bool> InputTextWithHint(const std::string &label, const std::string &hint, std::string text, ImGuiInputTextFlags flags) {
-    bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), text.data(), text.capacity() + 1, flags | ImGuiInputTextFlags_CallbackResize, resizeStringCallback, (void *)(&text));
+inline std::tuple<std::string, bool> InputTextWithHint(const std::string &label, const std::string &hint, std::string text, ImGuiInputTextFlags flags, sol::function callback) {
+    InputTestUserData userData{ &text, callback.valid() ? &callback : nullptr };
+    bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), text.data(), text.capacity() + 1, flags | ImGuiInputTextFlags_CallbackResize, inputTextCallback, &userData);
     return std::make_tuple(text, selected);
 }
 inline std::tuple<float, bool> InputFloat(const std::string &label, float v) { bool selected = ImGui::InputFloat(label.c_str(), &v); return std::make_tuple(v, selected); }
@@ -1931,6 +1954,8 @@ inline void Init(sol::state_view &solState, sol::table &table) {
     sol::table ImGui = solState.create_table();
     table["imgui"] = ImGui;
     InitEnums(ImGui);
+
+    ImGui.set_function("ShowDemoWindow", []() { ImGui::ShowDemoWindow(); });
 
     ImGui.set_function("Begin", sol::overload(
         sol::resolve<bool(const std::string &)>(Begin),

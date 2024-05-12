@@ -187,7 +187,6 @@ class Renderer {
     virtual void swapBuffers() = 0;
     virtual void beginOverlays() = 0;
     virtual void endOverlays() = 0;
-    virtual void drawOverlays(nk_context *context) = 0;
 
     std::shared_ptr<GameConfig> config = nullptr;
     int *pActiveZBuffer;

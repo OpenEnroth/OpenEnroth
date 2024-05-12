@@ -13,10 +13,9 @@ class Overlay;
 class GameConfig;
 class PlatformApplication;
 class Renderer;
-struct nk_context;
 
 /** 
- * @brief An Overlay is a screen built in Immediate Mode GUI ( nuklear ) which is displayed on top of any other ui and it's 
+ * @brief An Overlay is a screen built in Immediate Mode GUI ( imgui ) which is displayed on top of any other ui and it's 
  * mainly used for debug purposes ( Console, Render Stats, Debug View Buttons, etc... ).
  * 
  * The Overlay System is the class responsible to keep track of all the registered Overlays and update them accordingly.
@@ -42,7 +41,6 @@ class OverlaySystem {
     std::unordered_map<TransparentString, std::unique_ptr<Overlay>, TransparentStringHash, TransparentStringEquals> _overlays;
     Renderer &_renderer;
     PlatformApplication &_application;
-    std::unique_ptr<nk_context> _nuklearContext;
     std::function<void()> _unregisterDependencies;
     bool _isEnabled{};
 };

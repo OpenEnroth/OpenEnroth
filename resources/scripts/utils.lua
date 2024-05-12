@@ -77,6 +77,27 @@ function stringToEnum(enumTable, valueStr)
     return 0
 end
 
+---@class Rect
+---@field x number
+---@field y number
+---@field w number
+---@field h number
+
+---Create a table with r,g,b,a fields
+---@param x number
+---@param y number
+---@param w number
+---@param h number
+---@return Rect
+Utilities.rect = function (x, y, w, h)
+    return {
+        x = x,
+        y = y,
+        w = w,
+        h = h
+    }
+end
+
 ---@class Color
 ---@field r number
 ---@field g number

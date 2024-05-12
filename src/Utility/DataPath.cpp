@@ -27,8 +27,6 @@ static const std::vector<std::vector<std::string_view>> globalValidateList = {
     {"shaders", "glforcepershader.vert"},
     {"shaders", "gllinesshader.frag"},
     {"shaders", "gllinesshader.vert"},
-    {"shaders", "glnuklear.frag"},
-    {"shaders", "glnuklear.vert"},
     {"shaders", "gloutbuild.frag"},
     {"shaders", "gloutbuild.vert"},
     {"shaders", "glterrain.frag"},

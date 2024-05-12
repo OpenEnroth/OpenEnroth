@@ -1,7 +1,5 @@
 #include "ScriptedOverlay.h"
 
-#include <nuklear_config.h> // NOLINT: not a C system header.
-
 #include "Library/Logger/Logger.h"
 #include "Scripting/ScriptingSystem.h"
 
@@ -25,10 +23,10 @@ ScriptedOverlay::~ScriptedOverlay() {
     }
 }
 
-void ScriptedOverlay::update(nk_context *context) {
+void ScriptedOverlay::update() {
     auto updateFunction = _prepareFunction(_updateFunctionReference);
     if (updateFunction.valid()) {
-        updateFunction(context);
+        updateFunction();
     }
 }
 

@@ -1,11 +1,13 @@
 local Console = require "console"
-local InputListener = require "core.input_listener"
-local Input = require "bindings.input"
 local Platform = require "bindings.platform"
 local Overlay = require "bindings.overlay"
 local Utilities = require "utils"
 local imgui = Overlay.imgui
 
+local scrollToBottom = false
+local consoleMargin = 5
+local footerHeight = 35
+local minWidth = 200
 local isWindowMaximized = false
 local baseColor = { 32, 32, 32, 255 }
 local messageBkgColor = { 16, 16, 16, 255 }
@@ -15,32 +17,41 @@ local function getColorAlpha(col)
     return { col[1], col[2], col[3], a }
 end
 
-local function historyPrev()
-    if Console.editTB.state[nk.EditState.NK_EDIT_ACTIVE] then
-        Console:navigateHistory(-1)
-        return true
+---@param w integer
+---@param h integer
+---@return table
+local function calculateWindowSize(w, h)
+    local consoleWidth = w / 3
+    ---@type Rect
+    if isWindowMaximized then
+        return Utilities.rect(
+            consoleMargin,
+            consoleMargin,
+            consoleWidth,
+            h - consoleMargin * 2
+        )
+    else
+        return Utilities.rect(
+            consoleMargin,
+            h - footerHeight - consoleMargin,
+            consoleWidth,
+            footerHeight
+        )
     end
-    return false
 end
 
-local function historyNext()
-    if Console.editTB.state[nk.EditState.NK_EDIT_ACTIVE] then
-        Console:navigateHistory(1)
-        return true
+local function inputTextCallback(callbackEvent, param)
+    if callbackEvent == imgui.ImGuiInputTextFlags.CallbackHistory then
+        Console:navigateHistory(param)
+        return Console.text
     end
-    return false
 end
-
-local scrollToBottom = false
 
 local function drawCommandLineRow()
-    if imgui.Button(Console.isExpanded and "<" or ">") then
-        Console.isExpanded = not Console.isExpanded
-    end
-    imgui.SameLine()
-
-    local text, changed = imgui.InputTextWithHint("##Input", "Write something here...", Console.text,
-        imgui.ImGuiInputTextFlags.EnterReturnsTrue)
+    local inputTextFlags = bit32.bor(imgui.ImGuiInputTextFlags.EnterReturnsTrue,
+        imgui.ImGuiInputTextFlags.CallbackHistory)
+    local text, changed = imgui.InputTextWithHint("##Input", "Write something here...", Console.text, inputTextFlags,
+        inputTextCallback)
     Console.text = text
 
     if changed then
@@ -58,6 +69,11 @@ local function drawCommandLineRow()
             Console:send()
         end
     end
+
+    imgui.SameLine()
+    if imgui.Button("Clear") then
+        Console:clear()
+    end
 end
 
 local function drawOptionsRow()
@@ -73,7 +89,7 @@ local function drawMessages()
         if message.source ~= "log" or Console.logEnabled then
             imgui.PushStyleColor(imgui.ImGuiCol.Text, message.col.r, message.col.g, message.col.b,
                 message.col.a)
-            imgui.TextUnformatted(message.text)
+            imgui.TextWrapped(message.text)
             imgui.PopStyleColor()
         end
     end
@@ -86,14 +102,16 @@ end
 
 local function drawConsole()
     local mainWinW, mainWinH = Platform.window.dimensions()
-    Console:updateWindowSize(isWindowMaximized, mainWinW, mainWinH, 35)
+    local rect = calculateWindowSize(mainWinW, mainWinH)
 
-    imgui.SetNextWindowPos(Console.rect.x, Console.rect.y)
-    imgui.SetNextWindowSize(Console.rect.w, Console.rect.h)
+    imgui.SetNextWindowPos(rect.x, rect.y)
+    imgui.SetNextWindowSize(rect.w, rect.h, imgui.ImGuiCond.FirstUseEver)
+    imgui.SetNextWindowSizeConstraints(minWidth, rect.h, mainWinW - consoleMargin * 2, rect.h)
     local _, drawWindow = imgui.Begin("Debug Console", true, imgui.ImGuiWindowFlags.NoTitleBar)
     if drawWindow then
         local flags = imgui.ImGuiHoveredFlags.RootAndChildWindows
-        isWindowMaximized = imgui.IsWindowHovered(flags) or Console.autoMinimize
+        isWindowMaximized = imgui.IsWindowHovered(flags) or imgui.IsMouseHoveringRect(rect.x, rect.y, rect.w, rect.h) or
+        not Console.autoMinimize
         if isWindowMaximized then
             drawMessages()
             drawOptionsRow()
@@ -103,20 +121,13 @@ local function drawConsole()
     imgui.End()
 end
 
-local unregisterFromInput = function () end
-
 local ConsoleOverlay = {}
 
 ConsoleOverlay.init = function ()
-    Console.scroll:set(0, 0)
     if #Console.messages == 0 then
         Console:addMessage("Type \"help\" on the command line to get a list of all the commands",
             Utilities.color(1, 1, 1, 0.5))
     end
-    unregisterFromInput = InputListener.registerKeyPressBulk({
-        { key = Input.PlatformKey.KEY_UP,   callback = historyPrev },
-        { key = Input.PlatformKey.KEY_DOWN, callback = historyNext }
-    })
 end
 
 ConsoleOverlay.update = function ()
@@ -124,7 +135,6 @@ ConsoleOverlay.update = function ()
 end
 
 ConsoleOverlay.close = function ()
-    unregisterFromInput()
 end
 
 return ConsoleOverlay

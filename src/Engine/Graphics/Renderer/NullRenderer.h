@@ -113,5 +113,4 @@ class NullRenderer : public BaseRenderer {
 
     virtual void beginOverlays() override;
     virtual void endOverlays() override;
-    virtual void drawOverlays(nk_context *context) override;
 };

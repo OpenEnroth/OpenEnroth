@@ -52,8 +52,6 @@
 #include "Utility/String/Format.h"
 #include "Utility/Memory/MemSet.h"
 
-#include "NuklearOverlayRenderer.h"
-
 #ifndef LOWORD
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
 #endif
@@ -4641,7 +4639,6 @@ bool OpenGLRenderer::Initialize() {
 
         gladSetGLPostCallback(GL_Check_Errors);
 
-        _overlayRenderer = std::make_unique<NuklearOverlayRenderer>();
         ImGui_ImplOpenGL3_Init();
 
         return Reinitialize(true);
@@ -4999,10 +4996,6 @@ void OpenGLRenderer::ReloadShaders() {
     glDeleteBuffers(1, &forceperVBO);
     forceperVAO = forceperVBO = 0;
     forceperstorecnt = 0;
-
-    if (_overlayRenderer) {
-        _overlayRenderer->reloadShaders(OpenGLES);
-    }
 }
 
 void OpenGLRenderer::beginOverlays() {
@@ -5014,12 +5007,6 @@ void OpenGLRenderer::beginOverlays() {
 void OpenGLRenderer::endOverlays() {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
-
-void OpenGLRenderer::drawOverlays(nk_context *context) {
-    if (_overlayRenderer) {
-        _overlayRenderer->render(context, outputPresent, OpenGLES, &drawcalls);
-    }
 }
 
 void OpenGLRenderer::ReleaseTerrain() {

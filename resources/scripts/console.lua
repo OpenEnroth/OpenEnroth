@@ -21,32 +21,19 @@ local criticalColor = Utilities.color(1.00, 0.50, 0.00, 1.00)
 ---@field maxMessagesCount integer Maximum number of messages the console can show. After that the oldest messages are removed
 ---@field history table<integer, string> List of all the messages sent by the user
 ---@field historyIndex integer current message being shown ( used to go back/forward when the user want to execute send messages )
----@field separateEveryNCharacters number --hack for a lacking text wrapping support in nuklear
----@field isExpanded boolean
 ---@field logEnabled boolean
 ---@field autoMinimize boolean
 ---@field text string
 local Console = {
-    rect = {
-        x = 8,
-        y = 8,
-        w = 600,
-        h = 480
-    },
-    text = "",                     -- current command being typed
-    messages = {},                 -- each message being sent to the console is stored in this table
-    history = {},                  -- the history of commands being executed. Useful to navigate back to previously written commands
-    historyIndex = 1,              -- utility index which tells us the command we're navigating back to
-    scroll = nk_scroll.new(0, 0),  -- the scrollbar position
-    isExpanded = true,             -- flag telling us if the console has been expanded or not ( width is increased )
-    padding = 5,
-    footerHeight = 50,             -- the footer is the section containing the bottom part of the console ( command line + send button )
-    logEnabled = false,            -- flag that tells if the log messages should be displayed in the console
-    autoMinimize = true,           -- Minimize console when the mouse is not hover it
-    maxMessagesCount = 400,        -- to avoid storing all the messages we can set a limit
-    maxHistoryCount = 40,          -- to avoid storing all the commands history we can set a limit
-    characterWidth = 7.3,          --hack for a lacking text wrapping support in nuklear
-    separateEveryNCharacters = 50, --hack for a lacking text wrapping support in nuklear
+    rect = {},
+    text = "",              -- current command being typed
+    messages = {},          -- each message being sent to the console is stored in this table
+    history = {},           -- the history of commands being executed. Useful to navigate back to previously written commands
+    historyIndex = 1,       -- utility index which tells us the command we're navigating back to
+    logEnabled = false,     -- flag that tells if the log messages should be displayed in the console
+    autoMinimize = true,    -- Minimize console when the mouse is not hover it
+    maxMessagesCount = 400, -- to avoid storing all the messages we can set a limit
+    maxHistoryCount = 40,   -- to avoid storing all the commands history we can set a limit
 }
 
 local function getColorSuccess(isSuccess)
@@ -85,12 +72,6 @@ Console.addMessage = function (console, text, color, source)
             table.remove(console.messages, 1)
         end
     end
-    console:scrollToEnd()
-end
-
-Console.scrollToEnd = function (console)
-    --  little hack to put the scrollbar at the bottom whenever we insert a new message
-    console.scroll:set(0, #console.messages * 100)
 end
 
 --- Send a message from command line to the message list
@@ -128,29 +109,6 @@ Console.navigateHistory = function (console, step)
     else
         console.text = ""
     end
-end
-
----
----@param console Console
----@param isWindowMaximized boolean
----@param w integer
----@param h integer
----@diagnostic disable-next-line: unused-local
-Console.updateWindowSize = function (console, isWindowMaximized, w, h, footerHeight)
-    local consoleWidth = console.isExpanded and 600 or 400
-    if isWindowMaximized then
-        console.rect.x = console.padding
-        console.rect.y = console.padding
-        console.rect.w = consoleWidth
-        console.rect.h = h - console.padding * 2
-    else
-        console.rect.x = console.padding
-        console.rect.y = h - footerHeight - console.padding
-        console.rect.w = consoleWidth
-        console.rect.h = footerHeight
-    end
-
-    console.separateEveryNCharacters = (consoleWidth - 8) / console.characterWidth
 end
 
 --- Clear all the messages
