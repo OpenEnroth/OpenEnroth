@@ -162,26 +162,8 @@ Marginsi SdlWindow::frameMargins() const {
     return result;
 }
 
-uintptr_t SdlWindow::systemHandle() const {
-    SDL_SysWMinfo info;
-    SDL_VERSION(&info.version);
-
-    if (SDL_GetWindowWMInfo(_window, &info) != SDL_TRUE) {
-        _state->logSdlError("SDL_GetWindowWMInfo");
-        return 0;
-    }
-
-#if SDL_VIDEO_DRIVER_WINDOWS
-    return reinterpret_cast<uintptr_t>(info.info.win.window);
-#elif SDL_VIDEO_DRIVER_X11
-    return static_cast<uintptr_t>(info.info.x11.window);
-#elif SDL_VIDEO_DRIVER_COCOA
-    return reinterpret_cast<uintptr_t>(info.info.cocoa.window);
-#elif SDL_VIDEO_DRIVER_ANDROID
-    return reinterpret_cast<uintptr_t>(info.info.android.window);
-#else
-#   error "Unsupported SDL video driver."
-#endif
+void *SdlWindow::nativeHandle() const {
+    return _window;
 }
 
 void SdlWindow::activate() {

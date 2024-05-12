@@ -147,6 +147,9 @@ class OpenGLRenderer : public BaseRenderer {
 
     void SetFogParametersGL();
 
+    void _initImGui();
+    void _shutdownImGui();
+
     FrameLimiter _frameLimiter;
 
     // these are the view and projection matrices for submission to shaders

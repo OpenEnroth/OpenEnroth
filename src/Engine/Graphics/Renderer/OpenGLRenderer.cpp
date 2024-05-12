@@ -41,6 +41,7 @@
 #include "Engine/EngineCallObserver.h"
 
 #include <imgui/backends/imgui_impl_opengl3.h> // NOLINT: not a C system header.
+#include <imgui/backends/imgui_impl_sdl2.h> // NOLINT: not a C system header.
 
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Serialization/EnumSerialization.h"
@@ -199,7 +200,7 @@ OpenGLRenderer::OpenGLRenderer(
 
 OpenGLRenderer::~OpenGLRenderer() {
     logger->info("RenderGl - Destructor");
-    ImGui_ImplOpenGL3_Shutdown();
+    _shutdownImGui();
 }
 
 void OpenGLRenderer::Release() { logger->info("RenderGL - Release"); }
@@ -4642,12 +4643,32 @@ bool OpenGLRenderer::Initialize() {
         gladSetGLPostCallback(GL_Check_Errors);
 
         _overlayRenderer = std::make_unique<NuklearOverlayRenderer>();
-        ImGui_ImplOpenGL3_Init();
+
+        _initImGui();
 
         return Reinitialize(true);
     }
 
     return false;
+}
+
+void OpenGLRenderer::_initImGui() {
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+
+    SDL_Window *sdlWindow = reinterpret_cast<SDL_Window *>(window->nativeHandle());
+    ImGui_ImplSDL2_InitForOpenGL(sdlWindow, nullptr);
+    ImGui_ImplOpenGL3_Init();
+}
+
+void OpenGLRenderer::_shutdownImGui() {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
 }
 
 void OpenGLRenderer::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
@@ -5007,7 +5028,8 @@ void OpenGLRenderer::ReloadShaders() {
 
 void OpenGLRenderer::beginOverlays() {
     ImGui_ImplOpenGL3_NewFrame();
-    openGLContext->startOverlayFrame();
+    // we assume we're always running with SDL
+    ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 }
 
