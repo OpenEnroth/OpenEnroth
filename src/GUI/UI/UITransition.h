@@ -24,7 +24,6 @@ class GUIWindow_Transition : public GUIWindow {
     virtual void Update() override;
     virtual void Release() override;
 
-    MapId mapid = MAP_INVALID;
     std::string _mapName{};
 };
 

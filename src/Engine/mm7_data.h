@@ -104,9 +104,6 @@ extern int day_fogrange_2;
 extern float fWalkSpeedMultiplier;
 extern float fBackwardWalkSpeedMultiplier;
 extern float fTurnSpeedMultiplier;
-extern std::string pCurrentMapName; // TODO(captainurist): replace with MAP_TYPE & drop!
-extern MapId dword_6BE13C_uCurrentlyLoadedLocationID;
-extern MapId uLevelMapStatsID;
 
 // TODO(captainurist): #enum
 #define GAME_SETTINGS_SKIP_WORLD_UPDATE 0x0001  // Skip updating world next frame due to changing levels etc.

@@ -196,7 +196,11 @@ bool Game::loop() {
 
             pParty->pPickedItem.uItemID = ITEM_NULL;
 
-            pCurrentMapName = _config->gameplay.StartingMap.value();
+            engine->_transitionMapId = pMapStats->GetMapInfo(_config->gameplay.StartingMap.value());
+
+            // TODO(Nik-RE-dev): should not be an assert but an exception or error message.
+            assert(engine->_transitionMapId != MAP_INVALID);
+
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
@@ -777,7 +781,7 @@ void Game::processQueuedMessages() {
                 if (engine->_teleportPoint.isValid()) {
                     if (!engine->_teleportPoint.getTeleportMap().starts_with('0')) {
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
-                        bool leavingArena = ascii::noCaseEquals(pCurrentMapName, "d05.blv");
+                        bool leavingArena = engine->_currentLoadedMapId == MAP_ARENA;
                         onMapLeave();
                         Transition_StopSound_Autosave(engine->_teleportPoint.getTeleportMap(), MAP_START_POINT_PARTY);
                         if (leavingArena)
@@ -814,7 +818,7 @@ void Game::processQueuedMessages() {
 
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 // encounter_index = (NPCData *)getTravelTime();
-                pOutdoor->level_filename = pCurrentMapName;
+                // TODO(Nik-RE-dev): pOut should be an enum
                 if (!engine->IsUnderwater() && pParty->bFlying ||
                     pOutdoor->GetTravelDestination(pParty->pos.x, pParty->pos.y, &pOut) != 1) {
                     PlayButtonClickSound();
@@ -851,25 +855,26 @@ void Game::processQueuedMessages() {
                         ++pParty->days_played_without_rest;
                     }
                     pSpriteFrameTable->ResetLoadedFlags();
-                    pCurrentMapName = pOut;
-                    Level_LoadEvtAndStr(pCurrentMapName.substr(0, pCurrentMapName.rfind('.')));
+                    engine->_currentLoadedMapId = pMapStats->GetMapInfo(pOut);
+                    Level_LoadEvtAndStr(pOut.substr(0, pOut.rfind('.')));
                     _decalBuilder->Reset(0);
-                    uLevelMapStatsID = pMapStats->GetMapInfo(pCurrentMapName);
 
                     bNoNPCHiring = 0;
 
-                    engine->SetUnderwater(Is_out15odm_underwater());
+                    engine->SetUnderwater(engine->_currentLoadedMapId == MAP_SHOALS);
 
-                    if (Is_out15odm_underwater() || (pCurrentMapName == "d47.blv"))
+                    // Previously was checking maps 'out15.odm' and 'd47.blv', but d47 is not present in MM7.
+                    // Logically here must check Shoals and Lincoln.
+                    if (engine->_currentLoadedMapId == MAP_SHOALS || engine->_currentLoadedMapId == MAP_LINCOLN)
                         bNoNPCHiring = 1;
-                    PrepareToLoadODM(1u, (ODMRenderParams *)1);
+
+                    PrepareToLoadODM(pOut, 1u, (ODMRenderParams *)1);
                     bDialogueUI_InitializeActor_NPC_ID = 0;
                     onMapLoad();
                     pOutdoor->SetFog();
                     TeleportToStartingPoint(uLevel_StartingPointType);
                     bool bOnWater = false;
-                    pParty->pos.z = GetTerrainHeightsAroundParty2(
-                        pParty->pos.x, pParty->pos.y, &bOnWater, 0);
+                    pParty->pos.z = GetTerrainHeightsAroundParty2(pParty->pos.x, pParty->pos.y, &bOnWater, 0);
                     pParty->uFallStartZ = pParty->pos.z;
                     engine->_461103_load_level_sub();
                     pEventTimer->setPaused(false);
@@ -950,7 +955,7 @@ void Game::processQueuedMessages() {
                 playButtonSoundOnEscape = false;
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 AutoSave();
-                pCurrentMapName = pMapStats->pInfos[houseNpcs[currentHouseNpc].targetMapID].fileName;
+                engine->_transitionMapId = houseNpcs[currentHouseNpc].targetMapID;
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
@@ -1011,7 +1016,7 @@ void Game::processQueuedMessages() {
                 pParty->_viewPitch = 0;
 
                 // change map to Harmondale
-                pCurrentMapName = "out02.odm";
+                engine->_transitionMapId = MAP_HARMONDALE;
                 engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
                 PrepareWorld(1);
                 Actor::InitializeActors();
@@ -1035,9 +1040,9 @@ void Game::processQueuedMessages() {
                 std::string status_string;
                 if (frameTableTxtLine.uPropCount == 1) {
                     MapId map_index = static_cast<MapId>(atoi(frameTableTxtLine.pProperties[0]));
-                    if (map_index < MAP_FIRST || map_index > MAP_LAST) continue;
-                    std::string map_name = pMapStats->pInfos[map_index].fileName;
-                    pCurrentMapName = map_name;
+                    if (map_index < MAP_FIRST || map_index > MAP_LAST)
+                        continue;
+                    engine->_transitionMapId = map_index;
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     onMapLeave();
@@ -1245,7 +1250,7 @@ void Game::processQueuedMessages() {
                     for (Character &character : pParty->pCharacters) {
                         character.conditions.Set(CONDITION_SLEEP, pParty->GetPlayingTime());
                     }
-                    MapId mapIdx = pMapStats->GetMapInfo(pCurrentMapName);
+                    MapId mapIdx = engine->_currentLoadedMapId;
                     assert(mapIdx != MAP_INVALID);
                     // Was this, which made exactly zero sense:
                     // if (mapIdx == MAP_INVALID)
@@ -1653,7 +1658,7 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_QuickSave:
-                if (pCurrentMapName == "d05.blv") {
+                if (engine->_currentLoadedMapId == MAP_ARENA) {
                     engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_ARENA);
                     pAudioPlayer->playUISound(SOUND_error);
                 } else {
@@ -1692,9 +1697,8 @@ void Game::onPressSpace() {
 }
 
 void Game::gameLoop() {
-    std::string pLocationName;  // [sp-4h] [bp-68h]@74
-    bool bLoading;              // [sp+10h] [bp-54h]@1
-    std::string Source;            // [sp+44h] [bp-20h]@76
+    bool bLoading;
+    MapId mapid;
 
     bLoading = sCurrentMenuID == MENU_LoadingProcInMainMenu;
     SetCurrentMenuID(MENU_NONE);
@@ -1718,8 +1722,7 @@ void Game::gameLoop() {
 
         DoPrepareWorld(bLoading, 1);
         pEventTimer->setPaused(false);
-        dword_6BE364_game_settings_1 |=
-            GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME;
+        dword_6BE364_game_settings_1 |= GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME;
         // uGame_if_0_else_ui_id__11_save__else_load__8_drawSpellInfoPopup__22_final_window__26_keymapOptions__2_options__28_videoOptions
         // = 0;
         current_screen_type = SCREEN_GAME;
@@ -1850,19 +1853,20 @@ void Game::gameLoop() {
                 if (pParty->_questBits[QBIT_ESCAPED_EMERALD_ISLE]) {
                     pParty->pos = Vec3f(-17331, 12547, 465); // respawn in harmondale
                     pParty->_viewYaw = 0;
-                    pLocationName = "out02.odm";
+                    mapid = MAP_HARMONDALE;
                 } else {
                     pParty->pos = Vec3f(12552, 1816, 193); // respawn on emerald isle
                     pParty->_viewYaw = 512;
-                    pLocationName = _config->gameplay.StartingMap.value();
+                    mapid = pMapStats->GetMapInfo(_config->gameplay.StartingMap.value());
+                    // TODO(Nik-RE-dev): should not be an assert but an exception or error message.
+                    assert(mapid != MAP_INVALID);
                 }
-                Source = pLocationName;
                 pParty->uFallStartZ = pParty->pos.z;
                 pParty->_viewPitch = 0;
                 pParty->velocity = Vec3f();
                 // change map
-                if (pCurrentMapName != Source) {
-                    pCurrentMapName = Source;
+                if (engine->_currentLoadedMapId != mapid) {
+                    engine->_transitionMapId = mapid;
                     engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
                     PrepareWorld(1);
                 }

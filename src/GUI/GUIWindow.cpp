@@ -883,8 +883,8 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 result += v1;
                 break;
             case 23:
-                if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID)
-                    result += pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].name;
+                if (engine->_currentLoadedMapId != MAP_INVALID)
+                    result += pMapStats->pInfos[engine->_currentLoadedMapId].name;
                 else
                     result += localization->GetString(LSTR_UNKNOWN);
                 break;

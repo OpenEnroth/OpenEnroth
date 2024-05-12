@@ -1126,19 +1126,22 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
 
 //----- (00438CF3) --------------------------------------------------------
 void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
-    if (uLevelMapStatsID == MAP_INVALID || !pActors[uActorID].IsPeasant()) return;
-
-    if ((uLevelMapStatsID == MAP_BRACADA_DESERT || uLevelMapStatsID == MAP_CELESTE) && pParty->isPartyEvil())
+    if (engine->_currentLoadedMapId == MAP_INVALID || !pActors[uActorID].IsPeasant())
         return;
 
-    if ((uLevelMapStatsID == MAP_DEYJA || uLevelMapStatsID == MAP_PIT) && pParty->isPartyGood())
+    if ((engine->_currentLoadedMapId == MAP_BRACADA_DESERT || engine->_currentLoadedMapId == MAP_CELESTE) && pParty->isPartyEvil())
         return;
 
-    pParty->uFine += 100 * (pMapStats->pInfos[uLevelMapStatsID].baseStealingFine +
+    if ((engine->_currentLoadedMapId == MAP_DEYJA || engine->_currentLoadedMapId == MAP_PIT) && pParty->isPartyGood())
+        return;
+
+    pParty->uFine += 100 * (pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine +
                             pActors[uActorID].monsterInfo.level +
                             pParty->GetPartyReputation());
-    if (pParty->uFine < 0) pParty->uFine = 0;
-    if (pParty->uFine > 4000000) pParty->uFine = 4000000;
+    if (pParty->uFine < 0)
+        pParty->uFine = 0;
+    if (pParty->uFine > 4000000)
+        pParty->uFine = 4000000;
 
     if (currentLocationInfo().reputation < 10000)
         currentLocationInfo().reputation++;
@@ -1268,17 +1271,15 @@ bool Actor::IsPeasant() {
 //----- (0042EBEE) --------------------------------------------------------
 void Actor::StealFrom(unsigned int uActorID) {
     Character *pPlayer;     // edi@1
-    int v4;              // ebx@2
-    MapId v5;     // eax@2
+    int v4 = 0;              // ebx@2
     LocationInfo *v6;  // esi@4
     Duration v8;              // [sp+8h] [bp-4h]@6
 
     pPlayer = &pParty->pCharacters[pParty->activeCharacterIndex() - 1];
     if (pPlayer->CanAct()) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
-        v4 = 0;
-        v5 = pMapStats->GetMapInfo(pCurrentMapName);
-        if (v5 != MAP_INVALID) v4 = pMapStats->pInfos[v5].baseStealingFine;
+        if (engine->_currentLoadedMapId != MAP_INVALID)
+            v4 = pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine;
         v6 = &currentLocationInfo();
         pPlayer->StealFromActor(uActorID, v4, v6->reputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);
@@ -2953,14 +2954,16 @@ void Actor::InitializeActors() {
     bool bPit = false;
     bool good = false;
     bool evil = false;
-    if (pCurrentMapName == "d25.blv") {  // the Celestia
+    if (engine->_currentLoadedMapId == MAP_CELESTE) {
         bCelestia = true;
     }
-    if (pCurrentMapName == "d26.blv") {  // the Pit
+    if (engine->_currentLoadedMapId == MAP_PIT) {
         bPit = true;
     }
-    if (pParty->isPartyGood()) good = true;
-    if (pParty->isPartyEvil()) evil = true;
+    if (pParty->isPartyGood())
+        good = true;
+    if (pParty->isPartyEvil())
+        evil = true;
 
     ai_near_actors_targets_pid.fill(Pid());
 

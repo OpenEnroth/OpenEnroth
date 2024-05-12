@@ -464,9 +464,8 @@ void AudioPlayer::UpdateVolumeFromConfig() {
 }
 
 void PlayLevelMusic() {
-    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
-    if (map_id != MAP_INVALID) {
-        pAudioPlayer->MusicPlayTrack(pMapStats->pInfos[map_id].musicId);
+    if (engine->_currentLoadedMapId != MAP_INVALID) {
+        pAudioPlayer->MusicPlayTrack(pMapStats->pInfos[engine->_currentLoadedMapId].musicId);
     }
 }
 

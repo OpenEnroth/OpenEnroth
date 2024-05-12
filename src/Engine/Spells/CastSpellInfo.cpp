@@ -314,7 +314,7 @@ void CastSpellInfoHelpers::castSpell() {
                 pAudioPlayer->playSpellSound(pCastSpell->uSpellID, false, SOUND_MODE_EXCLUSIVE);
             }
         } else if (pCastSpell->uSpellID == SPELL_WATER_LLOYDS_BEACON) {
-            if (pCurrentMapName == "d05.blv") {  // Arena
+            if (engine->_currentLoadedMapId == MAP_ARENA) {
                 spellFailed(pCastSpell, LSTR_SPELL_FAILED);
             } else {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastLloydsBeacon, pCastSpell->casterCharacterIndex, spell_level);

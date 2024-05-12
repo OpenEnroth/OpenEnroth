@@ -10,6 +10,7 @@
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
+#include "Engine/MapInfo.h"
 #include "Engine/Time/Timer.h"
 
 #include "Engine/Graphics/ImageLoader.h"
@@ -121,7 +122,7 @@ void LoadGame(int uSlot) {
         logger->error("Unable to find: {}!", header.locationName);
     }
 
-    pCurrentMapName = header.locationName;
+    engine->_transitionMapId = pMapStats->GetMapInfo(header.locationName);
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN | GAME_SETTINGS_SKIP_WORLD_UPDATE;
 
@@ -145,11 +146,13 @@ void LoadGame(int uSlot) {
 
 SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path, std::string_view title) {
     assert(isAutoSave || !title.empty());
-    assert(pCurrentMapName != "d05.blv" || isAutoSave); // No manual saves in Arena.
+    assert(engine->_currentLoadedMapId != MAP_ARENA || isAutoSave); // No manual saves in Arena.
 
-    if (pCurrentMapName == "d05.blv") { // arena
+    if (engine->_currentLoadedMapId == MAP_ARENA) {
         return {};
     }
+
+    std::string currentMapName = pMapStats->pInfos[engine->_currentLoadedMapId].fileName;
 
     // TODO(captainurist): why do we need to save & restore party position in this function?
     int pPositionX = pParty->pos.x;
@@ -204,7 +207,7 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path,
             serialize(*pOutdoor, &uncompressed, tags::via<OutdoorDelta_MM7>);
         }
 
-        std::string file_name = pCurrentMapName;
+        std::string file_name = currentMapName;
         size_t pos = file_name.find_last_of(".");
         file_name[pos + 1] = 'd';
         lodWriter.write(file_name, lod::encodeCompressed(uncompressed));
@@ -214,7 +217,7 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path,
 
     SaveGameHeader save_header;
     save_header.name = title;
-    save_header.locationName = pCurrentMapName;
+    save_header.locationName = currentMapName;
     save_header.playingTime = pParty->GetPlayingTime();
     serialize(save_header, &lodWriter, tags::via<SaveGame_MM7>);
 
@@ -262,7 +265,7 @@ void AutoSave() {
 }
 
 void DoSavegame(int uSlot) {
-    assert(pCurrentMapName != "d05.blv"); // Not Arena.
+    assert(engine->_currentLoadedMapId != MAP_ARENA); // Not Arena.
 
     pSavegameList->pSavegameHeader[uSlot] = SaveGame(false, false, makeDataPath("saves", fmt::format("save{:03}.mm7", uSlot)),
                                                      pSavegameList->pSavegameHeader[uSlot].name);
@@ -324,7 +327,7 @@ void SavegameList::Reset() {
 }
 
 void SaveNewGame() {
-    pCurrentMapName = "out01.odm";
+    engine->_currentLoadedMapId = MAP_EMERALD_ISLAND;
     pParty->lastPos.x = 12552;
     pParty->lastPos.y = 800;
     pParty->lastPos.z = 193;
@@ -345,7 +348,7 @@ void SaveNewGame() {
 }
 
 void QuickSaveGame() {
-    assert(pCurrentMapName != "d05.blv"); // Not Arena.
+    assert(engine->_currentLoadedMapId != MAP_ARENA); // Not Arena.
     pSavegameList->Initialize();
 
     engine->config->gameplay.QuickSavesCount.cycleIncrement();

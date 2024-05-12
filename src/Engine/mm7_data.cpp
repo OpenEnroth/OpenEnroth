@@ -2444,12 +2444,9 @@ int uDefaultTravelTime_ByFoot;
 MapWeatherFlags day_attrib;
 int day_fogrange_1; // fog start dist
 int day_fogrange_2; // fog end dist
-MapId dword_6BE13C_uCurrentlyLoadedLocationID;
 float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
 float fTurnSpeedMultiplier = 1.0f;
-std::string pCurrentMapName;
-MapId uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;
 
 char bNoNPCHiring = false;

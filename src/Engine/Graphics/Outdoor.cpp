@@ -250,7 +250,7 @@ bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
         ::day_attrib = this->loc_time.day_attrib;
         ::day_fogrange_1 = this->loc_time.day_fogrange_1;
         ::day_fogrange_2 = this->loc_time.day_fogrange_2;
-        if (Is_out15odm_underwater())
+        if (engine->_currentLoadedMapId == MAP_SHOALS)
             SetUnderwaterFog();
 
         return true;
@@ -466,9 +466,7 @@ int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos) {
 
 //----- (00489487) --------------------------------------------------------
 void OutdoorLocation::SetFog() {
-    pOutdoor->level_filename = pCurrentMapName;
-
-    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
+    MapId map_id = engine->_currentLoadedMapId;
     if (map_id == MAP_INVALID || map_id == MAP_CELESTE ||
         map_id == MAP_PIT || map_id > MAP_SHOALS)
         return;
@@ -497,7 +495,8 @@ void OutdoorLocation::SetFog() {
         ::day_attrib &= ~MAP_WEATHER_FOGGY;
     }
 
-    if (Is_out15odm_underwater()) SetUnderwaterFog();
+    if (map_id == MAP_SHOALS)
+        SetUnderwaterFog();
     pOutdoor->loc_time.day_fogrange_1 = ::day_fogrange_1;
     pOutdoor->loc_time.day_fogrange_2 = ::day_fogrange_2;
     pOutdoor->loc_time.day_attrib = ::day_attrib;
@@ -1137,10 +1136,6 @@ bool OutdoorLocation::IsMapCellPartiallyRevealed(int x_pos, int y_pos) {
 //----- (0047F138) --------------------------------------------------------
 bool OutdoorLocation::PrepareDecorations() {
     int v1 = 0;
-    int v8 = 0;
-    if (pCurrentMapName == "out09.odm") {
-        v8 = 1;
-    }
 
     decorationsWithSound.clear();
     for (unsigned i = 0; i < pLevelDecorations.size(); ++i) {
@@ -1153,7 +1148,7 @@ bool OutdoorLocation::PrepareDecorations() {
             decorationsWithSound.push_back(i);
         }
 
-        if (v8 && decor->uCog == 20)
+        if ((engine->_currentLoadedMapId == MAP_EVENMORN_ISLAND) && decor->uCog == 20)
             decor->uFlags |= LEVEL_DECORATION_OBELISK_CHEST;
         if (!decor->uEventID) {
             if (decor->IsInteractive()) {
@@ -1577,11 +1572,9 @@ void ODM_UpdateUserInputAndOther() {
     ODM_ProcessPartyActions();
     if (pParty->pos.x < -22528 || pParty->pos.x > 22528 ||
         pParty->pos.y < -22528 || pParty->pos.y > 22528) {
-        pOutdoor->level_filename = pCurrentMapName;
         v0 = pOutdoor->GetTravelDestination(pParty->pos.x, pParty->pos.y, &pOut);
         if (!engine->IsUnderwater() && (pParty->isAirborne() || (pParty->uFlags & (PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE)) ||
-                             pParty->uFlags & PARTY_FLAG_BURNING || pParty->bFlying) ||
-            !v0) {
+                             pParty->uFlags & PARTY_FLAG_BURNING || pParty->bFlying) || !v0) {
             if (pParty->pos.x < -22528) pParty->pos.x = -22528;
             if (pParty->pos.x > 22528) pParty->pos.x = 22528;
             if (pParty->pos.y < -22528) pParty->pos.y = -22528;
@@ -2280,11 +2273,6 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
     }
 }
 
-//----- (00464839) --------------------------------------------------------
-char Is_out15odm_underwater() {
-    return (pCurrentMapName == "out15.odm");
-}
-
 //----- (00464851) --------------------------------------------------------
 void SetUnderwaterFog() {
     day_fogrange_1 = 50;
@@ -2464,10 +2452,31 @@ void UpdateActors_ODM() {
     }
 }
 
+//----- (004610AA) --------------------------------------------------------
+void PrepareToLoadODM(std::string_view filename, bool bLoading, ODMRenderParams *a2) {
+    pGameLoadingUI_ProgressBar->Reset(27);
+    uCurrentlyLoadedLevelType = LEVEL_OUTDOOR;
+
+    ODM_LoadAndInitialize(filename, a2);
+    if (!bLoading)
+        TeleportToStartingPoint(uLevel_StartingPointType);
+
+    viewparams->_443365();
+    PlayLevelMusic();
+
+    //  level decoration sound
+    for (int decorIdx : decorationsWithSound) {
+        const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[decorIdx].uDecorationDescID);
+        pAudioPlayer->playSound(decoration->uSoundID, SOUND_MODE_PID, Pid(OBJECT_Decoration, decorIdx));
+    }
+}
+
 //----- (0047A384) --------------------------------------------------------
 void ODM_LoadAndInitialize(std::string_view pFilename, ODMRenderParams *thisa) {
-    MapInfo *map_info;            // edi@4
-    // size_t v7;              // eax@19
+    MapInfo *map_info;
+    bool outdoor_was_respawned;
+    MapId map_id = pMapStats->GetMapInfo(pFilename);
+    unsigned int respawn_interval = 0;
 
     // thisa->AllocSoftwareDrawBuffers();
     pWeather->bRenderSnow = false;
@@ -2475,17 +2484,13 @@ void ODM_LoadAndInitialize(std::string_view pFilename, ODMRenderParams *thisa) {
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
     pParty->_delayedReactionTimer = 0_ticks;
-    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
-    unsigned int respawn_interval = 0;
     if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];
         respawn_interval = map_info->respawnIntervalDays;
     }
     day_attrib &= ~MAP_WEATHER_FOGGY;
-    dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
-    bool outdoor_was_respawned;
-    pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().toDays() + 1,
-        respawn_interval, &outdoor_was_respawned);
+    engine->_currentLoadedMapId = map_id;
+    pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &outdoor_was_respawned);
 
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
         Actor::InitializeActors();
@@ -2523,6 +2528,7 @@ void ODM_LoadAndInitialize(std::string_view pFilename, ODMRenderParams *thisa) {
 
     MM7Initialization();
 }
+
 // returns 0xXXYYZZ fog color
 Color GetLevelFogColor() {
     if (engine->IsUnderwater()) {

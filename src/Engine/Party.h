@@ -91,7 +91,11 @@ struct Party {
     * Sets _activeCharacter to the first active (recoverd) character
     */
     void switchToNextActiveCharacter();
-    bool _497FC5_check_party_perception_against_level();
+
+    /**
+     * @offset 0x497FC5
+     */
+    bool checkPartyPerceptionAgainstCurrentMap();
 
     /**
      * @return                          Total number of characters who can act.
