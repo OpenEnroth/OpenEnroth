@@ -928,8 +928,6 @@ void Engine::_461103_load_level_sub() {
 
 //----- (0042F3D6) --------------------------------------------------------
 void InitializeTurnBasedAnimations(void *_this) {
-    uIconID_TurnHour = pIconsFrameTable->FindIcon("turnhour");
-    uIconID_CharacterFrame = pIconsFrameTable->FindIcon("aframe1");
     uSpriteID_Spell11 = pSpriteFrameTable->FastFindSprite("spell11");
 
     turnBasedOverlay.loadIcons();
