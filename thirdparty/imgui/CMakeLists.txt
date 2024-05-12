@@ -23,5 +23,5 @@ set(IMGUI_HEADERS
   imgui/backends/imgui_impl_sdl2.h
   )
 add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS})
-target_link_libraries(imgui PRIVATE SDL2::SDL2OE)
+target_link_libraries(imgui PRIVATE SDL2::SDL2OE OpenGL::GL)
 target_include_directories(imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
