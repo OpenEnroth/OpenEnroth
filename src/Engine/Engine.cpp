@@ -122,7 +122,7 @@ Engine *engine;
 GameState uGameState;
 
 void Engine::drawWorld() {
-    engine->SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
+    engine->SetSaturateFaces(pParty->checkPartyPerceptionAgainstCurrentMap());
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
     pCamera3D->_viewYaw = pParty->_viewYaw;
@@ -547,39 +547,34 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
 //----- (00464866) --------------------------------------------------------
 void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     // char *v3;         // eax@1
-    MapId v5;  // eax@3
 
     // v9 = bLoading;
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     pGameLoadingUI_ProgressBar->Initialize(_1_fullscreen_loading_2_box == 1
                                                ? GUIProgressBar::TYPE_Fullscreen
                                                : GUIProgressBar::TYPE_Box);
-    size_t pos = pCurrentMapName.rfind('.');
-    std::string mapName = pCurrentMapName.substr(0, pos);
-    std::string mapExt = pCurrentMapName.substr(pos + 1);  // This magically works even when pos == std::string::npos, in this case
-                                                      // maxExt == pCurrentMapName.
+    std::string mapToLoad = pMapStats->pInfos[engine->_transitionMapId].fileName;
+    size_t pos = mapToLoad.rfind('.');
+    std::string mapName = mapToLoad.substr(0, pos);
+    std::string mapExt = mapToLoad.substr(pos + 1);  // This magically works even when pos == std::string::npos, in this case
+                                                      // maxExt == mapToLoad.
 
     Level_LoadEvtAndStr(mapName);
-
-    v5 = pMapStats->GetMapInfo(pCurrentMapName);
-
-    uLevelMapStatsID = v5;
 
     // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?
     attackList.clear();
 
-    engine->SetUnderwater(Is_out15odm_underwater());
+    engine->SetUnderwater(engine->_transitionMapId == MAP_SHOALS);
 
     pParty->floor_face_id = 0; // TODO(captainurist): drop?
     if (ascii::noCaseEquals(mapExt, "blv"))
-        PrepareToLoadBLV(bLoading);
+        PrepareToLoadBLV(mapToLoad, bLoading);
     else
-        PrepareToLoadODM(bLoading, 0);
+        PrepareToLoadODM(mapToLoad, bLoading, 0);
 
     pNPCStats->setNPCNamesOnLoad();
     engine->_461103_load_level_sub();
-    if ((pCurrentMapName == "d11.blv") ||
-        (pCurrentMapName == "d10.blv")) {
+    if (engine->_currentLoadedMapId == MAP_BREEDING_ZONE || engine->_currentLoadedMapId == MAP_WALLS_OF_MIST) {
         // spawning grounds & walls of mist - no loot & exp from monsters
 
         for (unsigned i = 0; i < pActors.size(); ++i) {
@@ -590,10 +585,10 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
         }
     }
     bDialogueUI_InitializeActor_NPC_ID = 0;
+    engine->_transitionMapId = MAP_INVALID;
     onMapLoad();
     pGameLoadingUI_ProgressBar->Progress();
-    memset(&render->pBillboardRenderListD3D, 0,
-           sizeof(render->pBillboardRenderListD3D));
+    memset(&render->pBillboardRenderListD3D, 0, sizeof(render->pBillboardRenderListD3D));
     pGameLoadingUI_ProgressBar->Release();
 }
 
@@ -847,26 +842,6 @@ void MM7Initialization() {
                          viewparams->uScreen_BttmR_Y);
 }
 
-// TODO(pskelton): move to outdoor?
-//----- (004610AA) --------------------------------------------------------
-void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
-    pGameLoadingUI_ProgressBar->Reset(27);
-    uCurrentlyLoadedLevelType = LEVEL_OUTDOOR;
-
-    ODM_LoadAndInitialize(pCurrentMapName, a2);
-    if (!bLoading)
-        TeleportToStartingPoint(uLevel_StartingPointType);
-
-    viewparams->_443365();
-    PlayLevelMusic();
-
-    //  level decoration sound
-    for (int decorIdx : decorationsWithSound) {
-        const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[decorIdx].uDecorationDescID);
-        pAudioPlayer->playSound(decoration->uSoundID, SOUND_MODE_PID, Pid(OBJECT_Decoration, decorIdx));
-    }
-}
-
 //----- (00464479) --------------------------------------------------------
 void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     if (mouse)
@@ -908,7 +883,6 @@ void Engine::_461103_load_level_sub() {
     pParty->arenaState = ARENA_STATE_INITIAL;
     pParty->arenaLevel = ARENA_LEVEL_INVALID;
     pNPCStats->uNewlNPCBufPos = 0;
-    MapId mapId = pMapStats->GetMapInfo(pCurrentMapName);
 
     for (size_t i = 0; i < pActors.size(); ++i) {
         MonsterTier tier = monsterTierForMonsterId(pActors[i].monsterInfo.id);
@@ -921,7 +895,7 @@ void Engine::_461103_load_level_sub() {
         if (isPeasant(pActors[i].monsterInfo.id)) {
             pNPCStats->InitializeAdditionalNPCs(
                 &pNPCStats->pAdditionalNPC[pNPCStats->uNewlNPCBufPos],
-                pActors[i].monsterInfo.id, HOUSE_INVALID, mapId);
+                pActors[i].monsterInfo.id, HOUSE_INVALID, engine->_currentLoadedMapId);
             pActors[i].npcId = pNPCStats->uNewlNPCBufPos + 5000;
             pNPCStats->uNewlNPCBufPos++;
             continue;
@@ -954,8 +928,6 @@ void Engine::_461103_load_level_sub() {
 
 //----- (0042F3D6) --------------------------------------------------------
 void InitializeTurnBasedAnimations(void *_this) {
-    uIconID_TurnHour = pIconsFrameTable->FindIcon("turnhour");
-    uIconID_CharacterFrame = pIconsFrameTable->FindIcon("aframe1");
     uSpriteID_Spell11 = pSpriteFrameTable->FastFindSprite("spell11");
 
     turnBasedOverlay.loadIcons();
@@ -1117,7 +1089,8 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
                 }
             }
         }
-        if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) pOutdoor->SetFog();
+        if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
+            pOutdoor->SetFog();
 
         for (Character &character : pParty->pCharacters) {
             character.uNumDivineInterventionCastsThisDay = 0;
@@ -1532,19 +1505,19 @@ void Transition_StopSound_Autosave(std::string_view pMapName,
 
     // pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
 
-    if (pCurrentMapName != pMapName) {
+    if (engine->_currentLoadedMapId != pMapStats->GetMapInfo(pMapName)) {
         AutoSave();
     }
 
     uGameState = GAME_STATE_CHANGE_LOCATION;
-    pCurrentMapName = pMapName;
+    engine->_transitionMapId = pMapStats->GetMapInfo(pMapName);
     uLevel_StartingPointType = start_point;
 }
 
 //----- (0044C28F) --------------------------------------------------------
 void TeleportToNWCDungeon() {
     // return if we are already in the NWC dungeon
-    if ("nwc.blv" == pCurrentMapName) {
+    if (engine->_currentLoadedMapId == MAP_STRANGE_TEMPLE) {
         return;
     }
 

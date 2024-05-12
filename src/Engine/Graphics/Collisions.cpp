@@ -924,7 +924,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 
             // TODO(pskelton): Better way to do this?
             // Special case for steep staircase in tidewater
-            if (pCurrentMapName == "D17.blv") {
+            if (engine->_currentLoadedMapId == MAP_TIDEWATER_CAVERNS) {
                 if (collision_state.pid.id() == 650)
                     bFaceSlopeTooSteep = false;
             }

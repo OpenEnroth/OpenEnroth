@@ -342,7 +342,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
                 respawn_interval_days = 0x1BAF800;
 
-            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pCurrentMapName != "d29.dlv")
+            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pMapStats->GetMapInfo(filename) != MAP_CASTLE_HARMONDALE)
                 respawnTimed = true;
         } catch (const Exception &e) {
             logger->error("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
@@ -673,8 +673,8 @@ bool BLVFaceExtra::HasEventHint() {
 //----- (0046F228) --------------------------------------------------------
 void BLV_UpdateDoors() {
     SoundId eDoorSoundID = SOUND_wood_door0101;
-    if (dword_6BE13C_uCurrentlyLoadedLocationID != MAP_INVALID)
-        eDoorSoundID = pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
+    if (engine->_currentLoadedMapId != MAP_INVALID)
+        eDoorSoundID = pDoorSoundIDsByLocationID[engine->_currentLoadedMapId];
 
     // loop over all doors
     for (unsigned i = 0; i < pIndoor->pDoors.size(); ++i) {
@@ -873,12 +873,14 @@ void UpdateActors_BLV() {
 }
 
 //----- (00460A78) --------------------------------------------------------
-void PrepareToLoadBLV(bool bLoading) {
+void PrepareToLoadBLV(std::string_view filename, bool bLoading) {
     unsigned int respawn_interval;  // ebx@1
     MapInfo *map_info;              // edi@9
     bool v28;                       // zf@81
     bool alertStatus;                        // [sp+404h] [bp-10h]@1
     bool indoor_was_respawned = true;                      // [sp+40Ch] [bp-8h]@1
+
+    MapId map_id = pMapStats->GetMapInfo(filename);
 
     respawn_interval = 0;
     pGameLoadingUI_ProgressBar->Reset(0x20u);
@@ -886,10 +888,11 @@ void PrepareToLoadBLV(bool bLoading) {
     uCurrentlyLoadedLevelType = LEVEL_INDOOR;
     pBLVRenderParams->uPartySectorID = 0;
     pBLVRenderParams->uPartyEyeSectorID = 0;
+    engine->_currentLoadedMapId = map_id;
 
-    engine->SetUnderwater(Is_out15odm_underwater());
+    engine->SetUnderwater(map_id == MAP_SHOALS);
 
-    if ((pCurrentMapName == "out15.odm") || (pCurrentMapName == "d23.blv")) {
+    if ((map_id == MAP_SHOALS) || (map_id == MAP_LINCOLN)) {
         bNoNPCHiring = true;
     }
     //pPaletteManager->pPalette_tintColor[0] = 0;
@@ -897,7 +900,6 @@ void PrepareToLoadBLV(bool bLoading) {
     //pPaletteManager->pPalette_tintColor[2] = 0;
     //pPaletteManager->RecalculateAll();
     pParty->_delayedReactionTimer = 0_ticks;
-    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
     if (map_id != MAP_INVALID) {
         map_info = &pMapStats->pInfos[map_id];
         respawn_interval = pMapStats->pInfos[map_id].respawnIntervalDays;
@@ -905,10 +907,9 @@ void PrepareToLoadBLV(bool bLoading) {
     } else {
         map_info = nullptr;
     }
-    dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
 
     pStationaryLightsStack->uNumLightsActive = 0;
-    pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);
+    pIndoor->Load(filename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();

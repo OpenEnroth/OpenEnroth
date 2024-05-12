@@ -22,7 +22,6 @@ class KeyboardActionMapping;
 } // namespace Io
 
 struct BLVFace;
-struct ODMRenderParams;
 struct Vis_PIDAndDepth;
 struct Vis_SelectionFilter;
 struct Polygon;
@@ -130,6 +129,8 @@ class Engine {
     EventMap _localEventMap;
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
+    MapId _currentLoadedMapId = MAP_INVALID;
+    MapId _transitionMapId = MAP_INVALID;
     TeleportPoint _teleportPoint;
     OverlaySystem &_overlaySystem;
 
@@ -159,7 +160,6 @@ void FinalInitialization();
 void MM6_Initialize();
 void MM7Initialization();
 
-void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2);
 void InitializeTurnBasedAnimations(void *);
 unsigned int GetGravityStrength();
 

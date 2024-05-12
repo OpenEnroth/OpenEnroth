@@ -8,6 +8,7 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
+#include "Engine/Engine.h"
 #include "Engine/Time/Timer.h"
 
 #include "GUI/GUIButton.h"
@@ -65,7 +66,7 @@ static void calculateRequiredFood() {
     if (foodRequiredToRest < 1) {
         foodRequiredToRest = 1;
     }
-    if (pCurrentMapName == "d29.blv" && pParty->_questBits[QBIT_HARMONDALE_REBUILT]) {
+    if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE && pParty->_questBits[QBIT_HARMONDALE_REBUILT]) {
         foodRequiredToRest = 0;
     }
 }

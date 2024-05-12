@@ -6,6 +6,7 @@
 #include "Engine/Party.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/MapInfo.h"
+#include "Engine/Engine.h"
 #include "Engine/mm7_data.h"
 
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -108,12 +109,9 @@ void GUIWindow_CalendarBook::Update() {
     str = fmt::format("{}\t100:\t110{}", localization->GetString(LSTR_MOON), localization->GetMoonPhaseName(pDayMoonPhase[time.day - 1]));
     calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 8 * assets->pFontBookCalendar->GetHeight() + 31}, ui_book_calendar_moon_color, str);
 
-    MapId pMapID = pMapStats->GetMapInfo(pCurrentMapName);
-    std::string pMapName;
-    if (pMapID != MAP_INVALID) {
-        pMapName = pMapStats->pInfos[pMapID].name;
-    } else {
-        pMapName = "Unknown";
+    std::string pMapName = "Unknown";
+    if (engine->_currentLoadedMapId != MAP_INVALID) {
+        pMapName = pMapStats->pInfos[engine->_currentLoadedMapId].name;
     }
 
     str = fmt::format("{}\t100:\t110{}", localization->GetString(LSTR_LOCATION), pMapName);

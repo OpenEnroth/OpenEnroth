@@ -7309,8 +7309,7 @@ void Character::cleanupBeacons() {
 }
 
 bool Character::setBeacon(int index, Duration duration) {
-    MapId file_index = pMapStats->GetMapInfo(pCurrentMapName);
-    if (file_index == MAP_INVALID) {
+    if (engine->_currentLoadedMapId == MAP_INVALID) {
         return false;
     }
 
@@ -7321,7 +7320,7 @@ bool Character::setBeacon(int index, Duration duration) {
     beacon._partyPos = pParty->pos;
     beacon._partyViewYaw = pParty->_viewYaw;
     beacon._partyViewPitch = pParty->_viewPitch;
-    beacon.mapId = file_index;
+    beacon.mapId = engine->_currentLoadedMapId;
 
     if (index < vBeacons.size()) {
         // overwrite so clear image
