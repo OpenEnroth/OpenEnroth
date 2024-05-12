@@ -4661,7 +4661,7 @@ void OpenGLRenderer::_initImGui() {
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
 
     SDL_Window *sdlWindow = reinterpret_cast<SDL_Window *>(window->nativeHandle());
-    ImGui_ImplSDL2_InitForOpenGL(sdlWindow, nullptr);
+    ImGui_ImplSDL2_InitForOpenGL(sdlWindow, openGLContext->nativeHandle());
     ImGui_ImplOpenGL3_Init();
 }
 
