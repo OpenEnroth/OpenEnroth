@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0c3dde3</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9f2ba58</span>
    </div>
   </td>
  </tr>
@@ -118,12 +118,12 @@ Functions</h2></td></tr>
 <tr class="separator:ab3cc30c01fb2e9afa8ec291e6043bf99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62e44d7fd493356cb340fe1dc8fe993b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8h.html#a62e44d7fd493356cb340fe1dc8fe993b">ODM_ProcessPartyActions</a> ()</td></tr>
 <tr class="separator:a62e44d7fd493356cb340fe1dc8fe993b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aebaa8ee2e0dc20c658857cefb953448b"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8h.html#aebaa8ee2e0dc20c658857cefb953448b">Is_out15odm_underwater</a> ()</td></tr>
-<tr class="separator:aebaa8ee2e0dc20c658857cefb953448b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b27f3d68bad2b06d1caef0efe3b49ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8h.html#a1b27f3d68bad2b06d1caef0efe3b49ec">SetUnderwaterFog</a> ()</td></tr>
 <tr class="separator:a1b27f3d68bad2b06d1caef0efe3b49ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ad0932fe04ea63562fad5cea5e454b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8h.html#a5ad0932fe04ea63562fad5cea5e454b7">sub_487DA9</a> ()</td></tr>
 <tr class="separator:a5ad0932fe04ea63562fad5cea5e454b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8204fdd34d1dbe97f116a0a0471d0d85"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8h.html#a8204fdd34d1dbe97f116a0a0471d0d85">PrepareToLoadODM</a> (std::string_view filename, bool bLoading, <a class="el" href="structODMRenderParams.html">ODMRenderParams</a> *a2)</td></tr>
+<tr class="separator:a8204fdd34d1dbe97f116a0a0471d0d85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3038d1c600df84f756ce5e553413d0b2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8h.html#a3038d1c600df84f756ce5e553413d0b2">ODM_LoadAndInitialize</a> (std::string_view pLevelFilename, <a class="el" href="structODMRenderParams.html">ODMRenderParams</a> *thisa)</td></tr>
 <tr class="separator:a3038d1c600df84f756ce5e553413d0b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc756df02d61405f6513cdd2468c414e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8h.html#afc756df02d61405f6513cdd2468c414e">GetLevelFogColor</a> ()</td></tr>
@@ -281,23 +281,6 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>a1</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aebaa8ee2e0dc20c658857cefb953448b" name="aebaa8ee2e0dc20c658857cefb953448b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aebaa8ee2e0dc20c658857cefb953448b">&#9670;&#160;</a></span>Is_out15odm_underwater()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">char Is_out15odm_underwater </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -469,6 +452,40 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8204fdd34d1dbe97f116a0a0471d0d85" name="a8204fdd34d1dbe97f116a0a0471d0d85"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8204fdd34d1dbe97f116a0a0471d0d85">&#9670;&#160;</a></span>PrepareToLoadODM()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PrepareToLoadODM </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bLoading</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structODMRenderParams.html">ODMRenderParams</a> *&#160;</td>
+          <td class="paramname"><em>a2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">

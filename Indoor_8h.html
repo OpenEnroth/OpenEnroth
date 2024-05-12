@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0c3dde3</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9f2ba58</span>
    </div>
   </td>
  </tr>
@@ -134,8 +134,8 @@ Functions</h2></td></tr>
 <tr class="separator:a2a197c141a9bd00322e6808d35032aef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab7663442878fb1d9ce8c4293f7206c0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#ab7663442878fb1d9ce8c4293f7206c0e">PrepareDrawLists_BLV</a> ()</td></tr>
 <tr class="separator:ab7663442878fb1d9ce8c4293f7206c0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a47ac13ac7daaac0c541dbff213117ccf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#a47ac13ac7daaac0c541dbff213117ccf">PrepareToLoadBLV</a> (bool bLoading)</td></tr>
-<tr class="separator:a47ac13ac7daaac0c541dbff213117ccf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abce9502eaf91986f8050093abb201189"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#abce9502eaf91986f8050093abb201189">PrepareToLoadBLV</a> (std::string_view filename, bool bLoading)</td></tr>
+<tr class="separator:abce9502eaf91986f8050093abb201189"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c0727b9b9f6cdd555de87fabcea1a75"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#a5c0727b9b9f6cdd555de87fabcea1a75">SpawnEncounterMonsters</a> (<a class="el" href="structMapInfo.html">MapInfo</a> *a1, int a2)</td></tr>
 <tr class="separator:a5c0727b9b9f6cdd555de87fabcea1a75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1c3e70faa14d2455f85a31adf179094"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8h.html#ad1c3e70faa14d2455f85a31adf179094">DropTreasureAt</a> (<a class="el" href="ItemEnums_8h.html#a38d9b49da2474dd2a7da4ad935eb94e4">ItemTreasureLevel</a> trs_level, <a class="el" href="ItemEnums_8h.html#ac17d128fea2ce038be2a17b3c1737e25">RandomItemType</a> trs_type, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> pos, uint16_t facing)</td></tr>
@@ -592,8 +592,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a47ac13ac7daaac0c541dbff213117ccf" name="a47ac13ac7daaac0c541dbff213117ccf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a47ac13ac7daaac0c541dbff213117ccf">&#9670;&#160;</a></span>PrepareToLoadBLV()</h2>
+<a id="abce9502eaf91986f8050093abb201189" name="abce9502eaf91986f8050093abb201189"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abce9502eaf91986f8050093abb201189">&#9670;&#160;</a></span>PrepareToLoadBLV()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -601,9 +601,19 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void PrepareToLoadBLV </td>
           <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>bLoading</em></td><td>)</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>bLoading</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
