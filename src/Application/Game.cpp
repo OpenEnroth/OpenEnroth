@@ -198,6 +198,7 @@ bool Game::loop() {
 
             engine->_transitionMapId = pMapStats->GetMapInfo(_config->gameplay.StartingMap.value());
 
+            // TODO(Nik-RE-dev): should not be an assert but an exception or error message.
             assert(engine->_transitionMapId != MAP_INVALID);
 
             bFlashQuestBook = true;
@@ -817,6 +818,7 @@ void Game::processQueuedMessages() {
 
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 // encounter_index = (NPCData *)getTravelTime();
+                // TODO(Nik-RE-dev): pOut should be an enum
                 if (!engine->IsUnderwater() && pParty->bFlying ||
                     pOutdoor->GetTravelDestination(pParty->pos.x, pParty->pos.y, &pOut) != 1) {
                     PlayButtonClickSound();
@@ -1856,6 +1858,7 @@ void Game::gameLoop() {
                     pParty->pos = Vec3f(12552, 1816, 193); // respawn on emerald isle
                     pParty->_viewYaw = 512;
                     mapid = pMapStats->GetMapInfo(_config->gameplay.StartingMap.value());
+                    // TODO(Nik-RE-dev): should not be an assert but an exception or error message.
                     assert(mapid != MAP_INVALID);
                 }
                 pParty->uFallStartZ = pParty->pos.z;
