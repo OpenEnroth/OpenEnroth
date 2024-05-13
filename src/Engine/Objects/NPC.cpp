@@ -51,7 +51,8 @@ bool PartyHasDragon() { return pNPCStats->pNPCData[57].Hired(); }
 //----- (00476395) --------------------------------------------------------
 // 0x26 Wizard eye at skill level 2
 bool CheckHiredNPCSpeciality(NpcProfession prof) {
-    if (bNoNPCHiring == 1) return false;
+    if (isHirelingsBlockedOnMap(engine->_currentLoadedMapId))
+        return false;
 
     for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
         if (pNPCStats->pNPCData[i].profession == prof &&

@@ -250,7 +250,7 @@ bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
         ::day_attrib = this->loc_time.day_attrib;
         ::day_fogrange_1 = this->loc_time.day_fogrange_1;
         ::day_fogrange_2 = this->loc_time.day_fogrange_2;
-        if (engine->_currentLoadedMapId == MAP_SHOALS)
+        if (isMapUnderwater(engine->_currentLoadedMapId))
             SetUnderwaterFog();
 
         return true;
@@ -495,7 +495,7 @@ void OutdoorLocation::SetFog() {
         ::day_attrib &= ~MAP_WEATHER_FOGGY;
     }
 
-    if (map_id == MAP_SHOALS)
+    if (isMapUnderwater(map_id))
         SetUnderwaterFog();
     pOutdoor->loc_time.day_fogrange_1 = ::day_fogrange_1;
     pOutdoor->loc_time.day_fogrange_2 = ::day_fogrange_2;

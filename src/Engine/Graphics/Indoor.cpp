@@ -884,17 +884,16 @@ void PrepareToLoadBLV(std::string_view filename, bool bLoading) {
 
     respawn_interval = 0;
     pGameLoadingUI_ProgressBar->Reset(0x20u);
-    bNoNPCHiring = false;
     uCurrentlyLoadedLevelType = LEVEL_INDOOR;
     pBLVRenderParams->uPartySectorID = 0;
     pBLVRenderParams->uPartyEyeSectorID = 0;
     engine->_currentLoadedMapId = map_id;
 
-    engine->SetUnderwater(map_id == MAP_SHOALS);
+    engine->SetUnderwater(isMapUnderwater(map_id));
 
-    if ((map_id == MAP_SHOALS) || (map_id == MAP_LINCOLN)) {
-        bNoNPCHiring = true;
-    }
+    //if ((map_id == MAP_SHOALS) || (map_id == MAP_LINCOLN)) {
+    //    bNoNPCHiring = true;
+    //}
     //pPaletteManager->pPalette_tintColor[0] = 0;
     //pPaletteManager->pPalette_tintColor[1] = 0;
     //pPaletteManager->pPalette_tintColor[2] = 0;

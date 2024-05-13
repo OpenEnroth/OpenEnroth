@@ -280,7 +280,8 @@ void Game_StartDialogue(int actor_id) {
 void Game_StartHirelingDialogue(int hireling_id) {
     assert(hireling_id == 0 || hireling_id == 1);
 
-    if (bNoNPCHiring || current_screen_type != SCREEN_GAME) return;
+    if (isHirelingsBlockedOnMap(engine->_currentLoadedMapId) || current_screen_type != SCREEN_GAME)
+        return;
 
     engine->_messageQueue->clear();
 
@@ -859,14 +860,12 @@ void Game::processQueuedMessages() {
                     Level_LoadEvtAndStr(pOut.substr(0, pOut.rfind('.')));
                     _decalBuilder->Reset(0);
 
-                    bNoNPCHiring = 0;
-
-                    engine->SetUnderwater(engine->_currentLoadedMapId == MAP_SHOALS);
+                    engine->SetUnderwater(isMapUnderwater(engine->_currentLoadedMapId));
 
                     // Previously was checking maps 'out15.odm' and 'd47.blv', but d47 is not present in MM7.
                     // Logically here must check Shoals and Lincoln.
-                    if (engine->_currentLoadedMapId == MAP_SHOALS || engine->_currentLoadedMapId == MAP_LINCOLN)
-                        bNoNPCHiring = 1;
+                    //if (engine->_currentLoadedMapId == MAP_SHOALS || engine->_currentLoadedMapId == MAP_LINCOLN)
+                    //    bNoNPCHiring = 1;
 
                     PrepareToLoadODM(pOut, 1u, (ODMRenderParams *)1);
                     bDialogueUI_InitializeActor_NPC_ID = 0;

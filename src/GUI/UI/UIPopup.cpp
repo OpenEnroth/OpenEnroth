@@ -1712,7 +1712,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
 }
 
 void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
-    if (bNoNPCHiring != 1) {
+    if (!isHirelingsBlockedOnMap(engine->_currentLoadedMapId)) {
         FlatHirelings buf;
         buf.Prepare();
 

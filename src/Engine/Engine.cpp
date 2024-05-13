@@ -564,7 +564,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?
     attackList.clear();
 
-    engine->SetUnderwater(engine->_transitionMapId == MAP_SHOALS);
+    engine->SetUnderwater(isMapUnderwater(engine->_transitionMapId));
 
     pParty->floor_face_id = 0; // TODO(captainurist): drop?
     if (ascii::noCaseEquals(mapExt, "blv"))

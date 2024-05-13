@@ -1693,7 +1693,7 @@ void GameUI_DrawTorchlightAndWizardEye() {
 void GameUI_DrawHiredNPCs() {
     signed int uFrameID;            // [sp+24h] [bp-18h]@19
 
-    if (bNoNPCHiring != 1) {
+    if (!isHirelingsBlockedOnMap(engine->_currentLoadedMapId)) {
         FlatHirelings buf;
         buf.Prepare();
 
