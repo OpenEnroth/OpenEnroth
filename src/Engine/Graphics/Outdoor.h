@@ -113,7 +113,11 @@ struct OutdoorLocation {
                     int respawn_interval_days,
                     bool * outdoors_was_respawned);
     // bool Release2();
-    bool GetTravelDestination(int sPartyX, int sPartyZ, std::string *pOut);
+
+    /**
+     * @offset 0x48902E
+     */
+    MapId getTravelDestination(int partyX, int partyY);
     void MessWithLUN();
     void UpdateSunlightVectors();
     void UpdateFog();

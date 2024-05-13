@@ -357,7 +357,8 @@ void Game::processQueuedMessages() {
     int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
     UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
     int uMessageParam2;            // [sp+30h] [bp-5CCh]@7
-    std::string pOut;                // [sp+BCh] [bp-540h]@370
+    MapId travelMapId;
+    std::string pOut;
     std::array<MagicSchool, 9> spellbookPages = {};                  // [sp+158h] [bp-4A4h]@652
     int currHour;
     bool playButtonSoundOnEscape = true;
@@ -820,8 +821,8 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 // encounter_index = (NPCData *)getTravelTime();
                 // TODO(Nik-RE-dev): pOut should be an enum
-                if (!engine->IsUnderwater() && pParty->bFlying ||
-                    pOutdoor->GetTravelDestination(pParty->pos.x, pParty->pos.y, &pOut) != 1) {
+                travelMapId = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
+                if (!engine->IsUnderwater() && pParty->bFlying || travelMapId == MAP_INVALID) {
                     PlayButtonClickSound();
                     if (pParty->pos.x < -22528)
                         pParty->pos.x = -22528;
@@ -856,7 +857,8 @@ void Game::processQueuedMessages() {
                         ++pParty->days_played_without_rest;
                     }
                     pSpriteFrameTable->ResetLoadedFlags();
-                    engine->_currentLoadedMapId = pMapStats->GetMapInfo(pOut);
+                    engine->_currentLoadedMapId = travelMapId;
+                    pOut = pMapStats->pInfos[travelMapId].fileName;
                     Level_LoadEvtAndStr(pOut.substr(0, pOut.rfind('.')));
                     _decalBuilder->Reset(0);
 
