@@ -198,7 +198,7 @@ Duration timeUntilDawn();
  * @offset 0x443E31
  */
 void initLevelStrings(const Blob &blob);
-void Level_LoadEvtAndStr(std::string_view pLevelName);
+void loadMapEventsAndStrings(MapId mapid);
 bool _44100D_should_alter_right_panel();
 void Transition_StopSound_Autosave(std::string_view pMapName, MapStartPoint point);  // sub_44987B idb
 

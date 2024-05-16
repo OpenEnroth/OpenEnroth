@@ -50,6 +50,7 @@
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
 
+#include "Utility/String/Ascii.h"
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
@@ -2444,31 +2445,14 @@ void UpdateActors_ODM() {
     }
 }
 
-//----- (004610AA) --------------------------------------------------------
-void PrepareToLoadODM(std::string_view filename, bool bLoading, ODMRenderParams *a2) {
-    pGameLoadingUI_ProgressBar->Reset(27);
-    uCurrentlyLoadedLevelType = LEVEL_OUTDOOR;
-
-    ODM_LoadAndInitialize(filename, a2);
-    if (!bLoading)
-        TeleportToStartingPoint(uLevel_StartingPointType);
-
-    viewparams->_443365();
-    PlayLevelMusic();
-
-    //  level decoration sound
-    for (int decorIdx : decorationsWithSound) {
-        const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[decorIdx].uDecorationDescID);
-        pAudioPlayer->playSound(decoration->uSoundID, SOUND_MODE_PID, Pid(OBJECT_Decoration, decorIdx));
-    }
-}
-
-//----- (0047A384) --------------------------------------------------------
-void ODM_LoadAndInitialize(std::string_view pFilename, ODMRenderParams *thisa) {
+/**
+ * @offset 0x47A384
+ */
+static void loadAndPrepareODMInternal(MapId mapid, ODMRenderParams *thisa) {
     MapInfo *map_info;
     bool outdoor_was_respawned;
-    MapId map_id = pMapStats->GetMapInfo(pFilename);
     unsigned int respawn_interval = 0;
+    std::string mapFilename;
 
     // thisa->AllocSoftwareDrawBuffers();
     pWeather->bRenderSnow = false;
@@ -2476,13 +2460,19 @@ void ODM_LoadAndInitialize(std::string_view pFilename, ODMRenderParams *thisa) {
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
     pParty->_delayedReactionTimer = 0_ticks;
-    if (map_id != MAP_INVALID) {
-        map_info = &pMapStats->pInfos[map_id];
+    if (mapid != MAP_INVALID) {
+        mapFilename = pMapStats->pInfos[mapid].fileName;
+        map_info = &pMapStats->pInfos[mapid];
         respawn_interval = map_info->respawnIntervalDays;
+
+        assert(ascii::noCaseEquals(mapFilename.substr(mapFilename.rfind('.') + 1), "odm"));
+    } else {
+        // TODO(Nik-RE-dev): why there's logic for loading maps that are not listed in info?
+        mapFilename = "";
+        map_info = nullptr;
     }
     day_attrib &= ~MAP_WEATHER_FOGGY;
-    engine->_currentLoadedMapId = map_id;
-    pOutdoor->Initialize(pFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &outdoor_was_respawned);
+    pOutdoor->Initialize(mapFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &outdoor_was_respawned);
 
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
         Actor::InitializeActors();
@@ -2490,7 +2480,7 @@ void ODM_LoadAndInitialize(std::string_view pFilename, ODMRenderParams *thisa) {
     }
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
 
-    if (outdoor_was_respawned && map_id != MAP_INVALID) {
+    if (outdoor_was_respawned && mapid != MAP_INVALID) {
         for (unsigned i = 0; i < pOutdoor->pSpawnPoints.size(); ++i) {
             SpawnPoint *spawn = &pOutdoor->pSpawnPoints[i];
 
@@ -2503,9 +2493,9 @@ void ODM_LoadAndInitialize(std::string_view pFilename, ODMRenderParams *thisa) {
     }
     pOutdoor->PrepareDecorations();
     pOutdoor->ArrangeSpriteObjects();
-    pOutdoor->InitalizeActors(map_id);
+    pOutdoor->InitalizeActors(mapid);
     pOutdoor->MessWithLUN();
-    pOutdoor->level_filename = pFilename;
+    pOutdoor->level_filename = mapFilename;
     pWeather->Initialize();
     pCamera3D->_viewYaw = pParty->_viewYaw;
     pCamera3D->_viewPitch = pParty->_viewPitch;
@@ -2519,6 +2509,24 @@ void ODM_LoadAndInitialize(std::string_view pFilename, ODMRenderParams *thisa) {
     }
 
     MM7Initialization();
+}
+
+void loadAndPrepareODM(MapId mapid, bool bLoading, ODMRenderParams *a2) {
+    pGameLoadingUI_ProgressBar->Reset(27);
+    uCurrentlyLoadedLevelType = LEVEL_OUTDOOR;
+
+    loadAndPrepareODMInternal(mapid, a2);
+    if (!bLoading)
+        TeleportToStartingPoint(uLevel_StartingPointType);
+
+    viewparams->_443365();
+    PlayLevelMusic();
+
+    //  level decoration sound
+    for (int decorIdx : decorationsWithSound) {
+        const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[decorIdx].uDecorationDescID);
+        pAudioPlayer->playSound(decoration->uSoundID, SOUND_MODE_PID, Pid(OBJECT_Decoration, decorIdx));
+    }
 }
 
 // returns 0xXXYYZZ fog color

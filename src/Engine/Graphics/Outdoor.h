@@ -217,8 +217,11 @@ void UpdateActors_ODM();
 void ODM_ProcessPartyActions();
 void SetUnderwaterFog();
 void sub_487DA9();
-void PrepareToLoadODM(std::string_view filename, bool bLoading, ODMRenderParams *a2);
-void ODM_LoadAndInitialize(std::string_view pLevelFilename, ODMRenderParams *thisa);
+
+/**
+ * @offset 0x4610AA
+ */
+void loadAndPrepareODM(MapId mapid, bool bLoading, ODMRenderParams *a2);
 Color GetLevelFogColor();
 int sub_47C3D7_get_fog_specular(int unused, int a2, float a3);
 unsigned int WorldPosToGridCellX(int);
