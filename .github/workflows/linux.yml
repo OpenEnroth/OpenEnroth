@@ -83,6 +83,7 @@ jobs:
           if [ "${{matrix.architecture}}" = "x86" ]; then
             sudo dpkg --add-architecture i386
           fi
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
           sudo apt-get update
           if [ "${{matrix.architecture}}" = "x86" ]; then
             sudo apt-get install -y gcc-13-multilib g++-13-multilib lld
