@@ -8,6 +8,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Party.h"
+#include "Engine/MapEnumFunctions.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Tables/NPCTable.h"
 

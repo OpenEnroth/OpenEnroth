@@ -147,19 +147,3 @@ enum class MapStartPoint : uint32_t {
 };
 using enum MapStartPoint;
 MM_DECLARE_SERIALIZATION_FUNCTIONS(MapStartPoint)
-
-inline bool isMapOutdoor(MapId mapid) {
-    return mapid >= MAP_EMERALD_ISLAND && mapid <= MAP_SHOALS && mapid != MAP_PIT && mapid != MAP_CELESTE;
-}
-
-inline bool isMapIndoor(MapId mapid) {
-    return (mapid >= MAP_DRAGON_CAVES && mapid <= MAP_ARENA) || mapid == MAP_PIT || mapid == MAP_CELESTE;
-}
-
-inline bool isMapUnderwater(MapId mapid) {
-    return mapid == MAP_SHOALS;
-}
-
-inline bool isHirelingsBlockedOnMap(MapId mapid) {
-    return (mapid == MAP_SHOALS) || (mapid == MAP_LINCOLN);
-}

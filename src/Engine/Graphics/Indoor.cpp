@@ -888,9 +888,6 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
 
     engine->SetUnderwater(isMapUnderwater(mapid));
 
-    //if ((mapid == MAP_SHOALS) || (mapid == MAP_LINCOLN)) {
-    //    bNoNPCHiring = true;
-    //}
     //pPaletteManager->pPalette_tintColor[0] = 0;
     //pPaletteManager->pPalette_tintColor[1] = 0;
     //pPaletteManager->pPalette_tintColor[2] = 0;
