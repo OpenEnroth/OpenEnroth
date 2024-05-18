@@ -487,7 +487,7 @@ var searchData=
   ['gettileidbytilemapid_484',['getTileIdByTileMapId',['../structOutdoorLocation.html#a69eea8db6386599000dc0a939c7e315c',1,'OutdoorLocation']]],
   ['gettilemapidbygrid_485',['getTileMapIdByGrid',['../structOutdoorLocation.html#aced46bd02a9695c74505ed63aca5b50c',1,'OutdoorLocation']]],
   ['gettoggletype_486',['GetToggleType',['../classIo_1_1KeyboardActionMapping.html#a708fb6813992ac6fffc58d18a953464e',1,'Io::KeyboardActionMapping::GetToggleType()'],['../KeyboardActionMapping_8cpp.html#acbc113e6c5c4dc3ff652da46abe3b7e3',1,'GetToggleType(InputAction action):&#160;KeyboardActionMapping.cpp'],['../KeyboardActionMapping_8h.html#a363a7f7624185abe732f80d50ee04fcf',1,'GetToggleType(Io::InputAction action):&#160;KeyboardActionMapping.h']]],
-  ['gettraveldestination_487',['GetTravelDestination',['../structOutdoorLocation.html#af70267134cf2c120e541821a3106e18d',1,'OutdoorLocation']]],
+  ['gettraveldestination_487',['getTravelDestination',['../structOutdoorLocation.html#a553db31c7826c63a977323acc31f8cc9',1,'OutdoorLocation']]],
   ['gettraveltime_488',['getTravelTime',['../Party_8cpp.html#a9e6210bf99466b023425f6f0a6e82c66',1,'getTravelTime():&#160;Party.cpp'],['../Party_8h.html#a9e6210bf99466b023425f6f0a6e82c66',1,'getTravelTime():&#160;Party.cpp']]],
   ['gettraveltimetransportdays_489',['getTravelTimeTransportDays',['../classGUIWindow__Transport.html#a69dfb31dff8fef372d7d79c72eea27ad',1,'GUIWindow_Transport']]],
   ['getvalue_490',['GetValue',['../structItemGen.html#a35d9bb02e737d07fbf5ac2005ae4cef1',1,'ItemGen']]],

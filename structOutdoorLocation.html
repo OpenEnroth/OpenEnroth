@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a8ccf39</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0a5efae</span>
    </div>
   </td>
  </tr>
@@ -132,8 +132,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4eca40cf76b1ef011f28e37ea83c6386"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe2df11121cde2855e504aa9702a51c0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#abe2df11121cde2855e504aa9702a51c0">Initialize</a> (std::string_view filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned)</td></tr>
 <tr class="separator:abe2df11121cde2855e504aa9702a51c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af70267134cf2c120e541821a3106e18d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#af70267134cf2c120e541821a3106e18d">GetTravelDestination</a> (int sPartyX, int sPartyZ, std::string *pOut)</td></tr>
-<tr class="separator:af70267134cf2c120e541821a3106e18d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a553db31c7826c63a977323acc31f8cc9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="MapEnums_8h.html#a270ed629fcd100c7ea16f8c87ebb86a0">MapId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#a553db31c7826c63a977323acc31f8cc9">getTravelDestination</a> (int partyX, int partyY)</td></tr>
+<tr class="separator:a553db31c7826c63a977323acc31f8cc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93ad1862f88661d0a93128f707d04330"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#a93ad1862f88661d0a93128f707d04330">MessWithLUN</a> ()</td></tr>
 <tr class="separator:a93ad1862f88661d0a93128f707d04330"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad1464d7a2aad592f0aff9786e636496e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#ad1464d7a2aad592f0aff9786e636496e">UpdateSunlightVectors</a> ()</td></tr>
@@ -738,29 +738,23 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="af70267134cf2c120e541821a3106e18d" name="af70267134cf2c120e541821a3106e18d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af70267134cf2c120e541821a3106e18d">&#9670;&#160;</a></span>GetTravelDestination()</h2>
+<a id="a553db31c7826c63a977323acc31f8cc9" name="a553db31c7826c63a977323acc31f8cc9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a553db31c7826c63a977323acc31f8cc9">&#9670;&#160;</a></span>getTravelDestination()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool OutdoorLocation::GetTravelDestination </td>
+          <td class="memname"><a class="el" href="MapEnums_8h.html#a270ed629fcd100c7ea16f8c87ebb86a0">MapId</a> OutdoorLocation::getTravelDestination </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>sPartyX</em>, </td>
+          <td class="paramname"><em>partyX</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>sPartyZ</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::string *&#160;</td>
-          <td class="paramname"><em>pOut</em>&#160;</td>
+          <td class="paramname"><em>partyY</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -769,6 +763,7 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x48902E </dd></dl>
 
 </div>
 </div>

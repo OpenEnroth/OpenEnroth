@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a8ccf39</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0a5efae</span>
    </div>
   </td>
  </tr>
@@ -136,8 +136,8 @@ Functions</h2></td></tr>
 <tr class="separator:a2040a9ae01357a0cee15336316e4e0ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91180cf18d91c79b7bc41c630c261cbd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a91180cf18d91c79b7bc41c630c261cbd">UpdateActors_BLV</a> ()</td></tr>
 <tr class="separator:a91180cf18d91c79b7bc41c630c261cbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abce9502eaf91986f8050093abb201189"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#abce9502eaf91986f8050093abb201189">PrepareToLoadBLV</a> (std::string_view filename, bool bLoading)</td></tr>
-<tr class="separator:abce9502eaf91986f8050093abb201189"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a130cb21f4b4d1c28e20b74fcc4d1454d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#a130cb21f4b4d1c28e20b74fcc4d1454d">loadAndPrepareBLV</a> (<a class="el" href="MapEnums_8h.html#a270ed629fcd100c7ea16f8c87ebb86a0">MapId</a> mapid, bool bLoading)</td></tr>
+<tr class="separator:a130cb21f4b4d1c28e20b74fcc4d1454d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9235e5e7788e46b3797cbfa12467f44"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#ad9235e5e7788e46b3797cbfa12467f44">BLV_GetFloorLevel</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;pos, int uSectorID, int *pFaceID)</td></tr>
 <tr class="separator:ad9235e5e7788e46b3797cbfa12467f44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa49650e4b23075d330cd137c2e70001f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Indoor_8cpp.html#aa49650e4b23075d330cd137c2e70001f">Check_LineOfSight</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;target, const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;from)</td></tr>
@@ -591,34 +591,17 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ab7663442878fb1d9ce8c4293f7206c0e" name="ab7663442878fb1d9ce8c4293f7206c0e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab7663442878fb1d9ce8c4293f7206c0e">&#9670;&#160;</a></span>PrepareDrawLists_BLV()</h2>
+<a id="a130cb21f4b4d1c28e20b74fcc4d1454d" name="a130cb21f4b4d1c28e20b74fcc4d1454d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a130cb21f4b4d1c28e20b74fcc4d1454d">&#9670;&#160;</a></span>loadAndPrepareBLV()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void PrepareDrawLists_BLV </td>
+          <td class="memname">void loadAndPrepareBLV </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="abce9502eaf91986f8050093abb201189" name="abce9502eaf91986f8050093abb201189"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abce9502eaf91986f8050093abb201189">&#9670;&#160;</a></span>PrepareToLoadBLV()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void PrepareToLoadBLV </td>
-          <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>filename</em>, </td>
+          <td class="paramtype"><a class="el" href="MapEnums_8h.html#a270ed629fcd100c7ea16f8c87ebb86a0">MapId</a>&#160;</td>
+          <td class="paramname"><em>mapid</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -630,6 +613,24 @@ Variables</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x460A78 </dd></dl>
+
+</div>
+</div>
+<a id="ab7663442878fb1d9ce8c4293f7206c0e" name="ab7663442878fb1d9ce8c4293f7206c0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7663442878fb1d9ce8c4293f7206c0e">&#9670;&#160;</a></span>PrepareDrawLists_BLV()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void PrepareDrawLists_BLV </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -20,7 +20,7 @@ var searchData=
   ['makesavelodinfo_17',['makeSaveLodInfo',['../SaveLoad_8cpp.html#a59eca2472eb9c320c2acc2d8527e3dd2',1,'SaveLoad.cpp']]],
   ['makescreenshot32_18',['MakeScreenshot32',['../classRenderer.html#ab159c105be3b99446d71cbd0db2bbeb3',1,'Renderer::MakeScreenshot32()'],['../classOpenGLRenderer.html#ab29bbd3b32654526709b85b2e7cb5f05',1,'OpenGLRenderer::MakeScreenshot32()'],['../classNullRenderer.html#a656fb24e4de47e3f22cdae727ab7045a',1,'NullRenderer::MakeScreenshot32()']]],
   ['makevisiblesectorlist_19',['MakeVisibleSectorList',['../structBspRenderer.html#acbf92a5a5953c56e1a92a4a7d334a87d',1,'BspRenderer']]],
-  ['map_20',['map',['../classCommonTapeRecorder.html#a55eee0b5b75b74928e285649893ca44e',1,'CommonTapeRecorder']]],
+  ['map_20',['map',['../classCommonTapeRecorder.html#a7f450b98fa0ae23d45d4c1942e3be4c0',1,'CommonTapeRecorder']]],
   ['mapdefaultkey_21',['MapDefaultKey',['../classIo_1_1KeyboardActionMapping.html#ad92d303beda804214880271c87c5bba8',1,'Io::KeyboardActionMapping']]],
   ['mapgamepadkey_22',['MapGamepadKey',['../classIo_1_1KeyboardActionMapping.html#a509359bea43841bfcf319a405b427e1f',1,'Io::KeyboardActionMapping']]],
   ['mapidenumname_23',['mapIdEnumName',['../CodeGen_8cpp.html#aa883fe1ae82f43fcfe2360711465b8a4',1,'CodeGen.cpp']]],
