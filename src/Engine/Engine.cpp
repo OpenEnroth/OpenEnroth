@@ -538,7 +538,6 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
     pEventTimer->setPaused(true);
     pMiscTimer->setPaused(true);
     CastSpellInfoHelpers::cancelSpellCastInProgress();
-    engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     DoPrepareWorld(false, (_0_box_loading_1_fullscreen == 0) + 1);
     pMiscTimer->setPaused(false);
     pEventTimer->setPaused(false);
@@ -546,31 +545,24 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
 
 //----- (00464866) --------------------------------------------------------
 void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
-    // char *v3;         // eax@1
-
-    // v9 = bLoading;
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
-    pGameLoadingUI_ProgressBar->Initialize(_1_fullscreen_loading_2_box == 1
-                                               ? GUIProgressBar::TYPE_Fullscreen
-                                               : GUIProgressBar::TYPE_Box);
-    std::string mapToLoad = pMapStats->pInfos[engine->_transitionMapId].fileName;
-    size_t pos = mapToLoad.rfind('.');
-    std::string mapName = mapToLoad.substr(0, pos);
-    std::string mapExt = mapToLoad.substr(pos + 1);  // This magically works even when pos == std::string::npos, in this case
-                                                      // maxExt == mapToLoad.
+    pGameLoadingUI_ProgressBar->Initialize(_1_fullscreen_loading_2_box == 1 ? GUIProgressBar::TYPE_Fullscreen : GUIProgressBar::TYPE_Box);
 
-    Level_LoadEvtAndStr(mapName);
+    loadMapEventsAndStrings(engine->_transitionMapId);
 
     // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?
     attackList.clear();
 
-    engine->SetUnderwater(engine->_transitionMapId == MAP_SHOALS);
+    engine->SetUnderwater(isMapUnderwater(engine->_transitionMapId));
 
     pParty->floor_face_id = 0; // TODO(captainurist): drop?
-    if (ascii::noCaseEquals(mapExt, "blv"))
-        PrepareToLoadBLV(mapToLoad, bLoading);
+
+    engine->_currentLoadedMapId = engine->_transitionMapId;
+
+    if (isMapIndoor(engine->_transitionMapId))
+        loadAndPrepareBLV(engine->_transitionMapId, bLoading);
     else
-        PrepareToLoadODM(mapToLoad, bLoading, 0);
+        loadAndPrepareODM(engine->_transitionMapId, bLoading, 0);
 
     pNPCStats->setNPCNamesOnLoad();
     engine->_461103_load_level_sub();
@@ -1483,10 +1475,13 @@ void initLevelStrings(const Blob &blob) {
     }
 }
 
-void Level_LoadEvtAndStr(std::string_view pLevelName) {
-    initLevelStrings(engine->_gameResourceManager->getEventsFile(fmt::format("{}.str", pLevelName)));
+void loadMapEventsAndStrings(MapId mapid) {
+    std::string mapName = pMapStats->pInfos[mapid].fileName;
+    std::string mapNameWithoutExt = mapName.substr(0, mapName.rfind('.'));
 
-    engine->_localEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile(fmt::format("{}.evt", pLevelName)));
+    initLevelStrings(engine->_gameResourceManager->getEventsFile(fmt::format("{}.str", mapNameWithoutExt)));
+
+    engine->_localEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile(fmt::format("{}.evt", mapNameWithoutExt)));
 }
 
 bool _44100D_should_alter_right_panel() {

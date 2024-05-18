@@ -304,7 +304,11 @@ void BLV_ProcessPartyActions();
 void switchDoorAnimation(unsigned int uDoorID, DoorAction a2);
 int CalcDistPointToLine(int a1, int a2, int a3, int a4, int a5, int a6);
 void PrepareDrawLists_BLV();
-void PrepareToLoadBLV(std::string_view filename, bool bLoading);
+
+/**
+ * @offset 0x460A78
+ */
+void loadAndPrepareBLV(MapId mapid, bool bLoading);
 int SpawnEncounterMonsters(MapInfo *a1, int a2);
 int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing);
 void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2);

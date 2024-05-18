@@ -280,7 +280,8 @@ void Game_StartDialogue(int actor_id) {
 void Game_StartHirelingDialogue(int hireling_id) {
     assert(hireling_id == 0 || hireling_id == 1);
 
-    if (bNoNPCHiring || current_screen_type != SCREEN_GAME) return;
+    if (isHirelingsBlockedOnMap(engine->_currentLoadedMapId) || current_screen_type != SCREEN_GAME)
+        return;
 
     engine->_messageQueue->clear();
 
@@ -356,7 +357,7 @@ void Game::processQueuedMessages() {
     int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
     UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
     int uMessageParam2;            // [sp+30h] [bp-5CCh]@7
-    std::string pOut;                // [sp+BCh] [bp-540h]@370
+    MapId travelMapId;
     std::array<MagicSchool, 9> spellbookPages = {};                  // [sp+158h] [bp-4A4h]@652
     int currHour;
     bool playButtonSoundOnEscape = true;
@@ -818,9 +819,8 @@ void Game::processQueuedMessages() {
 
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 // encounter_index = (NPCData *)getTravelTime();
-                // TODO(Nik-RE-dev): pOut should be an enum
-                if (!engine->IsUnderwater() && pParty->bFlying ||
-                    pOutdoor->GetTravelDestination(pParty->pos.x, pParty->pos.y, &pOut) != 1) {
+                travelMapId = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
+                if (!engine->IsUnderwater() && pParty->bFlying || travelMapId == MAP_INVALID) {
                     PlayButtonClickSound();
                     if (pParty->pos.x < -22528)
                         pParty->pos.x = -22528;
@@ -855,20 +855,18 @@ void Game::processQueuedMessages() {
                         ++pParty->days_played_without_rest;
                     }
                     pSpriteFrameTable->ResetLoadedFlags();
-                    engine->_currentLoadedMapId = pMapStats->GetMapInfo(pOut);
-                    Level_LoadEvtAndStr(pOut.substr(0, pOut.rfind('.')));
+                    engine->_currentLoadedMapId = travelMapId;
+                    loadMapEventsAndStrings(travelMapId);
                     _decalBuilder->Reset(0);
 
-                    bNoNPCHiring = 0;
-
-                    engine->SetUnderwater(engine->_currentLoadedMapId == MAP_SHOALS);
+                    engine->SetUnderwater(isMapUnderwater(engine->_currentLoadedMapId));
 
                     // Previously was checking maps 'out15.odm' and 'd47.blv', but d47 is not present in MM7.
                     // Logically here must check Shoals and Lincoln.
-                    if (engine->_currentLoadedMapId == MAP_SHOALS || engine->_currentLoadedMapId == MAP_LINCOLN)
-                        bNoNPCHiring = 1;
+                    //if (engine->_currentLoadedMapId == MAP_SHOALS || engine->_currentLoadedMapId == MAP_LINCOLN)
+                    //    bNoNPCHiring = 1;
 
-                    PrepareToLoadODM(pOut, 1u, (ODMRenderParams *)1);
+                    loadAndPrepareODM(travelMapId, 1u, (ODMRenderParams *)1);
                     bDialogueUI_InitializeActor_NPC_ID = 0;
                     onMapLoad();
                     pOutdoor->SetFog();

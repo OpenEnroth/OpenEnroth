@@ -8,6 +8,7 @@
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/SpriteEnums.h"
 #include "Engine/Time/Time.h"
+#include "Engine/MapEnums.h"
 #include "Media/Audio/SoundEnums.h"
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
@@ -56,7 +57,7 @@ class CommonTapeRecorder {
 
     TestTape<int> deaths();
 
-    TestTape<std::string> map();
+    TestTape<MapId> map();
 
     TestTape<ScreenType> screen();
 
