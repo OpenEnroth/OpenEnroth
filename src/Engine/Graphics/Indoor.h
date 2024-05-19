@@ -219,7 +219,6 @@ struct IndoorLocation {
      */
     void toggleLight(signed int uLightID, unsigned int bToggle);
 
-    static unsigned int GetLocationIndex(std::string_view locationName);
     void DrawIndoorFaces(bool bD3D);
     void PrepareActorRenderList_BLV();
     void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, int uSectorID);

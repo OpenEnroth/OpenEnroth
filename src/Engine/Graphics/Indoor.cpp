@@ -136,15 +136,6 @@ static constexpr IndexedArray<SoundId, MAP_FIRST, MAP_LAST> pDoorSoundIDsByLocat
     {MAP_ARENA,                     SOUND_wood_door0101}
 };
 
-// all locations which should have special tranfer message
-// dragon caves, markham, bandit cave, haunted mansion
-// barrow 7, barrow 9, barrow 10, setag tower
-// wromthrax cave, toberti, hidden tomb
-std::array<const char *, 11> _4E6BDC_loc_names = {
-    "mdt12.blv", "d18.blv",   "mdt14.blv", "d37.blv",
-    "mdk01.blv", "mdt01.blv", "mdr01.blv", "mdt10.blv",
-    "mdt09.blv", "mdt15.blv", "mdt11.blv"};
-
 //----- (0043F39E) --------------------------------------------------------
 void PrepareDrawLists_BLV() {
     // unsigned int v7;  // ebx@8
@@ -281,15 +272,6 @@ void IndoorLocation::Release() {
     render->ReleaseBSP();
 
     this->bLoaded = 0;
-}
-
-//----- (00444810) --------------------------------------------------------
-// index of special transfer message, 0 otherwise
-unsigned int IndoorLocation::GetLocationIndex(std::string_view locationName) {
-    for (unsigned i = 0; i < _4E6BDC_loc_names.size(); ++i)
-        if (ascii::noCaseEquals(locationName, _4E6BDC_loc_names[i]))
-            return i + 1;
-    return 0;
 }
 
 void IndoorLocation::toggleLight(signed int sLightID, unsigned int bToggle) {

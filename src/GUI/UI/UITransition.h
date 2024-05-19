@@ -33,5 +33,6 @@ class GUIWindow_IndoorEntryExit : public GUIWindow_Transition {
 
     virtual void Update() override;
 
-    std::string _mapName{};
+    std::string _mapName = "";
+    int _transitionStringId = 0;
 };

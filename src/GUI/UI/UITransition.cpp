@@ -28,7 +28,31 @@
 
 #include "Library/Logger/Logger.h"
 
+#include "Utility/String/Ascii.h"
+
 GraphicsImage *transition_ui_icon = nullptr;
+
+/**
+ * all locations which should have special tranfer message:
+ * dragon caves, markham, bandit cave, haunted mansion,
+ * barrow 7, barrow 9, barrow 10, setag tower,
+ * wromthrax cave, toberti, hidden tomb
+ */
+std::array<std::string, 11> specialTransferMessageLocationNames = {
+    "mdt12.blv", "d18.blv",   "mdt14.blv", "d37.blv",
+    "mdk01.blv", "mdt01.blv", "mdr01.blv", "mdt10.blv",
+    "mdt09.blv", "mdt15.blv", "mdt11.blv"};
+
+/**
+ * @offset 0x444810
+ * @return Index of special transfer message, 0 otherwise
+ */
+int getSpecialTransferMessageIndex(std::string_view locationName) {
+    for (unsigned i = 0; i < specialTransferMessageLocationNames.size(); ++i)
+        if (ascii::noCaseEquals(locationName, specialTransferMessageLocationNames[i]))
+            return i + 1;
+    return 0;
+}
 
 GUIWindow_Transition::GUIWindow_Transition(WindowType windowType, ScreenType screenType) : GUIWindow(windowType, {0, 0}, render->GetRenderDimensions()) {
     pEventTimer->setPaused(true);
@@ -120,15 +144,16 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
 
     engine->_teleportPoint.setTeleportTarget(pos, yaw, pitch, zspeed);
     engine->_teleportPoint.setTeleportMap(locationName);
-    uCurrentHouse_Animation = std::to_underlying(transitionHouse); // TODO(Nik-RE-dev): is this correct?
+    _transitionStringId = std::to_underlying(transitionHouse); // TODO(Nik-RE-dev): is this correct?
 
     _mapName = locationName;
 
     transition_ui_icon = assets->getImage_Solid(pHouse_ExitPictures[exit_pic_id]);
 
     // animation or special transfer message
-    if (transitionHouse != HOUSE_INVALID || IndoorLocation::GetLocationIndex(locationName)) {
-        if (!IndoorLocation::GetLocationIndex(locationName))
+    if (transitionHouse != HOUSE_INVALID || getSpecialTransferMessageIndex(locationName)) {
+        // TODO(Nik-RE-dev): if message is special then no video when entering indoor?
+        if (!getSpecialTransferMessageIndex(locationName))
             pMediaPlayer->OpenHouseMovie(pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].video_name, 1);
 
         std::string destMap = std::string(locationName);
@@ -144,9 +169,9 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
         }
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
             pParty->activeCharacter().playReaction(SPEECH_LEAVE_DUNGEON);
-        if (IndoorLocation::GetLocationIndex(locationName))
-            uCurrentHouse_Animation = IndoorLocation::GetLocationIndex(locationName);
-    } else if (!IndoorLocation::GetLocationIndex(locationName)) { // transfer to outdoors - no special message
+        if (getSpecialTransferMessageIndex(locationName))
+            _transitionStringId = getSpecialTransferMessageIndex(locationName);
+    } else if (!getSpecialTransferMessageIndex(locationName)) { // transfer to outdoors - no special message
         if (engine->_currentLoadedMapId != MAP_INVALID) {
             hint = localization->FormatString(LSTR_FMT_LEAVE_S, pMapStats->pInfos[engine->_currentLoadedMapId].name);
         } else {
@@ -171,7 +196,7 @@ void GUIWindow_IndoorEntryExit::Update() {
 
     MapId map_id = engine->_currentLoadedMapId;
     // TODO(captainurist): mm7 map names never starts with ' ', what is this check?
-    if ((pMovie_Track || IndoorLocation::GetLocationIndex(_mapName)) && !engine->_teleportPoint.getTeleportMap().starts_with(' ')) {
+    if ((pMovie_Track || getSpecialTransferMessageIndex(_mapName)) && !engine->_teleportPoint.getTeleportMap().starts_with(' ')) {
         map_id = pMapStats->GetMapInfo(_mapName);
     }
 
@@ -184,9 +209,9 @@ void GUIWindow_IndoorEntryExit::Update() {
     transition_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     transition_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    if (uCurrentHouse_Animation) {
-        unsigned int vertMargin = (212 - assets->pFontCreate->CalcTextHeight(pTransitionStrings[uCurrentHouse_Animation], transition_window.uFrameWidth, 0)) / 2 + 101;
-        transition_window.DrawTitleText(assets->pFontCreate.get(), 0, vertMargin, colorTable.White, pTransitionStrings[uCurrentHouse_Animation], 3);
+    if (_transitionStringId) {
+        unsigned int vertMargin = (212 - assets->pFontCreate->CalcTextHeight(pTransitionStrings[_transitionStringId], transition_window.uFrameWidth, 0)) / 2 + 101;
+        transition_window.DrawTitleText(assets->pFontCreate.get(), 0, vertMargin, colorTable.White, pTransitionStrings[_transitionStringId], 3);
     } else if (map_id != MAP_INVALID) {
         std::string str = localization->FormatString(LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S_2, pMapStats->pInfos[map_id].name);
         unsigned int vertMargin = (212 - assets->pFontCreate->CalcTextHeight(str, transition_window.uFrameWidth, 0)) / 2 + 101;
