@@ -294,7 +294,7 @@ enum WindowType {
     WINDOW_QuickReference = 12,
     WINDOW_F = 15,
     WINDOW_Rest = 16,
-    WINDOW_ChangeLocation = 17,
+    WINDOW_Travel = 17,
     WINDOW_SpellBook = 18,
     WINDOW_GreetingNPC = 19,
     WINDOW_Chest = 20,
@@ -302,7 +302,7 @@ enum WindowType {
     WINDOW_SaveLoadButtons = 23,
     WINDOW_MainMenu_Load = 0x18,
     WINDOW_HouseInterior = 0x19,
-    WINDOW_Transition = 26,
+    WINDOW_IndoorEntryExit = 26,
     WINDOW_CastSpell = 27,  // OnCastTargetedSpell
     WINDOW_Scroll = 0x1E,
     WINDOW_CastSpell_InInventory = 31,
