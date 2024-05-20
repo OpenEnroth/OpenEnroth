@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0a5efae</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;cc6280c</span>
    </div>
   </td>
  </tr>
@@ -84,8 +84,8 @@ Dependencies</h1>
 <p >By default, we are using prebuilt dependencies, and they are resolved automatically during the cmake phase.</p>
 <p >The only exception is Linux, where we're using SDL2 from the distribution, so you will need to install a development versions of SDL2 before building OpenEnroth. E.g. on Ubuntu: </p><div class="fragment"><div class="line">sudo apt-get install SDL2 SDL2-devel</div>
 </div><!-- fragment --><p >Additional dependencies:</p><ul>
-<li>CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work);</li>
-<li>Python 3.x (optional, for style checks).</li>
+<li><a href="https://cmake.org/download/">CMake 3.27+</a></li>
+<li><a href="https://www.python.org/downloads/">Python 3.x</a> (optional, for style checks).</li>
 </ul>
 <p >Minimum required compiler versions are as follows:</p><ul>
 <li>Visual Studio 2022;</li>
@@ -100,7 +100,7 @@ Dependencies</h1>
 <h1><a class="anchor" id="autotoc_md2"></a>
 Building on *nix platforms</h1>
 <p >This project uses the <a href="https://cmake.org">CMake</a> build system. Use the following commands to clone the repository and build OpenEnroth:</p>
-<div class="fragment"><div class="line">$ git clone https://github.com/OpenEnroth/OpenEnroth.git</div>
+<div class="fragment"><div class="line">$ git clone --recurse-submodules --shallow-submodules https://github.com/OpenEnroth/OpenEnroth.git</div>
 <div class="line">$ cd OpenEnroth</div>
 <div class="line">$ cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug</div>
 <div class="line">$ cmake --build build</div>
