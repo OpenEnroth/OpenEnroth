@@ -102,7 +102,7 @@ GUIWindow_Travel::GUIWindow_Travel() : GUIWindow_Transition(WINDOW_Travel, SCREE
         hint = localization->GetString(LSTR_DIALOGUE_EXIT);
     }
 
-    createButtons(hint, localization->GetString(LSTR_STAY_IN_THIS_AREA), UIMSG_OnTravelByFoot, UIMSG_CHANGE_LOCATION_ClickCancelBtn);
+    createButtons(hint, localization->GetString(LSTR_STAY_IN_THIS_AREA), UIMSG_OnTravelByFoot, UIMSG_CancelTravelByFoot);
 }
 
 void GUIWindow_Travel::Update() {
@@ -183,7 +183,7 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
             pParty->activeCharacter().playReaction(SPEECH_LEAVE_DUNGEON);
     }
 
-    createButtons(hint, localization->GetString(LSTR_CANCEL), UIMSG_TransitionUI_Confirm, UIMSG_TransitionWindowCloseBtn);
+    createButtons(hint, localization->GetString(LSTR_CANCEL), UIMSG_OnIndoorEntryExit, UIMSG_CancelIndoorEntryExit);
 }
 
 void GUIWindow_IndoorEntryExit::Update() {

@@ -69,7 +69,7 @@ enum UIMessageType : uint32_t {
     UIMSG_ClickInstallRemoveQuickSpellBtn = 88,
 
     UIMSG_OnTravelByFoot = 90,
-    UIMSG_CHANGE_LOCATION_ClickCancelBtn = 91,
+    UIMSG_CancelTravelByFoot = 91,
     UIMSG_ShowStatus_DateTime = 92,
     UIMSG_ShowStatus_ManaHP = 93,
     UIMSG_ShowStatus_Player = 94,
@@ -191,8 +191,8 @@ enum UIMessageType : uint32_t {
 
     UIMSG_RentRoom = 409,
     UIMSG_ClickHouseNPCPortrait = 410,
-    UIMSG_TransitionUI_Confirm = 411,
-    UIMSG_TransitionWindowCloseBtn = 412,
+    UIMSG_OnIndoorEntryExit = 411,
+    UIMSG_CancelIndoorEntryExit = 412,
 
     UIMSG_OpenKeyMappingOptions = 415,
     UIMSG_SelectKeyPage1 = 416,
