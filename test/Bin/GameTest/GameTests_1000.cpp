@@ -187,9 +187,8 @@ GAME_TEST(Issues, Issue1191) {
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_DARK).level(), 0);
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
 
-    // TODO(captainurist): Uncomment when food issues (1226) resolved
-    // EXPECT_EQ(foodTape.delta(), -3);
-    // EXPECT_EQ(pParty->GetFood(), 7);
+    EXPECT_EQ(foodTape.delta(), -3);
+    EXPECT_EQ(pParty->GetFood(), 7);
 }
 
 GAME_TEST(Issues, Issue1196) {
@@ -211,6 +210,16 @@ GAME_TEST(Issues, Issue1197) {
 }
 
 // 1200
+
+GAME_TEST(Issues, Issue1226) {
+    // Check that food consumed while resting on different tiles is correct
+    // Also check that baby dragon consumes only one additional food
+    auto loc = tapes.map();
+    auto foodTape = tapes.food();
+    test.playTraceFromTestData("issue_1226.mm7", "issue_1226.json");
+    EXPECT_EQ(loc, tape(MAP_LAND_OF_THE_GIANTS, MAP_CASTLE_HARMONDALE, MAP_HARMONDALE, MAP_CASTLE_HARMONDALE));
+    EXPECT_EQ(foodTape, tape(30, 25, 21, 17, 14, 11));
+}
 
 GAME_TEST(Issues, Issue1251a) {
     // Part A - test that wand damage matches vanilla damage should be in range (d6 per skill) 8-48 for novice 8 fireball wand
