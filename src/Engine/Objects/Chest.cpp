@@ -72,7 +72,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
 
             Vec3f objectPos;
             if (chest->position) {
-                objectPos = (*chest->position).toFloat();
+                objectPos = *chest->position;
             } else if (objectPid.type() == OBJECT_Decoration) {
                 objectPos = pLevelDecorations[objId].vPosition +
                     Vec3f(0, 0, pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
@@ -579,9 +579,9 @@ void GenerateItemsInChest() {
 }
 
 void UpdateChestPositions() {
-    std::unordered_map<int, std::vector<Vec3i>> pointsByChestId;
+    std::unordered_map<int, std::vector<Vec3f>> pointsByChestId;
 
-    auto processEvent = [&](int eventId, const Vec3i &position) {
+    auto processEvent = [&](int eventId, const Vec3f &position) {
         // Can there be two EVENT_OpenChest in a single script, with different chests? If no, then we can
         // break out of the loop below early. If yes... Well. This should work.
         if (engine->_localEventMap.hasEvent(eventId))
@@ -594,21 +594,20 @@ void UpdateChestPositions() {
         for (const BSPModel &model : pOutdoor->pBModels)
             for (const ODMFace &face : model.pFaces)
                 if (face.sCogTriggeredID)
-                    processEvent(face.sCogTriggeredID, face.pBoundingBox.center().toInt());
+                    processEvent(face.sCogTriggeredID, face.pBoundingBox.center());
     } else {
         for (const BLVFace &face : pIndoor->pFaces)
             if (face.uFaceExtraID)
                 if (int eventId = pIndoor->pFaceExtras[face.uFaceExtraID].uEventID)
-                    processEvent(eventId, face.pBounding.center().toInt());
+                    processEvent(eventId, face.pBounding.center());
     }
 
     for (const auto &[chestId, points] : pointsByChestId) {
-        Vec3i center = std::accumulate(points.begin(), points.end(), Vec3i()) / points.size();
+        Vec3f center = std::accumulate(points.begin(), points.end(), Vec3f()) / points.size();
 
         bool isChestLike = true;
-        for (const Vec3i &point : points) {
-            // TODO(captainurist): just use lengthSqr when we transition to floats here.
-            if ((point - center).chebyshevLength() > 256) {
+        for (const Vec3f &point : points) {
+            if ((point - center).lengthSqr() > 256 * 256) {
                 // Wormhole chest detected. 256 is half the size of the ODM tile.
                 isChestLike = false;
                 break;
