@@ -20,6 +20,10 @@ struct Vec2 {
         return x * x + y * y;
     }
 
+    [[nodiscard]] T length() const {
+        return std::sqrt(lengthSqr());
+    }
+
     friend Vec2 operator+(const Vec2 &l, const Vec2 &r) {
         return Vec2(l.x + r.x, l.y + r.y);
     }
