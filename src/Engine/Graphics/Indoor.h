@@ -289,7 +289,7 @@ void BLV_UpdateUserInputAndOther();
  * @param uSectorID                     Actor's sector id.
  * @param[out] pFaceID                  Id of the closest floor/ceiling face for the provided position, or `-1`
  *                                      if wrong sector is supplied or actor is out of bounds. Pass `nullptr` to ignore.
- * @return                              Fixpoint Z coordinate of the floor/ceiling face for the given position.
+ * @return                              Float Z coordinate of the floor/ceiling face for the given position.
  *                                      If wrong sector is supplied or actor is out of bounds, `-30000` is
  *                                      returned.
  */
