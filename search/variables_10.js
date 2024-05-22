@@ -347,7 +347,7 @@ var searchData=
   ['pmobilelightsstack_344',['pMobileLightsStack',['../LightmapBuilder_8cpp.html#af463461dcf0805819742238f5a8bbadb',1,'pMobileLightsStack():&#160;LightmapBuilder.cpp'],['../LightmapBuilder_8h.html#af463461dcf0805819742238f5a8bbadb',1,'pMobileLightsStack():&#160;LightmapBuilder.cpp']]],
   ['pmodelname_345',['pModelName',['../structBSPModelData__MM7.html#a209e35c1367d350bbcb48f7ab14c08b8',1,'BSPModelData_MM7::pModelName()'],['../classBSPModel.html#a7903bef953f8fd277eee0410923852a6',1,'BSPModel::pModelName()']]],
   ['pmodelname2_346',['pModelName2',['../structBSPModelData__MM7.html#a8425e4313743fec58e321c3bb9a51bd3',1,'BSPModelData_MM7::pModelName2()'],['../classBSPModel.html#a5955dcb37111096b672dfc4ae3ff1552',1,'BSPModel::pModelName2()']]],
-  ['pmonsterarenaplacements_347',['pMonsterArenaPlacements',['../NPCTopics_8cpp.html#a89285e94b8c202a61afee9ccbb9e885a',1,'NPCTopics.cpp']]],
+  ['pmonsterarenaplacements_347',['pMonsterArenaPlacements',['../NPCTopics_8cpp.html#a3ec74a94fc94162eccb7126b46aca9fc',1,'NPCTopics.cpp']]],
   ['pmonsterinfo_348',['pMonsterInfo',['../structActor__MM7.html#aa6f81c650ae84ece30b367773653c894',1,'Actor_MM7']]],
   ['pmonsterlist_349',['pMonsterList',['../Monsters_8cpp.html#aff4d2b0091aca76d6133f6ffbd6956d7',1,'pMonsterList():&#160;Monsters.cpp'],['../Monsters_8h.html#aff4d2b0091aca76d6133f6ffbd6956d7',1,'pMonsterList():&#160;Monsters.cpp']]],
   ['pmonsterstats_350',['pMonsterStats',['../Monsters_8h.html#a5ddc602eb0d26c9aed73b427ab8e7540',1,'pMonsterStats():&#160;Monsters.cpp'],['../Monsters_8cpp.html#a5ddc602eb0d26c9aed73b427ab8e7540',1,'pMonsterStats():&#160;Monsters.cpp']]],
