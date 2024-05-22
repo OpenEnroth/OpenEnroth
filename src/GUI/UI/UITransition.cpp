@@ -37,6 +37,7 @@ GraphicsImage *transition_ui_icon = nullptr;
  * dragon caves, markham, bandit cave, haunted mansion,
  * barrow 7, barrow 9, barrow 10, setag tower,
  * wromthrax cave, toberti, hidden tomb
+ * TODO(Nik-RE-dev): Use location enums here.
  */
 std::array<std::string, 11> specialTransferMessageLocationNames = {
     "mdt12.blv", "d18.blv",   "mdt14.blv", "d37.blv",
@@ -63,13 +64,13 @@ GUIWindow_Transition::GUIWindow_Transition(WindowType windowType, ScreenType scr
     current_screen_type = screenType;
 }
 
-void GUIWindow_Transition::createButtons(const std::string &hint, const std::string &cancelLabel, UIMessageType confirmMsg, UIMessageType cancelMsg) {
-    this->sHint = hint;
+void GUIWindow_Transition::createButtons(const std::string &okHint, const std::string &cancelHint, UIMessageType confirmMsg, UIMessageType cancelMsg) {
+    this->sHint = okHint;
 
-    pBtn_ExitCancel = CreateButton({556, 445}, {75, 33}, 1, 0, cancelMsg, 0, Io::InputAction::No, cancelLabel, {ui_buttdesc2});
-    pBtn_YES = CreateButton({476, 445}, {75, 33}, 1, 0, confirmMsg, 0, Io::InputAction::Yes, hint, {ui_buttyes2});
-    CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, confirmMsg, 1, Io::InputAction::EventTrigger, hint);
-    CreateButton({8, 8}, {460, 344}, 1, 0, confirmMsg, 1, Io::InputAction::Invalid, hint);
+    pBtn_ExitCancel = CreateButton({556, 445}, {75, 33}, 1, 0, cancelMsg, 0, Io::InputAction::No, cancelHint, {ui_buttdesc2});
+    pBtn_YES = CreateButton({476, 445}, {75, 33}, 1, 0, confirmMsg, 0, Io::InputAction::Yes, okHint, {ui_buttyes2});
+    CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, confirmMsg, 1, Io::InputAction::EventTrigger, okHint);
+    CreateButton({8, 8}, {460, 344}, 1, 0, confirmMsg, 1, Io::InputAction::Invalid, okHint);
 }
 
 void GUIWindow_Transition::Release() {

@@ -15,7 +15,7 @@ class GUIWindow_Transition : public GUIWindow {
     virtual void Release() override;
 
  protected:
-    void createButtons(const std::string &hint, const std::string &cancelLabel, UIMessageType confirmMsg, UIMessageType cancelMsg);
+    void createButtons(const std::string &okHint, const std::string &cancelHint, UIMessageType confirmMsg, UIMessageType cancelMsg);
 };
 
 class GUIWindow_Travel : public GUIWindow_Transition {
