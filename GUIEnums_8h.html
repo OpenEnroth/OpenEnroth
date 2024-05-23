@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8151cc2</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2310288</span>
    </div>
   </td>
  </tr>
@@ -145,7 +145,7 @@ Enumerations</h2></td></tr>
 , <a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02aab2e45c58c63e86a8f667329c27570fe">UIMSG_ClickInstallRemoveQuickSpellBtn</a> = 88
 , <br />
 &#160;&#160;<a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a4e16166bbe02f843c39b28931384706c">UIMSG_OnTravelByFoot</a> = 90
-, <a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a1ae44bbad454fdc54c472430712fe075">UIMSG_CHANGE_LOCATION_ClickCancelBtn</a> = 91
+, <a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02ac102084fbdf4440b19a5217d9521e6f7">UIMSG_CancelTravelByFoot</a> = 91
 , <a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a1342646031e47a89cbedefe798818cac">UIMSG_ShowStatus_DateTime</a> = 92
 , <a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02ae13d55896283a096f5a530671e822dd0">UIMSG_ShowStatus_ManaHP</a> = 93
 , <br />
@@ -280,8 +280,8 @@ Enumerations</h2></td></tr>
 , <a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a0b5a2f8ca98c04da887afebd7abb982d">UIMSG_RentRoom</a> = 409
 , <br />
 &#160;&#160;<a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02adc4466b8c5e45ddd1538d5690a66d0f6">UIMSG_ClickHouseNPCPortrait</a> = 410
-, <a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a262e20cb721ac1bcf670259f73905c24">UIMSG_TransitionUI_Confirm</a> = 411
-, <a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02a5783c7397650bc1218108dc9d5688b44">UIMSG_TransitionWindowCloseBtn</a> = 412
+, <a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02aefb2f19bb36ad9ece0e1238f5d7a449d">UIMSG_OnIndoorEntryExit</a> = 411
+, <a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02aa826243b8f82f8ead4ebf9d94ec6b7fd">UIMSG_CancelIndoorEntryExit</a> = 412
 , <a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02af8141cbcf08684e7da427183c8b113e4">UIMSG_OpenKeyMappingOptions</a> = 415
 , <br />
 &#160;&#160;<a class="el" href="GUIEnums_8h.html#a2519966952faeb9397447ce89e9bcb02ac0956c71d1b78d04266ed41d68faefe7">UIMSG_SelectKeyPage1</a> = 416
@@ -390,7 +390,7 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509a2cc3ed328e33e9fec011b99a36846484">WINDOW_QuickReference</a> = 12
 , <a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509af7c9c750fc7a432f4a98aec19b12b87d">WINDOW_F</a> = 15
 , <a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509acc09041825690dee661fbb2927f13f91">WINDOW_Rest</a> = 16
-, <a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509a5fc5eff5be98373504604952ebcbcf41">WINDOW_ChangeLocation</a> = 17
+, <a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509ada576945f7b4aee7aadb7146f6a73dae">WINDOW_Travel</a> = 17
 , <br />
 &#160;&#160;<a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509a2e4700f7cc6b0e893d789f46351cc3f7">WINDOW_SpellBook</a> = 18
 , <a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509a6141a287d21c1b5a262d6737d04731ee">WINDOW_GreetingNPC</a> = 19
@@ -400,7 +400,7 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509a4bc7495f5eae83fd8e8d26be1dd4a1f2">WINDOW_SaveLoadButtons</a> = 23
 , <a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509a2b50a20957355191cae2eadb4ec49398">WINDOW_MainMenu_Load</a> = 0x18
 , <a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509afb4c65894d8e5be70f8b13bd1640903b">WINDOW_HouseInterior</a> = 0x19
-, <a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509a477fcd3643a0e743e1c9e222632091b0">WINDOW_Transition</a> = 26
+, <a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509a41ff4eaffe675b5e11dd845c003b4124">WINDOW_IndoorEntryExit</a> = 26
 , <br />
 &#160;&#160;<a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509ae160f7387d7b7496a4d219df76b71b2a">WINDOW_CastSpell</a> = 27
 , <a class="el" href="GUIEnums_8h.html#a476342970f954b62d70552bcbb5ee509a34057df7461b7fa8aa36783e99c9ac06">WINDOW_Scroll</a> = 0x1E
@@ -652,7 +652,7 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02afc1b44024b94653fc8ba7c3768cd000f" name="a2519966952faeb9397447ce89e9bcb02afc1b44024b94653fc8ba7c3768cd000f"></a>UIMSG_OpenSpellbookPage&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02aab2e45c58c63e86a8f667329c27570fe" name="a2519966952faeb9397447ce89e9bcb02aab2e45c58c63e86a8f667329c27570fe"></a>UIMSG_ClickInstallRemoveQuickSpellBtn&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a4e16166bbe02f843c39b28931384706c" name="a2519966952faeb9397447ce89e9bcb02a4e16166bbe02f843c39b28931384706c"></a>UIMSG_OnTravelByFoot&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a1ae44bbad454fdc54c472430712fe075" name="a2519966952faeb9397447ce89e9bcb02a1ae44bbad454fdc54c472430712fe075"></a>UIMSG_CHANGE_LOCATION_ClickCancelBtn&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02ac102084fbdf4440b19a5217d9521e6f7" name="a2519966952faeb9397447ce89e9bcb02ac102084fbdf4440b19a5217d9521e6f7"></a>UIMSG_CancelTravelByFoot&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a1342646031e47a89cbedefe798818cac" name="a2519966952faeb9397447ce89e9bcb02a1342646031e47a89cbedefe798818cac"></a>UIMSG_ShowStatus_DateTime&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02ae13d55896283a096f5a530671e822dd0" name="a2519966952faeb9397447ce89e9bcb02ae13d55896283a096f5a530671e822dd0"></a>UIMSG_ShowStatus_ManaHP&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02ab81cf2234122292e147fd343e0a96d08" name="a2519966952faeb9397447ce89e9bcb02ab81cf2234122292e147fd343e0a96d08"></a>UIMSG_ShowStatus_Player&#160;</td><td class="fielddoc"></td></tr>
@@ -760,8 +760,8 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a22fcc72f1f9fec1cc127cd55c44f90df" name="a2519966952faeb9397447ce89e9bcb02a22fcc72f1f9fec1cc127cd55c44f90df"></a>UIMSG_SelectProprietorDialogueOption&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a0b5a2f8ca98c04da887afebd7abb982d" name="a2519966952faeb9397447ce89e9bcb02a0b5a2f8ca98c04da887afebd7abb982d"></a>UIMSG_RentRoom&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02adc4466b8c5e45ddd1538d5690a66d0f6" name="a2519966952faeb9397447ce89e9bcb02adc4466b8c5e45ddd1538d5690a66d0f6"></a>UIMSG_ClickHouseNPCPortrait&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a262e20cb721ac1bcf670259f73905c24" name="a2519966952faeb9397447ce89e9bcb02a262e20cb721ac1bcf670259f73905c24"></a>UIMSG_TransitionUI_Confirm&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a5783c7397650bc1218108dc9d5688b44" name="a2519966952faeb9397447ce89e9bcb02a5783c7397650bc1218108dc9d5688b44"></a>UIMSG_TransitionWindowCloseBtn&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02aefb2f19bb36ad9ece0e1238f5d7a449d" name="a2519966952faeb9397447ce89e9bcb02aefb2f19bb36ad9ece0e1238f5d7a449d"></a>UIMSG_OnIndoorEntryExit&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02aa826243b8f82f8ead4ebf9d94ec6b7fd" name="a2519966952faeb9397447ce89e9bcb02aa826243b8f82f8ead4ebf9d94ec6b7fd"></a>UIMSG_CancelIndoorEntryExit&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02af8141cbcf08684e7da427183c8b113e4" name="a2519966952faeb9397447ce89e9bcb02af8141cbcf08684e7da427183c8b113e4"></a>UIMSG_OpenKeyMappingOptions&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02ac0956c71d1b78d04266ed41d68faefe7" name="a2519966952faeb9397447ce89e9bcb02ac0956c71d1b78d04266ed41d68faefe7"></a>UIMSG_SelectKeyPage1&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a2519966952faeb9397447ce89e9bcb02a3f63bd1a4a57a025cbcd110e1a9007ae" name="a2519966952faeb9397447ce89e9bcb02a3f63bd1a4a57a025cbcd110e1a9007ae"></a>UIMSG_SelectKeyPage2&#160;</td><td class="fielddoc"></td></tr>
@@ -808,7 +808,7 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a2cc3ed328e33e9fec011b99a36846484" name="a476342970f954b62d70552bcbb5ee509a2cc3ed328e33e9fec011b99a36846484"></a>WINDOW_QuickReference&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509af7c9c750fc7a432f4a98aec19b12b87d" name="a476342970f954b62d70552bcbb5ee509af7c9c750fc7a432f4a98aec19b12b87d"></a>WINDOW_F&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509acc09041825690dee661fbb2927f13f91" name="a476342970f954b62d70552bcbb5ee509acc09041825690dee661fbb2927f13f91"></a>WINDOW_Rest&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a5fc5eff5be98373504604952ebcbcf41" name="a476342970f954b62d70552bcbb5ee509a5fc5eff5be98373504604952ebcbcf41"></a>WINDOW_ChangeLocation&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509ada576945f7b4aee7aadb7146f6a73dae" name="a476342970f954b62d70552bcbb5ee509ada576945f7b4aee7aadb7146f6a73dae"></a>WINDOW_Travel&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a2e4700f7cc6b0e893d789f46351cc3f7" name="a476342970f954b62d70552bcbb5ee509a2e4700f7cc6b0e893d789f46351cc3f7"></a>WINDOW_SpellBook&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a6141a287d21c1b5a262d6737d04731ee" name="a476342970f954b62d70552bcbb5ee509a6141a287d21c1b5a262d6737d04731ee"></a>WINDOW_GreetingNPC&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a6f7f6a39f99e8ab3ad845c551e811ab1" name="a476342970f954b62d70552bcbb5ee509a6f7f6a39f99e8ab3ad845c551e811ab1"></a>WINDOW_Chest&#160;</td><td class="fielddoc"></td></tr>
@@ -816,7 +816,7 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a4bc7495f5eae83fd8e8d26be1dd4a1f2" name="a476342970f954b62d70552bcbb5ee509a4bc7495f5eae83fd8e8d26be1dd4a1f2"></a>WINDOW_SaveLoadButtons&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a2b50a20957355191cae2eadb4ec49398" name="a476342970f954b62d70552bcbb5ee509a2b50a20957355191cae2eadb4ec49398"></a>WINDOW_MainMenu_Load&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509afb4c65894d8e5be70f8b13bd1640903b" name="a476342970f954b62d70552bcbb5ee509afb4c65894d8e5be70f8b13bd1640903b"></a>WINDOW_HouseInterior&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a477fcd3643a0e743e1c9e222632091b0" name="a476342970f954b62d70552bcbb5ee509a477fcd3643a0e743e1c9e222632091b0"></a>WINDOW_Transition&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a41ff4eaffe675b5e11dd845c003b4124" name="a476342970f954b62d70552bcbb5ee509a41ff4eaffe675b5e11dd845c003b4124"></a>WINDOW_IndoorEntryExit&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509ae160f7387d7b7496a4d219df76b71b2a" name="a476342970f954b62d70552bcbb5ee509ae160f7387d7b7496a4d219df76b71b2a"></a>WINDOW_CastSpell&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a34057df7461b7fa8aa36783e99c9ac06" name="a476342970f954b62d70552bcbb5ee509a34057df7461b7fa8aa36783e99c9ac06"></a>WINDOW_Scroll&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a476342970f954b62d70552bcbb5ee509a9c05e5a474712ae2dec90f5d94e2b7a5" name="a476342970f954b62d70552bcbb5ee509a9c05e5a474712ae2dec90f5d94e2b7a5"></a>WINDOW_CastSpell_InInventory&#160;</td><td class="fielddoc"></td></tr>

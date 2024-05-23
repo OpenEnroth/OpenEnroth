@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8151cc2</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2310288</span>
    </div>
   </td>
  </tr>
@@ -74,6 +74,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">UITransition.cpp File Reference</div></div>
 </div><!--header-->
@@ -102,26 +103,58 @@ $(function() {
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MediaPlayer_8h.html">Media/MediaPlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Ascii_8h.html">Utility/String/Ascii.h</a>&quot;</code><br />
 </div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:ad68894ea983fff21e13b3b84c36ffc4b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UITransition_8cpp.html#ad68894ea983fff21e13b3b84c36ffc4b">getSpecialTransferMessageIndex</a> (std::string_view locationName)</td></tr>
+<tr class="separator:ad68894ea983fff21e13b3b84c36ffc4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a3da6f72f719ed54878a6e709a3e17271"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UITransition_8cpp.html#a3da6f72f719ed54878a6e709a3e17271">transition_ui_icon</a> = nullptr</td></tr>
 <tr class="separator:a3da6f72f719ed54878a6e709a3e17271"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a765d9292e646b6310f80d0bcc8c01be8"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UITransition_8cpp.html#a765d9292e646b6310f80d0bcc8c01be8">transition_button_label</a></td></tr>
-<tr class="separator:a765d9292e646b6310f80d0bcc8c01be8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bb7bbaf84afaeb937c77390faaca853"><td class="memItemLeft" align="right" valign="top">std::array&lt; std::string, 11 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UITransition_8cpp.html#a0bb7bbaf84afaeb937c77390faaca853">specialTransferMessageLocationNames</a></td></tr>
+<tr class="separator:a0bb7bbaf84afaeb937c77390faaca853"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="a765d9292e646b6310f80d0bcc8c01be8" name="a765d9292e646b6310f80d0bcc8c01be8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a765d9292e646b6310f80d0bcc8c01be8">&#9670;&#160;</a></span>transition_button_label</h2>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ad68894ea983fff21e13b3b84c36ffc4b" name="ad68894ea983fff21e13b3b84c36ffc4b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad68894ea983fff21e13b3b84c36ffc4b">&#9670;&#160;</a></span>getSpecialTransferMessageIndex()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string transition_button_label</td>
+          <td class="memname">int getSpecialTransferMessageIndex </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>locationName</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x444810 </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Index of special transfer message, 0 otherwise </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a0bb7bbaf84afaeb937c77390faaca853" name="a0bb7bbaf84afaeb937c77390faaca853"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bb7bbaf84afaeb937c77390faaca853">&#9670;&#160;</a></span>specialTransferMessageLocationNames</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::array&lt;std::string, 11&gt; specialTransferMessageLocationNames</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    <span class="stringliteral">&quot;mdt12.blv&quot;</span>, <span class="stringliteral">&quot;d18.blv&quot;</span>,   <span class="stringliteral">&quot;mdt14.blv&quot;</span>, <span class="stringliteral">&quot;d37.blv&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;mdk01.blv&quot;</span>, <span class="stringliteral">&quot;mdt01.blv&quot;</span>, <span class="stringliteral">&quot;mdr01.blv&quot;</span>, <span class="stringliteral">&quot;mdt10.blv&quot;</span>,</div>
+<div class="line">    <span class="stringliteral">&quot;mdt09.blv&quot;</span>, <span class="stringliteral">&quot;mdt15.blv&quot;</span>, <span class="stringliteral">&quot;mdt11.blv&quot;</span>}</div>
+</div><!-- fragment --><p >all locations which should have special tranfer message: dragon caves, markham, bandit cave, haunted mansion, barrow 7, barrow 9, barrow 10, setag tower, wromthrax cave, toberti, hidden tomb TODO(Nik-RE-dev): Use location enums here. </p>
 
 </div>
 </div>
