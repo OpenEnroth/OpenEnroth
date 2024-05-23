@@ -190,9 +190,9 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_MoveToMap:
         {
             if (ir.data.move_map_descr.house_id != HOUSE_INVALID || ir.data.move_map_descr.exit_pic_id) {
-                pDialogueWindow = new GUIWindow_Transition(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
-                                                           Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
-                                                           ir.data.move_map_descr.yaw, ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed, ir.str);
+                pDialogueWindow = new GUIWindow_IndoorEntryExit(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
+                                                                Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
+                                                                ir.data.move_map_descr.yaw, ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed, ir.str);
                 savedEventID = _eventId;
                 savedEventStep = step + 1;
                 return -1;
