@@ -37,17 +37,17 @@ DialogueId guildMembershipNPCTopicId;
 
 int gold_transaction_amount;
 
-static constexpr std::array<Vec2i, 20> pMonsterArenaPlacements = {{
-    Vec2i(1524, 8332),    Vec2i(2186, 8844),
-    Vec2i(3219, 9339),    Vec2i(4500, 9339),
-    Vec2i(5323, 9004),    Vec2i(0x177D, 0x2098),
-    Vec2i(0x50B, 0x1E15), Vec2i(0x18FF, 0x1E15),
-    Vec2i(0x50B, 0xD69),  Vec2i(0x18FF, 0x1B15),
-    Vec2i(0x50B, 0x1021), Vec2i(0x18FF, 0x1848),
-    Vec2i(0x50B, 0x12D7), Vec2i(0x18FF, 0x15A3),
-    Vec2i(0x50B, 0x14DB), Vec2i(0x18FF, 0x12D7),
-    Vec2i(0x50B, 0x1848), Vec2i(0x18FF, 0x1021),
-    Vec2i(0x50B, 0x1B15), Vec2i(0x18FF, 0xD69),
+static constexpr std::array<Vec2f, 20> pMonsterArenaPlacements = {{
+    Vec2f(1524, 8332),    Vec2f(2186, 8844),
+    Vec2f(3219, 9339),    Vec2f(4500, 9339),
+    Vec2f(5323, 9004),    Vec2f(0x177D, 0x2098),
+    Vec2f(0x50B, 0x1E15), Vec2f(0x18FF, 0x1E15),
+    Vec2f(0x50B, 0xD69),  Vec2f(0x18FF, 0x1B15),
+    Vec2f(0x50B, 0x1021), Vec2f(0x18FF, 0x1848),
+    Vec2f(0x50B, 0x12D7), Vec2f(0x18FF, 0x15A3),
+    Vec2f(0x50B, 0x14DB), Vec2f(0x18FF, 0x12D7),
+    Vec2f(0x50B, 0x1848), Vec2f(0x18FF, 0x1021),
+    Vec2f(0x50B, 0x1B15), Vec2f(0x18FF, 0xD69),
 }};
 
 static constexpr IndexedArray<int, GUILD_FIRST, GUILD_LAST> priceForMembership = {{
@@ -367,7 +367,7 @@ void prepareArenaFight(ArenaLevel level) {
     gold_transaction_amount = characterMaxLevel * baseReward;
 
     for (int i = 0; i < monstersNum; ++i) {
-        Vec2i pos = pMonsterArenaPlacements[i];
+        Vec2f pos = pMonsterArenaPlacements[i];
         Actor::Arena_summon_actor(grng->randomSample(monsterIds), Vec3f(pos.x, pos.y, 1));
     }
     pAudioPlayer->playUISound(SOUND_51heroism03);

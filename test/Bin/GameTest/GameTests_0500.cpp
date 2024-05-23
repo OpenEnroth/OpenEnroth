@@ -67,7 +67,7 @@ GAME_TEST(Issues, Issue503) {
     EXPECT_EQ(hpTape, tape({1147, 699, 350, 242})); // Game was paused, the party wasn't shot at, no HP change.
     EXPECT_EQ(noDamageTape, tape(false)); // HP change was actually possible.
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_BOOKS, SCREEN_GAME)); // TP book was opened.
-    EXPECT_EQ(mapTape, tape("mdt12.blv", "d29.blv")); // And party was teleported to Harmondale.
+    EXPECT_EQ(mapTape, tape(MAP_DRAGON_CAVES, MAP_CASTLE_HARMONDALE)); // And party was teleported to Harmondale.
 }
 
 GAME_TEST(Issues, Issue504) {
@@ -575,7 +575,7 @@ GAME_TEST(Issues, Issue735c) {
     // Checking location names explicitly so that we'll notice if party misses cave entrance after retracing.
     auto mapTape = tapes.map();
     test.playTraceFromTestData("issue_735c.mm7", "issue_735c.json");
-    EXPECT_EQ(mapTape, tape("out01.odm", "d28.blv")); // Emerald Isle -> Dragon's cave.
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_DRAGONS_LAIR)); // Emerald Isle -> Dragon's cave.
 }
 
 GAME_TEST(Issues, Issue735d) {

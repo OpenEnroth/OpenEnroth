@@ -43,7 +43,7 @@ GAME_TEST(Issues, Issue159) {
     // Exception when entering Tidewater Caverns
     auto mapTape = tapes.map();
     test.playTraceFromTestData("issue_159.mm7", "issue_159.json");
-    EXPECT_EQ(mapTape, tape("out13.odm", "d17.blv", "out13.odm"));
+    EXPECT_EQ(mapTape, tape(MAP_TATALIA, MAP_TIDEWATER_CAVERNS, MAP_TATALIA));
 }
 
 GAME_TEST(Issues, Issue163) {
@@ -122,7 +122,7 @@ GAME_TEST(Issues, Issue201) {
     auto daysTape = tapes.custom([] { return pParty->GetPlayingTime().toDays(); });
     test.playTraceFromTestData("issue_201.mm7", "issue_201.json");
     EXPECT_GT(healthTape.delta(), 0); // Party should heal.
-    EXPECT_EQ(mapTape, tape("out01.odm", "out02.odm")); // Emerald isle to Harmondale.
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE)); // Emerald isle to Harmondale.
     EXPECT_EQ(daysTape.delta(), 7); // Time should advance by a week.
 }
 
@@ -401,7 +401,7 @@ GAME_TEST(Issues, Issue331_679) {
     auto goldTape = tapes.gold();
     auto mapTape = tapes.map();
     test.playTraceFromTestData("issue_331.mm7", "issue_331.json");
-    EXPECT_EQ(mapTape, tape("out04.odm", "out02.odm", "out04.odm")); // We did travel.
+    EXPECT_EQ(mapTape, tape(MAP_TULAREAN_FOREST, MAP_HARMONDALE, MAP_TULAREAN_FOREST)); // We did travel.
 
     // #679: Loading autosave after travelling by stables / boat results in gold loss.
     EXPECT_EQ(goldTape.delta(), 0);
@@ -472,7 +472,7 @@ GAME_TEST(Issues, Issue403_970) {
     // Entering Lincoln shouldn't crash.
     auto mapTape = tapes.map();
     test.playTraceFromTestData("issue_403.mm7", "issue_403.json");
-    EXPECT_EQ(mapTape, tape("out15.odm", "d23.blv")); // Shoals -> Lincoln.
+    EXPECT_EQ(mapTape, tape(MAP_SHOALS, MAP_LINCOLN)); // Shoals -> Lincoln.
 
     // #970: Armor Class is wrong.
     EXPECT_EQ(pParty->pCharacters[0].GetActualAC(), 10);
@@ -532,7 +532,7 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     // should have saved a winner cert tex
     EXPECT_GT(certTape.size(), 1);
     // we should be teleported to harmondale
-    EXPECT_EQ(mapTape, tape("d30.blv", "out02.odm"));
+    EXPECT_EQ(mapTape, tape(MAP_CASTLE_LAMBENT, MAP_HARMONDALE));
     // ending message box was displayed.
     auto flatMessageBoxes = messageBoxesTape.flattened();
     EXPECT_EQ(flatMessageBoxes.size(), 1);

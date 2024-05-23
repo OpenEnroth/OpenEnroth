@@ -93,6 +93,7 @@ jobs:
             sudo dpkg --add-architecture i386
           fi
           if [[ "${{matrix.architecture}}" = "universal" || "${{matrix.architecture}}" = "x86" || "${{matrix.architecture}}" = "armeabi-v7a" ]]; then
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
             sudo apt-get update
             sudo apt-get install -y gcc-13-multilib g++-13-multilib
           fi

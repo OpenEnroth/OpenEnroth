@@ -166,29 +166,28 @@ GUIWindow_Travel::GUIWindow_Travel() : GUIWindow(WINDOW_ChangeLocation, {0, 0}, 
 }
 
 void GUIWindow_Travel::Update() {
-    std::string pDestinationMapName;
+    MapId destinationMap = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
 
-    pOutdoor->GetTravelDestination(pParty->pos.x, pParty->pos.y, &pDestinationMapName);
     render->DrawTextureNew(477 / 640.0f, 0, game_ui_dialogue_background);
     render->DrawTextureNew(468 / 640.0f, 0, game_ui_right_panel_frame);
     render->DrawTextureNew(pNPCPortraits_x[0][0] / 640.0f, pNPCPortraits_y[0][0] / 480.0f, transition_ui_icon);
     render->DrawTextureNew(556 / 640.0f, 451 / 480.0f, dialogue_ui_x_x_u);
     render->DrawTextureNew(476 / 640.0f, 451 / 480.0f, dialogue_ui_x_ok_u);
-    if (pMapStats->GetMapInfo(pDestinationMapName) != MAP_INVALID) {
+    if (destinationMap != MAP_INVALID) {
         GUIWindow travel_window = *pPrimaryWindow;
         travel_window.uFrameX = 493;
         travel_window.uFrameWidth = 126;
         travel_window.uFrameZ = 366;
-        travel_window.DrawTitleText(assets->pFontCreate.get(), 0, 4, colorTable.White, pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].name, 3);
+        travel_window.DrawTitleText(assets->pFontCreate.get(), 0, 4, colorTable.White, pMapStats->pInfos[destinationMap].name, 3);
         travel_window.uFrameX = SIDE_TEXT_BOX_POS_X;
         travel_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         travel_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
         std::string str;
         if (getTravelTime() == 1) {
-            str = localization->FormatString(LSTR_FMT_IT_TAKES_D_DAY_TO_S, 1, pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].name);
+            str = localization->FormatString(LSTR_FMT_IT_TAKES_D_DAY_TO_S, 1, pMapStats->pInfos[destinationMap].name);
         } else {
-            str = localization->FormatString(LSTR_FMT_IT_TAKES_D_DAYS_TO_S, getTravelTime(), pMapStats->pInfos[pMapStats->GetMapInfo(pDestinationMapName)].name);
+            str = localization->FormatString(LSTR_FMT_IT_TAKES_D_DAYS_TO_S, getTravelTime(), pMapStats->pInfos[destinationMap].name);
         }
         str += "\n \n";
         str += localization->FormatString(LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S, pMapStats->pInfos[engine->_currentLoadedMapId].name);

@@ -872,50 +872,49 @@ void UpdateActors_BLV() {
     }
 }
 
-//----- (00460A78) --------------------------------------------------------
-void PrepareToLoadBLV(std::string_view filename, bool bLoading) {
+void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     unsigned int respawn_interval;  // ebx@1
     MapInfo *map_info;              // edi@9
     bool v28;                       // zf@81
     bool alertStatus;                        // [sp+404h] [bp-10h]@1
     bool indoor_was_respawned = true;                      // [sp+40Ch] [bp-8h]@1
-
-    MapId map_id = pMapStats->GetMapInfo(filename);
+    std::string mapFilename;
 
     respawn_interval = 0;
     pGameLoadingUI_ProgressBar->Reset(0x20u);
-    bNoNPCHiring = false;
     uCurrentlyLoadedLevelType = LEVEL_INDOOR;
     pBLVRenderParams->uPartySectorID = 0;
     pBLVRenderParams->uPartyEyeSectorID = 0;
-    engine->_currentLoadedMapId = map_id;
 
-    engine->SetUnderwater(map_id == MAP_SHOALS);
+    engine->SetUnderwater(isMapUnderwater(mapid));
 
-    if ((map_id == MAP_SHOALS) || (map_id == MAP_LINCOLN)) {
-        bNoNPCHiring = true;
-    }
     //pPaletteManager->pPalette_tintColor[0] = 0;
     //pPaletteManager->pPalette_tintColor[1] = 0;
     //pPaletteManager->pPalette_tintColor[2] = 0;
     //pPaletteManager->RecalculateAll();
     pParty->_delayedReactionTimer = 0_ticks;
-    if (map_id != MAP_INVALID) {
-        map_info = &pMapStats->pInfos[map_id];
-        respawn_interval = pMapStats->pInfos[map_id].respawnIntervalDays;
+
+    if (mapid != MAP_INVALID) {
+        mapFilename = pMapStats->pInfos[mapid].fileName;
+        map_info = &pMapStats->pInfos[mapid];
+        respawn_interval = pMapStats->pInfos[mapid].respawnIntervalDays;
         alertStatus = GetAlertStatus();
+
+        assert(ascii::noCaseEquals(mapFilename.substr(mapFilename.rfind('.') + 1), "blv"));
     } else {
+        // TODO(Nik-RE-dev): why there's logic for loading maps that are not listed in info?
+        mapFilename = "";
         map_info = nullptr;
     }
 
     pStationaryLightsStack->uNumLightsActive = 0;
-    pIndoor->Load(filename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);
+    pIndoor->Load(mapFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();
     }
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
-    if (map_id == MAP_INVALID)
+    if (mapid == MAP_INVALID)
         indoor_was_respawned = false;
 
     if (indoor_was_respawned) {
@@ -1011,7 +1010,7 @@ void PrepareToLoadBLV(std::string_view filename, bool bLoading) {
 
     for (unsigned i = 0; i < pActors.size(); ++i) {
         if (pActors[i].attributes & ACTOR_UNKNOW7) {
-            if (map_id == MAP_INVALID) {
+            if (mapid == MAP_INVALID) {
                 pActors[i].monsterInfo.field_3E = 19;
                 pActors[i].attributes |= ACTOR_UNKNOW11;
                 continue;

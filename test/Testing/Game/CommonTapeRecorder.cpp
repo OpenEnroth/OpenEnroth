@@ -11,7 +11,6 @@
 #include "Engine/mm7_data.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
-#include "Engine/MapInfo.h"
 
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIDialogue.h"
@@ -76,8 +75,8 @@ TestTape<int> CommonTapeRecorder::deaths() {
     return custom([] { return pParty->uNumDeaths; });
 }
 
-TestTape<std::string> CommonTapeRecorder::map() {
-    return custom([] { return ascii::toLower(pMapStats->pInfos[engine->_currentLoadedMapId].fileName); });
+TestTape<MapId> CommonTapeRecorder::map() {
+    return custom([] { return engine->_currentLoadedMapId; });
 }
 
 TestTape<ScreenType> CommonTapeRecorder::screen() {

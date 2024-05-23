@@ -8,6 +8,7 @@
 
 #include "Utility/IndexedArray.h"
 
+#include "MapEnumFunctions.h"
 #include "MapEnums.h"
 
 class Blob;

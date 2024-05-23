@@ -1,4 +1,4 @@
-﻿# Development HOWTO
+# Development HOWTO
 
 This document describes the development process we're following. It's required reading for anyone intending to contribute.
 
@@ -20,8 +20,8 @@ sudo apt-get install SDL2 SDL2-devel
 ```
 
 Additional dependencies:
-* CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work);
-* Python 3.x (optional, for style checks).
+* [CMake 3.27+](https://cmake.org/download/)
+* [Python 3.x](https://www.python.org/downloads/) (optional, for style checks).
 
 Minimum required compiler versions are as follows:
 * Visual Studio 2022;
@@ -40,7 +40,7 @@ Building on \*nix platforms
 This project uses the [CMake](https://cmake.org) build system.  Use the following commands to clone the repository and build OpenEnroth:
 
 ```
-$ git clone https://github.com/OpenEnroth/OpenEnroth.git
+$ git clone --recurse-submodules --shallow-submodules https://github.com/OpenEnroth/OpenEnroth.git
 $ cd OpenEnroth
 $ cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug
 $ cmake --build build

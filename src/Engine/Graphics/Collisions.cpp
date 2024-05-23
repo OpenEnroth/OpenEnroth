@@ -86,7 +86,7 @@ static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, 
  * @param face                          Polygon to check collision against.
  * @param pos                           Actor position to check.
  * @param radius                        Actor radius.
- * @param dir                           Movement direction as a unit vector in fixpoint format.
+ * @param dir                           Movement direction as a unit vector.
  * @param[out] out_move_distance        Move distance along the `dir` axis required to touch the provided polygon.
  *                                      Always non-negative. This parameter is not set if the function returns false.
  *                                      Note that "touching" in this context means that the distance from the actor's
@@ -210,7 +210,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
  *
  * @param face                          Polygon to check collision against.
  * @param pos                           Actor position to check.
- * @param dir                           Movement direction as a unit vector in fixpoint format.
+ * @param dir                           Movement direction as a unit vector.
  * @param[in,out] out_move_distance     Current movement distance along the `dir` axis. This parameter is not touched
  *                                      when the function returns false. If the function returns true, then the
  *                                      distance required to hit the polygon is stored here. Note that this effectively
