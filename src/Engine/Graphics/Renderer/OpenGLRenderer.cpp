@@ -40,7 +40,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineCallObserver.h"
 
-#include "imgui_impl_opengl3.h" // NOLINT: not a C system header.
+#include <imgui_impl_opengl3.h> // NOLINT: not a C system header.
 #include <imgui/backends/imgui_impl_sdl2.h> // NOLINT: not a C system header.
 
 #include "Library/Platform/Application/PlatformApplication.h"
