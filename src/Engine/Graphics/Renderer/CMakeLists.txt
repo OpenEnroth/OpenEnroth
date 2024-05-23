@@ -9,6 +9,7 @@ set(ENGINE_GRAPHICS_RENDERER_SOURCES
         Renderer.cpp
         RendererEnums.cpp
         RendererFactory.cpp
+        imgui_impl_opengl3.cpp
         )
 
 set(ENGINE_GRAPHICS_RENDERER_HEADERS
@@ -21,6 +22,7 @@ set(ENGINE_GRAPHICS_RENDERER_HEADERS
         RendererEnums.h
         RendererFactory.h
         TextureRenderId.h
+        imgui_impl_opengl3.h
         )
 
 add_library(engine_graphics_renderer STATIC ${ENGINE_GRAPHICS_RENDERER_SOURCES} ${ENGINE_GRAPHICS_RENDERER_HEADERS})
