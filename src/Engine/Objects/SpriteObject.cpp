@@ -252,8 +252,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         int collisionZ = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         bool collisionOnWater = false;
         int collisionBmodelPid = 0;
-        Vec3i collisionPos = collision_state.new_position_lo.toInt() - Vec3i(0, 0, collision_state.radius_lo + 1);
-        float collisionLevel = ODM_GetFloorLevel(collisionPos.toFloat(), object->uHeight, &collisionOnWater, &collisionBmodelPid, 0);
+        Vec3f collisionPos = collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1);
+        float collisionLevel = ODM_GetFloorLevel(collisionPos, object->uHeight, &collisionOnWater, &collisionBmodelPid, 0);
         // TOOD(Nik-RE-dev): why initail "onWater" is used?
         if (onWater && collisionZ < (collisionLevel + 60)) {
             int splashZ = level + 60;

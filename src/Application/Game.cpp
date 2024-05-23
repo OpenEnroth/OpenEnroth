@@ -766,7 +766,7 @@ void Game::processQueuedMessages() {
                 GameUI_DrawHiredNPCs();
                 continue;
 
-            case UIMSG_TransitionUI_Confirm:
+            case UIMSG_OnIndoorEntryExit:
                 engine->_messageQueue->clear();
                 playButtonSoundOnEscape = false;
                 // PID_INVALID was used (exclusive sound)
@@ -776,7 +776,8 @@ void Game::processQueuedMessages() {
                 //    uCurrentHouse_Animation,
                 //    HouseSound_NotEnoughMoney);
 
-                if (pMovie_Track) pMediaPlayer->Unload();
+                if (pMovie_Track)
+                    pMediaPlayer->Unload();
                 DialogueEnding();
 
                 if (engine->_teleportPoint.isValid()) {
@@ -801,7 +802,7 @@ void Game::processQueuedMessages() {
                 back_to_game();
                 onEscape();
                 continue;
-            case UIMSG_TransitionWindowCloseBtn:
+            case UIMSG_CancelIndoorEntryExit:
                 PlayButtonClickSound();
                 pMediaPlayer->Unload();
                 DialogueEnding();
@@ -833,13 +834,13 @@ void Game::processQueuedMessages() {
                     DialogueEnding();
                     current_screen_type = SCREEN_GAME;
                 } else {
-                    CastSpellInfoHelpers::cancelSpellCastInProgress();
                     DialogueEnding();
+                    pAudioPlayer->stopSounds();
                     pEventTimer->setPaused(true);
-                    pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
-                    pGameLoadingUI_ProgressBar->Progress();
                     AutoSave();
-                    pGameLoadingUI_ProgressBar->Progress();
+                    uGameState = GAME_STATE_CHANGE_LOCATION;
+                    engine->_transitionMapId = travelMapId;
+                    // TODO(Nik-RE-dev): rest and heal uncoditionally even if party does not have food?
                     restAndHeal(Duration::fromDays(getTravelTime()));
                     if (pParty->GetFood() > 0) {
                         pParty->restAndHeal();
@@ -854,33 +855,9 @@ void Game::processQueuedMessages() {
                             character.SetCondition(CONDITION_WEAK, 0);
                         ++pParty->days_played_without_rest;
                     }
-                    pSpriteFrameTable->ResetLoadedFlags();
-                    engine->_currentLoadedMapId = travelMapId;
-                    loadMapEventsAndStrings(travelMapId);
-                    _decalBuilder->Reset(0);
-
-                    engine->SetUnderwater(isMapUnderwater(engine->_currentLoadedMapId));
-
-                    // Previously was checking maps 'out15.odm' and 'd47.blv', but d47 is not present in MM7.
-                    // Logically here must check Shoals and Lincoln.
-                    //if (engine->_currentLoadedMapId == MAP_SHOALS || engine->_currentLoadedMapId == MAP_LINCOLN)
-                    //    bNoNPCHiring = 1;
-
-                    loadAndPrepareODM(travelMapId, 1u, (ODMRenderParams *)1);
-                    bDialogueUI_InitializeActor_NPC_ID = 0;
-                    onMapLoad();
-                    pOutdoor->SetFog();
-                    TeleportToStartingPoint(uLevel_StartingPointType);
-                    bool bOnWater = false;
-                    pParty->pos.z = GetTerrainHeightsAroundParty2(pParty->pos.x, pParty->pos.y, &bOnWater, 0);
-                    pParty->uFallStartZ = pParty->pos.z;
-                    engine->_461103_load_level_sub();
-                    pEventTimer->setPaused(false);
-                    current_screen_type = SCREEN_GAME;
-                    pGameLoadingUI_ProgressBar->Release();
                 }
                 continue;
-            case UIMSG_CHANGE_LOCATION_ClickCancelBtn:
+            case UIMSG_CancelTravelByFoot:
                 PlayButtonClickSound();
                 if (pParty->pos.x < -22528)
                     pParty->pos.x = -22528;
