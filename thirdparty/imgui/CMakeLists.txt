@@ -8,8 +8,8 @@ set(IMGUI_SOURCES
   imgui/imgui_draw.cpp
   imgui/imgui_tables.cpp
   imgui/imgui_widgets.cpp
-  imgui/backends/imgui_impl_opengl3.cpp
   imgui/backends/imgui_impl_sdl2.cpp
+  imgui_impl_opengl3.cpp
   )
 
 set(IMGUI_HEADERS
@@ -19,8 +19,8 @@ set(IMGUI_HEADERS
   imgui/imstb_rectpack.h
   imgui/imstb_textedit.h
   imgui/imstb_truetype.h
-  imgui/backends/imgui_impl_opengl3.h
   imgui/backends/imgui_impl_sdl2.h
+  imgui_impl_opengl3.h
   )
 add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS})
 target_link_libraries(imgui PRIVATE SDL2::SDL2OE glad)
