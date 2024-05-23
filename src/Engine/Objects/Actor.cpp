@@ -4517,7 +4517,6 @@ void evaluateAoeDamage() {
     for (AttackDescription &attack : attackList) {
         ObjectType attackerType = attack.pid.type();
         int attackerId = attack.pid.id();
-        //Vec3i attackVector = Vec3i(0, 0, 0);
 
         // attacker is an item (sprite)
         if (attackerType == OBJECT_Item) {
@@ -4546,10 +4545,10 @@ void evaluateAoeDamage() {
                 }
             } else {  // Actor (peasant) damage from monsters
                 if (actor->buffs[ACTOR_BUFF_PARALYZED].Active() || actor->CanAct()) {
-                    Vec3i distanceVec = actor->pos.toInt() + Vec3i(0, 0, actor->height / 2) - attack.pos.toInt();
-                    int distanceSq = distanceVec.lengthSqr();
-                    int attackRange = attack.attackRange + actor->radius;
-                    int attackRangeSq = attackRange * attackRange;
+                    Vec3f distanceVec = actor->pos + Vec3f(0, 0, actor->height / 2) - attack.pos;
+                    float distanceSq = distanceVec.lengthSqr();
+                    float attackRange = attack.attackRange + actor->radius;
+                    float attackRangeSq = attackRange * attackRange;
                     Vec3f attackVector = Vec3f(distanceVec.x, distanceVec.y, actor->pos.z);
                     attackVector.normalize();
 
@@ -4580,10 +4579,10 @@ void evaluateAoeDamage() {
 
             for (int actorID = 0; actorID < pActors.size(); ++actorID) {
                 if (pActors[actorID].CanAct()) {
-                    Vec3i distanceVec = pActors[actorID].pos.toInt() + Vec3i(0, 0, pActors[actorID].height / 2) - attack.pos.toInt();
-                    int distanceSq = distanceVec.lengthSqr();
-                    int attackRange = attack.attackRange + pActors[actorID].radius;
-                    int attackRangeSq = attackRange * attackRange;
+                    Vec3f distanceVec = pActors[actorID].pos + Vec3f(0, 0, pActors[actorID].height / 2) - attack.pos;
+                    float distanceSq = distanceVec.lengthSqr();
+                    float attackRange = attack.attackRange + pActors[actorID].radius;
+                    float attackRangeSq = attackRange * attackRange;
                     // TODO: using absolute Z here is BS, it's used as speed in ItemDamageFromActor
                     Vec3f attVF = Vec3f(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
                     attVF.normalize();
