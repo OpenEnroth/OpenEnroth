@@ -2,8 +2,6 @@
 
 #include <cassert>
 
-#include <imgui/backends/imgui_impl_sdl2.h> // NOLINT: not a C system header.
-
 #include "SdlPlatformSharedState.h"
 
 SdlOpenGLContext::SdlOpenGLContext(SdlPlatformSharedState *state, SDL_Window *window, SDL_GLContext context): _state(state), _window(window), _context(context) {
