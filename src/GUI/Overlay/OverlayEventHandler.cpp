@@ -114,7 +114,7 @@ bool OverlayEventHandler::textInputEvent(const PlatformTextInputEvent *event) {
 
 bool OverlayEventHandler::nativeEvent(const PlatformNativeEvent *event) {
     // Here we're assuming the native event is coming from SDL
-    const SDL_Event *sdlEvent = reinterpret_cast<const SDL_Event *>(event->nativeEvent);
+    const SDL_Event *sdlEvent = static_cast<const SDL_Event *>(event->nativeEvent);
     ImGui_ImplSDL2_ProcessEvent(sdlEvent);
     return false;
 }
