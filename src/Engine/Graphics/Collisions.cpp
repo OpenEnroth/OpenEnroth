@@ -922,10 +922,13 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             BLVFace *pFace = &pIndoor->pFaces[collision_state.pid.id()];
             bool bFaceSlopeTooSteep = pFace->facePlane.normal.z > 0.0f && pFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
 
-            // TODO(pskelton): Better way to do this?
-            // Special case for steep staircase in tidewater
-            if (engine->_currentLoadedMapId == MAP_TIDEWATER_CAVERNS) {
+            // TODO(pskelton): Better way to do this? Maybe add a climbable attribute
+            if (engine->_currentLoadedMapId == MAP_TIDEWATER_CAVERNS) {  // Special case for steep staircase in tidewater
                 if (collision_state.pid.id() == 650)
+                    bFaceSlopeTooSteep = false;
+            }
+            if (engine->_currentLoadedMapId == MAP_CASTLE_GLOAMING) { // Special case for exiting teleport boats
+                if (collision_state.pid.id() == 551 || collision_state.pid.id() == 1990 || collision_state.pid.id() == 2217)
                     bFaceSlopeTooSteep = false;
             }
 
