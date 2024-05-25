@@ -20,6 +20,7 @@ set(IMGUI_HEADERS
   imgui/imstb_textedit.h
   imgui/imstb_truetype.h
   imgui/backends/imgui_impl_sdl2.h
+# TODO: implement this with cmake magic, copy the file directly from imgui repo & patch it.
   imgui_impl_opengl3.h
   )
 add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS})
