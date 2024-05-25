@@ -596,6 +596,10 @@ int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, std
             }
         }
     }
+
+    if (i == 0) {
+        i = 1;
+    }
     buf[i - 1] = 0;
 
     pNumLen = strlen(buf);

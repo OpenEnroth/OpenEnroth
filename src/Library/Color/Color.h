@@ -4,6 +4,7 @@
 #include <cstring>
 
 #include "Utility/String/Format.h"
+#include "Library/Serialization/SerializationFwd.h"
 
 #include "Colorf.h"
 
@@ -91,6 +92,7 @@ static_assert(alignof(Color) == 1);
 
 using ColorTag = detail::ColorTag<Color>;
 
+MM_DECLARE_SERIALIZATION_FUNCTIONS(Color)
 
 template<>
 struct fmt::formatter<ColorTag> {
