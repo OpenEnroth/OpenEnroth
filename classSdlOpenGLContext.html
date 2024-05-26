@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1b472b8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b13acd2</span>
    </div>
   </td>
  </tr>
@@ -98,6 +98,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a827bc1dc8610dba418ec463fbc737ee9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab0df3f39e110878f542d31b88c6595b6"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlOpenGLContext.html#ab0df3f39e110878f542d31b88c6595b6">unbind</a> () override</td></tr>
 <tr class="separator:ab0df3f39e110878f542d31b88c6595b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae37b0cd1d399d08e0aa4b608637990e9"><td class="memItemLeft" align="right" valign="top">virtual void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlOpenGLContext.html#ae37b0cd1d399d08e0aa4b608637990e9">nativeHandle</a> () override</td></tr>
+<tr class="separator:ae37b0cd1d399d08e0aa4b608637990e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ed149a81ca025c63018c492039a2c30"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlOpenGLContext.html#a0ed149a81ca025c63018c492039a2c30">swapBuffers</a> () override</td></tr>
 <tr class="separator:a0ed149a81ca025c63018c492039a2c30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af67c01f95e6e1944b51db54b1255af22"><td class="memItemLeft" align="right" valign="top">virtual void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlOpenGLContext.html#af67c01f95e6e1944b51db54b1255af22">getProcAddress</a> (const char *name) override</td></tr>
@@ -109,6 +111,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:adc75ee2e5b6736369658848bb170f830 inherit pub_methods_classPlatformOpenGLContext"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7380c1d7148317103824bf05954547e9 inherit pub_methods_classPlatformOpenGLContext"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformOpenGLContext.html#a7380c1d7148317103824bf05954547e9">unbind</a> ()=0</td></tr>
 <tr class="separator:a7380c1d7148317103824bf05954547e9 inherit pub_methods_classPlatformOpenGLContext"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf837b47c2a71f0c016b129080a1f230 inherit pub_methods_classPlatformOpenGLContext"><td class="memItemLeft" align="right" valign="top">virtual void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformOpenGLContext.html#abf837b47c2a71f0c016b129080a1f230">nativeHandle</a> ()=0</td></tr>
+<tr class="separator:abf837b47c2a71f0c016b129080a1f230 inherit pub_methods_classPlatformOpenGLContext"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26c2091bb2c65ad009cab04c515eda37 inherit pub_methods_classPlatformOpenGLContext"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformOpenGLContext.html#a26c2091bb2c65ad009cab04c515eda37">swapBuffers</a> ()=0</td></tr>
 <tr class="separator:a26c2091bb2c65ad009cab04c515eda37 inherit pub_methods_classPlatformOpenGLContext"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25bb9c2bf624c083c47e1e776ed8bbb8 inherit pub_methods_classPlatformOpenGLContext"><td class="memItemLeft" align="right" valign="top">virtual void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformOpenGLContext.html#a25bb9c2bf624c083c47e1e776ed8bbb8">getProcAddress</a> (const char *name)=0</td></tr>
@@ -236,6 +240,33 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classPlatformOpenGLContext.html#a25bb9c2bf624c083c47e1e776ed8bbb8">PlatformOpenGLContext</a>.</p>
+
+</div>
+</div>
+<a id="ae37b0cd1d399d08e0aa4b608637990e9" name="ae37b0cd1d399d08e0aa4b608637990e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae37b0cd1d399d08e0aa4b608637990e9">&#9670;&#160;</a></span>nativeHandle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void * SdlOpenGLContext::nativeHandle </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classPlatformOpenGLContext.html#abf837b47c2a71f0c016b129080a1f230">PlatformOpenGLContext</a>.</p>
 
 </div>
 </div>
