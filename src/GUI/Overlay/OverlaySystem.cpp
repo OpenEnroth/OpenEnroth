@@ -3,6 +3,7 @@
 #include <memory>
 #include <utility>
 
+#include <imgui/imgui.h> // NOLINT: not a C system header.
 #include <nuklear_config.h> // NOLINT: not a C system header.
 
 #include "Application/GameConfig.h"
@@ -21,7 +22,6 @@ OverlaySystem::OverlaySystem(Renderer &renderer, PlatformApplication &platformAp
     , _application(platformApplication) {
     _nuklearContext = std::make_unique<nk_context>();
     _application.installComponent(std::make_unique<OverlayEventHandler>(_nuklearContext.get()));
-
     NuklearLegacyBindings::setContext(_nuklearContext.get());
 }
 
@@ -45,6 +45,12 @@ void OverlaySystem::removeOverlay(std::string_view name) {
 void OverlaySystem::drawOverlays() {
     _update();
     _renderer.drawOverlays(_nuklearContext.get());
+
+    if (_isEnabled) {
+        _renderer.beginOverlays();
+        //ImGui::ShowDemoWindow();
+        _renderer.endOverlays();
+    }
 }
 
 void OverlaySystem::_update() {

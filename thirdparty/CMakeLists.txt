@@ -14,6 +14,7 @@ add_subdirectory(cli11)
 add_subdirectory(nlohmann_json)
 add_subdirectory(mio)
 add_subdirectory(sol2)
+add_subdirectory(imgui)
 
 # glob
 # not adding a subdirectory because it will download more libraries at build tree generaion stage

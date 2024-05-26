@@ -16,6 +16,7 @@ class OverlayEventHandler : public PlatformEventFilter {
     virtual bool mouseReleaseEvent(const PlatformMouseEvent *event) override;
     virtual bool wheelEvent(const PlatformWheelEvent *event) override;
     virtual bool textInputEvent(const PlatformTextInputEvent *event) override;
+    virtual bool nativeEvent(const PlatformNativeEvent *event) override;
 
     bool keyEvent(PlatformKey key, PlatformModifiers mods, bool down);
     bool mouseEvent(PlatformMouseButton button, const Pointi &pos, bool down);

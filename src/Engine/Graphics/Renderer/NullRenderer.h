@@ -110,5 +110,8 @@ class NullRenderer : public BaseRenderer {
 
     virtual void flushAndScale() override;
     virtual void swapBuffers() override;
+
+    virtual void beginOverlays() override;
+    virtual void endOverlays() override;
     virtual void drawOverlays(nk_context *context) override;
 };

@@ -41,6 +41,10 @@
 [submodule "thirdparty/sol2"]
 	path = thirdparty/sol2
 	url = https://github.com/ThePhD/sol2.git
+[submodule "thirdparty/imgui/imgui"]
+	path = thirdparty/imgui/imgui
+	url = https://github.com/ocornut/imgui.git
+	branch = docking
 [submodule "thirdparty/inifile_cpp"]
 	path = thirdparty/inifile_cpp
 	url = https://github.com/Rookfighter/inifile-cpp.git

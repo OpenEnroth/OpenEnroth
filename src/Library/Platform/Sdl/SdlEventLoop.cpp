@@ -51,7 +51,6 @@ void SdlEventLoop::processMessages(PlatformEventHandler *eventHandler, int count
     SDL_Event e;
     while (SDL_PollEvent(&e)) {
         dispatchEvent(eventHandler, &e);
-
         count--;
         if (count == 0)
             break; // Note: count == -1 will never get here, as intended.
@@ -64,9 +63,7 @@ void SdlEventLoop::waitForMessages() {
 }
 
 void SdlEventLoop::dispatchEvent(PlatformEventHandler *eventHandler, const SDL_Event *event) {
-#ifdef MM_PLATFORM_SEND_NATIVE_EVENTS
     dispatchNativeEvent(eventHandler, event);
-#endif
 
     switch(event->type) {
     case SDL_QUIT:
