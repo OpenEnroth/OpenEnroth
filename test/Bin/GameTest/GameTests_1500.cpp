@@ -107,6 +107,11 @@ GAME_TEST(Issues, Issue1535) {
     EXPECT_FALSE(engine->_messageQueue->haveMessages()); // Please don't roll over the messages between tests!
 }
 
+GAME_TEST(Issues, Issue1536) {
+    // Unable to climb out of the boat in Castle Gloaming
+    test.playTraceFromTestData("issue_1536.mm7", "issue_1536.json");
+    EXPECT_GT(pParty->pos.z, -2235.0f); // party has escape boat and is on dock
+}
 
 GAME_TEST(Issues, Issue1547) {
     // Crash when attacking when no actors are around
