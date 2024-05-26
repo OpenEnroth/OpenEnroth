@@ -805,6 +805,7 @@ void Game::processQueuedMessages() {
             case UIMSG_CancelIndoorEntryExit:
                 PlayButtonClickSound();
                 pMediaPlayer->Unload();
+                engine->_teleportPoint.invalidate();
                 DialogueEnding();
                 back_to_game();
                 onEscape();
