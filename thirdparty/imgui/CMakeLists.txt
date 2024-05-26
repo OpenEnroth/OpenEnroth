@@ -25,4 +25,5 @@ set(IMGUI_HEADERS
   )
 add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS})
 target_link_libraries(imgui PRIVATE SDL2::SDL2OE glad)
+# TODO: We can get rid of one of these two include directories once we setup cmake to properly use the imgui files we need ( See above ).
 target_include_directories(imgui PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/imgui)
