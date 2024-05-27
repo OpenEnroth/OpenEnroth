@@ -24,6 +24,13 @@ uniform float gamma;
 
 float getFogRatio(FogParam fogpar, float dist);
 
+vec3 colorCorrection(vec3 rgb) {
+    vec3 srgbValue = pow(FragColour.rgb, vec3(1.0/gamma));
+    // no desaturation
+    return srgbValue;
+}
+
+
 void main() {
     vec4 fragcol = texture(texture0, texuv);
     int index = int(fragcol.r * 255.0);
@@ -37,19 +44,19 @@ void main() {
 
     if (fog.fogstart == fog.fogend) {
         FragColour = fragcol;
-        return;
+    } else {
+    
+        float fograt = getFogRatio(fog, screenspace);
+        if (fragcol.a < 0.004) fograt = 0.0;
+    
+        float alpha = 0.0;
+        if (fog.fogmiddle > fog.fogstart) {
+            alpha = smoothstep(fog.fogend, (fog.fogend + fog.fogmiddle) / 2.0, screenspace);
+        }
+        FragColour = mix(fragcol, vec4(fog.color, alpha), fograt);
     }
-
-    float fograt = getFogRatio(fog, screenspace);
-    if (fragcol.a < 0.004) fograt = 0.0;
-
-    float alpha = 0.0;
-    if (fog.fogmiddle > fog.fogstart) {
-        alpha = smoothstep(fog.fogend, (fog.fogend + fog.fogmiddle) / 2.0, screenspace);
-    }
-
-    FragColour = mix(fragcol, vec4(fog.color, alpha), fograt);
-    FragColour.rgb = pow(FragColour.rgb, vec3(1.0/gamma));
+    
+    FragColour.rgb = colorCorrection(FragColour.rgb);
 }
 
 float getFogRatio(FogParam fogpar, float dist) {
