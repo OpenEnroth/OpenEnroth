@@ -162,6 +162,7 @@ GAME_TEST(Issues, Issue1597) {
 }
 
 // 1600
+
 GAME_TEST(Issues, Issue1657) {
     // Party can be placed at wrong position after canceling indoor transfer and changing map after it
     auto screenTape = tapes.screen();
@@ -170,4 +171,11 @@ GAME_TEST(Issues, Issue1657) {
     EXPECT_EQ(pParty->pos.toInt(), Vec3i(12552, 800, 193)); // party is back at new game start position
     EXPECT_EQ(mapTape.size(), 2);
     EXPECT_TRUE(screenTape.contains(SCREEN_INPUT_BLV));
+}
+
+GAME_TEST(Issues, Issue1671) {
+    // Falling from height outdoors onto models doesnt cause damage
+    auto health = tapes.totalHp();
+    test.playTraceFromTestData("issue_1671.mm7", "issue_1671.json");
+    EXPECT_LT(health.back(), health.front()); // party has taken damage from fall
 }
