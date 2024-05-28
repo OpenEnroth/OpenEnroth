@@ -20,6 +20,7 @@ set(ENGINE_OBJECTS_HEADERS
         Chest.h
         ChestEnums.h
         CombinedSkillValue.h
+        DecorationEnums.h
         ItemEnchantment.h
         ItemEnums.h
         ItemEnumFunctions.h
