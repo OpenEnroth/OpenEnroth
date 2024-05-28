@@ -14,6 +14,7 @@
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIStatusBar.h"
+#include <Engine/Graphics/Outdoor.h>
 
 // 1500
 
@@ -176,6 +177,12 @@ GAME_TEST(Issues, Issue1657) {
 GAME_TEST(Issues, Issue1671) {
     // Falling from height outdoors onto models doesnt cause damage
     auto health = tapes.totalHp();
+    auto expressionTape = charTapes.expression(2);
+    auto modelTape = tapes.custom([]() {bool on_water = false; int bmodel_pid = 0;
+        float floor_level = ODM_GetFloorLevel(pParty->pos, 0, &on_water, &bmodel_pid, false);
+        return bmodel_pid; });
     test.playTraceFromTestData("issue_1671.mm7", "issue_1671.json");
     EXPECT_LT(health.back(), health.front()); // party has taken damage from fall
+    EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_FEAR));
+    EXPECT_NE(modelTape.back(), 0); // landed on a model
 }
