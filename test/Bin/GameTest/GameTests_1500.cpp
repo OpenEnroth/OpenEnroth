@@ -14,7 +14,7 @@
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIStatusBar.h"
-#include <Engine/Graphics/Outdoor.h>
+#include "Engine/Graphics/Outdoor.h"
 
 // 1500
 

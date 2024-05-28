@@ -88,7 +88,7 @@ class GameConfig : public Config {
 
         // TODO(captainurist): move all Trace* options into a separate section.
 
-        Int TraceFrameTimeMs = {this, "trace_frame_time_ms", 100, &ValidateFrameTime,
+        Int TraceFrameTimeMs = {this, "trace_frame_time_ms", 50, &ValidateFrameTime,
                                 "Number of milliseconds per frame when recording game traces."};
 
         ConfigEntry<RandomEngineType> TraceRandomEngine = {this, "trace_random_engine", RANDOM_ENGINE_MERSENNE_TWISTER,
