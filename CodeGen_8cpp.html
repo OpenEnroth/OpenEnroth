@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b13acd2</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d806184</span>
    </div>
   </td>
  </tr>
@@ -93,6 +93,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="BuildingTable_8h.html">Engine/Tables/BuildingTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EventMap_8h.html">Engine/Events/EventMap.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Random_8h.html">Engine/Random/Random.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DecorationEnums_8h.html">Engine/Objects/DecorationEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Monsters_8h.html">Engine/Objects/Monsters.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MonsterEnumFunctions_8h.html">Engine/Objects/MonsterEnumFunctions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TableSerialization_8h.html">Engine/Snapshots/TableSerialization.h</a>&quot;</code><br />
@@ -109,9 +110,12 @@ $(function() {
 <code>#include &quot;<a class="el" href="Transformations_8h.html">Utility/String/Transformations.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CodeGenEnums_8h.html">CodeGenEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CodeGenMap_8h.html">CodeGenMap.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DecorationList_8h.html">Engine/Graphics/DecorationList.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a360a603a5ffbedfadac3b67547c9e50e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CodeGen_8cpp.html#a360a603a5ffbedfadac3b67547c9e50e">runDecorationsCodegen</a> (const <a class="el" href="structCodeGenOptions.html">CodeGenOptions</a> &amp;options, <a class="el" href="classGameResourceManager.html">GameResourceManager</a> *resourceManager)</td></tr>
+<tr class="separator:a360a603a5ffbedfadac3b67547c9e50e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ca3c27f2cb2d3703ff9842cc1a2f3de"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CodeGen_8cpp.html#a9ca3c27f2cb2d3703ff9842cc1a2f3de">runItemIdCodeGen</a> (const <a class="el" href="structCodeGenOptions.html">CodeGenOptions</a> &amp;options, <a class="el" href="classGameResourceManager.html">GameResourceManager</a> *resourceManager)</td></tr>
 <tr class="separator:a9ca3c27f2cb2d3703ff9842cc1a2f3de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa883fe1ae82f43fcfe2360711465b8a4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CodeGen_8cpp.html#aa883fe1ae82f43fcfe2360711465b8a4">mapIdEnumName</a> (const <a class="el" href="structMapInfo.html">MapInfo</a> &amp;mapInfo)</td></tr>
@@ -320,6 +324,34 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int runBountyHuntCodeGen </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCodeGenOptions.html">CodeGenOptions</a> &amp;&#160;</td>
+          <td class="paramname"><em>options</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classGameResourceManager.html">GameResourceManager</a> *&#160;</td>
+          <td class="paramname"><em>resourceManager</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a360a603a5ffbedfadac3b67547c9e50e" name="a360a603a5ffbedfadac3b67547c9e50e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a360a603a5ffbedfadac3b67547c9e50e">&#9670;&#160;</a></span>runDecorationsCodegen()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int runDecorationsCodegen </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structCodeGenOptions.html">CodeGenOptions</a> &amp;&#160;</td>
           <td class="paramname"><em>options</em>, </td>
