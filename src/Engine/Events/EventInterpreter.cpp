@@ -70,15 +70,15 @@ static bool checkSeason(Season season) {
  */
 static void spawnMonsters(int16_t typeindex, int16_t level, int count,
                           Vec3f pos, int group, unsigned int uUniqueName) {
-    SpawnPoint pSpawnPoint;
+    if (engine->_currentLoadedMapId != MAP_INVALID && !engine->config->debug.NoActors.value()) {
+        SpawnPoint pSpawnPoint;
 
-    pSpawnPoint.vPosition = pos;
-    pSpawnPoint.uGroup = group;
-    pSpawnPoint.uRadius = 32;
-    pSpawnPoint.uKind = OBJECT_Actor;
-    pSpawnPoint.uMonsterIndex = typeindex + 2 * level + level;
+        pSpawnPoint.vPosition = pos;
+        pSpawnPoint.uGroup = group;
+        pSpawnPoint.uRadius = 32;
+        pSpawnPoint.uKind = OBJECT_Actor;
+        pSpawnPoint.uMonsterIndex = typeindex + 2 * level + level;
 
-    if (engine->_currentLoadedMapId != MAP_INVALID) {
         AIDirection direction;
         int oldNumActors = pActors.size();
         SpawnEncounter(&pMapStats->pInfos[engine->_currentLoadedMapId], &pSpawnPoint, 0, count, 0);
