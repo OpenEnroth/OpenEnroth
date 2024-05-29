@@ -15,6 +15,7 @@
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "Engine/Graphics/Outdoor.h"
+#include "Engine/Events/EventInterpreter.h"
 
 // 1500
 
@@ -185,4 +186,21 @@ GAME_TEST(Issues, Issue1671) {
     EXPECT_LT(health.back(), health.front()); // party has taken damage from fall
     EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_FEAR));
     EXPECT_NE(modelTape.back(), 0); // landed on a model
+}
+
+GAME_TEST(Issues, Issue1673) {
+    // Actors can spawn in "NoActor" debug mode
+    engine->config->debug.NoActors.setValue(true);
+
+    auto actorsTape = actorTapes.totalCount();
+    game.startNewGame();
+    test.startTaping();
+    game.tick();
+    for (int i = 0; i < 5; i++) {
+        spawnMonsters(1, 0, 5, Vec3f(0, 0, 50), 0, i);
+        game.tick(10);
+    }
+    test.stopTaping();
+
+    EXPECT_EQ(actorsTape, tape(0)); // no actors
 }
