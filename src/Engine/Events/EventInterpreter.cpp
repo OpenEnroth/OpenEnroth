@@ -68,7 +68,7 @@ static bool checkSeason(Season season) {
 /**
  * @offset 0x448CF4
  */
-static void spawnMonsters(int16_t typeindex, int16_t level, int count,
+void spawnMonsters(int16_t typeindex, int16_t level, int count,
                           Vec3f pos, int group, unsigned int uUniqueName) {
     if (engine->_currentLoadedMapId != MAP_INVALID && !engine->config->debug.NoActors.value()) {
         SpawnPoint pSpawnPoint;

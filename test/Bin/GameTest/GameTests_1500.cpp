@@ -15,7 +15,7 @@
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "Engine/Graphics/Outdoor.h"
-#include <Engine/Events/EventInterpreter.cpp>
+#include "Engine/Events/EventInterpreter.h"
 
 // 1500
 
@@ -198,7 +198,7 @@ GAME_TEST(Issues, Issue1673) {
     game.tick();
     for (int i = 0; i < 5; i++) {
         spawnMonsters(1, 0, 5, Vec3f(0, 0, 50), 0, i);
-        game.tick(10);    
+        game.tick(10);
     }
     test.stopTaping();
 
