@@ -2119,7 +2119,7 @@ void ODM_ProcessPartyActions() {
     if (!triggerID ||
         (eventProcessor(triggerID, Pid(), 1), pParty->pos.x == partyNewPos.x) &&
         pParty->pos.y == partyNewPos.y && pParty->pos.z == partyNewPos.z) {
-        if (((pParty->pos.z <= newGroundLevel || partyHasHitModel) && partyInputSpeed.z < 0)) {
+        if (((pParty->pos.z <= newGroundLevel || partyHasHitModel) && savedZ < 0)) {
             pParty->velocity.z = 0;
             if (!partyHasHitModel)
                 pParty->pos.z = newGroundLevel;
