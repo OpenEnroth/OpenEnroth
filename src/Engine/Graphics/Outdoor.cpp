@@ -1953,8 +1953,6 @@ void ODM_ProcessPartyActions() {
         pParty->uFallStartZ = partyNewPos.z;
     } else if (partyNewPos.z < currentGroundLevel) {
         partyNewPos.z = currentGroundLevel;
-        if (partyIsOnWater && !fuzzyIsNull(partyInputSpeed.z))
-            SpriteObject::createSplashObject(partyNewPos);
         partyInputSpeed.z = 0;
         pParty->uFallStartZ = currentGroundLevel;
         partyOldFlightZ = partyNewPos.z;
@@ -2121,6 +2119,13 @@ void ODM_ProcessPartyActions() {
         pParty->pos.y == partyNewPos.y && pParty->pos.z == partyNewPos.z) {
         if (((pParty->pos.z <= newGroundLevel || partyHasHitModel) && savedZ < 0)) {
             pParty->velocity.z = 0;
+
+            if (partyIsOnWater && savedZ < -400.0f) {
+                // SpriteObject::createSplashObject(partyNewPos);
+                // Party can never see its own splashes so just play the sound - only one splash at a time for party
+                pAudioPlayer->playSound(SOUND_splash, SOUND_MODE_EXCLUSIVE, Pid::character(0));
+            }
+
             if (!partyHasHitModel)
                 pParty->pos.z = newGroundLevel;
             if (pParty->uFallStartZ - partyNewPos.z > 512 && !partyHasFeatherFall &&
