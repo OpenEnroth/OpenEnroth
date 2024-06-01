@@ -430,6 +430,11 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
             if (face_id == collision_state.ignored_face_id)
                 continue;
 
+            // TODO(pskelton): Modify game data face attribs to ethereal eventually - hack so that secret tunnel under prison bed can be accessed
+            if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE)
+                if (face_id == 385 || face_id == 405 || face_id == 4602 || face_id == 4606)
+                    continue;
+
             CollideBodyWithFace(face, Pid(OBJECT_Face, face_id), ignore_ethereal, MODEL_INDOOR);
         }
     }
@@ -929,6 +934,10 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             }
             if (engine->_currentLoadedMapId == MAP_CASTLE_GLOAMING) { // Special case for exiting teleport boats
                 if (collision_state.pid.id() == 551 || collision_state.pid.id() == 1990 || collision_state.pid.id() == 2217)
+                    bFaceSlopeTooSteep = false;
+            }
+            if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE) {
+                if (collision_state.pid.id() == 398) // Secret tunnel under prison bed
                     bFaceSlopeTooSteep = false;
             }
 
