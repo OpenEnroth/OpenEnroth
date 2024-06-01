@@ -2005,13 +2005,13 @@ void ODM_ProcessPartyActions() {
     // has the party collided with a outdoor model
     bool partyHasHitModel{ false };
 
-    float savedZ = partyInputSpeed.z;
+    float savedZSpeed = partyInputSpeed.z;
     // horizontal
     partyInputSpeed.z = 0;
     ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &partyIsOnWater, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID);
     // vertical - only when horizonal motion hasnt caused height gain
     if (partyNewPos.z <= pParty->pos.z) {
-        partyInputSpeed = Vec3f(0, 0, savedZ);
+        partyInputSpeed = Vec3f(0, 0, savedZSpeed);
         ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &partyIsOnWater, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID);
     }
 
@@ -2117,10 +2117,10 @@ void ODM_ProcessPartyActions() {
     if (!triggerID ||
         (eventProcessor(triggerID, Pid(), 1), pParty->pos.x == partyNewPos.x) &&
         pParty->pos.y == partyNewPos.y && pParty->pos.z == partyNewPos.z) {
-        if (((pParty->pos.z <= newGroundLevel || partyHasHitModel) && savedZ < 0)) {
+        if (((pParty->pos.z <= newGroundLevel || partyHasHitModel) && savedZSpeed < 0)) {
             pParty->velocity.z = 0;
 
-            if (partyIsOnWater && savedZ < -400.0f) { // Require that we have a bit of impact into water surface to cause a splash
+            if (partyIsOnWater && savedZSpeed < -400.0f) { // Require that we have a bit of impact into water surface to cause a splash
                 // -400 chosen so that it is just under z impact speed from standing jump
                 // SpriteObject::createSplashObject(partyNewPos);
                 // Party can never see its own splashes so just play the sound - only one splash at a time for party
