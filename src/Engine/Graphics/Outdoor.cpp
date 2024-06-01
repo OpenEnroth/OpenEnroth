@@ -2120,7 +2120,8 @@ void ODM_ProcessPartyActions() {
         if (((pParty->pos.z <= newGroundLevel || partyHasHitModel) && savedZ < 0)) {
             pParty->velocity.z = 0;
 
-            if (partyIsOnWater && savedZ < -400.0f) {
+            if (partyIsOnWater && savedZ < -400.0f) { // Require that we have a bit of impact into water surface to cause a splash
+                // -400 chosen so that it is just under z impact speed from standing jump
                 // SpriteObject::createSplashObject(partyNewPos);
                 // Party can never see its own splashes so just play the sound - only one splash at a time for party
                 pAudioPlayer->playSound(SOUND_splash, SOUND_MODE_EXCLUSIVE, Pid::character(0));
