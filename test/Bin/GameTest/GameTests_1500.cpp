@@ -175,6 +175,17 @@ GAME_TEST(Issues, Issue1657) {
     EXPECT_TRUE(screenTape.contains(SCREEN_INPUT_BLV));
 }
 
+GAME_TEST(Issues, Issue1665) {
+    // Secret Room under the bed in Castle Harmondale Dungeon. Can't enter room
+    auto xpos = tapes.custom([]() { return static_cast<int>(pParty->pos.x); });
+    auto zpos = tapes.custom([]() { return static_cast<int>(pParty->pos.z); });
+    test.playTraceFromTestData("issue_1665.mm7", "issue_1665.json");
+    EXPECT_GT(xpos.max(), 2200);
+    EXPECT_LT(zpos.min(), -1700); // weve made it into the hole
+    EXPECT_LT(xpos.back(), 1500);
+    EXPECT_GT(zpos.back(), -1550); // And made it back out
+}
+
 GAME_TEST(Issues, Issue1671) {
     // Falling from height outdoors onto models doesnt cause damage
     auto health = tapes.totalHp();
