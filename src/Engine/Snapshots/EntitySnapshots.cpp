@@ -7,8 +7,8 @@
 #include "Engine/ArenaEnumFunctions.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
@@ -1612,7 +1612,7 @@ void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst) {
 
 void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
     reconstruct(src.name, &dst->name);
-    reconstruct(src.field_20, &dst->field_20);
+    reconstruct(src.type, &dst->type);
     dst->uType = src.uType;
     dst->uDecorationHeight = src.uDecorationHeight;
     dst->uRadius = src.uRadius;
@@ -1693,7 +1693,7 @@ void reconstruct(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
 }
 
 void reconstruct(const LevelDecoration_MM7 &src, LevelDecoration *dst) {
-    dst->uDecorationDescID = src.uDecorationDescID;
+    dst->uDecorationDescID = static_cast<DecorationId>(src.uDecorationDescID);
     dst->uFlags = LevelDecorationFlags(src.uFlags);
     dst->vPosition = src.vPosition.toFloat();
     dst->_yawAngle = (TrigLUT.uIntegerHalfPi * src.field_1A) / 90;

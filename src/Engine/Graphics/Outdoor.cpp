@@ -11,8 +11,8 @@
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -2811,7 +2811,7 @@ double OutdoorLocation::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int u
 void TeleportToStartingPoint(MapStartPoint point) {
     std::string pName = toString(point);
 
-    if (pDecorationList->GetDecorIdByName(pName)) {
+    if (pDecorationList->GetDecorIdByName(pName) != DECORATION_NULL) {
         if (!pLevelDecorations.empty()) {
             for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
                 if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {

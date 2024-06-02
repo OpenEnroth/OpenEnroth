@@ -35,7 +35,6 @@ target_link_libraries(application
         engine_components_deterministic
         engine_components_trace
         engine_graphics
-        engine_graphics_level
         engine_graphics_renderer
         game_states
         gui

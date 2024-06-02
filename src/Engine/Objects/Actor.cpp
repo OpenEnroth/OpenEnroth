@@ -9,7 +9,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Overlays.h"
@@ -42,7 +42,6 @@
 #include "Library/Logger/Logger.h"
 
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Math/FixPoint.h"
 
 // should be injected into Actor but struct size cant be changed
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();

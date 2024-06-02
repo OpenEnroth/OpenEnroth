@@ -11,6 +11,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <imgui/backends/imgui_impl_opengl3.h> // NOLINT: not a C system header.
+#include <imgui/backends/imgui_impl_sdl2.h> // NOLINT: not a C system header.
+
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/BspRenderer.h"
@@ -18,9 +21,8 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/LightsStack.h"
-#include "OpenGLShader.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -30,8 +32,6 @@
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Polygon.h"
-#include "Engine/Objects/Actor.h"
-#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
@@ -40,12 +40,8 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineCallObserver.h"
 
-#include <imgui_impl_opengl3.h> // NOLINT: not a C system header.
-#include <imgui/backends/imgui_impl_sdl2.h> // NOLINT: not a C system header.
-
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Serialization/EnumSerialization.h"
-#include "Library/Image/ImageFunctions.h"
 #include "Library/Color/Colorf.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Geometry/Size.h"
@@ -54,6 +50,7 @@
 #include "Utility/Memory/MemSet.h"
 
 #include "NuklearOverlayRenderer.h"
+#include "OpenGLShader.h"
 
 #ifndef LOWORD
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))

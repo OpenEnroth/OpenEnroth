@@ -8,7 +8,7 @@
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Weather.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/Actor.h"
@@ -70,24 +70,25 @@ static bool checkSeason(Season season) {
  */
 void spawnMonsters(int16_t typeindex, int16_t level, int count,
                           Vec3f pos, int group, unsigned int uUniqueName) {
-    if (engine->_currentLoadedMapId != MAP_INVALID && !engine->config->debug.NoActors.value()) {
-        SpawnPoint pSpawnPoint;
+    if (engine->_currentLoadedMapId == MAP_INVALID || engine->config->debug.NoActors.value())
+        return;
 
-        pSpawnPoint.vPosition = pos;
-        pSpawnPoint.uGroup = group;
-        pSpawnPoint.uRadius = 32;
-        pSpawnPoint.uKind = OBJECT_Actor;
-        pSpawnPoint.uMonsterIndex = typeindex + 2 * level + level;
+    SpawnPoint pSpawnPoint;
 
-        AIDirection direction;
-        int oldNumActors = pActors.size();
-        SpawnEncounter(&pMapStats->pInfos[engine->_currentLoadedMapId], &pSpawnPoint, 0, count, 0);
-        Actor::GetDirectionInfo(Pid(OBJECT_Actor, oldNumActors), Pid::character(0), &direction, 1);
-        for (int i = oldNumActors; i < pActors.size(); ++i) {
-            pActors[i].PrepareSprites(0);
-            pActors[i].yawAngle = direction.uYawAngle;
-            pActors[i].uniqueNameIndex = uUniqueName;
-        }
+    pSpawnPoint.vPosition = pos;
+    pSpawnPoint.uGroup = group;
+    pSpawnPoint.uRadius = 32;
+    pSpawnPoint.uKind = OBJECT_Actor;
+    pSpawnPoint.uMonsterIndex = typeindex + 2 * level + level;
+
+    AIDirection direction;
+    int oldNumActors = pActors.size();
+    SpawnEncounter(&pMapStats->pInfos[engine->_currentLoadedMapId], &pSpawnPoint, 0, count, 0);
+    Actor::GetDirectionInfo(Pid(OBJECT_Actor, oldNumActors), Pid::character(0), &direction, 1);
+    for (int i = oldNumActors; i < pActors.size(); ++i) {
+        pActors[i].PrepareSprites(0);
+        pActors[i].yawAngle = direction.uYawAngle;
+        pActors[i].uniqueNameIndex = uUniqueName;
     }
 }
 

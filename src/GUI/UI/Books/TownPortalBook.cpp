@@ -42,22 +42,22 @@ std::array<TownPortalData, TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS> townPortal
     {Vec3f(  -158,   7624,    1),  512, 0, MAP_CELESTE,              QBIT_FOUNTAIN_IN_CELESTIA_ACTIVATED},
     {Vec3f( -1837,  -4247,   65),   65, 0, MAP_PIT,                  QBIT_FOUNTAIN_IN_THE_PIT_ACTIVATED},
     // cheats
-    {Vec3f( 14500,  20300,   450), 1800, 0, MAP_AVLEE,               QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
-    {Vec3f( -2500,   3000,  2100), 1024, 0, MAP_BARROW_DOWNS,        QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
-    {Vec3f( 10000,  18000,    50), 1024, 0, MAP_BRACADA_DESERT,      QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
-    {Vec3f(-17000,  18000,    50),    0, 0, MAP_DEYJA,               QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
-    {Vec3f( 12000, -10000,   400), 1024, 0, MAP_TATALIA,             QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED}, // near swamps
-    //{Vec3f(16000, 15000,  3100),  300, 0, MAP_TATALIA,             QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED}, // alternative location - near mercenary guild
-    {Vec3f( -5000,     25,   600),    0, 0, MAP_EVENMORN_ISLAND,     QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED}, // in a center of map :)
-    //{Vec3f( -4868,   25,   100),    0, 0, MAP_EVENMORN_ISLAND,     QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED}, // alternative location - near ship
-    {Vec3f( 10600,   9900,   100),    0, 0, MAP_EMERALD_ISLAND,      QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
-    {Vec3f( 15000,   4500,  1000), 1400, 0, MAP_LAND_OF_THE_GIANTS,  QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
-    {Vec3f(     0,  16000,  2500), 1000, 0, MAP_SHOALS,              QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
-    {Vec3f( -2500,   3400,    50),    0, 0, MAP_CELESTE,             QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
-    {Vec3f( -3642,  10830, -1550),    0, 0, MAP_CASTLE_NAVAN,        QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
-    {Vec3f( -5640,   -253,   550),  600, 0, MAP_CASTLE_GRYPHONHEART, QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
-    {Vec3f( -3492,  12500,  1121),  512, 0, MAP_CASTLE_LAMBENT,      QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
-    {Vec3f( -9916, -18482, -2800), 1024, 0, MAP_CASTLE_GLOAMING,     QBIT_FOUNTAIN_IN_HARMONDALE_ACTIVATED},
+    {Vec3f( 14500,  20300,   450), 1800, 0, MAP_AVLEE,               QBIT_INVALID},
+    {Vec3f( -2500,   3000,  2100), 1024, 0, MAP_BARROW_DOWNS,        QBIT_INVALID},
+    {Vec3f( 10000,  18000,    50), 1024, 0, MAP_BRACADA_DESERT,      QBIT_INVALID},
+    {Vec3f(-17000,  18000,    50),    0, 0, MAP_DEYJA,               QBIT_INVALID},
+    {Vec3f( 12000, -10000,   400), 1024, 0, MAP_TATALIA,             QBIT_INVALID}, // near swamps
+    //{Vec3f(16000, 15000,  3100),  300, 0, MAP_TATALIA,             QBIT_INVALID}, // alternative location - near mercenary guild
+    {Vec3f( -5000,     25,   600),    0, 0, MAP_EVENMORN_ISLAND,     QBIT_INVALID}, // in a center of map :)
+    //{Vec3f( -4868,   25,   100),    0, 0, MAP_EVENMORN_ISLAND,     QBIT_INVALID}, // alternative location - near ship
+    {Vec3f( 10600,   9900,   100),    0, 0, MAP_EMERALD_ISLAND,      QBIT_INVALID},
+    {Vec3f( 15000,   4500,  1000), 1400, 0, MAP_LAND_OF_THE_GIANTS,  QBIT_INVALID},
+    {Vec3f(     0,  16000,  2500), 1000, 0, MAP_SHOALS,              QBIT_INVALID},
+    {Vec3f( -2500,   3400,    50),    0, 0, MAP_CELESTE,             QBIT_INVALID},
+    {Vec3f( -3642,  10830, -1550),    0, 0, MAP_CASTLE_NAVAN,        QBIT_INVALID},
+    {Vec3f( -5640,   -253,   550),  600, 0, MAP_CASTLE_GRYPHONHEART, QBIT_INVALID},
+    {Vec3f( -3492,  12500,  1121),  512, 0, MAP_CASTLE_LAMBENT,      QBIT_INVALID},
+    {Vec3f( -9916, -18482, -2800), 1024, 0, MAP_CASTLE_GLOAMING,     QBIT_INVALID},
 }};
 
 static std::array<Recti, TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS> townPortalButtonsPos = {{
@@ -162,7 +162,7 @@ void GUIWindow_TownPortalBook::Update() {
 
 void GUIWindow_TownPortalBook::clickTown(int townId) {
     // check if tp location is unlocked
-    if (!pParty->_questBits[townPortalList[townId].qBit] && !engine->config->debug.TownPortal.value()) {
+    if (!engine->config->debug.TownPortal.value() && !pParty->_questBits[townPortalList[townId].qBit]) {
         return;
     }
 
@@ -214,8 +214,8 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
 }
 
 void GUIWindow_TownPortalBook::hintTown(int townId) {
-    if (!pParty->_questBits[townPortalList[townId].qBit] && !engine->config->debug.TownPortal.value()) {
-        render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
+    if (!engine->config->debug.TownPortal.value() && !pParty->_questBits[townPortalList[townId].qBit]) {
+        render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar); // TODO(captainurist): engine->_statusBar->smthSmth()???
         return;
     }
 

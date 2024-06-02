@@ -6,8 +6,8 @@
 
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
-#include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Objects/SpriteObject.h"

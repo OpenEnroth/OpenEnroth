@@ -12,8 +12,8 @@
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -50,7 +50,6 @@
 
 #include "Utility/String/Ascii.h"
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Math/FixPoint.h"
 #include "Utility/Exception.h"
 
 IndoorLocation *pIndoor = nullptr;
@@ -833,7 +832,6 @@ void UpdateActors_BLV() {
                 if (actor.velocity.z < 0)
                     actor.velocity.z = 0;
             } else {
-                // fixpoint(45000) = 0.68664550781, no idea what the actual semantics here is.
                 if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.68664550781f) // was 45000 fixpoint
                     actor.velocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
             }

@@ -30,7 +30,6 @@ target_link_libraries(engine_graphics_renderer
         PUBLIC
         engine
         engine_graphics
-        engine_graphics_level
         utility
         library_serialization
         library_color

@@ -1032,7 +1032,7 @@ void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst);
 
 struct DecorationDesc_MM6 {
     std::array<char, 32> name;
-    std::array<char, 32> field_20;
+    std::array<char, 32> type;
     int16_t uType;
     uint16_t uDecorationHeight;
     int16_t uRadius;

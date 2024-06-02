@@ -171,7 +171,7 @@ GAME_TEST(Issues, Issue1657) {
     auto mapTape = tapes.map();
     test.playTraceFromTestData("issue_1657.mm7", "issue_1657.json");
     EXPECT_EQ(pParty->pos.toInt(), Vec3i(12552, 800, 193)); // party is back at new game start position
-    EXPECT_EQ(mapTape.size(), 2);
+    EXPECT_EQ(mapTape, tape(MAP_ERATHIA, MAP_EMERALD_ISLAND));
     EXPECT_TRUE(screenTape.contains(SCREEN_INPUT_BLV));
 }
 
@@ -211,17 +211,25 @@ GAME_TEST(Issues, Issue1671) {
 
 GAME_TEST(Issues, Issue1673) {
     // Actors can spawn in "NoActor" debug mode
+    auto recordOnce = [&] {
+        engine->config->debug.WizardEye.setValue(true);
+        auto actorsTape = actorTapes.totalCount();
+        game.startNewGame();
+        test.startTaping();
+        game.tick();
+        for (int i = 0; i < 5; i++) {
+            spawnMonsters(1, 0, 5, pParty->pos + Vec3f(0, 1000, 0), 0, i); // Spawning dragonflies in front of the party.
+            game.tick();
+        }
+        test.stopTaping();
+        return actorsTape;
+    };
+
+    auto enabledTape = recordOnce();
+    test.prepareForNextTest();
     engine->config->debug.NoActors.setValue(true);
+    auto disabledTape = recordOnce();
 
-    auto actorsTape = actorTapes.totalCount();
-    game.startNewGame();
-    test.startTaping();
-    game.tick();
-    for (int i = 0; i < 5; i++) {
-        spawnMonsters(1, 0, 5, Vec3f(0, 0, 50), 0, i);
-        game.tick(10);
-    }
-    test.stopTaping();
-
-    EXPECT_EQ(actorsTape, tape(0)); // no actors
+    EXPECT_EQ(enabledTape.delta(), +25); // Monster spawning works.
+    EXPECT_EQ(disabledTape, tape(0)); // But not when actors are disabled.
 }

@@ -11,8 +11,8 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/BSPModel.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -919,7 +919,7 @@ void GameUI_WritePointedObjectStatusString() {
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
                         pText = pNPCTopics[engine->_persistentVariables.decorVars[pLevelDecorations[pickedObjectID].eventVarId] + 380].pTopic; // campfire
                     else
-                        pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20;
+                        pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->type;
                     engine->_statusBar->setPermanent(pText);
                 } else {
                     std::string hintString = getEventHintString(pLevelDecorations[pickedObjectID].uEventID);
