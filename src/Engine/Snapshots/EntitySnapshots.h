@@ -238,7 +238,7 @@ struct ItemGen_MM7 {
     /* 14 */ uint32_t attributes;
     /* 18 */ uint8_t bodyAnchor;
     /* 19 */ uint8_t maxCharges;
-    /* 1A */ uint8_t holderPlayer;
+    /* 1A */ uint8_t holderPlayer; // Only for full lich jars. 1-based index of the character whose essence it stored in it.
     /* 1B */ uint8_t placedInChest; // unknown unused 8-bit field, was repurposed
     /* 1C */ int64_t expireTime;
 };
