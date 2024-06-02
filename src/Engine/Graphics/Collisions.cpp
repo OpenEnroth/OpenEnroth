@@ -20,7 +20,6 @@
 
 #include "Utility/Math/Float.h"
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Math/FixPoint.h"
 
 CollisionState collision_state;
 
@@ -222,8 +221,6 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
  */
 static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &dir, float *out_move_distance,
                                  int model_idx) {
-    // _fp suffix => that's a fixpoint number
-
     // dot_product(dir, normal) is a cosine of an angle between them.
     float cos_dir_normal = dot(dir, face->facePlane.normal);
 
