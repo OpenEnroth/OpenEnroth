@@ -1693,7 +1693,7 @@ void reconstruct(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
 }
 
 void reconstruct(const LevelDecoration_MM7 &src, LevelDecoration *dst) {
-    dst->uDecorationDescID = src.uDecorationDescID;
+    dst->uDecorationDescID = static_cast<DecorationId>(src.uDecorationDescID);
     dst->uFlags = LevelDecorationFlags(src.uFlags);
     dst->vPosition = src.vPosition.toFloat();
     dst->_yawAngle = (TrigLUT.uIntegerHalfPi * src.field_1A) / 90;

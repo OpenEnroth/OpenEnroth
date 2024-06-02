@@ -13,7 +13,7 @@ struct LevelDecoration {
     bool IsInteractive();
     bool IsObeliskChestActive();
 
-    uint16_t uDecorationDescID;
+    DecorationId uDecorationDescID;
     LevelDecorationFlags uFlags;
     Vec3f vPosition;
     int32_t _yawAngle; // Only used for party spawn points, see `MapStartPoint`.

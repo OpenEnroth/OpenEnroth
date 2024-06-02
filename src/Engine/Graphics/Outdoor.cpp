@@ -2805,7 +2805,7 @@ double OutdoorLocation::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int u
 void TeleportToStartingPoint(MapStartPoint point) {
     std::string pName = toString(point);
 
-    if (pDecorationList->GetDecorIdByName(pName)) {
+    if (pDecorationList->GetDecorIdByName(pName) != DECORATION_NULL) {
         if (!pLevelDecorations.empty()) {
             for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
                 if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {

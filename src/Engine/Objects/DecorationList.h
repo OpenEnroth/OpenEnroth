@@ -8,7 +8,7 @@
 
 #include "Library/Color/Color.h"
 
-#include "Utility/Memory/Blob.h"
+#include "Utility/Workaround/ToUnderlying.h"
 
 #include "DecorationEnums.h"
 
@@ -41,15 +41,15 @@ class DecorationList {
  public:
     inline DecorationList() {}
 
-    void InitializeDecorationSprite(unsigned int uDecID);
-    uint16_t GetDecorIdByName(std::string_view pName);
+    void InitializeDecorationSprite(DecorationId uDecID);
+    DecorationId GetDecorIdByName(std::string_view pName);
 
-    const DecorationDesc *GetDecoration(unsigned int index) const {
-        return &pDecorations[index];
+    const DecorationDesc *GetDecoration(DecorationId index) const {
+        return &pDecorations[std::to_underlying(index)];
     }
 
  public:
-    std::vector<DecorationDesc> pDecorations;
+    std::vector<DecorationDesc> pDecorations; // TODO(captainurist): IndexedArray.
 };
 
 extern DecorationList *pDecorationList;

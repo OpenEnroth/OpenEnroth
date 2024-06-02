@@ -46,7 +46,7 @@ int savedEventStep;
 LevelDecoration *savedDecoration;
 
 void initDecorationEvents() {
-    int id = pDecorationList->GetDecorIdByName("Event Trigger");
+    DecorationId id = pDecorationList->GetDecorIdByName("Event Trigger");
 
     decorationsWithEvents.clear();
     for (int i = 0; i < pLevelDecorations.size(); ++i) {
