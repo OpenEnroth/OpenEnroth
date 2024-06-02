@@ -26,7 +26,7 @@ Join our discord channel to discuss, track progress or get involved in the devel
 Getting Started on Windows
 --------------------------
 
-1. You will need a GoG or any other version of Might and Magic VII. Just run the installer and install the game into default location.
+1. You will need a GoG or any other version of Might and Magic VII. Run the installer and install the game into a custom location like `C:\Games`. (If you install into Program Files, there will be compatibility issues between the MM7 and OpenEnroth save file locations).
 
 2. Download one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip the files.
 
