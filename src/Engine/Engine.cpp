@@ -10,7 +10,7 @@
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/LightmapBuilder.h"

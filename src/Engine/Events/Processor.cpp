@@ -7,7 +7,7 @@
 #include "Engine/Localization.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Graphics/LocationFunctions.h"
-#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/Actor.h"

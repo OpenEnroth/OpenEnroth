@@ -24,7 +24,7 @@
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineGlobals.h"

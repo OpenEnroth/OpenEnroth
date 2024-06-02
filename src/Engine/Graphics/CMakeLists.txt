@@ -10,7 +10,6 @@ set(ENGINE_GRAPHICS_SOURCES
         ClippingFunctions.cpp
         Collisions.cpp
         DecalBuilder.cpp
-        DecorationList.cpp
         FrameLimiter.cpp
         Image.cpp
         ImageLoader.cpp
@@ -38,7 +37,6 @@ set(ENGINE_GRAPHICS_HEADERS
         ClippingFunctions.h
         Collisions.h
         DecalBuilder.h
-        DecorationList.h
         FaceEnums.h
         FrameLimiter.h
         Image.h

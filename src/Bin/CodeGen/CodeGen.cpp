@@ -15,6 +15,7 @@
 #include "Engine/Events/EventMap.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/DecorationEnums.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Snapshots/TableSerialization.h"
@@ -35,8 +36,6 @@
 
 #include "CodeGenEnums.h"
 #include "CodeGenMap.h"
-
-#include "Engine/Graphics/DecorationList.h"
 
 // TODO(captainurist): use std::string::contains once Android have full C++23 support.
 static auto contains = [](std::string_view haystack, std::string_view needle) {

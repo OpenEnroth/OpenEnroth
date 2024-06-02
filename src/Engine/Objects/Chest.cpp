@@ -6,7 +6,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
