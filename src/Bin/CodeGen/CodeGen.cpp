@@ -6,6 +6,7 @@
 #include <vector>
 #include <utility>
 #include <map>
+#include <regex>
 #include <string>
 
 #include "Application/GameStarter.h"
@@ -41,57 +42,6 @@
 static auto contains = [](std::string_view haystack, std::string_view needle) {
     return haystack.find(needle) != std::string::npos;
 };
-
-int runDecorationsCodegen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
-    CodeGenMap map;
-
-    std::map<std::string, int> categoryCounts;
-    for (int decId = 1; decId < pDecorationList->pDecorations.size(); decId++) {
-        const DecorationDesc& dd = pDecorationList->pDecorations[decId];
-        categoryCounts[toUpperCaseEnum(dd.type)] += 1;
-    }
-
-    map.insert(DecorationId(0), "NULL", "");
-    for (int decId = 1; decId < pDecorationList->pDecorations.size(); decId++) {
-        const DecorationDesc& dd = pDecorationList->pDecorations[decId];
-
-        if (dd.name.size() == 0)
-            continue;
-
-        std::string s1 = toUpperCaseEnum(dd.name);
-        std::string s2 = toUpperCaseEnum(dd.type);
-        std::string enumName;
-        std::string description =  dd.name + ", " + dd.type;
-
-        if (s2 == "NULL" || s2 == "TEST") {
-            s2 = "";
-        }
-
-        if (dd.uLightRadius) {
-            description += fmt::format(", r={}", dd.uLightRadius);
-        }
-        if (dd.uColoredLight.r + dd.uColoredLight.g + dd.uColoredLight.b > 0) {
-            description += fmt::format(", #{:02x}{:02x}{:02x}", dd.uColoredLight.r, dd.uColoredLight.g, dd.uColoredLight.b );
-        }
-
-        if ((int)dd.uSoundID) {
-            description += fmt::format(", snd={}", (int)dd.uSoundID);
-        }
-
-        if (s1.starts_with(s2)) {
-            enumName = toUpperCaseEnum(dd.name);
-        } else if (categoryCounts[toUpperCaseEnum(dd.type)] == 1) {
-            // dd.field_20 is unique description of the decoration
-            enumName = toUpperCaseEnum(dd.type);
-        } else {
-            enumName = toUpperCaseEnum(dd.type + "-" + dd.name);
-        }
-
-        map.insert(DecorationId(decId), enumName, description);
-    }
-    map.dump(stdout, "DECORATION_");
-    return 0;
-}
 
 int runItemIdCodeGen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
     ItemTable itemTable;
@@ -487,6 +437,50 @@ int runMusicCodeGen(const CodeGenOptions &options, GameResourceManager *resource
     return 0;
 }
 
+int runDecorationsCodegen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
+    CodeGenMap map;
+    std::regex tailRegex("^([A-Za-z ]*)([0-9]+)([a-zA-Z]?)$");
+
+    // Decoration naming & numbering is very weird, and there is no sane approach to naming except just using the
+    // id values as a suffix. So this is what we're doing here.
+
+    map.insert(DECORATION_NULL, "NULL", "");
+    for (size_t index = 1; index < pDecorationList->pDecorations.size(); index++) {
+        DecorationId i = static_cast<DecorationId>(index);
+        const DecorationDesc& dd = pDecorationList->pDecorations[index];
+
+        if (dd.name.empty()) {
+            map.insert(i, "", "Unused.");
+            continue;
+        }
+
+        std::string enumName;
+        if (dd.name == "fount1") {
+            enumName = "FOUNTAIN";
+        } else if (dd.name.starts_with("dec")) {
+            enumName = dd.type;
+        } else {
+            enumName = dd.name;
+        }
+        std::smatch match;
+        if (std::regex_search(enumName, match, tailRegex))
+            enumName = match[1].str();
+        enumName = fmt::format("{}_{}", enumName, index);
+
+        std::string description =  dd.name + ", " + dd.type;
+        if (dd.uLightRadius)
+            description += fmt::format(", light_r={}", dd.uLightRadius);
+        if (dd.uColoredLight.r + dd.uColoredLight.g + dd.uColoredLight.b > 0)
+            description += fmt::format(", light_c=#{:02x}{:02x}{:02x}", dd.uColoredLight.r, dd.uColoredLight.g, dd.uColoredLight.b );
+        if (dd.uSoundID != SOUND_Invalid)
+            description += fmt::format(", snd={}", std::to_underlying(dd.uSoundID));
+
+        map.insert(i, toUpperCaseEnum(enumName), description);
+    }
+    map.dump(stdout, "DECORATION_");
+    return 0;
+}
+
 int platformMain(int argc, char **argv) {
     try {
         UnicodeCrt _(argc, argv);
@@ -500,7 +494,6 @@ int platformMain(int argc, char **argv) {
         resourceManager.openGameResources();
 
         switch (options.subcommand) {
-        case CodeGenOptions::SUBCOMMAND_DECORATIONS: return runDecorationsCodegen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_ITEM_ID: return runItemIdCodeGen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_MAP_ID: return runMapIdCodeGen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_BEACON_MAPPING: return runBeaconsCodeGen(options, &resourceManager);
@@ -509,6 +502,7 @@ int platformMain(int argc, char **argv) {
         case CodeGenOptions::SUBCOMMAND_MONSTER_TYPE: return runMonsterTypeCodeGen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_BOUNTY_HUNT: return runBountyHuntCodeGen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_MUSIC: return runMusicCodeGen(options, &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_DECORATIONS: return runDecorationsCodegen(options, &resourceManager);
         default:
             assert(false);
             return 1;
