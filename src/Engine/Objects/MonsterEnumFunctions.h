@@ -4,7 +4,6 @@
 
 #include "GUI/UI/UIHouseEnums.h"
 
-#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Segment.h"
 
 #include "ItemEnums.h"
