@@ -13,16 +13,6 @@
 #include "Utility/MapAccess.h"
 #include "Utility/Exception.h"
 
-// Add std::string_view support to inicpp.
-namespace ini {
-template<>
-struct Convert<std::string_view> {
-    void decode(const std::string &value, std::string_view &result) {
-        result = value;
-    }
-};
-} // namespace ini
-
 void Config::load(std::string_view path) {
     if (!std::filesystem::exists(path))
         throw Exception("config file '{}' doesn't exist", path);
