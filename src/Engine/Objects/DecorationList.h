@@ -29,8 +29,9 @@ MM_DECLARE_FLAGS(DecorationDescFlags, DecorationDescFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(DecorationDescFlags)
 
 struct DecorationDesc {
-    std::string name;
-    std::string field_20; // TODO(captainurist): actually interactionText?
+    std::string name; // Internal name (e.g. "dec03").
+    std::string type; // Type of the decoration (e.g. "campfire", "cauldron"). This text is shown in the status bar
+                      // when clicking on the decoration if it's not scripted.
     int16_t uType;
     uint16_t uDecorationHeight;
     int16_t uRadius;

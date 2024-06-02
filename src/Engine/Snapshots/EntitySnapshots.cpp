@@ -1612,7 +1612,7 @@ void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst) {
 
 void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
     reconstruct(src.name, &dst->name);
-    reconstruct(src.field_20, &dst->field_20);
+    reconstruct(src.type, &dst->type);
     dst->uType = src.uType;
     dst->uDecorationHeight = src.uDecorationHeight;
     dst->uRadius = src.uRadius;

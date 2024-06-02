@@ -48,7 +48,7 @@ int runDecorationsCodegen(const CodeGenOptions &options, GameResourceManager *re
     std::map<std::string, int> categoryCounts;
     for (int decId = 1; decId < pDecorationList->pDecorations.size(); decId++) {
         const DecorationDesc& dd = pDecorationList->pDecorations[decId];
-        categoryCounts[toUpperCaseEnum(dd.field_20)] += 1;
+        categoryCounts[toUpperCaseEnum(dd.type)] += 1;
     }
 
     map.insert(DecorationId(0), "NULL", "");
@@ -59,9 +59,9 @@ int runDecorationsCodegen(const CodeGenOptions &options, GameResourceManager *re
             continue;
 
         std::string s1 = toUpperCaseEnum(dd.name);
-        std::string s2 = toUpperCaseEnum(dd.field_20);
+        std::string s2 = toUpperCaseEnum(dd.type);
         std::string enumName;
-        std::string description =  dd.name + ", " + dd.field_20;
+        std::string description =  dd.name + ", " + dd.type;
 
         if (s2 == "NULL" || s2 == "TEST") {
             s2 = "";
@@ -80,11 +80,11 @@ int runDecorationsCodegen(const CodeGenOptions &options, GameResourceManager *re
 
         if (s1.starts_with(s2)) {
             enumName = toUpperCaseEnum(dd.name);
-        } else if (categoryCounts[toUpperCaseEnum(dd.field_20)] == 1) {
+        } else if (categoryCounts[toUpperCaseEnum(dd.type)] == 1) {
             // dd.field_20 is unique description of the decoration
-            enumName = toUpperCaseEnum(dd.field_20);
+            enumName = toUpperCaseEnum(dd.type);
         } else {
-            enumName = toUpperCaseEnum(dd.field_20 + "-" + dd.name);
+            enumName = toUpperCaseEnum(dd.type + "-" + dd.name);
         }
 
         map.insert(DecorationId(decId), enumName, description);
