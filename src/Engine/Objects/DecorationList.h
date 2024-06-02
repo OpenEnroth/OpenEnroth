@@ -8,8 +8,6 @@
 
 #include "Library/Color/Color.h"
 
-#include "Utility/Workaround/ToUnderlying.h"
-
 #include "DecorationEnums.h"
 
 struct DecorationDesc {
