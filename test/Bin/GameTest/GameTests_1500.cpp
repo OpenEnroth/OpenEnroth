@@ -171,7 +171,7 @@ GAME_TEST(Issues, Issue1657) {
     auto mapTape = tapes.map();
     test.playTraceFromTestData("issue_1657.mm7", "issue_1657.json");
     EXPECT_EQ(pParty->pos.toInt(), Vec3i(12552, 800, 193)); // party is back at new game start position
-    EXPECT_EQ(mapTape.size(), 2);
+    EXPECT_EQ(mapTape, tape(MAP_ERATHIA, MAP_EMERALD_ISLAND));
     EXPECT_TRUE(screenTape.contains(SCREEN_INPUT_BLV));
 }
 
