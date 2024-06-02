@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
-add_subdirectory(Level)
 add_subdirectory(Renderer)
 
 set(ENGINE_GRAPHICS_SOURCES
@@ -68,8 +67,7 @@ target_check_style(engine_graphics)
 target_link_libraries(engine_graphics
         PUBLIC
         engine
-        engine_graphics_level
-        engine_graphics_renderer        
+        engine_graphics_renderer
         utility
         library_serialization
         library_color

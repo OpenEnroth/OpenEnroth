@@ -23,7 +23,7 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/AssetsManager.h"

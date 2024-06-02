@@ -19,6 +19,7 @@
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Objects/SpriteEnumFunctions.h"
 
@@ -26,7 +27,6 @@
 
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/BSPModel.h"
-#include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -35,7 +35,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Math/FixPoint.h"
 
 // should be injected in SpriteObject but struct size cant be changed
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();

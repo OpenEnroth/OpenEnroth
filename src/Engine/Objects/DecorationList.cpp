@@ -1,7 +1,7 @@
 #include "DecorationList.h"
 
 #include "Engine/Engine.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Sprites.h"
 
 #include "Utility/String/Ascii.h"

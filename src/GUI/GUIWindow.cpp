@@ -12,7 +12,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineCallObserver.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
