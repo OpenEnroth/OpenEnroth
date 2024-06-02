@@ -7,7 +7,6 @@
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 
-#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Segment.h"
 
 #include "CharacterEnumFunctions.h"

@@ -45,7 +45,6 @@ set(UTILITY_HEADERS
         String/TransparentFunctors.h
         String/Transformations.h
         Win/Unicode.h
-        Workaround/ToUnderlying.h
         Unaligned.h
         UnicodeCrt.h)
 

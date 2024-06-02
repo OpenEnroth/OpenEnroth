@@ -2,8 +2,8 @@
 
 #include <cassert>
 #include <cstdint>
+#include <utility>
 
-#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Flags.h"
 
 /**

@@ -2,8 +2,8 @@
 
 #include <cstdint>
 #include <cassert>
+#include <utility>
 
-#include "Utility/Workaround/ToUnderlying.h"
 
 enum class ObjectType {
     OBJECT_None = 0x0,
