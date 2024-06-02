@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;df857ea</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;08940da</span>
    </div>
   </td>
  </tr>
@@ -86,6 +86,7 @@ $(function() {
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
 <code>#include &lt;map&gt;</code><br />
+<code>#include &lt;regex&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="GameStarter_8h.html">Application/GameStarter.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineRandomComponent_8h.html">Engine/Components/Random/EngineRandomComponent.h</a>&quot;</code><br />
@@ -94,6 +95,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="EventMap_8h.html">Engine/Events/EventMap.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Random_8h.html">Engine/Random/Random.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DecorationEnums_8h.html">Engine/Objects/DecorationEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DecorationList_8h.html">Engine/Objects/DecorationList.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Monsters_8h.html">Engine/Objects/Monsters.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MonsterEnumFunctions_8h.html">Engine/Objects/MonsterEnumFunctions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TableSerialization_8h.html">Engine/Snapshots/TableSerialization.h</a>&quot;</code><br />
@@ -110,12 +112,9 @@ $(function() {
 <code>#include &quot;<a class="el" href="Transformations_8h.html">Utility/String/Transformations.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CodeGenEnums_8h.html">CodeGenEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CodeGenMap_8h.html">CodeGenMap.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="DecorationList_8h.html">Engine/Graphics/DecorationList.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a360a603a5ffbedfadac3b67547c9e50e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CodeGen_8cpp.html#a360a603a5ffbedfadac3b67547c9e50e">runDecorationsCodegen</a> (const <a class="el" href="structCodeGenOptions.html">CodeGenOptions</a> &amp;options, <a class="el" href="classGameResourceManager.html">GameResourceManager</a> *resourceManager)</td></tr>
-<tr class="separator:a360a603a5ffbedfadac3b67547c9e50e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ca3c27f2cb2d3703ff9842cc1a2f3de"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CodeGen_8cpp.html#a9ca3c27f2cb2d3703ff9842cc1a2f3de">runItemIdCodeGen</a> (const <a class="el" href="structCodeGenOptions.html">CodeGenOptions</a> &amp;options, <a class="el" href="classGameResourceManager.html">GameResourceManager</a> *resourceManager)</td></tr>
 <tr class="separator:a9ca3c27f2cb2d3703ff9842cc1a2f3de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa883fe1ae82f43fcfe2360711465b8a4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CodeGen_8cpp.html#aa883fe1ae82f43fcfe2360711465b8a4">mapIdEnumName</a> (const <a class="el" href="structMapInfo.html">MapInfo</a> &amp;mapInfo)</td></tr>
@@ -142,6 +141,8 @@ Functions</h2></td></tr>
 <tr class="separator:acdcdc5d53ad448ed9a691a7c24d045a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a444822d6e7c41b04e713df37dc90298f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CodeGen_8cpp.html#a444822d6e7c41b04e713df37dc90298f">runMusicCodeGen</a> (const <a class="el" href="structCodeGenOptions.html">CodeGenOptions</a> &amp;options, <a class="el" href="classGameResourceManager.html">GameResourceManager</a> *resourceManager)</td></tr>
 <tr class="separator:a444822d6e7c41b04e713df37dc90298f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a360a603a5ffbedfadac3b67547c9e50e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CodeGen_8cpp.html#a360a603a5ffbedfadac3b67547c9e50e">runDecorationsCodegen</a> (const <a class="el" href="structCodeGenOptions.html">CodeGenOptions</a> &amp;options, <a class="el" href="classGameResourceManager.html">GameResourceManager</a> *resourceManager)</td></tr>
+<tr class="separator:a360a603a5ffbedfadac3b67547c9e50e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac514b18d4266e4a2f5a39f9d19a88f77"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="CodeGen_8cpp.html#ac514b18d4266e4a2f5a39f9d19a88f77">platformMain</a> (int argc, char **argv)</td></tr>
 <tr class="separator:ac514b18d4266e4a2f5a39f9d19a88f77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">

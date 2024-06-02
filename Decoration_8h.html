@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Graphics/Level/Decoration.h File Reference</title>
+<title>OpenEnroth: src/Engine/Objects/Decoration.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;df857ea</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;08940da</span>
    </div>
   </td>
  </tr>
@@ -69,13 +69,12 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_32f76bd42096cb3656f6b4adb3ae4055.html">Graphics</a></li><li class="navelem"><a class="el" href="dir_cbe67a6e0393fc4fb77d3293ca096712.html">Level</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_86712bbc5bacd9c1ef0acd1abef6222f.html">Objects</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#enum-members">Enumerations</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">Decoration.h File Reference</div></div>
 </div><!--header-->
@@ -83,27 +82,12 @@ $(function() {
 <div class="textblock"><code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
 <code>#include &quot;<a class="el" href="Vec_8h.html">Library/Geometry/Vec.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DecorationEnums_8h.html">DecorationEnums.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structLevelDecoration.html">LevelDecoration</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:a17eaffe474f750b97348969dfc31b138"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Decoration_8h.html#a17eaffe474f750b97348969dfc31b138">LevelDecorationFlag</a> : uint16_t { <br />
-&#160;&#160;<a class="el" href="Decoration_8h.html#a17eaffe474f750b97348969dfc31b138ac1a31754953c654e18b8dda2c7862016">LEVEL_DECORATION_TRIGGERED_BY_TOUCH</a> = 0x01
-, <a class="el" href="Decoration_8h.html#a17eaffe474f750b97348969dfc31b138a823615d8d59adfb90838fa925f47d444">LEVEL_DECORATION_TRIGGERED_BY_MONSTER</a> = 0x02
-, <a class="el" href="Decoration_8h.html#a17eaffe474f750b97348969dfc31b138a0f305b1eb455a5410e6ec49d3fb66d1f">LEVEL_DECORATION_TRIGGERED_BY_OBJECT</a> = 0x04
-, <a class="el" href="Decoration_8h.html#a17eaffe474f750b97348969dfc31b138a944cb1f56ddcb27675b9c691cc980591">LEVEL_DECORATION_VISIBLE_ON_MAP</a> = 0x08
-, <br />
-&#160;&#160;<a class="el" href="Decoration_8h.html#a17eaffe474f750b97348969dfc31b138a8d6b725a63426c9f2b894acad08df766">LEVEL_DECORATION_CHEST</a> = 0x10
-, <a class="el" href="Decoration_8h.html#a17eaffe474f750b97348969dfc31b138a37a4cc9d4a0306b05c789e3d554b3bd8">LEVEL_DECORATION_INVISIBLE</a> = 0x20
-, <a class="el" href="Decoration_8h.html#a17eaffe474f750b97348969dfc31b138aad5f7c81add55fc1e7eb9337841095b6">LEVEL_DECORATION_OBELISK_CHEST</a> = 0x40
-<br />
- }</td></tr>
-<tr class="separator:a17eaffe474f750b97348969dfc31b138"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -114,38 +98,6 @@ Variables</h2></td></tr>
 <tr class="memitem:ad0fa06b8c2179a9134b5d63f3949a141"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structLevelDecoration.html">LevelDecoration</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Decoration_8h.html#ad0fa06b8c2179a9134b5d63f3949a141">activeLevelDecoration</a></td></tr>
 <tr class="separator:ad0fa06b8c2179a9134b5d63f3949a141"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a17eaffe474f750b97348969dfc31b138" name="a17eaffe474f750b97348969dfc31b138"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a17eaffe474f750b97348969dfc31b138">&#9670;&#160;</a></span>LevelDecorationFlag</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum class <a class="el" href="Decoration_8h.html#a17eaffe474f750b97348969dfc31b138">LevelDecorationFlag</a> : uint16_t</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a17eaffe474f750b97348969dfc31b138ac1a31754953c654e18b8dda2c7862016" name="a17eaffe474f750b97348969dfc31b138ac1a31754953c654e18b8dda2c7862016"></a>LEVEL_DECORATION_TRIGGERED_BY_TOUCH&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a17eaffe474f750b97348969dfc31b138a823615d8d59adfb90838fa925f47d444" name="a17eaffe474f750b97348969dfc31b138a823615d8d59adfb90838fa925f47d444"></a>LEVEL_DECORATION_TRIGGERED_BY_MONSTER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a17eaffe474f750b97348969dfc31b138a0f305b1eb455a5410e6ec49d3fb66d1f" name="a17eaffe474f750b97348969dfc31b138a0f305b1eb455a5410e6ec49d3fb66d1f"></a>LEVEL_DECORATION_TRIGGERED_BY_OBJECT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a17eaffe474f750b97348969dfc31b138a944cb1f56ddcb27675b9c691cc980591" name="a17eaffe474f750b97348969dfc31b138a944cb1f56ddcb27675b9c691cc980591"></a>LEVEL_DECORATION_VISIBLE_ON_MAP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a17eaffe474f750b97348969dfc31b138a8d6b725a63426c9f2b894acad08df766" name="a17eaffe474f750b97348969dfc31b138a8d6b725a63426c9f2b894acad08df766"></a>LEVEL_DECORATION_CHEST&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a17eaffe474f750b97348969dfc31b138a37a4cc9d4a0306b05c789e3d554b3bd8" name="a17eaffe474f750b97348969dfc31b138a37a4cc9d4a0306b05c789e3d554b3bd8"></a>LEVEL_DECORATION_INVISIBLE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a17eaffe474f750b97348969dfc31b138aad5f7c81add55fc1e7eb9337841095b6" name="a17eaffe474f750b97348969dfc31b138aad5f7c81add55fc1e7eb9337841095b6"></a>LEVEL_DECORATION_OBELISK_CHEST&#160;</td><td class="fielddoc"></td></tr>
-</table>
-
-</div>
-</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="ad0fa06b8c2179a9134b5d63f3949a141" name="ad0fa06b8c2179a9134b5d63f3949a141"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad0fa06b8c2179a9134b5d63f3949a141">&#9670;&#160;</a></span>activeLevelDecoration</h2>

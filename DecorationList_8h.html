@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Graphics/DecorationList.h File Reference</title>
+<title>OpenEnroth: src/Engine/Objects/DecorationList.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;df857ea</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;08940da</span>
    </div>
   </td>
  </tr>
@@ -69,13 +69,12 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_32f76bd42096cb3656f6b4adb3ae4055.html">Graphics</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_86712bbc5bacd9c1ef0acd1abef6222f.html">Objects</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">DecorationList.h File Reference</div></div>
@@ -86,8 +85,8 @@ $(function() {
 <code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="SoundEnums_8h.html">Media/Audio/SoundEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Color_8h.html">Library/Color/Color.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Blob_8h.html">Utility/Memory/Blob.h</a>&quot;</code><br />
+<code>#include &quot;Utility/Workaround/ToUnderlying.h&quot;</code><br />
+<code>#include &quot;<a class="el" href="DecorationEnums_8h.html">DecorationEnums.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -95,26 +94,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDecorationList.html">DecorationList</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
-Enumerations</h2></td></tr>
-<tr class="memitem:a0f02a4f1bd0fdf28d7f46f29f2d05310"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DecorationList_8h.html#a0f02a4f1bd0fdf28d7f46f29f2d05310">DecorationDescFlag</a> : uint16_t { <br />
-&#160;&#160;<a class="el" href="DecorationList_8h.html#a0f02a4f1bd0fdf28d7f46f29f2d05310ada1fb8e614c658d1b7deb0c3fb7ebda9">DECORATION_DESC_MOVE_THROUGH</a> = 0x0001
-, <a class="el" href="DecorationList_8h.html#a0f02a4f1bd0fdf28d7f46f29f2d05310a7024bb7f24cc390108f66c5f8766115c">DECORATION_DESC_DONT_DRAW</a> = 0x0002
-, <a class="el" href="DecorationList_8h.html#a0f02a4f1bd0fdf28d7f46f29f2d05310a610bf3edf39a31276d3e44c50c2dd549">DECORATION_DESC_FLICKER_SLOW</a> = 0x0004
-, <a class="el" href="DecorationList_8h.html#a0f02a4f1bd0fdf28d7f46f29f2d05310abfd266834e1672d278dad3bc1b427f72">DECORATION_DESC_FICKER_AVERAGE</a> = 0x0008
-, <br />
-&#160;&#160;<a class="el" href="DecorationList_8h.html#a0f02a4f1bd0fdf28d7f46f29f2d05310a6c5428beb86cc80a4be29faf619db97f">DECORATION_DESC_FICKER_FAST</a> = 0x0010
-, <a class="el" href="DecorationList_8h.html#a0f02a4f1bd0fdf28d7f46f29f2d05310aa3eb549702014e70dbc071a4fd519c2a">DECORATION_DESC_MARKER</a> = 0x0020
-, <a class="el" href="DecorationList_8h.html#a0f02a4f1bd0fdf28d7f46f29f2d05310a9df229a9e24a1512fae26737178271f5">DECORATION_DESC_SLOW_LOOP</a> = 0x0040
-, <a class="el" href="DecorationList_8h.html#a0f02a4f1bd0fdf28d7f46f29f2d05310a494a4be1e2298d2302dd53dd5b298350">DECORATION_DESC_EMITS_FIRE</a> = 0x0080
-, <br />
-&#160;&#160;<a class="el" href="DecorationList_8h.html#a0f02a4f1bd0fdf28d7f46f29f2d05310a306785880a2b7ac24c1d016bb1ed8d6b">DECORATION_DESC_SOUND_ON_DAWN</a> = 0x0100
-, <a class="el" href="DecorationList_8h.html#a0f02a4f1bd0fdf28d7f46f29f2d05310a9858f400e0c1e7430198e0aea5ee8944">DECORATION_DESC_SOUND_ON_DUSK</a> = 0x0200
-, <a class="el" href="DecorationList_8h.html#a0f02a4f1bd0fdf28d7f46f29f2d05310afe50763e880f45b38d27742277931f67">DECORATION_DESC_EMITS_SMOKE</a> = 0x0400
-<br />
- }</td></tr>
-<tr class="separator:a0f02a4f1bd0fdf28d7f46f29f2d05310"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -126,42 +105,6 @@ Variables</h2></td></tr>
 <tr class="memitem:ab7f58ed5720e435c81e6faef72bb0980"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDecorationList.html">DecorationList</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="DecorationList_8h.html#ab7f58ed5720e435c81e6faef72bb0980">pDecorationList</a></td></tr>
 <tr class="separator:ab7f58ed5720e435c81e6faef72bb0980"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a0f02a4f1bd0fdf28d7f46f29f2d05310" name="a0f02a4f1bd0fdf28d7f46f29f2d05310"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0f02a4f1bd0fdf28d7f46f29f2d05310">&#9670;&#160;</a></span>DecorationDescFlag</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum class <a class="el" href="DecorationList_8h.html#a0f02a4f1bd0fdf28d7f46f29f2d05310">DecorationDescFlag</a> : uint16_t</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a0f02a4f1bd0fdf28d7f46f29f2d05310ada1fb8e614c658d1b7deb0c3fb7ebda9" name="a0f02a4f1bd0fdf28d7f46f29f2d05310ada1fb8e614c658d1b7deb0c3fb7ebda9"></a>DECORATION_DESC_MOVE_THROUGH&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0f02a4f1bd0fdf28d7f46f29f2d05310a7024bb7f24cc390108f66c5f8766115c" name="a0f02a4f1bd0fdf28d7f46f29f2d05310a7024bb7f24cc390108f66c5f8766115c"></a>DECORATION_DESC_DONT_DRAW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0f02a4f1bd0fdf28d7f46f29f2d05310a610bf3edf39a31276d3e44c50c2dd549" name="a0f02a4f1bd0fdf28d7f46f29f2d05310a610bf3edf39a31276d3e44c50c2dd549"></a>DECORATION_DESC_FLICKER_SLOW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0f02a4f1bd0fdf28d7f46f29f2d05310abfd266834e1672d278dad3bc1b427f72" name="a0f02a4f1bd0fdf28d7f46f29f2d05310abfd266834e1672d278dad3bc1b427f72"></a>DECORATION_DESC_FICKER_AVERAGE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0f02a4f1bd0fdf28d7f46f29f2d05310a6c5428beb86cc80a4be29faf619db97f" name="a0f02a4f1bd0fdf28d7f46f29f2d05310a6c5428beb86cc80a4be29faf619db97f"></a>DECORATION_DESC_FICKER_FAST&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0f02a4f1bd0fdf28d7f46f29f2d05310aa3eb549702014e70dbc071a4fd519c2a" name="a0f02a4f1bd0fdf28d7f46f29f2d05310aa3eb549702014e70dbc071a4fd519c2a"></a>DECORATION_DESC_MARKER&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0f02a4f1bd0fdf28d7f46f29f2d05310a9df229a9e24a1512fae26737178271f5" name="a0f02a4f1bd0fdf28d7f46f29f2d05310a9df229a9e24a1512fae26737178271f5"></a>DECORATION_DESC_SLOW_LOOP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0f02a4f1bd0fdf28d7f46f29f2d05310a494a4be1e2298d2302dd53dd5b298350" name="a0f02a4f1bd0fdf28d7f46f29f2d05310a494a4be1e2298d2302dd53dd5b298350"></a>DECORATION_DESC_EMITS_FIRE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0f02a4f1bd0fdf28d7f46f29f2d05310a306785880a2b7ac24c1d016bb1ed8d6b" name="a0f02a4f1bd0fdf28d7f46f29f2d05310a306785880a2b7ac24c1d016bb1ed8d6b"></a>DECORATION_DESC_SOUND_ON_DAWN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0f02a4f1bd0fdf28d7f46f29f2d05310a9858f400e0c1e7430198e0aea5ee8944" name="a0f02a4f1bd0fdf28d7f46f29f2d05310a9858f400e0c1e7430198e0aea5ee8944"></a>DECORATION_DESC_SOUND_ON_DUSK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a0f02a4f1bd0fdf28d7f46f29f2d05310afe50763e880f45b38d27742277931f67" name="a0f02a4f1bd0fdf28d7f46f29f2d05310afe50763e880f45b38d27742277931f67"></a>DECORATION_DESC_EMITS_SMOKE&#160;</td><td class="fielddoc"></td></tr>
-</table>
-
-</div>
-</div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="af5fd5d37e31f2e4dcb9b3d11a7994081" name="af5fd5d37e31f2e4dcb9b3d11a7994081"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af5fd5d37e31f2e4dcb9b3d11a7994081">&#9670;&#160;</a></span>RespawnGlobalDecorations()</h2>
