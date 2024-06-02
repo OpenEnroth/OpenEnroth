@@ -49,6 +49,5 @@ var searchData=
   ['configpatchentry_46',['ConfigPatchEntry',['../structConfigPatchEntry.html',1,'']]],
   ['configsection_47',['ConfigSection',['../classConfigSection.html',1,'']]],
   ['context_48',['context',['../structcontext.html',1,'']]],
-  ['contexttag_49',['ContextTag',['../classContextTag.html',1,'']]],
-  ['convert_3c_20std_3a_3astring_5fview_20_3e_50',['Convert&lt; std::string_view &gt;',['../structini_1_1Convert_3_01std_1_1string__view_01_4.html',1,'ini']]]
+  ['contexttag_49',['ContextTag',['../classContextTag.html',1,'']]]
 ];
