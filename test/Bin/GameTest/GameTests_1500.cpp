@@ -186,6 +186,16 @@ GAME_TEST(Issues, Issue1665) {
     EXPECT_GT(zpos.back(), -1550); // And made it back out
 }
 
+GAME_TEST(Issues, Issue1666) {
+    // Sound 220 'splash' getting spammed
+    auto mapTape = tapes.map();
+    auto soundsTape = tapes.sounds();
+    test.playTraceFromTestData("issue_1666.mm7", "issue_1666.json");
+    EXPECT_EQ(mapTape.size(), 2);
+    int count = soundsTape.flattened().filtered([](const auto& sound) { return sound == SOUND_splash; }).size();
+    EXPECT_EQ(count, 1); // jump splash at start
+}
+
 GAME_TEST(Issues, Issue1671) {
     // Falling from height outdoors onto models doesnt cause damage
     auto health = tapes.totalHp();
