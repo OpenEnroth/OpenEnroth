@@ -38,11 +38,6 @@
 #include "CodeGenEnums.h"
 #include "CodeGenMap.h"
 
-// TODO(captainurist): use std::string::contains once Android have full C++23 support.
-static auto contains = [](std::string_view haystack, std::string_view needle) {
-    return haystack.find(needle) != std::string::npos;
-};
-
 int runItemIdCodeGen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
     ItemTable itemTable;
     itemTable.Initialize(resourceManager);
@@ -73,18 +68,18 @@ int runItemIdCodeGen(const CodeGenOptions &options, GameResourceManager *resourc
             continue;
         }
 
-        if (contains(enumName, "PLACEHOLDER") || contains(enumName, "SEALED_LETTER")) {
+        if (enumName.contains("PLACEHOLDER") || enumName.contains("SEALED_LETTER")) {
             map.insert(i, "", name + ", unused.");
             continue;
         }
 
-        if (contains(enumName, "ORDERS_FROM_SNERGLE")) {
+        if (enumName.contains("ORDERS_FROM_SNERGLE")) {
             map.insert(i, "", name + ", unused remnant from MM6.");
             continue;
         }
 
         if (enumName == "LICH_JAR") {
-            if (contains(description, "Empty")) {
+            if (description.contains("Empty")) {
                 enumName += "_EMPTY";
             } else {
                 enumName += "_FULL";
@@ -92,11 +87,11 @@ int runItemIdCodeGen(const CodeGenOptions &options, GameResourceManager *resourc
         }
 
         if (enumName == "THE_PERFECT_BOW")
-            if (!contains(description, "off-balance"))
+            if (!description.contains("off-balance"))
                 enumName += "_FIXED";
 
         // Shorten enum names for letters.
-        if (enumName.starts_with("LETTER_FROM") && contains(enumName, "_TO_"))
+        if (enumName.starts_with("LETTER_FROM") && enumName.contains("_TO_"))
             enumName = enumName.substr(0, enumName.find("_TO_"));
 
         if (desc.uEquipType == ITEM_TYPE_REAGENT) {
