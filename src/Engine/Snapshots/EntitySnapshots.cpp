@@ -457,7 +457,7 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
     dst->attributes = std::to_underlying(src.uAttributes);
     dst->bodyAnchor = std::to_underlying(src.uBodyAnchor);
     dst->maxCharges = src.uMaxCharges;
-    dst->holderPlayer = src.uHolderPlayer;
+    dst->holderPlayer = src.uHolderPlayer + 1;
     dst->placedInChest = src.placedInChest;
     snapshot(src.uExpireTime, &dst->expireTime);
 }
@@ -486,7 +486,7 @@ void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->uAttributes = ItemFlags(src.attributes);
     dst->uBodyAnchor = static_cast<ItemSlot>(src.bodyAnchor);
     dst->uMaxCharges = src.maxCharges;
-    dst->uHolderPlayer = src.holderPlayer;
+    dst->uHolderPlayer = src.holderPlayer - 1;
     dst->placedInChest = src.placedInChest;
     reconstruct(src.expireTime, &dst->uExpireTime);
 }
