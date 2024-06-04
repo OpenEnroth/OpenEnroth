@@ -3642,7 +3642,7 @@ void Actor::LootActor() {
 //----- (00427102) --------------------------------------------------------
 bool Actor::_427102_IsOkToCastSpell(SpellId spell) {
     switch (spell) {
-        case SPELL_BODY_POWER_CURE: {
+        case SPELL_BODY_POWER_CURE: { // TODO(pskelton): Only cure below half health?
             if (this->currentHP >= this->monsterInfo.hp) return false;
             return true;
         }
@@ -3683,6 +3683,8 @@ bool Actor::_427102_IsOkToCastSpell(SpellId spell) {
             return this->buffs[ACTOR_BUFF_FATE].Inactive();
         case SPELL_SPIRIT_HEROISM:
             return this->buffs[ACTOR_BUFF_HEROISM].Inactive();
+        case SPELL_NONE:
+            return false;
         default:
             return true;
     }
