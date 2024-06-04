@@ -1,5 +1,6 @@
 #include "Monsters.h"
 
+#include <cstring>
 #include <string>
 #include <utility>
 

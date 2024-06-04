@@ -1,5 +1,6 @@
 #include "NPCTable.h"
 
+#include <cstring>
 #include <string>
 
 #include "Engine/Objects/NPC.h"

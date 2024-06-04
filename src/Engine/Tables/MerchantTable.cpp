@@ -1,5 +1,6 @@
 #include "MerchantTable.h"
 
+#include <cstring>
 #include <string>
 
 #include "Engine/Objects/NPCEnumFunctions.h"

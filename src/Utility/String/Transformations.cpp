@@ -1,24 +1,9 @@
 #include "Transformations.h"
 
 #include <cassert>
-#include <vector>
-#include <algorithm>
 #include <string>
 
 #include "Format.h"
-
-std::vector<char *> tokenize(char *input, const char separator) {
-    std::vector<char *> retVect;
-    retVect.push_back(input);
-    while (*input) {
-        if (*input == separator) {
-            *input = '\0';
-            retVect.push_back(input + 1);
-        }
-        ++input;
-    }
-    return retVect;
-}
 
 std::string toHexDump(std::string_view s, size_t groupSize) {
     std::string result;
@@ -59,10 +44,3 @@ std::string replaceAll(std::string_view text, char what, char replacement) {
     return result;
 }
 
-void split(std::string_view s, char sep, std::vector<std::string_view> *result) {
-    result->clear();
-    result->reserve(16);
-    split(s, sep, [&result] (std::string_view part) {
-        result->push_back(part);
-    });
-}

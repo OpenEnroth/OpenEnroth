@@ -18,26 +18,6 @@ UNIT_TEST(StringTransformations, replaceAll) {
     EXPECT_EQ(replaceAll("AAAA", "AA", "AAZAA"), "AAZAAAAZAA");
 }
 
-UNIT_TEST(StringTransformations, split) {
-    std::vector<std::string_view> v;
-
-    split("aa;bb;cc", ';', &v);
-    std::vector<std::string_view> r0 = {"aa", "bb", "cc"};
-    EXPECT_EQ(v, r0);
-
-    split("ABC", ';', &v);
-    std::vector<std::string_view> r1 = {"ABC"};
-    EXPECT_EQ(v, r1);
-
-    split("AB", 'B', &v);
-    std::vector<std::string_view> r2 = {"A", ""};
-    EXPECT_EQ(v, r2);
-
-    split("", ';', &v);
-    std::vector<std::string_view> r3 = {""};
-    EXPECT_EQ(v, r3);
-}
-
 UNIT_TEST(StringTransformations, join) {
     EXPECT_EQ(join("", '/', std::string_view("123"), std::string("321")), "/123321");
 }

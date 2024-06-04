@@ -1,5 +1,6 @@
 #include "Localization.h"
 
+#include <cstring>
 #include <string>
 
 #include "Engine/Objects/CharacterEnumFunctions.h"
@@ -7,6 +8,7 @@
 #include "Engine/GameResourceManager.h"
 
 #include "Utility/String/Transformations.h"
+#include "Utility/String/Split.h"
 
 Localization *localization = nullptr;
 

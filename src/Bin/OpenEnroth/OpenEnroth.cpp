@@ -23,6 +23,7 @@
 #include "Utility/String/Format.h"
 #include "Utility/UnicodeCrt.h"
 #include "Utility/String/Transformations.h"
+#include "Utility/String/Split.h"
 #include "Utility/Types.h"
 
 #include "OpenEnrothOptions.h"

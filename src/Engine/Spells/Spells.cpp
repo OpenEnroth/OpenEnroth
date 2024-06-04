@@ -1,5 +1,6 @@
 #include "Engine/Spells/Spells.h"
 
+#include <cstring>
 #include <algorithm>
 #include <map>
 #include <string>
@@ -19,6 +20,7 @@
 
 #include "Utility/Math/TrigLut.h"
 #include "Utility/String/Ascii.h"
+#include "Utility/String/Split.h"
 #include "Utility/MapAccess.h"
 
 SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
