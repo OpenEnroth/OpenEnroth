@@ -192,9 +192,9 @@ std::string ItemGen::GetIdentifiedName() {
         if (uHolderPlayer >= 0 && uHolderPlayer < pParty->pCharacters.size()) {
             const std::string &player_name = pParty->pCharacters[uHolderPlayer].name;
             if (player_name.back() == 's')
-                return localization->FormatString(LSTR_FMT_JAR, player_name);
-            else
                 return localization->FormatString(LSTR_FMT_JAR_2, player_name);
+            else
+                return localization->FormatString(LSTR_FMT_JAR, player_name);
         }
     }
 
