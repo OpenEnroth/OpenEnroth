@@ -233,3 +233,27 @@ GAME_TEST(Issues, Issue1673) {
     EXPECT_EQ(enabledTape.delta(), +25); // Monster spawning works.
     EXPECT_EQ(disabledTape, tape(0)); // But not when actors are disabled.
 }
+
+GAME_TEST(Issues, Issue1685) {
+    // Lich jar item name was "Kolya' jar" / "Nicholas's jar" instead of "Kolya's jar" / "Nicholas' jar"
+    game.startNewGame();
+    pParty->pCharacters[0].name = "Kolya";
+    pParty->pCharacters[1].name = "Nicholas";
+
+    ItemGen jar1;
+    jar1.uItemID = ItemId::ITEM_QUEST_LICH_JAR_FULL;
+    jar1.uHolderPlayer = 0;
+
+    ItemGen jar2;
+    jar2.uItemID = ItemId::ITEM_QUEST_LICH_JAR_FULL;
+    jar2.uHolderPlayer = 1;
+
+    game.runGameRoutine([&] {
+        // This code needs to be run in game thread b/c AddItem2 is loading textures...
+        pParty->pCharacters[0].AddItem2(-1, &jar1);
+        pParty->pCharacters[1].AddItem2(-1, &jar2);
+    });
+
+    EXPECT_EQ(jar1.GetIdentifiedName(), "Kolya's Jar");
+    EXPECT_EQ(jar2.GetIdentifiedName(), "Nicholas' Jar");
+}
