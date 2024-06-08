@@ -165,6 +165,24 @@ GAME_TEST(Issues, Issue1597) {
 
 // 1600
 
+GAME_TEST(Issues, Issue1655) {
+    // Assertion in CalcSpellDamage failed b/c an actor is trying to cast SPELL_NONE.
+    auto stateTape = actorTapes.aiState(73);
+    auto expressionsTape = charTapes.expressions();
+    test.playTraceFromTestData("issue_1655.mm7", "issue_1655.json");
+    EXPECT_EQ(stateTape, tape(AttackingMelee));
+
+    // Check that we have received quite a beating.
+    //
+    // The bug here was that the blasterguy had SPELL_NONE as one of the special attacks with a probability of 15%. So
+    // we need to roll attack enough times for this code path to trigger even upon retracing. 0.85^25 = ~2% chance not
+    // to trigger the relevant codepath.
+    auto beatingsTape = expressionsTape.filtered([] (const auto &expressions) {
+        return expressions.containsAny(CHARACTER_EXPRESSION_DMGRECVD_MINOR, CHARACTER_EXPRESSION_DMGRECVD_MODERATE, CHARACTER_EXPRESSION_DMGRECVD_MAJOR);
+    });
+    EXPECT_GE(beatingsTape.size(), 25);
+}
+
 GAME_TEST(Issues, Issue1657) {
     // Party can be placed at wrong position after canceling indoor transfer and changing map after it
     auto screenTape = tapes.screen();
