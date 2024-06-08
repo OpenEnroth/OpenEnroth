@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2ebc341</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b556a0f</span>
    </div>
   </td>
  </tr>
@@ -74,32 +74,15 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#namespaces">Namespaces</a> &#124;
-<a href="#concepts">Concepts</a> &#124;
-<a href="#func-members">Functions</a> &#124;
-<a href="#var-members">Variables</a>  </div>
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">Transformations.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;cstring&gt;</code><br />
-<code>#include &lt;algorithm&gt;</code><br />
-<code>#include &lt;string&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
+<div class="textblock"><code>#include &lt;string&gt;</code><br />
+<code>#include &lt;string_view&gt;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
-Namespaces</h2></td></tr>
-<tr class="memitem:namespacedetail"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacedetail.html">detail</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="concepts" name="concepts"></a>
-Concepts</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">concept &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conceptJoinableToString.html">JoinableToString</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a26543b6f1052f150560045f6a091e4fe"><td class="memItemLeft" align="right" valign="top">std::vector&lt; char * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#a26543b6f1052f150560045f6a091e4fe">tokenize</a> (char *input, const char separator)</td></tr>
-<tr class="separator:a26543b6f1052f150560045f6a091e4fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a32b8814bc1a5652c82d128b1566ba3c9"><td class="memItemLeft" align="right" valign="top">std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#a32b8814bc1a5652c82d128b1566ba3c9">removeQuotes</a> (std::string_view str)</td></tr>
 <tr class="separator:a32b8814bc1a5652c82d128b1566ba3c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6594f254aa6d2ca44371a419dc9297d7"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#a6594f254aa6d2ca44371a419dc9297d7">trimRemoveQuotes</a> (std::string str)</td></tr>
@@ -112,88 +95,8 @@ Functions</h2></td></tr>
 <tr class="separator:ad7be334215e4c19823a702e50687e9b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abce37d02d8240d54edb96502ca178a49"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#abce37d02d8240d54edb96502ca178a49">replaceAll</a> (std::string_view text, char what, char replacement)</td></tr>
 <tr class="separator:abce37d02d8240d54edb96502ca178a49"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3f1aed79fdcf0920dbf12c22e09e7c4"><td class="memTemplParams" colspan="2">template&lt;class Consumer &gt; </td></tr>
-<tr class="memitem:ae3f1aed79fdcf0920dbf12c22e09e7c4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#ae3f1aed79fdcf0920dbf12c22e09e7c4">split</a> (std::string_view <a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, char sep, Consumer &amp;&amp;consumer)</td></tr>
-<tr class="separator:ae3f1aed79fdcf0920dbf12c22e09e7c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3810690177cb57539130f0de5c96f8ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#a3810690177cb57539130f0de5c96f8ac">split</a> (std::string_view <a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, char sep, std::vector&lt; std::string_view &gt; *result)</td></tr>
-<tr class="separator:a3810690177cb57539130f0de5c96f8ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5d077992d827516cafb44a6126ffc06"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string_view &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#aa5d077992d827516cafb44a6126ffc06">split</a> (std::string_view <a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, char sep)</td></tr>
-<tr class="separator:aa5d077992d827516cafb44a6126ffc06"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7cd7d83eab1926c0dfe4285211b8951"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string_view &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#ae7cd7d83eab1926c0dfe4285211b8951">split</a> (const char *<a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, char sep)</td></tr>
-<tr class="separator:ae7cd7d83eab1926c0dfe4285211b8951"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a77debccb9efa601e8f2d18ab08aa9bd9"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string_view &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#a77debccb9efa601e8f2d18ab08aa9bd9">split</a> (std::string &amp;&amp;<a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, char sep)=delete</td></tr>
-<tr class="separator:a77debccb9efa601e8f2d18ab08aa9bd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f647795bd210b8edbc5c1a311207025"><td class="memTemplParams" colspan="2">template&lt;JoinableToString... Joinables&gt; <br />
-requires (sizeof...(Joinables) &gt; 0)</td></tr>
-<tr class="memitem:a6f647795bd210b8edbc5c1a311207025"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#a6f647795bd210b8edbc5c1a311207025">join</a> (Joinables &amp;&amp;... joinables)</td></tr>
-<tr class="separator:a6f647795bd210b8edbc5c1a311207025"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c3a95d4e9cfe05bfa92cb06d5c8c531"><td class="memTemplParams" colspan="2">template&lt;class Strings &gt; <br />
-requires <a class="el" href="conceptJoinableToString.html">JoinableToString</a>&lt;typename Strings::value_type&gt; &amp;&amp; (!<a class="el" href="conceptJoinableToString.html">JoinableToString</a>&lt;Strings&gt;)</td></tr>
-<tr class="memitem:a0c3a95d4e9cfe05bfa92cb06d5c8c531"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Transformations_8h.html#a0c3a95d4e9cfe05bfa92cb06d5c8c531">join</a> (const Strings &amp;strings, char sep)</td></tr>
-<tr class="separator:a0c3a95d4e9cfe05bfa92cb06d5c8c531"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
-Variables</h2></td></tr>
-<tr class="memitem:a81732f213af30bdd8a5e4c43982edda8"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a81732f213af30bdd8a5e4c43982edda8"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#a81732f213af30bdd8a5e4c43982edda8">detail::is_bounded_char_array_v</a> = false</td></tr>
-<tr class="separator:a81732f213af30bdd8a5e4c43982edda8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5c16cfa8cb5ca4f7366b633b9f6c21f"><td class="memTemplParams" colspan="2">template&lt;std::size_t N&gt; </td></tr>
-<tr class="memitem:ae5c16cfa8cb5ca4f7366b633b9f6c21f"><td class="memTemplItemLeft" align="right" valign="top">constexpr bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacedetail.html#ae5c16cfa8cb5ca4f7366b633b9f6c21f">detail::is_bounded_char_array_v&lt; char[N]&gt;</a> = true</td></tr>
-<tr class="separator:ae5c16cfa8cb5ca4f7366b633b9f6c21f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a0c3a95d4e9cfe05bfa92cb06d5c8c531" name="a0c3a95d4e9cfe05bfa92cb06d5c8c531"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0c3a95d4e9cfe05bfa92cb06d5c8c531">&#9670;&#160;</a></span>join() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class Strings &gt; <br />
-requires <a class="el" href="conceptJoinableToString.html">JoinableToString</a>&lt;typename Strings::value_type&gt; &amp;&amp; (!<a class="el" href="conceptJoinableToString.html">JoinableToString</a>&lt;Strings&gt;)</div>
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string join </td>
-          <td>(</td>
-          <td class="paramtype">const Strings &amp;&#160;</td>
-          <td class="paramname"><em>strings</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>sep</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6f647795bd210b8edbc5c1a311207025" name="a6f647795bd210b8edbc5c1a311207025"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6f647795bd210b8edbc5c1a311207025">&#9670;&#160;</a></span>join() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;JoinableToString... Joinables&gt; <br />
-requires (sizeof...(Joinables) &gt; 0)</div>
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string join </td>
-          <td>(</td>
-          <td class="paramtype">Joinables &amp;&amp;...&#160;</td>
-          <td class="paramname"><em>joinables</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a32b8814bc1a5652c82d128b1566ba3c9" name="a32b8814bc1a5652c82d128b1566ba3c9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a32b8814bc1a5652c82d128b1566ba3c9">&#9670;&#160;</a></span>removeQuotes()</h2>
 
@@ -296,194 +199,6 @@ requires (sizeof...(Joinables) &gt; 0)</div>
 
 </div>
 </div>
-<a id="ae7cd7d83eab1926c0dfe4285211b8951" name="ae7cd7d83eab1926c0dfe4285211b8951"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae7cd7d83eab1926c0dfe4285211b8951">&#9670;&#160;</a></span>split() <span class="overload">[1/5]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt; std::string_view &gt; split </td>
-          <td>(</td>
-          <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>s</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>sep</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a77debccb9efa601e8f2d18ab08aa9bd9" name="a77debccb9efa601e8f2d18ab08aa9bd9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a77debccb9efa601e8f2d18ab08aa9bd9">&#9670;&#160;</a></span>split() <span class="overload">[2/5]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt; std::string_view &gt; split </td>
-          <td>(</td>
-          <td class="paramtype">std::string &amp;&amp;&#160;</td>
-          <td class="paramname"><em>s</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>sep</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa5d077992d827516cafb44a6126ffc06" name="aa5d077992d827516cafb44a6126ffc06"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5d077992d827516cafb44a6126ffc06">&#9670;&#160;</a></span>split() <span class="overload">[3/5]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt; std::string_view &gt; split </td>
-          <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>s</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>sep</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae3f1aed79fdcf0920dbf12c22e09e7c4" name="ae3f1aed79fdcf0920dbf12c22e09e7c4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae3f1aed79fdcf0920dbf12c22e09e7c4">&#9670;&#160;</a></span>split() <span class="overload">[4/5]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class Consumer &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void split </td>
-          <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>s</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>sep</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Consumer &amp;&amp;&#160;</td>
-          <td class="paramname"><em>consumer</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p >Splits the provided string <code>s</code> using separator <code>sep</code>, passing <code>std::string_view</code> chunks into <code>consumer</code>.</p>
-<p >This function doesn't discard empty chunks, so at least one chunk will always be passed to <code>consumer</code> - splitting an empty string produces a single empty chunk.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">s</td><td>String to split. </td></tr>
-    <tr><td class="paramname">sep</td><td>Separator character. </td></tr>
-    <tr><td class="paramname">consumer</td><td>Lambda to pass <code>std::string_view</code> chunks into. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a3810690177cb57539130f0de5c96f8ac" name="a3810690177cb57539130f0de5c96f8ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3810690177cb57539130f0de5c96f8ac">&#9670;&#160;</a></span>split() <span class="overload">[5/5]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void split </td>
-          <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>s</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>sep</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::vector&lt; std::string_view &gt; *&#160;</td>
-          <td class="paramname"><em>result</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a2b9c38d4b6e7b1de0adc8219f65fff37" name="a2b9c38d4b6e7b1de0adc8219f65fff37"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2b9c38d4b6e7b1de0adc8219f65fff37">&#9670;&#160;</a></span>toHexDump()</h2>
 
@@ -518,34 +233,6 @@ template&lt;class Consumer &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Hex dump of the provided string. </dd></dl>
-
-</div>
-</div>
-<a id="a26543b6f1052f150560045f6a091e4fe" name="a26543b6f1052f150560045f6a091e4fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a26543b6f1052f150560045f6a091e4fe">&#9670;&#160;</a></span>tokenize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt; char * &gt; tokenize </td>
-          <td>(</td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>input</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const char&#160;</td>
-          <td class="paramname"><em>separator</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
 
 </div>
 </div>

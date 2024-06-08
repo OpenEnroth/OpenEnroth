@@ -69,7 +69,7 @@ var searchData=
   ['tohsv_66',['toHsv',['../structColorf.html#ab61e9d2367c1aee8ba9601d5637b6cb0',1,'Colorf']]],
   ['toint_67',['toInt',['../structVec3.html#a57325647f3fd60fcaf73dc9ed7b0b47d',1,'Vec3']]],
   ['tointtrunc_68',['toIntTrunc',['../structVec3.html#aa18f8d10dad44a61a6974a61c5bb7f77',1,'Vec3']]],
-  ['tokenize_69',['tokenize',['../Transformations_8cpp.html#a26543b6f1052f150560045f6a091e4fe',1,'tokenize(char *input, const char separator):&#160;Transformations.cpp'],['../Transformations_8h.html#a26543b6f1052f150560045f6a091e4fe',1,'tokenize(char *input, const char separator):&#160;Transformations.cpp']]],
+  ['tokenize_69',['tokenize',['../Split_8cpp.html#a26543b6f1052f150560045f6a091e4fe',1,'tokenize(char *input, const char separator):&#160;Split.cpp'],['../Split_8h.html#a26543b6f1052f150560045f6a091e4fe',1,'tokenize(char *input, const char separator):&#160;Split.cpp']]],
   ['tolongcivilduration_70',['toLongCivilDuration',['../classDuration.html#a1d6efb7674e43754bd2e02037865eb15',1,'Duration']]],
   ['tolower_71',['toLower',['../namespaceascii.html#a71bc1b44c251c37c04ee0fd3bd21659d',1,'ascii::toLower(std::string_view text)'],['../namespaceascii.html#ad3285c0fe3e293ca58b3a6356273c42f',1,'ascii::toLower(char c)']]],
   ['tominutes_72',['toMinutes',['../classTime.html#aa54b52530e472b5bf66a7b60117260d4',1,'Time']]],
