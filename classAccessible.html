@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b556a0f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;73a019d</span>
    </div>
   </td>
  </tr>
@@ -127,6 +127,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a42ffc6465109812aadc3af051e46f9c7"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
 <tr class="memitem:a42ffc6465109812aadc3af051e46f9c7"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classAccessible.html#a42ffc6465109812aadc3af051e46f9c7">containsAll</a> (const Args &amp;... args) const</td></tr>
 <tr class="separator:a42ffc6465109812aadc3af051e46f9c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a308e200eb6ef2092bbb264a37e38c49b"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:a308e200eb6ef2092bbb264a37e38c49b"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classAccessible.html#a308e200eb6ef2092bbb264a37e38c49b">containsAny</a> (const Args &amp;... args) const</td></tr>
+<tr class="separator:a308e200eb6ef2092bbb264a37e38c49b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a568170c3dcd56e6b5abe1d3010f3d1b3"><td class="memTemplParams" colspan="2">template&lt;class Predicate &gt; <br />
 requires std::is_invocable_v&lt;Predicate, <a class="el" href="classAccessible.html#a357d7a8d5b7bd585cc3fcf662778919a">value_type</a>&gt;</td></tr>
 <tr class="memitem:a568170c3dcd56e6b5abe1d3010f3d1b3"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classAccessible.html#a568170c3dcd56e6b5abe1d3010f3d1b3">contains</a> (Predicate predicate) const</td></tr>
@@ -321,6 +324,36 @@ template&lt;class... Args&gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">bool <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::containsAll </td>
+          <td>(</td>
+          <td class="paramtype">const Args &amp;...&#160;</td>
+          <td class="paramname"><em>args</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a308e200eb6ef2092bbb264a37e38c49b" name="a308e200eb6ef2092bbb264a37e38c49b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a308e200eb6ef2092bbb264a37e38c49b">&#9670;&#160;</a></span>containsAny()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Base &gt; </div>
+<div class="memtemplate">
+template&lt;class... Args&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classAccessible.html">Accessible</a>&lt; Base &gt;::containsAny </td>
           <td>(</td>
           <td class="paramtype">const Args &amp;...&#160;</td>
           <td class="paramname"><em>args</em></td><td>)</td>
