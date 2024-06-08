@@ -146,6 +146,11 @@ class Accessible : public Base {
         return (contains(static_cast<value_type>(args)) && ...);
     }
 
+    template<class... Args>
+    bool containsAny(const Args &... args) const {
+        return (contains(static_cast<value_type>(args)) || ...);
+    }
+
     template<class Predicate> requires std::is_invocable_v<Predicate, value_type>
     bool contains(Predicate predicate) const {
         return std::find_if(begin(), end(), std::move(predicate)) != end();
