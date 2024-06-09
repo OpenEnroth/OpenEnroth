@@ -51,3 +51,6 @@
 [submodule "thirdparty/small_vector"]
 	path = thirdparty/small_vector
 	url = https://github.com/gharveymn/small_vector.git
+[submodule "thirdparty/cmrc"]
+	path = thirdparty/cmrc
+	url = https://github.com/vector-of-bool/cmrc.git

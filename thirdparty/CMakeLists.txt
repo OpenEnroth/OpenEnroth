@@ -6,6 +6,7 @@ set(BUILD_TESTING OFF CACHE BOOL "Don't build tests for subprojects. Value is fo
 # Note that setting a CMAKE_POLICY_* variable is the intended way to pass this policy to a subproject.
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
+add_subdirectory(cmrc)
 add_subdirectory(fast_float)
 add_subdirectory(glm)
 add_subdirectory(magic_enum)
