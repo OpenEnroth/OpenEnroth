@@ -324,21 +324,21 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
     }
 
     switch (result) {
-        case SoundPlaybackResult::SOUND_PLAYBACK_FAILED:
+        case SOUND_PLAYBACK_FAILED:
             if (si->sName.empty()) {
                 logger->warning("AudioPlayer: failed to play audio {} with name '{}'", std::to_underlying(eSoundID), si->sName);
             } else {
                 logger->warning("AudioPlayer: failed to play audio {}", std::to_underlying(eSoundID));
             }
             break;
-        case SoundPlaybackResult::SOUND_PLAYBACK_SKIPPED:
+        case SOUND_PLAYBACK_SKIPPED:
             if (si->sName.empty()) {
                 logger->trace("AudioPlayer: skipped playing sound {}", std::to_underlying(eSoundID));
             } else {
                 logger->trace("AudioPlayer: skipped playing sound {} with name '{}'", std::to_underlying(eSoundID), si->sName);
             }
             break;
-        case SoundPlaybackResult::SOUND_PLAYBACK_SUCCEEDED:
+        case SOUND_PLAYBACK_SUCCEEDED:
             if (si->sName.empty()) {
                 logger->trace("AudioPlayer: playing sound {}", std::to_underlying(eSoundID));
             } else {
