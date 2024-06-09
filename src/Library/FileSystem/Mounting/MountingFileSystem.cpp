@@ -150,7 +150,7 @@ MountingFileSystem::WalkResult MountingFileSystem::walk(const FileSystemPath &pa
     }
 
     if (mount) {
-        return {node, mount, FileSystemPath(path.string().substr(std::min(path.string().size(), tailOffset)))};
+        return {node, mount, FileSystemPath::fromNormalized(path.string().substr(std::min(path.string().size(), tailOffset + 1)))};
     } else {
         return {node, nullptr, FileSystemPath()};
     }
