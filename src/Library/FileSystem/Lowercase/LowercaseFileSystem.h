@@ -14,7 +14,11 @@
  *   a potentially case-sensitive filesystem.
  * - Is a view, and thus read-only.
  * - Caches the contents of the underlying filesystem in constructor. Call `refresh` to update the cache.
- * - Constructor and `refresh` throw on coflicts.
+ * - Constructor and `refresh` throw on conflicts.
+ *
+ * Some notes on why it is designed the way it is designed. Previous iteration was a writeable FS that was always up
+ * to date with the underlying FS (was checking timestamps for all parents in each call). The code was messy, it was
+ * O(N) on each call, and even after writing an implementation that actually worked, I hated it.
  */
 class LowercaseFileSystem : public ReadOnlyFileSystem {
  public:
