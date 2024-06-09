@@ -177,6 +177,9 @@ GAME_TEST(Issues, Issue1655) {
     // The bug here was that the blasterguy had SPELL_NONE as one of the special attacks with a probability of 15%. So
     // we need to roll attack enough times for this code path to trigger even upon retracing. 0.85^25 = ~2% chance not
     // to trigger the relevant codepath.
+    EXPECT_EQ(pActors[73].monsterInfo.id, MONSTER_BLASTERGUY_C);
+    EXPECT_EQ(pActors[73].monsterInfo.spell1Id, SPELL_NONE);
+    EXPECT_EQ(pActors[73].monsterInfo.spell1UseChance, 15);
     auto beatingsTape = expressionsTape.filtered([] (const auto &expressions) {
         return expressions.containsAny(CHARACTER_EXPRESSION_DMGRECVD_MINOR, CHARACTER_EXPRESSION_DMGRECVD_MODERATE, CHARACTER_EXPRESSION_DMGRECVD_MAJOR);
     });
