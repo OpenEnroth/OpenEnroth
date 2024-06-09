@@ -4,11 +4,17 @@
 #include <cstring>
 #include <string>
 
-StringOutputStream::StringOutputStream(std::string *target) : _target(target) {
-    assert(target);
+StringOutputStream::StringOutputStream(std::string *target) {
+    open(target);
 }
 
 StringOutputStream::~StringOutputStream() {}
+
+void StringOutputStream::open(std::string *target) {
+    assert(target);
+
+    _target = target; // No need to call close() here.
+}
 
 void StringOutputStream::write(const void *data, size_t size) {
     assert(_target);
