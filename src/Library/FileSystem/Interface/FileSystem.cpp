@@ -103,6 +103,9 @@ bool FileSystem::remove(const FileSystemPath &path) {
 }
 
 void FileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath) {
+    assert(!srcPath.isEmpty());
+    assert(!dstPath.isEmpty());
+
     FileStat srcStat = _stat(srcPath);
     if (!srcStat)
         throw FileSystemException(FileSystemException::RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
