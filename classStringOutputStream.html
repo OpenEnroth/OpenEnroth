@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;73a019d</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d082971</span>
    </div>
   </td>
  </tr>
@@ -91,10 +91,14 @@ Inheritance diagram for StringOutputStream:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a0c4caad8a580ebe4bb9d8c31e8525554"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classStringOutputStream.html#a0c4caad8a580ebe4bb9d8c31e8525554">StringOutputStream</a> ()=default</td></tr>
+<tr class="separator:a0c4caad8a580ebe4bb9d8c31e8525554"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84b9818ae80a617bddd080590912b5f0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classStringOutputStream.html#a84b9818ae80a617bddd080590912b5f0">StringOutputStream</a> (std::string *target)</td></tr>
 <tr class="separator:a84b9818ae80a617bddd080590912b5f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14fe71f694b3c145543b258775aec973"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classStringOutputStream.html#a14fe71f694b3c145543b258775aec973">~StringOutputStream</a> ()</td></tr>
 <tr class="separator:a14fe71f694b3c145543b258775aec973"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a332e5b7834f206b1bd48311fe45aa810"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classStringOutputStream.html#a332e5b7834f206b1bd48311fe45aa810">open</a> (std::string *target)</td></tr>
+<tr class="separator:a332e5b7834f206b1bd48311fe45aa810"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7451251eedd657ccf03e5de95654c97a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classStringOutputStream.html#a7451251eedd657ccf03e5de95654c97a">write</a> (const void *data, size_t size) override</td></tr>
 <tr class="separator:a7451251eedd657ccf03e5de95654c97a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43c745c1582a8cb5f6da485583fe6029"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classStringOutputStream.html#a43c745c1582a8cb5f6da485583fe6029">flush</a> () override</td></tr>
@@ -123,8 +127,33 @@ Private Attributes</h2></td></tr>
 <tr class="separator:ad7e30f81a3f40443e949c74e7209eb8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a0c4caad8a580ebe4bb9d8c31e8525554" name="a0c4caad8a580ebe4bb9d8c31e8525554"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c4caad8a580ebe4bb9d8c31e8525554">&#9670;&#160;</a></span>StringOutputStream() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">StringOutputStream::StringOutputStream </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a84b9818ae80a617bddd080590912b5f0" name="a84b9818ae80a617bddd080590912b5f0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a84b9818ae80a617bddd080590912b5f0">&#9670;&#160;</a></span>StringOutputStream()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a84b9818ae80a617bddd080590912b5f0">&#9670;&#160;</a></span>StringOutputStream() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -245,6 +274,24 @@ Private Attributes</h2></td></tr>
 <p>Implements <a class="el" href="classOutputStream.html#a2b731aef87084c3779bea292f85e800d">OutputStream</a>.</p>
 
 <p>Reimplemented in <a class="el" href="classBlobOutputStream.html#a2d506bed47c323ac04bf4d5e654a649a">BlobOutputStream</a>.</p>
+
+</div>
+</div>
+<a id="a332e5b7834f206b1bd48311fe45aa810" name="a332e5b7834f206b1bd48311fe45aa810"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a332e5b7834f206b1bd48311fe45aa810">&#9670;&#160;</a></span>open()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void StringOutputStream::open </td>
+          <td>(</td>
+          <td class="paramtype">std::string *&#160;</td>
+          <td class="paramname"><em>target</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
