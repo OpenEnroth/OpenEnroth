@@ -8,12 +8,23 @@
 #include "Utility/Exception.h"
 
 BlobInputStream::BlobInputStream(Blob &&blob) {
+    open(std::move(blob));
+}
+
+BlobInputStream::BlobInputStream(const Blob &blob) {
+    open(blob);
+}
+
+void BlobInputStream::open(Blob &&blob) {
+    // No need to call close() here, we're overwriting all the fields anyway.
     _blob = std::move(blob);
     _pos = static_cast<const char *>(_blob.data());
     _end = _pos + _blob.size();
 }
 
-BlobInputStream::BlobInputStream(const Blob &blob): BlobInputStream(Blob::share(blob)) {}
+void BlobInputStream::open(const Blob &blob) {
+    open(Blob::share(blob));
+}
 
 size_t BlobInputStream::read(void *data, size_t size) {
     assert(_pos);
