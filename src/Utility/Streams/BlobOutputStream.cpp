@@ -3,12 +3,25 @@
 #include <cassert>
 #include <utility>
 
-BlobOutputStream::BlobOutputStream(Blob *target) : base_type(&Embedded::get()), _target(target) {
-    assert(target);
+BlobOutputStream::BlobOutputStream() {}
+
+
+BlobOutputStream::BlobOutputStream(Blob *target) : BlobOutputStream() {
+    open(target);
 }
 
 BlobOutputStream::~BlobOutputStream() {
     closeInternal();
+}
+
+void BlobOutputStream::open(Blob *target) {
+    assert(target);
+
+    closeInternal();
+    assert(Embedded::get().empty());
+
+    _target = target;
+    base_type::open(&Embedded::get());
 }
 
 void BlobOutputStream::flush() {

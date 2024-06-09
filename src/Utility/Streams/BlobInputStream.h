@@ -16,6 +16,9 @@ class BlobInputStream : public InputStream {
     explicit BlobInputStream(Blob &&blob);
     explicit BlobInputStream(const Blob &blob); // Shares the blob and stores the shared copy in this stream object.
 
+    void open(Blob &&blob);
+    void open(const Blob &blob);
+
     virtual size_t read(void *data, size_t size) override;
     virtual size_t skip(size_t size) override;
     virtual void close() override;
