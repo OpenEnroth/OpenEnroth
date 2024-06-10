@@ -11,14 +11,6 @@
 
 FileSystemPath::FileSystemPath(std::string_view path) : _path(normalizePath(path)) {}
 
-FileSystemPath FileSystemPath::fromNormalized(std::string path) {
-    assert(normalizePath(path) == path);
-
-    FileSystemPath result;
-    result._path = std::move(path);
-    return result;
-}
-
 std::string FileSystemPath::normalizePath(std::string_view path) {
     std::string normalPath = replaceAll(path, '\\', '/'); // Please no '\\' path separators.
 
