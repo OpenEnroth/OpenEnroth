@@ -38,13 +38,13 @@ UNIT_TEST(MemoryFileSystem, Ls) {
     fs.write("a/c/d", Blob());
 
     std::vector<DirectoryEntry> ls0 = sorted(fs.ls(""));
-    EXPECT_EQ(ls0, (std::vector<DirectoryEntry>{{"a", FILE_DIRECTORY}}));
+    EXPECT_EQ(ls0, std::vector<DirectoryEntry>({{"a", FILE_DIRECTORY}}));
 
     std::vector<DirectoryEntry> ls1 = sorted(fs.ls("a"));
-    EXPECT_EQ(ls1, (std::vector<DirectoryEntry>{{"b", FILE_REGULAR}, {"c", FILE_DIRECTORY}}));
+    EXPECT_EQ(ls1, std::vector<DirectoryEntry>({{"b", FILE_REGULAR}, {"c", FILE_DIRECTORY}}));
 
     std::vector<DirectoryEntry> ls2 = sorted(fs.ls("a/c"));
-    EXPECT_EQ(ls2, (std::vector<DirectoryEntry>{{"d", FILE_REGULAR}}));
+    EXPECT_EQ(ls2, std::vector<DirectoryEntry>({{"d", FILE_REGULAR}}));
 
     EXPECT_ANY_THROW((void) fs.ls("a/b"));
     EXPECT_ANY_THROW((void) fs.ls("a/c/d"));
@@ -173,6 +173,6 @@ UNIT_TEST(MemoryFileSystem, Rename) {
 
     EXPECT_EQ(fs.read("x/y/d").string_view(), "1234");
     EXPECT_EQ(fs.read("x/y/c").string_view(), "123");
-    EXPECT_EQ(fs.ls("x"), (std::vector<DirectoryEntry>{{"y", FILE_DIRECTORY}}));
-    EXPECT_EQ(sorted(fs.ls("x/y")), (std::vector<DirectoryEntry>{{"c", FILE_REGULAR}, {"d", FILE_REGULAR}}));
+    EXPECT_EQ(fs.ls("x"), std::vector<DirectoryEntry>({{"y", FILE_DIRECTORY}}));
+    EXPECT_EQ(sorted(fs.ls("x/y")), std::vector<DirectoryEntry>({{"c", FILE_REGULAR}, {"d", FILE_REGULAR}}));
 }
