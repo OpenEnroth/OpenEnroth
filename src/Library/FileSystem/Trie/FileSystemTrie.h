@@ -100,9 +100,6 @@ class FileSystemTrie {
     Node *find(Node *base, const FileSystemPath &relativePath) {
         assert(base);
 
-        if (relativePath.isEmpty())
-            return base;
-
         for (std::string_view chunk : relativePath.chunks()) {
             base = base->child(chunk);
             if (!base)
@@ -127,18 +124,13 @@ class FileSystemTrie {
     Node *walk(Node *base, const FileSystemPath &relativePath, FileSystemPath *tail = nullptr) {
         assert(base);
 
-        if (!relativePath.isEmpty()) {
-            for (std::string_view chunk : relativePath.chunks()) {
-                if (Node *child = base->child(chunk)) {
-                    base = child;
-                } else {
-                    if (tail) {
-                        assert(chunk.data() >= relativePath.string().data() && chunk.data() < relativePath.string().data() + relativePath.string().size());
-                        size_t offset = chunk.data() - relativePath.string().data();
-                        *tail = FileSystemPath::fromNormalized(relativePath.string().substr(offset));
-                    }
-                    return base;
-                }
+        for (std::string_view chunk : relativePath.chunks()) {
+            if (Node *child = base->child(chunk)) {
+                base = child;
+            } else {
+                if (tail)
+                    *tail = relativePath.tailAt(chunk);
+                return base;
             }
         }
 
@@ -248,7 +240,7 @@ class FileSystemTrie {
     }
 
     Node *insertOrAssign(const FileSystemPath &path, std::unique_ptr<Node> node) {
-        return insert(root(), path, std::move(node));
+        return insertOrAssign(root(), path, std::move(node));
     }
 
     void clear() {
@@ -272,9 +264,6 @@ class FileSystemTrie {
 
     Node *_grow(Node *base, const FileSystemPath &relativePath) {
         assert(base);
-
-        if (relativePath.isEmpty())
-            return base;
 
         for (std::string_view chunk : relativePath.chunks()) {
             if (Node *child = base->child(chunk)) {

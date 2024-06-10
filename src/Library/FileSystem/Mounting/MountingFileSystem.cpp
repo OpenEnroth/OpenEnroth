@@ -1,7 +1,6 @@
 #include "MountingFileSystem.h"
 
 #include <vector>
-#include <algorithm>
 #include <memory>
 #include <ranges>
 #include <span>
@@ -138,19 +137,19 @@ MountingFileSystem::WalkResult MountingFileSystem::walk(const FileSystemPath &pa
     if (path.isEmpty())
         return {node, mount, FileSystemPath()};
 
-    size_t tailOffset = 0;
+    std::string_view mountChunk;
     for (std::string_view chunk : path.chunks()) {
         node = node->child(chunk);
         if (!node)
             break;
         if (node->hasValue()) {
             mount = node->value();
-            tailOffset = chunk.data() + chunk.size() - path.string().data();
+            mountChunk = chunk;
         }
     }
 
     if (mount) {
-        return {node, mount, FileSystemPath::fromNormalized(path.string().substr(std::min(path.string().size(), tailOffset + 1)))};
+        return {node, mount, path.tailAfter(mountChunk)};
     } else {
         return {node, nullptr, FileSystemPath()};
     }

@@ -4,6 +4,7 @@
 #include <compare>
 #include <string>
 #include <string_view>
+#include <utility>
 
 #include "Utility/String/Split.h"
 #include "Utility/String/Format.h"
@@ -26,7 +27,13 @@ class FileSystemPath {
  public:
     explicit FileSystemPath(std::string_view path);
 
-    static FileSystemPath fromNormalized(std::string path);
+    static FileSystemPath fromNormalized(std::string path) {
+        assert(normalizePath(path) == path);
+
+        FileSystemPath result;
+        result._path = std::move(path);
+        return result;
+    }
 
     /**
      * Constructs a root path.
@@ -58,18 +65,54 @@ class FileSystemPath {
         return _path;
     }
 
-    [[nodiscard]] auto chunks() const {
-        return split(_path, '/');
+    [[nodiscard]] auto chunks() const { // TODO(captainurist): fix usages now that we're not returning chunks
+        if (_path.empty()) {
+            return detail::SplitView();
+        } else {
+            return split(_path, '/');
+        }
     }
 
-    [[nodiscard]] FileSystemPath appended(std::string_view name) const {
-        assert(name.find('\\') == std::string_view::npos && name.find('/') == std::string_view::npos && name != "." && name != "..");
+    [[nodiscard]] FileSystemPath tailAt(std::string_view chunk) const {
+        assert(chunk.data() >= _path.data() && chunk.data() + chunk.size() <= _path.data() + _path.size());
+        size_t offset = chunk.data() - _path.data();
+        return fromNormalized(_path.substr(offset));
+    }
 
+    [[nodiscard]] FileSystemPath tailAfter(std::string_view chunk) const {
+        assert(chunk.data() >= _path.data() && chunk.data() + chunk.size() <= _path.data() + _path.size());
+        if (chunk.data() + chunk.size() == _path.data() + _path.size()) {
+            return {};
+        } else {
+            size_t offset = chunk.data() + chunk.size() - _path.data() + 1;
+            return fromNormalized(_path.substr(offset));
+        }
+    }
+
+    void append(std::string_view chunk) {
+        assert(chunk.empty() || (chunk.find('\\') == std::string_view::npos && chunk.find('/') == std::string_view::npos && chunk != "." && chunk != ".."));
+
+        if (!_path.empty() && !chunk.empty())
+            _path += '/';
+        _path += chunk;
+    }
+
+    void append(const FileSystemPath &tail) {
+        if (!_path.empty() && !tail.isEmpty())
+            _path += '/';
+        _path += tail._path;
+    }
+
+    // TODO(captainurist): name this one better, it takes a chunk, not a path that needs to be re-normalized.
+    [[nodiscard]] FileSystemPath appended(std::string_view chunk) const {
         FileSystemPath result = *this;
-        if (!result._path.empty())
-            result._path += '/';
-        result._path += name;
+        result.append(chunk);
+        return result;
+    }
 
+    [[nodiscard]] FileSystemPath appended(const FileSystemPath &tail) const {
+        FileSystemPath result = *this;
+        result.append(tail);
         return result;
     }
 
