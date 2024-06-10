@@ -24,6 +24,7 @@ class FileSystemException : public Exception {
         READ_FAILED_PATH_IS_DIR,
 
         WRITE_FAILED_PATH_NOT_WRITEABLE, // E.g. on a read-only filesystem.
+        WRITE_FAILED_FILE_IN_PATH, // Writing to "a/b.txt/c" where "a/b.txt" is an existing file.
         WRITE_FAILED_PATH_IS_DIR,
 
         RENAME_FAILED_DST_NOT_WRITEABLE,

@@ -27,6 +27,8 @@ std::string FileSystemException::formatMessage(Code code, const FileSystemPath &
 
     case WRITE_FAILED_PATH_NOT_WRITEABLE:
         return fmt::format("Could not write to '{}' because the provided path is not writeable.", arg0);
+    case WRITE_FAILED_FILE_IN_PATH:
+        return fmt::format("Could not write to '{}' because the provided path goes through an existing file.", arg0);
     case WRITE_FAILED_PATH_IS_DIR:
         return fmt::format("Could not write to '{}' because the provided path is a directory.", arg0);
 
