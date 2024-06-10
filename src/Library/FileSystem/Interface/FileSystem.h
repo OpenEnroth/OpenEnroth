@@ -151,6 +151,8 @@ class FileSystem {
     template<class T>
     using FileSystemTrie = detail::FileSystemTrie<T>;
 
+    friend class ProxyFileSystem; // It's OK for the default proxy implementation to call into the private methods.
+
  protected:
     [[nodiscard]] virtual bool _exists(const FileSystemPath &path) const = 0;
     [[nodiscard]] virtual FileStat _stat(const FileSystemPath &path) const = 0;
