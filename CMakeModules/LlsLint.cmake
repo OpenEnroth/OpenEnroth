@@ -1,13 +1,11 @@
 function(init_check_lua_style)
     if(OE_CHECK_LUA_STYLE)
-        unset(OE_LUALANGUAGESERVER_COMMAND CACHE)
-        unset(OE_LLS_CHECK_COMMAND CACHE)
-        find_program(OE_LUALANGUAGESERVER_COMMAND lua-language-server)
+        find_program(OE_LLS_COMMAND lua-language-server)
         set(OE_LLS_CHECK_COMMAND "${PROJECT_SOURCE_DIR}/lls-check.py" CACHE FILEPATH "Lua Language Server check script")
-        if(OE_LUALANGUAGESERVER_COMMAND)
-            message("Lua Language Server Found")
+        if(OE_LLS_COMMAND)
+            message("Using lua-language-server at '${OE_LLS_COMMAND}'")
         else()
-            message("Could not find Lua Language Server")
+            message("Could not find lua-language-server")
         endif()
     endif()
 endfunction()
@@ -18,7 +16,7 @@ function(source_check_lua_style TARGET)
         
         set(LOG_OUTPUT_DIR "${CMAKE_BINARY_DIR}/lls-check/${TARGET}")
         add_custom_target(${TARGET_NAME}
-                COMMAND Python::Interpreter ${OE_LLS_CHECK_COMMAND} ${OE_LUALANGUAGESERVER_COMMAND} ${PROJECT_SOURCE_DIR} ${LOG_OUTPUT_DIR} "${PROJECT_SOURCE_DIR}/.luarc.json"
+                COMMAND Python::Interpreter ${OE_LLS_CHECK_COMMAND} ${OE_LLS_COMMAND} ${PROJECT_SOURCE_DIR} ${LOG_OUTPUT_DIR} "${PROJECT_SOURCE_DIR}/.luarc.json"
                 WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 
         add_dependencies(check_style ${TARGET_NAME})
@@ -27,8 +25,7 @@ function(source_check_lua_style TARGET)
 endfunction()
 
 function(target_check_lua_style TARGET)
-    if(OE_CHECK_LUA_STYLE AND OE_LUALANGUAGESERVER_COMMAND)
+    if(OE_CHECK_LUA_STYLE AND OE_LLS_COMMAND)
         source_check_lua_style(${TARGET})
-
     endif()
 endfunction()
