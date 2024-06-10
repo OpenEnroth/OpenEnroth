@@ -131,7 +131,7 @@ UNIT_TEST(MemoryFileSystem, Remove) {
     EXPECT_FALSE(fs.exists("a"));
     EXPECT_EQ(fs.ls("").size(), 0);
 
-    EXPECT_EQ(input->readAll(), "123");
+    EXPECT_EQ(input->readAll(), "123"); // Input stream still readable, even though the file was removed.
     input->close();
 }
 
@@ -143,7 +143,7 @@ UNIT_TEST(MemoryFileSystem, Lifetime) {
     std::unique_ptr<OutputStream> output = fs->openForWriting("b");
 
     fs.reset();
-    EXPECT_EQ(input->readAll(), "123");
+    EXPECT_EQ(input->readAll(), "123"); // Input stream still readable, even though the FS was destroyed.
     input->close();
 
     output->write("123");
@@ -164,10 +164,10 @@ UNIT_TEST(MemoryFileSystem, Rename) {
     EXPECT_ANY_THROW(fs.rename("a/b", "a"));
 
     fs.rename("a/b", "x/y");
-    EXPECT_FALSE(fs.exists("a"));
+    EXPECT_FALSE(fs.exists("a")); // "a" is now empty, so was trimmed.
     EXPECT_ANY_THROW((void) fs.ls("a"));
-    EXPECT_EQ(input->readAll(), "123");
 
+    EXPECT_EQ(input->readAll(), "123"); // Moving files around keeps the streams valid.
     output->write("1234");
     output->close();
 
