@@ -112,3 +112,11 @@ UNIT_TEST(MountingFileSystem, RenameDifferentFs) {
     EXPECT_EQ(mfs2.read("a").string_view(), "123");
 }
 
+UNIT_TEST(MountingFileSystem, Binary) {
+    MountingFileSystem fs;
+    fs.mount("0", &fs);
+    fs.mount("1", &fs);
+
+    EXPECT_TRUE(fs.exists("1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1"));
+    EXPECT_TRUE(fs.exists("0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0"));
+}
