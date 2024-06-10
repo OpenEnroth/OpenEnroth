@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d082971</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2c2603c</span>
    </div>
   </td>
  </tr>
@@ -91,6 +91,8 @@ Inheritance diagram for detail::SplitView:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a395c096fd74c700894f557b1ac00f0ae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1SplitView.html#a395c096fd74c700894f557b1ac00f0ae">SplitView</a> ()</td></tr>
+<tr class="separator:a395c096fd74c700894f557b1ac00f0ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a30e009aae7fdbd71afb2d0cbbdb65796"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1SplitView.html#a30e009aae7fdbd71afb2d0cbbdb65796">SplitView</a> (std::string_view <a class="el" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a>, char sep)</td></tr>
 <tr class="separator:a30e009aae7fdbd71afb2d0cbbdb65796"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aca83e8a41f7dbf70f085766558efdd69"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1SplitView.html#aca83e8a41f7dbf70f085766558efdd69">begin</a> () const</td></tr>
@@ -104,17 +106,44 @@ requires std::is_same_v&lt;std::remove_cv_t&lt;typename Container::value_type::v
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a1069106c0daa1c910525c41c422593eb"><td class="memItemLeft" align="right" valign="top">std::string_view&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1SplitView.html#a1069106c0daa1c910525c41c422593eb">_s</a></td></tr>
-<tr class="separator:a1069106c0daa1c910525c41c422593eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4f7093d45153483fdf367250fc9a594"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1SplitView.html#af4f7093d45153483fdf367250fc9a594">_sep</a></td></tr>
+<tr class="memitem:abfa3cb4d32561eb05bb993722a02b7d6"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1SplitView.html#abfa3cb4d32561eb05bb993722a02b7d6">_begin</a> = nullptr</td></tr>
+<tr class="separator:abfa3cb4d32561eb05bb993722a02b7d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae762e42a466837a93dcdb6b5256b742e"><td class="memItemLeft" align="right" valign="top">const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1SplitView.html#ae762e42a466837a93dcdb6b5256b742e">_end</a> = nullptr</td></tr>
+<tr class="separator:ae762e42a466837a93dcdb6b5256b742e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4f7093d45153483fdf367250fc9a594"><td class="memItemLeft" align="right" valign="top">char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1SplitView.html#af4f7093d45153483fdf367250fc9a594">_sep</a> = '\0'</td></tr>
 <tr class="separator:af4f7093d45153483fdf367250fc9a594"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >We use C++ and this is why we can't have nice things. It's 2024, we still can't split a string w/o jumping through hoops. Just look at this: <a href="https://cplusplus.github.io/LWG/issue4017">https://cplusplus.github.io/LWG/issue4017</a>. One option is to use <code>std::views::drop</code> in a hacky way to fix this. But then we run into the fact that <code>std::views::split</code> isn't even implemented in AppleClang 14...</p>
 <p >So here is our own implementation. More user-friendly, and more efficient. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a395c096fd74c700894f557b1ac00f0ae" name="a395c096fd74c700894f557b1ac00f0ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a395c096fd74c700894f557b1ac00f0ae">&#9670;&#160;</a></span>SplitView() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">detail::SplitView::SplitView </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a30e009aae7fdbd71afb2d0cbbdb65796" name="a30e009aae7fdbd71afb2d0cbbdb65796"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a30e009aae7fdbd71afb2d0cbbdb65796">&#9670;&#160;</a></span>SplitView()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a30e009aae7fdbd71afb2d0cbbdb65796">&#9670;&#160;</a></span>SplitView() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -229,8 +258,8 @@ requires std::is_same_v&lt;std::remove_cv_t&lt;typename Container::value_type::v
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a1069106c0daa1c910525c41c422593eb" name="a1069106c0daa1c910525c41c422593eb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1069106c0daa1c910525c41c422593eb">&#9670;&#160;</a></span>_s</h2>
+<a id="abfa3cb4d32561eb05bb993722a02b7d6" name="abfa3cb4d32561eb05bb993722a02b7d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abfa3cb4d32561eb05bb993722a02b7d6">&#9670;&#160;</a></span>_begin</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -239,7 +268,29 @@ requires std::is_same_v&lt;std::remove_cv_t&lt;typename Container::value_type::v
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string_view detail::SplitView::_s</td>
+          <td class="memname">const char* detail::SplitView::_begin = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae762e42a466837a93dcdb6b5256b742e" name="ae762e42a466837a93dcdb6b5256b742e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae762e42a466837a93dcdb6b5256b742e">&#9670;&#160;</a></span>_end</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* detail::SplitView::_end = nullptr</td>
         </tr>
       </table>
   </td>
@@ -261,7 +312,7 @@ requires std::is_same_v&lt;std::remove_cv_t&lt;typename Container::value_type::v
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">char detail::SplitView::_sep</td>
+          <td class="memname">char detail::SplitView::_sep = '\0'</td>
         </tr>
       </table>
   </td>
