@@ -42,12 +42,15 @@ class FileSystemTrieNode {
         return pos == _children.end() ? nullptr : pos->second.get();
     }
 
+    [[nodiscard]] FileSystemTrieNode *parent() const {
+        return _parent;
+    }
+
  private:
     friend class FileSystemTrie<T>;
 
  private:
-    /** Parent of this node. It's only used for node removal, and is not exposed through a getter - there are no
-     * sane use cases where the user would need a parent pointer. */
+    /** Parent of this node. */
     FileSystemTrieNode *_parent = nullptr;
 
     /** Key in the parent node. It's only used for node removal, and is not exposed through getters. */
@@ -160,7 +163,7 @@ class FileSystemTrie {
 
         base->_children.clear();
         base->_value = std::nullopt;
-        _trim(base);
+        _prune(base);
         return true;
     }
 
@@ -176,7 +179,7 @@ class FileSystemTrie {
             return;
 
         base->_children.clear();
-        _trim(base);
+        _prune(base);
     }
 
     void chop(const FileSystemPath &path) {
@@ -207,7 +210,7 @@ class FileSystemTrie {
             result->_key.clear();
 
             parent->_children.erase(pos);
-            _trim(parent); // parent might have become empty as a result.
+            _prune(parent); // parent might have become empty as a result.
 
             return result;
         } else {
@@ -236,7 +239,9 @@ class FileSystemTrie {
 
         // We need to preserve pointer values so will have to jump through hoops here a bit.
         Node *branch = _grow(base, relativePath);
-        return (branch->_parent->_children[branch->_key] = std::move(node)).get();
+        node->_parent = branch->_parent;
+        node->_key = std::move(branch->_key); // Can move the string out as branch will be destroyed in the next statement.
+        return (node->_parent->_children[node->_key] = std::move(node)).get();
     }
 
     Node *insertOrAssign(const FileSystemPath &path, std::unique_ptr<Node> node) {
@@ -248,11 +253,11 @@ class FileSystemTrie {
     }
 
     bool isEmpty() const {
-        return !root().hasValue() && root().children().empty();
+        return !root()->hasValue() && root()->children().empty();
     }
 
  private:
-    Node *_trim(Node *node) {
+    Node *_prune(Node *node) {
         assert(node);
         while (node->children().empty() && !node->hasValue() && node != root()) {
             Node *parent = node->_parent;
