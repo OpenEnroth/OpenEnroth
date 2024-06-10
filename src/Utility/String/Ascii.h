@@ -5,12 +5,20 @@
 
 namespace ascii {
 
+inline char isLower(char c) {
+    return c >= 'a' && c <= 'z';
+}
+
+inline char isUpper(char c) {
+    return c >= 'A' && c <= 'Z';
+}
+
 inline char toLower(char c) {
-    return ((((c) >= 'A') && ((c) <= 'Z')) ? ((c) - 'A' + 'a') : (c));
+    return isUpper(c) ? c - 'A' + 'a' : c;
 }
 
 inline char toUpper(char c) {
-    return ((((c) >= 'a') && ((c) <= 'z')) ? ((c) - 'a' + 'A') : (c));
+    return isLower(c) ? c - 'a' + 'A' : c;
 }
 
 std::string toLower(std::string_view text);

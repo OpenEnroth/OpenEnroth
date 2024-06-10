@@ -58,3 +58,26 @@ UNIT_TEST(StringSplit, ConverToContainer) {
     std::unordered_set<std::string> v6 = split(s, ';');
     EXPECT_EQ(v6, std::unordered_set<std::string>({"1", "2", "3"}));
 }
+
+UNIT_TEST(StringSplit, NonNullTerminated) {
+    const char *s = "1,2,3,4,5,6,7,8,9,10";
+    std::string_view sv(s, s+9);
+
+    std::vector<std::string_view> v1 = split(sv, ',');
+    EXPECT_EQ(v1, std::vector<std::string_view>({"1", "2", "3", "4", "5"}));
+}
+
+UNIT_TEST(StringSplit, DefaultConstructed) {
+    detail::SplitView view;
+    EXPECT_EQ(view.begin(), view.end());
+
+    detail::SplitViewIterator end;
+    EXPECT_EQ(end, detail::SplitViewSentinel());
+
+    EXPECT_NO_THROW((
+        [] {
+            for (std::string_view chunk : detail::SplitView())
+                throw 0; // Shouldn't get here.
+        } ()
+    ));
+}
