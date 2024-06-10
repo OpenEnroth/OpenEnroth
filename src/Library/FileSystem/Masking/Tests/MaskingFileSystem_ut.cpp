@@ -19,7 +19,7 @@ UNIT_TEST(MaskingFileSystem, SimpleMasks) {
     fs1.mask("a/b/c/d");
     EXPECT_FALSE(fs1.exists("a/b/c/d"));
     EXPECT_TRUE(fs0.exists("a/b/c/d"));
-    EXPECT_EQ(fs1.ls("a/b/c"), (std::vector<DirectoryEntry>{{"e", FILE_REGULAR}}));
+    EXPECT_EQ(fs1.ls("a/b/c"), std::vector<DirectoryEntry>({{"e", FILE_REGULAR}}));
 
     fs1.clearMasks();
     EXPECT_TRUE(fs1.exists("a/b/c/d"));
@@ -27,7 +27,7 @@ UNIT_TEST(MaskingFileSystem, SimpleMasks) {
     EXPECT_TRUE(fs1.remove("a/b/c/d"));
     EXPECT_FALSE(fs1.exists("a/b/c/d"));
     EXPECT_TRUE(fs0.exists("a/b/c/d"));
-    EXPECT_EQ(fs1.ls("a/b/c"), (std::vector<DirectoryEntry>{{"e", FILE_REGULAR}}));
+    EXPECT_EQ(fs1.ls("a/b/c"), std::vector<DirectoryEntry>({{"e", FILE_REGULAR}}));
 
     EXPECT_TRUE(fs1.remove("a/b"));
     EXPECT_TRUE(fs1.exists("a"));
@@ -39,7 +39,7 @@ UNIT_TEST(MaskingFileSystem, SimpleMasks) {
     EXPECT_TRUE(fs0.exists("a/b"));
     EXPECT_TRUE(fs0.exists("a/b/1"));
     EXPECT_TRUE(fs0.exists("a/b/c/e"));
-    EXPECT_EQ(fs0.ls("a"), (std::vector<DirectoryEntry>{{"b", FILE_DIRECTORY}}));
+    EXPECT_EQ(fs0.ls("a"), std::vector<DirectoryEntry>({{"b", FILE_DIRECTORY}}));
 
     EXPECT_FALSE(fs1.remove("a/b/c"));
 }
