@@ -14,7 +14,11 @@ class SplitViewIterator {
     using difference_type = std::ptrdiff_t; // Required for std::input_or_output_iterator, even though we can't take iterator difference...
     using value_type = std::string_view; // Required for std::indirectly_readable.
 
-    SplitViewIterator(std::string_view s, char sep) : _pos(s.data()), _end(s.data() + s.size()), _sep(sep) {}
+    SplitViewIterator() {
+        _pos++; // Construct an iterator that compares equal to `SplitViewSentinel`.
+    }
+
+    SplitViewIterator(const char *begin, const char *end, char sep) : _pos(begin), _end(end), _sep(sep) {}
 
     SplitViewIterator &operator++() {
         return *this; // This is an input iterator, all the work is done in `operator*`.
@@ -54,10 +58,14 @@ class SplitViewIterator {
  */
 class SplitView : public std::ranges::view_interface<SplitView> {
  public:
-    SplitView(std::string_view s, char sep) : _s(s), _sep(sep) {}
+    SplitView() {
+        _begin++; // Construct an empty split view.
+    }
+
+    SplitView(std::string_view s, char sep) : _begin(s.data()), _end(s.data() + s.size()), _sep(sep) {}
 
     [[nodiscard]] auto begin() const {
-        return SplitViewIterator(_s.data(), _sep);
+        return SplitViewIterator(_begin, _end, _sep);
     }
 
     [[nodiscard]] auto end() const {
@@ -87,8 +95,9 @@ class SplitView : public std::ranges::view_interface<SplitView> {
     }
 
  private:
-    std::string_view _s;
-    char _sep;
+    const char *_begin = nullptr;
+    const char *_end = nullptr;
+    char _sep = '\0';
 };
 } // namespace detail
 
