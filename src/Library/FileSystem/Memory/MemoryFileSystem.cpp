@@ -109,8 +109,8 @@ MemoryFileSystem::Node *MemoryFileSystem::nodeForWriting(const FileSystemPath &p
     Node *node = _trie.walk(path, &tail);
 
     if (!tail.isEmpty()) { // File doesn't exist.
-        if (node->hasValue()) { // But we have an existing file as parent.
-            throw FileSystemException(FileSystemException::WRITE_FAILED_PATH_NOT_WRITEABLE, path);
+        if (node->hasValue()) {
+            throw FileSystemException(FileSystemException::WRITE_FAILED_FILE_IN_PATH, path);
         } else {
             return _trie.insertOrAssign(node, tail, std::make_shared<MemoryFileData>(Blob()));
         }
