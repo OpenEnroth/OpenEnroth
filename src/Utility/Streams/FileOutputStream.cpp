@@ -28,6 +28,8 @@ void FileOutputStream::open(std::string_view path) {
 
 void FileOutputStream::write(const void *data, size_t size) {
     assert(isOpen()); // Writing into a closed stream is UB.
+    if (!size)
+        return;
 
     if (fwrite(data, size, 1, _file) != 1)
         Exception::throwFromErrno(_path);

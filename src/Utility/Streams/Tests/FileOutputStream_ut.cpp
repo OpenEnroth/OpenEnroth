@@ -28,3 +28,16 @@ UNIT_TEST(FileOutputStream, Write) {
 
     remove(tmpfile);
 }
+
+UNIT_TEST(FileOutputStream, WriteZero) {
+    const char *tmpfile = "tmp_test.txt";
+
+    FileOutputStream out(tmpfile);
+    EXPECT_NO_THROW(out.write(nullptr, 0));
+    out.close();
+
+    FileInputStream in(tmpfile);
+    EXPECT_EQ(in.readAll(), "");
+
+    remove(tmpfile);
+}
