@@ -118,7 +118,7 @@ jobs:
         working-directory: build
         run: |
           make -j3
-          ldd build/src/Bin/OpenEnroth/OpenEnroth
+          ldd src/Bin/OpenEnroth/OpenEnroth
 
       - name: Run unit tests
         working-directory: build
