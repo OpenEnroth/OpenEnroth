@@ -113,7 +113,6 @@ jobs:
           fi
           export CC=gcc-13 && export CXX=g++-13
           cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DBUILD_SHARED_LIBS=OFF
-          cmake -LAH
 
       - name: Build
         working-directory: build
