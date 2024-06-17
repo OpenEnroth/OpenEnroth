@@ -99,12 +99,19 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         # Prebuilt & user-supplied deps are resolved using the same code here.
         find_package(ZLIB REQUIRED)
         find_package(FFmpeg REQUIRED)
-
         find_package(SDL2 CONFIG REQUIRED)
         add_library(SDL2OE INTERFACE)
-        target_link_libraries(SDL2OE INTERFACE SDL2::SDL2)
-        if(TARGET SDL2::SDL2main) # Not all platforms have SDL2main.
-            target_link_libraries(SDL2OE INTERFACE SDL2::SDL2main)
+        #static SDL for linux
+        if (OE_BUILD_PLATFORM STREQUAL "linux") 
+            target_link_libraries(SDL2OE INTERFACE SDL2::SDL2-static)
+            if(TARGET SDL2::SDL2main-static) # Not all platforms have SDL2main.
+                target_link_libraries(SDL2OE INTERFACE SDL2::SDL2main-static)
+            endif()
+        else()
+            target_link_libraries(SDL2OE INTERFACE SDL2::SDL2)
+            if(TARGET SDL2::SDL2main) # Not all platforms have SDL2main.
+                target_link_libraries(SDL2OE INTERFACE SDL2::SDL2main)
+            endif()
         endif()
         add_library(SDL2::SDL2OE ALIAS SDL2OE)
 
