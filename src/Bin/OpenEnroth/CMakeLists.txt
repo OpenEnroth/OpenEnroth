@@ -30,11 +30,12 @@ else()
         set_source_files_properties(${OpenEnroth_ICON} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
         add_executable(OpenEnroth MACOSX_BUNDLE ${OpenEnroth_ICON} ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
     else ()
+        # Linux
         add_executable(OpenEnroth ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
     endif()
 	
     target_check_style(OpenEnroth)
-    target_link_libraries(OpenEnroth PUBLIC application library_cli library_platform_main library_stack_trace Glob)
+    target_link_libraries(OpenEnroth PUBLIC application library_cli library_platform_main library_stack_trace Glob "-static")
 
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenEnroth)
 endif()
