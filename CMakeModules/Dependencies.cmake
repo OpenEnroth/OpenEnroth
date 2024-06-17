@@ -102,7 +102,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         find_package(SDL2 CONFIG REQUIRED)
         add_library(SDL2OE INTERFACE)
         #static SDL for linux
-        if (OE_BUILD_PLATFORM STREQUAL "linux") 
+        if (NOT DBUILD_SHARED_LIBS) 
             target_link_libraries(SDL2OE INTERFACE SDL2::SDL2-static)
             if(TARGET SDL2::SDL2main-static) # Not all platforms have SDL2main.
                 target_link_libraries(SDL2OE INTERFACE SDL2::SDL2main-static)
