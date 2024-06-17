@@ -35,7 +35,7 @@ else()
     endif()
 	
     target_check_style(OpenEnroth)
-    target_link_libraries(OpenEnroth PUBLIC application library_cli library_platform_main library_stack_trace Glob "-static")
+    target_link_libraries(OpenEnroth PUBLIC application library_cli library_platform_main library_stack_trace Glob)
 
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenEnroth)
 endif()
