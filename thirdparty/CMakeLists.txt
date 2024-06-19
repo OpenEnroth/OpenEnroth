@@ -55,13 +55,11 @@ if(OE_BUILD_TESTS)
     add_subdirectory(googletest)
 endif()
 
-# backward
-if(NOT OE_BUILD_PLATFORM STREQUAL "android")
-    add_subdirectory(backward_cpp)
-    if (OE_BUILD_PLATFORM STREQUAL "linux" AND NOT OE_USE_DUMMY_DEPENDENCIES)
-        string(FIND "${BACKWARD_DEFINITIONS}" "BACKWARD_HAS_DWARF=1" DWARF_POS)
-        if (${DWARF_POS} EQUAL -1)
-            message(WARNING "libdwarf is required for backward-cpp on linux.")
-        endif()
-    endif()
-endif()
+# include cpptrace for debug backtraces
+include(FetchContent)
+FetchContent_Declare(
+  cpptrace
+  GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
+  GIT_TAG        v0.6.1 # <HASH or TAG>
+)
+FetchContent_MakeAvailable(cpptrace)
