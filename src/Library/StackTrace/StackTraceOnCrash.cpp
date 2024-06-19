@@ -13,7 +13,7 @@ StackTraceOnCrash::StackTraceOnCrash() = default;
 #else
 
 StackTraceOnCrash::StackTraceOnCrash() {
-    _private = std::make_shared<backward::SignalHandling>();
+    //_private = std::make_shared<backward::SignalHandling>();
 }
 
 #endif
