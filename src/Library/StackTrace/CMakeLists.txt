@@ -12,7 +12,7 @@ add_library(library_stack_trace STATIC ${LIBRARY_STACK_TRACE_SOURCES} ${LIBRARY_
 target_link_libraries(library_stack_trace PUBLIC utility)
 target_check_style(library_stack_trace)
 
-# backward-cpp doesn't support Android...
+# cpptrace doesn't support Android...
 if (NOT OE_BUILD_PLATFORM STREQUAL "android")
-    target_link_libraries(library_stack_trace PRIVATE Backward::Backward)
+    target_link_libraries(library_stack_trace PRIVATE cpptrace::cpptrace)
 endif ()
