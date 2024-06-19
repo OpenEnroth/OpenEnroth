@@ -17,7 +17,6 @@ void printStackTrace(FILE *stream) {
 #else
 
 void printStackTrace(FILE *stream) {
-    cpptrace::generate_trace().print();
     cpptrace::generate_trace().print_with_snippets();
 }
 
