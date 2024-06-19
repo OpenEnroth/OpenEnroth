@@ -40,7 +40,7 @@ jobs:
       matrix:
         configuration:
           - Debug
-          - relwithdebinfo
+          - Release
         architecture:
           - x86_64
           - arm64
@@ -87,7 +87,11 @@ jobs:
           if [ "${{matrix.architecture}}" = "arm64" ]; then
             export MACOSX_DEPLOYMENT_TARGET="11"
           fi
-          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DCMAKE_OSX_ARCHITECTURES=${{matrix.architecture}}
+          if [ "${{matrix.configuration}}" = "Release" ]; then
+            cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=relwithdebinfo -DBUILD_SHARED_LIBS=OFF -DCMAKE_OSX_ARCHITECTURES=${{matrix.architecture}}
+          else
+            cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DBUILD_SHARED_LIBS=OFF -DCMAKE_OSX_ARCHITECTURES=${{matrix.architecture}}
+          fi  
                   
       - name: Build
         working-directory: build
