@@ -118,6 +118,12 @@ jobs:
           ccache --set-config=hash_dir=false
 
       - name: Configure
+        if: matrix.configuration == 'Release'
+        run: |
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=Release
+
+      - name: Configure
+        if: matrix.configuration != 'Release'
         run: |
           cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
 
