@@ -45,7 +45,7 @@ jobs:
       matrix:
         configuration:
           - Debug
-          - relwithdebinfo
+          - Release
         architecture:
           - x86
           - x86_64
@@ -112,7 +112,11 @@ jobs:
             export CFLAGS="-m32" CXXFLAGS="-m32" 
           fi
           export CC=gcc-13 && export CXX=g++-13
-          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DBUILD_SHARED_LIBS=OFF
+          if [ "${{matrix.configuration}}" = "Release" ]; then
+            cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=relwithdebinfo -DBUILD_SHARED_LIBS=OFF
+          else
+            cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DBUILD_SHARED_LIBS=OFF
+          fi  
 
       - name: Build
         working-directory: build
