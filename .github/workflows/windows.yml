@@ -120,12 +120,12 @@ jobs:
       - name: Configure
         if: matrix.configuration == 'Release'
         run: |
-          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=relwithdebinfo
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=relwithdebinfo -DBUILD_SHARED_LIBS=OFF 
 
       - name: Configure
         if: matrix.configuration != 'Release'
         run: |
-          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DBUILD_SHARED_LIBS=OFF 
 
       - name: Build
         working-directory: build
