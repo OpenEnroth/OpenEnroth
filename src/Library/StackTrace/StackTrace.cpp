@@ -3,7 +3,7 @@
 #include <cstdio>
 
 #ifndef __ANDROID__
-#   include <backward.hpp>
+#   include <cpptrace/cpptrace.hpp>
 #endif
 
 #include "Utility/String/Format.h"
