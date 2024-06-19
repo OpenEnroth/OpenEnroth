@@ -6,8 +6,8 @@ project("OpenEnroth")
 
 # Warn on Release
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
-    warning( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" )
-    warning( "relwithdebinfo is required for debug info" )
+    message( warning "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" )
+    message( warning "relwithdebinfo is required for debug info" )
 endif()
 
 set(CMAKE_CXX_STANDARD 23)
