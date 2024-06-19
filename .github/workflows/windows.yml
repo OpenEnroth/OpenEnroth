@@ -120,7 +120,7 @@ jobs:
       - name: Configure
         if: matrix.configuration == 'Release'
         run: |
-          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=Release
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=relwithdebinfo
 
       - name: Configure
         if: matrix.configuration != 'Release'
