@@ -88,9 +88,9 @@ jobs:
             export MACOSX_DEPLOYMENT_TARGET="11"
           fi
           if [ "${{matrix.configuration}}" = "Release" ]; then
-            cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=relwithdebinfo -DBUILD_SHARED_LIBS=OFF -DCMAKE_OSX_ARCHITECTURES=${{matrix.architecture}}
+            cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=relwithdebinfo -DBUILD_SHARED_LIBS=OFF -DCMAKE_OSX_ARCHITECTURES=${{matrix.architecture}} -DBUILD_SHARED_LIBS=OFF 
           else
-            cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DBUILD_SHARED_LIBS=OFF -DCMAKE_OSX_ARCHITECTURES=${{matrix.architecture}}
+            cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DBUILD_SHARED_LIBS=OFF -DCMAKE_OSX_ARCHITECTURES=${{matrix.architecture}} -DBUILD_SHARED_LIBS=OFF 
           fi  
                   
       - name: Build
