@@ -3,7 +3,7 @@
 #include <memory>
 
 #ifndef __ANDROID__
-#   include <backward.hpp>
+#   include <cpptrace/cpptrace.hpp>
 #endif
 
 #ifdef __ANDROID__
