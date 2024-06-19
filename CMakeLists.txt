@@ -4,6 +4,12 @@ cmake_policy(SET CMP0144 NEW) # Use upper-case <PACKAGENAME>_ROOT variables in f
 
 project("OpenEnroth")
 
+# Warn on Release
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    warning( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" )
+    warning( "relwithdebinfo is required for debug info" )
+endif()
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
