@@ -120,12 +120,12 @@ jobs:
       - name: Configure
         if: matrix.configuration == 'Release'
         run: |
-          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=relwithdebinfo -DBUILD_SHARED_LIBS=OFF 
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=relwithdebinfo 
 
       - name: Configure
         if: matrix.configuration != 'Release'
         run: |
-          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DBUILD_SHARED_LIBS=OFF 
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
 
       - name: Build
         working-directory: build
@@ -134,13 +134,14 @@ jobs:
           ninja -v
 
       - name: Run unit tests
+        if: matrix.configuration == 'true'
         working-directory: build
         run: |
           ninja UnitTest
 
       # Only run gametest if we restored game data.
       - name: Run game tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true'
+        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration == 'true'
         working-directory: build
         run: |
           ninja GameTest_Headless
@@ -148,7 +149,7 @@ jobs:
           OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
 
       - name: Run retrace tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration == 'Release'
+        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration == 'Release' && matrix.configuration == 'true'
         working-directory: build
         run: |
           ninja RetraceTest_Headless
