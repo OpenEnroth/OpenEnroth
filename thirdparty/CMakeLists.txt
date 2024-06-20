@@ -56,10 +56,12 @@ if(OE_BUILD_TESTS)
 endif()
 
 # include cpptrace for debug backtraces
-include(FetchContent)
-FetchContent_Declare(
-  cpptrace
-  GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
-  GIT_TAG        v0.6.1 # <HASH or TAG>
-)
-FetchContent_MakeAvailable(cpptrace)
+if(NOT OE_BUILD_PLATFORM STREQUAL "android")
+    include(FetchContent)
+    FetchContent_Declare(
+      cpptrace
+      GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
+      GIT_TAG        v0.6.1 # <HASH or TAG>
+    )
+    FetchContent_MakeAvailable(cpptrace)
+endif()
