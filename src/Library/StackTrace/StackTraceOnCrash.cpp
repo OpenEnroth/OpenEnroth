@@ -13,7 +13,7 @@ StackTraceOnCrash::StackTraceOnCrash() = default;
 #else
 
 StackTraceOnCrash::StackTraceOnCrash() {
-    _private = cpptrace::generate_trace().print_with_snippets();
+    cpptrace::generate_trace().print_with_snippets();
 }
 
 #endif
