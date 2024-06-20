@@ -51,6 +51,7 @@ int platformMain(int argc, char **argv) {
     } catch (const std::exception &e) {
         // TODO(captainurist): we need a separate test that testing framework terminates correctly if the engine throws.
         fmt::print(stderr, "{}\n", e.what());
+        cpptrace::generate_trace().print_with_snippets();
         return 1;
     }
 }
