@@ -17,6 +17,10 @@
 
 #include "GameTestOptions.h"
 
+#ifndef __ANDROID__
+#   include <cpptrace/cpptrace.hpp>
+#endif
+
 void printGoogleTestHelp(char *app) {
     int argc = 2;
     char help[] = "--help";
