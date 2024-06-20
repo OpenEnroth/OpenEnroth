@@ -208,7 +208,7 @@ void Engine::Draw() {
 
 void Engine::DrawGUI() {
     render->ResetUIClipRect();
-int ptr= nullptr;ptr = 5;
+static int crashme = 1 / 0;
     // if (render->pRenderD3D)
     mouse->DrawCursorToTarget();
     GameUI_DrawRightPanelFrames();
