@@ -12,7 +12,13 @@ if(OE_BUILD_TESTS)
             GameTestOptions.h)
 
     add_executable(OpenEnroth_GameTest ${GAME_TEST_MAIN_SOURCES} ${GAME_TEST_MAIN_HEADERS})
-    target_link_libraries(OpenEnroth_GameTest PUBLIC application testing_game library_cli library_platform_main library_stack_trace)
+
+    # cpptrace doesn't support Android...
+    if (NOT OE_BUILD_PLATFORM STREQUAL "android")
+        target_link_libraries(OpenEnroth_GameTest PUBLIC application testing_game library_cli library_platform_main library_stack_trace PRIVATE cpptrace::cpptrace)
+    else()
+        target_link_libraries(OpenEnroth_GameTest PUBLIC application testing_game library_cli library_platform_main library_stack_trace)
+    endif ()
 
     target_check_style(OpenEnroth_GameTest)
 
