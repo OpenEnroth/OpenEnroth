@@ -388,9 +388,8 @@ void QuickSaveGame() {
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
 }
 
-void QuickLoadGame() {
+int GetQuickSaveSlot() {
     pSavegameList->Initialize();
-
     std::string quickSaveName = GetCurrentQuickSave();
 
     int uSlot = -1;
@@ -403,6 +402,12 @@ void QuickLoadGame() {
             break;
         }
     }
+
+    return uSlot;
+}
+
+void QuickLoadGame() {
+    int uSlot = GetQuickSaveSlot();
 
     if (uSlot != -1) {
         LoadGame(uSlot);
