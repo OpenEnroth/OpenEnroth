@@ -28,8 +28,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Library/Logger/Logger.h"
-
 using Io::TextInputType;
 using Io::KeyToggleType;
 using Io::InputAction;
