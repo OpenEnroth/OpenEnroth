@@ -461,18 +461,9 @@ void Menu::EventLoop() {
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 }
                 continue;
-            case UIMSG_QuickLoad: {
-                int slot = GetQuickSaveSlot();
-                if (slot != -1) {
-                    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-                    LoadGame(slot);
-                    uGameState = GAME_STATE_LOADING_GAME;
-                } else {
-                    logger->error("QuickLoadGame:: No quick save could be found!");
-                    pAudioPlayer->playUISound(SOUND_error);
-                }
+            case UIMSG_QuickLoad:
+                QuickLoadGame();
                 break;
-            }
             default:
                 break;
         }
