@@ -2742,7 +2742,7 @@ void Actor::UpdateActorAI() {
             if (v81 < 0)
                 v81 = 0;
             // rand();
-            pActor->attributes &= ~ACTOR_UNKNOW5;  // ~0x40000
+            pActor->attributes &= ~ACTOR_LAST_SPELL_MISSED;  // ~0x40000
             if (v81 < 5120) {
                 v45 = pActor->special_ability_use_check(actor_id);
                 if (v45 == ABILITY_ATTACK1) {

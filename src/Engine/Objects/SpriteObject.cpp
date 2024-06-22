@@ -723,8 +723,8 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         }
     }
     if (pid.type() == OBJECT_Face && object->spell_caster_pid.type() != OBJECT_Character) {
-        if (object->spell_caster_pid.id() < 500) {  // bugfix  v2->spell_caster_pid.id()==1000
-            pActors[object->spell_caster_pid.id()].attributes |= ACTOR_UNKNOW5;
+        if (object->spell_caster_pid.id() < pActors.size()) {  // bugfix  v2->spell_caster_pid.id()==1000
+            pActors[object->spell_caster_pid.id()].attributes |= ACTOR_LAST_SPELL_MISSED;
         }
     }
 
