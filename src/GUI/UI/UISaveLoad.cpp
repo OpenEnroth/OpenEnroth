@@ -27,6 +27,7 @@
 #include "GUI/GUIMessageQueue.h"
 
 #include "Library/Lod/LodReader.h"
+#include "Library/Logger/Logger.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
 
 #include "Utility/String/Ascii.h"
@@ -414,6 +415,18 @@ void MainMenuLoad_EventLoop() {
             newlistpost = std::clamp(newlistpost, 0, (param - 7));
             pSavegameList->saveListPosition = newlistpost;
             pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+            break;
+        }
+        case UIMSG_QuickLoad: {
+            int slot = GetQuickSaveSlot();
+            if (slot != -1) {
+                pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+                pSavegameList->selectedSlot = slot;
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
+            } else {
+                logger->error("QuickLoadGame:: No quick save could be found!");
+                pAudioPlayer->playUISound(SOUND_error);
+            }
             break;
         }
         default:

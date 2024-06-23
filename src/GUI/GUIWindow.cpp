@@ -1002,6 +1002,11 @@ void WindowManager::DeleteAllVisibleWindows() {
         if (pWindow->eWindowType == WINDOW_GameUI) {
             assert(false && "WINDOW_GameUI is not at back of lWindowList");
         }
+        // Child books button should be deleted by parent
+        if (pWindow->eWindowType == WINDOW_BooksButtonOverlay) {
+            lWindowList.pop_front();
+            continue;
+        }
         pWindow->Release();
         delete pWindow;
     }

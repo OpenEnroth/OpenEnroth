@@ -459,7 +459,9 @@ void Menu::EventLoop() {
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 }
                 continue;
-
+            case UIMSG_QuickLoad:
+                QuickLoadGame();
+                break;
             default:
                 break;
         }
