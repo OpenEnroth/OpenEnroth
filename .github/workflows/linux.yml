@@ -112,7 +112,6 @@ jobs:
             export CFLAGS="-m32" CXXFLAGS="-m32" 
           fi
           export CC=gcc-13 && export CXX=g++-13
-          sudo rm -rf /usr/lib/x86_64-linux-gnu/libdwarf.so
           cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
 
       - name: Build
