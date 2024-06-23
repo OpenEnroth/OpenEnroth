@@ -16,6 +16,8 @@ include(LlsLint)
 include(Dependencies)
 include(CheckLinkerFlag)
 
+set(CMAKE_FIND_LIBRARY_SUFFIXES ".a" ".so")
+
 # Defaults.
 if (CMAKE_BUILD_TYPE)
     set(OE_USE_PREBUILT_DEPENDENCIES_DEFAULT ON)
