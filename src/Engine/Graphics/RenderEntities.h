@@ -78,6 +78,10 @@ struct RenderVertexSoft {
     float u = 0;
     float v = 0;
     float flt_2C = 0;
+
+    bool operator==(const RenderVertexSoft& other) const {
+        return vWorldPosition == other.vWorldPosition;
+    }
 };
 
 struct RenderVertexD3D3 {

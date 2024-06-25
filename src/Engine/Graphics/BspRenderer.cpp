@@ -84,19 +84,20 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
         nodes[num_nodes].uSectorID = pTransitionSector;
         nodes[num_nodes].uFaceID = uFaceID;
 
-        // avoid circular loops in portals
-        for (int test = 0; test < num_nodes; test++) {
-            if (nodes[test].uSectorID == nodes[num_nodes].uSectorID &&
-                nodes[test].uFaceID == nodes[num_nodes].uFaceID) {
-                return;
-            }
-        }
-
         // calculates the portal bounding and frustum
         bool bFrustumbuilt = engine->pStru10Instance->CalcPortalShapePoly(
                 pFace, static_subAddFaceToRenderList_d3d_stru_F79E08,
                 &pNewNumVertices, nodes[num_nodes].ViewportNodeFrustum.data(),
                 nodes[num_nodes].pPortalBounding.data());
+
+        // avoid circular loops in portals
+        for (int test = 0; test < num_nodes; test++) {
+            if (nodes[test].uSectorID == nodes[num_nodes].uSectorID &&
+                nodes[test].uFaceID == nodes[num_nodes].uFaceID &&
+                nodes[test].pPortalBounding == nodes[num_nodes].pPortalBounding) {
+                return;
+            }
+        }
 
         if (bFrustumbuilt) {
             // add portal sector to drawing list
@@ -129,6 +130,7 @@ void BspRenderer::MakeVisibleSectorList() {
 
         // drop all sectors beyond config limit
         if (uNumVisibleNotEmptySectors >= engine->config->graphics.MaxVisibleSectors.value()) {
+            logger->warning("Hit visible sector limit!");
             break;
         }
     }
