@@ -4,6 +4,7 @@
 
 #include "Library/Serialization/Serialization.h"
 #include "Library/Serialization/EnumSerialization.h"
+#include "Library/Color/Color.h"
 
 UNIT_TEST(Serialization, Standard) {
     EXPECT_EQ(fromString<int>(toString(0)), 0);
@@ -202,4 +203,48 @@ UNIT_TEST(Serialization, MagicEnum) {
     EXPECT_ANY_THROW(fromString<MagicEnum>("MAGIC_X"));
     EXPECT_ANY_THROW(fromString<MagicEnum>("magic_a"));
     EXPECT_ANY_THROW(toString(static_cast<MagicEnum>(5)));
+}
+
+
+UNIT_TEST(Serialization, Color) {
+    Color red = Color(255, 0, 0, 255);
+    Color green = Color(0, 255, 0, 255);
+    Color blue = Color(0, 0, 255, 255);
+    Color white = Color(255, 255, 255, 255);
+    Color gray = Color(128, 128, 128, 255);
+    Color transparentGray = Color(128, 128, 128, 128);
+    Color black = Color(0, 0, 0, 255);
+    Color invisibleBlack = Color(0, 0, 0, 0);
+
+    EXPECT_EQ(toString(red),   "0xff0000");
+    EXPECT_EQ(toString(green), "0x00ff00");
+    EXPECT_EQ(toString(blue),  "0x0000ff");
+    EXPECT_EQ(toString(white), "0xffffff");
+    EXPECT_EQ(toString(gray),  "0x808080");
+    EXPECT_EQ(toString(transparentGray),
+                               "0x80808080");
+    EXPECT_EQ(toString(black), "0x000000");
+    EXPECT_EQ(toString(invisibleBlack),
+                               "0x00000000");
+
+    EXPECT_EQ(fromString<Color>("0xff0000"), red);
+    EXPECT_EQ(fromString<Color>("0xff0000ff"), red);
+    EXPECT_EQ(fromString<Color>(toString(green)), green);
+    EXPECT_EQ(fromString<Color>(toString(blue)), blue);
+    EXPECT_EQ(fromString<Color>(toString(white)), white);
+    EXPECT_EQ(fromString<Color>(toString(gray)), gray);
+    EXPECT_EQ(fromString<Color>(toString(transparentGray)), transparentGray);
+    EXPECT_EQ(fromString<Color>(toString(black)), black);
+    EXPECT_EQ(fromString<Color>(toString(invisibleBlack)), invisibleBlack);
+
+    // EXPECT_ANY_THROW(fromString<Color>("0xffccffccff"));
+    EXPECT_ANY_THROW(fromString<Color>("0xfcf"));
+    EXPECT_ANY_THROW(fromString<Color>("red"));
+    EXPECT_ANY_THROW(fromString<Color>(""));
+    EXPECT_ANY_THROW(fromString<Color>(";"));
+    EXPECT_ANY_THROW(fromString<Color>("="));
+    EXPECT_ANY_THROW(fromString<Color>("."));
+    EXPECT_ANY_THROW(fromString<Color>("3.14"));
+    EXPECT_ANY_THROW(fromString<Color>("-1"));
+    EXPECT_ANY_THROW(fromString<Color>("i"));
 }

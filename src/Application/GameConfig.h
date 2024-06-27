@@ -11,6 +11,8 @@
 #include "Io/Key.h"
 
 #include "Library/Config/Config.h"
+#include "Library/Color/Color.h"
+
 #include "Engine/Random/RandomEnums.h"
 #include "Library/Logger/LogEnums.h"
 
@@ -36,6 +38,7 @@ class GameConfig : public Config {
     using Float = ConfigEntry<float>;
     using String = ConfigEntry<std::string>;
     using Key = ConfigEntry<PlatformKey>;
+    using ColorEntry = ConfigEntry<Color>;
 
     class Debug : public ConfigSection {
      public:
@@ -395,6 +398,10 @@ class GameConfig : public Config {
         Int RenderFilter = {this, "render_filter", 2, &ValidateRenderFilter,
                             "Filtering method when scaling rendered framebuffer to window dimensions if they differ."
                             " 0 - disabled (render dimensions will always match window dimensions), 1 - linear filter, 2 - nearest filter"};
+
+        ColorEntry DefaultLightColor = {this, "default_light_color", Color(185, 185, 185), "Some light sources have black color. Use this color for such lights instead."};
+        Bool AddMoreLights = {this, "add_more_lights", true, "add light sources to pedestals/cauldrons/etc (as in MM8)"};
+        Int DefaultLightRadius = {this, "default_light_radius", 172, "Light radius of the additional lights."};
 
      private:
         static int ValidateGamma(int level) {
