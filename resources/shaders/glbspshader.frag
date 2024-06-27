@@ -53,10 +53,16 @@ uniform PointLight fspointlights[num_point_lights];
 
 uniform sampler2DArray textureArray0;
 
-
 // funcs
 vec3 CalcSunLight(Sunlight light, vec3 normal, vec3 viewDir, vec3 thisfragcol);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+
+vec3 colorCorrection(vec3 rgb) {
+    vec3 srgbValue = pow(FragColour.rgb, vec3(1.0/gamma));
+    // we might want to add desaturation here (mm7 indoor meshes are desaturated)
+    return srgbValue;
+}
+
 
 void main() {
     vec3 fragnorm = normalize(vsNorm);
@@ -122,7 +128,6 @@ void main() {
         if (fspointlights[i].type == 1.0)
             result += CalcPointLight(fspointlights[i], fragnorm, vsPos, fragviewdir);
     }
-
     result *= fragcol.rgb;
 
     // stack mobile
@@ -145,9 +150,7 @@ void main() {
     }
 
     FragColour = vec4(clamps,1)  * vec4(dull,1); // result, 1.0);
-
-    FragColour.rgb = pow(FragColour.rgb, vec3(1.0/gamma));
-
+    FragColour.rgb = colorCorrection(FragColour.rgb);
 }
 
 // calculates the color when using a directional light.
@@ -189,8 +192,6 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     //float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
     float attenuation = clamp(1.0 - ((distance * distance)/(light.radius * light.radius)), 0.0, 1.0);
     attenuation *= attenuation;
-
-
 
     // combine results
     vec3 ambient = light.ambient;//* vec3(texture(material.diffuse, TexCoords));
