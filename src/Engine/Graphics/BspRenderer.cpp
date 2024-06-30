@@ -90,11 +90,19 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
                 &pNewNumVertices, nodes[num_nodes].ViewportNodeFrustum.data(),
                 nodes[num_nodes].pPortalBounding.data());
 
+        auto boundingMatches = [](const std::array<RenderVertexSoft, 4> &l, const std::array<RenderVertexSoft, 4> &r) {
+            for (int i = 0; i < l.size(); i++) {
+                if (l[i].vWorldPosition != r[i].vWorldPosition)
+                    return false;
+            }
+            return true;
+        };
+
         // avoid circular loops in portals
         for (int test = 0; test < num_nodes; test++) {
             if (nodes[test].uSectorID == nodes[num_nodes].uSectorID &&
                 nodes[test].uFaceID == nodes[num_nodes].uFaceID &&
-                nodes[test].pPortalBounding == nodes[num_nodes].pPortalBounding) {
+                boundingMatches(nodes[test].pPortalBounding, nodes[num_nodes].pPortalBounding)) {
                 return;
             }
         }
