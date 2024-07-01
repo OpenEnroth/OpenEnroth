@@ -114,7 +114,7 @@ jobs:
             export CC=gcc-13 && export CXX=g++-13
             cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
             cd build
-            make V=1 -j3
+            make -j3
             sudo make install 
 
       - name: Run ccache
