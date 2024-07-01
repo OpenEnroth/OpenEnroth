@@ -108,6 +108,10 @@ jobs:
       - name: 'Build libdwarf'
         working-directory: libdwarf-code
         run: |
+            if [ "${{matrix.architecture}}" = "x86" ]; then
+              export CFLAGS="-m32" CXXFLAGS="-m32" 
+            fi
+            export CC=gcc-13 && export CXX=g++-13
             cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
             cd build
             make V=1 -j3
