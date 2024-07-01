@@ -103,14 +103,14 @@ jobs:
         with:
           repository: davea42/libdwarf-code
           path: libdwarf-code
-          ref: 'v0.10.0'
+          ref: '20210528'
 
       - name: 'Build libdwarf'
         working-directory: libdwarf-code
         run: |
             cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
             cd build
-            make -j3
+            make V=1 -j3
             sudo make install 
 
       - name: Run ccache
