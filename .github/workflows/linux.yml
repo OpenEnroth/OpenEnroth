@@ -103,7 +103,7 @@ jobs:
         with:
           repository: davea42/libdwarf-code
           path: libdwarf-code
-          ref: '20210528'
+          ref: '20191104'
 
       - name: 'Build libdwarf'
         working-directory: libdwarf-code
