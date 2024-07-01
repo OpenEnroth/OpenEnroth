@@ -106,6 +106,7 @@ jobs:
           ref: 'v0.10.0'
 
       - name: 'Build libdwarf'
+        working-directory: libdwarf-code
         run: |
             cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
             cd build
