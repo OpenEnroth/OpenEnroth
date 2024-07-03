@@ -435,6 +435,9 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
             if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE)
                 if (face_id == 385 || face_id == 405 || face_id == 4602 || face_id == 4606)
                     continue;
+            if (engine->_currentLoadedMapId == MAP_TEMPLE_OF_THE_LIGHT) // For #1706 glitch on waterway
+                if (face_id == 1181)
+                    continue;
 
             CollideBodyWithFace(face, Pid(OBJECT_Face, face_id), ignore_ethereal, MODEL_INDOOR);
         }
