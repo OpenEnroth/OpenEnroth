@@ -285,9 +285,13 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
             }
 
             if (have_collision && move_distance < collision_state.adjusted_move_distance) {
-                collision_state.adjusted_move_distance = move_distance;
-                collision_state.collisionPos = col_pos;
-                collision_state.pid = face_pid;
+                // TODO(pskelton): should this be a config value
+                // We allow for a bit of negative movement in case we are already too close to the surface and need pushback
+                if (move_distance > -10.0f) {
+                    collision_state.adjusted_move_distance = move_distance;
+                    collision_state.collisionPos = col_pos;
+                    collision_state.pid = face_pid;
+                }
             }
         }
     };
@@ -430,6 +434,9 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
             // TODO(pskelton): Modify game data face attribs to ethereal eventually - hack so that secret tunnel under prison bed can be accessed
             if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE)
                 if (face_id == 385 || face_id == 405 || face_id == 4602 || face_id == 4606)
+                    continue;
+            if (engine->_currentLoadedMapId == MAP_TEMPLE_OF_THE_LIGHT) // For #1706 glitch on waterway
+                if (face_id == 1181)
                     continue;
 
             CollideBodyWithFace(face, Pid(OBJECT_Face, face_id), ignore_ethereal, MODEL_INDOOR);

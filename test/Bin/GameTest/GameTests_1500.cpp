@@ -278,3 +278,13 @@ GAME_TEST(Issues, Issue1685) {
     EXPECT_EQ(jar1.GetIdentifiedName(), "Kolya's Jar");
     EXPECT_EQ(jar2.GetIdentifiedName(), "Nicholas' Jar");
 }
+
+// 1700
+
+GAME_TEST(Issues, Issue1706) {
+    // Collisions - Getting out of bounds in The temple of the Light
+    auto ypos = tapes.custom([]() { return static_cast<int>(pParty->pos.y); });
+    test.playTraceFromTestData("issue_1706.mm7", "issue_1706.json");
+    EXPECT_GT(ypos.min(), -2555); // make sure we dont get past the wall
+    EXPECT_LE(ypos.min(), -2550); // but we should get right up against it
+}
