@@ -696,7 +696,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             collision_state.ignored_face_id = collision_state.pid.id();
             if (pIndoor->pFaces[id].uPolygonType == POLYGON_Floor) {
                 actor.velocity.z = 0;
-                actor.pos.z = pIndoor->pVertices[face->pVertexIDs[0]].z + 1;
+                // actor.pos.z = pIndoor->pVertices[face->pVertexIDs[0]].z + 1;  // testing
                 if (actor.velocity.lengthSqr() < 400) {
                     actor.velocity.x = 0;
                     actor.velocity.y = 0;
