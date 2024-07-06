@@ -1562,7 +1562,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         if (pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING)) {
             // flying was previously used to prevent fall damage from jump spell
             pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
-        } else {
+        } else if (!engine->config->gameplay.NoIndoorFallDamage.value()){
             pParty->giveFallDamage(pParty->uFallStartZ - pParty->pos.z);
         }
     }
