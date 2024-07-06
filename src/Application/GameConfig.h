@@ -247,6 +247,8 @@ class GameConfig : public Config {
         }
     };
 
+    Gameplay gameplay{ this };
+
     class Gamepad : public ConfigSection {
      public:
         explicit Gamepad(GameConfig *config) : ConfigSection(config, "gamepad") {}
@@ -329,8 +331,6 @@ class GameConfig : public Config {
     };
 
     Gamepad gamepad{ this };
-
-    Gameplay gameplay{ this };
 
     class Graphics : public ConfigSection {
      public:

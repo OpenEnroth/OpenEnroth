@@ -288,3 +288,15 @@ GAME_TEST(Issues, Issue1706) {
     EXPECT_GT(ypos.min(), -2555); // make sure we dont get past the wall
     EXPECT_LE(ypos.min(), -2550); // but we should get right up against it
 }
+
+GAME_TEST(issues, Issue1710) {
+    // Fall damage indoors
+    auto health = tapes.totalHp();
+    auto expressionTape = charTapes.expression(2);
+    auto zpos = tapes.custom([]() { return static_cast<int>(pParty->pos.z); });
+    test.playTraceFromTestData("issue_1710.mm7", "issue_1710.json", [](){ engine->config->gameplay.NoIndoorFallDamage.setValue(false); });
+    EXPECT_LT(health.back(), health.front()); // party has taken damage from fall
+    EXPECT_TRUE(uCurrentlyLoadedLevelType == LEVEL_INDOOR);
+    EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_FEAR));
+    EXPECT_GT(zpos.max(), zpos.min() + 1000);
+}
