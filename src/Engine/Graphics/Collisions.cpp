@@ -695,17 +695,17 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
             collision_state.ignored_face_id = collision_state.pid.id();
             if (pIndoor->pFaces[id].uPolygonType == POLYGON_Floor) {
-                actor.velocity.z = 0;
+                if (actor.velocity.z < 0) actor.velocity.z = 0;
                 // actor.pos.z = pIndoor->pVertices[face->pVertexIDs[0]].z + 1;  // testing
                 if (actor.velocity.lengthSqr() < 400) {
                     actor.velocity.x = 0;
                     actor.velocity.y = 0;
-                    continue; // TODO(captainurist): drop this continue
                 }
             } else {
                 float velocityDotNormal = dot(face->facePlane.normal, actor.velocity);
                 velocityDotNormal = std::max(std::abs(velocityDotNormal), collision_state.speed / 8);
                 actor.velocity += velocityDotNormal * face->facePlane.normal;
+
                 if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
                     float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos);
                     if (overshoot > 0)
@@ -815,8 +815,8 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 
             if (!face->Ethereal()) {
                 if (face->uPolygonType == POLYGON_Floor) {
-                    actor.velocity.z = 0;
-                    actor.pos.z = pOutdoor->model(collision_state.pid).pVertices[face->pVertexIDs[0]].z + 1;
+                    if (actor.velocity.z < 0) actor.velocity.z = 0;
+                    //actor.pos.z = pOutdoor->model(collision_state.pid).pVertices[face->pVertexIDs[0]].z + 1; // testing
                     if (actor.velocity.lengthSqr() < 400) {
                         actor.velocity.y = 0;
                         actor.velocity.x = 0;
