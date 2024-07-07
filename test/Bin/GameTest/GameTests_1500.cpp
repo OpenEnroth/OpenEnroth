@@ -294,7 +294,9 @@ GAME_TEST(issues, Issue1710) {
     auto health = tapes.totalHp();
     auto expressionTape = charTapes.expression(2);
     auto zpos = tapes.custom([]() { return static_cast<int>(pParty->pos.z); });
-    test.playTraceFromTestData("issue_1710.mm7", "issue_1710.json", [](){ engine->config->gameplay.NoIndoorFallDamage.setValue(false); });
+    auto noFallDamageTape = tapes.config(engine->config->gameplay.NoIndoorFallDamage);
+    test.playTraceFromTestData("issue_1710.mm7", "issue_1710.json");
+    EXPECT_EQ(noFallDamageTape, tape(false)); // Fall damage was actually possible
     EXPECT_LT(health.back(), health.front()); // party has taken damage from fall
     EXPECT_TRUE(uCurrentlyLoadedLevelType == LEVEL_INDOOR);
     EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_FEAR));
