@@ -212,6 +212,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         }
     }
 
+    // TODO(pskelton): move to collisions
     collision_state.check_hi = false;
     collision_state.radius_lo = object->uRadius;
     collision_state.radius_hi = 0;
@@ -360,6 +361,7 @@ void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
     if (floor_lvl <= pSpriteObject->vPosition.z - 3) {
         pSpriteObject->vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
         // TODO(Nik-RE-dev): get rid of goto here
+        // TODO(pskelton): move to Collisions
 LABEL_25:
         collision_state.check_hi = false;
         collision_state.radius_lo = pObject->uRadius;
