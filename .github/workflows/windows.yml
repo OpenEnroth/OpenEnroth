@@ -40,7 +40,7 @@ jobs:
       matrix:
         configuration:
           - Debug
-          - Release
+          - RelWithDebInfo
         architecture:
           - x86
           - x86_64
