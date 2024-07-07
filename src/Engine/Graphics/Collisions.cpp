@@ -823,11 +823,9 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
                     }
                 } else {
                     float velocityDotNormal = dot(face->facePlane.normal, actor.velocity);
-                    // TODO(captainurist): in BLV code we have std::abs(velocityDotNormal) here, and adding std::abs affects traces.
-                    // Note that not all copies of this code have std::abs. Why?
-                    velocityDotNormal = std::max(velocityDotNormal, collision_state.speed / 8);
-
+                    velocityDotNormal = std::max(std::abs(velocityDotNormal), collision_state.speed / 8);
                     actor.velocity += velocityDotNormal * face->facePlane.normal;
+
                     if (face->uPolygonType != POLYGON_InBetweenFloorAndWall) {
                         float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos);
                         if (overshoot > 0)
