@@ -1337,7 +1337,7 @@ void RegeneratePartyHealthMana() {
         spellSprite.uAttributes = 0;
         spellSprite.uSectorID = 0;
         spellSprite.timeSinceCreated = 0_ticks;
-        spellSprite.spell_caster_pid = Pid(OBJECT_Character, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster);
+        spellSprite.spell_caster_pid = Pid(OBJECT_Character, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster - 1); // caster is 1 indexed so turn back to 0
         spellSprite.uFacing = 0;
         spellSprite.uSoundID = 0;
 
