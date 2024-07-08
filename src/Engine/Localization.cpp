@@ -82,7 +82,7 @@ bool Localization::Initialize() {
     if (this->localization_strings[LSTR_ENERGY].empty())
         this->localization_strings[LSTR_ENERGY] = "Energy";
     if (this->localization_strings[LSTR_IMMOLATION_DAMAGE].empty())
-        this->localization_strings[LSTR_IMMOLATION_DAMAGE] = "Immolation deals %d damage to %d targets";
+        this->localization_strings[LSTR_IMMOLATION_DAMAGE] = "Immolation deals %d damage to %d target(s)";
 
     InitializeMm6ItemCategories();
 
