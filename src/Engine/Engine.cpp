@@ -1343,13 +1343,21 @@ void RegeneratePartyHealthMana() {
 
         int actorsAffectedByImmolation[100];
         size_t numberOfActorsAffected = pParty->immolationAffectedActors(actorsAffectedByImmolation, 100, 307);
+        int totalDmg = 0; int hitCount = 0;
         for (size_t idx = 0; idx < numberOfActorsAffected; ++idx) {
             int actorID = actorsAffectedByImmolation[idx];
             spellSprite.vPosition.x = pActors[actorID].pos.x;
             spellSprite.vPosition.y = pActors[actorID].pos.y;
             spellSprite.vPosition.z = pActors[actorID].pos.z;
             spellSprite.spell_target_pid = Pid(OBJECT_Actor, actorID);
-            Actor::DamageMonsterFromParty(Pid(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, Vec3f());
+            int thisDmg = Actor::DamageMonsterFromParty(Pid(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, Vec3f());
+            if (thisDmg) hitCount++;
+            totalDmg += thisDmg;
+        }
+
+        // Override status bar
+        if (engine->config->settings.ShowHits.value() && totalDmg > 0) {
+            engine->_statusBar->setEvent(LSTR_IMMOLATION_DAMAGE, totalDmg, hitCount);
         }
     }
 
