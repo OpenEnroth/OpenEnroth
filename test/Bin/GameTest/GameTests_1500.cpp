@@ -302,3 +302,13 @@ GAME_TEST(issues, Issue1710) {
     EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_FEAR));
     EXPECT_GT(zpos.max(), zpos.min() + 1000);
 }
+
+GAME_TEST(issues, Issue1717) {
+    // Immolation incorrect damage message
+    auto statusBar = tapes.statusBar();
+    auto immoBuff = tapes.custom([]() { return pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active(); });
+    test.playTraceFromTestData("issue_1717.mm7", "issue_1717.json");
+    EXPECT_EQ(immoBuff, tape( false, true ));
+    EXPECT_EQ(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster, 4);
+    EXPECT_TRUE(statusBar.contains("Immolation deals 77 damage to 2 target(s)"));
+}
