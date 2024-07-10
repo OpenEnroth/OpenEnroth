@@ -1337,19 +1337,27 @@ void RegeneratePartyHealthMana() {
         spellSprite.uAttributes = 0;
         spellSprite.uSectorID = 0;
         spellSprite.timeSinceCreated = 0_ticks;
-        spellSprite.spell_caster_pid = Pid(OBJECT_Character, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster);
+        spellSprite.spell_caster_pid = Pid(OBJECT_Character, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster - 1); // caster is 1 indexed so turn back to 0
         spellSprite.uFacing = 0;
         spellSprite.uSoundID = 0;
 
         int actorsAffectedByImmolation[100];
         size_t numberOfActorsAffected = pParty->immolationAffectedActors(actorsAffectedByImmolation, 100, 307);
+        int totalDmg = 0; int hitCount = 0;
         for (size_t idx = 0; idx < numberOfActorsAffected; ++idx) {
             int actorID = actorsAffectedByImmolation[idx];
             spellSprite.vPosition.x = pActors[actorID].pos.x;
             spellSprite.vPosition.y = pActors[actorID].pos.y;
             spellSprite.vPosition.z = pActors[actorID].pos.z;
             spellSprite.spell_target_pid = Pid(OBJECT_Actor, actorID);
-            Actor::DamageMonsterFromParty(Pid(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, Vec3f());
+            int thisDmg = Actor::DamageMonsterFromParty(Pid(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, Vec3f());
+            if (thisDmg) hitCount++;
+            totalDmg += thisDmg;
+        }
+
+        // Override status bar
+        if (engine->config->settings.ShowHits.value() && totalDmg > 0) {
+            engine->_statusBar->setEvent(LSTR_IMMOLATION_DAMAGE, totalDmg, hitCount);
         }
     }
 

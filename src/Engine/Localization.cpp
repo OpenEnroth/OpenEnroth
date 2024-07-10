@@ -81,6 +81,8 @@ bool Localization::Initialize() {
         this->localization_strings[LSTR_WAND_ALREADY_CHARGED] = "Wand already charged!";
     if (this->localization_strings[LSTR_ENERGY].empty())
         this->localization_strings[LSTR_ENERGY] = "Energy";
+    if (this->localization_strings[LSTR_IMMOLATION_DAMAGE].empty())
+        this->localization_strings[LSTR_IMMOLATION_DAMAGE] = "Immolation deals %d damage to %d target(s)";
 
     InitializeMm6ItemCategories();
 

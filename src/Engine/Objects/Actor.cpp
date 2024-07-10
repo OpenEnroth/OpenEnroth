@@ -2993,7 +2993,7 @@ void Actor::InitializeActors() {
     }
 }
 //----- (00439474) --------------------------------------------------------
-void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const Vec3f &pVelocity) {
+int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const Vec3f &pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
     Duration extraRecoveryTime;           // qax@125
@@ -3017,12 +3017,12 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
         v61 = projectileSprite->field_60_distance_related_prolly_lod;
         a1 = projectileSprite->spell_caster_pid;
     }
-    if (a1.type() != OBJECT_Character) return;
+    if (a1.type() != OBJECT_Character) return 0;
 
     assert(a1.id() < 4);
     Character *character = &pParty->pCharacters[a1.id()];
     pMonster = &pActors[uActorID_Monster];
-    if (pMonster->IsNotAlive()) return;
+    if (pMonster->IsNotAlive()) return 0;
 
     pMonster->attributes |= ACTOR_NEARBY | ACTOR_ACTIVE;
     if (pMonster->aiState == Fleeing) pMonster->attributes |= ACTOR_FLEEING;
@@ -3060,7 +3060,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
         uDamageAmount = character->CalculateMeleeDamageTo(false, false, pMonster->monsterInfo.id);
         if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
             character->playReaction(SPEECH_ATTACK_MISS);
-            return;
+            return 0;
         }
     } else {
         v61 = projectileSprite->field_60_distance_related_prolly_lod;
@@ -3071,7 +3071,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
             v61 = int_get_vector_length(d1, d2, d3);
 
             if (v61 >= 5120 && !(pMonster->attributes & ACTOR_FULL_AI_STATE))  // 0x400
-                return;
+                return 0;
             else if (v61 >= 2560)
                 v61 = 2;
             else
@@ -3088,7 +3088,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
                 uDamageAmount = character->CalculateMeleeDamageTo(true, true, MONSTER_INVALID);
                 if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
-                    return;
+                    return 0;
                 }
                 break;
             case SPELL_101:
@@ -3099,7 +3099,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
                 IsAdditionalDamagePossible = true;
                 if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
-                    return;
+                    return 0;
                 }
                 break;
             case SPELL_EARTH_BLADES:
@@ -3114,7 +3114,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
                 IsAdditionalDamagePossible = false;
                 if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
-                    return;
+                    return 0;
                 }
                 break;
             case SPELL_EARTH_STUN:
@@ -3123,7 +3123,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
                 hit_will_stun = 1;
                 if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
-                    return;
+                    return 0;
                 }
                 break;
             case SPELL_BOW_ARROW:
@@ -3138,7 +3138,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
                     attackElement = DAMAGE_FIRE;
                 } else if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
-                    return;
+                    return 0;
                 }
                 break;
 
@@ -3199,7 +3199,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
     pMonster->currentHP -= uDamageAmount;
     if (uDamageAmount == 0 && !hit_will_stun) {
         character->playReaction(SPEECH_ATTACK_MISS);
-        return;
+        return 0;
     }
     if (pMonster->currentHP > 0) {
         Actor::AI_Stun(uActorID_Monster, a1, 0);
@@ -3253,6 +3253,8 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
         pMonster->velocity = 50 * knockbackValue * pVelocity;
     }
     Actor::AddOnDamageOverlay(uActorID_Monster, 1, v61);
+
+    return uDamageAmount;
 }
 
 //----- (004BBF61) --------------------------------------------------------

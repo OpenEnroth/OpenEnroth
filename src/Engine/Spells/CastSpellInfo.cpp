@@ -114,6 +114,7 @@ static void setSpellRecovery(CastSpellInfo *pCastSpell,
     pPlayer->playReaction(SPEECH_CAST_SPELL);
 }
 
+// TODO(pskelton): caster index not supplied to buffs ".Apply"
 void CastSpellInfoHelpers::castSpell() {
     CharacterSkillType which_skill;
     AIDirection target_direction;
@@ -963,7 +964,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION]
-                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_level, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_level, 0, pCastSpell->casterCharacterIndex + 1);
                     break;
                 }
 
