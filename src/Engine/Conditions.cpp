@@ -19,9 +19,9 @@ MM_DECLARE_FLAGS(ConditionFlags, ConditionFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(ConditionFlags)
 
 struct ConditionTableEntry {
-    ConditionFlags flags;
-    ItemEnchantment enchantment = ITEM_ENCHANTMENT_NULL;
-    std::array<ConditionEquipment, 3> equipment = {{}};
+    ConditionFlags _flags;
+    ItemEnchantment _enchantment = ITEM_ENCHANTMENT_NULL;
+    std::array<ConditionEquipment, 3> _equipment = {{}};
 
     constexpr ConditionTableEntry() = default;
     constexpr ConditionTableEntry(ConditionFlags flags,
@@ -32,14 +32,14 @@ struct ConditionTableEntry {
                                   ItemSlot slot2 = ITEM_SLOT_INVALID,
                                   ItemId item3 = ITEM_NULL,
                                   ItemSlot slot3 = ITEM_SLOT_INVALID) { // NOLINT: we want an explicit constructor.
-        flags = flags;
-        enchantment = enchantment;
-        equipment[0].item = item1;
-        equipment[0].slot = slot1;
-        equipment[1].item = item2;
-        equipment[1].slot = slot2;
-        equipment[2].item = item3;
-        equipment[2].slot = slot3;
+        _flags = flags;
+        _enchantment = enchantment;
+        _equipment[0].item = item1;
+        _equipment[0].slot = slot1;
+        _equipment[1].item = item2;
+        _equipment[1].slot = slot2;
+        _equipment[2].item = item3;
+        _equipment[2].slot = slot3;
     }
 };
 
@@ -65,7 +65,7 @@ static constexpr IndexedArray<ConditionTableEntry, CONDITION_CURSED, CONDITION_Z
                                  ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
     {CONDITION_DISEASE_SEVERE,  {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_IMMUNITY,
                                  ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_PARALYZED,       {0, ITEM_ENCHANTMENT_OF_FREEDOM,
+    {CONDITION_PARALYZED,       {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_FREEDOM,
                                  ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK, ITEM_ARTIFACT_GHOULSBANE, ITEM_SLOT_ANY}},
     {CONDITION_UNCONSCIOUS,     {0}},
     {CONDITION_DEAD,            {AFFECTED_BY_PROTECTION_FROM_MAGIC | REQUIRES_GM_PROTECTION_FROM_MAGIC}},
@@ -118,14 +118,14 @@ static std::array<Condition, 18> conditionImportancyTableAlternative = {{
 }};
 
 static bool blockConditionWithProtectionFromMagic(const ConditionTableEntry &entry) {
-    if (!(entry.flags & AFFECTED_BY_PROTECTION_FROM_MAGIC))
+    if (!(entry._flags & AFFECTED_BY_PROTECTION_FROM_MAGIC))
         return false;
 
     SpellBuff &protectionBuff = pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC];
     if (!protectionBuff.Active())
         return false;
 
-    if ((entry.flags & REQUIRES_GM_PROTECTION_FROM_MAGIC) && protectionBuff.skillMastery < CHARACTER_SKILL_MASTERY_GRANDMASTER)
+    if ((entry._flags & REQUIRES_GM_PROTECTION_FROM_MAGIC) && protectionBuff.skillMastery < CHARACTER_SKILL_MASTERY_GRANDMASTER)
         return false;
 
     assert(protectionBuff.power != 0); // Otherwise the decrement below will overflow.
@@ -143,10 +143,10 @@ bool blockCondition(Character *character, Condition condition) {
     if (blockConditionWithProtectionFromMagic(entry))
         return true;
 
-    if (entry.enchantment != ITEM_ENCHANTMENT_NULL && character->HasEnchantedItemEquipped(entry.enchantment))
+    if (entry._enchantment != ITEM_ENCHANTMENT_NULL && character->HasEnchantedItemEquipped(entry._enchantment))
         return true;
 
-    for (const ConditionEquipment &pair : entry.equipment) {
+    for (const ConditionEquipment &pair : entry._equipment) {
         if (pair.item == ITEM_NULL)
             break;
 
