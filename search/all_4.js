@@ -21,7 +21,7 @@ var searchData=
   ['damage_5ftype_18',['damage_type',['../classEventIR.html#a4ace3256905b6cd2fabf44a4466e65d9',1,'EventIR']]],
   ['damage_5fwater_19',['DAMAGE_WATER',['../ItemEnums_8h.html#aede113aaae4be64c871e8712183fb868a5b88adeabca29c68e4412e864cc7cef1',1,'ItemEnums.h']]],
   ['damagecharacterfrommonster_20',['DamageCharacterFromMonster',['../Character_8cpp.html#a9fd0044b1f46415c28cf559e771bd8d8',1,'DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int targetchar):&#160;Character.cpp'],['../Character_8h.html#a4078484e0a64d424aee425c3ebd82194',1,'DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int a4):&#160;Character.cpp']]],
-  ['damagemonsterfromparty_21',['DamageMonsterFromParty',['../classActor.html#a57dbf77eca2136385f45054ed11656a9',1,'Actor']]],
+  ['damagemonsterfromparty_21',['DamageMonsterFromParty',['../classActor.html#a862a026ab9344b99235bcd399ee4b58b',1,'Actor']]],
   ['damagetype_22',['DamageType',['../ItemEnums_8h.html#aede113aaae4be64c871e8712183fb868',1,'ItemEnums.h']]],
   ['damagetype_23',['damageType',['../structSpellInfo.html#ad77c008058be5902b76c0abfa55ba7c9',1,'SpellInfo']]],
   ['darkgray_24',['DarkGray',['../classColorTable.html#a966c48f5e72daf931a056ec9dd8698d5',1,'ColorTable']]],
