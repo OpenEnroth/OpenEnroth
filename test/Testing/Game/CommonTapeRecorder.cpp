@@ -157,3 +157,7 @@ TestMultiTape<std::string> CommonTapeRecorder::messageBoxes() {
 TestMultiTape<std::string> CommonTapeRecorder::allGUIWindowsText() {
     return _controller->recordFunctionTape<std::string>(CALL_GUIWINDOW_DRAWTEXT);
 }
+
+TestMultiTape<SpecialAttackType> CommonTapeRecorder::specialAttacks() {
+    return _controller->recordFunctionTape<SpecialAttackType>(CALL_SPECIAL_ATTACK);
+}
