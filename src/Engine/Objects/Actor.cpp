@@ -3943,13 +3943,14 @@ void Actor::MakeActorAIList_ODM() {
     // use stable_sort to make tests work across all platforms
     std::stable_sort(activeActorsDistances.begin(), activeActorsDistances.end(), [] (std::pair<int, int> a, std::pair<int, int> b) { return a.second < b.second; });
 
-    // and takes nearest 30
-    for (int i = 0; (i < 30) && (i < activeActorsDistances.size()); i++) {
+    // and takes nearest amount
+    int configLimit = engine->config->gameplay.MaxActiveAIActors.value();
+    for (int i = 0; (i < configLimit) && (i < activeActorsDistances.size()); i++) {
         ai_near_actors_ids[i] = activeActorsDistances[i].first;
         pActors[ai_near_actors_ids[i]].attributes |= ACTOR_FULL_AI_STATE;
     }
 
-    ai_arrays_size = std::min(30, (int)activeActorsDistances.size());
+    ai_arrays_size = std::min(configLimit, (int)activeActorsDistances.size());
 }
 
 //----- (004016FA) --------------------------------------------------------
