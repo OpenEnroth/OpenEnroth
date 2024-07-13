@@ -540,7 +540,7 @@ std::string masteryTeacherOptionString() {
           default:
             break;
         }
-        canLearn = canLearn && (skillLevel >= 7);
+        canLearn = canLearn && (skillLevel >= 7) && (skillMastery == CHARACTER_SKILL_MASTERY_EXPERT);
         gold_transaction_amount = masterSkillMasteryCost[skillBeingTaught];
     }
 
@@ -561,7 +561,7 @@ std::string masteryTeacherOptionString() {
           default:
             break;
         }
-        canLearn = canLearn && (skillLevel >= 10);
+        canLearn = canLearn && (skillLevel >= 10) && (skillMastery == CHARACTER_SKILL_MASTERY_MASTER);
         gold_transaction_amount = grandmasterSkillMasteryCost[skillBeingTaught];
     }
 
