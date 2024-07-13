@@ -208,6 +208,9 @@ class GameConfig : public Config {
         Bool NoIndoorFallDamage = { this, "no_indoor_fall_damage", false,
                                   "Disable fall damage for indoor maps." };
 
+        Float SpawnCountMultiplier = { this, "spawn_count_multiplier", 1.0f,
+                                    "Muliplicaiton factor for how many enemies are spawned over original." };
+
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)
