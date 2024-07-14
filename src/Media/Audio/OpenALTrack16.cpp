@@ -178,7 +178,7 @@ bool OpenALTrack16::Update() {
     DrainBuffers();
 
     while (uiReservedData < uiReservedDataMinimum) {
-        std::shared_ptr<Blob> buffer = pDataSource->GetNextBuffer();
+        Blob buffer = pDataSource->GetNextBuffer();
 
         if (!buffer) {
             pDataSource->Close();
@@ -196,7 +196,7 @@ bool OpenALTrack16::Update() {
             return false;
         }
 
-        alBufferData(al_buffer, al_format, buffer->data(), buffer->size(), al_sample_rate);
+        alBufferData(al_buffer, al_format, buffer.data(), buffer.size(), al_sample_rate);
         if (checkOpenALError()) {
             return false;
         }
@@ -206,7 +206,7 @@ bool OpenALTrack16::Update() {
             return false;
         }
 
-        uiReservedData += buffer->size();
+        uiReservedData += buffer.size();
     }
 
     return true;

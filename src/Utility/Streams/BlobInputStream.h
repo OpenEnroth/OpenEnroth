@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "Utility/Memory/Blob.h"
 
 #include "InputStream.h"
@@ -22,6 +24,7 @@ class BlobInputStream : public InputStream {
     virtual size_t read(void *data, size_t size) override;
     virtual size_t skip(size_t size) override;
     virtual void close() override;
+    [[nodiscard]] virtual std::string displayPath() const override;
 
     /**
      * @return                          Remaining stream data, as a blob that's shared with the blob that this

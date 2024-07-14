@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstring>
 #include <algorithm>
+#include <string>
 #include <utility>
 
 #include "Utility/Exception.h"
@@ -48,6 +49,10 @@ void BlobInputStream::close() {
     _blob = Blob();
     _pos = nullptr;
     _end = nullptr;
+}
+
+std::string BlobInputStream::displayPath() const {
+    return _blob.displayPath();
 }
 
 Blob BlobInputStream::tail() const {
