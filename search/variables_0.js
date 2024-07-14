@@ -27,7 +27,7 @@ var searchData=
   ['_5fbasedatasource_24',['_baseDataSource',['../classOpenALAudioDataSource.html#ad1b24120bccd2cc11d45b0772e9d34c3',1,'OpenALAudioDataSource']]],
   ['_5fbegin_25',['_begin',['../classdetail_1_1SplitView.html#abfa3cb4d32561eb05bb993722a02b7d6',1,'detail::SplitView::_begin()'],['../classMemoryInputStream.html#a51611d5453948cf270240af38de3cbfc',1,'MemoryInputStream::_begin()']]],
   ['_5fbindings_26',['_bindings',['../classScriptingSystem.html#a2f5ff6ce8fdeeb3a17a9fe94997e7cc0',1,'ScriptingSystem']]],
-  ['_5fbinkbuffer_27',['_binkBuffer',['../classMovie.html#af52fbdc20373536f722e92d87461b853',1,'Movie']]],
+  ['_5fbinkbuffer_27',['_binkBuffer',['../classMovie.html#ac73ca737e1cdf1ccd0d7bb10b9511b40',1,'Movie']]],
   ['_5fbinkpacket_28',['_binkPacket',['../classMovie.html#a6d0365f31277b99b0187fc4e82aa8808',1,'Movie']]],
   ['_5fbitset_29',['_bitset',['../classIndexedBitset.html#a497fdfdd43533b777de4009ae2ca6701',1,'IndexedBitset']]],
   ['_5fblob_30',['_blob',['../classBlobInputStream.html#a5cba6e75c9adbe112902e6bf9a2770e4',1,'BlobInputStream::_blob()'],['../classMovie.html#a5e676ebf479652283175c0c5d4d39234',1,'Movie::_blob()']]],
