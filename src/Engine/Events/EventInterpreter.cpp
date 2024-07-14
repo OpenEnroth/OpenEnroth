@@ -82,15 +82,14 @@ void spawnMonsters(int16_t typeindex, int16_t level, int count,
     pSpawnPoint.uMonsterIndex = typeindex + 2 * level + level;
 
     AIDirection direction;
-    // TODO(pskelton): fix this or check is safe to remove. Looks like it was meant to rotate last set of spawned monster towards party
-    int oldNumActors = 0; // pActors.size();
+    int oldNumActors = pActors.size();
     SpawnEncounter(&pMapStats->pInfos[engine->_currentLoadedMapId], &pSpawnPoint, 0, count, 0);
-    Actor::GetDirectionInfo(Pid(OBJECT_Actor, oldNumActors), Pid::character(0), &direction, 1);
-    //for (int i = oldNumActors; i < pActors.size(); ++i) {
-    //    pActors[i].PrepareSprites(0);
-    //    pActors[i].yawAngle = direction.uYawAngle;
-    //    pActors[i].uniqueNameIndex = uUniqueName;
-    //}
+    Actor::GetDirectionInfo(pos, pParty->pos + Vec3f(0, 0, pParty->eyeLevel), &direction);
+    for (int i = oldNumActors; i < pActors.size(); ++i) {
+        pActors[i].PrepareSprites(0);
+        pActors[i].yawAngle = direction.uYawAngle;
+        pActors[i].uniqueNameIndex = uUniqueName;
+    }
 }
 
 static bool doForChosenPlayer(CharacterChoosePolicy who, RandomEngine *rng, std::function<int(Character&)> func) {

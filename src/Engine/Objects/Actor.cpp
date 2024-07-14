@@ -860,6 +860,29 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     return;
 }
 
+void Actor::GetDirectionInfo(Vec3f p1, Vec3f p2, AIDirection* pOut) {
+    // TODO(pskelton): Should this be moved somewhere else - not actor related
+    Vec3f dir = p2 - p1;
+    float length = dir.length();
+    float deltaX = p2.x - p1.x;
+    float deltaY = p2.y - p1.y;
+    float deltaZ = p2.z - p1.z;
+    if (length <= 1.0) {
+        pOut->vDirection = Vec3f(1, 0, 0);
+        pOut->uDistance = 1;
+        pOut->uDistanceXZ = 1;
+        pOut->uYawAngle = 0;
+        pOut->uPitchAngle = 0;
+    } else {
+        dir.normalize();
+        pOut->vDirection = dir;
+        pOut->uDistance = length;
+        pOut->uDistanceXZ = std::sqrt(deltaX * deltaX + deltaY * deltaY);
+        pOut->uYawAngle = TrigLUT.atan2(deltaX, deltaY);
+        pOut->uPitchAngle = TrigLUT.atan2(pOut->uDistanceXZ, deltaZ);
+    }
+}
+
 //----- (004040E9) --------------------------------------------------------
 // // Get direction vector from object1 to object2,
 // // distance from object1 to object2 and Euler angles of the direction vector
@@ -955,25 +978,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
     }
 
-    Vec3f dir = out2 - out1;
-    float length = dir.length();
-    float deltaX = out2.x - out1.x;
-    float deltaY = out2.y - out1.y;
-    float deltaZ = out2.z - out1.z;
-    if (length <= 1.0) {
-        pOut->vDirection = Vec3f(1, 0, 0);
-        pOut->uDistance = 1;
-        pOut->uDistanceXZ = 1;
-        pOut->uYawAngle = 0;
-        pOut->uPitchAngle = 0;
-    } else {
-        dir.normalize();
-        pOut->vDirection = dir;
-        pOut->uDistance = length;
-        pOut->uDistanceXZ = std::sqrt(deltaX * deltaX + deltaY * deltaY);
-        pOut->uYawAngle = TrigLUT.atan2(deltaX, deltaY);
-        pOut->uPitchAngle = TrigLUT.atan2(pOut->uDistanceXZ, deltaZ);
-    }
+    GetDirectionInfo(out1, out2, pOut);
 }
 
 //----- (00404030) --------------------------------------------------------
