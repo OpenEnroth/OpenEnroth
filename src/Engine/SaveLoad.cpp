@@ -63,7 +63,7 @@ void LoadGame(int uSlot) {
 
     // Note that we're using Blob::copy so that the memory mapping for the savefile is not held by the LOD reader.
     pSave_LOD->close();
-    pSave_LOD->open(Blob::copy(Blob::fromFile(filename)), filename, LOD_ALLOW_DUPLICATES);
+    pSave_LOD->open(Blob::copy(Blob::fromFile(filename)), LOD_ALLOW_DUPLICATES);
 
     SaveGameHeader header;
     deserialize(*pSave_LOD, &header, tags::via<SaveGame_MM7>);
@@ -248,7 +248,7 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path,
     std::filesystem::rename(tempPath, path);
 
     pSave_LOD->close();
-    pSave_LOD->open(Blob::copy(Blob::fromFile(path)), path, LOD_ALLOW_DUPLICATES);
+    pSave_LOD->open(Blob::copy(Blob::fromFile(path)), LOD_ALLOW_DUPLICATES);
 
     pParty->pos.x = pPositionX;
     pParty->pos.y = pPositionY;

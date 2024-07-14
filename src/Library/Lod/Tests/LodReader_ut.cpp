@@ -31,7 +31,7 @@ const char brokenLod[] =
 
 UNIT_TEST(LodReader, RussianLod) {
     // Opening a LOD with invalid directory dataSize should just work.
-    LodReader reader(Blob::view(brokenLod, sizeof(brokenLod)), "russian.lod", LOD_ALLOW_DUPLICATES);
+    LodReader reader(Blob::view(brokenLod, sizeof(brokenLod)).withDisplayPath("russian.lod"), LOD_ALLOW_DUPLICATES);
     EXPECT_TRUE(reader.isOpen());
     EXPECT_EQ(reader.ls(), std::vector<std::string>{"lolkek"});
     EXPECT_EQ(reader.info().rootName, "maps");
