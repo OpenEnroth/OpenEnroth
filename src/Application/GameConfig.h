@@ -213,7 +213,7 @@ class GameConfig : public Config {
 
         Int MaxActors = { this, "max_actors", 500, &ValidateMaxActors,
                         "Limit to how many total actors are possible on a map." };
-        
+
         Int MaxActiveAIActors = { this, "max_active_ai_actors", 30, &ValidateMaxActiveAIActors,
                                 "Limit to how many actors can be in full AI state at once." };
 
