@@ -2969,7 +2969,7 @@ void Actor::InitializeActors() {
     if (pParty->isPartyEvil())
         evil = true;
 
-    ai_near_actors_targets_pid.fill(Pid());
+    std::ranges::fill(ai_near_actors_targets_pid, Pid());
 
     for (unsigned i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];

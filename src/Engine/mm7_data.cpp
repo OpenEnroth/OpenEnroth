@@ -2393,9 +2393,8 @@ IndexedArray<IndexedArray<CharacterSkillMastery, CHARACTER_SKILL_FIRST, CHARACTE
 }};
 
 int ai_arrays_size;
-// TODO(pskelton): 500 limits should be configurable or align with another actor limit
-std::array<Pid, 500> ai_near_actors_targets_pid;
-std::array<unsigned int, 500> ai_near_actors_ids;
+std::vector<Pid> ai_near_actors_targets_pid;
+std::vector<unsigned int> ai_near_actors_ids;
 
 char byte_4FAA24;  // turn over break??
 // HWND dword_4FAA28; // idb
