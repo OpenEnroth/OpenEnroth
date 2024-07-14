@@ -255,14 +255,10 @@ class GameConfig : public Config {
             return std::clamp(num, 0, 4);
         }
         static int ValidateMaxActors(int num) {
-            if (num < 500) return 500;
-
-            return num;
+            return std::clamp(num, 500, 5000);
         }
         static int ValidateMaxActiveAIActors(int num) {
-            if (num < 30) return 30;
-
-            return num;
+            return std::clamp(num, 30, 500);
         }
     };
 
