@@ -4408,8 +4408,8 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
     if (NumToSpawn <= 0) return;
 
     // Config multiplier now
-    NumToSpawn *= engine->config->gameplay.SpawnCountMultiplier.value();
-    NumToSpawn = std::clamp(NumToSpawn, 1, static_cast<int>(pActors.size()));
+    NumToSpawn = std::ceil(NumToSpawn * engine->config->gameplay.SpawnCountMultiplier.value());
+    NumToSpawn = std::clamp(NumToSpawn, 1, INT32_MAX);
 
     pSector = 0;
     pPosX = spawn->vPosition.x;
