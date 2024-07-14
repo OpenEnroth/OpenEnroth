@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;cb370e9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4c85d9f</span>
    </div>
   </td>
  </tr>
@@ -99,10 +99,10 @@ Functions</h2></td></tr>
 requires (sizeof...(Joinables) &gt; 0)</td></tr>
 <tr class="memitem:a6f647795bd210b8edbc5c1a311207025"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Join_8h.html#a6f647795bd210b8edbc5c1a311207025">join</a> (Joinables &amp;&amp;... joinables)</td></tr>
 <tr class="separator:a6f647795bd210b8edbc5c1a311207025"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c3a95d4e9cfe05bfa92cb06d5c8c531"><td class="memTemplParams" colspan="2">template&lt;class Strings &gt; <br />
-requires <a class="el" href="conceptJoinableToString.html">JoinableToString</a>&lt;typename Strings::value_type&gt; &amp;&amp; (!<a class="el" href="conceptJoinableToString.html">JoinableToString</a>&lt;Strings&gt;)</td></tr>
-<tr class="memitem:a0c3a95d4e9cfe05bfa92cb06d5c8c531"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Join_8h.html#a0c3a95d4e9cfe05bfa92cb06d5c8c531">join</a> (const Strings &amp;strings, char sep)</td></tr>
-<tr class="separator:a0c3a95d4e9cfe05bfa92cb06d5c8c531"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ef95759f5d26a7f3d0b7f2a1937e657"><td class="memTemplParams" colspan="2">template&lt;class Strings &gt; <br />
+requires <a class="el" href="conceptJoinableToString.html">JoinableToString</a>&lt;decltype(*std::declval&lt;Strings&gt;().begin())&gt; &amp;&amp; (!<a class="el" href="conceptJoinableToString.html">JoinableToString</a>&lt;Strings&gt;)</td></tr>
+<tr class="memitem:a5ef95759f5d26a7f3d0b7f2a1937e657"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="Join_8h.html#a5ef95759f5d26a7f3d0b7f2a1937e657">join</a> (Strings &amp;&amp;strings, char sep)</td></tr>
+<tr class="separator:a5ef95759f5d26a7f3d0b7f2a1937e657"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -114,39 +114,8 @@ Variables</h2></td></tr>
 <tr class="separator:ae5c16cfa8cb5ca4f7366b633b9f6c21f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a0c3a95d4e9cfe05bfa92cb06d5c8c531" name="a0c3a95d4e9cfe05bfa92cb06d5c8c531"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0c3a95d4e9cfe05bfa92cb06d5c8c531">&#9670;&#160;</a></span>join() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class Strings &gt; <br />
-requires <a class="el" href="conceptJoinableToString.html">JoinableToString</a>&lt;typename Strings::value_type&gt; &amp;&amp; (!<a class="el" href="conceptJoinableToString.html">JoinableToString</a>&lt;Strings&gt;)</div>
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string join </td>
-          <td>(</td>
-          <td class="paramtype">const Strings &amp;&#160;</td>
-          <td class="paramname"><em>strings</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>sep</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a6f647795bd210b8edbc5c1a311207025" name="a6f647795bd210b8edbc5c1a311207025"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6f647795bd210b8edbc5c1a311207025">&#9670;&#160;</a></span>join() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f647795bd210b8edbc5c1a311207025">&#9670;&#160;</a></span>join() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -160,6 +129,37 @@ requires (sizeof...(Joinables) &gt; 0)</div>
           <td class="paramtype">Joinables &amp;&amp;...&#160;</td>
           <td class="paramname"><em>joinables</em></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5ef95759f5d26a7f3d0b7f2a1937e657" name="a5ef95759f5d26a7f3d0b7f2a1937e657"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ef95759f5d26a7f3d0b7f2a1937e657">&#9670;&#160;</a></span>join() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Strings &gt; <br />
+requires <a class="el" href="conceptJoinableToString.html">JoinableToString</a>&lt;decltype(*std::declval&lt;Strings&gt;().begin())&gt; &amp;&amp; (!<a class="el" href="conceptJoinableToString.html">JoinableToString</a>&lt;Strings&gt;)</div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string join </td>
+          <td>(</td>
+          <td class="paramtype">Strings &amp;&amp;&#160;</td>
+          <td class="paramname"><em>strings</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>sep</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
