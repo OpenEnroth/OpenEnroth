@@ -46,6 +46,10 @@ void FileOutputStream::close() {
     closeInternal(true);
 }
 
+std::string FileOutputStream::displayPath() const {
+    return _path;
+}
+
 void FileOutputStream::closeInternal(bool canThrow) {
     if (!isOpen())
         return;
@@ -55,4 +59,5 @@ void FileOutputStream::closeInternal(bool canThrow) {
     if (status != 0 && canThrow)
         Exception::throwFromErrno(_path);
     // TODO(captainurist): !canThrow => log OR attach
+    _path = {};
 }

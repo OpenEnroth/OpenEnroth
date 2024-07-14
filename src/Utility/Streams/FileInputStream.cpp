@@ -73,6 +73,10 @@ void FileInputStream::close() {
     closeInternal(true);
 }
 
+std::string FileInputStream::displayPath() const {
+    return _path;
+}
+
 void FileInputStream::seek(size_t pos) {
     assert(isOpen());
 
@@ -99,4 +103,5 @@ void FileInputStream::closeInternal(bool canThrow) {
     if (status != 0 && canThrow)
         Exception::throwFromErrno(_path);
     // TODO(captainurist): !canThrow => log OR attach
+    _path = {};
 }
