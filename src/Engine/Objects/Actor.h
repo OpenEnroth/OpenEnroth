@@ -130,7 +130,7 @@ class Actor {
     /**
     * @param p1                            From Vec3f.
     * @param p2                            To Vec3f.
-    * @param[out] pOUt                     AIDirection from p1 to p2.
+    * @param[out] pOut                     AIDirection from p1 to p2.
     */
     static void GetDirectionInfo(Vec3f p1, Vec3f p2, AIDirection* pOut);
     static void GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
