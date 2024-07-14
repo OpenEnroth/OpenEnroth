@@ -155,6 +155,8 @@ var searchData=
   ['_7estru10_152',['~stru10',['../structstru10.html#afbbbedb5c6f95ffe0fdb4d1a8580f468',1,'stru10']]],
   ['_7estru314_153',['~stru314',['../structstru314.html#a19c9b3d11b111abb410af9cff3f6636b',1,'stru314']]],
   ['_7etestcontroller_154',['~TestController',['../classTestController.html#ab8c9f06ec38003688261be84150c11ff',1,'TestController']]],
-  ['_7evidreader_155',['~VidReader',['../classVidReader.html#af03b6fefc7a74f9ebf18a7abf53a4e29',1,'VidReader']]],
-  ['_7ewindowmanager_156',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]]
+  ['_7etestexistingfile_155',['~TestExistingFile',['../classTestExistingFile.html#a5ee5493775f2c3fd375405f600a6a471',1,'TestExistingFile']]],
+  ['_7etestnonexistingfile_156',['~TestNonExistingFile',['../classTestNonExistingFile.html#ab7231b1972561f82975e51c1a37bb59a',1,'TestNonExistingFile']]],
+  ['_7evidreader_157',['~VidReader',['../classVidReader.html#af03b6fefc7a74f9ebf18a7abf53a4e29',1,'VidReader']]],
+  ['_7ewindowmanager_158',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]]
 ];

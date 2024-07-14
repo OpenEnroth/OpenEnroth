@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4c85d9f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;45a1180</span>
    </div>
   </td>
  </tr>
@@ -105,6 +105,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a47c88a664d86b146829b6c5c9912449a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0148f63b4e9e39a214362403a474a61c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a0148f63b4e9e39a214362403a474a61c">close</a> ()=0</td></tr>
 <tr class="separator:a0148f63b4e9e39a214362403a474a61c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd0ef9cd7386baf8c31c73158498eaa2"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#acd0ef9cd7386baf8c31c73158498eaa2">displayPath</a> () const =0</td></tr>
+<tr class="separator:acd0ef9cd7386baf8c31c73158498eaa2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Abstract base class for all data input streams.</p>
@@ -172,6 +174,34 @@ Public Member Functions</h2></td></tr>
 </dl>
 
 <p>Implemented in <a class="el" href="classBlobInputStream.html#aee9d6242c38cbb55016587c4fd2c2222">BlobInputStream</a>, <a class="el" href="classFileInputStream.html#af945368142d438059e88f8a5eb23f6a4">FileInputStream</a>, and <a class="el" href="classMemoryInputStream.html#ade3b3c9a4a35fcf89fb8c6109047cba2">MemoryInputStream</a>.</p>
+
+</div>
+</div>
+<a id="acd0ef9cd7386baf8c31c73158498eaa2" name="acd0ef9cd7386baf8c31c73158498eaa2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd0ef9cd7386baf8c31c73158498eaa2">&#9670;&#160;</a></span>displayPath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::string InputStream::displayPath </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Path to the file or resource being read, to be used for debugging and error reporting. </dd></dl>
+
+<p>Implemented in <a class="el" href="classBlobInputStream.html#ab98cfa96bc2eeca090d6e4cf4fb4aa1d">BlobInputStream</a>, <a class="el" href="classFileInputStream.html#a96ec9ea08cb1df5bc51489056cf2a71f">FileInputStream</a>, and <a class="el" href="classMemoryInputStream.html#a040e29c438c790beed3a370366ecead5">MemoryInputStream</a>.</p>
 
 </div>
 </div>

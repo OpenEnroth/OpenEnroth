@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4c85d9f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;45a1180</span>
    </div>
   </td>
  </tr>
@@ -107,6 +107,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aec94f54aa8002d9c289e1f97ea4d622b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee9d6242c38cbb55016587c4fd2c2222"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlobInputStream.html#aee9d6242c38cbb55016587c4fd2c2222">close</a> () override</td></tr>
 <tr class="separator:aee9d6242c38cbb55016587c4fd2c2222"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab98cfa96bc2eeca090d6e4cf4fb4aa1d"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlobInputStream.html#ab98cfa96bc2eeca090d6e4cf4fb4aa1d">displayPath</a> () const override</td></tr>
+<tr class="separator:ab98cfa96bc2eeca090d6e4cf4fb4aa1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefa26a70ce33a9964b2e6b2ceab29279"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlobInputStream.html#aefa26a70ce33a9964b2e6b2ceab29279">tail</a> () const</td></tr>
 <tr class="separator:aefa26a70ce33a9964b2e6b2ceab29279"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54de3bd85c298d32c2782b78bb072fb5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classBlobInputStream.html#a54de3bd85c298d32c2782b78bb072fb5">readBlob</a> (size_t size)</td></tr>
@@ -128,6 +130,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a47c88a664d86b146829b6c5c9912449a inherit pub_methods_classInputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0148f63b4e9e39a214362403a474a61c inherit pub_methods_classInputStream"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a0148f63b4e9e39a214362403a474a61c">close</a> ()=0</td></tr>
 <tr class="separator:a0148f63b4e9e39a214362403a474a61c inherit pub_methods_classInputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd0ef9cd7386baf8c31c73158498eaa2 inherit pub_methods_classInputStream"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#acd0ef9cd7386baf8c31c73158498eaa2">displayPath</a> () const =0</td></tr>
+<tr class="separator:acd0ef9cd7386baf8c31c73158498eaa2 inherit pub_methods_classInputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -259,6 +263,34 @@ Private Attributes</h2></td></tr>
 </dl>
 
 <p>Implements <a class="el" href="classInputStream.html#a0148f63b4e9e39a214362403a474a61c">InputStream</a>.</p>
+
+</div>
+</div>
+<a id="ab98cfa96bc2eeca090d6e4cf4fb4aa1d" name="ab98cfa96bc2eeca090d6e4cf4fb4aa1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab98cfa96bc2eeca090d6e4cf4fb4aa1d">&#9670;&#160;</a></span>displayPath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string BlobInputStream::displayPath </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Path to the file or resource being read, to be used for debugging and error reporting. </dd></dl>
+
+<p>Implements <a class="el" href="classInputStream.html#acd0ef9cd7386baf8c31c73158498eaa2">InputStream</a>.</p>
 
 </div>
 </div>

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4c85d9f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;45a1180</span>
    </div>
   </td>
  </tr>
@@ -107,6 +107,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0de32c076c2c1f5629fd9d9792a49590"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af945368142d438059e88f8a5eb23f6a4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileInputStream.html#af945368142d438059e88f8a5eb23f6a4">close</a> () override</td></tr>
 <tr class="separator:af945368142d438059e88f8a5eb23f6a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96ec9ea08cb1df5bc51489056cf2a71f"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileInputStream.html#a96ec9ea08cb1df5bc51489056cf2a71f">displayPath</a> () const override</td></tr>
+<tr class="separator:a96ec9ea08cb1df5bc51489056cf2a71f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80c62a09ec6ce40e41e81e56582b2ff0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileInputStream.html#a80c62a09ec6ce40e41e81e56582b2ff0">seek</a> (size_t pos)</td></tr>
 <tr class="separator:a80c62a09ec6ce40e41e81e56582b2ff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8cb3043641b9ec541bd2a79f9cbd7b2"><td class="memItemLeft" align="right" valign="top">FILE *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileInputStream.html#aa8cb3043641b9ec541bd2a79f9cbd7b2">handle</a> ()</td></tr>
@@ -126,6 +128,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a47c88a664d86b146829b6c5c9912449a inherit pub_methods_classInputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0148f63b4e9e39a214362403a474a61c inherit pub_methods_classInputStream"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#a0148f63b4e9e39a214362403a474a61c">close</a> ()=0</td></tr>
 <tr class="separator:a0148f63b4e9e39a214362403a474a61c inherit pub_methods_classInputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd0ef9cd7386baf8c31c73158498eaa2 inherit pub_methods_classInputStream"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classInputStream.html#acd0ef9cd7386baf8c31c73158498eaa2">displayPath</a> () const =0</td></tr>
+<tr class="separator:acd0ef9cd7386baf8c31c73158498eaa2 inherit pub_methods_classInputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -275,6 +279,34 @@ Private Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a96ec9ea08cb1df5bc51489056cf2a71f" name="a96ec9ea08cb1df5bc51489056cf2a71f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a96ec9ea08cb1df5bc51489056cf2a71f">&#9670;&#160;</a></span>displayPath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string FileInputStream::displayPath </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Returns</dt><dd>Path to the file or resource being read, to be used for debugging and error reporting. </dd></dl>
+
+<p>Implements <a class="el" href="classInputStream.html#acd0ef9cd7386baf8c31c73158498eaa2">InputStream</a>.</p>
 
 </div>
 </div>

@@ -40,7 +40,7 @@ var searchData=
   ['matchesattackpreference_37',['matchesAttackPreference',['../classCharacter.html#a0dda4d97eb5833c35a83004ccc41fe21',1,'Character']]],
   ['max_38',['max',['../classAccessible.html#af368288b8cbbfe6c1c8bd48431303db5',1,'Accessible']]],
   ['maybewakesolosurvivor_39',['maybeWakeSoloSurvivor',['../Engine_8cpp.html#a83c70feebdf6c10d01d38f06fcdd1c24',1,'maybeWakeSoloSurvivor():&#160;Engine.cpp'],['../Engine_8h.html#a83c70feebdf6c10d01d38f06fcdd1c24',1,'maybeWakeSoloSurvivor():&#160;Engine.cpp']]],
-  ['memoryinputstream_40',['MemoryInputStream',['../classMemoryInputStream.html#a7dce51580caaa27f8e2806c8c812627c',1,'MemoryInputStream::MemoryInputStream()'],['../classMemoryInputStream.html#ac04a4a4a47a9113df50ec6d97c458093',1,'MemoryInputStream::MemoryInputStream(const void *data, size_t size)']]],
+  ['memoryinputstream_40',['MemoryInputStream',['../classMemoryInputStream.html#a7dce51580caaa27f8e2806c8c812627c',1,'MemoryInputStream::MemoryInputStream()'],['../classMemoryInputStream.html#a4cd1ca12b780563ca8d451063df10d40',1,'MemoryInputStream::MemoryInputStream(const void *data, size_t size, std::string_view displayPath={})']]],
   ['memset32_41',['memset32',['../MemSet_8h.html#afcf95e3a294e5646a7e76ca294b9c64a',1,'MemSet.h']]],
   ['memzero_42',['memzero',['../MemSet_8h.html#a8a39e67a38934f8552012608710d2399',1,'MemSet.h']]],
   ['menu_43',['Menu',['../classMenu.html#ad466dd83355124a6ed958430450bfe94',1,'Menu']]],
