@@ -21,6 +21,7 @@ class FileInputStream : public InputStream {
     [[nodiscard]] virtual size_t read(void *data, size_t size) override;
     [[nodiscard]] virtual size_t skip(size_t size) override;
     virtual void close() override;
+    [[nodiscard]] virtual std::string displayPath() const override;
 
     void seek(size_t pos);
 

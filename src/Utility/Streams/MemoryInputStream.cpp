@@ -3,21 +3,23 @@
 #include <cassert>
 #include <cstring>
 #include <algorithm>
+#include <string>
 
 MemoryInputStream::MemoryInputStream() {
     reset(nullptr, 0);
 }
 
-MemoryInputStream::MemoryInputStream(const void *data, size_t size) {
-    reset(data, size);
+MemoryInputStream::MemoryInputStream(const void *data, size_t size, std::string_view displayPath) {
+    reset(data, size, displayPath);
 }
 
 MemoryInputStream::~MemoryInputStream() {}
 
-void MemoryInputStream::reset(const void *data, size_t size) {
+void MemoryInputStream::reset(const void *data, size_t size, std::string_view displayPath) {
     _begin = static_cast<const char *>(data);
     _pos = _begin;
     _end = _pos + size;
+    _displayPath = displayPath;
 }
 
 size_t MemoryInputStream::read(void *data, size_t size) {
@@ -40,6 +42,10 @@ size_t MemoryInputStream::skip(size_t size) {
 
 void MemoryInputStream::close() {
     reset(nullptr, 0);
+}
+
+std::string MemoryInputStream::displayPath() const {
+    return _displayPath;
 }
 
 void MemoryInputStream::seek(size_t pos) {
