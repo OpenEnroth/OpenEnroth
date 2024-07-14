@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <ranges>
 
 #include "Testing/Unit/UnitTest.h"
 
@@ -24,4 +25,8 @@ UNIT_TEST(StringJoin, joinContainer) {
     EXPECT_EQ(join(v4, '/'), "1/4/99");
 }
 
+UNIT_TEST(StringJoin, joinRange) {
+    std::vector<std::string> v1 = {"1", "2", "3"};
 
+    EXPECT_EQ(join(v1 | std::views::filter([] (std::string_view s) { return s != "2"; }), ':'), "1:3");
+}
