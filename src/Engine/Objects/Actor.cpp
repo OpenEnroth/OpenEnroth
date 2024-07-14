@@ -4036,13 +4036,14 @@ int Actor::MakeActorAIList_BLV() {
         }
     }
 
-    // activate ai state for first 30 actors from list
-    for (int i = 0; (i < 30) && (i < pickedActorIds.size()); i++) {
+    // activate ai state for first x actors from list
+    int configLimit = engine->config->gameplay.MaxActiveAIActors.value();
+    for (int i = 0; (i < configLimit) && (i < pickedActorIds.size()); i++) {
         ai_near_actors_ids[i] = pickedActorIds[i];
         pActors[pickedActorIds[i]].attributes |= ACTOR_FULL_AI_STATE;
     }
 
-    ai_arrays_size = std::min(30, (int)pickedActorIds.size());
+    ai_arrays_size = std::min(configLimit, (int)pickedActorIds.size());
 
     return ai_arrays_size;
 }
