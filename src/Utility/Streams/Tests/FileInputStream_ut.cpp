@@ -5,10 +5,13 @@
 
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Streams/FileInputStream.h"
+#include "Utility/Testing/TestNonExistingFile.h"
 
 UNIT_TEST(FileInputStream, Skip) {
     const char *tmpfile = "tmp_test.txt";
     std::string data(3000, 'a');
+
+    TestNonExistingFile tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
     out.write(data.data(), data.size());
@@ -26,6 +29,4 @@ UNIT_TEST(FileInputStream, Skip) {
     EXPECT_EQ(bytes, 950);
     EXPECT_EQ(std::string_view(buf, 950), std::string(950, 'a'));
     in.close();
-
-    remove(tmpfile);
 }
