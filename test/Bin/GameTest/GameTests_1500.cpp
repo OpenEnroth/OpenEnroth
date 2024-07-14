@@ -312,3 +312,13 @@ GAME_TEST(issues, Issue1717) {
     EXPECT_EQ(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster, 4);
     EXPECT_TRUE(statusBar.contains("Immolation deals 77 damage to 2 target(s)"));
 }
+
+GAME_TEST(issues, Issue1726) {
+    // Blaster trainers do not check requirements and crash the game
+    auto textTape = tapes.allGUIWindowsText();
+    test.playTraceFromTestData("issue_1726.mm7", "issue_1726.json");
+    int GMcount = std::ranges::count_if(pParty->pCharacters, [](const Character& ch) {return ch.getActualSkillValue(CHARACTER_SKILL_BLASTER).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER; });
+    EXPECT_EQ(GMcount, 0); // no one ends up grand master
+    EXPECT_GT(textTape.flattened().filtered([](const auto& s) { return s.starts_with("Your skills improve!  If your Skill with the Blaster"); }).size(), 0); // blaster requirements shown
+    EXPECT_TRUE(textTape.flattened().contains("You don't meet the requirements, and cannot be taught until you do.")); // but we dont meet them
+}
