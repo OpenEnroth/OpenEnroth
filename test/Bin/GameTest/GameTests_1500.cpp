@@ -289,7 +289,7 @@ GAME_TEST(Issues, Issue1706) {
     EXPECT_LE(ypos.min(), -2550); // but we should get right up against it
 }
 
-GAME_TEST(issues, Issue1710) {
+GAME_TEST(Issues, Issue1710) {
     // Fall damage indoors
     auto health = tapes.totalHp();
     auto expressionTape = charTapes.expression(2);
@@ -303,7 +303,18 @@ GAME_TEST(issues, Issue1710) {
     EXPECT_GT(zpos.max(), zpos.min() + 1000);
 }
 
-GAME_TEST(issues, Issue1717) {
+GAME_TEST(Issues, Issue1716) {
+    // Status protections not working
+    auto specialAttack = tapes.specialAttacks();
+    auto pmCountTape = tapes.custom([]() { return pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].power; });
+    test.playTraceFromTestData("issue_1716.mm7", "issue_1716.json");
+    EXPECT_TRUE(specialAttack.flattened().contains(SPECIAL_ATTACK_PARALYZED)); // Paralysis attacks were made
+    int paraCount = std::ranges::count_if(pParty->pCharacters, [](Character& ch) { return ch.IsParalyzed(); });
+    EXPECT_EQ(paraCount, 0); // No one ended up paralysed
+    EXPECT_LT(pmCountTape.back(), pmCountTape.front()); // PM saved us
+}
+
+GAME_TEST(Issues, Issue1717) {
     // Immolation incorrect damage message
     auto statusBar = tapes.statusBar();
     auto immoBuff = tapes.custom([]() { return pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active(); });

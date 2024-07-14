@@ -7,6 +7,7 @@
 
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/SpriteEnums.h"
+#include "Engine/Objects/MonsterEnums.h"
 #include "Engine/Time/Time.h"
 #include "Engine/MapEnums.h"
 #include "Media/Audio/SoundEnums.h"
@@ -101,6 +102,11 @@ class CommonTapeRecorder {
      * @return                          Tape object.
      */
     TestMultiTape<std::string> allGUIWindowsText();
+    /**
+     * Return a tape object of SpecialAttackTypes listing all the special attack attempts on the party
+     * @return                          Tape object.
+     */
+    TestMultiTape<SpecialAttackType> specialAttacks();
 
  private:
     TestController *_controller = nullptr;
