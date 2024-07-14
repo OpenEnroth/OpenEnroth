@@ -15,6 +15,6 @@ class IVideoDataSource {
     virtual size_t GetFrameRate() = 0;
     virtual size_t GetWidth() = 0;
     virtual size_t GetHeight() = 0;
-    virtual std::shared_ptr<Blob> GetNextFrame() = 0;
+    virtual Blob GetNextFrame() = 0;
 };
 typedef std::shared_ptr<IVideoDataSource> PVideoDataSource;

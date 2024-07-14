@@ -20,7 +20,7 @@ class AudioBaseDataSource : public IAudioDataSource {
 
     virtual size_t GetSampleRate() override;
     virtual size_t GetChannelCount() override;
-    virtual std::shared_ptr<Blob> GetNextBuffer() override;
+    virtual Blob GetNextBuffer() override;
 
     virtual float GetDuration() override;
 
@@ -30,7 +30,7 @@ class AudioBaseDataSource : public IAudioDataSource {
     AVCodecContext *pCodecContext;
     SwrContext *pConverter;
     bool bOpened;
-    std::queue<std::shared_ptr<Blob>, std::deque<std::shared_ptr<Blob>>> queue;
+    std::queue<Blob> queue;
 
     float _savedDuration;
 };
