@@ -28,9 +28,9 @@ std::string join(Joinables &&... joinables) {
 }
 
 template<class Strings>
-    requires JoinableToString<typename Strings::value_type> && // We can use std::ranges::range_value_t, but I'd rather not bring in <ranges>
+    requires JoinableToString<decltype(*std::declval<Strings>().begin())> && // We can use std::ranges::range_value_t, but I'd rather not bring in <ranges>
              (!JoinableToString<Strings>)
-std::string join(const Strings &strings, char sep) {
+std::string join(Strings &&strings, char sep) {
     std::string result;
 
     auto pos = strings.begin();

@@ -14,11 +14,11 @@ class LodWriter {
  public:
     LodWriter();
     LodWriter(std::string_view path, LodInfo info);
-    LodWriter(OutputStream *stream, std::string_view path, LodInfo info);
+    LodWriter(OutputStream *stream, LodInfo info);
     ~LodWriter();
 
     void open(std::string_view path, LodInfo info);
-    void open(OutputStream *stream, std::string_view path, LodInfo info);
+    void open(OutputStream *stream, LodInfo info);
 
     void close();
 
@@ -32,7 +32,6 @@ class LodWriter {
  private:
     std::unique_ptr<OutputStream> _ownedStream;
     OutputStream *_stream = nullptr;
-    std::string _path;
     LodInfo _info;
     std::map<std::string, Blob> _files; // Having this one sorted makes implementation simpler.
 };

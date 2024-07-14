@@ -40,7 +40,8 @@ Blob Blob::fromMalloc(std::unique_ptr<void, FreeDeleter> data, size_t size) {
 
 Blob Blob::fromFile(std::string_view path) {
     // On Windows mio::mmap_source expects UTF8-encoded paths. If the file doesn't exist, std::system_error is thrown.
-    std::shared_ptr<mio::mmap_source> mmap = std::make_shared<mio::mmap_source>(std::string(path));
+    std::string pathString(path);
+    std::shared_ptr<mio::mmap_source> mmap = std::make_shared<mio::mmap_source>(pathString);
     if (mmap->size() == 0)
         return Blob();
 
@@ -48,6 +49,7 @@ Blob Blob::fromFile(std::string_view path) {
     result._data = mmap->data();
     result._size = mmap->size();
     result._state = std::move(mmap);
+    result._displayPath = std::move(pathString);
     return result;
 }
 
@@ -74,7 +76,7 @@ Blob Blob::copy(const void *data, size_t size) { // NOLINT: this is not std::cop
 }
 
 Blob Blob::copy(const Blob &other) { // NOLINT: this is not std::copy.
-    return copy(other.data(), other.size()); // NOLINT: seriously, this is not std::copy.
+    return copy(other.data(), other.size()).withDisplayPath(other.displayPath()); // NOLINT: seriously, this is not std::copy.
 }
 
 Blob Blob::view(const void *data, size_t size) {
@@ -102,13 +104,13 @@ Blob Blob::read(FILE *file, size_t size) {
     return fromMalloc(std::move(memory), size);
 }
 
-Blob Blob::read(FileInputStream &file, size_t size) {
+Blob Blob::read(InputStream *stream, size_t size) {
     if (size == 0)
         return Blob();
 
     std::unique_ptr<void, FreeDeleter> memory(malloc(size));
-    file.readOrFail(memory.get(), size);
-    return fromMalloc(std::move(memory), size);
+    stream->readOrFail(memory.get(), size);
+    return fromMalloc(std::move(memory), size).withDisplayPath(stream->displayPath());
 }
 
 Blob Blob::concat(const Blob &l, const Blob &r) {
@@ -135,5 +137,6 @@ Blob Blob::share(const Blob &other) {
     result._data = other._data;
     result._size = other._size;
     result._state = other._state;
+    result._displayPath = other._displayPath;
     return result;
 }

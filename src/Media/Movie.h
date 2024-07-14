@@ -16,7 +16,7 @@ class IMovie {
     virtual bool Play(bool loop = false) = 0;
     virtual bool Stop() = 0;
     virtual bool IsPlaying() const = 0;
-    virtual std::shared_ptr<Blob> GetFrame() = 0;
+    virtual Blob GetFrame() = 0;
     virtual std::string GetFormat() = 0;
     virtual void PlayBink() = 0;
 

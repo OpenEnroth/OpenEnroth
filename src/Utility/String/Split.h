@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <utility> // For std::forward.
 #include <string>
 #include <type_traits>
@@ -21,11 +22,15 @@ class SplitViewIterator {
     SplitViewIterator(const char *begin, const char *end, char sep) : _pos(begin), _end(end), _sep(sep) {}
 
     SplitViewIterator &operator++() {
-        return *this; // This is an input iterator, all the work is done in `operator*`.
+        // This is an input iterator, all the work is done in `operator*`.
+        return *this;
     }
 
     SplitViewIterator operator++(int) {
-        return *this; // This is an input iterator, all the work is done in `operator*`.
+        // This is not supported because all the logic is in operator* (because we want less state in this iterator).
+        // Just use prefix operator++ if you need it.
+        assert(false);
+        return *this;
     }
 
     std::string_view operator*() const {

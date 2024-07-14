@@ -22,7 +22,7 @@ class LodReader final {
  public:
     LodReader();
     LodReader(std::string_view path, LodOpenFlags openFlags = 0);
-    LodReader(Blob blob, std::string_view path, LodOpenFlags openFlags = 0);
+    LodReader(Blob blob, LodOpenFlags openFlags = 0);
     ~LodReader();
 
     /**
@@ -35,11 +35,10 @@ class LodReader final {
 
     /**
      * @param blob                      LOD data.
-     * @param path                      LOD path, for error reporting. Actual data is read from `blob`.
      * @param openFlags                 Open flags.
      * @throw Exception                 If there are errors in the provided LOD file.
      */
-    void open(Blob blob, std::string_view path, LodOpenFlags openFlags = 0);
+    void open(Blob blob, LodOpenFlags openFlags = 0);
 
     /**
      * Closes this LOD reader & frees all associated resources.
@@ -82,7 +81,6 @@ class LodReader final {
 
  private:
     Blob _lod;
-    std::string _path;
     LodInfo _info;
     std::unordered_map<std::string, LodRegion> _files;
 };
