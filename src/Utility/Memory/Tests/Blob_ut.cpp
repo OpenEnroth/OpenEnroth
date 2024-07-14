@@ -3,6 +3,7 @@
 #include "Testing/Unit/UnitTest.h"
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Testing/TestExistingFile.h"
 #include "Utility/Testing/TestNonExistingFile.h"
@@ -38,4 +39,25 @@ UNIT_TEST(Blob, SharedFromFile) {
 
     blob = Blob(); // Release original blob.
     EXPECT_EQ(subBlob.string_view(), "56789");
+}
+
+UNIT_TEST(Blob, DisplayPathCopyShare) {
+    Blob blob = Blob::fromString("123").withDisplayPath("1.bin");
+
+    EXPECT_EQ(blob.displayPath(), "1.bin");
+    EXPECT_EQ(Blob::copy(blob).displayPath(), "1.bin");
+    EXPECT_EQ(Blob::share(blob).displayPath(), "1.bin");
+}
+
+UNIT_TEST(Blob, DisplayPathFromFile) {
+    TestExistingFile tmp("1.bin", "123");
+
+    EXPECT_EQ(Blob::fromFile("1.bin").displayPath(), "1.bin");
+}
+
+UNIT_TEST(Blob, DisplayPathFromStream) {
+    TestExistingFile tmp("1.bin", "123");
+
+    FileInputStream in("1.bin");
+    EXPECT_EQ(Blob::read(&in, 2).displayPath(), "1.bin");
 }

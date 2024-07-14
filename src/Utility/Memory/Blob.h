@@ -139,6 +139,7 @@ class Blob final {
         swap(l._data, r._data);
         swap(l._size, r._size);
         swap(l._state, r._state);
+        swap(l._displayPath, r._displayPath);
     }
 
     [[nodiscard]] size_t size() const {
