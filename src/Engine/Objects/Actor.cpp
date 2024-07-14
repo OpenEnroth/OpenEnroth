@@ -4693,7 +4693,7 @@ Actor *AllocateActor(bool appendOnly) {
         }
     }
 
-    if (pActors.size() >= 500)
+    if (pActors.size() >= engine->config->gameplay.MaxActors.value())
         return nullptr; // Too many actors.
 
     return &pActors.emplace_back(Actor(pActors.size()));
