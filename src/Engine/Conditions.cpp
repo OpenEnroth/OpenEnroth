@@ -19,27 +19,27 @@ MM_DECLARE_FLAGS(ConditionFlags, ConditionFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(ConditionFlags)
 
 struct ConditionTableEntry {
-    ConditionFlags _flags;
-    ItemEnchantment _enchantment = ITEM_ENCHANTMENT_NULL;
-    std::array<ConditionEquipment, 3> _equipment = {{}};
+    ConditionFlags flags;
+    ItemEnchantment enchantment = ITEM_ENCHANTMENT_NULL;
+    std::array<ConditionEquipment, 3> equipment = {{}};
 
     constexpr ConditionTableEntry() = default;
-    constexpr ConditionTableEntry(ConditionFlags flags,
-                                  ItemEnchantment enchantment = ITEM_ENCHANTMENT_NULL,
+    constexpr ConditionTableEntry(ConditionFlags flagsIn,
+                                  ItemEnchantment enchantmentIn = ITEM_ENCHANTMENT_NULL,
                                   ItemId item1 = ITEM_NULL,
                                   ItemSlot slot1 = ITEM_SLOT_INVALID,
                                   ItemId item2 = ITEM_NULL,
                                   ItemSlot slot2 = ITEM_SLOT_INVALID,
                                   ItemId item3 = ITEM_NULL,
                                   ItemSlot slot3 = ITEM_SLOT_INVALID) { // NOLINT: we want an explicit constructor.
-        _flags = flags;
-        _enchantment = enchantment;
-        _equipment[0].item = item1;
-        _equipment[0].slot = slot1;
-        _equipment[1].item = item2;
-        _equipment[1].slot = slot2;
-        _equipment[2].item = item3;
-        _equipment[2].slot = slot3;
+        flags = flagsIn;
+        enchantment = enchantmentIn;
+        equipment[0].item = item1;
+        equipment[0].slot = slot1;
+        equipment[1].item = item2;
+        equipment[1].slot = slot2;
+        equipment[2].item = item3;
+        equipment[2].slot = slot3;
     }
 };
 
@@ -118,14 +118,14 @@ static std::array<Condition, 18> conditionImportancyTableAlternative = {{
 }};
 
 static bool blockConditionWithProtectionFromMagic(const ConditionTableEntry &entry) {
-    if (!(entry._flags & AFFECTED_BY_PROTECTION_FROM_MAGIC))
+    if (!(entry.flags & AFFECTED_BY_PROTECTION_FROM_MAGIC))
         return false;
 
     SpellBuff &protectionBuff = pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC];
     if (!protectionBuff.Active())
         return false;
 
-    if ((entry._flags & REQUIRES_GM_PROTECTION_FROM_MAGIC) && protectionBuff.skillMastery < CHARACTER_SKILL_MASTERY_GRANDMASTER)
+    if ((entry.flags & REQUIRES_GM_PROTECTION_FROM_MAGIC) && protectionBuff.skillMastery < CHARACTER_SKILL_MASTERY_GRANDMASTER)
         return false;
 
     assert(protectionBuff.power != 0); // Otherwise the decrement below will overflow.
@@ -143,10 +143,10 @@ bool blockCondition(Character *character, Condition condition) {
     if (blockConditionWithProtectionFromMagic(entry))
         return true;
 
-    if (entry._enchantment != ITEM_ENCHANTMENT_NULL && character->HasEnchantedItemEquipped(entry._enchantment))
+    if (entry.enchantment != ITEM_ENCHANTMENT_NULL && character->HasEnchantedItemEquipped(entry.enchantment))
         return true;
 
-    for (const ConditionEquipment &pair : entry._equipment) {
+    for (const ConditionEquipment &pair : entry.equipment) {
         if (pair.item == ITEM_NULL)
             break;
 
