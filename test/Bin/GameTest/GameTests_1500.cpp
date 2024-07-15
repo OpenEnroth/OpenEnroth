@@ -324,6 +324,16 @@ GAME_TEST(Issues, Issue1717) {
     EXPECT_TRUE(statusBar.contains("Immolation deals 77 damage to 2 target(s)"));
 }
 
+GAME_TEST(Issues, Issue1725) {
+    // Finishing Strike the Devils quest on dark path glitches out game menus
+    auto screenTape = tapes.screen();
+    auto textTape = tapes.allGUIWindowsText();
+    test.playTraceFromTestData("issue_1725.mm7", "issue_1725.json");
+    EXPECT_EQ(screenTape.back(), SCREEN_HOUSE); // Make sure we end up back in the throne room
+    EXPECT_GT(textTape.flattened().filtered([](const auto& s) { return s.starts_with("THAT WAS AWESOME!"); }).size(), 0);
+    EXPECT_TRUE(textTape.flattened().contains("Exit Building")); // And can exit it
+}
+
 GAME_TEST(issues, Issue1726) {
     // Blaster trainers do not check requirements and crash the game
     auto textTape = tapes.allGUIWindowsText();
