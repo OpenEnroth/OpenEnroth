@@ -11,7 +11,7 @@
 
 static_assert(std::ranges::view<detail::SplitView>);
 static_assert(std::ranges::viewable_range<detail::SplitView>);
-static_assert(std::ranges::input_range<detail::SplitView>);
+static_assert(std::ranges::forward_range<detail::SplitView>);
 
 UNIT_TEST(StringSplit, SplitToVector) {
     std::vector<std::string_view> v;
@@ -70,9 +70,11 @@ UNIT_TEST(StringSplit, NonNullTerminated) {
 UNIT_TEST(StringSplit, DefaultConstructed) {
     detail::SplitView view;
     EXPECT_EQ(view.begin(), view.end());
+    EXPECT_TRUE(view.empty());
 
     detail::SplitViewIterator end;
     EXPECT_EQ(end, detail::SplitViewSentinel());
+    EXPECT_EQ(end, end);
 
     EXPECT_NO_THROW((
         [] {
