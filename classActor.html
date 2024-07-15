@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;445d896</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;cc518a7</span>
    </div>
   </td>
  </tr>
@@ -189,8 +189,10 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a0d36eebbd2b8a9ed3df7d49bebe7b184"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf97bf0ca832347b58a3e8b7c16170d4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#adf97bf0ca832347b58a3e8b7c16170d4">AI_FaceObject</a> (unsigned int uActorID, <a class="el" href="classPid.html">Pid</a> uObjID, <a class="el" href="structAIDirection.html">AIDirection</a> *Dir_In)</td></tr>
 <tr class="separator:adf97bf0ca832347b58a3e8b7c16170d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8830f24329d95e81d737431489f1f5cd"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#a8830f24329d95e81d737431489f1f5cd">GetDirectionInfo</a> (<a class="el" href="classPid.html">Pid</a> uObj1ID, <a class="el" href="classPid.html">Pid</a> uObj2ID, <a class="el" href="structAIDirection.html">AIDirection</a> *pOut, int a4)</td></tr>
-<tr class="separator:a8830f24329d95e81d737431489f1f5cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af439291de72cb394a5470f7537bef795"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#af439291de72cb394a5470f7537bef795">GetDirectionInfo</a> (<a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> p1, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> p2, <a class="el" href="structAIDirection.html">AIDirection</a> *pOut)</td></tr>
+<tr class="separator:af439291de72cb394a5470f7537bef795"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7a7be5edaad5feffcd8048b33c1630d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#ae7a7be5edaad5feffcd8048b33c1630d">GetDirectionInfo</a> (<a class="el" href="classPid.html">Pid</a> uObj1ID, <a class="el" href="classPid.html">Pid</a> uObj2ID, <a class="el" href="structAIDirection.html">AIDirection</a> *pOut, int PreferedZ)</td></tr>
+<tr class="separator:ae7a7be5edaad5feffcd8048b33c1630d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa03a8044db9c631c68d58499d4f630d0"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#aa03a8044db9c631c68d58499d4f630d0">Explode</a> (unsigned int uActorID)</td></tr>
 <tr class="separator:aa03a8044db9c631c68d58499d4f630d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49a4c8b81f20072276bc801180948908"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classActor.html#a49a4c8b81f20072276bc801180948908">AI_RangedAttack</a> (unsigned int uActorID, <a class="el" href="structAIDirection.html">AIDirection</a> *a2, int type, <a class="el" href="ActorEnums_8h.html#adf8438223a48250b5b8f0f6dfa470a10">ActorAbility</a> a4)</td></tr>
@@ -1861,8 +1863,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a8830f24329d95e81d737431489f1f5cd" name="a8830f24329d95e81d737431489f1f5cd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8830f24329d95e81d737431489f1f5cd">&#9670;&#160;</a></span>GetDirectionInfo()</h2>
+<a id="ae7a7be5edaad5feffcd8048b33c1630d" name="ae7a7be5edaad5feffcd8048b33c1630d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7a7be5edaad5feffcd8048b33c1630d">&#9670;&#160;</a></span>GetDirectionInfo() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1892,7 +1894,7 @@ Public Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>a4</em>&#160;</td>
+          <td class="paramname"><em>PreferedZ</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1906,6 +1908,56 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="af439291de72cb394a5470f7537bef795" name="af439291de72cb394a5470f7537bef795"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af439291de72cb394a5470f7537bef795">&#9670;&#160;</a></span>GetDirectionInfo() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Actor::GetDirectionInfo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>&#160;</td>
+          <td class="paramname"><em>p1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>&#160;</td>
+          <td class="paramname"><em>p2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structAIDirection.html">AIDirection</a> *&#160;</td>
+          <td class="paramname"><em>pOut</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir"></td><td class="paramname">p1</td><td>From Vec3f. </td></tr>
+    <tr><td class="paramdir"></td><td class="paramname">p2</td><td>To Vec3f. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">pOut</td><td><a class="el" href="structAIDirection.html">AIDirection</a> from p1 to p2. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
