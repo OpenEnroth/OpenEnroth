@@ -552,6 +552,9 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
     // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?
     attackList.clear();
+    int configLimit = engine->config->gameplay.MaxActors.value();
+    ai_near_actors_targets_pid.resize(configLimit, Pid());
+    ai_near_actors_ids.resize(configLimit);
 
     engine->SetUnderwater(isMapUnderwater(engine->_transitionMapId));
 

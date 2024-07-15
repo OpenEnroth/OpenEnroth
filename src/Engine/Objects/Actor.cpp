@@ -860,6 +860,29 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     return;
 }
 
+void Actor::GetDirectionInfo(Vec3f p1, Vec3f p2, AIDirection* pOut) {
+    // TODO(pskelton): Should this be moved somewhere else - not actor related
+    Vec3f dir = p2 - p1;
+    float length = dir.length();
+    float deltaX = p2.x - p1.x;
+    float deltaY = p2.y - p1.y;
+    float deltaZ = p2.z - p1.z;
+    if (length <= 1.0) {
+        pOut->vDirection = Vec3f(1, 0, 0);
+        pOut->uDistance = 1;
+        pOut->uDistanceXZ = 1;
+        pOut->uYawAngle = 0;
+        pOut->uPitchAngle = 0;
+    } else {
+        dir.normalize();
+        pOut->vDirection = dir;
+        pOut->uDistance = length;
+        pOut->uDistanceXZ = std::sqrt(deltaX * deltaX + deltaY * deltaY);
+        pOut->uYawAngle = TrigLUT.atan2(deltaX, deltaY);
+        pOut->uPitchAngle = TrigLUT.atan2(pOut->uDistanceXZ, deltaZ);
+    }
+}
+
 //----- (004040E9) --------------------------------------------------------
 // // Get direction vector from object1 to object2,
 // // distance from object1 to object2 and Euler angles of the direction vector
@@ -955,25 +978,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
     }
 
-    Vec3f dir = out2 - out1;
-    float length = dir.length();
-    float deltaX = out2.x - out1.x;
-    float deltaY = out2.y - out1.y;
-    float deltaZ = out2.z - out1.z;
-    if (length <= 1.0) {
-        pOut->vDirection = Vec3f(1, 0, 0);
-        pOut->uDistance = 1;
-        pOut->uDistanceXZ = 1;
-        pOut->uYawAngle = 0;
-        pOut->uPitchAngle = 0;
-    } else {
-        dir.normalize();
-        pOut->vDirection = dir;
-        pOut->uDistance = length;
-        pOut->uDistanceXZ = std::sqrt(deltaX * deltaX + deltaY * deltaY);
-        pOut->uYawAngle = TrigLUT.atan2(deltaX, deltaY);
-        pOut->uPitchAngle = TrigLUT.atan2(pOut->uDistanceXZ, deltaZ);
-    }
+    GetDirectionInfo(out1, out2, pOut);
 }
 
 //----- (00404030) --------------------------------------------------------
@@ -2964,7 +2969,7 @@ void Actor::InitializeActors() {
     if (pParty->isPartyEvil())
         evil = true;
 
-    ai_near_actors_targets_pid.fill(Pid());
+    std::ranges::fill(ai_near_actors_targets_pid, Pid());
 
     for (unsigned i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];
@@ -3943,13 +3948,14 @@ void Actor::MakeActorAIList_ODM() {
     // use stable_sort to make tests work across all platforms
     std::stable_sort(activeActorsDistances.begin(), activeActorsDistances.end(), [] (std::pair<int, int> a, std::pair<int, int> b) { return a.second < b.second; });
 
-    // and takes nearest 30
-    for (int i = 0; (i < 30) && (i < activeActorsDistances.size()); i++) {
+    // and takes nearest amount
+    int configLimit = engine->config->gameplay.MaxActiveAIActors.value();
+    for (int i = 0; (i < configLimit) && (i < activeActorsDistances.size()); i++) {
         ai_near_actors_ids[i] = activeActorsDistances[i].first;
         pActors[ai_near_actors_ids[i]].attributes |= ACTOR_FULL_AI_STATE;
     }
 
-    ai_arrays_size = std::min(30, (int)activeActorsDistances.size());
+    ai_arrays_size = std::min(configLimit, (int)activeActorsDistances.size());
 }
 
 //----- (004016FA) --------------------------------------------------------
@@ -4030,13 +4036,14 @@ int Actor::MakeActorAIList_BLV() {
         }
     }
 
-    // activate ai state for first 30 actors from list
-    for (int i = 0; (i < 30) && (i < pickedActorIds.size()); i++) {
+    // activate ai state for first x actors from list
+    int configLimit = engine->config->gameplay.MaxActiveAIActors.value();
+    for (int i = 0; (i < configLimit) && (i < pickedActorIds.size()); i++) {
         ai_near_actors_ids[i] = pickedActorIds[i];
         pActors[pickedActorIds[i]].attributes |= ACTOR_FULL_AI_STATE;
     }
 
-    ai_arrays_size = std::min(30, (int)pickedActorIds.size());
+    ai_arrays_size = std::min(configLimit, (int)pickedActorIds.size());
 
     return ai_arrays_size;
 }
@@ -4406,6 +4413,10 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
     // v18 = NumToSpawn;
     if (NumToSpawn <= 0) return;
 
+    // Config multiplier now
+    NumToSpawn = std::ceil(NumToSpawn * engine->config->gameplay.SpawnCountMultiplier.value());
+    NumToSpawn = std::clamp(NumToSpawn, 1, engine->config->gameplay.MaxActors.value());
+
     pSector = 0;
     pPosX = spawn->vPosition.x;
     a4 = spawn->vPosition.y;
@@ -4688,7 +4699,7 @@ Actor *AllocateActor(bool appendOnly) {
         }
     }
 
-    if (pActors.size() >= 500)
+    if (pActors.size() >= engine->config->gameplay.MaxActors.value())
         return nullptr; // Too many actors.
 
     return &pActors.emplace_back(Actor(pActors.size()));
