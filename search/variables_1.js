@@ -106,10 +106,10 @@ var searchData=
   ['attack1missiletype_103',['attack1MissileType',['../structMonsterInfo.html#a917e2e0844f17d4c32bd59f0c5ccd1c9',1,'MonsterInfo::attack1MissileType()'],['../structMonsterInfo__MM7.html#a4b6690f5941f0b35ed0615d50e92e2f3',1,'MonsterInfo_MM7::attack1MissileType()']]],
   ['attack1type_104',['attack1Type',['../structMonsterInfo.html#a5f85543355d688eb78c6ca56f7caa7ed',1,'MonsterInfo::attack1Type()'],['../structMonsterInfo__MM7.html#aa1ce16b35a4b77522ebe5be990fdb1f5',1,'MonsterInfo_MM7::attack1Type()']]],
   ['attack2chance_105',['attack2Chance',['../structMonsterInfo.html#aa0304f8ff58e66e167f0af7d491bb830',1,'MonsterInfo::attack2Chance()'],['../structMonsterInfo__MM7.html#ae4695bab9d6a4c26d9372d9eaa216095',1,'MonsterInfo_MM7::attack2Chance()']]],
-  ['attack2damagebonus_106',['attack2DamageBonus',['../structMonsterInfo__MM7.html#ab39ef3e120d5ea4fa41011deb25fd275',1,'MonsterInfo_MM7::attack2DamageBonus()'],['../structMonsterInfo.html#abaf0a80b9f2f34cbd9697b0ed2564771',1,'MonsterInfo::attack2DamageBonus()']]],
-  ['attack2damagedicerolls_107',['attack2DamageDiceRolls',['../structMonsterInfo__MM7.html#aea5d6224ce510cc667e25d91b81a2ab7',1,'MonsterInfo_MM7::attack2DamageDiceRolls()'],['../structMonsterInfo.html#a6591a195053c228dd9a6c3106abd7244',1,'MonsterInfo::attack2DamageDiceRolls()']]],
+  ['attack2damagebonus_106',['attack2DamageBonus',['../structMonsterInfo.html#abaf0a80b9f2f34cbd9697b0ed2564771',1,'MonsterInfo::attack2DamageBonus()'],['../structMonsterInfo__MM7.html#ab39ef3e120d5ea4fa41011deb25fd275',1,'MonsterInfo_MM7::attack2DamageBonus()']]],
+  ['attack2damagedicerolls_107',['attack2DamageDiceRolls',['../structMonsterInfo.html#a6591a195053c228dd9a6c3106abd7244',1,'MonsterInfo::attack2DamageDiceRolls()'],['../structMonsterInfo__MM7.html#aea5d6224ce510cc667e25d91b81a2ab7',1,'MonsterInfo_MM7::attack2DamageDiceRolls()']]],
   ['attack2damagedicesides_108',['attack2DamageDiceSides',['../structMonsterInfo__MM7.html#a0465c2281fa7694ca14637ae3a34e16b',1,'MonsterInfo_MM7::attack2DamageDiceSides()'],['../structMonsterInfo.html#ae5ab88c0b242da73c89320b628cc6857',1,'MonsterInfo::attack2DamageDiceSides()']]],
-  ['attack2missiletype_109',['attack2MissileType',['../structMonsterInfo__MM7.html#ae39f2ce01bc86a3cfa5cbe01bb9fc115',1,'MonsterInfo_MM7::attack2MissileType()'],['../structMonsterInfo.html#ab1272beb588021c8ac91977012bff8d3',1,'MonsterInfo::attack2MissileType()']]],
+  ['attack2missiletype_109',['attack2MissileType',['../structMonsterInfo.html#ab1272beb588021c8ac91977012bff8d3',1,'MonsterInfo::attack2MissileType()'],['../structMonsterInfo__MM7.html#ae39f2ce01bc86a3cfa5cbe01bb9fc115',1,'MonsterInfo_MM7::attack2MissileType()']]],
   ['attack2type_110',['attack2Type',['../structMonsterInfo.html#a55e1fe9ef844061a5d4269b16efe0674',1,'MonsterInfo::attack2Type()'],['../structMonsterInfo__MM7.html#a2a37bb93f1684f8c28df501052797c66',1,'MonsterInfo_MM7::attack2Type()']]],
   ['attacklist_111',['attackList',['../AttackList_8h.html#aea5e81cb3334117c90c7b8e6700a3884',1,'attackList():&#160;AttackList.cpp'],['../AttackList_8cpp.html#aea5e81cb3334117c90c7b8e6700a3884',1,'attackList():&#160;AttackList.cpp']]],
   ['attackpreferences_112',['attackPreferences',['../structMonsterInfo__MM7.html#aadd30ca58ad63bb5c62cd4bbef291d76',1,'MonsterInfo_MM7::attackPreferences()'],['../structMonsterInfo.html#ab2622808ff25180875ef44db1e734000',1,'MonsterInfo::attackPreferences()']]],
@@ -136,9 +136,8 @@ var searchData=
   ['avio_5fctx_133',['avio_ctx',['../classAudioBufferDataSource.html#a37dffb40faf65a5144f8cd0e97a7b2df',1,'AudioBufferDataSource']]],
   ['avio_5fctx_5fbuffer_134',['avio_ctx_buffer',['../classAudioBufferDataSource.html#af541e53e6b6236fd0babcf3d08eb7cb9',1,'AudioBufferDataSource']]],
   ['avio_5fctx_5fbuffer_5fsize_135',['avio_ctx_buffer_size',['../classAudioBufferDataSource.html#ae6b9e307330b9e1261069ba059c6d8e1',1,'AudioBufferDataSource']]],
-  ['aviocontext_136',['avioContext',['../classMovie.html#a811bee64c93e9942371deb39497e4384',1,'Movie']]],
-  ['awards_137',['Awards',['../classGameConfig_1_1Keybindings.html#a678b4f4a3e170434c25acf3306afd6ee',1,'GameConfig::Keybindings::Awards()'],['../classGameConfig_1_1Gamepad.html#a34eb2ecf7883af1cea43a4410239fac1',1,'GameConfig::Gamepad::Awards()']]],
-  ['axis_138',['axis',['../classPlatformGamepadAxisEvent.html#a5d34f2d053a27f165402f72a044e7e9d',1,'PlatformGamepadAxisEvent']]],
-  ['azure_139',['Azure',['../classColorTable.html#a8f3cef2720e9574dbec3539855cab531',1,'ColorTable']]],
-  ['azureradiance_140',['AzureRadiance',['../classColorTable.html#a4acd12093cf6ef9721e65e0c42c51f53',1,'ColorTable']]]
+  ['awards_136',['Awards',['../classGameConfig_1_1Keybindings.html#a678b4f4a3e170434c25acf3306afd6ee',1,'GameConfig::Keybindings::Awards()'],['../classGameConfig_1_1Gamepad.html#a34eb2ecf7883af1cea43a4410239fac1',1,'GameConfig::Gamepad::Awards()']]],
+  ['axis_137',['axis',['../classPlatformGamepadAxisEvent.html#a5d34f2d053a27f165402f72a044e7e9d',1,'PlatformGamepadAxisEvent']]],
+  ['azure_138',['Azure',['../classColorTable.html#a8f3cef2720e9574dbec3539855cab531',1,'ColorTable']]],
+  ['azureradiance_139',['AzureRadiance',['../classColorTable.html#a4acd12093cf6ef9721e65e0c42c51f53',1,'ColorTable']]]
 ];
