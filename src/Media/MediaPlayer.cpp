@@ -33,8 +33,8 @@ extern "C" {
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/OpenALSoundProvider.h"
 #include "Media/FFmpegLogProxy.h"
+#include "Media/FFmpegBlobInputStream.h"
 
-#include "Utility/Streams/MemoryInputStream.h"
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/DataPath.h"
 
@@ -299,14 +299,10 @@ class Movie : public IMovie {
         last_resampled_frame_num = -1;
 
         audio_data_in_device = nullptr;
-        ioBuffer = nullptr;
         format_ctx = nullptr;
-        avioContext = nullptr;
 
         looping = false;
         playing = false;
-
-        _blob = Blob();
     }
 
     virtual ~Movie() {
@@ -335,14 +331,6 @@ class Movie : public IMovie {
             avformat_close_input(&format_ctx);
             logger->trace("close video format context file\n");
             format_ctx = nullptr;
-        }
-        if (avioContext) {
-            av_free(avioContext);
-            avioContext = nullptr;
-        }
-        if (ioBuffer) {
-            // av_free(ioBuffer);
-            ioBuffer = nullptr;
         }
     }
 
@@ -383,20 +371,12 @@ class Movie : public IMovie {
     }
 
     bool LoadFromLOD(const Blob &blob) {
-        _blob = Blob::share(blob);
-        _stream.reset(_blob.data(), _blob.size());
+        _stream.open(Blob::share(blob));
 
-        if (!ioBuffer) {
-            ioBuffer = (unsigned char *)av_malloc(AV_INPUT_BUFFER_MIN_SIZE);  // can get av_free()ed by libav
-        }
-
-        if (!avioContext) {
-            avioContext = avio_alloc_context(ioBuffer, 0x4000, 0, this, s_read, NULL, s_seek);
-        }
         if (!format_ctx) {
             format_ctx = avformat_alloc_context();
         }
-        format_ctx->pb = avioContext;
+        format_ctx->pb = _stream.ioContext();
         return Load("dummyFilename");
     }
 
@@ -699,41 +679,6 @@ class Movie : public IMovie {
         render->DrawImage(_texture, calculateVideoRectangle(*this));
     }
 
-    static int s_read(void *opaque, uint8_t *buf, int buf_size) {
-        return static_cast<Movie *>(opaque)->read(buf, buf_size);
-    }
-
-    static int64_t s_seek(void *opaque, int64_t offset, int whence) {
-        return static_cast<Movie *>(opaque)->seek(offset, whence);
-    }
-
-    int read(uint8_t *buf, int buf_size) {
-        return _stream.read(buf, buf_size);
-    }
-
-    int64_t seek(int64_t offset, int whence) {
-        if (whence == AVSEEK_SIZE) {
-            return _blob.size();
-        }
-
-        switch (whence) {
-            case SEEK_SET:
-                _stream.seek(offset);
-                break;
-            case SEEK_CUR:
-                _stream.seek(_stream.position() + offset);
-                break;
-            case SEEK_END:
-                _stream.seek(_blob.size() - offset);
-                break;
-            default:
-                assert(false);
-                break;
-        }
-
-        return _stream.position();
-    }
-
  protected:
     unsigned int width;
     unsigned int height;
@@ -741,8 +686,6 @@ class Movie : public IMovie {
     double playback_time;
 
     AVAudioStream audio;
-    unsigned char *ioBuffer;
-    AVIOContext *avioContext;
     OpenALSoundProvider::StreamingTrackBuffer *audio_data_in_device;
 
     AVVideoStream video;
@@ -752,8 +695,7 @@ class Movie : public IMovie {
     bool looping;
     bool playing;
 
-    Blob _blob;
-    MemoryInputStream _stream;
+    FFmpegBlobInputStream _stream;
 
     GraphicsImage *_texture{};
 

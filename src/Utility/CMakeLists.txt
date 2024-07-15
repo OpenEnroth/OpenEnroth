@@ -70,6 +70,7 @@ if(OE_BUILD_TESTS)
             Streams/Tests/FileOutputStream_ut.cpp
             Streams/Tests/FileInputStream_ut.cpp
             Streams/Tests/InputStream_ut.cpp
+            Streams/Tests/MemoryInputStream_ut.cpp
             Tests/IndexedArray_ut.cpp
             Tests/IndexedBitset_ut.cpp
             Tests/Segment_ut.cpp
