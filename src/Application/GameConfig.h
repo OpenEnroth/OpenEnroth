@@ -209,7 +209,7 @@ class GameConfig : public Config {
                                   "Disable fall damage for indoor maps." };
 
         Float SpawnCountMultiplier = { this, "spawn_count_multiplier", 1.0f,
-                                    "Muliplicaiton factor for how many enemies are spawned over original." };
+                                    "Multiplication factor for how many enemies are spawned over original." };
 
         Int MaxActors = { this, "max_actors", 500, &ValidateMaxActors,
                         "Limit to how many total actors are possible on a map." };
