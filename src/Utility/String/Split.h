@@ -47,6 +47,8 @@ class SplitViewIterator {
         return l._pos == l._end + 1;
     }
 
+    friend bool operator==(const SplitViewIterator &l, const SplitViewIterator &r) = default;
+
  private:
     mutable const char *_pos = nullptr; // std::indirectly_readable requires const operator*, so we need to make _pos mutable.
     const char *_end = nullptr;
