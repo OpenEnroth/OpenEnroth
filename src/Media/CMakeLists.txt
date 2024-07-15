@@ -4,6 +4,7 @@ set(MEDIA_SOURCES
         AudioBaseDataSource.cpp
         AudioBufferDataSource.cpp
         AudioFileDataSource.cpp
+        FFmpegBlobInputStream.cpp
         FFmpegLogProxy.cpp
         FFmpegLogSource.cpp
         MediaPlayer.cpp)
@@ -15,6 +16,7 @@ set(MEDIA_HEADERS
         AudioFileDataSource.h
         AudioSample.h
         AudioTrack.h
+        FFmpegBlobInputStream.h
         FFmpegLogProxy.h
         FFmpegLogSource.h
         MediaPlayer.h

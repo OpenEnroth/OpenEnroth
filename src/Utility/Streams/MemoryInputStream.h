@@ -19,6 +19,7 @@ class MemoryInputStream: public InputStream {
 
     void seek(size_t pos);
     [[nodiscard]] size_t position() const;
+    [[nodiscard]] size_t size() const;
 
  private:
     const char *_begin = nullptr;

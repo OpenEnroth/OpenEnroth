@@ -55,17 +55,35 @@ std::string BlobInputStream::displayPath() const {
     return _blob.displayPath();
 }
 
+void BlobInputStream::seek(size_t pos) {
+    assert(_pos);
+
+    _pos = static_cast<const char *>(_blob.data()) + std::min(pos, _blob.size());
+}
+
+size_t BlobInputStream::position() const {
+    assert(_pos);
+
+    return _pos - static_cast<const char *>(_blob.data());
+}
+
+size_t BlobInputStream::size() const {
+    assert(_pos);
+
+    return _blob.size();
+}
+
 Blob BlobInputStream::tail() const {
     assert(_pos);
 
-    return _blob.subBlob(offset());
+    return _blob.subBlob(position());
 }
 
 Blob BlobInputStream::readBlob(size_t size) {
     assert(_pos);
 
     size = std::min(size, remaining());
-    Blob result = _blob.subBlob(offset(), size);
+    Blob result = _blob.subBlob(position(), size);
     assert(result.size() == size);
     _pos += size;
     return result;
@@ -77,16 +95,10 @@ Blob BlobInputStream::readBlobOrFail(size_t size) {
     if (size > remaining())
         throw Exception("Failed to read the requested number of bytes from a blob stream, requested {}, got {}", size, remaining());
 
-    Blob result = _blob.subBlob(offset(), size);
+    Blob result = _blob.subBlob(position(), size);
     assert(result.size() == size);
     _pos += size;
     return result;
-}
-
-size_t BlobInputStream::offset() const {
-    assert(_pos);
-
-    return _pos - static_cast<const char *>(_blob.data());
 }
 
 size_t BlobInputStream::remaining() const {
