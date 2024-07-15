@@ -49,9 +49,19 @@ std::string MemoryInputStream::displayPath() const {
 }
 
 void MemoryInputStream::seek(size_t pos) {
-    _pos = _begin + std::min(pos, static_cast<size_t>(_end - _begin));
+    assert(_pos);
+
+    _pos = _begin + std::min(pos, size());
 }
 
 size_t MemoryInputStream::position() const {
+    assert(_pos);
+
     return _pos - _begin;
+}
+
+size_t MemoryInputStream::size() const {
+    assert(_pos);
+
+    return _end - _begin;
 }

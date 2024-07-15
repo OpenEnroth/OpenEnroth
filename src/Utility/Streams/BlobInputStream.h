@@ -26,6 +26,10 @@ class BlobInputStream : public InputStream {
     virtual void close() override;
     [[nodiscard]] virtual std::string displayPath() const override;
 
+    void seek(size_t pos);
+    [[nodiscard]] size_t position() const;
+    [[nodiscard]] size_t size() const;
+
     /**
      * @return                          Remaining stream data, as a blob that's shared with the blob that this
      *                                  stream is reading from.
@@ -54,7 +58,6 @@ class BlobInputStream : public InputStream {
     [[nodiscard]] Blob readBlobOrFail(size_t size);
 
  private:
-    [[nodiscard]] size_t offset() const;
     [[nodiscard]] size_t remaining() const;
 
  private:
