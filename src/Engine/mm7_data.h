@@ -61,8 +61,8 @@ extern IndexedArray<Duration, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> base_
 extern std::array<IndexedArray<ClassSkillAffinity, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST>, 9> pSkillAvailabilityPerClass;
 extern IndexedArray<IndexedArray<CharacterSkillMastery, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST>, CLASS_FIRST, CLASS_LAST> skillMaxMasteryPerClass;
 
-extern std::array<Pid, 500> ai_near_actors_targets_pid;
-extern std::array<unsigned int, 500> ai_near_actors_ids;
+extern std::vector<Pid> ai_near_actors_targets_pid;
+extern std::vector<unsigned int> ai_near_actors_ids;
 extern int ai_arrays_size;
 
 extern Pid uLastPointedObjectID;

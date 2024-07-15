@@ -84,7 +84,7 @@ void spawnMonsters(int16_t typeindex, int16_t level, int count,
     AIDirection direction;
     int oldNumActors = pActors.size();
     SpawnEncounter(&pMapStats->pInfos[engine->_currentLoadedMapId], &pSpawnPoint, 0, count, 0);
-    Actor::GetDirectionInfo(Pid(OBJECT_Actor, oldNumActors), Pid::character(0), &direction, 1);
+    Actor::GetDirectionInfo(pos, pParty->pos + Vec3f(0, 0, pParty->eyeLevel), &direction);
     for (int i = oldNumActors; i < pActors.size(); ++i) {
         pActors[i].PrepareSprites(0);
         pActors[i].yawAngle = direction.uYawAngle;

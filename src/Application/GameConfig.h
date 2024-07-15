@@ -208,6 +208,15 @@ class GameConfig : public Config {
         Bool NoIndoorFallDamage = { this, "no_indoor_fall_damage", false,
                                   "Disable fall damage for indoor maps." };
 
+        Float SpawnCountMultiplier = { this, "spawn_count_multiplier", 1.0f,
+                                    "Multiplication factor for how many enemies are spawned over original." };
+
+        Int MaxActors = { this, "max_actors", 500, &ValidateMaxActors,
+                        "Limit to how many total actors are possible on a map." };
+
+        Int MaxActiveAIActors = { this, "max_active_ai_actors", 30, &ValidateMaxActiveAIActors,
+                                "Limit to how many actors can be in full AI state at once." };
+
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)
@@ -244,6 +253,12 @@ class GameConfig : public Config {
         }
         static int ValidateQuickSaveCount(int num) {
             return std::clamp(num, 0, 4);
+        }
+        static int ValidateMaxActors(int num) {
+            return std::clamp(num, 500, 5000);
+        }
+        static int ValidateMaxActiveAIActors(int num) {
+            return std::clamp(num, 30, 500);
         }
     };
 
