@@ -258,7 +258,10 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 pMediaPlayer->Unload();
             }
 
+            // Restore the screen type after the movie has played in case we are already in a house
+            auto saveScreenType = current_screen_type;
             pMediaPlayer->PlayFullscreenMovie(movieName);
+            current_screen_type = saveScreenType;
 
             if (!movieName.compare("arbiter good")) { // change alignment to good
                 pParty->alignment = PartyAlignment::PartyAlignment_Good;
