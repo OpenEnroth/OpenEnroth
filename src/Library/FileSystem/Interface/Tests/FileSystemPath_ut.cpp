@@ -55,14 +55,10 @@ UNIT_TEST(FileSystemPath, Parent) {
 }
 
 UNIT_TEST(FileSystemPath, EmptyChunks) {
-    // We don't have an .empty() method because SplitView is not a forward range. Making it a forward range would
-    // require storing another pointer, which we don't want to do.
-    auto empty = [](auto range) { return range.begin() == range.end(); };
-
-    EXPECT_TRUE(empty(FileSystemPath().chunks()));
-    EXPECT_TRUE(empty(FileSystemPath(".").chunks()));
-    EXPECT_TRUE(empty(FileSystemPath("..").chunks()));
-    EXPECT_FALSE(empty(FileSystemPath("a").chunks()));
+    EXPECT_TRUE(FileSystemPath().chunks().empty());
+    EXPECT_TRUE(FileSystemPath(".").chunks().empty());
+    EXPECT_TRUE(FileSystemPath("..").chunks().empty());
+    EXPECT_FALSE(FileSystemPath("a").chunks().empty());
 }
 
 UNIT_TEST(FileSystemPath, Tail) {
