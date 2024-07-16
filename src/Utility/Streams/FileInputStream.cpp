@@ -77,7 +77,7 @@ std::string FileInputStream::displayPath() const {
     return _path;
 }
 
-void FileInputStream::seek(size_t pos) {
+void FileInputStream::seek(ssize_t pos) {
     assert(isOpen());
 
     if (fseeko(_file, 0, SEEK_END) != 0)
@@ -87,8 +87,7 @@ void FileInputStream::seek(size_t pos) {
     if (end == -1)
         Exception::throwFromErrno(_path);
 
-    if (pos > end)
-        pos = end; // Seek beyond EOF just seeks to EOF.
+    pos = std::clamp<ssize_t>(pos, 0, end); // Seek beyond EOF just seeks to EOF.
 
     if (fseeko(_file, pos, SEEK_SET) != 0)
         Exception::throwFromErrno(_path);

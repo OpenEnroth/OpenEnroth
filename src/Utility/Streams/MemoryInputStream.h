@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Utility/Types.h"
+
 #include "InputStream.h"
 
 class MemoryInputStream: public InputStream {
@@ -17,9 +19,9 @@ class MemoryInputStream: public InputStream {
     virtual void close() override;
     [[nodiscard]] std::string displayPath() const override;
 
-    void seek(size_t pos);
-    [[nodiscard]] size_t position() const;
-    [[nodiscard]] size_t size() const;
+    void seek(ssize_t pos);
+    [[nodiscard]] ssize_t position() const;
+    [[nodiscard]] ssize_t size() const;
 
  private:
     const char *_begin = nullptr;

@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/Types.h"
 
 #include "InputStream.h"
 
@@ -26,9 +27,9 @@ class BlobInputStream : public InputStream {
     virtual void close() override;
     [[nodiscard]] virtual std::string displayPath() const override;
 
-    void seek(size_t pos);
-    [[nodiscard]] size_t position() const;
-    [[nodiscard]] size_t size() const;
+    void seek(ssize_t pos);
+    [[nodiscard]] ssize_t position() const;
+    [[nodiscard]] ssize_t size() const;
 
     /**
      * @return                          Remaining stream data, as a blob that's shared with the blob that this
