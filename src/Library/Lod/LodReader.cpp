@@ -147,7 +147,7 @@ Blob LodReader::read(std::string_view filename) const {
     if (pos == _files.cend())
         throw Exception("Entry '{}' doesn't exist in LOD file '{}'", filename, _lod.displayPath());
 
-    return _lod.subBlob(pos->second.offset, pos->second.size);
+    return _lod.subBlob(pos->second.offset, pos->second.size).withDisplayPath(fmt::format("{}/{}", _lod.displayPath(), filename));
 }
 
 std::vector<std::string> LodReader::ls() const {
