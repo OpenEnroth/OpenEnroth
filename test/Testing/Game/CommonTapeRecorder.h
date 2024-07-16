@@ -10,6 +10,7 @@
 #include "Engine/Objects/MonsterEnums.h"
 #include "Engine/Time/Time.h"
 #include "Engine/MapEnums.h"
+#include "Engine/PartyEnums.h"
 #include "Media/Audio/SoundEnums.h"
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
@@ -85,6 +86,8 @@ class CommonTapeRecorder {
 
     TestTape<int> activeCharacterIndex(); // Remember that 0 means none!
 
+    TestTape<bool> questBit(QuestBit bit);
+
     TestMultiTape<SoundId> sounds();
 
     TestMultiTape<std::string> hudTextures();
@@ -95,6 +98,7 @@ class CommonTapeRecorder {
      * @return                          Tape object.
      */
     TestMultiTape<std::string> messageBoxes();
+
     /**
      * Return a tape object of strings listing all the text drawn by GUIWindow::DrawText.
      * TODO(pskelton): Tape will be spammy as it is recording everything.
@@ -102,8 +106,10 @@ class CommonTapeRecorder {
      * @return                          Tape object.
      */
     TestMultiTape<std::string> allGUIWindowsText();
+
     /**
-     * Return a tape object of SpecialAttackTypes listing all the special attack attempts on the party
+     * Return a tape object of SpecialAttackTypes listing all the special attack attempts on the party.
+     *
      * @return                          Tape object.
      */
     TestMultiTape<SpecialAttackType> specialAttacks();
