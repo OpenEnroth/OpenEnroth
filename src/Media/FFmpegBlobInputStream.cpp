@@ -11,7 +11,8 @@ extern "C" {
 
 static int ffRead(void *opaque, uint8_t *buf, int size) {
     FFmpegBlobInputStream *stream = static_cast<FFmpegBlobInputStream *>(opaque);
-    return stream->read(buf, size);
+    int result = stream->read(buf, size);
+    return result == 0 ? AVERROR_EOF : result;
 }
 
 static int64_t ffSeek(void *opaque, int64_t offset, int whence) {
@@ -33,7 +34,7 @@ static int64_t ffSeek(void *opaque, int64_t offset, int whence) {
         break;
     default:
         assert(false);
-        break;
+        return AVERROR(EIO);
     }
 
     return stream->position();
