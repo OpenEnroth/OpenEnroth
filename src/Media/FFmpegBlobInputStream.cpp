@@ -29,7 +29,7 @@ static int64_t ffSeek(void *opaque, int64_t offset, int whence) {
         stream->seek(stream->position() + offset);
         break;
     case SEEK_END:
-        stream->seek(stream->size() - std::min(offset, static_cast<int64_t>(stream->size()))); // std::min to handle the overflow correctly.
+        stream->seek(stream->size() + offset);
         break;
     default:
         assert(false);

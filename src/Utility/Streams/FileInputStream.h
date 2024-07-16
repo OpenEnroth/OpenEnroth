@@ -4,6 +4,8 @@
 #include <string>
 #include <string_view>
 
+#include "Utility/Types.h"
+
 #include "InputStream.h"
 
 class FileInputStream : public InputStream {
@@ -23,7 +25,7 @@ class FileInputStream : public InputStream {
     virtual void close() override;
     [[nodiscard]] virtual std::string displayPath() const override;
 
-    void seek(size_t pos);
+    void seek(ssize_t pos);
 
     [[nodiscard]] FILE *handle() {
         return _file;
