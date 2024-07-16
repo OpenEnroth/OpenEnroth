@@ -61,6 +61,11 @@ class Accessible : public Base {
         return result;
     }
 
+    const_reference operator[](size_t index) const {
+        assert(index < size());
+        return *(begin() + index);
+    }
+
     size_t size() const {
         return end() - begin();
     }

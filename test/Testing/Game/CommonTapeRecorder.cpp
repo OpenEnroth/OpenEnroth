@@ -142,6 +142,10 @@ TestTape<int> CommonTapeRecorder::activeCharacterIndex() {
     return custom([] { return pParty->hasActiveCharacter() ? pParty->activeCharacterIndex() : 0; });
 }
 
+TestTape<bool> CommonTapeRecorder::questBit(QuestBit bit) {
+    return custom([bit] { return !!pParty->_questBits[bit]; });
+}
+
 TestMultiTape<SoundId> CommonTapeRecorder::sounds() {
     return _controller->recordFunctionTape<SoundId>(CALL_PLAY_SOUND);
 }

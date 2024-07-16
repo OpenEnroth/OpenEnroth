@@ -328,13 +328,17 @@ GAME_TEST(Issues, Issue1725) {
     // Finishing Strike the Devils quest on dark path glitches out game menus
     auto screenTape = tapes.screen();
     auto textTape = tapes.allGUIWindowsText();
+    auto bit120Tape = tapes.questBit(QBIT_120);
+    auto bit123Tape = tapes.questBit(QBIT_123);
     test.playTraceFromTestData("issue_1725.mm7", "issue_1725.json");
     EXPECT_EQ(screenTape.back(), SCREEN_HOUSE); // Make sure we end up back in the throne room
     EXPECT_GT(textTape.flattened().filtered([](const auto& s) { return s.starts_with("THAT WAS AWESOME!"); }).size(), 0);
     EXPECT_TRUE(textTape.flattened().contains("Exit Building")); // And can exit it
+    EXPECT_EQ(bit120Tape, tape(false, true));
+    EXPECT_EQ(bit123Tape, tape(true, false));
 }
 
-GAME_TEST(issues, Issue1726) {
+GAME_TEST(Issues, Issue1726) {
     // Blaster trainers do not check requirements and crash the game
     auto textTape = tapes.allGUIWindowsText();
     test.playTraceFromTestData("issue_1726.mm7", "issue_1726.json");
