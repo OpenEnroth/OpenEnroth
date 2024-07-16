@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;03533f1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7b7499e</span>
    </div>
   </td>
  </tr>
@@ -91,10 +91,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1ac61e07471619a83575c77ebc6920b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa31279935fe55f50670e590f00c202da"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classVidReader.html#aa31279935fe55f50670e590f00c202da">VidReader</a> (std::string_view path)</td></tr>
 <tr class="separator:aa31279935fe55f50670e590f00c202da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aceb1d25a7fac3fd390049777e21441cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classVidReader.html#aceb1d25a7fac3fd390049777e21441cf">VidReader</a> (<a class="el" href="classBlob.html">Blob</a> blob)</td></tr>
+<tr class="separator:aceb1d25a7fac3fd390049777e21441cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af03b6fefc7a74f9ebf18a7abf53a4e29"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classVidReader.html#af03b6fefc7a74f9ebf18a7abf53a4e29">~VidReader</a> ()</td></tr>
 <tr class="separator:af03b6fefc7a74f9ebf18a7abf53a4e29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6da8dd9cab4d0ad0ef46e71557131d25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classVidReader.html#a6da8dd9cab4d0ad0ef46e71557131d25">open</a> (std::string_view path)</td></tr>
 <tr class="separator:a6da8dd9cab4d0ad0ef46e71557131d25"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae538c4dbb59e3b3d835b4effdb190123"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classVidReader.html#ae538c4dbb59e3b3d835b4effdb190123">open</a> (<a class="el" href="classBlob.html">Blob</a> blob)</td></tr>
+<tr class="separator:ae538c4dbb59e3b3d835b4effdb190123"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74b8a87c8252d0480c45ea79121b04f8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classVidReader.html#a74b8a87c8252d0480c45ea79121b04f8">close</a> ()</td></tr>
 <tr class="separator:a74b8a87c8252d0480c45ea79121b04f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c136404ba1c67e724ab42f7da4cb305"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classVidReader.html#a3c136404ba1c67e724ab42f7da4cb305">isOpen</a> () const</td></tr>
@@ -110,8 +114,6 @@ Public Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:af505e8ea4b4a5b292354702781dff687"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classVidReader.html#af505e8ea4b4a5b292354702781dff687">_vid</a></td></tr>
 <tr class="separator:af505e8ea4b4a5b292354702781dff687"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea250ac2a6a1f3340c1c7c49dd2f7ab7"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classVidReader.html#aea250ac2a6a1f3340c1c7c49dd2f7ab7">_path</a></td></tr>
-<tr class="separator:aea250ac2a6a1f3340c1c7c49dd2f7ab7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43ffc654878ac2990886120cafc36e26"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, <a class="el" href="structVidReader_1_1VidRegion.html">VidRegion</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classVidReader.html#a43ffc654878ac2990886120cafc36e26">_files</a></td></tr>
 <tr class="separator:a43ffc654878ac2990886120cafc36e26"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -119,7 +121,7 @@ Private Attributes</h2></td></tr>
 <div class="textblock"><p >Reader for Might&amp;Magic VID files. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a1ac61e07471619a83575c77ebc6920b9" name="a1ac61e07471619a83575c77ebc6920b9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1ac61e07471619a83575c77ebc6920b9">&#9670;&#160;</a></span>VidReader() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1ac61e07471619a83575c77ebc6920b9">&#9670;&#160;</a></span>VidReader() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -144,7 +146,7 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <a id="aa31279935fe55f50670e590f00c202da" name="aa31279935fe55f50670e590f00c202da"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa31279935fe55f50670e590f00c202da">&#9670;&#160;</a></span>VidReader() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa31279935fe55f50670e590f00c202da">&#9670;&#160;</a></span>VidReader() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -157,6 +159,32 @@ Private Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aceb1d25a7fac3fd390049777e21441cf" name="aceb1d25a7fac3fd390049777e21441cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aceb1d25a7fac3fd390049777e21441cf">&#9670;&#160;</a></span>VidReader() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">VidReader::VidReader </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlob.html">Blob</a>&#160;</td>
+          <td class="paramname"><em>blob</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -281,8 +309,38 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="ae538c4dbb59e3b3d835b4effdb190123" name="ae538c4dbb59e3b3d835b4effdb190123"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae538c4dbb59e3b3d835b4effdb190123">&#9670;&#160;</a></span>open() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void VidReader::open </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlob.html">Blob</a>&#160;</td>
+          <td class="paramname"><em>blob</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">blob</td><td>VID data. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>If there are errors in the provided VID file. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a6da8dd9cab4d0ad0ef46e71557131d25" name="a6da8dd9cab4d0ad0ef46e71557131d25"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6da8dd9cab4d0ad0ef46e71557131d25">&#9670;&#160;</a></span>open()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6da8dd9cab4d0ad0ef46e71557131d25">&#9670;&#160;</a></span>open() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -354,28 +412,6 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::unordered_map&lt;std::string, <a class="el" href="structVidReader_1_1VidRegion.html">VidRegion</a>&gt; VidReader::_files</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aea250ac2a6a1f3340c1c7c49dd2f7ab7" name="aea250ac2a6a1f3340c1c7c49dd2f7ab7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aea250ac2a6a1f3340c1c7c49dd2f7ab7">&#9670;&#160;</a></span>_path</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string VidReader::_path</td>
         </tr>
       </table>
   </td>

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;03533f1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7b7499e</span>
    </div>
   </td>
  </tr>
@@ -85,10 +85,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa94f536cb46015e6ca66ceb87000836a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b455b37b4dacb6cc2130fbdd7d6385a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#a5b455b37b4dacb6cc2130fbdd7d6385a">SndReader</a> (std::string_view path)</td></tr>
 <tr class="separator:a5b455b37b4dacb6cc2130fbdd7d6385a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0835c9e5a743afedb912db0871d83aa7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#a0835c9e5a743afedb912db0871d83aa7">SndReader</a> (<a class="el" href="classBlob.html">Blob</a> blob)</td></tr>
+<tr class="separator:a0835c9e5a743afedb912db0871d83aa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac65c3e89a0c4743a829db993b81c4f93"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#ac65c3e89a0c4743a829db993b81c4f93">~SndReader</a> ()</td></tr>
 <tr class="separator:ac65c3e89a0c4743a829db993b81c4f93"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7403fc400d3ef4f5208b2a6853e4d3a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#a7403fc400d3ef4f5208b2a6853e4d3a0">open</a> (std::string_view path)</td></tr>
 <tr class="separator:a7403fc400d3ef4f5208b2a6853e4d3a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4e200c4622185239b0fa7b590639bf7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#ae4e200c4622185239b0fa7b590639bf7">open</a> (<a class="el" href="classBlob.html">Blob</a> blob)</td></tr>
+<tr class="separator:ae4e200c4622185239b0fa7b590639bf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adcc04da93237f0c3e78e69b5bea5e02a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#adcc04da93237f0c3e78e69b5bea5e02a">close</a> ()</td></tr>
 <tr class="separator:adcc04da93237f0c3e78e69b5bea5e02a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed0c10bc4f4f0210a62b7a450b110aa8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#aed0c10bc4f4f0210a62b7a450b110aa8">isOpen</a> () const</td></tr>
@@ -104,8 +108,6 @@ Public Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a53a19432cea020065de29105ca5a87e7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#a53a19432cea020065de29105ca5a87e7">_snd</a></td></tr>
 <tr class="separator:a53a19432cea020065de29105ca5a87e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49f495d2d075476a66665835a0235e42"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#a49f495d2d075476a66665835a0235e42">_path</a></td></tr>
-<tr class="separator:a49f495d2d075476a66665835a0235e42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec0b94bba27ec8c64ab57d9b87519cd8"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, <a class="el" href="structSndEntry.html">SndEntry</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSndReader.html#aec0b94bba27ec8c64ab57d9b87519cd8">_files</a></td></tr>
 <tr class="separator:aec0b94bba27ec8c64ab57d9b87519cd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -114,7 +116,7 @@ Private Attributes</h2></td></tr>
 <p >Note that compression is part of the container format in SND files, unlike in LOD, where it's part of the internal lod-specific file formats. Thus, we're not exposing it as part of the interface, and there is no 'SndFormats' library. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa94f536cb46015e6ca66ceb87000836a" name="aa94f536cb46015e6ca66ceb87000836a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa94f536cb46015e6ca66ceb87000836a">&#9670;&#160;</a></span>SndReader() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa94f536cb46015e6ca66ceb87000836a">&#9670;&#160;</a></span>SndReader() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -139,7 +141,7 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <a id="a5b455b37b4dacb6cc2130fbdd7d6385a" name="a5b455b37b4dacb6cc2130fbdd7d6385a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5b455b37b4dacb6cc2130fbdd7d6385a">&#9670;&#160;</a></span>SndReader() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b455b37b4dacb6cc2130fbdd7d6385a">&#9670;&#160;</a></span>SndReader() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -152,6 +154,32 @@ Private Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0835c9e5a743afedb912db0871d83aa7" name="a0835c9e5a743afedb912db0871d83aa7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0835c9e5a743afedb912db0871d83aa7">&#9670;&#160;</a></span>SndReader() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">SndReader::SndReader </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlob.html">Blob</a>&#160;</td>
+          <td class="paramname"><em>blob</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -276,8 +304,38 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="ae4e200c4622185239b0fa7b590639bf7" name="ae4e200c4622185239b0fa7b590639bf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4e200c4622185239b0fa7b590639bf7">&#9670;&#160;</a></span>open() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SndReader::open </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlob.html">Blob</a>&#160;</td>
+          <td class="paramname"><em>blob</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">blob</td><td>SND data. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classException.html">Exception</a></td><td>If there are errors in the provided SND file. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a7403fc400d3ef4f5208b2a6853e4d3a0" name="a7403fc400d3ef4f5208b2a6853e4d3a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7403fc400d3ef4f5208b2a6853e4d3a0">&#9670;&#160;</a></span>open()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7403fc400d3ef4f5208b2a6853e4d3a0">&#9670;&#160;</a></span>open() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -349,28 +407,6 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::unordered_map&lt;std::string, <a class="el" href="structSndEntry.html">SndEntry</a>&gt; SndReader::_files</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a49f495d2d075476a66665835a0235e42" name="a49f495d2d075476a66665835a0235e42"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a49f495d2d075476a66665835a0235e42">&#9670;&#160;</a></span>_path</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string SndReader::_path</td>
         </tr>
       </table>
   </td>
