@@ -170,7 +170,7 @@ class Blob final {
         return _displayPath;
     }
 
-    Blob &&withDisplayPath(std::string_view displayPath) && {
+    Blob withDisplayPath(std::string_view displayPath) {
         _displayPath = displayPath;
         return std::move(*this);
     }

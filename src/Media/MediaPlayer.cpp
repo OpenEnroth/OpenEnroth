@@ -334,9 +334,9 @@ class Movie : public IMovie {
         }
     }
 
-    bool Load(const char *filename) {  // Загрузка
+    bool Load(const std::string &fileName) {  // Загрузка
         // Open video file
-        if (avformat_open_input(&format_ctx, filename, nullptr, nullptr) < 0) {
+        if (avformat_open_input(&format_ctx, fileName.c_str(), nullptr, nullptr) < 0) {
             logger->warning("ffmpeg: Unable to open input file");
             Close();
             return false;
@@ -350,12 +350,12 @@ class Movie : public IMovie {
         }
 
         // Dump information about file onto standard error
-        av_dump_format(format_ctx, 0, filename, 0);
+        av_dump_format(format_ctx, 0, fileName.c_str(), 0);
 
         audio.open(format_ctx);
 
         if (!video.open(format_ctx)) {
-            logger->error("Cannot open video stream: {}", filename);
+            logger->error("Cannot open video stream: {}", fileName);
             Close();
             return false;
         }
@@ -377,7 +377,7 @@ class Movie : public IMovie {
             format_ctx = avformat_alloc_context();
         }
         format_ctx->pb = _stream.ioContext();
-        return Load("dummyFilename");
+        return Load(blob.displayPath());
     }
 
     virtual Blob GetFrame() override {

@@ -61,3 +61,9 @@ UNIT_TEST(LodReader, ErrorMessage) {
         EXPECT_TRUE(std::string_view(e.what()).contains(name));
     }
 }
+
+UNIT_TEST(LodReader, DisplayPath) {
+    LodReader reader(Blob::view(brokenLod, sizeof(brokenLod)).withDisplayPath("russian.lod"), LOD_ALLOW_DUPLICATES);
+    EXPECT_EQ(reader.read("lolkek").displayPath(), "russian.lod/lolkek");
+    EXPECT_EQ(reader.read("LOLKEK").displayPath(), "russian.lod/LOLKEK");
+}
