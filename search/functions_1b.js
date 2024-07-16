@@ -2,7 +2,7 @@ var searchData=
 [
   ['_7eanyconfigentry_0',['~AnyConfigEntry',['../classAnyConfigEntry.html#aefb4cea2c5a5cea838ab597e958fe0f3',1,'AnyConfigEntry']]],
   ['_7eaudiobasedatasource_1',['~AudioBaseDataSource',['../classAudioBaseDataSource.html#ad43a6ea2a3adf5381bcaef398bba80c3',1,'AudioBaseDataSource']]],
-  ['_7eaudiobufferdatasource_2',['~AudioBufferDataSource',['../classAudioBufferDataSource.html#a2c043c6913f1e54f774013e0f3564a01',1,'AudioBufferDataSource']]],
+  ['_7eaudiobufferdatasource_2',['~AudioBufferDataSource',['../classAudioBufferDataSource.html#af124b158e6d8201512d5a46dedf2f8dd',1,'AudioBufferDataSource']]],
   ['_7eaudiofiledatasource_3',['~AudioFileDataSource',['../classAudioFileDataSource.html#a2e24d1042f849e4e831437aeb2004ff1',1,'AudioFileDataSource']]],
   ['_7eaudioplayer_4',['~AudioPlayer',['../classAudioPlayer.html#a41d5beac7ef47d2d935f17e822cbfd9f',1,'AudioPlayer']]],
   ['_7eaudiosample16_5',['~AudioSample16',['../classAudioSample16.html#a15fa0260adfe7fd802f00e4801fcac7c',1,'AudioSample16']]],
