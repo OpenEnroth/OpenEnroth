@@ -329,10 +329,10 @@ GAME_TEST(Issues, Issue1724) {
     auto statusBar = tapes.statusBar();
     auto partyXP = tapes.totalExperience();
     auto tbState = tapes.turnBasedMode();
-    auto zombieActor = tapes.custom([]() {return std::ranges::count_if(pActors, [](const Actor& act) { return (act.currentHP < 1) && act.CanAct(); }); } );
+    auto zombieActor = tapes.custom([]() {return std::ranges::count_if(pActors, [](const Actor &act) { return (act.currentHP < 1) && act.CanAct(); }); } );
     test.playTraceFromTestData("issue_1724.mm7", "issue_1724.json");
-    
-    EXPECT_GT(statusBar.filtered([](const auto& s) { return s.starts_with("Immolation deals"); }).size(), 0);// test for immolation message
+
+     EXPECT_GT(statusBar.filtered([](const auto &s) { return s.starts_with("Immolation deals"); }).size(), 0);// test for immolation message
     EXPECT_GT(partyXP.back(), partyXP.front());
     EXPECT_EQ(tbState.back(), true);
     EXPECT_EQ(zombieActor.max(), 0);
