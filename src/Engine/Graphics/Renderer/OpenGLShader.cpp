@@ -1,5 +1,6 @@
 #include "OpenGLShader.h"
 
+#include <cassert>
 #include <string>
 
 #include <glad/gl.h> // NOLINT: this is not a C system include.
@@ -79,7 +80,7 @@ bool OpenGLShader::reload(std::string_view name, bool OpenGLES) {
     int tryreload = build(name, sFilename, OpenGLES, true);
 
     if (tryreload) {
-        glDeleteProgram(ID);
+        reset();
         ID = tryreload;
         return true;
     }
@@ -88,8 +89,30 @@ bool OpenGLShader::reload(std::string_view name, bool OpenGLES) {
     return false;
 }
 
+int OpenGLShader::uniformLocation(const char *name) {
+    assert(isValid());
+
+    return glGetUniformLocation(ID, name);
+}
+
+int OpenGLShader::attribLocation(const char *name) {
+    assert(isValid());
+
+    return glGetAttribLocation(ID, name);
+}
+
 void OpenGLShader::use() {
+    assert(isValid());
+
     glUseProgram(ID);
+}
+
+void OpenGLShader::reset() {
+    if (ID == 0)
+        return;
+
+    glDeleteProgram(ID);
+    ID = 0;
 }
 
 std::string OpenGLShader::shaderTypeToExtension(int type) {
