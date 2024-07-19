@@ -66,8 +66,8 @@ int OpenGLShader::build(std::string_view name, std::string_view filename, bool O
     if (tempID) {
         // set var members on first load
         if (reload == false) {
-            ID = tempID;
-            sFilename = filename;
+            _id = tempID;
+            _filename = filename;
         }
         return tempID;
     }
@@ -77,11 +77,11 @@ int OpenGLShader::build(std::string_view name, std::string_view filename, bool O
 }
 
 bool OpenGLShader::reload(std::string_view name, bool OpenGLES) {
-    int tryreload = build(name, sFilename, OpenGLES, true);
+    int tryreload = build(name, _filename, OpenGLES, true);
 
     if (tryreload) {
         reset();
-        ID = tryreload;
+        _id = tryreload;
         return true;
     }
 
@@ -92,27 +92,27 @@ bool OpenGLShader::reload(std::string_view name, bool OpenGLES) {
 int OpenGLShader::uniformLocation(const char *name) {
     assert(isValid());
 
-    return glGetUniformLocation(ID, name);
+    return glGetUniformLocation(_id, name);
 }
 
 int OpenGLShader::attribLocation(const char *name) {
     assert(isValid());
 
-    return glGetAttribLocation(ID, name);
+    return glGetAttribLocation(_id, name);
 }
 
 void OpenGLShader::use() {
     assert(isValid());
 
-    glUseProgram(ID);
+    glUseProgram(_id);
 }
 
 void OpenGLShader::reset() {
-    if (ID == 0)
+    if (_id == 0)
         return;
 
-    glDeleteProgram(ID);
-    ID = 0;
+    glDeleteProgram(_id);
+    _id = 0;
 }
 
 std::string OpenGLShader::shaderTypeToExtension(int type) {

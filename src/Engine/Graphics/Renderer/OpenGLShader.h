@@ -11,7 +11,7 @@ class OpenGLShader {
     OpenGLShader() = default;
 
     [[nodiscard]] bool isValid() const {
-       return ID != 0;
+       return _id != 0;
     }
 
     // TODO(pskelton): consider map for uniform locations
@@ -38,6 +38,6 @@ class OpenGLShader {
     int load(std::string_view name, std::string_view filename, int type, bool OpenGLES, bool nonFatal = false);
 
  private:
-    unsigned ID = 0;
-    std::string sFilename;
+    unsigned _id = 0;
+    std::string _filename;
 };
