@@ -47,7 +47,7 @@ var searchData=
   ['can_5fbe_5fdiscarded_44',['can_be_discarded',['../structArcomageCard.html#ac0af23c598dd622f555454ec1397a54f',1,'ArcomageCard']]],
   ['can_5fdraw_5fextra_5fcard2_45',['can_draw_extra_card2',['../structArcomageCard.html#abf24d4549f09da9c3635cd2af5df5ac2',1,'ArcomageCard']]],
   ['can_5fshow_5fnpc_5fdialogue_46',['can_show_npc_dialogue',['../classEventIR.html#a2c3e071a165fef9048682ade27d89c33',1,'EventIR']]],
-  ['canact_47',['CanAct',['../classActor.html#a77ae756013f17fc041403c5a03e67e56',1,'Actor::CanAct()'],['../classCharacter.html#a5aecef78dd9c904fb44d421601e1a4f1',1,'Character::CanAct()']]],
+  ['canact_47',['CanAct',['../classActor.html#a683955d8696ef8716878f8f1368bd4ac',1,'Actor::CanAct()'],['../classCharacter.html#a5aecef78dd9c904fb44d421601e1a4f1',1,'Character::CanAct()']]],
   ['canactcount_48',['canActCount',['../structParty.html#a13e8874dfb7d2bf6b978c708cce623a1',1,'Party']]],
   ['canary_49',['Canary',['../classColorTable.html#adc93e91346caf1934e5165ef4a8a821a',1,'ColorTable']]],
   ['cancardbeplayed_50',['CanCardBePlayed',['../Arcomage_8cpp.html#a97980666b4d687bf9dfa7bc407bfb70d',1,'Arcomage.cpp']]],
