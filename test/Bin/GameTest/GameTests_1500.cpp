@@ -324,6 +324,20 @@ GAME_TEST(Issues, Issue1717) {
     EXPECT_TRUE(statusBar.contains("Immolation deals 77 damage to 2 target(s)"));
 }
 
+GAME_TEST(Issues, Issue1724) {
+    // Enemies killed by immolation in turn based mode come back alive
+    auto statusBar = tapes.statusBar();
+    auto partyXP = tapes.totalExperience();
+    auto tbState = tapes.turnBasedMode();
+    auto zombieActor = tapes.custom([]() {return std::ranges::count_if(pActors, [](const Actor &act) { return (act.currentHP < 1) && act.CanAct(); }); } );
+    test.playTraceFromTestData("issue_1724.mm7", "issue_1724.json");
+
+     EXPECT_GT(statusBar.filtered([](const auto &s) { return s.starts_with("Immolation deals"); }).size(), 0);// test for immolation message
+    EXPECT_GT(partyXP.back(), partyXP.front());
+    EXPECT_EQ(tbState.back(), true);
+    EXPECT_EQ(zombieActor.max(), 0);
+}
+
 GAME_TEST(Issues, Issue1725) {
     // Finishing Strike the Devils quest on dark path glitches out game menus
     auto screenTape = tapes.screen();
@@ -332,7 +346,7 @@ GAME_TEST(Issues, Issue1725) {
     auto bit123Tape = tapes.questBit(QBIT_123);
     test.playTraceFromTestData("issue_1725.mm7", "issue_1725.json");
     EXPECT_EQ(screenTape.back(), SCREEN_HOUSE); // Make sure we end up back in the throne room
-    EXPECT_GT(textTape.flattened().filtered([](const auto& s) { return s.starts_with("THAT WAS AWESOME!"); }).size(), 0);
+    EXPECT_GT(textTape.flattened().filtered([](const auto &s) { return s.starts_with("THAT WAS AWESOME!"); }).size(), 0);
     EXPECT_TRUE(textTape.flattened().contains("Exit Building")); // And can exit it
     EXPECT_EQ(bit120Tape, tape(false, true));
     EXPECT_EQ(bit123Tape, tape(true, false));
@@ -342,7 +356,7 @@ GAME_TEST(Issues, Issue1726) {
     // Blaster trainers do not check requirements and crash the game
     auto textTape = tapes.allGUIWindowsText();
     test.playTraceFromTestData("issue_1726.mm7", "issue_1726.json");
-    int GMcount = std::ranges::count_if(pParty->pCharacters, [](const Character& ch) {return ch.getActualSkillValue(CHARACTER_SKILL_BLASTER).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER; });
+    int GMcount = std::ranges::count_if(pParty->pCharacters, [](const Character &ch) { return ch.getActualSkillValue(CHARACTER_SKILL_BLASTER).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER; });
     EXPECT_EQ(GMcount, 0); // no one ends up grand master
     EXPECT_GT(textTape.flattened().filtered([](const auto& s) { return s.starts_with("Your skills improve!  If your Skill with the Blaster"); }).size(), 0); // blaster requirements shown
     EXPECT_TRUE(textTape.flattened().contains("You don't meet the requirements, and cannot be taught until you do.")); // but we dont meet them

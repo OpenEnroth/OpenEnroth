@@ -170,7 +170,7 @@ void Actor::giveItem(signed int uActorID, ItemId uItemID, unsigned int bGive) {
 }
 
 //----- (0040894B) --------------------------------------------------------
-bool Actor::CanAct() {
+bool Actor::CanAct() const {
     bool stoned = this->buffs[ACTOR_BUFF_STONED].Active();
     bool paralyzed = this->buffs[ACTOR_BUFF_PARALYZED].Active();
     return !(stoned || paralyzed || this->aiState == Dying ||

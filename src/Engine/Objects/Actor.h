@@ -61,7 +61,7 @@ class Actor {
     void UpdateAnimation();
     MonsterHostility GetActorsRelation(Actor *a2);
     void SetRandomGoldIfTheresNoItem();
-    bool CanAct();
+    bool CanAct() const;
     bool IsNotAlive();
     bool IsPeasant();
 
