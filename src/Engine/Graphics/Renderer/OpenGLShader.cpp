@@ -1,5 +1,6 @@
 #include "OpenGLShader.h"
 
+#include <cassert>
 #include <string>
 
 #include <glad/gl.h> // NOLINT: this is not a C system include.
@@ -65,8 +66,8 @@ int OpenGLShader::build(std::string_view name, std::string_view filename, bool O
     if (tempID) {
         // set var members on first load
         if (reload == false) {
-            ID = tempID;
-            sFilename = filename;
+            _id = tempID;
+            _filename = filename;
         }
         return tempID;
     }
@@ -76,11 +77,11 @@ int OpenGLShader::build(std::string_view name, std::string_view filename, bool O
 }
 
 bool OpenGLShader::reload(std::string_view name, bool OpenGLES) {
-    int tryreload = build(name, sFilename, OpenGLES, true);
+    int tryreload = build(name, _filename, OpenGLES, true);
 
     if (tryreload) {
-        glDeleteProgram(ID);
-        ID = tryreload;
+        reset();
+        _id = tryreload;
         return true;
     }
 
@@ -88,8 +89,30 @@ bool OpenGLShader::reload(std::string_view name, bool OpenGLES) {
     return false;
 }
 
+int OpenGLShader::uniformLocation(const char *name) {
+    assert(isValid());
+
+    return glGetUniformLocation(_id, name);
+}
+
+int OpenGLShader::attribLocation(const char *name) {
+    assert(isValid());
+
+    return glGetAttribLocation(_id, name);
+}
+
 void OpenGLShader::use() {
-    glUseProgram(ID);
+    assert(isValid());
+
+    glUseProgram(_id);
+}
+
+void OpenGLShader::reset() {
+    if (_id == 0)
+        return;
+
+    glDeleteProgram(_id);
+    _id = 0;
 }
 
 std::string OpenGLShader::shaderTypeToExtension(int type) {

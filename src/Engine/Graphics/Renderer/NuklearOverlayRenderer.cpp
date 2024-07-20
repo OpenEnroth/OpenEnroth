@@ -73,17 +73,17 @@ void NuklearOverlayRenderer::_initialize(nk_context *context) {
 
 bool NuklearOverlayRenderer::_createDevice() {
     _shader.build("nuklear", "glnuklear", _useOGLES);
-    if (_shader.ID == 0) {
+    if (!_shader.isValid()) {
         logger->warning("Nuklear shader failed to compile!");
         return false;
     }
 
     nk_buffer_init_default(&_state->dev.cmds);
-    _state->dev.uniform_tex = glGetUniformLocation(_shader.ID, "Texture");
-    _state->dev.uniform_proj = glGetUniformLocation(_shader.ID, "ProjMtx");
-    _state->dev.attrib_pos = glGetAttribLocation(_shader.ID, "Position");
-    _state->dev.attrib_uv = glGetAttribLocation(_shader.ID, "TexCoord");
-    _state->dev.attrib_col = glGetAttribLocation(_shader.ID, "Color");
+    _state->dev.uniform_tex = _shader.uniformLocation("Texture");
+    _state->dev.uniform_proj = _shader.uniformLocation("ProjMtx");
+    _state->dev.attrib_pos = _shader.attribLocation("Position");
+    _state->dev.attrib_uv = _shader.attribLocation("TexCoord");
+    _state->dev.attrib_col = _shader.attribLocation("Color");
     {
         GLsizei vs = sizeof(struct nk_vertex);
         size_t vp = offsetof(struct nk_vertex, position);
@@ -165,7 +165,7 @@ void NuklearOverlayRenderer::_cleanup() {
 
         nk_font_atlas_clear(&_state->dev.atlas);
 
-        glDeleteProgram(_shader.ID);
+        _shader.reset();
         glDeleteBuffers(1, &_state->dev.vbo);
         glDeleteBuffers(1, &_state->dev.ebo);
         glDeleteVertexArrays(1, &_state->dev.vao);
@@ -214,7 +214,7 @@ void NuklearOverlayRenderer::render(nk_context *context, const Sizei &outputPres
     glActiveTexture(GL_TEXTURE0);
 
     /* setup program */
-    glUseProgram(_shader.ID);
+    _shader.use();
     glUniform1i(_state->dev.uniform_tex, 0);
     glUniformMatrix4fv(_state->dev.uniform_proj, 1, GL_FALSE, &ortho[0][0]);
     {
@@ -293,17 +293,17 @@ void NuklearOverlayRenderer::render(nk_context *context, const Sizei &outputPres
 }
 
 void NuklearOverlayRenderer::reloadShaders(bool useOGLES) {
-    if (_shader.ID != 0) {
+    if (_shader.isValid()) {
         std::string name = "Nuklear";
         std::string message = "shader failed to reload!\nPlease consult the log and issue a bug report!";
         if (!_shader.reload(name, useOGLES)) {
             logger->warning("{} {}", name, message);
         } else {
-            _state->dev.uniform_tex = glGetUniformLocation(_shader.ID, "Texture");
-            _state->dev.uniform_proj = glGetUniformLocation(_shader.ID, "ProjMtx");
-            _state->dev.attrib_pos = glGetAttribLocation(_shader.ID, "Position");
-            _state->dev.attrib_uv = glGetAttribLocation(_shader.ID, "TexCoord");
-            _state->dev.attrib_col = glGetAttribLocation(_shader.ID, "Color");
+            _state->dev.uniform_tex = _shader.uniformLocation("Texture");
+            _state->dev.uniform_proj = _shader.uniformLocation("ProjMtx");
+            _state->dev.attrib_pos = _shader.attribLocation("Position");
+            _state->dev.attrib_uv = _shader.attribLocation("TexCoord");
+            _state->dev.attrib_col = _shader.attribLocation("Color");
         }
     }
 }

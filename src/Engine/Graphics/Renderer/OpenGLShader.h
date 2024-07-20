@@ -8,13 +8,11 @@
 
 class OpenGLShader {
  public:
-    unsigned int ID{};
+    OpenGLShader() = default;
 
-    OpenGLShader() {
-        ID = 0;
+    [[nodiscard]] bool isValid() const {
+       return _id != 0;
     }
-
-    std::string sFilename{};
 
     // TODO(pskelton): consider map for uniform locations
 
@@ -22,8 +20,13 @@ class OpenGLShader {
 
     bool reload(std::string_view name, bool OpenGLES);
 
+    int uniformLocation(const char *name);
+    int attribLocation(const char *name);
+
     // activate the shader
     void use();
+
+    void reset();
 
  private:
     static std::string shaderTypeToExtension(int type);
@@ -33,4 +36,8 @@ class OpenGLShader {
     bool checkCompileErrors(int shader, std::string_view name, std::string_view type);
 
     int load(std::string_view name, std::string_view filename, int type, bool OpenGLES, bool nonFatal = false);
+
+ private:
+    unsigned _id = 0;
+    std::string _filename;
 };
