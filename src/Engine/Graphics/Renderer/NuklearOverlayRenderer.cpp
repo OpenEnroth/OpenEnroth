@@ -87,13 +87,13 @@ bool NuklearOverlayRenderer::_createDevice() {
         glBindBuffer(GL_ARRAY_BUFFER, _state->dev.vbo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _state->dev.ebo);
 
-        glEnableVertexAttribArray((GLuint)attrib_pos);
-        glEnableVertexAttribArray((GLuint)attrib_uv);
-        glEnableVertexAttribArray((GLuint)attrib_col);
+        glEnableVertexAttribArray((GLuint)_attribPos);
+        glEnableVertexAttribArray((GLuint)_attribUv);
+        glEnableVertexAttribArray((GLuint)_attribCol);
 
-        glVertexAttribPointer((GLuint)attrib_pos, 2, GL_FLOAT, GL_FALSE, vs, (void *)vp);
-        glVertexAttribPointer((GLuint)attrib_uv, 2, GL_FLOAT, GL_FALSE, vs, (void *)vt);
-        glVertexAttribPointer((GLuint)attrib_col, 4, GL_UNSIGNED_BYTE, GL_TRUE, vs, (void *)vc);
+        glVertexAttribPointer((GLuint)_attribPos, 2, GL_FLOAT, GL_FALSE, vs, (void *)vp);
+        glVertexAttribPointer((GLuint)_attribUv, 2, GL_FLOAT, GL_FALSE, vs, (void *)vt);
+        glVertexAttribPointer((GLuint)_attribCol, 4, GL_UNSIGNED_BYTE, GL_TRUE, vs, (void *)vc);
     }
 
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -204,8 +204,8 @@ void NuklearOverlayRenderer::render(nk_context *context, const Sizei &outputPres
 
     /* setup program */
     _shader.use();
-    glUniform1i(uniform_tex, 0);
-    glUniformMatrix4fv(uniform_proj, 1, GL_FALSE, &ortho[0][0]);
+    glUniform1i(_uniformTex, 0);
+    glUniformMatrix4fv(_uniformProj, 1, GL_FALSE, &ortho[0][0]);
     {
         /* convert from command queue into draw list and draw to screen */
         const struct nk_draw_command *cmd;
@@ -283,10 +283,10 @@ void NuklearOverlayRenderer::render(nk_context *context, const Sizei &outputPres
 
 void NuklearOverlayRenderer::reloadShaders(bool useOGLES) {
     if (_shader.load(makeDataPath("shaders", "glnuklear.vert"), makeDataPath("shaders", "glnuklear.frag"), useOGLES)) {
-        uniform_tex = _shader.uniformLocation("Texture");
-        uniform_proj = _shader.uniformLocation("ProjMtx");
-        attrib_pos = _shader.attribLocation("Position");
-        attrib_uv = _shader.attribLocation("TexCoord");
-        attrib_col = _shader.attribLocation("Color");
+        _uniformTex = _shader.uniformLocation("Texture");
+        _uniformProj = _shader.uniformLocation("ProjMtx");
+        _attribPos = _shader.attribLocation("Position");
+        _attribUv = _shader.attribLocation("TexCoord");
+        _attribCol = _shader.attribLocation("Color");
     }
 }

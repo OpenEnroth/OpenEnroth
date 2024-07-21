@@ -4766,12 +4766,6 @@ void OpenGLRenderer::FillRectFast(unsigned int uX, unsigned int uY, unsigned int
     return;
 }
 
-// gl shaders
-bool OpenGLRenderer::InitShaders() {
-    ReloadShaders();
-    return true;
-}
-
 bool OpenGLRenderer::Reinitialize(bool firstInit) {
     BaseRenderer::Reinitialize(firstInit);
 
@@ -4854,7 +4848,8 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
 
     if (firstInit) {
         // initiate shaders
-        InitShaders();
+        if (!ReloadShaders())
+            return false;
     } // else {
 
     if (config->window.ReloadTex.value()) {
@@ -4872,7 +4867,7 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
     return BaseRenderer::Reinitialize(firstInit);
 }
 
-void OpenGLRenderer::ReloadShaders() {
+bool OpenGLRenderer::ReloadShaders() {
     logger->info("Reloading shaders...");
     glUseProgram(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -4969,10 +4964,12 @@ void OpenGLRenderer::ReloadShaders() {
         if (!shader->load(makeDataPath("shaders", fmt::format("{}.vert", fileName)), makeDataPath("shaders", fmt::format("{}.frag", fileName)), OpenGLES)) {
             platform->showMessageBox("CRITICAL ERROR: shader compilation failure",
                                      fmt::format("{} shader failed to compile!\nPlease consult the log and consider issuing a bug report!", readableName));
+            return false;
         }
     }
 
     logger->info("Shaders reloaded.");
+    return true;
 }
 
 void OpenGLRenderer::beginOverlays() {
