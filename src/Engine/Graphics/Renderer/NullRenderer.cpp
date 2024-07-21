@@ -136,7 +136,7 @@ void NullRenderer::ReleaseBSP() {}
 
 void NullRenderer::DrawTwodVerts() {}
 
-void NullRenderer::ReloadShaders() {}
+bool NullRenderer::ReloadShaders() { return true; }
 
 void NullRenderer::DoRenderBillboards_D3D() {}
 

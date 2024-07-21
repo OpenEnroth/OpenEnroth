@@ -31,5 +31,10 @@ class NuklearOverlayRenderer {
     std::unique_ptr<nk_state> _state;
     bool _useOGLES = false;
     OpenGLShader _shader;
+    int32_t _attribPos = 0;
+    int32_t _attribUv = 0;
+    int32_t _attribCol = 0;
+    int32_t _uniformTex = 0;
+    int32_t _uniformProj = 0;
     nk_tex_font *_defaultFont = nullptr;
 };
