@@ -10,6 +10,7 @@
 
 #include "Library/Logger/Logger.h"
 #include "Engine/Graphics/Image.h"
+#include "Utility/DataPath.h"
 
 struct nk_vertex {
     float position[2]{};
@@ -22,11 +23,6 @@ struct nk_device {
     struct nk_draw_null_texture null;
     struct nk_font_atlas atlas;
     uint32_t vbo{}, vao{}, ebo{};
-    int32_t attrib_pos{};
-    int32_t attrib_uv{};
-    int32_t attrib_col{};
-    int32_t uniform_tex{};
-    int32_t uniform_proj{};
 };
 
 struct nk_state {
@@ -72,18 +68,11 @@ void NuklearOverlayRenderer::_initialize(nk_context *context) {
 }
 
 bool NuklearOverlayRenderer::_createDevice() {
-    _shader.build("nuklear", "glnuklear", _useOGLES);
-    if (!_shader.isValid()) {
-        logger->warning("Nuklear shader failed to compile!");
+    reloadShaders(_useOGLES);
+    if (!_shader.isValid())
         return false;
-    }
 
     nk_buffer_init_default(&_state->dev.cmds);
-    _state->dev.uniform_tex = _shader.uniformLocation("Texture");
-    _state->dev.uniform_proj = _shader.uniformLocation("ProjMtx");
-    _state->dev.attrib_pos = _shader.attribLocation("Position");
-    _state->dev.attrib_uv = _shader.attribLocation("TexCoord");
-    _state->dev.attrib_col = _shader.attribLocation("Color");
     {
         GLsizei vs = sizeof(struct nk_vertex);
         size_t vp = offsetof(struct nk_vertex, position);
@@ -98,13 +87,13 @@ bool NuklearOverlayRenderer::_createDevice() {
         glBindBuffer(GL_ARRAY_BUFFER, _state->dev.vbo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _state->dev.ebo);
 
-        glEnableVertexAttribArray((GLuint)_state->dev.attrib_pos);
-        glEnableVertexAttribArray((GLuint)_state->dev.attrib_uv);
-        glEnableVertexAttribArray((GLuint)_state->dev.attrib_col);
+        glEnableVertexAttribArray((GLuint)attrib_pos);
+        glEnableVertexAttribArray((GLuint)attrib_uv);
+        glEnableVertexAttribArray((GLuint)attrib_col);
 
-        glVertexAttribPointer((GLuint)_state->dev.attrib_pos, 2, GL_FLOAT, GL_FALSE, vs, (void *)vp);
-        glVertexAttribPointer((GLuint)_state->dev.attrib_uv, 2, GL_FLOAT, GL_FALSE, vs, (void *)vt);
-        glVertexAttribPointer((GLuint)_state->dev.attrib_col, 4, GL_UNSIGNED_BYTE, GL_TRUE, vs, (void *)vc);
+        glVertexAttribPointer((GLuint)attrib_pos, 2, GL_FLOAT, GL_FALSE, vs, (void *)vp);
+        glVertexAttribPointer((GLuint)attrib_uv, 2, GL_FLOAT, GL_FALSE, vs, (void *)vt);
+        glVertexAttribPointer((GLuint)attrib_col, 4, GL_UNSIGNED_BYTE, GL_TRUE, vs, (void *)vc);
     }
 
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -165,7 +154,7 @@ void NuklearOverlayRenderer::_cleanup() {
 
         nk_font_atlas_clear(&_state->dev.atlas);
 
-        _shader.reset();
+        _shader.release();
         glDeleteBuffers(1, &_state->dev.vbo);
         glDeleteBuffers(1, &_state->dev.ebo);
         glDeleteVertexArrays(1, &_state->dev.vao);
@@ -215,8 +204,8 @@ void NuklearOverlayRenderer::render(nk_context *context, const Sizei &outputPres
 
     /* setup program */
     _shader.use();
-    glUniform1i(_state->dev.uniform_tex, 0);
-    glUniformMatrix4fv(_state->dev.uniform_proj, 1, GL_FALSE, &ortho[0][0]);
+    glUniform1i(uniform_tex, 0);
+    glUniformMatrix4fv(uniform_proj, 1, GL_FALSE, &ortho[0][0]);
     {
         /* convert from command queue into draw list and draw to screen */
         const struct nk_draw_command *cmd;
@@ -293,17 +282,11 @@ void NuklearOverlayRenderer::render(nk_context *context, const Sizei &outputPres
 }
 
 void NuklearOverlayRenderer::reloadShaders(bool useOGLES) {
-    if (_shader.isValid()) {
-        std::string name = "Nuklear";
-        std::string message = "shader failed to reload!\nPlease consult the log and issue a bug report!";
-        if (!_shader.reload(name, useOGLES)) {
-            logger->warning("{} {}", name, message);
-        } else {
-            _state->dev.uniform_tex = _shader.uniformLocation("Texture");
-            _state->dev.uniform_proj = _shader.uniformLocation("ProjMtx");
-            _state->dev.attrib_pos = _shader.attribLocation("Position");
-            _state->dev.attrib_uv = _shader.attribLocation("TexCoord");
-            _state->dev.attrib_col = _shader.attribLocation("Color");
-        }
+    if (_shader.load(makeDataPath("shaders", "glnuklear.vert"), makeDataPath("shaders", "glnuklear.frag"), useOGLES)) {
+        uniform_tex = _shader.uniformLocation("Texture");
+        uniform_proj = _shader.uniformLocation("ProjMtx");
+        attrib_pos = _shader.attribLocation("Position");
+        attrib_uv = _shader.attribLocation("TexCoord");
+        attrib_col = _shader.attribLocation("Color");
     }
 }

@@ -5,6 +5,7 @@
 #include <utility>
 #include <map>
 #include <string>
+#include <tuple>
 
 #include <glad/gl.h> // NOLINT: not a C system header.
 
@@ -51,6 +52,7 @@
 
 #include "NuklearOverlayRenderer.h"
 #include "OpenGLShader.h"
+#include "Utility/DataPath.h"
 
 #ifndef LOWORD
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
@@ -4766,81 +4768,7 @@ void OpenGLRenderer::FillRectFast(unsigned int uX, unsigned int uY, unsigned int
 
 // gl shaders
 bool OpenGLRenderer::InitShaders() {
-    logger->info("initialising OpenGL shaders...");
-
-    std::string title = "CRITICAL ERROR: shader compilation failure";
-    std::string name = "Terrain";
-    std::string message = "shader failed to compile!\nPlease consult the log and consider issuing a bug report!";
-    terrainshader.build(name, "glterrain", OpenGLES);
-    if (!terrainshader.isValid()) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-
-    name = "Outdoor buildings";
-    outbuildshader.build(name, "gloutbuild", OpenGLES);
-    if (!outbuildshader.isValid()) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-
-    name = "Indoor BSP";
-    bspshader.build(name, "glbspshader", OpenGLES);
-    if (!bspshader.isValid()) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-
-    name = "Text";
-    textshader.build(name, "gltextshader", OpenGLES);
-    if (!textshader.isValid()) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-    textVAO = 0;
-
-    name = "Lines";
-    lineshader.build(name, "gllinesshader", OpenGLES);
-    if (!lineshader.isValid()) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-    lineVAO = 0;
-
-    name = "2D";
-    twodshader.build(name, "gltwodshader", OpenGLES);
-    if (!twodshader.isValid()) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-    twodVAO = 0;
-
-    name = "Billboards";
-    billbshader.build(name, "glbillbshader", OpenGLES);
-    if (!billbshader.isValid()) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-    billbVAO = 0;
-    palbuf = 0;
-
-    name = "Decals";
-    decalshader.build(name, "gldecalshader", OpenGLES);
-    if (!decalshader.isValid()) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-    decalVAO = 0;
-
-    name = "Forced perspective";
-    forcepershader.build(name, "glforcepershader", OpenGLES);
-    if (!forcepershader.isValid()) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-    forceperVAO = 0;
-
-    logger->info("shaders have been compiled successfully!");
+    ReloadShaders();
     return true;
 }
 
@@ -4926,10 +4854,7 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
 
     if (firstInit) {
         // initiate shaders
-        if (!InitShaders()) {
-            logger->warning("shader initialisation has failed!");
-            return false;
-        }
+        InitShaders();
     } // else {
 
     if (config->window.ReloadTex.value()) {
@@ -4948,79 +4873,106 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
 }
 
 void OpenGLRenderer::ReloadShaders() {
-    logger->info("reloading Shaders...");
+    logger->info("Reloading shaders...");
     glUseProgram(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    std::string name = "Terrain";
-    std::string message = "shader failed to reload!\nPlease consult the log and issue a bug report!";
-    if (!terrainshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
-    name = "Outdoor buildings";
-    if (!outbuildshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
     ReleaseTerrain();
-
-    name = "Indoor BSP";
-    if (!bspshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
     ReleaseBSP();
 
-    name = "Text";
-    if (!textshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
-    glDeleteVertexArrays(1, &textVAO);
-    glDeleteBuffers(1, &textVBO);
-    textVAO = textVBO = 0;
+    if (textVAO) {
+        glDeleteVertexArrays(1, &textVAO);
+        textVAO = 0;
+    }
+    if (textVBO) {
+        glDeleteBuffers(1, &textVBO);
+        textVBO = 0;
+    }
     textvertscnt = 0;
 
-    name = "Lines";
-    if (!lineshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
-    glDeleteVertexArrays(1, &lineVAO);
-    glDeleteBuffers(1, &lineVBO);
-    lineVAO = lineVBO = 0;
+    if (lineVAO) {
+        glDeleteVertexArrays(1, &lineVAO);
+        lineVAO = 0;
+    }
+    if (lineVBO) {
+        glDeleteBuffers(1, &lineVBO);
+        lineVBO = 0;
+    }
     linevertscnt = 0;
 
-    name = "2D";
-    if (!twodshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
-    glDeleteVertexArrays(1, &twodVAO);
-    glDeleteBuffers(1, &twodVBO);
-    twodVAO = twodVBO = 0;
+    if (twodVAO) {
+        glDeleteVertexArrays(1, &twodVAO);
+        twodVAO = 0;
+    }
+    if (twodVBO) {
+        glDeleteBuffers(1, &twodVBO);
+        twodVBO = 0;
+    }
     twodvertscnt = 0;
 
-    name = "Billboards";
-    if (!billbshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
-    glDeleteVertexArrays(1, &billbVAO);
-    glDeleteBuffers(1, &billbVBO);
-    billbVAO = billbVBO = 0;
-    glDeleteTextures(1, &paltex);
-    glDeleteBuffers(1, &palbuf);
-    paltex = palbuf = 0;
+    if (billbVAO) {
+        glDeleteVertexArrays(1, &billbVAO);
+        billbVAO = 0;
+    }
+    if (billbVBO) {
+        glDeleteBuffers(1, &billbVBO);
+        billbVBO = 0;
+    }
+    if (paltex) {
+        glDeleteTextures(1, &paltex);
+        paltex = 0;
+    }
+    if (palbuf) {
+        glDeleteBuffers(1, &palbuf);
+        palbuf = 0;
+    }
     billbstorecnt = 0;
 
-    name = "Decals";
-    if (!decalshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
-    glDeleteVertexArrays(1, &decalVAO);
-    glDeleteBuffers(1, &decalVBO);
-    decalVAO = decalVBO = 0;
+    if (decalVAO) {
+        glDeleteVertexArrays(1, &decalVAO);
+        decalVAO = 0;
+    }
+    if (decalVBO) {
+        glDeleteBuffers(1, &decalVBO);
+        decalVBO = 0;
+    }
     numdecalverts = 0;
 
-    name = "Forced perspective";
-    if (!forcepershader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
-    glDeleteVertexArrays(1, &forceperVAO);
-    glDeleteBuffers(1, &forceperVBO);
-    forceperVAO = forceperVBO = 0;
+    if (forceperVAO) {
+        glDeleteVertexArrays(1, &forceperVAO);
+        forceperVAO = 0;
+    }
+    if (forceperVBO) {
+        glDeleteBuffers(1, &forceperVBO);
+        forceperVBO = 0;
+    }
     forceperstorecnt = 0;
 
     if (_overlayRenderer) {
         _overlayRenderer->reloadShaders(OpenGLES);
     }
+
+    const std::initializer_list<std::tuple<OpenGLShader *, std::string_view, std::string_view>> shaders = {
+        {&terrainshader,    "glterrain",        "Terrain"},
+        {&outbuildshader,   "gloutbuild",       "Outdoor buildings"},
+        {&bspshader,        "glbspshader",      "Indoor BSP"},
+        {&textshader,       "gltextshader",     "Text"},
+        {&lineshader,       "gllinesshader",    "Lines"},
+        {&twodshader,       "gltwodshader",     "2D"},
+        {&billbshader,      "glbillbshader",    "Billboards"},
+        {&decalshader,      "gldecalshader",    "Decals"},
+        {&forcepershader,   "glforcepershader", "Forced perspective"}
+    };
+
+    for (const auto &[shader, fileName, readableName] : shaders) {
+        if (!shader->load(makeDataPath("shaders", fmt::format("{}.vert", fileName)), makeDataPath("shaders", fmt::format("{}.frag", fileName)), OpenGLES)) {
+            platform->showMessageBox("CRITICAL ERROR: shader compilation failure",
+                                     fmt::format("{} shader failed to compile!\nPlease consult the log and consider issuing a bug report!", readableName));
+        }
+    }
+
+    logger->info("Shaders reloaded.");
 }
 
 void OpenGLRenderer::beginOverlays() {
