@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Utility/Memory/Blob.h"
+
 /**
  * Class for loading in and building gl shaders.
  *
@@ -18,6 +20,7 @@ class OpenGLShader {
     }
 
     [[nodiscard]] bool load(std::string_view vertPath, std::string_view fragPath, bool openGLES);
+    [[nodiscard]] bool load(const Blob &vertSource, const Blob &fragSource, bool openGLES);
     void release();
 
     [[nodiscard]] int uniformLocation(const char *name);
@@ -26,7 +29,7 @@ class OpenGLShader {
     void use();
 
  private:
-    [[nodiscard]] unsigned loadShader(std::string_view path, int type, bool openGLES);
+    [[nodiscard]] unsigned loadShader(const Blob &source, int type, bool openGLES);
 
  private:
     unsigned _id = 0;

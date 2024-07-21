@@ -38,13 +38,24 @@ OpenGLShader::~OpenGLShader() {
 }
 
 bool OpenGLShader::load(std::string_view vertPath, std::string_view fragPath, bool openGLES) {
-    release();
+    Blob vertSource, fragSource;
+    try {
+        vertSource = Blob::fromFile(vertPath);
+        fragSource = Blob::fromFile(fragPath);
+    } catch (const std::exception &e) {
+        logger->error("Could not read shader source: {}", e.what()); // e.what() will contain file path.
+        return false;
+    }
 
-    GLuint vertex = loadShader(vertPath, GL_VERTEX_SHADER, openGLES);
+    return load(vertSource, fragSource, openGLES);
+}
+
+bool OpenGLShader::load(const Blob &vertSource, const Blob &fragSource, bool openGLES) {
+    GLuint vertex = loadShader(vertSource, GL_VERTEX_SHADER, openGLES);
     if (vertex == 0)
         return false;
 
-    GLuint fragment = loadShader(fragPath, GL_FRAGMENT_SHADER, openGLES);
+    GLuint fragment = loadShader(fragSource, GL_FRAGMENT_SHADER, openGLES);
     if (fragment == 0) {
         glDeleteShader(vertex);
         return false;
@@ -61,7 +72,7 @@ bool OpenGLShader::load(std::string_view vertPath, std::string_view fragPath, bo
 
     std::string errors = compileErrors(result);
     if (!errors.empty()) {
-        logger->error("Could not link shader program ['{}', '{}']:\n{}", vertPath, fragPath, errors);
+        logger->error("Could not link shader program ['{}', '{}']:\n{}", vertSource.displayPath(), fragSource.displayPath(), errors);
         glDeleteProgram(result);
         return false;
     }
@@ -96,31 +107,24 @@ void OpenGLShader::use() {
     glUseProgram(_id);
 }
 
-unsigned OpenGLShader::loadShader(std::string_view path, int type, bool openGLES) {
-    std::string source;
-    try {
-        source = FileInputStream(path).readAll();
-    } catch (const std::exception &e) {
-        logger->error("Could not read shader source: {}", e.what()); // e.what() will contain file path.
-        return 0;
-    }
-
+unsigned OpenGLShader::loadShader(const Blob &source, int type, bool openGLES) {
+    std::string_view version;
     if (!openGLES)
-        source = "#version 410 core\n" + source;
+        version = "#version 410 core\n";
     else
-        source = "#version 320 es\n" + source;
+        version = "#version 320 es\n";
 
     // compile shader
-    const char *sources[1] = {source.data()};
-    const GLint lengths[1] = {static_cast<GLint>(source.size())};
+    const char *sources[2] = {version.data(), static_cast<const char *>(source.data())};
+    const GLint lengths[2] = {static_cast<GLint>(version.size()), static_cast<GLint>(source.size())};
 
     GLuint result = glCreateShader(type);
-    glShaderSource(result, 1, sources, lengths);
+    glShaderSource(result, 2, sources, lengths);
     glCompileShader(result);
 
     std::string errors = compileErrors(result);
     if (!errors.empty()) {
-        logger->error("Could not compile shader '{}':\n{}", path, errors);
+        logger->error("Could not compile shader '{}':\n{}", source.displayPath(), errors);
         glDeleteShader(result);
         return 0;
     }
