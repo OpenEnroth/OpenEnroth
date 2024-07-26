@@ -693,15 +693,15 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         if (type == OBJECT_Face) {
             BLVFace *face = &pIndoor->pFaces[id];
 
-            collision_state.ignored_face_id = collision_state.pid.id();
             if (pIndoor->pFaces[id].uPolygonType == POLYGON_Floor) {
                 if (actor.velocity.z < 0) actor.velocity.z = 0;
-                // actor.pos.z = pIndoor->pVertices[face->pVertexIDs[0]].z + 1;  // testing
+                actor.pos.z = newFloorZ;
                 if (actor.velocity.lengthSqr() < 400) {
                     actor.velocity.x = 0;
                     actor.velocity.y = 0;
                 }
             } else {
+                bool bFaceSlopeTooSteep = face->facePlane.normal.z >= 0.0f && face->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
                 float velocityDotNormal = dot(face->facePlane.normal, actor.velocity);
                 velocityDotNormal = std::max(std::abs(velocityDotNormal), collision_state.speed / 8);
                 actor.velocity += velocityDotNormal * face->facePlane.normal;
@@ -712,7 +712,17 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                         actor.pos += overshoot * pIndoor->pFaces[id].facePlane.normal;
                     actor.yawAngle = TrigLUT.atan2(actor.velocity.x, actor.velocity.y);
                 }
+
+                // Cant push uphill on steep faces
+                if (bFaceSlopeTooSteep && actor.velocity.z > 0)
+                    actor.velocity.z = 0;
+
+                // Push away from the surface and add a touch down for better slide
+                if (bFaceSlopeTooSteep)
+                    actor.velocity += Vec3f(face->facePlane.normal.x, face->facePlane.normal.y, -2) * 10;
+
             }
+
             if (pIndoor->pFaces[id].uAttributes & FACE_TriggerByMonster)
                 eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, Pid(), 1);
         }
