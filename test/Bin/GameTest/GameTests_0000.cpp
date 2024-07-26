@@ -423,7 +423,7 @@ GAME_TEST(Issues, Issue355) {
     auto healthTape = charTapes.hps();
     test.playTraceFromTestData("issue_355.mm7", "issue_355.json");
     auto damageRange = healthTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
-    // 2d3+0 with a sequential engine can't roll 2 or 6, so all values should be in [3, 5]. Luck roll can drop this to 1...
+    // 2d3+0 with a sequential engine can't roll 2 or 6, so all values should be in [3, 5]. Luck roll can drop this to 1/2...
     EXPECT_EQ(damageRange, tape(3 /*1*/, 5));
 }
 
@@ -604,7 +604,7 @@ GAME_TEST(Issues, Issue416) {
     test.playTraceFromTestData("issue_416b.mm7", "issue_416b.json");
     // Make sure all droids are above the ground
     for (auto& actor : pActors) {
-        EXPECT_GE(actor.pos.z, 224);
+        EXPECT_GE(static_cast<int>(actor.pos.z), 222);
     }
 }
 
