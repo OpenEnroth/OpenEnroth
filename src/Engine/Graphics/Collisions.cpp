@@ -826,7 +826,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
             if (!face->Ethereal()) {
                 if (face->uPolygonType == POLYGON_Floor) {
                     if (actor.velocity.z < 0) actor.velocity.z = 0;
-                    //actor.pos.z = pOutdoor->model(collision_state.pid).pVertices[face->pVertexIDs[0]].z + 1; // testing
+                    actor.pos.z = newFloorZ;
                     if (actor.velocity.lengthSqr() < 400) {
                         actor.velocity.y = 0;
                         actor.velocity.x = 0;
