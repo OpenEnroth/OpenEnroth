@@ -365,7 +365,6 @@ void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
 LABEL_25:
         collision_state.check_hi = false;
         collision_state.radius_lo = pObject->uRadius;
-        collision_state.ignored_face_id = -1;
         collision_state.radius_hi = 0;
         collision_state.total_move_distance = 0;
         for (int loop = 0; loop < 100; loop++) {
@@ -441,8 +440,8 @@ LABEL_25:
                 pSpriteObject->vVelocity.x = cos(velXYRot) * velXYLen;
                 pSpriteObject->vVelocity.y = sin(velXYRot) * velXYLen;
             }
+
             if (collision_state.pid.type() == OBJECT_Face) {
-                collision_state.ignored_face_id = collision_state.pid.id();
                 if (pIndoor->pFaces[pidId].uPolygonType != POLYGON_Floor) {
                     // Before this variable changed floor_lvl variable which is obviously invalid.
                     float dotFix = std::abs(dot(pIndoor->pFaces[pidId].facePlane.normal, pSpriteObject->vVelocity));

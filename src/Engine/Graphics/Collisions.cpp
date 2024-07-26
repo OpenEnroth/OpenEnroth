@@ -428,9 +428,6 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
                 continue;
 
             int face_id = pSector->pFloors[j];
-            if (face_id == collision_state.ignored_face_id)
-                continue;
-
             // TODO(pskelton): Modify game data face attribs to ethereal eventually - hack so that secret tunnel under prison bed can be accessed
             if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE)
                 if (face_id == 385 || face_id == 405 || face_id == 4602 || face_id == 4606)
@@ -588,7 +585,6 @@ void CollideWithParty(bool jagged_top) {
 }
 
 void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) {
-    collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.check_hi = true;
     collision_state.radius_hi = actor.radius;
@@ -733,7 +729,6 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
     int actorRadius = !isFlying ? 40 : actor.radius;
 
-    collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.check_hi = true;
     collision_state.radius_hi = actorRadius;
@@ -852,7 +847,6 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *faceId, int *faceEvent) {
     constexpr float closestdist = 0.5f; // Closest allowed approach to collision surface - needs adjusting
 
-    collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius;
@@ -993,7 +987,6 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
     constexpr float closestdist = 0.5f;  // Closest allowed approach to collision surface - needs adjusting
 
     // --(Collisions)-------------------------------------------------------------------
-    collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius;
