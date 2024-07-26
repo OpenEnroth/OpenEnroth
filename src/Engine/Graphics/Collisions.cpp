@@ -720,7 +720,6 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 // Push away from the surface and add a touch down for better slide
                 if (bFaceSlopeTooSteep)
                     actor.velocity += Vec3f(face->facePlane.normal.x, face->facePlane.normal.y, -2) * 10;
-
             }
 
             if (pIndoor->pFaces[id].uAttributes & FACE_TriggerByMonster)
