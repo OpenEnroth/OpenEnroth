@@ -604,7 +604,7 @@ GAME_TEST(Issues, Issue416) {
     test.playTraceFromTestData("issue_416b.mm7", "issue_416b.json");
     // Make sure all droids are above the ground
     for (auto& actor : pActors) {
-        EXPECT_GE(static_cast<int>(actor.pos.z), 222);
+        EXPECT_GE(actor.pos.z, 224);
     }
 }
 
