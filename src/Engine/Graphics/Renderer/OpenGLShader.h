@@ -1,43 +1,36 @@
-// Class for loading in and building gl shaders for use
-// shamelessly stolen from:
-// https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader.h
-
 #pragma once
 
 #include <string>
 
+#include "Utility/Memory/Blob.h"
+
+/**
+ * Class for loading in and building gl shaders.
+ *
+ * Code derived from:
+ * https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader.h
+ */
 class OpenGLShader {
  public:
     OpenGLShader() = default;
+    ~OpenGLShader();
 
     [[nodiscard]] bool isValid() const {
        return _id != 0;
     }
 
-    // TODO(pskelton): consider map for uniform locations
+    [[nodiscard]] bool load(std::string_view vertPath, std::string_view fragPath, bool openGLES);
+    [[nodiscard]] bool load(const Blob &vertSource, const Blob &fragSource, bool openGLES);
+    void release();
 
-    int build(std::string_view name, std::string_view filename, bool OpenGLES = false, bool reload = false);
+    [[nodiscard]] int uniformLocation(const char *name);
+    [[nodiscard]] int attribLocation(const char *name);
 
-    bool reload(std::string_view name, bool OpenGLES);
-
-    int uniformLocation(const char *name);
-    int attribLocation(const char *name);
-
-    // activate the shader
     void use();
 
-    void reset();
-
  private:
-    static std::string shaderTypeToExtension(int type);
-    static std::string shaderTypeToName(int type);
-
-    // utility function for checking shader compilation/linking errors.
-    bool checkCompileErrors(int shader, std::string_view name, std::string_view type);
-
-    int load(std::string_view name, std::string_view filename, int type, bool OpenGLES, bool nonFatal = false);
+    [[nodiscard]] unsigned loadShader(const Blob &source, int type, bool openGLES);
 
  private:
     unsigned _id = 0;
-    std::string _filename;
 };
