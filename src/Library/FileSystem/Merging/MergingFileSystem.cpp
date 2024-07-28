@@ -1,6 +1,5 @@
 #include "MergingFileSystem.h"
 
-#include <cassert>
 #include <utility>
 #include <string>
 #include <vector>
@@ -9,6 +8,7 @@
 #include <tuple>
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
+#include "Library/FileSystem/Null/NullFileSystem.h"
 
 MergingFileSystem::MergingFileSystem(std::vector<const FileSystem *> bases) {
     _bases = std::move(bases);
@@ -71,10 +71,29 @@ std::unique_ptr<InputStream> MergingFileSystem::_openForReading(const FileSystem
     return locateForReading(path)->openForReading(path);
 }
 
+std::string MergingFileSystem::_displayPath(const FileSystemPath &path) const {
+    if (_bases.empty())
+        return NullFileSystem().displayPath(path); // Empty merging FS is basically a NullFileSystem.
+
+    const FileSystem *base = locateForReadingOrNull(path);
+    // TODO(captainurist): This is not ideal, we might want to know ALL merged paths, e.g. see
+    //                     ScriptingSystem::_initPackageTable. But the API that we have here doesn't allow that.
+    if (!base)
+        base = _bases[0];
+    return base->displayPath(path);
+}
+
 const FileSystem *MergingFileSystem::locateForReading(const FileSystemPath &path) const {
+    const FileSystem *result = locateForReadingOrNull(path);
+    if (result == nullptr)
+        throw FileSystemException(FileSystemException::READ_FAILED_PATH_DOESNT_EXIST, path);
+    return result;
+}
+
+const FileSystem *MergingFileSystem::locateForReadingOrNull(const FileSystemPath &path) const {
     for (const FileSystem *base : _bases)
         if (base->stat(path).type == FILE_REGULAR)
             return base;
 
-    throw FileSystemException(FileSystemException::READ_FAILED_PATH_DOESNT_EXIST, path);
+    return nullptr;
 }

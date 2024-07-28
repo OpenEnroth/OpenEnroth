@@ -6,7 +6,7 @@
 #include <memory>
 #include <tuple>
 
-#include "Library/FileSystem/Interface/ReadOnlyFileSystem.h"
+#include "Library/FileSystem/Interface/FileSystem.h"
 #include "Library/FileSystem/Trie/FileSystemTrie.h"
 
 /**
@@ -46,6 +46,7 @@ class LowercaseFileSystem : public FileSystem {
     virtual std::unique_ptr<OutputStream> _openForWriting(const FileSystemPath &path) override;
     virtual void _rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath) override;
     virtual bool _remove(const FileSystemPath &path) override;
+    virtual std::string _displayPath(const FileSystemPath &path) const override;
 
  private:
     using Node = FileSystemTrieNode<std::string>;

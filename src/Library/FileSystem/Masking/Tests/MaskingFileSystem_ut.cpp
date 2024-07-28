@@ -6,7 +6,7 @@
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 
 UNIT_TEST(MaskingFileSystem, SimpleMasks) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("a/b/c/d", Blob());
     fs0.write("a/b/c/e", Blob());
     fs0.write("a/b/1/d", Blob());
@@ -45,7 +45,7 @@ UNIT_TEST(MaskingFileSystem, SimpleMasks) {
 }
 
 UNIT_TEST(MaskingFileSystem, PersistentMasking) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     MaskingFileSystem fs1(&fs0);
 
     fs1.mask("a");

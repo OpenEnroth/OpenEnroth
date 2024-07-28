@@ -3,6 +3,7 @@
 #include <cassert>
 #include <vector>
 #include <memory>
+#include <string>
 
 #include "FileSystemPath.h"
 
@@ -100,6 +101,14 @@ bool FileSystem::remove(const FileSystemPath &path) {
     if (path.isEmpty())
         throw FileSystemException(FileSystemException::REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
     return _remove(path);
+}
+
+std::string FileSystem::displayPath(std::string_view path) const {
+    return displayPath(FileSystemPath(path));
+}
+
+std::string FileSystem::displayPath(const FileSystemPath &path) const {
+    return _displayPath(path);
 }
 
 void FileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath) {

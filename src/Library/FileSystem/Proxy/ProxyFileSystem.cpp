@@ -3,6 +3,7 @@
 #include <cassert>
 #include <vector>
 #include <memory>
+#include <string>
 
 bool ProxyFileSystem::_exists(const FileSystemPath &path) const {
     return nonNullBase()->_exists(path);
@@ -40,6 +41,9 @@ bool ProxyFileSystem::_remove(const FileSystemPath &path) {
     return nonNullBase()->_remove(path);
 }
 
+std::string ProxyFileSystem::_displayPath(const FileSystemPath &path) const {
+    return nonNullBase()->_displayPath(path);
+}
 
 FileSystem *ProxyFileSystem::nonNullBase() const {
     assert(_base);

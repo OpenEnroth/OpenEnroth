@@ -145,6 +145,9 @@ class FileSystem {
     bool remove(std::string_view path);
     bool remove(const FileSystemPath &path);
 
+    [[nodiscard]] std::string displayPath(std::string_view path) const;
+    [[nodiscard]] std::string displayPath(const FileSystemPath &path) const;
+
  protected:
     template<class T>
     using FileSystemTrieNode = detail::FileSystemTrieNode<T>;
@@ -163,6 +166,7 @@ class FileSystem {
     [[nodiscard]] virtual std::unique_ptr<OutputStream> _openForWriting(const FileSystemPath &path) = 0;
     virtual void _rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath);
     virtual bool _remove(const FileSystemPath &path) = 0;
+    [[nodiscard]] virtual std::string _displayPath(const FileSystemPath &path) const = 0;
 };
 
 
