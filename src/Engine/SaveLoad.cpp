@@ -154,21 +154,6 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path,
 
     std::string currentMapName = pMapStats->pInfos[engine->_currentLoadedMapId].fileName;
 
-    // TODO(captainurist): why do we need to save & restore party position in this function?
-    int pPositionX = pParty->pos.x;
-    int pPositionY = pParty->pos.y;
-    int pPositionZ = pParty->pos.z;
-    int partyViewYaw = pParty->_viewYaw;
-    int partyViewPitch = pParty->_viewPitch;
-    pParty->pos.x = pParty->lastPos.x;
-    pParty->pos.z = pParty->lastPos.z;
-    pParty->pos.y = pParty->lastPos.y;
-
-    pParty->uFallStartZ = pParty->lastPos.z;
-
-    pParty->_viewYaw = pParty->_viewPrevYaw;
-    pParty->_viewPitch = pParty->_viewPrevPitch;
-
     // saving - please wait
 
     // if (current_screen_type == SCREEN_SAVEGAME) {
@@ -249,13 +234,6 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path,
 
     pSave_LOD->close();
     pSave_LOD->open(Blob::copy(Blob::fromFile(path)), LOD_ALLOW_DUPLICATES);
-
-    pParty->pos.x = pPositionX;
-    pParty->pos.y = pPositionY;
-    pParty->pos.z = pPositionZ;
-    pParty->uFallStartZ = pPositionZ;
-    pParty->_viewYaw = partyViewYaw;
-    pParty->_viewPitch = partyViewPitch;
 
     return save_header;
 }
