@@ -289,6 +289,16 @@ GAME_TEST(Issues, Issue1706) {
     EXPECT_LE(ypos.min(), -2550); // but we should get right up against it
 }
 
+GAME_TEST(Issues, Issue1708) {
+    // Collisions - Paralyzed Angel falling perpetually
+    auto zPos = actorTapes.custom(7, [](const Actor &a) { return static_cast<int>(a.pos.z); });
+    auto parTape = actorTapes.hasBuff(7, ACTOR_BUFF_PARALYZED);
+    test.playTraceFromTestData("issue_1708.mm7", "issue_1708.json");
+    EXPECT_EQ(parTape, tape(true, false)); // paralysed
+    EXPECT_EQ(zPos.max(), zPos.front()); // highest position at the start
+    EXPECT_LT(zPos.size(), 5); // no bobbling around
+}
+
 GAME_TEST(Issues, Issue1710) {
     // Fall damage indoors
     auto health = tapes.totalHp();

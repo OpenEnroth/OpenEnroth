@@ -475,6 +475,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
 
 //----- (00498A41) --------------------------------------------------------
 void BLVFace::_get_normals(Vec3f *outU, Vec3f *outV) {
+    // TODO(pskelton): these arent face normals - they are texture shift vectors
     // TODO(captainurist): code looks very similar to Camera3D::GetFacetOrientation
     if (this->uPolygonType == POLYGON_VerticalWall) {
         outU->x = -this->facePlane.normal.y;
@@ -1074,7 +1075,7 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
         // And if this z is ceiling z, then this will place the actor above the ceiling.
         float z_calc;
         if (pFloor->uPolygonType == POLYGON_Floor || pFloor->uPolygonType == POLYGON_Ceiling) {
-            z_calc = pIndoor->pVertices[pFloor->pVertexIDs[0]].z;
+            z_calc = pIndoor->pVertices[pFloor->pVertexIDs[0]].z; // POLYGON_Floor has normal (0,0,1)
         } else {
             z_calc = pFloor->zCalc.calculate(pos.x, pos.y);
         }
