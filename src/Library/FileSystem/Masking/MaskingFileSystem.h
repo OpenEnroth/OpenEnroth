@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 #include "Library/FileSystem/Interface/ReadOnlyFileSystem.h"
 #include "Library/FileSystem/Trie/FileSystemTrie.h"
@@ -30,6 +31,7 @@ class MaskingFileSystem : public ReadOnlyFileSystem {
     virtual Blob _read(const FileSystemPath &path) const override;
     virtual std::unique_ptr<InputStream> _openForReading(const FileSystemPath &path) const override;
     virtual bool _remove(const FileSystemPath &path) override;
+    virtual std::string _displayPath(const FileSystemPath &path) const override;
 
  private:
     FileSystem *_base = nullptr;

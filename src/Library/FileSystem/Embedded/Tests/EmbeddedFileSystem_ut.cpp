@@ -8,7 +8,7 @@
 CMRC_DECLARE(testrc);
 
 UNIT_TEST(EmbeddedFileSystem, StatExists) {
-    EmbeddedFileSystem fs(cmrc::testrc::get_filesystem());
+    EmbeddedFileSystem fs(cmrc::testrc::get_filesystem(), "testrc");
 
     EXPECT_TRUE(fs.exists("Tests"));
     EXPECT_EQ(fs.stat("Tests"), FileStat(FILE_DIRECTORY, 0));
@@ -21,7 +21,7 @@ UNIT_TEST(EmbeddedFileSystem, StatExists) {
 }
 
 UNIT_TEST(EmbeddedFileSystem, Ls) {
-    EmbeddedFileSystem fs(cmrc::testrc::get_filesystem());
+    EmbeddedFileSystem fs(cmrc::testrc::get_filesystem(), "testrc");
 
     EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>({{"Tests", FILE_DIRECTORY}}));
     EXPECT_EQ(fs.ls("Tests"), std::vector<DirectoryEntry>({{"EmbeddedFileSystem_ut.cpp", FILE_REGULAR}}));
@@ -30,7 +30,7 @@ UNIT_TEST(EmbeddedFileSystem, Ls) {
 }
 
 UNIT_TEST(EmbeddedFileSystem, Read) {
-    EmbeddedFileSystem fs(cmrc::testrc::get_filesystem());
+    EmbeddedFileSystem fs(cmrc::testrc::get_filesystem(), "testrc");
 
     const char *needle = "123456789012345678901234567890";
 

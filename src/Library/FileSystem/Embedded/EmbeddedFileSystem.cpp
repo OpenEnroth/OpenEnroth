@@ -6,7 +6,7 @@
 
 #include "Utility/Streams/MemoryInputStream.h"
 
-EmbeddedFileSystem::EmbeddedFileSystem(cmrc::embedded_filesystem base) : _base(base) {}
+EmbeddedFileSystem::EmbeddedFileSystem(cmrc::embedded_filesystem base, std::string_view displayName) : _base(base), _displayName(displayName) {}
 
 EmbeddedFileSystem::~EmbeddedFileSystem() = default;
 
@@ -40,4 +40,8 @@ Blob EmbeddedFileSystem::_read(const FileSystemPath &path) const {
 std::unique_ptr<InputStream> EmbeddedFileSystem::_openForReading(const FileSystemPath &path) const {
     cmrc::file file = _base.open(path.string());
     return std::make_unique<MemoryInputStream>(file.begin(), file.size());
+}
+
+std::string EmbeddedFileSystem::_displayPath(const FileSystemPath &path) const {
+    return _displayName + "://" + path.string();
 }

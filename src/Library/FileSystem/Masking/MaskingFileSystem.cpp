@@ -3,6 +3,7 @@
 #include <cassert>
 #include <vector>
 #include <memory>
+#include <string>
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
@@ -93,4 +94,9 @@ bool MaskingFileSystem::_remove(const FileSystemPath &path) {
 
     mask(path);
     return true;
+}
+
+std::string MaskingFileSystem::_displayPath(const FileSystemPath &path) const {
+    // TODO(captainurist): gotta tag masked paths somehow, otherwise error messages might get confusing.
+    return _base->displayPath(path);
 }

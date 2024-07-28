@@ -9,7 +9,7 @@
 #include "Utility/ScopeGuard.h"
 
 UNIT_TEST(LowercaseFileSystem, Empty) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     LowercaseFileSystem fs(&fs0);
 
     EXPECT_TRUE(fs.ls("").empty());
@@ -18,7 +18,7 @@ UNIT_TEST(LowercaseFileSystem, Empty) {
 }
 
 UNIT_TEST(LowercaseFileSystem, ExistsStatUppercase) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("A.bin", Blob());
 
     LowercaseFileSystem fs(&fs0);
@@ -48,7 +48,7 @@ UNIT_TEST(LowercaseFileSystem, EmptyFolders) {
 }
 
 UNIT_TEST(LowercaseFileSystem, Conflict) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("A.bin", Blob());
     fs0.write("a.bin", Blob());
 
@@ -56,7 +56,7 @@ UNIT_TEST(LowercaseFileSystem, Conflict) {
 }
 
 UNIT_TEST(LowercaseFileSystem, Lowercase) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("A.bin", Blob::fromString("123"));
     fs0.write("a/B/C/1.bin", Blob::fromString("321"));
     fs0.write("a/C/C/1.bin", Blob::fromString("111"));
@@ -68,7 +68,7 @@ UNIT_TEST(LowercaseFileSystem, Lowercase) {
 }
 
 UNIT_TEST(LowercaseFileSystem, Shenanigans) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("A/A/A.bin", Blob::fromString("123"));
 
     LowercaseFileSystem fs(&fs0);
@@ -83,7 +83,7 @@ UNIT_TEST(LowercaseFileSystem, Shenanigans) {
 }
 
 UNIT_TEST(LowercaseFileSystem, Write) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("B/B.bin", Blob::fromString("B"));
 
     LowercaseFileSystem fs(&fs0);
@@ -100,7 +100,7 @@ UNIT_TEST(LowercaseFileSystem, Write) {
 }
 
 UNIT_TEST(LowercaseFileSystem, PruneRemove) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("a/a", Blob());
 
     LowercaseFileSystem fs(&fs0);
@@ -112,7 +112,7 @@ UNIT_TEST(LowercaseFileSystem, PruneRemove) {
 }
 
 UNIT_TEST(LowercaseFileSystem, PruneRename) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("A/A/A", Blob::fromString("123"));
 
     LowercaseFileSystem fs(&fs0);
@@ -128,7 +128,7 @@ UNIT_TEST(LowercaseFileSystem, PruneRename) {
 }
 
 UNIT_TEST(LowercaseFileSystem, RenameReplace) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("A/A/A", Blob::fromString("AAA"));
     fs0.write("B/B/B", Blob::fromString("BBB"));
 
@@ -145,7 +145,7 @@ UNIT_TEST(LowercaseFileSystem, RenameReplace) {
 }
 
 UNIT_TEST(LowercaseFileSystem, RenameFolder) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("A/A/A/A", Blob::fromString("AAAA"));
     fs0.write("B/tmp", Blob());
 
@@ -162,7 +162,7 @@ UNIT_TEST(LowercaseFileSystem, RenameFolder) {
 }
 
 UNIT_TEST(LowercaseFileSystem, WriteUppercase) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     LowercaseFileSystem fs(&fs0);
 
     EXPECT_ANY_THROW(fs.write("A", Blob()));
@@ -170,7 +170,7 @@ UNIT_TEST(LowercaseFileSystem, WriteUppercase) {
 }
 
 UNIT_TEST(LowercaseFileSystem, RenameRepeatedly) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("A", Blob::fromString("A"));
 
     LowercaseFileSystem fs(&fs0);
@@ -189,7 +189,7 @@ UNIT_TEST(LowercaseFileSystem, RenameRepeatedly) {
 }
 
 UNIT_TEST(LowercaseFileSystem, RenameUppercase) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("A", Blob::fromString("A"));
 
     LowercaseFileSystem fs(&fs0);
@@ -199,7 +199,7 @@ UNIT_TEST(LowercaseFileSystem, RenameUppercase) {
 }
 
 UNIT_TEST(LowercaseFileSystem, RemoveRepeatedly) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("A", Blob::fromString("A"));
 
     LowercaseFileSystem fs(&fs0);

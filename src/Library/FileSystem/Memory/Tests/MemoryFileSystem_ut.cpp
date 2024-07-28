@@ -14,7 +14,7 @@ static std::vector<DirectoryEntry> sorted(std::vector<DirectoryEntry> data) {
 
 UNIT_TEST(MemoryFileSystem, EmptyRoot) {
     // Make sure accessing root works as expected.
-    MemoryFileSystem fs;
+    MemoryFileSystem fs("");
     EXPECT_TRUE(fs.ls("").empty());
     EXPECT_TRUE(fs.exists(""));
     EXPECT_EQ(fs.stat(""), FileStat(FILE_DIRECTORY, 0));
@@ -32,7 +32,7 @@ UNIT_TEST(MemoryFileSystem, EmptyRoot) {
 }
 
 UNIT_TEST(MemoryFileSystem, Ls) {
-    MemoryFileSystem fs;
+    MemoryFileSystem fs("");
 
     fs.write("a/b", Blob());
     fs.write("a/c/d", Blob());
@@ -51,7 +51,7 @@ UNIT_TEST(MemoryFileSystem, Ls) {
 }
 
 UNIT_TEST(MemoryFileSystem, ReadWrite) {
-    MemoryFileSystem fs;
+    MemoryFileSystem fs("");
 
     fs.write("a", Blob());
     EXPECT_EQ(fs.read("a").size(), 0);
@@ -63,7 +63,7 @@ UNIT_TEST(MemoryFileSystem, ReadWrite) {
 }
 
 UNIT_TEST(MemoryFileSystem, ReadDir) {
-    MemoryFileSystem fs;
+    MemoryFileSystem fs("");
 
     fs.write("a/b/c", Blob());
     EXPECT_ANY_THROW((void) fs.read("a"));
@@ -71,7 +71,7 @@ UNIT_TEST(MemoryFileSystem, ReadDir) {
 }
 
 UNIT_TEST(MemoryFileSystem, ExistsStat) {
-    MemoryFileSystem fs;
+    MemoryFileSystem fs("");
 
     fs.write("a/b/c", Blob::fromString("123"));
     EXPECT_TRUE(fs.exists("a"));
@@ -83,7 +83,7 @@ UNIT_TEST(MemoryFileSystem, ExistsStat) {
 }
 
 UNIT_TEST(MemoryFileSystem, Streaming) {
-    MemoryFileSystem fs;
+    MemoryFileSystem fs("");
 
     EXPECT_ANY_THROW((void) fs.openForReading("a"));
 
@@ -122,7 +122,7 @@ UNIT_TEST(MemoryFileSystem, Streaming) {
 }
 
 UNIT_TEST(MemoryFileSystem, Remove) {
-    MemoryFileSystem fs;
+    MemoryFileSystem fs("");
 
     fs.write("a", Blob::fromString("123"));
     std::unique_ptr<InputStream> input = fs.openForReading("a");
@@ -136,7 +136,7 @@ UNIT_TEST(MemoryFileSystem, Remove) {
 }
 
 UNIT_TEST(MemoryFileSystem, Lifetime) {
-    std::unique_ptr<MemoryFileSystem> fs = std::make_unique<MemoryFileSystem>();
+    std::unique_ptr<MemoryFileSystem> fs = std::make_unique<MemoryFileSystem>("");
 
     fs->write("a", Blob::fromString("123"));
     std::unique_ptr<InputStream> input = fs->openForReading("a");
@@ -151,7 +151,7 @@ UNIT_TEST(MemoryFileSystem, Lifetime) {
 }
 
 UNIT_TEST(MemoryFileSystem, Rename) {
-    MemoryFileSystem fs;
+    MemoryFileSystem fs("");
 
     fs.write("a/b/c", Blob::fromString("123"));
 

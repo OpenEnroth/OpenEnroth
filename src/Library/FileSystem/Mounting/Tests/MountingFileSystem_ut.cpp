@@ -6,10 +6,10 @@
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 
 UNIT_TEST(MountingFileSystem, StatExists) {
-    MemoryFileSystem mfs;
+    MemoryFileSystem mfs("");
     mfs.write("c/d", Blob());
 
-    MountingFileSystem fs;
+    MountingFileSystem fs("");
     fs.mount("a/b", &mfs);
 
     EXPECT_TRUE(fs.exists("a"));
@@ -24,10 +24,10 @@ UNIT_TEST(MountingFileSystem, StatExists) {
 }
 
 UNIT_TEST(MountingFileSystem, Override) {
-    MemoryFileSystem mfs;
+    MemoryFileSystem mfs("");
     mfs.write("a", Blob());
 
-    MountingFileSystem fs;
+    MountingFileSystem fs("");
     fs.mount("", &mfs);
     fs.mount("a", &mfs);
 
@@ -41,9 +41,9 @@ UNIT_TEST(MountingFileSystem, Override) {
 }
 
 UNIT_TEST(MountingFileSystem, WriteIntoVfs) {
-    MemoryFileSystem mfs;
+    MemoryFileSystem mfs("");
 
-    MountingFileSystem fs;
+    MountingFileSystem fs("");
     fs.mount("a/b/c/d", &mfs);
     fs.mount("a/b/g/e", &mfs);
 
@@ -52,9 +52,9 @@ UNIT_TEST(MountingFileSystem, WriteIntoVfs) {
 }
 
 UNIT_TEST(MountingFileSystem, ReadWriteThrough) {
-    MemoryFileSystem mfs;
+    MemoryFileSystem mfs("");
 
-    MountingFileSystem fs;
+    MountingFileSystem fs("");
     fs.mount("a", &mfs);
     fs.mount("a/b", &mfs);
     fs.mount("x", &mfs);
@@ -68,9 +68,9 @@ UNIT_TEST(MountingFileSystem, ReadWriteThrough) {
 }
 
 UNIT_TEST(MountingFileSystem, Remove) {
-    MemoryFileSystem mfs;
+    MemoryFileSystem mfs("");
 
-    MountingFileSystem fs;
+    MountingFileSystem fs("");
     fs.mount("a", &mfs);
 
     mfs.write("a", Blob());
@@ -81,9 +81,9 @@ UNIT_TEST(MountingFileSystem, Remove) {
 }
 
 UNIT_TEST(MountingFileSystem, RenameSameFs) {
-    MemoryFileSystem mfs;
+    MemoryFileSystem mfs("");
 
-    MountingFileSystem fs;
+    MountingFileSystem fs("");
     fs.mount("a", &mfs);
 
     mfs.write("a", Blob::fromString("123"));
@@ -96,10 +96,10 @@ UNIT_TEST(MountingFileSystem, RenameSameFs) {
 }
 
 UNIT_TEST(MountingFileSystem, RenameDifferentFs) {
-    MemoryFileSystem mfs1;
-    MemoryFileSystem mfs2;
+    MemoryFileSystem mfs1("");
+    MemoryFileSystem mfs2("");
 
-    MountingFileSystem fs;
+    MountingFileSystem fs("");
     fs.mount("1", &mfs1);
     fs.mount("2", &mfs2);
 
@@ -113,7 +113,7 @@ UNIT_TEST(MountingFileSystem, RenameDifferentFs) {
 }
 
 UNIT_TEST(MountingFileSystem, Binary) {
-    MountingFileSystem fs;
+    MountingFileSystem fs("");
     fs.mount("0", &fs);
     fs.mount("1", &fs);
 

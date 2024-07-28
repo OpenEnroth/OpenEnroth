@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 #include "Library/FileSystem/Interface/ReadOnlyFileSystem.h"
 
@@ -50,8 +51,10 @@ class MergingFileSystem : public ReadOnlyFileSystem {
     virtual std::vector<DirectoryEntry> _ls(const FileSystemPath &path) const override;
     virtual Blob _read(const FileSystemPath &path) const override;
     virtual std::unique_ptr<InputStream> _openForReading(const FileSystemPath &path) const override;
+    virtual std::string _displayPath(const FileSystemPath &path) const override;
 
     const FileSystem *locateForReading(const FileSystemPath &path) const;
+    const FileSystem *locateForReadingOrNull(const FileSystemPath &path) const;
 
  private:
     std::vector<const FileSystem *> _bases;

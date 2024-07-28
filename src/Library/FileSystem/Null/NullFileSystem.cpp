@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
@@ -25,6 +26,10 @@ Blob NullFileSystem::_read(const FileSystemPath &path) const {
 
 std::unique_ptr<InputStream> NullFileSystem::_openForReading(const FileSystemPath &path) const {
     reportReadError(path);
+}
+
+std::string NullFileSystem::_displayPath(const FileSystemPath &path) const {
+    return "null://" + path.string();
 }
 
 [[noreturn]] void NullFileSystem::reportReadError(const FileSystemPath &path) const {

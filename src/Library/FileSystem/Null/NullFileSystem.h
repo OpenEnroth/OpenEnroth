@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
 #include "Library/FileSystem/Interface/ReadOnlyFileSystem.h"
 
@@ -15,6 +16,7 @@ class NullFileSystem : public ReadOnlyFileSystem {
     virtual std::vector<DirectoryEntry> _ls(const FileSystemPath &path) const override;
     virtual Blob _read(const FileSystemPath &path) const override;
     virtual std::unique_ptr<InputStream> _openForReading(const FileSystemPath &path) const override;
+    virtual std::string _displayPath(const FileSystemPath &path) const override;
 
     [[noreturn]] void reportReadError(const FileSystemPath &path) const;
 };

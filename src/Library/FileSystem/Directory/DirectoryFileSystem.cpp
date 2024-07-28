@@ -65,7 +65,7 @@ std::vector<DirectoryEntry> DirectoryFileSystem::_ls(const FileSystemPath &path)
         if (path.isEmpty()) {
             return {}; // Always pretend the root exists & is accessible.
         } else {
-            throw std::system_error(ec);
+            throw std::system_error(ec, path.string());
         }
     }
 
@@ -114,6 +114,10 @@ void DirectoryFileSystem::_rename(const FileSystemPath &srcPath, const FileSyste
 bool DirectoryFileSystem::_remove(const FileSystemPath &path) {
     assert(!path.isEmpty());
     return std::filesystem::remove_all(makeBasePath(path)) > 0;
+}
+
+std::string DirectoryFileSystem::_displayPath(const FileSystemPath &path) const {
+    return makeBasePath(path).string();
 }
 
 std::filesystem::path DirectoryFileSystem::makeBasePath(const FileSystemPath &path) const {

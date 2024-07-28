@@ -20,10 +20,10 @@ UNIT_TEST(MergingFileSystem, Empty) {
 }
 
 UNIT_TEST(MergingFileSystem, SimpleMerge) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("a/b", Blob::fromString("B"));
 
-    MemoryFileSystem fs1;
+    MemoryFileSystem fs1("");
     fs1.write("a/c/d", Blob::fromString("D"));
 
     MergingFileSystem fs({&fs0, &fs1});
@@ -38,13 +38,13 @@ UNIT_TEST(MergingFileSystem, SimpleMerge) {
 }
 
 UNIT_TEST(MergingFileSystem, ShrodingerMaxxxing) {
-    MemoryFileSystem fs0;
+    MemoryFileSystem fs0("");
     fs0.write("a/b/c", Blob::fromString("C"));
 
-    MemoryFileSystem fs1;
+    MemoryFileSystem fs1("");
     fs1.write("a/b", Blob::fromString("B"));
 
-    MemoryFileSystem fs2;
+    MemoryFileSystem fs2("");
     fs2.write("a/c/d", Blob::fromString("D"));
 
     MergingFileSystem fs({&fs0, &fs1, &fs2});

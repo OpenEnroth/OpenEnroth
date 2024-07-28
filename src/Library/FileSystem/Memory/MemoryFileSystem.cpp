@@ -2,11 +2,14 @@
 
 #include <vector>
 #include <memory>
+#include <string>
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
 #include "MemoryFileSystemInputStream.h"
 #include "MemoryFileSystemOutputStream.h"
+
+MemoryFileSystem::MemoryFileSystem(std::string_view displayName) : _displayName(displayName) {}
 
 void MemoryFileSystem::clear() {
     _trie.clear();
@@ -88,6 +91,10 @@ bool MemoryFileSystem::_remove(const FileSystemPath &path) {
         return false;
 
     return _trie.erase(node);
+}
+
+std::string MemoryFileSystem::_displayPath(const FileSystemPath &path) const {
+    return _displayName + "://" + path.string();
 }
 
 const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(const FileSystemPath &path) const {

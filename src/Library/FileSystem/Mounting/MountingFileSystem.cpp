@@ -9,7 +9,7 @@
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
-MountingFileSystem::MountingFileSystem() = default;
+MountingFileSystem::MountingFileSystem(std::string_view displayName) : _displayName(displayName) {}
 MountingFileSystem::~MountingFileSystem() = default;
 
 void MountingFileSystem::mount(std::string_view path, FileSystem *fileSystem) {
@@ -129,6 +129,10 @@ bool MountingFileSystem::_remove(const FileSystemPath &path) {
     if (!mount)
         return false; // Nothing to remove.
     return mount->remove(tail);
+}
+
+std::string MountingFileSystem::_displayPath(const FileSystemPath &path) const {
+    return _displayName + "://" + path.string();
 }
 
 MountingFileSystem::WalkResult MountingFileSystem::walk(const FileSystemPath &path) {

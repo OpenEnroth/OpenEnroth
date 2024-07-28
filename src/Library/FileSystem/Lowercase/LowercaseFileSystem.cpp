@@ -129,6 +129,11 @@ bool LowercaseFileSystem::_remove(const FileSystemPath &path) {
     return true;
 }
 
+std::string LowercaseFileSystem::_displayPath(const FileSystemPath &path) const {
+    auto [basePath, node, tail] = walk(path);
+    return _base->displayPath(basePath.appended(tail));
+}
+
 void LowercaseFileSystem::refresh(Node *node, const FileSystemPath &basePath) {
     std::vector<DirectoryEntry> entries = _base->ls(basePath);
 
