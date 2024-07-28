@@ -10,6 +10,9 @@
 #include "ConfigSection.h"
 #include "ConfigEntry.h"
 
+class OutputStream;
+class InputStream;
+
 class Config {
  public:
     Config() = default;
@@ -18,6 +21,9 @@ class Config {
 
     void load(std::string_view path);
     void save(std::string_view path) const;
+    void load(InputStream *stream);
+    void save(OutputStream *stream) const;
+
     void reset();
 
     void registerSection(ConfigSection *section);
