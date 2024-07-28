@@ -65,7 +65,7 @@ void AudioPlayer::MusicPlayTrack(MusicId eTrack) {
             return;
         }
 
-        pCurrentMusicTrack = CreateAudioTrack(file_path);
+        pCurrentMusicTrack = CreateAudioTrack(Blob::fromFile(file_path));
         if (pCurrentMusicTrack) {
             currentMusicTrack = eTrack;
 
