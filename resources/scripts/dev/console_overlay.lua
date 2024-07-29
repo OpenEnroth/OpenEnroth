@@ -9,13 +9,14 @@ local consoleMargin = 5
 local footerHeight = 35
 local minWidth = 200
 local isWindowMaximized = false
-local baseColor = { 32, 32, 32, 255 }
+--[[local baseColor = { 32, 32, 32, 255 }
 local messageBkgColor = { 16, 16, 16, 255 }
 
 local function getColorAlpha(col)
     local a = isWindowMaximized and 200 or 64
     return { col[1], col[2], col[3], a }
 end
+--]]
 
 ---@param w integer
 ---@param h integer
@@ -48,6 +49,7 @@ local function inputTextCallback(callbackEvent, param)
 end
 
 local function drawCommandLineRow()
+    --- @type any
     local inputTextFlags = bit32.bor(imgui.ImGuiInputTextFlags.EnterReturnsTrue,
         imgui.ImGuiInputTextFlags.CallbackHistory)
     local text, changed = imgui.InputTextWithHint("##Input", "Write something here...", Console.text, inputTextFlags,
@@ -111,7 +113,7 @@ local function drawConsole()
     if drawWindow then
         local flags = imgui.ImGuiHoveredFlags.RootAndChildWindows
         isWindowMaximized = imgui.IsWindowHovered(flags) or imgui.IsMouseHoveringRect(rect.x, rect.y, rect.w, rect.h) or
-        not Console.autoMinimize
+            not Console.autoMinimize
         if isWindowMaximized then
             drawMessages()
             drawOptionsRow()

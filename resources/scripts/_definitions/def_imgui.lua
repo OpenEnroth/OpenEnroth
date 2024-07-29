@@ -49,6 +49,8 @@
 --- @field PopStyleColor fun()
 --- Demo
 --- @field ShowDemoWindow fun()
+--- Mouse
+--- @field IsMouseHoveringRect fun(x: number, y: number, w: number, h: number) : boolean
 --- Enums
 --- @field ImGuiCol ImGuiColEnum
 --- @field ImGuiCond ImGuiCondEnum
