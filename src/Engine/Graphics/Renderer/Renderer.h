@@ -138,9 +138,6 @@ class Renderer {
 
     virtual bool AreRenderSurfacesOk() = 0;
 
-    virtual void SaveScreenshot(std::string_view filename, unsigned int width,
-                                unsigned int height) = 0;
-
     virtual void SavePCXScreenshot() = 0;
 
     /**

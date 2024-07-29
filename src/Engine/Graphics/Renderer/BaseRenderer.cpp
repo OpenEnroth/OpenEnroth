@@ -608,10 +608,6 @@ void BaseRenderer::SavePCXImage32(std::string_view filename, RgbaImageView image
     output.close();
 }
 
-void BaseRenderer::SaveScreenshot(std::string_view filename, const unsigned int width, const unsigned int height) {
-    SavePCXImage32(filename, render->MakeScreenshot32(width, height));
-}
-
 void BaseRenderer::DrawTextureGrayShade(float a2, float a3, GraphicsImage *a4) {
     DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey);
 }

@@ -30,7 +30,6 @@ class BaseRenderer : public Renderer {
 
     virtual void SavePCXScreenshot() override;
     virtual void SavePCXImage32(std::string_view filename, RgbaImageView image);
-    virtual void SaveScreenshot(std::string_view filename, unsigned int width, unsigned int height) override;
 
     virtual void DrawMasked(float u, float v, GraphicsImage *img,
         unsigned int color_dimming_level, Color mask = colorTable.White) override;

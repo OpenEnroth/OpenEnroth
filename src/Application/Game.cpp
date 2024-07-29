@@ -1438,8 +1438,7 @@ void Game::processQueuedMessages() {
                     gamma_preview_image->Release();
                     gamma_preview_image = nullptr;
                 }
-                render->SaveScreenshot("gamma.pcx", 155, 117);
-                gamma_preview_image = assets->getImage_PCXFromFile("gamma.pcx");
+                gamma_preview_image = GraphicsImage::Create(render->MakeScreenshot32(155, 117));
 
                 new OnButtonClick({602, 450}, {0, 0}, pBtn_GameSettings);
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
