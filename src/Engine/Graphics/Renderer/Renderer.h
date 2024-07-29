@@ -141,13 +141,13 @@ class Renderer {
     virtual void SavePCXScreenshot() = 0;
 
     /**
-     * Takes a screenshot of the game world view, w/o the UI elements.
+     * Takes a screenshot of the game viewport, w/o the UI elements.
      *
      * @param width                         Required width
      * @param height                        Required height.
      * @return                              Taken screenshot image.
      */
-    virtual RgbaImage MakeScreenshot32(int width, int height) = 0;
+    virtual RgbaImage MakeViewportScreenshot(int width, int height) = 0;
 
     virtual std::vector<Actor *> getActorsInViewport(int pDepth) = 0;
 

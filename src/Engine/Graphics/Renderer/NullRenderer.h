@@ -81,7 +81,7 @@ class NullRenderer : public BaseRenderer {
 
     virtual bool AreRenderSurfacesOk() override;
 
-    virtual RgbaImage MakeScreenshot32(const int width, const int height) override;
+    virtual RgbaImage MakeViewportScreenshot(const int width, const int height) override;
 
     virtual void BeginLightmaps() override;
     virtual void EndLightmaps() override;

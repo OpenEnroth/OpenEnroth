@@ -405,7 +405,7 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
         gamma_preview_image = nullptr;
     }
 
-    gamma_preview_image = GraphicsImage::Create(render->MakeScreenshot32(155, 117));
+    gamma_preview_image = GraphicsImage::Create(render->MakeViewportScreenshot(155, 117));
 }
 
 //----- (00414D9A) --------------------------------------------------------

@@ -110,8 +110,8 @@ bool NullRenderer::AreRenderSurfacesOk() {
     return true;
 }
 
-RgbaImage NullRenderer::MakeScreenshot32(const int width, const int height) {
-    return RgbaImage::solid(640, 480, Color());
+RgbaImage NullRenderer::MakeViewportScreenshot(const int width, const int height) {
+    return RgbaImage::solid(width, height, Color());
 }
 
 void NullRenderer::BeginLightmaps() {}

@@ -983,7 +983,7 @@ bool OpenGLRenderer::AreRenderSurfacesOk() {
     return true;
 }
 
-RgbaImage OpenGLRenderer::MakeScreenshot32(const int width, const int height) {
+RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int height) {
     // TODO(pskelton): should this call drawworld instead??
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
