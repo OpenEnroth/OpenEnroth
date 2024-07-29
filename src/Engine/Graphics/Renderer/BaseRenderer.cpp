@@ -616,10 +616,6 @@ Blob BaseRenderer::PackScreenshot(const unsigned int width, const unsigned int h
     return pcx::encode(render->MakeScreenshot32(width, height));
 }
 
-GraphicsImage *BaseRenderer::TakeScreenshot(const unsigned int width, const unsigned int height) {
-    return GraphicsImage::Create(MakeScreenshot32(width, height));
-}
-
 void BaseRenderer::DrawTextureGrayShade(float a2, float a3, GraphicsImage *a4) {
     DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey);
 }

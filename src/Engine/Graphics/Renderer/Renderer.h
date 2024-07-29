@@ -138,7 +138,6 @@ class Renderer {
 
     virtual bool AreRenderSurfacesOk() = 0;
 
-    virtual GraphicsImage *TakeScreenshot(unsigned int width, unsigned int height) = 0;
     virtual void SaveScreenshot(std::string_view filename, unsigned int width,
                                 unsigned int height) = 0;
 
@@ -149,6 +148,14 @@ class Renderer {
      */
     virtual Blob PackScreenshot(unsigned int width, unsigned int height) = 0;
     virtual void SavePCXScreenshot() = 0;
+
+    /**
+     * Takes a screenshot of the game world view, w/o the UI elements.
+     *
+     * @param width                         Required width
+     * @param height                        Required height.
+     * @return                              Taken screenshot image.
+     */
     virtual RgbaImage MakeScreenshot32(int width, int height) = 0;
 
     virtual std::vector<Actor *> getActorsInViewport(int pDepth) = 0;

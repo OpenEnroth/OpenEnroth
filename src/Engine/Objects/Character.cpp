@@ -7320,7 +7320,7 @@ bool Character::setBeacon(int index, Duration duration) {
 
     LloydBeacon beacon;
 
-    beacon.image = render->TakeScreenshot(92, 68);
+    beacon.image = GraphicsImage::Create(render->MakeScreenshot32(92, 68));
     beacon.uBeaconTime = pParty->GetPlayingTime() + duration;
     beacon._partyPos = pParty->pos;
     beacon._partyViewYaw = pParty->_viewYaw;
