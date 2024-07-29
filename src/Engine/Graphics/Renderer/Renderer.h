@@ -141,12 +141,6 @@ class Renderer {
     virtual void SaveScreenshot(std::string_view filename, unsigned int width,
                                 unsigned int height) = 0;
 
-    /**
-     * @param width                         Final width of image to create.
-     * @param height                        Final height of image to create.
-     * @return                              Returns Blob containing packed pcx data and its size.
-     */
-    virtual Blob PackScreenshot(unsigned int width, unsigned int height) = 0;
     virtual void SavePCXScreenshot() = 0;
 
     /**
