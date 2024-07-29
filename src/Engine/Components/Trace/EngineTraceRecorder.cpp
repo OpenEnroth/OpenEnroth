@@ -43,7 +43,7 @@ void EngineTraceRecorder::startRecording(EngineController *game, std::string_vie
     RandomEngineType rngType = engine->config->debug.TraceRandomEngine.value();
 
     if (!(flags & TRACE_RECORDING_LOAD_EXISTING_SAVE))
-        game->saveGame(savePath);
+        FileOutputStream(savePath).write(game->saveGame().string_view());
     _trace->header.saveFileSize = std::filesystem::file_size(_savePath);
 
     // Reset all pressed buttons. It's important to do this before loading the game b/c game loading peeks into pressed
@@ -53,7 +53,7 @@ void EngineTraceRecorder::startRecording(EngineController *game, std::string_vie
     engine->config->graphics.FPSLimit.setValue(0);
     game->goToMainMenu(); // This might call into a random engine.
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
-    game->loadGame(savePath);
+    game->loadGame(Blob::fromFile(savePath));
     _trace->header.afterLoadRandomState = grng->peek(1024 * 1024);
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
 

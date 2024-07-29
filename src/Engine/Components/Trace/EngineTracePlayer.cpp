@@ -56,7 +56,7 @@ void EngineTracePlayer::playTrace(EngineController *game, std::string_view saveP
 
     game->goToMainMenu(); // This might call into a random engine.
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
-    game->loadGame(_savePath);
+    game->loadGame(Blob::fromFile(_savePath));
     checkAfterLoadRng(_trace->header.afterLoadRandomState);
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
     component<GameKeyboardController>()->reset(); // Reset all pressed buttons.
