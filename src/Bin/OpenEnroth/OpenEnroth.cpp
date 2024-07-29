@@ -77,7 +77,7 @@ int runRetrace(const OpenEnrothOptions &options) {
 
             std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
 
-            EventTrace oldTrace = EventTrace::loadFromFile(tracePath, application->window());
+            EventTrace oldTrace = EventTrace::fromJsonBlob(Blob::fromFile(tracePath), application->window());
             EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), oldTrace.header.config);
 
             recorder->startRecording(game, savePath, tracePath, TRACE_RECORDING_LOAD_EXISTING_SAVE);

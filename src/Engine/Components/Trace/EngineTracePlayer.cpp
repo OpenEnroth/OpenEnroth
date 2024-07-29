@@ -35,7 +35,7 @@ void EngineTracePlayer::playTrace(EngineController *game, std::string_view saveP
     _tracePath = tracePath;
     _savePath = savePath;
     _flags = flags;
-    _trace = std::make_unique<EventTrace>(EventTrace::loadFromFile(_tracePath, application()->window()));
+    _trace = std::make_unique<EventTrace>(EventTrace::fromJsonBlob(Blob::fromFile(_tracePath), application()->window()));
 
     MM_AT_SCOPE_EXIT({
         _tracePath.clear();

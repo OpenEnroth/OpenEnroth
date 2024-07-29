@@ -19,6 +19,7 @@
 
 #include "EngineTraceSimpleRecorder.h"
 #include "EngineTraceStateAccessor.h"
+#include "Utility/Streams/FileOutputStream.h"
 
 EngineTraceRecorder::EngineTraceRecorder() {}
 
@@ -79,7 +80,7 @@ void EngineTraceRecorder::finishRecording(EngineController *game) {
     _trace->events = component<EngineTraceSimpleRecorder>()->finishRecording();
     _trace->header.endState = EngineTraceStateAccessor::makeGameState();
 
-    EventTrace::saveToFile(_tracePath, *_trace);
+    FileOutputStream(_tracePath).write(EventTrace::toJsonBlob(*_trace).string_view());
 
     logger->info("Trace saved to {} and {}",
                  absolute(std::filesystem::path(_savePath)).generic_string(),
