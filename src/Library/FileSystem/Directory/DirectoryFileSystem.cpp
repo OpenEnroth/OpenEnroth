@@ -74,28 +74,28 @@ std::vector<DirectoryEntry> DirectoryFileSystem::_ls(const FileSystemPath &path)
 
 Blob DirectoryFileSystem::_read(const FileSystemPath &path) const {
     assert(!path.isEmpty());
-    return Blob::fromFile(makeBasePath(path).string());
+    return Blob::fromFile(makeBasePath(path).generic_string());
 }
 
 void DirectoryFileSystem::_write(const FileSystemPath &path, const Blob &data) {
     assert(!path.isEmpty());
     std::filesystem::path basePath = makeBasePath(path);
     std::filesystem::create_directories(basePath.parent_path());
-    FileOutputStream stream(basePath.string());
+    FileOutputStream stream(basePath.generic_string());
     stream.write(data.data(), data.size());
     stream.close();
 }
 
 std::unique_ptr<InputStream> DirectoryFileSystem::_openForReading(const FileSystemPath &path) const {
     assert(!path.isEmpty());
-    return std::make_unique<FileInputStream>(makeBasePath(path).string());
+    return std::make_unique<FileInputStream>(makeBasePath(path).generic_string());
 }
 
 std::unique_ptr<OutputStream> DirectoryFileSystem::_openForWriting(const FileSystemPath &path) {
     assert(!path.isEmpty());
     std::filesystem::path basePath = makeBasePath(path);
     std::filesystem::create_directories(basePath.parent_path());
-    return std::make_unique<FileOutputStream>(basePath.string());
+    return std::make_unique<FileOutputStream>(basePath.generic_string());
 }
 
 void DirectoryFileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath) {
@@ -117,7 +117,7 @@ bool DirectoryFileSystem::_remove(const FileSystemPath &path) {
 }
 
 std::string DirectoryFileSystem::_displayPath(const FileSystemPath &path) const {
-    return makeBasePath(path).string();
+    return makeBasePath(path).generic_string();
 }
 
 std::filesystem::path DirectoryFileSystem::makeBasePath(const FileSystemPath &path) const {

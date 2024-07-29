@@ -2,32 +2,14 @@
 #include <ranges>
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "Testing/Unit/UnitTest.h"
 
 #include "Library/FileSystem/Directory/DirectoryFileSystem.h"
 
 #include "Utility/Streams/FileOutputStream.h"
-
-class TemporaryFile {
- public:
-    explicit TemporaryFile(std::string_view name): _name(name) {
-        if (std::filesystem::exists(_name))
-            std::filesystem::remove_all(_name);
-
-        FileOutputStream stream(_name);
-        stream.close();
-        EXPECT_TRUE(std::filesystem::exists(_name));
-    }
-
-    ~TemporaryFile() {
-        std::filesystem::remove(_name);
-        EXPECT_FALSE(std::filesystem::exists(_name));
-    }
-
- private:
-    std::string _name;
-};
+#include "Utility/Testing/TestExistingFile.h"
 
 class TemporaryDir {
  public:
@@ -50,7 +32,7 @@ class TemporaryDir {
 
 UNIT_TEST(DirectoryFileSystem, LsRoot) {
     // Make sure passing empty paths works as intended.
-    TemporaryFile tmp("1.txt");
+    TestExistingFile tmp("1.txt", "");
 
     DirectoryFileSystem fs1(""); // Current dir.
     std::vector<DirectoryEntry> entries = fs1.ls("");
@@ -66,7 +48,7 @@ UNIT_TEST(DirectoryFileSystem, LsRoot) {
 
 UNIT_TEST(DirectoryFileSystem, LsFile) {
     // Make sure ls() throws when called on a file.
-    TemporaryFile tmp("1.txt");
+    TestExistingFile tmp("1.txt", "");
 
     DirectoryFileSystem fs(""); // Current dir.
     EXPECT_ANY_THROW((void) fs.ls("1.txt"));
@@ -86,7 +68,7 @@ UNIT_TEST(DirectoryFileSystem, ExistsRoot) {
     DirectoryFileSystem fs2("this_dir_doesnt_exist");
     EXPECT_TRUE(fs2.exists(""));
 
-    TemporaryFile tmp("1.txt");
+    TestExistingFile tmp("1.txt", "");
     DirectoryFileSystem fs3("1.txt");
     EXPECT_TRUE(fs3.exists(""));
 }
@@ -99,14 +81,14 @@ UNIT_TEST(DirectoryFileSystem, StatRoot) {
     DirectoryFileSystem fs2("this_dir_doesnt_exist"); // Non-existent dir.
     EXPECT_EQ(fs2.stat("").type, FILE_DIRECTORY);
 
-    TemporaryFile tmp("1.txt");
+    TestExistingFile tmp("1.txt", "");
     DirectoryFileSystem fs3("1.txt"); // Not-a-dir.
     EXPECT_EQ(fs3.stat("").type, FILE_DIRECTORY);
 }
 
 UNIT_TEST(DirectoryFileSystem, ReadRootAsFile) {
     // Root is always assumed to be a dir, we can't read it as a file even if it IS a file.
-    TemporaryFile tmp("1.txt");
+    TestExistingFile tmp("1.txt", "");
 
     DirectoryFileSystem fs("1.txt");
     EXPECT_ANY_THROW((void) fs.read(""));
@@ -116,4 +98,16 @@ UNIT_TEST(DirectoryFileSystem, WriteRootAsFile) {
     // Root is always assumed to be a dir, we can't write it as a file if it doesn't exist.
     DirectoryFileSystem fs("1.txt");
     EXPECT_ANY_THROW(fs.write("", Blob()));
+}
+
+UNIT_TEST(DirectoryFileSystem, DisplayPathSymmetry) {
+    TestExistingFile tmp("1.txt", "");
+
+    DirectoryFileSystem fs("");
+    Blob blob = fs.read("1.txt");
+    std::unique_ptr<InputStream> stream = fs.openForReading("1.txt");
+
+    EXPECT_TRUE(blob.displayPath().ends_with("1.txt"));
+    EXPECT_TRUE(std::filesystem::path(blob.displayPath()).is_absolute());
+    EXPECT_EQ(blob.displayPath(), stream->displayPath());
 }
