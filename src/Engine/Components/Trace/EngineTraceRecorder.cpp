@@ -1,8 +1,8 @@
 #include "EngineTraceRecorder.h"
 
 #include <cassert>
-#include <filesystem>
 #include <memory>
+#include <utility>
 
 #include "Application/GameKeyboardController.h" // TODO(captainurist): Engine -> Application dependency
 
@@ -19,7 +19,6 @@
 
 #include "EngineTraceSimpleRecorder.h"
 #include "EngineTraceStateAccessor.h"
-#include "Utility/Streams/FileOutputStream.h"
 
 EngineTraceRecorder::EngineTraceRecorder() {}
 
@@ -27,12 +26,10 @@ EngineTraceRecorder::~EngineTraceRecorder() {
     assert(!application()); // We're uninstalled.
 }
 
-void EngineTraceRecorder::startRecording(EngineController *game, std::string_view savePath, std::string_view tracePath, EngineTraceRecordingFlags flags) {
-    assert(!savePath.empty() && !tracePath.empty());
+void EngineTraceRecorder::startRecording(EngineController *game, const Blob &savedGame) {
     assert(!isRecording());
 
-    _savePath = savePath;
-    _tracePath = tracePath;
+    _savedGame = Blob::share(savedGame);
     _trace = std::make_unique<EventTrace>();
     _configSnapshot = std::make_unique<ConfigPatch>(ConfigPatch::fromConfig(engine->config.get()));
 
@@ -42,9 +39,9 @@ void EngineTraceRecorder::startRecording(EngineController *game, std::string_vie
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
     RandomEngineType rngType = engine->config->debug.TraceRandomEngine.value();
 
-    if (!(flags & TRACE_RECORDING_LOAD_EXISTING_SAVE))
-        FileOutputStream(savePath).write(game->saveGame().string_view());
-    _trace->header.saveFileSize = std::filesystem::file_size(_savePath);
+    if (!_savedGame)
+        _savedGame = game->saveGame();
+    _trace->header.saveFileSize = _savedGame.size();
 
     // Reset all pressed buttons. It's important to do this before loading the game b/c game loading peeks into pressed
     // buttons and does all kinds of weird stuff.
@@ -53,7 +50,7 @@ void EngineTraceRecorder::startRecording(EngineController *game, std::string_vie
     engine->config->graphics.FPSLimit.setValue(0);
     game->goToMainMenu(); // This might call into a random engine.
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
-    game->loadGame(Blob::fromFile(savePath));
+    game->loadGame(_savedGame);
     _trace->header.afterLoadRandomState = grng->peek(1024 * 1024);
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
 
@@ -65,12 +62,11 @@ void EngineTraceRecorder::startRecording(EngineController *game, std::string_vie
     logger->info("Tracing started.");
 }
 
-void EngineTraceRecorder::finishRecording(EngineController *game) {
+EngineTraceRecording EngineTraceRecorder::finishRecording(EngineController *game) {
     assert(isRecording());
 
     MM_AT_SCOPE_EXIT({
-        _tracePath.clear();
-        _savePath.clear();
+        _savedGame = {};
         _trace.reset();
         component<EngineDeterministicComponent>()->finish();
         _configSnapshot->apply(engine->config.get()); // Roll back all config changes.
@@ -80,9 +76,8 @@ void EngineTraceRecorder::finishRecording(EngineController *game) {
     _trace->events = component<EngineTraceSimpleRecorder>()->finishRecording();
     _trace->header.endState = EngineTraceStateAccessor::makeGameState();
 
-    FileOutputStream(_tracePath).write(EventTrace::toJsonBlob(*_trace).string_view());
-
-    logger->info("Trace saved to {} and {}",
-                 absolute(std::filesystem::path(_savePath)).generic_string(),
-                 absolute(std::filesystem::path(_tracePath)).generic_string());
+    EngineTraceRecording result;
+    result.save = std::move(_savedGame);
+    result.trace = EventTrace::toJsonBlob(*_trace);
+    return result;
 }

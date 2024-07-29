@@ -19,7 +19,7 @@
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
 
-#include "Utility/Streams/FileInputStream.h"
+#include "Utility/Streams/FileOutputStream.h"
 #include "Utility/String/Format.h"
 #include "Utility/UnicodeCrt.h"
 #include "Utility/String/Transformations.h"
@@ -28,9 +28,9 @@
 
 #include "OpenEnrothOptions.h"
 
-static std::string readTextFile(std::string_view path) {
+static std::string normalizeText(std::string_view text) {
     // Normalize to UNIX line endings. Need this b/c git on Windows checks out CRLF line endings.
-    std::string result = replaceAll(FileInputStream(path).readAll(), "\r\n", "\n");
+    std::string result = replaceAll(text, "\r\n", "\n");
 
     // Also drop trailing newlines. Vim always adds a newline, but retracing removes it.
     while (result.ends_with('\n'))
@@ -47,7 +47,9 @@ static void printLines(const std::vector<std::string_view> &lines, ssize_t line,
 static void printTraceDiff(std::string_view current, std::string_view canonical) {
     assert(canonical != current);
 
-    size_t pos = *std::ranges::find_if(std::views::iota(0), [&] (size_t i) { return canonical[i] != current[i]; });
+    size_t pos = *std::ranges::find_if(std::views::iota(0), [&] (size_t i) {
+        return i >= canonical.size() || i >= current.size() || canonical[i] != current[i];
+    });
     size_t line = std::ranges::count(std::string_view(canonical.data(), pos), '\n'); // 0-indexed.
 
     std::vector<std::string_view> canonicalLines = split(canonical, '\n');
@@ -71,22 +73,23 @@ int runRetrace(const OpenEnrothOptions &options) {
         for (const std::string &tracePath : options.retrace.traces) {
             fmt::println(stderr, "Retracing '{}'...", tracePath);
 
-            std::string oldTraceJson;
-            if (options.retrace.checkCanonical)
-                oldTraceJson = readTextFile(tracePath);
-
             std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
+            Blob oldTraceBlob = Blob::fromFile(tracePath);
+            Blob oldSaveBlob = Blob::fromFile(savePath);
 
-            EventTrace oldTrace = EventTrace::fromJsonBlob(Blob::fromFile(tracePath), application->window());
+            EventTrace oldTrace = EventTrace::fromJsonBlob(oldTraceBlob, application->window());
+
             EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), oldTrace.header.config);
-
-            recorder->startRecording(game, savePath, tracePath, TRACE_RECORDING_LOAD_EXISTING_SAVE);
+            recorder->startRecording(game, oldSaveBlob);
             engine->config->graphics.FPSLimit.setValue(0);
             player->playTrace(game, std::move(oldTrace.events), tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
-            recorder->finishRecording(game);
+            EngineTraceRecording recording = recorder->finishRecording(game);
 
-            if (options.retrace.checkCanonical) {
-                std::string newTraceJson = readTextFile(tracePath);
+            if (!options.retrace.checkCanonical) {
+                FileOutputStream(tracePath).write(recording.trace.string_view());
+            } else {
+                std::string oldTraceJson = normalizeText(oldTraceBlob.string_view());
+                std::string newTraceJson = normalizeText(recording.trace.string_view());
                 if (oldTraceJson != newTraceJson) {
                     fmt::println(stderr, "Trace '{}' is not in canonical representation.", tracePath);
                     printTraceDiff(oldTraceJson, newTraceJson);

@@ -1,16 +1,21 @@
 #pragma once
 
-#include <string>
 #include <memory>
-#include <vector>
 
 #include "Library/Platform/Application/PlatformApplicationAware.h"
+
+#include "Utility/Memory/Blob.h"
 
 #include "EngineTraceEnums.h"
 
 class EngineController;
 struct EventTrace;
 class ConfigPatch;
+
+struct EngineTraceRecording {
+    Blob save;
+    Blob trace;
+};
 
 /**
  * Component that exposes a trace recording interface. Doesn't have a `Component` in its name because who likes
@@ -45,20 +50,19 @@ class EngineTraceRecorder : private PlatformApplicationAware {
      * Note that this method needs to be called from the control thread, see `EngineControlComponent`.
      *
      * @param game                      Engine controller.
-     * @param savePath                  Path to save file.
-     * @param tracePath                 Path to trace file.
-     * @param flags                     Recording flags.
+     * @param savedGame                 Saved game to load instead of starting recording from current game state.
      */
-    void startRecording(EngineController *game, std::string_view savePath, std::string_view tracePath, EngineTraceRecordingFlags flags = 0);
+    void startRecording(EngineController *game, const Blob &savedGame = {});
 
     /**
-     * Finishes trace recording & saves the trace file.
+     * Finishes trace recording.
      *
      * Note that this method needs to be called from the control thread, see `EngineControlComponent`.
      *
      * @param game                      Engine controller.
+     * @returns                         Resulting recording.
      */
-    void finishRecording(EngineController *game);
+    [[nodiscard]] EngineTraceRecording finishRecording(EngineController *game);
 
     /**
      * @return                          Whether recording is in progress. Make sure to call this method only from the
@@ -73,8 +77,7 @@ class EngineTraceRecorder : private PlatformApplicationAware {
     friend class PlatformIntrospection;
 
  private:
-    std::string _savePath;
-    std::string _tracePath;
+    Blob _savedGame;
     std::unique_ptr<EventTrace> _trace;
     std::unique_ptr<ConfigPatch> _configSnapshot;
 };
