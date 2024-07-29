@@ -113,7 +113,11 @@ struct OutdoorLocation {
                     int respawn_interval_days,
                     bool * outdoors_was_respawned);
     // bool Release2();
-    bool GetTravelDestination(int sPartyX, int sPartyZ, std::string *pOut);
+
+    /**
+     * @offset 0x48902E
+     */
+    MapId getTravelDestination(int partyX, int partyY);
     void MessWithLUN();
     void UpdateSunlightVectors();
     void UpdateFog();
@@ -211,11 +215,13 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
 void ODM_GetTerrainNormalAt(float pos_x, float pos_y, Vec3f *out);
 void UpdateActors_ODM();
 void ODM_ProcessPartyActions();
-char Is_out15odm_underwater();
 void SetUnderwaterFog();
 void sub_487DA9();
-void ODM_LoadAndInitialize(std::string_view pLevelFilename,
-                           ODMRenderParams *thisa);
+
+/**
+ * @offset 0x4610AA
+ */
+void loadAndPrepareODM(MapId mapid, bool bLoading, ODMRenderParams *a2);
 Color GetLevelFogColor();
 int sub_47C3D7_get_fog_specular(int unused, int a2, float a3);
 unsigned int WorldPosToGridCellX(int);

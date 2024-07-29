@@ -13,25 +13,25 @@
 #include "Utility/MapAccess.h"
 #include "Utility/Exception.h"
 
-// Add std::string_view support to inicpp.
-namespace ini {
-template<>
-struct Convert<std::string_view> {
-    void decode(const std::string &value, std::string_view &result) {
-        result = value;
-    }
-};
-} // namespace ini
-
 void Config::load(std::string_view path) {
     if (!std::filesystem::exists(path))
-        throw Exception("config file '{}' doesn't exist", path);
+        throw Exception("Config file '{}' doesn't exist", path);
 
+    FileInputStream stream(path);
+    load(&stream);
+}
+
+void Config::save(std::string_view path) const {
+    FileOutputStream stream(path);
+    save(&stream);
+}
+
+void Config::load(InputStream *stream) {
     // We'd rather handle FS errors on our side.
-    std::istringstream stream(FileInputStream(path).readAll());
+    std::istringstream stdStream(stream->readAll());
 
     ini::IniFile ini;
-    ini.decode(stream); // This can throw.
+    ini.decode(stdStream); // This can throw.
 
     for (const auto &[sectionName, iniSection] : ini)
         if (ConfigSection *section = this->section(sectionName))
@@ -40,17 +40,17 @@ void Config::load(std::string_view path) {
                     entry->setString(iniValue.as<std::string_view>());
 }
 
-void Config::save(std::string_view path) const {
+void Config::save(OutputStream *stream) const {
     ini::IniFile ini;
     for (ConfigSection *section : sections())
         for (AnyConfigEntry *entry : section->entries())
             ini[section->name()][entry->name()] = entry->string();
 
-    std::ostringstream stream;
-    ini.encode(stream); // This can throw.
+    std::ostringstream stdStream;
+    ini.encode(stdStream); // This can throw.
 
     // Same here - we'd rather handle FS errors on our side.
-    FileOutputStream(path).write(stream.str());
+    stream->write(stdStream.str());
 }
 
 void Config::reset() {

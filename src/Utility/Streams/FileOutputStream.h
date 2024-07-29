@@ -22,6 +22,7 @@ class FileOutputStream : public OutputStream {
     using OutputStream::write;
     virtual void flush() override;
     virtual void close() override;
+    [[nodiscard]] virtual std::string displayPath() const override;
 
     [[nodiscard]] FILE *handle() {
         return _file;

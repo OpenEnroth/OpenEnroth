@@ -7,8 +7,8 @@
 #include "Engine/Localization.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Graphics/LocationFunctions.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Events/EventMap.h"
@@ -46,7 +46,7 @@ int savedEventStep;
 LevelDecoration *savedDecoration;
 
 void initDecorationEvents() {
-    int id = pDecorationList->GetDecorIdByName("Event Trigger");
+    DecorationId id = pDecorationList->GetDecorIdByName("Event Trigger");
 
     decorationsWithEvents.clear();
     for (int i = 0; i < pLevelDecorations.size(); ++i) {

@@ -12,7 +12,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineCallObserver.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
@@ -883,8 +883,8 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 result += v1;
                 break;
             case 23:
-                if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID)
-                    result += pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].name;
+                if (engine->_currentLoadedMapId != MAP_INVALID)
+                    result += pMapStats->pInfos[engine->_currentLoadedMapId].name;
                 else
                     result += localization->GetString(LSTR_UNKNOWN);
                 break;
@@ -1001,6 +1001,11 @@ void WindowManager::DeleteAllVisibleWindows() {
         // game ui should never be released and should always be at the back of the window list
         if (pWindow->eWindowType == WINDOW_GameUI) {
             assert(false && "WINDOW_GameUI is not at back of lWindowList");
+        }
+        // Child books button should be deleted by parent
+        if (pWindow->eWindowType == WINDOW_BooksButtonOverlay) {
+            lWindowList.pop_front();
+            continue;
         }
         pWindow->Release();
         delete pWindow;

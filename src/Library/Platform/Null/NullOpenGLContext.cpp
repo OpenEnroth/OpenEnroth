@@ -33,7 +33,8 @@ bool NullOpenGLContext::unbind() {
     return false;
 }
 
-void NullOpenGLContext::startOverlayFrame() {
+void *NullOpenGLContext::nativeHandle() {
+    return nullptr;
 }
 
 void NullOpenGLContext::swapBuffers() {

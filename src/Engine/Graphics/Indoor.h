@@ -219,7 +219,6 @@ struct IndoorLocation {
      */
     void toggleLight(signed int uLightID, unsigned int bToggle);
 
-    static unsigned int GetLocationIndex(std::string_view locationName);
     void DrawIndoorFaces(bool bD3D);
     void PrepareActorRenderList_BLV();
     void PrepareDecorationsRenderList_BLV(unsigned int uDecorationID, int uSectorID);
@@ -289,7 +288,7 @@ void BLV_UpdateUserInputAndOther();
  * @param uSectorID                     Actor's sector id.
  * @param[out] pFaceID                  Id of the closest floor/ceiling face for the provided position, or `-1`
  *                                      if wrong sector is supplied or actor is out of bounds. Pass `nullptr` to ignore.
- * @return                              Fixpoint Z coordinate of the floor/ceiling face for the given position.
+ * @return                              Float Z coordinate of the floor/ceiling face for the given position.
  *                                      If wrong sector is supplied or actor is out of bounds, `-30000` is
  *                                      returned.
  */
@@ -304,7 +303,11 @@ void BLV_ProcessPartyActions();
 void switchDoorAnimation(unsigned int uDoorID, DoorAction a2);
 int CalcDistPointToLine(int a1, int a2, int a3, int a4, int a5, int a6);
 void PrepareDrawLists_BLV();
-void PrepareToLoadBLV(bool bLoading);
+
+/**
+ * @offset 0x460A78
+ */
+void loadAndPrepareBLV(MapId mapid, bool bLoading);
 int SpawnEncounterMonsters(MapInfo *a1, int a2);
 int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing);
 void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2);

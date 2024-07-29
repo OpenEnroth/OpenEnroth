@@ -22,9 +22,9 @@ UNIT_TEST(LodWriter, TestWrite) {
     std::string file4 = std::string(1'000'000, '0');
 
     Blob lod;
-    BlobOutputStream stream(&lod);
+    BlobOutputStream stream(&lod, "some.lod");
 
-    LodWriter writer(&stream, "some.lod", info);
+    LodWriter writer(&stream, info);
     writer.write("1", Blob::view(file1));
     writer.write("2", Blob::view(file2));
     writer.write("3", Blob::view(file3));
@@ -32,7 +32,7 @@ UNIT_TEST(LodWriter, TestWrite) {
     writer.close();
     stream.close();
 
-    LodReader reader(std::move(lod), "some.lod");
+    LodReader reader(std::move(lod));
     EXPECT_EQ(reader.ls(), (std::vector<std::string>{"1", "2", "3", "4"}));
     EXPECT_EQ(reader.info().rootName, info.rootName);
     EXPECT_EQ(reader.info().description, info.description);

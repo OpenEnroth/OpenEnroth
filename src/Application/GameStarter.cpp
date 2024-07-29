@@ -9,7 +9,6 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/Random/Random.h"
 #include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
@@ -23,7 +22,6 @@
 #include "Engine/Components/Random/EngineRandomComponent.h"
 
 #include "GUI/Overlay/OverlaySystem.h"
-#include "GUI/Overlay/ImGuiWrapper.h"
 
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -81,8 +79,6 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
             _logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", _options.configPath);
         }
     }
-
-    _imGuiWrapper = std::make_unique<ImGuiWrapper>();
 
     // Finish logger init now that we know the desired log level.
     if (_options.logLevel) {

@@ -125,7 +125,7 @@ class OpenGLRenderer : public BaseRenderer {
     void DrawBillboards();
 
     virtual bool Reinitialize(bool firstInit) override;
-    virtual void ReloadShaders() override;
+    virtual bool ReloadShaders() override;
 
     virtual void flushAndScale() override;
     virtual void swapBuffers() override;
@@ -143,6 +143,9 @@ class OpenGLRenderer : public BaseRenderer {
     void DrawForcePerVerts();
 
     void SetFogParametersGL();
+
+    void _initImGui();
+    void _shutdownImGui();
 
     FrameLimiter _frameLimiter;
 
@@ -165,7 +168,6 @@ class OpenGLRenderer : public BaseRenderer {
     int GPU_MAX_UNIFORM_COMP{};
     int GPU_MAX_TOTAL_TEXTURES{};
 
-    bool InitShaders();
     OpenGLShader terrainshader;
     OpenGLShader outbuildshader;
     OpenGLShader bspshader;

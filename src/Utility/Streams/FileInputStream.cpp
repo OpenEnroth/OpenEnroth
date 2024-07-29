@@ -73,7 +73,11 @@ void FileInputStream::close() {
     closeInternal(true);
 }
 
-void FileInputStream::seek(size_t pos) {
+std::string FileInputStream::displayPath() const {
+    return _path;
+}
+
+void FileInputStream::seek(ssize_t pos) {
     assert(isOpen());
 
     if (fseeko(_file, 0, SEEK_END) != 0)
@@ -83,8 +87,7 @@ void FileInputStream::seek(size_t pos) {
     if (end == -1)
         Exception::throwFromErrno(_path);
 
-    if (pos > end)
-        pos = end; // Seek beyond EOF just seeks to EOF.
+    pos = std::clamp<ssize_t>(pos, 0, end); // Seek beyond EOF just seeks to EOF.
 
     if (fseeko(_file, pos, SEEK_SET) != 0)
         Exception::throwFromErrno(_path);
@@ -99,4 +102,5 @@ void FileInputStream::closeInternal(bool canThrow) {
     if (status != 0 && canThrow)
         Exception::throwFromErrno(_path);
     // TODO(captainurist): !canThrow => log OR attach
+    _path = {};
 }

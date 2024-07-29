@@ -29,7 +29,7 @@ class NullWindow : public PlatformWindow {
     virtual void setOrientations(PlatformWindowOrientations orientations) override;
     virtual PlatformWindowOrientations orientations() override;
     virtual Marginsi frameMargins() const override;
-    virtual uintptr_t systemHandle() const override;
+    virtual void *nativeHandle() const override;
     virtual void activate() override;
     virtual std::unique_ptr<PlatformOpenGLContext> createOpenGLContext(const PlatformOpenGLOptions &options) override;
 
@@ -43,5 +43,4 @@ class NullWindow : public PlatformWindow {
     PlatformWindowMode _mode = WINDOW_MODE_WINDOWED;
     bool _grabsMouse = false;
     PlatformWindowOrientations _orientations = LANDSCAPE_LEFT | LANDSCAPE_RIGHT | PORTRAIT_UP | PORTRAIT_DOWN;
-    uintptr_t _systemHandle = 0;
 };

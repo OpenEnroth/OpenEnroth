@@ -238,7 +238,7 @@ struct ItemGen_MM7 {
     /* 14 */ uint32_t attributes;
     /* 18 */ uint8_t bodyAnchor;
     /* 19 */ uint8_t maxCharges;
-    /* 1A */ uint8_t holderPlayer;
+    /* 1A */ uint8_t holderPlayer; // Only for full lich jars. 1-based index of the character whose essence it stored in it.
     /* 1B */ uint8_t placedInChest; // unknown unused 8-bit field, was repurposed
     /* 1C */ int64_t expireTime;
 };
@@ -1032,7 +1032,7 @@ void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst);
 
 struct DecorationDesc_MM6 {
     std::array<char, 32> name;
-    std::array<char, 32> field_20;
+    std::array<char, 32> type;
     int16_t uType;
     uint16_t uDecorationHeight;
     int16_t uRadius;

@@ -1,10 +1,10 @@
 #pragma once
 
 #include <cassert>
+#include <utility>
 
 #include "Engine/Spells/SpellEnums.h"
 
-#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Segment.h"
 
 #include "CharacterEnums.h"

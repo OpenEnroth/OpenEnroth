@@ -7,7 +7,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Camera.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -20,6 +20,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
+#include "Engine/MapEnumFunctions.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
@@ -113,6 +114,7 @@ static void setSpellRecovery(CastSpellInfo *pCastSpell,
     pPlayer->playReaction(SPEECH_CAST_SPELL);
 }
 
+// TODO(pskelton): caster index not supplied to buffs ".Apply"
 void CastSpellInfoHelpers::castSpell() {
     CharacterSkillType which_skill;
     AIDirection target_direction;
@@ -314,7 +316,7 @@ void CastSpellInfoHelpers::castSpell() {
                 pAudioPlayer->playSpellSound(pCastSpell->uSpellID, false, SOUND_MODE_EXCLUSIVE);
             }
         } else if (pCastSpell->uSpellID == SPELL_WATER_LLOYDS_BEACON) {
-            if (pCurrentMapName == "d05.blv") {  // Arena
+            if (engine->_currentLoadedMapId == MAP_ARENA) {
                 spellFailed(pCastSpell, LSTR_SPELL_FAILED);
             } else {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastLloydsBeacon, pCastSpell->casterCharacterIndex, spell_level);
@@ -962,7 +964,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION]
-                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_level, 0, 0);
+                        .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_level, 0, pCastSpell->casterCharacterIndex + 1);
                     break;
                 }
 
@@ -2779,7 +2781,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_DARK_SACRIFICE:
                 {
-                    if (bNoNPCHiring) {
+                    if (isHirelingsBlockedOnMap(engine->_currentLoadedMapId)) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);

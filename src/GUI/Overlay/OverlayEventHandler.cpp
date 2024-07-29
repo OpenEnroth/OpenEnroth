@@ -1,5 +1,6 @@
 #include "OverlayEventHandler.h"
 
+#include <imgui/backends/imgui_impl_sdl2.h>
 #include <imgui/imgui.h>
 
 OverlayEventHandler::OverlayEventHandler() : PlatformEventFilter(EVENTS_ALL) {
@@ -31,4 +32,11 @@ bool OverlayEventHandler::mouseEvent(PlatformMouseButton button, const Pointi &p
 
 bool OverlayEventHandler::wheelEvent(const PlatformWheelEvent *event) {
     return ImGui::GetIO().WantCaptureMouse;
+}
+
+bool OverlayEventHandler::nativeEvent(const PlatformNativeEvent *event) {
+    // Here we're assuming the native event is coming from SDL
+    const SDL_Event *sdlEvent = static_cast<const SDL_Event *>(event->nativeEvent);
+    ImGui_ImplSDL2_ProcessEvent(sdlEvent);
+    return false;
 }

@@ -12,7 +12,6 @@ NullWindow::NullWindow(NullPlatformSharedState *state): _state(state) {
 
     _position = _state->options.defaultWindowPosition;
     _size = _state->options.defaultWindowSize;
-    _systemHandle = _state->nextWinId++;
 }
 
 NullWindow::~NullWindow() = default;
@@ -89,8 +88,8 @@ Marginsi NullWindow::frameMargins() const {
     }
 }
 
-uintptr_t NullWindow::systemHandle() const {
-    return _systemHandle;
+void *NullWindow::nativeHandle() const {
+    return nullptr;
 }
 
 void NullWindow::activate() {

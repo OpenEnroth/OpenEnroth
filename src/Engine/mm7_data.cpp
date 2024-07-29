@@ -2393,8 +2393,8 @@ IndexedArray<IndexedArray<CharacterSkillMastery, CHARACTER_SKILL_FIRST, CHARACTE
 }};
 
 int ai_arrays_size;
-std::array<Pid, 500> ai_near_actors_targets_pid;
-std::array<unsigned int, 500> ai_near_actors_ids;
+std::vector<Pid> ai_near_actors_targets_pid;
+std::vector<unsigned int> ai_near_actors_ids;
 
 char byte_4FAA24;  // turn over break??
 // HWND dword_4FAA28; // idb
@@ -2410,8 +2410,6 @@ SpellId dword_507B00_spell_info_to_draw_in_popup;
 int dword_507CC0_activ_ch;
 bool OpenedTelekinesis;
 int enchantingActiveCharacter;
-unsigned int uIconID_TurnHour;
-int uIconID_CharacterFrame;  // idb
 int uSpriteID_Spell11;  // idb
 bool IsEnchantingInProgress;
 Duration ItemEnchantmentTimer;
@@ -2444,15 +2442,11 @@ int uDefaultTravelTime_ByFoot;
 MapWeatherFlags day_attrib;
 int day_fogrange_1; // fog start dist
 int day_fogrange_2; // fog end dist
-MapId dword_6BE13C_uCurrentlyLoadedLocationID;
 float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
 float fTurnSpeedMultiplier = 1.0f;
-std::string pCurrentMapName;
-MapId uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;
 
-char bNoNPCHiring = false;
 std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;

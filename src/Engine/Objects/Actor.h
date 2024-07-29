@@ -61,7 +61,7 @@ class Actor {
     void UpdateAnimation();
     MonsterHostility GetActorsRelation(Actor *a2);
     void SetRandomGoldIfTheresNoItem();
-    bool CanAct();
+    bool CanAct() const;
     bool IsNotAlive();
     bool IsPeasant();
 
@@ -126,8 +126,15 @@ class Actor {
     static void AI_StandOrBored(unsigned int uActorID, Pid uObjID,
                                 Duration uActionLength, AIDirection *a4);
     static void AI_FaceObject(unsigned int uActorID, Pid uObjID, AIDirection *Dir_In);
+
+    /**
+    * @param p1                            From Vec3f.
+    * @param p2                            To Vec3f.
+    * @param[out] pOut                     AIDirection from p1 to p2.
+    */
+    static void GetDirectionInfo(Vec3f p1, Vec3f p2, AIDirection* pOut);
     static void GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
-                                 AIDirection *pOut, int a4);
+                                 AIDirection *pOut, int PreferedZ);
     static void Explode(unsigned int uActorID);
     static void AI_RangedAttack(unsigned int uActorID, AIDirection *a2,
                                 int type, ActorAbility a4);
@@ -157,8 +164,7 @@ class Actor {
     static void AddOnDamageOverlay(unsigned int uActorID, int overlayType, int damage);
 
     static void Arena_summon_actor(MonsterId monster_id, Vec3f pos);
-    static void DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
-                                       const Vec3f &pVelocity);
+    static int DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const Vec3f &pVelocity);
     static void MakeActorAIList_ODM();
     static int MakeActorAIList_BLV();
     static void UpdateActorAI();

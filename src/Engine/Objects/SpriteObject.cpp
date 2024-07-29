@@ -19,6 +19,7 @@
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/ObjectList.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Objects/SpriteEnumFunctions.h"
 
@@ -26,7 +27,6 @@
 
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/BSPModel.h"
-#include "Engine/Graphics/Level/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -35,7 +35,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Math/FixPoint.h"
 
 // should be injected in SpriteObject but struct size cant be changed
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
@@ -213,6 +212,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         }
     }
 
+    // TODO(pskelton): move to collisions
     collision_state.check_hi = false;
     collision_state.radius_lo = object->uRadius;
     collision_state.radius_hi = 0;
@@ -252,8 +252,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         int collisionZ = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
         bool collisionOnWater = false;
         int collisionBmodelPid = 0;
-        Vec3i collisionPos = collision_state.new_position_lo.toInt() - Vec3i(0, 0, collision_state.radius_lo + 1);
-        float collisionLevel = ODM_GetFloorLevel(collisionPos.toFloat(), object->uHeight, &collisionOnWater, &collisionBmodelPid, 0);
+        Vec3f collisionPos = collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1);
+        float collisionLevel = ODM_GetFloorLevel(collisionPos, object->uHeight, &collisionOnWater, &collisionBmodelPid, 0);
         // TOOD(Nik-RE-dev): why initail "onWater" is used?
         if (onWater && collisionZ < (collisionLevel + 60)) {
             int splashZ = level + 60;
@@ -324,12 +324,12 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         //LABEL_74:
         pSpriteObjects[uLayingItemID].vVelocity *= 0.89263916f; // was 58500 fp
     }
-    Vec2i deltaXY = pSpriteObjects[uLayingItemID].vPosition.toInt().xy() - pLevelDecorations[collision_state.pid.id()].vPosition.toInt().xy();
-    int velLenXY = integer_sqrt(pSpriteObjects[uLayingItemID].vVelocity.xy().lengthSqr());
-    int velRotXY = TrigLUT.atan2(deltaXY.x, deltaXY.y);
+    Vec2f deltaXY = pSpriteObjects[uLayingItemID].vPosition.xy() - pLevelDecorations[collision_state.pid.id()].vPosition.xy();
+    float velLenXY = pSpriteObjects[uLayingItemID].vVelocity.xy().length();
+    float velRotXY = atan2(deltaXY.x, deltaXY.y);
 
-    pSpriteObjects[uLayingItemID].vVelocity.x = TrigLUT.cos(velRotXY) * velLenXY;
-    pSpriteObjects[uLayingItemID].vVelocity.y = TrigLUT.sin(velRotXY - TrigLUT.uIntegerHalfPi) * velLenXY;
+    pSpriteObjects[uLayingItemID].vVelocity.x = cos(velRotXY) * velLenXY;
+    pSpriteObjects[uLayingItemID].vVelocity.y = sin(velRotXY - pi / 2) * velLenXY;
     //goto LABEL_74; // This goto results in an infinite loop, commented out.
 }
 
@@ -361,10 +361,10 @@ void SpriteObject::updateObjectBLV(unsigned int uLayingItemID) {
     if (floor_lvl <= pSpriteObject->vPosition.z - 3) {
         pSpriteObject->vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
         // TODO(Nik-RE-dev): get rid of goto here
+        // TODO(pskelton): move to Collisions
 LABEL_25:
         collision_state.check_hi = false;
         collision_state.radius_lo = pObject->uRadius;
-        collision_state.ignored_face_id = -1;
         collision_state.radius_hi = 0;
         collision_state.total_move_distance = 0;
         for (int loop = 0; loop < 100; loop++) {
@@ -434,14 +434,14 @@ LABEL_25:
 
             int pidId = collision_state.pid.id();
             if (collision_state.pid.type() == OBJECT_Decoration) {
-                Vec2i deltaXY = pSpriteObject->vPosition.toInt().xy() - pLevelDecorations[pidId].vPosition.toInt().xy();
-                int velXYLen = integer_sqrt(pSpriteObject->vVelocity.xy().lengthSqr());
-                int velXYRot = TrigLUT.atan2(deltaXY.x, deltaXY.y);
-                pSpriteObject->vVelocity.x = TrigLUT.cos(velXYRot) * velXYLen;
-                pSpriteObject->vVelocity.y = TrigLUT.sin(velXYRot) * velXYLen;
+                Vec2f deltaXY = pSpriteObject->vPosition.xy() - pLevelDecorations[pidId].vPosition.xy();
+                float velXYLen = pSpriteObject->vVelocity.xy().length();
+                float velXYRot = atan2(deltaXY.x, deltaXY.y);
+                pSpriteObject->vVelocity.x = cos(velXYRot) * velXYLen;
+                pSpriteObject->vVelocity.y = sin(velXYRot) * velXYLen;
             }
+
             if (collision_state.pid.type() == OBJECT_Face) {
-                collision_state.ignored_face_id = collision_state.pid.id();
                 if (pIndoor->pFaces[pidId].uPolygonType != POLYGON_Floor) {
                     // Before this variable changed floor_lvl variable which is obviously invalid.
                     float dotFix = std::abs(dot(pIndoor->pFaces[pidId].facePlane.normal, pSpriteObject->vVelocity));
@@ -513,7 +513,7 @@ LABEL_25:
 }
 
 void SpriteObject::explosionTraps() {
-    MapInfo *pMapInfo = &pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)];
+    MapInfo *pMapInfo = &pMapStats->pInfos[engine->_currentLoadedMapId];
     int dir_x = std::abs(pParty->pos.x - this->vPosition.x);
     int dir_y = std::abs(pParty->pos.y - this->vPosition.y);
     int dir_z = std::abs(pParty->pos.z + pParty->eyeLevel - this->vPosition.z);
@@ -724,8 +724,8 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         }
     }
     if (pid.type() == OBJECT_Face && object->spell_caster_pid.type() != OBJECT_Character) {
-        if (object->spell_caster_pid.id() < 500) {  // bugfix  v2->spell_caster_pid.id()==1000
-            pActors[object->spell_caster_pid.id()].attributes |= ACTOR_UNKNOW5;
+        if (object->spell_caster_pid.id() < pActors.size()) {  // bugfix  v2->spell_caster_pid.id()==1000
+            pActors[object->spell_caster_pid.id()].attributes |= ACTOR_LAST_SPELL_MISSED;
         }
     }
 

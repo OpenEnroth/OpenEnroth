@@ -13,7 +13,7 @@ class SdlOpenGLContext: public PlatformOpenGLContext {
 
     virtual bool bind() override;
     virtual bool unbind() override;
-    virtual void startOverlayFrame() override;
+    virtual void *nativeHandle() override;
     virtual void swapBuffers() override;
     virtual void *getProcAddress(const char *name) override;
 

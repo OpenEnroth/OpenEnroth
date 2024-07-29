@@ -1,11 +1,11 @@
 #include "MapInfo.h"
 
 #include <cstdlib>
+#include <cstring>
 #include <sstream>
 #include <string>
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Transformations.h"
 

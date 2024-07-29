@@ -8,7 +8,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Camera.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -526,13 +526,13 @@ void updateHouseNPCTopics(int npc) {
     currentHouseNpc = npc;
     if (houseNpcs[npc].type == HOUSE_TRANSITION) {
         pDialogueWindow->Release();
+        // TODO(Nik-RE-dev): can use GUIWindow_Transition
         pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, render->GetRenderDimensions());
-        transition_button_label = houseNpcs[npc].label;
         pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, Io::InputAction::No, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
-        pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, Io::InputAction::Yes, transition_button_label, {ui_buttyes2});
+        pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, Io::InputAction::Yes, houseNpcs[npc].label, {ui_buttyes2});
         pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, UIMSG_HouseTransitionConfirmation, 1,
-                                      Io::InputAction::EventTrigger, transition_button_label);
-        pDialogueWindow->CreateButton({8, 8}, {460, 344}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, Io::InputAction::Yes, transition_button_label);
+                                      Io::InputAction::EventTrigger, houseNpcs[npc].label);
+        pDialogueWindow->CreateButton({8, 8}, {460, 344}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, Io::InputAction::Yes, houseNpcs[npc].label);
     } else {
         if (window_SpeakInHouse->getCurrentDialogue() != DIALOGUE_OTHER) {
             for (int i = 0; i < houseNpcs.size(); ++i) {

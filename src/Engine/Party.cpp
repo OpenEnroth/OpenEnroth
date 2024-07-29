@@ -183,23 +183,19 @@ void ActionQueue::Add(PartyAction action) {
     if (uNumActions < 30) pActions[uNumActions++] = action;
 }
 
-//----- (00497FC5) --------------------------------------------------------
-bool Party::_497FC5_check_party_perception_against_level() {
-    int uMaxPerception;  // edi@1
-    signed int v5;       // eax@3
-    bool result;         // eax@7
+bool Party::checkPartyPerceptionAgainstCurrentMap() {
+    int maxPerception = 0;
+    bool result = 0;
 
-    uMaxPerception = 0;
     for (Character &player : this->pCharacters) {
         if (player.CanAct()) {
-            v5 = player.GetPerception();
-            if (v5 > uMaxPerception) uMaxPerception = v5;
+            int playerPerception = player.GetPerception();
+            if (playerPerception > maxPerception)
+                maxPerception = playerPerception;
         }
     }
-    if (uLevelMapStatsID >= MAP_FIRST && uLevelMapStatsID <= MAP_LAST)
-        result = uMaxPerception >= 2 * pMapStats->pInfos[uLevelMapStatsID].perceptionDifficulty;
-    else
-        result = 0;
+    if (engine->_currentLoadedMapId >= MAP_FIRST && engine->_currentLoadedMapId <= MAP_LAST)
+        result = maxPerception >= 2 * pMapStats->pInfos[engine->_currentLoadedMapId].perceptionDifficulty;
     return result;
 }
 
@@ -1068,7 +1064,6 @@ bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
     }
 
     if (!pItemTable->pItems[pItem->uItemID].iconName.empty()) {
-        auto texture = assets->getImage_ColorKey(pItemTable->pItems[pItem->uItemID].iconName);
         int playerId = hasActiveCharacter() ? (pParty->_activeCharacter - 1) : 0;
         for (int i = 0; i < pCharacters.size(); i++, playerId++) {
             if (playerId >= pCharacters.size()) {
@@ -1083,14 +1078,8 @@ bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
                     pCharacters[playerId].playReaction(SPEECH_FOUND_ITEM);
                 }
 
-                if (texture) {
-                    texture->Release();
-                }
                 return true;
             }
-        }
-        if (texture) {
-            texture->Release();
         }
     } else {
         logger->warning("Invalid picture_name detected ::addItem()");

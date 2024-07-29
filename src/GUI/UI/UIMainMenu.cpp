@@ -6,6 +6,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/SaveLoad.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
@@ -15,6 +16,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
+
+#include "Library/Logger/Logger.h"
 
 GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
 
@@ -108,6 +111,18 @@ void GUIWindow_MainMenu::EventLoop() {
         case UIMSG_ChangeGameState:
             uGameState = GAME_FINISHED;
             break;
+        case UIMSG_QuickLoad: {
+            int slot = GetQuickSaveSlot();
+            if (slot != -1) {
+                pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+                pSavegameList->selectedSlot = slot;
+                SetCurrentMenuID(MENU_LoadingProcInMainMenu);
+            } else {
+                logger->error("QuickLoadGame:: No quick save could be found!");
+                pAudioPlayer->playUISound(SOUND_error);
+            }
+            break;
+        }
         default:
             break;
         }

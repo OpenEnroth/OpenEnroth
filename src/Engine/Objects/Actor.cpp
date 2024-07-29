@@ -9,7 +9,7 @@
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Overlays.h"
@@ -42,7 +42,6 @@
 #include "Library/Logger/Logger.h"
 
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Math/FixPoint.h"
 
 // should be injected into Actor but struct size cant be changed
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
@@ -171,7 +170,7 @@ void Actor::giveItem(signed int uActorID, ItemId uItemID, unsigned int bGive) {
 }
 
 //----- (0040894B) --------------------------------------------------------
-bool Actor::CanAct() {
+bool Actor::CanAct() const {
     bool stoned = this->buffs[ACTOR_BUFF_STONED].Active();
     bool paralyzed = this->buffs[ACTOR_BUFF_PARALYZED].Active();
     return !(stoned || paralyzed || this->aiState == Dying ||
@@ -861,6 +860,29 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     return;
 }
 
+void Actor::GetDirectionInfo(Vec3f p1, Vec3f p2, AIDirection* pOut) {
+    // TODO(pskelton): Should this be moved somewhere else - not actor related
+    Vec3f dir = p2 - p1;
+    float length = dir.length();
+    float deltaX = p2.x - p1.x;
+    float deltaY = p2.y - p1.y;
+    float deltaZ = p2.z - p1.z;
+    if (length <= 1.0) {
+        pOut->vDirection = Vec3f(1, 0, 0);
+        pOut->uDistance = 1;
+        pOut->uDistanceXZ = 1;
+        pOut->uYawAngle = 0;
+        pOut->uPitchAngle = 0;
+    } else {
+        dir.normalize();
+        pOut->vDirection = dir;
+        pOut->uDistance = length;
+        pOut->uDistanceXZ = std::sqrt(deltaX * deltaX + deltaY * deltaY);
+        pOut->uYawAngle = TrigLUT.atan2(deltaX, deltaY);
+        pOut->uPitchAngle = TrigLUT.atan2(pOut->uDistanceXZ, deltaZ);
+    }
+}
+
 //----- (004040E9) --------------------------------------------------------
 // // Get direction vector from object1 to object2,
 // // distance from object1 to object2 and Euler angles of the direction vector
@@ -956,25 +978,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
     }
 
-    Vec3f dir = out2 - out1;
-    float length = dir.length();
-    float deltaX = out2.x - out1.x;
-    float deltaY = out2.y - out1.y;
-    float deltaZ = out2.z - out1.z;
-    if (length <= 1.0) {
-        pOut->vDirection = Vec3f(1, 0, 0);
-        pOut->uDistance = 1;
-        pOut->uDistanceXZ = 1;
-        pOut->uYawAngle = 0;
-        pOut->uPitchAngle = 0;
-    } else {
-        dir.normalize();
-        pOut->vDirection = dir;
-        pOut->uDistance = length;
-        pOut->uDistanceXZ = std::sqrt(deltaX * deltaX + deltaY * deltaY);
-        pOut->uYawAngle = TrigLUT.atan2(deltaX, deltaY);
-        pOut->uPitchAngle = TrigLUT.atan2(pOut->uDistanceXZ, deltaZ);
-    }
+    GetDirectionInfo(out1, out2, pOut);
 }
 
 //----- (00404030) --------------------------------------------------------
@@ -1126,19 +1130,22 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
 
 //----- (00438CF3) --------------------------------------------------------
 void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
-    if (uLevelMapStatsID == MAP_INVALID || !pActors[uActorID].IsPeasant()) return;
-
-    if ((uLevelMapStatsID == MAP_BRACADA_DESERT || uLevelMapStatsID == MAP_CELESTE) && pParty->isPartyEvil())
+    if (engine->_currentLoadedMapId == MAP_INVALID || !pActors[uActorID].IsPeasant())
         return;
 
-    if ((uLevelMapStatsID == MAP_DEYJA || uLevelMapStatsID == MAP_PIT) && pParty->isPartyGood())
+    if ((engine->_currentLoadedMapId == MAP_BRACADA_DESERT || engine->_currentLoadedMapId == MAP_CELESTE) && pParty->isPartyEvil())
         return;
 
-    pParty->uFine += 100 * (pMapStats->pInfos[uLevelMapStatsID].baseStealingFine +
+    if ((engine->_currentLoadedMapId == MAP_DEYJA || engine->_currentLoadedMapId == MAP_PIT) && pParty->isPartyGood())
+        return;
+
+    pParty->uFine += 100 * (pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine +
                             pActors[uActorID].monsterInfo.level +
                             pParty->GetPartyReputation());
-    if (pParty->uFine < 0) pParty->uFine = 0;
-    if (pParty->uFine > 4000000) pParty->uFine = 4000000;
+    if (pParty->uFine < 0)
+        pParty->uFine = 0;
+    if (pParty->uFine > 4000000)
+        pParty->uFine = 4000000;
 
     if (currentLocationInfo().reputation < 10000)
         currentLocationInfo().reputation++;
@@ -1268,17 +1275,15 @@ bool Actor::IsPeasant() {
 //----- (0042EBEE) --------------------------------------------------------
 void Actor::StealFrom(unsigned int uActorID) {
     Character *pPlayer;     // edi@1
-    int v4;              // ebx@2
-    MapId v5;     // eax@2
+    int v4 = 0;              // ebx@2
     LocationInfo *v6;  // esi@4
     Duration v8;              // [sp+8h] [bp-4h]@6
 
     pPlayer = &pParty->pCharacters[pParty->activeCharacterIndex() - 1];
     if (pPlayer->CanAct()) {
         CastSpellInfoHelpers::cancelSpellCastInProgress();
-        v4 = 0;
-        v5 = pMapStats->GetMapInfo(pCurrentMapName);
-        if (v5 != MAP_INVALID) v4 = pMapStats->pInfos[v5].baseStealingFine;
+        if (engine->_currentLoadedMapId != MAP_INVALID)
+            v4 = pMapStats->pInfos[engine->_currentLoadedMapId].baseStealingFine;
         v6 = &currentLocationInfo();
         pPlayer->StealFromActor(uActorID, v4, v6->reputation++);
         v8 = pPlayer->GetAttackRecoveryTime(false);
@@ -2742,7 +2747,7 @@ void Actor::UpdateActorAI() {
             if (v81 < 0)
                 v81 = 0;
             // rand();
-            pActor->attributes &= ~ACTOR_UNKNOW5;  // ~0x40000
+            pActor->attributes &= ~ACTOR_LAST_SPELL_MISSED;  // ~0x40000
             if (v81 < 5120) {
                 v45 = pActor->special_ability_use_check(actor_id);
                 if (v45 == ABILITY_ATTACK1) {
@@ -2953,16 +2958,18 @@ void Actor::InitializeActors() {
     bool bPit = false;
     bool good = false;
     bool evil = false;
-    if (pCurrentMapName == "d25.blv") {  // the Celestia
+    if (engine->_currentLoadedMapId == MAP_CELESTE) {
         bCelestia = true;
     }
-    if (pCurrentMapName == "d26.blv") {  // the Pit
+    if (engine->_currentLoadedMapId == MAP_PIT) {
         bPit = true;
     }
-    if (pParty->isPartyGood()) good = true;
-    if (pParty->isPartyEvil()) evil = true;
+    if (pParty->isPartyGood())
+        good = true;
+    if (pParty->isPartyEvil())
+        evil = true;
 
-    ai_near_actors_targets_pid.fill(Pid());
+    std::ranges::fill(ai_near_actors_targets_pid, Pid());
 
     for (unsigned i = 0; i < pActors.size(); ++i) {
         Actor *actor = &pActors[i];
@@ -2991,7 +2998,7 @@ void Actor::InitializeActors() {
     }
 }
 //----- (00439474) --------------------------------------------------------
-void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const Vec3f &pVelocity) {
+int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const Vec3f &pVelocity) {
     SpriteObject *projectileSprite;  // ebx@1
     Actor *pMonster;                 // esi@7
     Duration extraRecoveryTime;           // qax@125
@@ -3015,12 +3022,12 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
         v61 = projectileSprite->field_60_distance_related_prolly_lod;
         a1 = projectileSprite->spell_caster_pid;
     }
-    if (a1.type() != OBJECT_Character) return;
+    if (a1.type() != OBJECT_Character) return 0;
 
     assert(a1.id() < 4);
     Character *character = &pParty->pCharacters[a1.id()];
     pMonster = &pActors[uActorID_Monster];
-    if (pMonster->IsNotAlive()) return;
+    if (pMonster->IsNotAlive()) return 0;
 
     pMonster->attributes |= ACTOR_NEARBY | ACTOR_ACTIVE;
     if (pMonster->aiState == Fleeing) pMonster->attributes |= ACTOR_FLEEING;
@@ -3058,7 +3065,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
         uDamageAmount = character->CalculateMeleeDamageTo(false, false, pMonster->monsterInfo.id);
         if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
             character->playReaction(SPEECH_ATTACK_MISS);
-            return;
+            return 0;
         }
     } else {
         v61 = projectileSprite->field_60_distance_related_prolly_lod;
@@ -3069,7 +3076,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
             v61 = int_get_vector_length(d1, d2, d3);
 
             if (v61 >= 5120 && !(pMonster->attributes & ACTOR_FULL_AI_STATE))  // 0x400
-                return;
+                return 0;
             else if (v61 >= 2560)
                 v61 = 2;
             else
@@ -3086,7 +3093,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
                 uDamageAmount = character->CalculateMeleeDamageTo(true, true, MONSTER_INVALID);
                 if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
-                    return;
+                    return 0;
                 }
                 break;
             case SPELL_101:
@@ -3097,7 +3104,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
                 IsAdditionalDamagePossible = true;
                 if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
-                    return;
+                    return 0;
                 }
                 break;
             case SPELL_EARTH_BLADES:
@@ -3112,7 +3119,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
                 IsAdditionalDamagePossible = false;
                 if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
-                    return;
+                    return 0;
                 }
                 break;
             case SPELL_EARTH_STUN:
@@ -3121,7 +3128,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
                 hit_will_stun = 1;
                 if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
-                    return;
+                    return 0;
                 }
                 break;
             case SPELL_BOW_ARROW:
@@ -3136,7 +3143,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
                     attackElement = DAMAGE_FIRE;
                 } else if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
-                    return;
+                    return 0;
                 }
                 break;
 
@@ -3197,7 +3204,7 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
     pMonster->currentHP -= uDamageAmount;
     if (uDamageAmount == 0 && !hit_will_stun) {
         character->playReaction(SPEECH_ATTACK_MISS);
-        return;
+        return 0;
     }
     if (pMonster->currentHP > 0) {
         Actor::AI_Stun(uActorID_Monster, a1, 0);
@@ -3251,6 +3258,8 @@ void Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const 
         pMonster->velocity = 50 * knockbackValue * pVelocity;
     }
     Actor::AddOnDamageOverlay(uActorID_Monster, 1, v61);
+
+    return uDamageAmount;
 }
 
 //----- (004BBF61) --------------------------------------------------------
@@ -3640,7 +3649,7 @@ void Actor::LootActor() {
 //----- (00427102) --------------------------------------------------------
 bool Actor::_427102_IsOkToCastSpell(SpellId spell) {
     switch (spell) {
-        case SPELL_BODY_POWER_CURE: {
+        case SPELL_BODY_POWER_CURE: { // TODO(pskelton): Only cure below half health?
             if (this->currentHP >= this->monsterInfo.hp) return false;
             return true;
         }
@@ -3681,6 +3690,8 @@ bool Actor::_427102_IsOkToCastSpell(SpellId spell) {
             return this->buffs[ACTOR_BUFF_FATE].Inactive();
         case SPELL_SPIRIT_HEROISM:
             return this->buffs[ACTOR_BUFF_HEROISM].Inactive();
+        case SPELL_NONE:
+            return false;
         default:
             return true;
     }
@@ -3937,13 +3948,14 @@ void Actor::MakeActorAIList_ODM() {
     // use stable_sort to make tests work across all platforms
     std::stable_sort(activeActorsDistances.begin(), activeActorsDistances.end(), [] (std::pair<int, int> a, std::pair<int, int> b) { return a.second < b.second; });
 
-    // and takes nearest 30
-    for (int i = 0; (i < 30) && (i < activeActorsDistances.size()); i++) {
+    // and takes nearest amount
+    int configLimit = engine->config->gameplay.MaxActiveAIActors.value();
+    for (int i = 0; (i < configLimit) && (i < activeActorsDistances.size()); i++) {
         ai_near_actors_ids[i] = activeActorsDistances[i].first;
         pActors[ai_near_actors_ids[i]].attributes |= ACTOR_FULL_AI_STATE;
     }
 
-    ai_arrays_size = std::min(30, (int)activeActorsDistances.size());
+    ai_arrays_size = std::min(configLimit, (int)activeActorsDistances.size());
 }
 
 //----- (004016FA) --------------------------------------------------------
@@ -4024,13 +4036,14 @@ int Actor::MakeActorAIList_BLV() {
         }
     }
 
-    // activate ai state for first 30 actors from list
-    for (int i = 0; (i < 30) && (i < pickedActorIds.size()); i++) {
+    // activate ai state for first x actors from list
+    int configLimit = engine->config->gameplay.MaxActiveAIActors.value();
+    for (int i = 0; (i < configLimit) && (i < pickedActorIds.size()); i++) {
         ai_near_actors_ids[i] = pickedActorIds[i];
         pActors[pickedActorIds[i]].attributes |= ACTOR_FULL_AI_STATE;
     }
 
-    ai_arrays_size = std::min(30, (int)pickedActorIds.size());
+    ai_arrays_size = std::min(configLimit, (int)pickedActorIds.size());
 
     return ai_arrays_size;
 }
@@ -4400,6 +4413,10 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
     // v18 = NumToSpawn;
     if (NumToSpawn <= 0) return;
 
+    // Config multiplier now
+    NumToSpawn = std::ceil(NumToSpawn * engine->config->gameplay.SpawnCountMultiplier.value());
+    NumToSpawn = std::clamp(NumToSpawn, 1, engine->config->gameplay.MaxActors.value());
+
     pSector = 0;
     pPosX = spawn->vPosition.x;
     a4 = spawn->vPosition.y;
@@ -4514,7 +4531,6 @@ void evaluateAoeDamage() {
     for (AttackDescription &attack : attackList) {
         ObjectType attackerType = attack.pid.type();
         int attackerId = attack.pid.id();
-        //Vec3i attackVector = Vec3i(0, 0, 0);
 
         // attacker is an item (sprite)
         if (attackerType == OBJECT_Item) {
@@ -4543,10 +4559,10 @@ void evaluateAoeDamage() {
                 }
             } else {  // Actor (peasant) damage from monsters
                 if (actor->buffs[ACTOR_BUFF_PARALYZED].Active() || actor->CanAct()) {
-                    Vec3i distanceVec = actor->pos.toInt() + Vec3i(0, 0, actor->height / 2) - attack.pos.toInt();
-                    int distanceSq = distanceVec.lengthSqr();
-                    int attackRange = attack.attackRange + actor->radius;
-                    int attackRangeSq = attackRange * attackRange;
+                    Vec3f distanceVec = actor->pos + Vec3f(0, 0, actor->height / 2) - attack.pos;
+                    float distanceSq = distanceVec.lengthSqr();
+                    float attackRange = attack.attackRange + actor->radius;
+                    float attackRangeSq = attackRange * attackRange;
                     Vec3f attackVector = Vec3f(distanceVec.x, distanceVec.y, actor->pos.z);
                     attackVector.normalize();
 
@@ -4577,10 +4593,10 @@ void evaluateAoeDamage() {
 
             for (int actorID = 0; actorID < pActors.size(); ++actorID) {
                 if (pActors[actorID].CanAct()) {
-                    Vec3i distanceVec = pActors[actorID].pos.toInt() + Vec3i(0, 0, pActors[actorID].height / 2) - attack.pos.toInt();
-                    int distanceSq = distanceVec.lengthSqr();
-                    int attackRange = attack.attackRange + pActors[actorID].radius;
-                    int attackRangeSq = attackRange * attackRange;
+                    Vec3f distanceVec = pActors[actorID].pos + Vec3f(0, 0, pActors[actorID].height / 2) - attack.pos;
+                    float distanceSq = distanceVec.lengthSqr();
+                    float attackRange = attack.attackRange + pActors[actorID].radius;
+                    float attackRangeSq = attackRange * attackRange;
                     // TODO: using absolute Z here is BS, it's used as speed in ItemDamageFromActor
                     Vec3f attVF = Vec3f(distanceVec.x, distanceVec.y, pActors[actorID].pos.z);
                     attVF.normalize();
@@ -4683,7 +4699,7 @@ Actor *AllocateActor(bool appendOnly) {
         }
     }
 
-    if (pActors.size() >= 500)
+    if (pActors.size() >= engine->config->gameplay.MaxActors.value())
         return nullptr; // Too many actors.
 
     return &pActors.emplace_back(Actor(pActors.size()));

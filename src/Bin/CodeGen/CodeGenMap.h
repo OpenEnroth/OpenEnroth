@@ -9,7 +9,6 @@
 #include <vector>
 #include <algorithm>
 
-#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/String/Format.h"
 #include "Utility/String/TransparentFunctors.h"
 

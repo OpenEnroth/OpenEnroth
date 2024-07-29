@@ -5,7 +5,7 @@
 
 #include "Engine/Events/EventEnums.h"
 #include "Engine/Events/RawEvent.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Engine.h"

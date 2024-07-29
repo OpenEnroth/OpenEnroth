@@ -59,6 +59,9 @@ def main():
         data = open_log_file(log_file)
         if data == None:
             return 1
+        # New LLS version produces json file with empty list if there are no errors
+        if len(data) == 0:
+            return 0
 
         print_lls(f"Parsing {len(data.items())} Lua Files containing issues...")
         files_with_errors = parse_log(data)

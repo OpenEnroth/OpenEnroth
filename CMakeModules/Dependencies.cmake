@@ -50,9 +50,9 @@ endfunction()
 
 macro(resolve_dependencies) # Intentionally a macro - we want set() to work in parent scope.
     if(OE_USE_PREBUILT_DEPENDENCIES)
-        # "r2" is version as set in yml files in OpenEnroth_Dependencies, "master" is a branch name. This way it's
+        # "r3" is version as set in yml files in OpenEnroth_Dependencies, "master" is a branch name. This way it's
         # possible to test with dependencies built from different branches of the OpenEnroth_Dependencies repo.
-        set(PREBUILT_DEPS_TAG "deps_r2_master")
+        set(PREBUILT_DEPS_TAG "deps_r3_master")
         message(STATUS "Using prebuilt dependencies with PREBUILT_DEPS_TAG=${PREBUILT_DEPS_TAG}")
 
         set(PREBUILT_DEPS_BUILD_TYPE "${CMAKE_BUILD_TYPE}")

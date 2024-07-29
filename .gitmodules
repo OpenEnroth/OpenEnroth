@@ -32,9 +32,6 @@
 [submodule "thirdparty/cpplint"]
 	path = thirdparty/cpplint
 	url = https://github.com/cpplint/cpplint.git
-[submodule "thirdparty/backward_cpp"]
-	path = thirdparty/backward_cpp
-	url = https://github.com/captainurist/backward-cpp.git
 [submodule "thirdparty/glob"]
 	path = thirdparty/glob
 	url = https://github.com/p-ranav/glob.git
@@ -48,3 +45,6 @@
 [submodule "thirdparty/inifile_cpp"]
 	path = thirdparty/inifile_cpp
 	url = https://github.com/Rookfighter/inifile-cpp.git
+[submodule "thirdparty/backward_cpp"]
+	path = thirdparty/backward_cpp
+	url = https://github.com/OpenEnroth/backward-cpp.git

@@ -12,8 +12,8 @@
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -50,7 +50,6 @@
 
 #include "Utility/String/Ascii.h"
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Math/FixPoint.h"
 #include "Utility/Exception.h"
 
 IndoorLocation *pIndoor = nullptr;
@@ -135,15 +134,6 @@ static constexpr IndexedArray<SoundId, MAP_FIRST, MAP_LAST> pDoorSoundIDsByLocat
     {MAP_SMALL_HOUSE,               SOUND_stone_door0101},
     {MAP_ARENA,                     SOUND_wood_door0101}
 };
-
-// all locations which should have special tranfer message
-// dragon caves, markham, bandit cave, haunted mansion
-// barrow 7, barrow 9, barrow 10, setag tower
-// wromthrax cave, toberti, hidden tomb
-std::array<const char *, 11> _4E6BDC_loc_names = {
-    "mdt12.blv", "d18.blv",   "mdt14.blv", "d37.blv",
-    "mdk01.blv", "mdt01.blv", "mdr01.blv", "mdt10.blv",
-    "mdt09.blv", "mdt15.blv", "mdt11.blv"};
 
 //----- (0043F39E) --------------------------------------------------------
 void PrepareDrawLists_BLV() {
@@ -283,15 +273,6 @@ void IndoorLocation::Release() {
     this->bLoaded = 0;
 }
 
-//----- (00444810) --------------------------------------------------------
-// index of special transfer message, 0 otherwise
-unsigned int IndoorLocation::GetLocationIndex(std::string_view locationName) {
-    for (unsigned i = 0; i < _4E6BDC_loc_names.size(); ++i)
-        if (ascii::noCaseEquals(locationName, _4E6BDC_loc_names[i]))
-            return i + 1;
-    return 0;
-}
-
 void IndoorLocation::toggleLight(signed int sLightID, unsigned int bToggle) {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR &&
         (sLightID <= pIndoor->pLights.size() - 1) && (sLightID >= 0)) {
@@ -342,7 +323,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
             if (dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)
                 respawn_interval_days = 0x1BAF800;
 
-            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pCurrentMapName != "d29.dlv")
+            if (!respawnInitial && num_days_played - delta.header.info.lastRespawnDay >= respawn_interval_days && pMapStats->GetMapInfo(filename) != MAP_CASTLE_HARMONDALE)
                 respawnTimed = true;
         } catch (const Exception &e) {
             logger->error("Failed to load '{}', respawning location: {}", dlv_filename, e.what());
@@ -494,6 +475,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
 
 //----- (00498A41) --------------------------------------------------------
 void BLVFace::_get_normals(Vec3f *outU, Vec3f *outV) {
+    // TODO(pskelton): these arent face normals - they are texture shift vectors
     // TODO(captainurist): code looks very similar to Camera3D::GetFacetOrientation
     if (this->uPolygonType == POLYGON_VerticalWall) {
         outU->x = -this->facePlane.normal.y;
@@ -673,8 +655,8 @@ bool BLVFaceExtra::HasEventHint() {
 //----- (0046F228) --------------------------------------------------------
 void BLV_UpdateDoors() {
     SoundId eDoorSoundID = SOUND_wood_door0101;
-    if (dword_6BE13C_uCurrentlyLoadedLocationID != MAP_INVALID)
-        eDoorSoundID = pDoorSoundIDsByLocationID[dword_6BE13C_uCurrentlyLoadedLocationID];
+    if (engine->_currentLoadedMapId != MAP_INVALID)
+        eDoorSoundID = pDoorSoundIDsByLocationID[engine->_currentLoadedMapId];
 
     // loop over all doors
     for (unsigned i = 0; i < pIndoor->pDoors.size(); ++i) {
@@ -851,7 +833,6 @@ void UpdateActors_BLV() {
                 if (actor.velocity.z < 0)
                     actor.velocity.z = 0;
             } else {
-                // fixpoint(45000) = 0.68664550781, no idea what the actual semantics here is.
                 if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.68664550781f) // was 45000 fixpoint
                     actor.velocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
             }
@@ -872,49 +853,49 @@ void UpdateActors_BLV() {
     }
 }
 
-//----- (00460A78) --------------------------------------------------------
-void PrepareToLoadBLV(bool bLoading) {
+void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     unsigned int respawn_interval;  // ebx@1
     MapInfo *map_info;              // edi@9
     bool v28;                       // zf@81
     bool alertStatus;                        // [sp+404h] [bp-10h]@1
     bool indoor_was_respawned = true;                      // [sp+40Ch] [bp-8h]@1
+    std::string mapFilename;
 
     respawn_interval = 0;
     pGameLoadingUI_ProgressBar->Reset(0x20u);
-    bNoNPCHiring = false;
     uCurrentlyLoadedLevelType = LEVEL_INDOOR;
     pBLVRenderParams->uPartySectorID = 0;
     pBLVRenderParams->uPartyEyeSectorID = 0;
 
-    engine->SetUnderwater(Is_out15odm_underwater());
+    engine->SetUnderwater(isMapUnderwater(mapid));
 
-    if ((pCurrentMapName == "out15.odm") || (pCurrentMapName == "d23.blv")) {
-        bNoNPCHiring = true;
-    }
     //pPaletteManager->pPalette_tintColor[0] = 0;
     //pPaletteManager->pPalette_tintColor[1] = 0;
     //pPaletteManager->pPalette_tintColor[2] = 0;
     //pPaletteManager->RecalculateAll();
     pParty->_delayedReactionTimer = 0_ticks;
-    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
-    if (map_id != MAP_INVALID) {
-        map_info = &pMapStats->pInfos[map_id];
-        respawn_interval = pMapStats->pInfos[map_id].respawnIntervalDays;
+
+    if (mapid != MAP_INVALID) {
+        mapFilename = pMapStats->pInfos[mapid].fileName;
+        map_info = &pMapStats->pInfos[mapid];
+        respawn_interval = pMapStats->pInfos[mapid].respawnIntervalDays;
         alertStatus = GetAlertStatus();
+
+        assert(ascii::noCaseEquals(mapFilename.substr(mapFilename.rfind('.') + 1), "blv"));
     } else {
+        // TODO(Nik-RE-dev): why there's logic for loading maps that are not listed in info?
+        mapFilename = "";
         map_info = nullptr;
     }
-    dword_6BE13C_uCurrentlyLoadedLocationID = map_id;
 
     pStationaryLightsStack->uNumLightsActive = 0;
-    pIndoor->Load(pCurrentMapName, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);
+    pIndoor->Load(mapFilename, pParty->GetPlayingTime().toDays() + 1, respawn_interval, &indoor_was_respawned);
     if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN)) {
         Actor::InitializeActors();
         SpriteObject::InitializeSpriteObjects();
     }
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_LOADING_SAVEGAME_SKIP_RESPAWN;
-    if (map_id == MAP_INVALID)
+    if (mapid == MAP_INVALID)
         indoor_was_respawned = false;
 
     if (indoor_was_respawned) {
@@ -1010,7 +991,7 @@ void PrepareToLoadBLV(bool bLoading) {
 
     for (unsigned i = 0; i < pActors.size(); ++i) {
         if (pActors[i].attributes & ACTOR_UNKNOW7) {
-            if (map_id == MAP_INVALID) {
+            if (mapid == MAP_INVALID) {
                 pActors[i].monsterInfo.field_3E = 19;
                 pActors[i].attributes |= ACTOR_UNKNOW11;
                 continue;
@@ -1094,7 +1075,7 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
         // And if this z is ceiling z, then this will place the actor above the ceiling.
         float z_calc;
         if (pFloor->uPolygonType == POLYGON_Floor || pFloor->uPolygonType == POLYGON_Ceiling) {
-            z_calc = pIndoor->pVertices[pFloor->pVertexIDs[0]].z;
+            z_calc = pIndoor->pVertices[pFloor->pVertexIDs[0]].z; // POLYGON_Floor has normal (0,0,1)
         } else {
             z_calc = pFloor->zCalc.calculate(pos.x, pos.y);
         }
@@ -1582,7 +1563,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         if (pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING)) {
             // flying was previously used to prevent fall damage from jump spell
             pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
-        } else {
+        } else if (!engine->config->gameplay.NoIndoorFallDamage.value()) {
             pParty->giveFallDamage(pParty->uFallStartZ - pParty->pos.z);
         }
     }
@@ -1594,7 +1575,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->uFallStartZ = pParty->pos.z;
     } else if (pParty->pos.z <= floorZ + 32) {
         not_high_fall = true;
-        pParty->uFallStartZ = pParty->pos.z;
     }
 
     // not hovering & stepped onto a new face => activate potential pressure plate.
@@ -1721,11 +1701,12 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     if (isAboveGround) {
         pParty->velocity.z += -2.0f * pEventTimer->dt().ticks() * GetGravityStrength();
-        if (pParty->velocity.z < -500) {
+        if (pParty->velocity.z < -500 && !bFeatherFall && pParty->pos.z - floorZ > 1000) {
             for (Character &character : pParty->pCharacters) {
                 if (!character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-                    !character.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {  // was 8
-                    character.playEmotion(CHARACTER_EXPRESSION_SCARED, 0_ticks);
+                    !character.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS) &&
+                    character.CanAct()) {  // was 8
+                    character.playReaction(SPEECH_FALLING);
                 }
             }
         }

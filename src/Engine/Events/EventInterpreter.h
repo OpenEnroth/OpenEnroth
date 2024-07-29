@@ -6,6 +6,8 @@
 #include "Engine/Events/EventIR.h"
 #include "Engine/Events/EventMap.h"
 
+#include "Library/Geometry/Vec.h"
+
 class EventInterpreter {
  public:
      bool executeRegular(int startStep);
@@ -27,3 +29,6 @@ class EventInterpreter {
      bool _mapExitTriggered = false;
      CharacterChoosePolicy _who = CHOOSE_PARTY;
 };
+
+void spawnMonsters(int16_t typeindex, int16_t level, int count,
+    Vec3f pos, int group, unsigned int uUniqueName);

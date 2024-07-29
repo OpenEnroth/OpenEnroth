@@ -21,12 +21,18 @@ SndReader::SndReader(std::string_view path) {
     open(path);
 }
 
+SndReader::SndReader(Blob blob) {
+    open(std::move(blob));
+}
+
 SndReader::~SndReader() = default;
 
 void SndReader::open(std::string_view path) {
     close();
+    open(Blob::fromFile(path));
+}
 
-    Blob blob = Blob::fromFile(path);
+void SndReader::open(Blob blob) {
     BlobInputStream stream(blob);
 
     std::vector<SndEntry> entries;
@@ -36,24 +42,22 @@ void SndReader::open(std::string_view path) {
     for (SndEntry &entry : entries) {
         std::string name = ascii::toLower(entry.name);
         if (files.contains(name))
-            throw Exception("File '{}' is not a valid SND: contains duplicate entries for '{}'", path, name);
+            throw Exception("File '{}' is not a valid SND: contains duplicate entries for '{}'", blob.displayPath(), name);
 
         if (entry.offset + entry.size > blob.size())
-            throw Exception("File '{}' is not a valid SND: entry '{}' points outside the SND file", path, entry.name);
+            throw Exception("File '{}' is not a valid SND: entry '{}' points outside the SND file", blob.displayPath(), entry.name);
 
         files.emplace(std::move(name), std::move(entry));
     }
 
     // All good, this is a valid SND, can update `this`.
     _snd = std::move(blob);
-    _path = path;
     _files = std::move(files);
 }
 
 void SndReader::close() {
     // Double-closing is OK.
     _snd = Blob();
-    _path = {};
     _files = {};
 }
 
@@ -68,13 +72,13 @@ Blob SndReader::read(std::string_view filename) const {
 
     const auto pos = _files.find(ascii::toLower(filename));
     if (pos == _files.cend())
-        throw Exception("Entry '{}' doesn't exist in SND file '{}'", filename, _path);
+        throw Exception("Entry '{}' doesn't exist in SND file '{}'", filename, _snd.displayPath());
     const SndEntry &entry = pos->second;
 
     Blob result = _snd.subBlob(entry.offset, entry.size);
     if (entry.decompressedSize && entry.decompressedSize != entry.size)
         result = zlib::uncompress(result, entry.decompressedSize);
-    return result;
+    return result.withDisplayPath(fmt::format("{}/{}", _snd.displayPath(), filename));
 }
 
 std::vector<std::string> SndReader::ls() const {

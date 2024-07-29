@@ -1,8 +1,9 @@
 #include "OpenALTrack16.h"
 
 #include <memory>
+#include <utility>
 
-#include "Media/AudioFileDataSource.h"
+#include "Media/AudioBufferDataSource.h"
 
 #include "Library/Logger/Logger.h"
 
@@ -178,7 +179,7 @@ bool OpenALTrack16::Update() {
     DrainBuffers();
 
     while (uiReservedData < uiReservedDataMinimum) {
-        std::shared_ptr<Blob> buffer = pDataSource->GetNextBuffer();
+        Blob buffer = pDataSource->GetNextBuffer();
 
         if (!buffer) {
             pDataSource->Close();
@@ -196,7 +197,7 @@ bool OpenALTrack16::Update() {
             return false;
         }
 
-        alBufferData(al_buffer, al_format, buffer->data(), buffer->size(), al_sample_rate);
+        alBufferData(al_buffer, al_format, buffer.data(), buffer.size(), al_sample_rate);
         if (checkOpenALError()) {
             return false;
         }
@@ -206,16 +207,16 @@ bool OpenALTrack16::Update() {
             return false;
         }
 
-        uiReservedData += buffer->size();
+        uiReservedData += buffer.size();
     }
 
     return true;
 }
 
-PAudioTrack CreateAudioTrack(std::string_view file_path) {
+PAudioTrack CreateAudioTrack(Blob data) {
     PAudioTrack track = std::make_shared<OpenALTrack16>();
 
-    PAudioDataSource source = CreateAudioFileDataSource(file_path);
+    PAudioDataSource source = CreateAudioBufferDataSource(std::move(data));
     if (!track->Open(source)) {
         track = nullptr;
     }

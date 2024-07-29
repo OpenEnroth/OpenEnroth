@@ -53,7 +53,7 @@ bool OpenALAudioDataSource::Open() {
     }
 
     while (true) {
-        std::shared_ptr<Blob> buffer = _baseDataSource->GetNextBuffer();
+        Blob buffer = _baseDataSource->GetNextBuffer();
         if (!buffer) {
             break;
         }
@@ -65,7 +65,7 @@ bool OpenALAudioDataSource::Open() {
             break;
         }
 
-        alBufferData(al_buffer, al_format, buffer->data(), buffer->size(), al_sample_rate);
+        alBufferData(al_buffer, al_format, buffer.data(), buffer.size(), al_sample_rate);
         if (checkOpenALError()) {
             result = false;
             break;

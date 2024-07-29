@@ -7,8 +7,8 @@
 #include "Engine/ArenaEnumFunctions.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
@@ -457,7 +457,7 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
     dst->attributes = std::to_underlying(src.uAttributes);
     dst->bodyAnchor = std::to_underlying(src.uBodyAnchor);
     dst->maxCharges = src.uMaxCharges;
-    dst->holderPlayer = src.uHolderPlayer;
+    dst->holderPlayer = src.uHolderPlayer + 1;
     dst->placedInChest = src.placedInChest;
     snapshot(src.uExpireTime, &dst->expireTime);
 }
@@ -486,7 +486,7 @@ void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->uAttributes = ItemFlags(src.attributes);
     dst->uBodyAnchor = static_cast<ItemSlot>(src.bodyAnchor);
     dst->uMaxCharges = src.maxCharges;
-    dst->uHolderPlayer = src.holderPlayer;
+    dst->uHolderPlayer = src.holderPlayer - 1;
     dst->placedInChest = src.placedInChest;
     reconstruct(src.expireTime, &dst->uExpireTime);
 }
@@ -1612,7 +1612,7 @@ void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst) {
 
 void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
     reconstruct(src.name, &dst->name);
-    reconstruct(src.field_20, &dst->field_20);
+    reconstruct(src.type, &dst->type);
     dst->uType = src.uType;
     dst->uDecorationHeight = src.uDecorationHeight;
     dst->uRadius = src.uRadius;
@@ -1693,7 +1693,7 @@ void reconstruct(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
 }
 
 void reconstruct(const LevelDecoration_MM7 &src, LevelDecoration *dst) {
-    dst->uDecorationDescID = src.uDecorationDescID;
+    dst->uDecorationDescID = static_cast<DecorationId>(src.uDecorationDescID);
     dst->uFlags = LevelDecorationFlags(src.uFlags);
     dst->vPosition = src.vPosition.toFloat();
     dst->_yawAngle = (TrigLUT.uIntegerHalfPi * src.field_1A) / 90;
