@@ -6,7 +6,7 @@ ImGuiDemoOverlay.init = function ()
 end
 
 ImGuiDemoOverlay.update = function ()
-    imgui.ShowDemoWindow()
+    imgui.showDemoWindow()
 end
 
 ImGuiDemoOverlay.close = function ()

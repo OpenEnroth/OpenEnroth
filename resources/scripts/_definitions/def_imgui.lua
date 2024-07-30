@@ -5,7 +5,7 @@
 --- @class ImGuiBindings
 --- @field beginWindow fun(name:string) : boolean
 --- @field beginWindow fun(name:string, isOpen:boolean, flags:ImGuiWindowFlags) : boolean, boolean
---- @field end fun()
+--- @field endWindow fun()
 --- Window
 --- @field getWindowSize fun() : number, number
 --- @field setNextWindowSize fun(w: number, h: number, cond:ImGuiCond)

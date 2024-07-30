@@ -115,7 +115,7 @@ int inputTextCallback(ImGuiInputTextCallbackData *data) {
 std::tuple<std::string, bool> imGuiInputTextWithHint(const std::string &label, const std::string &hint, std::string text, ImGuiInputTextFlags flags, sol::function callback) {
     ImGuiInputTextUserData userData{ &text, callback.valid() ? &callback : nullptr };
     bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), text.data(), text.capacity() + 1, flags | ImGuiInputTextFlags_CallbackResize, inputTextCallback, &userData);
-    return std::make_tuple(text, selected);
+    return { text, selected };
 }
 
 void InitEnums(sol::table &table) {
@@ -471,11 +471,11 @@ void ImGuiBindings::Init(sol::state_view &solState, sol::table &table) {
 
     ImGui.set_function("showDemoWindow", []() { ImGui::ShowDemoWindow(); });
 
-    ImGui.set_function("begin", sol::overload(
+    ImGui.set_function("beginWindow", sol::overload(
         sol::resolve<bool(const std::string &)>(imGuiBegin),
         sol::resolve<std::tuple<bool, bool>(const std::string &, bool, int)>(imGuiBegin)
     ));
-    ImGui.set_function("end", End);
+    ImGui.set_function("endWindow", End);
 
     ImGui.set_function("beginChild", imGuiBeginChild);
     ImGui.set_function("endChild", imGuiEndChild);
@@ -483,7 +483,6 @@ void ImGuiBindings::Init(sol::state_view &solState, sol::table &table) {
     ImGui.set_function("isWindowHovered", imGuiIsWindowHovered);
     ImGui.set_function("getWindowSize", imGuiGetWindowSize);
 
-    // Prefer  SetNext...
     ImGui.set_function("setNextWindowPos", sol::overload(
         sol::resolve<void(float, float)>(imGuiSetNextWindowPos),
         sol::resolve<void(float, float, int)>(imGuiSetNextWindowPos)
