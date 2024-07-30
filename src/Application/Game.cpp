@@ -92,8 +92,6 @@
 #include "GameMenu.h"
 #include "GameStates/GameFsmBuilder.h"
 
-void ShowMM7IntroVideo_and_LoadingScreen();
-
 void initDataPath(Platform *platform, std::string_view dataPath) {
     std::string missing_file;
 
@@ -234,29 +232,6 @@ bool Game::loop() {
 
     return true;
 }
-
-
-
-void ShowMM7IntroVideo_and_LoadingScreen() {
-    bGameoverLoop = true;
-
-    render->PresentBlackScreen();
-    if (!engine->config->debug.NoVideo.value()) {
-        if (!engine->config->debug.NoLogo.value()) {
-            pMediaPlayer->PlayFullscreenMovie("3dologo");
-            pMediaPlayer->PlayFullscreenMovie("new world logo");
-            pMediaPlayer->PlayFullscreenMovie("jvc");
-        }
-        if (!engine->config->debug.NoIntro.value()) {
-            pMediaPlayer->PlayFullscreenMovie("Intro");
-        }
-    }
-
-    bGameoverLoop = false;
-}
-
-
-
 
 GraphicsImage *gamma_preview_image = nullptr;  // 506E40
 
