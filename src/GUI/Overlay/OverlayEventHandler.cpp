@@ -15,7 +15,7 @@ bool OverlayEventHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
 }
 
 bool OverlayEventHandler::keyEvent(PlatformKey key, PlatformModifiers mods, bool keyPressed) {
-    return ImGui::GetIO().WantCaptureKeyboard;
+    return ImGui::GetCurrentContext() && ImGui::GetIO().WantCaptureKeyboard;
 }
 
 bool OverlayEventHandler::mousePressEvent(const PlatformMouseEvent *event) {
@@ -27,11 +27,11 @@ bool OverlayEventHandler::mouseReleaseEvent(const PlatformMouseEvent *event) {
 }
 
 bool OverlayEventHandler::mouseEvent(PlatformMouseButton button, const Pointi &pos, bool down) {
-    return ImGui::GetIO().WantCaptureMouse;
+    return ImGui::GetCurrentContext() && ImGui::GetIO().WantCaptureMouse;
 }
 
 bool OverlayEventHandler::wheelEvent(const PlatformWheelEvent *event) {
-    return ImGui::GetIO().WantCaptureMouse;
+    return ImGui::GetCurrentContext() && ImGui::GetIO().WantCaptureMouse;
 }
 
 bool OverlayEventHandler::nativeEvent(const PlatformNativeEvent *event) {
