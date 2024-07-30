@@ -46,6 +46,7 @@
 #include "Library/Color/Colorf.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Geometry/Size.h"
+#include "Library/Image/ImageFunctions.h"
 
 #include "Utility/String/Format.h"
 #include "Utility/Memory/MemSet.h"
@@ -983,7 +984,7 @@ bool OpenGLRenderer::AreRenderSurfacesOk() {
     return true;
 }
 
-RgbaImage OpenGLRenderer::MakeScreenshot32(const int width, const int height) {
+RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int height) {
     // TODO(pskelton): should this call drawworld instead??
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
@@ -1020,6 +1021,10 @@ RgbaImage OpenGLRenderer::MakeScreenshot32(const int width, const int height) {
     }
 
     return pPixels;
+}
+
+RgbaImage OpenGLRenderer::MakeFullScreenshot() {
+    return flipVertically(ReadScreenPixels());
 }
 
 // TODO(pskelton): drop - not required in gl renderer now
