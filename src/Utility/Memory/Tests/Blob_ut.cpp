@@ -25,6 +25,14 @@ UNIT_TEST(Blob, FromFile) {
     EXPECT_EQ(blob.string_view(), fileContents);
 }
 
+UNIT_TEST(Blob, FromEmptyFile) {
+    TestExistingFile tmp("1.txt", "");
+
+    Blob blob = Blob::fromFile("1.txt"); // Shouldn't throw.
+    EXPECT_EQ(blob.size(), 0);
+    EXPECT_TRUE(!blob);
+}
+
 UNIT_TEST(Blob, SharedFromFile) {
     std::string fileName = "abcdefghijklmnopqrstuvwxyz1.tmp";
     std::string fileContents = "0123456789";
