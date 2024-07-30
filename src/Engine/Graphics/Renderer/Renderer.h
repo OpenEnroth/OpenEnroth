@@ -47,7 +47,6 @@ class Renderer {
     virtual void PresentBlackScreen() = 0;
 
     virtual RgbaImage ReadScreenPixels() = 0;
-    virtual void SaveWinnersCertificate(std::string_view filePath) = 0;
     virtual void ClearTarget(Color uColor) = 0;
     virtual void Present() = 0;
 
@@ -138,8 +137,6 @@ class Renderer {
 
     virtual bool AreRenderSurfacesOk() = 0;
 
-    virtual void SavePCXScreenshot() = 0;
-
     /**
      * Takes a screenshot of the game viewport, w/o the UI elements.
      *
@@ -148,6 +145,8 @@ class Renderer {
      * @return                              Taken screenshot image.
      */
     virtual RgbaImage MakeViewportScreenshot(int width, int height) = 0;
+
+    virtual RgbaImage MakeFullScreenshot() = 0;
 
     virtual std::vector<Actor *> getActorsInViewport(int pDepth) = 0;
 

@@ -596,11 +596,6 @@ float BaseRenderer::GetGamma() {
     return base + mult * level;
 }
 
-void BaseRenderer::SavePCXScreenshot() {
-    engine->config->settings.ScreenshotNumber.increment();
-    SaveWinnersCertificate(fmt::format("screenshot_{:05}.pcx", engine->config->settings.ScreenshotNumber.value()));
-}
-
 void BaseRenderer::DrawTextureGrayShade(float a2, float a3, GraphicsImage *a4) {
     DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey);
 }
@@ -797,17 +792,6 @@ Sizei BaseRenderer::GetRenderDimensions() {
 
 Sizei BaseRenderer::GetPresentDimensions() {
     return outputPresent;
-}
-
-void BaseRenderer::SaveWinnersCertificate(std::string_view filePath) {
-    RgbaImage sPixels = flipVertically(ReadScreenPixels());
-
-    // TODO(pskelton): add "Screenshots" folder?
-    // save to disk
-    FileOutputStream(makeDataPath(filePath)).write(pcx::encode(sPixels).string_view());
-
-    // reverse input and save to texture for later
-    assets->winnerCert = GraphicsImage::Create(std::move(sPixels));
 }
 
 void BaseRenderer::updateRenderDimensions() {

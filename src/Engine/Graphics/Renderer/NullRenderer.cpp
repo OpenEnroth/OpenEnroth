@@ -114,6 +114,10 @@ RgbaImage NullRenderer::MakeViewportScreenshot(const int width, const int height
     return RgbaImage::solid(width, height, Color());
 }
 
+RgbaImage NullRenderer::MakeFullScreenshot() {
+    return RgbaImage::solid(640, 480, Color());
+}
+
 void NullRenderer::BeginLightmaps() {}
 void NullRenderer::EndLightmaps() {}
 void NullRenderer::BeginLightmaps2() {}

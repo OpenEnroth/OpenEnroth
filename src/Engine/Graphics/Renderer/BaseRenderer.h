@@ -28,8 +28,6 @@ class BaseRenderer : public Renderer {
                                               int angle) override;
     virtual float GetGamma() override;
 
-    virtual void SavePCXScreenshot() override;
-
     virtual void DrawMasked(float u, float v, GraphicsImage *img,
         unsigned int color_dimming_level, Color mask = colorTable.White) override;
     virtual void DrawTextureGrayShade(float u, float v, GraphicsImage *a4) override;
@@ -52,8 +50,6 @@ class BaseRenderer : public Renderer {
 
     virtual Sizei GetRenderDimensions() override;
     virtual Sizei GetPresentDimensions() override;
-
-    virtual void SaveWinnersCertificate(std::string_view filePath) override;
 
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);

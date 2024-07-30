@@ -46,6 +46,7 @@
 #include "Library/Color/Colorf.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Geometry/Size.h"
+#include "Library/Image/ImageFunctions.h"
 
 #include "Utility/String/Format.h"
 #include "Utility/Memory/MemSet.h"
@@ -1020,6 +1021,10 @@ RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int heig
     }
 
     return pPixels;
+}
+
+RgbaImage OpenGLRenderer::MakeFullScreenshot() {
+    return flipVertically(ReadScreenPixels());
 }
 
 // TODO(pskelton): drop - not required in gl renderer now
