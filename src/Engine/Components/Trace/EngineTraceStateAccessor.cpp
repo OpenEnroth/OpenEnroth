@@ -5,6 +5,8 @@
 #include "Application/GameConfig.h"
 
 #include "Engine/Party.h"
+#include "Engine/Engine.h"
+#include "Engine/MapInfo.h"
 #include "Engine/mm7_data.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -66,12 +68,19 @@ void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config, const Conf
 
 EventTraceGameState EngineTraceStateAccessor::makeGameState() {
     EventTraceGameState result;
-    result.locationName = ascii::toLower(pCurrentMapName);
+    result.locationName = ascii::toLower(pMapStats->pInfos[engine->_currentLoadedMapId].fileName);
     result.partyPosition = pParty->pos.toInt();
     for (const Character &character : pParty->pCharacters) {
         EventTraceCharacterState &traceCharacter = result.characters.emplace_back();
         traceCharacter.hp = character.health;
         traceCharacter.mp = character.mana;
+        traceCharacter.might = character.GetActualMight();
+        traceCharacter.intelligence = character.GetActualIntelligence();
+        traceCharacter.personality = character.GetActualPersonality();
+        traceCharacter.endurance = character.GetActualEndurance();
+        traceCharacter.accuracy = character.GetActualAccuracy();
+        traceCharacter.speed = character.GetActualSpeed();
+        traceCharacter.luck = character.GetActualLuck();
     }
     return result;
 }

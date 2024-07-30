@@ -24,16 +24,16 @@ struct ConditionTableEntry {
     std::array<ConditionEquipment, 3> equipment = {{}};
 
     constexpr ConditionTableEntry() = default;
-    constexpr ConditionTableEntry(ConditionFlags flags,
-                                  ItemEnchantment enchantment = ITEM_ENCHANTMENT_NULL,
+    constexpr ConditionTableEntry(ConditionFlags flagsIn,
+                                  ItemEnchantment enchantmentIn = ITEM_ENCHANTMENT_NULL,
                                   ItemId item1 = ITEM_NULL,
                                   ItemSlot slot1 = ITEM_SLOT_INVALID,
                                   ItemId item2 = ITEM_NULL,
                                   ItemSlot slot2 = ITEM_SLOT_INVALID,
                                   ItemId item3 = ITEM_NULL,
                                   ItemSlot slot3 = ITEM_SLOT_INVALID) { // NOLINT: we want an explicit constructor.
-        flags = flags;
-        enchantment = enchantment;
+        flags = flagsIn;
+        enchantment = enchantmentIn;
         equipment[0].item = item1;
         equipment[0].slot = slot1;
         equipment[1].item = item2;
@@ -65,7 +65,7 @@ static constexpr IndexedArray<ConditionTableEntry, CONDITION_CURSED, CONDITION_Z
                                  ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
     {CONDITION_DISEASE_SEVERE,  {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_IMMUNITY,
                                  ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_PARALYZED,       {0, ITEM_ENCHANTMENT_OF_FREEDOM,
+    {CONDITION_PARALYZED,       {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_FREEDOM,
                                  ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK, ITEM_ARTIFACT_GHOULSBANE, ITEM_SLOT_ANY}},
     {CONDITION_UNCONSCIOUS,     {0}},
     {CONDITION_DEAD,            {AFFECTED_BY_PROTECTION_FROM_MAGIC | REQUIRES_GM_PROTECTION_FROM_MAGIC}},

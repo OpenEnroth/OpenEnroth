@@ -1,22 +1,11 @@
 #include "StartState.h"
 
-#include <Engine/Engine.h>
-
-StartState::StartState() {
+FsmAction StartState::enter() {
+    return FsmAction::transition("proceed");
 }
 
-FSMAction StartState::enter() {
-    auto &debug = engine->config->debug;
-    if(debug.NoVideo.value() || (debug.NoLogo.value() && debug.NoIntro.value()))
-        return FSMActionTransition("skipVideo");
-    else if (debug.NoLogo.value())
-        return FSMActionTransition("skipLogo");
-
-    return FSMActionTransition("noSkip");
-}
-
-FSMAction StartState::update() {
-    return FSMActionNone();
+FsmAction StartState::update() {
+    return FsmAction::none();
 }
 
 void StartState::exit() {

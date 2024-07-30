@@ -8,7 +8,7 @@
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/ObjectList.h"
-#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/TextureFrameTable.h"

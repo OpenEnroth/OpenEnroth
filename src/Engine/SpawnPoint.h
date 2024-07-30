@@ -6,7 +6,7 @@
 #include "Library/Geometry/Vec.h"
 
 struct SpawnPoint {
-    Vec3i vPosition;
+    Vec3f vPosition;
     uint16_t uRadius = 32;
     ObjectType uKind = OBJECT_None;
     ItemTreasureLevel uItemIndex = ITEM_TREASURE_LEVEL_INVALID;

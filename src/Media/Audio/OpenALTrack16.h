@@ -37,4 +37,4 @@ class OpenALTrack16 : public IAudioTrack {
     size_t uiReservedDataMinimum;
 };
 
-PAudioTrack CreateAudioTrack(std::string_view file_path);
+PAudioTrack CreateAudioTrack(Blob data);

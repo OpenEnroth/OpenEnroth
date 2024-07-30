@@ -8,7 +8,7 @@
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Weather.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/Actor.h"
@@ -68,9 +68,11 @@ static bool checkSeason(Season season) {
 /**
  * @offset 0x448CF4
  */
-static void spawnMonsters(int16_t typeindex, int16_t level, int count,
-                          Vec3i pos, int group, unsigned int uUniqueName) {
-    MapId mapId = pMapStats->GetMapInfo(pCurrentMapName);
+void spawnMonsters(int16_t typeindex, int16_t level, int count,
+                          Vec3f pos, int group, unsigned int uUniqueName) {
+    if (engine->_currentLoadedMapId == MAP_INVALID || engine->config->debug.NoActors.value())
+        return;
+
     SpawnPoint pSpawnPoint;
 
     pSpawnPoint.vPosition = pos;
@@ -79,16 +81,14 @@ static void spawnMonsters(int16_t typeindex, int16_t level, int count,
     pSpawnPoint.uKind = OBJECT_Actor;
     pSpawnPoint.uMonsterIndex = typeindex + 2 * level + level;
 
-    if (mapId != MAP_INVALID) {
-        AIDirection direction;
-        int oldNumActors = pActors.size();
-        SpawnEncounter(&pMapStats->pInfos[mapId], &pSpawnPoint, 0, count, 0);
-        Actor::GetDirectionInfo(Pid(OBJECT_Actor, oldNumActors), Pid::character(0), &direction, 1);
-        for (int i = oldNumActors; i < pActors.size(); ++i) {
-            pActors[i].PrepareSprites(0);
-            pActors[i].yawAngle = direction.uYawAngle;
-            pActors[i].uniqueNameIndex = uUniqueName;
-        }
+    AIDirection direction;
+    int oldNumActors = pActors.size();
+    SpawnEncounter(&pMapStats->pInfos[engine->_currentLoadedMapId], &pSpawnPoint, 0, count, 0);
+    Actor::GetDirectionInfo(pos, pParty->pos + Vec3f(0, 0, pParty->eyeLevel), &direction);
+    for (int i = oldNumActors; i < pActors.size(); ++i) {
+        pActors[i].PrepareSprites(0);
+        pActors[i].yawAngle = direction.uYawAngle;
+        pActors[i].uniqueNameIndex = uUniqueName;
     }
 }
 
@@ -191,14 +191,14 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_MoveToMap:
         {
             if (ir.data.move_map_descr.house_id != HOUSE_INVALID || ir.data.move_map_descr.exit_pic_id) {
-                pDialogueWindow = new GUIWindow_Transition(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
-                                                           Vec3i(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
-                                                           ir.data.move_map_descr.yaw, ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed, ir.str);
+                pDialogueWindow = new GUIWindow_IndoorEntryExit(ir.data.move_map_descr.house_id, ir.data.move_map_descr.exit_pic_id,
+                                                                Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
+                                                                ir.data.move_map_descr.yaw, ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed, ir.str);
                 savedEventID = _eventId;
                 savedEventStep = step + 1;
                 return -1;
             }
-            engine->_teleportPoint.setTeleportTarget(Vec3i(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
+            engine->_teleportPoint.setTeleportTarget(Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
                                                      (ir.data.move_map_descr.yaw != -1) ? (ir.data.move_map_descr.yaw & TrigLUT.uDoublePiMask) : -1,
                                                      ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed);
             if (ir.str[0] == '0') { // teleport within map
@@ -258,7 +258,10 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
                 pMediaPlayer->Unload();
             }
 
+            // Restore the screen type after the movie has played in case we are already in a house
+            auto saveScreenType = current_screen_type;
             pMediaPlayer->PlayFullscreenMovie(movieName);
+            current_screen_type = saveScreenType;
 
             if (!movieName.compare("arbiter good")) { // change alignment to good
                 pParty->alignment = PartyAlignment::PartyAlignment_Good;
@@ -318,19 +321,17 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         case EVENT_SummonMonsters:
             spawnMonsters(ir.data.monster_descr.type, ir.data.monster_descr.level, ir.data.monster_descr.count,
-                          Vec3i(ir.data.monster_descr.x, ir.data.monster_descr.y, ir.data.monster_descr.z),
+                          Vec3f(ir.data.monster_descr.x, ir.data.monster_descr.y, ir.data.monster_descr.z),
                           ir.data.monster_descr.group, ir.data.monster_descr.name_id);
             break;
         case EVENT_CastSpell:
             eventCastSpell(ir.data.spell_descr.spell_id, ir.data.spell_descr.spell_mastery, ir.data.spell_descr.spell_level,
-                           ir.data.spell_descr.fromx, ir.data.spell_descr.fromy, ir.data.spell_descr.fromz,
-                           ir.data.spell_descr.tox, ir.data.spell_descr.toy, ir.data.spell_descr.toz);
+                         Vec3f(ir.data.spell_descr.fromx, ir.data.spell_descr.fromy, ir.data.spell_descr.fromz),
+                         Vec3f(ir.data.spell_descr.tox, ir.data.spell_descr.toy, ir.data.spell_descr.toz));
             break;
         case EVENT_SpeakNPC:
             if (_canShowMessages) {
-                Actor actor = Actor();
-                actor.npcId = ir.data.npc_descr.npc_id;
-                initializeNPCDialogue(&actor, false);
+                initializeNPCDialogue(ir.data.npc_descr.npc_id, false);
             } else {
                 bDialogueUI_InitializeActor_NPC_ID = ir.data.npc_descr.npc_id;
             }

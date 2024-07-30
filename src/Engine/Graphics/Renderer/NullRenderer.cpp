@@ -1,7 +1,5 @@
 #include "NullRenderer.h"
 
-#include <nuklear_config.h> // NOLINT: not a C system header.
-
 #include "Engine/EngineGlobals.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineCallObserver.h"
@@ -136,11 +134,12 @@ void NullRenderer::ReleaseBSP() {}
 
 void NullRenderer::DrawTwodVerts() {}
 
-void NullRenderer::ReloadShaders() {}
+bool NullRenderer::ReloadShaders() { return true; }
 
 void NullRenderer::DoRenderBillboards_D3D() {}
 
-void NullRenderer::drawOverlays(nk_context *) {}
+void NullRenderer::beginOverlays() {}
+void NullRenderer::endOverlays() {}
 void NullRenderer::flushAndScale() {}
 void NullRenderer::swapBuffers() {
     openGLContext->swapBuffers();

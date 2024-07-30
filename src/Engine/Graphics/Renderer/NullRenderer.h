@@ -104,11 +104,13 @@ class NullRenderer : public BaseRenderer {
 
     virtual void DrawTwodVerts() override;
 
-    virtual void ReloadShaders() override;
+    virtual bool ReloadShaders() override;
 
     virtual void DoRenderBillboards_D3D() override;
 
     virtual void flushAndScale() override;
     virtual void swapBuffers() override;
-    virtual void drawOverlays(nk_context *context) override;
+
+    virtual void beginOverlays() override;
+    virtual void endOverlays() override;
 };

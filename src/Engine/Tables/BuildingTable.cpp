@@ -1,5 +1,6 @@
 #include "BuildingTable.h"
 
+#include <cstring>
 #include <string>
 
 #include "Utility/Memory/Blob.h"

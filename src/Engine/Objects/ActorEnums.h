@@ -104,7 +104,7 @@ enum class ActorAttribute : uint32_t {
     ACTOR_NEARBY = 0x00008000,  // detected player / monster
     ACTOR_UNKNOW11 = 0x00010000,  // aidisabled?
     ACTOR_FLEEING = 0x00020000,
-    ACTOR_UNKNOW5 = 0x00040000,  // casting??
+    ACTOR_LAST_SPELL_MISSED = 0x00040000,
     ACTOR_AGGRESSOR = 0x00080000,
     ACTOR_UNKNOW7 = 0x00100000,  // alertstatus ?
     ACTOR_ANIMATION = 0x00200000,

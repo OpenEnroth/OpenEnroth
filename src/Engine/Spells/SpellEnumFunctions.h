@@ -2,7 +2,6 @@
 
 #include <cassert>
 
-#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Segment.h"
 
 #include "SpellEnums.h"

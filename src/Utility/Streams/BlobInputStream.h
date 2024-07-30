@@ -1,6 +1,9 @@
 #pragma once
 
+#include <string>
+
 #include "Utility/Memory/Blob.h"
+#include "Utility/Types.h"
 
 #include "InputStream.h"
 
@@ -16,9 +19,17 @@ class BlobInputStream : public InputStream {
     explicit BlobInputStream(Blob &&blob);
     explicit BlobInputStream(const Blob &blob); // Shares the blob and stores the shared copy in this stream object.
 
+    void open(Blob &&blob);
+    void open(const Blob &blob);
+
     virtual size_t read(void *data, size_t size) override;
     virtual size_t skip(size_t size) override;
     virtual void close() override;
+    [[nodiscard]] virtual std::string displayPath() const override;
+
+    void seek(ssize_t pos);
+    [[nodiscard]] ssize_t position() const;
+    [[nodiscard]] ssize_t size() const;
 
     /**
      * @return                          Remaining stream data, as a blob that's shared with the blob that this
@@ -48,7 +59,6 @@ class BlobInputStream : public InputStream {
     [[nodiscard]] Blob readBlobOrFail(size_t size);
 
  private:
-    [[nodiscard]] size_t offset() const;
     [[nodiscard]] size_t remaining() const;
 
  private:

@@ -323,7 +323,7 @@ void GameWindowHandler::OnKey(PlatformKey key) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_DebugReloadShader, window_SpeakInHouse != 0, 0);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::QuickSave, key) && current_screen_type == SCREEN_GAME) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_QuickSave, window_SpeakInHouse != 0, 0);
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::QuickLoad, key) && current_screen_type == SCREEN_GAME) {
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::QuickLoad, key)) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_QuickLoad, window_SpeakInHouse != 0, 0);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogLeft, key) || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogRight, key)
             || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogUp, key) || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogDown, key)
@@ -646,10 +646,12 @@ bool GameWindowHandler::event(const PlatformEvent *event) {
     return false;
 }
 
-void GameWindowHandler::addFSMEventHandler(FSMEventHandler *fsmEventHandler) {
+void GameWindowHandler::addFsmEventHandler(FsmEventHandler *fsmEventHandler) {
+    assert(std::ranges::find(_fsmEventHandlers, fsmEventHandler) == _fsmEventHandlers.end());
     _fsmEventHandlers.push_back(fsmEventHandler);
 }
 
-void GameWindowHandler::removeFSMEventHandler(FSMEventHandler *fsmEventHandler) {
+void GameWindowHandler::removeFsmEventHandler(FsmEventHandler *fsmEventHandler) {
+    assert(std::ranges::find(_fsmEventHandlers, fsmEventHandler) != _fsmEventHandlers.end());
     std::erase(_fsmEventHandlers, fsmEventHandler);
 }

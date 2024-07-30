@@ -7,7 +7,6 @@
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 
-#include "Utility/Workaround/ToUnderlying.h"
 #include "Utility/Segment.h"
 
 #include "CharacterEnumFunctions.h"
@@ -168,6 +167,19 @@ SpellId spellForSpellbook(ItemId spellbook);
 SpellId spellForScroll(ItemId scroll);
 
 SpellId spellForWand(ItemId wand);
+
+inline CharacterAttributeType statForPureStatPotion(ItemId pureStatPotion) {
+    switch (pureStatPotion) {
+    default: assert(false); [[fallthrough]];
+    case ITEM_POTION_PURE_LUCK:         return CHARACTER_ATTRIBUTE_LUCK;
+    case ITEM_POTION_PURE_SPEED:        return CHARACTER_ATTRIBUTE_SPEED;
+    case ITEM_POTION_PURE_INTELLECT:    return CHARACTER_ATTRIBUTE_INTELLIGENCE;
+    case ITEM_POTION_PURE_ENDURANCE:    return CHARACTER_ATTRIBUTE_ENDURANCE;
+    case ITEM_POTION_PURE_PERSONALITY:  return CHARACTER_ATTRIBUTE_PERSONALITY;
+    case ITEM_POTION_PURE_ACCURACY:     return CHARACTER_ATTRIBUTE_ACCURACY;
+    case ITEM_POTION_PURE_MIGHT:        return CHARACTER_ATTRIBUTE_MIGHT;
+    }
+}
 
 
 //

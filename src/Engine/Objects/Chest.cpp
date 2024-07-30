@@ -6,8 +6,8 @@
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
@@ -45,7 +45,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
     int pDepth;
     bool flag_shout;
     SpriteId pSpriteID[4];
-    Vec3i pOut;
+    Vec3f pOut;
     int yawAngle{};
     int pitchAngle{};
     SpriteObject pSpellObject;
@@ -61,9 +61,8 @@ bool Chest::open(int uChestID, Pid objectPid) {
     if (!pParty->hasActiveCharacter())
         return false;
     flag_shout = false;
-    MapId pMapID = pMapStats->GetMapInfo(pCurrentMapName);
-    if (chest->Trapped() && pMapID != MAP_INVALID) {
-        if (pParty->activeCharacter().GetDisarmTrap() < 2 * pMapStats->pInfos[pMapID].disarmDifficulty) {
+    if (chest->Trapped() && engine->_currentLoadedMapId != MAP_INVALID) {
+        if (pParty->activeCharacter().GetDisarmTrap() < 2 * pMapStats->pInfos[engine->_currentLoadedMapId].disarmDifficulty) {
             pSpriteID[0] = SPRITE_TRAP_FIRE;
             pSpriteID[1] = SPRITE_TRAP_LIGHTNING;
             pSpriteID[2] = SPRITE_TRAP_COLD;
@@ -71,12 +70,12 @@ bool Chest::open(int uChestID, Pid objectPid) {
             int pRandom = grng->random(4); // Not sure if this should be grng or vrng, so we'd rather err on the side of safety.
             int objId = objectPid.id();
 
-            Vec3i objectPos;
+            Vec3f objectPos;
             if (chest->position) {
                 objectPos = *chest->position;
             } else if (objectPid.type() == OBJECT_Decoration) {
-                objectPos = pLevelDecorations[objId].vPosition.toInt() +
-                    Vec3i(0, 0, pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
+                objectPos = pLevelDecorations[objId].vPosition +
+                    Vec3f(0, 0, pDecorationList->GetDecoration(pLevelDecorations[objId].uDecorationDescID)->uDecorationHeight / 2);
             } else if (objectPid.type() == OBJECT_Face) {
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                     objectPos = pOutdoor->face(objectPid).pBoundingBox.center();
@@ -101,7 +100,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             if (length_vector < pDepth) {
                 pDepth = length_vector;
             }
-            pOut = objectPos + Vec3i::fromPolar(pDepth, yawAngle, pitchAngle);
+            pOut = objectPos + Vec3f::fromPolar(pDepth, yawAngle, pitchAngle);
 
             pSpellObject.containing_item.Reset();
             pSpellObject.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
@@ -115,15 +114,15 @@ bool Chest::open(int uChestID, Pid objectPid) {
             SpriteFrame *frame = pSpellObject.getSpriteFrame();
             if (frame->uFlags & 0x20) {
                 // centering
-                pOut += Vec3i(0, 0, frame->hw_sprites[0]->texture->height() / 4);
+                pOut += Vec3f(0, 0, frame->hw_sprites[0]->texture->height() / 4);
             } else {
-                pOut -= Vec3i(0, 0, (frame->hw_sprites[0]->texture->height() - 64) / 2);
+                pOut -= Vec3f(0, 0, (frame->hw_sprites[0]->texture->height() - 64) / 2);
             }
-            pSpellObject.vPosition = pOut.toFloat();
+            pSpellObject.vPosition = pOut;
 
             pSpellObject.uSoundID = 0;
             pSpellObject.uAttributes = SPRITE_IGNORE_RANGE | SPRITE_NO_Z_BUFFER;
-            pSpellObject.uSectorID = pIndoor->GetSector(pOut);
+            pSpellObject.uSectorID = pIndoor->GetSector(pSpellObject.vPosition);
             pSpellObject.timeSinceCreated = 0_ticks;
             pSpellObject.spell_caster_pid = Pid();
             pSpellObject.spell_target_pid = Pid();
@@ -543,8 +542,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
 }
 
 void GenerateItemsInChest() {
-    MapId mapType = pMapStats->GetMapInfo(pCurrentMapName);
-    MapInfo *currMapInfo = &pMapStats->pInfos[mapType];
+    MapInfo *currMapInfo = &pMapStats->pInfos[engine->_currentLoadedMapId];
     for (int i = 0; i < 20; ++i) {
         for (int j = 0; j < 140; ++j) {
             ItemGen *currItem = &vChests[i].igChestItems[j];
@@ -581,9 +579,9 @@ void GenerateItemsInChest() {
 }
 
 void UpdateChestPositions() {
-    std::unordered_map<int, std::vector<Vec3i>> pointsByChestId;
+    std::unordered_map<int, std::vector<Vec3f>> pointsByChestId;
 
-    auto processEvent = [&](int eventId, const Vec3i &position) {
+    auto processEvent = [&](int eventId, const Vec3f &position) {
         // Can there be two EVENT_OpenChest in a single script, with different chests? If no, then we can
         // break out of the loop below early. If yes... Well. This should work.
         if (engine->_localEventMap.hasEvent(eventId))
@@ -605,12 +603,11 @@ void UpdateChestPositions() {
     }
 
     for (const auto &[chestId, points] : pointsByChestId) {
-        Vec3i center = std::accumulate(points.begin(), points.end(), Vec3i()) / points.size();
+        Vec3f center = std::accumulate(points.begin(), points.end(), Vec3f()) / points.size();
 
         bool isChestLike = true;
-        for (const Vec3i &point : points) {
-            // TODO(captainurist): just use lengthSqr when we transition to floats here.
-            if ((point - center).chebyshevLength() > 256) {
+        for (const Vec3f &point : points) {
+            if ((point - center).lengthSqr() > 256 * 256) {
                 // Wormhole chest detected. 256 is half the size of the ODM tile.
                 isChestLike = false;
                 break;

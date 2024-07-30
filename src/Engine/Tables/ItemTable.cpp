@@ -1,5 +1,6 @@
 #include "ItemTable.h"
 
+#include <cstring>
 #include <map>
 #include <vector>
 #include <string>
@@ -19,6 +20,7 @@
 #include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
 #include "Utility/String/Transformations.h"
+#include "Utility/String/Split.h"
 
 static void strtokSkipLines(int n) {
     for (int i = 0; i < n; ++i) {

@@ -27,7 +27,7 @@ struct TransportInfo {
     MapId uMapInfoID;
     std::array<unsigned char, 7> pSchedule;
     int uTravelTime; // In days.
-    Vec3i arrivalPos;
+    Vec3f arrivalPos;
     int arrival_view_yaw;
     QuestBit uQuestBit;  // quest bit required to set for this travel option to be enabled; otherwise 0
 };
@@ -157,9 +157,9 @@ void GUIWindow_Transport::transportDialogue() {
     const TransportInfo *pTravel = &transportSchedule[transportRoutes[houseId()][choice_id]];
 
     if (pTravel->pSchedule[pParty->uCurrentDayOfMonth % 7]) {
-        if (pCurrentMapName != pMapStats->pInfos[pTravel->uMapInfoID].fileName) {
+        if (engine->_currentLoadedMapId != pTravel->uMapInfoID) {
             AutoSave();
-            pCurrentMapName = pMapStats->pInfos[pTravel->uMapInfoID].fileName;
+            engine->_transitionMapId = pTravel->uMapInfoID;
 
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
@@ -167,7 +167,7 @@ void GUIWindow_Transport::transportDialogue() {
         } else {
             // travelling to map we are already in
             pCamera3D->_viewYaw = 0;
-            pParty->pos = pTravel->arrivalPos.toFloat();
+            pParty->pos = pTravel->arrivalPos;
             pParty->uFallStartZ = pParty->pos.z;
             pParty->_viewPitch = 0;
             pParty->_viewYaw = pTravel->arrival_view_yaw;

@@ -8,11 +8,11 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
+#include "Engine/Engine.h"
 #include "Engine/Time/Timer.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIRest.h"
-#include "GUI/GUIFont.h"
 
 GraphicsImage *rest_ui_btn_4 = nullptr;
 GraphicsImage *rest_ui_btn_exit = nullptr;
@@ -45,7 +45,7 @@ static void prepareToLoadRestUI() {
 
 static void calculateRequiredFood() {
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        foodRequiredToRest = pOutdoor->getNumFoodRequiredToRestInCurrentPos(pParty->pos.toInt());
+        foodRequiredToRest = pOutdoor->getNumFoodRequiredToRestInCurrentPos(pParty->pos);
     } else {
         foodRequiredToRest = 2;
     }
@@ -66,7 +66,7 @@ static void calculateRequiredFood() {
     if (foodRequiredToRest < 1) {
         foodRequiredToRest = 1;
     }
-    if (pCurrentMapName == "d29.blv" && pParty->_questBits[QBIT_HARMONDALE_REBUILT]) {
+    if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE && pParty->_questBits[QBIT_HARMONDALE_REBUILT]) {
         foodRequiredToRest = 0;
     }
 }

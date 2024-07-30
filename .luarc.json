@@ -2,7 +2,10 @@
     "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
     "diagnostics": {
         "disable": [],
-        "globals": [],
+        "globals": [
+            "enumToString",
+            "stringToEnum"
+        ],
         "groupFileStatus": {
             "ambiguity": "Any",
             "await": "Any",
@@ -77,11 +80,14 @@
         "libraryFiles": "Disable"
     },
     "runtime": {
-        "version": "Lua 5.4",
+        "version": "Lua 5.2",
         "path": [
             "./resources/scripts/?.lua",
             "./resources/scripts/_definitions/?.lua"
         ],
+        "builtin": {
+            "bit32": "enable"
+        },
         "pathStrict": false
     },
     "workspace": {
@@ -185,5 +191,8 @@
         "require_module_name_style": "pascal_case",
         "class_name_style": "pascal_case",
         "const_variable_name_style": "pascal_case"
-    }
+    },
+    "spell.dict": [
+        "imgui"
+    ]
 }

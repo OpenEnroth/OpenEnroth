@@ -31,7 +31,7 @@ const char brokenLod[] =
 
 UNIT_TEST(LodReader, RussianLod) {
     // Opening a LOD with invalid directory dataSize should just work.
-    LodReader reader(Blob::view(brokenLod, sizeof(brokenLod)), "russian.lod", LOD_ALLOW_DUPLICATES);
+    LodReader reader(Blob::view(brokenLod, sizeof(brokenLod)).withDisplayPath("russian.lod"), LOD_ALLOW_DUPLICATES);
     EXPECT_TRUE(reader.isOpen());
     EXPECT_EQ(reader.ls(), std::vector<std::string>{"lolkek"});
     EXPECT_EQ(reader.info().rootName, "maps");
@@ -48,4 +48,22 @@ UNIT_TEST(LodReader, RussianLod) {
 
     // Check that we throw when accessing non-existent files.
     EXPECT_THROW((void) reader.read("lolke"), std::exception);
+}
+
+UNIT_TEST(LodReader, ErrorMessage) {
+    std::string_view name = "XXXXXXXXXXX";
+    Blob blob = Blob().withDisplayPath(name);
+
+    EXPECT_ANY_THROW(LodReader(Blob::share(blob)));
+    try {
+        LodReader reader(Blob::share(blob));
+    } catch (const std::exception &e) {
+        EXPECT_TRUE(std::string_view(e.what()).contains(name));
+    }
+}
+
+UNIT_TEST(LodReader, DisplayPath) {
+    LodReader reader(Blob::view(brokenLod, sizeof(brokenLod)).withDisplayPath("russian.lod"), LOD_ALLOW_DUPLICATES);
+    EXPECT_EQ(reader.read("lolkek").displayPath(), "russian.lod/lolkek");
+    EXPECT_EQ(reader.read("LOLKEK").displayPath(), "russian.lod/LOLKEK");
 }

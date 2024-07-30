@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <string>
 #include <string_view>
 
 /**
@@ -49,4 +50,10 @@ class OutputStream {
      * @throws Exception                On error.
      */
     virtual void close() = 0;
+
+    /**
+     * @return                          Path to the file or resource being written, to be used for debugging and error
+     *                                  reporting.
+     */
+    [[nodiscard]] virtual std::string displayPath() const = 0;
 };

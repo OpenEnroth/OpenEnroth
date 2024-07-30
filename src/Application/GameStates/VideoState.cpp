@@ -8,18 +8,22 @@
 
 #include <GUI/GUIWindow.h>
 
-VideoState::VideoState(std::string_view videoFileName) : _videoFileName(videoFileName) {
+VideoState::VideoState(VideoState::Type type, std::string_view videoFileName) : _type(type), _videoFileName(videoFileName) {
 }
 
-FSMAction VideoState::enter() {
+FsmAction VideoState::enter() {
     _skipVideo = false;
-    if (engine->config->debug.NoVideo.value()) {
-        return FSMActionTransition("videoEnd");
+    _previousScreenType = current_screen_type;
+
+    if (engine->config->debug.NoVideo.value() ||
+        (engine->config->debug.NoIntro.value() && _type == Type::VIDEO_INTRO) ||
+        (engine->config->debug.NoLogo.value() && _type == Type::VIDEO_LOGO)) {
+        return FsmAction::transition("videoEnd");
     }
 
     _movie = pMediaPlayer->loadFullScreenMovie(_videoFileName.c_str());
     if (!_movie) {
-        return FSMActionTransition("videoEnd");
+        return FsmAction::transition("videoEnd");
     }
 
     // Stop the event timer and audio before playing a video
@@ -31,27 +35,26 @@ FSMAction VideoState::enter() {
     platform->setCursorShown(false);
 
     // Wish we could get rid of this type of screen states
-    _previousScreenType = current_screen_type;
     current_screen_type = SCREEN_VIDEO;
 
     // Actually, calling Play() does not play something but just setup some internal flags.
     _movie->Play();
-    return FSMActionNone();
+    return FsmAction::none();
 }
 
-FSMAction VideoState::update() {
+FsmAction VideoState::update() {
     if (!_movie || _skipVideo)
-        return FSMActionTransition("videoEnd");
+        return FsmAction::transition("videoEnd");
 
     bool isOver = _movie->renderFrame();
     if (isOver)
-        return FSMActionTransition("videoEnd");
+        return FsmAction::transition("videoEnd");
 
-    return FSMActionNone();
+    return FsmAction::none();
 }
 
 void VideoState::exit() {
-    _movie = nullptr;
+    _movie.reset();
     // restore the screen type that was set before the video started
     current_screen_type = _previousScreenType;
     platform->setCursorShown(true);

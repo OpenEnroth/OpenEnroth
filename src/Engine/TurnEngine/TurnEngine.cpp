@@ -774,6 +774,7 @@ void stru262_TurnBased::ActorAIStopMovement() {
     AIDirection v7;  // [sp+20h] [bp-2Ch]@5
     int i;
 
+    SortTurnQueue();
     for (i = 0; i < this->pQueue.size(); ++i) {
         if (pQueue[i].uPackedID.type() == OBJECT_Actor) {
             Pid target_pid =

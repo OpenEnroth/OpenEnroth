@@ -9,7 +9,7 @@
 #include <memory>
 
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Spells/Spells.h"
@@ -65,7 +65,7 @@ void AudioPlayer::MusicPlayTrack(MusicId eTrack) {
             return;
         }
 
-        pCurrentMusicTrack = CreateAudioTrack(file_path);
+        pCurrentMusicTrack = CreateAudioTrack(Blob::fromFile(file_path));
         if (pCurrentMusicTrack) {
             currentMusicTrack = eTrack;
 
@@ -324,21 +324,21 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
     }
 
     switch (result) {
-        case SoundPlaybackResult::SOUND_PLAYBACK_FAILED:
+        case SOUND_PLAYBACK_FAILED:
             if (si->sName.empty()) {
                 logger->warning("AudioPlayer: failed to play audio {} with name '{}'", std::to_underlying(eSoundID), si->sName);
             } else {
                 logger->warning("AudioPlayer: failed to play audio {}", std::to_underlying(eSoundID));
             }
             break;
-        case SoundPlaybackResult::SOUND_PLAYBACK_SKIPPED:
+        case SOUND_PLAYBACK_SKIPPED:
             if (si->sName.empty()) {
                 logger->trace("AudioPlayer: skipped playing sound {}", std::to_underlying(eSoundID));
             } else {
                 logger->trace("AudioPlayer: skipped playing sound {} with name '{}'", std::to_underlying(eSoundID), si->sName);
             }
             break;
-        case SoundPlaybackResult::SOUND_PLAYBACK_SUCCEEDED:
+        case SOUND_PLAYBACK_SUCCEEDED:
             if (si->sName.empty()) {
                 logger->trace("AudioPlayer: playing sound {}", std::to_underlying(eSoundID));
             } else {
@@ -464,9 +464,8 @@ void AudioPlayer::UpdateVolumeFromConfig() {
 }
 
 void PlayLevelMusic() {
-    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
-    if (map_id != MAP_INVALID) {
-        pAudioPlayer->MusicPlayTrack(pMapStats->pInfos[map_id].musicId);
+    if (engine->_currentLoadedMapId != MAP_INVALID) {
+        pAudioPlayer->MusicPlayTrack(pMapStats->pInfos[engine->_currentLoadedMapId].musicId);
     }
 }
 

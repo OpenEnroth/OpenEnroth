@@ -34,6 +34,7 @@ class GUIProgressBar {
     GraphicsImage *progressbar_dungeon = nullptr;  // struct Texture_MM7 pBardata;
     GraphicsImage *progressbar_loading = nullptr;  // struct Texture_MM7 pLoadingProgress;
     GraphicsImage *loading_bg = nullptr;
+    int turnHourIconId = 0;
 };
 
 extern GUIProgressBar *pGameLoadingUI_ProgressBar;

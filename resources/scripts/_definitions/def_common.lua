@@ -11,17 +11,14 @@
 
 --- @class MiscBindings
 --- @field goToScreen fun(screenId: integer)
---- @field canClassLearn fun(classType: integer, skillType: integer)
+--- @field canClassLearn fun(classType: ClassType, skillType: SkillType)
 
 --- @class AudioBindings
 --- @field playSound fun(soundId: integer, soundPlaybackMode: integer)
 --- @field playMusic fun(musicId: integer)
 
---- @class SerializeBindings
---- @field partyAlignment fun(alignment: integer): string
-
---- @class DeserializeBindings
---- @field partyAlignment fun(alignment: string): integer
+--- @class RendererBindings
+--- @field reloadShaders fun()
 
 --- @class LogBindings
 --- @field info fun(message:string)
@@ -49,9 +46,9 @@
 --- @class Overlay
 --- @field init fun()
 --- @field close fun()
---- @field update fun(ctx: NuklearContext)
+--- @field update fun()
 
 --- @class OverlayBindings
 --- @field addOverlay fun(name: string, view: Overlay)
 --- @field removeOverlay fun(name: string)
---- @field nk Nuklear
+--- @field imgui ImGuiBindings
