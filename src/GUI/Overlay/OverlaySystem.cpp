@@ -39,10 +39,6 @@ void OverlaySystem::removeOverlay(std::string_view name) {
 }
 
 void OverlaySystem::drawOverlays() {
-    _update();
-}
-
-void OverlaySystem::_update() {
     if (!_isEnabled) {
         return;
     }
