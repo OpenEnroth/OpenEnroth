@@ -7,77 +7,68 @@
 #include <sol/sol.hpp>
 
 // Windows
-inline bool Begin(const std::string &name) { return ImGui::Begin(name.c_str()); }
-inline std::tuple<bool, bool> Begin(const std::string &name, bool open, int flags) {
-    if (!open) return { false, false };
-    bool shouldDraw = ImGui::Begin(name.c_str(), &open, static_cast<ImGuiWindowFlags_>(flags));
-
-    if (!open) {
-        ImGui::End();
-        return { false, false };
-    }
-
-    return { open, shouldDraw };
+bool imGuiBegin(const std::string &name) { return ImGui::Begin(name.c_str()); }
+std::tuple<bool, bool> imGuiBegin(const std::string &name, bool isOpened, int flags) {
+    bool shouldDraw = ImGui::Begin(name.c_str(), &isOpened, static_cast<ImGuiWindowFlags_>(flags));
+    return { shouldDraw, isOpened };
 }
-inline void End() { ImGui::End(); }
+void End() { ImGui::End(); }
 
 // Child Windows
-inline bool BeginChild(const std::string &name, float sizeX, float sizeY, bool border) { return ImGui::BeginChild(name.c_str(), { sizeX, sizeY }, border); }
-inline void EndChild() { ImGui::EndChild(); }
+bool imGuiBeginChild(const std::string &name, float sizeX, float sizeY, bool border) { return ImGui::BeginChild(name.c_str(), { sizeX, sizeY }, border); }
+void imGuiEndChild() { ImGui::EndChild(); }
 
 // Windows Utilities
-inline bool IsWindowHovered(int flags) { return ImGui::IsWindowHovered(static_cast<ImGuiHoveredFlags>(flags)); }
-inline std::tuple<float, float> GetWindowSize() { const auto vec2{ ImGui::GetWindowSize() };  return std::make_tuple(vec2.x, vec2.y); }
-inline void SetNextWindowPos(float posX, float posY) { ImGui::SetNextWindowPos({ posX, posY }); }
-inline void SetNextWindowPos(float posX, float posY, int cond) { ImGui::SetNextWindowPos({ posX, posY }, static_cast<ImGuiCond>(cond)); }
-inline void SetNextWindowSize(float sizeX, float sizeY) { ImGui::SetNextWindowSize({ sizeX, sizeY }); }
-inline void SetNextWindowSize(float sizeX, float sizeY, int cond) { ImGui::SetNextWindowSize({ sizeX, sizeY }, static_cast<ImGuiCond>(cond)); }
-inline void SetNextWindowSizeConstraints(float minX, float minY, float maxX, float maxY) { ImGui::SetNextWindowSizeConstraints({ minX, minY }, { maxX, maxY }); }
+bool imGuiIsWindowHovered(int flags) { return ImGui::IsWindowHovered(static_cast<ImGuiHoveredFlags>(flags)); }
+std::tuple<float, float> imGuiGetWindowSize() { const auto vec2{ ImGui::GetWindowSize() };  return std::make_tuple(vec2.x, vec2.y); }
+void imGuiSetNextWindowPos(float posX, float posY) { ImGui::SetNextWindowPos({ posX, posY }); }
+void imGuiSetNextWindowPos(float posX, float posY, int cond) { ImGui::SetNextWindowPos({ posX, posY }, static_cast<ImGuiCond>(cond)); }
+void imGuiSetNextWindowSize(float sizeX, float sizeY) { ImGui::SetNextWindowSize({ sizeX, sizeY }); }
+void imGuiSetNextWindowSize(float sizeX, float sizeY, int cond) { ImGui::SetNextWindowSize({ sizeX, sizeY }, static_cast<ImGuiCond>(cond)); }
+void imGuiSetNextWindowSizeConstraints(float minX, float minY, float maxX, float maxY) { ImGui::SetNextWindowSizeConstraints({ minX, minY }, { maxX, maxY }); }
 
 // Windows Scrolling
-inline void SetScrollHereY(float y) { ImGui::SetScrollHereY(y); }
+void imGuiSetScrollHereY(float y) { ImGui::SetScrollHereY(y); }
 
 // Styles
-inline void PushStyleColor(int idx, float colR, float colG, float colB, float colA) { ImGui::PushStyleColor(static_cast<ImGuiCol>(idx), { colR, colG, colB, colA }); }
-inline void PopStyleColor() { ImGui::PopStyleColor(); }
+void imGuiPushStyleColor(int idx, float r, float g, float b, float a) { ImGui::PushStyleColor(static_cast<ImGuiCol>(idx), { r, g, b, a }); }
+void imGuiPopStyleColor() { ImGui::PopStyleColor(); }
 
 // Widgets: Text
-inline void TextUnformatted(const std::string &text) { ImGui::TextUnformatted(text.c_str()); }
-inline void Text(const std::string &text) { ImGui::Text("%s", text.c_str()); }
-inline void TextWrapped(const std::string text) { ImGui::TextWrapped("%s", text.c_str()); }
+void imGuiTextUnformatted(const std::string &text) { ImGui::TextUnformatted(text.c_str()); }
+void imGuiText(const std::string &text) { ImGui::Text("%s", text.c_str()); }
+void imGuiTextWrapped(const std::string text) { ImGui::TextWrapped("%s", text.c_str()); }
 
 // Widgets: Common
-inline bool Button(const std::string &label) { return ImGui::Button(label.c_str()); }
-inline bool Button(const std::string &label, float sizeX, float sizeY) { return ImGui::Button(label.c_str(), { sizeX, sizeY }); }
-inline std::tuple<bool, bool> Checkbox(const std::string &label, bool v) {
-    bool value{ v };
+bool imGuiButton(const std::string &label) { return ImGui::Button(label.c_str()); }
+bool imGuiButton(const std::string &label, float sizeX, float sizeY) { return ImGui::Button(label.c_str(), { sizeX, sizeY }); }
+std::tuple<bool, bool> imGuiCheckbox(const std::string &label, bool value) {
     bool pressed = ImGui::Checkbox(label.c_str(), &value);
-
-    return std::make_tuple(value, pressed);
+    return { value, pressed };
 }
 
 // Tables
-inline void BeginTable(std::string name, int columns) { ImGui::BeginTable(name.c_str(), columns); }
-inline void EndTable() { ImGui::EndTable(); }
-inline void TableNextRow() { ImGui::TableNextRow(); }
-inline void TableSetColumnIndex(int index) { ImGui::TableSetColumnIndex(index); }
-inline int TableGetColumnCount() { return ImGui::TableGetColumnCount(); }
+void imGuiBeginTable(std::string name, int columns) { ImGui::BeginTable(name.c_str(), columns); }
+void imGuiEndTable() { ImGui::EndTable(); }
+void imGuiTableNextRow() { ImGui::TableNextRow(); }
+void imGuiTableSetColumnIndex(int index) { ImGui::TableSetColumnIndex(index); }
+int imGuiTableGetColumnCount() { return ImGui::TableGetColumnCount(); }
 
 // Item/Widgets Utilities
-inline bool IsItemFocused() { return ImGui::IsItemFocused(); }
+bool imGuiIsItemFocused() { return ImGui::IsItemFocused(); }
 
 // Inputs
-inline bool IsMouseHoveringRect(float min_x, float min_y, float max_x, float max_y) { return ImGui::IsMouseHoveringRect({ min_x, min_y }, { max_x, max_y }); }
+bool imGuiIsMouseHoveringRect(float minX, float minY, float maxX, float maxY) { return ImGui::IsMouseHoveringRect({ minX, minY }, { maxX, maxY }); }
 
 // Layout
-inline void SameLine() { ImGui::SameLine(); }
-inline float GetFrameHeightWithSpacing() { return ImGui::GetFrameHeightWithSpacing(); }
+void imGuiSameLine() { ImGui::SameLine(); }
+float imGuiGetFrameHeightWithSpacing() { return ImGui::GetFrameHeightWithSpacing(); }
 
 // Inputs Utilities: Keyboard
-inline void SetKeyboardFocusHere(int offset) { ImGui::SetKeyboardFocusHere(offset); }
+void imGuiSetKeyboardFocusHere(int offset) { ImGui::SetKeyboardFocusHere(offset); }
 
 // Widgets: Input with Keyboard
-struct InputTextUserData {
+struct ImGuiInputTextUserData {
     void onResize(ImGuiInputTextCallbackData *data) {
         string->resize(data->BufTextLen);
         data->Buf = string->data();
@@ -104,15 +95,15 @@ struct InputTextUserData {
     sol::function *callback{};
 };
 
-static int inputTextCallback(ImGuiInputTextCallbackData *data) {
+int inputTextCallback(ImGuiInputTextCallbackData *data) {
     switch (data->EventFlag) {
     case ImGuiInputTextFlags_CallbackResize: {
-        InputTextUserData *userData = static_cast<InputTextUserData *>(data->UserData);
+        ImGuiInputTextUserData *userData = static_cast<ImGuiInputTextUserData *>(data->UserData);
         userData->onResize(data);
         break;
     }
     case ImGuiInputTextFlags_CallbackHistory: {
-        InputTextUserData *userData = static_cast<InputTextUserData *>(data->UserData);
+        ImGuiInputTextUserData *userData = static_cast<ImGuiInputTextUserData *>(data->UserData);
         userData->onHistory(data);
         break;
     }
@@ -121,13 +112,13 @@ static int inputTextCallback(ImGuiInputTextCallbackData *data) {
     return 0;
 }
 
-inline std::tuple<std::string, bool> InputTextWithHint(const std::string &label, const std::string &hint, std::string text, ImGuiInputTextFlags flags, sol::function callback) {
-    InputTextUserData userData{ &text, callback.valid() ? &callback : nullptr };
+std::tuple<std::string, bool> imGuiInputTextWithHint(const std::string &label, const std::string &hint, std::string text, ImGuiInputTextFlags flags, sol::function callback) {
+    ImGuiInputTextUserData userData{ &text, callback.valid() ? &callback : nullptr };
     bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), text.data(), text.capacity() + 1, flags | ImGuiInputTextFlags_CallbackResize, inputTextCallback, &userData);
     return std::make_tuple(text, selected);
 }
 
-inline void InitEnums(sol::table &table) {
+void InitEnums(sol::table &table) {
     table.new_enum("ImGuiWindowFlags",
         "None", ImGuiWindowFlags_None,
         "NoTitleBar", ImGuiWindowFlags_NoTitleBar,
@@ -478,60 +469,60 @@ void ImGuiBindings::Init(sol::state_view &solState, sol::table &table) {
     table["imgui"] = ImGui;
     InitEnums(ImGui);
 
-    ImGui.set_function("ShowDemoWindow", []() { ImGui::ShowDemoWindow(); });
+    ImGui.set_function("showDemoWindow", []() { ImGui::ShowDemoWindow(); });
 
-    ImGui.set_function("Begin", sol::overload(
-        sol::resolve<bool(const std::string &)>(Begin),
-        sol::resolve<std::tuple<bool, bool>(const std::string &, bool, int)>(Begin)
+    ImGui.set_function("begin", sol::overload(
+        sol::resolve<bool(const std::string &)>(imGuiBegin),
+        sol::resolve<std::tuple<bool, bool>(const std::string &, bool, int)>(imGuiBegin)
     ));
-    ImGui.set_function("End", End);
+    ImGui.set_function("end", End);
 
-    ImGui.set_function("BeginChild", BeginChild);
-    ImGui.set_function("EndChild", EndChild);
+    ImGui.set_function("beginChild", imGuiBeginChild);
+    ImGui.set_function("endChild", imGuiEndChild);
 
-    ImGui.set_function("IsWindowHovered", IsWindowHovered);
-    ImGui.set_function("GetWindowSize", GetWindowSize);
+    ImGui.set_function("isWindowHovered", imGuiIsWindowHovered);
+    ImGui.set_function("getWindowSize", imGuiGetWindowSize);
 
     // Prefer  SetNext...
-    ImGui.set_function("SetNextWindowPos", sol::overload(
-        sol::resolve<void(float, float)>(SetNextWindowPos),
-        sol::resolve<void(float, float, int)>(SetNextWindowPos)
+    ImGui.set_function("setNextWindowPos", sol::overload(
+        sol::resolve<void(float, float)>(imGuiSetNextWindowPos),
+        sol::resolve<void(float, float, int)>(imGuiSetNextWindowPos)
     ));
-    ImGui.set_function("SetNextWindowSize", sol::overload(
-        sol::resolve<void(float, float)>(SetNextWindowSize),
-        sol::resolve<void(float, float, int)>(SetNextWindowSize)
+    ImGui.set_function("setNextWindowSize", sol::overload(
+        sol::resolve<void(float, float)>(imGuiSetNextWindowSize),
+        sol::resolve<void(float, float, int)>(imGuiSetNextWindowSize)
     ));
-    ImGui.set_function("SetNextWindowSizeConstraints", SetNextWindowSizeConstraints);
+    ImGui.set_function("setNextWindowSizeConstraints", imGuiSetNextWindowSizeConstraints);
 
-    ImGui.set_function("SetScrollHereY", SetScrollHereY);
+    ImGui.set_function("setScrollHereY", imGuiSetScrollHereY);
 
-    ImGui.set_function("PushStyleColor", PushStyleColor);
-    ImGui.set_function("PopStyleColor", PopStyleColor);
+    ImGui.set_function("pushStyleColor", imGuiPushStyleColor);
+    ImGui.set_function("popStyleColor", imGuiPopStyleColor);
 
-    ImGui.set_function("TextUnformatted", TextUnformatted);
-    ImGui.set_function("Text", Text);
-    ImGui.set_function("TextWrapped", TextWrapped);
+    ImGui.set_function("textUnformatted", imGuiTextUnformatted);
+    ImGui.set_function("text", imGuiText);
+    ImGui.set_function("textWrapped", imGuiTextWrapped);
 
-    ImGui.set_function("Button", sol::overload(
-        sol::resolve<bool(const std::string &)>(Button),
-        sol::resolve<bool(const std::string &, float, float)>(Button)
+    ImGui.set_function("button", sol::overload(
+        sol::resolve<bool(const std::string &)>(imGuiButton),
+        sol::resolve<bool(const std::string &, float, float)>(imGuiButton)
     ));
-    ImGui.set_function("Checkbox", Checkbox);
+    ImGui.set_function("checkbox", imGuiCheckbox);
 
-    ImGui.set_function("InputTextWithHint", InputTextWithHint);
+    ImGui.set_function("inputTextWithHint", imGuiInputTextWithHint);
 
-    ImGui.set_function("BeginTable", BeginTable);
-    ImGui.set_function("EndTable", EndTable);
-    ImGui.set_function("TableNextRow", TableNextRow);
-    ImGui.set_function("TableSetColumnIndex", TableSetColumnIndex);
-    ImGui.set_function("TableGetColumnCount", TableGetColumnCount);
+    ImGui.set_function("beginTable", imGuiBeginTable);
+    ImGui.set_function("endTable", imGuiEndTable);
+    ImGui.set_function("tableNextRow", imGuiTableNextRow);
+    ImGui.set_function("tableSetColumnIndex", imGuiTableSetColumnIndex);
+    ImGui.set_function("tableGetColumnCount", imGuiTableGetColumnCount);
 
-    ImGui.set_function("IsItemFocused", IsItemFocused);
+    ImGui.set_function("isItemFocused", imGuiIsItemFocused);
 
-    ImGui.set_function("SetKeyboardFocusHere", SetKeyboardFocusHere);
+    ImGui.set_function("setKeyboardFocusHere", imGuiSetKeyboardFocusHere);
 
-    ImGui.set_function("SameLine", SameLine);
-    ImGui.set_function("GetFrameHeightWithSpacing", GetFrameHeightWithSpacing);
+    ImGui.set_function("sameLine", imGuiSameLine);
+    ImGui.set_function("getFrameHeightWithSpacing", imGuiGetFrameHeightWithSpacing);
 
-    ImGui.set_function("IsMouseHoveringRect", IsMouseHoveringRect);
+    ImGui.set_function("isMouseHoveringRect", imGuiIsMouseHoveringRect);
 }

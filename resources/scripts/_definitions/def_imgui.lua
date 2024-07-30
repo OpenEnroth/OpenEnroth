@@ -3,52 +3,51 @@
 --- @diagnostic disable: duplicate-doc-field
 
 --- @class ImGuiBindings
---- @field Begin fun(name:string) : boolean
---- @field Begin fun(name:string, isOpen:boolean, flags:ImGuiWindowFlags) : boolean, boolean
---- @field End fun()
+--- @field beginWindow fun(name:string) : boolean
+--- @field beginWindow fun(name:string, isOpen:boolean, flags:ImGuiWindowFlags) : boolean, boolean
+--- @field end fun()
 --- Window
---- @field GetWindowSize fun() : number, number
---- @field SetNextWindowSize fun(w: number, h: number)
---- @field SetNextWindowSize fun(w: number, h: number, cond:ImGuiCond)
---- @field SetNextWindowPos fun(x: number, h: number)
---- @field SetNextWindowPos fun(x: number, h: number, cond:ImGuiCond)
---- @field SetNextWindowSizeConstraints fun(minX: number, minH: number, maxX: number, maxH: number)
---- @field IsWindowHovered fun(flags:ImGuiHoveredFlags) : boolean
+--- @field getWindowSize fun() : number, number
+--- @field setNextWindowSize fun(w: number, h: number, cond:ImGuiCond)
+--- @field setNextWindowPos fun(x: number, h: number)
+--- @field setNextWindowPos fun(x: number, h: number, cond:ImGuiCond)
+--- @field setNextWindowSizeConstraints fun(minX: number, minH: number, maxX: number, maxH: number)
+--- @field isWindowHovered fun(flags:ImGuiHoveredFlags) : boolean
 --- Child
---- @field BeginChild fun(name:string, width:number, height:number, showBorder:boolean) : boolean
---- @field EndChild fun()
+--- @field beginChild fun(name:string, width:number, height:number, showBorder:boolean) : boolean
+--- @field endChild fun()
 --- Text
---- @field Text fun(text:string)
---- @field TextUnformatted fun(text:string)
---- @field TextWrapped fun(text:string)
+--- @field text fun(text:string)
+--- @field textUnformatted fun(text:string)
+--- @field textWrapped fun(text:string)
 --- Button
---- @field Button fun() : boolean
---- @field Button fun(text:string, width:number, height: number) : boolean
+--- @field button fun() : boolean
+--- @field button fun(text:string, width:number, height: number) : boolean
 --- InputText
---- @field InputTextWithHint fun(name:string, hint:string, text:string, flags:ImGuiInputTextFlags, callback: fun(event:ImGuiInputTextFlags, param1:any) : string) : string, boolean
+--- @field inputTextWithHint fun(name:string, hint:string, text:string, flags:ImGuiInputTextFlags, callback: fun(event:ImGuiInputTextFlags, param1:any) : string) : string, boolean
 --- Checkbox
---- @field Checkbox fun(label:string, value:boolean) : boolean
+--- @field checkbox fun(label:string, value:boolean) : boolean
 --- Table
---- @field BeginTable fun(name:string, columns:integer)
---- @field EndTable fun()
---- @field TableNextRow fun()
---- @field TableSetColumnIndex fun(column:integer)
---- @field TableGetColumnCount fun(): integer
+--- @field beginTable fun(name:string, columns:integer)
+--- @field endTable fun()
+--- @field tableNextRow fun()
+--- @field tableSetColumnIndex fun(column:integer)
+--- @field tableGetColumnCount fun(): integer
 --- Scroll
---- @field SetScrollHereY fun(scroll:number)
+--- @field setScrollHereY fun(scroll:number)
 --- Layout
---- @field SameLine fun()
---- @field GetFrameHeightWithSpacing fun()
+--- @field sameLine fun()
+--- @field getFrameHeightWithSpacing fun()
 --- Focus
---- @field SetKeyboardFocusHere fun(index:integer)
---- @field IsItemFocused fun() : boolean
+--- @field setKeyboardFocusHere fun(index:integer)
+--- @field isItemFocused fun() : boolean
 --- Style
---- @field PushStyleColor fun(col:ImGuiCol, r: number, g: number, b: number, a: number)
---- @field PopStyleColor fun()
+--- @field pushStyleColor fun(col:ImGuiCol, r: number, g: number, b: number, a: number)
+--- @field popStyleColor fun()
 --- Demo
---- @field ShowDemoWindow fun()
+--- @field showDemoWindow fun()
 --- Mouse
---- @field IsMouseHoveringRect fun(x: number, y: number, w: number, h: number) : boolean
+--- @field isMouseHoveringRect fun(x: number, y: number, w: number, h: number) : boolean
 --- Enums
 --- @field ImGuiCol ImGuiColEnum
 --- @field ImGuiCond ImGuiCondEnum

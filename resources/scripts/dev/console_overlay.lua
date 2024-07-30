@@ -44,7 +44,7 @@ local function drawCommandLineRow()
     --- @type any
     local inputTextFlags = bit32.bor(imgui.ImGuiInputTextFlags.EnterReturnsTrue,
         imgui.ImGuiInputTextFlags.CallbackHistory)
-    local text, changed = imgui.InputTextWithHint("##Input", "Write something here...", Console.text, inputTextFlags,
+    local text, changed = imgui.inputTextWithHint("##Input", "Write something here...", Console.text, inputTextFlags,
         inputTextCallback)
     Console.text = text
 
@@ -52,59 +52,59 @@ local function drawCommandLineRow()
         if not Utilities.isEmpty(Console.text) then
             Console:send()
             scrollToBottom = true
-            imgui.SetKeyboardFocusHere(-1)
+            imgui.setKeyboardFocusHere(-1)
         end
     end
 
-    imgui.SameLine()
-    if imgui.Button("Send") then
+    imgui.sameLine()
+    if imgui.button("Send") then
         if not Utilities.isEmpty(Console.text) then
             scrollToBottom = true
             Console:send()
         end
     end
 
-    imgui.SameLine()
-    if imgui.Button("Clear") then
+    imgui.sameLine()
+    if imgui.button("Clear") then
         Console:clear()
     end
 end
 
 local function drawOptionsRow()
-    Console.logEnabled = imgui.Checkbox("Show Log", Console.logEnabled)
-    imgui.SameLine()
-    Console.autoMinimize = imgui.Checkbox("Auto Hide", Console.autoMinimize)
+    Console.logEnabled = imgui.checkbox("Show Log", Console.logEnabled)
+    imgui.sameLine()
+    Console.autoMinimize = imgui.checkbox("Auto Hide", Console.autoMinimize)
 end
 
 local function drawMessages()
-    imgui.BeginChild("Messages", 0, -(imgui.GetFrameHeightWithSpacing() * 2), true)
+    imgui.beginChild("Messages", 0, -(imgui.getFrameHeightWithSpacing() * 2), true)
     for i = 1, #Console.messages do
         local message = Console.messages[i]
         if message.source ~= "log" or Console.logEnabled then
-            imgui.PushStyleColor(imgui.ImGuiCol.Text, message.col.r, message.col.g, message.col.b,
+            imgui.pushStyleColor(imgui.ImGuiCol.Text, message.col.r, message.col.g, message.col.b,
                 message.col.a)
-            imgui.TextWrapped(message.text)
-            imgui.PopStyleColor()
+            imgui.textWrapped(message.text)
+            imgui.popStyleColor()
         end
     end
     if scrollToBottom then
-        imgui.SetScrollHereY(1.0);
+        imgui.setScrollHereY(1.0);
         scrollToBottom = false
     end
-    imgui.EndChild()
+    imgui.endChild()
 end
 
 local function drawConsole()
     local mainWinW, mainWinH = Platform.window.dimensions()
     local rect = calculateWindowSize(mainWinW, mainWinH)
 
-    imgui.SetNextWindowPos(rect.x, rect.y)
-    imgui.SetNextWindowSize(rect.w, rect.h, imgui.ImGuiCond.FirstUseEver)
-    imgui.SetNextWindowSizeConstraints(minWidth, rect.h, mainWinW - consoleMargin * 2, rect.h)
-    local _, drawWindow = imgui.Begin("Debug Console", true, imgui.ImGuiWindowFlags.NoTitleBar)
-    if drawWindow then
+    imgui.setNextWindowPos(rect.x, rect.y)
+    imgui.setNextWindowSize(rect.w, rect.h, imgui.ImGuiCond.FirstUseEver)
+    imgui.setNextWindowSizeConstraints(minWidth, rect.h, mainWinW - consoleMargin * 2, rect.h)
+    local shouldDraw, _ = imgui.beginWindow("Debug Console", true, imgui.ImGuiWindowFlags.NoTitleBar)
+    if shouldDraw then
         local flags = imgui.ImGuiHoveredFlags.RootAndChildWindows
-        isWindowMaximized = imgui.IsWindowHovered(flags) or imgui.IsMouseHoveringRect(rect.x, rect.y, rect.w, rect.h) or
+        isWindowMaximized = imgui.isWindowHovered(flags) or imgui.isMouseHoveringRect(rect.x, rect.y, rect.w, rect.h) or
             not Console.autoMinimize
         if isWindowMaximized then
             drawMessages()
@@ -112,7 +112,7 @@ local function drawConsole()
         end
     end
     drawCommandLineRow()
-    imgui.End()
+    imgui.endWindow()
 end
 
 local ConsoleOverlay = {}

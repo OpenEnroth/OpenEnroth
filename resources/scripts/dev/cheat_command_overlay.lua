@@ -26,7 +26,7 @@ local buttonSize = { w = -0.001, h = 30 }
 ---@param entry CheatCommandEntry
 ---@return boolean
 local function defaultDrawCommandEntry(entry)
-    return imgui.Button(entry.label, buttonSize.w, buttonSize.h)
+    return imgui.button(entry.label, buttonSize.w, buttonSize.h)
 end
 
 -- The configValue is provided in the form of "[command to run] | (optional label)"
@@ -48,12 +48,12 @@ local function createCheatCommandEntry(configValue)
         drawFunction = function (entry)
             local valueString = Config.getConfig(configName)
             local color = Utilities.toBoolean(valueString) and enabledColor or disabledColor
-            imgui.PushStyleColor(imgui.ImGuiCol.ButtonHovered, color.r, color.g, color.b, color.a)
+            imgui.pushStyleColor(imgui.ImGuiCol.ButtonHovered, color.r, color.g, color.b, color.a)
             color = Utilities.toBoolean(valueString) and enabledHoveredColor or disabledHoveredColor
-            imgui.PushStyleColor(imgui.ImGuiCol.Button, color.r, color.g, color.b, color.a)
-            local isPressed = imgui.Button(entry.label, buttonSize.w, buttonSize.h)
-            imgui.PopStyleColor()
-            imgui.PopStyleColor()
+            imgui.pushStyleColor(imgui.ImGuiCol.Button, color.r, color.g, color.b, color.a)
+            local isPressed = imgui.button(entry.label, buttonSize.w, buttonSize.h)
+            imgui.popStyleColor()
+            imgui.popStyleColor()
             return isPressed
         end
     else
@@ -81,9 +81,9 @@ end
 
 local function drawColumnItem(entry, columnIndex, itemsPerRow)
     if columnIndex == 0 then
-        imgui.TableNextRow();
+        imgui.tableNextRow();
     end
-    imgui.TableSetColumnIndex(columnIndex);
+    imgui.tableSetColumnIndex(columnIndex);
     if entry:draw() then
         --TODO(Gerark) I should expose the audio enum instead of using magic number
         -- It should look like this: Audio.playSound(SOUND_StartMainChoice02, SOUND_MODE_UI)
@@ -94,23 +94,23 @@ local function drawColumnItem(entry, columnIndex, itemsPerRow)
 end
 
 local function beginTable(name, columnSize)
-    local w, _ = imgui.GetWindowSize()
-    imgui.BeginTable(name, math.max(1, math.floor(w / columnSize)))
+    local w, _ = imgui.getWindowSize()
+    imgui.beginTable(name, math.max(1, math.floor(w / columnSize)))
 end
 
 CheatOverlay.update = function ()
     local screenW, screenH = window.dimensions()
-    imgui.SetNextWindowSize(300, screenH - 10, imgui.ImGuiCond.FirstUseEver);
-    imgui.SetNextWindowPos(screenW - 305, 5, imgui.ImGuiCond.FirstUseEver);
-    if imgui.Begin("Debug Menu") then
+    imgui.setNextWindowSize(300, screenH - 10, imgui.ImGuiCond.FirstUseEver);
+    imgui.setNextWindowPos(screenW - 305, 5, imgui.ImGuiCond.FirstUseEver);
+    if imgui.beginWindow("Debug Menu") then
         beginTable("buttonTable", 150)
         local columnIndex = 0
         for _, entry in pairs(availableCommands) do
-            columnIndex = drawColumnItem(entry, columnIndex, imgui.TableGetColumnCount())
+            columnIndex = drawColumnItem(entry, columnIndex, imgui.tableGetColumnCount())
         end
-        imgui.EndTable()
+        imgui.endTable()
     end
-    imgui.End()
+    imgui.endWindow()
 end
 
 
