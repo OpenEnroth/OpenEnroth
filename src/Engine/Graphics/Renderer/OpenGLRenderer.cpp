@@ -2318,7 +2318,9 @@ void OpenGLRenderer::DrawForcePerVerts() {
             fpfogstart = day_fogrange_1;
             fpfogmiddle = day_fogrange_2;
             fpfogend = pCamera3D->GetFarClip();
-            fpfogr = fpfogg = fpfogb = GetLevelFogColor().r / 255.0f;
+            fpfogr = fpfogcol.r / 255.0f;
+            fpfogg = fpfogcol.g / 255.0f;
+            fpfogb = fpfogcol.b / 255.0f;
         } else {
             fpfogstart = pCamera3D->GetFarClip();
             fpfogmiddle = 0.0f;
@@ -2381,7 +2383,9 @@ void OpenGLRenderer::SetFogParametersGL() {
             fogstart = day_fogrange_1;
             fogmiddle = day_fogrange_2;
             fogend = pCamera3D->GetFarClip();
-            fog.r = fog.g = fog.b = GetLevelFogColor().r / 255.0f;
+            fog.r = fogcol.r / 255.0f;
+            fog.g = fogcol.g / 255.0f;
+            fog.b = fogcol.b / 255.0f;
         } else {
             fogend = pCamera3D->GetFarClip();
             fogmiddle = 0.0f;
