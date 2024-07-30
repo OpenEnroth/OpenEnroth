@@ -19,7 +19,7 @@ sol::table OverlayBindings::createBindingTable(sol::state_view &solState) const 
             _overlaySystem.removeOverlay(name);
         })
     );
-    sol_ImGui::Init(solState, table);
+    ImGuiBindings::Init(solState, table);
 
     return table;
 }

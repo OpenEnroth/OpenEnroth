@@ -3,9 +3,7 @@
 --- @diagnostic disable: duplicate-doc-field
 
 --- @class ImGuiBindings
---- @field Begin fun() : boolean
 --- @field Begin fun(name:string) : boolean
---- @field Begin fun(name:string, isOpen:boolean) : boolean, boolean
 --- @field Begin fun(name:string, isOpen:boolean, flags:ImGuiWindowFlags) : boolean, boolean
 --- @field End fun()
 --- Window

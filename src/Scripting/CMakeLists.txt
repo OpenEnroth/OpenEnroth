@@ -5,6 +5,7 @@ set(SCRIPTING_SOURCES
         ConfigBindings.cpp
         OverlayBindings.cpp
         GameBindings.cpp
+        ImGuiBindings.cpp
         InputBindings.cpp
         InputScriptEventHandler.cpp
         LoggerBindings.cpp
