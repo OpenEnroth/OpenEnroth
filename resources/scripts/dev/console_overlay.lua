@@ -9,14 +9,6 @@ local consoleMargin = 5
 local footerHeight = 35
 local minWidth = 200
 local isWindowMaximized = false
---[[local baseColor = { 32, 32, 32, 255 }
-local messageBkgColor = { 16, 16, 16, 255 }
-
-local function getColorAlpha(col)
-    local a = isWindowMaximized and 200 or 64
-    return { col[1], col[2], col[3], a }
-end
---]]
 
 ---@param w integer
 ---@param h integer
