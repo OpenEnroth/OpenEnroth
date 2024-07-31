@@ -10,6 +10,9 @@
 
 #include <memory>
 
+MainMenuState::MainMenuState() {
+}
+
 FsmAction MainMenuState::enter() {
     pAudioPlayer->stopSounds();
     pAudioPlayer->MusicPlayTrack(MUSIC_MAIN_MENU);

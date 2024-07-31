@@ -37,14 +37,14 @@ void GameFsmBuilder::_buildIntroVideoSequence(FsmBuilder &builder) {
         .on("videoEnd").jumpTo("LoadStep2")
 
     .state<LoadStep2State>("LoadStep2")
-        .on("done").exitFsm();
+        .on("done").jumpTo("MainMenu");
 }
 
 void GameFsmBuilder::_buildMainMenu(FsmBuilder &builder) {
     builder
-        .state<MainMenuState>("MainMenu")
-            .on("newGame").exitFsm()
-            .on("loadGame").exitFsm()
-            .on("credits").exitFsm()
-            .on("exit").exitFsm();
+    .state<MainMenuState>("MainMenu")
+        .on("newGame").exitFsm()
+        .on("loadGame").exitFsm()
+        .on("credits").exitFsm()
+        .on("exit").exitFsm();
 }

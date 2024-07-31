@@ -8,7 +8,7 @@ class GUIWindow_MainMenu;
 
 class MainMenuState : public FsmState {
  public:
-    MainMenuState() = default;
+    MainMenuState();
     virtual FsmAction update() override;
     virtual FsmAction enter() override;
     virtual void exit() override;
