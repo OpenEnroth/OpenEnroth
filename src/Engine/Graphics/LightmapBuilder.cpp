@@ -86,7 +86,7 @@ Color GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight
     if (!engine->IsUnderwater()) {
         return Color(255 - dimminglevel, 255 - dimminglevel, 255 - dimminglevel);
     } else {
-        Color sea = colorTable.GreenishCyan;
+        Color sea = colorTable.Topaz;
         float col = (255 - dimminglevel) * 0.0039215689f;
         int red = static_cast<int>(floorf(col * sea.r + 0.5f));
         int grn = static_cast<int>(floorf(col * sea.g + 0.5f));
