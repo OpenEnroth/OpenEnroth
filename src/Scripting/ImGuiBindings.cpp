@@ -8,30 +8,30 @@
 
 // Windows
 bool imGuiBegin(const std::string &name) { return ImGui::Begin(name.c_str()); }
-std::tuple<bool, bool> imGuiBegin(const std::string &name, bool isOpened, int flags) {
-    bool shouldDraw = ImGui::Begin(name.c_str(), &isOpened, static_cast<ImGuiWindowFlags_>(flags));
+std::tuple<bool, bool> imGuiBeginEx(const std::string &name, bool isOpened, ImGuiWindowFlags_ flags) {
+    bool shouldDraw = ImGui::Begin(name.c_str(), &isOpened, flags);
     return { shouldDraw, isOpened };
 }
-void End() { ImGui::End(); }
+void imGuiEnd() { ImGui::End(); }
 
 // Child Windows
 bool imGuiBeginChild(const std::string &name, float sizeX, float sizeY, bool border) { return ImGui::BeginChild(name.c_str(), { sizeX, sizeY }, border); }
 void imGuiEndChild() { ImGui::EndChild(); }
 
 // Windows Utilities
-bool imGuiIsWindowHovered(int flags) { return ImGui::IsWindowHovered(static_cast<ImGuiHoveredFlags>(flags)); }
+bool imGuiIsWindowHovered(ImGuiHoveredFlags_ flags) { return ImGui::IsWindowHovered(flags); }
 std::tuple<float, float> imGuiGetWindowSize() { const auto vec2{ ImGui::GetWindowSize() };  return std::make_tuple(vec2.x, vec2.y); }
 void imGuiSetNextWindowPos(float posX, float posY) { ImGui::SetNextWindowPos({ posX, posY }); }
-void imGuiSetNextWindowPos(float posX, float posY, int cond) { ImGui::SetNextWindowPos({ posX, posY }, static_cast<ImGuiCond>(cond)); }
+void imGuiSetNextWindowPosEx(float posX, float posY, ImGuiCond_ cond) { ImGui::SetNextWindowPos({ posX, posY }, cond); }
 void imGuiSetNextWindowSize(float sizeX, float sizeY) { ImGui::SetNextWindowSize({ sizeX, sizeY }); }
-void imGuiSetNextWindowSize(float sizeX, float sizeY, int cond) { ImGui::SetNextWindowSize({ sizeX, sizeY }, static_cast<ImGuiCond>(cond)); }
+void imGuiSetNextWindowSizeEx(float sizeX, float sizeY, ImGuiCond_ cond) { ImGui::SetNextWindowSize({ sizeX, sizeY }, cond); }
 void imGuiSetNextWindowSizeConstraints(float minX, float minY, float maxX, float maxY) { ImGui::SetNextWindowSizeConstraints({ minX, minY }, { maxX, maxY }); }
 
 // Windows Scrolling
 void imGuiSetScrollHereY(float y) { ImGui::SetScrollHereY(y); }
 
 // Styles
-void imGuiPushStyleColor(int idx, float r, float g, float b, float a) { ImGui::PushStyleColor(static_cast<ImGuiCol>(idx), { r, g, b, a }); }
+void imGuiPushStyleColor(ImGuiCol_ colorType, float r, float g, float b, float a) { ImGui::PushStyleColor(colorType, { r, g, b, a }); }
 void imGuiPopStyleColor() { ImGui::PopStyleColor(); }
 
 // Widgets: Text
@@ -41,7 +41,7 @@ void imGuiTextWrapped(const std::string text) { ImGui::TextWrapped("%s", text.c_
 
 // Widgets: Common
 bool imGuiButton(const std::string &label) { return ImGui::Button(label.c_str()); }
-bool imGuiButton(const std::string &label, float sizeX, float sizeY) { return ImGui::Button(label.c_str(), { sizeX, sizeY }); }
+bool imGuiButtonEx(const std::string &label, float sizeX, float sizeY) { return ImGui::Button(label.c_str(), { sizeX, sizeY }); }
 std::tuple<bool, bool> imGuiCheckbox(const std::string &label, bool value) {
     bool pressed = ImGui::Checkbox(label.c_str(), &value);
     return { value, pressed };
@@ -471,11 +471,8 @@ void ImGuiBindings::Init(sol::state_view &solState, sol::table &table) {
 
     ImGui.set_function("showDemoWindow", []() { ImGui::ShowDemoWindow(); });
 
-    ImGui.set_function("beginWindow", sol::overload(
-        sol::resolve<bool(const std::string &)>(imGuiBegin),
-        sol::resolve<std::tuple<bool, bool>(const std::string &, bool, int)>(imGuiBegin)
-    ));
-    ImGui.set_function("endWindow", End);
+    ImGui.set_function("beginWindow", sol::overload(imGuiBegin, imGuiBeginEx));
+    ImGui.set_function("endWindow", imGuiEnd);
 
     ImGui.set_function("beginChild", imGuiBeginChild);
     ImGui.set_function("endChild", imGuiEndChild);
@@ -483,14 +480,8 @@ void ImGuiBindings::Init(sol::state_view &solState, sol::table &table) {
     ImGui.set_function("isWindowHovered", imGuiIsWindowHovered);
     ImGui.set_function("getWindowSize", imGuiGetWindowSize);
 
-    ImGui.set_function("setNextWindowPos", sol::overload(
-        sol::resolve<void(float, float)>(imGuiSetNextWindowPos),
-        sol::resolve<void(float, float, int)>(imGuiSetNextWindowPos)
-    ));
-    ImGui.set_function("setNextWindowSize", sol::overload(
-        sol::resolve<void(float, float)>(imGuiSetNextWindowSize),
-        sol::resolve<void(float, float, int)>(imGuiSetNextWindowSize)
-    ));
+    ImGui.set_function("setNextWindowPos", sol::overload(imGuiSetNextWindowPos, imGuiSetNextWindowPosEx));
+    ImGui.set_function("setNextWindowSize", sol::overload(imGuiSetNextWindowSize, imGuiSetNextWindowSizeEx));
     ImGui.set_function("setNextWindowSizeConstraints", imGuiSetNextWindowSizeConstraints);
 
     ImGui.set_function("setScrollHereY", imGuiSetScrollHereY);
@@ -502,10 +493,7 @@ void ImGuiBindings::Init(sol::state_view &solState, sol::table &table) {
     ImGui.set_function("text", imGuiText);
     ImGui.set_function("textWrapped", imGuiTextWrapped);
 
-    ImGui.set_function("button", sol::overload(
-        sol::resolve<bool(const std::string &)>(imGuiButton),
-        sol::resolve<bool(const std::string &, float, float)>(imGuiButton)
-    ));
+    ImGui.set_function("button", sol::overload(imGuiButton,imGuiButtonEx));
     ImGui.set_function("checkbox", imGuiCheckbox);
 
     ImGui.set_function("inputTextWithHint", imGuiInputTextWithHint);
