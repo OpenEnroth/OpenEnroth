@@ -22,6 +22,5 @@ target_link_libraries(gui_overlay
     utility
     PRIVATE
     imgui
-    nuklear
     scripting
 )

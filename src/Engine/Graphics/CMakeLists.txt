@@ -77,5 +77,4 @@ target_link_libraries(engine_graphics
         libluajit
         sol2
         PRIVATE
-        glad
-        nuklear)
+        glad)

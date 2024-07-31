@@ -46,9 +46,9 @@
 --- @class Overlay
 --- @field init fun()
 --- @field close fun()
---- @field update fun(ctx: NuklearContext)
+--- @field update fun()
 
 --- @class OverlayBindings
 --- @field addOverlay fun(name: string, view: Overlay)
 --- @field removeOverlay fun(name: string)
---- @field nk Nuklear
+--- @field imgui ImGuiBindings

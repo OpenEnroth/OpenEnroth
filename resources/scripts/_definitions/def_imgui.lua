@@ -1,0 +1,193 @@
+--- @meta
+
+--- @diagnostic disable: duplicate-doc-field
+
+--- @class ImGuiBindings
+--- @field beginWindow fun(name:string) : boolean
+--- @field beginWindow fun(name:string, isOpen:boolean, flags:ImGuiWindowFlags) : boolean, boolean
+--- @field endWindow fun()
+--- Window
+--- @field getWindowSize fun() : number, number
+--- @field setNextWindowSize fun(w: number, h: number, cond:ImGuiCond)
+--- @field setNextWindowPos fun(x: number, h: number)
+--- @field setNextWindowPos fun(x: number, h: number, cond:ImGuiCond)
+--- @field setNextWindowSizeConstraints fun(minX: number, minH: number, maxX: number, maxH: number)
+--- @field isWindowHovered fun(flags:ImGuiHoveredFlags) : boolean
+--- Child
+--- @field beginChild fun(name:string, width:number, height:number, showBorder:boolean) : boolean
+--- @field endChild fun()
+--- Text
+--- @field text fun(text:string)
+--- @field textUnformatted fun(text:string)
+--- @field textWrapped fun(text:string)
+--- Button
+--- @field button fun() : boolean
+--- @field button fun(text:string, width:number, height: number) : boolean
+--- InputText
+--- @field inputTextWithHint fun(name:string, hint:string, text:string, flags:ImGuiInputTextFlags, callback: fun(event:ImGuiInputTextFlags, param1:any) : string) : string, boolean
+--- Checkbox
+--- @field checkbox fun(label:string, value:boolean) : boolean
+--- Table
+--- @field beginTable fun(name:string, columns:integer)
+--- @field endTable fun()
+--- @field tableNextRow fun()
+--- @field tableSetColumnIndex fun(column:integer)
+--- @field tableGetColumnCount fun(): integer
+--- Scroll
+--- @field setScrollHereY fun(scroll:number)
+--- Layout
+--- @field sameLine fun()
+--- @field getFrameHeightWithSpacing fun()
+--- Focus
+--- @field setKeyboardFocusHere fun(index:integer)
+--- @field isItemFocused fun() : boolean
+--- Style
+--- @field pushStyleColor fun(col:ImGuiCol, r: number, g: number, b: number, a: number)
+--- @field popStyleColor fun()
+--- Demo
+--- @field showDemoWindow fun()
+--- Mouse
+--- @field isMouseHoveringRect fun(x: number, y: number, w: number, h: number) : boolean
+--- Enums
+--- @field ImGuiCol ImGuiColEnum
+--- @field ImGuiCond ImGuiCondEnum
+--- @field ImGuiInputTextFlags ImGuiInputTextFlagsEnum
+--- @field ImGuiHoveredFlags ImGuiHoveredFlagsEnum
+--- @field ImGuiWindowFlags ImGuiWindowFlagsEnum
+
+--- @enum ImGuiCol
+--- @class ImGuiColEnum
+--- @field Text ImGuiCol
+--- @field TextDisabled ImGuiCol
+--- @field WindowBg ImGuiCol
+--- @field ChildBg ImGuiCol
+--- @field PopupBg ImGuiCol
+--- @field Border ImGuiCol
+--- @field BorderShadow ImGuiCol
+--- @field FrameBg ImGuiCol
+--- @field FrameBgHovered ImGuiCol
+--- @field FrameBgActive ImGuiCol
+--- @field TitleBg ImGuiCol
+--- @field TitleBgActive ImGuiCol
+--- @field TitleBgCollapsed ImGuiCol
+--- @field MenuBarBg ImGuiCol,
+--- @field ScrollbarBg ImGuiCol
+--- @field ScrollbarGrab ImGuiCol
+--- @field ScrollbarGrabHovered ImGuiCol
+--- @field ScrollbarGrabActive ImGuiCol
+--- @field CheckMark ImGuiCol
+--- @field SliderGrab ImGuiCol
+--- @field SliderGrabActive ImGuiCol
+--- @field Button ImGuiCol
+--- @field ButtonHovered ImGuiCol
+--- @field ButtonActive ImGuiCol
+--- @field Header ImGuiCol
+--- @field HeaderHovered ImGuiCol
+--- @field HeaderActive ImGuiCol
+--- @field Separator ImGuiCol
+--- @field SeparatorHovered ImGuiCol
+--- @field SeparatorActive ImGuiCol
+--- @field ResizeGrip ImGuiCol
+--- @field ResizeGripHovered ImGuiCol
+--- @field ResizeGripActive ImGuiCol
+--- @field Tab ImGuiCol
+--- @field TabHovered ImGuiCol
+--- @field TabActive ImGuiCol
+--- @field TabUnfocused ImGuiCol
+--- @field TabUnfocusedActive ImGuiCol
+--- @field DockingPreview ImGuiCol
+--- @field DockingEmptyBg ImGuiCol
+--- @field PlotLines ImGuiCol
+--- @field PlotLinesHovered ImGuiCol
+--- @field PlotHistogram ImGuiCol
+--- @field PlotHistogramHovered ImGuiCol
+--- @field TableHeaderBg ImGuiCol
+--- @field TableBorderStrong ImGuiCol
+--- @field TableBorderLight ImGuiCol
+--- @field TableRowBg ImGuiCol
+--- @field TableRowBgAlt ImGuiCol
+--- @field TextSelectedBg ImGuiCol
+--- @field DragDropTarget ImGuiCol
+--- @field NavHighlight ImGuiCol
+--- @field NavWindowingHighlight ImGuiCol
+--- @field NavWindowingDimBg ImGuiCol
+--- @field ModalWindowDimBg ImGuiCol
+
+--- @enum ImGuiCond
+--- @class ImGuiCondEnum
+--- @field None ImGuiCond
+--- @field Always ImGuiCond
+--- @field Once ImGuiCond
+--- @field FirstUseEver ImGuiCond
+--- @field Appearing ImGuiCond
+
+--- @enum ImGuiInputTextFlags
+--- @class ImGuiInputTextFlagsEnum
+--- @field None ImGuiInputTextFlags
+--- @field CharsDecimal ImGuiInputTextFlags
+--- @field CharsHexadecimal ImGuiInputTextFlags
+--- @field CharsUppercase ImGuiInputTextFlags
+--- @field CharsNoBlank ImGuiInputTextFlags
+--- @field AutoSelectAll ImGuiInputTextFlags
+--- @field EnterReturnsTrue ImGuiInputTextFlags
+--- @field CallbackCompletion ImGuiInputTextFlags
+--- @field CallbackHistory ImGuiInputTextFlags
+--- @field CallbackAlways ImGuiInputTextFlags
+--- @field CallbackCharFilter ImGuiInputTextFlags
+--- @field AllowTabInput ImGuiInputTextFlags
+--- @field CtrlEnterForNewLine ImGuiInputTextFlags
+--- @field NoHorizontalScroll ImGuiInputTextFlags
+--- @field AlwaysOverwrite ImGuiInputTextFlags
+--- @field ReadOnly ImGuiInputTextFlags
+--- @field Password ImGuiInputTextFlags
+--- @field NoUndoRedo ImGuiInputTextFlags
+--- @field CharsScientific ImGuiInputTextFlags
+--- @field CallbackResize ImGuiInputTextFlags
+
+--- @enum ImGuiHoveredFlags
+--- @class ImGuiHoveredFlagsEnum
+--- @field None ImGuiHoveredFlags
+--- @field ChildWindows ImGuiHoveredFlags
+--- @field RootWindow ImGuiHoveredFlags
+--- @field AnyWindow ImGuiHoveredFlags
+--- @field AllowWhenBlockedByPopup ImGuiHoveredFlags
+--- @field AllowWhenBlockedByActiveItem ImGuiHoveredFlags
+--- @field AllowWhenOverlapped ImGuiHoveredFlags
+--- @field AllowWhenDisabled ImGuiHoveredFlags
+--- @field RectOnly ImGuiHoveredFlags
+--- @field RootAndChildWindows ImGuiHoveredFlags
+
+--- @enum ImGuiWindowFlags
+--- @class ImGuiWindowFlagsEnum
+--- @field None ImGuiWindowFlags
+--- @field NoTitleBar ImGuiWindowFlags
+--- @field NoResize ImGuiWindowFlags
+--- @field NoMove ImGuiWindowFlags
+--- @field NoScrollbar ImGuiWindowFlags
+--- @field NoScrollWithMouse ImGuiWindowFlags
+--- @field NoCollapse ImGuiWindowFlags
+--- @field AlwaysAutoResize ImGuiWindowFlags
+--- @field NoBackground ImGuiWindowFlags
+--- @field NoSavedSettings ImGuiWindowFlags
+--- @field NoMouseInputs ImGuiWindowFlags
+--- @field MenuBar ImGuiWindowFlags
+--- @field HorizontalScrollbar ImGuiWindowFlags
+--- @field NoFocusOnAppearing ImGuiWindowFlags
+--- @field NoBringToFrontOnFocus ImGuiWindowFlags
+--- @field AlwaysVerticalScrollbar ImGuiWindowFlags
+--- @field AlwaysHorizontalScrollbar ImGuiWindowFlags
+--- @field AlwaysUseWindowPadding ImGuiWindowFlags
+--- @field NoNavInputs ImGuiWindowFlags
+--- @field NoNavFocus ImGuiWindowFlags
+--- @field UnsavedDocument ImGuiWindowFlags
+--- @field NoDocking ImGuiWindowFlags
+--- @field NoNav ImGuiWindowFlags
+--- @field NoDecoration ImGuiWindowFlags
+--- @field NoInputs ImGuiWindowFlags
+--- @field NavFlattened ImGuiWindowFlags
+--- @field ChildWindow ImGuiWindowFlags
+--- @field Tooltip ImGuiWindowFlags
+--- @field Popup ImGuiWindowFlags
+--- @field Modal ImGuiWindowFlags
+--- @field ChildMenu ImGuiWindowFlags
+--- @field DockNodeHost ImGuiWindowFlags

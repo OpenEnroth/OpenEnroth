@@ -5,10 +5,10 @@ set(SCRIPTING_SOURCES
         ConfigBindings.cpp
         OverlayBindings.cpp
         GameBindings.cpp
+        ImGuiBindings.cpp
         InputBindings.cpp
         InputScriptEventHandler.cpp
         LoggerBindings.cpp
-        NuklearLegacyBindings.cpp
         PlatformBindings.cpp
         RendererBindings.cpp
         ScriptingSystem.cpp
@@ -18,11 +18,11 @@ set(SCRIPTING_HEADERS
         AudioBindings.h
         ConfigBindings.h
         OverlayBindings.h
+        ImGuiBindings.h
         GameBindings.h
         InputBindings.h
         InputScriptEventHandler.h
         LoggerBindings.h
-        NuklearLegacyBindings.h
         LuaItemQueryTable.h
         PlatformBindings.h
         RendererBindings.h
@@ -39,5 +39,4 @@ target_link_libraries(scripting
         PRIVATE
         libluajit
         sol2
-        nuklear
         gui_overlay)

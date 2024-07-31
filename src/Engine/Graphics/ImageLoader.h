@@ -81,17 +81,6 @@ class PCX_Loader : public ImageLoader {
     bool InternalLoad(const Blob &data, RgbaImage *rgbaImage);
 };
 
-class PCX_File_Loader : public PCX_Loader {
- public:
-    explicit inline PCX_File_Loader(std::string_view filename) {
-        this->resource_name = filename;
-    }
-
-    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
-
-    LodTextureCache *lod;
-};
-
 class PCX_LOD_Raw_Loader : public PCX_Loader {
  public:
     inline PCX_LOD_Raw_Loader(LodReader *lod, std::string_view filename) {

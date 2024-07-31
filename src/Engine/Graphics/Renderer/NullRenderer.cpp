@@ -1,7 +1,5 @@
 #include "NullRenderer.h"
 
-#include <nuklear_config.h> // NOLINT: not a C system header.
-
 #include "Engine/EngineGlobals.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineCallObserver.h"
@@ -110,7 +108,11 @@ bool NullRenderer::AreRenderSurfacesOk() {
     return true;
 }
 
-RgbaImage NullRenderer::MakeScreenshot32(const int width, const int height) {
+RgbaImage NullRenderer::MakeViewportScreenshot(const int width, const int height) {
+    return RgbaImage::solid(width, height, Color());
+}
+
+RgbaImage NullRenderer::MakeFullScreenshot() {
     return RgbaImage::solid(640, 480, Color());
 }
 
@@ -142,7 +144,6 @@ void NullRenderer::DoRenderBillboards_D3D() {}
 
 void NullRenderer::beginOverlays() {}
 void NullRenderer::endOverlays() {}
-void NullRenderer::drawOverlays(nk_context *) {}
 void NullRenderer::flushAndScale() {}
 void NullRenderer::swapBuffers() {
     openGLContext->swapBuffers();

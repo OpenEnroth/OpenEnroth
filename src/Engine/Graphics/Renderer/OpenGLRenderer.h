@@ -16,8 +16,6 @@
 #include "OpenGLShader.h"
 
 class PlatformOpenGLContext;
-class NuklearOverlayRenderer;
-struct nk_state;
 
 class OpenGLRenderer : public BaseRenderer {
  public:
@@ -102,7 +100,8 @@ class OpenGLRenderer : public BaseRenderer {
 
     virtual bool AreRenderSurfacesOk() override;
 
-    virtual RgbaImage MakeScreenshot32(const int width, const int height) override;
+    virtual RgbaImage MakeViewportScreenshot(const int width, const int height) override;
+    virtual RgbaImage MakeFullScreenshot() override;
 
     virtual void BeginLightmaps() override;
     virtual void EndLightmaps() override;
@@ -134,7 +133,6 @@ class OpenGLRenderer : public BaseRenderer {
 
     virtual void beginOverlays() override;
     virtual void endOverlays() override;
-    virtual void drawOverlays(nk_context *context) override;
 
  protected:
     virtual void DoRenderBillboards_D3D() override;
@@ -232,8 +230,6 @@ class OpenGLRenderer : public BaseRenderer {
     int fogend{};
 
     float gamma{};
-
-    std::unique_ptr<NuklearOverlayRenderer> _overlayRenderer;
 };
 
 
