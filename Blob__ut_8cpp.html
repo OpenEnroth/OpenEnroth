@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c46a99d</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fd9733d</span>
    </div>
   </td>
  </tr>
@@ -79,6 +79,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
+<code>#include &lt;filesystem&gt;</code><br />
 <code>#include &quot;<a class="el" href="UnitTest_8h.html">Testing/Unit/UnitTest.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Blob_8h.html">Utility/Memory/Blob.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="FileInputStream_8h.html">Utility/Streams/FileInputStream.h</a>&quot;</code><br />
@@ -98,12 +99,14 @@ Functions</h2></td></tr>
 <tr class="separator:afe2b38abc6583b824172e3e113061430"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add9388b3bfb2f49126cb191ced790697"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Blob__ut_8cpp.html#add9388b3bfb2f49126cb191ced790697">UNIT_TEST</a> (<a class="el" href="classBlob.html">Blob</a>, DisplayPathFromFile)</td></tr>
 <tr class="separator:add9388b3bfb2f49126cb191ced790697"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03d50abedf74deaa61e4f7fe490c6cf4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Blob__ut_8cpp.html#a03d50abedf74deaa61e4f7fe490c6cf4">UNIT_TEST</a> (<a class="el" href="classBlob.html">Blob</a>, DisplayPathFromEmptyFile)</td></tr>
+<tr class="separator:a03d50abedf74deaa61e4f7fe490c6cf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96c653552be2892671706cae25125bfb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Blob__ut_8cpp.html#a96c653552be2892671706cae25125bfb">UNIT_TEST</a> (<a class="el" href="classBlob.html">Blob</a>, DisplayPathFromStream)</td></tr>
 <tr class="separator:a96c653552be2892671706cae25125bfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="afe2b38abc6583b824172e3e113061430" name="afe2b38abc6583b824172e3e113061430"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe2b38abc6583b824172e3e113061430">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[1/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#afe2b38abc6583b824172e3e113061430">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[1/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -130,8 +133,36 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a03d50abedf74deaa61e4f7fe490c6cf4" name="a03d50abedf74deaa61e4f7fe490c6cf4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03d50abedf74deaa61e4f7fe490c6cf4">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[2/7]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UNIT_TEST </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlob.html">Blob</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">DisplayPathFromEmptyFile&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="add9388b3bfb2f49126cb191ced790697" name="add9388b3bfb2f49126cb191ced790697"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#add9388b3bfb2f49126cb191ced790697">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[2/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#add9388b3bfb2f49126cb191ced790697">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[3/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -159,7 +190,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a96c653552be2892671706cae25125bfb" name="a96c653552be2892671706cae25125bfb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a96c653552be2892671706cae25125bfb">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[3/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a96c653552be2892671706cae25125bfb">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[4/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -187,7 +218,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a976e97483a35b8db007bb571416e051f" name="a976e97483a35b8db007bb571416e051f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a976e97483a35b8db007bb571416e051f">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[4/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a976e97483a35b8db007bb571416e051f">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[5/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -215,7 +246,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ae1fb45e7f9f3fee8fe39d442fa35fc54" name="ae1fb45e7f9f3fee8fe39d442fa35fc54"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae1fb45e7f9f3fee8fe39d442fa35fc54">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[5/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae1fb45e7f9f3fee8fe39d442fa35fc54">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[6/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -243,7 +274,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a94c6ae0848462bef28287a0b53906c70" name="a94c6ae0848462bef28287a0b53906c70"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a94c6ae0848462bef28287a0b53906c70">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[6/6]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a94c6ae0848462bef28287a0b53906c70">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[7/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
