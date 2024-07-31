@@ -293,9 +293,7 @@ void Menu::EventLoop() {
                     gamma_preview_image = nullptr;
                 }
 
-                render->SaveScreenshot("gamma.pcx", 155, 117);
-                gamma_preview_image = assets->getImage_PCXFromFile("gamma.pcx");
-
+                gamma_preview_image = GraphicsImage::Create(render->MakeViewportScreenshot(155, 117));
                 continue;
             }
             case UIMSG_ToggleBloodsplats:
@@ -480,8 +478,7 @@ void Menu::MenuLoop() {
         gamma_preview_image = nullptr;
     }
 
-    render->SaveScreenshot("gamma.pcx", 155, 117);
-    gamma_preview_image = assets->getImage_PCXFromFile("gamma.pcx");
+    gamma_preview_image = GraphicsImage::Create(render->MakeViewportScreenshot(155, 117));
 
     pParty->resetCharacterEmotions();
 

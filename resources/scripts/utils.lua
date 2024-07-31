@@ -83,7 +83,7 @@ end
 ---@field w number
 ---@field h number
 
----Create a table with r,g,b,a fields
+---Create a table with x,y,w,h fields
 ---@param x number
 ---@param y number
 ---@param w number
