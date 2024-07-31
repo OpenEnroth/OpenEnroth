@@ -6,6 +6,7 @@
 #include <vector>
 #include <utility>
 #include <map>
+#include <regex>
 #include <string>
 
 #include "Application/GameStarter.h"
@@ -14,6 +15,8 @@
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Events/EventMap.h"
 #include "Engine/Random/Random.h"
+#include "Engine/Objects/DecorationEnums.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Snapshots/TableSerialization.h"
@@ -25,19 +28,15 @@
 #include "Library/Lod/LodReader.h"
 #include "Library/Serialization/EnumSerialization.h"
 
-#include "Utility/Format.h"
+#include "Utility/String/Ascii.h"
+#include "Utility/String/Format.h"
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
-#include "Utility/String.h"
 #include "Utility/UnicodeCrt.h"
+#include "Utility/String/Transformations.h"
 
 #include "CodeGenEnums.h"
 #include "CodeGenMap.h"
-
-// TODO(captainurist): use std::string::contains once Android have full C++23 support.
-static auto contains = [](std::string_view haystack, std::string_view needle) {
-    return haystack.find(needle) != std::string::npos;
-};
 
 int runItemIdCodeGen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
     ItemTable itemTable;
@@ -69,18 +68,18 @@ int runItemIdCodeGen(const CodeGenOptions &options, GameResourceManager *resourc
             continue;
         }
 
-        if (contains(enumName, "PLACEHOLDER") || contains(enumName, "SEALED_LETTER")) {
+        if (enumName.contains("PLACEHOLDER") || enumName.contains("SEALED_LETTER")) {
             map.insert(i, "", name + ", unused.");
             continue;
         }
 
-        if (contains(enumName, "ORDERS_FROM_SNERGLE")) {
+        if (enumName.contains("ORDERS_FROM_SNERGLE")) {
             map.insert(i, "", name + ", unused remnant from MM6.");
             continue;
         }
 
         if (enumName == "LICH_JAR") {
-            if (contains(description, "Empty")) {
+            if (description.contains("Empty")) {
                 enumName += "_EMPTY";
             } else {
                 enumName += "_FULL";
@@ -88,11 +87,11 @@ int runItemIdCodeGen(const CodeGenOptions &options, GameResourceManager *resourc
         }
 
         if (enumName == "THE_PERFECT_BOW")
-            if (!contains(description, "off-balance"))
+            if (!description.contains("off-balance"))
                 enumName += "_FIXED";
 
         // Shorten enum names for letters.
-        if (enumName.starts_with("LETTER_FROM") && contains(enumName, "_TO_"))
+        if (enumName.starts_with("LETTER_FROM") && enumName.contains("_TO_"))
             enumName = enumName.substr(0, enumName.find("_TO_"));
 
         if (desc.uEquipType == ITEM_TYPE_REAGENT) {
@@ -167,7 +166,7 @@ int runMapIdCodeGen(const CodeGenOptions &options, GameResourceManager *resource
 
 const MapInfo &mapInfoByFileName(const MapStats &mapStats, std::string_view fileName) {
     auto pos = std::find_if(mapStats.pInfos.begin(), mapStats.pInfos.end(), [&] (const MapInfo &mapInfo) {
-        return noCaseEquals(mapInfo.fileName, fileName);
+        return ascii::noCaseEquals(mapInfo.fileName, fileName);
     });
     if (pos == mapStats.pInfos.end())
         throw Exception("Unrecognized map '{}'", fileName);
@@ -433,6 +432,50 @@ int runMusicCodeGen(const CodeGenOptions &options, GameResourceManager *resource
     return 0;
 }
 
+int runDecorationsCodegen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
+    CodeGenMap map;
+    std::regex tailRegex("^([A-Za-z ]*)([0-9]+)([a-zA-Z]?)$");
+
+    // Decoration naming & numbering is very weird, and there is no sane approach to naming except just using the
+    // id values as a suffix. So this is what we're doing here.
+
+    map.insert(DECORATION_NULL, "NULL", "");
+    for (size_t index = 1; index < pDecorationList->pDecorations.size(); index++) {
+        DecorationId i = static_cast<DecorationId>(index);
+        const DecorationDesc& dd = pDecorationList->pDecorations[index];
+
+        if (dd.name.empty()) {
+            map.insert(i, "", "Unused.");
+            continue;
+        }
+
+        std::string enumName;
+        if (dd.name == "fount1") {
+            enumName = "FOUNTAIN";
+        } else if (dd.name.starts_with("dec")) {
+            enumName = dd.type;
+        } else {
+            enumName = dd.name;
+        }
+        std::smatch match;
+        if (std::regex_search(enumName, match, tailRegex))
+            enumName = match[1].str();
+        enumName = fmt::format("{}_{}", enumName, index);
+
+        std::string description =  dd.name + ", " + dd.type;
+        if (dd.uLightRadius)
+            description += fmt::format(", light_r={}", dd.uLightRadius);
+        if (dd.uColoredLight.r + dd.uColoredLight.g + dd.uColoredLight.b > 0)
+            description += fmt::format(", light_c=#{:02x}{:02x}{:02x}", dd.uColoredLight.r, dd.uColoredLight.g, dd.uColoredLight.b );
+        if (dd.uSoundID != SOUND_Invalid)
+            description += fmt::format(", snd={}", std::to_underlying(dd.uSoundID));
+
+        map.insert(i, toUpperCaseEnum(enumName), description);
+    }
+    map.dump(stdout, "DECORATION_");
+    return 0;
+}
+
 int platformMain(int argc, char **argv) {
     try {
         UnicodeCrt _(argc, argv);
@@ -454,6 +497,7 @@ int platformMain(int argc, char **argv) {
         case CodeGenOptions::SUBCOMMAND_MONSTER_TYPE: return runMonsterTypeCodeGen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_BOUNTY_HUNT: return runBountyHuntCodeGen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_MUSIC: return runMusicCodeGen(options, &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_DECORATIONS: return runDecorationsCodegen(options, &resourceManager);
         default:
             assert(false);
             return 1;

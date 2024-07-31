@@ -19,6 +19,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Utility/String/Ascii.h"
+
 std::array<int, 5> lloydsBeaconsPreviewXs = {{61, 281, 61, 281, 171}};
 std::array<int, 5> lloydsBeaconsPreviewYs = {{84, 84, 228, 228, 155}};
 std::array<int, 5> lloydsBeacons_SomeXs = {{59, 279, 59, 279, 169}};
@@ -155,10 +157,9 @@ void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
             engine->_statusBar->setPermanent(LSTR_FMT_RECALL_TO_S, mapName);
         }
     } else {
-        MapId mapId = pMapStats->GetMapInfo(pCurrentMapName);
         std::string mapName = "Not in Map Stats";
-        if (mapId != MAP_INVALID) {
-            mapName = pMapStats->pInfos[mapId].name;
+        if (engine->_currentLoadedMapId != MAP_INVALID) {
+            mapName = pMapStats->pInfos[engine->_currentLoadedMapId].name;
         }
 
         if (beacon.uBeaconTime) {
@@ -195,16 +196,16 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
     }
     pAudioPlayer->playSpellSound(SPELL_WATER_LLOYDS_BEACON, false, SOUND_MODE_UI);
     if (_recallingBeacon) {
-        if (toLower(pCurrentMapName) != toLower(pMapStats->pInfos[character.vBeacons[beaconId].mapId].fileName)) {
+        if (engine->_currentLoadedMapId != character.vBeacons[beaconId].mapId) {
             // TODO(Nik-RE-dev): need separate function for teleportation to other maps
             AutoSave();
             onMapLeave();
-            pCurrentMapName = pMapStats->pInfos[character.vBeacons[beaconId].mapId].fileName;
+            engine->_transitionMapId = character.vBeacons[beaconId].mapId;
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
             engine->_teleportPoint.setTeleportTarget(character.vBeacons[beaconId]._partyPos, character.vBeacons[beaconId]._partyViewYaw, character.vBeacons[beaconId]._partyViewPitch, 0);
         } else {
-            pParty->pos = character.vBeacons[beaconId]._partyPos.toFloat();
+            pParty->pos = character.vBeacons[beaconId]._partyPos;
             pParty->uFallStartZ = pParty->pos.z;
             pParty->_viewYaw = character.vBeacons[beaconId]._partyViewYaw;
             pParty->_viewPitch = character.vBeacons[beaconId]._partyViewPitch;

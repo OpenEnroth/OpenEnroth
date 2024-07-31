@@ -189,7 +189,14 @@ static void from_json(const Json &json, ConfigPatch &patch) {
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceCharacterState, (
     (hp, "hp"),
-    (mp, "mp")
+    (mp, "mp"),
+    (might, "might"),
+    (intelligence, "intelligence"),
+    (personality, "personality"),
+    (endurance, "endurance"),
+    (accuracy, "accuracy"),
+    (speed, "speed"),
+    (luck, "luck")
 ))
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceGameState, (

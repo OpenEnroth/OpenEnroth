@@ -34,6 +34,10 @@ void SdlOpenGLContext::swapBuffers() {
     SDL_GL_SwapWindow(_window);
 }
 
+void *SdlOpenGLContext::nativeHandle() {
+    return &_context;
+}
+
 void *SdlOpenGLContext::getProcAddress(const char *name) {
     if (SDL_GL_GetCurrentWindow() != _window || SDL_GL_GetCurrentContext() != _context)
         if (!bind())

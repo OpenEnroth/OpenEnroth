@@ -1,0 +1,196 @@
+--- @meta
+
+--- @class GameBindings
+--- @field party PartyBindings
+--- @field items ItemsBindings
+--- @field misc MiscBindings
+--- @field PartyAlignment PartyAlignmentEnum | table<string, PartyAlignment>
+--- @field CharacterCondition CharacterConditionEnum | table<string, CharacterCondition>
+--- @field SkillType SkillTypeEnum | table<string, SkillType>
+--- @field SkillMastery SkillMasteryEnum | table<string, SkillMastery>
+--- @field ClassType ClassTypeEnum | table<string, ClassType>
+--- @field ItemType ItemTypeEnum | table<string, ItemType>
+--- @field QBits table<string, QBits>
+
+--- @class SkillEntry
+--- @field id SkillType
+--- @field mastery SkillMastery
+--- @field level integer
+
+--- @class CharacterInfo
+--- @field name string?
+--- @field class ClassType?
+--- @field mana integer?
+--- @field maxMana integer?
+--- @field hp integer?
+--- @field maxHp integer?
+--- @field skills table<SkillType, SkillEntry>?
+--- @field condition table<CharacterCondition, boolean>?
+
+--- @class CharacterInfoInput
+--- @field name string?
+--- @field class ClassType?
+--- @field mana integer?
+--- @field maxMana integer?
+--- @field hp integer?
+--- @field maxHp integer?
+--- @field skills table<SkillType, SkillEntry>?
+--- @field condition CharacterCondition?
+
+--- @class PartyBindings
+--- @field getGold fun(): integer
+--- @field setGold fun(amount: integer)
+--- @field getFood fun(): integer
+--- @field setFood fun(amount: integer)
+--- @field getAlignment fun(): PartyAlignment
+--- @field setAlignment fun(alignment: PartyAlignment)
+--- @field givePartyXp fun(amount: integer)
+--- @field getPartySize fun(): integer
+--- @field getActiveCharacter fun(): integer
+--- @field getCharacterInfo fun(charIndex: integer, query: table): CharacterInfo
+--- @field setCharacterInfo fun(charIndex: integer, info: CharacterInfoInput)
+--- @field addItemToInventory fun(charIndex: integer, itemId: ItemType):boolean
+--- @field addCustomItemToInventory fun(charIndex: integer, item: table)
+--- @field playAllCharactersAwardSound fun()
+--- @field playCharacterAwardSound fun(charIndex: integer)
+--- @field clearCondition fun(charIndex: integer, condition: CharacterCondition?)
+--- @field getQBit fun(qbit: QBits):boolean
+--- @field setQBit fun(qbit: QBits, value: boolean)
+
+--- @class ItemInfo
+--- @field name string
+--- @field level integer
+
+--- @class ItemsBindings
+--- @field getItemInfo fun(itemId: integer):ItemInfo
+--- @field getRandomItem fun(filter: fun(item: table)?):integer
+
+--- ENUMS
+
+---@alias AnyGameEnum PartyAlignmentEnum|SkillMasteryEnum|SkillTypeEnum|CharacterConditionEnum|ClassTypeEnum|ItemTypeEnum
+---@alias AnyGameEnumValue PartyAlignment|SkillMastery|SkillType|CharacterCondition|ClassType|ItemType
+
+--- @enum PartyAlignment
+--- @class PartyAlignmentEnum
+--- @field Good PartyAlignment
+--- @field Neutral PartyAlignment
+--- @field Evil PartyAlignment
+
+--- @enum SkillMastery
+--- @class SkillMasteryEnum
+--- @field None SkillMastery
+--- @field Novice SkillMastery
+--- @field Expert SkillMastery
+--- @field Master SkillMastery
+--- @field Grandmaster SkillMastery
+
+--- @enum SkillType
+--- @class SkillTypeEnum
+--- @field Staff SkillType
+--- @field Sword SkillType
+--- @field Dagger SkillType
+--- @field Axe SkillType
+--- @field Spear SkillType
+--- @field Bow SkillType
+--- @field Mace SkillType
+--- @field Blaster SkillType
+--- @field Shield SkillType
+--- @field Leather SkillType
+--- @field Chain SkillType
+--- @field Plate SkillType
+--- @field Fire SkillType
+--- @field Air SkillType
+--- @field Water SkillType
+--- @field Earth SkillType
+--- @field Spirit SkillType
+--- @field Mind SkillType
+--- @field Body SkillType
+--- @field Light SkillType
+--- @field Dark SkillType
+--- @field Item_ID SkillType
+--- @field Merchant SkillType
+--- @field Repair SkillType
+--- @field Bodybuilding SkillType
+--- @field Meditation SkillType
+--- @field Perception SkillType
+--- @field Diplomacy SkillType
+--- @field Thievery SkillType
+--- @field Trap_Disarm SkillType
+--- @field Dodge SkillType
+--- @field Unarmed SkillType
+--- @field Monster_ID SkillType
+--- @field Armsmaster SkillType
+--- @field Stealing SkillType
+--- @field Alchemy SkillType
+--- @field Learning SkillType
+--- @field Club SkillType
+--- @field Misc SkillType
+
+--- @enum CharacterCondition
+--- @class CharacterConditionEnum
+--- @field Cursed CharacterCondition
+--- @field Weak CharacterCondition
+--- @field Sleep CharacterCondition
+--- @field Fear CharacterCondition
+--- @field Drunk CharacterCondition
+--- @field Insane CharacterCondition
+--- @field Poison_weak CharacterCondition
+--- @field Disease_weak CharacterCondition
+--- @field Poison_medium CharacterCondition
+--- @field Disease_medium CharacterCondition
+--- @field Poison_severe CharacterCondition
+--- @field Disease_severe CharacterCondition
+--- @field Paralyzed CharacterCondition
+--- @field Unconscious CharacterCondition
+--- @field Dead CharacterCondition
+--- @field Petriefied CharacterCondition
+--- @field Eradicated CharacterCondition
+--- @field Zombie CharacterCondition
+
+--- @enum ClassType
+--- @class ClassTypeEnum
+--- @field Knight ClassType
+--- @field Cavalier ClassType
+--- @field Champion ClassType
+--- @field BlackKnight ClassType
+--- @field Thief ClassType
+--- @field Rogue ClassType
+--- @field Spy ClassType
+--- @field Assassin ClassType
+--- @field Monk ClassType
+--- @field Initiate ClassType
+--- @field Master ClassType
+--- @field Ninja ClassType
+--- @field Paladin ClassType
+--- @field Crusader ClassType
+--- @field Hero ClassType
+--- @field Villain ClassType
+--- @field Archer ClassType
+--- @field WarriorMage ClassType
+--- @field MasterArcher ClassType
+--- @field Sniper ClassType
+--- @field Ranger ClassType
+--- @field Hunter ClassType
+--- @field RangerLord ClassType
+--- @field BountyHunter ClassType
+--- @field Cleric ClassType
+--- @field Priest ClassType
+--- @field PriestOfSun ClassType
+--- @field PriestOfMoon ClassType
+--- @field Druid ClassType
+--- @field GreatDruid ClassType
+--- @field ArchDruid ClassType
+--- @field Warlock ClassType
+--- @field Sorcerer ClassType
+--- @field Wizard ClassType
+--- @field Archmage ClassType
+--- @field Lich ClassType
+
+--- @enum ItemType
+--- @class ItemTypeEnum
+--- @field LichJarFull ItemType
+
+--- @enum QBits
+--- @class QBitsEnum
+--- @field DarkPath QBits
+--- @field LightPath QBits

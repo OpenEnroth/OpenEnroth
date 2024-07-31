@@ -1,9 +1,11 @@
 {
     "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
-    "addonManager.enable": true,
     "diagnostics": {
         "disable": [],
-        "globals": [],
+        "globals": [
+            "enumToString",
+            "stringToEnum"
+        ],
         "groupFileStatus": {
             "ambiguity": "Any",
             "await": "Any",
@@ -78,11 +80,14 @@
         "libraryFiles": "Disable"
     },
     "runtime": {
-        "version": "Lua 5.4",
+        "version": "Lua 5.2",
         "path": [
             "./resources/scripts/?.lua",
-            "./luaDefinition/?.lua"
+            "./resources/scripts/_definitions/?.lua"
         ],
+        "builtin": {
+            "bit32": "enable"
+        },
         "pathStrict": false
     },
     "workspace": {
@@ -175,18 +180,19 @@
         "remove_call_expression_list_finish_comma": "false",
         "end_statement_with_semicolon": "keep"
     },
-    "nameStyle": {
-        "config": {
-            "local_name_style": "camel_case",
-            "function_param_name_style": "camel_case",
-            "function_name_style": "camel_case",
-            "local_function_name_style": "camel_case",
-            "table_field_name_style": "camel_case",
-            "global_variable_name_style": "pascal_case",
-            "module_name_style": "pascal_case",
-            "require_module_name_style": "pascal_case",
-            "class_name_style": "pascal_case",
-            "const_variable_name_style": "pascal_case"
-        }
-    }
+    "nameStyle.config": {
+        "local_name_style": "camel_case",
+        "function_param_name_style": "camel_case",
+        "function_name_style": "camel_case",
+        "local_function_name_style": "camel_case",
+        "table_field_name_style": "camel_case",
+        "global_variable_name_style": "pascal_case",
+        "module_name_style": "pascal_case",
+        "require_module_name_style": "pascal_case",
+        "class_name_style": "pascal_case",
+        "const_variable_name_style": "pascal_case"
+    },
+    "spell.dict": [
+        "imgui"
+    ]
 }

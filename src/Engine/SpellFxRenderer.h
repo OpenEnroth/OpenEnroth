@@ -9,12 +9,15 @@
 
 #include "Library/Color/ColorTable.h"
 
+#include "Library/Geometry/Vec.h"
+
 class Actor;
 class GraphicsImage;
 class ParticleEngine;
 struct SpriteObject;
-struct stru16x;
-struct stru160;
+
+extern std::array<Vec3f, 66> sphereVertPos;
+extern std::array<int32_t, 128 * 3> sphereVertInd;
 
 struct SpellFX_Billboard {
     /**
@@ -22,10 +25,6 @@ struct SpellFX_Billboard {
      */
     inline SpellFX_Billboard() {
         uNumVertices = 0;
-        uNumVec4sInArray1 = 0;
-        uNumVec3sInArray2 = 0;
-        pArray1 = nullptr;
-        pArray2 = nullptr;
     }
 
     /**
@@ -38,22 +37,13 @@ struct SpellFX_Billboard {
     int SpellFXViewTransform();
     bool SpellFXViewClip();
     int SpellFXProject();
-    void Initialize(int a2);
-    void _47829F_sphere_particle(float x_offset, float y_offset, float z_offset,
-                                 float scale, Color diffuse);
+    void _47829F_sphere_particle(Vec3f center, float scale, Color diffuse);
+
     // billboard quad vertex
     struct local_01 {
-        float x;
-        float y;
-        float z;
+        Vec3f pos;
         Color diffuse;
     };
-
-    // for spheres
-    unsigned int uNumVec4sInArray1;
-    stru16x *pArray1;
-    unsigned int uNumVec3sInArray2;
-    stru160 *pArray2;
 
     // spellfx verts
     int uNumVertices;
@@ -102,16 +92,16 @@ struct SpellFxRenderer {
         this->field_0 = 0;
         this->uAnimLength = 0_ticks;
 
-        pStru1 = new SpellFX_Billboard();
-        pStru1->Initialize(colorTable.OrangeyRed.c32());
+        _spellFXSphereInstance = new SpellFX_Billboard();
+        //_spellFXSphereInstance->Initialize(colorTable.OrangeyRed);
     }
 
     /**
      * @offset 0x4A71DC
      */
     ~SpellFxRenderer() {
-        delete pStru1;
-        pStru1 = nullptr;
+        delete _spellFXSphereInstance;
+        _spellFXSphereInstance = nullptr;
     }
 
     void DoAddProjectile(float srcX, float srcY, float srcZ, float dstX,
@@ -156,7 +146,7 @@ struct SpellFxRenderer {
     std::array<PlayerBuffAnim, 4> pCharacterBuffs;
     std::array<ProjectileAnim, 32> pProjectiles;
     int uNumProjectiles;
-    SpellFX_Billboard *pStru1;
+    SpellFX_Billboard *_spellFXSphereInstance;
     int field_5D0;
     Duration uAnimLength;
     Duration uFadeTime;

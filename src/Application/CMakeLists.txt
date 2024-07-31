@@ -35,7 +35,6 @@ target_link_libraries(application
         engine_components_deterministic
         engine_components_trace
         engine_graphics
-        engine_graphics_level
         engine_graphics_renderer
         game_states
         gui
@@ -48,6 +47,7 @@ target_link_libraries(application
         library_platform_implementation
         library_environment_implementation
         scripting
-        utility)
+        utility
+        imgui)
 
 add_subdirectory(GameStates)

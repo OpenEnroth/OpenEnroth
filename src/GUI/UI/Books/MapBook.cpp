@@ -6,7 +6,7 @@
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
@@ -14,6 +14,7 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/MapInfo.h"
+#include "Engine/Engine.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/UI/UIGame.h"
@@ -131,9 +132,8 @@ void GUIWindow_MapBook::Update() {
     map_window.uFrameZ = game_viewport_z;
     map_window.uFrameW = game_viewport_w;
 
-    MapId map_id = pMapStats->GetMapInfo(pCurrentMapName);
-    if (map_id != MAP_INVALID) {
-        map_window.DrawTitleText(assets->pFontBookTitle.get(), -14, 12, ui_book_map_title_color, pMapStats->pInfos[map_id].name, 3);
+    if (engine->_currentLoadedMapId != MAP_INVALID) {
+        map_window.DrawTitleText(assets->pFontBookTitle.get(), -14, 12, ui_book_map_title_color, pMapStats->pInfos[engine->_currentLoadedMapId].name, 3);
     }
 
     auto party_coordinates = localization->FormatString(LSTR_FMT_X_D_Y_D, static_cast<int>(pParty->pos.x), static_cast<int>(pParty->pos.y));

@@ -82,6 +82,6 @@ void EngineRandomComponent::removeNotify() {
 }
 
 void EngineRandomComponent::swizzleGlobals() {
-    vrng._ptr = _vrngs[_type].get();
-    grng._ptr = (_tracing ? _tracingGrngs : _grngs)[_type].get();
+    vrng = _vrngs[_type].get();
+    grng = (_tracing ? _tracingGrngs : _grngs)[_type].get();
 }

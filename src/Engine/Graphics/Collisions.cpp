@@ -5,8 +5,8 @@
 #include <utility>
 
 #include "Engine/Events/Processor.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Actor.h"
@@ -20,7 +20,6 @@
 
 #include "Utility/Math/Float.h"
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Math/FixPoint.h"
 
 CollisionState collision_state;
 
@@ -86,7 +85,7 @@ static bool CollideWithLine(const Vec3f p1, const Vec3f p2, const float radius, 
  * @param face                          Polygon to check collision against.
  * @param pos                           Actor position to check.
  * @param radius                        Actor radius.
- * @param dir                           Movement direction as a unit vector in fixpoint format.
+ * @param dir                           Movement direction as a unit vector.
  * @param[out] out_move_distance        Move distance along the `dir` axis required to touch the provided polygon.
  *                                      Always non-negative. This parameter is not set if the function returns false.
  *                                      Note that "touching" in this context means that the distance from the actor's
@@ -141,7 +140,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
         assert(fuzzyIsNull(face->facePlane.signedDistanceTo(projected_pos), COLLISIONS_EPS)); // TODO(captainurist): move into face->Contains.
 
         // collision point is in face so can return
-        if (face->Contains(projected_pos.toInt(), model_idx)) {
+        if (face->Contains(projected_pos, model_idx)) {
             *out_move_distance = move_distance;
             *out_collision_point = projected_pos;
             //logger->warning("Error: collide with face md: {}", move_distance);
@@ -160,9 +159,9 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     for (int i = 0; i < face->uNumVertices; ++i) {
         Vec3f vertPos;
         if (model_idx == MODEL_INDOOR) {
-            vertPos = pIndoor->pVertices[face->pVertexIDs[i]].toFloat();
+            vertPos = pIndoor->pVertices[face->pVertexIDs[i]];
         } else {
-            vertPos = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]].toFloat();
+            vertPos = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]];
         }
 
         b = 2.0f * (dot(dir, pos - vertPos));
@@ -180,11 +179,11 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
         Vec3f vert1, vert2;
         int i2 = (i + 1) % face->uNumVertices;
         if (model_idx == MODEL_INDOOR) {
-            vert1 = pIndoor->pVertices[face->pVertexIDs[i]].toFloat();
-            vert2 = pIndoor->pVertices[face->pVertexIDs[i2]].toFloat();
+            vert1 = pIndoor->pVertices[face->pVertexIDs[i]];
+            vert2 = pIndoor->pVertices[face->pVertexIDs[i2]];
         } else {
-            vert1 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]].toFloat();
-            vert2 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i2]].toFloat();
+            vert1 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i]];
+            vert2 = pOutdoor->pBModels[model_idx].pVertices[face->pVertexIDs[i2]];
         }
 
         // collide with line between the two verts
@@ -210,7 +209,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
  *
  * @param face                          Polygon to check collision against.
  * @param pos                           Actor position to check.
- * @param dir                           Movement direction as a unit vector in fixpoint format.
+ * @param dir                           Movement direction as a unit vector.
  * @param[in,out] out_move_distance     Current movement distance along the `dir` axis. This parameter is not touched
  *                                      when the function returns false. If the function returns true, then the
  *                                      distance required to hit the polygon is stored here. Note that this effectively
@@ -222,8 +221,6 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
  */
 static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &dir, float *out_move_distance,
                                  int model_idx) {
-    // _fp suffix => that's a fixpoint number
-
     // dot_product(dir, normal) is a cosine of an angle between them.
     float cos_dir_normal = dot(dir, face->facePlane.normal);
 
@@ -252,7 +249,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &d
     if (move_distance > *out_move_distance)
         return false; // No correction needed.
 
-    if (!face->Contains(new_pos.toInt(), model_idx))
+    if (!face->Contains(new_pos, model_idx))
         return false;
 
     *out_move_distance = move_distance;
@@ -288,9 +285,13 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
             }
 
             if (have_collision && move_distance < collision_state.adjusted_move_distance) {
-                collision_state.adjusted_move_distance = move_distance;
-                collision_state.collisionPos = col_pos;
-                collision_state.pid = face_pid;
+                // TODO(pskelton): should this be a config value
+                // We allow for a bit of negative movement in case we are already too close to the surface and need pushback
+                if (move_distance > -10.0f) {
+                    collision_state.adjusted_move_distance = move_distance;
+                    collision_state.collisionPos = col_pos;
+                    collision_state.pid = face_pid;
+                }
             }
         }
     };
@@ -427,8 +428,13 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
                 continue;
 
             int face_id = pSector->pFloors[j];
-            if (face_id == collision_state.ignored_face_id)
-                continue;
+            // TODO(pskelton): Modify game data face attribs to ethereal eventually - hack so that secret tunnel under prison bed can be accessed
+            if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE)
+                if (face_id == 385 || face_id == 405 || face_id == 4602 || face_id == 4606)
+                    continue;
+            if (engine->_currentLoadedMapId == MAP_TEMPLE_OF_THE_LIGHT) // For #1706 glitch on waterway
+                if (face_id == 1181)
+                    continue;
 
             CollideBodyWithFace(face, Pid(OBJECT_Face, face_id), ignore_ethereal, MODEL_INDOOR);
         }
@@ -579,7 +585,6 @@ void CollideWithParty(bool jagged_top) {
 }
 
 void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) {
-    collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.check_hi = true;
     collision_state.radius_hi = actor.radius;
@@ -610,7 +615,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         Vec3f newPos = actor.pos + collision_state.adjusted_move_distance * collision_state.direction;
         int newFaceID = -1;
-        int newFloorZ = GetIndoorFloorZ(newPos.toInt(), &collision_state.uSectorID, &newFaceID);
+        float newFloorZ = GetIndoorFloorZ(newPos, &collision_state.uSectorID, &newFaceID);
         if (newFloorZ == -30000)
             break; // New pos is out of bounds, running more iterations won't help.
 
@@ -684,26 +689,35 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         if (type == OBJECT_Face) {
             BLVFace *face = &pIndoor->pFaces[id];
 
-            collision_state.ignored_face_id = collision_state.pid.id();
             if (pIndoor->pFaces[id].uPolygonType == POLYGON_Floor) {
-                actor.velocity.z = 0;
-                actor.pos.z = pIndoor->pVertices[face->pVertexIDs[0]].z + 1;
+                if (actor.velocity.z < 0) actor.velocity.z = 0;
+                actor.pos.z = newFloorZ;
                 if (actor.velocity.lengthSqr() < 400) {
                     actor.velocity.x = 0;
                     actor.velocity.y = 0;
-                    continue; // TODO(captainurist): drop this continue
                 }
             } else {
+                bool bFaceSlopeTooSteep = face->facePlane.normal.z >= 0.0f && face->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
                 float velocityDotNormal = dot(face->facePlane.normal, actor.velocity);
                 velocityDotNormal = std::max(std::abs(velocityDotNormal), collision_state.speed / 8);
                 actor.velocity += velocityDotNormal * face->facePlane.normal;
+
                 if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
                     float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos);
                     if (overshoot > 0)
                         actor.pos += overshoot * pIndoor->pFaces[id].facePlane.normal;
                     actor.yawAngle = TrigLUT.atan2(actor.velocity.x, actor.velocity.y);
                 }
+
+                // Cant push uphill on steep faces
+                if (bFaceSlopeTooSteep && actor.velocity.z > 0)
+                    actor.velocity.z = 0;
+
+                // Push away from the surface and add a touch down for better slide
+                if (bFaceSlopeTooSteep)
+                    actor.velocity += Vec3f(face->facePlane.normal.x, face->facePlane.normal.y, -2) * 10;
             }
+
             if (pIndoor->pFaces[id].uAttributes & FACE_TriggerByMonster)
                 eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, Pid(), 1);
         }
@@ -715,7 +729,6 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
     int actorRadius = !isFlying ? 40 : actor.radius;
 
-    collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.check_hi = true;
     collision_state.radius_hi = actorRadius;
@@ -747,7 +760,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         Vec3f newPos = actor.pos + collision_state.adjusted_move_distance * collision_state.direction;
         bool isOnWater = false;
         int modelPid = 0;
-        int newFloorZ = ODM_GetFloorLevel(newPos.toInt(), actor.height, &isOnWater, &modelPid, 0);
+        float newFloorZ = ODM_GetFloorLevel(newPos, actor.height, &isOnWater, &modelPid, 0);
         if (isOnWater) {
             if (actor.pos.z < newFloorZ + 60) {
                 if (actor.aiState == Dead || actor.aiState == Dying ||
@@ -806,19 +819,17 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 
             if (!face->Ethereal()) {
                 if (face->uPolygonType == POLYGON_Floor) {
-                    actor.velocity.z = 0;
-                    actor.pos.z = pOutdoor->model(collision_state.pid).pVertices[face->pVertexIDs[0]].z + 1;
+                    if (actor.velocity.z < 0) actor.velocity.z = 0;
+                    actor.pos.z = newFloorZ;
                     if (actor.velocity.lengthSqr() < 400) {
                         actor.velocity.y = 0;
                         actor.velocity.x = 0;
                     }
                 } else {
                     float velocityDotNormal = dot(face->facePlane.normal, actor.velocity);
-                    // TODO(captainurist): in BLV code we have std::abs(velocityDotNormal) here, and adding std::abs affects traces.
-                    // Note that not all copies of this code have std::abs. Why?
-                    velocityDotNormal = std::max(velocityDotNormal, collision_state.speed / 8);
-
+                    velocityDotNormal = std::max(std::abs(velocityDotNormal), collision_state.speed / 8);
                     actor.velocity += velocityDotNormal * face->facePlane.normal;
+
                     if (face->uPolygonType != POLYGON_InBetweenFloorAndWall) {
                         float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos);
                         if (overshoot > 0)
@@ -836,7 +847,6 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *faceId, int *faceEvent) {
     constexpr float closestdist = 0.5f; // Closest allowed approach to collision surface - needs adjusting
 
-    collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius;
@@ -873,7 +883,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
         // Adjust the collision position with the same offset
         collision_state.collisionPos -= closestdist * collision_state.direction;
 
-        int adjusted_floor_z = GetIndoorFloorZ((adjusted_pos + Vec3f(0, 0, collision_state.radius_lo)).toInt(), &collision_state.uSectorID, faceId);
+        float adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3f(0, 0, collision_state.radius_lo), &collision_state.uSectorID, faceId);
         if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128) {
             // intended world position isnt valid so dont move there
             return; // TODO: whaaa?
@@ -922,10 +932,17 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             BLVFace *pFace = &pIndoor->pFaces[collision_state.pid.id()];
             bool bFaceSlopeTooSteep = pFace->facePlane.normal.z > 0.0f && pFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
 
-            // TODO(pskelton): Better way to do this?
-            // Special case for steep staircase in tidewater
-            if (pCurrentMapName == "D17.blv") {
+            // TODO(pskelton): Better way to do this? Maybe add a climbable attribute
+            if (engine->_currentLoadedMapId == MAP_TIDEWATER_CAVERNS) {  // Special case for steep staircase in tidewater
                 if (collision_state.pid.id() == 650)
+                    bFaceSlopeTooSteep = false;
+            }
+            if (engine->_currentLoadedMapId == MAP_CASTLE_GLOAMING) { // Special case for exiting teleport boats
+                if (collision_state.pid.id() == 551 || collision_state.pid.id() == 1990 || collision_state.pid.id() == 2217)
+                    bFaceSlopeTooSteep = false;
+            }
+            if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE) {
+                if (collision_state.pid.id() == 398) // Secret tunnel under prison bed
                     bFaceSlopeTooSteep = false;
             }
 
@@ -970,7 +987,6 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
     constexpr float closestdist = 0.5f;  // Closest allowed approach to collision surface - needs adjusting
 
     // --(Collisions)-------------------------------------------------------------------
-    collision_state.ignored_face_id = -1;
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius;
@@ -1011,11 +1027,11 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             collision_state.collisionPos -= closestdist * collision_state.direction;
         }
 
-        int allnewfloor = ODM_GetFloorLevel(newPosLow.toInt(), pParty->height, partyIsOnWater, floorFaceId, 0);
+        float allnewfloor = ODM_GetFloorLevel(newPosLow, pParty->height, partyIsOnWater, floorFaceId, 0);
         int party_y_pid;
-        int x_advance_floor = ODM_GetFloorLevel(Vec3i(newPosLow.x, partyNewPos->y, newPosLow.z), pParty->height, partyIsOnWater, &party_y_pid, 0);
+        float x_advance_floor = ODM_GetFloorLevel(Vec3f(newPosLow.x, partyNewPos->y, newPosLow.z), pParty->height, partyIsOnWater, &party_y_pid, 0);
         int party_x_pid;
-        int y_advance_floor = ODM_GetFloorLevel(Vec3i(partyNewPos->x, newPosLow.y, newPosLow.z), pParty->height, partyIsOnWater, &party_x_pid, 0);
+        float y_advance_floor = ODM_GetFloorLevel(Vec3f(partyNewPos->x, newPosLow.y, newPosLow.z), pParty->height, partyIsOnWater, &party_x_pid, 0);
         bool terr_slope_advance_x = IsTerrainSlopeTooHigh(newPosLow.x, partyNewPos->y);
         bool terr_slope_advance_y = IsTerrainSlopeTooHigh(partyNewPos->x, newPosLow.y);
 

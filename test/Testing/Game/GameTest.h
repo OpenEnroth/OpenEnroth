@@ -35,7 +35,7 @@ class GameTest : public testing::Test {
 
 #define GAME_TEST_II(SuiteName, TestName, TestClassName, TestFunctionName)                                              \
     void TestFunctionName(EngineController &game, TestController &test,                                                 \
-                          CommonTapeRecorder &tapes, CharacterTapeRecorder &ctapes, ActorTapeRecorder &actorTapes);     \
+                          CommonTapeRecorder &tapes, CharacterTapeRecorder &charTapes, ActorTapeRecorder &actorTapes);  \
                                                                                                                         \
     GTEST_TEST_(SuiteName, TestName, GameTest, testing::internal::GetTypeId<GameTest>()) {                              \
         runTestBody(&TestFunctionName);                                                                                 \

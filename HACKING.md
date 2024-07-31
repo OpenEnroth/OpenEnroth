@@ -1,4 +1,4 @@
-﻿# Development HOWTO
+# Development HOWTO
 
 This document describes the development process we're following. It's required reading for anyone intending to contribute.
 
@@ -20,8 +20,8 @@ sudo apt-get install SDL2 SDL2-devel
 ```
 
 Additional dependencies:
-* CMake 3.20.4+ (3.20.21032501-MSVC_2 from VS2019 won't work);
-* Python 3.x (optional, for style checks).
+* [CMake 3.27+](https://cmake.org/download/)
+* [Python 3.x](https://www.python.org/downloads/) (optional, for style checks).
 
 Minimum required compiler versions are as follows:
 * Visual Studio 2022;
@@ -40,7 +40,7 @@ Building on \*nix platforms
 This project uses the [CMake](https://cmake.org) build system.  Use the following commands to clone the repository and build OpenEnroth:
 
 ```
-$ git clone https://github.com/OpenEnroth/OpenEnroth.git
+$ git clone --recurse-submodules --shallow-submodules https://github.com/OpenEnroth/OpenEnroth.git
 $ cd OpenEnroth
 $ cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug
 $ cmake --build build
@@ -109,7 +109,8 @@ Language features:
 * For string function parameters, use `std::string_view` passed by value. 
   * In general, you shouldn't bother optimizing code paths where you might save an allocation by moving in an `std::string` or passing it by const reference, the performance benefits are almost always negligible.
   * Use `TransparentString*` classes if you need to index into a string map using `std::string_view` keys.
-  * However, feel free to use `std::string` or `const std::string &` parameters where it makes your code simpler (e.g. by avoiding jumping through hoops if you'll need to create an intermediate `std::string` object anyway). 
+  * However, feel free to use `std::string` or `const std::string &` parameters where it makes your code simpler (e.g. by avoiding jumping through hoops if you'll need to create an intermediate `std::string` object anyway).
+  * C++ is notoriously bad when it comes to string concatenation (you can't concatenate `std::string_view` with a string literal using `operator+`, and never will). In most cases you should be fine just using `fmt::format` for this. If `fmt::format` looks like an overkill, use `join` from `Utility/String/Transformations.h`.
 * We generally refrain from using namespaces because OpenEnroth is a relatively small codebase, and we don't need the measures advocated by the Google style guide to prevent name clashes.
   * We don't put user-facing classes into namespaces because it ultimately leads to code where you have `ns1::Context` and `ns2::Context`, and when coupled with a bit of `using` here and there this makes the code harder to read and reason about. Please spend some time coming up with good names for your classes instead.
   * We sometimes use namespaces to group related functions, e.g. see `namespace lod`.

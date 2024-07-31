@@ -4,11 +4,14 @@
 #include <string>
 #include <vector>
 
-#include "Utility/TransparentFunctors.h"
+#include "Utility/String/TransparentFunctors.h"
 
 #include "ConfigFwd.h"
 #include "ConfigSection.h"
 #include "ConfigEntry.h"
+
+class OutputStream;
+class InputStream;
 
 class Config {
  public:
@@ -18,6 +21,9 @@ class Config {
 
     void load(std::string_view path);
     void save(std::string_view path) const;
+    void load(InputStream *stream);
+    void save(OutputStream *stream) const;
+
     void reset();
 
     void registerSection(ConfigSection *section);

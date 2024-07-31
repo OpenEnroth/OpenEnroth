@@ -8,14 +8,14 @@
 #include <string>
 #include <algorithm>
 
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 
 inline std::string toUpperCaseEnum(std::string_view string) {
     std::string result;
     for (char c : trim(string)) {
         if (std::isalnum(c)) {
             result += static_cast<char>(toupper(c));
-        } else if (std::isspace(c) || c == '/' || c == '-') {
+        } else if (std::isspace(c) || c == '/' || c == '-' || c == '_') {
             if (!result.ends_with('_'))
                 result += '_';
         }

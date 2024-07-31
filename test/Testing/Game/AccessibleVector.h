@@ -61,6 +61,11 @@ class Accessible : public Base {
         return result;
     }
 
+    const_reference operator[](size_t index) const {
+        assert(index < size());
+        return *(begin() + index);
+    }
+
     size_t size() const {
         return end() - begin();
     }
@@ -144,6 +149,11 @@ class Accessible : public Base {
     template<class... Args>
     bool containsAll(const Args &... args) const {
         return (contains(static_cast<value_type>(args)) && ...);
+    }
+
+    template<class... Args>
+    bool containsAny(const Args &... args) const {
+        return (contains(static_cast<value_type>(args)) || ...);
     }
 
     template<class Predicate> requires std::is_invocable_v<Predicate, value_type>

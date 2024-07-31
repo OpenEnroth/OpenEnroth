@@ -8,21 +8,17 @@
 #include <Engine/Graphics/Image.h>
 #include <GUI/GUIWindow.h>
 
-#include <thread>
-
-LoadStep2State::LoadStep2State() {
-}
-
-void LoadStep2State::enter() {
-    // This specific value GAME_SETTINGS_4000 is checked only in UIPartyCreation.
+FsmAction LoadStep2State::enter() {
+    // TODO(Gerark) This specific value GAME_SETTINGS_4000 is checked only in UIPartyCreation.
     // So, this assignment might be removed after the Party Creation becomes part of the FSM
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 
     _fullscreenTexture = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
     _isFirstPass = true;
+    return FsmAction::none();
 }
 
-void LoadStep2State::update() {
+FsmAction LoadStep2State::update() {
     // Not exactly the best approach but still better than calling Begin/Present directly here
     // We resolve this state in 2 frames. The first pass is drawing the main bkg texture and the copyrights
     // The second pass perform the loading part.
@@ -35,8 +31,9 @@ void LoadStep2State::update() {
         FinalInitialization();
         //In case we want to test a slower loading
         //std::this_thread::sleep_for(std::chrono::seconds(1));
-        executeTransition("done");
+        return FsmAction::transition("done");
     }
+    return FsmAction::none();
 }
 
 void LoadStep2State::exit() {

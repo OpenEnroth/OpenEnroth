@@ -33,8 +33,8 @@ extern "C" {
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/Audio/OpenALSoundProvider.h"
 #include "Media/FFmpegLogProxy.h"
+#include "Media/FFmpegBlobInputStream.h"
 
-#include "Utility/Streams/MemoryInputStream.h"
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/DataPath.h"
 
@@ -118,7 +118,7 @@ class AVStreamWrapper {
     AVCodec *dec;
 #endif
     AVCodecContext *dec_ctx;
-    std::queue<std::shared_ptr<Blob>> queue;
+    std::queue<Blob> queue;
 };
 
 class AVAudioStream : public AVStreamWrapper {
@@ -142,12 +142,12 @@ class AVAudioStream : public AVStreamWrapper {
         return true;
     }
 
-    std::shared_ptr<Blob> decode_frame(AVPacket *avpacket) {
-        std::shared_ptr<Blob> result;
+    Blob decode_frame(AVPacket *avpacket) {
+        Blob result;
         AVFrame *frame = av_frame_alloc();
 
         if (!queue.empty()) {
-            result = queue.front();
+            result = std::move(queue.front());
             queue.pop();
         }
 
@@ -168,12 +168,13 @@ class AVAudioStream : public AVStreamWrapper {
                 int got_samples = swr_convert(
                     converter, dst_channels, frame->nb_samples,
                     (const uint8_t**)frame->data, frame->nb_samples);
-                std::shared_ptr<Blob> tmp_blob = std::make_shared<Blob>(Blob::fromMalloc(std::move(tmp_buf), tmp_size));
+
+                Blob tmp_blob = Blob::fromMalloc(std::move(tmp_buf), tmp_size);
                 if (got_samples > 0) {
                     if (!result) {
-                        result = tmp_blob;
+                        result = std::move(tmp_blob);
                     } else {
-                        queue.push(tmp_blob);
+                        queue.push(std::move(tmp_blob));
                     }
                 }
             }
@@ -208,12 +209,12 @@ class AVVideoStream : public AVStreamWrapper {
         return true;
     }
 
-    std::shared_ptr<Blob> decode_frame(AVPacket *avpacket) {
-        std::shared_ptr<Blob> result;
+    Blob decode_frame(AVPacket *avpacket) {
+        Blob result;
         AVFrame *frame = av_frame_alloc();
 
         if (!queue.empty()) {
-            result = queue.front();
+            result = std::move(queue.front());
             queue.pop();
         }
 
@@ -240,24 +241,24 @@ class AVVideoStream : public AVStreamWrapper {
                     assert(false);
                 }
 
-                std::shared_ptr<Blob> tmp_blob = std::make_shared<Blob>(Blob::fromMalloc(std::move(tmp_buf), tmp_size));
+                Blob tmp_blob = Blob::fromMalloc(std::move(tmp_buf), tmp_size);
 
                 if (!result) {
-                    result = tmp_blob;
+                    result = std::move(tmp_blob);
                 } else {
-                    queue.push(tmp_blob);
+                    queue.push(std::move(tmp_blob));
                 }
             }
         }
 
         av_frame_free(&frame);
 
-        last_frame = result;
+        last_frame = Blob::share(result);
 
         return result;
     }
 
-    std::shared_ptr<Blob> last_frame;
+    Blob last_frame;
     double frames_per_second = 0;
     double frame_len = 0;
     SwsContext *converter = nullptr;
@@ -298,14 +299,10 @@ class Movie : public IMovie {
         last_resampled_frame_num = -1;
 
         audio_data_in_device = nullptr;
-        ioBuffer = nullptr;
         format_ctx = nullptr;
-        avioContext = nullptr;
 
         looping = false;
         playing = false;
-
-        _blob = Blob();
     }
 
     virtual ~Movie() {
@@ -335,19 +332,11 @@ class Movie : public IMovie {
             logger->trace("close video format context file\n");
             format_ctx = nullptr;
         }
-        if (avioContext) {
-            av_free(avioContext);
-            avioContext = nullptr;
-        }
-        if (ioBuffer) {
-            // av_free(ioBuffer);
-            ioBuffer = nullptr;
-        }
     }
 
-    bool Load(const char *filename) {  // Загрузка
+    bool Load(const std::string &fileName) {  // Загрузка
         // Open video file
-        if (avformat_open_input(&format_ctx, filename, nullptr, nullptr) < 0) {
+        if (avformat_open_input(&format_ctx, fileName.c_str(), nullptr, nullptr) < 0) {
             logger->warning("ffmpeg: Unable to open input file");
             Close();
             return false;
@@ -361,12 +350,12 @@ class Movie : public IMovie {
         }
 
         // Dump information about file onto standard error
-        av_dump_format(format_ctx, 0, filename, 0);
+        av_dump_format(format_ctx, 0, fileName.c_str(), 0);
 
         audio.open(format_ctx);
 
         if (!video.open(format_ctx)) {
-            logger->error("Cannot open video stream: {}", filename);
+            logger->error("Cannot open video stream: {}", fileName);
             Close();
             return false;
         }
@@ -382,26 +371,18 @@ class Movie : public IMovie {
     }
 
     bool LoadFromLOD(const Blob &blob) {
-        _blob = Blob::share(blob);
-        _stream.reset(_blob.data(), _blob.size());
+        _stream.open(Blob::share(blob));
 
-        if (!ioBuffer) {
-            ioBuffer = (unsigned char *)av_malloc(AV_INPUT_BUFFER_MIN_SIZE);  // can get av_free()ed by libav
-        }
-
-        if (!avioContext) {
-            avioContext = avio_alloc_context(ioBuffer, 0x4000, 0, this, s_read, NULL, s_seek);
-        }
         if (!format_ctx) {
             format_ctx = avformat_alloc_context();
         }
-        format_ctx->pb = avioContext;
-        return Load("dummyFilename");
+        format_ctx->pb = _stream.ioContext();
+        return Load(blob.displayPath());
     }
 
-    virtual std::shared_ptr<Blob> GetFrame() override {
+    virtual Blob GetFrame() override {
         if (!playing) {
-            return nullptr;
+            return Blob();
         }
 
         auto current_time = std::chrono::system_clock::now();
@@ -412,7 +393,7 @@ class Movie : public IMovie {
 
         int desired_frame_number = (int)((playback_time / video.frame_len) + 0.5);
         if (last_resampled_frame_num == desired_frame_number) {
-            return video.last_frame;
+            return Blob::share(video.last_frame);
         }
         last_resampled_frame_num++;
         if (last_resampled_frame_num == video.stream->duration) {
@@ -425,14 +406,14 @@ class Movie : public IMovie {
                 av_strerror(err, err_buf, 2048);
                 if (err < 0) {
                     Close();
-                    return nullptr;
+                    return Blob();
                 }
                 last_resampled_frame_num = 0;
                 playback_time = 0;
                 desired_frame_number = 0;
             } else {
                 playing = false;
-                return nullptr;
+                return Blob();
             }
         }
 
@@ -444,17 +425,17 @@ class Movie : public IMovie {
                 // probably movie is finished
                 playing = false;
                 av_packet_free(&avpacket);
-                return nullptr;
+                return Blob();
             }
 
             // Is this a packet from the video stream?
             // audio packet - queue into playing
             if (avpacket->stream_index == audio.stream_idx) {
-                std::shared_ptr<Blob> buffer = audio.decode_frame(avpacket);
+                Blob buffer = audio.decode_frame(avpacket);
                 if (buffer) {
                     provider->Stream16(audio_data_in_device,
-                                       buffer->size() / 2,
-                                       buffer->data());
+                                       buffer.size() / 2,
+                                       buffer.data());
                 }
             } else if (avpacket->stream_index == video.stream_idx) {
               // Decode video frame
@@ -468,7 +449,7 @@ class Movie : public IMovie {
 
         av_packet_free(&avpacket);
 
-        return video.last_frame;
+        return Blob::share(video.last_frame);
     }
 
     virtual void PlayBink() override {
@@ -481,13 +462,13 @@ class Movie : public IMovie {
         GraphicsImage *tex = GraphicsImage::Create(pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
 
         // holds decoded audio
-        std::queue<std::shared_ptr<Blob>, std::deque<std::shared_ptr<Blob>>> buffq;
+        std::queue<Blob> buffq;
 
         // loop through once and add all audio packets to queue
         while (av_read_frame(format_ctx, &packet) >= 0) {
             if (packet.stream_index == audio.stream_idx) {
-                std::shared_ptr<Blob> buffer = audio.decode_frame(&packet);
-                if (buffer) buffq.push(buffer);
+                Blob buffer = audio.decode_frame(&packet);
+                if (buffer) buffq.push(std::move(buffer));
             }
         }
         logger->trace("Audio Packets Queued");
@@ -523,8 +504,8 @@ class Movie : public IMovie {
 
             if (packet.stream_index == video.stream_idx) {
                 // check if anymore sound frames still in decoder
-                std::shared_ptr<Blob> buffer = audio.decode_frame(NULL);
-                if (buffer) buffq.push(buffer);
+                Blob buffer = audio.decode_frame(NULL);
+                if (buffer) buffq.push(std::move(buffer));
 
                 // stream required sound frames
                 // nwc and intro are 15fps vid but need 30fps sound
@@ -532,8 +513,8 @@ class Movie : public IMovie {
                 for (int i = 0; i < audioupdaterate; i++) {
                     if (!buffq.empty()) {
                         provider->Stream16(audio_data_in_device,
-                                            buffq.front()->size() / 2,
-                                            buffq.front()->data());
+                                            buffq.front().size() / 2,
+                                            buffq.front().data());
                         buffq.pop();
                     }
                 }
@@ -541,11 +522,10 @@ class Movie : public IMovie {
                 // Decode video frame and show
                 lastvideopts = packet.pts;
                 video.decode_frame(&packet);
-                std::shared_ptr<Blob> tmp_buf = video.last_frame;
 
                 render->BeginScene2D();
                 // update pixels from buffer
-                tex->rgba() = RgbaImage::copy(tex->width(), tex->height(), static_cast<const Color *>(tmp_buf->data()));
+                tex->rgba() = RgbaImage::copy(tex->width(), tex->height(), static_cast<const Color *>(video.last_frame.data()));
 
                 // update texture
                 render->Update_Texture(tex);
@@ -598,8 +578,8 @@ class Movie : public IMovie {
             // loop through once and add all audio packets to queue
             while (av_read_frame(format_ctx, &_binkPacket) >= 0) {
                 if (_binkPacket.stream_index == audio.stream_idx) {
-                    std::shared_ptr<Blob> buffer = audio.decode_frame(&_binkPacket);
-                    if (buffer) _binkBuffer.push(buffer);
+                    Blob buffer = audio.decode_frame(&_binkPacket);
+                    if (buffer) _binkBuffer.push(std::move(buffer));
                 }
             }
             logger->trace("Audio Packets Queued");
@@ -622,7 +602,7 @@ class Movie : public IMovie {
     }
 
     virtual bool renderFrame() override {
-        std::shared_ptr<Blob> buffer;
+        Blob buffer;
         if (GetFormat() == "bink") {
             if (av_read_frame(format_ctx, &_binkPacket) >= 0) {
                 int desired_frame_number{};
@@ -636,13 +616,17 @@ class Movie : public IMovie {
 
                 // ignore audio packets
                 if (_binkPacket.stream_index == audio.stream_idx) {
+                    // but still render the last frame
+                    if (video.last_frame) {
+                        _renderTexture(video.last_frame);
+                    }
                     return false;
                 }
 
                 if (_binkPacket.stream_index == video.stream_idx) {
                     // check if anymore sound frames still in decoder
                     buffer = audio.decode_frame(NULL);
-                    if (buffer) _binkBuffer.push(buffer);
+                    if (buffer) _binkBuffer.push(std::move(buffer));
 
                     // stream required sound frames
                     // nwc and intro are 15fps vid but need 30fps sound
@@ -650,8 +634,8 @@ class Movie : public IMovie {
                     for (int i = 0; i < _audioUpdateRate; i++) {
                         if (!_binkBuffer.empty()) {
                             provider->Stream16(audio_data_in_device,
-                                _binkBuffer.front()->size() / 2,
-                                _binkBuffer.front()->data());
+                                _binkBuffer.front().size() / 2,
+                                _binkBuffer.front().data());
                             _binkBuffer.pop();
                         }
                     }
@@ -659,9 +643,7 @@ class Movie : public IMovie {
                     // Decode video frame and show
                     _lastVideoPts = _binkPacket.pts;
                     video.decode_frame(&_binkPacket);
-                    std::shared_ptr<Blob> tmp_buf = video.last_frame;
-
-                    _renderTexture(*tmp_buf);
+                    _renderTexture(video.last_frame);
                 }
 
                 av_packet_unref(&_binkPacket);
@@ -676,60 +658,25 @@ class Movie : public IMovie {
         } else {
             std::this_thread::sleep_for(2ms);
 
-            std::shared_ptr<Blob> buffer = GetFrame();
+            Blob buffer = GetFrame();
             if (!buffer) {
                 return true;
             }
 
-            _renderTexture(*buffer);
+            _renderTexture(buffer);
         }
 
         return false;
     }
 
  protected:
-    void _renderTexture(Blob &buffer) {
+    void _renderTexture(const Blob &buffer) {
         // update pixels from buffer
         _texture->rgba() = RgbaImage::copy(_texture->width(), _texture->height(), static_cast<const Color *>(buffer.data()));
 
         // update texture
         render->Update_Texture(_texture);
         render->DrawImage(_texture, calculateVideoRectangle(*this));
-    }
-
-    static int s_read(void *opaque, uint8_t *buf, int buf_size) {
-        return static_cast<Movie *>(opaque)->read(buf, buf_size);
-    }
-
-    static int64_t s_seek(void *opaque, int64_t offset, int whence) {
-        return static_cast<Movie *>(opaque)->seek(offset, whence);
-    }
-
-    int read(uint8_t *buf, int buf_size) {
-        return _stream.read(buf, buf_size);
-    }
-
-    int64_t seek(int64_t offset, int whence) {
-        if (whence == AVSEEK_SIZE) {
-            return _blob.size();
-        }
-
-        switch (whence) {
-            case SEEK_SET:
-                _stream.seek(offset);
-                break;
-            case SEEK_CUR:
-                _stream.seek(_stream.position() + offset);
-                break;
-            case SEEK_END:
-                _stream.seek(_blob.size() - offset);
-                break;
-            default:
-                assert(false);
-                break;
-        }
-
-        return _stream.position();
     }
 
  protected:
@@ -739,8 +686,6 @@ class Movie : public IMovie {
     double playback_time;
 
     AVAudioStream audio;
-    unsigned char *ioBuffer;
-    AVIOContext *avioContext;
     OpenALSoundProvider::StreamingTrackBuffer *audio_data_in_device;
 
     AVVideoStream video;
@@ -750,15 +695,14 @@ class Movie : public IMovie {
     bool looping;
     bool playing;
 
-    Blob _blob;
-    MemoryInputStream _stream;
+    FFmpegBlobInputStream _stream;
 
     GraphicsImage *_texture{};
 
     // Bink video properties
     AVPacket _binkPacket;
     // Bink decoded audio buffer
-    std::queue<std::shared_ptr<Blob>, std::deque<std::shared_ptr<Blob>>> _binkBuffer;
+    std::queue<Blob> _binkBuffer;
     int _lastVideoPts = -1;
     int _desiredFrameNumber;
     std::chrono::system_clock::time_point _currentTime;
@@ -805,7 +749,7 @@ void MPlayer::HouseMovieLoop() {
         tex = GraphicsImage::Create(pMovie_Track->GetWidth(), pMovie_Track->GetHeight());
     }
 
-    std::shared_ptr<Blob> buffer = pMovie_Track->GetFrame();
+    Blob buffer = pMovie_Track->GetFrame();
     if (buffer) {
         Recti rect;
         Sizei wsize = render->GetRenderDimensions();
@@ -815,7 +759,7 @@ void MPlayer::HouseMovieLoop() {
         rect.h = wsize.h - render->config->graphics.HouseMovieY2.value();
 
         // update pixels from buffer
-        tex->rgba() = RgbaImage::copy(tex->width(), tex->height(), static_cast<const Color *>(buffer->data()));
+        tex->rgba() = RgbaImage::copy(tex->width(), tex->height(), static_cast<const Color *>(buffer.data()));
 
         // update texture
         render->Update_Texture(tex);
@@ -835,23 +779,23 @@ void MPlayer::HouseMovieLoop() {
     }
 }
 
-std::shared_ptr<IMovie> MPlayer::loadFullScreenMovie(std::string_view movieFileName) {
+std::unique_ptr<IMovie> MPlayer::loadFullScreenMovie(std::string_view movieFileName) {
     Blob blob = LoadMovie(movieFileName);
     if (!blob) {
         return nullptr;
     }
 
-    std::shared_ptr<Movie> pMovie = std::make_shared<Movie>();
-    if (!pMovie->LoadFromLOD(blob)) {
+    auto movie = std::make_unique<Movie>();
+    if (!movie->LoadFromLOD(blob)) {
         return nullptr;
     }
 
-    bool setupSuccess = pMovie->prepare();
+    bool setupSuccess = movie->prepare();
     if (!setupSuccess) {
         return nullptr;
     }
 
-    return std::dynamic_pointer_cast<IMovie>(pMovie);
+    return movie;
 }
 
 void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
@@ -891,13 +835,13 @@ void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
 
             std::this_thread::sleep_for(2ms);
 
-            std::shared_ptr<Blob> buffer = pMovie_Track->GetFrame();
+            Blob buffer = pMovie_Track->GetFrame();
             if (!buffer) {
                 break;
             }
 
             // update pixels from buffer
-            tex->rgba() = RgbaImage::copy(tex->width(), tex->height(), static_cast<const Color *>(buffer->data()));
+            tex->rgba() = RgbaImage::copy(tex->width(), tex->height(), static_cast<const Color *>(buffer.data()));
 
             // update texture
             render->Update_Texture(tex);

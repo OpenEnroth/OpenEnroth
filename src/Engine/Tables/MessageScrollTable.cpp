@@ -1,9 +1,10 @@
 #include "MessageScrollTable.h"
 
+#include <cstring>
 #include <string>
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 
 IndexedArray<std::string, ITEM_FIRST_MESSAGE_SCROLL, ITEM_LAST_MESSAGE_SCROLL> pMessageScrolls;
 

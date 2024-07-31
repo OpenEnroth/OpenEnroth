@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
-add_subdirectory(Level)
 add_subdirectory(Renderer)
 
 set(ENGINE_GRAPHICS_SOURCES
@@ -10,7 +9,6 @@ set(ENGINE_GRAPHICS_SOURCES
         ClippingFunctions.cpp
         Collisions.cpp
         DecalBuilder.cpp
-        DecorationList.cpp
         FrameLimiter.cpp
         Image.cpp
         ImageLoader.cpp
@@ -38,7 +36,6 @@ set(ENGINE_GRAPHICS_HEADERS
         ClippingFunctions.h
         Collisions.h
         DecalBuilder.h
-        DecorationList.h
         FaceEnums.h
         FrameLimiter.h
         Image.h
@@ -70,8 +67,7 @@ target_check_style(engine_graphics)
 target_link_libraries(engine_graphics
         PUBLIC
         engine
-        engine_graphics_level
-        engine_graphics_renderer        
+        engine_graphics_renderer
         utility
         library_serialization
         library_color
@@ -81,5 +77,4 @@ target_link_libraries(engine_graphics
         libluajit
         sol2
         PRIVATE
-        glad
-        nuklear)
+        glad)

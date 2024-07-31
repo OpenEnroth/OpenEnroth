@@ -25,7 +25,7 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformWindowMode, CASE_INSENSITIVE, {
 GameConfig::GameConfig() = default;
 GameConfig::~GameConfig() = default;
 
-const std::vector<std::string> defaultCommands = {
+static constexpr std::initializer_list<const char *> defaultCommands = {
     "config toggle town_portal | Town Portal",
     "config toggle wizard_eye | Wizard Eye",
     "config toggle all_magic | All Magic",
@@ -60,14 +60,19 @@ const std::vector<std::string> defaultCommands = {
 GameConfig::CheatCommands::CheatCommands(GameConfig *config) : ConfigSection(config, "cheat_commands") {
     // I'm adding 40 in case we want to add more commands even if we provide 29 by default
     static const int maxNumberOfCommands = 40;
-    for (int i = 0; i < maxNumberOfCommands; ++i) {
-        std::string name = fmt::format("command{:02}", i + 1);
-        std::string defaultValue = "";
-        if (i < defaultCommands.size()) {
-            defaultValue = defaultCommands[i];
-        }
-        auto item = std::make_unique<String>(this, name.c_str(), defaultValue,
-            "Cheat Command. Example: 'xp add 1000|Give 1000 xp to current Character'");
-        CommandList.push_back(std::move(item));
+    int i = 0;
+    for (const char* defaultCommand : defaultCommands) {
+        _addCommand(i, defaultCommand);
+        ++i;
     }
+    for (; i < maxNumberOfCommands; ++i) {
+        _addCommand(i, "");
+    }
+}
+
+void GameConfig::CheatCommands::_addCommand(int commandIndex, const std::string& defaultValue) {
+    std::string name = fmt::format("command{:02}", commandIndex + 1);
+    auto item = std::make_unique<String>(this, name, defaultValue,
+        "Cheat Command. Example: 'xp add 1000|Give 1000 xp to current Character'");
+    CommandList.push_back(std::move(item));
 }

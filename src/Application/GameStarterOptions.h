@@ -3,8 +3,6 @@
 #include <string>
 #include <optional>
 
-#include "Engine/Graphics/Renderer/RendererEnums.h"
-
 #include "Library/Logger/LogEnums.h"
 
 struct GameStarterOptions {

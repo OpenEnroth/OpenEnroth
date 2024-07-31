@@ -22,14 +22,12 @@ class KeyboardActionMapping;
 } // namespace Io
 
 struct BLVFace;
-struct ODMRenderParams;
 struct Vis_PIDAndDepth;
 struct Vis_SelectionFilter;
 struct Polygon;
 struct DecalBuilder;
 struct BloodsplatContainer;
 struct SpellFxRenderer;
-class Nuklear;
 class Vis;
 class ParticleEngine;
 struct ClippingFunctions;
@@ -130,6 +128,8 @@ class Engine {
     EventMap _localEventMap;
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
+    MapId _currentLoadedMapId = MAP_INVALID;
+    MapId _transitionMapId = MAP_INVALID;
     TeleportPoint _teleportPoint;
     OverlaySystem &_overlaySystem;
 
@@ -159,7 +159,6 @@ void FinalInitialization();
 void MM6_Initialize();
 void MM7Initialization();
 
-void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2);
 void InitializeTurnBasedAnimations(void *);
 unsigned int GetGravityStrength();
 
@@ -198,7 +197,7 @@ Duration timeUntilDawn();
  * @offset 0x443E31
  */
 void initLevelStrings(const Blob &blob);
-void Level_LoadEvtAndStr(std::string_view pLevelName);
+void loadMapEventsAndStrings(MapId mapid);
 bool _44100D_should_alter_right_panel();
 void Transition_StopSound_Autosave(std::string_view pMapName, MapStartPoint point);  // sub_44987B idb
 

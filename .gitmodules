@@ -5,9 +5,6 @@
 [submodule "thirdparty/glm"]
 	path = thirdparty/glm
 	url = https://github.com/g-truc/glm
-[submodule "thirdparty/mini"]
-	path = thirdparty/mini
-	url = https://github.com/pulzed/mINI
 [submodule "thirdparty/googletest"]
 	path = thirdparty/googletest
 	url = https://github.com/google/googletest.git
@@ -35,12 +32,19 @@
 [submodule "thirdparty/cpplint"]
 	path = thirdparty/cpplint
 	url = https://github.com/cpplint/cpplint.git
-[submodule "thirdparty/backward_cpp"]
-	path = thirdparty/backward_cpp
-	url = https://github.com/captainurist/backward-cpp.git
 [submodule "thirdparty/glob"]
 	path = thirdparty/glob
 	url = https://github.com/p-ranav/glob.git
 [submodule "thirdparty/sol2"]
 	path = thirdparty/sol2
 	url = https://github.com/ThePhD/sol2.git
+[submodule "thirdparty/imgui/imgui"]
+	path = thirdparty/imgui/imgui
+	url = https://github.com/ocornut/imgui.git
+	branch = docking
+[submodule "thirdparty/inifile_cpp"]
+	path = thirdparty/inifile_cpp
+	url = https://github.com/Rookfighter/inifile-cpp.git
+[submodule "thirdparty/backward_cpp"]
+	path = thirdparty/backward_cpp
+	url = https://github.com/OpenEnroth/backward-cpp.git

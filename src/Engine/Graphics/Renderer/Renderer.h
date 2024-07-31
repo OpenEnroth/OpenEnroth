@@ -180,12 +180,13 @@ class Renderer {
     virtual Sizei GetRenderDimensions() = 0;
     virtual Sizei GetPresentDimensions() = 0;
     virtual bool Reinitialize(bool firstInit = false) = 0;
-    virtual void ReloadShaders() = 0;
+    virtual bool ReloadShaders() = 0;
     virtual void DoRenderBillboards_D3D() = 0;
 
     virtual void flushAndScale() = 0;
     virtual void swapBuffers() = 0;
-    virtual void drawOverlays(nk_context *context) = 0;
+    virtual void beginOverlays() = 0;
+    virtual void endOverlays() = 0;
 
     std::shared_ptr<GameConfig> config = nullptr;
     int *pActiveZBuffer;

@@ -6,7 +6,6 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -41,6 +40,8 @@ GraphicsImage *ui_partycreation_minus = nullptr;
 GraphicsImage *ui_partycreation_plus = nullptr;
 GraphicsImage *ui_partycreation_buttmake2 = nullptr;
 GraphicsImage *ui_partycreation_buttmake = nullptr;
+
+GraphicsImage *ui_partycreation_character_frame = nullptr;
 
 std::array<GraphicsImage *, 9> ui_partycreation_class_icons;
 std::array<GraphicsImage *, 22> ui_partycreation_portraits;
@@ -330,8 +331,7 @@ void GUIWindow_PartyCreation::Update() {
     render->DrawTextureNew(494 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pCharacters[3].uCurrentFace]);
 
     // arrows
-    pFrame = pIconsFrameTable->GetFrame(uIconID_CharacterFrame, pEventTimer->time());
-    render->DrawTextureNew(pX / oldDims.w, 29 / oldDims.h, pFrame->GetTexture());
+    render->DrawTextureNew(pX / oldDims.w, 29 / oldDims.h, ui_partycreation_character_frame);
     uPosActiveItem = pGUIWindow_CurrentMenu->GetControl(pGUIWindow_CurrentMenu->pCurrentPosActiveItem);
     // cycle arrows backwards
     int arrowAnimTextureNum = ui_partycreation_arrow_l.size() - 1 - (pMiscTimer->time().realtimeMilliseconds() % ARROW_SPIN_PERIOD_MS) / (ARROW_SPIN_PERIOD_MS / ui_partycreation_arrow_l.size());
@@ -607,6 +607,8 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
 
     ui_partycreation_top = assets->getImage_Alpha("MAKETOP");
     ui_partycreation_sky_scroller = assets->getImage_Solid("MAKESKY");
+
+    ui_partycreation_character_frame = assets->getImage_Solid("aframe1");
 
     for (int uX = 0; uX < 22; ++uX) {
         ui_partycreation_portraits[uX] = assets->getImage_ColorKey(fmt::format("{}01", pPlayerPortraitsNames[uX]));

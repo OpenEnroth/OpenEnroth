@@ -3,7 +3,7 @@
 #include "Library/Color/Color.h"
 #include "Library/Color/ColorTable.h"
 
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 
 UNIT_TEST(Color, Tags) {
     EXPECT_THROW((void) fmt::format(fmt::runtime("{}"), colorTable.Anakiwa.tag()), std::exception);

@@ -3,21 +3,23 @@
 #include <cassert>
 #include <cstring>
 #include <algorithm>
+#include <string>
 
 MemoryInputStream::MemoryInputStream() {
     reset(nullptr, 0);
 }
 
-MemoryInputStream::MemoryInputStream(const void *data, size_t size) {
-    reset(data, size);
+MemoryInputStream::MemoryInputStream(const void *data, size_t size, std::string_view displayPath) {
+    reset(data, size, displayPath);
 }
 
 MemoryInputStream::~MemoryInputStream() {}
 
-void MemoryInputStream::reset(const void *data, size_t size) {
+void MemoryInputStream::reset(const void *data, size_t size, std::string_view displayPath) {
     _begin = static_cast<const char *>(data);
     _pos = _begin;
     _end = _pos + size;
+    _displayPath = displayPath;
 }
 
 size_t MemoryInputStream::read(void *data, size_t size) {
@@ -42,10 +44,24 @@ void MemoryInputStream::close() {
     reset(nullptr, 0);
 }
 
-void MemoryInputStream::seek(size_t pos) {
-    _pos = _begin + std::min(pos, static_cast<size_t>(_end - _begin));
+std::string MemoryInputStream::displayPath() const {
+    return _displayPath;
 }
 
-size_t MemoryInputStream::position() const {
+void MemoryInputStream::seek(ssize_t pos) {
+    assert(_pos);
+
+    _pos = _begin + std::min(pos, size());
+}
+
+ssize_t MemoryInputStream::position() const {
+    assert(_pos);
+
     return _pos - _begin;
+}
+
+ssize_t MemoryInputStream::size() const {
+    assert(_pos);
+
+    return _end - _begin;
 }

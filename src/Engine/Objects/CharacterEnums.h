@@ -355,7 +355,7 @@ enum class CharacterExpressionID : uint16_t {
     CHARACTER_EXPRESSION_55 = 55,
     CHARACTER_EXPRESSION_56 = 56,
     CHARACTER_EXPRESSION_57 = 57,
-    CHARACTER_EXPRESSION_FALLING = 58,
+    CHARACTER_EXPRESSION_FALLING = 58, // TODO(pskelton): is this actually used or just fear?
 
     // ?
 

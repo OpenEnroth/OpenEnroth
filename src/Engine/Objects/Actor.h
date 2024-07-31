@@ -31,9 +31,9 @@ struct stru319 {
 extern stru319 stru_50C198;  // idb
 
 struct AIDirection {
-    Vec3f vDirection{};
-    unsigned int uDistance = 0;
-    unsigned int uDistanceXZ = 0;
+    Vec3f vDirection;
+    float uDistance = 0;
+    float uDistanceXZ = 0;
     unsigned int uYawAngle = 0;
     /*un*/signed int uPitchAngle = 0;
 };
@@ -61,7 +61,7 @@ class Actor {
     void UpdateAnimation();
     MonsterHostility GetActorsRelation(Actor *a2);
     void SetRandomGoldIfTheresNoItem();
-    bool CanAct();
+    bool CanAct() const;
     bool IsNotAlive();
     bool IsPeasant();
 
@@ -126,15 +126,22 @@ class Actor {
     static void AI_StandOrBored(unsigned int uActorID, Pid uObjID,
                                 Duration uActionLength, AIDirection *a4);
     static void AI_FaceObject(unsigned int uActorID, Pid uObjID, AIDirection *Dir_In);
+
+    /**
+    * @param p1                            From Vec3f.
+    * @param p2                            To Vec3f.
+    * @param[out] pOut                     AIDirection from p1 to p2.
+    */
+    static void GetDirectionInfo(Vec3f p1, Vec3f p2, AIDirection* pOut);
     static void GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
-                                 AIDirection *pOut, int a4);
+                                 AIDirection *pOut, int PreferedZ);
     static void Explode(unsigned int uActorID);
     static void AI_RangedAttack(unsigned int uActorID, AIDirection *a2,
                                 int type, ActorAbility a4);
     static void AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                                SpellId uSpellID, ActorAbility a4, CombinedSkillValue uSkill);
     static void ActorDamageFromMonster(Pid attacker_id, unsigned int actor_id,
-                                       Vec3i *pVelocity, ActorAbility a4);
+                                       const Vec3f &pVelocity, ActorAbility a4);
 
     static unsigned short GetObjDescId(SpellId spellId);
 
@@ -156,9 +163,8 @@ class Actor {
     int _43B3E0_CalcDamage(ActorAbility dmgSource);
     static void AddOnDamageOverlay(unsigned int uActorID, int overlayType, int damage);
 
-    static void Arena_summon_actor(MonsterId monster_id, Vec3i pos);
-    static void DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster,
-                                       Vec3i *pVelocity);
+    static void Arena_summon_actor(MonsterId monster_id, Vec3f pos);
+    static int DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const Vec3f &pVelocity);
     static void MakeActorAIList_ODM();
     static int MakeActorAIList_BLV();
     static void UpdateActorAI();
@@ -217,8 +223,8 @@ class Actor {
     uint16_t pitchAngle = 0;
     int sectorId = 0;
     Duration currentActionLength = 0_ticks;
-    Vec3i initialPosition;
-    Vec3i guardingPosition;
+    Vec3f initialPosition;
+    Vec3f guardingPosition;
     uint16_t tetherDistance = 256;
     AIState aiState = Standing;
     ActorAnimation currentActionAnimation = ANIM_Standing;
@@ -262,8 +268,7 @@ void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5
  */
 void evaluateAoeDamage();
 double sub_43AE12(signed int a1);
-void ItemDamageFromActor(Pid uObjID, unsigned int uActorID,
-                         Vec3i *pVelocity);
+void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, const Vec3f &pVelocity);
 
 // TODO: in original binary almost all calls are with appendOnly=true, only Spawn_Light_Elemental uses
 // appendOnly=false. And this actually makes sense as actor ids can be stored in all kinds of places (e.g. inside

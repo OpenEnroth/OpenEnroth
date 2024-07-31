@@ -23,6 +23,7 @@
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Party.h"
+#include "Engine/MapEnumFunctions.h"
 #include "Engine/Time/Timer.h"
 #include "Engine/Conditions.h"
 
@@ -702,7 +703,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     // Draw name and profession
     std::string str;
     if (pActors[uActorID].npcId) {
-        str = NameAndTitle(GetNPCData(pActors[uActorID].npcId));
+        str = NameAndTitle(getNPCData(pActors[uActorID].npcId));
     } else {
         str = GetDisplayName(&pActors[uActorID]);
     }
@@ -1712,17 +1713,14 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
 }
 
 void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
-    NPCData *pNPC;           // eax@16
-    std::string pText;       // eax@18
-    int a2 = 0;                  // [sp+60h] [bp-Ch]@16
-
-    if (bNoNPCHiring != 1) {
+    if (!isHirelingsBlockedOnMap(engine->_currentLoadedMapId)) {
         FlatHirelings buf;
         buf.Prepare();
 
         if (_this + pParty->hirelingScrollPosition < buf.Size()) {
-            sDialogue_SpeakingActorNPC_ID = -1 - pParty->hirelingScrollPosition - _this;
-            pNPC = GetNewNPCData(sDialogue_SpeakingActorNPC_ID, &a2);
+            NPCData *pNPC = getNPCData(-1 - pParty->hirelingScrollPosition - _this);
+            std::string pText;
+
             if (pNPC) {
                 if (pNPC->name == "Baby Dragon")
                     pText = pNPCTopics[512].pText;  // Baby dragon
@@ -1754,7 +1752,7 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
                 popup_window.DrawTitleText(assets->pFontArrus.get(), 0, 12, colorTable.PaleCanary, NameAndTitle(pNPC), 3);
                 popup_window.uFrameWidth -= 24;
                 popup_window.uFrameZ = popup_window.uFrameX + popup_window.uFrameWidth - 1;
-                popup_window.DrawText(assets->pFontArrus.get(), {100, 36}, colorTable.White, BuildDialogueString(pText, 0));
+                popup_window.DrawText(assets->pFontArrus.get(), {100, 36}, colorTable.White, BuildDialogueString(pText, 0, pNPC));
             }
         }
     }

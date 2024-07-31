@@ -4,39 +4,53 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <sstream>
 
-#define MINI_CASE_SENSITIVE
-#include <mini/ini.h> // NOLINT: this is not a C system header.
+#include <inicpp.h> // NOLINT: this is not a C system header.
 
+#include "Utility/Streams/FileInputStream.h"
+#include "Utility/Streams/FileOutputStream.h"
 #include "Utility/MapAccess.h"
 #include "Utility/Exception.h"
 
 void Config::load(std::string_view path) {
     if (!std::filesystem::exists(path))
-        throw Exception("config file '{}' doesn't exist", path);
+        throw Exception("Config file '{}' doesn't exist", path);
 
-    mINI::INIFile file = mINI::INIFile(std::string(path));
-    mINI::INIStructure ini;
-    if (!file.read(ini))
-        throw Exception("Couldn't read config file '{}'", path);
+    FileInputStream stream(path);
+    load(&stream);
+}
+
+void Config::save(std::string_view path) const {
+    FileOutputStream stream(path);
+    save(&stream);
+}
+
+void Config::load(InputStream *stream) {
+    // We'd rather handle FS errors on our side.
+    std::istringstream stdStream(stream->readAll());
+
+    ini::IniFile ini;
+    ini.decode(stdStream); // This can throw.
 
     for (const auto &[sectionName, iniSection] : ini)
         if (ConfigSection *section = this->section(sectionName))
             for (const auto &[entryName, iniValue] : iniSection)
                 if (AnyConfigEntry *entry = section->entry(entryName))
-                    entry->setString(iniValue);
+                    entry->setString(iniValue.as<std::string_view>());
 }
 
-void Config::save(std::string_view path) const {
-    mINI::INIFile file = mINI::INIFile(std::string(path));
-    mINI::INIStructure ini;
-
+void Config::save(OutputStream *stream) const {
+    ini::IniFile ini;
     for (ConfigSection *section : sections())
         for (AnyConfigEntry *entry : section->entries())
             ini[section->name()][entry->name()] = entry->string();
 
-    if (!file.write(ini, true))
-        throw Exception("Couldn't save config file '{}'", path);
+    std::ostringstream stdStream;
+    ini.encode(stdStream); // This can throw.
+
+    // Same here - we'd rather handle FS errors on our side.
+    stream->write(stdStream.str());
 }
 
 void Config::reset() {

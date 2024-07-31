@@ -1,5 +1,6 @@
 #include "Engine/Spells/Spells.h"
 
+#include <cstring>
 #include <algorithm>
 #include <map>
 #include <string>
@@ -18,6 +19,8 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Utility/Math/TrigLut.h"
+#include "Utility/String/Ascii.h"
+#include "Utility/String/Split.h"
 #include "Utility/MapAccess.h"
 
 SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
@@ -476,7 +479,7 @@ bool SpellBuff::Apply(Time expire_time, CharacterSkillMastery uSkillMastery,
 }
 
 void SpellStats::Initialize(const Blob &spells) {
-    std::map<std::string, DamageType, NoCaseLess> spellSchoolMaps;
+    std::map<std::string, DamageType, ascii::NoCaseLess> spellSchoolMaps; // TODO(captainurist): #enum, use enum serialization
     spellSchoolMaps["fire"] = DAMAGE_FIRE;
     spellSchoolMaps["air"] = DAMAGE_AIR;
     spellSchoolMaps["water"] = DAMAGE_WATER;
@@ -516,23 +519,20 @@ void SpellStats::Initialize(const Blob &spells) {
     }
 }
 
-void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int skillLevel, int fromx,
-                    int fromy, int fromz, int tox, int toy, int toz) {
+void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int skillLevel, Vec3f from, Vec3f to) {
     // For bug catching
     assert(skillMastery >= CHARACTER_SKILL_MASTERY_NOVICE && skillMastery <= CHARACTER_SKILL_MASTERY_GRANDMASTER);
 
-    Vec3i from(fromx, fromy, fromz);
-    Vec3i to(tox, toy, toz);
-    Vec3i coord_delta;
-    if (tox || toy || toz) {
+    Vec3f coord_delta;
+    if (to.lengthSqr() > 1.0f) {
         coord_delta = to - from;
     } else {
-        coord_delta = pParty->pos.toInt() - from + Vec3i(0, 0, pParty->eyeLevel);
+        coord_delta = pParty->pos - from + Vec3f(0, 0, pParty->eyeLevel);
     }
 
     int yaw = 0;
     int pitch = 0;
-    float distance_to_target = coord_delta.toFloat().length();
+    float distance_to_target = coord_delta.length();
     if (distance_to_target <= 1.0) {
         distance_to_target = 1;
     } else {
@@ -563,7 +563,7 @@ void eventCastSpell(SpellId uSpellID, CharacterSkillMastery skillMastery, int sk
             spell_sprites.spell_level = skillLevel;
             spell_sprites.spell_skill = skillMastery;
             spell_sprites.uObjectDescID = pObjectList->ObjectIDByItemID(spell_sprites.uType);
-            spell_sprites.vPosition = from.toFloat();
+            spell_sprites.vPosition = from;
             spell_sprites.uAttributes = SPRITE_IGNORE_RANGE;
             spell_sprites.uSectorID = pIndoor->GetSector(from);
             spell_sprites.field_60_distance_related_prolly_lod = distance_to_target;

@@ -33,6 +33,10 @@ bool NullOpenGLContext::unbind() {
     return false;
 }
 
+void *NullOpenGLContext::nativeHandle() {
+    return nullptr;
+}
+
 void NullOpenGLContext::swapBuffers() {
     // Do nothing.
 }
