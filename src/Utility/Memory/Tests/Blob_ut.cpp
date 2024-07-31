@@ -1,4 +1,5 @@
 #include <string>
+#include <filesystem>
 
 #include "Testing/Unit/UnitTest.h"
 
@@ -60,12 +61,24 @@ UNIT_TEST(Blob, DisplayPathCopyShare) {
 UNIT_TEST(Blob, DisplayPathFromFile) {
     TestExistingFile tmp("1.bin", "123");
 
-    EXPECT_EQ(Blob::fromFile("1.bin").displayPath(), "1.bin");
+    std::string displayPath = Blob::fromFile("1.bin").displayPath();
+    EXPECT_TRUE(displayPath.ends_with("1.bin"));
+    EXPECT_TRUE(std::filesystem::path(displayPath).is_absolute());
+}
+
+UNIT_TEST(Blob, DisplayPathFromEmptyFile) {
+    TestExistingFile tmp("1.txt", "");
+
+    std::string displayPath = Blob::fromFile("1.txt").displayPath();
+    EXPECT_TRUE(displayPath.ends_with("1.txt"));
+    EXPECT_TRUE(std::filesystem::path(displayPath).is_absolute());
 }
 
 UNIT_TEST(Blob, DisplayPathFromStream) {
     TestExistingFile tmp("1.bin", "123");
 
     FileInputStream in("1.bin");
-    EXPECT_EQ(Blob::read(&in, 2).displayPath(), "1.bin");
+    std::string displayPath = Blob::read(&in, 2).displayPath();
+    EXPECT_TRUE(displayPath.ends_with("1.bin"));
+    EXPECT_TRUE(std::filesystem::path(displayPath).is_absolute());
 }
