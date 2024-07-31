@@ -1,20 +1,19 @@
 #pragma once
 
-#include <Library/Fsm/FSMState.h>
+#include <Library/Fsm/FsmState.h>
 
 #include <memory>
 
 class GUICredits;
 
-class CreditsState : public FSMState {
+class CreditsState : public FsmState {
  public:
     CreditsState();
-    virtual void update() override;
-    virtual void enter() override;
+    virtual FsmAction update() override;
+    virtual FsmAction enter() override;
     virtual void exit() override;
 
  private:
-    void _goBack();
-
     std::unique_ptr<GUICredits> _uiCredits;
+    bool _scheduleBackTransition = false;
 };

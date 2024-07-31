@@ -6,10 +6,11 @@
 #include <utility>
 #include <memory>
 
-#include "VideoState.h"
-#include "StartState.h"
 #include "LoadStep2State.h"
+#include "CreditsState.h"
 #include "MainMenuState.h"
+#include "StartState.h"
+#include "VideoState.h"
 
 std::unique_ptr<Fsm> GameFsmBuilder::buildFsm(std::string_view startingState) {
     FsmBuilder fsmBuilder;
@@ -45,6 +46,9 @@ void GameFsmBuilder::_buildMainMenu(FsmBuilder &builder) {
     .state<MainMenuState>("MainMenu")
         .on("newGame").exitFsm()
         .on("loadGame").exitFsm()
-        .on("credits").exitFsm()
-        .on("exit").exitFsm();
+        .on("credits").jumpTo("Credits")
+        .on("exit").exitFsm()
+
+    .state<CreditsState>("Credits")
+        .on("back").jumpTo("MainMenu");
 }
