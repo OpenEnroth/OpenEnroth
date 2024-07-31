@@ -493,7 +493,7 @@ void ImGuiBindings::Init(sol::state_view &solState, sol::table &table) {
     ImGui.set_function("text", imGuiText);
     ImGui.set_function("textWrapped", imGuiTextWrapped);
 
-    ImGui.set_function("button", sol::overload(imGuiButton,imGuiButtonEx));
+    ImGui.set_function("button", sol::overload(imGuiButton, imGuiButtonEx));
     ImGui.set_function("checkbox", imGuiCheckbox);
 
     ImGui.set_function("inputTextWithHint", imGuiInputTextWithHint);
