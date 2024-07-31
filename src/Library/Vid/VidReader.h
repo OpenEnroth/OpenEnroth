@@ -14,6 +14,7 @@ class VidReader {
  public:
     VidReader();
     explicit VidReader(std::string_view path);
+    explicit VidReader(Blob blob);
     ~VidReader();
 
     /**
@@ -22,6 +23,12 @@ class VidReader {
      *                                  or if it's not in VID format.
      */
     void open(std::string_view path);
+
+    /**
+     * @param blob                      VID data.
+     * @throw Exception                 If there are errors in the provided VID file.
+     */
+    void open(Blob blob);
 
     /**
      * Closes this VID reader & frees all associated resources.
@@ -58,6 +65,5 @@ class VidReader {
 
  private:
     Blob _vid;
-    std::string _path;
     std::unordered_map<std::string, VidRegion> _files;
 };

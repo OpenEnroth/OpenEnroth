@@ -49,7 +49,8 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() {
     for (int i = 0; i < pParty->PartyTimes.HistoryEventTimes.size(); i++) {
         if (pParty->PartyTimes.HistoryEventTimes[i].isValid()) {
             if (!pStorylineText->StoreLine[i + 1].pText.empty()) {
-                std::string str = BuildDialogueString(pStorylineText->StoreLine[i + 1].pText, 0, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID, &pParty->PartyTimes.HistoryEventTimes[i]);
+                NPCData dummyNpc;
+                std::string str = BuildDialogueString(pStorylineText->StoreLine[i + 1].pText, 0, &dummyNpc, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID, &pParty->PartyTimes.HistoryEventTimes[i]);
                 int pTextHeight = assets->pFontBookOnlyShadow->CalcTextHeight(str, journal_window.uFrameWidth, 1);
                 int pages = ((pTextHeight - (assets->pFontBookOnlyShadow->GetHeight() - 3)) / (signed int)journal_window.uFrameHeight) + 1;
                 for (int j = 0; j < pages; ++j) {
@@ -67,13 +68,13 @@ void GUIWindow_JournalBook::Update() {
     GUIWindow journal_window;
 
     render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_journal_background);
-    if ((_bookButtonClicked && _bookButtonAction == BOOK_NEXT_PAGE) || !_currentIdx) {
+    if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || !_currentIdx) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 2) / 480.0f, ui_book_button1_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 1) / 480.0f, ui_book_button1_on);
     }
 
-    if ((_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE) || (_currentIdx + 1) >= _journalIdx.size()) {
+    if ((_bookButtonClicked && _bookButtonAction == BOOK_NEXT_PAGE) || (_currentIdx + 1) >= _journalIdx.size()) {
         render->DrawTextureNew((pViewport->uViewportTL_X + 407) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_off);
     } else {
         render->DrawTextureNew((pViewport->uViewportTL_X + 398) / 640.0f, (pViewport->uViewportTL_Y + 38) / 480.0f, ui_book_button2_on);
@@ -111,8 +112,9 @@ void GUIWindow_JournalBook::Update() {
     _bookButtonClicked = false;
 
     if (_journalIdx.size()) {
-        std::string str = BuildDialogueString(pStorylineText->StoreLine[_journalIdx[_currentIdx]].pText,
-                                              0, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID, &pParty->PartyTimes.HistoryEventTimes[_journalIdx[_currentIdx] - 1]);
+        NPCData dummyNpc;
+        std::string str = BuildDialogueString(pStorylineText->StoreLine[_journalIdx[_currentIdx]].pText, 0, &dummyNpc, 0, HOUSE_INVALID,
+                                              SHOP_SCREEN_INVALID, &pParty->PartyTimes.HistoryEventTimes[_journalIdx[_currentIdx] - 1]);
         std::string pStringOnPage = assets->pFontBookOnlyShadow->GetPageTop(str, &journal_window, 1, _journalEntryPage[_currentIdx]);
         journal_window.DrawText(assets->pFontBookOnlyShadow.get(), {1, 0}, ui_book_journal_text_color, pStringOnPage,
                                 journal_window.uFrameY + journal_window.uFrameHeight, ui_book_journal_text_shadow);

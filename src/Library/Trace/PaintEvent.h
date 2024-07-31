@@ -4,7 +4,6 @@
 
 #include "Library/Platform/Interface/PlatformEvents.h"
 
-#include "Utility/Workaround/ToUnderlying.h"
 
 inline constexpr PlatformEventType EVENT_PAINT = static_cast<PlatformEventType>(std::to_underlying(EVENT_LAST) + 1);
 

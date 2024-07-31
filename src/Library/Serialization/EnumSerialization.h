@@ -3,6 +3,7 @@
 #include <cassert>
 #include <string>
 #include <type_traits>
+#include <functional> // This is required for magic_enum.hpp, but is not included by it...
 
 #define MAGIC_ENUM_RANGE_MIN (-256)
 #define MAGIC_ENUM_RANGE_MAX (255)

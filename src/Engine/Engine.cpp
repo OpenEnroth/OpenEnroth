@@ -8,12 +8,11 @@
 #include "Engine/AssetsManager.h"
 
 #include "Engine/Events/Processor.h"
-#include "Engine/Events/RawEvent.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -63,7 +62,6 @@
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
 
-#include "GUI/GUIButton.h"
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIStatusBar.h"
@@ -81,6 +79,7 @@
 #include "Library/Logger/Logger.h"
 #include "Library/BuildInfo/BuildInfo.h"
 
+#include "Utility/String/Ascii.h"
 #include "Utility/DataPath.h"
 
 /*
@@ -123,7 +122,7 @@ Engine *engine;
 GameState uGameState;
 
 void Engine::drawWorld() {
-    engine->SetSaturateFaces(pParty->_497FC5_check_party_perception_against_level());
+    engine->SetSaturateFaces(pParty->checkPartyPerceptionAgainstCurrentMap());
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
     pCamera3D->_viewYaw = pParty->_viewYaw;
@@ -289,12 +288,12 @@ void Engine::DrawGUI() {
         } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             int uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
-            int floor_level = BLV_GetFloorLevel(pParty->pos.toInt()/* + Vec3i(0,0,40) */, sector_id, &uFaceID);
+            float floor_level = BLV_GetFloorLevel(pParty->pos/* + Vec3f(0,0,40) */, sector_id, &uFaceID);
             floor_level_str = fmt::format("BLV_GetFloorLevel: {}   face_id {}\n", floor_level, uFaceID);
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             bool on_water = false;
             int bmodel_pid;
-            int floor_level = ODM_GetFloorLevel(pParty->pos.toInt(), 0, &on_water, &bmodel_pid, false);
+            float floor_level = ODM_GetFloorLevel(pParty->pos, 0, &on_water, &bmodel_pid, false);
             floor_level_str = fmt::format(
                 "ODM_GetFloorLevel: {}   on_water: {}  on: {}\n",
                 floor_level, on_water ? "true" : "false",
@@ -539,7 +538,6 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
     pEventTimer->setPaused(true);
     pMiscTimer->setPaused(true);
     CastSpellInfoHelpers::cancelSpellCastInProgress();
-    engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
     DoPrepareWorld(false, (_0_box_loading_1_fullscreen == 0) + 1);
     pMiscTimer->setPaused(false);
     pEventTimer->setPaused(false);
@@ -547,40 +545,31 @@ void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
 
 //----- (00464866) --------------------------------------------------------
 void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
-    // char *v3;         // eax@1
-    MapId v5;  // eax@3
-
-    // v9 = bLoading;
     engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
-    pGameLoadingUI_ProgressBar->Initialize(_1_fullscreen_loading_2_box == 1
-                                               ? GUIProgressBar::TYPE_Fullscreen
-                                               : GUIProgressBar::TYPE_Box);
-    size_t pos = pCurrentMapName.rfind('.');
-    std::string mapName = pCurrentMapName.substr(0, pos);
-    std::string mapExt = pCurrentMapName.substr(pos + 1);  // This magically works even when pos == std::string::npos, in this case
-                                                      // maxExt == pCurrentMapName.
+    pGameLoadingUI_ProgressBar->Initialize(_1_fullscreen_loading_2_box == 1 ? GUIProgressBar::TYPE_Fullscreen : GUIProgressBar::TYPE_Box);
 
-    Level_LoadEvtAndStr(mapName);
-
-    v5 = pMapStats->GetMapInfo(pCurrentMapName);
-
-    uLevelMapStatsID = v5;
+    loadMapEventsAndStrings(engine->_transitionMapId);
 
     // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?
     attackList.clear();
+    int configLimit = engine->config->gameplay.MaxActors.value();
+    ai_near_actors_targets_pid.resize(configLimit, Pid());
+    ai_near_actors_ids.resize(configLimit);
 
-    engine->SetUnderwater(Is_out15odm_underwater());
+    engine->SetUnderwater(isMapUnderwater(engine->_transitionMapId));
 
     pParty->floor_face_id = 0; // TODO(captainurist): drop?
-    if (noCaseEquals(mapExt, "blv"))
-        PrepareToLoadBLV(bLoading);
+
+    engine->_currentLoadedMapId = engine->_transitionMapId;
+
+    if (isMapIndoor(engine->_transitionMapId))
+        loadAndPrepareBLV(engine->_transitionMapId, bLoading);
     else
-        PrepareToLoadODM(bLoading, 0);
+        loadAndPrepareODM(engine->_transitionMapId, bLoading, 0);
 
     pNPCStats->setNPCNamesOnLoad();
     engine->_461103_load_level_sub();
-    if ((pCurrentMapName == "d11.blv") ||
-        (pCurrentMapName == "d10.blv")) {
+    if (engine->_currentLoadedMapId == MAP_BREEDING_ZONE || engine->_currentLoadedMapId == MAP_WALLS_OF_MIST) {
         // spawning grounds & walls of mist - no loot & exp from monsters
 
         for (unsigned i = 0; i < pActors.size(); ++i) {
@@ -591,10 +580,10 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
         }
     }
     bDialogueUI_InitializeActor_NPC_ID = 0;
+    engine->_transitionMapId = MAP_INVALID;
     onMapLoad();
     pGameLoadingUI_ProgressBar->Progress();
-    memset(&render->pBillboardRenderListD3D, 0,
-           sizeof(render->pBillboardRenderListD3D));
+    memset(&render->pBillboardRenderListD3D, 0, sizeof(render->pBillboardRenderListD3D));
     pGameLoadingUI_ProgressBar->Release();
 }
 
@@ -848,26 +837,6 @@ void MM7Initialization() {
                          viewparams->uScreen_BttmR_Y);
 }
 
-// TODO(pskelton): move to outdoor?
-//----- (004610AA) --------------------------------------------------------
-void PrepareToLoadODM(bool bLoading, ODMRenderParams *a2) {
-    pGameLoadingUI_ProgressBar->Reset(27);
-    uCurrentlyLoadedLevelType = LEVEL_OUTDOOR;
-
-    ODM_LoadAndInitialize(pCurrentMapName, a2);
-    if (!bLoading)
-        TeleportToStartingPoint(uLevel_StartingPointType);
-
-    viewparams->_443365();
-    PlayLevelMusic();
-
-    //  level decoration sound
-    for (int decorIdx : decorationsWithSound) {
-        const DecorationDesc *decoration = pDecorationList->GetDecoration(pLevelDecorations[decorIdx].uDecorationDescID);
-        pAudioPlayer->playSound(decoration->uSoundID, SOUND_MODE_PID, Pid(OBJECT_Decoration, decorIdx));
-    }
-}
-
 //----- (00464479) --------------------------------------------------------
 void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
     if (mouse)
@@ -909,7 +878,6 @@ void Engine::_461103_load_level_sub() {
     pParty->arenaState = ARENA_STATE_INITIAL;
     pParty->arenaLevel = ARENA_LEVEL_INVALID;
     pNPCStats->uNewlNPCBufPos = 0;
-    MapId mapId = pMapStats->GetMapInfo(pCurrentMapName);
 
     for (size_t i = 0; i < pActors.size(); ++i) {
         MonsterTier tier = monsterTierForMonsterId(pActors[i].monsterInfo.id);
@@ -922,7 +890,7 @@ void Engine::_461103_load_level_sub() {
         if (isPeasant(pActors[i].monsterInfo.id)) {
             pNPCStats->InitializeAdditionalNPCs(
                 &pNPCStats->pAdditionalNPC[pNPCStats->uNewlNPCBufPos],
-                pActors[i].monsterInfo.id, HOUSE_INVALID, mapId);
+                pActors[i].monsterInfo.id, HOUSE_INVALID, engine->_currentLoadedMapId);
             pActors[i].npcId = pNPCStats->uNewlNPCBufPos + 5000;
             pNPCStats->uNewlNPCBufPos++;
             continue;
@@ -955,8 +923,6 @@ void Engine::_461103_load_level_sub() {
 
 //----- (0042F3D6) --------------------------------------------------------
 void InitializeTurnBasedAnimations(void *_this) {
-    uIconID_TurnHour = pIconsFrameTable->FindIcon("turnhour");
-    uIconID_CharacterFrame = pIconsFrameTable->FindIcon("aframe1");
     uSpriteID_Spell11 = pSpriteFrameTable->FastFindSprite("spell11");
 
     turnBasedOverlay.loadIcons();
@@ -1118,7 +1084,8 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
                 }
             }
         }
-        if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) pOutdoor->SetFog();
+        if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
+            pOutdoor->SetFog();
 
         for (Character &character : pParty->pCharacters) {
             character.uNumDivineInterventionCastsThisDay = 0;
@@ -1173,8 +1140,7 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
         if (character.timeToRecovery && recoveryTimeDt > 0_ticks)
             character.Recover(recoveryTimeDt);
 
-        if (character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE) +
-            character.health + character.uEndurance >= 1 ||
+        if (character.GetBaseEndurance() + character.health >= 1 ||
             character.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active()) {
             if (character.health < 1)
                 character.SetCondition(CONDITION_UNCONSCIOUS, 0);
@@ -1363,8 +1329,6 @@ void RegeneratePartyHealthMana() {
     // care about immolation if you're traveling, or if you're in jail? You won't be getting several ticks here during
     // normal gameplay.
     if (pParty->ImmolationActive()) {
-        Vec3i cords;
-
         SpriteObject spellSprite;
         spellSprite.containing_item.Reset();
         spellSprite.spell_level = pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].power;
@@ -1376,19 +1340,27 @@ void RegeneratePartyHealthMana() {
         spellSprite.uAttributes = 0;
         spellSprite.uSectorID = 0;
         spellSprite.timeSinceCreated = 0_ticks;
-        spellSprite.spell_caster_pid = Pid(OBJECT_Character, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster);
+        spellSprite.spell_caster_pid = Pid(OBJECT_Character, pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster - 1); // caster is 1 indexed so turn back to 0
         spellSprite.uFacing = 0;
         spellSprite.uSoundID = 0;
 
         int actorsAffectedByImmolation[100];
         size_t numberOfActorsAffected = pParty->immolationAffectedActors(actorsAffectedByImmolation, 100, 307);
+        int totalDmg = 0; int hitCount = 0;
         for (size_t idx = 0; idx < numberOfActorsAffected; ++idx) {
             int actorID = actorsAffectedByImmolation[idx];
             spellSprite.vPosition.x = pActors[actorID].pos.x;
             spellSprite.vPosition.y = pActors[actorID].pos.y;
             spellSprite.vPosition.z = pActors[actorID].pos.z;
             spellSprite.spell_target_pid = Pid(OBJECT_Actor, actorID);
-            Actor::DamageMonsterFromParty(Pid(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, &cords);
+            int thisDmg = Actor::DamageMonsterFromParty(Pid(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, Vec3f());
+            if (thisDmg) hitCount++;
+            totalDmg += thisDmg;
+        }
+
+        // Override status bar
+        if (engine->config->settings.ShowHits.value() && totalDmg > 0) {
+            engine->_statusBar->setEvent(LSTR_IMMOLATION_DAMAGE, totalDmg, hitCount);
         }
     }
 
@@ -1486,7 +1458,7 @@ void RegeneratePartyHealthMana() {
 
         // Knock out / kill chars due to hp drain.
         if (character.health <= 0) {
-            int enduranceCheck = character.health + character.uEndurance + character.GetItemsBonus(CHARACTER_ATTRIBUTE_ENDURANCE);
+            int enduranceCheck = character.health + character.GetBaseEndurance();
             Condition targetCondition = enduranceCheck >= 1 || character.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active() ? CONDITION_UNCONSCIOUS : CONDITION_DEAD;
             if (!character.conditions.Has(targetCondition))
                 character.conditions.Set(targetCondition, pParty->GetPlayingTime());
@@ -1514,10 +1486,13 @@ void initLevelStrings(const Blob &blob) {
     }
 }
 
-void Level_LoadEvtAndStr(std::string_view pLevelName) {
-    initLevelStrings(engine->_gameResourceManager->getEventsFile(fmt::format("{}.str", pLevelName)));
+void loadMapEventsAndStrings(MapId mapid) {
+    std::string mapName = pMapStats->pInfos[mapid].fileName;
+    std::string mapNameWithoutExt = mapName.substr(0, mapName.rfind('.'));
 
-    engine->_localEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile(fmt::format("{}.evt", pLevelName)));
+    initLevelStrings(engine->_gameResourceManager->getEventsFile(fmt::format("{}.str", mapNameWithoutExt)));
+
+    engine->_localEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile(fmt::format("{}.evt", mapNameWithoutExt)));
 }
 
 bool _44100D_should_alter_right_panel() {
@@ -1536,19 +1511,19 @@ void Transition_StopSound_Autosave(std::string_view pMapName,
 
     // pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_None);
 
-    if (pCurrentMapName != pMapName) {
+    if (engine->_currentLoadedMapId != pMapStats->GetMapInfo(pMapName)) {
         AutoSave();
     }
 
     uGameState = GAME_STATE_CHANGE_LOCATION;
-    pCurrentMapName = pMapName;
+    engine->_transitionMapId = pMapStats->GetMapInfo(pMapName);
     uLevel_StartingPointType = start_point;
 }
 
 //----- (0044C28F) --------------------------------------------------------
 void TeleportToNWCDungeon() {
     // return if we are already in the NWC dungeon
-    if ("nwc.blv" == pCurrentMapName) {
+    if (engine->_currentLoadedMapId == MAP_STRANGE_TEMPLE) {
         return;
     }
 

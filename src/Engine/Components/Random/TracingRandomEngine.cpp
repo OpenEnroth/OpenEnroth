@@ -5,7 +5,7 @@
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/StackTrace/StackTrace.h"
 
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 
 TracingRandomEngine::TracingRandomEngine(Platform *platform, RandomEngine *base): _platform(platform), _base(base) {
     assert(platform);

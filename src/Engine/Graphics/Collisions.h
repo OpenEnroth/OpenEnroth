@@ -37,7 +37,6 @@ struct CollisionState {
     float adjusted_move_distance;  // Movement distance for current iteration, adjusted after collision checks.
     int uSectorID = 0;  // Indoor sector id.
     Pid pid;  // Pid of the object that we're collided with.
-    int ignored_face_id;  // Don't check collisions with this face.
     BBoxf bbox;
 
     Vec3f collisionPos;  // Point at which nearest collision occurs (touching radii)

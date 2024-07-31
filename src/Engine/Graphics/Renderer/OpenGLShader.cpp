@@ -1,156 +1,133 @@
 #include "OpenGLShader.h"
 
+#include <cassert>
 #include <string>
 
 #include <glad/gl.h> // NOLINT: this is not a C system include.
 
 #include "Library/Logger/Logger.h"
-#include "Library/Serialization/EnumSerialization.h"
 
 #include "Utility/Streams/FileInputStream.h"
-#include "Utility/DataPath.h"
-#include "Utility/Exception.h"
 
-namespace detail_extension {
-MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(GLenum, CASE_SENSITIVE, {
-    {GL_VERTEX_SHADER, "vert"},
-    {GL_FRAGMENT_SHADER, "frag"},
-    {GL_GEOMETRY_SHADER, "geom"},
-    {GL_COMPUTE_SHADER, "comp"},
-    {GL_TESS_CONTROL_SHADER, "tesc"},
-    {GL_TESS_EVALUATION_SHADER, "tese"}
-})
-} // namespace detail_extension
+static std::string compileErrors(int shader) {
+    GLint success = 1;
+    GLchar infoLog[2048];
+    if (glIsShader(shader)) {
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+        if (!success)
+            glGetShaderInfoLog(shader, 2048, NULL, infoLog);
+    } else {
+        glGetProgramiv(shader, GL_LINK_STATUS, &success);
+        if (!success)
+            glGetProgramInfoLog(shader, 2048, NULL, infoLog);
+    }
 
-namespace detail_name {
-MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(GLenum, CASE_SENSITIVE, {
-    {GL_VERTEX_SHADER, "vertex"},
-    {GL_FRAGMENT_SHADER, "fragment"},
-    {GL_GEOMETRY_SHADER, "geometry"},
-    {GL_COMPUTE_SHADER, "compute"},
-    {GL_TESS_CONTROL_SHADER, "tessellation control"},
-    {GL_TESS_EVALUATION_SHADER, "tessellation evaluation"}
-})
-} // namespace detail_name
+    if (!success) {
+        if (infoLog[0]) {
+            return infoLog;
+        } else {
+            return "Unknown error";
+        }
+    }
 
-int OpenGLShader::build(std::string_view name, std::string_view filename, bool OpenGLES, bool reload) {
-    // 1. retrieve the vertex/fragment source code from filePath
-    GLuint vertex = load(name, filename, GL_VERTEX_SHADER, OpenGLES);
+    return {};
+}
+
+OpenGLShader::~OpenGLShader() {
+    release();
+}
+
+bool OpenGLShader::load(std::string_view vertPath, std::string_view fragPath, bool openGLES) {
+    Blob vertSource, fragSource;
+    try {
+        vertSource = Blob::fromFile(vertPath);
+        fragSource = Blob::fromFile(fragPath);
+    } catch (const std::exception &e) {
+        logger->error("Could not read shader source: {}", e.what()); // e.what() will contain file path.
+        return false;
+    }
+
+    return load(vertSource, fragSource, openGLES);
+}
+
+bool OpenGLShader::load(const Blob &vertSource, const Blob &fragSource, bool openGLES) {
+    GLuint vertex = loadShader(vertSource, GL_VERTEX_SHADER, openGLES);
     if (vertex == 0)
-        return 0;
+        return false;
 
-    GLuint fragment = load(name, filename, GL_FRAGMENT_SHADER, OpenGLES);
-    if (fragment == 0)
-        return 0;
+    GLuint fragment = loadShader(fragSource, GL_FRAGMENT_SHADER, openGLES);
+    if (fragment == 0) {
+        glDeleteShader(vertex);
+        return false;
+    }
 
-    GLuint geometry = load(name, filename, GL_GEOMETRY_SHADER, OpenGLES, true);
-
-    // shader Program
-    int tempID = glCreateProgram();
-    glAttachShader(tempID, vertex);
-    glAttachShader(tempID, fragment);
-    if (geometry != 0)
-        glAttachShader(tempID, geometry);
-    glLinkProgram(tempID);
-    bool NOerror = checkCompileErrors(tempID, name, "program");
-    if (!NOerror)
-        tempID = 0;
+    int result = glCreateProgram();
+    glAttachShader(result, vertex);
+    glAttachShader(result, fragment);
+    glLinkProgram(result);
 
     // delete the shaders as they're linked into our program now and no longer necessery
     glDeleteShader(vertex);
     glDeleteShader(fragment);
-    if (geometry != 0)
-        glDeleteShader(geometry);
 
-    if (tempID) {
-        // set var members on first load
-        if (reload == false) {
-            ID = tempID;
-            sFilename = filename;
-        }
-        return tempID;
+    std::string errors = compileErrors(result);
+    if (!errors.empty()) {
+        logger->error("Could not link shader program ['{}', '{}']:\n{}", vertSource.displayPath(), fragSource.displayPath(), errors);
+        glDeleteProgram(result);
+        return false;
     }
 
-    logger->error("shader compilation failure: {}", filename);
-    return 0;
-}
-
-bool OpenGLShader::reload(std::string_view name, bool OpenGLES) {
-    int tryreload = build(name, sFilename, OpenGLES, true);
-
-    if (tryreload) {
-        glDeleteProgram(ID);
-        ID = tryreload;
-        return true;
-    }
-
-    logger->info("shader reload failed, reverting...");
-    return false;
-}
-
-void OpenGLShader::use() {
-    glUseProgram(ID);
-}
-
-std::string OpenGLShader::shaderTypeToExtension(int type) {
-    std::string result;
-    detail_extension::serialize(type, &result);
-    return result;
-}
-
-std::string OpenGLShader::shaderTypeToName(int type) {
-    std::string result;
-    detail_name::serialize(type, &result);
-    return result;
-}
-
-bool OpenGLShader::checkCompileErrors(int shader, std::string_view name, std::string_view type) {
-    GLint success;
-    GLchar infoLog[1024];
-    if (type != "program") {
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-        if (!success) {
-            glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-            logger->error("{} {} shader compilation error:\n{}", name, type, infoLog);
-            return false;
-        }
-    } else {
-        glGetProgramiv(shader, GL_LINK_STATUS, &success);
-        if (!success) {
-            glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-            logger->error("{} {} linking error:\n{}", name, type, infoLog);
-            return false;
-        }
-    }
+    _id = result;
     return true;
 }
 
-int OpenGLShader::load(std::string_view name, std::string_view filename, int type, bool OpenGLES, bool nonFatal) {
-    std::string directory = "shaders";
-    std::string typeName = shaderTypeToName(type);
-    std::string path = makeDataPath(directory, fmt::format("{}.{}", filename, shaderTypeToExtension(type)));
+void OpenGLShader::release() {
+    if (_id == 0)
+        return;
 
-    try {
-        std::string shaderString;
-        if (!OpenGLES)
-            shaderString = "#version 410 core\n";
-        else
-            shaderString = "#version 320 es\n";
+    glDeleteProgram(_id);
+    _id = 0;
+}
 
-        FileInputStream stream(path);
-        shaderString += stream.readAll();
+int OpenGLShader::uniformLocation(const char *name) {
+    assert(isValid());
 
-        // compile shader
-        const char *shaderChar = shaderString.c_str();
-        GLuint shaderHandler = glCreateShader(type);
-        glShaderSource(shaderHandler, 1, &shaderChar, NULL);
-        glCompileShader(shaderHandler);
-        checkCompileErrors(shaderHandler, name, shaderTypeToName(type));
+    return glGetUniformLocation(_id, name);
+}
 
-        return shaderHandler;
-    } catch (const Exception &e) {
-        if (!nonFatal)
-            logger->error("Error occured during reading {} {} shader file at path {}: {}", name, typeName, path, e.what());
+int OpenGLShader::attribLocation(const char *name) {
+    assert(isValid());
+
+    return glGetAttribLocation(_id, name);
+}
+
+void OpenGLShader::use() {
+    assert(isValid());
+
+    glUseProgram(_id);
+}
+
+unsigned OpenGLShader::loadShader(const Blob &source, int type, bool openGLES) {
+    std::string_view version;
+    if (!openGLES)
+        version = "#version 410 core\n";
+    else
+        version = "#version 320 es\n";
+
+    // compile shader
+    const char *sources[2] = {version.data(), static_cast<const char *>(source.data())};
+    const GLint lengths[2] = {static_cast<GLint>(version.size()), static_cast<GLint>(source.size())};
+
+    GLuint result = glCreateShader(type);
+    glShaderSource(result, 2, sources, lengths);
+    glCompileShader(result);
+
+    std::string errors = compileErrors(result);
+    if (!errors.empty()) {
+        logger->error("Could not compile shader '{}':\n{}", source.displayPath(), errors);
+        glDeleteShader(result);
         return 0;
     }
+
+    return result;
 }

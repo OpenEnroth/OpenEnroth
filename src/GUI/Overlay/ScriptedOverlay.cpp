@@ -1,9 +1,7 @@
 #include "ScriptedOverlay.h"
 
-#include <Library/Logger/Logger.h>
-#include <Scripting/ScriptingSystem.h>
-
-#include <nuklear_config.h> // NOLINT: not a C system header.
+#include "Library/Logger/Logger.h"
+#include "Scripting/ScriptingSystem.h"
 
 ScriptedOverlay::ScriptedOverlay(std::string_view name, sol::state_view &solState, sol::table luaOverlay)
     : _name(name), _solState(solState) {
@@ -25,10 +23,10 @@ ScriptedOverlay::~ScriptedOverlay() {
     }
 }
 
-void ScriptedOverlay::update(nk_context *context) {
+void ScriptedOverlay::update() {
     auto updateFunction = _prepareFunction(_updateFunctionReference);
     if (updateFunction.valid()) {
-        updateFunction(context);
+        updateFunction();
     }
 }
 

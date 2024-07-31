@@ -23,5 +23,4 @@ target_link_libraries(engine_graphics_level
         engine_graphics
         PRIVATE
         libluajit
-        glad
-        nuklear)
+        glad)

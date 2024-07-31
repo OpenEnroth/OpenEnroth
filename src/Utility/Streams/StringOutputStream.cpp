@@ -4,11 +4,18 @@
 #include <cstring>
 #include <string>
 
-StringOutputStream::StringOutputStream(std::string *target) : _target(target) {
-    assert(target);
+StringOutputStream::StringOutputStream(std::string *target, std::string_view displayPath) {
+    open(target, displayPath);
 }
 
 StringOutputStream::~StringOutputStream() {}
+
+void StringOutputStream::open(std::string *target, std::string_view displayPath) {
+    assert(target);
+
+    _target = target; // No need to call close() here.
+    _displayPath = displayPath;
+}
 
 void StringOutputStream::write(const void *data, size_t size) {
     assert(_target);
@@ -25,4 +32,9 @@ void StringOutputStream::flush() {
 
 void StringOutputStream::close() {
     _target = nullptr;
+    _displayPath = {};
+}
+
+std::string StringOutputStream::displayPath() const {
+    return _displayPath;
 }

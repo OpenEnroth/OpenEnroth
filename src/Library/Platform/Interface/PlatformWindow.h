@@ -56,9 +56,9 @@ class PlatformWindow {
     virtual Marginsi frameMargins() const = 0;
 
     /**
-     * @return                          System handle of a window, e.g. `HWND` on windows or `NSWindow *` on mac.
+     * @return Pointer to the native window, e.g. `SDL_window` on SDL.
      */
-    virtual uintptr_t systemHandle() const = 0;
+    virtual void *nativeHandle() const = 0;
 
     virtual void activate() = 0;
 

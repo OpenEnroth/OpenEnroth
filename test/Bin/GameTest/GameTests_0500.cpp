@@ -67,7 +67,7 @@ GAME_TEST(Issues, Issue503) {
     EXPECT_EQ(hpTape, tape({1147, 699, 350, 242})); // Game was paused, the party wasn't shot at, no HP change.
     EXPECT_EQ(noDamageTape, tape(false)); // HP change was actually possible.
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_BOOKS, SCREEN_GAME)); // TP book was opened.
-    EXPECT_EQ(mapTape, tape("mdt12.blv", "d29.blv")); // And party was teleported to Harmondale.
+    EXPECT_EQ(mapTape, tape(MAP_DRAGON_CAVES, MAP_CASTLE_HARMONDALE)); // And party was teleported to Harmondale.
 }
 
 GAME_TEST(Issues, Issue504) {
@@ -110,10 +110,12 @@ GAME_TEST(Issues, Issue520) {
 
 GAME_TEST(Issues, Issue521) {
     // 500 endurance leads to asserts in Character::SetRecoveryTime
-    auto healthTape = tapes.totalHp();
+    auto enduranceTape = charTapes.stat(0, CHARACTER_ATTRIBUTE_ENDURANCE);
+    auto hpsTape = charTapes.hps();
     auto activeCharTape = tapes.activeCharacterIndex();
     test.playTraceFromTestData("issue_521.mm7", "issue_521.json");
-    EXPECT_LT(healthTape.delta(), 0); // Party took fall damage.
+    EXPECT_EQ(enduranceTape, tape(500)); // First char is beefy.
+    EXPECT_LT(hpsTape.delta().max(), 0); // All chars took damage.
     EXPECT_EQ(activeCharTape, tape(1)); // First char didn't flinch.
 }
 
@@ -423,7 +425,7 @@ GAME_TEST(Issues, Issue675) {
 GAME_TEST(Issues, Issue676) {
     // Jump spell doesn't work
     test.playTraceFromTestData("issue_676.mm7", "issue_676.json");
-    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12042, 11779, 912));
+    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12041, 11766, 908));
 }
 
 GAME_TEST(Issues, Issue677) {
@@ -573,7 +575,7 @@ GAME_TEST(Issues, Issue735c) {
     // Checking location names explicitly so that we'll notice if party misses cave entrance after retracing.
     auto mapTape = tapes.map();
     test.playTraceFromTestData("issue_735c.mm7", "issue_735c.json");
-    EXPECT_EQ(mapTape, tape("out01.odm", "d28.blv")); // Emerald Isle -> Dragon's cave.
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_DRAGONS_LAIR)); // Emerald Isle -> Dragon's cave.
 }
 
 GAME_TEST(Issues, Issue735d) {
@@ -722,13 +724,13 @@ GAME_TEST(Issues, Issue808) {
 GAME_TEST(Issues, Issue814) {
     // Test that compare variable for autonotes do not assert
     test.playTraceFromTestData("issue_814.mm7", "issue_814.json"); // Should not assert
-    EXPECT_EQ(pParty->pCharacters[0].uIntelligenceBonus, 25);
+    EXPECT_EQ(pParty->pCharacters[0]._statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE], 25);
 }
 
 GAME_TEST(Issues, Issue815) {
     // Test that subtract variable for character bits work
     test.playTraceFromTestData("issue_815.mm7", "issue_815.json");
-    EXPECT_EQ(pParty->pCharacters[0].uIntelligenceBonus, 25);
+    EXPECT_EQ(pParty->pCharacters[0]._statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE], 25);
 }
 
 GAME_TEST(Issues, Issue816) {

@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 
-#include "Utility/TransparentFunctors.h"
+#include "Utility/String/TransparentFunctors.h"
 
 #include "ConfigFwd.h"
 

@@ -26,7 +26,6 @@ struct Polygon {
     float field_C = 0;
     float field_10 = 0;
     unsigned int uNumVertices;
-    Vec3i v_18;  // fp pitch rotation vec
     int field_24 = 0;  // dot dist
     int sTextureDeltaU = 0;
     int sTextureDeltaV = 0;

@@ -8,7 +8,7 @@
 #include "Engine/Engine.h"
 #include "Engine/OurMath.h"
 
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
@@ -72,9 +72,9 @@ Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pi
             }
         }
     } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-        const std::vector<Vec3i> &v = pOutdoor->model(pid).pVertices;
+        const std::vector<Vec3f> &v = pOutdoor->model(pid).pVertices;
         for (unsigned i = 0; i < face->uNumVertices; ++i)
-            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->pVertexIDs[i]].toFloat();
+            static_DetermineFacetIntersection_array_F8F200[i].vWorldPosition = v[face->pVertexIDs[i]];
     } else {
         assert(false);
     }
@@ -313,10 +313,10 @@ bool IsBModelVisible(BSPModel *model, int reachable_depth, bool *reachable) {
     if (dist < model->sBoundingRadius + reachable_depth) *reachable = true;
 
     // to avoid small objects not showing up give a more generous radius
-    float radius{ static_cast<float>(model->sBoundingRadius) };
+    float radius{ model->sBoundingRadius };
     if (radius < 512.0f) radius = 512.0f;
 
-    return IsSphereInFrustum(model->vBoundingCenter.toFloat(), radius);
+    return IsSphereInFrustum(model->vBoundingCenter, radius);
 }
 
 bool IsSphereInFrustum(Vec3f center, float radius, Planef *frustum) {
@@ -469,14 +469,14 @@ bool Vis::Intersect_Ray_Face(const Vec3f &origin, const Vec3f &step,
     // p(t) = p0 + tu;
     Intersection->vWorldPosition = origin + t * step;
 
-    if (!CheckIntersectFace(pFace, Intersection->vWorldPosition.toInt(), pBModelID))
+    if (!CheckIntersectFace(pFace, Intersection->vWorldPosition, pBModelID))
         return false;
 
     return true;
 }
 
 //----- (004C1D2B) --------------------------------------------------------
-bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3i IntersectPoint, signed int sModelID) {
+bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3f IntersectPoint, signed int sModelID) {
     if (!pFace->pBounding.contains(IntersectPoint))
         return false;
 

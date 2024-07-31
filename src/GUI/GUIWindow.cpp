@@ -12,7 +12,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineCallObserver.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
@@ -21,7 +21,6 @@
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
-#include "Engine/Objects/NPC.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
@@ -38,6 +37,7 @@
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIPopup.h"
+#include "GUI/UI/UIDialogue.h"
 
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
@@ -436,7 +436,7 @@ GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, s
 }
 
 void DialogueEnding() {
-    sDialogue_SpeakingActorNPC_ID = 0;
+    speakingNpcId = 0;
     if (pDialogueWindow) {
         pDialogueWindow->Release();
     }
@@ -760,29 +760,17 @@ Color GetSkillColor(CharacterClass uPlayerClass, CharacterSkillType uPlayerSkill
     return ui_character_skillinfo_cant_learn;
 }
 
-std::string BuildDialogueString(std::string_view str, int uPlayerID, ItemGen *a3, HouseId houseId, ShopScreen shop_screen, Time *a6) {
+std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *npc, ItemGen *item, HouseId houseId, ShopScreen shop_screen, Time *a6) {
     std::string v1;
     Character *pPlayer;       // ebx@3
-    std::string pText;     // esi@7
-    int64_t v18;    // qax@18
     int v29;               // eax@68
     std::vector<int> addressingBits;
     CivilTime time;
+    std::string result;
 
     pPlayer = &pParty->pCharacters[uPlayerID];
 
-    NPCData *npc;
-
-    if (houseNpcs.size()) {
-        npc = houseNpcs[currentHouseNpc].npc;
-    } else {
-        npc = GetNPCData(sDialogue_SpeakingActorNPC_ID);
-    }
-
-    std::string result;
-
-    unsigned len = str.length();
-    for (int i = 0, dst = 0; i < len; ++i) {
+    for (int i = 0, dst = 0; i < str.length(); ++i) {
         char c = str[i];  // skip through string till we find insertion point
         if (c != '%') {
             result += c;  // add char to result string
@@ -805,14 +793,13 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, ItemGen *a3
             case 5:
                 time = pParty->GetPlayingTime().toCivilTime();
                 if (time.hour >= 11 && time.hour < 20) {
-                    pText = localization->GetString(LSTR_DAY);
+                    result += localization->GetString(LSTR_DAY);
                 } else if (time.hour >= 5 && time.hour < 11) {
-                    pText = localization->GetString(LSTR_MORNING);
+                    result += localization->GetString(LSTR_MORNING);
                 } else {
-                    pText = localization->GetString(LSTR_EVENING);
+                    result += localization->GetString(LSTR_EVENING);
                 }
                 // TODO(captainurist): ^ and what about night?
-                result += pText;
                 break;
             case 6:
                 if (pPlayer->uSex == SEX_FEMALE)
@@ -896,31 +883,31 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, ItemGen *a3
                 result += v1;
                 break;
             case 23:
-                if (pMapStats->GetMapInfo(pCurrentMapName) != MAP_INVALID)
-                    result += pMapStats->pInfos[pMapStats->GetMapInfo(pCurrentMapName)].name;
+                if (engine->_currentLoadedMapId != MAP_INVALID)
+                    result += pMapStats->pInfos[engine->_currentLoadedMapId].name;
                 else
                     result += localization->GetString(LSTR_UNKNOWN);
                 break;
 
             case 24:  // item name
-                v1 = fmt::format("{::}{}\f00000\n", colorTable.PaleCanary.tag(), a3->GetDisplayName());
+                v1 = fmt::format("{::}{}\f00000\n", colorTable.PaleCanary.tag(), item->GetDisplayName());
                 result += v1;
                 break;
 
             case 25:  // base prices
-                v29 = PriceCalculator::baseItemBuyingPrice(a3->GetValue(), buildingTable[houseId].fPriceMultiplier);
+                v29 = PriceCalculator::baseItemBuyingPrice(item->GetValue(), buildingTable[houseId].fPriceMultiplier);
                 switch (shop_screen) {
                 case SHOP_SCREEN_SELL:
-                    v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), buildingTable[houseId].fPriceMultiplier);
+                    v29 = PriceCalculator::baseItemSellingPrice(item->GetValue(), buildingTable[houseId].fPriceMultiplier);
                     break;
                 case SHOP_SCREEN_IDENTIFY:
                     v29 = PriceCalculator::baseItemIdentifyPrice(buildingTable[houseId].fPriceMultiplier);
                     break;
                 case SHOP_SCREEN_REPAIR:
-                    v29 = PriceCalculator::baseItemRepairPrice(a3->GetValue(), buildingTable[houseId].fPriceMultiplier);
+                    v29 = PriceCalculator::baseItemRepairPrice(item->GetValue(), buildingTable[houseId].fPriceMultiplier);
                     break;
                 case SHOP_SCREEN_SELL_FOR_CHEAP:
-                    v29 = PriceCalculator::baseItemSellingPrice(a3->GetValue(), buildingTable[houseId].fPriceMultiplier) / 2;
+                    v29 = PriceCalculator::baseItemSellingPrice(item->GetValue(), buildingTable[houseId].fPriceMultiplier) / 2;
                     break;
                 }
                 v1 = fmt::format("{}", v29);
@@ -928,9 +915,9 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, ItemGen *a3
                 break;
 
             case 27:  // actual price
-                v29 = PriceCalculator::itemBuyingPriceForPlayer(pPlayer, a3->GetValue(), buildingTable[houseId].fPriceMultiplier);
+                v29 = PriceCalculator::itemBuyingPriceForPlayer(pPlayer, item->GetValue(), buildingTable[houseId].fPriceMultiplier);
                 if (shop_screen == SHOP_SCREEN_SELL) {
-                    v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, buildingTable[houseId].fPriceMultiplier);
+                    v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *item, buildingTable[houseId].fPriceMultiplier);
                     v1 = fmt::format("{}", v29);
                     result += v1;
                     break;
@@ -938,12 +925,12 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, ItemGen *a3
                 if (shop_screen != SHOP_SCREEN_IDENTIFY) {
                     if (shop_screen == SHOP_SCREEN_REPAIR) {
                     v29 = PriceCalculator::itemRepairPriceForPlayer(
-                        pPlayer, a3->GetValue(),
+                        pPlayer, item->GetValue(),
                         buildingTable[houseId].fPriceMultiplier);
                     } else {
                         if (shop_screen == SHOP_SCREEN_SELL_FOR_CHEAP) {
                             // TODO(captainurist): encapsulate this logic in PriceCalculator
-                            v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *a3, buildingTable[houseId].fPriceMultiplier) / 2;
+                            v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *item, buildingTable[houseId].fPriceMultiplier) / 2;
                             if (!v29)  // cannot be 0
                                 v29 = 1;
                             v1 = fmt::format("{}", v29);
@@ -1014,6 +1001,11 @@ void WindowManager::DeleteAllVisibleWindows() {
         // game ui should never be released and should always be at the back of the window list
         if (pWindow->eWindowType == WINDOW_GameUI) {
             assert(false && "WINDOW_GameUI is not at back of lWindowList");
+        }
+        // Child books button should be deleted by parent
+        if (pWindow->eWindowType == WINDOW_BooksButtonOverlay) {
+            lWindowList.pop_front();
+            continue;
         }
         pWindow->Release();
         delete pWindow;

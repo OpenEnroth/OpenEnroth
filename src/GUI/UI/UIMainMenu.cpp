@@ -13,9 +13,6 @@
 
 #include "Io/Mouse.h"
 
-#include "Media/Audio/AudioPlayer.h"
-#include "Media/MediaPlayer.h"
-
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
     GUIWindow(WINDOW_MainMenu, {0, 0}, render->GetRenderDimensions()) {
     main_menu_background = assets->getImage_PCXFromIconsLOD("title.pcx");

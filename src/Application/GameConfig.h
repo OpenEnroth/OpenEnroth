@@ -13,7 +13,6 @@
 #include "Library/Config/Config.h"
 #include "Engine/Random/RandomEnums.h"
 #include "Library/Logger/LogEnums.h"
-#include "Utility/Format.h"
 
 #ifdef __ANDROID__
 #define ConfigRenderer RENDERER_OPENGL_ES
@@ -89,7 +88,7 @@ class GameConfig : public Config {
 
         // TODO(captainurist): move all Trace* options into a separate section.
 
-        Int TraceFrameTimeMs = {this, "trace_frame_time_ms", 50, &ValidateFrameTime,
+        Int TraceFrameTimeMs = {this, "trace_frame_time_ms", 100, &ValidateFrameTime,
                                 "Number of milliseconds per frame when recording game traces."};
 
         ConfigEntry<RandomEngineType> TraceRandomEngine = {this, "trace_random_engine", RANDOM_ENGINE_MERSENNE_TWISTER,
@@ -126,7 +125,7 @@ class GameConfig : public Config {
                                   "Use 1 to try to place items that didn't fit every time the chest is opened again. "
                                   "Use 2 to try to place items that didn't fit every time an item is picked up from the chest."};
 
-        Int FloorChecksEps = {this, "floor_checks_eps", 3, &ValidateFloorChecksEps,
+        Int FloorChecksEps = {this, "floor_checks_eps", 3, &ValidateFloorChecksEps, // TODO(pskelton): Move to debug
                               "Maximum allowed slack for point-inside-a-polygon checks when calculating floor z level. "
                               "This is needed because there are actual holes in level geometry sometimes, up to several units wide."};
 
@@ -203,8 +202,20 @@ class GameConfig : public Config {
                                 "How many quick saves have currently been used."
                                 "This will rotate back to 0 when 5 saves has been reached" };
 
-        Bool NoPartyActorCollisions = {this, "no_party_actor_collisions", false,
+        Bool NoPartyActorCollisions = {this, "no_party_actor_collisions", false, // TODO(pskelton): Move to debug
                                        "Disable collisions between the party and monsters on the map. Mainly useful for debugging and tests."};
+
+        Bool NoIndoorFallDamage = { this, "no_indoor_fall_damage", false,
+                                  "Disable fall damage for indoor maps." };
+
+        Float SpawnCountMultiplier = { this, "spawn_count_multiplier", 1.0f,
+                                    "Multiplication factor for how many enemies are spawned over original." };
+
+        Int MaxActors = { this, "max_actors", 500, &ValidateMaxActors,
+                        "Limit to how many total actors are possible on a map." };
+
+        Int MaxActiveAIActors = { this, "max_active_ai_actors", 30, &ValidateMaxActiveAIActors,
+                                "Limit to how many actors can be in full AI state at once." };
 
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
@@ -243,7 +254,15 @@ class GameConfig : public Config {
         static int ValidateQuickSaveCount(int num) {
             return std::clamp(num, 0, 4);
         }
+        static int ValidateMaxActors(int num) {
+            return std::clamp(num, 500, 5000);
+        }
+        static int ValidateMaxActiveAIActors(int num) {
+            return std::clamp(num, 30, 500);
+        }
     };
+
+    Gameplay gameplay{ this };
 
     class Gamepad : public ConfigSection {
      public:
@@ -327,8 +346,6 @@ class GameConfig : public Config {
     };
 
     Gamepad gamepad{ this };
-
-    Gameplay gameplay{ this };
 
     class Graphics : public ConfigSection {
      public:
@@ -613,6 +630,8 @@ class GameConfig : public Config {
      public:
         explicit CheatCommands(GameConfig *config);
 
+     private:
+        void _addCommand(int commandIndex, const std::string& defaultValue);
         std::vector<std::unique_ptr<String>> CommandList;
     };
 

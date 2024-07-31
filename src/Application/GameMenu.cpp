@@ -172,7 +172,7 @@ void Menu::EventLoop() {
                 DoSavegame(pSavegameList->selectedSlot);
                 continue;
             case UIMSG_Game_OpenSaveGameDialog: {
-                if (pCurrentMapName == "d05.blv") {
+                if (engine->_currentLoadedMapId == MAP_ARENA) {
                     engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_ARENA);
                     pAudioPlayer->playUISound(SOUND_error);
                 } else {
@@ -459,7 +459,9 @@ void Menu::EventLoop() {
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 }
                 continue;
-
+            case UIMSG_QuickLoad:
+                QuickLoadGame();
+                break;
             default:
                 break;
         }

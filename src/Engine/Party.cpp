@@ -183,23 +183,19 @@ void ActionQueue::Add(PartyAction action) {
     if (uNumActions < 30) pActions[uNumActions++] = action;
 }
 
-//----- (00497FC5) --------------------------------------------------------
-bool Party::_497FC5_check_party_perception_against_level() {
-    int uMaxPerception;  // edi@1
-    signed int v5;       // eax@3
-    bool result;         // eax@7
+bool Party::checkPartyPerceptionAgainstCurrentMap() {
+    int maxPerception = 0;
+    bool result = 0;
 
-    uMaxPerception = 0;
     for (Character &player : this->pCharacters) {
         if (player.CanAct()) {
-            v5 = player.GetPerception();
-            if (v5 > uMaxPerception) uMaxPerception = v5;
+            int playerPerception = player.GetPerception();
+            if (playerPerception > maxPerception)
+                maxPerception = playerPerception;
         }
     }
-    if (uLevelMapStatsID >= MAP_FIRST && uLevelMapStatsID <= MAP_LAST)
-        result = uMaxPerception >= 2 * pMapStats->pInfos[uLevelMapStatsID].perceptionDifficulty;
-    else
-        result = 0;
+    if (engine->_currentLoadedMapId >= MAP_FIRST && engine->_currentLoadedMapId <= MAP_LAST)
+        result = maxPerception >= 2 * pMapStats->pInfos[engine->_currentLoadedMapId].perceptionDifficulty;
     return result;
 }
 
@@ -267,8 +263,8 @@ void Party::switchToNextActiveCharacter() {
     for (int i = 0; i < this->pCharacters.size(); i++) {
         if (this->pCharacters[i].CanAct() &&
             !this->pCharacters[i].timeToRecovery) {
-            if (v12 == 0 || this->pCharacters[i].uSpeedBonus > v8) {
-                v8 = this->pCharacters[i].uSpeedBonus;
+            if (v12 == 0 || this->pCharacters[i]._statBonuses[CHARACTER_ATTRIBUTE_SPEED] > v8) {
+                v8 = this->pCharacters[i]._statBonuses[CHARACTER_ATTRIBUTE_SPEED];
                 v12 = i + 1;
             }
         }
@@ -420,13 +416,13 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[0].uCurrentFace = 17;
     this->pCharacters[0].uPrevVoiceID = 17;
     this->pCharacters[0].uVoiceID = 17;
-    this->pCharacters[0].uMight = 30;
-    this->pCharacters[0].uIntelligence = 5;
-    this->pCharacters[0].uPersonality = 5;
-    this->pCharacters[0].uEndurance = 13;
-    this->pCharacters[0].uAccuracy = 13;
-    this->pCharacters[0].uSpeed = 14;
-    this->pCharacters[0].uLuck = 7;
+    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_MIGHT] = 30;
+    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 5;
+    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_PERSONALITY] = 5;
+    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_ENDURANCE] = 13;
+    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_ACCURACY] = 13;
+    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_SPEED] = 14;
+    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_LUCK] = 7;
     this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
     this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_ARMSMASTER] = CombinedSkillValue::novice();
     this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_BOW] = CombinedSkillValue::novice();
@@ -437,13 +433,13 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[1].uCurrentFace = 3;
     this->pCharacters[1].uPrevVoiceID = 3;
     this->pCharacters[1].uVoiceID = 3;
-    this->pCharacters[1].uMight = 13;
-    this->pCharacters[1].uIntelligence = 9;
-    this->pCharacters[1].uPersonality = 9;
-    this->pCharacters[1].uEndurance = 13;
-    this->pCharacters[1].uAccuracy = 13;
-    this->pCharacters[1].uSpeed = 13;
-    this->pCharacters[1].uLuck = 13;
+    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_MIGHT] = 13;
+    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 9;
+    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_PERSONALITY] = 9;
+    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_ENDURANCE] = 13;
+    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_ACCURACY] = 13;
+    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_SPEED] = 13;
+    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_LUCK] = 13;
     this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
     this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_STEALING] = CombinedSkillValue::novice();
     this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_DAGGER] = CombinedSkillValue::novice();
@@ -454,13 +450,13 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[2].uCurrentFace = 14;
     this->pCharacters[2].uPrevVoiceID = 14;
     this->pCharacters[2].uVoiceID = 14;
-    this->pCharacters[2].uMight = 12;
-    this->pCharacters[2].uIntelligence = 9;
-    this->pCharacters[2].uPersonality = 20;
-    this->pCharacters[2].uEndurance = 22;
-    this->pCharacters[2].uAccuracy = 7;
-    this->pCharacters[2].uSpeed = 13;
-    this->pCharacters[2].uLuck = 7;
+    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_MIGHT] = 12;
+    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 9;
+    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_PERSONALITY] = 20;
+    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_ENDURANCE] = 22;
+    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_ACCURACY] = 7;
+    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_SPEED] = 13;
+    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_LUCK] = 7;
     this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_ALCHEMY] = CombinedSkillValue::novice();
     this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
     this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_BODY] = CombinedSkillValue::novice();
@@ -469,15 +465,15 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[3].name = localization->GetString(LSTR_PC_NAME_ALEXIS);
     this->pCharacters[3].uPrevFace = 10;
     this->pCharacters[3].uCurrentFace = 10;
-    this->pCharacters[3].uEndurance = 13;
-    this->pCharacters[3].uAccuracy = 13;
-    this->pCharacters[3].uSpeed = 13;
     this->pCharacters[3].uPrevVoiceID = 10;
     this->pCharacters[3].uVoiceID = 10;
-    this->pCharacters[3].uMight = 5;
-    this->pCharacters[3].uIntelligence = 30;
-    this->pCharacters[3].uPersonality = 9;
-    this->pCharacters[3].uLuck = 7;
+    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_MIGHT] = 5;
+    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 30;
+    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_PERSONALITY] = 9;
+    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_ENDURANCE] = 13;
+    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_ACCURACY] = 13;
+    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_SPEED] = 13;
+    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_LUCK] = 7;
     this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
     this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR] = CombinedSkillValue::novice();
     this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_FIRE] = CombinedSkillValue::novice();
@@ -1068,7 +1064,6 @@ bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
     }
 
     if (!pItemTable->pItems[pItem->uItemID].iconName.empty()) {
-        auto texture = assets->getImage_ColorKey(pItemTable->pItems[pItem->uItemID].iconName);
         int playerId = hasActiveCharacter() ? (pParty->_activeCharacter - 1) : 0;
         for (int i = 0; i < pCharacters.size(); i++, playerId++) {
             if (playerId >= pCharacters.size()) {
@@ -1083,14 +1078,8 @@ bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
                     pCharacters[playerId].playReaction(SPEECH_FOUND_ITEM);
                 }
 
-                if (texture) {
-                    texture->Release();
-                }
                 return true;
             }
-        }
-        if (texture) {
-            texture->Release();
         }
     } else {
         logger->warning("Invalid picture_name detected ::addItem()");

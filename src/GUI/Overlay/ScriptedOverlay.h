@@ -10,7 +10,7 @@ class ScriptedOverlay: public Overlay {
  public:
     ScriptedOverlay(std::string_view name, sol::state_view &solState, sol::table luaOverlay);
     virtual ~ScriptedOverlay() override;
-    virtual void update(nk_context *context) override;
+    virtual void update() override;
 
  private:
     void _addFunctionToRegistry(sol::table &table, sol::reference& ref, std::string_view functionName);

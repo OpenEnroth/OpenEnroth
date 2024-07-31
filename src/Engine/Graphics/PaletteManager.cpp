@@ -9,7 +9,7 @@
 #include "Library/Color/Color.h"
 #include "Library/Logger/Logger.h"
 
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 
 PaletteManager *pPaletteManager = new PaletteManager;
 

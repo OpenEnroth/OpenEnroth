@@ -127,11 +127,11 @@ size_t AudioBaseDataSource::GetChannelCount() {
     return pCodecContext->channels;
 }
 
-std::shared_ptr<Blob> AudioBaseDataSource::GetNextBuffer() {
-    std::shared_ptr<Blob> buffer;
+Blob AudioBaseDataSource::GetNextBuffer() {
+    Blob buffer;
 
     if (!queue.empty()) {
-        buffer = queue.front();
+        buffer = std::move(queue.front());
         queue.pop();
     }
 
@@ -139,7 +139,7 @@ std::shared_ptr<Blob> AudioBaseDataSource::GetNextBuffer() {
 
     if (av_read_frame(pFormatContext, packet) >= 0) {
         if (avcodec_send_packet(pCodecContext, packet) >= 0) {
-            std::shared_ptr<Blob> result;
+            Blob result;
             AVFrame *frame = av_frame_alloc();
             int res = 0;
             while (res >= 0) {
@@ -157,13 +157,13 @@ std::shared_ptr<Blob> AudioBaseDataSource::GetNextBuffer() {
                     pConverter, dst_channels, frame->nb_samples,
                     (const uint8_t **)frame->data, frame->nb_samples);
 
-                std::shared_ptr<Blob> tmp_blob = std::make_shared<Blob>(Blob::fromMalloc(std::move(tmp_buf), tmp_size));
+                Blob tmp_blob = Blob::fromMalloc(std::move(tmp_buf), tmp_size);
 
                 if (got_samples > 0) {
                     if (!buffer) {
-                        buffer = tmp_blob;
+                        buffer = std::move(tmp_blob);
                     } else {
-                        queue.push(tmp_blob);
+                        queue.push(std::move(tmp_blob));
                     }
                 }
             }

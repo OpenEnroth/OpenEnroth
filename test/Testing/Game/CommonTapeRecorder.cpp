@@ -16,7 +16,7 @@
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIStatusBar.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 
 CommonTapeRecorder::CommonTapeRecorder(TestController *controller) : _controller(controller) {
     assert(controller);
@@ -75,8 +75,8 @@ TestTape<int> CommonTapeRecorder::deaths() {
     return custom([] { return pParty->uNumDeaths; });
 }
 
-TestTape<std::string> CommonTapeRecorder::map() {
-    return custom([] { return toLower(pCurrentMapName); });
+TestTape<MapId> CommonTapeRecorder::map() {
+    return custom([] { return engine->_currentLoadedMapId; });
 }
 
 TestTape<ScreenType> CommonTapeRecorder::screen() {
@@ -142,6 +142,10 @@ TestTape<int> CommonTapeRecorder::activeCharacterIndex() {
     return custom([] { return pParty->hasActiveCharacter() ? pParty->activeCharacterIndex() : 0; });
 }
 
+TestTape<bool> CommonTapeRecorder::questBit(QuestBit bit) {
+    return custom([bit] { return !!pParty->_questBits[bit]; });
+}
+
 TestMultiTape<SoundId> CommonTapeRecorder::sounds() {
     return _controller->recordFunctionTape<SoundId>(CALL_PLAY_SOUND);
 }
@@ -156,4 +160,8 @@ TestMultiTape<std::string> CommonTapeRecorder::messageBoxes() {
 
 TestMultiTape<std::string> CommonTapeRecorder::allGUIWindowsText() {
     return _controller->recordFunctionTape<std::string>(CALL_GUIWINDOW_DRAWTEXT);
+}
+
+TestMultiTape<SpecialAttackType> CommonTapeRecorder::specialAttacks() {
+    return _controller->recordFunctionTape<SpecialAttackType>(CALL_SPECIAL_ATTACK);
 }

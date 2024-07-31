@@ -14,6 +14,9 @@ on:
     types:
       - published
 
+env:
+  LLS_TAG: '3.9.1'
+
 jobs:
   check_style:
     runs-on: ubuntu-22.04
@@ -22,20 +25,36 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: recursive
-          ref: '${{ inputs.myCommit }}'
+          ref: '${{inputs.myCommit}}'
 
-      - name: Install Homebrew
-        run: |
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          echo "/home/linuxbrew/.linuxbrew/bin" >> $GITHUB_PATH
+      - name: Restore cached lua-language-server
+        id: lls-cache
+        uses: actions/cache@v4
+        with:
+          path: 'lua-language-server/build/bin'
+          key: 'lls-cache-${{env.LLS_TAG}}'
 
-      - name: Install lua-language-server
+      - name: Checkout lua-language-server
+        if: steps.lls-cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v3
+        with:
+          repository: 'LuaLS/lua-language-server'
+          path: 'lua-language-server'
+          ref: '3.9.1'
+
+      - name: Install ninja-build
+        if: steps.lls-cache.outputs.cache-hit != 'true'
+        uses: seanmiddleditch/gha-setup-ninja@v4
+
+      - name: Build lua-language-server
+        if: steps.lls-cache.outputs.cache-hit != 'true'
+        working-directory: lua-language-server
         run: |
-          /home/linuxbrew/.linuxbrew/bin/brew install -vd lua-language-server        
+          ./make.sh
 
       - name: Configure
         run: |
-          cmake -B build -DOE_USE_DUMMY_DEPENDENCIES=ON
+          cmake -B build -DOE_USE_DUMMY_DEPENDENCIES=ON -DOE_LLS_COMMAND=./lua-language-server/build/bin/lua-language-server
 
       - name: Check style
         working-directory: build

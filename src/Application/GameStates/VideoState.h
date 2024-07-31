@@ -1,27 +1,33 @@
 #pragma once
 
-#include <Library/Fsm/FSMState.h>
+#include <Library/Fsm/FsmState.h>
 #include <GUI/GUIEnums.h>
+#include <Media/Movie.h>
 
 #include <string>
 #include <memory>
 
-class IMovie;
-
-class VideoState : public FSMState {
+class VideoState : public FsmState {
  public:
-    explicit VideoState(std::string_view videoFileName);
-    virtual void update() override;
-    virtual void enter() override;
+    enum class Type {
+        VIDEO_LOGO,
+        VIDEO_INTRO
+    };
+    using enum Type;
+
+    explicit VideoState(Type type, std::string_view videoFileName);
+    virtual FsmAction update() override;
+    virtual FsmAction enter() override;
     virtual void exit() override;
 
  private:
     virtual bool mousePressEvent(const PlatformMouseEvent *event) override;
     virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
-    void _skipVideo();
 
+    Type _type;
     std::string _videoFileName;
-    std::shared_ptr<IMovie> _movie;
+    std::unique_ptr<IMovie> _movie;
     ScreenType _previousScreenType{};
     bool _isPaused{};
+    bool _skipVideo{};
 };

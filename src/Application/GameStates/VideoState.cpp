@@ -8,17 +8,22 @@
 
 #include <GUI/GUIWindow.h>
 
-VideoState::VideoState(std::string_view videoFileName) : _videoFileName(videoFileName) {
+VideoState::VideoState(VideoState::Type type, std::string_view videoFileName) : _type(type), _videoFileName(videoFileName) {
 }
 
-void VideoState::enter() {
-    if (engine->config->debug.NoVideo.value()) {
-        return;
+FsmAction VideoState::enter() {
+    _skipVideo = false;
+    _previousScreenType = current_screen_type;
+
+    if (engine->config->debug.NoVideo.value() ||
+        (engine->config->debug.NoIntro.value() && _type == Type::VIDEO_INTRO) ||
+        (engine->config->debug.NoLogo.value() && _type == Type::VIDEO_LOGO)) {
+        return FsmAction::transition("videoEnd");
     }
 
     _movie = pMediaPlayer->loadFullScreenMovie(_videoFileName.c_str());
     if (!_movie) {
-        return;
+        return FsmAction::transition("videoEnd");
     }
 
     // Stop the event timer and audio before playing a video
@@ -30,28 +35,26 @@ void VideoState::enter() {
     platform->setCursorShown(false);
 
     // Wish we could get rid of this type of screen states
-    _previousScreenType = current_screen_type;
     current_screen_type = SCREEN_VIDEO;
 
     // Actually, calling Play() does not play something but just setup some internal flags.
     _movie->Play();
+    return FsmAction::none();
 }
 
-void VideoState::update() {
-    if (!_movie)
-        executeTransition("videoEnd");
+FsmAction VideoState::update() {
+    if (!_movie || _skipVideo)
+        return FsmAction::transition("videoEnd");
 
     bool isOver = _movie->renderFrame();
     if (isOver)
-        executeTransition("videoEnd");
-}
+        return FsmAction::transition("videoEnd");
 
-void VideoState::_skipVideo() {
-    executeTransition("videoEnd");
+    return FsmAction::none();
 }
 
 void VideoState::exit() {
-    _movie = nullptr;
+    _movie.reset();
     // restore the screen type that was set before the video started
     current_screen_type = _previousScreenType;
     platform->setCursorShown(true);
@@ -59,14 +62,14 @@ void VideoState::exit() {
 
 bool VideoState::mousePressEvent(const PlatformMouseEvent *event) {
     // We skip the video if we press any mouse button
-    _skipVideo();
+    _skipVideo = true;
     return true;
 }
 
 bool VideoState::keyPressEvent(const PlatformKeyEvent *event) {
     // We skip the video if we press any key button
     if (!event->isAutoRepeat) {
-        _skipVideo();
+        _skipVideo = true;
         return true;
     }
     return false;

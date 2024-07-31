@@ -8,7 +8,7 @@
 #include "Library/Snapshots/SnapshotSerialization.h"
 
 #include "Utility/Streams/FileOutputStream.h"
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 
 #include "LodSnapshots.h"
 
@@ -18,8 +18,8 @@ LodWriter::LodWriter(std::string_view path, LodInfo info) {
     open(path, std::move(info));
 }
 
-LodWriter::LodWriter(OutputStream *stream, std::string_view path, LodInfo info) {
-    open(stream, path, std::move(info));
+LodWriter::LodWriter(OutputStream *stream, LodInfo info) {
+    open(stream, std::move(info));
 }
 
 LodWriter::~LodWriter() {
@@ -28,17 +28,16 @@ LodWriter::~LodWriter() {
 
 void LodWriter::open(std::string_view path, LodInfo info) {
     std::unique_ptr<OutputStream> ownedStream = std::make_unique<FileOutputStream>(path); // If this throws, no field is overwritten.
-    open(ownedStream.get(), path, std::move(info));
+    open(ownedStream.get(), std::move(info));
     _ownedStream = std::move(ownedStream);
 }
 
-void LodWriter::open(OutputStream *stream, std::string_view path, LodInfo info) {
+void LodWriter::open(OutputStream *stream, LodInfo info) {
     assert(stream);
 
     close();
 
     _stream = stream;
-    _path = path;
     _info = std::move(info);
 }
 
@@ -93,7 +92,6 @@ void LodWriter::close() {
     _files.clear(); // Important to release the Blobs first, as they might point into a file that we're about to overwrite...
     _ownedStream = {}; // ...here.
     _stream = {};
-    _path = {};
     _info = {};
 }
 
@@ -104,5 +102,5 @@ void LodWriter::write(std::string_view filename, const Blob &data) {
 void LodWriter::write(std::string_view filename, Blob &&data) {
     assert(isOpen());
 
-    _files.insert_or_assign(toLower(filename), std::move(data));
+    _files.insert_or_assign(ascii::toLower(filename), std::move(data));
 }

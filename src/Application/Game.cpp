@@ -17,7 +17,7 @@
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
@@ -39,7 +39,6 @@
 #include "Engine/Random/Random.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
-#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/FrameTableInc.h"
 #include "Engine/Time/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -81,18 +80,17 @@
 
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
-#include "Library/Fsm/FSM.h"
+#include "Library/Fsm/Fsm.h"
 
-#include "Utility/Format.h"
+#include "Utility/String/Ascii.h"
+#include "Utility/String/Format.h"
 #include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 
 #include "GameIocContainer.h"
 #include "GameWindowHandler.h"
 #include "GameMenu.h"
-#include "GameStates/GameFSMBuilder.h"
-
-void ShowMM7IntroVideo_and_LoadingScreen();
+#include "GameStates/GameFsmBuilder.h"
 
 void initDataPath(Platform *platform, std::string_view dataPath) {
     std::string missing_file;
@@ -133,11 +131,12 @@ int Game::run() {
     window->activate();
     ::eventLoop->processMessages(eventHandler);
 
-    std::unique_ptr<FSM> fsm = GameFSMBuilder::buildFSM();
-    GameWindowHandler* gameWindowHandler = ::application->component<GameWindowHandler>();
+    std::string_view startingState = "Start";
     // Need to have this do/while external loop till we remove entirely all the states
     do {
-        gameWindowHandler->addFSMEventHandler(fsm.get());
+        std::unique_ptr<Fsm> fsm = GameFsmBuilder::buildFsm(startingState);
+        GameWindowHandler *gameWindowHandler = ::application->component<GameWindowHandler>();
+        gameWindowHandler->addFsmEventHandler(fsm.get());
         while (!fsm->hasReachedExitState()) {
             render->ClearBlack();
             render->BeginScene2D();
@@ -152,14 +151,14 @@ int Game::run() {
 
             MessageLoopWithWait();
         }
-        gameWindowHandler->removeFSMEventHandler(fsm.get());
+        gameWindowHandler->removeFsmEventHandler(fsm.get());
 
-        // Here we're still running the rest of the loops as usual
+        // Here we're still running the rest of the loops as usual.
         uGameState = GAME_STATE_PLAYING;
         if (!loop()) {
             break;
         } else {
-            fsm->jumpToState("MainMenu");
+            startingState = "MainMenu";
         }
     } while (true);
 
@@ -191,7 +190,11 @@ bool Game::loop() {
 
             pParty->pPickedItem.uItemID = ITEM_NULL;
 
-            pCurrentMapName = _config->gameplay.StartingMap.value();
+            engine->_transitionMapId = pMapStats->GetMapInfo(_config->gameplay.StartingMap.value());
+
+            // TODO(Nik-RE-dev): should not be an assert but an exception or error message.
+            assert(engine->_transitionMapId != MAP_INVALID);
+
             bFlashQuestBook = true;
             pMediaPlayer->PlayFullscreenMovie("Intro Post");
             SaveNewGame();
@@ -235,43 +238,21 @@ bool Game::loop() {
     return true;
 }
 
-
-
-void ShowMM7IntroVideo_and_LoadingScreen() {
-    bGameoverLoop = true;
-
-    render->PresentBlackScreen();
-    if (!engine->config->debug.NoVideo.value()) {
-        if (!engine->config->debug.NoLogo.value()) {
-            pMediaPlayer->PlayFullscreenMovie("3dologo");
-            pMediaPlayer->PlayFullscreenMovie("new world logo");
-            pMediaPlayer->PlayFullscreenMovie("jvc");
-        }
-        if (!engine->config->debug.NoIntro.value()) {
-            pMediaPlayer->PlayFullscreenMovie("Intro");
-        }
-    }
-
-    bGameoverLoop = false;
-}
-
-
-
-
 GraphicsImage *gamma_preview_image = nullptr;  // 506E40
 
 void Game_StartDialogue(int actor_id) {
     if (pParty->hasActiveCharacter()) {
         engine->_messageQueue->clear();
 
-        initializeNPCDialogue(&pActors[actor_id], true);
+        initializeNPCDialogue(pActors[actor_id].npcId, true, &pActors[actor_id]);
     }
 }
 
 void Game_StartHirelingDialogue(int hireling_id) {
     assert(hireling_id == 0 || hireling_id == 1);
 
-    if (bNoNPCHiring || current_screen_type != SCREEN_GAME) return;
+    if (isHirelingsBlockedOnMap(engine->_currentLoadedMapId) || current_screen_type != SCREEN_GAME)
+        return;
 
     engine->_messageQueue->clear();
 
@@ -283,9 +264,7 @@ void Game_StartHirelingDialogue(int hireling_id) {
         if (buf.GetSacrificeStatus(index) && buf.GetSacrificeStatus(index)->inProgress)
             return; // Hireling is being dark sacrificed.
 
-        Actor actor;
-        actor.npcId += -1 - pParty->hirelingScrollPosition - hireling_id;
-        initializeNPCDialogue(&actor, true);
+        initializeNPCDialogue(-1 - pParty->hirelingScrollPosition - hireling_id, true);
     }
 }
 
@@ -349,16 +328,13 @@ void Game::processQueuedMessages() {
     int uNumSeconds;     // [sp+24h] [bp-5D8h]@18
     UIMessageType uMessage;  // [sp+2Ch] [bp-5D0h]@7
     int uMessageParam2;            // [sp+30h] [bp-5CCh]@7
-    std::string pOut;                // [sp+BCh] [bp-540h]@370
+    MapId travelMapId;
     std::array<MagicSchool, 9> spellbookPages = {};                  // [sp+158h] [bp-4A4h]@652
     int currHour;
     bool playButtonSoundOnEscape = true;
 
     if (bDialogueUI_InitializeActor_NPC_ID) {
-        // Actor::Actor(&actor);
-        Actor actor = Actor();
-        actor.npcId = bDialogueUI_InitializeActor_NPC_ID;
-        initializeNPCDialogue(&actor, false);
+        initializeNPCDialogue(bDialogueUI_InitializeActor_NPC_ID, false);
         bDialogueUI_InitializeActor_NPC_ID = 0;
     }
 
@@ -761,7 +737,7 @@ void Game::processQueuedMessages() {
                 GameUI_DrawHiredNPCs();
                 continue;
 
-            case UIMSG_TransitionUI_Confirm:
+            case UIMSG_OnIndoorEntryExit:
                 engine->_messageQueue->clear();
                 playButtonSoundOnEscape = false;
                 // PID_INVALID was used (exclusive sound)
@@ -771,13 +747,14 @@ void Game::processQueuedMessages() {
                 //    uCurrentHouse_Animation,
                 //    HouseSound_NotEnoughMoney);
 
-                if (pMovie_Track) pMediaPlayer->Unload();
+                if (pMovie_Track)
+                    pMediaPlayer->Unload();
                 DialogueEnding();
 
                 if (engine->_teleportPoint.isValid()) {
                     if (!engine->_teleportPoint.getTeleportMap().starts_with('0')) {
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
-                        bool leavingArena = noCaseEquals(pCurrentMapName, "d05.blv");
+                        bool leavingArena = engine->_currentLoadedMapId == MAP_ARENA;
                         onMapLeave();
                         Transition_StopSound_Autosave(engine->_teleportPoint.getTeleportMap(), MAP_START_POINT_PARTY);
                         if (leavingArena)
@@ -796,9 +773,10 @@ void Game::processQueuedMessages() {
                 back_to_game();
                 onEscape();
                 continue;
-            case UIMSG_TransitionWindowCloseBtn:
+            case UIMSG_CancelIndoorEntryExit:
                 PlayButtonClickSound();
                 pMediaPlayer->Unload();
+                engine->_teleportPoint.invalidate();
                 DialogueEnding();
                 back_to_game();
                 onEscape();
@@ -814,9 +792,8 @@ void Game::processQueuedMessages() {
 
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 // encounter_index = (NPCData *)getTravelTime();
-                pOutdoor->level_filename = pCurrentMapName;
-                if (!engine->IsUnderwater() && pParty->bFlying ||
-                    pOutdoor->GetTravelDestination(pParty->pos.x, pParty->pos.y, &pOut) != 1) {
+                travelMapId = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
+                if (!engine->IsUnderwater() && pParty->bFlying || travelMapId == MAP_INVALID) {
                     PlayButtonClickSound();
                     if (pParty->pos.x < -22528)
                         pParty->pos.x = -22528;
@@ -829,13 +806,13 @@ void Game::processQueuedMessages() {
                     DialogueEnding();
                     current_screen_type = SCREEN_GAME;
                 } else {
-                    CastSpellInfoHelpers::cancelSpellCastInProgress();
                     DialogueEnding();
+                    pAudioPlayer->stopSounds();
                     pEventTimer->setPaused(true);
-                    pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
-                    pGameLoadingUI_ProgressBar->Progress();
                     AutoSave();
-                    pGameLoadingUI_ProgressBar->Progress();
+                    uGameState = GAME_STATE_CHANGE_LOCATION;
+                    engine->_transitionMapId = travelMapId;
+                    // TODO(Nik-RE-dev): rest and heal uncoditionally even if party does not have food?
                     restAndHeal(Duration::fromDays(getTravelTime()));
                     if (pParty->GetFood() > 0) {
                         pParty->restAndHeal();
@@ -850,34 +827,9 @@ void Game::processQueuedMessages() {
                             character.SetCondition(CONDITION_WEAK, 0);
                         ++pParty->days_played_without_rest;
                     }
-                    pSpriteFrameTable->ResetLoadedFlags();
-                    pCurrentMapName = pOut;
-                    Level_LoadEvtAndStr(pCurrentMapName.substr(0, pCurrentMapName.rfind('.')));
-                    _decalBuilder->Reset(0);
-                    uLevelMapStatsID = pMapStats->GetMapInfo(pCurrentMapName);
-
-                    bNoNPCHiring = 0;
-
-                    engine->SetUnderwater(Is_out15odm_underwater());
-
-                    if (Is_out15odm_underwater() || (pCurrentMapName == "d47.blv"))
-                        bNoNPCHiring = 1;
-                    PrepareToLoadODM(1u, (ODMRenderParams *)1);
-                    bDialogueUI_InitializeActor_NPC_ID = 0;
-                    onMapLoad();
-                    pOutdoor->SetFog();
-                    TeleportToStartingPoint(uLevel_StartingPointType);
-                    bool bOnWater = false;
-                    pParty->pos.z = GetTerrainHeightsAroundParty2(
-                        pParty->pos.x, pParty->pos.y, &bOnWater, 0);
-                    pParty->uFallStartZ = pParty->pos.z;
-                    engine->_461103_load_level_sub();
-                    pEventTimer->setPaused(false);
-                    current_screen_type = SCREEN_GAME;
-                    pGameLoadingUI_ProgressBar->Release();
                 }
                 continue;
-            case UIMSG_CHANGE_LOCATION_ClickCancelBtn:
+            case UIMSG_CancelTravelByFoot:
                 PlayButtonClickSound();
                 if (pParty->pos.x < -22528)
                     pParty->pos.x = -22528;
@@ -950,7 +902,7 @@ void Game::processQueuedMessages() {
                 playButtonSoundOnEscape = false;
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 AutoSave();
-                pCurrentMapName = pMapStats->pInfos[houseNpcs[currentHouseNpc].targetMapID].fileName;
+                engine->_transitionMapId = houseNpcs[currentHouseNpc].targetMapID;
                 dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
@@ -958,7 +910,7 @@ void Game::processQueuedMessages() {
                 v53 = std::to_underlying(buildingTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
                 if (v53 < 0) {
                     v54 = std::abs(v53) - 1;
-                    engine->_teleportPoint.setTeleportTarget(Vec3i(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
+                    engine->_teleportPoint.setTeleportTarget(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
                 }
                 houseDialogPressEscape();
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
@@ -1011,8 +963,8 @@ void Game::processQueuedMessages() {
                 pParty->_viewPitch = 0;
 
                 // change map to Harmondale
-                pCurrentMapName = "out02.odm";
-                engine->_teleportPoint.setTeleportTarget(pParty->pos.toInt(), pParty->_viewYaw, pParty->_viewPitch, 0);
+                engine->_transitionMapId = MAP_HARMONDALE;
+                engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
                 PrepareWorld(1);
                 Actor::InitializeActors();
 
@@ -1035,9 +987,9 @@ void Game::processQueuedMessages() {
                 std::string status_string;
                 if (frameTableTxtLine.uPropCount == 1) {
                     MapId map_index = static_cast<MapId>(atoi(frameTableTxtLine.pProperties[0]));
-                    if (map_index < MAP_FIRST || map_index > MAP_LAST) continue;
-                    std::string map_name = pMapStats->pInfos[map_index].fileName;
-                    pCurrentMapName = map_name;
+                    if (map_index < MAP_FIRST || map_index > MAP_LAST)
+                        continue;
+                    engine->_transitionMapId = map_index;
                     dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
                     uGameState = GAME_STATE_CHANGE_LOCATION;
                     onMapLeave();
@@ -1245,7 +1197,7 @@ void Game::processQueuedMessages() {
                     for (Character &character : pParty->pCharacters) {
                         character.conditions.Set(CONDITION_SLEEP, pParty->GetPlayingTime());
                     }
-                    MapId mapIdx = pMapStats->GetMapInfo(pCurrentMapName);
+                    MapId mapIdx = engine->_currentLoadedMapId;
                     assert(mapIdx != MAP_INVALID);
                     // Was this, which made exactly zero sense:
                     // if (mapIdx == MAP_INVALID)
@@ -1653,7 +1605,7 @@ void Game::processQueuedMessages() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 continue;
             case UIMSG_QuickSave:
-                if (pCurrentMapName == "d05.blv") {
+                if (engine->_currentLoadedMapId == MAP_ARENA) {
                     engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_ARENA);
                     pAudioPlayer->playUISound(SOUND_error);
                 } else {
@@ -1692,9 +1644,8 @@ void Game::onPressSpace() {
 }
 
 void Game::gameLoop() {
-    std::string pLocationName;  // [sp-4h] [bp-68h]@74
-    bool bLoading;              // [sp+10h] [bp-54h]@1
-    std::string Source;            // [sp+44h] [bp-20h]@76
+    bool bLoading;
+    MapId mapid;
 
     bLoading = sCurrentMenuID == MENU_LoadingProcInMainMenu;
     SetCurrentMenuID(MENU_NONE);
@@ -1718,8 +1669,7 @@ void Game::gameLoop() {
 
         DoPrepareWorld(bLoading, 1);
         pEventTimer->setPaused(false);
-        dword_6BE364_game_settings_1 |=
-            GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME;
+        dword_6BE364_game_settings_1 |= GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME;
         // uGame_if_0_else_ui_id__11_save__else_load__8_drawSpellInfoPopup__22_final_window__26_keymapOptions__2_options__28_videoOptions
         // = 0;
         current_screen_type = SCREEN_GAME;
@@ -1850,20 +1800,21 @@ void Game::gameLoop() {
                 if (pParty->_questBits[QBIT_ESCAPED_EMERALD_ISLE]) {
                     pParty->pos = Vec3f(-17331, 12547, 465); // respawn in harmondale
                     pParty->_viewYaw = 0;
-                    pLocationName = "out02.odm";
+                    mapid = MAP_HARMONDALE;
                 } else {
                     pParty->pos = Vec3f(12552, 1816, 193); // respawn on emerald isle
                     pParty->_viewYaw = 512;
-                    pLocationName = _config->gameplay.StartingMap.value();
+                    mapid = pMapStats->GetMapInfo(_config->gameplay.StartingMap.value());
+                    // TODO(Nik-RE-dev): should not be an assert but an exception or error message.
+                    assert(mapid != MAP_INVALID);
                 }
-                Source = pLocationName;
                 pParty->uFallStartZ = pParty->pos.z;
                 pParty->_viewPitch = 0;
                 pParty->velocity = Vec3f();
                 // change map
-                if (pCurrentMapName != Source) {
-                    pCurrentMapName = Source;
-                    engine->_teleportPoint.setTeleportTarget(pParty->pos.toInt(), pParty->_viewYaw, pParty->_viewPitch, 0);
+                if (engine->_currentLoadedMapId != mapid) {
+                    engine->_transitionMapId = mapid;
+                    engine->_teleportPoint.setTeleportTarget(pParty->pos, pParty->_viewYaw, pParty->_viewPitch, 0);
                     PrepareWorld(1);
                 }
                 pMiscTimer->setPaused(false);

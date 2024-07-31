@@ -4,5 +4,5 @@ local Log = require "bindings.log"
 ---@param errorMessage string
 ---@diagnostic disable-next-line: name-style-check
 _globalErrorHandler = function (errorMessage)
-    Log.error(errorMessage)
+    Log.error(debug.traceback(errorMessage))
 end

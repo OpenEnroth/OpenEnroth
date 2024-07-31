@@ -110,13 +110,25 @@ void EngineTracePlayer::checkState(const EventTraceGameState &expectedState, boo
                         where, _tracePath, expectedState.characters.size(), state.characters.size());
     }
     for (size_t i = 0; i < state.characters.size(); i++) {
-        if (state.characters[i].hp != expectedState.characters[i].hp) {
-            throw Exception("Unexpected hp of character #{} at the {} of trace '{}': expected {}, got {}",
-                            i, where, _tracePath, expectedState.characters[i].hp, state.characters[i].hp);
-        }
-        if (state.characters[i].mp != expectedState.characters[i].mp) {
-            throw Exception("Unexpected mp of character #{} at the {} of trace '{}': expected {}, got {}",
-                            i, where, _tracePath, expectedState.characters[i].mp, state.characters[i].mp);
+        static constexpr std::initializer_list<std::pair<int EventTraceCharacterState::*, const char *>> attributes = {
+            {&EventTraceCharacterState::hp, "hp"},
+            {&EventTraceCharacterState::mp, "mp"},
+            {&EventTraceCharacterState::might, "might"},
+            {&EventTraceCharacterState::intelligence, "intelligence"},
+            {&EventTraceCharacterState::personality, "personality"},
+            {&EventTraceCharacterState::endurance, "endurance"},
+            {&EventTraceCharacterState::accuracy, "accuracy"},
+            {&EventTraceCharacterState::speed, "speed"},
+            {&EventTraceCharacterState::luck, "luck"},
+        };
+
+        for (const auto &[attribute, attributeName] : attributes) {
+            int expected = expectedState.characters[i].*attribute;
+            int actual = state.characters[i].*attribute;
+            if (expected != actual) {
+                throw Exception("Unexpected {} of character #{} at the {} of trace '{}': expected {}, got {}",
+                                attributeName, i, where, _tracePath, expected, actual);
+            }
         }
     }
 }

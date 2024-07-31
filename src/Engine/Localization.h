@@ -12,7 +12,7 @@
 #include "Engine/PartyEnums.h"
 
 #include "Utility/IndexedArray.h"
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 
 // TODO(captainurist): #enum
 #define LSTR_AC                               0   // "AC"
@@ -438,8 +438,9 @@
 #define LSTR_RECOVERY_TIME_NA               682  // "Recovery time: N/A"
 #define LSTR_WAND_ALREADY_CHARGED           683  // "Wand already charged!"
 #define LSTR_ENERGY                         684  // "Energy"
+#define LSTR_IMMOLATION_DAMAGE              685  // "Immolation deals %d damage to %d target(s)
 
-#define MAX_LOC_STRINGS MM7_LOC_STRINGS + 8
+#define MAX_LOC_STRINGS MM7_LOC_STRINGS + 9
 
 class Localization {
  public:

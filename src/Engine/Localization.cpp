@@ -1,12 +1,15 @@
 #include "Localization.h"
 
+#include <cstring>
 #include <string>
+#include <vector>
 
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
 #include "Engine/GameResourceManager.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
+#include "Utility/String/Split.h"
 
 Localization *localization = nullptr;
 
@@ -78,6 +81,8 @@ bool Localization::Initialize() {
         this->localization_strings[LSTR_WAND_ALREADY_CHARGED] = "Wand already charged!";
     if (this->localization_strings[LSTR_ENERGY].empty())
         this->localization_strings[LSTR_ENERGY] = "Energy";
+    if (this->localization_strings[LSTR_IMMOLATION_DAMAGE].empty())
+        this->localization_strings[LSTR_IMMOLATION_DAMAGE] = "Immolation deals %d damage to %d target(s)";
 
     InitializeMm6ItemCategories();
 
@@ -422,7 +427,7 @@ void Localization::InitializeAttributeNames() {
     strtok(this->attribute_desc_raw.data(), "\r");
     for (int i = 0; i < 26; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
-        auto tokens = splitString(test_string, '\t');
+        std::vector<std::string_view> tokens = split(test_string, '\t');
         assert(tokens.size() == 2 && "Invalid number of tokens");
         switch (i) {
             case 0:

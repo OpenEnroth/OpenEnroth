@@ -8,7 +8,6 @@
 
 #include "GUI/GUIButton.h"
 
-#include "Io/Mouse.h"
 #include "Io/KeyboardInputHandler.h"
 
 void GUIWindow_Inventory::Update() {

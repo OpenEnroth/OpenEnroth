@@ -6,13 +6,13 @@
 #include <vector>
 #include <string>
 
-#include <glob/glob.h> // NOLINT: not a C system include.
+#include <glob/glob.hpp> // NOLINT: not a C system header.
 
 #include "Application/GamePathResolver.h"
 
 #include "Library/Cli/CliApp.h"
 
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 
 OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     OpenEnrothOptions result;
