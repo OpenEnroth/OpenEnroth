@@ -400,7 +400,5 @@ var searchData=
   ['lstr_5fyou_5fwon_397',['LSTR_YOU_WON',['../Localization_8h.html#ad85d50e7581b6939443f4bbad9db27a8',1,'Localization.h']]],
   ['lstr_5fyoure_5fdrowning_398',['LSTR_YOURE_DROWNING',['../Localization_8h.html#abee594bf70bbbe012d8b00aa812e6771',1,'Localization.h']]],
   ['lstr_5fzoom_5fin_399',['LSTR_ZOOM_IN',['../Localization_8h.html#a577ea6a1442bf43ab227f8fc95a8b70a',1,'Localization.h']]],
-  ['lstr_5fzoom_5fout_400',['LSTR_ZOOM_OUT',['../Localization_8h.html#a4d5b5c0da0e5e2a1c31ca245962a5b75',1,'Localization.h']]],
-  ['lua_5fcheck_5fret_401',['lua_check_ret',['../NuklearLegacyBindings_8cpp.html#a866e79e85e70be1fb6fe49e708f21b63',1,'NuklearLegacyBindings.cpp']]],
-  ['lua_5fforeach_402',['lua_foreach',['../NuklearLegacyBindings_8cpp.html#ae7c1ec4a95f8b65957124ca9aac05c6e',1,'NuklearLegacyBindings.cpp']]]
+  ['lstr_5fzoom_5fout_400',['LSTR_ZOOM_OUT',['../Localization_8h.html#a4d5b5c0da0e5e2a1c31ca245962a5b75',1,'Localization.h']]]
 ];

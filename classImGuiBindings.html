@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: context Struct Reference</title>
+<title>OpenEnroth: ImGuiBindings Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;149cf5b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c46a99d</span>
    </div>
   </td>
  </tr>
@@ -70,50 +70,59 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structcontext-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">context Struct Reference</div></div>
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="classImGuiBindings-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">ImGuiBindings Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;ImGuiBindings.h&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a5005d3800f027145a9522c05938095b5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; struct <a class="el" href="structimg.html">img</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcontext.html#a5005d3800f027145a9522c05938095b5">imgs</a></td></tr>
-<tr class="separator:a5005d3800f027145a9522c05938095b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acdeb9daa97139c45ce94ed3236e20471"><td class="memItemLeft" align="right" valign="top">std::vector&lt; struct <a class="el" href="structnk__tex__font.html">nk_tex_font</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structcontext.html#acdeb9daa97139c45ce94ed3236e20471">fonts</a></td></tr>
-<tr class="separator:acdeb9daa97139c45ce94ed3236e20471"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:ad000dd593d3a7ec0dab5a434563d0548"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classImGuiBindings.html#ad000dd593d3a7ec0dab5a434563d0548">Init</a> (sol::state_view &amp;solState, sol::table &amp;table)</td></tr>
+<tr class="separator:ad000dd593d3a7ec0dab5a434563d0548"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="acdeb9daa97139c45ce94ed3236e20471" name="acdeb9daa97139c45ce94ed3236e20471"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acdeb9daa97139c45ce94ed3236e20471">&#9670;&#160;</a></span>fonts</h2>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ad000dd593d3a7ec0dab5a434563d0548" name="ad000dd593d3a7ec0dab5a434563d0548"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad000dd593d3a7ec0dab5a434563d0548">&#9670;&#160;</a></span>Init()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;struct <a class="el" href="structnk__tex__font.html">nk_tex_font</a> *&gt; context::fonts</td>
+          <td class="memname">void ImGuiBindings::Init </td>
+          <td>(</td>
+          <td class="paramtype">sol::state_view &amp;&#160;</td>
+          <td class="paramname"><em>solState</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">sol::table &amp;&#160;</td>
+          <td class="paramname"><em>table</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a5005d3800f027145a9522c05938095b5" name="a5005d3800f027145a9522c05938095b5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5005d3800f027145a9522c05938095b5">&#9670;&#160;</a></span>imgs</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt;struct <a class="el" href="structimg.html">img</a> *&gt; context::imgs</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
-<li>src/Scripting/<a class="el" href="NuklearLegacyBindings_8cpp.html">NuklearLegacyBindings.cpp</a></li>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>src/Scripting/<a class="el" href="ImGuiBindings_8h.html">ImGuiBindings.h</a></li>
+<li>src/Scripting/<a class="el" href="ImGuiBindings_8cpp.html">ImGuiBindings.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

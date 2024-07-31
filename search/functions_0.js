@@ -68,6 +68,5 @@ var searchData=
   ['_5fset_5fortho_5fmodelview_65',['_set_ortho_modelview',['../classOpenGLRenderer.html#a8517f3bab1f58716ae3879bd7a3f240c',1,'OpenGLRenderer']]],
   ['_5fset_5fortho_5fprojection_66',['_set_ortho_projection',['../classOpenGLRenderer.html#aa516d829bf373f6bba13a3086bb1401d',1,'OpenGLRenderer']]],
   ['_5fseterrorhandler_67',['_setErrorHandler',['../classScriptedOverlay.html#a3ef8e840e5eb9c371b54157798528108',1,'ScriptedOverlay']]],
-  ['_5fshutdownimgui_68',['_shutdownImGui',['../classOpenGLRenderer.html#a053263b49947156e648f67f20795d21c',1,'OpenGLRenderer']]],
-  ['_5fupdate_69',['_update',['../classOverlaySystem.html#a42ec2a5b9d03b1516b400174f605ff39',1,'OverlaySystem']]]
+  ['_5fshutdownimgui_68',['_shutdownImGui',['../classOpenGLRenderer.html#a053263b49947156e648f67f20795d21c',1,'OpenGLRenderer']]]
 ];

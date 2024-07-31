@@ -6,7 +6,5 @@ var searchData=
   ['lodfileformat_3',['LodFileFormat',['../LodFormatEnums_8h.html#ab23e5f0e74d06865211ebb5098f88a55',1,'LodFormatEnums.h']]],
   ['lodopenflag_4',['LodOpenFlag',['../LodEnums_8h.html#ae7c808b386c26abf59f5c297772dc9f6',1,'LodEnums.h']]],
   ['lodversion_5',['LodVersion',['../LodEnums_8h.html#a63d4571b1e87db9efa0a36b67d764103',1,'LodEnums.h']]],
-  ['loglevel_6',['LogLevel',['../LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9',1,'LogEnums.h']]],
-  ['lua_5fnk_5fcolor_5ftype_7',['lua_nk_color_type',['../NuklearLegacyBindings_8h.html#ad5c43e544004db1243bbc5672150b1ff',1,'NuklearLegacyBindings.h']]],
-  ['lua_5fnk_5fstyle_5ftype_8',['lua_nk_style_type',['../NuklearLegacyBindings_8h.html#ac0d970bebe8aebb1675e0c626f381e4a',1,'NuklearLegacyBindings.h']]]
+  ['loglevel_6',['LogLevel',['../LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9',1,'LogEnums.h']]]
 ];

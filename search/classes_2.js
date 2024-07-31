@@ -48,6 +48,5 @@ var searchData=
   ['configpatch_45',['ConfigPatch',['../classConfigPatch.html',1,'']]],
   ['configpatchentry_46',['ConfigPatchEntry',['../structConfigPatchEntry.html',1,'']]],
   ['configsection_47',['ConfigSection',['../classConfigSection.html',1,'']]],
-  ['context_48',['context',['../structcontext.html',1,'']]],
-  ['contexttag_49',['ContextTag',['../classContextTag.html',1,'']]]
+  ['contexttag_48',['ContextTag',['../classContextTag.html',1,'']]]
 ];

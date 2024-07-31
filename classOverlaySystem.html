@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;149cf5b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c46a99d</span>
    </div>
   </td>
  </tr>
@@ -72,14 +72,13 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
-<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classOverlaySystem-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">OverlaySystem Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p>An <a class="el" href="classOverlay.html">Overlay</a> is a screen built in Immediate Mode GUI ( nuklear ) which is displayed on top of any other ui and it's mainly used for debug purposes ( Console, Render Stats, Debug View Buttons, etc... ).  
+<p>An <a class="el" href="classOverlay.html">Overlay</a> is a screen built in Immediate Mode GUI ( imgui ) which is displayed on top of any other ui and it's mainly used for debug purposes ( Console, Render Stats, Debug View Buttons, etc... ).  
  <a href="classOverlaySystem.html#details">More...</a></p>
 
 <p><code>#include &lt;OverlaySystem.h&gt;</code></p>
@@ -106,11 +105,6 @@ Static Public Attributes</h2></td></tr>
 <tr class="memitem:ad4131de87a4b8ac0c56a22da605612a2"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classLogCategory.html">LogCategory</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOverlaySystem.html#ad4131de87a4b8ac0c56a22da605612a2">OverlayLogCategory</a></td></tr>
 <tr class="separator:ad4131de87a4b8ac0c56a22da605612a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
-Private Member Functions</h2></td></tr>
-<tr class="memitem:a42ec2a5b9d03b1516b400174f605ff39"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOverlaySystem.html#a42ec2a5b9d03b1516b400174f605ff39">_update</a> ()</td></tr>
-<tr class="separator:a42ec2a5b9d03b1516b400174f605ff39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a917e66319ca8c5368942021b6d7bc893"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="classTransparentString.html">TransparentString</a>, std::unique_ptr&lt; <a class="el" href="classOverlay.html">Overlay</a> &gt;, <a class="el" href="structTransparentStringHash.html">TransparentStringHash</a>, <a class="el" href="structTransparentStringEquals.html">TransparentStringEquals</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOverlaySystem.html#a917e66319ca8c5368942021b6d7bc893">_overlays</a></td></tr>
@@ -119,15 +113,13 @@ Private Attributes</h2></td></tr>
 <tr class="separator:ac7b3fb4266d5b67d52e795aaf708233e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab172446864612438a77b04c5d16180d8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPlatformApplication.html">PlatformApplication</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOverlaySystem.html#ab172446864612438a77b04c5d16180d8">_application</a></td></tr>
 <tr class="separator:ab172446864612438a77b04c5d16180d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50c53583eadd78d400d2339704d0698f"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; nk_context &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOverlaySystem.html#a50c53583eadd78d400d2339704d0698f">_nuklearContext</a></td></tr>
-<tr class="separator:a50c53583eadd78d400d2339704d0698f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa79a7af67dc747bb43fef077eb9bf10e"><td class="memItemLeft" align="right" valign="top">std::function&lt; void()&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOverlaySystem.html#aa79a7af67dc747bb43fef077eb9bf10e">_unregisterDependencies</a></td></tr>
 <tr class="separator:aa79a7af67dc747bb43fef077eb9bf10e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e2cced875a5943b332ac0bba962aed5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOverlaySystem.html#a0e2cced875a5943b332ac0bba962aed5">_isEnabled</a> {}</td></tr>
 <tr class="separator:a0e2cced875a5943b332ac0bba962aed5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p >An <a class="el" href="classOverlay.html">Overlay</a> is a screen built in Immediate Mode GUI ( nuklear ) which is displayed on top of any other ui and it's mainly used for debug purposes ( Console, Render Stats, Debug View Buttons, etc... ). </p>
+<div class="textblock"><p >An <a class="el" href="classOverlay.html">Overlay</a> is a screen built in Immediate Mode GUI ( imgui ) which is displayed on top of any other ui and it's mainly used for debug purposes ( Console, Render Stats, Debug View Buttons, etc... ). </p>
 <p >The <a class="el" href="classOverlay.html">Overlay</a> System is the class responsible to keep track of all the registered Overlays and update them accordingly. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a2db6fc9a7ade60f357c28a850bf60334" name="a2db6fc9a7ade60f357c28a850bf60334"></a>
@@ -176,31 +168,6 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a42ec2a5b9d03b1516b400174f605ff39" name="a42ec2a5b9d03b1516b400174f605ff39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a42ec2a5b9d03b1516b400174f605ff39">&#9670;&#160;</a></span>_update()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void OverlaySystem::_update </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="adc6a2fea70a5c196ce4d0ae8053bd664" name="adc6a2fea70a5c196ce4d0ae8053bd664"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adc6a2fea70a5c196ce4d0ae8053bd664">&#9670;&#160;</a></span>addOverlay()</h2>
 
@@ -333,28 +300,6 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">bool OverlaySystem::_isEnabled {}</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a50c53583eadd78d400d2339704d0698f" name="a50c53583eadd78d400d2339704d0698f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a50c53583eadd78d400d2339704d0698f">&#9670;&#160;</a></span>_nuklearContext</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt;nk_context&gt; OverlaySystem::_nuklearContext</td>
         </tr>
       </table>
   </td>
