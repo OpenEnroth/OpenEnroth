@@ -28,7 +28,6 @@ struct Polygon;
 struct DecalBuilder;
 struct BloodsplatContainer;
 struct SpellFxRenderer;
-class Nuklear;
 class Vis;
 class ParticleEngine;
 struct ClippingFunctions;

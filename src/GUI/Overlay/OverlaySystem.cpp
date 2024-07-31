@@ -4,13 +4,11 @@
 #include <utility>
 
 #include <imgui/imgui.h> // NOLINT: not a C system header.
-#include <nuklear_config.h> // NOLINT: not a C system header.
 
 #include "Application/GameConfig.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
-#include "Scripting/NuklearLegacyBindings.h"
 
 #include "Overlay.h"
 #include "OverlayEventHandler.h"
@@ -20,9 +18,7 @@ LogCategory OverlaySystem::OverlayLogCategory("Overlay");
 OverlaySystem::OverlaySystem(Renderer &renderer, PlatformApplication &platformApplication)
     : _renderer(renderer)
     , _application(platformApplication) {
-    _nuklearContext = std::make_unique<nk_context>();
-    _application.installComponent(std::make_unique<OverlayEventHandler>(_nuklearContext.get()));
-    NuklearLegacyBindings::setContext(_nuklearContext.get());
+    _application.installComponent(std::make_unique<OverlayEventHandler>());
 }
 
 OverlaySystem::~OverlaySystem() {
@@ -43,30 +39,15 @@ void OverlaySystem::removeOverlay(std::string_view name) {
 }
 
 void OverlaySystem::drawOverlays() {
-    _update();
-    _renderer.drawOverlays(_nuklearContext.get());
-
-    if (_isEnabled) {
-        _renderer.beginOverlays();
-        //ImGui::ShowDemoWindow();
-        _renderer.endOverlays();
-    }
-}
-
-void OverlaySystem::_update() {
     if (!_isEnabled) {
         return;
     }
 
-    auto context = _nuklearContext.get();
-
-    if (context->style.font != nullptr) {
-        nk_input_end(context);
-        for (auto &&[name, overlay] : _overlays) {
-            overlay->update(context);
-        }
-        nk_input_begin(context);
+    _renderer.beginOverlays();
+    for (auto &&[name, overlay] : _overlays) {
+        overlay->update();
     }
+    _renderer.endOverlays();
 }
 
 bool OverlaySystem::isEnabled() const {
