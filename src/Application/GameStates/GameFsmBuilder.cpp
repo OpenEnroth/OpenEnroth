@@ -8,6 +8,7 @@
 
 #include "VideoState.h"
 #include "StartState.h"
+#include "LoadStep2State.h"
 
 std::unique_ptr<Fsm> GameFsmBuilder::buildFsm() {
     FsmBuilder fsmBuilder;
@@ -31,5 +32,8 @@ void GameFsmBuilder::_buildIntroVideoSequence(FsmBuilder &builder) {
         .on("videoEnd").jumpTo("IntroVideo")
 
     .state<VideoState>("IntroVideo", VideoState::VIDEO_INTRO, "Intro")
-        .on("videoEnd").exitFsm();
+        .on("videoEnd").jumpTo("LoadStep2")
+
+    .state<LoadStep2State>("LoadStep2")
+        .on("done").exitFsm();
 }
