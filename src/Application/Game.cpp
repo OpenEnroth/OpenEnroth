@@ -92,8 +92,6 @@
 #include "GameMenu.h"
 #include "GameStates/GameFsmBuilder.h"
 
-void ShowMM7IntroVideo_and_LoadingScreen();
-
 void initDataPath(Platform *platform, std::string_view dataPath) {
     std::string missing_file;
 
@@ -133,7 +131,7 @@ int Game::run() {
     window->activate();
     ::eventLoop->processMessages(eventHandler);
 
-    // Right now This Fsm is used only to show the intro videos as a proof of concept
+    // This FSM is used only to show the intro videos and perform the second initialization
     std::unique_ptr<Fsm> fsm = GameFsmBuilder::buildFsm();
     GameWindowHandler* gameWindowHandler = ::application->component<GameWindowHandler>();
     gameWindowHandler->addFsmEventHandler(fsm.get());
@@ -148,15 +146,6 @@ int Game::run() {
         MessageLoopWithWait();
     }
     gameWindowHandler->removeFsmEventHandler(fsm.get());
-
-    //ShowMM7IntroVideo_and_LoadingScreen();
-
-    dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
-
-    GUIWindow_MainMenu::drawCopyrightAndInit([&] {
-        engine->SecondaryInitialization();
-        FinalInitialization();
-    });
 
     // logger->Warning("MM: entering main loop");
     while (true) {
@@ -243,29 +232,6 @@ bool Game::loop() {
 
     return true;
 }
-
-
-
-void ShowMM7IntroVideo_and_LoadingScreen() {
-    bGameoverLoop = true;
-
-    render->PresentBlackScreen();
-    if (!engine->config->debug.NoVideo.value()) {
-        if (!engine->config->debug.NoLogo.value()) {
-            pMediaPlayer->PlayFullscreenMovie("3dologo");
-            pMediaPlayer->PlayFullscreenMovie("new world logo");
-            pMediaPlayer->PlayFullscreenMovie("jvc");
-        }
-        if (!engine->config->debug.NoIntro.value()) {
-            pMediaPlayer->PlayFullscreenMovie("Intro");
-        }
-    }
-
-    bGameoverLoop = false;
-}
-
-
-
 
 GraphicsImage *gamma_preview_image = nullptr;  // 506E40
 
