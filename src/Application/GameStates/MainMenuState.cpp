@@ -5,7 +5,6 @@
 #include <Engine/SaveLoad.h>
 #include <GUI/GUIMessageQueue.h>
 #include <GUI/GUIWindow.h>
-#include <GUI/UI/UIMainMenu.h>
 #include <Library/Logger/Logger.h>
 
 #include <memory>

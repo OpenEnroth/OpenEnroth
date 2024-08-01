@@ -1,10 +1,9 @@
 #pragma once
 
+#include <GUI/UI/UIMainMenu.h>
 #include <Library/Fsm/FsmState.h>
 
 #include <memory>
-
-class GUIWindow_MainMenu;
 
 class MainMenuState : public FsmState {
  public:
