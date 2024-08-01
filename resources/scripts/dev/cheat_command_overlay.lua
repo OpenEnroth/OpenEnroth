@@ -21,7 +21,7 @@ local enabledColor = Utilities.color(0.19, 0.39, 0.19, 1)
 local disabledColor = Utilities.color(0.39, 0.19, 0.19, 1)
 local enabledHoveredColor = Utilities.color(0.09, 0.29, 0.09, 1)
 local disabledHoveredColor = Utilities.color(0.29, 0.09, 0.09, 1)
-local buttonSize = { w = -0.001, h = 30 }
+local buttonSize = { w = -1, h = 30 }
 
 ---@param entry CheatCommandEntry
 ---@return boolean

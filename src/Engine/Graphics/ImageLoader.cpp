@@ -118,11 +118,6 @@ bool PCX_Loader::InternalLoad(const Blob &data, RgbaImage *rgbaImage) {
     return true;
 }
 
-bool PCX_File_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
-    Blob buffer = Blob::fromFile(makeDataPath(this->resource_name));
-    return InternalLoad(buffer, rgbaImage);
-}
-
 bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Blob data = lod->read(resource_name);
     if (!data) {

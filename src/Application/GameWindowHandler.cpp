@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 #include <tuple>
+#include <string>
 
 #include "Arcomage/Arcomage.h"
 
@@ -27,10 +28,13 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
+#include "Library/Image/PCX.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Platform/Application/PlatformApplication.h"
-
 #include "Library/Platform/Interface/PlatformGamepad.h"
+
+#include "Utility/Streams/FileOutputStream.h"
+#include "Utility/DataPath.h"
 
 using Io::InputAction;
 
@@ -150,7 +154,11 @@ void GameWindowHandler::UpdateConfigFromWindow(GameConfig *config) {
 
 void GameWindowHandler::OnScreenshot() {
     if (render) {
-        render->SavePCXScreenshot();
+        // TODO(pskelton): add "Screenshots" folder?
+        engine->config->settings.ScreenshotNumber.increment();
+        std::string path = fmt::format("screenshot_{:05}.pcx", engine->config->settings.ScreenshotNumber.value());
+
+        FileOutputStream(makeDataPath(path)).write(pcx::encode(render->MakeFullScreenshot()).string_view());
     }
 }
 
