@@ -6,6 +6,7 @@
 #include <GUI/GUIMessageQueue.h>
 #include <GUI/GUIWindow.h>
 #include <Library/Logger/Logger.h>
+#include <Engine/Graphics/Renderer/Renderer.h>
 
 #include <memory>
 
@@ -29,12 +30,7 @@ FsmAction MainMenuState::enter() {
 }
 
 FsmAction MainMenuState::update() {
-    // We have to postpone transitions until the next frame to avoid issues with the way how buttons are updated
-    // TODO(Gerark) Remove this scheduling once we have a proper Retained Mode UI system
-    if (!_scheduledTransition.empty()) {
-        return FsmAction::transition(std::exchange(_scheduledTransition, ""));
-    }
-
+    std::string_view transition;
     while (engine->_messageQueue->haveMessages()) {
         UIMessageType messageType;
         engine->_messageQueue->popMessage(&messageType, nullptr, nullptr);
@@ -44,19 +40,19 @@ FsmAction MainMenuState::update() {
         switch (messageType) {
         case UIMSG_MainMenu_ShowPartyCreationWnd:
             SetCurrentMenuID(MENU_NEWGAME);
-            _scheduledTransition = "newGame";
+            transition = "newGame";
             break;
         case UIMSG_MainMenu_ShowLoadWindow:
             SetCurrentMenuID(MENU_SAVELOAD);
-            _scheduledTransition = "loadGame";
+            transition = "loadGame";
             break;
         case UIMSG_ShowCredits:
             SetCurrentMenuID(MENU_CREDITS);
-            _scheduledTransition = "credits";
+            transition = "credits";
             break;
         case UIMSG_ExitToWindows:
             SetCurrentMenuID(MENU_EXIT_GAME);
-            _scheduledTransition = "exitGame";
+            transition = "exitGame";
             break;
         case UIMSG_QuickLoad: {
             int slot = GetQuickSaveSlot();
@@ -64,7 +60,7 @@ FsmAction MainMenuState::update() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 pSavegameList->selectedSlot = slot;
                 SetCurrentMenuID(MENU_LoadingProcInMainMenu);
-                _scheduledTransition = "quickLoadGame";
+                transition = "quickLoadGame";
             } else {
                 logger->debug("UIMSG_QuickLoad - No quick save could be found!");
                 pAudioPlayer->playUISound(SOUND_error);
@@ -75,6 +71,14 @@ FsmAction MainMenuState::update() {
             break;
         }
     }
+
+    if (!transition.empty()) {
+        // TODO(Gerark) Remove this GUI_UpdateWindows once we have a proper Retained Mode UI system.
+        // Right now we're forced to call this to cause the proper removal of temporary "buttons"
+        GUI_UpdateWindows();
+        return FsmAction::transition(std::exchange(transition, ""));
+    }
+
     return FsmAction::none();
 }
 

@@ -14,5 +14,4 @@ class MainMenuState : public FsmState {
 
  private:
     std::unique_ptr<GUIWindow_MainMenu> _mainMenuUI;
-    std::string_view _scheduledTransition;
 };
