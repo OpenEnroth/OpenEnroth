@@ -2439,9 +2439,13 @@ int bDialogueUI_InitializeActor_NPC_ID;
 std::array<char, 777> byte_5E4C15;
 
 int uDefaultTravelTime_ByFoot;
+
+// TODO(pskelton): can we drop these fog globals?
 MapWeatherFlags day_attrib;
 int day_fogrange_1; // fog start dist
-int day_fogrange_2; // fog end dist
+int day_fogrange_2; // fog mid dist
+int day_fogrange_3; // fog end dist
+
 float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
 float fTurnSpeedMultiplier = 1.0f;
