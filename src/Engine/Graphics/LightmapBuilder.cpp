@@ -86,11 +86,11 @@ Color GetActorTintColor(int max_dimm, int min_dimm, float distance, int bNoLight
     if (!engine->IsUnderwater()) {
         return Color(255 - dimminglevel, 255 - dimminglevel, 255 - dimminglevel);
     } else {
-        // underwater
+        Color sea = colorTable.Topaz;
         float col = (255 - dimminglevel) * 0.0039215689f;
-        int red = static_cast<int>(floorf(col * 16.0f + 0.5f));
-        int grn = static_cast<int>(floorf(col * 194.0f + 0.5f));
-        int blue = static_cast<int>(floorf(col * 153.0f + 0.5f));
+        int red = static_cast<int>(floorf(col * sea.r + 0.5f));
+        int grn = static_cast<int>(floorf(col * sea.g + 0.5f));
+        int blue = static_cast<int>(floorf(col * sea.b + 0.5f));
         return Color(red, grn, blue);
     }
 }
