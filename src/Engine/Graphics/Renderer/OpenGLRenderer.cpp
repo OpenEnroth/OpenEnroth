@@ -46,6 +46,7 @@
 #include "Library/Color/Colorf.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Geometry/Size.h"
+#include "Library/Image/ImageFunctions.h"
 
 #include "Utility/String/Format.h"
 #include "Utility/Memory/MemSet.h"
@@ -982,7 +983,7 @@ bool OpenGLRenderer::AreRenderSurfacesOk() {
     return true;
 }
 
-RgbaImage OpenGLRenderer::MakeScreenshot32(const int width, const int height) {
+RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int height) {
     // TODO(pskelton): should this call drawworld instead??
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
@@ -1019,6 +1020,10 @@ RgbaImage OpenGLRenderer::MakeScreenshot32(const int width, const int height) {
     }
 
     return pPixels;
+}
+
+RgbaImage OpenGLRenderer::MakeFullScreenshot() {
+    return flipVertically(ReadScreenPixels());
 }
 
 // TODO(pskelton): drop - not required in gl renderer now
@@ -2316,8 +2321,10 @@ void OpenGLRenderer::DrawForcePerVerts() {
         if (fpfogcol != Color()) {
             fpfogstart = day_fogrange_1;
             fpfogmiddle = day_fogrange_2;
-            fpfogend = pCamera3D->GetFarClip();
-            fpfogr = fpfogg = fpfogb = GetLevelFogColor().r / 255.0f;
+            fpfogend = day_fogrange_3;
+            fpfogr = fpfogcol.r / 255.0f;
+            fpfogg = fpfogcol.g / 255.0f;
+            fpfogb = fpfogcol.b / 255.0f;
         } else {
             fpfogstart = pCamera3D->GetFarClip();
             fpfogmiddle = 0.0f;
@@ -2379,8 +2386,10 @@ void OpenGLRenderer::SetFogParametersGL() {
         if (fogcol != Color()) {
             fogstart = day_fogrange_1;
             fogmiddle = day_fogrange_2;
-            fogend = pCamera3D->GetFarClip();
-            fog.r = fog.g = fog.b = GetLevelFogColor().r / 255.0f;
+            fogend = day_fogrange_3;
+            fog.r = fogcol.r / 255.0f;
+            fog.g = fogcol.g / 255.0f;
+            fog.b = fogcol.b / 255.0f;
         } else {
             fogend = pCamera3D->GetFarClip();
             fogmiddle = 0.0f;

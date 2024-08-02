@@ -46,8 +46,9 @@ void GameFsmBuilder::_buildMainMenu(FsmBuilder &builder) {
     .state<MainMenuState>("MainMenu")
         .on("newGame").exitFsm()
         .on("loadGame").exitFsm()
+        .on("quickLoadGame").exitFsm()
         .on("credits").jumpTo("Credits")
-        .on("exit").exitFsm()
+        .on("exitGame").exitFsm()
 
     .state<CreditsState>("Credits")
         .on("back").jumpTo("MainMenu");

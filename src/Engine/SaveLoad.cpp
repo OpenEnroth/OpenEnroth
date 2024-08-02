@@ -198,7 +198,7 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path,
         lodWriter.write(file_name, lod::encodeCompressed(uncompressed));
     }
 
-    lodWriter.write("image.pcx", render->PackScreenshot(150, 112));
+    lodWriter.write("image.pcx", pcx::encode(render->MakeViewportScreenshot(150, 112)));
 
     SaveGameHeader save_header;
     save_header.name = title;

@@ -5,8 +5,8 @@
 #include <Engine/SaveLoad.h>
 #include <GUI/GUIMessageQueue.h>
 #include <GUI/GUIWindow.h>
-#include <GUI/UI/UIMainMenu.h>
 #include <Library/Logger/Logger.h>
+#include <Engine/Graphics/Renderer/Renderer.h>
 
 #include <memory>
 
@@ -30,6 +30,7 @@ FsmAction MainMenuState::enter() {
 }
 
 FsmAction MainMenuState::update() {
+    std::string_view transition;
     while (engine->_messageQueue->haveMessages()) {
         UIMessageType messageType;
         engine->_messageQueue->popMessage(&messageType, nullptr, nullptr);
@@ -39,18 +40,19 @@ FsmAction MainMenuState::update() {
         switch (messageType) {
         case UIMSG_MainMenu_ShowPartyCreationWnd:
             SetCurrentMenuID(MENU_NEWGAME);
-            return FsmAction::transition("newGame");
+            transition = "newGame";
+            break;
         case UIMSG_MainMenu_ShowLoadWindow:
             SetCurrentMenuID(MENU_SAVELOAD);
-            return FsmAction::transition("loadGame");
+            transition = "loadGame";
+            break;
         case UIMSG_ShowCredits:
             SetCurrentMenuID(MENU_CREDITS);
-            return FsmAction::transition("credits");
+            transition = "credits";
+            break;
         case UIMSG_ExitToWindows:
             SetCurrentMenuID(MENU_EXIT_GAME);
-            return FsmAction::transition("exit");
-        case UIMSG_ChangeGameState:
-            uGameState = GAME_FINISHED;
+            transition = "exitGame";
             break;
         case UIMSG_QuickLoad: {
             int slot = GetQuickSaveSlot();
@@ -58,8 +60,9 @@ FsmAction MainMenuState::update() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 pSavegameList->selectedSlot = slot;
                 SetCurrentMenuID(MENU_LoadingProcInMainMenu);
+                transition = "quickLoadGame";
             } else {
-                logger->error("QuickLoadGame:: No quick save could be found!");
+                logger->debug("UIMSG_QuickLoad - No quick save could be found!");
                 pAudioPlayer->playUISound(SOUND_error);
             }
             break;
@@ -67,6 +70,13 @@ FsmAction MainMenuState::update() {
         default:
             break;
         }
+    }
+
+    if (!transition.empty()) {
+        // TODO(Gerark) Remove this GUI_UpdateWindows once we have a proper Retained Mode UI system.
+        // Right now we're forced to call this to cause the proper removal of temporary "buttons"
+        GUI_UpdateWindows();
+        return FsmAction::transition(std::exchange(transition, ""));
     }
 
     return FsmAction::none();

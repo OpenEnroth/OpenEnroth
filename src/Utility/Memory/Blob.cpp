@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include <utility>
+#include <filesystem>
 
 #include <mio/mmap.hpp>
 
@@ -39,11 +40,17 @@ Blob Blob::fromMalloc(std::unique_ptr<void, FreeDeleter> data, size_t size) {
 }
 
 Blob Blob::fromFile(std::string_view path) {
+    std::filesystem::path absolutePath = absolute(std::filesystem::path(path));
+    std::string pathString = absolutePath.generic_string();
+
+    // On Mac mapping an empty file throws, so we need to provide a workaround.
+    std::error_code error;
+    uintmax_t size = std::filesystem::file_size(absolutePath, error);
+    if (!error && size == 0)
+        return Blob().withDisplayPath(pathString);
+
     // On Windows mio::mmap_source expects UTF8-encoded paths. If the file doesn't exist, std::system_error is thrown.
-    std::string pathString(path);
     std::shared_ptr<mio::mmap_source> mmap = std::make_shared<mio::mmap_source>(pathString);
-    if (mmap->size() == 0)
-        return Blob();
 
     Blob result;
     result._data = mmap->data();

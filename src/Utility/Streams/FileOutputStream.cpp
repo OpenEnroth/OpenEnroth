@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdio>
 #include <string>
+#include <filesystem>
 
 #include "Utility/Exception.h"
 #include "Utility/UnicodeCrt.h"
@@ -20,7 +21,7 @@ void FileOutputStream::open(std::string_view path) {
 
     close();
 
-    _path = std::string(path);
+    _path = absolute(std::filesystem::path(path)).generic_string();
     _file = fopen(_path.c_str(), "wb");
     if (!_file)
         Exception::throwFromErrno(_path);

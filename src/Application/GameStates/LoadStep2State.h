@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Library/Fsm/FSMState.h>
+#include <Library/Fsm/FsmState.h>
 
 class GraphicsImage;
 

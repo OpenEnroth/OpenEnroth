@@ -308,6 +308,7 @@ bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
         ::day_attrib = this->loc_time.day_attrib;
         ::day_fogrange_1 = this->loc_time.day_fogrange_1;
         ::day_fogrange_2 = this->loc_time.day_fogrange_2;
+        ::day_fogrange_3 = pCamera3D->GetFarClip();
         if (isMapUnderwater(engine->_currentLoadedMapId))
             SetUnderwaterFog();
 
@@ -488,6 +489,8 @@ void OutdoorLocation::SetFog() {
     } else {
         ::day_attrib &= ~MAP_WEATHER_FOGGY;
     }
+
+    ::day_fogrange_3 = pCamera3D->GetFarClip();
 
     if (isMapUnderwater(map_id))
         SetUnderwaterFog();
@@ -2275,7 +2278,8 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
 //----- (00464851) --------------------------------------------------------
 void SetUnderwaterFog() {
     day_fogrange_1 = 50;
-    day_fogrange_2 = 5000;
+    day_fogrange_2 = 1000;
+    day_fogrange_3 = 15000;
 }
 
 //----- (00487DA9) --------------------------------------------------------
@@ -2538,7 +2542,9 @@ void loadAndPrepareODM(MapId mapid, bool bLoading, ODMRenderParams *a2) {
 // returns 0xXXYYZZ fog color
 Color GetLevelFogColor() {
     if (engine->IsUnderwater()) {
-        return colorTable.OliveDrab;
+        Color sea = colorTable.Topaz;  //OliveDrab;
+        // TODO(pskelton): 0.65 is desaturation factor - this will need moving/dropping when thats sorted
+        return Color(sea.r * 0.65f, sea.g * 0.65f , sea.b * 0.65f);
     }
 
     if (day_attrib & MAP_WEATHER_FOGGY) {
