@@ -47,5 +47,5 @@ void GameFsmBuilder::_buildMainMenu(FsmBuilder &builder) {
         .on("loadGame").exitFsm()
         .on("quickLoadGame").exitFsm()
         .on("credits").exitFsm()
-        .on("exit").exitFsm();
+        .on("exitGame").exitFsm();
 }

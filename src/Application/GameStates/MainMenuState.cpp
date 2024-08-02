@@ -29,6 +29,12 @@ FsmAction MainMenuState::enter() {
 }
 
 FsmAction MainMenuState::update() {
+    // We have to postpone transitions until the next frame to avoid issues with the way how buttons are updated
+    // TODO(Gerark) Remove this scheduling once we have a proper Retained Mode UI system
+    if (!_scheduledTransition.empty()) {
+        return FsmAction::transition(std::exchange(_scheduledTransition, ""));
+    }
+
     while (engine->_messageQueue->haveMessages()) {
         UIMessageType messageType;
         engine->_messageQueue->popMessage(&messageType, nullptr, nullptr);
@@ -38,18 +44,19 @@ FsmAction MainMenuState::update() {
         switch (messageType) {
         case UIMSG_MainMenu_ShowPartyCreationWnd:
             SetCurrentMenuID(MENU_NEWGAME);
-            return FsmAction::transition("newGame");
+            _scheduledTransition = "newGame";
+            break;
         case UIMSG_MainMenu_ShowLoadWindow:
             SetCurrentMenuID(MENU_SAVELOAD);
-            return FsmAction::transition("loadGame");
+            _scheduledTransition = "loadGame";
+            break;
         case UIMSG_ShowCredits:
             SetCurrentMenuID(MENU_CREDITS);
-            return FsmAction::transition("credits");
+            _scheduledTransition = "credits";
+            break;
         case UIMSG_ExitToWindows:
             SetCurrentMenuID(MENU_EXIT_GAME);
-            return FsmAction::transition("exit");
-        case UIMSG_ChangeGameState:
-            uGameState = GAME_FINISHED;
+            _scheduledTransition = "exitGame";
             break;
         case UIMSG_QuickLoad: {
             int slot = GetQuickSaveSlot();
@@ -57,7 +64,7 @@ FsmAction MainMenuState::update() {
                 pAudioPlayer->playUISound(SOUND_StartMainChoice02);
                 pSavegameList->selectedSlot = slot;
                 SetCurrentMenuID(MENU_LoadingProcInMainMenu);
-                return FsmAction::transition("quickLoadGame");
+                _scheduledTransition = "quickLoadGame";
             } else {
                 logger->debug("UIMSG_QuickLoad - No quick save could be found!");
                 pAudioPlayer->playUISound(SOUND_error);
@@ -68,7 +75,6 @@ FsmAction MainMenuState::update() {
             break;
         }
     }
-
     return FsmAction::none();
 }
 
