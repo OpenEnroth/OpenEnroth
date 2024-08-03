@@ -170,10 +170,10 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
 }
 
 GameStarter::~GameStarter() {
+    _application->removeComponent<EngineControlComponent>(); // Join the control thread first.
+
     ::engine = nullptr;
-
     ::render = nullptr;
-
     ::application = nullptr;
     ::platform = nullptr;
     ::eventLoop = nullptr;
