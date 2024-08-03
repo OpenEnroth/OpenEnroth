@@ -11,19 +11,9 @@ class GUIWindow_MainMenu : public GUIWindow {
 
     virtual void Update() override;
 
-    void EventLoop();
-
-    /**
-     * @brief Performs secondary initialization while showing copyright window.
-     *
-     * @param initFunc     Pointer to code which is executed while copyright window is showed.
-     */
-    static void drawCopyrightAndInit(std::function<void()> initFunc);
-    static void loop();
+    void processMessage(UIMessageType messageType);
 
  protected:
-    static void drawMM7CopyrightWindow();
-
     GUIButton *pBtnExit;
     GUIButton *pBtnCredits;
     GUIButton *pBtnLoad;
@@ -36,5 +26,3 @@ class GUIWindow_MainMenu : public GUIWindow {
     GraphicsImage *ui_mainmenu_credits;
     GraphicsImage *ui_mainmenu_exit;
 };
-
-extern GUIWindow_MainMenu *pWindow_MainMenu;
