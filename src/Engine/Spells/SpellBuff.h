@@ -8,6 +8,8 @@
 struct SpellBuff {
     /**
      * @offset 0x4584E0
+     * TODO(pskelton): check for inconsistent use of caster
+     * caster = 0 for external source (potion / npc), 1 based for party character index
      */
     bool Apply(Time time, CharacterSkillMastery uSkillMastery,
                int uPower, int uOverlayID, uint8_t caster);

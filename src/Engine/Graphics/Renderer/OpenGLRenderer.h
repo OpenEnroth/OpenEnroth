@@ -16,8 +16,6 @@
 #include "OpenGLShader.h"
 
 class PlatformOpenGLContext;
-class NuklearOverlayRenderer;
-struct nk_state;
 
 class OpenGLRenderer : public BaseRenderer {
  public:
@@ -102,7 +100,8 @@ class OpenGLRenderer : public BaseRenderer {
 
     virtual bool AreRenderSurfacesOk() override;
 
-    virtual RgbaImage MakeScreenshot32(const int width, const int height) override;
+    virtual RgbaImage MakeViewportScreenshot(const int width, const int height) override;
+    virtual RgbaImage MakeFullScreenshot() override;
 
     virtual void BeginLightmaps() override;
     virtual void EndLightmaps() override;
@@ -127,11 +126,13 @@ class OpenGLRenderer : public BaseRenderer {
     void DrawBillboards();
 
     virtual bool Reinitialize(bool firstInit) override;
-    virtual void ReloadShaders() override;
+    virtual bool ReloadShaders() override;
 
     virtual void flushAndScale() override;
     virtual void swapBuffers() override;
-    virtual void drawOverlays(nk_context *context) override;
+
+    virtual void beginOverlays() override;
+    virtual void endOverlays() override;
 
  protected:
     virtual void DoRenderBillboards_D3D() override;
@@ -143,6 +144,9 @@ class OpenGLRenderer : public BaseRenderer {
     void DrawForcePerVerts();
 
     void SetFogParametersGL();
+
+    void _initImGui();
+    void _shutdownImGui();
 
     FrameLimiter _frameLimiter;
 
@@ -165,7 +169,6 @@ class OpenGLRenderer : public BaseRenderer {
     int GPU_MAX_UNIFORM_COMP{};
     int GPU_MAX_TOTAL_TEXTURES{};
 
-    bool InitShaders();
     OpenGLShader terrainshader;
     OpenGLShader outbuildshader;
     OpenGLShader bspshader;
@@ -227,8 +230,6 @@ class OpenGLRenderer : public BaseRenderer {
     int fogend{};
 
     float gamma{};
-
-    std::unique_ptr<NuklearOverlayRenderer> _overlayRenderer;
 };
 
 

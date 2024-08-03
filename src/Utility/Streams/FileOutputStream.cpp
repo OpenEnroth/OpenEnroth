@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstdio>
 #include <string>
+#include <filesystem>
 
 #include "Utility/Exception.h"
 #include "Utility/UnicodeCrt.h"
@@ -20,7 +21,7 @@ void FileOutputStream::open(std::string_view path) {
 
     close();
 
-    _path = std::string(path);
+    _path = absolute(std::filesystem::path(path)).generic_string();
     _file = fopen(_path.c_str(), "wb");
     if (!_file)
         Exception::throwFromErrno(_path);
@@ -28,6 +29,8 @@ void FileOutputStream::open(std::string_view path) {
 
 void FileOutputStream::write(const void *data, size_t size) {
     assert(isOpen()); // Writing into a closed stream is UB.
+    if (!size)
+        return;
 
     if (fwrite(data, size, 1, _file) != 1)
         Exception::throwFromErrno(_path);
@@ -44,6 +47,10 @@ void FileOutputStream::close() {
     closeInternal(true);
 }
 
+std::string FileOutputStream::displayPath() const {
+    return _path;
+}
+
 void FileOutputStream::closeInternal(bool canThrow) {
     if (!isOpen())
         return;
@@ -53,4 +60,5 @@ void FileOutputStream::closeInternal(bool canThrow) {
     if (status != 0 && canThrow)
         Exception::throwFromErrno(_path);
     // TODO(captainurist): !canThrow => log OR attach
+    _path = {};
 }

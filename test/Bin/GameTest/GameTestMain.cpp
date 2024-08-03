@@ -12,7 +12,7 @@
 #include "Library/StackTrace/StackTraceOnCrash.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 #include "Utility/UnicodeCrt.h"
 
 #include "GameTestOptions.h"

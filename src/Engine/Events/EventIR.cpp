@@ -5,14 +5,14 @@
 
 #include "Engine/Events/EventEnums.h"
 #include "Engine/Events/RawEvent.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Tables/BuildingTable.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Engine.h"
 
 #include "Library/Serialization/Serialization.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 #include "Utility/Exception.h"
 
 static std::string getVariableSetStr(VariableType type, int value) {

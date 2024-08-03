@@ -1,12 +1,13 @@
 #include "MapInfo.h"
 
 #include <cstdlib>
+#include <cstring>
 #include <sstream>
 #include <string>
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/Workaround/ToUnderlying.h"
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
+#include "Utility/String/Transformations.h"
 
 MapStats *pMapStats;
 
@@ -65,7 +66,7 @@ void MapStats::Initialize(const Blob &mapStats) {
                     pInfos[i].name = removeQuotes(test_string);  // randoms crashes here  // got 1 too
                     break;
                 case 2:
-                    pInfos[i].fileName = toLower(removeQuotes(test_string));
+                    pInfos[i].fileName = ascii::toLower(removeQuotes(test_string));
                     break;
                 case 3:
                     pInfos[i].numResets = atoi(test_string);
@@ -204,7 +205,7 @@ void MapStats::Initialize(const Blob &mapStats) {
 }
 
 MapId MapStats::GetMapInfo(std::string_view Str2) {
-    std::string map_name = toLower(Str2);
+    std::string map_name = ascii::toLower(Str2);
 
     for (MapId i : pInfos.indices()) {
         if (pInfos[i].fileName == map_name) {

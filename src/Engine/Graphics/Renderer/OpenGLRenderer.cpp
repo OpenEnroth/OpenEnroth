@@ -5,11 +5,15 @@
 #include <utility>
 #include <map>
 #include <string>
+#include <tuple>
 
 #include <glad/gl.h> // NOLINT: not a C system header.
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include <imgui/backends/imgui_impl_opengl3.h> // NOLINT: not a C system header.
+#include <imgui/backends/imgui_impl_sdl2.h> // NOLINT: not a C system header.
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
@@ -18,9 +22,8 @@
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/LightmapBuilder.h"
 #include "Engine/Graphics/DecalBuilder.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/LightsStack.h"
-#include "OpenGLShader.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -30,8 +33,6 @@
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Polygon.h"
-#include "Engine/Objects/Actor.h"
-#include "Engine/Objects/SpriteObject.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
@@ -42,15 +43,16 @@
 
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Serialization/EnumSerialization.h"
-#include "Library/Image/ImageFunctions.h"
 #include "Library/Color/Colorf.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Geometry/Size.h"
+#include "Library/Image/ImageFunctions.h"
 
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 #include "Utility/Memory/MemSet.h"
 
-#include "NuklearOverlayRenderer.h"
+#include "OpenGLShader.h"
+#include "Utility/DataPath.h"
 
 #ifndef LOWORD
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
@@ -195,7 +197,10 @@ OpenGLRenderer::OpenGLRenderer(
     clip_z = 0;
 }
 
-OpenGLRenderer::~OpenGLRenderer() { logger->info("RenderGl - Destructor"); }
+OpenGLRenderer::~OpenGLRenderer() {
+    logger->info("RenderGl - Destructor");
+    _shutdownImGui();
+}
 
 void OpenGLRenderer::Release() { logger->info("RenderGL - Release"); }
 
@@ -228,6 +233,12 @@ void OpenGLRenderer::BltBackToFontFast(int a2, int a3, Recti *a4) {
 }
 
 void OpenGLRenderer::ClearTarget(Color uColor) {
+    /* TODO(Gerark) Should we bind to the framebuffer before clearing?
+    if (outputRender != outputPresent) {
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+    }
+    */
+
     glClearColor(0, 0, 0, 0/*0.9f, 0.5f, 0.1f, 1.0f*/);
     glClearDepthf(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -281,12 +292,12 @@ void OpenGLRenderer::EndLines2D() {
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 
-    glUseProgram(lineshader.ID);
+    lineshader.use();
 
     //// set projection
-    glUniformMatrix4fv(glGetUniformLocation(lineshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    glUniformMatrix4fv(lineshader.uniformLocation("projection"), 1, GL_FALSE, &projmat[0][0]);
     //// set view
-    glUniformMatrix4fv(glGetUniformLocation(lineshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+    glUniformMatrix4fv(lineshader.uniformLocation("view"), 1, GL_FALSE, &viewmat[0][0]);
 
     glDrawArrays(GL_LINES, 0, (linevertscnt));
     drawcalls++;
@@ -972,7 +983,7 @@ bool OpenGLRenderer::AreRenderSurfacesOk() {
     return true;
 }
 
-RgbaImage OpenGLRenderer::MakeScreenshot32(const int width, const int height) {
+RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int height) {
     // TODO(pskelton): should this call drawworld instead??
 
     pCamera3D->_viewPitch = pParty->_viewPitch;
@@ -1009,6 +1020,10 @@ RgbaImage OpenGLRenderer::MakeScreenshot32(const int width, const int height) {
     }
 
     return pPixels;
+}
+
+RgbaImage OpenGLRenderer::MakeFullScreenshot() {
+    return flipVertically(ReadScreenPixels());
 }
 
 // TODO(pskelton): drop - not required in gl renderer now
@@ -1099,23 +1114,23 @@ void OpenGLRenderer::EndDecals() {
     _set_3d_projection_matrix();
     _set_3d_modelview_matrix();
 
-    glUseProgram(decalshader.ID);
+    decalshader.use();
     // set projection
-    glUniformMatrix4fv(glGetUniformLocation(decalshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    glUniformMatrix4fv(decalshader.uniformLocation("projection"), 1, GL_FALSE, &projmat[0][0]);
     // set view
-    glUniformMatrix4fv(glGetUniformLocation(decalshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+    glUniformMatrix4fv(decalshader.uniformLocation("view"), 1, GL_FALSE, &viewmat[0][0]);
 
     // set fog uniforms
-    glUniform3f(glGetUniformLocation(decalshader.ID, "fog.color"), fog.r, fog.g, fog.b);
-    glUniform1f(glGetUniformLocation(decalshader.ID, "fog.fogstart"), GLfloat(fogstart));
-    glUniform1f(glGetUniformLocation(decalshader.ID, "fog.fogmiddle"), GLfloat(fogmiddle));
-    glUniform1f(glGetUniformLocation(decalshader.ID, "fog.fogend"), GLfloat(fogend));
+    glUniform3f(decalshader.uniformLocation("fog.color"), fog.r, fog.g, fog.b);
+    glUniform1f(decalshader.uniformLocation("fog.fogstart"), GLfloat(fogstart));
+    glUniform1f(decalshader.uniformLocation("fog.fogmiddle"), GLfloat(fogmiddle));
+    glUniform1f(decalshader.uniformLocation("fog.fogend"), GLfloat(fogend));
 
     // set bias
-    glUniform1f(glGetUniformLocation(decalshader.ID, "decalbias"), GLfloat(0.002f));
+    glUniform1f(decalshader.uniformLocation("decalbias"), GLfloat(0.002f));
 
     // set texture unit location
-    glUniform1i(glGetUniformLocation(decalshader.ID, "texture0"), GLint(0));
+    glUniform1i(decalshader.uniformLocation("texture0"), GLint(0));
     glActiveTexture(GL_TEXTURE0);
 
     GraphicsImage *texture = assets->getBitmap("hwsplat04");
@@ -1710,31 +1725,31 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     glEnableVertexAttribArray(4);
 
     // use the terrain shader
-    glUseProgram(terrainshader.ID);
+    terrainshader.use();
 
     // set projection matrix
-    glUniformMatrix4fv(glGetUniformLocation(terrainshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    glUniformMatrix4fv(terrainshader.uniformLocation("projection"), 1, GL_FALSE, &projmat[0][0]);
     // set view matrix
-    glUniformMatrix4fv(glGetUniformLocation(terrainshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+    glUniformMatrix4fv(terrainshader.uniformLocation("view"), 1, GL_FALSE, &viewmat[0][0]);
     // set animated water frame
-    glUniform1i(glGetUniformLocation(terrainshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
+    glUniform1i(terrainshader.uniformLocation("waterframe"), GLint(this->hd_water_current_frame));
     // set texture unit location
-    glUniform1i(glGetUniformLocation(terrainshader.ID, "textureArray0"), GLint(0));
-    glUniform1i(glGetUniformLocation(terrainshader.ID, "textureArray1"), GLint(1));
+    glUniform1i(terrainshader.uniformLocation("textureArray0"), GLint(0));
+    glUniform1i(terrainshader.uniformLocation("textureArray1"), GLint(1));
 
-    glUniform1f(glGetUniformLocation(terrainshader.ID, "gamma"), gamma);
+    glUniform1f(terrainshader.uniformLocation("gamma"), gamma);
 
     // set fog uniforms
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "fog.color"), fog.r, fog.g, fog.b);
-    glUniform1f(glGetUniformLocation(terrainshader.ID, "fog.fogstart"), GLfloat(fogstart));
-    glUniform1f(glGetUniformLocation(terrainshader.ID, "fog.fogmiddle"), GLfloat(fogmiddle));
-    glUniform1f(glGetUniformLocation(terrainshader.ID, "fog.fogend"), GLfloat(fogend));
+    glUniform3f(terrainshader.uniformLocation("fog.color"), fog.r, fog.g, fog.b);
+    glUniform1f(terrainshader.uniformLocation("fog.fogstart"), GLfloat(fogstart));
+    glUniform1f(terrainshader.uniformLocation("fog.fogmiddle"), GLfloat(fogmiddle));
+    glUniform1f(terrainshader.uniformLocation("fog.fogend"), GLfloat(fogend));
 
     GLfloat camera[3] {};
     camera[0] = (float)(pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0));
     camera[1] = (float)(pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0));
     camera[2] = (float)(pParty->pos.z + pParty->eyeLevel);
-    glUniform3fv(glGetUniformLocation(terrainshader.ID, "CameraPos"), 1, &camera[0]);
+    glUniform3fv(terrainshader.uniformLocation("CameraPos"), 1, &camera[0]);
 
 
     // sun lighting stuff
@@ -1742,16 +1757,16 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     ambient = 0.15 + (sinf(((ambient - 360.0) * 2 * pi_double) / 1440) + 1) * 0.27;
     float diffuseon = pWeather->bNight ? 0 : 1;
 
-    glUniform3fv(glGetUniformLocation(terrainshader.ID, "sun.direction"), 1, &pOutdoor->vSunlight.x);
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.ambient"), ambient, ambient, ambient);
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.diffuse"), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3));
-    glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), /*diffuseon * 0.35f * ambient*/ 0.0f, /*diffuseon * 0.28f * ambient*/ 0.0f, 0.0f);
+    glUniform3fv(terrainshader.uniformLocation("sun.direction"), 1, &pOutdoor->vSunlight.x);
+    glUniform3f(terrainshader.uniformLocation("sun.ambient"), ambient, ambient, ambient);
+    glUniform3f(terrainshader.uniformLocation("sun.diffuse"), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3), diffuseon * (ambient + 0.3));
+    glUniform3f(terrainshader.uniformLocation("sun.specular"), /*diffuseon * 0.35f * ambient*/ 0.0f, /*diffuseon * 0.28f * ambient*/ 0.0f, 0.0f);
 
     // red colouring
     if (pParty->armageddon_timer) {
-        glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.ambient"), 1.0, 0, 0);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.diffuse"), 1.0, 0, 0);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), 0, 0, 0);
+        glUniform3f(terrainshader.uniformLocation("sun.ambient"), 1.0, 0, 0);
+        glUniform3f(terrainshader.uniformLocation("sun.diffuse"), 1.0, 0, 0);
+        glUniform3f(terrainshader.uniformLocation("sun.specular"), 0, 0, 0);
     }
 
 
@@ -1772,13 +1787,13 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
         Colorf color = pMobileLightsStack->pLights[i].uLightColor.toColorf();
 
-        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
-        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
+        glUniform1f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
+        glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform1f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].sector").c_str()), 0);
+        glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+        glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
+        glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
+        glUniform1f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
         num_lights++;
     }
 
@@ -1798,12 +1813,12 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
         float lightrad = test.uRadius;
 
-        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), color.r, color.g, color.b);
-        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
+        glUniform1f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 1.0);
+        glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+        glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
+        glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].specular").c_str()), color.r, color.g, color.b);
+        glUniform1f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
 
         num_lights++;
     }
@@ -1825,12 +1840,12 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
         float lightrad = pMobileLightsStack->pLights[i].uRadius;
 
-        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), color.r, color.g, color.b);
-        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
+        glUniform1f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 2.0);
+        glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+        glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
+        glUniform3f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].specular").c_str()), color.r, color.g, color.b);
+        glUniform1f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
 
         num_lights++;
     }
@@ -1838,7 +1853,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     // blank the rest of the lights
     for (int blank = num_lights; blank < 20; blank++) {
         std::string slotnum = std::to_string(blank);
-        glUniform1f(glGetUniformLocation(terrainshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 0.0);
+        glUniform1f(terrainshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 0.0);
     }
 
     // actually draw the whole terrain
@@ -2284,15 +2299,15 @@ void OpenGLRenderer::DrawForcePerVerts() {
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
 
-    glUseProgram(forcepershader.ID);
+    forcepershader.use();
 
     // set sampler to texure0
-    glUniform1i(glGetUniformLocation(forcepershader.ID, "texture0"), GLint(0));
+    glUniform1i(forcepershader.uniformLocation("texture0"), GLint(0));
 
     //// set projection
-    glUniformMatrix4fv(glGetUniformLocation(forcepershader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    glUniformMatrix4fv(forcepershader.uniformLocation("projection"), 1, GL_FALSE, &projmat[0][0]);
     //// set view
-    glUniformMatrix4fv(glGetUniformLocation(forcepershader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+    glUniformMatrix4fv(forcepershader.uniformLocation("view"), 1, GL_FALSE, &viewmat[0][0]);
 
 
     // set fog - force perspective is handled slightly differently becuase of the sky
@@ -2306,8 +2321,10 @@ void OpenGLRenderer::DrawForcePerVerts() {
         if (fpfogcol != Color()) {
             fpfogstart = day_fogrange_1;
             fpfogmiddle = day_fogrange_2;
-            fpfogend = pCamera3D->GetFarClip();
-            fpfogr = fpfogg = fpfogb = GetLevelFogColor().r / 255.0f;
+            fpfogend = day_fogrange_3;
+            fpfogr = fpfogcol.r / 255.0f;
+            fpfogg = fpfogcol.g / 255.0f;
+            fpfogb = fpfogcol.b / 255.0f;
         } else {
             fpfogstart = pCamera3D->GetFarClip();
             fpfogmiddle = 0.0f;
@@ -2321,10 +2338,10 @@ void OpenGLRenderer::DrawForcePerVerts() {
     }
 
     // set fog uniforms
-    glUniform3f(glGetUniformLocation(forcepershader.ID, "fog.color"), fpfogr, fpfogg, fpfogb);
-    glUniform1f(glGetUniformLocation(forcepershader.ID, "fog.fogstart"), GLfloat(fpfogstart));
-    glUniform1f(glGetUniformLocation(forcepershader.ID, "fog.fogmiddle"), GLfloat(fpfogmiddle));
-    glUniform1f(glGetUniformLocation(forcepershader.ID, "fog.fogend"), GLfloat(fpfogend));
+    glUniform3f(forcepershader.uniformLocation("fog.color"), fpfogr, fpfogg, fpfogb);
+    glUniform1f(forcepershader.uniformLocation("fog.fogstart"), GLfloat(fpfogstart));
+    glUniform1f(forcepershader.uniformLocation("fog.fogmiddle"), GLfloat(fpfogmiddle));
+    glUniform1f(forcepershader.uniformLocation("fog.fogend"), GLfloat(fpfogend));
 
     // draw all similar textures in batches
     int offset = 0;
@@ -2369,8 +2386,10 @@ void OpenGLRenderer::SetFogParametersGL() {
         if (fogcol != Color()) {
             fogstart = day_fogrange_1;
             fogmiddle = day_fogrange_2;
-            fogend = pCamera3D->GetFarClip();
-            fog.r = fog.g = fog.b = GetLevelFogColor().r / 255.0f;
+            fogend = day_fogrange_3;
+            fog.r = fogcol.r / 255.0f;
+            fog.g = fogcol.g / 255.0f;
+            fog.b = fogcol.b / 255.0f;
         } else {
             fogend = pCamera3D->GetFarClip();
             fogmiddle = 0.0f;
@@ -2606,10 +2625,10 @@ void OpenGLRenderer::DrawBillboards() {
     glEnableVertexAttribArray(4);
     glEnableVertexAttribArray(5);
 
-    glUseProgram(billbshader.ID);
+    billbshader.use();
 
     // set sampler to palette
-    glUniform1i(glGetUniformLocation(billbshader.ID, "palbuf"), GLint(1));
+    glUniform1i(billbshader.uniformLocation("palbuf"), GLint(1));
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_BUFFER, paltex);
     glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
@@ -2617,20 +2636,20 @@ void OpenGLRenderer::DrawBillboards() {
 
 
     // set sampler to texure0
-    glUniform1i(glGetUniformLocation(billbshader.ID, "texture0"), GLint(0));
+    glUniform1i(billbshader.uniformLocation("texture0"), GLint(0));
 
     //// set projection
-    glUniformMatrix4fv(glGetUniformLocation(billbshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    glUniformMatrix4fv(billbshader.uniformLocation("projection"), 1, GL_FALSE, &projmat[0][0]);
     //// set view
-    glUniformMatrix4fv(glGetUniformLocation(billbshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+    glUniformMatrix4fv(billbshader.uniformLocation("view"), 1, GL_FALSE, &viewmat[0][0]);
 
-    glUniform1f(glGetUniformLocation(billbshader.ID, "gamma"), gamma);
+    glUniform1f(billbshader.uniformLocation("gamma"), gamma);
 
     // set fog uniforms
-    glUniform3f(glGetUniformLocation(billbshader.ID, "fog.color"), fog.r, fog.g, fog.b);
-    glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogstart"), GLfloat(fogstart));
-    glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogmiddle"), GLfloat(fogmiddle));
-    glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogend"), GLfloat(fogend));
+    glUniform3f(billbshader.uniformLocation("fog.color"), fog.r, fog.g, fog.b);
+    glUniform1f(billbshader.uniformLocation("fog.fogstart"), GLfloat(fogstart));
+    glUniform1f(billbshader.uniformLocation("fog.fogmiddle"), GLfloat(fogmiddle));
+    glUniform1f(billbshader.uniformLocation("fog.fogend"), GLfloat(fogend));
 
     int offset = 0;
     while (offset < billbstorecnt) {
@@ -2649,11 +2668,11 @@ void OpenGLRenderer::DrawBillboards() {
         if (thisblend == 0.0) {
             // disable alpha blending and enable fog for opaque items
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogstart"), GLfloat(fogstart));
+            glUniform1f(billbshader.uniformLocation("fog.fogstart"), GLfloat(fogstart));
         } else {
             // enable blending and disable fog for transparent items
             glBlendFunc(GL_ONE, GL_ONE);
-            glUniform1f(glGetUniformLocation(billbshader.ID, "fog.fogstart"), GLfloat(fogend));
+            glUniform1f(billbshader.uniformLocation("fog.fogstart"), GLfloat(fogend));
         }
 
 
@@ -3011,20 +3030,20 @@ void OpenGLRenderer::EndTextNew() {
     glEnableVertexAttribArray(2);
     glEnableVertexAttribArray(3);
 
-    glUseProgram(textshader.ID);
+    textshader.use();
 
     // glEnable(GL_TEXTURE_2D);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // set sampler to texure0
-    glUniform1i(glGetUniformLocation(textshader.ID, "texture0"), GLint(0));
-    glUniform1i(glGetUniformLocation(textshader.ID, "texture1"), GLint(1));
+    glUniform1i(textshader.uniformLocation("texture0"), GLint(0));
+    glUniform1i(textshader.uniformLocation("texture1"), GLint(1));
 
     //// set projection
-    glUniformMatrix4fv(glGetUniformLocation(textshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    glUniformMatrix4fv(textshader.uniformLocation("projection"), 1, GL_FALSE, &projmat[0][0]);
     //// set view
-    glUniformMatrix4fv(glGetUniformLocation(textshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+    glUniformMatrix4fv(textshader.uniformLocation("view"), 1, GL_FALSE, &viewmat[0][0]);
 
     // set textures
     glActiveTexture(GL_TEXTURE0);
@@ -3304,6 +3323,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                         else if (face.uAttributes & FACE_FlowLeft)
                             attribflags |= 0x1000;
 
+                        if (face.uAttributes & FACE_IsLava)
+                            attribflags |= 0x4000;
+
                         // loop while running down animlength with frame animtimes
                         do {
                             // check if tile->name is already in list
@@ -3473,7 +3495,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                 if (!model.pFaces.empty()) {
                     for (ODMFace &face : model.pFaces) {
                         if (!face.Invisible()) {
-                            array_73D150[0].vWorldPosition = model.pVertices[face.pVertexIDs[0]].toFloat();
+                            array_73D150[0].vWorldPosition = model.pVertices[face.pVertexIDs[0]];
 
                             if (pCamera3D->is_face_faced_to_cameraODM(&face, &array_73D150[0])) {
                                 int texunit = 0;
@@ -3518,6 +3540,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                     attribflags |= 0x2000;
                                 else if (face.uAttributes & FACE_FlowLeft)
                                     attribflags |= 0x1000;
+
+                                if (face.uAttributes & FACE_IsLava)
+                                    attribflags |= 0x4000;
 
                                 if (face.uAttributes & FACE_OUTLINED || (face.uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
                                     attribflags |= 0x00010000;
@@ -3585,32 +3610,32 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         if (!OpenGLES)
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    glUseProgram(outbuildshader.ID);
+    outbuildshader.use();
     // set projection
-    glUniformMatrix4fv(glGetUniformLocation(outbuildshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    glUniformMatrix4fv(outbuildshader.uniformLocation("projection"), 1, GL_FALSE, &projmat[0][0]);
     // set view
-    glUniformMatrix4fv(glGetUniformLocation(outbuildshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+    glUniformMatrix4fv(outbuildshader.uniformLocation("view"), 1, GL_FALSE, &viewmat[0][0]);
 
-    glUniform1i(glGetUniformLocation(outbuildshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
-    // TODO(pskelton): check tickcount usage here
-    glUniform1i(glGetUniformLocation(outbuildshader.ID, "flowtimer"), GLint(platform->tickCount() >> 4));
+    glUniform1i(outbuildshader.uniformLocation("waterframe"), GLint(this->hd_water_current_frame));
+    glUniform1i(outbuildshader.uniformLocation("flowtimer"), GLint(pMiscTimer->time().realtimeMilliseconds() >> 4));
+    glUniform1i(outbuildshader.uniformLocation("flowtimerms"), GLint(pMiscTimer->time().realtimeMilliseconds()));
 
-    glUniform1f(glGetUniformLocation(outbuildshader.ID, "gamma"), gamma);
+    glUniform1f(outbuildshader.uniformLocation("gamma"), gamma);
 
     // set texture unit location
-    glUniform1i(glGetUniformLocation(outbuildshader.ID, "textureArray0"), GLint(0));
+    glUniform1i(outbuildshader.uniformLocation("textureArray0"), GLint(0));
 
     // set fog uniforms
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "fog.color"), fog.r, fog.g, fog.b);
-    glUniform1f(glGetUniformLocation(outbuildshader.ID, "fog.fogstart"), GLfloat(fogstart));
-    glUniform1f(glGetUniformLocation(outbuildshader.ID, "fog.fogmiddle"), GLfloat(fogmiddle));
-    glUniform1f(glGetUniformLocation(outbuildshader.ID, "fog.fogend"), GLfloat(fogend));
+    glUniform3f(outbuildshader.uniformLocation("fog.color"), fog.r, fog.g, fog.b);
+    glUniform1f(outbuildshader.uniformLocation("fog.fogstart"), GLfloat(fogstart));
+    glUniform1f(outbuildshader.uniformLocation("fog.fogmiddle"), GLfloat(fogmiddle));
+    glUniform1f(outbuildshader.uniformLocation("fog.fogend"), GLfloat(fogend));
 
     GLfloat camera[3] {};
     camera[0] = (float)(pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f));
     camera[1] = (float)(pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f));
     camera[2] = (float)(pParty->pos.z + pParty->eyeLevel);
-    glUniform3fv(glGetUniformLocation(outbuildshader.ID, "CameraPos"), 1, &camera[0]);
+    glUniform3fv(outbuildshader.uniformLocation("CameraPos"), 1, &camera[0]);
 
 
     // sun lighting stuff
@@ -3618,15 +3643,15 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     ambient = 0.15 + (sinf(((ambient - 360.0f) * 2 * pi_double) / 1440) + 1) * 0.27f;
     float diffuseon = pWeather->bNight ? 0.0f : 1.0f;
 
-    glUniform3fv(glGetUniformLocation(outbuildshader.ID, "sun.direction"), 1, &pOutdoor->vSunlight.x);
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.ambient"), ambient, ambient, ambient);
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.diffuse"), diffuseon * (ambient + 0.3f), diffuseon * (ambient + 0.3f), diffuseon * (ambient + 0.3f));
-    glUniform3f(glGetUniformLocation(outbuildshader.ID, "sun.specular"), diffuseon * 0.35f * ambient, diffuseon * 0.28f * ambient, 0.0f);
+    glUniform3fv(outbuildshader.uniformLocation("sun.direction"), 1, &pOutdoor->vSunlight.x);
+    glUniform3f(outbuildshader.uniformLocation("sun.ambient"), ambient, ambient, ambient);
+    glUniform3f(outbuildshader.uniformLocation("sun.diffuse"), diffuseon * (ambient + 0.3f), diffuseon * (ambient + 0.3f), diffuseon * (ambient + 0.3f));
+    glUniform3f(outbuildshader.uniformLocation("sun.specular"), diffuseon * 0.35f * ambient, diffuseon * 0.28f * ambient, 0.0f);
 
     if (pParty->armageddon_timer) {
-        glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.ambient"), 1.0f, 0.0f, 0.0f);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.diffuse"), 1.0f, 0.0f, 0.0f);
-        glUniform3f(glGetUniformLocation(terrainshader.ID, "sun.specular"), 0.0f, 0.0f, 0.0f);
+        glUniform3f(terrainshader.uniformLocation("sun.ambient"), 1.0f, 0.0f, 0.0f);
+        glUniform3f(terrainshader.uniformLocation("sun.diffuse"), 1.0f, 0.0f, 0.0f);
+        glUniform3f(terrainshader.uniformLocation("sun.specular"), 0.0f, 0.0f, 0.0f);
     }
 
 
@@ -3647,13 +3672,13 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
         Colorf color = pMobileLightsStack->pLights[i].uLightColor.toColorf();
 
-        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
-        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
+        glUniform1f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
+        glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform1f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].sector").c_str()), 0);
+        glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+        glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
+        glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
+        glUniform1f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
         num_lights++;
     }
 
@@ -3673,12 +3698,12 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
         float lightrad = test.uRadius;
 
-        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), color.r, color.g, color.b);
-        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
+        glUniform1f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 1.0);
+        glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+        glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
+        glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].specular").c_str()), color.r, color.g, color.b);
+        glUniform1f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
 
         num_lights++;
     }
@@ -3700,12 +3725,12 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
         float lightrad = pMobileLightsStack->pLights[i].uRadius;
 
-        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
-        glUniform3f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), color.r, color.g, color.b);
-        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
+        glUniform1f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 2.0);
+        glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+        glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+        glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
+        glUniform3f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].specular").c_str()), color.r, color.g, color.b);
+        glUniform1f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].radius").c_str()), lightrad);
 
         num_lights++;
     }
@@ -3713,12 +3738,12 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     // blank the rest of the lights
     for (int blank = num_lights; blank < 20; blank++) {
         std::string slotnum = std::to_string(blank);
-        glUniform1f(glGetUniformLocation(outbuildshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 0.0);
+        glUniform1f(outbuildshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 0.0);
     }
 
 
     // toggle for water faces or not
-    glUniform1i(glGetUniformLocation(outbuildshader.ID, "watertiles"), GLint(1));
+    glUniform1i(outbuildshader.uniformLocation("watertiles"), GLint(1));
 
     glActiveTexture(GL_TEXTURE0);
 
@@ -3726,7 +3751,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         // skip if textures are empty
         //if (numoutbuildtexloaded[unit] > 0) {
             if (unit == 1) {
-                glUniform1i(glGetUniformLocation(outbuildshader.ID, "watertiles"), GLint(0));
+                glUniform1i(outbuildshader.uniformLocation("watertiles"), GLint(0));
             }
 
             // draw each set of triangles
@@ -3855,7 +3880,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
 
                 // kludge for getting lights in  visible sectors
-                pStationaryLightsStack->pLights[lightscnt].uSectorID = pIndoor->GetSector(test.vPosition.toInt());
+                pStationaryLightsStack->pLights[lightscnt].uSectorID = pIndoor->GetSector(test.vPosition);
 
                 if (pStationaryLightsStack->pLights[lightscnt].uSectorID == 0) cntnosect++;
             }
@@ -3919,6 +3944,9 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     attribflags |= 0x2000;
                 else if (face->uAttributes & FACE_FlowLeft)
                     attribflags |= 0x1000;
+
+                if (face->uAttributes & FACE_IsLava)
+                    attribflags |= 0x4000;
 
                 if (face->uAttributes & (FACE_OUTLINED | FACE_IsSecret))
                     attribflags |= 0x00010000;
@@ -4160,6 +4188,9 @@ void OpenGLRenderer::DrawIndoorFaces() {
                             else if (face->uAttributes & FACE_FlowLeft)
                                 attribflags |= 0x1000;
 
+                            if (face->uAttributes & FACE_IsLava)
+                                attribflags |= 0x4000;
+
                             if (face->uAttributes & FACE_OUTLINED || (face->uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
                                 attribflags |= 0x00010000;
 
@@ -4275,29 +4306,30 @@ void OpenGLRenderer::DrawIndoorFaces() {
         //glEnableVertexAttribArray(3);
         //glEnableVertexAttribArray(4);
 
-        glUseProgram(bspshader.ID);
+        bspshader.use();
 
         //// set projection
-        glUniformMatrix4fv(glGetUniformLocation(bspshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+        glUniformMatrix4fv(bspshader.uniformLocation("projection"), 1, GL_FALSE, &projmat[0][0]);
         //// set view
-        glUniformMatrix4fv(glGetUniformLocation(bspshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+        glUniformMatrix4fv(bspshader.uniformLocation("view"), 1, GL_FALSE, &viewmat[0][0]);
 
-        glUniform1f(glGetUniformLocation(bspshader.ID, "gamma"), gamma);
-        glUniform1i(glGetUniformLocation(bspshader.ID, "waterframe"), GLint(this->hd_water_current_frame));
-        // TODO(pskelton): check tickcount usage here
-        glUniform1i(glGetUniformLocation(bspshader.ID, "flowtimer"), GLint(platform->tickCount() >> 4));
+        glUniform1i(bspshader.uniformLocation("waterframe"), GLint(this->hd_water_current_frame));
+        glUniform1i(bspshader.uniformLocation("flowtimer"), GLint(pMiscTimer->time().realtimeMilliseconds() >> 4));
+        glUniform1i(bspshader.uniformLocation("flowtimerms"), GLint(pMiscTimer->time().realtimeMilliseconds()));
+
+        glUniform1f(bspshader.uniformLocation("gamma"), gamma);
 
         // set texture unit location
-        glUniform1i(glGetUniformLocation(bspshader.ID, "textureArray0"), GLint(0));
-        glUniform1i(glGetUniformLocation(bspshader.ID, "textureArray1"), GLint(1));
-        glUniform1i(glGetUniformLocation(bspshader.ID, "textureArray2"), GLint(2));
+        glUniform1i(bspshader.uniformLocation("textureArray0"), GLint(0));
+        glUniform1i(bspshader.uniformLocation("textureArray1"), GLint(1));
+        glUniform1i(bspshader.uniformLocation("textureArray2"), GLint(2));
 
 
         GLfloat camera[3] {};
         camera[0] = (float)(pParty->pos.x - pParty->_yawGranularity * cosf(2 * pi_double * pParty->_viewYaw / 2048.0f));
         camera[1] = (float)(pParty->pos.y - pParty->_yawGranularity * sinf(2 * pi_double * pParty->_viewYaw / 2048.0f));
         camera[2] = (float)(pParty->pos.z + pParty->eyeLevel);
-        glUniform3fv(glGetUniformLocation(bspshader.ID, "CameraPos"), 1, &camera[0]);
+        glUniform3fv(bspshader.uniformLocation("CameraPos"), 1, &camera[0]);
 
 
         // lighting stuff
@@ -4321,10 +4353,10 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
         float diffuseon = 0.0f;  // pWeather->bNight ? 0 : 1;
 
-        glUniform3fv(glGetUniformLocation(bspshader.ID, "sun.direction"), 1, &sunvec[0]);
-        glUniform3f(glGetUniformLocation(bspshader.ID, "sun.ambient"), ambient, ambient, ambient);
-        glUniform3f(glGetUniformLocation(bspshader.ID, "sun.diffuse"), diffuseon * (ambient + 0.3f), diffuseon * (ambient + 0.3f), diffuseon * (ambient + 0.3f));
-        glUniform3f(glGetUniformLocation(bspshader.ID, "sun.specular"), diffuseon * 1.0f, diffuseon * 0.8f, 0.0f);
+        glUniform3fv(bspshader.uniformLocation("sun.direction"), 1, &sunvec[0]);
+        glUniform3f(bspshader.uniformLocation("sun.ambient"), ambient, ambient, ambient);
+        glUniform3f(bspshader.uniformLocation("sun.diffuse"), diffuseon * (ambient + 0.3f), diffuseon * (ambient + 0.3f), diffuseon * (ambient + 0.3f));
+        glUniform3f(bspshader.uniformLocation("sun.specular"), diffuseon * 1.0f, diffuseon * 0.8f, 0.0f);
 
         // point lights - fspointlights
         // rest of lights stacking
@@ -4343,13 +4375,13 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
             Colorf color = pMobileLightsStack->pLights[i].uLightColor.toColorf();
 
-            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
-            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
+            glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
+            glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+            glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].sector").c_str()), 0);
+            glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+            glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
+            glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
+            glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
             num_lights++;
         }
 
@@ -4401,13 +4433,13 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
             Colorf color = test.uLightColor.toColorf();
 
-            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 1.0f);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), test.uSectorID);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
-            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
+            glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 1.0f);
+            glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+            glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].sector").c_str()), test.uSectorID);
+            glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+            glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
+            glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
+            glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
             num_lights++;
         }
 
@@ -4427,26 +4459,26 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
             Colorf color = pMobileLightsStack->pLights[i].uLightColor.toColorf();
 
-            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
-            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].sector").c_str()), 0);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
-            glUniform3f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
-            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
+            glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 2.0f);
+            glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].position").c_str()), x, y, z);
+            glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].sector").c_str()), 0);
+            glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].ambient").c_str()), color.r, color.g, color.b);
+            glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].diffuse").c_str()), color.r, color.g, color.b);
+            glUniform3f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].specular").c_str()), 0, 0, 0);
+            glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].radius").c_str()), test.uRadius);
             num_lights++;
         }
 
         // blank any lights not used
         for (int blank = num_lights; blank < 40; blank++) {
             std::string slotnum = std::to_string(blank);
-            glUniform1f(glGetUniformLocation(bspshader.ID, ("fspointlights[" + slotnum + "].type").c_str()), 0.0);
+            glUniform1f(bspshader.uniformLocation(("fspointlights[" + slotnum + "].type").c_str()), 0.0);
         }
 
 
 
         // toggle for water faces or not
-        glUniform1i(glGetUniformLocation(bspshader.ID, "watertiles"), GLint(1));
+        glUniform1i(bspshader.uniformLocation("watertiles"), GLint(1));
 
         glActiveTexture(GL_TEXTURE0);
 
@@ -4454,7 +4486,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
             // skip if textures are empty
             //if (numoutbuildtexloaded[unit] > 0) {
             if (unit == 1) {
-                glUniform1i(glGetUniformLocation(bspshader.ID, "watertiles"), GLint(0));
+                glUniform1i(bspshader.uniformLocation("watertiles"), GLint(0));
             }
 
             // draw each set of triangles
@@ -4617,12 +4649,77 @@ bool OpenGLRenderer::Initialize() {
 
         gladSetGLPostCallback(GL_Check_Errors);
 
-        _overlayRenderer = std::make_unique<NuklearOverlayRenderer>();
+        _initImGui();
 
         return Reinitialize(true);
     }
 
     return false;
+}
+
+void OpenGLRenderer::_initImGui() {
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    io.IniFilename = nullptr;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+
+    SDL_Window *sdlWindow = static_cast<SDL_Window *>(window->nativeHandle());
+    ImGui_ImplSDL2_InitForOpenGL(sdlWindow, openGLContext->nativeHandle());
+    ImGui_ImplOpenGL3_Init();
+
+    // Set ImGui Style
+    ImVec4 *colors = ImGui::GetStyle().Colors;
+    colors[ImGuiCol_Text] = ImVec4(1.00f, 1.00f, 1.00f, 1.00f);
+    colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+    colors[ImGuiCol_WindowBg] = ImVec4(0.06f, 0.06f, 0.06f, 0.94f);
+    colors[ImGuiCol_ChildBg] = ImVec4(1.00f, 1.00f, 1.00f, 0.00f);
+    colors[ImGuiCol_PopupBg] = ImVec4(0.08f, 0.08f, 0.08f, 0.94f);
+    colors[ImGuiCol_Border] = ImVec4(0.43f, 0.43f, 0.50f, 0.50f);
+    colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+    colors[ImGuiCol_FrameBg] = ImVec4(0.20f, 0.21f, 0.22f, 0.54f);
+    colors[ImGuiCol_FrameBgHovered] = ImVec4(0.40f, 0.40f, 0.40f, 0.40f);
+    colors[ImGuiCol_FrameBgActive] = ImVec4(0.18f, 0.18f, 0.18f, 0.67f);
+    colors[ImGuiCol_TitleBg] = ImVec4(0.04f, 0.04f, 0.04f, 1.00f);
+    colors[ImGuiCol_TitleBgActive] = ImVec4(0.29f, 0.29f, 0.29f, 1.00f);
+    colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.00f, 0.00f, 0.00f, 0.51f);
+    colors[ImGuiCol_MenuBarBg] = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
+    colors[ImGuiCol_ScrollbarBg] = ImVec4(0.02f, 0.02f, 0.02f, 0.53f);
+    colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.31f, 0.31f, 0.31f, 1.00f);
+    colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.41f, 0.41f, 0.41f, 1.00f);
+    colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.51f, 0.51f, 0.51f, 1.00f);
+    colors[ImGuiCol_CheckMark] = ImVec4(0.94f, 0.94f, 0.94f, 1.00f);
+    colors[ImGuiCol_SliderGrab] = ImVec4(0.51f, 0.51f, 0.51f, 1.00f);
+    colors[ImGuiCol_SliderGrabActive] = ImVec4(0.86f, 0.86f, 0.86f, 1.00f);
+    colors[ImGuiCol_Button] = ImVec4(0.44f, 0.44f, 0.44f, 0.40f);
+    colors[ImGuiCol_ButtonHovered] = ImVec4(0.46f, 0.47f, 0.48f, 1.00f);
+    colors[ImGuiCol_ButtonActive] = ImVec4(0.42f, 0.42f, 0.42f, 1.00f);
+    colors[ImGuiCol_Header] = ImVec4(0.70f, 0.70f, 0.70f, 0.31f);
+    colors[ImGuiCol_HeaderHovered] = ImVec4(0.70f, 0.70f, 0.70f, 0.80f);
+    colors[ImGuiCol_HeaderActive] = ImVec4(0.48f, 0.50f, 0.52f, 1.00f);
+    colors[ImGuiCol_Separator] = ImVec4(0.43f, 0.43f, 0.50f, 0.50f);
+    colors[ImGuiCol_SeparatorHovered] = ImVec4(0.72f, 0.72f, 0.72f, 0.78f);
+    colors[ImGuiCol_SeparatorActive] = ImVec4(0.51f, 0.51f, 0.51f, 1.00f);
+    colors[ImGuiCol_ResizeGrip] = ImVec4(0.91f, 0.91f, 0.91f, 0.25f);
+    colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.81f, 0.81f, 0.81f, 0.67f);
+    colors[ImGuiCol_ResizeGripActive] = ImVec4(0.46f, 0.46f, 0.46f, 0.95f);
+    colors[ImGuiCol_PlotLines] = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
+    colors[ImGuiCol_PlotLinesHovered] = ImVec4(1.00f, 0.43f, 0.35f, 1.00f);
+    colors[ImGuiCol_PlotHistogram] = ImVec4(0.73f, 0.60f, 0.15f, 1.00f);
+    colors[ImGuiCol_PlotHistogramHovered] = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
+    colors[ImGuiCol_TextSelectedBg] = ImVec4(0.87f, 0.87f, 0.87f, 0.35f);
+    colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.35f);
+    colors[ImGuiCol_DragDropTarget] = ImVec4(1.00f, 1.00f, 0.00f, 0.90f);
+    colors[ImGuiCol_NavHighlight] = ImVec4(0.60f, 0.60f, 0.60f, 1.00f);
+    colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
+}
+
+void OpenGLRenderer::_shutdownImGui() {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
 }
 
 void OpenGLRenderer::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
@@ -4721,86 +4818,6 @@ void OpenGLRenderer::FillRectFast(unsigned int uX, unsigned int uY, unsigned int
     return;
 }
 
-// gl shaders
-bool OpenGLRenderer::InitShaders() {
-    logger->info("initialising OpenGL shaders...");
-
-    std::string title = "CRITICAL ERROR: shader compilation failure";
-    std::string name = "Terrain";
-    std::string message = "shader failed to compile!\nPlease consult the log and consider issuing a bug report!";
-    terrainshader.build(name, "glterrain", OpenGLES);
-    if (terrainshader.ID == 0) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-
-    name = "Outdoor buildings";
-    outbuildshader.build(name, "gloutbuild", OpenGLES);
-    if (outbuildshader.ID == 0) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-
-    name = "Indoor BSP";
-    bspshader.build(name, "glbspshader", OpenGLES);
-    if (bspshader.ID == 0) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-
-    name = "Text";
-    textshader.build(name, "gltextshader", OpenGLES);
-    if (textshader.ID == 0) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-    textVAO = 0;
-
-    name = "Lines";
-    lineshader.build(name, "gllinesshader", OpenGLES);
-    if (lineshader.ID == 0) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-    lineVAO = 0;
-
-    name = "2D";
-    twodshader.build(name, "gltwodshader", OpenGLES);
-    if (twodshader.ID == 0) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-    twodVAO = 0;
-
-    name = "Billboards";
-    billbshader.build(name, "glbillbshader", OpenGLES);
-    if (billbshader.ID == 0) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-    billbVAO = 0;
-    palbuf = 0;
-
-    name = "Decals";
-    decalshader.build(name, "gldecalshader", OpenGLES);
-    if (decalshader.ID == 0) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-    decalVAO = 0;
-
-    name = "Forced perspective";
-    forcepershader.build(name, "glforcepershader", OpenGLES);
-    if (forcepershader.ID == 0) {
-        platform->showMessageBox(title, fmt::format("{} {}", name, message));
-        return false;
-    }
-    forceperVAO = 0;
-
-    logger->info("shaders have been compiled successfully!");
-    return true;
-}
-
 bool OpenGLRenderer::Reinitialize(bool firstInit) {
     BaseRenderer::Reinitialize(firstInit);
 
@@ -4883,10 +4900,8 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
 
     if (firstInit) {
         // initiate shaders
-        if (!InitShaders()) {
-            logger->warning("shader initialisation has failed!");
+        if (!ReloadShaders())
             return false;
-        }
     } // else {
 
     if (config->window.ReloadTex.value()) {
@@ -4904,86 +4919,117 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
     return BaseRenderer::Reinitialize(firstInit);
 }
 
-void OpenGLRenderer::ReloadShaders() {
-    logger->info("reloading Shaders...");
+bool OpenGLRenderer::ReloadShaders() {
+    logger->info("Reloading shaders...");
     glUseProgram(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    std::string name = "Terrain";
-    std::string message = "shader failed to reload!\nPlease consult the log and issue a bug report!";
-    if (!terrainshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
-    name = "Outdoor buildings";
-    if (!outbuildshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
     ReleaseTerrain();
-
-    name = "Indoor BSP";
-    if (!bspshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
     ReleaseBSP();
 
-    name = "Text";
-    if (!textshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
-    glDeleteVertexArrays(1, &textVAO);
-    glDeleteBuffers(1, &textVBO);
-    textVAO = textVBO = 0;
+    if (textVAO) {
+        glDeleteVertexArrays(1, &textVAO);
+        textVAO = 0;
+    }
+    if (textVBO) {
+        glDeleteBuffers(1, &textVBO);
+        textVBO = 0;
+    }
     textvertscnt = 0;
 
-    name = "Lines";
-    if (!lineshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
-    glDeleteVertexArrays(1, &lineVAO);
-    glDeleteBuffers(1, &lineVBO);
-    lineVAO = lineVBO = 0;
+    if (lineVAO) {
+        glDeleteVertexArrays(1, &lineVAO);
+        lineVAO = 0;
+    }
+    if (lineVBO) {
+        glDeleteBuffers(1, &lineVBO);
+        lineVBO = 0;
+    }
     linevertscnt = 0;
 
-    name = "2D";
-    if (!twodshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
-    glDeleteVertexArrays(1, &twodVAO);
-    glDeleteBuffers(1, &twodVBO);
-    twodVAO = twodVBO = 0;
+    if (twodVAO) {
+        glDeleteVertexArrays(1, &twodVAO);
+        twodVAO = 0;
+    }
+    if (twodVBO) {
+        glDeleteBuffers(1, &twodVBO);
+        twodVBO = 0;
+    }
     twodvertscnt = 0;
 
-    name = "Billboards";
-    if (!billbshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
-    glDeleteVertexArrays(1, &billbVAO);
-    glDeleteBuffers(1, &billbVBO);
-    billbVAO = billbVBO = 0;
-    glDeleteTextures(1, &paltex);
-    glDeleteBuffers(1, &palbuf);
-    paltex = palbuf = 0;
+    if (billbVAO) {
+        glDeleteVertexArrays(1, &billbVAO);
+        billbVAO = 0;
+    }
+    if (billbVBO) {
+        glDeleteBuffers(1, &billbVBO);
+        billbVBO = 0;
+    }
+    if (paltex) {
+        glDeleteTextures(1, &paltex);
+        paltex = 0;
+    }
+    if (palbuf) {
+        glDeleteBuffers(1, &palbuf);
+        palbuf = 0;
+    }
     billbstorecnt = 0;
 
-    name = "Decals";
-    if (!decalshader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
-    glDeleteVertexArrays(1, &decalVAO);
-    glDeleteBuffers(1, &decalVBO);
-    decalVAO = decalVBO = 0;
+    if (decalVAO) {
+        glDeleteVertexArrays(1, &decalVAO);
+        decalVAO = 0;
+    }
+    if (decalVBO) {
+        glDeleteBuffers(1, &decalVBO);
+        decalVBO = 0;
+    }
     numdecalverts = 0;
 
-    name = "Forced perspective";
-    if (!forcepershader.reload(name, OpenGLES))
-        logger->warning("{} {}", name, message);
-    glDeleteVertexArrays(1, &forceperVAO);
-    glDeleteBuffers(1, &forceperVBO);
-    forceperVAO = forceperVBO = 0;
+    if (forceperVAO) {
+        glDeleteVertexArrays(1, &forceperVAO);
+        forceperVAO = 0;
+    }
+    if (forceperVBO) {
+        glDeleteBuffers(1, &forceperVBO);
+        forceperVBO = 0;
+    }
     forceperstorecnt = 0;
 
-    if (_overlayRenderer) {
-        _overlayRenderer->reloadShaders(OpenGLES);
+    const std::initializer_list<std::tuple<OpenGLShader *, std::string_view, std::string_view>> shaders = {
+        {&terrainshader,    "glterrain",        "Terrain"},
+        {&outbuildshader,   "gloutbuild",       "Outdoor buildings"},
+        {&bspshader,        "glbspshader",      "Indoor BSP"},
+        {&textshader,       "gltextshader",     "Text"},
+        {&lineshader,       "gllinesshader",    "Lines"},
+        {&twodshader,       "gltwodshader",     "2D"},
+        {&billbshader,      "glbillbshader",    "Billboards"},
+        {&decalshader,      "gldecalshader",    "Decals"},
+        {&forcepershader,   "glforcepershader", "Forced perspective"}
+    };
+
+    for (const auto &[shader, fileName, readableName] : shaders) {
+        if (!shader->load(makeDataPath("shaders", fmt::format("{}.vert", fileName)), makeDataPath("shaders", fmt::format("{}.frag", fileName)), OpenGLES)) {
+            platform->showMessageBox("CRITICAL ERROR: shader compilation failure",
+                                     fmt::format("{} shader failed to compile!\nPlease consult the log and consider issuing a bug report!", readableName));
+            return false;
+        }
     }
+
+    logger->info("Shaders reloaded.");
+    return true;
 }
 
-void OpenGLRenderer::drawOverlays(nk_context *context) {
-    if (_overlayRenderer) {
-        _overlayRenderer->render(context, outputPresent, OpenGLES, &drawcalls);
-    }
+void OpenGLRenderer::beginOverlays() {
+    ImGui_ImplOpenGL3_NewFrame();
+    // we assume we're always running with SDL
+    ImGui_ImplSDL2_NewFrame();
+    ImGui::NewFrame();
+}
+
+void OpenGLRenderer::endOverlays() {
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void OpenGLRenderer::ReleaseTerrain() {
@@ -5122,10 +5168,10 @@ void OpenGLRenderer::DrawTwodVerts() {
     glEnableVertexAttribArray(3);
     glEnableVertexAttribArray(4);
 
-    glUseProgram(twodshader.ID);
+    twodshader.use();
 
     // set sampler to palette
-    glUniform1i(glGetUniformLocation(twodshader.ID, "palbuf"), GLint(1));
+    glUniform1i(twodshader.uniformLocation("palbuf"), GLint(1));
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_BUFFER, paltex);
     glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
@@ -5135,12 +5181,12 @@ void OpenGLRenderer::DrawTwodVerts() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     // set sampler to texure0
-    glUniform1i(glGetUniformLocation(twodshader.ID, "texture0"), GLint(0));
+    glUniform1i(twodshader.uniformLocation("texture0"), GLint(0));
 
     //// set projection
-    glUniformMatrix4fv(glGetUniformLocation(twodshader.ID, "projection"), 1, GL_FALSE, &projmat[0][0]);
+    glUniformMatrix4fv(twodshader.uniformLocation("projection"), 1, GL_FALSE, &projmat[0][0]);
     //// set view
-    glUniformMatrix4fv(glGetUniformLocation(twodshader.ID, "view"), 1, GL_FALSE, &viewmat[0][0]);
+    glUniformMatrix4fv(twodshader.uniformLocation("view"), 1, GL_FALSE, &viewmat[0][0]);
 
     int offset = 0;
     while (offset < twodvertscnt) {

@@ -6,14 +6,14 @@
 #include <string>
 
 #include "Engine/OurMath.h"
-#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/LodSpriteCache.h"
 
 #include "Library/Logger/Logger.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 
 SpriteFrameTable *pSpriteFrameTable;
 
@@ -164,14 +164,14 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
 //----- (0044D813) --------------------------------------------------------
 int SpriteFrameTable::FastFindSprite(std::string_view pSpriteName) {
     auto cmp = [this] (uint16_t index, std::string_view name) {
-        return noCaseLess(pSpriteSFrames[index].icon_name, name);
+        return ascii::noCaseLess(pSpriteSFrames[index].icon_name, name);
     };
 
     auto pos = std::lower_bound(pSpriteEFrames.begin(), pSpriteEFrames.end(), pSpriteName, cmp);
     if (pos == pSpriteEFrames.end())
         return 0;
 
-    return noCaseEquals(pSpriteSFrames[*pos].icon_name, pSpriteName) ? *pos : 0;
+    return ascii::noCaseEquals(pSpriteSFrames[*pos].icon_name, pSpriteName) ? *pos : 0;
 }
 
 //----- (0044D8D0) --------------------------------------------------------

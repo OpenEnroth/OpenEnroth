@@ -29,6 +29,9 @@ enum class QuestBit : uint16_t {
     QBIT_110 = 110,
     QBIT_114 = 114,
 
+    QBIT_120 = 120,
+    QBIT_123 = 123,
+
     QBIT_ESCAPED_EMERALD_ISLE = 136,
 
     QBIT_OBELISK_IN_HARMONDALE_FOUND = 164,

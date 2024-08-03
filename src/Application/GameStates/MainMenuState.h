@@ -1,16 +1,15 @@
 #pragma once
 
-#include <Library/Fsm/FSMState.h>
+#include <GUI/UI/UIMainMenu.h>
+#include <Library/Fsm/FsmState.h>
 
 #include <memory>
 
-class GUIWindow_MainMenu;
-
-class MainMenuState : public FSMState {
+class MainMenuState : public FsmState {
  public:
     MainMenuState();
-    virtual void update() override;
-    virtual void enter() override;
+    virtual FsmAction update() override;
+    virtual FsmAction enter() override;
     virtual void exit() override;
 
  private:

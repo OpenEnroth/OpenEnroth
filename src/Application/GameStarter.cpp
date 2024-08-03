@@ -9,7 +9,6 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/Random/Random.h"
 #include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
@@ -33,13 +32,15 @@
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/Platform/Null/NullPlatform.h"
 
+#include "Scripting/AudioBindings.h"
 #include "Scripting/ConfigBindings.h"
 #include "Scripting/OverlayBindings.h"
-#include "Scripting/GameLuaBindings.h"
+#include "Scripting/GameBindings.h"
 #include "Scripting/InputBindings.h"
 #include "Scripting/InputScriptEventHandler.h"
 #include "Scripting/LoggerBindings.h"
 #include "Scripting/PlatformBindings.h"
+#include "Scripting/RendererBindings.h"
 #include "Scripting/ScriptingSystem.h"
 
 #include "Utility/DataPath.h"
@@ -158,11 +159,13 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     // Init scripting system.
     _scriptingSystem = std::make_unique<ScriptingSystem>("scripts", "init.lua", *_application, *_rootLogSink);
     _scriptingSystem->addBindings<LoggerBindings>("log");
-    _scriptingSystem->addBindings<GameLuaBindings>("game");
+    _scriptingSystem->addBindings<GameBindings>("game");
     _scriptingSystem->addBindings<ConfigBindings>("config");
     _scriptingSystem->addBindings<PlatformBindings>("platform", *_application);
     _scriptingSystem->addBindings<InputBindings>("input", *_application->component<InputScriptEventHandler>());
     _scriptingSystem->addBindings<OverlayBindings>("overlay", *_overlaySystem);
+    _scriptingSystem->addBindings<AudioBindings>("audio");
+    _scriptingSystem->addBindings<RendererBindings>("renderer");
     _scriptingSystem->executeEntryPoint();
 }
 

@@ -1,15 +1,15 @@
 #include "ScriptingSystem.h"
 
-#include <Utility/DataPath.h>
-#include <Library/Logger/Logger.h>
-#include <Library/Logger/DistLogSink.h>
-#include <Library/Platform/Application/PlatformApplication.h>
-
 #include <string>
 #include <vector>
 #include <memory>
 #include <utility>
 #include <unordered_map>
+
+#include "Library/Logger/Logger.h"
+#include "Library/Logger/DistLogSink.h"
+#include "Library/Platform/Application/PlatformApplication.h"
+#include "Utility/DataPath.h"
 
 #include "IBindings.h"
 #include "InputScriptEventHandler.h"
@@ -38,7 +38,7 @@ void ScriptingSystem::executeEntryPoint() {
     try {
         _solState->script_file(makeDataPath(_scriptFolder, _entryPointFile));
     } catch (const sol::error &e) {
-        logger->error(ScriptingLogCategory, "An unexpected error has occurred: {}", e.what());
+        logger->warning(ScriptingLogCategory, "An unexpected error has occurred: {}", e.what());
     }
 }
 
@@ -57,37 +57,23 @@ void ScriptingSystem::_initBaseLibraries() {
     );
 }
 
-/**
- * @brief Internal Lua function used as package loader for the Bindings table.
- *
- * Usage in Lua:
- *   local gameBindings = require "bindings.game" -- If the module starts with 'bindings.' we try to load/create the binding table
- *   gameBindings.doSomething()
- *
- * @param luaState The Lua state.
- * @return int Returns 1 if the binding table is loaded, otherwise returns 0.
- *
- * @todo(Gerark) I'm asking in the sol2 repo if there's a way to avoid a lua_CFunction and use the sol2 approach instead.
- * Here's the question: [link to the question](https://github.com/ThePhD/sol2/issues/1601)
- */
-int _loadBindingTableThroughRequire(lua_State *luaState) {
-    std::string path = sol::stack::get<std::string>(luaState, 1);
-    std::string_view prefix = "bindings.";
-    if (path.starts_with(prefix)) {
-        // When requesting a module, Lua expects us to place a code chunk on the stack.
-        // We utilize loadbuffer to load this chunk, after which the Lua VM promptly executes it.
-        std::string script = fmt::format("return _createBindingTable('{}')", path);
-        luaL_loadbuffer(luaState, script.data(), script.size(), path.c_str());
-        return 1;
-    }
-    return 0;
-}
-
 void ScriptingSystem::_initPackageTable(std::string_view scriptFolder) {
     sol::table packageTable = (*_solState)["package"];
     packageTable["path"] = makeDataPath(scriptFolder, "?.lua");
     packageTable["cpath"] = ""; //Reset the path for any c loaders
-    _solState->add_package_loader(_loadBindingTableThroughRequire);
+
+    // Usage in Lua:
+    // local gameBindings = require "bindings.game" -- If the module starts with 'bindings.' we try to load/create the binding table.
+    // gameBindings.doSomething()
+    _solState->add_package_loader([this](const std::string &module) {
+        if (module.starts_with("bindings.")) {
+            return _solState->load(fmt::format("return _createBindingTable('{}')", module), module).get<sol::object>();
+        } else {
+            // Note that "\n\t" is needed here so that the error message is properly formatted, see `searchpath`
+            // function in lua sources.
+            return sol::make_object(*_solState, fmt::format("\n\tno bindings module '{}'", module));
+        }
+    });
 }
 
 void ScriptingSystem::_initBindingFunction() {

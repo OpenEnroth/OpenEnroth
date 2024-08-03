@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <algorithm> // For std::min.
 #include <string>
+#include <filesystem>
 
 #include "Utility/Exception.h"
 #include "Utility/UnicodeCrt.h"
@@ -24,7 +25,7 @@ FileInputStream::~FileInputStream() {
 void FileInputStream::open(std::string_view path) {
     assert(UnicodeCrt::isInitialized()); // Otherwise fopen on Windows will choke on UTF-8 paths.
 
-    _path = std::string(path);
+    _path = absolute(std::filesystem::path(path)).generic_string();
     _file = fopen(_path.c_str(), "rb");
     if (!_file)
         Exception::throwFromErrno(_path);
@@ -73,7 +74,11 @@ void FileInputStream::close() {
     closeInternal(true);
 }
 
-void FileInputStream::seek(size_t pos) {
+std::string FileInputStream::displayPath() const {
+    return _path;
+}
+
+void FileInputStream::seek(ssize_t pos) {
     assert(isOpen());
 
     if (fseeko(_file, 0, SEEK_END) != 0)
@@ -83,8 +88,7 @@ void FileInputStream::seek(size_t pos) {
     if (end == -1)
         Exception::throwFromErrno(_path);
 
-    if (pos > end)
-        pos = end; // Seek beyond EOF just seeks to EOF.
+    pos = std::clamp<ssize_t>(pos, 0, end); // Seek beyond EOF just seeks to EOF.
 
     if (fseeko(_file, pos, SEEK_SET) != 0)
         Exception::throwFromErrno(_path);
@@ -99,4 +103,5 @@ void FileInputStream::closeInternal(bool canThrow) {
     if (status != 0 && canThrow)
         Exception::throwFromErrno(_path);
     // TODO(captainurist): !canThrow => log OR attach
+    _path = {};
 }

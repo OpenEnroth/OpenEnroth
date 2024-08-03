@@ -10,13 +10,15 @@
 
 #include "FreeDeleter.h"
 
-class FileInputStream;
+class InputStream;
 
 /**
  * `Blob` is an abstraction that couples a contiguous memory region with the knowledge of how to deallocate it.
  *
  * Deallocation is type-erased (like it's done in `std::shared_ptr`), so you don't have to pass in deleter as
  * a template parameter.
+ *
+ * For debug and error reporting purposes, `Blob` also stores a string describing the data source.
  */
 class Blob final {
  public:
@@ -63,7 +65,8 @@ class Blob final {
 
     /**
      * @param path                      Path to a file.
-     * @return                          Blob that wraps the memory mapping of the provided file.
+     * @return                          Blob that wraps the memory mapping of the provided file, with display path
+     *                                  set to `path`.
      * @throws std::runtime_error       If file doesn't exist or on some other OS error.
      */
     [[nodiscard]] static Blob fromFile(std::string_view path);
@@ -109,12 +112,13 @@ class Blob final {
     [[nodiscard]] static Blob read(FILE *file, size_t size);
 
     /**
-     * @param file                      File to read from.
+     * @param stream                    Stream to read from.
      * @param size                      Number of bytes to read.
-     * @return                          Blob that owns the data that was read from the provided file.
+     * @return                          Blob that owns the data that was read from the provided file, with display path
+     *                                  set to the display path of the passed stream.
      * @throws Exception                If the provided number of bytes couldn't be read.
      */
-    [[nodiscard]] static Blob read(FileInputStream &file, size_t size);
+    [[nodiscard]] static Blob read(InputStream *stream, size_t size);
 
     /**
      * @param l                         First blob.
@@ -135,6 +139,7 @@ class Blob final {
         swap(l._data, r._data);
         swap(l._size, r._size);
         swap(l._state, r._state);
+        swap(l._displayPath, r._displayPath);
     }
 
     [[nodiscard]] size_t size() const {
@@ -161,8 +166,18 @@ class Blob final {
         return {static_cast<const char *>(_data), _size};
     }
 
+    [[nodiscard]] const std::string &displayPath() const {
+        return _displayPath;
+    }
+
+    Blob withDisplayPath(std::string_view displayPath) {
+        _displayPath = displayPath;
+        return std::move(*this);
+    }
+
  private:
     const void *_data = nullptr;
     size_t _size = 0;
     std::shared_ptr<void> _state;
+    std::string _displayPath;
 };

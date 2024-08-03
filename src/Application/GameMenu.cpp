@@ -172,7 +172,7 @@ void Menu::EventLoop() {
                 DoSavegame(pSavegameList->selectedSlot);
                 continue;
             case UIMSG_Game_OpenSaveGameDialog: {
-                if (pCurrentMapName == "d05.blv") {
+                if (engine->_currentLoadedMapId == MAP_ARENA) {
                     engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_ARENA);
                     pAudioPlayer->playUISound(SOUND_error);
                 } else {
@@ -293,9 +293,7 @@ void Menu::EventLoop() {
                     gamma_preview_image = nullptr;
                 }
 
-                render->SaveScreenshot("gamma.pcx", 155, 117);
-                gamma_preview_image = assets->getImage_PCXFromFile("gamma.pcx");
-
+                gamma_preview_image = GraphicsImage::Create(render->MakeViewportScreenshot(155, 117));
                 continue;
             }
             case UIMSG_ToggleBloodsplats:
@@ -459,7 +457,9 @@ void Menu::EventLoop() {
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 }
                 continue;
-
+            case UIMSG_QuickLoad:
+                QuickLoadGame();
+                break;
             default:
                 break;
         }
@@ -478,8 +478,7 @@ void Menu::MenuLoop() {
         gamma_preview_image = nullptr;
     }
 
-    render->SaveScreenshot("gamma.pcx", 155, 117);
-    gamma_preview_image = assets->getImage_PCXFromFile("gamma.pcx");
+    gamma_preview_image = GraphicsImage::Create(render->MakeViewportScreenshot(155, 117));
 
     pParty->resetCharacterEmotions();
 

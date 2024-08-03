@@ -14,6 +14,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
+#include "Engine/LOD.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Graphics/ParticleEngine.h"
 
@@ -113,7 +114,7 @@ GAME_TEST(Issues, Issue1115) {
     auto dialogueTape = tapes.dialogueType();
     auto levelTape = charTapes.levels();
     test.playTraceFromTestData("issue_1115.mm7", "issue_1115.json");
-    EXPECT_EQ(mapTape, tape("out02.odm", "d05.blv")); // Harmondale -> Arena.
+    EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_ARENA)); // Harmondale -> Arena.
     EXPECT_TRUE(dialogueTape.contains(DIALOGUE_ARENA_SELECT_LORD));
     EXPECT_EQ(levelTape, tape({21, 21, 21, 21}));
 }
@@ -186,9 +187,8 @@ GAME_TEST(Issues, Issue1191) {
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_DARK).level(), 0);
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
 
-    // TODO(captainurist): Uncomment when food issues (1226) resolved
-    // EXPECT_EQ(foodTape.delta(), -3);
-    // EXPECT_EQ(pParty->GetFood(), 7);
+    EXPECT_EQ(foodTape.delta(), -3);
+    EXPECT_EQ(pParty->GetFood(), 7);
 }
 
 GAME_TEST(Issues, Issue1196) {
@@ -205,11 +205,21 @@ GAME_TEST(Issues, Issue1197) {
     auto loc = tapes.map();
     auto deaths = tapes.deaths();
     test.playTraceFromTestData("issue_1197.mm7", "issue_1197.json");
-    EXPECT_TRUE(loc.contains("out01.odm")); // make it back to emerald
+    EXPECT_TRUE(loc.contains(MAP_EMERALD_ISLAND)); // make it back to emerald
     EXPECT_EQ(deaths.delta(), 1);
 }
 
 // 1200
+
+GAME_TEST(Issues, Issue1226) {
+    // Check that food consumed while resting on different tiles is correct
+    // Also check that baby dragon consumes only one additional food
+    auto loc = tapes.map();
+    auto foodTape = tapes.food();
+    test.playTraceFromTestData("issue_1226.mm7", "issue_1226.json");
+    EXPECT_EQ(loc, tape(MAP_LAND_OF_THE_GIANTS, MAP_CASTLE_HARMONDALE, MAP_HARMONDALE, MAP_CASTLE_HARMONDALE));
+    EXPECT_EQ(foodTape, tape(30, 25, 21, 17, 14, 11));
+}
 
 GAME_TEST(Issues, Issue1251a) {
     // Part A - test that wand damage matches vanilla damage should be in range (d6 per skill) 8-48 for novice 8 fireball wand
@@ -224,8 +234,10 @@ GAME_TEST(Issues, Issue1251a) {
 GAME_TEST(Issues, Issue1251b) {
     // Make sure charm wand doesn't assert
     auto charmedActors = actorTapes.countByBuff(ACTOR_BUFF_CHARM);
+    auto charmWands = tapes.hasItem(ITEM_ALACORN_WAND_OF_CHARMS);
     test.playTraceFromTestData("issue_1251b.mm7", "issue_1251b.json");
     EXPECT_EQ(charmedActors.delta(), 3);
+    EXPECT_EQ(charmWands, tape(true));
 }
 
 GAME_TEST(Issues, Issue1253) {
@@ -342,7 +354,7 @@ GAME_TEST(Issues, Issue1315) {
     auto stateTape = tapes.custom([] { return std::tuple(pParty->bTurnBasedModeOn, uGameState); });
     test.playTraceFromTestData("issue_1315.mm7", "issue_1315.json");
     EXPECT_EQ(deathsTape.delta(), +1);
-    EXPECT_EQ(mapTape, tape("out12.odm", "out02.odm")); // Land of the Giants -> Harmondale.
+    EXPECT_EQ(mapTape, tape(MAP_LAND_OF_THE_GIANTS, MAP_HARMONDALE)); // Land of the Giants -> Harmondale.
     EXPECT_EQ(stateTape, tape(std::tuple(false, GAME_STATE_PLAYING),
                               std::tuple(true, GAME_STATE_PLAYING),
                               std::tuple(false, GAME_STATE_PARTY_DIED), // Instant switch from turn-based & alive into realtime & dead,
@@ -403,9 +415,14 @@ GAME_TEST(Issues, Issue1340) {
     auto mapTape = tapes.map();
     auto statusTape = tapes.statusBar();
     auto screenTape = tapes.screen();
-    test.playTraceFromTestData("issue_1340.mm7", "issue_1340.json");
-    EXPECT_EQ(mapTape, tape("out01.odm", "d29.blv")); // Emerald Isle -> Castle Harmondale. Map change is important because
-    // we want to trigger map respawn on first visit.
+    test.playTraceFromTestData("issue_1340.mm7", "issue_1340.json", [] {
+        // Harmondale should not have been visited - check that the dlv data is the same as what's in games.lod.
+        Blob saveHarmondale = pSave_LOD->read("d29.dlv");
+        Blob origHarmondale = pGames_LOD->read("d29.dlv");
+        EXPECT_EQ(saveHarmondale.string_view(), origHarmondale.string_view());
+    });
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_CASTLE_HARMONDALE)); // Emerald Isle -> Castle Harmondale. Map change is important because
+                                                      // we want to trigger map respawn on first visit.
     EXPECT_TRUE(screenTape.contains(SCREEN_CHEST));
     EXPECT_GT(goldTape.delta(), 0); // Party should have picked some gold from the chest.
     EXPECT_FALSE(statusTape.contains("You found 0 gold!")); // No piles of 0 size.
@@ -434,7 +451,7 @@ GAME_TEST(Issues, Issue1342) {
     test.playTraceFromTestData("issue_1342.mm7", "issue_1342.json");
 
     // Emerald Isle -> Dragon Cave. Map change is important here because we need to trigger map respawn on first visit.
-    EXPECT_EQ(mapTape, tape("out01.odm", "d28.blv"));
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_DRAGONS_LAIR));
 
     EXPECT_GT(goldTape.delta(), 0); // We picked up some gold.
     EXPECT_EQ(pilesTape.max() - pilesTape.back(), 3); // Minus three small gold piles.
@@ -469,7 +486,7 @@ GAME_TEST(Issues, Issue1364) {
     auto statusTape = tapes.statusBar();
     auto screenTape = tapes.screen();
     test.playTraceFromTestData("issue_1364.mm7", "issue_1364.json");
-    EXPECT_EQ(mapTape, tape("out02.odm", "d05.blv")); // Harmondale -> Arena.
+    EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_ARENA)); // Harmondale -> Arena.
     EXPECT_TRUE(statusTape.contains("No saving in the Arena")); // Clicking the save button didn't work.
     EXPECT_TRUE(screenTape.contains(SCREEN_HOUSE)); // We have visited the stables.
     EXPECT_TRUE(screenTape.contains(SCREEN_MENU)); // Opened the game menu while in the Arena.

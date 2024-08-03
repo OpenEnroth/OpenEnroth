@@ -11,8 +11,8 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/BSPModel.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -30,7 +30,6 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/Spells/Spells.h"
-#include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Time/Timer.h"
@@ -51,7 +50,6 @@
 
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
-#include "Utility/String.h"
 
 #include "Library/Logger/Logger.h"
 
@@ -407,8 +405,7 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
         gamma_preview_image = nullptr;
     }
 
-    render->SaveScreenshot("gamma.pcx", 155, 117);
-    gamma_preview_image = assets->getImage_PCXFromFile("gamma.pcx");
+    gamma_preview_image = GraphicsImage::Create(render->MakeViewportScreenshot(155, 117));
 }
 
 //----- (00414D9A) --------------------------------------------------------
@@ -697,7 +694,6 @@ void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
 std::string GameUI_GetMinimapHintText() {
     double v3;            // st7@1
     int v7;               // eax@4
-    MapId pMapID;  // eax@14
     int global_coord_X;   // [sp+10h] [bp-1Ch]@1
     int global_coord_Y;   // [sp+14h] [bp-18h]@1
     int pY;      // [sp+1Ch] [bp-10h]@1
@@ -712,11 +708,10 @@ std::string GameUI_GetMinimapHintText() {
         (int64_t)((double)pParty->pos.y - (double)(pY - 74) * v3);
     if (uCurrentlyLoadedLevelType != LEVEL_OUTDOOR ||
         pOutdoor->pBModels.empty()) {
-        pMapID = pMapStats->GetMapInfo(pCurrentMapName);
-        if (pMapID == MAP_INVALID)
+        if (engine->_currentLoadedMapId == MAP_INVALID)
             result = "No Maze Info for this maze on file!";
         else
-            result = pMapStats->pInfos[pMapID].name;
+            result = pMapStats->pInfos[engine->_currentLoadedMapId].name;
     } else {
         for (BSPModel &model : pOutdoor->pBModels) {
             v7 = int_get_vector_length(
@@ -732,14 +727,14 @@ std::string GameUI_GetMinimapHintText() {
                         }
                     }
                 }
-                if (!result.empty()) return result;
+                if (!result.empty())
+                    return result;
             }
         }
-        pMapID = pMapStats->GetMapInfo(pCurrentMapName);
-        if (pMapID == MAP_INVALID)
+        if (engine->_currentLoadedMapId == MAP_INVALID)
             result = "No Maze Info for this maze on file!";
         else
-            result = pMapStats->pInfos[pMapID].name;
+            result = pMapStats->pInfos[engine->_currentLoadedMapId].name;
         return result;
     }
     return result;
@@ -923,7 +918,7 @@ void GameUI_WritePointedObjectStatusString() {
                     if (pLevelDecorations[pickedObjectID].IsInteractive())
                         pText = pNPCTopics[engine->_persistentVariables.decorVars[pLevelDecorations[pickedObjectID].eventVarId] + 380].pTopic; // campfire
                     else
-                        pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->field_20;
+                        pText = pDecorationList->GetDecoration(pLevelDecorations[pickedObjectID].uDecorationDescID)->type;
                     engine->_statusBar->setPermanent(pText);
                 } else {
                     std::string hintString = getEventHintString(pLevelDecorations[pickedObjectID].uEventID);
@@ -1529,10 +1524,10 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
         for (unsigned i = 0; i < uNumBlueFacesInBLVMinimap; ++i) {
             BLVMapOutline *pOutline = &pIndoor->pMapOutlines[pBlueFacesInBLVMinimapIDs[i]];
-            int pX = uCenterX + fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].x - (int)pParty->pos.x);
-            int pY = uCenterY - fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex1ID].y - (int)pParty->pos.y);
-            int pZ = uCenterX + fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].x - (int)pParty->pos.x);
-            int pW = uCenterY - fixpoint_mul(uZoom, pIndoor->pVertices[pOutline->uVertex2ID].y - (int)pParty->pos.y);
+            int pX = uCenterX + uZoom * (pIndoor->pVertices[pOutline->uVertex1ID].x - pParty->pos.x) / 65536.0f;
+            int pY = uCenterY - uZoom * (pIndoor->pVertices[pOutline->uVertex1ID].y - pParty->pos.y) / 65536.0f;
+            int pZ = uCenterX + uZoom * (pIndoor->pVertices[pOutline->uVertex2ID].x - pParty->pos.x) / 65536.0f;
+            int pW = uCenterY - uZoom * (pIndoor->pVertices[pOutline->uVertex2ID].y - pParty->pos.y) / 65536.0f;
             render->RasterLine2D(pX, pY, pZ, pW, ui_game_minimap_outline_color);
         }
     }
@@ -1697,7 +1692,7 @@ void GameUI_DrawTorchlightAndWizardEye() {
 void GameUI_DrawHiredNPCs() {
     signed int uFrameID;            // [sp+24h] [bp-18h]@19
 
-    if (bNoNPCHiring != 1) {
+    if (!isHirelingsBlockedOnMap(engine->_currentLoadedMapId)) {
         FlatHirelings buf;
         buf.Prepare();
 

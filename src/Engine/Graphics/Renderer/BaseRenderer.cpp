@@ -23,8 +23,8 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/ParticleEngine.h"
-#include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineGlobals.h"
@@ -596,30 +596,6 @@ float BaseRenderer::GetGamma() {
     return base + mult * level;
 }
 
-void BaseRenderer::SavePCXScreenshot() {
-    engine->config->settings.ScreenshotNumber.increment();
-    SaveWinnersCertificate(fmt::format("screenshot_{:05}.pcx", engine->config->settings.ScreenshotNumber.value()));
-}
-
-void BaseRenderer::SavePCXImage32(std::string_view filename, RgbaImageView image) {
-    // TODO(pskelton): add "Screenshots" folder?
-    FileOutputStream output(makeDataPath(filename));
-    output.write(pcx::encode(image).string_view());
-    output.close();
-}
-
-void BaseRenderer::SaveScreenshot(std::string_view filename, const unsigned int width, const unsigned int height) {
-    SavePCXImage32(filename, render->MakeScreenshot32(width, height));
-}
-
-Blob BaseRenderer::PackScreenshot(const unsigned int width, const unsigned int height) {
-    return pcx::encode(render->MakeScreenshot32(width, height));
-}
-
-GraphicsImage *BaseRenderer::TakeScreenshot(const unsigned int width, const unsigned int height) {
-    return GraphicsImage::Create(MakeScreenshot32(width, height));
-}
-
 void BaseRenderer::DrawTextureGrayShade(float a2, float a3, GraphicsImage *a4) {
     DrawMasked(a2, a3, a4, 1, colorTable.MediumGrey);
 }
@@ -657,8 +633,8 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
 
     float depth = 1000000.0;
     for (unsigned i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
-        if (a1->field_104[i].z < depth) {
-            depth = a1->field_104[i].z;
+        if (a1->field_104[i].pos.z < depth) {
+            depth = a1->field_104[i].pos.z;
         }
     }
 
@@ -676,14 +652,12 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
     pBillboardRenderListD3D[v5].pQuads[3].pos.z = 0.0f;
 
     for (unsigned int i = 0; i < (unsigned int)a1->uNumVertices; ++i) {
-        pBillboardRenderListD3D[v5].pQuads[i].pos.x = a1->field_104[i].x;
-        pBillboardRenderListD3D[v5].pQuads[i].pos.y = a1->field_104[i].y;
-        pBillboardRenderListD3D[v5].pQuads[i].pos.z = a1->field_104[i].z;
+        pBillboardRenderListD3D[v5].pQuads[i].pos = a1->field_104[i].pos;
 
-        float rhw = 1.f / a1->field_104[i].z;
-        float z = 1.f - 1.f / (a1->field_104[i].z * 1000.f / pCamera3D->GetFarClip());
+        float rhw = 1.f / a1->field_104[i].pos.z;
+        float z = 1.f - 1.f / (a1->field_104[i].pos.z * 1000.f / pCamera3D->GetFarClip());
 
-        double v10 = a1->field_104[i].z;
+        double v10 = a1->field_104[i].pos.z;
         v10 *= 1000.f / pCamera3D->GetFarClip();
 
         pBillboardRenderListD3D[v5].pQuads[i].rhw = rhw;
@@ -818,16 +792,6 @@ Sizei BaseRenderer::GetRenderDimensions() {
 
 Sizei BaseRenderer::GetPresentDimensions() {
     return outputPresent;
-}
-
-void BaseRenderer::SaveWinnersCertificate(std::string_view filePath) {
-    RgbaImage sPixels = flipVertically(ReadScreenPixels());
-
-    // save to disk
-    SavePCXImage32(filePath, sPixels);
-
-    // reverse input and save to texture for later
-    assets->winnerCert = GraphicsImage::Create(std::move(sPixels));
 }
 
 void BaseRenderer::updateRenderDimensions() {

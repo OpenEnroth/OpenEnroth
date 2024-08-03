@@ -43,7 +43,7 @@ GAME_TEST(Issues, Issue159) {
     // Exception when entering Tidewater Caverns
     auto mapTape = tapes.map();
     test.playTraceFromTestData("issue_159.mm7", "issue_159.json");
-    EXPECT_EQ(mapTape, tape("out13.odm", "d17.blv", "out13.odm"));
+    EXPECT_EQ(mapTape, tape(MAP_TATALIA, MAP_TIDEWATER_CAVERNS, MAP_TATALIA));
 }
 
 GAME_TEST(Issues, Issue163) {
@@ -122,7 +122,7 @@ GAME_TEST(Issues, Issue201) {
     auto daysTape = tapes.custom([] { return pParty->GetPlayingTime().toDays(); });
     test.playTraceFromTestData("issue_201.mm7", "issue_201.json");
     EXPECT_GT(healthTape.delta(), 0); // Party should heal.
-    EXPECT_EQ(mapTape, tape("out01.odm", "out02.odm")); // Emerald isle to Harmondale.
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_HARMONDALE)); // Emerald isle to Harmondale.
     EXPECT_EQ(daysTape.delta(), 7); // Time should advance by a week.
 }
 
@@ -308,25 +308,25 @@ GAME_TEST(Issues, Issue293a) {
     auto totalItemsTape = tapes.totalItemCount();
     auto conditionsTape = charTapes.conditions();
     test.playTraceFromTestData("issue_293a.mm7", "issue_293a.json", [] {
-        EXPECT_EQ(pParty->pCharacters[0].uMight, 30);
-        EXPECT_EQ(pParty->pCharacters[0].uIntelligence, 5);
-        EXPECT_EQ(pParty->pCharacters[0].uPersonality, 5);
-        EXPECT_EQ(pParty->pCharacters[0].uEndurance, 13);
-        EXPECT_EQ(pParty->pCharacters[0].uSpeed, 14);
-        EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 13);
-        EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
+        EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_MIGHT], 30);
+        EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE], 5);
+        EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_PERSONALITY], 5);
+        EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_ENDURANCE], 13);
+        EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_SPEED], 14);
+        EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_ACCURACY], 13);
+        EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_LUCK], 7);
     });
 
     EXPECT_EQ(totalItemsTape.delta(), +1);
     EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD, CONDITION_GOOD},
                                                {CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK, CONDITION_DISEASE_WEAK}));
-    EXPECT_EQ(pParty->pCharacters[0].uMight, 30);
-    EXPECT_EQ(pParty->pCharacters[0].uIntelligence, 7); // +2
-    EXPECT_EQ(pParty->pCharacters[0].uPersonality, 5);
-    EXPECT_EQ(pParty->pCharacters[0].uEndurance, 13);
-    EXPECT_EQ(pParty->pCharacters[0].uSpeed, 14);
-    EXPECT_EQ(pParty->pCharacters[0].uAccuracy, 15); // +2
-    EXPECT_EQ(pParty->pCharacters[0].uLuck, 7);
+    EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_MIGHT], 30);
+    EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE], 7); // +2
+    EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_PERSONALITY], 5);
+    EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_ENDURANCE], 13);
+    EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_SPEED], 14);
+    EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_ACCURACY], 15); // +2
+    EXPECT_EQ(pParty->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_LUCK], 7);
 }
 
 GAME_TEST(Issues, Issue293b) {
@@ -371,7 +371,7 @@ GAME_TEST(Prs, Pr314_742) {
     test.playTraceFromTestData("pr_314.mm7", "pr_314.json");
 
     for (int i = 0; i < 4; i++)
-        EXPECT_EQ(pParty->pCharacters[i].uLuck, 20);
+        EXPECT_EQ(pParty->pCharacters[i]._stats[CHARACTER_ATTRIBUTE_LUCK], 20);
 
     EXPECT_EQ(pParty->pCharacters[0].classType, CLASS_MONK);
     EXPECT_EQ(pParty->pCharacters[1].classType, CLASS_THIEF);
@@ -401,7 +401,7 @@ GAME_TEST(Issues, Issue331_679) {
     auto goldTape = tapes.gold();
     auto mapTape = tapes.map();
     test.playTraceFromTestData("issue_331.mm7", "issue_331.json");
-    EXPECT_EQ(mapTape, tape("out04.odm", "out02.odm", "out04.odm")); // We did travel.
+    EXPECT_EQ(mapTape, tape(MAP_TULAREAN_FOREST, MAP_HARMONDALE, MAP_TULAREAN_FOREST)); // We did travel.
 
     // #679: Loading autosave after travelling by stables / boat results in gold loss.
     EXPECT_EQ(goldTape.delta(), 0);
@@ -423,7 +423,7 @@ GAME_TEST(Issues, Issue355) {
     auto healthTape = charTapes.hps();
     test.playTraceFromTestData("issue_355.mm7", "issue_355.json");
     auto damageRange = healthTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
-    // 2d3+0 with a non-random engine can't roll 2 or 6, so all values should be in [3, 5]. Luck roll can drop this to [1..
+    // 2d3+0 with a sequential engine can't roll 2 or 6, so all values should be in [3, 5]. Luck roll can drop this to 1/2...
     EXPECT_EQ(damageRange, tape(3 /*1*/, 5));
 }
 
@@ -472,7 +472,7 @@ GAME_TEST(Issues, Issue403_970) {
     // Entering Lincoln shouldn't crash.
     auto mapTape = tapes.map();
     test.playTraceFromTestData("issue_403.mm7", "issue_403.json");
-    EXPECT_EQ(mapTape, tape("out15.odm", "d23.blv")); // Shoals -> Lincoln.
+    EXPECT_EQ(mapTape, tape(MAP_SHOALS, MAP_LINCOLN)); // Shoals -> Lincoln.
 
     // #970: Armor Class is wrong.
     EXPECT_EQ(pParty->pCharacters[0].GetActualAC(), 10);
@@ -532,7 +532,7 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     // should have saved a winner cert tex
     EXPECT_GT(certTape.size(), 1);
     // we should be teleported to harmondale
-    EXPECT_EQ(mapTape, tape("d30.blv", "out02.odm"));
+    EXPECT_EQ(mapTape, tape(MAP_CASTLE_LAMBENT, MAP_HARMONDALE));
     // ending message box was displayed.
     auto flatMessageBoxes = messageBoxesTape.flattened();
     EXPECT_EQ(flatMessageBoxes.size(), 1);

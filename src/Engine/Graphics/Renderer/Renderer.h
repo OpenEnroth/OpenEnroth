@@ -47,7 +47,6 @@ class Renderer {
     virtual void PresentBlackScreen() = 0;
 
     virtual RgbaImage ReadScreenPixels() = 0;
-    virtual void SaveWinnersCertificate(std::string_view filePath) = 0;
     virtual void ClearTarget(Color uColor) = 0;
     virtual void Present() = 0;
 
@@ -138,18 +137,16 @@ class Renderer {
 
     virtual bool AreRenderSurfacesOk() = 0;
 
-    virtual GraphicsImage *TakeScreenshot(unsigned int width, unsigned int height) = 0;
-    virtual void SaveScreenshot(std::string_view filename, unsigned int width,
-                                unsigned int height) = 0;
-
     /**
-     * @param width                         Final width of image to create.
-     * @param height                        Final height of image to create.
-     * @return                              Returns Blob containing packed pcx data and its size.
+     * Takes a screenshot of the game viewport, w/o the UI elements.
+     *
+     * @param width                         Required width
+     * @param height                        Required height.
+     * @return                              Taken screenshot image.
      */
-    virtual Blob PackScreenshot(unsigned int width, unsigned int height) = 0;
-    virtual void SavePCXScreenshot() = 0;
-    virtual RgbaImage MakeScreenshot32(int width, int height) = 0;
+    virtual RgbaImage MakeViewportScreenshot(int width, int height) = 0;
+
+    virtual RgbaImage MakeFullScreenshot() = 0;
 
     virtual std::vector<Actor *> getActorsInViewport(int pDepth) = 0;
 
@@ -180,12 +177,13 @@ class Renderer {
     virtual Sizei GetRenderDimensions() = 0;
     virtual Sizei GetPresentDimensions() = 0;
     virtual bool Reinitialize(bool firstInit = false) = 0;
-    virtual void ReloadShaders() = 0;
+    virtual bool ReloadShaders() = 0;
     virtual void DoRenderBillboards_D3D() = 0;
 
     virtual void flushAndScale() = 0;
     virtual void swapBuffers() = 0;
-    virtual void drawOverlays(nk_context *context) = 0;
+    virtual void beginOverlays() = 0;
+    virtual void endOverlays() = 0;
 
     std::shared_ptr<GameConfig> config = nullptr;
     int *pActiveZBuffer;

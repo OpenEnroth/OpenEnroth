@@ -5,7 +5,7 @@
 
 #include "Library/LodFormats/LodFormats.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
 
 LodTextureCache *pIcons_LOD = nullptr;
@@ -41,7 +41,7 @@ void LodTextureCache::releaseUnreserved() {
 }
 
 Texture_MM7 *LodTextureCache::loadTexture(std::string_view pContainer, bool useDummyOnError) {
-    std::string name = toLower(pContainer);
+    std::string name = ascii::toLower(pContainer);
 
     Texture_MM7 *result = valuePtr(_textureByName, name);
     if (result)

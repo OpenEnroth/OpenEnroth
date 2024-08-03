@@ -1,14 +1,16 @@
 #include "NuklearOverlayRenderer.h"
 
-#include <Library/Logger/Logger.h>
-#include <Engine/Graphics/Image.h>
-
 #include <memory>
 #include <string>
 
 #include <glad/gl.h> // NOLINT: not a C system header.
 #include <glm/glm.hpp>
+
 #include <nuklear_config.h> // NOLINT: not a C system header.
+
+#include "Library/Logger/Logger.h"
+#include "Engine/Graphics/Image.h"
+#include "Utility/DataPath.h"
 
 struct nk_vertex {
     float position[2]{};
@@ -21,11 +23,6 @@ struct nk_device {
     struct nk_draw_null_texture null;
     struct nk_font_atlas atlas;
     uint32_t vbo{}, vao{}, ebo{};
-    int32_t attrib_pos{};
-    int32_t attrib_uv{};
-    int32_t attrib_col{};
-    int32_t uniform_tex{};
-    int32_t uniform_proj{};
 };
 
 struct nk_state {
@@ -71,18 +68,11 @@ void NuklearOverlayRenderer::_initialize(nk_context *context) {
 }
 
 bool NuklearOverlayRenderer::_createDevice() {
-    _shader.build("nuklear", "glnuklear", _useOGLES);
-    if (_shader.ID == 0) {
-        logger->warning("Nuklear shader failed to compile!");
+    reloadShaders(_useOGLES);
+    if (!_shader.isValid())
         return false;
-    }
 
     nk_buffer_init_default(&_state->dev.cmds);
-    _state->dev.uniform_tex = glGetUniformLocation(_shader.ID, "Texture");
-    _state->dev.uniform_proj = glGetUniformLocation(_shader.ID, "ProjMtx");
-    _state->dev.attrib_pos = glGetAttribLocation(_shader.ID, "Position");
-    _state->dev.attrib_uv = glGetAttribLocation(_shader.ID, "TexCoord");
-    _state->dev.attrib_col = glGetAttribLocation(_shader.ID, "Color");
     {
         GLsizei vs = sizeof(struct nk_vertex);
         size_t vp = offsetof(struct nk_vertex, position);
@@ -97,13 +87,13 @@ bool NuklearOverlayRenderer::_createDevice() {
         glBindBuffer(GL_ARRAY_BUFFER, _state->dev.vbo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _state->dev.ebo);
 
-        glEnableVertexAttribArray((GLuint)_state->dev.attrib_pos);
-        glEnableVertexAttribArray((GLuint)_state->dev.attrib_uv);
-        glEnableVertexAttribArray((GLuint)_state->dev.attrib_col);
+        glEnableVertexAttribArray((GLuint)_attribPos);
+        glEnableVertexAttribArray((GLuint)_attribUv);
+        glEnableVertexAttribArray((GLuint)_attribCol);
 
-        glVertexAttribPointer((GLuint)_state->dev.attrib_pos, 2, GL_FLOAT, GL_FALSE, vs, (void *)vp);
-        glVertexAttribPointer((GLuint)_state->dev.attrib_uv, 2, GL_FLOAT, GL_FALSE, vs, (void *)vt);
-        glVertexAttribPointer((GLuint)_state->dev.attrib_col, 4, GL_UNSIGNED_BYTE, GL_TRUE, vs, (void *)vc);
+        glVertexAttribPointer((GLuint)_attribPos, 2, GL_FLOAT, GL_FALSE, vs, (void *)vp);
+        glVertexAttribPointer((GLuint)_attribUv, 2, GL_FLOAT, GL_FALSE, vs, (void *)vt);
+        glVertexAttribPointer((GLuint)_attribCol, 4, GL_UNSIGNED_BYTE, GL_TRUE, vs, (void *)vc);
     }
 
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -157,12 +147,14 @@ struct nk_tex_font *NuklearOverlayRenderer::_loadFont(const char *font_path, siz
 
 void NuklearOverlayRenderer::_cleanup() {
     if (_state) {
-        glDeleteTextures(1, &_defaultFont->texid);
-        delete _defaultFont;
+        if (_defaultFont) {
+            glDeleteTextures(1, &_defaultFont->texid);
+            delete _defaultFont;
+        }
 
         nk_font_atlas_clear(&_state->dev.atlas);
 
-        glDeleteProgram(_shader.ID);
+        _shader.release();
         glDeleteBuffers(1, &_state->dev.vbo);
         glDeleteBuffers(1, &_state->dev.ebo);
         glDeleteVertexArrays(1, &_state->dev.vao);
@@ -211,9 +203,9 @@ void NuklearOverlayRenderer::render(nk_context *context, const Sizei &outputPres
     glActiveTexture(GL_TEXTURE0);
 
     /* setup program */
-    glUseProgram(_shader.ID);
-    glUniform1i(_state->dev.uniform_tex, 0);
-    glUniformMatrix4fv(_state->dev.uniform_proj, 1, GL_FALSE, &ortho[0][0]);
+    _shader.use();
+    glUniform1i(_uniformTex, 0);
+    glUniformMatrix4fv(_uniformProj, 1, GL_FALSE, &ortho[0][0]);
     {
         /* convert from command queue into draw list and draw to screen */
         const struct nk_draw_command *cmd;
@@ -290,17 +282,11 @@ void NuklearOverlayRenderer::render(nk_context *context, const Sizei &outputPres
 }
 
 void NuklearOverlayRenderer::reloadShaders(bool useOGLES) {
-    if (_shader.ID != 0) {
-        std::string name = "Nuklear";
-        std::string message = "shader failed to reload!\nPlease consult the log and issue a bug report!";
-        if (!_shader.reload(name, useOGLES)) {
-            logger->warning("{} {}", name, message);
-        } else {
-            _state->dev.uniform_tex = glGetUniformLocation(_shader.ID, "Texture");
-            _state->dev.uniform_proj = glGetUniformLocation(_shader.ID, "ProjMtx");
-            _state->dev.attrib_pos = glGetAttribLocation(_shader.ID, "Position");
-            _state->dev.attrib_uv = glGetAttribLocation(_shader.ID, "TexCoord");
-            _state->dev.attrib_col = glGetAttribLocation(_shader.ID, "Color");
-        }
+    if (_shader.load(makeDataPath("shaders", "glnuklear.vert"), makeDataPath("shaders", "glnuklear.frag"), useOGLES)) {
+        _uniformTex = _shader.uniformLocation("Texture");
+        _uniformProj = _shader.uniformLocation("ProjMtx");
+        _attribPos = _shader.attribLocation("Position");
+        _attribUv = _shader.attribLocation("TexCoord");
+        _attribCol = _shader.attribLocation("Color");
     }
 }

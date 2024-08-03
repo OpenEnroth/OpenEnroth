@@ -27,8 +27,10 @@
 #include "GUI/GUIMessageQueue.h"
 
 #include "Library/Lod/LodReader.h"
+#include "Library/Logger/Logger.h"
 #include "Library/Snapshots/SnapshotSerialization.h"
 
+#include "Utility/String/Ascii.h"
 #include "Utility/DataPath.h"
 
 using Io::TextInputType;
@@ -176,7 +178,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
         pLODFile.open(str, LOD_ALLOW_DUPLICATES);
         deserialize(pLODFile.read("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
 
-        if (noCaseEquals(pSavegameList->pFileList[i], localization->GetString(LSTR_AUTOSAVE_MM7))) {
+        if (ascii::noCaseEquals(pSavegameList->pFileList[i], localization->GetString(LSTR_AUTOSAVE_MM7))) { // TODO(captainurist): #unicode might not be ascii
             pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_AUTOSAVE);
         }
 
@@ -467,6 +469,18 @@ void MainMenuLoad_EventLoop() {
             newlistpost = std::clamp(newlistpost, 0, (param - 7));
             pSavegameList->saveListPosition = newlistpost;
             pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+            break;
+        }
+        case UIMSG_QuickLoad: {
+            int slot = GetQuickSaveSlot();
+            if (slot != -1) {
+                pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+                pSavegameList->selectedSlot = slot;
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
+            } else {
+                logger->error("QuickLoadGame:: No quick save could be found!");
+                pAudioPlayer->playUISound(SOUND_error);
+            }
             break;
         }
         default:

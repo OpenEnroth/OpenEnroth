@@ -9,7 +9,7 @@ local function showPartyConditions()
         local info = Game.party.getCharacterInfo(i, { "condition", "name" })
         local conditionString = ""
         for key, _ in pairs(info.condition) do
-            conditionString = conditionString .. Utilities.enumToString(Game.CharacterCondition, key) .. " "
+            conditionString = conditionString .. enumToString(Game.CharacterCondition, key) .. " "
         end
 
         if Utilities.isEmpty(conditionString) then
@@ -28,7 +28,7 @@ end
 local function setCondition(conditionName, characterIndex)
     characterIndex = CommandUtilities.characterOrCurrent(characterIndex)
 
-    Game.party.setCharacterInfo(characterIndex, { condition = Game.CharacterCondition[conditionName] })
+    Game.party.setCharacterInfo(characterIndex, { condition = stringToEnum(Game.CharacterCondition, conditionName) })
     local info = Game.party.getCharacterInfo(characterIndex, { "name" })
 
     local message = "Set condition " .. conditionName .. " to " .. info.name
@@ -44,7 +44,7 @@ local function clearCondition(conditionName, characterIndex)
         return "All conditions cleared", true
     else
         characterIndex = CommandUtilities.characterOrCurrent(characterIndex)
-        Game.party.clearCondition(characterIndex, Game.CharacterCondition[conditionName])
+        Game.party.clearCondition(characterIndex, stringToEnum(Game.CharacterCondition, conditionName))
         return "Condition " .. conditionName .. " cleared", true
     end
 end

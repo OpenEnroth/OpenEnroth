@@ -9,12 +9,16 @@ set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 add_subdirectory(fast_float)
 add_subdirectory(glm)
 add_subdirectory(magic_enum)
-add_subdirectory(nuklear)
 add_subdirectory(cli11)
 add_subdirectory(nlohmann_json)
 add_subdirectory(mio)
-add_subdirectory(glob)
 add_subdirectory(sol2)
+add_subdirectory(imgui)
+
+# glob
+# not adding a subdirectory because it will download more libraries at build tree generaion stage
+add_library(Glob INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/glob/single_include/glob/glob.hpp)
+target_include_directories(Glob INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/glob/single_include)
 
 # fmt
 add_subdirectory(fmt)
@@ -32,10 +36,10 @@ add_subdirectory(luajit)
 target_include_directories(libluajit INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/luajit/luajit/src)
 set_target_properties(libluajit PROPERTIES COMPILE_FLAGS "${CMAKE_C_FLAGS}" LINK_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}") # Make it compile under x86.
 
-# mini
-add_library(mini INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/mini/src/mini/ini.h)
-add_library(mini::mini ALIAS mini)
-target_include_directories(mini INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/mini/src)
+# inifile_cpp, would rather not use add_subdirectory
+add_library(inicpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/inifile_cpp/include/inicpp.h)
+target_include_directories(inicpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/inifile_cpp/include)
+add_library(inicpp::inicpp ALIAS inicpp)
 
 # spdlog
 set(SPDLOG_FMT_EXTERNAL ON)
@@ -46,7 +50,7 @@ add_subdirectory(spdlog)
 # googletest
 if(OE_BUILD_TESTS)
     set(INSTALL_GTEST OFF)
-    set(BUILD_GMOCK OFF)
+    set(BUILD_GMOCK ON)
     add_subdirectory(googletest)
 endif()
 

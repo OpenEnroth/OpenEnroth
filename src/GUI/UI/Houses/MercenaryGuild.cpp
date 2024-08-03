@@ -59,7 +59,7 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
             // TODO(captainurist): #mm6 this is MM6 legacy, and this decompiled code doesn't look sane.
             //                     Reimplement properly once we get to MM6.
             // if ( !*(&byte_4ED94C[37 * v1->uClass / 3] + dword_F8B19C)
-            //|| (v6 = (short *)(&pParty->activeCharacter().uIntelligence + _currentDialogue),
+            //|| (v6 = (short *)(&pParty->activeCharacter()._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] + _currentDialogue),
             //    *(short *)v6))
             pAudioPlayer->playUISound(SOUND_error);
         } else {

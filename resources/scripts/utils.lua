@@ -49,17 +49,81 @@ end
 --- local result = enumToString(Game.SkillType, 2)
 --- The value of variable "result" is "Dagger"
 ---
----@param enumTable table<string, integer> - The enum table ( ex: Game.SkillType, Game.SkillMastery )
----@param valueToConvert integer - The input is the enumeration value
+---@param enumTable any - The enum table ( ex: Game.SkillType, Game.SkillMastery )
+---@param value any
 ---@return string
-Utilities.enumToString = function (enumTable, valueToConvert)
+function enumToString(enumTable, value)
+    ---@cast enumTable table<string, any>
     for k, v in pairs(enumTable) do
-        if v == valueToConvert then
+        if v == value then
             return k
         end
     end
 
     return ""
+end
+
+---@param enumTable any - The enum table ( ex: Game.SkillType, Game.SkillMastery )
+---@param valueStr string
+---@return any
+function stringToEnum(enumTable, valueStr)
+    ---@cast enumTable table<string, any>
+    for k, v in pairs(enumTable) do
+        if k == valueStr then
+            return v
+        end
+    end
+
+    return 0
+end
+
+---@class Rect
+---@field x number
+---@field y number
+---@field w number
+---@field h number
+
+---Create a table with x,y,w,h fields
+---@param x number
+---@param y number
+---@param w number
+---@param h number
+---@return Rect
+Utilities.rect = function (x, y, w, h)
+    return {
+        x = x,
+        y = y,
+        w = w,
+        h = h
+    }
+end
+
+---@class Color
+---@field r number
+---@field g number
+---@field b number
+---@field a number
+
+---Create a table with r,g,b,a fields
+---@param r number
+---@param g number
+---@param b number
+---@param a number
+---@return Color
+Utilities.color = function (r, g, b, a)
+    return {
+        r = r,
+        g = g,
+        b = b,
+        a = a
+    }
+end
+
+---@param table table<any, any>
+Utilities.printTable = function (table)
+    for k, v in pairs(table) do
+        print(k, v)
+    end
 end
 
 return Utilities

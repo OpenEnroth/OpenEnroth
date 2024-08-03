@@ -4,7 +4,7 @@
 #include <utility>
 #include <mutex>
 
-#include "Utility/Format.h"
+#include "Utility/String/Format.h"
 
 #include "LogCategory.h"
 #include "LogEnums.h"

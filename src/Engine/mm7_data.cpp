@@ -4,81 +4,81 @@
 #include <vector>
 
 #include "Engine/Graphics/Viewport.h"
-#include "Engine/stru160.h"
 #include "OurMath.h"
 
 Viewport *pViewport = new Viewport;
 ViewingParams *viewparams = new ViewingParams;
 
-std::array<stru160, 66> array_4EB8B8 = {  // vertices for spheres
-    {stru160(0.0000000f, 0.0000000f, 1.0000000f),
-     stru160(0.0000000f, 0.3826830f, 0.9238799f),
-     stru160(0.3826830f, 0.0000000f, 0.9238799f),
-     stru160(0.4082480f, 0.4082480f, 0.8164970f),
-     stru160(0.0000000f, 0.7071070f, 0.7071070f),
-     stru160(0.7071070f, 0.0000000f, 0.7071070f),
-     stru160(0.4082480f, 0.8164970f, 0.4082480f),
-     stru160(0.8164970f, 0.4082480f, 0.4082480f),
-     stru160(0.7071070f, 0.7071070f, 0.0000000f),
-     stru160(0.0000000f, 0.9238799f, 0.3826830f),
-     stru160(0.3826830f, 0.9238799f, 0.0000000f),
-     stru160(0.0000000f, 1.0000000f, 0.0000000f),
-     stru160(0.9238799f, 0.3826830f, 0.0000000f),
-     stru160(0.9238799f, 0.0000000f, 0.3826830f),
-     stru160(1.0000000f, 0.0000000f, 0.0000000f),
-     stru160(0.0000000f, -0.3826830f, 0.9238799f),
-     stru160(0.4082480f, -0.4082480f, 0.8164970f),
-     stru160(0.0000000f, -0.7071070f, 0.7071070f),
-     stru160(0.8164970f, -0.4082480f, 0.4082480f),
-     stru160(0.4082480f, -0.8164970f, 0.4082480f),
-     stru160(0.7071070f, -0.7071070f, 0.0000000f),
-     stru160(0.9238799f, -0.3826830f, 0.0000000f),
-     stru160(0.3826830f, -0.9238799f, 0.0000000f),
-     stru160(0.0000000f, -0.9238799f, 0.3826830f),
-     stru160(0.0000000f, -1.0000000f, 0.0000000f),
-     stru160(-0.3826830f, 0.0000000f, 0.9238799f),
-     stru160(-0.4082480f, -0.4082480f, 0.8164970f),
-     stru160(-0.7071070f, 0.0000000f, 0.7071070f),
-     stru160(-0.4082480f, -0.8164970f, 0.4082480f),
-     stru160(-0.8164970f, -0.4082480f, 0.4082480f),
-     stru160(-0.7071070f, -0.7071070f, 0.0000000f),
-     stru160(-0.3826830f, -0.9238799f, 0.0000000f),
-     stru160(-0.9238799f, -0.3826830f, 0.0000000f),
-     stru160(-0.9238799f, 0.0000000f, 0.3826830f),
-     stru160(-1.0000000f, 0.0000000f, 0.0000000f),
-     stru160(-0.4082480f, 0.4082480f, 0.8164970f),
-     stru160(-0.8164970f, 0.4082480f, 0.4082480f),
-     stru160(-0.4082480f, 0.8164970f, 0.4082480f),
-     stru160(-0.7071070f, 0.7071070f, 0.0000000f),
-     stru160(-0.9238799f, 0.3826830f, 0.0000000f),
-     stru160(-0.3826830f, 0.9238799f, 0.0000000f),
-     stru160(0.0000000f, 0.0000000f, -1.0000000f),
-     stru160(0.0000000f, 0.3826830f, -0.9238799f),
-     stru160(0.3826830f, 0.0000000f, -0.9238799f),
-     stru160(0.4082480f, 0.4082480f, -0.8164970f),
-     stru160(0.0000000f, 0.7071070f, -0.7071070f),
-     stru160(0.7071070f, 0.0000000f, -0.7071070f),
-     stru160(0.4082480f, 0.8164970f, -0.4082480f),
-     stru160(0.8164970f, 0.4082480f, -0.4082480f),
-     stru160(0.0000000f, 0.9238799f, -0.3826830f),
-     stru160(0.9238799f, 0.0000000f, -0.3826830f),
-     stru160(0.0000000f, -0.3826830f, -0.9238799f),
-     stru160(0.4082480f, -0.4082480f, -0.8164970f),
-     stru160(0.0000000f, -0.7071070f, -0.7071070f),
-     stru160(0.8164970f, -0.4082480f, -0.4082480f),
-     stru160(0.4082480f, -0.8164970f, -0.4082480f),
-     stru160(0.0000000f, -0.9238799f, -0.3826830f),
-     stru160(-0.3826830f, 0.0000000f, -0.9238799f),
-     stru160(-0.4082480f, -0.4082480f, -0.8164970f),
-     stru160(-0.7071070f, 0.0000000f, -0.7071070f),
-     stru160(-0.4082480f, -0.8164970f, -0.4082480f),
-     stru160(-0.8164970f, -0.4082480f, -0.4082480f),
-     stru160(-0.9238799f, 0.0000000f, -0.3826830f),
-     stru160(-0.4082480f, 0.4082480f, -0.8164970f),
-     stru160(-0.8164970f, 0.4082480f, -0.4082480f),
-     stru160(-0.4082480f, 0.8164970f, -0.4082480f)}};
-std::array<stru160, 128> array_4EBBD0;
-std::array<int32_t, 128 * 3> array_4EBBD0_x = {  // indicies for triangle in sphere
+// TODO(pskelton): move me - to spellfxrendere.h?
+std::array<Vec3f, 66> sphereVertPos = {  // vertices for spheres
+    {Vec3f(0.0000000f, 0.0000000f, 1.0000000f),
+     Vec3f(0.0000000f, 0.3826830f, 0.9238799f),
+     Vec3f(0.3826830f, 0.0000000f, 0.9238799f),
+     Vec3f(0.4082480f, 0.4082480f, 0.8164970f),
+     Vec3f(0.0000000f, 0.7071070f, 0.7071070f),
+     Vec3f(0.7071070f, 0.0000000f, 0.7071070f),
+     Vec3f(0.4082480f, 0.8164970f, 0.4082480f),
+     Vec3f(0.8164970f, 0.4082480f, 0.4082480f),
+     Vec3f(0.7071070f, 0.7071070f, 0.0000000f),
+     Vec3f(0.0000000f, 0.9238799f, 0.3826830f),
+     Vec3f(0.3826830f, 0.9238799f, 0.0000000f),
+     Vec3f(0.0000000f, 1.0000000f, 0.0000000f),
+     Vec3f(0.9238799f, 0.3826830f, 0.0000000f),
+     Vec3f(0.9238799f, 0.0000000f, 0.3826830f),
+     Vec3f(1.0000000f, 0.0000000f, 0.0000000f),
+     Vec3f(0.0000000f, -0.3826830f, 0.9238799f),
+     Vec3f(0.4082480f, -0.4082480f, 0.8164970f),
+     Vec3f(0.0000000f, -0.7071070f, 0.7071070f),
+     Vec3f(0.8164970f, -0.4082480f, 0.4082480f),
+     Vec3f(0.4082480f, -0.8164970f, 0.4082480f),
+     Vec3f(0.7071070f, -0.7071070f, 0.0000000f),
+     Vec3f(0.9238799f, -0.3826830f, 0.0000000f),
+     Vec3f(0.3826830f, -0.9238799f, 0.0000000f),
+     Vec3f(0.0000000f, -0.9238799f, 0.3826830f),
+     Vec3f(0.0000000f, -1.0000000f, 0.0000000f),
+     Vec3f(-0.3826830f, 0.0000000f, 0.9238799f),
+     Vec3f(-0.4082480f, -0.4082480f, 0.8164970f),
+     Vec3f(-0.7071070f, 0.0000000f, 0.7071070f),
+     Vec3f(-0.4082480f, -0.8164970f, 0.4082480f),
+     Vec3f(-0.8164970f, -0.4082480f, 0.4082480f),
+     Vec3f(-0.7071070f, -0.7071070f, 0.0000000f),
+     Vec3f(-0.3826830f, -0.9238799f, 0.0000000f),
+     Vec3f(-0.9238799f, -0.3826830f, 0.0000000f),
+     Vec3f(-0.9238799f, 0.0000000f, 0.3826830f),
+     Vec3f(-1.0000000f, 0.0000000f, 0.0000000f),
+     Vec3f(-0.4082480f, 0.4082480f, 0.8164970f),
+     Vec3f(-0.8164970f, 0.4082480f, 0.4082480f),
+     Vec3f(-0.4082480f, 0.8164970f, 0.4082480f),
+     Vec3f(-0.7071070f, 0.7071070f, 0.0000000f),
+     Vec3f(-0.9238799f, 0.3826830f, 0.0000000f),
+     Vec3f(-0.3826830f, 0.9238799f, 0.0000000f),
+     Vec3f(0.0000000f, 0.0000000f, -1.0000000f),
+     Vec3f(0.0000000f, 0.3826830f, -0.9238799f),
+     Vec3f(0.3826830f, 0.0000000f, -0.9238799f),
+     Vec3f(0.4082480f, 0.4082480f, -0.8164970f),
+     Vec3f(0.0000000f, 0.7071070f, -0.7071070f),
+     Vec3f(0.7071070f, 0.0000000f, -0.7071070f),
+     Vec3f(0.4082480f, 0.8164970f, -0.4082480f),
+     Vec3f(0.8164970f, 0.4082480f, -0.4082480f),
+     Vec3f(0.0000000f, 0.9238799f, -0.3826830f),
+     Vec3f(0.9238799f, 0.0000000f, -0.3826830f),
+     Vec3f(0.0000000f, -0.3826830f, -0.9238799f),
+     Vec3f(0.4082480f, -0.4082480f, -0.8164970f),
+     Vec3f(0.0000000f, -0.7071070f, -0.7071070f),
+     Vec3f(0.8164970f, -0.4082480f, -0.4082480f),
+     Vec3f(0.4082480f, -0.8164970f, -0.4082480f),
+     Vec3f(0.0000000f, -0.9238799f, -0.3826830f),
+     Vec3f(-0.3826830f, 0.0000000f, -0.9238799f),
+     Vec3f(-0.4082480f, -0.4082480f, -0.8164970f),
+     Vec3f(-0.7071070f, 0.0000000f, -0.7071070f),
+     Vec3f(-0.4082480f, -0.8164970f, -0.4082480f),
+     Vec3f(-0.8164970f, -0.4082480f, -0.4082480f),
+     Vec3f(-0.9238799f, 0.0000000f, -0.3826830f),
+     Vec3f(-0.4082480f, 0.4082480f, -0.8164970f),
+     Vec3f(-0.8164970f, 0.4082480f, -0.4082480f),
+     Vec3f(-0.4082480f, 0.8164970f, -0.4082480f)}};
+
+std::array<int32_t, 128 * 3> sphereVertInd = {  // indicies for triangle in sphere
     {0x00000000, 0x00000001, 0x00000002, 0x00000001, 0x00000003, 0x00000002,
      0x00000001, 0x00000004, 0x00000003, 0x00000003, 0x00000005, 0x00000002,
      0x00000004, 0x00000006, 0x00000003, 0x00000006, 0x00000007, 0x00000003,
@@ -2393,8 +2393,8 @@ IndexedArray<IndexedArray<CharacterSkillMastery, CHARACTER_SKILL_FIRST, CHARACTE
 }};
 
 int ai_arrays_size;
-std::array<Pid, 500> ai_near_actors_targets_pid;
-std::array<unsigned int, 500> ai_near_actors_ids;
+std::vector<Pid> ai_near_actors_targets_pid;
+std::vector<unsigned int> ai_near_actors_ids;
 
 char byte_4FAA24;  // turn over break??
 // HWND dword_4FAA28; // idb
@@ -2410,8 +2410,6 @@ SpellId dword_507B00_spell_info_to_draw_in_popup;
 int dword_507CC0_activ_ch;
 bool OpenedTelekinesis;
 int enchantingActiveCharacter;
-unsigned int uIconID_TurnHour;
-int uIconID_CharacterFrame;  // idb
 int uSpriteID_Spell11;  // idb
 bool IsEnchantingInProgress;
 Duration ItemEnchantmentTimer;
@@ -2428,8 +2426,6 @@ std::array<GraphicsImage *, 14> party_buff_icons;
 unsigned int uIconIdx_FlySpell;
 unsigned int uIconIdx_WaterWalk;
 
-Actor *pDialogue_SpeakingActor;
-int sDialogue_SpeakingActorNPC_ID;
 int uCurrentHouse_Animation;
 std::string branchless_dialogue_str;
 int dword_5B65C4_cancelEventProcessing;
@@ -2443,18 +2439,18 @@ int bDialogueUI_InitializeActor_NPC_ID;
 std::array<char, 777> byte_5E4C15;
 
 int uDefaultTravelTime_ByFoot;
+
+// TODO(pskelton): can we drop these fog globals?
 MapWeatherFlags day_attrib;
 int day_fogrange_1; // fog start dist
-int day_fogrange_2; // fog end dist
-MapId dword_6BE13C_uCurrentlyLoadedLocationID;
+int day_fogrange_2; // fog mid dist
+int day_fogrange_3; // fog end dist
+
 float fWalkSpeedMultiplier = 1.0f;
 float fBackwardWalkSpeedMultiplier = 1.0f;
 float fTurnSpeedMultiplier = 1.0f;
-std::string pCurrentMapName;
-MapId uLevelMapStatsID;
 int dword_6BE364_game_settings_1 = 0;
 
-char bNoNPCHiring = false;
 std::vector<Vec3f> pTerrainNormals;
 std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;

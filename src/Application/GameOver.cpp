@@ -1,25 +1,27 @@
 #include <string>
 #include <memory>
+#include <utility>
 
 #include "GameOver.h"
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Time/Time.h"
 #include "Engine/mm7_data.h"
 
-#include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/UI/UIHouses.h"
 
-#include "Io/Mouse.h"
-
 #include "Media/Audio/AudioPlayer.h"
+
+#include "Library/Image/PCX.h"
+
+#include "Utility/Streams/FileOutputStream.h"
+#include "Utility/DataPath.h"
 
 
 //----- (004BF91E) --------------------------------------------------------
@@ -116,7 +118,11 @@ void CreateWinnerCertificate() {
     render->DrawTwodVerts();
     render->EndLines2D();
     render->EndTextNew();
-    render->SaveWinnersCertificate("MM7_Win.Pcx");
+
+    RgbaImage pixels = render->MakeFullScreenshot();
+    FileOutputStream(makeDataPath("MM7_Win.Pcx")).write(pcx::encode(pixels).string_view());
+    assets->winnerCert = GraphicsImage::Create(std::move(pixels));
+
     background->Release();
     background = nullptr;
     tempwindow_SpeakInHouse->Release();

@@ -40,6 +40,7 @@ bool Initialize_GamesLOD_NewLOD();
 void SaveNewGame();
 
 void QuickSaveGame();
+int GetQuickSaveSlot();
 void QuickLoadGame();
 std::string GetCurrentQuickSave();
 

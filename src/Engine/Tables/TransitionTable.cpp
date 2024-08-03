@@ -1,9 +1,10 @@
 #include "TransitionTable.h"
 
+#include <cstring>
 #include <string>
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 
 std::array<std::string, 465> pTransitionStrings;
 

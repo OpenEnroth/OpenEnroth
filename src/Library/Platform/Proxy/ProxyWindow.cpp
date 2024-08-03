@@ -75,8 +75,8 @@ Marginsi ProxyWindow::frameMargins() const {
     return nonNullBase()->frameMargins();
 }
 
-uintptr_t ProxyWindow::systemHandle() const {
-    return nonNullBase()->systemHandle();
+void *ProxyWindow::nativeHandle() const {
+    return nonNullBase()->nativeHandle();
 }
 
 void ProxyWindow::activate() {

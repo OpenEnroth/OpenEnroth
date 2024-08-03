@@ -66,4 +66,10 @@ class InputStream {
      * @throws Exception                On error.
      */
     virtual void close() = 0;
+
+    /**
+     * @return                          Path to the file or resource being read, to be used for debugging and error
+     *                                  reporting.
+     */
+    [[nodiscard]] virtual std::string displayPath() const = 0;
 };

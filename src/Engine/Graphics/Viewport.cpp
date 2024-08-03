@@ -2,8 +2,8 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Events/Processor.h"
-#include "Engine/Graphics/DecorationList.h"
-#include "Engine/Graphics/Level/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
+#include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Vis.h"
@@ -174,8 +174,8 @@ void ViewingParams::InitGrayPalette() {
 
 //----- (00443365) --------------------------------------------------------
 void ViewingParams::_443365() {
-    Vec3i *v3;  // eax@4
-    Vec3i *v6;  // eax@12
+    Vec3f *v3;  // eax@4
+    Vec3f *v6;  // eax@12
     int minimum_y;    // [sp+10h] [bp-10h]@2
     int maximum_y;    // [sp+14h] [bp-Ch]@2
     int minimum_x;    // [sp+18h] [bp-8h]@2
@@ -189,16 +189,14 @@ void ViewingParams::_443365() {
         maximum_x = -0x40000000;
         maximum_y = -0x40000000;
         for (int i = 0; i < pIndoor->pMapOutlines.size(); ++i) {
-            v3 = &pIndoor
-                      ->pVertices[pIndoor->pMapOutlines[i].uVertex1ID];
+            v3 = &pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex1ID];
 
             if (v3->x < minimum_x) minimum_x = v3->x;
             if (v3->x > maximum_x) maximum_x = v3->x;
             if (v3->y < minimum_y) minimum_y = v3->x;
             if (v3->y > maximum_y) maximum_y = v3->x;
 
-            v6 = &pIndoor
-                      ->pVertices[pIndoor->pMapOutlines[i].uVertex2ID];
+            v6 = &pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex2ID];
 
             if (v6->x < minimum_x) minimum_x = v3->x;
             if (v6->x > maximum_x) maximum_x = v3->x;

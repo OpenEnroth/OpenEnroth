@@ -12,7 +12,7 @@
 
 #include "Library/Logger/Logger.h"
 
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 
 AssetsManager *assets = new AssetsManager();
 
@@ -33,7 +33,7 @@ void AssetsManager::releaseAllTextures() {
 }
 
 bool AssetsManager::releaseImage(std::string_view name) {
-    std::string filename = toLower(name);
+    std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -46,7 +46,7 @@ bool AssetsManager::releaseImage(std::string_view name) {
 }
 
 GraphicsImage *AssetsManager::getImage_Paletted(std::string_view name) {
-    std::string filename = toLower(name);
+    std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -60,7 +60,7 @@ GraphicsImage *AssetsManager::getImage_Paletted(std::string_view name) {
 
 
 GraphicsImage *AssetsManager::getImage_ColorKey(std::string_view name, Color colorkey) {
-    std::string filename = toLower(name);
+    std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -75,7 +75,7 @@ GraphicsImage *AssetsManager::getImage_ColorKey(std::string_view name, Color col
 
 
 GraphicsImage *AssetsManager::getImage_Solid(std::string_view name) {
-    std::string filename = toLower(name);
+    std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -88,7 +88,7 @@ GraphicsImage *AssetsManager::getImage_Solid(std::string_view name) {
 }
 
 GraphicsImage *AssetsManager::getImage_Alpha(std::string_view name) {
-    std::string filename = toLower(name);
+    std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -101,7 +101,7 @@ GraphicsImage *AssetsManager::getImage_Alpha(std::string_view name) {
 }
 
 GraphicsImage *AssetsManager::getImage_PCXFromIconsLOD(std::string_view name) {
-    std::string filename = toLower(name);
+    std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
@@ -113,21 +113,8 @@ GraphicsImage *AssetsManager::getImage_PCXFromIconsLOD(std::string_view name) {
     return i->second;
 }
 
-GraphicsImage *AssetsManager::getImage_PCXFromFile(std::string_view name) {
-    std::string filename = toLower(name);
-
-    auto i = images.find(filename);
-    if (i == images.end()) {
-        auto image = GraphicsImage::Create(std::make_unique<PCX_File_Loader>(filename));
-        images[filename] = image;
-        return image;
-    }
-
-    return i->second;
-}
-
 GraphicsImage *AssetsManager::getBitmap(std::string_view name) {
-    std::string filename = toLower(name);
+    std::string filename = ascii::toLower(name);
 
     auto i = bitmaps.find(filename);
     if (i == bitmaps.end()) {
@@ -140,7 +127,7 @@ GraphicsImage *AssetsManager::getBitmap(std::string_view name) {
 }
 
 bool AssetsManager::releaseBitmap(std::string_view name) {
-    std::string filename = toLower(name);
+    std::string filename = ascii::toLower(name);
 
     auto i = bitmaps.find(filename);
     if (i == bitmaps.end()) {
@@ -153,7 +140,7 @@ bool AssetsManager::releaseBitmap(std::string_view name) {
 }
 
 GraphicsImage *AssetsManager::getSprite(std::string_view name) {
-    std::string filename = toLower(name);
+    std::string filename = ascii::toLower(name);
 
     auto i = sprites.find(filename);
     if (i == sprites.end()) {
@@ -166,7 +153,7 @@ GraphicsImage *AssetsManager::getSprite(std::string_view name) {
 }
 
 bool AssetsManager::releaseSprite(std::string_view name) {
-    std::string filename = toLower(name);
+    std::string filename = ascii::toLower(name);
 
     auto i = sprites.find(filename);
     if (i == sprites.end()) {

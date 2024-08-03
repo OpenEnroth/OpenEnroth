@@ -24,6 +24,7 @@ CodeGenOptions CodeGenOptions::parse(int argc, char **argv) {
     app->add_subcommand("monster_types", "Generate monster types enum.", result.subcommand, SUBCOMMAND_MONSTER_TYPE)->fallthrough();
     app->add_subcommand("bounty_hunt", "Generate monster type / town hall table for bounty hunts.", result.subcommand, SUBCOMMAND_BOUNTY_HUNT)->fallthrough();
     app->add_subcommand("music", "Generate music ids enum.", result.subcommand, SUBCOMMAND_MUSIC)->fallthrough();
+    app->add_subcommand("decorations", "Generate decorations ids enum.", result.subcommand, SUBCOMMAND_DECORATIONS)->fallthrough();
 
     app->parse(argc, argv, result.helpPrinted);
     return result;

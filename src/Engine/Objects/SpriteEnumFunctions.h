@@ -2,7 +2,6 @@
 
 #include <cassert>
 
-#include "Utility/Workaround/ToUnderlying.h"
 
 #include "SpriteEnums.h"
 

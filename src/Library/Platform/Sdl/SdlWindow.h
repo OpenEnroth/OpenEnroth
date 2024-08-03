@@ -41,7 +41,7 @@ class SdlWindow : public PlatformWindow {
 
     virtual Marginsi frameMargins() const override;
 
-    virtual uintptr_t systemHandle() const override;
+    virtual void *nativeHandle() const override;
 
     virtual void activate() override;
 

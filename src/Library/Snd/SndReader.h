@@ -20,6 +20,7 @@ class SndReader {
  public:
     SndReader();
     explicit SndReader(std::string_view path);
+    explicit SndReader(Blob blob);
     ~SndReader();
 
     /**
@@ -28,6 +29,12 @@ class SndReader {
      *                                  or if it's not in SND format.
      */
     void open(std::string_view path);
+
+    /**
+     * @param blob                      SND data.
+     * @throw Exception                 If there are errors in the provided SND file.
+     */
+    void open(Blob blob);
 
     /**
      * Closes this SND reader & frees all associated resources.
@@ -58,6 +65,5 @@ class SndReader {
 
  private:
     Blob _snd;
-    std::string _path;
     std::unordered_map<std::string, SndEntry> _files;
 };

@@ -1,7 +1,8 @@
-local nk = require "bindings.overlay".nk
+local Overlay = require "bindings.overlay"
+local imgui = Overlay.imgui
 local window = require "bindings.platform".window
 local Config = require "bindings.config"
-local Game = require "bindings.game"
+local Audio = require "bindings.audio"
 local Console = require "console"
 local Utilities = require "utils"
 
@@ -11,21 +12,21 @@ local CheatOverlay = {}
 ---@class CheatCommandEntry
 ---@field command string
 ---@field label string
----@field draw fun(entry: CheatCommandEntry, ctx:NuklearContext) : boolean
+---@field draw fun(entry: CheatCommandEntry) : boolean
 
 ---@type table<string, CheatCommandEntry>
 local availableCommands = {}
 
-local enabledColor = { 50, 100, 50, 255 }
-local disabledColor = { 100, 50, 50, 255 }
-local enabledHoveredColor = { 25, 75, 25, 255 }
-local disabledHoveredColor = { 75, 25, 25, 255 }
+local enabledColor = Utilities.color(0.19, 0.39, 0.19, 1)
+local disabledColor = Utilities.color(0.39, 0.19, 0.19, 1)
+local enabledHoveredColor = Utilities.color(0.09, 0.29, 0.09, 1)
+local disabledHoveredColor = Utilities.color(0.29, 0.09, 0.09, 1)
+local buttonSize = { w = -1, h = 30 }
 
----@param ctx NuklearContext
 ---@param entry CheatCommandEntry
 ---@return boolean
-local function defaultDrawCommandEntry(entry, ctx)
-    return nk.button_label(ctx, entry.label)
+local function defaultDrawCommandEntry(entry)
+    return imgui.button(entry.label, buttonSize.w, buttonSize.h)
 end
 
 -- The configValue is provided in the form of "[command to run] | (optional label)"
@@ -44,15 +45,15 @@ local function createCheatCommandEntry(configValue)
     local arguments = Utilities.splitString(command, " ")
     if arguments[1] == "config" and arguments[2] == "toggle" then
         local configName = arguments[3]
-        drawFunction = function (entry, ctx)
+        drawFunction = function (entry)
             local valueString = Config.getConfig(configName)
             local color = Utilities.toBoolean(valueString) and enabledColor or disabledColor
-            nk.style_push(ctx, "button", "normal", color)
+            imgui.pushStyleColor(imgui.ImGuiCol.ButtonHovered, color.r, color.g, color.b, color.a)
             color = Utilities.toBoolean(valueString) and enabledHoveredColor or disabledHoveredColor
-            nk.style_push(ctx, "button", "hover", color)
-            local isPressed = nk.button_label(ctx, entry.label)
-            nk.style_pop(ctx, "button", "normal")
-            nk.style_pop(ctx, "button", "hover")
+            imgui.pushStyleColor(imgui.ImGuiCol.Button, color.r, color.g, color.b, color.a)
+            local isPressed = imgui.button(entry.label, buttonSize.w, buttonSize.h)
+            imgui.popStyleColor()
+            imgui.popStyleColor()
             return isPressed
         end
     else
@@ -78,21 +79,38 @@ end
 CheatOverlay.close = function ()
 end
 
-CheatOverlay.update = function (ctx)
-    local w, h = window.dimensions()
-    nk.style_push(ctx, "window", "fixed_background", { 64, 64, 64, 128 })
-    nk.window_begin(ctx, "Debug Menu", { x = w - 305, y = 5, w = 300, h = h - 10 }, { "title", "scalable", "movable" })
-    nk.layout_row_dynamic(ctx, 0, 2)
-    for _, entry in pairs(availableCommands) do
-        if entry:draw(ctx) then
-            --TODO(Gerark) I should expose the audio enum instead of using magic number
-            -- It should look like this: Audio.playSound(SOUND_StartMainChoice02, SOUND_MODE_UI)
-            Game.audio.playSound(75, 1)
-            Console:send(entry.command)
-        end
+local function drawColumnItem(entry, columnIndex, itemsPerRow)
+    if columnIndex == 0 then
+        imgui.tableNextRow();
     end
-    nk.window_end(ctx)
-    nk.style_pop(ctx, "window", "fixed_background")
+    imgui.tableSetColumnIndex(columnIndex);
+    if entry:draw() then
+        --TODO(Gerark) I should expose the audio enum instead of using magic number
+        -- It should look like this: Audio.playSound(SOUND_StartMainChoice02, SOUND_MODE_UI)
+        Audio.playSound(75, 1)
+        Console:send(entry.command)
+    end
+    return columnIndex + 1 < itemsPerRow and columnIndex + 1 or 0
+end
+
+local function beginTable(name, columnSize)
+    local w, _ = imgui.getWindowSize()
+    imgui.beginTable(name, math.max(1, math.floor(w / columnSize)))
+end
+
+CheatOverlay.update = function ()
+    local screenW, screenH = window.dimensions()
+    imgui.setNextWindowSize(300, screenH - 10, imgui.ImGuiCond.FirstUseEver);
+    imgui.setNextWindowPos(screenW - 305, 5, imgui.ImGuiCond.FirstUseEver);
+    if imgui.beginWindow("Debug Menu") then
+        beginTable("buttonTable", 150)
+        local columnIndex = 0
+        for _, entry in pairs(availableCommands) do
+            columnIndex = drawColumnItem(entry, columnIndex, imgui.tableGetColumnCount())
+        end
+        imgui.endTable()
+    end
+    imgui.endWindow()
 end
 
 

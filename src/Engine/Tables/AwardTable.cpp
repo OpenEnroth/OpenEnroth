@@ -1,9 +1,10 @@
 #include "AwardTable.h"
 
+#include <cstring>
 #include <string>
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/String.h"
+#include "Utility/String/Transformations.h"
 
 std::array<Award, 105> pAwards;
 

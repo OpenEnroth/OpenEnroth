@@ -29,7 +29,7 @@ class ProxyWindow : public ProxyBase<PlatformWindow> {
     virtual void setOrientations(PlatformWindowOrientations orientations) override;
     virtual PlatformWindowOrientations orientations() override;
     virtual Marginsi frameMargins() const override;
-    virtual uintptr_t systemHandle() const override;
+    virtual void *nativeHandle() const override;
     virtual void activate() override;
     virtual std::unique_ptr<PlatformOpenGLContext> createOpenGLContext(const PlatformOpenGLOptions &options) override;
 };

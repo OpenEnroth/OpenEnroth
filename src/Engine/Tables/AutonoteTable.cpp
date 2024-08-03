@@ -1,9 +1,11 @@
 #include "AutonoteTable.h"
 
+#include <cstring>
 #include <string>
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
+#include "Utility/String/Transformations.h"
 
 std::array<Autonote, 196> pAutonoteTxt;
 
@@ -38,23 +40,23 @@ void initializeAutonotes(const Blob &autonotes) {
                         pAutonoteTxt[i].pText = removeQuotes(test_string);
                         break;
                     case 2: {
-                        if (noCaseEquals(test_string, "potion")) {
+                        if (ascii::noCaseEquals(test_string, "potion")) {
                             pAutonoteTxt[i].eType = AUTONOTE_POTION_RECIPE;
                             break;
                         }
-                        if (noCaseEquals(test_string, "stat")) {
+                        if (ascii::noCaseEquals(test_string, "stat")) {
                             pAutonoteTxt[i].eType = AUTONOTE_STAT_HINT;
                             break;
                         }
-                        if (noCaseEquals(test_string, "seer")) {
+                        if (ascii::noCaseEquals(test_string, "seer")) {
                             pAutonoteTxt[i].eType = AUTONOTE_SEER;
                             break;
                         }
-                        if (noCaseEquals(test_string, "obelisk")) {
+                        if (ascii::noCaseEquals(test_string, "obelisk")) {
                             pAutonoteTxt[i].eType = AUTONOTE_OBELISK;
                             break;
                         }
-                        if (noCaseEquals(test_string, "teacher")) {
+                        if (ascii::noCaseEquals(test_string, "teacher")) {
                             pAutonoteTxt[i].eType = AUTONOTE_TEACHER;
                             break;
                         }

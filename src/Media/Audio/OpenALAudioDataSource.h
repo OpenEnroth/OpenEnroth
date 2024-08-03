@@ -19,7 +19,7 @@ class OpenALAudioDataSource : public IAudioDataSource {
 
     virtual size_t GetSampleRate() override { return _baseDataSource->GetSampleRate(); }
     virtual size_t GetChannelCount() override { return _baseDataSource->GetChannelCount(); }
-    virtual std::shared_ptr<Blob> GetNextBuffer() override { return _baseDataSource->GetNextBuffer(); }
+    virtual Blob GetNextBuffer() override { return _baseDataSource->GetNextBuffer(); }
 
     virtual float GetDuration() override { return _baseDataSource->GetDuration(); }
 

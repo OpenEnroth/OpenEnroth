@@ -29,7 +29,7 @@ class TeleportPoint {
      * @param pitch   Camera pitch after teleportation.
      * @param zSpeed  Vertical velocity of party after teleportation.
      */
-    void setTeleportTarget(Vec3i pos, int yaw, int pitch, int zSpeed);
+    void setTeleportTarget(Vec3f pos, int yaw, int pitch, int zSpeed);
 
     /**
      * Set target map name for teleportation.
@@ -58,7 +58,7 @@ class TeleportPoint {
  private:
     bool _teleportValid = false;
     std::string _targetMap;
-    Vec3i _pos;
+    Vec3f _pos;
     int _yaw = 0;
     int _pitch = 0;
     int _zSpeed = 0;

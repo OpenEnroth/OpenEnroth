@@ -61,8 +61,8 @@ extern IndexedArray<Duration, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> base_
 extern std::array<IndexedArray<ClassSkillAffinity, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST>, 9> pSkillAvailabilityPerClass;
 extern IndexedArray<IndexedArray<CharacterSkillMastery, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST>, CLASS_FIRST, CLASS_LAST> skillMaxMasteryPerClass;
 
-extern std::array<Pid, 500> ai_near_actors_targets_pid;
-extern std::array<unsigned int, 500> ai_near_actors_ids;
+extern std::vector<Pid> ai_near_actors_targets_pid;
+extern std::vector<unsigned int> ai_near_actors_ids;
 extern int ai_arrays_size;
 
 extern Pid uLastPointedObjectID;
@@ -73,8 +73,6 @@ extern SpellId dword_507B00_spell_info_to_draw_in_popup;
 extern int dword_507CC0_activ_ch;
 extern bool OpenedTelekinesis;
 extern int enchantingActiveCharacter;
-extern unsigned int uIconID_TurnHour;
-extern int uIconID_CharacterFrame;  // idb
 extern int uSpriteID_Spell11;  // idb
 extern bool IsEnchantingInProgress; // 50C9A0 Indicates that inventory window is opened for enchant-like spell
 extern Duration ItemEnchantmentTimer; // 50C9A8 Timer for enchanting animation for item in inventory
@@ -89,8 +87,6 @@ extern std::array<GraphicsImage *, 14> party_buff_icons;
 extern unsigned int uIconIdx_FlySpell;
 extern unsigned int uIconIdx_WaterWalk;
 
-extern Actor *pDialogue_SpeakingActor;
-extern signed int sDialogue_SpeakingActorNPC_ID;
 extern int uCurrentHouse_Animation;
 
 extern std::string branchless_dialogue_str;
@@ -100,15 +96,15 @@ extern int npcIdToDismissAfterDialogue;
 extern int bDialogueUI_InitializeActor_NPC_ID;
 
 extern int uDefaultTravelTime_ByFoot;
+
 extern MapWeatherFlags day_attrib;
 extern int day_fogrange_1;
 extern int day_fogrange_2;
+extern int day_fogrange_3;
+
 extern float fWalkSpeedMultiplier;
 extern float fBackwardWalkSpeedMultiplier;
 extern float fTurnSpeedMultiplier;
-extern std::string pCurrentMapName; // TODO(captainurist): replace with MAP_TYPE & drop!
-extern MapId dword_6BE13C_uCurrentlyLoadedLocationID;
-extern MapId uLevelMapStatsID;
 
 // TODO(captainurist): #enum
 #define GAME_SETTINGS_SKIP_WORLD_UPDATE 0x0001  // Skip updating world next frame due to changing levels etc.
@@ -142,8 +138,6 @@ constexpr float debug_turn_based_monster_movespeed_mul = 1.666666666666667f;
 constexpr float flt_debugrecmod3 = 2.133333333333333f;
 
 constexpr float meleeRange = 307.2f;
-
-extern char bNoNPCHiring;
 
 extern std::vector<Vec3f> pTerrainNormals;
 extern std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;

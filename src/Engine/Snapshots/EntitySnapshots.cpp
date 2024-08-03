@@ -7,8 +7,8 @@
 #include "Engine/ArenaEnumFunctions.h"
 #include "Engine/Engine.h"
 #include "Engine/Graphics/Indoor.h"
-#include "Engine/Graphics/Level/Decoration.h"
-#include "Engine/Graphics/DecorationList.h"
+#include "Engine/Objects/Decoration.h"
+#include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
@@ -34,7 +34,7 @@
 #include "Library/Snapshots/CommonSnapshots.h"
 
 #include "Utility/Memory/MemSet.h"
-#include "Utility/String.h"
+#include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
 
 /**
@@ -177,14 +177,27 @@ void reconstruct(const Vec3s &src, Vec3i *dst) {
     dst->z = src.z;
 }
 
-void snapshot(const Vec3f& src, Vec3s* dst) {
+void snapshot(const Vec3f &src, Vec3s *dst) {
     // TODO(captainurist): do we need to check for overflows here?
     dst->x = src.x;
     dst->y = src.y;
     dst->z = src.z;
 }
 
-void reconstruct(const Vec3s& src, Vec3f* dst) {
+void reconstruct(const Vec3s &src, Vec3f *dst) {
+    dst->x = src.x;
+    dst->y = src.y;
+    dst->z = src.z;
+}
+
+void snapshot(const Vec3f &src, Vec3i *dst) {
+    // TODO(captainurist): do we need to check for overflows here?
+    dst->x = src.x;
+    dst->y = src.y;
+    dst->z = src.z;
+}
+
+void reconstruct(const Vec3i &src, Vec3f *dst) {
     dst->x = src.x;
     dst->y = src.y;
     dst->z = src.z;
@@ -209,6 +222,25 @@ void reconstruct(const BBoxs_MM7 &src, BBoxi *dst) {
     dst->z2 = src.z2;
 }
 
+void snapshot(const BBoxf& src, BBoxs_MM7* dst) {
+    // TODO(captainurist): do we need to check for overflows here?
+    dst->x1 = src.x1;
+    dst->x2 = src.x2;
+    dst->y1 = src.y1;
+    dst->y2 = src.y2;
+    dst->z1 = src.z1;
+    dst->z2 = src.z2;
+}
+
+void reconstruct(const BBoxs_MM7& src, BBoxf* dst) {
+    dst->x1 = src.x1;
+    dst->x2 = src.x2;
+    dst->y1 = src.y1;
+    dst->y2 = src.y2;
+    dst->z1 = src.z1;
+    dst->z2 = src.z2;
+}
+
 void reconstruct(const Planef_MM7 &src, Planef *dst) {
     dst->normal = src.normal;
     dst->dist = src.dist;
@@ -223,10 +255,10 @@ void reconstruct(const Planei_MM7 &src, Planef *dst) {
 
 void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
     reconstruct(src.iconName, &dst->icon_name);
-    dst->icon_name = toLower(dst->icon_name);
+    dst->icon_name = ascii::toLower(dst->icon_name);
 
     reconstruct(src.textureName, &dst->texture_name);
-    dst->texture_name = toLower(dst->texture_name);
+    dst->texture_name = ascii::toLower(dst->texture_name);
 
     for (unsigned int i = 0; i < 8; ++i)
         dst->hw_sprites[i] = nullptr;
@@ -259,10 +291,10 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
 
 void reconstruct(const TileDesc_MM7 &src, TileDesc *dst) {
     reconstruct(src.tileName, &dst->name);
-    dst->name = toLower(dst->name);
+    dst->name = ascii::toLower(dst->name);
 
-    if (noCaseStartsWith(dst->name, "wtrdr"))
-        dst->name.insert(0, "h");  // mm7 uses hd water tiles with legacy names
+    if (ascii::noCaseStartsWith(dst->name, "wtrdr"))
+        dst->name.insert(0, "h"); // mm7 uses hd water tiles with legacy names
 
     dst->uTileID = src.tileId;
     dst->tileset = static_cast<Tileset>(src.tileSet);
@@ -272,7 +304,7 @@ void reconstruct(const TileDesc_MM7 &src, TileDesc *dst) {
 
 void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
     reconstruct(src.textureName, &dst->name);
-    dst->name = toLower(dst->name);
+    dst->name = ascii::toLower(dst->name);
 
     dst->animationDuration = Duration::fromTicks(src.animLength * 8);
     dst->frameDuration = Duration::fromTicks(src.animTime * 8);
@@ -425,7 +457,7 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
     dst->attributes = std::to_underlying(src.uAttributes);
     dst->bodyAnchor = std::to_underlying(src.uBodyAnchor);
     dst->maxCharges = src.uMaxCharges;
-    dst->holderPlayer = src.uHolderPlayer;
+    dst->holderPlayer = src.uHolderPlayer + 1;
     dst->placedInChest = src.placedInChest;
     snapshot(src.uExpireTime, &dst->expireTime);
 }
@@ -454,7 +486,7 @@ void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
     dst->uAttributes = ItemFlags(src.attributes);
     dst->uBodyAnchor = static_cast<ItemSlot>(src.bodyAnchor);
     dst->uMaxCharges = src.maxCharges;
-    dst->uHolderPlayer = src.holderPlayer;
+    dst->uHolderPlayer = src.holderPlayer - 1;
     dst->placedInChest = src.placedInChest;
     reconstruct(src.expireTime, &dst->uExpireTime);
 }
@@ -737,20 +769,20 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->sex = std::to_underlying(src.uSex);
     dst->classType = std::to_underlying(src.classType);
     dst->currentFace = src.uCurrentFace;
-    dst->might = src.uMight;
-    dst->mightBonus = src.uMightBonus;
-    dst->intelligence = src.uIntelligence;
-    dst->intelligenceBonus = src.uIntelligenceBonus;
-    dst->personality = src.uPersonality;
-    dst->personalityBonus = src.uPersonalityBonus;
-    dst->endurance = src.uEndurance;
-    dst->enduranceBonus = src.uEnduranceBonus;
-    dst->speed = src.uSpeed;
-    dst->speedBonus = src.uSpeedBonus;
-    dst->accuracy = src.uAccuracy;
-    dst->accuracyBonus = src.uAccuracyBonus;
-    dst->luck = src.uLuck;
-    dst->luckBonus = src.uLuckBonus;
+    dst->might = src._stats[CHARACTER_ATTRIBUTE_MIGHT];
+    dst->mightBonus = src._statBonuses[CHARACTER_ATTRIBUTE_MIGHT];
+    dst->intelligence = src._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE];
+    dst->intelligenceBonus = src._statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE];
+    dst->personality = src._stats[CHARACTER_ATTRIBUTE_PERSONALITY];
+    dst->personalityBonus = src._statBonuses[CHARACTER_ATTRIBUTE_PERSONALITY];
+    dst->endurance = src._stats[CHARACTER_ATTRIBUTE_ENDURANCE];
+    dst->enduranceBonus = src._statBonuses[CHARACTER_ATTRIBUTE_ENDURANCE];
+    dst->speed = src._stats[CHARACTER_ATTRIBUTE_SPEED];
+    dst->speedBonus = src._statBonuses[CHARACTER_ATTRIBUTE_SPEED];
+    dst->accuracy = src._stats[CHARACTER_ATTRIBUTE_ACCURACY];
+    dst->accuracyBonus = src._statBonuses[CHARACTER_ATTRIBUTE_ACCURACY];
+    dst->luck = src._stats[CHARACTER_ATTRIBUTE_LUCK];
+    dst->luckBonus = src._statBonuses[CHARACTER_ATTRIBUTE_LUCK];
     dst->acModifier = src.sACModifier;
     dst->level = src.uLevel;
     dst->levelModifier = src.sLevelModifier;
@@ -760,13 +792,13 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     snapshot(src._achievedAwardsBits, &dst->achievedAwardsBits, tags::reverseBits);
     snapshot(src.bHaveSpell, &dst->haveSpell);
 
-    dst->pureLuckUsed = src.pure_luck_used;
-    dst->pureSpeedUsed = src.pure_speed_used;
-    dst->pureIntellectUsed = src.pure_intellect_used;
-    dst->pureEnduranceUsed = src.pure_endurance_used;
-    dst->purePersonalityUsed = src.pure_personality_used;
-    dst->pureAccuracyUsed = src.pure_accuracy_used;
-    dst->pureMightUsed = src.pure_might_used;
+    dst->pureLuckUsed = src._pureStatPotionUsed[CHARACTER_ATTRIBUTE_LUCK];
+    dst->pureSpeedUsed = src._pureStatPotionUsed[CHARACTER_ATTRIBUTE_SPEED];
+    dst->pureIntellectUsed = src._pureStatPotionUsed[CHARACTER_ATTRIBUTE_INTELLIGENCE];
+    dst->pureEnduranceUsed = src._pureStatPotionUsed[CHARACTER_ATTRIBUTE_ENDURANCE];
+    dst->purePersonalityUsed = src._pureStatPotionUsed[CHARACTER_ATTRIBUTE_PERSONALITY];
+    dst->pureAccuracyUsed = src._pureStatPotionUsed[CHARACTER_ATTRIBUTE_ACCURACY];
+    dst->pureMightUsed = src._pureStatPotionUsed[CHARACTER_ATTRIBUTE_MIGHT];
 
     snapshot(src.pInventoryItemList, &dst->inventoryItems);
     snapshot(src.pInventoryMatrix, &dst->inventoryMatrix);
@@ -978,20 +1010,20 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     }
 
     dst->uCurrentFace = src.currentFace;
-    dst->uMight = src.might;
-    dst->uMightBonus = src.mightBonus;
-    dst->uIntelligence = src.intelligence;
-    dst->uIntelligenceBonus = src.intelligenceBonus;
-    dst->uPersonality = src.personality;
-    dst->uPersonalityBonus = src.personalityBonus;
-    dst->uEndurance = src.endurance;
-    dst->uEnduranceBonus = src.enduranceBonus;
-    dst->uSpeed = src.speed;
-    dst->uSpeedBonus = src.speedBonus;
-    dst->uAccuracy = src.accuracy;
-    dst->uAccuracyBonus = src.accuracyBonus;
-    dst->uLuck = src.luck;
-    dst->uLuckBonus = src.luckBonus;
+    dst->_stats[CHARACTER_ATTRIBUTE_MIGHT] = src.might;
+    dst->_statBonuses[CHARACTER_ATTRIBUTE_MIGHT] = src.mightBonus;
+    dst->_stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = src.intelligence;
+    dst->_statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE] = src.intelligenceBonus;
+    dst->_stats[CHARACTER_ATTRIBUTE_PERSONALITY] = src.personality;
+    dst->_statBonuses[CHARACTER_ATTRIBUTE_PERSONALITY] = src.personalityBonus;
+    dst->_stats[CHARACTER_ATTRIBUTE_ENDURANCE] = src.endurance;
+    dst->_statBonuses[CHARACTER_ATTRIBUTE_ENDURANCE] = src.enduranceBonus;
+    dst->_stats[CHARACTER_ATTRIBUTE_SPEED] = src.speed;
+    dst->_statBonuses[CHARACTER_ATTRIBUTE_SPEED] = src.speedBonus;
+    dst->_stats[CHARACTER_ATTRIBUTE_ACCURACY] = src.accuracy;
+    dst->_statBonuses[CHARACTER_ATTRIBUTE_ACCURACY] = src.accuracyBonus;
+    dst->_stats[CHARACTER_ATTRIBUTE_LUCK] = src.luck;
+    dst->_statBonuses[CHARACTER_ATTRIBUTE_LUCK] = src.luckBonus;
     dst->sACModifier = src.acModifier;
     dst->uLevel = src.level;
     dst->sLevelModifier = src.levelModifier;
@@ -1001,13 +1033,13 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     reconstruct(src.achievedAwardsBits, &dst->_achievedAwardsBits, tags::reverseBits);
     reconstruct(src.haveSpell, &dst->bHaveSpell);
 
-    dst->pure_luck_used = src.pureLuckUsed;
-    dst->pure_speed_used = src.pureSpeedUsed;
-    dst->pure_intellect_used = src.pureIntellectUsed;
-    dst->pure_endurance_used = src.pureEnduranceUsed;
-    dst->pure_personality_used = src.purePersonalityUsed;
-    dst->pure_accuracy_used = src.pureAccuracyUsed;
-    dst->pure_might_used = src.pureMightUsed;
+    dst->_pureStatPotionUsed[CHARACTER_ATTRIBUTE_LUCK] = src.pureLuckUsed;
+    dst->_pureStatPotionUsed[CHARACTER_ATTRIBUTE_SPEED] = src.pureSpeedUsed;
+    dst->_pureStatPotionUsed[CHARACTER_ATTRIBUTE_INTELLIGENCE] = src.pureIntellectUsed;
+    dst->_pureStatPotionUsed[CHARACTER_ATTRIBUTE_ENDURANCE] = src.pureEnduranceUsed;
+    dst->_pureStatPotionUsed[CHARACTER_ATTRIBUTE_PERSONALITY] = src.purePersonalityUsed;
+    dst->_pureStatPotionUsed[CHARACTER_ATTRIBUTE_ACCURACY] = src.pureAccuracyUsed;
+    dst->_pureStatPotionUsed[CHARACTER_ATTRIBUTE_MIGHT] = src.pureMightUsed;
 
     reconstruct(src.inventoryItems, &dst->pInventoryItemList);
     reconstruct(src.inventoryMatrix, &dst->pInventoryMatrix);
@@ -1386,7 +1418,7 @@ void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
     dst->uAttributes = std::to_underlying(src.uAttributes);
     dst->uDoorID = src.uDoorID;
     dst->uTimeSinceTriggered = src.uTimeSinceTriggered.ticks();
-    dst->vDirection = src.vDirection;
+    dst->vDirection = src.vDirection.toFixpoint();
     dst->uMoveLength = src.uMoveLength;
     dst->uCloseSpeed = src.uCloseSpeed;
     dst->uOpenSpeed = src.uOpenSpeed;
@@ -1401,7 +1433,7 @@ void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
     dst->uAttributes = static_cast<DoorAttributes>(src.uAttributes);
     dst->uDoorID = src.uDoorID;
     dst->uTimeSinceTriggered = Duration::fromTicks(src.uTimeSinceTriggered);
-    dst->vDirection = src.vDirection;
+    dst->vDirection = src.vDirection.toFloatFromFixpoint();
     dst->uMoveLength = src.uMoveLength;
     dst->uCloseSpeed = src.uCloseSpeed;
     dst->uOpenSpeed = src.uOpenSpeed;
@@ -1506,7 +1538,7 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
 }
 
 void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
-    dst->vPosition = src.vPosition;
+    dst->vPosition = src.vPosition.toFloat();
     dst->uRadius = src.uRadius;
     dst->uKind = static_cast<ObjectType>(src.uKind);
     if (dst->uKind == OBJECT_Actor) {
@@ -1580,7 +1612,7 @@ void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst) {
 
 void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
     reconstruct(src.name, &dst->name);
-    reconstruct(src.field_20, &dst->field_20);
+    reconstruct(src.type, &dst->type);
     dst->uType = src.uType;
     dst->uDecorationHeight = src.uDecorationHeight;
     dst->uRadius = src.uRadius;
@@ -1661,7 +1693,7 @@ void reconstruct(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
 }
 
 void reconstruct(const LevelDecoration_MM7 &src, LevelDecoration *dst) {
-    dst->uDecorationDescID = src.uDecorationDescID;
+    dst->uDecorationDescID = static_cast<DecorationId>(src.uDecorationDescID);
     dst->uFlags = LevelDecorationFlags(src.uFlags);
     dst->vPosition = src.vPosition.toFloat();
     dst->_yawAngle = (TrigLUT.uIntegerHalfPi * src.field_1A) / 90;

@@ -8,6 +8,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Party.h"
+#include "Engine/MapEnumFunctions.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Tables/NPCTable.h"
 
@@ -27,61 +28,22 @@ static const Segment<Condition> standardConditionsExcludeDead = {CONDITION_CURSE
 // All conditions including dead character ones, but still excluding zombie
 static const Segment<Condition> standardConditionsIncludeDead = {CONDITION_CURSED, CONDITION_ERADICATED};
 
-//----- (004459F9) --------------------------------------------------------
-NPCData *GetNPCData(signed int npcid) {
-    NPCData *result;
-
-    if (npcid >= 0) {
-        if (npcid < 5000) {
-            if (npcid >= 501) {
+NPCData *getNPCData(int npcId) {
+    if (npcId >= 0) {
+        if (npcId < 5000) {
+            if (npcId >= 501) {
                 logger->warning("NPC id exceeds MAX_DATA!");
             }
-            return &pNPCStats->pNPCData[npcid];  // - 1];
+            return &pNPCStats->pNPCData[npcId];
+        } else {
+            return &pNPCStats->pAdditionalNPC[npcId - 5000];
         }
-        return &pNPCStats->pAdditionalNPC[npcid - 5000];
-    }
-
-    if (npcid >= 5000) return &pNPCStats->pAdditionalNPC[npcid - 5000];
-    if (sDialogue_SpeakingActorNPC_ID >= 0) {
-        result = 0;
     } else {
         FlatHirelings buf;
         buf.Prepare();
 
-        result = buf.Get(std::abs(sDialogue_SpeakingActorNPC_ID) - 1);
+        return buf.Get(std::abs(npcId) - 1);
     }
-    return result;
-}
-
-//----- (00445B2C) --------------------------------------------------------
-NPCData *GetNewNPCData(signed int npcid, int *npc_indx) {
-    NPCData *result;
-
-    if (npcid >= 0) {
-        if (npcid < 5000) {
-            if (npcid >= 501) {
-                logger->warning("NPC id exceeds MAX_DATA!");
-            }
-            *npc_indx = npcid;
-            return &pNPCStats->pNPCData[npcid];
-        }
-        *npc_indx = npcid - 5000;
-        return &pNPCStats->pAdditionalNPC[npcid - 5000];
-    }
-    if (npcid >= 5000) {
-        *npc_indx = npcid - 5000;
-        return &pNPCStats->pAdditionalNPC[npcid - 5000];
-    }
-    if (sDialogue_SpeakingActorNPC_ID >= 0) {
-        *npc_indx = 0;
-        result = nullptr;
-    } else {
-        FlatHirelings buf;
-        buf.Prepare();
-
-        result = buf.Get(std::abs(sDialogue_SpeakingActorNPC_ID) - 1);
-    }
-    return result;
 }
 
 //----- (00476387) --------------------------------------------------------
@@ -90,7 +52,8 @@ bool PartyHasDragon() { return pNPCStats->pNPCData[57].Hired(); }
 //----- (00476395) --------------------------------------------------------
 // 0x26 Wizard eye at skill level 2
 bool CheckHiredNPCSpeciality(NpcProfession prof) {
-    if (bNoNPCHiring == 1) return false;
+    if (isHirelingsBlockedOnMap(engine->_currentLoadedMapId))
+        return false;
 
     for (unsigned i = 0; i < pNPCStats->uNumNewNPCs; ++i) {
         if (pNPCStats->pNPCData[i].profession == prof &&
