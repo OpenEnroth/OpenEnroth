@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;556e87b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;11a08d4</span>
    </div>
   </td>
  </tr>
@@ -81,13 +81,15 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a8b73973a268c32914d1e1c5ceb5b55d7"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classFsm.html">Fsm</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameFsmBuilder.html#a8b73973a268c32914d1e1c5ceb5b55d7">buildFsm</a> ()</td></tr>
-<tr class="separator:a8b73973a268c32914d1e1c5ceb5b55d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf726bb83fd9b81fdd5e4fd15e9708a9"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classFsm.html">Fsm</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameFsmBuilder.html#abf726bb83fd9b81fdd5e4fd15e9708a9">buildFsm</a> (std::string_view startingState)</td></tr>
+<tr class="separator:abf726bb83fd9b81fdd5e4fd15e9708a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
 <tr class="memitem:ac46393887e26b6cd0b6ced6e9784fb5b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameFsmBuilder.html#ac46393887e26b6cd0b6ced6e9784fb5b">_buildIntroVideoSequence</a> (<a class="el" href="classFsmBuilder.html">FsmBuilder</a> &amp;fsmBuilder)</td></tr>
 <tr class="separator:ac46393887e26b6cd0b6ced6e9784fb5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcf412290422a561e31c5e746683b52a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameFsmBuilder.html#abcf412290422a561e31c5e746683b52a">_buildMainMenu</a> (<a class="el" href="classFsmBuilder.html">FsmBuilder</a> &amp;fsmBuilder)</td></tr>
+<tr class="separator:abcf412290422a561e31c5e746683b52a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="ac46393887e26b6cd0b6ced6e9784fb5b" name="ac46393887e26b6cd0b6ced6e9784fb5b"></a>
@@ -116,8 +118,34 @@ Static Private Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a8b73973a268c32914d1e1c5ceb5b55d7" name="a8b73973a268c32914d1e1c5ceb5b55d7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8b73973a268c32914d1e1c5ceb5b55d7">&#9670;&#160;</a></span>buildFsm()</h2>
+<a id="abcf412290422a561e31c5e746683b52a" name="abcf412290422a561e31c5e746683b52a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abcf412290422a561e31c5e746683b52a">&#9670;&#160;</a></span>_buildMainMenu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameFsmBuilder::_buildMainMenu </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classFsmBuilder.html">FsmBuilder</a> &amp;&#160;</td>
+          <td class="paramname"><em>fsmBuilder</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abf726bb83fd9b81fdd5e4fd15e9708a9" name="abf726bb83fd9b81fdd5e4fd15e9708a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf726bb83fd9b81fdd5e4fd15e9708a9">&#9670;&#160;</a></span>buildFsm()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -128,7 +156,8 @@ Static Private Member Functions</h2></td></tr>
         <tr>
           <td class="memname">std::unique_ptr&lt; <a class="el" href="classFsm.html">Fsm</a> &gt; GameFsmBuilder::buildFsm </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>startingState</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
