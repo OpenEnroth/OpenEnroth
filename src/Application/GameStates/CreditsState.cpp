@@ -30,7 +30,7 @@ FsmAction CreditsState::update() {
         engine->_messageQueue->popMessage(&messageType, nullptr, nullptr);
 
         if (messageType == UIMSG_Escape) {
-            _scheduleBackTransition = true;
+            return FsmAction::transition("back");
         }
     }
 
