@@ -9,11 +9,13 @@
 #include "VideoState.h"
 #include "StartState.h"
 #include "LoadStep2State.h"
+#include "MainMenuState.h"
 
-std::unique_ptr<Fsm> GameFsmBuilder::buildFsm() {
+std::unique_ptr<Fsm> GameFsmBuilder::buildFsm(std::string_view startingState) {
     FsmBuilder fsmBuilder;
     _buildIntroVideoSequence(fsmBuilder);
-    auto fsm = fsmBuilder.build("Start");
+    _buildMainMenu(fsmBuilder);
+    auto fsm = fsmBuilder.build(startingState);
     return fsm;
 }
 
@@ -35,5 +37,15 @@ void GameFsmBuilder::_buildIntroVideoSequence(FsmBuilder &builder) {
         .on("videoEnd").jumpTo("LoadStep2")
 
     .state<LoadStep2State>("LoadStep2")
-        .on("done").exitFsm();
+        .on("done").jumpTo("MainMenu");
+}
+
+void GameFsmBuilder::_buildMainMenu(FsmBuilder &builder) {
+    builder
+    .state<MainMenuState>("MainMenu")
+        .on("newGame").exitFsm()
+        .on("loadGame").exitFsm()
+        .on("quickLoadGame").exitFsm()
+        .on("credits").exitFsm()
+        .on("exitGame").exitFsm();
 }

@@ -6,20 +6,12 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-#include "Engine/SaveLoad.h"
 
 #include "GUI/GUIButton.h"
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
 
 #include "Io/Mouse.h"
-
-#include "Media/Audio/AudioPlayer.h"
-#include "Media/MediaPlayer.h"
-
-#include "Library/Logger/Logger.h"
-
-GUIWindow_MainMenu *pWindow_MainMenu = nullptr;
 
 GUIWindow_MainMenu::GUIWindow_MainMenu() :
     GUIWindow(WINDOW_MainMenu, {0, 0}, render->GetRenderDimensions()) {
@@ -52,12 +44,11 @@ void GUIWindow_MainMenu::Update() {
     render->DrawTextureNew(0, 0, main_menu_background);
 
     Pointi pt = mouse->GetCursorPos();
-    GUIWindow *pWindow = this;
 
     GraphicsImage *pTexture = nullptr;
-    if (!pGameOverWindow) {  // ???
-        for (GUIButton *pButton : pWindow->vButtons) {
-            if (pButton->Contains(pt.x, pt.y) && pWindow == pWindow_MainMenu) {
+    if (!pGameOverWindow) {  // Really why???
+        for (GUIButton *pButton : vButtons) {
+            if (pButton->Contains(pt.x, pt.y)) {
                 auto pControlParam = pButton->msg_param;
                 int pY = 0;
                 switch (pControlParam) {  // backlight for buttons
@@ -84,114 +75,22 @@ void GUIWindow_MainMenu::Update() {
     }
 }
 
-void GUIWindow_MainMenu::EventLoop() {
-    while (engine->_messageQueue->haveMessages()) {
-        UIMessageType pUIMessageType;
-        int pParam;
-        int param2;
-        engine->_messageQueue->popMessage(&pUIMessageType, &pParam, &param2);
-
-        switch (pUIMessageType) {  // For buttons of window MainMenu
-        case UIMSG_MainMenu_ShowPartyCreationWnd:
-            new OnButtonClick2({495, 172}, {0, 0}, pBtnNew);
-            SetCurrentMenuID(MENU_NEWGAME);
-            break;
-        case UIMSG_MainMenu_ShowLoadWindow:
-            new OnButtonClick2({495, 227}, {0, 0}, pBtnLoad);
-            SetCurrentMenuID(MENU_SAVELOAD);
-            break;
-        case UIMSG_ShowCredits:
-            new OnButtonClick2({495, 282}, {0, 0}, pBtnCredits);
-            SetCurrentMenuID(MENU_CREDITS);
-            break;
-        case UIMSG_ExitToWindows:
-            new OnButtonClick2({495, 337}, {0, 0}, pBtnExit);
-            SetCurrentMenuID(MENU_EXIT_GAME);
-            break;
-        case UIMSG_ChangeGameState:
-            uGameState = GAME_FINISHED;
-            break;
-        case UIMSG_QuickLoad: {
-            int slot = GetQuickSaveSlot();
-            if (slot != -1) {
-                pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-                pSavegameList->selectedSlot = slot;
-                SetCurrentMenuID(MENU_LoadingProcInMainMenu);
-            } else {
-                logger->error("QuickLoadGame:: No quick save could be found!");
-                pAudioPlayer->playUISound(SOUND_error);
-            }
-            break;
-        }
-        default:
-            break;
-        }
+void GUIWindow_MainMenu::processMessage(UIMessageType message) {
+    // Play the sound and change visual connected to the related button
+    switch (message) {
+    case UIMSG_MainMenu_ShowPartyCreationWnd:
+        new OnButtonClick2({ 495, 172 }, { 0, 0 }, pBtnNew);
+        break;
+    case UIMSG_MainMenu_ShowLoadWindow:
+        new OnButtonClick2({ 495, 227 }, { 0, 0 }, pBtnLoad);
+        break;
+    case UIMSG_ShowCredits:
+        new OnButtonClick2({ 495, 282 }, { 0, 0 }, pBtnCredits);
+        break;
+    case UIMSG_ExitToWindows:
+        new OnButtonClick2({ 495, 337 }, { 0, 0 }, pBtnExit);
+        break;
+    default:
+        break;
     }
-}
-
-void GUIWindow_MainMenu::drawMM7CopyrightWindow() {
-    GUIWindow Dst;
-    Dst.uFrameWidth = 624;
-    Dst.uFrameHeight = 256;
-    Dst.uFrameX = 8;
-    Dst.uFrameY = 30;
-    Dst.uFrameHeight = assets->pFontSmallnum->CalcTextHeight(localization->GetString(LSTR_3DO_COPYRIGHT), Dst.uFrameWidth, 24, 0);
-    Dst.uFrameHeight += 2 * assets->pFontSmallnum->GetHeight() + 24;
-    Dst.uFrameY = 470 - Dst.uFrameHeight;
-    Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
-    Dst.uFrameW = 469;
-    Dst.DrawMessageBox(0);
-
-    Dst.uFrameWidth -= 28;
-    Dst.uFrameX += 12;
-    Dst.uFrameY += 12;
-    Dst.uFrameHeight -= 12;
-    Dst.uFrameZ = Dst.uFrameX + Dst.uFrameWidth - 1;
-    Dst.uFrameW = Dst.uFrameY + Dst.uFrameHeight - 1;
-    Dst.DrawTitleText(assets->pFontSmallnum.get(), 0, 12, ui_mainmenu_copyright_color, localization->GetString(LSTR_3DO_COPYRIGHT), 3);
-}
-
-void GUIWindow_MainMenu::drawCopyrightAndInit(std::function<void()> initFunc) {
-    GraphicsImage *tex = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
-
-    render->ResetUIClipRect();
-    render->BeginScene2D();
-    {
-        render->DrawTextureNew(0, 0, tex);
-        drawMM7CopyrightWindow();
-        render->Present();
-
-        initFunc();
-
-        tex->Release();
-    }
-}
-
-void GUIWindow_MainMenu::loop() {
-    pAudioPlayer->stopSounds();
-    pAudioPlayer->MusicPlayTrack(MUSIC_MAIN_MENU);
-
-    current_screen_type = SCREEN_GAME;
-
-    pGUIWindow_BranchlessDialogue = nullptr;
-
-    pWindow_MainMenu = new GUIWindow_MainMenu();
-
-    SetCurrentMenuID(MENU_MAIN);
-    // window->Activate();
-
-    while (GetCurrentMenuID() == MENU_MAIN) {
-        MessageLoopWithWait();
-
-        render->BeginScene2D();
-        {
-            pWindow_MainMenu->EventLoop();
-            GUI_UpdateWindows();
-        }
-        render->Present();
-    }
-
-    pWindow_MainMenu->Release();
-    delete pWindow_MainMenu;
-    pWindow_MainMenu = nullptr;
 }

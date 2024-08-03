@@ -131,31 +131,36 @@ int Game::run() {
     window->activate();
     ::eventLoop->processMessages(eventHandler);
 
-    // This FSM is used only to show the intro videos and perform the second initialization
-    std::unique_ptr<Fsm> fsm = GameFsmBuilder::buildFsm();
-    GameWindowHandler* gameWindowHandler = ::application->component<GameWindowHandler>();
-    gameWindowHandler->addFsmEventHandler(fsm.get());
-    while(!fsm->hasReachedExitState()) {
-        render->ClearBlack();
-        render->BeginScene2D();
+    std::string_view startingState = "Start";
+    // Need to have this do/while external loop till we remove entirely all the states
+    do {
+        std::unique_ptr<Fsm> fsm = GameFsmBuilder::buildFsm(startingState);
+        GameWindowHandler *gameWindowHandler = ::application->component<GameWindowHandler>();
+        gameWindowHandler->addFsmEventHandler(fsm.get());
+        while (!fsm->hasReachedExitState()) {
+            render->ClearBlack();
+            render->BeginScene2D();
 
-        fsm->update();
+            fsm->update();
 
-        render->Present();
+            // This method should be interpreted as a future RetainedUISystem::update()
+            // It does update all the GUIWindow alive + it does various hacks
+            GUI_UpdateWindows();
 
-        MessageLoopWithWait();
-    }
-    gameWindowHandler->removeFsmEventHandler(fsm.get());
+            render->Present();
 
-    // logger->Warning("MM: entering main loop");
-    while (true) {
-        GUIWindow_MainMenu::loop();
+            MessageLoopWithWait();
+        }
+        gameWindowHandler->removeFsmEventHandler(fsm.get());
+
+        // Here we're still running the rest of the loops as usual.
         uGameState = GAME_STATE_PLAYING;
-
         if (!loop()) {
             break;
+        } else {
+            startingState = "MainMenu";
         }
-    }
+    } while (true);
 
     return 0;
 }
