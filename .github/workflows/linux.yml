@@ -89,14 +89,33 @@ jobs:
             sudo apt-get install -y gcc-13-multilib g++-13-multilib lld
             sudo apt-get install -y libglu1-mesa-dev:i386
             sudo apt-get install -y libsdl2-dev:i386
-            sudo apt-get install -y libdwarf-dev:i386 libelf-dev:i386
+            sudo apt-get install -y libelf-dev:i386
           fi
           if [ "${{matrix.architecture}}" = "x86_64" ]; then
             sudo apt-get install -y gcc-13 g++-13 lld
             sudo apt-get install -y libglu1-mesa-dev
             sudo apt-get install -y libsdl2-dev
-            sudo apt-get install -y libdwarf-dev libelf-dev
+            sudo apt-get install -y libelf-dev
           fi
+
+      - name: 'Checkout libdwarf'
+        uses: actions/checkout@v4
+        with:
+          repository: davea42/libdwarf-code
+          path: libdwarf-code
+          ref: '20191104'
+
+      - name: 'Build libdwarf'
+        working-directory: libdwarf-code
+        run: |
+            if [ "${{matrix.architecture}}" = "x86" ]; then
+              export CFLAGS="-m32" CXXFLAGS="-m32" 
+            fi
+            export CC=gcc-13 && export CXX=g++-13
+            cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
+            cd build
+            make -j3
+            sudo make install 
 
       - name: Run ccache
         uses: hendrikmuhs/ccache-action@v1.2.10
