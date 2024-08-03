@@ -1,10 +1,9 @@
 #pragma once
 
 #include <Library/Fsm/FsmState.h>
+#include <GUI/UI/UICredits.h>
 
 #include <memory>
-
-class GUICredits;
 
 class CreditsState : public FsmState {
  public:
