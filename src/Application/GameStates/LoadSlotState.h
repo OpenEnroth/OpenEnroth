@@ -1,20 +1,18 @@
 #pragma once
 
-#include <Library/Fsm/FSMState.h>
+#include <Library/Fsm/FsmState.h>
 
 #include <memory>
 
 class GUIWindow_Load;
 
-class LoadSlotState : public FSMState {
+class LoadSlotState : public FsmState {
  public:
     LoadSlotState();
-    virtual void update() override;
-    virtual void enter() override;
+    virtual FsmAction update() override;
+    virtual FsmAction enter() override;
     virtual void exit() override;
 
  private:
-    void _goBack();
-
     std::unique_ptr<GUIWindow_Load> _uiLoadSaveSlot;
 };

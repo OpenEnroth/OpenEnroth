@@ -12,15 +12,16 @@
 LoadSlotState::LoadSlotState() {
 }
 
-void LoadSlotState::enter() {
+FsmAction LoadSlotState::enter() {
     current_screen_type = SCREEN_LOADGAME;
     bool isInGame = false;
     _uiLoadSaveSlot = std::make_unique<GUIWindow_Load>(isInGame);
     // Unfortunately there's a need to set this global pointer if we don't want to refactor the entire SaveLoad UI ( not worth it right now )
     pGUIWindow_CurrentMenu = _uiLoadSaveSlot.get();
+    return FsmAction::none();
 }
 
-void LoadSlotState::update() {
+FsmAction LoadSlotState::update() {
     while (engine->_messageQueue->haveMessages()) {
         UIMessageType message;
         int param1, param2;
@@ -30,9 +31,8 @@ void LoadSlotState::update() {
             if (!pSavegameList->pSavegameUsedSlots[pSavegameList->selectedSlot]) {
                 break;
             }
-            executeTransition("slotConfirmed");
             SetCurrentMenuID(MENU_LoadingProcInMainMenu);
-            break;
+            return FsmAction::transition("slotConfirmed");
         }
         case UIMSG_SelectLoadSlot: {
             _uiLoadSaveSlot->slotSelected(param1);
@@ -56,8 +56,9 @@ void LoadSlotState::update() {
         }
         case UIMSG_Escape: {
             pEventTimer->setPaused(false);
-            _goBack();
-            break;
+            SetCurrentMenuID(MENU_MAIN);
+            current_screen_type = SCREEN_GAME;
+            return FsmAction::transition("back");
         }
         case UIMSG_SaveLoadScroll: {
             _uiLoadSaveSlot->scroll(param1);
@@ -67,19 +68,12 @@ void LoadSlotState::update() {
             break;
         }
     }
+
+    return FsmAction::none();
 }
 
 void LoadSlotState::exit() {
     pGUIWindow_CurrentMenu = nullptr;
     _uiLoadSaveSlot->Release();
     _uiLoadSaveSlot.reset();
-}
-
-void LoadSlotState::_goBack() {
-    // One day we'll be able to get rid of this. We shouldn't know from a state where we're going.
-    // That's why we trigger a "back" transition few lines below
-    SetCurrentMenuID(MENU_MAIN);
-    current_screen_type = SCREEN_GAME;
-
-    executeTransition("back");
 }
