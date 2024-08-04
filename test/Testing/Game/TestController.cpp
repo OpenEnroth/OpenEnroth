@@ -68,7 +68,7 @@ std::string TestController::fullPathInTestData(std::string_view fileName) {
 }
 
 void TestController::loadGameFromTestData(std::string_view name) {
-    _controller->loadGame(fullPathInTestData(name));
+    _controller->loadGame(Blob::fromFile(fullPathInTestData(name)));
 }
 
 void TestController::playTraceFromTestData(std::string_view saveName, std::string_view traceName, std::function<void()> postLoadCallback) {

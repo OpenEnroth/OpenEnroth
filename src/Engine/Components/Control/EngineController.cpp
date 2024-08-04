@@ -23,6 +23,7 @@
 
 #include "Utility/Exception.h"
 #include "Utility/DataPath.h"
+#include "Utility/Streams/FileOutputStream.h"
 
 EngineController::EngineController(EngineControlStateHandle state): _state(std::move(state)) {}
 
@@ -187,17 +188,19 @@ void EngineController::skipLoadingScreen() {
         tick(1);
 }
 
-void EngineController::saveGame(std::string_view path) {
+Blob EngineController::saveGame() {
     // AutoSave makes a screenshot and needs the opengl context that's bound in game thread, so we cannot call it from
     // the control thread. One option is to unbind every time we switch to control thread, but this is slow, and not
     // needed 99% of the time. So we just call back into the game thread.
-    runGameRoutine([&] { SaveGame(true, false, path); });
+    Blob result;
+    runGameRoutine([&] { result = CreateSaveData(false, "").second; });
+    return result;
 }
 
-void EngineController::loadGame(std::string_view path) {
+void EngineController::loadGame(const Blob &savedGame) {
     std::string saveName = "!!!test.mm7";
     std::string dst = makeDataPath("saves", saveName);
-    std::filesystem::copy_file(path, dst, std::filesystem::copy_options::overwrite_existing); // This might throw.
+    FileOutputStream(dst).write(savedGame.string_view()); // This might throw.
 
     goToMainMenu();
     pressGuiButton("MainMenu_LoadGame");

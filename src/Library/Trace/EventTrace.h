@@ -9,6 +9,8 @@
 #include "Library/Config/ConfigPatch.h"
 #include "Library/Geometry/Vec.h"
 
+#include "Utility/Memory/Blob.h"
+
 // TODO(captainurist): this should go to Core/, not Library/,
 
 struct EventTraceCharacterState {
@@ -49,8 +51,8 @@ struct EventTraceHeader {
 };
 
 struct EventTrace {
-    static void saveToFile(std::string_view path, const EventTrace &trace);
-    static EventTrace loadFromFile(std::string_view path, PlatformWindow *window);
+    static Blob toJsonBlob(const EventTrace &trace);
+    static EventTrace fromJsonBlob(const Blob &blob, PlatformWindow *window);
 
     static bool isTraceable(const PlatformEvent *event);
     static std::unique_ptr<PlatformEvent> cloneEvent(const PlatformEvent *event);

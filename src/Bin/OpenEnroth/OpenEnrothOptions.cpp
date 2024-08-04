@@ -54,7 +54,7 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         "Use random number generators that print stack trace on each call.");
     retrace->add_flag(
         "--check-canonical", result.retrace.checkCanonical,
-        "Check whether all passed traces are stored in canonical representation and return an error if not.");
+        "Check whether all passed traces are stored in canonical representation and return an error if not. Don't overwrite the actual trace files.");
     retrace->add_flag(
         "--glob", globTraces,
         "Glob passed trace paths.")->group(""); // group("") hides this option. It's here so that we don't have to jump through hoops in cmake.

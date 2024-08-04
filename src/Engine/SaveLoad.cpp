@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <string>
 #include <memory>
+#include <utility>
 
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
@@ -36,6 +37,7 @@
 #include "Library/Lod/LodWriter.h"
 
 #include "Utility/DataPath.h"
+#include "Utility/Streams/FileOutputStream.h"
 
 SavegameList *pSavegameList = new SavegameList;
 
@@ -144,32 +146,13 @@ void LoadGame(int uSlot) {
     bFlashHistoryBook = false;
 }
 
-SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path, std::string_view title) {
-    assert(isAutoSave || !title.empty());
-    assert(engine->_currentLoadedMapId != MAP_ARENA || isAutoSave); // No manual saves in Arena.
-
-    if (engine->_currentLoadedMapId == MAP_ARENA) {
-        return {};
-    }
+std::pair<SaveGameHeader, Blob> CreateSaveData(bool resetWorld, std::string_view title) {
+    std::pair<SaveGameHeader, Blob> result;
+    auto &[resultHeader, resultBlob] = result;
+    BlobOutputStream lodStream(&resultBlob);
+    LodWriter lodWriter(&lodStream, makeSaveLodInfo());
 
     std::string currentMapName = pMapStats->pInfos[engine->_currentLoadedMapId].fileName;
-
-    // saving - please wait
-
-    // if (current_screen_type == SCREEN_SAVEGAME) {
-    //    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
-    //    render->DrawTextureNew(18 / 640.0f, 141 / 480.0f, saveload_ui_loadsave);
-    //    int text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(190));
-    //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0, localization->GetString(190), 0, 0, 0);  // Сохранение
-    //    text_pos = pFontSmallnum->AlignText_Center(186, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName);
-    //    pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, text_pos + 25, 259, 0, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName, 185, 0);
-    //    text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT));
-    //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0, localization->GetString(LSTR_PLEASE_WAIT), 0, 0, 0);  // Пожалуйста, подождите
-    //    render->Present();
-    //}
-
-    std::string tempPath = fmt::format("{}.tmp", path);
-    LodWriter lodWriter(tempPath, makeSaveLodInfo());
 
     if (resetWorld) {
         // New game - copy ddm & dlv files.
@@ -200,11 +183,10 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path,
 
     lodWriter.write("image.pcx", pcx::encode(render->MakeViewportScreenshot(150, 112)));
 
-    SaveGameHeader save_header;
-    save_header.name = title;
-    save_header.locationName = currentMapName;
-    save_header.playingTime = pParty->GetPlayingTime();
-    serialize(save_header, &lodWriter, tags::via<SaveGame_MM7>);
+    resultHeader.name = title;
+    resultHeader.locationName = currentMapName;
+    resultHeader.playingTime = pParty->GetPlayingTime();
+    serialize(resultHeader, &lodWriter, tags::via<SaveGame_MM7>);
 
     // TODO(captainurist): incapsulate this too
     for (size_t i = 0; i < 4; ++i) {  // 4 - players
@@ -229,13 +211,42 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path,
     // Our code doesn't support duplicate entries, so we just add a dummy entry
     lodWriter.write("z.bin", Blob::fromString("dummy"));
     lodWriter.close();
+    lodStream.close();
+    return result;
+}
 
-    std::filesystem::rename(tempPath, path);
+SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path, std::string_view title) {
+    assert(isAutoSave || !title.empty());
+    assert(engine->_currentLoadedMapId != MAP_ARENA || isAutoSave); // No manual saves in Arena.
+
+    if (engine->_currentLoadedMapId == MAP_ARENA) {
+        return {};
+    }
+
+    // saving - please wait
+
+    // if (current_screen_type == SCREEN_SAVEGAME) {
+    //    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
+    //    render->DrawTextureNew(18 / 640.0f, 141 / 480.0f, saveload_ui_loadsave);
+    //    int text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(190));
+    //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0, localization->GetString(190), 0, 0, 0);  // Сохранение
+    //    text_pos = pFontSmallnum->AlignText_Center(186, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName);
+    //    pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, text_pos + 25, 259, 0, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName, 185, 0);
+    //    text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT));
+    //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0, localization->GetString(LSTR_PLEASE_WAIT), 0, 0, 0);  // Пожалуйста, подождите
+    //    render->Present();
+    //}
+
+    auto [header, blob] = CreateSaveData(resetWorld, title);
+
+    std::string tmpPath = fmt::format("{}.tmp", path);
+    FileOutputStream(tmpPath).write(blob.string_view());
+    std::filesystem::rename(tmpPath, path);
 
     pSave_LOD->close();
-    pSave_LOD->open(Blob::copy(Blob::fromFile(path)), LOD_ALLOW_DUPLICATES);
+    pSave_LOD->open(std::move(blob), LOD_ALLOW_DUPLICATES);
 
-    return save_header;
+    return std::move(header);
 }
 
 void AutoSave() {
