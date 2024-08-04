@@ -6,6 +6,7 @@ set(BUILD_TESTING OFF CACHE BOOL "Don't build tests for subprojects. Value is fo
 # Note that setting a CMAKE_POLICY_* variable is the intended way to pass this policy to a subproject.
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
+add_subdirectory(cmrc)
 add_subdirectory(fast_float)
 add_subdirectory(glm)
 add_subdirectory(magic_enum)
@@ -40,6 +41,9 @@ set_target_properties(libluajit PROPERTIES COMPILE_FLAGS "${CMAKE_C_FLAGS}" LINK
 add_library(inicpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/inifile_cpp/include/inicpp.h)
 target_include_directories(inicpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/inifile_cpp/include)
 add_library(inicpp::inicpp ALIAS inicpp)
+
+# small_vector
+add_subdirectory(small_vector)
 
 # spdlog
 set(SPDLOG_FMT_EXTERNAL ON)

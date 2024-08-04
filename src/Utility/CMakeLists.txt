@@ -49,7 +49,8 @@ set(UTILITY_HEADERS
         String/Transformations.h
         Win/Unicode.h
         Unaligned.h
-        UnicodeCrt.h)
+        UnicodeCrt.h
+        SmallVector.h)
 
 if(OE_BUILD_PLATFORM STREQUAL "windows")
     list(APPEND UTILITY_SOURCES Win/Unicode.cpp)
@@ -60,6 +61,7 @@ target_check_style(utility)
 target_link_libraries(utility
         PUBLIC
         fmt::fmt
+        gch::small_vector
         PRIVATE
         mio::mio)
 
