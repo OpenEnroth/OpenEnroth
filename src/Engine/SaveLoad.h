@@ -2,8 +2,11 @@
 
 #include <array>
 #include <string>
+#include <utility>
 
 #include "Engine/Time/Time.h"
+
+#include "Utility/Memory/Blob.h"
 
 class GraphicsImage;
 
@@ -33,6 +36,7 @@ struct SavegameList {
 };
 
 void LoadGame(int uSlot);
+std::pair<SaveGameHeader, Blob> CreateSaveData(bool resetWorld, std::string_view title);
 SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path, std::string_view title = {});
 void AutoSave();
 void DoSavegame(int uSlot);

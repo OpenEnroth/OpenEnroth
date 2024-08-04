@@ -35,7 +35,7 @@ void EngineTracePlayer::playTrace(EngineController *game, std::string_view saveP
     _tracePath = tracePath;
     _savePath = savePath;
     _flags = flags;
-    _trace = std::make_unique<EventTrace>(EventTrace::loadFromFile(_tracePath, application()->window()));
+    _trace = std::make_unique<EventTrace>(EventTrace::fromJsonBlob(Blob::fromFile(_tracePath), application()->window()));
 
     MM_AT_SCOPE_EXIT({
         _tracePath.clear();
@@ -56,7 +56,7 @@ void EngineTracePlayer::playTrace(EngineController *game, std::string_view saveP
 
     game->goToMainMenu(); // This might call into a random engine.
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
-    game->loadGame(_savePath);
+    game->loadGame(Blob::fromFile(_savePath));
     checkAfterLoadRng(_trace->header.afterLoadRandomState);
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
     component<GameKeyboardController>()->reset(); // Reset all pressed buttons.
