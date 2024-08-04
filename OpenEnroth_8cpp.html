@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c469e64</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;65ca4c7</span>
    </div>
   </td>
  </tr>
@@ -95,7 +95,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="StackTraceOnCrash_8h.html">Library/StackTrace/StackTraceOnCrash.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PlatformApplication_8h.html">Library/Platform/Application/PlatformApplication.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EventTrace_8h.html">Library/Trace/EventTrace.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="FileInputStream_8h.html">Utility/Streams/FileInputStream.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FileOutputStream_8h.html">Utility/Streams/FileOutputStream.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Format_8h.html">Utility/String/Format.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UnicodeCrt_8h.html">Utility/UnicodeCrt.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Transformations_8h.html">Utility/String/Transformations.h</a>&quot;</code><br />
@@ -105,8 +105,8 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aed430d80a3910e831b6b284b2f6329fe"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#aed430d80a3910e831b6b284b2f6329fe">readTextFile</a> (std::string_view path)</td></tr>
-<tr class="separator:aed430d80a3910e831b6b284b2f6329fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f83dd125cf40cfa51935bced7fbf5fb"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a8f83dd125cf40cfa51935bced7fbf5fb">normalizeText</a> (std::string_view text)</td></tr>
+<tr class="separator:a8f83dd125cf40cfa51935bced7fbf5fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07aec9820e428e19c1ba4fb9a3524e9b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a07aec9820e428e19c1ba4fb9a3524e9b">printLines</a> (const std::vector&lt; std::string_view &gt; &amp;lines, ssize_t line, ssize_t delta)</td></tr>
 <tr class="separator:a07aec9820e428e19c1ba4fb9a3524e9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a62f3198bd8683c9b1994da8344f6f4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a9a62f3198bd8683c9b1994da8344f6f4">printTraceDiff</a> (std::string_view current, std::string_view canonical)</td></tr>
@@ -123,6 +123,32 @@ Functions</h2></td></tr>
 <tr class="separator:ac514b18d4266e4a2f5a39f9d19a88f77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a8f83dd125cf40cfa51935bced7fbf5fb" name="a8f83dd125cf40cfa51935bced7fbf5fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f83dd125cf40cfa51935bced7fbf5fb">&#9670;&#160;</a></span>normalizeText()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::string normalizeText </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>text</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a3b2b6e7cb9d141623a9f00f84f068537" name="a3b2b6e7cb9d141623a9f00f84f068537"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3b2b6e7cb9d141623a9f00f84f068537">&#9670;&#160;</a></span>openEnrothMain()</h2>
 
@@ -255,32 +281,6 @@ Functions</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aed430d80a3910e831b6b284b2f6329fe" name="aed430d80a3910e831b6b284b2f6329fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aed430d80a3910e831b6b284b2f6329fe">&#9670;&#160;</a></span>readTextFile()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static std::string readTextFile </td>
-          <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>path</em></td><td>)</td>
-          <td></td>
         </tr>
       </table>
   </td>

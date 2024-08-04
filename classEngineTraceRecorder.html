@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c469e64</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;65ca4c7</span>
    </div>
   </td>
  </tr>
@@ -95,19 +95,17 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:acd1ed55beb5b93dfd9ad455faa197b9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3260d2bf193cd1c01286fb1e2a77bb09"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a3260d2bf193cd1c01286fb1e2a77bb09">~EngineTraceRecorder</a> ()</td></tr>
 <tr class="separator:a3260d2bf193cd1c01286fb1e2a77bb09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d0e84d01d2aa85e19832095fb56f222"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a1d0e84d01d2aa85e19832095fb56f222">startRecording</a> (<a class="el" href="classEngineController.html">EngineController</a> *game, std::string_view savePath, std::string_view tracePath, EngineTraceRecordingFlags flags=0)</td></tr>
-<tr class="separator:a1d0e84d01d2aa85e19832095fb56f222"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6a657c968efc8229f90716e8fac346d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a6a657c968efc8229f90716e8fac346d4">finishRecording</a> (<a class="el" href="classEngineController.html">EngineController</a> *game)</td></tr>
-<tr class="separator:a6a657c968efc8229f90716e8fac346d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae30fc49a568f91a3b2cdb2320477208b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#ae30fc49a568f91a3b2cdb2320477208b">startRecording</a> (<a class="el" href="classEngineController.html">EngineController</a> *game, const <a class="el" href="classBlob.html">Blob</a> &amp;savedGame={})</td></tr>
+<tr class="separator:ae30fc49a568f91a3b2cdb2320477208b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a008fd687a341613de832980f1702937f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structEngineTraceRecording.html">EngineTraceRecording</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a008fd687a341613de832980f1702937f">finishRecording</a> (<a class="el" href="classEngineController.html">EngineController</a> *game)</td></tr>
+<tr class="separator:a008fd687a341613de832980f1702937f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16c33f2dc904389d54b896e3283fab68"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a16c33f2dc904389d54b896e3283fab68">isRecording</a> () const</td></tr>
 <tr class="separator:a16c33f2dc904389d54b896e3283fab68"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a96069addb38148baf4951a7627bee550"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a96069addb38148baf4951a7627bee550">_savePath</a></td></tr>
-<tr class="separator:a96069addb38148baf4951a7627bee550"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7cf662c77d82cebb03ce84db5a63ee4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#ae7cf662c77d82cebb03ce84db5a63ee4">_tracePath</a></td></tr>
-<tr class="separator:ae7cf662c77d82cebb03ce84db5a63ee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a898e76e30a0e3ffd6373cb5eb63480be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#a898e76e30a0e3ffd6373cb5eb63480be">_savedGame</a></td></tr>
+<tr class="separator:a898e76e30a0e3ffd6373cb5eb63480be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af944ae412ccf9ab1e0a1b41394a5ac6d"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="structEventTrace.html">EventTrace</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#af944ae412ccf9ab1e0a1b41394a5ac6d">_trace</a></td></tr>
 <tr class="separator:af944ae412ccf9ab1e0a1b41394a5ac6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2a2d88d2a3ee4edc4970fa8995344fb"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classConfigPatch.html">ConfigPatch</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineTraceRecorder.html#ad2a2d88d2a3ee4edc4970fa8995344fb">_configSnapshot</a></td></tr>
@@ -180,14 +178,14 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a6a657c968efc8229f90716e8fac346d4" name="a6a657c968efc8229f90716e8fac346d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6a657c968efc8229f90716e8fac346d4">&#9670;&#160;</a></span>finishRecording()</h2>
+<a id="a008fd687a341613de832980f1702937f" name="a008fd687a341613de832980f1702937f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a008fd687a341613de832980f1702937f">&#9670;&#160;</a></span>finishRecording()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void EngineTraceRecorder::finishRecording </td>
+          <td class="memname"><a class="el" href="structEngineTraceRecording.html">EngineTraceRecording</a> EngineTraceRecorder::finishRecording </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classEngineController.html">EngineController</a> *&#160;</td>
           <td class="paramname"><em>game</em></td><td>)</td>
@@ -195,7 +193,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Finishes trace recording &amp; saves the trace file.</p>
+<p >Finishes trace recording.</p>
 <p >Note that this method needs to be called from the control thread, see <code><a class="el" href="classEngineControlComponent.html">EngineControlComponent</a></code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -203,6 +201,7 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>Resulting recording. </dd></dl>
 
 </div>
 </div>
@@ -232,8 +231,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a1d0e84d01d2aa85e19832095fb56f222" name="a1d0e84d01d2aa85e19832095fb56f222"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d0e84d01d2aa85e19832095fb56f222">&#9670;&#160;</a></span>startRecording()</h2>
+<a id="ae30fc49a568f91a3b2cdb2320477208b" name="ae30fc49a568f91a3b2cdb2320477208b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae30fc49a568f91a3b2cdb2320477208b">&#9670;&#160;</a></span>startRecording()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -247,20 +246,8 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>savePath</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>tracePath</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">EngineTraceRecordingFlags&#160;</td>
-          <td class="paramname"><em>flags</em> = <code>0</code>&#160;</td>
+          <td class="paramtype">const <a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
+          <td class="paramname"><em>savedGame</em> = <code>{}</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -274,9 +261,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">game</td><td><a class="el" href="classEngine.html">Engine</a> controller. </td></tr>
-    <tr><td class="paramname">savePath</td><td>Path to save file. </td></tr>
-    <tr><td class="paramname">tracePath</td><td>Path to trace file. </td></tr>
-    <tr><td class="paramname">flags</td><td>Recording flags. </td></tr>
+    <tr><td class="paramname">savedGame</td><td>Saved game to load instead of starting recording from current game state. </td></tr>
   </table>
   </dd>
 </dl>
@@ -329,8 +314,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a96069addb38148baf4951a7627bee550" name="a96069addb38148baf4951a7627bee550"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a96069addb38148baf4951a7627bee550">&#9670;&#160;</a></span>_savePath</h2>
+<a id="a898e76e30a0e3ffd6373cb5eb63480be" name="a898e76e30a0e3ffd6373cb5eb63480be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a898e76e30a0e3ffd6373cb5eb63480be">&#9670;&#160;</a></span>_savedGame</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -339,7 +324,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string EngineTraceRecorder::_savePath</td>
+          <td class="memname"><a class="el" href="classBlob.html">Blob</a> EngineTraceRecorder::_savedGame</td>
         </tr>
       </table>
   </td>
@@ -362,28 +347,6 @@ Additional Inherited Members</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::unique_ptr&lt;<a class="el" href="structEventTrace.html">EventTrace</a>&gt; EngineTraceRecorder::_trace</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae7cf662c77d82cebb03ce84db5a63ee4" name="ae7cf662c77d82cebb03ce84db5a63ee4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae7cf662c77d82cebb03ce84db5a63ee4">&#9670;&#160;</a></span>_tracePath</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string EngineTraceRecorder::_tracePath</td>
         </tr>
       </table>
   </td>
