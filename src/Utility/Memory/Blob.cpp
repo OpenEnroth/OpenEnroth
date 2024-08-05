@@ -50,7 +50,13 @@ Blob Blob::fromFile(std::string_view path) {
         return Blob().withDisplayPath(pathString);
 
     // On Windows mio::mmap_source expects UTF8-encoded paths. If the file doesn't exist, std::system_error is thrown.
-    std::shared_ptr<mio::mmap_source> mmap = std::make_shared<mio::mmap_source>(pathString);
+    std::shared_ptr<mio::mmap_source> mmap;
+    try {
+        mmap = std::make_shared<mio::mmap_source>(pathString);
+    } catch (const std::system_error &e) {
+        // mio doesn't fill in the path component for std::system_error, so we need to do this ourselves.
+        throw std::system_error(e.code(), pathString);
+    }
 
     Blob result;
     result._data = mmap->data();
