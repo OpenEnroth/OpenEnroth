@@ -23,7 +23,8 @@ bool AudioBufferDataSource::Open() {
     }
 
     // Reset stream to start if already played
-    stream.ioContext()->pos = 0;
+    if (stream.ioContext()->pos != 0)
+        stream.resetContext();
 
     pFormatContext->pb = stream.ioContext();
 
