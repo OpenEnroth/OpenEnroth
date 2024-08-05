@@ -7,6 +7,7 @@
 #include "Library/Platform/Application/PlatformApplicationAware.h"
 
 #include "EngineTraceEnums.h"
+#include "EngineTraceRecording.h"
 
 class EngineController;
 struct EventTrace;
@@ -29,12 +30,11 @@ class EngineTracePlayer : private PlatformApplicationAware {
      * Plays a previously recorded trace. Can be called only from a control thread of `EngineControlComponent`.
      *
      * @param game                      Engine controller.
-     * @param savePath                  Path to save file.
-     * @param tracePath                 Path to trace file.
+     * @param recording                 Recorded trace.
      * @param flags                     Playback flags.
      * @param postLoadCallback          Callback to call once the saved game is loaded.
      */
-    void playTrace(EngineController *game, std::string_view savePath, std::string_view tracePath,
+    void playTrace(EngineController *game, const EngineTraceRecording &recording,
                    EngineTracePlaybackFlags flags = 0, std::function<void()> postLoadCallback = {});
 
     [[nodiscard]] bool isPlaying() const {
@@ -44,13 +44,11 @@ class EngineTracePlayer : private PlatformApplicationAware {
  private:
     friend class PlatformIntrospection;
 
-    void checkSaveFileSize(int expectedSaveFileSize);
-    void checkAfterLoadRng(int expectedRandomState);
-    void checkState(const EventTraceGameState &expectedState, bool isStart);
+    void checkSaveFileSize(const EngineTraceRecording &recording, int expectedSaveFileSize);
+    void checkAfterLoadRng(const EngineTraceRecording &recording, int expectedRandomState);
+    void checkState(const EngineTraceRecording &recording, const EventTraceGameState &expectedState, bool isStart);
 
  private:
-    std::string _tracePath;
-    std::string _savePath;
     EngineTracePlaybackFlags _flags;
     std::unique_ptr<EventTrace> _trace;
 };

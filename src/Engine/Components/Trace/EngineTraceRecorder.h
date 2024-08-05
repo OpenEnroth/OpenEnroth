@@ -6,16 +6,11 @@
 
 #include "Utility/Memory/Blob.h"
 
-#include "EngineTraceEnums.h"
+#include "EngineTraceRecording.h"
 
 class EngineController;
 struct EventTrace;
 class ConfigPatch;
-
-struct EngineTraceRecording {
-    Blob save;
-    Blob trace;
-};
 
 /**
  * Component that exposes a trace recording interface. Doesn't have a `Component` in its name because who likes
