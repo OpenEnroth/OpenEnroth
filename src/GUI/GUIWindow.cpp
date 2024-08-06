@@ -454,6 +454,8 @@ void OnButtonClick::Update() {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
+
+    delete this;
 }
 
 void OnButtonClick2::Update() {
@@ -470,6 +472,8 @@ void OnButtonClick2::Update() {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
+
+    delete this;
 }
 
 void OnButtonClick3::Update() {
@@ -480,6 +484,8 @@ void OnButtonClick3::Update() {
         _button->DrawLabel(sHint, assets->pFontCreate.get(), colorTable.White);
     }
     Release();
+
+    delete this;
 }
 
 void OnButtonClick4::Update() {
@@ -489,6 +495,8 @@ void OnButtonClick4::Update() {
     render->DrawTextureNew(uFrameX / 640.0f, uFrameY / 480.0f, _button->vTextures[1]);
 
     Release();
+
+    delete this;
 }
 
 void OnSaveLoad::Update() {
@@ -506,6 +514,8 @@ void OnSaveLoad::Update() {
     } else {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
     }
+
+    delete this;
 }
 
 void OnCancel::Update() {
@@ -519,6 +529,8 @@ void OnCancel::Update() {
     Release();
 
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+
+    delete this;
 }
 
 void OnCancel2::Update() {
@@ -532,6 +544,8 @@ void OnCancel2::Update() {
     Release();
 
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+
+    delete this;
 }
 
 void OnCancel3::Update() {
@@ -546,6 +560,8 @@ void OnCancel3::Update() {
     Release();
 
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+
+    delete this;
 }
 
 void GUI_UpdateWindows() {
