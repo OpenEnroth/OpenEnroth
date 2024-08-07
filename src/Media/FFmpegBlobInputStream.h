@@ -12,6 +12,7 @@ class FFmpegBlobInputStream : public BlobInputStream {
     virtual ~FFmpegBlobInputStream();
 
     void open(Blob blob);
+    void resetContext();
 
     virtual void close() override;
 
