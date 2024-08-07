@@ -2025,7 +2025,7 @@ void OpenGLRenderer::DrawOutdoorSky() {
     // (int)&pBitmaps_LOD->pTextures[pSkyPolygon.uTileBitmapID] : 0);
 
     if (!pOutdoor->sky_texture)
-        pOutdoor->sky_texture = assets->getBitmap("plansky3");
+        pOutdoor->sky_texture = assets->getBitmap("plansky3"); // TODO(pskelton): do we need this?
 
     pSkyPolygon.texture = pOutdoor->sky_texture;
     if (pSkyPolygon.texture) {

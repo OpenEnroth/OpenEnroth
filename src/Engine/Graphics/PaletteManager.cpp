@@ -61,8 +61,8 @@ Palette PaletteManager::createLoadedPalette(const Palette &palette) {
     for (size_t i = 0; i < 256; i++) {
         HsvColorf hsv = palette.colors[i].toColorf().toHsv();
 
-        hsv.v = std::clamp(hsv.v * 1.1f, 0.0f, 1.0f);
-        hsv.s = std::clamp(hsv.s * 0.64999998f, 0.0f, 1.0f);
+        hsv.v = std::clamp(hsv.v * 1.1f, 0.0f, 1.0f);         // TODO(pskelton): value multiplier 1.1 should be configurable
+        hsv.s = std::clamp(hsv.s * 0.64999998f, 0.0f, 1.0f);  // TODO(pskelton): saturation multiplier 0.65 should be configurable
 
         result.colors[i] = hsv.toRgb().toColor();
     }
