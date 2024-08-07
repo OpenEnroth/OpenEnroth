@@ -287,21 +287,49 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                     if (frame->uFlags & 0x40000) v38 |= 0x40;
                     if (frame->uFlags & 0x20000) v38 |= 0x80;
 
-                    // for light
+
+                    if (engine->config->graphics.AddMoreLights.value()) {
+                        // This is an attempt to make the game look more nice.
+                        // In MM7 data some sprites like a "cauldron" do not emit light.
+                        // In MM8 pedestals and campfires have large radius and bright color (too bright actually).
+                        // The following changes makes OpenEnroth look more like MM8.
+                        // OpenEnroth do not support mods and data patches right now.
+                        // So the changes are in C++ code. But it better be placed in lua scripts or binary data patches.
+                        const int uDecorationDescID = pLevelDecorations[i].uDecorationDescID;
+                        int defaultGlowRadius = engine->config->graphics.DefaultLightRadius.value();
+
+                        if (uDecorationDescID == 5) { // campfire, like the one you see when the the game is just started
+                            frame->uGlowRadius = defaultGlowRadius;
+                        } else if (uDecorationDescID == 6) { // cauldron
+                            frame->uGlowRadius = defaultGlowRadius;
+                        } else if (uDecorationDescID == 27) { // signal fire pit
+                            frame->uGlowRadius = defaultGlowRadius;
+                        } else if (uDecorationDescID == 222) { // signal fire pit (unlit)
+                        } else if (uDecorationDescID == 184) { // fire?
+                        } else if (uDecorationDescID == 187) { // fire?
+                        } else if (uDecorationDescID == 190) { // fire?
+                        } else if (uDecorationDescID >= 206 && uDecorationDescID <= 209) { // lighthouse fire
+                            frame->uGlowRadius = defaultGlowRadius;
+                        } else if (uDecorationDescID >= 210 && uDecorationDescID <= 221) { // magic pedestal
+                            frame->uGlowRadius = defaultGlowRadius;
+                        } else if (uDecorationDescID == 190) {
+                        }
+                    }
+
+                    Color defaultLightColor = engine->config->graphics.DefaultLightColor.value();
                     if (frame->uGlowRadius) {
-                        color = colorTable.White;
+                        color = defaultLightColor;
                         if (render->config->graphics.ColoredLights.value()) {
                             color = decor_desc->uColoredLight;
-                            // to avoid blank lights
-                            if (color == Color()) {
-                                color = colorTable.White;
+                            // to avoid black lights
+                            if (color.r == 0 && color.g == 0 && color.b == 0) {
+                                color = defaultLightColor;
                             }
                         }
                         pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition +
                             Vec3f(0, 0, decor_desc->uDecorationHeight / 2),
                             frame->uGlowRadius, color, _4E94D0_light_type);
-                    }  // for light
-
+                    }
                        // v17 = (pLevelDecorations[i].vPosition.x -
                        // pCamera3D->vCameraPos.x) << 16; v40 =
                        // (pLevelDecorations[i].vPosition.y -

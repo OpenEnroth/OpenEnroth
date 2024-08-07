@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(LIBRARY_COLOR_SOURCES
         Colorf.cpp
+        Color.cpp
         HsvColorf.cpp)
 
 set(LIBRARY_COLOR_HEADERS
