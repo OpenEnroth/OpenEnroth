@@ -1769,6 +1769,14 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
         glUniform3f(terrainshader.uniformLocation("sun.specular"), 0, 0, 0);
     }
 
+    // Sea colouring
+    if (engine->IsUnderwater()) {
+        Colorf sea = colorTable.Eucalyptus.toColorf();
+        glUniform3f(terrainshader.uniformLocation("sun.ambient"), sea.r * ambient, sea.g * ambient, sea.b * ambient);
+        glUniform3f(terrainshader.uniformLocation("sun.diffuse"), sea.r * (ambient + 0.3), sea.g * (ambient + 0.3), sea.b * (ambient + 0.3));
+        //glUniform3f(terrainshader.uniformLocation("sun.specular"), 0, 0, 0);
+    }
+
 
     // TODO(pskelton): this should be a seperate function
     // rest of lights stacking

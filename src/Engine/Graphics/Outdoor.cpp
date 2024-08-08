@@ -2278,8 +2278,8 @@ int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight, int *pF
 //----- (00464851) --------------------------------------------------------
 void SetUnderwaterFog() {
     day_fogrange_1 = 50;
-    day_fogrange_2 = 1000;
-    day_fogrange_3 = 15000;
+    day_fogrange_2 = 2000;
+    day_fogrange_3 = 25000;
 }
 
 //----- (00487DA9) --------------------------------------------------------
@@ -2542,9 +2542,7 @@ void loadAndPrepareODM(MapId mapid, bool bLoading, ODMRenderParams *a2) {
 // returns 0xXXYYZZ fog color
 Color GetLevelFogColor() {
     if (engine->IsUnderwater()) {
-        Color sea = colorTable.Topaz;  //OliveDrab;
-        // TODO(pskelton): 0.65 is desaturation factor - this will need moving/dropping when thats sorted
-        return Color(sea.r * 0.65f, sea.g * 0.65f , sea.b * 0.65f);
+        return colorTable.Eucalyptus;
     }
 
     if (day_attrib & MAP_WEATHER_FOGGY) {
