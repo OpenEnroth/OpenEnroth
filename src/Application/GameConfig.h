@@ -414,6 +414,9 @@ class GameConfig : public Config {
                             "Filtering method when scaling rendered framebuffer to window dimensions if they differ."
                             " 0 - disabled (render dimensions will always match window dimensions), 1 - linear filter, 2 - nearest filter"};
 
+        Float Saturation = { this, "saturation", 0.65f, "Colour saturation multiplier for textures and palettes" };
+        Float Lightness = { this, "lightness", 1.1f, "Colour lightness multiplier for textures and palettes" };
+
      private:
         static int ValidateGamma(int level) {
             return std::clamp(level, 0, 9);
