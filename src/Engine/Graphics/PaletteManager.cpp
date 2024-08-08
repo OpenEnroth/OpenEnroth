@@ -10,6 +10,7 @@
 #include "Library/Logger/Logger.h"
 
 #include "Utility/String/Format.h"
+#include <Engine/Engine.h>
 
 PaletteManager *pPaletteManager = new PaletteManager;
 
@@ -57,12 +58,14 @@ Palette PaletteManager::createGrayscalePalette() {
 
 Palette PaletteManager::createLoadedPalette(const Palette &palette) {
     Palette result;
+    float satConfig = engine->config->graphics.Saturation.value();
+    float lightConfig = engine->config->graphics.Lightness.value();
 
     for (size_t i = 0; i < 256; i++) {
         HsvColorf hsv = palette.colors[i].toColorf().toHsv();
 
-        hsv.v = std::clamp(hsv.v * 1.1f, 0.0f, 1.0f);         // TODO(pskelton): value multiplier 1.1 should be configurable
-        hsv.s = std::clamp(hsv.s * 0.64999998f, 0.0f, 1.0f);  // TODO(pskelton): saturation multiplier 0.65 should be configurable
+        hsv.v = std::clamp(hsv.v * lightConfig, 0.0f, 1.0f);
+        hsv.s = std::clamp(hsv.s * satConfig, 0.0f, 1.0f);
 
         result.colors[i] = hsv.toRgb().toColor();
     }
