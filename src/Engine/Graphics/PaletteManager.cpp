@@ -5,12 +5,13 @@
 
 #include "Engine/Graphics/Texture_MM7.h"
 #include "Engine/LodTextureCache.h"
+#include "Engine/Engine.h"
 
 #include "Library/Color/Color.h"
 #include "Library/Logger/Logger.h"
 
 #include "Utility/String/Format.h"
-#include <Engine/Engine.h>
+
 
 PaletteManager *pPaletteManager = new PaletteManager;
 
