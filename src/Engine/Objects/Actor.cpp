@@ -539,6 +539,9 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             pAudioPlayer->playSound(SOUND_Fate, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
 
+        case SPELL_LIGHT_PARALYZE:
+            logger->warning("Spell Paralyze cast - replaced with dispel");
+            [[fallthrough]];
         case SPELL_LIGHT_DISPEL_MAGIC:
             for (SpellBuff &buff : pParty->pPartyBuffs) {
                 buff.Reset();
