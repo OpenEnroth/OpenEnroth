@@ -2440,7 +2440,7 @@ void Actor::SummonMinion(int summonerId) {
         int sectorId = pIndoor->GetSector(v15, v17, this->pos.z);
         if (sectorId != actorSector) return;
         int z = BLV_GetFloorLevel(Vec3f(v15, v17, v27), sectorId);
-        if (z != -30000) return;
+        if (z == -30000) return;
         if (std::abs(z - v27) > 1024) return;
     }
 
