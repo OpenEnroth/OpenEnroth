@@ -540,6 +540,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             break;
 
         case SPELL_LIGHT_PARALYZE:
+            // TODO(pskelton): This is a vanilla bug - monsters with instant targeting spells can't actually use them - fix properly??
             logger->warning("Spell Paralyze cast - replaced with dispel");
             [[fallthrough]];
         case SPELL_LIGHT_DISPEL_MAGIC:
