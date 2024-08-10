@@ -213,10 +213,11 @@ enum UIMessageType : uint32_t {
 
     UIMSG_SaveLoadScroll = 970,
 
+    // OE-specific UIMSG values.
     UIMSG_DebugReloadShader = 1000,
-
     UIMSG_QuickSave = 2000,
     UIMSG_QuickLoad = 2001,
+    UIMSG_CreditsFinished = 2002,
 
     UIMSG_Invalid = 0xffffffff
 };
