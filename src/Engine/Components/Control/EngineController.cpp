@@ -200,7 +200,7 @@ Blob EngineController::saveGame() {
 void EngineController::loadGame(const Blob &savedGame) {
     std::string saveName = "!!!test.mm7";
     std::string dst = makeDataPath("saves", saveName);
-    FileOutputStream(dst).write(savedGame.string_view()); // This might throw.
+    FileOutputStream(dst).write(savedGame); // This might throw.
 
     goToMainMenu();
     pressGuiButton("MainMenu_LoadGame");

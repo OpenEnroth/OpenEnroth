@@ -84,7 +84,7 @@ int runRetrace(const OpenEnrothOptions &options) {
             EngineTraceRecording recording = recorder->finishRecording(game);
 
             if (!options.retrace.checkCanonical) {
-                FileOutputStream(tracePath).write(recording.trace.string_view());
+                FileOutputStream(tracePath).write(recording.trace);
             } else {
                 std::string oldTraceJson = normalizeText(oldTraceBlob.string_view());
                 std::string newTraceJson = normalizeText(recording.trace.string_view());

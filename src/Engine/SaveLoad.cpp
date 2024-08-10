@@ -240,7 +240,7 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path,
     auto [header, blob] = CreateSaveData(resetWorld, title);
 
     std::string tmpPath = fmt::format("{}.tmp", path);
-    FileOutputStream(tmpPath).write(blob.string_view());
+    FileOutputStream(tmpPath).write(blob);
     std::filesystem::rename(tmpPath, path);
 
     pSave_LOD->close();
