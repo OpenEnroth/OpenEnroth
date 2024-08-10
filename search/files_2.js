@@ -57,5 +57,7 @@ var searchData=
   ['configpatch_2eh_54',['ConfigPatch.h',['../ConfigPatch_8h.html',1,'']]],
   ['configsection_2ecpp_55',['ConfigSection.cpp',['../ConfigSection_8cpp.html',1,'']]],
   ['configsection_2eh_56',['ConfigSection.h',['../ConfigSection_8h.html',1,'']]],
-  ['containerserialization_2eh_57',['ContainerSerialization.h',['../ContainerSerialization_8h.html',1,'']]]
+  ['containerserialization_2eh_57',['ContainerSerialization.h',['../ContainerSerialization_8h.html',1,'']]],
+  ['creditsstate_2ecpp_58',['CreditsState.cpp',['../CreditsState_8cpp.html',1,'']]],
+  ['creditsstate_2eh_59',['CreditsState.h',['../CreditsState_8h.html',1,'']]]
 ];
