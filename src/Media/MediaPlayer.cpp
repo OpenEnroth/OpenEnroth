@@ -377,6 +377,7 @@ class Movie : public IMovie {
             format_ctx = avformat_alloc_context();
         }
         format_ctx->pb = _stream.ioContext();
+        format_ctx->flags |= AVFMT_FLAG_CUSTOM_IO; // Otherwise AVIOContext will be closed in avformat_close_input.
         return Load(blob.displayPath());
     }
 

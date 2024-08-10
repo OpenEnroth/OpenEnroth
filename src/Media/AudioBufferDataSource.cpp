@@ -24,6 +24,7 @@ bool AudioBufferDataSource::Open() {
 
     stream.seek(0); // Reset stream to start if already played.
     pFormatContext->pb = stream.ioContext();
+    pFormatContext->flags |= AVFMT_FLAG_CUSTOM_IO; // Otherwise AVIOContext will be closed in avformat_close_input.
 
     // Open audio file
     if (avformat_open_input(&pFormatContext, stream.displayPath().c_str(), nullptr, nullptr) < 0) {
