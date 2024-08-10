@@ -29,17 +29,21 @@ class PlatformComponentStorage {
     ~PlatformComponentStorage();
 
     template<class T>
-    void insert(std::unique_ptr<T> component, std::function<void()> cleanupRoutine) {
+    T *insert(std::unique_ptr<T> component, std::function<void()> cleanupRoutine) {
         assert(component);
 
         std::type_index index = typeid(T);
         assert(!_dataByType.contains(index));
+
+        T *result = component.get();
 
         Data data;
         data.component = std::unique_ptr<void, void(*)(void *)>(component.release(), &PlatformComponentStorage::destructor<T>);
         data.cleanupRoutine = std::move(cleanupRoutine);
         data.index = _nextIndex++;
         _dataByType.emplace(index, std::move(data));
+
+        return result;
     }
 
     template<class T>
