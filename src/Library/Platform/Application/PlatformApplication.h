@@ -46,7 +46,7 @@ class PlatformApplication {
     PlatformEventHandler *eventHandler();
 
     template<class T>
-    void installComponent(std::unique_ptr<T> component) {
+    T *installComponent(std::unique_ptr<T> component) {
         PlatformIntrospection::visit(component.get(), [this] (auto *specificComponent) {
             installComponentInternal(specificComponent);
         });
@@ -57,7 +57,7 @@ class PlatformApplication {
             });
         };
 
-        _components.insert(std::move(component), std::move(cleanup));
+        return _components.insert(std::move(component), std::move(cleanup));
     }
 
     template<class T>

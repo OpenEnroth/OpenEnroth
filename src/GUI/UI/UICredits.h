@@ -8,7 +8,7 @@ class GUIFont;
 
 class GUICredits : public GUIWindow {
  public:
-    explicit GUICredits(std::function<void()> onReachEndOfCredits);
+    GUICredits();
     virtual ~GUICredits();
 
     virtual void Update() override;
@@ -17,8 +17,7 @@ class GUICredits : public GUIWindow {
     std::unique_ptr<GUIFont> _fontQuick;
     std::unique_ptr<GUIFont> _fontCChar;
 
-    GraphicsImage *_mm6TitleTexture;
-    GraphicsImage *_creditsTexture;
-    float _moveY;
-    std::function<void()> _onReachEndOfCredits;
+    GraphicsImage *_mm6TitleTexture = nullptr;
+    GraphicsImage *_creditsTexture = nullptr;
+    float _moveY = 0;
 };
