@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <string>
+#include <filesystem>
 
 #include "Testing/Unit/UnitTest.h"
 
@@ -29,4 +30,17 @@ UNIT_TEST(FileInputStream, Skip) {
     EXPECT_EQ(bytes, 950);
     EXPECT_EQ(std::string_view(buf, 950), std::string(950, 'a'));
     in.close();
+}
+
+UNIT_TEST(FileInputStream, ExceptionMessages) {
+    const char *fileName = "afjhrbluxnkskghelxrigjmgdhckeog.txt";
+
+    EXPECT_FALSE(std::filesystem::exists(fileName));
+    EXPECT_ANY_THROW(FileInputStream in(fileName));
+
+    try {
+        FileInputStream in(fileName);
+    } catch (const std::exception &e) {
+        EXPECT_TRUE(std::string_view(e.what()).contains(fileName));
+    }
 }
