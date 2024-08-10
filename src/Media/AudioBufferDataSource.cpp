@@ -22,12 +22,7 @@ bool AudioBufferDataSource::Open() {
         return false;
     }
 
-    // TODO(pskelton): Investigate why this context reset is required - should seek to start of file rather
-    // than close and reopen source if looping music tracks
-    // Reset stream to start if already played
-    if (stream.ioContext()->pos != 0)
-        stream.resetContext();
-
+    stream.seek(0); // Reset stream to start if already played.
     pFormatContext->pb = stream.ioContext();
 
     // Open audio file

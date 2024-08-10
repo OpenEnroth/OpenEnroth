@@ -16,7 +16,8 @@ static int ffRead(void *opaque, uint8_t *buf, int size) {
 }
 
 static int64_t ffSeek(void *opaque, int64_t offset, int whence) {
-    FFmpegBlobInputStream *stream = static_cast<FFmpegBlobInputStream *>(opaque);
+    // Note: we cast to BlobInputStream, not FFmpegBlobInputStream, so that we could call BlobInputStream::seek below.
+    BlobInputStream *stream = static_cast<BlobInputStream *>(opaque);
 
     if (whence & AVSEEK_SIZE)
         return stream->size();
@@ -49,13 +50,22 @@ FFmpegBlobInputStream::~FFmpegBlobInputStream() {
 }
 
 void FFmpegBlobInputStream::open(Blob blob) {
+    closeInternal();
     BlobInputStream::open(std::move(blob));
-    resetContext();
+
+    unsigned char* buffer = static_cast<unsigned char*>(av_malloc(AV_INPUT_BUFFER_MIN_SIZE));
+    _ctx = avio_alloc_context(buffer, AV_INPUT_BUFFER_MIN_SIZE, 0, this, &ffRead, nullptr, &ffSeek);
+}
+
+void FFmpegBlobInputStream::seek(ssize_t pos) {
+    assert(_ctx);
+
+    avio_seek(_ctx, pos, SEEK_SET); // This will call BlobInputStream::seek.
 }
 
 void FFmpegBlobInputStream::close() {
-    BlobInputStream::close();
     closeInternal();
+    BlobInputStream::close();
 }
 
 void FFmpegBlobInputStream::closeInternal() {
@@ -65,10 +75,4 @@ void FFmpegBlobInputStream::closeInternal() {
     av_free(_ctx->buffer);
     av_free(_ctx);
     _ctx = nullptr;
-}
-
-void FFmpegBlobInputStream::resetContext() {
-    closeInternal();
-    unsigned char* buffer = static_cast<unsigned char*>(av_malloc(AV_INPUT_BUFFER_MIN_SIZE));
-    _ctx = avio_alloc_context(buffer, AV_INPUT_BUFFER_MIN_SIZE, 0, this, &ffRead, nullptr, &ffSeek);
 }

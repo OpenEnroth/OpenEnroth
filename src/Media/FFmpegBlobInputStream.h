@@ -12,9 +12,9 @@ class FFmpegBlobInputStream : public BlobInputStream {
     virtual ~FFmpegBlobInputStream();
 
     void open(Blob blob);
-    void resetContext();
 
     virtual void close() override;
+    void seek(ssize_t pos);
 
     AVIOContext *ioContext() const {
         return _ctx;
