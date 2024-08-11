@@ -28,12 +28,12 @@ class EngineTraceSimplePlayer : private PlatformApplicationAware {
     /**
      * @param game                      Engine controller.
      * @param events                    Vector of events to play. Passed vector is consumed by this function.
-     * @param tracePath                 Path to trace file that the events were loaded from. Used only for error
+     * @param traceDisplayPath          Path to trace file that the events were loaded from. Used only for error
      *                                  reporting.
      * @param flags                     Playback flags.
      */
     void playTrace(EngineController *game, std::vector<std::unique_ptr<PlatformEvent>> events,
-                   std::string_view tracePath, EngineTracePlaybackFlags flags);
+                   std::string_view traceDisplayPath, EngineTracePlaybackFlags flags);
 
     bool isPlaying() const {
         return _playing;
@@ -47,6 +47,6 @@ class EngineTraceSimplePlayer : private PlatformApplicationAware {
 
  private:
     bool _playing = false;
-    std::string _tracePath;
+    std::string _traceDisplayPath;
     EngineTracePlaybackFlags _flags;
 };

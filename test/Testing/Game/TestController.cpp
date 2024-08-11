@@ -77,10 +77,13 @@ void TestController::playTraceFromTestData(std::string_view saveName, std::strin
 
 void TestController::playTraceFromTestData(std::string_view saveName, std::string_view traceName,
                                            EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback) {
+    EngineTraceRecording recording;
+    recording.save = Blob::fromFile(fullPathInTestData(saveName));
+    recording.trace = Blob::fromFile(fullPathInTestData(traceName));
+
     ::application->component<EngineTracePlayer>()->playTrace(
         _controller,
-        fullPathInTestData(saveName),
-        fullPathInTestData(traceName),
+        recording,
         flags,
         [this, postLoadCallback = std::move(postLoadCallback)] {
             if (postLoadCallback)

@@ -86,7 +86,7 @@ void LodWriter::close() {
     }
 
     for (const auto &[_, data] : _files)
-        _stream->write(data.string_view());
+        _stream->write(data);
 
     // Close shop.
     _files.clear(); // Important to release the Blobs first, as they might point into a file that we're about to overwrite...

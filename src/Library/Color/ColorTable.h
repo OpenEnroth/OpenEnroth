@@ -74,6 +74,7 @@ class ColorTable {
     const Color MediumBlue = Color(0, 0, 200);          // #0000C8
     const Color OliveDrab = Color(92, 143, 37);         // #5C8F25
     const Color Topaz = Color(16, 194, 153);            // #10C299
+    const Color Eucalyptus = Color(33, 142, 90);        // #2E8B57
 };
 
 inline constexpr ColorTable colorTable;

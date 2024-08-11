@@ -82,3 +82,16 @@ UNIT_TEST(Blob, DisplayPathFromStream) {
     EXPECT_TRUE(displayPath.ends_with("1.bin"));
     EXPECT_TRUE(std::filesystem::path(displayPath).is_absolute());
 }
+
+UNIT_TEST(Blob, ExceptionMessages) {
+    const char *fileName = "lknjdfgsbiuherqbhvdfnjkkvsdhjkweqguy.txt";
+
+    EXPECT_FALSE(std::filesystem::exists(fileName));
+    EXPECT_ANY_THROW((void) Blob::fromFile(fileName));
+
+    try {
+        Blob tmp = Blob::fromFile(fileName);
+    } catch (const std::exception &e) {
+        EXPECT_TRUE(std::string_view(e.what()).contains(fileName)) << "e.what() = " << e.what();
+    }
+}

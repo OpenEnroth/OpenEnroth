@@ -13,17 +13,11 @@ class GUICredits : public GUIWindow {
 
     virtual void Update() override;
 
-    static void ExecuteCredits();
-    void EventLoop();
+ private:
+    std::unique_ptr<GUIFont> _fontQuick;
+    std::unique_ptr<GUIFont> _fontCChar;
 
- protected:
-    std::unique_ptr<GUIFont> pFontQuick;
-    std::unique_ptr<GUIFont> pFontCChar;
-
-    GraphicsImage *mm6title;
-
-    int width;
-    int height;
-    GraphicsImage *cred_texture;
-    float move_Y;
+    GraphicsImage *_mm6TitleTexture = nullptr;
+    GraphicsImage *_creditsTexture = nullptr;
+    float _moveY = 0;
 };

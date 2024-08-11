@@ -158,7 +158,7 @@ void GameWindowHandler::OnScreenshot() {
         engine->config->settings.ScreenshotNumber.increment();
         std::string path = fmt::format("screenshot_{:05}.pcx", engine->config->settings.ScreenshotNumber.value());
 
-        FileOutputStream(makeDataPath(path)).write(pcx::encode(render->MakeFullScreenshot()).string_view());
+        FileOutputStream(makeDataPath(path)).write(pcx::encode(render->MakeFullScreenshot()));
     }
 }
 
@@ -641,25 +641,4 @@ bool GameWindowHandler::gamepadAxisEvent(const PlatformGamepadAxisEvent *event) 
     }
 
     return false;
-}
-
-bool GameWindowHandler::event(const PlatformEvent *event) {
-    if (PlatformEventFilter::event(event))
-        return true;
-
-    for (auto &fsmEventHandler : _fsmEventHandlers)
-        if (fsmEventHandler->event(event))
-            return true;
-
-    return false;
-}
-
-void GameWindowHandler::addFsmEventHandler(FsmEventHandler *fsmEventHandler) {
-    assert(std::ranges::find(_fsmEventHandlers, fsmEventHandler) == _fsmEventHandlers.end());
-    _fsmEventHandlers.push_back(fsmEventHandler);
-}
-
-void GameWindowHandler::removeFsmEventHandler(FsmEventHandler *fsmEventHandler) {
-    assert(std::ranges::find(_fsmEventHandlers, fsmEventHandler) != _fsmEventHandlers.end());
-    std::erase(_fsmEventHandlers, fsmEventHandler);
 }

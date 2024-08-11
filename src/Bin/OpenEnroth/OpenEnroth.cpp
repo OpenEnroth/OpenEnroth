@@ -84,7 +84,7 @@ int runRetrace(const OpenEnrothOptions &options) {
             EngineTraceRecording recording = recorder->finishRecording(game);
 
             if (!options.retrace.checkCanonical) {
-                FileOutputStream(tracePath).write(recording.trace.string_view());
+                FileOutputStream(tracePath).write(recording.trace);
             } else {
                 std::string oldTraceJson = normalizeText(oldTraceBlob.string_view());
                 std::string newTraceJson = normalizeText(recording.trace.string_view());
@@ -113,7 +113,12 @@ int runPlay(const OpenEnrothOptions &options) {
             fmt::println(stderr, "Playing back '{}'...", tracePath);
 
             std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
-            player->playTrace(game, savePath, tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS , [&] {
+
+            EngineTraceRecording recording;
+            recording.save = Blob::fromFile(savePath);
+            recording.trace = Blob::fromFile(tracePath);
+
+            player->playTrace(game, recording, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS , [&] {
                 int fps = options.play.speed * 1000 / engine->config->debug.TraceFrameTimeMs.value();
                 engine->config->graphics.FPSLimit.setValue(std::max(1, fps));
             });

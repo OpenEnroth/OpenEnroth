@@ -134,9 +134,7 @@ int Game::run() {
     std::string_view startingState = "Start";
     // Need to have this do/while external loop till we remove entirely all the states
     do {
-        std::unique_ptr<Fsm> fsm = GameFsmBuilder::buildFsm(startingState);
-        GameWindowHandler *gameWindowHandler = ::application->component<GameWindowHandler>();
-        gameWindowHandler->addFsmEventHandler(fsm.get());
+        Fsm *fsm = application->installComponent(GameFsmBuilder::buildFsm(startingState));
         while (!fsm->hasReachedExitState()) {
             render->ClearBlack();
             render->BeginScene2D();
@@ -151,7 +149,7 @@ int Game::run() {
 
             MessageLoopWithWait();
         }
-        gameWindowHandler->removeFsmEventHandler(fsm.get());
+        application->removeComponent<Fsm>();
 
         // Here we're still running the rest of the loops as usual.
         uGameState = GAME_STATE_PLAYING;
@@ -211,10 +209,6 @@ bool Game::loop() {
                 break;
             }
             assert(false && "Invalid game state");
-        } else if (GetCurrentMenuID() == MENU_CREDITS) {
-            pAudioPlayer->MusicStop();
-            GUICredits::ExecuteCredits();
-            break;
         } else if (GetCurrentMenuID() == MENU_5 || GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
             uGameState = GAME_STATE_PLAYING;
             gameLoop();

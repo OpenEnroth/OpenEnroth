@@ -4,13 +4,15 @@
 #include <string>
 #include <string_view>
 
+#include "Utility/Memory/Blob.h"
+
 /**
  * Abstract base class for all data output streams.
  *
  * Compared to `std::ostream` it is:
  * - Non-buffered.
  * - Uses exceptions for error handling.
- * - Has a very simple and intuitive interface consisting of exactly three methods.
+ * - Has a very simple and intuitive interface. No `tellg` and other bullshit.
  */
 class OutputStream {
  public:
@@ -33,6 +35,16 @@ class OutputStream {
      */
     void write(std::string_view s) {
         write(s.data(), s.size());
+    }
+
+    /**
+     * Writes provided `Blob` into the output stream.
+     *
+     * @param blob                      `Blob` to write.
+     * @throws Exception                On error.
+     */
+    void write(const Blob &blob) {
+        write(blob.data(), blob.size());
     }
 
     /**

@@ -9,6 +9,7 @@
 #include "Engine/Graphics/Texture_MM7.h"
 #include "Engine/LodTextureCache.h"
 #include "Engine/LodSpriteCache.h"
+#include "Engine/Graphics/PaletteManager.h"
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/PCX.h"
@@ -191,6 +192,9 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
 
     // TODO(captainurist): no need to copy here.
     *indexedImage = GrayscaleImage::copy(tex->indexed.width(), tex->indexed.height(), tex->indexed.pixels().data()); // NOLINT: this is not std::copy.
+
+    // Desaturate bitmaps
+    tex->palette = PaletteManager::createLoadedPalette(tex->palette);
 
     if (!transparentTextures.contains(tex->name)) {
         *palette = tex->palette;
