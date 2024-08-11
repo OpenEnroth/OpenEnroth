@@ -120,7 +120,7 @@ void CreateWinnerCertificate() {
     render->EndTextNew();
 
     RgbaImage pixels = render->MakeFullScreenshot();
-    FileOutputStream(makeDataPath("MM7_Win.Pcx")).write(pcx::encode(pixels).string_view());
+    FileOutputStream(makeDataPath("MM7_Win.Pcx")).write(pcx::encode(pixels));
     assets->winnerCert = GraphicsImage::Create(std::move(pixels));
 
     background->Release();

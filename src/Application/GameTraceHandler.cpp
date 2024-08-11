@@ -28,8 +28,8 @@ bool GameTraceHandler::keyPressEvent(const PlatformKeyEvent *event) {
             EngineTraceRecorder *tracer = component<EngineTraceRecorder>();
             if (tracer->isRecording()) {
                 EngineTraceRecording recording = tracer->finishRecording(game);
-                FileOutputStream("trace.json").write(recording.trace.string_view());
-                FileOutputStream("trace.mm7").write(recording.save.string_view());
+                FileOutputStream("trace.json").write(recording.trace);
+                FileOutputStream("trace.mm7").write(recording.save);
                 logger->info("Trace saved to {} and {}",
                     absolute(std::filesystem::path("trace.json")).generic_string(),
                     absolute(std::filesystem::path("trace.mm7")).generic_string());

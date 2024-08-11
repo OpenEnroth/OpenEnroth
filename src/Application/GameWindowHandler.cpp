@@ -158,7 +158,7 @@ void GameWindowHandler::OnScreenshot() {
         engine->config->settings.ScreenshotNumber.increment();
         std::string path = fmt::format("screenshot_{:05}.pcx", engine->config->settings.ScreenshotNumber.value());
 
-        FileOutputStream(makeDataPath(path)).write(pcx::encode(render->MakeFullScreenshot()).string_view());
+        FileOutputStream(makeDataPath(path)).write(pcx::encode(render->MakeFullScreenshot()));
     }
 }
 
