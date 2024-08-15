@@ -60,7 +60,7 @@ GAME_TEST(Issues, Issue1522) {
     auto lightElem = tapes.custom([]() { return std::ranges::count_if(pActors, [](const Actor& a) { return a.name.contains("Light Elemental"); }); });
     test.playTraceFromTestData("issue_1522.mm7", "issue_1522.json");
     EXPECT_GT(actorsCount.back(), actorsCount.front());
-    EXPECT_GT(actorsCount.back(), actorsCount.front());
+    EXPECT_GT(lightElem.back(), lightElem.front());
     auto summoned = std::ranges::count_if(pActors, [](const Actor& a) { return a.summonerId.type() == OBJECT_Actor; });
     EXPECT_GT(summoned, 0);
 }
