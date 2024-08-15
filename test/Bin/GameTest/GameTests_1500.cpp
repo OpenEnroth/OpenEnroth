@@ -54,6 +54,17 @@ GAME_TEST(Issues, Issue1519) {
     EXPECT_GT(flatMessageBoxesBody.filtered([](const auto &s) { return s.starts_with("The Baby Dragon"); }).size(), 0);
 }
 
+GAME_TEST(Issues, Issue1522) {
+    // Wizards not summoning light elementals
+    auto actorsCount = actorTapes.totalCount();
+    auto lightElem = tapes.custom([]() { return std::ranges::count_if(pActors, [](const Actor& a) { return a.name.contains("Light Elemental"); }); });
+    test.playTraceFromTestData("issue_1522.mm7", "issue_1522.json");
+    EXPECT_GT(actorsCount.back(), actorsCount.front());
+    EXPECT_GT(actorsCount.back(), actorsCount.front());
+    auto summoned = std::ranges::count_if(pActors, [](const Actor& a) { return a.summonerId.type() == OBJECT_Actor; });
+    EXPECT_GT(summoned, 0);
+}
+
 GAME_TEST(Issues, Issue1524) {
     // More enemy spells without sound
     auto soundsTape = tapes.sounds();
