@@ -1,6 +1,7 @@
 #include "Engine/Objects/Actor.h"
 
 #include <algorithm>
+#include <deque>
 #include <string>
 #include <utility>
 #include <vector>
@@ -46,7 +47,8 @@
 // should be injected into Actor but struct size cant be changed
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
-std::vector<Actor> pActors;
+// Using deque for pointer stability
+std::deque<Actor> pActors;
 
 stru319 stru_50C198;  // idb
 

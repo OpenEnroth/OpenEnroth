@@ -767,8 +767,6 @@ void Engine::SecondaryInitialization() {
     pBitmaps_LOD->reserveLoadedTextures();
     pSprites_LOD->reserveLoadedSprites();
 
-    pActors.reserve(engine->config->gameplay.MaxActors.value());
-
     Initialize_GamesLOD_NewLOD();
 }
 
