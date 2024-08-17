@@ -1,6 +1,7 @@
 #include "Engine/Objects/Actor.h"
 
 #include <algorithm>
+#include <deque>
 #include <string>
 #include <utility>
 #include <vector>
@@ -46,7 +47,8 @@
 // should be injected into Actor but struct size cant be changed
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
-std::vector<Actor> pActors;
+// Using deque for pointer stability
+std::deque<Actor> pActors;
 
 stru319 stru_50C198;  // idb
 
@@ -539,6 +541,10 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             pAudioPlayer->playSound(SOUND_Fate, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
 
+        case SPELL_LIGHT_PARALYZE:
+            // TODO(pskelton): This is a vanilla bug - monsters with instant targeting spells can't actually use them - #1246
+            logger->info("Spell Paralyze cast - replaced with dispel");
+            [[fallthrough]];
         case SPELL_LIGHT_DISPEL_MAGIC:
             for (SpellBuff &buff : pParty->pPartyBuffs) {
                 buff.Reset();
@@ -2440,7 +2446,7 @@ void Actor::SummonMinion(int summonerId) {
         int sectorId = pIndoor->GetSector(v15, v17, this->pos.z);
         if (sectorId != actorSector) return;
         int z = BLV_GetFloorLevel(Vec3f(v15, v17, v27), sectorId);
-        if (z != -30000) return;
+        if (z == -30000) return;
         if (std::abs(z - v27) > 1024) return;
     }
 
