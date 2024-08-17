@@ -9,7 +9,7 @@ var searchData=
   ['pactivezbuffer_6',['pActiveZBuffer',['../classRenderer.html#a27af033554e4d5a29a5eec5c5f626882',1,'Renderer']]],
   ['pactorbuffs_7',['pActorBuffs',['../structActor__MM7.html#a8cdba44af2b91320be5c541596f76ca4',1,'Actor_MM7']]],
   ['pactorname_8',['pActorName',['../structActor__MM7.html#a1ea26c95e9134caa264b1eea2c3a7b80',1,'Actor_MM7']]],
-  ['pactors_9',['pActors',['../Actor_8h.html#a6fe394cffecd5254e16a215e32b31039',1,'pActors():&#160;Actor.cpp'],['../Actor_8cpp.html#a6fe394cffecd5254e16a215e32b31039',1,'pActors():&#160;Actor.cpp']]],
+  ['pactors_9',['pActors',['../Actor_8h.html#ad0172867d7177cb708f733b90975d4ca',1,'pActors():&#160;Actor.cpp'],['../Actor_8cpp.html#ad0172867d7177cb708f733b90975d4ca',1,'pActors():&#160;Actor.cpp']]],
   ['padding_10',['padding',['../structIndoorLocation.html#ab68b1f128f17f7607dffdb0049495c35',1,'IndoorLocation']]],
   ['padding_5fe_11',['padding_e',['../structHouseAnimDescr.html#a29782ddc9a3a41aa4fbaf9ecb5cdda1a',1,'HouseAnimDescr']]],
   ['padding_5funused_12',['padding_unused',['../structActor__MM7.html#aaa7f94841a780644b0102fee1f39e530',1,'Actor_MM7']]],
