@@ -8,6 +8,8 @@
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 #include "Library/FileSystem/Dump/FileSystemDump.h"
 
+#include "Utility/Testing/TestMacros.h"
+
 UNIT_TEST(MemoryFileSystem, EmptyRoot) {
     // Make sure accessing root works as expected.
     MemoryFileSystem fs("");
@@ -207,26 +209,7 @@ UNIT_TEST(MemoryFileSystem, DisplayPath) {
 UNIT_TEST(MemoryFileSystem, ExceptionMessage) {
     MemoryFileSystem fs("mem");
 
-    // TODO(captainurist): better macros for checking exception messages.
-
-    EXPECT_ANY_THROW((void) fs.read("a"));
-    try {
-        (void) fs.read("a");
-    } catch (const std::exception &e) {
-        EXPECT_TRUE(std::string_view(e.what()).contains("mem://a"));
-    }
-
-    EXPECT_ANY_THROW((void) fs.openForReading("a"));
-    try {
-        (void) fs.read("a");
-    } catch (const std::exception &e) {
-        EXPECT_TRUE(std::string_view(e.what()).contains("mem://a"));
-    }
-
-    EXPECT_ANY_THROW((void) fs.ls("a"));
-    try {
-        (void) fs.read("a");
-    } catch (const std::exception &e) {
-        EXPECT_TRUE(std::string_view(e.what()).contains("mem://a"));
-    }
+    EXPECT_THROW_MESSAGE((void) fs.read("a"), "mem://a");
+    EXPECT_THROW_MESSAGE((void) fs.openForReading("a"), "mem://a");
+    EXPECT_THROW_MESSAGE((void) fs.ls("a"), "mem://a");
 }

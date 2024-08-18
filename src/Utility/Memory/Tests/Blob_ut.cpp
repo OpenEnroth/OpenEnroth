@@ -7,6 +7,7 @@
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Testing/TestExistingFile.h"
+#include "Utility/Testing/TestMacros.h"
 #include "Utility/Testing/TestNonExistingFile.h"
 
 UNIT_TEST(Blob, FromFile) {
@@ -87,11 +88,5 @@ UNIT_TEST(Blob, ExceptionMessages) {
     const char *fileName = "lknjdfgsbiuherqbhvdfnjkkvsdhjkweqguy.txt";
 
     EXPECT_FALSE(std::filesystem::exists(fileName));
-    EXPECT_ANY_THROW((void) Blob::fromFile(fileName));
-
-    try {
-        Blob tmp = Blob::fromFile(fileName);
-    } catch (const std::exception &e) {
-        EXPECT_TRUE(std::string_view(e.what()).contains(fileName)) << "e.what() = " << e.what();
-    }
+    EXPECT_THROW_MESSAGE((void) Blob::fromFile(fileName), fileName);
 }
