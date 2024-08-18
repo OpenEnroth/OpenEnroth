@@ -49,7 +49,7 @@ void MaskingFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEnt
         if (path.isEmpty()) {
             return; // Pretend root exists even if it was masked.
         } else {
-            throw FileSystemException(FileSystemException::LS_FAILED_PATH_DOESNT_EXIST, path);
+            FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
         }
     }
 
@@ -69,14 +69,14 @@ void MaskingFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEnt
 Blob MaskingFileSystem::_read(const FileSystemPath &path) const {
     assert(!path.isEmpty());
     if (isMasked(path))
-        throw FileSystemException(FileSystemException::READ_FAILED_PATH_DOESNT_EXIST, path);
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
     return _base->read(path);
 }
 
 std::unique_ptr<InputStream> MaskingFileSystem::_openForReading(const FileSystemPath &path) const {
     assert(!path.isEmpty());
     if (isMasked(path))
-        throw FileSystemException(FileSystemException::READ_FAILED_PATH_DOESNT_EXIST, path);
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
     return _base->openForReading(path);
 }
 

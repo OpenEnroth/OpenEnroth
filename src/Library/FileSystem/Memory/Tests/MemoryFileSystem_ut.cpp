@@ -204,3 +204,29 @@ UNIT_TEST(MemoryFileSystem, DisplayPath) {
     EXPECT_EQ(fs.read("b").displayPath(), "mem://b");
 }
 
+UNIT_TEST(MemoryFileSystem, ExceptionMessage) {
+    MemoryFileSystem fs("mem");
+
+    // TODO(captainurist): better macros for checking exception messages.
+
+    EXPECT_ANY_THROW((void) fs.read("a"));
+    try {
+        (void) fs.read("a");
+    } catch (const std::exception &e) {
+        EXPECT_TRUE(std::string_view(e.what()).contains("mem://a"));
+    }
+
+    EXPECT_ANY_THROW((void) fs.openForReading("a"));
+    try {
+        (void) fs.read("a");
+    } catch (const std::exception &e) {
+        EXPECT_TRUE(std::string_view(e.what()).contains("mem://a"));
+    }
+
+    EXPECT_ANY_THROW((void) fs.ls("a"));
+    try {
+        (void) fs.read("a");
+    } catch (const std::exception &e) {
+        EXPECT_TRUE(std::string_view(e.what()).contains("mem://a"));
+    }
+}

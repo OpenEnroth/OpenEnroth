@@ -37,9 +37,9 @@ FileStat MemoryFileSystem::_stat(const FileSystemPath &path) const {
 void MemoryFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
     const Node *node = _trie.find(path);
     if (!node)
-        throw FileSystemException(FileSystemException::LS_FAILED_PATH_DOESNT_EXIST, path);
+        FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
     if (node->hasValue())
-        throw FileSystemException(FileSystemException::LS_FAILED_PATH_IS_FILE, path);
+        FileSystemException::raise(this, FS_LS_FAILED_PATH_IS_FILE, path);
 
     for (const auto &[name, child] : node->children())
         entries->push_back(DirectoryEntry(name, child->hasValue() ? FILE_REGULAR : FILE_DIRECTORY));
@@ -67,15 +67,15 @@ void MemoryFileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPa
 
     Node *srcNode = _trie.find(srcPath);
     if (!srcNode)
-        throw FileSystemException(FileSystemException::RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
 
     FileSystemPath dstTail;
     Node *dstNode = _trie.walk(dstPath, &dstTail);
     if (dstTail.isEmpty()) { // dstPath exists.
         if (!dstNode->hasValue())
-            throw FileSystemException(FileSystemException::RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
+            FileSystemException::raise(this, FS_RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
         if (!srcNode->hasValue())
-            throw FileSystemException(FileSystemException::RENAME_FAILED_SRC_IS_DIR_DST_IS_FILE, srcPath, dstPath);
+            FileSystemException::raise(this, FS_RENAME_FAILED_SRC_IS_DIR_DST_IS_FILE, srcPath, dstPath);
     }
 
     _trie.insertOrAssign(dstNode, dstTail, _trie.extract(srcNode));
@@ -99,11 +99,11 @@ const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(const FileSystemP
     assert(!path.isEmpty());
     const Node *node = _trie.find(path);
     if (!node)
-        throw FileSystemException(FileSystemException::READ_FAILED_PATH_DOESNT_EXIST, path);
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
     if (!node->hasValue())
-        throw FileSystemException(FileSystemException::READ_FAILED_PATH_IS_DIR, path);
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
     if (node->value()->writerCount)
-        throw FileSystemException(FileSystemException::READ_FAILED_PATH_NOT_READABLE, path);
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_NOT_READABLE, path);
     return node;
 }
 
@@ -115,17 +115,17 @@ MemoryFileSystem::Node *MemoryFileSystem::nodeForWriting(const FileSystemPath &p
 
     if (!tail.isEmpty()) { // File doesn't exist.
         if (node->hasValue()) {
-            throw FileSystemException(FileSystemException::WRITE_FAILED_FILE_IN_PATH, path);
+            FileSystemException::raise(this, FS_WRITE_FAILED_FILE_IN_PATH, path);
         } else {
             return _trie.insertOrAssign(node, tail, std::make_shared<MemoryFileData>(Blob()));
         }
     }
 
     if (!node->hasValue())
-        throw FileSystemException(FileSystemException::WRITE_FAILED_PATH_IS_DIR, path);
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
 
     if (node->value()->readerCount || node->value()->writerCount)
-        throw FileSystemException(FileSystemException::WRITE_FAILED_PATH_NOT_WRITEABLE, path);
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
 
     return node;
 }

@@ -49,9 +49,9 @@ FileStat LowercaseFileSystem::_stat(const FileSystemPath &path) const {
 void LowercaseFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
     const Node *node = _trie.find(path);
     if (!node)
-        throw FileSystemException(FileSystemException::LS_FAILED_PATH_DOESNT_EXIST, path);
+        FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
     if (node->children().empty() && node != _trie.root())
-        throw FileSystemException(FileSystemException::LS_FAILED_PATH_IS_FILE, path);
+        FileSystemException::raise(this, FS_LS_FAILED_PATH_IS_FILE, path);
 
     for (const auto &[name, child] : node->children())
         entries->push_back(DirectoryEntry(name, child->children().empty() ? FILE_REGULAR : FILE_DIRECTORY));
@@ -80,17 +80,17 @@ std::unique_ptr<OutputStream> LowercaseFileSystem::_openForWriting(const FileSys
 
 void LowercaseFileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath) {
     if (hasUpper(dstPath.string()))
-        throw FileSystemException(FileSystemException::RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
 
     auto [srcBasePath, srcNode, srcTail] = walk(srcPath);
     if (!srcTail.isEmpty())
-        throw FileSystemException(FileSystemException::RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
 
     auto [dstBasePath, dstNode, dstTail] = walk(dstPath);
     if (!dstNode->children().empty() && dstTail.isEmpty())
-        throw FileSystemException(FileSystemException::RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
     if (!srcNode->children().empty() && dstTail.isEmpty())
-        throw FileSystemException(FileSystemException::RENAME_FAILED_SRC_IS_DIR_DST_IS_FILE, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_IS_DIR_DST_IS_FILE, srcPath, dstPath);
 
     dstBasePath.append(dstTail);
     _base->rename(srcBasePath, dstBasePath);
@@ -138,10 +138,11 @@ void LowercaseFileSystem::refresh(Node *node, const FileSystemPath &basePath) {
     for (DirectoryEntry &entry : entries) {
         std::string lowerEntryName = ascii::toLower(entry.name);
 
+        // TODO(captainurist): FileSystemException
         if (node->children().contains(lowerEntryName))
             throw Exception("Can't refresh a lowercase filesystem because paths '{}' and '{}' are conflicting.",
-                            basePath.appended(entry.name),
-                            basePath.appended(node->child(lowerEntryName)->value()));
+                            _base->displayPath(basePath.appended(entry.name)),
+                            _base->displayPath(basePath.appended(node->child(lowerEntryName)->value())));
 
         Node *child = _trie.insertOrAssign(node, FileSystemPath::fromNormalized(lowerEntryName), entry.name);
 
@@ -198,23 +199,23 @@ void LowercaseFileSystem::prune(Node *node) {
 FileSystemPath LowercaseFileSystem::locateForReading(const FileSystemPath &path) const {
     auto [basePath, node, tail] = walk(path);
     if (!tail.isEmpty())
-        throw FileSystemException(FileSystemException::READ_FAILED_PATH_DOESNT_EXIST, path);
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
     if (!node->children().empty())
-        throw FileSystemException(FileSystemException::READ_FAILED_PATH_IS_DIR, path);
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
     return std::move(basePath);
 }
 
 std::tuple<FileSystemPath, LowercaseFileSystem::Node *, FileSystemPath> LowercaseFileSystem::locateForWriting(const FileSystemPath &path) {
     if (hasUpper(path.string()))
-        throw FileSystemException(FileSystemException::WRITE_FAILED_PATH_NOT_WRITEABLE, path);
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
 
     auto result = walk(path);
     auto &[basePath, node, tail] = result;
 
     if (tail.isEmpty() && !node->children().empty())
-        throw FileSystemException(FileSystemException::WRITE_FAILED_PATH_IS_DIR, path);
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
     if (!tail.isEmpty() && node->children().empty())
-        throw FileSystemException(FileSystemException::WRITE_FAILED_FILE_IN_PATH, path);
+        FileSystemException::raise(this, FS_WRITE_FAILED_FILE_IN_PATH, path);
 
     basePath.append(tail);
     return result;

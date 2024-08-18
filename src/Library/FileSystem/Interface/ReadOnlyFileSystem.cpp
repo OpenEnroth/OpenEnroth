@@ -13,16 +13,16 @@ std::unique_ptr<OutputStream> ReadOnlyFileSystem::_openForWriting(const FileSyst
 }
 
 void ReadOnlyFileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath) {
-    throw FileSystemException(FileSystemException::RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
+    FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
 }
 
 bool ReadOnlyFileSystem::_remove(const FileSystemPath &path) {
     if (!_exists(path))
         return false;
 
-    throw FileSystemException(FileSystemException::REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
+    FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
 }
 
 void ReadOnlyFileSystem::reportWriteError(const FileSystemPath &path) const {
-    throw FileSystemException(FileSystemException::WRITE_FAILED_PATH_NOT_WRITEABLE, path);
+    FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
 }

@@ -19,7 +19,7 @@ void NullFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry>
         entries->clear();
         return;
     }
-    throw FileSystemException(FileSystemException::LS_FAILED_PATH_DOESNT_EXIST, path);
+    FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
 }
 
 Blob NullFileSystem::_read(const FileSystemPath &path) const {
@@ -35,5 +35,5 @@ std::string NullFileSystem::_displayPath(const FileSystemPath &path) const {
 }
 
 [[noreturn]] void NullFileSystem::reportReadError(const FileSystemPath &path) const {
-    throw FileSystemException(FileSystemException::READ_FAILED_PATH_DOESNT_EXIST, path);
+    FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
 }

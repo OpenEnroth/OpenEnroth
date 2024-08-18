@@ -53,7 +53,7 @@ void MountingFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEn
     auto [node, mount, tail] = walk(path);
 
     if (!node && !mount)
-        throw FileSystemException(FileSystemException::LS_FAILED_PATH_DOESNT_EXIST, path);
+        FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
 
     if (!node) {
         mount->ls(tail, entries);
@@ -116,13 +116,13 @@ void MountingFileSystem::_rename(const FileSystemPath &srcPath, const FileSystem
     auto [dstNode, dstMount, dstTail] = walk(dstPath);
 
     if (srcNode)
-        throw FileSystemException(FileSystemException::RENAME_FAILED_SRC_NOT_WRITEABLE, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_NOT_WRITEABLE, srcPath, dstPath);
     if (dstNode)
-        throw FileSystemException(FileSystemException::RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
     if (!srcMount)
-        throw FileSystemException(FileSystemException::RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
     if (!dstMount)
-        throw FileSystemException(FileSystemException::RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
 
     if (srcMount == dstMount) {
         srcMount->rename(srcTail, dstTail);
@@ -136,7 +136,7 @@ void MountingFileSystem::_rename(const FileSystemPath &srcPath, const FileSystem
 bool MountingFileSystem::_remove(const FileSystemPath &path) {
     auto [node, mount, tail] = walk(path);
     if (node)
-        throw FileSystemException(FileSystemException::REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
+        FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
     if (!mount)
         return false; // Nothing to remove.
     return mount->remove(tail);
@@ -178,17 +178,17 @@ MountingFileSystem::ConstWalkResult MountingFileSystem::walk(const FileSystemPat
 std::pair<const FileSystem *, FileSystemPath> MountingFileSystem::walkForReading(const FileSystemPath &path) const {
     auto [node, mount, tail] = walk(path);
     if (node)
-        throw FileSystemException(FileSystemException::READ_FAILED_PATH_IS_DIR, path);
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
     if (!mount)
-        throw FileSystemException(FileSystemException::READ_FAILED_PATH_DOESNT_EXIST, path);
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
     return {mount, std::move(tail)};
 }
 
 std::pair<FileSystem *, FileSystemPath> MountingFileSystem::walkForWriting(const FileSystemPath &path) {
     auto [node, mount, tail] = walk(path);
     if (node)
-        throw FileSystemException(FileSystemException::WRITE_FAILED_PATH_IS_DIR, path);
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
     if (!mount)
-        throw FileSystemException(FileSystemException::WRITE_FAILED_PATH_NOT_WRITEABLE, path); // No mount point => can't write.
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path); // No mount point => can't write.
     return {mount, std::move(tail)};
 }

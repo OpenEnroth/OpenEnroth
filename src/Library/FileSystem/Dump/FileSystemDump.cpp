@@ -58,7 +58,7 @@ class FileSystemDumper {
         if (_target) {
             _target->push_back(FileSystemDumpEntry(path.string(), FILE_DIRECTORY));
         } else {
-            fmt::println(_stream, "{}", path);
+            fmt::println(_stream, "{}", path.string());
         }
 
         _entries++;

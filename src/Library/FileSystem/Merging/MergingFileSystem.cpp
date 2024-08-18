@@ -51,7 +51,7 @@ void MergingFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEnt
     }
 
     if (!hasOne && !path.isEmpty())
-        throw FileSystemException(FileSystemException::LS_FAILED_PATH_DOESNT_EXIST, path);
+        FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
 
     // Note that we don't need std::stable_sort here b/c no fs-specific data is exposed by the entries.
     std::ranges::sort(*entries);
@@ -82,7 +82,7 @@ std::string MergingFileSystem::_displayPath(const FileSystemPath &path) const {
 const FileSystem *MergingFileSystem::locateForReading(const FileSystemPath &path) const {
     const FileSystem *result = locateForReadingOrNull(path);
     if (result == nullptr)
-        throw FileSystemException(FileSystemException::READ_FAILED_PATH_DOESNT_EXIST, path);
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
     return result;
 }
 

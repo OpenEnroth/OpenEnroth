@@ -7,7 +7,6 @@
 #include <utility>
 
 #include "Utility/String/Split.h"
-#include "Utility/String/Format.h"
 
 /**
  * `FileSystemPath` does path normalization for `FileSystem`, transforming passed paths into a normal form of
@@ -125,15 +124,6 @@ class FileSystemPath {
 
  private:
     std::string _path;
-};
-
-template<>
-struct fmt::formatter<FileSystemPath> : fmt::formatter<std::string_view> {
-    using base_type = fmt::formatter<std::string_view>;
-
-    auto format(const FileSystemPath &path, format_context &ctx) const {
-        return base_type::format(path.string(), ctx);
-    }
 };
 
 template<>

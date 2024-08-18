@@ -56,7 +56,7 @@ Blob FileSystem::read(std::string_view path) const {
 
 Blob FileSystem::read(const FileSystemPath &path) const {
     if (path.isEmpty())
-        throw FileSystemException(FileSystemException::READ_FAILED_PATH_IS_DIR, path);
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
     return _read(path);
 }
 
@@ -66,7 +66,7 @@ void FileSystem::write(std::string_view path, const Blob &data) {
 
 void FileSystem::write(const FileSystemPath &path, const Blob &data) {
     if (path.isEmpty())
-        throw FileSystemException(FileSystemException::WRITE_FAILED_PATH_IS_DIR, path);
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
     _write(path, data);
 }
 
@@ -76,7 +76,7 @@ std::unique_ptr<InputStream> FileSystem::openForReading(std::string_view path) c
 
 std::unique_ptr<InputStream> FileSystem::openForReading(const FileSystemPath &path) const {
     if (path.isEmpty())
-        throw FileSystemException(FileSystemException::READ_FAILED_PATH_IS_DIR, path);
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
     return _openForReading(path);
 }
 
@@ -86,7 +86,7 @@ std::unique_ptr<OutputStream> FileSystem::openForWriting(std::string_view path) 
 
 std::unique_ptr<OutputStream> FileSystem::openForWriting(const FileSystemPath &path) {
     if (path.isEmpty())
-        throw FileSystemException(FileSystemException::WRITE_FAILED_PATH_IS_DIR, path);
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
     return _openForWriting(path);
 }
 
@@ -96,11 +96,11 @@ void FileSystem::rename(std::string_view srcPath, std::string_view dstPath) {
 
 void FileSystem::rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath) {
     if (srcPath.isEmpty())
-        throw FileSystemException(FileSystemException::RENAME_FAILED_SRC_NOT_WRITEABLE, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_NOT_WRITEABLE, srcPath, dstPath);
     if (dstPath.isEmpty())
-        throw FileSystemException(FileSystemException::RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
     if (srcPath.isParentOf(dstPath))
-        throw FileSystemException(FileSystemException::RENAME_FAILED_SRC_IS_PARENT_OF_DST, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_IS_PARENT_OF_DST, srcPath, dstPath);
     _rename(srcPath, dstPath);
 }
 
@@ -110,7 +110,7 @@ bool FileSystem::remove(std::string_view path) {
 
 bool FileSystem::remove(const FileSystemPath &path) {
     if (path.isEmpty())
-        throw FileSystemException(FileSystemException::REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
+        FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
     return _remove(path);
 }
 
@@ -128,13 +128,13 @@ void FileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPath &ds
 
     FileStat srcStat = stat(srcPath);
     if (!srcStat)
-        throw FileSystemException(FileSystemException::RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
 
     FileStat dstStat = stat(dstPath);
     if (dstStat.type == FILE_DIRECTORY)
-        throw FileSystemException(FileSystemException::RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
     if (dstStat.type == FILE_REGULAR && srcStat.type == FILE_DIRECTORY)
-        throw FileSystemException(FileSystemException::RENAME_FAILED_SRC_IS_DIR_DST_IS_FILE, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_IS_DIR_DST_IS_FILE, srcPath, dstPath);
     if (dstStat)
         remove(dstPath);
 

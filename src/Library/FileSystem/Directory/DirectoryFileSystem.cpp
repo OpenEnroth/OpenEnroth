@@ -102,7 +102,7 @@ void DirectoryFileSystem::_rename(const FileSystemPath &srcPath, const FileSyste
     std::filesystem::path srcBasePath = makeBasePath(srcPath);
     std::filesystem::path dstBasePath = makeBasePath(dstPath);
     if (std::filesystem::is_directory(dstBasePath))
-        throw FileSystemException(FileSystemException::RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
+        FileSystemException::raise(this, FS_RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
 
     // This call will copy the file if POSIX rename() fails, so if it throws then we can't really do anything either.
     std::filesystem::rename(srcBasePath, dstBasePath);
