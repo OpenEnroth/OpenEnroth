@@ -47,7 +47,7 @@ void BlobOutputStream::closeInternal() {
         return;
 
     base_type::close();
-    *_target = Blob::fromString(std::move(Embedded::get()));
+    *_target = Blob::fromString(std::move(Embedded::get())).withDisplayPath(_displayPath);
     _target = nullptr;
     _displayPath = {};
 }

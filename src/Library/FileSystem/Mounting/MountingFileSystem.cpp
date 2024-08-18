@@ -143,6 +143,7 @@ bool MountingFileSystem::_remove(const FileSystemPath &path) {
 }
 
 std::string MountingFileSystem::_displayPath(const FileSystemPath &path) const {
+    // TODO(captainurist): this is not symmetric with that's done in read / openForReading / openForWriting.
     return _displayName + "://" + path.string();
 }
 

@@ -95,6 +95,6 @@ bool MaskingFileSystem::_remove(const FileSystemPath &path) {
 }
 
 std::string MaskingFileSystem::_displayPath(const FileSystemPath &path) const {
-    // TODO(captainurist): gotta tag masked paths somehow, otherwise error messages might get confusing.
+    // TODO(captainurist): gotta tag masked paths somehow, otherwise error messages might get confusing?
     return _base->displayPath(path);
 }

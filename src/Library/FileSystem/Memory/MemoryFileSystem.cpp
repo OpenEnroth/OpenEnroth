@@ -50,7 +50,7 @@ Blob MemoryFileSystem::_read(const FileSystemPath &path) const {
 }
 
 void MemoryFileSystem::_write(const FileSystemPath &path, const Blob &data) {
-    nodeForWriting(path)->value()->blob = Blob::share(data);
+    nodeForWriting(path)->value()->blob = Blob::share(data).withDisplayPath(displayPath(path));
 }
 
 std::unique_ptr<InputStream> MemoryFileSystem::_openForReading(const FileSystemPath &path) const {
@@ -58,7 +58,7 @@ std::unique_ptr<InputStream> MemoryFileSystem::_openForReading(const FileSystemP
 }
 
 std::unique_ptr<OutputStream> MemoryFileSystem::_openForWriting(const FileSystemPath &path) {
-    return std::make_unique<detail::MemoryFileSystemOutputStream>(nodeForWriting(path)->value());
+    return std::make_unique<detail::MemoryFileSystemOutputStream>(nodeForWriting(path)->value(), displayPath(path));
 }
 
 void MemoryFileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath) {

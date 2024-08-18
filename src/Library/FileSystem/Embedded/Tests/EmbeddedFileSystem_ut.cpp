@@ -43,3 +43,13 @@ UNIT_TEST(EmbeddedFileSystem, Read) {
     EXPECT_ANY_THROW((void) fs.read("DoesntExist"));
     EXPECT_ANY_THROW((void) fs.openForReading("DoesntExist"));
 }
+
+UNIT_TEST(EmbeddedFileSystem, DisplayPath) {
+    EmbeddedFileSystem fs(cmrc::testrc::get_filesystem(), "testrc");
+
+    Blob data = fs.read("Tests/EmbeddedFileSystem_ut.cpp");
+    EXPECT_EQ(data.displayPath(), "testrc://Tests/EmbeddedFileSystem_ut.cpp");
+
+    std::unique_ptr<InputStream> input = fs.openForReading("Tests/EmbeddedFileSystem_ut.cpp");
+    EXPECT_EQ(input->displayPath(), "testrc://Tests/EmbeddedFileSystem_ut.cpp");
+}

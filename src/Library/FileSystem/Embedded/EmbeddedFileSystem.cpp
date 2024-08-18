@@ -32,12 +32,12 @@ void EmbeddedFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEn
 
 Blob EmbeddedFileSystem::_read(const FileSystemPath &path) const {
     cmrc::file file = _base.open(path.string());
-    return Blob::view(file.begin(), file.size());
+    return Blob::view(file.begin(), file.size()).withDisplayPath(displayPath(path));
 }
 
 std::unique_ptr<InputStream> EmbeddedFileSystem::_openForReading(const FileSystemPath &path) const {
     cmrc::file file = _base.open(path.string());
-    return std::make_unique<MemoryInputStream>(file.begin(), file.size());
+    return std::make_unique<MemoryInputStream>(file.begin(), file.size(), displayPath(path));
 }
 
 std::string EmbeddedFileSystem::_displayPath(const FileSystemPath &path) const {

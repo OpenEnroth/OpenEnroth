@@ -7,15 +7,14 @@
 
 namespace detail {
 
-MemoryFileSystemOutputStream::MemoryFileSystemOutputStream(std::shared_ptr<MemoryFileData> data) {
+MemoryFileSystemOutputStream::MemoryFileSystemOutputStream(std::shared_ptr<MemoryFileData> data, std::string_view displayPath) {
     assert(data);
-    assert(data->blob.empty());
     assert(data->readerCount == 0);
     assert(data->writerCount == 0);
 
     _data = std::move(data);
     _data->writerCount++;
-    open(&_data->blob);
+    open(&_data->blob, displayPath);
 }
 
 MemoryFileSystemOutputStream::~MemoryFileSystemOutputStream() {

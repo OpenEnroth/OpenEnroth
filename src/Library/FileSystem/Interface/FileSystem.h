@@ -149,6 +149,11 @@ class FileSystem {
     bool remove(std::string_view path);
     bool remove(const FileSystemPath &path);
 
+    /**
+     * @param path                      Path inside this file system. The passed path is not required to exist.
+     * @return                          A path string that's suitable to be displayed to the user. E.g. an absolute path
+     *                                  on the underlying OS file system.
+     */
     [[nodiscard]] std::string displayPath(std::string_view path) const;
     [[nodiscard]] std::string displayPath(const FileSystemPath &path) const;
 

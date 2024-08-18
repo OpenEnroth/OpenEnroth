@@ -174,3 +174,33 @@ UNIT_TEST(MemoryFileSystem, Rename) {
         {"x/y/d", FILE_REGULAR, "1234"}
     }));
 }
+
+UNIT_TEST(MemoryFileSystem, Overwrite) {
+    MemoryFileSystem fs("");
+    fs.write("a", Blob::fromString("a"));
+
+    std::unique_ptr<OutputStream> output = fs.openForWriting("a");
+    output->write("A");
+    output->close();
+
+    EXPECT_EQ(fs.read("a").string_view(), "A");
+}
+
+UNIT_TEST(MemoryFileSystem, DisplayPath) {
+    MemoryFileSystem fs("mem");
+    fs.write("a", Blob::fromString("a"));
+
+    EXPECT_EQ(fs.read("a").displayPath(), "mem://a");
+
+    std::unique_ptr<InputStream> input = fs.openForReading("a");
+    EXPECT_EQ(input->displayPath(), "mem://a");
+    input->close();
+
+    std::unique_ptr<OutputStream> output = fs.openForWriting("b");
+    EXPECT_EQ(output->displayPath(), "mem://b");
+    output->close();
+
+    // Also check that writing through a streaming interfaces preserves display path.
+    EXPECT_EQ(fs.read("b").displayPath(), "mem://b");
+}
+

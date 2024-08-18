@@ -1,4 +1,5 @@
 #include <vector>
+#include <memory>
 
 #include "Testing/Unit/UnitTest.h"
 
@@ -211,4 +212,25 @@ UNIT_TEST(LowercaseFileSystem, RemoveRepeatedly) {
     EXPECT_TRUE(fs.ls("").empty());
     EXPECT_FALSE(fs0.exists("A"));
     EXPECT_TRUE(fs0.ls("").empty());
+}
+
+UNIT_TEST(LowercaseFileSystem, DisplayPath) {
+    MemoryFileSystem fs0("ram");
+    fs0.write("A/A", Blob::fromString("A"));
+
+    LowercaseFileSystem fs(&fs0);
+
+    Blob blob = fs.read("a/a");
+    EXPECT_EQ(blob.displayPath(), "ram://A/A");
+
+    std::unique_ptr<InputStream> input = fs.openForReading("a/a");
+    EXPECT_EQ(input->displayPath(), "ram://A/A");
+    input->close();
+
+    std::unique_ptr<OutputStream> output = fs.openForWriting("a/a");
+    EXPECT_EQ(output->displayPath(), "ram://A/A");
+    output->close();
+
+    EXPECT_EQ(fs.displayPath("a/b/c"), "ram://A/b/c");
+    EXPECT_EQ(fs.displayPath(""), "ram://");
 }

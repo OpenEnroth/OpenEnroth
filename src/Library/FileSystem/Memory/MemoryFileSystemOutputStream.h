@@ -12,7 +12,7 @@ struct MemoryFileData;
 
 class MemoryFileSystemOutputStream : public BlobOutputStream {
  public:
-    explicit MemoryFileSystemOutputStream(std::shared_ptr<MemoryFileData> data);
+    explicit MemoryFileSystemOutputStream(std::shared_ptr<MemoryFileData> data, std::string_view displayPath);
     virtual ~MemoryFileSystemOutputStream();
 
  private:
