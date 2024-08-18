@@ -7,6 +7,12 @@
 #include "Library/FileSystem/Interface/ReadOnlyFileSystem.h"
 #include "Library/FileSystem/Trie/FileSystemTrie.h"
 
+// TODO(captainurist): This was originally designed as a workaround to make rename() work on top of a mergingfs looking
+//                     into two different filesystems, one of which is readonly. This made little sense, so mergingfs
+//                     was changed to be readonly, thus the original use case is no more. This class needs to be redone
+//                     with just mask / unmask / clearMasks, masking out parts of the underlying FS makes sense in some
+//                     cases.
+
 /**
  * Proxy read-only filesystem that supports `remove` operations by simply masking away the removed files and
  * directories.
