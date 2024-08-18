@@ -144,7 +144,6 @@ jobs:
         run: |
           mkdir dist
           cp build/src/Bin/OpenEnroth/OpenEnroth dist/
-          cp -r resources/* dist/
 
       - name: Zip folder for release
         if: inputs.releaseTag != ''

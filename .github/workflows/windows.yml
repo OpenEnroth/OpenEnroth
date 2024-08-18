@@ -153,7 +153,6 @@ jobs:
         run: |
           mkdir dist
           copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
-          xcopy resources dist\ /E/H/C/I
 
       - name: Zip folder for release
         if: inputs.releaseTag != ''

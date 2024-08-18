@@ -119,7 +119,6 @@ jobs:
         run: |
           mkdir dist
           cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
-          cp -r resources/* dist/
           hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
 
       - name: Zip folder for release
