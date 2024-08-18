@@ -49,26 +49,27 @@ FileStat MountingFileSystem::_stat(const FileSystemPath &path) const {
     return node ? FileStat(FILE_DIRECTORY, 0) : mount ? mount->stat(tail) : FileStat();
 }
 
-std::vector<DirectoryEntry> MountingFileSystem::_ls(const FileSystemPath &path) const {
+void MountingFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
     auto [node, mount, tail] = walk(path);
 
     if (!node && !mount)
         throw FileSystemException(FileSystemException::LS_FAILED_PATH_DOESNT_EXIST, path);
 
-    if (!node)
-        return mount->ls(tail);
+    if (!node) {
+        mount->ls(tail, entries);
+        return;
+    }
 
     if (!mount) {
-        std::vector<DirectoryEntry> result;
         for (const auto &[name, _] : node->children())
-            result.push_back(DirectoryEntry(name, FILE_DIRECTORY));
-        return result;
+            entries->push_back(DirectoryEntry(name, FILE_DIRECTORY));
+        return;
     }
 
     // Need to merge in this case.
-    std::vector<DirectoryEntry> result = mount->ls(tail);
-    std::ranges::sort(result);
-    std::span<DirectoryEntry> searchable = result;
+    mount->ls(tail, entries);
+    std::ranges::sort(*entries);
+    std::span<DirectoryEntry> searchable = *entries;
     bool cleanupNeeded = false;
     for (const auto &[name, _] : node->children()) {
         auto range = std::ranges::equal_range(searchable, name, std::ranges::less(), &DirectoryEntry::name);
@@ -76,7 +77,7 @@ std::vector<DirectoryEntry> MountingFileSystem::_ls(const FileSystemPath &path) 
         size_t size = range.size();
 
         if (size == 0) {
-            result.push_back(DirectoryEntry(name, FILE_DIRECTORY));
+            entries->push_back(DirectoryEntry(name, FILE_DIRECTORY));
         } else if (size == 1) {
             range[0].type = FILE_DIRECTORY;
         } else {
@@ -87,8 +88,7 @@ std::vector<DirectoryEntry> MountingFileSystem::_ls(const FileSystemPath &path) 
         }
     }
     if (cleanupNeeded)
-        std::erase_if(result, [] (const DirectoryEntry &entry) { return entry.type == FILE_INVALID; });
-    return result;
+        std::erase_if(*entries, [] (const DirectoryEntry &entry) { return entry.type == FILE_INVALID; });
 }
 
 Blob MountingFileSystem::_read(const FileSystemPath &path) const {

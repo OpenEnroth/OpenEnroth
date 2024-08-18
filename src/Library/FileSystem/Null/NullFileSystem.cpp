@@ -14,9 +14,11 @@ FileStat NullFileSystem::_stat(const FileSystemPath &path) const {
     return {};
 }
 
-std::vector<DirectoryEntry> NullFileSystem::_ls(const FileSystemPath &path) const {
-    if (path.isEmpty())
-        return {};
+void NullFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
+    if (path.isEmpty()) {
+        entries->clear();
+        return;
+    }
     throw FileSystemException(FileSystemException::LS_FAILED_PATH_DOESNT_EXIST, path);
 }
 

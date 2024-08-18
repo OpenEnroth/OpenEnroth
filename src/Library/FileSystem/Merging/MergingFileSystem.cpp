@@ -35,8 +35,8 @@ FileStat MergingFileSystem::_stat(const FileSystemPath &path) const {
     return dirFound ? FileStat(FILE_DIRECTORY, 0) : FileStat();
 }
 
-std::vector<DirectoryEntry> MergingFileSystem::_ls(const FileSystemPath &path) const {
-    std::vector<DirectoryEntry> result;
+void MergingFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
+    std::vector<DirectoryEntry> buffer;
 
     bool hasOne = false;
     for (const FileSystem *base : _bases) {
@@ -45,21 +45,18 @@ std::vector<DirectoryEntry> MergingFileSystem::_ls(const FileSystemPath &path) c
 
         // We will throw here if the folder was deleted between stat() and ls() calls. That's probably OK.
         hasOne = true;
-        std::ranges::move(base->ls(path), std::back_inserter(result));
+
+        base->ls(path, &buffer);
+        std::ranges::move(buffer, std::back_inserter(*entries));
     }
 
-    if (!hasOne) {
-        if (path.isEmpty())
-            return {};
+    if (!hasOne && !path.isEmpty())
         throw FileSystemException(FileSystemException::LS_FAILED_PATH_DOESNT_EXIST, path);
-    }
 
     // Note that we don't need std::stable_sort here b/c no fs-specific data is exposed by the entries.
-    std::ranges::sort(result);
-    auto [tailStart, tailEnd] = std::ranges::unique(result);
-    result.erase(tailStart, tailEnd);
-
-    return result;
+    std::ranges::sort(*entries);
+    auto [tailStart, tailEnd] = std::ranges::unique(*entries);
+    entries->erase(tailStart, tailEnd);
 }
 
 Blob MergingFileSystem::_read(const FileSystemPath &path) const {

@@ -24,7 +24,7 @@ class DirectoryFileSystem : public FileSystem {
  private:
     virtual bool _exists(const FileSystemPath &path) const override;
     virtual FileStat _stat(const FileSystemPath &path) const override;
-    virtual std::vector<DirectoryEntry> _ls(const FileSystemPath &path) const override;
+    virtual void _ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const override;
     virtual Blob _read(const FileSystemPath &path) const override;
     virtual void _write(const FileSystemPath &path, const Blob &data) override;
     virtual std::unique_ptr<InputStream> _openForReading(const FileSystemPath &path) const override;

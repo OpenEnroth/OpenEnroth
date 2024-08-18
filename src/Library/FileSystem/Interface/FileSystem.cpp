@@ -36,7 +36,18 @@ std::vector<DirectoryEntry> FileSystem::ls(std::string_view path) const {
 }
 
 std::vector<DirectoryEntry> FileSystem::ls(const FileSystemPath &path) const {
-    return _ls(path);
+    std::vector<DirectoryEntry> result;
+    _ls(path, &result);
+    return result;
+}
+
+void FileSystem::ls(std::string_view path, std::vector<DirectoryEntry> *entries) const {
+    ls(FileSystemPath(path), entries);
+}
+
+void FileSystem::ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
+    entries->clear();
+    _ls(path, entries);
 }
 
 Blob FileSystem::read(std::string_view path) const {
@@ -115,22 +126,22 @@ void FileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPath &ds
     assert(!srcPath.isEmpty());
     assert(!dstPath.isEmpty());
 
-    FileStat srcStat = _stat(srcPath);
+    FileStat srcStat = stat(srcPath);
     if (!srcStat)
         throw FileSystemException(FileSystemException::RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
 
-    FileStat dstStat = _stat(dstPath);
+    FileStat dstStat = stat(dstPath);
     if (dstStat.type == FILE_DIRECTORY)
         throw FileSystemException(FileSystemException::RENAME_FAILED_DST_IS_DIR, srcPath, dstPath);
     if (dstStat.type == FILE_REGULAR && srcStat.type == FILE_DIRECTORY)
         throw FileSystemException(FileSystemException::RENAME_FAILED_SRC_IS_DIR_DST_IS_FILE, srcPath, dstPath);
     if (dstStat)
-        _remove(dstPath);
+        remove(dstPath);
 
     std::unique_ptr<char[]> buffer;
     auto copyFile = [this, &buffer](const FileSystemPath &srcPath, const FileSystemPath &dstPath) -> void {
-        std::unique_ptr<InputStream> input = _openForReading(srcPath);
-        std::unique_ptr<OutputStream> output = _openForWriting(dstPath);
+        std::unique_ptr<InputStream> input = openForReading(srcPath);
+        std::unique_ptr<OutputStream> output = openForWriting(dstPath);
 
         if (!buffer)
             buffer = std::make_unique<char[]>(COPY_BUFFER_SIZE); // TODO(captainurist): C++23, use make_unique_for_overwrite.
@@ -144,7 +155,7 @@ void FileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPath &ds
     };
 
     auto copyDir = [this] (const FileSystemPath &srcPath, const FileSystemPath &dstPath, const auto &copyAny) -> void {
-        for (const DirectoryEntry &entry : _ls(srcPath))
+        for (const DirectoryEntry &entry : ls(srcPath))
             copyAny(entry.type, srcPath.appended(entry.name), dstPath.appended(entry.name), copyAny);
     };
 
@@ -158,5 +169,5 @@ void FileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPath &ds
     };
 
     copyAny(srcStat.type, srcPath, dstPath, copyAny);
-    _remove(srcPath);
+    remove(srcPath);
 }

@@ -44,19 +44,19 @@ FileStat MaskingFileSystem::_stat(const FileSystemPath &path) const {
     return _base->stat(path);
 }
 
-std::vector<DirectoryEntry> MaskingFileSystem::_ls(const FileSystemPath &path) const {
+void MaskingFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
     if (isMasked(path)) {
         if (path.isEmpty()) {
-            return {}; // Pretend root exists even if it was masked.
+            return; // Pretend root exists even if it was masked.
         } else {
             throw FileSystemException(FileSystemException::LS_FAILED_PATH_DOESNT_EXIST, path);
         }
     }
 
-    std::vector<DirectoryEntry> result = _base->ls(path);
+    _base->ls(path, entries);
 
     if (const FileSystemTrieNode<bool> *node = _masks.find(path)) {
-        std::erase_if(result, [node] (const DirectoryEntry &entry) {
+        std::erase_if(*entries, [node] (const DirectoryEntry &entry) {
             if (FileSystemTrieNode<bool> *child = node->child(entry.name)) {
                 return child->hasValue();
             } else {
@@ -64,8 +64,6 @@ std::vector<DirectoryEntry> MaskingFileSystem::_ls(const FileSystemPath &path) c
             }
         });
     }
-
-    return result;
 }
 
 Blob MaskingFileSystem::_read(const FileSystemPath &path) const {

@@ -46,17 +46,15 @@ FileStat LowercaseFileSystem::_stat(const FileSystemPath &path) const {
     return !tail.isEmpty() ? FileStat() : _base->stat(basePath);
 }
 
-std::vector<DirectoryEntry> LowercaseFileSystem::_ls(const FileSystemPath &path) const {
+void LowercaseFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
     const Node *node = _trie.find(path);
     if (!node)
         throw FileSystemException(FileSystemException::LS_FAILED_PATH_DOESNT_EXIST, path);
     if (node->children().empty() && node != _trie.root())
         throw FileSystemException(FileSystemException::LS_FAILED_PATH_IS_FILE, path);
 
-    std::vector<DirectoryEntry> result;
     for (const auto &[name, child] : node->children())
-        result.push_back(DirectoryEntry(name, child->children().empty() ? FILE_REGULAR : FILE_DIRECTORY));
-    return result;
+        entries->push_back(DirectoryEntry(name, child->children().empty() ? FILE_REGULAR : FILE_DIRECTORY));
 }
 
 Blob LowercaseFileSystem::_read(const FileSystemPath &path) const {

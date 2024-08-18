@@ -25,11 +25,9 @@ FileStat EmbeddedFileSystem::_stat(const FileSystemPath &path) const {
     return FileStat(FILE_REGULAR, file.size());
 }
 
-std::vector<DirectoryEntry> EmbeddedFileSystem::_ls(const FileSystemPath &path) const {
-    std::vector<DirectoryEntry> result;
+void EmbeddedFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
     for (const cmrc::directory_entry &entry : _base.iterate_directory(path.string()))
-        result.push_back(DirectoryEntry(entry.filename(), entry.is_file() ? FILE_REGULAR : FILE_DIRECTORY));
-    return result;
+        entries->push_back(DirectoryEntry(entry.filename(), entry.is_file() ? FILE_REGULAR : FILE_DIRECTORY));
 }
 
 Blob EmbeddedFileSystem::_read(const FileSystemPath &path) const {

@@ -43,9 +43,8 @@ FileStat DirectoryFileSystem::_stat(const FileSystemPath &path) const {
     return result;
 }
 
-std::vector<DirectoryEntry> DirectoryFileSystem::_ls(const FileSystemPath &path) const {
+void DirectoryFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
     std::error_code ec;
-    std::vector<DirectoryEntry> result;
     for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(makeBasePath(path), ec)) {
         bool isRegular = entry.is_regular_file();
         bool isDirectory = !isRegular && entry.is_directory();
@@ -56,20 +55,18 @@ std::vector<DirectoryEntry> DirectoryFileSystem::_ls(const FileSystemPath &path)
         if (name.find('\\') != std::string::npos)
             continue; // Files with '\\' in filename are not observable through this interface. Don't be a retard.
 
-        DirectoryEntry &resultEntry = result.emplace_back();
+        DirectoryEntry &resultEntry = entries->emplace_back();
         resultEntry.name = std::move(name);
         resultEntry.type = isRegular ? FILE_REGULAR : FILE_DIRECTORY;
     }
 
     if (ec) {
         if (path.isEmpty()) {
-            return {}; // Always pretend the root exists & is accessible.
+            return; // Always pretend the root exists & is accessible.
         } else {
             throw std::system_error(ec, path.string());
         }
     }
-
-    return result;
 }
 
 Blob DirectoryFileSystem::_read(const FileSystemPath &path) const {

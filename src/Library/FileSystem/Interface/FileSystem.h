@@ -87,6 +87,8 @@ class FileSystem {
      */
     [[nodiscard]] std::vector<DirectoryEntry> ls(std::string_view path) const;
     [[nodiscard]] std::vector<DirectoryEntry> ls(const FileSystemPath &path) const;
+    void ls(std::string_view path, std::vector<DirectoryEntry> *entries) const;
+    void ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const;
 
     /**
      * @param path                      Path to an existing file to read or map into memory.
@@ -161,7 +163,7 @@ class FileSystem {
  protected:
     [[nodiscard]] virtual bool _exists(const FileSystemPath &path) const = 0;
     [[nodiscard]] virtual FileStat _stat(const FileSystemPath &path) const = 0;
-    [[nodiscard]] virtual std::vector<DirectoryEntry> _ls(const FileSystemPath &path) const = 0;
+    virtual void _ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const = 0;
     [[nodiscard]] virtual Blob _read(const FileSystemPath &path) const = 0;
     virtual void _write(const FileSystemPath &path, const Blob &data) = 0;
     [[nodiscard]] virtual std::unique_ptr<InputStream> _openForReading(const FileSystemPath &path) const = 0;

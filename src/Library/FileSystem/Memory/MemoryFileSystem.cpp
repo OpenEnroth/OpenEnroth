@@ -34,17 +34,15 @@ FileStat MemoryFileSystem::_stat(const FileSystemPath &path) const {
     }
 }
 
-std::vector<DirectoryEntry> MemoryFileSystem::_ls(const FileSystemPath &path) const {
+void MemoryFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
     const Node *node = _trie.find(path);
     if (!node)
         throw FileSystemException(FileSystemException::LS_FAILED_PATH_DOESNT_EXIST, path);
     if (node->hasValue())
         throw FileSystemException(FileSystemException::LS_FAILED_PATH_IS_FILE, path);
 
-    std::vector<DirectoryEntry> result;
     for (const auto &[name, child] : node->children())
-        result.push_back(DirectoryEntry(name, child->hasValue() ? FILE_REGULAR : FILE_DIRECTORY));
-    return result;
+        entries->push_back(DirectoryEntry(name, child->hasValue() ? FILE_REGULAR : FILE_DIRECTORY));
 }
 
 Blob MemoryFileSystem::_read(const FileSystemPath &path) const {

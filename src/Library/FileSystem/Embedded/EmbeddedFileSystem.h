@@ -16,7 +16,7 @@ class EmbeddedFileSystem : public ReadOnlyFileSystem {
  private:
     virtual bool _exists(const FileSystemPath &path) const override;
     virtual FileStat _stat(const FileSystemPath &path) const override;
-    virtual std::vector<DirectoryEntry> _ls(const FileSystemPath &path) const override;
+    virtual void _ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const override;
     virtual Blob _read(const FileSystemPath &path) const override;
     virtual std::unique_ptr<InputStream> _openForReading(const FileSystemPath &path) const override;
     virtual std::string _displayPath(const FileSystemPath &path) const override;

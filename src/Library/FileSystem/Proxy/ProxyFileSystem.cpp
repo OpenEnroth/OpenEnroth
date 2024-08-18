@@ -13,8 +13,8 @@ FileStat ProxyFileSystem::_stat(const FileSystemPath &path) const {
     return nonNullBase()->_stat(path);
 }
 
-std::vector<DirectoryEntry> ProxyFileSystem::_ls(const FileSystemPath &path) const {
-    return nonNullBase()->_ls(path);
+void ProxyFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
+    nonNullBase()->_ls(path, entries);
 }
 
 Blob ProxyFileSystem::_read(const FileSystemPath &path) const {
