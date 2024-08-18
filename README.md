@@ -30,9 +30,9 @@ Getting Started on Windows
 
 2. Download one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip the files.
 
-3. From the `dist` folder inside the zip file copy the `OpenEnroth.exe` and the `shaders` folder to the folder where the game is installed.
+3. From the `dist` folder inside the zip file copy the `OpenEnroth.exe` to the folder where the game is installed.
 
-4. Run `OpenEnroth.exe`. If you forget to copy the `shaders` folder, you will see errors in the console.
+4. Run `OpenEnroth.exe`.
 
 
 Getting Started on Linux or Mac
@@ -45,15 +45,11 @@ Getting Started on Linux or Mac
 
 2. Build OpenEnroth as described in [HACKING.md](HACKING.md).
 
-3. Copy OpenEnroth-specific resources from the `resources` folder of the repo to the folder where the game assets were extracted to:
-
-    `cp -rv resources/shaders <target-folder>/app`
-
-4. Set `OPENENROTH_MM7_PATH` env variable to point to the location of the game assets. You might also want to add the following line to your bash profile (e.g. `~/.profile` on Ubuntu or `~/.zshrc` on Mac):
+3. Set `OPENENROTH_MM7_PATH` env variable to point to the location of the game assets. You might also want to add the following line to your bash profile (e.g. `~/.profile` on Ubuntu or `~/.zshrc` on Mac):
 
     `export OPENENROTH_MM7_PATH="<target-folder>/app"`
 
-5. Run the freshly built `OpenEnroth` binary.
+4. Run the freshly built `OpenEnroth` binary.
 
 
 Development

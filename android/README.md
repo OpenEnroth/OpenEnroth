@@ -8,4 +8,4 @@ Getting Started
 2. Generate keystore file for signing the APK. Place keystore path, alias and passwords into env variables SIGNING_KEYSTORE, SIGNING_STORE_PASSWORD, SIGNING_KEY_ALIAS and SIGNING_KEY_PASSWORD.
 3. Use Android Studio or invoke gradle manually from console to build the APK file.
 4. Install it on your Android device.
-5. Copy assets from Might and Magic VII and OpenEnroth-specific resources from the 'resources' folder of the main repo to `/sdcard/Android/data/org.openenroth.game/files`.
+5. Copy assets from Might and Magic VII to `/sdcard/Android/data/org.openenroth.game/files`.

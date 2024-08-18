@@ -195,12 +195,9 @@ Console Commands
 -----------------
 The game features a console capable of executing various Lua script commands. To activate this feature, please follow these steps:
 
-1. Copy the `resources/scripts` folder to the game's installation directory.
-2. Launch the game.
-3. Begin by loading an existing game or creating a new one.
-4. Once in-game, press the `~` key to open the DebugView.
-5. If the Lua scripts have been loaded correctly, you'll find a button labeled `Console`.
-6. Click on the `Console` button to reveal the command-line interface at the bottom left corner of the screen.
+1. Launch the game.
+2. Begin by loading an existing game or creating a new one.
+3. Once in-game, press the `~` key to open the debug console.
 
 Currently, the console is only available while in-game.
 
