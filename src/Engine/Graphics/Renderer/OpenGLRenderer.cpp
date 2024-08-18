@@ -16,6 +16,7 @@
 #include <imgui/backends/imgui_impl_sdl2.h> // NOLINT: not a C system header.
 
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Image.h"
@@ -52,7 +53,6 @@
 #include "Utility/Memory/MemSet.h"
 
 #include "OpenGLShader.h"
-#include "Utility/DataPath.h"
 
 #ifndef LOWORD
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
@@ -5017,7 +5017,8 @@ bool OpenGLRenderer::ReloadShaders() {
     };
 
     for (const auto &[shader, fileName, readableName] : shaders) {
-        if (!shader->load(makeDataPath("shaders", fmt::format("{}.vert", fileName)), makeDataPath("shaders", fmt::format("{}.frag", fileName)), OpenGLES)) {
+        if (!shader->load(dfs->read(fmt::format("shaders/{}.vert", fileName)),
+                          dfs->read(fmt::format("shaders/{}.frag", fileName)), OpenGLES)) {
             platform->showMessageBox("CRITICAL ERROR: shader compilation failure",
                                      fmt::format("{} shader failed to compile!\nPlease consult the log and consider issuing a bug report!", readableName));
             return false;

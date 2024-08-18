@@ -24,6 +24,7 @@ extern "C" {
 }
 
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
@@ -36,7 +37,6 @@ extern "C" {
 #include "Media/FFmpegBlobInputStream.h"
 
 #include "Utility/Memory/FreeDeleter.h"
-#include "Utility/DataPath.h"
 
 #include "GUI/GUIWindow.h"
 
@@ -710,8 +710,8 @@ class Movie : public IMovie {
 };
 
 void MPlayer::Initialize() {
-    might_list.open(makeDataPath("anims", "might7.vid"));
-    magic_list.open(makeDataPath("anims", "magic7.vid"));
+    might_list.open(dfs->read("anims/might7.vid"));
+    magic_list.open(dfs->read("anims/magic7.vid"));
 }
 
 void MPlayer::OpenHouseMovie(std::string_view pMovieName, bool bLoop) {

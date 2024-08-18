@@ -7,6 +7,7 @@ set(ENGINE_SOURCES
         Engine.cpp
         EngineGlobals.cpp
         EngineIocContainer.cpp
+        EngineFileSystem.cpp
         GpuHints.cpp
         LOD.cpp
         LodTextureCache.cpp
@@ -35,6 +36,7 @@ set(ENGINE_HEADERS
         EngineCallObserver.h
         EngineGlobals.h
         EngineIocContainer.h
+        EngineFileSystem.h
         LOD.h
         LodTextureCache.h
         LodSpriteCache.h
@@ -74,6 +76,13 @@ target_link_libraries(engine
         library_color
         library_lod_formats
         library_buildinfo
+        library_filesystem_embedded
+        library_filesystem_merging
+        library_filesystem_masking
+        library_filesystem_directory
+        library_filesystem_lowercase
+        library_filesystem_proxy
+        resources
         utility)
 
 target_compile_definitions(engine PRIVATE

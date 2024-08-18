@@ -2,6 +2,7 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <Shlobj.h>
 
 #include <cstdlib>
 #include <array>
@@ -9,6 +10,7 @@
 #include <string>
 
 #include "Utility/Win/Unicode.h"
+#include "Utility/ScopeGuard.h"
 
 // TODO(captainurist): revisit this code once I'm on a win machine.
 static std::wstring OS_GetAppStringRecursive(HKEY parent_key, const wchar_t *path, int flags) {
@@ -85,6 +87,18 @@ std::string WinEnvironment::queryRegistry(const std::string &path) const {
 std::string WinEnvironment::path(EnvironmentPath path) const {
     if (path == PATH_HOME) {
         return getenv("USERPROFILE");
+    } else if (path == PATH_WINDOWS_SAVED_GAMES) {
+        PWSTR path = nullptr;
+        MM_AT_SCOPE_EXIT({
+            if (path != nullptr)
+                CoTaskMemFree(path);
+        });
+
+        HRESULT status = SHGetKnownFolderPath(FOLDERID_SavedGames, KF_FLAG_CREATE, NULL, &path);
+        if (status != S_OK || path == nullptr)
+            return {};
+
+        return win::toUtf8(path);
     } else {
         return {};
     }

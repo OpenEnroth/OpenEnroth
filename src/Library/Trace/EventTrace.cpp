@@ -10,9 +10,6 @@
 
 #include "Io/Key.h" // TODO(captainurist): doesn't belong here
 
-#include "Utility/Streams/FileInputStream.h"
-#include "Utility/Streams/FileOutputStream.h"
-
 #include "PaintEvent.h"
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(Pointi, (

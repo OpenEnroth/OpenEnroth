@@ -2,9 +2,25 @@
 
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #include "Library/Logger/Logger.h"
 #include "Library/Environment/Interface/Environment.h"
+#include "Library/FileSystem/Directory/DirectoryFileSystem.h"
+#include "Library/FileSystem/Lowercase/LowercaseFileSystem.h"
+
+static const std::vector<std::string_view> globalValidateList = {
+    {"anims/magic7.vid"},
+    {"anims/might7.vid"},
+    {"data/bitmaps.lod"},
+//    {"data/d3dbitmap.hwl"}, // We're not using HWL textures, so these are not required.
+//    {"data/d3dsprite.hwl"},
+    {"data/events.lod"},
+    {"data/games.lod"},
+    {"data/icons.lod"},
+    {"data/sprites.lod"},
+    {"sounds/audio.snd"}
+};
 
 struct PathResolutionConfig {
     const char *overrideEnvKey = nullptr;
@@ -58,9 +74,8 @@ static std::vector<std::string> resolvePaths(Environment *environment, const Pat
 
     std::vector<std::string> result;
 
-    // TODO(pskelton): std::filesystem::current_path().string()?
     // Otherwise we check PWD first.
-    result.push_back(".");
+    result.push_back(std::filesystem::current_path().string());
 
     // Then we check paths from registry on Windows,...
     for (const char *registryKey : config.registryKeys) {
@@ -71,6 +86,7 @@ static std::vector<std::string> resolvePaths(Environment *environment, const Pat
         }
     }
 
+#ifdef __ANDROID__
     // ...Android storage paths on Android,...
     std::string externalPath = environment->path(PATH_ANDROID_STORAGE_EXTERNAL);
     if (!externalPath.empty())
@@ -81,9 +97,10 @@ static std::vector<std::string> resolvePaths(Environment *environment, const Pat
     // TODO(captainurist): need a mechanism to show user-visible errors. Commenting out for now.
     //if (ANDROID && result.empty())
     //    platform->showMessageBox("Device currently unsupported", "Your device doesn't have any storage so it is unsupported!");
+#endif
 
-    // ...or Library/Application Support in home on macOS.
 #ifdef __APPLE__
+    // ...or Library/Application Support in home on macOS.
     std::string home = environment->path(PATH_HOME);
     if (!home.empty())
         result.push_back(home + "/Library/Application Support/OpenEnroth");
@@ -102,4 +119,31 @@ std::vector<std::string> resolveMm7Paths(Environment *environment) {
 
 std::vector<std::string> resolveMm8Paths(Environment *environment) {
     return resolvePaths(environment, mm8Config);
+}
+
+bool validateMm7Path(std::string_view dataPath, std::string *missingFile) {
+    DirectoryFileSystem dirFs(dataPath);
+    LowercaseFileSystem lowerFs(&dirFs);
+
+    for (std::string_view entry : globalValidateList) {
+        if (!lowerFs.exists(entry)) {
+            *missingFile = entry;
+            return false;
+        }
+    }
+
+    return true;
+}
+
+std::string resolveMm7UserPath(Environment *environment) {
+#ifdef _WINDOWS
+    std::string savedGames = environment->path(PATH_WINDOWS_SAVED_GAMES);
+    if (savedGames.empty())
+        return {}; // Shouldn't really happen.
+    return fmt::format("{}/OpenEnroth", savedGames);
+#elif __ANDROID__
+    return fmt::format("{}/.openenroth", environment->path(PATH_ANDROID_STORAGE_INTERNAL));
+#else // Mac & linux
+    return fmt::format("{}/.openenroth", environment->path(PATH_HOME));
+#endif
 }

@@ -1,7 +1,6 @@
 #include "EngineController.h"
 
 #include <cassert>
-#include <filesystem>
 #include <utility>
 #include <thread>
 #include <string>
@@ -14,16 +13,16 @@
 #include "GUI/GUIButton.h"
 
 #include "Engine/SaveLoad.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/mm7_data.h"
 
+#include "Library/FileSystem/Memory/MemoryFileSystem.h"
+#include "Library/FileSystem/Proxy/ScopedFileSystemSwizzle.h"
 #include "Library/Platform/Application/PlatformApplication.h"
-
 #include "Library/Platform/Interface/PlatformEvents.h"
 
 #include "Utility/Exception.h"
-#include "Utility/DataPath.h"
-#include "Utility/Streams/FileOutputStream.h"
 
 EngineController::EngineController(EngineControlStateHandle state): _state(std::move(state)) {}
 
@@ -51,6 +50,16 @@ void EngineController::pressKey(PlatformKey key) {
     event->key = key;
     event->mods = 0;
     event->isAutoRepeat = false;
+    postEvent(std::move(event));
+}
+
+void EngineController::pressAutoRepeatedKey(PlatformKey key) {
+    std::unique_ptr<PlatformKeyEvent> event = std::make_unique<PlatformKeyEvent>();
+    event->type = EVENT_KEY_PRESS;
+    event->window = ::application->window();
+    event->key = key;
+    event->mods = 0;
+    event->isAutoRepeat = true;
     postEvent(std::move(event));
 }
 
@@ -198,9 +207,10 @@ Blob EngineController::saveGame() {
 }
 
 void EngineController::loadGame(const Blob &savedGame) {
-    std::string saveName = "!!!test.mm7";
-    std::string dst = makeDataPath("saves", saveName);
-    FileOutputStream(dst).write(savedGame); // This might throw.
+    MemoryFileSystem ramFs("ramfs");
+    ramFs.write("saves/!!!save.mm7", savedGame);
+
+    ScopedFileSystemSwizzle swizzle(ufs, &ramFs);
 
     goToMainMenu();
     pressGuiButton("MainMenu_LoadGame");
@@ -208,9 +218,8 @@ void EngineController::loadGame(const Blob &savedGame) {
     pSavegameList->saveListPosition = 0; // Make sure we start at the top of the list.
     tick(1);
 
-    // TODO(captainurist): the tricks above might fail if we have more than 45 save files
     assert(pSavegameList->pSavegameUsedSlots[0]);
-    assert(pSavegameList->pFileList[0] == saveName);
+    assert(pSavegameList->pFileList[0] == "!!!save.mm7");
 
     pressGuiButton("LoadMenu_Slot0");
     tick(2);

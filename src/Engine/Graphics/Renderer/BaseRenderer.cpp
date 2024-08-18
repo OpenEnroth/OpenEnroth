@@ -7,8 +7,6 @@
 #include "Engine/Engine.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Party.h"
-#include "Engine/LodTextureCache.h"
-#include "Engine/LodSpriteCache.h"
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -26,18 +24,13 @@
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/AssetsManager.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Random/Random.h"
 
-#include "Library/Image/PCX.h"
-#include "Library/Image/ImageFunctions.h"
 #include "Library/Logger/Logger.h"
 
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Memory/MemSet.h"
-#include "Utility/DataPath.h"
 
 bool BaseRenderer::Initialize() {
     updateRenderDimensions();

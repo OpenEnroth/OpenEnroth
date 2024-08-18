@@ -36,6 +36,7 @@ class EngineController {
 
     void postEvent(std::unique_ptr<PlatformEvent> event);
     void pressKey(PlatformKey key);
+    void pressAutoRepeatedKey(PlatformKey key);
     void releaseKey(PlatformKey key);
     void pressButton(PlatformMouseButton button, int x, int y);
     void releaseButton(PlatformMouseButton button, int x, int y);

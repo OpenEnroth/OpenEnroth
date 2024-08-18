@@ -36,6 +36,4 @@ class Game {
     Menu *_menu = nullptr;
 };
 
-void initDataPath(Platform *platform, std::string_view dataPath);
-
 extern GraphicsImage *gamma_preview_image;  // 506E40

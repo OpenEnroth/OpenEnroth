@@ -23,8 +23,8 @@ LodTextureCache::~LodTextureCache() {
         texture.Release();
 }
 
-void LodTextureCache::open(std::string_view pFilename) {
-    _reader.open(pFilename);
+void LodTextureCache::open(Blob blob) {
+    _reader.open(std::move(blob));
 }
 
 void LodTextureCache::reserveLoadedTextures() {

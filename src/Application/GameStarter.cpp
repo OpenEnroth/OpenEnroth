@@ -9,6 +9,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/EngineIocContainer.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/Graphics/Renderer/RendererFactory.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
@@ -31,6 +32,7 @@
 #include "Library/Logger/BufferLogSink.h"
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/Platform/Null/NullPlatform.h"
+#include "Library/FileSystem/Memory/MemoryFileSystem.h"
 
 #include "Scripting/AudioBindings.h"
 #include "Scripting/ConfigBindings.h"
@@ -43,7 +45,6 @@
 #include "Scripting/RendererBindings.h"
 #include "Scripting/ScriptingSystem.h"
 
-#include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 
 #include "GamePathResolver.h"
@@ -52,6 +53,8 @@
 #include "GameKeyboardController.h"
 #include "GameWindowHandler.h"
 #include "GameTraceHandler.h"
+
+constexpr std::string_view configName = "openenroth.ini";
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init environment.
@@ -68,16 +71,26 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     // Init paths.
     resolvePaths(_environment.get(), &_options, _logger.get());
 
+    // Init filesystem - needs data paths initialized.
+    _fs = std::make_unique<EngineFileSystem>(_options.dataPath, _options.userPath);
+    if (_options.ramFsUserData) {
+        _userRamFs = std::make_unique<MemoryFileSystem>("ramfs");
+        ufs->setBase(_userRamFs.get());
+    }
+
+    // TODO(captainurist): --portable, .portable
+    // Migrate saves & config if needed.
+    if (!_options.ramFsUserData && _options.dataPath != _options.userPath)
+        migrateUserData();
+
     // Init config - needs data paths initialized.
     _config = std::make_shared<GameConfig>();
-    if (_options.useConfig) {
-        if (std::filesystem::exists(_options.configPath)) {
-            _config->load(_options.configPath);
-            _logger->info("Configuration file '{}' loaded!", _options.configPath);
-        } else {
-            _config->reset();
-            _logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", _options.configPath);
-        }
+    if (ufs->exists(configName)) {
+        _config->load(ufs->openForReading(configName).get());
+        _logger->info("Configuration file '{}' loaded!", ufs->displayPath(configName));
+    } else {
+        _config->reset();
+        _logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", ufs->displayPath(configName));
     }
 
     // Finish logger init now that we know the desired log level.
@@ -98,11 +111,11 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
 
     // Prepare OpenAL settings. Unfortunately the only way to do this is by manipulating the env variables.
     // If we don't do this, game tests in GH action on macos-14 will hang for 9 min on init.
-    if (options.headless)
+    if (_options.headless)
         _environment->setenv("ALSOFT_DRIVERS", "null");
 
-    // Init global data path.
-    initDataPath(_platform.get(), _options.dataPath);
+    // Can validate the resolved data path now.
+    failOnInvalidPath(_options.dataPath, _platform.get());
 
     // Create application.
     _application = std::make_unique<PlatformApplication>(_platform.get());
@@ -139,14 +152,15 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     if (!_renderer->Initialize())
         throw Exception("Renderer failed to initialize"); // TODO(captainurist): Initialize should throw?
 
+    // Init overlays.
+    _overlaySystem = std::make_unique<OverlaySystem>(*_renderer, *_application);
+
     // Init io.
     ::keyboardActionMapping = std::make_shared<Io::KeyboardActionMapping>(_config);;
     ::keyboardInputHandler = std::make_shared<Io::KeyboardInputHandler>(_application->component<GameKeyboardController>(),
         keyboardActionMapping
     );
     ::mouse = EngineIocContainer::ResolveMouse();
-
-    _overlaySystem = std::make_unique<OverlaySystem>(*_renderer, *_application);
 
     // Init engine.
     _engine = std::make_unique<Engine>(_config, *_overlaySystem);
@@ -183,44 +197,86 @@ GameStarter::~GameStarter() {
 }
 
 void GameStarter::resolvePaths(Environment *environment, GameStarterOptions* options, Logger *logger) {
-    if (options->dataPath.empty()) {
-        std::vector<std::string> candidates = resolveMm7Paths(environment);
-        assert(!candidates.empty());
+    std::vector<std::string> candidates;
+    if (!options->dataPath.empty()) {
+        candidates.push_back(options->dataPath);
+    } else {
+        candidates = resolveMm7Paths(environment);
+    }
+    assert(!candidates.empty());
 
-        if (candidates.size() > 1) {
-            for (int i = 0; i < candidates.size(); i++) {
-                std::string missingFile;
-                if (!std::filesystem::exists(candidates[i])) {
-                    logger->info("Data path candidate #{} ('{}') doesn't exist.", i + 1, candidates[i]);
-                } else if (!validateDataPath(candidates[i], &missingFile)) {
-                    logger->info("Data path candidate #{} ('{}') is missing file '{}'.", i + 1, candidates[i], missingFile);
-                } else {
-                    logger->info("Data path candidate #{} ('{}') is OK!", i + 1, candidates[i]);
-                    options->dataPath = candidates[i];
-                    break;
-                }
-            }
+    for (int i = 0; i < candidates.size(); i++) {
+        std::string missingFile;
+        if (!std::filesystem::exists(candidates[i])) {
+            logger->info("Data path #{} ('{}') doesn't exist.", i + 1, candidates[i]);
+        } else if (!validateMm7Path(candidates[i], &missingFile)) {
+            logger->info("Data path #{} ('{}') is missing file '{}'.", i + 1, candidates[i], missingFile);
+        } else {
+            logger->info("Data path #{} ('{}') is OK!", i + 1, candidates[i]);
+            options->dataPath = candidates[i];
+            break;
         }
-
-        if (options->dataPath.empty()) // Only one candidate, or no valid candidates? Use the last one & re-check it later.
-            options->dataPath = candidates.back();
     }
 
-    assert(!options->dataPath.empty());
+    // Just use the last data path if all paths are invalid. We'll throw later.
+    if (options->dataPath.empty())
+        options->dataPath = candidates.back();
     logger->info("Using data path '{}'.", options->dataPath);
 
-    if (options->useConfig && options->configPath.empty())
-        options->configPath = options->dataPath + "/openenroth.ini";
+    if (options->userPath.empty())
+        options->userPath = resolveMm7UserPath(environment);
+    logger->info("Using user path '{}'.", options->userPath);
+}
+
+void GameStarter::failOnInvalidPath(std::string_view dataPath, Platform *platform) {
+    std::string missingFile;
+    if (validateMm7Path(dataPath, &missingFile))
+        return;
+
+    std::string message = fmt::format(
+        "Required file '{}' not found.\n"
+        "You should acquire licensed copy of M&M VII and copy its resources to \n{}\n\n"
+        "Additionally you should also copy the content from\n"
+        "resources directory from our repository there as well.",
+        missingFile,
+        dataPath
+    );
+    logger->critical("{}", message);
+    platform->showMessageBox("CRITICAL ERROR: missing resources", message);
+    throw Exception("Data folder '{}' validation failed", dataPath);
+}
+
+void GameStarter::migrateUserData() {
+    logger->info("Migrating user data from '{}' to '{}'...", dfs->displayPath(""), ufs->displayPath(""));
+
+    if (ufs->exists("saves") && !ufs->ls("saves").empty()) {
+        logger->info("    Target saves directory is not empty, skipping saves migration.");
+    } else if (!dfs->exists("saves")) {
+        logger->info("    No save files to migrate.");
+    } else {
+        for (const DirectoryEntry &entry : dfs->ls("saves")) {
+            std::string path = fmt::format("saves/{}", entry.name);
+            ufs->write(path, dfs->read(path));
+            logger->info("    Copied '{}'.", entry.name);
+        }
+    }
+
+    if (ufs->exists(configName)) {
+        logger->info("    Target config exists, skipping config migration.");
+    } else if (!dfs->exists(configName)) {
+        logger->info("    No config file to migrate.");
+    } else {
+        ufs->write(configName, dfs->read(configName));
+        logger->info("    Copied '{}'.", configName);
+    }
 }
 
 void GameStarter::run() {
     _game->run();
 
-    if (_options.useConfig) {
-        _application->component<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
-        _config->save(_options.configPath);
-        logger->info("Configuration file '{}' saved!", _options.configPath);
-    }
+    _application->component<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
+    _config->save(ufs->openForWriting(configName).get());
+    logger->info("Configuration file '{}' saved!", configName);
 }
 
 void GameStarter::runInstrumented(std::function<void(EngineController *)> controlRoutine) {

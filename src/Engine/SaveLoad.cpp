@@ -1,13 +1,13 @@
 #include "SaveLoad.h"
 
 #include <cassert>
-#include <filesystem>
 #include <algorithm>
 #include <string>
 #include <memory>
 #include <utility>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
@@ -36,9 +36,6 @@
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Lod/LodWriter.h"
 
-#include "Utility/DataPath.h"
-#include "Utility/Streams/FileOutputStream.h"
-
 SavegameList *pSavegameList = new SavegameList;
 
 static LodInfo makeSaveLodInfo() {
@@ -61,11 +58,11 @@ void LoadGame(int uSlot) {
     // TODO(captainurist): remained from Party::Reset, doesn't really belong here (or in Party::Reset).
     current_character_screen_window = WINDOW_CharacterWindow_Stats;
 
-    std::string filename = makeDataPath("saves", pSavegameList->pFileList[uSlot]);
+    std::string filename = fmt::format("saves/{}", pSavegameList->pFileList[uSlot]);
 
     // Note that we're using Blob::copy so that the memory mapping for the savefile is not held by the LOD reader.
     pSave_LOD->close();
-    pSave_LOD->open(Blob::copy(Blob::fromFile(filename)), LOD_ALLOW_DUPLICATES);
+    pSave_LOD->open(Blob::copy(ufs->read(filename)), LOD_ALLOW_DUPLICATES);
 
     SaveGameHeader header;
     deserialize(*pSave_LOD, &header, tags::via<SaveGame_MM7>);
@@ -239,24 +236,21 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path,
 
     auto [header, blob] = CreateSaveData(resetWorld, title);
 
-    std::string tmpPath = fmt::format("{}.tmp", path);
-    FileOutputStream(tmpPath).write(blob);
-    std::filesystem::rename(tmpPath, path);
+    ufs->write(path, blob);
 
-    pSave_LOD->close();
     pSave_LOD->open(std::move(blob), LOD_ALLOW_DUPLICATES);
 
     return std::move(header);
 }
 
 void AutoSave() {
-    SaveGame(true, false, makeDataPath("saves", "autosave.mm7"));
+    SaveGame(true, false, "saves/autosave.mm7");
 }
 
 void DoSavegame(int uSlot) {
     assert(engine->_currentLoadedMapId != MAP_ARENA); // Not Arena.
 
-    pSavegameList->pSavegameHeader[uSlot] = SaveGame(false, false, makeDataPath("saves", fmt::format("save{:03}.mm7", uSlot)),
+    pSavegameList->pSavegameHeader[uSlot] = SaveGame(false, false, fmt::format("saves/save{:03}.mm7", uSlot),
                                                      pSavegameList->pSavegameHeader[uSlot].name);
 
     pSavegameList->selectedSlot = uSlot;
@@ -279,19 +273,15 @@ void DoSavegame(int uSlot) {
 void SavegameList::Initialize() {
     pSavegameList->Reset();
 
-    std::string saves_dir = makeDataPath("saves");
-
-    if (std::filesystem::exists(saves_dir)) {
-        for (const auto &entry : std::filesystem::directory_iterator(saves_dir)) {
-            if (entry.path().extension() == ".mm7") {
-                pSavegameList->pFileList[pSavegameList->numSavegameFiles++] = entry.path().filename().string();
+    if (ufs->exists("saves")) {
+        for (const auto &entry : ufs->ls("saves")) {
+            if (entry.name.ends_with(".mm7")) {
+                pSavegameList->pFileList[pSavegameList->numSavegameFiles++] = entry.name;
                 if (pSavegameList->numSavegameFiles == MAX_SAVE_SLOTS) {
                     break;
                 }
             }
         }
-    } else {
-        logger->warning("Couldn't find saves directory!");
     }
 
     if (pSavegameList->numSavegameFiles) {
@@ -333,7 +323,7 @@ void SaveNewGame() {
     pParty->_viewPitch = 0;
     pParty->_viewYaw = 512;
 
-    SaveGame(true, true, makeDataPath("saves", "autosave.mm7"));
+    SaveGame(true, true, "saves/autosave.mm7");
 }
 
 void QuickSaveGame() {
@@ -371,7 +361,7 @@ void QuickSaveGame() {
     }
 
     pSavegameList->pSavegameHeader[uSlot].name = "Quicksave";
-    pSavegameList->pSavegameHeader[uSlot] = SaveGame(false, false, makeDataPath("saves", quickSaveName),
+    pSavegameList->pSavegameHeader[uSlot] = SaveGame(false, false, fmt::format("saves/{}", quickSaveName),
                                                      pSavegameList->pSavegameHeader[uSlot].name);
     engine->_statusBar->setEvent(LSTR_GAME_SAVED);
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);

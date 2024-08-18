@@ -21,6 +21,7 @@
 #include "Utility/Math/TrigLut.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Split.h"
+#include "Utility/String/Transformations.h"
 #include "Utility/MapAccess.h"
 
 SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();

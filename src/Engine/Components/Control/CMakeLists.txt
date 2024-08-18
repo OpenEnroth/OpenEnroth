@@ -18,5 +18,6 @@ target_link_libraries(engine_components_control PUBLIC
         engine
         gui
         arcomage
+        library_filesystem_memory
         library_platform_interface
         library_platform_application)

@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(UTILITY_SOURCES
-        DataPath.cpp
         Exception.cpp
         FileSystem.cpp
         Math/TrigLut.cpp
@@ -19,7 +18,6 @@ set(UTILITY_SOURCES
         UnicodeCrt.cpp)
 
 set(UTILITY_HEADERS
-        DataPath.h
         Embedded.h
         Exception.h
         FileSystem.h
