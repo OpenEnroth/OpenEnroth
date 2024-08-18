@@ -4,6 +4,9 @@
 
 #include "Library/FileSystem/Mounting/MountingFileSystem.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
+#include "Library/FileSystem/Merging/MergingFileSystem.h"
+#include "Library/FileSystem/Null/NullFileSystem.h"
+#include "Library/FileSystem/Dump/FileSystemDump.h"
 
 UNIT_TEST(MountingFileSystem, StatExists) {
     MemoryFileSystem mfs("");
@@ -36,8 +39,52 @@ UNIT_TEST(MountingFileSystem, Override) {
     EXPECT_EQ(fs.stat("a"), FileStat(FILE_DIRECTORY, 0));
     EXPECT_EQ(fs.stat("a/a"), FileStat(FILE_REGULAR, 0));
 
-    EXPECT_EQ(fs.ls(""), (std::vector<DirectoryEntry>{{"a", FILE_DIRECTORY}}));
-    EXPECT_EQ(fs.ls("a"), (std::vector<DirectoryEntry>{{"a", FILE_REGULAR}}));
+    EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>({{"a", FILE_DIRECTORY}}));
+    EXPECT_EQ(fs.ls("a"), std::vector<DirectoryEntry>({{"a", FILE_REGULAR}}));
+}
+
+UNIT_TEST(MountingFileSystem, SchrodingerOverride) {
+    MemoryFileSystem mfs1("");
+    MemoryFileSystem mfs2("");
+    MergingFileSystem sfs({&mfs1, &mfs2});
+
+    MountingFileSystem fs("");
+    fs.mount("", &sfs);
+
+    mfs1.write("a/a.bin", Blob());
+    mfs2.write("a", Blob());
+    EXPECT_EQ(dumpFileSystem(&fs), std::vector<FileSystemDumpEntry>({
+        {"", FILE_DIRECTORY},
+        {"a", FILE_REGULAR},
+        {"a", FILE_DIRECTORY},
+        {"a/a.bin", FILE_REGULAR}
+    }));
+
+    NullFileSystem nfs;
+    fs.mount("a", &nfs);
+    EXPECT_EQ(dumpFileSystem(&fs), std::vector<FileSystemDumpEntry>({
+        {"", FILE_DIRECTORY},
+        {"a", FILE_DIRECTORY}
+    }));
+}
+
+UNIT_TEST(MountingFileSystem, SimpleMerge) {
+    MemoryFileSystem mfs1("");
+    MemoryFileSystem mfs2("");
+
+    MountingFileSystem fs("");
+    fs.mount("", &mfs1);
+    fs.mount("a", &mfs2);
+
+    mfs1.write("b", Blob::fromString("b"));
+    mfs2.write("a", Blob::fromString("a"));
+
+    EXPECT_EQ(dumpFileSystem(&fs, FILE_SYSTEM_DUMP_WITH_CONTENTS), std::vector<FileSystemDumpEntry>({
+        {"", FILE_DIRECTORY},
+        {"a", FILE_DIRECTORY},
+        {"a/a", FILE_REGULAR, "a"},
+        {"b", FILE_REGULAR, "b"}
+    }));
 }
 
 UNIT_TEST(MountingFileSystem, WriteIntoVfs) {
@@ -92,7 +139,7 @@ UNIT_TEST(MountingFileSystem, RenameSameFs) {
 
     EXPECT_EQ(mfs.read("b").string_view(), "123");
     EXPECT_EQ(fs.read("a/b").string_view(), "123");
-    EXPECT_EQ(fs.ls("a"), (std::vector<DirectoryEntry>{{"b", FILE_REGULAR}}));
+    EXPECT_EQ(fs.ls("a"), std::vector<DirectoryEntry>({{"b", FILE_REGULAR}}));
 }
 
 UNIT_TEST(MountingFileSystem, RenameDifferentFs) {
@@ -120,3 +167,4 @@ UNIT_TEST(MountingFileSystem, Binary) {
     EXPECT_TRUE(fs.exists("1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1/1"));
     EXPECT_TRUE(fs.exists("0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0/0"));
 }
+

@@ -88,6 +88,13 @@ UNIT_TEST(FileSystemPath, Tail) {
     EXPECT_EQ(tail7.string(), "");
 }
 
+UNIT_TEST(FileSystemPath, TailAfterRoot) {
+    FileSystemPath path("a/b/c");
+
+    EXPECT_EQ(path.tailAfter(""), path);
+    // Note: can't call tailAt("") b/c "" is not a valid chunk.
+}
+
 UNIT_TEST(FileSystemPath, Appended) {
     EXPECT_EQ(FileSystemPath("").appended("").string(), "");
     EXPECT_EQ(FileSystemPath("").appended("a").string(), "a");

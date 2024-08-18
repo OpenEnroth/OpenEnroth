@@ -54,9 +54,8 @@ std::vector<DirectoryEntry> MergingFileSystem::_ls(const FileSystemPath &path) c
         throw FileSystemException(FileSystemException::LS_FAILED_PATH_DOESNT_EXIST, path);
     }
 
-    std::ranges::sort(result, [] (const DirectoryEntry &l, const DirectoryEntry &r) {
-        return std::tie(l.name, l.type) < std::tie(r.name, r.type);
-    });
+    // Note that we don't need std::stable_sort here b/c no fs-specific data is exposed by the entries.
+    std::ranges::sort(result);
     auto [tailStart, tailEnd] = std::ranges::unique(result);
     result.erase(tailStart, tailEnd);
 

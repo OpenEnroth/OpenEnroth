@@ -5,6 +5,7 @@
 #include <string_view>
 #include <memory>
 #include <utility>
+#include <compare>
 
 #include "Utility/Memory/Blob.h"
 #include "Utility/Streams/InputStream.h"
@@ -35,7 +36,8 @@ struct DirectoryEntry {
     std::string name;
     FileType type = FILE_INVALID; // When returned from FileSystem::ls, this one is never invalid.
 
-    friend bool operator==(const DirectoryEntry &l, const DirectoryEntry &r) = default;
+    // Make entries sortable. If two entries have the same name, then files go before directories.
+    friend std::strong_ordering operator<=>(const DirectoryEntry &l, const DirectoryEntry &r) = default;
 };
 
 /**

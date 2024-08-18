@@ -37,9 +37,7 @@ class FileSystemDumper {
             return;
 
         std::vector<DirectoryEntry> entries = _fs->ls(path);
-        std::ranges::sort(entries, [] (const DirectoryEntry &l, const DirectoryEntry &r) {
-            return std::tie(l.name, l.type) < std::tie(r.name, r.type); // If we have entries with the same name, files go first.
-        });
+        std::ranges::sort(entries);
 
         for (const DirectoryEntry &entry : entries) {
             FileSystemPath entryPath = path.appended(entry.name);
@@ -68,24 +66,22 @@ class FileSystemDumper {
     }
 
     void writeOutFile(const FileSystemPath &path) {
-        std::int64_t size = 0;
         Blob content;
-        if (_flags & FILE_SYSTEM_DUMP_WITH_CONTENTS) {
+        if (_flags & FILE_SYSTEM_DUMP_WITH_CONTENTS)
             content = _fs->read(path);
-            size = content.size();
-        } else {
-            size = _fs->stat(path).size;
-        }
 
         if (_target) {
-            _target->push_back(FileSystemDumpEntry(path.string(), FILE_REGULAR, size, std::move(content)));
+            _target->push_back(FileSystemDumpEntry(path.string(), FILE_REGULAR, std::move(content)));
         } else {
             if (_flags & FILE_SYSTEM_DUMP_WITH_CONTENTS) {
-                fmt::println(_stream, "{}: \"{}\" ", path.string(), size, ascii::toPrintable(content.string_view(), '_'));
+                fmt::println(_stream, "{}: \"{}\" ", path.string(), ascii::toPrintable(content.string_view(), '_'));
             } else {
-                fmt::println(_stream, "{}: {} bytes", path.string(), size);
+                fmt::println(_stream, "{}", path.string());
             }
         }
+
+        _entries++;
+        assert(_entries <= _maxEntries);
     }
 
  private:

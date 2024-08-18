@@ -18,7 +18,7 @@ if(OE_BUILD_TESTS)
     set(TEST_LIBRARY_FILESYSTEM_MEMORY_SOURCES Tests/MemoryFileSystem_ut.cpp)
 
     add_library(test_library_filesystem_memory OBJECT ${TEST_LIBRARY_FILESYSTEM_MEMORY_SOURCES})
-    target_link_libraries(test_library_filesystem_memory PUBLIC testing_unit library_filesystem_memory)
+    target_link_libraries(test_library_filesystem_memory PUBLIC testing_unit library_filesystem_memory library_filesystem_dump)
 
     target_check_style(test_library_filesystem_memory)
 

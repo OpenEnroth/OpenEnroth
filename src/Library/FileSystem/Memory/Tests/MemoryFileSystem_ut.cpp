@@ -6,11 +6,7 @@
 #include "Testing/Unit/UnitTest.h"
 
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
-
-static std::vector<DirectoryEntry> sorted(std::vector<DirectoryEntry> data) {
-    std::ranges::sort(data, std::ranges::less(), &DirectoryEntry::name);
-    return std::move(data);
-}
+#include "Library/FileSystem/Dump/FileSystemDump.h"
 
 UNIT_TEST(MemoryFileSystem, EmptyRoot) {
     // Make sure accessing root works as expected.
@@ -37,14 +33,13 @@ UNIT_TEST(MemoryFileSystem, Ls) {
     fs.write("a/b", Blob());
     fs.write("a/c/d", Blob());
 
-    std::vector<DirectoryEntry> ls0 = sorted(fs.ls(""));
-    EXPECT_EQ(ls0, std::vector<DirectoryEntry>({{"a", FILE_DIRECTORY}}));
-
-    std::vector<DirectoryEntry> ls1 = sorted(fs.ls("a"));
-    EXPECT_EQ(ls1, std::vector<DirectoryEntry>({{"b", FILE_REGULAR}, {"c", FILE_DIRECTORY}}));
-
-    std::vector<DirectoryEntry> ls2 = sorted(fs.ls("a/c"));
-    EXPECT_EQ(ls2, std::vector<DirectoryEntry>({{"d", FILE_REGULAR}}));
+    EXPECT_EQ(dumpFileSystem(&fs), std::vector<FileSystemDumpEntry>({
+        {"", FILE_DIRECTORY},
+        {"a", FILE_DIRECTORY},
+        {"a/b", FILE_REGULAR},
+        {"a/c", FILE_DIRECTORY},
+        {"a/c/d", FILE_REGULAR}
+    }));
 
     EXPECT_ANY_THROW((void) fs.ls("a/b"));
     EXPECT_ANY_THROW((void) fs.ls("a/c/d"));
@@ -171,8 +166,11 @@ UNIT_TEST(MemoryFileSystem, Rename) {
     output->write("1234");
     output->close();
 
-    EXPECT_EQ(fs.read("x/y/d").string_view(), "1234");
-    EXPECT_EQ(fs.read("x/y/c").string_view(), "123");
-    EXPECT_EQ(fs.ls("x"), std::vector<DirectoryEntry>({{"y", FILE_DIRECTORY}}));
-    EXPECT_EQ(sorted(fs.ls("x/y")), std::vector<DirectoryEntry>({{"c", FILE_REGULAR}, {"d", FILE_REGULAR}}));
+    EXPECT_EQ(dumpFileSystem(&fs, FILE_SYSTEM_DUMP_WITH_CONTENTS), std::vector<FileSystemDumpEntry>({
+        {"", FILE_DIRECTORY},
+        {"x", FILE_DIRECTORY},
+        {"x/y", FILE_DIRECTORY},
+        {"x/y/c", FILE_REGULAR, "123"},
+        {"x/y/d", FILE_REGULAR, "1234"}
+    }));
 }

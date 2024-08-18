@@ -67,16 +67,27 @@ std::vector<DirectoryEntry> MountingFileSystem::_ls(const FileSystemPath &path) 
 
     // Need to merge in this case.
     std::vector<DirectoryEntry> result = mount->ls(tail);
-    std::ranges::sort(result, std::ranges::less(), &DirectoryEntry::name);
+    std::ranges::sort(result);
     std::span<DirectoryEntry> searchable = result;
+    bool cleanupNeeded = false;
     for (const auto &[name, _] : node->children()) {
-        auto pos = std::ranges::equal_range(searchable, name, std::ranges::less(), &DirectoryEntry::name);
-        if (pos.empty()) {
+        auto range = std::ranges::equal_range(searchable, name, std::ranges::less(), &DirectoryEntry::name);
+
+        size_t size = range.size();
+
+        if (size == 0) {
             result.push_back(DirectoryEntry(name, FILE_DIRECTORY));
+        } else if (size == 1) {
+            range[0].type = FILE_DIRECTORY;
         } else {
-            pos[0].type = FILE_DIRECTORY;
+            assert(size == 2); // Schrodingermaxxed fs, still should not have more than two identical entries.
+            range[0].type = FILE_DIRECTORY;
+            range[1].type = FILE_INVALID;
+            cleanupNeeded = true;
         }
     }
+    if (cleanupNeeded)
+        std::erase_if(result, [] (const DirectoryEntry &entry) { return entry.type == FILE_INVALID; });
     return result;
 }
 

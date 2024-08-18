@@ -80,7 +80,11 @@ class FileSystemPath {
     }
 
     [[nodiscard]] FileSystemPath tailAfter(std::string_view chunk) const {
+        if (chunk.empty())
+            return *this;
+
         assert(chunk.data() >= _path.data() && chunk.data() + chunk.size() <= _path.data() + _path.size());
+
         if (chunk.data() + chunk.size() == _path.data() + _path.size()) {
             return {};
         } else {

@@ -22,29 +22,25 @@ MM_DECLARE_FLAGS(FileSystemDumpFlags, FileSystemDumpFlag)
 struct FileSystemDumpEntry {
     std::string path;
     FileType type;
-    std::int64_t size = 0;
     Blob content; // If it's a regular file.
 
-    FileSystemDumpEntry(const FileSystemDumpEntry &other): path(other.path), type(other.type), size(other.size), content(Blob::share(other.content)) {}
+    FileSystemDumpEntry(const FileSystemDumpEntry &other): path(other.path), type(other.type), content(Blob::share(other.content)) {}
 
-    FileSystemDumpEntry(std::string path, FileType type, std::int64_t size = 0, Blob content = {}): path(std::move(path)), type(type), size(size), content(std::move(content)) {
+    FileSystemDumpEntry(std::string path, FileType type, Blob content = {}): path(std::move(path)), type(type), content(std::move(content)) {
         assert(type == FILE_REGULAR || type == FILE_DIRECTORY);
-        assert(content.empty() || content.size() == size);
-        assert(size == 0 || type == FILE_REGULAR);
+        assert(content.empty() || type == FILE_REGULAR);
     }
 
     FileSystemDumpEntry(std::string path, FileType type, std::string content) : path(std::move(path)), type(type) {
         assert(type == FILE_REGULAR || type == FILE_DIRECTORY);
         assert(content.empty() || type == FILE_REGULAR);
 
-        if (!content.empty()) {
-            size = content.size();
+        if (!content.empty())
             this->content = Blob::fromString(std::move(content));
-        }
     }
 
     friend bool operator==(const FileSystemDumpEntry &l, const FileSystemDumpEntry &r) {
-        return l.path == r.path && l.type == r.type && l.size == r.size && l.content.string_view() == r.content.string_view();
+        return l.path == r.path && l.type == r.type && l.content.string_view() == r.content.string_view();
     }
 };
 
