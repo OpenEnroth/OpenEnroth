@@ -54,3 +54,6 @@
 [submodule "thirdparty/cmrc"]
 	path = thirdparty/cmrc
 	url = https://github.com/vector-of-bool/cmrc.git
+[submodule "thirdparty/gtest_parallel"]
+	path = thirdparty/gtest_parallel
+	url = https://github.com/google/gtest-parallel.git
