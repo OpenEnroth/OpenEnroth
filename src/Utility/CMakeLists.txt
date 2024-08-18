@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(UTILITY_SOURCES
         Exception.cpp
-        FileSystem.cpp
         Math/TrigLut.cpp
         Memory/Blob.cpp
         Streams/BlobInputStream.cpp
@@ -20,7 +19,6 @@ set(UTILITY_SOURCES
 set(UTILITY_HEADERS
         Embedded.h
         Exception.h
-        FileSystem.h
         Flags.h
         String/Format.h
         Types.h
