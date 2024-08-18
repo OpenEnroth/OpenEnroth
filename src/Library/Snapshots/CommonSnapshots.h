@@ -101,7 +101,7 @@ void reconstruct(const Src &src, Dst *dst, const Tags &... tags) {
 // std::deque to std::vector support for pActors.
 //
 
-template<class T1, class T2, class... Tags> requires (!std::is_same_v<T1, T2>)
+template<class T1, class T2, class... Tags>
 void snapshot(const std::deque<T1> &src, std::vector<T2> *dst, const Tags &... tags) {
     dst->resize(src.size());
 
@@ -109,7 +109,7 @@ void snapshot(const std::deque<T1> &src, std::vector<T2> *dst, const Tags &... t
         snapshot(src[i], &(*dst)[i], tags...);
 }
 
-template<class T1, class T2, class... Tags> requires (!std::is_same_v<T1, T2>)
+template<class T1, class T2, class... Tags>
 void reconstruct(const std::vector<T1> &src, std::deque<T2> *dst, const Tags &... tags) {
     dst->resize(src.size());
 

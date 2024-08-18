@@ -11,7 +11,7 @@ ActorTapeRecorder::ActorTapeRecorder(TestController *controller) : _controller(c
     assert(controller);
 }
 
-std::deque<Actor> & ActorTapeRecorder::actors() {
+std::deque<Actor> &ActorTapeRecorder::actors() {
     return pActors;
 }
 

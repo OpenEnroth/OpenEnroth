@@ -51,7 +51,7 @@ class ActorTapeRecorder {
     TestTape<bool> hasBuff(int actorIndex, ActorBuff buff);
 
  private:
-    static std::deque<Actor> & actors();
+    static std::deque<Actor> &actors();
 
  private:
     TestController *_controller = nullptr;
