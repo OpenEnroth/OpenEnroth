@@ -81,8 +81,7 @@ if(OE_BUILD_TESTS)
             Testing/TestExistingFile.h
             Testing/TestExistingFile.cpp
             Testing/TestNonExistingFile.h
-            Testing/TestNonExistingFile.cpp
-            Testing/TestMacros.h)
+            Testing/TestNonExistingFile.cpp)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_link_libraries(test_utility PUBLIC testing_unit utility)

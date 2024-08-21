@@ -7,7 +7,6 @@
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Testing/TestExistingFile.h"
-#include "Utility/Testing/TestMacros.h"
 #include "Utility/Testing/TestNonExistingFile.h"
 
 UNIT_TEST(Blob, FromFile) {

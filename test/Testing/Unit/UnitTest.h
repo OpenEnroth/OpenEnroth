@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
+#include "Testing/Extensions/ThrowingAssertions.h"
+#include "Testing/Extensions/ExpectExtensions.h"
+
 #define UNIT_TEST(SuiteName, TestName) \
     TEST(SuiteName, TestName)
 

@@ -5,7 +5,8 @@ if(OE_BUILD_TESTS)
             ThrowingAssertions.cpp)
 
     set(TESTING_EXTENSIONS_HEADERS
-            ThrowingAssertions.h)
+            ThrowingAssertions.h
+            ExpectExtensions.h)
 
     add_library(testing_extensions ${TESTING_EXTENSIONS_SOURCES} ${TESTING_EXTENSIONS_HEADERS})
     target_link_libraries(testing_extensions PUBLIC GTest::gtest)

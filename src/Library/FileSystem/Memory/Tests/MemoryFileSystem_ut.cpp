@@ -8,8 +8,6 @@
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 #include "Library/FileSystem/Dump/FileSystemDump.h"
 
-#include "Utility/Testing/TestMacros.h"
-
 UNIT_TEST(MemoryFileSystem, EmptyRoot) {
     // Make sure accessing root works as expected.
     MemoryFileSystem fs("");
