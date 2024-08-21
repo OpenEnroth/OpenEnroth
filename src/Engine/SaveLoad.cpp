@@ -275,7 +275,7 @@ void SavegameList::Initialize() {
 
     if (ufs->exists("saves")) {
         for (const auto &entry : ufs->ls("saves")) {
-            if (entry.name.ends_with(".mm7")) {
+            if (entry.type == FILE_REGULAR && entry.name.ends_with(".mm7")) {
                 pSavegameList->pFileList[pSavegameList->numSavegameFiles++] = entry.name;
                 if (pSavegameList->numSavegameFiles == MAX_SAVE_SLOTS) {
                     break;

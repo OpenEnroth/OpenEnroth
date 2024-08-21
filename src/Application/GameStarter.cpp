@@ -255,9 +255,11 @@ void GameStarter::migrateUserData() {
         logger->info("    No save files to migrate.");
     } else {
         for (const DirectoryEntry &entry : dfs->ls("saves")) {
-            std::string path = fmt::format("saves/{}", entry.name);
-            ufs->write(path, dfs->read(path));
-            logger->info("    Copied '{}'.", entry.name);
+            if (entry.type == FILE_REGULAR) {
+                std::string path = fmt::format("saves/{}", entry.name);
+                ufs->write(path, dfs->read(path));
+                logger->info("    Copied '{}'.", entry.name);
+            }
         }
     }
 
