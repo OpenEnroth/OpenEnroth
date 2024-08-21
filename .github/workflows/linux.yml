@@ -73,11 +73,6 @@ jobs:
             OpenEnroth_GameData
           key: data-cache
 
-      - name: Copy shaders
-        if: steps.restore-data-cache.outputs.cache-hit == 'true'
-        run: |
-          cp -r ./resources/shaders ./OpenEnroth_GameData/mm7
-
       - name: Install dependencies
         run: |
           if [ "${{matrix.architecture}}" = "x86" ]; then

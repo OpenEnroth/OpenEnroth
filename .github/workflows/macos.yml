@@ -64,11 +64,6 @@ jobs:
             OpenEnroth_GameData
           key: data-cache
 
-      - name: Copy shaders
-        if: steps.restore-data-cache.outputs.cache-hit == 'true'
-        run: |
-          cp -r ./resources/shaders ./OpenEnroth_GameData/mm7
-
       - name: Run ccache
         uses: hendrikmuhs/ccache-action@v1.2.10
         with:
