@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: TestNonExistingFile Class Reference</title>
+<title>OpenEnroth: ScopedTestFileSlot Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8fff56c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7e89a50</span>
    </div>
   </td>
  </tr>
@@ -72,30 +72,31 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
-<a href="classTestNonExistingFile-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">TestNonExistingFile Class Reference</div></div>
+<a href="classScopedTestFileSlot-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">ScopedTestFileSlot Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;TestNonExistingFile.h&gt;</code></p>
+<p><code>#include &lt;ScopedTestFileSlot.h&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:afb6606502d8458cbb5c84f338998343f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestNonExistingFile.html#afb6606502d8458cbb5c84f338998343f">TestNonExistingFile</a> (std::string_view path)</td></tr>
-<tr class="separator:afb6606502d8458cbb5c84f338998343f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7231b1972561f82975e51c1a37bb59a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestNonExistingFile.html#ab7231b1972561f82975e51c1a37bb59a">~TestNonExistingFile</a> ()</td></tr>
-<tr class="separator:ab7231b1972561f82975e51c1a37bb59a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaab1c9b73c16c9fca34593a11e6a743d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classScopedTestFileSlot.html#aaab1c9b73c16c9fca34593a11e6a743d">ScopedTestFileSlot</a> (std::string_view path)</td></tr>
+<tr class="separator:aaab1c9b73c16c9fca34593a11e6a743d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ec38b35654ab6dfbebc545969685ada"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classScopedTestFileSlot.html#a8ec38b35654ab6dfbebc545969685ada">~ScopedTestFileSlot</a> ()</td></tr>
+<tr class="separator:a8ec38b35654ab6dfbebc545969685ada"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a7f2815d32907f2a66eebc699c5019bf5"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classTestNonExistingFile.html#a7f2815d32907f2a66eebc699c5019bf5">_path</a></td></tr>
-<tr class="separator:a7f2815d32907f2a66eebc699c5019bf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a5642dd1ad82e110498e6cf1b0d2bc4"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classScopedTestFileSlot.html#a7a5642dd1ad82e110498e6cf1b0d2bc4">_path</a></td></tr>
+<tr class="separator:a7a5642dd1ad82e110498e6cf1b0d2bc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p >Helper class to remove a file in ctor and when leaving the current scope. </p>
+<div class="textblock"><p >Helper class to remove a file in ctor and when leaving the current scope.</p>
+<p >Essentially a counterpart to <code><a class="el" href="classScopedTestFile.html">ScopedTestFile</a></code>. While the latter creates a file, this class makes sure a 'slot' exist where the user can create a file. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="afb6606502d8458cbb5c84f338998343f" name="afb6606502d8458cbb5c84f338998343f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afb6606502d8458cbb5c84f338998343f">&#9670;&#160;</a></span>TestNonExistingFile()</h2>
+<a id="aaab1c9b73c16c9fca34593a11e6a743d" name="aaab1c9b73c16c9fca34593a11e6a743d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaab1c9b73c16c9fca34593a11e6a743d">&#9670;&#160;</a></span>ScopedTestFileSlot()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -104,7 +105,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">TestNonExistingFile::TestNonExistingFile </td>
+          <td class="memname">ScopedTestFileSlot::ScopedTestFileSlot </td>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
           <td class="paramname"><em>path</em></td><td>)</td>
@@ -120,14 +121,14 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ab7231b1972561f82975e51c1a37bb59a" name="ab7231b1972561f82975e51c1a37bb59a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab7231b1972561f82975e51c1a37bb59a">&#9670;&#160;</a></span>~TestNonExistingFile()</h2>
+<a id="a8ec38b35654ab6dfbebc545969685ada" name="a8ec38b35654ab6dfbebc545969685ada"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ec38b35654ab6dfbebc545969685ada">&#9670;&#160;</a></span>~ScopedTestFileSlot()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">TestNonExistingFile::~TestNonExistingFile </td>
+          <td class="memname">ScopedTestFileSlot::~ScopedTestFileSlot </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -138,8 +139,8 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a7f2815d32907f2a66eebc699c5019bf5" name="a7f2815d32907f2a66eebc699c5019bf5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7f2815d32907f2a66eebc699c5019bf5">&#9670;&#160;</a></span>_path</h2>
+<a id="a7a5642dd1ad82e110498e6cf1b0d2bc4" name="a7a5642dd1ad82e110498e6cf1b0d2bc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a5642dd1ad82e110498e6cf1b0d2bc4">&#9670;&#160;</a></span>_path</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -148,7 +149,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string TestNonExistingFile::_path</td>
+          <td class="memname">std::string ScopedTestFileSlot::_path</td>
         </tr>
       </table>
   </td>
@@ -161,8 +162,8 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
-<li>src/Utility/Testing/<a class="el" href="TestNonExistingFile_8h.html">TestNonExistingFile.h</a></li>
-<li>src/Utility/Testing/<a class="el" href="TestNonExistingFile_8cpp.html">TestNonExistingFile.cpp</a></li>
+<li>test/Testing/Extensions/<a class="el" href="ScopedTestFileSlot_8h.html">ScopedTestFileSlot.h</a></li>
+<li>test/Testing/Extensions/<a class="el" href="ScopedTestFileSlot_8cpp.html">ScopedTestFileSlot.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

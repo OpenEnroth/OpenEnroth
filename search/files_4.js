@@ -56,5 +56,6 @@ var searchData=
   ['exampleoverlay_2ecpp_53',['ExampleOverlay.cpp',['../ExampleOverlay_8cpp.html',1,'']]],
   ['exampleoverlay_2eh_54',['ExampleOverlay.h',['../ExampleOverlay_8h.html',1,'']]],
   ['exception_2ecpp_55',['Exception.cpp',['../Exception_8cpp.html',1,'']]],
-  ['exception_2eh_56',['Exception.h',['../Exception_8h.html',1,'']]]
+  ['exception_2eh_56',['Exception.h',['../Exception_8h.html',1,'']]],
+  ['expectextensions_2eh_57',['ExpectExtensions.h',['../ExpectExtensions_8h.html',1,'']]]
 ];
