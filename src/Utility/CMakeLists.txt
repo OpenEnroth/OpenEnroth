@@ -77,11 +77,7 @@ if(OE_BUILD_TESTS)
             String/Tests/TransparentFunctors_ut.cpp
             String/Tests/Ascii_ut.cpp
             String/Tests/Split_ut.cpp
-            String/Tests/Join_ut.cpp
-            Testing/TestExistingFile.h
-            Testing/TestExistingFile.cpp
-            Testing/TestNonExistingFile.h
-            Testing/TestNonExistingFile.cpp)
+            String/Tests/Join_ut.cpp)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_link_libraries(test_utility PUBLIC testing_unit utility)
