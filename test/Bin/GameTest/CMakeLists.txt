@@ -42,8 +42,8 @@ if(OE_BUILD_TESTS)
             USES_TERMINAL)
 
     add_custom_target(GameTest_Headless_Parallel
-            ${CMAKE_SOURCE_DIR}/thirdparty/gtest_parallel/gtest-parallel --print_test_times ${CMAKE_CURRENT_BINARY_DIR}/OpenEnroth_GameTest
-                -- --test-path ${CMAKE_CURRENT_BINARY_DIR}/test_data/data --headless
+            Python::Interpreter ${CMAKE_SOURCE_DIR}/thirdparty/gtest_parallel/gtest-parallel --print_test_times
+                ${CMAKE_CURRENT_BINARY_DIR}/OpenEnroth_GameTest -- --test-path ${CMAKE_CURRENT_BINARY_DIR}/test_data/data --headless
             DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             USES_TERMINAL)
