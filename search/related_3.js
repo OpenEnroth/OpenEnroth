@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['logger_0',['Logger',['../classLogCategory.html#aff02b76416d2846736b7ecd798921a0a',1,'LogCategory']]]
+  ['filesystemtrie_3c_20t_20_3e_0',['FileSystemTrie&lt; T &gt;',['../classdetail_1_1FileSystemTrieNode.html#a1d28d3b2446e073105930747d7ba27a2',1,'detail::FileSystemTrieNode']]]
 ];

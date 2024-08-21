@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Utility/FileSystem.cpp File Reference</title>
+<title>OpenEnroth: src/Library/FileSystem/Interface/FileSystem.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3efdef0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8fff56c</span>
    </div>
   </td>
  </tr>
@@ -69,89 +69,48 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_9761b53e3d9349800c0cb59b71c8cd3d.html">Utility</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_f741251061e5c7c7ed48ab45c3348f11.html">Library</a></li><li class="navelem"><a class="el" href="dir_9bfbd6268da4c9911f68ab70ef4a4474.html">FileSystem</a></li><li class="navelem"><a class="el" href="dir_1f863a155a7421b675313aa221e29df0.html">Interface</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">FileSystem.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="FileSystem_8h.html">FileSystem.h</a>&quot;</code><br />
+<code>#include &lt;cassert&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
-<code>#include &quot;<a class="el" href="Ascii_8h.html">Utility/String/Ascii.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FileSystemPath_8h.html">FileSystemPath.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FileSystemException_8h.html">FileSystemException.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a30afec064362631abc6aeed92da4eefc"><td class="memItemLeft" align="right" valign="top">std::filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="FileSystem_8cpp.html#a30afec064362631abc6aeed92da4eefc">expandUserPath</a> (std::string_view path, std::string_view home)</td></tr>
-<tr class="separator:a30afec064362631abc6aeed92da4eefc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa40c48ec8b25943a761f2bc49adeda9f"><td class="memItemLeft" align="right" valign="top">std::filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="FileSystem_8cpp.html#aa40c48ec8b25943a761f2bc49adeda9f">makeCaseInsensitivePath</a> (std::filesystem::path path)</td></tr>
-<tr class="separator:aa40c48ec8b25943a761f2bc49adeda9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:ab44bb019a2bad99f668a79d77a7c3dea"><td class="memItemLeft" align="right" valign="top">static constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="FileSystem_8cpp.html#ab44bb019a2bad99f668a79d77a7c3dea">COPY_BUFFER_SIZE</a> = 1024 * 1024</td></tr>
+<tr class="separator:ab44bb019a2bad99f668a79d77a7c3dea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="a30afec064362631abc6aeed92da4eefc" name="a30afec064362631abc6aeed92da4eefc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a30afec064362631abc6aeed92da4eefc">&#9670;&#160;</a></span>expandUserPath()</h2>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="ab44bb019a2bad99f668a79d77a7c3dea" name="ab44bb019a2bad99f668a79d77a7c3dea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab44bb019a2bad99f668a79d77a7c3dea">&#9670;&#160;</a></span>COPY_BUFFER_SIZE</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::filesystem::path expandUserPath </td>
-          <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>path</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>home</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
+          <td class="memname">constexpr size_t COPY_BUFFER_SIZE = 1024 * 1024</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p >This function handles home-relative paths, so this is the preferred method of constructing absolute paths instead of calling <code>std::filesystem::path</code> constructor.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">path</td><td>Path as a string. </td></tr>
-    <tr><td class="paramname">home</td><td>Home path as a string. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Path as <code>std::filesystem::path</code>. </dd></dl>
-
-</div>
-</div>
-<a id="aa40c48ec8b25943a761f2bc49adeda9f" name="aa40c48ec8b25943a761f2bc49adeda9f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa40c48ec8b25943a761f2bc49adeda9f">&#9670;&#160;</a></span>makeCaseInsensitivePath()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::filesystem::path makeCaseInsensitivePath </td>
-          <td>(</td>
-          <td class="paramtype">std::filesystem::path&#160;</td>
-          <td class="paramname"><em>path</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p >This function emulates the behavior of a case-insensitive filesystem. You pass in a path, this function traverses it as if the underlying filesystem was case-insensitive, and returns a case-corrected path that actually exists.</p>
-<p >Case sensitivity is properly handled only for ascii characters.</p>
-<p >Note that this is not about Windows vs Linux. On Windows case sensitivity can be set per directory. On Linux it's possible to mount case-insensitive partitions.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">path</td><td>Requested path. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Case-corrected path if it exists, original path otherwise. </dd></dl>
 
 </div>
 </div>

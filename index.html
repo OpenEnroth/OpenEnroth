@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3efdef0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8fff56c</span>
    </div>
   </td>
  </tr>
@@ -89,8 +89,8 @@ Getting Started on Windows</h1>
 <ol type="1">
 <li>You will need a GoG or any other version of Might and Magic VII. Run the installer and install the game into a custom location like <code>C:\Games</code>. (If you install into Program Files, there will be compatibility issues between the MM7 and OpenEnroth save file locations).</li>
 <li>Download one of the prebuilt <a href="https://github.com/OpenEnroth/OpenEnroth/releases">releases</a> and unzip the files.</li>
-<li>From the <code>dist</code> folder inside the zip file copy the <code>OpenEnroth.exe</code> and the <code>shaders</code> folder to the folder where the game is installed.</li>
-<li>Run <code>OpenEnroth.exe</code>. If you forget to copy the <code>shaders</code> folder, you will see errors in the console.</li>
+<li>From the <code>dist</code> folder inside the zip file copy the <code>OpenEnroth.exe</code> to the folder where the game is installed.</li>
+<li>Run <code>OpenEnroth.exe</code>.</li>
 </ol>
 <h1><a class="anchor" id="autotoc_md18"></a>
 Getting Started on Linux or Mac</h1>
@@ -102,9 +102,6 @@ Getting Started on Linux or Mac</h1>
 </ul>
 </li>
 <li>Build OpenEnroth as described in <a class="el" href="md_HACKING.html">HACKING.md</a>.</li>
-<li><p class="startli">Copy OpenEnroth-specific resources from the <code>resources</code> folder of the repo to the folder where the game assets were extracted to:</p>
-<p class="startli"><code>cp -rv resources/shaders &lt;target-folder&gt;/app</code></p>
-</li>
 <li><p class="startli">Set <code>OPENENROTH_MM7_PATH</code> env variable to point to the location of the game assets. You might also want to add the following line to your bash profile (e.g. <code>~/.profile</code> on Ubuntu or <code>~/.zshrc</code> on Mac):</p>
 <p class="startli"><code>export OPENENROTH_MM7_PATH="&lt;target-folder&gt;/app"</code></p>
 </li>

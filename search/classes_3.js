@@ -8,8 +8,10 @@ var searchData=
   ['decorationdesc_5fmm6_5',['DecorationDesc_MM6',['../structDecorationDesc__MM6.html',1,'']]],
   ['decorationdesc_5fmm7_6',['DecorationDesc_MM7',['../structDecorationDesc__MM7.html',1,'']]],
   ['decorationlist_7',['DecorationList',['../classDecorationList.html',1,'']]],
-  ['distlogsink_8',['DistLogSink',['../classDistLogSink.html',1,'']]],
-  ['dmap_9',['DMap',['../structDMap.html',1,'']]],
-  ['dummy_10',['Dummy',['../structFlags_1_1Dummy.html',1,'Flags']]],
-  ['duration_11',['Duration',['../classDuration.html',1,'']]]
+  ['directoryentry_8',['DirectoryEntry',['../structDirectoryEntry.html',1,'']]],
+  ['directoryfilesystem_9',['DirectoryFileSystem',['../classDirectoryFileSystem.html',1,'']]],
+  ['distlogsink_10',['DistLogSink',['../classDistLogSink.html',1,'']]],
+  ['dmap_11',['DMap',['../structDMap.html',1,'']]],
+  ['dummy_12',['Dummy',['../structFlags_1_1Dummy.html',1,'Flags']]],
+  ['duration_13',['Duration',['../classDuration.html',1,'']]]
 ];

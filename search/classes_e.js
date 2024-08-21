@@ -66,8 +66,9 @@ var searchData=
   ['proxybase_3c_20platformopenglcontext_20_3e_63',['ProxyBase&lt; PlatformOpenGLContext &gt;',['../classProxyBase.html',1,'']]],
   ['proxybase_3c_20platformwindow_20_3e_64',['ProxyBase&lt; PlatformWindow &gt;',['../classProxyBase.html',1,'']]],
   ['proxyeventloop_65',['ProxyEventLoop',['../classProxyEventLoop.html',1,'']]],
-  ['proxygamepad_66',['ProxyGamepad',['../classProxyGamepad.html',1,'']]],
-  ['proxyopenglcontext_67',['ProxyOpenGLContext',['../classProxyOpenGLContext.html',1,'']]],
-  ['proxyplatform_68',['ProxyPlatform',['../classProxyPlatform.html',1,'']]],
-  ['proxywindow_69',['ProxyWindow',['../classProxyWindow.html',1,'']]]
+  ['proxyfilesystem_66',['ProxyFileSystem',['../classProxyFileSystem.html',1,'']]],
+  ['proxygamepad_67',['ProxyGamepad',['../classProxyGamepad.html',1,'']]],
+  ['proxyopenglcontext_68',['ProxyOpenGLContext',['../classProxyOpenGLContext.html',1,'']]],
+  ['proxyplatform_69',['ProxyPlatform',['../classProxyPlatform.html',1,'']]],
+  ['proxywindow_70',['ProxyWindow',['../classProxyWindow.html',1,'']]]
 ];

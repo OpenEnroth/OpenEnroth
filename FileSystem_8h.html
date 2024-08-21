@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Utility/FileSystem.h File Reference</title>
+<title>OpenEnroth: src/Library/FileSystem/Interface/FileSystem.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3efdef0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8fff56c</span>
    </div>
   </td>
  </tr>
@@ -69,91 +69,38 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_9761b53e3d9349800c0cb59b71c8cd3d.html">Utility</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_f741251061e5c7c7ed48ab45c3348f11.html">Library</a></li><li class="navelem"><a class="el" href="dir_9bfbd6268da4c9911f68ab70ef4a4474.html">FileSystem</a></li><li class="navelem"><a class="el" href="dir_1f863a155a7421b675313aa221e29df0.html">Interface</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#nested-classes">Classes</a>  </div>
   <div class="headertitle"><div class="title">FileSystem.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;filesystem&gt;</code><br />
+<div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
+<code>#include &lt;string_view&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+<code>#include &lt;compare&gt;</code><br />
+<code>#include &quot;<a class="el" href="Blob_8h.html">Utility/Memory/Blob.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="InputStream_8h.html">Utility/Streams/InputStream.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="OutputStream_8h.html">Utility/Streams/OutputStream.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FileSystemPath_8h.html">FileSystemPath.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FileSystemEnums_8h.html">FileSystemEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="FileSystemFwd_8h.html">FileSystemFwd.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a30afec064362631abc6aeed92da4eefc"><td class="memItemLeft" align="right" valign="top">std::filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="FileSystem_8h.html#a30afec064362631abc6aeed92da4eefc">expandUserPath</a> (std::string_view path, std::string_view home)</td></tr>
-<tr class="separator:a30afec064362631abc6aeed92da4eefc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa40c48ec8b25943a761f2bc49adeda9f"><td class="memItemLeft" align="right" valign="top">std::filesystem::path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="FileSystem_8h.html#aa40c48ec8b25943a761f2bc49adeda9f">makeCaseInsensitivePath</a> (std::filesystem::path path)</td></tr>
-<tr class="separator:aa40c48ec8b25943a761f2bc49adeda9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structFileStat.html">FileStat</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structDirectoryEntry.html">DirectoryEntry</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystem.html">FileSystem</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="a30afec064362631abc6aeed92da4eefc" name="a30afec064362631abc6aeed92da4eefc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a30afec064362631abc6aeed92da4eefc">&#9670;&#160;</a></span>expandUserPath()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::filesystem::path expandUserPath </td>
-          <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>path</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>home</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p >This function handles home-relative paths, so this is the preferred method of constructing absolute paths instead of calling <code>std::filesystem::path</code> constructor.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">path</td><td>Path as a string. </td></tr>
-    <tr><td class="paramname">home</td><td>Home path as a string. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Path as <code>std::filesystem::path</code>. </dd></dl>
-
-</div>
-</div>
-<a id="aa40c48ec8b25943a761f2bc49adeda9f" name="aa40c48ec8b25943a761f2bc49adeda9f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa40c48ec8b25943a761f2bc49adeda9f">&#9670;&#160;</a></span>makeCaseInsensitivePath()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::filesystem::path makeCaseInsensitivePath </td>
-          <td>(</td>
-          <td class="paramtype">std::filesystem::path&#160;</td>
-          <td class="paramname"><em>path</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p >This function emulates the behavior of a case-insensitive filesystem. You pass in a path, this function traverses it as if the underlying filesystem was case-insensitive, and returns a case-corrected path that actually exists.</p>
-<p >Case sensitivity is properly handled only for ascii characters.</p>
-<p >Note that this is not about Windows vs Linux. On Windows case sensitivity can be set per directory. On Linux it's possible to mount case-insensitive partitions.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">path</td><td>Requested path. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Case-corrected path if it exists, original path otherwise. </dd></dl>
-
-</div>
-</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

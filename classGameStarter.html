@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3efdef0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8fff56c</span>
    </div>
   </td>
  </tr>
@@ -99,6 +99,10 @@ Public Member Functions</h2></td></tr>
 Static Private Member Functions</h2></td></tr>
 <tr class="memitem:ae529cc14bf30f52640c47d403e80274d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#ae529cc14bf30f52640c47d403e80274d">resolvePaths</a> (<a class="el" href="classEnvironment.html">Environment</a> *environment, <a class="el" href="structGameStarterOptions.html">GameStarterOptions</a> *options, <a class="el" href="classLogger.html">Logger</a> *<a class="el" href="Logger_8cpp.html#a0009c186c3629201f6c24eded36605f4">logger</a>)</td></tr>
 <tr class="separator:ae529cc14bf30f52640c47d403e80274d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c7b8ecd9d7c56aaf29ba9e9dfc0a0e4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a3c7b8ecd9d7c56aaf29ba9e9dfc0a0e4">failOnInvalidPath</a> (std::string_view dataPath, <a class="el" href="classPlatform.html">Platform</a> *<a class="el" href="EngineGlobals_8cpp.html#a75b48f1787959a4617f2a599d7c09aab">platform</a>)</td></tr>
+<tr class="separator:a3c7b8ecd9d7c56aaf29ba9e9dfc0a0e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea67d81f9b52ca40daf065c7f4097613"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#aea67d81f9b52ca40daf065c7f4097613">migrateUserData</a> ()</td></tr>
+<tr class="separator:aea67d81f9b52ca40daf065c7f4097613"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -114,6 +118,10 @@ Private Attributes</h2></td></tr>
 <tr class="separator:aae1cf5e6217ed2b642a68c9d60a8e00a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeee9d98b4e95fb2a5c2b9882c26c676b"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classLogger.html">Logger</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#aeee9d98b4e95fb2a5c2b9882c26c676b">_logger</a></td></tr>
 <tr class="separator:aeee9d98b4e95fb2a5c2b9882c26c676b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5a8786273ce56d74678d2edac054def"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classEngineFileSystem.html">EngineFileSystem</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#aa5a8786273ce56d74678d2edac054def">_fs</a></td></tr>
+<tr class="separator:aa5a8786273ce56d74678d2edac054def"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a904bf456565b2b38027cd5fffcd2a288"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classMemoryFileSystem.html">MemoryFileSystem</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a904bf456565b2b38027cd5fffcd2a288">_userRamFs</a></td></tr>
+<tr class="separator:a904bf456565b2b38027cd5fffcd2a288"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0f9c715453fdc136f60ca4f4e6fcd60"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classGameConfig.html">GameConfig</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#af0f9c715453fdc136f60ca4f4e6fcd60">_config</a></td></tr>
 <tr class="separator:af0f9c715453fdc136f60ca4f4e6fcd60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac68a518d94fa40a198407c8c63edefa0"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPlatform.html">Platform</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#ac68a518d94fa40a198407c8c63edefa0">_platform</a></td></tr>
@@ -220,6 +228,67 @@ Private Attributes</h2></td></tr>
   </td>
   <td class="mlabels-right">
 <span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3c7b8ecd9d7c56aaf29ba9e9dfc0a0e4" name="a3c7b8ecd9d7c56aaf29ba9e9dfc0a0e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c7b8ecd9d7c56aaf29ba9e9dfc0a0e4">&#9670;&#160;</a></span>failOnInvalidPath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameStarter::failOnInvalidPath </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>dataPath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classPlatform.html">Platform</a> *&#160;</td>
+          <td class="paramname"><em>platform</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aea67d81f9b52ca40daf065c7f4097613" name="aea67d81f9b52ca40daf065c7f4097613"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea67d81f9b52ca40daf065c7f4097613">&#9670;&#160;</a></span>migrateUserData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameStarter::migrateUserData </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -436,6 +505,28 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="aa5a8786273ce56d74678d2edac054def" name="aa5a8786273ce56d74678d2edac054def"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5a8786273ce56d74678d2edac054def">&#9670;&#160;</a></span>_fs</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classEngineFileSystem.html">EngineFileSystem</a>&gt; GameStarter::_fs</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="afa59264f2fc213f62b0faaf97b6f8252" name="afa59264f2fc213f62b0faaf97b6f8252"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afa59264f2fc213f62b0faaf97b6f8252">&#9670;&#160;</a></span>_game</h2>
 
@@ -601,6 +692,28 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::unique_ptr&lt;<a class="el" href="classScriptingSystem.html">ScriptingSystem</a>&gt; GameStarter::_scriptingSystem</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a904bf456565b2b38027cd5fffcd2a288" name="a904bf456565b2b38027cd5fffcd2a288"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a904bf456565b2b38027cd5fffcd2a288">&#9670;&#160;</a></span>_userRamFs</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classMemoryFileSystem.html">MemoryFileSystem</a>&gt; GameStarter::_userRamFs</td>
         </tr>
       </table>
   </td>
