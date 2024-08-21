@@ -1,7 +1,6 @@
 #include "Game.h"
 
 #include <algorithm>
-#include <filesystem>
 #include <string>
 #include <utility>
 #include <memory>
@@ -21,7 +20,6 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
-#include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Image.h"
@@ -45,7 +43,6 @@
 #include "Engine/MapInfo.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/Books/AutonotesBook.h"
@@ -82,41 +79,13 @@
 #include "Library/Logger/Logger.h"
 #include "Library/Fsm/Fsm.h"
 
-#include "Utility/String/Ascii.h"
 #include "Utility/String/Format.h"
-#include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 
 #include "GameIocContainer.h"
 #include "GameWindowHandler.h"
 #include "GameMenu.h"
 #include "GameStates/GameFsmBuilder.h"
-
-void initDataPath(Platform *platform, std::string_view dataPath) {
-    std::string missing_file;
-
-    if (validateDataPath(dataPath, &missing_file)) {
-        setDataPath(dataPath);
-
-        std::string savesPath = makeDataPath("saves");
-        if (!std::filesystem::exists(savesPath)) {
-            std::filesystem::create_directory(savesPath);
-        }
-    } else {
-        std::string message = fmt::format(
-            "Required file {} not found.\n"
-            "You should acquire licensed copy of M&M VII and copy its resources to \n{}{}\n\n"
-            "Additionally you should also copy the content from\n"
-            "resources directory from our repository there as well.",
-            missing_file,
-            !dataPath.empty() ? dataPath : std::filesystem::current_path().string(),
-            !dataPath.empty() ? "" :      " (current directory)"
-        );
-        logger->critical("{}", message);
-        platform->showMessageBox("CRITICAL ERROR: missing resources", message);
-        throw Exception("Data folder '{}' validation failed", dataPath);
-    }
-}
 
 Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config) {
     _application = application;

@@ -6,6 +6,7 @@
 
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Streams/FileInputStream.h"
+#include "Utility/Testing/TestMacros.h"
 #include "Utility/Testing/TestNonExistingFile.h"
 
 UNIT_TEST(FileInputStream, Skip) {
@@ -36,11 +37,5 @@ UNIT_TEST(FileInputStream, ExceptionMessages) {
     const char *fileName = "afjhrbluxnkskghelxrigjmgdhckeog.txt";
 
     EXPECT_FALSE(std::filesystem::exists(fileName));
-    EXPECT_ANY_THROW(FileInputStream in(fileName));
-
-    try {
-        FileInputStream in(fileName);
-    } catch (const std::exception &e) {
-        EXPECT_TRUE(std::string_view(e.what()).contains(fileName));
-    }
+    EXPECT_THROW_MESSAGE(FileInputStream in(fileName), fileName);
 }

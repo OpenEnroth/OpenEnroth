@@ -18,8 +18,8 @@
 #include "Engine/Party.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 
-#include "Utility/DataPath.h"
 #include "Utility/ScopeGuard.h"
 
 
@@ -48,21 +48,8 @@ GAME_TEST(Issues, Issue159) {
 
 GAME_TEST(Issues, Issue163) {
     // Testing that pressing the Load Game button doesn't crash even if the 'saves' folder doesn't exist.
-    std::string savesDir = makeDataPath("saves");
-    std::string savesDirMoved;
-
-    MM_AT_SCOPE_EXIT({
-        if (!savesDirMoved.empty()) {
-            std::error_code ec;
-            std::filesystem::rename(savesDirMoved, savesDir, ec); // Using std::error_code here, so can't throw.
-        }
-    });
-
-    if (std::filesystem::exists(savesDir)) {
-        savesDirMoved = savesDir + "_moved_for_testing";
-        ASSERT_FALSE(std::filesystem::exists(savesDirMoved)); // Throws on failure.
-        std::filesystem::rename(savesDir, savesDirMoved);
-    }
+    ufs->remove("saves");
+    EXPECT_FALSE(ufs->exists("saves"));
 
     game.pressGuiButton("MainMenu_LoadGame"); // Shouldn't crash.
     game.tick(10);

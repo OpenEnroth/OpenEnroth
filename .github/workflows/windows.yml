@@ -62,12 +62,6 @@ jobs:
           key: data-cache
           enableCrossOsArchive: true
 
-      # If datacache is restored than we will be running gametest and need shaders.
-      - name: Copy shaders
-        if: steps.restore-data-cache.outputs.cache-hit == 'true'
-        run: |
-          xcopy resources OpenEnroth_GameData\mm7 /E/H/C/I
-
       # Setup the MSVC build enviroment
       - name: Setup environment
         uses: ilammy/msvc-dev-cmd@v1
@@ -153,7 +147,6 @@ jobs:
         run: |
           mkdir dist
           copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
-          xcopy resources dist\ /E/H/C/I
 
       - name: Zip folder for release
         if: inputs.releaseTag != ''

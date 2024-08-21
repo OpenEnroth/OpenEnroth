@@ -64,11 +64,6 @@ jobs:
             OpenEnroth_GameData
           key: data-cache
 
-      - name: Copy shaders
-        if: steps.restore-data-cache.outputs.cache-hit == 'true'
-        run: |
-          cp -r ./resources/shaders ./OpenEnroth_GameData/mm7
-
       - name: Run ccache
         uses: hendrikmuhs/ccache-action@v1.2.10
         with:
@@ -119,7 +114,6 @@ jobs:
         run: |
           mkdir dist
           cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
-          cp -r resources/* dist/
           hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
 
       - name: Zip folder for release

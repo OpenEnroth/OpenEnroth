@@ -6,8 +6,10 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Party.h"
+#include "Engine/SaveLoad.h"
 #include "Engine/Objects/SpriteObject.h"
 
 #include "GUI/GUIWindow.h"
@@ -288,6 +290,19 @@ GAME_TEST(Issues, Issue1685) {
 
     EXPECT_EQ(jar1.GetIdentifiedName(), "Kolya's Jar");
     EXPECT_EQ(jar2.GetIdentifiedName(), "Nicholas' Jar");
+}
+
+GAME_TEST(Prs, Pr1694) {
+    // Having a dir ending with .mm7 in /saves shouldn't trip the engine.
+    ufs->write("saves/dir.mm7/1.txt", Blob());
+
+    game.pressGuiButton("MainMenu_LoadGame");
+    game.tick(5);
+    game.pressGuiButton("LoadMenu_Slot0"); // Should not crash.
+    game.tick(1);
+
+    for (bool used : pSavegameList->pSavegameUsedSlots)
+        EXPECT_FALSE(used); // All slots unused.
 }
 
 // 1700

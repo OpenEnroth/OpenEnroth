@@ -6,7 +6,7 @@
 
 CodeGenOptions CodeGenOptions::parse(int argc, char **argv) {
     CodeGenOptions result;
-    result.useConfig = false; // CodeGen doesn't use external config.
+    result.ramFsUserData = true; // CodeGen doesn't need user data.
     result.logLevel = LOG_CRITICAL; // CodeGen doesn't need logging.
 
     std::unique_ptr<CliApp> app = std::make_unique<CliApp>();

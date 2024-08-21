@@ -3,6 +3,7 @@
 #include <string_view>
 #include <string>
 
+// TODO(captaniurist): come up with a saner name. TemporaryFile?
 /**
  * Helper class to create a temporary file at the given path with the given contents & remove it when leaving the
  * current scope.

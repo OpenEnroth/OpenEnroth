@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(UTILITY_SOURCES
-        DataPath.cpp
         Exception.cpp
-        FileSystem.cpp
         Math/TrigLut.cpp
         Memory/Blob.cpp
         Streams/BlobInputStream.cpp
@@ -19,10 +17,8 @@ set(UTILITY_SOURCES
         UnicodeCrt.cpp)
 
 set(UTILITY_HEADERS
-        DataPath.h
         Embedded.h
         Exception.h
-        FileSystem.h
         Flags.h
         String/Format.h
         Types.h
@@ -49,7 +45,8 @@ set(UTILITY_HEADERS
         String/Transformations.h
         Win/Unicode.h
         Unaligned.h
-        UnicodeCrt.h)
+        UnicodeCrt.h
+        SmallVector.h)
 
 if(OE_BUILD_PLATFORM STREQUAL "windows")
     list(APPEND UTILITY_SOURCES Win/Unicode.cpp)
@@ -60,6 +57,7 @@ target_check_style(utility)
 target_link_libraries(utility
         PUBLIC
         fmt::fmt
+        gch::small_vector
         PRIVATE
         mio::mio)
 
@@ -83,7 +81,8 @@ if(OE_BUILD_TESTS)
             Testing/TestExistingFile.h
             Testing/TestExistingFile.cpp
             Testing/TestNonExistingFile.h
-            Testing/TestNonExistingFile.cpp)
+            Testing/TestNonExistingFile.cpp
+            Testing/TestMacros.h)
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_link_libraries(test_utility PUBLIC testing_unit utility)

@@ -10,6 +10,7 @@
 #include <string>
 
 #include "Application/GameStarter.h"
+
 #include "Engine/Components/Random/EngineRandomComponent.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/BuildingTable.h"
@@ -22,6 +23,7 @@
 #include "Engine/Snapshots/TableSerialization.h"
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
+#include "Engine/EngineFileSystem.h"
 
 #include "GUI/UI/Houses/TownHall.h"
 
@@ -30,7 +32,6 @@
 
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Format.h"
-#include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 #include "Utility/UnicodeCrt.h"
 #include "Utility/String/Transformations.h"
@@ -177,7 +178,7 @@ int runBeaconsCodeGen(const CodeGenOptions &options, GameResourceManager *resour
     MapStats mapStats;
     mapStats.Initialize(resourceManager->getEventsFile("MapStats.txt"));
 
-    LodReader gamesLod(makeDataPath("data", "games.lod"));
+    LodReader gamesLod(dfs->read("data/games.lod"));
     std::vector<std::string> fileNames = gamesLod.ls();
 
     for (size_t i = 0; i < fileNames.size(); i++) {
@@ -200,7 +201,7 @@ int runHouseIdCodeGen(const CodeGenOptions &options, GameResourceManager *resour
 
     std::unordered_map<HouseId, std::set<std::string>> mapNamesByHouseId; // Only arbiter exists on two maps.
 
-    LodReader gamesLod(makeDataPath("data", "games.lod"));
+    LodReader gamesLod(dfs->read("data/games.lod"));
     for (const std::string &fileName : gamesLod.ls()) {
         if (!fileName.ends_with(".odm") && !fileName.ends_with(".blv"))
             continue; // Not a level file.

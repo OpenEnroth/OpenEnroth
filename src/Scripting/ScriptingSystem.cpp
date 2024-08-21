@@ -6,16 +6,19 @@
 #include <utility>
 #include <unordered_map>
 
+#include "Engine/EngineFileSystem.h"
+
 #include "Library/Logger/Logger.h"
 #include "Library/Logger/DistLogSink.h"
 #include "Library/Platform/Application/PlatformApplication.h"
-#include "Utility/DataPath.h"
+
+#include "Utility/String/Transformations.h"
 
 #include "IBindings.h"
 #include "InputScriptEventHandler.h"
 #include "ScriptLogSink.h"
 
-LogCategory ScriptingSystem::ScriptingLogCategory("Script");
+LogCategory ScriptingSystem::ScriptingLogCategory("script");
 
 ScriptingSystem::ScriptingSystem(std::string_view scriptFolder, std::string_view entryPointFile, PlatformApplication &platformApplication, DistLogSink &distLogSink)
     : _scriptFolder(scriptFolder), _entryPointFile(entryPointFile), _platformApplication(platformApplication), _distLogSink(distLogSink) {
@@ -25,7 +28,7 @@ ScriptingSystem::ScriptingSystem(std::string_view scriptFolder, std::string_view
     _distLogSink.addLogSink(_scriptingLogSink.get());
 
     _initBaseLibraries();
-    _initPackageTable(scriptFolder);
+    _initPackageTable();
     _initBindingFunction();
 }
 
@@ -36,7 +39,7 @@ ScriptingSystem::~ScriptingSystem() {
 
 void ScriptingSystem::executeEntryPoint() {
     try {
-        _solState->script_file(makeDataPath(_scriptFolder, _entryPointFile));
+        _solState->script(dfs->read(fmt::format("{}/{}", _scriptFolder, _entryPointFile)).string_view());
     } catch (const sol::error &e) {
         logger->warning(ScriptingLogCategory, "An unexpected error has occurred: {}", e.what());
     }
@@ -57,11 +60,7 @@ void ScriptingSystem::_initBaseLibraries() {
     );
 }
 
-void ScriptingSystem::_initPackageTable(std::string_view scriptFolder) {
-    sol::table packageTable = (*_solState)["package"];
-    packageTable["path"] = makeDataPath(scriptFolder, "?.lua");
-    packageTable["cpath"] = ""; //Reset the path for any c loaders
-
+void ScriptingSystem::_initPackageTable() {
     // Usage in Lua:
     // local gameBindings = require "bindings.game" -- If the module starts with 'bindings.' we try to load/create the binding table.
     // gameBindings.doSomething()
@@ -72,6 +71,16 @@ void ScriptingSystem::_initPackageTable(std::string_view scriptFolder) {
             // Note that "\n\t" is needed here so that the error message is properly formatted, see `searchpath`
             // function in lua sources.
             return sol::make_object(*_solState, fmt::format("\n\tno bindings module '{}'", module));
+        }
+    });
+
+    // Other scripts are loaded from our virtual FS.
+    _solState->add_package_loader([this](const std::string &module) {
+        std::string path = fmt::format("{}/{}.lua", _scriptFolder, replaceAll(module, '.', '/'));
+        if (dfs->exists(path)) {
+            return _solState->load(dfs->read(path).string_view(), module).get<sol::object>();
+        } else {
+            return sol::make_object(*_solState, fmt::format("\n\tno file '{}'", dfs->displayPath(path)));
         }
     });
 }

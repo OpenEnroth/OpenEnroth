@@ -34,7 +34,7 @@ class ScriptingSystem {
 
  private:
     void _initBaseLibraries();
-    void _initPackageTable(std::string_view scriptFolder);
+    void _initPackageTable();
     void _initBindingFunction();
 
     std::unique_ptr<sol::state> _solState;

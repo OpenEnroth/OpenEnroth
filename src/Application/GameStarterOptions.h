@@ -6,10 +6,11 @@
 #include "Library/Logger/LogEnums.h"
 
 struct GameStarterOptions {
-    bool useConfig = true; // Load external config & save it on exit?
-    std::string configPath; // Path to config, empty means use default.
-    std::string dataPath; // Path to game data, empty means use default.
+    std::string dataPath; // Path to game data.
+    std::string userPath; // Path to user data.
     std::optional<LogLevel> logLevel; // Override log level.
+    bool ramFsUserData = false; // Use in-memory file system for user data, don't read/write config & saves
+                                // from/to disk. This also means that default config will be used.
     bool headless = false; // Run in headless mode.
     bool tracingRng = false; // Use tracing random engine?
 };

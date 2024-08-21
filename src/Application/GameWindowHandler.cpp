@@ -8,6 +8,7 @@
 #include "Arcomage/Arcomage.h"
 
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
@@ -34,7 +35,6 @@
 #include "Library/Platform/Interface/PlatformGamepad.h"
 
 #include "Utility/Streams/FileOutputStream.h"
-#include "Utility/DataPath.h"
 
 using Io::InputAction;
 
@@ -158,7 +158,7 @@ void GameWindowHandler::OnScreenshot() {
         engine->config->settings.ScreenshotNumber.increment();
         std::string path = fmt::format("screenshot_{:05}.pcx", engine->config->settings.ScreenshotNumber.value());
 
-        FileOutputStream(makeDataPath(path)).write(pcx::encode(render->MakeFullScreenshot()));
+        ufs->write(path, pcx::encode(render->MakeFullScreenshot()));
     }
 }
 

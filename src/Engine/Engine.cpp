@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Engine/Engine.h"
+
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 
@@ -61,6 +62,7 @@
 #include "Engine/AttackList.h"
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
+#include "Engine/EngineFileSystem.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -79,8 +81,7 @@
 #include "Library/Logger/Logger.h"
 #include "Library/BuildInfo/BuildInfo.h"
 
-#include "Utility/String/Ascii.h"
-#include "Utility/DataPath.h"
+#include "Utility/String/Transformations.h"
 
 /*
 
@@ -608,13 +609,13 @@ void MM7_LoadLods() {
     engine->_gameResourceManager->openGameResources();
 
     pIcons_LOD = new LodTextureCache;
-    pIcons_LOD->open(makeDataPath("data", "icons.lod"));
+    pIcons_LOD->open(dfs->read("data/icons.lod"));
 
     pBitmaps_LOD = new LodTextureCache;
-    pBitmaps_LOD->open(makeDataPath("data", "bitmaps.lod"));
+    pBitmaps_LOD->open(dfs->read("data/bitmaps.lod"));
 
     pSprites_LOD = new LodSpriteCache;
-    pSprites_LOD->open(makeDataPath("data", "sprites.lod"));
+    pSprites_LOD->open(dfs->read("data/sprites.lod"));
 
     // TODO(captainurist):
     // on error in `open` we had this:

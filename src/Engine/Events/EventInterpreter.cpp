@@ -22,6 +22,7 @@
 #include "Media/MediaPlayer.h"
 
 #include "Utility/Math/TrigLut.h"
+#include "Utility/String/Transformations.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIMessageQueue.h"

@@ -24,9 +24,10 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
                     "If neither this argument is supplied nor the environment variable is set, "
                     "then on Windows OpenEnroth will also try to read the path from registry. "
                     "If this also fails, then OpenEnroth will look for game data in the current folder.", mm7PathOverrideKey))->check(CLI::ExistingDirectory)->option_text("PATH");
+    // TODO(captainurist): to print default value here we'll need to pass in Environment.
     app->add_option(
-        "--config", result.configPath,
-        "Path to OpenEnroth config file, default is 'openenroth.ini' in data folder.")->option_text("PATH");
+        "--user-path", result.userPath,
+        "Path to OpenEnroth user data folder.")->check(CLI::ExistingDirectory)->option_text("PATH");
     app->add_option(
         "--log-level", result.logLevel,
         "Log level, one of 'trace', 'debug', 'info', 'warning', 'error', 'critical'.")->option_text("LOG_LEVEL");
@@ -66,7 +67,7 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     app->parse(argc, argv, result.helpPrinted);
 
     if (result.subcommand == SUBCOMMAND_RETRACE) {
-        result.useConfig = false; // Don't use external config if retracing.
+        result.ramFsUserData = true; // No config & no user data if retracing.
 
         if (globTraces) {
             std::vector<std::string> patterns = std::move(result.retrace.traces);
@@ -79,7 +80,7 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     }
 
     if (result.subcommand == SUBCOMMAND_PLAY)
-        result.useConfig = false; // Don't use external config if playing a trace.
+        result.ramFsUserData = true; // No config & no user data if playing a trace.
 
     return result;
 }

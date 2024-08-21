@@ -5,6 +5,8 @@
 
 #include "Library/Lod/LodReader.h"
 
+#include "Utility/Testing/TestMacros.h"
+
 const char brokenLod[] =
     "LOD\0"         "Game"          "MMVI"          "\0\0\0\0"      // signature, version
     "\0\0\0\0"      "\0\0\0\0"      "\0\0\0\0"      "\0\0\0\0"
@@ -54,12 +56,7 @@ UNIT_TEST(LodReader, ErrorMessage) {
     std::string_view name = "XXXXXXXXXXX";
     Blob blob = Blob().withDisplayPath(name);
 
-    EXPECT_ANY_THROW(LodReader(Blob::share(blob)));
-    try {
-        LodReader reader(Blob::share(blob));
-    } catch (const std::exception &e) {
-        EXPECT_TRUE(std::string_view(e.what()).contains(name));
-    }
+    EXPECT_THROW_MESSAGE(LodReader(Blob::share(blob)), name);
 }
 
 UNIT_TEST(LodReader, DisplayPath) {

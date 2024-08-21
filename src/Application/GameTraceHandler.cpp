@@ -1,14 +1,11 @@
 #include "GameTraceHandler.h"
 
-#include <filesystem>
-
+#include "Engine/EngineFileSystem.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
-
-#include "Utility/Streams/FileOutputStream.h"
 
 GameTraceHandler::GameTraceHandler() : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}) {}
 
@@ -28,11 +25,11 @@ bool GameTraceHandler::keyPressEvent(const PlatformKeyEvent *event) {
             EngineTraceRecorder *tracer = component<EngineTraceRecorder>();
             if (tracer->isRecording()) {
                 EngineTraceRecording recording = tracer->finishRecording(game);
-                FileOutputStream("trace.json").write(recording.trace);
-                FileOutputStream("trace.mm7").write(recording.save);
-                logger->info("Trace saved to {} and {}",
-                    absolute(std::filesystem::path("trace.json")).generic_string(),
-                    absolute(std::filesystem::path("trace.mm7")).generic_string());
+
+                // TODO(captainurist): do this properly, trace00001.json, etc.
+                ufs->write("trace.json", recording.trace);
+                ufs->write("trace.mm7", recording.save);
+                logger->info("Trace saved to {} and {}", ufs->displayPath("trace.json"), ufs->displayPath("trace.mm7"));
             } else {
                 tracer->startRecording(game);
             }

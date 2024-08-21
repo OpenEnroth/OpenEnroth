@@ -5,6 +5,7 @@
 #include "GameOver.h"
 
 #include "Engine/AssetsManager.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
@@ -21,7 +22,6 @@
 #include "Library/Image/PCX.h"
 
 #include "Utility/Streams/FileOutputStream.h"
-#include "Utility/DataPath.h"
 
 
 //----- (004BF91E) --------------------------------------------------------
@@ -120,7 +120,7 @@ void CreateWinnerCertificate() {
     render->EndTextNew();
 
     RgbaImage pixels = render->MakeFullScreenshot();
-    FileOutputStream(makeDataPath("MM7_Win.Pcx")).write(pcx::encode(pixels));
+    ufs->write("MM7_Win.Pcx", pcx::encode(pixels));
     assets->winnerCert = GraphicsImage::Create(std::move(pixels));
 
     background->Release();

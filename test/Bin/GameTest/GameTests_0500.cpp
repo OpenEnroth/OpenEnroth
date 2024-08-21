@@ -17,8 +17,8 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 
-#include "Utility/DataPath.h"
 #include "Utility/ScopeGuard.h"
 
 static std::initializer_list<CharacterBuff> allPotionBuffs() {
@@ -248,31 +248,39 @@ GAME_TEST(Issues, Issue625) {
 }
 
 GAME_TEST(Issues, Issue624) {
-    // Test that key repeating work
-    test.playTraceFromTestData("issue_624.mm7", "issue_624.json");
+    // Test that key repeating works.
+    game.startNewGame();
+
+    // TODO(captainurist): drop .mm7 and .json for this test from test data.
+
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    game.pressGuiButton("SaveMenu_Slot0");
+    game.tick(1);
+
+    for (int i = 0; i < 5; i++) {
+        game.pressAndReleaseKey(PlatformKey::KEY_A);
+        game.tick(1);
+    }
+
+    EXPECT_EQ(keyboardInputHandler->GetTextInput(), "aaaaa");
+
+    game.pressKey(PlatformKey::KEY_BACKSPACE);
+    game.tick(1);
+    for (int i = 0; i < 4; i++) {
+        game.pressAutoRepeatedKey(PlatformKey::KEY_BACKSPACE);
+        game.tick(1);
+    }
+
     EXPECT_EQ(keyboardInputHandler->GetTextInput(), "");
 }
 
 GAME_TEST(Issues, Issue626) {
     // Last loaded save is not remembered
-    std::string savesDir = makeDataPath("saves");
-    std::string savesDirMoved;
-
-    MM_AT_SCOPE_EXIT({
-        std::error_code ec;
-        std::filesystem::remove_all(savesDir);
-        if (!savesDirMoved.empty()) {
-            std::filesystem::rename(savesDirMoved, savesDir, ec); // Using std::error_code here, so can't throw.
-        }
-    });
-
-    if (std::filesystem::exists(savesDir)) {
-        savesDirMoved = savesDir + "_moved_for_testing";
-        ASSERT_FALSE(std::filesystem::exists(savesDirMoved)); // Throws on failure.
-        std::filesystem::rename(savesDir, savesDirMoved);
-    }
-
-    std::filesystem::create_directory(savesDir);
+    ufs->remove("saves");
+    EXPECT_FALSE(ufs->exists("saves"));
 
     game.startNewGame();
 
@@ -457,24 +465,8 @@ GAME_TEST(Issues, Issue681) {
 
 GAME_TEST(Issues, Issue689) {
     // Testing that clicking on load game scroll is not crashing the game then there's small amount of saves present.
-    std::string savesDir = makeDataPath("saves");
-    std::string savesDirMoved;
-
-    MM_AT_SCOPE_EXIT({
-        std::error_code ec;
-        std::filesystem::remove_all(savesDir);
-        if (!savesDirMoved.empty()) {
-            std::filesystem::rename(savesDirMoved, savesDir, ec); // Using std::error_code here, so can't throw.
-        }
-    });
-
-    if (std::filesystem::exists(savesDir)) {
-        savesDirMoved = savesDir + "_moved_for_testing";
-        ASSERT_FALSE(std::filesystem::exists(savesDirMoved)); // Throws on failure.
-        std::filesystem::rename(savesDir, savesDirMoved);
-    }
-
-    std::filesystem::create_directory(savesDir);
+    ufs->remove("saves");
+    EXPECT_FALSE(ufs->exists("saves"));
 
     game.startNewGame();
 
@@ -510,7 +502,7 @@ GAME_TEST(Issues, Issue689) {
     game.tick(10);
     game.pressGuiButton("MainMenu_LoadGame"); // Should not crash because of last loaded save
     game.tick(10);
-    game.pressGuiButton("LoadMenu_Scroll"); // Sould not crash
+    game.pressGuiButton("LoadMenu_Scroll"); // Should not crash
 }
 
 GAME_TEST(Issues, Issue691) {

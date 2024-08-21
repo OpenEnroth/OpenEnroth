@@ -7,7 +7,7 @@
 
 GameTestOptions GameTestOptions::parse(int argc, char **argv) {
     GameTestOptions result;
-    result.useConfig = false; // Tests don't need an external config.
+    result.ramFsUserData = true; // We want reproducible tests, so shouldn't depend on external user data.
     std::optional<std::string> testPath;
 
     std::unique_ptr<CliApp> app = std::make_unique<CliApp>();

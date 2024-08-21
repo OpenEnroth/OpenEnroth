@@ -24,7 +24,7 @@ class LodSpriteCache {
     LodSpriteCache();
     ~LodSpriteCache();
 
-    bool open(std::string_view pFilename);
+    bool open(Blob blob);
 
     void reserveLoadedSprites();
     void releaseUnreserved();
