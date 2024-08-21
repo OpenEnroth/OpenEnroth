@@ -5,14 +5,13 @@
 
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Streams/FileInputStream.h"
-#include "Utility/Testing/TestNonExistingFile.h"
 
 UNIT_TEST(FileOutputStream, Write) {
     const char *tmpfile = "tmp_test.txt";
     const char *tmpfilecontent = "1234\n";
     size_t tmpfilesize = strlen(tmpfilecontent);
 
-    TestNonExistingFile tmp(tmpfile);
+    ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
     out.write(tmpfilecontent, tmpfilesize);
@@ -33,7 +32,7 @@ UNIT_TEST(FileOutputStream, Write) {
 UNIT_TEST(FileOutputStream, WriteZero) {
     const char *tmpfile = "tmp_test.txt";
 
-    TestNonExistingFile tmp(tmpfile);
+    ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
     EXPECT_NO_THROW(out.write(nullptr, 0));

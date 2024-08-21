@@ -1,6 +1,9 @@
 #include <gtest/gtest.h>
 
 #include "Testing/Extensions/ThrowingAssertions.h"
+#include "Testing/Extensions/ExpectExtensions.h"
+#include "Testing/Extensions/ScopedTestFile.h"
+#include "Testing/Extensions/ScopedTestFileSlot.h"
 
 #include "Engine/Components/Control/EngineController.h"
 

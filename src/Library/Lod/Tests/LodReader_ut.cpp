@@ -5,8 +5,6 @@
 
 #include "Library/Lod/LodReader.h"
 
-#include "Utility/Testing/TestMacros.h"
-
 const char brokenLod[] =
     "LOD\0"         "Game"          "MMVI"          "\0\0\0\0"      // signature, version
     "\0\0\0\0"      "\0\0\0\0"      "\0\0\0\0"      "\0\0\0\0"

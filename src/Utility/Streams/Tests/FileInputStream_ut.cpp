@@ -6,14 +6,12 @@
 
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Streams/FileInputStream.h"
-#include "Utility/Testing/TestMacros.h"
-#include "Utility/Testing/TestNonExistingFile.h"
 
 UNIT_TEST(FileInputStream, Skip) {
     const char *tmpfile = "tmp_test.txt";
     std::string data(3000, 'a');
 
-    TestNonExistingFile tmp(tmpfile);
+    ScopedTestFileSlot tmp(tmpfile);
 
     FileOutputStream out(tmpfile);
     out.write(data.data(), data.size());

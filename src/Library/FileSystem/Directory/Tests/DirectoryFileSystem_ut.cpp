@@ -9,7 +9,6 @@
 #include "Library/FileSystem/Directory/DirectoryFileSystem.h"
 
 #include "Utility/Streams/FileOutputStream.h"
-#include "Utility/Testing/TestExistingFile.h"
 
 class TemporaryDir {
  public:
@@ -32,7 +31,7 @@ class TemporaryDir {
 
 UNIT_TEST(DirectoryFileSystem, LsRoot) {
     // Make sure passing empty paths works as intended.
-    TestExistingFile tmp("1.txt", "");
+    ScopedTestFile tmp("1.txt", "");
 
     DirectoryFileSystem fs1(""); // Current dir.
     std::vector<DirectoryEntry> entries = fs1.ls("");
@@ -48,7 +47,7 @@ UNIT_TEST(DirectoryFileSystem, LsRoot) {
 
 UNIT_TEST(DirectoryFileSystem, LsFile) {
     // Make sure ls() throws when called on a file.
-    TestExistingFile tmp("1.txt", "");
+    ScopedTestFile tmp("1.txt", "");
 
     DirectoryFileSystem fs(""); // Current dir.
     EXPECT_ANY_THROW((void) fs.ls("1.txt"));
@@ -68,7 +67,7 @@ UNIT_TEST(DirectoryFileSystem, ExistsRoot) {
     DirectoryFileSystem fs2("this_dir_doesnt_exist");
     EXPECT_TRUE(fs2.exists(""));
 
-    TestExistingFile tmp("1.txt", "");
+    ScopedTestFile tmp("1.txt", "");
     DirectoryFileSystem fs3("1.txt");
     EXPECT_TRUE(fs3.exists(""));
 }
@@ -81,14 +80,14 @@ UNIT_TEST(DirectoryFileSystem, StatRoot) {
     DirectoryFileSystem fs2("this_dir_doesnt_exist"); // Non-existent dir.
     EXPECT_EQ(fs2.stat("").type, FILE_DIRECTORY);
 
-    TestExistingFile tmp("1.txt", "");
+    ScopedTestFile tmp("1.txt", "");
     DirectoryFileSystem fs3("1.txt"); // Not-a-dir.
     EXPECT_EQ(fs3.stat("").type, FILE_DIRECTORY);
 }
 
 UNIT_TEST(DirectoryFileSystem, ReadRootAsFile) {
     // Root is always assumed to be a dir, we can't read it as a file even if it IS a file.
-    TestExistingFile tmp("1.txt", "");
+    ScopedTestFile tmp("1.txt", "");
 
     DirectoryFileSystem fs("1.txt");
     EXPECT_ANY_THROW((void) fs.read(""));
@@ -101,7 +100,7 @@ UNIT_TEST(DirectoryFileSystem, WriteRootAsFile) {
 }
 
 UNIT_TEST(DirectoryFileSystem, DisplayPathSymmetry) {
-    TestExistingFile tmp("1.txt", "");
+    ScopedTestFile tmp("1.txt", "");
 
     DirectoryFileSystem fs("");
     Blob blob = fs.read("1.txt");

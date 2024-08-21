@@ -3,15 +3,14 @@
 #include <string_view>
 #include <string>
 
-// TODO(captaniurist): come up with a saner name. TemporaryFile?
 /**
  * Helper class to create a temporary file at the given path with the given contents & remove it when leaving the
  * current scope.
  */
-class TestExistingFile {
+class ScopedTestFile {
  public:
-    TestExistingFile(std::string_view path, std::string_view contents);
-    ~TestExistingFile();
+    ScopedTestFile(std::string_view path, std::string_view contents);
+    ~ScopedTestFile();
 
  private:
     std::string _path;

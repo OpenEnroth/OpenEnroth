@@ -3,7 +3,7 @@
 #include <exception>
 #include <string_view>
 
-// TODO(captainurist): just move this folder to /tests/Testing/Extensions?
+#include <gtest/gtest.h> // NOLINT: not a C system header.
 
 #define EXPECT_THROW_MESSAGE(statement, message)                                                                        \
     try {                                                                                                               \
