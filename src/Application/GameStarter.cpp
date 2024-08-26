@@ -60,47 +60,65 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     // Init environment.
     _environment = Environment::createStandardEnvironment();
 
-    // Init logger.
-    _bufferLogSink = std::make_unique<BufferLogSink>();
+    // Init default log sink.
     _rootLogSink = std::make_unique<DistLogSink>();
     _defaultLogSink = LogSink::createDefaultSink();
     _rootLogSink->addLogSink(_defaultLogSink.get());
-    _logger = std::make_unique<Logger>(LOG_TRACE, _bufferLogSink.get());
-    Engine::LogEngineBuildInfo();
 
-    // Init paths.
-    resolvePaths(_environment.get(), &_options, _logger.get());
-
-    // Init filesystem - needs data paths initialized.
-    _fs = std::make_unique<EngineFileSystem>(_options.dataPath, _options.userPath);
-    if (_options.ramFsUserData) {
-        _userRamFs = std::make_unique<MemoryFileSystem>("ramfs");
-        ufs->setBase(_userRamFs.get());
+    // If we know the log level - init logger properly right away.
+    if (_options.logLevel) {
+        _logger = std::make_unique<Logger>(*_options.logLevel, _rootLogSink.get());
+    } else {
+        // Otherwise log into a buffer before we read the log level from config.
+        _bufferLogSink = std::make_unique<BufferLogSink>();
+        _logger = std::make_unique<Logger>(LOG_TRACE, _bufferLogSink.get());
     }
 
-    // TODO(captainurist): --portable, .portable
-    // Migrate saves & config if needed.
-    if (!_options.ramFsUserData && _options.dataPath != _options.userPath)
-        migrateUserData();
+    // Log engine info.
+    Engine::LogEngineBuildInfo();
 
-    // Init config - needs data paths initialized.
-    _config = std::make_shared<GameConfig>();
-    if (ufs->exists(configName)) {
-        _config->load(ufs->openForReading(configName).get());
-        _logger->info("Configuration file '{}' loaded!", ufs->displayPath(configName));
-    } else {
-        _config->reset();
-        _logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", ufs->displayPath(configName));
+    try {
+        // Init paths.
+        resolvePaths(_environment.get(), &_options, _logger.get());
+
+        // Init filesystem - needs data paths initialized.
+        _fs = std::make_unique<EngineFileSystem>(_options.dataPath, _options.userPath);
+        if (_options.ramFsUserData) {
+            _userRamFs = std::make_unique<MemoryFileSystem>("ramfs");
+            ufs->setBase(_userRamFs.get());
+        }
+
+        // TODO(captainurist): --portable, .portable
+        // Migrate saves & config if needed.
+        if (!_options.ramFsUserData && _options.dataPath != _options.userPath)
+            migrateUserData();
+
+        // Init config - needs data paths initialized.
+        _config = std::make_shared<GameConfig>();
+        if (ufs->exists(configName)) {
+            _config->load(ufs->openForReading(configName).get());
+            _logger->info("Configuration file '{}' loaded!", ufs->displayPath(configName));
+        } else {
+            _config->reset();
+            _logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", ufs->displayPath(configName));
+        }
+    } catch (...) {
+        // Something happened while we were trying to read the config & figure out the log level.
+        // Print out logs at LOG_TRACE in this case & rethrow.
+        if (_bufferLogSink) {
+            _logger->setLevel(LOG_TRACE);
+            _logger->setSink(_rootLogSink.get());
+            _bufferLogSink->flush(_logger.get());
+        }
+        throw;
     }
 
     // Finish logger init now that we know the desired log level.
-    if (_options.logLevel) {
-        _logger->setLevel(*_options.logLevel);
-    } else {
+    if (_bufferLogSink) {
         _logger->setLevel(_config->debug.LogLevel.value());
+        _logger->setSink(_rootLogSink.get());
+        _bufferLogSink->flush(_logger.get());
     }
-    _logger->setSink(_rootLogSink.get());
-    _bufferLogSink->flush(_logger.get());
 
     // Create platform.
     if (_options.headless) {
