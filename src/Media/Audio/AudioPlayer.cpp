@@ -191,7 +191,7 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
     //logger->Info("AudioPlayer: trying to load sound id {}", eSoundID);
 
     // TODO(pskelton): do we need to reinstate this optimisation? dropped to allow better sound tracing
-    if (/*engine->config->settings.SoundLevel.value() < 1 ||*/ (eSoundID == SOUND_Invalid)) {
+    if (/*engine->config->settings.SoundLevel.value() < 1 ||*/ eSoundID == SOUND_Invalid) {
         return;
     }
 
