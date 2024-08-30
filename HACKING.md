@@ -158,7 +158,7 @@ As typing out all the events to send inside the test code can be pretty tedious,
 * Perform the steps that used to reproduce the bug.
 * Press `Ctrl+Shift+R` again to stop trace recording. You will get two files generated in the current folder – `trace.json` and `trace.mm7`.
 * Rename them into something more suiting (e.g. `issue_XXX.json` and `issue_XXX.mm7`) and create a PR to the [OpenEnroth_TestData](https://github.com/OpenEnroth/OpenEnroth_TestData) repo. 
-* Once it's merged update the reference tag in the corresponding [CMakeLists.txt](https://github.com/OpenEnroth/OpenEnroth/blob/master/test/Bin/GameTest/CMakeLists.txt) in the main repo.
+* Once it's merged update the reference tag in the corresponding [CMakeLists.txt](https://github.com/OpenEnroth/OpenEnroth/blob/master/test/Bin/CMakeLists.txt) in the main repo.
 * Create a new test case in one of the game test files in [the game tests folder](https://github.com/OpenEnroth/OpenEnroth/tree/master/test/Bin/GameTest).
 * Use `TestController::playTraceFromTestData` to play back your trace, and add the necessary checks around it.
 
