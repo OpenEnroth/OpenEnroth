@@ -9,6 +9,7 @@
 #include <tuple>
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
+#include "Library/FileSystem/Proxy/ProxyFileSystem.h"
 
 #include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
@@ -97,11 +98,15 @@ void LowercaseFileSystem::_rename(const FileSystemPath &srcPath, const FileSyste
         FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
 
     dstBasePath.append(dstTail);
-    _base->rename(srcBasePath, dstBasePath);
+    try {
+        _base->rename(srcBasePath, dstBasePath);
+    } catch (...) {
+        // We have no idea about the state of the underlying FS now. Don't bother checking, just invalidate the caches.
+        invalidateLs(srcNode->parent());
+        invalidateLs(dstTail.isEmpty() ? dstNode->parent() : dstNode);
+        throw;
+    }
 
-    // If rename() above throws we'll just assume that nothing was renamed. This might not be the case - if we were
-    // renaming a folder between different file systems, then some files might have been renamed. We don't try to be
-    // smart here, it's up to the user to call refresh() in this case.
     cacheInsert(dstNode, dstTail, srcNode->value().type);
     cacheRemove(srcNode);
 }
@@ -116,12 +121,17 @@ bool LowercaseFileSystem::_remove(const FileSystemPath &path) {
     if (node->value().conflicting)
         FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
 
-    // Return value doesn't matter here, from this file system's pov we are deleting an existing entry.
-    _base->remove(basePath);
+    try {
+        // Return value doesn't matter here, from this file system's pov we are deleting an existing entry.
+        _base->remove(basePath);
+    } catch (...) {
+        // Exception should mean that the file/folder wasn't removed. However, if it's a folder then some of the files
+        // might have been removed, so we need to invalidate the caches in this case.
+        if (node->value().type == FILE_DIRECTORY)
+            invalidateLs(node);
+        throw;
+    }
 
-    // If remove() above throws we'll just assume that nothing was removed. This might not be the case - if we were
-    // removing a folder, then some files might have been removed. We don't try to be smart here, it's up to the
-    // user to call refresh() in this case.
     cacheRemove(node);
     return true;
 }
@@ -179,12 +189,30 @@ void LowercaseFileSystem::cacheLs(Node *node, const FileSystemPath &basePath) co
     node->value().listed = true;
 }
 
+void LowercaseFileSystem::invalidateLs(Node *node) const {
+    assert(node->value().type == FILE_DIRECTORY);
+
+    node->value().listed = false;
+    _trie.chop(node);
+}
+
 void LowercaseFileSystem::cacheRemove(Node *node) const {
-    do {
-        Node *parent = node->parent();
+    Node *prev = node;
+    Node *next = node->parent();
+
+    while (next->children().size() == 1 && next != _trie.root()) {
+        prev = next;
+        next = next->parent();
+    }
+
+    if (prev == node) {
         _trie.erase(node);
-        node = parent;
-    } while (node && node->children().empty() && node != _trie.root());
+    } else {
+        // We don't know if the underlying FS keeps empty folders or not, so we just invalidate the caches. We might drop
+        // more than we really should, but the alternative approach here is to call ProxyFileSystem::exists, and we need
+        // to construct a base path for that... just not worth it.
+        invalidateLs(next);
+    }
 }
 
 void LowercaseFileSystem::cacheInsert(Node *node, const FileSystemPath &tail, FileType type) const {

@@ -27,24 +27,43 @@ UNIT_TEST(LowercaseFileSystem, ExistsStatUppercase) {
     EXPECT_EQ(fs.stat("A.bin"), FileStat());
 }
 
-UNIT_TEST(LowercaseFileSystem, EmptyFolders) {
+UNIT_TEST(LowercaseFileSystem, KeepEmptyFolders) {
     MM_AT_SCOPE_EXIT(std::filesystem::remove_all("tmp_dir"));
 
     DirectoryFileSystem fs0("tmp_dir");
     fs0.write("a/b/c.bin", Blob());
     fs0.write("a/c/b.bin", Blob());
-    fs0.write("b/a/a.bin", Blob());
-    EXPECT_TRUE(fs0.remove("a/b/c.bin"));
-    EXPECT_TRUE(fs0.remove("a/c/b.bin"));
+
+    // Check that LowercaseFileSystem keeps empty folders in this case.
+    LowercaseFileSystem fs(&fs0);
+    EXPECT_TRUE(fs.remove("a/b/c.bin"));
+    EXPECT_TRUE(fs.remove("a/c/b.bin"));
     EXPECT_TRUE(fs0.exists("a/b"));
     EXPECT_TRUE(fs0.exists("a/c"));
-
-    // Check that LowercaseFileSystem keeps empty folders.
-    LowercaseFileSystem fs(&fs0);
     EXPECT_TRUE(fs.exists("a/b"));
     EXPECT_TRUE(fs.exists("a/c"));
-    EXPECT_TRUE(fs.exists("a"));
-    EXPECT_TRUE(fs.exists("b"));
+
+    // Same check, just for a new LowercaseFileSystem for which we didn't call remove.
+    LowercaseFileSystem fss(&fs0);
+    EXPECT_TRUE(fss.exists("a/b"));
+    EXPECT_TRUE(fss.exists("a/c"));
+}
+
+UNIT_TEST(LowercaseFileSystem, DropEmptyFolders) {
+    MemoryFileSystem fs0("");
+    fs0.write("a/b/c.bin", Blob());
+    fs0.write("a/c/b.bin", Blob());
+
+    // Check that LowercaseFileSystem drops empty folders in this case.
+    LowercaseFileSystem fs(&fs0);
+    EXPECT_TRUE(fs.remove("a/b/c.bin"));
+    EXPECT_TRUE(fs.remove("a/c/b.bin"));
+    EXPECT_FALSE(fs0.exists("a/b"));
+    EXPECT_FALSE(fs0.exists("a/c"));
+    EXPECT_FALSE(fs0.exists("a"));
+    EXPECT_FALSE(fs.exists("a/b"));
+    EXPECT_FALSE(fs.exists("a/c"));
+    EXPECT_FALSE(fs.exists("a"));
 }
 
 UNIT_TEST(LowercaseFileSystem, Conflict) {
