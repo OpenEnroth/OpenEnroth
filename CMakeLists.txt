@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
-cmake_policy(SET CMP0144 NEW) # Use upper-case <PACKAGENAME>_ROOT variables in find_package().
+# Use upper-case <PACKAGENAME>_ROOT variables in find_package().
+cmake_policy(SET CMP0144 NEW)
+
+# Use /Z7 instead of /Zi for MSVC debug information, this puts debug info into .obj files. This is needed for ccache
+# to work. Note that for the binaries we're still getting debug info in .pdb files.
+set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
 
 project("OpenEnroth")
 
@@ -137,12 +142,6 @@ if(OE_BUILD_COMPILER STREQUAL "gcc")
 elseif(OE_BUILD_COMPILER STREQUAL "clang")
     add_compile_definitions($<$<CONFIG:Debug>:_LIBCPP_ENABLE_ASSERTIONS=1>) # Enable assertions in libcxx.
 elseif(OE_BUILD_COMPILER STREQUAL "msvc")
-    # /Zi -> /Z7: Pack debug info into .obj files, this is needed for ccache to work. Note that pdb for the binary
-    #             itself is still generated.
-    string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
-    string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
-    string(REPLACE "/Zi" "/Z7" CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}")
-    string(REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
     add_compile_definitions(NOMINMAX) # Please don't pull in these macros from <Windows.h>
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS) # STL security warnings are just noise
     add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE) # POSIX deprecation warnings are also just noise
