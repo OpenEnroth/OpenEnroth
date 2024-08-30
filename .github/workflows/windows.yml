@@ -136,7 +136,7 @@ jobs:
           OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
 
       - name: Run retrace tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration == 'Release'
+        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration != 'Debug'
         working-directory: build
         run: |
           ninja Run_RetraceTest_Headless

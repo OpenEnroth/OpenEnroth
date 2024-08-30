@@ -49,6 +49,9 @@ if(OE_BUILD_TESTS)
             USES_TERMINAL)
 
     # RetraceTest
+    #
+    # Note that it's possible to drop the hacky --glob option, but it will likely break on Windows with its limit on
+    # command line size. So it's either --glob, or passing args in a @file.
     add_custom_target(Run_RetraceTest
             OpenEnroth retrace --check-canonical --glob ${CMAKE_CURRENT_BINARY_DIR}/test_data/data/*.json
             DEPENDS OpenEnroth OpenEnroth_TestData
