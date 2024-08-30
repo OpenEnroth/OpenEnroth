@@ -11,8 +11,9 @@
 
 namespace detail {
 struct LowercaseFileData {
-    FileType type = FILE_INVALID; // FILE_INVALID means there was a name conflict in the underlying FS.
-    bool listed = false;
+    FileType type = FILE_INVALID;
+    bool listed = false; // Only for `FILE_DIRECTORY`, means that `ls()` call was cached.
+    bool conflicting = false; // Was there a conflict in the underlying FS? `type` should be set to `FILE_REGULAR`.
     std::string baseName;
 
     LowercaseFileData(FileType type, std::string baseName) : type(type), baseName(std::move(baseName)) {}

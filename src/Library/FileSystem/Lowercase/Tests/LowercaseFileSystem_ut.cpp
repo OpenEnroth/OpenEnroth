@@ -55,16 +55,30 @@ UNIT_TEST(LowercaseFileSystem, Conflict) {
     LowercaseFileSystem fs(&fs0);
     EXPECT_TRUE(fs.exists("a.bin"));
     EXPECT_EQ(fs.stat("a.bin"), FileStat(FILE_REGULAR, 0));
+    EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>({{"a.bin", FILE_REGULAR}}));
 
     EXPECT_ANY_THROW((void) fs.read("a.bin"));
     EXPECT_ANY_THROW(fs.write("a.bin", Blob()));
     EXPECT_ANY_THROW((void) fs.openForReading("a.bin"));
     EXPECT_ANY_THROW((void) fs.openForWriting("a.bin"));
     EXPECT_ANY_THROW((void) fs.remove("a.bin"));
-    EXPECT_ANY_THROW((void) fs.rename("a.bin", "b.bin"));
+    EXPECT_ANY_THROW(fs.rename("a.bin", "b.bin"));
 
     EXPECT_TRUE(fs0.exists("A.bin"));
     EXPECT_TRUE(fs0.exists("a.bin"));
+}
+
+UNIT_TEST(LowercaseFileSystem, ConflictFolders) {
+    MemoryFileSystem fs0("");
+    fs0.write("a/1", Blob());
+    fs0.write("A/1", Blob());
+
+    LowercaseFileSystem fs(&fs0);
+    EXPECT_TRUE(fs.exists("a"));
+    EXPECT_EQ(fs.stat("a"), FileStat(FILE_REGULAR, 0));
+    EXPECT_FALSE(fs.exists("a/1"));
+    EXPECT_EQ(fs.stat("a/1"), FileStat());
+    EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>({{"a", FILE_REGULAR}}));
 }
 
 UNIT_TEST(LowercaseFileSystem, Lowercase) {
@@ -261,4 +275,14 @@ UNIT_TEST(LowercaseFileSystem, RemoveDeep) {
     EXPECT_TRUE(fs0.exists("A/B/1"));
     EXPECT_EQ(fs.ls("a/b"), std::vector<DirectoryEntry>({{"1", FILE_REGULAR}}));
     EXPECT_EQ(fs0.ls("A/B"), std::vector<DirectoryEntry>({{"1", FILE_REGULAR}}));
+}
+
+UNIT_TEST(LowercaseFileSystem, RenameOverConflict) {
+    MemoryFileSystem fs0("ram");
+    fs0.write("A", Blob::fromString(""));
+    fs0.write("AAA", Blob::fromString(""));
+    fs0.write("AAa", Blob::fromString(""));
+
+    LowercaseFileSystem fs(&fs0);
+    EXPECT_ANY_THROW(fs.rename("a", "aaa/b"));
 }
