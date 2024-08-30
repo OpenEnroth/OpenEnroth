@@ -7,7 +7,7 @@ if(OE_BUILD_TESTS)
     add_executable(OpenEnroth_UnitTest ${UNIT_TEST_MAIN_SOURCES})
     target_link_libraries(OpenEnroth_UnitTest PUBLIC testing_unit library_stack_trace)
 
-    add_custom_target(UnitTest OpenEnroth_UnitTest
+    add_custom_target(Run_UnitTest OpenEnroth_UnitTest
             DEPENDS OpenEnroth_UnitTest
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             USES_TERMINAL)

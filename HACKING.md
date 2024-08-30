@@ -166,7 +166,7 @@ If you need to record a trace with non-standard FPS (e.g. if an issue doesn't re
 
 To run all unit tests locally, build a `UnitTest` cmake target, or build & run `OpenEnroth_UnitTest`.
 
-To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to point to the location of the game assets, then build `GameTest` cmake target. Alternatively, you can build `OpenEnroth_GameTest`, and run it manually, passing the paths to both game assets and the test data via command line.
+To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to point to the location of the game assets, then build `Run_GameTest_Headless_Parallel` cmake target. Alternatively, you can build `OpenEnroth_GameTest`, and run it manually, passing the paths to both game assets and the test data via command line.
 
 If you need to look closely at the recorded trace, you can play it by running `OpenEnroth play --speed 0.5 <path-to-trace.json>`. Alternatively, if you already have a unit test that runs the recorded trace, you can run `OpenEnroth_GameTest --speed 0.5 --gtest_filter=<test-suite-name>.<test-name> --test-path <path-to-test-data-folder>`. Note that `--gtest_filter` needs that `=` and won't work if you try passing test name after a space. 
 

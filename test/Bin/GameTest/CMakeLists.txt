@@ -29,19 +29,19 @@ if(OE_BUILD_TESTS)
 
 
     # GameTest
-    add_custom_target(GameTest
+    add_custom_target(Run_GameTest
             OpenEnroth_GameTest --test-path ${CMAKE_CURRENT_BINARY_DIR}/test_data/data
             DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             USES_TERMINAL) # USES_TERMINAL makes the command print progress as it goes.
 
-    add_custom_target(GameTest_Headless
+    add_custom_target(Run_GameTest_Headless
             OpenEnroth_GameTest --test-path ${CMAKE_CURRENT_BINARY_DIR}/test_data/data --headless
             DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             USES_TERMINAL)
 
-    add_custom_target(GameTest_Headless_Parallel
+    add_custom_target(Run_GameTest_Headless_Parallel
             Python::Interpreter ${CMAKE_SOURCE_DIR}/thirdparty/gtest_parallel/gtest-parallel --print_test_times
                 ${CMAKE_CURRENT_BINARY_DIR}/OpenEnroth_GameTest -- --test-path ${CMAKE_CURRENT_BINARY_DIR}/test_data/data --headless
             DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
@@ -49,14 +49,14 @@ if(OE_BUILD_TESTS)
             USES_TERMINAL)
 
     # RetraceTest
-    add_custom_target(RetraceTest
+    add_custom_target(Run_RetraceTest
             OpenEnroth retrace --check-canonical --glob ${CMAKE_CURRENT_BINARY_DIR}/test_data/data/*.json
             DEPENDS OpenEnroth OpenEnroth_TestData
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             USES_TERMINAL
     )
 
-    add_custom_target(RetraceTest_Headless
+    add_custom_target(Run_RetraceTest_Headless
             OpenEnroth retrace --headless --check-canonical --glob ${CMAKE_CURRENT_BINARY_DIR}/test_data/data/*.json
             DEPENDS OpenEnroth OpenEnroth_TestData
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
