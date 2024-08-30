@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7e89a50</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ae49c78</span>
    </div>
   </td>
  </tr>
@@ -210,7 +210,8 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >View over a directory on a file system.</p>
 <p >All methods will work as if the root directory of this <code><a class="el" href="classFileSystem.html">FileSystem</a></code> exists, even if it doesn't exist on the underlying file system.</p>
-<p >Files outside of the root directory are not observable through this <code><a class="el" href="classFileSystem.html">FileSystem</a></code> - the methods will behave as if these files don't exist. </p>
+<p >Files outside of the root directory are not observable through this <code><a class="el" href="classFileSystem.html">FileSystem</a></code> - the methods will behave as if these files don't exist.</p>
+<p >When it comes to permissions, this filesystem tries its best to provide a simple guarantee that <code>ls</code> for an existing folder never throws, and is in sync with what <code>stat</code> / <code>exists</code> return. This means that some files or folders that are observable through <code>ls</code> in bash won't be observable through this filesystem. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a341a3497aa99337c8adae3781f10dac0" name="a341a3497aa99337c8adae3781f10dac0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a341a3497aa99337c8adae3781f10dac0">&#9670;&#160;</a></span>DirectoryFileSystem()</h2>

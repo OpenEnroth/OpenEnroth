@@ -64,14 +64,15 @@ var searchData=
   ['logcategory_61',['logCategory',['../classSdlPlatformSharedState.html#abecbd76adcba46a0bb61e8396b9268df',1,'SdlPlatformSharedState']]],
   ['logcategory_62',['LogCategory',['../classLogCategory.html#ace6ad48daee8ffd0d3d18d0c05e06020',1,'LogCategory::LogCategory(std::string_view name, LogSource *source=nullptr)'],['../classLogCategory.html#a31395451d3d84a9d7ee340945e3eac67',1,'LogCategory::LogCategory(const LogCategory &amp;)=delete'],['../classLogCategory.html#a59f9431e43d5376213779ed82608a066',1,'LogCategory::LogCategory(LogCategory &amp;&amp;)=default']]],
   ['logenginebuildinfo_63',['LogEngineBuildInfo',['../classEngine.html#a3c0041a61788c61d0a1a74ec908793bb',1,'Engine']]],
-  ['logger_64',['logger',['../classSdlPlatformSharedState.html#a8e96ed7e33ae07f73712541956b8de77',1,'SdlPlatformSharedState']]],
-  ['logger_65',['Logger',['../classLogger.html#a338d3ab3882f8c40e3430d1e7ff0b9f3',1,'Logger']]],
+  ['logger_64',['Logger',['../classLogger.html#a338d3ab3882f8c40e3430d1e7ff0b9f3',1,'Logger']]],
+  ['logger_65',['logger',['../classSdlPlatformSharedState.html#a8e96ed7e33ae07f73712541956b8de77',1,'SdlPlatformSharedState']]],
   ['logsdlerror_66',['logSdlError',['../classSdlPlatformSharedState.html#a2b1d8d645a2204e8826f787394ad62f7',1,'SdlPlatformSharedState']]],
   ['logv_67',['logV',['../classLogger.html#ad69ae0b96811ae6abe4530ccc78c7e0b',1,'Logger']]],
-  ['loop_68',['Loop',['../structArcomageGame.html#af5f4ef42b2a0d72d14621a54895afb58',1,'ArcomageGame']]],
-  ['loop_69',['loop',['../classGame.html#a9516786804da7367b712c77dc98a7278',1,'Game']]],
+  ['loop_68',['loop',['../classGame.html#a9516786804da7367b712c77dc98a7278',1,'Game']]],
+  ['loop_69',['Loop',['../structArcomageGame.html#af5f4ef42b2a0d72d14621a54895afb58',1,'ArcomageGame']]],
   ['lootactor_70',['LootActor',['../classActor.html#a5c96e635141f504057794facc929c5e1',1,'Actor']]],
-  ['lowercasefilesystem_71',['LowercaseFileSystem',['../classLowercaseFileSystem.html#a276d9f706815e3310773deb05e211ac3',1,'LowercaseFileSystem']]],
-  ['ls_72',['ls',['../classFileSystem.html#a1ca76aecd03b7d1ba116544e410ddbd2',1,'FileSystem::ls(const FileSystemPath &amp;path, std::vector&lt; DirectoryEntry &gt; *entries) const'],['../classFileSystem.html#a7d201656d181b7b87a2462328a87c710',1,'FileSystem::ls(std::string_view path) const'],['../classFileSystem.html#a616e801d682d42389beacbedd790deca',1,'FileSystem::ls(const FileSystemPath &amp;path) const'],['../classFileSystem.html#af8cde9f30db079d90f5f1269a519c506',1,'FileSystem::ls(std::string_view path, std::vector&lt; DirectoryEntry &gt; *entries) const'],['../classVidReader.html#a2341f262409fe224791c2b10c9157c24',1,'VidReader::ls()'],['../classSndReader.html#ac695138114e6d8f62f144a35cd3e9d46',1,'SndReader::ls()'],['../classLodReader.html#a80818bb3647a0dd4960bbab6c953b3d5',1,'LodReader::ls()']]],
-  ['luaitemquerytable_73',['LuaItemQueryTable',['../classLuaItemQueryTable.html#adb80da50a87e675257079e9e8277be98',1,'LuaItemQueryTable']]]
+  ['lowercasefiledata_71',['LowercaseFileData',['../structdetail_1_1LowercaseFileData.html#a2a9ec98d81b14852d41e12434d0313a9',1,'detail::LowercaseFileData']]],
+  ['lowercasefilesystem_72',['LowercaseFileSystem',['../classLowercaseFileSystem.html#a276d9f706815e3310773deb05e211ac3',1,'LowercaseFileSystem']]],
+  ['ls_73',['ls',['../classFileSystem.html#af8cde9f30db079d90f5f1269a519c506',1,'FileSystem::ls(std::string_view path, std::vector&lt; DirectoryEntry &gt; *entries) const'],['../classFileSystem.html#a7d201656d181b7b87a2462328a87c710',1,'FileSystem::ls(std::string_view path) const'],['../classFileSystem.html#a616e801d682d42389beacbedd790deca',1,'FileSystem::ls(const FileSystemPath &amp;path) const'],['../classVidReader.html#a2341f262409fe224791c2b10c9157c24',1,'VidReader::ls()'],['../classSndReader.html#ac695138114e6d8f62f144a35cd3e9d46',1,'SndReader::ls()'],['../classLodReader.html#a80818bb3647a0dd4960bbab6c953b3d5',1,'LodReader::ls()'],['../classFileSystem.html#a1ca76aecd03b7d1ba116544e410ddbd2',1,'FileSystem::ls()']]],
+  ['luaitemquerytable_74',['LuaItemQueryTable',['../classLuaItemQueryTable.html#adb80da50a87e675257079e9e8277be98',1,'LuaItemQueryTable']]]
 ];
