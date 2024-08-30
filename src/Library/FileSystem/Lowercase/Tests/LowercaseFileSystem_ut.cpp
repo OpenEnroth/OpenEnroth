@@ -39,13 +39,12 @@ UNIT_TEST(LowercaseFileSystem, EmptyFolders) {
     EXPECT_TRUE(fs0.exists("a/b"));
     EXPECT_TRUE(fs0.exists("a/c"));
 
-    // Check that LowercaseFileSystem doesn't keep empty folders.
+    // Check that LowercaseFileSystem keeps empty folders.
     LowercaseFileSystem fs(&fs0);
-    EXPECT_FALSE(fs.exists("a/b"));
-    EXPECT_FALSE(fs.exists("a/c"));
-    EXPECT_FALSE(fs.exists("a"));
+    EXPECT_TRUE(fs.exists("a/b"));
+    EXPECT_TRUE(fs.exists("a/c"));
+    EXPECT_TRUE(fs.exists("a"));
     EXPECT_TRUE(fs.exists("b"));
-    EXPECT_EQ(fs.ls(""), std::vector<DirectoryEntry>({{"b", FILE_DIRECTORY}}));
 }
 
 UNIT_TEST(LowercaseFileSystem, Conflict) {
@@ -53,7 +52,19 @@ UNIT_TEST(LowercaseFileSystem, Conflict) {
     fs0.write("A.bin", Blob());
     fs0.write("a.bin", Blob());
 
-    EXPECT_ANY_THROW(LowercaseFileSystem fs(&fs0));
+    LowercaseFileSystem fs(&fs0);
+    EXPECT_TRUE(fs.exists("a.bin"));
+    EXPECT_EQ(fs.stat("a.bin"), FileStat(FILE_REGULAR, 0));
+
+    EXPECT_ANY_THROW((void) fs.read("a.bin"));
+    EXPECT_ANY_THROW(fs.write("a.bin", Blob()));
+    EXPECT_ANY_THROW((void) fs.openForReading("a.bin"));
+    EXPECT_ANY_THROW((void) fs.openForWriting("a.bin"));
+    EXPECT_ANY_THROW((void) fs.remove("a.bin"));
+    EXPECT_ANY_THROW((void) fs.rename("a.bin", "b.bin"));
+
+    EXPECT_TRUE(fs0.exists("A.bin"));
+    EXPECT_TRUE(fs0.exists("a.bin"));
 }
 
 UNIT_TEST(LowercaseFileSystem, Lowercase) {
@@ -73,12 +84,13 @@ UNIT_TEST(LowercaseFileSystem, Shenanigans) {
     fs0.write("A/A/A.bin", Blob::fromString("123"));
 
     LowercaseFileSystem fs(&fs0);
-    fs0.clear();
-
     EXPECT_TRUE(fs.exists("a/a/a.bin"));
-    EXPECT_EQ(fs.stat("a/a/a.bin"), FileStat());
+
+    fs0.clear();
+    EXPECT_EQ(fs.stat("a/a/a.bin"), FileStat()); // stat() should call base->stat().
     EXPECT_EQ(fs.ls("a/a"), std::vector<DirectoryEntry>({{"a.bin", FILE_REGULAR}}));
 
+    // Check that we don't blow up in spectacular ways. Throwing is OK.
     EXPECT_ANY_THROW((void) fs.read("a/a/a.bin"));
     EXPECT_ANY_THROW((void) fs.openForReading("a/a/a.bin"));
 }
@@ -233,4 +245,20 @@ UNIT_TEST(LowercaseFileSystem, DisplayPath) {
 
     EXPECT_EQ(fs.displayPath("a/b/c"), "ram://A/b/c");
     EXPECT_EQ(fs.displayPath(""), "ram://");
+}
+
+UNIT_TEST(LowercaseFileSystem, RemoveDeep) {
+    MemoryFileSystem fs0("ram");
+    fs0.write("A/B/0", Blob::fromString("0"));
+    fs0.write("A/B/1", Blob::fromString("1"));
+
+    LowercaseFileSystem fs(&fs0);
+
+    EXPECT_TRUE(fs.remove("a/b/0"));
+    EXPECT_FALSE(fs.exists("a/b/0"));
+    EXPECT_FALSE(fs0.exists("A/B/0"));
+    EXPECT_TRUE(fs.exists("a/b/1"));
+    EXPECT_TRUE(fs0.exists("A/B/1"));
+    EXPECT_EQ(fs.ls("a/b"), std::vector<DirectoryEntry>({{"1", FILE_REGULAR}}));
+    EXPECT_EQ(fs0.ls("A/B"), std::vector<DirectoryEntry>({{"1", FILE_REGULAR}}));
 }

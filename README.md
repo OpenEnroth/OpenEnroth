@@ -13,7 +13,7 @@ Download
 
 To download the code without having to compile it we have our releases at [https://github.com/OpenEnroth/OpenEnroth/releases](https://github.com/OpenEnroth/OpenEnroth/releases) 
 
-Note: Currently there are only the nightly builds which may have bugs.
+Currently there are only the nightly builds which may have bugs.
 
 Discord
 -------
@@ -35,21 +35,46 @@ Getting Started on Windows
 4. Run `OpenEnroth.exe`.
 
 
-Getting Started on Linux or Mac
+Getting Started on Ubuntu Linux
 -------------------------------
 
 1. You will need a GoG or any other version of Might and Magic VII. If you have an offline GoG installer, then follow these steps:
-   * Install `innoextract`. If you're on Ubuntu, `sudo apt-get install innoextract` should work. If you're on Mac then you'll need homebrew, and `brew install innoextract` should do the job.
+   * Install `innoextract` with `sudo apt-get install innoextract`.
    * Run `innoextract -e -d <target-folder> <mm7-gog-folder>/setup_mm_7.exe`, where `<target-folder>` is the folder where you want to have game data extracted from the mm7 installer.
    * Check the files in `<target-folder>`, it should now contain the `app` subfolder. This is where game assets were extracted into.
 
-2. Build OpenEnroth as described in [HACKING.md](HACKING.md).
+2. Install OpenEnroth dependencies with `sudo apt-get install libsdl2-dev libdwarf-dev libelf-dev`.
 
-3. Set `OPENENROTH_MM7_PATH` env variable to point to the location of the game assets. You might also want to add the following line to your bash profile (e.g. `~/.profile` on Ubuntu or `~/.zshrc` on Mac):
+3. Download one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip the files.
 
-    `export OPENENROTH_MM7_PATH="<target-folder>/app"`
+4. From the `dist` folder inside the zip file copy the `OpenEnroth` binary to `<target-folder>/app`.
 
-4. Run the freshly built `OpenEnroth` binary.
+5. Run `OpenEnroth` binary.
+
+
+Getting Started on MacOS
+------------------------
+
+1. You will need a GoG or any other version of Might and Magic VII. If you have an offline GoG installer, then follow these steps:
+   * Install `innoextract` with `brew install innoextract`.
+   * Run `innoextract -e -d <target-folder> <mm7-gog-folder>/setup_mm_7.exe`, where `<target-folder>` is the folder where you want to have game data extracted from the mm7 installer.
+   * Check the files in `<target-folder>`, it should now contain the `app` subfolder. This is where game assets were extracted into.
+
+2. Move extracted game assets to `~/Library/Application Support/OpenEnroth`. This is where `OpenEnroth` will look for game data.
+
+3. Download one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip the files.
+   
+4. Run `xattr -rc <extracted-path>/dist/OpenEnroth.app`. This is needed because OpenEnroth binaries are unsigned, without this step the app bundle won't start.
+
+5. Start `OpenEnroth.app`.
+
+
+Game Assets Path Override
+-------------------------
+
+You can set `OPENENROTH_MM7_PATH` env variable to point to the location of the game assets. If this variable is set, OpenEnroth will look for game assets only in the location it's pointing to. You might also want to add the following line to your bash profile (e.g. `~/.profile` on Ubuntu or `~/.zshrc` on Mac):
+
+    `export OPENENROTH_MM7_PATH="<path-to-mm7-game-assets>"`
 
 
 Development
