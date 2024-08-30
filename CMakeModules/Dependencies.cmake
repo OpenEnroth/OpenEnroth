@@ -56,7 +56,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         message(STATUS "Using prebuilt dependencies with PREBUILT_DEPS_TAG=${PREBUILT_DEPS_TAG}")
 
         set(PREBUILT_DEPS_BUILD_TYPE "${CMAKE_BUILD_TYPE}")
-        if (PREBUILT_DEPS_BUILD_TYPE STREQUAL "RelWithDebInfo" OR PREBUILT_DEPS_BUILD_TYPE STREQUAL "MinSizeRel")
+        if (PREBUILT_DEPS_BUILD_TYPE STREQUAL "MinSizeRel")
             set(PREBUILT_DEPS_BUILD_TYPE "Release")
         endif()
 
