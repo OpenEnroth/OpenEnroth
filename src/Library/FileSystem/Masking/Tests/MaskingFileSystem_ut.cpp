@@ -30,6 +30,7 @@ UNIT_TEST(MaskingFileSystem, SimpleMasks) {
     EXPECT_EQ(fs1.ls(""), std::vector<DirectoryEntry>());
 
     EXPECT_TRUE(fs1.unmask("a/b/c/e"));
+    EXPECT_FALSE(fs1.exists("a/b/c/e")); // Still masked.
     EXPECT_TRUE(fs1.unmask(""));
     EXPECT_TRUE(fs1.exists("a/b/c/e"));
     EXPECT_FALSE(fs1.exists("a/b/c/d"));
