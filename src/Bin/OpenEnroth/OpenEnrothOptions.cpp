@@ -17,16 +17,22 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     OpenEnrothOptions result;
     std::unique_ptr<CliApp> app = std::make_unique<CliApp>();
 
+    std::optional<bool> portable;
     app->add_option(
         "--data-path", result.dataPath,
         fmt::format("Path to MM7 data folder, default is taken from '{}' environment variable. "
                     "If neither this argument is supplied nor the environment variable is set, "
-                    "then on Windows OpenEnroth will also try to read the path from registry. "
-                    "If this also fails, then OpenEnroth will look for game data in the current folder.", mm7PathOverrideKey))->check(CLI::ExistingDirectory)->option_text("PATH");
+                    "then OpenEnroth will try to look for game data in the current folder, "
+                    "then on Windows it will also try to read the path from registry, "
+                    "and on MacOS it will also try to look at '/Library/Application Support/OpenEnroth'.", mm7PathOverrideKey))->check(CLI::ExistingDirectory)->option_text("PATH");
     // TODO(captainurist): to print default value here we'll need to pass in Environment.
     app->add_option(
         "--user-path", result.userPath,
         "Path to OpenEnroth user data folder.")->check(CLI::ExistingDirectory)->option_text("PATH");
+    app->add_flag(
+        "--portable", portable,
+        "Run in portable mode, game & user data paths will default to current folder. "
+        "If '.portable' file exists in the current folder, then this parameter defaults to 'true'.");
     app->add_option(
         "--log-level", result.logLevel,
         "Log level, one of 'trace', 'debug', 'info', 'warning', 'error', 'critical'.")->option_text("LOG_LEVEL");
@@ -64,6 +70,15 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     retrace->set_help_flag("-h,--help", "Print help and exit."); // This places --help last in the command list.
 
     app->parse(argc, argv, result.helpPrinted);
+
+    if (!portable && std::filesystem::exists(".portable"))
+        portable = true;
+    if (portable && *portable) {
+        if (result.userPath.empty())
+            result.userPath = std::filesystem::current_path().generic_string();
+        if (result.dataPath.empty())
+            result.dataPath = std::filesystem::current_path().generic_string();
+    }
 
     if (result.subcommand == SUBCOMMAND_RETRACE) {
         result.ramFsUserData = true; // No config & no user data if retracing.

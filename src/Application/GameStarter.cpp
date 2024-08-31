@@ -253,9 +253,8 @@ void GameStarter::failOnInvalidPath(std::string_view dataPath, Platform *platfor
 
     std::string message = fmt::format(
         "Required file '{}' not found.\n"
-        "You should acquire licensed copy of M&M VII and copy its resources to \n{}\n\n"
-        "Additionally you should also copy the content from\n"
-        "resources directory from our repository there as well.",
+        "\n"
+        "You should acquire licensed copy of M&M VII and copy its resources to {}.",
         missingFile,
         dataPath
     );
