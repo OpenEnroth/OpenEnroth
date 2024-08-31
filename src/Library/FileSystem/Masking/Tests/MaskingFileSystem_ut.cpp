@@ -21,27 +21,22 @@ UNIT_TEST(MaskingFileSystem, SimpleMasks) {
     EXPECT_TRUE(fs0.exists("a/b/c/d"));
     EXPECT_EQ(fs1.ls("a/b/c"), std::vector<DirectoryEntry>({{"e", FILE_REGULAR}}));
 
+    fs1.mask("a/b/c/e");
+    EXPECT_FALSE(fs1.exists("a/b/c/e"));
+    EXPECT_TRUE(fs0.exists("a/b/c/e"));
+    EXPECT_EQ(fs1.ls("a/b/c"), std::vector<DirectoryEntry>()); // Masking might result in observable empty dirs.
+
+    fs1.mask("");
+    EXPECT_EQ(fs1.ls(""), std::vector<DirectoryEntry>());
+
+    EXPECT_TRUE(fs1.unmask("a/b/c/e"));
+    EXPECT_FALSE(fs1.exists("a/b/c/e")); // Still masked.
+    EXPECT_TRUE(fs1.unmask(""));
+    EXPECT_TRUE(fs1.exists("a/b/c/e"));
+    EXPECT_FALSE(fs1.exists("a/b/c/d"));
+
     fs1.clearMasks();
     EXPECT_TRUE(fs1.exists("a/b/c/d"));
-
-    EXPECT_TRUE(fs1.remove("a/b/c/d"));
-    EXPECT_FALSE(fs1.exists("a/b/c/d"));
-    EXPECT_TRUE(fs0.exists("a/b/c/d"));
-    EXPECT_EQ(fs1.ls("a/b/c"), std::vector<DirectoryEntry>({{"e", FILE_REGULAR}}));
-
-    EXPECT_TRUE(fs1.remove("a/b"));
-    EXPECT_TRUE(fs1.exists("a"));
-    EXPECT_FALSE(fs1.exists("a/b"));
-    EXPECT_FALSE(fs1.exists("a/b/1"));
-    EXPECT_FALSE(fs1.exists("a/b/c/e"));
-    EXPECT_EQ(fs1.ls("a"), std::vector<DirectoryEntry>());
-    EXPECT_TRUE(fs0.exists("a"));
-    EXPECT_TRUE(fs0.exists("a/b"));
-    EXPECT_TRUE(fs0.exists("a/b/1"));
-    EXPECT_TRUE(fs0.exists("a/b/c/e"));
-    EXPECT_EQ(fs0.ls("a"), std::vector<DirectoryEntry>({{"b", FILE_DIRECTORY}}));
-
-    EXPECT_FALSE(fs1.remove("a/b/c"));
 }
 
 UNIT_TEST(MaskingFileSystem, PersistentMasking) {

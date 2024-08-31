@@ -75,7 +75,7 @@ static std::vector<std::string> resolvePaths(Environment *environment, const Pat
     std::vector<std::string> result;
 
     // Otherwise we check PWD first.
-    result.push_back(std::filesystem::current_path().string());
+    result.push_back(std::filesystem::current_path().generic_string());
 
     // Then we check paths from registry on Windows,...
     for (const char *registryKey : config.registryKeys) {

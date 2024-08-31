@@ -26,7 +26,7 @@ Join our discord channel to discuss, track progress or get involved in the devel
 Getting Started on Windows
 --------------------------
 
-1. You will need a GoG or any other version of Might and Magic VII. Run the installer and install the game into a custom location like `C:\Games`. (If you install into Program Files, there will be compatibility issues between the MM7 and OpenEnroth save file locations).
+1. You will need a GoG or any other version of Might and Magic VII. Run the installer as usual.
 
 2. Download one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip the files.
 
@@ -74,7 +74,9 @@ Game Assets Path Override
 
 You can set `OPENENROTH_MM7_PATH` env variable to point to the location of the game assets. If this variable is set, OpenEnroth will look for game assets only in the location it's pointing to. You might also want to add the following line to your bash profile (e.g. `~/.profile` on Ubuntu or `~/.zshrc` on Mac):
 
-    `export OPENENROTH_MM7_PATH="<path-to-mm7-game-assets>"`
+```
+export OPENENROTH_MM7_PATH="<path-to-mm7-game-assets>"
+```
 
 
 Development

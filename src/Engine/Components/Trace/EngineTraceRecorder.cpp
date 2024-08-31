@@ -12,6 +12,7 @@
 #include "Engine/Random/Random.h"
 
 #include "Library/Platform/Application/PlatformApplication.h"
+#include "Library/FileSystem/Memory/MemoryFileSystem.h"
 #include "Library/Trace/EventTrace.h"
 #include "Library/Logger/Logger.h"
 
@@ -19,6 +20,7 @@
 
 #include "EngineTraceSimpleRecorder.h"
 #include "EngineTraceStateAccessor.h"
+#include "Engine/EngineFileSystem.h"
 
 EngineTraceRecorder::EngineTraceRecorder() {}
 
@@ -57,6 +59,11 @@ void EngineTraceRecorder::startRecording(EngineController *game, const Blob &sav
     _trace->header.startState = EngineTraceStateAccessor::makeGameState();
     EngineTraceStateAccessor::prepareForRecording(engine->config.get(), &_trace->header.config);
 
+    // Same as in EngineTraceRecorder - replace user fs with a filesystem that only has the current save.
+    _ramFs = std::make_unique<MemoryFileSystem>("ramfs");
+    _ramFs->write("saves/!!!save.mm7", _savedGame);
+    _fsRollback.emplace(&ufs, _ramFs.get());
+
     component<EngineTraceSimpleRecorder>()->startRecording();
 
     logger->info("Tracing started.");
@@ -66,6 +73,8 @@ EngineTraceRecording EngineTraceRecorder::finishRecording(EngineController *game
     assert(isRecording());
 
     MM_AT_SCOPE_EXIT({
+        _fsRollback.reset(); // Roll it back.
+        _ramFs.reset();
         _savedGame = {};
         _trace.reset();
         component<EngineDeterministicComponent>()->finish();

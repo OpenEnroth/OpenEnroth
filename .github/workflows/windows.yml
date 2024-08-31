@@ -104,7 +104,7 @@ jobs:
           key: 'windows-${{matrix.configuration}}-${{matrix.architecture}}'
           save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
           verbose: 2
-          max-size: 100M
+          max-size: 200M
           
       # MSVC hit rate is higher with ignoring the hash_dir and is safe
       - name: Set ccache config values
@@ -124,22 +124,22 @@ jobs:
       - name: Run unit tests
         working-directory: build
         run: |
-          ninja UnitTest
+          ninja Run_UnitTest
 
       # Only run gametest if we restored game data.
       - name: Run game tests
         if: steps.restore-data-cache.outputs.cache-hit == 'true'
         working-directory: build
         run: |
-          ninja GameTest_Headless_Parallel
+          ninja Run_GameTest_Headless_Parallel
         env:
           OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
 
       - name: Run retrace tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration == 'Release'
+        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration != 'Debug'
         working-directory: build
         run: |
-          ninja RetraceTest_Headless
+          ninja Run_RetraceTest_Headless_Parallel
         env:
           OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
 

@@ -16,9 +16,9 @@
 #include "Library/Trace/EventTrace.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
-#include "Library/FileSystem/Proxy/ScopedFileSystemSwizzle.h"
 
 #include "Utility/ScopeGuard.h"
+#include "Utility/ScopedRollback.h"
 #include "Utility/Exception.h"
 
 #include "EngineTraceStateAccessor.h"
@@ -66,7 +66,7 @@ void EngineTracePlayer::playTrace(EngineController *game, const EngineTraceRecor
     // inside the trace.
     MemoryFileSystem ramFs("ramfs");
     ramFs.write("saves/!!!save.mm7", recording.save);
-    ScopedFileSystemSwizzle swizzle(ufs, &ramFs);
+    ScopedRollback<FileSystem *> rollback(&ufs, &ramFs);
 
     checkState(recording, _trace->header.startState, true);
     component<EngineTraceSimplePlayer>()->playTrace(game, std::move(_trace->events), recording.trace.displayPath(), _flags);

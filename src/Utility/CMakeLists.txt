@@ -46,7 +46,8 @@ set(UTILITY_HEADERS
         Win/Unicode.h
         Unaligned.h
         UnicodeCrt.h
-        SmallVector.h)
+        SmallVector.h
+        ScopedRollback.h)
 
 if(OE_BUILD_PLATFORM STREQUAL "windows")
     list(APPEND UTILITY_SOURCES Win/Unicode.cpp)

@@ -4,28 +4,21 @@
 #include <memory>
 #include <string>
 
-#include "Library/FileSystem/Interface/ReadOnlyFileSystem.h"
+#include "Library/FileSystem/Proxy/ProxyFileSystem.h"
 #include "Library/FileSystem/Trie/FileSystemTrie.h"
 
-// TODO(captainurist): This was originally designed as a workaround to make rename() work on top of a mergingfs looking
-//                     into two different filesystems, one of which is readonly. This made little sense, so mergingfs
-//                     was changed to be readonly, thus the original use case is no more. This class needs to be redone
-//                     with just mask / unmask / clearMasks, masking out parts of the underlying FS makes sense in some
-//                     cases.
-
 /**
- * Proxy read-only filesystem that supports `remove` operations by simply masking away the removed files and
- * directories.
- *
- * Note that other mutating operations (`write`, `openForWriting` and `rename`) will still throw.
+ * Proxy filesystem that supports masking out certain parts of the underlying filesystem.
  */
-class MaskingFileSystem : public ReadOnlyFileSystem {
+class MaskingFileSystem : public ProxyFileSystem {
  public:
-    explicit MaskingFileSystem(FileSystem *base);
+    explicit MaskingFileSystem(FileSystem *base = nullptr);
     virtual ~MaskingFileSystem();
 
     void mask(std::string_view path);
     void mask(const FileSystemPath &path);
+    bool unmask(std::string_view path);
+    bool unmask(const FileSystemPath &path);
     void clearMasks();
 
  private:
@@ -35,11 +28,13 @@ class MaskingFileSystem : public ReadOnlyFileSystem {
     virtual FileStat _stat(const FileSystemPath &path) const override;
     virtual void _ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const override;
     virtual Blob _read(const FileSystemPath &path) const override;
+    virtual void _write(const FileSystemPath &path, const Blob &data) override;
     virtual std::unique_ptr<InputStream> _openForReading(const FileSystemPath &path) const override;
+    virtual std::unique_ptr<OutputStream> _openForWriting(const FileSystemPath &path) override;
+    virtual void _rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath) override;
     virtual bool _remove(const FileSystemPath &path) override;
     virtual std::string _displayPath(const FileSystemPath &path) const override;
 
  private:
-    FileSystem *_base = nullptr;
     FileSystemTrie<bool> _masks;
 };

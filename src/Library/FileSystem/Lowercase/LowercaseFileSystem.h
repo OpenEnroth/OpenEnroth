@@ -11,8 +11,9 @@
 
 namespace detail {
 struct LowercaseFileData {
-    FileType type = FILE_INVALID; // FILE_INVALID means there was a name conflict in the underlying FS.
-    bool listed = false;
+    FileType type = FILE_INVALID;
+    bool listed = false; // Only for `FILE_DIRECTORY`, means that `ls()` call was cached.
+    bool conflicting = false; // Was there a conflict in the underlying FS? `type` should be set to `FILE_REGULAR`.
     std::string baseName;
 
     LowercaseFileData(FileType type, std::string baseName) : type(type), baseName(std::move(baseName)) {}
@@ -24,6 +25,8 @@ struct LowercaseFileData {
  * - Contains only lowercase-named files.
  * - Effectively gives the user a case-insensitive view over a potentially case-sensitive filesystem.
  * - Caches the contents of the underlying filesystem. Call `refresh` to clear cache.
+ * - Preserves empty folders that exist on the underlying FS, but also supports file systems that automatically prune
+ *   empty folders.
  * - Conflicts are visible as empty files but are not readable / writeable / removeable (conflict is when both
  *   "file.txt" and "FILE.txt" exist).
  * - Is not thread-safe. Even const methods update the underlying cache.
@@ -67,6 +70,7 @@ class LowercaseFileSystem : public FileSystem {
 
     std::tuple<FileSystemPath, Node *, FileSystemPath> walk(const FileSystemPath &path) const;
     void cacheLs(Node *node, const FileSystemPath &basePath) const;
+    void invalidateLs(Node *node) const;
     void cacheRemove(Node *node) const;
     void cacheInsert(Node *node, const FileSystemPath &tail, FileType type) const;
 

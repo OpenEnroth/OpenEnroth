@@ -7,7 +7,7 @@ set(LIBRARY_FILESYSTEM_MASKING_HEADERS
         MaskingFileSystem.h)
 
 add_library(library_filesystem_masking STATIC ${LIBRARY_FILESYSTEM_MASKING_SOURCES} ${LIBRARY_FILESYSTEM_MASKING_HEADERS})
-target_link_libraries(library_filesystem_masking PUBLIC library_filesystem_interface utility)
+target_link_libraries(library_filesystem_masking PUBLIC library_filesystem_interface library_filesystem_proxy utility)
 target_check_style(library_filesystem_masking)
 
 if(OE_BUILD_TESTS)

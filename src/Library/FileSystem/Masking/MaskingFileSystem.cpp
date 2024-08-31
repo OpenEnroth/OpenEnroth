@@ -7,9 +7,7 @@
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
-MaskingFileSystem::MaskingFileSystem(FileSystem *base) : _base(base) {
-    assert(_base);
-}
+MaskingFileSystem::MaskingFileSystem(FileSystem *base) : ProxyFileSystem(base) {}
 
 MaskingFileSystem::~MaskingFileSystem() = default;
 
@@ -18,8 +16,19 @@ void MaskingFileSystem::mask(std::string_view path) {
 }
 
 void MaskingFileSystem::mask(const FileSystemPath &path) {
-    // Chop drops all children for the newly inserted node. This is needed for the implementation of `isMasked` to work.
-    _masks.chop(_masks.insertOrAssign(path, true));
+    _masks.insertOrAssign(path, true);
+}
+
+bool MaskingFileSystem::unmask(std::string_view path) {
+    return unmask(FileSystemPath(path));
+}
+
+bool MaskingFileSystem::unmask(const FileSystemPath &path) {
+    FileSystemTrieNode<bool> *node = _masks.find(path);
+    if (!node || !node->hasValue() || !node->value())
+        return false; // Can only unmask what was previously masked.
+    node->value() = false;
+    return true;
 }
 
 void MaskingFileSystem::clearMasks() {
@@ -27,21 +36,30 @@ void MaskingFileSystem::clearMasks() {
 }
 
 bool MaskingFileSystem::isMasked(const FileSystemPath &path) const {
-    return _masks.walk(path)->hasValue();
+    const FileSystemTrieNode<bool> *node = _masks.root();
+
+    for (std::string_view chunk : path.chunks()) {
+        if (node->hasValue() && node->value())
+            return true;
+
+        node = node->child(chunk);
+        if (!node)
+            return false;
+    }
+
+    return node->hasValue() && node->value();
 }
 
 bool MaskingFileSystem::_exists(const FileSystemPath &path) const {
-    assert(!path.isEmpty());
     if (isMasked(path))
         return false;
-    return _base->exists(path);
+    return ProxyFileSystem::_exists(path);
 }
 
 FileStat MaskingFileSystem::_stat(const FileSystemPath &path) const {
-    assert(!path.isEmpty());
     if (isMasked(path))
         return {};
-    return _base->stat(path);
+    return ProxyFileSystem::_stat(path);
 }
 
 void MaskingFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
@@ -53,12 +71,12 @@ void MaskingFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEnt
         }
     }
 
-    _base->ls(path, entries);
+    ProxyFileSystem::_ls(path, entries);
 
     if (const FileSystemTrieNode<bool> *node = _masks.find(path)) {
         std::erase_if(*entries, [node] (const DirectoryEntry &entry) {
             if (FileSystemTrieNode<bool> *child = node->child(entry.name)) {
-                return child->hasValue();
+                return child->hasValue() && child->value();
             } else {
                 return false;
             }
@@ -67,34 +85,45 @@ void MaskingFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEnt
 }
 
 Blob MaskingFileSystem::_read(const FileSystemPath &path) const {
-    assert(!path.isEmpty());
     if (isMasked(path))
         FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
-    return _base->read(path);
+    return ProxyFileSystem::_read(path);
+}
+
+void MaskingFileSystem::_write(const FileSystemPath &path, const Blob &data) {
+    if (isMasked(path))
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
+    ProxyFileSystem::_write(path, data);
 }
 
 std::unique_ptr<InputStream> MaskingFileSystem::_openForReading(const FileSystemPath &path) const {
-    assert(!path.isEmpty());
     if (isMasked(path))
         FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
-    return _base->openForReading(path);
+    return ProxyFileSystem::_openForReading(path);
+}
+
+std::unique_ptr<OutputStream> MaskingFileSystem::_openForWriting(const FileSystemPath &path) {
+    if (isMasked(path))
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
+    return ProxyFileSystem::_openForWriting(path);
+}
+
+void MaskingFileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath) {
+    if (isMasked(srcPath))
+        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
+    if (isMasked(dstPath))
+        FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
+    return ProxyFileSystem::_rename(srcPath, dstPath);
 }
 
 bool MaskingFileSystem::_remove(const FileSystemPath &path) {
-    assert(!path.isEmpty());
-
     if (isMasked(path))
         return false;
-
-    FileStat stat = _base->stat(path);
-    if (!stat)
-        return false;
-
-    mask(path);
-    return true;
+    return ProxyFileSystem::_remove(path);
 }
 
 std::string MaskingFileSystem::_displayPath(const FileSystemPath &path) const {
-    // TODO(captainurist): gotta tag masked paths somehow, otherwise error messages might get confusing?
-    return _base->displayPath(path);
+    if (isMasked(path))
+        return "masked://" + path.string();
+    return ProxyFileSystem::_displayPath(path);
 }

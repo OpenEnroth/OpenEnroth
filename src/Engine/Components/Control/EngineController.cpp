@@ -18,11 +18,11 @@
 #include "Engine/mm7_data.h"
 
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
-#include "Library/FileSystem/Proxy/ScopedFileSystemSwizzle.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Platform/Interface/PlatformEvents.h"
 
 #include "Utility/Exception.h"
+#include "Utility/ScopedRollback.h"
 
 EngineController::EngineController(EngineControlStateHandle state): _state(std::move(state)) {}
 
@@ -210,7 +210,7 @@ void EngineController::loadGame(const Blob &savedGame) {
     MemoryFileSystem ramFs("ramfs");
     ramFs.write("saves/!!!save.mm7", savedGame);
 
-    ScopedFileSystemSwizzle swizzle(ufs, &ramFs);
+    ScopedRollback<FileSystem *> rollback(&ufs, &ramFs);
 
     goToMainMenu();
     pressGuiButton("MainMenu_LoadGame");

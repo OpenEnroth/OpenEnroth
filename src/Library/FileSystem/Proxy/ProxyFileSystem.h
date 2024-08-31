@@ -18,7 +18,7 @@ class ProxyFileSystem : public FileSystem {
         _base = base;
     }
 
- private:
+ protected:
     virtual bool _exists(const FileSystemPath &path) const override;
     virtual FileStat _stat(const FileSystemPath &path) const override;
     virtual void _ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const override;

@@ -65,8 +65,8 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
     _defaultLogSink = LogSink::createDefaultSink();
     _rootLogSink->addLogSink(_defaultLogSink.get());
 
-    // If we know the log level - init logger properly right away.
     if (_options.logLevel) {
+        // If we know the log level - init logger properly right away.
         _logger = std::make_unique<Logger>(*_options.logLevel, _rootLogSink.get());
     } else {
         // Otherwise log into a buffer before we read the log level from config.
@@ -74,43 +74,50 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
         _logger = std::make_unique<Logger>(LOG_TRACE, _bufferLogSink.get());
     }
 
-    // Log engine info.
-    Engine::LogEngineBuildInfo();
-
     try {
-        // Init paths.
-        resolvePaths(_environment.get(), &_options, _logger.get());
-
-        // Init filesystem - needs data paths initialized.
-        _fs = std::make_unique<EngineFileSystem>(_options.dataPath, _options.userPath);
-        if (_options.ramFsUserData) {
-            _userRamFs = std::make_unique<MemoryFileSystem>("ramfs");
-            ufs->setBase(_userRamFs.get());
-        }
-
-        // TODO(captainurist): --portable, .portable
-        // Migrate saves & config if needed.
-        if (!_options.ramFsUserData && _options.dataPath != _options.userPath)
-            migrateUserData();
-
-        // Init config - needs data paths initialized.
-        _config = std::make_shared<GameConfig>();
-        if (ufs->exists(configName)) {
-            _config->load(ufs->openForReading(configName).get());
-            _logger->info("Configuration file '{}' loaded!", ufs->displayPath(configName));
-        } else {
-            _config->reset();
-            _logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", ufs->displayPath(configName));
-        }
-    } catch (...) {
-        // Something happened while we were trying to read the config & figure out the log level.
-        // Print out logs at LOG_TRACE in this case & rethrow.
+        initializeWithLogger();
+    } catch (const std::exception &e) {
+        // If we still haven't figured out the log level - print everything out at LOG_TRACE.
         if (_bufferLogSink) {
             _logger->setLevel(LOG_TRACE);
             _logger->setSink(_rootLogSink.get());
             _bufferLogSink->flush(_logger.get());
         }
+
+        // Also log the exception so that it goes to all registered loggers.
+        _logger->critical("Terminated with exception: {}", e.what());
+
+        // And propagate.
         throw;
+    }
+}
+
+void GameStarter::initializeWithLogger() {
+    // Log engine info.
+    Engine::LogEngineBuildInfo();
+
+    // Init paths.
+    resolvePaths(_environment.get(), &_options, _logger.get());
+
+    // Init filesystem - needs data paths initialized.
+    _fs = std::make_unique<EngineFileSystem>(_options.dataPath, _options.userPath);
+    if (_options.ramFsUserData) {
+        _userRamFs = std::make_unique<MemoryFileSystem>("ramfs");
+        ufs = _userRamFs.get();
+    }
+
+    // Migrate saves & config if needed.
+    if (!_options.ramFsUserData && _options.dataPath != _options.userPath)
+        migrateUserData();
+
+    // Init config - needs data paths initialized.
+    _config = std::make_shared<GameConfig>();
+    if (ufs->exists(configName)) {
+        _config->load(ufs->openForReading(configName).get());
+        _logger->info("Configuration file '{}' loaded!", ufs->displayPath(configName));
+    } else {
+        _config->reset();
+        _logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", ufs->displayPath(configName));
     }
 
     // Finish logger init now that we know the desired log level.
@@ -118,6 +125,7 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
         _logger->setLevel(_config->debug.LogLevel.value());
         _logger->setSink(_rootLogSink.get());
         _bufferLogSink->flush(_logger.get());
+        _bufferLogSink.reset();
     }
 
     // Create platform.
@@ -253,13 +261,11 @@ void GameStarter::failOnInvalidPath(std::string_view dataPath, Platform *platfor
 
     std::string message = fmt::format(
         "Required file '{}' not found.\n"
-        "You should acquire licensed copy of M&M VII and copy its resources to \n{}\n\n"
-        "Additionally you should also copy the content from\n"
-        "resources directory from our repository there as well.",
+        "\n"
+        "You should acquire licensed copy of M&M VII and copy its resources to {}.",
         missingFile,
         dataPath
     );
-    logger->critical("{}", message);
     platform->showMessageBox("CRITICAL ERROR: missing resources", message);
     throw Exception("Data folder '{}' validation failed", dataPath);
 }
@@ -292,11 +298,19 @@ void GameStarter::migrateUserData() {
 }
 
 void GameStarter::run() {
-    _game->run();
+    try {
+        _game->run();
 
-    _application->component<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
-    _config->save(ufs->openForWriting(configName).get());
-    logger->info("Configuration file '{}' saved!", configName);
+        _application->component<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
+        _config->save(ufs->openForWriting(configName).get());
+        logger->info("Configuration file '{}' saved!", configName);
+    } catch (const std::exception &e) {
+        // Log the exception so that it goes to all registered loggers.
+        _logger->critical("Terminated with exception: {}", e.what());
+
+        // And propagate.
+        throw;
+    }
 }
 
 void GameStarter::runInstrumented(std::function<void(EngineController *)> controlRoutine) {
