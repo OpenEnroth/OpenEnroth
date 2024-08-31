@@ -5,7 +5,8 @@ set(LIBRARY_LOGGER_SOURCES
         LogEnums.cpp
         Logger.cpp
         LogSink.cpp
-        DistLogSink.cpp)
+        DistLogSink.cpp
+        StreamLogSink.cpp)
 
 set(LIBRARY_LOGGER_HEADERS
         BufferLogSink.h
@@ -14,7 +15,9 @@ set(LIBRARY_LOGGER_HEADERS
         Logger.h
         LogSink.h
         DistLogSink.h
-        LogSource.h)
+        LogSource.h
+        StreamLogSink.h
+        LogEnumFunctions.h)
 
 add_library(library_logger STATIC ${LIBRARY_LOGGER_SOURCES} ${LIBRARY_LOGGER_HEADERS})
 target_link_libraries(library_logger PUBLIC library_serialization utility PRIVATE spdlog::spdlog)

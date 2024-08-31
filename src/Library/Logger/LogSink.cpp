@@ -12,19 +12,7 @@
 #include <spdlog/sinks/msvc_sink.h> // NOLINT
 #include <spdlog/sinks/stdout_color_sinks.h> // NOLINT
 
-static spdlog::level::level_enum translateLogLevel(LogLevel level) {
-    switch (level) {
-    case LOG_TRACE:     return spdlog::level::trace;
-    case LOG_DEBUG:     return spdlog::level::debug;
-    case LOG_INFO:      return spdlog::level::info;
-    case LOG_WARNING:   return spdlog::level::warn;
-    case LOG_ERROR:     return spdlog::level::err;
-    case LOG_CRITICAL:  return spdlog::level::critical;
-    default:
-        assert(false);
-        return spdlog::level::trace;
-    }
-}
+#include "LogEnumFunctions.h"
 
 template<class BaseSink>
 class SpdlogSink : public LogSink {
@@ -77,18 +65,4 @@ std::unique_ptr<LogSink> LogSink::createDefaultSink() {
     return std::make_unique<SpdlogSink<spdlog::sinks::stderr_color_sink_st>>();
 #endif
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
