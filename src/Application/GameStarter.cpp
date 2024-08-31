@@ -88,7 +88,6 @@ GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options
             ufs->setBase(_userRamFs.get());
         }
 
-        // TODO(captainurist): --portable, .portable
         // Migrate saves & config if needed.
         if (!_options.ramFsUserData && _options.dataPath != _options.userPath)
             migrateUserData();
