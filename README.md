@@ -74,7 +74,9 @@ Game Assets Path Override
 
 You can set `OPENENROTH_MM7_PATH` env variable to point to the location of the game assets. If this variable is set, OpenEnroth will look for game assets only in the location it's pointing to. You might also want to add the following line to your bash profile (e.g. `~/.profile` on Ubuntu or `~/.zshrc` on Mac):
 
-    `export OPENENROTH_MM7_PATH="<path-to-mm7-game-assets>"`
+```
+export OPENENROTH_MM7_PATH="<path-to-mm7-game-assets>"
+```
 
 
 Development
