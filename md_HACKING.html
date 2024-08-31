@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5f16c3f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;26451ff</span>
    </div>
   </td>
  </tr>
@@ -208,13 +208,13 @@ Testing</h1>
 <li>Perform the steps that used to reproduce the bug.</li>
 <li>Press <code>Ctrl+Shift+R</code> again to stop trace recording. You will get two files generated in the current folder – <code>trace.json</code> and <code>trace.mm7</code>.</li>
 <li>Rename them into something more suiting (e.g. <code>issue_XXX.json</code> and <code>issue_XXX.mm7</code>) and create a PR to the <a href="https://github.com/OpenEnroth/OpenEnroth_TestData">OpenEnroth_TestData</a> repo.</li>
-<li>Once it's merged update the reference tag in the corresponding <a href="https://github.com/OpenEnroth/OpenEnroth/blob/master/test/Bin/GameTest/CMakeLists.txt">CMakeLists.txt</a> in the main repo.</li>
+<li>Once it's merged update the reference tag in the corresponding <a href="https://github.com/OpenEnroth/OpenEnroth/blob/master/test/Bin/CMakeLists.txt">CMakeLists.txt</a> in the main repo.</li>
 <li>Create a new test case in one of the game test files in <a href="https://github.com/OpenEnroth/OpenEnroth/tree/master/test/Bin/GameTest">the game tests folder</a>.</li>
 <li>Use <code><a class="el" href="classTestController.html#af9fcbb7e65a9e0c5c0798c3f09790011">TestController::playTraceFromTestData</a></code> to play back your trace, and add the necessary checks around it.</li>
 </ul>
 <p >If you need to record a trace with non-standard FPS (e.g. if an issue doesn't reproduce on lower FPS values), set <code>debug.trace_frame_time_ms</code> config value before starting OpenEnroth for recording.</p>
 <p >To run all unit tests locally, build a <code>UnitTest</code> cmake target, or build &amp; run <code>OpenEnroth_UnitTest</code>.</p>
-<p >To run all game tests locally, set <code>OPENENROTH_MM7_PATH</code> environment variable to point to the location of the game assets, then build <code><a class="el" href="classGameTest.html">GameTest</a></code> cmake target. Alternatively, you can build <code>OpenEnroth_GameTest</code>, and run it manually, passing the paths to both game assets and the test data via command line.</p>
+<p >To run all game tests locally, set <code>OPENENROTH_MM7_PATH</code> environment variable to point to the location of the game assets, then build <code>Run_GameTest_Headless_Parallel</code> cmake target. Alternatively, you can build <code>OpenEnroth_GameTest</code>, and run it manually, passing the paths to both game assets and the test data via command line.</p>
 <p >If you need to look closely at the recorded trace, you can play it by running <code>OpenEnroth play --speed 0.5 &lt;path-to-trace.json&gt;</code>. Alternatively, if you already have a unit test that runs the recorded trace, you can run <code>OpenEnroth_GameTest --speed 0.5 --gtest_filter=&lt;test-suite-name&gt;.&lt;test-name&gt; --test-path &lt;path-to-test-data-folder&gt;</code>. Note that <code>--gtest_filter</code> needs that <code>=</code> and won't work if you try passing test name after a space.</p>
 <p >Changing game logic might result in failures in game tests because they check random number generator state after each frame, and this will show as <code>Random state desynchronized when playing back trace</code> message in test logs. This is intentional – we don't want accidental game logic changes. If the change was actually intentional, then you might need to either retrace or re-record the traces for the failing tests. To retrace, run <code>OpenEnroth retrace &lt;path-to-trace.json&gt;</code>. Note that you can pass multiple trace paths to this command.</p>
 <h1><a class="anchor" id="autotoc_md7"></a>

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5f16c3f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;26451ff</span>
    </div>
   </td>
  </tr>
@@ -71,7 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classProxyFileSystem-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ProxyFileSystem Class Reference</div></div>
@@ -85,7 +85,8 @@ Inheritance diagram for ProxyFileSystem:</div>
  <div class="center">
   <img src="classProxyFileSystem.png" usemap="#ProxyFileSystem_map" alt=""/>
   <map id="ProxyFileSystem_map" name="ProxyFileSystem_map">
-<area href="classFileSystem.html" alt="FileSystem" shape="rect" coords="0,0,106,24"/>
+<area href="classFileSystem.html" alt="FileSystem" shape="rect" coords="0,0,120,24"/>
+<area href="classMaskingFileSystem.html" alt="MaskingFileSystem" shape="rect" coords="0,112,120,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -147,8 +148,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a35f323592fe0823dc7ff3af4c9271567 inherit pub_methods_classFileSystem"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystem.html#a35f323592fe0823dc7ff3af4c9271567">displayPath</a> (const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;path) const</td></tr>
 <tr class="separator:a35f323592fe0823dc7ff3af4c9271567 inherit pub_methods_classFileSystem"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
-Private Member Functions</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
 <tr class="memitem:a8b0f00fce19158211ff90659aa6500c2"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyFileSystem.html#a8b0f00fce19158211ff90659aa6500c2">_exists</a> (const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;path) const override</td></tr>
 <tr class="separator:a8b0f00fce19158211ff90659aa6500c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f68cf62c6c6a5e0f908331c73417637"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="structFileStat.html">FileStat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyFileSystem.html#a6f68cf62c6c6a5e0f908331c73417637">_stat</a> (const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;path) const override</td></tr>
@@ -171,21 +172,6 @@ Private Member Functions</h2></td></tr>
 <tr class="separator:a52a7d3554f6b18ac40995a3a702aa709"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8262573ec6e81d366b7dbd8b24aaf1e4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFileSystem.html">FileSystem</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyFileSystem.html#a8262573ec6e81d366b7dbd8b24aaf1e4">nonNullBase</a> () const</td></tr>
 <tr class="separator:a8262573ec6e81d366b7dbd8b24aaf1e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
-Private Attributes</h2></td></tr>
-<tr class="memitem:a6f35b60df283620f5755819aa459c45c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFileSystem.html">FileSystem</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyFileSystem.html#a6f35b60df283620f5755819aa459c45c">_base</a> = nullptr</td></tr>
-<tr class="separator:a6f35b60df283620f5755819aa459c45c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_types_classFileSystem"><td colspan="2" onclick="javascript:toggleInherit('pro_types_classFileSystem')"><img src="closed.png" alt="-"/>&#160;Protected Types inherited from <a class="el" href="classFileSystem.html">FileSystem</a></td></tr>
-<tr class="memitem:a4703315bd214c9d2eb335d0ce650efe7 inherit pro_types_classFileSystem"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a4703315bd214c9d2eb335d0ce650efe7 inherit pro_types_classFileSystem"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classFileSystem.html#a4703315bd214c9d2eb335d0ce650efe7">FileSystemTrieNode</a> = <a class="el" href="classdetail_1_1FileSystemTrieNode.html">detail::FileSystemTrieNode</a>&lt; T &gt;</td></tr>
-<tr class="separator:a4703315bd214c9d2eb335d0ce650efe7 inherit pro_types_classFileSystem"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4047b4c7a41738894ccee53a6cb82e04 inherit pro_types_classFileSystem"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
-<tr class="memitem:a4047b4c7a41738894ccee53a6cb82e04 inherit pro_types_classFileSystem"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classFileSystem.html#a4047b4c7a41738894ccee53a6cb82e04">FileSystemTrie</a> = <a class="el" href="classdetail_1_1FileSystemTrie.html">detail::FileSystemTrie</a>&lt; T &gt;</td></tr>
-<tr class="separator:a4047b4c7a41738894ccee53a6cb82e04 inherit pro_types_classFileSystem"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abfb49152c7482f5e9df3f3804fe61353"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystem.html#abfb49152c7482f5e9df3f3804fe61353">_exists</a> (const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;path) const =0</td></tr>
 <tr class="separator:abfb49152c7482f5e9df3f3804fe61353"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2b1e9880dc0a8d506ed80fca07b1306"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="structFileStat.html">FileStat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystem.html#ac2b1e9880dc0a8d506ed80fca07b1306">_stat</a> (const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;path) const =0</td></tr>
@@ -206,6 +192,21 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a1864770c0aebd406eedd86a1d299dc79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45a83202c3a2307e2b08109780b9430e"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystem.html#a45a83202c3a2307e2b08109780b9430e">_displayPath</a> (const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;path) const =0</td></tr>
 <tr class="separator:a45a83202c3a2307e2b08109780b9430e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a6f35b60df283620f5755819aa459c45c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFileSystem.html">FileSystem</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classProxyFileSystem.html#a6f35b60df283620f5755819aa459c45c">_base</a> = nullptr</td></tr>
+<tr class="separator:a6f35b60df283620f5755819aa459c45c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_types_classFileSystem"><td colspan="2" onclick="javascript:toggleInherit('pro_types_classFileSystem')"><img src="closed.png" alt="-"/>&#160;Protected Types inherited from <a class="el" href="classFileSystem.html">FileSystem</a></td></tr>
+<tr class="memitem:a4703315bd214c9d2eb335d0ce650efe7 inherit pro_types_classFileSystem"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a4703315bd214c9d2eb335d0ce650efe7 inherit pro_types_classFileSystem"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classFileSystem.html#a4703315bd214c9d2eb335d0ce650efe7">FileSystemTrieNode</a> = <a class="el" href="classdetail_1_1FileSystemTrieNode.html">detail::FileSystemTrieNode</a>&lt; T &gt;</td></tr>
+<tr class="separator:a4703315bd214c9d2eb335d0ce650efe7 inherit pro_types_classFileSystem"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4047b4c7a41738894ccee53a6cb82e04 inherit pro_types_classFileSystem"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a4047b4c7a41738894ccee53a6cb82e04 inherit pro_types_classFileSystem"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classFileSystem.html#a4047b4c7a41738894ccee53a6cb82e04">FileSystemTrie</a> = <a class="el" href="classdetail_1_1FileSystemTrie.html">detail::FileSystemTrie</a>&lt; T &gt;</td></tr>
+<tr class="separator:a4047b4c7a41738894ccee53a6cb82e04 inherit pro_types_classFileSystem"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af80e047f9918562a56aacd46087d5814" name="af80e047f9918562a56aacd46087d5814"></a>
@@ -254,12 +255,14 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classFileSystem.html#a45a83202c3a2307e2b08109780b9430e">FileSystem</a>.</p>
+
+<p>Reimplemented in <a class="el" href="classMaskingFileSystem.html#abead1778506b5be894eef7074b3c580b">MaskingFileSystem</a>.</p>
 
 </div>
 </div>
@@ -282,12 +285,14 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classFileSystem.html#abfb49152c7482f5e9df3f3804fe61353">FileSystem</a>.</p>
+
+<p>Reimplemented in <a class="el" href="classMaskingFileSystem.html#a0824ae5216ae2b908aaeb572ce58bd10">MaskingFileSystem</a>.</p>
 
 </div>
 </div>
@@ -320,12 +325,14 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classFileSystem.html#a0cc2712935dad0670320841b80131d9a">FileSystem</a>.</p>
+
+<p>Reimplemented in <a class="el" href="classMaskingFileSystem.html#a6d4fff42d402769e7abcff1e001ebf93">MaskingFileSystem</a>.</p>
 
 </div>
 </div>
@@ -348,12 +355,14 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classFileSystem.html#a0581442cd63c3f3e1d206c0a488564f8">FileSystem</a>.</p>
+
+<p>Reimplemented in <a class="el" href="classMaskingFileSystem.html#a9484bf263d5b34c1efaca623ae1277d1">MaskingFileSystem</a>.</p>
 
 </div>
 </div>
@@ -376,12 +385,14 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classFileSystem.html#aed6dd33b5382f819d70c64a744164eb7">FileSystem</a>.</p>
+
+<p>Reimplemented in <a class="el" href="classMaskingFileSystem.html#ad989655441aec5005e29c6ed79562769">MaskingFileSystem</a>.</p>
 
 </div>
 </div>
@@ -404,12 +415,14 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classFileSystem.html#aff7ce635598816b67e81543ec111a14c">FileSystem</a>.</p>
+
+<p>Reimplemented in <a class="el" href="classMaskingFileSystem.html#a2b9b6a3678ed2819efb78267e0ce807c">MaskingFileSystem</a>.</p>
 
 </div>
 </div>
@@ -432,12 +445,14 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classFileSystem.html#a1864770c0aebd406eedd86a1d299dc79">FileSystem</a>.</p>
+
+<p>Reimplemented in <a class="el" href="classMaskingFileSystem.html#a61fbfcca6fc488f958f887b8488767a9">MaskingFileSystem</a>.</p>
 
 </div>
 </div>
@@ -470,12 +485,14 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Reimplemented from <a class="el" href="classFileSystem.html#af7580850d7452768bcba20a75380b026">FileSystem</a>.</p>
+
+<p>Reimplemented in <a class="el" href="classMaskingFileSystem.html#a9008007095ffd3c2437ed9daeacbbeae">MaskingFileSystem</a>.</p>
 
 </div>
 </div>
@@ -498,12 +515,14 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classFileSystem.html#ac2b1e9880dc0a8d506ed80fca07b1306">FileSystem</a>.</p>
+
+<p>Reimplemented in <a class="el" href="classMaskingFileSystem.html#aa85b2dbdca173895bd7bbc1a06444b2e">MaskingFileSystem</a>.</p>
 
 </div>
 </div>
@@ -536,12 +555,14 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">private</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classFileSystem.html#a2087a7e7c987b41560cbc897f3f46676">FileSystem</a>.</p>
+
+<p>Reimplemented in <a class="el" href="classMaskingFileSystem.html#a6927605db3a59383d01fd7427996e1a2">MaskingFileSystem</a>.</p>
 
 </div>
 </div>
@@ -588,7 +609,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

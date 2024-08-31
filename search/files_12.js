@@ -2,7 +2,7 @@ var searchData=
 [
   ['saveload_2ecpp_0',['SaveLoad.cpp',['../SaveLoad_8cpp.html',1,'']]],
   ['saveload_2eh_1',['SaveLoad.h',['../SaveLoad_8h.html',1,'']]],
-  ['scopedfilesystemswizzle_2eh_2',['ScopedFileSystemSwizzle.h',['../ScopedFileSystemSwizzle_8h.html',1,'']]],
+  ['scopedrollback_2eh_2',['ScopedRollback.h',['../ScopedRollback_8h.html',1,'']]],
   ['scopedtestfile_2ecpp_3',['ScopedTestFile.cpp',['../ScopedTestFile_8cpp.html',1,'']]],
   ['scopedtestfile_2eh_4',['ScopedTestFile.h',['../ScopedTestFile_8h.html',1,'']]],
   ['scopedtestfileslot_2ecpp_5',['ScopedTestFileSlot.cpp',['../ScopedTestFileSlot_8cpp.html',1,'']]],
@@ -81,7 +81,9 @@ var searchData=
   ['startstate_2eh_78',['StartState.h',['../StartState_8h.html',1,'']]],
   ['storylinetexttable_2ecpp_79',['StorylineTextTable.cpp',['../StorylineTextTable_8cpp.html',1,'']]],
   ['storylinetexttable_2eh_80',['StorylineTextTable.h',['../StorylineTextTable_8h.html',1,'']]],
-  ['stringoutputstream_2ecpp_81',['StringOutputStream.cpp',['../StringOutputStream_8cpp.html',1,'']]],
-  ['stringoutputstream_2eh_82',['StringOutputStream.h',['../StringOutputStream_8h.html',1,'']]],
-  ['stru314_2eh_83',['stru314.h',['../stru314_8h.html',1,'']]]
+  ['streamlogsink_2ecpp_81',['StreamLogSink.cpp',['../StreamLogSink_8cpp.html',1,'']]],
+  ['streamlogsink_2eh_82',['StreamLogSink.h',['../StreamLogSink_8h.html',1,'']]],
+  ['stringoutputstream_2ecpp_83',['StringOutputStream.cpp',['../StringOutputStream_8cpp.html',1,'']]],
+  ['stringoutputstream_2eh_84',['StringOutputStream.h',['../StringOutputStream_8h.html',1,'']]],
+  ['stru314_2eh_85',['stru314.h',['../stru314_8h.html',1,'']]]
 ];

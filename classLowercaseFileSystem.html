@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5f16c3f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;26451ff</span>
    </div>
   </td>
  </tr>
@@ -179,6 +179,8 @@ Private Member Functions</h2></td></tr>
 <tr class="separator:a672325bfe5714d7f50e96bbc4bb393a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ca981b9462b00fff6e108fab58e07b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLowercaseFileSystem.html#a8ca981b9462b00fff6e108fab58e07b8">cacheLs</a> (<a class="el" href="classLowercaseFileSystem.html#ae6256b60b6ea9cd1c41988261e858628">Node</a> *node, const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;basePath) const</td></tr>
 <tr class="separator:a8ca981b9462b00fff6e108fab58e07b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0d95cfdfdb2a9e41b2c212ae16b0314"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLowercaseFileSystem.html#ab0d95cfdfdb2a9e41b2c212ae16b0314">invalidateLs</a> (<a class="el" href="classLowercaseFileSystem.html#ae6256b60b6ea9cd1c41988261e858628">Node</a> *node) const</td></tr>
+<tr class="separator:ab0d95cfdfdb2a9e41b2c212ae16b0314"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c263be6d9522d918fcccb314bb98dc9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLowercaseFileSystem.html#a5c263be6d9522d918fcccb314bb98dc9">cacheRemove</a> (<a class="el" href="classLowercaseFileSystem.html#ae6256b60b6ea9cd1c41988261e858628">Node</a> *node) const</td></tr>
 <tr class="separator:a5c263be6d9522d918fcccb314bb98dc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d59ab4b13f2f5c3997a4b0cf026ae1d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLowercaseFileSystem.html#a2d59ab4b13f2f5c3997a4b0cf026ae1d">cacheInsert</a> (<a class="el" href="classLowercaseFileSystem.html#ae6256b60b6ea9cd1c41988261e858628">Node</a> *node, const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;tail, <a class="el" href="FileSystemEnums_8h.html#a2c794c5c13ab4dd7e65bad031dbe41c3">FileType</a> type) const</td></tr>
@@ -230,6 +232,7 @@ Additional Inherited Members</h2></td></tr>
 <li>Contains only lowercase-named files.</li>
 <li>Effectively gives the user a case-insensitive view over a potentially case-sensitive filesystem.</li>
 <li>Caches the contents of the underlying filesystem. Call <code>refresh</code> to clear cache.</li>
+<li>Preserves empty folders that exist on the underlying FS, but also supports file systems that automatically prune empty folders.</li>
 <li>Conflicts are visible as empty files but are not readable / writeable / removeable (conflict is when both "file.txt" and "FILE.txt" exist).</li>
 <li>Is not thread-safe. Even const methods update the underlying cache.</li>
 </ul>
@@ -712,6 +715,32 @@ Additional Inherited Members</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">void LowercaseFileSystem::cacheRemove </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classLowercaseFileSystem.html#ae6256b60b6ea9cd1c41988261e858628">Node</a> *&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab0d95cfdfdb2a9e41b2c212ae16b0314" name="ab0d95cfdfdb2a9e41b2c212ae16b0314"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0d95cfdfdb2a9e41b2c212ae16b0314">&#9670;&#160;</a></span>invalidateLs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void LowercaseFileSystem::invalidateLs </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classLowercaseFileSystem.html#ae6256b60b6ea9cd1c41988261e858628">Node</a> *&#160;</td>
           <td class="paramname"><em>node</em></td><td>)</td>

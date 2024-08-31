@@ -149,7 +149,7 @@ var searchData=
   ['_7erandomengine_146',['~RandomEngine',['../classRandomEngine.html#aeefb0e852951547da7a92802d3c15da7',1,'RandomEngine']]],
   ['_7erenderer_147',['~Renderer',['../classRenderer.html#afeee408862d5bd6255a6882d47e6d5cd',1,'Renderer']]],
   ['_7escopedenablethrowingassertions_148',['~ScopedEnableThrowingAssertions',['../structdetail_1_1ScopedEnableThrowingAssertions.html#a6b2da9132711303a7dc0319d77d26777',1,'detail::ScopedEnableThrowingAssertions']]],
-  ['_7escopedfilesystemswizzle_149',['~ScopedFileSystemSwizzle',['../classScopedFileSystemSwizzle.html#a978e4eeee0bae57950fa221bb9cc8392',1,'ScopedFileSystemSwizzle']]],
+  ['_7escopedrollback_149',['~ScopedRollback',['../classScopedRollback.html#a3052e929bf0489dcd8835d1e71841cf0',1,'ScopedRollback']]],
   ['_7escopedtestfile_150',['~ScopedTestFile',['../classScopedTestFile.html#ac720102b2c1d04295622895da7458cae',1,'ScopedTestFile']]],
   ['_7escopedtestfileslot_151',['~ScopedTestFileSlot',['../classScopedTestFileSlot.html#a8ec38b35654ab6dfbebc545969685ada',1,'ScopedTestFileSlot']]],
   ['_7escopeguard_152',['~ScopeGuard',['../classScopeGuard.html#a3c14b287aab88bdbd25cfc7dc0fac173',1,'ScopeGuard']]],
@@ -165,11 +165,12 @@ var searchData=
   ['_7esndreader_162',['~SndReader',['../classSndReader.html#ac65c3e89a0c4743a829db993b81c4f93',1,'SndReader']]],
   ['_7espellfx_5fbillboard_163',['~SpellFX_Billboard',['../structSpellFX__Billboard.html#a1ff2ae71b6135aeaeb4679968165fc1e',1,'SpellFX_Billboard']]],
   ['_7espellfxrenderer_164',['~SpellFxRenderer',['../structSpellFxRenderer.html#a8eb173b7c558b19dbd77d9181d110181',1,'SpellFxRenderer']]],
-  ['_7estringoutputstream_165',['~StringOutputStream',['../classStringOutputStream.html#a14fe71f694b3c145543b258775aec973',1,'StringOutputStream']]],
-  ['_7estru10_166',['~stru10',['../structstru10.html#afbbbedb5c6f95ffe0fdb4d1a8580f468',1,'stru10']]],
-  ['_7estru314_167',['~stru314',['../structstru314.html#a19c9b3d11b111abb410af9cff3f6636b',1,'stru314']]],
-  ['_7etemporarydir_168',['~TemporaryDir',['../classTemporaryDir.html#ae815f10f33f79ab481d1cc38ae0d0070',1,'TemporaryDir']]],
-  ['_7etestcontroller_169',['~TestController',['../classTestController.html#ab8c9f06ec38003688261be84150c11ff',1,'TestController']]],
-  ['_7evidreader_170',['~VidReader',['../classVidReader.html#af03b6fefc7a74f9ebf18a7abf53a4e29',1,'VidReader']]],
-  ['_7ewindowmanager_171',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]]
+  ['_7estreamlogsink_165',['~StreamLogSink',['../classStreamLogSink.html#aa5923a324e189e561e4206a978d7aeaa',1,'StreamLogSink']]],
+  ['_7estringoutputstream_166',['~StringOutputStream',['../classStringOutputStream.html#a14fe71f694b3c145543b258775aec973',1,'StringOutputStream']]],
+  ['_7estru10_167',['~stru10',['../structstru10.html#afbbbedb5c6f95ffe0fdb4d1a8580f468',1,'stru10']]],
+  ['_7estru314_168',['~stru314',['../structstru314.html#a19c9b3d11b111abb410af9cff3f6636b',1,'stru314']]],
+  ['_7etemporarydir_169',['~TemporaryDir',['../classTemporaryDir.html#ae815f10f33f79ab481d1cc38ae0d0070',1,'TemporaryDir']]],
+  ['_7etestcontroller_170',['~TestController',['../classTestController.html#ab8c9f06ec38003688261be84150c11ff',1,'TestController']]],
+  ['_7evidreader_171',['~VidReader',['../classVidReader.html#af03b6fefc7a74f9ebf18a7abf53a4e29',1,'VidReader']]],
+  ['_7ewindowmanager_172',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]]
 ];
