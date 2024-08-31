@@ -17,8 +17,14 @@ if(OE_BUILD_TESTS)
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             USES_TERMINAL)
 
-    add_custom_target(Run_RetraceTest_Headless_Parallel
+    add_custom_target(Run_RetraceTest_Parallel
             Python::Interpreter ${CMAKE_CURRENT_SOURCE_DIR}/ParallelRetrace.py --ls ${OE_TESTDATA_PATH} $<TARGET_FILE:OpenEnroth>
+            DEPENDS OpenEnroth OpenEnroth_TestData
+            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+            USES_TERMINAL)
+
+    add_custom_target(Run_RetraceTest_Headless_Parallel
+            Python::Interpreter ${CMAKE_CURRENT_SOURCE_DIR}/ParallelRetrace.py --ls ${OE_TESTDATA_PATH} --headless $<TARGET_FILE:OpenEnroth>
             DEPENDS OpenEnroth OpenEnroth_TestData
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             USES_TERMINAL)

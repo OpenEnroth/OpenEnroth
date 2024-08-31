@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <chrono>
 
 #include "Application/GameStarter.h"
 
@@ -70,6 +71,7 @@ int runRetrace(const OpenEnrothOptions &options) {
 
         for (const std::string &tracePath : options.retrace.traces) {
             fmt::println(stderr, "Retracing '{}'...", tracePath);
+            auto startTime = std::chrono::steady_clock::now();
 
             std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
             Blob oldTraceBlob = Blob::fromFile(tracePath);
@@ -82,6 +84,9 @@ int runRetrace(const OpenEnrothOptions &options) {
             engine->config->graphics.FPSLimit.setValue(0);
             player->playTrace(game, std::move(oldTrace.events), tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
             EngineTraceRecording recording = recorder->finishRecording(game);
+
+            auto endTime = std::chrono::steady_clock::now();
+            fmt::println(stderr, "Retraced in {}ms.", std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count());
 
             if (!options.retrace.checkCanonical) {
                 oldTraceBlob = Blob(); // Close old trace file
