@@ -80,7 +80,7 @@
 #include "Library/Fsm/Fsm.h"
 
 #include "Utility/String/Format.h"
-#include "Utility/Exception.h"
+#include "Utility/ScopeGuard.h"
 
 #include "GameIocContainer.h"
 #include "GameWindowHandler.h"
@@ -103,22 +103,24 @@ int Game::run() {
     std::string_view startingState = "Start";
     // Need to have this do/while external loop till we remove entirely all the states
     do {
-        Fsm *fsm = application->installComponent(GameFsmBuilder::buildFsm(startingState));
-        while (!fsm->hasReachedExitState()) {
-            render->ClearBlack();
-            render->BeginScene2D();
+        {
+            Fsm *fsm = application->installComponent(GameFsmBuilder::buildFsm(startingState));
+            MM_AT_SCOPE_EXIT(application->removeComponent<Fsm>());
+            while (!fsm->hasReachedExitState()) {
+                render->ClearBlack();
+                render->BeginScene2D();
 
-            fsm->update();
+                fsm->update();
 
-            // This method should be interpreted as a future RetainedUISystem::update()
-            // It does update all the GUIWindow alive + it does various hacks
-            GUI_UpdateWindows();
+                // This method should be interpreted as a future RetainedUISystem::update()
+                // It does update all the GUIWindow alive + it does various hacks
+                GUI_UpdateWindows();
 
-            render->Present();
+                render->Present();
 
-            MessageLoopWithWait();
+                MessageLoopWithWait();
+            }
         }
-        application->removeComponent<Fsm>();
 
         // Here we're still running the rest of the loops as usual.
         uGameState = GAME_STATE_PLAYING;
