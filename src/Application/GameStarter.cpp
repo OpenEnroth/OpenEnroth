@@ -103,7 +103,7 @@ void GameStarter::initializeWithLogger() {
     _fs = std::make_unique<EngineFileSystem>(_options.dataPath, _options.userPath);
     if (_options.ramFsUserData) {
         _userRamFs = std::make_unique<MemoryFileSystem>("ramfs");
-        ufs->setBase(_userRamFs.get());
+        ufs = _userRamFs.get();
     }
 
     // Migrate saves & config if needed.

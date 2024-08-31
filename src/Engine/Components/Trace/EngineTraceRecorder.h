@@ -1,10 +1,12 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 
 #include "Library/Platform/Application/PlatformApplicationAware.h"
 
 #include "Utility/Memory/Blob.h"
+#include "Utility/ScopedRollback.h"
 
 #include "EngineTraceRecording.h"
 
@@ -12,7 +14,6 @@ class EngineController;
 struct EventTrace;
 class ConfigPatch;
 class FileSystem;
-class ScopedFileSystemSwizzle;
 
 /**
  * Component that exposes a trace recording interface. Doesn't have a `Component` in its name because who likes
@@ -78,5 +79,5 @@ class EngineTraceRecorder : private PlatformApplicationAware {
     std::unique_ptr<EventTrace> _trace;
     std::unique_ptr<ConfigPatch> _configSnapshot;
     std::unique_ptr<FileSystem> _ramFs;
-    std::unique_ptr<ScopedFileSystemSwizzle> _fsSwizzle; // We're being lazy here and using a unique_ptr, even though it's not really needed.
+    std::optional<ScopedRollback<FileSystem *>> _fsRollback;
 };

@@ -4,8 +4,7 @@ set(LIBRARY_FILESYSTEM_PROXY_SOURCES
         ProxyFileSystem.cpp)
 
 set(LIBRARY_FILESYSTEM_PROXY_HEADERS
-        ProxyFileSystem.h
-        ScopedFileSystemSwizzle.h)
+        ProxyFileSystem.h)
 
 add_library(library_filesystem_proxy STATIC ${LIBRARY_FILESYSTEM_PROXY_SOURCES} ${LIBRARY_FILESYSTEM_PROXY_HEADERS})
 target_link_libraries(library_filesystem_proxy PUBLIC library_filesystem_interface utility)
