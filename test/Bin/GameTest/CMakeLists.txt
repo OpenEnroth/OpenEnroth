@@ -16,8 +16,6 @@ if(OE_BUILD_TESTS)
 
     target_check_style(OpenEnroth_GameTest)
 
-
-    # GameTest
     add_custom_target(Run_GameTest
             OpenEnroth_GameTest --test-path ${OE_TESTDATA_PATH}
             DEPENDS OpenEnroth_GameTest OpenEnroth_TestData
