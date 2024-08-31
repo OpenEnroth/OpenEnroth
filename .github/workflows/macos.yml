@@ -106,7 +106,7 @@ jobs:
         if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration != 'Debug'
         working-directory: build
         run: |
-          make Run_RetraceTest_Headless
+          make Run_RetraceTest_Headless_Parallel
         env:
           OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
