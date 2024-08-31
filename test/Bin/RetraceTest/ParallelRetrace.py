@@ -38,21 +38,24 @@ def split_into_batches(args, n):
 
 def main():
     parser = argparse.ArgumentParser(description="Run OpenEnroth retrace --headless --check-canonical in parallel")
-    parser.add_argument("-j", type=int, default=multiprocessing.cpu_count() * 2, help="Number of subprocesses to spawn")
+    parser.add_argument("-j", type=int, default=multiprocessing.cpu_count() * 3, help="Number of subprocesses to spawn")
+    parser.add_argument("--ls", help="Directory to look for traces to retrace")
     parser.add_argument("program", help="Path to OpenEnroth binary")
-    parser.add_argument("pattern", help="Glob pattern to match traces")
+    parser.add_argument("traces", nargs=argparse.REMAINDER, help="Trace files to retrace")
 
     args = parser.parse_args()
 
     # Expand the glob pattern to a list of files
-    files = glob.glob(args.pattern)
+    traces = args.traces
+    if args.ls:
+        traces += glob.glob(args.ls + "/*.json")
 
-    if not files:
-        print(f"No files matched the glob pattern: {args.pattern}")
+    if not traces:
+        print("No traces to retrace")
         sys.exit(1)
 
     # Split free args into N batches
-    batches = split_into_batches(files, args.j)
+    batches = split_into_batches(traces, args.j)
 
     # Run the program in N parallel instances
     exit_codes = run_in_parallel(args.program, ["retrace", "--headless", "--check-canonical"], batches)

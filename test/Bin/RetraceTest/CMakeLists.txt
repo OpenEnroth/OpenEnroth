@@ -6,19 +6,19 @@ if(OE_BUILD_TESTS)
     # Note that it's possible to drop the hacky --glob option, but it will likely break on Windows with its limit on
     # command line size. So it's either --glob, or passing args in a @file.
     add_custom_target(Run_RetraceTest
-            OpenEnroth retrace --check-canonical --glob ${OE_TESTDATA_PATH}/*.json
+            OpenEnroth retrace --check-canonical --ls ${OE_TESTDATA_PATH}
             DEPENDS OpenEnroth OpenEnroth_TestData
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             USES_TERMINAL)
 
     add_custom_target(Run_RetraceTest_Headless
-            OpenEnroth retrace --headless --check-canonical --glob ${OE_TESTDATA_PATH}/*.json
+            OpenEnroth retrace --headless --check-canonical --ls ${OE_TESTDATA_PATH}
             DEPENDS OpenEnroth OpenEnroth_TestData
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             USES_TERMINAL)
 
     add_custom_target(Run_RetraceTest_Headless_Parallel
-            Python::Interpreter ${CMAKE_CURRENT_SOURCE_DIR}/ParallelRetrace.py $<TARGET_FILE:OpenEnroth> "\"${OE_TESTDATA_PATH}/*.json\""
+            Python::Interpreter ${CMAKE_CURRENT_SOURCE_DIR}/ParallelRetrace.py --ls ${OE_TESTDATA_PATH} $<TARGET_FILE:OpenEnroth>
             DEPENDS OpenEnroth OpenEnroth_TestData
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
             USES_TERMINAL)

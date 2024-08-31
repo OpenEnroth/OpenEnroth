@@ -16,11 +16,6 @@ add_subdirectory(mio)
 add_subdirectory(sol2)
 add_subdirectory(imgui)
 
-# glob
-# not adding a subdirectory because it will download more libraries at build tree generaion stage
-add_library(Glob INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/glob/single_include/glob/glob.hpp)
-target_include_directories(Glob INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/glob/single_include)
-
 # fmt
 add_subdirectory(fmt)
 target_compile_definitions(fmt INTERFACE FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals.
