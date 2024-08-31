@@ -104,7 +104,7 @@ jobs:
           key: 'windows-${{matrix.configuration}}-${{matrix.architecture}}'
           save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
           verbose: 2
-          max-size: 100M
+          max-size: 200M
           
       # MSVC hit rate is higher with ignoring the hash_dir and is safe
       - name: Set ccache config values

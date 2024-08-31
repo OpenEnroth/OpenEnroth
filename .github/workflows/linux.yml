@@ -99,7 +99,7 @@ jobs:
           key: 'linux-${{matrix.configuration}}-${{matrix.architecture}}'
           save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
           verbose: 2
-          max-size: 100M
+          max-size: 200M
 
       - name: Configure
         run: |

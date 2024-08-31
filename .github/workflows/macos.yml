@@ -70,7 +70,7 @@ jobs:
           key: 'macos-${{matrix.configuration}}-${{matrix.architecture}}'
           save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
           verbose: 2
-          max-size: 100M
+          max-size: 200M
 
       # MacOS deployment target here should be kept in sync with what's set in OpenEnroth_Dependencies:
       # https://github.com/OpenEnroth/OpenEnroth_Dependencies/blob/master/scripts/build_all.sh
