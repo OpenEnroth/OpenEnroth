@@ -15,3 +15,8 @@ set(OE_TESTDATA_PATH ${CMAKE_CURRENT_BINARY_DIR}/test_data/data)
 add_subdirectory(GameTest)
 add_subdirectory(RetraceTest)
 add_subdirectory(UnitTest)
+
+# A target to build & run everything. LodTool & CodeGen are added in b/c they are not tested & we sometimes break the
+# build there.
+add_custom_target(Run_AllTests_Headless_Parallel
+        DEPENDS Run_UnitTest Run_GameTest_Headless_Parallel Run_RetraceTest_Headless_Parallel LodTool CodeGen)
