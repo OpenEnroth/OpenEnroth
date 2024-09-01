@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d612a8b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ee9f282</span>
    </div>
   </td>
  </tr>
@@ -84,27 +84,31 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a9b09c8633fdfe1128a7ea799ef5a40e7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ExpectExtensions_8h.html#a9b09c8633fdfe1128a7ea799ef5a40e7">EXPECT_THROW_MESSAGE</a>(statement,  message)</td></tr>
-<tr class="separator:a9b09c8633fdfe1128a7ea799ef5a40e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fc42e4be1145bc38128b81d094f4fd9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ExpectExtensions_8h.html#a2fc42e4be1145bc38128b81d094f4fd9">EXPECT_THROW_MESSAGE</a>(STATEMENT,  MESSAGE)</td></tr>
+<tr class="separator:a2fc42e4be1145bc38128b81d094f4fd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4c58dc5c207803c3a154db744c9baf1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ExpectExtensions_8h.html#aa4c58dc5c207803c3a154db744c9baf1">EXPECT_CONTAINS</a>(HAYSTACK,  NEEDLE)</td></tr>
+<tr class="separator:aa4c58dc5c207803c3a154db744c9baf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afeba41c4d04f52faf2cc4e25c572d67a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ExpectExtensions_8h.html#afeba41c4d04f52faf2cc4e25c572d67a">EXPECT_MISSES</a>(HAYSTACK,  NEEDLE)</td></tr>
+<tr class="separator:afeba41c4d04f52faf2cc4e25c572d67a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a id="a9b09c8633fdfe1128a7ea799ef5a40e7" name="a9b09c8633fdfe1128a7ea799ef5a40e7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b09c8633fdfe1128a7ea799ef5a40e7">&#9670;&#160;</a></span>EXPECT_THROW_MESSAGE</h2>
+<a id="aa4c58dc5c207803c3a154db744c9baf1" name="aa4c58dc5c207803c3a154db744c9baf1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4c58dc5c207803c3a154db744c9baf1">&#9670;&#160;</a></span>EXPECT_CONTAINS</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define EXPECT_THROW_MESSAGE</td>
+          <td class="memname">#define EXPECT_CONTAINS</td>
           <td>(</td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">statement, </td>
+          <td class="paramname">HAYSTACK, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">&#160;</td>
-          <td class="paramname">message&#160;</td>
+          <td class="paramname">NEEDLE&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -113,15 +117,86 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">try</span> {                                                                                                               \</div>
-<div class="line">        statement;                                                                                                      \</div>
-<div class="line">        EXPECT_TRUE(<span class="keyword">false</span>) &lt;&lt; #statement &lt;&lt; <span class="stringliteral">&quot; didn&#39;t throw.&quot;</span>;                                                           \</div>
-<div class="line">    } <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp;<a class="code hl_variable" href="Json__ut_8cpp.html#ad3d8865e86dcc3ccd62ab3c24c806d54">e</a>) {                                                                                 \</div>
-<div class="line">        EXPECT_TRUE(std::string_view(<a class="code hl_variable" href="Json__ut_8cpp.html#ad3d8865e86dcc3ccd62ab3c24c806d54">e</a>.what()).contains(message))                                                       \</div>
-<div class="line">            &lt;&lt; <span class="stringliteral">&quot;exception message &#39;&quot;</span> &lt;&lt; <a class="code hl_variable" href="Json__ut_8cpp.html#ad3d8865e86dcc3ccd62ab3c24c806d54">e</a>.what() &lt;&lt; <span class="stringliteral">&quot;&#39; doesn&#39;t have &#39;&quot;</span> &lt;&lt; message &lt;&lt; <span class="stringliteral">&quot;&#39; as a substring.&quot;</span>;               \</div>
-<div class="line">    } <span class="keywordflow">catch</span> (...) {                                                                                                     \</div>
-<div class="line">        EXPECT_TRUE(<span class="keyword">false</span>) &lt;&lt; #statement &lt;&lt; <span class="stringliteral">&quot; has thrown an unknown exception.&quot;</span>;                                        \</div>
-<div class="line">    }</div>
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                                                                                                \</div>
+<div class="line">        <span class="keyword">const</span> <span class="keyword">auto</span> &amp;__haystack = (HAYSTACK);                                                                            \</div>
+<div class="line">        <span class="keyword">const</span> <span class="keyword">auto</span> &amp;__needle = (NEEDLE);                                                                                \</div>
+<div class="line">        EXPECT_TRUE(__haystack.contains(__needle))                                                                      \</div>
+<div class="line">            &lt;&lt; #HAYSTACK &lt;&lt; <span class="stringliteral">&quot; (&quot;</span> &lt;&lt; testing::PrintToString(__haystack) &lt;&lt; <span class="stringliteral">&quot;) doesn&#39;t contain &quot;</span>                          \</div>
+<div class="line">            &lt;&lt; #NEEDLE &lt;&lt; <span class="stringliteral">&quot; (&quot;</span> &lt;&lt; testing::PrintToString(__needle) &lt;&lt; <span class="stringliteral">&quot;)&quot;</span>;                                              \</div>
+<div class="line">    } <span class="keywordflow">while</span> (0)</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="afeba41c4d04f52faf2cc4e25c572d67a" name="afeba41c4d04f52faf2cc4e25c572d67a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afeba41c4d04f52faf2cc4e25c572d67a">&#9670;&#160;</a></span>EXPECT_MISSES</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define EXPECT_MISSES</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">HAYSTACK, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">NEEDLE&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                                                                                                \</div>
+<div class="line">        <span class="keyword">const</span> <span class="keyword">auto</span> &amp;__haystack = (HAYSTACK);                                                                            \</div>
+<div class="line">        <span class="keyword">const</span> <span class="keyword">auto</span> &amp;__needle = (NEEDLE);                                                                                \</div>
+<div class="line">        EXPECT_FALSE(__haystack.contains(__needle))                                                                     \</div>
+<div class="line">            &lt;&lt; #HAYSTACK &lt;&lt; <span class="stringliteral">&quot; (&quot;</span> &lt;&lt; testing::PrintToString(__haystack) &lt;&lt; <span class="stringliteral">&quot;) contains &quot;</span>                                 \</div>
+<div class="line">            &lt;&lt; #NEEDLE &lt;&lt; <span class="stringliteral">&quot; (&quot;</span> &lt;&lt; testing::PrintToString(__needle) &lt;&lt; <span class="stringliteral">&quot;)&quot;</span>;                                              \</div>
+<div class="line">    } <span class="keywordflow">while</span> (0)</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a2fc42e4be1145bc38128b81d094f4fd9" name="a2fc42e4be1145bc38128b81d094f4fd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2fc42e4be1145bc38128b81d094f4fd9">&#9670;&#160;</a></span>EXPECT_THROW_MESSAGE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define EXPECT_THROW_MESSAGE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">STATEMENT, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">MESSAGE&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keywordflow">do</span> {                                                                                                                \</div>
+<div class="line">        <span class="keywordflow">try</span> {                                                                                                           \</div>
+<div class="line">            STATEMENT;                                                                                                  \</div>
+<div class="line">            EXPECT_TRUE(<span class="keyword">false</span>) &lt;&lt; #STATEMENT &lt;&lt; <span class="stringliteral">&quot; didn&#39;t throw.&quot;</span>;                                                       \</div>
+<div class="line">        } <span class="keywordflow">catch</span> (<span class="keyword">const</span> std::exception &amp;<a class="code hl_variable" href="Json__ut_8cpp.html#ad3d8865e86dcc3ccd62ab3c24c806d54">e</a>) {                                                                             \</div>
+<div class="line">            EXPECT_CONTAINS(std::string_view(<a class="code hl_variable" href="Json__ut_8cpp.html#ad3d8865e86dcc3ccd62ab3c24c806d54">e</a>.what()), (MESSAGE));                                                     \</div>
+<div class="line">        } <span class="keywordflow">catch</span> (...) {                                                                                                 \</div>
+<div class="line">            EXPECT_TRUE(<span class="keyword">false</span>) &lt;&lt; #STATEMENT &lt;&lt; <span class="stringliteral">&quot; has thrown an unknown exception.&quot;</span>;                                    \</div>
+<div class="line">        }                                                                                                               \</div>
+<div class="line">    } <span class="keywordflow">while</span> (0)</div>
 <div class="ttc" id="aJson__ut_8cpp_html_ad3d8865e86dcc3ccd62ab3c24c806d54"><div class="ttname"><a href="Json__ut_8cpp.html#ad3d8865e86dcc3ccd62ab3c24c806d54">e</a></div><div class="ttdeci">TotallyBrokenEnum e</div><div class="ttdef"><b>Definition:</b> Json_ut.cpp:135</div></div>
 </div><!-- fragment -->
 </div>
