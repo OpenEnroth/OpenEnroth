@@ -49,9 +49,7 @@ void GUICredits::Update() {
     credit_window.uFrameY = 19;
 
     render->DrawTextureNew(0, 0, _mm6TitleTexture);
-    render->SetUIClipRect(credit_window.uFrameX, credit_window.uFrameY,
-    credit_window.uFrameX + credit_window.uFrameWidth,
-    credit_window.uFrameY + credit_window.uFrameHeight);
+    render->SetUIClipRect(Recti(credit_window.uFrameX, credit_window.uFrameY, credit_window.uFrameWidth, credit_window.uFrameHeight));
     render->DrawTextureOffset(credit_window.uFrameX, credit_window.uFrameY, 0, _moveY, _creditsTexture);
     render->ResetUIClipRect();
 

@@ -223,7 +223,7 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 
     if (!parchment) return;
 
-    render->SetUIClipRect(uX, uY, uX + uWidth, uY + uHeight);
+    render->SetUIClipRect(Recti(uX, uY, uWidth, uHeight));
 
     Sizei renderdims = render->GetRenderDimensions();
     float renwidth = renderdims.w;
@@ -258,9 +258,9 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
         messagebox_corner_w);
 
     if (uWidth > messagebox_corner_x->width() + messagebox_corner_z->width()) {
-        render->SetUIClipRect(uX + messagebox_corner_x->width(), uY,
-                              uX + uWidth - messagebox_corner_z->width(),
-                              uY + uHeight);
+        render->SetUIClipRect(Recti(uX + messagebox_corner_x->width(), uY,
+                              uWidth - messagebox_corner_z->width() - messagebox_corner_x->width(),
+                              uHeight));
 
         // horizontal borders
         for (unsigned int x = uX + messagebox_corner_x->width();
@@ -277,9 +277,9 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 
     // vertical borders
     if (uHeight > messagebox_corner_x->height() + messagebox_corner_y->height()) {
-        render->SetUIClipRect(uX, uY + messagebox_corner_x->height(),
-                              uX + uWidth,
-                              uY + uHeight - messagebox_corner_y->height());
+        render->SetUIClipRect(Recti(uX, uY + messagebox_corner_x->height(),
+                              uWidth,
+                              uHeight - messagebox_corner_y->height() - messagebox_corner_x->height()));
 
         for (unsigned int y = uY + messagebox_corner_x->height();
              y < uY + uHeight - messagebox_corner_y->height();
@@ -375,10 +375,9 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
 
     if (inspect_item->IsBroken()) {
         iteminfo_window.DrawMessageBox(0);
-        render->SetUIClipRect(
+        render->SetUIClipRect(Recti(
             iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
-            iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 12,
-            iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 12);
+            iteminfo_window.uFrameWidth - 24, iteminfo_window.uFrameHeight - 24));
         iteminfo_window.uFrameWidth -= 24;
         iteminfo_window.uFrameHeight -= 12;
         iteminfo_window.uFrameZ =
@@ -406,10 +405,9 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
 
     if (!inspect_item->IsIdentified()) {
         iteminfo_window.DrawMessageBox(0);
-        render->SetUIClipRect(
+        render->SetUIClipRect(Recti(
             iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
-            iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 12,
-            iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 12);
+            iteminfo_window.uFrameWidth - 24, iteminfo_window.uFrameHeight - 24));
         iteminfo_window.uFrameWidth -= 24;
         iteminfo_window.uFrameHeight -= 12;
         iteminfo_window.uFrameZ =
@@ -546,10 +544,9 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
     render->DrawTwodVerts();
 
     iteminfo_window.DrawMessageBox(0);
-    render->SetUIClipRect(
+    render->SetUIClipRect(Recti(
         iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
-        iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 12,
-        iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 12);
+        iteminfo_window.uFrameWidth - 24, iteminfo_window.uFrameHeight - 24));
     iteminfo_window.uFrameWidth -= 12;
     iteminfo_window.uFrameHeight -= 12;
     iteminfo_window.uFrameZ =

@@ -815,10 +815,12 @@ void GameUI_DrawLifeManaBars() {
                 pTextureHealth = game_ui_bar_red;
             }
             if (hpFillRatio > 0.0) {
-                render->SetUIClipRect(
+                int height = pTextureHealth->height() * hpFillRatio;
+                render->SetUIClipRect(Recti(
                     v17 + pHealthBarPos[i],
-                    (int64_t)((1.0 - hpFillRatio) * pTextureHealth->height()) + pHealthManaBarYPos,
-                    v17 + pHealthBarPos[i] + pTextureHealth->width(), pTextureHealth->height() + pHealthManaBarYPos);
+                    pTextureHealth->height() - height + pHealthManaBarYPos,
+                    pTextureHealth->width(),
+                    height));
                 render->DrawTextureNew((v17 + pHealthBarPos[i]) / 640.0f, pHealthManaBarYPos / 480.0f, pTextureHealth);
                 render->ResetUIClipRect();
             }
@@ -830,10 +832,11 @@ void GameUI_DrawLifeManaBars() {
             }
             int v17 = 0;
             if (i == 2) v17 = 1;
-            render->SetUIClipRect(
+            int height = mpFillRatio * game_ui_bar_blue->height();
+            render->SetUIClipRect(Recti(
                 v17 + pManaBarPos[i],
-                (int64_t)((1.0 - mpFillRatio) * game_ui_bar_blue->height()) + pHealthManaBarYPos,
-                v17 + pManaBarPos[i] + game_ui_bar_blue->width(), game_ui_bar_blue->height() + pHealthManaBarYPos);
+                game_ui_bar_blue->height() - height + pHealthManaBarYPos,
+                game_ui_bar_blue->width(), height));
             render->DrawTextureNew((v17 + pManaBarPos[i]) / 640.0f, pHealthManaBarYPos / 480.0f, game_ui_bar_blue);
             render->ResetUIClipRect();
         }
@@ -1397,7 +1400,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
     signed int uCenterX = (uX + uZ) / 2;
     signed int uCenterY = (uY + uW) / 2;
-    render->SetUIClipRect(uX, uY, uZ, uW);
+    render->SetUIClipRect(Recti(uX, uY, uZ - uX, uW - uY));
     int uHeight = uW - uY;
     signed int uWidth = uZ - uX;
 
@@ -1647,7 +1650,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     if (rotate < 128 || rotate > 1920) arrow_idx = 7;
     render->DrawTextureNew((uCenterX - 3) / 640.0f, (uCenterY - 3) / 480.0f, game_ui_minimap_dirs[arrow_idx]);
 
-    render->SetUIClipRect(541, 0, 567, 480);
+    render->SetUIClipRect(Recti(541, 0, 26, 480));
     render->DrawTextureNew((floorf((pParty->_viewYaw * 0.1171875) + 0.5f) + 285) / 640.0f,
         136 / 480.0f, game_ui_minimap_compass);
     render->ResetUIClipRect();

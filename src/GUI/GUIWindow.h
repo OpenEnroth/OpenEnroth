@@ -84,7 +84,7 @@ class GUIWindow {
     int uFrameX = 0;
     int uFrameY = 0;
     int uFrameWidth = 0;
-    int uFrameHeight = 0;
+    int uFrameHeight = 0; // TODO(captainurist): frameRect
     int uFrameZ = 0;
     int uFrameW = 0;
     WindowType eWindowType = WINDOW_null;

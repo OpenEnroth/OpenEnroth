@@ -146,7 +146,7 @@ void GUIWindow_MapBook::Update() {
 void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y, int dummy) {
     int ScreenCenterX = (tl_x + br_x) / 2;
     int ScreenCenterY = (tl_y + br_y) / 2;
-    render->SetUIClipRect(tl_x, tl_y, br_x, br_y);
+    render->SetUIClipRect(Recti(tl_x, tl_y, br_x - tl_x, br_y - tl_y));
 
     int pCenterX = viewparams->sViewCenterX;
     int pCenterY = viewparams->sViewCenterY;

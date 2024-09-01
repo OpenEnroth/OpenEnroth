@@ -2715,14 +2715,13 @@ void OpenGLRenderer::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1
     return;
 }
 
-void OpenGLRenderer::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
-                                   unsigned int w) {
-    this->clipRect = Recti(x, y, z - x, w - y);
-    glScissor(x, outputRender.h -w, z-x, w-y);  // invert glscissor co-ords 0,0 is BL
+void OpenGLRenderer::SetUIClipRect(const Recti &rect) {
+    this->clipRect = rect;
+    glScissor(rect.x, outputRender.h - rect.y - rect.h, rect.w, rect.h);  // invert glscissor co-ords 0,0 is BL
 }
 
 void OpenGLRenderer::ResetUIClipRect() {
-    this->SetUIClipRect(0, 0, outputRender.w, outputRender.h);
+    this->SetUIClipRect(Recti(Pointi(0, 0), outputRender));
 }
 
 void OpenGLRenderer::BeginScene2D() {
@@ -5225,7 +5224,7 @@ void OpenGLRenderer::DrawTwodVerts() {
     glBindVertexArray(0);
 
     twodvertscnt = 0;
-    render->SetUIClipRect(savedClipRect.x, savedClipRect.y, savedClipRect.x + savedClipRect.w, savedClipRect.y + savedClipRect.h);
+    render->SetUIClipRect(savedClipRect);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
