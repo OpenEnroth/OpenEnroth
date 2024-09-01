@@ -283,17 +283,17 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         render->BeginLines2D();
         for (unsigned i = 0; i < (signed int)pLevelDecorations.size(); ++i) {
             if (pLevelDecorations[i].uFlags & LEVEL_DECORATION_VISIBLE_ON_MAP) {
-                int DecY = pLevelDecorations[i].vPosition.y - center.y;
-                int DecX = pLevelDecorations[i].vPosition.x - center.x;
-                int decxpos = screenCenter.x + fixpoint_mul(DecX, viewparams->uMapBookMapZoom);
-                int decypos = screenCenter.y - fixpoint_mul(DecY, viewparams->uMapBookMapZoom);
+                Vec2f decPos = (pLevelDecorations[i].vPosition.xy() - center) / 65536.0f;
+                decPos.y = -decPos.y;
+
+                Vec2i screenPos = screenCenter + (decPos * viewparams->uMapBookMapZoom).toInt();
 
                 if (viewparams->uMapBookMapZoom > 512) {
-                    render->RasterLine2D(Pointi(decxpos - 1, decypos - 1), Pointi(decxpos - 1, decypos + 1), colorTable.White);
-                    render->RasterLine2D(Pointi(decxpos, decypos - 1), Pointi(decxpos, decypos + 1), colorTable.White);
-                    render->RasterLine2D(Pointi(decxpos + 1, decypos - 1), Pointi(decxpos + 1, decypos + 1), colorTable.White);
+                    render->RasterLine2D(screenPos + Pointi(-1, -1), screenPos + Pointi(-1, 1), colorTable.White);
+                    render->RasterLine2D(screenPos + Pointi(0, -1), screenPos + Pointi(0, 1), colorTable.White);
+                    render->RasterLine2D(screenPos + Pointi(1, -1), screenPos + Pointi(1, 1), colorTable.White);
                 } else {
-                    render->RasterLine2D(Pointi(decxpos, decypos), Pointi(decxpos, decypos), colorTable.White);
+                    render->RasterLine2D(screenPos, screenPos, colorTable.White);
                 }
             }
         }
