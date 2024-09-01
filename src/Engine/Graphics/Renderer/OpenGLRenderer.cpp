@@ -311,16 +311,16 @@ void OpenGLRenderer::EndLines2D() {
     linevertscnt = 0;
 }
 
-void OpenGLRenderer::RasterLine2D(int uX, int uY, int uZ, int uW, Color uColor32) {
+void OpenGLRenderer::RasterLine2D(Pointi a, Pointi b, Color uColor32) {
     Colorf cf = uColor32.toColorf();
 
-    lineshaderstore[linevertscnt].x = static_cast<float>(uX);
-    lineshaderstore[linevertscnt].y = static_cast<float>(uY);
+    lineshaderstore[linevertscnt].x = a.x;
+    lineshaderstore[linevertscnt].y = a.y;
     lineshaderstore[linevertscnt].color = cf;
     linevertscnt++;
 
-    lineshaderstore[linevertscnt].x = static_cast<float>(uZ);
-    lineshaderstore[linevertscnt].y = static_cast<float>(uW);
+    lineshaderstore[linevertscnt].x = b.x;
+    lineshaderstore[linevertscnt].y = b.y;
     lineshaderstore[linevertscnt].color = cf;
     linevertscnt++;
 

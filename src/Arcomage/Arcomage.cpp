@@ -2962,19 +2962,13 @@ void am_DrawText(std::string_view str, Pointi *pXY) {
 
 void DrawRect(Recti *pRect, Color uColor, char bSolidFill) {
     if (bSolidFill) {
-        int width = pRect->w;
-        int height = pRect->h;
-        render->FillRectFast(pRect->x, pRect->y, width, height, uColor);
+        render->FillRectFast(pRect->x, pRect->y, pRect->w, pRect->h, uColor);
     } else {
         render->BeginLines2D();
-        int x0 = pRect->x;
-        int x1 = pRect->x + pRect->w;
-        int y0 = pRect->y;
-        int y1 = pRect->y + pRect->h;
-        render->RasterLine2D(x0, y0, x1, y0, uColor);
-        render->RasterLine2D(x1, y0, x1, y1, uColor);
-        render->RasterLine2D(x1, y1, x0, y1, uColor);
-        render->RasterLine2D(x0, y1, x0, y0, uColor);
+        render->RasterLine2D(pRect->topLeft(), pRect->topRight(), uColor);
+        render->RasterLine2D(pRect->topRight(), pRect->bottomRight(), uColor);
+        render->RasterLine2D(pRect->bottomRight(), pRect->bottomLeft(), uColor);
+        render->RasterLine2D(pRect->bottomLeft(), pRect->topLeft(), uColor);
         render->EndLines2D();
     }
 }

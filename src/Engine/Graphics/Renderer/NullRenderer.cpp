@@ -39,7 +39,7 @@ bool NullRenderer::SwitchToWindow() {
 
 void NullRenderer::BeginLines2D() {}
 void NullRenderer::EndLines2D() {}
-void NullRenderer::RasterLine2D(signed int uX, signed int uY, signed int uZ, signed int uW, Color uColor32) {}
+void NullRenderer::RasterLine2D(Pointi a, Pointi b, Color uColor32) {}
 void NullRenderer::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {}
 
 void NullRenderer::RestoreFrontBuffer() {}

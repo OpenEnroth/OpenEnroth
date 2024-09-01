@@ -23,8 +23,7 @@ class NullRenderer : public BaseRenderer {
 
     virtual void BeginLines2D() override;
     virtual void EndLines2D() override;
-    virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ,
-                              signed int uW, Color uColor32) override;
+    virtual void RasterLine2D(Pointi a, Pointi b, Color uColor32) override;
     virtual void DrawLines(const RenderVertexD3D3 *vertices,
                            unsigned int num_vertices) override;
 

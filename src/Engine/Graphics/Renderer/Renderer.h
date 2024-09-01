@@ -59,7 +59,7 @@ class Renderer {
 
     virtual void BeginLines2D() = 0;
     virtual void EndLines2D() = 0;
-    virtual void RasterLine2D(int uX, int uY, int uZ, int uW, Color uColor32) = 0;
+    virtual void RasterLine2D(Pointi a, Pointi b, Color uColor32) = 0;
     virtual void DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) = 0;
 
     virtual void ClearZBuffer() = 0;
