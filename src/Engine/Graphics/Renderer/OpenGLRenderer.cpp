@@ -638,7 +638,7 @@ void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, unsigned p
     int w = rect.y + rect.h;
 
     // check bounds
-    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || y >= outputRender.h) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
@@ -1249,7 +1249,7 @@ void OpenGLRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, 
     int w = y + height;
 
     // check bounds
-    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || y >= outputRender.h) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
@@ -2764,7 +2764,7 @@ void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color 
     int w = y + height;
 
     // check bounds
-    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || y >= outputRender.h) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
@@ -2866,7 +2866,7 @@ void OpenGLRenderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *im
     int w = y + custom_height;
 
     // check bounds
-    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || y >= outputRender.h) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
@@ -3081,7 +3081,7 @@ void OpenGLRenderer::DrawTextNew(int x, int y, int width, int h, float u1, float
     int z = x + width;
     int w = y + h;
     // check bounds
-    if (x >= outputRender.w || x >= clipz || y >= outputRender.h || y >= clipw) return;
+    if (x >= outputRender.w || y >= outputRender.h) return;
     // check for overlap
     if (!(clipx < z && clipz > x && clipy < w && clipw > y)) return;
 
@@ -4726,7 +4726,7 @@ void OpenGLRenderer::FillRectFast(unsigned int uX, unsigned int uY, unsigned int
     int w = y + uHeight;
 
     // check bounds
-    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || y >= outputRender.h) return;
     // check for overlap
     if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
 
