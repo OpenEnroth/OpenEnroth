@@ -1453,13 +1453,12 @@ void GameUI_DrawMinimap(const Recti &rect, unsigned int uZoom, unsigned int bRed
             if (/*pMapLod0 && */ bRedrawOdmMinimap) {
                 assert(rect.w == 137 && rect.h == 117);
 
-                int MapImgWidth = viewparams->location_minimap->width();
-                const Color *pMapLod0Line = viewparams->location_minimap->rgba().pixels().data();
-                Color *minitempix = minimaptemp->rgba().pixels().data();
-
                 for (int y = 0; y < rect.h; ++y) {
+                    std::span<Color> dstLine = minimaptemp->rgba()[y];
+                    std::span<const Color> srcLine = viewparams->location_minimap->rgba()[ypix];
+
                     for (int x = 0; x < rect.w; ++x) {
-                        minitempix[x + y * rect.w] = pMapLod0Line[xpix + ypix * MapImgWidth];
+                        dstLine[x] = srcLine[xpix];
                         xpix = (xpixoffset16 + x * map_scale) >> 16;
                     }
                     ypixoffset16 += map_scale;
