@@ -35,10 +35,10 @@ UNIT_TEST(EmbeddedFileSystem, Read) {
     const char *needle = "123456789012345678901234567890";
 
     Blob data = fs.read("Tests/EmbeddedFileSystem_ut.cpp");
-    EXPECT_TRUE(data.string_view().contains(needle));
+    EXPECT_CONTAINS(data.string_view(), needle);
 
     std::unique_ptr<InputStream> input = fs.openForReading("Tests/EmbeddedFileSystem_ut.cpp");
-    EXPECT_TRUE(input->readAll().contains(needle));
+    EXPECT_CONTAINS(input->readAll(), needle);
 
     EXPECT_ANY_THROW((void) fs.read("DoesntExist"));
     EXPECT_ANY_THROW((void) fs.openForReading("DoesntExist"));

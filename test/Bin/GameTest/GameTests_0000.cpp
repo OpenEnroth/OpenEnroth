@@ -217,7 +217,7 @@ GAME_TEST(Issues, Issue271) {
     auto landingTape = tapes.custom([] { return !!(pParty->uFlags & PARTY_FLAG_LANDING); });
     auto zTape = tapes.custom([] { return pParty->pos.z; });
     test.playTraceFromTestData("issue_271.mm7", "issue_271.json");
-    EXPECT_FALSE(expressionTape.contains(CHARACTER_EXPRESSION_FEAR));
+    EXPECT_MISSES(expressionTape, CHARACTER_EXPRESSION_FEAR);
     EXPECT_EQ(landingTape, tape(false, true));
     EXPECT_LT(zTape.delta(), -1000);
 }
