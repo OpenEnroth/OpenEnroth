@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ee9f282</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;95bc236</span>
    </div>
   </td>
  </tr>
@@ -125,7 +125,6 @@ $(function() {
 <code>#include &quot;<a class="el" href="InputAction_8h.html">Io/InputAction.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TrigLut_8h.html">Utility/Math/TrigLut.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="FixPoint_8h.html">Utility/Math/FixPoint.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
@@ -163,8 +162,8 @@ Functions</h2></td></tr>
 <tr class="separator:a2b9637f377a724c8b025b37f6a859c4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e32e980a85838fc2f5643f47311ec43"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#a2e32e980a85838fc2f5643f47311ec43">GameUI_DrawPortraits</a> ()</td></tr>
 <tr class="separator:a2e32e980a85838fc2f5643f47311ec43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d123b25b8450b488ec11905979530ad"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#a2d123b25b8450b488ec11905979530ad">GameUI_DrawMinimap</a> (unsigned int uX, unsigned int uY, unsigned int uZ, unsigned int uW, unsigned int uZoom, unsigned int bRedrawOdmMinimap)</td></tr>
-<tr class="separator:a2d123b25b8450b488ec11905979530ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f0bc9eb2ac9412d8575797caf01d890"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#a1f0bc9eb2ac9412d8575797caf01d890">GameUI_DrawMinimap</a> (const <a class="el" href="Rect_8h.html#a32073cc1967b01302be5d39e09079649">Recti</a> &amp;rect, int zoom)</td></tr>
+<tr class="separator:a1f0bc9eb2ac9412d8575797caf01d890"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa3da4fb426e908bca4572d1ba810af0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#aa3da4fb426e908bca4572d1ba810af0f">GameUI_DrawTorchlightAndWizardEye</a> ()</td></tr>
 <tr class="separator:aa3da4fb426e908bca4572d1ba810af0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c41aa3821250ef9f680138883f687e6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIGame_8cpp.html#a4c41aa3821250ef9f680138883f687e6">GameUI_DrawHiredNPCs</a> ()</td></tr>
@@ -447,8 +446,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a2d123b25b8450b488ec11905979530ad" name="a2d123b25b8450b488ec11905979530ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d123b25b8450b488ec11905979530ad">&#9670;&#160;</a></span>GameUI_DrawMinimap()</h2>
+<a id="a1f0bc9eb2ac9412d8575797caf01d890" name="a1f0bc9eb2ac9412d8575797caf01d890"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f0bc9eb2ac9412d8575797caf01d890">&#9670;&#160;</a></span>GameUI_DrawMinimap()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -456,38 +455,14 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">void GameUI_DrawMinimap </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uX</em>, </td>
+          <td class="paramtype">const <a class="el" href="Rect_8h.html#a32073cc1967b01302be5d39e09079649">Recti</a> &amp;&#160;</td>
+          <td class="paramname"><em>rect</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uY</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uZ</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uW</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uZoom</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>bRedrawOdmMinimap</em>&#160;</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>zoom</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -496,6 +471,13 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rect</td><td>Screen rect to draw the minimap at. </td></tr>
+    <tr><td class="paramname">zoom</td><td>The number of screen pixels a location map should take. Default outdoor zoom level is 512, so that means that an outdoor location map would take 512x512 pixels on screen if not cropped. For indoor locations, this is the number of screen pixels an indoor location the size of a regular outdoor location would take. Note that outdoor location size is 2^16x2^16 in in-game coordinates. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
