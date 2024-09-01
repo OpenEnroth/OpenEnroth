@@ -1417,9 +1417,6 @@ void GameUI_DrawMinimap(const Recti &rect, unsigned int uZoom, unsigned int bRed
             minimaptemp = GraphicsImage::Create(rect.size());
         }
 
-        static uint16_t pOdmMinimap[117][137];
-        assert(sizeof(pOdmMinimap) == 137 * 117 * sizeof(short));
-
         bool partymoved = true;  // TODO(pskelton): actually check for party movement
 
         if (partymoved) {
