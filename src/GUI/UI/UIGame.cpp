@@ -1465,15 +1465,17 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
                     pOutline->uFlags = pOutline->uFlags | 1;
                     pIndoor->_visible_outlines[i >> 3] |= 1 << (7 - i % 8);
 
-                    int Vert1X = pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex1ID].x - pParty->pos.x;
-                    int Vert2X = pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex2ID].x - pParty->pos.x;
-                    int Vert1Y = pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex1ID].y - pParty->pos.y;
-                    int Vert2Y = pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex2ID].y - pParty->pos.y;
+                    // Outdoor map size is 65536 x 65536, so we're normalizing the coords the same way it's done for
+                    // outdoor maps.
+                    Vec2f Vert1 = (pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex1ID] - pParty->pos).xy() / 65536.0f;
+                    Vec2f Vert2 = (pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex2ID] - pParty->pos).xy() / 65536.0f;
 
-                    int linex = center.x + fixpoint_mul(zoom, Vert1X);
-                    int liney = center.y - fixpoint_mul(zoom, Vert1Y);
-                    int linez = center.x + fixpoint_mul(zoom, Vert2X);
-                    int linew = center.y - fixpoint_mul(zoom, Vert2Y);
+                    // In-game VS screen-space Y are flipped.
+                    Vert1.y = -Vert1.y;
+                    Vert2.y = -Vert2.y;
+
+                    Vec2i linea = center + (zoom * Vert1).toInt();
+                    Vec2i lineb = center + (zoom * Vert2).toInt();
 
                     if (bWizardEyeActive && uWizardEyeSkillLevel >= CHARACTER_SKILL_MASTERY_MASTER &&
                         (pIndoor->pFaces[pOutline->uFace1ID].Clickable() ||
@@ -1488,7 +1490,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
 
                     LineGreyDim = std::abs(pOutline->sZ - pParty->pos.z) / 8;
                     if (LineGreyDim > 100) LineGreyDim = 100;
-                    render->RasterLine2D(Pointi(linex, liney), Pointi(linez, linew), viewparams->pPalette[-LineGreyDim + 200]);
+                    render->RasterLine2D(linea, lineb, viewparams->pPalette[-LineGreyDim + 200]);
                 }
             }
         }

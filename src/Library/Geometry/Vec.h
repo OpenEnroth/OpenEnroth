@@ -15,6 +15,10 @@ struct Vec2 {
     constexpr Vec2() = default;
     constexpr Vec2(T a, T b) : x(a), y(b) {}
 
+    [[nodiscard]] Vec2<int> toInt() const requires std::is_floating_point_v<T> {
+        return Vec2<int>(std::round(x), std::round(y));
+    }
+
     [[nodiscard]] auto lengthSqr() const {
         // Note that auto return type is important because this way Vec2s::lengthSqr returns int.
         return x * x + y * y;
