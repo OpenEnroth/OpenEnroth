@@ -12,7 +12,7 @@ var searchData=
   ['validatemaxactors_9',['ValidateMaxActors',['../classGameConfig_1_1Gameplay.html#adc74e029dac3e8c5249cf8205eb6e287',1,'GameConfig::Gameplay']]],
   ['validatemaxflightheight_10',['ValidateMaxFlightHeight',['../classGameConfig_1_1Gameplay.html#a2242a39125203eeea3ee3a3468fa139a',1,'GameConfig::Gameplay']]],
   ['validatemaxsectors_11',['ValidateMaxSectors',['../classGameConfig_1_1Graphics.html#ab6c25fcf450cb9365db8faeb1f5d879f',1,'GameConfig::Graphics']]],
-  ['validatemm7path_12',['validateMm7Path',['../GamePathResolver_8cpp.html#aa8c2d1a8f68c10452cb32d136b50e501',1,'validateMm7Path(std::string_view dataPath, std::string *missingFile):&#160;GamePathResolver.cpp'],['../GamePathResolver_8h.html#aa8c2d1a8f68c10452cb32d136b50e501',1,'validateMm7Path(std::string_view dataPath, std::string *missingFile):&#160;GamePathResolver.cpp']]],
+  ['validatemm7path_12',['validateMm7Path',['../PathResolver_8cpp.html#aa8c2d1a8f68c10452cb32d136b50e501',1,'validateMm7Path(std::string_view dataPath, std::string *missingFile):&#160;PathResolver.cpp'],['../PathResolver_8h.html#aa8c2d1a8f68c10452cb32d136b50e501',1,'validateMm7Path(std::string_view dataPath, std::string *missingFile):&#160;PathResolver.cpp']]],
   ['validateposition_13',['ValidatePosition',['../classGameConfig_1_1Window.html#a1e39038fe04212f11122c8ef4dee4fde',1,'GameConfig::Window']]],
   ['validatequicksavecount_14',['ValidateQuickSaveCount',['../classGameConfig_1_1Gameplay.html#a3911b4858957a6b311ac52710d481e5d',1,'GameConfig::Gameplay']]],
   ['validaterangedattackdepth_15',['ValidateRangedAttackDepth',['../classGameConfig_1_1Gameplay.html#a106dcb09630401694225a3fb2daa296e',1,'GameConfig::Gameplay']]],

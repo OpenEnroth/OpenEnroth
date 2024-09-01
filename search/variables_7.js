@@ -96,7 +96,7 @@ var searchData=
   ['globalthrowlistenerinstalled_93',['globalThrowListenerInstalled',['../ThrowingAssertions_8cpp.html#aef4196a0004f7989fc29edd7a280461e',1,'ThrowingAssertions.cpp']]],
   ['globaltypedhandler_94',['globalTypedHandler',['../namespacedetail.html#acfb055d7387db58dcb65b2851bcabeec',1,'detail']]],
   ['globalunicodecrtinitialized_95',['globalUnicodeCrtInitialized',['../UnicodeCrt_8cpp.html#a192e3e73d938fca94daab5d65902f831',1,'UnicodeCrt.cpp']]],
-  ['globalvalidatelist_96',['globalValidateList',['../GamePathResolver_8cpp.html#a769078cfe7d56aa96d7cac0bd9b38e7e',1,'GamePathResolver.cpp']]],
+  ['globalvalidatelist_96',['globalValidateList',['../PathResolver_8cpp.html#a769078cfe7d56aa96d7cac0bd9b38e7e',1,'PathResolver.cpp']]],
   ['glowradius_97',['glowRadius',['../structSpriteFrame__MM6.html#a6721b1ee6cb3f866bbca0eef7361882c',1,'SpriteFrame_MM6']]],
   ['gold_5ftransaction_5famount_98',['gold_transaction_amount',['../NPCTopics_8cpp.html#a4bb6508ee8f5604384798ce3ac89243b',1,'gold_transaction_amount():&#160;NPCTopics.cpp'],['../NPCTopics_8h.html#a4bb6508ee8f5604384798ce3ac89243b',1,'gold_transaction_amount():&#160;NPCTopics.cpp']]],
   ['goldamount_99',['goldAmount',['../structItemGen.html#a8170975427065bb3cf0d5a1526d5486a',1,'ItemGen']]],

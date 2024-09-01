@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Application/GameStarter.cpp File Reference</title>
+<title>OpenEnroth: src/Application/Startup/GameStarter.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;26451ff</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;25bebe1</span>
    </div>
   </td>
  </tr>
@@ -69,7 +69,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_378992324979dd2b2ee7a83cc14dc244.html">Application</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_378992324979dd2b2ee7a83cc14dc244.html">Application</a></li><li class="navelem"><a class="el" href="dir_e2348a297b9ed29fa872d5758fa12888.html">Startup</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -84,6 +84,11 @@ $(function() {
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
+<code>#include &quot;<a class="el" href="GameConfig_8h.html">Application/GameConfig.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Game_8h.html">Application/Game.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GameKeyboardController_8h.html">Application/GameKeyboardController.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GameWindowHandler_8h.html">Application/GameWindowHandler.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="GameTraceHandler_8h.html">Application/GameTraceHandler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineIocContainer_8h.html">Engine/EngineIocContainer.h</a>&quot;</code><br />
@@ -120,12 +125,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="RendererBindings_8h.html">Scripting/RendererBindings.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ScriptingSystem_8h.html">Scripting/ScriptingSystem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Exception_8h.html">Utility/Exception.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="GamePathResolver_8h.html">GamePathResolver.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="GameConfig_8h.html">GameConfig.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Game_8h.html">Game.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="GameKeyboardController_8h.html">GameKeyboardController.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="GameWindowHandler_8h.html">GameWindowHandler.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="GameTraceHandler_8h.html">GameTraceHandler.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="PathResolver_8h.html">PathResolver.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
