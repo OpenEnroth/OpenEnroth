@@ -135,23 +135,23 @@ class Flags {
 };
 
 
-#define MM_DECLARE_FLAGS(FLAGS, ENUM)                                           \
+#define MM_DECLARE_FLAGS(FLAGS, ENUM)                                                                                   \
     using FLAGS = Flags<ENUM>;
 
 
-#define MM_DECLARE_OPERATORS_FOR_FLAGS(FLAGS)                                   \
-    constexpr inline FLAGS operator|(FLAGS::enumeration_type l, FLAGS::enumeration_type r) { \
-        return FLAGS(l) | r;                                                    \
-    }                                                                           \
-    constexpr inline FLAGS operator~(FLAGS::enumeration_type value) {           \
-        return ~FLAGS(value);                                                   \
+#define MM_DECLARE_OPERATORS_FOR_FLAGS(FLAGS)                                                                           \
+    constexpr inline FLAGS operator|(FLAGS::enumeration_type l, FLAGS::enumeration_type r) {                            \
+        return FLAGS(l) | r;                                                                                            \
+    }                                                                                                                   \
+    constexpr inline FLAGS operator~(FLAGS::enumeration_type value) {                                                   \
+        return ~FLAGS(value);                                                                                           \
     }
 
 
-// TODO(captainurist): technically this is UB
+// Opening namespace std is technically UB, but hey, YOLO!
 namespace std {
-    template<class Enum>
-    typename Flags<Enum>::underlying_type to_underlying(Flags<Enum> flags) {
-        return static_cast<typename Flags<Enum>::underlying_type>(flags);
-    }
+template<class Enum>
+typename Flags<Enum>::underlying_type to_underlying(Flags<Enum> flags) {
+    return static_cast<typename Flags<Enum>::underlying_type>(flags);
 }
+} // namespace std
