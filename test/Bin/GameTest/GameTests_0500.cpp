@@ -53,7 +53,7 @@ GAME_TEST(Issues, Issue502) {
     // Check that script face animation and voice indexes right characters.
     auto expressionTape = charTapes.expression(3);
     test.playTraceFromTestData("issue_502.mm7", "issue_502.json");
-    EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_NO));
+    EXPECT_CONTAINS(expressionTape, CHARACTER_EXPRESSION_NO);
     EXPECT_EQ(pParty->activeCharacterIndex(), 4);
 }
 
@@ -600,10 +600,10 @@ GAME_TEST(Issues, Issue755) {
     auto actor2Tape = actorTapes.aiState(2);
     auto actor37Tape = actorTapes.aiState(37);
     test.playTraceFromTestData("issue_755.mm7", "issue_755.json");
-    EXPECT_TRUE(actor2Tape.contains(Dead));
-    EXPECT_TRUE(actor2Tape.contains(Resurrected));
-    EXPECT_TRUE(actor37Tape.contains(Dead));
-    EXPECT_TRUE(actor37Tape.contains(Resurrected));
+    EXPECT_CONTAINS(actor2Tape, Dead);
+    EXPECT_CONTAINS(actor2Tape, Resurrected);
+    EXPECT_CONTAINS(actor37Tape, Dead);
+    EXPECT_CONTAINS(actor37Tape, Resurrected);
 }
 
 GAME_TEST(Issues, Issue760) {
@@ -735,7 +735,7 @@ GAME_TEST(Issues, Issue820a) {
     auto statusTape = tapes.statusBar();
     auto foodTape = tapes.food();
     test.playTraceFromTestData("issue_820A.mm7", "issue_820A.json");
-    EXPECT_TRUE(statusTape.contains("Fruit Tree"));
+    EXPECT_CONTAINS(statusTape, "Fruit Tree");
     EXPECT_GT(foodTape.back(), foodTape.front());
 }
 
@@ -744,7 +744,7 @@ GAME_TEST(Issues, Issue820b) {
     auto statusTape = tapes.statusBar();
     auto treeHealthTape = actorTapes.hp(80);
     test.playTraceFromTestData("issue_820B.mm7", "issue_820B.json");
-    EXPECT_TRUE(statusTape.contains(fmt::format("Zoltan hits Tree for {} damage", -treeHealthTape.delta())));
+    EXPECT_CONTAINS(statusTape, fmt::format("Zoltan hits Tree for {} damage", -treeHealthTape.delta()));
     EXPECT_LT(treeHealthTape.delta(), 0);
 }
 
@@ -835,7 +835,7 @@ GAME_TEST(Issues, Issue833a) {
     test.playTraceFromTestData("issue_833a.mm7", "issue_833a.json");
     EXPECT_EQ(manaTape.delta(), -2);
     EXPECT_EQ(quickSpellTape, tape(SPELL_FIRE_FIRE_BOLT));
-    EXPECT_TRUE(spritesTape.flattened().contains(SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT)); // Fire bolt was cast by 1st character.
+    EXPECT_CONTAINS(spritesTape.flattened(), SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT); // Fire bolt was cast by 1st character.
 }
 
 GAME_TEST(Issues, Issue833b) {
@@ -848,7 +848,7 @@ GAME_TEST(Issues, Issue833b) {
     EXPECT_EQ(manaTape.delta(), 0);
     EXPECT_EQ(quickSpellTape, tape(SPELL_NONE));
     EXPECT_EQ(actorsHpTape.size(), 1); // No one was hurt.
-    EXPECT_TRUE(soundsTape.flattened().contains(SOUND_error));
+    EXPECT_CONTAINS(soundsTape.flattened(), SOUND_error);
 }
 
 GAME_TEST(Issues, Issue840) {

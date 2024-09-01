@@ -30,11 +30,11 @@ UNIT_TEST(Segment, Iteration) {
 UNIT_TEST(Segment, Contains) {
     auto seg = Segment(0, 2);
 
-    EXPECT_FALSE(seg.contains(-1));
-    EXPECT_TRUE(seg.contains(0));
-    EXPECT_TRUE(seg.contains(1));
-    EXPECT_TRUE(seg.contains(2));
-    EXPECT_FALSE(seg.contains(3));
+    EXPECT_MISSES(seg, -1);
+    EXPECT_CONTAINS(seg, 0);
+    EXPECT_CONTAINS(seg, 1);
+    EXPECT_CONTAINS(seg, 2);
+    EXPECT_MISSES(seg, 3);
 }
 
 UNIT_TEST(Segment, Constexpr) {
@@ -47,8 +47,8 @@ UNIT_TEST(Segment, Constexpr) {
 UNIT_TEST(Segment, Empty) {
     constexpr Segment emptySegment = Segment<int>();
 
-    EXPECT_FALSE(emptySegment.contains(0));
-    EXPECT_FALSE(emptySegment.contains(1));
+    EXPECT_MISSES(emptySegment, 0);
+    EXPECT_MISSES(emptySegment, 1);
     for (int i : emptySegment) {
         EXPECT_FALSE(true);
     }

@@ -41,7 +41,7 @@ GAME_TEST(Issues, Issue1515) {
     // No dispel magic sound
     auto soundsTape = tapes.sounds();
     test.playTraceFromTestData("issue_1515.mm7", "issue_1515.json");
-    EXPECT_TRUE(soundsTape.flattened().contains(SOUND_RechargeItem)); // dispel magic
+    EXPECT_CONTAINS(soundsTape.flattened(), SOUND_RechargeItem); // dispel magic
 }
 
 GAME_TEST(Issues, Issue1519) {
@@ -71,7 +71,7 @@ GAME_TEST(Issues, Issue1524) {
     // More enemy spells without sound
     auto soundsTape = tapes.sounds();
     test.playTraceFromTestData("issue_1524.mm7", "issue_1524.json");
-    EXPECT_TRUE(soundsTape.flattened().contains(SOUND_Sacrifice2)); // pain reflection sound
+    EXPECT_CONTAINS(soundsTape.flattened(), SOUND_Sacrifice2); // pain reflection sound
 }
 
 GAME_TEST(Issues, Issue1532) {
@@ -206,7 +206,7 @@ GAME_TEST(Issues, Issue1657) {
     test.playTraceFromTestData("issue_1657.mm7", "issue_1657.json");
     EXPECT_EQ(pParty->pos.toInt(), Vec3i(12552, 800, 193)); // party is back at new game start position
     EXPECT_EQ(mapTape, tape(MAP_ERATHIA, MAP_EMERALD_ISLAND));
-    EXPECT_TRUE(screenTape.contains(SCREEN_INPUT_BLV));
+    EXPECT_CONTAINS(screenTape, SCREEN_INPUT_BLV);
 }
 
 GAME_TEST(Issues, Issue1665) {
@@ -239,7 +239,7 @@ GAME_TEST(Issues, Issue1671) {
         return bmodel_pid; });
     test.playTraceFromTestData("issue_1671.mm7", "issue_1671.json");
     EXPECT_LT(health.back(), health.front()); // party has taken damage from fall
-    EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_FEAR));
+    EXPECT_CONTAINS(expressionTape, CHARACTER_EXPRESSION_FEAR);
     EXPECT_NE(modelTape.back(), 0); // landed on a model
 }
 
@@ -334,8 +334,8 @@ GAME_TEST(Issues, Issue1710) {
     test.playTraceFromTestData("issue_1710.mm7", "issue_1710.json");
     EXPECT_EQ(noFallDamageTape, tape(false)); // Fall damage was actually possible
     EXPECT_LT(health.back(), health.front()); // party has taken damage from fall
-    EXPECT_TRUE(uCurrentlyLoadedLevelType == LEVEL_INDOOR);
-    EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_FEAR));
+    EXPECT_EQ(uCurrentlyLoadedLevelType, LEVEL_INDOOR);
+    EXPECT_CONTAINS(expressionTape, CHARACTER_EXPRESSION_FEAR);
     EXPECT_GT(zpos.max(), zpos.min() + 1000);
 }
 
@@ -344,7 +344,7 @@ GAME_TEST(Issues, Issue1716) {
     auto specialAttack = tapes.specialAttacks();
     auto pmCountTape = tapes.custom([]() { return pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].power; });
     test.playTraceFromTestData("issue_1716.mm7", "issue_1716.json");
-    EXPECT_TRUE(specialAttack.flattened().contains(SPECIAL_ATTACK_PARALYZED)); // Paralysis attacks were made
+    EXPECT_CONTAINS(specialAttack.flattened(), SPECIAL_ATTACK_PARALYZED); // Paralysis attacks were made
     int paraCount = std::ranges::count_if(pParty->pCharacters, [](Character& ch) { return ch.IsParalyzed(); });
     EXPECT_EQ(paraCount, 0); // No one ended up paralysed
     EXPECT_LT(pmCountTape.back(), pmCountTape.front()); // PM saved us
@@ -357,7 +357,7 @@ GAME_TEST(Issues, Issue1717) {
     test.playTraceFromTestData("issue_1717.mm7", "issue_1717.json");
     EXPECT_EQ(immoBuff, tape( false, true ));
     EXPECT_EQ(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster, 4);
-    EXPECT_TRUE(statusBar.contains("Immolation deals 77 damage to 2 target(s)"));
+    EXPECT_CONTAINS(statusBar, "Immolation deals 77 damage to 2 target(s)");
 }
 
 GAME_TEST(Issues, Issue1724) {
@@ -383,7 +383,7 @@ GAME_TEST(Issues, Issue1725) {
     test.playTraceFromTestData("issue_1725.mm7", "issue_1725.json");
     EXPECT_EQ(screenTape.back(), SCREEN_HOUSE); // Make sure we end up back in the throne room
     EXPECT_GT(textTape.flattened().filtered([](const auto &s) { return s.starts_with("THAT WAS AWESOME!"); }).size(), 0);
-    EXPECT_TRUE(textTape.flattened().contains("Exit Building")); // And can exit it
+    EXPECT_CONTAINS(textTape.flattened(), "Exit Building"); // And can exit it
     EXPECT_EQ(bit120Tape, tape(false, true));
     EXPECT_EQ(bit123Tape, tape(true, false));
 }
@@ -395,5 +395,5 @@ GAME_TEST(Issues, Issue1726) {
     int GMcount = std::ranges::count_if(pParty->pCharacters, [](const Character &ch) { return ch.getActualSkillValue(CHARACTER_SKILL_BLASTER).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER; });
     EXPECT_EQ(GMcount, 0); // no one ends up grand master
     EXPECT_GT(textTape.flattened().filtered([](const auto& s) { return s.starts_with("Your skills improve!  If your Skill with the Blaster"); }).size(), 0); // blaster requirements shown
-    EXPECT_TRUE(textTape.flattened().contains("You don't meet the requirements, and cannot be taught until you do.")); // but we dont meet them
+    EXPECT_CONTAINS(textTape.flattened(), "You don't meet the requirements, and cannot be taught until you do."); // but we dont meet them
 }
