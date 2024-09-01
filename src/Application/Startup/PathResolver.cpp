@@ -1,4 +1,4 @@
-#include "GamePathResolver.h"
+#include "PathResolver.h"
 
 #include <string>
 #include <vector>

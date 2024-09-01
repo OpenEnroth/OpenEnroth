@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <chrono>
 
-#include "Application/GameStarter.h"
+#include "Application/Startup/GameStarter.h"
 
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
