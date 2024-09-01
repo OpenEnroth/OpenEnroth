@@ -2719,12 +2719,11 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_y) {
 //----- (0048257A) --------------------------------------------------------
 int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAboveWater) {
     //  int result; // eax@9
-    int v8;          // ebx@11
-    int v9;          // eax@11
-    int v10;         // ecx@11
-    int v13;         // [sp+10h] [bp-8h]@11
-    signed int v14;  // [sp+14h] [bp-4h]@3
-    int v15;         // [sp+24h] [bp+Ch]@11
+    int originz;          // ebx@11
+    int lz;          // eax@11
+    int rz;         // ecx@11
+    int rpos;         // [sp+10h] [bp-8h]@11
+    int lpos;         // [sp+24h] [bp+Ch]@11
 
     unsigned int grid_x = WorldPosToGridCellX(x);
     unsigned int grid_y = WorldPosToGridCellY(y);
@@ -2734,10 +2733,10 @@ int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAbov
     int grid_y1 = GridCellToWorldPosY(grid_y),
         grid_y2 = GridCellToWorldPosY(grid_y + 1);
 
-    int y_x1z1 = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y),
-        y_x2z1 = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y),
-        y_x2z2 = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y + 1),
-        y_x1z2 = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y + 1);
+    int z_x1y1 = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y),
+        z_x2y1 = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y),
+        z_x2y2 = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y + 1),
+        z_x1y2 = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y + 1);
     // v4 = WorldPosToGridCellX(x);
     // v5 = WorldPosToGridCellY(v12);
     // dword_76D538_terrain_cell_world_pos_around_party_x =
@@ -2768,26 +2767,37 @@ int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAbov
     if (pOutdoor->getTileAttribByGrid(grid_x, grid_y) & TILE_DESC_WATER) {
         *pIsOnWater = true;
     }
-    v14 = 0;
-    if (!bFloatAboveWater && *pIsOnWater) v14 = -60;
-    if (y_x1z1 != y_x2z1 || y_x2z1 != y_x2z2 || y_x2z2 != y_x1z2) {
+
+    int waterAdjustment = 0;
+    if (!bFloatAboveWater && *pIsOnWater)
+        waterAdjustment = -60;
+
+    if (z_x1y1 != z_x2y1 || z_x2y1 != z_x2y2 || z_x2y2 != z_x1y2) {
+        // On a slope.
         if (std::abs(grid_y1 - y) >= std::abs(x - grid_x1)) {
-            v8 = y_x1z2;
-            v9 = y_x2z2;
-            v10 = y_x1z1;
-            v15 = x - grid_x1;
-            v13 = y - grid_y2;
+            originz = z_x1y2;
+            lz = z_x2y2;
+            rz = z_x1y1;
+            lpos = x - grid_x1;
+            rpos = y - grid_y2;
         } else {
-            v8 = y_x2z1;
-            v9 = y_x1z1;
-            v10 = y_x2z2;
-            v15 = grid_x2 - x;
-            v13 = grid_y1 - y;
+            originz = z_x2y1;
+            lz = z_x1y1;
+            rz = z_x2y2;
+            lpos = grid_x2 - x;
+            rpos = grid_y1 - y;
         }
-        return v14 + v8 + fixpoint_mul(v13, (v10 - v8) * 128) +
-               fixpoint_mul(v15, (v9 - v8) * 128);
+
+        assert(lpos >= 0 && lpos < 512);
+        assert(rpos >= 0 && rpos < 512);
+
+        // (x >> 9) is basically (x / 512) but with consistent rounding towards -inf.
+        return waterAdjustment + originz + ((rpos * (rz - originz)) >> 9) +
+               ((lpos * (lz - originz)) >> 9);
     } else {
-        return y_x1z1;
+        // On flat terrain.
+        // TODO(captainurist): waterAdjustment isn't used in this case, so effectively is never used. Bugged?
+        return z_x1y1;
     }
 }
 
