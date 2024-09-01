@@ -190,12 +190,7 @@ OpenGLRenderer::OpenGLRenderer(
     SpellFxRenderer *spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,
     Vis *vis
-) : BaseRenderer(config, decal_builder, spellfx, particle_engine, vis) {
-    clip_w = 0;
-    clip_x = 0;
-    clip_y = 0;
-    clip_z = 0;
-}
+) : BaseRenderer(config, decal_builder, spellfx, particle_engine, vis) {}
 
 OpenGLRenderer::~OpenGLRenderer() {
     logger->info("RenderGl - Destructor");
@@ -638,16 +633,20 @@ void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, unsigned p
     int w = rect.y + rect.h;
 
     // check bounds
-    if (x >= outputRender.w || y >= outputRender.h) return;
+    if (x >= outputRender.w || y >= outputRender.h)
+        return;
+
     // check for overlap
-    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
+    Recti clippedRect = rect.intersection(this->clipRect);
+    if (clippedRect.isEmpty())
+        return;
 
     float gltexid = static_cast<float>(img->renderId().value());
 
-    float drawx = static_cast<float>(std::max(x, this->clip_x));
-    float drawy = static_cast<float>(std::max(y, this->clip_y));
-    float draww = static_cast<float>(std::min(w, this->clip_w));
-    float drawz = static_cast<float>(std::min(z, this->clip_z));
+    float drawx = clippedRect.x;
+    float drawy = clippedRect.y;
+    float drawz = clippedRect.x + clippedRect.w;
+    float draww = clippedRect.y + clippedRect.h;
 
     float texx = (drawx - x) / float(z - x);
     float texy = (drawy - y) / float(w - y);
@@ -1249,9 +1248,12 @@ void OpenGLRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, 
     int w = y + height;
 
     // check bounds
-    if (x >= outputRender.w || y >= outputRender.h) return;
+    if (x >= outputRender.w || y >= outputRender.h)
+        return;
+
     // check for overlap
-    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
+    if (!Recti(*pTargetPoint, pSrcRect->size()).intersects(this->clipRect))
+        return;
 
     float gltexid = static_cast<float>(texture->renderId().value());
     int texwidth = texture->width();
@@ -2715,10 +2717,7 @@ void OpenGLRenderer::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1
 
 void OpenGLRenderer::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
                                    unsigned int w) {
-    this->clip_x = x;
-    this->clip_y = y;
-    this->clip_z = z;
-    this->clip_w = w;
+    this->clipRect = Recti(x, y, z - x, w - y);
     glScissor(x, outputRender.h -w, z-x, w-y);  // invert glscissor co-ords 0,0 is BL
 }
 
@@ -2764,16 +2763,20 @@ void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color 
     int w = y + height;
 
     // check bounds
-    if (x >= outputRender.w || y >= outputRender.h) return;
+    if (x >= outputRender.w || y >= outputRender.h)
+        return;
+
     // check for overlap
-    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
+    Recti clippedRect = Recti(x, y, width, height).intersection(this->clipRect);
+    if (clippedRect.isEmpty())
+        return;
 
     float gltexid = tex->renderId().value();
 
-    float drawx = static_cast<float>(std::max(x, this->clip_x));
-    float drawy = static_cast<float>(std::max(y, this->clip_y));
-    float draww = static_cast<float>(std::min(w, this->clip_w));
-    float drawz = static_cast<float>(std::min(z, this->clip_z));
+    float drawx = clippedRect.x;
+    float drawy = clippedRect.y;
+    float drawz = clippedRect.x + clippedRect.w;
+    float draww = clippedRect.y + clippedRect.h;
 
     float texx = (drawx - x) / float(width);
     float texy = (drawy - y) / float(height);
@@ -2867,15 +2870,18 @@ void OpenGLRenderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *im
 
     // check bounds
     if (x >= outputRender.w || y >= outputRender.h) return;
+
     // check for overlap
-    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
+    Recti clippedRect = Recti(x, y, width, custom_height).intersection(this->clipRect);
+    if (clippedRect.isEmpty())
+        return;
 
     float gltexid = img->renderId().value();
 
-    float drawx = static_cast<float>(std::max(x, this->clip_x));
-    float drawy = static_cast<float>(std::max(y, this->clip_y));
-    float draww = static_cast<float>(std::min(w, this->clip_w));
-    float drawz = static_cast<float>(std::min(z, this->clip_z));
+    float drawx = clippedRect.x;
+    float drawy = clippedRect.y;
+    float drawz = clippedRect.x + clippedRect.w;
+    float draww = clippedRect.y + clippedRect.h;
 
     float texx = (drawx - x) / float(width);
     float texy = (drawy - y) / float(height);
@@ -3073,17 +3079,15 @@ void OpenGLRenderer::DrawTextNew(int x, int y, int width, int h, float u1, float
     if (cf.r == 0.0f)
         cf.r = 0.00392f;
 
-    int clipx = this->clip_x;
-    int clipy = this->clip_y;
-    int clipw = this->clip_w;
-    int clipz = this->clip_z;
-
     int z = x + width;
     int w = y + h;
+
     // check bounds
-    if (x >= outputRender.w || y >= outputRender.h) return;
+    if (x >= outputRender.w || y >= outputRender.h)
+        return;
+
     // check for overlap
-    if (!(clipx < z && clipz > x && clipy < w && clipw > y)) return;
+    if (!Recti(x, y, width, h).intersects(this->clipRect)) return;
 
     float drawx = static_cast<float>(x);
     float drawy = static_cast<float>(y);
@@ -4726,17 +4730,21 @@ void OpenGLRenderer::FillRectFast(unsigned int uX, unsigned int uY, unsigned int
     int w = y + uHeight;
 
     // check bounds
-    if (x >= outputRender.w || y >= outputRender.h) return;
+    if (x >= outputRender.w || y >= outputRender.h)
+        return;
+
     // check for overlap
-    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
+    Recti clippedRect = Recti(x, y, uWidth, uHeight).intersection(this->clipRect);
+    if (clippedRect.isEmpty())
+        return;
 
     static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
     float gltexid = static_cast<float>(effpar03->renderId().value());
 
-    float drawx = static_cast<float>(std::max(x, this->clip_x));
-    float drawy = static_cast<float>(std::max(y, this->clip_y));
-    float draww = static_cast<float>(std::min(w, this->clip_w));
-    float drawz = static_cast<float>(std::min(z, this->clip_z));
+    float drawx = clippedRect.x;
+    float drawy = clippedRect.y;
+    float drawz = clippedRect.x + clippedRect.w;
+    float draww = clippedRect.y + clippedRect.h;
 
     float texx = 0.5f;
     float texy = 0.5f;
@@ -4873,9 +4881,7 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
     // Swap Buffers (Double Buffering)
     openGLContext->swapBuffers();
 
-    this->clip_x = this->clip_y = 0;
-    this->clip_z = outputRender.w;
-    this->clip_w = outputRender.h;
+    this->clipRect = Recti(Pointi(0, 0), outputRender);
 
     // PostInitialization();
 
@@ -5105,10 +5111,7 @@ void OpenGLRenderer::ReleaseBSP() {
 void OpenGLRenderer::DrawTwodVerts() {
     if (!twodvertscnt) return;
 
-    int savex = this->clip_x;
-    int savey = this->clip_y;
-    int savez = this->clip_z;
-    int savew = this->clip_w;
+    Recti savedClipRect = this->clipRect;
     render->ResetUIClipRect();
 
     if (twodVAO == 0) {
@@ -5222,7 +5225,7 @@ void OpenGLRenderer::DrawTwodVerts() {
     glBindVertexArray(0);
 
     twodvertscnt = 0;
-    render->SetUIClipRect(savex, savey, savez, savew);
+    render->SetUIClipRect(savedClipRect.x, savedClipRect.y, savedClipRect.x + savedClipRect.w, savedClipRect.y + savedClipRect.h);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }

@@ -157,8 +157,7 @@ class OpenGLRenderer : public BaseRenderer {
     void _set_ortho_projection(bool gameviewport = false);
     void _set_ortho_modelview();
 
-    int clip_x{}, clip_y{};
-    int clip_z{}, clip_w{};
+    Recti clipRect;
 
     int GL_lastboundtex{};
 

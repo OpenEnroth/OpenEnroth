@@ -1,5 +1,7 @@
 #pragma once
 
+#include <algorithm>
+
 #include "Point.h"
 #include "Size.h"
 
@@ -41,6 +43,26 @@ struct Rect {
 
     Size<T> size() const {
         return {w, h};
+    }
+
+    bool intersects(const Rect<T> &other) const {
+        // Rect, unlike BBox, doesn't include its bottom/right border. So an empty rect (w=0, h=0) intersects nothing.
+        return
+            x < other.x + other.w && x + w > other.x &&
+            y < other.y + other.h && y + h > other.y;
+    }
+
+    Rect<T> intersection(const Rect<T> &other) const {
+        T x1 = std::max(x, other.x);
+        T y1 = std::max(y, other.y);
+        T x2 = std::min(x + w, other.x + other.w);
+        T y2 = std::min(y + h, other.y + other.h);
+
+        return Rect<T>{x1, y1, x2 - x1, y2 - y1}; // Can return an empty rect with negative size.
+    }
+
+    bool isEmpty() const {
+        return w <= 0 || h <= 0;
     }
 
     friend bool operator==(const Rect &l, const Rect &r) = default;
