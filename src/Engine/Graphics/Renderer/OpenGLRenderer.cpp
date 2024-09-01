@@ -1240,11 +1240,6 @@ void OpenGLRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, 
     float col = (blend_mode == 2) ? 1.0f : 0.5f;
     Colorf cf = Colorf(col, col, col);
 
-    int clipx = this->clip_x;
-    int clipy = this->clip_y;
-    int clipw = this->clip_w;
-    int clipz = this->clip_z;
-
     int width = pSrcRect->w;
     int height = pSrcRect->h;
 
@@ -2760,11 +2755,6 @@ void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color 
 
     Colorf cf = colourmask.toColorf();
 
-    int clipx = this->clip_x;
-    int clipy = this->clip_y;
-    int clipw = this->clip_w;
-    int clipz = this->clip_z;
-
     int width = tex->width();
     int height = tex->height();
 
@@ -2866,11 +2856,6 @@ void OpenGLRenderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *im
         engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, img->GetName());
 
     Colorf cf(1.0f, 1.0f, 1.0f);
-
-    int clipx = this->clip_x;
-    int clipy = this->clip_y;
-    int clipw = this->clip_w;
-    int clipz = this->clip_z;
 
     int width = img->width();
     int height = img->height();
