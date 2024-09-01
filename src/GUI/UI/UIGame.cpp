@@ -49,7 +49,6 @@
 #include "Io/Mouse.h"
 
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Math/FixPoint.h"
 
 #include "Library/Logger/Logger.h"
 

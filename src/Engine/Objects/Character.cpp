@@ -52,7 +52,6 @@
 #include "Library/Logger/Logger.h"
 
 #include "Utility/Memory/MemSet.h"
-#include "Utility/Math/FixPoint.h"
 #include "Utility/IndexedArray.h"
 
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();

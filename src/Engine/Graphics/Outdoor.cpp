@@ -53,7 +53,6 @@
 #include "Utility/String/Ascii.h"
 #include "Utility/Memory/FreeDeleter.h"
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Math/FixPoint.h"
 #include "Utility/Exception.h"
 
 MapStartPoint uLevel_StartingPointType;

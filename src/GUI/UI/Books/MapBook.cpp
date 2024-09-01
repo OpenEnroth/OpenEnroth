@@ -22,7 +22,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Math/FixPoint.h"
 
 void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y);
 
