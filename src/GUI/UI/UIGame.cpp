@@ -1377,7 +1377,7 @@ void GameUI_DrawPortraits() {
 }
 
 //----- (00441D38) --------------------------------------------------------
-void GameUI_DrawMinimap(const Recti &rect, int uZoom, unsigned int bRedrawOdmMinimap) {
+void GameUI_DrawMinimap(const Recti &rect, int uZoom) {
     // signed int pW;   // ebx@23
     int LineGreyDim;         // eax@23
     //double startx;      // st7@30
@@ -1435,22 +1435,20 @@ void GameUI_DrawMinimap(const Recti &rect, int uZoom, unsigned int bRedrawOdmMin
             int starty16 = partyy16 - (rect.h << 16) / (2 * zoomLevel);
 
             // TODO(pskelton): could stretch texture rather than rescale
-            if (/*pMapLod0 && */ bRedrawOdmMinimap) {
-                assert(rect.w == 137 && rect.h == 117);
+            assert(rect.w == 137 && rect.h == 117);
 
-                int step16 = (1 << 16) / zoomLevel;
-                for (int dstY = 0, srcY16 = starty16; dstY < rect.h; ++dstY, srcY16 += step16) {
-                    std::span<Color> dstLine = minimaptemp->rgba()[dstY];
-                    std::span<const Color> srcLine = viewparams->location_minimap->rgba()[srcY16 >> 16];
-                    for (int dstX = 0, srcX16 = startx16; dstX < rect.w; ++dstX, srcX16 += step16)
-                        dstLine[dstX] = srcLine[srcX16 >> 16];
-                }
-
-                // draw image
-                render->Update_Texture(minimaptemp);
-                render->DrawTextureNew(rect.x / 640., rect.y / 480., minimaptemp);
-                // minimaptemp->Release();
+            int step16 = (1 << 16) / zoomLevel;
+            for (int dstY = 0, srcY16 = starty16; dstY < rect.h; ++dstY, srcY16 += step16) {
+                std::span<Color> dstLine = minimaptemp->rgba()[dstY];
+                std::span<const Color> srcLine = viewparams->location_minimap->rgba()[srcY16 >> 16];
+                for (int dstX = 0, srcX16 = startx16; dstX < rect.w; ++dstX, srcX16 += step16)
+                    dstLine[dstX] = srcLine[srcX16 >> 16];
             }
+
+            // draw image
+            render->Update_Texture(minimaptemp);
+            render->DrawTextureNew(rect.x / 640., rect.y / 480., minimaptemp);
+            // minimaptemp->Release();
         } else {
             // no need to update map - just redraw
             render->DrawTextureNew(rect.x / 640., rect.y / 480., minimaptemp);
