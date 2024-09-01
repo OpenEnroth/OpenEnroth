@@ -43,13 +43,13 @@ set(UTILITY_HEADERS
         String/Split.h
         String/TransparentFunctors.h
         String/Transformations.h
-        Win/Unicode.h
         Unaligned.h
         UnicodeCrt.h
         SmallVector.h
         ScopedRollback.h)
 
 if(OE_BUILD_PLATFORM STREQUAL "windows")
+    list(APPEND UTILITY_HEADERS Win/Unicode.h)
     list(APPEND UTILITY_SOURCES Win/Unicode.cpp)
 endif()
 
