@@ -1377,13 +1377,13 @@ void GameUI_DrawPortraits() {
 }
 
 //----- (00441D38) --------------------------------------------------------
-void GameUI_DrawMinimap(const Recti &rect, unsigned int uZoom, unsigned int bRedrawOdmMinimap) {
+void GameUI_DrawMinimap(const Recti &rect, int uZoom, unsigned int bRedrawOdmMinimap) {
     // signed int pW;   // ebx@23
     int LineGreyDim;         // eax@23
-    double startx;      // st7@30
-    signed int ypix;  // eax@37
+    //double startx;      // st7@30
+    // signed int ypix;  // eax@37
     // uint16_t *v28; // ecx@37
-    signed int xpix;       // edi@40
+    // signed int xpix;       // edi@40
     int pPoint_X;         // edi@72
     int pPoint_Y;         // ebx@72
     // unsigned int lPitch;  // [sp+20h] [bp-34h]@1
@@ -1391,9 +1391,9 @@ void GameUI_DrawMinimap(const Recti &rect, unsigned int uZoom, unsigned int bRed
     // signed int pX;        // [sp+24h] [bp-30h]@23
     signed int xpixoffset16;       // [sp+24h] [bp-30h]@37
     signed int ypixoffset16;    // [sp+28h] [bp-2Ch]@37
-    int map_scale;              // [sp+2Ch] [bp-28h]@30
+    // int map_scale;              // [sp+2Ch] [bp-28h]@30
     // signed int pZ;        // [sp+60h] [bp+Ch]@23
-    double starty;            // [sp+60h] [bp+Ch]@30
+    //double starty;            // [sp+60h] [bp+Ch]@30
     Color pColor;
 
     Pointi center = rect.center();
@@ -1420,50 +1420,32 @@ void GameUI_DrawMinimap(const Recti &rect, unsigned int uZoom, unsigned int bRed
         bool partymoved = true;  // TODO(pskelton): actually check for party movement
 
         if (partymoved) {
-            int loc_power = ImageHelper::GetWidthLn2(viewparams->location_minimap);
-            map_scale = (1 << (loc_power + 16)) / (signed int)uZoom;
-            startx = (double)(pParty->pos.x + 32768) /
-                     (double)(1 << (16 - loc_power));
-            starty = (double)(32768 - pParty->pos.y) /
-                     (double)(1 << (16 - loc_power));
-            switch (uZoom) {
-            case 512: {
-                startx = startx - (double)(rect.w / 2);
-                starty = starty - (double)(rect.h / 2);
-            } break;
-            case 1024: {
-                startx = startx - (double)(rect.w / 4);
-                starty = starty - (double)(rect.h / 4);
-            } break;
-            case 2048: {
-                startx = startx - (double)(rect.w / 8);
-                starty = starty - (double)(rect.h / 8);
-            } break;
-            default:
-                assert(false);
-            }
+            int imageWidth = viewparams->location_minimap->width();
 
-            xpixoffset16 = floorf(startx * 65536.0 + 0.5f);     // LODWORD(v24);
-            ypixoffset16 = floorf(starty * 65536.0 + 0.5f);  // LODWORD(v25);
-            ypix = ypixoffset16 >> 16;
-            xpix = xpixoffset16 >> 16;
-            // v28 = &render->pTargetSurface[uX + uY * lPitch];
+            // Zoom level, x1, x2 or x4.
+            int zoomLevel = uZoom / imageWidth;
+
+            // Party position in fixpoint image coordinates.
+            // Map is 2^16 by 2^16 in in-game coords, but (0, 0) is in the center of the map.
+            int partyx16 = static_cast<int>(pParty->pos.x + 32768) * imageWidth;
+            int partyy16 = static_cast<int>(32768 - pParty->pos.y) * imageWidth;
+
+            // Top-left corner position in fixpoint image coordinates.
+            int startx16 = partyx16 - (rect.w << 16) / (2 * zoomLevel);
+            int starty16 = partyy16 - (rect.h << 16) / (2 * zoomLevel);
 
             // TODO(pskelton): could stretch texture rather than rescale
             if (/*pMapLod0 && */ bRedrawOdmMinimap) {
                 assert(rect.w == 137 && rect.h == 117);
 
-                for (int y = 0; y < rect.h; ++y) {
-                    std::span<Color> dstLine = minimaptemp->rgba()[y];
-                    std::span<const Color> srcLine = viewparams->location_minimap->rgba()[ypix];
-
-                    for (int x = 0; x < rect.w; ++x) {
-                        dstLine[x] = srcLine[xpix];
-                        xpix = (xpixoffset16 + x * map_scale) >> 16;
-                    }
-                    ypixoffset16 += map_scale;
-                    ypix = ypixoffset16 >> 16;
+                int step16 = (1 << 16) / zoomLevel;
+                for (int dstY = 0, srcY16 = starty16; dstY < rect.h; ++dstY, srcY16 += step16) {
+                    std::span<Color> dstLine = minimaptemp->rgba()[dstY];
+                    std::span<const Color> srcLine = viewparams->location_minimap->rgba()[srcY16 >> 16];
+                    for (int dstX = 0, srcX16 = startx16; dstX < rect.w; ++dstX, srcX16 += step16)
+                        dstLine[dstX] = srcLine[srcX16 >> 16];
                 }
+
                 // draw image
                 render->Update_Texture(minimaptemp);
                 render->DrawTextureNew(rect.x / 640., rect.y / 480., minimaptemp);
