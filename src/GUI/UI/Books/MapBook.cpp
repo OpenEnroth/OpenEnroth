@@ -144,16 +144,17 @@ void GUIWindow_MapBook::Update() {
 
 //----- (00442955) --------------------------------------------------------
 void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
+    // TODO(captainurist): this needs to be merged with GameUI_DrawMinimap
+
     int ScreenCenterX = (tl_x + br_x) / 2;
     int ScreenCenterY = (tl_y + br_y) / 2;
     render->SetUIClipRect(Recti(tl_x, tl_y, br_x - tl_x, br_y - tl_y));
 
-    int pCenterX = viewparams->sViewCenterX;
-    int pCenterY = viewparams->sViewCenterY;
+    Vec2i center(viewparams->sViewCenterX, viewparams->sViewCenterY);
 
     if (viewparams->uMapBookMapZoom == 384) {
-        pCenterX = viewparams->indoor_center_x;
-        pCenterY = viewparams->indoor_center_y;
+        center.x = viewparams->indoor_center_x;
+        center.y = viewparams->indoor_center_y;
     }
 
     if (uCurrentlyLoadedLevelType != LEVEL_INDOOR) {  // outdoors
@@ -165,9 +166,9 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         double MapSizeScale = (double)(1 << (16 - loc_power));
         int stepX_r_resets =
             (unsigned int)(int64_t)
-            ((double)(pCenterX - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
+            ((double)(center.x - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
         int stepY_r = (int)(int64_t)
-            ((double)(-pCenterY - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
+            ((double)(-center.y - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
         int scaled_posY = stepY_r >> 16;
 
         static GraphicsImage *minimaptemp = nullptr;
@@ -223,10 +224,10 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
                         pOutline->uFlags = pOutline->uFlags | 1;
                         pIndoor->_visible_outlines[i >> 3] |= 1 << (7 - i % 8);
 
-                        int Vert1X = pIndoor->pVertices[pOutline->uVertex1ID].x - pCenterX;
-                        int Vert2X = pIndoor->pVertices[pOutline->uVertex2ID].x - pCenterX;
-                        int Vert1Y = pIndoor->pVertices[pOutline->uVertex1ID].y - pCenterY;
-                        int Vert2Y = pIndoor->pVertices[pOutline->uVertex2ID].y - pCenterY;
+                        int Vert1X = pIndoor->pVertices[pOutline->uVertex1ID].x - center.x;
+                        int Vert2X = pIndoor->pVertices[pOutline->uVertex2ID].x - center.x;
+                        int Vert1Y = pIndoor->pVertices[pOutline->uVertex1ID].y - center.y;
+                        int Vert2Y = pIndoor->pVertices[pOutline->uVertex2ID].y - center.y;
 
                         int linex = ScreenCenterX + fixpoint_mul(Vert1X, viewparams->uMapBookMapZoom);
                         int liney = ScreenCenterY - fixpoint_mul(Vert1Y, viewparams->uMapBookMapZoom);
@@ -242,8 +243,8 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
     }
 
     // Direction arrow drawing
-    int ArrowXPos = (pParty->pos.x - pCenterX) * viewparams->uMapBookMapZoom / 65536.0f + ScreenCenterX - 3;
-    int ArrowYPos = ScreenCenterY - ((pParty->pos.y - pCenterY) * viewparams->uMapBookMapZoom / 65536.0f) - 3;
+    int ArrowXPos = (pParty->pos.x - center.x) * viewparams->uMapBookMapZoom / 65536.0f + ScreenCenterX - 3;
+    int ArrowYPos = ScreenCenterY - ((pParty->pos.y - center.y) * viewparams->uMapBookMapZoom / 65536.0f) - 3;
     bool DrawArrow = 1;
 
     if (ArrowXPos >= (signed int)tl_x) {
@@ -285,8 +286,8 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         render->BeginLines2D();
         for (unsigned i = 0; i < (signed int)pLevelDecorations.size(); ++i) {
             if (pLevelDecorations[i].uFlags & LEVEL_DECORATION_VISIBLE_ON_MAP) {
-                int DecY = pLevelDecorations[i].vPosition.y - pCenterY;
-                int DecX = pLevelDecorations[i].vPosition.x - pCenterX;
+                int DecY = pLevelDecorations[i].vPosition.y - center.y;
+                int DecX = pLevelDecorations[i].vPosition.x - center.x;
                 int decxpos = ScreenCenterX + fixpoint_mul(DecX, viewparams->uMapBookMapZoom);
                 int decypos = ScreenCenterY - fixpoint_mul(DecY, viewparams->uMapBookMapZoom);
 
