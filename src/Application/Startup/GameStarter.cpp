@@ -6,6 +6,12 @@
 #include <vector>
 #include <memory>
 
+#include "Application/GameConfig.h"
+#include "Application/Game.h"
+#include "Application/GameKeyboardController.h"
+#include "Application/GameWindowHandler.h"
+#include "Application/GameTraceHandler.h"
+
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/EngineIocContainer.h"
@@ -47,12 +53,7 @@
 
 #include "Utility/Exception.h"
 
-#include "GamePathResolver.h"
-#include "GameConfig.h"
-#include "Game.h"
-#include "GameKeyboardController.h"
-#include "GameWindowHandler.h"
-#include "GameTraceHandler.h"
+#include "PathResolver.h"
 
 constexpr std::string_view configName = "openenroth.ini";
 

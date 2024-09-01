@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-#include "Application/GamePathResolver.h"
+#include "Application/Startup/PathResolver.h"
 
 #include "Library/Cli/CliApp.h"
 

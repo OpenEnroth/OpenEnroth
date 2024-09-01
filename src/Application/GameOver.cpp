@@ -21,8 +21,6 @@
 
 #include "Library/Image/PCX.h"
 
-#include "Utility/Streams/FileOutputStream.h"
-
 
 //----- (004BF91E) --------------------------------------------------------
 void GameOver_Loop(int v15) {

@@ -9,7 +9,7 @@
 #include <regex>
 #include <string>
 
-#include "Application/GameStarter.h"
+#include "Application/Startup/GameStarter.h"
 
 #include "Engine/Components/Random/EngineRandomComponent.h"
 #include "Engine/Tables/ItemTable.h"
