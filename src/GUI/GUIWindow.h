@@ -23,6 +23,7 @@
 #include "Library/Color/ColorTable.h"
 #include "Library/Geometry/Size.h"
 #include "Library/Geometry/Point.h"
+#include "Library/Geometry/Rect.h"
 
 #include "Utility/IndexedArray.h"
 
@@ -238,8 +239,7 @@ void GameUI_DrawFoodAndGold();
 void GameUI_DrawLifeManaBars();
 void GameUI_DrawHiredNPCs();
 void GameUI_DrawPortraits();
-void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
-                        unsigned int uW, unsigned int uZoom, unsigned int bRedrawOdmMinimap);
+void GameUI_DrawMinimap(const Recti &rect, unsigned int uZoom, unsigned int bRedrawOdmMinimap);
 std::string GameUI_GetMinimapHintText();
 void GameUI_DrawPartySpells();
 void GameUI_DrawTorchlightAndWizardEye();

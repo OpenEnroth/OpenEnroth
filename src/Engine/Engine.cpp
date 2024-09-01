@@ -216,7 +216,7 @@ void Engine::DrawGUI() {
     _statusBar->draw();
 
     if (!pMovie_Track && uGameState != GAME_STATE_CHANGE_LOCATION) {  // ! pVideoPlayer->pSmackerMovie)
-        GameUI_DrawMinimap(488, 16, 625, 133, viewparams->uMinimapZoom, true);  // redraw = pParty->uFlags & 2);
+        GameUI_DrawMinimap(Recti(488, 16, 137, 117), viewparams->uMinimapZoom, true);  // redraw = pParty->uFlags & 2);
     }
 
     GameUI_DrawPartySpells();

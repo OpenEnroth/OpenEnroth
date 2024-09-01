@@ -1377,9 +1377,7 @@ void GameUI_DrawPortraits() {
 }
 
 //----- (00441D38) --------------------------------------------------------
-void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
-                        unsigned int uW, unsigned int uZoom,
-                        unsigned int bRedrawOdmMinimap) {
+void GameUI_DrawMinimap(const Recti &rect, unsigned int uZoom, unsigned int bRedrawOdmMinimap) {
     // signed int pW;   // ebx@23
     int LineGreyDim;         // eax@23
     double startx;      // st7@30
@@ -1398,11 +1396,8 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     double starty;            // [sp+60h] [bp+Ch]@30
     Color pColor;
 
-    signed int uCenterX = (uX + uZ) / 2;
-    signed int uCenterY = (uY + uW) / 2;
-    render->SetUIClipRect(Recti(uX, uY, uZ - uX, uW - uY));
-    int uHeight = uW - uY;
-    signed int uWidth = uZ - uX;
+    Pointi center = rect.center();
+    render->SetUIClipRect(rect);
 
     bool bWizardEyeActive = pParty->wizardEyeActive();
     CharacterSkillMastery uWizardEyeSkillLevel = pParty->wizardEyeSkillLevel();
@@ -1419,7 +1414,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         static GraphicsImage *minimaptemp;
         if (!minimaptemp) {
-            minimaptemp = GraphicsImage::Create(uWidth, uHeight);
+            minimaptemp = GraphicsImage::Create(rect.size());
         }
 
         static uint16_t pOdmMinimap[117][137];
@@ -1436,16 +1431,16 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                      (double)(1 << (16 - loc_power));
             switch (uZoom) {
             case 512: {
-                startx = startx - (double)(uWidth / 2);
-                starty = starty - (double)(uHeight / 2);
+                startx = startx - (double)(rect.w / 2);
+                starty = starty - (double)(rect.h / 2);
             } break;
             case 1024: {
-                startx = startx - (double)(uWidth / 4);
-                starty = starty - (double)(uHeight / 4);
+                startx = startx - (double)(rect.w / 4);
+                starty = starty - (double)(rect.h / 4);
             } break;
             case 2048: {
-                startx = startx - (double)(uWidth / 8);
-                starty = starty - (double)(uHeight / 8);
+                startx = startx - (double)(rect.w / 8);
+                starty = starty - (double)(rect.h / 8);
             } break;
             default:
                 assert(false);
@@ -1459,15 +1454,15 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
             // TODO(pskelton): could stretch texture rather than rescale
             if (/*pMapLod0 && */ bRedrawOdmMinimap) {
-                assert(uWidth == 137 && uHeight == 117);
+                assert(rect.w == 137 && rect.h == 117);
 
                 int MapImgWidth = viewparams->location_minimap->width();
                 const Color *pMapLod0Line = viewparams->location_minimap->rgba().pixels().data();
                 Color *minitempix = minimaptemp->rgba().pixels().data();
 
-                for (int y = 0; y < uHeight; ++y) {
-                    for (int x = 0; x < uWidth; ++x) {
-                        minitempix[x + y * uWidth] = pMapLod0Line[xpix + ypix * MapImgWidth];
+                for (int y = 0; y < rect.h; ++y) {
+                    for (int x = 0; x < rect.w; ++x) {
+                        minitempix[x + y * rect.w] = pMapLod0Line[xpix + ypix * MapImgWidth];
                         xpix = (xpixoffset16 + x * map_scale) >> 16;
                     }
                     ypixoffset16 += map_scale;
@@ -1475,16 +1470,16 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 }
                 // draw image
                 render->Update_Texture(minimaptemp);
-                render->DrawTextureNew(uX / 640., uY / 480., minimaptemp);
+                render->DrawTextureNew(rect.x / 640., rect.y / 480., minimaptemp);
                 // minimaptemp->Release();
             }
         } else {
             // no need to update map - just redraw
-            render->DrawTextureNew(uX / 640., uY / 480., minimaptemp);
+            render->DrawTextureNew(rect.x / 640., rect.y / 480., minimaptemp);
         }
         render->BeginLines2D();
     } else if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-        render->FillRectFast(uX, uY, uZ - uX, uHeight, colorTable.NavyBlue);
+        render->FillRectFast(rect.x, rect.y, rect.w, rect.h, colorTable.NavyBlue);
         uNumBlueFacesInBLVMinimap = 0;
         render->BeginLines2D();
         for (unsigned i = 0; i < (unsigned)pIndoor->pMapOutlines.size(); ++i) {
@@ -1502,10 +1497,10 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                     int Vert1Y = pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex1ID].y - pParty->pos.y;
                     int Vert2Y = pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex2ID].y - pParty->pos.y;
 
-                    int linex = uCenterX + fixpoint_mul(uZoom, Vert1X);
-                    int liney = uCenterY - fixpoint_mul(uZoom, Vert1Y);
-                    int linez = uCenterX + fixpoint_mul(uZoom, Vert2X);
-                    int linew = uCenterY - fixpoint_mul(uZoom, Vert2Y);
+                    int linex = center.x + fixpoint_mul(uZoom, Vert1X);
+                    int liney = center.y - fixpoint_mul(uZoom, Vert1Y);
+                    int linez = center.x + fixpoint_mul(uZoom, Vert2X);
+                    int linew = center.y - fixpoint_mul(uZoom, Vert2Y);
 
                     if (bWizardEyeActive && uWizardEyeSkillLevel >= CHARACTER_SKILL_MASTERY_MASTER &&
                         (pIndoor->pFaces[pOutline->uFace1ID].Clickable() ||
@@ -1527,10 +1522,10 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
 
         for (unsigned i = 0; i < uNumBlueFacesInBLVMinimap; ++i) {
             BLVMapOutline *pOutline = &pIndoor->pMapOutlines[pBlueFacesInBLVMinimapIDs[i]];
-            int pX = uCenterX + uZoom * (pIndoor->pVertices[pOutline->uVertex1ID].x - pParty->pos.x) / 65536.0f;
-            int pY = uCenterY - uZoom * (pIndoor->pVertices[pOutline->uVertex1ID].y - pParty->pos.y) / 65536.0f;
-            int pZ = uCenterX + uZoom * (pIndoor->pVertices[pOutline->uVertex2ID].x - pParty->pos.x) / 65536.0f;
-            int pW = uCenterY - uZoom * (pIndoor->pVertices[pOutline->uVertex2ID].y - pParty->pos.y) / 65536.0f;
+            int pX = center.x + uZoom * (pIndoor->pVertices[pOutline->uVertex1ID].x - pParty->pos.x) / 65536.0f;
+            int pY = center.y - uZoom * (pIndoor->pVertices[pOutline->uVertex1ID].y - pParty->pos.y) / 65536.0f;
+            int pZ = center.x + uZoom * (pIndoor->pVertices[pOutline->uVertex2ID].x - pParty->pos.x) / 65536.0f;
+            int pW = center.y - uZoom * (pIndoor->pVertices[pOutline->uVertex2ID].y - pParty->pos.y) / 65536.0f;
             render->RasterLine2D(Pointi(pX, pY), Pointi(pZ, pW), ui_game_minimap_outline_color);
         }
     }
@@ -1545,8 +1540,8 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
                 if (pSpriteObjects[i].uType == SPRITE_NULL || !pSpriteObjects[i].uObjectDescID)
                     continue;
                 // if (uWizardEyeSkillLevel == 1
-                pPoint_X = uCenterX + (pSpriteObjects[i].vPosition.x - pParty->pos.x) * uZoom / 65536.0f;
-                pPoint_Y = uCenterY - (pSpriteObjects[i].vPosition.y - pParty->pos.y) * uZoom / 65536.0f;
+                pPoint_X = center.x + (pSpriteObjects[i].vPosition.x - pParty->pos.x) * uZoom / 65536.0f;
+                pPoint_Y = center.y - (pSpriteObjects[i].vPosition.y - pParty->pos.y) * uZoom / 65536.0f;
                 // if ( pPoint_X >= render->raster_clip_x && pPoint_X <=
                 // render->raster_clip_z &&
                 //     pPoint_Y >= render->raster_clip_y && pPoint_Y <=
@@ -1581,8 +1576,8 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
             if (pActors[i].aiState != Removed &&
                 pActors[i].aiState != Disabled &&
                 (pActors[i].aiState == Dead || pActors[i].ActorNearby())) {
-                pPoint_X = uCenterX + (pActors[i].pos.x - pParty->pos.x) * uZoom / 65536.0f;
-                pPoint_Y = uCenterY - (pActors[i].pos.y - pParty->pos.y) * uZoom / 65536.0f;
+                pPoint_X = center.x + (pActors[i].pos.x - pParty->pos.x) * uZoom / 65536.0f;
+                pPoint_Y = center.y - (pActors[i].pos.y - pParty->pos.y) * uZoom / 65536.0f;
                 // if ( pPoint_X >= render->raster_clip_x && pPoint_X <=
                 // render->raster_clip_z
                 //  && pPoint_Y >= render->raster_clip_y && pPoint_Y <=
@@ -1615,8 +1610,8 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
         }
         for (unsigned i = 0; i < (signed int)pLevelDecorations.size(); ++i) {  // draw items(отрисовка предметов)
             if (pLevelDecorations[i].uFlags & LEVEL_DECORATION_VISIBLE_ON_MAP) {
-                pPoint_X = uCenterX + (pLevelDecorations[i].vPosition.x - pParty->pos.x) * uZoom / 65536.0f;
-                pPoint_Y = uCenterY - (pLevelDecorations[i].vPosition.y - pParty->pos.y) * uZoom / 65536.0f;
+                pPoint_X = center.x + (pLevelDecorations[i].vPosition.x - pParty->pos.x) * uZoom / 65536.0f;
+                pPoint_Y = center.y - (pLevelDecorations[i].vPosition.y - pParty->pos.y) * uZoom / 65536.0f;
 
                 // if ( pPoint_X >= render->raster_clip_x && pPoint_X <=
                 // render->raster_clip_z
@@ -1648,7 +1643,7 @@ void GameUI_DrawMinimap(unsigned int uX, unsigned int uY, unsigned int uZ,
     if (rotate < 640) arrow_idx = 1;
     if (rotate <= 384) arrow_idx = 0;
     if (rotate < 128 || rotate > 1920) arrow_idx = 7;
-    render->DrawTextureNew((uCenterX - 3) / 640.0f, (uCenterY - 3) / 480.0f, game_ui_minimap_dirs[arrow_idx]);
+    render->DrawTextureNew((center.x - 3) / 640.0f, (center.y - 3) / 480.0f, game_ui_minimap_dirs[arrow_idx]);
 
     render->SetUIClipRect(Recti(541, 0, 26, 480));
     render->DrawTextureNew((floorf((pParty->_viewYaw * 0.1171875) + 0.5f) + 285) / 640.0f,

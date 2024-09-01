@@ -19,6 +19,7 @@ class GraphicsImage {
 
     static GraphicsImage *Create(RgbaImage image);
     static GraphicsImage *Create(ssize_t width, ssize_t height);
+    static GraphicsImage *Create(Sizei size);
     static GraphicsImage *Create(std::unique_ptr<ImageLoader> loader);
 
     ssize_t width();
