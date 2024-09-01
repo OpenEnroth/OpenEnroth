@@ -24,7 +24,7 @@
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Math/FixPoint.h"
 
-void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y, int dummy);
+void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y);
 
 GraphicsImage *ui_book_map_background = nullptr;
 
@@ -121,7 +121,7 @@ void GUIWindow_MapBook::Update() {
     _bookButtonClicked = false;
 
     render->DrawTextureNew(75 / 640.0f, 22 / 480.0f, ui_book_map_frame);
-    DrawBook_Map_sub(97, 49, 361, 313, 0);
+    DrawBook_Map_sub(97, 49, 361, 313);
     render->ResetUIClipRect();
 
     GUIWindow map_window;
@@ -143,7 +143,7 @@ void GUIWindow_MapBook::Update() {
 }
 
 //----- (00442955) --------------------------------------------------------
-void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y, int dummy) {
+void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
     int ScreenCenterX = (tl_x + br_x) / 2;
     int ScreenCenterY = (tl_y + br_y) / 2;
     render->SetUIClipRect(Recti(tl_x, tl_y, br_x - tl_x, br_y - tl_y));
