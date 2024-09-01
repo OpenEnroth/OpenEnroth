@@ -242,6 +242,8 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             if (quickSpellNumber != SPELL_NONE && !engine->config->debug.AllMagic.value()) {
                 CharacterSkillMastery skill_mastery = pParty->activeCharacter().getActualSkillValue(skillForSpell(quickSpellNumber)).mastery();
 
+                // TODO(captainurist): can get skill_mastery == CHARACTER_SKILL_MASTERY_NONE here by enabling / disabling all magic, this asserts.
+
                 uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[skill_mastery];
             }
 

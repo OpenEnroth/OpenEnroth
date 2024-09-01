@@ -2,20 +2,6 @@
 
 #include <utility>
 
-// int64_t fixpoint_sub_unknown(int a1, int a2) {
-//    return (((int64_t)a1 << 16) * a2) >> 16;
-// }
-
-////----- (0048B561) --------------------------------------------------------
-// int fixpoint_from_float(float val) {
-//    //  float X.Yf -> int XXXX YYYY
-//    int left = floorf((val - 0.5f) + 0.5f);
-//    int right = floorf((val - left) * 65536.0f);
-//    return (left << 16) | right;
-// }
-
-// int fixpoint_from_int(int lhv, int rhv) { return (lhv << 16) | rhv; }
-
 //----- (00452A9E) --------------------------------------------------------
 int integer_sqrt(int val) {
     ///////////////////////////////

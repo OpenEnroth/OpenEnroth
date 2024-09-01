@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <limits>
 
+// TODO(captainurist): drop this header
+
 #define pi_double 3.14159265358979323846
 
 const float pi = static_cast<float>(M_PI);

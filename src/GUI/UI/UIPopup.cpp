@@ -223,7 +223,7 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 
     if (!parchment) return;
 
-    render->SetUIClipRect(uX, uY, uX + uWidth, uY + uHeight);
+    render->SetUIClipRect(Recti(uX, uY, uWidth, uHeight));
 
     Sizei renderdims = render->GetRenderDimensions();
     float renwidth = renderdims.w;
@@ -258,9 +258,9 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
         messagebox_corner_w);
 
     if (uWidth > messagebox_corner_x->width() + messagebox_corner_z->width()) {
-        render->SetUIClipRect(uX + messagebox_corner_x->width(), uY,
-                              uX + uWidth - messagebox_corner_z->width(),
-                              uY + uHeight);
+        render->SetUIClipRect(Recti(uX + messagebox_corner_x->width(), uY,
+                              uWidth - messagebox_corner_z->width() - messagebox_corner_x->width(),
+                              uHeight));
 
         // horizontal borders
         for (unsigned int x = uX + messagebox_corner_x->width();
@@ -277,9 +277,9 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 
     // vertical borders
     if (uHeight > messagebox_corner_x->height() + messagebox_corner_y->height()) {
-        render->SetUIClipRect(uX, uY + messagebox_corner_x->height(),
-                              uX + uWidth,
-                              uY + uHeight - messagebox_corner_y->height());
+        render->SetUIClipRect(Recti(uX, uY + messagebox_corner_x->height(),
+                              uWidth,
+                              uHeight - messagebox_corner_y->height() - messagebox_corner_x->height()));
 
         for (unsigned int y = uY + messagebox_corner_x->height();
              y < uY + uHeight - messagebox_corner_y->height();
@@ -375,10 +375,9 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
 
     if (inspect_item->IsBroken()) {
         iteminfo_window.DrawMessageBox(0);
-        render->SetUIClipRect(
+        render->SetUIClipRect(Recti(
             iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
-            iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 12,
-            iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 12);
+            iteminfo_window.uFrameWidth - 24, iteminfo_window.uFrameHeight - 24));
         iteminfo_window.uFrameWidth -= 24;
         iteminfo_window.uFrameHeight -= 12;
         iteminfo_window.uFrameZ =
@@ -406,10 +405,9 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
 
     if (!inspect_item->IsIdentified()) {
         iteminfo_window.DrawMessageBox(0);
-        render->SetUIClipRect(
+        render->SetUIClipRect(Recti(
             iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
-            iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 12,
-            iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 12);
+            iteminfo_window.uFrameWidth - 24, iteminfo_window.uFrameHeight - 24));
         iteminfo_window.uFrameWidth -= 24;
         iteminfo_window.uFrameHeight -= 12;
         iteminfo_window.uFrameZ =
@@ -546,10 +544,9 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
     render->DrawTwodVerts();
 
     iteminfo_window.DrawMessageBox(0);
-    render->SetUIClipRect(
+    render->SetUIClipRect(Recti(
         iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
-        iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 12,
-        iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 12);
+        iteminfo_window.uFrameWidth - 24, iteminfo_window.uFrameHeight - 24));
     iteminfo_window.uFrameWidth -= 12;
     iteminfo_window.uFrameHeight -= 12;
     iteminfo_window.uFrameZ =
@@ -684,15 +681,13 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         // Draw portrait border
         render->ResetUIClipRect();
         render->FillRectFast(doll_rect.x, doll_rect.y, 128, 128, colorTable.Black);
+
+        Recti frameRect(doll_rect.topLeft() - Pointi(1, 1), doll_rect.bottomRight() + Pointi(1, 1));
         render->BeginLines2D();
-        int x0 = doll_rect.x;
-        int x1 = doll_rect.x + doll_rect.w;
-        int y0 = doll_rect.y;
-        int y1 = doll_rect.y + doll_rect.h;
-        render->RasterLine2D(x0 - 1, y0 - 1, x1 + 1, y0 - 1, colorTable.Jonquil);  // горизонтальная верхняя линия
-        render->RasterLine2D(x0 - 1, y1 + 1, x0 - 1, y0 - 1, colorTable.Jonquil);  // горизонтальная нижняя линия
-        render->RasterLine2D(x1 + 1, y1 + 1, x0 - 1, y1 + 1, colorTable.Jonquil);  // левая вертикальная линия
-        render->RasterLine2D(x1 + 1, y0 - 1, x1 + 1, y1 + 1, colorTable.Jonquil);  // правая вертикальная линия
+        render->RasterLine2D(frameRect.topLeft(), frameRect.topRight(), colorTable.Jonquil);
+        render->RasterLine2D(frameRect.topRight(), frameRect.bottomRight(), colorTable.Jonquil);
+        render->RasterLine2D(frameRect.bottomRight(), frameRect.bottomLeft(), colorTable.Jonquil);
+        render->RasterLine2D(frameRect.bottomLeft(), frameRect.topLeft(), colorTable.Jonquil);
         render->EndLines2D();
 
         // Draw portrait

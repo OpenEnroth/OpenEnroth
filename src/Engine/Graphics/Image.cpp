@@ -26,6 +26,10 @@ GraphicsImage *GraphicsImage::Create(ssize_t width, ssize_t height) {
     return Create(RgbaImage::solid(width, height, Color()));
 }
 
+GraphicsImage *GraphicsImage::Create(Sizei size) {
+    return Create(size.w, size.h);
+}
+
 GraphicsImage *GraphicsImage::Create(std::unique_ptr<ImageLoader> loader) {
     GraphicsImage *img = new GraphicsImage();
     img->_name = loader->GetResourceName();

@@ -1519,18 +1519,15 @@ void Game::processQueuedMessages() {
                 new OnButtonClick2({519, 136}, {0, 0}, pBtn_ZoomIn);
                 uNumSeconds = 131072;
 
-                ++viewparams->field_28;
                 viewparams->uMinimapZoom *= 2;
 
                 if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                     if (viewparams->uMinimapZoom > 4096) {
                         viewparams->uMinimapZoom = 4096;
-                        viewparams->field_28 = 12;
                     }
                 } else {
                     if (viewparams->uMinimapZoom > 2048) {
                         viewparams->uMinimapZoom = 2048;
-                        viewparams->field_28 = 11;
                     }
                 }
 
@@ -1540,18 +1537,15 @@ void Game::processQueuedMessages() {
                 new OnButtonClick2({574, 136}, {0, 0}, pBtn_ZoomOut);
                 uNumSeconds = 32768;
 
-                --viewparams->field_28;
                 viewparams->uMinimapZoom /= 2;
 
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                     if (viewparams->uMinimapZoom < 512) {
                         viewparams->uMinimapZoom = 512;
-                        viewparams->field_28 = 9;
                     }
                 } else {
                     if (viewparams->uMinimapZoom < 256) {
                         viewparams->uMinimapZoom = 256;
-                        viewparams->field_28 = 8;
                     }
                 }
 

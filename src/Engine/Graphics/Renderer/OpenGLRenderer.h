@@ -42,8 +42,7 @@ class OpenGLRenderer : public BaseRenderer {
 
     virtual void BeginLines2D() override;
     virtual void EndLines2D() override;
-    virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ,
-                              signed int uW, Color uColor32) override;
+    virtual void RasterLine2D(Pointi a, Pointi b, Color uColor32) override;
     virtual void DrawLines(const RenderVertexD3D3 *vertices,
         unsigned int num_vertices) override;
 
@@ -68,8 +67,7 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void BeginScene2D() override;
     virtual void ScreenFade(Color color, float t) override;
 
-    virtual void SetUIClipRect(unsigned int uX, unsigned int uY,
-                               unsigned int uZ, unsigned int uW) override;
+    virtual void SetUIClipRect(const Recti &rect) override;
     virtual void ResetUIClipRect() override;
 
     virtual void DrawTextureNew(float u, float v, GraphicsImage *, Color colourmask = colorTable.White) override;
@@ -158,8 +156,7 @@ class OpenGLRenderer : public BaseRenderer {
     void _set_ortho_projection(bool gameviewport = false);
     void _set_ortho_modelview();
 
-    int clip_x{}, clip_y{};
-    int clip_z{}, clip_w{};
+    Recti clipRect;
 
     int GL_lastboundtex{};
 

@@ -207,13 +207,11 @@ void ViewingParams::_443365() {
 
         uMinimapZoom = 1024;
         indoor_center_x = (signed int)(minimum_x + maximum_x) / 2;
-        field_28 = 10;
         indoor_center_y = (signed int)(minimum_y + maximum_y) / 2;
     } else {
         indoor_center_x = 0;
         indoor_center_y = 0;
         uMinimapZoom = 512;
-        field_28 = 9;
     }
     uMapBookMapZoom = 384;
 }
