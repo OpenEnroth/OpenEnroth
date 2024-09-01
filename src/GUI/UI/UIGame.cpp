@@ -1377,7 +1377,7 @@ void GameUI_DrawPortraits() {
 }
 
 //----- (00441D38) --------------------------------------------------------
-void GameUI_DrawMinimap(const Recti &rect, int uZoom) {
+void GameUI_DrawMinimap(const Recti &rect, int zoom) {
     // signed int pW;   // ebx@23
     int LineGreyDim;         // eax@23
     //double startx;      // st7@30
@@ -1420,10 +1420,7 @@ void GameUI_DrawMinimap(const Recti &rect, int uZoom) {
         bool partymoved = true;  // TODO(pskelton): actually check for party movement
 
         if (partymoved) {
-            int imageWidth = viewparams->location_minimap->width();
-
-            // Zoom level, x1, x2 or x4.
-            int zoomLevel = uZoom / imageWidth;
+            int imageWidth = viewparams->location_minimap->width(); // Assume a square image.
 
             // Party position in fixpoint image coordinates.
             // Map is 2^16 by 2^16 in in-game coords, but (0, 0) is in the center of the map.
@@ -1431,13 +1428,13 @@ void GameUI_DrawMinimap(const Recti &rect, int uZoom) {
             int partyy16 = static_cast<int>(32768 - pParty->pos.y) * imageWidth;
 
             // Top-left corner position in fixpoint image coordinates.
-            int startx16 = partyx16 - (rect.w << 16) / (2 * zoomLevel);
-            int starty16 = partyy16 - (rect.h << 16) / (2 * zoomLevel);
+            int startx16 = partyx16 - (rect.w << 16) / (2 * zoom) * imageWidth;
+            int starty16 = partyy16 - (rect.h << 16) / (2 * zoom) * imageWidth;
 
             // TODO(pskelton): could stretch texture rather than rescale
             assert(rect.w == 137 && rect.h == 117);
 
-            int step16 = (1 << 16) / zoomLevel;
+            int step16 = (1 << 16) * imageWidth / zoom;
             for (int dstY = 0, srcY16 = starty16; dstY < rect.h; ++dstY, srcY16 += step16) {
                 std::span<Color> dstLine = minimaptemp->rgba()[dstY];
                 std::span<const Color> srcLine = viewparams->location_minimap->rgba()[srcY16 >> 16];
@@ -1473,10 +1470,10 @@ void GameUI_DrawMinimap(const Recti &rect, int uZoom) {
                     int Vert1Y = pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex1ID].y - pParty->pos.y;
                     int Vert2Y = pIndoor->pVertices[pIndoor->pMapOutlines[i].uVertex2ID].y - pParty->pos.y;
 
-                    int linex = center.x + fixpoint_mul(uZoom, Vert1X);
-                    int liney = center.y - fixpoint_mul(uZoom, Vert1Y);
-                    int linez = center.x + fixpoint_mul(uZoom, Vert2X);
-                    int linew = center.y - fixpoint_mul(uZoom, Vert2Y);
+                    int linex = center.x + fixpoint_mul(zoom, Vert1X);
+                    int liney = center.y - fixpoint_mul(zoom, Vert1Y);
+                    int linez = center.x + fixpoint_mul(zoom, Vert2X);
+                    int linew = center.y - fixpoint_mul(zoom, Vert2Y);
 
                     if (bWizardEyeActive && uWizardEyeSkillLevel >= CHARACTER_SKILL_MASTERY_MASTER &&
                         (pIndoor->pFaces[pOutline->uFace1ID].Clickable() ||
@@ -1498,10 +1495,10 @@ void GameUI_DrawMinimap(const Recti &rect, int uZoom) {
 
         for (unsigned i = 0; i < uNumBlueFacesInBLVMinimap; ++i) {
             BLVMapOutline *pOutline = &pIndoor->pMapOutlines[pBlueFacesInBLVMinimapIDs[i]];
-            int pX = center.x + uZoom * (pIndoor->pVertices[pOutline->uVertex1ID].x - pParty->pos.x) / 65536.0f;
-            int pY = center.y - uZoom * (pIndoor->pVertices[pOutline->uVertex1ID].y - pParty->pos.y) / 65536.0f;
-            int pZ = center.x + uZoom * (pIndoor->pVertices[pOutline->uVertex2ID].x - pParty->pos.x) / 65536.0f;
-            int pW = center.y - uZoom * (pIndoor->pVertices[pOutline->uVertex2ID].y - pParty->pos.y) / 65536.0f;
+            int pX = center.x + zoom * (pIndoor->pVertices[pOutline->uVertex1ID].x - pParty->pos.x) / 65536.0f;
+            int pY = center.y - zoom * (pIndoor->pVertices[pOutline->uVertex1ID].y - pParty->pos.y) / 65536.0f;
+            int pZ = center.x + zoom * (pIndoor->pVertices[pOutline->uVertex2ID].x - pParty->pos.x) / 65536.0f;
+            int pW = center.y - zoom * (pIndoor->pVertices[pOutline->uVertex2ID].y - pParty->pos.y) / 65536.0f;
             render->RasterLine2D(Pointi(pX, pY), Pointi(pZ, pW), ui_game_minimap_outline_color);
         }
     }
@@ -1516,8 +1513,8 @@ void GameUI_DrawMinimap(const Recti &rect, int uZoom) {
                 if (pSpriteObjects[i].uType == SPRITE_NULL || !pSpriteObjects[i].uObjectDescID)
                     continue;
                 // if (uWizardEyeSkillLevel == 1
-                pPoint_X = center.x + (pSpriteObjects[i].vPosition.x - pParty->pos.x) * uZoom / 65536.0f;
-                pPoint_Y = center.y - (pSpriteObjects[i].vPosition.y - pParty->pos.y) * uZoom / 65536.0f;
+                pPoint_X = center.x + (pSpriteObjects[i].vPosition.x - pParty->pos.x) * zoom / 65536.0f;
+                pPoint_Y = center.y - (pSpriteObjects[i].vPosition.y - pParty->pos.y) * zoom / 65536.0f;
                 // if ( pPoint_X >= render->raster_clip_x && pPoint_X <=
                 // render->raster_clip_z &&
                 //     pPoint_Y >= render->raster_clip_y && pPoint_Y <=
@@ -1528,7 +1525,7 @@ void GameUI_DrawMinimap(const Recti &rect, int uZoom) {
                         OBJECT_DESC_UNPICKABLE) {
                         render->RasterLine2D(Pointi(pPoint_X, pPoint_Y), Pointi(pPoint_X + 1, pPoint_Y + 1),
                                              ui_game_minimap_projectile_color);
-                    } else if (uZoom > 512) {
+                    } else if (zoom > 512) {
                         render->RasterLine2D(Pointi(pPoint_X - 2, pPoint_Y), Pointi(pPoint_X - 2, pPoint_Y + 1 + lineadj),
                                              ui_game_minimap_treasure_color);
                         render->RasterLine2D(Pointi(pPoint_X - 1, pPoint_Y - 1), Pointi(pPoint_X - 1, pPoint_Y + 1 + lineadj),
@@ -1552,8 +1549,8 @@ void GameUI_DrawMinimap(const Recti &rect, int uZoom) {
             if (pActors[i].aiState != Removed &&
                 pActors[i].aiState != Disabled &&
                 (pActors[i].aiState == Dead || pActors[i].ActorNearby())) {
-                pPoint_X = center.x + (pActors[i].pos.x - pParty->pos.x) * uZoom / 65536.0f;
-                pPoint_Y = center.y - (pActors[i].pos.y - pParty->pos.y) * uZoom / 65536.0f;
+                pPoint_X = center.x + (pActors[i].pos.x - pParty->pos.x) * zoom / 65536.0f;
+                pPoint_Y = center.y - (pActors[i].pos.y - pParty->pos.y) * zoom / 65536.0f;
                 // if ( pPoint_X >= render->raster_clip_x && pPoint_X <=
                 // render->raster_clip_z
                 //  && pPoint_Y >= render->raster_clip_y && pPoint_Y <=
@@ -1564,7 +1561,7 @@ void GameUI_DrawMinimap(const Recti &rect, int uZoom) {
                         pColor = ui_game_minimap_actor_hostile_color;
                     if (pActors[i].aiState == Dead)
                         pColor = ui_game_minimap_actor_corpse_color;
-                    if (uZoom > 1024) {
+                    if (zoom > 1024) {
                         render->RasterLine2D(Pointi(pPoint_X - 2, pPoint_Y - 1), Pointi(pPoint_X - 2, pPoint_Y + 1 + lineadj),
                                              pColor);
                         render->RasterLine2D(Pointi(pPoint_X - 1, pPoint_Y - 2), Pointi(pPoint_X - 1, pPoint_Y + 2 + lineadj),
@@ -1586,15 +1583,15 @@ void GameUI_DrawMinimap(const Recti &rect, int uZoom) {
         }
         for (unsigned i = 0; i < (signed int)pLevelDecorations.size(); ++i) {  // draw items(отрисовка предметов)
             if (pLevelDecorations[i].uFlags & LEVEL_DECORATION_VISIBLE_ON_MAP) {
-                pPoint_X = center.x + (pLevelDecorations[i].vPosition.x - pParty->pos.x) * uZoom / 65536.0f;
-                pPoint_Y = center.y - (pLevelDecorations[i].vPosition.y - pParty->pos.y) * uZoom / 65536.0f;
+                pPoint_X = center.x + (pLevelDecorations[i].vPosition.x - pParty->pos.x) * zoom / 65536.0f;
+                pPoint_Y = center.y - (pLevelDecorations[i].vPosition.y - pParty->pos.y) * zoom / 65536.0f;
 
                 // if ( pPoint_X >= render->raster_clip_x && pPoint_X <=
                 // render->raster_clip_z
                 //  && pPoint_Y >= render->raster_clip_y && pPoint_Y <=
                 //  render->raster_clip_w )
                 {
-                    if ((signed int)uZoom > 512) {
+                    if ((signed int)zoom > 512) {
                         render->RasterLine2D(Pointi(pPoint_X - 1, pPoint_Y - 1), Pointi(pPoint_X - 1, pPoint_Y + 1), ui_game_minimap_decoration_color_1);
                         render->RasterLine2D(Pointi(pPoint_X, pPoint_Y - 1), Pointi(pPoint_X, pPoint_Y + 1), ui_game_minimap_decoration_color_1);
                         render->RasterLine2D(Pointi(pPoint_X + 1, pPoint_Y - 1), Pointi(pPoint_X + 1, pPoint_Y + 1), ui_game_minimap_decoration_color_1);
