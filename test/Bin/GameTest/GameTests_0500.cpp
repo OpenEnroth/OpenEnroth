@@ -251,8 +251,6 @@ GAME_TEST(Issues, Issue624) {
     // Test that key repeating works.
     game.startNewGame();
 
-    // TODO(captainurist): drop .mm7 and .json for this test from test data.
-
     game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
     game.tick(2);
     game.pressGuiButton("GameMenu_SaveGame");
