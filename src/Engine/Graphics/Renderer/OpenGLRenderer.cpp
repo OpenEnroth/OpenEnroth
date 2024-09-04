@@ -4718,21 +4718,15 @@ void OpenGLRenderer::_shutdownImGui() {
     ImGui::DestroyContext();
 }
 
-void OpenGLRenderer::FillRectFast(int uX, int uY, int uWidth, int uHeight, Color uColor32) {
-    Colorf cf = uColor32.toColorf();
-
-    float depth = 0;
-    int x = uX;
-    int y = uY;
-    int z = x + uWidth;
-    int w = y + uHeight;
+void OpenGLRenderer::FillRectFast(int x, int y, int width, int height, Color color) {
+    Colorf cf = color.toColorf();
 
     // check bounds
     if (x >= outputRender.w || y >= outputRender.h)
         return;
 
     // check for overlap
-    Recti clippedRect = Recti(x, y, uWidth, uHeight).intersection(this->clipRect);
+    Recti clippedRect = Recti(x, y, width, height).intersection(this->clipRect);
     if (clippedRect.isEmpty())
         return;
 

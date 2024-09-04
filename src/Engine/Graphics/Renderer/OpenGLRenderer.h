@@ -85,7 +85,7 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void EndTextNew() override;
     virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) override;
 
-    virtual void FillRectFast(int uX, int uY, int uWidth, int uHeight, Color uColor32) override;
+    virtual void FillRectFast(int x, int y, int width, int height, Color color) override;
 
     virtual void DrawOutdoorBuildings() override;
 
