@@ -397,3 +397,35 @@ GAME_TEST(Issues, Issue1726) {
     EXPECT_GT(textTape.flattened().filtered([](const auto& s) { return s.starts_with("Your skills improve!  If your Skill with the Blaster"); }).size(), 0); // blaster requirements shown
     EXPECT_CONTAINS(textTape.flattened(), "You don't meet the requirements, and cannot be taught until you do."); // but we dont meet them
 }
+
+GAME_TEST(Issues, Issue1786) {
+    // Casting a quick spell that's not in spellbook asserts
+    auto sprites = tapes.sprites();
+    test.startTaping();
+    game.startNewGame();
+    pParty->pCharacters[3].uQuickSpell = SPELL_FIRE_FIRE_BOLT;
+    EXPECT_FALSE(pParty->pCharacters[3].bHaveSpell[SPELL_FIRE_FIRE_BOLT]);
+
+    engine->config->debug.AllMagic.setValue(true);
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_4); // Select char 4.
+    game.tick();
+    EXPECT_EQ(pParty->activeCharacterIndex(), 4);
+
+    game.pressKey(PlatformKey::KEY_S); // Quick cast fire bolt.
+    game.tick();
+    game.releaseKey(PlatformKey::KEY_S);
+    game.tick();
+    EXPECT_CONTAINS(sprites.back(), SPRITE_SPELL_FIRE_FIRE_BOLT);
+
+    while (pParty->activeCharacterIndex() != 4) {
+        game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_4);
+        game.tick();
+    }
+
+    engine->config->debug.AllMagic.setValue(false);
+    game.pressKey(PlatformKey::KEY_S); // Try to quick cast fire bolt.
+    game.tick();
+    game.releaseKey(PlatformKey::KEY_S);
+    game.tick();
+    EXPECT_MISSES(sprites.back(), SPRITE_SPELL_FIRE_FIRE_BOLT);
+}
