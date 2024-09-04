@@ -55,7 +55,6 @@
 #include "GUI/UI/UISpellbook.h"
 #include "GUI/UI/UIBooks.h"
 #include "GUI/UI/UICharacter.h"
-#include "GUI/UI/UICredits.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UIGame.h"
@@ -82,7 +81,6 @@
 #include "Utility/String/Format.h"
 #include "Utility/ScopeGuard.h"
 
-#include "GameIocContainer.h"
 #include "GameWindowHandler.h"
 #include "GameMenu.h"
 #include "GameStates/GameFsmBuilder.h"
@@ -90,8 +88,8 @@
 Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config) {
     _application = application;
     _config = config;
+    _menu = std::make_unique<Menu>();
     _decalBuilder = EngineIocContainer::ResolveDecalBuilder();
-    _menu = GameIocContainer::ResolveGameMenu();
 }
 
 Game::~Game() = default;

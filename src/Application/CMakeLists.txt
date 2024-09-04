@@ -7,8 +7,7 @@ set(APPLICATION_SOURCES
         GameMenu.cpp
         GameOver.cpp
         GameTraceHandler.cpp
-        GameWindowHandler.cpp
-        GameIocContainer.cpp)
+        GameWindowHandler.cpp)
 
 set(APPLICATION_HEADERS
         Game.h
@@ -17,8 +16,7 @@ set(APPLICATION_HEADERS
         GameMenu.h
         GameOver.h
         GameTraceHandler.h
-        GameWindowHandler.h
-        GameIocContainer.h)
+        GameWindowHandler.h)
 
 add_library(application STATIC ${APPLICATION_SOURCES} ${APPLICATION_HEADERS})
 target_check_style(application)
