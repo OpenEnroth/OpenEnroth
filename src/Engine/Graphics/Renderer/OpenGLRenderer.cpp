@@ -324,9 +324,9 @@ void OpenGLRenderer::RasterLine2D(Pointi a, Pointi b, Color uColor32) {
 }
 
 // used for debug protal lines
-void OpenGLRenderer::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
+void OpenGLRenderer::DrawLines(const RenderVertexD3D3 *vertices, int num_vertices) {
     BeginLines2D();
-    for (unsigned i = 0; i < num_vertices - 1; ++i) {
+    for (int i = 0; i < num_vertices - 1; ++i) {
         Colorf color0 = vertices[i].diffuse.toColorf();
         Colorf color1 = vertices[i + 1].diffuse.toColorf();
 
@@ -616,7 +616,7 @@ void OpenGLRenderer::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 }
 
 
-void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, unsigned paletteid, Color uColor32) {
+void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, int paletteid, Color uColor32) {
     if (!img) {
         logger->trace("Null img passed to DrawImage");
         return;
@@ -839,7 +839,7 @@ void OpenGLRenderer::TexturePixelRotateDraw(float u, float v, GraphicsImage *img
 }
 
 // TODO(pskelton): renderbase
-void OpenGLRenderer::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
+void OpenGLRenderer::DrawIndoorSky(int uNumVertices, int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     if (pFace->uNumVertices <= 0) return;
 
@@ -4718,8 +4718,7 @@ void OpenGLRenderer::_shutdownImGui() {
     ImGui::DestroyContext();
 }
 
-void OpenGLRenderer::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
-                                  unsigned int uHeight, Color uColor32) {
+void OpenGLRenderer::FillRectFast(int uX, int uY, int uWidth, int uHeight, Color uColor32) {
     Colorf cf = uColor32.toColorf();
 
     float depth = 0;
