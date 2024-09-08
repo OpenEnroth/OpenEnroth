@@ -30,7 +30,7 @@ Getting Started on Windows
 
 2. Download one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip the files.
 
-3. From the `dist` folder inside the zip file copy the `OpenEnroth.exe` to the folder where the game is installed.
+3. From the `dist` folder inside the zip file copy `OpenEnroth.exe` and `OpenEnroth.pdb` to the folder where the game is installed.
 
 4. Run `OpenEnroth.exe`.
 
