@@ -147,6 +147,7 @@ jobs:
         run: |
           mkdir dist
           copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
+          copy build\src\Bin\OpenEnroth\OpenEnroth.pdb dist\ 
 
       - name: Zip folder for release
         if: inputs.releaseTag != ''
