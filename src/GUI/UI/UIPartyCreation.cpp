@@ -529,6 +529,8 @@ void GUIWindow_PartyCreation::Update() {
         // trim skills that are too long
         if (pText.size() > 13)
             pText.resize(12);
+        if (pText == "Body Building")
+            pText = "Body Build";
         if (pText.starts_with(' '))
             pText.clear();
 
@@ -539,15 +541,7 @@ void GUIWindow_PartyCreation::Update() {
         if (!pParty->pCharacters[uPlayerCreationUI_SelectedCharacter].pActiveSkills[pSkillId])
             pColorText = colorTable.White;
 
-        // align skills left / centre /right
-        if ((i / 3) == 0) {
-            pTextCenter = 5;
-        } else if ((i / 3) == 1) {
-            pTextCenter = assets->pFontCreate->AlignText_Center(100, pText);
-        } else {
-            pTextCenter = 105 - assets->pFontCreate->GetLineWidth(pText);
-        }
-
+        pTextCenter = assets->pFontCreate->AlignText_Center(100, pText);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {100 * (i / 3) + pTextCenter + pCorrective + 17, pIntervalY * (i % 3) + 417}, pColorText, pText);
     }
 
