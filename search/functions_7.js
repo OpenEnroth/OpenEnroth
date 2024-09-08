@@ -183,7 +183,7 @@ var searchData=
   ['getgloveitem_180',['GetGloveItem',['../classCharacter.html#ab158f0e0bd4f788984562423c1cd3856',1,'Character::GetGloveItem()'],['../classCharacter.html#a3769a13be1844abd0a28283bc1639509',1,'Character::GetGloveItem() const']]],
   ['getgold_181',['GetGold',['../structParty.html#a804b168cb4a072332ee44b6cb01aacfa',1,'Party']]],
   ['getgolddialogue_182',['getGoldDialogue',['../classGUIWindow__Bank.html#a9dff23b43fd7057bc68a8687b84d6f42',1,'GUIWindow_Bank']]],
-  ['getgravitystrength_183',['GetGravityStrength',['../Engine_8cpp.html#a8d0606898b0fe5f58025c4bd6b21cc90',1,'GetGravityStrength():&#160;Engine.cpp'],['../Engine_8h.html#a8d0606898b0fe5f58025c4bd6b21cc90',1,'GetGravityStrength():&#160;Engine.cpp']]],
+  ['getgravitystrength_183',['GetGravityStrength',['../Engine_8cpp.html#a3983955f28324a450ddb9a9b1c62cafc',1,'GetGravityStrength():&#160;Engine.cpp'],['../Engine_8h.html#a3983955f28324a450ddb9a9b1c62cafc',1,'GetGravityStrength():&#160;Engine.cpp']]],
   ['gethealth_184',['GetHealth',['../classCharacter.html#afccec033c459be725065e945be54187a',1,'Character']]],
   ['getheight_185',['GetHeight',['../classMovie.html#a6564c4f7f611108006fcf8dcf9f870de',1,'Movie::GetHeight()'],['../classIMovie.html#a8df63d180f1a84760934775e4f594e8b',1,'IMovie::GetHeight()'],['../classGUIFont.html#a9feab603e63e7a8bc63adc298fbf713c',1,'GUIFont::GetHeight()'],['../classIVideoDataSource.html#ac8784568c3dfb40c998c80bc50844881',1,'IVideoDataSource::GetHeight()']]],
   ['getheightln2_186',['GetHeightLn2',['../classImageHelper.html#a856b5ce1f92429945f3e75c9217e9982',1,'ImageHelper']]],
