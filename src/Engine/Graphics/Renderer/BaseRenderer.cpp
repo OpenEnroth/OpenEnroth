@@ -601,7 +601,7 @@ void BaseRenderer::DrawTransparentGreenShade(float u, float v, GraphicsImage *pT
     DrawMasked(u, v, pTexture, 0, colorTable.Green);
 }
 
-void BaseRenderer::DrawMasked(float u, float v, GraphicsImage *pTexture, unsigned int color_dimming_level, Color mask) {
+void BaseRenderer::DrawMasked(float u, float v, GraphicsImage *pTexture, int color_dimming_level, Color mask) {
     int b = mask.b & (0xFF >> color_dimming_level);
     int g = mask.g & (0xFF >> color_dimming_level);
     int r = mask.r & (0xFF >> color_dimming_level);

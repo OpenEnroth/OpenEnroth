@@ -452,12 +452,12 @@ void Engine::LogEngineBuildInfo() {
 }
 
 //----- (0044EA5E) --------------------------------------------------------
-Vis_PIDAndDepth Engine::PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
+Vis_PIDAndDepth Engine::PickMouse(float fPickDepth, int uMouseX, int uMouseY,
                                   Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter) {
-    if (uMouseX >= (signed int)pViewport->uScreen_TL_X &&
-        uMouseX <= (signed int)pViewport->uScreen_BR_X &&
-        uMouseY >= (signed int)pViewport->uScreen_TL_Y &&
-        uMouseY <= (signed int)pViewport->uScreen_BR_Y) {
+    if (uMouseX >= pViewport->uScreen_TL_X &&
+        uMouseX <= pViewport->uScreen_BR_X &&
+        uMouseY >= pViewport->uScreen_TL_Y &&
+        uMouseY <= pViewport->uScreen_BR_Y) {
         return vis->PickMouse(fPickDepth, uMouseX, uMouseY, sprite_filter, face_filter);
     } else {
         return Vis_PIDAndDepth();
@@ -533,7 +533,7 @@ void UpdateUserInput_and_MapSpecificStuff() {
 }
 
 //----- (004646F0) --------------------------------------------------------
-void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
+void PrepareWorld(int _0_box_loading_1_fullscreen) {
     Vis *vis = EngineIocContainer::ResolveVis();
 
     pEventTimer->setPaused(true);
@@ -930,7 +930,7 @@ void InitializeTurnBasedAnimations(void *_this) {
 }
 
 //----- (0046BDA8) --------------------------------------------------------
-unsigned int GetGravityStrength() {
+int GetGravityStrength() {
     return engine->config->gameplay.Gravity.value();
 }
 

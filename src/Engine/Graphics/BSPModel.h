@@ -57,7 +57,7 @@ struct ODMFace {
      */
     bool Contains(const Vec3f &pos, int model_idx, int slack = 0, FaceAttributes override_plane = 0) const;
 
-    unsigned int index = 0;
+    int index = 0;
     Planef facePlane;
     PlaneZCalcf zCalc;
     FaceAttributes uAttributes = 0;
@@ -84,7 +84,7 @@ struct ODMFace {
 
 class BSPModel {
  public:
-    unsigned int index = 0;
+    int index = 0;
     std::string pModelName;
     std::string pModelName2;
     int32_t field_40 = 0; // visibility flag TODO(pskelton): use for map tooltip checking or remove

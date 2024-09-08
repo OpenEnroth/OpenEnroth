@@ -60,7 +60,7 @@ class Renderer {
     virtual void BeginLines2D() = 0;
     virtual void EndLines2D() = 0;
     virtual void RasterLine2D(Pointi a, Pointi b, Color uColor32) = 0;
-    virtual void DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) = 0;
+    virtual void DrawLines(const RenderVertexD3D3 *vertices, int num_vertices) = 0;
 
     virtual void ClearZBuffer() = 0;
     virtual void RestoreFrontBuffer() = 0;
@@ -101,7 +101,7 @@ class Renderer {
     virtual void DrawTextureNew(float u, float v, GraphicsImage *img, Color colourmask32 = colorTable.White) = 0;
     virtual void DrawTextureCustomHeight(float u, float v, GraphicsImage *, int height) = 0;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y, GraphicsImage *) = 0;
-    virtual void DrawImage(GraphicsImage *, const Recti &rect, const unsigned int paletteid = 0, Color colourmask32 = colorTable.White) = 0;
+    virtual void DrawImage(GraphicsImage *, const Recti &rect, int paletteid = 0, Color colourmask32 = colorTable.White) = 0;
 
     virtual void ZDrawTextureAlpha(float u, float v, GraphicsImage *pTexture, int zVal) = 0;
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t, int start_opacity, int end_opacity) = 0;
@@ -109,24 +109,23 @@ class Renderer {
     virtual void DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait_Sprite, int Y_Offset) = 0;
 
     virtual void DrawMasked(float u, float v, GraphicsImage *img,
-                            unsigned int color_dimming_level,
+                            int color_dimming_level,
                             Color mask = colorTable.White) = 0;
     virtual void DrawTextureGrayShade(float u, float v, GraphicsImage *a4) = 0;
     virtual void DrawTransparentRedShade(float u, float v, GraphicsImage *a4) = 0;
     virtual void DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) = 0;
-    // virtual void DrawFansTransparent(const RenderVertexD3D3 *vertices, unsigned int num_vertices) = 0;
 
     virtual void BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) = 0;
     virtual void EndTextNew() = 0;
     virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) = 0;
 
-    virtual void FillRectFast(unsigned int uX, unsigned int uY,
-                              unsigned int uWidth, unsigned int uHeight,
+    virtual void FillRectFast(int uX, int uY,
+                              int uWidth, int uHeight,
                               Color uColor32) = 0;
 
     virtual void DrawOutdoorBuildings() = 0;
 
-    virtual void DrawIndoorSky(unsigned int uNumVertices, int uFaceID = 0) = 0;
+    virtual void DrawIndoorSky(int uNumVertices, int uFaceID = 0) = 0;
     virtual void DrawOutdoorSky() = 0;
 
     virtual void PrepareDecorationsRenderList_ODM() = 0;
