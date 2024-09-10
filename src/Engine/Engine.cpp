@@ -1370,11 +1370,30 @@ void RegeneratePartyHealthMana() {
         if (character.conditions.HasAny({CONDITION_DEAD, CONDITION_ERADICATED}))
             continue; // No HP/MP regen/drain for dead characters.
 
+
         // Item regeneration / drain.
+        bool recovery_HP = false;
+        bool decrease_HP = false;
+        bool recovery_SP = false;
+        bool stacking = engine->config->gameplay.ItemRegenStacking.value();
+
+        auto regen = [&character, ticks5](bool recovery_HP, bool recovery_SP, bool decrease_HP) {
+            if (recovery_HP)
+            character.health = std::min(character.GetMaxHealth(), character.health + ticks5);
+
+            if (recovery_SP)
+                character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
+
+            if (decrease_HP)
+                character.health -= ticks5;
+        };
+
         for (ItemSlot idx : allItemSlots()) {
-            bool recovery_HP = false;
-            bool decrease_HP = false;
-            bool recovery_SP = false;
+            if (stacking) {
+                recovery_HP = false;
+                decrease_HP = false;
+                recovery_SP = false;
+            }
             if (character.HasItemEquipped(idx)) {
                 unsigned _idx = character.pEquipment[idx];
                 ItemGen equppedItem = character.pInventoryItemList[_idx - 1];
@@ -1413,15 +1432,16 @@ void RegeneratePartyHealthMana() {
                     }
                 }
 
-                if (recovery_HP)
-                    character.health = std::min(character.GetMaxHealth(), character.health + ticks5);
-
-                if (recovery_SP)
-                    character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
-
-                if (decrease_HP)
-                    character.health -= ticks5;
+                // OE stacking - each item can trigger its own regen
+                if (stacking) {
+                    regen(recovery_HP, recovery_SP, decrease_HP);
+                }
             }
+        }
+
+        // Vanilla like regen - only one item contributes
+        if (!stacking) {
+            regen(recovery_HP, recovery_SP, decrease_HP);
         }
 
         // Regeneration buff.
