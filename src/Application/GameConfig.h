@@ -217,7 +217,7 @@ class GameConfig : public Config {
         Int MaxActiveAIActors = { this, "max_active_ai_actors", 30, &ValidateMaxActiveAIActors,
                                 "Limit to how many actors can be in full AI state at once." };
 
-        Bool ItemRegenStacking = { this, "item_regen_stacking", true,
+        Bool RegenStacking = { this, "regen_stacking", true,
                                 "Disable for vanilla like mode where only one item will trigger HP/SP regeneration." };
 
      private:

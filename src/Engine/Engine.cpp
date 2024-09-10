@@ -1371,27 +1371,22 @@ void RegeneratePartyHealthMana() {
             continue; // No HP/MP regen/drain for dead characters.
 
 
-        // Item regeneration / drain.
+        // Item regeneration
         bool recovery_HP = false;
-        bool decrease_HP = false;
         bool recovery_SP = false;
-        bool stacking = engine->config->gameplay.ItemRegenStacking.value();
+        bool stacking = engine->config->gameplay.RegenStacking.value();
 
-        auto regen = [&character, ticks5](bool recovery_HP, bool recovery_SP, bool decrease_HP) {
+        auto regen = [&character, ticks5](bool recovery_HP, bool recovery_SP) {
             if (recovery_HP)
             character.health = std::min(character.GetMaxHealth(), character.health + ticks5);
 
             if (recovery_SP)
-                character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
-
-            if (decrease_HP)
-                character.health -= ticks5;
+                character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);                
         };
 
         for (ItemSlot idx : allItemSlots()) {
             if (stacking) {
                 recovery_HP = false;
-                decrease_HP = false;
                 recovery_SP = false;
             }
             if (character.HasItemEquipped(idx)) {
@@ -1399,7 +1394,7 @@ void RegeneratePartyHealthMana() {
                 ItemGen equppedItem = character.pInventoryItemList[_idx - 1];
                 if (!isRegular(equppedItem.uItemID)) {
                     if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF) {
-                        decrease_HP = true;
+                        character.health -= ticks5;
                     }
                     if (equppedItem.uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {
                         recovery_HP = true;
@@ -1434,23 +1429,22 @@ void RegeneratePartyHealthMana() {
 
                 // OE stacking - each item can trigger its own regen
                 if (stacking) {
-                    regen(recovery_HP, recovery_SP, decrease_HP);
+                    regen(recovery_HP, recovery_SP);
                 }
             }
         }
 
-        // Vanilla like regen - only one item contributes
-        if (!stacking) {
-            regen(recovery_HP, recovery_SP, decrease_HP);
+        // Regeneration buff.
+        if (character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active()) {
+            character.health = std::min(character.GetMaxHealth(), character.health + ticks5 * 5 * character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power);
+            recovery_HP = false;
         }
 
-        // Regeneration buff.
-        if (character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active())
-            character.health = std::min(character.GetMaxHealth(), character.health + ticks5 * 5 * character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power);
-
         // Warlock mana regen.
-        if (PartyHasDragon() && character.classType == CLASS_WARLOCK)
+        if (PartyHasDragon() && character.classType == CLASS_WARLOCK) {
             character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
+            recovery_SP = false;
+        }
 
         // Lich mana/health drain/regen.
         if (character.classType == CLASS_LICH) {
@@ -1461,10 +1455,16 @@ void RegeneratePartyHealthMana() {
 
             if (lich_has_jar) {
                 character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
+                recovery_SP = false;
             } else {
                 character.health = std::min(character.health, std::max(character.GetMaxHealth() / 2, character.health - 2 * ticks5));
                 character.mana = std::min(character.mana, std::max(character.GetMaxMana() / 2, character.mana - 2 * ticks5));
             }
+        }
+
+        // Vanilla like regen - only one item contributes
+        if (!stacking) {
+            regen(recovery_HP, recovery_SP);
         }
 
         // Zombie mana/health drain.
