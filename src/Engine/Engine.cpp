@@ -1381,7 +1381,7 @@ void RegeneratePartyHealthMana() {
             character.health = std::min(character.GetMaxHealth(), character.health + ticks5);
 
             if (recovery_SP)
-                character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);                
+                character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
         };
 
         for (ItemSlot idx : allItemSlots()) {
