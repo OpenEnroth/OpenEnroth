@@ -70,7 +70,7 @@ modules:
     post-install:
       - install -Dm755 src/Bin/OpenEnroth/OpenEnroth /app/bin/OpenEnroth
       # launcher script
-      - install -Dm755 ${FLATPAK_ID}.sh /app/bin/${FLATPAK_ID}.sh
+      - install -Dm755 ../distribution/linux/flatpak/${FLATPAK_ID}.sh /app/bin/${FLATPAK_ID}.sh
       # Icon
       - install -Dm644 ../distribution/linux/${FLATPAK_ID}.png /app/share/icons/hicolor/512x512/apps/${FLATPAK_ID}.png
       # metainfo
