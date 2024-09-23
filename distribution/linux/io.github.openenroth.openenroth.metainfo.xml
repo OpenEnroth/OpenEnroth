@@ -11,7 +11,7 @@
     <color type="primary" scheme_preference="dark">#a694bb</color>
   </branding>
   <launchable type="desktop-id">io.github.openenroth.openenroth.desktop</launchable>
-  <summary>Modern cross-platform port of the Might and Magic 6/7/8 game engine</summary>
+  <summary>Modern cross-platform port of the Might and Magic VI - VIII game engine</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>LGPL-3.0</project_license>
   <url type="homepage">https://github.com/openenroth/openenroth/</url>

@@ -60,8 +60,9 @@ modules:
       - -DCMAKE_LINKER=lld
     sources:
       - type: git
-        url: https://github.com/openenroth/openenroth.git
-        commit: 4b1f87f5f06def65fddb4549b8143c2d9ccd386d
+        url: https://github.com/fpiesche/openenroth.git
+        # url: https://github.com/openenroth/openenroth.git
+        # commit: 4b1f87f5f06def65fddb4549b8143c2d9ccd386d
         x-checker-data:
           type: json
           url: https://api.github.com/repos/openenroth/openenroth/tags
