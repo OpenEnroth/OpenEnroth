@@ -68,12 +68,10 @@ modules:
           version-query: .[0].commit.sha
           url-template: https://github.com/OpenEnroth/OpenEnroth/archive/$version.zip
     post-install:
-      - ls -la
-      - ls -la ..
       - install -Dm755 src/Bin/OpenEnroth/OpenEnroth /app/bin/OpenEnroth
       # launcher script
-      - install -Dm755 ../${FLATPAK_ID}.sh /app/bin/${FLATPAK_ID}.sh
-      # Icons
+      - install -Dm755 ${FLATPAK_ID}.sh /app/bin/${FLATPAK_ID}.sh
+      # Icon
       - install -Dm644 ../distribution/linux/${FLATPAK_ID}.png /app/share/icons/hicolor/512x512/apps/${FLATPAK_ID}.png
       # metainfo
       - install -Dm644 ../distribution/linux/${FLATPAK_ID}.metainfo.xml /app/share/metainfo/${FLATPAK_ID}.metainfo.xml
