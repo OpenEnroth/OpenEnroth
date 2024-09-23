@@ -67,12 +67,6 @@ modules:
           url: https://api.github.com/repos/openenroth/openenroth/tags
           version-query: .[0].commit.sha
           url-template: https://github.com/OpenEnroth/OpenEnroth/archive/$version.zip
-      - type: file
-        path: io.github.openenroth.openenroth.sh
-      - type: file
-        path: io.github.openenroth.openenroth.desktop
-      - type: file
-        path: io.github.openenroth.openenroth.metainfo.xml
     post-install:
       - ls -la
       - ls -la ..
