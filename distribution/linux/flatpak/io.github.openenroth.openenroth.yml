@@ -1,0 +1,89 @@
+app-id: io.github.openenroth.openenroth
+runtime: org.freedesktop.Platform
+runtime-version: &runtime-version '24.08'
+sdk: org.freedesktop.Sdk
+command: io.github.openenroth.openenroth.sh
+
+finish-args:
+  # hardware 3D and controller access
+  - --device=all
+  # X11 + XShm access
+  - --share=ipc
+  - --socket=x11
+  # Audio
+  - --socket=pulseaudio
+
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.llvm18
+
+add-extensions:
+  org.freedesktop.Platform.ffmpeg-full:
+    directory: lib/ffmpeg
+    add-ld-path: .
+    version: *runtime-version
+    no-autodownload: true
+    autodelete: false
+
+modules:
+  - name: libdwarf
+    buildsystem: cmake-ninja
+    sources:
+      - type: git
+        url: https://github.com/davea42/libdwarf-code/
+        tag: v0.11.0
+        commit: 285d9d34f3e9f56cc1c487d0055f6dc54a9c54a1
+        x-checker-data:
+          type: git
+          tag-pattern: ^v\d+(\.\d+)+.*$
+
+  - name: openenroth
+    buildsystem: cmake-ninja
+    builddir: true
+    build-options:
+      append-path: /usr/lib/sdk/llvm18/bin
+      prepend-ld-library-path: /usr/lib/sdk/llvm18/lib
+    cleanup:
+      - /share/cmake
+      - /lib/cmake
+      - /share/man
+      - /share/gch
+      - '*.a'
+      - /include
+    config-opts:
+      - -DOE_BUILD_TOOLS=OFF
+      - -DOE_BUILD_TESTS=OFF
+      - -DOE_CHECK_STYLE=OFF
+      - -DOE_CHECK_LUA_STYLE=OFF
+      - -DOE_BUILD_TOOLS=ON
+      - -DOE_USE_PREBUILT_DEPENDENCIES=OFF
+      - -DCMAKE_BUILD_TYPE=RelWithDbgInfo
+      - -DCMAKE_LINKER=lld
+    sources:
+      - type: git
+        url: https://github.com/openenroth/openenroth.git
+        commit: 4b1f87f5f06def65fddb4549b8143c2d9ccd386d
+        x-checker-data:
+          type: json
+          url: https://api.github.com/repos/openenroth/openenroth/tags
+          version-query: .[0].commit.sha
+          url-template: https://github.com/OpenEnroth/OpenEnroth/archive/$version.zip
+      - type: file
+        path: io.github.openenroth.openenroth.sh
+      - type: file
+        path: io.github.openenroth.openenroth.desktop
+      - type: file
+        path: io.github.openenroth.openenroth.metainfo.xml
+    post-install:
+      - ls -la
+      - ls -la ..
+      - install -Dm755 src/Bin/OpenEnroth/OpenEnroth /app/bin/OpenEnroth
+      # launcher script
+      - install -Dm755 ../${FLATPAK_ID}.sh /app/bin/${FLATPAK_ID}.sh
+      # Icons
+      - install -Dm644 ../distribution/linux/${FLATPAK_ID}.png /app/share/icons/hicolor/512x512/apps/${FLATPAK_ID}.png
+      # metainfo
+      - install -Dm644 ../distribution/linux/${FLATPAK_ID}.metainfo.xml /app/share/metainfo/${FLATPAK_ID}.metainfo.xml
+      - install -Dm644 ../distribution/linux/${FLATPAK_ID}.releases.xml /app/share/releases/${FLATPAK_ID}.releases.xml
+      # desktop file
+      - install -Dm644 ../distribution/linux/${FLATPAK_ID}.desktop /app/share/applications/${FLATPAK_ID}.desktop
+      - desktop-file-edit --set-key=Exec --set-value="${FLATPAK_ID}.sh" /app/share/applications/${FLATPAK_ID}.desktop

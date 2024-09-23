@@ -1,0 +1,9 @@
+[Desktop Entry]
+Categories=Game;RolePlaying
+Comment=Open reimplementation of Might and Magic 6/7/8 game engine
+Exec=OpenEnroth
+Icon=io.github.openenroth.openenroth
+Keywords=might and magic;might & magic;rpg;
+Name=OpenEnroth
+StartupNotify=true
+Terminal=false

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.openenroth.openenroth</id>
+  <name>OpenEnroth</name>
+  <developer id="io.github.openenroth">
+    <name>OpenEnroth Contributors</name>
+    <url>https://github.com/openenroth/openenroth/graphs/contributors</url>
+  </developer>
+  <branding>
+    <color type="primary" scheme_preference="light">#79678e</color>
+    <color type="primary" scheme_preference="dark">#a694bb</color>
+  </branding>
+  <launchable type="desktop-id">io.github.openenroth.openenroth.desktop</launchable>
+  <summary>Modern cross-platform port of the Might and Magic 6/7/8 game engine</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>LGPL-3.0</project_license>
+  <url type="homepage">https://github.com/openenroth/openenroth/</url>
+  <description>
+    <p>We are creating an extensible engine & modding environment that would make it possible to play the original Might & Magic VI-VIII games on modern platforms with improved graphics and quality-of-life features expected of modern titles, and make modding and installing & playing the mods a pleasurable experience.</p>
+    <p>Currently only MM7 is playable.</p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image type="source">https://user-images.githubusercontent.com/24377109/79051217-491a7800-7c2f-11ea-85c7-f9120b7d79dd.png</image>
+      <caption>The Dragon's Lair</caption>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://user-images.githubusercontent.com/24377109/79051879-f04cde80-7c32-11ea-939d-1dcc97b46f5d.png</image>
+      <caption>Exploring a town</caption>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://user-images.githubusercontent.com/24377109/79051881-f17e0b80-7c32-11ea-82cd-5e4993a1c071.png</image>
+      <caption>Encountering some city guards</caption>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://user-images.githubusercontent.com/24377109/79051882-f3e06580-7c32-11ea-974f-414f68394190.png</image>
+      <caption>A shop</caption>
+    </screenshot>
+    <screenshot>
+      <image type="source">https://user-images.githubusercontent.com/24377109/79051883-f5119280-7c32-11ea-801c-1595709d8060.png</image>
+      <caption>A character's inventory'</caption>
+    </screenshot>
+  </screenshots>
+  <categories>
+    <category>Game</category>
+    <category>RolePlaying</category>
+  </categories>
+  <keywords>
+    <keyword>Might and Magic</keyword>
+    <keyword>fantasy</keyword>
+    <keyword>rpg</keyword>
+    <keyword>Might & Magic</keyword>
+    <keyword>retro</keyword>
+    <keyword>sourceport</keyword>
+    <keyword>port</keyword>
+  </keywords>
+  <releases type="external" url="https://raw.githubusercontent.com/openenroth/openenroth/master/distribution/linux/io.github.openenroth.openenroth.releases.xml" />
+  <content_rating type="oars-1.1">
+    <content_attribute id="violence-fantasy">intense</content_attribute>
+    <content_attribute id="violence-desecration">mild</content_attribute>
+    <content_attribute id="drugs-alcohol">mild</content_attribute>
+    <content_attribute id="sex-themes">mild</content_attribute>
+    <content_attribute id="language-humor">mild</content_attribute>
+  </content_rating>
+</component>

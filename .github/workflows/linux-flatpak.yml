@@ -1,0 +1,54 @@
+name: Build Linux Flatpak bundle
+
+on:
+  push:
+    branches:
+      - "*"
+  workflow_dispatch:
+
+jobs:
+  build-flatpak-bundle:
+    name: "Build flatpak bundle"
+    runs-on: ubuntu-latest
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:freedesktop-23.08
+      options: --privileged
+    strategy:
+      matrix:
+        arch:
+          - x86_64
+          - arm64
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'true'
+
+    - name: Set up Docker
+      if: ${{ matrix.arch != 'x86_64' }}
+      run: |
+        dnf install -y docker
+
+    - name: Set up QEMU
+      if: ${{ matrix.arch != 'x86_64' }}
+      id: qemu
+      uses: docker/setup-qemu-action@v2
+      with:
+        platforms: arm64
+
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
+    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+      with:
+        bundle: io.github.openenroth.openenroth_${{ steps.date.outputs.date }}_${{ matrix.arch }}.flatpak
+        manifest-path: distribution/linux/flatpak/io.github.openenroth.openenroth.yml
+        cache-key: flatpak-builder-${{ github.sha }}_${{ matrix.arch }}
+        upload-artifact: true
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: io.github.openenroth.openenroth_${{ steps.date.outputs.date }}_${{ matrix.arch }}.flatpak
+        path: io.github.openenroth.openenroth_${{ steps.date.outputs.date }}_${{ matrix.arch }}.flatpak
+        retention-days: 0
