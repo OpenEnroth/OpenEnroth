@@ -16,7 +16,7 @@
   <project_license>LGPL-3.0</project_license>
   <url type="homepage">https://github.com/openenroth/openenroth/</url>
   <description>
-    <p>We are creating an extensible engine & modding environment that would make it possible to play the original Might & Magic VI-VIII games on modern platforms with improved graphics and quality-of-life features expected of modern titles, and make modding and installing & playing the mods a pleasurable experience.</p>
+    <p>We are creating an extensible engine and modding environment to make it possible to play the original Might &amp; Magic VI-VIII games on modern platforms with improved graphics and quality-of-life features expected of modern titles, and make modding and installing and playing the mods a pleasurable experience.</p>
     <p>Currently only MM7 is playable.</p>
   </description>
   <screenshots>
@@ -49,7 +49,7 @@
     <keyword>Might and Magic</keyword>
     <keyword>fantasy</keyword>
     <keyword>rpg</keyword>
-    <keyword>Might & Magic</keyword>
+    <keyword>Might &amp; Magic</keyword>
     <keyword>retro</keyword>
     <keyword>sourceport</keyword>
     <keyword>port</keyword>
