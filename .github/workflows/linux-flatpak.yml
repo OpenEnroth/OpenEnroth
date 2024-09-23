@@ -26,7 +26,7 @@ on:
         default: ''
         type: string
   push: null
-  pull-request: null
+  pull_request: null
   release:
     types:
       - published
@@ -43,10 +43,11 @@ jobs:
         arch:
           - x86_64
           - arm64
+
     steps:
     - uses: actions/checkout@v4
       with:
-        submodules: 'true'
+        submodules: false
 
     - name: Set up Docker
       if: ${{ matrix.arch != 'x86_64' }}
@@ -60,7 +61,8 @@ jobs:
       with:
         platforms: arm64
 
-    - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+    - name: Run Flatpak build
+      uses: flatpak/flatpak-github-actions/flatpak-builder@v6
       with:
         bundle: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{ matrix.arch }}.flatpak
         manifest-path: distribution/linux/flatpak/io.github.openenroth.openenroth.yml
@@ -80,5 +82,4 @@ jobs:
       with:
         prerelease: true
         tag_name: '${{inputs.releaseTag}}'
-        files: |
-          io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{ matrix.arch }}.flatpak
+        files: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{ matrix.arch }}.flatpak
