@@ -54,7 +54,6 @@ modules:
       - -DOE_BUILD_TESTS=OFF
       - -DOE_CHECK_STYLE=OFF
       - -DOE_CHECK_LUA_STYLE=OFF
-      - -DOE_BUILD_TOOLS=ON
       - -DOE_USE_PREBUILT_DEPENDENCIES=OFF
       - -DCMAKE_BUILD_TYPE=RelWithDbgInfo
       - -DCMAKE_LINKER=lld
