@@ -1,7 +1,7 @@
 #!/bin/bash
 DATAFILE="magic7.vid"
 SAVEDIR="$XDG_DATA_HOME/mm7/saves"
-GAMETITLE="Might & Magic 7"
+GAMETITLE="Might and Magic VII"
 
 export OPENENROTH_MM6_PATH="$XDG_DATA_HOME/mm6/data"
 export OPENENROTH_MM7_PATH="$XDG_DATA_HOME/mm7/data"
