@@ -13,6 +13,9 @@ finish-args:
   # Audio
   - --socket=pulseaudio
 
+cleanup-commands:
+  - mkdir -p ${FLATPAK_DEST}/lib/ffmpeg
+
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.llvm18
 
@@ -21,7 +24,7 @@ add-extensions:
     directory: lib/ffmpeg
     add-ld-path: .
     version: *runtime-version
-    no-autodownload: true
+    no-autodownload: false
     autodelete: false
 
 modules:
