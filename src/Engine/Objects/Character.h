@@ -55,7 +55,8 @@ struct LloydBeacon {
     GraphicsImage *image = nullptr;
 };
 
-// HP/SP regeneration and HP deterioration.
+// HP/SP regeneration from items and spell
+// TODO(pskelton): test if negative stats stack in vanilla
 // TODO(pskelton): maybe expand so we can handle different strength enchantments
 struct RegenData {
     int hpRegen = 0;
