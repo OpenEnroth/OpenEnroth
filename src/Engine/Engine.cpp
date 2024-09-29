@@ -1415,7 +1415,7 @@ void RegeneratePartyHealthMana() {
 
         // Regeneration buff.
         if (character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active()) {
-            thisChar.hpSpellRegen++;
+            thisChar.hpSpellRegen = 5 * character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power;
         }
 
         // Warlock mana regen.
