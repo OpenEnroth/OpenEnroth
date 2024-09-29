@@ -7018,6 +7018,26 @@ void Character::setXP(int xp) {
     experience = xp;
 }
 
+void Character::tickRegeneration(int tick5, const RegenData &rData, bool stacking) {
+    if (stacking) {
+        if (rData.hpSpellRegen || rData.hpRegen) {
+            int addHP = tick5 * (rData.hpRegen + 5 * pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power);
+            health = std::min(GetMaxHealth(), health + addHP);
+        }
+
+        if (rData.spRegen)
+            mana = std::min(GetMaxMana(), mana + tick5 * rData.spRegen);
+    } else {
+        if (rData.hpSpellRegen)
+            health = std::min(GetMaxHealth(), health + tick5 * 5 * pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power);
+        else if (rData.hpRegen)
+            health = std::min(GetMaxHealth(), health + tick5);
+
+        if (rData.spRegen)
+            mana = std::min(GetMaxMana(), mana + tick5);
+    }
+}
+
 void Character::playReaction(CharacterSpeech speech, int a3) {
     int speechCount = 0;
     int expressionCount = 0;

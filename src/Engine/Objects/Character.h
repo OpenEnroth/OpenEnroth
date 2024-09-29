@@ -55,6 +55,14 @@ struct LloydBeacon {
     GraphicsImage *image = nullptr;
 };
 
+// HP/SP regeneration from items and spell
+// TODO(pskelton): maybe expand so we can handle different strength enchantments
+struct RegenData {
+    int hpRegen = 0;
+    int hpSpellRegen = 0; // From regeneration buff.
+    int spRegen = 0;
+};
+
 struct RawCharacterConditions {
     /** Game time when condition has started. Zero means that the character doesn't have a condition. */
     IndexedArray<Time, CONDITION_FIRST, CONDITION_LAST> _times;
@@ -372,6 +380,8 @@ class Character {
     void setSkillValue(CharacterSkillType skill, const CombinedSkillValue &value);
 
     void setXP(int xp);
+
+    void tickRegeneration(int tick5, const RegenData &rData, bool stacking);
 
     CharacterConditions conditions;
     uint64_t experience;
