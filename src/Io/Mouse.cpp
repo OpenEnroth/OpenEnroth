@@ -22,6 +22,7 @@
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UISpell.h"
+#include "GUI/UI/UIGameOver.h"
 
 #include "Media/Audio/AudioPlayer.h"
 
@@ -264,6 +265,15 @@ void Io::Mouse::UI_OnMouseLeftClick() {
 
     if (pGUIWindow_BranchlessDialogue && pGUIWindow_BranchlessDialogue->event() == EVENT_PressAnyKey) {
         releaseBranchlessDialogue();
+        return;
+    }
+
+    if (pGameOverWindow) {
+        if (pGameOverWindow->isFinished()) {
+            pGameOverWindow->Release();
+            delete pGameOverWindow;
+            pGameOverWindow = nullptr;
+        }
         return;
     }
 

@@ -148,4 +148,4 @@ extern int currentAddressingAwardBit;
 extern std::string current_npc_text;  // F8B1E8
 extern char dialogue_show_profession_details;
 
-extern int bGameoverLoop;
+extern bool GameOverNoSound;

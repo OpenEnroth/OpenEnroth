@@ -23,9 +23,9 @@
 
 
 //----- (004BF91E) --------------------------------------------------------
-void GameOver_Loop(int v15) {
+void GameOver_Setup() {
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_4000;
-    bGameoverLoop = true;
+    GameOverNoSound = true;
     pAudioPlayer->stopSounds();
 
     CreateWinnerCertificate();
