@@ -915,7 +915,7 @@ void MPlayer::Unload() {
         pMovie_Track->Stop();
     }
     pMovie_Track = nullptr;
-    if (!bGameoverLoop) {
+    if (!GameOverNoSound) {
         pAudioPlayer->MusicResume();
         pAudioPlayer->resumeSounds();
     }

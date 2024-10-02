@@ -475,16 +475,16 @@ void Game::processQueuedMessages() {
                     default:
                         break;
                 }
+
                 if (pGameOverWindow) {
-                    if (bGameOverWindowCheckExit) {
+                    if (pGameOverWindow->isFinished()) {
                         pGameOverWindow->Release();
+                        delete pGameOverWindow;
                         pGameOverWindow = nullptr;
-                        continue;
-                    } else {
-                        bGameOverWindowCheckExit = true;
-                        continue;
                     }
+                    continue;
                 }
+
                 render->ClearZBuffer();
                 if (current_screen_type == SCREEN_GAME) {
                     if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu

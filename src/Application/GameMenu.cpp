@@ -393,11 +393,6 @@ void Menu::EventLoop() {
                 continue;
 
             case UIMSG_Escape:
-                if (pGameOverWindow) {
-                    pGameOverWindow->Release();
-                    pGameOverWindow = nullptr;
-                    continue;
-                }
                 render->ClearZBuffer();
                 confirmationState = CONFIRM_NONE;
 

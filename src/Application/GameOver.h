@@ -1,4 +1,4 @@
 #pragma once
 
-void GameOver_Loop(int);
+void GameOver_Setup();
 void CreateWinnerCertificate();

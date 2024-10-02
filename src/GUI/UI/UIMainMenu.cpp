@@ -46,31 +46,29 @@ void GUIWindow_MainMenu::Update() {
     Pointi pt = mouse->GetCursorPos();
 
     GraphicsImage *pTexture = nullptr;
-    if (!pGameOverWindow) {  // Really why???
-        for (GUIButton *pButton : vButtons) {
-            if (pButton->Contains(pt.x, pt.y)) {
-                auto pControlParam = pButton->msg_param;
-                int pY = 0;
-                switch (pControlParam) {  // backlight for buttons
-                    case 0:
-                        pTexture = assets->getImage_ColorKey("title_new");
-                        pY = 172;
-                        break;
-                    case 1:
-                        pTexture = assets->getImage_ColorKey("title_load");
-                        pY = 227;
-                        break;
-                    case 2:
-                        pTexture = assets->getImage_ColorKey("title_cred");
-                        pY = 282;
-                        break;
-                    case 3:
-                        pTexture = assets->getImage_ColorKey("title_exit");
-                        pY = 337;
-                        break;
-                }
-                render->DrawTextureNew(495 / float(render->GetRenderDimensions().w), pY / float(render->GetRenderDimensions().h), pTexture);
+    for (GUIButton *pButton : vButtons) {
+        if (pButton->Contains(pt.x, pt.y)) {
+            auto pControlParam = pButton->msg_param;
+            int pY = 0;
+            switch (pControlParam) {  // backlight for buttons
+                case 0:
+                    pTexture = assets->getImage_ColorKey("title_new");
+                    pY = 172;
+                    break;
+                case 1:
+                    pTexture = assets->getImage_ColorKey("title_load");
+                    pY = 227;
+                    break;
+                case 2:
+                    pTexture = assets->getImage_ColorKey("title_cred");
+                    pY = 282;
+                    break;
+                case 3:
+                    pTexture = assets->getImage_ColorKey("title_exit");
+                    pY = 337;
+                    break;
             }
+            render->DrawTextureNew(495 / float(render->GetRenderDimensions().w), pY / float(render->GetRenderDimensions().h), pTexture);
         }
     }
 }

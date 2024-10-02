@@ -390,7 +390,7 @@ void GameWindowHandler::OnActivated() {
         }
 
         pAudioPlayer->resumeSounds();
-        if (!bGameoverLoop && !pMovie_Track) {  // continue an audio track
+        if (!GameOverNoSound && !pMovie_Track) {  // continue an audio track
             pAudioPlayer->MusicResume();
         }
     }

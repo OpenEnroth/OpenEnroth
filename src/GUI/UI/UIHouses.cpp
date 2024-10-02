@@ -688,7 +688,7 @@ void BackToHouseMenu() {
 #if 0
     if (window_SpeakInHouse && window_SpeakInHouse->houseId() == 165 &&
         !pMovie_Track) {
-        bGameoverLoop = true;
+        GameOverNoSound = true;
         houseDialogPressEscape();
         window_SpeakInHouse->Release();
         pParty->uFlags &= 0xFFFFFFFD;
@@ -696,7 +696,7 @@ void BackToHouseMenu() {
             pAudioPlayer->playUISound(SOUND_Invalid);
             createHouseUI(HOUSE_BODY_GUILD_MASTER_ERATHIA);
         }
-        bGameoverLoop = false;
+        GameOverNoSound = false;
     }
 #endif
 }
