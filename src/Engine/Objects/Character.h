@@ -58,9 +58,9 @@ struct LloydBeacon {
 // HP/SP regeneration from items and spell
 // TODO(pskelton): maybe expand so we can handle different strength enchantments
 struct RegenData {
-    int hpRegen = 0;
-    int hpSpellRegen = 0; // From regeneration buff.
-    int spRegen = 0;
+    int hpRegen = 0; // From all sources except for regeneration buff, hp / 5 ticks.
+    int hpSpellRegen = 0; // From regeneration buff, hp / 5 ticks.
+    int spRegen = 0; // From all sources, mp / 5 ticks.
 };
 
 struct RawCharacterConditions {
