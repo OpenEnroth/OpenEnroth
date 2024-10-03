@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Categories=Game;RolePlaying
+Comment="A modern port of the Might and Magic VI - VIII game engine"
+Exec=OpenEnroth
+Icon=io.github.openenroth.openenroth
+Keywords=might and magic;rpg;retro
+Name=OpenEnroth
+StartupNotify=true
+Terminal=false
