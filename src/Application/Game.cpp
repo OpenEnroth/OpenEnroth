@@ -477,7 +477,7 @@ void Game::processQueuedMessages() {
                 }
 
                 if (pGameOverWindow) {
-                    if (pGameOverWindow->isFinished()) {
+                    if (pGameOverWindow->toggleAndTestFinished()) {
                         pGameOverWindow->Release();
                         delete pGameOverWindow;
                         pGameOverWindow = nullptr;

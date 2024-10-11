@@ -52,7 +52,7 @@ void GUIWindow_GameOver::Release() {
     GUIWindow::Release();
 }
 
-bool GUIWindow_GameOver::isFinished() {
+bool GUIWindow_GameOver::toggleAndTestFinished() {
     if (_showPopUp) return true;
 
     _showPopUp = true;
