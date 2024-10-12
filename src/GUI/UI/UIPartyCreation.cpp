@@ -222,11 +222,6 @@ void CreateParty_EventLoop() {
             keyboardInputHandler->StartTextInput(TextInputType::Text, 15, pGUIWindow_CurrentMenu);
             break;
         case UIMSG_Escape:
-            if (pGameOverWindow) {
-                pGameOverWindow->Release();
-                pGameOverWindow = nullptr;
-                break;
-            }
             if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_4000)) break;
             if (GetCurrentMenuID() == MENU_MAIN ||
                 GetCurrentMenuID() == MENU_MMT_MAIN_MENU ||

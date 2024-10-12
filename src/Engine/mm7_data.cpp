@@ -2461,4 +2461,4 @@ int currentAddressingAwardBit;
 std::string current_npc_text;                        // F8B1E8
 char dialogue_show_profession_details = false;  // F8B1EC
 
-int bGameoverLoop = 0;
+bool GameOverNoSound = false;

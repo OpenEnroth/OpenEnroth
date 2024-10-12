@@ -38,6 +38,7 @@ class GUIWindow_House;
 class GUIWindow_Chest;
 class GUIWindow_MessageScroll;
 class GUIWindow_BranchlessDialogue;
+class GUIWindow_GameOver;
 class Character;
 struct NPCData;
 class GraphicsImage;
@@ -310,8 +311,7 @@ extern GUIWindow *pGUIWindow_CurrentMenu;
 extern GUIWindow_Chest *pGUIWindow_CurrentChest;
 //extern GUIWindow *ptr_507BD0;
 extern TargetedSpellUI *pGUIWindow_CastTargetedSpell;
-extern GUIWindow *pGameOverWindow;
-extern bool bGameOverWindowCheckExit;
+extern GUIWindow_GameOver *pGameOverWindow;
 //extern GUIWindow *pGUIWindow_EscMessageWindow;
 extern GUIWindow_BranchlessDialogue *pGUIWindow_BranchlessDialogue;
 
