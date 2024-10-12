@@ -12,7 +12,7 @@ var searchData=
   ['gamekeyboardcontroller_9',['GameKeyboardController',['../classGameKeyboardController.html#a0508f76c375e760e4419faf68abbfd91',1,'GameKeyboardController']]],
   ['gameloop_10',['gameLoop',['../classGame.html#aede5f46c8c7bbbaf8459eeec397a11e7',1,'Game']]],
   ['gamemenuui_5fgetkeybindingcolor_11',['GameMenuUI_GetKeyBindingColor',['../UIGame_8cpp.html#ad4e6a1d6556af770b612087b155ce78d',1,'UIGame.cpp']]],
-  ['gameover_5floop_12',['GameOver_Loop',['../GameOver_8h.html#a7c0ba3dc6307b98f70f46146e6ddd4da',1,'GameOver_Loop(int):&#160;GameOver.cpp'],['../GameOver_8cpp.html#a3b85068c9cdda92cf87aef83cb37a4d0',1,'GameOver_Loop(int v15):&#160;GameOver.cpp']]],
+  ['gameover_5fsetup_12',['GameOver_Setup',['../GameOver_8h.html#a8e22a2a8cd9d9b4e550f3d5a1ba3e452',1,'GameOver_Setup():&#160;GameOver.cpp'],['../GameOver_8cpp.html#a8e22a2a8cd9d9b4e550f3d5a1ba3e452',1,'GameOver_Setup():&#160;GameOver.cpp']]],
   ['gamepad_13',['gamepad',['../classSdlPlatformSharedState.html#a234aa6635652bdd42a76e4be5eec90c8',1,'SdlPlatformSharedState']]],
   ['gamepad_14',['Gamepad',['../classGameConfig_1_1Gamepad.html#a2a28033928c5bf320b9f3cd14ed60949',1,'GameConfig::Gamepad']]],
   ['gamepadaxisevent_15',['gamepadAxisEvent',['../classPlatformEventHandler.html#a4f878333c0086028117c519bc6245103',1,'PlatformEventHandler::gamepadAxisEvent()'],['../classPlatformEventFilter.html#a582bc6c932d6854290a45cdf64413829',1,'PlatformEventFilter::gamepadAxisEvent()'],['../classGameWindowHandler.html#a34d2372a265d92b1eccf1b0dd6ddfcbd',1,'GameWindowHandler::gamepadAxisEvent()']]],
