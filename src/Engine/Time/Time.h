@@ -13,6 +13,8 @@ struct CivilTime {
     int day = 0; // In [1, 28].
     int dayOfWeek = 0; // In [1, 7].
     int hour = 0; // In [0, 23].
+    int hourAmPm = 0; // In [0, 12], note that 12:00 is 12pm.
+    bool isPm = false;
     int minute = 0;
     int second = 0;
 };
@@ -63,6 +65,8 @@ class Time {
         result.day = 1 + toDays() % 28;
         result.dayOfWeek = 1 + toDays() % 7;
         result.hour = toHours() % 24;
+        result.hourAmPm = result.hour > 12 ? result.hour - 12 : result.hour;
+        result.isPm = result.hour >= 12; // 12:00 is 12pm.
         result.minute = toMinutes() % 60;
         result.second = toSeconds() % 60;
         return result;

@@ -51,12 +51,14 @@ GUIWindow_CalendarBook::GUIWindow_CalendarBook() : GUIWindow_Book() {
 /**
  * @offset 0x413D3C
  */
-static std::string getDayPart() {
-    if (pParty->uCurrentHour > 5 && pParty->uCurrentHour < 20) {
+static std::string getDayPart(int hour) {
+    assert(hour >= 0 && hour < 24);
+
+    if (hour > 5 && hour < 20) {
         return localization->GetString(LSTR_DAY_CAPITALIZED);
-    } else if (pParty->uCurrentHour == 5) {
+    } else if (hour == 5) {
         return localization->GetString(LSTR_DAWN);
-    } else if (pParty->uCurrentHour == 20) {
+    } else if (hour == 20) {
         return localization->GetString(LSTR_DUSK);
     } else {
         return localization->GetString(LSTR_NIGHT);
@@ -69,17 +71,7 @@ void GUIWindow_CalendarBook::Update() {
     GUIWindow calendar_window;
 
     render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_calendar_background);
-    int hour = pParty->uCurrentHour;
-    int am;
-    if (hour >= 12) {
-        hour -= 12;
-        if (!hour) {
-            hour = 12;
-        }
-        am = 1;
-    } else {
-        am = 0;
-    }
+    CivilTime time = pParty->GetPlayingTime().toCivilTime();
 
     calendar_window.uFrameX = game_viewport_x;
     calendar_window.uFrameY = game_viewport_y;
@@ -89,10 +81,8 @@ void GUIWindow_CalendarBook::Update() {
     calendar_window.uFrameW = game_viewport_w;
     calendar_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_calendar_title_color, localization->GetString(LSTR_TIME_IN_ERATHIA), 3);
 
-    CivilTime time = pParty->GetPlayingTime().toCivilTime();
-
-    std::string str = fmt::format("{}\t100:\t110{}:{:02} {} - {}", localization->GetString(LSTR_TIME), hour,
-                                  time.minute, localization->GetAmPm(am), getDayPart());
+    std::string str = fmt::format("{}\t100:\t110{}:{:02} {} - {}", localization->GetString(LSTR_TIME), time.hourAmPm,
+                                  time.minute, localization->GetAmPm(time.isPm), getDayPart(time.hour));
     calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 55}, ui_book_calendar_time_color, str);
 
     str = fmt::format("{}\t100:\t110{} - {}", localization->GetString(LSTR_DAY_CAPITALIZED), time.day,

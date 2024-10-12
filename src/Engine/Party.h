@@ -298,7 +298,7 @@ struct Party {
     int hirelingScrollPosition;
     char cNonHireFollowers;  // number of non hireling party guests
 
-    // TODO(captainurist): #time drop all of these?
+    // TODO(captainurist): #time replace with GetCurrentCivilTime().
     unsigned int uCurrentYear;
     unsigned int uCurrentMonth;
     unsigned int uCurrentMonthWeek;

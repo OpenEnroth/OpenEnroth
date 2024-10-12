@@ -312,27 +312,22 @@ bool enterHouse(HouseId uHouseID) {
     Time closeTime = currentTimeDays + Duration::fromHours(closeHours);
 
     if (closeHours > openHours) {
-        // Store opened within one day
+        // Store opens during the day.
         isOpened = (currentTime >= openTime) && (currentTime <= closeTime);
     } else {
-        // Store opens in one day and closes on next day
+        // Store opens at night.
         isOpened = (currentTime <= closeTime) || (currentTime >= openTime);
     }
 
     if (!isOpened) {
-        int amPmOpen = 0;
-        int amPmClose = 0;
+        CivilTime openCivilTime = openTime.toCivilTime();
+        CivilTime closeCivilTime = closeTime.toCivilTime();
 
-        if (openHours > 12) {
-            openHours -= 12;
-            amPmOpen = 1;
-        }
-        if (closeHours > 12) {
-            closeHours -= 12;
-            amPmClose = 1;
-        }
-
-        engine->_statusBar->setEvent(LSTR_FMT_OPEN_TIME, openHours, localization->GetAmPm(amPmOpen), closeHours, localization->GetAmPm(amPmClose));
+        engine->_statusBar->setEvent(LSTR_FMT_OPEN_TIME,
+                                     openCivilTime.hourAmPm,
+                                     localization->GetAmPm(openCivilTime.isPm),
+                                     closeCivilTime.hourAmPm,
+                                     localization->GetAmPm(closeCivilTime.isPm));
         if (pParty->hasActiveCharacter()) {
             pParty->activeCharacter().playReaction(SPEECH_STORE_CLOSED);
         }

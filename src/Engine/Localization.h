@@ -551,8 +551,8 @@ class Localization {
         return this->character_conditions[index];
     }
 
-    const std::string &GetAmPm(unsigned int index) const {
-        return this->GetString(472 + index);
+    const std::string &GetAmPm(bool isPm) const {
+        return this->GetString(472 + isPm);
     }
 
     const std::string &GetNpcProfessionName(NpcProfession prof) const {
