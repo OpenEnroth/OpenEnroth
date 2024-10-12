@@ -12,7 +12,7 @@ class SdlPlatformSharedState;
 
 class SdlPlatform: public Platform {
  public:
-    explicit SdlPlatform(Logger *logger);
+    SdlPlatform();
     virtual ~SdlPlatform();
 
     virtual std::unique_ptr<PlatformWindow> createWindow() override;

@@ -16,9 +16,7 @@
 static constinit SdlLogSource globalSdlLogSource;
 static LogCategory globalSdlLogCategory("sdl", &globalSdlLogSource);
 
-SdlPlatformSharedState::SdlPlatformSharedState(Logger *logger): _logger(logger) {
-    assert(logger);
-}
+SdlPlatformSharedState::SdlPlatformSharedState() = default;
 
 SdlPlatformSharedState::~SdlPlatformSharedState() {
     assert(_windowById.empty()); // Platform should be destroyed after all windows.
@@ -29,15 +27,11 @@ void SdlPlatformSharedState::logSdlError(const char *sdlFunctionName) {
     const char *errorMessage = SDL_GetError();
     if (!errorMessage || *errorMessage == '\0') // Not sure if SDL_GetError can return nullptr, but it definitely can return an empty string.
         errorMessage = "No error";
-    _logger->error(globalSdlLogCategory, "SDL error in {}: {}", sdlFunctionName, errorMessage);
+    logger->error(logCategory(), "SDL error in {}: {}", sdlFunctionName, errorMessage);
 }
 
-const LogCategory &SdlPlatformSharedState::logCategory() const {
+const LogCategory &SdlPlatformSharedState::logCategory() {
     return globalSdlLogCategory;
-}
-
-Logger *SdlPlatformSharedState::logger() const {
-    return _logger;
 }
 
 void SdlPlatformSharedState::registerWindow(SdlWindow *window) {
