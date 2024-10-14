@@ -96,12 +96,11 @@ var searchData=
   ['buffer_5fstart_93',['buffer_start',['../structbstreamer.html#a07ce03b5323036ba9302037fe850330b',1,'bstreamer']]],
   ['buffs_94',['buffs',['../classActor.html#a54110025d368f9e1a90dde532714f5c0',1,'Actor']]],
   ['building_5fgamme_95',['building_gamme',['../structODMRenderParams.html#a7fbc6fd236f96f7c1cbb9b1008f9f18e',1,'ODMRenderParams']]],
-  ['buildingtable_96',['buildingTable',['../BuildingTable_8cpp.html#a9b0f9f795e511693efb989e0dcb3067a',1,'buildingTable():&#160;BuildingTable.cpp'],['../BuildingTable_8h.html#a9b0f9f795e511693efb989e0dcb3067a',1,'buildingTable():&#160;BuildingTable.cpp']]],
-  ['button_97',['button',['../structHouseNpcDesc.html#aae0393e74fb01fdeabc553e764a315ca',1,'HouseNpcDesc::button()'],['../classPlatformMouseEvent.html#af17e75fe234639b3fac26fb425fca2f5',1,'PlatformMouseEvent::button()']]],
-  ['buttons_98',['buttons',['../classPlatformMouseEvent.html#a07f8dacd42bce1c04d64f9e90ca969c5',1,'PlatformMouseEvent']]],
-  ['bvisible_99',['bVisible',['../structODMFace__MM7.html#a2b3462dec80a5eb7f98ef46efde2dac1',1,'ODMFace_MM7::bVisible()'],['../structODMFace.html#a58b2f9f03de81c6646ea70fe9fa23c0f',1,'ODMFace::bVisible()']]],
-  ['byte_5f4ecf08_100',['byte_4ECF08',['../mm7__data_8cpp.html#ae312e333acdc4d62e19030e47b21f065',1,'byte_4ECF08():&#160;mm7_data.cpp'],['../mm7__data_8h.html#ae312e333acdc4d62e19030e47b21f065',1,'byte_4ECF08():&#160;mm7_data.cpp']]],
-  ['byte_5f4faa24_101',['byte_4FAA24',['../mm7__data_8cpp.html#aa529bc58e934243868454344dd834792',1,'mm7_data.cpp']]],
-  ['byte_5f5e4c15_102',['byte_5E4C15',['../mm7__data_8cpp.html#a4ba98abcb55678f89a29ad26338dd79c',1,'mm7_data.cpp']]],
-  ['bytes_5fper_5frow_103',['bytes_per_row',['../structPCXHeader.html#af8217b3a659ff618a7f2899fa4e1acff',1,'PCXHeader']]]
+  ['button_96',['button',['../structHouseNpcDesc.html#aae0393e74fb01fdeabc553e764a315ca',1,'HouseNpcDesc::button()'],['../classPlatformMouseEvent.html#af17e75fe234639b3fac26fb425fca2f5',1,'PlatformMouseEvent::button()']]],
+  ['buttons_97',['buttons',['../classPlatformMouseEvent.html#a07f8dacd42bce1c04d64f9e90ca969c5',1,'PlatformMouseEvent']]],
+  ['bvisible_98',['bVisible',['../structODMFace__MM7.html#a2b3462dec80a5eb7f98ef46efde2dac1',1,'ODMFace_MM7::bVisible()'],['../structODMFace.html#a58b2f9f03de81c6646ea70fe9fa23c0f',1,'ODMFace::bVisible()']]],
+  ['byte_5f4ecf08_99',['byte_4ECF08',['../mm7__data_8cpp.html#ae312e333acdc4d62e19030e47b21f065',1,'byte_4ECF08():&#160;mm7_data.cpp'],['../mm7__data_8h.html#ae312e333acdc4d62e19030e47b21f065',1,'byte_4ECF08():&#160;mm7_data.cpp']]],
+  ['byte_5f4faa24_100',['byte_4FAA24',['../mm7__data_8cpp.html#aa529bc58e934243868454344dd834792',1,'mm7_data.cpp']]],
+  ['byte_5f5e4c15_101',['byte_5E4C15',['../mm7__data_8cpp.html#a4ba98abcb55678f89a29ad26338dd79c',1,'mm7_data.cpp']]],
+  ['bytes_5fper_5frow_102',['bytes_per_row',['../structPCXHeader.html#af8217b3a659ff618a7f2899fa4e1acff',1,'PCXHeader']]]
 ];

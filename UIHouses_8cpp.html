@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7e0239c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;28c4fae</span>
    </div>
   </td>
  </tr>
@@ -86,6 +86,7 @@ $(function() {
 <code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AwardEnums_8h.html">Engine/Data/AwardEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Camera_8h.html">Engine/Graphics/Camera.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Decoration_8h.html">Engine/Objects/Decoration.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Indoor_8h.html">Engine/Graphics/Indoor.h</a>&quot;</code><br />
@@ -95,8 +96,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="MapInfo_8h.html">Engine/MapInfo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PriceCalculator_8h.html">Engine/PriceCalculator.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="BuildingTable_8h.html">Engine/Tables/BuildingTable.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="AwardTable_8h.html">Engine/Tables/AwardTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="HouseTable_8h.html">Engine/Tables/HouseTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TransitionTable_8h.html">Engine/Tables/TransitionTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIFont_8h.html">GUI/GUIFont.h</a>&quot;</code><br />
@@ -156,10 +156,10 @@ Variables</h2></td></tr>
 <tr class="separator:a186e5864d5cfc7e4f2f6d3d756216b43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afca7bc064d88227f64fa87f84f66d632"><td class="memItemLeft" align="right" valign="top">std::array&lt; const <a class="el" href="structHouseAnimDescr.html">HouseAnimDescr</a>, 196 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#afca7bc064d88227f64fa87f84f66d632">pAnimatedRooms</a></td></tr>
 <tr class="separator:afca7bc064d88227f64fa87f84f66d632"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bccd008c0f617f9cad0bf5892d89a31"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; int, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a4e88bbd32e5a5de530f70a87fc669b1d">BUILDING_WEAPON_SHOP</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a8202bb3067b3dd43e620004f98f368bc">BUILDING_DARK_GUILD</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a7bccd008c0f617f9cad0bf5892d89a31">itemAmountInShop</a></td></tr>
-<tr class="separator:a7bccd008c0f617f9cad0bf5892d89a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46746b17601a2848339c9085c1da42ab"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; const char *, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a4e88bbd32e5a5de530f70a87fc669b1d">BUILDING_WEAPON_SHOP</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80ac3f678024135fe7a571ff8de0abdeb05">BUILDING_MIRRORED_PATH_GUILD</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a46746b17601a2848339c9085c1da42ab">shopBackgroundNames</a></td></tr>
-<tr class="separator:a46746b17601a2848339c9085c1da42ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56d3b8068f9da8104d0d892ecd50fca0"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; int, <a class="el" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a1d7505427d438c675fa1561662798c00">HOUSE_TYPE_WEAPON_SHOP</a>, <a class="el" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a0779d12df93ab659e32cd3e7f6b6fd84">HOUSE_TYPE_DARK_GUILD</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a56d3b8068f9da8104d0d892ecd50fca0">itemAmountInShop</a></td></tr>
+<tr class="separator:a56d3b8068f9da8104d0d892ecd50fca0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00549bfd5a53fad6d6c951f14c807ad5"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; const char *, <a class="el" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a1d7505427d438c675fa1561662798c00">HOUSE_TYPE_WEAPON_SHOP</a>, <a class="el" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a274a30df5bcf52be0d25476f0748872d">HOUSE_TYPE_MIRRORED_PATH_GUILD</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIHouses_8cpp.html#a00549bfd5a53fad6d6c951f14c807ad5">shopBackgroundNames</a></td></tr>
+<tr class="separator:a00549bfd5a53fad6d6c951f14c807ad5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a367ca93a4c306e3d85e764d52a71a2d2" name="a367ca93a4c306e3d85e764d52a71a2d2"></a>
@@ -399,45 +399,45 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a7bccd008c0f617f9cad0bf5892d89a31" name="a7bccd008c0f617f9cad0bf5892d89a31"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7bccd008c0f617f9cad0bf5892d89a31">&#9670;&#160;</a></span>itemAmountInShop</h2>
+<a id="a56d3b8068f9da8104d0d892ecd50fca0" name="a56d3b8068f9da8104d0d892ecd50fca0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56d3b8068f9da8104d0d892ecd50fca0">&#9670;&#160;</a></span>itemAmountInShop</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;int, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a4e88bbd32e5a5de530f70a87fc669b1d">BUILDING_WEAPON_SHOP</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a8202bb3067b3dd43e620004f98f368bc">BUILDING_DARK_GUILD</a>&gt; itemAmountInShop</td>
+          <td class="memname">const <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;int, <a class="el" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a1d7505427d438c675fa1561662798c00">HOUSE_TYPE_WEAPON_SHOP</a>, <a class="el" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a0779d12df93ab659e32cd3e7f6b6fd84">HOUSE_TYPE_DARK_GUILD</a>&gt; itemAmountInShop</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {{</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a4e88bbd32e5a5de530f70a87fc669b1d">BUILDING_WEAPON_SHOP</a>,   6},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80afc8b864d9e189c4961ab2317e5776978">BUILDING_ARMOR_SHOP</a>,    8},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80abcd8947e64eca2da788d3a74bcbdc46a">BUILDING_MAGIC_SHOP</a>,   12},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a71664d61ab90f046290ba1908ee47931">BUILDING_ALCHEMY_SHOP</a>, 12},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a8c71c0ea26026b6133d527aaefa98d1b">BUILDING_FIRE_GUILD</a>,   12},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a5251033f108fa09f903b5a7db3e2a440">BUILDING_AIR_GUILD</a>,    12},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80aef511d16b4c81d66e40d6fdb98df4973">BUILDING_WATER_GUILD</a>,  12},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a4ce87be94b1edc2da41c5e31ee04e011">BUILDING_EARTH_GUILD</a>,  12},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80aed37872d81a005fcf8b45f2bfc4cfa74">BUILDING_SPIRIT_GUILD</a>, 12},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80aabb5676ba83617fe6c78f424b49cf2bd">BUILDING_MIND_GUILD</a>,   12},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80ac2c57889b3a487e25bdc7541b3deb76f">BUILDING_BODY_GUILD</a>,   12},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a2b6aa27a06c670e68ae7f79bb8a27ef7">BUILDING_LIGHT_GUILD</a>,  12},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a8202bb3067b3dd43e620004f98f368bc">BUILDING_DARK_GUILD</a>,   12}</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a1d7505427d438c675fa1561662798c00">HOUSE_TYPE_WEAPON_SHOP</a>,   6},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a8e631c0df6c5610e624a827aaadcff80">HOUSE_TYPE_ARMOR_SHOP</a>,    8},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9ad80f3d74acb38a6fd2d43adf674cde38">HOUSE_TYPE_MAGIC_SHOP</a>,   12},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a1caeccbdc684a0ffc1ad2ddbc52251b9">HOUSE_TYPE_ALCHEMY_SHOP</a>, 12},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9afa9eda36770351d2da250db40ccb2802">HOUSE_TYPE_FIRE_GUILD</a>,   12},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a0289fb152e373a7522da11a89bbc2a86">HOUSE_TYPE_AIR_GUILD</a>,    12},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9ab7726c9d4514864de3bf47497d18b828">HOUSE_TYPE_WATER_GUILD</a>,  12},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a0d77bda34b31b5907da3c6cb6a79aadb">HOUSE_TYPE_EARTH_GUILD</a>,  12},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a72d11bbf2528447c74fd0efe705d583f">HOUSE_TYPE_SPIRIT_GUILD</a>, 12},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a582b78e92aab7355d882e83ddbc0f028">HOUSE_TYPE_MIND_GUILD</a>,   12},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a60e0cd954d3ef29298bf294939856d35">HOUSE_TYPE_BODY_GUILD</a>,   12},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9aa5fe852c28bbab8b41942ca04b7ed13a">HOUSE_TYPE_LIGHT_GUILD</a>,  12},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a0779d12df93ab659e32cd3e7f6b6fd84">HOUSE_TYPE_DARK_GUILD</a>,   12}</div>
 <div class="line">}}</div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a2b6aa27a06c670e68ae7f79bb8a27ef7"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a2b6aa27a06c670e68ae7f79bb8a27ef7">BuildingType::BUILDING_LIGHT_GUILD</a></div><div class="ttdeci">@ BUILDING_LIGHT_GUILD</div></div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a4ce87be94b1edc2da41c5e31ee04e011"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a4ce87be94b1edc2da41c5e31ee04e011">BuildingType::BUILDING_EARTH_GUILD</a></div><div class="ttdeci">@ BUILDING_EARTH_GUILD</div></div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a4e88bbd32e5a5de530f70a87fc669b1d"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a4e88bbd32e5a5de530f70a87fc669b1d">BuildingType::BUILDING_WEAPON_SHOP</a></div><div class="ttdeci">@ BUILDING_WEAPON_SHOP</div></div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a5251033f108fa09f903b5a7db3e2a440"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a5251033f108fa09f903b5a7db3e2a440">BuildingType::BUILDING_AIR_GUILD</a></div><div class="ttdeci">@ BUILDING_AIR_GUILD</div></div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a71664d61ab90f046290ba1908ee47931"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a71664d61ab90f046290ba1908ee47931">BuildingType::BUILDING_ALCHEMY_SHOP</a></div><div class="ttdeci">@ BUILDING_ALCHEMY_SHOP</div></div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a8202bb3067b3dd43e620004f98f368bc"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a8202bb3067b3dd43e620004f98f368bc">BuildingType::BUILDING_DARK_GUILD</a></div><div class="ttdeci">@ BUILDING_DARK_GUILD</div></div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a8c71c0ea26026b6133d527aaefa98d1b"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a8c71c0ea26026b6133d527aaefa98d1b">BuildingType::BUILDING_FIRE_GUILD</a></div><div class="ttdeci">@ BUILDING_FIRE_GUILD</div></div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80aabb5676ba83617fe6c78f424b49cf2bd"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80aabb5676ba83617fe6c78f424b49cf2bd">BuildingType::BUILDING_MIND_GUILD</a></div><div class="ttdeci">@ BUILDING_MIND_GUILD</div></div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80abcd8947e64eca2da788d3a74bcbdc46a"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80abcd8947e64eca2da788d3a74bcbdc46a">BuildingType::BUILDING_MAGIC_SHOP</a></div><div class="ttdeci">@ BUILDING_MAGIC_SHOP</div></div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80ac2c57889b3a487e25bdc7541b3deb76f"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80ac2c57889b3a487e25bdc7541b3deb76f">BuildingType::BUILDING_BODY_GUILD</a></div><div class="ttdeci">@ BUILDING_BODY_GUILD</div></div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80aed37872d81a005fcf8b45f2bfc4cfa74"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80aed37872d81a005fcf8b45f2bfc4cfa74">BuildingType::BUILDING_SPIRIT_GUILD</a></div><div class="ttdeci">@ BUILDING_SPIRIT_GUILD</div></div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80aef511d16b4c81d66e40d6fdb98df4973"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80aef511d16b4c81d66e40d6fdb98df4973">BuildingType::BUILDING_WATER_GUILD</a></div><div class="ttdeci">@ BUILDING_WATER_GUILD</div></div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80afc8b864d9e189c4961ab2317e5776978"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80afc8b864d9e189c4961ab2317e5776978">BuildingType::BUILDING_ARMOR_SHOP</a></div><div class="ttdeci">@ BUILDING_ARMOR_SHOP</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9a0289fb152e373a7522da11a89bbc2a86"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a0289fb152e373a7522da11a89bbc2a86">HouseType::HOUSE_TYPE_AIR_GUILD</a></div><div class="ttdeci">@ HOUSE_TYPE_AIR_GUILD</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9a0779d12df93ab659e32cd3e7f6b6fd84"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a0779d12df93ab659e32cd3e7f6b6fd84">HouseType::HOUSE_TYPE_DARK_GUILD</a></div><div class="ttdeci">@ HOUSE_TYPE_DARK_GUILD</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9a0d77bda34b31b5907da3c6cb6a79aadb"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a0d77bda34b31b5907da3c6cb6a79aadb">HouseType::HOUSE_TYPE_EARTH_GUILD</a></div><div class="ttdeci">@ HOUSE_TYPE_EARTH_GUILD</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9a1caeccbdc684a0ffc1ad2ddbc52251b9"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a1caeccbdc684a0ffc1ad2ddbc52251b9">HouseType::HOUSE_TYPE_ALCHEMY_SHOP</a></div><div class="ttdeci">@ HOUSE_TYPE_ALCHEMY_SHOP</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9a1d7505427d438c675fa1561662798c00"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a1d7505427d438c675fa1561662798c00">HouseType::HOUSE_TYPE_WEAPON_SHOP</a></div><div class="ttdeci">@ HOUSE_TYPE_WEAPON_SHOP</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9a582b78e92aab7355d882e83ddbc0f028"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a582b78e92aab7355d882e83ddbc0f028">HouseType::HOUSE_TYPE_MIND_GUILD</a></div><div class="ttdeci">@ HOUSE_TYPE_MIND_GUILD</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9a60e0cd954d3ef29298bf294939856d35"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a60e0cd954d3ef29298bf294939856d35">HouseType::HOUSE_TYPE_BODY_GUILD</a></div><div class="ttdeci">@ HOUSE_TYPE_BODY_GUILD</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9a72d11bbf2528447c74fd0efe705d583f"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a72d11bbf2528447c74fd0efe705d583f">HouseType::HOUSE_TYPE_SPIRIT_GUILD</a></div><div class="ttdeci">@ HOUSE_TYPE_SPIRIT_GUILD</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9a8e631c0df6c5610e624a827aaadcff80"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a8e631c0df6c5610e624a827aaadcff80">HouseType::HOUSE_TYPE_ARMOR_SHOP</a></div><div class="ttdeci">@ HOUSE_TYPE_ARMOR_SHOP</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9aa5fe852c28bbab8b41942ca04b7ed13a"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9aa5fe852c28bbab8b41942ca04b7ed13a">HouseType::HOUSE_TYPE_LIGHT_GUILD</a></div><div class="ttdeci">@ HOUSE_TYPE_LIGHT_GUILD</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9ab7726c9d4514864de3bf47497d18b828"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9ab7726c9d4514864de3bf47497d18b828">HouseType::HOUSE_TYPE_WATER_GUILD</a></div><div class="ttdeci">@ HOUSE_TYPE_WATER_GUILD</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9ad80f3d74acb38a6fd2d43adf674cde38"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9ad80f3d74acb38a6fd2d43adf674cde38">HouseType::HOUSE_TYPE_MAGIC_SHOP</a></div><div class="ttdeci">@ HOUSE_TYPE_MAGIC_SHOP</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9afa9eda36770351d2da250db40ccb2802"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9afa9eda36770351d2da250db40ccb2802">HouseType::HOUSE_TYPE_FIRE_GUILD</a></div><div class="ttdeci">@ HOUSE_TYPE_FIRE_GUILD</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -455,8 +455,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a46746b17601a2848339c9085c1da42ab" name="a46746b17601a2848339c9085c1da42ab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46746b17601a2848339c9085c1da42ab">&#9670;&#160;</a></span>shopBackgroundNames</h2>
+<a id="a00549bfd5a53fad6d6c951f14c807ad5" name="a00549bfd5a53fad6d6c951f14c807ad5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00549bfd5a53fad6d6c951f14c807ad5">&#9670;&#160;</a></span>shopBackgroundNames</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -465,7 +465,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;const char *, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a4e88bbd32e5a5de530f70a87fc669b1d">BUILDING_WEAPON_SHOP</a>, <a class="el" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80ac3f678024135fe7a571ff8de0abdeb05">BUILDING_MIRRORED_PATH_GUILD</a>&gt; shopBackgroundNames</td>
+          <td class="memname">constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;const char *, <a class="el" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a1d7505427d438c675fa1561662798c00">HOUSE_TYPE_WEAPON_SHOP</a>, <a class="el" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a274a30df5bcf52be0d25476f0748872d">HOUSE_TYPE_MIRRORED_PATH_GUILD</a>&gt; shopBackgroundNames</td>
         </tr>
       </table>
   </td>
@@ -475,26 +475,26 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {{</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a4e88bbd32e5a5de530f70a87fc669b1d">BUILDING_WEAPON_SHOP</a>,           <span class="stringliteral">&quot;WEPNTABL&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80afc8b864d9e189c4961ab2317e5776978">BUILDING_ARMOR_SHOP</a>,            <span class="stringliteral">&quot;ARMORY&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80abcd8947e64eca2da788d3a74bcbdc46a">BUILDING_MAGIC_SHOP</a>,            <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a71664d61ab90f046290ba1908ee47931">BUILDING_ALCHEMY_SHOP</a>,          <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a8c71c0ea26026b6133d527aaefa98d1b">BUILDING_FIRE_GUILD</a>,            <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a5251033f108fa09f903b5a7db3e2a440">BUILDING_AIR_GUILD</a>,             <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80aef511d16b4c81d66e40d6fdb98df4973">BUILDING_WATER_GUILD</a>,           <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a4ce87be94b1edc2da41c5e31ee04e011">BUILDING_EARTH_GUILD</a>,           <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80aed37872d81a005fcf8b45f2bfc4cfa74">BUILDING_SPIRIT_GUILD</a>,          <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80aabb5676ba83617fe6c78f424b49cf2bd">BUILDING_MIND_GUILD</a>,            <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80ac2c57889b3a487e25bdc7541b3deb76f">BUILDING_BODY_GUILD</a>,            <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a2b6aa27a06c670e68ae7f79bb8a27ef7">BUILDING_LIGHT_GUILD</a>,           <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a8202bb3067b3dd43e620004f98f368bc">BUILDING_DARK_GUILD</a>,            <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a15dd5deae379ab5a81f3b55ccc878554">BUILDING_ELEMENTAL_GUILD</a>,       <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a9d67359ac2b8aaef03eb39f0f6eb378d">BUILDING_SELF_GUILD</a>,            <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
-<div class="line">    {<a class="code hl_enumvalue" href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80ac3f678024135fe7a571ff8de0abdeb05">BUILDING_MIRRORED_PATH_GUILD</a>,   <span class="stringliteral">&quot;MAGSHELF&quot;</span>}</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a1d7505427d438c675fa1561662798c00">HOUSE_TYPE_WEAPON_SHOP</a>,           <span class="stringliteral">&quot;WEPNTABL&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a8e631c0df6c5610e624a827aaadcff80">HOUSE_TYPE_ARMOR_SHOP</a>,            <span class="stringliteral">&quot;ARMORY&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9ad80f3d74acb38a6fd2d43adf674cde38">HOUSE_TYPE_MAGIC_SHOP</a>,            <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a1caeccbdc684a0ffc1ad2ddbc52251b9">HOUSE_TYPE_ALCHEMY_SHOP</a>,          <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9afa9eda36770351d2da250db40ccb2802">HOUSE_TYPE_FIRE_GUILD</a>,            <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a0289fb152e373a7522da11a89bbc2a86">HOUSE_TYPE_AIR_GUILD</a>,             <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9ab7726c9d4514864de3bf47497d18b828">HOUSE_TYPE_WATER_GUILD</a>,           <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a0d77bda34b31b5907da3c6cb6a79aadb">HOUSE_TYPE_EARTH_GUILD</a>,           <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a72d11bbf2528447c74fd0efe705d583f">HOUSE_TYPE_SPIRIT_GUILD</a>,          <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a582b78e92aab7355d882e83ddbc0f028">HOUSE_TYPE_MIND_GUILD</a>,            <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a60e0cd954d3ef29298bf294939856d35">HOUSE_TYPE_BODY_GUILD</a>,            <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9aa5fe852c28bbab8b41942ca04b7ed13a">HOUSE_TYPE_LIGHT_GUILD</a>,           <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a0779d12df93ab659e32cd3e7f6b6fd84">HOUSE_TYPE_DARK_GUILD</a>,            <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9af3079ce35316804726f1a20b24d8ca15">HOUSE_TYPE_ELEMENTAL_GUILD</a>,       <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9accdffc59efd9363d8fb3404b8609e5ab">HOUSE_TYPE_SELF_GUILD</a>,            <span class="stringliteral">&quot;MAGSHELF&quot;</span>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a274a30df5bcf52be0d25476f0748872d">HOUSE_TYPE_MIRRORED_PATH_GUILD</a>,   <span class="stringliteral">&quot;MAGSHELF&quot;</span>}</div>
 <div class="line">}}</div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a15dd5deae379ab5a81f3b55ccc878554"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a15dd5deae379ab5a81f3b55ccc878554">BuildingType::BUILDING_ELEMENTAL_GUILD</a></div><div class="ttdeci">@ BUILDING_ELEMENTAL_GUILD</div></div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80a9d67359ac2b8aaef03eb39f0f6eb378d"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80a9d67359ac2b8aaef03eb39f0f6eb378d">BuildingType::BUILDING_SELF_GUILD</a></div><div class="ttdeci">@ BUILDING_SELF_GUILD</div></div>
-<div class="ttc" id="aBuildingTable_8h_html_a1e6330273dfb88062f9ac99d61322e80ac3f678024135fe7a571ff8de0abdeb05"><div class="ttname"><a href="BuildingTable_8h.html#a1e6330273dfb88062f9ac99d61322e80ac3f678024135fe7a571ff8de0abdeb05">BuildingType::BUILDING_MIRRORED_PATH_GUILD</a></div><div class="ttdeci">@ BUILDING_MIRRORED_PATH_GUILD</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9a274a30df5bcf52be0d25476f0748872d"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9a274a30df5bcf52be0d25476f0748872d">HouseType::HOUSE_TYPE_MIRRORED_PATH_GUILD</a></div><div class="ttdeci">@ HOUSE_TYPE_MIRRORED_PATH_GUILD</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9accdffc59efd9363d8fb3404b8609e5ab"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9accdffc59efd9363d8fb3404b8609e5ab">HouseType::HOUSE_TYPE_SELF_GUILD</a></div><div class="ttdeci">@ HOUSE_TYPE_SELF_GUILD</div></div>
+<div class="ttc" id="aHouseEnums_8h_html_abe2eb8a142683522b90e5e74305ba4f9af3079ce35316804726f1a20b24d8ca15"><div class="ttname"><a href="HouseEnums_8h.html#abe2eb8a142683522b90e5e74305ba4f9af3079ce35316804726f1a20b24d8ca15">HouseType::HOUSE_TYPE_ELEMENTAL_GUILD</a></div><div class="ttdeci">@ HOUSE_TYPE_ELEMENTAL_GUILD</div></div>
 </div><!-- fragment -->
 </div>
 </div>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Tables/BuildingTable.cpp File Reference</title>
+<title>OpenEnroth: src/Engine/Tables/HouseTable.h File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7e0239c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;28c4fae</span>
    </div>
   </td>
  </tr>
@@ -76,38 +76,37 @@ $(function() {
   <div class="summary">
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
-  <div class="headertitle"><div class="title">BuildingTable.cpp File Reference</div></div>
+  <div class="headertitle"><div class="title">HouseTable.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="BuildingTable_8h.html">BuildingTable.h</a>&quot;</code><br />
-<code>#include &lt;cstring&gt;</code><br />
+<div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
-<code>#include &quot;<a class="el" href="Blob_8h.html">Utility/Memory/Blob.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Ascii_8h.html">Utility/String/Ascii.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Transformations_8h.html">Utility/String/Transformations.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="UIHouseEnums_8h.html">GUI/UI/UIHouseEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="HouseData_8h.html">Engine/Data/HouseData.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:aff445fe4f8c945a2a8a7478515b40728"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BuildingTable_8cpp.html#aff445fe4f8c945a2a8a7478515b40728">initializeBuildings</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;buildings)</td></tr>
-<tr class="separator:aff445fe4f8c945a2a8a7478515b40728"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcd853b5bcfdf0b18debbbeac6ffb306"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="HouseTable_8h.html#afcd853b5bcfdf0b18debbbeac6ffb306">initializeHouses</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;houses)</td></tr>
+<tr class="separator:afcd853b5bcfdf0b18debbbeac6ffb306"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a9b0f9f795e511693efb989e0dcb3067a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structBuildingDesc.html">BuildingDesc</a>, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca6cf369da931a5a943f34ce7d10de047b">HOUSE_FIRST</a>, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17cae197250a5b60254ffb5ac948b573cd9a">HOUSE_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="BuildingTable_8cpp.html#a9b0f9f795e511693efb989e0dcb3067a">buildingTable</a></td></tr>
-<tr class="separator:a9b0f9f795e511693efb989e0dcb3067a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4415f5f4feb31afbf4d3ae343b985845"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structHouseData.html">HouseData</a>, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca6cf369da931a5a943f34ce7d10de047b">HOUSE_FIRST</a>, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17cae197250a5b60254ffb5ac948b573cd9a">HOUSE_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="HouseTable_8h.html#a4415f5f4feb31afbf4d3ae343b985845">houseTable</a></td></tr>
+<tr class="separator:a4415f5f4feb31afbf4d3ae343b985845"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="aff445fe4f8c945a2a8a7478515b40728" name="aff445fe4f8c945a2a8a7478515b40728"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aff445fe4f8c945a2a8a7478515b40728">&#9670;&#160;</a></span>initializeBuildings()</h2>
+<a id="afcd853b5bcfdf0b18debbbeac6ffb306" name="afcd853b5bcfdf0b18debbbeac6ffb306"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afcd853b5bcfdf0b18debbbeac6ffb306">&#9670;&#160;</a></span>initializeHouses()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void initializeBuildings </td>
+          <td class="memname">void initializeHouses </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
-          <td class="paramname"><em>buildings</em></td><td>)</td>
+          <td class="paramname"><em>houses</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -116,16 +115,24 @@ Variables</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a9b0f9f795e511693efb989e0dcb3067a" name="a9b0f9f795e511693efb989e0dcb3067a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b0f9f795e511693efb989e0dcb3067a">&#9670;&#160;</a></span>buildingTable</h2>
+<a id="a4415f5f4feb31afbf4d3ae343b985845" name="a4415f5f4feb31afbf4d3ae343b985845"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4415f5f4feb31afbf4d3ae343b985845">&#9670;&#160;</a></span>houseTable</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="structBuildingDesc.html">BuildingDesc</a>, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca6cf369da931a5a943f34ce7d10de047b">HOUSE_FIRST</a>, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17cae197250a5b60254ffb5ac948b573cd9a">HOUSE_LAST</a>&gt; buildingTable</td>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="structHouseData.html">HouseData</a>, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca6cf369da931a5a943f34ce7d10de047b">HOUSE_FIRST</a>, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17cae197250a5b60254ffb5ac948b573cd9a">HOUSE_LAST</a>&gt; houseTable</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

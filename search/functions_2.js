@@ -56,7 +56,7 @@ var searchData=
   ['builddialoguestring_53',['BuildDialogueString',['../GUIWindow_8cpp.html#acfc5666e7a375b4686f084d63eb901be',1,'BuildDialogueString(std::string_view str, int uPlayerID, NPCData *npc, ItemGen *item, HouseId houseId, ShopScreen shop_screen, Time *a6):&#160;GUIWindow.cpp'],['../GUIWindow_8h.html#a90095a1706b327ce5406ea3092f1e577',1,'BuildDialogueString(std::string_view str, int uPlayerID, NPCData *npc, ItemGen *item=nullptr, HouseId houseId=HOUSE_INVALID, ShopScreen shop_screen=SHOP_SCREEN_INVALID, Time *a6=nullptr):&#160;GUIWindow.cpp']]],
   ['buildfsm_54',['buildFsm',['../classGameFsmBuilder.html#abf726bb83fd9b81fdd5e4fd15e9708a9',1,'GameFsmBuilder']]],
   ['buildhireablenpcdialogue_55',['BuildHireableNpcDialogue',['../UIDialogue_8cpp.html#aebeda10c8f32f8d077763c3183820cd1',1,'UIDialogue.cpp']]],
-  ['buildingtype_56',['buildingType',['../classGUIWindow__House.html#af6ce7e1b488fc9e3d30ed94a77dd8270',1,'GUIWindow_House']]],
+  ['buildingtype_56',['buildingType',['../classGUIWindow__House.html#a93fcab7ed70091faf59f478c0d33a4d2',1,'GUIWindow_House']]],
   ['buildtime_57',['buildTime',['../BuildInfo_8cpp.html#a8f8292190e1f390c91a570b76517580f',1,'buildTime():&#160;BuildInfo.cpp'],['../BuildInfo_8h.html#a8f8292190e1f390c91a570b76517580f',1,'buildTime():&#160;BuildInfo.cpp']]],
   ['buildviewfrustum_58',['BuildViewFrustum',['../structCamera3D.html#add0eb5d761f167b74424a2ec7e432817',1,'Camera3D']]],
   ['buttonbox_59',['buttonbox',['../UIGame_8h.html#a2b8aa9dd15802d22ce635ceda6a66ebf',1,'UIGame.h']]],

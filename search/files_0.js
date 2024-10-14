@@ -36,10 +36,14 @@ var searchData=
   ['audiosamplepool_2ecpp_33',['AudioSamplePool.cpp',['../AudioSamplePool_8cpp.html',1,'']]],
   ['audiosamplepool_2eh_34',['AudioSamplePool.h',['../AudioSamplePool_8h.html',1,'']]],
   ['audiotrack_2eh_35',['AudioTrack.h',['../AudioTrack_8h.html',1,'']]],
-  ['autonotesbook_2ecpp_36',['AutonotesBook.cpp',['../AutonotesBook_8cpp.html',1,'']]],
-  ['autonotesbook_2eh_37',['AutonotesBook.h',['../AutonotesBook_8h.html',1,'']]],
-  ['autonotetable_2ecpp_38',['AutonoteTable.cpp',['../AutonoteTable_8cpp.html',1,'']]],
-  ['autonotetable_2eh_39',['AutonoteTable.h',['../AutonoteTable_8h.html',1,'']]],
-  ['awardtable_2ecpp_40',['AwardTable.cpp',['../AwardTable_8cpp.html',1,'']]],
-  ['awardtable_2eh_41',['AwardTable.h',['../AwardTable_8h.html',1,'']]]
+  ['autonotedata_2eh_36',['AutonoteData.h',['../AutonoteData_8h.html',1,'']]],
+  ['autonoteenums_2eh_37',['AutonoteEnums.h',['../AutonoteEnums_8h.html',1,'']]],
+  ['autonotesbook_2ecpp_38',['AutonotesBook.cpp',['../AutonotesBook_8cpp.html',1,'']]],
+  ['autonotesbook_2eh_39',['AutonotesBook.h',['../AutonotesBook_8h.html',1,'']]],
+  ['autonotetable_2ecpp_40',['AutonoteTable.cpp',['../AutonoteTable_8cpp.html',1,'']]],
+  ['autonotetable_2eh_41',['AutonoteTable.h',['../AutonoteTable_8h.html',1,'']]],
+  ['awarddata_2eh_42',['AwardData.h',['../AwardData_8h.html',1,'']]],
+  ['awardenums_2eh_43',['AwardEnums.h',['../AwardEnums_8h.html',1,'']]],
+  ['awardtable_2ecpp_44',['AwardTable.cpp',['../AwardTable_8cpp.html',1,'']]],
+  ['awardtable_2eh_45',['AwardTable.h',['../AwardTable_8h.html',1,'']]]
 ];

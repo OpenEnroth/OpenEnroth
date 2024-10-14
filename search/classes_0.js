@@ -38,9 +38,9 @@ var searchData=
   ['audiosample16_35',['AudioSample16',['../classAudioSample16.html',1,'']]],
   ['audiosamplepool_36',['AudioSamplePool',['../classAudioSamplePool.html',1,'']]],
   ['audiosamplepoolentry_37',['AudioSamplePoolEntry',['../structAudioSamplePoolEntry.html',1,'']]],
-  ['autonote_38',['Autonote',['../structAutonote.html',1,'']]],
+  ['autonotedata_38',['AutonoteData',['../structAutonoteData.html',1,'']]],
   ['avaudiostream_39',['AVAudioStream',['../classAVAudioStream.html',1,'']]],
   ['avstreamwrapper_40',['AVStreamWrapper',['../classAVStreamWrapper.html',1,'']]],
   ['avvideostream_41',['AVVideoStream',['../classAVVideoStream.html',1,'']]],
-  ['award_42',['Award',['../structAward.html',1,'']]]
+  ['awarddata_42',['AwardData',['../structAwardData.html',1,'']]]
 ];
