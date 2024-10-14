@@ -62,14 +62,6 @@ jobs:
         bundle: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{ matrix.arch }}.flatpak
         manifest-path: distribution/linux/flatpak/io.github.openenroth.openenroth.yml
         cache-key: flatpak-builder-${{ github.sha }}_${{ matrix.arch }}
-        upload-artifact: true
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{ matrix.arch }}.flatpak
-        path: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{ matrix.arch }}.flatpak
-        retention-days: 0
 
     - name: Publish release
       if: inputs.releaseTag != ''
