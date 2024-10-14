@@ -126,7 +126,7 @@ class Duration {
 
     template<class L> requires std::is_arithmetic_v<L>
     [[nodiscard]] constexpr friend Duration operator*(L l, Duration r) {
-        return Duration::fromTicks(l * r.ticks());
+        return Duration::fromMilliticks(l * r.milliticks());
     }
 
     template<class R> requires std::is_arithmetic_v<R>
