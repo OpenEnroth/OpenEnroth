@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/HouseTable.h"
 #include "Engine/MapEnums.h"
 
 #include "GUI/GUIWindow.h"
@@ -80,7 +80,7 @@ class GUIWindow_House : public GUIWindow {
     virtual void Release() override;
 
     HouseType buildingType() const {
-        return buildingTable[houseId()].uType;
+        return houseTable[houseId()].uType;
     }
 
     HouseId houseId() const {

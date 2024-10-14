@@ -10,7 +10,7 @@
 #include "Engine/Objects/ItemEnchantment.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/HouseTable.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 
@@ -790,7 +790,7 @@ bool ItemGen::canSellRepairIdentifyAt(HouseId houseId) {
     if (::isMessageScroll(uItemID) && !isRecipe(uItemID))
         return false; // Can't sell message scrolls. Recipes are sellable at alchemy shops.
 
-    switch (buildingTable[houseId].uType) {
+    switch (houseTable[houseId].uType) {
         case HOUSE_TYPE_WEAPON_SHOP:
             return this->isWeapon();
         case HOUSE_TYPE_ARMOR_SHOP:

@@ -5,7 +5,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/HouseTable.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
@@ -172,7 +172,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
         }
     }
 
-    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
+    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
 
     if (haveLearnableSkills) {
         std::string skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, pPrice);
@@ -258,7 +258,7 @@ void GUIWindow_MagicGuild::houseDialogueOptionSelected(DialogueId option) {
                     shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->spellBooksInGuilds[houseId()][i].GetIconName());
             }
         } else {
-            Time nextGenTime = pParty->GetPlayingTime() + Duration::fromDays(buildingTable[houseId()].generation_interval_days);
+            Time nextGenTime = pParty->GetPlayingTime() + Duration::fromDays(houseTable[houseId()].generation_interval_days);
             generateSpellBooksForGuild();
             pParty->PartyTimes.guildNextRefreshTime[houseId()] = nextGenTime;
         }
@@ -322,7 +322,7 @@ void GUIWindow_MagicGuild::houseScreenClick() {
             if (pt.x >= testpos && pt.x <= testpos + (shop_ui_items_in_store[testx]->width())) {
                 if ((pt.y >= 90 && pt.y <= (90 + (shop_ui_items_in_store[testx]->height()))) ||
                     (pt.y >= 250 && pt.y <= (250 + (shop_ui_items_in_store[testx]->height())))) {
-                    float fPriceMultiplier = buildingTable[houseId()].fPriceMultiplier;
+                    float fPriceMultiplier = houseTable[houseId()].fPriceMultiplier;
                     int uPriceItemService = PriceCalculator::itemBuyingPriceForPlayer(&pParty->activeCharacter(), boughtItem.GetValue(), fPriceMultiplier);
 
                     if (pParty->GetGold() < uPriceItemService) {

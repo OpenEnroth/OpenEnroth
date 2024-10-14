@@ -783,7 +783,7 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DialogueId option) {
         if (pParty->PartyTimes.shopNextRefreshTime[houseId()] < pParty->GetPlayingTime()) {
             generateShopItems(false);
             generateShopItems(true);
-            Time nextGenTime = pParty->GetPlayingTime() + Duration::fromDays(buildingTable[houseId()].generation_interval_days);
+            Time nextGenTime = pParty->GetPlayingTime() + Duration::fromDays(houseTable[houseId()].generation_interval_days);
             pParty->PartyTimes.shopNextRefreshTime[houseId()] = nextGenTime;
         }
 
@@ -938,7 +938,7 @@ void GUIWindow_Shop::houseScreenClick() {
                 return;
             }
 
-            float fPriceMultiplier = buildingTable[houseId()].fPriceMultiplier;
+            float fPriceMultiplier = houseTable[houseId()].fPriceMultiplier;
             int uPriceItemService = PriceCalculator::itemIdentificationPriceForPlayer(&pParty->activeCharacter(), fPriceMultiplier);
             ItemGen &item = pParty->activeCharacter().pInventoryItemList[pItemID - 1];
 
@@ -979,7 +979,7 @@ void GUIWindow_Shop::houseScreenClick() {
             }
 
             ItemGen &item = pParty->activeCharacter().pInventoryItemList[pItemID - 1];
-            float fPriceMultiplier = buildingTable[houseId()].fPriceMultiplier;
+            float fPriceMultiplier = houseTable[houseId()].fPriceMultiplier;
             int uPriceItemService = PriceCalculator::itemRepairPriceForPlayer(&pParty->activeCharacter(), item.GetValue(), fPriceMultiplier);
 
             if (item.uAttributes & ITEM_BROKEN) {
@@ -1097,7 +1097,7 @@ void GUIWindow_Shop::houseScreenClick() {
                 return;
             }
 
-            float fPriceMultiplier = buildingTable[houseId()].fPriceMultiplier;
+            float fPriceMultiplier = houseTable[houseId()].fPriceMultiplier;
             int uPriceItemService = PriceCalculator::itemBuyingPriceForPlayer(&pParty->activeCharacter(), boughtItem->GetValue(), fPriceMultiplier);
             int stealResult = 0;
             int stealDifficulty = 0;

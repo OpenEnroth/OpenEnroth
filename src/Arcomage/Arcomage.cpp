@@ -2844,7 +2844,7 @@ void GameResultsApply() {
         if (isArcomageTavern(houseId)) {
             if (!pParty->pArcomageWins[houseId]) {
                 pParty->pArcomageWins[houseId] = 1;
-                pParty->partyFindsGold(buildingTable[houseId].fPriceMultiplier * 100, GOLD_RECEIVE_SHARE);
+                pParty->partyFindsGold(houseTable[houseId].fPriceMultiplier * 100, GOLD_RECEIVE_SHARE);
             }
         }
 

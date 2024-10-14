@@ -6,7 +6,7 @@
 #include "Engine/Events/EventEnums.h"
 #include "Engine/Events/RawEvent.h"
 #include "Engine/Objects/Decoration.h"
-#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Engine.h"
 
@@ -666,8 +666,8 @@ std::string EventIR::toString() const {
         case EVENT_Exit:
             return fmt::format("{}: Exit", step);
         case EVENT_SpeakInHouse:
-            if (buildingTable.indices().contains(data.house_id) && !buildingTable[data.house_id].name.empty()) {
-                return fmt::format("{}: SpeakInHouse({}, \"{}\")", step, std::to_underlying(data.house_id), buildingTable[data.house_id].name);
+            if (houseTable.indices().contains(data.house_id) && !houseTable[data.house_id].name.empty()) {
+                return fmt::format("{}: SpeakInHouse({}, \"{}\")", step, std::to_underlying(data.house_id), houseTable[data.house_id].name);
             } else {
                 return fmt::format("{}: SpeakInHouse({})", step, std::to_underlying(data.house_id));
             }

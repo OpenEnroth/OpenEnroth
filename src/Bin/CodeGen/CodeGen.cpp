@@ -13,7 +13,7 @@
 
 #include "Engine/Components/Random/EngineRandomComponent.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/HouseTable.h"
 #include "Engine/Events/EventMap.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/DecorationEnums.h"
@@ -196,8 +196,8 @@ int runHouseIdCodeGen(const CodeGenOptions &options, GameResourceManager *resour
     MapStats mapStats;
     mapStats.Initialize(resourceManager->getEventsFile("MapStats.txt"));
 
-    initializeBuildings(resourceManager->getEventsFile("2dEvents.txt"));
-    // ^ Initializes buildingTable.
+    initializeHouses(resourceManager->getEventsFile("2dEvents.txt"));
+    // ^ Initializes houseTable.
 
     std::unordered_map<HouseId, std::set<std::string>> mapNamesByHouseId; // Only arbiter exists on two maps.
 
@@ -226,8 +226,8 @@ int runHouseIdCodeGen(const CodeGenOptions &options, GameResourceManager *resour
     CodeGenMap map;
     map.insert(HOUSE_INVALID, "INVALID", "");
 
-    for (HouseId i : buildingTable.indices()) {
-        const HouseData &desc = buildingTable[i];
+    for (HouseId i : houseTable.indices()) {
+        const HouseData &desc = houseTable[i];
         bool hasMap = mapNamesByHouseId.contains(i);
         std::string mapName;
         if (hasMap)

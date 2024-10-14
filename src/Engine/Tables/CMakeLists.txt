@@ -9,7 +9,7 @@ set(ENGINE_TABLES_SOURCES
         CharacterFrameTable.cpp
         StorylineTextTable.cpp
         TileTable.cpp
-        BuildingTable.cpp
+        HouseTable.cpp
         AwardTable.cpp
         AutonoteTable.cpp
         QuestTable.cpp
@@ -27,7 +27,7 @@ set(ENGINE_TABLES_HEADERS
         StorylineTextTable.h
         TileEnums.h
         TileTable.h
-        BuildingTable.h
+        HouseTable.h
         AwardTable.h
         AutonoteTable.h
         QuestTable.h

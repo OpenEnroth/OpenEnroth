@@ -10,7 +10,7 @@
 
 class Blob;
 
-void initializeBuildings(const Blob &buildings);
+void initializeHouses(const Blob &houses);
 
 // TODO(captainurist): move HOUSE_* to Engine/Data
-extern IndexedArray<HouseData, HOUSE_FIRST, HOUSE_LAST> buildingTable;
+extern IndexedArray<HouseData, HOUSE_FIRST, HOUSE_LAST> houseTable;

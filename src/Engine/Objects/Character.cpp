@@ -29,7 +29,7 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/AttackList.h"
 #include "Engine/Tables/AwardTable.h"
-#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
@@ -314,7 +314,7 @@ void Character::SpendMana(unsigned int uRequiredMana) {
 
 //----- (004BE2DD) --------------------------------------------------------
 void Character::SalesProcess(unsigned int inventory_idnx, int item_index, HouseId houseId) {
-    float shop_mult = buildingTable[houseId].fPriceMultiplier;
+    float shop_mult = houseTable[houseId].fPriceMultiplier;
     int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, pInventoryItemList[item_index], shop_mult);
 
     // remove item and add gold
@@ -7183,7 +7183,7 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, HouseType bui
     if (pItem->IsStolen())
         return MERCAHNT_PHRASE_STOLEN_ITEM;
 
-    multiplier = buildingTable[houseId].fPriceMultiplier;
+    multiplier = houseTable[houseId].fPriceMultiplier;
     switch (ShopMenuType) {
         case SHOP_SCREEN_BUY:
             price = PriceCalculator::itemBuyingPriceForPlayer(this, itemValue, multiplier);
