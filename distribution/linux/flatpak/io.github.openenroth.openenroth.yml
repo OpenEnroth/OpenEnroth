@@ -61,16 +61,8 @@ modules:
       - -DCMAKE_BUILD_TYPE=RelWithDbgInfo
       - -DCMAKE_LINKER=lld
     sources:
-      - type: shell
-        commands:
-          - pwd
-          - ls -lha ../
-          - ls -lha ../../          
-          - ls -lha ../../../
-          - ls -lha ../../../../
-          - ls -lha ../../../../../
-#      - type: dir
-#        path: ../../../../
+      - type: dir
+        path: ../../../
     post-install:
       - install -Dm755 src/Bin/OpenEnroth/OpenEnroth /app/bin/OpenEnroth
       # launcher script
