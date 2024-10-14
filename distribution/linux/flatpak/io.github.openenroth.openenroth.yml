@@ -60,11 +60,11 @@ modules:
       - -DOE_USE_PREBUILT_DEPENDENCIES=OFF
       - -DCMAKE_BUILD_TYPE=RelWithDbgInfo
       - -DCMAKE_LINKER=lld
+    sources:
       - type: shell
         commands:
           - pwd
           - ls -lha ../../../
-#    sources:
 #      - type: dir
 #        path: ../../../
     post-install:
