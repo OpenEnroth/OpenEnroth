@@ -7,7 +7,7 @@
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Transformations.h"
 
-std::array<Autonote, 196> pAutonoteTxt;
+std::array<AutonoteData, 196> pAutonoteTxt;
 
 void initializeAutonotes(const Blob &autonotes) {
     char *test_string;
