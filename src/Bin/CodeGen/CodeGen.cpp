@@ -227,7 +227,7 @@ int runHouseIdCodeGen(const CodeGenOptions &options, GameResourceManager *resour
     map.insert(HOUSE_INVALID, "INVALID", "");
 
     for (HouseId i : buildingTable.indices()) {
-        const BuildingData &desc = buildingTable[i];
+        const HouseData &desc = buildingTable[i];
         bool hasMap = mapNamesByHouseId.contains(i);
         std::string mapName;
         if (hasMap)
@@ -235,9 +235,9 @@ int runHouseIdCodeGen(const CodeGenOptions &options, GameResourceManager *resour
 
         if (i == HOUSE_JAIL) {
             map.insert(i, "JAIL", "");
-        } else if (desc.uType == BUILDING_INVALID && hasMap) {
+        } else if (desc.uType == HOUSE_TYPE_INVALID && hasMap) {
             map.insert(i, "", fmt::format("Used in MAP_{} but invalid, hmm...", mapName));
-        } else if (desc.uType == BUILDING_INVALID) {
+        } else if (desc.uType == HOUSE_TYPE_INVALID) {
             map.insert(i, "", "Unused.");
         } else if (!hasMap && !desc.name.empty()) {
             map.insert(i, "", fmt::format("Unused {} named \"{}\".", toString(desc.uType), desc.name));
@@ -245,7 +245,7 @@ int runHouseIdCodeGen(const CodeGenOptions &options, GameResourceManager *resour
             map.insert(i, "", "Unused.");
         } else if (toUpperCaseEnum(desc.name) == fmt::format("HOUSE_{}", std::to_underlying(i))) {
             map.insert(i, "", fmt::format("Used in MAP_{}, named \"{}\", looks totally like a placeholder...", mapName, desc.name));
-        } else if (desc.uType == BUILDING_HOUSE || desc.uType == BUILDING_MERCENARY_GUILD) {
+        } else if (desc.uType == HOUSE_TYPE_HOUSE || desc.uType == HOUSE_TYPE_MERCENARY_GUILD) {
             map.insert(i, fmt::format("{}_{}", mapName, toUpperCaseEnum(desc.name)), "");
         } else {
             map.insert(i, fmt::format("{}_{}", toString(desc.uType), mapName), fmt::format("\"{}\".", trim(desc.name)));

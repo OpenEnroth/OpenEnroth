@@ -79,7 +79,7 @@ class GUIWindow_House : public GUIWindow {
     virtual void Update() override;
     virtual void Release() override;
 
-    BuildingType buildingType() const {
+    HouseType buildingType() const {
         return buildingTable[houseId()].uType;
     }
 
@@ -134,7 +134,7 @@ struct HouseAnimDescr {
     std::string video_name;
     int field_4;
     int house_npc_id;
-    BuildingType uBuildingType; // Originally was 1 byte.
+    HouseType uBuildingType; // Originally was 1 byte.
     uint8_t uRoomSoundId;
     uint16_t padding_e;
 };
@@ -143,7 +143,7 @@ extern GraphicsImage *_591428_endcap;
 
 extern std::array<const HouseAnimDescr, 196> pAnimatedRooms;
 
-extern const IndexedArray<int, BUILDING_WEAPON_SHOP, BUILDING_DARK_GUILD> itemAmountInShop;
+extern const IndexedArray<int, HOUSE_TYPE_WEAPON_SHOP, HOUSE_TYPE_DARK_GUILD> itemAmountInShop;
 
 extern std::vector<HouseNpcDesc> houseNpcs;
 extern int currentHouseNpc;

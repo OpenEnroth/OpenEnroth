@@ -5,7 +5,7 @@
 #include <string>
 #include <utility>
 
-#include "Engine/Data/BuildingEnums.h"
+#include "Engine/Data/HouseEnums.h"
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Objects/CombinedSkillValue.h"
@@ -221,7 +221,7 @@ class Character {
     void resetTempBonuses();
     Color GetStatColor(CharacterAttributeType uStat) const;
     bool DiscardConditionIfLastsLongerThan(Condition uCondition, Time time);
-    MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HouseId houseId, ShopScreen ShopMenuType);
+    MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, HouseType building_type, HouseId houseId, ShopScreen ShopMenuType);
     int GetBodybuilding() const;
     int GetMeditation() const;
     bool CanIdentify(ItemGen *pItem) const;

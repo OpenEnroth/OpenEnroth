@@ -7137,7 +7137,7 @@ bool Character::isClass(CharacterClass class_type, bool check_honorary) const {
 }
 
 //----- (00490EEE) --------------------------------------------------------
-MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HouseId houseId, ShopScreen ShopMenuType) {
+MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, HouseType building_type, HouseId houseId, ShopScreen ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Character:: stuff
     ItemId idemId;   // edx@1
     ItemType equipType;  // esi@1
@@ -7152,25 +7152,25 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType 
     itemValue = pItem->GetValue();
 
     switch (building_type) {
-        case BUILDING_WEAPON_SHOP:
+        case HOUSE_TYPE_WEAPON_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
                 return MERCHANT_PHRASE_INVALID_ACTION;
             if (!isWeapon(equipType))
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
-        case BUILDING_ARMOR_SHOP:
+        case HOUSE_TYPE_ARMOR_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
                 return MERCHANT_PHRASE_INVALID_ACTION;
             if (!isArmor(equipType))
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
-        case BUILDING_MAGIC_SHOP:
+        case HOUSE_TYPE_MAGIC_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
                 return MERCHANT_PHRASE_INVALID_ACTION;
             if (pItemTable->pItems[idemId].uSkillType != CHARACTER_SKILL_MISC)
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
-        case BUILDING_ALCHEMY_SHOP:
+        case HOUSE_TYPE_ALCHEMY_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS && !isRecipe(idemId))
                 return MERCHANT_PHRASE_INVALID_ACTION;
             if (equipType != ITEM_TYPE_REAGENT && equipType != ITEM_TYPE_POTION && equipType != ITEM_TYPE_MESSAGE_SCROLL)

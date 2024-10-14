@@ -791,13 +791,13 @@ bool ItemGen::canSellRepairIdentifyAt(HouseId houseId) {
         return false; // Can't sell message scrolls. Recipes are sellable at alchemy shops.
 
     switch (buildingTable[houseId].uType) {
-        case BUILDING_WEAPON_SHOP:
+        case HOUSE_TYPE_WEAPON_SHOP:
             return this->isWeapon();
-        case BUILDING_ARMOR_SHOP:
+        case HOUSE_TYPE_ARMOR_SHOP:
             return this->isArmor();
-        case BUILDING_MAGIC_SHOP:
+        case HOUSE_TYPE_MAGIC_SHOP:
             return this->GetPlayerSkillType() == CHARACTER_SKILL_MISC || this->isBook();
-        case BUILDING_ALCHEMY_SHOP:
+        case HOUSE_TYPE_ALCHEMY_SHOP:
             return this->isReagent() ||
                    this->isPotion() ||
                    (this->isMessageScroll() && isRecipe(this->uItemID));

@@ -2,13 +2,13 @@
 
 #include <string>
 
-#include "BuildingEnums.h"
+#include "HouseEnums.h"
 
 #include "Engine/MapEnums.h"
 #include "Engine/PartyEnums.h"
 
-struct BuildingData {
-    BuildingType uType;
+struct HouseData {
+    HouseType uType;
     uint16_t uAnimationID;
     std::string name;
     std::string pProprieterName;

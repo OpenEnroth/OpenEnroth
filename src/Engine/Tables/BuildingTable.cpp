@@ -7,7 +7,7 @@
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Transformations.h"
 
-IndexedArray<BuildingData, HOUSE_FIRST, HOUSE_LAST> buildingTable;
+IndexedArray<HouseData, HOUSE_FIRST, HOUSE_LAST> buildingTable;
 
 void initializeBuildings(const Blob &buildings) {
     char *test_string;
@@ -40,103 +40,103 @@ void initializeBuildings(const Blob &buildings) {
                 case 2:
                 {
                     if (ascii::noCaseStartsWith(test_string, "wea")) {
-                        buildingTable[houseId].uType = BUILDING_WEAPON_SHOP;
+                        buildingTable[houseId].uType = HOUSE_TYPE_WEAPON_SHOP;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "arm")) {
-                        buildingTable[houseId].uType = BUILDING_ARMOR_SHOP;
+                        buildingTable[houseId].uType = HOUSE_TYPE_ARMOR_SHOP;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "mag")) {
-                        buildingTable[houseId].uType = BUILDING_MAGIC_SHOP;
+                        buildingTable[houseId].uType = HOUSE_TYPE_MAGIC_SHOP;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "alc")) {
-                        buildingTable[houseId].uType = BUILDING_ALCHEMY_SHOP;
+                        buildingTable[houseId].uType = HOUSE_TYPE_ALCHEMY_SHOP;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "sta")) {
-                        buildingTable[houseId].uType = BUILDING_STABLE;
+                        buildingTable[houseId].uType = HOUSE_TYPE_STABLE;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "boa")) {
-                        buildingTable[houseId].uType = BUILDING_BOAT;
+                        buildingTable[houseId].uType = HOUSE_TYPE_BOAT;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "tem")) {
-                        buildingTable[houseId].uType = BUILDING_TEMPLE;
+                        buildingTable[houseId].uType = HOUSE_TYPE_TEMPLE;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "tra")) {
-                        buildingTable[houseId].uType = BUILDING_TRAINING_GROUND;
+                        buildingTable[houseId].uType = HOUSE_TYPE_TRAINING_GROUND;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "tow")) {
-                        buildingTable[houseId].uType = BUILDING_TOWN_HALL;
+                        buildingTable[houseId].uType = HOUSE_TYPE_TOWN_HALL;
                         break;
                     }
 
                     if (ascii::noCaseStartsWith(test_string, "tav")) {
-                        buildingTable[houseId].uType = BUILDING_TAVERN;
+                        buildingTable[houseId].uType = HOUSE_TYPE_TAVERN;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "ban")) {
-                        buildingTable[houseId].uType = BUILDING_BANK;
+                        buildingTable[houseId].uType = HOUSE_TYPE_BANK;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "fir")) {
-                        buildingTable[houseId].uType = BUILDING_FIRE_GUILD;
+                        buildingTable[houseId].uType = HOUSE_TYPE_FIRE_GUILD;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "air")) {
-                        buildingTable[houseId].uType = BUILDING_AIR_GUILD;
+                        buildingTable[houseId].uType = HOUSE_TYPE_AIR_GUILD;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "wat")) {
-                        buildingTable[houseId].uType = BUILDING_WATER_GUILD;
+                        buildingTable[houseId].uType = HOUSE_TYPE_WATER_GUILD;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "ear")) {
-                        buildingTable[houseId].uType = BUILDING_EARTH_GUILD;
+                        buildingTable[houseId].uType = HOUSE_TYPE_EARTH_GUILD;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "spi")) {
-                        buildingTable[houseId].uType = BUILDING_SPIRIT_GUILD;
+                        buildingTable[houseId].uType = HOUSE_TYPE_SPIRIT_GUILD;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "min")) {
-                        buildingTable[houseId].uType = BUILDING_MIND_GUILD;
+                        buildingTable[houseId].uType = HOUSE_TYPE_MIND_GUILD;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "bod")) {
-                        buildingTable[houseId].uType = BUILDING_BODY_GUILD;
+                        buildingTable[houseId].uType = HOUSE_TYPE_BODY_GUILD;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "lig")) {
-                        buildingTable[houseId].uType = BUILDING_LIGHT_GUILD;
+                        buildingTable[houseId].uType = HOUSE_TYPE_LIGHT_GUILD;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "dar")) {
-                        buildingTable[houseId].uType = BUILDING_DARK_GUILD;
+                        buildingTable[houseId].uType = HOUSE_TYPE_DARK_GUILD;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "ele")) { // "Element Guild" from mm6
-                        buildingTable[houseId].uType = BUILDING_ELEMENTAL_GUILD;
+                        buildingTable[houseId].uType = HOUSE_TYPE_ELEMENTAL_GUILD;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "sel")) {
-                        buildingTable[houseId].uType = BUILDING_SELF_GUILD;
+                        buildingTable[houseId].uType = HOUSE_TYPE_SELF_GUILD;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "mir")) {
-                        buildingTable[houseId].uType = BUILDING_MIRRORED_PATH_GUILD;
+                        buildingTable[houseId].uType = HOUSE_TYPE_MIRRORED_PATH_GUILD;
                         break;
                     }
                     if (ascii::noCaseStartsWith(test_string, "mer")) { // "Thieves Guild" from mm6
-                        buildingTable[houseId].uType = BUILDING_TOWN_HALL; //TODO: Is this right and not Merc Guild (18)?
+                        buildingTable[houseId].uType = HOUSE_TYPE_TOWN_HALL; //TODO: Is this right and not Merc Guild (18)?
                         break;
                     }
-                    buildingTable[houseId].uType = BUILDING_MERCENARY_GUILD;
+                    buildingTable[houseId].uType = HOUSE_TYPE_MERCENARY_GUILD;
                 } break;
 
                 case 4:
