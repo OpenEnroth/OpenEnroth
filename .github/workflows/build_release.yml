@@ -86,6 +86,14 @@ jobs:
       releaseTag: '${{needs.advanceNightlyTag.outputs.tagName}}'
       myCommit: '${{inputs.myCommit}}'
 
+  build_linux_flatpak:
+    needs: advanceNightlyTag
+    uses: ./.github/workflows/linux-flatpak.yml
+    secrets: inherit
+    with:
+      releaseTag: '${{needs.advanceNightlyTag.outputs.tagName}}'
+      myCommit: '${{inputs.myCommit}}'
+
   build_macos:
     needs: advanceNightlyTag
     uses: ./.github/workflows/macos.yml
