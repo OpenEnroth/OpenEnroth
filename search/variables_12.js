@@ -30,7 +30,7 @@ var searchData=
   ['reference_5fdist_27',['REFERENCE_DIST',['../OpenALSoundProvider_8h.html#adb93d84878098656e3fe5efd007b898e',1,'OpenALSoundProvider.h']]],
   ['regenstacking_28',['RegenStacking',['../classGameConfig_1_1Gameplay.html#a5c03474b02354a835f13484daa1c1ae1',1,'GameConfig::Gameplay']]],
   ['registrykeys_29',['registryKeys',['../structPathResolutionConfig.html#aa01585c686acd71bb69b8f88022456d0',1,'PathResolutionConfig']]],
-  ['regularbonusmap_30',['regularBonusMap',['../Items_8cpp.html#a771c21123b6e053ec27ac6a80f7d8612',1,'Items.cpp']]],
+  ['regularbonusmap_30',['regularBonusMap',['../Items_8cpp.html#ac0db8614ee9c68e070f00a5f1f8b2f8e',1,'Items.cpp']]],
   ['relations_31',['relations',['../structFactionTable.html#a7a7f7e8b9498d82b88213a22e632ec6e',1,'FactionTable']]],
   ['reloadshaders_32',['ReloadShaders',['../classGameConfig_1_1Gamepad.html#afc8601c0ff812feefebe81ad56a86ba1',1,'GameConfig::Gamepad::ReloadShaders()'],['../classGameConfig_1_1Keybindings.html#a35384b2e922e937a0fdfd52dd274c9ed',1,'GameConfig::Keybindings::ReloadShaders()']]],
   ['reloadtex_33',['ReloadTex',['../classGameConfig_1_1Window.html#ad93e22040af9052d344ffb8c715362c5',1,'GameConfig::Window']]],

@@ -1,7 +1,7 @@
 var searchData=
 [
   ['casesensitivity_0',['CaseSensitivity',['../EnumSerializer_8h.html#aaa929f83398f109dfbff9789108b159b',1,'EnumSerializer.h']]],
-  ['characterattributetype_1',['CharacterAttributeType',['../CharacterEnums_8h.html#a5283119c60345ad4a9e4af5f447f5aa2',1,'CharacterEnums.h']]],
+  ['characterattribute_1',['CharacterAttribute',['../CharacterEnums_8h.html#aafb4f4226d458aea2b37af72bd815d74',1,'CharacterEnums.h']]],
   ['characterbuff_2',['CharacterBuff',['../CharacterEnums_8h.html#ac446b240b6be7a1768934b00aa32d95a',1,'CharacterEnums.h']]],
   ['characterchoosepolicy_3',['CharacterChoosePolicy',['../EventEnums_8h.html#ac6ba0e8b31393d270ae04a8e97786a69',1,'EventEnums.h']]],
   ['characterclass_4',['CharacterClass',['../CharacterEnums_8h.html#a569314c3473f9c08a1d371d0c34fc309',1,'CharacterEnums.h']]],
