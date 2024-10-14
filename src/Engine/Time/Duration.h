@@ -63,7 +63,7 @@ class Duration {
     [[nodiscard]] constexpr int years() const { return months() / 12; }
 
     [[nodiscard]] constexpr static Duration fromRealtimeSeconds(int64_t seconds) { return fromTicks(seconds * TICKS_PER_REALTIME_SECOND); }
-    [[nodiscard]] constexpr static Duration fromRealtimeMilliseconds(int64_t msec) { return fromTicks(msec * TICKS_PER_REALTIME_SECOND / 1000); }
+    [[nodiscard]] constexpr static Duration fromRealtimeMilliseconds(int64_t msec) { return fromMilliticks(msec * TICKS_PER_REALTIME_SECOND); }
 
     [[nodiscard]] constexpr int64_t realtimeSeconds() const { return ticks() / TICKS_PER_REALTIME_SECOND; }
     [[nodiscard]] constexpr int64_t realtimeMilliseconds() const { return ticks() * 1000 / TICKS_PER_REALTIME_SECOND; }
