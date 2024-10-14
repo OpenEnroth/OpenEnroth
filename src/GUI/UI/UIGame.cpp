@@ -1782,20 +1782,17 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
         }
 
         case UIMSG_ShowStatus_DateTime: {
-            unsigned currHour = pParty->uCurrentHour;
-            unsigned uNumSeconds = 1;
-            if (pParty->uCurrentHour > 12) {
-                if (pParty->uCurrentHour >= 24) uNumSeconds = 0;
-                currHour = (currHour - 12);
-            } else {
-                if (pParty->uCurrentHour < 12)  // 12:00 is PM
-                    uNumSeconds = 0;
-                if (pParty->uCurrentHour == 0) currHour = 12;
-            }
-            engine->_statusBar->setPermanent(fmt::format("{}:{:02}{} {} {} {} {}", currHour, pParty->uCurrentMinute, localization->GetAmPm(uNumSeconds),
-                localization->GetDayName(pParty->uCurrentDayOfMonth % 7),
-                7 * pParty->uCurrentMonthWeek + pParty->uCurrentDayOfMonth % 7 + 1,
-                localization->GetMonthName(pParty->uCurrentMonth), pParty->uCurrentYear));
+            CivilTime time = pParty->GetPlayingTime().toCivilTime();
+            std::string status = fmt::format(
+                "{}:{:02}{} {} {} {} {}",
+                time.hourAmPm,
+                time.minute,
+                localization->GetAmPm(time.isPm),
+                localization->GetDayName(time.dayOfWeek - 1),
+                time.day,
+                localization->GetMonthName(time.month - 1),
+                time.year);
+            engine->_statusBar->setPermanent(status);
             break;
         }
 
