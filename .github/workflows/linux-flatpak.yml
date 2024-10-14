@@ -1,6 +1,7 @@
 name: Linux (Flatpak)
 
 on:
+  pull_request: null
   workflow_dispatch:
     inputs:
       myCommit:
@@ -26,55 +27,41 @@ on:
         default: ''
         type: string
   push: null
-  pull_request: null
   release:
     types:
       - published
 
 jobs:
   build-flatpak-bundle:
+    timeout-minutes: 60
     name: "Build flatpak bundle"
     runs-on: ubuntu-latest
     container:
       image: bilelmoussaoui/flatpak-github-actions:freedesktop-24.08
       options: --privileged
     strategy:
+      fail-fast: false
       matrix:
-        arch:
+        configuration:
+          - Debug
+          - RelWithDebInfo
+        architecture:
+          - x86
           - x86_64
-          - arm64
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v3
       with:
-        submodules: false
-
-    - name: Set up Docker
-      if: ${{ matrix.arch != 'x86_64' }}
-      run: |
-        dnf install -y docker
-
-    - name: Set up QEMU
-      if: ${{ matrix.arch != 'x86_64' }}
-      id: qemu
-      uses: docker/setup-qemu-action@v2
-      with:
-        platforms: arm64
-
+        submodules: recursive
+        ref: '${{inputs.myCommit}}'
+          
     - name: Run Flatpak build
       uses: flatpak/flatpak-github-actions/flatpak-builder@v6
       with:
         bundle: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{ matrix.arch }}.flatpak
         manifest-path: distribution/linux/flatpak/io.github.openenroth.openenroth.yml
         cache-key: flatpak-builder-${{ github.sha }}_${{ matrix.arch }}
-        upload-artifact: true
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{ matrix.arch }}.flatpak
-        path: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{ matrix.arch }}.flatpak
-        retention-days: 0
 
     - name: Publish release
       if: inputs.releaseTag != ''
