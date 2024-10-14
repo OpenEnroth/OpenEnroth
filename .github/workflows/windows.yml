@@ -113,7 +113,7 @@ jobs:
 
       - name: Configure
         run: |
-          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DOE_USE_CCACHE=ON
 
       - name: Build
         working-directory: build
