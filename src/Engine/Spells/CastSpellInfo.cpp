@@ -1436,11 +1436,11 @@ void CastSpellInfoHelpers::castSpell() {
                                 if (rnd < 80 && isPassiveEquipment(this_equip_type)) { // chance to roll standard enchantment on non-weapons
                                     int ench_found = 0;
                                     int to_item_apply_sum = 0;
-                                    CharacterAttributeType ench_array[100] = {};
+                                    CharacterAttribute ench_array[100] = {};
 
                                     // finds how many possible enchaments and adds up to item apply values
                                     // if (pItemTable->pEnchantments_count > 0) {
-                                    for (CharacterAttributeType attr : allEnchantableAttributes()) {
+                                    for (CharacterAttribute attr : allEnchantableAttributes()) {
                                         const std::string &bonusStat = pItemTable->standardEnchantments[attr].pBonusStat;
                                         if (!bonusStat.empty()) {
                                             int this_to_apply = pItemTable->standardEnchantments[attr].chancesByItemType[this_equip_type];

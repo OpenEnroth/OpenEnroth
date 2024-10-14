@@ -22,8 +22,8 @@ struct ItemGen {  // 0x24
     static void PopulateArtifactBonusMap();
     static void ClearItemBonusMaps();
 
-    void GetItemBonusArtifact(const Character *owner, CharacterAttributeType attrToGet, int *bonusSum) const;
-    void GetItemBonusSpecialEnchantment(const Character *owner, CharacterAttributeType attrToGet, int *additiveBonus, int *halfSkillBonus) const;
+    void GetItemBonusArtifact(const Character *owner, CharacterAttribute attrToGet, int *bonusSum) const;
+    void GetItemBonusSpecialEnchantment(const Character *owner, CharacterAttribute attrToGet, int *additiveBonus, int *halfSkillBonus) const;
 
     inline void ResetEnchantAnimation() { uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK; }
     inline bool ItemEnchanted() const {
@@ -42,7 +42,7 @@ struct ItemGen {  // 0x24
         return (uAttributes & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_PURPLE;
     }
 
-    bool IsRegularEnchanmentForAttribute(CharacterAttributeType attrToGet);
+    bool IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet);
 
     inline bool IsBroken() const { return uAttributes & ITEM_BROKEN; }
     inline void SetBroken() { uAttributes |= ITEM_BROKEN; }
@@ -109,7 +109,7 @@ struct ItemGen {  // 0x24
     ItemId uItemID = ITEM_NULL;        // 0
     int potionPower = 0; // Only for potions.
     int goldAmount = 0; // Only for gold.
-    std::optional<CharacterAttributeType> attributeEnchantment; // TODO(captainurist): introduce ATTRIBUTE_NULL?
+    std::optional<CharacterAttribute> attributeEnchantment; // TODO(captainurist): introduce ATTRIBUTE_NULL?
     int32_t m_enchantmentStrength = 0;  // 8
     ItemEnchantment special_enchantment = ITEM_ENCHANTMENT_NULL;
     int32_t uNumCharges = 0;           // 10
@@ -144,7 +144,7 @@ struct ItemDesc {  // 30h
     uint8_t uDamageMod = 0;   // 20 24
     ItemRarity uMaterial = RARITY_COMMON;    // 21 25
     ItemEnchantment _additional_value = ITEM_ENCHANTMENT_NULL;       // 22 26
-    std::optional<CharacterAttributeType> _bonus_type;
+    std::optional<CharacterAttribute> _bonus_type;
     char _bonus_strength = 0;         // 24 28
     char field_25 = 0;                // 25  29
     char field_26 = 0;                // 26   2A

@@ -1098,8 +1098,8 @@ void CharacterUI_StatsTab_ShowHint() {
         case 5:
         case 6:
             CharacterUI_DrawTooltip(
-                localization->GetAttirubteName(static_cast<CharacterAttributeType>(pStringNum)),
-                localization->GetAttributeDescription(static_cast<CharacterAttributeType>(pStringNum)));
+                localization->GetAttirubteName(static_cast<CharacterAttribute>(pStringNum)),
+                localization->GetAttributeDescription(static_cast<CharacterAttribute>(pStringNum)));
             break;
         case 7:  // Health Points
             CharacterUI_DrawTooltip(localization->GetString(LSTR_HIT_POINTS), localization->getHPDescription());
@@ -1962,8 +1962,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     (signed int)pY < (signed int)pButton->uW) {
                     switch (pButton->msg) {
                         case UIMSG_0:  // stats info
-                            popup_window.sHint = localization->GetAttributeDescription(static_cast<CharacterAttributeType>(pButton->msg_param % 7));
-                            pStr = localization->GetAttirubteName(static_cast<CharacterAttributeType>(pButton->msg_param % 7));
+                            popup_window.sHint = localization->GetAttributeDescription(static_cast<CharacterAttribute>(pButton->msg_param % 7));
+                            pStr = localization->GetAttirubteName(static_cast<CharacterAttribute>(pButton->msg_param % 7));
                             break;
                         case UIMSG_PlayerCreationClickPlus:  // Plus button info
                             pStr = localization->GetString(LSTR_ADD);

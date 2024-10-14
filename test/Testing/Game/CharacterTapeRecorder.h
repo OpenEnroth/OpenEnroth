@@ -66,11 +66,11 @@ class CharacterTapeRecorder {
     TestTape<Condition> condition(int characterIndex);
     TestMultiTape<Condition> conditions();
 
-    TestTape<int> resistance(int characterIndex, CharacterAttributeType resistance);
-    TestMultiTape<int> resistances(CharacterAttributeType resistance);
+    TestTape<int> resistance(int characterIndex, CharacterAttribute resistance);
+    TestMultiTape<int> resistances(CharacterAttribute resistance);
 
-    TestTape<int> stat(int characterIndex, CharacterAttributeType stat);
-    TestMultiTape<int> stats(CharacterAttributeType stat);
+    TestTape<int> stat(int characterIndex, CharacterAttribute stat);
+    TestMultiTape<int> stats(CharacterAttribute stat);
 
     TestTape<bool> hasBuff(int characterIndex, CharacterBuff buff);
     TestMultiTape<bool> haveBuffs(CharacterBuff buff);
