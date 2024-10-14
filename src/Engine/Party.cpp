@@ -263,8 +263,8 @@ void Party::switchToNextActiveCharacter() {
     for (int i = 0; i < this->pCharacters.size(); i++) {
         if (this->pCharacters[i].CanAct() &&
             !this->pCharacters[i].timeToRecovery) {
-            if (v12 == 0 || this->pCharacters[i]._statBonuses[CHARACTER_ATTRIBUTE_SPEED] > v8) {
-                v8 = this->pCharacters[i]._statBonuses[CHARACTER_ATTRIBUTE_SPEED];
+            if (v12 == 0 || this->pCharacters[i]._statBonuses[ATTRIBUTE_SPEED] > v8) {
+                v8 = this->pCharacters[i]._statBonuses[ATTRIBUTE_SPEED];
                 v12 = i + 1;
             }
         }
@@ -416,13 +416,13 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[0].uCurrentFace = 17;
     this->pCharacters[0].uPrevVoiceID = 17;
     this->pCharacters[0].uVoiceID = 17;
-    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_MIGHT] = 30;
-    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 5;
-    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_PERSONALITY] = 5;
-    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_ENDURANCE] = 13;
-    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_ACCURACY] = 13;
-    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_SPEED] = 14;
-    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_LUCK] = 7;
+    this->pCharacters[0]._stats[ATTRIBUTE_MIGHT] = 30;
+    this->pCharacters[0]._stats[ATTRIBUTE_INTELLIGENCE] = 5;
+    this->pCharacters[0]._stats[ATTRIBUTE_PERSONALITY] = 5;
+    this->pCharacters[0]._stats[ATTRIBUTE_ENDURANCE] = 13;
+    this->pCharacters[0]._stats[ATTRIBUTE_ACCURACY] = 13;
+    this->pCharacters[0]._stats[ATTRIBUTE_SPEED] = 14;
+    this->pCharacters[0]._stats[ATTRIBUTE_LUCK] = 7;
     this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
     this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_ARMSMASTER] = CombinedSkillValue::novice();
     this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_BOW] = CombinedSkillValue::novice();
@@ -433,13 +433,13 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[1].uCurrentFace = 3;
     this->pCharacters[1].uPrevVoiceID = 3;
     this->pCharacters[1].uVoiceID = 3;
-    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_MIGHT] = 13;
-    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 9;
-    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_PERSONALITY] = 9;
-    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_ENDURANCE] = 13;
-    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_ACCURACY] = 13;
-    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_SPEED] = 13;
-    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_LUCK] = 13;
+    this->pCharacters[1]._stats[ATTRIBUTE_MIGHT] = 13;
+    this->pCharacters[1]._stats[ATTRIBUTE_INTELLIGENCE] = 9;
+    this->pCharacters[1]._stats[ATTRIBUTE_PERSONALITY] = 9;
+    this->pCharacters[1]._stats[ATTRIBUTE_ENDURANCE] = 13;
+    this->pCharacters[1]._stats[ATTRIBUTE_ACCURACY] = 13;
+    this->pCharacters[1]._stats[ATTRIBUTE_SPEED] = 13;
+    this->pCharacters[1]._stats[ATTRIBUTE_LUCK] = 13;
     this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
     this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_STEALING] = CombinedSkillValue::novice();
     this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_DAGGER] = CombinedSkillValue::novice();
@@ -450,13 +450,13 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[2].uCurrentFace = 14;
     this->pCharacters[2].uPrevVoiceID = 14;
     this->pCharacters[2].uVoiceID = 14;
-    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_MIGHT] = 12;
-    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 9;
-    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_PERSONALITY] = 20;
-    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_ENDURANCE] = 22;
-    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_ACCURACY] = 7;
-    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_SPEED] = 13;
-    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_LUCK] = 7;
+    this->pCharacters[2]._stats[ATTRIBUTE_MIGHT] = 12;
+    this->pCharacters[2]._stats[ATTRIBUTE_INTELLIGENCE] = 9;
+    this->pCharacters[2]._stats[ATTRIBUTE_PERSONALITY] = 20;
+    this->pCharacters[2]._stats[ATTRIBUTE_ENDURANCE] = 22;
+    this->pCharacters[2]._stats[ATTRIBUTE_ACCURACY] = 7;
+    this->pCharacters[2]._stats[ATTRIBUTE_SPEED] = 13;
+    this->pCharacters[2]._stats[ATTRIBUTE_LUCK] = 7;
     this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_ALCHEMY] = CombinedSkillValue::novice();
     this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
     this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_BODY] = CombinedSkillValue::novice();
@@ -467,13 +467,13 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[3].uCurrentFace = 10;
     this->pCharacters[3].uPrevVoiceID = 10;
     this->pCharacters[3].uVoiceID = 10;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_MIGHT] = 5;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 30;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_PERSONALITY] = 9;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_ENDURANCE] = 13;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_ACCURACY] = 13;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_SPEED] = 13;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_LUCK] = 7;
+    this->pCharacters[3]._stats[ATTRIBUTE_MIGHT] = 5;
+    this->pCharacters[3]._stats[ATTRIBUTE_INTELLIGENCE] = 30;
+    this->pCharacters[3]._stats[ATTRIBUTE_PERSONALITY] = 9;
+    this->pCharacters[3]._stats[ATTRIBUTE_ENDURANCE] = 13;
+    this->pCharacters[3]._stats[ATTRIBUTE_ACCURACY] = 13;
+    this->pCharacters[3]._stats[ATTRIBUTE_SPEED] = 13;
+    this->pCharacters[3]._stats[ATTRIBUTE_LUCK] = 7;
     this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
     this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR] = CombinedSkillValue::novice();
     this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_FIRE] = CombinedSkillValue::novice();

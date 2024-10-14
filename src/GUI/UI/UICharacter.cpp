@@ -1619,35 +1619,35 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
 
     pY += 2 * assets->pFontArrus->GetHeight() - 4;
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
-                                     formatRightCol(LSTR_FIRE, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE),
-                                                    player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_FIRE)));
+                                     formatRightCol(LSTR_FIRE, player->GetActualResistance(ATTRIBUTE_RESIST_FIRE),
+                                                    player->GetBaseResistance(ATTRIBUTE_RESIST_FIRE)));
 
     pY += assets->pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
-                                     formatRightCol(LSTR_AIR, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_AIR),
-                                                    player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_AIR)));
+                                     formatRightCol(LSTR_AIR, player->GetActualResistance(ATTRIBUTE_RESIST_AIR),
+                                                    player->GetBaseResistance(ATTRIBUTE_RESIST_AIR)));
 
     pY += assets->pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
-                                     formatRightCol(LSTR_WATER, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_WATER),
-                                                    player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_WATER)));
+                                     formatRightCol(LSTR_WATER, player->GetActualResistance(ATTRIBUTE_RESIST_WATER),
+                                                    player->GetBaseResistance(ATTRIBUTE_RESIST_WATER)));
 
     pY += assets->pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
-                                     formatRightCol(LSTR_EARTH, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH),
-                                                    player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_EARTH)));
+                                     formatRightCol(LSTR_EARTH, player->GetActualResistance(ATTRIBUTE_RESIST_EARTH),
+                                                    player->GetBaseResistance(ATTRIBUTE_RESIST_EARTH)));
 
     pY += assets->pFontArrus->GetHeight() - 2;
-    bool immuneToMind = player->classType == CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND) == 200;
+    bool immuneToMind = player->classType == CLASS_LICH && player->GetBaseResistance(ATTRIBUTE_RESIST_MIND) == 200;
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
-                                     formatRightCol(LSTR_MIND, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_MIND),
-                                                    player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_MIND), immuneToMind));
+                                     formatRightCol(LSTR_MIND, player->GetActualResistance(ATTRIBUTE_RESIST_MIND),
+                                                    player->GetBaseResistance(ATTRIBUTE_RESIST_MIND), immuneToMind));
 
     pY += assets->pFontArrus->GetHeight() - 2;
-    bool immuneToBody = player->classType == CLASS_LICH && player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY) == 200;
+    bool immuneToBody = player->classType == CLASS_LICH && player->GetBaseResistance(ATTRIBUTE_RESIST_BODY) == 200;
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
-                                     formatRightCol(LSTR_BODY, player->GetActualResistance(CHARACTER_ATTRIBUTE_RESIST_BODY),
-                                                    player->GetBaseResistance(CHARACTER_ATTRIBUTE_RESIST_BODY), immuneToBody));
+                                     formatRightCol(LSTR_BODY, player->GetActualResistance(ATTRIBUTE_RESIST_BODY),
+                                                    player->GetBaseResistance(ATTRIBUTE_RESIST_BODY), immuneToBody));
 }
 
 void GUIWindow_CharacterRecord::fillAwardsData() {
