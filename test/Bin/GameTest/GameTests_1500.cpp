@@ -194,7 +194,7 @@ GAME_TEST(Issues, Issue1655) {
     EXPECT_EQ(pActors[73].monsterInfo.spell1Id, SPELL_NONE);
     EXPECT_EQ(pActors[73].monsterInfo.spell1UseChance, 15);
     auto beatingsTape = expressionsTape.filtered([] (const auto &expressions) {
-        return expressions.containsAny(CHARACTER_EXPRESSION_DMGRECVD_MINOR, CHARACTER_EXPRESSION_DMGRECVD_MODERATE, CHARACTER_EXPRESSION_DMGRECVD_MAJOR);
+        return expressions.containsAny(PORTRAIT_DMGRECVD_MINOR, PORTRAIT_DMGRECVD_MODERATE, PORTRAIT_DMGRECVD_MAJOR);
     });
     EXPECT_GE(beatingsTape.size(), 25);
 }
@@ -239,7 +239,7 @@ GAME_TEST(Issues, Issue1671) {
         return bmodel_pid; });
     test.playTraceFromTestData("issue_1671.mm7", "issue_1671.json");
     EXPECT_LT(health.back(), health.front()); // party has taken damage from fall
-    EXPECT_CONTAINS(expressionTape, CHARACTER_EXPRESSION_FEAR);
+    EXPECT_CONTAINS(expressionTape, PORTRAIT_FEAR);
     EXPECT_NE(modelTape.back(), 0); // landed on a model
 }
 
@@ -335,7 +335,7 @@ GAME_TEST(Issues, Issue1710) {
     EXPECT_EQ(noFallDamageTape, tape(false)); // Fall damage was actually possible
     EXPECT_LT(health.back(), health.front()); // party has taken damage from fall
     EXPECT_EQ(uCurrentlyLoadedLevelType, LEVEL_INDOOR);
-    EXPECT_CONTAINS(expressionTape, CHARACTER_EXPRESSION_FEAR);
+    EXPECT_CONTAINS(expressionTape, PORTRAIT_FEAR);
     EXPECT_GT(zpos.max(), zpos.min() + 1000);
 }
 

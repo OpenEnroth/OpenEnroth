@@ -899,7 +899,7 @@ EventIR EventIR::parse(const RawEvent *evt, size_t size) {
         case EVENT_ShowFace:
             requireSize(7);
             ir.who = static_cast<CharacterChoosePolicy>(evt->v5);
-            ir.data.expr_id = static_cast<CharacterExpressionID>(evt->v6);
+            ir.data.expr_id = static_cast<CharacterPortrait>(evt->v6);
             break;
         case EVENT_ReceiveDamage:
             requireSize(11);

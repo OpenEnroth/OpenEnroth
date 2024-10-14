@@ -42,8 +42,8 @@ class CharacterTapeRecorder {
     TestTape<int64_t> experience(int characterIndex);
     TestMultiTape<int64_t> experiences();
 
-    TestTape<CharacterExpressionID> expression(int characterIndex);
-    TestMultiTape<CharacterExpressionID> expressions();
+    TestTape<CharacterPortrait> expression(int characterIndex);
+    TestMultiTape<CharacterPortrait> expressions();
 
     TestTape<int> hp(int characterIndex);
     TestMultiTape<int> hps();

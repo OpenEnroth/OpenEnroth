@@ -8,7 +8,7 @@
 #include "Utility/Memory/Blob.h"
 
 struct PlayerFrame {
-    CharacterExpressionID expression;
+    CharacterPortrait expression;
     uint16_t uTextureID;
     Duration uAnimTime;
     Duration uAnimLength;
@@ -16,8 +16,8 @@ struct PlayerFrame {
 };
 
 struct PlayerFrameTable {
-    unsigned int GetFrameIdByExpression(CharacterExpressionID expression);
-    Duration GetDurationByExpression(CharacterExpressionID expression);
+    unsigned int GetFrameIdByExpression(CharacterPortrait expression);
+    Duration GetDurationByExpression(CharacterPortrait expression);
     PlayerFrame *GetFrameBy_x(int uFramesetID, Duration gameTime);
     PlayerFrame *GetFrameBy_y(int *a2, Duration *a3, Duration a4);
 

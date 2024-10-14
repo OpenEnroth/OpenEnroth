@@ -133,19 +133,19 @@ GAME_TEST(Issues, Issue1155) {
 }
 
 GAME_TEST(Issues, Issue1164) {
-    // CHARACTER_EXPRESSION_NO animation ending abruptly - should show the character moving his/her head to the left,
+    // PORTRAIT_NO animation ending abruptly - should show the character moving his/her head to the left,
     // then to the right.
     auto expressionTape = tapes.custom([] { return std::pair(pParty->pCharacters[0].expression, pEventTimer->time()); });
     auto frameTimeTape = tapes.config(engine->config->debug.TraceFrameTimeMs);
     test.playTraceFromTestData("issue_1164.mm7", "issue_1164.json");
     EXPECT_EQ(frameTimeTape, tape(15)); // Don't redo at other frame rates.
 
-    auto isNo = [] (const auto &pair) { return pair.first == CHARACTER_EXPRESSION_NO; };
+    auto isNo = [] (const auto &pair) { return pair.first == PORTRAIT_NO; };
     auto begin = std::find_if(expressionTape.begin(), expressionTape.end(), isNo);
     auto end = std::find_if_not(begin, expressionTape.end(), isNo);
     ASSERT_NE(end, expressionTape.end());
 
-    // CHARACTER_EXPRESSION_NO should take 144 ticks, minus one frame. This one frame is an implementation artifact,
+    // PORTRAIT_NO should take 144 ticks, minus one frame. This one frame is an implementation artifact,
     // shouldn't really be there, but for now we test it the way it actually works.
     auto ticks = end->second - begin->second;
     Duration frameTicks = Duration::fromRealtimeMilliseconds(15 + (1_ticks).realtimeMilliseconds() - 1 /* Round up! */);
@@ -195,9 +195,9 @@ GAME_TEST(Issues, Issue1196) {
     // Assert fails in Character::playEmotion when character looks down
     auto expr = tapes.custom([] { return pParty->activeCharacter().expression; });
     test.playTraceFromTestData("issue_1196.mm7", "issue_1196.json");
-    EXPECT_MISSES(expr, CHARACTER_EXPRESSION_32);
-    EXPECT_CONTAINS(expr, CHARACTER_EXPRESSION_LOOK_UP);
-    EXPECT_CONTAINS(expr, CHARACTER_EXPRESSION_LOOK_DOWN);
+    EXPECT_MISSES(expr, PORTRAIT_32);
+    EXPECT_CONTAINS(expr, PORTRAIT_LOOK_UP);
+    EXPECT_CONTAINS(expr, PORTRAIT_LOOK_DOWN);
 }
 
 GAME_TEST(Issues, Issue1197) {
@@ -504,13 +504,13 @@ GAME_TEST(Issues, Issue1368) {
 }
 
 GAME_TEST(Issues, Issue1370) {
-    // CHARACTER_EXPRESSION_TALK doesn't work
+    // PORTRAIT_TALK doesn't work
     EXPECT_TRUE(fuzzyEquals(2.53f, pAudioPlayer->getSoundLength(SOUND_EndTurnBasedMode), 0.001f));
     EXPECT_TRUE(fuzzyEquals(2.49f, pAudioPlayer->getSoundLength(static_cast<SoundId>(6480)), 0.001f));
 
     // Can be any character selected to talk on map change
-    auto someonesTalking = tapes.custom([] { for (const auto& ch : pParty->pCharacters) if (ch.expression == CHARACTER_EXPRESSION_TALK) return true; return false; });
-    auto talkExprTimeTape = tapes.custom([] { for (const auto& ch : pParty->pCharacters) if (ch.expression == CHARACTER_EXPRESSION_TALK) return ch.uExpressionTimeLength; return Duration(); });
+    auto someonesTalking = tapes.custom([] { for (const auto& ch : pParty->pCharacters) if (ch.expression == PORTRAIT_TALK) return true; return false; });
+    auto talkExprTimeTape = tapes.custom([] { for (const auto& ch : pParty->pCharacters) if (ch.expression == PORTRAIT_TALK) return ch.uExpressionTimeLength; return Duration(); });
     test.playTraceFromTestData("issue_1370.mm7", "issue_1370.json", [] { engine->config->settings.VoiceLevel.setValue(1); });
     EXPECT_CONTAINS(someonesTalking, true);
     EXPECT_GT(talkExprTimeTape.max(), 128_ticks);  // Check that we have at least a second of speech to cover all
@@ -806,7 +806,7 @@ GAME_TEST(Issues, Issue1479) {
     auto expressionTape = charTapes.expression(2);
     test.playTraceFromTestData("issue_1479.mm7", "issue_1479.json");
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_MONSTER_ID).mastery(), CHARACTER_SKILL_MASTERY_GRANDMASTER);
-    EXPECT_CONTAINS(expressionTape, CHARACTER_EXPRESSION_47); // Reaction to strong monster id.
+    EXPECT_CONTAINS(expressionTape, PORTRAIT_47); // Reaction to strong monster id.
 }
 
 GAME_TEST(Issues, Issue1482) {

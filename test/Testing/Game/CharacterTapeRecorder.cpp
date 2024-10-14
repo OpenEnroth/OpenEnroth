@@ -23,11 +23,11 @@ TestMultiTape<int64_t> CharacterTapeRecorder::experiences() {
     return custom(std::bind<int64_t>(&Character::experience, _1));
 }
 
-TestTape<CharacterExpressionID> CharacterTapeRecorder::expression(int characterIndex) {
+TestTape<CharacterPortrait> CharacterTapeRecorder::expression(int characterIndex) {
     return custom(characterIndex, std::bind(&Character::expression, _1));
 }
 
-TestMultiTape<CharacterExpressionID> CharacterTapeRecorder::expressions() {
+TestMultiTape<CharacterPortrait> CharacterTapeRecorder::expressions() {
     return custom(std::bind(&Character::expression, _1));
 }
 

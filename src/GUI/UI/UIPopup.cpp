@@ -1652,7 +1652,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
         uFramesetID = pPlayerFrameTable->GetFrameIdByExpression(player->expression);
         if (!uFramesetID)
             uFramesetID = 1;
-        if (player->expression == CHARACTER_EXPRESSION_TALK)
+        if (player->expression == PORTRAIT_TALK)
             v15 = pPlayerFrameTable->GetFrameBy_y(&player->_expression21_frameset, &player->_expression21_animtime, pMiscTimer->dt());
         else
             v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID, pMiscTimer->time());

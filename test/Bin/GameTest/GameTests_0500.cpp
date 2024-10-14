@@ -53,7 +53,7 @@ GAME_TEST(Issues, Issue502) {
     // Check that script face animation and voice indexes right characters.
     auto expressionTape = charTapes.expression(3);
     test.playTraceFromTestData("issue_502.mm7", "issue_502.json");
-    EXPECT_CONTAINS(expressionTape, CHARACTER_EXPRESSION_NO);
+    EXPECT_CONTAINS(expressionTape, PORTRAIT_NO);
     EXPECT_EQ(pParty->activeCharacterIndex(), 4);
 }
 

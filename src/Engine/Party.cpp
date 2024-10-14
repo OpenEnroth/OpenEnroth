@@ -647,7 +647,7 @@ void Party::Reset() {
             buff.Reset();
         }
 
-        player.expression = CHARACTER_EXPRESSION_NORMAL;
+        player.expression = PORTRAIT_NORMAL;
         player.uExpressionTimePassed = 0_ticks;
         player.uExpressionTimeLength = Duration::randomRealtimeSeconds(vrng, 1, 3);
     }
@@ -723,7 +723,7 @@ void Party::resetCharacterEmotions() {
         Condition condition = player.GetMajorConditionIdx();
         if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
             player.uExpressionTimeLength = 32_ticks;
-            player.expression = CHARACTER_EXPRESSION_NORMAL;
+            player.expression = PORTRAIT_NORMAL;
         } else {
             player.uExpressionTimeLength = 0_ticks;
             player.uExpressionTimePassed = 0_ticks;
@@ -746,49 +746,49 @@ void Party::updateCharactersAndHirelingsEmotions() {
                 continue;
 
             player.uExpressionTimePassed = 0_ticks;
-            if (player.expression != CHARACTER_EXPRESSION_NORMAL || vrng->random(5)) {
-                player.expression = CHARACTER_EXPRESSION_NORMAL;
+            if (player.expression != PORTRAIT_NORMAL || vrng->random(5)) {
+                player.expression = PORTRAIT_NORMAL;
                 player.uExpressionTimeLength = Duration::randomRealtimeMilliseconds(vrng, 250, 2250);
             } else {
                 int randomVal = vrng->random(100);
                 if (randomVal < 25)
-                    player.expression = CHARACTER_EXPRESSION_BLINK;
+                    player.expression = PORTRAIT_BLINK;
                 else if (randomVal < 31)
-                    player.expression = CHARACTER_EXPRESSION_WINK;
+                    player.expression = PORTRAIT_WINK;
                 else if (randomVal < 37)
-                    player.expression = CHARACTER_EXPRESSION_MOUTH_OPEN_RANDOM;
+                    player.expression = PORTRAIT_MOUTH_OPEN_RANDOM;
                 else if (randomVal < 43)
-                    player.expression = CHARACTER_EXPRESSION_PURSE_LIPS_RANDOM;
+                    player.expression = PORTRAIT_PURSE_LIPS_RANDOM;
                 else if (randomVal < 46)
-                    player.expression = CHARACTER_EXPRESSION_LOOK_UP;
+                    player.expression = PORTRAIT_LOOK_UP;
                 else if (randomVal < 52)
-                    player.expression = CHARACTER_EXPRESSION_LOOK_RIGHT;
+                    player.expression = PORTRAIT_LOOK_RIGHT;
                 else if (randomVal < 58)
-                    player.expression = CHARACTER_EXPRESSION_LOOK_LEFT;
+                    player.expression = PORTRAIT_LOOK_LEFT;
                 else if (randomVal < 64)
-                    player.expression = CHARACTER_EXPRESSION_LOOK_DOWN;
+                    player.expression = PORTRAIT_LOOK_DOWN;
                 else if (randomVal < 70)
-                    player.expression = CHARACTER_EXPRESSION_54;
+                    player.expression = PORTRAIT_54;
                 else if (randomVal < 76)
-                    player.expression = CHARACTER_EXPRESSION_55;
+                    player.expression = PORTRAIT_55;
                 else if (randomVal < 82)
-                    player.expression = CHARACTER_EXPRESSION_56;
+                    player.expression = PORTRAIT_56;
                 else if (randomVal < 88)
-                    player.expression = CHARACTER_EXPRESSION_57;
+                    player.expression = PORTRAIT_57;
                 else if (randomVal < 94)
-                    player.expression = CHARACTER_EXPRESSION_PURSE_LIPS_1;
+                    player.expression = PORTRAIT_PURSE_LIPS_1;
                 else
-                    player.expression = CHARACTER_EXPRESSION_PURSE_LIPS_2;
+                    player.expression = PORTRAIT_PURSE_LIPS_2;
             }
 
-            // TODO(captainurist): We overwrite the random timing from the CHARACTER_EXPRESSION_NORMAL branch here.
+            // TODO(captainurist): We overwrite the random timing from the PORTRAIT_NORMAL branch here.
             //                     Doesn't seem intentional!
             Duration timeLength = pPlayerFrameTable->GetDurationByExpression(player.expression);
             if (timeLength)
                 player.uExpressionTimeLength = timeLength;
-        } else if (player.expression != CHARACTER_EXPRESSION_DMGRECVD_MINOR &&
-                   player.expression != CHARACTER_EXPRESSION_DMGRECVD_MODERATE &&
-                   player.expression != CHARACTER_EXPRESSION_DMGRECVD_MAJOR ||
+        } else if (player.expression != PORTRAIT_DMGRECVD_MINOR &&
+                   player.expression != PORTRAIT_DMGRECVD_MODERATE &&
+                   player.expression != PORTRAIT_DMGRECVD_MAJOR ||
                    player.uExpressionTimePassed >= player.uExpressionTimeLength) {
             player.uExpressionTimeLength = 0_ticks;
             player.uExpressionTimePassed = 0_ticks;

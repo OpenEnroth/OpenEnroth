@@ -1093,7 +1093,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->_health_related = src.healthRelated;
     dst->uFullManaBonus = src.fullManaBonus;
     dst->_mana_related = src.manaRelated;
-    dst->expression = static_cast<CharacterExpressionID>(src.expression);
+    dst->expression = static_cast<CharacterPortrait>(src.expression);
     dst->uExpressionTimePassed = Duration::fromTicks(src.expressionTimePassed);
     dst->uExpressionTimeLength = Duration::fromTicks(src.expressionTimeLength);
     dst->uExpressionImageIndex = src.field_1AA2;
@@ -1685,7 +1685,7 @@ void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
 }
 
 void reconstruct(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
-    dst->expression = static_cast<CharacterExpressionID>(src.expression);
+    dst->expression = static_cast<CharacterPortrait>(src.expression);
     dst->uTextureID = src.uTextureID;
     dst->uAnimTime = Duration::fromTicks(src.uAnimTime * 8);
     dst->uAnimLength = Duration::fromTicks(src.uAnimLength * 8);

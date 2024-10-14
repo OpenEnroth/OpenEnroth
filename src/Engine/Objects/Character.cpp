@@ -7066,9 +7066,9 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
         }
     }
     if (expressionCount) {
-        CharacterExpressionID expression = (CharacterExpressionID)expressionVariants[speech][vrng->random(expressionCount)];
+        CharacterPortrait expression = (CharacterPortrait)expressionVariants[speech][vrng->random(expressionCount)];
         Duration expressionDuration;
-        if (expression == CHARACTER_EXPRESSION_TALK && pickedSoundID) {
+        if (expression == PORTRAIT_TALK && pickedSoundID) {
             if (pickedSoundID >= 0) {
                 expressionDuration = Duration::fromRealtimeMilliseconds(1000 * pAudioPlayer->getSoundLength(static_cast<SoundId>(pickedSoundID))); // Was (sLastTrackLengthMS << 7) / 1000;
             }
@@ -7077,24 +7077,24 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
     }
 }
 
-void Character::playEmotion(CharacterExpressionID new_expression, Duration duration) {
+void Character::playEmotion(CharacterPortrait new_expression, Duration duration) {
     // 38 - sparkles 1 character?
 
-    CharacterExpressionID currexpr = expression;
+    CharacterPortrait currexpr = expression;
 
-    if (expression == CHARACTER_EXPRESSION_DEAD ||
-        expression == CHARACTER_EXPRESSION_ERADICATED) {
+    if (expression == PORTRAIT_DEAD ||
+        expression == PORTRAIT_ERADICATED) {
         return;  // no react
-    } else if (expression == CHARACTER_EXPRESSION_PETRIFIED &&
-               new_expression != CHARACTER_EXPRESSION_FALLING) {
+    } else if (expression == PORTRAIT_PETRIFIED &&
+               new_expression != PORTRAIT_FALLING) {
         return;  // no react
     } else {
-        if (expression != CHARACTER_EXPRESSION_SLEEP ||
-            new_expression != CHARACTER_EXPRESSION_FALLING) {
-            if (currexpr >= CHARACTER_EXPRESSION_CURSED && currexpr <= CHARACTER_EXPRESSION_UNCONCIOUS && currexpr != CHARACTER_EXPRESSION_POISONED &&
-                !(new_expression == CHARACTER_EXPRESSION_DMGRECVD_MINOR ||
-                  new_expression == CHARACTER_EXPRESSION_DMGRECVD_MODERATE ||
-                  new_expression == CHARACTER_EXPRESSION_DMGRECVD_MAJOR)) {
+        if (expression != PORTRAIT_SLEEP ||
+            new_expression != PORTRAIT_FALLING) {
+            if (currexpr >= PORTRAIT_CURSED && currexpr <= PORTRAIT_UNCONSCIOUS && currexpr != PORTRAIT_POISONED &&
+                !(new_expression == PORTRAIT_DMGRECVD_MINOR ||
+                  new_expression == PORTRAIT_DMGRECVD_MODERATE ||
+                  new_expression == PORTRAIT_DMGRECVD_MAJOR)) {
                 return;  // no react
             }
         }
@@ -7285,7 +7285,7 @@ void Character::Zero() {
     _characterEventBits.reset();
     _achievedAwardsBits.reset();
     // Expression
-    expression = CHARACTER_EXPRESSION_INVALID;
+    expression = PORTRAIT_INVALID;
     uExpressionTimePassed = 0_ticks;
     uExpressionTimeLength = 0_ticks;
     uExpressionImageIndex = 0;
