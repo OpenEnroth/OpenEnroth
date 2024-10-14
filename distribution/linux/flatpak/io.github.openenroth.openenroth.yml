@@ -61,16 +61,8 @@ modules:
       - -DCMAKE_BUILD_TYPE=RelWithDbgInfo
       - -DCMAKE_LINKER=lld
     sources:
-      - type: git
-        url: https://github.com/OpenEnroth/OpenEnroth.git
-        branch: master
-      # Once release tags are created in the OpenEnroth repo and OE is submitted to Flathub, delete the above and use this instead
-      # - type: git
-      #   url: https://github.com/OpenEnroth/OpenEnroth.git
-      #   tag: v0.1
-      #   x-checker-data:
-      #     type: git
-      #     tag-pattern: ^v\d+(\.\d+)+.*$
+      - type: dir
+        path: ../
     post-install:
       - install -Dm755 src/Bin/OpenEnroth/OpenEnroth /app/bin/OpenEnroth
       # launcher script
