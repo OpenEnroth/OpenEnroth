@@ -65,9 +65,9 @@ class Duration {
     [[nodiscard]] constexpr static Duration fromRealtimeSeconds(int64_t seconds) { return fromTicks(seconds * TICKS_PER_REALTIME_SECOND); }
     [[nodiscard]] constexpr static Duration fromRealtimeMilliseconds(int64_t msec) { return fromMilliticks(msec * TICKS_PER_REALTIME_SECOND); }
 
-    [[nodiscard]] constexpr int64_t realtimeSeconds() const { return ticks() / TICKS_PER_REALTIME_SECOND; }
-    [[nodiscard]] constexpr int64_t realtimeMilliseconds() const { return ticks() * 1000 / TICKS_PER_REALTIME_SECOND; }
-    [[nodiscard]] constexpr float realtimeMillisecondsFloat() const { return ticks() / static_cast<float>(TICKS_PER_REALTIME_SECOND); }
+    [[nodiscard]] constexpr int64_t realtimeSeconds() const { return milliticks() / (TICKS_PER_REALTIME_SECOND * 1000); }
+    [[nodiscard]] constexpr int64_t realtimeMilliseconds() const { return milliticks() / TICKS_PER_REALTIME_SECOND; }
+    [[nodiscard]] constexpr float realtimeMillisecondsFloat() const { return milliticks() / static_cast<float>(TICKS_PER_REALTIME_SECOND * 1000); }
 
     // Unlike with RandomEngine::randomInSegment, two-arg functions below generate a duration in [lo, hi) open interval,
     // not in [lo, hi] segment.
@@ -101,23 +101,23 @@ class Duration {
     // TODO(captainurist): #time add unit tests.
 
     [[nodiscard]] constexpr Duration roundedUp(Duration period) const {
-        assert(period.ticks() > 0);
+        assert(period.milliticks() > 0);
 
-        int64_t t = ticks();
-        int64_t p = period.ticks();
-        return Duration::fromTicks((t + p - 1) / p * p);
+        int64_t t = milliticks();
+        int64_t p = period.milliticks();
+        return Duration::fromMilliticks((t + p - 1) / p * p);
     }
 
     [[nodiscard]] constexpr Duration roundedDown(Duration period) const {
-        assert(period.ticks() > 0);
+        assert(period.milliticks() > 0);
 
-        int64_t t = ticks();
-        int64_t p = period.ticks();
-        return Duration::fromTicks(t / p * p);
+        int64_t t = milliticks();
+        int64_t p = period.milliticks();
+        return Duration::fromMilliticks(t / p * p);
     }
 
     [[nodiscard]] constexpr friend Duration operator+(Duration l, Duration r) {
-        return Duration::fromTicks(l.ticks() + r.ticks());
+        return Duration::fromMilliticks(l.milliticks() + r.milliticks());
     }
 
     [[nodiscard]] constexpr friend Duration operator-(Duration l, Duration r) {
