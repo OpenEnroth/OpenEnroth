@@ -55,6 +55,8 @@ jobs:
       with:
         submodules: recursive
         ref: '${{inputs.myCommit}}'
+
+    - run:  ls -lha
           
     - name: Run Flatpak build
       uses: flatpak/flatpak-github-actions/flatpak-builder@v6
