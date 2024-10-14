@@ -6,7 +6,7 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Transformations.h"
 
-std::array<Award, 105> pAwards;
+std::array<AwardData, 105> pAwards;
 
 void initializeAwards(const Blob &awards) {
     char *test_string;

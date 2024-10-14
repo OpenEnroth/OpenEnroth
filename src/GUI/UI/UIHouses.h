@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "Engine/Tables/BuildingTable.h"
-#include "Engine/Tables/AwardTable.h"
 #include "Engine/MapEnums.h"
 
 #include "GUI/GUIWindow.h"

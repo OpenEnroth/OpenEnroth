@@ -20,6 +20,7 @@
 #include "Engine/Random/Random.h"
 #include "Engine/Tables/MerchantTable.h"
 #include "Engine/Tables/ItemTable.h"
+#include "Engine/Data/AwardEnums.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"

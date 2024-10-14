@@ -7,6 +7,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/Data/AwardEnums.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Indoor.h"
@@ -17,7 +18,6 @@
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Tables/BuildingTable.h"
-#include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/TransitionTable.h"
 
 #include "GUI/GUIButton.h"

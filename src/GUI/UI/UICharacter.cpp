@@ -21,6 +21,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Spells/Spells.h"
+#include "Engine/Data/AwardEnums.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"

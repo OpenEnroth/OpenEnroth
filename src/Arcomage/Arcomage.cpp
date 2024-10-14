@@ -3,13 +3,12 @@
 #include <string>
 
 #include "Engine/EngineGlobals.h"
+#include "Engine/Data/AwardEnums.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Random/Random.h"
-#include "Engine/Tables/AwardTable.h"
 #include "Engine/AssetsManager.h"
 
 #include "GUI/GUIWindow.h"

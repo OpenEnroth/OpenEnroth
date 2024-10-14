@@ -25,8 +25,8 @@
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Time/Timer.h"
 #include "Engine/MapInfo.h"
 
