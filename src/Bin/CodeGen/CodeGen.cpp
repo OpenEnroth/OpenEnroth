@@ -227,7 +227,7 @@ int runHouseIdCodeGen(const CodeGenOptions &options, GameResourceManager *resour
     map.insert(HOUSE_INVALID, "INVALID", "");
 
     for (HouseId i : buildingTable.indices()) {
-        const BuildingDesc &desc = buildingTable[i];
+        const BuildingData &desc = buildingTable[i];
         bool hasMap = mapNamesByHouseId.contains(i);
         std::string mapName;
         if (hasMap)

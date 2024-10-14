@@ -6,6 +6,7 @@
 #include <utility>
 #include <string>
 
+#include "Engine/Tables/BuildingTable.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 

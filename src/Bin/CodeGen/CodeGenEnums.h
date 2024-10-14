@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Data/BuildingEnums.h"
 #include "Engine/Objects/MonsterEnums.h"
+
+#include "GUI/UI/UIHouseEnums.h"
 
 #include "Library/Serialization/SerializationFwd.h"
 

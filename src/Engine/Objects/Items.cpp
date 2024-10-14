@@ -10,6 +10,7 @@
 #include "Engine/Objects/ItemEnchantment.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Tables/ItemTable.h"
+#include "Engine/Tables/BuildingTable.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 

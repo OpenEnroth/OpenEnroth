@@ -2,7 +2,7 @@
 
 class Character;
 struct ItemGen;
-struct BuildingDesc;
+struct BuildingData;
 
 // Class to calculate various prices and overall deal with them
 class PriceCalculator {
@@ -127,33 +127,33 @@ class PriceCalculator {
      * @param house                     House in which player tries to learn skill.
      * @returns                         Skill learning cost for character.
      */
-    static int skillLearningCostForPlayer(const Character *player, const BuildingDesc &house);
+    static int skillLearningCostForPlayer(const Character *player, const BuildingData &house);
 
     /**
      * @param player                    Character to calculate cost for.
      * @param house                     Stable/boat building in which player travels.
      * @returns                         Transport (stable/boat) cost for character.
      */
-    static int transportCostForPlayer(const Character *player, const BuildingDesc &house);
+    static int transportCostForPlayer(const Character *player, const BuildingData &house);
 
     /**
      * @param player                    Character to calculate cost for.
      * @param house                     Tavern in which player tries to buy room.
      * @returns                         Tavern room cost for character.
      */
-    static int tavernRoomCostForPlayer(const Character *player, const BuildingDesc &house);
+    static int tavernRoomCostForPlayer(const Character *player, const BuildingData &house);
 
     /**
      * @param player                    Character to calculate cost for.
      * @param house                     Tavern in which player tries to buy food.
      * @returns                         Tavern food cost for character.
      */
-    static int tavernFoodCostForPlayer(const Character *player, const BuildingDesc &house);
+    static int tavernFoodCostForPlayer(const Character *player, const BuildingData &house);
 
     /**
      * @param player                    Character to calculate cost for.
      * @param house                     Training hall in which player tries to train.
      * @returns                         Training cost for character.
      */
-    static int trainingCostForPlayer(const Character *player, const BuildingDesc &house);
+    static int trainingCostForPlayer(const Character *player, const BuildingData &house);
 };

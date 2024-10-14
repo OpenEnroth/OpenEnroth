@@ -2,7 +2,7 @@
 
 #include "Engine/PriceCalculator.h"
 
-#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Data/BuildingData.h"
 #include "Engine/Objects/Items.h"
 #include "Engine/Objects/Character.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
@@ -158,7 +158,7 @@ int PriceCalculator::applyMerchantDiscount(const Character *player, float goldAm
     return goldAmount * (100 - playerMerchant(player)) / 100;
 }
 
-int PriceCalculator::skillLearningCostForPlayer(const Character *player, const BuildingDesc &house) {
+int PriceCalculator::skillLearningCostForPlayer(const Character *player, const BuildingData &house) {
     bool isGuild = house.uType >= BUILDING_FIRE_GUILD && house.uType <= BUILDING_SELF_GUILD;
     // guilds use different multiplier for skill learning
     int baseTeachPrice = (isGuild ? house.fPriceMultiplier : house.flt_24) * 500.0;
@@ -172,7 +172,7 @@ int PriceCalculator::skillLearningCostForPlayer(const Character *player, const B
     return effectivePrice;
 }
 
-int PriceCalculator::transportCostForPlayer(const Character *player, const BuildingDesc &house) {
+int PriceCalculator::transportCostForPlayer(const Character *player, const BuildingData &house) {
     // boats are 2 times pricier than stables
     int basePrice = house.uType == BUILDING_STABLE ? 25 : 50;
 
@@ -183,7 +183,7 @@ int PriceCalculator::transportCostForPlayer(const Character *player, const Build
     return price;
 }
 
-int PriceCalculator::tavernRoomCostForPlayer(const Character *player, const BuildingDesc &house) {
+int PriceCalculator::tavernRoomCostForPlayer(const Character *player, const BuildingData &house) {
     float houseMult = house.fPriceMultiplier;
 
     int roomPrice = applyMerchantDiscount(player, houseMult * houseMult / 10), minRoomPrice = ((houseMult * houseMult) / 10) / 3;
@@ -199,7 +199,7 @@ int PriceCalculator::tavernRoomCostForPlayer(const Character *player, const Buil
     return roomPrice;
 }
 
-int PriceCalculator::tavernFoodCostForPlayer(const Character *player, const BuildingDesc &house) {
+int PriceCalculator::tavernFoodCostForPlayer(const Character *player, const BuildingData &house) {
     float houseMult = house.fPriceMultiplier;
 
     int foodPrice = applyMerchantDiscount(player, static_cast<float>(std::pow(houseMult, 3) / 100)), minFoodPrice = std::pow(houseMult, 3) / 300;
@@ -213,7 +213,7 @@ int PriceCalculator::tavernFoodCostForPlayer(const Character *player, const Buil
     return foodPrice;
 }
 
-int PriceCalculator::trainingCostForPlayer(const Character *player, const BuildingDesc &house) {
+int PriceCalculator::trainingCostForPlayer(const Character *player, const BuildingData &house) {
     int trainPrice = 0;
     uint64_t expForNextLevel = 1000ull * player->uLevel * (player->uLevel + 1) / 2;
     if (player->experience >= expForNextLevel) { // can train

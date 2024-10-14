@@ -7,7 +7,7 @@
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Transformations.h"
 
-IndexedArray<BuildingDesc, HOUSE_FIRST, HOUSE_LAST> buildingTable;
+IndexedArray<BuildingData, HOUSE_FIRST, HOUSE_LAST> buildingTable;
 
 void initializeBuildings(const Blob &buildings) {
     char *test_string;
