@@ -69,7 +69,7 @@ GAME_TEST(Issues, Issue1038) {
     auto conditionsTape = charTapes.conditions();
     test.playTraceFromTestData("issue_1038.mm7", "issue_1038.json");
     EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_GOOD, CONDITION_INSANE, CONDITION_GOOD, CONDITION_INSANE},
-                                               {CONDITION_SLEEP, CONDITION_INSANE, CONDITION_UNCONSCIOUS, CONDITION_UNCONSCIOUS}));
+                                               {CONDITION_GOOD, CONDITION_INSANE, CONDITION_UNCONSCIOUS, CONDITION_UNCONSCIOUS}));
 }
 
 GAME_TEST(Issues, Issue1040) {
