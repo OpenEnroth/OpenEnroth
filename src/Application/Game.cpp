@@ -10,6 +10,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/Data/AwardEnums.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -870,7 +871,7 @@ void Game::processQueuedMessages() {
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
                 // int)ptr_507BC0->ptr_1C];
-                v53 = std::to_underlying(buildingTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
+                v53 = std::to_underlying(houseTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
                 if (v53 < 0) {
                     v54 = std::abs(v53) - 1;
                     engine->_teleportPoint.setTeleportTarget(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);

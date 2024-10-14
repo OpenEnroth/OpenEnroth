@@ -1464,10 +1464,10 @@ void ShowPopupShopItem() {
     ItemGen *item;  // ecx@13
     int invindex;
     int testpos;
-    BuildingType buildingType = window_SpeakInHouse->buildingType();
+    HouseType houseType = window_SpeakInHouse->buildingType();
     DialogueId dialogue = window_SpeakInHouse->getCurrentDialogue();
 
-    if (buildingType == BUILDING_INVALID)
+    if (houseType == HOUSE_TYPE_INVALID)
         return;
 
     if (dialogue < DIALOGUE_SHOP_BUY_STANDARD)
@@ -1476,10 +1476,10 @@ void ShowPopupShopItem() {
     Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
     int testx;
 
-    if (buildingType <= BUILDING_ALCHEMY_SHOP) {
+    if (houseType <= HOUSE_TYPE_ALCHEMY_SHOP) {
         if (dialogue == DIALOGUE_SHOP_BUY_STANDARD || dialogue == DIALOGUE_SHOP_BUY_SPECIAL) {
-            switch (buildingType) {
-                case BUILDING_WEAPON_SHOP: {
+            switch (houseType) {
+                case HOUSE_TYPE_WEAPON_SHOP: {
                     testx = (pt.x - 30) / 70;
                     if (testx >= 0 && testx < 6) {
                         if (dialogue == DIALOGUE_SHOP_BUY_STANDARD)
@@ -1504,7 +1504,7 @@ void ShowPopupShopItem() {
                     break;
                 }
 
-                case BUILDING_ARMOR_SHOP:
+                case HOUSE_TYPE_ARMOR_SHOP:
                     testx = (pt.x - 40) / 105;
                     if (testx >= 0 && testx < 4) {
                         if (pt.y >= 126) {
@@ -1537,8 +1537,8 @@ void ShowPopupShopItem() {
                     }
                     break;
 
-                case BUILDING_ALCHEMY_SHOP:
-                case BUILDING_MAGIC_SHOP:
+                case HOUSE_TYPE_ALCHEMY_SHOP:
+                case HOUSE_TYPE_MAGIC_SHOP:
                     testx = (pt.x) / 75;
                     // testx limits check
                     if (testx >= 0 && testx < 6) {
@@ -1597,7 +1597,7 @@ void ShowPopupShopItem() {
         }
     }
 
-    if (buildingType <= BUILDING_MIRRORED_PATH_GUILD && dialogue == DIALOGUE_GUILD_BUY_BOOKS) {
+    if (houseType <= HOUSE_TYPE_MIRRORED_PATH_GUILD && dialogue == DIALOGUE_GUILD_BUY_BOOKS) {
         int testx = (pt.x - 32) / 70;
         if (testx >= 0 && testx < 6) {
             if (pt.y >= 250) {

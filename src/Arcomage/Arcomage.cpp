@@ -3,13 +3,12 @@
 #include <string>
 
 #include "Engine/EngineGlobals.h"
+#include "Engine/Data/AwardEnums.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/Random/Random.h"
-#include "Engine/Tables/AwardTable.h"
 #include "Engine/AssetsManager.h"
 
 #include "GUI/GUIWindow.h"
@@ -2845,7 +2844,7 @@ void GameResultsApply() {
         if (isArcomageTavern(houseId)) {
             if (!pParty->pArcomageWins[houseId]) {
                 pParty->pArcomageWins[houseId] = 1;
-                pParty->partyFindsGold(buildingTable[houseId].fPriceMultiplier * 100, GOLD_RECEIVE_SHARE);
+                pParty->partyFindsGold(houseTable[houseId].fPriceMultiplier * 100, GOLD_RECEIVE_SHARE);
             }
         }
 

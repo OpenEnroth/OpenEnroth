@@ -46,13 +46,14 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/Spells.h"
+#include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Tables/FactionTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
-#include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/AutonoteTable.h"
 #include "Engine/Tables/QuestTable.h"
 #include "Engine/Tables/TransitionTable.h"
@@ -723,7 +724,7 @@ void Engine::SecondaryInitialization() {
     pItemTable = new ItemTable();
     pItemTable->Initialize(engine->_gameResourceManager.get());
 
-    initializeBuildings(engine->_gameResourceManager->getEventsFile("2dEvents.txt"));
+    initializeHouses(engine->_gameResourceManager->getEventsFile("2dEvents.txt"));
 
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();

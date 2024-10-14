@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "GUI/GUIDialogues.h"

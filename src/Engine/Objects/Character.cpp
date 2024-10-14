@@ -7,6 +7,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineCallObserver.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Data/AwardEnums.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Spells/SpellEnumFunctions.h"
@@ -27,10 +28,11 @@
 #include "Engine/PriceCalculator.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/AttackList.h"
+#include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
-#include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/AutonoteTable.h"
 #include "Engine/Tables/QuestTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -312,7 +314,7 @@ void Character::SpendMana(unsigned int uRequiredMana) {
 
 //----- (004BE2DD) --------------------------------------------------------
 void Character::SalesProcess(unsigned int inventory_idnx, int item_index, HouseId houseId) {
-    float shop_mult = buildingTable[houseId].fPriceMultiplier;
+    float shop_mult = houseTable[houseId].fPriceMultiplier;
     int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, pInventoryItemList[item_index], shop_mult);
 
     // remove item and add gold
@@ -7135,7 +7137,7 @@ bool Character::isClass(CharacterClass class_type, bool check_honorary) const {
 }
 
 //----- (00490EEE) --------------------------------------------------------
-MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HouseId houseId, ShopScreen ShopMenuType) {
+MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, HouseType building_type, HouseId houseId, ShopScreen ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Character:: stuff
     ItemId idemId;   // edx@1
     ItemType equipType;  // esi@1
@@ -7150,25 +7152,25 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType 
     itemValue = pItem->GetValue();
 
     switch (building_type) {
-        case BUILDING_WEAPON_SHOP:
+        case HOUSE_TYPE_WEAPON_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
                 return MERCHANT_PHRASE_INVALID_ACTION;
             if (!isWeapon(equipType))
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
-        case BUILDING_ARMOR_SHOP:
+        case HOUSE_TYPE_ARMOR_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
                 return MERCHANT_PHRASE_INVALID_ACTION;
             if (!isArmor(equipType))
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
-        case BUILDING_MAGIC_SHOP:
+        case HOUSE_TYPE_MAGIC_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
                 return MERCHANT_PHRASE_INVALID_ACTION;
             if (pItemTable->pItems[idemId].uSkillType != CHARACTER_SKILL_MISC)
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
-        case BUILDING_ALCHEMY_SHOP:
+        case HOUSE_TYPE_ALCHEMY_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS && !isRecipe(idemId))
                 return MERCHANT_PHRASE_INVALID_ACTION;
             if (equipType != ITEM_TYPE_REAGENT && equipType != ITEM_TYPE_POTION && equipType != ITEM_TYPE_MESSAGE_SCROLL)
@@ -7181,7 +7183,7 @@ MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, BuildingType 
     if (pItem->IsStolen())
         return MERCAHNT_PHRASE_STOLEN_ITEM;
 
-    multiplier = buildingTable[houseId].fPriceMultiplier;
+    multiplier = houseTable[houseId].fPriceMultiplier;
     switch (ShopMenuType) {
         case SHOP_SCREEN_BUY:
             price = PriceCalculator::itemBuyingPriceForPlayer(this, itemValue, multiplier);

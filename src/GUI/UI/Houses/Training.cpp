@@ -33,7 +33,7 @@ void GUIWindow_Training::mainDialogue() {
         return;
     }
 
-    int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
+    int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
     uint64_t expForNextLevel = 1000ull * pParty->activeCharacter().uLevel * (pParty->activeCharacter().uLevel + 1) / 2;
     std::string trainText = "";
 
@@ -54,7 +54,7 @@ void GUIWindow_Training::mainDialogue() {
 }
 
 void GUIWindow_Training::trainDialogue() {
-    int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
+    int pPrice = PriceCalculator::trainingCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
     uint64_t expForNextLevel = 1000ull * pParty->activeCharacter().uLevel * (pParty->activeCharacter().uLevel + 1) / 2;
 
     if (!checkIfPlayerCanInteract()) {

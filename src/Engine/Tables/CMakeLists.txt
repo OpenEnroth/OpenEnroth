@@ -9,7 +9,7 @@ set(ENGINE_TABLES_SOURCES
         CharacterFrameTable.cpp
         StorylineTextTable.cpp
         TileTable.cpp
-        BuildingTable.cpp
+        HouseTable.cpp
         AwardTable.cpp
         AutonoteTable.cpp
         QuestTable.cpp
@@ -27,7 +27,7 @@ set(ENGINE_TABLES_HEADERS
         StorylineTextTable.h
         TileEnums.h
         TileTable.h
-        BuildingTable.h
+        HouseTable.h
         AwardTable.h
         AutonoteTable.h
         QuestTable.h
@@ -36,5 +36,5 @@ set(ENGINE_TABLES_HEADERS
         MessageScrollTable.h)
 
 add_library(engine_tables STATIC ${ENGINE_TABLES_SOURCES} ${ENGINE_TABLES_HEADERS})
-target_link_libraries(engine_tables PUBLIC engine)
+target_link_libraries(engine_tables PUBLIC engine_data)
 target_check_style(engine_tables)

@@ -25,9 +25,9 @@ void GUIWindow_Tavern::mainDialogue() {
         return;
     }
 
-    int pPriceRoom = PriceCalculator::tavernRoomCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
-    int pPriceFood = PriceCalculator::tavernFoodCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
-    int foodNum = buildingTable[houseId()].fPriceMultiplier;
+    int pPriceRoom = PriceCalculator::tavernRoomCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
+    int pPriceFood = PriceCalculator::tavernFoodCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
+    int foodNum = houseTable[houseId()].fPriceMultiplier;
 
     std::vector<std::string> optionsText = {localization->FormatString(LSTR_FMT_RENT_ROOM_FOR_D_GOLD, pPriceRoom),
                                             localization->FormatString(LSTR_FMT_BUY_D_FOOD_FOR_D_GOLD, foodNum, pPriceFood),
@@ -116,7 +116,7 @@ void GUIWindow_Tavern::arcomageResultDialogue() {
 }
 
 void GUIWindow_Tavern::restDialogue() {
-    int pPriceRoom = PriceCalculator::tavernRoomCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
+    int pPriceRoom = PriceCalculator::tavernRoomCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
 
     if (pParty->GetGold() >= pPriceRoom) {
         pParty->TakeGold(pPriceRoom);
@@ -137,9 +137,9 @@ void GUIWindow_Tavern::restDialogue() {
 }
 
 void GUIWindow_Tavern::buyFoodDialogue() {
-    int pPriceFood = PriceCalculator::tavernFoodCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
+    int pPriceFood = PriceCalculator::tavernFoodCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
 
-    if ((double)pParty->GetFood() >= buildingTable[houseId()].fPriceMultiplier) {
+    if ((double)pParty->GetFood() >= houseTable[houseId()].fPriceMultiplier) {
         engine->_statusBar->setEvent(LSTR_RATIONS_FULL);
         if (pParty->hasActiveCharacter()) {
             pParty->activeCharacter().playReaction(SPEECH_PACKS_FULL);
@@ -149,7 +149,7 @@ void GUIWindow_Tavern::buyFoodDialogue() {
     }
     if (pParty->GetGold() >= pPriceFood) {
         pParty->TakeGold(pPriceFood);
-        pParty->SetFood(buildingTable[houseId()].fPriceMultiplier);
+        pParty->SetFood(houseTable[houseId()].fPriceMultiplier);
         playHouseSound(houseId(), HOUSE_SOUND_TAVERN_BUY_FOOD);
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return;
