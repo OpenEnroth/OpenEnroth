@@ -16,5 +16,5 @@ set(ENGINE_EVENTS_HEADERS
         Processor.h)
 
 add_library(engine_events STATIC ${ENGINE_EVENTS_SOURCES} ${ENGINE_EVENTS_HEADERS})
-target_link_libraries(engine_events PUBLIC engine)
+target_link_libraries(engine_events PUBLIC engine tl::generator)
 target_check_style(engine_events)
