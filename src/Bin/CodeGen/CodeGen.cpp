@@ -11,6 +11,7 @@
 
 #include "Application/Startup/GameStarter.h"
 
+#include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/Components/Random/EngineRandomComponent.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/HouseTable.h"

@@ -11,7 +11,6 @@
 #include "Engine/Objects/Character.h"
 #include "Engine/Time/Time.h"
 #include "Engine/Time/Timer.h"
-#include "GUI/UI/UIHouseEnums.h"
 #include "Media/Audio/SoundEnums.h"
 #include "Utility/IndexedBitset.h"
 

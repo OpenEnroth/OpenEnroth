@@ -3,8 +3,8 @@
 #include <array>
 #include <string>
 
+#include "Engine/Data/HouseEnums.h"
 #include "Engine/Events/EventEnums.h"
-#include "GUI/UI/UIHouseEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/ChestEnums.h"

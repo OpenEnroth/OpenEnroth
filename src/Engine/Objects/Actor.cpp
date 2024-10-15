@@ -9,6 +9,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/Data/AwardEnums.h"
+#include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Objects/Decoration.h"

@@ -3,6 +3,7 @@
 #include <string>
 #include <optional>
 
+#include "Engine/Data/HouseEnums.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/ItemEnumFunctions.h"
 #include "Engine/Objects/CharacterEnums.h"
@@ -11,8 +12,6 @@
 #include "Engine/MapEnums.h"
 
 #include "Utility/IndexedArray.h"
-
-#include "GUI/UI/UIHouseEnums.h"
 
 class Character;
 

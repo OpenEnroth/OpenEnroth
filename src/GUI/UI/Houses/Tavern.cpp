@@ -8,6 +8,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
 
+#include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
 #include "Engine/PriceCalculator.h"

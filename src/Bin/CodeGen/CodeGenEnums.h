@@ -4,8 +4,6 @@
 #include "Engine/Objects/MonsterEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 
-#include "GUI/UI/UIHouseEnums.h"
-
 #include "Library/Serialization/SerializationFwd.h"
 
 MM_DECLARE_SERIALIZATION_FUNCTIONS(HouseType)
