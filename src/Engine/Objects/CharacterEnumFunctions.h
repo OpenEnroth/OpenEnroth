@@ -13,7 +13,7 @@
 // Condition
 //
 
-CharacterExpressionID expressionForCondition(Condition condition);
+CharacterPortrait portraitForCondition(Condition condition);
 
 /**
  * @return                              List of conditions that can be applied to the character.

@@ -1104,13 +1104,13 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
             if (character.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
                 character.pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
-                character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0_ticks);
+                character.playEmotion(PORTRAIT_SMILE, 0_ticks);
             } else {
                 if (!character.hasUnderwaterSuitEquipped()) {
                     character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE); // TODO(pskelton): fire damage?
                     engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
                 } else {
-                    character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0_ticks);
+                    character.playEmotion(PORTRAIT_SMILE, 0_ticks);
                 }
             }
         }

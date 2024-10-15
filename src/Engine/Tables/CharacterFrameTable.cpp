@@ -4,15 +4,15 @@
 
 
 //----- (00494AED) --------------------------------------------------------
-unsigned int PlayerFrameTable::GetFrameIdByExpression(CharacterExpressionID expression) {
+unsigned int PlayerFrameTable::GetFrameIdByPortrait(CharacterPortrait portrait) {
     for (size_t i = 0; i < this->pFrames.size(); i++) {
-        if (this->pFrames[i].expression == expression) return i;
+        if (this->pFrames[i].portrait == portrait) return i;
     }
     return 0;
 }
 
-Duration PlayerFrameTable::GetDurationByExpression(CharacterExpressionID expression) {
-    int index = GetFrameIdByExpression(expression);
+Duration PlayerFrameTable::GetDurationByPortrait(CharacterPortrait portrait) {
+    int index = GetFrameIdByPortrait(portrait);
     if (index == 0)
         return 0_ticks;
     return this->pFrames[index].uAnimLength;
@@ -21,7 +21,7 @@ Duration PlayerFrameTable::GetDurationByExpression(CharacterExpressionID express
 //----- (00494B10) --------------------------------------------------------
 PlayerFrame *PlayerFrameTable::GetFrameBy_x(int uFramesetID, Duration gameTime) {
     if (this->pFrames[uFramesetID].uFlags & 1 && this->pFrames[uFramesetID].uAnimLength) {
-        // Processing animated character expressions - e.g., CHARACTER_EXPRESSION_YES & CHARACTER_EXPRESSION_NO.
+        // Processing animated character expressions - e.g., PORTRAIT_YES & PORTRAIT_NO.
         Duration time = gameTime % this->pFrames[uFramesetID].uAnimLength;
 
         while (true) {
@@ -30,7 +30,7 @@ PlayerFrame *PlayerFrameTable::GetFrameBy_x(int uFramesetID, Duration gameTime) 
                 break;
             time -= frameTime;
             ++uFramesetID;
-            assert(this->pFrames[uFramesetID].expression == CHARACTER_EXPRESSION_INVALID); // Shouldn't jump into another expression.
+            assert(this->pFrames[uFramesetID].portrait == PORTRAIT_INVALID); // Shouldn't jump into another expression.
         }
     }
     return &this->pFrames[uFramesetID];

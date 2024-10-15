@@ -2352,7 +2352,7 @@ void Character::SetRecoveryTime(Duration rec) {
 
 //----- (0048E9B7) --------------------------------------------------------
 void Character::RandomizeName() {
-    if (!uExpressionTimePassed)
+    if (!portraitTimePassed)
         name = pNPCStats->pNPCNames[grng->random(pNPCStats->uNumNPCNames[uSex])][uSex];
 }
 
@@ -7040,7 +7040,7 @@ void Character::tickRegeneration(int tick5, const RegenData &rData, bool stackin
 
 void Character::playReaction(CharacterSpeech speech, int a3) {
     int speechCount = 0;
-    int expressionCount = 0;
+    int portraitCount = 0;
     int pickedSoundID = 0;
 
     if (engine->config->settings.VoiceLevel.value() > 0) {
@@ -7060,56 +7060,53 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
         }
     }
 
-    for (int i = 0; i < expressionVariants[speech].size(); i++) {
-        if (expressionVariants[speech][i]) {
-            expressionCount++;
+    for (int i = 0; i < portraitVariants[speech].size(); i++) {
+        if (portraitVariants[speech][i] != PORTRAIT_INVALID) {
+            portraitCount++;
         }
     }
-    if (expressionCount) {
-        CharacterExpressionID expression = (CharacterExpressionID)expressionVariants[speech][vrng->random(expressionCount)];
+    if (portraitCount) {
+        CharacterPortrait portrait = portraitVariants[speech][vrng->random(portraitCount)];
         Duration expressionDuration;
-        if (expression == CHARACTER_EXPRESSION_TALK && pickedSoundID) {
+        if (portrait == PORTRAIT_TALK && pickedSoundID) {
             if (pickedSoundID >= 0) {
                 expressionDuration = Duration::fromRealtimeMilliseconds(1000 * pAudioPlayer->getSoundLength(static_cast<SoundId>(pickedSoundID))); // Was (sLastTrackLengthMS << 7) / 1000;
             }
         }
-        playEmotion(expression, expressionDuration);
+        playEmotion(portrait, expressionDuration);
     }
 }
 
-void Character::playEmotion(CharacterExpressionID new_expression, Duration duration) {
+void Character::playEmotion(CharacterPortrait newPortrait, Duration duration) {
     // 38 - sparkles 1 character?
 
-    CharacterExpressionID currexpr = expression;
-
-    if (expression == CHARACTER_EXPRESSION_DEAD ||
-        expression == CHARACTER_EXPRESSION_ERADICATED) {
+    if (portrait == PORTRAIT_DEAD ||
+        portrait == PORTRAIT_ERADICATED) {
         return;  // no react
-    } else if (expression == CHARACTER_EXPRESSION_PETRIFIED &&
-               new_expression != CHARACTER_EXPRESSION_FALLING) {
+    } else if (portrait == PORTRAIT_PETRIFIED &&
+               newPortrait != PORTRAIT_FALLING) {
         return;  // no react
     } else {
-        if (expression != CHARACTER_EXPRESSION_SLEEP ||
-            new_expression != CHARACTER_EXPRESSION_FALLING) {
-            if (currexpr >= CHARACTER_EXPRESSION_CURSED && currexpr <= CHARACTER_EXPRESSION_UNCONCIOUS && currexpr != CHARACTER_EXPRESSION_POISONED &&
-                !(new_expression == CHARACTER_EXPRESSION_DMGRECVD_MINOR ||
-                  new_expression == CHARACTER_EXPRESSION_DMGRECVD_MODERATE ||
-                  new_expression == CHARACTER_EXPRESSION_DMGRECVD_MAJOR)) {
+        if (portrait != PORTRAIT_SLEEP || newPortrait != PORTRAIT_FALLING) {
+            if (portrait >= PORTRAIT_CURSED && portrait <= PORTRAIT_UNCONSCIOUS && portrait != PORTRAIT_POISONED &&
+                !(newPortrait == PORTRAIT_DMGRECVD_MINOR ||
+                  newPortrait == PORTRAIT_DMGRECVD_MODERATE ||
+                  newPortrait == PORTRAIT_DMGRECVD_MAJOR)) {
                 return;  // no react
             }
         }
     }
 
-    this->uExpressionTimePassed = 0_ticks;
+    this->portraitTimePassed = 0_ticks;
 
     if (!duration) {
-        this->uExpressionTimeLength = pPlayerFrameTable->GetDurationByExpression(new_expression);
-        assert(this->uExpressionTimeLength); // GetDurationByExpression should have found the expression.
+        this->portraitTimeLength = pPlayerFrameTable->GetDurationByPortrait(newPortrait);
+        assert(this->portraitTimeLength); // GetDurationByExpression should have found the expression.
     } else {
-        this->uExpressionTimeLength = duration;
+        this->portraitTimeLength = duration;
     }
 
-    expression = new_expression;
+    portrait = newPortrait;
 }
 
 bool Character::isClass(CharacterClass class_type, bool check_honorary) const {
@@ -7285,12 +7282,12 @@ void Character::Zero() {
     _characterEventBits.reset();
     _achievedAwardsBits.reset();
     // Expression
-    expression = CHARACTER_EXPRESSION_INVALID;
-    uExpressionTimePassed = 0_ticks;
-    uExpressionTimeLength = 0_ticks;
-    uExpressionImageIndex = 0;
-    _expression21_animtime = 0_ticks;
-    _expression21_frameset = 0;
+    portrait = PORTRAIT_INVALID;
+    portraitTimePassed = 0_ticks;
+    portraitTimeLength = 0_ticks;
+    portraitImageIndex = 0;
+    talkAnimTime = 0_ticks;
+    talkFrameSet = 0;
     // Black potions
     _pureStatPotionUsed.fill(false);
 }
