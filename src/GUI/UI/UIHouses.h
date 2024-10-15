@@ -7,7 +7,9 @@
 #include "Engine/MapEnums.h"
 
 #include "GUI/GUIWindow.h"
+
 #include "Utility/IndexedArray.h"
+
 #include "UIHouseEnums.h"
 
 // Right hand side dialogue writing constants

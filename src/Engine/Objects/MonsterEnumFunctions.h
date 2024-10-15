@@ -1,8 +1,9 @@
 #pragma once
 
 #include <span>
+#include <utility>
 
-#include "GUI/UI/UIHouseEnums.h"
+#include "Engine/Data/HouseEnums.h"
 
 #include "Utility/Segment.h"
 

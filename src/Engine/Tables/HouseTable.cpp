@@ -3,6 +3,8 @@
 #include <cstring>
 #include <string>
 
+#include "Engine/Data/HouseEnumFunctions.h"
+
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Transformations.h"

@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 
+#include "Engine/Data/HouseEnums.h"
 #include "Engine/PartyEnums.h"
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/ItemEnums.h"
@@ -14,7 +15,6 @@
 
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
-#include "GUI/UI/UIHouseEnums.h"
 
 #include "Io/InputAction.h"
 #include "Io/KeyboardInputHandler.h"
