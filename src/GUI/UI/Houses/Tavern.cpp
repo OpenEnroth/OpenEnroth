@@ -45,8 +45,9 @@ void GUIWindow_Tavern::arcomageMainDialogue() {
         return;
     }
 
-    std::vector<std::string> optionsText = {localization->GetString(LSTR_RULES), localization->GetString(LSTR_VICTORY_CONDITIONS),
-                                            pParty->hasItem(ITEM_QUEST_ARCOMAGE_DECK) ? localization->GetString(LSTR_PLAY) : ""};
+    std::vector<std::string> optionsText = {localization->GetString(LSTR_RULES), localization->GetString(LSTR_VICTORY_CONDITIONS)};
+    if (pParty->hasItem(ITEM_QUEST_ARCOMAGE_DECK))
+        optionsText.push_back(localization->GetString(LSTR_PLAY));
 
     drawOptions(optionsText, colorTable.PaleCanary);
 }

@@ -326,6 +326,9 @@ void GUIWindow::DrawShops_next_generation_time_string(Duration time) {
 
 //----- (0044D406) --------------------------------------------------------
 void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int verticalMargin, Color color, std::string_view text, int lineSpacing) {
+    if (engine->callObserver) {
+        engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, std::string(text));
+    }
     int width = this->uFrameWidth - horizontalMargin;
     std::string resString = pFont->FitTextInAWindow(text, this->uFrameWidth, horizontalMargin);
     std::istringstream stream(resString);

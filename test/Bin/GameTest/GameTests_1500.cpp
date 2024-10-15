@@ -429,3 +429,15 @@ GAME_TEST(Issues, Issue1786) {
     game.tick();
     EXPECT_MISSES(sprites.back(), SPRITE_SPELL_FIRE_FIRE_BOLT);
 }
+
+GAME_TEST(Issues, Issue1807) {
+    // Opening arcomage menu in a tavern while not carrying a deck asserts.
+    auto deckTape = tapes.hasItem(ITEM_QUEST_ARCOMAGE_DECK);
+    auto houseTape = tapes.house();
+    auto textTape = tapes.allGUIWindowsText();
+    test.playTraceFromTestData("issue_1807.mm7", "issue_1807.json");
+    EXPECT_EQ(deckTape, tape(false)); // No deck.
+    EXPECT_CONTAINS(houseTape, HOUSE_TAVERN_HARMONDALE); // We've visited the Harmondale tavern.
+    EXPECT_CONTAINS(textTape.flattened(), "Victory Conditions"); // We've seen the Arcomage dialog.
+    EXPECT_MISSES(textTape.flattened(), "Play"); // But there was no "Play" option.
+}
