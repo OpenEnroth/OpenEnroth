@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;268196b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;edc8531</span>
    </div>
   </td>
  </tr>
@@ -87,13 +87,13 @@ $(function() {
 <code>#include &lt;memory&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
+<code>#include &quot;<a class="el" href="HouseEnums_8h.html">Engine/Data/HouseEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PartyEnums_8h.html">Engine/PartyEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="NPCEnums_8h.html">Engine/Objects/NPCEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemEnums_8h.html">Engine/Objects/ItemEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Time_8h.html">Engine/Time/Time.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIEnums_8h.html">GUI/GUIEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIDialogues_8h.html">GUI/GUIDialogues.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="UIHouseEnums_8h.html">GUI/UI/UIHouseEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="InputAction_8h.html">Io/InputAction.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="KeyboardInputHandler_8h.html">Io/KeyboardInputHandler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PlatformEnums_8h.html">Library/Platform/Interface/PlatformEnums.h</a>&quot;</code><br />
@@ -201,7 +201,7 @@ Functions</h2></td></tr>
 <tr class="separator:a2c04776db08e21e3fb9372aa7a8f1100"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0143a0f4fd2506eacca48c9a49fa429d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a0143a0f4fd2506eacca48c9a49fa429d">isHoldingMouseRightButton</a> ()</td></tr>
 <tr class="separator:a0143a0f4fd2506eacca48c9a49fa429d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90095a1706b327ce5406ea3092f1e577"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a90095a1706b327ce5406ea3092f1e577">BuildDialogueString</a> (std::string_view str, int uPlayerID, <a class="el" href="structNPCData.html">NPCData</a> *npc, <a class="el" href="structItemGen.html">ItemGen</a> *item=nullptr, <a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17c">HouseId</a> houseId=<a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca8c0598eacfd11554d227f7f920032e75">HOUSE_INVALID</a>, <a class="el" href="GUIEnums_8h.html#a1843d6e6a086fbb26b295c96c7a87368">ShopScreen</a> shop_screen=<a class="el" href="GUIEnums_8h.html#a1843d6e6a086fbb26b295c96c7a87368a0c40644c4ede1c06d261a68abeb95edf">SHOP_SCREEN_INVALID</a>, <a class="el" href="classTime.html">Time</a> *a6=nullptr)</td></tr>
+<tr class="memitem:a90095a1706b327ce5406ea3092f1e577"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a90095a1706b327ce5406ea3092f1e577">BuildDialogueString</a> (std::string_view str, int uPlayerID, <a class="el" href="structNPCData.html">NPCData</a> *npc, <a class="el" href="structItemGen.html">ItemGen</a> *item=nullptr, <a class="el" href="HouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17c">HouseId</a> houseId=<a class="el" href="HouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca8c0598eacfd11554d227f7f920032e75">HOUSE_INVALID</a>, <a class="el" href="GUIEnums_8h.html#a1843d6e6a086fbb26b295c96c7a87368">ShopScreen</a> shop_screen=<a class="el" href="GUIEnums_8h.html#a1843d6e6a086fbb26b295c96c7a87368a0c40644c4ede1c06d261a68abeb95edf">SHOP_SCREEN_INVALID</a>, <a class="el" href="classTime.html">Time</a> *a6=nullptr)</td></tr>
 <tr class="separator:a90095a1706b327ce5406ea3092f1e577"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f538119941c67a43250baa73fe36857"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIWindow_8h.html#a5f538119941c67a43250baa73fe36857">NameAndTitle</a> (std::string_view name, std::string_view title)</td></tr>
 <tr class="separator:a5f538119941c67a43250baa73fe36857"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -421,8 +421,8 @@ Variables</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17c">HouseId</a>&#160;</td>
-          <td class="paramname"><em>houseId</em> = <code><a class="el" href="UIHouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca8c0598eacfd11554d227f7f920032e75">HOUSE_INVALID</a></code>, </td>
+          <td class="paramtype"><a class="el" href="HouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17c">HouseId</a>&#160;</td>
+          <td class="paramname"><em>houseId</em> = <code><a class="el" href="HouseEnums_8h.html#a5ea2a2987049a04401b3ec8a45cbf17ca8c0598eacfd11554d227f7f920032e75">HOUSE_INVALID</a></code>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
