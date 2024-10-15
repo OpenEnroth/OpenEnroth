@@ -718,5 +718,6 @@ var searchData=
   ['subcommand_5fnone_715',['SUBCOMMAND_NONE',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a745ca9977da10b91ea23c9ff55d82975',1,'CodeGenOptions']]],
   ['subcommand_5fplay_716',['SUBCOMMAND_PLAY',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2a37b7775a0b058c6712038ab75647f8bf',1,'OpenEnrothOptions']]],
   ['subcommand_5fretrace_717',['SUBCOMMAND_RETRACE',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2af67b035a3a3941ba21dbe7245a72cb32',1,'OpenEnrothOptions']]],
-  ['summoned_718',['Summoned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda046bfcaf387649f3c78b193d321d4dd6',1,'ActorEnums.h']]]
+  ['subcommand_5fspeech_5fportraits_718',['SUBCOMMAND_SPEECH_PORTRAITS',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a96e5d586d7525833eb566424218be6d4',1,'CodeGenOptions']]],
+  ['summoned_719',['Summoned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda046bfcaf387649f3c78b193d321d4dd6',1,'ActorEnums.h']]]
 ];
