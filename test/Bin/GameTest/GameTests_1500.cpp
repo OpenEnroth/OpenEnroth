@@ -181,7 +181,7 @@ GAME_TEST(Issues, Issue1597) {
 GAME_TEST(Issues, Issue1655) {
     // Assertion in CalcSpellDamage failed b/c an actor is trying to cast SPELL_NONE.
     auto stateTape = actorTapes.aiState(73);
-    auto expressionsTape = charTapes.expressions();
+    auto expressionsTape = charTapes.portraits();
     test.playTraceFromTestData("issue_1655.mm7", "issue_1655.json");
     EXPECT_EQ(stateTape, tape(AttackingMelee));
 
@@ -194,7 +194,7 @@ GAME_TEST(Issues, Issue1655) {
     EXPECT_EQ(pActors[73].monsterInfo.spell1Id, SPELL_NONE);
     EXPECT_EQ(pActors[73].monsterInfo.spell1UseChance, 15);
     auto beatingsTape = expressionsTape.filtered([] (const auto &expressions) {
-        return expressions.containsAny(CHARACTER_EXPRESSION_DMGRECVD_MINOR, CHARACTER_EXPRESSION_DMGRECVD_MODERATE, CHARACTER_EXPRESSION_DMGRECVD_MAJOR);
+        return expressions.containsAny(PORTRAIT_DMGRECVD_MINOR, PORTRAIT_DMGRECVD_MODERATE, PORTRAIT_DMGRECVD_MAJOR);
     });
     EXPECT_GE(beatingsTape.size(), 25);
 }
@@ -233,13 +233,13 @@ GAME_TEST(Issues, Issue1666) {
 GAME_TEST(Issues, Issue1671) {
     // Falling from height outdoors onto models doesnt cause damage
     auto health = tapes.totalHp();
-    auto expressionTape = charTapes.expression(2);
+    auto expressionTape = charTapes.portrait(2);
     auto modelTape = tapes.custom([]() {bool on_water = false; int bmodel_pid = 0;
         float floor_level = ODM_GetFloorLevel(pParty->pos, 0, &on_water, &bmodel_pid, false);
         return bmodel_pid; });
     test.playTraceFromTestData("issue_1671.mm7", "issue_1671.json");
     EXPECT_LT(health.back(), health.front()); // party has taken damage from fall
-    EXPECT_CONTAINS(expressionTape, CHARACTER_EXPRESSION_FEAR);
+    EXPECT_CONTAINS(expressionTape, PORTRAIT_FEAR);
     EXPECT_NE(modelTape.back(), 0); // landed on a model
 }
 
@@ -328,14 +328,14 @@ GAME_TEST(Issues, Issue1708) {
 GAME_TEST(Issues, Issue1710) {
     // Fall damage indoors
     auto health = tapes.totalHp();
-    auto expressionTape = charTapes.expression(2);
+    auto expressionTape = charTapes.portrait(2);
     auto zpos = tapes.custom([]() { return static_cast<int>(pParty->pos.z); });
     auto noFallDamageTape = tapes.config(engine->config->gameplay.NoIndoorFallDamage);
     test.playTraceFromTestData("issue_1710.mm7", "issue_1710.json");
     EXPECT_EQ(noFallDamageTape, tape(false)); // Fall damage was actually possible
     EXPECT_LT(health.back(), health.front()); // party has taken damage from fall
     EXPECT_EQ(uCurrentlyLoadedLevelType, LEVEL_INDOOR);
-    EXPECT_CONTAINS(expressionTape, CHARACTER_EXPRESSION_FEAR);
+    EXPECT_CONTAINS(expressionTape, PORTRAIT_FEAR);
     EXPECT_GT(zpos.max(), zpos.min() + 1000);
 }
 
@@ -428,4 +428,16 @@ GAME_TEST(Issues, Issue1786) {
     game.releaseKey(PlatformKey::KEY_S);
     game.tick();
     EXPECT_MISSES(sprites.back(), SPRITE_SPELL_FIRE_FIRE_BOLT);
+}
+
+GAME_TEST(Issues, Issue1807) {
+    // Opening arcomage menu in a tavern while not carrying a deck asserts.
+    auto deckTape = tapes.hasItem(ITEM_QUEST_ARCOMAGE_DECK);
+    auto houseTape = tapes.house();
+    auto textTape = tapes.allGUIWindowsText();
+    test.playTraceFromTestData("issue_1807.mm7", "issue_1807.json");
+    EXPECT_EQ(deckTape, tape(false)); // No deck.
+    EXPECT_CONTAINS(houseTape, HOUSE_TAVERN_HARMONDALE); // We've visited the Harmondale tavern.
+    EXPECT_CONTAINS(textTape.flattened(), "Victory Conditions"); // We've seen the Arcomage dialog.
+    EXPECT_MISSES(textTape.flattened(), "Play"); // But there was no "Play" option.
 }

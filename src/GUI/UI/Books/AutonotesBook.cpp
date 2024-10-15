@@ -4,6 +4,7 @@
 
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"
+#include "Engine/Tables/AutonoteTable.h"
 #include "Engine/mm7_data.h"
 
 #include "GUI/GUIButton.h"

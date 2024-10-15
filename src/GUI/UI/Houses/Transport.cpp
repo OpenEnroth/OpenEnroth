@@ -9,6 +9,7 @@
 #include "GUI/GUIButton.h"
 #include "GUI/GUIMessageQueue.h"
 
+#include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Localization.h"
 #include "Engine/SaveLoad.h"
@@ -108,7 +109,7 @@ void GUIWindow_Transport::mainDialogue() {
     }
 
     std::vector<std::string> optionsText;
-    int price = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
+    int price = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
     std::string travelCost = localization->FormatString(LSTR_FMT_TRAVEL_COST_D_GOLD, price);
     int startingOffset = assets->pFontArrus->CalcTextHeight(travelCost, travel_window.uFrameWidth, 0) + (assets->pFontArrus->GetHeight() - 3) + 146;
     int lastsched = 255;
@@ -144,7 +145,7 @@ void GUIWindow_Transport::mainDialogue() {
 }
 
 void GUIWindow_Transport::transportDialogue() {
-    int pPrice = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), buildingTable[houseId()]);
+    int pPrice = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
 
     if (pParty->GetGold() < pPrice) {
         engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);

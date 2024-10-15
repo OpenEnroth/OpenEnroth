@@ -46,13 +46,14 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/Spells.h"
+#include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/CharacterFrameTable.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Tables/FactionTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
-#include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/AutonoteTable.h"
 #include "Engine/Tables/QuestTable.h"
 #include "Engine/Tables/TransitionTable.h"
@@ -723,7 +724,7 @@ void Engine::SecondaryInitialization() {
     pItemTable = new ItemTable();
     pItemTable->Initialize(engine->_gameResourceManager.get());
 
-    initializeBuildings(engine->_gameResourceManager->getEventsFile("2dEvents.txt"));
+    initializeHouses(engine->_gameResourceManager->getEventsFile("2dEvents.txt"));
 
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();
@@ -1103,13 +1104,13 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
             if (character.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
                 character.pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
-                character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0_ticks);
+                character.playEmotion(PORTRAIT_SMILE, 0_ticks);
             } else {
                 if (!character.hasUnderwaterSuitEquipped()) {
                     character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE); // TODO(pskelton): fire damage?
                     engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
                 } else {
-                    character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0_ticks);
+                    character.playEmotion(PORTRAIT_SMILE, 0_ticks);
                 }
             }
         }

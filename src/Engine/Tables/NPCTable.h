@@ -3,13 +3,12 @@
 #include <string>
 #include <array>
 
+#include "Engine/Data/HouseEnums.h"
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/MonsterEnums.h"
 #include "Engine/Time/Duration.h"
 #include "Engine/MapEnums.h"
-
-#include "GUI/UI/UIHouseEnums.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/Flags.h"

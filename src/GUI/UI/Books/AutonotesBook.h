@@ -1,9 +1,11 @@
 #pragma once
+
 #include <vector>
 #include <unordered_map>
 
+#include "Engine/Data/AutonoteEnums.h"
+
 #include "GUI/UI/UIBooks.h"
-#include "Engine/Tables/AutonoteTable.h"
 
 struct GUIWindow_AutonotesBook : public GUIWindow_Book {
     GUIWindow_AutonotesBook();

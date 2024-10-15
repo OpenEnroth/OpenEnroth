@@ -13,7 +13,7 @@
 // Condition
 //
 
-CharacterExpressionID expressionForCondition(Condition condition);
+CharacterPortrait portraitForCondition(Condition condition);
 
 /**
  * @return                              List of conditions that can be applied to the character.
@@ -182,14 +182,14 @@ inline Segment<CharacterClass> promotionsForClass(CharacterClass classType) {
  * @return                              All attributes that can be improved though attribute item enchantments, like
  *                                      "of Might".
  */
-inline Segment<CharacterAttributeType> allEnchantableAttributes() {
-    return {CHARACTER_ATTRIBUTE_FIRST_ENCHANTABLE, CHARACTER_ATTRIBUTE_LAST_ENCHANTABLE};
+inline Segment<CharacterAttribute> allEnchantableAttributes() {
+    return {ATTRIBUTE_FIRST_ENCHANTABLE, ATTRIBUTE_LAST_ENCHANTABLE};
 }
 
 /**
  * @return                              Segment containing the 7 basic character stats (starting with might & ending
  *                                      with luck).
  */
-inline Segment<CharacterAttributeType> allStatAttributes() {
-    return {CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT};
+inline Segment<CharacterAttribute> allStatAttributes() {
+    return {ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT};
 }

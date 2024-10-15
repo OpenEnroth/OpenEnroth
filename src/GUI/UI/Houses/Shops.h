@@ -5,8 +5,6 @@
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIHouseEnums.h"
 
-#include "Engine/Tables/BuildingTable.h"
-
 class GUIWindow_Shop : public GUIWindow_House {
  public:
     explicit GUIWindow_Shop(HouseId houseId) : GUIWindow_House(houseId) {}

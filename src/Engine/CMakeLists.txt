@@ -53,13 +53,15 @@ set(ENGINE_HEADERS
         TeleportPoint.h
         GameResourceManager.h
         mm7_data.h
-        stru314.h)
+        stru314.h
+        Data/AutonoteData.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 target_check_style(engine)
 
 target_link_libraries(engine
         PUBLIC
+        engine_data
         engine_graphics
         engine_graphics_renderer
         engine_objects
@@ -91,6 +93,7 @@ target_compile_definitions(engine PRIVATE
         OE_BUILD_PLATFORM="${OE_BUILD_PLATFORM}"
         OE_BUILD_ARCHITECTURE="${OE_BUILD_ARCHITECTURE}")
 
+add_subdirectory(Data)
 add_subdirectory(Components)
 add_subdirectory(Events)
 add_subdirectory(Graphics)

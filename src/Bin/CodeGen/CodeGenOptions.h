@@ -14,6 +14,7 @@ struct CodeGenOptions : GameStarterOptions {
         SUBCOMMAND_BOUNTY_HUNT,
         SUBCOMMAND_MUSIC,
         SUBCOMMAND_DECORATIONS,
+        SUBCOMMAND_SPEECH_PORTRAITS,
     };
     using enum Subcommand;
 

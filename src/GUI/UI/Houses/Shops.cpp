@@ -20,6 +20,7 @@
 #include "Engine/Random/Random.h"
 #include "Engine/Tables/MerchantTable.h"
 #include "Engine/Tables/ItemTable.h"
+#include "Engine/Data/AwardEnums.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
@@ -264,7 +265,7 @@ void GUIWindow_Shop::displayEquipmentDialogue() {
 
     std::vector<std::string> optionsText = {localization->GetString(LSTR_SELL), localization->GetString(LSTR_IDENTIFY)};
 
-    if (buildingType() != BUILDING_ALCHEMY_SHOP) {
+    if (buildingType() != HOUSE_TYPE_ALCHEMY_SHOP) {
         optionsText.push_back(localization->GetString(LSTR_REPAIR));
     }
 
@@ -422,7 +423,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
                         if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + (shop_ui_items_in_store[testx]->height()))) {
                             std::string str;
                             if (!isStealingModeActive()) {
-                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, BUILDING_WEAPON_SHOP, houseId(), SHOP_SCREEN_BUY);
+                                MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, HOUSE_TYPE_WEAPON_SHOP, houseId(), SHOP_SCREEN_BUY);
                                 str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             } else {
                                 str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
@@ -782,18 +783,18 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DialogueId option) {
         if (pParty->PartyTimes.shopNextRefreshTime[houseId()] < pParty->GetPlayingTime()) {
             generateShopItems(false);
             generateShopItems(true);
-            Time nextGenTime = pParty->GetPlayingTime() + Duration::fromDays(buildingTable[houseId()].generation_interval_days);
+            Time nextGenTime = pParty->GetPlayingTime() + Duration::fromDays(houseTable[houseId()].generation_interval_days);
             pParty->PartyTimes.shopNextRefreshTime[houseId()] = nextGenTime;
         }
 
-        BuildingType shopType = buildingType();
+        HouseType shopType = buildingType();
         const std::array<ItemGen, 12> &itemArray = (option == DIALOGUE_SHOP_BUY_STANDARD) ? pParty->standartItemsInShops[houseId()] : pParty->specialItemsInShops[houseId()];
         for (int i = 0; i < itemAmountInShop[shopType]; ++i) {
             if (itemArray[i].uItemID != ITEM_NULL) {
                 shop_ui_items_in_store[i] = assets->getImage_ColorKey(itemArray[i].GetIconName());
             }
         }
-        if (shopType == BUILDING_WEAPON_SHOP) {
+        if (shopType == HOUSE_TYPE_WEAPON_SHOP) {
             for (int i = 0; i < itemAmountInShop[shopType]; ++i) {
                 if (itemArray[i].uItemID != ITEM_NULL) {
                     // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
@@ -937,7 +938,7 @@ void GUIWindow_Shop::houseScreenClick() {
                 return;
             }
 
-            float fPriceMultiplier = buildingTable[houseId()].fPriceMultiplier;
+            float fPriceMultiplier = houseTable[houseId()].fPriceMultiplier;
             int uPriceItemService = PriceCalculator::itemIdentificationPriceForPlayer(&pParty->activeCharacter(), fPriceMultiplier);
             ItemGen &item = pParty->activeCharacter().pInventoryItemList[pItemID - 1];
 
@@ -978,7 +979,7 @@ void GUIWindow_Shop::houseScreenClick() {
             }
 
             ItemGen &item = pParty->activeCharacter().pInventoryItemList[pItemID - 1];
-            float fPriceMultiplier = buildingTable[houseId()].fPriceMultiplier;
+            float fPriceMultiplier = houseTable[houseId()].fPriceMultiplier;
             int uPriceItemService = PriceCalculator::itemRepairPriceForPlayer(&pParty->activeCharacter(), item.GetValue(), fPriceMultiplier);
 
             if (item.uAttributes & ITEM_BROKEN) {
@@ -1013,7 +1014,7 @@ void GUIWindow_Shop::houseScreenClick() {
             ItemGen *boughtItem = nullptr;
 
             switch (buildingType()) {
-              case BUILDING_WEAPON_SHOP:
+              case HOUSE_TYPE_WEAPON_SHOP:
                 testx = (pt.x - 30) / 70;
                 if (testx >= 0 && testx < 6) {
                     if (_currentDialogue == DIALOGUE_SHOP_BUY_STANDARD)
@@ -1032,7 +1033,7 @@ void GUIWindow_Shop::houseScreenClick() {
                 }
                 return;
 
-              case BUILDING_ARMOR_SHOP:
+              case HOUSE_TYPE_ARMOR_SHOP:
                 testx = (pt.x - 40) / 105;
                 if (testx >= 0 && testx < 4) {
                     if (pt.y >= 126) {
@@ -1061,8 +1062,8 @@ void GUIWindow_Shop::houseScreenClick() {
                 }
                 return;
 
-              case BUILDING_ALCHEMY_SHOP:
-              case BUILDING_MAGIC_SHOP:
+              case HOUSE_TYPE_ALCHEMY_SHOP:
+              case HOUSE_TYPE_MAGIC_SHOP:
                 testx = (pt.x) / 75;
                 if (testx >= 0 && testx < 6) {
                     if (pt.y > 152) {
@@ -1096,7 +1097,7 @@ void GUIWindow_Shop::houseScreenClick() {
                 return;
             }
 
-            float fPriceMultiplier = buildingTable[houseId()].fPriceMultiplier;
+            float fPriceMultiplier = houseTable[houseId()].fPriceMultiplier;
             int uPriceItemService = PriceCalculator::itemBuyingPriceForPlayer(&pParty->activeCharacter(), boughtItem->GetValue(), fPriceMultiplier);
             int stealResult = 0;
             int stealDifficulty = 0;

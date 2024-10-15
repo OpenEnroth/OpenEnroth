@@ -1098,8 +1098,8 @@ void CharacterUI_StatsTab_ShowHint() {
         case 5:
         case 6:
             CharacterUI_DrawTooltip(
-                localization->GetAttirubteName(static_cast<CharacterAttributeType>(pStringNum)),
-                localization->GetAttributeDescription(static_cast<CharacterAttributeType>(pStringNum)));
+                localization->GetAttirubteName(static_cast<CharacterAttribute>(pStringNum)),
+                localization->GetAttributeDescription(static_cast<CharacterAttribute>(pStringNum)));
             break;
         case 7:  // Health Points
             CharacterUI_DrawTooltip(localization->GetString(LSTR_HIT_POINTS), localization->getHPDescription());
@@ -1464,10 +1464,10 @@ void ShowPopupShopItem() {
     ItemGen *item;  // ecx@13
     int invindex;
     int testpos;
-    BuildingType buildingType = window_SpeakInHouse->buildingType();
+    HouseType houseType = window_SpeakInHouse->buildingType();
     DialogueId dialogue = window_SpeakInHouse->getCurrentDialogue();
 
-    if (buildingType == BUILDING_INVALID)
+    if (houseType == HOUSE_TYPE_INVALID)
         return;
 
     if (dialogue < DIALOGUE_SHOP_BUY_STANDARD)
@@ -1476,10 +1476,10 @@ void ShowPopupShopItem() {
     Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
     int testx;
 
-    if (buildingType <= BUILDING_ALCHEMY_SHOP) {
+    if (houseType <= HOUSE_TYPE_ALCHEMY_SHOP) {
         if (dialogue == DIALOGUE_SHOP_BUY_STANDARD || dialogue == DIALOGUE_SHOP_BUY_SPECIAL) {
-            switch (buildingType) {
-                case BUILDING_WEAPON_SHOP: {
+            switch (houseType) {
+                case HOUSE_TYPE_WEAPON_SHOP: {
                     testx = (pt.x - 30) / 70;
                     if (testx >= 0 && testx < 6) {
                         if (dialogue == DIALOGUE_SHOP_BUY_STANDARD)
@@ -1504,7 +1504,7 @@ void ShowPopupShopItem() {
                     break;
                 }
 
-                case BUILDING_ARMOR_SHOP:
+                case HOUSE_TYPE_ARMOR_SHOP:
                     testx = (pt.x - 40) / 105;
                     if (testx >= 0 && testx < 4) {
                         if (pt.y >= 126) {
@@ -1537,8 +1537,8 @@ void ShowPopupShopItem() {
                     }
                     break;
 
-                case BUILDING_ALCHEMY_SHOP:
-                case BUILDING_MAGIC_SHOP:
+                case HOUSE_TYPE_ALCHEMY_SHOP:
+                case HOUSE_TYPE_MAGIC_SHOP:
                     testx = (pt.x) / 75;
                     // testx limits check
                     if (testx >= 0 && testx < 6) {
@@ -1597,7 +1597,7 @@ void ShowPopupShopItem() {
         }
     }
 
-    if (buildingType <= BUILDING_MIRRORED_PATH_GUILD && dialogue == DIALOGUE_GUILD_BUY_BOOKS) {
+    if (houseType <= HOUSE_TYPE_MIRRORED_PATH_GUILD && dialogue == DIALOGUE_GUILD_BUY_BOOKS) {
         int testx = (pt.x - 32) / 70;
         if (testx >= 0 && testx < 6) {
             if (pt.y >= 250) {
@@ -1649,14 +1649,14 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     } else if (player->IsDead()) {
         v13 = game_ui_player_face_dead;
     } else {
-        uFramesetID = pPlayerFrameTable->GetFrameIdByExpression(player->expression);
+        uFramesetID = pPlayerFrameTable->GetFrameIdByPortrait(player->portrait);
         if (!uFramesetID)
             uFramesetID = 1;
-        if (player->expression == CHARACTER_EXPRESSION_TALK)
-            v15 = pPlayerFrameTable->GetFrameBy_y(&player->_expression21_frameset, &player->_expression21_animtime, pMiscTimer->dt());
+        if (player->portrait == PORTRAIT_TALK)
+            v15 = pPlayerFrameTable->GetFrameBy_y(&player->talkFrameSet, &player->talkAnimTime, pMiscTimer->dt());
         else
             v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID, pMiscTimer->time());
-        player->uExpressionImageIndex = v15->uTextureID - 1;
+        player->portraitImageIndex = v15->uTextureID - 1;
         v13 = game_ui_player_faces[characterIndex][v15->uTextureID - 1];
     }
 
@@ -1962,8 +1962,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     (signed int)pY < (signed int)pButton->uW) {
                     switch (pButton->msg) {
                         case UIMSG_0:  // stats info
-                            popup_window.sHint = localization->GetAttributeDescription(static_cast<CharacterAttributeType>(pButton->msg_param % 7));
-                            pStr = localization->GetAttirubteName(static_cast<CharacterAttributeType>(pButton->msg_param % 7));
+                            popup_window.sHint = localization->GetAttributeDescription(static_cast<CharacterAttribute>(pButton->msg_param % 7));
+                            pStr = localization->GetAttirubteName(static_cast<CharacterAttribute>(pButton->msg_param % 7));
                             break;
                         case UIMSG_PlayerCreationClickPlus:  // Plus button info
                             pStr = localization->GetString(LSTR_ADD);

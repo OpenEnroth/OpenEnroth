@@ -6,6 +6,7 @@
 #include <utility>
 #include <string>
 
+#include "Engine/Tables/HouseTable.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 
@@ -107,8 +108,8 @@ std::string EventMap::hint(int eventId) const {
             }
         }
         if (mouseOverFound && ir.type == EVENT_SpeakInHouse) {
-            if (buildingTable.indices().contains(ir.data.house_id)) {
-                result = buildingTable[ir.data.house_id].name;
+            if (houseTable.indices().contains(ir.data.house_id)) {
+                result = houseTable[ir.data.house_id].name;
             }
             break;
         }
