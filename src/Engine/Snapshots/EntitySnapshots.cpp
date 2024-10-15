@@ -852,12 +852,12 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->healthRelated = src._health_related;
     dst->fullManaBonus = src.uFullManaBonus;
     dst->manaRelated = src._mana_related;
-    dst->expression = std::to_underlying(src.expression);
-    dst->expressionTimePassed = src.uExpressionTimePassed.ticks();
-    dst->expressionTimeLength = src.uExpressionTimeLength.ticks();
-    dst->field_1AA2 = src.uExpressionImageIndex;
-    dst->_expression21_animtime = src._expression21_animtime.ticks();
-    dst->_expression21_frameset = src._expression21_frameset;
+    dst->portrait = std::to_underlying(src.portrait);
+    dst->portraitTimePassed = src.portraitTimePassed.ticks();
+    dst->portraitTimeLength = src.portraitTimeLength.ticks();
+    dst->portraitImageIndex = src.portraitImageIndex;
+    dst->talkAnimTime = src.talkAnimTime.ticks();
+    dst->talkFrameSet = src.talkFrameSet;
 
     for (unsigned int i = 0; i < 5; ++i) {
         if (i >= src.vBeacons.size()) {
@@ -1093,12 +1093,12 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->_health_related = src.healthRelated;
     dst->uFullManaBonus = src.fullManaBonus;
     dst->_mana_related = src.manaRelated;
-    dst->expression = static_cast<CharacterPortrait>(src.expression);
-    dst->uExpressionTimePassed = Duration::fromTicks(src.expressionTimePassed);
-    dst->uExpressionTimeLength = Duration::fromTicks(src.expressionTimeLength);
-    dst->uExpressionImageIndex = src.field_1AA2;
-    dst->_expression21_animtime = Duration::fromTicks(src._expression21_animtime);
-    dst->_expression21_frameset = src._expression21_frameset;
+    dst->portrait = static_cast<CharacterPortrait>(src.portrait);
+    dst->portraitTimePassed = Duration::fromTicks(src.portraitTimePassed);
+    dst->portraitTimeLength = Duration::fromTicks(src.portraitTimeLength);
+    dst->portraitImageIndex = src.portraitImageIndex;
+    dst->talkAnimTime = Duration::fromTicks(src.talkAnimTime);
+    dst->talkFrameSet = src.talkFrameSet;
 
     for (int z = 0; z < dst->vBeacons.size(); z++)
         dst->vBeacons[z].image->Release();
@@ -1685,7 +1685,7 @@ void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
 }
 
 void reconstruct(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
-    dst->expression = static_cast<CharacterPortrait>(src.expression);
+    dst->portrait = static_cast<CharacterPortrait>(src.portrait);
     dst->uTextureID = src.uTextureID;
     dst->uAnimTime = Duration::fromTicks(src.uAnimTime * 8);
     dst->uAnimLength = Duration::fromTicks(src.uAnimLength * 8);

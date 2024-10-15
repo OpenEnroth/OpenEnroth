@@ -5,10 +5,8 @@
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Time/Duration.h"
 
-#include "Utility/Memory/Blob.h"
-
 struct PlayerFrame {
-    CharacterPortrait expression;
+    CharacterPortrait portrait;
     uint16_t uTextureID;
     Duration uAnimTime;
     Duration uAnimLength;
@@ -16,8 +14,8 @@ struct PlayerFrame {
 };
 
 struct PlayerFrameTable {
-    unsigned int GetFrameIdByExpression(CharacterPortrait expression);
-    Duration GetDurationByExpression(CharacterPortrait expression);
+    unsigned int GetFrameIdByPortrait(CharacterPortrait portrait);
+    Duration GetDurationByPortrait(CharacterPortrait portrait);
     PlayerFrame *GetFrameBy_x(int uFramesetID, Duration gameTime);
     PlayerFrame *GetFrameBy_y(int *a2, Duration *a3, Duration a4);
 

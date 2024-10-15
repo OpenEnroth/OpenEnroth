@@ -181,7 +181,7 @@ GAME_TEST(Issues, Issue1597) {
 GAME_TEST(Issues, Issue1655) {
     // Assertion in CalcSpellDamage failed b/c an actor is trying to cast SPELL_NONE.
     auto stateTape = actorTapes.aiState(73);
-    auto expressionsTape = charTapes.expressions();
+    auto expressionsTape = charTapes.portraits();
     test.playTraceFromTestData("issue_1655.mm7", "issue_1655.json");
     EXPECT_EQ(stateTape, tape(AttackingMelee));
 
@@ -233,7 +233,7 @@ GAME_TEST(Issues, Issue1666) {
 GAME_TEST(Issues, Issue1671) {
     // Falling from height outdoors onto models doesnt cause damage
     auto health = tapes.totalHp();
-    auto expressionTape = charTapes.expression(2);
+    auto expressionTape = charTapes.portrait(2);
     auto modelTape = tapes.custom([]() {bool on_water = false; int bmodel_pid = 0;
         float floor_level = ODM_GetFloorLevel(pParty->pos, 0, &on_water, &bmodel_pid, false);
         return bmodel_pid; });
@@ -328,7 +328,7 @@ GAME_TEST(Issues, Issue1708) {
 GAME_TEST(Issues, Issue1710) {
     // Fall damage indoors
     auto health = tapes.totalHp();
-    auto expressionTape = charTapes.expression(2);
+    auto expressionTape = charTapes.portrait(2);
     auto zpos = tapes.custom([]() { return static_cast<int>(pParty->pos.z); });
     auto noFallDamageTape = tapes.config(engine->config->gameplay.NoIndoorFallDamage);
     test.playTraceFromTestData("issue_1710.mm7", "issue_1710.json");

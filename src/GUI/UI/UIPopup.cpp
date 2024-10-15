@@ -1649,14 +1649,14 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     } else if (player->IsDead()) {
         v13 = game_ui_player_face_dead;
     } else {
-        uFramesetID = pPlayerFrameTable->GetFrameIdByExpression(player->expression);
+        uFramesetID = pPlayerFrameTable->GetFrameIdByPortrait(player->portrait);
         if (!uFramesetID)
             uFramesetID = 1;
-        if (player->expression == PORTRAIT_TALK)
-            v15 = pPlayerFrameTable->GetFrameBy_y(&player->_expression21_frameset, &player->_expression21_animtime, pMiscTimer->dt());
+        if (player->portrait == PORTRAIT_TALK)
+            v15 = pPlayerFrameTable->GetFrameBy_y(&player->talkFrameSet, &player->talkAnimTime, pMiscTimer->dt());
         else
             v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID, pMiscTimer->time());
-        player->uExpressionImageIndex = v15->uTextureID - 1;
+        player->portraitImageIndex = v15->uTextureID - 1;
         v13 = game_ui_player_faces[characterIndex][v15->uTextureID - 1];
     }
 

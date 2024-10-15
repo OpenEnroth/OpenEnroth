@@ -686,7 +686,7 @@ std::string EventIR::toString() const {
         case EVENT_OpenChest:
             return fmt::format("{}: OpenChest({})", step, data.chest_id);
         case EVENT_ShowFace:
-            return fmt::format("{}: SetExpression({}, {})", step, std::to_underlying(who), std::to_underlying(data.expr_id));
+            return fmt::format("{}: SetExpression({}, {})", step, std::to_underlying(who), std::to_underlying(data.portrait_id));
         case EVENT_ReceiveDamage:
             return fmt::format("{}: ReceiveDamage({}, {})", step, data.damage_descr.damage, std::to_underlying(data.damage_descr.damage_type));
         case EVENT_SetSnow:
@@ -899,7 +899,7 @@ EventIR EventIR::parse(const RawEvent *evt, size_t size) {
         case EVENT_ShowFace:
             requireSize(7);
             ir.who = static_cast<CharacterChoosePolicy>(evt->v5);
-            ir.data.expr_id = static_cast<CharacterPortrait>(evt->v6);
+            ir.data.portrait_id = static_cast<CharacterPortrait>(evt->v6);
             break;
         case EVENT_ReceiveDamage:
             requireSize(11);

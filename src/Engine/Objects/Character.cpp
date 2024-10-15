@@ -2352,7 +2352,7 @@ void Character::SetRecoveryTime(Duration rec) {
 
 //----- (0048E9B7) --------------------------------------------------------
 void Character::RandomizeName() {
-    if (!uExpressionTimePassed)
+    if (!portraitTimePassed)
         name = pNPCStats->pNPCNames[grng->random(pNPCStats->uNumNPCNames[uSex])][uSex];
 }
 
@@ -7060,13 +7060,13 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
         }
     }
 
-    for (int i = 0; i < expressionVariants[speech].size(); i++) {
-        if (expressionVariants[speech][i]) {
+    for (int i = 0; i < portraitVariants[speech].size(); i++) {
+        if (portraitVariants[speech][i]) {
             expressionCount++;
         }
     }
     if (expressionCount) {
-        CharacterPortrait expression = (CharacterPortrait)expressionVariants[speech][vrng->random(expressionCount)];
+        CharacterPortrait expression = (CharacterPortrait)portraitVariants[speech][vrng->random(expressionCount)];
         Duration expressionDuration;
         if (expression == PORTRAIT_TALK && pickedSoundID) {
             if (pickedSoundID >= 0) {
@@ -7077,39 +7077,36 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
     }
 }
 
-void Character::playEmotion(CharacterPortrait new_expression, Duration duration) {
+void Character::playEmotion(CharacterPortrait newPortrait, Duration duration) {
     // 38 - sparkles 1 character?
 
-    CharacterPortrait currexpr = expression;
-
-    if (expression == PORTRAIT_DEAD ||
-        expression == PORTRAIT_ERADICATED) {
+    if (portrait == PORTRAIT_DEAD ||
+        portrait == PORTRAIT_ERADICATED) {
         return;  // no react
-    } else if (expression == PORTRAIT_PETRIFIED &&
-               new_expression != PORTRAIT_FALLING) {
+    } else if (portrait == PORTRAIT_PETRIFIED &&
+               newPortrait != PORTRAIT_FALLING) {
         return;  // no react
     } else {
-        if (expression != PORTRAIT_SLEEP ||
-            new_expression != PORTRAIT_FALLING) {
-            if (currexpr >= PORTRAIT_CURSED && currexpr <= PORTRAIT_UNCONSCIOUS && currexpr != PORTRAIT_POISONED &&
-                !(new_expression == PORTRAIT_DMGRECVD_MINOR ||
-                  new_expression == PORTRAIT_DMGRECVD_MODERATE ||
-                  new_expression == PORTRAIT_DMGRECVD_MAJOR)) {
+        if (portrait != PORTRAIT_SLEEP || newPortrait != PORTRAIT_FALLING) {
+            if (portrait >= PORTRAIT_CURSED && portrait <= PORTRAIT_UNCONSCIOUS && portrait != PORTRAIT_POISONED &&
+                !(newPortrait == PORTRAIT_DMGRECVD_MINOR ||
+                  newPortrait == PORTRAIT_DMGRECVD_MODERATE ||
+                  newPortrait == PORTRAIT_DMGRECVD_MAJOR)) {
                 return;  // no react
             }
         }
     }
 
-    this->uExpressionTimePassed = 0_ticks;
+    this->portraitTimePassed = 0_ticks;
 
     if (!duration) {
-        this->uExpressionTimeLength = pPlayerFrameTable->GetDurationByExpression(new_expression);
-        assert(this->uExpressionTimeLength); // GetDurationByExpression should have found the expression.
+        this->portraitTimeLength = pPlayerFrameTable->GetDurationByPortrait(newPortrait);
+        assert(this->portraitTimeLength); // GetDurationByExpression should have found the expression.
     } else {
-        this->uExpressionTimeLength = duration;
+        this->portraitTimeLength = duration;
     }
 
-    expression = new_expression;
+    portrait = newPortrait;
 }
 
 bool Character::isClass(CharacterClass class_type, bool check_honorary) const {
@@ -7285,12 +7282,12 @@ void Character::Zero() {
     _characterEventBits.reset();
     _achievedAwardsBits.reset();
     // Expression
-    expression = PORTRAIT_INVALID;
-    uExpressionTimePassed = 0_ticks;
-    uExpressionTimeLength = 0_ticks;
-    uExpressionImageIndex = 0;
-    _expression21_animtime = 0_ticks;
-    _expression21_frameset = 0;
+    portrait = PORTRAIT_INVALID;
+    portraitTimePassed = 0_ticks;
+    portraitTimeLength = 0_ticks;
+    portraitImageIndex = 0;
+    talkAnimTime = 0_ticks;
+    talkFrameSet = 0;
     // Black potions
     _pureStatPotionUsed.fill(false);
 }

@@ -373,7 +373,7 @@ IndexedArray<std::array<unsigned char, 3>, SPEECH_FIRST, SPEECH_LAST> speechVari
     {SPEECH_110,                 {0,  0,  0}} // initially this entry was not present in array
 };
 
-IndexedArray<std::array<unsigned char, 5>, SPEECH_FIRST, SPEECH_LAST> expressionVariants = {{
+IndexedArray<std::array<unsigned char, 5>, SPEECH_FIRST, SPEECH_LAST> portraitVariants = {{
     {SPEECH_NONE,                {0,  0,  0,  0,  0}},
     {SPEECH_KILL_WEAK_ENEMY,       {37, 38, 45, 0,  0}},
     {SPEECH_KILL_STRONG_ENEMY,     {47, 53, 0,  0,  0}},

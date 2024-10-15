@@ -4,15 +4,15 @@
 
 
 //----- (00494AED) --------------------------------------------------------
-unsigned int PlayerFrameTable::GetFrameIdByExpression(CharacterPortrait expression) {
+unsigned int PlayerFrameTable::GetFrameIdByPortrait(CharacterPortrait portrait) {
     for (size_t i = 0; i < this->pFrames.size(); i++) {
-        if (this->pFrames[i].expression == expression) return i;
+        if (this->pFrames[i].portrait == portrait) return i;
     }
     return 0;
 }
 
-Duration PlayerFrameTable::GetDurationByExpression(CharacterPortrait expression) {
-    int index = GetFrameIdByExpression(expression);
+Duration PlayerFrameTable::GetDurationByPortrait(CharacterPortrait portrait) {
+    int index = GetFrameIdByPortrait(portrait);
     if (index == 0)
         return 0_ticks;
     return this->pFrames[index].uAnimLength;
@@ -30,7 +30,7 @@ PlayerFrame *PlayerFrameTable::GetFrameBy_x(int uFramesetID, Duration gameTime) 
                 break;
             time -= frameTime;
             ++uFramesetID;
-            assert(this->pFrames[uFramesetID].expression == PORTRAIT_INVALID); // Shouldn't jump into another expression.
+            assert(this->pFrames[uFramesetID].portrait == PORTRAIT_INVALID); // Shouldn't jump into another expression.
         }
     }
     return &this->pFrames[uFramesetID];

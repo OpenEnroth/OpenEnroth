@@ -2,7 +2,7 @@
 
 #include "Engine/Spells/SpellEnumFunctions.h"
 
-CharacterPortrait expressionForCondition(Condition condition) {
+CharacterPortrait portraitForCondition(Condition condition) {
     switch (condition) {
     case CONDITION_CURSED:
         return PORTRAIT_CURSED;

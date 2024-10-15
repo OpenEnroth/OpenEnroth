@@ -1315,19 +1315,19 @@ void GameUI_DrawPortraits() {
         }
         face_expression_ID = 0;
         for (size_t j = 0; j < pPlayerFrameTable->pFrames.size(); ++j)
-            if (pPlayerFrameTable->pFrames[j].expression == pPlayer->expression) {
+            if (pPlayerFrameTable->pFrames[j].portrait == pPlayer->portrait) {
                 face_expression_ID = j;
                 break;
             }
         if (face_expression_ID == 0)
             face_expression_ID = 1;
-        if (pPlayer->expression == PORTRAIT_TALK)
-            pFrame = pPlayerFrameTable->GetFrameBy_y(&pPlayer->_expression21_frameset, &pPlayer->_expression21_animtime, pMiscTimer->dt());
+        if (pPlayer->portrait == PORTRAIT_TALK)
+            pFrame = pPlayerFrameTable->GetFrameBy_y(&pPlayer->talkFrameSet, &pPlayer->talkAnimTime, pMiscTimer->dt());
         else
-            pFrame = pPlayerFrameTable->GetFrameBy_x(face_expression_ID, pPlayer->uExpressionTimePassed);
+            pFrame = pPlayerFrameTable->GetFrameBy_x(face_expression_ID, pPlayer->portraitTimePassed);
         if (true /* || pPlayer->uExpressionImageIndex != pFrame->uTextureID - 1*/) {
-            pPlayer->uExpressionImageIndex = pFrame->uTextureID - 1;
-            pPortrait = game_ui_player_faces[i][pPlayer->uExpressionImageIndex];  // pFace = (Texture_MM7*)game_ui_player_faces[i][pFrame->uTextureID];
+            pPlayer->portraitImageIndex = pFrame->uTextureID - 1;
+            pPortrait = game_ui_player_faces[i][pPlayer->portraitImageIndex];  // pFace = (Texture_MM7*)game_ui_player_faces[i][pFrame->uTextureID];
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
                 render->DrawTextureGrayShade(
                     pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f,

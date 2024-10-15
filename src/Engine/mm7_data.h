@@ -54,7 +54,7 @@ extern std::array<const char *, 25> pPlayerPortraitsNames;
 
 extern std::array<std::array<unsigned char, 25>, 48> byte_4ECF08;
 extern IndexedArray<std::array<unsigned char, 3>, SPEECH_FIRST, SPEECH_LAST> speechVariants;
-extern IndexedArray<std::array<unsigned char, 5>, SPEECH_FIRST, SPEECH_LAST> expressionVariants;
+extern IndexedArray<std::array<unsigned char, 5>, SPEECH_FIRST, SPEECH_LAST> portraitVariants;
 extern std::array<int16_t, 4> pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing;
 extern IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> skills_max_level;
 extern IndexedArray<Duration, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> base_recovery_times_per_weapon_type;

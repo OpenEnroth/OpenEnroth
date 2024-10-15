@@ -398,12 +398,12 @@ struct Player_MM7 {
     /* 1A99 */ char healthRelated;
     /* 1A9A */ char fullManaBonus;
     /* 1A9B */ char manaRelated;
-    /* 1A9C */ uint16_t expression;
-    /* 1A9E */ uint16_t expressionTimePassed;
-    /* 1AA0 */ uint16_t expressionTimeLength;
-    /* 1AA2 */ int16_t field_1AA2;
-    /* 1AA4 */ int32_t _expression21_animtime;
-    /* 1AA8 */ int32_t _expression21_frameset;
+    /* 1A9C */ uint16_t portrait;
+    /* 1A9E */ uint16_t portraitTimePassed;
+    /* 1AA0 */ uint16_t portraitTimeLength;
+    /* 1AA2 */ int16_t portraitImageIndex;
+    /* 1AA4 */ int32_t talkAnimTime;
+    /* 1AA8 */ int32_t talkFrameSet;
     /* 1AAC */ std::array<LloydBeacon_MM7, 5> installedBeacons;
     /* 1B38 */ char numDivineInterventionCasts;
     /* 1B39 */ char numArmageddonCasts;
@@ -1109,7 +1109,7 @@ void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst);
 
 
 struct PlayerFrame_MM7 {
-    uint16_t expression;
+    uint16_t portrait;
     uint16_t uTextureID;
     int16_t uAnimTime;
     int16_t uAnimLength;

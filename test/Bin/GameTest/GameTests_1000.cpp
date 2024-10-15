@@ -135,7 +135,7 @@ GAME_TEST(Issues, Issue1155) {
 GAME_TEST(Issues, Issue1164) {
     // PORTRAIT_NO animation ending abruptly - should show the character moving his/her head to the left,
     // then to the right.
-    auto expressionTape = tapes.custom([] { return std::pair(pParty->pCharacters[0].expression, pEventTimer->time()); });
+    auto expressionTape = tapes.custom([] { return std::pair(pParty->pCharacters[0].portrait, pEventTimer->time()); });
     auto frameTimeTape = tapes.config(engine->config->debug.TraceFrameTimeMs);
     test.playTraceFromTestData("issue_1164.mm7", "issue_1164.json");
     EXPECT_EQ(frameTimeTape, tape(15)); // Don't redo at other frame rates.
@@ -193,7 +193,7 @@ GAME_TEST(Issues, Issue1191) {
 
 GAME_TEST(Issues, Issue1196) {
     // Assert fails in Character::playEmotion when character looks down
-    auto expr = tapes.custom([] { return pParty->activeCharacter().expression; });
+    auto expr = tapes.custom([] { return pParty->activeCharacter().portrait; });
     test.playTraceFromTestData("issue_1196.mm7", "issue_1196.json");
     EXPECT_MISSES(expr, PORTRAIT_32);
     EXPECT_CONTAINS(expr, PORTRAIT_LOOK_UP);
@@ -509,8 +509,8 @@ GAME_TEST(Issues, Issue1370) {
     EXPECT_TRUE(fuzzyEquals(2.49f, pAudioPlayer->getSoundLength(static_cast<SoundId>(6480)), 0.001f));
 
     // Can be any character selected to talk on map change
-    auto someonesTalking = tapes.custom([] { for (const auto& ch : pParty->pCharacters) if (ch.expression == PORTRAIT_TALK) return true; return false; });
-    auto talkExprTimeTape = tapes.custom([] { for (const auto& ch : pParty->pCharacters) if (ch.expression == PORTRAIT_TALK) return ch.uExpressionTimeLength; return Duration(); });
+    auto someonesTalking = tapes.custom([] { for (const auto& ch : pParty->pCharacters) if (ch.portrait == PORTRAIT_TALK) return true; return false; });
+    auto talkExprTimeTape = tapes.custom([] { for (const auto& ch : pParty->pCharacters) if (ch.portrait == PORTRAIT_TALK) return ch.portraitTimeLength; return Duration(); });
     test.playTraceFromTestData("issue_1370.mm7", "issue_1370.json", [] { engine->config->settings.VoiceLevel.setValue(1); });
     EXPECT_CONTAINS(someonesTalking, true);
     EXPECT_GT(talkExprTimeTape.max(), 128_ticks);  // Check that we have at least a second of speech to cover all
@@ -803,7 +803,7 @@ GAME_TEST(Issues, Issue1478) {
 
 GAME_TEST(Issues, Issue1479) {
     // Crash when identifying Chaos Hydra with ID Monster skill.
-    auto expressionTape = charTapes.expression(2);
+    auto expressionTape = charTapes.portrait(2);
     test.playTraceFromTestData("issue_1479.mm7", "issue_1479.json");
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_MONSTER_ID).mastery(), CHARACTER_SKILL_MASTERY_GRANDMASTER);
     EXPECT_CONTAINS(expressionTape, PORTRAIT_47); // Reaction to strong monster id.
