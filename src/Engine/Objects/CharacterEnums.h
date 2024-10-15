@@ -344,12 +344,20 @@ enum class CharacterPortrait : uint16_t {
     PORTRAIT_WIDE_SMILE = 38,
     PORTRAIT_SAD = 39,
     PORTRAIT_CAST_SPELL = 40,
-
-    // ?
+    PORTRAIT_41 = 41,
+    PORTRAIT_42 = 42,
+    PORTRAIT_43 = 43,
+    PORTRAIT_44 = 44,
+    PORTRAIT_45 = 45,
 
     PORTRAIT_SCARED = 46,  // like falling
     PORTRAIT_47 = 47,
-
+    PORTRAIT_48 = 48,
+    PORTRAIT_49 = 49,
+    PORTRAIT_50 = 50,
+    PORTRAIT_51 = 51,
+    PORTRAIT_52 = 52,
+    PORTRAIT_53 = 53,
     PORTRAIT_54 = 54,
     PORTRAIT_55 = 55,
     PORTRAIT_56 = 56,

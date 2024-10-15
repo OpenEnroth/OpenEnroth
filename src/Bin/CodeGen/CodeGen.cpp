@@ -24,6 +24,7 @@
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
 #include "Engine/EngineFileSystem.h"
+#include "Engine/mm7_data.h"
 
 #include "GUI/UI/Houses/TownHall.h"
 
@@ -477,6 +478,24 @@ int runDecorationsCodegen(const CodeGenOptions &options, GameResourceManager *re
     return 0;
 }
 
+int runSpeechPortraitsCodegen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
+    std::vector<std::array<std::string, 7>> table;
+    for (CharacterSpeech speech : portraitVariants.indices()) {
+        auto &line = table.emplace_back();
+        line[0] = fmt::format("{{{}, ", toString(speech));
+        line[1] = "{";
+        for (int i = 2; auto portrait : portraitVariants[speech])
+            line[i++] = toString(static_cast<CharacterPortrait>(portrait)) + ", ";
+        line[6].pop_back();
+        line[6].pop_back(); // Drop the last ", ".
+        line[6] += "}},";
+    }
+
+    // Dump!
+    dumpAligned(stdout, "    ", table);
+    return 0;
+}
+
 int platformMain(int argc, char **argv) {
     try {
         UnicodeCrt _(argc, argv);
@@ -499,6 +518,7 @@ int platformMain(int argc, char **argv) {
         case CodeGenOptions::SUBCOMMAND_BOUNTY_HUNT: return runBountyHuntCodeGen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_MUSIC: return runMusicCodeGen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_DECORATIONS: return runDecorationsCodegen(options, &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_SPEECH_PORTRAITS: return runSpeechPortraitsCodegen(options, &resourceManager);
         default:
             assert(false);
             return 1;

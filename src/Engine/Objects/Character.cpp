@@ -7040,7 +7040,7 @@ void Character::tickRegeneration(int tick5, const RegenData &rData, bool stackin
 
 void Character::playReaction(CharacterSpeech speech, int a3) {
     int speechCount = 0;
-    int expressionCount = 0;
+    int portraitCount = 0;
     int pickedSoundID = 0;
 
     if (engine->config->settings.VoiceLevel.value() > 0) {
@@ -7061,19 +7061,19 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
     }
 
     for (int i = 0; i < portraitVariants[speech].size(); i++) {
-        if (portraitVariants[speech][i]) {
-            expressionCount++;
+        if (portraitVariants[speech][i] != PORTRAIT_INVALID) {
+            portraitCount++;
         }
     }
-    if (expressionCount) {
-        CharacterPortrait expression = (CharacterPortrait)portraitVariants[speech][vrng->random(expressionCount)];
+    if (portraitCount) {
+        CharacterPortrait portrait = portraitVariants[speech][vrng->random(portraitCount)];
         Duration expressionDuration;
-        if (expression == PORTRAIT_TALK && pickedSoundID) {
+        if (portrait == PORTRAIT_TALK && pickedSoundID) {
             if (pickedSoundID >= 0) {
                 expressionDuration = Duration::fromRealtimeMilliseconds(1000 * pAudioPlayer->getSoundLength(static_cast<SoundId>(pickedSoundID))); // Was (sLastTrackLengthMS << 7) / 1000;
             }
         }
-        playEmotion(expression, expressionDuration);
+        playEmotion(portrait, expressionDuration);
     }
 }
 
