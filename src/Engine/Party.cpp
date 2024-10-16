@@ -714,6 +714,9 @@ void Party::updateCharactersAndHirelingsEmotions() {
 
         Condition condition = player.GetMajorConditionIdx();
         if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
+            if (player.portrait == PORTRAIT_TALK)
+                player.talkAnimation.update(pMiscTimer->dt());
+
             if (player.portraitTimePassed < player.portraitTimeLength)
                 continue;
 

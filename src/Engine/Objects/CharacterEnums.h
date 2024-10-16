@@ -362,7 +362,7 @@ enum class CharacterPortrait : uint16_t {
     PORTRAIT_55 = 55,
     PORTRAIT_56 = 56,
     PORTRAIT_57 = 57,
-    PORTRAIT_FALLING = 58, // TODO(pskelton): is this actually used or just fear?
+    PORTRAIT_WAKE_UP = 58,
 
     // ?
 

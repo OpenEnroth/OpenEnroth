@@ -1288,7 +1288,6 @@ void GameUI_DrawPartySpells() {
 
 //----- (004921C1) --------------------------------------------------------
 void GameUI_DrawPortraits() {
-    int faceAnimationId;  // eax@17
     GraphicsImage *pPortrait;                 // [sp-4h] [bp-1Ch]@27
 
     pParty->updateDelayedReaction();
@@ -1315,15 +1314,13 @@ void GameUI_DrawPortraits() {
                     388 / 480.0f, pPortrait);
             continue;
         }
-        faceAnimationId = pPortraitFrameTable->animationId(pPlayer->portrait);
-        if (faceAnimationId == 0)
-            faceAnimationId = 1; // TODO(captainurist): this shouldn't be needed.
 
         int faceTextureIndex = 1;
         if (pPlayer->portrait == PORTRAIT_TALK)
-            faceTextureIndex = pPortraitFrameTable->talkFrameIndex(&pPlayer->talkFrameSet, &pPlayer->talkAnimTime, pMiscTimer->dt());
+            faceTextureIndex = pPlayer->talkAnimation.currentFrameIndex();
         else
-            faceTextureIndex = pPortraitFrameTable->animationFrameIndex(faceAnimationId, pPlayer->portraitTimePassed);
+            faceTextureIndex = pPortraitFrameTable->animationFrameIndex(pPortraitFrameTable->animationId(pPlayer->portrait),
+                                                                        pPlayer->portraitTimePassed);
         if (true /* || pPlayer->uExpressionImageIndex != pFrame->uTextureID - 1*/) {
             pPlayer->portraitImageIndex = faceTextureIndex - 1;
             pPortrait = game_ui_player_faces[i][pPlayer->portraitImageIndex];  // pFace = (Texture_MM7*)game_ui_player_faces[i][pFrame->uTextureID];

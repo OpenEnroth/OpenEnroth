@@ -1629,7 +1629,6 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     GraphicsImage *v13;              // eax@6
     std::string spellName;   // eax@16
     int v36;                 // esi@22
-    signed int uFramesetID;  // [sp+20h] [bp-8h]@9
     int uFramesetIDa;        // [sp+20h] [bp-8h]@18
     Character *player = &pParty->pCharacters[characterIndex];
 
@@ -1648,14 +1647,12 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     } else if (player->IsDead()) {
         v13 = game_ui_player_face_dead;
     } else {
-        uFramesetID = pPortraitFrameTable->animationId(player->portrait);
-        if (!uFramesetID)
-            uFramesetID = 1;
         int faceTextureIndex = 1;
         if (player->portrait == PORTRAIT_TALK)
-            faceTextureIndex = pPortraitFrameTable->talkFrameIndex(&player->talkFrameSet, &player->talkAnimTime, pMiscTimer->dt());
+            faceTextureIndex = player->talkAnimation.currentFrameIndex();
         else
-            faceTextureIndex = pPortraitFrameTable->animationFrameIndex(uFramesetID, pMiscTimer->time());
+            faceTextureIndex = pPortraitFrameTable->animationFrameIndex(pPortraitFrameTable->animationId(player->portrait),
+                                                                        pMiscTimer->time());
         player->portraitImageIndex = faceTextureIndex - 1;
         v13 = game_ui_player_faces[characterIndex][faceTextureIndex - 1];
     }

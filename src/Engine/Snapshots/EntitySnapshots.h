@@ -401,7 +401,8 @@ struct Player_MM7 {
     /* 1A9E */ uint16_t portraitTimePassed;
     /* 1AA0 */ uint16_t portraitTimeLength;
     /* 1AA2 */ int16_t portraitImageIndex;
-    /* 1AA4 */ int32_t talkAnimTime;
+    /* 1AA4 */ int32_t talkAnimTime; // In OE we always set this to 0. Makes little sense to save & restore speech
+                                     // animation state since we don't restart speech sounds when loading a saved game.
     /* 1AA8 */ int32_t talkFrameSet;
     /* 1AAC */ std::array<LloydBeacon_MM7, 5> installedBeacons;
     /* 1B38 */ char numDivineInterventionCasts;

@@ -36,19 +36,3 @@ int PortraitFrameTable::animationFrameIndex(int animationId, Duration frameTime)
     }
     return pFrames[animationId].textureIndex;
 }
-
-//----- (00494B5E) --------------------------------------------------------
-int PortraitFrameTable::talkFrameIndex(int *animationId, Duration *currentTime, Duration dt) {
-    // TODO(captainurist): just move this code out of PortraitFrameTable.
-    Duration updatedTime = *currentTime + dt;
-    if (updatedTime < pFrames[*animationId].frameLength) {
-        *currentTime = updatedTime;
-    } else {
-        int v6 = vrng->random(4) + 21; // 21 is index of PORTRAIT_TALK.
-        *animationId = v6;
-        // TODO(captainurist): Technically this is bugged, we need to redo this in the same fashion as it's done for
-        //                     other animations, just with a random index on each iteration.
-        *currentTime = updatedTime % this->pFrames[v6].frameLength;
-    }
-    return this->pFrames[*animationId].textureIndex;
-}

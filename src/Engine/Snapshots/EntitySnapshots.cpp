@@ -863,8 +863,8 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->portraitTimePassed = src.portraitTimePassed.ticks();
     dst->portraitTimeLength = src.portraitTimeLength.ticks();
     dst->portraitImageIndex = src.portraitImageIndex;
-    dst->talkAnimTime = src.talkAnimTime.ticks();
-    dst->talkFrameSet = src.talkFrameSet;
+    dst->talkAnimTime = 0;
+    dst->talkFrameSet = 0;
 
     for (unsigned int i = 0; i < 5; ++i) {
         if (i >= src.vBeacons.size()) {
@@ -1104,8 +1104,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->portraitTimePassed = Duration::fromTicks(src.portraitTimePassed);
     dst->portraitTimeLength = Duration::fromTicks(src.portraitTimeLength);
     dst->portraitImageIndex = src.portraitImageIndex;
-    dst->talkAnimTime = Duration::fromTicks(src.talkAnimTime);
-    dst->talkFrameSet = src.talkFrameSet;
+    dst->talkAnimation = TalkAnimation();
 
     for (int z = 0; z < dst->vBeacons.size(); z++)
         dst->vBeacons[z].image->Release();

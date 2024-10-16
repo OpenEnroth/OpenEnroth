@@ -9,7 +9,6 @@ struct PortraitFrameTable {
     int animationId(CharacterPortrait portrait);
     Duration animationDuration(CharacterPortrait portrait);
     int animationFrameIndex(int animationId, Duration frameTime);
-    int talkFrameIndex(int *animationId, Duration *currentTime, Duration dt);
 
     std::vector<PortraitFrameData> pFrames;
 };

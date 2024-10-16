@@ -7084,11 +7084,10 @@ void Character::playEmotion(CharacterPortrait newPortrait, Duration duration) {
     if (portrait == PORTRAIT_DEAD ||
         portrait == PORTRAIT_ERADICATED) {
         return;  // no react
-    } else if (portrait == PORTRAIT_PETRIFIED &&
-               newPortrait != PORTRAIT_FALLING) {
+    } else if (portrait == PORTRAIT_PETRIFIED && newPortrait != PORTRAIT_WAKE_UP) {
         return;  // no react
     } else {
-        if (portrait != PORTRAIT_SLEEP || newPortrait != PORTRAIT_FALLING) {
+        if (!(portrait == PORTRAIT_SLEEP && newPortrait == PORTRAIT_WAKE_UP)) {
             if (portrait >= PORTRAIT_CURSED && portrait <= PORTRAIT_UNCONSCIOUS && portrait != PORTRAIT_POISONED &&
                 !(newPortrait == PORTRAIT_DMGRECVD_MINOR ||
                   newPortrait == PORTRAIT_DMGRECVD_MODERATE ||
@@ -7106,6 +7105,9 @@ void Character::playEmotion(CharacterPortrait newPortrait, Duration duration) {
     } else {
         this->portraitTimeLength = duration;
     }
+
+    if (newPortrait == PORTRAIT_TALK)
+        talkAnimation.init();
 
     portrait = newPortrait;
 }
@@ -7287,8 +7289,7 @@ void Character::Zero() {
     portraitTimePassed = 0_ticks;
     portraitTimeLength = 0_ticks;
     portraitImageIndex = 0;
-    talkAnimTime = 0_ticks;
-    talkFrameSet = 0;
+    talkAnimation = TalkAnimation();
     // Black potions
     _pureStatPotionUsed.fill(false);
 }
