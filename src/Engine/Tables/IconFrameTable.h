@@ -54,21 +54,4 @@ struct IconFrameTable {
     std::vector<Icon> pIcons;
 };
 
-class UIAnimation {
- public:
-    Icon *icon;
-
-    int16_t uAnimTime;
-    Duration uAnimLength;
-    int16_t x;
-    int16_t y;
-};
-
 extern IconFrameTable *pIconsFrameTable;
-
-extern UIAnimation *pUIAnim_Food;
-extern UIAnimation *pUIAnim_Gold;
-extern UIAnimation *pUIAnum_Torchlight;
-extern UIAnimation *pUIAnim_WizardEye;
-
-extern std::array<UIAnimation *, 4> pUIAnims;

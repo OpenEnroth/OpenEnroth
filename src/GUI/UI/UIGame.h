@@ -1,7 +1,10 @@
 #pragma once
+
 #include <string>
 
 #include "GUI/GUIWindow.h"
+
+class Icon;
 
 void GameUI_LoadPlayerPortraintsAndVoices();
 void GameUI_ReloadPlayerPortraits(int player_id, int face_id);
@@ -107,6 +110,9 @@ extern GraphicsImage *game_ui_playerbuff_pain_reflection;
 extern GraphicsImage *game_ui_playerbuff_hammerhands;
 extern GraphicsImage *game_ui_playerbuff_preservation;
 extern GraphicsImage *game_ui_playerbuff_bless;
+
+extern Icon *game_ui_wizardEye;
+extern Icon *game_ui_torchLight;
 
 extern bool bFlashHistoryBook;
 extern bool bFlashAutonotesBook;

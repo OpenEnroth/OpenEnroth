@@ -44,23 +44,6 @@ Party *pParty = nullptr;
 
 ActionQueue *pPartyActionQueue = new ActionQueue;
 
-struct {
-    UIAnimation _pUIAnim_Food;
-    UIAnimation _pUIAnim_Gold;
-    UIAnimation _pUIAnum_Torchlight;
-    UIAnimation _pUIAnim_WizardEye;
-} _uianim;
-
-UIAnimation *pUIAnim_Food = &_uianim._pUIAnim_Food;
-UIAnimation *pUIAnim_Gold = &_uianim._pUIAnim_Gold;
-UIAnimation *pUIAnum_Torchlight = &_uianim._pUIAnum_Torchlight;
-UIAnimation *pUIAnim_WizardEye = &_uianim._pUIAnim_WizardEye;
-
-std::array<UIAnimation *, 4>
-    pUIAnims =  // was struct byt defined as class
-    {&_uianim._pUIAnim_Food, &_uianim._pUIAnim_Gold,
-     &_uianim._pUIAnum_Torchlight, &_uianim._pUIAnim_WizardEye};
-
 //----- (0044A56A) --------------------------------------------------------
 int Party::CountHirelings() {  // non hired followers
     cNonHireFollowers = 0;
@@ -283,18 +266,6 @@ bool Party::hasItem(ItemId uItemID) {
     return false;
 }
 
-void ui_play_gold_anim() {
-    pUIAnim_Gold->uAnimTime = 0;
-    pUIAnim_Gold->uAnimLength = pUIAnim_Gold->icon->GetAnimLength();
-    pAudioPlayer->playUISound(SOUND_gold01);
-}
-
-void ui_play_food_anim() {
-    pUIAnim_Food->uAnimTime = 0;
-    pUIAnim_Food->uAnimLength = pUIAnim_Food->icon->GetAnimLength();
-    // pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
-}
-
 //----- (00492AD5) --------------------------------------------------------
 void Party::SetFood(int amount) {
     if (amount > 65535)
@@ -304,7 +275,7 @@ void Party::SetFood(int amount) {
 
     uNumFoodRations = amount;
 
-    ui_play_food_anim();
+    // pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
 }
 
 //----- (00492B03) --------------------------------------------------------
@@ -340,7 +311,8 @@ void Party::SetGold(int amount, bool silent) {
 
     uNumGold = amount;
 
-    if (!silent) ui_play_gold_anim();
+    if (!silent)
+        pAudioPlayer->playUISound(SOUND_gold01);
 }
 
 void Party::AddGold(int amount) {

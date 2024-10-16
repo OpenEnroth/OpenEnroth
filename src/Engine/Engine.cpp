@@ -731,18 +731,19 @@ void Engine::SecondaryInitialization() {
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
 
-    for (unsigned i = 0; i < 4; ++i) {
-        static const char *pUIAnimNames[4] = {"glow03", "glow05", "torchA", "wizeyeA"};
-        static unsigned short _4E98D0[4][4] = { {479, 0, 329, 0}, {585, 0, 332, 0}, {468, 0, 0, 0}, {606, 0, 0, 0} };
-
-        // pUIAnims[i]->uIconID = pIconsFrameTable->FindIcon(pUIAnimNames[i]);
-        pUIAnims[i]->icon = pIconsFrameTable->GetIcon(pUIAnimNames[i]);
-
-        pUIAnims[i]->uAnimLength = 0_ticks;
-        pUIAnims[i]->uAnimTime = 0;
-        pUIAnims[i]->x = _4E98D0[i][0];
-        pUIAnims[i]->y = _4E98D0[i][2];
-    }
+    // TODO(captainurist): try resurrecting the food / gold animations using resource files from MM6?
+    //for (unsigned i = 0; i < 4; ++i) {
+    //    static const char *pUIAnimNames[4] = {"glow03", "glow05", "torchA", "wizeyeA"};
+    //    static unsigned short _4E98D0[4][4] = { {479, 0, 329, 0}, {585, 0, 332, 0}, {468, 0, 0, 0}, {606, 0, 0, 0} };
+    //
+    //    // pUIAnims[i]->uIconID = pIconsFrameTable->FindIcon(pUIAnimNames[i]);
+    //    pUIAnims[i]->icon = pIconsFrameTable->GetIcon(pUIAnimNames[i]);
+    //
+    //    pUIAnims[i]->uAnimLength = 0_ticks;
+    //    pUIAnims[i]->uAnimTime = 0_ticks;
+    //    pUIAnims[i]->x = _4E98D0[i][0];
+    //    pUIAnims[i]->y = _4E98D0[i][2];
+    //}
 
     // TODO(pskelton): dropping this causes std::bad_alloc in headless mode
     UI_Create();

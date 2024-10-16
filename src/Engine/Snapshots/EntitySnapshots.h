@@ -27,7 +27,6 @@ class SoundInfo;
 class SpriteFrame;
 class TextureFrame;
 class TileDesc;
-class UIAnimation;
 struct ActiveOverlay;
 struct ActiveOverlayList;
 struct ActorJob;
@@ -635,7 +634,8 @@ void snapshot(const Icon &src, IconFrame_MM7 *dst);
 void reconstruct(const IconFrame_MM7 &src, Icon *dst);
 
 
-struct UIAnimation_MM7 {
+// This seems to be an MM6-only struct, not really used in MM7.
+struct UIAnimation_MM6 {
     /* 000 */ uint16_t iconId;
     /* 002 */ int16_t field_2;
     /* 004 */ int16_t animTime;
@@ -644,11 +644,8 @@ struct UIAnimation_MM7 {
     /* 00A */ int16_t y;
     /* 00C */ char field_C;
 };
-static_assert(sizeof(UIAnimation_MM7) == 0xD);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(UIAnimation_MM7)
-
-void snapshot(const UIAnimation &src, UIAnimation_MM7 *dst);
-void reconstruct(const UIAnimation_MM7 &src, UIAnimation *dst);
+static_assert(sizeof(UIAnimation_MM6) == 0xD);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(UIAnimation_MM6)
 
 
 struct MonsterInfo_MM7 {

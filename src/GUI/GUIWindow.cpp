@@ -635,8 +635,8 @@ void SetUserInterface(PartyAlignment align) {
         game_ui_playerbuff_hammerhands = assets->getImage_ColorKey("isg-03-c");
         game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-c");
 
-        pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeC");
-        pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchC");
+        game_ui_wizardEye = pIconsFrameTable->GetIcon("wizeyeC");
+        game_ui_torchLight = pIconsFrameTable->GetIcon("torchC");
 
         game_ui_evtnpc = assets->getImage_ColorKey("evtnpc-c");
         ui_character_inventory_background = assets->getImage_ColorKey("fr_inven-c");
@@ -684,8 +684,8 @@ void SetUserInterface(PartyAlignment align) {
         game_ui_playerbuff_hammerhands = assets->getImage_ColorKey("isg-03-a");
         game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-a");
 
-        pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeA");
-        pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchA");
+        game_ui_wizardEye = pIconsFrameTable->GetIcon("wizeyeA");
+        game_ui_torchLight = pIconsFrameTable->GetIcon("torchA");
 
         game_ui_evtnpc = assets->getImage_ColorKey("evtnpc");
         ui_character_inventory_background = assets->getImage_ColorKey("fr_inven");
@@ -733,8 +733,8 @@ void SetUserInterface(PartyAlignment align) {
         game_ui_playerbuff_hammerhands = assets->getImage_ColorKey("isg-03-b");
         game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-b");
 
-        pUIAnim_WizardEye->icon = pIconsFrameTable->GetIcon("wizeyeB");
-        pUIAnum_Torchlight->icon = pIconsFrameTable->GetIcon("torchB");
+        game_ui_wizardEye = pIconsFrameTable->GetIcon("wizeyeB");
+        game_ui_torchLight = pIconsFrameTable->GetIcon("torchB");
 
         game_ui_evtnpc = assets->getImage_ColorKey("evtnpc-b");
         ui_character_inventory_background = assets->getImage_ColorKey("fr_inven-b");

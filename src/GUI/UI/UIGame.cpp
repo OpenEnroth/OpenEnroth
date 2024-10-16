@@ -159,6 +159,9 @@ GraphicsImage *game_ui_playerbuff_hammerhands = nullptr;
 GraphicsImage *game_ui_playerbuff_preservation = nullptr;
 GraphicsImage *game_ui_playerbuff_bless = nullptr;
 
+Icon *game_ui_wizardEye = nullptr;
+Icon *game_ui_torchLight = nullptr;
+
 bool bFlashHistoryBook;
 bool bFlashAutonotesBook;
 bool bFlashQuestBook;
@@ -1641,16 +1644,16 @@ void GameUI_DrawTorchlightAndWizardEye() {
         current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) {
         if (pParty->TorchlightActive()) {
             render->DrawTextureNew(
-                pUIAnum_Torchlight->x / 640.0f, pUIAnum_Torchlight->y / 480.0f,
+                468 / 640.0f, 0.0f,
                 pIconsFrameTable
-                    ->GetFrame(pUIAnum_Torchlight->icon->id, pMiscTimer->time())
+                    ->GetFrame(game_ui_torchLight->id, pMiscTimer->time())
                     ->GetTexture());
         }
         if (pParty->wizardEyeActive()) {
             render->DrawTextureNew(
-                pUIAnim_WizardEye->x / 640.0f, pUIAnim_WizardEye->y / 480.0f,
+                606 / 640.0f, 0.0f,
                 pIconsFrameTable
-                    ->GetFrame(pUIAnim_WizardEye->icon->id, pMiscTimer->time())
+                    ->GetFrame(game_ui_wizardEye->id, pMiscTimer->time())
                     ->GetTexture());
         }
     }
