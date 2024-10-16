@@ -375,6 +375,7 @@ IndexedArray<std::array<CharacterPortrait, 5>, SPEECH_FIRST, SPEECH_LAST> portra
     {SPEECH_TRAP_DISARMED,       {PORTRAIT_47,             PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_TRAP_EXPLODED,       {PORTRAIT_41,             PORTRAIT_42,                PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_AVOID_DAMAGE,        {PORTRAIT_AVOID_DAMAGE,   PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
+    // TODO(captainurist): Something's off here. PORTRAIT_TALK is a special animated portrait that's played back for the length of the speech sound.
     {SPEECH_ID_ITEM_WEAK,        {PORTRAIT_TALK,           PORTRAIT_MOUTH_OPEN_WIDE,   PORTRAIT_MOUTH_OPEN_A,   PORTRAIT_MOUTH_OPEN_O, PORTRAIT_45}},
     {SPEECH_ID_ITEM_STRONG,      {PORTRAIT_47,             PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_ID_ITEM_FAIL,        {PORTRAIT_43,             PORTRAIT_48,                PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},

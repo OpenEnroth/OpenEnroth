@@ -39,6 +39,7 @@ int PortraitFrameTable::animationFrameIndex(int animationId, Duration frameTime)
 
 //----- (00494B5E) --------------------------------------------------------
 int PortraitFrameTable::talkFrameIndex(int *animationId, Duration *currentTime, Duration dt) {
+    // TODO(captainurist): just move this code out of PortraitFrameTable.
     Duration updatedTime = *currentTime + dt;
     if (updatedTime < pFrames[*animationId].frameLength) {
         *currentTime = updatedTime;
