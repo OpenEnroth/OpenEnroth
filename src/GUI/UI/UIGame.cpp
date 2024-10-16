@@ -159,8 +159,8 @@ GraphicsImage *game_ui_playerbuff_hammerhands = nullptr;
 GraphicsImage *game_ui_playerbuff_preservation = nullptr;
 GraphicsImage *game_ui_playerbuff_bless = nullptr;
 
-Icon *game_ui_wizardEye = nullptr;
-Icon *game_ui_torchLight = nullptr;
+int game_ui_wizardEye = -1;
+int game_ui_torchLight = -1;
 
 bool bFlashHistoryBook;
 bool bFlashAutonotesBook;
@@ -1253,23 +1253,23 @@ void GameUI_DrawPartySpells() {
 
     if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_NPC_DIALOGUE) {
         // Flight / water walk animation is purposefully slowed down compared to what's in the data files.
-        Duration frameNum = pMiscTimer->time() * 50 / 128;
+        Duration frameTime = pMiscTimer->time() * 50 / 128;
 
         GraphicsImage *spell_texture;  // [sp-4h] [bp-1Ch]@12
 
         if (pParty->FlyActive()) {
             if (pParty->bFlying)
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, frameNum)->GetTexture();
+                spell_texture = pIconsFrameTable->animationFrame(uIconIdx_FlySpell, frameTime);
             else
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, 0_ticks)->GetTexture();
+                spell_texture = pIconsFrameTable->animationFrame(uIconIdx_FlySpell, 0_ticks);
             render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, spell_texture);
         }
 
         if (pParty->WaterWalkActive()) {
             if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER)
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, frameNum)->GetTexture();
+                spell_texture = pIconsFrameTable->animationFrame(uIconIdx_WaterWalk, frameTime);
             else
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, 0_ticks)->GetTexture();
+                spell_texture = pIconsFrameTable->animationFrame(uIconIdx_WaterWalk, 0_ticks);
             render->DrawTextureNew(396 / 640.0f, 8 / 480.0f, spell_texture);
         }
     }
@@ -1645,16 +1645,12 @@ void GameUI_DrawTorchlightAndWizardEye() {
         if (pParty->TorchlightActive()) {
             render->DrawTextureNew(
                 468 / 640.0f, 0.0f,
-                pIconsFrameTable
-                    ->GetFrame(game_ui_torchLight->id, pMiscTimer->time())
-                    ->GetTexture());
+                pIconsFrameTable->animationFrame(game_ui_torchLight, pMiscTimer->time()));
         }
         if (pParty->wizardEyeActive()) {
             render->DrawTextureNew(
                 606 / 640.0f, 0.0f,
-                pIconsFrameTable
-                    ->GetFrame(game_ui_wizardEye->id, pMiscTimer->time())
-                    ->GetTexture());
+                pIconsFrameTable->animationFrame(game_ui_wizardEye, pMiscTimer->time()));
         }
     }
 }
@@ -1679,7 +1675,7 @@ void GameUI_DrawHiredNPCs() {
                 render->DrawTextureNew(
                     pHiredNPCsIconsOffsetsX[count] / 640.0f,
                     pHiredNPCsIconsOffsetsY[count] / 480.0f,
-                    pIconsFrameTable->GetFrame(pIconsFrameTable->FindIcon("spell96"), buf.GetSacrificeStatus(i)->elapsedTime)->GetTexture());
+                    pIconsFrameTable->animationFrame(pIconsFrameTable->animationId("spell96"), buf.GetSacrificeStatus(i)->elapsedTime));
             }
         }
     }

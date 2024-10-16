@@ -635,8 +635,8 @@ void SetUserInterface(PartyAlignment align) {
         game_ui_playerbuff_hammerhands = assets->getImage_ColorKey("isg-03-c");
         game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-c");
 
-        game_ui_wizardEye = pIconsFrameTable->GetIcon("wizeyeC");
-        game_ui_torchLight = pIconsFrameTable->GetIcon("torchC");
+        game_ui_wizardEye = pIconsFrameTable->animationId("wizeyeC");
+        game_ui_torchLight = pIconsFrameTable->animationId("torchC");
 
         game_ui_evtnpc = assets->getImage_ColorKey("evtnpc-c");
         ui_character_inventory_background = assets->getImage_ColorKey("fr_inven-c");
@@ -684,8 +684,8 @@ void SetUserInterface(PartyAlignment align) {
         game_ui_playerbuff_hammerhands = assets->getImage_ColorKey("isg-03-a");
         game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-a");
 
-        game_ui_wizardEye = pIconsFrameTable->GetIcon("wizeyeA");
-        game_ui_torchLight = pIconsFrameTable->GetIcon("torchA");
+        game_ui_wizardEye = pIconsFrameTable->animationId("wizeyeA");
+        game_ui_torchLight = pIconsFrameTable->animationId("torchA");
 
         game_ui_evtnpc = assets->getImage_ColorKey("evtnpc");
         ui_character_inventory_background = assets->getImage_ColorKey("fr_inven");
@@ -733,8 +733,8 @@ void SetUserInterface(PartyAlignment align) {
         game_ui_playerbuff_hammerhands = assets->getImage_ColorKey("isg-03-b");
         game_ui_playerbuff_pain_reflection = assets->getImage_ColorKey("isg-04-b");
 
-        game_ui_wizardEye = pIconsFrameTable->GetIcon("wizeyeB");
-        game_ui_torchLight = pIconsFrameTable->GetIcon("torchB");
+        game_ui_wizardEye = pIconsFrameTable->animationId("wizeyeB");
+        game_ui_torchLight = pIconsFrameTable->animationId("torchB");
 
         game_ui_evtnpc = assets->getImage_ColorKey("evtnpc-b");
         ui_character_inventory_background = assets->getImage_ColorKey("fr_inven-b");
@@ -1068,8 +1068,8 @@ static void LoadPartyBuffIcons() {
         party_buff_icons[i] = assets->getImage_Paletted(fmt::format("isn-{:02}", i + 1));
     }
 
-    uIconIdx_FlySpell = pIconsFrameTable->FindIcon("spell21");
-    uIconIdx_WaterWalk = pIconsFrameTable->FindIcon("spell27");
+    uIconIdx_FlySpell = pIconsFrameTable->animationId("spell21");
+    uIconIdx_WaterWalk = pIconsFrameTable->animationId("spell27");
 }
 
 void UI_Create() {

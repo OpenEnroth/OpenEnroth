@@ -46,10 +46,9 @@ class Icon {
 };
 
 struct IconFrameTable {
-    Icon *GetIcon(unsigned int idx);
-    Icon *GetIcon(const char *pIconName);
-    unsigned int FindIcon(std::string_view pIconName);
-    Icon *GetFrame(unsigned int uIconID, Duration frame_time);
+    int animationId(std::string_view animationName) const; // By animation name.
+    Duration animationLength(int animationId) const;
+    GraphicsImage *animationFrame(int animationId, Duration frameTime);
 
     std::vector<Icon> pIcons;
 };

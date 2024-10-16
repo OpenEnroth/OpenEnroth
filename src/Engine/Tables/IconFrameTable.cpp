@@ -1,4 +1,6 @@
-#include "Engine/Tables/IconFrameTable.h"
+#include "IconFrameTable.h"
+
+#include <cassert>
 
 #include "Engine/AssetsManager.h"
 
@@ -14,40 +16,31 @@ GraphicsImage *Icon::GetTexture() {
     return this->img;
 }
 
-Icon *IconFrameTable::GetIcon(unsigned int idx) {
-    if (idx < pIcons.size()) return &this->pIcons[idx];
-    return nullptr;
-}
-
-Icon *IconFrameTable::GetIcon(const char *pIconName) {
-    for (unsigned int i = 0; i < pIcons.size(); i++) {
-        if (ascii::noCaseEquals(pIconName, this->pIcons[i].GetAnimationName()))
-            return &this->pIcons[i];
-    }
-    return nullptr;
-}
-
-//----- (00494F3A) --------------------------------------------------------
-unsigned int IconFrameTable::FindIcon(std::string_view pIconName) {
-    for (size_t i = 0; i < pIcons.size(); i++) {
-        if (ascii::noCaseEquals(pIconName, this->pIcons[i].GetAnimationName()))
+int IconFrameTable::animationId(std::string_view animationName) const {
+    for (size_t i = 0; i < pIcons.size(); i++)
+        if (ascii::noCaseEquals(animationName, this->pIcons[i].GetAnimationName()))
             return i;
-    }
-    return 0;
+    return -1;
 }
 
-//----- (00494F70) --------------------------------------------------------
-Icon *IconFrameTable::GetFrame(unsigned int uIconID, Duration frame_time) {
-    if (this->pIcons[uIconID].uFlags & FRAME_HAS_MORE && this->pIcons[uIconID].GetAnimLength()) {
-        Duration t = frame_time;
+Duration IconFrameTable::animationLength(int animationId) const {
+    const Icon &icon = pIcons[animationId];
+    assert(icon.uFlags & FRAME_FIRST);
+    return icon.GetAnimLength();
+}
 
-        t = t % this->pIcons[uIconID].GetAnimLength();
+GraphicsImage *IconFrameTable::animationFrame(int animationId, Duration frameTime) {
+    Icon &icon = pIcons[animationId];
+    assert(icon.uFlags & FRAME_FIRST);
 
-        int i;
-        for (i = uIconID; t >= this->pIcons[i].GetAnimTime(); i++)
-            t -= this->pIcons[i].GetAnimTime();
-        return &this->pIcons[i];
-    } else {
-        return &this->pIcons[uIconID];
-    }
+    if (!(icon.uFlags & FRAME_HAS_MORE))
+        return icon.GetTexture();
+
+    assert(icon.GetAnimLength());
+    Duration t = frameTime % icon.GetAnimLength();
+
+    int i;
+    for (i = animationId; t >= pIcons[i].GetAnimTime(); i++)
+        t -= pIcons[i].GetAnimTime();
+    return pIcons[i].GetTexture();
 }

@@ -2804,7 +2804,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                     sacrifice->inProgress = true;
                     sacrifice->elapsedTime = 0_ticks;
-                    sacrifice->endTime = pIconsFrameTable->GetIcon("spell96")->GetAnimLength();
+                    sacrifice->endTime = pIconsFrameTable->animationLength(pIconsFrameTable->animationId("spell96"));
 
                     for (Character &character : pParty->pCharacters) {
                         character.health = character.GetMaxHealth();

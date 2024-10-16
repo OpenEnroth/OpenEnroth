@@ -5,7 +5,7 @@
 #include "Engine/Time/Duration.h"
 #include "Engine/TurnEngine/TurnEngineEnums.h"
 
-class Icon;
+class GraphicsImage;
 
 enum class TurnBasedOverlayState {
     TURN_BASED_OVERLAY_NONE, // No overlay.
@@ -32,7 +32,7 @@ class TurnBasedOverlay {
     void draw();
 
  private:
-    Icon *currentIcon() const;
+    GraphicsImage *currentIcon() const;
 
  private:
     TurnBasedOverlayState _state = TURN_BASED_OVERLAY_NONE;
