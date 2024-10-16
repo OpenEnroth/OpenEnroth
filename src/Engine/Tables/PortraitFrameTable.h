@@ -5,7 +5,7 @@
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Time/Duration.h"
 
-struct PlayerFrame {
+struct PortraitFrame {
     CharacterPortrait portrait;
     uint16_t uTextureID;
     Duration uAnimTime;
@@ -13,13 +13,13 @@ struct PlayerFrame {
     int16_t uFlags;
 };
 
-struct PlayerFrameTable {
+struct PortraitFrameTable {
     unsigned int GetFrameIdByPortrait(CharacterPortrait portrait);
     Duration GetDurationByPortrait(CharacterPortrait portrait);
-    PlayerFrame *GetFrameBy_x(int uFramesetID, Duration gameTime);
-    PlayerFrame *GetFrameBy_y(int *a2, Duration *a3, Duration a4);
+    PortraitFrame *GetFrameBy_x(int uFramesetID, Duration gameTime);
+    PortraitFrame *GetFrameBy_y(int *a2, Duration *a3, Duration a4);
 
-    std::vector<PlayerFrame> pFrames;
+    std::vector<PortraitFrame> pFrames;
 };
 
-extern PlayerFrameTable *pPlayerFrameTable;  // idb
+extern PortraitFrameTable *pPortraitFrameTable;  // idb

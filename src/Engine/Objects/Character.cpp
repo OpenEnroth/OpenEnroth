@@ -31,7 +31,7 @@
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Tables/CharacterFrameTable.h"
+#include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
 #include "Engine/Tables/AutonoteTable.h"
 #include "Engine/Tables/QuestTable.h"
@@ -7100,7 +7100,7 @@ void Character::playEmotion(CharacterPortrait newPortrait, Duration duration) {
     this->portraitTimePassed = 0_ticks;
 
     if (!duration) {
-        this->portraitTimeLength = pPlayerFrameTable->GetDurationByPortrait(newPortrait);
+        this->portraitTimeLength = pPortraitFrameTable->GetDurationByPortrait(newPortrait);
         assert(this->portraitTimeLength); // GetDurationByExpression should have found the expression.
     } else {
         this->portraitTimeLength = duration;

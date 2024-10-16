@@ -20,7 +20,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Tables/CharacterFrameTable.h"
+#include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Party.h"
 #include "Engine/MapEnumFunctions.h"
@@ -1627,7 +1627,7 @@ void ShowPopupShopItem() {
 //----- (0041D3B7) --------------------------------------------------------
 void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     GraphicsImage *v13;              // eax@6
-    PlayerFrame *v15;        // eax@12
+    PortraitFrame *v15;        // eax@12
     std::string spellName;   // eax@16
     int v36;                 // esi@22
     signed int uFramesetID;  // [sp+20h] [bp-8h]@9
@@ -1649,13 +1649,13 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     } else if (player->IsDead()) {
         v13 = game_ui_player_face_dead;
     } else {
-        uFramesetID = pPlayerFrameTable->GetFrameIdByPortrait(player->portrait);
+        uFramesetID = pPortraitFrameTable->GetFrameIdByPortrait(player->portrait);
         if (!uFramesetID)
             uFramesetID = 1;
         if (player->portrait == PORTRAIT_TALK)
-            v15 = pPlayerFrameTable->GetFrameBy_y(&player->talkFrameSet, &player->talkAnimTime, pMiscTimer->dt());
+            v15 = pPortraitFrameTable->GetFrameBy_y(&player->talkFrameSet, &player->talkAnimTime, pMiscTimer->dt());
         else
-            v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID, pMiscTimer->time());
+            v15 = pPortraitFrameTable->GetFrameBy_x(uFramesetID, pMiscTimer->time());
         player->portraitImageIndex = v15->uTextureID - 1;
         v13 = game_ui_player_faces[characterIndex][v15->uTextureID - 1];
     }

@@ -147,8 +147,8 @@ std::array<int32_t, 128 * 3> sphereVertInd = {  // indicies for triangle in sphe
 #include "Engine/Tables/IconFrameTable.h"
 IconFrameTable *pIconsFrameTable;
 
-#include "Engine/Tables/CharacterFrameTable.h"
-PlayerFrameTable *pPlayerFrameTable;  // idb
+#include "Engine/Tables/PortraitFrameTable.h"
+PortraitFrameTable *pPortraitFrameTable;  // idb
 
 //-------------------------------------------------------------------------
 // Data declarations

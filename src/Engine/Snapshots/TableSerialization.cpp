@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Engine/Tables/CharacterFrameTable.h"
+#include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Objects/Chest.h"
@@ -22,7 +22,7 @@
 #include "EntitySnapshots.h"
 #include "CompositeSnapshots.h"
 
-void deserialize(const TriBlob &src, PlayerFrameTable *dst) {
+void deserialize(const TriBlob &src, PortraitFrameTable *dst) {
     dst->pFrames.clear();
 
     if (src.mm6)

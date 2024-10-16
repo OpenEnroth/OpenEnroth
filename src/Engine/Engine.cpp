@@ -50,7 +50,7 @@
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Tables/CharacterFrameTable.h"
+#include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Tables/FactionTable.h"
 #include "Engine/Tables/StorylineTextTable.h"
@@ -668,8 +668,8 @@ void Engine::MM7_Initialize() {
     pTileTable = new TileTable;
     deserialize(triLoad("dtile.bin"), pTileTable);
 
-    pPlayerFrameTable = new PlayerFrameTable;
-    deserialize(triLoad("dpft.bin"), pPlayerFrameTable);
+    pPortraitFrameTable = new PortraitFrameTable;
+    deserialize(triLoad("dpft.bin"), pPortraitFrameTable);
 
     pIconsFrameTable = new IconFrameTable;
     deserialize(triLoad("dift.bin"), pIconsFrameTable);

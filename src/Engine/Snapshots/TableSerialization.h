@@ -9,7 +9,7 @@ class SoundList;
 struct IconFrameTable;
 struct MonsterList;
 struct OverlayList;
-struct PlayerFrameTable;
+struct PortraitFrameTable;
 struct SpriteFrameTable;
 struct TextureFrameTable;
 struct TileTable;
@@ -23,7 +23,7 @@ struct TriBlob {
 /**
  * @offset 0x00494C0F
  */
-void deserialize(const TriBlob &src, PlayerFrameTable *dst);
+void deserialize(const TriBlob &src, PortraitFrameTable *dst);
 
 void deserialize(const TriBlob &src, ChestDescList *dst);
 

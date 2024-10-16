@@ -55,7 +55,7 @@ struct OutdoorLocationTileType;
 struct OverlayDesc;
 struct Party;
 struct PersistentVariables;
-struct PlayerFrame;
+struct PortraitFrame;
 struct SaveGameHeader;
 struct SpawnPoint;
 struct SpellBuff;
@@ -1118,7 +1118,7 @@ struct PlayerFrame_MM7 {
 static_assert(sizeof(PlayerFrame_MM7) == 10);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(PlayerFrame_MM7)
 
-void reconstruct(const PlayerFrame_MM7 &src, PlayerFrame *dst);
+void reconstruct(const PlayerFrame_MM7 &src, PortraitFrame *dst);
 
 
 struct LevelDecoration_MM7 {

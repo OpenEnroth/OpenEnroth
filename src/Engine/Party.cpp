@@ -20,7 +20,7 @@
 #include "Engine/Spells/SpellEnumFunctions.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Tables/CharacterFrameTable.h"
+#include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Time/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/OurMath.h"
@@ -783,7 +783,7 @@ void Party::updateCharactersAndHirelingsEmotions() {
 
             // TODO(captainurist): We overwrite the random timing from the PORTRAIT_NORMAL branch here.
             //                     Doesn't seem intentional!
-            Duration timeLength = pPlayerFrameTable->GetDurationByPortrait(player.portrait);
+            Duration timeLength = pPortraitFrameTable->GetDurationByPortrait(player.portrait);
             if (timeLength)
                 player.portraitTimeLength = timeLength;
         } else if (player.portrait != PORTRAIT_DMGRECVD_MINOR &&
