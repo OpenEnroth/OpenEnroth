@@ -21,4 +21,4 @@ add_custom_target(Run_AllTests_Headless_Parallel
         DEPENDS Run_UnitTest Run_GameTest_Headless_Parallel Run_RetraceTest_Headless_Parallel)
 # A target to build & run all tests in headless parallel mode.
 add_custom_target(test
-        DEPENDS Run_UnitTest Run_GameTest_Headless_Parallel Run_RetraceTest_Headless_Parallel)
+        DEPENDS Run_UnitTest Run_GameTest_Headless Run_RetraceTest_Headless)
