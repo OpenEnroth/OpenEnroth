@@ -1627,7 +1627,6 @@ void ShowPopupShopItem() {
 //----- (0041D3B7) --------------------------------------------------------
 void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     GraphicsImage *v13;              // eax@6
-    PortraitFrameData *v15;        // eax@12
     std::string spellName;   // eax@16
     int v36;                 // esi@22
     signed int uFramesetID;  // [sp+20h] [bp-8h]@9
@@ -1649,15 +1648,16 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     } else if (player->IsDead()) {
         v13 = game_ui_player_face_dead;
     } else {
-        uFramesetID = pPortraitFrameTable->GetFrameIdByPortrait(player->portrait);
+        uFramesetID = pPortraitFrameTable->animationId(player->portrait);
         if (!uFramesetID)
             uFramesetID = 1;
+        int faceTextureIndex = 1;
         if (player->portrait == PORTRAIT_TALK)
-            v15 = pPortraitFrameTable->GetFrameBy_y(&player->talkFrameSet, &player->talkAnimTime, pMiscTimer->dt());
+            faceTextureIndex = pPortraitFrameTable->talkFrameIndex(&player->talkFrameSet, &player->talkAnimTime, pMiscTimer->dt());
         else
-            v15 = pPortraitFrameTable->GetFrameBy_x(uFramesetID, pMiscTimer->time());
-        player->portraitImageIndex = v15->textureIndex - 1;
-        v13 = game_ui_player_faces[characterIndex][v15->textureIndex - 1];
+            faceTextureIndex = pPortraitFrameTable->animationFrameIndex(uFramesetID, pMiscTimer->time());
+        player->portraitImageIndex = faceTextureIndex - 1;
+        v13 = game_ui_player_faces[characterIndex][faceTextureIndex - 1];
     }
 
     render->DrawTextureNew((window->uFrameX + 24) / 640.0f, (window->uFrameY + 24) / 480.0f, v13);

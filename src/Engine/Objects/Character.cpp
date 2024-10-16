@@ -7101,7 +7101,7 @@ void Character::playEmotion(CharacterPortrait newPortrait, Duration duration) {
     this->portraitTimePassed = 0_ticks;
 
     if (!duration) {
-        this->portraitTimeLength = pPortraitFrameTable->GetDurationByPortrait(newPortrait);
+        this->portraitTimeLength = pPortraitFrameTable->animationDuration(newPortrait);
         assert(this->portraitTimeLength); // GetDurationByExpression should have found the expression.
     } else {
         this->portraitTimeLength = duration;

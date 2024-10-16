@@ -755,7 +755,7 @@ void Party::updateCharactersAndHirelingsEmotions() {
 
             // TODO(captainurist): We overwrite the random timing from the PORTRAIT_NORMAL branch here.
             //                     Doesn't seem intentional!
-            Duration timeLength = pPortraitFrameTable->GetDurationByPortrait(player.portrait);
+            Duration timeLength = pPortraitFrameTable->animationDuration(player.portrait);
             if (timeLength)
                 player.portraitTimeLength = timeLength;
         } else if (player.portrait != PORTRAIT_DMGRECVD_MINOR &&

@@ -6,10 +6,10 @@
 #include "Engine/Time/Duration.h"
 
 struct PortraitFrameTable {
-    unsigned int GetFrameIdByPortrait(CharacterPortrait portrait);
-    Duration GetDurationByPortrait(CharacterPortrait portrait);
-    PortraitFrameData *GetFrameBy_x(int uFramesetID, Duration gameTime);
-    PortraitFrameData *GetFrameBy_y(int *a2, Duration *a3, Duration a4);
+    int animationId(CharacterPortrait portrait);
+    Duration animationDuration(CharacterPortrait portrait);
+    int animationFrameIndex(int animationId, Duration frameTime);
+    int talkFrameIndex(int *animationId, Duration *currentTime, Duration dt);
 
     std::vector<PortraitFrameData> pFrames;
 };

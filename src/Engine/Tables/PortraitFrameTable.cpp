@@ -5,50 +5,49 @@
 PortraitFrameTable *pPortraitFrameTable = nullptr;
 
 //----- (00494AED) --------------------------------------------------------
-unsigned int PortraitFrameTable::GetFrameIdByPortrait(CharacterPortrait portrait) {
-    for (size_t i = 0; i < this->pFrames.size(); i++) {
-        if (this->pFrames[i].portrait == portrait) return i;
-    }
+int PortraitFrameTable::animationId(CharacterPortrait portrait) {
+    for (size_t i = 0; i < this->pFrames.size(); i++)
+        if (this->pFrames[i].portrait == portrait)
+            return i;
     return 0;
 }
 
-Duration PortraitFrameTable::GetDurationByPortrait(CharacterPortrait portrait) {
-    int index = GetFrameIdByPortrait(portrait);
+Duration PortraitFrameTable::animationDuration(CharacterPortrait portrait) {
+    int index = animationId(portrait);
     if (index == 0)
         return 0_ticks;
     return this->pFrames[index].animationLength;
 }
 
 //----- (00494B10) --------------------------------------------------------
-PortraitFrameData *PortraitFrameTable::GetFrameBy_x(int uFramesetID, Duration gameTime) {
-    if (this->pFrames[uFramesetID].flags & FRAME_HAS_MORE && this->pFrames[uFramesetID].animationLength) {
+int PortraitFrameTable::animationFrameIndex(int animationId, Duration frameTime) {
+    if (this->pFrames[animationId].flags & FRAME_HAS_MORE && this->pFrames[animationId].animationLength) {
         // Processing animated character expressions - e.g., PORTRAIT_YES & PORTRAIT_NO.
-        Duration time = gameTime % this->pFrames[uFramesetID].animationLength;
+        Duration time = frameTime % this->pFrames[animationId].animationLength;
 
         while (true) {
-            Duration frameTime = this->pFrames[uFramesetID].frameLength;
+            Duration frameTime = this->pFrames[animationId].frameLength;
             if (time < frameTime)
                 break;
             time -= frameTime;
-            ++uFramesetID;
-            assert(this->pFrames[uFramesetID].portrait == PORTRAIT_INVALID); // Shouldn't jump into another expression.
+            ++animationId;
+            assert(this->pFrames[animationId].portrait == PORTRAIT_INVALID); // Shouldn't jump into another portrait.
         }
     }
-    return &this->pFrames[uFramesetID];
+    return pFrames[animationId].textureIndex;
 }
 
 //----- (00494B5E) --------------------------------------------------------
-PortraitFrameData *PortraitFrameTable::GetFrameBy_y(int *pFramesetID, Duration *pAnimTime,
-                                            Duration a4) {
-    int v6;  // eax@2
-
-    Duration v5 = a4 + *pAnimTime;
-    if (v5 < this->pFrames[*pFramesetID].frameLength) {
-        *pAnimTime = v5;
+int PortraitFrameTable::talkFrameIndex(int *animationId, Duration *currentTime, Duration dt) {
+    Duration updatedTime = *currentTime + dt;
+    if (updatedTime < pFrames[*animationId].frameLength) {
+        *currentTime = updatedTime;
     } else {
-        v6 = vrng->random(4) + 21;
-        *pFramesetID = v6;
-        *pAnimTime = v5 % this->pFrames[v6].frameLength;
+        int v6 = vrng->random(4) + 21; // 21 is index of PORTRAIT_TALK.
+        *animationId = v6;
+        // TODO(captainurist): Technically this is bugged, we need to redo this in the same fashion as it's done for
+        //                     other animations, just with a random index on each iteration.
+        *currentTime = updatedTime % this->pFrames[v6].frameLength;
     }
-    return &this->pFrames[*pFramesetID];
+    return this->pFrames[*animationId].textureIndex;
 }

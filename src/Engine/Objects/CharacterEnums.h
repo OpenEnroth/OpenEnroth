@@ -324,7 +324,7 @@ enum class CharacterPortrait : uint16_t {
     PORTRAIT_LOOK_RIGHT = 18,
     PORTRAIT_LOOK_LEFT = 19,
     PORTRAIT_LOOK_DOWN = 20,
-    PORTRAIT_TALK = 21,
+    PORTRAIT_TALK = 21, // Talking is implemented by randomly jumping between this & the next three portraits.
     PORTRAIT_MOUTH_OPEN_WIDE = 22,
     PORTRAIT_MOUTH_OPEN_A = 23,
     PORTRAIT_MOUTH_OPEN_O = 24,

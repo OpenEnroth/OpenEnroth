@@ -1288,8 +1288,7 @@ void GameUI_DrawPartySpells() {
 
 //----- (004921C1) --------------------------------------------------------
 void GameUI_DrawPortraits() {
-    unsigned int face_expression_ID;  // eax@17
-    PortraitFrameData *pFrame;              // eax@21
+    int faceAnimationId;  // eax@17
     GraphicsImage *pPortrait;                 // [sp-4h] [bp-1Ch]@27
 
     pParty->updateDelayedReaction();
@@ -1316,20 +1315,17 @@ void GameUI_DrawPortraits() {
                     388 / 480.0f, pPortrait);
             continue;
         }
-        face_expression_ID = 0;
-        for (size_t j = 0; j < pPortraitFrameTable->pFrames.size(); ++j)
-            if (pPortraitFrameTable->pFrames[j].portrait == pPlayer->portrait) {
-                face_expression_ID = j;
-                break;
-            }
-        if (face_expression_ID == 0)
-            face_expression_ID = 1;
+        faceAnimationId = pPortraitFrameTable->animationId(pPlayer->portrait);
+        if (faceAnimationId == 0)
+            faceAnimationId = 1; // TODO(captainurist): this shouldn't be needed.
+
+        int faceTextureIndex = 1;
         if (pPlayer->portrait == PORTRAIT_TALK)
-            pFrame = pPortraitFrameTable->GetFrameBy_y(&pPlayer->talkFrameSet, &pPlayer->talkAnimTime, pMiscTimer->dt());
+            faceTextureIndex = pPortraitFrameTable->talkFrameIndex(&pPlayer->talkFrameSet, &pPlayer->talkAnimTime, pMiscTimer->dt());
         else
-            pFrame = pPortraitFrameTable->GetFrameBy_x(face_expression_ID, pPlayer->portraitTimePassed);
+            faceTextureIndex = pPortraitFrameTable->animationFrameIndex(faceAnimationId, pPlayer->portraitTimePassed);
         if (true /* || pPlayer->uExpressionImageIndex != pFrame->uTextureID - 1*/) {
-            pPlayer->portraitImageIndex = pFrame->textureIndex - 1;
+            pPlayer->portraitImageIndex = faceTextureIndex - 1;
             pPortrait = game_ui_player_faces[i][pPlayer->portraitImageIndex];  // pFace = (Texture_MM7*)game_ui_player_faces[i][pFrame->uTextureID];
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
                 render->DrawTextureGrayShade(
