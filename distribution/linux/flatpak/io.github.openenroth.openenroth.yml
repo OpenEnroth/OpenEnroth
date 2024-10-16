@@ -4,6 +4,9 @@ runtime-version: &runtime-version '24.08'
 sdk: org.freedesktop.Sdk
 command: io.github.openenroth.openenroth.sh
 
+build-options:
+  - --share=network
+
 finish-args:
   # hardware 3D and controller access
   - --device=all
