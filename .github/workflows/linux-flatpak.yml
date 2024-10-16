@@ -62,7 +62,7 @@ jobs:
       with:
         run-tests: true
         bundle: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.flatpak
-        manifest-path: distribution/linux/flatpak/io.github.openenroth.openenroth.yml
+        manifest-path: distribution/linux/flatpak/dev.io.github.openenroth.openenroth.yml
         cache-key: flatpak-builder-${{matrix.configuration}}_${{matrix.architecture}}
 
     - name: Publish release
