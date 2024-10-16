@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;edc8531</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;aa8ecb6</span>
    </div>
   </td>
  </tr>
@@ -81,6 +81,7 @@ $(function() {
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
 <code>#include &lt;functional&gt;</code><br />
+<code>#include &lt;tl/generator.hpp&gt;</code><br />
 <code>#include &quot;<a class="el" href="EventInterpreter_8h.html">Engine/Events/EventInterpreter.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EventIR_8h.html">Engine/Events/EventIR.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Processor_8h.html">Engine/Events/Processor.h</a>&quot;</code><br />
@@ -114,8 +115,8 @@ Functions</h2></td></tr>
 <tr class="separator:a96f7d3f0e3f97f50a853ffcb110f0443"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef0701fbc966ea5e57db517648fa7b69"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EventInterpreter_8cpp.html#aef0701fbc966ea5e57db517648fa7b69">spawnMonsters</a> (int16_t typeindex, int16_t level, int count, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> pos, int group, unsigned int uUniqueName)</td></tr>
 <tr class="separator:aef0701fbc966ea5e57db517648fa7b69"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8081bf7f7f86de19bba0e18c7a2cdfd0"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EventInterpreter_8cpp.html#a8081bf7f7f86de19bba0e18c7a2cdfd0">doForChosenPlayer</a> (<a class="el" href="EventEnums_8h.html#ac6ba0e8b31393d270ae04a8e97786a69">CharacterChoosePolicy</a> who, <a class="el" href="classRandomEngine.html">RandomEngine</a> *rng, std::function&lt; int(<a class="el" href="classCharacter.html">Character</a> &amp;)&gt; func)</td></tr>
-<tr class="separator:a8081bf7f7f86de19bba0e18c7a2cdfd0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa55bf6d676f8744680cebdbe56930072"><td class="memItemLeft" align="right" valign="top">static tl::generator&lt; <a class="el" href="classCharacter.html">Character</a> &amp; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EventInterpreter_8cpp.html#aa55bf6d676f8744680cebdbe56930072">iterateCharacters</a> (<a class="el" href="EventEnums_8h.html#ac6ba0e8b31393d270ae04a8e97786a69">CharacterChoosePolicy</a> who, <a class="el" href="classRandomEngine.html">RandomEngine</a> *rng)</td></tr>
+<tr class="separator:aa55bf6d676f8744680cebdbe56930072"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a96f7d3f0e3f97f50a853ffcb110f0443" name="a96f7d3f0e3f97f50a853ffcb110f0443"></a>
@@ -145,8 +146,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a8081bf7f7f86de19bba0e18c7a2cdfd0" name="a8081bf7f7f86de19bba0e18c7a2cdfd0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8081bf7f7f86de19bba0e18c7a2cdfd0">&#9670;&#160;</a></span>doForChosenPlayer()</h2>
+<a id="aa55bf6d676f8744680cebdbe56930072" name="aa55bf6d676f8744680cebdbe56930072"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa55bf6d676f8744680cebdbe56930072">&#9670;&#160;</a></span>iterateCharacters()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -155,7 +156,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool doForChosenPlayer </td>
+          <td class="memname">static tl::generator&lt; <a class="el" href="classCharacter.html">Character</a> &amp; &gt; iterateCharacters </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="EventEnums_8h.html#ac6ba0e8b31393d270ae04a8e97786a69">CharacterChoosePolicy</a>&#160;</td>
           <td class="paramname"><em>who</em>, </td>
@@ -164,13 +165,7 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="classRandomEngine.html">RandomEngine</a> *&#160;</td>
-          <td class="paramname"><em>rng</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::function&lt; int(<a class="el" href="classCharacter.html">Character</a> &amp;)&gt;&#160;</td>
-          <td class="paramname"><em>func</em>&#160;</td>
+          <td class="paramname"><em>rng</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
