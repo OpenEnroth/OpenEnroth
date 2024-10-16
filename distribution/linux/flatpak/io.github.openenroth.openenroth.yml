@@ -54,7 +54,6 @@ modules:
       - /include
     config-opts:
       - -DOE_BUILD_TOOLS=OFF
-      - -DOE_BUILD_TESTS=OFF
       - -DOE_CHECK_STYLE=OFF
       - -DOE_CHECK_LUA_STYLE=OFF
       - -DOE_USE_PREBUILT_DEPENDENCIES=OFF
