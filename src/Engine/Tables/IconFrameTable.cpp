@@ -10,41 +10,37 @@ IconFrameTable *pIconsFrameTable = nullptr;
 
 int IconFrameTable::animationId(std::string_view animationName) const {
     for (size_t i = 0; i < frames.size(); i++)
-        if (ascii::noCaseEquals(animationName, this->frames[i].anim_name))
+        if (ascii::noCaseEquals(animationName, this->frames[i].animationName))
             return i;
     return -1;
 }
 
 Duration IconFrameTable::animationLength(int animationId) const {
     const IconFrameData &icon = frames[animationId];
-    assert(icon.uFlags & FRAME_FIRST);
-    return icon.anim_length;
+    assert(icon.flags & FRAME_FIRST);
+    return icon.animationLength;
 }
 
 GraphicsImage *IconFrameTable::animationFrame(int animationId, Duration frameTime) {
     IconFrameData &icon = frames[animationId];
-    assert(icon.uFlags & FRAME_FIRST);
+    assert(icon.flags & FRAME_FIRST);
 
-    if (!(icon.uFlags & FRAME_HAS_MORE))
+    if (!(icon.flags & FRAME_HAS_MORE))
         return loadTexture(animationId);
 
-    assert(icon.anim_length);
-    Duration t = frameTime % icon.anim_length;
+    assert(icon.animationLength);
+    Duration t = frameTime % icon.animationLength;
 
     int i;
-    for (i = animationId; t >= frames[i].anim_time; i++)
-        t -= frames[i].anim_time;
+    for (i = animationId; t >= frames[i].frameLength; i++)
+        t -= frames[i].frameLength;
     return loadTexture(i);
 }
 
 GraphicsImage *IconFrameTable::loadTexture(int frameId) {
-    assert(frameId < frames.size());
-
-    if (textures.size() < frames.size())
-        textures.resize(frames.size());
+    assert(textures.size() == frames.size());
 
     if (!textures[frameId])
-        textures[frameId] = assets->getImage_ColorKey(frames[frameId].pTextureName);
-
+        textures[frameId] = assets->getImage_ColorKey(frames[frameId].textureName);
     return textures[frameId];
 }

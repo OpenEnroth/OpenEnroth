@@ -622,8 +622,8 @@ void reconstruct(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst);
 struct IconFrameData_MM7 {
     std::array<char, 12> animationName;
     std::array<char, 12> textureName;
-    int16_t animTime;
-    int16_t animLength;
+    int16_t frameLength;
+    int16_t animationLength;
     int16_t flags;
     uint16_t textureId;
 };

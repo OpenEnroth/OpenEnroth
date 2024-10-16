@@ -62,10 +62,13 @@ void deserialize(const TriBlob &src, DecorationList *dst) {
 }
 
 void deserialize(const TriBlob &src, IconFrameTable *dst) {
-    dst->frames.clear();
-    deserialize(src.mm7, &dst->frames, tags::append, tags::via<IconFrameData_MM7>);
+    RawIconFrameTable *rawDst = &raw(*dst);
 
-    assert(!dst->frames.empty());
+    rawDst->frames.clear();
+    deserialize(src.mm7, &rawDst->frames, tags::append, tags::via<IconFrameData_MM7>);
+    rawDst->textures.resize(rawDst->frames.size());
+
+    assert(!rawDst->frames.empty());
 }
 
 void deserialize(const TriBlob &src, MonsterList *dst) {

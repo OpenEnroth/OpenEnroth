@@ -1133,19 +1133,19 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
 void snapshot(const IconFrameData &src, IconFrameData_MM7 *dst) {
     memzero(dst);
 
-    snapshot(src.anim_name, &dst->animationName);
-    dst->animLength = src.anim_length.ticks() / 8;
-    snapshot(src.pTextureName, &dst->textureName);
-    dst->animTime = src.anim_time.ticks() / 8;
-    dst->flags = std::to_underlying(src.uFlags);
+    snapshot(src.animationName, &dst->animationName);
+    dst->animationLength = src.animationLength.ticks() / 8;
+    snapshot(src.textureName, &dst->textureName);
+    dst->frameLength = src.frameLength.ticks() / 8;
+    dst->flags = std::to_underlying(src.flags);
 }
 
 void reconstruct(const IconFrameData_MM7 &src, IconFrameData *dst) {
-    reconstruct(src.animationName, &dst->anim_name);
-    dst->anim_length = Duration::fromTicks(8 * src.animLength);
-    reconstruct(src.textureName, &dst->pTextureName);
-    dst->anim_time = Duration::fromTicks(8 * src.animTime);
-    dst->uFlags = static_cast<FrameFlags>(src.flags);
+    reconstruct(src.animationName, &dst->animationName);
+    dst->animationLength = Duration::fromTicks(8 * src.animationLength);
+    reconstruct(src.textureName, &dst->textureName);
+    dst->frameLength = Duration::fromTicks(8 * src.frameLength);
+    dst->flags = static_cast<FrameFlags>(src.flags);
 }
 
 void reconstruct(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
