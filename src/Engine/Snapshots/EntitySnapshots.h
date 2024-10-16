@@ -1105,17 +1105,17 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(OverlayDesc_MM7)
 void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst);
 
 
-struct PlayerFrame_MM7 {
+struct PortraitFrame_MM7 {
     uint16_t portrait;
     uint16_t uTextureID;
     int16_t uAnimTime;
     int16_t uAnimLength;
     int16_t uFlags;
 };
-static_assert(sizeof(PlayerFrame_MM7) == 10);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(PlayerFrame_MM7)
+static_assert(sizeof(PortraitFrame_MM7) == 10);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(PortraitFrame_MM7)
 
-void reconstruct(const PlayerFrame_MM7 &src, PortraitFrame *dst);
+void reconstruct(const PortraitFrame_MM7 &src, PortraitFrame *dst);
 
 
 struct LevelDecoration_MM7 {

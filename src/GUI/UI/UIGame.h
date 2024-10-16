@@ -4,7 +4,7 @@
 
 #include "GUI/GUIWindow.h"
 
-void GameUI_LoadPlayerPortraintsAndVoices();
+void GameUI_LoadPlayerPortraitsAndVoices();
 void GameUI_ReloadPlayerPortraits(int player_id, int face_id);
 void GameUI_WritePointedObjectStatusString();
 void GameUI_OnPlayerPortraitLeftClick(int uPlayerID);  // idb

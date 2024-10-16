@@ -1668,7 +1668,7 @@ void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
     dst->spriteFramesetGroup = src.spriteFramesetGroup;
 }
 
-void reconstruct(const PlayerFrame_MM7 &src, PortraitFrame *dst) {
+void reconstruct(const PortraitFrame_MM7 &src, PortraitFrame *dst) {
     dst->portrait = static_cast<CharacterPortrait>(src.portrait);
     dst->uTextureID = src.uTextureID;
     dst->uAnimTime = Duration::fromTicks(src.uAnimTime * 8);

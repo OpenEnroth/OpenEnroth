@@ -8,7 +8,7 @@
 
 struct PortraitFrame {
     CharacterPortrait portrait;
-    uint16_t uTextureID;
+    uint16_t uTextureID; // TODO(captainurist): actually portraitIndex.
     Duration uAnimTime;
     Duration uAnimLength;
     FrameFlags uFlags;

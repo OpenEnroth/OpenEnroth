@@ -208,7 +208,7 @@ void GUIWindow_GameMenu::Update() {
 }
 
 //----- (00491CB5) --------------------------------------------------------
-void GameUI_LoadPlayerPortraintsAndVoices() {
+void GameUI_LoadPlayerPortraitsAndVoices() {
     for (unsigned i = 0; i < 4; ++i) {
         for (unsigned j = 0; j < 56; ++j) {
             game_ui_player_faces[i][j] = assets->getImage_ColorKey(
