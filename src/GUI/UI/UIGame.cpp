@@ -1289,7 +1289,7 @@ void GameUI_DrawPartySpells() {
 //----- (004921C1) --------------------------------------------------------
 void GameUI_DrawPortraits() {
     unsigned int face_expression_ID;  // eax@17
-    PortraitFrame *pFrame;              // eax@21
+    PortraitFrameData *pFrame;              // eax@21
     GraphicsImage *pPortrait;                 // [sp-4h] [bp-1Ch]@27
 
     pParty->updateDelayedReaction();
@@ -1329,7 +1329,7 @@ void GameUI_DrawPortraits() {
         else
             pFrame = pPortraitFrameTable->GetFrameBy_x(face_expression_ID, pPlayer->portraitTimePassed);
         if (true /* || pPlayer->uExpressionImageIndex != pFrame->uTextureID - 1*/) {
-            pPlayer->portraitImageIndex = pFrame->uTextureID - 1;
+            pPlayer->portraitImageIndex = pFrame->textureIndex - 1;
             pPortrait = game_ui_player_faces[i][pPlayer->portraitImageIndex];  // pFace = (Texture_MM7*)game_ui_player_faces[i][pFrame->uTextureID];
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
                 render->DrawTextureGrayShade(

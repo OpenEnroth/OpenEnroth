@@ -54,7 +54,7 @@ struct OutdoorLocationTileType;
 struct OverlayDesc;
 struct Party;
 struct PersistentVariables;
-struct PortraitFrame;
+struct PortraitFrameData;
 struct SaveGameHeader;
 struct SpawnPoint;
 struct SpellBuff;
@@ -1105,17 +1105,17 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(OverlayDesc_MM7)
 void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst);
 
 
-struct PortraitFrame_MM7 {
+struct PortraitFrameData_MM7 {
     uint16_t portrait;
-    uint16_t uTextureID;
-    int16_t uAnimTime;
-    int16_t uAnimLength;
-    int16_t uFlags;
+    uint16_t textureIndex;
+    int16_t frameLength;
+    int16_t animationLength;
+    int16_t flags;
 };
-static_assert(sizeof(PortraitFrame_MM7) == 10);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(PortraitFrame_MM7)
+static_assert(sizeof(PortraitFrameData_MM7) == 10);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(PortraitFrameData_MM7)
 
-void reconstruct(const PortraitFrame_MM7 &src, PortraitFrame *dst);
+void reconstruct(const PortraitFrameData_MM7 &src, PortraitFrameData *dst);
 
 
 struct LevelDecoration_MM7 {

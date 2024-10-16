@@ -26,11 +26,11 @@ void deserialize(const TriBlob &src, PortraitFrameTable *dst) {
     dst->pFrames.clear();
 
     if (src.mm6)
-        deserialize(src.mm6, &dst->pFrames, tags::append, tags::via<PortraitFrame_MM7>);
+        deserialize(src.mm6, &dst->pFrames, tags::append, tags::via<PortraitFrameData_MM7>);
     if (src.mm7)
-        deserialize(src.mm7, &dst->pFrames, tags::append, tags::via<PortraitFrame_MM7>);
+        deserialize(src.mm7, &dst->pFrames, tags::append, tags::via<PortraitFrameData_MM7>);
     if (src.mm8)
-        deserialize(src.mm8, &dst->pFrames, tags::append, tags::via<PortraitFrame_MM7>);
+        deserialize(src.mm8, &dst->pFrames, tags::append, tags::via<PortraitFrameData_MM7>);
 
     assert(!dst->pFrames.empty());
 }

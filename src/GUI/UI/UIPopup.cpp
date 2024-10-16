@@ -1627,7 +1627,7 @@ void ShowPopupShopItem() {
 //----- (0041D3B7) --------------------------------------------------------
 void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     GraphicsImage *v13;              // eax@6
-    PortraitFrame *v15;        // eax@12
+    PortraitFrameData *v15;        // eax@12
     std::string spellName;   // eax@16
     int v36;                 // esi@22
     signed int uFramesetID;  // [sp+20h] [bp-8h]@9
@@ -1656,8 +1656,8 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
             v15 = pPortraitFrameTable->GetFrameBy_y(&player->talkFrameSet, &player->talkAnimTime, pMiscTimer->dt());
         else
             v15 = pPortraitFrameTable->GetFrameBy_x(uFramesetID, pMiscTimer->time());
-        player->portraitImageIndex = v15->uTextureID - 1;
-        v13 = game_ui_player_faces[characterIndex][v15->uTextureID - 1];
+        player->portraitImageIndex = v15->textureIndex - 1;
+        v13 = game_ui_player_faces[characterIndex][v15->textureIndex - 1];
     }
 
     render->DrawTextureNew((window->uFrameX + 24) / 640.0f, (window->uFrameY + 24) / 480.0f, v13);
