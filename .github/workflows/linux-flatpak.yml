@@ -43,7 +43,6 @@ jobs:
       fail-fast: false
       matrix:
         configuration:
-          - Debug
           - RelWithDebInfo
         architecture:
           - x86
