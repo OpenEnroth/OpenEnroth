@@ -5,7 +5,8 @@ sdk: org.freedesktop.Sdk
 command: io.github.openenroth.openenroth.sh
 
 build-options:
-  - --share=network
+  build-args:
+    - --share=network
 
 finish-args:
   # hardware 3D and controller access
