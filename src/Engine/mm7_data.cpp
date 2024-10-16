@@ -144,12 +144,6 @@ std::array<int32_t, 128 * 3> sphereVertInd = {  // indicies for triangle in sphe
      0x00000026, 0x00000028, 0x00000041, 0x00000028, 0x00000031, 0x00000041,
      0x00000028, 0x0000000B, 0x00000031, 0x00000031, 0x0000002D, 0x00000041}};
 
-#include "Engine/Tables/IconFrameTable.h"
-IconFrameTable *pIconsFrameTable;
-
-#include "Engine/Tables/PortraitFrameTable.h"
-PortraitFrameTable *pPortraitFrameTable;  // idb
-
 //-------------------------------------------------------------------------
 // Data declarations
 

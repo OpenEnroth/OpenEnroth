@@ -4,6 +4,8 @@
 
 #include "Utility/String/Ascii.h"
 
+IconFrameTable *pIconsFrameTable = nullptr;
+
 GraphicsImage *Icon::GetTexture() {
     if (!this->img) {
         this->img = assets->getImage_ColorKey(this->pTextureName);

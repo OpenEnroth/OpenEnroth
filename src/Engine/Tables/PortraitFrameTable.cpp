@@ -2,6 +2,7 @@
 
 #include "Engine/Random/Random.h"
 
+PortraitFrameTable *pPortraitFrameTable = nullptr;
 
 //----- (00494AED) --------------------------------------------------------
 unsigned int PortraitFrameTable::GetFrameIdByPortrait(CharacterPortrait portrait) {
