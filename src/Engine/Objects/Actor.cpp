@@ -8,6 +8,8 @@
 #include <optional>
 
 #include "Engine/Engine.h"
+#include "Engine/Data/AwardEnums.h"
+#include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Objects/Decoration.h"
@@ -29,7 +31,6 @@
 #include "Engine/AttackList.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/FactionTable.h"
-#include "Engine/Tables/AwardTable.h"
 #include "Engine/Time/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/MapInfo.h"

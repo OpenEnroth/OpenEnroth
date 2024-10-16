@@ -25,8 +25,8 @@
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/EngineIocContainer.h"
-#include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Time/Timer.h"
 #include "Engine/MapInfo.h"
 
@@ -326,6 +326,9 @@ void GUIWindow::DrawShops_next_generation_time_string(Duration time) {
 
 //----- (0044D406) --------------------------------------------------------
 void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int verticalMargin, Color color, std::string_view text, int lineSpacing) {
+    if (engine->callObserver) {
+        engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, std::string(text));
+    }
     int width = this->uFrameWidth - horizontalMargin;
     std::string resString = pFont->FitTextInAWindow(text, this->uFrameWidth, horizontalMargin);
     std::istringstream stream(resString);
@@ -910,19 +913,19 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 break;
 
             case 25:  // base prices
-                v29 = PriceCalculator::baseItemBuyingPrice(item->GetValue(), buildingTable[houseId].fPriceMultiplier);
+                v29 = PriceCalculator::baseItemBuyingPrice(item->GetValue(), houseTable[houseId].fPriceMultiplier);
                 switch (shop_screen) {
                 case SHOP_SCREEN_SELL:
-                    v29 = PriceCalculator::baseItemSellingPrice(item->GetValue(), buildingTable[houseId].fPriceMultiplier);
+                    v29 = PriceCalculator::baseItemSellingPrice(item->GetValue(), houseTable[houseId].fPriceMultiplier);
                     break;
                 case SHOP_SCREEN_IDENTIFY:
-                    v29 = PriceCalculator::baseItemIdentifyPrice(buildingTable[houseId].fPriceMultiplier);
+                    v29 = PriceCalculator::baseItemIdentifyPrice(houseTable[houseId].fPriceMultiplier);
                     break;
                 case SHOP_SCREEN_REPAIR:
-                    v29 = PriceCalculator::baseItemRepairPrice(item->GetValue(), buildingTable[houseId].fPriceMultiplier);
+                    v29 = PriceCalculator::baseItemRepairPrice(item->GetValue(), houseTable[houseId].fPriceMultiplier);
                     break;
                 case SHOP_SCREEN_SELL_FOR_CHEAP:
-                    v29 = PriceCalculator::baseItemSellingPrice(item->GetValue(), buildingTable[houseId].fPriceMultiplier) / 2;
+                    v29 = PriceCalculator::baseItemSellingPrice(item->GetValue(), houseTable[houseId].fPriceMultiplier) / 2;
                     break;
                 }
                 v1 = fmt::format("{}", v29);
@@ -930,9 +933,9 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 break;
 
             case 27:  // actual price
-                v29 = PriceCalculator::itemBuyingPriceForPlayer(pPlayer, item->GetValue(), buildingTable[houseId].fPriceMultiplier);
+                v29 = PriceCalculator::itemBuyingPriceForPlayer(pPlayer, item->GetValue(), houseTable[houseId].fPriceMultiplier);
                 if (shop_screen == SHOP_SCREEN_SELL) {
-                    v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *item, buildingTable[houseId].fPriceMultiplier);
+                    v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *item, houseTable[houseId].fPriceMultiplier);
                     v1 = fmt::format("{}", v29);
                     result += v1;
                     break;
@@ -941,11 +944,11 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                     if (shop_screen == SHOP_SCREEN_REPAIR) {
                     v29 = PriceCalculator::itemRepairPriceForPlayer(
                         pPlayer, item->GetValue(),
-                        buildingTable[houseId].fPriceMultiplier);
+                        houseTable[houseId].fPriceMultiplier);
                     } else {
                         if (shop_screen == SHOP_SCREEN_SELL_FOR_CHEAP) {
                             // TODO(captainurist): encapsulate this logic in PriceCalculator
-                            v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *item, buildingTable[houseId].fPriceMultiplier) / 2;
+                            v29 = PriceCalculator::itemSellingPriceForPlayer(pPlayer, *item, houseTable[houseId].fPriceMultiplier) / 2;
                             if (!v29)  // cannot be 0
                                 v29 = 1;
                             v1 = fmt::format("{}", v29);
@@ -957,16 +960,16 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                     result += v1;
                     break;
                 }
-                v1 = fmt::format("{}", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, buildingTable[houseId].fPriceMultiplier));
+                v1 = fmt::format("{}", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, houseTable[houseId].fPriceMultiplier));
                 result += v1;
                 break;
 
             case 28:  // shop type - blacksmith ect..
-                result += buildingTable[houseId].pProprieterTitle;
+                result += houseTable[houseId].pProprieterTitle;
                 break;
 
             case 29:  // identify cost
-                v1 = fmt::format("{}", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, buildingTable[houseId].fPriceMultiplier));
+                v1 = fmt::format("{}", PriceCalculator::itemIdentificationPriceForPlayer(pPlayer, houseTable[houseId].fPriceMultiplier));
                 result += v1;
                 break;
             case 30:

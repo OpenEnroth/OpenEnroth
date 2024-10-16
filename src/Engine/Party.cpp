@@ -263,8 +263,8 @@ void Party::switchToNextActiveCharacter() {
     for (int i = 0; i < this->pCharacters.size(); i++) {
         if (this->pCharacters[i].CanAct() &&
             !this->pCharacters[i].timeToRecovery) {
-            if (v12 == 0 || this->pCharacters[i]._statBonuses[CHARACTER_ATTRIBUTE_SPEED] > v8) {
-                v8 = this->pCharacters[i]._statBonuses[CHARACTER_ATTRIBUTE_SPEED];
+            if (v12 == 0 || this->pCharacters[i]._statBonuses[ATTRIBUTE_SPEED] > v8) {
+                v8 = this->pCharacters[i]._statBonuses[ATTRIBUTE_SPEED];
                 v12 = i + 1;
             }
         }
@@ -416,13 +416,13 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[0].uCurrentFace = 17;
     this->pCharacters[0].uPrevVoiceID = 17;
     this->pCharacters[0].uVoiceID = 17;
-    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_MIGHT] = 30;
-    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 5;
-    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_PERSONALITY] = 5;
-    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_ENDURANCE] = 13;
-    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_ACCURACY] = 13;
-    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_SPEED] = 14;
-    this->pCharacters[0]._stats[CHARACTER_ATTRIBUTE_LUCK] = 7;
+    this->pCharacters[0]._stats[ATTRIBUTE_MIGHT] = 30;
+    this->pCharacters[0]._stats[ATTRIBUTE_INTELLIGENCE] = 5;
+    this->pCharacters[0]._stats[ATTRIBUTE_PERSONALITY] = 5;
+    this->pCharacters[0]._stats[ATTRIBUTE_ENDURANCE] = 13;
+    this->pCharacters[0]._stats[ATTRIBUTE_ACCURACY] = 13;
+    this->pCharacters[0]._stats[ATTRIBUTE_SPEED] = 14;
+    this->pCharacters[0]._stats[ATTRIBUTE_LUCK] = 7;
     this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
     this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_ARMSMASTER] = CombinedSkillValue::novice();
     this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_BOW] = CombinedSkillValue::novice();
@@ -433,13 +433,13 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[1].uCurrentFace = 3;
     this->pCharacters[1].uPrevVoiceID = 3;
     this->pCharacters[1].uVoiceID = 3;
-    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_MIGHT] = 13;
-    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 9;
-    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_PERSONALITY] = 9;
-    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_ENDURANCE] = 13;
-    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_ACCURACY] = 13;
-    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_SPEED] = 13;
-    this->pCharacters[1]._stats[CHARACTER_ATTRIBUTE_LUCK] = 13;
+    this->pCharacters[1]._stats[ATTRIBUTE_MIGHT] = 13;
+    this->pCharacters[1]._stats[ATTRIBUTE_INTELLIGENCE] = 9;
+    this->pCharacters[1]._stats[ATTRIBUTE_PERSONALITY] = 9;
+    this->pCharacters[1]._stats[ATTRIBUTE_ENDURANCE] = 13;
+    this->pCharacters[1]._stats[ATTRIBUTE_ACCURACY] = 13;
+    this->pCharacters[1]._stats[ATTRIBUTE_SPEED] = 13;
+    this->pCharacters[1]._stats[ATTRIBUTE_LUCK] = 13;
     this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
     this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_STEALING] = CombinedSkillValue::novice();
     this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_DAGGER] = CombinedSkillValue::novice();
@@ -450,13 +450,13 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[2].uCurrentFace = 14;
     this->pCharacters[2].uPrevVoiceID = 14;
     this->pCharacters[2].uVoiceID = 14;
-    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_MIGHT] = 12;
-    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 9;
-    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_PERSONALITY] = 20;
-    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_ENDURANCE] = 22;
-    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_ACCURACY] = 7;
-    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_SPEED] = 13;
-    this->pCharacters[2]._stats[CHARACTER_ATTRIBUTE_LUCK] = 7;
+    this->pCharacters[2]._stats[ATTRIBUTE_MIGHT] = 12;
+    this->pCharacters[2]._stats[ATTRIBUTE_INTELLIGENCE] = 9;
+    this->pCharacters[2]._stats[ATTRIBUTE_PERSONALITY] = 20;
+    this->pCharacters[2]._stats[ATTRIBUTE_ENDURANCE] = 22;
+    this->pCharacters[2]._stats[ATTRIBUTE_ACCURACY] = 7;
+    this->pCharacters[2]._stats[ATTRIBUTE_SPEED] = 13;
+    this->pCharacters[2]._stats[ATTRIBUTE_LUCK] = 7;
     this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_ALCHEMY] = CombinedSkillValue::novice();
     this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
     this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_BODY] = CombinedSkillValue::novice();
@@ -467,13 +467,13 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[3].uCurrentFace = 10;
     this->pCharacters[3].uPrevVoiceID = 10;
     this->pCharacters[3].uVoiceID = 10;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_MIGHT] = 5;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] = 30;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_PERSONALITY] = 9;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_ENDURANCE] = 13;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_ACCURACY] = 13;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_SPEED] = 13;
-    this->pCharacters[3]._stats[CHARACTER_ATTRIBUTE_LUCK] = 7;
+    this->pCharacters[3]._stats[ATTRIBUTE_MIGHT] = 5;
+    this->pCharacters[3]._stats[ATTRIBUTE_INTELLIGENCE] = 30;
+    this->pCharacters[3]._stats[ATTRIBUTE_PERSONALITY] = 9;
+    this->pCharacters[3]._stats[ATTRIBUTE_ENDURANCE] = 13;
+    this->pCharacters[3]._stats[ATTRIBUTE_ACCURACY] = 13;
+    this->pCharacters[3]._stats[ATTRIBUTE_SPEED] = 13;
+    this->pCharacters[3]._stats[ATTRIBUTE_LUCK] = 7;
     this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
     this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR] = CombinedSkillValue::novice();
     this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_FIRE] = CombinedSkillValue::novice();
@@ -491,7 +491,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
             }
         }
 
-        pCharacter.uExpressionTimePassed = 0_ticks;
+        pCharacter.portraitTimePassed = 0_ticks;
 
         if (bDebugGiveItems) {
             Dst.Reset();
@@ -647,9 +647,9 @@ void Party::Reset() {
             buff.Reset();
         }
 
-        player.expression = CHARACTER_EXPRESSION_NORMAL;
-        player.uExpressionTimePassed = 0_ticks;
-        player.uExpressionTimeLength = Duration::randomRealtimeSeconds(vrng, 1, 3);
+        player.portrait = PORTRAIT_NORMAL;
+        player.portraitTimePassed = 0_ticks;
+        player.portraitTimeLength = Duration::randomRealtimeSeconds(vrng, 1, 3);
     }
 
     for (SpellBuff &buff : this->pPartyBuffs) {
@@ -722,12 +722,12 @@ void Party::resetCharacterEmotions() {
     for (Character &player : this->pCharacters) {
         Condition condition = player.GetMajorConditionIdx();
         if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
-            player.uExpressionTimeLength = 32_ticks;
-            player.expression = CHARACTER_EXPRESSION_NORMAL;
+            player.portraitTimeLength = 32_ticks;
+            player.portrait = PORTRAIT_NORMAL;
         } else {
-            player.uExpressionTimeLength = 0_ticks;
-            player.uExpressionTimePassed = 0_ticks;
-            player.expression = expressionForCondition(condition);
+            player.portraitTimeLength = 0_ticks;
+            player.portraitTimePassed = 0_ticks;
+            player.portrait = portraitForCondition(condition);
         }
     }
 }
@@ -738,61 +738,61 @@ void Party::updateCharactersAndHirelingsEmotions() {
     }
 
     for (Character &player : this->pCharacters) {
-        player.uExpressionTimePassed += pMiscTimer->dt();
+        player.portraitTimePassed += pMiscTimer->dt();
 
         Condition condition = player.GetMajorConditionIdx();
         if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
-            if (player.uExpressionTimePassed < player.uExpressionTimeLength)
+            if (player.portraitTimePassed < player.portraitTimeLength)
                 continue;
 
-            player.uExpressionTimePassed = 0_ticks;
-            if (player.expression != CHARACTER_EXPRESSION_NORMAL || vrng->random(5)) {
-                player.expression = CHARACTER_EXPRESSION_NORMAL;
-                player.uExpressionTimeLength = Duration::randomRealtimeMilliseconds(vrng, 250, 2250);
+            player.portraitTimePassed = 0_ticks;
+            if (player.portrait != PORTRAIT_NORMAL || vrng->random(5)) {
+                player.portrait = PORTRAIT_NORMAL;
+                player.portraitTimeLength = Duration::randomRealtimeMilliseconds(vrng, 250, 2250);
             } else {
                 int randomVal = vrng->random(100);
                 if (randomVal < 25)
-                    player.expression = CHARACTER_EXPRESSION_BLINK;
+                    player.portrait = PORTRAIT_BLINK;
                 else if (randomVal < 31)
-                    player.expression = CHARACTER_EXPRESSION_WINK;
+                    player.portrait = PORTRAIT_WINK;
                 else if (randomVal < 37)
-                    player.expression = CHARACTER_EXPRESSION_MOUTH_OPEN_RANDOM;
+                    player.portrait = PORTRAIT_MOUTH_OPEN_RANDOM;
                 else if (randomVal < 43)
-                    player.expression = CHARACTER_EXPRESSION_PURSE_LIPS_RANDOM;
+                    player.portrait = PORTRAIT_PURSE_LIPS_RANDOM;
                 else if (randomVal < 46)
-                    player.expression = CHARACTER_EXPRESSION_LOOK_UP;
+                    player.portrait = PORTRAIT_LOOK_UP;
                 else if (randomVal < 52)
-                    player.expression = CHARACTER_EXPRESSION_LOOK_RIGHT;
+                    player.portrait = PORTRAIT_LOOK_RIGHT;
                 else if (randomVal < 58)
-                    player.expression = CHARACTER_EXPRESSION_LOOK_LEFT;
+                    player.portrait = PORTRAIT_LOOK_LEFT;
                 else if (randomVal < 64)
-                    player.expression = CHARACTER_EXPRESSION_LOOK_DOWN;
+                    player.portrait = PORTRAIT_LOOK_DOWN;
                 else if (randomVal < 70)
-                    player.expression = CHARACTER_EXPRESSION_54;
+                    player.portrait = PORTRAIT_54;
                 else if (randomVal < 76)
-                    player.expression = CHARACTER_EXPRESSION_55;
+                    player.portrait = PORTRAIT_55;
                 else if (randomVal < 82)
-                    player.expression = CHARACTER_EXPRESSION_56;
+                    player.portrait = PORTRAIT_56;
                 else if (randomVal < 88)
-                    player.expression = CHARACTER_EXPRESSION_57;
+                    player.portrait = PORTRAIT_57;
                 else if (randomVal < 94)
-                    player.expression = CHARACTER_EXPRESSION_PURSE_LIPS_1;
+                    player.portrait = PORTRAIT_PURSE_LIPS_1;
                 else
-                    player.expression = CHARACTER_EXPRESSION_PURSE_LIPS_2;
+                    player.portrait = PORTRAIT_PURSE_LIPS_2;
             }
 
-            // TODO(captainurist): We overwrite the random timing from the CHARACTER_EXPRESSION_NORMAL branch here.
+            // TODO(captainurist): We overwrite the random timing from the PORTRAIT_NORMAL branch here.
             //                     Doesn't seem intentional!
-            Duration timeLength = pPlayerFrameTable->GetDurationByExpression(player.expression);
+            Duration timeLength = pPlayerFrameTable->GetDurationByPortrait(player.portrait);
             if (timeLength)
-                player.uExpressionTimeLength = timeLength;
-        } else if (player.expression != CHARACTER_EXPRESSION_DMGRECVD_MINOR &&
-                   player.expression != CHARACTER_EXPRESSION_DMGRECVD_MODERATE &&
-                   player.expression != CHARACTER_EXPRESSION_DMGRECVD_MAJOR ||
-                   player.uExpressionTimePassed >= player.uExpressionTimeLength) {
-            player.uExpressionTimeLength = 0_ticks;
-            player.uExpressionTimePassed = 0_ticks;
-            player.expression = expressionForCondition(condition);
+                player.portraitTimeLength = timeLength;
+        } else if (player.portrait != PORTRAIT_DMGRECVD_MINOR &&
+                   player.portrait != PORTRAIT_DMGRECVD_MODERATE &&
+                   player.portrait != PORTRAIT_DMGRECVD_MAJOR ||
+                   player.portraitTimePassed >= player.portraitTimeLength) {
+            player.portraitTimeLength = 0_ticks;
+            player.portraitTimePassed = 0_ticks;
+            player.portrait = portraitForCondition(condition);
         }
     }
 

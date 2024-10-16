@@ -1315,19 +1315,19 @@ void GameUI_DrawPortraits() {
         }
         face_expression_ID = 0;
         for (size_t j = 0; j < pPlayerFrameTable->pFrames.size(); ++j)
-            if (pPlayerFrameTable->pFrames[j].expression == pPlayer->expression) {
+            if (pPlayerFrameTable->pFrames[j].portrait == pPlayer->portrait) {
                 face_expression_ID = j;
                 break;
             }
         if (face_expression_ID == 0)
             face_expression_ID = 1;
-        if (pPlayer->expression == CHARACTER_EXPRESSION_TALK)
-            pFrame = pPlayerFrameTable->GetFrameBy_y(&pPlayer->_expression21_frameset, &pPlayer->_expression21_animtime, pMiscTimer->dt());
+        if (pPlayer->portrait == PORTRAIT_TALK)
+            pFrame = pPlayerFrameTable->GetFrameBy_y(&pPlayer->talkFrameSet, &pPlayer->talkAnimTime, pMiscTimer->dt());
         else
-            pFrame = pPlayerFrameTable->GetFrameBy_x(face_expression_ID, pPlayer->uExpressionTimePassed);
+            pFrame = pPlayerFrameTable->GetFrameBy_x(face_expression_ID, pPlayer->portraitTimePassed);
         if (true /* || pPlayer->uExpressionImageIndex != pFrame->uTextureID - 1*/) {
-            pPlayer->uExpressionImageIndex = pFrame->uTextureID - 1;
-            pPortrait = game_ui_player_faces[i][pPlayer->uExpressionImageIndex];  // pFace = (Texture_MM7*)game_ui_player_faces[i][pFrame->uTextureID];
+            pPlayer->portraitImageIndex = pFrame->uTextureID - 1;
+            pPortrait = game_ui_player_faces[i][pPlayer->portraitImageIndex];  // pFace = (Texture_MM7*)game_ui_player_faces[i][pFrame->uTextureID];
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
                 render->DrawTextureGrayShade(
                     pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f,
@@ -1782,20 +1782,17 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
         }
 
         case UIMSG_ShowStatus_DateTime: {
-            unsigned currHour = pParty->uCurrentHour;
-            unsigned uNumSeconds = 1;
-            if (pParty->uCurrentHour > 12) {
-                if (pParty->uCurrentHour >= 24) uNumSeconds = 0;
-                currHour = (currHour - 12);
-            } else {
-                if (pParty->uCurrentHour < 12)  // 12:00 is PM
-                    uNumSeconds = 0;
-                if (pParty->uCurrentHour == 0) currHour = 12;
-            }
-            engine->_statusBar->setPermanent(fmt::format("{}:{:02}{} {} {} {} {}", currHour, pParty->uCurrentMinute, localization->GetAmPm(uNumSeconds),
-                localization->GetDayName(pParty->uCurrentDayOfMonth % 7),
-                7 * pParty->uCurrentMonthWeek + pParty->uCurrentDayOfMonth % 7 + 1,
-                localization->GetMonthName(pParty->uCurrentMonth), pParty->uCurrentYear));
+            CivilTime time = pParty->GetPlayingTime().toCivilTime();
+            std::string status = fmt::format(
+                "{}:{:02}{} {} {} {} {}",
+                time.hourAmPm,
+                time.minute,
+                localization->GetAmPm(time.isPm),
+                localization->GetDayName(time.dayOfWeek - 1),
+                time.day,
+                localization->GetMonthName(time.month - 1),
+                time.year);
+            engine->_statusBar->setPermanent(status);
             break;
         }
 

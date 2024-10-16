@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#include "Engine/Tables/AwardTable.h"
+#include "Engine/Data/AwardEnums.h"
 #include "GUI/GUIDialogues.h"
 
 #include "ArenaEnums.h"

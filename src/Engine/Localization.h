@@ -487,11 +487,11 @@ class Localization {
         return this->class_desciptions[index];
     }
 
-    const std::string &GetAttirubteName(CharacterAttributeType index) const {
+    const std::string &GetAttirubteName(CharacterAttribute index) const {
         return this->attribute_names[index];
     }
 
-    const std::string &GetAttributeDescription(CharacterAttributeType index) const {
+    const std::string &GetAttributeDescription(CharacterAttribute index) const {
         return this->attribute_descriptions[index];
     }
 
@@ -551,8 +551,8 @@ class Localization {
         return this->character_conditions[index];
     }
 
-    const std::string &GetAmPm(unsigned int index) const {
-        return this->GetString(472 + index);
+    const std::string &GetAmPm(bool isPm) const {
+        return this->GetString(472 + isPm);
     }
 
     const std::string &GetNpcProfessionName(NpcProfession prof) const {
@@ -671,8 +671,8 @@ class Localization {
     IndexedArray<std::string, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> character_buff_names;
     IndexedArray<std::string, CLASS_FIRST, CLASS_LAST> class_names;
     IndexedArray<std::string, CLASS_FIRST, CLASS_LAST> class_desciptions;
-    IndexedArray<std::string, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> attribute_names;
-    IndexedArray<std::string, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> attribute_descriptions;
+    IndexedArray<std::string, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> attribute_names;
+    IndexedArray<std::string, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> attribute_descriptions;
     IndexedArray<std::string, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_names;
     IndexedArray<std::string, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions;
     IndexedArray<std::string, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_normal;

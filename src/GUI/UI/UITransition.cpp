@@ -5,7 +5,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/HouseTable.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -155,7 +155,7 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
     if (transitionHouse != HOUSE_INVALID || getSpecialTransferMessageIndex(locationName)) {
         // TODO(Nik-RE-dev): if message is special then no video when entering indoor?
         if (!getSpecialTransferMessageIndex(locationName))
-            pMediaPlayer->OpenHouseMovie(pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].video_name, 1);
+            pMediaPlayer->OpenHouseMovie(pAnimatedRooms[houseTable[transitionHouse].uAnimationID].video_name, 1);
 
         std::string destMap = std::string(locationName);
         if (locationName[0] == '0') {
@@ -165,7 +165,7 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
             hint = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(destMap)].name);
         } else {
             hint = localization->GetString(LSTR_DIALOGUE_EXIT);
-            if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].uRoomSoundId)
+            if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[houseTable[transitionHouse].uAnimationID].uRoomSoundId)
                 playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
         }
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
@@ -178,7 +178,7 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
         } else {
             hint = localization->GetString(LSTR_DIALOGUE_EXIT);
         }
-        if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[buildingTable[transitionHouse].uAnimationID].uRoomSoundId)
+        if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[houseTable[transitionHouse].uAnimationID].uRoomSoundId)
             playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR && pParty->hasActiveCharacter() && pParty->GetRedOrYellowAlert())
             pParty->activeCharacter().playReaction(SPEECH_LEAVE_DUNGEON);

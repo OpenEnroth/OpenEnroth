@@ -26,12 +26,12 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
      * I believe it is 250 gold cost for mercenary guild from mm6 and 100 for all other skill-learning house types in mm6
      * but they aren't used in mm7, so I'm gonna assume 250 gold cost in price calculator
      *
-     *  int v32 = (uint8_t)(((buildingTable[window_SpeakInHouse->houseId()].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
-     *  int v3 = (int64_t)((double)v32 * buildingTable[window_SpeakInHouse->houseId()].fPriceMultiplier);
+     *  int v32 = (uint8_t)(((houseTable[window_SpeakInHouse->houseId()].uType != BuildingType_MercenaryGuild) - 1) & 0x96) + 100;
+     *  int v3 = (int64_t)((double)v32 * houseTable[window_SpeakInHouse->houseId()].fPriceMultiplier);
      *  pPrice = v3 * (100 - PriceCalculator::playerMerchant(&pParty->activeCharacter())) / 100;
      *  if (pPrice < v3 / 3) pPrice = v3 / 3;
      */
-    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), buildingTable[window_SpeakInHouse->houseId()]);
+    int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), houseTable[window_SpeakInHouse->houseId()]);
 
     if (_currentDialogue == DIALOGUE_MAIN) {
         if (!pParty->activeCharacter()._achievedAwardsBits[word_4F0754[2 * std::to_underlying(window_SpeakInHouse->houseId())]]) {
@@ -59,7 +59,7 @@ void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
             // TODO(captainurist): #mm6 this is MM6 legacy, and this decompiled code doesn't look sane.
             //                     Reimplement properly once we get to MM6.
             // if ( !*(&byte_4ED94C[37 * v1->uClass / 3] + dword_F8B19C)
-            //|| (v6 = (short *)(&pParty->activeCharacter()._stats[CHARACTER_ATTRIBUTE_INTELLIGENCE] + _currentDialogue),
+            //|| (v6 = (short *)(&pParty->activeCharacter()._stats[ATTRIBUTE_INTELLIGENCE] + _currentDialogue),
             //    *(short *)v6))
             pAudioPlayer->playUISound(SOUND_error);
         } else {
