@@ -54,3 +54,6 @@
 [submodule "thirdparty/gtest_parallel"]
 	path = thirdparty/gtest_parallel
 	url = https://github.com/google/gtest-parallel.git
+[submodule "thirdparty/generator"]
+	path = thirdparty/generator
+	url = https://github.com/TartanLlama/generator.git

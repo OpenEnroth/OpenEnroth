@@ -63,3 +63,8 @@ if(NOT OE_BUILD_PLATFORM STREQUAL "android")
         endif()
     endif()
 endif()
+
+# generator
+set(GENERATOR_BUILD_PACKAGE OFF)
+set(GENERATOR_BUILD_TESTS OFF)
+add_subdirectory(generator)
