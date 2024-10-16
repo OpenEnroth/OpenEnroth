@@ -13,44 +13,26 @@
 
 class GraphicsImage;
 
-class Icon {
- public:
-    inline Icon() : img(nullptr) {}
-
-    inline void SetAnimationName(std::string_view name) {
-        anim_name = name;
-    }
-    inline const std::string &GetAnimationName() const { return anim_name; }
-
-    inline void SetAnimLength(Duration anim_length) {
-        this->anim_length = anim_length;
-    }
-    inline Duration GetAnimLength() const { return this->anim_length; }
-
-    inline void SetAnimTime(Duration anim_time) {
-        this->anim_time = anim_time;
-    }
-    inline Duration GetAnimTime() const { return this->anim_time; }
-
-    GraphicsImage *GetTexture();
-
+struct IconFrameData {
     std::string pTextureName;
     FrameFlags uFlags;
-    int id = 0;
-
- protected:
     std::string anim_name;
     Duration anim_length;
     Duration anim_time;
-    GraphicsImage *img = nullptr;
 };
 
-struct IconFrameTable {
+class IconFrameTable {
+public:
     int animationId(std::string_view animationName) const; // By animation name.
     Duration animationLength(int animationId) const;
     GraphicsImage *animationFrame(int animationId, Duration frameTime);
 
-    std::vector<Icon> pIcons;
+private:
+    GraphicsImage *loadTexture(int frameId);
+
+public: // TODO(captainurist): make private
+    std::vector<IconFrameData> frames;
+    std::vector<GraphicsImage *> textures;
 };
 
 extern IconFrameTable *pIconsFrameTable;

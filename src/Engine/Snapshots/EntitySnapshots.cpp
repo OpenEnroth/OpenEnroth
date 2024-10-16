@@ -1130,25 +1130,21 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->uNumFireSpikeCasts = src.numFireSpikeCasts;
 }
 
-void snapshot(const Icon &src, IconFrame_MM7 *dst) {
+void snapshot(const IconFrameData &src, IconFrameData_MM7 *dst) {
     memzero(dst);
 
-    snapshot(src.GetAnimationName(), &dst->animationName);
-    dst->animLength = src.GetAnimLength().ticks() / 8;
-
+    snapshot(src.anim_name, &dst->animationName);
+    dst->animLength = src.anim_length.ticks() / 8;
     snapshot(src.pTextureName, &dst->textureName);
-    dst->animTime = src.GetAnimTime().ticks() / 8;
+    dst->animTime = src.anim_time.ticks() / 8;
     dst->flags = std::to_underlying(src.uFlags);
 }
 
-void reconstruct(const IconFrame_MM7 &src, Icon *dst) {
-    std::string name;
-    reconstruct(src.animationName, &name);
-    dst->SetAnimationName(name);
-    dst->SetAnimLength(Duration::fromTicks(8 * src.animLength));
-
+void reconstruct(const IconFrameData_MM7 &src, IconFrameData *dst) {
+    reconstruct(src.animationName, &dst->anim_name);
+    dst->anim_length = Duration::fromTicks(8 * src.animLength);
     reconstruct(src.textureName, &dst->pTextureName);
-    dst->SetAnimTime(Duration::fromTicks(8 * src.animTime));
+    dst->anim_time = Duration::fromTicks(8 * src.animTime);
     dst->uFlags = static_cast<FrameFlags>(src.flags);
 }
 

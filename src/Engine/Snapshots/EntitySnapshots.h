@@ -19,7 +19,7 @@
 
 class Actor;
 class Character;
-class Icon;
+struct IconFrameData;
 class Pid;
 struct RawCharacterConditions;
 struct RawTimer;
@@ -619,7 +619,7 @@ void snapshot(const ActiveOverlayList &src, ActiveOverlayList_MM7 *dst);
 void reconstruct(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst);
 
 
-struct IconFrame_MM7 {
+struct IconFrameData_MM7 {
     std::array<char, 12> animationName;
     std::array<char, 12> textureName;
     int16_t animTime;
@@ -627,11 +627,11 @@ struct IconFrame_MM7 {
     int16_t flags;
     uint16_t textureId;
 };
-static_assert(sizeof(IconFrame_MM7) == 0x20);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(IconFrame_MM7)
+static_assert(sizeof(IconFrameData_MM7) == 0x20);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(IconFrameData_MM7)
 
-void snapshot(const Icon &src, IconFrame_MM7 *dst);
-void reconstruct(const IconFrame_MM7 &src, Icon *dst);
+void snapshot(const IconFrameData &src, IconFrameData_MM7 *dst);
+void reconstruct(const IconFrameData_MM7 &src, IconFrameData *dst);
 
 
 // This seems to be an MM6-only struct, not really used in MM7.

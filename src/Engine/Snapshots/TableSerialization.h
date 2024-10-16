@@ -6,7 +6,7 @@ class ChestDescList;
 class DecorationList;
 class ObjectList;
 class SoundList;
-struct IconFrameTable;
+class IconFrameTable;
 struct MonsterList;
 struct OverlayList;
 struct PortraitFrameTable;
