@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "Engine/Data/FrameEnums.h"
 #include "Engine/Time/Duration.h"
 
 #include "Utility/Memory/Blob.h"
@@ -34,7 +35,7 @@ class Icon {
     GraphicsImage *GetTexture();
 
     std::string pTextureName;
-    int16_t uFlags = 0;
+    FrameFlags uFlags;
     int id = 0;
 
  protected:

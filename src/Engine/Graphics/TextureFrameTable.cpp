@@ -32,7 +32,7 @@ GraphicsImage *TextureFrameTable::GetFrameTexture(int64_t frameId, Duration offs
     }
 
     Duration animationDuration = textures[frameId].animationDuration;
-    if ((textures[frameId].flags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && animationDuration) {
+    if ((textures[frameId].flags & FRAME_HAS_MORE) && animationDuration) {
         offset = offset % animationDuration;
         while (offset >= textures[frameId].frameDuration) {
             offset -= textures[frameId].frameDuration;
@@ -50,7 +50,7 @@ Duration TextureFrameTable::textureFrameAnimLength(int64_t frameID) {
         return 1_ticks;
     }
     Duration result = textures[frameID].animationDuration;
-    if ((textures[frameID].flags & TEXTURE_FRAME_TABLE_MORE_FRAMES) && result)
+    if ((textures[frameID].flags & FRAME_HAS_MORE) && result)
         return result;
     return 1_ticks;
 }

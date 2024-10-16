@@ -625,7 +625,7 @@ struct IconFrame_MM7 {
     std::array<char, 12> textureName;
     int16_t animTime;
     int16_t animLength;
-    int16_t flags;  // 0x01 - more icons in this animation
+    int16_t flags;
     uint16_t textureId;
 };
 static_assert(sizeof(IconFrame_MM7) == 0x20);

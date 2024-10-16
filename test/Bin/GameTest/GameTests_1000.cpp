@@ -599,7 +599,7 @@ GAME_TEST(Prs, Pr1440) {
     frame0.name = "dec33b";
     frame0.animationDuration = 16_ticks;
     frame0.frameDuration = 8_ticks;
-    frame0.flags = TEXTURE_FRAME_TABLE_MORE_FRAMES;
+    frame0.flags = FRAME_HAS_MORE;
     GraphicsImage *tex0 = frame0.GetTexture();
 
     TextureFrame frame1;

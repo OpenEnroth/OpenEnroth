@@ -10,7 +10,8 @@ set(ENGINE_DATA_HEADERS
         HouseData.h
         HouseEnums.h
         HouseEnumFunctions.h
-        HistoryData.h)
+        HistoryData.h
+        FrameEnums.h)
 
 add_library(engine_data INTERFACE ${ENGINE_DATA_SOURCES} ${ENGINE_DATA_HEADERS})
 target_link_libraries(engine_data INTERFACE library_serialization utility)

@@ -308,7 +308,14 @@ void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
 
     dst->animationDuration = Duration::fromTicks(src.animLength * 8);
     dst->frameDuration = Duration::fromTicks(src.animTime * 8);
-    dst->flags = static_cast<TextureFrameFlags>(src.flags);
+
+    // MM7 uses different enum values for texture frames and portrait frames. We have unified them, so need to properly
+    // convert the values here.
+    dst->flags = 0;
+    if (src.flags & 1)
+        dst->flags |= FRAME_HAS_MORE;
+    if (src.flags & 2)
+        dst->flags |= FRAME_FIRST;
 }
 
 void snapshot(const RawTimer &src, Timer_MM7 *dst) {
@@ -1131,7 +1138,7 @@ void snapshot(const Icon &src, IconFrame_MM7 *dst) {
 
     snapshot(src.pTextureName, &dst->textureName);
     dst->animTime = src.GetAnimTime().ticks() / 8;
-    dst->flags = src.uFlags;
+    dst->flags = std::to_underlying(src.uFlags);
 }
 
 void reconstruct(const IconFrame_MM7 &src, Icon *dst) {
@@ -1142,7 +1149,7 @@ void reconstruct(const IconFrame_MM7 &src, Icon *dst) {
 
     reconstruct(src.textureName, &dst->pTextureName);
     dst->SetAnimTime(Duration::fromTicks(8 * src.animTime));
-    dst->uFlags = src.flags;
+    dst->uFlags = static_cast<FrameFlags>(src.flags);
 }
 
 void snapshot(const UIAnimation &src, UIAnimation_MM7 *dst) {
@@ -1689,7 +1696,7 @@ void reconstruct(const PlayerFrame_MM7 &src, PortraitFrame *dst) {
     dst->uTextureID = src.uTextureID;
     dst->uAnimTime = Duration::fromTicks(src.uAnimTime * 8);
     dst->uAnimLength = Duration::fromTicks(src.uAnimLength * 8);
-    dst->uFlags = src.uFlags;
+    dst->uFlags = static_cast<FrameFlags>(src.uFlags);
 }
 
 void reconstruct(const LevelDecoration_MM7 &src, LevelDecoration *dst) {

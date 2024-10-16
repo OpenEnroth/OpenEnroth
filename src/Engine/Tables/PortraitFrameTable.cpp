@@ -21,7 +21,7 @@ Duration PortraitFrameTable::GetDurationByPortrait(CharacterPortrait portrait) {
 
 //----- (00494B10) --------------------------------------------------------
 PortraitFrame *PortraitFrameTable::GetFrameBy_x(int uFramesetID, Duration gameTime) {
-    if (this->pFrames[uFramesetID].uFlags & 1 && this->pFrames[uFramesetID].uAnimLength) {
+    if (this->pFrames[uFramesetID].uFlags & FRAME_HAS_MORE && this->pFrames[uFramesetID].uAnimLength) {
         // Processing animated character expressions - e.g., PORTRAIT_YES & PORTRAIT_NO.
         Duration time = gameTime % this->pFrames[uFramesetID].uAnimLength;
 

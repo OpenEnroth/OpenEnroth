@@ -38,7 +38,7 @@ unsigned int IconFrameTable::FindIcon(std::string_view pIconName) {
 
 //----- (00494F70) --------------------------------------------------------
 Icon *IconFrameTable::GetFrame(unsigned int uIconID, Duration frame_time) {
-    if (this->pIcons[uIconID].uFlags & 1 && this->pIcons[uIconID].GetAnimLength()) {
+    if (this->pIcons[uIconID].uFlags & FRAME_HAS_MORE && this->pIcons[uIconID].GetAnimLength()) {
         Duration t = frame_time;
 
         t = t % this->pIcons[uIconID].GetAnimLength();

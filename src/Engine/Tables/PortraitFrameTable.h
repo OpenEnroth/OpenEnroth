@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "Engine/Data/FrameEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Time/Duration.h"
 
@@ -10,7 +11,7 @@ struct PortraitFrame {
     uint16_t uTextureID;
     Duration uAnimTime;
     Duration uAnimLength;
-    int16_t uFlags;
+    FrameFlags uFlags;
 };
 
 struct PortraitFrameTable {
