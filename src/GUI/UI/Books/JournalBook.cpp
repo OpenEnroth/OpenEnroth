@@ -7,7 +7,7 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Tables/StorylineTextTable.h"
+#include "Engine/Tables/HistoryTable.h"
 #include "Engine/mm7_data.h"
 
 #include "GUI/GUIButton.h"
@@ -48,9 +48,9 @@ GUIWindow_JournalBook::GUIWindow_JournalBook() {
 
     for (int i = 0; i < pParty->PartyTimes.HistoryEventTimes.size(); i++) {
         if (pParty->PartyTimes.HistoryEventTimes[i].isValid()) {
-            if (!pStorylineText->StoreLine[i + 1].pText.empty()) {
+            if (!pHistoryTable->historyLines[i + 1].pText.empty()) {
                 NPCData dummyNpc;
-                std::string str = BuildDialogueString(pStorylineText->StoreLine[i + 1].pText, 0, &dummyNpc, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID, &pParty->PartyTimes.HistoryEventTimes[i]);
+                std::string str = BuildDialogueString(pHistoryTable->historyLines[i + 1].pText, 0, &dummyNpc, 0, HOUSE_INVALID, SHOP_SCREEN_INVALID, &pParty->PartyTimes.HistoryEventTimes[i]);
                 int pTextHeight = assets->pFontBookOnlyShadow->CalcTextHeight(str, journal_window.uFrameWidth, 1);
                 int pages = ((pTextHeight - (assets->pFontBookOnlyShadow->GetHeight() - 3)) / (signed int)journal_window.uFrameHeight) + 1;
                 for (int j = 0; j < pages; ++j) {
@@ -87,8 +87,8 @@ void GUIWindow_JournalBook::Update() {
         journal_window.uFrameHeight = game_viewport_height;
         journal_window.uFrameZ = game_viewport_z;
         journal_window.uFrameW = game_viewport_w;
-        if (!pStorylineText->StoreLine[_journalIdx[_currentIdx]].pPageTitle.empty()) {
-            journal_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_journal_title_color, pStorylineText->StoreLine[_journalIdx[_currentIdx]].pPageTitle, 3);
+        if (!pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle.empty()) {
+            journal_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_journal_title_color, pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle, 3);
         }
     }
 
@@ -113,7 +113,7 @@ void GUIWindow_JournalBook::Update() {
 
     if (_journalIdx.size()) {
         NPCData dummyNpc;
-        std::string str = BuildDialogueString(pStorylineText->StoreLine[_journalIdx[_currentIdx]].pText, 0, &dummyNpc, 0, HOUSE_INVALID,
+        std::string str = BuildDialogueString(pHistoryTable->historyLines[_journalIdx[_currentIdx]].pText, 0, &dummyNpc, 0, HOUSE_INVALID,
                                               SHOP_SCREEN_INVALID, &pParty->PartyTimes.HistoryEventTimes[_journalIdx[_currentIdx] - 1]);
         std::string pStringOnPage = assets->pFontBookOnlyShadow->GetPageTop(str, &journal_window, 1, _journalEntryPage[_currentIdx]);
         journal_window.DrawText(assets->pFontBookOnlyShadow.get(), {1, 0}, ui_book_journal_text_color, pStringOnPage,

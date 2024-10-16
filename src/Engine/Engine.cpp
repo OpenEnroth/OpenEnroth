@@ -53,7 +53,7 @@
 #include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Tables/FactionTable.h"
-#include "Engine/Tables/StorylineTextTable.h"
+#include "Engine/Tables/HistoryTable.h"
 #include "Engine/Tables/AutonoteTable.h"
 #include "Engine/Tables/QuestTable.h"
 #include "Engine/Tables/TransitionTable.h"
@@ -718,8 +718,8 @@ void Engine::SecondaryInitialization() {
     pFactionTable = new FactionTable();
     pFactionTable->Initialize(engine->_gameResourceManager->getEventsFile("hostile.txt"));
 
-    pStorylineText = new StorylineText();
-    pStorylineText->Initialize(engine->_gameResourceManager->getEventsFile("history.txt"));
+    pHistoryTable = new HistoryTable();
+    pHistoryTable->Initialize(engine->_gameResourceManager->getEventsFile("history.txt"));
 
     pItemTable = new ItemTable();
     pItemTable->Initialize(engine->_gameResourceManager.get());

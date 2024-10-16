@@ -7,7 +7,7 @@ set(ENGINE_TABLES_SOURCES
         FrameTableInc.cpp
         IconFrameTable.cpp
         PortraitFrameTable.cpp
-        StorylineTextTable.cpp
+        HistoryTable.cpp
         TileTable.cpp
         HouseTable.cpp
         AwardTable.cpp
@@ -24,7 +24,7 @@ set(ENGINE_TABLES_HEADERS
         FrameTableInc.h
         IconFrameTable.h
         PortraitFrameTable.h
-        StorylineTextTable.h
+        HistoryTable.h
         TileEnums.h
         TileTable.h
         HouseTable.h

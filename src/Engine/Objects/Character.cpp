@@ -32,7 +32,7 @@
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/PortraitFrameTable.h"
-#include "Engine/Tables/StorylineTextTable.h"
+#include "Engine/Tables/HistoryTable.h"
 #include "Engine/Tables/AutonoteTable.h"
 #include "Engine/Tables/QuestTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -4340,7 +4340,7 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
         if (!pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)]) {
             pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)] = pParty->GetPlayingTime();
-            if (!pStorylineText->StoreLine[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText.empty()) {
+            if (!pHistoryTable->historyLines[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText.empty()) {
                 bFlashHistoryBook = true;
                 PlayAwardSound();
             }
@@ -4979,7 +4979,7 @@ void Character::AddVariable(VariableType var_type, signed int val) {
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
         if (!pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)]) {
             pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)] = pParty->GetPlayingTime();
-            if (!pStorylineText->StoreLine[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText.empty()) {
+            if (!pHistoryTable->historyLines[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText.empty()) {
                 bFlashHistoryBook = true;
                 PlayAwardSound();
             }
