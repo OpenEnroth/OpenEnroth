@@ -56,9 +56,12 @@ void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config, const Conf
     // TODO(captainurist): Right now setting keybindings here doesn't work
     patch.apply(config);
 
-    config->settings.MusicLevel.setValue(0);
-    config->settings.VoiceLevel.setValue(0);
-    config->settings.SoundLevel.setValue(0);
+    // We don't set voice & music levels to 0.0 b/c in this case our code doesn't even call into OpenAL, and this is NOT
+    // what we want when playing traces, especially when running tests - we want the test code path to be the same as
+    // in-game one.
+    config->settings.MusicLevel.setValue(1.0);
+    config->settings.VoiceLevel.setValue(1.0);
+    config->settings.SoundLevel.setValue(1.0);
     config->window.MouseGrab.setValue(false);
     config->graphics.FPSLimit.setValue(0); // Unlimited
     config->debug.NoVideo.setValue(config->debug.TraceNoVideo.value());
