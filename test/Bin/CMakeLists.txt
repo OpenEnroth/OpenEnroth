@@ -19,6 +19,6 @@ add_subdirectory(UnitTest)
 # A target to build & run all tests in headless parallel mode.
 add_custom_target(Run_AllTests_Headless_Parallel
         DEPENDS Run_UnitTest Run_GameTest_Headless_Parallel Run_RetraceTest_Headless_Parallel)
-# A target to build & run all tests in headless parallel mode.
+# Used for flatpak builds, would be nice to have retrace and game tests using Run_GameTest_Headless and Run_RetraceTest_Headless  ...
 add_custom_target(test
         DEPENDS Run_UnitTest Run_RetraceTest_Headless)
