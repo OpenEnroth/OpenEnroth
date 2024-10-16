@@ -63,9 +63,14 @@ modules:
       - -DOE_USE_PREBUILT_DEPENDENCIES=OFF
       - -DCMAKE_BUILD_TYPE=RelWithDbgInfo
       - -DCMAKE_LINKER=lld
+      - -DOE_BUILD_TESTS=OFF      
     sources:
-      - type: dir
-        path: ../../../
+       - type: git
+         url: https://github.com/OpenEnroth/OpenEnroth.git
+         tag: v0.1
+         x-checker-data:
+           type: git
+           tag-pattern: ^v\d+(\.\d+)+.*$
     post-install:
       - install -Dm755 src/Bin/OpenEnroth/OpenEnroth /app/bin/OpenEnroth
       # launcher script
