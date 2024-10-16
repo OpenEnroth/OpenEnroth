@@ -61,9 +61,9 @@ jobs:
     - name: Run Flatpak build
       uses: flatpak/flatpak-github-actions/flatpak-builder@v6
       with:
-        bundle: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{ matrix.arch }}.flatpak
+        bundle: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.flatpak
         manifest-path: distribution/linux/flatpak/io.github.openenroth.openenroth.yml
-        cache-key: flatpak-builder-${{ github.sha }}_${{ matrix.arch }}
+        cache-key: flatpak-builder-${{matrix.configuration}}_${{matrix.architecture}}
 
     - name: Publish release
       if: inputs.releaseTag != ''
@@ -71,4 +71,4 @@ jobs:
       with:
         prerelease: true
         tag_name: '${{inputs.releaseTag}}'
-        files: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{ matrix.arch }}.flatpak
+        files: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.flatpak
