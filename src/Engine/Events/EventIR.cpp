@@ -15,6 +15,8 @@
 #include "Utility/String/Transformations.h"
 #include "Utility/Exception.h"
 
+#include "EventEnumFunctions.h"
+
 static std::string getVariableSetStr(VariableType type, int value) {
     if (type >= VAR_MapPersistentVariable_0 && type <= VAR_MapPersistentVariable_74) {
         return fmt::format("MapVars[{}], {}", std::to_underlying(type) - std::to_underlying(VAR_MapPersistentVariable_0), value);
@@ -33,7 +35,7 @@ static std::string getVariableSetStr(VariableType type, int value) {
     }
 
     if (type >= VAR_History_0 && type <= VAR_History_28) {
-        return fmt::format("History[{}]", std::to_underlying(type) - std::to_underlying(VAR_History_0));
+        return fmt::format("History[{}]", historyIndex(type));
     }
 
     switch (type) {
@@ -356,7 +358,7 @@ static std::string getVariableCompareStr(VariableType type, int value) {
     }
 
     if (type >= VAR_History_0 && type <= VAR_History_28) {
-        return fmt::format("ERROR: History[{}], {}", std::to_underlying(type) - std::to_underlying(VAR_History_0), value);
+        return fmt::format("ERROR: History[{}], {}", historyIndex(type), value);
     }
 
     switch (type) {
