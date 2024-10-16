@@ -45,7 +45,6 @@ jobs:
         configuration:
           - RelWithDebInfo
         architecture:
-          - x86
           - x86_64
 
     steps:
@@ -64,6 +63,7 @@ jobs:
         bundle: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.flatpak
         manifest-path: distribution/linux/flatpak/dev.io.github.openenroth.openenroth.yml
         cache-key: flatpak-builder-${{matrix.configuration}}_${{matrix.architecture}}
+        arch: ${{matrix.architecture}}
 
     - name: Publish release
       if: inputs.releaseTag != ''
