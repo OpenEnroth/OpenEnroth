@@ -3,7 +3,9 @@
 #include <memory>
 #include <functional>
 
+#include "FileSystemStarter.h"
 #include "GameStarterOptions.h"
+#include "LogStarter.h"
 
 class MemoryFileSystem;
 class EngineFileSystem;
@@ -41,21 +43,18 @@ class GameStarter {
     void runInstrumented(std::function<void(EngineController *)> controlRoutine);
 
  private:
-    void initializeWithLogger();
+    void initWithLogger();
 
-    static void resolvePaths(Environment *environment, GameStarterOptions* options, Logger *logger);
+    static void resolveUserPath(Environment *environment, GameStarterOptions *options);
+    static void resolveDataPath(Environment *environment, GameStarterOptions *options);
     static void failOnInvalidPath(std::string_view dataPath, Platform *platform);
     static void migrateUserData();
 
  private:
     GameStarterOptions _options;
+    FileSystemStarter _fsStarter;
+    LogStarter _logStarter;
     std::unique_ptr<Environment> _environment;
-    std::unique_ptr<BufferLogSink> _bufferLogSink;
-    std::unique_ptr<LogSink> _defaultLogSink;
-    std::unique_ptr<DistLogSink> _rootLogSink;
-    std::unique_ptr<Logger> _logger;
-    std::unique_ptr<EngineFileSystem> _fs;
-    std::unique_ptr<MemoryFileSystem> _userRamFs;
     std::shared_ptr<GameConfig> _config;
     std::unique_ptr<Platform> _platform;
     std::unique_ptr<PlatformApplication> _application;
