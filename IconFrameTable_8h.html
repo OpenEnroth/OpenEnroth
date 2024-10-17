@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7b94a60</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3a72e14</span>
    </div>
   </td>
  </tr>
@@ -79,37 +79,23 @@ $(function() {
   <div class="headertitle"><div class="title">IconFrameTable.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;array&gt;</code><br />
-<code>#include &lt;cstring&gt;</code><br />
-<code>#include &lt;cstdint&gt;</code><br />
-<code>#include &lt;string&gt;</code><br />
+<div class="textblock"><code>#include &lt;string_view&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
+<code>#include &quot;<a class="el" href="IconFrameData_8h.html">Engine/Data/IconFrameData.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Duration_8h.html">Engine/Time/Duration.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Blob_8h.html">Utility/Memory/Blob.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="RawSnapshots_8h.html">Library/Snapshots/RawSnapshots.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIcon.html">Icon</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structRawIconFrameTable.html">RawIconFrameTable</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIconFrameTable.html">IconFrameTable</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classUIAnimation.html">UIAnimation</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIconFrameTable.html">IconFrameTable</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a8e84e207d77d8d54886f3acaf6a5008a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structIconFrameTable.html">IconFrameTable</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IconFrameTable_8h.html#a8e84e207d77d8d54886f3acaf6a5008a">pIconsFrameTable</a></td></tr>
+<tr class="memitem:a8e84e207d77d8d54886f3acaf6a5008a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIconFrameTable.html">IconFrameTable</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IconFrameTable_8h.html#a8e84e207d77d8d54886f3acaf6a5008a">pIconsFrameTable</a></td></tr>
 <tr class="separator:a8e84e207d77d8d54886f3acaf6a5008a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57736ab9d5b15bd203ce973183301961"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classUIAnimation.html">UIAnimation</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IconFrameTable_8h.html#a57736ab9d5b15bd203ce973183301961">pUIAnim_Food</a></td></tr>
-<tr class="separator:a57736ab9d5b15bd203ce973183301961"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3fc24d2defbdaca88cb1e52031353d97"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classUIAnimation.html">UIAnimation</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IconFrameTable_8h.html#a3fc24d2defbdaca88cb1e52031353d97">pUIAnim_Gold</a></td></tr>
-<tr class="separator:a3fc24d2defbdaca88cb1e52031353d97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7108d8bc1c81e6faee850552e5cde9a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classUIAnimation.html">UIAnimation</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IconFrameTable_8h.html#af7108d8bc1c81e6faee850552e5cde9a">pUIAnum_Torchlight</a></td></tr>
-<tr class="separator:af7108d8bc1c81e6faee850552e5cde9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88cac2bf9581758898e327c744463b91"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classUIAnimation.html">UIAnimation</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IconFrameTable_8h.html#a88cac2bf9581758898e327c744463b91">pUIAnim_WizardEye</a></td></tr>
-<tr class="separator:a88cac2bf9581758898e327c744463b91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e43b372f0a95b2340869d2d773aef33"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="classUIAnimation.html">UIAnimation</a> *, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="IconFrameTable_8h.html#a4e43b372f0a95b2340869d2d773aef33">pUIAnims</a></td></tr>
-<tr class="separator:a4e43b372f0a95b2340869d2d773aef33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="a8e84e207d77d8d54886f3acaf6a5008a" name="a8e84e207d77d8d54886f3acaf6a5008a"></a>
@@ -122,117 +108,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structIconFrameTable.html">IconFrameTable</a>* pIconsFrameTable</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a57736ab9d5b15bd203ce973183301961" name="a57736ab9d5b15bd203ce973183301961"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a57736ab9d5b15bd203ce973183301961">&#9670;&#160;</a></span>pUIAnim_Food</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classUIAnimation.html">UIAnimation</a>* pUIAnim_Food</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3fc24d2defbdaca88cb1e52031353d97" name="a3fc24d2defbdaca88cb1e52031353d97"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3fc24d2defbdaca88cb1e52031353d97">&#9670;&#160;</a></span>pUIAnim_Gold</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classUIAnimation.html">UIAnimation</a>* pUIAnim_Gold</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a88cac2bf9581758898e327c744463b91" name="a88cac2bf9581758898e327c744463b91"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a88cac2bf9581758898e327c744463b91">&#9670;&#160;</a></span>pUIAnim_WizardEye</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classUIAnimation.html">UIAnimation</a>* pUIAnim_WizardEye</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4e43b372f0a95b2340869d2d773aef33" name="a4e43b372f0a95b2340869d2d773aef33"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4e43b372f0a95b2340869d2d773aef33">&#9670;&#160;</a></span>pUIAnims</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt;<a class="el" href="classUIAnimation.html">UIAnimation</a> *, 4&gt; pUIAnims</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">extern</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af7108d8bc1c81e6faee850552e5cde9a" name="af7108d8bc1c81e6faee850552e5cde9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7108d8bc1c81e6faee850552e5cde9a">&#9670;&#160;</a></span>pUIAnum_Torchlight</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classUIAnimation.html">UIAnimation</a>* pUIAnum_Torchlight</td>
+          <td class="memname"><a class="el" href="classIconFrameTable.html">IconFrameTable</a>* pIconsFrameTable</td>
         </tr>
       </table>
   </td>

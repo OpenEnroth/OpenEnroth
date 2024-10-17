@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7b94a60</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3a72e14</span>
    </div>
   </td>
  </tr>
@@ -99,7 +99,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="SpellEnumFunctions_8h.html">Engine/Spells/SpellEnumFunctions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ItemTable_8h.html">Engine/Tables/ItemTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="IconFrameTable_8h.html">Engine/Tables/IconFrameTable.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="CharacterFrameTable_8h.html">Engine/Tables/CharacterFrameTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="PortraitFrameTable_8h.html">Engine/Tables/PortraitFrameTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Time_8h.html">Engine/Time/Time.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TurnEngine_8h.html">Engine/TurnEngine/TurnEngine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="OurMath_8h.html">Engine/OurMath.h</a>&quot;</code><br />
@@ -115,10 +115,6 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ab6af3751607396afcd1745c1a536ae1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#ab6af3751607396afcd1745c1a536ae1a">ui_play_gold_anim</a> ()</td></tr>
-<tr class="separator:ab6af3751607396afcd1745c1a536ae1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25dbc18fe908ae3947a833127f1cf9e2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#a25dbc18fe908ae3947a833127f1cf9e2">ui_play_food_anim</a> ()</td></tr>
-<tr class="separator:a25dbc18fe908ae3947a833127f1cf9e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e6a8227eec1ad92a9ee0ac326629eb4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#a0e6a8227eec1ad92a9ee0ac326629eb4">Rest</a> (<a class="el" href="classDuration.html">Duration</a> restTime)</td></tr>
 <tr class="separator:a0e6a8227eec1ad92a9ee0ac326629eb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0de282b789f70149c2b5a6e0d537b8c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#aa0de282b789f70149c2b5a6e0d537b8c">restAndHeal</a> (<a class="el" href="classDuration.html">Duration</a> restTime)</td></tr>
@@ -134,27 +130,6 @@ Variables</h2></td></tr>
 <tr class="separator:a638b1d8b985f1c7f8b69f2d81286f98e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12ba3af651f05bc1509dfea9f91e4830"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structActionQueue.html">ActionQueue</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#a12ba3af651f05bc1509dfea9f91e4830">pPartyActionQueue</a> = new <a class="el" href="structActionQueue.html">ActionQueue</a></td></tr>
 <tr class="separator:a12ba3af651f05bc1509dfea9f91e4830"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61b08ef19ba885074b3458a404168171"><td class="memItemLeft" >struct {</td></tr>
-<tr class="memitem:added8d015e62f0414d287f6d758d855f"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="classUIAnimation.html">UIAnimation</a>&#160;&#160;&#160;<a class="el" href="Party_8cpp.html#a814f70dac9f5bfd0ddd689ef48e4ad90">_pUIAnim_Food</a></td></tr>
-<tr class="separator:added8d015e62f0414d287f6d758d855f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e7a48e61bd37597d4d372d828d23b25"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="classUIAnimation.html">UIAnimation</a>&#160;&#160;&#160;<a class="el" href="Party_8cpp.html#a262138669f703ab63acc9dcfb15fed57">_pUIAnim_Gold</a></td></tr>
-<tr class="separator:a0e7a48e61bd37597d4d372d828d23b25"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a364c743c34164fcc7a5a4d98c448241f"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="classUIAnimation.html">UIAnimation</a>&#160;&#160;&#160;<a class="el" href="Party_8cpp.html#a175b7af4a0e2125d58d90b043a28b2ff">_pUIAnum_Torchlight</a></td></tr>
-<tr class="separator:a364c743c34164fcc7a5a4d98c448241f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5f8ce8088e28a9d4179f70227b299dd"><td class="memItemLeft" >&#160;&#160;&#160;<a class="el" href="classUIAnimation.html">UIAnimation</a>&#160;&#160;&#160;<a class="el" href="Party_8cpp.html#af964b423abb946fcf3ec10babd767823">_pUIAnim_WizardEye</a></td></tr>
-<tr class="separator:ac5f8ce8088e28a9d4179f70227b299dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61b08ef19ba885074b3458a404168171"><td class="memItemLeft" valign="top">}&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#a61b08ef19ba885074b3458a404168171">_uianim</a></td></tr>
-<tr class="separator:a61b08ef19ba885074b3458a404168171"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57736ab9d5b15bd203ce973183301961"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classUIAnimation.html">UIAnimation</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#a57736ab9d5b15bd203ce973183301961">pUIAnim_Food</a> = &amp;<a class="el" href="Party_8cpp.html#a814f70dac9f5bfd0ddd689ef48e4ad90">_uianim._pUIAnim_Food</a></td></tr>
-<tr class="separator:a57736ab9d5b15bd203ce973183301961"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3fc24d2defbdaca88cb1e52031353d97"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classUIAnimation.html">UIAnimation</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#a3fc24d2defbdaca88cb1e52031353d97">pUIAnim_Gold</a> = &amp;<a class="el" href="Party_8cpp.html#a262138669f703ab63acc9dcfb15fed57">_uianim._pUIAnim_Gold</a></td></tr>
-<tr class="separator:a3fc24d2defbdaca88cb1e52031353d97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7108d8bc1c81e6faee850552e5cde9a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classUIAnimation.html">UIAnimation</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#af7108d8bc1c81e6faee850552e5cde9a">pUIAnum_Torchlight</a> = &amp;<a class="el" href="Party_8cpp.html#a175b7af4a0e2125d58d90b043a28b2ff">_uianim._pUIAnum_Torchlight</a></td></tr>
-<tr class="separator:af7108d8bc1c81e6faee850552e5cde9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a88cac2bf9581758898e327c744463b91"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classUIAnimation.html">UIAnimation</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#a88cac2bf9581758898e327c744463b91">pUIAnim_WizardEye</a> = &amp;<a class="el" href="Party_8cpp.html#af964b423abb946fcf3ec10babd767823">_uianim._pUIAnim_WizardEye</a></td></tr>
-<tr class="separator:a88cac2bf9581758898e327c744463b91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4e43b372f0a95b2340869d2d773aef33"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="classUIAnimation.html">UIAnimation</a> *, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Party_8cpp.html#a4e43b372f0a95b2340869d2d773aef33">pUIAnims</a></td></tr>
-<tr class="separator:a4e43b372f0a95b2340869d2d773aef33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a9e6210bf99466b023425f6f0a6e82c66" name="a9e6210bf99466b023425f6f0a6e82c66"></a>
@@ -245,111 +220,7 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a25dbc18fe908ae3947a833127f1cf9e2" name="a25dbc18fe908ae3947a833127f1cf9e2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25dbc18fe908ae3947a833127f1cf9e2">&#9670;&#160;</a></span>ui_play_food_anim()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ui_play_food_anim </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab6af3751607396afcd1745c1a536ae1a" name="ab6af3751607396afcd1745c1a536ae1a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6af3751607396afcd1745c1a536ae1a">&#9670;&#160;</a></span>ui_play_gold_anim()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ui_play_gold_anim </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a814f70dac9f5bfd0ddd689ef48e4ad90" name="a814f70dac9f5bfd0ddd689ef48e4ad90"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a814f70dac9f5bfd0ddd689ef48e4ad90">&#9670;&#160;</a></span>_pUIAnim_Food</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classUIAnimation.html">UIAnimation</a> _pUIAnim_Food</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a262138669f703ab63acc9dcfb15fed57" name="a262138669f703ab63acc9dcfb15fed57"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a262138669f703ab63acc9dcfb15fed57">&#9670;&#160;</a></span>_pUIAnim_Gold</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classUIAnimation.html">UIAnimation</a> _pUIAnim_Gold</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="af964b423abb946fcf3ec10babd767823" name="af964b423abb946fcf3ec10babd767823"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af964b423abb946fcf3ec10babd767823">&#9670;&#160;</a></span>_pUIAnim_WizardEye</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classUIAnimation.html">UIAnimation</a> _pUIAnim_WizardEye</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a175b7af4a0e2125d58d90b043a28b2ff" name="a175b7af4a0e2125d58d90b043a28b2ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a175b7af4a0e2125d58d90b043a28b2ff">&#9670;&#160;</a></span>_pUIAnum_Torchlight</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classUIAnimation.html">UIAnimation</a> _pUIAnum_Torchlight</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a61b08ef19ba885074b3458a404168171" name="a61b08ef19ba885074b3458a404168171"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a61b08ef19ba885074b3458a404168171">&#9670;&#160;</a></span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct  { ... }  _uianim</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a638b1d8b985f1c7f8b69f2d81286f98e" name="a638b1d8b985f1c7f8b69f2d81286f98e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a638b1d8b985f1c7f8b69f2d81286f98e">&#9670;&#160;</a></span>pParty</h2>
 
@@ -372,80 +243,6 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="structActionQueue.html">ActionQueue</a>* pPartyActionQueue = new <a class="el" href="structActionQueue.html">ActionQueue</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a57736ab9d5b15bd203ce973183301961" name="a57736ab9d5b15bd203ce973183301961"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a57736ab9d5b15bd203ce973183301961">&#9670;&#160;</a></span>pUIAnim_Food</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classUIAnimation.html">UIAnimation</a>* pUIAnim_Food = &amp;<a class="el" href="Party_8cpp.html#a814f70dac9f5bfd0ddd689ef48e4ad90">_uianim._pUIAnim_Food</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3fc24d2defbdaca88cb1e52031353d97" name="a3fc24d2defbdaca88cb1e52031353d97"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3fc24d2defbdaca88cb1e52031353d97">&#9670;&#160;</a></span>pUIAnim_Gold</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classUIAnimation.html">UIAnimation</a>* pUIAnim_Gold = &amp;<a class="el" href="Party_8cpp.html#a262138669f703ab63acc9dcfb15fed57">_uianim._pUIAnim_Gold</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a88cac2bf9581758898e327c744463b91" name="a88cac2bf9581758898e327c744463b91"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a88cac2bf9581758898e327c744463b91">&#9670;&#160;</a></span>pUIAnim_WizardEye</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classUIAnimation.html">UIAnimation</a>* pUIAnim_WizardEye = &amp;<a class="el" href="Party_8cpp.html#af964b423abb946fcf3ec10babd767823">_uianim._pUIAnim_WizardEye</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4e43b372f0a95b2340869d2d773aef33" name="a4e43b372f0a95b2340869d2d773aef33"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4e43b372f0a95b2340869d2d773aef33">&#9670;&#160;</a></span>pUIAnims</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt;<a class="el" href="classUIAnimation.html">UIAnimation</a> *, 4&gt; pUIAnims</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">=  </div>
-<div class="line">    {&amp;<a class="code hl_variable" href="Party_8cpp.html#a61b08ef19ba885074b3458a404168171">_uianim</a>._pUIAnim_Food, &amp;<a class="code hl_variable" href="Party_8cpp.html#a61b08ef19ba885074b3458a404168171">_uianim</a>._pUIAnim_Gold,</div>
-<div class="line">     &amp;<a class="code hl_variable" href="Party_8cpp.html#a61b08ef19ba885074b3458a404168171">_uianim</a>._pUIAnum_Torchlight, &amp;<a class="code hl_variable" href="Party_8cpp.html#a61b08ef19ba885074b3458a404168171">_uianim</a>._pUIAnim_WizardEye}</div>
-<div class="ttc" id="aParty_8cpp_html_a61b08ef19ba885074b3458a404168171"><div class="ttname"><a href="Party_8cpp.html#a61b08ef19ba885074b3458a404168171">_uianim</a></div><div class="ttdeci">struct @26 _uianim</div></div>
-</div><!-- fragment -->
-</div>
-</div>
-<a id="af7108d8bc1c81e6faee850552e5cde9a" name="af7108d8bc1c81e6faee850552e5cde9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7108d8bc1c81e6faee850552e5cde9a">&#9670;&#160;</a></span>pUIAnum_Torchlight</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classUIAnimation.html">UIAnimation</a>* pUIAnum_Torchlight = &amp;<a class="el" href="Party_8cpp.html#a175b7af4a0e2125d58d90b043a28b2ff">_uianim._pUIAnum_Torchlight</a></td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -79,11 +79,9 @@ var searchData=
   ['standardserialization_2eh_76',['StandardSerialization.h',['../StandardSerialization_8h.html',1,'']]],
   ['startstate_2ecpp_77',['StartState.cpp',['../StartState_8cpp.html',1,'']]],
   ['startstate_2eh_78',['StartState.h',['../StartState_8h.html',1,'']]],
-  ['storylinetexttable_2ecpp_79',['StorylineTextTable.cpp',['../StorylineTextTable_8cpp.html',1,'']]],
-  ['storylinetexttable_2eh_80',['StorylineTextTable.h',['../StorylineTextTable_8h.html',1,'']]],
-  ['streamlogsink_2ecpp_81',['StreamLogSink.cpp',['../StreamLogSink_8cpp.html',1,'']]],
-  ['streamlogsink_2eh_82',['StreamLogSink.h',['../StreamLogSink_8h.html',1,'']]],
-  ['stringoutputstream_2ecpp_83',['StringOutputStream.cpp',['../StringOutputStream_8cpp.html',1,'']]],
-  ['stringoutputstream_2eh_84',['StringOutputStream.h',['../StringOutputStream_8h.html',1,'']]],
-  ['stru314_2eh_85',['stru314.h',['../stru314_8h.html',1,'']]]
+  ['streamlogsink_2ecpp_79',['StreamLogSink.cpp',['../StreamLogSink_8cpp.html',1,'']]],
+  ['streamlogsink_2eh_80',['StreamLogSink.h',['../StreamLogSink_8h.html',1,'']]],
+  ['stringoutputstream_2ecpp_81',['StringOutputStream.cpp',['../StringOutputStream_8cpp.html',1,'']]],
+  ['stringoutputstream_2eh_82',['StringOutputStream.h',['../StringOutputStream_8h.html',1,'']]],
+  ['stru314_2eh_83',['stru314.h',['../stru314_8h.html',1,'']]]
 ];

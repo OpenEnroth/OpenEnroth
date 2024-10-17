@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: StorylineText Struct Reference</title>
+<title>OpenEnroth: HistoryTable Struct Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7b94a60</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3a72e14</span>
    </div>
   </td>
  </tr>
@@ -72,34 +72,32 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="structStorylineText-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">StorylineText Struct Reference</div></div>
+<a href="structHistoryTable-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">HistoryTable Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;StorylineTextTable.h&gt;</code></p>
+<p><code>#include &lt;HistoryTable.h&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aff87598cc2ca078eed2262d5ec05ebeb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structStorylineText.html#aff87598cc2ca078eed2262d5ec05ebeb">Initialize</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;history)</td></tr>
-<tr class="separator:aff87598cc2ca078eed2262d5ec05ebeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a894e38efc568103d638891c2b72069ef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHistoryTable.html#a894e38efc568103d638891c2b72069ef">Initialize</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;history)</td></tr>
+<tr class="separator:a894e38efc568103d638891c2b72069ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ad7d540870d3564378305bfc75e842f57"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structStorylineRecord.html">StorylineRecord</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structStorylineText.html#ad7d540870d3564378305bfc75e842f57">StoreLine</a> [29]</td></tr>
-<tr class="separator:ad7d540870d3564378305bfc75e842f57"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acef311b8cdcb68b925942cfa3fd6c55f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structStorylineText.html#acef311b8cdcb68b925942cfa3fd6c55f">field_15C</a></td></tr>
-<tr class="separator:acef311b8cdcb68b925942cfa3fd6c55f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a172a788c38da9d85ba44051b17d20fd4"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structHistoryData.html">HistoryData</a>, 29 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structHistoryTable.html#a172a788c38da9d85ba44051b17d20fd4">historyLines</a></td></tr>
+<tr class="separator:a172a788c38da9d85ba44051b17d20fd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aff87598cc2ca078eed2262d5ec05ebeb" name="aff87598cc2ca078eed2262d5ec05ebeb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aff87598cc2ca078eed2262d5ec05ebeb">&#9670;&#160;</a></span>Initialize()</h2>
+<a id="a894e38efc568103d638891c2b72069ef" name="a894e38efc568103d638891c2b72069ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a894e38efc568103d638891c2b72069ef">&#9670;&#160;</a></span>Initialize()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void StorylineText::Initialize </td>
+          <td class="memname">void HistoryTable::Initialize </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
           <td class="paramname"><em>history</em></td><td>)</td>
@@ -111,28 +109,14 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="acef311b8cdcb68b925942cfa3fd6c55f" name="acef311b8cdcb68b925942cfa3fd6c55f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acef311b8cdcb68b925942cfa3fd6c55f">&#9670;&#160;</a></span>field_15C</h2>
+<a id="a172a788c38da9d85ba44051b17d20fd4" name="a172a788c38da9d85ba44051b17d20fd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a172a788c38da9d85ba44051b17d20fd4">&#9670;&#160;</a></span>historyLines</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int StorylineText::field_15C</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad7d540870d3564378305bfc75e842f57" name="ad7d540870d3564378305bfc75e842f57"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad7d540870d3564378305bfc75e842f57">&#9670;&#160;</a></span>StoreLine</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structStorylineRecord.html">StorylineRecord</a> StorylineText::StoreLine[29]</td>
+          <td class="memname">std::array&lt;<a class="el" href="structHistoryData.html">HistoryData</a>, 29&gt; HistoryTable::historyLines</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -140,8 +124,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following files:<ul>
-<li>src/Engine/Tables/<a class="el" href="StorylineTextTable_8h.html">StorylineTextTable.h</a></li>
-<li>src/Engine/Tables/<a class="el" href="StorylineTextTable_8cpp.html">StorylineTextTable.cpp</a></li>
+<li>src/Engine/Tables/<a class="el" href="HistoryTable_8h.html">HistoryTable.h</a></li>
+<li>src/Engine/Tables/<a class="el" href="HistoryTable_8cpp.html">HistoryTable.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
