@@ -20,6 +20,7 @@ include(CppLint)
 include(LlsLint)
 include(Dependencies)
 include(CheckLinkerFlag)
+include(Assertions)
 
 # Defaults.
 if (CMAKE_BUILD_TYPE)
