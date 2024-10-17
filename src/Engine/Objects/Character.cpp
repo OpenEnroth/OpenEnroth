@@ -31,12 +31,13 @@
 #include "Engine/Tables/AwardTable.h"
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Tables/CharacterFrameTable.h"
-#include "Engine/Tables/StorylineTextTable.h"
+#include "Engine/Tables/PortraitFrameTable.h"
+#include "Engine/Tables/HistoryTable.h"
 #include "Engine/Tables/AutonoteTable.h"
 #include "Engine/Tables/QuestTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Conditions.h"
+#include "Engine/Events/EventEnumFunctions.h"
 
 #include "Io/Mouse.h"
 
@@ -4338,9 +4339,9 @@ void Character::SetVariable(VariableType var_type, signed int var_value) {
     ItemGen item;
 
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
-        if (!pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)]) {
-            pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)] = pParty->GetPlayingTime();
-            if (!pStorylineText->StoreLine[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText.empty()) {
+        if (!pParty->PartyTimes.HistoryEventTimes[historyIndex(var_type)]) {
+            pParty->PartyTimes.HistoryEventTimes[historyIndex(var_type)] = pParty->GetPlayingTime();
+            if (!pHistoryTable->historyLines[1 + historyIndex(var_type)].pText.empty()) {
                 bFlashHistoryBook = true;
                 PlayAwardSound();
             }
@@ -4977,9 +4978,9 @@ void Character::AddVariable(VariableType var_type, signed int val) {
     }
 
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
-        if (!pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)]) {
-            pParty->PartyTimes.HistoryEventTimes[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)] = pParty->GetPlayingTime();
-            if (!pStorylineText->StoreLine[std::to_underlying(var_type) - std::to_underlying(VAR_History_0)].pText.empty()) {
+        if (!pParty->PartyTimes.HistoryEventTimes[historyIndex(var_type)]) {
+            pParty->PartyTimes.HistoryEventTimes[historyIndex(var_type)] = pParty->GetPlayingTime();
+            if (!pHistoryTable->historyLines[1 + historyIndex(var_type)].pText.empty()) {
                 bFlashHistoryBook = true;
                 PlayAwardSound();
             }
@@ -7083,11 +7084,10 @@ void Character::playEmotion(CharacterPortrait newPortrait, Duration duration) {
     if (portrait == PORTRAIT_DEAD ||
         portrait == PORTRAIT_ERADICATED) {
         return;  // no react
-    } else if (portrait == PORTRAIT_PETRIFIED &&
-               newPortrait != PORTRAIT_FALLING) {
+    } else if (portrait == PORTRAIT_PETRIFIED && newPortrait != PORTRAIT_WAKE_UP) {
         return;  // no react
     } else {
-        if (portrait != PORTRAIT_SLEEP || newPortrait != PORTRAIT_FALLING) {
+        if (!(portrait == PORTRAIT_SLEEP && newPortrait == PORTRAIT_WAKE_UP)) {
             if (portrait >= PORTRAIT_CURSED && portrait <= PORTRAIT_UNCONSCIOUS && portrait != PORTRAIT_POISONED &&
                 !(newPortrait == PORTRAIT_DMGRECVD_MINOR ||
                   newPortrait == PORTRAIT_DMGRECVD_MODERATE ||
@@ -7100,11 +7100,14 @@ void Character::playEmotion(CharacterPortrait newPortrait, Duration duration) {
     this->portraitTimePassed = 0_ticks;
 
     if (!duration) {
-        this->portraitTimeLength = pPlayerFrameTable->GetDurationByPortrait(newPortrait);
+        this->portraitTimeLength = pPortraitFrameTable->animationDuration(newPortrait);
         assert(this->portraitTimeLength); // GetDurationByExpression should have found the expression.
     } else {
         this->portraitTimeLength = duration;
     }
+
+    if (newPortrait == PORTRAIT_TALK)
+        talkAnimation.init();
 
     portrait = newPortrait;
 }
@@ -7286,8 +7289,7 @@ void Character::Zero() {
     portraitTimePassed = 0_ticks;
     portraitTimeLength = 0_ticks;
     portraitImageIndex = 0;
-    talkAnimTime = 0_ticks;
-    talkFrameSet = 0;
+    talkAnimation = TalkAnimation();
     // Black potions
     _pureStatPotionUsed.fill(false);
 }

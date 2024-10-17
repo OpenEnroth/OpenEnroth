@@ -41,7 +41,9 @@ set(ENGINE_OBJECTS_HEADERS
         CharacterEnumFunctions.h
         SpriteObject.h
         SpriteEnums.h
-        SpriteEnumFunctions.h)
+        SpriteEnumFunctions.h
+        TalkAnimation.h
+        TalkAnimation.cpp)
 
 add_library(engine_objects STATIC ${ENGINE_OBJECTS_SOURCES} ${ENGINE_OBJECTS_HEADERS})
 target_check_style(engine_objects)

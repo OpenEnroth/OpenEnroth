@@ -31,7 +31,7 @@
 #include "Engine/Party.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Tables/CharacterFrameTable.h"
+#include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Time/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 
@@ -159,6 +159,9 @@ GraphicsImage *game_ui_playerbuff_hammerhands = nullptr;
 GraphicsImage *game_ui_playerbuff_preservation = nullptr;
 GraphicsImage *game_ui_playerbuff_bless = nullptr;
 
+int game_ui_wizardEye = -1;
+int game_ui_torchLight = -1;
+
 bool bFlashHistoryBook;
 bool bFlashAutonotesBook;
 bool bFlashQuestBook;
@@ -205,7 +208,7 @@ void GUIWindow_GameMenu::Update() {
 }
 
 //----- (00491CB5) --------------------------------------------------------
-void GameUI_LoadPlayerPortraintsAndVoices() {
+void GameUI_LoadPlayerPortraitsAndVoices() {
     for (unsigned i = 0; i < 4; ++i) {
         for (unsigned j = 0; j < 56; ++j) {
             game_ui_player_faces[i][j] = assets->getImage_ColorKey(
@@ -1250,23 +1253,23 @@ void GameUI_DrawPartySpells() {
 
     if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_NPC_DIALOGUE) {
         // Flight / water walk animation is purposefully slowed down compared to what's in the data files.
-        Duration frameNum = pMiscTimer->time() * 50 / 128;
+        Duration frameTime = pMiscTimer->time() * 50 / 128;
 
         GraphicsImage *spell_texture;  // [sp-4h] [bp-1Ch]@12
 
         if (pParty->FlyActive()) {
             if (pParty->bFlying)
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, frameNum)->GetTexture();
+                spell_texture = pIconsFrameTable->animationFrame(uIconIdx_FlySpell, frameTime);
             else
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_FlySpell, 0_ticks)->GetTexture();
+                spell_texture = pIconsFrameTable->animationFrame(uIconIdx_FlySpell, 0_ticks);
             render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, spell_texture);
         }
 
         if (pParty->WaterWalkActive()) {
             if (pParty->uFlags & PARTY_FLAG_STANDING_ON_WATER)
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, frameNum)->GetTexture();
+                spell_texture = pIconsFrameTable->animationFrame(uIconIdx_WaterWalk, frameTime);
             else
-                spell_texture = pIconsFrameTable->GetFrame(uIconIdx_WaterWalk, 0_ticks)->GetTexture();
+                spell_texture = pIconsFrameTable->animationFrame(uIconIdx_WaterWalk, 0_ticks);
             render->DrawTextureNew(396 / 640.0f, 8 / 480.0f, spell_texture);
         }
     }
@@ -1285,8 +1288,6 @@ void GameUI_DrawPartySpells() {
 
 //----- (004921C1) --------------------------------------------------------
 void GameUI_DrawPortraits() {
-    unsigned int face_expression_ID;  // eax@17
-    PlayerFrame *pFrame;              // eax@21
     GraphicsImage *pPortrait;                 // [sp-4h] [bp-1Ch]@27
 
     pParty->updateDelayedReaction();
@@ -1313,20 +1314,15 @@ void GameUI_DrawPortraits() {
                     388 / 480.0f, pPortrait);
             continue;
         }
-        face_expression_ID = 0;
-        for (size_t j = 0; j < pPlayerFrameTable->pFrames.size(); ++j)
-            if (pPlayerFrameTable->pFrames[j].portrait == pPlayer->portrait) {
-                face_expression_ID = j;
-                break;
-            }
-        if (face_expression_ID == 0)
-            face_expression_ID = 1;
+
+        int faceTextureIndex = 1;
         if (pPlayer->portrait == PORTRAIT_TALK)
-            pFrame = pPlayerFrameTable->GetFrameBy_y(&pPlayer->talkFrameSet, &pPlayer->talkAnimTime, pMiscTimer->dt());
+            faceTextureIndex = pPlayer->talkAnimation.currentFrameIndex();
         else
-            pFrame = pPlayerFrameTable->GetFrameBy_x(face_expression_ID, pPlayer->portraitTimePassed);
+            faceTextureIndex = pPortraitFrameTable->animationFrameIndex(pPortraitFrameTable->animationId(pPlayer->portrait),
+                                                                        pPlayer->portraitTimePassed);
         if (true /* || pPlayer->uExpressionImageIndex != pFrame->uTextureID - 1*/) {
-            pPlayer->portraitImageIndex = pFrame->uTextureID - 1;
+            pPlayer->portraitImageIndex = faceTextureIndex - 1;
             pPortrait = game_ui_player_faces[i][pPlayer->portraitImageIndex];  // pFace = (Texture_MM7*)game_ui_player_faces[i][pFrame->uTextureID];
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
                 render->DrawTextureGrayShade(
@@ -1641,17 +1637,13 @@ void GameUI_DrawTorchlightAndWizardEye() {
         current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) {
         if (pParty->TorchlightActive()) {
             render->DrawTextureNew(
-                pUIAnum_Torchlight->x / 640.0f, pUIAnum_Torchlight->y / 480.0f,
-                pIconsFrameTable
-                    ->GetFrame(pUIAnum_Torchlight->icon->id, pMiscTimer->time())
-                    ->GetTexture());
+                468 / 640.0f, 0.0f,
+                pIconsFrameTable->animationFrame(game_ui_torchLight, pMiscTimer->time()));
         }
         if (pParty->wizardEyeActive()) {
             render->DrawTextureNew(
-                pUIAnim_WizardEye->x / 640.0f, pUIAnim_WizardEye->y / 480.0f,
-                pIconsFrameTable
-                    ->GetFrame(pUIAnim_WizardEye->icon->id, pMiscTimer->time())
-                    ->GetTexture());
+                606 / 640.0f, 0.0f,
+                pIconsFrameTable->animationFrame(game_ui_wizardEye, pMiscTimer->time()));
         }
     }
 }
@@ -1676,7 +1668,7 @@ void GameUI_DrawHiredNPCs() {
                 render->DrawTextureNew(
                     pHiredNPCsIconsOffsetsX[count] / 640.0f,
                     pHiredNPCsIconsOffsetsY[count] / 480.0f,
-                    pIconsFrameTable->GetFrame(pIconsFrameTable->FindIcon("spell96"), buf.GetSacrificeStatus(i)->elapsedTime)->GetTexture());
+                    pIconsFrameTable->animationFrame(pIconsFrameTable->animationId("spell96"), buf.GetSacrificeStatus(i)->elapsedTime));
             }
         }
     }

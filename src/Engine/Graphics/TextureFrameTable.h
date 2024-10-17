@@ -4,27 +4,19 @@
 #include <string>
 #include <vector>
 
+#include "Engine/Data/FrameEnums.h"
 #include "Engine/Time/Duration.h"
 
 #include "Utility/Memory/Blob.h"
-#include "Utility/Flags.h"
 
 class GraphicsImage;
-
-enum class TextureFrameFlag {
-    TEXTURE_FRAME_TABLE_MORE_FRAMES = 0x1,
-    TEXTURE_FRAME_TABLE_FIRST = 0x2,
-};
-using enum TextureFrameFlag;
-MM_DECLARE_FLAGS(TextureFrameFlags, TextureFrameFlag)
-MM_DECLARE_OPERATORS_FOR_FLAGS(TextureFrameFlags)
 
 class TextureFrame {
  public:
     std::string name = "null";
     Duration frameDuration; // Duration of this frame.
     Duration animationDuration; // Total animation duration. Set only for the first frame in a sequence.
-    TextureFrameFlags flags = 0;
+    FrameFlags flags;
 
     GraphicsImage *GetTexture();
 

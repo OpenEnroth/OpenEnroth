@@ -35,7 +35,7 @@ bool GUIProgressBar::Initialize(Type type) {
     assert(type == TYPE_Box || type == TYPE_Fullscreen);
     uType = type;
 
-    turnHourIconId = pIconsFrameTable->FindIcon("turnhour");
+    turnHourIconId = pIconsFrameTable->animationId("turnhour");
 
     if (uType == TYPE_Fullscreen) {
         loading_bg = assets->getImage_PCXFromIconsLOD(fmt::format("loading{}.pcx", vrng->random(5) + 1));
@@ -100,7 +100,7 @@ void GUIProgressBar::Draw() {
         pParty->updateCharactersAndHirelingsEmotions();
 
         render->DrawTextureNew(80 / 640.0f, 122 / 480.0f, progressbar_dungeon);
-        render->DrawTextureNew(100 / 640.0f, 146 / 480.0f, pIconsFrameTable->GetFrame(turnHourIconId, 0_ticks)->GetTexture());
+        render->DrawTextureNew(100 / 640.0f, 146 / 480.0f, pIconsFrameTable->animationFrame(turnHourIconId, 0_ticks));
         render->FillRectFast(174, 164, floorf(((double)(113 * uProgressCurrent) / (double)uProgressMax) + 0.5f), 16, colorTable.Red);
     } else {
         if (loading_bg) {

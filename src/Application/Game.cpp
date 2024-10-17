@@ -1613,7 +1613,7 @@ void Game::gameLoop() {
     }
 
     extern bool use_music_folder;
-    GameUI_LoadPlayerPortraintsAndVoices();
+    GameUI_LoadPlayerPortraitsAndVoices();
     pIcons_LOD->reserveLoadedTextures();
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
 
@@ -1796,7 +1796,7 @@ void Game::gameLoop() {
         pEventTimer->setPaused(true);
         engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
         if (uGameState == GAME_STATE_LOADING_GAME) {
-            GameUI_LoadPlayerPortraintsAndVoices();
+            GameUI_LoadPlayerPortraitsAndVoices();
             uGameState = GAME_STATE_PLAYING;
             bLoading = true;
             continue;

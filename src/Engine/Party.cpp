@@ -20,7 +20,7 @@
 #include "Engine/Spells/SpellEnumFunctions.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Tables/CharacterFrameTable.h"
+#include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Time/Time.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/OurMath.h"
@@ -43,23 +43,6 @@ using Io::Mouse;
 Party *pParty = nullptr;
 
 ActionQueue *pPartyActionQueue = new ActionQueue;
-
-struct {
-    UIAnimation _pUIAnim_Food;
-    UIAnimation _pUIAnim_Gold;
-    UIAnimation _pUIAnum_Torchlight;
-    UIAnimation _pUIAnim_WizardEye;
-} _uianim;
-
-UIAnimation *pUIAnim_Food = &_uianim._pUIAnim_Food;
-UIAnimation *pUIAnim_Gold = &_uianim._pUIAnim_Gold;
-UIAnimation *pUIAnum_Torchlight = &_uianim._pUIAnum_Torchlight;
-UIAnimation *pUIAnim_WizardEye = &_uianim._pUIAnim_WizardEye;
-
-std::array<UIAnimation *, 4>
-    pUIAnims =  // was struct byt defined as class
-    {&_uianim._pUIAnim_Food, &_uianim._pUIAnim_Gold,
-     &_uianim._pUIAnum_Torchlight, &_uianim._pUIAnim_WizardEye};
 
 //----- (0044A56A) --------------------------------------------------------
 int Party::CountHirelings() {  // non hired followers
@@ -283,18 +266,6 @@ bool Party::hasItem(ItemId uItemID) {
     return false;
 }
 
-void ui_play_gold_anim() {
-    pUIAnim_Gold->uAnimTime = 0;
-    pUIAnim_Gold->uAnimLength = pUIAnim_Gold->icon->GetAnimLength();
-    pAudioPlayer->playUISound(SOUND_gold01);
-}
-
-void ui_play_food_anim() {
-    pUIAnim_Food->uAnimTime = 0;
-    pUIAnim_Food->uAnimLength = pUIAnim_Food->icon->GetAnimLength();
-    // pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
-}
-
 //----- (00492AD5) --------------------------------------------------------
 void Party::SetFood(int amount) {
     if (amount > 65535)
@@ -304,7 +275,7 @@ void Party::SetFood(int amount) {
 
     uNumFoodRations = amount;
 
-    ui_play_food_anim();
+    // pAudioPlayer->PlaySound(SOUND_eat, 0, 0, -1, 0, 0);
 }
 
 //----- (00492B03) --------------------------------------------------------
@@ -340,7 +311,8 @@ void Party::SetGold(int amount, bool silent) {
 
     uNumGold = amount;
 
-    if (!silent) ui_play_gold_anim();
+    if (!silent)
+        pAudioPlayer->playUISound(SOUND_gold01);
 }
 
 void Party::AddGold(int amount) {
@@ -742,6 +714,9 @@ void Party::updateCharactersAndHirelingsEmotions() {
 
         Condition condition = player.GetMajorConditionIdx();
         if (condition == CONDITION_GOOD || condition == CONDITION_ZOMBIE) {
+            if (player.portrait == PORTRAIT_TALK)
+                player.talkAnimation.update(pMiscTimer->dt());
+
             if (player.portraitTimePassed < player.portraitTimeLength)
                 continue;
 
@@ -783,7 +758,7 @@ void Party::updateCharactersAndHirelingsEmotions() {
 
             // TODO(captainurist): We overwrite the random timing from the PORTRAIT_NORMAL branch here.
             //                     Doesn't seem intentional!
-            Duration timeLength = pPlayerFrameTable->GetDurationByPortrait(player.portrait);
+            Duration timeLength = pPortraitFrameTable->animationDuration(player.portrait);
             if (timeLength)
                 player.portraitTimeLength = timeLength;
         } else if (player.portrait != PORTRAIT_DMGRECVD_MINOR &&

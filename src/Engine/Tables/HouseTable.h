@@ -8,5 +8,4 @@ class Blob;
 
 void initializeHouses(const Blob &houses);
 
-// TODO(captainurist): move HOUSE_* to Engine/Data
 extern IndexedArray<HouseData, HOUSE_FIRST, HOUSE_LAST> houseTable;

@@ -27,6 +27,8 @@
 #include "Utility/IndexedArray.h"
 #include "Utility/IndexedBitset.h"
 
+#include "TalkAnimation.h"
+
 class Actor;
 class GraphicsImage;
 
@@ -451,8 +453,7 @@ class Character {
     Duration portraitTimePassed;
     Duration portraitTimeLength;
     int16_t portraitImageIndex;
-    Duration talkAnimTime;
-    int talkFrameSet;
+    TalkAnimation talkAnimation;
     std::vector<LloydBeacon> vBeacons;
     char uNumDivineInterventionCastsThisDay;
     char uNumArmageddonCasts;

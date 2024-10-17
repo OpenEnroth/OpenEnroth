@@ -50,10 +50,10 @@
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Tables/CharacterFrameTable.h"
+#include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Tables/FactionTable.h"
-#include "Engine/Tables/StorylineTextTable.h"
+#include "Engine/Tables/HistoryTable.h"
 #include "Engine/Tables/AutonoteTable.h"
 #include "Engine/Tables/QuestTable.h"
 #include "Engine/Tables/TransitionTable.h"
@@ -668,8 +668,8 @@ void Engine::MM7_Initialize() {
     pTileTable = new TileTable;
     deserialize(triLoad("dtile.bin"), pTileTable);
 
-    pPlayerFrameTable = new PlayerFrameTable;
-    deserialize(triLoad("dpft.bin"), pPlayerFrameTable);
+    pPortraitFrameTable = new PortraitFrameTable;
+    deserialize(triLoad("dpft.bin"), pPortraitFrameTable);
 
     pIconsFrameTable = new IconFrameTable;
     deserialize(triLoad("dift.bin"), pIconsFrameTable);
@@ -718,8 +718,8 @@ void Engine::SecondaryInitialization() {
     pFactionTable = new FactionTable();
     pFactionTable->Initialize(engine->_gameResourceManager->getEventsFile("hostile.txt"));
 
-    pStorylineText = new StorylineText();
-    pStorylineText->Initialize(engine->_gameResourceManager->getEventsFile("history.txt"));
+    pHistoryTable = new HistoryTable();
+    pHistoryTable->Initialize(engine->_gameResourceManager->getEventsFile("history.txt"));
 
     pItemTable = new ItemTable();
     pItemTable->Initialize(engine->_gameResourceManager.get());
@@ -731,18 +731,19 @@ void Engine::SecondaryInitialization() {
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
 
-    for (unsigned i = 0; i < 4; ++i) {
-        static const char *pUIAnimNames[4] = {"glow03", "glow05", "torchA", "wizeyeA"};
-        static unsigned short _4E98D0[4][4] = { {479, 0, 329, 0}, {585, 0, 332, 0}, {468, 0, 0, 0}, {606, 0, 0, 0} };
-
-        // pUIAnims[i]->uIconID = pIconsFrameTable->FindIcon(pUIAnimNames[i]);
-        pUIAnims[i]->icon = pIconsFrameTable->GetIcon(pUIAnimNames[i]);
-
-        pUIAnims[i]->uAnimLength = 0_ticks;
-        pUIAnims[i]->uAnimTime = 0;
-        pUIAnims[i]->x = _4E98D0[i][0];
-        pUIAnims[i]->y = _4E98D0[i][2];
-    }
+    // TODO(captainurist): try resurrecting the food / gold animations using resource files from MM6?
+    //for (unsigned i = 0; i < 4; ++i) {
+    //    static const char *pUIAnimNames[4] = {"glow03", "glow05", "torchA", "wizeyeA"};
+    //    static unsigned short _4E98D0[4][4] = { {479, 0, 329, 0}, {585, 0, 332, 0}, {468, 0, 0, 0}, {606, 0, 0, 0} };
+    //
+    //    // pUIAnims[i]->uIconID = pIconsFrameTable->FindIcon(pUIAnimNames[i]);
+    //    pUIAnims[i]->icon = pIconsFrameTable->GetIcon(pUIAnimNames[i]);
+    //
+    //    pUIAnims[i]->uAnimLength = 0_ticks;
+    //    pUIAnims[i]->uAnimTime = 0_ticks;
+    //    pUIAnims[i]->x = _4E98D0[i][0];
+    //    pUIAnims[i]->y = _4E98D0[i][2];
+    //}
 
     // TODO(pskelton): dropping this causes std::bad_alloc in headless mode
     UI_Create();

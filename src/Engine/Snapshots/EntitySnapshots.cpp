@@ -22,7 +22,7 @@
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Tables/CharacterFrameTable.h"
+#include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Time/Time.h"
 
@@ -308,7 +308,14 @@ void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
 
     dst->animationDuration = Duration::fromTicks(src.animLength * 8);
     dst->frameDuration = Duration::fromTicks(src.animTime * 8);
-    dst->flags = static_cast<TextureFrameFlags>(src.flags);
+
+    // MM7 uses different enum values for texture frames and portrait frames. We have unified them, so need to properly
+    // convert the values here.
+    dst->flags = 0;
+    if (src.flags & 1)
+        dst->flags |= FRAME_HAS_MORE;
+    if (src.flags & 2)
+        dst->flags |= FRAME_FIRST;
 }
 
 void snapshot(const RawTimer &src, Timer_MM7 *dst) {
@@ -856,8 +863,8 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->portraitTimePassed = src.portraitTimePassed.ticks();
     dst->portraitTimeLength = src.portraitTimeLength.ticks();
     dst->portraitImageIndex = src.portraitImageIndex;
-    dst->talkAnimTime = src.talkAnimTime.ticks();
-    dst->talkFrameSet = src.talkFrameSet;
+    dst->talkAnimTime = 0;
+    dst->talkFrameSet = 0;
 
     for (unsigned int i = 0; i < 5; ++i) {
         if (i >= src.vBeacons.size()) {
@@ -1097,8 +1104,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->portraitTimePassed = Duration::fromTicks(src.portraitTimePassed);
     dst->portraitTimeLength = Duration::fromTicks(src.portraitTimeLength);
     dst->portraitImageIndex = src.portraitImageIndex;
-    dst->talkAnimTime = Duration::fromTicks(src.talkAnimTime);
-    dst->talkFrameSet = src.talkFrameSet;
+    dst->talkAnimation = TalkAnimation();
 
     for (int z = 0; z < dst->vBeacons.size(); z++)
         dst->vBeacons[z].image->Release();
@@ -1123,45 +1129,22 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->uNumFireSpikeCasts = src.numFireSpikeCasts;
 }
 
-void snapshot(const Icon &src, IconFrame_MM7 *dst) {
+void snapshot(const IconFrameData &src, IconFrameData_MM7 *dst) {
     memzero(dst);
 
-    snapshot(src.GetAnimationName(), &dst->animationName);
-    dst->animLength = src.GetAnimLength().ticks() / 8;
-
-    snapshot(src.pTextureName, &dst->textureName);
-    dst->animTime = src.GetAnimTime().ticks() / 8;
-    dst->flags = src.uFlags;
+    snapshot(src.animationName, &dst->animationName);
+    dst->animationLength = src.animationLength.ticks() / 8;
+    snapshot(src.textureName, &dst->textureName);
+    dst->frameLength = src.frameLength.ticks() / 8;
+    dst->flags = std::to_underlying(src.flags);
 }
 
-void reconstruct(const IconFrame_MM7 &src, Icon *dst) {
-    std::string name;
-    reconstruct(src.animationName, &name);
-    dst->SetAnimationName(name);
-    dst->SetAnimLength(Duration::fromTicks(8 * src.animLength));
-
-    reconstruct(src.textureName, &dst->pTextureName);
-    dst->SetAnimTime(Duration::fromTicks(8 * src.animTime));
-    dst->uFlags = src.flags;
-}
-
-void snapshot(const UIAnimation &src, UIAnimation_MM7 *dst) {
-    memzero(dst);
-
-    /* 000 */ dst->iconId = src.icon->id;
-    /* 004 */ dst->animTime = src.uAnimTime;
-    /* 006 */ dst->animLength = src.uAnimLength.ticks();
-    /* 008 */ dst->x = src.x;
-    /* 00A */ dst->y = src.y;
-}
-
-void reconstruct(const UIAnimation_MM7 &src, UIAnimation *dst) {
-    dst->icon = pIconsFrameTable->GetIcon(src.iconId);
-    ///* 000 */ anim->uIconID = src.uIconID;
-    /* 004 */ dst->uAnimTime = src.animTime;
-    /* 006 */ dst->uAnimLength = Duration::fromTicks(src.animLength);
-    /* 008 */ dst->x = src.x;
-    /* 00A */ dst->y = src.y;
+void reconstruct(const IconFrameData_MM7 &src, IconFrameData *dst) {
+    reconstruct(src.animationName, &dst->animationName);
+    dst->animationLength = Duration::fromTicks(8 * src.animationLength);
+    reconstruct(src.textureName, &dst->textureName);
+    dst->frameLength = Duration::fromTicks(8 * src.frameLength);
+    dst->flags = static_cast<FrameFlags>(src.flags);
 }
 
 void reconstruct(const MonsterDesc_MM6 &src, MonsterDesc *dst) {
@@ -1684,12 +1667,12 @@ void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
     dst->spriteFramesetGroup = src.spriteFramesetGroup;
 }
 
-void reconstruct(const PlayerFrame_MM7 &src, PlayerFrame *dst) {
+void reconstruct(const PortraitFrameData_MM7 &src, PortraitFrameData *dst) {
     dst->portrait = static_cast<CharacterPortrait>(src.portrait);
-    dst->uTextureID = src.uTextureID;
-    dst->uAnimTime = Duration::fromTicks(src.uAnimTime * 8);
-    dst->uAnimLength = Duration::fromTicks(src.uAnimLength * 8);
-    dst->uFlags = src.uFlags;
+    dst->textureIndex = src.textureIndex;
+    dst->frameLength = Duration::fromTicks(src.frameLength * 8);
+    dst->animationLength = Duration::fromTicks(src.animationLength * 8);
+    dst->flags = static_cast<FrameFlags>(src.flags);
 }
 
 void reconstruct(const LevelDecoration_MM7 &src, LevelDecoration *dst) {

@@ -1099,10 +1099,9 @@ void SpellFxRenderer::SetPlayerBuffAnim(SpellId uSpellID,
             return;
     }
 
-    v4->uSpellIconID = pIconsFrameTable->FindIcon(v6);
+    v4->uSpellIconID = pIconsFrameTable->animationId(v6);
     if (v4->bRender)
-        v4->uSpellAnimTime =
-            pIconsFrameTable->GetIcon(v4->uSpellIconID)->GetAnimLength();
+        v4->uSpellAnimTime = pIconsFrameTable->animationLength(v4->uSpellIconID);
 }
 
 void SpellFxRenderer::SetPartyBuffAnim(SpellId uSpellID) {
@@ -1175,11 +1174,10 @@ void SpellFxRenderer::DrawPlayerBuffAnims() {
             continue;
         }
 
-        Icon *icon = pIconsFrameTable->GetFrame(buff->uSpellIconID,
-                                                buff->uSpellAnimTimeElapsed);
+        GraphicsImage *icon = pIconsFrameTable->animationFrame(buff->uSpellIconID, buff->uSpellAnimTimeElapsed);
         render->DrawTextureNew(
             pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing[i] / 640.0f,
-            385 / 480.0f, icon->GetTexture());
+            385 / 480.0f, icon);
     }
 }
 

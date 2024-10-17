@@ -144,12 +144,6 @@ std::array<int32_t, 128 * 3> sphereVertInd = {  // indicies for triangle in sphe
      0x00000026, 0x00000028, 0x00000041, 0x00000028, 0x00000031, 0x00000041,
      0x00000028, 0x0000000B, 0x00000031, 0x00000031, 0x0000002D, 0x00000041}};
 
-#include "Engine/Tables/IconFrameTable.h"
-IconFrameTable *pIconsFrameTable;
-
-#include "Engine/Tables/CharacterFrameTable.h"
-PlayerFrameTable *pPlayerFrameTable;  // idb
-
 //-------------------------------------------------------------------------
 // Data declarations
 
@@ -381,6 +375,7 @@ IndexedArray<std::array<CharacterPortrait, 5>, SPEECH_FIRST, SPEECH_LAST> portra
     {SPEECH_TRAP_DISARMED,       {PORTRAIT_47,             PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_TRAP_EXPLODED,       {PORTRAIT_41,             PORTRAIT_42,                PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_AVOID_DAMAGE,        {PORTRAIT_AVOID_DAMAGE,   PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
+    // TODO(captainurist): Something's off here. PORTRAIT_TALK is a special animated portrait that's played back for the length of the speech sound.
     {SPEECH_ID_ITEM_WEAK,        {PORTRAIT_TALK,           PORTRAIT_MOUTH_OPEN_WIDE,   PORTRAIT_MOUTH_OPEN_A,   PORTRAIT_MOUTH_OPEN_O, PORTRAIT_45}},
     {SPEECH_ID_ITEM_STRONG,      {PORTRAIT_47,             PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_ID_ITEM_FAIL,        {PORTRAIT_43,             PORTRAIT_48,                PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
@@ -477,7 +472,7 @@ IndexedArray<std::array<CharacterPortrait, 5>, SPEECH_FIRST, SPEECH_LAST> portra
     {SPEECH_IN_PRISON,           {PORTRAIT_44,             PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_101,                 {PORTRAIT_48,             PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_PICK_ME,             {PORTRAIT_INVALID,        PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
-    {SPEECH_AWAKEN,              {PORTRAIT_FALLING,        PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
+    {SPEECH_AWAKEN,              {PORTRAIT_WAKE_UP,        PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_ID_MONSTER_WEAK,     {PORTRAIT_45,             PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_ID_MONSTER_STRONG,   {PORTRAIT_47,             PORTRAIT_INVALID,           PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},
     {SPEECH_ID_MONSTER_FAIL,     {PORTRAIT_43,             PORTRAIT_48,                PORTRAIT_INVALID,        PORTRAIT_INVALID,      PORTRAIT_INVALID}},

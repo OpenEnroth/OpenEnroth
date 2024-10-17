@@ -6,8 +6,8 @@ set(ENGINE_TABLES_SOURCES
         FactionTable.cpp
         FrameTableInc.cpp
         IconFrameTable.cpp
-        CharacterFrameTable.cpp
-        StorylineTextTable.cpp
+        PortraitFrameTable.cpp
+        HistoryTable.cpp
         TileTable.cpp
         HouseTable.cpp
         AwardTable.cpp
@@ -23,8 +23,8 @@ set(ENGINE_TABLES_HEADERS
         FactionTable.h
         FrameTableInc.h
         IconFrameTable.h
-        CharacterFrameTable.h
-        StorylineTextTable.h
+        PortraitFrameTable.h
+        HistoryTable.h
         TileEnums.h
         TileTable.h
         HouseTable.h

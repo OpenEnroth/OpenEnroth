@@ -265,7 +265,6 @@ bool PartyCreationUI_Loop() {
 // void PlayerCreationUI_Draw()
 void GUIWindow_PartyCreation::Update() {
     int pTextCenter;                // eax@3
-    Icon *pFrame;                   // eax@3
     int pX;                         // ecx@7
     GUIButton *uPosActiveItem;      // edi@12
     int v17;                        // eax@33

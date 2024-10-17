@@ -1,10 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <cassert>
-#include <utility>
-
-#include "Utility/Segment.h"
 
 enum class GuildId : int32_t {
     GUILD_OF_ELEMENTS = 0,
