@@ -1634,7 +1634,8 @@ void GameUI_DrawTorchlightAndWizardEye() {
         current_screen_type == SCREEN_LOADGAME ||
         current_screen_type == SCREEN_CHEST_INVENTORY ||
         current_screen_type == SCREEN_BOOKS ||
-        current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) {
+        current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG ||
+        current_screen_type == SCREEN_QUICK_REFERENCE) {
         if (pParty->TorchlightActive()) {
             render->DrawTextureNew(
                 468 / 640.0f, 0.0f,
