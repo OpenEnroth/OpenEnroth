@@ -146,6 +146,7 @@ elseif(OE_BUILD_COMPILER STREQUAL "msvc")
     add_compile_definitions(NOMINMAX) # Please don't pull in these macros from <Windows.h>
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS) # STL security warnings are just noise
     add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE) # POSIX deprecation warnings are also just noise
+    add_compile_definitions(_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS) # These are also useless
     add_compile_definitions(_USE_MATH_DEFINES) # Pull in M_PI and other <cmath> defines
     add_compile_definitions(FMT_CONSTEVAL=) # MSVC chokes on fmt consteval formatting, so we define FMT_CONSTEVAL=<empty>
     add_compile_options(/MP) # Multi-threaded build
