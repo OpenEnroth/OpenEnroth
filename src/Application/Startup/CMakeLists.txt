@@ -2,12 +2,16 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(APPLICATION_STARTUP_SOURCES
         PathResolver.cpp
-        GameStarter.cpp)
+        GameStarter.cpp
+        LogStarter.cpp
+        FileSystemStarter.cpp)
 
 set(APPLICATION_STARTUP_HEADERS
         PathResolver.h
         GameStarter.h
-        GameStarterOptions.h)
+        GameStarterOptions.h
+        LogStarter.h
+        FileSystemStarter.h)
 
 add_library(application_startup STATIC ${APPLICATION_STARTUP_SOURCES} ${APPLICATION_STARTUP_HEADERS})
 target_check_style(application_startup)
