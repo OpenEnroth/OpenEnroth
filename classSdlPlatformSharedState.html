@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6dc0330</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f770176</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classSdlPlatformSharedState-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">SdlPlatformSharedState Class Reference</div></div>
@@ -81,16 +82,12 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a36f08e479df66e30b767042ea82a3773"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a36f08e479df66e30b767042ea82a3773">SdlPlatformSharedState</a> (<a class="el" href="classLogger.html">Logger</a> *<a class="el" href="classSdlPlatformSharedState.html#a8e96ed7e33ae07f73712541956b8de77">logger</a>)</td></tr>
-<tr class="separator:a36f08e479df66e30b767042ea82a3773"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84e458da67942879c0a84055791b6d41"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a84e458da67942879c0a84055791b6d41">SdlPlatformSharedState</a> ()</td></tr>
+<tr class="separator:a84e458da67942879c0a84055791b6d41"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2f39c3327cf8a22083a3cd96a7dfd53"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#ab2f39c3327cf8a22083a3cd96a7dfd53">~SdlPlatformSharedState</a> ()</td></tr>
 <tr class="separator:ab2f39c3327cf8a22083a3cd96a7dfd53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b1d8d645a2204e8826f787394ad62f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a2b1d8d645a2204e8826f787394ad62f7">logSdlError</a> (const char *sdlFunctionName)</td></tr>
 <tr class="separator:a2b1d8d645a2204e8826f787394ad62f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abecbd76adcba46a0bb61e8396b9268df"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#abecbd76adcba46a0bb61e8396b9268df">logCategory</a> () const</td></tr>
-<tr class="separator:abecbd76adcba46a0bb61e8396b9268df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e96ed7e33ae07f73712541956b8de77"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogger.html">Logger</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a8e96ed7e33ae07f73712541956b8de77">logger</a> () const</td></tr>
-<tr class="separator:a8e96ed7e33ae07f73712541956b8de77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a793dc108d1f2c553fbc269cc7f872816"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a793dc108d1f2c553fbc269cc7f872816">registerWindow</a> (<a class="el" href="classSdlWindow.html">SdlWindow</a> *<a class="el" href="classSdlPlatformSharedState.html#a5f975d2b8f08e301486d2162304318eb">window</a>)</td></tr>
 <tr class="separator:a793dc108d1f2c553fbc269cc7f872816"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acbcbe6a541f4e8fcb2dc2dd0f18486eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#acbcbe6a541f4e8fcb2dc2dd0f18486eb">unregisterWindow</a> (<a class="el" href="classSdlWindow.html">SdlWindow</a> *<a class="el" href="classSdlPlatformSharedState.html#a5f975d2b8f08e301486d2162304318eb">window</a>)</td></tr>
@@ -114,10 +111,13 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a234aa6635652bdd42a76e4be5eec90c8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSdlGamepad.html">SdlGamepad</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a234aa6635652bdd42a76e4be5eec90c8">gamepad</a> (SDL_JoystickID id) const</td></tr>
 <tr class="separator:a234aa6635652bdd42a76e4be5eec90c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:aabe8faed8d6b12a769b01bbe94493ee7"><td class="memItemLeft" align="right" valign="top">static const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#aabe8faed8d6b12a769b01bbe94493ee7">logCategory</a> ()</td></tr>
+<tr class="separator:aabe8faed8d6b12a769b01bbe94493ee7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a09072a66b689b4d32c0dd357c8e31d65"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogger.html">Logger</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a09072a66b689b4d32c0dd357c8e31d65">_logger</a> = nullptr</td></tr>
-<tr class="separator:a09072a66b689b4d32c0dd357c8e31d65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b4897ab03bfb25e0d09e7dd48ce7072"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; uint32_t, <a class="el" href="classSdlWindow.html">SdlWindow</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a1b4897ab03bfb25e0d09e7dd48ce7072">_windowById</a></td></tr>
 <tr class="separator:a1b4897ab03bfb25e0d09e7dd48ce7072"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a46433640c377101c631d15e91a57b4cb"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; SDL_JoystickID, std::unique_ptr&lt; <a class="el" href="classSdlGamepad.html">SdlGamepad</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSdlPlatformSharedState.html#a46433640c377101c631d15e91a57b4cb">_gamepadById</a></td></tr>
@@ -126,8 +126,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:aa92688fdb1f5f0a821e57d6cd6964c47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a36f08e479df66e30b767042ea82a3773" name="a36f08e479df66e30b767042ea82a3773"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a36f08e479df66e30b767042ea82a3773">&#9670;&#160;</a></span>SdlPlatformSharedState()</h2>
+<a id="a84e458da67942879c0a84055791b6d41" name="a84e458da67942879c0a84055791b6d41"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a84e458da67942879c0a84055791b6d41">&#9670;&#160;</a></span>SdlPlatformSharedState()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -138,14 +138,13 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="memname">SdlPlatformSharedState::SdlPlatformSharedState </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classLogger.html">Logger</a> *&#160;</td>
-          <td class="paramname"><em>logger</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -275,36 +274,27 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="abecbd76adcba46a0bb61e8396b9268df" name="abecbd76adcba46a0bb61e8396b9268df"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abecbd76adcba46a0bb61e8396b9268df">&#9670;&#160;</a></span>logCategory()</h2>
+<a id="aabe8faed8d6b12a769b01bbe94493ee7" name="aabe8faed8d6b12a769b01bbe94493ee7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aabe8faed8d6b12a769b01bbe94493ee7">&#9670;&#160;</a></span>logCategory()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">const <a class="el" href="classLogCategory.html">LogCategory</a> &amp; SdlPlatformSharedState::logCategory </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td> const</td>
+          <td></td>
         </tr>
       </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8e96ed7e33ae07f73712541956b8de77" name="a8e96ed7e33ae07f73712541956b8de77"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e96ed7e33ae07f73712541956b8de77">&#9670;&#160;</a></span>logger()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLogger.html">Logger</a> * SdlPlatformSharedState::logger </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -451,28 +441,6 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::unordered_map&lt;SDL_JoystickID, std::unique_ptr&lt;<a class="el" href="classSdlGamepad.html">SdlGamepad</a>&gt; &gt; SdlPlatformSharedState::_gamepadById</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a09072a66b689b4d32c0dd357c8e31d65" name="a09072a66b689b4d32c0dd357c8e31d65"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a09072a66b689b4d32c0dd357c8e31d65">&#9670;&#160;</a></span>_logger</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classLogger.html">Logger</a>* SdlPlatformSharedState::_logger = nullptr</td>
         </tr>
       </table>
   </td>

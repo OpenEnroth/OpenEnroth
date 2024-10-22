@@ -40,10 +40,11 @@ var searchData=
   ['logmessage_37',['LogMessage',['../structBufferLogSink_1_1LogMessage.html',1,'BufferLogSink']]],
   ['logsink_38',['LogSink',['../classLogSink.html',1,'']]],
   ['logsource_39',['LogSource',['../classLogSource.html',1,'']]],
-  ['logstate_40',['LogState',['../structFFmpegLogProxy_1_1LogState.html',1,'FFmpegLogProxy']]],
-  ['longcivilduration_41',['LongCivilDuration',['../structLongCivilDuration.html',1,'']]],
-  ['lowercasefiledata_42',['LowercaseFileData',['../structdetail_1_1LowercaseFileData.html',1,'detail']]],
-  ['lowercasefilesystem_43',['LowercaseFileSystem',['../classLowercaseFileSystem.html',1,'']]],
-  ['luaitemquerytable_44',['LuaItemQueryTable',['../classLuaItemQueryTable.html',1,'']]],
-  ['luaitemquerytable_3c_20character_20_3e_45',['LuaItemQueryTable&lt; Character &gt;',['../classLuaItemQueryTable.html',1,'']]]
+  ['logstarter_40',['LogStarter',['../classLogStarter.html',1,'']]],
+  ['logstate_41',['LogState',['../structFFmpegLogProxy_1_1LogState.html',1,'FFmpegLogProxy']]],
+  ['longcivilduration_42',['LongCivilDuration',['../structLongCivilDuration.html',1,'']]],
+  ['lowercasefiledata_43',['LowercaseFileData',['../structdetail_1_1LowercaseFileData.html',1,'detail']]],
+  ['lowercasefilesystem_44',['LowercaseFileSystem',['../classLowercaseFileSystem.html',1,'']]],
+  ['luaitemquerytable_45',['LuaItemQueryTable',['../classLuaItemQueryTable.html',1,'']]],
+  ['luaitemquerytable_3c_20character_20_3e_46',['LuaItemQueryTable&lt; Character &gt;',['../classLuaItemQueryTable.html',1,'']]]
 ];

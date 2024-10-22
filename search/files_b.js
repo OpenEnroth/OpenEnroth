@@ -52,8 +52,10 @@ var searchData=
   ['logsink_2ecpp_49',['LogSink.cpp',['../LogSink_8cpp.html',1,'']]],
   ['logsink_2eh_50',['LogSink.h',['../LogSink_8h.html',1,'']]],
   ['logsource_2eh_51',['LogSource.h',['../LogSource_8h.html',1,'']]],
-  ['lowercasefilesystem_2ecpp_52',['LowercaseFileSystem.cpp',['../LowercaseFileSystem_8cpp.html',1,'']]],
-  ['lowercasefilesystem_2eh_53',['LowercaseFileSystem.h',['../LowercaseFileSystem_8h.html',1,'']]],
-  ['lowercasefilesystem_5fut_2ecpp_54',['LowercaseFileSystem_ut.cpp',['../LowercaseFileSystem__ut_8cpp.html',1,'']]],
-  ['luaitemquerytable_2eh_55',['LuaItemQueryTable.h',['../LuaItemQueryTable_8h.html',1,'']]]
+  ['logstarter_2ecpp_52',['LogStarter.cpp',['../LogStarter_8cpp.html',1,'']]],
+  ['logstarter_2eh_53',['LogStarter.h',['../LogStarter_8h.html',1,'']]],
+  ['lowercasefilesystem_2ecpp_54',['LowercaseFileSystem.cpp',['../LowercaseFileSystem_8cpp.html',1,'']]],
+  ['lowercasefilesystem_2eh_55',['LowercaseFileSystem.h',['../LowercaseFileSystem_8h.html',1,'']]],
+  ['lowercasefilesystem_5fut_2ecpp_56',['LowercaseFileSystem_ut.cpp',['../LowercaseFileSystem__ut_8cpp.html',1,'']]],
+  ['luaitemquerytable_2eh_57',['LuaItemQueryTable.h',['../LuaItemQueryTable_8h.html',1,'']]]
 ];

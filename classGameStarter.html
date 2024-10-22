@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6dc0330</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f770176</span>
    </div>
   </td>
  </tr>
@@ -98,13 +98,15 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a9a51e416f6eb1095024292ad971d7127"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a9a51e416f6eb1095024292ad971d7127">initializeWithLogger</a> ()</td></tr>
-<tr class="separator:a9a51e416f6eb1095024292ad971d7127"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab36e42869d32f8e2595e53519ca656d2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#ab36e42869d32f8e2595e53519ca656d2">initWithLogger</a> ()</td></tr>
+<tr class="separator:ab36e42869d32f8e2595e53519ca656d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
-<tr class="memitem:ae529cc14bf30f52640c47d403e80274d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#ae529cc14bf30f52640c47d403e80274d">resolvePaths</a> (<a class="el" href="classEnvironment.html">Environment</a> *environment, <a class="el" href="structGameStarterOptions.html">GameStarterOptions</a> *options, <a class="el" href="classLogger.html">Logger</a> *<a class="el" href="Logger_8cpp.html#a0009c186c3629201f6c24eded36605f4">logger</a>)</td></tr>
-<tr class="separator:ae529cc14bf30f52640c47d403e80274d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adaadff4485a1c6a2f996fefda773e058"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#adaadff4485a1c6a2f996fefda773e058">resolveUserPath</a> (<a class="el" href="classEnvironment.html">Environment</a> *environment, <a class="el" href="structGameStarterOptions.html">GameStarterOptions</a> *options)</td></tr>
+<tr class="separator:adaadff4485a1c6a2f996fefda773e058"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b7f0953a524f855c0f9a243c6e0ded2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a8b7f0953a524f855c0f9a243c6e0ded2">resolveDataPath</a> (<a class="el" href="classEnvironment.html">Environment</a> *environment, <a class="el" href="structGameStarterOptions.html">GameStarterOptions</a> *options)</td></tr>
+<tr class="separator:a8b7f0953a524f855c0f9a243c6e0ded2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c7b8ecd9d7c56aaf29ba9e9dfc0a0e4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a3c7b8ecd9d7c56aaf29ba9e9dfc0a0e4">failOnInvalidPath</a> (std::string_view dataPath, <a class="el" href="classPlatform.html">Platform</a> *<a class="el" href="EngineGlobals_8cpp.html#a75b48f1787959a4617f2a599d7c09aab">platform</a>)</td></tr>
 <tr class="separator:a3c7b8ecd9d7c56aaf29ba9e9dfc0a0e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea67d81f9b52ca40daf065c7f4097613"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#aea67d81f9b52ca40daf065c7f4097613">migrateUserData</a> ()</td></tr>
@@ -114,20 +116,12 @@ Static Private Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:a409dd64a320faa9388fa4777243537ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structGameStarterOptions.html">GameStarterOptions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a409dd64a320faa9388fa4777243537ac">_options</a></td></tr>
 <tr class="separator:a409dd64a320faa9388fa4777243537ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52ed2d82e1a313436b668527f19199a4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFileSystemStarter.html">FileSystemStarter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a52ed2d82e1a313436b668527f19199a4">_fsStarter</a></td></tr>
+<tr class="separator:a52ed2d82e1a313436b668527f19199a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f7f1590c51158e441f8bf27c5fe6a81"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogStarter.html">LogStarter</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a2f7f1590c51158e441f8bf27c5fe6a81">_logStarter</a></td></tr>
+<tr class="separator:a2f7f1590c51158e441f8bf27c5fe6a81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98d25ec3dd5bdbddaaf3003398eaf4f5"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classEnvironment.html">Environment</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a98d25ec3dd5bdbddaaf3003398eaf4f5">_environment</a></td></tr>
 <tr class="separator:a98d25ec3dd5bdbddaaf3003398eaf4f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae576bae6aecc9e4c048c0af5468406c9"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classBufferLogSink.html">BufferLogSink</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#ae576bae6aecc9e4c048c0af5468406c9">_bufferLogSink</a></td></tr>
-<tr class="separator:ae576bae6aecc9e4c048c0af5468406c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad1ed3265b1af6e3830c0d9a9b894cc7e"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classLogSink.html">LogSink</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#ad1ed3265b1af6e3830c0d9a9b894cc7e">_defaultLogSink</a></td></tr>
-<tr class="separator:ad1ed3265b1af6e3830c0d9a9b894cc7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae1cf5e6217ed2b642a68c9d60a8e00a"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classDistLogSink.html">DistLogSink</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#aae1cf5e6217ed2b642a68c9d60a8e00a">_rootLogSink</a></td></tr>
-<tr class="separator:aae1cf5e6217ed2b642a68c9d60a8e00a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeee9d98b4e95fb2a5c2b9882c26c676b"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classLogger.html">Logger</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#aeee9d98b4e95fb2a5c2b9882c26c676b">_logger</a></td></tr>
-<tr class="separator:aeee9d98b4e95fb2a5c2b9882c26c676b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5a8786273ce56d74678d2edac054def"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classEngineFileSystem.html">EngineFileSystem</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#aa5a8786273ce56d74678d2edac054def">_fs</a></td></tr>
-<tr class="separator:aa5a8786273ce56d74678d2edac054def"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a904bf456565b2b38027cd5fffcd2a288"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classMemoryFileSystem.html">MemoryFileSystem</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#a904bf456565b2b38027cd5fffcd2a288">_userRamFs</a></td></tr>
-<tr class="separator:a904bf456565b2b38027cd5fffcd2a288"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0f9c715453fdc136f60ca4f4e6fcd60"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classGameConfig.html">GameConfig</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#af0f9c715453fdc136f60ca4f4e6fcd60">_config</a></td></tr>
 <tr class="separator:af0f9c715453fdc136f60ca4f4e6fcd60"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac68a518d94fa40a198407c8c63edefa0"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classPlatform.html">Platform</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameStarter.html#ac68a518d94fa40a198407c8c63edefa0">_platform</a></td></tr>
@@ -276,8 +270,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a9a51e416f6eb1095024292ad971d7127" name="a9a51e416f6eb1095024292ad971d7127"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9a51e416f6eb1095024292ad971d7127">&#9670;&#160;</a></span>initializeWithLogger()</h2>
+<a id="ab36e42869d32f8e2595e53519ca656d2" name="ab36e42869d32f8e2595e53519ca656d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab36e42869d32f8e2595e53519ca656d2">&#9670;&#160;</a></span>initWithLogger()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -286,7 +280,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void GameStarter::initializeWithLogger </td>
+          <td class="memname">void GameStarter::initWithLogger </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -326,8 +320,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae529cc14bf30f52640c47d403e80274d" name="ae529cc14bf30f52640c47d403e80274d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae529cc14bf30f52640c47d403e80274d">&#9670;&#160;</a></span>resolvePaths()</h2>
+<a id="a8b7f0953a524f855c0f9a243c6e0ded2" name="a8b7f0953a524f855c0f9a243c6e0ded2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b7f0953a524f855c0f9a243c6e0ded2">&#9670;&#160;</a></span>resolveDataPath()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -336,7 +330,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void GameStarter::resolvePaths </td>
+          <td class="memname">void GameStarter::resolveDataPath </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classEnvironment.html">Environment</a> *&#160;</td>
           <td class="paramname"><em>environment</em>, </td>
@@ -345,13 +339,43 @@ Private Attributes</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="structGameStarterOptions.html">GameStarterOptions</a> *&#160;</td>
-          <td class="paramname"><em>options</em>, </td>
+          <td class="paramname"><em>options</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="adaadff4485a1c6a2f996fefda773e058" name="adaadff4485a1c6a2f996fefda773e058"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adaadff4485a1c6a2f996fefda773e058">&#9670;&#160;</a></span>resolveUserPath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameStarter::resolveUserPath </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classEnvironment.html">Environment</a> *&#160;</td>
+          <td class="paramname"><em>environment</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classLogger.html">Logger</a> *&#160;</td>
-          <td class="paramname"><em>logger</em>&#160;</td>
+          <td class="paramtype"><a class="el" href="structGameStarterOptions.html">GameStarterOptions</a> *&#160;</td>
+          <td class="paramname"><em>options</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -426,28 +450,6 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae576bae6aecc9e4c048c0af5468406c9" name="ae576bae6aecc9e4c048c0af5468406c9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae576bae6aecc9e4c048c0af5468406c9">&#9670;&#160;</a></span>_bufferLogSink</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classBufferLogSink.html">BufferLogSink</a>&gt; GameStarter::_bufferLogSink</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="af0f9c715453fdc136f60ca4f4e6fcd60" name="af0f9c715453fdc136f60ca4f4e6fcd60"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af0f9c715453fdc136f60ca4f4e6fcd60">&#9670;&#160;</a></span>_config</h2>
 
@@ -459,28 +461,6 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::shared_ptr&lt;<a class="el" href="classGameConfig.html">GameConfig</a>&gt; GameStarter::_config</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ad1ed3265b1af6e3830c0d9a9b894cc7e" name="ad1ed3265b1af6e3830c0d9a9b894cc7e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad1ed3265b1af6e3830c0d9a9b894cc7e">&#9670;&#160;</a></span>_defaultLogSink</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classLogSink.html">LogSink</a>&gt; GameStarter::_defaultLogSink</td>
         </tr>
       </table>
   </td>
@@ -536,8 +516,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aa5a8786273ce56d74678d2edac054def" name="aa5a8786273ce56d74678d2edac054def"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5a8786273ce56d74678d2edac054def">&#9670;&#160;</a></span>_fs</h2>
+<a id="a52ed2d82e1a313436b668527f19199a4" name="a52ed2d82e1a313436b668527f19199a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52ed2d82e1a313436b668527f19199a4">&#9670;&#160;</a></span>_fsStarter</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -546,7 +526,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classEngineFileSystem.html">EngineFileSystem</a>&gt; GameStarter::_fs</td>
+          <td class="memname"><a class="el" href="classFileSystemStarter.html">FileSystemStarter</a> GameStarter::_fsStarter</td>
         </tr>
       </table>
   </td>
@@ -580,8 +560,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aeee9d98b4e95fb2a5c2b9882c26c676b" name="aeee9d98b4e95fb2a5c2b9882c26c676b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeee9d98b4e95fb2a5c2b9882c26c676b">&#9670;&#160;</a></span>_logger</h2>
+<a id="a2f7f1590c51158e441f8bf27c5fe6a81" name="a2f7f1590c51158e441f8bf27c5fe6a81"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f7f1590c51158e441f8bf27c5fe6a81">&#9670;&#160;</a></span>_logStarter</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -590,7 +570,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classLogger.html">Logger</a>&gt; GameStarter::_logger</td>
+          <td class="memname"><a class="el" href="classLogStarter.html">LogStarter</a> GameStarter::_logStarter</td>
         </tr>
       </table>
   </td>
@@ -690,28 +670,6 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aae1cf5e6217ed2b642a68c9d60a8e00a" name="aae1cf5e6217ed2b642a68c9d60a8e00a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae1cf5e6217ed2b642a68c9d60a8e00a">&#9670;&#160;</a></span>_rootLogSink</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classDistLogSink.html">DistLogSink</a>&gt; GameStarter::_rootLogSink</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a0fe4a50284f62b781f1f41e67e3b632b" name="a0fe4a50284f62b781f1f41e67e3b632b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0fe4a50284f62b781f1f41e67e3b632b">&#9670;&#160;</a></span>_scriptingSystem</h2>
 
@@ -723,28 +681,6 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::unique_ptr&lt;<a class="el" href="classScriptingSystem.html">ScriptingSystem</a>&gt; GameStarter::_scriptingSystem</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a904bf456565b2b38027cd5fffcd2a288" name="a904bf456565b2b38027cd5fffcd2a288"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a904bf456565b2b38027cd5fffcd2a288">&#9670;&#160;</a></span>_userRamFs</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classMemoryFileSystem.html">MemoryFileSystem</a>&gt; GameStarter::_userRamFs</td>
         </tr>
       </table>
   </td>
