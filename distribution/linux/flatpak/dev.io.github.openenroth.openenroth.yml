@@ -49,6 +49,8 @@ modules:
     build-options:
       append-path: /usr/lib/sdk/llvm18/bin
       prepend-ld-library-path: /usr/lib/sdk/llvm18/lib
+      strip: false  # Do not strip binaries to keep debug symbols.
+      no-debuginfo: false  # Ensure debug info is generated.
     cleanup:
       - /share/cmake
       - /lib/cmake
