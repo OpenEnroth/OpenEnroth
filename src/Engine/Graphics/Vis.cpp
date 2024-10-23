@@ -287,20 +287,18 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
 
     for (int faceindex = 0; faceindex < (int)pIndoor->pFaces.size(); ++faceindex) {
         BLVFace *face = &pIndoor->pFaces[faceindex];
+        face->uAttributes &= ~FACE_OUTLINED;
+
         if (isFacePartOfSelection(nullptr, face, filter)) {
             if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
                 if (Intersect_Ray_Face(rayOrigin, rayStep, &a1, face, 0xFFFFFFFFu)) {
                     pCamera3D->ViewTransform(&a1, 1);
                     list->AddObject(VisObjectType_Face, a1.vWorldViewPosition.x, Pid(OBJECT_Face, faceindex));
+                    if (engine->config->debug.ShowPickedFace.value())
+                        face->uAttributes |= FACE_OUTLINED;
                 }
             }
         }
-
-        if (face->uAttributes & FACE_IsPicked)
-            face->uAttributes |= FACE_OUTLINED;
-        else
-            face->uAttributes &= ~FACE_OUTLINED;
-        face->uAttributes &= ~FACE_IsPicked;
     }
 }
 
@@ -370,6 +368,8 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
         }
 
         for (ODMFace &face : model.pFaces) {
+            face.uAttributes &= ~FACE_OUTLINED;
+
             if (isFacePartOfSelection(&face, nullptr, filter)) {
                 BLVFace blv_face;
                 blv_face.FromODM(&face);
@@ -381,16 +381,12 @@ void Vis::PickOutdoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec
                     // int v13 = fixpoint_from_float(/*v12,
                     // */intersection.vWorldViewPosition.x); v13 &= 0xFFFF0000;
                     // v13 += Pid(OBJECT_Face, j | (i << 6));
-                    Pid pid =
-                        Pid(OBJECT_Face, face.index | (model.index << 6));
+                    Pid pid = Pid(OBJECT_Face, face.index | (model.index << 6));
                     list->AddObject(VisObjectType_Face, intersection.vWorldViewPosition.x, pid);
-                }
 
-                if (blv_face.uAttributes & FACE_IsPicked)
-                    face.uAttributes |= FACE_OUTLINED;
-                else
-                    face.uAttributes &= ~FACE_OUTLINED;
-                blv_face.uAttributes &= ~FACE_IsPicked;
+                    if (engine->config->debug.ShowPickedFace.value())
+                        face.uAttributes |= FACE_OUTLINED;
+                }
             }
         }
     }
@@ -483,9 +479,6 @@ bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3f IntersectPoint, signed int sM
     // sModelID == -1 means we're indoor, and -1 == MODEL_INDOOR, so this call just works.
     if (!pFace->Contains(IntersectPoint, sModelID))
         return false;
-
-    if (engine->config->debug.ShowPickedFace.value())
-        pFace->uAttributes |= FACE_IsPicked;
 
     return true;
     /*

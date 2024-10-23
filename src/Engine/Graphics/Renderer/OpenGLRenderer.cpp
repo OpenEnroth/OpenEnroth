@@ -3306,8 +3306,10 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                         int texlayer = 0;
                         int attribflags = 0;
 
-                        if (face.uAttributes & FACE_IsFluid) attribflags |= 2;
-                        if (face.uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
+                        if (face.uAttributes & FACE_IsFluid)
+                            attribflags |= 2;
+                        if (face.uAttributes & FACE_INDOOR_SKY)
+                            attribflags |= 0x400;
 
                         if (face.uAttributes & FACE_FlowDown)
                             attribflags |= 0x400;
@@ -3524,8 +3526,10 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                                 int attribflags = 0;
 
-                                if (face.uAttributes & FACE_IsFluid) attribflags |= 2;
-                                if (face.uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
+                                if (face.uAttributes & FACE_IsFluid)
+                                    attribflags |= 2;
+                                if (face.uAttributes & FACE_INDOOR_SKY)
+                                    attribflags |= 0x400;
 
                                 if (face.uAttributes & FACE_FlowDown)
                                     attribflags |= 0x400;
@@ -3928,8 +3932,10 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 int texlayer = 0;
                 int attribflags = 0;
 
-                if (face->uAttributes & FACE_IsFluid) attribflags |= 2;
-                if (face->uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
+                if (face->uAttributes & FACE_IsFluid)
+                    attribflags |= 2;
+                if (face->uAttributes & FACE_INDOOR_SKY)
+                    attribflags |= 0x400;
 
                 if (face->uAttributes & FACE_FlowDown)
                     attribflags |= 0x400;
@@ -4172,7 +4178,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
                             int texunit = 0;
                             int attribflags = 0;
 
-                            if (face->uAttributes & FACE_IsFluid) attribflags |= 2;
+                            if (face->uAttributes & FACE_IsFluid)
+                                attribflags |= 2;
 
                             if (face->uAttributes & FACE_FlowDown)
                                 attribflags |= 0x400;
