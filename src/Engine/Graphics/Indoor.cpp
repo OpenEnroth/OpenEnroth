@@ -719,10 +719,10 @@ void BLV_UpdateDoors() {
             extras->sTextureDeltaU = 0;
             extras->sTextureDeltaV = 0;
 
-            float minU = std::numeric_limits<float>::max();
-            float minV = std::numeric_limits<float>::max();
-            float maxU = std::numeric_limits<float>::min();
-            float maxV = std::numeric_limits<float>::min();
+            float minU = std::numeric_limits<float>::infinity();
+            float minV = std::numeric_limits<float>::infinity();
+            float maxU = -std::numeric_limits<float>::infinity();
+            float maxV = -std::numeric_limits<float>::infinity();
             for (unsigned k = 0; k < face->uNumVertices; ++k) {
                 Vec3f point = pIndoor->pVertices[face->pVertexIDs[k]];
                 float pointU = dot(point, u);
@@ -744,7 +744,7 @@ void BLV_UpdateDoors() {
             if (face->uAttributes & FACE_TexAlignDown) {
                 extras->sTextureDeltaV -= minV;
             } else if (face->uAttributes & FACE_TexAlignBottom && face->resource) {
-                extras->sTextureDeltaV -= maxU + face->GetTexture()->height();
+                extras->sTextureDeltaV -= maxV + face->GetTexture()->height();
             }
 
             if (face->uAttributes & FACE_TexMoveByDoor) {
