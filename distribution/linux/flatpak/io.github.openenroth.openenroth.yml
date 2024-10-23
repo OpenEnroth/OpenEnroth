@@ -57,13 +57,13 @@ modules:
       - '*.a'
       - /include
     config-opts:
+      - -DOE_BUILD_TESTS=OFF
       - -DOE_BUILD_TOOLS=OFF
       - -DOE_CHECK_STYLE=OFF
       - -DOE_CHECK_LUA_STYLE=OFF
       - -DOE_USE_PREBUILT_DEPENDENCIES=OFF
       - -DCMAKE_BUILD_TYPE=RelWithDbgInfo
       - -DCMAKE_LINKER=lld
-      - -DOE_BUILD_TESTS=OFF      
     sources:
        - type: git
          url: https://github.com/OpenEnroth/OpenEnroth.git
