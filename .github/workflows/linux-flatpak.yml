@@ -53,14 +53,6 @@ jobs:
       with:
         submodules: recursive
         ref: '${{inputs.myCommit}}'
-
-    - name: Run ccache
-      uses: hendrikmuhs/ccache-action@v1.2.10
-      with:
-        key: 'linux-${{matrix.configuration}}-${{matrix.architecture}}-flatpak'
-        save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
-        verbose: 2
-        max-size: 200M
           
     - name: Run Flatpak build
       uses: flatpak/flatpak-github-actions/flatpak-builder@v6
