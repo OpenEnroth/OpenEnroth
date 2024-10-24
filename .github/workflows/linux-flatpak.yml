@@ -55,13 +55,13 @@ jobs:
         echo "CCACHE_DIR=$PWD" >> $GITHUB_ENV
         
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4.2.2
       with:
         submodules: recursive
         ref: '${{inputs.myCommit}}'
           
     - name: Run ccache
-      uses: hendrikmuhs/ccache-action@v1.2.10
+      uses: hendrikmuhs/ccache-action@v1.2.14
       with:
         key: 'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
         save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
@@ -71,7 +71,7 @@ jobs:
         CCACHE_DIR: ${{ env.CCACHE_DIR }}
         
     - name: Run Flatpak build
-      uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+      uses: flatpak/flatpak-github-actions/flatpak-builder@v6.3
       with:
         run-tests: true
         bundle: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.flatpak
@@ -85,7 +85,7 @@ jobs:
 
     - name: Publish release
       if: inputs.releaseTag != ''
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2.0.8
       with:
         prerelease: true
         tag_name: '${{inputs.releaseTag}}'
