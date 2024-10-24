@@ -5,11 +5,10 @@
 #include "Engine/Data/TileData.h"
 
 struct TileTable {
-    TileData *GetTileById(unsigned int uTileID);
-    int GetTileForTerrainType(Tileset a1, bool a2);
-    unsigned int GetTileId(Tileset uTerrainType, TILE_SECT uSection);
+    int tileIdForTileset(Tileset tileset, bool nonRandom);
+    int tileId(Tileset tileset, TILE_SECT section);
 
-    std::vector<TileData> tiles;
+    std::vector<TileData> tiles; // Tile by id.
 };
 
 extern TileTable *pTileTable;

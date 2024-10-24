@@ -1244,14 +1244,14 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
 
 //----- (0047F3EA) --------------------------------------------------------
 bool OutdoorLocation::LoadRoadTileset() {
-    pTileTypes[3].uTileID = pTileTable->GetTileForTerrainType(pTileTypes[3].tileset, 1);
+    pTileTypes[3].uTileID = pTileTable->tileIdForTileset(pTileTypes[3].tileset, 1);
     return true;
 }
 
 //----- (0047F420) --------------------------------------------------------
 bool OutdoorLocation::LoadTileGroupIds() {
     for (unsigned i = 0; i < 3; ++i)
-        pTileTypes[i].uTileID = pTileTable->GetTileForTerrainType(pTileTypes[i].tileset, 1);
+        pTileTypes[i].uTileID = pTileTable->tileIdForTileset(pTileTypes[i].tileset, 1);
     return true;
 }
 
