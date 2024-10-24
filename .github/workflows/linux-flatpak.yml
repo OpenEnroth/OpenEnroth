@@ -48,15 +48,19 @@ jobs:
           - x86_64
 
     steps:
+    - name: make ccache dir
+      run: |
+        mkdir ~/ccache
+        pwd 
+        cd ~/ccache
+        pwd
+        mkdir ~./break
+        
     - name: Checkout
       uses: actions/checkout@v3
       with:
         submodules: recursive
         ref: '${{inputs.myCommit}}'
-
-    - name: make ccache dir
-      run: |
-        mkdir ~/ccache
           
     - name: Run ccache
       uses: hendrikmuhs/ccache-action@v1.2.10
