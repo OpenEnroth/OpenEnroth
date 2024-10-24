@@ -94,7 +94,6 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         add_library(SDL2OE INTERFACE)
         add_library(SDL2::SDL2 ALIAS SDL2OE)
         add_library(SDL2::SDL2OE ALIAS SDL2OE)
-        set(SDL2_FOUND ON)
     else()
         # Prebuilt & user-supplied deps are resolved using the same code here.
         find_package(ZLIB REQUIRED)
