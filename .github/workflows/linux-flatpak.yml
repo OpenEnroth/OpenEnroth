@@ -53,6 +53,14 @@ jobs:
       with:
         submodules: recursive
         ref: '${{inputs.myCommit}}'
+
+    - name: Run ccache
+      uses: hendrikmuhs/ccache-action@v1.2.10
+      with:
+        key: 'linux-${{matrix.configuration}}-${{matrix.architecture}}'
+        save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
+        verbose: 2
+        max-size: 200M
           
     - name: Run Flatpak build
       uses: flatpak/flatpak-github-actions/flatpak-builder@v6
@@ -63,11 +71,9 @@ jobs:
         cache-key: flatpak-builder-${{matrix.configuration}}-${{ steps.date.outputs.date }}
         arch: ${{matrix.architecture}}
         verbose: true
-
-    - name: ccache stats
-      working-directory: build
-      run: |
-        make -j3   
+        cache: false
+      env:
+        CCACHE_DIR: /home/runner/work/OpenEnroth/OpenEnroth/.ccache
 
     - name: Publish release
       if: inputs.releaseTag != ''
