@@ -61,7 +61,7 @@ jobs:
           sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
         with:
           submodules: recursive
           ref: '${{inputs.myCommit}}'
@@ -80,7 +80,7 @@ jobs:
 
       - name: Get NDK
         id: get-ndk
-        uses: nttld/setup-ndk@v1.3.1
+        uses: nttld/setup-ndk@v1.5.0
         with:
           ndk-version: '${{env.NDK_REVISION}}'
           add-to-path: false
@@ -99,14 +99,14 @@ jobs:
             sudo apt-get install -y gcc-13-multilib g++-13-multilib
           fi
 
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4.4.0
         with:
           distribution: temurin
           java-version: 17.0.6
           cache: gradle
 
       - name: Run ccache
-        uses: hendrikmuhs/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2.14
         with:
           key: 'android-${{matrix.configuration}}-${{matrix.architecture}}'
           save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
@@ -144,4 +144,3 @@ jobs:
       - name: Cleanup ccache
         run: |
           ccache -c
-
