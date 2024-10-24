@@ -790,8 +790,7 @@ void OutdoorLocation::CreateDebugLocation() {
     this->pTileTypes[1].tileset = Tileset_Water;
     this->pTileTypes[2].tileset = Tileset_Badlands;
     this->pTileTypes[3].tileset = Tileset_RoadGrassCobble;
-    this->LoadTileGroupIds();
-    this->LoadRoadTileset();
+    this->LoadBaseTileIds();
     this->pSpawnPoints.clear();
     this->pTerrain.ZeroLandscape();
     this->pTerrain.FillDMap(0, 0, 128, 128);
@@ -1242,17 +1241,10 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
     return 1;
 }
 
-//----- (0047F3EA) --------------------------------------------------------
-bool OutdoorLocation::LoadRoadTileset() {
-    pTileTypes[3].uTileID = pTileTable->tileIdForTileset(pTileTypes[3].tileset, 1);
-    return true;
-}
-
 //----- (0047F420) --------------------------------------------------------
-bool OutdoorLocation::LoadTileGroupIds() {
+void OutdoorLocation::LoadBaseTileIds() {
     for (unsigned i = 0; i < 3; ++i)
         pTileTypes[i].uTileID = pTileTable->tileIdForTileset(pTileTypes[i].tileset, 1);
-    return true;
 }
 
 // TODO: move to actors?
