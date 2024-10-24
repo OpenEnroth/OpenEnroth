@@ -71,7 +71,7 @@ jobs:
         CCACHE_DIR: ${{ env.CCACHE_DIR }}
         
     - name: Run Flatpak build
-      uses: flatpak/flatpak-github-actions/flatpak-builder@v6.3
+      uses: flatpak/flatpak-github-actions/flatpak-builder@dcbd3a30d991a38708c318d17f5352cc1268c215
       with:
         run-tests: true
         bundle: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.flatpak
@@ -80,6 +80,7 @@ jobs:
         verbose: true
         cache: true
         restore-cache: false
+        upload-artifact: false
       env:
         CCACHE_DIR: ${{ env.CCACHE_DIR }}
 
