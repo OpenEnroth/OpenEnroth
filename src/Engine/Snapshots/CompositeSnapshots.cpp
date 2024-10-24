@@ -359,9 +359,7 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
     reconstruct(src.skyTexture, &dst->sky_texture_filename);
     // src.groundTilesetUnused is just dropped
     reconstruct(src.tileTypes, &dst->pTileTypes);
-
-    dst->LoadTileGroupIds();
-    dst->LoadRoadTileset();
+    dst->LoadBaseTileIds();
 
     reconstruct(src.heightMap, &dst->pTerrain.pHeightmap);
     reconstruct(src.tileMap, &dst->pTerrain.pTilemap);

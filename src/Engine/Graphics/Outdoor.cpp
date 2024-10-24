@@ -265,7 +265,7 @@ TILE_DESC_FLAGS OutdoorLocation::getTileAttribByPos(int sX, int sY) {
     return getTileAttribByGrid(gridX, gridY);
 }
 
-TileDesc *OutdoorLocation::getTileDescByPos(int sX, int sY) {
+TileData *OutdoorLocation::getTileDescByPos(int sX, int sY) {
     int gridY = WorldPosToGridCellY(sY);
     int gridX = WorldPosToGridCellX(sX);
 
@@ -790,8 +790,7 @@ void OutdoorLocation::CreateDebugLocation() {
     this->pTileTypes[1].tileset = Tileset_Water;
     this->pTileTypes[2].tileset = Tileset_Badlands;
     this->pTileTypes[3].tileset = Tileset_RoadGrassCobble;
-    this->LoadTileGroupIds();
-    this->LoadRoadTileset();
+    this->LoadBaseTileIds();
     this->pSpawnPoints.clear();
     this->pTerrain.ZeroLandscape();
     this->pTerrain.FillDMap(0, 0, 128, 128);
@@ -913,13 +912,6 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     if (respawnTimed)
         ddm.respawnCount++;
 
-    pTileTable->InitializeTileset(Tileset_Dirt);
-    pTileTable->InitializeTileset(Tileset_Snow);
-    pTileTable->InitializeTileset(pTileTypes[0].tileset);
-    pTileTable->InitializeTileset(pTileTypes[1].tileset);
-    pTileTable->InitializeTileset(pTileTypes[2].tileset);
-    pTileTable->InitializeTileset(pTileTypes[3].tileset);
-
     // LABEL_150:
     if (pWeather->bRenderSnow) {  // Ritor1: it's include for snow
         loc_time.sky_texture_name = "sky19";
@@ -959,7 +951,7 @@ int OutdoorLocation::getTileIdByTileMapId(int mapId) {
     return result;
 }
 
-TileDesc *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
+TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
     int v3;  // esi@5
              //  unsigned int result; // eax@9
 
@@ -1249,21 +1241,10 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
     return 1;
 }
 
-//----- (0047F3EA) --------------------------------------------------------
-bool OutdoorLocation::LoadRoadTileset() {
-    pTileTypes[3].uTileID =
-        pTileTable->GetTileForTerrainType(pTileTypes[3].tileset, 1);
-    pTileTable->InitializeTileset(pTileTypes[3].tileset);
-    return 1;
-}
-
 //----- (0047F420) --------------------------------------------------------
-bool OutdoorLocation::LoadTileGroupIds() {
+void OutdoorLocation::LoadBaseTileIds() {
     for (unsigned i = 0; i < 3; ++i)
-        pTileTypes[i].uTileID =
-            pTileTable->GetTileForTerrainType(pTileTypes[i].tileset, 1);
-
-    return true;
+        pTileTypes[i].uTileID = pTileTable->tileIdForTileset(pTileTypes[i].tileset, 1);
 }
 
 // TODO: move to actors?

@@ -124,7 +124,7 @@ void deserialize(const TriBlob &src, TextureFrameTable *dst) {
 }
 
 void deserialize(const TriBlob &src, TileTable *dst) {
-    deserialize(src.mm7, &dst->tiles, tags::append, tags::via<TileDesc_MM7>);
+    deserialize(src.mm7, &dst->tiles, tags::append, tags::via<TileData_MM7>);
 
     assert(!dst->tiles.empty());
 }

@@ -3,8 +3,8 @@
 #include <array>
 
 #include "Engine/Graphics/RenderEntities.h"
-#include "Engine/Tables/TileEnums.h"
 #include "Engine/Time/Duration.h"
+#include "Engine/Data/TileEnums.h"
 
 #include "Utility/Flags.h"
 
