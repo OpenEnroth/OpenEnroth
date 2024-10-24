@@ -5,14 +5,6 @@
 
 TileTable *pTileTable;
 
-GraphicsImage *TileDesc::GetTexture() {
-    if (!this->texture) {
-        this->texture = assets->getBitmap(this->name);
-    }
-    return this->texture;
-}
-
-
 //----- (00487E3B) --------------------------------------------------------
 TileDesc *TileTable::GetTileById(unsigned int uTileID) {
     return &tiles[uTileID];

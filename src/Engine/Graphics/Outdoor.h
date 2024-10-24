@@ -19,7 +19,7 @@
 
 struct DecalBuilder;
 struct SpellFxRenderer;
-class TileDesc;
+struct TileDesc;
 struct RenderVertexSoft;
 struct ODMRenderParams;
 

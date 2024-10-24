@@ -26,7 +26,7 @@ struct RawTimer;
 class SoundInfo;
 class SpriteFrame;
 class TextureFrame;
-class TileDesc;
+struct TileDesc;
 struct ActiveOverlay;
 struct ActiveOverlayList;
 struct ActorJob;
