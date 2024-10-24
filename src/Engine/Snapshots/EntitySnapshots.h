@@ -26,7 +26,7 @@ struct RawTimer;
 class SoundInfo;
 class SpriteFrame;
 class TextureFrame;
-struct TileDesc;
+struct TileData;
 struct ActiveOverlay;
 struct ActiveOverlayList;
 struct ActorJob;
@@ -172,7 +172,7 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVFace_MM7)
 void reconstruct(const BLVFace_MM7 &src, BLVFace *dst);
 
 
-struct TileDesc_MM7 {
+struct TileData_MM7 {
     std::array<char, 16> tileName;
     uint16_t tileId;
     uint16_t bitmapId;
@@ -180,10 +180,10 @@ struct TileDesc_MM7 {
     uint16_t section;
     uint16_t attributes;
 };
-static_assert(sizeof(TileDesc_MM7) == 26);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(TileDesc_MM7)
+static_assert(sizeof(TileData_MM7) == 26);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(TileData_MM7)
 
-void reconstruct(const TileDesc_MM7 &src, TileDesc *dst);
+void reconstruct(const TileData_MM7 &src, TileData *dst);
 
 
 struct TextureFrame_MM7 {

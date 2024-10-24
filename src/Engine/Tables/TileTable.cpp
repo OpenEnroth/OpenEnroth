@@ -6,7 +6,7 @@
 TileTable *pTileTable;
 
 //----- (00487E3B) --------------------------------------------------------
-TileDesc *TileTable::GetTileById(unsigned int uTileID) {
+TileData *TileTable::GetTileById(unsigned int uTileID) {
     return &tiles[uTileID];
 }
 

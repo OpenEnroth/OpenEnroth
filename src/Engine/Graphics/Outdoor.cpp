@@ -265,7 +265,7 @@ TILE_DESC_FLAGS OutdoorLocation::getTileAttribByPos(int sX, int sY) {
     return getTileAttribByGrid(gridX, gridY);
 }
 
-TileDesc *OutdoorLocation::getTileDescByPos(int sX, int sY) {
+TileData *OutdoorLocation::getTileDescByPos(int sX, int sY) {
     int gridY = WorldPosToGridCellY(sY);
     int gridX = WorldPosToGridCellX(sX);
 
@@ -952,7 +952,7 @@ int OutdoorLocation::getTileIdByTileMapId(int mapId) {
     return result;
 }
 
-TileDesc *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
+TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
     int v3;  // esi@5
              //  unsigned int result; // eax@9
 
