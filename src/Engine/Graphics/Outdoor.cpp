@@ -913,13 +913,6 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     if (respawnTimed)
         ddm.respawnCount++;
 
-    pTileTable->InitializeTileset(Tileset_Dirt);
-    pTileTable->InitializeTileset(Tileset_Snow);
-    pTileTable->InitializeTileset(pTileTypes[0].tileset);
-    pTileTable->InitializeTileset(pTileTypes[1].tileset);
-    pTileTable->InitializeTileset(pTileTypes[2].tileset);
-    pTileTable->InitializeTileset(pTileTypes[3].tileset);
-
     // LABEL_150:
     if (pWeather->bRenderSnow) {  // Ritor1: it's include for snow
         loc_time.sky_texture_name = "sky19";
@@ -1251,18 +1244,14 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
 
 //----- (0047F3EA) --------------------------------------------------------
 bool OutdoorLocation::LoadRoadTileset() {
-    pTileTypes[3].uTileID =
-        pTileTable->GetTileForTerrainType(pTileTypes[3].tileset, 1);
-    pTileTable->InitializeTileset(pTileTypes[3].tileset);
-    return 1;
+    pTileTypes[3].uTileID = pTileTable->GetTileForTerrainType(pTileTypes[3].tileset, 1);
+    return true;
 }
 
 //----- (0047F420) --------------------------------------------------------
 bool OutdoorLocation::LoadTileGroupIds() {
     for (unsigned i = 0; i < 3; ++i)
-        pTileTypes[i].uTileID =
-            pTileTable->GetTileForTerrainType(pTileTypes[i].tileset, 1);
-
+        pTileTypes[i].uTileID = pTileTable->GetTileForTerrainType(pTileTypes[i].tileset, 1);
     return true;
 }
 

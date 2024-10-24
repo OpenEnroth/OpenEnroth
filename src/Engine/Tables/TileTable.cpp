@@ -18,19 +18,6 @@ TileDesc *TileTable::GetTileById(unsigned int uTileID) {
     return &tiles[uTileID];
 }
 
-//----- (00487E58) --------------------------------------------------------
-void TileTable::InitializeTileset(Tileset tileset) {
-    //for (int i = 0; i < sNumTiles; ++i) {
-        //if (pTiles[i].tileset == tileset && !pTiles[i].name.empty()) {
-            // pTiles[i].uBitmapID =
-            // pBitmaps_LOD->LoadTexture(pTiles[i].pTileName); if
-            // (pTiles[i].uBitmapID != -1)
-            //    pBitmaps_LOD->pTextures[pTiles[i].uBitmapID].palette_id2 =
-            //    pPaletteManager->LoadPalette(pBitmaps_LOD->pTextures[pTiles[i].uBitmapID].palette_id1);
-        //}
-    //}
-}
-
 //----- (00487ED6) --------------------------------------------------------
 int TileTable::GetTileForTerrainType(Tileset terrain_type, bool not_random) {
     int v5;  // edx@3

@@ -19,21 +19,12 @@ class TileDesc {
 
     GraphicsImage *GetTexture();
 
-    // inline bool IsWaterTile() const         { return this->name == "wtrtyl";
-    // }
-    inline bool IsWaterTile() const { return this->uAttributes & TILE_DESC_WATER; }
-    inline bool IsWaterBorderTile() const {
-        return this->name.find("wtrdr", 0) == 0 ||
-               this->name.find("hwtrdr") == 0;
-    }
-
  protected:
     GraphicsImage *texture = nullptr;
 };
 
 struct TileTable {
     TileDesc *GetTileById(unsigned int uTileID);
-    void InitializeTileset(Tileset tileset);
     int GetTileForTerrainType(Tileset a1, bool a2);
     unsigned int GetTileId(Tileset uTerrainType, TILE_SECT uSection);
 
