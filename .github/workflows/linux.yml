@@ -60,7 +60,7 @@ jobs:
           sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
         with:
           submodules: recursive
           ref: '${{inputs.myCommit}}'
@@ -94,7 +94,7 @@ jobs:
           fi
 
       - name: Run ccache
-        uses: hendrikmuhs/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2.14
         with:
           key: 'linux-${{matrix.configuration}}-${{matrix.architecture}}'
           save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
