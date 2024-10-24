@@ -39,7 +39,8 @@ enum class FaceAttribute : uint32_t {
     // MMExt: great for vertical facets of stairs.
     // [MM7+] Shouldn't be used for sloped floor, like it's used in MM6.
     FACE_IsLava            = 0x40000000,
-    FACE_IsPicked          = 0x80000000,  // mouse is hovering
+    FACE_IsPicked          = 0x80000000,  // Was used internally in MM7 to mark faces for setting FACE_OUTLINED on them,
+                                          // we just set FACE_OUTLINED directly.
     // TODO: MMExt: HasData, are we talking about BLVFaceExtra?
 };
 using enum FaceAttribute;
