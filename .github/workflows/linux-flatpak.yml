@@ -50,8 +50,8 @@ jobs:
     steps:
     - name: make ccache dir
       run: |
-        mkdir -p .flatpak-builder/ccache
-        cd .flatpak-builder/ccache
+        mkdir -p .ccache
+        cd .ccache
         echo "CCACHE_DIR=$PWD" >> $GITHUB_ENV
         
     - name: Checkout
