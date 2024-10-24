@@ -62,6 +62,9 @@ jobs:
         manifest-path: distribution/linux/flatpak/dev.io.github.openenroth.openenroth.yml
         cache-key: flatpak-builder-${{matrix.configuration}}
         arch: ${{matrix.architecture}}
+        upload-artifact: false
+        verbose: true
+        
 
     - name: Publish release
       if: inputs.releaseTag != ''
