@@ -66,7 +66,7 @@ jobs:
         key: 'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
         save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
         verbose: 2
-        max-size: 300M
+        max-size: 200M
       env:
         CCACHE_DIR: ${{ env.CCACHE_DIR }}
         
