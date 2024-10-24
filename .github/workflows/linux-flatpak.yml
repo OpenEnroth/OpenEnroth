@@ -60,11 +60,14 @@ jobs:
         run-tests: true
         bundle: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.flatpak
         manifest-path: distribution/linux/flatpak/dev.io.github.openenroth.openenroth.yml
-        cache-key: flatpak-builder-${{matrix.configuration}}
+        cache-key: flatpak-builder-${{matrix.configuration}}-${{ steps.date.outputs.date }}
         arch: ${{matrix.architecture}}
-        upload-artifact: false
         verbose: true
-        
+
+    - name: ccache stats
+      working-directory: build
+      run: |
+        make -j3   
 
     - name: Publish release
       if: inputs.releaseTag != ''
