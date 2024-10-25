@@ -67,7 +67,7 @@ var searchData=
   ['seasonschange_64',['SeasonsChange',['../classGameConfig_1_1Graphics.html#ab8da2dbdaa497f026ecb0675b74be357',1,'GameConfig::Graphics']]],
   ['second_65',['second',['../structCivilTime.html#adc7255870c3810de1450bca44c06fc08',1,'CivilTime']]],
   ['seconds_66',['seconds',['../structCivilDuration.html#a4da0a383fbfb69070dbed7780a29e2c4',1,'CivilDuration::seconds()'],['../structLongCivilDuration.html#a16246478f97218ee5a11af18b49d070c',1,'LongCivilDuration::seconds()']]],
-  ['section_67',['section',['../structConfigPatchEntry.html#a98c8e20705b62326426c3e5fa3e5276c',1,'ConfigPatchEntry::section()'],['../structTileDesc__MM7.html#afbc8bfd14a9847afd686f3d0d10806d9',1,'TileDesc_MM7::section()']]],
+  ['section_67',['section',['../structConfigPatchEntry.html#a98c8e20705b62326426c3e5fa3e5276c',1,'ConfigPatchEntry::section()'],['../structTileData__MM7.html#a12db0a4efee37b747e051b81692c495e',1,'TileData_MM7::section()']]],
   ['sector_68',['sector',['../structGLshaderverts.html#ac48bb4dc35e9396f4281a41524cf6b28',1,'GLshaderverts']]],
   ['sectordata_69',['sectorData',['../structIndoorLocation__MM7.html#a3a6c753ed62390efb520bc272065f64b',1,'IndoorLocation_MM7']]],
   ['sectorid_70',['sectorId',['../classActor.html#a91fd59cbc6ea74a86272e3267cbbb18b',1,'Actor::sectorId()'],['../structBLVFace__MM7.html#a9512d27077b9e7f81023e36546f6f684',1,'BLVFace_MM7::sectorId()']]],

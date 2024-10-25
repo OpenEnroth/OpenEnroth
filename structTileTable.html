@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;eb8dffd</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;088a660</span>
    </div>
   </td>
  </tr>
@@ -81,84 +81,34 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4f601e1c678ad5e967a206c3715d993d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classTileDesc.html">TileDesc</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTileTable.html#a4f601e1c678ad5e967a206c3715d993d">GetTileById</a> (unsigned int uTileID)</td></tr>
-<tr class="separator:a4f601e1c678ad5e967a206c3715d993d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca827d3697a4e5c632797cf4d8dd5e3c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTileTable.html#aca827d3697a4e5c632797cf4d8dd5e3c">InitializeTileset</a> (<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3">Tileset</a> tileset)</td></tr>
-<tr class="separator:aca827d3697a4e5c632797cf4d8dd5e3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adc3963f25514c198ee4ee985e34c97a9"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTileTable.html#adc3963f25514c198ee4ee985e34c97a9">GetTileForTerrainType</a> (<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3">Tileset</a> a1, bool a2)</td></tr>
-<tr class="separator:adc3963f25514c198ee4ee985e34c97a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c23e293713251902b59d384737febe3"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTileTable.html#a3c23e293713251902b59d384737febe3">GetTileId</a> (<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3">Tileset</a> uTerrainType, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565d">TILE_SECT</a> uSection)</td></tr>
-<tr class="separator:a3c23e293713251902b59d384737febe3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f4627697077385203f4a5762826c120"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTileTable.html#a8f4627697077385203f4a5762826c120">tileIdForTileset</a> (<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3">Tileset</a> tileset, bool nonRandom)</td></tr>
+<tr class="separator:a8f4627697077385203f4a5762826c120"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3d3dc4bd42f413b40b5f3fadb1dea4a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTileTable.html#ae3d3dc4bd42f413b40b5f3fadb1dea4a">tileId</a> (<a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3">Tileset</a> tileset, <a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565d">TILE_SECT</a> section)</td></tr>
+<tr class="separator:ae3d3dc4bd42f413b40b5f3fadb1dea4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aa4aa3044a18d6edde93a6d0fd673cf28"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classTileDesc.html">TileDesc</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTileTable.html#aa4aa3044a18d6edde93a6d0fd673cf28">tiles</a></td></tr>
-<tr class="separator:aa4aa3044a18d6edde93a6d0fd673cf28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0babf039ffaf50408e698f66557944a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structTileData.html">TileData</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structTileTable.html#aa0babf039ffaf50408e698f66557944a">tiles</a></td></tr>
+<tr class="separator:aa0babf039ffaf50408e698f66557944a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a4f601e1c678ad5e967a206c3715d993d" name="a4f601e1c678ad5e967a206c3715d993d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4f601e1c678ad5e967a206c3715d993d">&#9670;&#160;</a></span>GetTileById()</h2>
+<a id="ae3d3dc4bd42f413b40b5f3fadb1dea4a" name="ae3d3dc4bd42f413b40b5f3fadb1dea4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3d3dc4bd42f413b40b5f3fadb1dea4a">&#9670;&#160;</a></span>tileId()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classTileDesc.html">TileDesc</a> * TileTable::GetTileById </td>
-          <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>uTileID</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="adc3963f25514c198ee4ee985e34c97a9" name="adc3963f25514c198ee4ee985e34c97a9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adc3963f25514c198ee4ee985e34c97a9">&#9670;&#160;</a></span>GetTileForTerrainType()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int TileTable::GetTileForTerrainType </td>
+          <td class="memname">int TileTable::tileId </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3">Tileset</a>&#160;</td>
-          <td class="paramname"><em>a1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>a2</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3c23e293713251902b59d384737febe3" name="a3c23e293713251902b59d384737febe3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3c23e293713251902b59d384737febe3">&#9670;&#160;</a></span>GetTileId()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">unsigned int TileTable::GetTileId </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3">Tileset</a>&#160;</td>
-          <td class="paramname"><em>uTerrainType</em>, </td>
+          <td class="paramname"><em>tileset</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="TileEnums_8h.html#a3110b267b30f84d40004b3d197f9565d">TILE_SECT</a>&#160;</td>
-          <td class="paramname"><em>uSection</em>&#160;</td>
+          <td class="paramname"><em>section</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -170,18 +120,28 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aca827d3697a4e5c632797cf4d8dd5e3c" name="aca827d3697a4e5c632797cf4d8dd5e3c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aca827d3697a4e5c632797cf4d8dd5e3c">&#9670;&#160;</a></span>InitializeTileset()</h2>
+<a id="a8f4627697077385203f4a5762826c120" name="a8f4627697077385203f4a5762826c120"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f4627697077385203f4a5762826c120">&#9670;&#160;</a></span>tileIdForTileset()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void TileTable::InitializeTileset </td>
+          <td class="memname">int TileTable::tileIdForTileset </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="TileEnums_8h.html#a853fa224fcbff1ba70f01db3865fa9e3">Tileset</a>&#160;</td>
-          <td class="paramname"><em>tileset</em></td><td>)</td>
+          <td class="paramname"><em>tileset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>nonRandom</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -189,14 +149,14 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="aa4aa3044a18d6edde93a6d0fd673cf28" name="aa4aa3044a18d6edde93a6d0fd673cf28"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa4aa3044a18d6edde93a6d0fd673cf28">&#9670;&#160;</a></span>tiles</h2>
+<a id="aa0babf039ffaf50408e698f66557944a" name="aa0babf039ffaf50408e698f66557944a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0babf039ffaf50408e698f66557944a">&#9670;&#160;</a></span>tiles</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="classTileDesc.html">TileDesc</a>&gt; TileTable::tiles</td>
+          <td class="memname">std::vector&lt;<a class="el" href="structTileData.html">TileData</a>&gt; TileTable::tiles</td>
         </tr>
       </table>
 </div><div class="memdoc">

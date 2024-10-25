@@ -32,7 +32,7 @@ var searchData=
   ['binitialized_29',['bInitialized',['../classIo_1_1Mouse.html#ad596a27e9667e9ea087bbee85d8850fa',1,'Io::Mouse']]],
   ['birthyear_30',['birthYear',['../structPlayer__MM7.html#a4d5e6d27cef8ffa99e2e7ea0eedb760c',1,'Player_MM7']]],
   ['bitmap_31',['bitmap',['../structLODSprite.html#a30ca2eb644893e6b15fdd0116c86214a',1,'LODSprite']]],
-  ['bitmapid_32',['bitmapId',['../structTileDesc__MM7.html#a4870e85c37c6c76464ab5a34d1aaa035',1,'TileDesc_MM7::bitmapId()'],['../structBLVFace__MM7.html#a1b53aecf5b50100c33c273d7d8cbc94a',1,'BLVFace_MM7::bitmapId()']]],
+  ['bitmapid_32',['bitmapId',['../structTileData__MM7.html#ab32d21527cc66686d5f48ad5102366b4',1,'TileData_MM7::bitmapId()'],['../structBLVFace__MM7.html#a1b53aecf5b50100c33c273d7d8cbc94a',1,'BLVFace_MM7::bitmapId()']]],
   ['bitmaps_33',['bitmaps',['../classAssetsManager.html#aee22e571e910db19832f9c88011b7a57',1,'AssetsManager']]],
   ['black_34',['Black',['../classColorTable.html#accc8b6035a84b1308261bcde227036ff',1,'ColorTable']]],
   ['blend_35',['blend',['../structbillbverts.html#af93be8514de386ad2e54a1cb1360dc5d',1,'billbverts']]],
