@@ -81,6 +81,11 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
 
         # Prebuilt zlib is static, so we instruct the find_package to look for the static one.
         set(ZLIB_USE_STATIC_LIBS ON)
+
+        # Frameworks get in the way of finding proper headers for prebuilt dependencies.
+        # On MacOS find_library looks for frameworks first by default, and thus finds png.h in Mono.framework, which
+        # fucks everything up for us royally.
+        set(CMAKE_FIND_FRAMEWORK LAST)
     else()
         message(STATUS "Not using prebuilt dependencies")
     endif()
@@ -94,6 +99,8 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         add_library(SDL2OE INTERFACE)
         add_library(SDL2::SDL2 ALIAS SDL2OE)
         add_library(SDL2::SDL2OE ALIAS SDL2OE)
+        add_library(PNG INTERFACE)
+        add_library(PNG::PNG ALIAS PNG)
     else()
         # Prebuilt & user-supplied deps are resolved using the same code here.
         find_package(ZLIB REQUIRED)
@@ -117,6 +124,8 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         #
         # If you're getting an error here, try passing something like -DOPENAL_ROOT=/opt/homebrew/opt/openal-soft to cmake.
         find_package(OpenAL CONFIG REQUIRED)
+
+        find_package(PNG REQUIRED)
     endif()
 
     # On Android we somehow get OpenGL available by default, despite it not being findable by find_package. So we

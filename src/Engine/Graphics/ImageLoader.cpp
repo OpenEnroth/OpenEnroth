@@ -12,11 +12,11 @@
 #include "Engine/Graphics/PaletteManager.h"
 
 #include "Library/Image/ImageFunctions.h"
-#include "Library/Image/PCX.h"
+#include "Library/Image/Pcx.h"
 #include "Library/Logger/Logger.h"
 
 // List of textures that require additional processing for transparent pixels.
-// TODO: move to OpenEnroth config file.
+// TODO(captainurist): #jsonify & move to compiled-in game data
 static const std::unordered_set<std::string_view> transparentTextures = {
     "hwtrdre",
     "hwtrdrne",

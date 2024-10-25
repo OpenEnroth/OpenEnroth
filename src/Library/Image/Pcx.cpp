@@ -1,4 +1,4 @@
-#include "PCX.h"
+#include "Pcx.h"
 
 #include <cstdint>
 #include <cstdlib>
