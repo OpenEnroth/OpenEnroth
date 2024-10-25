@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include "Engine/Tables/TileEnums.h"
+#include "Engine/Data/TileEnums.h"
 #include "Engine/SpawnPoint.h"
 #include "Engine/MapEnums.h"
 
@@ -19,7 +19,7 @@
 
 struct DecalBuilder;
 struct SpellFxRenderer;
-class TileDesc;
+struct TileData;
 struct RenderVertexSoft;
 struct ODMRenderParams;
 
@@ -90,8 +90,7 @@ struct OutdoorLocation {
     bool PrepareDecorations();
     void ArrangeSpriteObjects();
     bool InitalizeActors(MapId a1);
-    bool LoadRoadTileset();
-    bool LoadTileGroupIds();
+    void LoadBaseTileIds();
     double GetFogDensityByTime();
 
     /**
@@ -102,12 +101,12 @@ struct OutdoorLocation {
     /**
      * @offset 0x488EEF
      */
-    TileDesc *getTileDescByPos(int sX, int sZ);
+    TileData *getTileDescByPos(int sX, int sZ);
 
     /**
      * @offset 0x47ED08
      */
-    TileDesc *getTileDescByGrid(int uX, int uZ);
+    TileData *getTileDescByGrid(int uX, int uZ);
     int GetHeightOnTerrain(int sX, int sZ);
     bool Initialize(std::string_view filename, int days_played,
                     int respawn_interval_days,
