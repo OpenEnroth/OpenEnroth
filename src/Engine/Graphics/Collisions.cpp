@@ -945,6 +945,14 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                 if (collision_state.pid.id() == 398) // Secret tunnel under prison bed
                     bFaceSlopeTooSteep = false;
             }
+            if (engine->_currentLoadedMapId == MapId::MAP_HALL_OF_THE_PIT) {
+                if (collision_state.pid.id() == 787 || collision_state.pid.id() == 832 || collision_state.pid.id() == 790)
+                    bFaceSlopeTooSteep = false;
+            }
+            if (engine->_currentLoadedMapId == MAP_CASTLE_GLOAMING) {
+                if (collision_state.pid.id() == 2439 || collision_state.pid.id() == 2438 || collision_state.pid.id() == 2437 || collision_state.pid.id() == 2436) // gloaming
+                    bFaceSlopeTooSteep = false;
+            }
 
             // new sliding plane
             Vec3f slidePlaneOrigin = collision_state.collisionPos;
@@ -972,6 +980,8 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 
             if (pFace->uPolygonType == POLYGON_Floor) {
                 float new_party_z_tmp = pIndoor->pVertices[*pFace->pVertexIDs].z;
+                if (pParty->velocity.z > 0.0f)
+                    pParty->pos.z = new_party_z_tmp;
                 if (pParty->uFallStartZ - new_party_z_tmp < 512)
                     pParty->uFallStartZ = new_party_z_tmp;
             }
