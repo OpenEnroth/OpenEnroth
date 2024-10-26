@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Library/Image/PCX.cpp File Reference</title>
+<title>OpenEnroth: src/Library/Image/Pcx.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;088a660</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;08e38ae</span>
    </div>
   </td>
  </tr>
@@ -78,10 +78,10 @@ $(function() {
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">PCX.cpp File Reference</div></div>
+  <div class="headertitle"><div class="title">Pcx.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="PCX_8h.html">PCX.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="Pcx_8h.html">Pcx.h</a>&quot;</code><br />
 <code>#include &lt;cstdint&gt;</code><br />
 <code>#include &lt;cstdlib&gt;</code><br />
 <code>#include &lt;cstring&gt;</code><br />
@@ -98,38 +98,38 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:ac7f304b78511b342bef37de230ef6823"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structbstreamer.html">bstreamer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PCX_8cpp.html#ac7f304b78511b342bef37de230ef6823">bstreamer</a></td></tr>
+<tr class="memitem:ac7f304b78511b342bef37de230ef6823"><td class="memItemLeft" align="right" valign="top">typedef struct <a class="el" href="structbstreamer.html">bstreamer</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Pcx_8cpp.html#ac7f304b78511b342bef37de230ef6823">bstreamer</a></td></tr>
 <tr class="separator:ac7f304b78511b342bef37de230ef6823"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
 <tr class="memitem:aabfcbcb5ac86a1edac4035264bc7d2b8"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom">{ <br />
-&#160;&#160;<a class="el" href="PCX_8cpp.html#aabfcbcb5ac86a1edac4035264bc7d2b8a6532ce739c6f36c52c721d2375368bbf">PCX_VERSION_2_5</a> = 0
-, <a class="el" href="PCX_8cpp.html#aabfcbcb5ac86a1edac4035264bc7d2b8a1fa13e75f73932a9c92dcca3762b3bd6">PCX_VERSION_NOT_VALID</a> = 1
-, <a class="el" href="PCX_8cpp.html#aabfcbcb5ac86a1edac4035264bc7d2b8ad5a07e0a0182e98d274a94a1ce2e8de3">PCX_VERSION_2_8_WITH_PALLETE</a> = 2
-, <a class="el" href="PCX_8cpp.html#aabfcbcb5ac86a1edac4035264bc7d2b8afe6cf6978ac8dec59f8730e8334ccd5c">PCX_VERSION_2_8_WITHOUT_PALLETE</a> = 3
+&#160;&#160;<a class="el" href="Pcx_8cpp.html#aabfcbcb5ac86a1edac4035264bc7d2b8a6532ce739c6f36c52c721d2375368bbf">PCX_VERSION_2_5</a> = 0
+, <a class="el" href="Pcx_8cpp.html#aabfcbcb5ac86a1edac4035264bc7d2b8a1fa13e75f73932a9c92dcca3762b3bd6">PCX_VERSION_NOT_VALID</a> = 1
+, <a class="el" href="Pcx_8cpp.html#aabfcbcb5ac86a1edac4035264bc7d2b8ad5a07e0a0182e98d274a94a1ce2e8de3">PCX_VERSION_2_8_WITH_PALLETE</a> = 2
+, <a class="el" href="Pcx_8cpp.html#aabfcbcb5ac86a1edac4035264bc7d2b8afe6cf6978ac8dec59f8730e8334ccd5c">PCX_VERSION_2_8_WITHOUT_PALLETE</a> = 3
 , <br />
-&#160;&#160;<a class="el" href="PCX_8cpp.html#aabfcbcb5ac86a1edac4035264bc7d2b8a28d7683d9e7a2e823fd70e707ff39fda">PCX_VERSION_WINDOWS</a> = 4
-, <a class="el" href="PCX_8cpp.html#aabfcbcb5ac86a1edac4035264bc7d2b8aa15c02e52f9319fc8901568839deb44f">PCX_VERSION_3_0</a> = 5
+&#160;&#160;<a class="el" href="Pcx_8cpp.html#aabfcbcb5ac86a1edac4035264bc7d2b8a28d7683d9e7a2e823fd70e707ff39fda">PCX_VERSION_WINDOWS</a> = 4
+, <a class="el" href="Pcx_8cpp.html#aabfcbcb5ac86a1edac4035264bc7d2b8aa15c02e52f9319fc8901568839deb44f">PCX_VERSION_3_0</a> = 5
 <br />
  }</td></tr>
 <tr class="separator:aabfcbcb5ac86a1edac4035264bc7d2b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a7f7f7723f7d183b3cd6163b5e2216986"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PCX_8cpp.html#a7f7f7723f7d183b3cd6163b5e2216986">bs_init</a> (<a class="el" href="structbstreamer.html">bstreamer</a> *bs, const uint8_t *buf, int buf_size)</td></tr>
+<tr class="memitem:a7f7f7723f7d183b3cd6163b5e2216986"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Pcx_8cpp.html#a7f7f7723f7d183b3cd6163b5e2216986">bs_init</a> (<a class="el" href="structbstreamer.html">bstreamer</a> *bs, const uint8_t *buf, int buf_size)</td></tr>
 <tr class="separator:a7f7f7723f7d183b3cd6163b5e2216986"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76bcefa1c68c148388913330ed505ce7"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PCX_8cpp.html#a76bcefa1c68c148388913330ed505ce7">bs_get_bytes_left</a> (<a class="el" href="structbstreamer.html">bstreamer</a> *bs)</td></tr>
+<tr class="memitem:a76bcefa1c68c148388913330ed505ce7"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Pcx_8cpp.html#a76bcefa1c68c148388913330ed505ce7">bs_get_bytes_left</a> (<a class="el" href="structbstreamer.html">bstreamer</a> *bs)</td></tr>
 <tr class="separator:a76bcefa1c68c148388913330ed505ce7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa395c0fc990a9d8298139a3ffe4a3eef"><td class="memItemLeft" align="right" valign="top">static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PCX_8cpp.html#aa395c0fc990a9d8298139a3ffe4a3eef">bs_get_byte</a> (<a class="el" href="structbstreamer.html">bstreamer</a> *bs)</td></tr>
+<tr class="memitem:aa395c0fc990a9d8298139a3ffe4a3eef"><td class="memItemLeft" align="right" valign="top">static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Pcx_8cpp.html#aa395c0fc990a9d8298139a3ffe4a3eef">bs_get_byte</a> (<a class="el" href="structbstreamer.html">bstreamer</a> *bs)</td></tr>
 <tr class="separator:aa395c0fc990a9d8298139a3ffe4a3eef"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84332e8cfe678afb584536b1ba120146"><td class="memItemLeft" align="right" valign="top">static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PCX_8cpp.html#a84332e8cfe678afb584536b1ba120146">bs_get_buffer</a> (<a class="el" href="structbstreamer.html">bstreamer</a> *bs, uint8_t *dst, unsigned int size)</td></tr>
+<tr class="memitem:a84332e8cfe678afb584536b1ba120146"><td class="memItemLeft" align="right" valign="top">static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Pcx_8cpp.html#a84332e8cfe678afb584536b1ba120146">bs_get_buffer</a> (<a class="el" href="structbstreamer.html">bstreamer</a> *bs, uint8_t *dst, unsigned int size)</td></tr>
 <tr class="separator:a84332e8cfe678afb584536b1ba120146"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ca8596e96ab8252cc822005e79d2793"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PCX_8cpp.html#a4ca8596e96ab8252cc822005e79d2793">pcx_rle_decode</a> (<a class="el" href="structbstreamer.html">bstreamer</a> *bs, uint8_t *dst, unsigned int bytes_per_scanline, int compressed)</td></tr>
+<tr class="memitem:a4ca8596e96ab8252cc822005e79d2793"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Pcx_8cpp.html#a4ca8596e96ab8252cc822005e79d2793">pcx_rle_decode</a> (<a class="el" href="structbstreamer.html">bstreamer</a> *bs, uint8_t *dst, unsigned int bytes_per_scanline, int compressed)</td></tr>
 <tr class="separator:a4ca8596e96ab8252cc822005e79d2793"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac16cb95f8c852f73fff1406f058d6e32"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PCX_8cpp.html#ac16cb95f8c852f73fff1406f058d6e32">writePcxHeader</a> (void *pcx_data, int width, int height)</td></tr>
+<tr class="memitem:ac16cb95f8c852f73fff1406f058d6e32"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Pcx_8cpp.html#ac16cb95f8c852f73fff1406f058d6e32">writePcxHeader</a> (void *pcx_data, int width, int height)</td></tr>
 <tr class="separator:ac16cb95f8c852f73fff1406f058d6e32"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99876d4a9eadd7ebf71d92840255df07"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="PCX_8cpp.html#a99876d4a9eadd7ebf71d92840255df07">encodeOneLine</a> (void *pcx_data, void *line, size_t line_size)</td></tr>
+<tr class="memitem:a99876d4a9eadd7ebf71d92840255df07"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Pcx_8cpp.html#a99876d4a9eadd7ebf71d92840255df07">encodeOneLine</a> (void *pcx_data, void *line, size_t line_size)</td></tr>
 <tr class="separator:a99876d4a9eadd7ebf71d92840255df07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Typedef Documentation</h2>

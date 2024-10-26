@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Library/Image/PCX.h File Reference</title>
+<title>OpenEnroth: src/Library/Image/Png.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;088a660</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;08e38ae</span>
    </div>
   </td>
  </tr>
@@ -74,28 +74,52 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#namespaces">Namespaces</a> &#124;
-<a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">PCX.h File Reference</div></div>
+<a href="#define-members">Macros</a>  </div>
+  <div class="headertitle"><div class="title">Png.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;cstdint&gt;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="Png_8h.html">Png.h</a>&quot;</code><br />
 <code>#include &lt;memory&gt;</code><br />
-<code>#include &quot;<a class="el" href="Library_2Image_2Image_8h.html">Library/Image/Image.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Blob_8h.html">Utility/Memory/Blob.h</a>&quot;</code><br />
+<code>#include &lt;utility&gt;</code><br />
+<code>#include &lt;png.h&gt;</code><br />
+<code>#include &quot;<a class="el" href="Exception_8h.html">Utility/Exception.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
-Namespaces</h2></td></tr>
-<tr class="memitem:namespacepcx"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepcx.html">pcx</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a0ce1eff9c3288cde284e3e40cfb9c818"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Library_2Image_2Image_8h.html#ada8411436fef9ac499121bebb98f43cd">RgbaImage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepcx.html#a0ce1eff9c3288cde284e3e40cfb9c818">pcx::decode</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;data)</td></tr>
-<tr class="separator:a0ce1eff9c3288cde284e3e40cfb9c818"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a481e73d981d2507dda2871f04356121b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacepcx.html#a481e73d981d2507dda2871f04356121b">pcx::encode</a> (<a class="el" href="Library_2Image_2Image_8h.html#ab46117a6bb4ec93c50bc59858278d567">RgbaImageView</a> image)</td></tr>
-<tr class="separator:a481e73d981d2507dda2871f04356121b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a4b792f0631500dc2f1eaeda5654cb45e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Png_8cpp.html#a4b792f0631500dc2f1eaeda5654cb45e">PNG_SIMPLIFIED_READ_SUPPORTED</a></td></tr>
+<tr class="separator:a4b792f0631500dc2f1eaeda5654cb45e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40b664a80fa99600b666e6dc1e2b8f61"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Png_8cpp.html#a40b664a80fa99600b666e6dc1e2b8f61">PNG_SIMPLIFIED_WRITE_SUPPORTED</a></td></tr>
+<tr class="separator:a40b664a80fa99600b666e6dc1e2b8f61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a4b792f0631500dc2f1eaeda5654cb45e" name="a4b792f0631500dc2f1eaeda5654cb45e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b792f0631500dc2f1eaeda5654cb45e">&#9670;&#160;</a></span>PNG_SIMPLIFIED_READ_SUPPORTED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PNG_SIMPLIFIED_READ_SUPPORTED</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a40b664a80fa99600b666e6dc1e2b8f61" name="a40b664a80fa99600b666e6dc1e2b8f61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40b664a80fa99600b666e6dc1e2b8f61">&#9670;&#160;</a></span>PNG_SIMPLIFIED_WRITE_SUPPORTED</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PNG_SIMPLIFIED_WRITE_SUPPORTED</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
