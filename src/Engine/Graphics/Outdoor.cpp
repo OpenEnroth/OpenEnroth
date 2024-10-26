@@ -1023,10 +1023,21 @@ TILE_DESC_FLAGS OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
     if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
         return 0;
 
-    int v3 = this->pTerrain.pTilemap[gridY * 128 + gridX];
-    if (v3 >= 90)
-        v3 = v3 + this->pTileTypes[(v3 - 90) / 36].uTileID - 36 * ((v3 - 90) / 36) - 90;
-    return pTileTable->tiles[v3].uAttributes;
+    int tileId = this->pTerrain.pTilemap[gridY * 128 + gridX];
+    // Tiles in tilemap:
+    // [0..90) map as is to tile ids.
+    // [90..126) map to tileset #1.
+    // [126..162) map to tileset #2.
+    // [162..198) map to tileset #3.
+    // [198..234) map to tileset #4 (road).
+    // [234..255) are invalid.
+
+    if (tileId >= 90) {
+        int tileSetIndex = (tileId - 90) / 36;
+        int tileSetOffset = (tileId - 90) % 36;
+        tileId = this->pTileTypes[tileSetIndex].uTileID + tileSetOffset;
+    }
+    return pTileTable->tiles[tileId].uAttributes;
 }
 
 //----- (0047EE16) --------------------------------------------------------
