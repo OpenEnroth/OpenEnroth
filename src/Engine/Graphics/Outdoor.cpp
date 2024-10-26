@@ -1583,19 +1583,17 @@ void ODM_ProcessPartyActions() {
         pParty->setAirborne(true);
 
     Vec3f partyOldPosition = pParty->pos;
-    int partyCurrentXGrid = WorldPosToGridCellX(pParty->pos.x);
-    int partyCurrentYGrid = WorldPosToGridCellY(pParty->pos.y);
-    int partyNewXGrid = WorldPosToGridCellX(partyNewPos.x);
-    int partyNewYGrid = WorldPosToGridCellY(partyNewPos.y);
+    Vec2i partyOldGridPos = WorldPosToGrid(pParty->pos);
+    Vec2i partyNewGridPos = WorldPosToGrid(partyNewPos);
 
     // this gets if tile is not water
-    bool partyCurrentOnLand = !(pOutdoor->getTileAttribByGrid(partyCurrentXGrid, partyCurrentYGrid) & TILE_DESC_WATER);
-    bool partyNewXOnLand = !(pOutdoor->getTileAttribByGrid(partyNewXGrid, partyCurrentYGrid) & TILE_DESC_WATER);
-    bool partyNewYOnLand = !(pOutdoor->getTileAttribByGrid(partyCurrentXGrid, partyNewYGrid) & TILE_DESC_WATER);
+    bool partyCurrentOnLand = !(pOutdoor->getTileAttribByGrid(partyOldGridPos.x, partyOldGridPos.y) & TILE_DESC_WATER);
+    bool partyNewXOnLand = !(pOutdoor->getTileAttribByGrid(partyNewGridPos.x, partyOldGridPos.y) & TILE_DESC_WATER);
+    bool partyNewYOnLand = !(pOutdoor->getTileAttribByGrid(partyOldGridPos.x, partyNewGridPos.y) & TILE_DESC_WATER);
 
     // -(update party co-ords)---------------------------------------
     bool notWater{ false };
-    if (partyNewXGrid == partyCurrentXGrid && partyNewYGrid == partyCurrentYGrid && partyCurrentOnLand/*partyNewXOnLand && partyNewYOnLand*/)
+    if (partyNewGridPos == partyOldGridPos && partyCurrentOnLand/*partyNewXOnLand && partyNewYOnLand*/)
         notWater = true;
 
     if (!partyNotOnModel)
