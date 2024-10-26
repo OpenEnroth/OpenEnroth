@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;08e38ae</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ba8b34c</span>
    </div>
   </td>
  </tr>
@@ -81,8 +81,12 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="LodToolOptions_8h.html">LodToolOptions.h</a>&quot;</code><br />
 <code>#include &lt;cstdio&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
+<code>#include &quot;<a class="el" href="ImageFunctions_8h.html">Library/Image/ImageFunctions.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Pcx_8h.html">Library/Image/Pcx.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Png_8h.html">Library/Image/Png.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LodReader_8h.html">Library/Lod/LodReader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LodFormats_8h.html">Library/LodFormats/LodFormats.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="DirectoryFileSystem_8h.html">Library/FileSystem/Directory/DirectoryFileSystem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Serialization_8h.html">Library/Serialization/Serialization.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Format_8h.html">Utility/String/Format.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Ascii_8h.html">Utility/String/Ascii.h</a>&quot;</code><br />
@@ -91,16 +95,38 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ace5e4b5ec12ba07253ee91b60edcb5e6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#ace5e4b5ec12ba07253ee91b60edcb5e6">isPcx</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
+<tr class="separator:ace5e4b5ec12ba07253ee91b60edcb5e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9e6a27a663f91459cedf892057f73c7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#ab9e6a27a663f91459cedf892057f73c7">runLs</a> (const <a class="el" href="structLodToolOptions.html">LodToolOptions</a> &amp;options)</td></tr>
 <tr class="separator:ab9e6a27a663f91459cedf892057f73c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9285a99194c2ad5862f297ea39742b8c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#a9285a99194c2ad5862f297ea39742b8c">runDump</a> (const <a class="el" href="structLodToolOptions.html">LodToolOptions</a> &amp;options)</td></tr>
 <tr class="separator:a9285a99194c2ad5862f297ea39742b8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9e5e0e7b31d77c87bfc9e825a7dc9561"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#a9e5e0e7b31d77c87bfc9e825a7dc9561">runCat</a> (const <a class="el" href="structLodToolOptions.html">LodToolOptions</a> &amp;options)</td></tr>
 <tr class="separator:a9e5e0e7b31d77c87bfc9e825a7dc9561"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a783a7bddffac7819b3f44d2759ed578d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#a783a7bddffac7819b3f44d2759ed578d">runExtract</a> (const <a class="el" href="structLodToolOptions.html">LodToolOptions</a> &amp;options)</td></tr>
+<tr class="separator:a783a7bddffac7819b3f44d2759ed578d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c04138a5bfe5d72780bb7e82a18e627"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627">main</a> (int argc, char **argv)</td></tr>
 <tr class="separator:a3c04138a5bfe5d72780bb7e82a18e627"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ace5e4b5ec12ba07253ee91b60edcb5e6" name="ace5e4b5ec12ba07253ee91b60edcb5e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace5e4b5ec12ba07253ee91b60edcb5e6">&#9670;&#160;</a></span>isPcx()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool isPcx </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
+          <td class="paramname"><em>blob</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a3c04138a5bfe5d72780bb7e82a18e627" name="a3c04138a5bfe5d72780bb7e82a18e627"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3c04138a5bfe5d72780bb7e82a18e627">&#9670;&#160;</a></span>main()</h2>
 
@@ -155,6 +181,24 @@ Functions</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int runDump </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structLodToolOptions.html">LodToolOptions</a> &amp;&#160;</td>
+          <td class="paramname"><em>options</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a783a7bddffac7819b3f44d2759ed578d" name="a783a7bddffac7819b3f44d2759ed578d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a783a7bddffac7819b3f44d2759ed578d">&#9670;&#160;</a></span>runExtract()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int runExtract </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structLodToolOptions.html">LodToolOptions</a> &amp;&#160;</td>
           <td class="paramname"><em>options</em></td><td>)</td>
