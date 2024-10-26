@@ -746,8 +746,7 @@ void OutdoorLocation::ArrangeSpriteObjects() {
                     bool bOnWater = false;
                     pSpriteObjects[i].vPosition.z =
                         GetTerrainHeightsAroundParty2(
-                            pSpriteObjects[i].vPosition.x,
-                            pSpriteObjects[i].vPosition.y, &bOnWater, 0);
+                            pSpriteObjects[i].vPosition, &bOnWater, 0);
                 }
                 if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL) {
                     if (pSpriteObjects[i].containing_item.uItemID != ITEM_POTION_BOTTLE &&
@@ -994,7 +993,7 @@ float ODM_GetFloorLevel(const Vec3f &pos, int unused, bool *pIsOnWater,
     std::array<float, 20> odm_floor_level{};                   // idb
     current_BModel_id[0] = -1;
     current_Face_id[0] = -1;
-    odm_floor_level[0] = GetTerrainHeightsAroundParty2(pos.x, pos.y, pIsOnWater, bWaterWalk);
+    odm_floor_level[0] = GetTerrainHeightsAroundParty2(pos, pIsOnWater, bWaterWalk);
 
     int surface_count = 1;
 
@@ -1655,7 +1654,7 @@ void ODM_ProcessPartyActions() {
 
         if (partyDrowningFlag) {
             bool onWater = false;
-            int pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->pos.x, pParty->pos.y, &onWater, 1);
+            int pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->pos, &onWater, 1);
             if (pParty->pos.z <= pTerrainHeight + 1) {
                 pParty->uFlags |= PARTY_FLAG_WATER_DAMAGE;
             }
@@ -2259,7 +2258,7 @@ bool IsTerrainSlopeTooHigh(const Vec3f &pos) {
 }
 
 //----- (0048257A) --------------------------------------------------------
-int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAboveWater) {
+int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater, int bFloatAboveWater) {
     //  int result; // eax@9
     int originz;          // ebx@11
     int lz;          // eax@11
@@ -2267,7 +2266,7 @@ int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAbov
     int rpos;         // [sp+10h] [bp-8h]@11
     int lpos;         // [sp+24h] [bp+Ch]@11
 
-    Vec2i gridPos = WorldPosToGrid(Vec3f(x, y, 0));
+    Vec2i gridPos = WorldPosToGrid(pos);
 
     int grid_x1 = GridCellToWorldPosX(gridPos.x),
         grid_x2 = GridCellToWorldPosX(gridPos.x + 1);
@@ -2313,20 +2312,21 @@ int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAbov
     if (!bFloatAboveWater && *pIsOnWater)
         waterAdjustment = -60;
 
+    // TODO(captainurist): will need to retrace to get rid of static_cast<int>(pos.*) below.
     if (z_x1y1 != z_x2y1 || z_x2y1 != z_x2y2 || z_x2y2 != z_x1y2) {
         // On a slope.
-        if (std::abs(grid_y1 - y) >= std::abs(x - grid_x1)) {
+        if (std::abs(grid_y1 - static_cast<int>(pos.y)) >= std::abs(static_cast<int>(pos.x) - grid_x1)) {
             originz = z_x1y2;
             lz = z_x2y2;
             rz = z_x1y1;
-            lpos = x - grid_x1;
-            rpos = y - grid_y2;
+            lpos = static_cast<int>(pos.x) - grid_x1;
+            rpos = static_cast<int>(pos.y) - grid_y2;
         } else {
             originz = z_x2y1;
             lz = z_x1y1;
             rz = z_x2y2;
-            lpos = grid_x2 - x;
-            rpos = grid_y1 - y;
+            lpos = grid_x2 - static_cast<int>(pos.x);
+            rpos = grid_y1 - static_cast<int>(pos.y);
         }
 
         assert(lpos >= 0 && lpos < 512);
