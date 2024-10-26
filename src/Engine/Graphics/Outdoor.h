@@ -46,7 +46,7 @@ struct OutdoorLocation {
     /**
      * @offset 0x47EE49
      */
-    SoundId getSoundIdByGrid(int X_pos, int Y_pos, bool isRunning);
+    SoundId getSoundIdByGrid(Vec2i gridPos, bool isRunning);
     int UpdateDiscoveredArea(Vec2i gridPos);
     bool IsMapCellFullyRevealed(signed int a2, signed int a3);
     bool IsMapCellPartiallyRevealed(signed int a2, signed int a3);

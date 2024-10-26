@@ -624,9 +624,9 @@ TILE_DESC_FLAGS OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
     return pTileTable->tiles[tileId].uAttributes;
 }
 
-SoundId OutdoorLocation::getSoundIdByGrid(int X_pos, int Y_pos, bool isRunning) {
+SoundId OutdoorLocation::getSoundIdByGrid(Vec2i gridPos, bool isRunning) {
     // TODO(captainurist): this doesn't take seasons into account.
-    switch (pTerrain.tileSet(X_pos, Y_pos)) {
+    switch (pTerrain.tileSet(gridPos.x, gridPos.y)) {
         case Tileset_Grass:
             return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
         case Tileset_Snow:
@@ -1076,18 +1076,17 @@ float ODM_GetFloorLevel(const Vec3f &pos, int unused, bool *pIsOnWater,
 // out as normalised float vec
 //----- (0046DCC8) --------------------------------------------------------
 void ODM_GetTerrainNormalAt(float pos_x, float pos_y, Vec3f *out) {
-    int grid_x = WorldPosToGridCellX(pos_x);
-    int grid_y = WorldPosToGridCellY(pos_y);
+    Vec2i gridPos = WorldPosToGrid(Vec3f(pos_x, pos_y, 0));
 
-    int grid_pos_x1 = GridCellToWorldPosX(grid_x);
-    int grid_pos_x2 = GridCellToWorldPosX(grid_x + 1);
-    int grid_pos_y1 = GridCellToWorldPosY(grid_y);
-    int grid_pos_y2 = GridCellToWorldPosY(grid_y + 1);
+    int grid_pos_x1 = GridCellToWorldPosX(gridPos.x);
+    int grid_pos_x2 = GridCellToWorldPosX(gridPos.x + 1);
+    int grid_pos_y1 = GridCellToWorldPosY(gridPos.y);
+    int grid_pos_y2 = GridCellToWorldPosY(gridPos.y + 1);
 
-    int x1y1_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_y);
-    int x2y1_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_y);
-    int x2y2_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_y + 1);
-    int x1y2_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_y + 1);
+    int x1y1_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x, gridPos.y);
+    int x2y1_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x + 1, gridPos.y);
+    int x2y2_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x + 1, gridPos.y + 1);
+    int x1y2_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x, gridPos.y + 1);
 
     Vec3f side1, side2;
 
@@ -1734,7 +1733,7 @@ void ODM_ProcessPartyActions() {
                                 sound = SOUND_RunWood;
                             } else {
                                 // Old comment: 56 is ground run
-                                sound = pOutdoor->getSoundIdByGrid(WorldPosToGridCellX(partyOldPosition.x), WorldPosToGridCellY(partyOldPosition.y), true);
+                                sound = pOutdoor->getSoundIdByGrid(WorldPosToGrid(partyOldPosition), true);
                             }
                         }
                     } else if (partyIsWalking) {
@@ -1742,7 +1741,7 @@ void ODM_ProcessPartyActions() {
                             if (isModelWalk) {
                                 sound = SOUND_RunWood;
                             } else {
-                                sound = pOutdoor->getSoundIdByGrid(WorldPosToGridCellX(partyOldPosition.x), WorldPosToGridCellY(partyOldPosition.y), false);
+                                sound = pOutdoor->getSoundIdByGrid(WorldPosToGrid(partyOldPosition), false);
                             }
                         }
                     }
