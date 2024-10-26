@@ -365,8 +365,6 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
     reconstruct(src.tileMap, &dst->pTerrain.pTilemap);
     reconstruct(src.attributeMap, &dst->pTerrain.pAttributemap);
 
-    dst->pTerrain.FillDMap(0, 0, 128, 128);
-
     reconstruct(src.someOtherMap, &pTerrainSomeOtherData);
     reconstruct(src.normalMap, &pTerrainNormalIndices);
     reconstruct(src.normals, &pTerrainNormals);

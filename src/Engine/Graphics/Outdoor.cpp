@@ -459,173 +459,11 @@ void OutdoorLocation::SetFog() {
     pOutdoor->loc_time.day_attrib = ::day_attrib;
 }
 
-//----- (0047C80A) --------------------------------------------------------
-void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
-    double v6;                    // st7@1
-    double v7;                    // st7@2
-    double v8;                    // st7@2
-    int result;                   // eax@3
-    int v10;                      // eax@4
-    int v11;                      // ecx@5
-    int v12;                      // ecx@6
-    int v13;                      // edi@7
-    int v14;                      // edx@9
-                                  //  int v15; // eax@15
-    uint8_t *pMapHeight;  // ebx@15
-    char *v17;                      // eax@15
-    int v18;                      // ecx@15
-    int v19;                      // esi@15
-    int v20;                      // edi@15
-    int v21;                      // edx@15
-    int v22;                      // ecx@15
-    char *v23;                      // ebx@15
-    int v24;                      // ecx@15
-    int v25;                      // ST28_4@15
-    double v26;                   // st7@15
-    double v27;                   // st6@15
-    double v28;                   // st5@15
-    double v29;                   // st7@15
-    double v30;                   // st7@16
-    double v31;                   // st7@17
-    int v32;                      // eax@21
-    double v33;                   // st7@21
-    double v34;                   // st6@21
-    double v35;                   // st5@21
-    double v36;                   // st7@21
-    double v37;                   // st7@22
-    double v38;                   // st7@23
-    int v39;                      // [sp+14h] [bp-34h]@8
-    int v40;                      // [sp+18h] [bp-30h]@15
-    int v41;                      // [sp+1Ch] [bp-2Ch]@15
-    int v42;                      // [sp+20h] [bp-28h]@15
-    int v44;                      // [sp+28h] [bp-20h]@21
-    float v45;                    // [sp+2Ch] [bp-1Ch]@1
-    float v46;                    // [sp+30h] [bp-18h]@1
-    float v47;                    // [sp+34h] [bp-14h]@1
-    // int v48; // [sp+38h] [bp-10h]@7
-    int v49;    // [sp+3Ch] [bp-Ch]@10
-    int v50;    // [sp+40h] [bp-8h]@9
-    float v51;  // [sp+44h] [bp-4h]@15
-    float v52;  // [sp+44h] [bp-4h]@21
-    float v53;  // [sp+50h] [bp+8h]@15
-    float v54;  // [sp+50h] [bp+8h]@21
-                //  int v55; // [sp+54h] [bp+Ch]@15
-    float v56;  // [sp+54h] [bp+Ch]@15
-    float v57;  // [sp+54h] [bp+Ch]@21
-
-    v46 = -64.0;
-    v47 = -64.0;
-    v45 = 64.0;
-    v6 = std::sqrt(12288.0);
-    if (v6 != 0.0) {
-        v7 = 1.0 / v6;
-        v45 = 64.0 * v7;
-        v8 = v7 * -64.0;
-        v46 = v8;
-        v47 = v8;
-    }
-    result = Y;
-    if (Y > Z) {
-        v10 = Z ^ Y;
-        Z ^= Y ^ Z;
-        result = Z ^ v10;
-    }
-    v11 = X;
-    if (X > W) {
-        v12 = W ^ X;
-        W ^= X ^ W;
-        v11 = W ^ v12;
-    }
-    // v48 = result - 1;
-    if (result - 1 <= Z) {
-        v39 = v11 - 1;
-        for (v13 = result - 1; v13 <= Z; v13++) {
-            v50 = v39;
-            if (v39 <= W) {
-                result = (v39 - 63) << 9;
-                v49 = (v39 - 63) << 9;
-                for (v14 = v39; v14 <= W; v14++) {
-                    if (v13 >= 0 && result >= -32256 && v13 <= 127 &&
-                        result <= 32768) {
-                        // v15 = pOutLocTerrain->field_10;
-                        // v55 = pOutLocTerrain->field_10;
-                        pMapHeight = this->pHeightmap.data();
-                        v17 = (char *)(&pMapHeight[v13 * 128] + v14);
-                        v18 = -v13;
-                        v19 = (64 - v13) << 9;
-                        v20 = 32 * *(char *)v17;
-                        v21 = 32 * *(char *)(v17 + 1);
-
-                        v22 = (v18 + 63) << 9;
-                        v41 = v22;
-                        v23 = (char *)(&pMapHeight[128 * (v13 + 1)] +
-                                    v14);
-                        v24 = v22 - v19;
-                        v40 = 32 * *(char *)v23;
-                        v42 = 32 * *(char *)(v23 + 1);
-
-                        v25 = v49 - 512 - v49;
-                        v26 = (double)-((v20 - v21) * v24);
-                        v51 = v26;
-                        v27 = (double)-(v25 * (v42 - v21));
-                        v53 = v27;
-                        v28 = (double)(v25 * v24);
-                        v56 = v28;
-                        v29 = std::sqrt(v28 * v28 + v27 * v27 + v26 * v26);
-                        if (v29 != 0.0) {
-                            v30 = 1.0 / v29;
-                            v51 = v51 * v30;
-                            v53 = v53 * v30;
-                            v56 = v30 * v56;
-                        }
-                        v31 = (v56 * v47 + v53 * v46 + v51 * v45) * 31.0;
-                        if (v31 < 0.0) v31 = 0.0;
-                        if (v31 > 31.0) v31 = 31.0;
-                        v44 = 2 * (v14 + v13 * 128);
-                        // pOutLocTerrain = pOutLocTerrain2;
-                        *((char *)this->pDmap.data() + v44 + 1) = (int64_t)v31;
-
-                        v32 = v49 - (v49 - 512);
-                        v33 = (double)-((v42 - v40) * (v19 - v41));
-                        v52 = v33;
-                        v34 = (double)-(v32 * (v20 - v40));
-                        v54 = v34;
-                        v35 = (double)(v32 * (v19 - v41));
-                        v57 = v35;
-                        v36 = std::sqrt(v35 * v35 + v34 * v34 + v33 * v33);
-                        if (v36 != 0.0) {
-                            v37 = 1.0 / v36;
-                            v52 = v52 * v37;
-                            v54 = v54 * v37;
-                            v57 = v37 * v57;
-                        }
-                        v38 = (v57 * v47 + v54 * v46 + v52 * v45) * 31.0;
-                        if (v38 < 0.0) v38 = 0.0;
-                        if (v38 > 31.0) v38 = 31.0;
-                        // v13 = v48;
-                        *((char *)this->pDmap.data() + v44) = (int64_t)v38;
-                        // v14 = v50;
-                        result = v49;
-                    }
-                    // ++v14;
-                    result += 512;
-                    // v50 = v14;
-                    v49 = result;
-                }
-            }
-            // ++v13;
-            // v48 = v13;
-        }
-        // while ( v13 <= Z );
-    }
-}
-
 //----- (0047CCE2) --------------------------------------------------------
 bool OutdoorLocationTerrain::ZeroLandscape() {
     this->pHeightmap.fill(0);
     this->pTilemap.fill(90);
     this->pAttributemap.fill(0);
-    this->pDmap.fill({0, 0});
     return true;
 }
 
@@ -642,7 +480,6 @@ void OutdoorLocation::CreateDebugLocation() {
     this->LoadBaseTileIds();
     this->pSpawnPoints.clear();
     this->pTerrain.ZeroLandscape();
-    this->pTerrain.FillDMap(0, 0, 128, 128);
 
     this->pOMAP.fill(0);
     this->pFaceIDLIST.clear();

@@ -34,13 +34,11 @@ struct DMap {
 };
 
 struct OutdoorLocationTerrain {
-    void FillDMap(int X, int Y, int W, int Z);
     bool ZeroLandscape();
 
     std::array<uint8_t, 128 * 128> pHeightmap{};
     std::array<uint8_t, 128 * 128> pTilemap{};
     std::array<uint8_t, 128 * 128> pAttributemap{};
-    std::array<DMap, 128 * 128> pDmap{};
 };
 
 struct OutdoorLocation {
