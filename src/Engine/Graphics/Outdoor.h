@@ -144,8 +144,6 @@ void SetUnderwaterFog();
 void loadAndPrepareODM(MapId mapid, bool bLoading, ODMRenderParams *a2);
 Color GetLevelFogColor();
 int sub_47C3D7_get_fog_specular(int unused, int a2, float a3);
-int WorldPosToGridCellX(int);
-int WorldPosToGridCellY(int);
 Vec2i WorldPosToGrid(Vec3f worldPos);
 
 int GridCellToWorldPosX(int);

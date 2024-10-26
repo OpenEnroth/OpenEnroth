@@ -2173,19 +2173,15 @@ int sub_47C3D7_get_fog_specular(int unused, int isSky, float screen_depth) {
 }
 
 //----- (0047F44B) --------------------------------------------------------
-int WorldPosToGridCellX(int sWorldPosX) {
-    return (sWorldPosX >> 9) + 64;  // sar is in original exe, resulting -880 / 512 = -1
-                                    //                               and -880 sar 9 = -2
-}
-
 //----- (0047F458) --------------------------------------------------------
-int WorldPosToGridCellY(int sWorldPosY) {
-    return 63 - (sWorldPosY >> 9);  // sar is in original exe, resulting -880 / 512 = -1
-                                    //                               and -880 sar 9 = -2
-}
-
 Vec2i WorldPosToGrid(Vec3f worldPos) {
-    return Vec2i(WorldPosToGridCellX(worldPos.x), WorldPosToGridCellY(worldPos.y));
+    int worldX = worldPos.x;
+    int worldY = worldPos.y;
+
+    // sar is in original exe, resulting -880 / 512 = -1 and -880 sar 9 = -2.
+    int gridX = (worldX >> 9) + 64;
+    int gridY = 63 - (worldY >> 9);
+    return Vec2i(gridX, gridY);
 }
 
 //----- (0047F469) --------------------------------------------------------
