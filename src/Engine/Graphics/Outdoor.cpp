@@ -1087,8 +1087,8 @@ float ODM_GetFloorLevel(const Vec3f &pos, int unused, bool *pIsOnWater,
 // out as normalised float vec
 //----- (0046DCC8) --------------------------------------------------------
 void ODM_GetTerrainNormalAt(float pos_x, float pos_y, Vec3f *out) {
-    unsigned grid_x = WorldPosToGridCellX(pos_x);
-    unsigned grid_y = WorldPosToGridCellY(pos_y);
+    int grid_x = WorldPosToGridCellX(pos_x);
+    int grid_y = WorldPosToGridCellY(pos_y);
 
     int grid_pos_x1 = GridCellToWorldPosX(grid_x);
     int grid_pos_x2 = GridCellToWorldPosX(grid_x + 1);
@@ -2188,13 +2188,13 @@ int sub_47C3D7_get_fog_specular(int unused, int isSky, float screen_depth) {
 }
 
 //----- (0047F44B) --------------------------------------------------------
-unsigned int WorldPosToGridCellX(int sWorldPosX) {
+int WorldPosToGridCellX(int sWorldPosX) {
     return (sWorldPosX >> 9) + 64;  // sar is in original exe, resulting -880 / 512 = -1
                                     //                               and -880 sar 9 = -2
 }
 
 //----- (0047F458) --------------------------------------------------------
-unsigned int WorldPosToGridCellY(int sWorldPosY) {
+int WorldPosToGridCellY(int sWorldPosY) {
     return 63 - (sWorldPosY >> 9);  // sar is in original exe, resulting -880 / 512 = -1
                                     //                               and -880 sar 9 = -2
 }
@@ -2221,8 +2221,8 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_y) {
 
     // v12 = a1;
     // v11 = a2;
-    unsigned int grid_x = WorldPosToGridCellX(pos_x);
-    unsigned int grid_z = WorldPosToGridCellY(pos_y);
+    int grid_x = WorldPosToGridCellX(pos_x);
+    int grid_y = WorldPosToGridCellY(pos_y);
 
     int party_grid_x1 = GridCellToWorldPosX(grid_x);
     // dword_76D56C_terrain_cell_world_pos_around_party_x =
@@ -2231,17 +2231,17 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_y) {
     // GridCellToWorldPosX(grid_x + 1);
     // dword_76D574_terrain_cell_world_pos_around_party_x =
     // GridCellToWorldPosX(grid_x);
-    int party_grid_z1 = GridCellToWorldPosY(grid_z);
+    int party_grid_z1 = GridCellToWorldPosY(grid_y);
     // dword_76D55C_terrain_cell_world_pos_around_party_z =
     // GridCellToWorldPosY(grid_z);
     // dword_76D560_terrain_cell_world_pos_around_party_z =
     // GridCellToWorldPosY(grid_z + 1);
     // dword_76D564_terrain_cell_world_pos_around_party_z =
     // GridCellToWorldPosY(grid_z + 1);
-    int party_x1z1_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_z);
-    int party_x2z1_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_z);
-    int party_x2z2_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_z + 1);
-    int party_x1z2_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_z + 1);
+    int party_x1z1_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_y);
+    int party_x2z1_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_y);
+    int party_x2z2_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_y + 1);
+    int party_x1z2_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_y + 1);
     // dword_76D554_terrain_cell_world_pos_around_party_y = v4;
     if (party_x1z1_y == party_x2z1_y && party_x2z1_y == party_x2z2_y &&
         party_x2z2_y == party_x1z2_y)
@@ -2283,8 +2283,8 @@ int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAbov
     int rpos;         // [sp+10h] [bp-8h]@11
     int lpos;         // [sp+24h] [bp+Ch]@11
 
-    unsigned int grid_x = WorldPosToGridCellX(x);
-    unsigned int grid_y = WorldPosToGridCellY(y);
+    int grid_x = WorldPosToGridCellX(x);
+    int grid_y = WorldPosToGridCellY(y);
 
     int grid_x1 = GridCellToWorldPosX(grid_x),
         grid_x2 = GridCellToWorldPosX(grid_x + 1);
