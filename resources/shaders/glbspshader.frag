@@ -83,14 +83,28 @@ void main() {
         texuvmod.x = 1.0;
     }
 
-    // lava movement
-    if ((vsAttrib & 0x4000) > 0) {
-        // Texture makes full circle in 8 seconds
-        float lavaperiod = mod(float(flowtimerms), 8000.0);
-        float lavaradians = lavaperiod * radians(360.0) / 8000.0;
-        float curpos = sin(lavaradians);
-        deltas.x = 0.0;
-        deltas.y = float(texsize.y) * curpos;
+    if ((vsAttrib & 0x4000) > 0 || (vsAttrib & 0x2) > 0) {
+        // Portals & fluids.
+        // In-out movement.
+        float pongperiod = mod(float(flowtimerms), 8000.0);
+        float pongradians = pongperiod * radians(360.0) / 8000.0;
+        float pongprogress = sin(pongradians);
+        deltas.x = pongprogress * float(texsize.x) * 0.01 * sin(texuv.x / float(texsize.x) * radians(360.0));
+        deltas.y = pongprogress * float(texsize.y) * 0.01 * sin(texuv.y / float(texsize.y) * radians(360.0));
+
+        // Swirling movement.
+        float flowperiod = mod(float(flowtimerms), 5000.0);
+        float flowradians = flowperiod * radians(360.0) / 5000.0;
+        deltas.x += float(texsize.x) * 0.01 * sin(flowradians + texuv.y / float(texsize.y) * radians(360.0));
+        deltas.y += float(texsize.y) * 0.01 * cos(flowradians + texuv.x / float(texsize.x) * radians(360.0));
+
+        // Small ripples.
+        // TODO(captainurist): radians(360 * 32) looks better on portals, radians(360 * 16) looks better on lava,
+        //                     but we don't have a way to differentiate, 0x4000 and 0x2 is set on both. Settling on
+        //                     radians(360 * 24).
+        float rippleperiod = mod(float(flowtimerms), 2000.0);
+        float rippleradians = rippleperiod * radians(360.0) / 2000.0;
+        deltas.x = deltas.x - float(texsize.x) * 0.005 * cos(rippleradians + (texuv.y + deltas.y) / float(texsize.y) * radians(360.0 * 24.0));
     } else {
         deltas.x = texuvmod.x * mod(float(flowtimer), float(texsize.x));
         deltas.y = texuvmod.y * mod(float(flowtimer), float(texsize.y));
