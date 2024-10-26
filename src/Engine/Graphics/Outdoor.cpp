@@ -585,31 +585,18 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
 }
 
 TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
-    int v3;  // esi@5
-             //  unsigned int result; // eax@9
-
-    if (sX < 0 || sX > 127 || sY < 0 || sY > 127)
-        return 0;
-
-    v3 = this->pTerrain.pTilemap[sY * 128 + sX];
-    if (v3 < 198) {  // < Tileset_3
-        if (v3 >= 90)
-            v3 = v3 + this->pTerrain.pTileTypes[(v3 - 90) / 36].uTileID -
-                 36 * ((v3 - 90) / 36) - 90;
-    } else {
-      v3 = v3 + this->pTerrain.pTileTypes[3].uTileID - 198;
-    }
+    int tileId = pTerrain.tileId(sX, sY);
 
     if (engine->config->graphics.SeasonsChange.value()) {
         switch (pParty->uCurrentMonth) {
             case 11:
             case 0:
             case 1:            // winter
-                if (v3 >= 90) {  // Tileset_Grass begins at TileID = 90
-                    if (v3 <= 95)  // some grastyl entries
-                        v3 = 348;
-                    else if (v3 <= 113)  // rest of grastyl & all grdrt*
-                        v3 = 348 + (v3 - 96);
+                if (tileId >= 90) {  // Tileset_Grass begins at TileID = 90
+                    if (tileId <= 95)  // some grastyl entries
+                        tileId = 348;
+                    else if (tileId <= 113)  // rest of grastyl & all grdrt*
+                        tileId = 348 + (tileId - 96);
                 }
                 /*switch (v3)
                 {
@@ -625,9 +612,9 @@ TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
             case 8:
             case 9:
             case 10:  // autumn
-                if (v3 >= 90 &&
-                    v3 <= 113)  // just convert all Tileset_Grass to dirt
-                    v3 = 1;
+                if (tileId >= 90 &&
+                    tileId <= 113)  // just convert all Tileset_Grass to dirt
+                    tileId = 1;
                 break;
 
             case 5:
@@ -642,7 +629,7 @@ TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
         }
     }
 
-    return &pTileTable->tiles[v3];
+    return &pTileTable->tiles[tileId];
 }
 
 TILE_DESC_FLAGS OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
