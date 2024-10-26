@@ -34,18 +34,18 @@ int OutdoorTerrain::DoGetHeightOnTerrain(Vec2i gridPos) {
     return 32 * pHeightmap[gridPos.y * 128 + gridPos.x];
 }
 
-int OutdoorTerrain::tileId(int x, int y) const {
-    if (x < 0 || x > 127 || y < 0 || y > 127)
+int OutdoorTerrain::tileId(Vec2i gridPos) const {
+    if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return 0;
 
-    return mapToGlobalTileId(pTilemap[y * 128 + x]);
+    return mapToGlobalTileId(pTilemap[gridPos.y * 128 + gridPos.x]);
 }
 
-Tileset OutdoorTerrain::tileSet(int x, int y) const {
-    if (x < 0 || x > 127 || y < 0 || y > 127)
+Tileset OutdoorTerrain::tileSet(Vec2i gridPos) const {
+    if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return Tileset_NULL;
 
-    int localTileId = pTilemap[y * 128 + x];
+    int localTileId = pTilemap[gridPos.y * 128 + gridPos.x];
 
     if (localTileId >= 1 && localTileId <= 12)
         return Tileset_Dirt; // See comment in mapToGlobalTileId.

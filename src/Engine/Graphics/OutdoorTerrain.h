@@ -20,18 +20,16 @@ struct OutdoorTerrain {
     int DoGetHeightOnTerrain(Vec2i gridPos);
 
     /**
-     * @param x                         Grid x.
-     * @param y                         Grid y.
-     * @return                          Tile id at (x, y), that can then be used to get tile data from `TileTable`.
+     * @param gridPos                   Grid coordinates.
+     * @return                          Tile id at `gridPos` that can then be used to get tile data from `TileTable`.
      */
-    int tileId(int x, int y) const;
+    int tileId(Vec2i gridPos) const;
 
     /**
-     * @param x                         Grid x.
-     * @param y                         Grid y.
-     * @return                          Tile set at (x, y), or `Tileset_NULL` if the tile is invalid.
+     * @param gridPos                   Grid coordinates.
+     * @return                          Tile set for the tile at `gridPos`, or `Tileset_NULL` if the tile is invalid.
      */
-    Tileset tileSet(int x, int y) const;
+    Tileset tileSet(Vec2i gridPos) const;
 
     int mapToGlobalTileId(int localTileId) const;
 

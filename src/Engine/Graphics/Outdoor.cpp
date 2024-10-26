@@ -572,7 +572,7 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
 }
 
 TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
-    int tileId = pTerrain.tileId(sX, sY);
+    int tileId = pTerrain.tileId(Vec2i(sX, sY));
 
     if (engine->config->graphics.SeasonsChange.value()) {
         switch (pParty->uCurrentMonth) {
@@ -620,13 +620,13 @@ TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
 }
 
 TILE_DESC_FLAGS OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
-    int tileId = this->pTerrain.tileId(gridX, gridY);
+    int tileId = this->pTerrain.tileId(Vec2i(gridX, gridY));
     return pTileTable->tiles[tileId].uAttributes;
 }
 
 SoundId OutdoorLocation::getSoundIdByGrid(Vec2i gridPos, bool isRunning) {
     // TODO(captainurist): this doesn't take seasons into account.
-    switch (pTerrain.tileSet(gridPos.x, gridPos.y)) {
+    switch (pTerrain.tileSet(gridPos)) {
         case Tileset_Grass:
             return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
         case Tileset_Snow:
