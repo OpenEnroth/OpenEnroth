@@ -22,7 +22,6 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
-#include "Engine/Graphics/Polygon.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -61,7 +60,6 @@ OutdoorLocation *pOutdoor = nullptr;
 ODMRenderParams *pODMRenderParams = nullptr;
 
 SkyBillboardStruct SkyBillboard;  // skybox planes
-std::array<struct Polygon, 2000 + 18000> array_77EC08;
 
 static constexpr IndexedArray<std::array<MapId, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> footTravelDestinations = {
     // from                      north                south                east                 west
@@ -272,24 +270,6 @@ TileData *OutdoorLocation::getTileDescByPos(int sX, int sY) {
     return this->getTileDescByGrid(gridX, gridY);
 }
 
-//----- (00488F2E) --------------------------------------------------------
-int OutdoorLocation::GetHeightOnTerrain(int sX, int sZ) {
-/* Функция предоставляет возможность перемещать камеру таким образом, чтобы она
-имитировала ходьбу по ландшафту. То есть нам надо менять высоту камеры
-(координату Y) в зависимости от того, в каком месте ландшафта мы находимся. Для
-этого мы сначала должны определить по координатам X и Z камеры квадрат ландшафта
-в котором мы находимся. Все это делает функция Terrain::getHeight; в своих
-параметрах она получает координаты X и Z камеры и возвращает высоту,
-на которой должна быть расположена камера, чтобы она оказалась над ландшафтом.*/
-    int result;  // eax@5
-
-    if (sX < 0 || sX > 127 || sZ < 0 || sZ > 127)
-        result = 0;
-    else
-        result = DoGetHeightOnTerrain(sX, sZ);
-    return result;
-}
-
 //----- (00488F5C) --------------------------------------------------------
 bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
                                  int respawn_interval_days,
@@ -367,45 +347,6 @@ MapId OutdoorLocation::getTravelDestination(int partyX, int partyY) {
     uDefaultTravelTime_ByFoot = footTravelTimes[currentMap][direction];
     uLevel_StartingPointType = footTravelArrivalPoints[currentMap][direction];
     return destinationMap;
-}
-
-//----- (0048917E) --------------------------------------------------------
-void OutdoorLocation::MessWithLUN() {
-    this->pSpriteIDs_LUN[0] = -1;
-    this->pSpriteIDs_LUN[1] = 0;
-    this->pSpriteIDs_LUN[2] = pSpriteFrameTable->FastFindSprite("LUN1-4");
-    this->pSpriteIDs_LUN[3] = 0;
-    this->pSpriteIDs_LUN[4] = pSpriteFrameTable->FastFindSprite("LUN1-2");
-    this->pSpriteIDs_LUN[5] = 0;
-    this->pSpriteIDs_LUN[6] = pSpriteFrameTable->FastFindSprite("LUN3-4");
-    this->pSpriteIDs_LUN[7] = 0;
-    this->uSpriteID_LUNFULL = pSpriteFrameTable->FastFindSprite("LUNFULL");
-    this->uSpriteID_LUN1_2_cp = pSpriteFrameTable->FastFindSprite("LUN1-2");
-    this->uSpriteID_LUN1_4_cp = pSpriteFrameTable->FastFindSprite("LUN1-4");
-    this->uSpriteID_LUN3_4_cp = pSpriteFrameTable->FastFindSprite("LUN3-4");
-    this->field_D60 = -1;
-    this->field_CF0 = 4;
-    this->field_CF8 = 4;
-    this->field_D00 = 4;
-    this->field_CE8 = 0;
-    this->field_D3C = this->pSpriteIDs_LUN;
-    this->field_D40 = 0;
-    this->field_D44 = 0;
-    this->field_D48 = 0;
-    this->field_D4C = 131072;
-    this->field_D5C = 0;
-    this->field_D64 = 0;
-    this->field_D28 = -1;
-    this->field_D08 = 0;
-    this->field_D0C = 0;
-    this->field_D10 = 0;
-    this->field_D24 = 0;
-    this->field_D2C = 0;
-    this->uSpriteID_LUN_SUN = pSpriteFrameTable->FastFindSprite("LUN-SUN");
-    this->field_D14 = -131072;
-    for (unsigned i = 0; i < 8; i++)
-        pSpriteFrameTable->InitializeSprite(this->pSpriteIDs_LUN[i]);  // v2 += 2;
-    pSpriteFrameTable->InitializeSprite(this->uSpriteID_LUN_SUN);
 }
 
 //----- (004892E6) --------------------------------------------------------
@@ -498,302 +439,14 @@ void OutdoorLocation::SetFog() {
     pOutdoor->loc_time.day_attrib = ::day_attrib;
 }
 
-//----- (0047C7A9) --------------------------------------------------------
-void OutdoorLocationTerrain::_47C7A9() {
-    this->field_10 = 0;
-    this->field_12 = 0;
-    this->field_16 = 0;
-    this->field_14 = 0;
-    this->field_1C = 0;
-    this->field_18 = 0;
-}
-
-//----- (0047C7C2) --------------------------------------------------------
-void OutdoorLocationTerrain::Release() {  // очистить локацию
-    _47C7A9();
-}
-
-//----- (0047C80A) --------------------------------------------------------
-void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
-    double v6;                    // st7@1
-    double v7;                    // st7@2
-    double v8;                    // st7@2
-    int result;                   // eax@3
-    int v10;                      // eax@4
-    int v11;                      // ecx@5
-    int v12;                      // ecx@6
-    int v13;                      // edi@7
-    int v14;                      // edx@9
-                                  //  int v15; // eax@15
-    uint8_t *pMapHeight;  // ebx@15
-    char *v17;                      // eax@15
-    int v18;                      // ecx@15
-    int v19;                      // esi@15
-    int v20;                      // edi@15
-    int v21;                      // edx@15
-    int v22;                      // ecx@15
-    char *v23;                      // ebx@15
-    int v24;                      // ecx@15
-    int v25;                      // ST28_4@15
-    double v26;                   // st7@15
-    double v27;                   // st6@15
-    double v28;                   // st5@15
-    double v29;                   // st7@15
-    double v30;                   // st7@16
-    double v31;                   // st7@17
-    int v32;                      // eax@21
-    double v33;                   // st7@21
-    double v34;                   // st6@21
-    double v35;                   // st5@21
-    double v36;                   // st7@21
-    double v37;                   // st7@22
-    double v38;                   // st7@23
-    int v39;                      // [sp+14h] [bp-34h]@8
-    int v40;                      // [sp+18h] [bp-30h]@15
-    int v41;                      // [sp+1Ch] [bp-2Ch]@15
-    int v42;                      // [sp+20h] [bp-28h]@15
-    int v44;                      // [sp+28h] [bp-20h]@21
-    float v45;                    // [sp+2Ch] [bp-1Ch]@1
-    float v46;                    // [sp+30h] [bp-18h]@1
-    float v47;                    // [sp+34h] [bp-14h]@1
-    // int v48; // [sp+38h] [bp-10h]@7
-    int v49;    // [sp+3Ch] [bp-Ch]@10
-    int v50;    // [sp+40h] [bp-8h]@9
-    float v51;  // [sp+44h] [bp-4h]@15
-    float v52;  // [sp+44h] [bp-4h]@21
-    float v53;  // [sp+50h] [bp+8h]@15
-    float v54;  // [sp+50h] [bp+8h]@21
-                //  int v55; // [sp+54h] [bp+Ch]@15
-    float v56;  // [sp+54h] [bp+Ch]@15
-    float v57;  // [sp+54h] [bp+Ch]@21
-
-    v46 = -64.0;
-    v47 = -64.0;
-    v45 = 64.0;
-    v6 = std::sqrt(12288.0);
-    if (v6 != 0.0) {
-        v7 = 1.0 / v6;
-        v45 = 64.0 * v7;
-        v8 = v7 * -64.0;
-        v46 = v8;
-        v47 = v8;
-    }
-    result = Y;
-    if (Y > Z) {
-        v10 = Z ^ Y;
-        Z ^= Y ^ Z;
-        result = Z ^ v10;
-    }
-    v11 = X;
-    if (X > W) {
-        v12 = W ^ X;
-        W ^= X ^ W;
-        v11 = W ^ v12;
-    }
-    // v48 = result - 1;
-    if (result - 1 <= Z) {
-        v39 = v11 - 1;
-        for (v13 = result - 1; v13 <= Z; v13++) {
-            v50 = v39;
-            if (v39 <= W) {
-                result = (v39 - 63) << 9;
-                v49 = (v39 - 63) << 9;
-                for (v14 = v39; v14 <= W; v14++) {
-                    if (v13 >= 0 && result >= -32256 && v13 <= 127 &&
-                        result <= 32768) {
-                        // v15 = pOutLocTerrain->field_10;
-                        // v55 = pOutLocTerrain->field_10;
-                        pMapHeight = this->pHeightmap.data();
-                        v17 = (char *)(&pMapHeight[v13 * this->field_10] + v14);
-                        v18 = -v13;
-                        v19 = (64 - v13) << 9;
-                        v20 = 32 * *(char *)v17;
-                        v21 = 32 * *(char *)(v17 + 1);
-
-                        v22 = (v18 + 63) << 9;
-                        v41 = v22;
-                        v23 = (char *)(&pMapHeight[this->field_10 * (v13 + 1)] +
-                                    v14);
-                        v24 = v22 - v19;
-                        v40 = 32 * *(char *)v23;
-                        v42 = 32 * *(char *)(v23 + 1);
-
-                        v25 = v49 - 512 - v49;
-                        v26 = (double)-((v20 - v21) * v24);
-                        v51 = v26;
-                        v27 = (double)-(v25 * (v42 - v21));
-                        v53 = v27;
-                        v28 = (double)(v25 * v24);
-                        v56 = v28;
-                        v29 = std::sqrt(v28 * v28 + v27 * v27 + v26 * v26);
-                        if (v29 != 0.0) {
-                            v30 = 1.0 / v29;
-                            v51 = v51 * v30;
-                            v53 = v53 * v30;
-                            v56 = v30 * v56;
-                        }
-                        v31 = (v56 * v47 + v53 * v46 + v51 * v45) * 31.0;
-                        if (v31 < 0.0) v31 = 0.0;
-                        if (v31 > 31.0) v31 = 31.0;
-                        v44 = 2 * (v14 + v13 * this->field_10);
-                        // pOutLocTerrain = pOutLocTerrain2;
-                        *((char *)this->pDmap.data() + v44 + 1) = (int64_t)v31;
-
-                        v32 = v49 - (v49 - 512);
-                        v33 = (double)-((v42 - v40) * (v19 - v41));
-                        v52 = v33;
-                        v34 = (double)-(v32 * (v20 - v40));
-                        v54 = v34;
-                        v35 = (double)(v32 * (v19 - v41));
-                        v57 = v35;
-                        v36 = std::sqrt(v35 * v35 + v34 * v34 + v33 * v33);
-                        if (v36 != 0.0) {
-                            v37 = 1.0 / v36;
-                            v52 = v52 * v37;
-                            v54 = v54 * v37;
-                            v57 = v37 * v57;
-                        }
-                        v38 = (v57 * v47 + v54 * v46 + v52 * v45) * 31.0;
-                        if (v38 < 0.0) v38 = 0.0;
-                        if (v38 > 31.0) v38 = 31.0;
-                        // v13 = v48;
-                        *((char *)this->pDmap.data() + v44) = (int64_t)v38;
-                        // v14 = v50;
-                        result = v49;
-                    }
-                    // ++v14;
-                    result += 512;
-                    // v50 = v14;
-                    v49 = result;
-                }
-            }
-            // ++v13;
-            // v48 = v13;
-        }
-        // while ( v13 <= Z );
-    }
-}
-
-//----- (0047CB57) --------------------------------------------------------
-int OutdoorLocationTerrain::_47CB57(unsigned char *pixels_8bit, int a2,
-                                    int num_pixels) {
-    int result;  // eax@2
-                        //  uint16_t *v5; // edx@3
-                        //  double v6; // st7@3
-                        //  int v8; // eax@3
-                        //  int v9; // eax@4
-                        //  int v10; // eax@5
-                        //  double v11; // st6@7
-                        //  signed int v12; // edi@7
-                        //  int v13; // esi@9
-                        //  char *v14; // esi@10
-                        //  signed int v15; // ecx@10
-                        //  char v16[256]; // [sp+4h] [bp-124h]@9
-                        //  uint16_t *v17; // [sp+104h] [bp-24h]@3
-                        //  float v22; // [sp+118h] [bp-10h]@3
-                        //  float v23; // [sp+11Ch] [bp-Ch]@3
-                        //  int i; // [sp+120h] [bp-8h]@3
-                        //  unsigned int v25; // [sp+124h] [bp-4h]@5
-                        //  signed int a2a; // [sp+134h] [bp+Ch]@3
-                        //  unsigned int a2b; // [sp+134h] [bp+Ch]@7
-                        //  float a3a; // [sp+138h] [bp+10h]@7
-                        //  int a3b; // [sp+138h] [bp+10h]@9
-
-    int num_r_bits = 5;
-    int num_g_bits = 6;
-    int num_b_bits = 5;
-
-    int r_mask = 0xF800;
-    int g_mask = 0x7E0;
-    int b_mask = 0x1F;
-
-    // if ( render->pRenderD3D )
-    result = 0;
-    /*else
-    {
-      assert(false);
-      v5 = PaletteManager::Get_Dark_or_Red_LUT(a2, 0, 1);
-      v6 = 0.0;
-      v22 = 0.0;
-      v8 = 0;
-      v17 = v5;
-      v23 = 0.0;
-      a2a = 0;
-      for ( i = 0; i < num_pixels; ++i )
-      {
-        v9 = *(char *)(v8 + pixels_8bit);
-        if ( v9 )
-        {
-          v10 = v5[v9];
-          v6 = v6 + (double)((signed int)(r_mask & v10) >> (num_b_bits +
-    num_g_bits));
-          ++a2a;
-          v25 = b_mask & v10;
-          v22 = (double)((signed int)(g_mask & v10) >> num_b_bits) + v22;
-          v23 = (double)(signed int)(b_mask & v10) + v23;
-        }
-        v8 = i + 1;
-      }
-      v11 = 1.0 / (double)a2a;
-      a3a = v11;
-      v25 = (int64_t)(a3a * v22);
-      i = (int64_t)(a3a * v23);
-      v12 = 0;
-      a2b = num_b_bits + num_g_bits;
-      while ( 1 )
-      {
-        v13 = v17[v12];
-        a3b = std::abs((int64_t)(int64_t)(v11 * v6) - ((signed int)(r_mask &
-    v17[v12]) >> a2b)); BYTE3(a3b) = std::abs((signed)v25 - ((signed int)(g_mask &
-    v13) >> num_b_bits)) + a3b; v16[v12++] = std::abs((signed)i - (signed)(b_mask &
-    v13)) + BYTE3(a3b); if ( v12 >= 256 ) break;
-      }
-      result = 0;
-      v14 = (char *)&pPaletteManager->field_D1600[42][23][116];
-      v15 = 0;
-      do
-      {
-        if ( (uint8_t)v16[v15] < (signed int)v14 )
-        {
-          v14 = (char *)(uint8_t)v16[v15];
-          result = v15;
-        }
-        ++v15;
-      }
-      while ( v15 < 256 );
-    }*/
-    return result;
-}
-
-//----- (0047CCE2) --------------------------------------------------------
-bool OutdoorLocationTerrain::ZeroLandscape() {
-    this->pHeightmap.fill(0);
-    this->pTilemap.fill(90);
-    this->pAttributemap.fill(0);
-    this->pDmap.fill({0, 0});
-    this->field_12 = 128;
-    this->field_10 = 128;
-    this->field_16 = 7;
-    this->field_14 = 7;
-    this->field_1C = 127;
-    this->field_18 = 127;
-    return true;
-}
-
 //----- (0047CDE2) --------------------------------------------------------
 void OutdoorLocation::CreateDebugLocation() {
     this->level_filename = "blank";
     this->location_filename = "i6.odm";
     this->location_file_description = "MM6 Outdoor v1.00";
 
-    this->pTileTypes[0].tileset = Tileset_Grass;
-    this->pTileTypes[1].tileset = Tileset_Water;
-    this->pTileTypes[2].tileset = Tileset_Badlands;
-    this->pTileTypes[3].tileset = Tileset_RoadGrassCobble;
-    this->LoadBaseTileIds();
+    this->pTerrain.CreateDebugTerrain();
     this->pSpawnPoints.clear();
-    this->pTerrain.ZeroLandscape();
-    this->pTerrain.FillDMap(0, 0, 128, 128);
 
     this->pOMAP.fill(0);
     this->pFaceIDLIST.clear();
@@ -810,9 +463,7 @@ void OutdoorLocation::Release() {
 
     pBModels.clear();
     pSpawnPoints.clear();
-    pTerrain.Release();
     pFaceIDLIST.clear();
-    pTerrainNormals.clear();
 
     // free shader data for outdoor location
     render->ReleaseTerrain();
@@ -931,52 +582,19 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     this->sky_texture = assets->getBitmap(loc_time.sky_texture_name);
 }
 
-int OutdoorLocation::getTileIdByTileMapId(int mapId) {
-    int result;  // eax@2
-    int v3;             // eax@3
-
-    if (mapId >= 90) {
-        v3 = (mapId - 90) / 36;
-        if (v3 && v3 != 1 && v3 != 2) {
-            if (v3 == 3)
-                result = this->pTileTypes[3].uTileID;
-            else
-                result = mapId;
-        } else {
-            result = this->pTileTypes[v3].uTileID;
-        }
-    } else {
-        result = 0;
-    }
-    return result;
-}
-
 TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
-    int v3;  // esi@5
-             //  unsigned int result; // eax@9
-
-    if (sX < 0 || sX > 127 || sY < 0 || sY > 127)
-        return 0;
-
-    v3 = this->pTerrain.pTilemap[sY * 128 + sX];
-    if (v3 < 198) {  // < Tileset_3
-        if (v3 >= 90)
-            v3 = v3 + this->pTileTypes[(v3 - 90) / 36].uTileID -
-                 36 * ((v3 - 90) / 36) - 90;
-    } else {
-      v3 = v3 + this->pTileTypes[3].uTileID - 198;
-    }
+    int tileId = pTerrain.tileId(sX, sY);
 
     if (engine->config->graphics.SeasonsChange.value()) {
         switch (pParty->uCurrentMonth) {
             case 11:
             case 0:
             case 1:            // winter
-                if (v3 >= 90) {  // Tileset_Grass begins at TileID = 90
-                    if (v3 <= 95)  // some grastyl entries
-                        v3 = 348;
-                    else if (v3 <= 113)  // rest of grastyl & all grdrt*
-                        v3 = 348 + (v3 - 96);
+                if (tileId >= 90) {  // Tileset_Grass begins at TileID = 90
+                    if (tileId <= 95)  // some grastyl entries
+                        tileId = 348;
+                    else if (tileId <= 113)  // rest of grastyl & all grdrt*
+                        tileId = 348 + (tileId - 96);
                 }
                 /*switch (v3)
                 {
@@ -992,9 +610,9 @@ TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
             case 8:
             case 9:
             case 10:  // autumn
-                if (v3 >= 90 &&
-                    v3 <= 113)  // just convert all Tileset_Grass to dirt
-                    v3 = 1;
+                if (tileId >= 90 &&
+                    tileId <= 113)  // just convert all Tileset_Grass to dirt
+                    tileId = 1;
                 break;
 
             case 5:
@@ -1009,40 +627,17 @@ TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
         }
     }
 
-    return &pTileTable->tiles[v3];
-}
-
-int OutdoorLocation::getTileMapIdByGrid(signed int gridX, signed int gridY) {
-    if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
-        return 0;
-
-    return this->pTerrain.pTilemap[128 * gridY + gridX];
+    return &pTileTable->tiles[tileId];
 }
 
 TILE_DESC_FLAGS OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
-    if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
-        return 0;
-
-    int v3 = this->pTerrain.pTilemap[gridY * 128 + gridX];
-    if (v3 >= 90)
-        v3 = v3 + this->pTileTypes[(v3 - 90) / 36].uTileID - 36 * ((v3 - 90) / 36) - 90;
-    return pTileTable->tiles[v3].uAttributes;
-}
-
-//----- (0047EE16) --------------------------------------------------------
-int OutdoorLocation::DoGetHeightOnTerrain(signed int sX, signed int sZ) {
-    if (sX < 0 || sX > 127 || sZ < 0 || sZ > 127)
-        return 0;
-
-    return 32 * pTerrain.pHeightmap[sZ * 128 + sX];
+    int tileId = this->pTerrain.tileId(gridX, gridY);
+    return pTileTable->tiles[tileId].uAttributes;
 }
 
 SoundId OutdoorLocation::getSoundIdByGrid(int X_pos, int Y_pos, bool isRunning) {
-    if (!getTileIdByTileMapId(getTileMapIdByGrid(X_pos, Y_pos))) {
-        return isRunning ? SOUND_RunDirt : SOUND_WalkDirt;
-    }
-
-    switch (getTileDescByGrid(X_pos, Y_pos)->tileset) {
+    // TODO(captainurist): this doesn't take seasons into account.
+    switch (pTerrain.tileSet(X_pos, Y_pos)) {
         case Tileset_Grass:
             return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
         case Tileset_Snow:
@@ -1051,6 +646,7 @@ SoundId OutdoorLocation::getSoundIdByGrid(int X_pos, int Y_pos, bool isRunning) 
             return isRunning ? SOUND_RunDesert : SOUND_WalkDesert;
         case Tileset_CooledLava:
             return isRunning ? SOUND_RunCooledLava : SOUND_WalkCooledLava;
+        case Tileset_NULL: // Use dirt sounds for invalid tiles.
         case Tileset_Dirt:
             // Water sounds were used
             return isRunning ? SOUND_RunDirt : SOUND_WalkDirt;
@@ -1239,12 +835,6 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
     //  thisa.pMonsterInfo.uID = 45;
     //  thisa.PrepareSprites(0);
     return 1;
-}
-
-//----- (0047F420) --------------------------------------------------------
-void OutdoorLocation::LoadBaseTileIds() {
-    for (unsigned i = 0; i < 3; ++i)
-        pTileTypes[i].uTileID = pTileTable->tileIdForTileset(pTileTypes[i].tileset, 1);
 }
 
 // TODO: move to actors?
@@ -1505,10 +1095,10 @@ void ODM_GetTerrainNormalAt(float pos_x, float pos_y, Vec3f *out) {
     int grid_pos_y1 = GridCellToWorldPosY(grid_y);
     int grid_pos_y2 = GridCellToWorldPosY(grid_y + 1);
 
-    int x1y1_z = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y);
-    int x2y1_z = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y);
-    int x2y2_z = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y + 1);
-    int x1y2_z = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y + 1);
+    int x1y1_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_y);
+    int x2y1_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_y);
+    int x2y2_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_y + 1);
+    int x1y2_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_y + 1);
 
     Vec3f side1, side2;
 
@@ -2262,11 +1852,6 @@ void SetUnderwaterFog() {
     day_fogrange_3 = 25000;
 }
 
-//----- (00487DA9) --------------------------------------------------------
-void sub_487DA9() {
-    // for (int i = 0; i < 20000; ++i) array_77EC08[i].field_108 = 0;
-}
-
 //----- (004706C6) --------------------------------------------------------
 void UpdateActors_ODM() {
     if (engine->config->debug.NoActors.value())
@@ -2484,19 +2069,12 @@ static void loadAndPrepareODMInternal(MapId mapid, ODMRenderParams *thisa) {
     pOutdoor->PrepareDecorations();
     pOutdoor->ArrangeSpriteObjects();
     pOutdoor->InitalizeActors(mapid);
-    pOutdoor->MessWithLUN();
     pOutdoor->level_filename = mapFilename;
     pWeather->Initialize();
     pCamera3D->_viewYaw = pParty->_viewYaw;
     pCamera3D->_viewPitch = pParty->_viewPitch;
     // pODMRenderParams->RotationToInts();
     pOutdoor->UpdateSunlightVectors();
-
-    for (int i = 0; i < 20000; ++i) {
-        array_77EC08[i].ptr_38 = &SkyBillboard;
-
-        array_77EC08[i].ptr_48 = nullptr;
-    }
 
     MM7Initialization();
 }
@@ -2660,10 +2238,10 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_y) {
     // GridCellToWorldPosY(grid_z + 1);
     // dword_76D564_terrain_cell_world_pos_around_party_z =
     // GridCellToWorldPosY(grid_z + 1);
-    int party_x1z1_y = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z);
-    int party_x2z1_y = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z);
-    int party_x2z2_y = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z + 1);
-    int party_x1z2_y = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z + 1);
+    int party_x1z1_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_z);
+    int party_x2z1_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_z);
+    int party_x2z2_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_z + 1);
+    int party_x1z2_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_z + 1);
     // dword_76D554_terrain_cell_world_pos_around_party_y = v4;
     if (party_x1z1_y == party_x2z1_y && party_x2z1_y == party_x2z2_y &&
         party_x2z2_y == party_x1z2_y)
@@ -2713,10 +2291,10 @@ int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAbov
     int grid_y1 = GridCellToWorldPosY(grid_y),
         grid_y2 = GridCellToWorldPosY(grid_y + 1);
 
-    int z_x1y1 = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y),
-        z_x2y1 = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y),
-        z_x2y2 = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y + 1),
-        z_x1y2 = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y + 1);
+    int z_x1y1 = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_y),
+        z_x2y1 = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_y),
+        z_x2y2 = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_y + 1),
+        z_x1y2 = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_y + 1);
     // v4 = WorldPosToGridCellX(x);
     // v5 = WorldPosToGridCellY(v12);
     // dword_76D538_terrain_cell_world_pos_around_party_x =
@@ -2736,13 +2314,13 @@ int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAbov
     // dword_76D534_terrain_cell_world_pos_around_party_z =
     // GridCellToWorldPosY(v5 + 1);
     // dword_76D518_terrain_cell_world_pos_around_party_y =
-    // pOutdoor->DoGetHeightOnTerrain(v4, v5);
+    // pOutdoor->pTerrain.DoGetHeightOnTerrain(v4, v5);
     // dword_76D51C_terrain_cell_world_pos_around_party_y =
-    // pOutdoor->DoGetHeightOnTerrain(v4 + 1, v5);
+    // pOutdoor->pTerrain.DoGetHeightOnTerrain(v4 + 1, v5);
     // dword_76D520_terrain_cell_world_pos_around_party_y =
-    // pOutdoor->DoGetHeightOnTerrain(v4 + 1, v5 + 1);
+    // pOutdoor->pTerrain.DoGetHeightOnTerrain(v4 + 1, v5 + 1);
     // dword_76D524_terrain_cell_world_pos_around_party_y =
-    // pOutdoor->DoGetHeightOnTerrain(v4, v5 + 1);
+    // pOutdoor->pTerrain.DoGetHeightOnTerrain(v4, v5 + 1);
     *pIsOnWater = false;
     if (pOutdoor->getTileAttribByGrid(grid_x, grid_y) & TILE_DESC_WATER) {
         *pIsOnWater = true;

@@ -50,9 +50,6 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void BltBackToFontFast(int a2, int a3, Recti *pSrcRect) override;
     virtual void BeginScene3D() override;
 
-    virtual void DrawTerrainPolygon(Polygon *a4, bool transparent,
-                                    bool clampAtTextureBorders) override;
-
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
                                 GraphicsImage *texture) override;
@@ -133,9 +130,8 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void DoRenderBillboards_D3D() override;
     void SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1);
 
-    void DrawOutdoorSkyPolygon(Polygon *pSkyPolygon);
-    void DrawIndoorSkyPolygon(signed int uNumVertices,
-                              Polygon *pSkyPolygon);
+    void DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *texture, int dimmingLevel);
+    void DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *texture, int dimmingLevel);
     void DrawForcePerVerts();
 
     void SetFogParametersGL();

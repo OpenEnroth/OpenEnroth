@@ -33,7 +33,6 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/PaletteManager.h"
-#include "Engine/Graphics/Polygon.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
@@ -839,18 +838,14 @@ void OpenGLRenderer::TexturePixelRotateDraw(float u, float v, GraphicsImage *img
 }
 
 // TODO(pskelton): renderbase
-void OpenGLRenderer::DrawIndoorSky(int uNumVertices, int uFaceID) {
+void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     if (pFace->uNumVertices <= 0) return;
 
-    Polygon pSkyPolygon;
-    pSkyPolygon.texture = nullptr;
-    pSkyPolygon.texture = pFace->GetTexture();
-    if (!pSkyPolygon.texture) return;
+    if (!pFace->GetTexture()) return;
 
-    pSkyPolygon.ptr_38 = &SkyBillboard;
-    pSkyPolygon.dimming_level = 0;
-    pSkyPolygon.uNumVertices = pFace->uNumVertices;
+    int dimming_level = 0;
+    unsigned int uNumVertices = pFace->uNumVertices;
 
 
     // TODO(pskelton): repeated maths could be saved when calculating sky planes
@@ -888,22 +883,22 @@ void OpenGLRenderer::DrawIndoorSky(int uNumVertices, int uFaceID) {
     }
 
     // clip accurately to camera
-    pCamera3D->ClipFaceToFrustum(array_507D30, &pSkyPolygon.uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum.data(), 4, 0, 0);
-    if (!pSkyPolygon.uNumVertices) return;
+    pCamera3D->ClipFaceToFrustum(array_507D30, &uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum.data(), 4, 0, 0);
+    if (!uNumVertices) return;
 
-    pCamera3D->ViewTransform(VertexRenderList, pSkyPolygon.uNumVertices);
-    pCamera3D->Project(VertexRenderList, pSkyPolygon.uNumVertices, false);
+    pCamera3D->ViewTransform(VertexRenderList, uNumVertices);
+    pCamera3D->Project(VertexRenderList, uNumVertices, false);
 
     unsigned _507D30_idx = 0;
-    for (; _507D30_idx < pSkyPolygon.uNumVertices; _507D30_idx++) {
+    for (; _507D30_idx < uNumVertices; _507D30_idx++) {
         // outbound screen x dist
         float x_dist = inv_viewplanedist * (pBLVRenderParams->uViewportCenterX - VertexRenderList[_507D30_idx].vWorldViewProjX);
         // outbound screen y dist
         float y_dist = inv_viewplanedist * (blv_horizon_height_offset - VertexRenderList[_507D30_idx].vWorldViewProjY);
 
         // rotate vectors to cam facing
-        float skyfinalleft = (pSkyPolygon.ptr_38->CamVecLeft_X * x_dist) + (pSkyPolygon.ptr_38->CamVecLeft_Z * y_dist) + pSkyPolygon.ptr_38->CamVecLeft_Y;
-        float skyfinalfront = (pSkyPolygon.ptr_38->CamVecFront_X * x_dist) + (pSkyPolygon.ptr_38->CamVecFront_Z * y_dist) + pSkyPolygon.ptr_38->CamVecFront_Y;
+        float skyfinalleft = (SkyBillboard.CamVecLeft_X * x_dist) + (SkyBillboard.CamVecLeft_Z * y_dist) + SkyBillboard.CamVecLeft_Y;
+        float skyfinalfront = (SkyBillboard.CamVecFront_X * x_dist) + (SkyBillboard.CamVecFront_Z * y_dist) + SkyBillboard.CamVecFront_Y;
 
         // pitch rotate sky to get top projection
         float newX = v_18x + v_18y + (v_18z * y_dist);
@@ -911,32 +906,32 @@ void OpenGLRenderer::DrawIndoorSky(int uNumVertices, int uFaceID) {
 
         // offset tex coords
         float texoffset_U = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalleft * worldviewdepth) / 16.0f);
-        VertexRenderList[_507D30_idx].u = texoffset_U / (pSkyPolygon.texture->width());
+        VertexRenderList[_507D30_idx].u = texoffset_U / (pFace->GetTexture()->width());
         float texoffset_V = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalfront * worldviewdepth) / 16.0f);
-        VertexRenderList[_507D30_idx].v = texoffset_V / (pSkyPolygon.texture->height());
+        VertexRenderList[_507D30_idx].v = texoffset_V / (pFace->GetTexture()->height());
 
         // this basically acts as texture perspective correction
         VertexRenderList[_507D30_idx]._rhw = worldviewdepth;
     }
 
     // no clipped polygon so draw and return??
-    if (_507D30_idx >= pSkyPolygon.uNumVertices) {
-        DrawIndoorSkyPolygon(pSkyPolygon.uNumVertices, &pSkyPolygon);
+    if (_507D30_idx >= uNumVertices) {
+        DrawIndoorSkyPolygon(uNumVertices, pFace->GetTexture(), dimming_level);
         return;
     }
 }
 
-void OpenGLRenderer::DrawIndoorSkyPolygon(signed int uNumVertices, Polygon *pSkyPolygon) {
-    int texid = pSkyPolygon->texture->renderId().value();
+void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *texture, int dimmingLevel) {
+    int texid = texture->renderId().value();
 
-    Colorf uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
+    Colorf uTint = GetActorTintColor(dimmingLevel, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
     float scrspace{ pCamera3D->GetFarClip() };
 
     float oneon = 1.0f / (pCamera3D->GetNearClip() * 2.0f);
     float oneof = 1.0f / (pCamera3D->GetFarClip());
 
     // load up poly
-    for (int z = 0; z < (pSkyPolygon->uNumVertices - 2); z++) {
+    for (int z = 0; z < (uNumVertices - 2); z++) {
         // 123, 134, 145, 156..
         forcepersverts *thisvert = &forceperstore[forceperstorecnt];
         float oneoz = 1.0f / VertexRenderList[0].vWorldViewPosition.x;
@@ -1535,12 +1530,12 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 }
 
                 // next calculate all vertices vertices
-                unsigned norm_idx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 2 /*+ 1*/];  // 2 is top tri // 3 is bottom
-                unsigned bottnormidx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 3];
-                assert(norm_idx < pTerrainNormals.size());
-                assert(bottnormidx < pTerrainNormals.size());
-                Vec3f *norm = &pTerrainNormals[norm_idx];
-                Vec3f *norm2 = &pTerrainNormals[bottnormidx];
+                unsigned norm_idx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 2 /*+ 1*/];  // 2 is top tri // 3 is bottom
+                unsigned bottnormidx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 3];
+                assert(norm_idx < pOutdoor->pTerrain.pTerrainNormals.size());
+                assert(bottnormidx < pOutdoor->pTerrain.pTerrainNormals.size());
+                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[norm_idx];
+                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[bottnormidx];
 
                 // calc each vertex
                 // [0] - x,y        n1
@@ -1953,40 +1948,37 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     continue;
 
                 // splat hits this square of terrain
-                Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
-                pTilePolygon->flags = pOutdoor->getTileAttribByGrid(loopx, loopy);
+                TILE_DESC_FLAGS terrainFlags = pOutdoor->getTileAttribByGrid(loopx, loopy);
 
-                unsigned norm_idx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
-                unsigned bottnormidx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
-                assert(norm_idx < pTerrainNormals.size());
-                assert(bottnormidx < pTerrainNormals.size());
-                Vec3f *norm = &pTerrainNormals[norm_idx];
-                Vec3f *norm2 = &pTerrainNormals[bottnormidx];
+                unsigned norm_idx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
+                unsigned bottnormidx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
+                assert(norm_idx < pOutdoor->pTerrain.pTerrainNormals.size());
+                assert(bottnormidx < pOutdoor->pTerrain.pTerrainNormals.size());
+                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[norm_idx];
+                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[bottnormidx];
 
                 float Light_tile_dist = 0.0;
 
                 // top tri
                 float _f1 = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
-                pTilePolygon->dimming_level = 20.0f - floorf(20.0f * _f1 + 0.5f);
-                pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
+                int dimming_level = std::clamp(static_cast<int>(20.0f - floorf(20.0f * _f1 + 0.5f)), 0, 31);
 
-                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon->flags, norm, &Light_tile_dist, VertexRenderList, i);
+                decal_builder->ApplyBloodSplatToTerrain(terrainFlags, norm, &Light_tile_dist, VertexRenderList, i);
                 Planef plane;
                 plane.normal = *norm;
                 plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)
-                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, plane, 3, VertexRenderList, 0, -1);
+                    decal_builder->BuildAndApplyDecals(31 - dimming_level, LocationTerrain, plane, 3, VertexRenderList, 0, -1);
 
                 //bottom tri
                 float _f = norm2->x * pOutdoor->vSunlight.x + norm2->y * pOutdoor->vSunlight.y + norm2->z * pOutdoor->vSunlight.z;
-                pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
-                pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
+                dimming_level = std::clamp(static_cast<int>(20.0 - floorf(20.0 * _f + 0.5f)), 0, 31);
 
-                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon->flags, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
+                decal_builder->ApplyBloodSplatToTerrain(terrainFlags, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
                 plane.normal = *norm2;
                 plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)
-                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, plane, 3, (VertexRenderList + 3), 0, -1);
+                    decal_builder->BuildAndApplyDecals(31 - dimming_level, LocationTerrain, plane, 3, (VertexRenderList + 3), 0, -1);
             }
         }
     }
@@ -1996,9 +1988,6 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
     // end shder version
 }
-
-// TODO(pskelton): drop - this is now obselete with shader terrain drawing
-void OpenGLRenderer::DrawTerrainPolygon(Polygon *poly, bool transparent, bool clampAtTextureBorders) { return; }
 
 // TODO(pskelton): renderbase
 void OpenGLRenderer::DrawOutdoorSky() {
@@ -2017,11 +2006,6 @@ void OpenGLRenderer::DrawOutdoorSky() {
         (depth_to_far_clip + 0.0000001) *
         (height_to_far_clip - (double)pCamera3D->vCameraPos.z));
 
-    struct Polygon pSkyPolygon;
-    pSkyPolygon.texture = nullptr;
-    pSkyPolygon.ptr_38 = &SkyBillboard;
-
-
     // if ( pParty->uCurrentHour > 20 || pParty->uCurrentHour < 5 )
     // pSkyPolygon.uTileBitmapID = pOutdoor->New_SKY_NIGHT_ID;
     // else
@@ -2032,10 +2016,9 @@ void OpenGLRenderer::DrawOutdoorSky() {
     if (!pOutdoor->sky_texture)
         pOutdoor->sky_texture = assets->getBitmap("plansky3"); // TODO(pskelton): do we need this?
 
-    pSkyPolygon.texture = pOutdoor->sky_texture;
-    if (pSkyPolygon.texture) {
-        pSkyPolygon.dimming_level = (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)? 31 : 0;
-        pSkyPolygon.uNumVertices = 4;
+    if (pOutdoor->sky_texture) {
+        int dimming_level = (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)? 31 : 0;
+        int uNumVertices = 4;
 
         // centering(центруем)-----------------------------------------------------------------
         // plane of sky polygon rotation vector - pitch rotation around y
@@ -2069,15 +2052,15 @@ void OpenGLRenderer::DrawOutdoorSky() {
 
         float widthperpixel = 1 / pCamera3D->ViewPlaneDistPixels;
 
-        for (unsigned i = 0; i < pSkyPolygon.uNumVertices; ++i) {
+        for (unsigned i = 0; i < uNumVertices; ++i) {
             // outbound screen X dist
             float x_dist = widthperpixel * (pViewport->uScreenCenterX - VertexRenderList[i].vWorldViewProjX);
             // outbound screen y dist
             float y_dist = widthperpixel * (horizon_height_offset - VertexRenderList[i].vWorldViewProjY);
 
             // rotate vectors to cam facing
-            float skyfinalleft = (pSkyPolygon.ptr_38->CamVecLeft_X * x_dist) + (pSkyPolygon.ptr_38->CamVecLeft_Z * y_dist) + pSkyPolygon.ptr_38->CamVecLeft_Y;
-            float skyfinalfront = (pSkyPolygon.ptr_38->CamVecFront_X * x_dist) + (pSkyPolygon.ptr_38->CamVecFront_Z * y_dist) + pSkyPolygon.ptr_38->CamVecFront_Y;
+            float skyfinalleft = (SkyBillboard.CamVecLeft_X * x_dist) + (SkyBillboard.CamVecLeft_Z * y_dist) + SkyBillboard.CamVecLeft_Y;
+            float skyfinalfront = (SkyBillboard.CamVecFront_X * x_dist) + (SkyBillboard.CamVecFront_Z * y_dist) + SkyBillboard.CamVecFront_Y;
 
             // pitch rotate sky to get top
             float top_y_proj = v18x + v18y + v18z * y_dist;
@@ -2088,9 +2071,9 @@ void OpenGLRenderer::DrawOutdoorSky() {
 
             // offset tex coords
             float texoffset_U = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalleft * worldviewdepth));
-            VertexRenderList[i].u = texoffset_U / ((float) pSkyPolygon.texture->width());
+            VertexRenderList[i].u = texoffset_U / ((float) pOutdoor->sky_texture->width());
             float texoffset_V = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalfront * worldviewdepth));
-            VertexRenderList[i].v = texoffset_V / ((float) pSkyPolygon.texture->height());
+            VertexRenderList[i].v = texoffset_V / ((float) pOutdoor->sky_texture->height());
 
             VertexRenderList[i].vWorldViewPosition.x = pCamera3D->GetFarClip();
 
@@ -2122,15 +2105,14 @@ void OpenGLRenderer::DrawOutdoorSky() {
 
         _set_ortho_projection(1);
         _set_ortho_modelview();
-        DrawOutdoorSkyPolygon(&pSkyPolygon);
+        DrawOutdoorSkyPolygon(uNumVertices, pOutdoor->sky_texture, dimming_level);
     }
 }
 
 
 
 //----- (004A2DA3) --------------------------------------------------------
-void OpenGLRenderer::DrawOutdoorSkyPolygon(Polygon *pSkyPolygon) {
-    auto texture = pSkyPolygon->texture;
+void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *texture, int dimmingLevel) {
     auto texid = texture->renderId().value();
 
     static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
@@ -2140,13 +2122,13 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(Polygon *pSkyPolygon) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    Colorf uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
+    Colorf uTint = GetActorTintColor(dimmingLevel, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
     float scrspace{ pCamera3D->GetFarClip() };
 
 
 
     // load up poly
-    for (int z = 0; z < (pSkyPolygon->uNumVertices - 2); z++) {
+    for (int z = 0; z < (numVertices - 2); z++) {
         // 123, 134, 145, 156..
         forcepersverts *thisvert = &forceperstore[forceperstorecnt];
 
@@ -3805,19 +3787,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                 continue;
             }
 
-            Polygon *poly = &array_77EC08[pODMRenderParams->uNumPolygons];
-            poly->flags = 0;
-            poly->field_32 = 0;
-
-            // if (v53 == face.uNumVertices) poly->field_32 |= 1;
-            poly->pODMFace = &face;
-            poly->uNumVertices = face.uNumVertices;
-            poly->field_59 = 5;
-
-
             float _f1 = face.facePlane.normal.x * pOutdoor->vSunlight.x + face.facePlane.normal.y * pOutdoor->vSunlight.y + face.facePlane.normal.z * pOutdoor->vSunlight.z;
-            poly->dimming_level = 20.0 - floorf(20.0 * _f1 + 0.5f);
-            poly->dimming_level = std::clamp((int)poly->dimming_level, 0, 31);
+            int dimming_level = std::clamp(static_cast<int>(20.0 - floorf(20.0 * _f1 + 0.5f)), 0, 31);
 
             for (unsigned vertex_id = 1; vertex_id <= face.uNumVertices; vertex_id++) {
                 array_73D150[vertex_id - 1].vWorldPosition.x =
@@ -3836,7 +3807,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             decal_builder->ApplyBloodSplat_OutdoorFace(&face);
             if (decal_builder->uNumSplatsThisFace > 0) {
                 decal_builder->BuildAndApplyDecals(
-                    31 - poly->dimming_level, LocationBuildings,
+                    31 - dimming_level, LocationBuildings,
                     face.facePlane,
                     face.uNumVertices, VertexRenderList, 0, -1);
             }

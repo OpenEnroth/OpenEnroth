@@ -31,4 +31,4 @@ class EventInterpreter {
 };
 
 void spawnMonsters(int16_t typeindex, int16_t level, int count,
-    Vec3f pos, int group, unsigned int uUniqueName);
+    Vec3f pos, int group, int uUniqueName);
