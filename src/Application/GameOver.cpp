@@ -19,7 +19,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Library/Image/PCX.h"
+#include "Library/Image/Pcx.h"
 
 
 //----- (004BF91E) --------------------------------------------------------

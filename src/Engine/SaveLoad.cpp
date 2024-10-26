@@ -31,7 +31,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 #include "Library/Snapshots/SnapshotSerialization.h"
-#include "Library/Image/PCX.h"
+#include "Library/Image/Pcx.h"
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Lod/LodWriter.h"
