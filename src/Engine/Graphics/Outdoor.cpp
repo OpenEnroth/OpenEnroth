@@ -1082,10 +1082,10 @@ void ODM_GetTerrainNormalAt(const Vec3f &pos, Vec3f *out) {
     int grid_pos_y1 = GridCellToWorldPosY(gridPos.y);
     int grid_pos_y2 = GridCellToWorldPosY(gridPos.y + 1);
 
-    int x1y1_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x, gridPos.y);
-    int x2y1_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x + 1, gridPos.y);
-    int x2y2_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x + 1, gridPos.y + 1);
-    int x1y2_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x, gridPos.y + 1);
+    int x1y1_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos);
+    int x2y1_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos + Vec2i(1, 0));
+    int x2y2_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos + Vec2i(1, 1));
+    int x1y2_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos + Vec2i(0, 1));
 
     Vec3f side1, side2;
 
@@ -2220,10 +2220,10 @@ bool IsTerrainSlopeTooHigh(const Vec3f &pos) {
     // GridCellToWorldPosY(grid_z + 1);
     // dword_76D564_terrain_cell_world_pos_around_party_z =
     // GridCellToWorldPosY(grid_z + 1);
-    int party_x1z1_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x, gridPos.y);
-    int party_x2z1_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x + 1, gridPos.y);
-    int party_x2z2_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x + 1, gridPos.y + 1);
-    int party_x1z2_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x, gridPos.y + 1);
+    int party_x1z1_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos);
+    int party_x2z1_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos + Vec2i(1, 0));
+    int party_x2z2_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos + Vec2i(1, 1));
+    int party_x1z2_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos + Vec2i(0, 1));
     // dword_76D554_terrain_cell_world_pos_around_party_y = v4;
     if (party_x1z1_y == party_x2z1_y && party_x2z1_y == party_x2z2_y &&
         party_x2z2_y == party_x1z2_y)
@@ -2273,10 +2273,10 @@ int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater, int bFloat
     int grid_y1 = GridCellToWorldPosY(gridPos.y),
         grid_y2 = GridCellToWorldPosY(gridPos.y + 1);
 
-    int z_x1y1 = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x, gridPos.y),
-        z_x2y1 = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x + 1, gridPos.y),
-        z_x2y2 = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x + 1, gridPos.y + 1),
-        z_x1y2 = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos.x, gridPos.y + 1);
+    int z_x1y1 = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos),
+        z_x2y1 = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos + Vec2i(1, 0)),
+        z_x2y2 = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos + Vec2i(1, 1)),
+        z_x1y2 = pOutdoor->pTerrain.DoGetHeightOnTerrain(gridPos + Vec2i(0, 1));
     // v4 = WorldPosToGridCellX(x);
     // v5 = WorldPosToGridCellY(v12);
     // dword_76D538_terrain_cell_world_pos_around_party_x =

@@ -17,7 +17,7 @@ struct OutdoorTerrain {
     void LoadBaseTileIds();
     void CreateDebugTerrain();
 
-    int DoGetHeightOnTerrain(int x, int y);
+    int DoGetHeightOnTerrain(Vec2i gridPos);
 
     /**
      * @param x                         Grid x.

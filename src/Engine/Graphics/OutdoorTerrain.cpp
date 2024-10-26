@@ -27,11 +27,11 @@ void OutdoorTerrain::CreateDebugTerrain() {
 
 //----- (00488F2E) --------------------------------------------------------
 //----- (0047EE16) --------------------------------------------------------
-int OutdoorTerrain::DoGetHeightOnTerrain(int x, int y) {
-    if (x < 0 || x > 127 || y < 0 || y > 127)
+int OutdoorTerrain::DoGetHeightOnTerrain(Vec2i gridPos) {
+    if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return 0;
 
-    return 32 * pHeightmap[y * 128 + x];
+    return 32 * pHeightmap[gridPos.y * 128 + gridPos.x];
 }
 
 int OutdoorTerrain::tileId(int x, int y) const {
