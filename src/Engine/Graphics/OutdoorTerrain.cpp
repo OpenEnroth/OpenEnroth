@@ -15,3 +15,12 @@ void OutdoorTerrain::LoadBaseTileIds() {
     for (unsigned i = 0; i < 3; ++i)
         pTileTypes[i].uTileID = pTileTable->tileIdForTileset(pTileTypes[i].tileset, 1);
 }
+
+void OutdoorTerrain::CreateDebugTerrain() {
+    ZeroLandscape();
+    pTileTypes[0].tileset = Tileset_Grass;
+    pTileTypes[1].tileset = Tileset_Water;
+    pTileTypes[2].tileset = Tileset_Badlands;
+    pTileTypes[3].tileset = Tileset_RoadGrassCobble;
+    LoadBaseTileIds();
+}

@@ -465,13 +465,8 @@ void OutdoorLocation::CreateDebugLocation() {
     this->location_filename = "i6.odm";
     this->location_file_description = "MM6 Outdoor v1.00";
 
-    this->pTerrain.pTileTypes[0].tileset = Tileset_Grass;
-    this->pTerrain.pTileTypes[1].tileset = Tileset_Water;
-    this->pTerrain.pTileTypes[2].tileset = Tileset_Badlands;
-    this->pTerrain.pTileTypes[3].tileset = Tileset_RoadGrassCobble;
-    this->pTerrain.LoadBaseTileIds();
+    this->pTerrain.CreateDebugTerrain();
     this->pSpawnPoints.clear();
-    this->pTerrain.ZeroLandscape();
 
     this->pOMAP.fill(0);
     this->pFaceIDLIST.clear();

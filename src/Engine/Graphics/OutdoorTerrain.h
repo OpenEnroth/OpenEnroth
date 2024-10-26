@@ -12,6 +12,7 @@ struct OutdoorLocationTileType {
 struct OutdoorTerrain {
     bool ZeroLandscape();
     void LoadBaseTileIds();
+    void CreateDebugTerrain();
 
     std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3] is road tileset.
     std::array<uint8_t, 128 * 128> pHeightmap = {};
