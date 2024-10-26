@@ -171,11 +171,6 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
 
     //}
 
-    pODMRenderParams->uMapGridCellX = WorldPosToGridCellX(pParty->pos.x);
-    pODMRenderParams->uMapGridCellY = WorldPosToGridCellY(pParty->pos.y);
-
-    assert(pODMRenderParams->uMapGridCellX <= 127 && pODMRenderParams->uMapGridCellY <= 127);
-
     if (pParty->uCurrentMinute != pOutdoor->uLastSunlightUpdateMinute)
         pOutdoor->UpdateSunlightVectors();
 
