@@ -25,7 +25,6 @@ set(ENGINE_TABLES_HEADERS
         IconFrameTable.h
         PortraitFrameTable.h
         HistoryTable.h
-        TileEnums.h
         TileTable.h
         HouseTable.h
         AwardTable.h
