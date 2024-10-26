@@ -1074,8 +1074,8 @@ float ODM_GetFloorLevel(const Vec3f &pos, int unused, bool *pIsOnWater,
 // for a right-handed system, that would be an inverse normal
 // out as normalised float vec
 //----- (0046DCC8) --------------------------------------------------------
-void ODM_GetTerrainNormalAt(float pos_x, float pos_y, Vec3f *out) {
-    Vec2i gridPos = WorldPosToGrid(Vec3f(pos_x, pos_y, 0));
+void ODM_GetTerrainNormalAt(const Vec3f &pos, Vec3f *out) {
+    Vec2i gridPos = WorldPosToGrid(pos);
 
     int grid_pos_x1 = GridCellToWorldPosX(gridPos.x);
     int grid_pos_x2 = GridCellToWorldPosX(gridPos.x + 1);
@@ -1091,8 +1091,8 @@ void ODM_GetTerrainNormalAt(float pos_x, float pos_y, Vec3f *out) {
 
     //float side1_dx, side1_dz, side1_dy, side2_dx, side2_dz, side2_dy;
 
-    int dx = std::abs(pos_x - grid_pos_x1);
-    int dy = std::abs(grid_pos_y1 - pos_y);
+    int dx = std::abs(pos.x - grid_pos_x1);
+    int dy = std::abs(grid_pos_y1 - pos.y);
     if (dy >= dx) {
         side2 = Vec3f(grid_pos_x2 - grid_pos_x1, 0.0f, x2y2_z - x1y2_z);
         side1 = Vec3f(0.0f, grid_pos_y1 - grid_pos_y2, x1y1_z - x1y2_z);
@@ -1536,7 +1536,7 @@ void ODM_ProcessPartyActions() {
             partyNewPos.z = currentGroundLevel;
             if (partyAtHighSlope) {
                 Vec3f v98;
-                ODM_GetTerrainNormalAt(partyNewPos.x, partyNewPos.y, &v98);
+                ODM_GetTerrainNormalAt(partyNewPos, &v98);
                 partyInputSpeed.z += (8 * -(pEventTimer->dt().ticks() * (int)GetGravityStrength()));
                 float dotp = std::abs(dot(partyInputSpeed, v98));
                 partyInputSpeed += dotp * v98;
@@ -1918,7 +1918,7 @@ void UpdateActors_ODM() {
             if (Slope_High && !uIsAboveFloor && Actor_On_Terrain) {
                 Vec3f Terrain_Norm;
                 pActors[Actor_ITR].pos.z = Floor_Level;
-                ODM_GetTerrainNormalAt(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y, &Terrain_Norm);
+                ODM_GetTerrainNormalAt(pActors[Actor_ITR].pos, &Terrain_Norm);
                 int Gravity = GetGravityStrength();
 
                 pActors[Actor_ITR].velocity.z += -16 * pEventTimer->dt().ticks() * Gravity; //TODO(pskelton): common gravity code extract

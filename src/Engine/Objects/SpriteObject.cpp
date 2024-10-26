@@ -163,7 +163,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             pSpriteObjects[uLayingItemID].vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
         } else if (isHighSlope) {
             Vec3f normf;
-            ODM_GetTerrainNormalAt(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, &normf);
+            ODM_GetTerrainNormalAt(pSpriteObjects[uLayingItemID].vPosition, &normf);
             pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
             pSpriteObjects[uLayingItemID].vVelocity.z -= (pEventTimer->dt().ticks() * GetGravityStrength());
 
