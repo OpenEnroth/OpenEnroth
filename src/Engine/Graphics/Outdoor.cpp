@@ -188,9 +188,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     engine->StackPartyTorchLight();
 
     // engine->PrepareBloodsplats(); // not used?
-    UpdateDiscoveredArea(WorldPosToGridCellX(pParty->pos.x),
-                            WorldPosToGridCellY(pParty->pos.y),
-                            1);
+    UpdateDiscoveredArea(WorldPosToGrid(pParty->pos));
 
     uNumDecorationsDrawnThisFrame = 0;
     uNumSpritesDrawnThisFrame = 0;
@@ -679,11 +677,11 @@ SoundId OutdoorLocation::getSoundIdByGrid(int X_pos, int Y_pos, bool isRunning) 
 }
 
 //----- (0047EF60) --------------------------------------------------------
-int OutdoorLocation::UpdateDiscoveredArea(int X_grid_pos, int Y_grid_poa, int unused) {
+int OutdoorLocation::UpdateDiscoveredArea(Vec2i gridPos) {
     for (int i = -10; i < 10; i++) {
-        int currYpos = Y_grid_poa + i - 20;
+        int currYpos = gridPos.y + i - 20;
         for (int j = -10; j < 10; j++) {
-            int currXpos = X_grid_pos + j - 20;
+            int currXpos = gridPos.x + j - 20;
             int distanceSquared = i * i + j * j;
             if (distanceSquared <= 100 && currYpos >= 0 && currYpos <= 87 && currXpos >= 0 && currXpos <= 87) {
                 unsigned char v13 = 1 << (7 - currXpos % 8);
