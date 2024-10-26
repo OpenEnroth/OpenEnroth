@@ -60,4 +60,3 @@ struct Polygon {
     char field_10B = 0;
 };
 
-extern std::array<struct Polygon, 2000 + 18000> array_77EC08;

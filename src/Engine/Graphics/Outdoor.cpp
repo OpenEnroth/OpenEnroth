@@ -61,7 +61,6 @@ OutdoorLocation *pOutdoor = nullptr;
 ODMRenderParams *pODMRenderParams = nullptr;
 
 SkyBillboardStruct SkyBillboard;  // skybox planes
-std::array<struct Polygon, 2000 + 18000> array_77EC08;
 
 static constexpr IndexedArray<std::array<MapId, 4>, MAP_EMERALD_ISLAND, MAP_SHOALS> footTravelDestinations = {
     // from                      north                south                east                 west
@@ -1853,11 +1852,6 @@ void SetUnderwaterFog() {
     day_fogrange_3 = 25000;
 }
 
-//----- (00487DA9) --------------------------------------------------------
-void sub_487DA9() {
-    // for (int i = 0; i < 20000; ++i) array_77EC08[i].field_108 = 0;
-}
-
 //----- (004706C6) --------------------------------------------------------
 void UpdateActors_ODM() {
     if (engine->config->debug.NoActors.value())
@@ -2081,12 +2075,6 @@ static void loadAndPrepareODMInternal(MapId mapid, ODMRenderParams *thisa) {
     pCamera3D->_viewPitch = pParty->_viewPitch;
     // pODMRenderParams->RotationToInts();
     pOutdoor->UpdateSunlightVectors();
-
-    for (int i = 0; i < 20000; ++i) {
-        array_77EC08[i].ptr_38 = &SkyBillboard;
-
-        array_77EC08[i].ptr_48 = nullptr;
-    }
 
     MM7Initialization();
 }

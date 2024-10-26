@@ -137,7 +137,6 @@ void ODM_GetTerrainNormalAt(float pos_x, float pos_y, Vec3f *out);
 void UpdateActors_ODM();
 void ODM_ProcessPartyActions();
 void SetUnderwaterFog();
-void sub_487DA9();
 
 /**
  * @offset 0x4610AA
