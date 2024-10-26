@@ -35,7 +35,6 @@ struct DMap {
 
 struct OutdoorLocationTerrain {
     void FillDMap(int X, int Y, int W, int Z);
-    int _47CB57(unsigned char *pixels_8bit, int a2, int num_pixels);
     bool ZeroLandscape();
 
     std::array<uint8_t, 128 * 128> pHeightmap{};
