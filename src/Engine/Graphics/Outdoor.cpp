@@ -272,24 +272,6 @@ TileData *OutdoorLocation::getTileDescByPos(int sX, int sY) {
     return this->getTileDescByGrid(gridX, gridY);
 }
 
-//----- (00488F2E) --------------------------------------------------------
-int OutdoorLocation::GetHeightOnTerrain(int sX, int sZ) {
-/* Функция предоставляет возможность перемещать камеру таким образом, чтобы она
-имитировала ходьбу по ландшафту. То есть нам надо менять высоту камеры
-(координату Y) в зависимости от того, в каком месте ландшафта мы находимся. Для
-этого мы сначала должны определить по координатам X и Z камеры квадрат ландшафта
-в котором мы находимся. Все это делает функция Terrain::getHeight; в своих
-параметрах она получает координаты X и Z камеры и возвращает высоту,
-на которой должна быть расположена камера, чтобы она оказалась над ландшафтом.*/
-    int result;  // eax@5
-
-    if (sX < 0 || sX > 127 || sZ < 0 || sZ > 127)
-        result = 0;
-    else
-        result = pTerrain.DoGetHeightOnTerrain(sX, sZ);
-    return result;
-}
-
 //----- (00488F5C) --------------------------------------------------------
 bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
                                  int respawn_interval_days,

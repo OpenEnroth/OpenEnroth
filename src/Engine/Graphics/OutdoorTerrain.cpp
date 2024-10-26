@@ -25,6 +25,7 @@ void OutdoorTerrain::CreateDebugTerrain() {
     LoadBaseTileIds();
 }
 
+//----- (00488F2E) --------------------------------------------------------
 //----- (0047EE16) --------------------------------------------------------
 int OutdoorTerrain::DoGetHeightOnTerrain(int x, int y) {
     if (x < 0 || x > 127 || y < 0 || y > 127)

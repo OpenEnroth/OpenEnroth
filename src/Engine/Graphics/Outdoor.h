@@ -75,7 +75,6 @@ struct OutdoorLocation {
      * @offset 0x47ED08
      */
     TileData *getTileDescByGrid(int uX, int uZ);
-    int GetHeightOnTerrain(int sX, int sZ);
     bool Initialize(std::string_view filename, int days_played,
                     int respawn_interval_days,
                     bool * outdoors_was_respawned);
