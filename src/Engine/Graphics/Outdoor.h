@@ -58,7 +58,7 @@ struct OutdoorLocation {
     /**
      * @offset 0x488EB1
      */
-    TILE_DESC_FLAGS getTileAttribByPos(int sX, int sY);
+    TILE_DESC_FLAGS getTileAttribByPos(const Vec3f &pos);
 
     /**
      * @offset 0x488EEF

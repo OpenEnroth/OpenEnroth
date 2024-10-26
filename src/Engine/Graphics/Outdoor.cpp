@@ -249,8 +249,8 @@ double OutdoorLocation::GetFogDensityByTime() {
     }
 }
 
-TILE_DESC_FLAGS OutdoorLocation::getTileAttribByPos(int sX, int sY) {
-    Vec2i gridPos = WorldPosToGrid(Vec3f(sX, sY, 0));
+TILE_DESC_FLAGS OutdoorLocation::getTileAttribByPos(const Vec3f &pos) {
+    Vec2i gridPos = WorldPosToGrid(pos);
     return getTileAttribByGrid(gridPos.x, gridPos.y);
 }
 
@@ -1958,9 +1958,8 @@ void UpdateActors_ODM() {
         if (!Water_Walk) {
             // tile on (1) tile heading (2)
             bool tile1IsLand, tile2IsLand;
-            tile1IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y) & TILE_DESC_WATER);
-            tile2IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos.x + pActors[Actor_ITR].velocity.x,
-                                                         pActors[Actor_ITR].pos.y + pActors[Actor_ITR].velocity.y) & TILE_DESC_WATER);
+            tile1IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos) & TILE_DESC_WATER);
+            tile2IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos + pActors[Actor_ITR].velocity) & TILE_DESC_WATER);
             if (!uIsFlying && tile1IsLand && !tile2IsLand) {
                 // approaching water - turn away
                 if (pActors[Actor_ITR].CanAct()) {
