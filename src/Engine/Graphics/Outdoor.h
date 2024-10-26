@@ -117,7 +117,6 @@ struct OutdoorLocation {
      * @offset 0x48902E
      */
     MapId getTravelDestination(int partyX, int partyY);
-    void MessWithLUN();
     void UpdateSunlightVectors();
     void UpdateFog();
     int getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos);
@@ -159,37 +158,7 @@ struct OutdoorLocation {
                                           // end it's 11 * 8 bits = 88 values
     std::array<std::array<uint8_t, 11>, 88> uPartiallyRevealedCellOnMap;  // [968]
     int max_terrain_dimming_level;
-    unsigned int pSpriteIDs_LUN[8];
-    unsigned int uSpriteID_LUNFULL;
-    int field_CE8;
-    unsigned int uSpriteID_LUN3_4_cp;
-    int field_CF0;
-    unsigned int uSpriteID_LUN1_2_cp;
-    int field_CF8;
-    unsigned int uSpriteID_LUN1_4_cp;
-    int field_D00;
-    uint16_t uSpriteID_LUN_SUN;
-    int16_t field_D06;
-    int field_D08;
-    int field_D0C;
-    int field_D10;
-    int field_D14;
-    int field_D24;
-    int field_D28;
-    int field_D2C;
     Vec3f vSunlight;
-    unsigned int *field_D3C;
-    int field_D40;
-    int field_D44;
-    int field_D48;
-    int field_D4C;
-    float field_D50;
-    int field_D54;
-    int field_D58;
-    int field_D5C;
-    int field_D60;
-    int field_D64;
-    char field_D68[111900];
     float fFogDensity;
     int uLastSunlightUpdateMinute;
 

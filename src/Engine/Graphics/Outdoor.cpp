@@ -369,45 +369,6 @@ MapId OutdoorLocation::getTravelDestination(int partyX, int partyY) {
     return destinationMap;
 }
 
-//----- (0048917E) --------------------------------------------------------
-void OutdoorLocation::MessWithLUN() {
-    this->pSpriteIDs_LUN[0] = -1;
-    this->pSpriteIDs_LUN[1] = 0;
-    this->pSpriteIDs_LUN[2] = pSpriteFrameTable->FastFindSprite("LUN1-4");
-    this->pSpriteIDs_LUN[3] = 0;
-    this->pSpriteIDs_LUN[4] = pSpriteFrameTable->FastFindSprite("LUN1-2");
-    this->pSpriteIDs_LUN[5] = 0;
-    this->pSpriteIDs_LUN[6] = pSpriteFrameTable->FastFindSprite("LUN3-4");
-    this->pSpriteIDs_LUN[7] = 0;
-    this->uSpriteID_LUNFULL = pSpriteFrameTable->FastFindSprite("LUNFULL");
-    this->uSpriteID_LUN1_2_cp = pSpriteFrameTable->FastFindSprite("LUN1-2");
-    this->uSpriteID_LUN1_4_cp = pSpriteFrameTable->FastFindSprite("LUN1-4");
-    this->uSpriteID_LUN3_4_cp = pSpriteFrameTable->FastFindSprite("LUN3-4");
-    this->field_D60 = -1;
-    this->field_CF0 = 4;
-    this->field_CF8 = 4;
-    this->field_D00 = 4;
-    this->field_CE8 = 0;
-    this->field_D3C = this->pSpriteIDs_LUN;
-    this->field_D40 = 0;
-    this->field_D44 = 0;
-    this->field_D48 = 0;
-    this->field_D4C = 131072;
-    this->field_D5C = 0;
-    this->field_D64 = 0;
-    this->field_D28 = -1;
-    this->field_D08 = 0;
-    this->field_D0C = 0;
-    this->field_D10 = 0;
-    this->field_D24 = 0;
-    this->field_D2C = 0;
-    this->uSpriteID_LUN_SUN = pSpriteFrameTable->FastFindSprite("LUN-SUN");
-    this->field_D14 = -131072;
-    for (unsigned i = 0; i < 8; i++)
-        pSpriteFrameTable->InitializeSprite(this->pSpriteIDs_LUN[i]);  // v2 += 2;
-    pSpriteFrameTable->InitializeSprite(this->uSpriteID_LUN_SUN);
-}
-
 //----- (004892E6) --------------------------------------------------------
 void OutdoorLocation::UpdateSunlightVectors() {
     unsigned int minutes;  // edi@3
@@ -2495,7 +2456,6 @@ static void loadAndPrepareODMInternal(MapId mapid, ODMRenderParams *thisa) {
     pOutdoor->PrepareDecorations();
     pOutdoor->ArrangeSpriteObjects();
     pOutdoor->InitalizeActors(mapid);
-    pOutdoor->MessWithLUN();
     pOutdoor->level_filename = mapFilename;
     pWeather->Initialize();
     pCamera3D->_viewYaw = pParty->_viewYaw;
