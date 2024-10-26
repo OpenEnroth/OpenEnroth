@@ -2011,11 +2011,6 @@ void OpenGLRenderer::DrawOutdoorSky() {
         (depth_to_far_clip + 0.0000001) *
         (height_to_far_clip - (double)pCamera3D->vCameraPos.z));
 
-    struct Polygon pSkyPolygon;
-    pSkyPolygon.texture = nullptr;
-    pSkyPolygon.ptr_38 = &SkyBillboard;
-
-
     // if ( pParty->uCurrentHour > 20 || pParty->uCurrentHour < 5 )
     // pSkyPolygon.uTileBitmapID = pOutdoor->New_SKY_NIGHT_ID;
     // else
@@ -2026,10 +2021,9 @@ void OpenGLRenderer::DrawOutdoorSky() {
     if (!pOutdoor->sky_texture)
         pOutdoor->sky_texture = assets->getBitmap("plansky3"); // TODO(pskelton): do we need this?
 
-    pSkyPolygon.texture = pOutdoor->sky_texture;
-    if (pSkyPolygon.texture) {
-        pSkyPolygon.dimming_level = (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)? 31 : 0;
-        pSkyPolygon.uNumVertices = 4;
+    if (pOutdoor->sky_texture) {
+        int dimming_level = (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)? 31 : 0;
+        int uNumVertices = 4;
 
         // centering(центруем)-----------------------------------------------------------------
         // plane of sky polygon rotation vector - pitch rotation around y
@@ -2063,15 +2057,15 @@ void OpenGLRenderer::DrawOutdoorSky() {
 
         float widthperpixel = 1 / pCamera3D->ViewPlaneDistPixels;
 
-        for (unsigned i = 0; i < pSkyPolygon.uNumVertices; ++i) {
+        for (unsigned i = 0; i < uNumVertices; ++i) {
             // outbound screen X dist
             float x_dist = widthperpixel * (pViewport->uScreenCenterX - VertexRenderList[i].vWorldViewProjX);
             // outbound screen y dist
             float y_dist = widthperpixel * (horizon_height_offset - VertexRenderList[i].vWorldViewProjY);
 
             // rotate vectors to cam facing
-            float skyfinalleft = (pSkyPolygon.ptr_38->CamVecLeft_X * x_dist) + (pSkyPolygon.ptr_38->CamVecLeft_Z * y_dist) + pSkyPolygon.ptr_38->CamVecLeft_Y;
-            float skyfinalfront = (pSkyPolygon.ptr_38->CamVecFront_X * x_dist) + (pSkyPolygon.ptr_38->CamVecFront_Z * y_dist) + pSkyPolygon.ptr_38->CamVecFront_Y;
+            float skyfinalleft = (SkyBillboard.CamVecLeft_X * x_dist) + (SkyBillboard.CamVecLeft_Z * y_dist) + SkyBillboard.CamVecLeft_Y;
+            float skyfinalfront = (SkyBillboard.CamVecFront_X * x_dist) + (SkyBillboard.CamVecFront_Z * y_dist) + SkyBillboard.CamVecFront_Y;
 
             // pitch rotate sky to get top
             float top_y_proj = v18x + v18y + v18z * y_dist;
@@ -2082,9 +2076,9 @@ void OpenGLRenderer::DrawOutdoorSky() {
 
             // offset tex coords
             float texoffset_U = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalleft * worldviewdepth));
-            VertexRenderList[i].u = texoffset_U / ((float) pSkyPolygon.texture->width());
+            VertexRenderList[i].u = texoffset_U / ((float) pOutdoor->sky_texture->width());
             float texoffset_V = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalfront * worldviewdepth));
-            VertexRenderList[i].v = texoffset_V / ((float) pSkyPolygon.texture->height());
+            VertexRenderList[i].v = texoffset_V / ((float) pOutdoor->sky_texture->height());
 
             VertexRenderList[i].vWorldViewPosition.x = pCamera3D->GetFarClip();
 
@@ -2116,15 +2110,14 @@ void OpenGLRenderer::DrawOutdoorSky() {
 
         _set_ortho_projection(1);
         _set_ortho_modelview();
-        DrawOutdoorSkyPolygon(&pSkyPolygon);
+        DrawOutdoorSkyPolygon(uNumVertices, pOutdoor->sky_texture, dimming_level);
     }
 }
 
 
 
 //----- (004A2DA3) --------------------------------------------------------
-void OpenGLRenderer::DrawOutdoorSkyPolygon(Polygon *pSkyPolygon) {
-    auto texture = pSkyPolygon->texture;
+void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *texture, int dimmingLevel) {
     auto texid = texture->renderId().value();
 
     static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
@@ -2134,13 +2127,13 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(Polygon *pSkyPolygon) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    Colorf uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
+    Colorf uTint = GetActorTintColor(dimmingLevel, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
     float scrspace{ pCamera3D->GetFarClip() };
 
 
 
     // load up poly
-    for (int z = 0; z < (pSkyPolygon->uNumVertices - 2); z++) {
+    for (int z = 0; z < (numVertices - 2); z++) {
         // 123, 134, 145, 156..
         forcepersverts *thisvert = &forceperstore[forceperstorecnt];
 

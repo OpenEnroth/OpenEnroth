@@ -130,7 +130,7 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void DoRenderBillboards_D3D() override;
     void SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1);
 
-    void DrawOutdoorSkyPolygon(Polygon *pSkyPolygon);
+    void DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *texture, int dimmingLevel);
     void DrawIndoorSkyPolygon(signed int uNumVertices,
                               Polygon *pSkyPolygon);
     void DrawForcePerVerts();
