@@ -954,6 +954,10 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                     bFaceSlopeTooSteep = false;
             }
 
+            // TODO(pskelton): This 'catch all' is probably unsafe - would be better as above
+            if (bFaceSlopeTooSteep && pFace->Invisible() && pFace->uPolygonType == PolygonType::POLYGON_InBetweenFloorAndWall)
+                bFaceSlopeTooSteep = false;
+
             // new sliding plane
             Vec3f slidePlaneOrigin = collision_state.collisionPos;
             Vec3f slidePlaneNormal = adjusted_pos + Vec3f(0, 0, collision_state.radius_lo) - slidePlaneOrigin;
