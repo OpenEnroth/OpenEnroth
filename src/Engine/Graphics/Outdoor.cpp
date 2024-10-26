@@ -2199,6 +2199,10 @@ int WorldPosToGridCellY(int sWorldPosY) {
                                     //                               and -880 sar 9 = -2
 }
 
+Vec2i WorldPosToGrid(Vec3f worldPos) {
+    return Vec2i(WorldPosToGridCellX(worldPos.x), WorldPosToGridCellY(worldPos.y));
+}
+
 //----- (0047F469) --------------------------------------------------------
 int GridCellToWorldPosX(int a1) { return (a1 - 64) << 9; }
 

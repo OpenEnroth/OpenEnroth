@@ -227,9 +227,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         }
 
         CollideOutdoorWithModels(false);
-        int gridX = WorldPosToGridCellX(pSpriteObjects[uLayingItemID].vPosition.x);
-        int gridY = WorldPosToGridCellY(pSpriteObjects[uLayingItemID].vPosition.y);
-        CollideOutdoorWithDecorations(gridX, gridY);
+        CollideOutdoorWithDecorations(WorldPosToGrid(pSpriteObjects[uLayingItemID].vPosition));
         ObjectType casterType = pSpriteObjects[uLayingItemID].spell_caster_pid.type();
         if (casterType != OBJECT_Character) {
             CollideWithParty(false);
