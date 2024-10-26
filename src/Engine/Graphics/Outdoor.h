@@ -60,7 +60,6 @@ struct OutdoorLocation {
     bool PrepareDecorations();
     void ArrangeSpriteObjects();
     bool InitalizeActors(MapId a1);
-    void LoadBaseTileIds();
     double GetFogDensityByTime();
 
     /**

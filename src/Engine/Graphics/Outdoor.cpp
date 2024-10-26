@@ -469,7 +469,7 @@ void OutdoorLocation::CreateDebugLocation() {
     this->pTerrain.pTileTypes[1].tileset = Tileset_Water;
     this->pTerrain.pTileTypes[2].tileset = Tileset_Badlands;
     this->pTerrain.pTileTypes[3].tileset = Tileset_RoadGrassCobble;
-    this->LoadBaseTileIds();
+    this->pTerrain.LoadBaseTileIds();
     this->pSpawnPoints.clear();
     this->pTerrain.ZeroLandscape();
 
@@ -927,12 +927,6 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
     //  thisa.pMonsterInfo.uID = 45;
     //  thisa.PrepareSprites(0);
     return 1;
-}
-
-//----- (0047F420) --------------------------------------------------------
-void OutdoorLocation::LoadBaseTileIds() {
-    for (unsigned i = 0; i < 3; ++i)
-        pTerrain.pTileTypes[i].uTileID = pTileTable->tileIdForTileset(pTerrain.pTileTypes[i].tileset, 1);
 }
 
 // TODO: move to actors?
