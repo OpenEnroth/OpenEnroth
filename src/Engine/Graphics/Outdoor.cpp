@@ -1973,11 +1973,10 @@ void UpdateActors_ODM() {
             if (!uIsFlying && !tile1IsLand && !uIsAboveFloor && Actor_On_Terrain) {
                 // on water and shouldnt be
                 bool tileTestLand = false;  // reset land found
-                int Grid_X = WorldPosToGridCellX(pActors[Actor_ITR].pos.x);
-                int Grid_Z = WorldPosToGridCellY(pActors[Actor_ITR].pos.y);
-                for (int i = Grid_X - 1; i <= Grid_X + 1; i++) {
+                Vec2i gridPos = WorldPosToGrid(pActors[Actor_ITR].pos);
+                for (int i = gridPos.x - 1; i <= gridPos.x + 1; i++) {
                     // scan surrounding cells for land
-                    for (int j = Grid_Z - 1; j <= Grid_Z + 1; j++) {
+                    for (int j = gridPos.y - 1; j <= gridPos.y + 1; j++) {
                         tileTestLand = !(pOutdoor->getTileAttribByGrid(i, j) & TILE_DESC_WATER);
                         if (tileTestLand) {  // found land
                             int target_x = GridCellToWorldPosX(i);
