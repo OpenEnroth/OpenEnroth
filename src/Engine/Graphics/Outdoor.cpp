@@ -459,21 +459,6 @@ void OutdoorLocation::SetFog() {
     pOutdoor->loc_time.day_attrib = ::day_attrib;
 }
 
-//----- (0047C7A9) --------------------------------------------------------
-void OutdoorLocationTerrain::_47C7A9() {
-    this->field_10 = 0;
-    this->field_12 = 0;
-    this->field_16 = 0;
-    this->field_14 = 0;
-    this->field_1C = 0;
-    this->field_18 = 0;
-}
-
-//----- (0047C7C2) --------------------------------------------------------
-void OutdoorLocationTerrain::Release() {  // очистить локацию
-    _47C7A9();
-}
-
 //----- (0047C80A) --------------------------------------------------------
 void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
     double v6;                    // st7@1
@@ -565,7 +550,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
                         // v15 = pOutLocTerrain->field_10;
                         // v55 = pOutLocTerrain->field_10;
                         pMapHeight = this->pHeightmap.data();
-                        v17 = (char *)(&pMapHeight[v13 * this->field_10] + v14);
+                        v17 = (char *)(&pMapHeight[v13 * 128] + v14);
                         v18 = -v13;
                         v19 = (64 - v13) << 9;
                         v20 = 32 * *(char *)v17;
@@ -573,7 +558,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
 
                         v22 = (v18 + 63) << 9;
                         v41 = v22;
-                        v23 = (char *)(&pMapHeight[this->field_10 * (v13 + 1)] +
+                        v23 = (char *)(&pMapHeight[128 * (v13 + 1)] +
                                     v14);
                         v24 = v22 - v19;
                         v40 = 32 * *(char *)v23;
@@ -596,7 +581,7 @@ void OutdoorLocationTerrain::FillDMap(int X, int Y, int W, int Z) {
                         v31 = (v56 * v47 + v53 * v46 + v51 * v45) * 31.0;
                         if (v31 < 0.0) v31 = 0.0;
                         if (v31 > 31.0) v31 = 31.0;
-                        v44 = 2 * (v14 + v13 * this->field_10);
+                        v44 = 2 * (v14 + v13 * 128);
                         // pOutLocTerrain = pOutLocTerrain2;
                         *((char *)this->pDmap.data() + v44 + 1) = (int64_t)v31;
 
@@ -732,12 +717,6 @@ bool OutdoorLocationTerrain::ZeroLandscape() {
     this->pTilemap.fill(90);
     this->pAttributemap.fill(0);
     this->pDmap.fill({0, 0});
-    this->field_12 = 128;
-    this->field_10 = 128;
-    this->field_16 = 7;
-    this->field_14 = 7;
-    this->field_1C = 127;
-    this->field_18 = 127;
     return true;
 }
 
@@ -771,7 +750,6 @@ void OutdoorLocation::Release() {
 
     pBModels.clear();
     pSpawnPoints.clear();
-    pTerrain.Release();
     pFaceIDLIST.clear();
     pTerrainNormals.clear();
 

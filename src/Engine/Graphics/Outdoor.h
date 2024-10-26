@@ -34,29 +34,14 @@ struct DMap {
 };
 
 struct OutdoorLocationTerrain {
-    //----- (0047C794) --------------------------------------------------------
-    inline OutdoorLocationTerrain() {
-        this->field_10 = 0;
-        this->field_12 = 0;
-    }
-
-    void _47C7A9();
-    void Release();
     void FillDMap(int X, int Y, int W, int Z);
     int _47CB57(unsigned char *pixels_8bit, int a2, int num_pixels);
     bool ZeroLandscape();
-
 
     std::array<uint8_t, 128 * 128> pHeightmap{};
     std::array<uint8_t, 128 * 128> pTilemap{};
     std::array<uint8_t, 128 * 128> pAttributemap{};
     std::array<DMap, 128 * 128> pDmap{};
-    int16_t field_10 = 0;
-    int16_t field_12 = 0;
-    int16_t field_14 = 0;
-    int16_t field_16 = 0;
-    int field_18 = 0;
-    int field_1C = 0;
 };
 
 struct OutdoorLocation {
