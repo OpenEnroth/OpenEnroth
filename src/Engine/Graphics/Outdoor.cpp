@@ -254,8 +254,8 @@ TILE_DESC_FLAGS OutdoorLocation::getTileAttribByPos(const Vec3f &pos) {
     return getTileAttribByGrid(gridPos.x, gridPos.y);
 }
 
-TileData *OutdoorLocation::getTileDescByPos(int sX, int sY) {
-    Vec2i gridPos = WorldPosToGrid(Vec3f(sX, sY, 0));
+TileData *OutdoorLocation::getTileDescByPos(const Vec3f &pos) {
+    Vec2i gridPos = WorldPosToGrid(pos);
     return getTileDescByGrid(gridPos.x, gridPos.y);
 }
 
@@ -372,7 +372,7 @@ int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos) {
         return 2;
     }
 
-    switch (getTileDescByPos(pos.x, pos.y)->tileset) {
+    switch (getTileDescByPos(pos)->tileset) {
         case Tileset_Grass:
             return 1;
         case Tileset_Snow:

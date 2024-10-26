@@ -63,7 +63,7 @@ struct OutdoorLocation {
     /**
      * @offset 0x488EEF
      */
-    TileData *getTileDescByPos(int sX, int sZ);
+    TileData *getTileDescByPos(const Vec3f &pos);
 
     /**
      * @offset 0x47ED08
