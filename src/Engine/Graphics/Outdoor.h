@@ -24,8 +24,8 @@ struct RenderVertexSoft;
 struct ODMRenderParams;
 
 struct OutdoorLocationTileType {
-    Tileset tileset;
-    uint16_t uTileID;
+    Tileset tileset = Tileset_NULL;
+    uint16_t uTileID = 0;
 };
 
 struct DMap {
@@ -36,9 +36,10 @@ struct DMap {
 struct OutdoorLocationTerrain {
     bool ZeroLandscape();
 
-    std::array<uint8_t, 128 * 128> pHeightmap{};
-    std::array<uint8_t, 128 * 128> pTilemap{};
-    std::array<uint8_t, 128 * 128> pAttributemap{};
+    std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3] is road tileset.
+    std::array<uint8_t, 128 * 128> pHeightmap = {};
+    std::array<uint8_t, 128 * 128> pTilemap = {};
+    std::array<uint8_t, 128 * 128> pAttributemap = {};
 };
 
 struct OutdoorLocation {
@@ -124,7 +125,6 @@ struct OutdoorLocation {
     std::string location_filename;
     std::string location_file_description;
     std::string sky_texture_filename;
-    std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3]  road tileset
     OutdoorLocationTerrain pTerrain;
     std::vector<BSPModel> pBModels;
     std::vector<Pid> pFaceIDLIST;

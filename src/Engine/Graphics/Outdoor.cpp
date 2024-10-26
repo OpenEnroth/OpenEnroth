@@ -473,10 +473,10 @@ void OutdoorLocation::CreateDebugLocation() {
     this->location_filename = "i6.odm";
     this->location_file_description = "MM6 Outdoor v1.00";
 
-    this->pTileTypes[0].tileset = Tileset_Grass;
-    this->pTileTypes[1].tileset = Tileset_Water;
-    this->pTileTypes[2].tileset = Tileset_Badlands;
-    this->pTileTypes[3].tileset = Tileset_RoadGrassCobble;
+    this->pTerrain.pTileTypes[0].tileset = Tileset_Grass;
+    this->pTerrain.pTileTypes[1].tileset = Tileset_Water;
+    this->pTerrain.pTileTypes[2].tileset = Tileset_Badlands;
+    this->pTerrain.pTileTypes[3].tileset = Tileset_RoadGrassCobble;
     this->LoadBaseTileIds();
     this->pSpawnPoints.clear();
     this->pTerrain.ZeroLandscape();
@@ -624,11 +624,11 @@ int OutdoorLocation::getTileIdByTileMapId(int mapId) {
         v3 = (mapId - 90) / 36;
         if (v3 && v3 != 1 && v3 != 2) {
             if (v3 == 3)
-                result = this->pTileTypes[3].uTileID;
+                result = this->pTerrain.pTileTypes[3].uTileID;
             else
                 result = mapId;
         } else {
-            result = this->pTileTypes[v3].uTileID;
+            result = this->pTerrain.pTileTypes[v3].uTileID;
         }
     } else {
         result = 0;
@@ -646,10 +646,10 @@ TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
     v3 = this->pTerrain.pTilemap[sY * 128 + sX];
     if (v3 < 198) {  // < Tileset_3
         if (v3 >= 90)
-            v3 = v3 + this->pTileTypes[(v3 - 90) / 36].uTileID -
+            v3 = v3 + this->pTerrain.pTileTypes[(v3 - 90) / 36].uTileID -
                  36 * ((v3 - 90) / 36) - 90;
     } else {
-      v3 = v3 + this->pTileTypes[3].uTileID - 198;
+      v3 = v3 + this->pTerrain.pTileTypes[3].uTileID - 198;
     }
 
     if (engine->config->graphics.SeasonsChange.value()) {
@@ -720,7 +720,7 @@ TILE_DESC_FLAGS OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
     if (tileId >= 90) {
         int tileSetIndex = (tileId - 90) / 36;
         int tileSetOffset = (tileId - 90) % 36;
-        tileId = this->pTileTypes[tileSetIndex].uTileID + tileSetOffset;
+        tileId = this->pTerrain.pTileTypes[tileSetIndex].uTileID + tileSetOffset;
     }
     return pTileTable->tiles[tileId].uAttributes;
 }
@@ -940,7 +940,7 @@ bool OutdoorLocation::InitalizeActors(MapId a1) {
 //----- (0047F420) --------------------------------------------------------
 void OutdoorLocation::LoadBaseTileIds() {
     for (unsigned i = 0; i < 3; ++i)
-        pTileTypes[i].uTileID = pTileTable->tileIdForTileset(pTileTypes[i].tileset, 1);
+        pTerrain.pTileTypes[i].uTileID = pTileTable->tileIdForTileset(pTerrain.pTileTypes[i].tileset, 1);
 }
 
 // TODO: move to actors?
