@@ -250,17 +250,13 @@ double OutdoorLocation::GetFogDensityByTime() {
 }
 
 TILE_DESC_FLAGS OutdoorLocation::getTileAttribByPos(int sX, int sY) {
-    int gridY = WorldPosToGridCellY(sY);
-    int gridX = WorldPosToGridCellX(sX);
-
-    return getTileAttribByGrid(gridX, gridY);
+    Vec2i gridPos = WorldPosToGrid(Vec3f(sX, sY, 0));
+    return getTileAttribByGrid(gridPos.x, gridPos.y);
 }
 
 TileData *OutdoorLocation::getTileDescByPos(int sX, int sY) {
-    int gridY = WorldPosToGridCellY(sY);
-    int gridX = WorldPosToGridCellX(sX);
-
-    return this->getTileDescByGrid(gridX, gridY);
+    Vec2i gridPos = WorldPosToGrid(Vec3f(sX, sY, 0));
+    return getTileDescByGrid(gridPos.x, gridPos.y);
 }
 
 //----- (00488F5C) --------------------------------------------------------
