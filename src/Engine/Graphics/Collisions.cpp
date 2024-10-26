@@ -1032,8 +1032,8 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
         float x_advance_floor = ODM_GetFloorLevel(Vec3f(newPosLow.x, partyNewPos->y, newPosLow.z), pParty->height, partyIsOnWater, &party_y_pid, 0);
         int party_x_pid;
         float y_advance_floor = ODM_GetFloorLevel(Vec3f(partyNewPos->x, newPosLow.y, newPosLow.z), pParty->height, partyIsOnWater, &party_x_pid, 0);
-        bool terr_slope_advance_x = IsTerrainSlopeTooHigh(newPosLow.x, partyNewPos->y);
-        bool terr_slope_advance_y = IsTerrainSlopeTooHigh(partyNewPos->x, newPosLow.y);
+        bool terr_slope_advance_x = IsTerrainSlopeTooHigh(Vec3f(newPosLow.x, partyNewPos->y, 0.0f));
+        bool terr_slope_advance_y = IsTerrainSlopeTooHigh(Vec3f(partyNewPos->x, newPosLow.y, 0.0f));
 
         *partyNotOnModel = false;
         if (!party_y_pid && !party_x_pid && !*floorFaceId) *partyNotOnModel = true;
@@ -1053,7 +1053,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             } else if (move_in_y) {
                 partyNewPos->y = newPosLow.y;
             } else {
-                if (IsTerrainSlopeTooHigh(newPosLow.x, newPosLow.y) && allnewfloor <= partyNewPos->z) {
+                if (IsTerrainSlopeTooHigh(newPosLow) && allnewfloor <= partyNewPos->z) {
                     // move down the hill is allowed
                     partyNewPos->x = newPosLow.x;
                     partyNewPos->y = newPosLow.y;

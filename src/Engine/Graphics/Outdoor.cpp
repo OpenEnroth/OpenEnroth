@@ -1242,7 +1242,7 @@ void ODM_ProcessPartyActions() {
     }
     int partyOldFlightZ = pParty->sPartySavedFlightZ;
 
-    bool partyAtHighSlope = IsTerrainSlopeTooHigh(pParty->pos.x, pParty->pos.y);
+    bool partyAtHighSlope = IsTerrainSlopeTooHigh(pParty->pos);
     bool partyIsRunning = false;
     bool partyIsWalking = false;
     bool noFlightBob = false;
@@ -1856,7 +1856,7 @@ void UpdateActors_ODM() {
         if (!pActors[Actor_ITR].CanAct())
             uIsFlying = 0;
 
-        bool Slope_High = IsTerrainSlopeTooHigh(pActors[Actor_ITR].pos.x, pActors[Actor_ITR].pos.y);
+        bool Slope_High = IsTerrainSlopeTooHigh(pActors[Actor_ITR].pos);
         int Model_On_PID = 0;
         bool uIsOnWater = false;
         float Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].pos, pActors[Actor_ITR].height, &uIsOnWater, &Model_On_PID, Water_Walk);
@@ -2191,7 +2191,7 @@ int GridCellToWorldPosY(int a1) { return (64 - a1) << 9; }
 
 
 //----- (004823F4) --------------------------------------------------------
-bool IsTerrainSlopeTooHigh(int pos_x, int pos_y) {
+bool IsTerrainSlopeTooHigh(const Vec3f &pos) {
     // unsigned int v2; // ebx@1
     // unsigned int v3; // edi@1
     // int v4; // eax@1
@@ -2205,7 +2205,7 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_y) {
 
     // v12 = a1;
     // v11 = a2;
-    Vec2i gridPos = WorldPosToGrid(Vec3f(pos_x, pos_y, 0));
+    Vec2i gridPos = WorldPosToGrid(pos);
 
     int party_grid_x1 = GridCellToWorldPosX(gridPos.x);
     // dword_76D56C_terrain_cell_world_pos_around_party_x =
@@ -2230,7 +2230,8 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_y) {
         party_x2z2_y == party_x1z2_y)
         return false;
 
-    int dx = std::abs(pos_x - party_grid_x1), dz = std::abs(party_grid_z1 - pos_y);
+    // TODO(captainurist): Will need to retrace to drop static_cast<int> here.
+    int dx = std::abs(static_cast<int>(pos.x) - party_grid_x1), dz = std::abs(party_grid_z1 - static_cast<int>(pos.y));
 
     int y1, y2, y3;
     if (dz >= dx) {
