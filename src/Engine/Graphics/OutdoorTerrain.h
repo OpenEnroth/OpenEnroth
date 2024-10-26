@@ -7,6 +7,8 @@
 
 #include "Engine/Data/TileEnums.h"
 
+#include "Media/Audio/SoundEnums.h"
+
 struct OutdoorLocationTileType {
     Tileset tileset = Tileset_NULL;
     uint16_t uTileID = 0;
@@ -30,6 +32,11 @@ struct OutdoorTerrain {
      * @return                          Tile set for the tile at `gridPos`, or `Tileset_NULL` if the tile is invalid.
      */
     Tileset tileSet(Vec2i gridPos) const;
+
+    /**
+     * @offset 0x47EE49
+     */
+    SoundId getSoundIdByGrid(Vec2i gridPos, bool isRunning);
 
     int mapToGlobalTileId(int localTileId) const;
 

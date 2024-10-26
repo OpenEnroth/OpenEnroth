@@ -57,6 +57,54 @@ Tileset OutdoorTerrain::tileSet(Vec2i gridPos) const {
     return pTileTypes[tileSetIndex].tileset;
 }
 
+SoundId OutdoorTerrain::getSoundIdByGrid(Vec2i gridPos, bool isRunning) {
+    // TODO(captainurist): this doesn't take seasons into account.
+    switch (tileSet(gridPos)) {
+    case Tileset_Grass:
+        return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
+    case Tileset_Snow:
+        return isRunning ? SOUND_RunSnow : SOUND_WalkSnow;
+    case Tileset_Desert:
+        return isRunning ? SOUND_RunDesert : SOUND_WalkDesert;
+    case Tileset_CooledLava:
+        return isRunning ? SOUND_RunCooledLava : SOUND_WalkCooledLava;
+    case Tileset_NULL: // Use dirt sounds for invalid tiles.
+    case Tileset_Dirt:
+        // Water sounds were used
+        return isRunning ? SOUND_RunDirt : SOUND_WalkDirt;
+    case Tileset_Water:
+        // Dirt sounds were used
+        return isRunning ? SOUND_RunWater : SOUND_WalkWater;
+    case Tileset_Badlands:
+        return isRunning ? SOUND_RunBadlands : SOUND_WalkBadlands;
+    case Tileset_Swamp:
+        return isRunning ? SOUND_RunSwamp : SOUND_WalkSwamp;
+    case Tileset_Tropical:
+        // TODO(Nik-RE-dev): is that correct?
+        return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
+    case Tileset_RoadGrassCobble:
+    case Tileset_RoadGrassDirt:
+    case Tileset_RoadSnowCobble:
+    case Tileset_RoadSnowDirt:
+    case Tileset_RoadSandCobble:
+    case Tileset_RoadSandDirt:
+    case Tileset_RoadVolcanoCobble:
+    case Tileset_RoadVolcanoDirt:
+    case Tileset_RoadCrackedCobble:
+    case Tileset_RoadCrackedDirt:
+    case Tileset_RoadSwampCobble:
+    case Tileset_RoadSwampDir:
+    case Tileset_RoadTropicalCobble:
+    case Tileset_RoadTropicalDirt:
+        return isRunning ? SOUND_RunRoad : SOUND_WalkRoad;
+    case Tileset_City:
+    case Tileset_RoadCityStone:
+        // TODO(Nik-RE-dev): is that correct?
+    default:
+        return isRunning ? SOUND_RunGround : SOUND_WalkGround;
+    }
+}
+
 int OutdoorTerrain::mapToGlobalTileId(int localTileId) const {
     // Tiles in tilemap:
     // [0..90) are mapped as-is, but seem to be mostly invalid. Only global tile ids [1..12] are valid (all are dirt),

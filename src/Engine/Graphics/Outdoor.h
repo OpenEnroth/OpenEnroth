@@ -8,8 +8,6 @@
 #include "Engine/SpawnPoint.h"
 #include "Engine/MapEnums.h"
 
-#include "Media/Audio/SoundEnums.h"
-
 #include "Library/Color/Color.h"
 
 #include "BSPModel.h"
@@ -43,10 +41,6 @@ struct OutdoorLocation {
      */
     TILE_DESC_FLAGS getTileAttribByGrid(int gridX, int gridY);
 
-    /**
-     * @offset 0x47EE49
-     */
-    SoundId getSoundIdByGrid(Vec2i gridPos, bool isRunning);
     int UpdateDiscoveredArea(Vec2i gridPos);
     bool IsMapCellFullyRevealed(signed int a2, signed int a3);
     bool IsMapCellPartiallyRevealed(signed int a2, signed int a3);
