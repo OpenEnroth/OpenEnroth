@@ -19,6 +19,17 @@ struct OutdoorTerrain {
 
     int DoGetHeightOnTerrain(int x, int y);
 
+    /**
+     * @param x                         Grid x.
+     * @param y                         Grid y.
+     * @return                          Tile id at (x, y), that can then be used to get tile data from `TileTable`.
+     */
+    int tileId(int x, int y) const;
+
+    Tileset tileSet(int x, int y, Tileset defaultTileSet = Tileset_Dirt) const;
+
+    int mapToGlobalTileId(int localTileId) const;
+
     std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3] is road tileset.
     std::array<uint8_t, 128 * 128> pHeightmap = {};
     std::array<uint8_t, 128 * 128> pTilemap = {};

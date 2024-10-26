@@ -584,26 +584,6 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     this->sky_texture = assets->getBitmap(loc_time.sky_texture_name);
 }
 
-int OutdoorLocation::getTileIdByTileMapId(int mapId) {
-    int result;  // eax@2
-    int v3;             // eax@3
-
-    if (mapId >= 90) {
-        v3 = (mapId - 90) / 36;
-        if (v3 && v3 != 1 && v3 != 2) {
-            if (v3 == 3)
-                result = this->pTerrain.pTileTypes[3].uTileID;
-            else
-                result = mapId;
-        } else {
-            result = this->pTerrain.pTileTypes[v3].uTileID;
-        }
-    } else {
-        result = 0;
-    }
-    return result;
-}
-
 TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
     int v3;  // esi@5
              //  unsigned int result; // eax@9
@@ -665,40 +645,14 @@ TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
     return &pTileTable->tiles[v3];
 }
 
-int OutdoorLocation::getTileMapIdByGrid(signed int gridX, signed int gridY) {
-    if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
-        return 0;
-
-    return this->pTerrain.pTilemap[128 * gridY + gridX];
-}
-
 TILE_DESC_FLAGS OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
-    if (gridX < 0 || gridX > 127 || gridY < 0 || gridY > 127)
-        return 0;
-
-    int tileId = this->pTerrain.pTilemap[gridY * 128 + gridX];
-    // Tiles in tilemap:
-    // [0..90) map as is to tile ids.
-    // [90..126) map to tileset #1.
-    // [126..162) map to tileset #2.
-    // [162..198) map to tileset #3.
-    // [198..234) map to tileset #4 (road).
-    // [234..255) are invalid.
-
-    if (tileId >= 90) {
-        int tileSetIndex = (tileId - 90) / 36;
-        int tileSetOffset = (tileId - 90) % 36;
-        tileId = this->pTerrain.pTileTypes[tileSetIndex].uTileID + tileSetOffset;
-    }
+    int tileId = this->pTerrain.tileId(gridX, gridY);
     return pTileTable->tiles[tileId].uAttributes;
 }
 
 SoundId OutdoorLocation::getSoundIdByGrid(int X_pos, int Y_pos, bool isRunning) {
-    if (!getTileIdByTileMapId(getTileMapIdByGrid(X_pos, Y_pos))) {
-        return isRunning ? SOUND_RunDirt : SOUND_WalkDirt;
-    }
-
-    switch (getTileDescByGrid(X_pos, Y_pos)->tileset) {
+    // TODO(captainurist): this doesn't take seasons into account.
+    switch (pTerrain.tileSet(X_pos, Y_pos, Tileset_Dirt)) {
         case Tileset_Grass:
             return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
         case Tileset_Snow:

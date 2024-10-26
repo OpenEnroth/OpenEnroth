@@ -33,3 +33,39 @@ int OutdoorTerrain::DoGetHeightOnTerrain(int x, int y) {
 
     return 32 * pHeightmap[y * 128 + x];
 }
+
+int OutdoorTerrain::tileId(int x, int y) const {
+    if (x < 0 || x > 127 || y < 0 || y > 127)
+        return 0;
+
+    return mapToGlobalTileId(pTilemap[y * 128 + x]);
+}
+
+Tileset OutdoorTerrain::tileSet(int x, int y, Tileset defaultTileSet) const {
+    int localTileId = pTilemap[y * 128 + x];
+
+    if (localTileId >= 234 || localTileId < 90)
+        return defaultTileSet;
+
+    int tileSetIndex = (localTileId - 90) / 36;
+    return pTileTypes[tileSetIndex].tileset;
+}
+
+int OutdoorTerrain::mapToGlobalTileId(int localTileId) const {
+    // Tiles in tilemap:
+    // [0..90) seem to be invalid.
+    //         The idea there might have been to map them into global tile ids as-is, but only global tile ids [1..12]
+    //         are valid (all are dirt), the rest are "pending", effectively invalid. We treat them as invalid here.
+    // [90..126) map to tileset #1.
+    // [126..162) map to tileset #2.
+    // [162..198) map to tileset #3.
+    // [198..234) map to tileset #4 (road).
+    // [234..255) are invalid.
+
+    if (localTileId >= 234 || localTileId < 90)
+        return 0;
+
+    int tileSetIndex = (localTileId - 90) / 36;
+    int tileSetOffset = (localTileId - 90) % 36;
+    return pTileTypes[tileSetIndex].uTileID + tileSetOffset;
+}

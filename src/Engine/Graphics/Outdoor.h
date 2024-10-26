@@ -37,12 +37,6 @@ struct OutdoorLocation {
     void CreateDebugLocation();
     void Release();
     void Load(std::string_view filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned);
-    int getTileIdByTileMapId(signed int a2);
-
-    /**
-     * @offset 0x47ED83
-     */
-    int getTileMapIdByGrid(int gridX, int gridY);
 
     /**
      * @offset 0x47EDB3
