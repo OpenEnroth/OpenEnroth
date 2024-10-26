@@ -14,31 +14,30 @@ struct OutdoorLocationTileType {
     uint16_t uTileID = 0;
 };
 
-struct OutdoorTerrain {
+class OutdoorTerrain {
+ public:
     bool ZeroLandscape();
     void LoadBaseTileIds();
     void CreateDebugTerrain();
 
-    int DoGetHeightOnTerrain(Vec2i gridPos);
+    int heightByGrid(Vec2i gridPos);
 
     /**
      * @param gridPos                   Grid coordinates.
      * @return                          Tile id at `gridPos` that can then be used to get tile data from `TileTable`.
      */
-    int tileId(Vec2i gridPos) const;
+    int tileIdByGrid(Vec2i gridPos) const;
 
     /**
      * @param gridPos                   Grid coordinates.
      * @return                          Tile set for the tile at `gridPos`, or `Tileset_NULL` if the tile is invalid.
      */
-    Tileset tileSet(Vec2i gridPos) const;
+    Tileset tileSetByGrid(Vec2i gridPos) const;
 
     /**
      * @offset 0x47EE49
      */
-    SoundId getSoundIdByGrid(Vec2i gridPos, bool isRunning);
-
-    int mapToGlobalTileId(int localTileId) const;
+    SoundId soundIdByGrid(Vec2i gridPos, bool isRunning);
 
     std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3] is road tileset.
     std::array<uint8_t, 128 * 128> pHeightmap = {};
@@ -46,4 +45,7 @@ struct OutdoorTerrain {
     std::array<uint8_t, 128 * 128> pAttributemap = {};
     std::vector<Vec3f> pTerrainNormals;
     std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
+
+ private:
+    int mapToGlobalTileId(int localTileId) const;
 };

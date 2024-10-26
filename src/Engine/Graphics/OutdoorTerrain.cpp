@@ -27,21 +27,21 @@ void OutdoorTerrain::CreateDebugTerrain() {
 
 //----- (00488F2E) --------------------------------------------------------
 //----- (0047EE16) --------------------------------------------------------
-int OutdoorTerrain::DoGetHeightOnTerrain(Vec2i gridPos) {
+int OutdoorTerrain::heightByGrid(Vec2i gridPos) {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return 0;
 
     return 32 * pHeightmap[gridPos.y * 128 + gridPos.x];
 }
 
-int OutdoorTerrain::tileId(Vec2i gridPos) const {
+int OutdoorTerrain::tileIdByGrid(Vec2i gridPos) const {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return 0;
 
     return mapToGlobalTileId(pTilemap[gridPos.y * 128 + gridPos.x]);
 }
 
-Tileset OutdoorTerrain::tileSet(Vec2i gridPos) const {
+Tileset OutdoorTerrain::tileSetByGrid(Vec2i gridPos) const {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return Tileset_NULL;
 
@@ -57,9 +57,9 @@ Tileset OutdoorTerrain::tileSet(Vec2i gridPos) const {
     return pTileTypes[tileSetIndex].tileset;
 }
 
-SoundId OutdoorTerrain::getSoundIdByGrid(Vec2i gridPos, bool isRunning) {
+SoundId OutdoorTerrain::soundIdByGrid(Vec2i gridPos, bool isRunning) {
     // TODO(captainurist): this doesn't take seasons into account.
-    switch (tileSet(gridPos)) {
+    switch (tileSetByGrid(gridPos)) {
     case Tileset_Grass:
         return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
     case Tileset_Snow:
