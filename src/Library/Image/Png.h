@@ -6,4 +6,5 @@
 namespace png {
 RgbaImage decode(const Blob &data);
 Blob encode(RgbaImageView image);
+Blob encode(GrayscaleImageView image);
 } // namespace png
