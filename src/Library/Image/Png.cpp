@@ -28,12 +28,13 @@ RgbaImage png::decode(const Blob &data) {
     return result;
 }
 
-Blob png::encode(RgbaImageView image) {
+template<class Color>
+static Blob encodeWithFormat(ImageView<Color> image, int format) {
     png_image pngImage = {};
     pngImage.version = PNG_IMAGE_VERSION;
     pngImage.width = image.width();
     pngImage.height = image.height();
-    pngImage.format = PNG_FORMAT_RGBA;
+    pngImage.format = format;
 
     size_t size = PNG_IMAGE_PNG_SIZE_MAX(pngImage);
     std::unique_ptr<void, FreeDeleter> data(malloc(size));
@@ -41,4 +42,12 @@ Blob png::encode(RgbaImageView image) {
         throw Exception("Failed to encode PNG image ({})", pngImage.message);
 
     return Blob::fromMalloc(std::move(data), size);
+}
+
+Blob png::encode(RgbaImageView image) {
+    return encodeWithFormat(image, PNG_FORMAT_RGBA);
+}
+
+Blob png::encode(GrayscaleImageView image) {
+    return encodeWithFormat(image, PNG_FORMAT_GRAY);
 }

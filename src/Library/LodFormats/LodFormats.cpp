@@ -128,7 +128,7 @@ Blob lod::decodeCompressed(const Blob &blob) {
         return result;
     }
 
-    if (format == LodFileFormat::LOD_FILE_PSEUDO_IMAGE) {
+    if (format == LOD_FILE_PSEUDO_IMAGE) {
         BlobInputStream stream(blob);
         LodImageHeader_MM6 header;
         deserialize(stream, &header);
