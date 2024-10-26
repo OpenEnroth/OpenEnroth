@@ -145,15 +145,10 @@ struct OutdoorLocation {
     std::string sky_texture_filename;
     std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3]  road tileset
     OutdoorLocationTerrain pTerrain;
-    std::array<uint16_t, 128 * 128> pCmap; // Unused
     std::vector<BSPModel> pBModels;
     std::vector<Pid> pFaceIDLIST;
     std::array<uint32_t, 128 * 128> pOMAP;
     GraphicsImage *sky_texture = nullptr;        // signed int sSky_TextureID;
-    int16_t field_F0;
-    int16_t field_F2;
-    int field_F4;
-    char field_F8[968];
     std::vector<SpawnPoint> pSpawnPoints;
     LocationInfo ddm;
     LocationTime loc_time;
@@ -163,9 +158,7 @@ struct OutdoorLocation {
                                           // used for a separate cell, so in the
                                           // end it's 11 * 8 bits = 88 values
     std::array<std::array<uint8_t, 11>, 88> uPartiallyRevealedCellOnMap;  // [968]
-    int field_CB8;
     int max_terrain_dimming_level;
-    int field_CC0;
     unsigned int pSpriteIDs_LUN[8];
     unsigned int uSpriteID_LUNFULL;
     int field_CE8;
