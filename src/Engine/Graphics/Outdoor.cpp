@@ -459,14 +459,6 @@ void OutdoorLocation::SetFog() {
     pOutdoor->loc_time.day_attrib = ::day_attrib;
 }
 
-//----- (0047CCE2) --------------------------------------------------------
-bool OutdoorLocationTerrain::ZeroLandscape() {
-    this->pHeightmap.fill(0);
-    this->pTilemap.fill(90);
-    this->pAttributemap.fill(0);
-    return true;
-}
-
 //----- (0047CDE2) --------------------------------------------------------
 void OutdoorLocation::CreateDebugLocation() {
     this->level_filename = "blank";
