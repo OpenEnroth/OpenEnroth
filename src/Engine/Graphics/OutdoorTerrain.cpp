@@ -24,3 +24,11 @@ void OutdoorTerrain::CreateDebugTerrain() {
     pTileTypes[3].tileset = Tileset_RoadGrassCobble;
     LoadBaseTileIds();
 }
+
+//----- (0047EE16) --------------------------------------------------------
+int OutdoorTerrain::DoGetHeightOnTerrain(int x, int y) {
+    if (x < 0 || x > 127 || y < 0 || y > 127)
+        return 0;
+
+    return 32 * pHeightmap[y * 128 + x];
+}

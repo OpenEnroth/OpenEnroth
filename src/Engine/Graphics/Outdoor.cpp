@@ -286,7 +286,7 @@ int OutdoorLocation::GetHeightOnTerrain(int sX, int sZ) {
     if (sX < 0 || sX > 127 || sZ < 0 || sZ > 127)
         result = 0;
     else
-        result = DoGetHeightOnTerrain(sX, sZ);
+        result = pTerrain.DoGetHeightOnTerrain(sX, sZ);
     return result;
 }
 
@@ -710,14 +710,6 @@ TILE_DESC_FLAGS OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
         tileId = this->pTerrain.pTileTypes[tileSetIndex].uTileID + tileSetOffset;
     }
     return pTileTable->tiles[tileId].uAttributes;
-}
-
-//----- (0047EE16) --------------------------------------------------------
-int OutdoorLocation::DoGetHeightOnTerrain(signed int sX, signed int sZ) {
-    if (sX < 0 || sX > 127 || sZ < 0 || sZ > 127)
-        return 0;
-
-    return 32 * pTerrain.pHeightmap[sZ * 128 + sX];
 }
 
 SoundId OutdoorLocation::getSoundIdByGrid(int X_pos, int Y_pos, bool isRunning) {
@@ -1182,10 +1174,10 @@ void ODM_GetTerrainNormalAt(float pos_x, float pos_y, Vec3f *out) {
     int grid_pos_y1 = GridCellToWorldPosY(grid_y);
     int grid_pos_y2 = GridCellToWorldPosY(grid_y + 1);
 
-    int x1y1_z = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y);
-    int x2y1_z = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y);
-    int x2y2_z = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y + 1);
-    int x1y2_z = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y + 1);
+    int x1y1_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_y);
+    int x2y1_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_y);
+    int x2y2_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_y + 1);
+    int x1y2_z = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_y + 1);
 
     Vec3f side1, side2;
 
@@ -2336,10 +2328,10 @@ bool IsTerrainSlopeTooHigh(int pos_x, int pos_y) {
     // GridCellToWorldPosY(grid_z + 1);
     // dword_76D564_terrain_cell_world_pos_around_party_z =
     // GridCellToWorldPosY(grid_z + 1);
-    int party_x1z1_y = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z);
-    int party_x2z1_y = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z);
-    int party_x2z2_y = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_z + 1);
-    int party_x1z2_y = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_z + 1);
+    int party_x1z1_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_z);
+    int party_x2z1_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_z);
+    int party_x2z2_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_z + 1);
+    int party_x1z2_y = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_z + 1);
     // dword_76D554_terrain_cell_world_pos_around_party_y = v4;
     if (party_x1z1_y == party_x2z1_y && party_x2z1_y == party_x2z2_y &&
         party_x2z2_y == party_x1z2_y)
@@ -2389,10 +2381,10 @@ int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAbov
     int grid_y1 = GridCellToWorldPosY(grid_y),
         grid_y2 = GridCellToWorldPosY(grid_y + 1);
 
-    int z_x1y1 = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y),
-        z_x2y1 = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y),
-        z_x2y2 = pOutdoor->DoGetHeightOnTerrain(grid_x + 1, grid_y + 1),
-        z_x1y2 = pOutdoor->DoGetHeightOnTerrain(grid_x, grid_y + 1);
+    int z_x1y1 = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_y),
+        z_x2y1 = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_y),
+        z_x2y2 = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x + 1, grid_y + 1),
+        z_x1y2 = pOutdoor->pTerrain.DoGetHeightOnTerrain(grid_x, grid_y + 1);
     // v4 = WorldPosToGridCellX(x);
     // v5 = WorldPosToGridCellY(v12);
     // dword_76D538_terrain_cell_world_pos_around_party_x =
@@ -2412,13 +2404,13 @@ int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAbov
     // dword_76D534_terrain_cell_world_pos_around_party_z =
     // GridCellToWorldPosY(v5 + 1);
     // dword_76D518_terrain_cell_world_pos_around_party_y =
-    // pOutdoor->DoGetHeightOnTerrain(v4, v5);
+    // pOutdoor->pTerrain.DoGetHeightOnTerrain(v4, v5);
     // dword_76D51C_terrain_cell_world_pos_around_party_y =
-    // pOutdoor->DoGetHeightOnTerrain(v4 + 1, v5);
+    // pOutdoor->pTerrain.DoGetHeightOnTerrain(v4 + 1, v5);
     // dword_76D520_terrain_cell_world_pos_around_party_y =
-    // pOutdoor->DoGetHeightOnTerrain(v4 + 1, v5 + 1);
+    // pOutdoor->pTerrain.DoGetHeightOnTerrain(v4 + 1, v5 + 1);
     // dword_76D524_terrain_cell_world_pos_around_party_y =
-    // pOutdoor->DoGetHeightOnTerrain(v4, v5 + 1);
+    // pOutdoor->pTerrain.DoGetHeightOnTerrain(v4, v5 + 1);
     *pIsOnWater = false;
     if (pOutdoor->getTileAttribByGrid(grid_x, grid_y) & TILE_DESC_WATER) {
         *pIsOnWater = true;

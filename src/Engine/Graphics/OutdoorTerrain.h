@@ -14,6 +14,8 @@ struct OutdoorTerrain {
     void LoadBaseTileIds();
     void CreateDebugTerrain();
 
+    int DoGetHeightOnTerrain(int x, int y);
+
     std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3] is road tileset.
     std::array<uint8_t, 128 * 128> pHeightmap = {};
     std::array<uint8_t, 128 * 128> pTilemap = {};
