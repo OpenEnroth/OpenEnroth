@@ -139,9 +139,6 @@ constexpr float flt_debugrecmod3 = 2.133333333333333f;
 
 constexpr float meleeRange = 307.2f;
 
-extern std::vector<Vec3f> pTerrainNormals;
-extern std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
-extern std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
 extern int uPlayerCreationUI_SelectedCharacter;
 extern int uPlayerCreationUI_NameEditCharacter;
 extern int currentAddressingAwardBit;

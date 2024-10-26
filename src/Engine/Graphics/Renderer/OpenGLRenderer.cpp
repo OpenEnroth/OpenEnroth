@@ -1535,12 +1535,12 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 }
 
                 // next calculate all vertices vertices
-                unsigned norm_idx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 2 /*+ 1*/];  // 2 is top tri // 3 is bottom
-                unsigned bottnormidx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 3];
-                assert(norm_idx < pTerrainNormals.size());
-                assert(bottnormidx < pTerrainNormals.size());
-                Vec3f *norm = &pTerrainNormals[norm_idx];
-                Vec3f *norm2 = &pTerrainNormals[bottnormidx];
+                unsigned norm_idx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 2 /*+ 1*/];  // 2 is top tri // 3 is bottom
+                unsigned bottnormidx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 3];
+                assert(norm_idx < pOutdoor->pTerrain.pTerrainNormals.size());
+                assert(bottnormidx < pOutdoor->pTerrain.pTerrainNormals.size());
+                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[norm_idx];
+                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[bottnormidx];
 
                 // calc each vertex
                 // [0] - x,y        n1
@@ -1956,12 +1956,12 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
                 pTilePolygon->flags = pOutdoor->getTileAttribByGrid(loopx, loopy);
 
-                unsigned norm_idx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
-                unsigned bottnormidx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
-                assert(norm_idx < pTerrainNormals.size());
-                assert(bottnormidx < pTerrainNormals.size());
-                Vec3f *norm = &pTerrainNormals[norm_idx];
-                Vec3f *norm2 = &pTerrainNormals[bottnormidx];
+                unsigned norm_idx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
+                unsigned bottnormidx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
+                assert(norm_idx < pOutdoor->pTerrain.pTerrainNormals.size());
+                assert(bottnormidx < pOutdoor->pTerrain.pTerrainNormals.size());
+                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[norm_idx];
+                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[bottnormidx];
 
                 float Light_tile_dist = 0.0;
 

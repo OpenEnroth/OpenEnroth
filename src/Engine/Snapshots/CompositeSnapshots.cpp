@@ -365,9 +365,8 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
     reconstruct(src.tileMap, &dst->pTerrain.pTilemap);
     reconstruct(src.attributeMap, &dst->pTerrain.pAttributemap);
 
-    reconstruct(src.someOtherMap, &pTerrainSomeOtherData);
-    reconstruct(src.normalMap, &pTerrainNormalIndices);
-    reconstruct(src.normals, &pTerrainNormals);
+    reconstruct(src.normalMap, &dst->pTerrain.pTerrainNormalIndices);
+    reconstruct(src.normals, &dst->pTerrain.pTerrainNormals);
 
     dst->pBModels.clear();
     for (size_t i = 0; i < src.models.size(); i++) {

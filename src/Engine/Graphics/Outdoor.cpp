@@ -466,7 +466,6 @@ void OutdoorLocation::Release() {
     pBModels.clear();
     pSpawnPoints.clear();
     pFaceIDLIST.clear();
-    pTerrainNormals.clear();
 
     // free shader data for outdoor location
     render->ReleaseTerrain();
