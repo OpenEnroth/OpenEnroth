@@ -68,9 +68,6 @@ class Renderer {
     virtual void BltBackToFontFast(int a2, int a3, Recti *a4) = 0;
     virtual void BeginScene3D() = 0;
 
-    virtual void DrawTerrainPolygon(Polygon *a4, bool transparent,
-                                    bool clampAtTextureBorders) = 0;
-
     virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                               GraphicsImage *texture,
                                               Color uDiffuse,

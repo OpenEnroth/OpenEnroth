@@ -1994,9 +1994,6 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     // end shder version
 }
 
-// TODO(pskelton): drop - this is now obselete with shader terrain drawing
-void OpenGLRenderer::DrawTerrainPolygon(Polygon *poly, bool transparent, bool clampAtTextureBorders) { return; }
-
 // TODO(pskelton): renderbase
 void OpenGLRenderer::DrawOutdoorSky() {
     double rot_to_rads = ((2 * pi_double) / 2048);

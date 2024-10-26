@@ -31,9 +31,6 @@ class NullRenderer : public BaseRenderer {
     virtual void BltBackToFontFast(int a2, int a3, Recti *pSrcRect) override;
     virtual void BeginScene3D() override;
 
-    virtual void DrawTerrainPolygon(Polygon *a4, bool transparent,
-                                    bool clampAtTextureBorders) override;
-
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
                                 GraphicsImage *texture) override;
