@@ -839,18 +839,14 @@ void OpenGLRenderer::TexturePixelRotateDraw(float u, float v, GraphicsImage *img
 }
 
 // TODO(pskelton): renderbase
-void OpenGLRenderer::DrawIndoorSky(int uNumVertices, int uFaceID) {
+void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     if (pFace->uNumVertices <= 0) return;
 
-    Polygon pSkyPolygon;
-    pSkyPolygon.texture = nullptr;
-    pSkyPolygon.texture = pFace->GetTexture();
-    if (!pSkyPolygon.texture) return;
+    if (!pFace->GetTexture()) return;
 
-    pSkyPolygon.ptr_38 = &SkyBillboard;
-    pSkyPolygon.dimming_level = 0;
-    pSkyPolygon.uNumVertices = pFace->uNumVertices;
+    int dimming_level = 0;
+    unsigned int uNumVertices = pFace->uNumVertices;
 
 
     // TODO(pskelton): repeated maths could be saved when calculating sky planes
@@ -888,22 +884,22 @@ void OpenGLRenderer::DrawIndoorSky(int uNumVertices, int uFaceID) {
     }
 
     // clip accurately to camera
-    pCamera3D->ClipFaceToFrustum(array_507D30, &pSkyPolygon.uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum.data(), 4, 0, 0);
-    if (!pSkyPolygon.uNumVertices) return;
+    pCamera3D->ClipFaceToFrustum(array_507D30, &uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum.data(), 4, 0, 0);
+    if (!uNumVertices) return;
 
-    pCamera3D->ViewTransform(VertexRenderList, pSkyPolygon.uNumVertices);
-    pCamera3D->Project(VertexRenderList, pSkyPolygon.uNumVertices, false);
+    pCamera3D->ViewTransform(VertexRenderList, uNumVertices);
+    pCamera3D->Project(VertexRenderList, uNumVertices, false);
 
     unsigned _507D30_idx = 0;
-    for (; _507D30_idx < pSkyPolygon.uNumVertices; _507D30_idx++) {
+    for (; _507D30_idx < uNumVertices; _507D30_idx++) {
         // outbound screen x dist
         float x_dist = inv_viewplanedist * (pBLVRenderParams->uViewportCenterX - VertexRenderList[_507D30_idx].vWorldViewProjX);
         // outbound screen y dist
         float y_dist = inv_viewplanedist * (blv_horizon_height_offset - VertexRenderList[_507D30_idx].vWorldViewProjY);
 
         // rotate vectors to cam facing
-        float skyfinalleft = (pSkyPolygon.ptr_38->CamVecLeft_X * x_dist) + (pSkyPolygon.ptr_38->CamVecLeft_Z * y_dist) + pSkyPolygon.ptr_38->CamVecLeft_Y;
-        float skyfinalfront = (pSkyPolygon.ptr_38->CamVecFront_X * x_dist) + (pSkyPolygon.ptr_38->CamVecFront_Z * y_dist) + pSkyPolygon.ptr_38->CamVecFront_Y;
+        float skyfinalleft = (SkyBillboard.CamVecLeft_X * x_dist) + (SkyBillboard.CamVecLeft_Z * y_dist) + SkyBillboard.CamVecLeft_Y;
+        float skyfinalfront = (SkyBillboard.CamVecFront_X * x_dist) + (SkyBillboard.CamVecFront_Z * y_dist) + SkyBillboard.CamVecFront_Y;
 
         // pitch rotate sky to get top projection
         float newX = v_18x + v_18y + (v_18z * y_dist);
@@ -911,32 +907,32 @@ void OpenGLRenderer::DrawIndoorSky(int uNumVertices, int uFaceID) {
 
         // offset tex coords
         float texoffset_U = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalleft * worldviewdepth) / 16.0f);
-        VertexRenderList[_507D30_idx].u = texoffset_U / (pSkyPolygon.texture->width());
+        VertexRenderList[_507D30_idx].u = texoffset_U / (pFace->GetTexture()->width());
         float texoffset_V = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalfront * worldviewdepth) / 16.0f);
-        VertexRenderList[_507D30_idx].v = texoffset_V / (pSkyPolygon.texture->height());
+        VertexRenderList[_507D30_idx].v = texoffset_V / (pFace->GetTexture()->height());
 
         // this basically acts as texture perspective correction
         VertexRenderList[_507D30_idx]._rhw = worldviewdepth;
     }
 
     // no clipped polygon so draw and return??
-    if (_507D30_idx >= pSkyPolygon.uNumVertices) {
-        DrawIndoorSkyPolygon(pSkyPolygon.uNumVertices, &pSkyPolygon);
+    if (_507D30_idx >= uNumVertices) {
+        DrawIndoorSkyPolygon(uNumVertices, pFace->GetTexture(), dimming_level);
         return;
     }
 }
 
-void OpenGLRenderer::DrawIndoorSkyPolygon(signed int uNumVertices, Polygon *pSkyPolygon) {
-    int texid = pSkyPolygon->texture->renderId().value();
+void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *texture, int dimmingLevel) {
+    int texid = texture->renderId().value();
 
-    Colorf uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
+    Colorf uTint = GetActorTintColor(dimmingLevel, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
     float scrspace{ pCamera3D->GetFarClip() };
 
     float oneon = 1.0f / (pCamera3D->GetNearClip() * 2.0f);
     float oneof = 1.0f / (pCamera3D->GetFarClip());
 
     // load up poly
-    for (int z = 0; z < (pSkyPolygon->uNumVertices - 2); z++) {
+    for (int z = 0; z < (uNumVertices - 2); z++) {
         // 123, 134, 145, 156..
         forcepersverts *thisvert = &forceperstore[forceperstorecnt];
         float oneoz = 1.0f / VertexRenderList[0].vWorldViewPosition.x;

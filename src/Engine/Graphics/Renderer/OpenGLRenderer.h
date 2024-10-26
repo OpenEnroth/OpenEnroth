@@ -131,8 +131,7 @@ class OpenGLRenderer : public BaseRenderer {
     void SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1);
 
     void DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *texture, int dimmingLevel);
-    void DrawIndoorSkyPolygon(signed int uNumVertices,
-                              Polygon *pSkyPolygon);
+    void DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *texture, int dimmingLevel);
     void DrawForcePerVerts();
 
     void SetFogParametersGL();
