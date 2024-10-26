@@ -638,7 +638,7 @@ TILE_DESC_FLAGS OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
 
 SoundId OutdoorLocation::getSoundIdByGrid(int X_pos, int Y_pos, bool isRunning) {
     // TODO(captainurist): this doesn't take seasons into account.
-    switch (pTerrain.tileSet(X_pos, Y_pos, Tileset_Dirt)) {
+    switch (pTerrain.tileSet(X_pos, Y_pos)) {
         case Tileset_Grass:
             return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
         case Tileset_Snow:
@@ -647,6 +647,7 @@ SoundId OutdoorLocation::getSoundIdByGrid(int X_pos, int Y_pos, bool isRunning) 
             return isRunning ? SOUND_RunDesert : SOUND_WalkDesert;
         case Tileset_CooledLava:
             return isRunning ? SOUND_RunCooledLava : SOUND_WalkCooledLava;
+        case Tileset_NULL: // Use dirt sounds for invalid tiles.
         case Tileset_Dirt:
             // Water sounds were used
             return isRunning ? SOUND_RunDirt : SOUND_WalkDirt;

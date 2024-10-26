@@ -26,7 +26,12 @@ struct OutdoorTerrain {
      */
     int tileId(int x, int y) const;
 
-    Tileset tileSet(int x, int y, Tileset defaultTileSet = Tileset_Dirt) const;
+    /**
+     * @param x                         Grid x.
+     * @param y                         Grid y.
+     * @return                          Tile set at (x, y), or `Tileset_NULL` if the tile is invalid.
+     */
+    Tileset tileSet(int x, int y) const;
 
     int mapToGlobalTileId(int localTileId) const;
 

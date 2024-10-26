@@ -41,11 +41,17 @@ int OutdoorTerrain::tileId(int x, int y) const {
     return mapToGlobalTileId(pTilemap[y * 128 + x]);
 }
 
-Tileset OutdoorTerrain::tileSet(int x, int y, Tileset defaultTileSet) const {
+Tileset OutdoorTerrain::tileSet(int x, int y) const {
+    if (x < 0 || x > 127 || y < 0 || y > 127)
+        return Tileset_NULL;
+
     int localTileId = pTilemap[y * 128 + x];
 
+    if (localTileId >= 1 && localTileId <= 12)
+        return Tileset_Dirt; // See comment in mapToGlobalTileId.
+
     if (localTileId >= 234 || localTileId < 90)
-        return defaultTileSet;
+        return Tileset_NULL;
 
     int tileSetIndex = (localTileId - 90) / 36;
     return pTileTypes[tileSetIndex].tileset;
@@ -53,16 +59,18 @@ Tileset OutdoorTerrain::tileSet(int x, int y, Tileset defaultTileSet) const {
 
 int OutdoorTerrain::mapToGlobalTileId(int localTileId) const {
     // Tiles in tilemap:
-    // [0..90) seem to be invalid.
-    //         The idea there might have been to map them into global tile ids as-is, but only global tile ids [1..12]
-    //         are valid (all are dirt), the rest are "pending", effectively invalid. We treat them as invalid here.
+    // [0..90) are mapped as-is, but seem to be mostly invalid. Only global tile ids [1..12] are valid (all are dirt),
+    //         the rest are "pending", effectively invalid.
     // [90..126) map to tileset #1.
     // [126..162) map to tileset #2.
     // [162..198) map to tileset #3.
     // [198..234) map to tileset #4 (road).
     // [234..255) are invalid.
 
-    if (localTileId >= 234 || localTileId < 90)
+    if (localTileId < 90)
+        return localTileId;
+
+    if (localTileId >= 234)
         return 0;
 
     int tileSetIndex = (localTileId - 90) / 36;
