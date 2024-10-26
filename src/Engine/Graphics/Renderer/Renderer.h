@@ -25,7 +25,6 @@ struct SpellFX_Billboard;
 class Vis;
 struct Lightmap;
 struct Decal;
-struct Polygon;
 struct nk_context;
 
 bool PauseGameDrawing();

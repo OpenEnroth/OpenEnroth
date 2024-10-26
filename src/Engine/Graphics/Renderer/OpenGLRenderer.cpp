@@ -33,7 +33,6 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/PaletteManager.h"
-#include "Engine/Graphics/Polygon.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"

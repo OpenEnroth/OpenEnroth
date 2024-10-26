@@ -50,7 +50,6 @@ set(ENGINE_GRAPHICS_HEADERS
         Overlays.h
         PaletteManager.h
         ParticleEngine.h
-        Polygon.h
         PortalFunctions.h
         RenderEntities.h
         Sprites.h
