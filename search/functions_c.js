@@ -26,7 +26,7 @@ var searchData=
   ['loadandprepareodm_23',['loadAndPrepareODM',['../Outdoor_8h.html#af2ef3a16e28c3ce7e36bae7d2fa0fb9e',1,'loadAndPrepareODM(MapId mapid, bool bLoading, ODMRenderParams *a2):&#160;Outdoor.cpp'],['../Outdoor_8cpp.html#af2ef3a16e28c3ce7e36bae7d2fa0fb9e',1,'loadAndPrepareODM(MapId mapid, bool bLoading, ODMRenderParams *a2):&#160;Outdoor.cpp']]],
   ['loadandprepareodminternal_24',['loadAndPrepareODMInternal',['../Outdoor_8cpp.html#ae0f32cb6e3c4479f3610a7bf817c7174',1,'Outdoor.cpp']]],
   ['loadanimations_25',['LoadAnimations',['../structSpellFxRenderer.html#a509ed934516ac7f737ed8782b22e0f6b',1,'SpellFxRenderer']]],
-  ['loadbasetileids_26',['LoadBaseTileIds',['../structOutdoorLocation.html#a4f4438ab5bcb3161363b5d843cc28045',1,'OutdoorLocation']]],
+  ['loadbasetileids_26',['LoadBaseTileIds',['../structOutdoorTerrain.html#a7855e5cb4925c10807977ec11f08478d',1,'OutdoorTerrain']]],
   ['loadcompressedtexture_27',['LoadCompressedTexture',['../classLodTextureCache.html#ad552acb57e1a873637579425795e578c',1,'LodTextureCache']]],
   ['loadfont_28',['LoadFont',['../classGUIFont.html#a204c95245c729c193bd24f35212cb7a0',1,'GUIFont']]],
   ['loadfromlod_29',['LoadFromLOD',['../classMovie.html#a4362f25679d3f41aaf7afcc9fdd6ab05',1,'Movie']]],
