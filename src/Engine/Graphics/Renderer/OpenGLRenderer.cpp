@@ -1953,8 +1953,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     continue;
 
                 // splat hits this square of terrain
-                Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
-                pTilePolygon->flags = pOutdoor->getTileAttribByGrid(loopx, loopy);
+                TILE_DESC_FLAGS terrainFlags = pOutdoor->getTileAttribByGrid(loopx, loopy);
 
                 unsigned norm_idx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
                 unsigned bottnormidx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
@@ -1967,26 +1966,24 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                 // top tri
                 float _f1 = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
-                pTilePolygon->dimming_level = 20.0f - floorf(20.0f * _f1 + 0.5f);
-                pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
+                int dimming_level = std::clamp(static_cast<int>(20.0f - floorf(20.0f * _f1 + 0.5f)), 0, 31);
 
-                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon->flags, norm, &Light_tile_dist, VertexRenderList, i);
+                decal_builder->ApplyBloodSplatToTerrain(terrainFlags, norm, &Light_tile_dist, VertexRenderList, i);
                 Planef plane;
                 plane.normal = *norm;
                 plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)
-                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, plane, 3, VertexRenderList, 0, -1);
+                    decal_builder->BuildAndApplyDecals(31 - dimming_level, LocationTerrain, plane, 3, VertexRenderList, 0, -1);
 
                 //bottom tri
                 float _f = norm2->x * pOutdoor->vSunlight.x + norm2->y * pOutdoor->vSunlight.y + norm2->z * pOutdoor->vSunlight.z;
-                pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
-                pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
+                dimming_level = std::clamp(static_cast<int>(20.0 - floorf(20.0 * _f + 0.5f)), 0, 31);
 
-                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon->flags, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
+                decal_builder->ApplyBloodSplatToTerrain(terrainFlags, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
                 plane.normal = *norm2;
                 plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)
-                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, plane, 3, (VertexRenderList + 3), 0, -1);
+                    decal_builder->BuildAndApplyDecals(31 - dimming_level, LocationTerrain, plane, 3, (VertexRenderList + 3), 0, -1);
             }
         }
     }
@@ -3805,19 +3802,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                 continue;
             }
 
-            Polygon *poly = &array_77EC08[pODMRenderParams->uNumPolygons];
-            poly->flags = 0;
-            poly->field_32 = 0;
-
-            // if (v53 == face.uNumVertices) poly->field_32 |= 1;
-            poly->pODMFace = &face;
-            poly->uNumVertices = face.uNumVertices;
-            poly->field_59 = 5;
-
-
             float _f1 = face.facePlane.normal.x * pOutdoor->vSunlight.x + face.facePlane.normal.y * pOutdoor->vSunlight.y + face.facePlane.normal.z * pOutdoor->vSunlight.z;
-            poly->dimming_level = 20.0 - floorf(20.0 * _f1 + 0.5f);
-            poly->dimming_level = std::clamp((int)poly->dimming_level, 0, 31);
+            int dimming_level = std::clamp(static_cast<int>(20.0 - floorf(20.0 * _f1 + 0.5f)), 0, 31);
 
             for (unsigned vertex_id = 1; vertex_id <= face.uNumVertices; vertex_id++) {
                 array_73D150[vertex_id - 1].vWorldPosition.x =
@@ -3836,7 +3822,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             decal_builder->ApplyBloodSplat_OutdoorFace(&face);
             if (decal_builder->uNumSplatsThisFace > 0) {
                 decal_builder->BuildAndApplyDecals(
-                    31 - poly->dimming_level, LocationBuildings,
+                    31 - dimming_level, LocationBuildings,
                     face.facePlane,
                     face.uNumVertices, VertexRenderList, 0, -1);
             }
