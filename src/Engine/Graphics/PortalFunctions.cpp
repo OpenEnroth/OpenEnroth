@@ -68,12 +68,12 @@ int _49CE9E_sub0_z(RenderVertexSoft *pVertices, unsigned int uNumVertices,
 }
 
 //----- (0049CE9E) --------------------------------------------------------
-void stru10::_49CE9E(BLVFace *pFace, RenderVertexSoft *pVertices,
+void _49CE9E(BLVFace *pFace, RenderVertexSoft *pVertices,
                      unsigned int uNumVertices, RenderVertexSoft *pOutLimits) {
     assert(sizeof(RenderVertexSoft) == 0x30);
 
     RenderVertexSoft pLimits[64];
-    stru10::CalcPolygonLimits(pFace, pLimits);
+    CalcPolygonLimits(pFace, pLimits);
 
     if (pFace->uAttributes & FACE_XY_PLANE) {
         pOutLimits[0] = pVertices[_49CE9E_sub0_x(pVertices, uNumVertices, pLimits[0].vWorldPosition.x)];
@@ -94,7 +94,7 @@ void stru10::_49CE9E(BLVFace *pFace, RenderVertexSoft *pVertices,
 }
 
 //----- (0049D379) --------------------------------------------------------
-void stru10::CalcPolygonLimits(BLVFace *pFace, RenderVertexSoft *pOutVertices) {
+void CalcPolygonLimits(BLVFace *pFace, RenderVertexSoft *pOutVertices) {
     FlatFace points;
     pFace->Flatten(&points, MODEL_INDOOR);
 
@@ -156,7 +156,7 @@ void stru10::CalcPolygonLimits(BLVFace *pFace, RenderVertexSoft *pOutVertices) {
 }
 
 //----- (0049C9E3) --------------------------------------------------------
-bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
+bool CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
                               unsigned int uNumVertices,
                               RenderVertexSoft *pOutBounding) {
     Vec3f a1;
@@ -340,14 +340,8 @@ bool stru10::CalcFaceBounding(BLVFace *pFace, RenderVertexSoft *pFaceLimits,
     return true;
 }
 
-//----- (0049C5B0) --------------------------------------------------------
-stru10::stru10() { /*this->bDoNotDrawPortalFrustum = false;*/ }
-
-//----- (0049C5BD) --------------------------------------------------------
-stru10::~stru10() {}
-
 //----- (0049C5DA) --------------------------------------------------------
-bool stru10::CalcPortalShapePoly(BLVFace *pFace, RenderVertexSoft *pVertices,
+bool CalcPortalShapePoly(BLVFace *pFace, RenderVertexSoft *pVertices,
                      unsigned int *pNumVertices, Planef *pOutFrustum,
                      RenderVertexSoft *pOutBounding) {
     // calc poly limits
@@ -388,7 +382,7 @@ bool stru10::CalcPortalShapePoly(BLVFace *pFace, RenderVertexSoft *pVertices,
 }
 
 //----- (0049C720) --------------------------------------------------------
-bool stru10::CalcPortalFrustum(RenderVertexSoft *pFaceBounding, Planef *pPortalDataFrustum) {
+bool CalcPortalFrustum(RenderVertexSoft *pFaceBounding, Planef *pPortalDataFrustum) {
     Vec3f pRayStart;
     pRayStart.x = pCamera3D->vCameraPos.x;
     pRayStart.y = pCamera3D->vCameraPos.y;
@@ -405,7 +399,7 @@ bool stru10::CalcPortalFrustum(RenderVertexSoft *pFaceBounding, Planef *pPortalD
 }
 
 //----- (0049C7C5) --------------------------------------------------------
-bool stru10::CalcPortalFrustumPlane(RenderVertexSoft *pFaceBounding1,
+bool CalcPortalFrustumPlane(RenderVertexSoft *pFaceBounding1,
                                     RenderVertexSoft *pFaceBounding2,
                                     Vec3f *pRayStart,
                                     Planef *pPortalDataFrustum) {

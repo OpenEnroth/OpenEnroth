@@ -85,7 +85,7 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
         nodes[num_nodes].uFaceID = uFaceID;
 
         // calculates the portal bounding and frustum
-        bool bFrustumbuilt = engine->pStru10Instance->CalcPortalShapePoly(
+        bool bFrustumbuilt = CalcPortalShapePoly(
                 pFace, static_subAddFaceToRenderList_d3d_stru_F79E08,
                 &pNewNumVertices, nodes[num_nodes].ViewportNodeFrustum.data(),
                 nodes[num_nodes].pPortalBounding.data());
