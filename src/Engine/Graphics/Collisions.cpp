@@ -1159,6 +1159,11 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
                 pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
             }
 
+            if (pODMFace->uPolygonType == POLYGON_Floor) {
+                if (pParty->velocity.z > 0.0f)
+                    pParty->pos.z = pOutdoor->pBModels[collision_state.pid.id() >> 6].pVertices[pODMFace->pVertexIDs[0]].z;
+            }
+
             continue;
         }
 
