@@ -355,9 +355,12 @@ bool Camera3D::CullFaceToCameraFrustum(RenderVertexSoft *pInVertices,
 bool Camera3D::CullFaceToFrustum(RenderVertexSoft *a1, unsigned int *pOutNumVertices,
                     RenderVertexSoft *pVertices, Planef *frustum,
                     signed int NumFrustumPlanes) {
-    if (NumFrustumPlanes <= 0) return false;
-    if (*pOutNumVertices <= 0) return false;
-    if (frustum == NULL) return true;
+    if (NumFrustumPlanes <= 0)
+        return false;
+    if (*pOutNumVertices <= 0)
+        return false;
+    if (frustum == NULL)
+        return true;
 
     bool inside = false;
     for (int p = 0; p < NumFrustumPlanes; p++) {
@@ -373,19 +376,14 @@ bool Camera3D::CullFaceToFrustum(RenderVertexSoft *a1, unsigned int *pOutNumVert
         if (inside == false) break;
     }
 
-    if (inside == false) {
-        *pOutNumVertices = 0;
-        return false;
-    } else {
+    if (inside) {
         // copy in vcerts
         memcpy(pVertices, a1, sizeof(RenderVertexSoft) * *pOutNumVertices);
-        // return true
-        return true;
+    } else {
+        *pOutNumVertices = 0;
     }
 
-    assert(false);
-
-    return false;
+    return inside;
 }
 
 bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,

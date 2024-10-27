@@ -13,9 +13,8 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
     int pTransitionSector;  // ax@11
     // int dotdist;                              // edx@15
 
-    nodes[num_nodes].viewing_portal_id = -1;
-
-    if (uFaceID >= pIndoor->pFaces.size()) return;
+    if (uFaceID >= pIndoor->pFaces.size())
+        return;
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
 
     if (!pFace->isPortal()) {
@@ -31,7 +30,8 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
 
     // portals are invisible faces marking the transition between sectors
     // dont add the face we are looking through
-    if (nodes[node_id].uFaceID == uFaceID) return;
+    if (nodes[node_id].uFaceID == uFaceID)
+        return;
 
     // if node_id 0 and bounding box check with portal - ie party stood next to portal
     int boundingslack = 128;
@@ -57,23 +57,24 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
         AddBspNodeToRenderList(++num_nodes - 1);
         return;
     }
+
     // check if portal is visible on screen
 
-    static RenderVertexSoft static_subAddFaceToRenderList_d3d_stru_F7AA08[64];
-    static RenderVertexSoft static_subAddFaceToRenderList_d3d_stru_F79E08[64];
+    static RenderVertexSoft originalFaceVertices[64];
+    static RenderVertexSoft clippedFaceVertices[64];
 
     for (unsigned k = 0; k < pFace->uNumVertices; ++k) {
-        static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[k]].x;
-        static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[k]].y;
-        static_subAddFaceToRenderList_d3d_stru_F7AA08[k].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[k]].z;
+        originalFaceVertices[k].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[k]].x;
+        originalFaceVertices[k].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[k]].y;
+        originalFaceVertices[k].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[k]].z;
     }
 
     unsigned int pNewNumVertices = pFace->uNumVertices;
 
     // accurate clip to current viewing nodes frustum
     bool vertadj = pCamera3D->ClipFaceToFrustum(
-            static_subAddFaceToRenderList_d3d_stru_F7AA08, &pNewNumVertices,
-            static_subAddFaceToRenderList_d3d_stru_F79E08,
+            originalFaceVertices, &pNewNumVertices,
+            clippedFaceVertices,
             nodes[node_id].ViewportNodeFrustum.data(), 4, 0, 0);
 
     if (pNewNumVertices) {
@@ -86,7 +87,7 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
 
         // calculates the portal bounding and frustum
         bool bFrustumbuilt = CalcPortalShapePoly(
-                pFace, static_subAddFaceToRenderList_d3d_stru_F79E08,
+                pFace, clippedFaceVertices,
                 &pNewNumVertices, nodes[num_nodes].ViewportNodeFrustum.data(),
                 nodes[num_nodes].pPortalBounding.data());
 
@@ -99,6 +100,11 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
         };
 
         // avoid circular loops in portals
+        // NOTE(yoctozepto): based on other code, we should avoid having the same sector id in two nodes as this
+        //                   causes faces to be added twice, yet simplifying this statement causes rendering issues
+        //                   in some places, notably the upper, open corridor in "Temple of Light" because it offers
+        //                   several ways (portals) to "look" at faces and some might be more limited in sight than others;
+        //                   see PR #1850 for the discussion and save file
         for (int test = 0; test < num_nodes; test++) {
             if (nodes[test].uSectorID == nodes[num_nodes].uSectorID &&
                 nodes[test].uFaceID == nodes[num_nodes].uFaceID &&
@@ -110,7 +116,6 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
         if (bFrustumbuilt) {
             // add portal sector to drawing list
             assert(num_nodes < 150);
-            nodes[num_nodes].viewing_portal_id = uFaceID;
             AddBspNodeToRenderList(++num_nodes - 1);
         }
     }
@@ -163,7 +168,6 @@ void PrepareBspRenderList_BLV() {
 
         // blank viewing node
         pBspRenderer->nodes[0].uFaceID = -1;
-        pBspRenderer->nodes[0].viewing_portal_id = -1;
         pBspRenderer->num_nodes = 1;
         AddBspNodeToRenderList(0);
     }
