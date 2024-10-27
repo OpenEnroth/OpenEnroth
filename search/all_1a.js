@@ -12,7 +12,7 @@ var searchData=
   ['zdrawtexturealpha_9',['ZDrawTextureAlpha',['../classBaseRenderer.html#ae7f483a400325ed8febb28291c6dbe5e',1,'BaseRenderer::ZDrawTextureAlpha()'],['../classRenderer.html#a547dd661c097a0e7bb0fcd36103072a5',1,'Renderer::ZDrawTextureAlpha()']]],
   ['zero_10',['Zero',['../classCharacter.html#a47a20410a76308c666dc87e067b92efc',1,'Character::Zero()'],['../structParty.html#ab15c1e68117cce8aa7ac038d8b9aa67e',1,'Party::Zero()']]],
   ['zeroistransparent_11',['zeroIsTransparent',['../structTexture__MM7.html#a6b081e207c7eec7820b18ba5926b6c78',1,'Texture_MM7::zeroIsTransparent()'],['../structLodImage.html#a3dfe62fc15678444b1de2c98c006f8dc',1,'LodImage::zeroIsTransparent()']]],
-  ['zerolandscape_12',['ZeroLandscape',['../structOutdoorTerrain.html#ad863d416520e3b46bb203c9dddeaf142',1,'OutdoorTerrain']]],
+  ['zerolandscape_12',['ZeroLandscape',['../classOutdoorTerrain.html#ad863d416520e3b46bb203c9dddeaf142',1,'OutdoorTerrain']]],
   ['zinterceptdisplacements_13',['zInterceptDisplacements',['../structBLVFace__MM7.html#a00f74bed521bd182c7e7b06d8c7e253c',1,'BLVFace_MM7']]],
   ['zlib_14',['zlib',['../namespacezlib.html',1,'']]],
   ['zoo_5fbonus_15',['zoo_bonus',['../Arcomage_8cpp.html#af82c72b01e668ec6665cda79a2b609e7',1,'Arcomage.cpp']]],

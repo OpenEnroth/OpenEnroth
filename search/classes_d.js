@@ -28,7 +28,7 @@ var searchData=
   ['outdoorlocation_5fmm7_25',['OutdoorLocation_MM7',['../structOutdoorLocation__MM7.html',1,'']]],
   ['outdoorlocationtiletype_26',['OutdoorLocationTileType',['../structOutdoorLocationTileType.html',1,'']]],
   ['outdoorlocationtiletype_5fmm7_27',['OutdoorLocationTileType_MM7',['../structOutdoorLocationTileType__MM7.html',1,'']]],
-  ['outdoorterrain_28',['OutdoorTerrain',['../structOutdoorTerrain.html',1,'']]],
+  ['outdoorterrain_28',['OutdoorTerrain',['../classOutdoorTerrain.html',1,'']]],
   ['outputstream_29',['OutputStream',['../classOutputStream.html',1,'']]],
   ['overlay_30',['Overlay',['../classOverlay.html',1,'']]],
   ['overlaybindings_31',['OverlayBindings',['../classOverlayBindings.html',1,'']]],

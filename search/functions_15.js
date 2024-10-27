@@ -34,7 +34,7 @@ var searchData=
   ['updateconfigfromwindow_31',['UpdateConfigFromWindow',['../classGameWindowHandler.html#afa76bd0215459d21a137e0da355630af',1,'GameWindowHandler']]],
   ['updatedelayedreaction_32',['updateDelayedReaction',['../structParty.html#ae0f610ef63383e0a74e2c08ea0e61bee',1,'Party']]],
   ['updatedialogueonescape_33',['updateDialogueOnEscape',['../classGUIWindow__Shop.html#a693da406ffad77cb3aa69eb6c076d270',1,'GUIWindow_Shop::updateDialogueOnEscape()'],['../classGUIWindow__Tavern.html#a4b661ebc0967dea171fddf7dc1347042',1,'GUIWindow_Tavern::updateDialogueOnEscape()'],['../classGUIWindow__Temple.html#ac080a7a99953cf0a2ea47a3d6f8c054e',1,'GUIWindow_Temple::updateDialogueOnEscape()'],['../classGUIWindow__Training.html#a00ca11a3b91e02715004fa5d52a2e29c',1,'GUIWindow_Training::updateDialogueOnEscape()'],['../classGUIWindow__House.html#a43fa1f2a5f2ee998dc8d4e42beb04e4f',1,'GUIWindow_House::updateDialogueOnEscape()']]],
-  ['updatediscoveredarea_34',['UpdateDiscoveredArea',['../structOutdoorLocation.html#a282d75e700f03ca87e719cd74c8a0ebf',1,'OutdoorLocation']]],
+  ['updatediscoveredarea_34',['UpdateDiscoveredArea',['../structOutdoorLocation.html#ae5bbde73156bbfdc83dbbfdc5d406844',1,'OutdoorLocation']]],
   ['updateeffect_35',['UpdateEffect',['../structexplosion__effect__struct.html#a436b1857a90644e9fe7e388415492944',1,'explosion_effect_struct']]],
   ['updatefog_36',['UpdateFog',['../structOutdoorLocation.html#a0a6da39ca4fa6c668663e87a51d706a2',1,'OutdoorLocation']]],
   ['updatehousenpctopics_37',['updateHouseNPCTopics',['../UIHouses_8h.html#a0bfbd1d898fd51368b8eb7f1bfbbd43e',1,'updateHouseNPCTopics(int npc):&#160;UIHouses.cpp'],['../UIHouses_8cpp.html#a0bfbd1d898fd51368b8eb7f1bfbbd43e',1,'updateHouseNPCTopics(int npc):&#160;UIHouses.cpp']]],
