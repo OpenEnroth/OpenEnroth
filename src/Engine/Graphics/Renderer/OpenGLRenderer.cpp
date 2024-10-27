@@ -4079,6 +4079,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 if (uFaceID >= pIndoor->pFaces.size())
                     continue;
                 BLVFace *face = &pIndoor->pFaces[uFaceID];
+                face->uAttributes |= FACE_SeenByParty;
 
                 if (face->isPortal()) {
                     continue;
@@ -4105,8 +4106,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 static RenderVertexSoft static_vertices_buff_in[64];  // buff in
                 static RenderVertexSoft static_vertices_calc_out[64];  // buff out - calc portal shape
 
-                // moved face to camera check to avoid missing minimap outlines
-                if (/*pCamera3D->is_face_faced_to_cameraBLV(face) ||*/ true) {
+                // check face is towards camera
+                if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
                     uNumVerticesa = face->uNumVertices;
 
                     // copy to buff in
@@ -4135,10 +4136,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                     // check if this face is visible through current portal node
                     if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)) {
-                        face->uAttributes |= FACE_SeenByParty;
-
-                        // check face is towards camera
-                        if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
+                        if (true) {
                             ++pBLVRenderParams->uNumFacesRenderedThisFrame;
                             // load up verts here
                             int texlayer = 0;

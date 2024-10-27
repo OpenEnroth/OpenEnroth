@@ -33,31 +33,6 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
     if (nodes[node_id].uFaceID == uFaceID)
         return;
 
-    // if node_id 0 and bounding box check with portal - ie party stood next to portal
-    int boundingslack = 128;
-
-    if (!node_id &&
-        pFace->pBounding.intersectsCube(Vec3f(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z), boundingslack)) {
-        // we are standing at the portal plane
-        pTransitionSector = pFace->uSectorID;
-        // draw back sector if we are already doing this sector
-        if (nodes[0].uSectorID == pTransitionSector)
-            pTransitionSector = pFace->uBackSectorID;
-        nodes[num_nodes].uSectorID = pTransitionSector;
-        nodes[num_nodes].uFaceID = uFaceID;
-
-        // set furstum to cam frustum
-        for (int loop = 0; loop < 4; loop++) {
-            nodes[num_nodes].ViewportNodeFrustum[loop].normal.x = pCamera3D->FrustumPlanes[loop].x;
-            nodes[num_nodes].ViewportNodeFrustum[loop].normal.y = pCamera3D->FrustumPlanes[loop].y;
-            nodes[num_nodes].ViewportNodeFrustum[loop].normal.z = pCamera3D->FrustumPlanes[loop].z;
-            nodes[num_nodes].ViewportNodeFrustum[loop].dist = -pCamera3D->FrustumPlanes[loop].w;
-        }
-
-        AddBspNodeToRenderList(++num_nodes - 1);
-        return;
-    }
-
     // check if portal is visible on screen
 
     static RenderVertexSoft originalFaceVertices[64];
@@ -114,8 +89,21 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
         }
 
         if (bFrustumbuilt) {
+            const int boundingslack = 128;
+
+            // NOTE(yoctozepto): when the party is standing near (in a `boundingslack`) a portal of the same node (`id == 0`), then we need to fix the frustum
+            //                   because it is likely to clip the view too much and miss to render the faces behind it
+            if (node_id == 0 &&
+                pFace->pBounding.intersectsCube(Vec3f(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z), boundingslack)) {
+                for (int loop = 0; loop < 4; loop++) {
+                    nodes[num_nodes].ViewportNodeFrustum[loop].normal.x = pCamera3D->FrustumPlanes[loop].x;
+                    nodes[num_nodes].ViewportNodeFrustum[loop].normal.y = pCamera3D->FrustumPlanes[loop].y;
+                    nodes[num_nodes].ViewportNodeFrustum[loop].normal.z = pCamera3D->FrustumPlanes[loop].z;
+                    nodes[num_nodes].ViewportNodeFrustum[loop].dist = -pCamera3D->FrustumPlanes[loop].w;
+                }
+            }
+
             // add portal sector to drawing list
-            assert(num_nodes < 150);
             AddBspNodeToRenderList(++num_nodes - 1);
         }
     }
