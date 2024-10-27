@@ -6,6 +6,8 @@
 
 #include <cstdlib>
 
+#include "Engine/Engine.h"
+
 // Sound attenuation factors
 constexpr float MAX_SOUND_DIST = 60000.0f;
 constexpr float REFERENCE_DIST = 300.0f;
