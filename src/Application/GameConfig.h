@@ -37,6 +37,14 @@ class GameConfig : public Config {
     using String = ConfigEntry<std::string>;
     using Key = ConfigEntry<PlatformKey>;
 
+    class Audio : public ConfigSection {
+     public:
+        explicit Audio(GameConfig *config) : ConfigSection(config, "audio") {}
+
+        Bool HRTF = {this, "hrtf", true, "Disable HRTF for headphones."};
+
+    };
+
     class Debug : public ConfigSection {
      public:
         explicit Debug(GameConfig *config) : ConfigSection(config, "debug") {}
