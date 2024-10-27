@@ -42,7 +42,6 @@ class GameConfig : public Config {
         explicit Audio(GameConfig *config) : ConfigSection(config, "audio") {}
 
         Bool DisableHRTF = {this, "disable_hrtf", true, "Disable HRTF for headphones."};
-
     };
 
     Audio audio{ this };
