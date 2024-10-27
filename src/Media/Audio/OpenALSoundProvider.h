@@ -2,6 +2,7 @@
 
 #include <al.h>
 #include <alc.h>
+#include <AL/alext.h>
 
 #include <cstdlib>
 
