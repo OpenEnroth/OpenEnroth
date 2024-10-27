@@ -3,6 +3,10 @@
 #include <cassert>
 #include <cmath>
 
+#include <alext.h> // For ALC_HRTF_SOFT. NOLINT: not a C system header.
+
+#include "Engine/Engine.h"
+
 #include "Library/Logger/Logger.h"
 
 bool checkOpenALError() {
@@ -53,7 +57,7 @@ bool OpenALSoundProvider::Initialize() {
         return false;
     }
 
-    ALCint attrs[3] = {0};
+    ALCint attrs[3] = {};
 
     if (engine->config->audio.DisableHRTF.value()) {
         // Disable HRTF so headphones don't sound bad.
