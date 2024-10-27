@@ -21,9 +21,9 @@
 #include "Engine/Objects/Chest.h"
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
-#include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Tables/PortraitFrameTable.h"
-#include "Engine/Tables/TileTable.h"
+#include "Engine/Data/IconFrameData.h"
+#include "Engine/Data/PortraitFrameData.h"
+#include "Engine/Data/TileData.h"
 #include "Engine/Time/Time.h"
 
 #include "Media/Audio/SoundInfo.h"
@@ -289,7 +289,7 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->uNumVertices = src.numVertices;
 }
 
-void reconstruct(const TileDesc_MM7 &src, TileDesc *dst) {
+void reconstruct(const TileData_MM7 &src, TileData *dst) {
     reconstruct(src.tileName, &dst->name);
     dst->name = ascii::toLower(dst->name);
 

@@ -136,13 +136,18 @@ UNIT_TEST(MemoryFileSystem, Lifetime) {
     fs->write("a", Blob::fromString("123"));
     std::unique_ptr<InputStream> input = fs->openForReading("a");
     std::unique_ptr<OutputStream> output = fs->openForWriting("b");
+    std::unique_ptr<OutputStream> output2 = fs->openForWriting("c");
 
     fs.reset();
     EXPECT_EQ(input->readAll(), "123"); // Input stream still readable, even though the FS was destroyed.
     input->close();
 
+    // Output stream still writeable & closeable.
     output->write("123");
     output->close();
+
+    // Closing in destructor also works.
+    output2->write("456");
 }
 
 UNIT_TEST(MemoryFileSystem, Rename) {

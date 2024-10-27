@@ -29,7 +29,7 @@
 #include "Media/Audio/AudioPlayer.h"
 #include "Media/MediaPlayer.h"
 
-#include "Library/Image/PCX.h"
+#include "Library/Image/Png.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Platform/Interface/PlatformGamepad.h"
@@ -156,9 +156,9 @@ void GameWindowHandler::OnScreenshot() {
     if (render) {
         // TODO(pskelton): add "Screenshots" folder?
         engine->config->settings.ScreenshotNumber.increment();
-        std::string path = fmt::format("screenshot_{:05}.pcx", engine->config->settings.ScreenshotNumber.value());
+        std::string path = fmt::format("screenshot_{:05}.png", engine->config->settings.ScreenshotNumber.value());
 
-        ufs->write(path, pcx::encode(render->MakeFullScreenshot()));
+        ufs->write(path, png::encode(render->MakeFullScreenshot()));
     }
 }
 

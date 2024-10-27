@@ -1,4 +1,4 @@
-#include "PCX.h"
+#include "Pcx.h"
 
 #include <cstdint>
 #include <cstdlib>
@@ -104,7 +104,6 @@ RgbaImage pcx::decode(const Blob &data) {
     // check that's PCX and its version
     if (header->manufacturer != 0x0a)
         throw Exception("Invalid PCX starting byte, expected {:02x}, got {:02x}", 0x0a, header->manufacturer);
-
 
     if (header->version < PCX_VERSION_2_5 || header->version == PCX_VERSION_NOT_VALID || header->version > PCX_VERSION_3_0)
         throw Exception("Invalid PCX version: {}", header->version);

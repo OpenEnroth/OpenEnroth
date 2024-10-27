@@ -63,6 +63,7 @@ inline Segment<TILE_SECT> allSpecialTileSects() {
     return {TILE_SECT_FIRST_SPECIAL, TILE_SECT_LAST_SPECIAL};
 }
 
+// TODO(captainurist): #enum rename
 #pragma warning(push)
 #pragma warning(disable : 4341)
 enum class Tileset : int16_t {

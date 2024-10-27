@@ -50,8 +50,6 @@ void NullRenderer::BeginScene3D() {
     uNumBillboardsToDraw = 0;
 }
 
-void NullRenderer::DrawTerrainPolygon(Polygon *a4, bool transparent, bool clampAtTextureBorders) {}
-
 void NullRenderer::DrawProjectile(float srcX, float srcY, float a3, float a4,
                                   float dstX, float dstY, float a7, float a8,
                                   GraphicsImage *texture) {}

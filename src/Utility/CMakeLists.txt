@@ -80,6 +80,10 @@ if(OE_BUILD_TESTS)
             String/Tests/Split_ut.cpp
             String/Tests/Join_ut.cpp)
 
+    if(OE_BUILD_PLATFORM STREQUAL "windows")
+        list(APPEND TEST_UTILITY_SOURCES Win/Tests/Unicode_ut.cpp)
+    endif()
+
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_link_libraries(test_utility PUBLIC testing_unit utility)
 

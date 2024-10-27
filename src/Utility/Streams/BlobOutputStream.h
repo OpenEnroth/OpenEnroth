@@ -25,5 +25,5 @@ class BlobOutputStream : private Embedded<std::string>, public StringOutputStrea
 
  private:
     Blob *_target = nullptr;
-    std::string _displayPath;
+    std::string _displayPath; // TODO(captainurist): Use StringOutputStream's _displayPath instead.
 };

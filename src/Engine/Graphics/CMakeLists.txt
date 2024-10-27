@@ -50,7 +50,6 @@ set(ENGINE_GRAPHICS_HEADERS
         Overlays.h
         PaletteManager.h
         ParticleEngine.h
-        Polygon.h
         PortalFunctions.h
         RenderEntities.h
         Sprites.h
@@ -59,7 +58,9 @@ set(ENGINE_GRAPHICS_HEADERS
         TurnBasedOverlay.h
         Viewport.h
         Vis.h
-        Weather.h)
+        Weather.h
+        OutdoorTerrain.h
+        OutdoorTerrain.cpp)
 
 add_library(engine_graphics STATIC ${ENGINE_GRAPHICS_SOURCES} ${ENGINE_GRAPHICS_HEADERS})
 target_check_style(engine_graphics)
