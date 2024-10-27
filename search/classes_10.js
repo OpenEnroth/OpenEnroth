@@ -70,10 +70,9 @@ var searchData=
   ['stringdeserializer_67',['StringDeserializer',['../structdetail_1_1StringDeserializer.html',1,'detail']]],
   ['stringoutputstream_68',['StringOutputStream',['../classStringOutputStream.html',1,'']]],
   ['stringserializer_69',['StringSerializer',['../structdetail_1_1StringSerializer.html',1,'detail']]],
-  ['stru10_70',['stru10',['../structstru10.html',1,'']]],
-  ['stru262_5fturnbased_71',['stru262_TurnBased',['../structstru262__TurnBased.html',1,'']]],
-  ['stru2_5flinelist_72',['stru2_LineList',['../structstru2__LineList.html',1,'']]],
-  ['stru314_73',['stru314',['../structstru314.html',1,'']]],
-  ['stru319_74',['stru319',['../structstru319.html',1,'']]],
-  ['stru6_5fstru2_75',['stru6_stru2',['../structstru6__stru2.html',1,'']]]
+  ['stru262_5fturnbased_70',['stru262_TurnBased',['../structstru262__TurnBased.html',1,'']]],
+  ['stru2_5flinelist_71',['stru2_LineList',['../structstru2__LineList.html',1,'']]],
+  ['stru314_72',['stru314',['../structstru314.html',1,'']]],
+  ['stru319_73',['stru319',['../structstru319.html',1,'']]],
+  ['stru6_5fstru2_74',['stru6_stru2',['../structstru6__stru2.html',1,'']]]
 ];
