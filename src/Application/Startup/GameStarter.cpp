@@ -58,82 +58,54 @@
 constexpr std::string_view configName = "openenroth.ini";
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
-    // Init environment.
-    _environment = Environment::createStandardEnvironment();
-
-    // Init default log sink.
-    _rootLogSink = std::make_unique<DistLogSink>();
-    _defaultLogSink = LogSink::createDefaultSink();
-    _rootLogSink->addLogSink(_defaultLogSink.get());
-
-    if (_options.logLevel) {
-        // If we know the log level - init logger properly right away.
-        _logger = std::make_unique<Logger>(*_options.logLevel, _rootLogSink.get());
-    } else {
-        // Otherwise log into a buffer before we read the log level from config.
-        _bufferLogSink = std::make_unique<BufferLogSink>();
-        _logger = std::make_unique<Logger>(LOG_TRACE, _bufferLogSink.get());
-    }
+    // Init logging.
+    _logStarter.initPrimary();
+    Engine::LogEngineBuildInfo();
 
     try {
-        initializeWithLogger();
+        initWithLogger();
     } catch (const std::exception &e) {
-        // If we still haven't figured out the log level - print everything out at LOG_TRACE.
-        if (_bufferLogSink) {
-            _logger->setLevel(LOG_TRACE);
-            _logger->setSink(_rootLogSink.get());
-            _bufferLogSink->flush(_logger.get());
-        }
-
-        // Also log the exception so that it goes to all registered loggers.
-        _logger->critical("Terminated with exception: {}", e.what());
-
-        // And propagate.
+        logger->critical("Terminated with exception: {}", e.what());
         throw;
     }
 }
 
-void GameStarter::initializeWithLogger() {
-    // Log engine info.
-    Engine::LogEngineBuildInfo();
+void GameStarter::initWithLogger() {
+    // Init environment.
+    _environment = Environment::createStandardEnvironment();
 
-    // Init paths.
-    resolvePaths(_environment.get(), &_options, _logger.get());
+    // Resolve user path, create user fs & file logger.
+    resolveUserPath(_environment.get(), &_options);
+    _fsStarter.initUserFs(_options.ramFsUserData, _options.userPath);
+    _logStarter.initSecondary(ufs);
 
-    // Init filesystem - needs data paths initialized.
-    _fs = std::make_unique<EngineFileSystem>(_options.dataPath, _options.userPath);
-    if (_options.ramFsUserData) {
-        _userRamFs = std::make_unique<MemoryFileSystem>("ramfs");
-        ufs = _userRamFs.get();
-    }
+    // Resolve data path, create data fs.
+    // TODO(captainurist): actually move datapath to config?
+    resolveDataPath(_environment.get(), &_options);
+    _fsStarter.initDataFs(_options.dataPath);
 
     // Migrate saves & config if needed.
     if (!_options.ramFsUserData && _options.dataPath != _options.userPath)
         migrateUserData();
 
-    // Init config - needs data paths initialized.
+    // Init config.
     _config = std::make_shared<GameConfig>();
     if (ufs->exists(configName)) {
         _config->load(ufs->openForReading(configName).get());
-        _logger->info("Configuration file '{}' loaded!", ufs->displayPath(configName));
+        logger->info("Configuration file '{}' loaded!", ufs->displayPath(configName));
     } else {
         _config->reset();
-        _logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", ufs->displayPath(configName));
+        logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", ufs->displayPath(configName));
     }
 
     // Finish logger init now that we know the desired log level.
-    if (_bufferLogSink) {
-        _logger->setLevel(_config->debug.LogLevel.value());
-        _logger->setSink(_rootLogSink.get());
-        _bufferLogSink->flush(_logger.get());
-        _bufferLogSink.reset();
-    }
+    _logStarter.initFinal(_options.logLevel ? *_options.logLevel : _config->debug.LogLevel.value());
 
     // Create platform.
     if (_options.headless) {
         _platform = std::make_unique<NullPlatform>(NullPlatformOptions());
     } else {
-        _platform = Platform::createStandardPlatform(_logger.get());
+        _platform = Platform::createStandardPlatform();
     }
 
     // Prepare OpenAL settings. Unfortunately the only way to do this is by manipulating the env variables.
@@ -198,7 +170,7 @@ void GameStarter::initializeWithLogger() {
     _game = std::make_unique<Game>(_application.get(), _config);
 
     // Init scripting system.
-    _scriptingSystem = std::make_unique<ScriptingSystem>("scripts", "init.lua", *_application, *_rootLogSink);
+    _scriptingSystem = std::make_unique<ScriptingSystem>("scripts", "init.lua", *_application, *_logStarter.rootSink());
     _scriptingSystem->addBindings<LoggerBindings>("log");
     _scriptingSystem->addBindings<GameBindings>("game");
     _scriptingSystem->addBindings<ConfigBindings>("config");
@@ -223,7 +195,13 @@ GameStarter::~GameStarter() {
     ::openGLContext = nullptr;
 }
 
-void GameStarter::resolvePaths(Environment *environment, GameStarterOptions* options, Logger *logger) {
+void GameStarter::resolveUserPath(Environment *environment, GameStarterOptions *options) {
+    if (options->userPath.empty())
+        options->userPath = resolveMm7UserPath(environment);
+    logger->info("Using user path '{}'.", options->userPath);
+}
+
+void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *options) {
     std::vector<std::string> candidates;
     if (!options->dataPath.empty()) {
         candidates.push_back(options->dataPath);
@@ -249,10 +227,6 @@ void GameStarter::resolvePaths(Environment *environment, GameStarterOptions* opt
     if (options->dataPath.empty())
         options->dataPath = candidates.back();
     logger->info("Using data path '{}'.", options->dataPath);
-
-    if (options->userPath.empty())
-        options->userPath = resolveMm7UserPath(environment);
-    logger->info("Using user path '{}'.", options->userPath);
 }
 
 void GameStarter::failOnInvalidPath(std::string_view dataPath, Platform *platform) {
@@ -307,9 +281,7 @@ void GameStarter::run() {
         logger->info("Configuration file '{}' saved!", configName);
     } catch (const std::exception &e) {
         // Log the exception so that it goes to all registered loggers.
-        _logger->critical("Terminated with exception: {}", e.what());
-
-        // And propagate.
+        logger->critical("Terminated with exception: {}", e.what());
         throw;
     }
 }

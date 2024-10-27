@@ -25,7 +25,6 @@ struct SpellFX_Billboard;
 class Vis;
 struct Lightmap;
 struct Decal;
-struct Polygon;
 struct nk_context;
 
 bool PauseGameDrawing();
@@ -67,9 +66,6 @@ class Renderer {
     virtual void RestoreBackBuffer() = 0;
     virtual void BltBackToFontFast(int a2, int a3, Recti *a4) = 0;
     virtual void BeginScene3D() = 0;
-
-    virtual void DrawTerrainPolygon(Polygon *a4, bool transparent,
-                                    bool clampAtTextureBorders) = 0;
 
     virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
                                               GraphicsImage *texture,

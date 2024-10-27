@@ -24,7 +24,6 @@ class KeyboardActionMapping;
 struct BLVFace;
 struct Vis_PIDAndDepth;
 struct Vis_SelectionFilter;
-struct Polygon;
 struct DecalBuilder;
 struct BloodsplatContainer;
 struct SpellFxRenderer;

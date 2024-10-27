@@ -18,7 +18,8 @@ MemoryFileSystemOutputStream::MemoryFileSystemOutputStream(std::shared_ptr<Memor
 }
 
 MemoryFileSystemOutputStream::~MemoryFileSystemOutputStream() {
-    closeInternal();
+    // We can't just call closeInternal() here because base class's close() depends on _data->blob.
+    close();
 }
 
 void MemoryFileSystemOutputStream::close() {

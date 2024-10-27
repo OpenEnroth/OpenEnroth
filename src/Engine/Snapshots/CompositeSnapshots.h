@@ -89,7 +89,7 @@ struct OutdoorLocation_MM7 {
     std::array<uint8_t, 128 * 128> tileMap;
     std::array<uint8_t, 128 * 128> attributeMap;
     uint32_t normalCount;
-    std::array<uint32_t , 128 * 128 * 2> someOtherMap;
+    std::array<uint32_t , 128 * 128 * 2> someOtherMap; // Not used in OE, not even sure what this is.
     std::array<uint16_t, 128 * 128 * 2> normalMap;
     std::vector<Vec3f> normals;
     std::vector<BSPModelData_MM7> models;
