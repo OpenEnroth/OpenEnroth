@@ -8,8 +8,6 @@
 #include "Engine/SpawnPoint.h"
 #include "Engine/MapEnums.h"
 
-#include "Media/Audio/SoundEnums.h"
-
 #include "Library/Color/Color.h"
 
 #include "BSPModel.h"
@@ -43,11 +41,7 @@ struct OutdoorLocation {
      */
     TILE_DESC_FLAGS getTileAttribByGrid(int gridX, int gridY);
 
-    /**
-     * @offset 0x47EE49
-     */
-    SoundId getSoundIdByGrid(int X_pos, int Y_pos, bool isRunning);
-    int UpdateDiscoveredArea(int a2, int a3, int unused);
+    int UpdateDiscoveredArea(Vec2i gridPos);
     bool IsMapCellFullyRevealed(signed int a2, signed int a3);
     bool IsMapCellPartiallyRevealed(signed int a2, signed int a3);
     bool PrepareDecorations();
@@ -58,12 +52,12 @@ struct OutdoorLocation {
     /**
      * @offset 0x488EB1
      */
-    TILE_DESC_FLAGS getTileAttribByPos(int sX, int sY);
+    TILE_DESC_FLAGS getTileAttribByPos(const Vec3f &pos);
 
     /**
      * @offset 0x488EEF
      */
-    TileData *getTileDescByPos(int sX, int sZ);
+    TileData *getTileDescByPos(const Vec3f &pos);
 
     /**
      * @offset 0x47ED08
@@ -133,7 +127,7 @@ float ODM_GetFloorLevel(const Vec3f &pos, int unused, bool *pOnWater,
                       int *faceId, int bWaterWalk);
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                      int *pFaceID);
-void ODM_GetTerrainNormalAt(float pos_x, float pos_y, Vec3f *out);
+void ODM_GetTerrainNormalAt(const Vec3f &pos, Vec3f *out);
 void UpdateActors_ODM();
 void ODM_ProcessPartyActions();
 void SetUnderwaterFog();
@@ -144,13 +138,13 @@ void SetUnderwaterFog();
 void loadAndPrepareODM(MapId mapid, bool bLoading, ODMRenderParams *a2);
 Color GetLevelFogColor();
 int sub_47C3D7_get_fog_specular(int unused, int a2, float a3);
-unsigned int WorldPosToGridCellX(int);
-unsigned int WorldPosToGridCellY(int);
+Vec2i WorldPosToGrid(Vec3f worldPos);
+
 int GridCellToWorldPosX(int);
 int GridCellToWorldPosY(int);
 void sub_481ED9_MessWithODMRenderParams();
-bool IsTerrainSlopeTooHigh(int pos_x, int pos_y);
-int GetTerrainHeightsAroundParty2(int x, int y, bool *pIsOnWater, int bFloatAboveWater);
+bool IsTerrainSlopeTooHigh(const Vec3f &pos);
+int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater, int bFloatAboveWater);
 void TeleportToStartingPoint(MapStartPoint point);  // idb
 
 extern MapStartPoint uLevel_StartingPointType;

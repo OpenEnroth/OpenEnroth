@@ -476,11 +476,11 @@ void CollideIndoorWithDecorations() {
         CollideWithDecoration(sector->pDecorationIDs[i]);
 }
 
-void CollideOutdoorWithDecorations(int grid_x, int grid_y) {
-    if (grid_x < 0 || grid_x > 127 || grid_y < 0 || grid_y > 127)
+void CollideOutdoorWithDecorations(Vec2i gridPos) {
+    if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return;
 
-    int grid_index = grid_x + (grid_y << 7);
+    int grid_index = gridPos.x + (gridPos.y << 7);
     int list_index = pOutdoor->pOMAP[grid_index];
 
     for(int i = list_index; i < pOutdoor->pFaceIDLIST.size(); i++) {
@@ -744,7 +744,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
             break;
 
         CollideOutdoorWithModels(true);
-        CollideOutdoorWithDecorations(WorldPosToGridCellX(actor.pos.x), WorldPosToGridCellY(actor.pos.y));
+        CollideOutdoorWithDecorations(WorldPosToGrid(actor.pos));
         CollideWithParty(false);
         _46ED8A_collide_against_sprite_objects(Pid(OBJECT_Actor, actor.id));
 
@@ -1007,7 +1007,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
         }
 
         CollideOutdoorWithModels(true);
-        CollideOutdoorWithDecorations(WorldPosToGridCellX(pParty->pos.x), WorldPosToGridCellY(pParty->pos.y));
+        CollideOutdoorWithDecorations(WorldPosToGrid(pParty->pos));
         _46ED8A_collide_against_sprite_objects(Pid::character(0));
         if (!engine->config->gameplay.NoPartyActorCollisions.value()) {
             for (size_t actor_id = 0; actor_id < pActors.size(); ++actor_id)
@@ -1032,8 +1032,8 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
         float x_advance_floor = ODM_GetFloorLevel(Vec3f(newPosLow.x, partyNewPos->y, newPosLow.z), pParty->height, partyIsOnWater, &party_y_pid, 0);
         int party_x_pid;
         float y_advance_floor = ODM_GetFloorLevel(Vec3f(partyNewPos->x, newPosLow.y, newPosLow.z), pParty->height, partyIsOnWater, &party_x_pid, 0);
-        bool terr_slope_advance_x = IsTerrainSlopeTooHigh(newPosLow.x, partyNewPos->y);
-        bool terr_slope_advance_y = IsTerrainSlopeTooHigh(partyNewPos->x, newPosLow.y);
+        bool terr_slope_advance_x = IsTerrainSlopeTooHigh(Vec3f(newPosLow.x, partyNewPos->y, 0.0f));
+        bool terr_slope_advance_y = IsTerrainSlopeTooHigh(Vec3f(partyNewPos->x, newPosLow.y, 0.0f));
 
         *partyNotOnModel = false;
         if (!party_y_pid && !party_x_pid && !*floorFaceId) *partyNotOnModel = true;
@@ -1053,7 +1053,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             } else if (move_in_y) {
                 partyNewPos->y = newPosLow.y;
             } else {
-                if (IsTerrainSlopeTooHigh(newPosLow.x, newPosLow.y) && allnewfloor <= partyNewPos->z) {
+                if (IsTerrainSlopeTooHigh(newPosLow) && allnewfloor <= partyNewPos->z) {
                     // move down the hill is allowed
                     partyNewPos->x = newPosLow.x;
                     partyNewPos->y = newPosLow.y;

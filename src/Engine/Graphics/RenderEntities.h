@@ -63,9 +63,6 @@ struct ODMRenderParams {
     int outdoor_no_mist;
     int building_gamme = 0;
     int terrain_gamma = 0;
-
-    unsigned int uMapGridCellX = 0;  // moved from 157 struct IndoorCamera::0C
-    unsigned int uMapGridCellY = 0;  // moved from 157 struct IndoorCamera::10
 };
 extern ODMRenderParams *pODMRenderParams;
 

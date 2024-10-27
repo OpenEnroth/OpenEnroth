@@ -2903,12 +2903,11 @@ void CastSpellInfoHelpers::castSpell() {
                         ++pTurnEngine->pending_actions;
                     }
                     for (unsigned i = 0; i < 50; i++) {
-                        int rand_x = grng->random(4096) - 2048;
-                        int rand_y = grng->random(4096) - 2048;
+                        Vec3f rand(grng->random(4096) - 2048, grng->random(4096) - 2048, 0);
                         bool bOnWater = false;
-                        int terr_height = GetTerrainHeightsAroundParty2(rand_x + pParty->pos.x, rand_y + pParty->pos.y, &bOnWater, 0);
+                        int terr_height = GetTerrainHeightsAroundParty2(pParty->pos + rand, &bOnWater, 0);
                         SpriteObject::dropItemAt(SPRITE_SPELL_EARTH_ROCK_BLAST,
-                                                 {rand_x + pParty->pos.x, rand_y + pParty->pos.y, terr_height + 16.0f}, grng->random(500) + 500);
+                                                 {rand.x + pParty->pos.x, rand.y + pParty->pos.y, terr_height + 16.0f}, grng->random(500) + 500);
                     }
                     break;
                 }
