@@ -7,33 +7,37 @@
 
 #include "Engine/Data/TileEnums.h"
 
+#include "Media/Audio/SoundEnums.h"
+
 struct OutdoorLocationTileType {
     Tileset tileset = Tileset_NULL;
     uint16_t uTileID = 0;
 };
 
-struct OutdoorTerrain {
+class OutdoorTerrain {
+ public:
     bool ZeroLandscape();
     void LoadBaseTileIds();
     void CreateDebugTerrain();
 
-    int DoGetHeightOnTerrain(int x, int y);
+    int heightByGrid(Vec2i gridPos);
 
     /**
-     * @param x                         Grid x.
-     * @param y                         Grid y.
-     * @return                          Tile id at (x, y), that can then be used to get tile data from `TileTable`.
+     * @param gridPos                   Grid coordinates.
+     * @return                          Tile id at `gridPos` that can then be used to get tile data from `TileTable`.
      */
-    int tileId(int x, int y) const;
+    int tileIdByGrid(Vec2i gridPos) const;
 
     /**
-     * @param x                         Grid x.
-     * @param y                         Grid y.
-     * @return                          Tile set at (x, y), or `Tileset_NULL` if the tile is invalid.
+     * @param gridPos                   Grid coordinates.
+     * @return                          Tile set for the tile at `gridPos`, or `Tileset_NULL` if the tile is invalid.
      */
-    Tileset tileSet(int x, int y) const;
+    Tileset tileSetByGrid(Vec2i gridPos) const;
 
-    int mapToGlobalTileId(int localTileId) const;
+    /**
+     * @offset 0x47EE49
+     */
+    SoundId soundIdByGrid(Vec2i gridPos, bool isRunning);
 
     std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3] is road tileset.
     std::array<uint8_t, 128 * 128> pHeightmap = {};
@@ -41,4 +45,7 @@ struct OutdoorTerrain {
     std::array<uint8_t, 128 * 128> pAttributemap = {};
     std::vector<Vec3f> pTerrainNormals;
     std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
+
+ private:
+    int mapToGlobalTileId(int localTileId) const;
 };

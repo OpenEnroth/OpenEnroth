@@ -28,6 +28,8 @@ struct Vec2 {
         return std::sqrt(lengthSqr());
     }
 
+    friend bool operator==(const Vec2 &, const Vec2 &) = default;
+
     friend Vec2 operator+(const Vec2 &l, const Vec2 &r) {
         return Vec2(l.x + r.x, l.y + r.y);
     }
@@ -137,9 +139,7 @@ struct Vec3 {
         return std::max({std::abs(x), std::abs(y), std::abs(z)});
     }
 
-    friend bool operator==(const Vec3 &l, const Vec3 &r) {
-        return (l.x == r.x) && (l.y == r.y) && (l.z == r.z);
-    }
+    friend bool operator==(const Vec3 &l, const Vec3 &r) = default;
 
     friend Vec3 operator+(const Vec3 &l, const Vec3 &r) {
         return Vec3(l.x + r.x, l.y + r.y, l.z + r.z);

@@ -27,25 +27,25 @@ void OutdoorTerrain::CreateDebugTerrain() {
 
 //----- (00488F2E) --------------------------------------------------------
 //----- (0047EE16) --------------------------------------------------------
-int OutdoorTerrain::DoGetHeightOnTerrain(int x, int y) {
-    if (x < 0 || x > 127 || y < 0 || y > 127)
+int OutdoorTerrain::heightByGrid(Vec2i gridPos) {
+    if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return 0;
 
-    return 32 * pHeightmap[y * 128 + x];
+    return 32 * pHeightmap[gridPos.y * 128 + gridPos.x];
 }
 
-int OutdoorTerrain::tileId(int x, int y) const {
-    if (x < 0 || x > 127 || y < 0 || y > 127)
+int OutdoorTerrain::tileIdByGrid(Vec2i gridPos) const {
+    if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return 0;
 
-    return mapToGlobalTileId(pTilemap[y * 128 + x]);
+    return mapToGlobalTileId(pTilemap[gridPos.y * 128 + gridPos.x]);
 }
 
-Tileset OutdoorTerrain::tileSet(int x, int y) const {
-    if (x < 0 || x > 127 || y < 0 || y > 127)
+Tileset OutdoorTerrain::tileSetByGrid(Vec2i gridPos) const {
+    if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return Tileset_NULL;
 
-    int localTileId = pTilemap[y * 128 + x];
+    int localTileId = pTilemap[gridPos.y * 128 + gridPos.x];
 
     if (localTileId >= 1 && localTileId <= 12)
         return Tileset_Dirt; // See comment in mapToGlobalTileId.
@@ -55,6 +55,54 @@ Tileset OutdoorTerrain::tileSet(int x, int y) const {
 
     int tileSetIndex = (localTileId - 90) / 36;
     return pTileTypes[tileSetIndex].tileset;
+}
+
+SoundId OutdoorTerrain::soundIdByGrid(Vec2i gridPos, bool isRunning) {
+    // TODO(captainurist): this doesn't take seasons into account.
+    switch (tileSetByGrid(gridPos)) {
+    case Tileset_Grass:
+        return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
+    case Tileset_Snow:
+        return isRunning ? SOUND_RunSnow : SOUND_WalkSnow;
+    case Tileset_Desert:
+        return isRunning ? SOUND_RunDesert : SOUND_WalkDesert;
+    case Tileset_CooledLava:
+        return isRunning ? SOUND_RunCooledLava : SOUND_WalkCooledLava;
+    case Tileset_NULL: // Use dirt sounds for invalid tiles.
+    case Tileset_Dirt:
+        // Water sounds were used
+        return isRunning ? SOUND_RunDirt : SOUND_WalkDirt;
+    case Tileset_Water:
+        // Dirt sounds were used
+        return isRunning ? SOUND_RunWater : SOUND_WalkWater;
+    case Tileset_Badlands:
+        return isRunning ? SOUND_RunBadlands : SOUND_WalkBadlands;
+    case Tileset_Swamp:
+        return isRunning ? SOUND_RunSwamp : SOUND_WalkSwamp;
+    case Tileset_Tropical:
+        // TODO(Nik-RE-dev): is that correct?
+        return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
+    case Tileset_RoadGrassCobble:
+    case Tileset_RoadGrassDirt:
+    case Tileset_RoadSnowCobble:
+    case Tileset_RoadSnowDirt:
+    case Tileset_RoadSandCobble:
+    case Tileset_RoadSandDirt:
+    case Tileset_RoadVolcanoCobble:
+    case Tileset_RoadVolcanoDirt:
+    case Tileset_RoadCrackedCobble:
+    case Tileset_RoadCrackedDirt:
+    case Tileset_RoadSwampCobble:
+    case Tileset_RoadSwampDir:
+    case Tileset_RoadTropicalCobble:
+    case Tileset_RoadTropicalDirt:
+        return isRunning ? SOUND_RunRoad : SOUND_WalkRoad;
+    case Tileset_City:
+    case Tileset_RoadCityStone:
+        // TODO(Nik-RE-dev): is that correct?
+    default:
+        return isRunning ? SOUND_RunGround : SOUND_WalkGround;
+    }
 }
 
 int OutdoorTerrain::mapToGlobalTileId(int localTileId) const {

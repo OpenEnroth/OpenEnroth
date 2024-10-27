@@ -144,7 +144,7 @@ static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
 
 void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
     ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID];
-    bool isHighSlope = IsTerrainSlopeTooHigh(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y);
+    bool isHighSlope = IsTerrainSlopeTooHigh(pSpriteObjects[uLayingItemID].vPosition);
     int bmodelPid = 0;
     bool onWater = false;
     float level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition, object->uHeight, &onWater, &bmodelPid, 0);
@@ -163,7 +163,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             pSpriteObjects[uLayingItemID].vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
         } else if (isHighSlope) {
             Vec3f normf;
-            ODM_GetTerrainNormalAt(pSpriteObjects[uLayingItemID].vPosition.x, pSpriteObjects[uLayingItemID].vPosition.y, &normf);
+            ODM_GetTerrainNormalAt(pSpriteObjects[uLayingItemID].vPosition, &normf);
             pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
             pSpriteObjects[uLayingItemID].vVelocity.z -= (pEventTimer->dt().ticks() * GetGravityStrength());
 
@@ -227,9 +227,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         }
 
         CollideOutdoorWithModels(false);
-        int gridX = WorldPosToGridCellX(pSpriteObjects[uLayingItemID].vPosition.x);
-        int gridY = WorldPosToGridCellY(pSpriteObjects[uLayingItemID].vPosition.y);
-        CollideOutdoorWithDecorations(gridX, gridY);
+        CollideOutdoorWithDecorations(WorldPosToGrid(pSpriteObjects[uLayingItemID].vPosition));
         ObjectType casterType = pSpriteObjects[uLayingItemID].spell_caster_pid.type();
         if (casterType != OBJECT_Character) {
             CollideWithParty(false);

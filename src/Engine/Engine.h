@@ -30,7 +30,6 @@ struct SpellFxRenderer;
 class Vis;
 class ParticleEngine;
 struct ClippingFunctions;
-struct stru10;
 class GUIMessageQueue;
 class GameResourceManager;
 class StatusBar;
@@ -113,7 +112,6 @@ class Engine {
     std::shared_ptr<GameConfig> config;
     int uNumStationaryLights_in_pStationaryLightsStack;
     float fSaturation;
-    stru10 *pStru10Instance;
     BloodsplatContainer *bloodsplat_container = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renedrer = nullptr;

@@ -430,7 +430,6 @@ Engine::Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem)
     uNumStationaryLights_in_pStationaryLightsStack = 0;
 
     pCamera3D = new Camera3D;
-    pStru10Instance = new stru10;
 
     keyboardInputHandler = ::keyboardInputHandler;
     keyboardActionMapping = ::keyboardActionMapping;
@@ -442,7 +441,6 @@ Engine::~Engine() {
         mouse->Deactivate();
 
     delete pEventTimer;
-    delete pStru10Instance;
     delete pCamera3D;
     pAudioPlayer.reset();
 }
