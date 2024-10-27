@@ -45,6 +45,8 @@ class GameConfig : public Config {
 
     };
 
+    Audio audio{ this };
+
     class Debug : public ConfigSection {
      public:
         explicit Debug(GameConfig *config) : ConfigSection(config, "debug") {}
