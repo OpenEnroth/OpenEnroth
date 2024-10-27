@@ -56,7 +56,7 @@ bool OpenALSoundProvider::Initialize() {
     ALCint attrs[3] = {0};
 
     if (engine->config->audio.DisableHRTF.value()) {
-        // Disable HRTF so headphones don't sound bad. 
+        // Disable HRTF so headphones don't sound bad.
         attrs[0] = ALC_HRTF_SOFT;
         attrs[1] = ALC_FALSE;
         attrs[2] = 0; // end of list
