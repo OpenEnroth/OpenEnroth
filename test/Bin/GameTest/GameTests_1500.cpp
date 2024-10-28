@@ -430,6 +430,8 @@ GAME_TEST(Issues, Issue1786) {
     EXPECT_MISSES(sprites.back(), SPRITE_SPELL_FIRE_FIRE_BOLT);
 }
 
+// 1800
+
 GAME_TEST(Issues, Issue1807) {
     // Opening arcomage menu in a tavern while not carrying a deck asserts.
     auto deckTape = tapes.hasItem(ITEM_QUEST_ARCOMAGE_DECK);
@@ -440,4 +442,24 @@ GAME_TEST(Issues, Issue1807) {
     EXPECT_CONTAINS(houseTape, HOUSE_TAVERN_HARMONDALE); // We've visited the Harmondale tavern.
     EXPECT_CONTAINS(textTape.flattened(), "Victory Conditions"); // We've seen the Arcomage dialog.
     EXPECT_MISSES(textTape.flattened(), "Play"); // But there was no "Play" option.
+}
+
+GAME_TEST(Issues, Issue1851a) {
+    // Collisions: stair climbing - hall of the pit - using catch all
+    auto zPos = tapes.custom([]() { return static_cast<int>(pParty->pos.z); });
+    auto jumpTape = tapes.custom([]() { return !!(pParty->uFlags & PARTY_FLAG_JUMPING); });
+    test.playTraceFromTestData("issue_1851a.mm7", "issue_1851a.json");
+    EXPECT_LT(zPos.front(), -190);
+    EXPECT_GE(zPos.back(), 0);
+    EXPECT_MISSES(jumpTape, true);
+}
+
+GAME_TEST(Issues, Issue1851b) {
+    // Collisions: stair climbing - castle gloaming - using face exclusion
+    auto zPos = tapes.custom([]() { return static_cast<int>(pParty->pos.z); });
+    auto jumpTape = tapes.custom([]() { return !!(pParty->uFlags & PARTY_FLAG_JUMPING); });
+    test.playTraceFromTestData("issue_1851b.mm7", "issue_1851b.json");
+    EXPECT_LT(zPos.front(), -90);
+    EXPECT_GT(zPos.back(), 525);
+    EXPECT_MISSES(jumpTape, true);
 }
