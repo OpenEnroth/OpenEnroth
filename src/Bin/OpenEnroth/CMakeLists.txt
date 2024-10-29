@@ -32,8 +32,7 @@ else()
         set_source_files_properties(${OpenEnroth_ICON} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
         add_executable(OpenEnroth MACOSX_BUNDLE ${OpenEnroth_ICON} ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
 
-        # OSX doesnt have install defaults cuz reasons
-        install(TARGETS OpenEnroth "/Applications")
+        # Can't make install on OSX due to signing, dmg generation, etc
     else ()
         add_executable(OpenEnroth ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
 
