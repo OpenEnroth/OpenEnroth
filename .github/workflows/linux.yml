@@ -114,11 +114,6 @@ jobs:
         run: |
           make -j3
 
-      - name: Install
-        working-directory: build
-        run: |
-          make install
-
       - name: Run unit tests
         working-directory: build
         run: |
