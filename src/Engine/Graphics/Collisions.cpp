@@ -984,6 +984,8 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 
             if (pFace->uPolygonType == POLYGON_Floor) {
                 float new_party_z_tmp = pIndoor->pVertices[*pFace->pVertexIDs].z;
+                // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
+                // weve collided with its edge and we should step up onto its level.
                 if (pParty->velocity.z > 0.0f)
                     pParty->pos.z = new_party_z_tmp;
                 if (pParty->uFallStartZ - new_party_z_tmp < 512)
@@ -1160,6 +1162,8 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             }
 
             if (pODMFace->uPolygonType == POLYGON_Floor) {
+                // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
+                // weve collided with its edge and we should step up onto its level.
                 if (pParty->velocity.z > 0.0f)
                     pParty->pos.z = pOutdoor->pBModels[collision_state.pid.id() >> 6].pVertices[pODMFace->pVertexIDs[0]].z;
             }
