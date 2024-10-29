@@ -945,6 +945,18 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                 if (collision_state.pid.id() == 398) // Secret tunnel under prison bed
                     bFaceSlopeTooSteep = false;
             }
+            if (engine->_currentLoadedMapId == MapId::MAP_HALL_OF_THE_PIT) {
+                if (collision_state.pid.id() == 787 || collision_state.pid.id() == 832 || collision_state.pid.id() == 790)
+                    bFaceSlopeTooSteep = false;
+            }
+            if (engine->_currentLoadedMapId == MAP_CASTLE_GLOAMING) {
+                if (collision_state.pid.id() == 2439 || collision_state.pid.id() == 2438 || collision_state.pid.id() == 2437 || collision_state.pid.id() == 2436) // gloaming
+                    bFaceSlopeTooSteep = false;
+            }
+
+            // TODO(pskelton): This 'catch all' is probably unsafe - would be better as above
+            if (bFaceSlopeTooSteep && pFace->Invisible() && pFace->uPolygonType == PolygonType::POLYGON_InBetweenFloorAndWall)
+                bFaceSlopeTooSteep = false;
 
             // new sliding plane
             Vec3f slidePlaneOrigin = collision_state.collisionPos;
@@ -972,6 +984,10 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 
             if (pFace->uPolygonType == POLYGON_Floor) {
                 float new_party_z_tmp = pIndoor->pVertices[*pFace->pVertexIDs].z;
+                // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
+                // weve collided with its edge and we should step up onto its level.
+                if (pParty->velocity.z > 0.0f)
+                    pParty->pos.z = new_party_z_tmp;
                 if (pParty->uFallStartZ - new_party_z_tmp < 512)
                     pParty->uFallStartZ = new_party_z_tmp;
             }
@@ -1143,6 +1159,13 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             if (pODMFace->uPolygonType == POLYGON_Floor || pODMFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
                 pParty->bFlying = false;
                 pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
+            }
+
+            if (pODMFace->uPolygonType == POLYGON_Floor) {
+                // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
+                // weve collided with its edge and we should step up onto its level.
+                if (pParty->velocity.z > 0.0f)
+                    pParty->pos.z = pOutdoor->pBModels[collision_state.pid.id() >> 6].pVertices[pODMFace->pVertexIDs[0]].z;
             }
 
             continue;
