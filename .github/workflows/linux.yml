@@ -113,6 +113,8 @@ jobs:
         working-directory: build
         run: |
           make -j3
+          make -n install
+          make --debug=j install
 
       - name: Run unit tests
         working-directory: build
