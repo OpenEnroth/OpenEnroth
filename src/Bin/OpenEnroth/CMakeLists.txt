@@ -17,7 +17,7 @@ else()
     if (WIN32)
         add_executable(OpenEnroth ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/win_OpenEnroth.rc)
 
-        install(TARGETS OpenEnroth )
+        install(TARGETS OpenEnroth)
     elseif(APPLE)
         # Set apple plist items and icon
         set(MACOSX_BUNDLE_BUNDLE_NAME "OpenEnroth")
@@ -36,13 +36,11 @@ else()
     else ()
         add_executable(OpenEnroth ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
 
-        install(TARGETS OpenEnroth )
+        install(TARGETS OpenEnroth)
     endif() 
 
     target_check_style(OpenEnroth)
     target_link_libraries(OpenEnroth PUBLIC application library_cli library_platform_main library_stack_trace)
 
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenEnroth)
-
-    
 endif()
