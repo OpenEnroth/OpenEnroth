@@ -33,7 +33,7 @@ else()
         add_executable(OpenEnroth MACOSX_BUNDLE ${OpenEnroth_ICON} ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
 
         # OSX doesnt have install defaults cuz reasons
-        install(TARGETS OpenEnroth RUNTIME DESTINATION . BUNDLE DESTINATION ${CMAKE_SOURCE_DIR})
+        install(TARGETS OpenEnroth "/Applications")
     else ()
         add_executable(OpenEnroth ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
 
