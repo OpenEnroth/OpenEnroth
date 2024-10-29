@@ -31,10 +31,12 @@ else()
         add_executable(OpenEnroth MACOSX_BUNDLE ${OpenEnroth_ICON} ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
     else ()
         add_executable(OpenEnroth ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
-    endif()
-	
+    endif() 
+
     target_check_style(OpenEnroth)
     target_link_libraries(OpenEnroth PUBLIC application library_cli library_platform_main library_stack_trace)
 
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT OpenEnroth)
+
+    install(TARGETS OpenEnroth )
 endif()
