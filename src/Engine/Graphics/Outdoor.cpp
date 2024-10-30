@@ -2181,8 +2181,7 @@ bool IsTerrainSlopeTooHigh(const Vec3f &pos) {
         party_x2z2_y == party_x1z2_y)
         return false;
 
-    // TODO(captainurist): Will need to retrace to drop static_cast<int> here.
-    int dx = std::abs(static_cast<int>(pos.x) - party_grid_x1), dz = std::abs(party_grid_z1 - static_cast<int>(pos.y));
+    int dx = std::abs(pos.x - party_grid_x1), dz = std::abs(party_grid_z1 - pos.y);
 
     int y1, y2, y3;
     if (dz >= dx) {
