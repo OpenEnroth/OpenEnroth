@@ -5,26 +5,24 @@
 #include "Utility/Flags.h"
 #include "Utility/Segment.h"
 
-// TODO(captainurist): #enum rename
-enum class TILE_DESC_FLAG {
-    TILE_DESC_NULL = 0,
-    TILE_DESC_BURN = 0x1,
-    TILE_DESC_WATER = 0x2, // Literally water.
-    TILE_DESC_BLOCK = 0x4,
-    TILE_DESC_REPULSE = 0x8,
-    TILE_DESC_FLAT = 0x10,
-    TILE_DESC_WAVY = 0x20,
-    TILE_DESC_DONT_DRAW = 0x40,
-    TILE_DESC_SHORE = 0x100, // Shore tile that's drawn on top of the water.
-    TILE_DESC_TRANSITION = 0x200, // Transition tile, e.g. dirt-sand, dirt-water, grass-dirt, etc. All road tiles have this set.
-    TILE_DESC_SCROLL_DOWN = 0x400,
-    TILE_DESC_SCROLL_UP = 0x800,
-    TILE_DESC_SCROLL_LEFT = 0x1000,
-    TILE_DESC_SCROLL_RIGHT = 0x2000
+enum class TileFlag {
+    TILE_BURN = 0x1,
+    TILE_WATER = 0x2, // Literally water.
+    TILE_BLOCK = 0x4,
+    TILE_REPULSE = 0x8,
+    TILE_FLAT = 0x10,
+    TILE_WAVY = 0x20,
+    TILE_DONT_DRAW = 0x40,
+    TILE_SHORE = 0x100, // Shore tile that's drawn on top of the water.
+    TILE_TRANSITION = 0x200, // Transition tile, e.g. dirt-sand, dirt-water, grass-dirt, etc. All road tiles have this set.
+    TILE_SCROLL_DOWN = 0x400,
+    TILE_SCROLL_UP = 0x800,
+    TILE_SCROLL_LEFT = 0x1000,
+    TILE_SCROLL_RIGHT = 0x2000
 };
-using enum TILE_DESC_FLAG;
-MM_DECLARE_FLAGS(TILE_DESC_FLAGS, TILE_DESC_FLAG)
-MM_DECLARE_OPERATORS_FOR_FLAGS(TILE_DESC_FLAGS)
+using enum TileFlag;
+MM_DECLARE_FLAGS(TileFlags, TileFlag)
+MM_DECLARE_OPERATORS_FOR_FLAGS(TileFlags)
 
 // TODO(captainurist): #enum rename
 enum class TILE_SECT {

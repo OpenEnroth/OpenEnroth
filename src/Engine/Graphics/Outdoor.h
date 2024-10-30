@@ -39,7 +39,7 @@ struct OutdoorLocation {
     /**
      * @offset 0x47EDB3
      */
-    TILE_DESC_FLAGS getTileAttribByGrid(int gridX, int gridY);
+    TileFlags getTileAttribByGrid(int gridX, int gridY);
 
     int UpdateDiscoveredArea(Vec2i gridPos);
     bool IsMapCellFullyRevealed(signed int a2, signed int a3);
@@ -52,7 +52,7 @@ struct OutdoorLocation {
     /**
      * @offset 0x488EB1
      */
-    TILE_DESC_FLAGS getTileAttribByPos(const Vec3f &pos);
+    TileFlags getTileAttribByPos(const Vec3f &pos);
 
     /**
      * @offset 0x488EEF
