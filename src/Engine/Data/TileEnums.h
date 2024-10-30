@@ -15,7 +15,7 @@ enum class TILE_DESC_FLAG {
     TILE_DESC_FLAT = 0x10,
     TILE_DESC_WAVY = 0x20,
     TILE_DESC_DONT_DRAW = 0x40,
-    TILE_DESC_WATER_2 = 0x100, // Shore tile that's drawn on top of the water.
+    TILE_DESC_SHORE = 0x100, // Shore tile that's drawn on top of the water.
     TILE_DESC_TRANSITION = 0x200, // Transition tile, e.g. dirt-sand, dirt-water, grass-dirt, etc. All road tiles have this set.
     TILE_DESC_SCROLL_DOWN = 0x400,
     TILE_DESC_SCROLL_UP = 0x800,

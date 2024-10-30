@@ -247,7 +247,7 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(TILE_DESC_FLAGS terrainFlags, Vec3f 
             // blood splat hits this terrain tri
 
             // check if water or something else (maybe should be border tile or swampy?)
-            if (terrainFlags & TILE_DESC_WATER || terrainFlags & TILE_DESC_WATER_2) {
+            if (terrainFlags & TILE_DESC_WATER || terrainFlags & TILE_DESC_SHORE) {
                 // apply fade flags
                 if (!(bloodsplat_container->pBloodsplats_to_apply[whichsplat].blood_flags & DecalFlagsFade)) {
                     bloodsplat_container->pBloodsplats_to_apply[whichsplat].blood_flags |= DecalFlagsFade;
