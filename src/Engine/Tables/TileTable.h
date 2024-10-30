@@ -6,7 +6,7 @@
 
 struct TileTable {
     int tileIdForTileset(Tileset tileset, bool nonRandom);
-    int tileId(Tileset tileset, TILE_SECT section);
+    int tileId(Tileset tileset, TileVariant section);
 
     std::vector<TileData> tiles; // Tile by id.
 };

@@ -298,7 +298,7 @@ void reconstruct(const TileData_MM7 &src, TileData *dst) {
 
     dst->uTileID = src.tileId;
     dst->tileset = static_cast<Tileset>(src.tileSet);
-    dst->uSection = static_cast<TILE_SECT>(src.section);
+    dst->uSection = static_cast<TileVariant>(src.section);
     dst->uAttributes = static_cast<TileFlags>(src.attributes);
 }
 
