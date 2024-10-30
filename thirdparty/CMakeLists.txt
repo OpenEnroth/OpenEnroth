@@ -6,29 +6,30 @@ set(BUILD_TESTING OFF CACHE BOOL "Don't build tests for subprojects. Value is fo
 # Note that setting a CMAKE_POLICY_* variable is the intended way to pass this policy to a subproject.
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
-add_subdirectory(cmrc)
-add_subdirectory(fast_float)
-add_subdirectory(glm)
-add_subdirectory(magic_enum)
-add_subdirectory(cli11)
-add_subdirectory(nlohmann_json)
-add_subdirectory(mio)
-add_subdirectory(sol2)
-add_subdirectory(imgui)
+# Use EXCLUDE_FROM_ALL when adding subdirectories so that we dont build/install it using make only link to it 
+add_subdirectory(cmrc EXCLUDE_FROM_ALL)
+add_subdirectory(fast_float EXCLUDE_FROM_ALL)
+add_subdirectory(glm EXCLUDE_FROM_ALL)
+add_subdirectory(magic_enum EXCLUDE_FROM_ALL)
+add_subdirectory(cli11 EXCLUDE_FROM_ALL)
+add_subdirectory(nlohmann_json EXCLUDE_FROM_ALL)
+add_subdirectory(mio EXCLUDE_FROM_ALL)
+add_subdirectory(sol2 EXCLUDE_FROM_ALL)
+add_subdirectory(imgui EXCLUDE_FROM_ALL)
 
 # fmt
-add_subdirectory(fmt)
+add_subdirectory(fmt EXCLUDE_FROM_ALL)
 target_compile_definitions(fmt INTERFACE FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals.
 if(OE_BUILD_COMPILER STREQUAL "msvc")
     target_compile_definitions(fmt INTERFACE FMT_CONSTEVAL=) # MSVC chokes on fmt consteval formatting, so we define FMT_CONSTEVAL=<empty>.
 endif()
 
 # glad
-add_subdirectory(glad)
+add_subdirectory(glad EXCLUDE_FROM_ALL)
 target_include_directories(glad INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/glad/include)
 
 # luajit
-add_subdirectory(luajit)
+add_subdirectory(luajit EXCLUDE_FROM_ALL)
 target_include_directories(libluajit INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/luajit/luajit/src)
 set_target_properties(libluajit PROPERTIES COMPILE_FLAGS "${CMAKE_C_FLAGS}" LINK_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}") # Make it compile under x86.
 
@@ -38,24 +39,24 @@ target_include_directories(inicpp INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/inifile_
 add_library(inicpp::inicpp ALIAS inicpp)
 
 # small_vector
-add_subdirectory(small_vector)
+add_subdirectory(small_vector EXCLUDE_FROM_ALL)
 
 # spdlog
 set(SPDLOG_FMT_EXTERNAL ON)
 set(SPDLOG_DISABLE_DEFAULT_LOGGER ON)
 set(SPDLOG_WCHAR_SUPPORT ON) # Use unicode APIs on Windows.
-add_subdirectory(spdlog)
+add_subdirectory(spdlog EXCLUDE_FROM_ALL)
 
 # googletest
 if(OE_BUILD_TESTS)
     set(INSTALL_GTEST OFF)
     set(BUILD_GMOCK ON)
-    add_subdirectory(googletest)
+    add_subdirectory(googletest EXCLUDE_FROM_ALL)
 endif()
 
 # backward
 if(NOT OE_BUILD_PLATFORM STREQUAL "android")
-    add_subdirectory(backward_cpp)
+    add_subdirectory(backward_cpp EXCLUDE_FROM_ALL)
     if (OE_BUILD_PLATFORM STREQUAL "linux" AND NOT OE_USE_DUMMY_DEPENDENCIES)
         string(FIND "${BACKWARD_DEFINITIONS}" "BACKWARD_HAS_DWARF=1" DWARF_POS)
         if (${DWARF_POS} EQUAL -1)
@@ -67,4 +68,4 @@ endif()
 # generator
 set(GENERATOR_BUILD_PACKAGE OFF)
 set(GENERATOR_BUILD_TESTS OFF)
-add_subdirectory(generator)
+add_subdirectory(generator EXCLUDE_FROM_ALL)

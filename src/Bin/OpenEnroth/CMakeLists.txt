@@ -16,6 +16,8 @@ if(OE_BUILD_PLATFORM STREQUAL "android")
 else()
     if (WIN32)
         add_executable(OpenEnroth ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES} ${CMAKE_CURRENT_SOURCE_DIR}/win_OpenEnroth.rc)
+
+        install(TARGETS OpenEnroth)
     elseif(APPLE)
         # Set apple plist items and icon
         set(MACOSX_BUNDLE_BUNDLE_NAME "OpenEnroth")
@@ -29,10 +31,14 @@ else()
         set(OpenEnroth_ICON ${CMAKE_CURRENT_SOURCE_DIR}/osx_OpenEnroth.icns)
         set_source_files_properties(${OpenEnroth_ICON} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
         add_executable(OpenEnroth MACOSX_BUNDLE ${OpenEnroth_ICON} ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
+
+        # Can't make install on OSX due to signing, dmg generation, etc
     else ()
         add_executable(OpenEnroth ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
-    endif()
-	
+
+        install(TARGETS OpenEnroth)
+    endif() 
+
     target_check_style(OpenEnroth)
     target_link_libraries(OpenEnroth PUBLIC application library_cli library_platform_main library_stack_trace)
 
