@@ -6,7 +6,7 @@ set(BUILD_TESTING OFF CACHE BOOL "Don't build tests for subprojects. Value is fo
 # Note that setting a CMAKE_POLICY_* variable is the intended way to pass this policy to a subproject.
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
-# Use EXCLUDE_FROM_ALL when adding subdirectories so that we dont build/install it using make only link to it 
+# Using EXCLUDE_FROM_ALL when adding subdirectories so that we dont add the libs to install target.
 add_subdirectory(cmrc EXCLUDE_FROM_ALL)
 add_subdirectory(fast_float EXCLUDE_FROM_ALL)
 add_subdirectory(glm EXCLUDE_FROM_ALL)
@@ -29,8 +29,9 @@ add_subdirectory(glad EXCLUDE_FROM_ALL)
 target_include_directories(glad INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/glad/include)
 
 # luajit
-add_subdirectory(luajit EXCLUDE_FROM_ALL)
-target_include_directories(libluajit INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/luajit/luajit/src)
+set(LUAJIT_DIR ${CMAKE_CURRENT_LIST_DIR}/luajit)
+include(${CMAKE_CURRENT_LIST_DIR}/luajit-cmake/LuaJIT.cmake)
+target_include_directories(libluajit INTERFACE ${CMAKE_CURRENT_BINARY_DIR})
 set_target_properties(libluajit PROPERTIES COMPILE_FLAGS "${CMAKE_C_FLAGS}" LINK_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}") # Make it compile under x86.
 
 # inifile_cpp, would rather not use add_subdirectory
