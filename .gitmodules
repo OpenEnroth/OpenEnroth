@@ -1,6 +1,6 @@
 [submodule "thirdparty/luajit"]
-	path = thirdparty/luajit/luajit
-	url = https://github.com/LuaJIT/LuaJIT
+	path = thirdparty/luajit
+	url = https://github.com/LuaJIT/LuaJIT.git
 	branch = v2.1
 [submodule "thirdparty/glm"]
 	path = thirdparty/glm
@@ -57,3 +57,6 @@
 [submodule "thirdparty/generator"]
 	path = thirdparty/generator
 	url = https://github.com/TartanLlama/generator.git
+[submodule "thirdparty/luajit-cmake"]
+	path = thirdparty/luajit-cmake
+	url = https://github.com/zhaozg/luajit-cmake.git
