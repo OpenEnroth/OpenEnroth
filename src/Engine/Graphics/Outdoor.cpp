@@ -2263,21 +2263,20 @@ int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater, int bFloat
     if (!bFloatAboveWater && *pIsOnWater)
         waterAdjustment = -60;
 
-    // TODO(captainurist): will need to retrace to get rid of static_cast<int>(pos.*) below.
     if (z_x1y1 != z_x2y1 || z_x2y1 != z_x2y2 || z_x2y2 != z_x1y2) {
         // On a slope.
-        if (std::abs(grid_y1 - static_cast<int>(pos.y)) >= std::abs(static_cast<int>(pos.x) - grid_x1)) {
+        if (std::abs(grid_y1 - pos.y) >= std::abs(pos.x - grid_x1)) {
             originz = z_x1y2;
             lz = z_x2y2;
             rz = z_x1y1;
-            lpos = static_cast<int>(pos.x) - grid_x1;
-            rpos = static_cast<int>(pos.y) - grid_y2;
+            lpos = pos.x - grid_x1;
+            rpos = pos.y - grid_y2;
         } else {
             originz = z_x2y1;
             lz = z_x1y1;
             rz = z_x2y2;
-            lpos = grid_x2 - static_cast<int>(pos.x);
-            rpos = grid_y1 - static_cast<int>(pos.y);
+            lpos = grid_x2 - pos.x;
+            rpos = grid_y1 - pos.y;
         }
 
         assert(lpos >= 0 && lpos < 512);
