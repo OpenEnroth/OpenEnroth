@@ -75,11 +75,12 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
         };
 
         // avoid circular loops in portals
+        // a loop is triggered in "Mercenary Guild", see issue #417
         // NOTE(yoctozepto): based on other code, we should avoid having the same sector id in two nodes as this
         //                   causes faces to be added twice, yet simplifying this statement causes rendering issues
         //                   in some places, notably the upper, open corridor in "Temple of Light" because it offers
         //                   several ways (portals) to "look" at faces and some might be more limited in sight than others;
-        //                   see PR #1850 for the discussion and save file
+        //                   see PR #1850 and issue #1704 for the discussion and save file
         for (int test = 0; test < num_nodes; test++) {
             if (nodes[test].uSectorID == nodes[num_nodes].uSectorID &&
                 nodes[test].uFaceID == nodes[num_nodes].uFaceID &&
