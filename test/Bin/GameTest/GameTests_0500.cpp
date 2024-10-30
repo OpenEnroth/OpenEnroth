@@ -431,7 +431,7 @@ GAME_TEST(Issues, Issue675) {
 GAME_TEST(Issues, Issue676) {
     // Jump spell doesn't work
     test.playTraceFromTestData("issue_676.mm7", "issue_676.json");
-    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12041, 11766, 908));
+    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12041, 11766, 909));
 }
 
 GAME_TEST(Issues, Issue677) {

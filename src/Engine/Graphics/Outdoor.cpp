@@ -2181,8 +2181,7 @@ bool IsTerrainSlopeTooHigh(const Vec3f &pos) {
         party_x2z2_y == party_x1z2_y)
         return false;
 
-    // TODO(captainurist): Will need to retrace to drop static_cast<int> here.
-    int dx = std::abs(static_cast<int>(pos.x) - party_grid_x1), dz = std::abs(party_grid_z1 - static_cast<int>(pos.y));
+    int dx = std::abs(pos.x - party_grid_x1), dz = std::abs(party_grid_z1 - pos.y);
 
     int y1, y2, y3;
     if (dz >= dx) {
@@ -2264,21 +2263,20 @@ int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater, int bFloat
     if (!bFloatAboveWater && *pIsOnWater)
         waterAdjustment = -60;
 
-    // TODO(captainurist): will need to retrace to get rid of static_cast<int>(pos.*) below.
     if (z_x1y1 != z_x2y1 || z_x2y1 != z_x2y2 || z_x2y2 != z_x1y2) {
         // On a slope.
-        if (std::abs(grid_y1 - static_cast<int>(pos.y)) >= std::abs(static_cast<int>(pos.x) - grid_x1)) {
+        if (std::abs(grid_y1 - pos.y) >= std::abs(pos.x - grid_x1)) {
             originz = z_x1y2;
             lz = z_x2y2;
             rz = z_x1y1;
-            lpos = static_cast<int>(pos.x) - grid_x1;
-            rpos = static_cast<int>(pos.y) - grid_y2;
+            lpos = pos.x - grid_x1;
+            rpos = pos.y - grid_y2;
         } else {
             originz = z_x2y1;
             lz = z_x1y1;
             rz = z_x2y2;
-            lpos = grid_x2 - static_cast<int>(pos.x);
-            rpos = grid_y1 - static_cast<int>(pos.y);
+            lpos = grid_x2 - pos.x;
+            rpos = grid_y1 - pos.y;
         }
 
         assert(lpos >= 0 && lpos < 512);
