@@ -6,6 +6,7 @@ set(BUILD_TESTING OFF CACHE BOOL "Don't build tests for subprojects. Value is fo
 # Note that setting a CMAKE_POLICY_* variable is the intended way to pass this policy to a subproject.
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
+# Use EXCLUDE_FROM_ALL when adding subdirectories so that we dont build/install it using make only link to it 
 add_subdirectory(cmrc EXCLUDE_FROM_ALL)
 add_subdirectory(fast_float EXCLUDE_FROM_ALL)
 add_subdirectory(glm EXCLUDE_FROM_ALL)
