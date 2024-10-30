@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 #include "Utility/Flags.h"
 #include "Utility/Segment.h"
 
@@ -34,7 +32,7 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(TileFlags)
  * The only road tile set we have in mm7 is cobble road over dirt.
  */
 enum class TileVariant {
-    TILE_VARIANT_INVALID = -1,
+    TILE_VARIANT_INVALID = 255, // Tile with id 0 has variant = 255.
     TILE_VARIANT_BASE1 = 0, // Base tile. For roads - crossing.
     TILE_VARIANT_BASE2_NS = 1, // Base variation (swamp has one). For roads - NS.
     TILE_VARIANT_BASE3_EW = 2, // Base variation (swamp has one). For roads - EW.
@@ -68,40 +66,37 @@ inline Segment<TileVariant> allSpecialTileSects() {
     return {TILE_VARIANT_FIRST_SPECIAL, TILE_VARIANT_LAST_SPECIAL};
 }
 
-// TODO(captainurist): #enum rename
-// TODO(captainurist): rename enum values properly, City is Sand.
-// Most of these tilesets don't exist in mm7 data, see comments. Everything's mapped to dirt.
-#pragma warning(push)
-#pragma warning(disable : 4341)
-enum class Tileset : int16_t {
-    // Tile 0 has Tileset = 255.
-    Tileset_Grass = 0,
-    Tileset_Snow = 1,
-    Tileset_Desert = 2, // Sand.
-    Tileset_CooledLava = 3, // Somehow this tileset is all dirt in the data files.
-    Tileset_Dirt = 4, // This one has only 3 tiles.
-    Tileset_Water = 5, // Water tile & shoreline tiles.
-    Tileset_Badlands = 6, // Looks like Deyja.
-    Tileset_Swamp = 7,
-    Tileset_Tropical = 8, // This is all dirt.
-    Tileset_City = 9, // This is sand too, lol.
-    Tileset_RoadGrassCobble = 10, // Cobble road on dirt actually.
-    Tileset_RoadGrassDirt = 11, // This is all dirt.
-    Tileset_RoadSnowCobble = 12, // This is all dirt.
-    Tileset_RoadSnowDirt = 13, // This is all dirt.
-    Tileset_RoadSandCobble = 14, // This doesn't exist in mm7 tiles at all.
-    Tileset_RoadSandDirt = 15, // This doesn't exist in mm7 tiles at all.
-    Tileset_RoadVolcanoCobble = 16, // This is all dirt.
-    Tileset_RoadVolcanoDirt = 17, // This is all dirt.
-    Tileset_RoadCrackedCobble = 22, // This is all dirt.
-    Tileset_RoadCrackedDirt = 23, // This is all dirt.
-    Tileset_RoadSwampCobble = 24, // This is all dirt.
-    Tileset_RoadSwampDir = 25, // This is all dirt.
-    Tileset_RoadTropicalCobble = 26, // This is all dirt.
-    Tileset_RoadTropicalDirt = 27, // This is all dirt.
-    Tileset_RoadCityStone = 28, // This is all dirt.
-    Tileset_NULL = -1,
-    Tileset_Start = -2
+/**
+ * Tile set id.
+ *
+ * Most of these tile sets don't exist in mm7 data, see comments.
+ */
+enum class TileSet {
+    TILE_SET_INVALID = 255, // Tile with id 0 has tile set = 255.
+    TILE_SET_GRASS = 0,
+    TILE_SET_SNOW = 1,
+    TILE_SET_DESERT = 2, // Sand.
+    TILE_SET_COOLED_LAVA = 3, // Somehow this tileset is all dirt in the data files.
+    TILE_SET_DIRT = 4, // This one has only 3 tiles.
+    TILE_SET_WATER = 5, // Water tile & shoreline tiles.
+    TILE_SET_BADLANDS = 6, // Looks like Deyja.
+    TILE_SET_SWAMP = 7,
+    TILE_SET_TROPICAL = 8, // This is all dirt.
+    TILE_SET_CITY = 9, // This is sand too, lol.
+    TILE_SET_ROAD_GRASS_COBBLE = 10, // Cobble road on dirt actually.
+    TILE_SET_ROAD_GRASS_DIRT = 11, // This is all dirt.
+    TILE_SET_ROAD_SNOW_COBBLE = 12, // This is all dirt.
+    TILE_SET_ROAD_SNOW_DIRT = 13, // This is all dirt.
+    TILE_SET_ROAD_SAND_COBBLE = 14, // This doesn't exist in mm7 tiles at all.
+    TILE_SET_ROAD_SAND_DIRT = 15, // This doesn't exist in mm7 tiles at all.
+    TILE_SET_ROAD_VOLCANO_COBBLE = 16, // This is all dirt.
+    TILE_SET_ROAD_VOLCANO_DIRT = 17, // This is all dirt.
+    TILE_SET_ROAD_CRACKED_COBBLE = 22, // This is all dirt.
+    TILE_SET_ROAD_CRACKED_DIRT = 23, // This is all dirt.
+    TILE_SET_ROAD_SWAMP_COBBLE = 24, // This is all dirt.
+    TILE_SET_ROAD_SWAMP_DIRT = 25, // This is all dirt.
+    TILE_SET_ROAD_TROPICAL_COBBLE = 26, // This is all dirt.
+    TILE_SET_ROAD_TROPICAL_DIRT = 27, // This is all dirt.
+    TILE_SET_ROAD_CITY_STONE = 28, // This is all dirt.
 };
-using enum Tileset;
-#pragma warning(pop)
+using enum TileSet;

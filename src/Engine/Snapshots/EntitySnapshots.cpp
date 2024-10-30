@@ -297,7 +297,7 @@ void reconstruct(const TileData_MM7 &src, TileData *dst) {
         dst->name.insert(0, "h"); // mm7 uses hd water tiles with legacy names
 
     dst->uTileID = src.tileId;
-    dst->tileset = static_cast<Tileset>(src.tileSet);
+    dst->tileset = static_cast<TileSet>(src.tileSet);
     dst->uSection = static_cast<TileVariant>(src.section);
     dst->uAttributes = static_cast<TileFlags>(src.attributes);
 }
@@ -1798,7 +1798,7 @@ void reconstruct(const PersistentVariables_MM7 &src, PersistentVariables *dst) {
 }
 
 void reconstruct(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType *dst) {
-    dst->tileset = static_cast<Tileset>(src.tileset);
+    dst->tileset = static_cast<TileSet>(src.tileset);
     dst->uTileID = src.tileId;
 }
 

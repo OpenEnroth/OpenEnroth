@@ -10,7 +10,7 @@
 #include "Media/Audio/SoundEnums.h"
 
 struct OutdoorLocationTileType {
-    Tileset tileset = Tileset_NULL;
+    TileSet tileset = TILE_SET_INVALID;
     uint16_t uTileID = 0;
 };
 
@@ -32,7 +32,7 @@ class OutdoorTerrain {
      * @param gridPos                   Grid coordinates.
      * @return                          Tile set for the tile at `gridPos`, or `Tileset_NULL` if the tile is invalid.
      */
-    Tileset tileSetByGrid(Vec2i gridPos) const;
+    TileSet tileSetByGrid(Vec2i gridPos) const;
 
     /**
      * @offset 0x47EE49
