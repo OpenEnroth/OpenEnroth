@@ -1944,7 +1944,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     continue;
 
                 // splat hits this square of terrain
-                TILE_DESC_FLAGS terrainFlags = pOutdoor->getTileAttribByGrid(loopx, loopy);
+                TileFlags terrainFlags = pOutdoor->getTileAttribByGrid(loopx, loopy);
 
                 unsigned norm_idx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
                 unsigned bottnormidx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];

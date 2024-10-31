@@ -101,7 +101,7 @@ struct DecalBuilder {
      * 
      * @return                              True if bloodsplat_container->uNumBloodsplats > 0, false otherwise.
      */
-    bool ApplyBloodSplatToTerrain(TILE_DESC_FLAGS terrainFlags, Vec3f *terrnorm, float *tridotdist,
+    bool ApplyBloodSplatToTerrain(TileFlags terrainFlags, Vec3f *terrnorm, float *tridotdist,
                                   RenderVertexSoft *triverts, const int whichsplat);
     void DrawDecals(float z_bias);
     void DrawBloodsplats();

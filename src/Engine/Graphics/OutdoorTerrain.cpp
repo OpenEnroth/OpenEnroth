@@ -18,10 +18,10 @@ void OutdoorTerrain::LoadBaseTileIds() {
 
 void OutdoorTerrain::CreateDebugTerrain() {
     ZeroLandscape();
-    pTileTypes[0].tileset = Tileset_Grass;
-    pTileTypes[1].tileset = Tileset_Water;
-    pTileTypes[2].tileset = Tileset_Badlands;
-    pTileTypes[3].tileset = Tileset_RoadGrassCobble;
+    pTileTypes[0].tileset = TILE_SET_GRASS;
+    pTileTypes[1].tileset = TILE_SET_WATER;
+    pTileTypes[2].tileset = TILE_SET_BADLANDS;
+    pTileTypes[3].tileset = TILE_SET_ROAD_GRASS_COBBLE;
     LoadBaseTileIds();
 }
 
@@ -41,17 +41,17 @@ int OutdoorTerrain::tileIdByGrid(Vec2i gridPos) const {
     return mapToGlobalTileId(pTilemap[gridPos.y * 128 + gridPos.x]);
 }
 
-Tileset OutdoorTerrain::tileSetByGrid(Vec2i gridPos) const {
+TileSet OutdoorTerrain::tileSetByGrid(Vec2i gridPos) const {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
-        return Tileset_NULL;
+        return TILE_SET_INVALID;
 
     int localTileId = pTilemap[gridPos.y * 128 + gridPos.x];
 
     if (localTileId >= 1 && localTileId <= 12)
-        return Tileset_Dirt; // See comment in mapToGlobalTileId.
+        return TILE_SET_DIRT; // See comment in mapToGlobalTileId.
 
     if (localTileId >= 234 || localTileId < 90)
-        return Tileset_NULL;
+        return TILE_SET_INVALID;
 
     int tileSetIndex = (localTileId - 90) / 36;
     return pTileTypes[tileSetIndex].tileset;
@@ -60,45 +60,45 @@ Tileset OutdoorTerrain::tileSetByGrid(Vec2i gridPos) const {
 SoundId OutdoorTerrain::soundIdByGrid(Vec2i gridPos, bool isRunning) {
     // TODO(captainurist): this doesn't take seasons into account.
     switch (tileSetByGrid(gridPos)) {
-    case Tileset_Grass:
+    case TILE_SET_GRASS:
         return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
-    case Tileset_Snow:
+    case TILE_SET_SNOW:
         return isRunning ? SOUND_RunSnow : SOUND_WalkSnow;
-    case Tileset_Desert:
+    case TILE_SET_DESERT:
         return isRunning ? SOUND_RunDesert : SOUND_WalkDesert;
-    case Tileset_CooledLava:
+    case TILE_SET_COOLED_LAVA:
         return isRunning ? SOUND_RunCooledLava : SOUND_WalkCooledLava;
-    case Tileset_NULL: // Use dirt sounds for invalid tiles.
-    case Tileset_Dirt:
+    case TILE_SET_INVALID: // Use dirt sounds for invalid tiles.
+    case TILE_SET_DIRT:
         // Water sounds were used
         return isRunning ? SOUND_RunDirt : SOUND_WalkDirt;
-    case Tileset_Water:
+    case TILE_SET_WATER:
         // Dirt sounds were used
         return isRunning ? SOUND_RunWater : SOUND_WalkWater;
-    case Tileset_Badlands:
+    case TILE_SET_BADLANDS:
         return isRunning ? SOUND_RunBadlands : SOUND_WalkBadlands;
-    case Tileset_Swamp:
+    case TILE_SET_SWAMP:
         return isRunning ? SOUND_RunSwamp : SOUND_WalkSwamp;
-    case Tileset_Tropical:
+    case TILE_SET_TROPICAL:
         // TODO(Nik-RE-dev): is that correct?
         return isRunning ? SOUND_RunGrass : SOUND_WalkGrass;
-    case Tileset_RoadGrassCobble:
-    case Tileset_RoadGrassDirt:
-    case Tileset_RoadSnowCobble:
-    case Tileset_RoadSnowDirt:
-    case Tileset_RoadSandCobble:
-    case Tileset_RoadSandDirt:
-    case Tileset_RoadVolcanoCobble:
-    case Tileset_RoadVolcanoDirt:
-    case Tileset_RoadCrackedCobble:
-    case Tileset_RoadCrackedDirt:
-    case Tileset_RoadSwampCobble:
-    case Tileset_RoadSwampDir:
-    case Tileset_RoadTropicalCobble:
-    case Tileset_RoadTropicalDirt:
+    case TILE_SET_ROAD_GRASS_COBBLE:
+    case TILE_SET_ROAD_GRASS_DIRT:
+    case TILE_SET_ROAD_SNOW_COBBLE:
+    case TILE_SET_ROAD_SNOW_DIRT:
+    case TILE_SET_ROAD_SAND_COBBLE:
+    case TILE_SET_ROAD_SAND_DIRT:
+    case TILE_SET_ROAD_VOLCANO_COBBLE:
+    case TILE_SET_ROAD_VOLCANO_DIRT:
+    case TILE_SET_ROAD_CRACKED_COBBLE:
+    case TILE_SET_ROAD_CRACKED_DIRT:
+    case TILE_SET_ROAD_SWAMP_COBBLE:
+    case TILE_SET_ROAD_SWAMP_DIRT:
+    case TILE_SET_ROAD_TROPICAL_COBBLE:
+    case TILE_SET_ROAD_TROPICAL_DIRT:
         return isRunning ? SOUND_RunRoad : SOUND_WalkRoad;
-    case Tileset_City:
-    case Tileset_RoadCityStone:
+    case TILE_SET_CITY:
+    case TILE_SET_ROAD_CITY_STONE:
         // TODO(Nik-RE-dev): is that correct?
     default:
         return isRunning ? SOUND_RunGround : SOUND_WalkGround;

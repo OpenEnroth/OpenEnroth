@@ -249,7 +249,7 @@ double OutdoorLocation::GetFogDensityByTime() {
     }
 }
 
-TILE_DESC_FLAGS OutdoorLocation::getTileAttribByPos(const Vec3f &pos) {
+TileFlags OutdoorLocation::getTileAttribByPos(const Vec3f &pos) {
     Vec2i gridPos = WorldPosToGrid(pos);
     return getTileAttribByGrid(gridPos.x, gridPos.y);
 }
@@ -373,15 +373,15 @@ int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos) {
     }
 
     switch (getTileDescByPos(pos)->tileset) {
-        case Tileset_Grass:
+        case TILE_SET_GRASS:
             return 1;
-        case Tileset_Snow:
-        case Tileset_Swamp:
+        case TILE_SET_SNOW:
+        case TILE_SET_SWAMP:
             return 3;
-        case Tileset_CooledLava:
-        case Tileset_Badlands:
+        case TILE_SET_COOLED_LAVA:
+        case TILE_SET_BADLANDS:
             return 4;
-        case Tileset_Desert:
+        case TILE_SET_DESERT:
             return 5;
         default:
             return 2;
@@ -619,7 +619,7 @@ TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
     return &pTileTable->tiles[tileId];
 }
 
-TILE_DESC_FLAGS OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
+TileFlags OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
     int tileId = this->pTerrain.tileIdByGrid(Vec2i(gridX, gridY));
     return pTileTable->tiles[tileId].uAttributes;
 }
@@ -1537,9 +1537,9 @@ void ODM_ProcessPartyActions() {
     Vec2i partyNewGridPos = WorldPosToGrid(partyNewPos);
 
     // this gets if tile is not water
-    bool partyCurrentOnLand = !(pOutdoor->getTileAttribByGrid(partyOldGridPos.x, partyOldGridPos.y) & TILE_DESC_WATER);
-    bool partyNewXOnLand = !(pOutdoor->getTileAttribByGrid(partyNewGridPos.x, partyOldGridPos.y) & TILE_DESC_WATER);
-    bool partyNewYOnLand = !(pOutdoor->getTileAttribByGrid(partyOldGridPos.x, partyNewGridPos.y) & TILE_DESC_WATER);
+    bool partyCurrentOnLand = !(pOutdoor->getTileAttribByGrid(partyOldGridPos.x, partyOldGridPos.y) & TILE_WATER);
+    bool partyNewXOnLand = !(pOutdoor->getTileAttribByGrid(partyNewGridPos.x, partyOldGridPos.y) & TILE_WATER);
+    bool partyNewYOnLand = !(pOutdoor->getTileAttribByGrid(partyOldGridPos.x, partyNewGridPos.y) & TILE_WATER);
 
     // -(update party co-ords)---------------------------------------
     bool notWater{ false };
@@ -1909,8 +1909,8 @@ void UpdateActors_ODM() {
         if (!Water_Walk) {
             // tile on (1) tile heading (2)
             bool tile1IsLand, tile2IsLand;
-            tile1IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos) & TILE_DESC_WATER);
-            tile2IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos + pActors[Actor_ITR].velocity) & TILE_DESC_WATER);
+            tile1IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos) & TILE_WATER);
+            tile2IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos + pActors[Actor_ITR].velocity) & TILE_WATER);
             if (!uIsFlying && tile1IsLand && !tile2IsLand) {
                 // approaching water - turn away
                 if (pActors[Actor_ITR].CanAct()) {
@@ -1927,7 +1927,7 @@ void UpdateActors_ODM() {
                 for (int i = gridPos.x - 1; i <= gridPos.x + 1; i++) {
                     // scan surrounding cells for land
                     for (int j = gridPos.y - 1; j <= gridPos.y + 1; j++) {
-                        tileTestLand = !(pOutdoor->getTileAttribByGrid(i, j) & TILE_DESC_WATER);
+                        tileTestLand = !(pOutdoor->getTileAttribByGrid(i, j) & TILE_WATER);
                         if (tileTestLand) {  // found land
                             int target_x = GridCellToWorldPosX(i);
                             int target_y = GridCellToWorldPosY(j);
@@ -2255,7 +2255,7 @@ int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater, int bFloat
     // dword_76D524_terrain_cell_world_pos_around_party_y =
     // pOutdoor->pTerrain.DoGetHeightOnTerrain(v4, v5 + 1);
     *pIsOnWater = false;
-    if (pOutdoor->getTileAttribByGrid(gridPos.x, gridPos.y) & TILE_DESC_WATER) {
+    if (pOutdoor->getTileAttribByGrid(gridPos.x, gridPos.y) & TILE_WATER) {
         *pIsOnWater = true;
     }
 
