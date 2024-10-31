@@ -75,6 +75,8 @@ struct RenderVertexSoft {
     float u = 0;
     float v = 0;
     float flt_2C = 0;
+
+    friend bool operator==(const RenderVertexSoft &l, const RenderVertexSoft &r) = default;
 };
 
 struct RenderVertexD3D3 {

@@ -6,11 +6,18 @@
 
 #include "Library/Geometry/Plane.h"
 
+struct BspRenderer;
+
 struct BspRenderer_ViewportNode {
     int uSectorID = 0;  // sector that this node shows
     int uFaceID = 0;  // face id of the portal through which we're seeing this node
     std::array<Planef, 4> ViewportNodeFrustum = {{}};  // frustum planes of portal
     std::array<RenderVertexSoft, 4> pPortalBounding = {{}};  // extents of portal
+
+ private:
+    void SetFrustumToCamera();
+
+    friend BspRenderer;
 };
 
 struct BspFace {
@@ -19,22 +26,24 @@ struct BspFace {
 };
 
 struct BspRenderer {
-    void AddFaceToRenderList_d3d(int node_id, int uFaceID);
-    void MakeVisibleSectorList();
+ public:
+    void Init();
 
+    // TODO(yoctozepto): hide these
     unsigned int num_faces = 0;
-    std::array<BspFace, 1500> faces = {{}};
+    std::array<BspFace, 1500> faces = { {} };
 
     unsigned int num_nodes = 0;
-    std::array<BspRenderer_ViewportNode, 150> nodes = {{}};
+    std::array<BspRenderer_ViewportNode, 150> nodes = { {} };
 
     unsigned int uNumVisibleNotEmptySectors = 0;
-    std::array<int, 150> pVisibleSectorIDs_toDrawDecorsActorsEtcFrom = {{}};
+    std::array<int, 150> pVisibleSectorIDs_toDrawDecorsActorsEtcFrom = { {} };
+
+ private:
+    void AddFace(int node_id, int uFaceID);
+    void AddNode();
+    void AddBSPFaces(const int node_id, const int bspNodeId);
+    void AddSector(int sectorId);
 };
 
 extern BspRenderer *pBspRenderer;
-
-void PrepareBspRenderList_BLV();
-void AddBspNodeToRenderList(int node_id);
-void AddNodeBSPFaces(int node_id, int uFirstNode);  // idb
-

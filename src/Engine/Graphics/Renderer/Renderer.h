@@ -203,7 +203,6 @@ extern RenderBillboard pBillboardRenderList[500];
 extern unsigned int uNumBillboardsToDraw;
 extern int uNumSpritesDrawnThisFrame;
 
-extern RenderVertexSoft array_507D30[50];
 extern RenderVertexSoft VertexRenderList[50];
 extern RenderVertexSoft array_73D150[20];
 

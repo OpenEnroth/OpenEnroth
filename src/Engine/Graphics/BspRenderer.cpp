@@ -6,31 +6,39 @@
 
 #include "Library/Logger/Logger.h"
 
+// TODO(yoctozepto): we should not see it here
 BspRenderer *pBspRenderer = new BspRenderer();
 
-//----- (004B0EA8) --------------------------------------------------------
-void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
-    int pTransitionSector;  // ax@11
-    // int dotdist;                              // edx@15
 
-    if (uFaceID >= pIndoor->pFaces.size())
-        return;
+//----- (004B0EA8) --------------------------------------------------------
+void BspRenderer::AddFace(int node_id, int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
 
     if (!pFace->isPortal()) {
-        if (num_faces < 1500) {
-            // add face and return
-            faces[num_faces].uFaceID = uFaceID;
-            faces[num_faces++].uNodeID = node_id;
-        } else {
-            logger->info("Too many faces in BLV render");
+        // NOTE(yoctozepto): the below happens, e.g., on various stairs
+        if (pFace->Invisible())
+            return;  // nothing to render
+        // NOTE(yoctozepto): the below happens, e.g., on various stairs
+        if (pFace->uNumVertices < 3) {
+            return;  // nothing to render
         }
+        // TODO(yoctozepto): does the below happen?
+        if (!pFace->GetTexture()) {
+            return;  // nothing to render
+        }
+        // add face and return
+        auto newFace = &faces[num_faces];
+        newFace->uFaceID = uFaceID;
+        newFace->uNodeID = node_id;
+        num_faces++;
         return;
     }
 
+    auto currentNode = &nodes[node_id];
+
     // portals are invisible faces marking the transition between sectors
     // dont add the face we are looking through
-    if (nodes[node_id].uFaceID == uFaceID)
+    if (currentNode->uFaceID == uFaceID)
         return;
 
     // check if portal is visible on screen
@@ -46,177 +54,177 @@ void BspRenderer::AddFaceToRenderList_d3d(int node_id, int uFaceID) {
 
     unsigned int pNewNumVertices = pFace->uNumVertices;
 
-    // accurate clip to current viewing nodes frustum
-    bool vertadj = pCamera3D->ClipFaceToFrustum(
-            originalFaceVertices, &pNewNumVertices,
-            clippedFaceVertices,
-            nodes[node_id].ViewportNodeFrustum.data(), 4, 0, 0);
+    // TODO(yoctozepto): original vertices could have been just Vec3f
+    // clip to current viewing node frustum
+    pCamera3D->ClipFaceToFrustum(
+        originalFaceVertices,
+        &pNewNumVertices,
+        clippedFaceVertices,
+        currentNode->ViewportNodeFrustum.data());
 
-    if (pNewNumVertices) {
-        // current portal visible through previous
-        pTransitionSector = pFace->uSectorID;
-        if (nodes[node_id].uSectorID == pTransitionSector)
-            pTransitionSector = pFace->uBackSectorID;
-        nodes[num_nodes].uSectorID = pTransitionSector;
-        nodes[num_nodes].uFaceID = uFaceID;
+    if (!pNewNumVertices) {
+        return;  // no triangle of face in view
+    }
 
-        // calculates the portal bounding and frustum
-        bool bFrustumbuilt = CalcPortalShapePoly(
-                pFace, clippedFaceVertices,
-                &pNewNumVertices, nodes[num_nodes].ViewportNodeFrustum.data(),
-                nodes[num_nodes].pPortalBounding.data());
+    // start to construct the new node
 
-        auto boundingMatches = [](const std::array<RenderVertexSoft, 4> &l, const std::array<RenderVertexSoft, 4> &r) {
-            for (int i = 0; i < l.size(); i++) {
-                if (l[i].vWorldPosition != r[i].vWorldPosition)
-                    return false;
+    auto newNode = &nodes[num_nodes];
+
+    // calculates the portal bounding and frustum
+    bool isFrustumBuilt = CalcPortalShapePoly(
+        pFace,
+        clippedFaceVertices,
+        &pNewNumVertices,
+        newNode->ViewportNodeFrustum.data(),
+        newNode->pPortalBounding.data());
+
+    if (!isFrustumBuilt) {
+        return;  // no way we can see through this portal
+    }
+
+    // new node should have new sector; use the back one if the front one is current
+    newNode->uSectorID = pFace->uSectorID;
+    if (currentNode->uSectorID == newNode->uSectorID) {
+        newNode->uSectorID = pFace->uBackSectorID;
+    }
+    newNode->uFaceID = uFaceID;
+
+    // assume it is a new sector and check it below
+    bool isNewSector = true;
+
+    // check if it is a new sector and avoid infinite loops in portals
+    // an infinite loop is triggered in "Mercenary Guild", see issue #417
+    // NOTE(yoctozepto): having the same sector id in two nodes causes faces to be added twice
+    //                   but this is expected because of how the view is constructed;
+    //                   it is possible to have the same sector observed from two different portals
+    //                   which give different views;
+    //                   this is also recursive so we can have another portal in that duplicate sector
+    //                   being observed differently from each portal that led to this sector;
+    //                   an example is the open corridor in "Temple of Light";
+    //                   see PR #1850 and issue #1704 for the discussion and save file
+    for (int i = 0; i < num_nodes; i++) {
+        if (nodes[i].uSectorID == newNode->uSectorID) {
+            if (nodes[i].uFaceID == newNode->uFaceID &&
+                //nodes[i].ViewportNodeFrustum == newNode->ViewportNodeFrustum) {
+                // TODO(yoctozepto): we have to compare boundings, not frusta, because the latter are not as reliable - understand why
+                // TODO(yoctozepto): boundings can be simplified
+                // TODO(yoctozepto): live debug the current number of nodes, faces and sectors
+                nodes[i].pPortalBounding == newNode->pPortalBounding) {
+                    return;  // gives the same view - would bring nothing but cause an infinite loop
             }
-            return true;
-        };
-
-        // avoid circular loops in portals
-        // a loop is triggered in "Mercenary Guild", see issue #417
-        // NOTE(yoctozepto): based on other code, we should avoid having the same sector id in two nodes as this
-        //                   causes faces to be added twice, yet simplifying this statement causes rendering issues
-        //                   in some places, notably the upper, open corridor in "Temple of Light" because it offers
-        //                   several ways (portals) to "look" at faces and some might be more limited in sight than others;
-        //                   see PR #1850 and issue #1704 for the discussion and save file
-        for (int test = 0; test < num_nodes; test++) {
-            if (nodes[test].uSectorID == nodes[num_nodes].uSectorID &&
-                nodes[test].uFaceID == nodes[num_nodes].uFaceID &&
-                boundingMatches(nodes[test].pPortalBounding, nodes[num_nodes].pPortalBounding)) {
-                return;
-            }
-        }
-
-        if (bFrustumbuilt) {
-            const int boundingslack = 128;
-
-            // NOTE(yoctozepto): when the party is standing near (in a `boundingslack`) a portal of the same node (`id == 0`), then we need to fix the frustum
-            //                   because it is likely to clip the view too much and miss to render the faces behind it
-            if (node_id == 0 &&
-                pFace->pBounding.intersectsCube(Vec3f(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z), boundingslack)) {
-                for (int loop = 0; loop < 4; loop++) {
-                    nodes[num_nodes].ViewportNodeFrustum[loop].normal.x = pCamera3D->FrustumPlanes[loop].x;
-                    nodes[num_nodes].ViewportNodeFrustum[loop].normal.y = pCamera3D->FrustumPlanes[loop].y;
-                    nodes[num_nodes].ViewportNodeFrustum[loop].normal.z = pCamera3D->FrustumPlanes[loop].z;
-                    nodes[num_nodes].ViewportNodeFrustum[loop].dist = -pCamera3D->FrustumPlanes[loop].w;
-                }
-            }
-
-            // add portal sector to drawing list
-            AddBspNodeToRenderList(++num_nodes - 1);
+            isNewSector = false;
         }
     }
-}
 
+    const int boundingslack = 128;
 
-//----- (0043F333) --------------------------------------------------------
-void BspRenderer::MakeVisibleSectorList() {
-    bool onlist = false;
-    uNumVisibleNotEmptySectors = 0;
+    // NOTE(yoctozepto): (1) when the party is standing near (in a `boundingslack`) a portal of the same node (`id == 0`), then we need to fix the frustum
+    //                   because it is likely to clip the view too much and miss to render the faces behind it
+    //                   (2) normal in z (1/-1) does not work too well - similar issue happens, e.g., in "Temple of Light" when looking at the indoor sky ceiling
+    //                   behind a portal in the big room before the hidden stairs
+    if (/* (1) */(node_id == 0 && pFace->pBounding.intersectsCube(Vec3f(pCamera3D->vCameraPos.x, pCamera3D->vCameraPos.y, pCamera3D->vCameraPos.z), boundingslack))
+        || /* (2) */(pFace->facePlane.normal.z == 1.0 || pFace->facePlane.normal.z == -1.0)) {
+        newNode->SetFrustumToCamera();
+    }
 
-    // TODO: this is actually n^2, might make sense to rewrite properly.
-
-    for (unsigned i = 0; i < num_nodes; ++i) {
-        onlist = false;
-        for (unsigned j = 0; j < uNumVisibleNotEmptySectors; j++) {
-            if (pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[j] == nodes[i].uSectorID) {
-                onlist = true;
-                break;
-            }
-        }
-
-        if (!onlist)
-            pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[uNumVisibleNotEmptySectors++] = nodes[i].uSectorID;
-
+    if (isNewSector) {
+        // NOTE(yoctozepto): the below happens, e.g., when looking back after entering the room behind hidden stairs in "Temple of Light";
+        //                   there are lots of portals in sight from there
         // drop all sectors beyond config limit
         if (uNumVisibleNotEmptySectors >= engine->config->graphics.MaxVisibleSectors.value()) {
-            logger->warning("Hit visible sector limit!");
-            break;
+            logger->warning("Hit visible sector limit but needed to add new one!");
+        } else {
+            AddSector(newNode->uSectorID);
         }
     }
+
+    AddNode();  // can recurse back to this function
+}
+
+void BspRenderer::AddSector(int sectorId) {
+    pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[uNumVisibleNotEmptySectors] = sectorId;
+    uNumVisibleNotEmptySectors++;
 }
 
 
 //----- (0043F953) --------------------------------------------------------
-void PrepareBspRenderList_BLV() {
-    // reset faces list
-    pBspRenderer->num_faces = 0;
+void BspRenderer::Init() {
+    // reset lists
+    num_faces = 0;
+    num_nodes = 0;
+    uNumVisibleNotEmptySectors = 0;
 
     if (pBLVRenderParams->uPartySectorID) {
-        // set node 0 to current sector - using eye sector here because feet can be in other sector on horizontal portal
-        pBspRenderer->nodes[0].uSectorID = pBLVRenderParams->uPartyEyeSectorID;
-        // set furstum to cam frustum
-        for (int loop = 0; loop < 4; loop++) {
-            pBspRenderer->nodes[0].ViewportNodeFrustum[loop].normal.x = pCamera3D->FrustumPlanes[loop].x;
-            pBspRenderer->nodes[0].ViewportNodeFrustum[loop].normal.y = pCamera3D->FrustumPlanes[loop].y;
-            pBspRenderer->nodes[0].ViewportNodeFrustum[loop].normal.z = pCamera3D->FrustumPlanes[loop].z;
-            pBspRenderer->nodes[0].ViewportNodeFrustum[loop].dist = -pCamera3D->FrustumPlanes[loop].w;
-        }
+        // set to current sector - using eye sector here because feet can be in other sector on horizontal portal
+        nodes[0].uSectorID = pBLVRenderParams->uPartyEyeSectorID;
+        // this node is being observed directly, not through another face
+        nodes[0].uFaceID = -1;
+        nodes[0].SetFrustumToCamera();
+        AddSector(nodes[0].uSectorID);
 
-        // blank viewing node
-        pBspRenderer->nodes[0].uFaceID = -1;
-        pBspRenderer->num_nodes = 1;
-        AddBspNodeToRenderList(0);
+        AddNode();
     }
-
-    pBspRenderer->MakeVisibleSectorList();
 }
 
 
 //----- (00440639) --------------------------------------------------------
-void AddBspNodeToRenderList(int node_id) {
-    BLVSector *pSector = &pIndoor->pSectors[pBspRenderer->nodes[node_id].uSectorID];
+void BspRenderer::AddNode() {
+    const int node_id = num_nodes;
+    num_nodes++;
+
+    BLVSector *pSector = &pIndoor->pSectors[nodes[node_id].uSectorID];
 
     for (unsigned i = 0; i < pSector->uNumNonBSPFaces; ++i)
-        pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[i]);  // рекурсия\recursion
+        AddFace(node_id, pSector->pFaceIDs[i]);  // can recurse back to this function
 
     if (pSector->field_0 & 0x10) {
-        AddNodeBSPFaces(node_id, pSector->uFirstBSPNode);
+        AddBSPFaces(node_id, pSector->uFirstBSPNode);  // can recurse back to this function through AddFace
     }
 }
 
 
 //----- (004406BC) --------------------------------------------------------
-void AddNodeBSPFaces(int node_id, int uFirstNode) {
+void BspRenderer::AddBSPFaces(const int node_id, const int initialBSPNodeId) {
     BLVSector *pSector;       // esi@2
-    BSPNode *pNode;           // edi@2
+    BSPNode *bspNode;         // edi@2
     BLVFace *pFace;           // eax@2
-    int v6;               // ax@6
-    int v7;                   // ebp@10
-    int v8;                   // ebx@10
-    int v9;               // di@18
+    int bspNodeId = initialBSPNodeId;  // for tail recursion optimisation, see below
 
-    BspRenderer_ViewportNode *node = &pBspRenderer->nodes[node_id];
+    BspRenderer_ViewportNode *node = &nodes[node_id];
 
-    while (1) {
+    // NOTE(yoctozepto): tail recursion optimisation;
+    //                   normally, this BSP node exploration is recursive on two branches but the second recursion can be optimised
+    //                   because it's in the tail call position - in here, it has been optimised explicitly through the following loop
+    do {
         pSector = &pIndoor->pSectors[node->uSectorID];
-        pNode = &pIndoor->pNodes[uFirstNode];
-        pFace = &pIndoor->pFaces[pSector->pFaceIDs[pNode->uBSPFaceIDOffset]];
-        // check if we are in front or behind face
-        float v5 = pFace->facePlane.dist +
-             pCamera3D->vCameraPos.x * pFace->facePlane.normal.x +
-             pCamera3D->vCameraPos.y * pFace->facePlane.normal.y +
-             pCamera3D->vCameraPos.z * pFace->facePlane.normal.z;  // plane equation
-        if (pFace->isPortal() && pFace->uSectorID != node->uSectorID) v5 = -v5;
+        bspNode = &pIndoor->pNodes[bspNodeId];
+        pFace = &pIndoor->pFaces[pSector->pFaceIDs[bspNode->uBSPFaceIDOffset]];
 
-        if (v5 <= 0)
-            v6 = pNode->uFront;
-        else
-            v6 = pNode->uBack;
+        bool isFaceFront = pCamera3D->is_face_faced_to_cameraBLV(pFace);
+        // NOTE(yoctozepto): if the face is a portal going from a different sector, then its normal is inverted, so invert the computed value
+        if (pFace->isPortal() && pFace->uSectorID != node->uSectorID)
+            isFaceFront = !isFaceFront;
 
-        if (v6 != -1) AddNodeBSPFaces(node_id, v6);
+        int otherBSPNodeId = isFaceFront ? bspNode->uBack : bspNode->uFront;
 
-        v7 = pNode->uBSPFaceIDOffset;
-        v8 = v7 + pNode->uNumBSPFaces;
+        if (otherBSPNodeId != -1)
+            AddBSPFaces(node_id, otherBSPNodeId);
 
-        while (v7 < v8) {
-            pBspRenderer->AddFaceToRenderList_d3d(node_id, pSector->pFaceIDs[v7++]);
+        for (int i = 0; i < bspNode->uNumBSPFaces; i++) {
+            AddFace(node_id, pSector->pFaceIDs[bspNode->uBSPFaceIDOffset + i]);  // can recurse back to this function through AddNode
         }
 
-        v9 = v5 > 0 ? pNode->uFront : pNode->uBack;
-        if (v9 == -1) break;
-        uFirstNode = v9;
+        // tail recursion optimised call
+        bspNodeId = isFaceFront ? bspNode->uFront : bspNode->uBack;
+    } while (bspNodeId != -1);
+}
+
+
+void BspRenderer_ViewportNode::SetFrustumToCamera() {
+    for (int i = 0; i < 4; i++) {
+        ViewportNodeFrustum[i].normal.x = pCamera3D->FrustumPlanes[i].x;
+        ViewportNodeFrustum[i].normal.y = pCamera3D->FrustumPlanes[i].y;
+        ViewportNodeFrustum[i].normal.z = pCamera3D->FrustumPlanes[i].z;
+        ViewportNodeFrustum[i].dist = -pCamera3D->FrustumPlanes[i].w;
     }
 }

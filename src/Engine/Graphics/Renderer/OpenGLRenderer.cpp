@@ -68,7 +68,6 @@ int uNumSpritesDrawnThisFrame;
 RenderVertexSoft array_73D150[20];
 RenderVertexSoft VertexRenderList[50];
 RenderVertexD3D3 d3d_vertex_buffer[50];
-RenderVertexSoft array_507D30[50];
 
 static GLuint framebuffer = 0;
 static GLuint framebufferTextures[2] = {0, 0};
@@ -873,17 +872,19 @@ void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
 
     float inv_viewplanedist = 1.0f / pCamera3D->ViewPlaneDistPixels;
 
+    RenderVertexSoft originalVertices[50];
+
     // copy to buff in
     for (unsigned i = 0; i < pFace->uNumVertices; ++i) {
-        array_507D30[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
-        array_507D30[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
-        array_507D30[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
-        array_507D30[i].u = (signed short)pFace->pVertexUIDs[i];
-        array_507D30[i].v = (signed short)pFace->pVertexVIDs[i];
+        originalVertices[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+        originalVertices[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+        originalVertices[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+        originalVertices[i].u = (signed short)pFace->pVertexUIDs[i];
+        originalVertices[i].v = (signed short)pFace->pVertexVIDs[i];
     }
 
     // clip accurately to camera
-    pCamera3D->ClipFaceToFrustum(array_507D30, &uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum.data(), 4, 0, 0);
+    pCamera3D->ClipFaceToFrustum(originalVertices, &uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum.data());
     if (!uNumVertices) return;
 
     pCamera3D->ViewTransform(VertexRenderList, uNumVertices);
@@ -3879,9 +3880,10 @@ void OpenGLRenderer::DrawIndoorFaces() {
             for (int test = 0; test < pIndoor->pFaces.size(); test++) {
                 BLVFace *face = &pIndoor->pFaces[test];
 
-                if (face->isPortal()) continue;
-                if (!face->GetTexture()) continue;
-                //if (face->uAttributes & FACE_IS_DOOR) continue;
+                if (face->isPortal())
+                    continue;
+                if (!face->GetTexture())
+                    continue;
 
                 // TODO(pskelton): Same as outdoors. When ODM and BLV face is combined - seperate out function
                 GraphicsImage *tex = face->GetTexture();
@@ -3897,28 +3899,6 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                 int texunit = 0;
                 int texlayer = 0;
-                int attribflags = 0;
-
-                if (face->uAttributes & FACE_IsFluid)
-                    attribflags |= 2;
-                if (face->uAttributes & FACE_INDOOR_SKY)
-                    attribflags |= 0x400;
-
-                if (face->uAttributes & FACE_FlowDown)
-                    attribflags |= 0x400;
-                else if (face->uAttributes & FACE_FlowUp)
-                    attribflags |= 0x800;
-
-                if (face->uAttributes & FACE_FlowRight)
-                    attribflags |= 0x2000;
-                else if (face->uAttributes & FACE_FlowLeft)
-                    attribflags |= 0x1000;
-
-                if (face->uAttributes & FACE_IsLava)
-                    attribflags |= 0x4000;
-
-                if (face->uAttributes & (FACE_OUTLINED | FACE_IsSecret))
-                    attribflags |= 0x00010000;
 
                 // loop while running down animlength with frame animtimes
                 do {
@@ -4081,23 +4061,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 BLVFace *face = &pIndoor->pFaces[uFaceID];
                 face->uAttributes |= FACE_SeenByParty;
 
-                if (face->isPortal()) {
-                    continue;
-                }
-
-                if (face->uNumVertices < 3) continue;
-
-                if (face->Invisible()) {
-                    continue;
-                }
-
-                if (!face->GetTexture()) {
-                    continue;
-                }
-
                 Planef *portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum.data();
                 unsigned int uNumFrustums = 4;
-                RenderVertexSoft *pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding.data();
 
                 // unsigned ColourMask;  // ebx@25
                 unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
@@ -4107,136 +4072,138 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 static RenderVertexSoft static_vertices_calc_out[64];  // buff out - calc portal shape
 
                 // check face is towards camera
-                if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
-                    uNumVerticesa = face->uNumVertices;
+                if (!pCamera3D->is_face_faced_to_cameraBLV(face)) {
+                    continue;
+                }
 
-                    // copy to buff in
-                    for (unsigned i = 0; i < face->uNumVertices; ++i) {
-                        static_vertices_buff_in[i].vWorldPosition.x = pIndoor->pVertices[face->pVertexIDs[i]].x;
-                        static_vertices_buff_in[i].vWorldPosition.y = pIndoor->pVertices[face->pVertexIDs[i]].y;
-                        static_vertices_buff_in[i].vWorldPosition.z = pIndoor->pVertices[face->pVertexIDs[i]].z;
-                        static_vertices_buff_in[i].u = (signed short)face->pVertexUIDs[i];
-                        static_vertices_buff_in[i].v = (signed short)face->pVertexVIDs[i];
+                uNumVerticesa = face->uNumVertices;
+
+                // copy to buff in
+                for (unsigned i = 0; i < face->uNumVertices; ++i) {
+                    static_vertices_buff_in[i].vWorldPosition.x = pIndoor->pVertices[face->pVertexIDs[i]].x;
+                    static_vertices_buff_in[i].vWorldPosition.y = pIndoor->pVertices[face->pVertexIDs[i]].y;
+                    static_vertices_buff_in[i].vWorldPosition.z = pIndoor->pVertices[face->pVertexIDs[i]].z;
+                    static_vertices_buff_in[i].u = (signed short)face->pVertexUIDs[i];
+                    static_vertices_buff_in[i].v = (signed short)face->pVertexVIDs[i];
+                }
+
+                // check if this face is visible through current portal node
+                if (!pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)) {
+                    continue;
+                }
+
+                // ceiling sky faces are not frustum culled
+                float skymodtimex{};
+                float skymodtimey{};
+                if (face->Indoor_sky()) {
+                    if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
+                        // draw forced perspective sky
+                        DrawIndoorSky(face->uNumVertices, uFaceID);
+                        continue;
+                    } else {
+                        // TODO(pskelton): check tickcount usage here
+                        skymodtimex = (platform->tickCount() / 32.0f) - pCamera3D->vCameraPos.x;
+                        skymodtimey = (platform->tickCount() / 32.0f) + pCamera3D->vCameraPos.y;
                     }
+                }
 
-                    // ceiling sky faces are not frustum culled
-                    float skymodtimex{};
-                    float skymodtimey{};
+                ++pBLVRenderParams->uNumFacesRenderedThisFrame;
+                // load up verts here
+                int texlayer = 0;
+                int texunit = 0;
+                int attribflags = 0;
+
+                if (face->uAttributes & FACE_IsFluid)
+                    attribflags |= 2;
+
+                if (face->uAttributes & FACE_FlowDown)
+                    attribflags |= 0x400;
+                else if (face->uAttributes & FACE_FlowUp)
+                    attribflags |= 0x800;
+
+                if (face->uAttributes & FACE_FlowRight)
+                    attribflags |= 0x2000;
+                else if (face->uAttributes & FACE_FlowLeft)
+                    attribflags |= 0x1000;
+
+                if (face->uAttributes & FACE_IsLava)
+                    attribflags |= 0x4000;
+
+                if (face->uAttributes & FACE_OUTLINED || (face->uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
+                    attribflags |= 0x00010000;
+
+                if (face->IsTextureFrameTable()) {
+                    texlayer = -1;
+                    texunit = -1;
+                } else {
+                    texlayer = face->texlayer;
+                    texunit = face->texunit;
+                }
+
+                if (texlayer == -1) { // texture has been reset - see if its in the map
+                    GraphicsImage *tex = face->GetTexture();
+                    std::string texname = tex->GetName();
+                    auto mapiter = bsptexmap.find(texname);
+                    if (mapiter != bsptexmap.end()) {
+                        // if so, extract unit and layer
+                        int unitlayer = mapiter->second;
+                        face->texlayer = texlayer = unitlayer & 0xFF;
+                        face->texunit = texunit = (unitlayer & 0xFF00) >> 8;
+                    } else {
+                        logger->warning("Texture not found in map!");
+                        // TODO(pskelton): set to water for now - fountains in walls of mist
+                        texlayer = face->texlayer = 0;
+                        texunit = face->texunit = 0;
+                    }
+                }
+
+
+                for (int z = 0; z < (face->uNumVertices - 2); z++) {
+                    // 123, 134, 145, 156..
+                    GLshaderverts *thisvert = &BSPshaderstore[texunit][numBSPverts[texunit]];
+
+                    // copy first
+                    thisvert->x = pIndoor->pVertices[face->pVertexIDs[0]].x;
+                    thisvert->y = pIndoor->pVertices[face->pVertexIDs[0]].y;
+                    thisvert->z = pIndoor->pVertices[face->pVertexIDs[0]].z;
+                    thisvert->u = face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
+                    thisvert->v = face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
                     if (face->Indoor_sky()) {
-                        if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
-                            // draw forced perspective sky
-                            DrawIndoorSky(face->uNumVertices, uFaceID);
-                            continue;
-                        } else {
-                            // TODO(pskelton): check tickcount usage here
-                            skymodtimex = (platform->tickCount() / 32.0f) - pCamera3D->vCameraPos.x;
-                            skymodtimey = (platform->tickCount() / 32.0f) + pCamera3D->vCameraPos.y;
+                        thisvert->u = (skymodtimex + thisvert->u) * 0.25f;
+                        thisvert->v = (skymodtimey + thisvert->v) * 0.25f;
+                    }
+                    thisvert->texunit = texunit;
+                    thisvert->texturelayer = texlayer;
+                    thisvert->normx = face->facePlane.normal.x;
+                    thisvert->normy = face->facePlane.normal.y;
+                    thisvert->normz = face->facePlane.normal.z;
+                    thisvert->attribs = attribflags;
+                    thisvert->sector = face->uSectorID;
+                    thisvert++;
+
+                    // copy other two (z+1)(z+2)
+                    for (unsigned i = 1; i < 3; ++i) {
+                        thisvert->x = pIndoor->pVertices[face->pVertexIDs[z + i]].x;
+                        thisvert->y = pIndoor->pVertices[face->pVertexIDs[z + i]].y;
+                        thisvert->z = pIndoor->pVertices[face->pVertexIDs[z + i]].z;
+                        thisvert->u = face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
+                        thisvert->v = face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
+                        if (face->Indoor_sky()) {
+                            thisvert->u = (skymodtimex + thisvert->u) * 0.25f;
+                            thisvert->v = (skymodtimey + thisvert->v) * 0.25f;
                         }
+                        thisvert->texunit = texunit;
+                        thisvert->texturelayer = texlayer;
+                        thisvert->normx = face->facePlane.normal.x;
+                        thisvert->normy = face->facePlane.normal.y;
+                        thisvert->normz = face->facePlane.normal.z;
+                        thisvert->attribs = attribflags;
+                        thisvert->sector = face->uSectorID;
+                        thisvert++;
                     }
 
-                    // check if this face is visible through current portal node
-                    if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)) {
-                        if (true) {
-                            ++pBLVRenderParams->uNumFacesRenderedThisFrame;
-                            // load up verts here
-                            int texlayer = 0;
-                            int texunit = 0;
-                            int attribflags = 0;
-
-                            if (face->uAttributes & FACE_IsFluid)
-                                attribflags |= 2;
-
-                            if (face->uAttributes & FACE_FlowDown)
-                                attribflags |= 0x400;
-                            else if (face->uAttributes & FACE_FlowUp)
-                                attribflags |= 0x800;
-
-                            if (face->uAttributes & FACE_FlowRight)
-                                attribflags |= 0x2000;
-                            else if (face->uAttributes & FACE_FlowLeft)
-                                attribflags |= 0x1000;
-
-                            if (face->uAttributes & FACE_IsLava)
-                                attribflags |= 0x4000;
-
-                            if (face->uAttributes & FACE_OUTLINED || (face->uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
-                                attribflags |= 0x00010000;
-
-                            if (face->IsTextureFrameTable()) {
-                                texlayer = -1;
-                                texunit = -1;
-                            } else {
-                                texlayer = face->texlayer;
-                                texunit = face->texunit;
-                            }
-
-                            if (texlayer == -1) { // texture has been reset - see if its in the map
-                                GraphicsImage *tex = face->GetTexture();
-                                std::string texname = tex->GetName();
-                                auto mapiter = bsptexmap.find(texname);
-                                if (mapiter != bsptexmap.end()) {
-                                    // if so, extract unit and layer
-                                    int unitlayer = mapiter->second;
-                                    face->texlayer = texlayer = unitlayer & 0xFF;
-                                    face->texunit = texunit = (unitlayer & 0xFF00) >> 8;
-                                } else {
-                                    logger->warning("Texture not found in map!");
-                                    // TODO(pskelton): set to water for now - fountains in walls of mist
-                                    texlayer = face->texlayer = 0;
-                                    texunit = face->texunit = 0;
-                                }
-                            }
-
-
-                            for (int z = 0; z < (face->uNumVertices - 2); z++) {
-                                // 123, 134, 145, 156..
-                                GLshaderverts *thisvert = &BSPshaderstore[texunit][numBSPverts[texunit]];
-
-                                // copy first
-                                thisvert->x = pIndoor->pVertices[face->pVertexIDs[0]].x;
-                                thisvert->y = pIndoor->pVertices[face->pVertexIDs[0]].y;
-                                thisvert->z = pIndoor->pVertices[face->pVertexIDs[0]].z;
-                                thisvert->u = face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
-                                thisvert->v = face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
-                                if (face->Indoor_sky()) {
-                                    thisvert->u = (skymodtimex + thisvert->u) * 0.25f;
-                                    thisvert->v = (skymodtimey + thisvert->v) * 0.25f;
-                                }
-                                thisvert->texunit = texunit;
-                                thisvert->texturelayer = texlayer;
-                                thisvert->normx = face->facePlane.normal.x;
-                                thisvert->normy = face->facePlane.normal.y;
-                                thisvert->normz = face->facePlane.normal.z;
-                                thisvert->attribs = attribflags;
-                                thisvert->sector = face->uSectorID;
-                                thisvert++;
-
-                                // copy other two (z+1)(z+2)
-                                for (unsigned i = 1; i < 3; ++i) {
-                                    thisvert->x = pIndoor->pVertices[face->pVertexIDs[z + i]].x;
-                                    thisvert->y = pIndoor->pVertices[face->pVertexIDs[z + i]].y;
-                                    thisvert->z = pIndoor->pVertices[face->pVertexIDs[z + i]].z;
-                                    thisvert->u = face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
-                                    thisvert->v = face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
-                                    if (face->Indoor_sky()) {
-                                        thisvert->u = (skymodtimex + thisvert->u) * 0.25f;
-                                        thisvert->v = (skymodtimey + thisvert->v) * 0.25f;
-                                    }
-                                    thisvert->texunit = texunit;
-                                    thisvert->texturelayer = texlayer;
-                                    thisvert->normx = face->facePlane.normal.x;
-                                    thisvert->normy = face->facePlane.normal.y;
-                                    thisvert->normz = face->facePlane.normal.z;
-                                    thisvert->attribs = attribflags;
-                                    thisvert->sector = face->uSectorID;
-                                    thisvert++;
-                                }
-
-                                numBSPverts[texunit] += 3;
-                                assert(numBSPverts[texunit] <= 19999);
-                            }
-                        }
-                    }
+                    numBSPverts[texunit] += 3;
+                    assert(numBSPverts[texunit] <= 19999);
                 }
             }
 

@@ -285,6 +285,7 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
                                 Vis_SelectionFilter *filter) {
     RenderVertexSoft a1;
 
+    // TODO(yoctozepto): this should rather use faces rendered by BSP
     for (int faceindex = 0; faceindex < (int)pIndoor->pFaces.size(); ++faceindex) {
         BLVFace *face = &pIndoor->pFaces[faceindex];
         face->uAttributes &= ~FACE_OUTLINED;
