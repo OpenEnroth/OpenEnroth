@@ -463,8 +463,7 @@ void OutdoorLocation::Release() {
 }
 
 void OutdoorLocation::fixResourceIssues() {
-    if (engine->_currentLoadedMapId == MAP_BARROW_DOWNS)
-    {
+    if (engine->_currentLoadedMapId == MAP_BARROW_DOWNS) {
         if (!pLevelDecorations.empty()) {
             for (auto &decoration : pLevelDecorations) {
                 if (decoration.uDecorationDescID == DECORATION_NORTH_START_39) {
