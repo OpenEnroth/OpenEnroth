@@ -2321,6 +2321,8 @@ void TeleportToStartingPoint(MapStartPoint point) {
             for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
                 if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
                     pParty->pos = pLevelDecorations[i].vPosition;
+                    bool bOnWater = false;
+                    pParty->pos.z = GetTerrainHeightsAroundParty2(pParty->pos, &bOnWater, 0);
                     pParty->velocity = Vec3f();
                     pParty->uFallStartZ = pParty->pos.z;
                     pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
