@@ -21,6 +21,8 @@
 #include "Utility/Math/Float.h"
 #include "Utility/Math/TrigLut.h"
 
+#include "Library/Logger/Logger.h"
+
 CollisionState collision_state;
 
 constexpr float COLLISIONS_EPS = 0.01f;
@@ -1125,6 +1127,11 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
             const ODMFace* pODMFace = &pOutdoor->face(collision_state.pid);
             bool bFaceSlopeTooSteep = pODMFace->facePlane.normal.z > 0.0f && pODMFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
 
+            if (bFaceSlopeTooSteep) {
+                if (pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1 < 128)
+                    bFaceSlopeTooSteep = false;
+            }
+
             if (pODMFace->facePlane.normal.z > 0 && !bFaceSlopeTooSteep)
                 *partyHasHitModel = true;
 
@@ -1151,8 +1158,10 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
             newDirection.normalize();
 
             // Push away from the surface and add a touch down for better slide
-            if (bFaceSlopeTooSteep)
+            if (bFaceSlopeTooSteep) {
                 *partyInputSpeed += Vec3f(pODMFace->facePlane.normal.x, pODMFace->facePlane.normal.y, -2) * 10;
+                logger->trace("steep slope");
+            }
 
             // set movement speed along sliding plane
             *partyInputSpeed = newDirection * dot(newDirection, *partyInputSpeed);
