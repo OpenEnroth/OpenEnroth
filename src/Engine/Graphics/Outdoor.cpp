@@ -2321,8 +2321,10 @@ void TeleportToStartingPoint(MapStartPoint point) {
             for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
                 if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
                     pParty->pos = pLevelDecorations[i].vPosition;
+                    // TODO: (Chaosit) dummy variables created for the sake of passing pointers
                     bool bOnWater = false;
-                    pParty->pos.z = GetTerrainHeightsAroundParty2(pParty->pos, &bOnWater, 0);
+                    int bModelPid;
+                    pParty->pos.z = ODM_GetFloorLevel(pParty->pos, 0, &bOnWater, &bModelPid, false);
                     pParty->velocity = Vec3f();
                     pParty->uFallStartZ = pParty->pos.z;
                     pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
