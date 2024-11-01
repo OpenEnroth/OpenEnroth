@@ -64,7 +64,11 @@ void ScriptingSystem::_initPackageTable() {
     // Usage in Lua:
     // local gameBindings = require "bindings.game" -- If the module starts with 'bindings.' we try to load/create the binding table.
     // gameBindings.doSomething()
-    _solState->add_package_loader([this](const std::string &module) {
+    //
+    // Note that sol::as_function is required here because some compilers mangle (mis-mangle?) different lambdas
+    // inside the same function using the same signature, and this leads to problems.
+    // See https://sol2.readthedocs.io/en/latest/functions.html#working-with-callables-lambdas
+    _solState->add_package_loader(sol::as_function([this](const std::string &module) {
         if (module.starts_with("bindings.")) {
             return _solState->load(fmt::format("return _createBindingTable('{}')", module), module).get<sol::object>();
         } else {
@@ -72,25 +76,25 @@ void ScriptingSystem::_initPackageTable() {
             // function in lua sources.
             return sol::make_object(*_solState, fmt::format("\n\tno bindings module '{}'", module));
         }
-    });
+    }));
 
     // Other scripts are loaded from our virtual FS.
-    _solState->add_package_loader([this](const std::string &module) {
+    _solState->add_package_loader(sol::as_function([this](const std::string &module) {
         std::string path = fmt::format("{}/{}.lua", _scriptFolder, replaceAll(module, '.', '/'));
         if (dfs->exists(path)) {
             return _solState->load(dfs->read(path).string_view(), module).get<sol::object>();
         } else {
             return sol::make_object(*_solState, fmt::format("\n\tno file '{}'", dfs->displayPath(path)));
         }
-    });
+    }));
 }
 
 void ScriptingSystem::_initBindingFunction() {
-    (*_solState)["_createBindingTable"] = [this](std::string tableName) {
+    (*_solState)["_createBindingTable"] = sol::as_function([this](std::string tableName) {
         if (auto itr = _bindings.find(tableName); itr != _bindings.end()) {
             return itr->second->createBindingTable(*_solState);
         }
         logger->warning(ScriptingLogCategory, "Can't find a binding table with name: {}", tableName);
         return _solState->create_table();
-    };
+    });
 }

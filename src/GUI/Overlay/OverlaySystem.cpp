@@ -39,13 +39,12 @@ void OverlaySystem::removeOverlay(std::string_view name) {
 }
 
 void OverlaySystem::drawOverlays() {
-    if (!_isEnabled) {
-        return;
-    }
-
+    // Cycle Imgui even if overlays are disabled and we dont draw anything. This allows it to consume input events at the correct time - #1824.
     _renderer.beginOverlays();
-    for (auto &&[name, overlay] : _overlays) {
-        overlay->update();
+    if (_isEnabled) {
+        for (auto &&[name, overlay] : _overlays) {
+            overlay->update();
+        }
     }
     _renderer.endOverlays();
 }
