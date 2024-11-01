@@ -929,6 +929,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
             pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
         }
     }
+    BLV_UpdateDoors();
 
     /*for (unsigned i = 0; i < pIndoor->uNumFaces; ++i)
     {
