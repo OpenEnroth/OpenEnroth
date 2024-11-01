@@ -463,3 +463,9 @@ GAME_TEST(Issues, Issue1851b) {
     EXPECT_GT(zPos.back(), 525);
     EXPECT_MISSES(jumpTape, true);
 }
+
+GAME_TEST(Issues, Issue1837) {
+    // Checking if we still fall down from the sky in Barrow Downs
+    test.playTraceFromTestData("issue_1837.mm7", "issue_1837.json");
+    EXPECT_FLOAT_EQ(pParty->pos.z, 1.0f);
+}
