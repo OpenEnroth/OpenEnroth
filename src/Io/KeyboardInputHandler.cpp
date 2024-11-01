@@ -16,9 +16,8 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
 
-// TODO(captainurist): get rid of the last -1_ticks and retrace. It's a leftover implementation artifact.
 // Delayed keyrepeat registers after 500ms.
-static constexpr Duration DELAY_TOGGLE_TIME_FIRST = Duration::fromRealtimeMilliseconds(500) - 1_ticks;
+static constexpr Duration DELAY_TOGGLE_TIME_FIRST = Duration::fromRealtimeMilliseconds(500);
 
 // Further keyrepeats happen every 1/15th of a second.
 static constexpr Duration DELAY_TOGGLE_TIME_PERIOD = Duration::fromRealtimeMilliseconds(67);
