@@ -1689,7 +1689,7 @@ void Game::gameLoop() {
                 continue;
             }
 
-            if (uGameState == GAME_STATE_CHANGE_LOCATION) {  // location change
+            if (uGameState == GAME_STATE_CHANGE_LOCATION) {  // смена локации
                 pAudioPlayer->stopSounds();
                 PrepareWorld(0);
                 uGameState = GAME_STATE_PLAYING;

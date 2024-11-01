@@ -50,11 +50,6 @@ struct OutdoorLocation {
     double GetFogDensityByTime();
 
     /**
-     * Function to go through possible issues in map definitions fixing them
-     */
-    void fixResourceIssues();
-
-    /**
      * @offset 0x488EB1
      */
     TileFlags getTileAttribByPos(const Vec3f &pos);

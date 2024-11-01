@@ -462,18 +462,6 @@ void OutdoorLocation::Release() {
     viewparams->location_minimap = nullptr;
 }
 
-void OutdoorLocation::fixResourceIssues() {
-    if (engine->_currentLoadedMapId == MAP_BARROW_DOWNS) {
-        if (!pLevelDecorations.empty()) {
-            for (auto &decoration : pLevelDecorations) {
-                if (decoration.uDecorationDescID == DECORATION_NORTH_START_39) {
-                    decoration.vPosition.z = 0;
-                }
-            }
-        }
-    }
-}
-
 void OutdoorLocation::Load(std::string_view filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned) {
     //if (engine->IsUnderwater()) {
     //    pPaletteManager->pPalette_tintColor[0] = 0x10;
@@ -2013,7 +2001,6 @@ static void loadAndPrepareODMInternal(MapId mapid, ODMRenderParams *thisa) {
         }
         RespawnGlobalDecorations();
     }
-    pOutdoor->fixResourceIssues();
     pOutdoor->PrepareDecorations();
     pOutdoor->ArrangeSpriteObjects();
     pOutdoor->InitalizeActors(mapid);
@@ -2334,6 +2321,8 @@ void TeleportToStartingPoint(MapStartPoint point) {
             for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
                 if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
                     pParty->pos = pLevelDecorations[i].vPosition;
+                    bool bOnWater = false;
+                    pParty->pos.z = GetTerrainHeightsAroundParty2(pParty->pos, &bOnWater, 0);
                     pParty->velocity = Vec3f();
                     pParty->uFallStartZ = pParty->pos.z;
                     pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
