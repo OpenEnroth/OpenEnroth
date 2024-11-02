@@ -48,8 +48,8 @@ struct DirectoryEntry {
  * `std::string`s to store paths.
  *
  * Paths are normalized internally, and then processed by the implementation in a derived class. Both `".."` and `"."`
- * special dirs are supported, but peeking outside of the root directory is not - root is considered a parent of itself,
- * so `"../.."` is normalized into an empty path.
+ * special dirs are supported, but peeking outside the root directory is not - passing paths that try to do this will
+ * throw, `exists` will return `false`, and `stat` will return `FILE_INVALID`.
  *
  * Unlike a real file system, this interface doesn't have a concept of a "current directory." All methods take
  * root-relative paths, so `"foo/bar"` and `"/foo/bar"` are equivalent.

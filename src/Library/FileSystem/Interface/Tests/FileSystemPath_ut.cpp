@@ -13,12 +13,12 @@ UNIT_TEST(FileSystemPath, Normalization) {
     EXPECT_EQ(FileSystemPath("/foo//bar/").string(), "foo/bar");
     EXPECT_EQ(FileSystemPath("//foo//bar//").string(), "foo/bar");
 
-    EXPECT_EQ(FileSystemPath("..").string(), "");
-    EXPECT_EQ(FileSystemPath("../..").string(), "");
-    EXPECT_EQ(FileSystemPath("/../..").string(), "");
-    EXPECT_EQ(FileSystemPath("../../").string(), "");
-    EXPECT_EQ(FileSystemPath("/../../").string(), "");
-    EXPECT_EQ(FileSystemPath("//..//..//").string(), "");
+    EXPECT_EQ(FileSystemPath("..").string(), "..");
+    EXPECT_EQ(FileSystemPath("../..").string(), "../..");
+    EXPECT_EQ(FileSystemPath("/../..").string(), "../..");
+    EXPECT_EQ(FileSystemPath("../../").string(), "../..");
+    EXPECT_EQ(FileSystemPath("/../../").string(), "../..");
+    EXPECT_EQ(FileSystemPath("//..//..//").string(), "../..");
 
     EXPECT_EQ(FileSystemPath("").string(), "");
     EXPECT_EQ(FileSystemPath("/").string(), "");
@@ -39,25 +39,33 @@ UNIT_TEST(FileSystemPath, Normalization) {
     EXPECT_EQ(FileSystemPath("//foo//bar//..//").string(), "foo");
     EXPECT_EQ(FileSystemPath("foo/../bar").string(), "bar");
     EXPECT_EQ(FileSystemPath("//foo//..//bar//").string(), "bar");
-    EXPECT_EQ(FileSystemPath("../foo/bar").string(), "foo/bar");
-    EXPECT_EQ(FileSystemPath("//..//foo//bar//").string(), "foo/bar");
+    EXPECT_EQ(FileSystemPath("../foo/bar").string(), "../foo/bar");
+    EXPECT_EQ(FileSystemPath("//..//foo//bar//").string(), "../foo/bar");
 
     EXPECT_EQ(FileSystemPath("foo/bar/../..").string(), "");
-    EXPECT_EQ(FileSystemPath("foo/../../bar").string(), "bar");
-    EXPECT_EQ(FileSystemPath("../../foo/bar").string(), "foo/bar");
+    EXPECT_EQ(FileSystemPath("foo/../../bar").string(), "../bar");
+    EXPECT_EQ(FileSystemPath("../../foo/bar").string(), "../../foo/bar");
 
     EXPECT_EQ(FileSystemPath("foo/.../bar/...").string(), "foo/.../bar/...");
 }
 
 UNIT_TEST(FileSystemPath, Parent) {
     EXPECT_FALSE(FileSystemPath("foo").isParentOf(FileSystemPath("foo")));
-    EXPECT_TRUE(FileSystemPath("").isParentOf(FileSystemPath("")));
+    EXPECT_FALSE(FileSystemPath("").isParentOf(FileSystemPath("")));
+
+    EXPECT_TRUE(FileSystemPath("").isParentOf(FileSystemPath("a")));
+    EXPECT_TRUE(FileSystemPath("").isParentOf(FileSystemPath("a/b")));
+    EXPECT_TRUE(FileSystemPath("a").isParentOf(FileSystemPath("a/b")));
+
+    EXPECT_FALSE(FileSystemPath("a/b").isParentOf(FileSystemPath("a")));
+    EXPECT_FALSE(FileSystemPath("a/b").isParentOf(FileSystemPath("")));
+    EXPECT_FALSE(FileSystemPath("a").isParentOf(FileSystemPath("")));
 }
 
 UNIT_TEST(FileSystemPath, EmptyChunks) {
     EXPECT_TRUE(FileSystemPath().chunks().empty());
     EXPECT_TRUE(FileSystemPath(".").chunks().empty());
-    EXPECT_TRUE(FileSystemPath("..").chunks().empty());
+    EXPECT_FALSE(FileSystemPath("..").chunks().empty());
     EXPECT_FALSE(FileSystemPath("a").chunks().empty());
 }
 
@@ -128,4 +136,47 @@ UNIT_TEST(FileSystemPath, Append) {
     FileSystemPath path5("a/b");
     path5.append(FileSystemPath("c/d"));
     EXPECT_EQ(path5.string(), "a/b/c/d");
+}
+
+UNIT_TEST(FileSystemPath, AppendedEscaping) {
+    EXPECT_EQ(FileSystemPath("..").appended(FileSystemPath("..")).string(), "../..");
+    EXPECT_EQ(FileSystemPath("../..").appended(FileSystemPath("../..")).string(), "../../../..");
+    EXPECT_EQ(FileSystemPath("").appended(FileSystemPath("..")).string(), "..");
+    EXPECT_EQ(FileSystemPath("..").appended(FileSystemPath("")).string(), "..");
+    EXPECT_EQ(FileSystemPath("").appended(FileSystemPath("../..")).string(), "../..");
+    EXPECT_EQ(FileSystemPath("../..").appended(FileSystemPath("")).string(), "../..");
+
+    EXPECT_EQ(FileSystemPath("../../abc").appended(FileSystemPath("..")).string(), "../..");
+    EXPECT_EQ(FileSystemPath("../../abc").appended(FileSystemPath("../..")).string(), "../../..");
+    EXPECT_EQ(FileSystemPath("../../abc").appended(FileSystemPath("../../xyz")).string(), "../../../xyz");
+    EXPECT_EQ(FileSystemPath("aa/bb").appended(FileSystemPath("../../xyz")).string(), "xyz");
+    EXPECT_EQ(FileSystemPath("aa/bb").appended(FileSystemPath("../../../xyz")).string(), "../xyz");
+
+    EXPECT_EQ(FileSystemPath("aa").appended(FileSystemPath("..")).string(), "");
+    EXPECT_EQ(FileSystemPath("aa/bb").appended(FileSystemPath("../..")).string(), "");
+    EXPECT_EQ(FileSystemPath("aa/bb/cc").appended(FileSystemPath("../../..")).string(), "");
+}
+
+UNIT_TEST(FileSystemPath, EscapingParents) {
+    EXPECT_TRUE(FileSystemPath("..").isParentOf(FileSystemPath("")));
+    EXPECT_TRUE(FileSystemPath("../..").isParentOf(FileSystemPath("")));
+    EXPECT_FALSE(FileSystemPath("../../a").isParentOf(FileSystemPath("")));
+    EXPECT_TRUE(FileSystemPath("../../a/..").isParentOf(FileSystemPath("")));
+    EXPECT_TRUE(FileSystemPath("../../a/..").isParentOf(FileSystemPath("a")));
+    EXPECT_TRUE(FileSystemPath("../..").isParentOf(FileSystemPath("a/b")));
+
+    EXPECT_FALSE(FileSystemPath("").isParentOf(FileSystemPath("..")));
+    EXPECT_FALSE(FileSystemPath("").isParentOf(FileSystemPath("../..")));
+    EXPECT_FALSE(FileSystemPath("a/b").isParentOf(FileSystemPath("..")));
+    EXPECT_FALSE(FileSystemPath("a/b").isParentOf(FileSystemPath("../..")));
+    EXPECT_FALSE(FileSystemPath("a/b").isParentOf(FileSystemPath("../../a/b")));
+
+    EXPECT_TRUE(FileSystemPath("../..").isParentOf(FileSystemPath("..")));
+    EXPECT_TRUE(FileSystemPath("../../..").isParentOf(FileSystemPath("..")));
+    EXPECT_TRUE(FileSystemPath("../../..").isParentOf(FileSystemPath("../b")));
+    EXPECT_TRUE(FileSystemPath("../../..").isParentOf(FileSystemPath("../../b")));
+    EXPECT_TRUE(FileSystemPath("../../..").isParentOf(FileSystemPath("../../../b")));
+    EXPECT_FALSE(FileSystemPath("../../..").isParentOf(FileSystemPath("../../../../b")));
+    EXPECT_TRUE(FileSystemPath("../../../a").isParentOf(FileSystemPath("../../../a/b")));
+    EXPECT_FALSE(FileSystemPath("../../../a").isParentOf(FileSystemPath("../../../b")));
 }

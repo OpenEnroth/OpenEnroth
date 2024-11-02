@@ -18,6 +18,8 @@ bool FileSystem::exists(std::string_view path) const {
 bool FileSystem::exists(FileSystemPathView path) const {
     if (path.isEmpty())
         return true; // Root always exists.
+    if (path.isEscaping())
+        return false; // Escaping paths are not accessible through this interface.
     return _exists(path);
 }
 
@@ -28,6 +30,8 @@ FileStat FileSystem::stat(std::string_view path) const {
 FileStat FileSystem::stat(FileSystemPathView path) const {
     if (path.isEmpty())
         return FileStat(FILE_DIRECTORY, 0);
+    if (path.isEscaping())
+        return FileStat();
     return _stat(path);
 }
 
@@ -36,6 +40,8 @@ std::vector<DirectoryEntry> FileSystem::ls(std::string_view path) const {
 }
 
 std::vector<DirectoryEntry> FileSystem::ls(FileSystemPathView path) const {
+    if (path.isEscaping())
+        FileSystemException::raise(this, FS_LS_FAILED_PATH_NOT_ACCESSIBLE, path);
     std::vector<DirectoryEntry> result;
     _ls(path, &result);
     return result;
@@ -46,6 +52,8 @@ void FileSystem::ls(std::string_view path, std::vector<DirectoryEntry> *entries)
 }
 
 void FileSystem::ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
+    if (path.isEscaping())
+        FileSystemException::raise(this, FS_LS_FAILED_PATH_NOT_ACCESSIBLE, path);
     entries->clear();
     _ls(path, entries);
 }
@@ -57,6 +65,8 @@ Blob FileSystem::read(std::string_view path) const {
 Blob FileSystem::read(FileSystemPathView path) const {
     if (path.isEmpty())
         FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
+    if (path.isEscaping())
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_NOT_ACCESSIBLE, path);
     return _read(path);
 }
 
@@ -67,6 +77,8 @@ void FileSystem::write(std::string_view path, const Blob &data) {
 void FileSystem::write(FileSystemPathView path, const Blob &data) {
     if (path.isEmpty())
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
+    if (path.isEscaping())
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_ACCESSIBLE, path);
     _write(path, data);
 }
 
@@ -77,6 +89,8 @@ std::unique_ptr<InputStream> FileSystem::openForReading(std::string_view path) c
 std::unique_ptr<InputStream> FileSystem::openForReading(FileSystemPathView path) const {
     if (path.isEmpty())
         FileSystemException::raise(this, FS_READ_FAILED_PATH_IS_DIR, path);
+    if (path.isEscaping())
+        FileSystemException::raise(this, FS_READ_FAILED_PATH_NOT_ACCESSIBLE, path);
     return _openForReading(path);
 }
 
@@ -87,6 +101,8 @@ std::unique_ptr<OutputStream> FileSystem::openForWriting(std::string_view path) 
 std::unique_ptr<OutputStream> FileSystem::openForWriting(FileSystemPathView path) {
     if (path.isEmpty())
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_IS_DIR, path);
+    if (path.isEscaping())
+        FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_ACCESSIBLE, path);
     return _openForWriting(path);
 }
 
@@ -97,8 +113,12 @@ void FileSystem::rename(std::string_view srcPath, std::string_view dstPath) {
 void FileSystem::rename(FileSystemPathView srcPath, FileSystemPathView dstPath) {
     if (srcPath.isEmpty())
         FileSystemException::raise(this, FS_RENAME_FAILED_SRC_NOT_WRITEABLE, srcPath, dstPath);
+    if (srcPath.isEscaping())
+        FileSystemException::raise(this, FS_RENAME_FAILED_SRC_NOT_ACCESSIBLE, srcPath, dstPath);
     if (dstPath.isEmpty())
         FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
+    if (dstPath.isEscaping())
+        FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_ACCESSIBLE, srcPath, dstPath);
     if (srcPath.isParentOf(dstPath))
         FileSystemException::raise(this, FS_RENAME_FAILED_SRC_IS_PARENT_OF_DST, srcPath, dstPath);
     _rename(srcPath, dstPath);
@@ -111,6 +131,8 @@ bool FileSystem::remove(std::string_view path) {
 bool FileSystem::remove(FileSystemPathView path) {
     if (path.isEmpty())
         FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
+    if (path.isEscaping())
+        FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_ACCESSIBLE, path);
     return _remove(path);
 }
 

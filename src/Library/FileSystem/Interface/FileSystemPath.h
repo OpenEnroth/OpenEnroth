@@ -15,7 +15,6 @@
  * - Repeated path separators are replaced with a single one.
  * - Leading & trailing path separators are removed.
  * - `"."` and `".."` are collapsed.
- * - Leading `".."` are removed (since root is a parent of itself).
  * - Root path is stored as an empty string.
  *
  * Note that this means that `FileSystemPath` is different from `std::filesystem::path` in that there is no difference
@@ -60,6 +59,10 @@ class FileSystemPath {
         return parent.isParentOf(*this);
     }
 
+    [[nodiscard]] bool isEscaping() const {
+        return FileSystemPathView(*this).isEscaping();
+    }
+
     [[nodiscard]] const std::string &string() const {
         return _path;
     }
@@ -84,11 +87,7 @@ class FileSystemPath {
         _path += chunk;
     }
 
-    void append(FileSystemPathView tail) {
-        if (!_path.empty() && !tail.isEmpty())
-            _path += '/';
-        _path += tail.string();
-    }
+    void append(FileSystemPathView tail);
 
     // TODO(captainurist): name this one better, it takes a chunk, not a path that needs to be re-normalized.
     [[nodiscard]] FileSystemPath appended(std::string_view chunk) const {

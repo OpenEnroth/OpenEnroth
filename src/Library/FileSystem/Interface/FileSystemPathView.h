@@ -19,16 +19,20 @@ class FileSystemPathView {
     FileSystemPathView &operator=(const FileSystemPathView &) = default;
     FileSystemPathView &operator=(FileSystemPathView &&) = default;
 
-    friend auto operator<=>(const FileSystemPathView &l, const FileSystemPathView &r) = default;
+    friend auto operator<=>(FileSystemPathView l, FileSystemPathView r) = default;
 
     [[nodiscard]] bool isEmpty() const {
         return _path.empty();
     }
 
-    [[nodiscard]] bool isParentOf(const FileSystemPathView &child) const;
+    [[nodiscard]] bool isParentOf(FileSystemPathView child) const;
 
-    [[nodiscard]] bool isChildOf(const FileSystemPathView &parent) const {
+    [[nodiscard]] bool isChildOf(FileSystemPathView parent) const {
         return parent.isParentOf(*this);
+    }
+
+    [[nodiscard]] bool isEscaping() const {
+        return _path == ".." || _path.starts_with("../");
     }
 
     [[nodiscard]] std::string_view string() const {
