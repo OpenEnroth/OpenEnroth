@@ -82,6 +82,14 @@ class SplitView : public std::ranges::view_interface<SplitView> {
         return SplitViewSentinel();
     }
 
+    [[nodiscard]] std::string_view string() const {
+        return std::string_view(_begin, _end);
+    }
+
+    [[nodiscard]] char separator() const {
+        return _sep;
+    }
+
     template<class Container> requires std::is_same_v<std::remove_cv_t<typename Container::value_type::value_type>, char>
     operator Container() const {
         // Shamelessly stolen from std::ranges::to implementation. Only our code works for std::set, and
@@ -111,6 +119,11 @@ class SplitView : public std::ranges::view_interface<SplitView> {
 };
 } // namespace detail
 
+#ifndef __DOXYGEN__ // Doxygen chokes here...
+// Enable taking detail::SplitView by value, we handle dangling at split() level.
+template<>
+inline constexpr bool std::ranges::enable_borrowed_range<detail::SplitView> = true;
+#endif
 
 // TODO(captainurist): drop!
 std::vector<char*> tokenize(char *input, const char separator);

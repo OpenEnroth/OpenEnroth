@@ -104,3 +104,9 @@ UNIT_TEST(StringSplit, ForwardRange) {
     pos++;
     EXPECT_EQ(pos, ss.end());
 }
+
+UNIT_TEST(StringSplit, BorrowedRange) {
+    auto mismatch = std::ranges::mismatch(split("a/b/c", '/'), split("a.b.z", '.'));
+    EXPECT_EQ(*mismatch.in1, "c");
+    EXPECT_EQ(*mismatch.in2, "z");
+}
