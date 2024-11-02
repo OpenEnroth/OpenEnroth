@@ -7,18 +7,32 @@ class FileSystemPathView;
 
 class FileSystemPathComponents {
  public:
+    /**
+     * @return                          Path without the last path component. Note that this is different from the
+     *                                  intuitive understanding of a "parent" path because `prefix` for `"../.."` is
+     *                                  `".."`, but the latter is not a parent of the former.
+     */
     inline FileSystemPathView prefix() const;
 
+    /**
+     * @return                          Last path component. Returns an empty string for empty path.
+     */
     std::string_view name() const {
         return _path.substr(_nameStart);
     }
 
-    std::string_view extension() const {
-        return _path.substr(_extStart);
-    }
-
+    /**
+     * @return                          Name of the last path component w/o the extension.
+     */
     std::string_view stem() const {
         return _path.substr(_nameStart, _extStart - _nameStart);
+    }
+
+    /**
+     * @return                          Extension of the last path component.
+     */
+    std::string_view extension() const {
+        return _path.substr(_extStart);
     }
 
  private:
