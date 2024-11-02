@@ -147,15 +147,15 @@ std::tuple<FileSystemPath, LowercaseFileSystem::Node *, FileSystemPathView> Lowe
         return {FileSystemPath(), node, FileSystemPath()};
 
     FileSystemPath basePath;
-    for (std::string_view chunk : path.chunks()) {
+    for (std::string_view chunk : path.split()) {
         if (node->value().type != FILE_DIRECTORY)
-            return {std::move(basePath), node, path.tailAt(chunk)};
+            return {std::move(basePath), node, path.split().tailAt(chunk)};
 
         cacheLs(node, basePath);
 
         Node *child = node->child(chunk);
         if (!child)
-            return {std::move(basePath), node, path.tailAt(chunk)};
+            return {std::move(basePath), node, path.split().tailAt(chunk)};
 
         node = child;
         basePath.append(child->value().baseName);
@@ -221,7 +221,7 @@ void LowercaseFileSystem::cacheInsert(Node *node, FileSystemPathView tail, FileT
 
     assert(node->value().type == FILE_DIRECTORY);
 
-    auto chunks = tail.chunks();
+    auto chunks = tail.split();
     auto pos = chunks.begin();
     auto end = chunks.end();
 

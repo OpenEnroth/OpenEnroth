@@ -63,19 +63,19 @@ UNIT_TEST(FileSystemPath, Parent) {
 }
 
 UNIT_TEST(FileSystemPath, EmptyChunks) {
-    EXPECT_TRUE(FileSystemPath().chunks().empty());
-    EXPECT_TRUE(FileSystemPath(".").chunks().empty());
-    EXPECT_FALSE(FileSystemPath("..").chunks().empty());
-    EXPECT_FALSE(FileSystemPath("a").chunks().empty());
+    EXPECT_TRUE(FileSystemPath().split().empty());
+    EXPECT_TRUE(FileSystemPath(".").split().empty());
+    EXPECT_FALSE(FileSystemPath("..").split().empty());
+    EXPECT_FALSE(FileSystemPath("a").split().empty());
 }
 
 UNIT_TEST(FileSystemPath, Tail) {
     FileSystemPath path("a/b/c");
 
     auto tails = [] (FileSystemPathView path, std::string_view at) -> std::pair<FileSystemPathView, FileSystemPathView> {
-        for (std::string_view chunk : path.chunks())
+        for (std::string_view chunk : path.split())
             if (chunk == at)
-                return std::pair(path.tailAt(chunk), path.tailAfter(chunk));
+                return std::pair(path.split().tailAt(chunk), path.split().tailAfter(chunk));
         return {};
     };
 
@@ -99,7 +99,7 @@ UNIT_TEST(FileSystemPath, Tail) {
 UNIT_TEST(FileSystemPath, TailAfterRoot) {
     FileSystemPath path("a/b/c");
 
-    EXPECT_EQ(path.tailAfter(""), path);
+    EXPECT_EQ(path.split().tailAfter(""), path);
     // Note: can't call tailAt("") b/c "" is not a valid chunk.
 }
 
@@ -179,4 +179,23 @@ UNIT_TEST(FileSystemPath, EscapingParents) {
     EXPECT_FALSE(FileSystemPath("../../..").isParentOf(FileSystemPath("../../../../b")));
     EXPECT_TRUE(FileSystemPath("../../../a").isParentOf(FileSystemPath("../../../a/b")));
     EXPECT_FALSE(FileSystemPath("../../../a").isParentOf(FileSystemPath("../../../b")));
+}
+
+UNIT_TEST(FileSystemPath, TailAtByIterator) {
+    FileSystemPath path("a/b");
+
+    auto split = path.split();
+    auto pos = split.begin();
+    auto end = split.end();
+
+    EXPECT_EQ(*pos, "a");
+    EXPECT_EQ(path.split().tailAt(pos).string(), "a/b");
+
+    pos++;
+    EXPECT_EQ(*pos, "b");
+    EXPECT_EQ(path.split().tailAt(pos).string(), "b");
+
+    pos++;
+    EXPECT_EQ(path.split().tailAt(pos).string(), "");
+    EXPECT_EQ(pos, end);
 }

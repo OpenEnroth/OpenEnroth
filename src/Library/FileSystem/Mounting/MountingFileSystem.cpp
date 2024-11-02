@@ -156,7 +156,7 @@ MountingFileSystem::WalkResult MountingFileSystem::walk(FileSystemPathView path)
         return {node, mount, {}};
 
     std::string_view mountChunk;
-    for (std::string_view chunk : path.chunks()) {
+    for (std::string_view chunk : path.split()) {
         node = node->child(chunk);
         if (!node)
             break;
@@ -167,7 +167,7 @@ MountingFileSystem::WalkResult MountingFileSystem::walk(FileSystemPathView path)
     }
 
     if (mount) {
-        return {node, mount, path.tailAfter(mountChunk)};
+        return {node, mount, path.split().tailAfter(mountChunk)};
     } else {
         return {node, nullptr, {}};
     }

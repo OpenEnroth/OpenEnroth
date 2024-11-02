@@ -4,6 +4,8 @@
 
 #include "Utility/String/Split.h"
 
+#include "FileSystemPathSplit.h"
+
 class FileSystemPath;
 
 class FileSystemPathView {
@@ -39,32 +41,8 @@ class FileSystemPathView {
         return _path;
     }
 
-    [[nodiscard]] auto chunks() const {
-        if (_path.empty()) {
-            return detail::SplitView();
-        } else {
-            return split(_path, '/');
-        }
-    }
-
-    [[nodiscard]] FileSystemPathView tailAt(std::string_view chunk) const {
-        assert(chunk.data() >= _path.data() && chunk.data() + chunk.size() <= _path.data() + _path.size());
-        size_t offset = chunk.data() - _path.data();
-        return fromNormalized(_path.substr(offset));
-    }
-
-    [[nodiscard]] FileSystemPathView tailAfter(std::string_view chunk) const {
-        if (chunk.empty())
-            return *this;
-
-        assert(chunk.data() >= _path.data() && chunk.data() + chunk.size() <= _path.data() + _path.size());
-
-        if (chunk.data() + chunk.size() == _path.data() + _path.size()) {
-            return {};
-        } else {
-            size_t offset = chunk.data() + chunk.size() - _path.data() + 1;
-            return fromNormalized(_path.substr(offset));
-        }
+    [[nodiscard]] FileSystemPathSplit split() const {
+        return FileSystemPathSplit(string());
     }
 
  private:
@@ -79,5 +57,32 @@ struct std::hash<FileSystemPathView> : std::hash<std::string_view> {
         return base_type::operator()(path.string()); // NOLINT: not std::string.
     }
 };
+
+[[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAt(std::string_view chunk) const {
+    std::string_view path = string();
+    assert(chunk.data() >= path.data() && chunk.data() + chunk.size() <= path.data() + path.size());
+    size_t offset = chunk.data() - path.data();
+    return FileSystemPathView::fromNormalized(path.substr(offset));
+}
+
+[[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAfter(std::string_view chunk) const {
+    std::string_view path = string(); // NOLINT: not std::string.
+
+    if (chunk.empty())
+        return FileSystemPathView::fromNormalized(path);
+
+    assert(chunk.data() >= path.data() && chunk.data() + chunk.size() <= path.data() + path.size());
+
+    if (chunk.data() + chunk.size() == path.data() + path.size()) {
+        return {};
+    } else {
+        size_t offset = chunk.data() + chunk.size() - path.data() + 1;
+        return FileSystemPathView::fromNormalized(path.substr(offset));
+    }
+}
+
+[[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAt(detail::SplitViewIterator pos) const {
+    return pos == detail::SplitViewSentinel() ? FileSystemPathView() : tailAt(*pos);
+}
 
 #include "FileSystemPath.h"

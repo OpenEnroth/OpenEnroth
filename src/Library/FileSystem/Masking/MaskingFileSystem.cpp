@@ -39,7 +39,7 @@ void MaskingFileSystem::clearMasks() {
 bool MaskingFileSystem::isMasked(FileSystemPathView path) const {
     const FileSystemTrieNode<bool> *node = _masks.root();
 
-    for (std::string_view chunk : path.chunks()) {
+    for (std::string_view chunk : path.split()) {
         if (node->hasValue() && node->value())
             return true;
 

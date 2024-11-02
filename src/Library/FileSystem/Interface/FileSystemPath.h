@@ -67,16 +67,8 @@ class FileSystemPath {
         return _path;
     }
 
-    [[nodiscard]] auto chunks() const {
-        return FileSystemPathView(*this).chunks();
-    }
-
-    [[nodiscard]] FileSystemPathView tailAt(std::string_view chunk) const {
-        return FileSystemPathView(*this).tailAt(chunk);
-    }
-
-    [[nodiscard]] FileSystemPathView tailAfter(std::string_view chunk) const {
-        return FileSystemPathView(*this).tailAfter(chunk);
+    [[nodiscard]] auto split() const {
+        return FileSystemPathView(*this).split();
     }
 
     void append(std::string_view chunk) {

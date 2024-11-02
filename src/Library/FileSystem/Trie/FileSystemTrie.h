@@ -103,7 +103,7 @@ class FileSystemTrie {
     Node *find(Node *base, FileSystemPathView relativePath) {
         assert(base);
 
-        for (std::string_view chunk : relativePath.chunks()) {
+        for (std::string_view chunk : relativePath.split()) {
             base = base->child(chunk);
             if (!base)
                 return base;
@@ -127,12 +127,12 @@ class FileSystemTrie {
     Node *walk(Node *base, FileSystemPathView relativePath, FileSystemPathView *tail = nullptr) {
         assert(base);
 
-        for (std::string_view chunk : relativePath.chunks()) {
+        for (std::string_view chunk : relativePath.split()) {
             if (Node *child = base->child(chunk)) {
                 base = child;
             } else {
                 if (tail)
-                    *tail = relativePath.tailAt(chunk);
+                    *tail = relativePath.split().tailAt(chunk);
                 return base;
             }
         }
@@ -270,7 +270,7 @@ class FileSystemTrie {
     Node *_grow(Node *base, const FileSystemPathView relativePath) {
         assert(base);
 
-        for (std::string_view chunk : relativePath.chunks()) {
+        for (std::string_view chunk : relativePath.split()) {
             if (Node *child = base->child(chunk)) {
                 base = child;
                 continue;

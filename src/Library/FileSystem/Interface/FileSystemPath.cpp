@@ -45,7 +45,7 @@ std::string FileSystemPath::normalizePath(std::string_view path) {
     std::string normalPath = replaceAll(path, '\\', '/'); // Please no '\\' path separators.
 
     gch::small_vector<std::string_view, 32> stack;
-    for (std::string_view chunk : split(normalPath, '/')) {
+    for (std::string_view chunk : ::split(normalPath, '/')) {
         if (chunk.empty())
             continue;
 
