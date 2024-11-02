@@ -2321,6 +2321,8 @@ void TeleportToStartingPoint(MapStartPoint point) {
             for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
                 if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
                     pParty->pos = pLevelDecorations[i].vPosition;
+                    // Spawn point in Harmondale from Barrow Downs is up in the sky, vanilla worked it around by
+                    // always placing the party on the ground.
                     // TODO: (Chaosit) dummy variables created for the sake of passing pointers
                     bool bOnWater = false;
                     int bModelPid;
