@@ -97,7 +97,7 @@ void LowercaseFileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView
     if (dstNode->value().conflicting)
         FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
 
-    dstBasePath.append(dstTail);
+    dstBasePath /= dstTail;
     try {
         _base->rename(srcBasePath, dstBasePath);
     } catch (...) {
@@ -138,7 +138,7 @@ bool LowercaseFileSystem::_remove(FileSystemPathView path) {
 
 std::string LowercaseFileSystem::_displayPath(FileSystemPathView path) const {
     auto [basePath, node, tail] = walk(path);
-    return _base->displayPath(basePath.appended(tail));
+    return _base->displayPath(basePath / tail);
 }
 
 std::tuple<FileSystemPath, LowercaseFileSystem::Node *, FileSystemPathView> LowercaseFileSystem::walk(FileSystemPathView path) const {
@@ -158,7 +158,7 @@ std::tuple<FileSystemPath, LowercaseFileSystem::Node *, FileSystemPathView> Lowe
             return {std::move(basePath), node, path.split().tailAt(chunk)};
 
         node = child;
-        basePath.append(child->value().baseName);
+        basePath /= child->value().baseName;
     }
 
     return {std::move(basePath), node, FileSystemPath()};
@@ -260,6 +260,6 @@ std::tuple<FileSystemPath, LowercaseFileSystem::Node *, FileSystemPathView> Lowe
     if (node->value().conflicting)
         FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
 
-    basePath.append(tail);
+    basePath /= tail;
     return result;
 }

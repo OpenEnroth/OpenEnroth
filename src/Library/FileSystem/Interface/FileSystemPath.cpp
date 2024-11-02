@@ -7,29 +7,81 @@
 #include "Utility/String/Transformations.h"
 #include "Utility/SmallVector.h"
 
-FileSystemPath::FileSystemPath(std::string_view path) : _path(normalizePath(path)) {}
+template<class String>
+inline bool popOneChunk(String &path) {
+    if (path.empty())
+        return false;
 
-void FileSystemPath::append(FileSystemPathView tail) {
+    size_t splitPos = path.find_last_of('/');
+    size_t chunkPos;
+    if (splitPos == std::string_view::npos) {
+        splitPos = 0;
+        chunkPos = 0;
+    } else {
+        chunkPos = splitPos + 1;
+    }
+
+    if (std::string_view(path).substr(chunkPos) == "..")
+        return false;
+
+    path.resize(splitPos);
+    return true;
+}
+
+FileSystemPath::FileSystemPath(std::string_view path) {
+    operator/=(path);
+}
+
+FileSystemPath &FileSystemPath::operator/=(std::string_view tail) {
+    // Please no '\\' path separators.
+    std::string tmp;
+    if (tail.contains('\\')) {
+        tmp = replaceAll(tail, '\\', '/');
+        tail = tmp;
+    }
+
+    gch::small_vector<std::string_view, 32> stack;
+    for (std::string_view chunk : ::split(tail, '/')) {
+        if (chunk.empty())
+            continue;
+
+        if (chunk == ".")
+            continue;
+
+        if (chunk == "..") {
+            if (!stack.empty()) {
+                if (stack.back() != "..") {
+                    stack.pop_back();
+                    continue;
+                }
+            } else if (popOneChunk(_path)) {
+                continue;
+            }
+        }
+
+        stack.push_back(chunk);
+    }
+
+    if (_path.empty()) {
+        _path = join(stack, '/');
+    } else {
+        for (std::string_view chunk : stack) {
+            _path += '/';
+            _path += chunk;
+        }
+    }
+
+    return *this;
+}
+
+FileSystemPath &FileSystemPath::operator/=(FileSystemPathView tail) {
     std::string_view tailsTail = tail.string();
 
     if (tail.isEscaping()) {
         while (true) {
-            if (_path.empty())
+            if (!popOneChunk(_path))
                 break;
 
-            size_t splitPos = _path.find_last_of('/');
-            size_t chunkPos;
-            if (splitPos == std::string_view::npos) {
-                splitPos = 0;
-                chunkPos = 0;
-            } else {
-                chunkPos = splitPos + 1;
-            }
-
-            if (std::string_view(_path).substr(chunkPos) == "..")
-                break;
-
-            _path.resize(splitPos);
             tailsTail = tailsTail.substr(tailsTail.size() > 2 ? 3 : 2); // Skip "../" that we've just processed.
             if (tailsTail != ".." && !tailsTail.starts_with("../"))
                 break;
@@ -39,26 +91,6 @@ void FileSystemPath::append(FileSystemPathView tail) {
     if (!_path.empty() && !tailsTail.empty())
         _path += '/';
     _path += tailsTail;
-}
 
-std::string FileSystemPath::normalizePath(std::string_view path) {
-    std::string normalPath = replaceAll(path, '\\', '/'); // Please no '\\' path separators.
-
-    gch::small_vector<std::string_view, 32> stack;
-    for (std::string_view chunk : ::split(normalPath, '/')) {
-        if (chunk.empty())
-            continue;
-
-        if (chunk == ".")
-            continue;
-
-        if (chunk == ".." && !stack.empty() && stack.back() != "..") {
-            stack.pop_back();
-            continue;
-        }
-
-        stack.push_back(chunk);
-    }
-
-    return join(stack, '/');
+    return *this;
 }

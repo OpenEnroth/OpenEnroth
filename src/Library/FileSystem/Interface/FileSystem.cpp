@@ -178,7 +178,7 @@ void FileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView dstPath)
 
     auto copyDir = [this] (FileSystemPathView srcPath, FileSystemPathView dstPath, const auto &copyAny) -> void {
         for (const DirectoryEntry &entry : ls(srcPath))
-            copyAny(entry.type, FileSystemPath(srcPath).appended(entry.name), FileSystemPath(dstPath).appended(entry.name), copyAny);
+            copyAny(entry.type, srcPath / entry.name, dstPath / entry.name, copyAny);
     };
 
     auto copyAny = [this, &copyFile, &copyDir] (FileType type, FileSystemPathView srcPath, FileSystemPathView dstPath, const auto &copyAny) -> void {

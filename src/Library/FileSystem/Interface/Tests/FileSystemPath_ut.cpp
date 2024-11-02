@@ -104,57 +104,67 @@ UNIT_TEST(FileSystemPath, TailAfterRoot) {
 }
 
 UNIT_TEST(FileSystemPath, Appended) {
-    EXPECT_EQ(FileSystemPath("").appended("").string(), "");
-    EXPECT_EQ(FileSystemPath("").appended("a").string(), "a");
-    EXPECT_EQ(FileSystemPath("a").appended("").string(), "a");
-    EXPECT_EQ(FileSystemPath("a").appended("b").string(), "a/b");
-    EXPECT_EQ(FileSystemPath("a/b").appended("c").string(), "a/b/c");
-    EXPECT_EQ(FileSystemPath("a/b").appended(FileSystemPath("c/d")).string(), "a/b/c/d");
+    auto testOne = [] (std::string_view l, std::string_view r, std::string_view result) {
+        EXPECT_EQ((FileSystemPath(l) / FileSystemPath(r)).string(), result);
+        EXPECT_EQ((FileSystemPath(l) / r).string(), result);
+    };
+
+    testOne("", "", "");
+    testOne("", "a", "a");
+    testOne("a", "", "a");
+    testOne("a", "b", "a/b");
+    testOne("a/b", "c", "a/b/c");
+    testOne("a/b", "c/d", "a/b/c/d");
 }
 
 UNIT_TEST(FileSystemPath, Append) {
     FileSystemPath path0("");
-    path0.append("");
+    path0 /= "";
     EXPECT_EQ(path0.string(), "");
 
     FileSystemPath path1("");
-    path1.append("a");
+    path1 /= "a";
     EXPECT_EQ(path1.string(), "a");
 
     FileSystemPath path2("a");
-    path2.append("");
+    path2 /= "";
     EXPECT_EQ(path2.string(), "a");
 
     FileSystemPath path3("a");
-    path3.append("b");
+    path3 /= "b";
     EXPECT_EQ(path3.string(), "a/b");
 
     FileSystemPath path4("a/b");
-    path4.append("c");
+    path4 /= "c";
     EXPECT_EQ(path4.string(), "a/b/c");
 
     FileSystemPath path5("a/b");
-    path5.append(FileSystemPath("c/d"));
+    path5 /= FileSystemPath("c/d");
     EXPECT_EQ(path5.string(), "a/b/c/d");
 }
 
 UNIT_TEST(FileSystemPath, AppendedEscaping) {
-    EXPECT_EQ(FileSystemPath("..").appended(FileSystemPath("..")).string(), "../..");
-    EXPECT_EQ(FileSystemPath("../..").appended(FileSystemPath("../..")).string(), "../../../..");
-    EXPECT_EQ(FileSystemPath("").appended(FileSystemPath("..")).string(), "..");
-    EXPECT_EQ(FileSystemPath("..").appended(FileSystemPath("")).string(), "..");
-    EXPECT_EQ(FileSystemPath("").appended(FileSystemPath("../..")).string(), "../..");
-    EXPECT_EQ(FileSystemPath("../..").appended(FileSystemPath("")).string(), "../..");
+    auto testOne = [] (std::string_view l, std::string_view r, std::string_view result) {
+        EXPECT_EQ((FileSystemPath(l) / FileSystemPath(r)).string(), result);
+        EXPECT_EQ((FileSystemPath(l) / r).string(), result);
+    };
 
-    EXPECT_EQ(FileSystemPath("../../abc").appended(FileSystemPath("..")).string(), "../..");
-    EXPECT_EQ(FileSystemPath("../../abc").appended(FileSystemPath("../..")).string(), "../../..");
-    EXPECT_EQ(FileSystemPath("../../abc").appended(FileSystemPath("../../xyz")).string(), "../../../xyz");
-    EXPECT_EQ(FileSystemPath("aa/bb").appended(FileSystemPath("../../xyz")).string(), "xyz");
-    EXPECT_EQ(FileSystemPath("aa/bb").appended(FileSystemPath("../../../xyz")).string(), "../xyz");
+    testOne("..", "..", "../..");
+    testOne("../..", "../..", "../../../..");
+    testOne("", "..", "..");
+    testOne("..", "", "..");
+    testOne("", "../..", "../..");
+    testOne("../..", "", "../..");
 
-    EXPECT_EQ(FileSystemPath("aa").appended(FileSystemPath("..")).string(), "");
-    EXPECT_EQ(FileSystemPath("aa/bb").appended(FileSystemPath("../..")).string(), "");
-    EXPECT_EQ(FileSystemPath("aa/bb/cc").appended(FileSystemPath("../../..")).string(), "");
+    testOne("../../abc", "..", "../..");
+    testOne("../../abc", "../..", "../../..");
+    testOne("../../abc", "../../xyz", "../../../xyz");
+    testOne("aa/bb", "../../xyz", "xyz");
+    testOne("aa/bb", "../../../xyz", "../xyz");
+
+    testOne("aa", "..", "");
+    testOne("aa/bb", "../..", "");
+    testOne("aa/bb/cc", "../../..", "");
 }
 
 UNIT_TEST(FileSystemPath, EscapingParents) {

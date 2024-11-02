@@ -28,7 +28,7 @@ class FileSystemPath {
     explicit FileSystemPath(FileSystemPathView path) : _path(path.string()) {}
 
     static FileSystemPath fromNormalized(std::string path) {
-        assert(normalizePath(path) == path);
+        assert(FileSystemPath(path).string() == path);
 
         FileSystemPath result;
         result._path = std::move(path);
@@ -71,31 +71,8 @@ class FileSystemPath {
         return FileSystemPathView(*this).split();
     }
 
-    void append(std::string_view chunk) {
-        assert(chunk.empty() || (chunk.find('\\') == std::string_view::npos && chunk.find('/') == std::string_view::npos && chunk != "." && chunk != ".."));
-
-        if (!_path.empty() && !chunk.empty())
-            _path += '/';
-        _path += chunk;
-    }
-
-    void append(FileSystemPathView tail);
-
-    // TODO(captainurist): name this one better, it takes a chunk, not a path that needs to be re-normalized.
-    [[nodiscard]] FileSystemPath appended(std::string_view chunk) const {
-        FileSystemPath result = *this;
-        result.append(chunk);
-        return result;
-    }
-
-    [[nodiscard]] FileSystemPath appended(FileSystemPathView tail) const {
-        FileSystemPath result = *this;
-        result.append(tail);
-        return result;
-    }
-
- private:
-    [[nodiscard]] static std::string normalizePath(std::string_view path);
+    FileSystemPath &operator/=(std::string_view tail);
+    FileSystemPath &operator/=(FileSystemPathView tail);
 
  private:
     std::string _path;
@@ -117,5 +94,17 @@ inline FileSystemPathView FileSystemPathView::fromNormalized(std::string_view pa
 
     FileSystemPathView result;
     result._path = path;
+    return result;
+}
+
+inline FileSystemPath operator/(FileSystemPathView l, FileSystemPathView r) {
+    FileSystemPath result(l);
+    result /= r;
+    return result;
+}
+
+inline FileSystemPath operator/(FileSystemPathView l, std::string_view r) {
+    FileSystemPath result(l);
+    result /= r;
     return result;
 }

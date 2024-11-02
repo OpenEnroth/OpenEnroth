@@ -40,7 +40,7 @@ class FileSystemDumper {
         std::ranges::sort(entries);
 
         for (const DirectoryEntry &entry : entries) {
-            FileSystemPath entryPath = path.appended(entry.name);
+            FileSystemPath entryPath = path / entry.name;
 
             if (entry.type == FILE_REGULAR) {
                 writeOutFile(entryPath);
