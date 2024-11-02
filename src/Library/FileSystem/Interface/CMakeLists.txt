@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 set(LIBRARY_FILESYSTEM_INTERFACE_SOURCES
         FileSystem.cpp
         FileSystemPath.cpp
-        FileSystemPathView.cpp
         FileSystemException.cpp
         ReadOnlyFileSystem.cpp)
 

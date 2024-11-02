@@ -51,12 +51,8 @@ class FileSystemPath {
         return _path.empty();
     }
 
-    [[nodiscard]] bool isParentOf(FileSystemPathView child) const {
-        return FileSystemPathView(*this).isParentOf(child);
-    }
-
-    [[nodiscard]] bool isChildOf(FileSystemPathView parent) const {
-        return parent.isParentOf(*this);
+    [[nodiscard]] bool isPrefixOf(FileSystemPathView path) const {
+        return FileSystemPathView(*this).isPrefixOf(path);
     }
 
     [[nodiscard]] bool isEscaping() const {

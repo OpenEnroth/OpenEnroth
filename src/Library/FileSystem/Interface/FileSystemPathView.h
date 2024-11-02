@@ -27,10 +27,11 @@ class FileSystemPathView {
         return _path.empty();
     }
 
-    [[nodiscard]] bool isParentOf(FileSystemPathView child) const;
-
-    [[nodiscard]] bool isChildOf(FileSystemPathView parent) const {
-        return parent.isParentOf(*this);
+    [[nodiscard]] bool isPrefixOf(FileSystemPathView path) const {
+        return
+            path._path.size() >= _path.size() &&
+            path._path.starts_with(_path) &&
+            (path._path.size() == _path.size() || _path.empty() || path._path[_path.size()] == '/');
     }
 
     [[nodiscard]] bool isEscaping() const {

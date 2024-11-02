@@ -119,7 +119,7 @@ void FileSystem::rename(FileSystemPathView srcPath, FileSystemPathView dstPath) 
         FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
     if (dstPath.isEscaping())
         FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_ACCESSIBLE, srcPath, dstPath);
-    if (srcPath.isParentOf(dstPath))
+    if (srcPath.isPrefixOf(dstPath) && srcPath != dstPath)
         FileSystemException::raise(this, FS_RENAME_FAILED_SRC_IS_PARENT_OF_DST, srcPath, dstPath);
     _rename(srcPath, dstPath);
 }
