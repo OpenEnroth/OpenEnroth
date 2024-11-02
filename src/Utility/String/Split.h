@@ -16,41 +16,44 @@ class SplitViewIterator {
     using value_type = std::string_view; // Required for std::indirectly_readable.
 
     SplitViewIterator() {
-        _pos++; // Construct an iterator that compares equal to `SplitViewSentinel`.
+        _pos0++; // Construct an iterator that compares equal to `SplitViewSentinel`.
     }
 
-    SplitViewIterator(const char *begin, const char *end, char sep) : _pos(begin), _end(end), _sep(sep) {}
+    SplitViewIterator(const char *begin, const char *end, char sep) : _pos0(begin), _end(end), _sep(sep) {
+        advance();
+    }
 
     SplitViewIterator &operator++() {
-        // This is an input iterator, all the work is done in `operator*`.
+        _pos0 = _pos1 + 1; // Skip separator.
+        advance();
         return *this;
     }
 
     SplitViewIterator operator++(int) {
-        // This is not supported because all the logic is in operator* (because we want less state in this iterator).
-        // Just use prefix operator++ if you need it.
-        assert(false);
-        return *this;
-    }
-
-    std::string_view operator*() const {
-        const char *next = std::find(_pos, _end, _sep);
-
-        std::string_view result(_pos, next);
-
-        _pos = next + 1;
-
+        SplitViewIterator result = *this;
+        operator++();
         return result;
     }
 
+    std::string_view operator*() const {
+        return std::string_view(_pos0, _pos1);
+    }
+
     friend bool operator==(const SplitViewIterator &l, const SplitViewSentinel &r) {
-        return l._pos == l._end + 1;
+        return l._pos0 == l._end + 1;
     }
 
     friend bool operator==(const SplitViewIterator &l, const SplitViewIterator &r) = default;
 
  private:
-    mutable const char *_pos = nullptr; // std::indirectly_readable requires const operator*, so we need to make _pos mutable.
+    void advance() {
+        if (_pos0 <= _end)
+            _pos1 = std::find(_pos0, _end, _sep);
+    }
+
+ private:
+    const char *_pos0 = nullptr;
+    const char *_pos1 = nullptr;
     const char *_end = nullptr;
     char _sep = '\0';
 };
