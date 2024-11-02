@@ -108,8 +108,8 @@ UNIT_TEST(FileSystemPath, Tail) {
 UNIT_TEST(FileSystemPath, TailAfterRoot) {
     FileSystemPath path("a/b/c");
 
-    EXPECT_EQ(path.split().tailAfter(""), path);
-    // Note: can't call tailAt("") b/c "" is not a valid chunk.
+    EXPECT_EQ(path.split().tailAfter(std::string_view()), path);
+    // Note: can't call tailAt(std::string_view()) b/c "" is not a valid chunk.
 }
 
 UNIT_TEST(FileSystemPath, Appended) {

@@ -70,14 +70,14 @@ struct std::hash<FileSystemPathView> : std::hash<std::string_view> {
     }
 };
 
-[[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAt(std::string_view chunk) const {
+[[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAt(std::same_as<std::string_view> auto chunk) const {
     std::string_view path = string();
     assert(chunk.data() >= path.data() && chunk.data() + chunk.size() <= path.data() + path.size());
     size_t offset = chunk.data() - path.data();
     return FileSystemPathView::fromNormalized(path.substr(offset));
 }
 
-[[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAfter(std::string_view chunk) const {
+[[nodiscard]] inline FileSystemPathView FileSystemPathSplit::tailAfter(std::same_as<std::string_view> auto chunk) const {
     std::string_view path = string(); // NOLINT: not std::string.
 
     if (chunk.empty())

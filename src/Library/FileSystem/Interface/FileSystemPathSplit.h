@@ -1,6 +1,7 @@
 #pragma once
 
 #include <ranges>
+#include <concepts>
 
 #include "Utility/String/Split.h"
 
@@ -11,8 +12,12 @@ class FileSystemPathSplit : public detail::SplitView {
  public:
     FileSystemPathSplit() = default;
 
-    [[nodiscard]] inline FileSystemPathView tailAt(std::string_view chunk) const;
-    [[nodiscard]] inline FileSystemPathView tailAfter(std::string_view chunk) const;
+    // We disable conversions with `std::same_as<std::string_view> auto` because the only valid value to pass into the
+    // functions below is an element of this `SplitView`, and that's always a `std::string_view`. Copying this value
+    // into a separate `std::string` and then passing it in will blow up.
+
+    [[nodiscard]] inline FileSystemPathView tailAt(std::same_as<std::string_view> auto chunk) const;
+    [[nodiscard]] inline FileSystemPathView tailAfter(std::same_as<std::string_view> auto chunk) const;
 
     [[nodiscard]] inline FileSystemPathView tailAt(detail::SplitViewIterator pos) const;
 
