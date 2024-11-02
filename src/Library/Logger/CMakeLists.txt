@@ -6,7 +6,8 @@ set(LIBRARY_LOGGER_SOURCES
         Logger.cpp
         LogSink.cpp
         DistLogSink.cpp
-        StreamLogSink.cpp)
+        StreamLogSink.cpp
+        RotatingLogSink.cpp)
 
 set(LIBRARY_LOGGER_HEADERS
         BufferLogSink.h
@@ -17,8 +18,9 @@ set(LIBRARY_LOGGER_HEADERS
         DistLogSink.h
         LogSource.h
         StreamLogSink.h
-        LogEnumFunctions.h)
+        LogEnumFunctions.h
+        RotatingLogSink.h)
 
 add_library(library_logger STATIC ${LIBRARY_LOGGER_SOURCES} ${LIBRARY_LOGGER_HEADERS})
-target_link_libraries(library_logger PUBLIC library_serialization utility PRIVATE spdlog::spdlog)
+target_link_libraries(library_logger PUBLIC library_serialization library_filesystem_interface utility PRIVATE spdlog::spdlog)
 target_check_style(library_logger)

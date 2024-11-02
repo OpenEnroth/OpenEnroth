@@ -5,7 +5,7 @@
 #include <memory>
 
 #include "Library/FileSystem/Interface/FileSystem.h"
-#include "Library/Logger/StreamLogSink.h"
+#include "Library/Logger/RotatingLogSink.h"
 #include "Library/Logger/DistLogSink.h"
 #include "Library/Logger/BufferLogSink.h"
 
@@ -40,13 +40,9 @@ void LogStarter::initSecondary(FileSystem *userFs) {
     _stage = STAGE_SECONDARY;
 
     try {
-        std::string path = fmt::format("logs/openenroth_{:%Y_%m_%d_%H_%M_%S}.log",
-                                       std::chrono::floor<std::chrono::seconds>(std::chrono::system_clock::now()));
-        _userLogStream = userFs->openForWriting(path);
-        _userLogSink = std::make_unique<StreamLogSink>(_userLogStream.get());
+        _userLogSink = std::make_unique<RotatingLogSink>("logs/openenroth.log", userFs);
     } catch (const std::exception &e) {
         _logger->log(LOG_ERROR, "Could not open log file for writing: {}", e.what());
-        _userLogStream.reset();
         _userLogSink.reset();
     }
 }

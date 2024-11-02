@@ -9,7 +9,7 @@ class FileSystem;
 class LogSink;
 class DistLogSink;
 class BufferLogSink;
-class StreamLogSink;
+class RotatingLogSink;
 class Logger;
 
 class LogStarter {
@@ -36,8 +36,7 @@ class LogStarter {
     Stage _stage = STAGE_INITIAL;
     std::unique_ptr<BufferLogSink> _bufferLogSink;
     std::unique_ptr<LogSink> _defaultLogSink;
-    std::unique_ptr<OutputStream> _userLogStream;
-    std::unique_ptr<StreamLogSink> _userLogSink;
+    std::unique_ptr<RotatingLogSink> _userLogSink;
     std::unique_ptr<DistLogSink> _rootLogSink;
     std::unique_ptr<Logger> _logger;
 };
