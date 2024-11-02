@@ -13,12 +13,10 @@ struct LodToolOptions {
 
     struct CatOptions {
         std::string entry;
-        bool raw = false;
     };
 
     struct ExtractOptions {
         std::string output;
-        bool raw = false;
     };
 
     Subcommand subcommand = SUBCOMMAND_DUMP;
@@ -26,6 +24,7 @@ struct LodToolOptions {
     bool helpPrinted = false; // True means that help message was already printed.
     CatOptions cat;
     ExtractOptions extract;
+    bool raw = false; // Raw flag, shared by cat & extract.
 
     static LodToolOptions parse(int argc, char **argv);
 };

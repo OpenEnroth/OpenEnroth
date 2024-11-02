@@ -2,6 +2,7 @@
 
 #include <cstdio>
 #include <string>
+#include <utility>
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
@@ -35,6 +36,40 @@ bool isPcx(const Blob &blob) {
     if (s[3] != '\x01' && s[3] != '\x02' && s[3] != '\x04' && s[3] != '\x08')
         return false;
     return true;
+}
+
+std::pair<Blob, std::string> decodeLodEntry(Blob entry, std::string name, bool raw) {
+    if (raw)
+        return {std::move(entry), std::move(name)};
+
+    if (isPcx(entry))
+        return {png::encode(pcx::decode(entry)),
+                (name.ends_with(".pcx") ? name.substr(0, name.size() - 4) : name) + ".png"};
+
+    LodFileFormat format = lod::magic(entry, name);
+
+    if (format == LOD_FILE_IMAGE) {
+        LodImage lodImage = lod::decodeImage(entry);
+        return {png::encode(makeRgbaImage(lodImage.image, lodImage.palette)), name + ".png"};
+    }
+
+    if (format == LOD_FILE_PALETTE) {
+        LodImage lodImage = lod::decodeImage(entry);
+        RgbaImage palImage = RgbaImage::uninitialized(256, 1);
+        for (size_t i = 0; i < 256; i++)
+            palImage[0][i] = lodImage.palette.colors[i];
+        return {png::encode(palImage), name + ".png"};
+    }
+
+    if (format == LOD_FILE_SPRITE) {
+        LodSprite sprite = lod::decodeSprite(entry);
+        return {png::encode(sprite.image), name + ".png"};
+    }
+
+    if (format == LOD_FILE_COMPRESSED || format == LOD_FILE_PSEUDO_IMAGE)
+        return {lod::decodeCompressed(entry), name};
+
+    return {std::move(entry), std::move(name)};
 }
 
 int runLs(const LodToolOptions &options) {
@@ -77,13 +112,7 @@ int runDump(const LodToolOptions &options) {
 
 int runCat(const LodToolOptions &options) {
     LodReader reader(options.lodPath, LOD_ALLOW_DUPLICATES);
-    Blob data = reader.read(options.cat.entry);
-    // TODO(captainurist): cat should work the same way as extract & spit out pngs?
-    if (!options.cat.raw) {
-        LodFileFormat format = lod::magic(data, options.cat.entry);
-        if (format == LOD_FILE_COMPRESSED || format == LOD_FILE_PSEUDO_IMAGE)
-            data = lod::decodeCompressed(data);
-    }
+    auto [data, _] = decodeLodEntry(reader.read(options.cat.entry), options.cat.entry, options.raw);
     return fwrite(data.data(), data.size(), 1, stdout) != 1 ? 1 : 0;
 }
 
@@ -92,44 +121,8 @@ int runExtract(const LodToolOptions &options) {
     DirectoryFileSystem output(options.extract.output);
 
     for (const std::string &entryName : reader.ls()) {
-        Blob data = reader.read(entryName);
-        Blob result;
-        std::string resultName;
-
-        if (options.extract.raw) {
-            result = Blob::share(data);
-            resultName = entryName;
-        } else if (isPcx(data)) {
-            result = png::encode(pcx::decode(data));
-            resultName = (entryName.ends_with(".pcx") ? entryName.substr(0, entryName.size() - 4) : entryName) + ".png";
-        } else {
-            LodFileFormat format = lod::magic(data, entryName);
-
-            if (format == LOD_FILE_IMAGE) {
-                LodImage lodImage = lod::decodeImage(data);
-                result = png::encode(makeRgbaImage(lodImage.image, lodImage.palette));
-                resultName = entryName + ".png";
-            } else if (format == LOD_FILE_PALETTE) {
-                LodImage lodImage = lod::decodeImage(data);
-                RgbaImage palImage = RgbaImage::uninitialized(256, 1);
-                for (size_t i = 0; i < 256; i++)
-                    palImage[0][i] = lodImage.palette.colors[i];
-                result = png::encode(palImage);
-                resultName = entryName + ".png";
-            } else if (format == LOD_FILE_SPRITE) {
-                LodSprite sprite = lod::decodeSprite(data);
-                result = png::encode(sprite.image);
-                resultName = entryName + ".png";
-            } else if (format == LOD_FILE_COMPRESSED || format == LOD_FILE_PSEUDO_IMAGE) {
-                result = lod::decodeCompressed(data);
-                resultName = entryName;
-            } else {
-                result = Blob::share(data);
-                resultName = entryName;
-            }
-        }
-
-        output.write(resultName, result);
+        auto [data, name] = decodeLodEntry(reader.read(entryName), entryName, options.raw);
+        output.write(name, data);
     }
 
     return 0;
