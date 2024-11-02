@@ -194,3 +194,27 @@ UNIT_TEST(FileSystemPath, TailAtByIterator) {
     EXPECT_EQ(path.split().tailAt(pos).string(), "");
     EXPECT_EQ(pos, end);
 }
+
+UNIT_TEST(FileSystemPath, Components) {
+    auto testOne = [](std::string_view path, std::string_view prefix, std::string_view name, std::string_view stem, std::string_view ext) {
+        FileSystemPath fsPath(path);
+        auto components = fsPath.components();
+        EXPECT_EQ(components.prefix().string(), prefix) << "for " << path;
+        EXPECT_EQ(components.name(), name) << "for " << path;
+        EXPECT_EQ(components.stem(), stem) << "for " << path;
+        EXPECT_EQ(components.extension(), ext) << "for " << path;
+    };
+
+    testOne("", "", "", "", "");
+    testOne("a/b.c", "a", "b.c", "b", ".c");
+    testOne("b.c", "", "b.c", "b", ".c");
+    testOne("b", "", "b", "b", "");
+    testOne("a/b", "a", "b", "b", "");
+    testOne("..", "", "..", "..", "");
+    testOne("../..", "..", "..", "..", "");
+    testOne(".hidden", "", ".hidden", ".hidden", "");
+    testOne("..wat", "", "..wat", ".", ".wat");
+    testOne("x/y/z/some.", "x/y/z", "some.", "some", ".");
+    testOne("x.y/z.f/a.b.c.d", "x.y/z.f", "a.b.c.d", "a.b.c", ".d");
+    testOne("1/2/3/xyz.txt", "1/2/3", "xyz.txt", "xyz", ".txt");
+}

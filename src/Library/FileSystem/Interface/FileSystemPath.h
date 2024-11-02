@@ -67,6 +67,10 @@ class FileSystemPath {
         return FileSystemPathView(*this).split();
     }
 
+    [[nodiscard]] FileSystemPathComponents components() const {
+        return FileSystemPathView(*this).components();
+    }
+
     FileSystemPath &operator/=(std::string_view tail);
     FileSystemPath &operator/=(FileSystemPathView tail);
 
