@@ -64,7 +64,7 @@ UNIT_TEST(FileSystemPath, EmptyChunks) {
 UNIT_TEST(FileSystemPath, Tail) {
     FileSystemPath path("a/b/c");
 
-    auto tails = [] (const FileSystemPath &path, std::string_view at) -> std::pair<FileSystemPath, FileSystemPath> {
+    auto tails = [] (FileSystemPathView path, std::string_view at) -> std::pair<FileSystemPathView, FileSystemPathView> {
         for (std::string_view chunk : path.chunks())
             if (chunk == at)
                 return std::pair(path.tailAt(chunk), path.tailAfter(chunk));

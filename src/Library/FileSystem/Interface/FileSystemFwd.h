@@ -13,3 +13,4 @@ class FileSystemTrie;
 
 class FileSystem;
 class FileSystemPath;
+class FileSystemPathView;

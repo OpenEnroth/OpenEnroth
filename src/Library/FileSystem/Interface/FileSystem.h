@@ -70,7 +70,7 @@ class FileSystem {
      * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
      */
     [[nodiscard]] bool exists(std::string_view path) const;
-    [[nodiscard]] bool exists(const FileSystemPath &path) const;
+    [[nodiscard]] bool exists(FileSystemPathView path) const;
 
     /**
      * @param path                      Path to a file of a folder to get information for.
@@ -79,7 +79,7 @@ class FileSystem {
      * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
      */
     [[nodiscard]] FileStat stat(std::string_view path) const;
-    [[nodiscard]] FileStat stat(const FileSystemPath &path) const;
+    [[nodiscard]] FileStat stat(FileSystemPathView path) const;
 
     /**
      * @param path                      Path to an existing directory to list.
@@ -87,9 +87,9 @@ class FileSystem {
      * @throws std::runtime_error       If `path` doesn't exist, or on any other error.
      */
     [[nodiscard]] std::vector<DirectoryEntry> ls(std::string_view path) const;
-    [[nodiscard]] std::vector<DirectoryEntry> ls(const FileSystemPath &path) const;
+    [[nodiscard]] std::vector<DirectoryEntry> ls(FileSystemPathView path) const;
     void ls(std::string_view path, std::vector<DirectoryEntry> *entries) const;
-    void ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const;
+    void ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const;
 
     /**
      * @param path                      Path to an existing file to read or map into memory.
@@ -97,7 +97,7 @@ class FileSystem {
      * @throws std::runtime_error       If `path` doesn't exist, or on any other error.
      */
     [[nodiscard]] Blob read(std::string_view path) const;
-    [[nodiscard]] Blob read(const FileSystemPath &path) const;
+    [[nodiscard]] Blob read(FileSystemPathView path) const;
 
     /**
      * @param path                      Path to a file to write. If parent directory doesn't exist, it will be created.
@@ -106,7 +106,7 @@ class FileSystem {
      * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
      */
     void write(std::string_view path, const Blob &data);
-    void write(const FileSystemPath &path, const Blob &data);
+    void write(FileSystemPathView path, const Blob &data);
 
     /**
      * @param path                      Path to an existing file to open for reading.
@@ -114,7 +114,7 @@ class FileSystem {
      * @throws std::runtime_error       If `path` doesn't exist, or on any other error.
      */
     [[nodiscard]] std::unique_ptr<InputStream> openForReading(std::string_view path) const;
-    [[nodiscard]] std::unique_ptr<InputStream> openForReading(const FileSystemPath &path) const;
+    [[nodiscard]] std::unique_ptr<InputStream> openForReading(FileSystemPathView path) const;
 
     /**
      * @param path                      Path to a file to write. If parent directory doesn't exist, it will be created.
@@ -123,7 +123,7 @@ class FileSystem {
      * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
      */
     [[nodiscard]] std::unique_ptr<OutputStream> openForWriting(std::string_view path);
-    [[nodiscard]] std::unique_ptr<OutputStream> openForWriting(const FileSystemPath &path);
+    [[nodiscard]] std::unique_ptr<OutputStream> openForWriting(FileSystemPathView path);
 
     /**
      * Renames a file or a folder.
@@ -139,7 +139,7 @@ class FileSystem {
      * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
      */
     void rename(std::string_view srcPath, std::string_view dstPath);
-    void rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath);
+    void rename(FileSystemPathView srcPath, FileSystemPathView dstPath);
 
     /**
      * @param path                      Path to a file or a directory to remove. A directory will be removed even if it
@@ -148,7 +148,7 @@ class FileSystem {
      * @throws std::runtime_error       On error, e.g. if the current user doesn't have the necessary permissions.
      */
     bool remove(std::string_view path);
-    bool remove(const FileSystemPath &path);
+    bool remove(FileSystemPathView path);
 
     /**
      * @param path                      Path inside this file system. The passed path is not required to exist.
@@ -156,7 +156,7 @@ class FileSystem {
      *                                  on the underlying OS file system.
      */
     [[nodiscard]] std::string displayPath(std::string_view path) const;
-    [[nodiscard]] std::string displayPath(const FileSystemPath &path) const;
+    [[nodiscard]] std::string displayPath(FileSystemPathView path) const;
 
  protected:
     template<class T>
@@ -167,16 +167,16 @@ class FileSystem {
     friend class ProxyFileSystem; // It's OK for the default proxy implementation to call into the private methods.
 
  protected:
-    [[nodiscard]] virtual bool _exists(const FileSystemPath &path) const = 0;
-    [[nodiscard]] virtual FileStat _stat(const FileSystemPath &path) const = 0;
-    virtual void _ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const = 0;
-    [[nodiscard]] virtual Blob _read(const FileSystemPath &path) const = 0;
-    virtual void _write(const FileSystemPath &path, const Blob &data) = 0;
-    [[nodiscard]] virtual std::unique_ptr<InputStream> _openForReading(const FileSystemPath &path) const = 0;
-    [[nodiscard]] virtual std::unique_ptr<OutputStream> _openForWriting(const FileSystemPath &path) = 0;
-    virtual void _rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath);
-    virtual bool _remove(const FileSystemPath &path) = 0;
-    [[nodiscard]] virtual std::string _displayPath(const FileSystemPath &path) const = 0;
+    [[nodiscard]] virtual bool _exists(FileSystemPathView path) const = 0;
+    [[nodiscard]] virtual FileStat _stat(FileSystemPathView path) const = 0;
+    virtual void _ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const = 0;
+    [[nodiscard]] virtual Blob _read(FileSystemPathView path) const = 0;
+    virtual void _write(FileSystemPathView path, const Blob &data) = 0;
+    [[nodiscard]] virtual std::unique_ptr<InputStream> _openForReading(FileSystemPathView path) const = 0;
+    [[nodiscard]] virtual std::unique_ptr<OutputStream> _openForWriting(FileSystemPathView path) = 0;
+    virtual void _rename(FileSystemPathView srcPath, FileSystemPathView dstPath);
+    virtual bool _remove(FileSystemPathView path) = 0;
+    [[nodiscard]] virtual std::string _displayPath(FileSystemPathView path) const = 0;
 };
 
 

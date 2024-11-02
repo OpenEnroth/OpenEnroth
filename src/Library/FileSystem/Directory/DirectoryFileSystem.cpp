@@ -22,14 +22,14 @@ DirectoryFileSystem::DirectoryFileSystem(std::string_view root) {
 
 DirectoryFileSystem::~DirectoryFileSystem() = default;
 
-bool DirectoryFileSystem::_exists(const FileSystemPath &path) const {
+bool DirectoryFileSystem::_exists(FileSystemPathView path) const {
     assert(!path.isEmpty());
 
     std::error_code ec;
     return std::filesystem::exists(makeBasePath(path), ec); // Returns false on error.
 }
 
-FileStat DirectoryFileSystem::_stat(const FileSystemPath &path) const {
+FileStat DirectoryFileSystem::_stat(FileSystemPathView path) const {
     assert(!path.isEmpty());
 
     std::filesystem::path basePath = makeBasePath(path);
@@ -53,7 +53,7 @@ FileStat DirectoryFileSystem::_stat(const FileSystemPath &path) const {
     result.size = size;
     return result;}
 
-void DirectoryFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
+void DirectoryFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
     std::filesystem::path basePath = makeBasePath(path);
 
     // Handle the known errors first.
@@ -92,12 +92,12 @@ void DirectoryFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryE
     }
 }
 
-Blob DirectoryFileSystem::_read(const FileSystemPath &path) const {
+Blob DirectoryFileSystem::_read(FileSystemPathView path) const {
     assert(!path.isEmpty());
     return Blob::fromFile(makeBasePath(path).generic_string());
 }
 
-void DirectoryFileSystem::_write(const FileSystemPath &path, const Blob &data) {
+void DirectoryFileSystem::_write(FileSystemPathView path, const Blob &data) {
     assert(!path.isEmpty());
     std::filesystem::path basePath = makeBasePath(path);
     std::filesystem::create_directories(basePath.parent_path());
@@ -106,19 +106,19 @@ void DirectoryFileSystem::_write(const FileSystemPath &path, const Blob &data) {
     stream.close();
 }
 
-std::unique_ptr<InputStream> DirectoryFileSystem::_openForReading(const FileSystemPath &path) const {
+std::unique_ptr<InputStream> DirectoryFileSystem::_openForReading(FileSystemPathView path) const {
     assert(!path.isEmpty());
     return std::make_unique<FileInputStream>(makeBasePath(path).generic_string());
 }
 
-std::unique_ptr<OutputStream> DirectoryFileSystem::_openForWriting(const FileSystemPath &path) {
+std::unique_ptr<OutputStream> DirectoryFileSystem::_openForWriting(FileSystemPathView path) {
     assert(!path.isEmpty());
     std::filesystem::path basePath = makeBasePath(path);
     std::filesystem::create_directories(basePath.parent_path());
     return std::make_unique<FileOutputStream>(basePath.generic_string());
 }
 
-void DirectoryFileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath) {
+void DirectoryFileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView dstPath) {
     assert(!srcPath.isEmpty());
     assert(!dstPath.isEmpty());
 
@@ -133,15 +133,15 @@ void DirectoryFileSystem::_rename(const FileSystemPath &srcPath, const FileSyste
     std::filesystem::rename(srcBasePath, dstBasePath);
 }
 
-bool DirectoryFileSystem::_remove(const FileSystemPath &path) {
+bool DirectoryFileSystem::_remove(FileSystemPathView path) {
     assert(!path.isEmpty());
     return std::filesystem::remove_all(makeBasePath(path)) > 0;
 }
 
-std::string DirectoryFileSystem::_displayPath(const FileSystemPath &path) const {
+std::string DirectoryFileSystem::_displayPath(FileSystemPathView path) const {
     return makeBasePath(path).generic_string();
 }
 
-std::filesystem::path DirectoryFileSystem::makeBasePath(const FileSystemPath &path) const {
+std::filesystem::path DirectoryFileSystem::makeBasePath(FileSystemPathView path) const {
     return _root / path.string();
 }

@@ -51,10 +51,10 @@ std::string FileSystemException::formatMessage(FileSystemError error, std::strin
     }
 }
 
-[[noreturn]] void FileSystemException::raise(const FileSystem *fs, FileSystemError error, const FileSystemPath &arg0) {
+[[noreturn]] void FileSystemException::raise(const FileSystem *fs, FileSystemError error, FileSystemPathView arg0) {
     throw FileSystemException(error, fs->displayPath(arg0));
 }
 
-[[noreturn]] void FileSystemException::raise(const FileSystem *fs, FileSystemError error, const FileSystemPath &arg0, const FileSystemPath &arg1) {
+[[noreturn]] void FileSystemException::raise(const FileSystem *fs, FileSystemError error, FileSystemPathView arg0, FileSystemPathView arg1) {
     throw FileSystemException(error, fs->displayPath(arg0), fs->displayPath(arg1));
 }
