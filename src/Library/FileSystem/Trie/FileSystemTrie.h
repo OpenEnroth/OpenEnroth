@@ -138,7 +138,7 @@ class FileSystemTrie {
         }
 
         if (tail)
-            *tail = FileSystemPath();
+            *tail = {};
         return base;
     }
 

@@ -28,7 +28,7 @@ LowercaseFileSystem::~LowercaseFileSystem() = default;
 
 void LowercaseFileSystem::refresh() {
     _trie.clear();
-    _trie.insertOrAssign(FileSystemPath(), detail::LowercaseFileData(FILE_DIRECTORY, ""));
+    _trie.insertOrAssign({}, detail::LowercaseFileData(FILE_DIRECTORY, ""));
 }
 
 bool LowercaseFileSystem::_exists(FileSystemPathView path) const {
@@ -144,7 +144,7 @@ std::string LowercaseFileSystem::_displayPath(FileSystemPathView path) const {
 std::tuple<FileSystemPath, LowercaseFileSystem::Node *, FileSystemPathView> LowercaseFileSystem::walk(FileSystemPathView path) const {
     Node *node = _trie.root();
     if (path.isEmpty())
-        return {FileSystemPath(), node, FileSystemPath()};
+        return {FileSystemPath(), node, FileSystemPathView()};
 
     FileSystemPath basePath;
     for (std::string_view chunk : path.split()) {
@@ -161,7 +161,7 @@ std::tuple<FileSystemPath, LowercaseFileSystem::Node *, FileSystemPathView> Lowe
         basePath /= child->value().baseName;
     }
 
-    return {std::move(basePath), node, FileSystemPath()};
+    return {std::move(basePath), node, FileSystemPathView()};
 }
 
 void LowercaseFileSystem::cacheLs(Node *node, FileSystemPathView basePath) const {
@@ -182,7 +182,7 @@ void LowercaseFileSystem::cacheLs(Node *node, FileSystemPathView basePath) const
         }
 
         _trie.insertOrAssign(node,
-                             FileSystemPath::fromNormalized(std::move(lowerEntryName)),
+                             FileSystemPathView::fromNormalized(lowerEntryName),
                              detail::LowercaseFileData(entry.type, std::move(entry.name)));
     }
 
@@ -231,7 +231,7 @@ void LowercaseFileSystem::cacheInsert(Node *node, FileSystemPathView tail, FileT
 
     FileType nodeType = pos == end ? type : FILE_DIRECTORY;
     _trie.insertOrAssign(node,
-                         FileSystemPath::fromNormalized(std::string(firstChunk)),
+                         FileSystemPathView::fromNormalized(firstChunk),
                          detail::LowercaseFileData(nodeType, std::string(firstChunk)));
 }
 
