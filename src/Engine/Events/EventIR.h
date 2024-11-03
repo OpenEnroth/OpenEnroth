@@ -3,8 +3,8 @@
 #include <array>
 #include <string>
 
+#include "Engine/Data/HouseEnums.h"
 #include "Engine/Events/EventEnums.h"
-#include "GUI/UI/UIHouseEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/ChestEnums.h"
@@ -29,7 +29,7 @@ class EventIR {
     union {
         HouseId house_id;
         int chest_id;
-        CharacterExpressionID expr_id;
+        CharacterPortrait portrait_id;
         CharacterSpeech speech_id;
         int text_id;
         Season season;

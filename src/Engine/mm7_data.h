@@ -54,7 +54,7 @@ extern std::array<const char *, 25> pPlayerPortraitsNames;
 
 extern std::array<std::array<unsigned char, 25>, 48> byte_4ECF08;
 extern IndexedArray<std::array<unsigned char, 3>, SPEECH_FIRST, SPEECH_LAST> speechVariants;
-extern IndexedArray<std::array<unsigned char, 5>, SPEECH_FIRST, SPEECH_LAST> expressionVariants;
+extern IndexedArray<std::array<CharacterPortrait, 5>, SPEECH_FIRST, SPEECH_LAST> portraitVariants;
 extern std::array<int16_t, 4> pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing;
 extern IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> skills_max_level;
 extern IndexedArray<Duration, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> base_recovery_times_per_weapon_type;
@@ -139,13 +139,10 @@ constexpr float flt_debugrecmod3 = 2.133333333333333f;
 
 constexpr float meleeRange = 307.2f;
 
-extern std::vector<Vec3f> pTerrainNormals;
-extern std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
-extern std::array<unsigned int, 128 * 128 * 2> pTerrainSomeOtherData;
 extern int uPlayerCreationUI_SelectedCharacter;
 extern int uPlayerCreationUI_NameEditCharacter;
 extern int currentAddressingAwardBit;
 extern std::string current_npc_text;  // F8B1E8
 extern char dialogue_show_profession_details;
 
-extern int bGameoverLoop;
+extern bool GameOverNoSound;

@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <map>
 #include <string>
-#include <filesystem>
 #include <utility>
 #include <thread>
 #include <memory>
@@ -16,22 +15,20 @@
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 #include "Engine/MapInfo.h"
+#include "Engine/EngineFileSystem.h"
+#include "Engine/EngineCallObserver.h"
 
 #include "GUI/GUIWindow.h"
 
 #include "Media/AudioBufferDataSource.h"
 
-#include "Library/Compression/Compression.h"
 #include "Library/Logger/Logger.h"
-
-#include "Utility/DataPath.h"
 
 #include "SoundList.h"
 #include "OpenALTrack16.h"
 #include "OpenALSample16.h"
 #include "OpenALAudioDataSource.h"
 #include "OpenALSoundProvider.h"
-#include "Engine/EngineCallObserver.h"
 
 std::unique_ptr<AudioPlayer> pAudioPlayer;
 
@@ -58,14 +55,13 @@ void AudioPlayer::MusicPlayTrack(MusicId eTrack) {
         }
         currentMusicTrack = MUSIC_INVALID;
 
-        std::string file_path = fmt::format("{}.mp3", std::to_underlying(eTrack));
-        file_path = makeDataPath("music", file_path);
-        if (!std::filesystem::exists(file_path)) {
+        std::string file_path = fmt::format("music/{}.mp3", std::to_underlying(eTrack));
+        if (!dfs->exists(file_path)) {
             logger->warning("AudioPlayer: {} not found", file_path);
             return;
         }
 
-        pCurrentMusicTrack = CreateAudioTrack(Blob::fromFile(file_path));
+        pCurrentMusicTrack = CreateAudioTrack(dfs->read(file_path));
         if (pCurrentMusicTrack) {
             currentMusicTrack = eTrack;
 
@@ -195,7 +191,7 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
     //logger->Info("AudioPlayer: trying to load sound id {}", eSoundID);
 
     // TODO(pskelton): do we need to reinstate this optimisation? dropped to allow better sound tracing
-    if (/*engine->config->settings.SoundLevel.value() < 1 ||*/ (eSoundID == SOUND_Invalid)) {
+    if (/*engine->config->settings.SoundLevel.value() < 1 ||*/ eSoundID == SOUND_Invalid) {
         return;
     }
 
@@ -452,7 +448,7 @@ void AudioPlayer::Initialize() {
     uMasterVolume = 127;
 
     UpdateVolumeFromConfig();
-    _sndReader.open(makeDataPath("sounds", "audio.snd"));
+    _sndReader.open(dfs->read("sounds/audio.snd"));
 
     bPlayerReady = true;
 }

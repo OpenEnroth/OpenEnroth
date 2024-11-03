@@ -10,9 +10,6 @@
 
 #include "Io/Key.h" // TODO(captainurist): doesn't belong here
 
-#include "Utility/Streams/FileInputStream.h"
-#include "Utility/Streams/FileOutputStream.h"
-
 #include "PaintEvent.h"
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(Pointi, (
@@ -218,20 +215,17 @@ MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTrace, (
     (events, "trace")
 ))
 
-void EventTrace::saveToFile(std::string_view path, const EventTrace &trace) {
-    FileOutputStream output(path);
-
+Blob EventTrace::toJsonBlob(const EventTrace &trace) {
     // TODO(captainurist): well, nlohmann json is retarded in that it chokes if we throw exceptions inside
     // to_json calls for individual elements. Fix upstream?
     // Note: there is an example in tests to reproduce.
     Json json;
     to_json(json, trace);
-    output.write(json.dump(/*indent=*/4));
+    return Blob::fromString(json.dump(/*indent=*/4));
 }
 
-EventTrace EventTrace::loadFromFile(std::string_view path, PlatformWindow *window) {
-    FileInputStream input(path);
-    Json json = Json::parse(input.handle());
+EventTrace EventTrace::fromJsonBlob(const Blob &blob, PlatformWindow *window) {
+    Json json = Json::parse(blob.string_view());
 
     EventTrace result;
     from_json(json, result);

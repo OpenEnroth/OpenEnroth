@@ -9,15 +9,14 @@
 #include "Engine/Graphics/Texture_MM7.h"
 #include "Engine/LodTextureCache.h"
 #include "Engine/LodSpriteCache.h"
+#include "Engine/Graphics/PaletteManager.h"
 
 #include "Library/Image/ImageFunctions.h"
-#include "Library/Image/PCX.h"
+#include "Library/Image/Pcx.h"
 #include "Library/Logger/Logger.h"
 
-#include "Utility/DataPath.h"
-
 // List of textures that require additional processing for transparent pixels.
-// TODO: move to OpenEnroth config file.
+// TODO(captainurist): #jsonify & move to compiled-in game data
 static const std::unordered_set<std::string_view> transparentTextures = {
     "hwtrdre",
     "hwtrdrne",
@@ -191,6 +190,9 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
 
     // TODO(captainurist): no need to copy here.
     *indexedImage = GrayscaleImage::copy(tex->indexed.width(), tex->indexed.height(), tex->indexed.pixels().data()); // NOLINT: this is not std::copy.
+
+    // Desaturate bitmaps
+    tex->palette = PaletteManager::createLoadedPalette(tex->palette);
 
     if (!transparentTextures.contains(tex->name)) {
         *palette = tex->palette;

@@ -1,7 +1,6 @@
 #include "Game.h"
 
 #include <algorithm>
-#include <filesystem>
 #include <string>
 #include <utility>
 #include <memory>
@@ -11,6 +10,8 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/Data/AwardEnums.h"
+#include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/Events/Processor.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/ParticleEngine.h"
@@ -21,7 +22,6 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Overlays.h"
-#include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Image.h"
@@ -45,7 +45,6 @@
 #include "Engine/MapInfo.h"
 
 #include "GUI/GUIButton.h"
-#include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/Books/AutonotesBook.h"
@@ -58,7 +57,6 @@
 #include "GUI/UI/UISpellbook.h"
 #include "GUI/UI/UIBooks.h"
 #include "GUI/UI/UICharacter.h"
-#include "GUI/UI/UICredits.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/UIBranchlessDialogue.h"
 #include "GUI/UI/UIGame.h"
@@ -82,47 +80,18 @@
 #include "Library/Logger/Logger.h"
 #include "Library/Fsm/Fsm.h"
 
-#include "Utility/String/Ascii.h"
 #include "Utility/String/Format.h"
-#include "Utility/DataPath.h"
-#include "Utility/Exception.h"
+#include "Utility/ScopeGuard.h"
 
-#include "GameIocContainer.h"
 #include "GameWindowHandler.h"
 #include "GameMenu.h"
 #include "GameStates/GameFsmBuilder.h"
 
-void initDataPath(Platform *platform, std::string_view dataPath) {
-    std::string missing_file;
-
-    if (validateDataPath(dataPath, &missing_file)) {
-        setDataPath(dataPath);
-
-        std::string savesPath = makeDataPath("saves");
-        if (!std::filesystem::exists(savesPath)) {
-            std::filesystem::create_directory(savesPath);
-        }
-    } else {
-        std::string message = fmt::format(
-            "Required file {} not found.\n"
-            "You should acquire licensed copy of M&M VII and copy its resources to \n{}{}\n\n"
-            "Additionally you should also copy the content from\n"
-            "resources directory from our repository there as well.",
-            missing_file,
-            !dataPath.empty() ? dataPath : std::filesystem::current_path().string(),
-            !dataPath.empty() ? "" :      " (current directory)"
-        );
-        logger->critical("{}", message);
-        platform->showMessageBox("CRITICAL ERROR: missing resources", message);
-        throw Exception("Data folder '{}' validation failed", dataPath);
-    }
-}
-
 Game::Game(PlatformApplication *application, std::shared_ptr<GameConfig> config) {
     _application = application;
     _config = config;
+    _menu = std::make_unique<Menu>();
     _decalBuilder = EngineIocContainer::ResolveDecalBuilder();
-    _menu = GameIocContainer::ResolveGameMenu();
 }
 
 Game::~Game() = default;
@@ -134,24 +103,24 @@ int Game::run() {
     std::string_view startingState = "Start";
     // Need to have this do/while external loop till we remove entirely all the states
     do {
-        std::unique_ptr<Fsm> fsm = GameFsmBuilder::buildFsm(startingState);
-        GameWindowHandler *gameWindowHandler = ::application->component<GameWindowHandler>();
-        gameWindowHandler->addFsmEventHandler(fsm.get());
-        while (!fsm->hasReachedExitState()) {
-            render->ClearBlack();
-            render->BeginScene2D();
+        {
+            Fsm *fsm = application->installComponent(GameFsmBuilder::buildFsm(startingState));
+            MM_AT_SCOPE_EXIT(application->removeComponent<Fsm>());
+            while (!fsm->hasReachedExitState()) {
+                render->ClearBlack();
+                render->BeginScene2D();
 
-            fsm->update();
+                fsm->update();
 
-            // This method should be interpreted as a future RetainedUISystem::update()
-            // It does update all the GUIWindow alive + it does various hacks
-            GUI_UpdateWindows();
+                // This method should be interpreted as a future RetainedUISystem::update()
+                // It does update all the GUIWindow alive + it does various hacks
+                GUI_UpdateWindows();
 
-            render->Present();
+                render->Present();
 
-            MessageLoopWithWait();
+                MessageLoopWithWait();
+            }
         }
-        gameWindowHandler->removeFsmEventHandler(fsm.get());
 
         // Here we're still running the rest of the loops as usual.
         uGameState = GAME_STATE_PLAYING;
@@ -505,16 +474,16 @@ void Game::processQueuedMessages() {
                     default:
                         break;
                 }
+
                 if (pGameOverWindow) {
-                    if (bGameOverWindowCheckExit) {
+                    if (pGameOverWindow->toggleAndTestFinished()) {
                         pGameOverWindow->Release();
+                        delete pGameOverWindow;
                         pGameOverWindow = nullptr;
-                        continue;
-                    } else {
-                        bGameOverWindowCheckExit = true;
-                        continue;
                     }
+                    continue;
                 }
+
                 render->ClearZBuffer();
                 if (current_screen_type == SCREEN_GAME) {
                     if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
@@ -900,7 +869,7 @@ void Game::processQueuedMessages() {
                 uGameState = GAME_STATE_CHANGE_LOCATION;
                 // v53 = buildingTable_minus1_::30[26 * (unsigned
                 // int)ptr_507BC0->ptr_1C];
-                v53 = std::to_underlying(buildingTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
+                v53 = std::to_underlying(houseTable[window_SpeakInHouse->houseId()]._quest_bit); // TODO(captainurist): what's going on here?
                 if (v53 < 0) {
                     v54 = std::abs(v53) - 1;
                     engine->_teleportPoint.setTeleportTarget(Vec3f(teleportX[v54], teleportY[v54], teleportZ[v54]), teleportYaw[v54], 0, 0);
@@ -964,7 +933,7 @@ void Game::processQueuedMessages() {
                 uGameState = GAME_STATE_PLAYING;
 
                 for (Character &character : pParty->pCharacters) {
-                    character.playEmotion(CHARACTER_EXPRESSION_WIDE_SMILE, 0_ticks);
+                    character.playEmotion(PORTRAIT_WIDE_SMILE, 0_ticks);
                 }
 
                 // strcpy((char *)userInputHandler->pPressedKeysBuffer, "2");
@@ -1547,18 +1516,15 @@ void Game::processQueuedMessages() {
                 new OnButtonClick2({519, 136}, {0, 0}, pBtn_ZoomIn);
                 uNumSeconds = 131072;
 
-                ++viewparams->field_28;
                 viewparams->uMinimapZoom *= 2;
 
                 if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                     if (viewparams->uMinimapZoom > 4096) {
                         viewparams->uMinimapZoom = 4096;
-                        viewparams->field_28 = 12;
                     }
                 } else {
                     if (viewparams->uMinimapZoom > 2048) {
                         viewparams->uMinimapZoom = 2048;
-                        viewparams->field_28 = 11;
                     }
                 }
 
@@ -1568,18 +1534,15 @@ void Game::processQueuedMessages() {
                 new OnButtonClick2({574, 136}, {0, 0}, pBtn_ZoomOut);
                 uNumSeconds = 32768;
 
-                --viewparams->field_28;
                 viewparams->uMinimapZoom /= 2;
 
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                     if (viewparams->uMinimapZoom < 512) {
                         viewparams->uMinimapZoom = 512;
-                        viewparams->field_28 = 9;
                     }
                 } else {
                     if (viewparams->uMinimapZoom < 256) {
                         viewparams->uMinimapZoom = 256;
-                        viewparams->field_28 = 8;
                     }
                 }
 
@@ -1647,7 +1610,7 @@ void Game::gameLoop() {
     }
 
     extern bool use_music_folder;
-    GameUI_LoadPlayerPortraintsAndVoices();
+    GameUI_LoadPlayerPortraitsAndVoices();
     pIcons_LOD->reserveLoadedTextures();
     // pAudioPlayer->SetMusicVolume(engine->config->music_level);
 
@@ -1830,7 +1793,7 @@ void Game::gameLoop() {
         pEventTimer->setPaused(true);
         engine->ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows();
         if (uGameState == GAME_STATE_LOADING_GAME) {
-            GameUI_LoadPlayerPortraintsAndVoices();
+            GameUI_LoadPlayerPortraitsAndVoices();
             uGameState = GAME_STATE_PLAYING;
             bLoading = true;
             continue;

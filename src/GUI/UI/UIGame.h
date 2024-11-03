@@ -1,9 +1,10 @@
 #pragma once
+
 #include <string>
 
 #include "GUI/GUIWindow.h"
 
-void GameUI_LoadPlayerPortraintsAndVoices();
+void GameUI_LoadPlayerPortraitsAndVoices();
 void GameUI_ReloadPlayerPortraits(int player_id, int face_id);
 void GameUI_WritePointedObjectStatusString();
 void GameUI_OnPlayerPortraitLeftClick(int uPlayerID);  // idb
@@ -107,6 +108,9 @@ extern GraphicsImage *game_ui_playerbuff_pain_reflection;
 extern GraphicsImage *game_ui_playerbuff_hammerhands;
 extern GraphicsImage *game_ui_playerbuff_preservation;
 extern GraphicsImage *game_ui_playerbuff_bless;
+
+extern int game_ui_wizardEye;
+extern int game_ui_torchLight;
 
 extern bool bFlashHistoryBook;
 extern bool bFlashAutonotesBook;

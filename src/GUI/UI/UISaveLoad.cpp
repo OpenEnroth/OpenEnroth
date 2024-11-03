@@ -1,11 +1,11 @@
 #include "GUI/UI/UISaveLoad.h"
 
 #include <string>
-#include <filesystem>
 #include <algorithm>
 #include <memory>
 
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -31,7 +31,6 @@
 #include "Library/Snapshots/SnapshotSerialization.h"
 
 #include "Utility/String/Ascii.h"
-#include "Utility/DataPath.h"
 
 using Io::TextInputType;
 
@@ -66,12 +65,12 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, { 0, 0 }, render->GetR
             file_name = "1.mm7";
         }
 
-        std::string str = makeDataPath("saves", file_name);
-        if (!std::filesystem::exists(str)) {
+        std::string str = fmt::format("saves/{}", file_name);
+        if (!ufs->exists(str)) {
             pSavegameList->pSavegameUsedSlots[i] = false;
             pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_EMPTY_SAVESLOT);
         } else {
-            pLODFile.open(str, LOD_ALLOW_DUPLICATES);
+            pLODFile.open(ufs->read(str), LOD_ALLOW_DUPLICATES);
             deserialize(pLODFile.read("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
 
             if (pSavegameList->pSavegameHeader[i].name.empty()) {
@@ -160,8 +159,8 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, { 0, 0 }, {
 
     LodReader pLODFile;
     for (int i = 0; i < pSavegameList->numSavegameFiles; ++i) {
-        std::string str = makeDataPath("saves", pSavegameList->pFileList[i]);
-        if (!std::filesystem::exists(str)) {
+        std::string str = fmt::format("saves/{}", pSavegameList->pFileList[i]);
+        if (!ufs->exists(str)) {
             pSavegameList->pSavegameUsedSlots[i] = false;
             pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_EMPTY_SAVESLOT);
             continue;
@@ -175,7 +174,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, { 0, 0 }, {
             }
         }
 
-        pLODFile.open(str, LOD_ALLOW_DUPLICATES);
+        pLODFile.open(ufs->read(str), LOD_ALLOW_DUPLICATES);
         deserialize(pLODFile.read("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
 
         if (ascii::noCaseEquals(pSavegameList->pFileList[i], localization->GetString(LSTR_AUTOSAVE_MM7))) { // TODO(captainurist): #unicode might not be ascii
@@ -312,28 +311,19 @@ static void UI_DrawSaveLoad(bool save) {
             pMapStats->pInfos[pMapStats->GetMapInfo(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].locationName)].name, 3);
 
         // Draw date
-        CivilTime savegame_time = pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].playingTime.toCivilTime();
-        auto savegame_hour = savegame_time.hour;
+        CivilTime time = pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].playingTime.toCivilTime();
 
         save_load_window.uFrameY = pGUIWindow_CurrentMenu->uFrameY + 261;
-        int am;
-        if (savegame_hour >= 12) {
-            savegame_hour -= 12;
-            if (!savegame_hour) {
-                savegame_hour = 12;
-            }
-            am = 1;
-        } else {
-            am = 0;
-        }
 
-        auto str = fmt::format(
+        std::string str = fmt::format(
             "{} {}:{:02} {}\n{} {} {}",
-            localization->GetDayName(savegame_time.dayOfWeek - 1),
-            savegame_hour, savegame_time.minute,
-            localization->GetAmPm(am), savegame_time.day,
-            localization->GetMonthName(savegame_time.month - 1), savegame_time.year
-        );
+            localization->GetDayName(time.dayOfWeek - 1),
+            time.hourAmPm,
+            time.minute,
+            localization->GetAmPm(time.isPm),
+            time.day,
+            localization->GetMonthName(time.month - 1),
+            time.year);
         save_load_window.DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White, str, 3);
     }
 

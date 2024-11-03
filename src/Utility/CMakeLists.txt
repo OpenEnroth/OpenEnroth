@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(UTILITY_SOURCES
-        DataPath.cpp
         Exception.cpp
-        FileSystem.cpp
         Math/TrigLut.cpp
         Memory/Blob.cpp
         Streams/BlobInputStream.cpp
@@ -19,10 +17,8 @@ set(UTILITY_SOURCES
         UnicodeCrt.cpp)
 
 set(UTILITY_HEADERS
-        DataPath.h
         Embedded.h
         Exception.h
-        FileSystem.h
         Flags.h
         String/Format.h
         Types.h
@@ -47,11 +43,13 @@ set(UTILITY_HEADERS
         String/Split.h
         String/TransparentFunctors.h
         String/Transformations.h
-        Win/Unicode.h
         Unaligned.h
-        UnicodeCrt.h)
+        UnicodeCrt.h
+        SmallVector.h
+        ScopedRollback.h)
 
 if(OE_BUILD_PLATFORM STREQUAL "windows")
+    list(APPEND UTILITY_HEADERS Win/Unicode.h)
     list(APPEND UTILITY_SOURCES Win/Unicode.cpp)
 endif()
 
@@ -60,6 +58,7 @@ target_check_style(utility)
 target_link_libraries(utility
         PUBLIC
         fmt::fmt
+        gch::small_vector
         PRIVATE
         mio::mio)
 
@@ -79,11 +78,11 @@ if(OE_BUILD_TESTS)
             String/Tests/TransparentFunctors_ut.cpp
             String/Tests/Ascii_ut.cpp
             String/Tests/Split_ut.cpp
-            String/Tests/Join_ut.cpp
-            Testing/TestExistingFile.h
-            Testing/TestExistingFile.cpp
-            Testing/TestNonExistingFile.h
-            Testing/TestNonExistingFile.cpp)
+            String/Tests/Join_ut.cpp)
+
+    if(OE_BUILD_PLATFORM STREQUAL "windows")
+        list(APPEND TEST_UTILITY_SOURCES Win/Tests/Unicode_ut.cpp)
+    endif()
 
     add_library(test_utility OBJECT ${TEST_UTILITY_SOURCES})
     target_link_libraries(test_utility PUBLIC testing_unit utility)

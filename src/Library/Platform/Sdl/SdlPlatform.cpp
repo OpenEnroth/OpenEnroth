@@ -20,14 +20,13 @@ static void SDLCALL sdlLogCallback(void *userdata, int category, SDL_LogPriority
     if (category == SDL_LOG_CATEGORY_ASSERT)
         level = LOG_CRITICAL; // This is an assertion, damn it! But SDL issues these at SDL_LOG_PRIORITY_WARN.
 
-    SdlPlatformSharedState *state = static_cast<SdlPlatformSharedState *>(userdata);
-    state->logger()->log(state->logCategory(), level, "{}", message);
+    logger->log(SdlPlatformSharedState::logCategory(), level, "{}", message);
 }
 
-SdlPlatform::SdlPlatform(Logger *logger) {
+SdlPlatform::SdlPlatform() {
     assert(logger);
 
-    _state = std::make_unique<SdlPlatformSharedState>(logger);
+    _state = std::make_unique<SdlPlatformSharedState>();
 
     SDL_LogSetOutputFunction(&sdlLogCallback, _state.get());
 
@@ -141,6 +140,6 @@ int64_t SdlPlatform::tickCount() const {
     return SDL_GetTicks64();
 }
 
-std::unique_ptr<Platform> Platform::createStandardPlatform(Logger *logger) {
-    return std::make_unique<SdlPlatform>(logger);
+std::unique_ptr<Platform> Platform::createStandardPlatform() {
+    return std::make_unique<SdlPlatform>();
 }

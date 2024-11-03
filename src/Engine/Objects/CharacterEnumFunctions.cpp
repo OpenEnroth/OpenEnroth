@@ -2,41 +2,41 @@
 
 #include "Engine/Spells/SpellEnumFunctions.h"
 
-CharacterExpressionID expressionForCondition(Condition condition) {
+CharacterPortrait portraitForCondition(Condition condition) {
     switch (condition) {
     case CONDITION_CURSED:
-        return CHARACTER_EXPRESSION_CURSED;
+        return PORTRAIT_CURSED;
     case CONDITION_WEAK:
-        return CHARACTER_EXPRESSION_WEAK;
+        return PORTRAIT_WEAK;
     case CONDITION_SLEEP:
-        return CHARACTER_EXPRESSION_SLEEP;
+        return PORTRAIT_SLEEP;
     case CONDITION_FEAR:
-        return CHARACTER_EXPRESSION_FEAR;
+        return PORTRAIT_FEAR;
     case CONDITION_DRUNK:
-        return CHARACTER_EXPRESSION_DRUNK;
+        return PORTRAIT_DRUNK;
     case CONDITION_INSANE:
-        return CHARACTER_EXPRESSION_INSANE;
+        return PORTRAIT_INSANE;
     case CONDITION_POISON_WEAK:
     case CONDITION_POISON_MEDIUM:
     case CONDITION_POISON_SEVERE:
-        return CHARACTER_EXPRESSION_POISONED;
+        return PORTRAIT_POISONED;
     case CONDITION_DISEASE_WEAK:
     case CONDITION_DISEASE_MEDIUM:
     case CONDITION_DISEASE_SEVERE:
-        return CHARACTER_EXPRESSION_DISEASED;
+        return PORTRAIT_DISEASED;
     case CONDITION_PARALYZED:
-        return CHARACTER_EXPRESSION_PARALYZED;
+        return PORTRAIT_PARALYZED;
     case CONDITION_UNCONSCIOUS:
-        return CHARACTER_EXPRESSION_UNCONCIOUS;
+        return PORTRAIT_UNCONSCIOUS;
     case CONDITION_DEAD:
-        return CHARACTER_EXPRESSION_DEAD;
+        return PORTRAIT_DEAD;
     case CONDITION_PETRIFIED:
-        return CHARACTER_EXPRESSION_PETRIFIED;
+        return PORTRAIT_PETRIFIED;
     case CONDITION_ERADICATED:
-        return CHARACTER_EXPRESSION_ERADICATED;
+        return PORTRAIT_ERADICATED;
     default: // CONDITION_ZOMBIE & CONDITION_GOOD are handled externally.
         assert(false);
-        return CHARACTER_EXPRESSION_NORMAL;
+        return PORTRAIT_NORMAL;
     }
 }
 

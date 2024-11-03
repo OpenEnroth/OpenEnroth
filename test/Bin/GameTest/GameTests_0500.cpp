@@ -17,8 +17,8 @@
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 
-#include "Utility/DataPath.h"
 #include "Utility/ScopeGuard.h"
 
 static std::initializer_list<CharacterBuff> allPotionBuffs() {
@@ -51,9 +51,9 @@ static std::initializer_list<CharacterBuff> allPotionBuffs() {
 
 GAME_TEST(Issues, Issue502) {
     // Check that script face animation and voice indexes right characters.
-    auto expressionTape = charTapes.expression(3);
+    auto expressionTape = charTapes.portrait(3);
     test.playTraceFromTestData("issue_502.mm7", "issue_502.json");
-    EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_NO));
+    EXPECT_CONTAINS(expressionTape, PORTRAIT_NO);
     EXPECT_EQ(pParty->activeCharacterIndex(), 4);
 }
 
@@ -110,7 +110,7 @@ GAME_TEST(Issues, Issue520) {
 
 GAME_TEST(Issues, Issue521) {
     // 500 endurance leads to asserts in Character::SetRecoveryTime
-    auto enduranceTape = charTapes.stat(0, CHARACTER_ATTRIBUTE_ENDURANCE);
+    auto enduranceTape = charTapes.stat(0, ATTRIBUTE_ENDURANCE);
     auto hpsTape = charTapes.hps();
     auto activeCharTape = tapes.activeCharacterIndex();
     test.playTraceFromTestData("issue_521.mm7", "issue_521.json");
@@ -248,31 +248,37 @@ GAME_TEST(Issues, Issue625) {
 }
 
 GAME_TEST(Issues, Issue624) {
-    // Test that key repeating work
-    test.playTraceFromTestData("issue_624.mm7", "issue_624.json");
+    // Test that key repeating works.
+    game.startNewGame();
+
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_SaveGame");
+    game.tick(2);
+    game.pressGuiButton("SaveMenu_Slot0");
+    game.tick(1);
+
+    for (int i = 0; i < 5; i++) {
+        game.pressAndReleaseKey(PlatformKey::KEY_A);
+        game.tick(1);
+    }
+
+    EXPECT_EQ(keyboardInputHandler->GetTextInput(), "aaaaa");
+
+    game.pressKey(PlatformKey::KEY_BACKSPACE);
+    game.tick(1);
+    for (int i = 0; i < 4; i++) {
+        game.pressAutoRepeatedKey(PlatformKey::KEY_BACKSPACE);
+        game.tick(1);
+    }
+
     EXPECT_EQ(keyboardInputHandler->GetTextInput(), "");
 }
 
 GAME_TEST(Issues, Issue626) {
     // Last loaded save is not remembered
-    std::string savesDir = makeDataPath("saves");
-    std::string savesDirMoved;
-
-    MM_AT_SCOPE_EXIT({
-        std::error_code ec;
-        std::filesystem::remove_all(savesDir);
-        if (!savesDirMoved.empty()) {
-            std::filesystem::rename(savesDirMoved, savesDir, ec); // Using std::error_code here, so can't throw.
-        }
-    });
-
-    if (std::filesystem::exists(savesDir)) {
-        savesDirMoved = savesDir + "_moved_for_testing";
-        ASSERT_FALSE(std::filesystem::exists(savesDirMoved)); // Throws on failure.
-        std::filesystem::rename(savesDir, savesDirMoved);
-    }
-
-    std::filesystem::create_directory(savesDir);
+    ufs->remove("saves");
+    EXPECT_FALSE(ufs->exists("saves"));
 
     game.startNewGame();
 
@@ -360,9 +366,9 @@ GAME_TEST(Issues, Issue662) {
     // "of Air magic" should give floor(skill / 2) skill level bonus (like all other such bonuses)
     test.loadGameFromTestData("issue_662.mm7");
     EXPECT_EQ(pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR], CombinedSkillValue(6, CHARACTER_SKILL_MASTERY_EXPERT));
-    EXPECT_EQ(pParty->pCharacters[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 3);
+    EXPECT_EQ(pParty->pCharacters[3].GetItemsBonus(ATTRIBUTE_SKILL_AIR), 3);
     pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR] = CombinedSkillValue(5, CHARACTER_SKILL_MASTERY_EXPERT);
-    EXPECT_EQ(pParty->pCharacters[3].GetItemsBonus(CHARACTER_ATTRIBUTE_SKILL_AIR), 2);
+    EXPECT_EQ(pParty->pCharacters[3].GetItemsBonus(ATTRIBUTE_SKILL_AIR), 2);
 }
 
 GAME_TEST(Issues, Issue663) {
@@ -399,7 +405,7 @@ GAME_TEST(Issues, Issue675) {
         ITEM_TREASURE_LEVEL_4, ITEM_TREASURE_LEVEL_5, ITEM_TREASURE_LEVEL_6
     };
 
-    std::unordered_set<CharacterAttributeType> generatedEnchantments;
+    std::unordered_set<CharacterAttribute> generatedEnchantments;
 
     ItemGen item;
     for (int i = 0; i < 300; i++) {
@@ -411,8 +417,8 @@ GAME_TEST(Issues, Issue675) {
             } else {
                 EXPECT_EQ(item.potionPower, 0);
                 if (item.attributeEnchantment) {
-                    EXPECT_GE(*item.attributeEnchantment, CHARACTER_ATTRIBUTE_FIRST_ENCHANTABLE);
-                    EXPECT_LE(*item.attributeEnchantment, CHARACTER_ATTRIBUTE_LAST_ENCHANTABLE);
+                    EXPECT_GE(*item.attributeEnchantment, ATTRIBUTE_FIRST_ENCHANTABLE);
+                    EXPECT_LE(*item.attributeEnchantment, ATTRIBUTE_LAST_ENCHANTABLE);
                     generatedEnchantments.insert(*item.attributeEnchantment);
                 }
             }
@@ -425,7 +431,7 @@ GAME_TEST(Issues, Issue675) {
 GAME_TEST(Issues, Issue676) {
     // Jump spell doesn't work
     test.playTraceFromTestData("issue_676.mm7", "issue_676.json");
-    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12041, 11766, 908));
+    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12041, 11766, 909));
 }
 
 GAME_TEST(Issues, Issue677) {
@@ -457,24 +463,8 @@ GAME_TEST(Issues, Issue681) {
 
 GAME_TEST(Issues, Issue689) {
     // Testing that clicking on load game scroll is not crashing the game then there's small amount of saves present.
-    std::string savesDir = makeDataPath("saves");
-    std::string savesDirMoved;
-
-    MM_AT_SCOPE_EXIT({
-        std::error_code ec;
-        std::filesystem::remove_all(savesDir);
-        if (!savesDirMoved.empty()) {
-            std::filesystem::rename(savesDirMoved, savesDir, ec); // Using std::error_code here, so can't throw.
-        }
-    });
-
-    if (std::filesystem::exists(savesDir)) {
-        savesDirMoved = savesDir + "_moved_for_testing";
-        ASSERT_FALSE(std::filesystem::exists(savesDirMoved)); // Throws on failure.
-        std::filesystem::rename(savesDir, savesDirMoved);
-    }
-
-    std::filesystem::create_directory(savesDir);
+    ufs->remove("saves");
+    EXPECT_FALSE(ufs->exists("saves"));
 
     game.startNewGame();
 
@@ -510,7 +500,7 @@ GAME_TEST(Issues, Issue689) {
     game.tick(10);
     game.pressGuiButton("MainMenu_LoadGame"); // Should not crash because of last loaded save
     game.tick(10);
-    game.pressGuiButton("LoadMenu_Scroll"); // Sould not crash
+    game.pressGuiButton("LoadMenu_Scroll"); // Should not crash
 }
 
 GAME_TEST(Issues, Issue691) {
@@ -608,10 +598,10 @@ GAME_TEST(Issues, Issue755) {
     auto actor2Tape = actorTapes.aiState(2);
     auto actor37Tape = actorTapes.aiState(37);
     test.playTraceFromTestData("issue_755.mm7", "issue_755.json");
-    EXPECT_TRUE(actor2Tape.contains(Dead));
-    EXPECT_TRUE(actor2Tape.contains(Resurrected));
-    EXPECT_TRUE(actor37Tape.contains(Dead));
-    EXPECT_TRUE(actor37Tape.contains(Resurrected));
+    EXPECT_CONTAINS(actor2Tape, Dead);
+    EXPECT_CONTAINS(actor2Tape, Resurrected);
+    EXPECT_CONTAINS(actor37Tape, Dead);
+    EXPECT_CONTAINS(actor37Tape, Resurrected);
 }
 
 GAME_TEST(Issues, Issue760) {
@@ -669,27 +659,27 @@ GAME_TEST(Issues, Issue784) {
     // Potions were at power 75, that's 75*3=225 points for attribute bonuses.
     const Character &player0 = pParty->pCharacters[0];
 
-    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_AIR));
-    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_ATTACK)); // CHARACTER_BUFF_BLESS.
-    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RANGED_ATTACK)); // CHARACTER_BUFF_BLESS.
-    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_BODY));
-    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_EARTH));
-    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_FIRE));
+    EXPECT_EQ(225, player0.GetMagicalBonus(ATTRIBUTE_RESIST_AIR));
+    EXPECT_EQ(5, player0.GetMagicalBonus(ATTRIBUTE_ATTACK)); // CHARACTER_BUFF_BLESS.
+    EXPECT_EQ(5, player0.GetMagicalBonus(ATTRIBUTE_RANGED_ATTACK)); // CHARACTER_BUFF_BLESS.
+    EXPECT_EQ(225, player0.GetMagicalBonus(ATTRIBUTE_RESIST_BODY));
+    EXPECT_EQ(225, player0.GetMagicalBonus(ATTRIBUTE_RESIST_EARTH));
+    EXPECT_EQ(225, player0.GetMagicalBonus(ATTRIBUTE_RESIST_FIRE));
     EXPECT_EQ(58_ticks, player0.GetAttackRecoveryTime(false)); // CHARACTER_BUFF_HASTE.
     // EXPECT_EQ(59_ticks, player0.GetAttackRecoveryTime(true)); // Can't call this b/c no bow.
-    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_MELEE_DMG_BONUS)); // CHARACTER_BUFF_HEROISM.
-    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_MIND));
+    EXPECT_EQ(5, player0.GetMagicalBonus(ATTRIBUTE_MELEE_DMG_BONUS)); // CHARACTER_BUFF_HEROISM.
+    EXPECT_EQ(225, player0.GetMagicalBonus(ATTRIBUTE_RESIST_MIND));
     // No check for CHARACTER_BUFF_PRESERVATION.
     // No check for CHARACTER_BUFF_SHIELD.
-    EXPECT_EQ(5, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_AC_BONUS)); // CHARACTER_BUFF_STONESKIN.
-    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_ACCURACY));
-    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_ENDURANCE));
-    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_INTELLIGENCE));
-    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_LUCK));
-    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_MIGHT));
-    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_PERSONALITY));
-    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_SPEED));
-    EXPECT_EQ(225, player0.GetMagicalBonus(CHARACTER_ATTRIBUTE_RESIST_WATER));
+    EXPECT_EQ(5, player0.GetMagicalBonus(ATTRIBUTE_AC_BONUS)); // CHARACTER_BUFF_STONESKIN.
+    EXPECT_EQ(225, player0.GetMagicalBonus(ATTRIBUTE_ACCURACY));
+    EXPECT_EQ(225, player0.GetMagicalBonus(ATTRIBUTE_ENDURANCE));
+    EXPECT_EQ(225, player0.GetMagicalBonus(ATTRIBUTE_INTELLIGENCE));
+    EXPECT_EQ(225, player0.GetMagicalBonus(ATTRIBUTE_LUCK));
+    EXPECT_EQ(225, player0.GetMagicalBonus(ATTRIBUTE_MIGHT));
+    EXPECT_EQ(225, player0.GetMagicalBonus(ATTRIBUTE_PERSONALITY));
+    EXPECT_EQ(225, player0.GetMagicalBonus(ATTRIBUTE_SPEED));
+    EXPECT_EQ(225, player0.GetMagicalBonus(ATTRIBUTE_RESIST_WATER));
     // No check for CHARACTER_BUFF_WATER_WALK
 }
 
@@ -724,13 +714,13 @@ GAME_TEST(Issues, Issue808) {
 GAME_TEST(Issues, Issue814) {
     // Test that compare variable for autonotes do not assert
     test.playTraceFromTestData("issue_814.mm7", "issue_814.json"); // Should not assert
-    EXPECT_EQ(pParty->pCharacters[0]._statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE], 25);
+    EXPECT_EQ(pParty->pCharacters[0]._statBonuses[ATTRIBUTE_INTELLIGENCE], 25);
 }
 
 GAME_TEST(Issues, Issue815) {
     // Test that subtract variable for character bits work
     test.playTraceFromTestData("issue_815.mm7", "issue_815.json");
-    EXPECT_EQ(pParty->pCharacters[0]._statBonuses[CHARACTER_ATTRIBUTE_INTELLIGENCE], 25);
+    EXPECT_EQ(pParty->pCharacters[0]._statBonuses[ATTRIBUTE_INTELLIGENCE], 25);
 }
 
 GAME_TEST(Issues, Issue816) {
@@ -743,7 +733,7 @@ GAME_TEST(Issues, Issue820a) {
     auto statusTape = tapes.statusBar();
     auto foodTape = tapes.food();
     test.playTraceFromTestData("issue_820A.mm7", "issue_820A.json");
-    EXPECT_TRUE(statusTape.contains("Fruit Tree"));
+    EXPECT_CONTAINS(statusTape, "Fruit Tree");
     EXPECT_GT(foodTape.back(), foodTape.front());
 }
 
@@ -752,7 +742,7 @@ GAME_TEST(Issues, Issue820b) {
     auto statusTape = tapes.statusBar();
     auto treeHealthTape = actorTapes.hp(80);
     test.playTraceFromTestData("issue_820B.mm7", "issue_820B.json");
-    EXPECT_TRUE(statusTape.contains(fmt::format("Zoltan hits Tree for {} damage", -treeHealthTape.delta())));
+    EXPECT_CONTAINS(statusTape, fmt::format("Zoltan hits Tree for {} damage", -treeHealthTape.delta()));
     EXPECT_LT(treeHealthTape.delta(), 0);
 }
 
@@ -843,7 +833,7 @@ GAME_TEST(Issues, Issue833a) {
     test.playTraceFromTestData("issue_833a.mm7", "issue_833a.json");
     EXPECT_EQ(manaTape.delta(), -2);
     EXPECT_EQ(quickSpellTape, tape(SPELL_FIRE_FIRE_BOLT));
-    EXPECT_TRUE(spritesTape.flattened().contains(SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT)); // Fire bolt was cast by 1st character.
+    EXPECT_CONTAINS(spritesTape.flattened(), SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT); // Fire bolt was cast by 1st character.
 }
 
 GAME_TEST(Issues, Issue833b) {
@@ -856,7 +846,7 @@ GAME_TEST(Issues, Issue833b) {
     EXPECT_EQ(manaTape.delta(), 0);
     EXPECT_EQ(quickSpellTape, tape(SPELL_NONE));
     EXPECT_EQ(actorsHpTape.size(), 1); // No one was hurt.
-    EXPECT_TRUE(soundsTape.flattened().contains(SOUND_error));
+    EXPECT_CONTAINS(soundsTape.flattened(), SOUND_error);
 }
 
 GAME_TEST(Issues, Issue840) {

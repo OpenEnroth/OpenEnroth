@@ -24,6 +24,7 @@ extern "C" {
 }
 
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
@@ -36,7 +37,6 @@ extern "C" {
 #include "Media/FFmpegBlobInputStream.h"
 
 #include "Utility/Memory/FreeDeleter.h"
-#include "Utility/DataPath.h"
 
 #include "GUI/GUIWindow.h"
 
@@ -128,10 +128,19 @@ class AVAudioStream : public AVStreamWrapper {
             return false;
         }
 
-        converter = swr_alloc_set_opts(
-            converter, AV_CH_LAYOUT_STEREO, AV_SAMPLE_FMT_S16,
-            dec_ctx->sample_rate, dec_ctx->channel_layout, dec_ctx->sample_fmt,
+        AVChannelLayout stereoLayout = {};
+        av_channel_layout_default(&stereoLayout, 2);
+
+        int status = swr_alloc_set_opts2(
+            &converter, &stereoLayout, AV_SAMPLE_FMT_S16,
+            dec_ctx->sample_rate, &dec_ctx->ch_layout, dec_ctx->sample_fmt,
             dec_ctx->sample_rate, 0, nullptr);
+        if (status < 0) {
+            logger->warning("ffmpeg: swr_alloc_set_opts2 failed");
+            swr_free(&converter);
+            converter = nullptr;
+            return false;
+        }
         if (swr_init(converter) < 0) {
             logger->warning("ffmpeg: swr_init failed");
             swr_free(&converter);
@@ -710,8 +719,8 @@ class Movie : public IMovie {
 };
 
 void MPlayer::Initialize() {
-    might_list.open(makeDataPath("anims", "might7.vid"));
-    magic_list.open(makeDataPath("anims", "magic7.vid"));
+    might_list.open(dfs->read("anims/might7.vid"));
+    magic_list.open(dfs->read("anims/magic7.vid"));
 }
 
 void MPlayer::OpenHouseMovie(std::string_view pMovieName, bool bLoop) {
@@ -906,7 +915,7 @@ void MPlayer::Unload() {
         pMovie_Track->Stop();
     }
     pMovie_Track = nullptr;
-    if (!bGameoverLoop) {
+    if (!GameOverNoSound) {
         pAudioPlayer->MusicResume();
         pAudioPlayer->resumeSounds();
     }

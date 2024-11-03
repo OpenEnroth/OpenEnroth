@@ -1,5 +1,6 @@
 #include "GameTraceHandler.h"
 
+#include "Engine/EngineFileSystem.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 
@@ -23,9 +24,14 @@ bool GameTraceHandler::keyPressEvent(const PlatformKeyEvent *event) {
         component<EngineControlComponent>()->runControlRoutine([this] (EngineController *game) {
             EngineTraceRecorder *tracer = component<EngineTraceRecorder>();
             if (tracer->isRecording()) {
-                tracer->finishRecording(game);
+                EngineTraceRecording recording = tracer->finishRecording(game);
+
+                // TODO(captainurist): do this properly, trace00001.json, etc.
+                ufs->write("trace.json", recording.trace);
+                ufs->write("trace.mm7", recording.save);
+                logger->info("Trace saved to {} and {}", ufs->displayPath("trace.json"), ufs->displayPath("trace.mm7"));
             } else {
-                tracer->startRecording(game, "trace.mm7", "trace.json");
+                tracer->startRecording(game);
             }
         });
         return true;

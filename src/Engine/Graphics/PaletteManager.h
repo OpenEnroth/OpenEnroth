@@ -24,7 +24,6 @@ class PaletteManager {
      */
     std::span<Color> paletteData();
 
- private:
     static Palette createGrayscalePalette();
     static Palette createLoadedPalette(const Palette &palette);
 

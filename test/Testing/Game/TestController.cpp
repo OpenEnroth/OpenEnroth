@@ -14,11 +14,11 @@
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 
 #include "GUI/GUIMessageQueue.h"
 
-#include "Media/Audio/AudioPlayer.h"
-
+#include "Library/FileSystem/Interface/FileSystem.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 
 class TestControllerTickCallback : public ProxyOpenGLContext {
@@ -40,9 +40,12 @@ class TestControllerTickCallback : public ProxyOpenGLContext {
     TestController *_controller = nullptr;
 };
 
-TestController::TestController(EngineController *controller, std::string_view testDataPath, float playbackSpeed) {
+TestController::TestController(EngineController *controller, FileSystem *tfs, float playbackSpeed) {
+    assert(controller);
+    assert(tfs);
+
     _controller = controller;
-    _testDataPath = testDataPath;
+    _tfs = tfs;
     _playbackSpeed = playbackSpeed;
 
     assert(engine->callObserver == nullptr);
@@ -63,12 +66,8 @@ TestController::~TestController() {
     application->removeComponent<TestControllerTickCallback>();
 }
 
-std::string TestController::fullPathInTestData(std::string_view fileName) {
-    return (_testDataPath / fileName).string();
-}
-
 void TestController::loadGameFromTestData(std::string_view name) {
-    _controller->loadGame(fullPathInTestData(name));
+    _controller->loadGame(_tfs->read(name));
 }
 
 void TestController::playTraceFromTestData(std::string_view saveName, std::string_view traceName, std::function<void()> postLoadCallback) {
@@ -77,10 +76,13 @@ void TestController::playTraceFromTestData(std::string_view saveName, std::strin
 
 void TestController::playTraceFromTestData(std::string_view saveName, std::string_view traceName,
                                            EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback) {
+    EngineTraceRecording recording;
+    recording.save = _tfs->read(saveName);
+    recording.trace = _tfs->read(traceName);
+
     ::application->component<EngineTracePlayer>()->playTrace(
         _controller,
-        fullPathInTestData(saveName),
-        fullPathInTestData(traceName),
+        recording,
         flags,
         [this, postLoadCallback = std::move(postLoadCallback)] {
             if (postLoadCallback)
@@ -124,6 +126,9 @@ void TestController::stopTaping() {
 void TestController::prepareForNextTestInternal() {
     int frameTimeMs = engine->config->debug.TraceFrameTimeMs.value();
     RandomEngineType rngType = engine->config->debug.TraceRandomEngine.value();
+
+    for (const DirectoryEntry &entry : ufs->ls(""))
+        ufs->remove(entry.name);
 
     _callObserver.reset();
     _tapeCallbacks.clear();

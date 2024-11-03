@@ -51,7 +51,7 @@ jobs:
           xcode-version: 14.3
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
         with:
           submodules: recursive
           ref: '${{inputs.myCommit}}'
@@ -64,18 +64,13 @@ jobs:
             OpenEnroth_GameData
           key: data-cache
 
-      - name: Copy shaders
-        if: steps.restore-data-cache.outputs.cache-hit == 'true'
-        run: |
-          cp -r ./resources/shaders ./OpenEnroth_GameData/mm7
-
       - name: Run ccache
-        uses: hendrikmuhs/ccache-action@v1.2.10
+        uses: hendrikmuhs/ccache-action@v1.2.14
         with:
           key: 'macos-${{matrix.configuration}}-${{matrix.architecture}}'
           save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
           verbose: 2
-          max-size: 100M
+          max-size: 200M
 
       # MacOS deployment target here should be kept in sync with what's set in OpenEnroth_Dependencies:
       # https://github.com/OpenEnroth/OpenEnroth_Dependencies/blob/master/scripts/build_all.sh
@@ -88,7 +83,7 @@ jobs:
             export MACOSX_DEPLOYMENT_TARGET="11"
           fi
           cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DCMAKE_OSX_ARCHITECTURES=${{matrix.architecture}}
-                  
+
       - name: Build
         working-directory: build
         run: |
@@ -97,21 +92,21 @@ jobs:
       - name: Run unit tests
         working-directory: build
         run: |
-          make UnitTest
+          make Run_UnitTest
 
       - name: Run game tests
         if: steps.restore-data-cache.outputs.cache-hit == 'true'
         working-directory: build
         run: |
-          make GameTest_Headless
+          make Run_GameTest_Headless_Parallel
         env:
           OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
       - name: Run retrace tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration == 'Release'
+        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration != 'Debug'
         working-directory: build
         run: |
-          make RetraceTest_Headless
+          make Run_RetraceTest_Headless_Parallel
         env:
           OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
@@ -119,7 +114,6 @@ jobs:
         run: |
           mkdir dist
           cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
-          cp -r resources/* dist/
           hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
 
       - name: Zip folder for release

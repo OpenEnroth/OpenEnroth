@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <deque>
 #include <string>
 
 #include "Engine/Spells/SpellBuff.h"
@@ -247,7 +247,7 @@ class Actor {
                                  // a misc timer in there is very questionable.
 };
 
-extern std::vector<Actor> pActors;
+extern std::deque<Actor> pActors;
 
 bool CheckActors_proximity();
 

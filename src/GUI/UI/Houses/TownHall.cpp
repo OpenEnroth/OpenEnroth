@@ -8,7 +8,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
-#include "Engine/Tables/AwardTable.h"
+#include "Engine/Data/AwardEnums.h"
 #include "Engine/Party.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Engine.h"

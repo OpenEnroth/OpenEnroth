@@ -49,11 +49,8 @@ FFmpegBlobInputStream::~FFmpegBlobInputStream() {
 }
 
 void FFmpegBlobInputStream::open(Blob blob) {
-    closeInternal();
     BlobInputStream::open(std::move(blob));
-
-    unsigned char *buffer = static_cast<unsigned char *>(av_malloc(AV_INPUT_BUFFER_MIN_SIZE));
-    _ctx = avio_alloc_context(buffer, AV_INPUT_BUFFER_MIN_SIZE, 0, this, &ffRead, nullptr, &ffSeek);
+    resetContext();
 }
 
 void FFmpegBlobInputStream::close() {
@@ -68,4 +65,10 @@ void FFmpegBlobInputStream::closeInternal() {
     av_free(_ctx->buffer);
     av_free(_ctx);
     _ctx = nullptr;
+}
+
+void FFmpegBlobInputStream::resetContext() {
+    closeInternal();
+    unsigned char* buffer = static_cast<unsigned char*>(av_malloc(AV_INPUT_BUFFER_MIN_SIZE));
+    _ctx = avio_alloc_context(buffer, AV_INPUT_BUFFER_MIN_SIZE, 0, this, &ffRead, nullptr, &ffSeek);
 }

@@ -29,7 +29,7 @@ class BaseRenderer : public Renderer {
     virtual float GetGamma() override;
 
     virtual void DrawMasked(float u, float v, GraphicsImage *img,
-        unsigned int color_dimming_level, Color mask = colorTable.White) override;
+                            int color_dimming_level, Color mask = colorTable.White) override;
     virtual void DrawTextureGrayShade(float u, float v, GraphicsImage *a4) override;
     virtual void DrawTransparentRedShade(float u, float v, GraphicsImage *a4) override;
     virtual void DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) override;

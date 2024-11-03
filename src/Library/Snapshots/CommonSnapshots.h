@@ -6,6 +6,8 @@
 #include <string>
 #include <span>
 #include <type_traits>
+#include <deque>
+#include <vector>
 
 #include "Library/Binary/BinaryConcepts.h"
 
@@ -93,6 +95,26 @@ void reconstruct(const Src &src, Dst *dst, const Tags &... tags) {
     std::span dstSpan(dst->data(), dst->size());
     for (size_t i = 0; i < srcSpan.size(); i++)
         reconstruct(srcSpan[i], &dstSpan[i], tags...);
+}
+
+//
+// std::deque to std::vector support for pActors.
+//
+
+template<class T1, class T2, class... Tags>
+void snapshot(const std::deque<T1> &src, std::vector<T2> *dst, const Tags &... tags) {
+    dst->resize(src.size());
+
+    for (size_t i = 0; i < src.size(); i++)
+        snapshot(src[i], &(*dst)[i], tags...);
+}
+
+template<class T1, class T2, class... Tags>
+void reconstruct(const std::vector<T1> &src, std::deque<T2> *dst, const Tags &... tags) {
+    dst->resize(src.size());
+
+    for (size_t i = 0; i < src.size(); i++)
+        reconstruct(src[i], &(*dst)[i], tags...);
 }
 
 

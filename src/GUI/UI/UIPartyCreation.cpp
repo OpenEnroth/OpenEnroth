@@ -167,13 +167,13 @@ void CreateParty_EventLoop() {
         case UIMSG_PlayerCreationClickPlus:
             new OnButtonClick2({613, 393}, {0, 0}, pPlayerCreationUI_BtnPlus, std::string(), false);
             pPlayer[uPlayerCreationUI_SelectedCharacter].IncreaseAttribute(
-                static_cast<CharacterAttributeType>((pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) % 7));
+                static_cast<CharacterAttribute>((pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) % 7));
             pAudioPlayer->playUISound(SOUND_ClickMinus);
             break;
         case UIMSG_PlayerCreationClickMinus:
             new OnButtonClick2({523, 393}, {0, 0}, pPlayerCreationUI_BtnMinus, std::string(), false);
             pPlayer[uPlayerCreationUI_SelectedCharacter].DecreaseAttribute(
-                static_cast<CharacterAttributeType>((pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) % 7));
+                static_cast<CharacterAttribute>((pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) % 7));
             pAudioPlayer->playUISound(SOUND_ClickPlus);
             break;
         case UIMSG_PlayerCreationSelectActiveSkill:
@@ -222,11 +222,6 @@ void CreateParty_EventLoop() {
             keyboardInputHandler->StartTextInput(TextInputType::Text, 15, pGUIWindow_CurrentMenu);
             break;
         case UIMSG_Escape:
-            if (pGameOverWindow) {
-                pGameOverWindow->Release();
-                pGameOverWindow = nullptr;
-                break;
-            }
             if (!(dword_6BE364_game_settings_1 & GAME_SETTINGS_4000)) break;
             if (GetCurrentMenuID() == MENU_MAIN ||
                 GetCurrentMenuID() == MENU_MMT_MAIN_MENU ||
@@ -270,7 +265,6 @@ bool PartyCreationUI_Loop() {
 // void PlayerCreationUI_Draw()
 void GUIWindow_PartyCreation::Update() {
     int pTextCenter;                // eax@3
-    Icon *pFrame;                   // eax@3
     int pX;                         // ecx@7
     GUIButton *uPosActiveItem;      // edi@12
     int v17;                        // eax@33
@@ -391,31 +385,31 @@ void GUIWindow_PartyCreation::Update() {
         int posY = 169;
 
         auto str1 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_MIGHT), pX_Numbers, pParty->pCharacters[i].GetActualMight());
-        pStatColor = pParty->pCharacters[i].GetStatColor(CHARACTER_ATTRIBUTE_MIGHT);
+        pStatColor = pParty->pCharacters[i].GetStatColor(ATTRIBUTE_MIGHT);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, posY}, pStatColor, str1);
 
         auto str2 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_INTELLECT), pX_Numbers, pParty->pCharacters[i].GetActualIntelligence());
-        pStatColor = pParty->pCharacters[i].GetStatColor(CHARACTER_ATTRIBUTE_INTELLIGENCE);
+        pStatColor = pParty->pCharacters[i].GetStatColor(ATTRIBUTE_INTELLIGENCE);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, pIntervalY + posY}, pStatColor, str2);
 
         auto str3 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_PERSONALITY), pX_Numbers, pParty->pCharacters[i].GetActualPersonality());
-        pStatColor = pParty->pCharacters[i].GetStatColor(CHARACTER_ATTRIBUTE_PERSONALITY);
+        pStatColor = pParty->pCharacters[i].GetStatColor(ATTRIBUTE_PERSONALITY);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 2 * pIntervalY + posY}, pStatColor, str3);
 
         auto str4 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_ENDURANCE), pX_Numbers, pParty->pCharacters[i].GetActualEndurance());
-        pStatColor = pParty->pCharacters[i].GetStatColor(CHARACTER_ATTRIBUTE_ENDURANCE);
+        pStatColor = pParty->pCharacters[i].GetStatColor(ATTRIBUTE_ENDURANCE);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 3 * pIntervalY + posY}, pStatColor, str4);
 
         auto str5 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_ACCURACY), pX_Numbers, pParty->pCharacters[i].GetActualAccuracy());
-        pStatColor = pParty->pCharacters[i].GetStatColor(CHARACTER_ATTRIBUTE_ACCURACY);
+        pStatColor = pParty->pCharacters[i].GetStatColor(ATTRIBUTE_ACCURACY);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 4 * pIntervalY + posY}, pStatColor, str5);
 
         auto str6 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_SPEED), pX_Numbers, pParty->pCharacters[i].GetActualSpeed());
-        pStatColor = pParty->pCharacters[i].GetStatColor(CHARACTER_ATTRIBUTE_SPEED);
+        pStatColor = pParty->pCharacters[i].GetStatColor(ATTRIBUTE_SPEED);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 5 * pIntervalY + posY}, pStatColor, str6);
 
         auto str7 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_LUCK), pX_Numbers, pParty->pCharacters[i].GetActualLuck());
-        pStatColor = pParty->pCharacters[i].GetStatColor(CHARACTER_ATTRIBUTE_LUCK);
+        pStatColor = pParty->pCharacters[i].GetStatColor(ATTRIBUTE_LUCK);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 6 * pIntervalY + posY}, pStatColor, str7);
 
         posY = 311;
@@ -529,6 +523,8 @@ void GUIWindow_PartyCreation::Update() {
         // trim skills that are too long
         if (pText.size() > 13)
             pText.resize(12);
+        if (pText == "Body Building")
+            pText = "Body Build";
         if (pText.starts_with(' '))
             pText.clear();
 
@@ -539,15 +535,7 @@ void GUIWindow_PartyCreation::Update() {
         if (!pParty->pCharacters[uPlayerCreationUI_SelectedCharacter].pActiveSkills[pSkillId])
             pColorText = colorTable.White;
 
-        // align skills left / centre /right
-        if ((i / 3) == 0) {
-            pTextCenter = 5;
-        } else if ((i / 3) == 1) {
-            pTextCenter = assets->pFontCreate->AlignText_Center(100, pText);
-        } else {
-            pTextCenter = 105 - assets->pFontCreate->GetLineWidth(pText);
-        }
-
+        pTextCenter = assets->pFontCreate->AlignText_Center(100, pText);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {100 * (i / 3) + pTextCenter + pCorrective + 17, pIntervalY * (i % 3) + 417}, pColorText, pText);
     }
 

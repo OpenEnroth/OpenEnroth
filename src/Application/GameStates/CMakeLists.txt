@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
-set(GAME_STATES_SOURCES
+set(APPLICATION_GAME_STATES_SOURCES
         CreditsState.cpp
         GameFsmBuilder.cpp
         LoadSlotState.cpp
@@ -9,7 +9,7 @@ set(GAME_STATES_SOURCES
         StartState.cpp
         VideoState.cpp)
 
-set(GAME_STATES_HEADERS
+set(APPLICATION_GAME_STATES_HEADERS
         CreditsState.h
         GameFsmBuilder.h
         LoadSlotState.h
@@ -18,10 +18,10 @@ set(GAME_STATES_HEADERS
         StartState.h
         VideoState.h)
 
-add_library(game_states STATIC ${GAME_STATES_SOURCES} ${GAME_STATES_HEADERS})
-target_check_style(game_states)
+add_library(application_game_states STATIC ${APPLICATION_GAME_STATES_SOURCES} ${APPLICATION_GAME_STATES_HEADERS})
+target_check_style(application_game_states)
 
-target_link_libraries(game_states
+target_link_libraries(application_game_states
         PUBLIC
         library_fsm
         media

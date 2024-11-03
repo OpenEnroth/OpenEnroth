@@ -24,14 +24,12 @@ class KeyboardActionMapping;
 struct BLVFace;
 struct Vis_PIDAndDepth;
 struct Vis_SelectionFilter;
-struct Polygon;
 struct DecalBuilder;
 struct BloodsplatContainer;
 struct SpellFxRenderer;
 class Vis;
 class ParticleEngine;
 struct ClippingFunctions;
-struct stru10;
 class GUIMessageQueue;
 class GameResourceManager;
 class StatusBar;
@@ -72,7 +70,7 @@ class Engine {
     static void LogEngineBuildInfo();
 
     void Initialize();
-    Vis_PIDAndDepth PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
+    Vis_PIDAndDepth PickMouse(float fPickDepth, int uMouseX, int uMouseY,
                               Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
     Vis_PIDAndDepth PickKeyboard(float pick_depth, Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter);
 
@@ -114,7 +112,6 @@ class Engine {
     std::shared_ptr<GameConfig> config;
     int uNumStationaryLights_in_pStationaryLightsStack;
     float fSaturation;
-    stru10 *pStru10Instance;
     BloodsplatContainer *bloodsplat_container = nullptr;
     DecalBuilder *decal_builder = nullptr;
     SpellFxRenderer *spell_fx_renedrer = nullptr;
@@ -151,7 +148,7 @@ void PlayButtonClickSound();
 void back_to_game();
 
 void UpdateUserInput_and_MapSpecificStuff();
-void PrepareWorld(unsigned int _0_box_loading_1_fullscreen);
+void PrepareWorld(int _0_box_loading_1_fullscreen);
 void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box);
 
 void FinalInitialization();
@@ -160,7 +157,7 @@ void MM6_Initialize();
 void MM7Initialization();
 
 void InitializeTurnBasedAnimations(void *);
-unsigned int GetGravityStrength();
+int GetGravityStrength();
 
 /**
  * @offset 0x44861E

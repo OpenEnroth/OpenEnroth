@@ -18,9 +18,14 @@ LodToolOptions LodToolOptions::parse(int argc, char **argv) {
     dump->add_option("LOD", result.lodPath, "Path to lod file.")->check(CLI::ExistingFile)->required()->option_text(" ");
 
     CLI::App *cat = app->add_subcommand("cat", "Write contents of a single lod entry to stdout.", result.subcommand, SUBCOMMAND_CAT)->fallthrough();
-    cat->add_flag("--raw", result.cat.raw, "Don't try decompressing the entry before printing it.");
+    cat->add_flag("--raw", result.raw, "Don't decompress compressed entries & don't convert images to png.");
     cat->add_option("LOD", result.lodPath, "Path to lod file.")->check(CLI::ExistingFile)->required()->option_text(" ");
     cat->add_option("ENTRY", result.cat.entry, "Name of the entry to print.")->required()->option_text(" ");
+
+    CLI::App *extract = app->add_subcommand("extract", "Extract everything from a lod file.", result.subcommand, SUBCOMMAND_EXTRACT)->fallthrough();
+    extract->add_flag("--raw", result.raw, "Don't decompress compressed entries & don't convert images to png.");
+    extract->add_option("LOD", result.lodPath, "Path to lod file.")->check(CLI::ExistingFile)->required()->option_text(" ");
+    extract->add_option("OUTPUT", result.extract.output, "Directory to extract the entries to.")->required()->option_text(" ");
 
     app->parse(argc, argv, result.helpPrinted);
     return result;

@@ -5,8 +5,9 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <chrono>
 
-#include "Application/GameStarter.h"
+#include "Application/Startup/GameStarter.h"
 
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Trace/EngineTraceSimplePlayer.h"
@@ -19,7 +20,7 @@
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
 
-#include "Utility/Streams/FileInputStream.h"
+#include "Utility/Streams/FileOutputStream.h"
 #include "Utility/String/Format.h"
 #include "Utility/UnicodeCrt.h"
 #include "Utility/String/Transformations.h"
@@ -28,9 +29,9 @@
 
 #include "OpenEnrothOptions.h"
 
-static std::string readTextFile(std::string_view path) {
+static std::string normalizeText(std::string_view text) {
     // Normalize to UNIX line endings. Need this b/c git on Windows checks out CRLF line endings.
-    std::string result = replaceAll(FileInputStream(path).readAll(), "\r\n", "\n");
+    std::string result = replaceAll(text, "\r\n", "\n");
 
     // Also drop trailing newlines. Vim always adds a newline, but retracing removes it.
     while (result.ends_with('\n'))
@@ -47,8 +48,8 @@ static void printLines(const std::vector<std::string_view> &lines, ssize_t line,
 static void printTraceDiff(std::string_view current, std::string_view canonical) {
     assert(canonical != current);
 
-    size_t pos = *std::ranges::find_if(std::views::iota(0), [&] (size_t i) { return canonical[i] != current[i]; });
-    size_t line = std::ranges::count(std::string_view(canonical.data(), pos), '\n'); // 0-indexed.
+    auto pos = std::ranges::mismatch(canonical, current).in1;
+    size_t line = std::ranges::count(canonical.begin(), pos, '\n'); // 0-indexed.
 
     std::vector<std::string_view> canonicalLines = split(canonical, '\n');
     std::vector<std::string_view> currentLines = split(current, '\n');
@@ -70,23 +71,29 @@ int runRetrace(const OpenEnrothOptions &options) {
 
         for (const std::string &tracePath : options.retrace.traces) {
             fmt::println(stderr, "Retracing '{}'...", tracePath);
-
-            std::string oldTraceJson;
-            if (options.retrace.checkCanonical)
-                oldTraceJson = readTextFile(tracePath);
+            auto startTime = std::chrono::steady_clock::now();
 
             std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
+            Blob oldTraceBlob = Blob::fromFile(tracePath);
+            Blob oldSaveBlob = Blob::fromFile(savePath);
 
-            EventTrace oldTrace = EventTrace::loadFromFile(tracePath, application->window());
+            EventTrace oldTrace = EventTrace::fromJsonBlob(oldTraceBlob, application->window());
+
             EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), oldTrace.header.config);
-
-            recorder->startRecording(game, savePath, tracePath, TRACE_RECORDING_LOAD_EXISTING_SAVE);
+            recorder->startRecording(game, oldSaveBlob);
             engine->config->graphics.FPSLimit.setValue(0);
             player->playTrace(game, std::move(oldTrace.events), tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS);
-            recorder->finishRecording(game);
+            EngineTraceRecording recording = recorder->finishRecording(game);
 
-            if (options.retrace.checkCanonical) {
-                std::string newTraceJson = readTextFile(tracePath);
+            auto endTime = std::chrono::steady_clock::now();
+            fmt::println(stderr, "Retraced in {}ms.", std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count());
+
+            if (!options.retrace.checkCanonical) {
+                oldTraceBlob = Blob(); // Close old trace file
+                FileOutputStream(tracePath).write(recording.trace);
+            } else {
+                std::string oldTraceJson = normalizeText(oldTraceBlob.string_view());
+                std::string newTraceJson = normalizeText(recording.trace.string_view());
                 if (oldTraceJson != newTraceJson) {
                     fmt::println(stderr, "Trace '{}' is not in canonical representation.", tracePath);
                     printTraceDiff(oldTraceJson, newTraceJson);
@@ -112,7 +119,12 @@ int runPlay(const OpenEnrothOptions &options) {
             fmt::println(stderr, "Playing back '{}'...", tracePath);
 
             std::string savePath = tracePath.substr(0, tracePath.length() - 5) + ".mm7";
-            player->playTrace(game, savePath, tracePath, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS , [&] {
+
+            EngineTraceRecording recording;
+            recording.save = Blob::fromFile(savePath);
+            recording.trace = Blob::fromFile(tracePath);
+
+            player->playTrace(game, recording, TRACE_PLAYBACK_SKIP_RANDOM_CHECKS | TRACE_PLAYBACK_SKIP_STATE_CHECKS , [&] {
                 int fps = options.play.speed * 1000 / engine->config->debug.TraceFrameTimeMs.value();
                 engine->config->graphics.FPSLimit.setValue(std::max(1, fps));
             });

@@ -18,13 +18,13 @@ EngineTraceSimplePlayer::EngineTraceSimplePlayer() = default;
 EngineTraceSimplePlayer::~EngineTraceSimplePlayer() = default;
 
 void EngineTraceSimplePlayer::playTrace(EngineController *game, std::vector<std::unique_ptr<PlatformEvent>> events,
-                                        std::string_view tracePath, EngineTracePlaybackFlags flags) {
+                                        std::string_view traceDisplayPath, EngineTracePlaybackFlags flags) {
     assert(!isPlaying());
 
     _playing = true;
     MM_AT_SCOPE_EXIT(_playing = false);
 
-    _tracePath = tracePath;
+    _traceDisplayPath = traceDisplayPath;
     _flags = flags;
 
     for (std::unique_ptr<PlatformEvent> &event : events) {
@@ -47,7 +47,7 @@ void EngineTraceSimplePlayer::checkTime(const PaintEvent *paintEvent) {
     int64_t tickCount = application()->platform()->tickCount();
     if (tickCount != paintEvent->tickCount) {
         throw Exception("Tick count desynchronized when playing back trace '{}': expected {}, got {}",
-                        _tracePath, paintEvent->tickCount, tickCount);
+                        _traceDisplayPath, paintEvent->tickCount, tickCount);
     }
 }
 
@@ -59,6 +59,6 @@ void EngineTraceSimplePlayer::checkRng(const PaintEvent *paintEvent) {
     int64_t tickCount = application()->platform()->tickCount();
     if (randomState != paintEvent->randomState) {
         throw Exception("Random state desynchronized when playing back trace '{}' at {}ms: expected {}, got {}",
-                        _tracePath, tickCount, paintEvent->randomState, randomState);
+                        _traceDisplayPath, tickCount, paintEvent->randomState, randomState);
     }
 }

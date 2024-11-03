@@ -12,7 +12,7 @@ template<class Map>
 static void runTransparentTest() {
     Map m1;
 
-    EXPECT_FALSE(m1.contains(std::string_view("1")));
+    EXPECT_MISSES(m1, std::string_view("1"));
     EXPECT_EQ(valueOr(m1, std::string_view("1"), -1), -1);
 
     m1["1"] = 1;

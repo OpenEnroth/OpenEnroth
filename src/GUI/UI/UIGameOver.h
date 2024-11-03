@@ -10,8 +10,9 @@ class GUIWindow_GameOver : public GUIWindow {
     virtual void Update() override;
     virtual void Release() override;
 
+    bool toggleAndTestFinished();
+
  protected:
     UIMessageType _releaseEvent = UIMSG_0;
-    ScreenType prev_screen_type;
-    int64_t _tickcount = 0;
+    bool _showPopUp = false;
 };

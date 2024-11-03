@@ -32,10 +32,8 @@ class Game {
  private:
     PlatformApplication *_application = nullptr;
     std::shared_ptr<GameConfig> _config;
+    std::unique_ptr<Menu> _menu;
     DecalBuilder *_decalBuilder = nullptr;
-    Menu *_menu = nullptr;
 };
-
-void initDataPath(Platform *platform, std::string_view dataPath);
 
 extern GraphicsImage *gamma_preview_image;  // 506E40

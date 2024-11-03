@@ -158,7 +158,7 @@ As typing out all the events to send inside the test code can be pretty tedious,
 * Perform the steps that used to reproduce the bug.
 * Press `Ctrl+Shift+R` again to stop trace recording. You will get two files generated in the current folder – `trace.json` and `trace.mm7`.
 * Rename them into something more suiting (e.g. `issue_XXX.json` and `issue_XXX.mm7`) and create a PR to the [OpenEnroth_TestData](https://github.com/OpenEnroth/OpenEnroth_TestData) repo. 
-* Once it's merged update the reference tag in the corresponding [CMakeLists.txt](https://github.com/OpenEnroth/OpenEnroth/blob/master/test/Bin/GameTest/CMakeLists.txt) in the main repo.
+* Once it's merged update the reference tag in the corresponding [CMakeLists.txt](https://github.com/OpenEnroth/OpenEnroth/blob/master/test/Bin/CMakeLists.txt) in the main repo.
 * Create a new test case in one of the game test files in [the game tests folder](https://github.com/OpenEnroth/OpenEnroth/tree/master/test/Bin/GameTest).
 * Use `TestController::playTraceFromTestData` to play back your trace, and add the necessary checks around it.
 
@@ -166,7 +166,7 @@ If you need to record a trace with non-standard FPS (e.g. if an issue doesn't re
 
 To run all unit tests locally, build a `UnitTest` cmake target, or build & run `OpenEnroth_UnitTest`.
 
-To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to point to the location of the game assets, then build `GameTest` cmake target. Alternatively, you can build `OpenEnroth_GameTest`, and run it manually, passing the paths to both game assets and the test data via command line.
+To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to point to the location of the game assets, then build `Run_GameTest_Headless_Parallel` cmake target. Alternatively, you can build `OpenEnroth_GameTest`, and run it manually, passing the paths to both game assets and the test data via command line.
 
 If you need to look closely at the recorded trace, you can play it by running `OpenEnroth play --speed 0.5 <path-to-trace.json>`. Alternatively, if you already have a unit test that runs the recorded trace, you can run `OpenEnroth_GameTest --speed 0.5 --gtest_filter=<test-suite-name>.<test-name> --test-path <path-to-test-data-folder>`. Note that `--gtest_filter` needs that `=` and won't work if you try passing test name after a space. 
 
@@ -195,12 +195,9 @@ Console Commands
 -----------------
 The game features a console capable of executing various Lua script commands. To activate this feature, please follow these steps:
 
-1. Copy the `resources/scripts` folder to the game's installation directory.
-2. Launch the game.
-3. Begin by loading an existing game or creating a new one.
-4. Once in-game, press the `~` key to open the DebugView.
-5. If the Lua scripts have been loaded correctly, you'll find a button labeled `Console`.
-6. Click on the `Console` button to reveal the command-line interface at the bottom left corner of the screen.
+1. Launch the game.
+2. Begin by loading an existing game or creating a new one.
+3. Once in-game, press the `~` key to open the debug console.
 
 Currently, the console is only available while in-game.
 

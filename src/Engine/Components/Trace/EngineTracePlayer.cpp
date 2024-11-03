@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <utility>
-#include <filesystem>
 #include <memory>
 
 #include "Application/GameKeyboardController.h" // TODO(captainurist): Engine -> Application dependency
@@ -11,12 +10,15 @@
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 
 #include "Library/Trace/PaintEvent.h"
 #include "Library/Trace/EventTrace.h"
 #include "Library/Platform/Application/PlatformApplication.h"
+#include "Library/FileSystem/Memory/MemoryFileSystem.h"
 
 #include "Utility/ScopeGuard.h"
+#include "Utility/ScopedRollback.h"
 #include "Utility/Exception.h"
 
 #include "EngineTraceStateAccessor.h"
@@ -28,24 +30,20 @@ EngineTracePlayer::~EngineTracePlayer() {
     assert(!application()); // We're uninstalled.
 }
 
-void EngineTracePlayer::playTrace(EngineController *game, std::string_view savePath, std::string_view tracePath,
+void EngineTracePlayer::playTrace(EngineController *game, const EngineTraceRecording &recording,
                                   EngineTracePlaybackFlags flags, std::function<void()> postLoadCallback) {
     assert(!isPlaying());
 
-    _tracePath = tracePath;
-    _savePath = savePath;
     _flags = flags;
-    _trace = std::make_unique<EventTrace>(EventTrace::loadFromFile(_tracePath, application()->window()));
+    _trace = std::make_unique<EventTrace>(EventTrace::fromJsonBlob(recording.trace, application()->window()));
 
     MM_AT_SCOPE_EXIT({
-        _tracePath.clear();
-        _savePath.clear();
         _flags = 0;
         _trace.reset();
         component<EngineDeterministicComponent>()->finish();
     });
 
-    checkSaveFileSize(_trace->header.saveFileSize);
+    checkSaveFileSize(recording, _trace->header.saveFileSize);
 
     game->resizeWindow(640, 480);
     game->tick();
@@ -56,39 +54,44 @@ void EngineTracePlayer::playTrace(EngineController *game, std::string_view saveP
 
     game->goToMainMenu(); // This might call into a random engine.
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
-    game->loadGame(_savePath);
-    checkAfterLoadRng(_trace->header.afterLoadRandomState);
+    game->loadGame(recording.save);
+    checkAfterLoadRng(recording, _trace->header.afterLoadRandomState);
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
     component<GameKeyboardController>()->reset(); // Reset all pressed buttons.
 
     if (postLoadCallback)
         postLoadCallback();
 
-    checkState(_trace->header.startState, true);
-    component<EngineTraceSimplePlayer>()->playTrace(game, std::move(_trace->events), _tracePath, _flags);
-    checkState(_trace->header.endState, false);
+    // Place the save game in /saves while the trace is playing - we might want to load the save again from
+    // inside the trace.
+    MemoryFileSystem ramFs("ramfs");
+    ramFs.write("saves/!!!save.mm7", recording.save);
+    ScopedRollback<FileSystem *> rollback(&ufs, &ramFs);
+
+    checkState(recording, _trace->header.startState, true);
+    component<EngineTraceSimplePlayer>()->playTrace(game, std::move(_trace->events), recording.trace.displayPath(), _flags);
+    checkState(recording, _trace->header.endState, false);
 }
 
-void EngineTracePlayer::checkSaveFileSize(int expectedSaveFileSize) {
-    int saveFileSize = std::filesystem::file_size(_savePath);
-    if (expectedSaveFileSize != saveFileSize) {
+void EngineTracePlayer::checkSaveFileSize(const EngineTraceRecording &recording, int expectedSaveFileSize) {
+    if (expectedSaveFileSize != recording.save.size()) {
         throw Exception("Trace '{}' expected a savegame of size {} bytes, but the size of '{}' is {} bytes",
-                        _tracePath, expectedSaveFileSize, _savePath, saveFileSize);
+                        recording.trace.displayPath(), expectedSaveFileSize, recording.save.displayPath(), recording.save.size());
     }
 }
 
-void EngineTracePlayer::checkAfterLoadRng(int expectedRandomState) {
+void EngineTracePlayer::checkAfterLoadRng(const EngineTraceRecording &recording, int expectedRandomState) {
     if (_flags & TRACE_PLAYBACK_SKIP_RANDOM_CHECKS)
         return;
 
     int randomState = grng->peek(1024 * 1024);
     if (randomState != expectedRandomState) {
         throw Exception("Random state desynchronized after loading a save for trace '{}': expected {}, got {}",
-                        _tracePath, expectedRandomState, randomState);
+                        recording.trace.displayPath(), expectedRandomState, randomState);
     }
 }
 
-void EngineTracePlayer::checkState(const EventTraceGameState &expectedState, bool isStart) {
+void EngineTracePlayer::checkState(const EngineTraceRecording &recording, const EventTraceGameState &expectedState, bool isStart) {
     if (_flags & TRACE_PLAYBACK_SKIP_STATE_CHECKS)
         return;
 
@@ -97,17 +100,17 @@ void EngineTracePlayer::checkState(const EventTraceGameState &expectedState, boo
     EventTraceGameState state = EngineTraceStateAccessor::makeGameState();
     if (state.locationName != expectedState.locationName) {
         throw Exception("Unexpected location name at the {} of trace '{}': expected '{}', got '{}'",
-                        where, _tracePath, expectedState.locationName, state.locationName);
+                        where, recording.trace.displayPath(), expectedState.locationName, state.locationName);
     }
     if (state.partyPosition != expectedState.partyPosition) {
         throw Exception("Unexpected party position at the {} of trace '{}': expected ({}, {}, {}), got ({}, {}, {})",
-                        where, _tracePath,
+                        where, recording.trace.displayPath(),
                         expectedState.partyPosition.x, expectedState.partyPosition.y, expectedState.partyPosition.z,
                         state.partyPosition.x, state.partyPosition.y, state.partyPosition.z);
     }
     if (state.characters.size() != expectedState.characters.size()) {
         throw Exception("Unexpected number of characters at the {} of trace '{}': expected {}, got {}",
-                        where, _tracePath, expectedState.characters.size(), state.characters.size());
+                        where, recording.trace.displayPath(), expectedState.characters.size(), state.characters.size());
     }
     for (size_t i = 0; i < state.characters.size(); i++) {
         static constexpr std::initializer_list<std::pair<int EventTraceCharacterState::*, const char *>> attributes = {
@@ -127,7 +130,7 @@ void EngineTracePlayer::checkState(const EventTraceGameState &expectedState, boo
             int actual = state.characters[i].*attribute;
             if (expected != actual) {
                 throw Exception("Unexpected {} of character #{} at the {} of trace '{}': expected {}, got {}",
-                                attributeName, i, where, _tracePath, expected, actual);
+                                attributeName, i, where, recording.trace.displayPath(), expected, actual);
             }
         }
     }

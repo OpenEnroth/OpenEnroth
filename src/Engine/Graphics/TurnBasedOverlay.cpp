@@ -16,13 +16,13 @@ static constexpr int TURN_BASED_INITIAL_ACCELERATION = 3;
 TurnBasedOverlay turnBasedOverlay;
 
 void TurnBasedOverlay::loadIcons() {
-    _initialIconId = pIconsFrameTable->FindIcon("turnstart");
-    _initialAnimationLength = pIconsFrameTable->GetIcon(_initialIconId)->GetAnimLength();
-    _attackIconId = pIconsFrameTable->FindIcon("turnstop");
-    _waitIconId = pIconsFrameTable->FindIcon("turnhour");
+    _initialIconId = pIconsFrameTable->animationId("turnstart");
+    _initialAnimationLength = pIconsFrameTable->animationLength(_initialIconId);
+    _attackIconId = pIconsFrameTable->animationId("turnstop");
+    _waitIconId = pIconsFrameTable->animationId("turnhour");
 
     for (size_t i = 0; i < _movementIconIds.size(); ++i)
-        _movementIconIds[i] = pIconsFrameTable->FindIcon(fmt::format("turn{}", i));
+        _movementIconIds[i] = pIconsFrameTable->animationId(fmt::format("turn{}", i));
 }
 
 void TurnBasedOverlay::reset() {
@@ -73,21 +73,21 @@ void TurnBasedOverlay::draw() {
     if (_state == TURN_BASED_OVERLAY_NONE)
         return;
 
-    render->DrawTextureNew(394 / 640.0f, 288 / 480.0f, currentIcon()->GetTexture());
+    render->DrawTextureNew(394 / 640.0f, 288 / 480.0f, currentIcon());
 }
 
-Icon *TurnBasedOverlay::currentIcon() const {
+GraphicsImage *TurnBasedOverlay::currentIcon() const {
     switch (_state) {
     default:
         assert(false); // TURN_BASED_OVERLAY_NONE is expected to be checked up the stack.
         return nullptr;
     case TURN_BASED_OVERLAY_INITIAL:
-        return pIconsFrameTable->GetFrame(_initialIconId, _currentTime);
+        return pIconsFrameTable->animationFrame(_initialIconId, _currentTime);
     case TURN_BASED_OVERLAY_ATTACK:
-        return pIconsFrameTable->GetFrame(_attackIconId, 0_ticks);
+        return pIconsFrameTable->animationFrame(_attackIconId, 0_ticks);
     case TURN_BASED_OVERLAY_MOVEMENT:
-        return pIconsFrameTable->GetFrame(_movementIconIds[5 - pTurnEngine->uActionPointsLeft / 26], 0_ticks); // TODO(captainurist): get rid of this dependency.
+        return pIconsFrameTable->animationFrame(_movementIconIds[5 - pTurnEngine->uActionPointsLeft / 26], 0_ticks); // TODO(captainurist): get rid of this dependency.
     case TURN_BASED_OVERLAY_WAIT:
-        return pIconsFrameTable->GetFrame(_waitIconId, _currentTime);
+        return pIconsFrameTable->animationFrame(_waitIconId, _currentTime);
     }
 }

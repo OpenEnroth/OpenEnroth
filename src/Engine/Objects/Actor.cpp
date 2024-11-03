@@ -1,12 +1,15 @@
 #include "Engine/Objects/Actor.h"
 
 #include <algorithm>
+#include <deque>
 #include <string>
 #include <utility>
 #include <vector>
 #include <optional>
 
 #include "Engine/Engine.h"
+#include "Engine/Data/AwardEnums.h"
+#include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Objects/Decoration.h"
@@ -28,7 +31,6 @@
 #include "Engine/AttackList.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/FactionTable.h"
-#include "Engine/Tables/AwardTable.h"
 #include "Engine/Time/Timer.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/MapInfo.h"
@@ -46,7 +48,8 @@
 // should be injected into Actor but struct size cant be changed
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
 
-std::vector<Actor> pActors;
+// Using deque for pointer stability
+std::deque<Actor> pActors;
 
 stru319 stru_50C198;  // idb
 
@@ -108,12 +111,11 @@ void Actor::DrawHealthBar(Actor *actor, GUIWindow *window) {
     // centralise for clipping and draw
     unsigned int uX = window->uFrameX + (signed int)(window->uFrameWidth - bar_length) / 2;
 
-    render->SetUIClipRect(uX, window->uFrameY + 32, uX + bar_length, window->uFrameY + 52);
+    render->SetUIClipRect(Recti(uX, window->uFrameY + 32, bar_length, 20));
     render->DrawTextureNew(uX / 640.0f, (window->uFrameY + 32) / 480.0f,
                                 game_ui_monster_hp_background);
 
-    render->SetUIClipRect(uX, window->uFrameY + 32, uX + bar_filled_length,
-                          window->uFrameY + 52);
+    render->SetUIClipRect(Recti(uX, window->uFrameY + 32, bar_filled_length, 20));
     render->DrawTextureNew(uX / 640.0f, (window->uFrameY + 34) / 480.0f,
                                 bar_image);
 
@@ -539,6 +541,10 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             pAudioPlayer->playSound(SOUND_Fate, SOUND_MODE_PID, Pid(OBJECT_Actor, uActorID));
             break;
 
+        case SPELL_LIGHT_PARALYZE:
+            // TODO(pskelton): This is a vanilla bug - monsters with instant targeting spells can't actually use them - #1246
+            logger->info("Spell Paralyze cast - replaced with dispel");
+            [[fallthrough]];
         case SPELL_LIGHT_DISPEL_MAGIC:
             for (SpellBuff &buff : pParty->pPartyBuffs) {
                 buff.Reset();
@@ -2440,7 +2446,7 @@ void Actor::SummonMinion(int summonerId) {
         int sectorId = pIndoor->GetSector(v15, v17, this->pos.z);
         if (sectorId != actorSector) return;
         int z = BLV_GetFloorLevel(Vec3f(v15, v17, v27), sectorId);
-        if (z != -30000) return;
+        if (z == -30000) return;
         if (std::abs(z - v27) > 1024) return;
     }
 

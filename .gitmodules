@@ -1,6 +1,6 @@
 [submodule "thirdparty/luajit"]
-	path = thirdparty/luajit/luajit
-	url = https://github.com/LuaJIT/LuaJIT
+	path = thirdparty/luajit
+	url = https://github.com/LuaJIT/LuaJIT.git
 	branch = v2.1
 [submodule "thirdparty/glm"]
 	path = thirdparty/glm
@@ -32,9 +32,6 @@
 [submodule "thirdparty/cpplint"]
 	path = thirdparty/cpplint
 	url = https://github.com/cpplint/cpplint.git
-[submodule "thirdparty/glob"]
-	path = thirdparty/glob
-	url = https://github.com/p-ranav/glob.git
 [submodule "thirdparty/sol2"]
 	path = thirdparty/sol2
 	url = https://github.com/ThePhD/sol2.git
@@ -48,3 +45,18 @@
 [submodule "thirdparty/backward_cpp"]
 	path = thirdparty/backward_cpp
 	url = https://github.com/OpenEnroth/backward-cpp.git
+[submodule "thirdparty/small_vector"]
+	path = thirdparty/small_vector
+	url = https://github.com/gharveymn/small_vector.git
+[submodule "thirdparty/cmrc"]
+	path = thirdparty/cmrc
+	url = https://github.com/vector-of-bool/cmrc.git
+[submodule "thirdparty/gtest_parallel"]
+	path = thirdparty/gtest_parallel
+	url = https://github.com/google/gtest-parallel.git
+[submodule "thirdparty/generator"]
+	path = thirdparty/generator
+	url = https://github.com/TartanLlama/generator.git
+[submodule "thirdparty/luajit-cmake"]
+	path = thirdparty/luajit-cmake
+	url = https://github.com/zhaozg/luajit-cmake.git

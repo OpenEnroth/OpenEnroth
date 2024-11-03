@@ -7,8 +7,6 @@
 #include "Engine/Engine.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Party.h"
-#include "Engine/LodTextureCache.h"
-#include "Engine/LodSpriteCache.h"
 
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/SpriteObject.h"
@@ -26,18 +24,13 @@
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/AssetsManager.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Random/Random.h"
 
-#include "Library/Image/PCX.h"
-#include "Library/Image/ImageFunctions.h"
 #include "Library/Logger/Logger.h"
 
 #include "Utility/Math/TrigLut.h"
-#include "Utility/Streams/FileOutputStream.h"
 #include "Utility/Memory/MemSet.h"
-#include "Utility/DataPath.h"
 
 bool BaseRenderer::Initialize() {
     updateRenderDimensions();
@@ -608,7 +601,7 @@ void BaseRenderer::DrawTransparentGreenShade(float u, float v, GraphicsImage *pT
     DrawMasked(u, v, pTexture, 0, colorTable.Green);
 }
 
-void BaseRenderer::DrawMasked(float u, float v, GraphicsImage *pTexture, unsigned int color_dimming_level, Color mask) {
+void BaseRenderer::DrawMasked(float u, float v, GraphicsImage *pTexture, int color_dimming_level, Color mask) {
     int b = mask.b & (0xFF >> color_dimming_level);
     int g = mask.g & (0xFF >> color_dimming_level);
     int r = mask.r & (0xFF >> color_dimming_level);
@@ -683,7 +676,7 @@ void BaseRenderer::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Of
     rct.w = Portrait->hw_sprites[0]->uWidth;
     rct.h = Portrait->hw_sprites[0]->uHeight;
 
-    render->SetUIClipRect(rc.x, rc.y, rc.x + rc.w, rc.y + rc.h);
+    render->SetUIClipRect(rc);
     render->DrawImage(Portrait->hw_sprites[0]->texture, rct, Portrait->GetPaletteIndex());
     render->ResetUIClipRect();
 }

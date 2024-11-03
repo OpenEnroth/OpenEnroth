@@ -1,9 +1,9 @@
 #pragma once
 
-#include <al.h>
-#include <alc.h>
+#include <cstddef>
 
-#include <cstdlib>
+#include <al.h> // NOLINT: not a C system header.
+#include <alc.h> // NOLINT: not a C system header.
 
 // Sound attenuation factors
 constexpr float MAX_SOUND_DIST = 60000.0f;

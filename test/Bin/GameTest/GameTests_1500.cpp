@@ -6,8 +6,10 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/mm7_data.h"
 #include "Engine/Party.h"
+#include "Engine/SaveLoad.h"
 #include "Engine/Objects/SpriteObject.h"
 
 #include "GUI/GUIWindow.h"
@@ -39,7 +41,7 @@ GAME_TEST(Issues, Issue1515) {
     // No dispel magic sound
     auto soundsTape = tapes.sounds();
     test.playTraceFromTestData("issue_1515.mm7", "issue_1515.json");
-    EXPECT_TRUE(soundsTape.flattened().contains(SOUND_RechargeItem)); // dispel magic
+    EXPECT_CONTAINS(soundsTape.flattened(), SOUND_RechargeItem); // dispel magic
 }
 
 GAME_TEST(Issues, Issue1519) {
@@ -54,11 +56,22 @@ GAME_TEST(Issues, Issue1519) {
     EXPECT_GT(flatMessageBoxesBody.filtered([](const auto &s) { return s.starts_with("The Baby Dragon"); }).size(), 0);
 }
 
+GAME_TEST(Issues, Issue1522) {
+    // Wizards not summoning light elementals
+    auto actorsCount = actorTapes.totalCount();
+    auto lightElem = tapes.custom([]() { return std::ranges::count_if(pActors, [](const Actor& a) { return a.name.contains("Light Elemental"); }); });
+    test.playTraceFromTestData("issue_1522.mm7", "issue_1522.json");
+    EXPECT_GT(actorsCount.back(), actorsCount.front());
+    EXPECT_GT(lightElem.back(), lightElem.front());
+    auto summoned = std::ranges::count_if(pActors, [](const Actor& a) { return a.summonerId.type() == OBJECT_Actor; });
+    EXPECT_GT(summoned, 0);
+}
+
 GAME_TEST(Issues, Issue1524) {
     // More enemy spells without sound
     auto soundsTape = tapes.sounds();
     test.playTraceFromTestData("issue_1524.mm7", "issue_1524.json");
-    EXPECT_TRUE(soundsTape.flattened().contains(SOUND_Sacrifice2)); // pain reflection sound
+    EXPECT_CONTAINS(soundsTape.flattened(), SOUND_Sacrifice2); // pain reflection sound
 }
 
 GAME_TEST(Issues, Issue1532) {
@@ -168,7 +181,7 @@ GAME_TEST(Issues, Issue1597) {
 GAME_TEST(Issues, Issue1655) {
     // Assertion in CalcSpellDamage failed b/c an actor is trying to cast SPELL_NONE.
     auto stateTape = actorTapes.aiState(73);
-    auto expressionsTape = charTapes.expressions();
+    auto expressionsTape = charTapes.portraits();
     test.playTraceFromTestData("issue_1655.mm7", "issue_1655.json");
     EXPECT_EQ(stateTape, tape(AttackingMelee));
 
@@ -181,7 +194,7 @@ GAME_TEST(Issues, Issue1655) {
     EXPECT_EQ(pActors[73].monsterInfo.spell1Id, SPELL_NONE);
     EXPECT_EQ(pActors[73].monsterInfo.spell1UseChance, 15);
     auto beatingsTape = expressionsTape.filtered([] (const auto &expressions) {
-        return expressions.containsAny(CHARACTER_EXPRESSION_DMGRECVD_MINOR, CHARACTER_EXPRESSION_DMGRECVD_MODERATE, CHARACTER_EXPRESSION_DMGRECVD_MAJOR);
+        return expressions.containsAny(PORTRAIT_DMGRECVD_MINOR, PORTRAIT_DMGRECVD_MODERATE, PORTRAIT_DMGRECVD_MAJOR);
     });
     EXPECT_GE(beatingsTape.size(), 25);
 }
@@ -193,7 +206,7 @@ GAME_TEST(Issues, Issue1657) {
     test.playTraceFromTestData("issue_1657.mm7", "issue_1657.json");
     EXPECT_EQ(pParty->pos.toInt(), Vec3i(12552, 800, 193)); // party is back at new game start position
     EXPECT_EQ(mapTape, tape(MAP_ERATHIA, MAP_EMERALD_ISLAND));
-    EXPECT_TRUE(screenTape.contains(SCREEN_INPUT_BLV));
+    EXPECT_CONTAINS(screenTape, SCREEN_INPUT_BLV);
 }
 
 GAME_TEST(Issues, Issue1665) {
@@ -220,13 +233,13 @@ GAME_TEST(Issues, Issue1666) {
 GAME_TEST(Issues, Issue1671) {
     // Falling from height outdoors onto models doesnt cause damage
     auto health = tapes.totalHp();
-    auto expressionTape = charTapes.expression(2);
+    auto expressionTape = charTapes.portrait(2);
     auto modelTape = tapes.custom([]() {bool on_water = false; int bmodel_pid = 0;
         float floor_level = ODM_GetFloorLevel(pParty->pos, 0, &on_water, &bmodel_pid, false);
         return bmodel_pid; });
     test.playTraceFromTestData("issue_1671.mm7", "issue_1671.json");
     EXPECT_LT(health.back(), health.front()); // party has taken damage from fall
-    EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_FEAR));
+    EXPECT_CONTAINS(expressionTape, PORTRAIT_FEAR);
     EXPECT_NE(modelTape.back(), 0); // landed on a model
 }
 
@@ -279,6 +292,19 @@ GAME_TEST(Issues, Issue1685) {
     EXPECT_EQ(jar2.GetIdentifiedName(), "Nicholas' Jar");
 }
 
+GAME_TEST(Prs, Pr1694) {
+    // Having a dir ending with .mm7 in /saves shouldn't trip the engine.
+    ufs->write("saves/dir.mm7/1.txt", Blob());
+
+    game.pressGuiButton("MainMenu_LoadGame");
+    game.tick(5);
+    game.pressGuiButton("LoadMenu_Slot0"); // Should not crash.
+    game.tick(1);
+
+    for (bool used : pSavegameList->pSavegameUsedSlots)
+        EXPECT_FALSE(used); // All slots unused.
+}
+
 // 1700
 
 GAME_TEST(Issues, Issue1706) {
@@ -302,14 +328,14 @@ GAME_TEST(Issues, Issue1708) {
 GAME_TEST(Issues, Issue1710) {
     // Fall damage indoors
     auto health = tapes.totalHp();
-    auto expressionTape = charTapes.expression(2);
+    auto expressionTape = charTapes.portrait(2);
     auto zpos = tapes.custom([]() { return static_cast<int>(pParty->pos.z); });
     auto noFallDamageTape = tapes.config(engine->config->gameplay.NoIndoorFallDamage);
     test.playTraceFromTestData("issue_1710.mm7", "issue_1710.json");
     EXPECT_EQ(noFallDamageTape, tape(false)); // Fall damage was actually possible
     EXPECT_LT(health.back(), health.front()); // party has taken damage from fall
-    EXPECT_TRUE(uCurrentlyLoadedLevelType == LEVEL_INDOOR);
-    EXPECT_TRUE(expressionTape.contains(CHARACTER_EXPRESSION_FEAR));
+    EXPECT_EQ(uCurrentlyLoadedLevelType, LEVEL_INDOOR);
+    EXPECT_CONTAINS(expressionTape, PORTRAIT_FEAR);
     EXPECT_GT(zpos.max(), zpos.min() + 1000);
 }
 
@@ -318,7 +344,7 @@ GAME_TEST(Issues, Issue1716) {
     auto specialAttack = tapes.specialAttacks();
     auto pmCountTape = tapes.custom([]() { return pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].power; });
     test.playTraceFromTestData("issue_1716.mm7", "issue_1716.json");
-    EXPECT_TRUE(specialAttack.flattened().contains(SPECIAL_ATTACK_PARALYZED)); // Paralysis attacks were made
+    EXPECT_CONTAINS(specialAttack.flattened(), SPECIAL_ATTACK_PARALYZED); // Paralysis attacks were made
     int paraCount = std::ranges::count_if(pParty->pCharacters, [](Character& ch) { return ch.IsParalyzed(); });
     EXPECT_EQ(paraCount, 0); // No one ended up paralysed
     EXPECT_LT(pmCountTape.back(), pmCountTape.front()); // PM saved us
@@ -331,7 +357,7 @@ GAME_TEST(Issues, Issue1717) {
     test.playTraceFromTestData("issue_1717.mm7", "issue_1717.json");
     EXPECT_EQ(immoBuff, tape( false, true ));
     EXPECT_EQ(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster, 4);
-    EXPECT_TRUE(statusBar.contains("Immolation deals 77 damage to 2 target(s)"));
+    EXPECT_CONTAINS(statusBar, "Immolation deals 77 damage to 2 target(s)");
 }
 
 GAME_TEST(Issues, Issue1724) {
@@ -357,7 +383,7 @@ GAME_TEST(Issues, Issue1725) {
     test.playTraceFromTestData("issue_1725.mm7", "issue_1725.json");
     EXPECT_EQ(screenTape.back(), SCREEN_HOUSE); // Make sure we end up back in the throne room
     EXPECT_GT(textTape.flattened().filtered([](const auto &s) { return s.starts_with("THAT WAS AWESOME!"); }).size(), 0);
-    EXPECT_TRUE(textTape.flattened().contains("Exit Building")); // And can exit it
+    EXPECT_CONTAINS(textTape.flattened(), "Exit Building"); // And can exit it
     EXPECT_EQ(bit120Tape, tape(false, true));
     EXPECT_EQ(bit123Tape, tape(true, false));
 }
@@ -369,5 +395,77 @@ GAME_TEST(Issues, Issue1726) {
     int GMcount = std::ranges::count_if(pParty->pCharacters, [](const Character &ch) { return ch.getActualSkillValue(CHARACTER_SKILL_BLASTER).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER; });
     EXPECT_EQ(GMcount, 0); // no one ends up grand master
     EXPECT_GT(textTape.flattened().filtered([](const auto& s) { return s.starts_with("Your skills improve!  If your Skill with the Blaster"); }).size(), 0); // blaster requirements shown
-    EXPECT_TRUE(textTape.flattened().contains("You don't meet the requirements, and cannot be taught until you do.")); // but we dont meet them
+    EXPECT_CONTAINS(textTape.flattened(), "You don't meet the requirements, and cannot be taught until you do."); // but we dont meet them
+}
+
+GAME_TEST(Issues, Issue1786) {
+    // Casting a quick spell that's not in spellbook asserts
+    auto sprites = tapes.sprites();
+    test.startTaping();
+    game.startNewGame();
+    pParty->pCharacters[3].uQuickSpell = SPELL_FIRE_FIRE_BOLT;
+    EXPECT_FALSE(pParty->pCharacters[3].bHaveSpell[SPELL_FIRE_FIRE_BOLT]);
+
+    engine->config->debug.AllMagic.setValue(true);
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_4); // Select char 4.
+    game.tick();
+    EXPECT_EQ(pParty->activeCharacterIndex(), 4);
+
+    game.pressKey(PlatformKey::KEY_S); // Quick cast fire bolt.
+    game.tick();
+    game.releaseKey(PlatformKey::KEY_S);
+    game.tick();
+    EXPECT_CONTAINS(sprites.back(), SPRITE_SPELL_FIRE_FIRE_BOLT);
+
+    while (pParty->activeCharacterIndex() != 4) {
+        game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_4);
+        game.tick();
+    }
+
+    engine->config->debug.AllMagic.setValue(false);
+    game.pressKey(PlatformKey::KEY_S); // Try to quick cast fire bolt.
+    game.tick();
+    game.releaseKey(PlatformKey::KEY_S);
+    game.tick();
+    EXPECT_MISSES(sprites.back(), SPRITE_SPELL_FIRE_FIRE_BOLT);
+}
+
+// 1800
+
+GAME_TEST(Issues, Issue1807) {
+    // Opening arcomage menu in a tavern while not carrying a deck asserts.
+    auto deckTape = tapes.hasItem(ITEM_QUEST_ARCOMAGE_DECK);
+    auto houseTape = tapes.house();
+    auto textTape = tapes.allGUIWindowsText();
+    test.playTraceFromTestData("issue_1807.mm7", "issue_1807.json");
+    EXPECT_EQ(deckTape, tape(false)); // No deck.
+    EXPECT_CONTAINS(houseTape, HOUSE_TAVERN_HARMONDALE); // We've visited the Harmondale tavern.
+    EXPECT_CONTAINS(textTape.flattened(), "Victory Conditions"); // We've seen the Arcomage dialog.
+    EXPECT_MISSES(textTape.flattened(), "Play"); // But there was no "Play" option.
+}
+
+GAME_TEST(Issues, Issue1851a) {
+    // Collisions: stair climbing - hall of the pit - using catch all
+    auto zPos = tapes.custom([]() { return static_cast<int>(pParty->pos.z); });
+    auto jumpTape = tapes.custom([]() { return !!(pParty->uFlags & PARTY_FLAG_JUMPING); });
+    test.playTraceFromTestData("issue_1851a.mm7", "issue_1851a.json");
+    EXPECT_LT(zPos.front(), -190);
+    EXPECT_GE(zPos.back(), 0);
+    EXPECT_MISSES(jumpTape, true);
+}
+
+GAME_TEST(Issues, Issue1851b) {
+    // Collisions: stair climbing - castle gloaming - using face exclusion
+    auto zPos = tapes.custom([]() { return static_cast<int>(pParty->pos.z); });
+    auto jumpTape = tapes.custom([]() { return !!(pParty->uFlags & PARTY_FLAG_JUMPING); });
+    test.playTraceFromTestData("issue_1851b.mm7", "issue_1851b.json");
+    EXPECT_LT(zPos.front(), -90);
+    EXPECT_GT(zPos.back(), 525);
+    EXPECT_MISSES(jumpTape, true);
+}
+
+GAME_TEST(Issues, Issue1837) {
+    // Checking if we still fall down from the sky in Barrow Downs
+    test.playTraceFromTestData("issue_1837.mm7", "issue_1837.json");
+    EXPECT_FLOAT_EQ(pParty->pos.z, 1.0f);
 }

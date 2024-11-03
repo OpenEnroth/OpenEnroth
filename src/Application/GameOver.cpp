@@ -5,6 +5,7 @@
 #include "GameOver.h"
 
 #include "Engine/AssetsManager.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
@@ -18,16 +19,13 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Library/Image/PCX.h"
-
-#include "Utility/Streams/FileOutputStream.h"
-#include "Utility/DataPath.h"
+#include "Library/Image/Pcx.h"
 
 
 //----- (004BF91E) --------------------------------------------------------
-void GameOver_Loop(int v15) {
+void GameOver_Setup() {
     dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_4000;
-    bGameoverLoop = true;
+    GameOverNoSound = true;
     pAudioPlayer->stopSounds();
 
     CreateWinnerCertificate();
@@ -120,7 +118,7 @@ void CreateWinnerCertificate() {
     render->EndTextNew();
 
     RgbaImage pixels = render->MakeFullScreenshot();
-    FileOutputStream(makeDataPath("MM7_Win.Pcx")).write(pcx::encode(pixels).string_view());
+    ufs->write("MM7_Win.Pcx", pcx::encode(pixels));
     assets->winnerCert = GraphicsImage::Create(std::move(pixels));
 
     background->Release();

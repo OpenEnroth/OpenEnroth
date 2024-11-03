@@ -1,19 +1,17 @@
-#include "GUI/UI/UICredits.h"
-
-#include <Engine/EngineGlobals.h>
-#include <Engine/Graphics/Renderer/Renderer.h>
-#include <Engine/Graphics/Image.h>
-#include <Engine/AssetsManager.h>
-#include <Engine/Engine.h>
-#include <Engine/GameResourceManager.h>
+#include "UICredits.h"
 
 #include <string>
 
-#include "GUI/GUIFont.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
+#include "Engine/Graphics/Image.h"
+#include "Engine/AssetsManager.h"
+#include "Engine/Engine.h"
+#include "Engine/GameResourceManager.h"
 
-GUICredits::GUICredits(std::function<void()> onReachEndOfCredits)
-    : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDimensions())
-    , _onReachEndOfCredits(onReachEndOfCredits) {
+#include "GUI/GUIFont.h"
+#include "GUI/GUIMessageQueue.h"
+
+GUICredits::GUICredits() : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDimensions()) {
     _fontQuick = GUIFont::LoadFont("quick.fnt", "FONTPAL");
     _fontCChar = GUIFont::LoadFont("cchar.fnt", "FONTPAL");
 
@@ -35,8 +33,6 @@ GUICredits::GUICredits(std::function<void()> onReachEndOfCredits)
 
     render->Update_Texture(_creditsTexture);
 
-    _moveY = 0;
-
     CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Escape);
 }
 
@@ -53,15 +49,13 @@ void GUICredits::Update() {
     credit_window.uFrameY = 19;
 
     render->DrawTextureNew(0, 0, _mm6TitleTexture);
-    render->SetUIClipRect(credit_window.uFrameX, credit_window.uFrameY,
-    credit_window.uFrameX + credit_window.uFrameWidth,
-    credit_window.uFrameY + credit_window.uFrameHeight);
+    render->SetUIClipRect(Recti(credit_window.uFrameX, credit_window.uFrameY, credit_window.uFrameWidth, credit_window.uFrameHeight));
     render->DrawTextureOffset(credit_window.uFrameX, credit_window.uFrameY, 0, _moveY, _creditsTexture);
     render->ResetUIClipRect();
 
-    _moveY += 0.25;
+    _moveY += 0.25; // TODO(captainurist): #time gotta be dt-based.
 
     if (_moveY >= _creditsTexture->height()) {
-        _onReachEndOfCredits();
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_CreditsFinished);
     }
 }

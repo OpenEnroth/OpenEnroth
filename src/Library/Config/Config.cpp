@@ -1,7 +1,6 @@
 #include "Config.h"
 
 #include <cassert>
-#include <filesystem>
 #include <string>
 #include <vector>
 #include <sstream>
@@ -11,13 +10,9 @@
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/MapAccess.h"
-#include "Utility/Exception.h"
 
 void Config::load(std::string_view path) {
-    if (!std::filesystem::exists(path))
-        throw Exception("Config file '{}' doesn't exist", path);
-
-    FileInputStream stream(path);
+    FileInputStream stream(path); // Will throw if file doesn't exist.
     load(&stream);
 }
 

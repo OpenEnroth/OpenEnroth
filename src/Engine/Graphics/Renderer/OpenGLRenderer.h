@@ -42,18 +42,13 @@ class OpenGLRenderer : public BaseRenderer {
 
     virtual void BeginLines2D() override;
     virtual void EndLines2D() override;
-    virtual void RasterLine2D(signed int uX, signed int uY, signed int uZ,
-                              signed int uW, Color uColor32) override;
-    virtual void DrawLines(const RenderVertexD3D3 *vertices,
-        unsigned int num_vertices) override;
+    virtual void RasterLine2D(Pointi a, Pointi b, Color uColor32) override;
+    virtual void DrawLines(const RenderVertexD3D3 *vertices, int num_vertices) override;
 
     virtual void RestoreFrontBuffer() override;
     virtual void RestoreBackBuffer() override;
     virtual void BltBackToFontFast(int a2, int a3, Recti *pSrcRect) override;
     virtual void BeginScene3D() override;
-
-    virtual void DrawTerrainPolygon(Polygon *a4, bool transparent,
-                                    bool clampAtTextureBorders) override;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
                                 float dstX, float dstY, float a7, float a8,
@@ -68,8 +63,7 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void BeginScene2D() override;
     virtual void ScreenFade(Color color, float t) override;
 
-    virtual void SetUIClipRect(unsigned int uX, unsigned int uY,
-                               unsigned int uZ, unsigned int uW) override;
+    virtual void SetUIClipRect(const Recti &rect) override;
     virtual void ResetUIClipRect() override;
 
     virtual void DrawTextureNew(float u, float v, GraphicsImage *, Color colourmask = colorTable.White) override;
@@ -78,7 +72,7 @@ class OpenGLRenderer : public BaseRenderer {
                                          int height) override;
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y,
                                    GraphicsImage *) override;
-    virtual void DrawImage(GraphicsImage *, const Recti &rect, unsigned int paletteid = 0, Color colourmask = colorTable.White) override;
+    virtual void DrawImage(GraphicsImage *, const Recti &rect, int paletteid = 0, Color colourmask = colorTable.White) override;
 
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,
                                int start_opacity, int end_opacity) override;
@@ -88,13 +82,11 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void EndTextNew() override;
     virtual void DrawTextNew(int x, int y, int w, int h, float u1, float v1, float u2, float v2, int isshadow, Color colour) override;
 
-    virtual void FillRectFast(unsigned int uX, unsigned int uY,
-                              unsigned int uWidth, unsigned int uHeight,
-                              Color uColor32) override;
+    virtual void FillRectFast(int x, int y, int width, int height, Color color) override;
 
     virtual void DrawOutdoorBuildings() override;
 
-    virtual void DrawIndoorSky(unsigned int uNumVertices, int uFaceID) override;
+    virtual void DrawIndoorSky(int uNumVertices, int uFaceID) override;
     virtual void DrawOutdoorSky() override;
     virtual void DrawOutdoorTerrain() override;
 
@@ -138,9 +130,8 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void DoRenderBillboards_D3D() override;
     void SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1);
 
-    void DrawOutdoorSkyPolygon(Polygon *pSkyPolygon);
-    void DrawIndoorSkyPolygon(signed int uNumVertices,
-                              Polygon *pSkyPolygon);
+    void DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *texture, int dimmingLevel);
+    void DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *texture, int dimmingLevel);
     void DrawForcePerVerts();
 
     void SetFogParametersGL();
@@ -158,8 +149,7 @@ class OpenGLRenderer : public BaseRenderer {
     void _set_ortho_projection(bool gameviewport = false);
     void _set_ortho_modelview();
 
-    int clip_x{}, clip_y{};
-    int clip_z{}, clip_w{};
+    Recti clipRect;
 
     int GL_lastboundtex{};
 

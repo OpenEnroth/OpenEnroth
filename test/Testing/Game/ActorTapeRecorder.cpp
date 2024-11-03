@@ -1,7 +1,8 @@
 #include "ActorTapeRecorder.h"
 
-#include <cassert>
 #include <algorithm>
+#include <cassert>
+#include <deque>
 #include <functional>
 
 using namespace std::placeholders; // NOLINT
@@ -10,7 +11,7 @@ ActorTapeRecorder::ActorTapeRecorder(TestController *controller) : _controller(c
     assert(controller);
 }
 
-std::span<Actor> ActorTapeRecorder::actors() {
+std::deque<Actor> &ActorTapeRecorder::actors() {
     return pActors;
 }
 

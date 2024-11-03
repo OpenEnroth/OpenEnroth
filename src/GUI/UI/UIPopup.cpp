@@ -20,7 +20,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Tables/CharacterFrameTable.h"
+#include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/Party.h"
 #include "Engine/MapEnumFunctions.h"
@@ -223,7 +223,7 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 
     if (!parchment) return;
 
-    render->SetUIClipRect(uX, uY, uX + uWidth, uY + uHeight);
+    render->SetUIClipRect(Recti(uX, uY, uWidth, uHeight));
 
     Sizei renderdims = render->GetRenderDimensions();
     float renwidth = renderdims.w;
@@ -258,9 +258,9 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
         messagebox_corner_w);
 
     if (uWidth > messagebox_corner_x->width() + messagebox_corner_z->width()) {
-        render->SetUIClipRect(uX + messagebox_corner_x->width(), uY,
-                              uX + uWidth - messagebox_corner_z->width(),
-                              uY + uHeight);
+        render->SetUIClipRect(Recti(uX + messagebox_corner_x->width(), uY,
+                              uWidth - messagebox_corner_z->width() - messagebox_corner_x->width(),
+                              uHeight));
 
         // horizontal borders
         for (unsigned int x = uX + messagebox_corner_x->width();
@@ -277,9 +277,9 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 
     // vertical borders
     if (uHeight > messagebox_corner_x->height() + messagebox_corner_y->height()) {
-        render->SetUIClipRect(uX, uY + messagebox_corner_x->height(),
-                              uX + uWidth,
-                              uY + uHeight - messagebox_corner_y->height());
+        render->SetUIClipRect(Recti(uX, uY + messagebox_corner_x->height(),
+                              uWidth,
+                              uHeight - messagebox_corner_y->height() - messagebox_corner_x->height()));
 
         for (unsigned int y = uY + messagebox_corner_x->height();
              y < uY + uHeight - messagebox_corner_y->height();
@@ -375,10 +375,9 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
 
     if (inspect_item->IsBroken()) {
         iteminfo_window.DrawMessageBox(0);
-        render->SetUIClipRect(
+        render->SetUIClipRect(Recti(
             iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
-            iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 12,
-            iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 12);
+            iteminfo_window.uFrameWidth - 24, iteminfo_window.uFrameHeight - 24));
         iteminfo_window.uFrameWidth -= 24;
         iteminfo_window.uFrameHeight -= 12;
         iteminfo_window.uFrameZ =
@@ -406,10 +405,9 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
 
     if (!inspect_item->IsIdentified()) {
         iteminfo_window.DrawMessageBox(0);
-        render->SetUIClipRect(
+        render->SetUIClipRect(Recti(
             iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
-            iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 12,
-            iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 12);
+            iteminfo_window.uFrameWidth - 24, iteminfo_window.uFrameHeight - 24));
         iteminfo_window.uFrameWidth -= 24;
         iteminfo_window.uFrameHeight -= 12;
         iteminfo_window.uFrameZ =
@@ -546,10 +544,9 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
     render->DrawTwodVerts();
 
     iteminfo_window.DrawMessageBox(0);
-    render->SetUIClipRect(
+    render->SetUIClipRect(Recti(
         iteminfo_window.uFrameX + 12, iteminfo_window.uFrameY + 12,
-        iteminfo_window.uFrameX + iteminfo_window.uFrameWidth - 12,
-        iteminfo_window.uFrameY + iteminfo_window.uFrameHeight - 12);
+        iteminfo_window.uFrameWidth - 24, iteminfo_window.uFrameHeight - 24));
     iteminfo_window.uFrameWidth -= 12;
     iteminfo_window.uFrameHeight -= 12;
     iteminfo_window.uFrameZ =
@@ -684,15 +681,13 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         // Draw portrait border
         render->ResetUIClipRect();
         render->FillRectFast(doll_rect.x, doll_rect.y, 128, 128, colorTable.Black);
+
+        Recti frameRect(doll_rect.topLeft() - Pointi(1, 1), doll_rect.bottomRight() + Pointi(1, 1));
         render->BeginLines2D();
-        int x0 = doll_rect.x;
-        int x1 = doll_rect.x + doll_rect.w;
-        int y0 = doll_rect.y;
-        int y1 = doll_rect.y + doll_rect.h;
-        render->RasterLine2D(x0 - 1, y0 - 1, x1 + 1, y0 - 1, colorTable.Jonquil);  // горизонтальная верхняя линия
-        render->RasterLine2D(x0 - 1, y1 + 1, x0 - 1, y0 - 1, colorTable.Jonquil);  // горизонтальная нижняя линия
-        render->RasterLine2D(x1 + 1, y1 + 1, x0 - 1, y1 + 1, colorTable.Jonquil);  // левая вертикальная линия
-        render->RasterLine2D(x1 + 1, y0 - 1, x1 + 1, y1 + 1, colorTable.Jonquil);  // правая вертикальная линия
+        render->RasterLine2D(frameRect.topLeft(), frameRect.topRight(), colorTable.Jonquil);
+        render->RasterLine2D(frameRect.topRight(), frameRect.bottomRight(), colorTable.Jonquil);
+        render->RasterLine2D(frameRect.bottomRight(), frameRect.bottomLeft(), colorTable.Jonquil);
+        render->RasterLine2D(frameRect.bottomLeft(), frameRect.topLeft(), colorTable.Jonquil);
         render->EndLines2D();
 
         // Draw portrait
@@ -1103,8 +1098,8 @@ void CharacterUI_StatsTab_ShowHint() {
         case 5:
         case 6:
             CharacterUI_DrawTooltip(
-                localization->GetAttirubteName(static_cast<CharacterAttributeType>(pStringNum)),
-                localization->GetAttributeDescription(static_cast<CharacterAttributeType>(pStringNum)));
+                localization->GetAttirubteName(static_cast<CharacterAttribute>(pStringNum)),
+                localization->GetAttributeDescription(static_cast<CharacterAttribute>(pStringNum)));
             break;
         case 7:  // Health Points
             CharacterUI_DrawTooltip(localization->GetString(LSTR_HIT_POINTS), localization->getHPDescription());
@@ -1469,10 +1464,10 @@ void ShowPopupShopItem() {
     ItemGen *item;  // ecx@13
     int invindex;
     int testpos;
-    BuildingType buildingType = window_SpeakInHouse->buildingType();
+    HouseType houseType = window_SpeakInHouse->buildingType();
     DialogueId dialogue = window_SpeakInHouse->getCurrentDialogue();
 
-    if (buildingType == BUILDING_INVALID)
+    if (houseType == HOUSE_TYPE_INVALID)
         return;
 
     if (dialogue < DIALOGUE_SHOP_BUY_STANDARD)
@@ -1481,10 +1476,10 @@ void ShowPopupShopItem() {
     Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
     int testx;
 
-    if (buildingType <= BUILDING_ALCHEMY_SHOP) {
+    if (houseType <= HOUSE_TYPE_ALCHEMY_SHOP) {
         if (dialogue == DIALOGUE_SHOP_BUY_STANDARD || dialogue == DIALOGUE_SHOP_BUY_SPECIAL) {
-            switch (buildingType) {
-                case BUILDING_WEAPON_SHOP: {
+            switch (houseType) {
+                case HOUSE_TYPE_WEAPON_SHOP: {
                     testx = (pt.x - 30) / 70;
                     if (testx >= 0 && testx < 6) {
                         if (dialogue == DIALOGUE_SHOP_BUY_STANDARD)
@@ -1509,7 +1504,7 @@ void ShowPopupShopItem() {
                     break;
                 }
 
-                case BUILDING_ARMOR_SHOP:
+                case HOUSE_TYPE_ARMOR_SHOP:
                     testx = (pt.x - 40) / 105;
                     if (testx >= 0 && testx < 4) {
                         if (pt.y >= 126) {
@@ -1542,8 +1537,8 @@ void ShowPopupShopItem() {
                     }
                     break;
 
-                case BUILDING_ALCHEMY_SHOP:
-                case BUILDING_MAGIC_SHOP:
+                case HOUSE_TYPE_ALCHEMY_SHOP:
+                case HOUSE_TYPE_MAGIC_SHOP:
                     testx = (pt.x) / 75;
                     // testx limits check
                     if (testx >= 0 && testx < 6) {
@@ -1602,7 +1597,7 @@ void ShowPopupShopItem() {
         }
     }
 
-    if (buildingType <= BUILDING_MIRRORED_PATH_GUILD && dialogue == DIALOGUE_GUILD_BUY_BOOKS) {
+    if (houseType <= HOUSE_TYPE_MIRRORED_PATH_GUILD && dialogue == DIALOGUE_GUILD_BUY_BOOKS) {
         int testx = (pt.x - 32) / 70;
         if (testx >= 0 && testx < 6) {
             if (pt.y >= 250) {
@@ -1632,10 +1627,8 @@ void ShowPopupShopItem() {
 //----- (0041D3B7) --------------------------------------------------------
 void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     GraphicsImage *v13;              // eax@6
-    PlayerFrame *v15;        // eax@12
     std::string spellName;   // eax@16
     int v36;                 // esi@22
-    signed int uFramesetID;  // [sp+20h] [bp-8h]@9
     int uFramesetIDa;        // [sp+20h] [bp-8h]@18
     Character *player = &pParty->pCharacters[characterIndex];
 
@@ -1654,15 +1647,14 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     } else if (player->IsDead()) {
         v13 = game_ui_player_face_dead;
     } else {
-        uFramesetID = pPlayerFrameTable->GetFrameIdByExpression(player->expression);
-        if (!uFramesetID)
-            uFramesetID = 1;
-        if (player->expression == CHARACTER_EXPRESSION_TALK)
-            v15 = pPlayerFrameTable->GetFrameBy_y(&player->_expression21_frameset, &player->_expression21_animtime, pMiscTimer->dt());
+        int faceTextureIndex = 1;
+        if (player->portrait == PORTRAIT_TALK)
+            faceTextureIndex = player->talkAnimation.currentFrameIndex();
         else
-            v15 = pPlayerFrameTable->GetFrameBy_x(uFramesetID, pMiscTimer->time());
-        player->uExpressionImageIndex = v15->uTextureID - 1;
-        v13 = game_ui_player_faces[characterIndex][v15->uTextureID - 1];
+            faceTextureIndex = pPortraitFrameTable->animationFrameIndex(pPortraitFrameTable->animationId(player->portrait),
+                                                                        pMiscTimer->time());
+        player->portraitImageIndex = faceTextureIndex - 1;
+        v13 = game_ui_player_faces[characterIndex][faceTextureIndex - 1];
     }
 
     render->DrawTextureNew((window->uFrameX + 24) / 640.0f, (window->uFrameY + 24) / 480.0f, v13);
@@ -1967,8 +1959,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     (signed int)pY < (signed int)pButton->uW) {
                     switch (pButton->msg) {
                         case UIMSG_0:  // stats info
-                            popup_window.sHint = localization->GetAttributeDescription(static_cast<CharacterAttributeType>(pButton->msg_param % 7));
-                            pStr = localization->GetAttirubteName(static_cast<CharacterAttributeType>(pButton->msg_param % 7));
+                            popup_window.sHint = localization->GetAttributeDescription(static_cast<CharacterAttribute>(pButton->msg_param % 7));
+                            pStr = localization->GetAttirubteName(static_cast<CharacterAttribute>(pButton->msg_param % 7));
                             break;
                         case UIMSG_PlayerCreationClickPlus:  // Plus button info
                             pStr = localization->GetString(LSTR_ADD);

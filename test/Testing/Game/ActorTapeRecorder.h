@@ -1,6 +1,6 @@
 #pragma once
 
-#include <span>
+#include <deque>
 #include <utility>
 #include <type_traits>
 #include <vector>
@@ -51,7 +51,7 @@ class ActorTapeRecorder {
     TestTape<bool> hasBuff(int actorIndex, ActorBuff buff);
 
  private:
-    static std::span<Actor> actors();
+    static std::deque<Actor> &actors();
 
  private:
     TestController *_controller = nullptr;

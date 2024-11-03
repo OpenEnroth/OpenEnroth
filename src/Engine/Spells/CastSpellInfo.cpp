@@ -1436,11 +1436,11 @@ void CastSpellInfoHelpers::castSpell() {
                                 if (rnd < 80 && isPassiveEquipment(this_equip_type)) { // chance to roll standard enchantment on non-weapons
                                     int ench_found = 0;
                                     int to_item_apply_sum = 0;
-                                    CharacterAttributeType ench_array[100] = {};
+                                    CharacterAttribute ench_array[100] = {};
 
                                     // finds how many possible enchaments and adds up to item apply values
                                     // if (pItemTable->pEnchantments_count > 0) {
-                                    for (CharacterAttributeType attr : allEnchantableAttributes()) {
+                                    for (CharacterAttribute attr : allEnchantableAttributes()) {
                                         const std::string &bonusStat = pItemTable->standardEnchantments[attr].pBonusStat;
                                         if (!bonusStat.empty()) {
                                             int this_to_apply = pItemTable->standardEnchantments[attr].chancesByItemType[this_equip_type];
@@ -2804,7 +2804,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                     sacrifice->inProgress = true;
                     sacrifice->elapsedTime = 0_ticks;
-                    sacrifice->endTime = pIconsFrameTable->GetIcon("spell96")->GetAnimLength();
+                    sacrifice->endTime = pIconsFrameTable->animationLength(pIconsFrameTable->animationId("spell96"));
 
                     for (Character &character : pParty->pCharacters) {
                         character.health = character.GetMaxHealth();
@@ -2903,12 +2903,11 @@ void CastSpellInfoHelpers::castSpell() {
                         ++pTurnEngine->pending_actions;
                     }
                     for (unsigned i = 0; i < 50; i++) {
-                        int rand_x = grng->random(4096) - 2048;
-                        int rand_y = grng->random(4096) - 2048;
+                        Vec3f rand(grng->random(4096) - 2048, grng->random(4096) - 2048, 0);
                         bool bOnWater = false;
-                        int terr_height = GetTerrainHeightsAroundParty2(rand_x + pParty->pos.x, rand_y + pParty->pos.y, &bOnWater, 0);
+                        int terr_height = GetTerrainHeightsAroundParty2(pParty->pos + rand, &bOnWater, 0);
                         SpriteObject::dropItemAt(SPRITE_SPELL_EARTH_ROCK_BLAST,
-                                                 {rand_x + pParty->pos.x, rand_y + pParty->pos.y, terr_height + 16.0f}, grng->random(500) + 500);
+                                                 {rand.x + pParty->pos.x, rand.y + pParty->pos.y, terr_height + 16.0f}, grng->random(500) + 500);
                     }
                     break;
                 }

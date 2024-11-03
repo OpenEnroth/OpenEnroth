@@ -9,10 +9,12 @@
 #include <regex>
 #include <string>
 
-#include "Application/GameStarter.h"
+#include "Application/Startup/GameStarter.h"
+
+#include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/Components/Random/EngineRandomComponent.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Tables/BuildingTable.h"
+#include "Engine/Tables/HouseTable.h"
 #include "Engine/Events/EventMap.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/DecorationEnums.h"
@@ -22,6 +24,8 @@
 #include "Engine/Snapshots/TableSerialization.h"
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
+#include "Engine/EngineFileSystem.h"
+#include "Engine/mm7_data.h"
 
 #include "GUI/UI/Houses/TownHall.h"
 
@@ -30,7 +34,6 @@
 
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Format.h"
-#include "Utility/DataPath.h"
 #include "Utility/Exception.h"
 #include "Utility/UnicodeCrt.h"
 #include "Utility/String/Transformations.h"
@@ -177,7 +180,7 @@ int runBeaconsCodeGen(const CodeGenOptions &options, GameResourceManager *resour
     MapStats mapStats;
     mapStats.Initialize(resourceManager->getEventsFile("MapStats.txt"));
 
-    LodReader gamesLod(makeDataPath("data", "games.lod"));
+    LodReader gamesLod(dfs->read("data/games.lod"));
     std::vector<std::string> fileNames = gamesLod.ls();
 
     for (size_t i = 0; i < fileNames.size(); i++) {
@@ -195,12 +198,12 @@ int runHouseIdCodeGen(const CodeGenOptions &options, GameResourceManager *resour
     MapStats mapStats;
     mapStats.Initialize(resourceManager->getEventsFile("MapStats.txt"));
 
-    initializeBuildings(resourceManager->getEventsFile("2dEvents.txt"));
-    // ^ Initializes buildingTable.
+    initializeHouses(resourceManager->getEventsFile("2dEvents.txt"));
+    // ^ Initializes houseTable.
 
     std::unordered_map<HouseId, std::set<std::string>> mapNamesByHouseId; // Only arbiter exists on two maps.
 
-    LodReader gamesLod(makeDataPath("data", "games.lod"));
+    LodReader gamesLod(dfs->read("data/games.lod"));
     for (const std::string &fileName : gamesLod.ls()) {
         if (!fileName.ends_with(".odm") && !fileName.ends_with(".blv"))
             continue; // Not a level file.
@@ -225,8 +228,8 @@ int runHouseIdCodeGen(const CodeGenOptions &options, GameResourceManager *resour
     CodeGenMap map;
     map.insert(HOUSE_INVALID, "INVALID", "");
 
-    for (HouseId i : buildingTable.indices()) {
-        const BuildingDesc &desc = buildingTable[i];
+    for (HouseId i : houseTable.indices()) {
+        const HouseData &desc = houseTable[i];
         bool hasMap = mapNamesByHouseId.contains(i);
         std::string mapName;
         if (hasMap)
@@ -234,9 +237,9 @@ int runHouseIdCodeGen(const CodeGenOptions &options, GameResourceManager *resour
 
         if (i == HOUSE_JAIL) {
             map.insert(i, "JAIL", "");
-        } else if (desc.uType == BUILDING_INVALID && hasMap) {
+        } else if (desc.uType == HOUSE_TYPE_INVALID && hasMap) {
             map.insert(i, "", fmt::format("Used in MAP_{} but invalid, hmm...", mapName));
-        } else if (desc.uType == BUILDING_INVALID) {
+        } else if (desc.uType == HOUSE_TYPE_INVALID) {
             map.insert(i, "", "Unused.");
         } else if (!hasMap && !desc.name.empty()) {
             map.insert(i, "", fmt::format("Unused {} named \"{}\".", toString(desc.uType), desc.name));
@@ -244,7 +247,7 @@ int runHouseIdCodeGen(const CodeGenOptions &options, GameResourceManager *resour
             map.insert(i, "", "Unused.");
         } else if (toUpperCaseEnum(desc.name) == fmt::format("HOUSE_{}", std::to_underlying(i))) {
             map.insert(i, "", fmt::format("Used in MAP_{}, named \"{}\", looks totally like a placeholder...", mapName, desc.name));
-        } else if (desc.uType == BUILDING_HOUSE || desc.uType == BUILDING_MERCENARY_GUILD) {
+        } else if (desc.uType == HOUSE_TYPE_HOUSE || desc.uType == HOUSE_TYPE_MERCENARY_GUILD) {
             map.insert(i, fmt::format("{}_{}", mapName, toUpperCaseEnum(desc.name)), "");
         } else {
             map.insert(i, fmt::format("{}_{}", toString(desc.uType), mapName), fmt::format("\"{}\".", trim(desc.name)));
@@ -476,6 +479,24 @@ int runDecorationsCodegen(const CodeGenOptions &options, GameResourceManager *re
     return 0;
 }
 
+int runSpeechPortraitsCodegen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
+    std::vector<std::array<std::string, 7>> table;
+    for (CharacterSpeech speech : portraitVariants.indices()) {
+        auto &line = table.emplace_back();
+        line[0] = fmt::format("{{{}, ", toString(speech));
+        line[1] = "{";
+        for (int i = 2; auto portrait : portraitVariants[speech])
+            line[i++] = toString(static_cast<CharacterPortrait>(portrait)) + ", ";
+        line[6].pop_back();
+        line[6].pop_back(); // Drop the last ", ".
+        line[6] += "}},";
+    }
+
+    // Dump!
+    dumpAligned(stdout, "    ", table);
+    return 0;
+}
+
 int platformMain(int argc, char **argv) {
     try {
         UnicodeCrt _(argc, argv);
@@ -498,6 +519,7 @@ int platformMain(int argc, char **argv) {
         case CodeGenOptions::SUBCOMMAND_BOUNTY_HUNT: return runBountyHuntCodeGen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_MUSIC: return runMusicCodeGen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_DECORATIONS: return runDecorationsCodegen(options, &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_SPEECH_PORTRAITS: return runSpeechPortraitsCodegen(options, &resourceManager);
         default:
             assert(false);
             return 1;

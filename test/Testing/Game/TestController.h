@@ -1,6 +1,5 @@
 #pragma once
 
-#include <filesystem>
 #include <string>
 #include <functional>
 #include <utility>
@@ -14,14 +13,13 @@
 #include "TestTape.h"
 #include "TestCallObserver.h"
 
+class FileSystem;
 class EngineController;
 
 class TestController {
  public:
-    TestController(EngineController *controller, std::string_view testDataPath, float playbackSpeed);
+    TestController(EngineController *controller, FileSystem *tfs, float playbackSpeed);
     ~TestController();
-
-    std::string fullPathInTestData(std::string_view fileName);
 
     void loadGameFromTestData(std::string_view name);
     void playTraceFromTestData(std::string_view saveName, std::string_view traceName, std::function<void()> postLoadCallback = {});
@@ -58,7 +56,7 @@ class TestController {
 
  private:
     EngineController *_controller;
-    std::filesystem::path _testDataPath;
+    FileSystem *_tfs;
     float _playbackSpeed;
     TestCallObserver _callObserver;
     std::vector<std::function<void()>> _tapeCallbacks;

@@ -87,7 +87,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     strtokSkipLines(3);
     // Standard Bonuses by Group
     chanceByItemTypeSums.fill(0);
-    for (CharacterAttributeType i : allEnchantableAttributes()) {
+    for (CharacterAttribute i : allEnchantableAttributes()) {
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
         standardEnchantments[i].pBonusStat = removeQuotes(tokens[0]);
@@ -172,7 +172,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         pItems[item_counter]._additional_value = ITEM_ENCHANTMENT_NULL;
         pItems[item_counter]._bonus_type = {};
         if (pItems[item_counter].uMaterial == RARITY_SPECIAL) {
-            for (CharacterAttributeType ii : allEnchantableAttributes()) {
+            for (CharacterAttribute ii : allEnchantableAttributes()) {
                 if (ascii::noCaseEquals(tokens[12], standardEnchantments[ii].pOfName)) { // TODO(captainurist): #unicode this is not ascii
                     pItems[item_counter]._bonus_type = ii;
                     break;
@@ -568,7 +568,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
             if (bonusChanceRoll < uBonusChanceStandart[treasureLevel]) {
                 int enchantmentChanceSumRoll = grng->random(chanceByItemTypeSums[outItem->GetItemEquipType()]) + 1;
                 int currentEnchantmentChancesSum = 0;
-                for (CharacterAttributeType attr : allEnchantableAttributes()) {
+                for (CharacterAttribute attr : allEnchantableAttributes()) {
                     if (currentEnchantmentChancesSum >= enchantmentChanceSumRoll)
                         break;
 
@@ -578,10 +578,10 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
                 assert(outItem->attributeEnchantment);
 
                 outItem->m_enchantmentStrength = bonusRanges[treasureLevel].minR + grng->random(bonusRanges[treasureLevel].maxR - bonusRanges[treasureLevel].minR + 1);
-                CharacterAttributeType standardEnchantmentAttributeSkill = *outItem->attributeEnchantment;
-                if (standardEnchantmentAttributeSkill == CHARACTER_ATTRIBUTE_SKILL_ARMSMASTER ||
-                    standardEnchantmentAttributeSkill == CHARACTER_ATTRIBUTE_SKILL_DODGE ||
-                    standardEnchantmentAttributeSkill == CHARACTER_ATTRIBUTE_SKILL_UNARMED) {
+                CharacterAttribute standardEnchantmentAttributeSkill = *outItem->attributeEnchantment;
+                if (standardEnchantmentAttributeSkill == ATTRIBUTE_SKILL_ARMSMASTER ||
+                    standardEnchantmentAttributeSkill == ATTRIBUTE_SKILL_DODGE ||
+                    standardEnchantmentAttributeSkill == ATTRIBUTE_SKILL_UNARMED) {
                     outItem->m_enchantmentStrength /= 2;
                 }
                 // if enchantment generated, it needs to actually have an effect

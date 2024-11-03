@@ -15,6 +15,10 @@ struct Vec2 {
     constexpr Vec2() = default;
     constexpr Vec2(T a, T b) : x(a), y(b) {}
 
+    [[nodiscard]] Vec2<int> toInt() const requires std::is_floating_point_v<T> {
+        return Vec2<int>(std::round(x), std::round(y));
+    }
+
     [[nodiscard]] auto lengthSqr() const {
         // Note that auto return type is important because this way Vec2s::lengthSqr returns int.
         return x * x + y * y;
@@ -23,6 +27,8 @@ struct Vec2 {
     [[nodiscard]] T length() const {
         return std::sqrt(lengthSqr());
     }
+
+    friend bool operator==(const Vec2 &, const Vec2 &) = default;
 
     friend Vec2 operator+(const Vec2 &l, const Vec2 &r) {
         return Vec2(l.x + r.x, l.y + r.y);
@@ -133,9 +139,7 @@ struct Vec3 {
         return std::max({std::abs(x), std::abs(y), std::abs(z)});
     }
 
-    friend bool operator==(const Vec3 &l, const Vec3 &r) {
-        return (l.x == r.x) && (l.y == r.y) && (l.z == r.z);
-    }
+    friend bool operator==(const Vec3 &l, const Vec3 &r) = default;
 
     friend Vec3 operator+(const Vec3 &l, const Vec3 &r) {
         return Vec3(l.x + r.x, l.y + r.y, l.z + r.z);

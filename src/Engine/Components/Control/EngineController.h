@@ -6,6 +6,8 @@
 #include "Library/Platform/Interface/PlatformEnums.h"
 #include "Library/Platform/Interface/PlatformEvents.h"
 
+#include "Utility/Memory/Blob.h"
+
 #include "EngineControlStateHandle.h"
 
 class GUIButton;
@@ -34,6 +36,7 @@ class EngineController {
 
     void postEvent(std::unique_ptr<PlatformEvent> event);
     void pressKey(PlatformKey key);
+    void pressAutoRepeatedKey(PlatformKey key);
     void releaseKey(PlatformKey key);
     void pressButton(PlatformMouseButton button, int x, int y);
     void releaseButton(PlatformMouseButton button, int x, int y);
@@ -70,18 +73,16 @@ class EngineController {
     /**
      * Saves the game.
      *
-     * @param path                      Path to the savegame file to use.
-     * @throws std::runtime_error       On OS error, e.g. if the disk is full.
+     * @returns                         `Blob` containing saved game data.
      */
-    void saveGame(std::string_view path);
+    Blob saveGame();
 
     /**
      * Loads the game by opening up the load game menu and actually clicking all the buttons.
      *
-     * @param path                      Path to the savegame to load. Note that it doesn't have to be in the saves folder.
-     * @throws std::runtime_error       On OS error, e.g. if the file doesn't exist.
+     * @param savedGame                 `Blob` containing saved game data.
      */
-    void loadGame(std::string_view path);
+    void loadGame(const Blob &savedGame);
 
     /**
      * Runs the provided routine in game thread and returns once it's finished. This is mainly for running OpenGL code

@@ -70,10 +70,9 @@ void CollideIndoorWithDecorations();
 /**
  * @offset 0x0046E26D.
  *
- * @param grid_x                        Grid x coordinate.
- * @param grid_y                        Grid y coordinate.
+ * @param gridPos                       Grid coordinates.
  */
-void CollideOutdoorWithDecorations(int grid_x, int grid_y);
+void CollideOutdoorWithDecorations(Vec2i gridPos);
 
 /**
  * @offset 0x0046F04E.

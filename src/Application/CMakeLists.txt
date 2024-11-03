@@ -6,11 +6,8 @@ set(APPLICATION_SOURCES
         GameKeyboardController.cpp
         GameMenu.cpp
         GameOver.cpp
-        GamePathResolver.cpp
-        GameStarter.cpp
         GameTraceHandler.cpp
-        GameWindowHandler.cpp
-        GameIocContainer.cpp)
+        GameWindowHandler.cpp)
 
 set(APPLICATION_HEADERS
         Game.h
@@ -18,12 +15,8 @@ set(APPLICATION_HEADERS
         GameKeyboardController.h
         GameMenu.h
         GameOver.h
-        GamePathResolver.h
-        GameStarter.h
-        GameStarterOptions.h
         GameTraceHandler.h
-        GameWindowHandler.h
-        GameIocContainer.h)
+        GameWindowHandler.h)
 
 add_library(application STATIC ${APPLICATION_SOURCES} ${APPLICATION_HEADERS})
 target_check_style(application)
@@ -32,22 +25,22 @@ target_link_libraries(application
         PUBLIC
         engine
         engine_components_control
-        engine_components_deterministic
         engine_components_trace
         engine_graphics
         engine_graphics_renderer
-        game_states
+        application_game_states
+        application_startup
         gui
         io
         library_config
         library_fsm
         library_lod
         media
-        library_platform_null
-        library_platform_implementation
-        library_environment_implementation
+        library_platform_application
+        library_platform_interface
         scripting
         utility
         imgui)
 
 add_subdirectory(GameStates)
+add_subdirectory(Startup)

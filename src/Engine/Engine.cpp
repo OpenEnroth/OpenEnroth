@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Engine/Engine.h"
+
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 
@@ -45,13 +46,14 @@
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Spells/Spells.h"
+#include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/IconFrameTable.h"
-#include "Engine/Tables/CharacterFrameTable.h"
+#include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Tables/FactionTable.h"
-#include "Engine/Tables/StorylineTextTable.h"
-#include "Engine/Tables/AwardTable.h"
+#include "Engine/Tables/HistoryTable.h"
 #include "Engine/Tables/AutonoteTable.h"
 #include "Engine/Tables/QuestTable.h"
 #include "Engine/Tables/TransitionTable.h"
@@ -61,6 +63,7 @@
 #include "Engine/AttackList.h"
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
+#include "Engine/EngineFileSystem.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -79,8 +82,7 @@
 #include "Library/Logger/Logger.h"
 #include "Library/BuildInfo/BuildInfo.h"
 
-#include "Utility/String/Ascii.h"
-#include "Utility/DataPath.h"
+#include "Utility/String/Transformations.h"
 
 /*
 
@@ -215,7 +217,7 @@ void Engine::DrawGUI() {
     _statusBar->draw();
 
     if (!pMovie_Track && uGameState != GAME_STATE_CHANGE_LOCATION) {  // ! pVideoPlayer->pSmackerMovie)
-        GameUI_DrawMinimap(488, 16, 625, 133, viewparams->uMinimapZoom, true);  // redraw = pParty->uFlags & 2);
+        GameUI_DrawMinimap(Recti(488, 16, 137, 117), viewparams->uMinimapZoom);
     }
 
     GameUI_DrawPartySpells();
@@ -428,7 +430,6 @@ Engine::Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem)
     uNumStationaryLights_in_pStationaryLightsStack = 0;
 
     pCamera3D = new Camera3D;
-    pStru10Instance = new stru10;
 
     keyboardInputHandler = ::keyboardInputHandler;
     keyboardActionMapping = ::keyboardActionMapping;
@@ -440,7 +441,6 @@ Engine::~Engine() {
         mouse->Deactivate();
 
     delete pEventTimer;
-    delete pStru10Instance;
     delete pCamera3D;
     pAudioPlayer.reset();
 }
@@ -451,12 +451,12 @@ void Engine::LogEngineBuildInfo() {
 }
 
 //----- (0044EA5E) --------------------------------------------------------
-Vis_PIDAndDepth Engine::PickMouse(float fPickDepth, unsigned int uMouseX, unsigned int uMouseY,
+Vis_PIDAndDepth Engine::PickMouse(float fPickDepth, int uMouseX, int uMouseY,
                                   Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter) {
-    if (uMouseX >= (signed int)pViewport->uScreen_TL_X &&
-        uMouseX <= (signed int)pViewport->uScreen_BR_X &&
-        uMouseY >= (signed int)pViewport->uScreen_TL_Y &&
-        uMouseY <= (signed int)pViewport->uScreen_BR_Y) {
+    if (uMouseX >= pViewport->uScreen_TL_X &&
+        uMouseX <= pViewport->uScreen_BR_X &&
+        uMouseY >= pViewport->uScreen_TL_Y &&
+        uMouseY <= pViewport->uScreen_BR_Y) {
         return vis->PickMouse(fPickDepth, uMouseX, uMouseY, sprite_filter, face_filter);
     } else {
         return Vis_PIDAndDepth();
@@ -532,7 +532,7 @@ void UpdateUserInput_and_MapSpecificStuff() {
 }
 
 //----- (004646F0) --------------------------------------------------------
-void PrepareWorld(unsigned int _0_box_loading_1_fullscreen) {
+void PrepareWorld(int _0_box_loading_1_fullscreen) {
     Vis *vis = EngineIocContainer::ResolveVis();
 
     pEventTimer->setPaused(true);
@@ -608,13 +608,13 @@ void MM7_LoadLods() {
     engine->_gameResourceManager->openGameResources();
 
     pIcons_LOD = new LodTextureCache;
-    pIcons_LOD->open(makeDataPath("data", "icons.lod"));
+    pIcons_LOD->open(dfs->read("data/icons.lod"));
 
     pBitmaps_LOD = new LodTextureCache;
-    pBitmaps_LOD->open(makeDataPath("data", "bitmaps.lod"));
+    pBitmaps_LOD->open(dfs->read("data/bitmaps.lod"));
 
     pSprites_LOD = new LodSpriteCache;
-    pSprites_LOD->open(makeDataPath("data", "sprites.lod"));
+    pSprites_LOD->open(dfs->read("data/sprites.lod"));
 
     // TODO(captainurist):
     // on error in `open` we had this:
@@ -666,8 +666,8 @@ void Engine::MM7_Initialize() {
     pTileTable = new TileTable;
     deserialize(triLoad("dtile.bin"), pTileTable);
 
-    pPlayerFrameTable = new PlayerFrameTable;
-    deserialize(triLoad("dpft.bin"), pPlayerFrameTable);
+    pPortraitFrameTable = new PortraitFrameTable;
+    deserialize(triLoad("dpft.bin"), pPortraitFrameTable);
 
     pIconsFrameTable = new IconFrameTable;
     deserialize(triLoad("dift.bin"), pIconsFrameTable);
@@ -716,31 +716,32 @@ void Engine::SecondaryInitialization() {
     pFactionTable = new FactionTable();
     pFactionTable->Initialize(engine->_gameResourceManager->getEventsFile("hostile.txt"));
 
-    pStorylineText = new StorylineText();
-    pStorylineText->Initialize(engine->_gameResourceManager->getEventsFile("history.txt"));
+    pHistoryTable = new HistoryTable();
+    pHistoryTable->Initialize(engine->_gameResourceManager->getEventsFile("history.txt"));
 
     pItemTable = new ItemTable();
     pItemTable->Initialize(engine->_gameResourceManager.get());
 
-    initializeBuildings(engine->_gameResourceManager->getEventsFile("2dEvents.txt"));
+    initializeHouses(engine->_gameResourceManager->getEventsFile("2dEvents.txt"));
 
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();
     pObjectList->InitializeSprites();
     pOverlayList->InitializeSprites();
 
-    for (unsigned i = 0; i < 4; ++i) {
-        static const char *pUIAnimNames[4] = {"glow03", "glow05", "torchA", "wizeyeA"};
-        static unsigned short _4E98D0[4][4] = { {479, 0, 329, 0}, {585, 0, 332, 0}, {468, 0, 0, 0}, {606, 0, 0, 0} };
-
-        // pUIAnims[i]->uIconID = pIconsFrameTable->FindIcon(pUIAnimNames[i]);
-        pUIAnims[i]->icon = pIconsFrameTable->GetIcon(pUIAnimNames[i]);
-
-        pUIAnims[i]->uAnimLength = 0_ticks;
-        pUIAnims[i]->uAnimTime = 0;
-        pUIAnims[i]->x = _4E98D0[i][0];
-        pUIAnims[i]->y = _4E98D0[i][2];
-    }
+    // TODO(captainurist): try resurrecting the food / gold animations using resource files from MM6?
+    //for (unsigned i = 0; i < 4; ++i) {
+    //    static const char *pUIAnimNames[4] = {"glow03", "glow05", "torchA", "wizeyeA"};
+    //    static unsigned short _4E98D0[4][4] = { {479, 0, 329, 0}, {585, 0, 332, 0}, {468, 0, 0, 0}, {606, 0, 0, 0} };
+    //
+    //    // pUIAnims[i]->uIconID = pIconsFrameTable->FindIcon(pUIAnimNames[i]);
+    //    pUIAnims[i]->icon = pIconsFrameTable->GetIcon(pUIAnimNames[i]);
+    //
+    //    pUIAnims[i]->uAnimLength = 0_ticks;
+    //    pUIAnims[i]->uAnimTime = 0_ticks;
+    //    pUIAnims[i]->x = _4E98D0[i][0];
+    //    pUIAnims[i]->y = _4E98D0[i][2];
+    //}
 
     // TODO(pskelton): dropping this causes std::bad_alloc in headless mode
     UI_Create();
@@ -929,7 +930,7 @@ void InitializeTurnBasedAnimations(void *_this) {
 }
 
 //----- (0046BDA8) --------------------------------------------------------
-unsigned int GetGravityStrength() {
+int GetGravityStrength() {
     return engine->config->gameplay.Gravity.value();
 }
 
@@ -1102,13 +1103,13 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
             if (character.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
                 character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
                 character.pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
-                character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0_ticks);
+                character.playEmotion(PORTRAIT_SMILE, 0_ticks);
             } else {
                 if (!character.hasUnderwaterSuitEquipped()) {
                     character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE); // TODO(pskelton): fire damage?
                     engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
                 } else {
-                    character.playEmotion(CHARACTER_EXPRESSION_SMILE, 0_ticks);
+                    character.playEmotion(PORTRAIT_SMILE, 0_ticks);
                 }
             }
         }
@@ -1364,32 +1365,30 @@ void RegeneratePartyHealthMana() {
         }
     }
 
-    // HP/SP regeneration and HP deterioration.
+    bool stacking = engine->config->gameplay.RegenStacking.value();
     for (Character &character : pParty->pCharacters) {
         if (character.conditions.HasAny({CONDITION_DEAD, CONDITION_ERADICATED}))
             continue; // No HP/MP regen/drain for dead characters.
 
-        // Item regeneration / drain.
+        RegenData thisChar;
+        // Item regeneration
         for (ItemSlot idx : allItemSlots()) {
-            bool recovery_HP = false;
-            bool decrease_HP = false;
-            bool recovery_SP = false;
             if (character.HasItemEquipped(idx)) {
                 unsigned _idx = character.pEquipment[idx];
                 ItemGen equppedItem = character.pInventoryItemList[_idx - 1];
                 if (!isRegular(equppedItem.uItemID)) {
                     if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF) {
-                        decrease_HP = true;
+                        character.health -= ticks5;
                     }
                     if (equppedItem.uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {
-                        recovery_HP = true;
-                        recovery_SP = true;
+                        thisChar.hpRegen++;
+                        thisChar.spRegen++;
                     }
                     if (equppedItem.uItemID == ITEM_ARTIFACT_MINDS_EYE) {
-                        recovery_SP = true;
+                        thisChar.spRegen++;
                     }
                     if (equppedItem.uItemID == ITEM_ARTIFACT_HEROS_BELT) {
-                        recovery_HP = true;
+                        thisChar.hpRegen++;
                     }
                 } else {
                     ItemEnchantment special_enchantment = equppedItem.special_enchantment;
@@ -1397,39 +1396,32 @@ void RegeneratePartyHealthMana() {
                         || special_enchantment == ITEM_ENCHANTMENT_OF_LIFE
                         || special_enchantment == ITEM_ENCHANTMENT_OF_PHOENIX
                         || special_enchantment == ITEM_ENCHANTMENT_OF_TROLL) {
-                        recovery_HP = true;
+                        thisChar.hpRegen++;
                     }
 
                     if (special_enchantment == ITEM_ENCHANTMENT_OF_MANA
                         || special_enchantment == ITEM_ENCHANTMENT_OF_ECLIPSE
                         || special_enchantment == ITEM_ENCHANTMENT_OF_UNICORN) {
-                        recovery_SP = true;
+                        thisChar.spRegen++;
                     }
 
                     if (special_enchantment == ITEM_ENCHANTMENT_OF_PLENTY) {
-                        recovery_HP = true;
-                        recovery_SP = true;
+                        thisChar.hpRegen++;
+                        thisChar.spRegen++;
                     }
                 }
-
-                if (recovery_HP)
-                    character.health = std::min(character.GetMaxHealth(), character.health + ticks5);
-
-                if (recovery_SP)
-                    character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
-
-                if (decrease_HP)
-                    character.health -= ticks5;
             }
         }
 
         // Regeneration buff.
-        if (character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active())
-            character.health = std::min(character.GetMaxHealth(), character.health + ticks5 * 5 * character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power);
+        if (character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].Active()) {
+            thisChar.hpSpellRegen = 5 * character.pCharacterBuffs[CHARACTER_BUFF_REGENERATION].power;
+        }
 
         // Warlock mana regen.
-        if (PartyHasDragon() && character.classType == CLASS_WARLOCK)
-            character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
+        if (PartyHasDragon() && character.classType == CLASS_WARLOCK) {
+            thisChar.spRegen++;
+        }
 
         // Lich mana/health drain/regen.
         if (character.classType == CLASS_LICH) {
@@ -1439,12 +1431,14 @@ void RegeneratePartyHealthMana() {
                     lich_has_jar = true;
 
             if (lich_has_jar) {
-                character.mana = std::min(character.GetMaxMana(), character.mana + ticks5);
+                thisChar.spRegen++;
             } else {
                 character.health = std::min(character.health, std::max(character.GetMaxHealth() / 2, character.health - 2 * ticks5));
                 character.mana = std::min(character.mana, std::max(character.GetMaxMana() / 2, character.mana - 2 * ticks5));
             }
         }
+
+        character.tickRegeneration(ticks5, thisChar, stacking);
 
         // Zombie mana/health drain.
         if (character.conditions.Has(CONDITION_ZOMBIE)) {

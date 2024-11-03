@@ -28,8 +28,8 @@ LodSpriteCache::~LodSpriteCache() {
         sprite.Release();
 }
 
-bool LodSpriteCache::open(std::string_view pFilename) {
-    _reader.open(pFilename);
+bool LodSpriteCache::open(Blob blob) {
+    _reader.open(std::move(blob));
     return true;
 }
 

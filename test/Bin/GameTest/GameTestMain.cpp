@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "Application/GameStarter.h"
-#include "Application/GameConfig.h"
+#include "Application/Startup/GameStarter.h"
 
-#include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"
 
 #include "Testing/Game/GameTest.h"
@@ -11,6 +9,7 @@
 
 #include "Library/StackTrace/StackTraceOnCrash.h"
 #include "Library/Platform/Application/PlatformApplication.h"
+#include "Library/FileSystem/Directory/DirectoryFileSystem.h"
 
 #include "Utility/String/Format.h"
 #include "Utility/UnicodeCrt.h"
@@ -43,7 +42,8 @@ int platformMain(int argc, char **argv) {
 
         int exitCode = 0;
         starter.runInstrumented([&] (EngineController *game) {
-            TestController test(game, opts.testPath, opts.speed);
+            DirectoryFileSystem tfs(opts.testPath);
+            TestController test(game, &tfs, opts.speed);
             GameTest::init(game, &test);
             exitCode = RUN_ALL_TESTS();
         });

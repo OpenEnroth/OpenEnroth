@@ -4,7 +4,6 @@
 
 #include "Library/Serialization/EnumSerialization.h"
 
-// TODO(captainurist): recheck that ALL keys are actually serializable
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformKey, CASE_INSENSITIVE, {
     {PlatformKey::KEY_F1,           "F1" },
     {PlatformKey::KEY_F2,           "F2" },
@@ -96,6 +95,8 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformKey, CASE_INSENSITIVE, {
     {PlatformKey::KEY_LEFTBRACKET,  "L BRACKET" },
     {PlatformKey::KEY_RIGHTBRACKET, "R BRACKET" },
     {PlatformKey::KEY_TILDE,        "~" },
+    {PlatformKey::KEY_PRINTSCREEN,  "PRINT SCREEN" },
+    {PlatformKey::KEY_SELECT,       "SELECT" },
 
     {PlatformKey::KEY_CONTROL,      "CONTROL"},
     {PlatformKey::KEY_ALT,          "ALT"},

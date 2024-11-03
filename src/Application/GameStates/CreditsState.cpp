@@ -16,9 +16,7 @@ FsmAction CreditsState::enter() {
 
     pAudioPlayer->MusicPlayTrack(MUSIC_CREDITS);
 
-    _uiCredits = std::make_unique<GUICredits>([this]() {
-        _scheduleBackTransition = true;
-    });
+    _uiCredits = std::make_unique<GUICredits>();
     current_screen_type = SCREEN_CREATORS;
     SetCurrentMenuID(MENU_CREDITSPROC);
     return FsmAction::none();
@@ -29,14 +27,9 @@ FsmAction CreditsState::update() {
         UIMessageType messageType;
         engine->_messageQueue->popMessage(&messageType, nullptr, nullptr);
 
-        if (messageType == UIMSG_Escape) {
-            _scheduleBackTransition = true;
+        if (messageType == UIMSG_Escape || messageType == UIMSG_CreditsFinished) {
+            return FsmAction::transition("back");
         }
-    }
-
-    if (_scheduleBackTransition) {
-        _scheduleBackTransition = false;
-        return FsmAction::transition("back");
     }
 
     return FsmAction::none();
@@ -48,5 +41,4 @@ void CreditsState::exit() {
 
     pAudioPlayer->MusicStop();
     pAudioPlayer->stopSounds();
-    _scheduleBackTransition = false;
 }

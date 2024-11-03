@@ -37,6 +37,15 @@ class GameConfig : public Config {
     using String = ConfigEntry<std::string>;
     using Key = ConfigEntry<PlatformKey>;
 
+    class Audio : public ConfigSection {
+     public:
+        explicit Audio(GameConfig *config) : ConfigSection(config, "audio") {}
+
+        Bool DisableHRTF = {this, "disable_hrtf", true, "Disable HRTF for headphones."};
+    };
+
+    Audio audio{ this };
+
     class Debug : public ConfigSection {
      public:
         explicit Debug(GameConfig *config) : ConfigSection(config, "debug") {}
@@ -71,6 +80,7 @@ class GameConfig : public Config {
 
         Bool NoLogo = {this, "no_logo", false, "Skip 3do logo on startup."};
 
+        // TODO(captainurist): Move to [audio]?
         Bool NoSound = {this, "no_sound", false, "Don't play any sounds. Currently in-house movies are not affected."};
 
         Bool NoVideo = {this, "no_video", false, "Don't play any movies."};
@@ -83,7 +93,7 @@ class GameConfig : public Config {
 
         Bool NoMargaret = {this, "no_margareth", false, "Disable Margaret's tour messages on Emerald Island."};
 
-        ConfigEntry<::LogLevel> LogLevel = {this, "log_level", LOG_ERROR,
+        ConfigEntry<::LogLevel> LogLevel = {this, "log_level", LOG_INFO,
                                             "Default log level. One of 'trace', 'debug', 'info', 'warning', 'error' and 'critical'."};
 
         // TODO(captainurist): move all Trace* options into a separate section.
@@ -216,6 +226,9 @@ class GameConfig : public Config {
 
         Int MaxActiveAIActors = { this, "max_active_ai_actors", 30, &ValidateMaxActiveAIActors,
                                 "Limit to how many actors can be in full AI state at once." };
+
+        Bool RegenStacking = { this, "regen_stacking", true,
+                                "Disable for vanilla like mode where only one item will trigger HP/SP regeneration." };
 
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
@@ -414,6 +427,9 @@ class GameConfig : public Config {
                             "Filtering method when scaling rendered framebuffer to window dimensions if they differ."
                             " 0 - disabled (render dimensions will always match window dimensions), 1 - linear filter, 2 - nearest filter"};
 
+        Float Saturation = { this, "saturation", 0.65f, "Colour saturation multiplier for textures and palettes" };
+        Float Lightness = { this, "lightness", 1.1f, "Colour lightness multiplier for textures and palettes" };
+
      private:
         static int ValidateGamma(int level) {
             return std::clamp(level, 0, 9);
@@ -539,6 +555,7 @@ class GameConfig : public Config {
 
         Bool ShowHits = {this, "show_hits", true, "Show HP status in status bar."};
 
+        // TODO(captainurist): move to [audio]?
         Int MusicLevel = {this, "music_level", 3, &ValidateLevel, "Music volume level."};
 
         Int SoundLevel = {this, "sound_level", 4, &ValidateLevel, "Sound volume level."};
@@ -553,6 +570,7 @@ class GameConfig : public Config {
 
         Int VerticalTurnSpeed = {this, "vertical_turn_speed", 25, &ValidateVerticalTurnSpeed, "Discrete vertical turn speed."};
 
+        // TODO(captainurist): move to [audio]?
         Bool WalkSound = {this, "walk_sound", true, "Enable footsteps sound when walking."};
 
      private:

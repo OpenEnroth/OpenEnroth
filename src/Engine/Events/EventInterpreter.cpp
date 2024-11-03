@@ -2,6 +2,8 @@
 #include <utility>
 #include <functional>
 
+#include <tl/generator.hpp>
+
 #include "Engine/Events/EventInterpreter.h"
 #include "Engine/Events/EventIR.h"
 #include "Engine/Events/Processor.h"
@@ -22,6 +24,7 @@
 #include "Media/MediaPlayer.h"
 
 #include "Utility/Math/TrigLut.h"
+#include "Utility/String/Transformations.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIMessageQueue.h"
@@ -69,7 +72,7 @@ static bool checkSeason(Season season) {
  * @offset 0x448CF4
  */
 void spawnMonsters(int16_t typeindex, int16_t level, int count,
-                          Vec3f pos, int group, unsigned int uUniqueName) {
+                          Vec3f pos, int group, int uUniqueName) {
     if (engine->_currentLoadedMapId == MAP_INVALID || engine->config->debug.NoActors.value())
         return;
 
@@ -92,27 +95,19 @@ void spawnMonsters(int16_t typeindex, int16_t level, int count,
     }
 }
 
-static bool doForChosenPlayer(CharacterChoosePolicy who, RandomEngine *rng, std::function<int(Character&)> func) {
+static tl::generator<Character &> iterateCharacters(CharacterChoosePolicy who, RandomEngine *rng) {
     if (who >= CHOOSE_PLAYER1 && who <= CHOOSE_PLAYER4) {
-        return func(pParty->pCharacters[std::to_underlying(who)]);
+        co_yield pParty->pCharacters[std::to_underlying(who)];
     } else if (who == CHOOSE_ACTIVE) {
-        if (pParty->hasActiveCharacter()) {
-            return func(pParty->activeCharacter());
-        }
-        return false;
+        if (pParty->hasActiveCharacter())
+            co_yield pParty->activeCharacter();
     } else if (who == CHOOSE_PARTY) {
-        for (Character &player : pParty->pCharacters) {
-            if (func(player)) {
-                return true;
-            }
-        }
-        return false;
-    } else if (who == CHOOSE_RANDOM) {
-        return func(pParty->pCharacters[rng->random(4)]);
+        for (Character &player : pParty->pCharacters)
+            co_yield player;
+    } else {
+        assert(who == CHOOSE_RANDOM);
+        co_yield pParty->pCharacters[rng->random(4)];
     }
-
-    assert(false);
-    return false;
 }
 
 int EventInterpreter::executeOneEvent(int step, bool isNpc) {
@@ -235,10 +230,12 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             }
             break;
         case EVENT_ShowFace:
-            doForChosenPlayer(ir.who, vrng, [&] (Character &player) { player.playEmotion(ir.data.expr_id, 0_ticks); return false; });
+            for (Character &character : iterateCharacters(ir.who, vrng))
+                character.playEmotion(ir.data.portrait_id, 0_ticks);
             break;
         case EVENT_ReceiveDamage:
-            doForChosenPlayer(ir.who, grng, [&] (Character &player) { player.receiveDamage(ir.data.damage_descr.damage, ir.data.damage_descr.damage_type); return false; });
+            for (Character &character : iterateCharacters(ir.who, grng))
+                character.receiveDamage(ir.data.damage_descr.damage, ir.data.damage_descr.damage_type);
             break;
         case EVENT_SetSnow:
             if (!ir.data.snow_descr.is_nop) {
@@ -291,33 +288,33 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             setDecorationSprite(ir.data.sprite_texture_descr.cog, ir.data.sprite_texture_descr.hide, ir.str);
             break;
         case EVENT_Compare:
-        {
-            bool res = doForChosenPlayer(_who, grng, [&] (Character &player) { return player.CompareVariable(ir.data.variable_descr.type, ir.data.variable_descr.value); });
-            if (res) {
-                return ir.target_step;
-            }
+            for (Character &character : iterateCharacters(_who, grng))
+                if (character.CompareVariable(ir.data.variable_descr.type, ir.data.variable_descr.value))
+                    return ir.target_step;
             break;
-        }
         case EVENT_ChangeDoorState:
             switchDoorAnimation(ir.data.door_descr.door_id, ir.data.door_descr.door_action);
             break;
         case EVENT_Add:
-            doForChosenPlayer(_who, grng, [&] (Character &player) { player.AddVariable(ir.data.variable_descr.type, ir.data.variable_descr.value); return false; });
+            for (Character &character : iterateCharacters(_who, grng))
+                character.AddVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
         case EVENT_Substract:
             if (ir.data.variable_descr.type == VAR_PlayerItemInHands && _who == CHOOSE_PARTY) {
-                for (Character &player : pParty->pCharacters) {
-                    if (player.hasItem((ItemId)ir.data.variable_descr.value, 1)) {
-                        player.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
+                for (Character &character : pParty->pCharacters) {
+                    if (character.hasItem((ItemId)ir.data.variable_descr.value, 1)) {
+                        character.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
                         break;  // only take one item
                     }
                 }
             } else {
-                doForChosenPlayer(_who, grng, [&] (Character &player) { player.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value); return false; });
+                for (Character &character : iterateCharacters(_who, grng))
+                    character.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
             }
             break;
         case EVENT_Set:
-            doForChosenPlayer(_who, grng, [&] (Character &player) { player.SetVariable(ir.data.variable_descr.type, ir.data.variable_descr.value); return false; });
+            for (Character &character : iterateCharacters(_who, grng))
+                character.SetVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
         case EVENT_SummonMonsters:
             spawnMonsters(ir.data.monster_descr.type, ir.data.monster_descr.level, ir.data.monster_descr.count,
@@ -462,17 +459,13 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             }
             break;
         case EVENT_CheckSkill:
-        {
             assert(_who != CHOOSE_PARTY); // TODO(Nik-RE-dev): original code for this option is dubious
-            bool res = doForChosenPlayer(_who, grng, [&] (Character &player) {
-                CombinedSkillValue val = player.getSkillValue(ir.data.check_skill_descr.skill_type);
-                return val.level() >= ir.data.check_skill_descr.skill_level && val.mastery() == ir.data.check_skill_descr.skill_mastery;
-            });
-            if (res) {
-                return ir.target_step;
+            for (Character &character : iterateCharacters(_who, grng)) {
+                CombinedSkillValue val = character.getSkillValue(ir.data.check_skill_descr.skill_type);
+                if (val.level() >= ir.data.check_skill_descr.skill_level && val.mastery() == ir.data.check_skill_descr.skill_mastery)
+                    return ir.target_step;
             }
             break;
-        }
         case EVENT_SetNPCGroupNews:
             pNPCStats->pGroups[ir.data.npc_groups_descr.groups_id] = ir.data.npc_groups_descr.group;
             break;
@@ -538,7 +531,8 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             Chest::toggleFlag(ir.data.chest_flag_descr.chest_id, ir.data.chest_flag_descr.flag, ir.data.chest_flag_descr.is_set);
             break;
         case EVENT_CharacterAnimation:
-            doForChosenPlayer(ir.who, vrng, [&] (Character &player) { player.playReaction(ir.data.speech_id); return false; });
+            for (Character &character : iterateCharacters(ir.who, vrng))
+                character.playReaction(ir.data.speech_id);
             break;
         case EVENT_SetActorItem:
             Actor::giveItem(ir.data.npc_item_descr.id, ir.data.npc_item_descr.item, ir.data.npc_item_descr.is_give);

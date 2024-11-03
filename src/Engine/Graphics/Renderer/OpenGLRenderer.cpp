@@ -16,6 +16,7 @@
 #include <imgui/backends/imgui_impl_sdl2.h> // NOLINT: not a C system header.
 
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Image.h"
@@ -32,7 +33,6 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Graphics/PaletteManager.h"
-#include "Engine/Graphics/Polygon.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
@@ -52,7 +52,6 @@
 #include "Utility/Memory/MemSet.h"
 
 #include "OpenGLShader.h"
-#include "Utility/DataPath.h"
 
 #ifndef LOWORD
     #define LOWORD(l) ((unsigned short)(((std::uintptr_t)(l)) & 0xFFFF))
@@ -190,12 +189,7 @@ OpenGLRenderer::OpenGLRenderer(
     SpellFxRenderer *spellfx,
     std::shared_ptr<ParticleEngine> particle_engine,
     Vis *vis
-) : BaseRenderer(config, decal_builder, spellfx, particle_engine, vis) {
-    clip_w = 0;
-    clip_x = 0;
-    clip_y = 0;
-    clip_z = 0;
-}
+) : BaseRenderer(config, decal_builder, spellfx, particle_engine, vis) {}
 
 OpenGLRenderer::~OpenGLRenderer() {
     logger->info("RenderGl - Destructor");
@@ -311,16 +305,16 @@ void OpenGLRenderer::EndLines2D() {
     linevertscnt = 0;
 }
 
-void OpenGLRenderer::RasterLine2D(int uX, int uY, int uZ, int uW, Color uColor32) {
+void OpenGLRenderer::RasterLine2D(Pointi a, Pointi b, Color uColor32) {
     Colorf cf = uColor32.toColorf();
 
-    lineshaderstore[linevertscnt].x = static_cast<float>(uX);
-    lineshaderstore[linevertscnt].y = static_cast<float>(uY);
+    lineshaderstore[linevertscnt].x = a.x;
+    lineshaderstore[linevertscnt].y = a.y;
     lineshaderstore[linevertscnt].color = cf;
     linevertscnt++;
 
-    lineshaderstore[linevertscnt].x = static_cast<float>(uZ);
-    lineshaderstore[linevertscnt].y = static_cast<float>(uW);
+    lineshaderstore[linevertscnt].x = b.x;
+    lineshaderstore[linevertscnt].y = b.y;
     lineshaderstore[linevertscnt].color = cf;
     linevertscnt++;
 
@@ -329,9 +323,9 @@ void OpenGLRenderer::RasterLine2D(int uX, int uY, int uZ, int uW, Color uColor32
 }
 
 // used for debug protal lines
-void OpenGLRenderer::DrawLines(const RenderVertexD3D3 *vertices, unsigned int num_vertices) {
+void OpenGLRenderer::DrawLines(const RenderVertexD3D3 *vertices, int num_vertices) {
     BeginLines2D();
-    for (unsigned i = 0; i < num_vertices - 1; ++i) {
+    for (int i = 0; i < num_vertices - 1; ++i) {
         Colorf color0 = vertices[i].diffuse.toColorf();
         Colorf color1 = vertices[i + 1].diffuse.toColorf();
 
@@ -621,7 +615,7 @@ void OpenGLRenderer::DrawTextureOffset(int pX, int pY, int move_X, int move_Y,
 }
 
 
-void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, unsigned paletteid, Color uColor32) {
+void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, int paletteid, Color uColor32) {
     if (!img) {
         logger->trace("Null img passed to DrawImage");
         return;
@@ -638,16 +632,20 @@ void OpenGLRenderer::DrawImage(GraphicsImage *img, const Recti &rect, unsigned p
     int w = rect.y + rect.h;
 
     // check bounds
-    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || y >= outputRender.h)
+        return;
+
     // check for overlap
-    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
+    Recti clippedRect = rect.intersection(this->clipRect);
+    if (clippedRect.isEmpty())
+        return;
 
     float gltexid = static_cast<float>(img->renderId().value());
 
-    float drawx = static_cast<float>(std::max(x, this->clip_x));
-    float drawy = static_cast<float>(std::max(y, this->clip_y));
-    float draww = static_cast<float>(std::min(w, this->clip_w));
-    float drawz = static_cast<float>(std::min(z, this->clip_z));
+    float drawx = clippedRect.x;
+    float drawy = clippedRect.y;
+    float drawz = clippedRect.x + clippedRect.w;
+    float draww = clippedRect.y + clippedRect.h;
 
     float texx = (drawx - x) / float(z - x);
     float texy = (drawy - y) / float(w - y);
@@ -840,18 +838,14 @@ void OpenGLRenderer::TexturePixelRotateDraw(float u, float v, GraphicsImage *img
 }
 
 // TODO(pskelton): renderbase
-void OpenGLRenderer::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
+void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     if (pFace->uNumVertices <= 0) return;
 
-    Polygon pSkyPolygon;
-    pSkyPolygon.texture = nullptr;
-    pSkyPolygon.texture = pFace->GetTexture();
-    if (!pSkyPolygon.texture) return;
+    if (!pFace->GetTexture()) return;
 
-    pSkyPolygon.ptr_38 = &SkyBillboard;
-    pSkyPolygon.dimming_level = 0;
-    pSkyPolygon.uNumVertices = pFace->uNumVertices;
+    int dimming_level = 0;
+    unsigned int uNumVertices = pFace->uNumVertices;
 
 
     // TODO(pskelton): repeated maths could be saved when calculating sky planes
@@ -889,22 +883,22 @@ void OpenGLRenderer::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
     }
 
     // clip accurately to camera
-    pCamera3D->ClipFaceToFrustum(array_507D30, &pSkyPolygon.uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum.data(), 4, 0, 0);
-    if (!pSkyPolygon.uNumVertices) return;
+    pCamera3D->ClipFaceToFrustum(array_507D30, &uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum.data(), 4, 0, 0);
+    if (!uNumVertices) return;
 
-    pCamera3D->ViewTransform(VertexRenderList, pSkyPolygon.uNumVertices);
-    pCamera3D->Project(VertexRenderList, pSkyPolygon.uNumVertices, false);
+    pCamera3D->ViewTransform(VertexRenderList, uNumVertices);
+    pCamera3D->Project(VertexRenderList, uNumVertices, false);
 
     unsigned _507D30_idx = 0;
-    for (; _507D30_idx < pSkyPolygon.uNumVertices; _507D30_idx++) {
+    for (; _507D30_idx < uNumVertices; _507D30_idx++) {
         // outbound screen x dist
         float x_dist = inv_viewplanedist * (pBLVRenderParams->uViewportCenterX - VertexRenderList[_507D30_idx].vWorldViewProjX);
         // outbound screen y dist
         float y_dist = inv_viewplanedist * (blv_horizon_height_offset - VertexRenderList[_507D30_idx].vWorldViewProjY);
 
         // rotate vectors to cam facing
-        float skyfinalleft = (pSkyPolygon.ptr_38->CamVecLeft_X * x_dist) + (pSkyPolygon.ptr_38->CamVecLeft_Z * y_dist) + pSkyPolygon.ptr_38->CamVecLeft_Y;
-        float skyfinalfront = (pSkyPolygon.ptr_38->CamVecFront_X * x_dist) + (pSkyPolygon.ptr_38->CamVecFront_Z * y_dist) + pSkyPolygon.ptr_38->CamVecFront_Y;
+        float skyfinalleft = (SkyBillboard.CamVecLeft_X * x_dist) + (SkyBillboard.CamVecLeft_Z * y_dist) + SkyBillboard.CamVecLeft_Y;
+        float skyfinalfront = (SkyBillboard.CamVecFront_X * x_dist) + (SkyBillboard.CamVecFront_Z * y_dist) + SkyBillboard.CamVecFront_Y;
 
         // pitch rotate sky to get top projection
         float newX = v_18x + v_18y + (v_18z * y_dist);
@@ -912,32 +906,32 @@ void OpenGLRenderer::DrawIndoorSky(unsigned int uNumVertices, int uFaceID) {
 
         // offset tex coords
         float texoffset_U = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalleft * worldviewdepth) / 16.0f);
-        VertexRenderList[_507D30_idx].u = texoffset_U / (pSkyPolygon.texture->width());
+        VertexRenderList[_507D30_idx].u = texoffset_U / (pFace->GetTexture()->width());
         float texoffset_V = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalfront * worldviewdepth) / 16.0f);
-        VertexRenderList[_507D30_idx].v = texoffset_V / (pSkyPolygon.texture->height());
+        VertexRenderList[_507D30_idx].v = texoffset_V / (pFace->GetTexture()->height());
 
         // this basically acts as texture perspective correction
         VertexRenderList[_507D30_idx]._rhw = worldviewdepth;
     }
 
     // no clipped polygon so draw and return??
-    if (_507D30_idx >= pSkyPolygon.uNumVertices) {
-        DrawIndoorSkyPolygon(pSkyPolygon.uNumVertices, &pSkyPolygon);
+    if (_507D30_idx >= uNumVertices) {
+        DrawIndoorSkyPolygon(uNumVertices, pFace->GetTexture(), dimming_level);
         return;
     }
 }
 
-void OpenGLRenderer::DrawIndoorSkyPolygon(signed int uNumVertices, Polygon *pSkyPolygon) {
-    int texid = pSkyPolygon->texture->renderId().value();
+void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *texture, int dimmingLevel) {
+    int texid = texture->renderId().value();
 
-    Colorf uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
+    Colorf uTint = GetActorTintColor(dimmingLevel, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
     float scrspace{ pCamera3D->GetFarClip() };
 
     float oneon = 1.0f / (pCamera3D->GetNearClip() * 2.0f);
     float oneof = 1.0f / (pCamera3D->GetFarClip());
 
     // load up poly
-    for (int z = 0; z < (pSkyPolygon->uNumVertices - 2); z++) {
+    for (int z = 0; z < (uNumVertices - 2); z++) {
         // 123, 134, 145, 156..
         forcepersverts *thisvert = &forceperstore[forceperstorecnt];
         float oneoz = 1.0f / VertexRenderList[0].vWorldViewPosition.x;
@@ -1240,11 +1234,6 @@ void OpenGLRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, 
     float col = (blend_mode == 2) ? 1.0f : 0.5f;
     Colorf cf = Colorf(col, col, col);
 
-    int clipx = this->clip_x;
-    int clipy = this->clip_y;
-    int clipw = this->clip_w;
-    int clipz = this->clip_z;
-
     int width = pSrcRect->w;
     int height = pSrcRect->h;
 
@@ -1254,9 +1243,12 @@ void OpenGLRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, 
     int w = y + height;
 
     // check bounds
-    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || y >= outputRender.h)
+        return;
+
     // check for overlap
-    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
+    if (!Recti(*pTargetPoint, pSrcRect->size()).intersects(this->clipRect))
+        return;
 
     float gltexid = static_cast<float>(texture->renderId().value());
     int texwidth = texture->width();
@@ -1538,12 +1530,12 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 }
 
                 // next calculate all vertices vertices
-                unsigned norm_idx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 2 /*+ 1*/];  // 2 is top tri // 3 is bottom
-                unsigned bottnormidx = pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 3];
-                assert(norm_idx < pTerrainNormals.size());
-                assert(bottnormidx < pTerrainNormals.size());
-                Vec3f *norm = &pTerrainNormals[norm_idx];
-                Vec3f *norm2 = &pTerrainNormals[bottnormidx];
+                unsigned norm_idx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 2 /*+ 1*/];  // 2 is top tri // 3 is bottom
+                unsigned bottnormidx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 3];
+                assert(norm_idx < pOutdoor->pTerrain.pTerrainNormals.size());
+                assert(bottnormidx < pOutdoor->pTerrain.pTerrainNormals.size());
+                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[norm_idx];
+                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[bottnormidx];
 
                 // calc each vertex
                 // [0] - x,y        n1
@@ -1769,6 +1761,14 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
         glUniform3f(terrainshader.uniformLocation("sun.specular"), 0, 0, 0);
     }
 
+    // Sea colouring
+    if (engine->IsUnderwater()) {
+        Colorf sea = colorTable.Eucalyptus.toColorf();
+        glUniform3f(terrainshader.uniformLocation("sun.ambient"), sea.r * ambient, sea.g * ambient, sea.b * ambient);
+        glUniform3f(terrainshader.uniformLocation("sun.diffuse"), sea.r * (ambient + 0.3), sea.g * (ambient + 0.3), sea.b * (ambient + 0.3));
+        //glUniform3f(terrainshader.uniformLocation("sun.specular"), 0, 0, 0);
+    }
+
 
     // TODO(pskelton): this should be a seperate function
     // rest of lights stacking
@@ -1886,17 +1886,13 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     // loop over blood to lay
     for (unsigned i = 0; i < NumBloodsplats; ++i) {
         // approx location of bloodsplat
-        int splatx = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos.x;
-        int splaty = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos.y;
-        int splatz = decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos.z;
-        int testx = WorldPosToGridCellX(splatx);
-        int testy = WorldPosToGridCellY(splaty);
+        Vec2i gridPos = WorldPosToGrid(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos);
         // use terrain squares in block surrounding to try and stack faces
 
         int scope = std::ceil(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].radius / 512);
 
-        for (int loopy = (testy - scope); loopy <= (testy + scope); ++loopy) {
-            for (int loopx = (testx - scope); loopx <= (testx + scope); ++loopx) {
+        for (int loopy = (gridPos.y - scope); loopy <= (gridPos.y + scope); ++loopy) {
+            for (int loopx = (gridPos.x - scope); loopx <= (gridPos.x + scope); ++loopx) {
                 if (loopy < 0) continue;
                 if (loopy > 127) continue;
                 if (loopx < 0) continue;
@@ -1948,40 +1944,37 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     continue;
 
                 // splat hits this square of terrain
-                Polygon *pTilePolygon = &array_77EC08[pODMRenderParams->uNumPolygons];
-                pTilePolygon->flags = pOutdoor->getTileAttribByGrid(loopx, loopy);
+                TileFlags terrainFlags = pOutdoor->getTileAttribByGrid(loopx, loopy);
 
-                unsigned norm_idx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
-                unsigned bottnormidx = pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
-                assert(norm_idx < pTerrainNormals.size());
-                assert(bottnormidx < pTerrainNormals.size());
-                Vec3f *norm = &pTerrainNormals[norm_idx];
-                Vec3f *norm2 = &pTerrainNormals[bottnormidx];
+                unsigned norm_idx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
+                unsigned bottnormidx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
+                assert(norm_idx < pOutdoor->pTerrain.pTerrainNormals.size());
+                assert(bottnormidx < pOutdoor->pTerrain.pTerrainNormals.size());
+                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[norm_idx];
+                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[bottnormidx];
 
                 float Light_tile_dist = 0.0;
 
                 // top tri
                 float _f1 = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
-                pTilePolygon->dimming_level = 20.0f - floorf(20.0f * _f1 + 0.5f);
-                pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
+                int dimming_level = std::clamp(static_cast<int>(20.0f - floorf(20.0f * _f1 + 0.5f)), 0, 31);
 
-                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon->flags, norm, &Light_tile_dist, VertexRenderList, i);
+                decal_builder->ApplyBloodSplatToTerrain(terrainFlags, norm, &Light_tile_dist, VertexRenderList, i);
                 Planef plane;
                 plane.normal = *norm;
                 plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)
-                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, plane, 3, VertexRenderList, 0, -1);
+                    decal_builder->BuildAndApplyDecals(31 - dimming_level, LocationTerrain, plane, 3, VertexRenderList, 0, -1);
 
                 //bottom tri
                 float _f = norm2->x * pOutdoor->vSunlight.x + norm2->y * pOutdoor->vSunlight.y + norm2->z * pOutdoor->vSunlight.z;
-                pTilePolygon->dimming_level = 20.0 - floorf(20.0 * _f + 0.5f);
-                pTilePolygon->dimming_level = std::clamp((int)pTilePolygon->dimming_level, 0, 31);
+                dimming_level = std::clamp(static_cast<int>(20.0 - floorf(20.0 * _f + 0.5f)), 0, 31);
 
-                decal_builder->ApplyBloodSplatToTerrain(pTilePolygon->flags, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
+                decal_builder->ApplyBloodSplatToTerrain(terrainFlags, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
                 plane.normal = *norm2;
                 plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)
-                    decal_builder->BuildAndApplyDecals(31 - pTilePolygon->dimming_level, LocationTerrain, plane, 3, (VertexRenderList + 3), 0, -1);
+                    decal_builder->BuildAndApplyDecals(31 - dimming_level, LocationTerrain, plane, 3, (VertexRenderList + 3), 0, -1);
             }
         }
     }
@@ -1991,9 +1984,6 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
     // end shder version
 }
-
-// TODO(pskelton): drop - this is now obselete with shader terrain drawing
-void OpenGLRenderer::DrawTerrainPolygon(Polygon *poly, bool transparent, bool clampAtTextureBorders) { return; }
 
 // TODO(pskelton): renderbase
 void OpenGLRenderer::DrawOutdoorSky() {
@@ -2012,11 +2002,6 @@ void OpenGLRenderer::DrawOutdoorSky() {
         (depth_to_far_clip + 0.0000001) *
         (height_to_far_clip - (double)pCamera3D->vCameraPos.z));
 
-    struct Polygon pSkyPolygon;
-    pSkyPolygon.texture = nullptr;
-    pSkyPolygon.ptr_38 = &SkyBillboard;
-
-
     // if ( pParty->uCurrentHour > 20 || pParty->uCurrentHour < 5 )
     // pSkyPolygon.uTileBitmapID = pOutdoor->New_SKY_NIGHT_ID;
     // else
@@ -2025,12 +2010,11 @@ void OpenGLRenderer::DrawOutdoorSky() {
     // (int)&pBitmaps_LOD->pTextures[pSkyPolygon.uTileBitmapID] : 0);
 
     if (!pOutdoor->sky_texture)
-        pOutdoor->sky_texture = assets->getBitmap("plansky3");
+        pOutdoor->sky_texture = assets->getBitmap("plansky3"); // TODO(pskelton): do we need this?
 
-    pSkyPolygon.texture = pOutdoor->sky_texture;
-    if (pSkyPolygon.texture) {
-        pSkyPolygon.dimming_level = (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)? 31 : 0;
-        pSkyPolygon.uNumVertices = 4;
+    if (pOutdoor->sky_texture) {
+        int dimming_level = (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)? 31 : 0;
+        int uNumVertices = 4;
 
         // centering(центруем)-----------------------------------------------------------------
         // plane of sky polygon rotation vector - pitch rotation around y
@@ -2064,15 +2048,15 @@ void OpenGLRenderer::DrawOutdoorSky() {
 
         float widthperpixel = 1 / pCamera3D->ViewPlaneDistPixels;
 
-        for (unsigned i = 0; i < pSkyPolygon.uNumVertices; ++i) {
+        for (unsigned i = 0; i < uNumVertices; ++i) {
             // outbound screen X dist
             float x_dist = widthperpixel * (pViewport->uScreenCenterX - VertexRenderList[i].vWorldViewProjX);
             // outbound screen y dist
             float y_dist = widthperpixel * (horizon_height_offset - VertexRenderList[i].vWorldViewProjY);
 
             // rotate vectors to cam facing
-            float skyfinalleft = (pSkyPolygon.ptr_38->CamVecLeft_X * x_dist) + (pSkyPolygon.ptr_38->CamVecLeft_Z * y_dist) + pSkyPolygon.ptr_38->CamVecLeft_Y;
-            float skyfinalfront = (pSkyPolygon.ptr_38->CamVecFront_X * x_dist) + (pSkyPolygon.ptr_38->CamVecFront_Z * y_dist) + pSkyPolygon.ptr_38->CamVecFront_Y;
+            float skyfinalleft = (SkyBillboard.CamVecLeft_X * x_dist) + (SkyBillboard.CamVecLeft_Z * y_dist) + SkyBillboard.CamVecLeft_Y;
+            float skyfinalfront = (SkyBillboard.CamVecFront_X * x_dist) + (SkyBillboard.CamVecFront_Z * y_dist) + SkyBillboard.CamVecFront_Y;
 
             // pitch rotate sky to get top
             float top_y_proj = v18x + v18y + v18z * y_dist;
@@ -2083,9 +2067,9 @@ void OpenGLRenderer::DrawOutdoorSky() {
 
             // offset tex coords
             float texoffset_U = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalleft * worldviewdepth));
-            VertexRenderList[i].u = texoffset_U / ((float) pSkyPolygon.texture->width());
+            VertexRenderList[i].u = texoffset_U / ((float) pOutdoor->sky_texture->width());
             float texoffset_V = pMiscTimer->time().realtimeMillisecondsFloat() + ((skyfinalfront * worldviewdepth));
-            VertexRenderList[i].v = texoffset_V / ((float) pSkyPolygon.texture->height());
+            VertexRenderList[i].v = texoffset_V / ((float) pOutdoor->sky_texture->height());
 
             VertexRenderList[i].vWorldViewPosition.x = pCamera3D->GetFarClip();
 
@@ -2117,15 +2101,14 @@ void OpenGLRenderer::DrawOutdoorSky() {
 
         _set_ortho_projection(1);
         _set_ortho_modelview();
-        DrawOutdoorSkyPolygon(&pSkyPolygon);
+        DrawOutdoorSkyPolygon(uNumVertices, pOutdoor->sky_texture, dimming_level);
     }
 }
 
 
 
 //----- (004A2DA3) --------------------------------------------------------
-void OpenGLRenderer::DrawOutdoorSkyPolygon(Polygon *pSkyPolygon) {
-    auto texture = pSkyPolygon->texture;
+void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *texture, int dimmingLevel) {
     auto texid = texture->renderId().value();
 
     static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
@@ -2135,13 +2118,13 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(Polygon *pSkyPolygon) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    Colorf uTint = GetActorTintColor(pSkyPolygon->dimming_level, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
+    Colorf uTint = GetActorTintColor(dimmingLevel, 0, VertexRenderList[0].vWorldViewPosition.x, 1, 0).toColorf();
     float scrspace{ pCamera3D->GetFarClip() };
 
 
 
     // load up poly
-    for (int z = 0; z < (pSkyPolygon->uNumVertices - 2); z++) {
+    for (int z = 0; z < (numVertices - 2); z++) {
         // 123, 134, 145, 156..
         forcepersverts *thisvert = &forceperstore[forceperstorecnt];
 
@@ -2710,17 +2693,13 @@ void OpenGLRenderer::SetBillboardBlendOptions(RenderBillboardD3D::OpacityType a1
     return;
 }
 
-void OpenGLRenderer::SetUIClipRect(unsigned int x, unsigned int y, unsigned int z,
-                                   unsigned int w) {
-    this->clip_x = x;
-    this->clip_y = y;
-    this->clip_z = z;
-    this->clip_w = w;
-    glScissor(x, outputRender.h -w, z-x, w-y);  // invert glscissor co-ords 0,0 is BL
+void OpenGLRenderer::SetUIClipRect(const Recti &rect) {
+    this->clipRect = rect;
+    glScissor(rect.x, outputRender.h - rect.y - rect.h, rect.w, rect.h);  // invert glscissor co-ords 0,0 is BL
 }
 
 void OpenGLRenderer::ResetUIClipRect() {
-    this->SetUIClipRect(0, 0, outputRender.w, outputRender.h);
+    this->SetUIClipRect(Recti(Pointi(0, 0), outputRender));
 }
 
 void OpenGLRenderer::BeginScene2D() {
@@ -2752,11 +2731,6 @@ void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color 
 
     Colorf cf = colourmask.toColorf();
 
-    int clipx = this->clip_x;
-    int clipy = this->clip_y;
-    int clipw = this->clip_w;
-    int clipz = this->clip_z;
-
     int width = tex->width();
     int height = tex->height();
 
@@ -2766,16 +2740,20 @@ void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color 
     int w = y + height;
 
     // check bounds
-    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || y >= outputRender.h)
+        return;
+
     // check for overlap
-    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
+    Recti clippedRect = Recti(x, y, width, height).intersection(this->clipRect);
+    if (clippedRect.isEmpty())
+        return;
 
     float gltexid = tex->renderId().value();
 
-    float drawx = static_cast<float>(std::max(x, this->clip_x));
-    float drawy = static_cast<float>(std::max(y, this->clip_y));
-    float draww = static_cast<float>(std::min(w, this->clip_w));
-    float drawz = static_cast<float>(std::min(z, this->clip_z));
+    float drawx = clippedRect.x;
+    float drawy = clippedRect.y;
+    float drawz = clippedRect.x + clippedRect.w;
+    float draww = clippedRect.y + clippedRect.h;
 
     float texx = (drawx - x) / float(width);
     float texy = (drawy - y) / float(height);
@@ -2859,11 +2837,6 @@ void OpenGLRenderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *im
 
     Colorf cf(1.0f, 1.0f, 1.0f);
 
-    int clipx = this->clip_x;
-    int clipy = this->clip_y;
-    int clipw = this->clip_w;
-    int clipz = this->clip_z;
-
     int width = img->width();
     int height = img->height();
 
@@ -2873,16 +2846,19 @@ void OpenGLRenderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *im
     int w = y + custom_height;
 
     // check bounds
-    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || y >= outputRender.h) return;
+
     // check for overlap
-    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
+    Recti clippedRect = Recti(x, y, width, custom_height).intersection(this->clipRect);
+    if (clippedRect.isEmpty())
+        return;
 
     float gltexid = img->renderId().value();
 
-    float drawx = static_cast<float>(std::max(x, this->clip_x));
-    float drawy = static_cast<float>(std::max(y, this->clip_y));
-    float draww = static_cast<float>(std::min(w, this->clip_w));
-    float drawz = static_cast<float>(std::min(z, this->clip_z));
+    float drawx = clippedRect.x;
+    float drawy = clippedRect.y;
+    float drawz = clippedRect.x + clippedRect.w;
+    float draww = clippedRect.y + clippedRect.h;
 
     float texx = (drawx - x) / float(width);
     float texy = (drawy - y) / float(height);
@@ -3080,17 +3056,15 @@ void OpenGLRenderer::DrawTextNew(int x, int y, int width, int h, float u1, float
     if (cf.r == 0.0f)
         cf.r = 0.00392f;
 
-    int clipx = this->clip_x;
-    int clipy = this->clip_y;
-    int clipw = this->clip_w;
-    int clipz = this->clip_z;
-
     int z = x + width;
     int w = y + h;
+
     // check bounds
-    if (x >= outputRender.w || x >= clipz || y >= outputRender.h || y >= clipw) return;
+    if (x >= outputRender.w || y >= outputRender.h)
+        return;
+
     // check for overlap
-    if (!(clipx < z && clipz > x && clipy < w && clipw > y)) return;
+    if (!Recti(x, y, width, h).intersects(this->clipRect)) return;
 
     float drawx = static_cast<float>(x);
     float drawy = static_cast<float>(y);
@@ -3310,8 +3284,10 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                         int texlayer = 0;
                         int attribflags = 0;
 
-                        if (face.uAttributes & FACE_IsFluid) attribflags |= 2;
-                        if (face.uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
+                        if (face.uAttributes & FACE_IsFluid)
+                            attribflags |= 2;
+                        if (face.uAttributes & FACE_INDOOR_SKY)
+                            attribflags |= 0x400;
 
                         if (face.uAttributes & FACE_FlowDown)
                             attribflags |= 0x400;
@@ -3528,8 +3504,10 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                                 int attribflags = 0;
 
-                                if (face.uAttributes & FACE_IsFluid) attribflags |= 2;
-                                if (face.uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
+                                if (face.uAttributes & FACE_IsFluid)
+                                    attribflags |= 2;
+                                if (face.uAttributes & FACE_INDOOR_SKY)
+                                    attribflags |= 0x400;
 
                                 if (face.uAttributes & FACE_FlowDown)
                                     attribflags |= 0x400;
@@ -3805,19 +3783,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                 continue;
             }
 
-            Polygon *poly = &array_77EC08[pODMRenderParams->uNumPolygons];
-            poly->flags = 0;
-            poly->field_32 = 0;
-
-            // if (v53 == face.uNumVertices) poly->field_32 |= 1;
-            poly->pODMFace = &face;
-            poly->uNumVertices = face.uNumVertices;
-            poly->field_59 = 5;
-
-
             float _f1 = face.facePlane.normal.x * pOutdoor->vSunlight.x + face.facePlane.normal.y * pOutdoor->vSunlight.y + face.facePlane.normal.z * pOutdoor->vSunlight.z;
-            poly->dimming_level = 20.0 - floorf(20.0 * _f1 + 0.5f);
-            poly->dimming_level = std::clamp((int)poly->dimming_level, 0, 31);
+            int dimming_level = std::clamp(static_cast<int>(20.0 - floorf(20.0 * _f1 + 0.5f)), 0, 31);
 
             for (unsigned vertex_id = 1; vertex_id <= face.uNumVertices; vertex_id++) {
                 array_73D150[vertex_id - 1].vWorldPosition.x =
@@ -3836,7 +3803,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
             decal_builder->ApplyBloodSplat_OutdoorFace(&face);
             if (decal_builder->uNumSplatsThisFace > 0) {
                 decal_builder->BuildAndApplyDecals(
-                    31 - poly->dimming_level, LocationBuildings,
+                    31 - dimming_level, LocationBuildings,
                     face.facePlane,
                     face.uNumVertices, VertexRenderList, 0, -1);
             }
@@ -3932,8 +3899,10 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 int texlayer = 0;
                 int attribflags = 0;
 
-                if (face->uAttributes & FACE_IsFluid) attribflags |= 2;
-                if (face->uAttributes & FACE_INDOOR_SKY) attribflags |= 0x400;
+                if (face->uAttributes & FACE_IsFluid)
+                    attribflags |= 2;
+                if (face->uAttributes & FACE_INDOOR_SKY)
+                    attribflags |= 0x400;
 
                 if (face->uAttributes & FACE_FlowDown)
                     attribflags |= 0x400;
@@ -4110,6 +4079,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 if (uFaceID >= pIndoor->pFaces.size())
                     continue;
                 BLVFace *face = &pIndoor->pFaces[uFaceID];
+                face->uAttributes |= FACE_SeenByParty;
 
                 if (face->isPortal()) {
                     continue;
@@ -4136,8 +4106,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 static RenderVertexSoft static_vertices_buff_in[64];  // buff in
                 static RenderVertexSoft static_vertices_calc_out[64];  // buff out - calc portal shape
 
-                // moved face to camera check to avoid missing minimap outlines
-                if (/*pCamera3D->is_face_faced_to_cameraBLV(face) ||*/ true) {
+                // check face is towards camera
+                if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
                     uNumVerticesa = face->uNumVertices;
 
                     // copy to buff in
@@ -4166,17 +4136,15 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                     // check if this face is visible through current portal node
                     if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)) {
-                        face->uAttributes |= FACE_SeenByParty;
-
-                        // check face is towards camera
-                        if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
+                        if (true) {
                             ++pBLVRenderParams->uNumFacesRenderedThisFrame;
                             // load up verts here
                             int texlayer = 0;
                             int texunit = 0;
                             int attribflags = 0;
 
-                            if (face->uAttributes & FACE_IsFluid) attribflags |= 2;
+                            if (face->uAttributes & FACE_IsFluid)
+                                attribflags |= 2;
 
                             if (face->uAttributes & FACE_FlowDown)
                                 attribflags |= 0x400;
@@ -4722,28 +4690,25 @@ void OpenGLRenderer::_shutdownImGui() {
     ImGui::DestroyContext();
 }
 
-void OpenGLRenderer::FillRectFast(unsigned int uX, unsigned int uY, unsigned int uWidth,
-                                  unsigned int uHeight, Color uColor32) {
-    Colorf cf = uColor32.toColorf();
-
-    float depth = 0;
-    int x = uX;
-    int y = uY;
-    int z = x + uWidth;
-    int w = y + uHeight;
+void OpenGLRenderer::FillRectFast(int x, int y, int width, int height, Color color) {
+    Colorf cf = color.toColorf();
 
     // check bounds
-    if (x >= outputRender.w || x >= this->clip_z || y >= outputRender.h || y >= this->clip_w) return;
+    if (x >= outputRender.w || y >= outputRender.h)
+        return;
+
     // check for overlap
-    if (!(this->clip_x < z && this->clip_z > x && this->clip_y < w && this->clip_w > y)) return;
+    Recti clippedRect = Recti(x, y, width, height).intersection(this->clipRect);
+    if (clippedRect.isEmpty())
+        return;
 
     static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
     float gltexid = static_cast<float>(effpar03->renderId().value());
 
-    float drawx = static_cast<float>(std::max(x, this->clip_x));
-    float drawy = static_cast<float>(std::max(y, this->clip_y));
-    float draww = static_cast<float>(std::min(w, this->clip_w));
-    float drawz = static_cast<float>(std::min(z, this->clip_z));
+    float drawx = clippedRect.x;
+    float drawy = clippedRect.y;
+    float drawz = clippedRect.x + clippedRect.w;
+    float draww = clippedRect.y + clippedRect.h;
 
     float texx = 0.5f;
     float texy = 0.5f;
@@ -4880,9 +4845,7 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
     // Swap Buffers (Double Buffering)
     openGLContext->swapBuffers();
 
-    this->clip_x = this->clip_y = 0;
-    this->clip_z = outputRender.w;
-    this->clip_w = outputRender.h;
+    this->clipRect = Recti(Pointi(0, 0), outputRender);
 
     // PostInitialization();
 
@@ -5009,7 +4972,8 @@ bool OpenGLRenderer::ReloadShaders() {
     };
 
     for (const auto &[shader, fileName, readableName] : shaders) {
-        if (!shader->load(makeDataPath("shaders", fmt::format("{}.vert", fileName)), makeDataPath("shaders", fmt::format("{}.frag", fileName)), OpenGLES)) {
+        if (!shader->load(dfs->read(fmt::format("shaders/{}.vert", fileName)),
+                          dfs->read(fmt::format("shaders/{}.frag", fileName)), OpenGLES)) {
             platform->showMessageBox("CRITICAL ERROR: shader compilation failure",
                                      fmt::format("{} shader failed to compile!\nPlease consult the log and consider issuing a bug report!", readableName));
             return false;
@@ -5111,10 +5075,7 @@ void OpenGLRenderer::ReleaseBSP() {
 void OpenGLRenderer::DrawTwodVerts() {
     if (!twodvertscnt) return;
 
-    int savex = this->clip_x;
-    int savey = this->clip_y;
-    int savez = this->clip_z;
-    int savew = this->clip_w;
+    Recti savedClipRect = this->clipRect;
     render->ResetUIClipRect();
 
     if (twodVAO == 0) {
@@ -5228,7 +5189,7 @@ void OpenGLRenderer::DrawTwodVerts() {
     glBindVertexArray(0);
 
     twodvertscnt = 0;
-    render->SetUIClipRect(savex, savey, savez, savew);
+    render->SetUIClipRect(savedClipRect);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }

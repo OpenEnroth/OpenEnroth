@@ -8,9 +8,10 @@
 
 #include <nuklear_config.h> // NOLINT: not a C system header.
 
+#include "Engine/EngineFileSystem.h"
+#include "Engine/Engine.h"
 #include "Library/Logger/Logger.h"
 #include "Engine/Graphics/Image.h"
-#include "Utility/DataPath.h"
 
 struct nk_vertex {
     float position[2]{};
@@ -282,7 +283,7 @@ void NuklearOverlayRenderer::render(nk_context *context, const Sizei &outputPres
 }
 
 void NuklearOverlayRenderer::reloadShaders(bool useOGLES) {
-    if (_shader.load(makeDataPath("shaders", "glnuklear.vert"), makeDataPath("shaders", "glnuklear.frag"), useOGLES)) {
+    if (_shader.load(dfs->read("shaders/glnuklear.vert"), dfs->read("shaders/glnuklear.frag"), useOGLES)) {
         _uniformTex = _shader.uniformLocation("Texture");
         _uniformProj = _shader.uniformLocation("ProjMtx");
         _attribPos = _shader.attribLocation("Position");

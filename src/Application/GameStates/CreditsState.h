@@ -1,10 +1,9 @@
 #pragma once
 
 #include <Library/Fsm/FsmState.h>
+#include <GUI/UI/UICredits.h>
 
 #include <memory>
-
-class GUICredits;
 
 class CreditsState : public FsmState {
  public:
@@ -15,5 +14,4 @@ class CreditsState : public FsmState {
 
  private:
     std::unique_ptr<GUICredits> _uiCredits;
-    bool _scheduleBackTransition = false;
 };

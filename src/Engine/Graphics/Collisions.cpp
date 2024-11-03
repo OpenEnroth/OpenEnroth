@@ -476,11 +476,11 @@ void CollideIndoorWithDecorations() {
         CollideWithDecoration(sector->pDecorationIDs[i]);
 }
 
-void CollideOutdoorWithDecorations(int grid_x, int grid_y) {
-    if (grid_x < 0 || grid_x > 127 || grid_y < 0 || grid_y > 127)
+void CollideOutdoorWithDecorations(Vec2i gridPos) {
+    if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return;
 
-    int grid_index = grid_x + (grid_y << 7);
+    int grid_index = gridPos.x + (gridPos.y << 7);
     int list_index = pOutdoor->pOMAP[grid_index];
 
     for(int i = list_index; i < pOutdoor->pFaceIDLIST.size(); i++) {
@@ -744,7 +744,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
             break;
 
         CollideOutdoorWithModels(true);
-        CollideOutdoorWithDecorations(WorldPosToGridCellX(actor.pos.x), WorldPosToGridCellY(actor.pos.y));
+        CollideOutdoorWithDecorations(WorldPosToGrid(actor.pos));
         CollideWithParty(false);
         _46ED8A_collide_against_sprite_objects(Pid(OBJECT_Actor, actor.id));
 
@@ -945,6 +945,18 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                 if (collision_state.pid.id() == 398) // Secret tunnel under prison bed
                     bFaceSlopeTooSteep = false;
             }
+            if (engine->_currentLoadedMapId == MapId::MAP_HALL_OF_THE_PIT) {
+                if (collision_state.pid.id() == 787 || collision_state.pid.id() == 832 || collision_state.pid.id() == 790)
+                    bFaceSlopeTooSteep = false;
+            }
+            if (engine->_currentLoadedMapId == MAP_CASTLE_GLOAMING) {
+                if (collision_state.pid.id() == 2439 || collision_state.pid.id() == 2438 || collision_state.pid.id() == 2437 || collision_state.pid.id() == 2436) // gloaming
+                    bFaceSlopeTooSteep = false;
+            }
+
+            // TODO(pskelton): This 'catch all' is probably unsafe - would be better as above
+            if (bFaceSlopeTooSteep && pFace->Invisible() && pFace->uPolygonType == PolygonType::POLYGON_InBetweenFloorAndWall)
+                bFaceSlopeTooSteep = false;
 
             // new sliding plane
             Vec3f slidePlaneOrigin = collision_state.collisionPos;
@@ -972,6 +984,10 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 
             if (pFace->uPolygonType == POLYGON_Floor) {
                 float new_party_z_tmp = pIndoor->pVertices[*pFace->pVertexIDs].z;
+                // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
+                // weve collided with its edge and we should step up onto its level.
+                if (pParty->velocity.z > 0.0f)
+                    pParty->pos.z = new_party_z_tmp;
                 if (pParty->uFallStartZ - new_party_z_tmp < 512)
                     pParty->uFallStartZ = new_party_z_tmp;
             }
@@ -1007,7 +1023,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
         }
 
         CollideOutdoorWithModels(true);
-        CollideOutdoorWithDecorations(WorldPosToGridCellX(pParty->pos.x), WorldPosToGridCellY(pParty->pos.y));
+        CollideOutdoorWithDecorations(WorldPosToGrid(pParty->pos));
         _46ED8A_collide_against_sprite_objects(Pid::character(0));
         if (!engine->config->gameplay.NoPartyActorCollisions.value()) {
             for (size_t actor_id = 0; actor_id < pActors.size(); ++actor_id)
@@ -1032,8 +1048,8 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
         float x_advance_floor = ODM_GetFloorLevel(Vec3f(newPosLow.x, partyNewPos->y, newPosLow.z), pParty->height, partyIsOnWater, &party_y_pid, 0);
         int party_x_pid;
         float y_advance_floor = ODM_GetFloorLevel(Vec3f(partyNewPos->x, newPosLow.y, newPosLow.z), pParty->height, partyIsOnWater, &party_x_pid, 0);
-        bool terr_slope_advance_x = IsTerrainSlopeTooHigh(newPosLow.x, partyNewPos->y);
-        bool terr_slope_advance_y = IsTerrainSlopeTooHigh(partyNewPos->x, newPosLow.y);
+        bool terr_slope_advance_x = IsTerrainSlopeTooHigh(Vec3f(newPosLow.x, partyNewPos->y, 0.0f));
+        bool terr_slope_advance_y = IsTerrainSlopeTooHigh(Vec3f(partyNewPos->x, newPosLow.y, 0.0f));
 
         *partyNotOnModel = false;
         if (!party_y_pid && !party_x_pid && !*floorFaceId) *partyNotOnModel = true;
@@ -1053,7 +1069,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             } else if (move_in_y) {
                 partyNewPos->y = newPosLow.y;
             } else {
-                if (IsTerrainSlopeTooHigh(newPosLow.x, newPosLow.y) && allnewfloor <= partyNewPos->z) {
+                if (IsTerrainSlopeTooHigh(newPosLow) && allnewfloor <= partyNewPos->z) {
                     // move down the hill is allowed
                     partyNewPos->x = newPosLow.x;
                     partyNewPos->y = newPosLow.y;
@@ -1143,6 +1159,13 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             if (pODMFace->uPolygonType == POLYGON_Floor || pODMFace->uPolygonType == POLYGON_InBetweenFloorAndWall) {
                 pParty->bFlying = false;
                 pParty->uFlags &= ~(PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
+            }
+
+            if (pODMFace->uPolygonType == POLYGON_Floor) {
+                // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
+                // weve collided with its edge and we should step up onto its level.
+                if (pParty->velocity.z > 0.0f)
+                    pParty->pos.z = pOutdoor->pBModels[collision_state.pid.id() >> 6].pVertices[pODMFace->pVertexIDs[0]].z;
             }
 
             continue;

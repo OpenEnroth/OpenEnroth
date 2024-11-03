@@ -11,7 +11,6 @@
 #include "Engine/Objects/Character.h"
 #include "Engine/Time/Time.h"
 #include "Engine/Time/Timer.h"
-#include "GUI/UI/UIHouseEnums.h"
 #include "Media/Audio/SoundEnums.h"
 #include "Utility/IndexedBitset.h"
 
@@ -298,7 +297,7 @@ struct Party {
     int hirelingScrollPosition;
     char cNonHireFollowers;  // number of non hireling party guests
 
-    // TODO(captainurist): #time drop all of these?
+    // TODO(captainurist): #time replace with GetCurrentCivilTime().
     unsigned int uCurrentYear;
     unsigned int uCurrentMonth;
     unsigned int uCurrentMonthWeek;

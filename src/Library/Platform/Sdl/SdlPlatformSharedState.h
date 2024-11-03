@@ -20,12 +20,11 @@ class Logger;
 
 class SdlPlatformSharedState {
  public:
-    explicit SdlPlatformSharedState(Logger *logger);
+    SdlPlatformSharedState();
     ~SdlPlatformSharedState();
 
     void logSdlError(const char *sdlFunctionName);
-    const LogCategory &logCategory() const;
-    Logger *logger() const;
+    static const LogCategory &logCategory();
 
     void registerWindow(SdlWindow *window);
     void unregisterWindow(SdlWindow *window);
@@ -42,7 +41,6 @@ class SdlPlatformSharedState {
     SdlGamepad *gamepad(SDL_JoystickID id) const;
 
  private:
-    Logger *_logger = nullptr;
     std::unordered_map<uint32_t, SdlWindow *> _windowById;
     std::unordered_map<SDL_JoystickID, std::unique_ptr<SdlGamepad>> _gamepadById;
     size_t _eventLoopCount = 0;

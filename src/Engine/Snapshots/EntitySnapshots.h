@@ -19,15 +19,14 @@
 
 class Actor;
 class Character;
-class Icon;
+struct IconFrameData;
 class Pid;
 struct RawCharacterConditions;
 struct RawTimer;
 class SoundInfo;
 class SpriteFrame;
 class TextureFrame;
-class TileDesc;
-class UIAnimation;
+struct TileData;
 struct ActiveOverlay;
 struct ActiveOverlayList;
 struct ActorJob;
@@ -55,7 +54,7 @@ struct OutdoorLocationTileType;
 struct OverlayDesc;
 struct Party;
 struct PersistentVariables;
-struct PlayerFrame;
+struct PortraitFrameData;
 struct SaveGameHeader;
 struct SpawnPoint;
 struct SpellBuff;
@@ -173,7 +172,7 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVFace_MM7)
 void reconstruct(const BLVFace_MM7 &src, BLVFace *dst);
 
 
-struct TileDesc_MM7 {
+struct TileData_MM7 {
     std::array<char, 16> tileName;
     uint16_t tileId;
     uint16_t bitmapId;
@@ -181,10 +180,10 @@ struct TileDesc_MM7 {
     uint16_t section;
     uint16_t attributes;
 };
-static_assert(sizeof(TileDesc_MM7) == 26);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(TileDesc_MM7)
+static_assert(sizeof(TileData_MM7) == 26);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(TileData_MM7)
 
-void reconstruct(const TileDesc_MM7 &src, TileDesc *dst);
+void reconstruct(const TileData_MM7 &src, TileData *dst);
 
 
 struct TextureFrame_MM7 {
@@ -398,12 +397,13 @@ struct Player_MM7 {
     /* 1A99 */ char healthRelated;
     /* 1A9A */ char fullManaBonus;
     /* 1A9B */ char manaRelated;
-    /* 1A9C */ uint16_t expression;
-    /* 1A9E */ uint16_t expressionTimePassed;
-    /* 1AA0 */ uint16_t expressionTimeLength;
-    /* 1AA2 */ int16_t field_1AA2;
-    /* 1AA4 */ int32_t _expression21_animtime;
-    /* 1AA8 */ int32_t _expression21_frameset;
+    /* 1A9C */ uint16_t portrait;
+    /* 1A9E */ uint16_t portraitTimePassed;
+    /* 1AA0 */ uint16_t portraitTimeLength;
+    /* 1AA2 */ int16_t portraitImageIndex;
+    /* 1AA4 */ int32_t talkAnimTime; // In OE we always set this to 0. Makes little sense to save & restore speech
+                                     // animation state since we don't restart speech sounds when loading a saved game.
+    /* 1AA8 */ int32_t talkFrameSet;
     /* 1AAC */ std::array<LloydBeacon_MM7, 5> installedBeacons;
     /* 1B38 */ char numDivineInterventionCasts;
     /* 1B39 */ char numArmageddonCasts;
@@ -620,22 +620,23 @@ void snapshot(const ActiveOverlayList &src, ActiveOverlayList_MM7 *dst);
 void reconstruct(const ActiveOverlayList_MM7 &src, ActiveOverlayList *dst);
 
 
-struct IconFrame_MM7 {
+struct IconFrameData_MM7 {
     std::array<char, 12> animationName;
     std::array<char, 12> textureName;
-    int16_t animTime;
-    int16_t animLength;
-    int16_t flags;  // 0x01 - more icons in this animation
+    int16_t frameLength;
+    int16_t animationLength;
+    int16_t flags;
     uint16_t textureId;
 };
-static_assert(sizeof(IconFrame_MM7) == 0x20);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(IconFrame_MM7)
+static_assert(sizeof(IconFrameData_MM7) == 0x20);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(IconFrameData_MM7)
 
-void snapshot(const Icon &src, IconFrame_MM7 *dst);
-void reconstruct(const IconFrame_MM7 &src, Icon *dst);
+void snapshot(const IconFrameData &src, IconFrameData_MM7 *dst);
+void reconstruct(const IconFrameData_MM7 &src, IconFrameData *dst);
 
 
-struct UIAnimation_MM7 {
+// This seems to be an MM6-only struct, not really used in MM7.
+struct UIAnimation_MM6 {
     /* 000 */ uint16_t iconId;
     /* 002 */ int16_t field_2;
     /* 004 */ int16_t animTime;
@@ -644,11 +645,8 @@ struct UIAnimation_MM7 {
     /* 00A */ int16_t y;
     /* 00C */ char field_C;
 };
-static_assert(sizeof(UIAnimation_MM7) == 0xD);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(UIAnimation_MM7)
-
-void snapshot(const UIAnimation &src, UIAnimation_MM7 *dst);
-void reconstruct(const UIAnimation_MM7 &src, UIAnimation *dst);
+static_assert(sizeof(UIAnimation_MM6) == 0xD);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(UIAnimation_MM6)
 
 
 struct MonsterInfo_MM7 {
@@ -1108,17 +1106,17 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(OverlayDesc_MM7)
 void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst);
 
 
-struct PlayerFrame_MM7 {
-    uint16_t expression;
-    uint16_t uTextureID;
-    int16_t uAnimTime;
-    int16_t uAnimLength;
-    int16_t uFlags;
+struct PortraitFrameData_MM7 {
+    uint16_t portrait;
+    uint16_t textureIndex;
+    int16_t frameLength;
+    int16_t animationLength;
+    int16_t flags;
 };
-static_assert(sizeof(PlayerFrame_MM7) == 10);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(PlayerFrame_MM7)
+static_assert(sizeof(PortraitFrameData_MM7) == 10);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(PortraitFrameData_MM7)
 
-void reconstruct(const PlayerFrame_MM7 &src, PlayerFrame *dst);
+void reconstruct(const PortraitFrameData_MM7 &src, PortraitFrameData *dst);
 
 
 struct LevelDecoration_MM7 {

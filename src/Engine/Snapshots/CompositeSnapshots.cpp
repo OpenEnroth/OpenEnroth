@@ -358,20 +358,15 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
     reconstruct(src.desciption, &dst->location_file_description);
     reconstruct(src.skyTexture, &dst->sky_texture_filename);
     // src.groundTilesetUnused is just dropped
-    reconstruct(src.tileTypes, &dst->pTileTypes);
-
-    dst->LoadTileGroupIds();
-    dst->LoadRoadTileset();
+    reconstruct(src.tileTypes, &dst->pTerrain.pTileTypes);
+    dst->pTerrain.LoadBaseTileIds();
 
     reconstruct(src.heightMap, &dst->pTerrain.pHeightmap);
     reconstruct(src.tileMap, &dst->pTerrain.pTilemap);
     reconstruct(src.attributeMap, &dst->pTerrain.pAttributemap);
 
-    dst->pTerrain.FillDMap(0, 0, 128, 128);
-
-    reconstruct(src.someOtherMap, &pTerrainSomeOtherData);
-    reconstruct(src.normalMap, &pTerrainNormalIndices);
-    reconstruct(src.normals, &pTerrainNormals);
+    reconstruct(src.normalMap, &dst->pTerrain.pTerrainNormalIndices);
+    reconstruct(src.normals, &dst->pTerrain.pTerrainNormals);
 
     dst->pBModels.clear();
     for (size_t i = 0; i < src.models.size(); i++) {

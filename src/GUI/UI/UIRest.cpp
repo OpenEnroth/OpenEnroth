@@ -109,15 +109,6 @@ void GUIWindow_Rest::Update() {
 
     if (liveCharacters) {
         render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, rest_ui_restmain);
-        int am_pm_hours = pParty->uCurrentHour;
-        //dword_506F1C = pGUIWindow_CurrentMenu->pCurrentPosActiveItem;
-        if (pParty->uCurrentHour <= 12) {
-            if (!am_pm_hours) {
-                am_pm_hours = 12;
-            }
-        } else {
-            am_pm_hours -= 12;
-        }
         render->DrawTextureNew(16 / 640.0f, 26 / 480.0f, rest_ui_sky_frame_current);
         if (rest_ui_hourglass_frame_current) {
             rest_ui_hourglass_frame_current->Release();
@@ -166,13 +157,16 @@ void GUIWindow_Rest::Update() {
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
         tmp_button.DrawLabel(localization->GetString(LSTR_WAIT_WITHOUT_HEALING), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
         tmp_button.pParent = 0;
-        std::string str2 = fmt::format("{}:{:02} {}", am_pm_hours, pParty->uCurrentMinute, localization->GetAmPm((pParty->uCurrentHour >= 12 && pParty->uCurrentHour < 24) ? 1 : 0));
+
+        CivilTime time = pParty->GetPlayingTime().toCivilTime();
+
+        std::string str2 = fmt::format("{}:{:02} {}", time.hourAmPm, time.minute, localization->GetAmPm(time.isPm));
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {368, 168}, colorTable.Diesel, str2, 0, colorTable.StarkWhite);
-        std::string str3 = fmt::format("{}\r190{}", localization->GetString(LSTR_DAY_CAPITALIZED), pParty->uCurrentDayOfMonth + 1);
+        std::string str3 = fmt::format("{}\r190{}", localization->GetString(LSTR_DAY_CAPITALIZED), time.day);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {350, 190}, colorTable.Diesel, str3, 0, colorTable.StarkWhite);
-        std::string str4 = fmt::format("{}\r190{}", localization->GetString(LSTR_MONTH), pParty->uCurrentMonth + 1);
+        std::string str4 = fmt::format("{}\r190{}", localization->GetString(LSTR_MONTH), time.month);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {350, 222}, colorTable.Diesel, str4, 0, colorTable.StarkWhite);
-        std::string str5 = fmt::format("{}\r190{}", localization->GetString(LSTR_YEAR), pParty->uCurrentYear);
+        std::string str5 = fmt::format("{}\r190{}", localization->GetString(LSTR_YEAR), time.year);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {350, 254}, colorTable.Diesel, str5, 0, colorTable.StarkWhite);
         if (currentRestType != REST_NONE) {
             Party::restOneFrame();

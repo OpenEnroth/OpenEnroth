@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 
+#include "Engine/Data/HouseEnums.h"
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Objects/CombinedSkillValue.h"
@@ -14,7 +15,6 @@
 #include "Engine/Objects/MonsterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Spells/SpellBuff.h"
-#include "Engine/Tables/BuildingTable.h"
 #include "Engine/Events/EventEnums.h"
 #include "Engine/Pid.h"
 
@@ -26,6 +26,8 @@
 
 #include "Utility/IndexedArray.h"
 #include "Utility/IndexedBitset.h"
+
+#include "TalkAnimation.h"
 
 class Actor;
 class GraphicsImage;
@@ -53,6 +55,14 @@ struct LloydBeacon {
     uint16_t unknown = 0;
     MapId mapId = MAP_INVALID;
     GraphicsImage *image = nullptr;
+};
+
+// HP/SP regeneration from items and spell
+// TODO(pskelton): maybe expand so we can handle different strength enchantments
+struct RegenData {
+    int hpRegen = 0; // From all sources except for regeneration buff, hp / 5 ticks.
+    int hpSpellRegen = 0; // From regeneration buff, hp / 5 ticks.
+    int spRegen = 0; // From all sources, mp / 5 ticks.
 };
 
 struct RawCharacterConditions {
@@ -131,7 +141,7 @@ class Character {
     int GetBaseAccuracy() const;
     int GetBaseSpeed() const;
     int GetBaseLuck() const;
-    int GetBaseStat(CharacterAttributeType stat) const;
+    int GetBaseStat(CharacterAttribute stat) const;
 
     int GetBaseLevel() const;
     int GetActualLevel() const;
@@ -143,7 +153,7 @@ class Character {
     int GetActualAccuracy() const;
     int GetActualSpeed() const;
     int GetActualLuck() const;
-    int GetActualStat(CharacterAttributeType stat) const;
+    int GetActualStat(CharacterAttribute stat) const;
 
     int GetActualAttack(bool onlyMainHandDmg) const;
     int GetMeleeDamageMinimal() const;
@@ -189,18 +199,18 @@ class Character {
     int GetActualAC() const;
     unsigned int GetBaseAge() const;
     unsigned int GetActualAge() const;
-    int GetBaseResistance(CharacterAttributeType a2) const;
-    int GetActualResistance(CharacterAttributeType resistance) const;
+    int GetBaseResistance(CharacterAttribute a2) const;
+    int GetActualResistance(CharacterAttribute resistance) const;
     void SetRecoveryTime(Duration sRecoveryTime);
     void RandomizeName();
     Condition GetMajorConditionIdx() const;
     int GetParameterBonus(int character_parameter) const;
     int GetSpecialItemBonus(ItemEnchantment enchantment) const;
-    int GetItemsBonus(CharacterAttributeType attr, bool getOnlyMainHandDmg = false) const;
-    int GetMagicalBonus(CharacterAttributeType a2) const;
+    int GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg = false) const;
+    int GetMagicalBonus(CharacterAttribute a2) const;
     int actualSkillLevel(CharacterSkillType skill) const;
     CombinedSkillValue getActualSkillValue(CharacterSkillType skill) const;
-    int GetSkillBonus(CharacterAttributeType a2) const;
+    int GetSkillBonus(CharacterAttribute a2) const;
     Race GetRace() const;
     std::string GetRaceName() const;
     CharacterSex GetSexByVoice() const;
@@ -208,12 +218,12 @@ class Character {
     void SetSexByVoice();
     void ChangeClass(CharacterClass classType);
     CharacterSkillType GetSkillIdxByOrder(signed int order);
-    void DecreaseAttribute(CharacterAttributeType eAttribute);
-    void IncreaseAttribute(CharacterAttributeType eAttribute);
+    void DecreaseAttribute(CharacterAttribute eAttribute);
+    void IncreaseAttribute(CharacterAttribute eAttribute);
     void resetTempBonuses();
-    Color GetStatColor(CharacterAttributeType uStat) const;
+    Color GetStatColor(CharacterAttribute uStat) const;
     bool DiscardConditionIfLastsLongerThan(Condition uCondition, Time time);
-    MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, BuildingType building_type, HouseId houseId, ShopScreen ShopMenuType);
+    MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, HouseType building_type, HouseId houseId, ShopScreen ShopMenuType);
     int GetBodybuilding() const;
     int GetMeditation() const;
     bool CanIdentify(ItemGen *pItem) const;
@@ -263,7 +273,7 @@ class Character {
     /**
      * @offset 0x494A25
      */
-    void playEmotion(CharacterExpressionID expression, Duration duration);
+    void playEmotion(CharacterPortrait newPortrait, Duration duration);
     void ItemsPotionDmgBreak(int enchant_count);
     unsigned int GetItemListAtInventoryIndex(int inout_item_cell);
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);
@@ -373,14 +383,16 @@ class Character {
 
     void setXP(int xp);
 
+    void tickRegeneration(int tick5, const RegenData &rData, bool stacking);
+
     CharacterConditions conditions;
     uint64_t experience;
     std::string name;
     CharacterSex uSex;
     CharacterClass classType;
     uint8_t uCurrentFace;
-    IndexedArray<int, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> _stats;
-    IndexedArray<int, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> _statBonuses;
+    IndexedArray<int, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> _stats;
+    IndexedArray<int, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> _statBonuses;
     int16_t sACModifier;
     uint16_t uLevel;
     int16_t sLevelModifier;
@@ -388,7 +400,7 @@ class Character {
     IndexedArray<CombinedSkillValue, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> pActiveSkills;
     IndexedBitset<1, 512> _achievedAwardsBits;
     IndexedArray<bool, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> bHaveSpell;
-    IndexedArray<bool, CHARACTER_ATTRIBUTE_FIRST_STAT, CHARACTER_ATTRIBUTE_LAST_STAT> _pureStatPotionUsed;
+    IndexedArray<bool, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> _pureStatPotionUsed;
     std::array<ItemGen, INVENTORY_SLOT_COUNT> pInventoryItemList;
     std::array<int, INVENTORY_SLOT_COUNT> pInventoryMatrix; // 0 => empty cell
                                                             // positive => subtract 1 to get an index into pInventoryItemList.
@@ -437,12 +449,11 @@ class Character {
     char _health_related;
     char uFullManaBonus;
     char _mana_related;
-    CharacterExpressionID expression;
-    Duration uExpressionTimePassed;
-    Duration uExpressionTimeLength;
-    int16_t uExpressionImageIndex;
-    Duration _expression21_animtime;
-    int _expression21_frameset;
+    CharacterPortrait portrait;
+    Duration portraitTimePassed;
+    Duration portraitTimeLength;
+    int16_t portraitImageIndex;
+    TalkAnimation talkAnimation;
     std::vector<LloydBeacon> vBeacons;
     char uNumDivineInterventionCastsThisDay;
     char uNumArmageddonCasts;
