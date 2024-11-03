@@ -1,10 +1,9 @@
 #pragma once
 
 #include <Library/Fsm/FsmState.h>
+#include <GUI/UI/UISaveLoad.h>
 
 #include <memory>
-
-class GUIWindow_Load;
 
 class LoadSlotState : public FsmState {
  public:
