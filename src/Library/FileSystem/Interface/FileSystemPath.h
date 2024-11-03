@@ -6,7 +6,7 @@
 #include <string_view>
 #include <utility>
 
-#include "Utility/String/Split.h"
+#include "FileSystemPathView.h"
 
 /**
  * `FileSystemPath` does path normalization for `FileSystem`, transforming passed paths into a normal form of
@@ -15,7 +15,6 @@
  * - Repeated path separators are replaced with a single one.
  * - Leading & trailing path separators are removed.
  * - `"."` and `".."` are collapsed.
- * - Leading `".."` are removed (since root is a parent of itself).
  * - Root path is stored as an empty string.
  *
  * Note that this means that `FileSystemPath` is different from `std::filesystem::path` in that there is no difference
@@ -26,8 +25,10 @@ class FileSystemPath {
  public:
     explicit FileSystemPath(std::string_view path);
 
+    explicit FileSystemPath(FileSystemPathView path) : _path(path.string()) {}
+
     static FileSystemPath fromNormalized(std::string path) {
-        assert(normalizePath(path) == path);
+        assert(FileSystemPath(path).string() == path);
 
         FileSystemPath result;
         result._path = std::move(path);
@@ -50,77 +51,28 @@ class FileSystemPath {
         return _path.empty();
     }
 
-    [[nodiscard]] bool isParentOf(const FileSystemPath &child) const {
-        if (isEmpty())
-            return true; // Root is a parent of everything, including itself.
-        return child._path.size() > _path.size() && child._path.starts_with(_path) && child._path[_path.size()] == '/';
+    [[nodiscard]] bool isPrefixOf(FileSystemPathView path) const {
+        return FileSystemPathView(*this).isPrefixOf(path);
     }
 
-    [[nodiscard]] bool isChildOf(const FileSystemPath &parent) const {
-        return parent.isParentOf(*this);
+    [[nodiscard]] bool isEscaping() const {
+        return FileSystemPathView(*this).isEscaping();
     }
 
     [[nodiscard]] const std::string &string() const {
         return _path;
     }
 
-    [[nodiscard]] auto chunks() const { // TODO(captainurist): fix usages now that we're not returning chunks
-        if (_path.empty()) {
-            return detail::SplitView();
-        } else {
-            return split(_path, '/');
-        }
+    [[nodiscard]] auto split() const {
+        return FileSystemPathView(*this).split();
     }
 
-    [[nodiscard]] FileSystemPath tailAt(std::string_view chunk) const {
-        assert(chunk.data() >= _path.data() && chunk.data() + chunk.size() <= _path.data() + _path.size());
-        size_t offset = chunk.data() - _path.data();
-        return fromNormalized(_path.substr(offset));
+    [[nodiscard]] FileSystemPathComponents components() const {
+        return FileSystemPathView(*this).components();
     }
 
-    [[nodiscard]] FileSystemPath tailAfter(std::string_view chunk) const {
-        if (chunk.empty())
-            return *this;
-
-        assert(chunk.data() >= _path.data() && chunk.data() + chunk.size() <= _path.data() + _path.size());
-
-        if (chunk.data() + chunk.size() == _path.data() + _path.size()) {
-            return {};
-        } else {
-            size_t offset = chunk.data() + chunk.size() - _path.data() + 1;
-            return fromNormalized(_path.substr(offset));
-        }
-    }
-
-    void append(std::string_view chunk) {
-        assert(chunk.empty() || (chunk.find('\\') == std::string_view::npos && chunk.find('/') == std::string_view::npos && chunk != "." && chunk != ".."));
-
-        if (!_path.empty() && !chunk.empty())
-            _path += '/';
-        _path += chunk;
-    }
-
-    void append(const FileSystemPath &tail) {
-        if (!_path.empty() && !tail.isEmpty())
-            _path += '/';
-        _path += tail._path;
-    }
-
-    // TODO(captainurist): name this one better, it takes a chunk, not a path that needs to be re-normalized.
-    [[nodiscard]] FileSystemPath appended(std::string_view chunk) const {
-        FileSystemPath result = *this;
-        result.append(chunk);
-        return result;
-    }
-
-    [[nodiscard]] FileSystemPath appended(const FileSystemPath &tail) const {
-        FileSystemPath result = *this;
-        result.append(tail);
-        return result;
-    }
-
- private:
-    [[nodiscard]] static std::string normalizePath(std::string_view path);
+    FileSystemPath &operator/=(std::string_view tail);
+    FileSystemPath &operator/=(FileSystemPathView tail);
 
  private:
     std::string _path;
@@ -134,3 +86,25 @@ struct std::hash<FileSystemPath> : std::hash<std::string> {
         return base_type::operator()(path.string());
     }
 };
+
+inline FileSystemPathView::FileSystemPathView(const FileSystemPath &path) : _path(path.string()) {}
+
+inline FileSystemPathView FileSystemPathView::fromNormalized(std::string_view path) {
+    assert(FileSystemPath(path).string() == path); // Should be normalized.
+
+    FileSystemPathView result;
+    result._path = path;
+    return result;
+}
+
+inline FileSystemPath operator/(FileSystemPathView l, FileSystemPathView r) {
+    FileSystemPath result(l);
+    result /= r;
+    return result;
+}
+
+inline FileSystemPath operator/(FileSystemPathView l, std::string_view r) {
+    FileSystemPath result(l);
+    result /= r;
+    return result;
+}

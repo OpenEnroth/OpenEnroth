@@ -6,6 +6,8 @@
 
 #include "Library/FileSystem/Interface/FileSystemException.h"
 
+#include "Utility/String/Join.h"
+
 #include "MemoryFileSystemInputStream.h"
 #include "MemoryFileSystemOutputStream.h"
 
@@ -15,12 +17,12 @@ void MemoryFileSystem::clear() {
     _trie.clear();
 }
 
-bool MemoryFileSystem::_exists(const FileSystemPath &path) const {
+bool MemoryFileSystem::_exists(FileSystemPathView path) const {
     assert(!path.isEmpty());
     return _trie.find(path) != nullptr;
 }
 
-FileStat MemoryFileSystem::_stat(const FileSystemPath &path) const {
+FileStat MemoryFileSystem::_stat(FileSystemPathView path) const {
     assert(!path.isEmpty());
 
     const Node *node = _trie.find(path);
@@ -34,7 +36,7 @@ FileStat MemoryFileSystem::_stat(const FileSystemPath &path) const {
     }
 }
 
-void MemoryFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
+void MemoryFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
     const Node *node = _trie.find(path);
     if (!node)
         FileSystemException::raise(this, FS_LS_FAILED_PATH_DOESNT_EXIST, path);
@@ -45,23 +47,23 @@ void MemoryFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntr
         entries->push_back(DirectoryEntry(name, child->hasValue() ? FILE_REGULAR : FILE_DIRECTORY));
 }
 
-Blob MemoryFileSystem::_read(const FileSystemPath &path) const {
+Blob MemoryFileSystem::_read(FileSystemPathView path) const {
     return Blob::share(nodeForReading(path)->value()->blob);
 }
 
-void MemoryFileSystem::_write(const FileSystemPath &path, const Blob &data) {
+void MemoryFileSystem::_write(FileSystemPathView path, const Blob &data) {
     nodeForWriting(path)->value()->blob = Blob::share(data).withDisplayPath(displayPath(path));
 }
 
-std::unique_ptr<InputStream> MemoryFileSystem::_openForReading(const FileSystemPath &path) const {
+std::unique_ptr<InputStream> MemoryFileSystem::_openForReading(FileSystemPathView path) const {
     return std::make_unique<detail::MemoryFileSystemInputStream>(nodeForReading(path)->value());
 }
 
-std::unique_ptr<OutputStream> MemoryFileSystem::_openForWriting(const FileSystemPath &path) {
+std::unique_ptr<OutputStream> MemoryFileSystem::_openForWriting(FileSystemPathView path) {
     return std::make_unique<detail::MemoryFileSystemOutputStream>(nodeForWriting(path)->value(), displayPath(path));
 }
 
-void MemoryFileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath) {
+void MemoryFileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView dstPath) {
     assert(!srcPath.isEmpty());
     assert(!dstPath.isEmpty());
 
@@ -69,7 +71,7 @@ void MemoryFileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPa
     if (!srcNode)
         FileSystemException::raise(this, FS_RENAME_FAILED_SRC_DOESNT_EXIST, srcPath, dstPath);
 
-    FileSystemPath dstTail;
+    FileSystemPathView dstTail;
     Node *dstNode = _trie.walk(dstPath, &dstTail);
     if (dstTail.isEmpty()) { // dstPath exists.
         if (!dstNode->hasValue())
@@ -81,7 +83,7 @@ void MemoryFileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPa
     _trie.insertOrAssign(dstNode, dstTail, _trie.extract(srcNode));
 }
 
-bool MemoryFileSystem::_remove(const FileSystemPath &path) {
+bool MemoryFileSystem::_remove(FileSystemPathView path) {
     assert(!path.isEmpty());
 
     Node *node = _trie.find(path);
@@ -91,11 +93,11 @@ bool MemoryFileSystem::_remove(const FileSystemPath &path) {
     return _trie.erase(node);
 }
 
-std::string MemoryFileSystem::_displayPath(const FileSystemPath &path) const {
-    return _displayName + "://" + path.string();
+std::string MemoryFileSystem::_displayPath(FileSystemPathView path) const {
+    return join(_displayName, "://", path.string());
 }
 
-const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(const FileSystemPath &path) const {
+const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(FileSystemPathView path) const {
     assert(!path.isEmpty());
     const Node *node = _trie.find(path);
     if (!node)
@@ -107,10 +109,10 @@ const MemoryFileSystem::Node *MemoryFileSystem::nodeForReading(const FileSystemP
     return node;
 }
 
-MemoryFileSystem::Node *MemoryFileSystem::nodeForWriting(const FileSystemPath &path) {
+MemoryFileSystem::Node *MemoryFileSystem::nodeForWriting(FileSystemPathView path) {
     assert(!path.isEmpty());
 
-    FileSystemPath tail;
+    FileSystemPathView tail;
     Node *node = _trie.walk(path, &tail);
 
     if (!tail.isEmpty()) { // File doesn't exist.

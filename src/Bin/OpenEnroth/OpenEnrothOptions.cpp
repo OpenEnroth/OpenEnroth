@@ -35,7 +35,7 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         "If '.portable' file exists in the current folder, then this parameter defaults to 'true'.");
     app->add_option(
         "--log-level", result.logLevel,
-        "Log level, one of 'trace', 'debug', 'info', 'warning', 'error', 'critical'.")->option_text("LOG_LEVEL");
+        "Log level, one of 'none', 'trace', 'debug', 'info', 'warning', 'error', 'critical'.")->option_text("LOG_LEVEL");
     app->add_flag_callback(
         "-v,--verbose", [&] { result.logLevel = LOG_TRACE; },
         "Set log level to 'trace'.");

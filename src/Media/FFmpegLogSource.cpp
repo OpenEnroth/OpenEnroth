@@ -16,7 +16,9 @@ void FFmpegLogSource::setLevel(LogLevel level) {
 
 LogLevel FFmpegLogSource::translateFFmpegLogLevel(int level) {
     // Best effort translation here.
-    if (level <= AV_LOG_PANIC) {
+    if (level <= AV_LOG_QUIET) {
+        return LOG_NONE;
+    } else if (level <= AV_LOG_PANIC) {
         return LOG_CRITICAL;
     } else if (level <= AV_LOG_FATAL) {
         return LOG_CRITICAL; // AV_LOG_PANIC & AV_LOG_FATAL are both translated into LOG_CRITICAL.
@@ -43,6 +45,7 @@ int FFmpegLogSource::translateLoggerLogLevel(LogLevel level) {
     case LOG_WARNING:   return AV_LOG_WARNING;
     case LOG_ERROR:     return AV_LOG_ERROR;
     case LOG_CRITICAL:  return AV_LOG_FATAL; // max(AV_LOG_PANIC, AV_LOG_FATAL)
+    case LOG_NONE:      return AV_LOG_QUIET;
     default:
         assert(false);
         return AV_LOG_TRACE;

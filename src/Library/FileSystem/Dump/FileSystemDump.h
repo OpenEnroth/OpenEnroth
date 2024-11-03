@@ -26,12 +26,12 @@ struct FileSystemDumpEntry {
 
     FileSystemDumpEntry(const FileSystemDumpEntry &other): path(other.path), type(other.type), content(Blob::share(other.content)) {}
 
-    FileSystemDumpEntry(std::string path, FileType type, Blob content = {}): path(std::move(path)), type(type), content(std::move(content)) {
+    FileSystemDumpEntry(std::string_view path, FileType type, Blob content = {}): path(path), type(type), content(std::move(content)) {
         assert(type == FILE_REGULAR || type == FILE_DIRECTORY);
         assert(content.empty() || type == FILE_REGULAR);
     }
 
-    FileSystemDumpEntry(std::string path, FileType type, std::string content) : path(std::move(path)), type(type) {
+    FileSystemDumpEntry(std::string_view path, FileType type, std::string content) : path(path), type(type) {
         assert(type == FILE_REGULAR || type == FILE_DIRECTORY);
         assert(content.empty() || type == FILE_REGULAR);
 

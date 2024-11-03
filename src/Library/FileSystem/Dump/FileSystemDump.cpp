@@ -3,7 +3,6 @@
 #include <cstdio>
 #include <iomanip>
 #include <ranges>
-#include <tuple>
 #include <utility>
 #include <string>
 #include <vector>
@@ -27,11 +26,11 @@ class FileSystemDumper {
         if (_maxEntries == 0)
             return;
 
-        dump(FileSystemPath());
+        dump({});
     }
 
  private:
-    void dump(const FileSystemPath &path) {
+    void dump(FileSystemPathView path) {
         writeOutDir(path);
         if (_entries == _maxEntries)
             return;
@@ -40,7 +39,7 @@ class FileSystemDumper {
         std::ranges::sort(entries);
 
         for (const DirectoryEntry &entry : entries) {
-            FileSystemPath entryPath = path.appended(entry.name);
+            FileSystemPath entryPath = path / entry.name;
 
             if (entry.type == FILE_REGULAR) {
                 writeOutFile(entryPath);
@@ -54,7 +53,7 @@ class FileSystemDumper {
         }
     }
 
-    void writeOutDir(const FileSystemPath &path) {
+    void writeOutDir(FileSystemPathView path) {
         if (_target) {
             _target->push_back(FileSystemDumpEntry(path.string(), FILE_DIRECTORY));
         } else {
@@ -65,7 +64,7 @@ class FileSystemDumper {
         assert(_entries <= _maxEntries);
     }
 
-    void writeOutFile(const FileSystemPath &path) {
+    void writeOutFile(FileSystemPathView path) {
         Blob content;
         if (_flags & FILE_SYSTEM_DUMP_WITH_CONTENTS)
             content = _fs->read(path);

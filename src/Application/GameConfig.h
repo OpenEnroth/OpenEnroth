@@ -94,7 +94,7 @@ class GameConfig : public Config {
         Bool NoMargaret = {this, "no_margareth", false, "Disable Margaret's tour messages on Emerald Island."};
 
         ConfigEntry<::LogLevel> LogLevel = {this, "log_level", LOG_INFO,
-                                            "Default log level. One of 'trace', 'debug', 'info', 'warning', 'error' and 'critical'."};
+                                            "Default log level. One of 'none', 'trace', 'debug', 'info', 'warning', 'error' and 'critical'."};
 
         // TODO(captainurist): move all Trace* options into a separate section.
 
