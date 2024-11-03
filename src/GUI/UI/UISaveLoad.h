@@ -3,13 +3,13 @@
 #include "GUI/GUIWindow.h"
 
 class GUIWindow_Save : public GUIWindow {
- public:
+    public:
     GUIWindow_Save();
     virtual ~GUIWindow_Save() {}
 
     virtual void Update() override;
 
- protected:
+    protected:
     // Image * main_menu_background;
 
     GraphicsImage *saveload_ui_save_up;
@@ -19,7 +19,7 @@ class GUIWindow_Save : public GUIWindow {
 };
 
 class GUIWindow_Load : public GUIWindow {
- public:
+    public:
     explicit GUIWindow_Load(bool ingame);
     virtual ~GUIWindow_Load() {}
 
@@ -32,7 +32,7 @@ class GUIWindow_Load : public GUIWindow {
     void cancelButtonPressed();
     void scroll(int maxSlots);
 
- protected:
+    protected:
     GraphicsImage *main_menu_background;
 
     GraphicsImage *saveload_ui_load_up;
@@ -40,6 +40,3 @@ class GUIWindow_Load : public GUIWindow {
     GraphicsImage *saveload_ui_loadu;
     GraphicsImage *saveload_ui_x_u;
 };
-
-void MainMenuLoad_Loop();
-void MainMenuLoad_EventLoop();
