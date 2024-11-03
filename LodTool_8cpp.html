@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2364f0e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5d86d75</span>
    </div>
   </td>
  </tr>
@@ -81,6 +81,7 @@ $(function() {
 <div class="textblock"><code>#include &quot;<a class="el" href="LodToolOptions_8h.html">LodToolOptions.h</a>&quot;</code><br />
 <code>#include &lt;cstdio&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
 <code>#include &quot;<a class="el" href="ImageFunctions_8h.html">Library/Image/ImageFunctions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Pcx_8h.html">Library/Image/Pcx.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Png_8h.html">Library/Image/Png.h</a>&quot;</code><br />
@@ -97,6 +98,8 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:ace5e4b5ec12ba07253ee91b60edcb5e6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#ace5e4b5ec12ba07253ee91b60edcb5e6">isPcx</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
 <tr class="separator:ace5e4b5ec12ba07253ee91b60edcb5e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8405e352fdee2661497d7f62b569aba"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classBlob.html">Blob</a>, std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#ad8405e352fdee2661497d7f62b569aba">decodeLodEntry</a> (<a class="el" href="classBlob.html">Blob</a> entry, std::string name, bool raw)</td></tr>
+<tr class="separator:ad8405e352fdee2661497d7f62b569aba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9e6a27a663f91459cedf892057f73c7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#ab9e6a27a663f91459cedf892057f73c7">runLs</a> (const <a class="el" href="structLodToolOptions.html">LodToolOptions</a> &amp;options)</td></tr>
 <tr class="separator:ab9e6a27a663f91459cedf892057f73c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9285a99194c2ad5862f297ea39742b8c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#a9285a99194c2ad5862f297ea39742b8c">runDump</a> (const <a class="el" href="structLodToolOptions.html">LodToolOptions</a> &amp;options)</td></tr>
@@ -109,6 +112,40 @@ Functions</h2></td></tr>
 <tr class="separator:a3c04138a5bfe5d72780bb7e82a18e627"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="ad8405e352fdee2661497d7f62b569aba" name="ad8405e352fdee2661497d7f62b569aba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8405e352fdee2661497d7f62b569aba">&#9670;&#160;</a></span>decodeLodEntry()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt; <a class="el" href="classBlob.html">Blob</a>, std::string &gt; decodeLodEntry </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classBlob.html">Blob</a>&#160;</td>
+          <td class="paramname"><em>entry</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>raw</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ace5e4b5ec12ba07253ee91b60edcb5e6" name="ace5e4b5ec12ba07253ee91b60edcb5e6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ace5e4b5ec12ba07253ee91b60edcb5e6">&#9670;&#160;</a></span>isPcx()</h2>
 
