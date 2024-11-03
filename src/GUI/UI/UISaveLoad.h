@@ -3,7 +3,7 @@
 #include "GUI/GUIWindow.h"
 
 class GUIWindow_Save : public GUIWindow {
-    public:
+ public:
     GUIWindow_Save();
     virtual ~GUIWindow_Save() {}
 
@@ -19,7 +19,7 @@ class GUIWindow_Save : public GUIWindow {
 };
 
 class GUIWindow_Load : public GUIWindow {
-    public:
+ public:
     explicit GUIWindow_Load(bool ingame);
     virtual ~GUIWindow_Load() {}
 
