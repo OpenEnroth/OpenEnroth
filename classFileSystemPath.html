@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5d86d75</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;af34bad</span>
    </div>
   </td>
  </tr>
@@ -72,7 +72,6 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
 <a href="classFileSystemPath-members.html">List of all members</a>  </div>
@@ -86,6 +85,8 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a40733d40c81891aec27cb7c1963a6ecf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#a40733d40c81891aec27cb7c1963a6ecf">FileSystemPath</a> (std::string_view path)</td></tr>
 <tr class="separator:a40733d40c81891aec27cb7c1963a6ecf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c896c82bee41554d7aaf184d5f166f3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#a5c896c82bee41554d7aaf184d5f166f3">FileSystemPath</a> (<a class="el" href="classFileSystemPathView.html">FileSystemPathView</a> path)</td></tr>
+<tr class="separator:a5c896c82bee41554d7aaf184d5f166f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68d990b6ae4d2757c0aede21fc1df823"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#a68d990b6ae4d2757c0aede21fc1df823">FileSystemPath</a> ()=default</td></tr>
 <tr class="separator:a68d990b6ae4d2757c0aede21fc1df823"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade7d84cd85f41a0cce1d577045c94eae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#ade7d84cd85f41a0cce1d577045c94eae">FileSystemPath</a> (const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;)=default</td></tr>
@@ -98,36 +99,25 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a750cf0279c7459b3fb26a9f30e8b964f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab89b060ab3540807874096ebb8bd1c4c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#ab89b060ab3540807874096ebb8bd1c4c">isEmpty</a> () const</td></tr>
 <tr class="separator:ab89b060ab3540807874096ebb8bd1c4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a784bf9d79716ecf0dd78f64ba93199b8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#a784bf9d79716ecf0dd78f64ba93199b8">isParentOf</a> (const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;child) const</td></tr>
-<tr class="separator:a784bf9d79716ecf0dd78f64ba93199b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae4c0c35e99c02599b68d1e9a555e3fc4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#ae4c0c35e99c02599b68d1e9a555e3fc4">isChildOf</a> (const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;parent) const</td></tr>
-<tr class="separator:ae4c0c35e99c02599b68d1e9a555e3fc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6294e6293f9ba8b6e9f8b770a4c970f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#ae6294e6293f9ba8b6e9f8b770a4c970f">isPrefixOf</a> (<a class="el" href="classFileSystemPathView.html">FileSystemPathView</a> path) const</td></tr>
+<tr class="separator:ae6294e6293f9ba8b6e9f8b770a4c970f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8bdbd1dba0dde7dce3b60aa2eda914f3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#a8bdbd1dba0dde7dce3b60aa2eda914f3">isEscaping</a> () const</td></tr>
+<tr class="separator:a8bdbd1dba0dde7dce3b60aa2eda914f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af513d56c9d1740bb38ae3677b4b423f2"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#af513d56c9d1740bb38ae3677b4b423f2">string</a> () const</td></tr>
 <tr class="separator:af513d56c9d1740bb38ae3677b4b423f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8ece70a00178687534a00c0cfd230e35"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#a8ece70a00178687534a00c0cfd230e35">chunks</a> () const</td></tr>
-<tr class="separator:a8ece70a00178687534a00c0cfd230e35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d917ae54ed4de2b961792cef7354635"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFileSystemPath.html">FileSystemPath</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#a9d917ae54ed4de2b961792cef7354635">tailAt</a> (std::string_view chunk) const</td></tr>
-<tr class="separator:a9d917ae54ed4de2b961792cef7354635"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87dff7d13a929c884980644732c3f3e1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFileSystemPath.html">FileSystemPath</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#a87dff7d13a929c884980644732c3f3e1">tailAfter</a> (std::string_view chunk) const</td></tr>
-<tr class="separator:a87dff7d13a929c884980644732c3f3e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a552792ee39cff00992d8f0e34a79599d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#a552792ee39cff00992d8f0e34a79599d">append</a> (std::string_view chunk)</td></tr>
-<tr class="separator:a552792ee39cff00992d8f0e34a79599d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4810a33611ede8c76d2eab87d869b8fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#a4810a33611ede8c76d2eab87d869b8fb">append</a> (const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;tail)</td></tr>
-<tr class="separator:a4810a33611ede8c76d2eab87d869b8fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa52d26f23b66f209fd78b3f91758c571"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFileSystemPath.html">FileSystemPath</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#aa52d26f23b66f209fd78b3f91758c571">appended</a> (std::string_view chunk) const</td></tr>
-<tr class="separator:aa52d26f23b66f209fd78b3f91758c571"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:addd9d910312dd9713a00637bd9f1503c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFileSystemPath.html">FileSystemPath</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#addd9d910312dd9713a00637bd9f1503c">appended</a> (const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;tail) const</td></tr>
-<tr class="separator:addd9d910312dd9713a00637bd9f1503c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87e7a3a234ff8c1e9d1b02d74d15ab84"><td class="memItemLeft" align="right" valign="top">auto&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#a87e7a3a234ff8c1e9d1b02d74d15ab84">split</a> () const</td></tr>
+<tr class="separator:a87e7a3a234ff8c1e9d1b02d74d15ab84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae462d815e3d8a59a28d28ff15be5940c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFileSystemPathComponents.html">FileSystemPathComponents</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#ae462d815e3d8a59a28d28ff15be5940c">components</a> () const</td></tr>
+<tr class="separator:ae462d815e3d8a59a28d28ff15be5940c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2cc592fdfe8b82a819c1381c980222f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#a2cc592fdfe8b82a819c1381c980222f2">operator/=</a> (std::string_view tail)</td></tr>
+<tr class="separator:a2cc592fdfe8b82a819c1381c980222f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe6ee101c4efb55166f4e12042a7098b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#afe6ee101c4efb55166f4e12042a7098b">operator/=</a> (<a class="el" href="classFileSystemPathView.html">FileSystemPathView</a> tail)</td></tr>
+<tr class="separator:afe6ee101c4efb55166f4e12042a7098b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a0ae6813892ebbaa4b992c1c57ae652dd"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classFileSystemPath.html">FileSystemPath</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#a0ae6813892ebbaa4b992c1c57ae652dd">fromNormalized</a> (std::string path)</td></tr>
 <tr class="separator:a0ae6813892ebbaa4b992c1c57ae652dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
-Static Private Member Functions</h2></td></tr>
-<tr class="memitem:aed7e38f2020f132056aa95f52e340e99"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFileSystemPath.html#aed7e38f2020f132056aa95f52e340e99">normalizePath</a> (std::string_view path)</td></tr>
-<tr class="separator:aed7e38f2020f132056aa95f52e340e99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -145,13 +135,12 @@ Friends</h2></td></tr>
 <li>Repeated path separators are replaced with a single one.</li>
 <li>Leading &amp; trailing path separators are removed.</li>
 <li><code>"."</code> and <code>".."</code> are collapsed.</li>
-<li>Leading <code>".."</code> are removed (since root is a parent of itself).</li>
 <li>Root path is stored as an empty string.</li>
 </ul>
 <p >Note that this means that <code><a class="el" href="classFileSystemPath.html">FileSystemPath</a></code> is different from <code>std::filesystem::path</code> in that there is no difference between a file and a directory at the path level. <code>"foo/bar/."</code> is normalized into <code>"foo/bar"</code>, and can then be used to open a file for reading. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a40733d40c81891aec27cb7c1963a6ecf" name="a40733d40c81891aec27cb7c1963a6ecf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a40733d40c81891aec27cb7c1963a6ecf">&#9670;&#160;</a></span>FileSystemPath() <span class="overload">[1/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a40733d40c81891aec27cb7c1963a6ecf">&#9670;&#160;</a></span>FileSystemPath() <span class="overload">[1/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -176,8 +165,34 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a id="a5c896c82bee41554d7aaf184d5f166f3" name="a5c896c82bee41554d7aaf184d5f166f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c896c82bee41554d7aaf184d5f166f3">&#9670;&#160;</a></span>FileSystemPath() <span class="overload">[2/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">FileSystemPath::FileSystemPath </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classFileSystemPathView.html">FileSystemPathView</a>&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a68d990b6ae4d2757c0aede21fc1df823" name="a68d990b6ae4d2757c0aede21fc1df823"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68d990b6ae4d2757c0aede21fc1df823">&#9670;&#160;</a></span>FileSystemPath() <span class="overload">[2/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a68d990b6ae4d2757c0aede21fc1df823">&#9670;&#160;</a></span>FileSystemPath() <span class="overload">[3/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -203,7 +218,7 @@ Friends</h2></td></tr>
 </div>
 </div>
 <a id="ade7d84cd85f41a0cce1d577045c94eae" name="ade7d84cd85f41a0cce1d577045c94eae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade7d84cd85f41a0cce1d577045c94eae">&#9670;&#160;</a></span>FileSystemPath() <span class="overload">[3/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ade7d84cd85f41a0cce1d577045c94eae">&#9670;&#160;</a></span>FileSystemPath() <span class="overload">[4/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -229,7 +244,7 @@ Friends</h2></td></tr>
 </div>
 </div>
 <a id="a604be16d6c426fee385aa13cbed55e8c" name="a604be16d6c426fee385aa13cbed55e8c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a604be16d6c426fee385aa13cbed55e8c">&#9670;&#160;</a></span>FileSystemPath() <span class="overload">[4/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a604be16d6c426fee385aa13cbed55e8c">&#9670;&#160;</a></span>FileSystemPath() <span class="overload">[5/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -255,8 +270,8 @@ Friends</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a4810a33611ede8c76d2eab87d869b8fb" name="a4810a33611ede8c76d2eab87d869b8fb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4810a33611ede8c76d2eab87d869b8fb">&#9670;&#160;</a></span>append() <span class="overload">[1/2]</span></h2>
+<a id="ae462d815e3d8a59a28d28ff15be5940c" name="ae462d815e3d8a59a28d28ff15be5940c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae462d815e3d8a59a28d28ff15be5940c">&#9670;&#160;</a></span>components()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -265,111 +280,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void FileSystemPath::append </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;&#160;</td>
-          <td class="paramname"><em>tail</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a552792ee39cff00992d8f0e34a79599d" name="a552792ee39cff00992d8f0e34a79599d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a552792ee39cff00992d8f0e34a79599d">&#9670;&#160;</a></span>append() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void FileSystemPath::append </td>
-          <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>chunk</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="addd9d910312dd9713a00637bd9f1503c" name="addd9d910312dd9713a00637bd9f1503c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#addd9d910312dd9713a00637bd9f1503c">&#9670;&#160;</a></span>appended() <span class="overload">[1/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classFileSystemPath.html">FileSystemPath</a> FileSystemPath::appended </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;&#160;</td>
-          <td class="paramname"><em>tail</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa52d26f23b66f209fd78b3f91758c571" name="aa52d26f23b66f209fd78b3f91758c571"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa52d26f23b66f209fd78b3f91758c571">&#9670;&#160;</a></span>appended() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classFileSystemPath.html">FileSystemPath</a> FileSystemPath::appended </td>
-          <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>chunk</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8ece70a00178687534a00c0cfd230e35" name="a8ece70a00178687534a00c0cfd230e35"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ece70a00178687534a00c0cfd230e35">&#9670;&#160;</a></span>chunks()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">auto FileSystemPath::chunks </td>
+          <td class="memname"><a class="el" href="classFileSystemPathComponents.html">FileSystemPathComponents</a> FileSystemPath::components </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -410,32 +321,6 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="ae4c0c35e99c02599b68d1e9a555e3fc4" name="ae4c0c35e99c02599b68d1e9a555e3fc4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae4c0c35e99c02599b68d1e9a555e3fc4">&#9670;&#160;</a></span>isChildOf()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool FileSystemPath::isChildOf </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;&#160;</td>
-          <td class="paramname"><em>parent</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="ab89b060ab3540807874096ebb8bd1c4c" name="ab89b060ab3540807874096ebb8bd1c4c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab89b060ab3540807874096ebb8bd1c4c">&#9670;&#160;</a></span>isEmpty()</h2>
 
@@ -461,8 +346,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a784bf9d79716ecf0dd78f64ba93199b8" name="a784bf9d79716ecf0dd78f64ba93199b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a784bf9d79716ecf0dd78f64ba93199b8">&#9670;&#160;</a></span>isParentOf()</h2>
+<a id="a8bdbd1dba0dde7dce3b60aa2eda914f3" name="a8bdbd1dba0dde7dce3b60aa2eda914f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8bdbd1dba0dde7dce3b60aa2eda914f3">&#9670;&#160;</a></span>isEscaping()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -471,10 +356,9 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool FileSystemPath::isParentOf </td>
+          <td class="memname">bool FileSystemPath::isEscaping </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp;&#160;</td>
-          <td class="paramname"><em>child</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -487,8 +371,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="aed7e38f2020f132056aa95f52e340e99" name="aed7e38f2020f132056aa95f52e340e99"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aed7e38f2020f132056aa95f52e340e99">&#9670;&#160;</a></span>normalizePath()</h2>
+<a id="ae6294e6293f9ba8b6e9f8b770a4c970f" name="ae6294e6293f9ba8b6e9f8b770a4c970f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6294e6293f9ba8b6e9f8b770a4c970f">&#9670;&#160;</a></span>isPrefixOf()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -497,18 +381,54 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string FileSystemPath::normalizePath </td>
+          <td class="memname">bool FileSystemPath::isPrefixOf </td>
           <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramtype"><a class="el" href="classFileSystemPathView.html">FileSystemPathView</a>&#160;</td>
           <td class="paramname"><em>path</em></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afe6ee101c4efb55166f4e12042a7098b" name="afe6ee101c4efb55166f4e12042a7098b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe6ee101c4efb55166f4e12042a7098b">&#9670;&#160;</a></span>operator/=() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp; FileSystemPath::operator/= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classFileSystemPathView.html">FileSystemPathView</a>&#160;</td>
+          <td class="paramname"><em>tail</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2cc592fdfe8b82a819c1381c980222f2" name="a2cc592fdfe8b82a819c1381c980222f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cc592fdfe8b82a819c1381c980222f2">&#9670;&#160;</a></span>operator/=() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classFileSystemPath.html">FileSystemPath</a> &amp; FileSystemPath::operator/= </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>tail</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 </div>
@@ -565,8 +485,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="af513d56c9d1740bb38ae3677b4b423f2" name="af513d56c9d1740bb38ae3677b4b423f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af513d56c9d1740bb38ae3677b4b423f2">&#9670;&#160;</a></span>string()</h2>
+<a id="a87e7a3a234ff8c1e9d1b02d74d15ab84" name="a87e7a3a234ff8c1e9d1b02d74d15ab84"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87e7a3a234ff8c1e9d1b02d74d15ab84">&#9670;&#160;</a></span>split()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -575,7 +495,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const std::string &amp; FileSystemPath::string </td>
+          <td class="memname">auto FileSystemPath::split </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -590,8 +510,8 @@ Friends</h2></td></tr>
 
 </div>
 </div>
-<a id="a87dff7d13a929c884980644732c3f3e1" name="a87dff7d13a929c884980644732c3f3e1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a87dff7d13a929c884980644732c3f3e1">&#9670;&#160;</a></span>tailAfter()</h2>
+<a id="af513d56c9d1740bb38ae3677b4b423f2" name="af513d56c9d1740bb38ae3677b4b423f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af513d56c9d1740bb38ae3677b4b423f2">&#9670;&#160;</a></span>string()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -600,36 +520,9 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classFileSystemPath.html">FileSystemPath</a> FileSystemPath::tailAfter </td>
+          <td class="memname">const std::string &amp; FileSystemPath::string </td>
           <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>chunk</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9d917ae54ed4de2b961792cef7354635" name="a9d917ae54ed4de2b961792cef7354635"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9d917ae54ed4de2b961792cef7354635">&#9670;&#160;</a></span>tailAt()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classFileSystemPath.html">FileSystemPath</a> FileSystemPath::tailAt </td>
-          <td>(</td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>chunk</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td> const</td>
         </tr>
       </table>

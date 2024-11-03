@@ -19,5 +19,6 @@ var searchData=
   ['rendervertexd3d3_16',['RenderVertexD3D3',['../structRenderVertexD3D3.html',1,'']]],
   ['rendervertexsoft_17',['RenderVertexSoft',['../structRenderVertexSoft.html',1,'']]],
   ['retraceoptions_18',['RetraceOptions',['../structOpenEnrothOptions_1_1RetraceOptions.html',1,'OpenEnrothOptions']]],
-  ['reversebitordertag_19',['ReverseBitOrderTag',['../structReverseBitOrderTag.html',1,'']]]
+  ['reversebitordertag_19',['ReverseBitOrderTag',['../structReverseBitOrderTag.html',1,'']]],
+  ['rotatinglogsink_20',['RotatingLogSink',['../classRotatingLogSink.html',1,'']]]
 ];

@@ -2,8 +2,8 @@ var searchData=
 [
   ['tag_0',['tag',['../structColor.html#ae7e75551d740e6f048e9857af967426c',1,'Color']]],
   ['tail_1',['tail',['../classBlobInputStream.html#aefa26a70ce33a9964b2e6b2ceab29279',1,'BlobInputStream']]],
-  ['tailafter_2',['tailAfter',['../classFileSystemPath.html#a87dff7d13a929c884980644732c3f3e1',1,'FileSystemPath']]],
-  ['tailat_3',['tailAt',['../classFileSystemPath.html#a9d917ae54ed4de2b961792cef7354635',1,'FileSystemPath']]],
+  ['tailafter_2',['tailAfter',['../classFileSystemPathSplit.html#a3f0cbb1a3cebc1043c163827946de624',1,'FileSystemPathSplit']]],
+  ['tailat_3',['tailAt',['../classFileSystemPathSplit.html#af2b9293c4cf9bb2dafa3cbfcb0be14cd',1,'FileSystemPathSplit::tailAt(std::same_as&lt; std::string_view &gt; auto chunk) const'],['../classFileSystemPathSplit.html#aa3470fca8b711ad4f91646693c7b8bbe',1,'FileSystemPathSplit::tailAt(detail::SplitViewIterator pos) const']]],
   ['takebankgold_4',['TakeBankGold',['../structParty.html#a1a1fae0601f9fffaa69d5faeb6745fa3',1,'Party']]],
   ['takefine_5',['TakeFine',['../structParty.html#ae3d08e8f8959150fc26ced36c90bf8a7',1,'Party']]],
   ['takefood_6',['TakeFood',['../structParty.html#a10acbfe965f51c4b6a102bee41c3f009',1,'Party']]],

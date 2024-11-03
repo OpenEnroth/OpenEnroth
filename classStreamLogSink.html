@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5d86d75</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;af34bad</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classStreamLogSink-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">StreamLogSink Class Reference</div></div>
@@ -84,12 +85,15 @@ Inheritance diagram for StreamLogSink:</div>
  <div class="center">
   <img src="classStreamLogSink.png" usemap="#StreamLogSink_map" alt=""/>
   <map id="StreamLogSink_map" name="StreamLogSink_map">
-<area href="classLogSink.html" alt="LogSink" shape="rect" coords="0,0,96,24"/>
+<area href="classLogSink.html" alt="LogSink" shape="rect" coords="0,0,102,24"/>
+<area href="classRotatingLogSink.html" alt="RotatingLogSink" shape="rect" coords="0,112,102,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a3ef600cb67330eccce0264d768c3d550"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classStreamLogSink.html#a3ef600cb67330eccce0264d768c3d550">StreamLogSink</a> (std::unique_ptr&lt; <a class="el" href="classOutputStream.html">OutputStream</a> &gt; stream)</td></tr>
+<tr class="separator:a3ef600cb67330eccce0264d768c3d550"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4f4c90b8808e1376a613be50a1a146f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classStreamLogSink.html#aa4f4c90b8808e1376a613be50a1a146f">StreamLogSink</a> (<a class="el" href="classOutputStream.html">OutputStream</a> *stream)</td></tr>
 <tr class="separator:aa4f4c90b8808e1376a613be50a1a146f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5923a324e189e561e4206a978d7aeaa"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classStreamLogSink.html#aa5923a324e189e561e4206a978d7aeaa">~StreamLogSink</a> ()</td></tr>
@@ -102,8 +106,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a431885462a3683eacfcc184639a1eec0 inherit pub_methods_classLogSink"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogSink.html#a431885462a3683eacfcc184639a1eec0">write</a> (const <a class="el" href="classLogCategory.html">LogCategory</a> &amp;category, <a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> level, std::string_view message)=0</td></tr>
 <tr class="separator:a431885462a3683eacfcc184639a1eec0 inherit pub_methods_classLogSink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a5f0da15d959b032301b64070b0de1a97"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classStreamLogSink.html#a5f0da15d959b032301b64070b0de1a97">initFormatter</a> ()</td></tr>
+<tr class="separator:a5f0da15d959b032301b64070b0de1a97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
+<tr class="memitem:abd9f2973f56e1c20cd8cdc7c99def6ef"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classOutputStream.html">OutputStream</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classStreamLogSink.html#abd9f2973f56e1c20cd8cdc7c99def6ef">_ownStream</a></td></tr>
+<tr class="separator:abd9f2973f56e1c20cd8cdc7c99def6ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6200364fc8a4b087e2579dbbee0044ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classOutputStream.html">OutputStream</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classStreamLogSink.html#a6200364fc8a4b087e2579dbbee0044ac">_stream</a> = nullptr</td></tr>
 <tr class="separator:a6200364fc8a4b087e2579dbbee0044ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb039178c43a2fabcde90975614758e7"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; spdlog::formatter &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classStreamLogSink.html#adb039178c43a2fabcde90975614758e7">_formatter</a></td></tr>
@@ -116,8 +127,34 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:a932ffa9e1cc7ab05c812742bc088b969 inherit pub_static_methods_classLogSink"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a3ef600cb67330eccce0264d768c3d550" name="a3ef600cb67330eccce0264d768c3d550"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ef600cb67330eccce0264d768c3d550">&#9670;&#160;</a></span>StreamLogSink() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">StreamLogSink::StreamLogSink </td>
+          <td>(</td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classOutputStream.html">OutputStream</a> &gt;&#160;</td>
+          <td class="paramname"><em>stream</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aa4f4c90b8808e1376a613be50a1a146f" name="aa4f4c90b8808e1376a613be50a1a146f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa4f4c90b8808e1376a613be50a1a146f">&#9670;&#160;</a></span>StreamLogSink()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4f4c90b8808e1376a613be50a1a146f">&#9670;&#160;</a></span>StreamLogSink() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -168,6 +205,31 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a5f0da15d959b032301b64070b0de1a97" name="a5f0da15d959b032301b64070b0de1a97"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f0da15d959b032301b64070b0de1a97">&#9670;&#160;</a></span>initFormatter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void StreamLogSink::initFormatter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a517a131e2a26b4876c97029a5ca4daa9" name="a517a131e2a26b4876c97029a5ca4daa9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a517a131e2a26b4876c97029a5ca4daa9">&#9670;&#160;</a></span>write()</h2>
 
@@ -234,6 +296,28 @@ Additional Inherited Members</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::unique_ptr&lt;spdlog::formatter&gt; StreamLogSink::_formatter</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abd9f2973f56e1c20cd8cdc7c99def6ef" name="abd9f2973f56e1c20cd8cdc7c99def6ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd9f2973f56e1c20cd8cdc7c99def6ef">&#9670;&#160;</a></span>_ownStream</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classOutputStream.html">OutputStream</a>&gt; StreamLogSink::_ownStream</td>
         </tr>
       </table>
   </td>

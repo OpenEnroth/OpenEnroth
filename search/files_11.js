@@ -21,5 +21,7 @@ var searchData=
   ['rendererenums_2ecpp_18',['RendererEnums.cpp',['../RendererEnums_8cpp.html',1,'']]],
   ['rendererenums_2eh_19',['RendererEnums.h',['../RendererEnums_8h.html',1,'']]],
   ['rendererfactory_2ecpp_20',['RendererFactory.cpp',['../RendererFactory_8cpp.html',1,'']]],
-  ['rendererfactory_2eh_21',['RendererFactory.h',['../RendererFactory_8h.html',1,'']]]
+  ['rendererfactory_2eh_21',['RendererFactory.h',['../RendererFactory_8h.html',1,'']]],
+  ['rotatinglogsink_2ecpp_22',['RotatingLogSink.cpp',['../RotatingLogSink_8cpp.html',1,'']]],
+  ['rotatinglogsink_2eh_23',['RotatingLogSink.h',['../RotatingLogSink_8h.html',1,'']]]
 ];

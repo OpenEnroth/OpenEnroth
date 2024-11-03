@@ -14,7 +14,6 @@ var searchData=
   ['spellid_11',['SpellId',['../SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90',1,'SpellEnums.h']]],
   ['spriteattribute_12',['SpriteAttribute',['../SpriteEnums_8h.html#a33ff8e5a067f92e0d66dc6534785ee25',1,'SpriteEnums.h']]],
   ['spriteid_13',['SpriteId',['../SpriteEnums_8h.html#ae4d6ddfadb3940c82f97cb293b7397f4',1,'SpriteEnums.h']]],
-  ['stage_14',['Stage',['../classLogStarter.html#a1a6ec3c75aebe6a00a3a0a1db839bf40',1,'LogStarter']]],
-  ['stealresult_15',['StealResult',['../Character_8h.html#a51f13cd67eab73d698e32f940c0ba824',1,'Character.h']]],
-  ['subcommand_16',['Subcommand',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2',1,'OpenEnrothOptions::Subcommand()'],['../structLodToolOptions.html#abcc21db1b7bbfbf2f3e735e81958863b',1,'LodToolOptions::Subcommand()'],['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226',1,'CodeGenOptions::Subcommand()']]]
+  ['stealresult_14',['StealResult',['../Character_8h.html#a51f13cd67eab73d698e32f940c0ba824',1,'Character.h']]],
+  ['subcommand_15',['Subcommand',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2',1,'OpenEnrothOptions::Subcommand()'],['../structLodToolOptions.html#abcc21db1b7bbfbf2f3e735e81958863b',1,'LodToolOptions::Subcommand()'],['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226',1,'CodeGenOptions::Subcommand()']]]
 ];

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5d86d75</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;af34bad</span>
    </div>
   </td>
  </tr>
@@ -71,7 +71,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pri-types">Private Types</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="classLogStarter-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">LogStarter Class Reference</div></div>
@@ -86,79 +85,34 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af138cb4cb38a54884eec048dcff84795"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e7362fcacd1c9ac3ae51a16e6790cd9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#a1e7362fcacd1c9ac3ae51a16e6790cd9">~LogStarter</a> ()</td></tr>
 <tr class="separator:a1e7362fcacd1c9ac3ae51a16e6790cd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aedf4bbe30e3ff5f1897f7ce0afd36d73"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#aedf4bbe30e3ff5f1897f7ce0afd36d73">initPrimary</a> ()</td></tr>
-<tr class="separator:aedf4bbe30e3ff5f1897f7ce0afd36d73"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c56faca7743798ad69fe15404a1f907"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#a6c56faca7743798ad69fe15404a1f907">initSecondary</a> (<a class="el" href="classFileSystem.html">FileSystem</a> *userFs)</td></tr>
-<tr class="separator:a6c56faca7743798ad69fe15404a1f907"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aae93959086842f39b2f11599408cb30d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#aae93959086842f39b2f11599408cb30d">initFinal</a> (<a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> logLevel)</td></tr>
-<tr class="separator:aae93959086842f39b2f11599408cb30d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a317db06405b55452a592221b24a1bb69"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#a317db06405b55452a592221b24a1bb69">initialize</a> (<a class="el" href="classFileSystem.html">FileSystem</a> *userFs, <a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a> logLevel)</td></tr>
+<tr class="separator:a317db06405b55452a592221b24a1bb69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f4bfe627d0e9294b0f71f44ec8d70c5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDistLogSink.html">DistLogSink</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#a7f4bfe627d0e9294b0f71f44ec8d70c5">rootSink</a> () const</td></tr>
 <tr class="separator:a7f4bfe627d0e9294b0f71f44ec8d70c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-types" name="pri-types"></a>
-Private Types</h2></td></tr>
-<tr class="memitem:a1a6ec3c75aebe6a00a3a0a1db839bf40"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#a1a6ec3c75aebe6a00a3a0a1db839bf40">Stage</a> { <a class="el" href="classLogStarter.html#a1a6ec3c75aebe6a00a3a0a1db839bf40a87caf32b094bebe8b02c58ca2fcabc9c">STAGE_INITIAL</a>
-, <a class="el" href="classLogStarter.html#a1a6ec3c75aebe6a00a3a0a1db839bf40a59fef3aa02300e59e5632950c55c41e5">STAGE_PRIMARY</a>
-, <a class="el" href="classLogStarter.html#a1a6ec3c75aebe6a00a3a0a1db839bf40ad2865948a48b25b0b7f8fc652eccd9ca">STAGE_SECONDARY</a>
-, <a class="el" href="classLogStarter.html#a1a6ec3c75aebe6a00a3a0a1db839bf40a02d5f1198a48bf1a321df0885747fbf3">STAGE_FINAL</a>
- }</td></tr>
-<tr class="separator:a1a6ec3c75aebe6a00a3a0a1db839bf40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:af471759e3cd613038442dc04b390383d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLogStarter.html#a1a6ec3c75aebe6a00a3a0a1db839bf40">Stage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#af471759e3cd613038442dc04b390383d">_stage</a> = <a class="el" href="classLogStarter.html#a1a6ec3c75aebe6a00a3a0a1db839bf40a87caf32b094bebe8b02c58ca2fcabc9c">STAGE_INITIAL</a></td></tr>
-<tr class="separator:af471759e3cd613038442dc04b390383d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf42cfa52e5e7dee5bebded97e898e19"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#abf42cfa52e5e7dee5bebded97e898e19">_initialized</a> = false</td></tr>
+<tr class="separator:abf42cfa52e5e7dee5bebded97e898e19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0a499619d264088a9f5a19a488eafb9"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classLogSink.html">LogSink</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#aa0a499619d264088a9f5a19a488eafb9">_nullSink</a></td></tr>
+<tr class="separator:aa0a499619d264088a9f5a19a488eafb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5755f99ea06e535630a3de9f25cb85b"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classBufferLogSink.html">BufferLogSink</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#ae5755f99ea06e535630a3de9f25cb85b">_bufferLogSink</a></td></tr>
 <tr class="separator:ae5755f99ea06e535630a3de9f25cb85b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a879c102cdc6205ce52b783854f50ba2f"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classLogSink.html">LogSink</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#a879c102cdc6205ce52b783854f50ba2f">_defaultLogSink</a></td></tr>
 <tr class="separator:a879c102cdc6205ce52b783854f50ba2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6efba7b24c175fce40247d430fb5d815"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classOutputStream.html">OutputStream</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#a6efba7b24c175fce40247d430fb5d815">_userLogStream</a></td></tr>
-<tr class="separator:a6efba7b24c175fce40247d430fb5d815"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2895f1d491b7e1a13008138a85891647"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classStreamLogSink.html">StreamLogSink</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#a2895f1d491b7e1a13008138a85891647">_userLogSink</a></td></tr>
-<tr class="separator:a2895f1d491b7e1a13008138a85891647"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e9b469c958c423e07308f6781921be1"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classRotatingLogSink.html">RotatingLogSink</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#a8e9b469c958c423e07308f6781921be1">_userLogSink</a></td></tr>
+<tr class="separator:a8e9b469c958c423e07308f6781921be1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a829b460e29f92943dc19a7c4c9d11d63"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classDistLogSink.html">DistLogSink</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#a829b460e29f92943dc19a7c4c9d11d63">_rootLogSink</a></td></tr>
 <tr class="separator:a829b460e29f92943dc19a7c4c9d11d63"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3de4dcfa6c219de7c8feed01d7a15051"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classLogger.html">Logger</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLogStarter.html#a3de4dcfa6c219de7c8feed01d7a15051">_logger</a></td></tr>
 <tr class="separator:a3de4dcfa6c219de7c8feed01d7a15051"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
-<a id="a1a6ec3c75aebe6a00a3a0a1db839bf40" name="a1a6ec3c75aebe6a00a3a0a1db839bf40"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1a6ec3c75aebe6a00a3a0a1db839bf40">&#9670;&#160;</a></span>Stage</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum class <a class="el" href="classLogStarter.html#a1a6ec3c75aebe6a00a3a0a1db839bf40">LogStarter::Stage</a></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">strong</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a1a6ec3c75aebe6a00a3a0a1db839bf40a87caf32b094bebe8b02c58ca2fcabc9c" name="a1a6ec3c75aebe6a00a3a0a1db839bf40a87caf32b094bebe8b02c58ca2fcabc9c"></a>STAGE_INITIAL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a1a6ec3c75aebe6a00a3a0a1db839bf40a59fef3aa02300e59e5632950c55c41e5" name="a1a6ec3c75aebe6a00a3a0a1db839bf40a59fef3aa02300e59e5632950c55c41e5"></a>STAGE_PRIMARY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a1a6ec3c75aebe6a00a3a0a1db839bf40ad2865948a48b25b0b7f8fc652eccd9ca" name="a1a6ec3c75aebe6a00a3a0a1db839bf40ad2865948a48b25b0b7f8fc652eccd9ca"></a>STAGE_SECONDARY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a1a6ec3c75aebe6a00a3a0a1db839bf40a02d5f1198a48bf1a321df0885747fbf3" name="a1a6ec3c75aebe6a00a3a0a1db839bf40a02d5f1198a48bf1a321df0885747fbf3"></a>STAGE_FINAL&#160;</td><td class="fielddoc"></td></tr>
-</table>
-
-</div>
-</div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af138cb4cb38a54884eec048dcff84795" name="af138cb4cb38a54884eec048dcff84795"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af138cb4cb38a54884eec048dcff84795">&#9670;&#160;</a></span>LogStarter()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">LogStarter::LogStarter </td>
@@ -167,11 +121,6 @@ Private Attributes</h2></td></tr>
           <td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">default</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
@@ -194,53 +143,28 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aae93959086842f39b2f11599408cb30d" name="aae93959086842f39b2f11599408cb30d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aae93959086842f39b2f11599408cb30d">&#9670;&#160;</a></span>initFinal()</h2>
+<a id="a317db06405b55452a592221b24a1bb69" name="a317db06405b55452a592221b24a1bb69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a317db06405b55452a592221b24a1bb69">&#9670;&#160;</a></span>initialize()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void LogStarter::initFinal </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td>
-          <td class="paramname"><em>logLevel</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aedf4bbe30e3ff5f1897f7ce0afd36d73" name="aedf4bbe30e3ff5f1897f7ce0afd36d73"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aedf4bbe30e3ff5f1897f7ce0afd36d73">&#9670;&#160;</a></span>initPrimary()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void LogStarter::initPrimary </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6c56faca7743798ad69fe15404a1f907" name="a6c56faca7743798ad69fe15404a1f907"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6c56faca7743798ad69fe15404a1f907">&#9670;&#160;</a></span>initSecondary()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void LogStarter::initSecondary </td>
+          <td class="memname">void LogStarter::initialize </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classFileSystem.html">FileSystem</a> *&#160;</td>
-          <td class="paramname"><em>userFs</em></td><td>)</td>
+          <td class="paramname"><em>userFs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="LogEnums_8h.html#aca1fd1d8935433e6ba2e3918214e07f9">LogLevel</a>&#160;</td>
+          <td class="paramname"><em>logLevel</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -309,6 +233,28 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="abf42cfa52e5e7dee5bebded97e898e19" name="abf42cfa52e5e7dee5bebded97e898e19"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf42cfa52e5e7dee5bebded97e898e19">&#9670;&#160;</a></span>_initialized</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool LogStarter::_initialized = false</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a3de4dcfa6c219de7c8feed01d7a15051" name="a3de4dcfa6c219de7c8feed01d7a15051"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3de4dcfa6c219de7c8feed01d7a15051">&#9670;&#160;</a></span>_logger</h2>
 
@@ -320,6 +266,28 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::unique_ptr&lt;<a class="el" href="classLogger.html">Logger</a>&gt; LogStarter::_logger</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa0a499619d264088a9f5a19a488eafb9" name="aa0a499619d264088a9f5a19a488eafb9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0a499619d264088a9f5a19a488eafb9">&#9670;&#160;</a></span>_nullSink</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classLogSink.html">LogSink</a>&gt; LogStarter::_nullSink</td>
         </tr>
       </table>
   </td>
@@ -353,8 +321,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="af471759e3cd613038442dc04b390383d" name="af471759e3cd613038442dc04b390383d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af471759e3cd613038442dc04b390383d">&#9670;&#160;</a></span>_stage</h2>
+<a id="a8e9b469c958c423e07308f6781921be1" name="a8e9b469c958c423e07308f6781921be1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e9b469c958c423e07308f6781921be1">&#9670;&#160;</a></span>_userLogSink</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -363,51 +331,7 @@ Private Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classLogStarter.html#a1a6ec3c75aebe6a00a3a0a1db839bf40">Stage</a> LogStarter::_stage = <a class="el" href="classLogStarter.html#a1a6ec3c75aebe6a00a3a0a1db839bf40a87caf32b094bebe8b02c58ca2fcabc9c">STAGE_INITIAL</a></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a2895f1d491b7e1a13008138a85891647" name="a2895f1d491b7e1a13008138a85891647"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2895f1d491b7e1a13008138a85891647">&#9670;&#160;</a></span>_userLogSink</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classStreamLogSink.html">StreamLogSink</a>&gt; LogStarter::_userLogSink</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a6efba7b24c175fce40247d430fb5d815" name="a6efba7b24c175fce40247d430fb5d815"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6efba7b24c175fce40247d430fb5d815">&#9670;&#160;</a></span>_userLogStream</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classOutputStream.html">OutputStream</a>&gt; LogStarter::_userLogStream</td>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classRotatingLogSink.html">RotatingLogSink</a>&gt; LogStarter::_userLogSink</td>
         </tr>
       </table>
   </td>
