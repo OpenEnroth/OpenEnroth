@@ -14,6 +14,7 @@ inline spdlog::level::level_enum translateLogLevel(LogLevel level) {
     case LOG_WARNING:   return spdlog::level::warn;
     case LOG_ERROR:     return spdlog::level::err;
     case LOG_CRITICAL:  return spdlog::level::critical;
+    case LOG_NONE:      return spdlog::level::off;
     default:
         assert(false);
         return spdlog::level::trace;

@@ -9,24 +9,7 @@
 #include "Library/Logger/DistLogSink.h"
 #include "Library/Logger/BufferLogSink.h"
 
-LogStarter::LogStarter() = default;
-
-LogStarter::~LogStarter() {
-    // We never got around to finding out the desired log level => flush everything at LOG_TRACE.
-    if (_stage != STAGE_FINAL && _stage != STAGE_INITIAL) {
-        _stage = STAGE_SECONDARY;
-        try {
-            initFinal(LOG_TRACE);
-        } catch (...) {
-            // Nothing we can do here.
-        }
-    }
-}
-
-void LogStarter::initPrimary() {
-    assert(_stage == STAGE_INITIAL);
-    _stage = STAGE_PRIMARY;
-
+LogStarter::LogStarter() {
     _rootLogSink = std::make_unique<DistLogSink>();
     _logger = std::make_unique<Logger>(LOG_TRACE, _rootLogSink.get());
 
@@ -35,27 +18,35 @@ void LogStarter::initPrimary() {
     _rootLogSink->addLogSink(_bufferLogSink.get());
 }
 
-void LogStarter::initSecondary(FileSystem *userFs) {
-    assert(_stage == STAGE_PRIMARY);
-    _stage = STAGE_SECONDARY;
-
-    try {
-        _userLogSink = std::make_unique<RotatingLogSink>("logs/openenroth.log", userFs);
-    } catch (const std::exception &e) {
-        _logger->log(LOG_ERROR, "Could not open log file for writing: {}", e.what());
-        _userLogSink.reset();
+LogStarter::~LogStarter() {
+    // We never got around to finding out the desired log level => flush everything at LOG_TRACE.
+    if (!_initialized) {
+        try {
+            initialize(nullptr, LOG_TRACE);
+        } catch (...) {
+            // Nothing we can do here.
+        }
     }
 }
 
-void LogStarter::initFinal(LogLevel logLevel) {
-    assert(_stage == STAGE_SECONDARY);
-    _stage = STAGE_FINAL;
+void LogStarter::initialize(FileSystem *userFs, LogLevel logLevel) {
+    assert(!_initialized);
+    _initialized = true;
 
-    // Create proper log sinks.
+    // Create & install default log sink.
     _defaultLogSink = LogSink::createDefaultSink();
     _rootLogSink->addLogSink(_defaultLogSink.get());
-    if (_userLogSink)
-        _rootLogSink->addLogSink(_userLogSink.get());
+
+    // Set up filesystem logging. We skip this on LOG_NONE b/c we don't want any FS changes in this case.
+    if (userFs && logLevel != LOG_NONE) {
+        try {
+            _userLogSink = std::make_unique<RotatingLogSink>("logs/openenroth.log", userFs);
+            _rootLogSink->addLogSink(_userLogSink.get());
+        } catch (const std::exception &e) {
+            _logger->log(LOG_ERROR, "Could not open log file for writing: {}", e.what());
+            _userLogSink.reset();
+        }
+    }
 
     // Then init log level & flush.
     _rootLogSink->removeLogSink(_bufferLogSink.get());

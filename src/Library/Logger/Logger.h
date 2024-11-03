@@ -40,7 +40,7 @@ class Logger {
     // LogCategory API.
 
     [[nodiscard]] bool shouldLog(const LogCategory &category, LogLevel level) const {
-        return level >= (category._level ? *category._level : *_defaultCategory._level);
+        return static_cast<int>(level) >= (category._adjustedLevel ? *category._adjustedLevel : *_defaultCategory._adjustedLevel);
     }
 
     template<class... Args>
@@ -82,7 +82,7 @@ class Logger {
     // Default category API.
 
     [[nodiscard]] bool shouldLog(LogLevel level) const {
-        return level >= *_defaultCategory._level;
+        return static_cast<int>(level) >= *_defaultCategory._adjustedLevel;
     }
 
     template<class... Args>

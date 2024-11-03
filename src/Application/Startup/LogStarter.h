@@ -17,23 +17,13 @@ class LogStarter {
     LogStarter();
     ~LogStarter();
 
-    void initPrimary(); // Can use global logger after this.
-    void initSecondary(FileSystem *userFs); // Start writing filesystem log.
-    void initFinal(LogLevel logLevel); // Set log level & finalize logger init.
+    void initialize(FileSystem *userFs, LogLevel logLevel); // Set log level & finalize logger init.
 
     DistLogSink *rootSink() const;
 
  private:
-    enum class Stage {
-        STAGE_INITIAL,
-        STAGE_PRIMARY,
-        STAGE_SECONDARY,
-        STAGE_FINAL
-    };
-    using enum Stage;
-
- private:
-    Stage _stage = STAGE_INITIAL;
+    bool _initialized = false;
+    std::unique_ptr<LogSink> _nullSink;
     std::unique_ptr<BufferLogSink> _bufferLogSink;
     std::unique_ptr<LogSink> _defaultLogSink;
     std::unique_ptr<RotatingLogSink> _userLogSink;
