@@ -41,7 +41,7 @@
 	branch = docking
 [submodule "thirdparty/inifile_cpp"]
 	path = thirdparty/inifile_cpp
-	url = https://github.com/Rookfighter/inifile-cpp.git
+	url = https://github.com/botanicvelious/inifile-cpp.git
 [submodule "thirdparty/backward_cpp"]
 	path = thirdparty/backward_cpp
 	url = https://github.com/OpenEnroth/backward-cpp.git
