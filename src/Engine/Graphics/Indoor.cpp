@@ -664,7 +664,7 @@ void BLV_UpdateDoors() {
         BLVDoor *door = &pIndoor->pDoors[i];
 
         // door not moving currently
-        if (door->uState == DOOR_CLOSED || door->uState == DOOR_OPEN) {
+        if (door->uState == DOOR_OPEN || door->uState == DOOR_CLOSED) {
             door->uAttributes &= ~DOOR_SETTING_UP;
             continue;
         }
@@ -673,24 +673,24 @@ void BLV_UpdateDoors() {
         door->uTimeSinceTriggered += pEventTimer->dt();
 
         int openDistance;     // [sp+60h] [bp-4h]@6
-        if (door->uState == DOOR_OPENING) {
+        if (door->uState == DOOR_CLOSING) {
             openDistance = door->uTimeSinceTriggered.realtimeMilliseconds() * door->uOpenSpeed / 1000;
 
             if (openDistance >= door->uMoveLength) {
                 openDistance = door->uMoveLength;
-                door->uState = DOOR_OPEN;
+                door->uState = DOOR_CLOSED;
                 if (shouldPlaySound)
                     pAudioPlayer->playSound(doorClosedSound(eDoorSoundID), SOUND_MODE_PID, Pid(OBJECT_Door, i));
             } else if (shouldPlaySound) {
                 pAudioPlayer->playSound(eDoorSoundID, SOUND_MODE_PID, Pid(OBJECT_Door, i));
             }
         } else {
-            assert(door->uState == DOOR_CLOSING);
+            assert(door->uState == DOOR_OPENING);
 
             int closeDistance = door->uTimeSinceTriggered.realtimeMilliseconds() * door->uCloseSpeed / 1000;
             if (closeDistance >= door->uMoveLength) {
                 openDistance = 0;
-                door->uState = DOOR_CLOSED;
+                door->uState = DOOR_OPEN;
                 if (shouldPlaySound)
                     pAudioPlayer->playSound(doorClosedSound(eDoorSoundID), SOUND_MODE_PID, Pid(OBJECT_Door, i));
             } else {
@@ -914,17 +914,17 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     //                     they snap into place on the next frame. Just init them properly!
     for (unsigned i = 0; i < pIndoor->pDoors.size(); ++i) {
         if (pIndoor->pDoors[i].uAttributes & DOOR_TRIGGERED) {
-            pIndoor->pDoors[i].uState = DOOR_OPENING;
+            pIndoor->pDoors[i].uState = DOOR_CLOSING;
             pIndoor->pDoors[i].uTimeSinceTriggered = 15360_ticks;
             pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
         }
 
-        if (pIndoor->pDoors[i].uState == DOOR_CLOSED) {
-            pIndoor->pDoors[i].uState = DOOR_CLOSING;
+        if (pIndoor->pDoors[i].uState == DOOR_OPEN) {
+            pIndoor->pDoors[i].uState = DOOR_OPENING;
             pIndoor->pDoors[i].uTimeSinceTriggered = 15360_ticks;
             pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
-        } else if (pIndoor->pDoors[i].uState == DOOR_OPEN) {
-            pIndoor->pDoors[i].uState = DOOR_OPENING;
+        } else if (pIndoor->pDoors[i].uState == DOOR_CLOSED) {
+            pIndoor->pDoors[i].uState = DOOR_CLOSING;
             pIndoor->pDoors[i].uTimeSinceTriggered = 15360_ticks;
             pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
         }
@@ -1830,30 +1830,17 @@ void switchDoorAnimation(unsigned int uDoorID, DoorAction a2) {
     BLVDoor &door = *pos;
 
     if (a2 == DOOR_ACTION_TRIGGER) {
-        if (door.uState == DOOR_CLOSING || door.uState == DOOR_OPENING)
+        if (door.uState == DOOR_OPENING || door.uState == DOOR_CLOSING)
             return;
 
         door.uTimeSinceTriggered = 0_ticks;
 
-        if (door.uState == DOOR_OPEN) {
-            door.uState = DOOR_CLOSING;
-        } else {
-            assert(door.uState == DOOR_CLOSED);
+        if (door.uState == DOOR_CLOSED) {
             door.uState = DOOR_OPENING;
+        } else {
+            assert(door.uState == DOOR_OPEN);
+            door.uState = DOOR_CLOSING;
         }
-    } else if (a2 == DOOR_ACTION_CLOSE) {
-        if (door.uState == DOOR_CLOSED || door.uState == DOOR_CLOSING)
-            return;
-
-        if (door.uState == DOOR_OPEN) {
-            door.uTimeSinceTriggered = 0_ticks;
-        } else if (door.uTimeSinceTriggered != 15360_ticks) {
-            assert(door.uState == DOOR_OPENING);
-            int totalTimeMs = 1000 * door.uMoveLength / door.uCloseSpeed;
-            int timeLeftMs = door.uTimeSinceTriggered.realtimeMilliseconds() * door.uOpenSpeed / door.uCloseSpeed;
-            door.uTimeSinceTriggered = Duration::fromRealtimeMilliseconds(totalTimeMs - timeLeftMs);
-        }
-        door.uState = DOOR_CLOSING;
     } else if (a2 == DOOR_ACTION_OPEN) {
         if (door.uState == DOOR_OPEN || door.uState == DOOR_OPENING)
             return;
@@ -1862,11 +1849,24 @@ void switchDoorAnimation(unsigned int uDoorID, DoorAction a2) {
             door.uTimeSinceTriggered = 0_ticks;
         } else if (door.uTimeSinceTriggered != 15360_ticks) {
             assert(door.uState == DOOR_CLOSING);
+            int totalTimeMs = 1000 * door.uMoveLength / door.uCloseSpeed;
+            int timeLeftMs = door.uTimeSinceTriggered.realtimeMilliseconds() * door.uOpenSpeed / door.uCloseSpeed;
+            door.uTimeSinceTriggered = Duration::fromRealtimeMilliseconds(totalTimeMs - timeLeftMs);
+        }
+        door.uState = DOOR_OPENING;
+    } else if (a2 == DOOR_ACTION_CLOSE) {
+        if (door.uState == DOOR_CLOSED || door.uState == DOOR_CLOSING)
+            return;
+
+        if (door.uState == DOOR_OPEN) {
+            door.uTimeSinceTriggered = 0_ticks;
+        } else if (door.uTimeSinceTriggered != 15360_ticks) {
+            assert(door.uState == DOOR_OPENING);
             int totalTimeMs = 1000 * door.uMoveLength / door.uOpenSpeed;
             int timeLeftMs = door.uTimeSinceTriggered.realtimeMilliseconds() * door.uCloseSpeed / door.uOpenSpeed;
             door.uTimeSinceTriggered = Duration::fromRealtimeMilliseconds(totalTimeMs - timeLeftMs);
         }
-        door.uState = DOOR_OPENING;
+        door.uState = DOOR_CLOSING;
     }
 }
 

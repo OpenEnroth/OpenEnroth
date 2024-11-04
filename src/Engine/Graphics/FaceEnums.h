@@ -59,16 +59,16 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(DoorAttributes)
 
 // TODO(captainurist): most closed doors are in DOOR_OPEN, and most open doors are in DOOR_CLOSED. Rename states?
 enum class DoorState : uint16_t {
-    DOOR_CLOSED = 0, // Initial state, door mesh is at a position where BLVDoor::p[XYZ]Offsets point.
-    DOOR_OPENING = 1, // Going into alternative state.
-    DOOR_OPEN = 2, // Alternative state, door mesh is at BLVDoor::p[XYZ]Offsets + BLVDoor::vDirection * BLVDoor::uMoveLength.
-    DOOR_CLOSING = 3, // Going into initial state.
+    DOOR_OPEN = 0, // Initial state, door mesh is at a position where BLVDoor::p[XYZ]Offsets point.
+    DOOR_CLOSING = 1, // Going into alternative state.
+    DOOR_CLOSED = 2, // Alternative state, door mesh is at BLVDoor::p[XYZ]Offsets + BLVDoor::vDirection * BLVDoor::uMoveLength.
+    DOOR_OPENING = 3, // Going into initial state.
 };
 using enum DoorState;
 
 enum class DoorAction {
-    DOOR_ACTION_CLOSE = 0, // If open or opening, transitions to closing.
-    DOOR_ACTION_OPEN = 1, // If closed or closing, transitions to opening.
+    DOOR_ACTION_OPEN = 0, // If closed or closing, transitions to opening.
+    DOOR_ACTION_CLOSE = 1, // If open or opening, transitions to closing.
     DOOR_ACTION_TRIGGER = 2, // Only works on fully open / closed doors. Closes / opens the door.
 };
 using enum DoorAction;
