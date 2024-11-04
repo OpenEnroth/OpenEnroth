@@ -378,7 +378,7 @@ bool Camera3D::CullFaceToFrustum(RenderVertexSoft *a1, unsigned int *pOutNumVert
 bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
     unsigned int *pOutNumVertices,
     RenderVertexSoft *pVertices,
-    Planef *CameraFrustrum) {
+    const Planef *CameraFrustrum) {
     // NumFrustumPlanes usually 4 - top, bottom, left, right - near and far done elsewhere
     // DebugLines 0 or 1 - 1 when debug lines
 

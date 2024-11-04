@@ -55,7 +55,7 @@ struct Camera3D {
     bool ClipFaceToFrustum(RenderVertexSoft *pInVertices,
                            unsigned int *pOutNumVertices,
                            RenderVertexSoft *pVertices,
-                           Planef *CameraFrustrum);
+                           const Planef *CameraFrustrum);
 
     void BuildViewFrustum();
     void CreateViewMatrixAndProjectionScale();

@@ -34,7 +34,7 @@ void BspRenderer::AddFace(int node_id, int uFaceID) {
         return;
     }
 
-    auto currentNode = &nodes[node_id];
+    const BspRenderer_ViewportNode *currentNode = &nodes[node_id];
 
     // portals are invisible faces marking the transition between sectors
 
@@ -86,13 +86,16 @@ void BspRenderer::AddFace(int node_id, int uFaceID) {
 
     auto newNode = &nodes[num_nodes];
 
+    // TODO(yoctozepto): remove it from here
+    static RenderVertexSoft pPortalBounding[4];
+
     // calculates the portal bounding and frustum
     bool isFrustumBuilt = CalcPortalShapePoly(
         pFace,
         clippedFaceVertices,
         &pNewNumVertices,
         newNode->ViewportNodeFrustum.data(),
-        newNode->pPortalBounding.data());
+        pPortalBounding);
 
     if (!isFrustumBuilt) {
         return;  // no way we can see through this portal

@@ -363,5 +363,3 @@ bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from);
  * @return                              True if line of sight obscurred by outdoor models
  */
 bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from);
-
-extern BspRenderer *pBspRenderer;
