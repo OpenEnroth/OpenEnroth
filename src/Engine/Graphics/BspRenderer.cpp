@@ -37,9 +37,25 @@ void BspRenderer::AddFace(int node_id, int uFaceID) {
     auto currentNode = &nodes[node_id];
 
     // portals are invisible faces marking the transition between sectors
+
+    // NOTE(yoctozepto): logically, this would not be necessary to skip as the next test would cover that;
+    //                   however, since we allow much about anything in the party node, it could happen that we allow a "mirror image"
+    //                   through the portal the party is standing in - this will then filter it out
     // dont add the face we are looking through
     if (currentNode->uFaceID == uFaceID)
         return;
+
+    const bool isPortalFlipped = currentNode->uSectorID != pFace->uSectorID;
+
+    // NOTE(yoctozepto): (2) ignore a portal if it would be processed backwards to the party
+    //                   as this might result in infinite loops;
+    //                   see issues #417, #1869, and the locations in the "Mercenary Guild" and "Tunnels to Eeofol";
+    //                   (1) processing these portals is required in the same node as party because getting really close
+    //                   to them might cause them to appear on the wrong side
+    //                   (this is very similar to the exception below with the camera frustum)
+    if (/*(1)*/ node_id != 0 && /*(2)*/ isPortalFlipped == pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
+        return;
+    }
 
     // check if portal is visible on screen
 
@@ -83,17 +99,13 @@ void BspRenderer::AddFace(int node_id, int uFaceID) {
     }
 
     // new node should have new sector; use the back one if the front one is current
-    newNode->uSectorID = pFace->uSectorID;
-    if (currentNode->uSectorID == newNode->uSectorID) {
-        newNode->uSectorID = pFace->uBackSectorID;
-    }
+    newNode->uSectorID = isPortalFlipped ? pFace->uSectorID : pFace->uBackSectorID;
     newNode->uFaceID = uFaceID;
 
     // assume it is a new sector and check it below
     bool isNewSector = true;
 
-    // check if it is a new sector and avoid infinite loops in portals
-    // an infinite loop is triggered in "Mercenary Guild", see issue #417
+    // check if it is a new sector
     // NOTE(yoctozepto): having the same sector id in two nodes causes faces to be added twice
     //                   but this is expected because of how the view is constructed;
     //                   it is possible to have the same sector observed from two different portals
@@ -104,15 +116,8 @@ void BspRenderer::AddFace(int node_id, int uFaceID) {
     //                   see PR #1850 and issue #1704 for the discussion and save file
     for (int i = 0; i < num_nodes; i++) {
         if (nodes[i].uSectorID == newNode->uSectorID) {
-            if (nodes[i].uFaceID == newNode->uFaceID &&
-                //nodes[i].ViewportNodeFrustum == newNode->ViewportNodeFrustum) {
-                // TODO(yoctozepto): we have to compare boundings, not frusta, because the latter are not as reliable - understand why
-                // TODO(yoctozepto): boundings can be simplified
-                // TODO(yoctozepto): live debug the current number of nodes, faces and sectors
-                nodes[i].pPortalBounding == newNode->pPortalBounding) {
-                    return;  // gives the same view - would bring nothing but cause an infinite loop
-            }
             isNewSector = false;
+            break;
         }
     }
 
