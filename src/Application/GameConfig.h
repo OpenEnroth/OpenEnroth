@@ -19,7 +19,7 @@
 #define ConfigWindowMode WINDOW_MODE_FULLSCREEN
 #else
 #define ConfigRenderer RENDERER_OPENGL
-#define ConfigWindowMode WINDOW_MODE_WINDOWED
+#define ConfigWindowMode WINDOW_MODE_FULLSCREEN_BORDERLESS
 #endif
 
 MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformWindowMode)
