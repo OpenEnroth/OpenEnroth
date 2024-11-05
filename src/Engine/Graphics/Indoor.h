@@ -293,7 +293,11 @@ void BLV_UpdateUserInputAndOther();
  *                                      returned.
  */
 float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID = nullptr);
+
+void BLV_InitialiseDoors();
 void BLV_UpdateDoors();
+void BLV_UpdateDoorGeometry(BLVDoor *door, int distance);
+
 void UpdateActors_BLV();
 void BLV_ProcessPartyActions();
 

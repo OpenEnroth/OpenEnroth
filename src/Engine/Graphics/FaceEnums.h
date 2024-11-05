@@ -50,7 +50,7 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(FaceAttributes)
 // door attr
 enum class DoorAttribute : uint32_t {
     DOOR_TRIGGERED         = 0x00000001,
-    DOOR_SETTING_UP        = 0x00000002,
+    DOOR_SETTING_UP        = 0x00000002, // unused
     DOOR_NOSOUND           = 0x00000004,
 };
 using enum DoorAttribute;
