@@ -18,7 +18,7 @@ struct ClippingFunctions {
                                   RenderVertexSoft *pVertices2, unsigned int *pOutNumVertices);
 
     static bool ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices, RenderVertexSoft *pOutVertices,
-                                        unsigned int *pOutNumVertices, Vec3f *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted, int unused);
+                                        unsigned int *pOutNumVertices, const Vec3f *CamFrustumNormal, float CamDotDistance, bool *VertsAdjusted);
 
     static void AddVertex(VertexBuffer *pVertexBuffer, RenderVertexSoft *pVertex);
 

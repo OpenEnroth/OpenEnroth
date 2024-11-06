@@ -73,7 +73,7 @@ struct BLVFace {  // 60h
     void FromODM(ODMFace *face);
 
     void SetTexture(std::string_view filename);
-    GraphicsImage *GetTexture();
+    GraphicsImage *GetTexture() const;
 
     inline bool Invisible() const {
         return uAttributes & FACE_IsInvisible;
@@ -363,5 +363,3 @@ bool Check_LOS_Obscurred_Indoors(const Vec3f &target, const Vec3f &from);
  * @return                              True if line of sight obscurred by outdoor models
  */
 bool Check_LOS_Obscurred_Outdoors_Bmodels(const Vec3f &target, const Vec3f &from);
-
-extern BspRenderer *pBspRenderer;
