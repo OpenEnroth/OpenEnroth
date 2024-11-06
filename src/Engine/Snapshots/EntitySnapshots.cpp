@@ -1403,8 +1403,8 @@ void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
     dst->uTimeSinceTriggered = src.uTimeSinceTriggered.ticks();
     dst->vDirection = src.vDirection.toFixpoint();
     dst->uMoveLength = src.uMoveLength;
-    dst->uCloseSpeed = src.uCloseSpeed;
     dst->uOpenSpeed = src.uOpenSpeed;
+    dst->uCloseSpeed = src.uCloseSpeed;
     dst->uNumVertices = src.uNumVertices;
     dst->uNumFaces = src.uNumFaces;
     dst->uNumSectors = src.uNumSectors;
@@ -1418,8 +1418,8 @@ void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
     dst->uTimeSinceTriggered = Duration::fromTicks(src.uTimeSinceTriggered);
     dst->vDirection = src.vDirection.toFloatFromFixpoint();
     dst->uMoveLength = src.uMoveLength;
-    dst->uCloseSpeed = src.uCloseSpeed;
     dst->uOpenSpeed = src.uOpenSpeed;
+    dst->uCloseSpeed = src.uCloseSpeed;
     dst->uNumVertices = src.uNumVertices;
     dst->uNumFaces = src.uNumFaces;
     dst->uNumSectors = src.uNumSectors;
