@@ -38,11 +38,8 @@ ScriptingSystem::~ScriptingSystem() {
 }
 
 void ScriptingSystem::executeEntryPoint() {
-    try {
-        _solState->script(dfs->read(fmt::format("{}/{}", _scriptFolder, _entryPointFile)).string_view());
-    } catch (const sol::error &e) {
-        logger->warning(ScriptingLogCategory, "An unexpected error has occurred: {}", e.what());
-    }
+    // This will throw if we have script errors.
+    _solState->script(dfs->read(fmt::format("{}/{}", _scriptFolder, _entryPointFile)).string_view());
 }
 
 void ScriptingSystem::_initBaseLibraries() {
