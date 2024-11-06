@@ -122,22 +122,11 @@ void Camera3D::GetFacetOrientation(const Vec3f &normal, Vec3f *outU, Vec3f *outV
 
 //----- (00438258) --------------------------------------------------------
 bool Camera3D::is_face_faced_to_cameraBLV(BLVFace *pFace) {
-    // if (pFace->Portal()) return false;
-
-    if (pFace->uNumVertices == 0)
-        return false; // TODO(captainurist): would be great to just filter these our on load & assert instead.
-
-    float x = pIndoor->pVertices[pFace->pVertexIDs[0]].x;
-    float y = pIndoor->pVertices[pFace->pVertexIDs[0]].y;
-    float z = pIndoor->pVertices[pFace->pVertexIDs[0]].z;
-
-    if ((z - pCamera3D->vCameraPos.z) * pFace->facePlane.normal.z +
-        (y - pCamera3D->vCameraPos.y) * pFace->facePlane.normal.y +
-        (x - pCamera3D->vCameraPos.x) * pFace->facePlane.normal.x <
-        0.0f)
-        return true;
-
-    return false;
+    return pFace->facePlane.dist +
+        pCamera3D->vCameraPos.z * pFace->facePlane.normal.z +
+        pCamera3D->vCameraPos.y * pFace->facePlane.normal.y +
+        pCamera3D->vCameraPos.x * pFace->facePlane.normal.x >
+        0.0f;
 }
 
 bool Camera3D::is_face_faced_to_cameraODM(ODMFace *pFace, RenderVertexSoft *a2) {
@@ -389,9 +378,7 @@ bool Camera3D::CullFaceToFrustum(RenderVertexSoft *a1, unsigned int *pOutNumVert
 bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
     unsigned int *pOutNumVertices,
     RenderVertexSoft *pVertices,
-    Planef *CameraFrustrum,
-    signed int NumFrustumPlanes, char DebugLines,
-    int _unused) {
+    const Planef *CameraFrustrum) {
     // NumFrustumPlanes usually 4 - top, bottom, left, right - near and far done elsewhere
     // DebugLines 0 or 1 - 1 when debug lines
 
@@ -399,8 +386,11 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
     RenderVertexSoft *v15;  // edx@8
     // float v17; // [sp+44h] [bp-10h]@1
     // int v18; // [sp+48h] [bp-Ch]@5
-    int VertsAdjusted = 0;  // [sp+53h] [bp-1h]@5
+    bool VertsAdjusted = false;  // [sp+53h] [bp-1h]@5
     // bool a6a; // [sp+70h] [bp+1Ch]@5
+
+    // TODO(yoctozepto): just have this as a global constant instead of random vars/4 around
+    const int NumFrustumPlanes = 4;
 
     // v17 = 0.0;
     // thisa = engine->pStru9Instance;
@@ -409,10 +399,7 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
 
     // result = 0;
     // VertsAdjusted = 0;
-    int MinVertsAllowed = 2 * (DebugLines == 0) + 1;  // 3 normally 1 for debuglines
-    // a6a = 0;
-    // v18 = MinVertsAllowed;
-    if (NumFrustumPlanes <= 0) return false;
+    const int MinVertsAllowed = 3;
 
     // v12 = *pOutNumVertices;
     // v13 = (char *)&a4->y;
@@ -431,7 +418,7 @@ bool Camera3D::ClipFaceToFrustum(RenderVertexSoft *pInVertices,
 
         ClippingFunctions::ClipVertsToFrustumPlane(
             v15, *pOutNumVertices, v14, pOutNumVertices, &CameraFrustrum[i].normal, -CameraFrustrum[i].dist,
-            (char*)&VertsAdjusted, _unused);
+            &VertsAdjusted);
 
         // v12 = *pOutNumVertices;
         if (*pOutNumVertices < MinVertsAllowed) {

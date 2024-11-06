@@ -137,9 +137,6 @@ static constexpr IndexedArray<SoundId, MAP_FIRST, MAP_LAST> pDoorSoundIDsByLocat
 
 //----- (0043F39E) --------------------------------------------------------
 void PrepareDrawLists_BLV() {
-    // unsigned int v7;  // ebx@8
-    BLVSector *v8;    // esi@8
-
     pBLVRenderParams->Reset();
     uNumDecorationsDrawnThisFrame = 0;
     uNumSpritesDrawnThisFrame = 0;
@@ -149,17 +146,17 @@ void PrepareDrawLists_BLV() {
     //pStationaryLightsStack->uNumLightsActive = 0;
     engine->StackPartyTorchLight();
 
-    PrepareBspRenderList_BLV();
+    pBspRenderer->Init();
 
     render->DrawSpriteObjects();
     pOutdoor->PrepareActorsDrawList();
 
      for (unsigned i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
-         int v7 = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
-         v8 = &pIndoor->pSectors[pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
+         int sectorId = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
+         BLVSector *sector = &pIndoor->pSectors[pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
 
-        for (unsigned j = 0; j < v8->uNumDecorations; ++j)
-            pIndoor->PrepareDecorationsRenderList_BLV(v8->pDecorationIDs[j], v7);
+        for (unsigned j = 0; j < sector->uNumDecorations; ++j)
+            pIndoor->PrepareDecorationsRenderList_BLV(sector->pDecorationIDs[j], sectorId);
      }
 
     FindBillboardsLightLevels_BLV();
@@ -226,7 +223,7 @@ void BLVFace::FromODM(ODMFace *face) {
 }
 
 //----- (004AE5BA) --------------------------------------------------------
-GraphicsImage *BLVFace::GetTexture() {
+GraphicsImage *BLVFace::GetTexture() const {
     if (this->IsTextureFrameTable())
         // TODO(captainurist): using pEventTimer here is weird. This means that e.g. cleric in the haunted mansion is
         //                     not animated in turn-based mode. Use misc timer? Also see ODMFace::GetTexture.
