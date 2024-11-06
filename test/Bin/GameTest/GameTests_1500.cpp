@@ -16,6 +16,7 @@
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIPartyCreation.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Events/EventInterpreter.h"
 
@@ -442,6 +443,18 @@ GAME_TEST(Issues, Issue1807) {
     EXPECT_CONTAINS(houseTape, HOUSE_TAVERN_HARMONDALE); // We've visited the Harmondale tavern.
     EXPECT_CONTAINS(textTape.flattened(), "Victory Conditions"); // We've seen the Arcomage dialog.
     EXPECT_MISSES(textTape.flattened(), "Play"); // But there was no "Play" option.
+}
+
+GAME_TEST(Issues, Issue1849_1831) {
+    // 1849 - Sectors get seen and activated on save load despite being behind closed doors
+    // 1831 - Engine too eager to reveal indoor map
+    auto nearDoor = tapes.custom([]() {return pParty->pos.x > -7800 && pParty->pos.x < -7400 && pParty->pos.y < -470; });
+    auto sectors = tapes.custom([]() {return pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom; });
+    test.playTraceFromTestData("issue_1849.mm7", "issue_1849.json"); // this loads a save
+    auto flat = sectors.flattened();
+    EXPECT_MISSES(flat, 58); // sectors not exposed
+    EXPECT_MISSES(flat, 32);
+    EXPECT_CONTAINS(nearDoor, true); // position take us close to wall
 }
 
 GAME_TEST(Issues, Issue1851a) {
