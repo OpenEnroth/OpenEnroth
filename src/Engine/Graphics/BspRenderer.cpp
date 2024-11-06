@@ -11,7 +11,7 @@ BspRenderer *pBspRenderer = new BspRenderer();
 
 
 //----- (004B0EA8) --------------------------------------------------------
-void BspRenderer::AddFace(int node_id, int uFaceID) {
+void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
 
     if (!pFace->isPortal()) {
@@ -26,6 +26,9 @@ void BspRenderer::AddFace(int node_id, int uFaceID) {
         if (!pFace->GetTexture()) {
             return;  // nothing to render
         }
+
+        assert(num_faces < 1500 && "please report with a nearby save file");
+
         // add face and return
         auto newFace = &faces[num_faces];
         newFace->uFaceID = uFaceID;
@@ -38,7 +41,9 @@ void BspRenderer::AddFace(int node_id, int uFaceID) {
 
     // portals are invisible faces marking the transition between sectors
 
-    // NOTE(yoctozepto): logically, this would not be necessary to skip as the next test would cover that;
+    // NOTE(yoctozepto): this is a quick test for a sure loop,
+    //                   more cases are covered with the sector uniqueness check further on
+    //                   logically, this would not be necessary to skip as the next test would cover that;
     //                   however, since we allow much about anything in the party node, it could happen that we allow a "mirror image"
     //                   through the portal the party is standing in - this will then filter it out
     // dont add the face we are looking through
@@ -52,7 +57,14 @@ void BspRenderer::AddFace(int node_id, int uFaceID) {
     //                   see issues #417, #1869, and the locations in the "Mercenary Guild" and "Tunnels to Eeofol";
     //                   (1) processing these portals is required in the same node as party because getting really close
     //                   to them might cause them to appear on the wrong side
-    //                   (this is very similar to the exception below with the camera frustum)
+    //                   (this is very similar to the exception below with the camera frustum);
+    //                   still, because of seemingly unreliable frusta, this is not covering every possible loop
+    //                   so there is another loop check further on;
+    //                   another use of this relatively simple condition is beyond loop prevention - it can also
+    //                   optimise away unnecessary nodes - this happens in the "Mercenary Guild" in the meeting room
+    //                   where there is a ceiling portal and the room is split artificially into two sectors (just why?!)
+    //                   - running without this causes the second half of the room to be "seen" both normally and via
+    //                   the ceiling (because its normal is in Z and it has frustum reset to camera frustum)
     if (/*(1)*/ node_id != 0 && /*(2)*/ isPortalFlipped == pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
         return;
     }
@@ -82,6 +94,8 @@ void BspRenderer::AddFace(int node_id, int uFaceID) {
         return;  // no triangle of face in view
     }
 
+    assert(num_nodes < 150 && "please report with a nearby save file");
+
     // start to construct the new node
 
     auto newNode = &nodes[num_nodes];
@@ -104,6 +118,19 @@ void BspRenderer::AddFace(int node_id, int uFaceID) {
     // new node should have new sector; use the back one if the front one is current
     newNode->uSectorID = isPortalFlipped ? pFace->uSectorID : pFace->uBackSectorID;
     newNode->uFaceID = uFaceID;
+    newNode->parentNodeId = node_id;
+
+    // NOTE(yoctozepto): the final check for loops;
+    //                   it happens that, despite the logic of previous checks being fine on paper, loops still happen;
+    //                   there could be some subtle bug around the frusta construction or application that escapes the perception
+    //                   of our small team of developers
+    int nodeIdToCheck = currentNode->parentNodeId;
+    while (nodeIdToCheck != -1) {
+        if (nodes[nodeIdToCheck].uSectorID == newNode->uSectorID) {  // would mean we see some sector through the same sector
+            return;
+        }
+        nodeIdToCheck = nodes[nodeIdToCheck].parentNodeId;
+    }
 
     // assume it is a new sector and check it below
     bool isNewSector = true;
@@ -135,6 +162,7 @@ void BspRenderer::AddFace(int node_id, int uFaceID) {
         newNode->SetFrustumToCamera();
     }
 
+    // keep track of new sectors only
     if (isNewSector) {
         // NOTE(yoctozepto): the below happens, e.g., when looking back after entering the room behind hidden stairs in "Temple of Light";
         //                   there are lots of portals in sight from there
@@ -167,6 +195,7 @@ void BspRenderer::Init() {
         nodes[0].uSectorID = pBLVRenderParams->uPartyEyeSectorID;
         // this node is being observed directly, not through another face
         nodes[0].uFaceID = -1;
+        nodes[0].parentNodeId = -1;
         nodes[0].SetFrustumToCamera();
         AddSector(nodes[0].uSectorID);
 

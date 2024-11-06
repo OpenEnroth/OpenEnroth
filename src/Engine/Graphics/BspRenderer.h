@@ -11,6 +11,7 @@ struct BspRenderer;
 struct BspRenderer_ViewportNode {
     int uSectorID = 0;  // sector that this node shows
     int uFaceID = 0;  // face id of the portal through which we're seeing this node
+    int parentNodeId = 0;
     std::array<Planef, 4> ViewportNodeFrustum = {{}};  // frustum planes of portal
 
  private:
@@ -39,7 +40,7 @@ struct BspRenderer {
     std::array<int, 150> pVisibleSectorIDs_toDrawDecorsActorsEtcFrom = { {} };
 
  private:
-    void AddFace(int node_id, int uFaceID);
+    void AddFace(const int node_id, const int uFaceID);
     void AddNode();
     void AddBSPFaces(const int node_id, const int bspNodeId);
     void AddSector(int sectorId);
