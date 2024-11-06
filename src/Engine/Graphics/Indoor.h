@@ -294,8 +294,22 @@ void BLV_UpdateUserInputAndOther();
  */
 float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID = nullptr);
 
+/**
+ * Initialises all door geometry into starting position on load.
+ */
 void BLV_InitialiseDoors();
+/**
+ * Updates all door geometry into current position and plays sounds if moving.
+ * 
+ * @offset 0x46F228
+ */
 void BLV_UpdateDoors();
+/**
+ * Updates the geomtry position of the supplied door. 
+ * 
+ * @param door                          Pointer to door to update.
+ * @param distance                      Distance the door is displaced. 0 is open, door->uMoveLength when closed.
+ */
 void BLV_UpdateDoorGeometry(BLVDoor *door, int distance);
 
 void UpdateActors_BLV();
