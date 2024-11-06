@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7e86797</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;00e7d17</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,8 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="structBspRenderer__ViewportNode-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">BspRenderer_ViewportNode Struct Reference</div></div>
 </div><!--header-->
@@ -84,20 +86,78 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a5f8f13fdf2a32a5a99442a48ae7f2635"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:accce448de871d13328fef088ee4077b3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer__ViewportNode.html#accce448de871d13328fef088ee4077b3">uFaceID</a> = 0</td></tr>
 <tr class="separator:accce448de871d13328fef088ee4077b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d6498eefb44696a2dc0bb3304c483e3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer__ViewportNode.html#a9d6498eefb44696a2dc0bb3304c483e3">parentNodeId</a> = 0</td></tr>
+<tr class="separator:a9d6498eefb44696a2dc0bb3304c483e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a333e73f9a09ed1ddf4944e6781a19c21"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structPlanef.html">Planef</a>, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer__ViewportNode.html#a333e73f9a09ed1ddf4944e6781a19c21">ViewportNodeFrustum</a> = {{}}</td></tr>
 <tr class="separator:a333e73f9a09ed1ddf4944e6781a19c21"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2638c709bdfd34a5bfc1ae83f179d46d"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a>, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer__ViewportNode.html#a2638c709bdfd34a5bfc1ae83f179d46d">pPortalBounding</a> = {{}}</td></tr>
-<tr class="separator:a2638c709bdfd34a5bfc1ae83f179d46d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:aa6f43f4bf0495d164def9c58198d056a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer__ViewportNode.html#aa6f43f4bf0495d164def9c58198d056a">SetFrustumToCamera</a> ()</td></tr>
+<tr class="separator:aa6f43f4bf0495d164def9c58198d056a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:aa2b4a272197d6f581916e2cbb72a61ee"><td class="memItemLeft" align="right" valign="top">friend&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer__ViewportNode.html#aa2b4a272197d6f581916e2cbb72a61ee">BspRenderer</a></td></tr>
+<tr class="separator:aa2b4a272197d6f581916e2cbb72a61ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="aa6f43f4bf0495d164def9c58198d056a" name="aa6f43f4bf0495d164def9c58198d056a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6f43f4bf0495d164def9c58198d056a">&#9670;&#160;</a></span>SetFrustumToCamera()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BspRenderer_ViewportNode::SetFrustumToCamera </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a2638c709bdfd34a5bfc1ae83f179d46d" name="a2638c709bdfd34a5bfc1ae83f179d46d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2638c709bdfd34a5bfc1ae83f179d46d">&#9670;&#160;</a></span>pPortalBounding</h2>
+<a id="aa2b4a272197d6f581916e2cbb72a61ee" name="aa2b4a272197d6f581916e2cbb72a61ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa2b4a272197d6f581916e2cbb72a61ee">&#9670;&#160;</a></span>BspRenderer</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">friend BspRenderer_ViewportNode::BspRenderer</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9d6498eefb44696a2dc0bb3304c483e3" name="a9d6498eefb44696a2dc0bb3304c483e3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d6498eefb44696a2dc0bb3304c483e3">&#9670;&#160;</a></span>parentNodeId</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;<a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a>, 4&gt; BspRenderer_ViewportNode::pPortalBounding = {{}}</td>
+          <td class="memname">int BspRenderer_ViewportNode::parentNodeId = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -146,8 +206,9 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
+<hr/>The documentation for this struct was generated from the following files:<ul>
 <li>src/Engine/Graphics/<a class="el" href="BspRenderer_8h.html">BspRenderer.h</a></li>
+<li>src/Engine/Graphics/<a class="el" href="BspRenderer_8cpp.html">BspRenderer.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

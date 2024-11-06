@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7e86797</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;00e7d17</span>
    </div>
   </td>
  </tr>
@@ -84,8 +84,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a4ade6eaaa1fe9ba3c32432fa0e0ea6e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd9fe2870667aa279cc83398e4b53805"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structClippingFunctions.html#afd9fe2870667aa279cc83398e4b53805">ClipVertsToPortal</a> (<a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pPortalBounding, unsigned int uNumVertices, <a class="el" href="structPlanef.html">Planef</a> *pVertices, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pVertices2, unsigned int *pOutNumVertices)</td></tr>
 <tr class="separator:afd9fe2870667aa279cc83398e4b53805"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a05cdb3e7fe58268e507561df812d93"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structClippingFunctions.html#a3a05cdb3e7fe58268e507561df812d93">ClipVertsToFrustumPlane</a> (<a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pInVertices, signed int pInNumVertices, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pOutVertices, unsigned int *pOutNumVertices, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted, int unused)</td></tr>
-<tr class="separator:a3a05cdb3e7fe58268e507561df812d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acea007ce8b4686833839bbac426891dd"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structClippingFunctions.html#acea007ce8b4686833839bbac426891dd">ClipVertsToFrustumPlane</a> (<a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pInVertices, signed int pInNumVertices, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pOutVertices, unsigned int *pOutNumVertices, const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *CamFrustumNormal, float CamDotDistance, bool *VertsAdjusted)</td></tr>
+<tr class="separator:acea007ce8b4686833839bbac426891dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2da274cfe91de10ce235a702834c1cc5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structClippingFunctions.html#a2da274cfe91de10ce235a702834c1cc5">AddVertex</a> (<a class="el" href="structVertexBuffer.html">VertexBuffer</a> *pVertexBuffer, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pVertex)</td></tr>
 <tr class="separator:a2da274cfe91de10ce235a702834c1cc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d902f2d509435e3c26d09e62ebd8f5b"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structClippingFunctions.html#a1d902f2d509435e3c26d09e62ebd8f5b">AdjustVertToClipEdge</a> (<a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *a1, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *a2, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *a3, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *a4, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *a5)</td></tr>
@@ -294,8 +294,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a3a05cdb3e7fe58268e507561df812d93" name="a3a05cdb3e7fe58268e507561df812d93"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3a05cdb3e7fe58268e507561df812d93">&#9670;&#160;</a></span>ClipVertsToFrustumPlane()</h2>
+<a id="acea007ce8b4686833839bbac426891dd" name="acea007ce8b4686833839bbac426891dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acea007ce8b4686833839bbac426891dd">&#9670;&#160;</a></span>ClipVertsToFrustumPlane()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -330,7 +330,7 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *&#160;</td>
+          <td class="paramtype">const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> *&#160;</td>
           <td class="paramname"><em>CamFrustumNormal</em>, </td>
         </tr>
         <tr>
@@ -342,14 +342,8 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">char *&#160;</td>
-          <td class="paramname"><em>VertsAdjusted</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>unused</em>&#160;</td>
+          <td class="paramtype">bool *&#160;</td>
+          <td class="paramname"><em>VertsAdjusted</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

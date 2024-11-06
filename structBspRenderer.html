@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7e86797</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;00e7d17</span>
    </div>
   </td>
  </tr>
@@ -72,6 +72,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="structBspRenderer-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">BspRenderer Struct Reference</div></div>
 </div><!--header-->
@@ -81,43 +82,91 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae829413e79f0abd6742ac250e509acea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#ae829413e79f0abd6742ac250e509acea">AddFaceToRenderList_d3d</a> (int node_id, int uFaceID)</td></tr>
-<tr class="separator:ae829413e79f0abd6742ac250e509acea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acbf92a5a5953c56e1a92a4a7d334a87d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#acbf92a5a5953c56e1a92a4a7d334a87d">MakeVisibleSectorList</a> ()</td></tr>
-<tr class="separator:acbf92a5a5953c56e1a92a4a7d334a87d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa06071730943a3ef3fed0423a7df9b1f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#aa06071730943a3ef3fed0423a7df9b1f">Init</a> ()</td></tr>
+<tr class="separator:aa06071730943a3ef3fed0423a7df9b1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:afce2c579f91e8e403fe3b817f0e32c61"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#afce2c579f91e8e403fe3b817f0e32c61">num_faces</a> = 0</td></tr>
 <tr class="separator:afce2c579f91e8e403fe3b817f0e32c61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3bb0b2feb4919a3ab3cc72d5e895f288"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structBspFace.html">BspFace</a>, 1500 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#a3bb0b2feb4919a3ab3cc72d5e895f288">faces</a> = {{}}</td></tr>
+<tr class="memitem:a3bb0b2feb4919a3ab3cc72d5e895f288"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structBspFace.html">BspFace</a>, 1500 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#a3bb0b2feb4919a3ab3cc72d5e895f288">faces</a> = { {} }</td></tr>
 <tr class="separator:a3bb0b2feb4919a3ab3cc72d5e895f288"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff5065af96683a64953022d65d17226a"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#aff5065af96683a64953022d65d17226a">num_nodes</a> = 0</td></tr>
 <tr class="separator:aff5065af96683a64953022d65d17226a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae0afa2114b20f5e0a8ef06626e1b7555"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structBspRenderer__ViewportNode.html">BspRenderer_ViewportNode</a>, 150 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#ae0afa2114b20f5e0a8ef06626e1b7555">nodes</a> = {{}}</td></tr>
+<tr class="memitem:ae0afa2114b20f5e0a8ef06626e1b7555"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structBspRenderer__ViewportNode.html">BspRenderer_ViewportNode</a>, 150 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#ae0afa2114b20f5e0a8ef06626e1b7555">nodes</a> = { {} }</td></tr>
 <tr class="separator:ae0afa2114b20f5e0a8ef06626e1b7555"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a269465151d548167952952d65f357526"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#a269465151d548167952952d65f357526">uNumVisibleNotEmptySectors</a> = 0</td></tr>
 <tr class="separator:a269465151d548167952952d65f357526"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f3575d875c870d23161ceffcc9d67e5"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 150 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#a9f3575d875c870d23161ceffcc9d67e5">pVisibleSectorIDs_toDrawDecorsActorsEtcFrom</a> = {{}}</td></tr>
+<tr class="memitem:a9f3575d875c870d23161ceffcc9d67e5"><td class="memItemLeft" align="right" valign="top">std::array&lt; int, 150 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#a9f3575d875c870d23161ceffcc9d67e5">pVisibleSectorIDs_toDrawDecorsActorsEtcFrom</a> = { {} }</td></tr>
 <tr class="separator:a9f3575d875c870d23161ceffcc9d67e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:acd9526d9adce705162e98310ba37fd1f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#acd9526d9adce705162e98310ba37fd1f">AddFace</a> (const int node_id, const int uFaceID)</td></tr>
+<tr class="separator:acd9526d9adce705162e98310ba37fd1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1882d5cb52135e01188f05f31810118d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#a1882d5cb52135e01188f05f31810118d">AddNode</a> ()</td></tr>
+<tr class="separator:a1882d5cb52135e01188f05f31810118d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a389791218709ce1d3ff5c92b6a714a34"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#a389791218709ce1d3ff5c92b6a714a34">AddBSPFaces</a> (const int node_id, const int bspNodeId)</td></tr>
+<tr class="separator:a389791218709ce1d3ff5c92b6a714a34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27d2b309362716a95c81c011af498d77"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBspRenderer.html#a27d2b309362716a95c81c011af498d77">AddSector</a> (int sectorId)</td></tr>
+<tr class="separator:a27d2b309362716a95c81c011af498d77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ae829413e79f0abd6742ac250e509acea" name="ae829413e79f0abd6742ac250e509acea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae829413e79f0abd6742ac250e509acea">&#9670;&#160;</a></span>AddFaceToRenderList_d3d()</h2>
+<a id="a389791218709ce1d3ff5c92b6a714a34" name="a389791218709ce1d3ff5c92b6a714a34"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a389791218709ce1d3ff5c92b6a714a34">&#9670;&#160;</a></span>AddBSPFaces()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void BspRenderer::AddFaceToRenderList_d3d </td>
+          <td class="memname">void BspRenderer::AddBSPFaces </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">const int&#160;</td>
           <td class="paramname"><em>node_id</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>bspNodeId</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acd9526d9adce705162e98310ba37fd1f" name="acd9526d9adce705162e98310ba37fd1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd9526d9adce705162e98310ba37fd1f">&#9670;&#160;</a></span>AddFace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BspRenderer::AddFace </td>
+          <td>(</td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>node_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
           <td class="paramname"><em>uFaceID</em>&#160;</td>
         </tr>
         <tr>
@@ -126,18 +175,74 @@ Public Attributes</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="acbf92a5a5953c56e1a92a4a7d334a87d" name="acbf92a5a5953c56e1a92a4a7d334a87d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acbf92a5a5953c56e1a92a4a7d334a87d">&#9670;&#160;</a></span>MakeVisibleSectorList()</h2>
+<a id="a1882d5cb52135e01188f05f31810118d" name="a1882d5cb52135e01188f05f31810118d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1882d5cb52135e01188f05f31810118d">&#9670;&#160;</a></span>AddNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BspRenderer::AddNode </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a27d2b309362716a95c81c011af498d77" name="a27d2b309362716a95c81c011af498d77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27d2b309362716a95c81c011af498d77">&#9670;&#160;</a></span>AddSector()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void BspRenderer::AddSector </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>sectorId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa06071730943a3ef3fed0423a7df9b1f" name="aa06071730943a3ef3fed0423a7df9b1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa06071730943a3ef3fed0423a7df9b1f">&#9670;&#160;</a></span>Init()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void BspRenderer::MakeVisibleSectorList </td>
+          <td class="memname">void BspRenderer::Init </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -155,7 +260,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;<a class="el" href="structBspFace.html">BspFace</a>, 1500&gt; BspRenderer::faces = {{}}</td>
+          <td class="memname">std::array&lt;<a class="el" href="structBspFace.html">BspFace</a>, 1500&gt; BspRenderer::faces = { {} }</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -169,7 +274,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;<a class="el" href="structBspRenderer__ViewportNode.html">BspRenderer_ViewportNode</a>, 150&gt; BspRenderer::nodes = {{}}</td>
+          <td class="memname">std::array&lt;<a class="el" href="structBspRenderer__ViewportNode.html">BspRenderer_ViewportNode</a>, 150&gt; BspRenderer::nodes = { {} }</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -211,7 +316,7 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;int, 150&gt; BspRenderer::pVisibleSectorIDs_toDrawDecorsActorsEtcFrom = {{}}</td>
+          <td class="memname">std::array&lt;int, 150&gt; BspRenderer::pVisibleSectorIDs_toDrawDecorsActorsEtcFrom = { {} }</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7e86797</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;00e7d17</span>
    </div>
   </td>
  </tr>
@@ -108,8 +108,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac7d54636a4eec3d3157d8063a117c8b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05c2f89fd51faa69d512d7608e521b15"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#a05c2f89fd51faa69d512d7608e521b15">CullFaceToFrustum</a> (<a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *inVerts, unsigned int *pOutNumVertices, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pOutVertices, <a class="el" href="structPlanef.html">Planef</a> *frustum, signed int uNumPlanes)</td></tr>
 <tr class="separator:a05c2f89fd51faa69d512d7608e521b15"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa009d99d021be5b13954ef4201fc6c2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#aaa009d99d021be5b13954ef4201fc6c2">ClipFaceToFrustum</a> (<a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pInVertices, unsigned int *pOutNumVertices, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pVertices, <a class="el" href="structPlanef.html">Planef</a> *CameraFrustrum, int NumFrustumPlanes, char DebugLines, int _unused)</td></tr>
-<tr class="separator:aaa009d99d021be5b13954ef4201fc6c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac141f77f2f5a63a45b47800aa4f23dd1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#ac141f77f2f5a63a45b47800aa4f23dd1">ClipFaceToFrustum</a> (<a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pInVertices, unsigned int *pOutNumVertices, <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *pVertices, const <a class="el" href="structPlanef.html">Planef</a> *CameraFrustrum)</td></tr>
+<tr class="separator:ac141f77f2f5a63a45b47800aa4f23dd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add0eb5d761f167b74424a2ec7e432817"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#add0eb5d761f167b74424a2ec7e432817">BuildViewFrustum</a> ()</td></tr>
 <tr class="separator:add0eb5d761f167b74424a2ec7e432817"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae887340351c4bcebaa06282fb4b324e2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structCamera3D.html#ae887340351c4bcebaa06282fb4b324e2">CreateViewMatrixAndProjectionScale</a> ()</td></tr>
@@ -225,8 +225,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aaa009d99d021be5b13954ef4201fc6c2" name="aaa009d99d021be5b13954ef4201fc6c2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaa009d99d021be5b13954ef4201fc6c2">&#9670;&#160;</a></span>ClipFaceToFrustum()</h2>
+<a id="ac141f77f2f5a63a45b47800aa4f23dd1" name="ac141f77f2f5a63a45b47800aa4f23dd1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac141f77f2f5a63a45b47800aa4f23dd1">&#9670;&#160;</a></span>ClipFaceToFrustum()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -252,26 +252,8 @@ Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structPlanef.html">Planef</a> *&#160;</td>
-          <td class="paramname"><em>CameraFrustrum</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>NumFrustumPlanes</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">char&#160;</td>
-          <td class="paramname"><em>DebugLines</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>_unused</em>&#160;</td>
+          <td class="paramtype">const <a class="el" href="structPlanef.html">Planef</a> *&#160;</td>
+          <td class="paramname"><em>CameraFrustrum</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
