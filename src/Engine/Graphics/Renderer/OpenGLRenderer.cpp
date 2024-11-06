@@ -841,6 +841,7 @@ void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     if (pFace->uNumVertices <= 0) return;
 
+    // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
     if (!pFace->GetTexture()) return;
 
     int dimming_level = 0;
@@ -3265,6 +3266,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                     if (!face.Invisible()) {
                         // TODO(pskelton): Same as indoors. When ODM and BLV face is combined - seperate out function
 
+                        // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
                         if (!face.GetTexture()) continue;
                         GraphicsImage *tex = face.GetTexture();
 
@@ -3882,6 +3884,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                 if (face->isPortal())
                     continue;
+                // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
                 if (!face->GetTexture())
                     continue;
 
@@ -4062,6 +4065,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 face->uAttributes |= FACE_SeenByParty;
 
                 Planef *portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum.data();
+                // TODO(yoctozepto): just have this as a global constant instead of random vars/4 around
                 unsigned int uNumFrustums = 4;
 
                 // unsigned ColourMask;  // ebx@25
@@ -4092,7 +4096,6 @@ void OpenGLRenderer::DrawIndoorFaces() {
                     continue;
                 }
 
-                // ceiling sky faces are not frustum culled
                 float skymodtimex{};
                 float skymodtimey{};
                 if (face->Indoor_sky()) {
@@ -4480,6 +4483,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
             BLVFace *pface = &pIndoor->pFaces[test];
 
             if (pface->isPortal()) continue;
+            // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
             if (!pface->GetTexture()) continue;
 
             // check if faces is visible

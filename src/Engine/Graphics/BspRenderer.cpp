@@ -12,6 +12,8 @@ BspRenderer *pBspRenderer = new BspRenderer();
 
 //----- (004B0EA8) --------------------------------------------------------
 void BspRenderer::AddFace(const int node_id, const int uFaceID) {
+    assert(uFaceID > -1 && uFaceID < pIndoor->pFaces.size() && "please report with a nearby save file");
+
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
 
     if (!pFace->isPortal()) {
@@ -19,13 +21,19 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
         if (pFace->Invisible())
             return;  // nothing to render
         // NOTE(yoctozepto): the below happens, e.g., on various stairs
+        // TODO(yoctozepto): might be nice to check if the vertices actually form a plane and not a line
         if (pFace->uNumVertices < 3) {
             return;  // nothing to render
         }
         // TODO(yoctozepto): does the below happen?
+        // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also OpenGLRenderer)
         if (!pFace->GetTexture()) {
             return;  // nothing to render
         }
+
+        // TODO(yoctozepto): experiment with clipping also regular faces to frustum and checking their facing:
+        //                   this would optimise the amount of faces that the other code has to process (OpenGLRenderer, Vis picking);
+        //                   remember to handle minimap with it
 
         assert(num_faces < 1500 && "please report with a nearby save file");
 
@@ -36,6 +44,8 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
         num_faces++;
         return;
     }
+
+    // TODO(yoctozepto): similarly to regular faces, maybe check if the portal vertices form a proper plane
 
     const BspRenderer_ViewportNode *currentNode = &nodes[node_id];
 
