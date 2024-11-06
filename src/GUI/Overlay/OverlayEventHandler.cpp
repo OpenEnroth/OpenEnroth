@@ -3,6 +3,8 @@
 #include <imgui/backends/imgui_impl_sdl2.h>
 #include <imgui/imgui.h>
 
+#include "Engine/Engine.h"
+
 OverlayEventHandler::OverlayEventHandler() : PlatformEventFilter(EVENTS_ALL) {
 }
 
@@ -15,6 +17,9 @@ bool OverlayEventHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
 }
 
 bool OverlayEventHandler::keyEvent(PlatformKey key, PlatformModifiers mods, bool keyPressed) {
+    if (key == engine->config->keybindings.Console.value() || key == engine->config->gamepad.Console.value())
+        return false; // Pass close console keys to the game to handle.
+
     return ImGui::GetCurrentContext() && ImGui::GetIO().WantCaptureKeyboard;
 }
 

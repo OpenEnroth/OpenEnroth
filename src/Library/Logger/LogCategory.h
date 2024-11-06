@@ -55,4 +55,8 @@ class LogCategory {
     // Storing log level here is an implementation detail - it makes it possible to check the log level inside a
     // logging call in just two memory reads.
     std::optional<LogLevel> _level;
+
+    // Same as above, but we store `detail::LOG_NONE_BARRIER` instead of `LOG_NONE` here so that when we don't read the
+    // docs and try to log at `LOG_NONE`, the message is always ignored.
+    std::optional<int> _adjustedLevel;
 };

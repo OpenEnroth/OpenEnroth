@@ -36,8 +36,9 @@ UNIT_TEST(FileSystemTrie, EmptyWalk) {
     using namespace detail; // NOLINT
 
     FileSystemTrie<bool> trie;
-    FileSystemPath tail;
-    FileSystemTrieNode<bool> *node = trie.walk(FileSystemPath("a/b/c"), &tail);
+    FileSystemPathView tail;
+    FileSystemPath path("a/b/c");
+    FileSystemTrieNode<bool> *node = trie.walk(path, &tail);
 
     EXPECT_EQ(node, trie.root());
     EXPECT_EQ(tail, FileSystemPath("a/b/c"));
@@ -49,18 +50,21 @@ UNIT_TEST(FileSystemTrie, NonEmptyWalk) {
     FileSystemTrie<int> trie;
     trie.insertOrAssign(FileSystemPath("a/b"), 10);
 
-    FileSystemPath tail;
+    FileSystemPathView tail;
     FileSystemTrieNode<int> *node = nullptr;
 
-    node = trie.walk(FileSystemPath("a/b/c"), &tail);
+    FileSystemPath path0("a/b/c");
+    node = trie.walk(path0, &tail);
     EXPECT_EQ(node, trie.find(FileSystemPath("a/b")));
     EXPECT_EQ(tail, FileSystemPath("c"));
 
-    node = trie.walk(FileSystemPath("a/b"), &tail);
+    FileSystemPath path1("a/b");
+    node = trie.walk(path1, &tail);
     EXPECT_EQ(node, trie.find(FileSystemPath("a/b")));
     EXPECT_EQ(tail, FileSystemPath());
 
-    node = trie.walk(FileSystemPath(""), &tail);
+    FileSystemPath path2("");
+    node = trie.walk(path2, &tail);
     EXPECT_EQ(node, trie.root());
     EXPECT_EQ(tail, FileSystemPath());
 }
@@ -71,12 +75,14 @@ UNIT_TEST(FileSystemTrie, WalkClearsTail) {
     FileSystemTrie<int> trie;
     trie.insertOrAssign(FileSystemPath("a/b"), 10);
 
-    FileSystemPath tail0("a");
-    trie.walk(FileSystemPath("a/b"), &tail0);
-    EXPECT_EQ(tail0, FileSystemPath());
+    FileSystemPath path0("a/b");
+    FileSystemPathView tail0 = path0;
+    trie.walk(path0, &tail0);
+    EXPECT_EQ(tail0, FileSystemPathView());
 
-    FileSystemPath tail1("a");
-    trie.walk(FileSystemPath(""), &tail1);
+    FileSystemPath path1("");
+    FileSystemPathView tail1 = path0;
+    trie.walk(path1, &tail1);
     EXPECT_EQ(tail1, FileSystemPath());
 }
 

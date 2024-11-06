@@ -4,25 +4,25 @@
 
 #include "FileSystemException.h"
 
-void ReadOnlyFileSystem::_write(const FileSystemPath &path, const Blob &data) {
+void ReadOnlyFileSystem::_write(FileSystemPathView path, const Blob &data) {
     reportWriteError(path);
 }
 
-std::unique_ptr<OutputStream> ReadOnlyFileSystem::_openForWriting(const FileSystemPath &path) {
+std::unique_ptr<OutputStream> ReadOnlyFileSystem::_openForWriting(FileSystemPathView path) {
     reportWriteError(path);
 }
 
-void ReadOnlyFileSystem::_rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath) {
+void ReadOnlyFileSystem::_rename(FileSystemPathView srcPath, FileSystemPathView dstPath) {
     FileSystemException::raise(this, FS_RENAME_FAILED_DST_NOT_WRITEABLE, srcPath, dstPath);
 }
 
-bool ReadOnlyFileSystem::_remove(const FileSystemPath &path) {
+bool ReadOnlyFileSystem::_remove(FileSystemPathView path) {
     if (!_exists(path))
         return false;
 
     FileSystemException::raise(this, FS_REMOVE_FAILED_PATH_NOT_WRITEABLE, path);
 }
 
-void ReadOnlyFileSystem::reportWriteError(const FileSystemPath &path) const {
+void ReadOnlyFileSystem::reportWriteError(FileSystemPathView path) const {
     FileSystemException::raise(this, FS_WRITE_FAILED_PATH_NOT_WRITEABLE, path);
 }

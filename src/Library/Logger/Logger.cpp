@@ -8,10 +8,15 @@
 
 Logger *logger = nullptr;
 
+static int adjustLevel(LogLevel level) {
+    return level == LOG_NONE ? detail::LOG_NONE_BARRIER : static_cast<int>(level);
+}
+
 Logger::Logger(LogLevel level, LogSink *sink) {
     assert(sink);
 
     _defaultCategory._level = level;
+    _defaultCategory._adjustedLevel = adjustLevel(level);
     _sink = sink;
 
     assert(logger == nullptr);
@@ -39,6 +44,7 @@ void Logger::setLevel(LogLevel level) {
         return;
 
     _defaultCategory._level = level;
+    _defaultCategory._adjustedLevel = adjustLevel(level);
 
     for (const LogCategory *category : LogCategory::instances())
         if (category->_source && !category->_level)
@@ -54,6 +60,7 @@ void Logger::setLevel(LogCategory &category, std::optional<LogLevel> level) {
         return;
 
     category._level = level;
+    category._adjustedLevel = level.transform(&adjustLevel);
 
     if (category._source) {
         LogLevel effectiveLevel = level ? *level : *_defaultCategory._level;

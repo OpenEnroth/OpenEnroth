@@ -100,10 +100,10 @@ class FileSystemTrie {
         return const_cast<FileSystemTrie *>(this)->root();
     }
 
-    Node *find(Node *base, const FileSystemPath &relativePath) {
+    Node *find(Node *base, FileSystemPathView relativePath) {
         assert(base);
 
-        for (std::string_view chunk : relativePath.chunks()) {
+        for (std::string_view chunk : relativePath.split()) {
             base = base->child(chunk);
             if (!base)
                 return base;
@@ -112,49 +112,49 @@ class FileSystemTrie {
         return base;
     }
 
-    Node *find(const FileSystemPath &path) {
+    Node *find(FileSystemPathView path) {
         return find(root(), path);
     }
 
-    const Node *find(const Node *base, const FileSystemPath &relativePath) const {
+    const Node *find(const Node *base, FileSystemPathView relativePath) const {
         return const_cast<FileSystemTrie *>(this)->find(base, relativePath);
     }
 
-    const Node *find(const FileSystemPath &path) const {
+    const Node *find(FileSystemPathView path) const {
         return const_cast<FileSystemTrie *>(this)->find(path);
     }
 
-    Node *walk(Node *base, const FileSystemPath &relativePath, FileSystemPath *tail = nullptr) {
+    Node *walk(Node *base, FileSystemPathView relativePath, FileSystemPathView *tail = nullptr) {
         assert(base);
 
-        for (std::string_view chunk : relativePath.chunks()) {
+        for (std::string_view chunk : relativePath.split()) {
             if (Node *child = base->child(chunk)) {
                 base = child;
             } else {
                 if (tail)
-                    *tail = relativePath.tailAt(chunk);
+                    *tail = relativePath.split().tailAt(chunk);
                 return base;
             }
         }
 
         if (tail)
-            *tail = FileSystemPath();
+            *tail = {};
         return base;
     }
 
-    Node *walk(const FileSystemPath &path, FileSystemPath *tail = nullptr) {
+    Node *walk(FileSystemPathView path, FileSystemPathView *tail = nullptr) {
         return walk(root(), path, tail);
     }
 
-    const Node *walk(const Node *base, const FileSystemPath &relativePath, FileSystemPath *tail = nullptr) const {
+    const Node *walk(const Node *base, FileSystemPathView relativePath, FileSystemPathView *tail = nullptr) const {
         return const_cast<FileSystemTrie *>(this)->walk(base, relativePath, tail);
     }
 
-    const Node *walk(const FileSystemPath &path, FileSystemPath *tail = nullptr) const {
+    const Node *walk(FileSystemPathView path, FileSystemPathView *tail = nullptr) const {
         return const_cast<FileSystemTrie *>(this)->walk(path, tail);
     }
 
-    bool erase(Node *base, const FileSystemPath &relativePath = {}) {
+    bool erase(Node *base, FileSystemPathView relativePath = {}) {
         assert(base);
 
         base = find(base, relativePath);
@@ -167,11 +167,11 @@ class FileSystemTrie {
         return true;
     }
 
-    bool erase(const FileSystemPath &path) {
+    bool erase(FileSystemPathView path) {
         return erase(root(), path);
     }
 
-    void chop(Node *base, const FileSystemPath &relativePath = {}) {
+    void chop(Node *base, FileSystemPathView relativePath = {}) {
         assert(base);
 
         base = find(base, relativePath);
@@ -182,11 +182,11 @@ class FileSystemTrie {
         _prune(base);
     }
 
-    void chop(const FileSystemPath &path) {
+    void chop(FileSystemPathView path) {
         chop(root(), path);
     }
 
-    Node *insertOrAssign(Node *base, const FileSystemPath &relativePath, T value) {
+    Node *insertOrAssign(Node *base, FileSystemPathView relativePath, T value) {
         assert(base);
 
         base = _grow(base, relativePath);
@@ -194,7 +194,7 @@ class FileSystemTrie {
         return base;
     }
 
-    Node *insertOrAssign(const FileSystemPath &path, T value) {
+    Node *insertOrAssign(FileSystemPathView path, T value) {
         return insertOrAssign(root(), path, std::move(value));
     }
 
@@ -221,7 +221,7 @@ class FileSystemTrie {
         }
     }
 
-    Node *insertOrAssign(Node *base, const FileSystemPath &relativePath, std::unique_ptr<Node> node) {
+    Node *insertOrAssign(Node *base, FileSystemPathView relativePath, std::unique_ptr<Node> node) {
         assert(base);
         assert(node);
         assert(node->_parent == nullptr);
@@ -244,7 +244,7 @@ class FileSystemTrie {
         return (node->_parent->_children[node->_key] = std::move(node)).get();
     }
 
-    Node *insertOrAssign(const FileSystemPath &path, std::unique_ptr<Node> node) {
+    Node *insertOrAssign(FileSystemPathView path, std::unique_ptr<Node> node) {
         return insertOrAssign(root(), path, std::move(node));
     }
 
@@ -267,10 +267,10 @@ class FileSystemTrie {
         return node;
     }
 
-    Node *_grow(Node *base, const FileSystemPath &relativePath) {
+    Node *_grow(Node *base, const FileSystemPathView relativePath) {
         assert(base);
 
-        for (std::string_view chunk : relativePath.chunks()) {
+        for (std::string_view chunk : relativePath.split()) {
             if (Node *child = base->child(chunk)) {
                 base = child;
                 continue;

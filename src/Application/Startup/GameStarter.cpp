@@ -59,7 +59,6 @@ constexpr std::string_view configName = "openenroth.ini";
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init logging.
-    _logStarter.initPrimary();
     Engine::LogEngineBuildInfo();
 
     try {
@@ -77,7 +76,6 @@ void GameStarter::initWithLogger() {
     // Resolve user path, create user fs & file logger.
     resolveUserPath(_environment.get(), &_options);
     _fsStarter.initUserFs(_options.ramFsUserData, _options.userPath);
-    _logStarter.initSecondary(ufs);
 
     // Resolve data path, create data fs.
     // TODO(captainurist): actually move datapath to config?
@@ -99,7 +97,7 @@ void GameStarter::initWithLogger() {
     }
 
     // Finish logger init now that we know the desired log level.
-    _logStarter.initFinal(_options.logLevel ? *_options.logLevel : _config->debug.LogLevel.value());
+    _logStarter.initialize(ufs, _options.logLevel ? *_options.logLevel : _config->debug.LogLevel.value());
 
     // Create platform.
     if (_options.headless) {

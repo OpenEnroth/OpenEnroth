@@ -45,7 +45,9 @@ add_subdirectory(small_vector EXCLUDE_FROM_ALL)
 # spdlog
 set(SPDLOG_FMT_EXTERNAL ON)
 set(SPDLOG_DISABLE_DEFAULT_LOGGER ON)
-set(SPDLOG_WCHAR_SUPPORT ON) # Use unicode APIs on Windows.
+if(OE_BUILD_PLATFORM STREQUAL "windows")
+    set(SPDLOG_WCHAR_SUPPORT ON) # Use unicode APIs on Windows.
+endif()
 add_subdirectory(spdlog EXCLUDE_FROM_ALL)
 
 # googletest

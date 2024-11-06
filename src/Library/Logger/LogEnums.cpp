@@ -3,6 +3,7 @@
 #include "Library/Serialization/EnumSerialization.h"
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(LogLevel, CASE_INSENSITIVE, {
+    {LOG_NONE, "none"},
     {LOG_TRACE, "trace"},
     {LOG_DEBUG, "debug"},
     {LOG_INFO, "info"},

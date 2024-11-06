@@ -110,3 +110,28 @@ UNIT_TEST(DirectoryFileSystem, DisplayPathSymmetry) {
     EXPECT_TRUE(std::filesystem::path(blob.displayPath()).is_absolute());
     EXPECT_EQ(blob.displayPath(), stream->displayPath());
 }
+
+UNIT_TEST(DirectoryFileSystem, EscapingPaths) {
+    TemporaryDir tmp("a");
+    ScopedTestFile tmp2("1.txt", "");
+    ScopedTestFile tmp3("a/1.txt", "");
+
+    DirectoryFileSystem fs("a");
+
+    EXPECT_FALSE(fs.exists(".."));
+    EXPECT_FALSE(fs.stat(".."));
+    EXPECT_ANY_THROW((void) fs.ls(".."));
+    EXPECT_ANY_THROW((void) fs.read("../1.txt"));
+    EXPECT_ANY_THROW((void) fs.openForReading("../1.txt"));
+    EXPECT_ANY_THROW(fs.write("../1.txt", Blob()));
+    EXPECT_ANY_THROW((void) fs.openForWriting("../1.txt"));
+    EXPECT_ANY_THROW(fs.remove("../1.txt"));
+    EXPECT_ANY_THROW(fs.rename("../1.txt", "2.txt"));
+    EXPECT_ANY_THROW(fs.rename("1.txt", "../2.txt"));
+}
+
+UNIT_TEST(DirectoryFileSystem, EscapingDisplayPath) {
+    DirectoryFileSystem fs("");
+
+    EXPECT_TRUE(fs.displayPath("..").ends_with(".."));
+}

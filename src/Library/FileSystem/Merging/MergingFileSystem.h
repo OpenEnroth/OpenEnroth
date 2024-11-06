@@ -46,15 +46,15 @@ class MergingFileSystem : public ReadOnlyFileSystem {
     virtual ~MergingFileSystem();
 
  private:
-    virtual bool _exists(const FileSystemPath &path) const override;
-    virtual FileStat _stat(const FileSystemPath &path) const override;
-    virtual void _ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const override;
-    virtual Blob _read(const FileSystemPath &path) const override;
-    virtual std::unique_ptr<InputStream> _openForReading(const FileSystemPath &path) const override;
-    virtual std::string _displayPath(const FileSystemPath &path) const override;
+    virtual bool _exists(FileSystemPathView path) const override;
+    virtual FileStat _stat(FileSystemPathView path) const override;
+    virtual void _ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const override;
+    virtual Blob _read(FileSystemPathView path) const override;
+    virtual std::unique_ptr<InputStream> _openForReading(FileSystemPathView path) const override;
+    virtual std::string _displayPath(FileSystemPathView path) const override;
 
-    const FileSystem *locateForReading(const FileSystemPath &path) const;
-    const FileSystem *locateForReadingOrNull(const FileSystemPath &path) const;
+    const FileSystem *locateForReading(FileSystemPathView path) const;
+    const FileSystem *locateForReadingOrNull(FileSystemPathView path) const;
 
  private:
     std::vector<const FileSystem *> _bases;

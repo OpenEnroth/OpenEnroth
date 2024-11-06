@@ -16,14 +16,14 @@ MergingFileSystem::MergingFileSystem(std::vector<const FileSystem *> bases) {
 
 MergingFileSystem::~MergingFileSystem() = default;
 
-bool MergingFileSystem::_exists(const FileSystemPath &path) const {
+bool MergingFileSystem::_exists(FileSystemPathView path) const {
     for (const FileSystem *base : _bases)
         if (base->exists(path))
             return true;
     return false;
 }
 
-FileStat MergingFileSystem::_stat(const FileSystemPath &path) const {
+FileStat MergingFileSystem::_stat(FileSystemPathView path) const {
     bool dirFound = false;
     for (const FileSystem *base : _bases) {
         FileStat stat = base->stat(path);
@@ -35,7 +35,7 @@ FileStat MergingFileSystem::_stat(const FileSystemPath &path) const {
     return dirFound ? FileStat(FILE_DIRECTORY, 0) : FileStat();
 }
 
-void MergingFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const {
+void MergingFileSystem::_ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const {
     std::vector<DirectoryEntry> buffer;
 
     bool hasOne = false;
@@ -59,15 +59,15 @@ void MergingFileSystem::_ls(const FileSystemPath &path, std::vector<DirectoryEnt
     entries->erase(tailStart, tailEnd);
 }
 
-Blob MergingFileSystem::_read(const FileSystemPath &path) const {
+Blob MergingFileSystem::_read(FileSystemPathView path) const {
     return locateForReading(path)->read(path);
 }
 
-std::unique_ptr<InputStream> MergingFileSystem::_openForReading(const FileSystemPath &path) const {
+std::unique_ptr<InputStream> MergingFileSystem::_openForReading(FileSystemPathView path) const {
     return locateForReading(path)->openForReading(path);
 }
 
-std::string MergingFileSystem::_displayPath(const FileSystemPath &path) const {
+std::string MergingFileSystem::_displayPath(FileSystemPathView path) const {
     if (_bases.empty())
         return NullFileSystem().displayPath(path); // Empty merging FS is basically a NullFileSystem.
 
@@ -79,14 +79,14 @@ std::string MergingFileSystem::_displayPath(const FileSystemPath &path) const {
     return base->displayPath(path);
 }
 
-const FileSystem *MergingFileSystem::locateForReading(const FileSystemPath &path) const {
+const FileSystem *MergingFileSystem::locateForReading(FileSystemPathView path) const {
     const FileSystem *result = locateForReadingOrNull(path);
     if (result == nullptr)
         FileSystemException::raise(this, FS_READ_FAILED_PATH_DOESNT_EXIST, path);
     return result;
 }
 
-const FileSystem *MergingFileSystem::locateForReadingOrNull(const FileSystemPath &path) const {
+const FileSystem *MergingFileSystem::locateForReadingOrNull(FileSystemPathView path) const {
     for (const FileSystem *base : _bases)
         if (base->stat(path).type == FILE_REGULAR)
             return base;

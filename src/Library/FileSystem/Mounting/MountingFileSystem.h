@@ -34,34 +34,34 @@ class MountingFileSystem : public FileSystem {
     virtual ~MountingFileSystem();
 
     void mount(std::string_view path, FileSystem *fileSystem);
-    void mount(const FileSystemPath &path, FileSystem *fileSystem);
+    void mount(FileSystemPathView path, FileSystem *fileSystem);
     bool unmount(std::string_view path);
-    bool unmount(const FileSystemPath &path);
+    bool unmount(FileSystemPathView path);
 
     void clearMounts();
 
  private:
-    virtual bool _exists(const FileSystemPath &path) const override;
-    virtual FileStat _stat(const FileSystemPath &path) const override;
-    virtual void _ls(const FileSystemPath &path, std::vector<DirectoryEntry> *entries) const override;
-    virtual Blob _read(const FileSystemPath &path) const override;
-    virtual void _write(const FileSystemPath &path, const Blob &data) override;
-    virtual std::unique_ptr<InputStream> _openForReading(const FileSystemPath &path) const override;
-    virtual std::unique_ptr<OutputStream> _openForWriting(const FileSystemPath &path) override;
-    virtual void _rename(const FileSystemPath &srcPath, const FileSystemPath &dstPath) override;
-    virtual bool _remove(const FileSystemPath &path) override;
-    virtual std::string _displayPath(const FileSystemPath &path) const override;
+    virtual bool _exists(FileSystemPathView path) const override;
+    virtual FileStat _stat(FileSystemPathView path) const override;
+    virtual void _ls(FileSystemPathView path, std::vector<DirectoryEntry> *entries) const override;
+    virtual Blob _read(FileSystemPathView path) const override;
+    virtual void _write(FileSystemPathView path, const Blob &data) override;
+    virtual std::unique_ptr<InputStream> _openForReading(FileSystemPathView path) const override;
+    virtual std::unique_ptr<OutputStream> _openForWriting(FileSystemPathView path) override;
+    virtual void _rename(FileSystemPathView srcPath, FileSystemPathView dstPath) override;
+    virtual bool _remove(FileSystemPathView path) override;
+    virtual std::string _displayPath(FileSystemPathView path) const override;
 
  private:
     using Node = FileSystemTrieNode<FileSystem *>;
-    using WalkResult = std::tuple<Node *, FileSystem *, FileSystemPath>;
-    using ConstWalkResult = std::tuple<const Node *, const FileSystem *, FileSystemPath>;
+    using WalkResult = std::tuple<Node *, FileSystem *, FileSystemPathView>;
+    using ConstWalkResult = std::tuple<const Node *, const FileSystem *, FileSystemPathView>;
 
-    WalkResult walk(const FileSystemPath &path);
-    ConstWalkResult walk(const FileSystemPath &path) const;
+    WalkResult walk(FileSystemPathView path);
+    ConstWalkResult walk(FileSystemPathView path) const;
 
-    std::pair<const FileSystem *, FileSystemPath> walkForReading(const FileSystemPath &path) const;
-    std::pair<FileSystem *, FileSystemPath> walkForWriting(const FileSystemPath &path);
+    std::pair<const FileSystem *, FileSystemPathView> walkForReading(FileSystemPathView path) const;
+    std::pair<FileSystem *, FileSystemPathView> walkForWriting(FileSystemPathView path);
 
  private:
     std::string _displayName;
