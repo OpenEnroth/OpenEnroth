@@ -16,6 +16,7 @@
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
 #include "Engine/PriceCalculator.h"
+#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -162,33 +163,54 @@ GAME_TEST(Issues, Issue1175) {
 }
 
 GAME_TEST(Issues, Issue1191) {
+    // Warlock's dragon should add +3 to Self magic skills. Dragon also consumes food when resting.
     auto foodTape = tapes.food();
+    auto timeTape = tapes.time();
     test.playTraceFromTestData("issue_1191.mm7", "issue_1191.json");
 
+    EXPECT_EQ(pParty->pCharacters[0].classType, CLASS_WARLOCK);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_FIRE).level(), 7);
     EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_FIRE).level(), 10);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_AIR).level(), 1);
     EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_AIR).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_WATER).level(), 1);
     EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_WATER).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_EARTH).level(), 1);
     EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_EARTH).level(), 4);
-
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_SPIRIT).level(), 1);
     EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_SPIRIT).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_MIND).level(), 4);
     EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_MIND).level(), 9); // 4, +3 dragon, +2 Ruler's ring
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_BODY).level(), 1);
     EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_BODY).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_DARK).level(), 0);
     EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_DARK).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
     EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
 
+    EXPECT_EQ(pParty->pCharacters[2].classType, CLASS_WARLOCK);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_FIRE).level(), 1);
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_FIRE).level(), 4);
+    EXPECT_LE(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_AIR).level(), 0);
     EXPECT_LE(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_AIR).level(), 3); // She has no skill. 0 or 3 skill level is fine
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_WATER).level(), 1);
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_WATER).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_EARTH).level(), 10);
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_EARTH).level(), 18); // 10, +3 dragon, +5 ring
-
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_SPIRIT).level(), 10);
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_SPIRIT).level(), 13);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_MIND).level(), 1);
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_MIND).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_BODY).level(), 10);
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_BODY).level(), 18); // 10, +3 dragon, +5 ring
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_DARK).level(), 0);
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_DARK).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
     EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
 
-    EXPECT_EQ(foodTape.delta(), -3);
-    EXPECT_EQ(pParty->GetFood(), 7);
+    EXPECT_GT(timeTape.delta(), Duration::fromHours(8));
+    EXPECT_EQ(pOutdoor->getNumFoodRequiredToRestInCurrentPos(pParty->pos), 2);
+    EXPECT_EQ(foodTape.delta(), -3); // Dragon consumed 1 additional food.
 }
 
 GAME_TEST(Issues, Issue1196) {
