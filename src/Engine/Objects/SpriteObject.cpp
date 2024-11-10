@@ -144,7 +144,7 @@ static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
 
 void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
     ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID];
-    bool isHighSlope = IsTerrainSlopeTooHigh(pSpriteObjects[uLayingItemID].vPosition);
+    bool isHighSlope = pOutdoor->pTerrain.isSlopeTooHighByPos(pSpriteObjects[uLayingItemID].vPosition);
     int bmodelPid = 0;
     bool onWater = false;
     float level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition, object->uHeight, &onWater, &bmodelPid, 0);

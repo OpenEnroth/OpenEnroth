@@ -142,7 +142,6 @@ Vec2i WorldPosToGrid(Vec3f worldPos);
 int GridCellToWorldPosX(int);
 int GridCellToWorldPosY(int);
 void sub_481ED9_MessWithODMRenderParams();
-bool IsTerrainSlopeTooHigh(const Vec3f &pos);
 int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater, int bFloatAboveWater);
 void TeleportToStartingPoint(MapStartPoint point);  // idb
 

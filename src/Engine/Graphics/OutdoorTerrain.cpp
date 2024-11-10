@@ -1,5 +1,7 @@
 #include "OutdoorTerrain.h"
 
+#include <algorithm>
+
 #include "Engine/Tables/TileTable.h"
 
 #include "Outdoor.h"
@@ -140,6 +142,42 @@ Vec3f OutdoorTerrain::normalByPos(const Vec3f& pos) const {
     } else {
         return n / mag;
     }
+}
+
+bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
+    Vec2i gridPos = WorldPosToGrid(pos);
+
+    OutdoorTileGeometry tile = pOutdoor->pTerrain.tileGeometryByGrid(gridPos);
+
+    int dx = std::abs(pos.x - tile.v00.x), dz = std::abs(tile.v00.y - pos.y);
+
+    int y1, y2, y3;
+    if (dz >= dx) {
+        y1 = tile.v01.z;
+        y2 = tile.v11.z;
+        y3 = tile.v00.z;
+        //  lower-left triangle
+        //  y3 | \
+        //     |   \
+        //     |     \
+        //     |______ \
+        //  y1           y2
+    } else {
+        y1 = tile.v10.z;
+        y2 = tile.v00.z;
+        y3 = tile.v11.z;
+
+        // upper-right
+        //  y2_______ y1
+        //    \     |
+        //      \   |
+        //        \ |
+        //          y3
+    }
+
+    int y_min = std::min(y1, std::min(y2, y3));  // не верно при подъёме на склон
+    int y_max = std::max(y1, std::max(y2, y3));
+    return (y_max - y_min) > 512;
 }
 
 OutdoorTileGeometry OutdoorTerrain::tileGeometryByGrid(Vec2i gridPos) const {

@@ -51,6 +51,13 @@ class OutdoorTerrain {
      */
     Vec3f normalByPos(const Vec3f& pos) const;
 
+    /**
+     * @param pos                       World coordinates, only xy component is used by this function.
+     * @return                          Whether terrain slope at given position is too high to be climbed or stood on.
+     * @offset 0x004823F4
+     */
+    bool isSlopeTooHighByPos(const Vec3f& pos) const;
+
     // TODO(captainurist): also move all the functions that use this method into this class.
     OutdoorTileGeometry tileGeometryByGrid(Vec2i gridPos) const;
 

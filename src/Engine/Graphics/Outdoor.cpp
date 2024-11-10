@@ -1144,7 +1144,7 @@ void ODM_ProcessPartyActions() {
     }
     int partyOldFlightZ = pParty->sPartySavedFlightZ;
 
-    bool partyAtHighSlope = IsTerrainSlopeTooHigh(pParty->pos);
+    bool partyAtHighSlope = pOutdoor->pTerrain.isSlopeTooHighByPos(pParty->pos);
     bool partyIsRunning = false;
     bool partyIsWalking = false;
     bool noFlightBob = false;
@@ -1757,7 +1757,7 @@ void UpdateActors_ODM() {
         if (!pActors[Actor_ITR].CanAct())
             uIsFlying = 0;
 
-        bool Slope_High = IsTerrainSlopeTooHigh(pActors[Actor_ITR].pos);
+        bool Slope_High = pOutdoor->pTerrain.isSlopeTooHighByPos(pActors[Actor_ITR].pos);
         int Model_On_PID = 0;
         bool uIsOnWater = false;
         float Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].pos, pActors[Actor_ITR].height, &uIsOnWater, &Model_On_PID, Water_Walk);
@@ -2088,44 +2088,6 @@ int GridCellToWorldPosX(int a1) { return (a1 - 64) << 9; }
 
 //----- (0047F476) --------------------------------------------------------
 int GridCellToWorldPosY(int a1) { return (64 - a1) << 9; }
-
-
-//----- (004823F4) --------------------------------------------------------
-bool IsTerrainSlopeTooHigh(const Vec3f &pos) {
-    Vec2i gridPos = WorldPosToGrid(pos);
-
-    OutdoorTileGeometry tile = pOutdoor->pTerrain.tileGeometryByGrid(gridPos);
-
-    int dx = std::abs(pos.x - tile.v00.x), dz = std::abs(tile.v00.y - pos.y);
-
-    int y1, y2, y3;
-    if (dz >= dx) {
-        y1 = tile.v01.z;
-        y2 = tile.v11.z;
-        y3 = tile.v00.z;
-        //  lower-left triangle
-        //  y3 | \
-        //     |   \
-        //     |     \
-        //     |______ \
-        //  y1           y2
-    } else {
-        y1 = tile.v10.z;
-        y2 = tile.v00.z;
-        y3 = tile.v11.z;
-
-        // upper-right
-        //  y2_______ y1
-        //    \     |
-        //      \   |
-        //        \ |
-        //          y3
-    }
-
-    int y_min = std::min(y1, std::min(y2, y3));  // не верно при подъёме на склон
-    int y_max = std::max(y1, std::max(y2, y3));
-    return (y_max - y_min) > 512;
-}
 
 //----- (0048257A) --------------------------------------------------------
 int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater, int bFloatAboveWater) {
