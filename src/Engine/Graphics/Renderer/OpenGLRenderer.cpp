@@ -1946,7 +1946,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     continue;
 
                 // splat hits this square of terrain
-                TileFlags terrainFlags = pOutdoor->getTileAttribByGrid(loopx, loopy);
+                bool fading = pOutdoor->pTerrain.isWaterOrShoreByGrid({loopx, loopy});
 
                 unsigned norm_idx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
                 unsigned bottnormidx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
@@ -1961,7 +1961,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 float _f1 = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
                 int dimming_level = std::clamp(static_cast<int>(20.0f - floorf(20.0f * _f1 + 0.5f)), 0, 31);
 
-                decal_builder->ApplyBloodSplatToTerrain(terrainFlags, norm, &Light_tile_dist, VertexRenderList, i);
+                decal_builder->ApplyBloodSplatToTerrain(fading, norm, &Light_tile_dist, VertexRenderList, i);
                 Planef plane;
                 plane.normal = *norm;
                 plane.dist = Light_tile_dist;
@@ -1972,7 +1972,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 float _f = norm2->x * pOutdoor->vSunlight.x + norm2->y * pOutdoor->vSunlight.y + norm2->z * pOutdoor->vSunlight.z;
                 dimming_level = std::clamp(static_cast<int>(20.0 - floorf(20.0 * _f + 0.5f)), 0, 31);
 
-                decal_builder->ApplyBloodSplatToTerrain(terrainFlags, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
+                decal_builder->ApplyBloodSplatToTerrain(fading, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
                 plane.normal = *norm2;
                 plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)

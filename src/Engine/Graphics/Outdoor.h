@@ -36,11 +36,6 @@ struct OutdoorLocation {
     void Release();
     void Load(std::string_view filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned);
 
-    /**
-     * @offset 0x47EDB3
-     */
-    TileFlags getTileAttribByGrid(int gridX, int gridY);
-
     int UpdateDiscoveredArea(Vec2i gridPos);
     bool IsMapCellFullyRevealed(signed int a2, signed int a3);
     bool IsMapCellPartiallyRevealed(signed int a2, signed int a3);
@@ -48,11 +43,6 @@ struct OutdoorLocation {
     void ArrangeSpriteObjects();
     bool InitalizeActors(MapId a1);
     double GetFogDensityByTime();
-
-    /**
-     * @offset 0x488EB1
-     */
-    TileFlags getTileAttribByPos(const Vec3f &pos);
 
     /**
      * @offset 0x488EEF

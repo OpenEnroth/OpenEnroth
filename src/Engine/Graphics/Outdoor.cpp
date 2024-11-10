@@ -249,11 +249,6 @@ double OutdoorLocation::GetFogDensityByTime() {
     }
 }
 
-TileFlags OutdoorLocation::getTileAttribByPos(const Vec3f &pos) {
-    Vec2i gridPos = WorldPosToGrid(pos);
-    return getTileAttribByGrid(gridPos.x, gridPos.y);
-}
-
 TileData *OutdoorLocation::getTileDescByPos(const Vec3f &pos) {
     Vec2i gridPos = WorldPosToGrid(pos);
     return getTileDescByGrid(gridPos.x, gridPos.y);
@@ -617,11 +612,6 @@ TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
     }
 
     return &pTileTable->tiles[tileId];
-}
-
-TileFlags OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
-    int tileId = this->pTerrain.tileIdByGrid(Vec2i(gridX, gridY));
-    return pTileTable->tiles[tileId].uAttributes;
 }
 
 //----- (0047EF60) --------------------------------------------------------

@@ -113,6 +113,10 @@ bool OutdoorTerrain::isWaterByGrid(Vec2i gridPos) const {
     return pTileTable->tiles[tileIdByGrid(gridPos)].uAttributes & TILE_WATER;
 }
 
+bool OutdoorTerrain::isWaterOrShoreByGrid(Vec2i gridPos) const {
+    return pTileTable->tiles[tileIdByGrid(gridPos)].uAttributes & (TILE_WATER | TILE_SHORE);
+}
+
 bool OutdoorTerrain::isWaterByPos(const Vec3f &pos) const {
     return isWaterByGrid(WorldPosToGrid(pos));
 }

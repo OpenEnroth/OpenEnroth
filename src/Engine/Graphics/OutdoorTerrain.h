@@ -50,6 +50,8 @@ class OutdoorTerrain {
      */
     bool isWaterByGrid(Vec2i gridPos) const;
 
+    bool isWaterOrShoreByGrid(Vec2i gridPos) const;
+
     bool isWaterByPos(const Vec3f &pos) const;
 
     /**
