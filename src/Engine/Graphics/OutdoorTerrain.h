@@ -27,6 +27,11 @@ class OutdoorTerrain {
     int heightByGrid(Vec2i gridPos);
 
     /**
+     * @offset 0x0048257A
+     */
+    int heightByPos(const Vec3f &pos);
+
+    /**
      * @param gridPos                   Grid coordinates.
      * @return                          Tile id at `gridPos` that can then be used to get tile data from `TileTable`.
      */

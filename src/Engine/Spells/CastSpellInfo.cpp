@@ -2904,7 +2904,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     for (unsigned i = 0; i < 50; i++) {
                         Vec3f rand(grng->random(4096) - 2048, grng->random(4096) - 2048, 0);
-                        int terr_height = GetTerrainHeightsAroundParty2(pParty->pos + rand);
+                        int terr_height = pOutdoor->pTerrain.heightByPos(pParty->pos + rand);
                         SpriteObject::dropItemAt(SPRITE_SPELL_EARTH_ROCK_BLAST,
                                                  {rand.x + pParty->pos.x, rand.y + pParty->pos.y, terr_height + 16.0f}, grng->random(500) + 500);
                     }

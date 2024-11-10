@@ -685,7 +685,7 @@ void OutdoorLocation::ArrangeSpriteObjects() {
         for (int i = 0; i < (signed int)pSpriteObjects.size(); ++i) {
             if (pSpriteObjects[i].uObjectDescID) {
                 if (!(pSpriteObjects[i].uAttributes & SPRITE_DROPPED_BY_PLAYER) && !pSpriteObjects[i].IsUnpickable()) {
-                    pSpriteObjects[i].vPosition.z = GetTerrainHeightsAroundParty2(pSpriteObjects[i].vPosition);
+                    pSpriteObjects[i].vPosition.z = pOutdoor->pTerrain.heightByPos(pSpriteObjects[i].vPosition);
                 }
                 if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL) {
                     if (pSpriteObjects[i].containing_item.uItemID != ITEM_POTION_BOTTLE &&
@@ -931,7 +931,7 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
     std::array<float, 20> odm_floor_level{};                   // idb
     current_BModel_id[0] = -1;
     current_Face_id[0] = -1;
-    odm_floor_level[0] = GetTerrainHeightsAroundParty2(pos);
+    odm_floor_level[0] = pOutdoor->pTerrain.heightByPos(pos);
     *pIsOnWater = pOutdoor->pTerrain.isWaterByPos(pos);
 
     int surface_count = 1;
@@ -1538,7 +1538,7 @@ void ODM_ProcessPartyActions() {
         pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
 
         if (partyDrowningFlag) {
-            int pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->pos);
+            int pTerrainHeight = pOutdoor->pTerrain.heightByPos(pParty->pos);
             if (pParty->pos.z <= pTerrainHeight + 1) {
                 pParty->uFlags |= PARTY_FLAG_WATER_DAMAGE;
             }
@@ -2070,52 +2070,6 @@ int GridCellToWorldPosX(int a1) { return (a1 - 64) << 9; }
 
 //----- (0047F476) --------------------------------------------------------
 int GridCellToWorldPosY(int a1) { return (64 - a1) << 9; }
-
-//----- (0048257A) --------------------------------------------------------
-int GetTerrainHeightsAroundParty2(const Vec3f &pos) {
-    //  int result; // eax@9
-    int originz;          // ebx@11
-    int lz;          // eax@11
-    int rz;         // ecx@11
-    int rpos;         // [sp+10h] [bp-8h]@11
-    int lpos;         // [sp+24h] [bp+Ch]@11
-
-    // TODO(captainurist): this function had some code that would push the party -60 units down when on a water tile AND
-    //                     not water-walking, but this isn't enabled in the game. I tried it, and it actually looks
-    //                     good, as if the party is actually a bit submerged and swimming. The only problem is that
-    //                     party would be jerked up upon coming ashore, and this just looks ugly. Find a way to
-    //                     reimplement this properly.
-
-    Vec2i gridPos = WorldPosToGrid(pos);
-
-    OutdoorTileGeometry tile = pOutdoor->pTerrain.tileGeometryByGrid(gridPos);
-
-    if (tile.v00.z != tile.v10.z || tile.v10.z != tile.v11.z || tile.v11.z != tile.v01.z) {
-        // On a slope.
-        if (std::abs(tile.v00.y - pos.y) >= std::abs(pos.x - tile.v00.x)) {
-            originz = tile.v01.z;
-            lz = tile.v11.z;
-            rz = tile.v00.z;
-            lpos = pos.x - tile.v00.x;
-            rpos = pos.y - tile.v11.y;
-        } else {
-            originz = tile.v10.z;
-            lz = tile.v00.z;
-            rz = tile.v11.z;
-            lpos = tile.v11.x - pos.x;
-            rpos = tile.v00.y - pos.y;
-        }
-
-        assert(lpos >= 0 && lpos < 512);
-        assert(rpos >= 0 && rpos < 512);
-
-        // (x >> 9) is basically (x / 512) but with consistent rounding towards -inf.
-        return originz + ((rpos * (rz - originz)) >> 9) + ((lpos * (lz - originz)) >> 9);
-    } else {
-        // On flat terrain.
-        return tile.v00.z;
-    }
-}
 
 //----- (00436A6D) --------------------------------------------------------
 double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int unumverts) {
