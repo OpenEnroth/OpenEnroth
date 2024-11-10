@@ -31,14 +31,14 @@ void OutdoorTerrain::CreateDebugTerrain() {
 
 //----- (00488F2E) --------------------------------------------------------
 //----- (0047EE16) --------------------------------------------------------
-int OutdoorTerrain::heightByGrid(Vec2i gridPos) {
+int OutdoorTerrain::heightByGrid(Vec2i gridPos) const {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return 0;
 
     return 32 * pHeightmap[gridPos.y * 128 + gridPos.x];
 }
 
-int OutdoorTerrain::heightByPos(const Vec3f &pos) {
+int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
     // TODO(captainurist): This should return float. But we'll need to retrace.
     int originz;          // ebx@11
     int lz;          // eax@11
@@ -54,7 +54,7 @@ int OutdoorTerrain::heightByPos(const Vec3f &pos) {
 
     Vec2i gridPos = WorldPosToGrid(pos);
 
-    OutdoorTileGeometry tile = pOutdoor->pTerrain.tileGeometryByGrid(gridPos);
+    TileGeometry tile = tileGeometryByGrid(gridPos);
 
     if (tile.v00.z != tile.v10.z || tile.v10.z != tile.v11.z || tile.v11.z != tile.v01.z) {
         // On a slope.
@@ -169,7 +169,7 @@ bool OutdoorTerrain::isWaterByPos(const Vec3f &pos) const {
 Vec3f OutdoorTerrain::normalByPos(const Vec3f &pos) const {
     Vec2i gridPos = WorldPosToGrid(pos);
 
-    OutdoorTileGeometry tile = pOutdoor->pTerrain.tileGeometryByGrid(gridPos);
+    TileGeometry tile = tileGeometryByGrid(gridPos);
 
     Vec3f side1, side2;
 
@@ -204,7 +204,7 @@ Vec3f OutdoorTerrain::normalByPos(const Vec3f &pos) const {
 bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
     Vec2i gridPos = WorldPosToGrid(pos);
 
-    OutdoorTileGeometry tile = pOutdoor->pTerrain.tileGeometryByGrid(gridPos);
+    TileGeometry tile = tileGeometryByGrid(gridPos);
 
     int dx = std::abs(pos.x - tile.v00.x), dz = std::abs(tile.v00.y - pos.y);
 
@@ -237,18 +237,18 @@ bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
     return (y_max - y_min) > 512;
 }
 
-OutdoorTileGeometry OutdoorTerrain::tileGeometryByGrid(Vec2i gridPos) const {
+OutdoorTerrain::TileGeometry OutdoorTerrain::tileGeometryByGrid(Vec2i gridPos) const {
     int x0 = GridCellToWorldPosX(gridPos.x);
     int y0 = GridCellToWorldPosY(gridPos.y);
     int x1 = GridCellToWorldPosX(gridPos.x + 1);
     int y1 = GridCellToWorldPosY(gridPos.y + 1);
 
-    int z00 = pOutdoor->pTerrain.heightByGrid(gridPos);
-    int z01 = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(0, 1));
-    int z10 = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(1, 0));
-    int z11 = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(1, 1));
+    int z00 = heightByGrid(gridPos);
+    int z01 = heightByGrid(gridPos + Vec2i(0, 1));
+    int z10 = heightByGrid(gridPos + Vec2i(1, 0));
+    int z11 = heightByGrid(gridPos + Vec2i(1, 1));
 
-    OutdoorTileGeometry result;
+    TileGeometry result;
     result.v00 = Vec3f(x0, y0, z00);
     result.v01 = Vec3f(x0, y1, z01);
     result.v10 = Vec3f(x1, y0, z10);

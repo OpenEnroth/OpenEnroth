@@ -14,22 +14,18 @@ struct OutdoorTileType {
     uint16_t uTileID = 0;
 };
 
-struct OutdoorTileGeometry {
-    Vec3f v00, v01, v10, v11; // Four vertices of the tile, v00 is at (x0, y0), v01 at (x0, y1), etc.
-};
-
 class OutdoorTerrain {
  public:
     bool ZeroLandscape();
     void LoadBaseTileIds();
     void CreateDebugTerrain();
 
-    int heightByGrid(Vec2i gridPos);
+    int heightByGrid(Vec2i gridPos) const;
 
     /**
      * @offset 0x0048257A
      */
-    int heightByPos(const Vec3f &pos);
+    int heightByPos(const Vec3f &pos) const;
 
     /**
      * @param gridPos                   Grid coordinates.
@@ -74,9 +70,6 @@ class OutdoorTerrain {
      */
     bool isSlopeTooHighByPos(const Vec3f &pos) const;
 
-    // TODO(captainurist): also move all the functions that use this method into this class.
-    OutdoorTileGeometry tileGeometryByGrid(Vec2i gridPos) const;
-
     std::array<OutdoorTileType, 4> pTileTypes;  // [3] is road tileset.
     std::array<uint8_t, 128 * 128> pHeightmap = {};
     std::array<uint8_t, 128 * 128> pTilemap = {};
@@ -85,5 +78,11 @@ class OutdoorTerrain {
     std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
 
  private:
+    struct TileGeometry {
+        Vec3f v00, v01, v10, v11; // Four vertices of the tile, v00 is at (x0, y0), v01 at (x0, y1), etc.
+    };
+
+ private:
+    TileGeometry tileGeometryByGrid(Vec2i gridPos) const;
     int mapToGlobalTileId(int localTileId) const;
 };
