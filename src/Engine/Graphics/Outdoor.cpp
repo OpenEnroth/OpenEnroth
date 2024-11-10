@@ -367,7 +367,7 @@ void OutdoorLocation::UpdateFog() {
 int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos) {
     bool is_on_water = false;
     int bmodel_standing_on_pid = 0;
-    ODM_GetFloorLevel(pos, &is_on_water, &bmodel_standing_on_pid, 0);
+    ODM_GetFloorLevel(pos, &is_on_water, &bmodel_standing_on_pid);
     if (pParty->isAirborne() || bmodel_standing_on_pid || is_on_water) {
         return 2;
     }
@@ -697,8 +697,7 @@ void OutdoorLocation::ArrangeSpriteObjects() {
                 if (!(pSpriteObjects[i].uAttributes & SPRITE_DROPPED_BY_PLAYER) && !pSpriteObjects[i].IsUnpickable()) {
                     bool bOnWater = false;
                     pSpriteObjects[i].vPosition.z =
-                        GetTerrainHeightsAroundParty2(
-                            pSpriteObjects[i].vPosition, &bOnWater, 0);
+                        GetTerrainHeightsAroundParty2(pSpriteObjects[i].vPosition, &bOnWater);
                 }
                 if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL) {
                     if (pSpriteObjects[i].containing_item.uItemID != ITEM_POTION_BOTTLE &&
@@ -939,13 +938,13 @@ void OutdoorLocation::PrepareActorsDrawList() {
 }
 
 float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater,
-                      int *faceId, int bWaterWalk) {
+                      int *faceId) {
     std::array<int, 20> current_Face_id{};                   // dword_721110
     std::array<int, 20> current_BModel_id{};                 // dword_721160
     std::array<float, 20> odm_floor_level{};                   // idb
     current_BModel_id[0] = -1;
     current_Face_id[0] = -1;
-    odm_floor_level[0] = GetTerrainHeightsAroundParty2(pos, pIsOnWater, bWaterWalk);
+    odm_floor_level[0] = GetTerrainHeightsAroundParty2(pos, pIsOnWater);
 
     int surface_count = 1;
 
@@ -1084,7 +1083,7 @@ void ODM_ProcessPartyActions() {
     int floorFaceId = 0;
     bool partyIsOnWater = false;
 
-    float floorZ = ODM_GetFloorLevel(pParty->pos, &partyIsOnWater, &floorFaceId, waterWalkActive);
+    float floorZ = ODM_GetFloorLevel(pParty->pos, &partyIsOnWater, &floorFaceId);
     bool partyNotOnModel = floorFaceId == 0;
     int currentGroundLevel = floorZ + 1;
 
@@ -1555,7 +1554,7 @@ void ODM_ProcessPartyActions() {
 
         if (partyDrowningFlag) {
             bool onWater = false;
-            int pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->pos, &onWater, 1);
+            int pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->pos, &onWater);
             if (pParty->pos.z <= pTerrainHeight + 1) {
                 pParty->uFlags |= PARTY_FLAG_WATER_DAMAGE;
             }
@@ -1569,7 +1568,7 @@ void ODM_ProcessPartyActions() {
     }
 
     // new ground level
-    float newFloorLevel = ODM_GetFloorLevel(partyNewPos, &partyIsOnWater, &floorFaceId, waterWalkActive);
+    float newFloorLevel = ODM_GetFloorLevel(partyNewPos, &partyIsOnWater, &floorFaceId);
     float newGroundLevel = newFloorLevel + 1;
 
     // Falling damage
@@ -1759,7 +1758,7 @@ void UpdateActors_ODM() {
         bool Slope_High = pOutdoor->pTerrain.isSlopeTooHighByPos(pActors[Actor_ITR].pos);
         int Model_On_PID = 0;
         bool uIsOnWater = false;
-        float Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].pos, &uIsOnWater, &Model_On_PID, Water_Walk);
+        float Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].pos, &uIsOnWater, &Model_On_PID);
         bool Actor_On_Terrain = Model_On_PID == 0;
 
         bool uIsAboveFloor = (pActors[Actor_ITR].pos.z > (Floor_Level + 1));
@@ -2089,13 +2088,19 @@ int GridCellToWorldPosX(int a1) { return (a1 - 64) << 9; }
 int GridCellToWorldPosY(int a1) { return (64 - a1) << 9; }
 
 //----- (0048257A) --------------------------------------------------------
-int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater, int bFloatAboveWater) {
+int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater) {
     //  int result; // eax@9
     int originz;          // ebx@11
     int lz;          // eax@11
     int rz;         // ecx@11
     int rpos;         // [sp+10h] [bp-8h]@11
     int lpos;         // [sp+24h] [bp+Ch]@11
+
+    // TODO(captainurist): this function had some code that would push the party -60 units down when on a water tile AND
+    //                     not water-walking, but this isn't enabled in the game. I tried it, and it actually looks
+    //                     good, as if the party is actually a bit submerged and swimming. The only problem is that
+    //                     party would be jerked up upon coming ashore, and this just looks ugly. Find a way to
+    //                     reimplement this properly.
 
     Vec2i gridPos = WorldPosToGrid(pos);
 
@@ -2105,10 +2110,6 @@ int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater, int bFloat
     if (pOutdoor->getTileAttribByGrid(gridPos.x, gridPos.y) & TILE_WATER) {
         *pIsOnWater = true;
     }
-
-    int waterAdjustment = 0;
-    if (!bFloatAboveWater && *pIsOnWater)
-        waterAdjustment = -60;
 
     if (tile.v00.z != tile.v10.z || tile.v10.z != tile.v11.z || tile.v11.z != tile.v01.z) {
         // On a slope.
@@ -2130,11 +2131,9 @@ int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater, int bFloat
         assert(rpos >= 0 && rpos < 512);
 
         // (x >> 9) is basically (x / 512) but with consistent rounding towards -inf.
-        return waterAdjustment + originz + ((rpos * (rz - originz)) >> 9) +
-               ((lpos * (lz - originz)) >> 9);
+        return originz + ((rpos * (rz - originz)) >> 9) + ((lpos * (lz - originz)) >> 9);
     } else {
         // On flat terrain.
-        // TODO(captainurist): waterAdjustment isn't used in this case, so effectively is never used. Bugged?
         return tile.v00.z;
     }
 }
@@ -2173,7 +2172,7 @@ void TeleportToStartingPoint(MapStartPoint point) {
                     // TODO: (Chaosit) dummy variables created for the sake of passing pointers
                     bool bOnWater = false;
                     int bModelPid;
-                    pParty->pos.z = ODM_GetFloorLevel(pParty->pos, &bOnWater, &bModelPid, false);
+                    pParty->pos.z = ODM_GetFloorLevel(pParty->pos, &bOnWater, &bModelPid);
                     pParty->velocity = Vec3f();
                     pParty->uFallStartZ = pParty->pos.z;
                     pParty->_viewYaw = pLevelDecorations[i]._yawAngle;

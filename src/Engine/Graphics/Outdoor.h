@@ -123,7 +123,7 @@ struct OutdoorLocation {
 extern OutdoorLocation *pOutdoor;
 
 void ODM_UpdateUserInputAndOther();
-float ODM_GetFloorLevel(const Vec3f &pos, bool *pOnWater, int *faceId, int bWaterWalk);
+float ODM_GetFloorLevel(const Vec3f &pos, bool *pOnWater, int *faceId);
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                      int *pFaceID);
 void UpdateActors_ODM();
@@ -141,7 +141,7 @@ Vec2i WorldPosToGrid(Vec3f worldPos);
 int GridCellToWorldPosX(int);
 int GridCellToWorldPosY(int);
 void sub_481ED9_MessWithODMRenderParams();
-int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater, int bFloatAboveWater);
+int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater);
 void TeleportToStartingPoint(MapStartPoint point);  // idb
 
 extern MapStartPoint uLevel_StartingPointType;

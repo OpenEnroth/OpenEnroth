@@ -760,7 +760,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
         Vec3f newPos = actor.pos + collision_state.adjusted_move_distance * collision_state.direction;
         bool isOnWater = false;
         int modelPid = 0;
-        float newFloorZ = ODM_GetFloorLevel(newPos, &isOnWater, &modelPid, 0);
+        float newFloorZ = ODM_GetFloorLevel(newPos, &isOnWater, &modelPid);
         if (isOnWater) {
             if (actor.pos.z < newFloorZ + 60) {
                 if (actor.aiState == Dead || actor.aiState == Dying ||
@@ -1044,11 +1044,11 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
         }
 
         bool isOnWater = false;
-        float allnewfloor = ODM_GetFloorLevel(newPosLow, &isOnWater, floorFaceId, 0);
+        float allnewfloor = ODM_GetFloorLevel(newPosLow, &isOnWater, floorFaceId);
         int party_y_pid;
-        float x_advance_floor = ODM_GetFloorLevel(Vec3f(newPosLow.x, partyNewPos->y, newPosLow.z), &isOnWater, &party_y_pid, 0);
+        float x_advance_floor = ODM_GetFloorLevel(Vec3f(newPosLow.x, partyNewPos->y, newPosLow.z), &isOnWater, &party_y_pid);
         int party_x_pid;
-        float y_advance_floor = ODM_GetFloorLevel(Vec3f(partyNewPos->x, newPosLow.y, newPosLow.z), &isOnWater, &party_x_pid, 0);
+        float y_advance_floor = ODM_GetFloorLevel(Vec3f(partyNewPos->x, newPosLow.y, newPosLow.z), &isOnWater, &party_x_pid);
         bool terr_slope_advance_x = pOutdoor->pTerrain.isSlopeTooHighByPos(Vec3f(newPosLow.x, partyNewPos->y, 0.0f));
         bool terr_slope_advance_y = pOutdoor->pTerrain.isSlopeTooHighByPos(Vec3f(partyNewPos->x, newPosLow.y, 0.0f));
 
