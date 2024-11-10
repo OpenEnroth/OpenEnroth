@@ -999,7 +999,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
     }
 }
 
-void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool *partyIsOnWater, int *floorFaceId, bool *partyNotOnModel, bool *partyHasHitModel, int *triggerID) {
+void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *floorFaceId, bool *partyNotOnModel, bool *partyHasHitModel, int *triggerID) {
     constexpr float closestdist = 0.5f;  // Closest allowed approach to collision surface - needs adjusting
 
     // --(Collisions)-------------------------------------------------------------------
@@ -1043,11 +1043,12 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, bool 
             collision_state.collisionPos -= closestdist * collision_state.direction;
         }
 
-        float allnewfloor = ODM_GetFloorLevel(newPosLow, pParty->height, partyIsOnWater, floorFaceId, 0);
+        bool isOnWater = false;
+        float allnewfloor = ODM_GetFloorLevel(newPosLow, pParty->height, &isOnWater, floorFaceId, 0);
         int party_y_pid;
-        float x_advance_floor = ODM_GetFloorLevel(Vec3f(newPosLow.x, partyNewPos->y, newPosLow.z), pParty->height, partyIsOnWater, &party_y_pid, 0);
+        float x_advance_floor = ODM_GetFloorLevel(Vec3f(newPosLow.x, partyNewPos->y, newPosLow.z), pParty->height, &isOnWater, &party_y_pid, 0);
         int party_x_pid;
-        float y_advance_floor = ODM_GetFloorLevel(Vec3f(partyNewPos->x, newPosLow.y, newPosLow.z), pParty->height, partyIsOnWater, &party_x_pid, 0);
+        float y_advance_floor = ODM_GetFloorLevel(Vec3f(partyNewPos->x, newPosLow.y, newPosLow.z), pParty->height, &isOnWater, &party_x_pid, 0);
         bool terr_slope_advance_x = pOutdoor->pTerrain.isSlopeTooHighByPos(Vec3f(newPosLow.x, partyNewPos->y, 0.0f));
         bool terr_slope_advance_y = pOutdoor->pTerrain.isSlopeTooHighByPos(Vec3f(partyNewPos->x, newPosLow.y, 0.0f));
 
