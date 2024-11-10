@@ -9,7 +9,7 @@
 
 #include "Media/Audio/SoundEnums.h"
 
-struct OutdoorLocationTileType {
+struct OutdoorTileType {
     TileSet tileset = TILE_SET_INVALID;
     uint16_t uTileID = 0;
 };
@@ -39,7 +39,7 @@ class OutdoorTerrain {
      */
     SoundId soundIdByGrid(Vec2i gridPos, bool isRunning);
 
-    std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3] is road tileset.
+    std::array<OutdoorTileType, 4> pTileTypes;  // [3] is road tileset.
     std::array<uint8_t, 128 * 128> pHeightmap = {};
     std::array<uint8_t, 128 * 128> pTilemap = {};
     std::array<uint8_t, 128 * 128> pAttributemap = {};
