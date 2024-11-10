@@ -1925,7 +1925,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             enc_spawn_point.uMonsterIndex = enc_index;
 
             // get proposed floor level
-            enc_spawn_point.vPosition.z = ODM_GetFloorLevel(enc_spawn_point.vPosition, 0, &bInWater, &modelPID, 0);
+            enc_spawn_point.vPosition.z = ODM_GetFloorLevel(enc_spawn_point.vPosition, &bInWater, &modelPID, 0);
 
             // check spawn point is not in a model
             for (BSPModel &model : pOutdoor->pBModels) {

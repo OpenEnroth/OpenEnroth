@@ -123,8 +123,7 @@ struct OutdoorLocation {
 extern OutdoorLocation *pOutdoor;
 
 void ODM_UpdateUserInputAndOther();
-float ODM_GetFloorLevel(const Vec3f &pos, int unused, bool *pOnWater,
-                      int *faceId, int bWaterWalk);
+float ODM_GetFloorLevel(const Vec3f &pos, bool *pOnWater, int *faceId, int bWaterWalk);
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                      int *pFaceID);
 void UpdateActors_ODM();

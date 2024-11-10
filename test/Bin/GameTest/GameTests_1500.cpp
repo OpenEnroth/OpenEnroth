@@ -236,7 +236,7 @@ GAME_TEST(Issues, Issue1671) {
     auto health = tapes.totalHp();
     auto expressionTape = charTapes.portrait(2);
     auto modelTape = tapes.custom([]() {bool on_water = false; int bmodel_pid = 0;
-        float floor_level = ODM_GetFloorLevel(pParty->pos, 0, &on_water, &bmodel_pid, false);
+        float floor_level = ODM_GetFloorLevel(pParty->pos, &on_water, &bmodel_pid, false);
         return bmodel_pid; });
     test.playTraceFromTestData("issue_1671.mm7", "issue_1671.json");
     EXPECT_LT(health.back(), health.front()); // party has taken damage from fall
