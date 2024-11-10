@@ -685,9 +685,7 @@ void OutdoorLocation::ArrangeSpriteObjects() {
         for (int i = 0; i < (signed int)pSpriteObjects.size(); ++i) {
             if (pSpriteObjects[i].uObjectDescID) {
                 if (!(pSpriteObjects[i].uAttributes & SPRITE_DROPPED_BY_PLAYER) && !pSpriteObjects[i].IsUnpickable()) {
-                    bool bOnWater = false;
-                    pSpriteObjects[i].vPosition.z =
-                        GetTerrainHeightsAroundParty2(pSpriteObjects[i].vPosition, &bOnWater);
+                    pSpriteObjects[i].vPosition.z = GetTerrainHeightsAroundParty2(pSpriteObjects[i].vPosition);
                 }
                 if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL) {
                     if (pSpriteObjects[i].containing_item.uItemID != ITEM_POTION_BOTTLE &&
@@ -927,14 +925,14 @@ void OutdoorLocation::PrepareActorsDrawList() {
     }
 }
 
-float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater,
-                      int *faceId) {
+float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
     std::array<int, 20> current_Face_id{};                   // dword_721110
     std::array<int, 20> current_BModel_id{};                 // dword_721160
     std::array<float, 20> odm_floor_level{};                   // idb
     current_BModel_id[0] = -1;
     current_Face_id[0] = -1;
-    odm_floor_level[0] = GetTerrainHeightsAroundParty2(pos, pIsOnWater);
+    odm_floor_level[0] = GetTerrainHeightsAroundParty2(pos);
+    *pIsOnWater = pOutdoor->pTerrain.isWaterByPos(pos);
 
     int surface_count = 1;
 
@@ -1001,11 +999,8 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater,
     else
         *faceId = current_Face_id[current_idx] | (current_BModel_id[current_idx] << 6);
 
-    if (current_idx) {
-        *pIsOnWater = false;
-        if (pOutdoor->pBModels[current_BModel_id[current_idx]].pFaces[current_Face_id[current_idx]].Fluid())
-            *pIsOnWater = true;
-    }
+    if (current_idx)
+        *pIsOnWater = pOutdoor->pBModels[current_BModel_id[current_idx]].pFaces[current_Face_id[current_idx]].Fluid();
 
     return std::max(odm_floor_level[0], odm_floor_level[current_idx]);
 }
@@ -1543,8 +1538,7 @@ void ODM_ProcessPartyActions() {
         pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
 
         if (partyDrowningFlag) {
-            bool onWater = false;
-            int pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->pos, &onWater);
+            int pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->pos);
             if (pParty->pos.z <= pTerrainHeight + 1) {
                 pParty->uFlags |= PARTY_FLAG_WATER_DAMAGE;
             }
@@ -2078,7 +2072,7 @@ int GridCellToWorldPosX(int a1) { return (a1 - 64) << 9; }
 int GridCellToWorldPosY(int a1) { return (64 - a1) << 9; }
 
 //----- (0048257A) --------------------------------------------------------
-int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater) {
+int GetTerrainHeightsAroundParty2(const Vec3f &pos) {
     //  int result; // eax@9
     int originz;          // ebx@11
     int lz;          // eax@11
@@ -2095,11 +2089,6 @@ int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater) {
     Vec2i gridPos = WorldPosToGrid(pos);
 
     OutdoorTileGeometry tile = pOutdoor->pTerrain.tileGeometryByGrid(gridPos);
-
-    *pIsOnWater = false;
-    if (pOutdoor->pTerrain.isWaterByGrid(gridPos)) {
-        *pIsOnWater = true;
-    }
 
     if (tile.v00.z != tile.v10.z || tile.v10.z != tile.v11.z || tile.v11.z != tile.v01.z) {
         // On a slope.

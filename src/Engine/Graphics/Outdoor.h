@@ -131,7 +131,7 @@ Vec2i WorldPosToGrid(Vec3f worldPos);
 int GridCellToWorldPosX(int);
 int GridCellToWorldPosY(int);
 void sub_481ED9_MessWithODMRenderParams();
-int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater);
+int GetTerrainHeightsAroundParty2(const Vec3f &pos);
 void TeleportToStartingPoint(MapStartPoint point);  // idb
 
 extern MapStartPoint uLevel_StartingPointType;
