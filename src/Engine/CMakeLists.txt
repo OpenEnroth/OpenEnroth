@@ -24,7 +24,8 @@ set(ENGINE_SOURCES
         TeleportPoint.cpp
         GameResourceManager.cpp
         mm7_data.cpp
-        mm7text_ru.cpp)
+        mm7text_ru.cpp
+        Seasons.cpp)
 
 set(ENGINE_HEADERS
         ArenaEnumFunctions.h
@@ -54,7 +55,7 @@ set(ENGINE_HEADERS
         GameResourceManager.h
         mm7_data.h
         stru314.h
-        Data/AutonoteData.h)
+        Seasons.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 target_check_style(engine)

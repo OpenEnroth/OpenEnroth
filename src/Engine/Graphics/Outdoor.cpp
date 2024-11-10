@@ -38,6 +38,7 @@
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/MapInfo.h"
 #include "Engine/LOD.h"
+#include "Engine/Seasons.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -569,47 +570,8 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
 TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
     int tileId = pTerrain.tileIdByGrid(Vec2i(sX, sY));
 
-    if (engine->config->graphics.SeasonsChange.value()) {
-        switch (pParty->uCurrentMonth) {
-            case 11:
-            case 0:
-            case 1:            // winter
-                if (tileId >= 90) {  // Tileset_Grass begins at TileID = 90
-                    if (tileId <= 95)  // some grastyl entries
-                        tileId = 348;
-                    else if (tileId <= 113)  // rest of grastyl & all grdrt*
-                        tileId = 348 + (tileId - 96);
-                }
-                /*switch (v3)
-                {
-                case 102: v3 = 354; break;  // grdrtNE -> SNdrtne
-                case 104: v3 = 356; break;  // grdrtNW -> SNdrtnw
-                case 108: v3 = 360; break;  // grdrtN  -> SNdrtn
-                }*/
-                break;
-
-            case 2:
-            case 3:
-            case 4:  // spring
-            case 8:
-            case 9:
-            case 10:  // autumn
-                if (tileId >= 90 &&
-                    tileId <= 113)  // just convert all Tileset_Grass to dirt
-                    tileId = 1;
-                break;
-
-            case 5:
-            case 6:
-            case 7:  // summer
-                // all tiles are green grass by default
-                break;
-
-            default:
-                assert(pParty->uCurrentMonth >= 0 &&
-                       pParty->uCurrentMonth < 12);
-        }
-    }
+    if (engine->config->graphics.SeasonsChange.value())
+        tileId = tileIdForSeason(tileId, pParty->uCurrentMonth);
 
     return &pTileTable->tiles[tileId];
 }
