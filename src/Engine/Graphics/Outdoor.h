@@ -127,7 +127,6 @@ float ODM_GetFloorLevel(const Vec3f &pos, int unused, bool *pOnWater,
                       int *faceId, int bWaterWalk);
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                      int *pFaceID);
-void ODM_GetTerrainNormalAt(const Vec3f &pos, Vec3f *out);
 void UpdateActors_ODM();
 void ODM_ProcessPartyActions();
 void SetUnderwaterFog();

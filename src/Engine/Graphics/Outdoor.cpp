@@ -1021,45 +1021,6 @@ float ODM_GetFloorLevel(const Vec3f &pos, int unused, bool *pIsOnWater,
     return std::max(odm_floor_level[0], odm_floor_level[current_idx]);
 }
 
-// not sure if right- or left-handed coordinate space assumed, so this could be
-// normal of inverse normal
-// for a right-handed system, that would be an inverse normal
-// out as normalised float vec
-//----- (0046DCC8) --------------------------------------------------------
-void ODM_GetTerrainNormalAt(const Vec3f &pos, Vec3f *out) {
-    Vec2i gridPos = WorldPosToGrid(pos);
-
-    OutdoorTileGeometry tile = pOutdoor->pTerrain.tileGeometryByGrid(gridPos);
-
-    Vec3f side1, side2;
-
-    int dx = std::abs(pos.x - tile.v00.x);
-    int dy = std::abs(tile.v00.y - pos.y);
-    if (dy >= dx) {
-        side2 = tile.v11 - tile.v01;
-        side1 = tile.v00 - tile.v01;
-        /*       |\
-           side1 |  \
-                 |____\
-                 side 2      */
-    } else {
-        side2 = tile.v00 - tile.v10;
-        side1 = tile.v11 - tile.v10;
-        /*   side 2
-             _____
-             \    |
-               \  | side 1
-                 \|       */
-    }
-
-    Vec3f n = cross(side2, side1);
-    float mag = n.length();
-    if (fabsf(mag) < 1e-6f) {
-        *out = Vec3f(0, 0, 1);
-    } else {
-        *out = n / mag;
-    }
-}
 //----- (0046BE0A) --------------------------------------------------------
 void ODM_UpdateUserInputAndOther() {
     ODM_ProcessPartyActions();
@@ -1477,8 +1438,7 @@ void ODM_ProcessPartyActions() {
             // gradually sliding downwards. nice trick
             partyNewPos.z = currentGroundLevel;
             if (partyAtHighSlope) {
-                Vec3f v98;
-                ODM_GetTerrainNormalAt(partyNewPos, &v98);
+                Vec3f v98 = pOutdoor->pTerrain.normalByPos(partyNewPos);
                 partyInputSpeed.z += (8 * -(pEventTimer->dt().ticks() * (int)GetGravityStrength()));
                 float dotp = std::abs(dot(partyInputSpeed, v98));
                 partyInputSpeed += dotp * v98;
@@ -1858,9 +1818,8 @@ void UpdateActors_ODM() {
         // GRAVITY
         if (!uIsAboveFloor || uIsFlying) {
             if (Slope_High && !uIsAboveFloor && Actor_On_Terrain) {
-                Vec3f Terrain_Norm;
                 pActors[Actor_ITR].pos.z = Floor_Level;
-                ODM_GetTerrainNormalAt(pActors[Actor_ITR].pos, &Terrain_Norm);
+                Vec3f Terrain_Norm = pOutdoor->pTerrain.normalByPos(pActors[Actor_ITR].pos);
                 int Gravity = GetGravityStrength();
 
                 pActors[Actor_ITR].velocity.z += -16 * pEventTimer->dt().ticks() * Gravity; //TODO(pskelton): common gravity code extract

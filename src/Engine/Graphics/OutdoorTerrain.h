@@ -43,6 +43,14 @@ class OutdoorTerrain {
      */
     SoundId soundIdByGrid(Vec2i gridPos, bool isRunning) const;
 
+    /**
+     *
+     * @param pos                       World coordinates, only xy component is used by this function.
+     * @return                          Terrain normal at given position. Terrain normals always point up (`z > 0`).
+     * @offset 0x0046DCC8
+     */
+    Vec3f normalByPos(const Vec3f& pos) const;
+
     // TODO(captainurist): also move all the functions that use this method into this class.
     OutdoorTileGeometry tileGeometryByGrid(Vec2i gridPos) const;
 

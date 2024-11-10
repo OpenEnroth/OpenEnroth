@@ -107,6 +107,41 @@ SoundId OutdoorTerrain::soundIdByGrid(Vec2i gridPos, bool isRunning) const {
     }
 }
 
+Vec3f OutdoorTerrain::normalByPos(const Vec3f& pos) const {
+    Vec2i gridPos = WorldPosToGrid(pos);
+
+    OutdoorTileGeometry tile = pOutdoor->pTerrain.tileGeometryByGrid(gridPos);
+
+    Vec3f side1, side2;
+
+    int dx = std::abs(pos.x - tile.v00.x);
+    int dy = std::abs(tile.v00.y - pos.y);
+    if (dy >= dx) {
+        side2 = tile.v11 - tile.v01;
+        side1 = tile.v00 - tile.v01;
+        /*       |\
+           side1 |  \
+                 |____\
+                 side 2      */
+    } else {
+        side2 = tile.v00 - tile.v10;
+        side1 = tile.v11 - tile.v10;
+        /*   side 2
+             _____
+             \    |
+               \  | side 1
+                 \|       */
+    }
+
+    Vec3f n = cross(side2, side1);
+    float mag = n.length();
+    if (fabsf(mag) < 1e-6f) {
+        return Vec3f(0, 0, 1);
+    } else {
+        return n / mag;
+    }
+}
+
 OutdoorTileGeometry OutdoorTerrain::tileGeometryByGrid(Vec2i gridPos) const {
     int x0 = GridCellToWorldPosX(gridPos.x);
     int y0 = GridCellToWorldPosY(gridPos.y);
