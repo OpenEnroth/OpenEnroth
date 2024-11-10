@@ -14,6 +14,10 @@ struct OutdoorTileType {
     uint16_t uTileID = 0;
 };
 
+struct OutdoorTileGeometry {
+    Vec3f v00, v01, v10, v11; // Four vertices of the tile, v00 is at (x0, y0), v01 at (x0, y1), etc.
+};
+
 class OutdoorTerrain {
  public:
     bool ZeroLandscape();
@@ -37,7 +41,10 @@ class OutdoorTerrain {
     /**
      * @offset 0x47EE49
      */
-    SoundId soundIdByGrid(Vec2i gridPos, bool isRunning);
+    SoundId soundIdByGrid(Vec2i gridPos, bool isRunning) const;
+
+    // TODO(captainurist): also move all the functions that use this method into this class.
+    OutdoorTileGeometry tileGeometryByGrid(Vec2i gridPos) const;
 
     std::array<OutdoorTileType, 4> pTileTypes;  // [3] is road tileset.
     std::array<uint8_t, 128 * 128> pHeightmap = {};

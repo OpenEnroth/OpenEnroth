@@ -2,6 +2,8 @@
 
 #include "Engine/Tables/TileTable.h"
 
+#include "Outdoor.h"
+
 //----- (0047CCE2) --------------------------------------------------------
 bool OutdoorTerrain::ZeroLandscape() {
     this->pHeightmap.fill(0);
@@ -57,7 +59,7 @@ TileSet OutdoorTerrain::tileSetByGrid(Vec2i gridPos) const {
     return pTileTypes[tileSetIndex].tileset;
 }
 
-SoundId OutdoorTerrain::soundIdByGrid(Vec2i gridPos, bool isRunning) {
+SoundId OutdoorTerrain::soundIdByGrid(Vec2i gridPos, bool isRunning) const {
     // TODO(captainurist): this doesn't take seasons into account.
     switch (tileSetByGrid(gridPos)) {
     case TILE_SET_GRASS:
@@ -103,6 +105,25 @@ SoundId OutdoorTerrain::soundIdByGrid(Vec2i gridPos, bool isRunning) {
     default:
         return isRunning ? SOUND_RunGround : SOUND_WalkGround;
     }
+}
+
+OutdoorTileGeometry OutdoorTerrain::tileGeometryByGrid(Vec2i gridPos) const {
+    int x0 = GridCellToWorldPosX(gridPos.x);
+    int y0 = GridCellToWorldPosY(gridPos.y);
+    int x1 = GridCellToWorldPosX(gridPos.x + 1);
+    int y1 = GridCellToWorldPosY(gridPos.y + 1);
+
+    int z00 = pOutdoor->pTerrain.heightByGrid(gridPos);
+    int z01 = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(0, 1));
+    int z10 = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(1, 0));
+    int z11 = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(1, 1));
+
+    OutdoorTileGeometry result;
+    result.v00 = Vec3f(x0, y0, z00);
+    result.v01 = Vec3f(x0, y1, z01);
+    result.v10 = Vec3f(x1, y0, z10);
+    result.v11 = Vec3f(x1, y1, z11);
+    return result;
 }
 
 int OutdoorTerrain::mapToGlobalTileId(int localTileId) const {
