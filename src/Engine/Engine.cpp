@@ -566,7 +566,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     if (isMapIndoor(engine->_transitionMapId))
         loadAndPrepareBLV(engine->_transitionMapId, bLoading);
     else
-        loadAndPrepareODM(engine->_transitionMapId, bLoading, 0);
+        loadAndPrepareODM(engine->_transitionMapId, bLoading);
 
     pNPCStats->setNPCNamesOnLoad();
     engine->_461103_load_level_sub();

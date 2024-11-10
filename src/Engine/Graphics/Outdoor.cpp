@@ -1958,7 +1958,7 @@ void UpdateActors_ODM() {
 /**
  * @offset 0x47A384
  */
-static void loadAndPrepareODMInternal(MapId mapid, ODMRenderParams *thisa) {
+static void loadAndPrepareODMInternal(MapId mapid) {
     MapInfo *map_info;
     bool outdoor_was_respawned;
     unsigned int respawn_interval = 0;
@@ -2014,11 +2014,11 @@ static void loadAndPrepareODMInternal(MapId mapid, ODMRenderParams *thisa) {
     MM7Initialization();
 }
 
-void loadAndPrepareODM(MapId mapid, bool bLoading, ODMRenderParams *a2) {
+void loadAndPrepareODM(MapId mapid, bool bLoading) {
     pGameLoadingUI_ProgressBar->Reset(27);
     uCurrentlyLoadedLevelType = LEVEL_OUTDOOR;
 
-    loadAndPrepareODMInternal(mapid, a2);
+    loadAndPrepareODMInternal(mapid);
     if (!bLoading)
         TeleportToStartingPoint(uLevel_StartingPointType);
 
