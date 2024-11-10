@@ -109,7 +109,15 @@ SoundId OutdoorTerrain::soundIdByGrid(Vec2i gridPos, bool isRunning) const {
     }
 }
 
-Vec3f OutdoorTerrain::normalByPos(const Vec3f& pos) const {
+bool OutdoorTerrain::isWaterByGrid(Vec2i gridPos) const {
+    return pTileTable->tiles[tileIdByGrid(gridPos)].uAttributes & TILE_WATER;
+}
+
+bool OutdoorTerrain::isWaterByPos(const Vec3f &pos) const {
+    return isWaterByGrid(WorldPosToGrid(pos));
+}
+
+Vec3f OutdoorTerrain::normalByPos(const Vec3f &pos) const {
     Vec2i gridPos = WorldPosToGrid(pos);
 
     OutdoorTileGeometry tile = pOutdoor->pTerrain.tileGeometryByGrid(gridPos);

@@ -1485,9 +1485,9 @@ void ODM_ProcessPartyActions() {
     Vec2i partyNewGridPos = WorldPosToGrid(partyNewPos);
 
     // this gets if tile is not water
-    bool partyCurrentOnLand = !(pOutdoor->getTileAttribByGrid(partyOldGridPos.x, partyOldGridPos.y) & TILE_WATER);
-    bool partyNewXOnLand = !(pOutdoor->getTileAttribByGrid(partyNewGridPos.x, partyOldGridPos.y) & TILE_WATER);
-    bool partyNewYOnLand = !(pOutdoor->getTileAttribByGrid(partyOldGridPos.x, partyNewGridPos.y) & TILE_WATER);
+    bool partyCurrentOnLand = !pOutdoor->pTerrain.isWaterByGrid(partyOldGridPos);
+    bool partyNewXOnLand = !pOutdoor->pTerrain.isWaterByGrid({partyNewGridPos.x, partyOldGridPos.y});
+    bool partyNewYOnLand = !pOutdoor->pTerrain.isWaterByGrid({partyOldGridPos.x, partyNewGridPos.y});
 
     // -(update party co-ords)---------------------------------------
     bool notWater{ false };
@@ -1856,8 +1856,8 @@ void UpdateActors_ODM() {
         if (!Water_Walk) {
             // tile on (1) tile heading (2)
             bool tile1IsLand, tile2IsLand;
-            tile1IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos) & TILE_WATER);
-            tile2IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos + pActors[Actor_ITR].velocity) & TILE_WATER);
+            tile1IsLand = !pOutdoor->pTerrain.isWaterByPos(pActors[Actor_ITR].pos);
+            tile2IsLand = !pOutdoor->pTerrain.isWaterByPos(pActors[Actor_ITR].pos + pActors[Actor_ITR].velocity);
             if (!uIsFlying && tile1IsLand && !tile2IsLand) {
                 // approaching water - turn away
                 if (pActors[Actor_ITR].CanAct()) {
@@ -1874,7 +1874,7 @@ void UpdateActors_ODM() {
                 for (int i = gridPos.x - 1; i <= gridPos.x + 1; i++) {
                     // scan surrounding cells for land
                     for (int j = gridPos.y - 1; j <= gridPos.y + 1; j++) {
-                        tileTestLand = !(pOutdoor->getTileAttribByGrid(i, j) & TILE_WATER);
+                        tileTestLand = !pOutdoor->pTerrain.isWaterByGrid({i, j});
                         if (tileTestLand) {  // found land
                             int target_x = GridCellToWorldPosX(i);
                             int target_y = GridCellToWorldPosY(j);
@@ -2107,7 +2107,7 @@ int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater) {
     OutdoorTileGeometry tile = pOutdoor->pTerrain.tileGeometryByGrid(gridPos);
 
     *pIsOnWater = false;
-    if (pOutdoor->getTileAttribByGrid(gridPos.x, gridPos.y) & TILE_WATER) {
+    if (pOutdoor->pTerrain.isWaterByGrid(gridPos)) {
         *pIsOnWater = true;
     }
 
