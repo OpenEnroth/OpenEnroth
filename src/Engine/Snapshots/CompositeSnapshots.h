@@ -84,7 +84,7 @@ struct OutdoorLocation_MM7 {
     std::array<char, 32> desciption;
     std::array<char, 32> skyTexture;
     std::array<char, 32> groundTilesetUnused;
-    std::array<OutdoorLocationTileType_MM7, 4> tileTypes;
+    std::array<OutdoorTileType_MM7, 4> tileTypes;
     std::array<uint8_t, 128 * 128> heightMap;
     std::array<uint8_t, 128 * 128> tileMap;
     std::array<uint8_t, 128 * 128> attributeMap;

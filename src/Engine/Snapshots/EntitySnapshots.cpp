@@ -1797,7 +1797,7 @@ void reconstruct(const PersistentVariables_MM7 &src, PersistentVariables *dst) {
     dst->decorVars = src.decorVars;
 }
 
-void reconstruct(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType *dst) {
+void reconstruct(const OutdoorTileType_MM7 &src, OutdoorTileType *dst) {
     dst->tileset = static_cast<TileSet>(src.tileset);
     dst->uTileID = src.tileId;
 }

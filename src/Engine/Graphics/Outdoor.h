@@ -36,11 +36,6 @@ struct OutdoorLocation {
     void Release();
     void Load(std::string_view filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned);
 
-    /**
-     * @offset 0x47EDB3
-     */
-    TileFlags getTileAttribByGrid(int gridX, int gridY);
-
     int UpdateDiscoveredArea(Vec2i gridPos);
     bool IsMapCellFullyRevealed(signed int a2, signed int a3);
     bool IsMapCellPartiallyRevealed(signed int a2, signed int a3);
@@ -48,11 +43,6 @@ struct OutdoorLocation {
     void ArrangeSpriteObjects();
     bool InitalizeActors(MapId a1);
     double GetFogDensityByTime();
-
-    /**
-     * @offset 0x488EB1
-     */
-    TileFlags getTileAttribByPos(const Vec3f &pos);
 
     /**
      * @offset 0x488EEF
@@ -123,11 +113,9 @@ struct OutdoorLocation {
 extern OutdoorLocation *pOutdoor;
 
 void ODM_UpdateUserInputAndOther();
-float ODM_GetFloorLevel(const Vec3f &pos, int unused, bool *pOnWater,
-                      int *faceId, int bWaterWalk);
+float ODM_GetFloorLevel(const Vec3f &pos, bool *pOnWater, int *faceId);
 int GetCeilingHeight(int Party_X, signed int Party_Y, int Party_ZHeight,
                      int *pFaceID);
-void ODM_GetTerrainNormalAt(const Vec3f &pos, Vec3f *out);
 void UpdateActors_ODM();
 void ODM_ProcessPartyActions();
 void SetUnderwaterFog();
@@ -143,8 +131,6 @@ Vec2i WorldPosToGrid(Vec3f worldPos);
 int GridCellToWorldPosX(int);
 int GridCellToWorldPosY(int);
 void sub_481ED9_MessWithODMRenderParams();
-bool IsTerrainSlopeTooHigh(const Vec3f &pos);
-int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater, int bFloatAboveWater);
 void TeleportToStartingPoint(MapStartPoint point);  // idb
 
 extern MapStartPoint uLevel_StartingPointType;

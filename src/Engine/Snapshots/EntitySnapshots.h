@@ -50,7 +50,7 @@ struct MonsterDesc;
 struct NPCData;
 struct ODMFace;
 struct ObjectDesc;
-struct OutdoorLocationTileType;
+struct OutdoorTileType;
 struct OverlayDesc;
 struct Party;
 struct PersistentVariables;
@@ -1353,14 +1353,14 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVHeader_MM7)
 // so no reconstruct() overloads for it.
 
 
-struct OutdoorLocationTileType_MM7 {
+struct OutdoorTileType_MM7 {
     uint16_t tileset;
     uint16_t tileId;
 };
-static_assert(sizeof(OutdoorLocationTileType_MM7) == 4);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(OutdoorLocationTileType_MM7)
+static_assert(sizeof(OutdoorTileType_MM7) == 4);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(OutdoorTileType_MM7)
 
-void reconstruct(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType *dst);
+void reconstruct(const OutdoorTileType_MM7 &src, OutdoorTileType *dst);
 
 
 struct SaveGameHeader_MM7 {

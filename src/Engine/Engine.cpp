@@ -296,7 +296,7 @@ void Engine::DrawGUI() {
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             bool on_water = false;
             int bmodel_pid;
-            float floor_level = ODM_GetFloorLevel(pParty->pos, 0, &on_water, &bmodel_pid, false);
+            float floor_level = ODM_GetFloorLevel(pParty->pos, &on_water, &bmodel_pid);
             floor_level_str = fmt::format(
                 "ODM_GetFloorLevel: {}   on_water: {}  on: {}\n",
                 floor_level, on_water ? "true" : "false",

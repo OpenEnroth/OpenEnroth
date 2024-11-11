@@ -9,9 +9,13 @@
 
 #include "Media/Audio/SoundEnums.h"
 
-struct OutdoorLocationTileType {
+struct OutdoorTileType {
     TileSet tileset = TILE_SET_INVALID;
     uint16_t uTileID = 0;
+};
+
+struct OutdoorTileGeometry {
+    Vec3f v00, v01, v10, v11; // Four vertices of the tile, v00 is at (x0, y0), v01 at (x0, y1), etc.
 };
 
 class OutdoorTerrain {
@@ -21,6 +25,11 @@ class OutdoorTerrain {
     void CreateDebugTerrain();
 
     int heightByGrid(Vec2i gridPos);
+
+    /**
+     * @offset 0x0048257A
+     */
+    int heightByPos(const Vec3f &pos);
 
     /**
      * @param gridPos                   Grid coordinates.
@@ -37,9 +46,38 @@ class OutdoorTerrain {
     /**
      * @offset 0x47EE49
      */
-    SoundId soundIdByGrid(Vec2i gridPos, bool isRunning);
+    SoundId soundIdByGrid(Vec2i gridPos, bool isRunning) const;
 
-    std::array<OutdoorLocationTileType, 4> pTileTypes;  // [3] is road tileset.
+    /**
+     * @param gridPos                   Grid coordinates.
+     * @return                          Whether the tile at `gridPos` is a water tile. Note that shore tiles are
+     *                                  different from water tiles.
+     */
+    bool isWaterByGrid(Vec2i gridPos) const;
+
+    bool isWaterOrShoreByGrid(Vec2i gridPos) const;
+
+    bool isWaterByPos(const Vec3f &pos) const;
+
+    /**
+     *
+     * @param pos                       World coordinates, only xy component is used by this function.
+     * @return                          Terrain normal at given position. Terrain normals always point up (`z > 0`).
+     * @offset 0x0046DCC8
+     */
+    Vec3f normalByPos(const Vec3f &pos) const;
+
+    /**
+     * @param pos                       World coordinates, only xy component is used by this function.
+     * @return                          Whether terrain slope at given position is too high to be climbed or stood on.
+     * @offset 0x004823F4
+     */
+    bool isSlopeTooHighByPos(const Vec3f &pos) const;
+
+    // TODO(captainurist): also move all the functions that use this method into this class.
+    OutdoorTileGeometry tileGeometryByGrid(Vec2i gridPos) const;
+
+    std::array<OutdoorTileType, 4> pTileTypes;  // [3] is road tileset.
     std::array<uint8_t, 128 * 128> pHeightmap = {};
     std::array<uint8_t, 128 * 128> pTilemap = {};
     std::array<uint8_t, 128 * 128> pAttributemap = {};

@@ -230,7 +230,7 @@ bool DecalBuilder::ApplyBloodSplat_OutdoorFace(ODMFace *pFace) {
 
 //----- (0049BE8A) --------------------------------------------------------
 // apply outdoor blodsplats - check to see if bloodsplat hits terrain triangle
-bool DecalBuilder::ApplyBloodSplatToTerrain(TileFlags terrainFlags, Vec3f *terrnorm, float *tridotdist,
+bool DecalBuilder::ApplyBloodSplatToTerrain(bool fading, Vec3f *terrnorm, float *tridotdist,
                                             RenderVertexSoft *triverts, const int whichsplat) {
     // tracks how many decals are applied to this tri
     this->uNumSplatsThisFace = 0;
@@ -247,7 +247,7 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(TileFlags terrainFlags, Vec3f *terrn
             // blood splat hits this terrain tri
 
             // check if water or something else (maybe should be border tile or swampy?)
-            if (terrainFlags & TILE_WATER || terrainFlags & TILE_SHORE) {
+            if (fading) {
                 // apply fade flags
                 if (!(bloodsplat_container->pBloodsplats_to_apply[whichsplat].blood_flags & DecalFlagsFade)) {
                     bloodsplat_container->pBloodsplats_to_apply[whichsplat].blood_flags |= DecalFlagsFade;

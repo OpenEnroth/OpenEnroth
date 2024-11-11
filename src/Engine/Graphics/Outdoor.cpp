@@ -249,11 +249,6 @@ double OutdoorLocation::GetFogDensityByTime() {
     }
 }
 
-TileFlags OutdoorLocation::getTileAttribByPos(const Vec3f &pos) {
-    Vec2i gridPos = WorldPosToGrid(pos);
-    return getTileAttribByGrid(gridPos.x, gridPos.y);
-}
-
 TileData *OutdoorLocation::getTileDescByPos(const Vec3f &pos) {
     Vec2i gridPos = WorldPosToGrid(pos);
     return getTileDescByGrid(gridPos.x, gridPos.y);
@@ -367,7 +362,7 @@ void OutdoorLocation::UpdateFog() {
 int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos) {
     bool is_on_water = false;
     int bmodel_standing_on_pid = 0;
-    ODM_GetFloorLevel(pos, pParty->height, &is_on_water, &bmodel_standing_on_pid, 0);
+    ODM_GetFloorLevel(pos, &is_on_water, &bmodel_standing_on_pid);
     if (pParty->isAirborne() || bmodel_standing_on_pid || is_on_water) {
         return 2;
     }
@@ -619,11 +614,6 @@ TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
     return &pTileTable->tiles[tileId];
 }
 
-TileFlags OutdoorLocation::getTileAttribByGrid(int gridX, int gridY) {
-    int tileId = this->pTerrain.tileIdByGrid(Vec2i(gridX, gridY));
-    return pTileTable->tiles[tileId].uAttributes;
-}
-
 //----- (0047EF60) --------------------------------------------------------
 int OutdoorLocation::UpdateDiscoveredArea(Vec2i gridPos) {
     for (int i = -10; i < 10; i++) {
@@ -695,10 +685,7 @@ void OutdoorLocation::ArrangeSpriteObjects() {
         for (int i = 0; i < (signed int)pSpriteObjects.size(); ++i) {
             if (pSpriteObjects[i].uObjectDescID) {
                 if (!(pSpriteObjects[i].uAttributes & SPRITE_DROPPED_BY_PLAYER) && !pSpriteObjects[i].IsUnpickable()) {
-                    bool bOnWater = false;
-                    pSpriteObjects[i].vPosition.z =
-                        GetTerrainHeightsAroundParty2(
-                            pSpriteObjects[i].vPosition, &bOnWater, 0);
+                    pSpriteObjects[i].vPosition.z = pOutdoor->pTerrain.heightByPos(pSpriteObjects[i].vPosition);
                 }
                 if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL) {
                     if (pSpriteObjects[i].containing_item.uItemID != ITEM_POTION_BOTTLE &&
@@ -938,14 +925,14 @@ void OutdoorLocation::PrepareActorsDrawList() {
     }
 }
 
-float ODM_GetFloorLevel(const Vec3f &pos, int unused, bool *pIsOnWater,
-                      int *faceId, int bWaterWalk) {
+float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
     std::array<int, 20> current_Face_id{};                   // dword_721110
     std::array<int, 20> current_BModel_id{};                 // dword_721160
     std::array<float, 20> odm_floor_level{};                   // idb
     current_BModel_id[0] = -1;
     current_Face_id[0] = -1;
-    odm_floor_level[0] = GetTerrainHeightsAroundParty2(pos, pIsOnWater, bWaterWalk);
+    odm_floor_level[0] = pOutdoor->pTerrain.heightByPos(pos);
+    *pIsOnWater = pOutdoor->pTerrain.isWaterByPos(pos);
 
     int surface_count = 1;
 
@@ -1012,64 +999,12 @@ float ODM_GetFloorLevel(const Vec3f &pos, int unused, bool *pIsOnWater,
     else
         *faceId = current_Face_id[current_idx] | (current_BModel_id[current_idx] << 6);
 
-    if (current_idx) {
-        *pIsOnWater = false;
-        if (pOutdoor->pBModels[current_BModel_id[current_idx]].pFaces[current_Face_id[current_idx]].Fluid())
-            *pIsOnWater = true;
-    }
+    if (current_idx)
+        *pIsOnWater = pOutdoor->pBModels[current_BModel_id[current_idx]].pFaces[current_Face_id[current_idx]].Fluid();
 
     return std::max(odm_floor_level[0], odm_floor_level[current_idx]);
 }
 
-// not sure if right- or left-handed coordinate space assumed, so this could be
-// normal of inverse normal
-// for a right-handed system, that would be an inverse normal
-// out as normalised float vec
-//----- (0046DCC8) --------------------------------------------------------
-void ODM_GetTerrainNormalAt(const Vec3f &pos, Vec3f *out) {
-    Vec2i gridPos = WorldPosToGrid(pos);
-
-    int grid_pos_x1 = GridCellToWorldPosX(gridPos.x);
-    int grid_pos_x2 = GridCellToWorldPosX(gridPos.x + 1);
-    int grid_pos_y1 = GridCellToWorldPosY(gridPos.y);
-    int grid_pos_y2 = GridCellToWorldPosY(gridPos.y + 1);
-
-    int x1y1_z = pOutdoor->pTerrain.heightByGrid(gridPos);
-    int x2y1_z = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(1, 0));
-    int x2y2_z = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(1, 1));
-    int x1y2_z = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(0, 1));
-
-    Vec3f side1, side2;
-
-    //float side1_dx, side1_dz, side1_dy, side2_dx, side2_dz, side2_dy;
-
-    int dx = std::abs(pos.x - grid_pos_x1);
-    int dy = std::abs(grid_pos_y1 - pos.y);
-    if (dy >= dx) {
-        side2 = Vec3f(grid_pos_x2 - grid_pos_x1, 0.0f, x2y2_z - x1y2_z);
-        side1 = Vec3f(0.0f, grid_pos_y1 - grid_pos_y2, x1y1_z - x1y2_z);
-        /*       |\
-           side1 |  \
-                 |____\
-                 side 2      */
-    } else {
-        side2 = Vec3f(grid_pos_x1 - grid_pos_x2, 0.0f, x1y1_z - x2y1_z);
-        side1 = Vec3f(0.0f, grid_pos_y2 - grid_pos_y1, x2y2_z - x2y1_z);
-        /*   side 2
-             _____
-             \    |
-               \  | side 1
-                 \|       */
-    }
-
-    Vec3f n = cross(side2, side1);
-    float mag = n.length();
-    if (fabsf(mag) < 1e-6f) {
-        *out = Vec3f(0, 0, 1);
-    } else {
-        *out = n / mag;
-    }
-}
 //----- (0046BE0A) --------------------------------------------------------
 void ODM_UpdateUserInputAndOther() {
     ODM_ProcessPartyActions();
@@ -1133,8 +1068,7 @@ void ODM_ProcessPartyActions() {
     int floorFaceId = 0;
     bool partyIsOnWater = false;
 
-    float floorZ = ODM_GetFloorLevel(pParty->pos, pParty->height,
-                                   &partyIsOnWater, &floorFaceId, waterWalkActive);
+    float floorZ = ODM_GetFloorLevel(pParty->pos, &partyIsOnWater, &floorFaceId);
     bool partyNotOnModel = floorFaceId == 0;
     int currentGroundLevel = floorZ + 1;
 
@@ -1193,7 +1127,7 @@ void ODM_ProcessPartyActions() {
     }
     int partyOldFlightZ = pParty->sPartySavedFlightZ;
 
-    bool partyAtHighSlope = IsTerrainSlopeTooHigh(pParty->pos);
+    bool partyAtHighSlope = pOutdoor->pTerrain.isSlopeTooHighByPos(pParty->pos);
     bool partyIsRunning = false;
     bool partyIsWalking = false;
     bool noFlightBob = false;
@@ -1487,8 +1421,7 @@ void ODM_ProcessPartyActions() {
             // gradually sliding downwards. nice trick
             partyNewPos.z = currentGroundLevel;
             if (partyAtHighSlope) {
-                Vec3f v98;
-                ODM_GetTerrainNormalAt(partyNewPos, &v98);
+                Vec3f v98 = pOutdoor->pTerrain.normalByPos(partyNewPos);
                 partyInputSpeed.z += (8 * -(pEventTimer->dt().ticks() * (int)GetGravityStrength()));
                 float dotp = std::abs(dot(partyInputSpeed, v98));
                 partyInputSpeed += dotp * v98;
@@ -1520,11 +1453,11 @@ void ODM_ProcessPartyActions() {
     float savedZSpeed = partyInputSpeed.z;
     // horizontal
     partyInputSpeed.z = 0;
-    ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &partyIsOnWater, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID);
+    ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID);
     // vertical - only when horizonal motion hasnt caused height gain
     if (partyNewPos.z <= pParty->pos.z) {
         partyInputSpeed = Vec3f(0, 0, savedZSpeed);
-        ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &partyIsOnWater, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID);
+        ProcessPartyCollisionsODM(&partyNewPos, &partyInputSpeed, &floorFaceId, &partyNotOnModel, &partyHasHitModel, &triggerID);
     }
 
     if (!partyNotTouchingFloor || partyCloseToGround)
@@ -1537,9 +1470,9 @@ void ODM_ProcessPartyActions() {
     Vec2i partyNewGridPos = WorldPosToGrid(partyNewPos);
 
     // this gets if tile is not water
-    bool partyCurrentOnLand = !(pOutdoor->getTileAttribByGrid(partyOldGridPos.x, partyOldGridPos.y) & TILE_WATER);
-    bool partyNewXOnLand = !(pOutdoor->getTileAttribByGrid(partyNewGridPos.x, partyOldGridPos.y) & TILE_WATER);
-    bool partyNewYOnLand = !(pOutdoor->getTileAttribByGrid(partyOldGridPos.x, partyNewGridPos.y) & TILE_WATER);
+    bool partyCurrentOnLand = !pOutdoor->pTerrain.isWaterByGrid(partyOldGridPos);
+    bool partyNewXOnLand = !pOutdoor->pTerrain.isWaterByGrid({partyNewGridPos.x, partyOldGridPos.y});
+    bool partyNewYOnLand = !pOutdoor->pTerrain.isWaterByGrid({partyOldGridPos.x, partyNewGridPos.y});
 
     // -(update party co-ords)---------------------------------------
     bool notWater{ false };
@@ -1605,8 +1538,7 @@ void ODM_ProcessPartyActions() {
         pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
 
         if (partyDrowningFlag) {
-            bool onWater = false;
-            int pTerrainHeight = GetTerrainHeightsAroundParty2(pParty->pos, &onWater, 1);
+            int pTerrainHeight = pOutdoor->pTerrain.heightByPos(pParty->pos);
             if (pParty->pos.z <= pTerrainHeight + 1) {
                 pParty->uFlags |= PARTY_FLAG_WATER_DAMAGE;
             }
@@ -1620,7 +1552,7 @@ void ODM_ProcessPartyActions() {
     }
 
     // new ground level
-    float newFloorLevel = ODM_GetFloorLevel(partyNewPos, pParty->height, &partyIsOnWater, &floorFaceId, waterWalkActive);
+    float newFloorLevel = ODM_GetFloorLevel(partyNewPos, &partyIsOnWater, &floorFaceId);
     float newGroundLevel = newFloorLevel + 1;
 
     // Falling damage
@@ -1807,10 +1739,10 @@ void UpdateActors_ODM() {
         if (!pActors[Actor_ITR].CanAct())
             uIsFlying = 0;
 
-        bool Slope_High = IsTerrainSlopeTooHigh(pActors[Actor_ITR].pos);
+        bool Slope_High = pOutdoor->pTerrain.isSlopeTooHighByPos(pActors[Actor_ITR].pos);
         int Model_On_PID = 0;
         bool uIsOnWater = false;
-        float Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].pos, pActors[Actor_ITR].height, &uIsOnWater, &Model_On_PID, Water_Walk);
+        float Floor_Level = ODM_GetFloorLevel(pActors[Actor_ITR].pos, &uIsOnWater, &Model_On_PID);
         bool Actor_On_Terrain = Model_On_PID == 0;
 
         bool uIsAboveFloor = (pActors[Actor_ITR].pos.z > (Floor_Level + 1));
@@ -1868,9 +1800,8 @@ void UpdateActors_ODM() {
         // GRAVITY
         if (!uIsAboveFloor || uIsFlying) {
             if (Slope_High && !uIsAboveFloor && Actor_On_Terrain) {
-                Vec3f Terrain_Norm;
                 pActors[Actor_ITR].pos.z = Floor_Level;
-                ODM_GetTerrainNormalAt(pActors[Actor_ITR].pos, &Terrain_Norm);
+                Vec3f Terrain_Norm = pOutdoor->pTerrain.normalByPos(pActors[Actor_ITR].pos);
                 int Gravity = GetGravityStrength();
 
                 pActors[Actor_ITR].velocity.z += -16 * pEventTimer->dt().ticks() * Gravity; //TODO(pskelton): common gravity code extract
@@ -1909,8 +1840,8 @@ void UpdateActors_ODM() {
         if (!Water_Walk) {
             // tile on (1) tile heading (2)
             bool tile1IsLand, tile2IsLand;
-            tile1IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos) & TILE_WATER);
-            tile2IsLand = !(pOutdoor->getTileAttribByPos(pActors[Actor_ITR].pos + pActors[Actor_ITR].velocity) & TILE_WATER);
+            tile1IsLand = !pOutdoor->pTerrain.isWaterByPos(pActors[Actor_ITR].pos);
+            tile2IsLand = !pOutdoor->pTerrain.isWaterByPos(pActors[Actor_ITR].pos + pActors[Actor_ITR].velocity);
             if (!uIsFlying && tile1IsLand && !tile2IsLand) {
                 // approaching water - turn away
                 if (pActors[Actor_ITR].CanAct()) {
@@ -1927,7 +1858,7 @@ void UpdateActors_ODM() {
                 for (int i = gridPos.x - 1; i <= gridPos.x + 1; i++) {
                     // scan surrounding cells for land
                     for (int j = gridPos.y - 1; j <= gridPos.y + 1; j++) {
-                        tileTestLand = !(pOutdoor->getTileAttribByGrid(i, j) & TILE_WATER);
+                        tileTestLand = !pOutdoor->pTerrain.isWaterByGrid({i, j});
                         if (tileTestLand) {  // found land
                             int target_x = GridCellToWorldPosX(i);
                             int target_y = GridCellToWorldPosY(j);
@@ -2140,158 +2071,6 @@ int GridCellToWorldPosX(int a1) { return (a1 - 64) << 9; }
 //----- (0047F476) --------------------------------------------------------
 int GridCellToWorldPosY(int a1) { return (64 - a1) << 9; }
 
-
-//----- (004823F4) --------------------------------------------------------
-bool IsTerrainSlopeTooHigh(const Vec3f &pos) {
-    // unsigned int v2; // ebx@1
-    // unsigned int v3; // edi@1
-    // int v4; // eax@1
-    // int v6; // esi@5
-    // int v7; // ecx@6
-    // int v8; // edx@6
-    // int v9; // eax@6
-    // int y_min; // esi@10
-    // int v11; // [sp+14h] [bp-8h]@1
-    // int v12; // [sp+18h] [bp-4h]@1
-
-    // v12 = a1;
-    // v11 = a2;
-    Vec2i gridPos = WorldPosToGrid(pos);
-
-    int party_grid_x1 = GridCellToWorldPosX(gridPos.x);
-    // dword_76D56C_terrain_cell_world_pos_around_party_x =
-    // GridCellToWorldPosX(grid_x + 1);
-    // dword_76D570_terrain_cell_world_pos_around_party_x =
-    // GridCellToWorldPosX(grid_x + 1);
-    // dword_76D574_terrain_cell_world_pos_around_party_x =
-    // GridCellToWorldPosX(grid_x);
-    int party_grid_z1 = GridCellToWorldPosY(gridPos.y);
-    // dword_76D55C_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosY(grid_z);
-    // dword_76D560_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosY(grid_z + 1);
-    // dword_76D564_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosY(grid_z + 1);
-    int party_x1z1_y = pOutdoor->pTerrain.heightByGrid(gridPos);
-    int party_x2z1_y = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(1, 0));
-    int party_x2z2_y = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(1, 1));
-    int party_x1z2_y = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(0, 1));
-    // dword_76D554_terrain_cell_world_pos_around_party_y = v4;
-    if (party_x1z1_y == party_x2z1_y && party_x2z1_y == party_x2z2_y &&
-        party_x2z2_y == party_x1z2_y)
-        return false;
-
-    int dx = std::abs(pos.x - party_grid_x1), dz = std::abs(party_grid_z1 - pos.y);
-
-    int y1, y2, y3;
-    if (dz >= dx) {
-        y1 = party_x1z2_y;
-        y2 = party_x2z2_y;
-        y3 = party_x1z1_y;
-        /*  lower-left triangle
-          y3 | \
-             |   \
-             |     \
-             |______ \
-          y1           y2   */
-    } else {
-        y1 = party_x2z1_y;  // upper-right
-        y2 = party_x1z1_y;  //  y2_______ y1
-        y3 = party_x2z2_y;  //    \     |
-                            /*      \   |
-                                      \ |
-                                       y3     */
-    }
-
-    int y_min = std::min(y1, std::min(y2, y3));  // не верно при подъёме на склон
-    int y_max = std::max(y1, std::max(y2, y3));
-    return (y_max - y_min) > 512;
-}
-
-//----- (0048257A) --------------------------------------------------------
-int GetTerrainHeightsAroundParty2(const Vec3f &pos, bool *pIsOnWater, int bFloatAboveWater) {
-    //  int result; // eax@9
-    int originz;          // ebx@11
-    int lz;          // eax@11
-    int rz;         // ecx@11
-    int rpos;         // [sp+10h] [bp-8h]@11
-    int lpos;         // [sp+24h] [bp+Ch]@11
-
-    Vec2i gridPos = WorldPosToGrid(pos);
-
-    int grid_x1 = GridCellToWorldPosX(gridPos.x),
-        grid_x2 = GridCellToWorldPosX(gridPos.x + 1);
-    int grid_y1 = GridCellToWorldPosY(gridPos.y),
-        grid_y2 = GridCellToWorldPosY(gridPos.y + 1);
-
-    int z_x1y1 = pOutdoor->pTerrain.heightByGrid(gridPos),
-        z_x2y1 = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(1, 0)),
-        z_x2y2 = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(1, 1)),
-        z_x1y2 = pOutdoor->pTerrain.heightByGrid(gridPos + Vec2i(0, 1));
-    // v4 = WorldPosToGridCellX(x);
-    // v5 = WorldPosToGridCellY(v12);
-    // dword_76D538_terrain_cell_world_pos_around_party_x =
-    // GridCellToWorldPosX(v4);
-    // dword_76D53C_terrain_cell_world_pos_around_party_x =
-    // GridCellToWorldPosX(v4 + 1);
-    // dword_76D540_terrain_cell_world_pos_around_party_x =
-    // GridCellToWorldPosX(v4 + 1);
-    // dword_76D544_terrain_cell_world_pos_around_party_x =
-    // GridCellToWorldPosX(v4);
-    // dword_76D528_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosY(v5);
-    // dword_76D52C_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosY(v5);
-    // dword_76D530_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosY(v5 + 1);
-    // dword_76D534_terrain_cell_world_pos_around_party_z =
-    // GridCellToWorldPosY(v5 + 1);
-    // dword_76D518_terrain_cell_world_pos_around_party_y =
-    // pOutdoor->pTerrain.DoGetHeightOnTerrain(v4, v5);
-    // dword_76D51C_terrain_cell_world_pos_around_party_y =
-    // pOutdoor->pTerrain.DoGetHeightOnTerrain(v4 + 1, v5);
-    // dword_76D520_terrain_cell_world_pos_around_party_y =
-    // pOutdoor->pTerrain.DoGetHeightOnTerrain(v4 + 1, v5 + 1);
-    // dword_76D524_terrain_cell_world_pos_around_party_y =
-    // pOutdoor->pTerrain.DoGetHeightOnTerrain(v4, v5 + 1);
-    *pIsOnWater = false;
-    if (pOutdoor->getTileAttribByGrid(gridPos.x, gridPos.y) & TILE_WATER) {
-        *pIsOnWater = true;
-    }
-
-    int waterAdjustment = 0;
-    if (!bFloatAboveWater && *pIsOnWater)
-        waterAdjustment = -60;
-
-    if (z_x1y1 != z_x2y1 || z_x2y1 != z_x2y2 || z_x2y2 != z_x1y2) {
-        // On a slope.
-        if (std::abs(grid_y1 - pos.y) >= std::abs(pos.x - grid_x1)) {
-            originz = z_x1y2;
-            lz = z_x2y2;
-            rz = z_x1y1;
-            lpos = pos.x - grid_x1;
-            rpos = pos.y - grid_y2;
-        } else {
-            originz = z_x2y1;
-            lz = z_x1y1;
-            rz = z_x2y2;
-            lpos = grid_x2 - pos.x;
-            rpos = grid_y1 - pos.y;
-        }
-
-        assert(lpos >= 0 && lpos < 512);
-        assert(rpos >= 0 && rpos < 512);
-
-        // (x >> 9) is basically (x / 512) but with consistent rounding towards -inf.
-        return waterAdjustment + originz + ((rpos * (rz - originz)) >> 9) +
-               ((lpos * (lz - originz)) >> 9);
-    } else {
-        // On flat terrain.
-        // TODO(captainurist): waterAdjustment isn't used in this case, so effectively is never used. Bugged?
-        return z_x1y1;
-    }
-}
-
 //----- (00436A6D) --------------------------------------------------------
 double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int unumverts) {
     double result = FLT_MAX;
@@ -2326,7 +2105,7 @@ void TeleportToStartingPoint(MapStartPoint point) {
                     // TODO: (Chaosit) dummy variables created for the sake of passing pointers
                     bool bOnWater = false;
                     int bModelPid;
-                    pParty->pos.z = ODM_GetFloorLevel(pParty->pos, 0, &bOnWater, &bModelPid, false);
+                    pParty->pos.z = ODM_GetFloorLevel(pParty->pos, &bOnWater, &bModelPid);
                     pParty->velocity = Vec3f();
                     pParty->uFallStartZ = pParty->pos.z;
                     pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
