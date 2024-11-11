@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d4b5373</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f6e9276</span>
    </div>
   </td>
  </tr>
@@ -77,18 +77,25 @@ $(function() {
 <table class="directory">
   <tr class="even"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a8b29aa09d9e1afb47177000551d9a59c">CreateDebugTerrain</a>()</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classOutdoorTerrain.html#ad2865b106a90e424c770689dc5bb6999">heightByGrid</a>(Vec2i gridPos)</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a7855e5cb4925c10807977ec11f08478d">LoadBaseTileIds</a>()</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a89ff43d584e9f982e0385a72039800db">mapToGlobalTileId</a>(int localTileId) const</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a0927fbc5b372f29793368fd63226ada3">heightByPos</a>(const Vec3f &amp;pos)</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a33e445fdb7035926c2faee789a0319b3">isSlopeTooHighByPos</a>(const Vec3f &amp;pos) const</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a01bda0797f76437b45c21a0259e01c5f">isWaterByGrid</a>(Vec2i gridPos) const</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classOutdoorTerrain.html#adb97228ce61ed1bbe82042f09b2f0704">isWaterByPos</a>(const Vec3f &amp;pos) const</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classOutdoorTerrain.html#aca5c69fdc83df42e8007c3bc863f70a3">isWaterOrShoreByGrid</a>(Vec2i gridPos) const</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a7855e5cb4925c10807977ec11f08478d">LoadBaseTileIds</a>()</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a89ff43d584e9f982e0385a72039800db">mapToGlobalTileId</a>(int localTileId) const</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a8e561f8a6cada19d35d671abf03b1326">normalByPos</a>(const Vec3f &amp;pos) const</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a38390f77a630ecce9c3f206e75e83736">pAttributemap</a></td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a62bc7849971d022a31dcceaeb4e12c52">pHeightmap</a></td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classOutdoorTerrain.html#af93a6b6ad7d653f8058349dc7a76d91f">pTerrainNormalIndices</a></td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a4213bc7be1f56ecf40f632e99ff97eb4">pTerrainNormals</a></td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a522ded1aa1e38e9fa8c234bf00c4d6fb">pTilemap</a></td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a2321c229e7b1c8094d51859df9c7a043">pTileTypes</a></td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a8a1a7198554a859cb546412addb1a4c2">soundIdByGrid</a>(Vec2i gridPos, bool isRunning)</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a6ee050f7e71c90675e68927fd1bb5d3f">tileIdByGrid</a>(Vec2i gridPos) const</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classOutdoorTerrain.html#ab84d661cc2a8d48374808529d774e717">tileSetByGrid</a>(Vec2i gridPos) const</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classOutdoorTerrain.html#ad863d416520e3b46bb203c9dddeaf142">ZeroLandscape</a>()</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classOutdoorTerrain.html#ab53979e779ed97eae72464c239d403f2">pTileTypes</a></td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a7bd4026ce3de626c470a3faa9550ddb0">soundIdByGrid</a>(Vec2i gridPos, bool isRunning) const</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classOutdoorTerrain.html#af66e54cbf88490b6fc53c40a66a8113e">tileGeometryByGrid</a>(Vec2i gridPos) const</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classOutdoorTerrain.html#a6ee050f7e71c90675e68927fd1bb5d3f">tileIdByGrid</a>(Vec2i gridPos) const</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classOutdoorTerrain.html#ab84d661cc2a8d48374808529d774e717">tileSetByGrid</a>(Vec2i gridPos) const</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classOutdoorTerrain.html#ad863d416520e3b46bb203c9dddeaf142">ZeroLandscape</a>()</td><td class="entry"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

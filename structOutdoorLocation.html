@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;d4b5373</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f6e9276</span>
    </div>
   </td>
  </tr>
@@ -94,8 +94,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a44239dc5856aabbae27ec8f191447dd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9acd9c8a5e4d629be5110f7e9de3bff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#ac9acd9c8a5e4d629be5110f7e9de3bff">Load</a> (std::string_view filename, int days_played, int respawn_interval_days, bool *outdoors_was_respawned)</td></tr>
 <tr class="separator:ac9acd9c8a5e4d629be5110f7e9de3bff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c6577836a578e7a311744aadb167e88"><td class="memItemLeft" align="right" valign="top">TileFlags&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#a0c6577836a578e7a311744aadb167e88">getTileAttribByGrid</a> (int gridX, int gridY)</td></tr>
-<tr class="separator:a0c6577836a578e7a311744aadb167e88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae5bbde73156bbfdc83dbbfdc5d406844"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#ae5bbde73156bbfdc83dbbfdc5d406844">UpdateDiscoveredArea</a> (<a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> gridPos)</td></tr>
 <tr class="separator:ae5bbde73156bbfdc83dbbfdc5d406844"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5deac38787362b826573194165d3b1a5"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#a5deac38787362b826573194165d3b1a5">IsMapCellFullyRevealed</a> (signed int a2, signed int a3)</td></tr>
@@ -110,8 +108,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a68714bccc31f87b3667e02577ed75573"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1c6fa80f7a45b9b846a8e0058889bf4"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#af1c6fa80f7a45b9b846a8e0058889bf4">GetFogDensityByTime</a> ()</td></tr>
 <tr class="separator:af1c6fa80f7a45b9b846a8e0058889bf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab573389cb2ce88ee07a9f0335f87d968"><td class="memItemLeft" align="right" valign="top">TileFlags&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#ab573389cb2ce88ee07a9f0335f87d968">getTileAttribByPos</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;pos)</td></tr>
-<tr class="separator:ab573389cb2ce88ee07a9f0335f87d968"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ad42ed7508a10faf81ef53d499699fa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTileData.html">TileData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#a0ad42ed7508a10faf81ef53d499699fa">getTileDescByPos</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;pos)</td></tr>
 <tr class="separator:a0ad42ed7508a10faf81ef53d499699fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d357ebf98f7f3bbfe79c76827a4119c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structTileData.html">TileData</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorLocation.html#a5d357ebf98f7f3bbfe79c76827a4119c">getTileDescByGrid</a> (int uX, int uZ)</td></tr>
@@ -389,54 +385,6 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-
-</div>
-</div>
-<a id="a0c6577836a578e7a311744aadb167e88" name="a0c6577836a578e7a311744aadb167e88"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0c6577836a578e7a311744aadb167e88">&#9670;&#160;</a></span>getTileAttribByGrid()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">TileFlags OutdoorLocation::getTileAttribByGrid </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>gridX</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>gridY</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x47EDB3 </dd></dl>
-
-</div>
-</div>
-<a id="ab573389cb2ce88ee07a9f0335f87d968" name="ab573389cb2ce88ee07a9f0335f87d968"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab573389cb2ce88ee07a9f0335f87d968">&#9670;&#160;</a></span>getTileAttribByPos()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">TileFlags OutdoorLocation::getTileAttribByPos </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;&#160;</td>
-          <td class="paramname"><em>pos</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x488EB1 </dd></dl>
 
 </div>
 </div>

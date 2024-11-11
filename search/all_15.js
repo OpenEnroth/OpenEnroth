@@ -776,7 +776,7 @@ var searchData=
   ['utextureid_5funused_5f1_773',['uTextureID_unused_1',['../structOptionsMenuSkin.html#a6feaf5db5590b945710dee1d7e21a265',1,'OptionsMenuSkin']]],
   ['utextureid_5funused_5f2_774',['uTextureID_unused_2',['../structOptionsMenuSkin.html#a6ed21671e4b284df1f91a5380eac9445',1,'OptionsMenuSkin']]],
   ['utextureid_5fwalksound_775',['uTextureID_WalkSound',['../structOptionsMenuSkin.html#a7ee1ad4a462874696741d8e6005a0c9a',1,'OptionsMenuSkin']]],
-  ['utileid_776',['uTileID',['../structTileData.html#a07bdf59503ad7785eab255d5cd371476',1,'TileData::uTileID()'],['../structOutdoorLocationTileType.html#a9503912fc16bd3203228964012f022af',1,'OutdoorLocationTileType::uTileID()']]],
+  ['utileid_776',['uTileID',['../structTileData.html#a07bdf59503ad7785eab255d5cd371476',1,'TileData::uTileID()'],['../structOutdoorTileType.html#a8976b6d9b62eb91048210210dff8e283',1,'OutdoorTileType::uTileID()']]],
   ['utime_777',['uTime',['../structHistoryData.html#a96b1d9db150fff34d7bd40091d8d0cd4',1,'HistoryData']]],
   ['utimeelapsed_778',['uTimeElapsed',['../classParticleEngine.html#a75471ccee347bd6263df183b8e34968f',1,'ParticleEngine']]],
   ['utimesincecreated_779',['uTimeSinceCreated',['../structSpriteObject__MM7.html#afea3256bc41f32ace8014572636515fa',1,'SpriteObject_MM7']]],
