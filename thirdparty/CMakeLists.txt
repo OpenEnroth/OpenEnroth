@@ -20,7 +20,7 @@ add_subdirectory(imgui EXCLUDE_FROM_ALL)
 # fmt
 add_subdirectory(fmt EXCLUDE_FROM_ALL)
 target_compile_definitions(fmt INTERFACE FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals.
-if(OE_BUILD_COMPILER STREQUAL "msvc")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_definitions(fmt INTERFACE FMT_CONSTEVAL=) # MSVC chokes on fmt consteval formatting, so we define FMT_CONSTEVAL=<empty>.
 endif()
 
