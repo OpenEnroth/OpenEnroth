@@ -4059,42 +4059,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
             for (unsigned i = 0; i < pBspRenderer->num_faces; ++i) {
                 int uFaceID = pBspRenderer->faces[i].uFaceID;
-                if (uFaceID >= pIndoor->pFaces.size())
-                    continue;
                 BLVFace *face = &pIndoor->pFaces[uFaceID];
-                face->uAttributes |= FACE_SeenByParty;
-
-                Planef *portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum.data();
-                // TODO(yoctozepto): just have this as a global constant instead of random vars/4 around
-                unsigned int uNumFrustums = 4;
-
-                // unsigned ColourMask;  // ebx@25
-                unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
-                // int LightLevel;                     // [sp+34h] [bp+Ch]@25
-
-                static RenderVertexSoft static_vertices_buff_in[64];  // buff in
-                static RenderVertexSoft static_vertices_calc_out[64];  // buff out - calc portal shape
-
-                // check face is towards camera
-                if (!pCamera3D->is_face_faced_to_cameraBLV(face)) {
-                    continue;
-                }
-
-                uNumVerticesa = face->uNumVertices;
-
-                // copy to buff in
-                for (unsigned i = 0; i < face->uNumVertices; ++i) {
-                    static_vertices_buff_in[i].vWorldPosition.x = pIndoor->pVertices[face->pVertexIDs[i]].x;
-                    static_vertices_buff_in[i].vWorldPosition.y = pIndoor->pVertices[face->pVertexIDs[i]].y;
-                    static_vertices_buff_in[i].vWorldPosition.z = pIndoor->pVertices[face->pVertexIDs[i]].z;
-                    static_vertices_buff_in[i].u = (signed short)face->pVertexUIDs[i];
-                    static_vertices_buff_in[i].v = (signed short)face->pVertexVIDs[i];
-                }
-
-                // check if this face is visible through current portal node
-                if (!pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)) {
-                    continue;
-                }
 
                 float skymodtimex{};
                 float skymodtimey{};

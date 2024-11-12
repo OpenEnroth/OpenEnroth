@@ -15,25 +15,57 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     assert(uFaceID > -1 && uFaceID < pIndoor->pFaces.size() && "please report with a nearby save file");
 
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
+    pFace->uAttributes |= FACE_SeenByParty;
+
+    // NOTE(yoctozepto): the below happens, e.g., on various stairs
+    // TODO(yoctozepto): might be nice to check if the vertices actually form a plane and not a line;
+    //                   this could be done when loading the location and filtering out such broken faces
+    if (pFace->uNumVertices < 3) {
+        return;  // nothing to render
+    }
+
+    const BspRenderer_ViewportNode *currentNode = &nodes[node_id];
+
+    // check if any triangle of the face can be seen
+
+    static RenderVertexSoft originalFaceVertices[64];
+    static RenderVertexSoft clippedFaceVertices[64];
+
+    // TODO(yoctozepto): are face vertices consecutive? are face vertices shared/overlapping?
+    for (unsigned k = 0; k < pFace->uNumVertices; ++k) {
+        originalFaceVertices[k].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[k]].x;
+        originalFaceVertices[k].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[k]].y;
+        originalFaceVertices[k].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[k]].z;
+    }
+
+    unsigned int pNewNumVertices = pFace->uNumVertices;
+
+    // TODO(yoctozepto): original vertices could have been just Vec3f
+    // clip to current viewing node frustum
+    pCamera3D->ClipFaceToFrustum(
+        originalFaceVertices,
+        &pNewNumVertices,
+        clippedFaceVertices,
+        currentNode->ViewportNodeFrustum.data());
+
+    if (!pNewNumVertices) {
+        return;  // no triangle of face in view
+    }
 
     if (!pFace->isPortal()) {
         // NOTE(yoctozepto): the below happens, e.g., on various stairs
         if (pFace->Invisible())
             return;  // nothing to render
-        // NOTE(yoctozepto): the below happens, e.g., on various stairs
-        // TODO(yoctozepto): might be nice to check if the vertices actually form a plane and not a line
-        if (pFace->uNumVertices < 3) {
-            return;  // nothing to render
-        }
+
         // TODO(yoctozepto): does the below happen?
         // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also OpenGLRenderer)
         if (!pFace->GetTexture()) {
             return;  // nothing to render
         }
 
-        // TODO(yoctozepto): experiment with clipping also regular faces to frustum and checking their facing:
-        //                   this would optimise the amount of faces that the other code has to process (OpenGLRenderer, Vis picking);
-        //                   remember to handle minimap with it
+        if (!pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
+            return;  // we don't see the face, no need to render
+        }
 
         assert(num_faces < 1500 && "please report with a nearby save file");
 
@@ -44,10 +76,6 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
         num_faces++;
         return;
     }
-
-    // TODO(yoctozepto): similarly to regular faces, maybe check if the portal vertices form a proper plane
-
-    const BspRenderer_ViewportNode *currentNode = &nodes[node_id];
 
     // portals are invisible faces marking the transition between sectors
 
@@ -77,31 +105,6 @@ void BspRenderer::AddFace(const int node_id, const int uFaceID) {
     //                   the ceiling (because its normal is in Z and it has frustum reset to camera frustum)
     if (/*(1)*/ node_id != 0 && /*(2)*/ isPortalFlipped == pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
         return;
-    }
-
-    // check if portal is visible on screen
-
-    static RenderVertexSoft originalFaceVertices[64];
-    static RenderVertexSoft clippedFaceVertices[64];
-
-    for (unsigned k = 0; k < pFace->uNumVertices; ++k) {
-        originalFaceVertices[k].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[k]].x;
-        originalFaceVertices[k].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[k]].y;
-        originalFaceVertices[k].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[k]].z;
-    }
-
-    unsigned int pNewNumVertices = pFace->uNumVertices;
-
-    // TODO(yoctozepto): original vertices could have been just Vec3f
-    // clip to current viewing node frustum
-    pCamera3D->ClipFaceToFrustum(
-        originalFaceVertices,
-        &pNewNumVertices,
-        clippedFaceVertices,
-        currentNode->ViewportNodeFrustum.data());
-
-    if (!pNewNumVertices) {
-        return;  // no triangle of face in view
     }
 
     assert(num_nodes < 150 && "please report with a nearby save file");
