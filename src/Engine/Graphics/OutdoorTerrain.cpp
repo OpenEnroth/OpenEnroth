@@ -1,5 +1,6 @@
 #include "OutdoorTerrain.h"
 
+#include <cassert>
 #include <algorithm>
 
 #include "Engine/Tables/TileTable.h"
@@ -72,8 +73,8 @@ int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
             rpos = tile.y0 - pos.y;
         }
 
-        assert(lpos >= 0 && lpos < 512);
-        assert(rpos >= 0 && rpos < 512);
+        //assert(lpos >= 0 && lpos < 512); // TODO(captainurist): fails in rare cases b/c not all of our code is in floats
+        //assert(rpos >= 0 && rpos < 512);
 
         // (x >> 9) is basically (x / 512) but with consistent rounding towards -inf.
         return originz + ((rpos * (rz - originz)) >> 9) + ((lpos * (lz - originz)) >> 9);
@@ -125,37 +126,19 @@ bool OutdoorTerrain::isWaterByPos(const Vec3f &pos) const {
 Vec3f OutdoorTerrain::normalByPos(const Vec3f &pos) const {
     Vec2i gridPos = WorldPosToGrid(pos);
 
-    // TODO(captainurist): why is this not returning a normal from pTerrainNormals?
+    int x0 = GridCellToWorldPosX(gridPos.x);
+    int y0 = GridCellToWorldPosY(gridPos.y);
 
-    TileGeometry tile = tileGeometryByGrid(gridPos);
+    int dx = pos.x - x0;
+    int dy = y0 - pos.y;
 
-    Vec3f side1, side2;
+    assert(dx >= 0);
+    assert(dy >= 0);
 
-    int dx = std::abs(pos.x - tile.x0);
-    int dy = std::abs(tile.y0 - pos.y);
     if (dy >= dx) {
-        side2 = Vec3f(tile.x1, tile.y1, tile.z11) - Vec3f(tile.x0, tile.y1, tile.z01);
-        side1 = Vec3f(tile.x0, tile.y0, tile.z00) - Vec3f(tile.x0, tile.y1, tile.z01);
-        /*       |\
-           side1 |  \
-                 |____\
-                 side 2      */
+        return pTerrainNormals[(gridPos.y * 128 + gridPos.x) * 2 + 1];
     } else {
-        side2 = Vec3f(tile.x0, tile.y0, tile.z00) - Vec3f(tile.x1, tile.y0, tile.z10);
-        side1 = Vec3f(tile.x1, tile.y1, tile.z11) - Vec3f(tile.x1, tile.y0, tile.z10);
-        /*   side 2
-             _____
-             \    |
-               \  | side 1
-                 \|       */
-    }
-
-    Vec3f n = cross(side2, side1);
-    float mag = n.length();
-    if (fabsf(mag) < 1e-6f) {
-        return Vec3f(0, 0, 1);
-    } else {
-        return n / mag;
+        return pTerrainNormals[(gridPos.y * 128 + gridPos.x) * 2];
     }
 }
 
@@ -193,6 +176,35 @@ bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
     int y_min = std::min(y1, std::min(y2, y3));  // не верно при подъёме на склон
     int y_max = std::max(y1, std::max(y2, y3));
     return (y_max - y_min) > 512;
+}
+
+void OutdoorTerrain::recalculateNormals() {
+    for (int y = 0; y < 128; y++) {
+        for (int x = 0; x < 128; x++) {
+            TileGeometry tile = tileGeometryByGrid({x, y});
+
+            Vec3f a2 = Vec3f(tile.x1, tile.y1, tile.z11) - Vec3f(tile.x0, tile.y1, tile.z01);
+            Vec3f a1 = Vec3f(tile.x0, tile.y0, tile.z00) - Vec3f(tile.x0, tile.y1, tile.z01);
+            Vec3f b2 = Vec3f(tile.x0, tile.y0, tile.z00) - Vec3f(tile.x1, tile.y0, tile.z10);
+            Vec3f b1 = Vec3f(tile.x1, tile.y1, tile.z11) - Vec3f(tile.x1, tile.y0, tile.z10);
+
+            // TODO(captainurist): use normalize() & retrace.
+
+            Vec3f an = cross(a2, a1);
+            float amag = an.length();
+            an /= amag;
+
+            Vec3f bn = cross(b2, b1);
+            float bmag = bn.length();
+            bn /= bmag;
+
+            assert(an.z > 0);
+            assert(bn.z > 0);
+
+            pTerrainNormals[(y * 128 + x) * 2] = bn;
+            pTerrainNormals[(y * 128 + x) * 2 + 1] = an;
+        }
+    }
 }
 
 OutdoorTerrain::TileGeometry OutdoorTerrain::tileGeometryByGrid(Vec2i gridPos) const {

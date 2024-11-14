@@ -1532,12 +1532,8 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 }
 
                 // next calculate all vertices vertices
-                unsigned norm_idx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 2 /*+ 1*/];  // 2 is top tri // 3 is bottom
-                unsigned bottnormidx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 3];
-                assert(norm_idx < pOutdoor->pTerrain.pTerrainNormals.size());
-                assert(bottnormidx < pOutdoor->pTerrain.pTerrainNormals.size());
-                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[norm_idx];
-                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[bottnormidx];
+                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[(2 * y * 128) + (2 * x)];
+                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[(2 * y * 128) + (2 * x) + 1];
 
                 // calc each vertex
                 // [0] - x,y        n1
@@ -1948,12 +1944,8 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 // splat hits this square of terrain
                 bool fading = pOutdoor->pTerrain.isWaterOrShoreByGrid({loopx, loopy});
 
-                unsigned norm_idx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
-                unsigned bottnormidx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
-                assert(norm_idx < pOutdoor->pTerrain.pTerrainNormals.size());
-                assert(bottnormidx < pOutdoor->pTerrain.pTerrainNormals.size());
-                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[norm_idx];
-                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[bottnormidx];
+                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[(2 * loopy * 128) + (2 * loopx)];
+                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[(2 * loopy * 128) + (2 * loopx) + 1];
 
                 float Light_tile_dist = 0.0;
 

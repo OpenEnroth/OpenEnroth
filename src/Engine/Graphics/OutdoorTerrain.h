@@ -70,15 +70,17 @@ class OutdoorTerrain {
     std::array<uint8_t, 128 * 128> pHeightmap = {};
     std::array<uint8_t, 128 * 128> pTilemap = {};
     std::array<uint8_t, 128 * 128> pAttributemap = {};
-    std::vector<Vec3f> pTerrainNormals;
-    std::array<uint16_t, 128 * 128 * 2> pTerrainNormalIndices;
+    std::array<Vec3f, 128 * 128 * 2> pTerrainNormals;
+
+    // TODO(captainurist): make private, also reconstruct() functions belong to the classes themselves.
+    void recalculateNormals();
 
  private:
     struct TileGeometry {
         int x0 = 0;
         int x1 = 0;
         int y0 = 0;
-        int y1 = 0;
+        int y1 = 0; // We have a retarded coordinate system, so y1 < y0, always.
         int z00 = 0;
         int z01 = 0;
         int z10 = 0;
