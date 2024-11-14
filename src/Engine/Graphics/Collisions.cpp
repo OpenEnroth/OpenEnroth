@@ -268,7 +268,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &d
  * @param model_idx                     Model index, or `MODEL_INDOOR`.
 */
 static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_ethereal, int model_idx) {
-    auto collide_once = [&](const Vec3f &old_pos, const Vec3f &new_pos, const Vec3f &dir, int radius) {
+    auto collide_once = [&](const Vec3f &old_pos, const Vec3f &new_pos, const Vec3f &dir, int radius, bool high) {
         float distance_old = face->facePlane.signedDistanceTo(old_pos);
         float distance_new = face->facePlane.signedDistanceTo(new_pos);
         if (distance_old > 0 && (distance_old <= radius || distance_new <= radius) && distance_new <= distance_old) {
@@ -293,17 +293,18 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
                     collision_state.adjusted_move_distance = move_distance;
                     collision_state.collisionPos = col_pos;
                     collision_state.pid = face_pid;
+                    collision_state.hiCollision = high;
                 }
             }
         }
     };
 
-    collide_once(collision_state.position_lo, collision_state.new_position_lo, collision_state.direction, collision_state.radius_lo);
+    collide_once(collision_state.position_lo, collision_state.new_position_lo, collision_state.direction, collision_state.radius_lo, false);
 
     if (!collision_state.check_hi)
         return;
 
-    collide_once(collision_state.position_hi, collision_state.new_position_hi, collision_state.direction, collision_state.radius_hi);
+    collide_once(collision_state.position_hi, collision_state.new_position_hi, collision_state.direction, collision_state.radius_hi, true);
 }
 
 /**
@@ -847,7 +848,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 }
 
 void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *faceId, int *faceEvent) {
-    constexpr float closestdist = 0.5f; // Closest allowed approach to collision surface - needs adjusting
+    constexpr float closestdist = 0.25f; // Closest allowed approach to collision surface - needs adjusting
 
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
@@ -962,11 +963,14 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 
             // new sliding plane
             Vec3f slidePlaneOrigin = collision_state.collisionPos;
+            // drag high collision down to low level for slide direction
+            if (collision_state.hiCollision)
+                slidePlaneOrigin -= Vec3f(0, 0, pParty->height - 2 * collision_state.radius_lo);
             Vec3f slidePlaneNormal = adjusted_pos + Vec3f(0, 0, collision_state.radius_lo) - slidePlaneOrigin;
             slidePlaneNormal.normalize();
             float destPlaneDist = dot(collision_state.new_position_lo - slidePlaneOrigin, slidePlaneNormal);
             Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
-            Vec3f newDirection = newDestination - collision_state.collisionPos;
+            Vec3f newDirection = newDestination - slidePlaneOrigin;
 
             // Cant push uphill on steep faces
             if (bFaceSlopeTooSteep && newDirection.z > 0)
@@ -1145,11 +1149,14 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
 
             // new sliding plane
             Vec3f slidePlaneOrigin = collision_state.collisionPos;
+            // drag high collision down to low level for slide direction
+            if (collision_state.hiCollision)
+                slidePlaneOrigin -= Vec3f(0, 0, pParty->height - 2 * collision_state.radius_lo);
             Vec3f slidePlaneNormal = newPosLow + Vec3f(0, 0, collision_state.radius_lo) - slidePlaneOrigin;
             slidePlaneNormal.normalize();
             float destPlaneDist = dot(collision_state.new_position_lo - slidePlaneOrigin, slidePlaneNormal);
             Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
-            Vec3f newDirection = newDestination - collision_state.collisionPos;
+            Vec3f newDirection = newDestination - slidePlaneOrigin;
 
             // Cant push uphill on steep faces
             if (bFaceSlopeTooSteep && newDirection.z > 0)
