@@ -53,7 +53,6 @@ class OutdoorTerrain {
     bool isWaterByPos(const Vec3f &pos) const;
 
     /**
-     *
      * @param pos                       World coordinates, only xy component is used by this function.
      * @return                          Terrain normal at given position. Terrain normals always point up (`z > 0`).
      * @offset 0x0046DCC8
@@ -67,16 +66,23 @@ class OutdoorTerrain {
      */
     bool isSlopeTooHighByPos(const Vec3f &pos) const;
 
-    std::array<OutdoorTileType, 4> pTileTypes;  // [3] is road tileset.
+    std::array<OutdoorTileType, 4> pTileTypes; // [3] is road tileset.
     std::array<uint8_t, 128 * 128> pHeightmap = {};
     std::array<uint8_t, 128 * 128> pTilemap = {};
     std::array<uint8_t, 128 * 128> pAttributemap = {};
     std::vector<Vec3f> pTerrainNormals;
-    std::array<unsigned short, 128 * 128 * 2> pTerrainNormalIndices;
+    std::array<uint16_t, 128 * 128 * 2> pTerrainNormalIndices;
 
  private:
     struct TileGeometry {
-        Vec3f v00, v01, v10, v11; // Four vertices of the tile, v00 is at (x0, y0), v01 at (x0, y1), etc.
+        int x0 = 0;
+        int x1 = 0;
+        int y0 = 0;
+        int y1 = 0;
+        int z00 = 0;
+        int z01 = 0;
+        int z10 = 0;
+        int z11 = 0;
     };
 
  private:

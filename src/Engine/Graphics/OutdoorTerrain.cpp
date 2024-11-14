@@ -56,20 +56,20 @@ int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
 
     TileGeometry tile = tileGeometryByGrid(gridPos);
 
-    if (tile.v00.z != tile.v10.z || tile.v10.z != tile.v11.z || tile.v11.z != tile.v01.z) {
+    if (tile.z00 != tile.z10 || tile.z10 != tile.z11 || tile.z11 != tile.z01) {
         // On a slope.
-        if (std::abs(tile.v00.y - pos.y) >= std::abs(pos.x - tile.v00.x)) {
-            originz = tile.v01.z;
-            lz = tile.v11.z;
-            rz = tile.v00.z;
-            lpos = pos.x - tile.v00.x;
-            rpos = pos.y - tile.v11.y;
+        if (std::abs(tile.y0 - pos.y) >= std::abs(pos.x - tile.x0)) {
+            originz = tile.z01;
+            lz = tile.z11;
+            rz = tile.z00;
+            lpos = pos.x - tile.x0;
+            rpos = pos.y - tile.y1;
         } else {
-            originz = tile.v10.z;
-            lz = tile.v00.z;
-            rz = tile.v11.z;
-            lpos = tile.v11.x - pos.x;
-            rpos = tile.v00.y - pos.y;
+            originz = tile.z10;
+            lz = tile.z00;
+            rz = tile.z11;
+            lpos = tile.x1 - pos.x;
+            rpos = tile.y0 - pos.y;
         }
 
         assert(lpos >= 0 && lpos < 512);
@@ -79,7 +79,7 @@ int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
         return originz + ((rpos * (rz - originz)) >> 9) + ((lpos * (lz - originz)) >> 9);
     } else {
         // On flat terrain.
-        return tile.v00.z;
+        return tile.z00;
     }
 }
 
@@ -125,22 +125,24 @@ bool OutdoorTerrain::isWaterByPos(const Vec3f &pos) const {
 Vec3f OutdoorTerrain::normalByPos(const Vec3f &pos) const {
     Vec2i gridPos = WorldPosToGrid(pos);
 
+    // TODO(captainurist): why is this not returning a normal from pTerrainNormals?
+
     TileGeometry tile = tileGeometryByGrid(gridPos);
 
     Vec3f side1, side2;
 
-    int dx = std::abs(pos.x - tile.v00.x);
-    int dy = std::abs(tile.v00.y - pos.y);
+    int dx = std::abs(pos.x - tile.x0);
+    int dy = std::abs(tile.y0 - pos.y);
     if (dy >= dx) {
-        side2 = tile.v11 - tile.v01;
-        side1 = tile.v00 - tile.v01;
+        side2 = Vec3f(tile.x1, tile.y1, tile.z11) - Vec3f(tile.x0, tile.y1, tile.z01);
+        side1 = Vec3f(tile.x0, tile.y0, tile.z00) - Vec3f(tile.x0, tile.y1, tile.z01);
         /*       |\
            side1 |  \
                  |____\
                  side 2      */
     } else {
-        side2 = tile.v00 - tile.v10;
-        side1 = tile.v11 - tile.v10;
+        side2 = Vec3f(tile.x0, tile.y0, tile.z00) - Vec3f(tile.x1, tile.y0, tile.z10);
+        side1 = Vec3f(tile.x1, tile.y1, tile.z11) - Vec3f(tile.x1, tile.y0, tile.z10);
         /*   side 2
              _____
              \    |
@@ -162,13 +164,13 @@ bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
 
     TileGeometry tile = tileGeometryByGrid(gridPos);
 
-    int dx = std::abs(pos.x - tile.v00.x), dz = std::abs(tile.v00.y - pos.y);
+    int dx = std::abs(pos.x - tile.x0), dz = std::abs(tile.y0 - pos.y);
 
     int y1, y2, y3;
     if (dz >= dx) {
-        y1 = tile.v01.z;
-        y2 = tile.v11.z;
-        y3 = tile.v00.z;
+        y1 = tile.z01;
+        y2 = tile.z11;
+        y3 = tile.z00;
         //  lower-left triangle
         //  y3 | \
         //     |   \
@@ -176,9 +178,9 @@ bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
         //     |______ \
         //  y1           y2
     } else {
-        y1 = tile.v10.z;
-        y2 = tile.v00.z;
-        y3 = tile.v11.z;
+        y1 = tile.z10;
+        y2 = tile.z00;
+        y3 = tile.z11;
 
         // upper-right
         //  y2_______ y1
@@ -194,21 +196,15 @@ bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
 }
 
 OutdoorTerrain::TileGeometry OutdoorTerrain::tileGeometryByGrid(Vec2i gridPos) const {
-    int x0 = GridCellToWorldPosX(gridPos.x);
-    int y0 = GridCellToWorldPosY(gridPos.y);
-    int x1 = GridCellToWorldPosX(gridPos.x + 1);
-    int y1 = GridCellToWorldPosY(gridPos.y + 1);
-
-    int z00 = heightByGrid(gridPos);
-    int z01 = heightByGrid(gridPos + Vec2i(0, 1));
-    int z10 = heightByGrid(gridPos + Vec2i(1, 0));
-    int z11 = heightByGrid(gridPos + Vec2i(1, 1));
-
     TileGeometry result;
-    result.v00 = Vec3f(x0, y0, z00);
-    result.v01 = Vec3f(x0, y1, z01);
-    result.v10 = Vec3f(x1, y0, z10);
-    result.v11 = Vec3f(x1, y1, z11);
+    result.x0 = GridCellToWorldPosX(gridPos.x);
+    result.y0 = GridCellToWorldPosY(gridPos.y);
+    result.x1 = GridCellToWorldPosX(gridPos.x + 1);
+    result.y1 = GridCellToWorldPosY(gridPos.y + 1);
+    result.z00 = heightByGrid(gridPos);
+    result.z01 = heightByGrid(gridPos + Vec2i(0, 1));
+    result.z10 = heightByGrid(gridPos + Vec2i(1, 0));
+    result.z11 = heightByGrid(gridPos + Vec2i(1, 1));
     return result;
 }
 
