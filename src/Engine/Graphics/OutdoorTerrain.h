@@ -40,11 +40,6 @@ class OutdoorTerrain {
     TileSet tileSetByGrid(Vec2i gridPos) const;
 
     /**
-     * @offset 0x47EE49
-     */
-    SoundId soundIdByGrid(Vec2i gridPos, bool isRunning) const;
-
-    /**
      * @param gridPos                   Grid coordinates.
      * @return                          Whether the tile at `gridPos` is a water tile. Note that shore tiles are
      *                                  different from water tiles.

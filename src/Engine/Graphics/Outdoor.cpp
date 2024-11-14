@@ -39,6 +39,7 @@
 #include "Engine/MapInfo.h"
 #include "Engine/LOD.h"
 #include "Engine/Seasons.h"
+#include "Engine/Data/TileEnumFunctions.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -1573,12 +1574,11 @@ void ODM_ProcessPartyActions() {
                     bool isModelWalk = !partyNotOnModel && pOutdoor->pBModels[modelId].pFaces[faceId].Visible();
                     SoundId sound = SOUND_Invalid;
                     if (partyIsRunning) {
-                        if (walkDelta >= 4 ) {
+                        if (walkDelta >= 4) {
                             if (isModelWalk) {
                                 sound = SOUND_RunWood;
                             } else {
-                                // Old comment: 56 is ground run
-                                sound = pOutdoor->pTerrain.soundIdByGrid(WorldPosToGrid(partyOldPosition), true);
+                                sound = walkSoundForTileSet(pOutdoor->pTerrain.tileSetByGrid(WorldPosToGrid(partyOldPosition)), true);
                             }
                         }
                     } else if (partyIsWalking) {
@@ -1586,7 +1586,7 @@ void ODM_ProcessPartyActions() {
                             if (isModelWalk) {
                                 sound = SOUND_RunWood;
                             } else {
-                                sound = pOutdoor->pTerrain.soundIdByGrid(WorldPosToGrid(partyOldPosition), false);
+                                sound = walkSoundForTileSet(pOutdoor->pTerrain.tileSetByGrid(WorldPosToGrid(partyOldPosition)), false);
                             }
                         }
                     }
