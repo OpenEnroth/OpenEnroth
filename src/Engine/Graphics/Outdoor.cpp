@@ -251,11 +251,6 @@ double OutdoorLocation::GetFogDensityByTime() {
     }
 }
 
-TileData *OutdoorLocation::getTileDescByPos(const Vec3f &pos) {
-    Vec2i gridPos = WorldPosToGrid(pos);
-    return getTileDescByGrid(gridPos.x, gridPos.y);
-}
-
 //----- (00488F5C) --------------------------------------------------------
 bool OutdoorLocation::Initialize(std::string_view filename, int days_played,
                                  int respawn_interval_days,
@@ -369,7 +364,7 @@ int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos) {
         return 2;
     }
 
-    return foodRequiredForTileSet(getTileDescByPos(pos)->tileset);
+    return foodRequiredForTileSet(pTerrain.tileSetByPos(pos));
 }
 
 //----- (00489487) --------------------------------------------------------

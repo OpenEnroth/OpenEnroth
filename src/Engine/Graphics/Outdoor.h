@@ -45,11 +45,6 @@ struct OutdoorLocation {
     double GetFogDensityByTime();
 
     /**
-     * @offset 0x488EEF
-     */
-    TileData *getTileDescByPos(const Vec3f &pos);
-
-    /**
      * @offset 0x47ED08
      */
     TileData *getTileDescByGrid(int uX, int uZ);

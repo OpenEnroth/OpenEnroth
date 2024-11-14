@@ -39,6 +39,8 @@ class OutdoorTerrain {
      */
     TileSet tileSetByGrid(Vec2i gridPos) const;
 
+    TileSet tileSetByPos(const Vec3f &pos) const;
+
     /**
      * @param gridPos                   Grid coordinates.
      * @return                          Whether the tile at `gridPos` is a water tile. Note that shore tiles are

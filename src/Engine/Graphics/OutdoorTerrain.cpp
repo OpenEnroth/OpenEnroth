@@ -106,6 +106,10 @@ TileSet OutdoorTerrain::tileSetByGrid(Vec2i gridPos) const {
     return pTileTypes[tileSetIndex].tileset;
 }
 
+TileSet OutdoorTerrain::tileSetByPos(const Vec3f &pos) const {
+    return tileSetByGrid(WorldPosToGrid(pos));
+}
+
 bool OutdoorTerrain::isWaterByGrid(Vec2i gridPos) const {
     return pTileTable->tiles[tileIdByGrid(gridPos)].uAttributes & TILE_WATER;
 }
