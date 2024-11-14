@@ -15,7 +15,8 @@ set(ENGINE_DATA_HEADERS
         IconFrameData.h
         PortraitFrameData.h
         TileData.h
-        TileEnums.h)
+        TileEnums.h
+        TileEnumFunctions.h)
 
 add_library(engine_data INTERFACE ${ENGINE_DATA_SOURCES} ${ENGINE_DATA_HEADERS})
 target_link_libraries(engine_data INTERFACE library_serialization utility)

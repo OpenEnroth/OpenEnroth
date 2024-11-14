@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Utility/Flags.h"
-#include "Utility/Segment.h"
 
 enum class TileFlag {
     TILE_BURN = 0x1,
@@ -61,10 +60,6 @@ enum class TileVariant {
     TILE_VARIANT_LAST_SPECIAL = TILE_VARIANT_SPECIAL8_NCAP,
 };
 using enum TileVariant;
-
-inline Segment<TileVariant> allSpecialTileSects() {
-    return {TILE_VARIANT_FIRST_SPECIAL, TILE_VARIANT_LAST_SPECIAL};
-}
 
 /**
  * Tile set id.

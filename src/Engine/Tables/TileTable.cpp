@@ -2,6 +2,7 @@
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Random/Random.h"
+#include "Engine/Data/TileEnumFunctions.h"
 
 TileTable *pTileTable;
 
@@ -23,7 +24,7 @@ int TileTable::tileIdForTileset(TileSet terrain_type, bool nonRandom) {
     } else if (v5 < 48) {
         return tileId(terrain_type, TILE_VARIANT_BASE4_NE);
     }
-    return tileId(terrain_type, vrng->randomSample(allSpecialTileSects()));
+    return tileId(terrain_type, vrng->randomSample(allSpecialTileVariants()));
 }
 
 //----- (00487F84) --------------------------------------------------------
