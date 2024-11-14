@@ -15,3 +15,5 @@ inline Segment<TileVariant> allSpecialTileVariants() {
  * @offset 0x47EE49
  */
 SoundId walkSoundForTileSet(TileSet tileSet, bool isRunning);
+
+int foodRequiredForTileSet(TileSet tileSet);

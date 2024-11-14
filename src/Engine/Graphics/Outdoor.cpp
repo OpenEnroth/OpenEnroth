@@ -369,20 +369,7 @@ int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos) {
         return 2;
     }
 
-    switch (getTileDescByPos(pos)->tileset) {
-        case TILE_SET_GRASS:
-            return 1;
-        case TILE_SET_SNOW:
-        case TILE_SET_SWAMP:
-            return 3;
-        case TILE_SET_COOLED_LAVA:
-        case TILE_SET_BADLANDS:
-            return 4;
-        case TILE_SET_DESERT:
-            return 5;
-        default:
-            return 2;
-    }
+    return foodRequiredForTileSet(getTileDescByPos(pos)->tileset);
 }
 
 //----- (00489487) --------------------------------------------------------

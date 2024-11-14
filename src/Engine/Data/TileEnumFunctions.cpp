@@ -48,3 +48,20 @@ SoundId walkSoundForTileSet(TileSet tileSet, bool isRunning) {
         return isRunning ? SOUND_RunGround : SOUND_WalkGround; // TODO(Nik-RE-dev): is that correct?
     }
 }
+
+int foodRequiredForTileSet(TileSet tileSet) {
+    switch (tileSet) {
+    case TILE_SET_GRASS:
+        return 1;
+    case TILE_SET_SNOW:
+    case TILE_SET_SWAMP:
+        return 3;
+    case TILE_SET_COOLED_LAVA:
+    case TILE_SET_BADLANDS:
+        return 4;
+    case TILE_SET_DESERT:
+        return 5;
+    default:
+        return 2;
+    }
+}
