@@ -285,19 +285,21 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
                                 Vis_SelectionFilter *filter) {
     RenderVertexSoft a1;
 
-    // TODO(yoctozepto): this should rather use faces rendered by BSP
-    for (int faceindex = 0; faceindex < (int)pIndoor->pFaces.size(); ++faceindex) {
-        BLVFace *face = &pIndoor->pFaces[faceindex];
-        face->uAttributes &= ~FACE_OUTLINED;
+    // clear the debug attribute
+    for (auto &face : pIndoor->pFaces) {
+        face.uAttributes &= ~FACE_OUTLINED;
+    }
+
+    for (int i = 0; i < pBspRenderer->num_faces; ++i) {
+        int faceId = pBspRenderer->faces[i].uFaceID;
+        BLVFace *face = &pIndoor->pFaces[faceId];
 
         if (isFacePartOfSelection(nullptr, face, filter)) {
-            if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
-                if (Intersect_Ray_Face(rayOrigin, rayStep, &a1, face, 0xFFFFFFFFu)) {
-                    pCamera3D->ViewTransform(&a1, 1);
-                    list->AddObject(VisObjectType_Face, a1.vWorldViewPosition.x, Pid(OBJECT_Face, faceindex));
-                    if (engine->config->debug.ShowPickedFace.value())
-                        face->uAttributes |= FACE_OUTLINED;
-                }
+            if (Intersect_Ray_Face(rayOrigin, rayStep, &a1, face, 0xFFFFFFFFu)) {
+                pCamera3D->ViewTransform(&a1, 1);
+                list->AddObject(VisObjectType_Face, a1.vWorldViewPosition.x, Pid(OBJECT_Face, faceId));
+                if (engine->config->debug.ShowPickedFace.value())
+                    face->uAttributes |= FACE_OUTLINED;
             }
         }
     }
@@ -895,12 +897,10 @@ void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vi
     for (int i = 0; i < pBspRenderer->num_faces; ++i) {
         int pFaceID = pBspRenderer->faces[i].uFaceID;
         BLVFace *pFace = &pIndoor->pFaces[pFaceID];
-        if (pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
-            if (isFacePartOfSelection(nullptr, pFace, filter)) {
-                Vis_ObjectInfo *v8 = DetermineFacetIntersection(pFace, Pid(OBJECT_Face, pFaceID), pick_depth);
-                if (v8)
-                    list->AddObject(v8->object_type, v8->depth, v8->object_pid);
-            }
+        if (isFacePartOfSelection(nullptr, pFace, filter)) {
+            Vis_ObjectInfo *v8 = DetermineFacetIntersection(pFace, Pid(OBJECT_Face, pFaceID), pick_depth);
+            if (v8)
+                list->AddObject(v8->object_type, v8->depth, v8->object_pid);
         }
     }
 }

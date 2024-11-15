@@ -27,7 +27,8 @@ struct BspFace {
 
 struct BspRenderer {
  public:
-    void Init();
+    void Clear();
+    void Render();
 
     // TODO(yoctozepto): hide these
     unsigned int num_faces = 0;
