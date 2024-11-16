@@ -11,8 +11,11 @@ struct TileData;
 struct OutdoorLocation_MM7;
 
 /**
+ * A note on grid coordinates. In grid coordinates Y-axis points south (down on the minimap), X-axis points east (right
+ * on the minimap), `(0, 0)` is NW (top-left) corner of the map.
+ *
  * @param gridPos                       Grid coordinates.
- * @return                              World coordinates of the grid's corner. XXX
+ * @return                              World coordinates of the grid cell's NW (top-left on the minimap) corner.
  * @offset 0x0047F469, 0x0047F476
  */
 inline Vec2i gridToWorld(Pointi gridPos) {
@@ -20,6 +23,9 @@ inline Vec2i gridToWorld(Pointi gridPos) {
 }
 
 /**
+ * A note on world coordinates. Y-axis points north (up on the minimap), X-axis points east (right on the minimap),
+ * `(0, 0)` is in the center of the map.
+ *
  * @param worldPos                      Position in world coordinates.
  * @return                              Grid cell coordinates that `worldPos` is in.
  * @offset 0x0047F44B, 0x0047F458
