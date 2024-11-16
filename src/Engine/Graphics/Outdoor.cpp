@@ -548,15 +548,9 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     }
 
     this->sky_texture = assets->getBitmap(loc_time.sky_texture_name);
-}
-
-TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
-    int tileId = pTerrain.tileIdByGrid(Vec2i(sX, sY));
 
     if (engine->config->graphics.SeasonsChange.value())
-        tileId = tileIdForSeason(tileId, pParty->uCurrentMonth);
-
-    return &pTileTable->tiles[tileId];
+        pOutdoor->pTerrain.changeSeason(pParty->uCurrentMonth);
 }
 
 //----- (0047EF60) --------------------------------------------------------

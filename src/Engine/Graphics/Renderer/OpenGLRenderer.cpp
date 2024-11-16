@@ -1455,8 +1455,6 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     // generate array and populate data
     if (terrainVAO == 0) {
         static RenderVertexSoft pTerrainVertices[128 * 128];
-        int blockScale = 512;
-        int heightScale = 32;
 
         // generate vertex locations
         for (int y = 0; y < 128; ++y)
@@ -1478,24 +1476,24 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 // map is 127 x 127 squares - each square has two triangles - each tri has 3 verts
 
                 // first find all required textures for terrain and add to map
-                auto tile = pOutdoor->getTileDescByGrid(x, y);
+                const auto &tile = pOutdoor->pTerrain.tileDataByGrid({x, y});
                 int tileunit = 0;
                 int tilelayer = 0;
 
                 // check if tile->name is already in list
-                auto mapiter = terraintexmap.find(tile->name);
+                auto mapiter = terraintexmap.find(tile.name);
                 if (mapiter != terraintexmap.end()) {
                     // if so, extract unit and layer
                     int unitlayer = mapiter->second;
                     tilelayer = unitlayer & 0xFF;
                     tileunit = (unitlayer & 0xFF00) >> 8;
-                } else if (tile->name == "wtrtyl") {
+                } else if (tile.name == "wtrtyl") {
                     // water tile
                     tileunit = 0;
                     tilelayer = 0;
                 } else {
                     // else need to add it
-                    auto thistexture = assets->getBitmap(tile->name);
+                    auto thistexture = assets->getBitmap(tile.name);
                     int width = thistexture->width();
                     // check size to see what unit it needs
                     int i;
@@ -1517,7 +1515,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                         if (numterraintexloaded[i] < 256) {
                             // intsert into tex map
-                            terraintexmap.insert(std::make_pair(tile->name, encode));
+                            terraintexmap.insert(std::make_pair(tile.name, encode));
                             numterraintexloaded[i]++;
                         } else {
                             logger->warning("Texture layer full - draw terrain!");

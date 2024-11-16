@@ -6,6 +6,7 @@
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Snapshots/CompositeSnapshots.h"
 #include "Engine/Snapshots/EntitySnapshots.h"
+#include "Engine/Seasons.h"
 
 #include "Library/Snapshots/CommonSnapshots.h"
 
@@ -40,6 +41,7 @@ OutdoorTerrain::OutdoorTerrain() {
     // Map is 127x127 squares.
     _heightMap = Image<uint8_t>::solid(128, 128, 0);
     _tileMap = Image<int16_t>::solid(127, 127, 0);
+    _originalTileMap = Image<int16_t>::solid(127, 127, 0);
     _normalMap = Image<std::array<Vec3f, 2>>::solid(127, 127, {Vec3f(0, 0, 1), Vec3f(0, 0, 1)});
 }
 
@@ -54,6 +56,13 @@ void OutdoorTerrain::createDebugTerrain() {
     _tilesets[1] = TILESET_WATER;
     _tilesets[2] = TILESET_BADLANDS;
     _tilesets[3] = TILESET_ROAD_GRASS_COBBLE;
+}
+
+void OutdoorTerrain::changeSeason(int month) {
+    assert(month >= 0 && month <= 11);
+    std::ranges::transform(_originalTileMap.pixels(), _tileMap.pixels().begin(), [&] (int tileId) {
+        return tileIdForSeason(tileId, month);
+    });
 }
 
 int OutdoorTerrain::heightByGrid(Pointi gridPos) const {
@@ -113,6 +122,10 @@ int OutdoorTerrain::tileIdByGrid(Pointi gridPos) const {
         return 0;
 
     return _tileMap[gridPos];
+}
+
+const TileData &OutdoorTerrain::tileDataByGrid(Pointi gridPos) const {
+    return pTileTable->tiles[tileIdByGrid(gridPos)];
 }
 
 Tileset OutdoorTerrain::tilesetByGrid(Pointi gridPos) const {
@@ -209,7 +222,8 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
 
     for (int y = 0; y < 127; y++)
         for (int x = 0; x < 127; x++)
-            dst->_tileMap[y][x] = mapToGlobalTileId(baseTileIds, src.tileMap[y * 128 + x]);
+            dst->_originalTileMap[y][x] = mapToGlobalTileId(baseTileIds, src.tileMap[y * 128 + x]);
+    dst->_tileMap = Image<int16_t>::copy(dst->_originalTileMap);
 
     dst->recalculateNormals();
 }

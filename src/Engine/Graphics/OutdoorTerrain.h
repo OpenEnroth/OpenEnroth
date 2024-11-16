@@ -7,6 +7,7 @@
 
 #include "Engine/Data/TileEnums.h"
 
+struct TileData;
 struct OutdoorLocation_MM7;
 
 /**
@@ -47,6 +48,8 @@ class OutdoorTerrain {
 
     void createDebugTerrain();
 
+    void changeSeason(int month);
+
     /**
      * @param gridPos                   Grid coordinates.
      * @return                          Terrain height at `gridPos`.
@@ -71,6 +74,13 @@ class OutdoorTerrain {
      * @return                          Tile id at `gridPos` that can then be used to get tile data from `TileTable`.
      */
     [[nodiscard]] int tileIdByGrid(Pointi gridPos) const;
+
+    /**
+     * @param gridPos                   Grid coordinates.
+     * @return                          Tile data from the global tile table for the tile at `gridPos`.
+     * @offset 0x47ED08
+     */
+    [[nodiscard]] const TileData &tileDataByGrid(Pointi gridPos) const;
 
     /**
      * @param gridPos                   Grid coordinates.
@@ -128,5 +138,6 @@ class OutdoorTerrain {
     std::array<Tileset, 4> _tilesets; // Tileset ids used in this location, [3] is road tileset.
     Image<uint8_t> _heightMap; // Height map, to get actual height multiply by 32.
     Image<int16_t> _tileMap; // Tile id map, indices into the global tile table.
+    Image<int16_t> _originalTileMap; // Same as above, but w/o seasonal changes.
     Image<std::array<Vec3f, 2>> _normalMap; // Terrain normal map, two normals per tile for two triangles.
 };

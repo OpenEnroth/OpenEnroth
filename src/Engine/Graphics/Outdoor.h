@@ -44,10 +44,6 @@ struct OutdoorLocation {
     bool InitalizeActors(MapId a1);
     double GetFogDensityByTime();
 
-    /**
-     * @offset 0x47ED08
-     */
-    TileData *getTileDescByGrid(int uX, int uZ);
     bool Initialize(std::string_view filename, int days_played,
                     int respawn_interval_days,
                     bool * outdoors_was_respawned);

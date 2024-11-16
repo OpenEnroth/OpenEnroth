@@ -164,6 +164,16 @@ class Image : public detail::ImageBase<T, std::unique_ptr<T, FreeDeleter>> {
         return result;
     }
 
+    /**
+     * Creates a copy of another image.
+     *
+     * @param other                     Image to copy.
+     * @return                          Newly allocated `Image` containing a copy of `other`.
+     */
+    static Image copy(const Image &other) {
+        return copy(other.width(), other.height(), other.pixels().data());
+    }
+
     // The rest is inherited from ImageBase.
 };
 
