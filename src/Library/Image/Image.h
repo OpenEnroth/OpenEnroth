@@ -73,6 +73,10 @@ class ImageBase {
         _pixels.reset();
     }
 
+    void fill(const T &color) {
+        std::fill_n(pixels().data(), pixels().size(), color);
+    }
+
  protected: // Directly accessible from derived classes.
     ssize_t _width = 0;
     ssize_t _height = 0;

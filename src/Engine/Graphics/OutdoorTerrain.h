@@ -3,6 +3,7 @@
 #include <array>
 
 #include "Library/Geometry/Vec.h"
+#include "Library/Image/Image.h"
 
 #include "Engine/Data/TileEnums.h"
 
@@ -15,7 +16,9 @@ struct OutdoorTileType {
 
 class OutdoorTerrain {
  public:
-    bool ZeroLandscape();
+    OutdoorTerrain();
+
+    void ZeroLandscape();
     void CreateDebugTerrain();
 
     int heightByGrid(Vec2i gridPos) const;
@@ -65,10 +68,9 @@ class OutdoorTerrain {
     bool isSlopeTooHighByPos(const Vec3f &pos) const;
 
     std::array<OutdoorTileType, 4> pTileTypes; // [3] is road tileset.
-    std::array<uint8_t, 128 * 128> pHeightmap = {};
-    std::array<uint8_t, 128 * 128> pTilemap = {}; // TODO(captainurist): place TILEIDS here on load!
-    std::array<uint8_t, 128 * 128> pAttributemap = {};
-    std::array<Vec3f, 128 * 128 * 2> pTerrainNormals;
+    Image<uint8_t> pHeightmap;
+    Image<uint8_t> pTilemap; // TODO(captainurist): place TILEIDS here on load!
+    Image<std::array<Vec3f, 2>> pTerrainNormals;
 
     friend void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst);
 

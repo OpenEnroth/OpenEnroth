@@ -11,12 +11,17 @@
 
 #include "Outdoor.h"
 
+OutdoorTerrain::OutdoorTerrain() {
+    pHeightmap = Image<uint8_t>::solid(128, 128, 0);
+    pTilemap = Image<uint8_t>::solid(128, 128, 0);
+    pTerrainNormals = Image<std::array<Vec3f, 2>>::solid(128, 128, {});
+}
+
 //----- (0047CCE2) --------------------------------------------------------
-bool OutdoorTerrain::ZeroLandscape() {
-    this->pHeightmap.fill(0);
-    this->pTilemap.fill(90);
-    this->pAttributemap.fill(0);
-    return true;
+void OutdoorTerrain::ZeroLandscape() {
+    pHeightmap.fill(0);
+    pTilemap.fill(90);
+    pTerrainNormals.fill({Vec3f(0, 0, 1), Vec3f(0, 0, 1)});
 }
 
 void OutdoorTerrain::CreateDebugTerrain() {
@@ -34,7 +39,7 @@ int OutdoorTerrain::heightByGrid(Vec2i gridPos) const {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return 0;
 
-    return 32 * pHeightmap[gridPos.y * 128 + gridPos.x];
+    return 32 * pHeightmap[gridPos.y][gridPos.x];
 }
 
 int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
@@ -86,14 +91,14 @@ int OutdoorTerrain::tileIdByGrid(Vec2i gridPos) const {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return 0;
 
-    return mapToGlobalTileId(pTilemap[gridPos.y * 128 + gridPos.x]);
+    return mapToGlobalTileId(pTilemap[gridPos.y][gridPos.x]);
 }
 
 TileSet OutdoorTerrain::tileSetByGrid(Vec2i gridPos) const {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return TILE_SET_INVALID;
 
-    int localTileId = pTilemap[gridPos.y * 128 + gridPos.x];
+    int localTileId = pTilemap[gridPos.y][gridPos.x];
 
     if (localTileId >= 1 && localTileId <= 12)
         return TILE_SET_DIRT; // See comment in mapToGlobalTileId.
@@ -134,9 +139,9 @@ Vec3f OutdoorTerrain::normalByPos(const Vec3f &pos) const {
     assert(dy >= 0);
 
     if (dy >= dx) {
-        return pTerrainNormals[(gridPos.y * 128 + gridPos.x) * 2 + 1];
+        return pTerrainNormals[gridPos.y][gridPos.x][1];
     } else {
-        return pTerrainNormals[(gridPos.y * 128 + gridPos.x) * 2];
+        return pTerrainNormals[gridPos.y][gridPos.x][0];
     }
 }
 
@@ -180,9 +185,13 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
     reconstruct(src.tileTypes, &dst->pTileTypes);
     dst->LoadBaseTileIds();
 
-    reconstruct(src.heightMap, &dst->pHeightmap);
-    reconstruct(src.tileMap, &dst->pTilemap);
-    reconstruct(src.attributeMap, &dst->pAttributemap);
+    for (int y = 0; y < 128; y++) {
+        for (int x = 0; x < 128; x++) {
+            dst->pHeightmap[y][x] = src.heightMap[y * 128 + x];
+            dst->pTilemap[y][x] = src.tileMap[y * 128 + x];
+        }
+    }
+
     dst->recalculateNormals();
 }
 
@@ -215,8 +224,8 @@ void OutdoorTerrain::recalculateNormals() {
             assert(an.z > 0);
             assert(bn.z > 0);
 
-            pTerrainNormals[(y * 128 + x) * 2] = bn;
-            pTerrainNormals[(y * 128 + x) * 2 + 1] = an;
+            pTerrainNormals[y][x][0] = bn;
+            pTerrainNormals[y][x][1] = an;
         }
     }
 }

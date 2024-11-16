@@ -1463,7 +1463,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
             for (unsigned int x = 0; x < 128; ++x) {
                 pTerrainVertices[y * 128 + x].vWorldPosition.x = (-64.0f + x) * blockScale;
                 pTerrainVertices[y * 128 + x].vWorldPosition.y = (64.0f - y) * blockScale;
-                pTerrainVertices[y * 128 + x].vWorldPosition.z = heightScale * pOutdoor->pTerrain.pHeightmap[y * 128 + x];
+                pTerrainVertices[y * 128 + x].vWorldPosition.z = heightScale * pOutdoor->pTerrain.pHeightmap[y][x];
             }
         }
 
@@ -1532,8 +1532,8 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 }
 
                 // next calculate all vertices vertices
-                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[(2 * y * 128) + (2 * x)];
-                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[(2 * y * 128) + (2 * x) + 1];
+                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[y][x][0];
+                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[y][x][1];
 
                 // calc each vertex
                 // [0] - x,y        n1
@@ -1944,8 +1944,8 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 // splat hits this square of terrain
                 bool fading = pOutdoor->pTerrain.isWaterOrShoreByGrid({loopx, loopy});
 
-                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[(2 * loopy * 128) + (2 * loopx)];
-                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[(2 * loopy * 128) + (2 * loopx) + 1];
+                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[loopy][loopx][0];
+                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[loopy][loopx][1];
 
                 float Light_tile_dist = 0.0;
 
