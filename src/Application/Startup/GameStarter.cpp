@@ -183,6 +183,9 @@ void GameStarter::initWithLogger() {
 GameStarter::~GameStarter() {
     _application->removeComponent<EngineControlComponent>(); // Join the control thread first.
 
+    _game.reset();
+    _engine.reset();
+
     ::engine = nullptr;
     ::render = nullptr;
     ::application = nullptr;

@@ -29,6 +29,7 @@ struct DMap {
 
 struct OutdoorLocation {
     OutdoorLocation();
+    ~OutdoorLocation();
     // int New_SKY_NIGHT_ID;
     void ExecDraw(unsigned int bRedraw);
     void PrepareActorsDrawList();

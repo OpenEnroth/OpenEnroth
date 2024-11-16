@@ -4,6 +4,7 @@
 #include <climits>
 #include <string>
 #include <utility>
+#include <concepts>
 
 #include "Library/Serialization/Serialization.h"
 
@@ -13,7 +14,8 @@
 
 template <class T>
 class ConfigEntry : public AnyConfigEntry {
- public:
+    using base_type = AnyConfigEntry;
+ public: // NOLINT: why are you complaining?
     ConfigEntry(const ConfigEntry &other) = delete; // non-copyable
     ConfigEntry(ConfigEntry &&other) = delete; // non-movable
 
@@ -64,6 +66,15 @@ class ConfigEntry : public AnyConfigEntry {
         decrement();
         if (value() == oldValue)
             setValue(INT_MAX);
+    }
+
+    using base_type::addListener;
+
+    template<std::invocable<T> Listener>
+    void addListener(void *ctx, Listener listener) {
+        addListener(ctx, [this, listener = std::move(listener)] {
+            listener(value());
+        });
     }
 
  private:

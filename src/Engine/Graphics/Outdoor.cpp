@@ -986,6 +986,15 @@ OutdoorLocation::OutdoorLocation() {
     this->sky_texture = nullptr;
 
     uLastSunlightUpdateMinute = 0;
+
+    engine->config->graphics.SeasonsChange.addListener(this, [this](bool seasonsChange) {
+        pTerrain.changeSeason(seasonsChange ? pParty->uCurrentMonth : 6);
+        render->ReleaseTerrain();
+    });
+}
+
+OutdoorLocation::~OutdoorLocation() {
+    engine->config->graphics.SeasonsChange.removeListeners(this);
 }
 
 // TODO(pskelton): Magic numbers

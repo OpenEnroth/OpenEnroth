@@ -4,6 +4,7 @@
 #include <functional>
 #include <any>
 #include <vector>
+#include <utility>
 
 #include "ConfigFwd.h"
 
@@ -51,6 +52,14 @@ class AnyConfigEntry {
         return _description;
     }
 
+    void addListener(void *ctx, std::function<void()> listener) {
+        _listeners.emplace_back(ctx, std::move(listener));
+    }
+
+    void removeListeners(void *ctx) {
+        std::erase_if(_listeners, [ctx] (const auto &pair) { return pair.first == ctx;});
+    }
+
  protected:
     Validator validator() const {
         return _validator;
@@ -64,4 +73,5 @@ class AnyConfigEntry {
     std::any _defaultValue;
     std::any _value;
     Validator _validator = nullptr;
+    std::vector<std::pair<void *, std::function<void()>>> _listeners;
 };
