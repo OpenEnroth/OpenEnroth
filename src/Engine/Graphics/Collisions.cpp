@@ -744,7 +744,7 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
             break;
 
         CollideOutdoorWithModels(true);
-        CollideOutdoorWithDecorations(WorldPosToGrid(actor.pos));
+        CollideOutdoorWithDecorations(worldToGrid(actor.pos));
         CollideWithParty(false);
         _46ED8A_collide_against_sprite_objects(Pid(OBJECT_Actor, actor.id));
 
@@ -1023,7 +1023,7 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
         }
 
         CollideOutdoorWithModels(true);
-        CollideOutdoorWithDecorations(WorldPosToGrid(pParty->pos));
+        CollideOutdoorWithDecorations(worldToGrid(pParty->pos));
         _46ED8A_collide_against_sprite_objects(Pid::character(0));
         if (!engine->config->gameplay.NoPartyActorCollisions.value()) {
             for (size_t actor_id = 0; actor_id < pActors.size(); ++actor_id)

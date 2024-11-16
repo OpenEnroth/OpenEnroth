@@ -9,15 +9,43 @@
 
 struct OutdoorLocation_MM7;
 
-int GridCellToWorldPosX(int);
-int GridCellToWorldPosY(int);
-Pointi WorldPosToGrid(Vec3f worldPos);
+/**
+ * @param gridPos                       Grid coordinates.
+ * @return                              World coordinates of the grid's corner. XXX
+ * @offset 0x0047F469, 0x0047F476
+ */
+inline Vec2i gridToWorld(Pointi gridPos) {
+    return {(gridPos.x - 64) << 9, (64 - gridPos.y) << 9};
+}
 
+/**
+ * @param worldPos                      Position in world coordinates.
+ * @return                              Grid cell coordinates that `worldPos` is in.
+ * @offset 0x0047F44B, 0x0047F458
+ */
+inline Pointi worldToGrid(const Vec3f &worldPos) {
+    int worldX = worldPos.x;
+    int worldY = worldPos.y;
+
+    // sar is in original exe, resulting -880 / 512 = -1 and -880 sar 9 = -2.
+    int gridX = (worldX >> 9) + 64;
+    int gridY = 63 - (worldY >> 9);
+    return Pointi(gridX, gridY);
+}
+
+/**
+ * Terrain for outdoor location.
+ *
+ * Contains geometry & tile data, and provides some convenience methods for accessing it.
+ *
+ * All methods do bounds checking, so this class effectively presents a view into a location that's infinite in size.
+ * Methods ending with `-Unsafe` don't do bounds checking.
+ */
 class OutdoorTerrain {
  public:
     OutdoorTerrain();
 
-    void CreateDebugTerrain();
+    void createDebugTerrain();
 
     /**
      * @param gridPos                   Grid coordinates.
@@ -34,7 +62,8 @@ class OutdoorTerrain {
     int heightByPos(const Vec3f &pos) const;
 
     Vec3i vertexByGridUnsafe(Pointi gridPos) const {
-        return Vec3i(GridCellToWorldPosX(gridPos.x), GridCellToWorldPosY(gridPos.y), 32 * pHeightmap[gridPos]);
+        Vec2i tmp = gridToWorld(gridPos);
+        return Vec3i(tmp.x, tmp.y, 32 * _heightMap[gridPos]);
     }
 
     /**
@@ -70,7 +99,7 @@ class OutdoorTerrain {
     Vec3f normalByPos(const Vec3f &pos) const;
 
     const std::array<Vec3f, 2> &normalsByGridUnsafe(Pointi gridPos) const {
-        return pTerrainNormals[gridPos];
+        return _normalMap[gridPos];
     }
 
     /**
@@ -84,10 +113,8 @@ class OutdoorTerrain {
 
  private:
     struct TileGeometry {
-        int x0 = 0;
-        int x1 = 0;
-        int y0 = 0;
-        int y1 = 0; // We have a retarded coordinate system, so y1 < y0, always.
+        Vec2i v0;
+        Vec2i v1; // We have a retarded coordinate system, so v1.y < v0.y, always.
         int z00 = 0;
         int z01 = 0;
         int z10 = 0;
@@ -98,8 +125,8 @@ class OutdoorTerrain {
     TileGeometry tileGeometryByGrid(Pointi gridPos) const;
 
  private:
-    std::array<Tileset, 4> pTileTypes; // Tileset ids used in this location, [3] is road tileset.
-    Image<uint8_t> pHeightmap; // Height map, to get actual height multiply by 32.
-    Image<int16_t> pTilemap; // Tile id map, indices into the global tile table.
-    Image<std::array<Vec3f, 2>> pTerrainNormals; // Terrain normal map, two normals per tile for two triangles.
+    std::array<Tileset, 4> _tilesets; // Tileset ids used in this location, [3] is road tileset.
+    Image<uint8_t> _heightMap; // Height map, to get actual height multiply by 32.
+    Image<int16_t> _tileMap; // Tile id map, indices into the global tile table.
+    Image<std::array<Vec3f, 2>> _normalMap; // Terrain normal map, two normals per tile for two triangles.
 };

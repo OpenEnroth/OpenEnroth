@@ -36,49 +36,31 @@ static bool contains(const Image &image, Pointi point) {
     return point.x >= 0 && point.x < image.width() && point.y >= 0 && point.y <= image.height();
 }
 
-//----- (0047F44B) --------------------------------------------------------
-//----- (0047F458) --------------------------------------------------------
-Pointi WorldPosToGrid(Vec3f worldPos) {
-    int worldX = worldPos.x;
-    int worldY = worldPos.y;
-
-    // sar is in original exe, resulting -880 / 512 = -1 and -880 sar 9 = -2.
-    int gridX = (worldX >> 9) + 64;
-    int gridY = 63 - (worldY >> 9);
-    return Pointi(gridX, gridY);
-}
-
-//----- (0047F469) --------------------------------------------------------
-int GridCellToWorldPosX(int a1) { return (a1 - 64) << 9; }
-
-//----- (0047F476) --------------------------------------------------------
-int GridCellToWorldPosY(int a1) { return (64 - a1) << 9; }
-
 OutdoorTerrain::OutdoorTerrain() {
     // Map is 127x127 squares.
-    pHeightmap = Image<uint8_t>::solid(128, 128, 0);
-    pTilemap = Image<int16_t>::solid(127, 127, 0);
-    pTerrainNormals = Image<std::array<Vec3f, 2>>::solid(127, 127, {Vec3f(0, 0, 1), Vec3f(0, 0, 1)});
+    _heightMap = Image<uint8_t>::solid(128, 128, 0);
+    _tileMap = Image<int16_t>::solid(127, 127, 0);
+    _normalMap = Image<std::array<Vec3f, 2>>::solid(127, 127, {Vec3f(0, 0, 1), Vec3f(0, 0, 1)});
 }
 
-void OutdoorTerrain::CreateDebugTerrain() {
+void OutdoorTerrain::createDebugTerrain() {
     int tileId = pTileTable->tileId(TILESET_GRASS, TILE_VARIANT_BASE1);
 
-    pHeightmap.fill(0);
-    pTilemap.fill(tileId);
-    pTerrainNormals.fill({Vec3f(0, 0, 1), Vec3f(0, 0, 1)});
+    _heightMap.fill(0);
+    _tileMap.fill(tileId);
+    _normalMap.fill({Vec3f(0, 0, 1), Vec3f(0, 0, 1)});
 
-    pTileTypes[0] = TILESET_GRASS;
-    pTileTypes[1] = TILESET_WATER;
-    pTileTypes[2] = TILESET_BADLANDS;
-    pTileTypes[3] = TILESET_ROAD_GRASS_COBBLE;
+    _tilesets[0] = TILESET_GRASS;
+    _tilesets[1] = TILESET_WATER;
+    _tilesets[2] = TILESET_BADLANDS;
+    _tilesets[3] = TILESET_ROAD_GRASS_COBBLE;
 }
 
 int OutdoorTerrain::heightByGrid(Pointi gridPos) const {
-    if (!contains(pHeightmap, gridPos))
+    if (!contains(_heightMap, gridPos))
         return 0;
 
-    return 32 * pHeightmap[gridPos];
+    return 32 * _heightMap[gridPos];
 }
 
 int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
@@ -95,24 +77,24 @@ int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
     //                     party would be jerked up upon coming ashore, and this just looks ugly. Find a way to
     //                     reimplement this properly.
 
-    Pointi gridPos = WorldPosToGrid(pos);
+    Pointi gridPos = worldToGrid(pos);
 
     TileGeometry tile = tileGeometryByGrid(gridPos);
 
     if (tile.z00 != tile.z10 || tile.z10 != tile.z11 || tile.z11 != tile.z01) {
         // On a slope.
-        if (std::abs(tile.y0 - pos.y) >= std::abs(pos.x - tile.x0)) {
+        if (std::abs(tile.v0.y - pos.y) >= std::abs(pos.x - tile.v0.x)) {
             originz = tile.z01;
             lz = tile.z11;
             rz = tile.z00;
-            lpos = pos.x - tile.x0;
-            rpos = pos.y - tile.y1;
+            lpos = pos.x - tile.v0.x;
+            rpos = pos.y - tile.v1.y;
         } else {
             originz = tile.z10;
             lz = tile.z00;
             rz = tile.z11;
-            lpos = tile.x1 - pos.x;
-            rpos = tile.y0 - pos.y;
+            lpos = tile.v1.x - pos.x;
+            rpos = tile.v0.y - pos.y;
         }
 
         //assert(lpos >= 0 && lpos < 512); // TODO(captainurist): fails in rare cases b/c not all of our code is in floats
@@ -127,21 +109,21 @@ int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
 }
 
 int OutdoorTerrain::tileIdByGrid(Pointi gridPos) const {
-    if (!contains(pTilemap, gridPos))
+    if (!contains(_tileMap, gridPos))
         return 0;
 
-    return pTilemap[gridPos];
+    return _tileMap[gridPos];
 }
 
 Tileset OutdoorTerrain::tilesetByGrid(Pointi gridPos) const {
-    if (!contains(pTilemap, gridPos))
+    if (!contains(_tileMap, gridPos))
         return TILESET_INVALID;
 
-    return pTileTable->tiles[pTilemap[gridPos]].tileset;
+    return pTileTable->tiles[_tileMap[gridPos]].tileset;
 }
 
 Tileset OutdoorTerrain::tilesetByPos(const Vec3f &pos) const {
-    return tilesetByGrid(WorldPosToGrid(pos));
+    return tilesetByGrid(worldToGrid(pos));
 }
 
 bool OutdoorTerrain::isWaterByGrid(Pointi gridPos) const {
@@ -149,7 +131,7 @@ bool OutdoorTerrain::isWaterByGrid(Pointi gridPos) const {
 }
 
 bool OutdoorTerrain::isWaterByPos(const Vec3f &pos) const {
-    return isWaterByGrid(WorldPosToGrid(pos));
+    return isWaterByGrid(worldToGrid(pos));
 }
 
 bool OutdoorTerrain::isWaterOrShoreByGrid(Pointi gridPos) const {
@@ -157,33 +139,31 @@ bool OutdoorTerrain::isWaterOrShoreByGrid(Pointi gridPos) const {
 }
 
 Vec3f OutdoorTerrain::normalByPos(const Vec3f &pos) const {
-    Pointi gridPos = WorldPosToGrid(pos);
-    if (!contains(pTerrainNormals, gridPos))
+    Pointi gridPos = worldToGrid(pos);
+    if (!contains(_normalMap, gridPos))
         return Vec3f(0, 0, 1);
 
-    int x0 = GridCellToWorldPosX(gridPos.x);
-    int y0 = GridCellToWorldPosY(gridPos.y);
-
-    int dx = pos.x - x0;
-    int dy = y0 - pos.y;
+    Vec2i o = gridToWorld(gridPos);
+    int dx = pos.x - o.x;
+    int dy = o.y - pos.y;
 
     assert(dx >= 0);
     assert(dy >= 0);
 
     if (dy >= dx) {
-        return pTerrainNormals[gridPos][1];
+        return _normalMap[gridPos][1];
     } else {
-        return pTerrainNormals[gridPos][0];
+        return _normalMap[gridPos][0];
     }
 }
 
 bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
-    Pointi gridPos = WorldPosToGrid(pos);
+    Pointi gridPos = worldToGrid(pos);
 
     TileGeometry tile = tileGeometryByGrid(gridPos);
 
-    int dx = pos.x - tile.x0;
-    int dy = tile.y0 - pos.y;
+    int dx = pos.x - tile.v0.x;
+    int dy = tile.v0.y - pos.y;
 
     assert(dx >= 0);
     assert(dy >= 0);
@@ -219,30 +199,30 @@ bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
 void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
     std::array<int, 4> baseTileIds;
     for (int i = 0; i < 4; i++) {
-        dst->pTileTypes[i] = static_cast<Tileset>(src.tileTypes[i].tileset);
-        baseTileIds[i] = pTileTable->tileId(dst->pTileTypes[i], TILE_VARIANT_BASE1);
+        dst->_tilesets[i] = static_cast<Tileset>(src.tileTypes[i].tileset);
+        baseTileIds[i] = pTileTable->tileId(dst->_tilesets[i], TILE_VARIANT_BASE1);
     }
 
     for (int y = 0; y < 128; y++)
         for (int x = 0; x < 128; x++)
-            dst->pHeightmap[y][x] = src.heightMap[y * 128 + x];
+            dst->_heightMap[y][x] = src.heightMap[y * 128 + x];
 
     for (int y = 0; y < 127; y++)
         for (int x = 0; x < 127; x++)
-            dst->pTilemap[y][x] = mapToGlobalTileId(baseTileIds, src.tileMap[y * 128 + x]);
+            dst->_tileMap[y][x] = mapToGlobalTileId(baseTileIds, src.tileMap[y * 128 + x]);
 
     dst->recalculateNormals();
 }
 
 void OutdoorTerrain::recalculateNormals() {
-    for (int y = 0; y < pTerrainNormals.height(); y++) {
-        for (int x = 0; x < pTerrainNormals.width(); x++) {
+    for (int y = 0; y < _normalMap.height(); y++) {
+        for (int x = 0; x < _normalMap.width(); x++) {
             TileGeometry tile = tileGeometryByGrid({x, y});
 
-            Vec3f a2 = Vec3f(tile.x1, tile.y1, tile.z11) - Vec3f(tile.x0, tile.y1, tile.z01);
-            Vec3f a1 = Vec3f(tile.x0, tile.y0, tile.z00) - Vec3f(tile.x0, tile.y1, tile.z01);
-            Vec3f b2 = Vec3f(tile.x0, tile.y0, tile.z00) - Vec3f(tile.x1, tile.y0, tile.z10);
-            Vec3f b1 = Vec3f(tile.x1, tile.y1, tile.z11) - Vec3f(tile.x1, tile.y0, tile.z10);
+            Vec3f a2 = Vec3f(tile.v1.x, tile.v1.y, tile.z11) - Vec3f(tile.v0.x, tile.v1.y, tile.z01);
+            Vec3f a1 = Vec3f(tile.v0.x, tile.v0.y, tile.z00) - Vec3f(tile.v0.x, tile.v1.y, tile.z01);
+            Vec3f b2 = Vec3f(tile.v0.x, tile.v0.y, tile.z00) - Vec3f(tile.v1.x, tile.v0.y, tile.z10);
+            Vec3f b1 = Vec3f(tile.v1.x, tile.v1.y, tile.z11) - Vec3f(tile.v1.x, tile.v0.y, tile.z10);
 
             // TODO(captainurist): use normalize() & retrace.
 
@@ -257,18 +237,16 @@ void OutdoorTerrain::recalculateNormals() {
             assert(an.z > 0);
             assert(bn.z > 0);
 
-            pTerrainNormals[y][x][0] = bn;
-            pTerrainNormals[y][x][1] = an;
+            _normalMap[y][x][0] = bn;
+            _normalMap[y][x][1] = an;
         }
     }
 }
 
 OutdoorTerrain::TileGeometry OutdoorTerrain::tileGeometryByGrid(Pointi gridPos) const {
     TileGeometry result;
-    result.x0 = GridCellToWorldPosX(gridPos.x);
-    result.y0 = GridCellToWorldPosY(gridPos.y);
-    result.x1 = GridCellToWorldPosX(gridPos.x + 1);
-    result.y1 = GridCellToWorldPosY(gridPos.y + 1);
+    result.v0 = gridToWorld(gridPos);
+    result.v1 = gridToWorld(gridPos + Pointi(1, 1));
     result.z00 = heightByGrid(gridPos);
     result.z01 = heightByGrid(gridPos + Pointi(0, 1));
     result.z10 = heightByGrid(gridPos + Pointi(1, 0));

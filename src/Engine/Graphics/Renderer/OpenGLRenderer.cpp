@@ -1879,7 +1879,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     // loop over blood to lay
     for (unsigned i = 0; i < NumBloodsplats; ++i) {
         // approx location of bloodsplat
-        Vec2i gridPos = WorldPosToGrid(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos);
+        Vec2i gridPos = worldToGrid(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos);
         // use terrain squares in block surrounding to try and stack faces
 
         int scope = std::ceil(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].radius / 512);

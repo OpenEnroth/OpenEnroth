@@ -190,7 +190,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     engine->StackPartyTorchLight();
 
     // engine->PrepareBloodsplats(); // not used?
-    UpdateDiscoveredArea(WorldPosToGrid(pParty->pos));
+    UpdateDiscoveredArea(worldToGrid(pParty->pos));
 
     uNumDecorationsDrawnThisFrame = 0;
     uNumSpritesDrawnThisFrame = 0;
@@ -413,7 +413,7 @@ void OutdoorLocation::CreateDebugLocation() {
     this->location_filename = "i6.odm";
     this->location_file_description = "MM6 Outdoor v1.00";
 
-    this->pTerrain.CreateDebugTerrain();
+    this->pTerrain.createDebugTerrain();
     this->pSpawnPoints.clear();
 
     this->pOMAP.fill(0);
@@ -1411,8 +1411,8 @@ void ODM_ProcessPartyActions() {
         pParty->setAirborne(true);
 
     Vec3f partyOldPosition = pParty->pos;
-    Vec2i partyOldGridPos = WorldPosToGrid(pParty->pos);
-    Vec2i partyNewGridPos = WorldPosToGrid(partyNewPos);
+    Vec2i partyOldGridPos = worldToGrid(pParty->pos);
+    Vec2i partyNewGridPos = worldToGrid(partyNewPos);
 
     // this gets if tile is not water
     bool partyCurrentOnLand = !pOutdoor->pTerrain.isWaterByGrid(partyOldGridPos);
@@ -1798,17 +1798,16 @@ void UpdateActors_ODM() {
             if (!uIsFlying && !tile1IsLand && !uIsAboveFloor && Actor_On_Terrain) {
                 // on water and shouldnt be
                 bool tileTestLand = false;  // reset land found
-                Vec2i gridPos = WorldPosToGrid(pActors[Actor_ITR].pos);
+                Vec2i gridPos = worldToGrid(pActors[Actor_ITR].pos);
                 for (int i = gridPos.x - 1; i <= gridPos.x + 1; i++) {
                     // scan surrounding cells for land
                     for (int j = gridPos.y - 1; j <= gridPos.y + 1; j++) {
                         tileTestLand = !pOutdoor->pTerrain.isWaterByGrid({i, j});
                         if (tileTestLand) {  // found land
-                            int target_x = GridCellToWorldPosX(i);
-                            int target_y = GridCellToWorldPosY(j);
+                            Vec2i target = gridToWorld({i, j});
                             if (pActors[Actor_ITR].CanAct()) {  // head to land
-                                pActors[Actor_ITR].yawAngle = TrigLUT.atan2(target_x - pActors[Actor_ITR].pos.x,
-                                                                             target_y - pActors[Actor_ITR].pos.y);
+                                pActors[Actor_ITR].yawAngle = TrigLUT.atan2(target.x - pActors[Actor_ITR].pos.x,
+                                                                             target.y - pActors[Actor_ITR].pos.y);
                                 pActors[Actor_ITR].currentActionTime = 0_ticks;
                                 pActors[Actor_ITR].currentActionLength = 128_ticks;
                                 pActors[Actor_ITR].aiState = Fleeing;
