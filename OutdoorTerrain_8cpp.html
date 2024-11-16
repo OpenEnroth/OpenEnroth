@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;17627ec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;92be04a</span>
    </div>
   </td>
  </tr>
@@ -73,14 +73,135 @@ $(function() {
 </div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">OutdoorTerrain.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="OutdoorTerrain_8h.html">OutdoorTerrain.h</a>&quot;</code><br />
+<code>#include &lt;cassert&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &quot;<a class="el" href="TileTable_8h.html">Engine/Tables/TileTable.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="CompositeSnapshots_8h.html">Engine/Snapshots/CompositeSnapshots.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EntitySnapshots_8h.html">Engine/Snapshots/EntitySnapshots.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Seasons_8h.html">Engine/Seasons.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="CommonSnapshots_8h.html">Library/Snapshots/CommonSnapshots.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Outdoor_8h.html">Outdoor.h</a>&quot;</code><br />
-</div></div><!-- contents -->
+</div><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a5b8bc317be7889b73fd883dea7efcb99"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OutdoorTerrain_8cpp.html#a5b8bc317be7889b73fd883dea7efcb99">mapToGlobalTileId</a> (const std::array&lt; int, 4 &gt; &amp;baseIds, int localTileId)</td></tr>
+<tr class="separator:a5b8bc317be7889b73fd883dea7efcb99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa82501c8bd58b0b54056b51d54847dd6"><td class="memTemplParams" colspan="2">template&lt;class <a class="el" href="classImage.html">Image</a> &gt; </td></tr>
+<tr class="memitem:aa82501c8bd58b0b54056b51d54847dd6"><td class="memTemplItemLeft" align="right" valign="top">static bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="OutdoorTerrain_8cpp.html#aa82501c8bd58b0b54056b51d54847dd6">contains</a> (const <a class="el" href="classImage.html">Image</a> &amp;image, <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> point)</td></tr>
+<tr class="separator:aa82501c8bd58b0b54056b51d54847dd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac95aa490a84c051de3c875ab132c92c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OutdoorTerrain_8cpp.html#ac95aa490a84c051de3c875ab132c92c7">reconstruct</a> (const <a class="el" href="structOutdoorLocation__MM7.html">OutdoorLocation_MM7</a> &amp;src, <a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a> *dst)</td></tr>
+<tr class="separator:ac95aa490a84c051de3c875ab132c92c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="aa82501c8bd58b0b54056b51d54847dd6" name="aa82501c8bd58b0b54056b51d54847dd6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa82501c8bd58b0b54056b51d54847dd6">&#9670;&#160;</a></span>contains()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class <a class="el" href="classImage.html">Image</a> &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool contains </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classImage.html">Image</a> &amp;&#160;</td>
+          <td class="paramname"><em>image</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>point</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5b8bc317be7889b73fd883dea7efcb99" name="a5b8bc317be7889b73fd883dea7efcb99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b8bc317be7889b73fd883dea7efcb99">&#9670;&#160;</a></span>mapToGlobalTileId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int mapToGlobalTileId </td>
+          <td>(</td>
+          <td class="paramtype">const std::array&lt; int, 4 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>baseIds</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>localTileId</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac95aa490a84c051de3c875ab132c92c7" name="ac95aa490a84c051de3c875ab132c92c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac95aa490a84c051de3c875ab132c92c7">&#9670;&#160;</a></span>reconstruct()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void reconstruct </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structOutdoorLocation__MM7.html">OutdoorLocation_MM7</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a> *&#160;</td>
+          <td class="paramname"><em>dst</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5

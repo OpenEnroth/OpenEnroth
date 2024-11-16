@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;17627ec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;92be04a</span>
    </div>
   </td>
  </tr>
@@ -74,25 +74,101 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">OutdoorTerrain.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;array&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
-<code>#include &quot;<a class="el" href="Vec_8h.html">Library/Geometry/Vec.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Point_8h.html">Library/Geometry/Point.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Library_2Image_2Image_8h.html">Library/Image/Image.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="TileEnums_8h.html">Engine/Data/TileEnums.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="SoundEnums_8h.html">Media/Audio/SoundEnums.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorTileType.html">OutdoorTileType</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorTileGeometry.html">OutdoorTileGeometry</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorTerrain_1_1TileGeometry.html">OutdoorTerrain::TileGeometry</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a57676f20e975653be69c58873a2752b7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OutdoorTerrain_8h.html#a57676f20e975653be69c58873a2752b7">gridToWorld</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> gridPos)</td></tr>
+<tr class="separator:a57676f20e975653be69c58873a2752b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7537c3d48525a31121698706e6a67a37"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OutdoorTerrain_8h.html#a7537c3d48525a31121698706e6a67a37">worldToGrid</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;worldPos)</td></tr>
+<tr class="separator:a7537c3d48525a31121698706e6a67a37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a57676f20e975653be69c58873a2752b7" name="a57676f20e975653be69c58873a2752b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57676f20e975653be69c58873a2752b7">&#9670;&#160;</a></span>gridToWorld()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> gridToWorld </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>gridPos</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >A note on grid coordinates. In grid coordinates Y-axis points south (down on the minimap), X-axis points east (right on the minimap), <code>(0, 0)</code> is NW (top-left) corner of the map.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gridPos</td><td>Grid coordinates. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>World coordinates of the grid cell's NW (top-left on the minimap) corner. </dd></dl>
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x0047F469, 0x0047F476 </dd></dl>
+
+</div>
+</div>
+<a id="a7537c3d48525a31121698706e6a67a37" name="a7537c3d48525a31121698706e6a67a37"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7537c3d48525a31121698706e6a67a37">&#9670;&#160;</a></span>worldToGrid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> worldToGrid </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;&#160;</td>
+          <td class="paramname"><em>worldPos</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >A note on world coordinates. Y-axis points north (up on the minimap), X-axis points east (right on the minimap), <code>(0, 0)</code> is in the center of the map.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">worldPos</td><td>Position in world coordinates. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Grid cell coordinates that <code>worldPos</code> is in. </dd></dl>
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x0047F44B, 0x0047F458 </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

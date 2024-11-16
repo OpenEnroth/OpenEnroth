@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;17627ec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;92be04a</span>
    </div>
   </td>
  </tr>
@@ -118,6 +118,8 @@ $(function() {
 <code>#include &quot;<a class="el" href="BspRenderer_8h.html">Engine/Graphics/BspRenderer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="MapInfo_8h.html">Engine/MapInfo.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LOD_8h.html">Engine/LOD.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Seasons_8h.html">Engine/Seasons.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="TileEnumFunctions_8h.html">Engine/Data/TileEnumFunctions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIProgressBar_8h.html">GUI/GUIProgressBar.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIRest_8h.html">GUI/UI/UIRest.h</a>&quot;</code><br />
@@ -157,12 +159,6 @@ Functions</h2></td></tr>
 <tr class="separator:afc756df02d61405f6513cdd2468c414e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c9f6d6642c296d444cbc41b254575b0"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8cpp.html#a5c9f6d6642c296d444cbc41b254575b0">sub_47C3D7_get_fog_specular</a> (int unused, int isSky, float screen_depth)</td></tr>
 <tr class="separator:a5c9f6d6642c296d444cbc41b254575b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b0e417839e3b8378a18e9a3ce73d00d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8cpp.html#a1b0e417839e3b8378a18e9a3ce73d00d">WorldPosToGrid</a> (<a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> worldPos)</td></tr>
-<tr class="separator:a1b0e417839e3b8378a18e9a3ce73d00d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acdffafa1ce95f97ed4a56f48002db29a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8cpp.html#acdffafa1ce95f97ed4a56f48002db29a">GridCellToWorldPosX</a> (int a1)</td></tr>
-<tr class="separator:acdffafa1ce95f97ed4a56f48002db29a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bfd4d4772829c50ee081de6631156ba"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8cpp.html#a7bfd4d4772829c50ee081de6631156ba">GridCellToWorldPosY</a> (int a1)</td></tr>
-<tr class="separator:a7bfd4d4772829c50ee081de6631156ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab77e6eeddb252822cbab29444d66a41c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Outdoor_8cpp.html#ab77e6eeddb252822cbab29444d66a41c">TeleportToStartingPoint</a> (<a class="el" href="MapEnums_8h.html#adad43ef8fbf56e2a3bc00fd08cca312f">MapStartPoint</a> point)</td></tr>
 <tr class="separator:ab77e6eeddb252822cbab29444d66a41c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -240,42 +236,6 @@ Variables</h2></td></tr>
           <td class="memname"><a class="el" href="structColor.html">Color</a> GetLevelFogColor </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="acdffafa1ce95f97ed4a56f48002db29a" name="acdffafa1ce95f97ed4a56f48002db29a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acdffafa1ce95f97ed4a56f48002db29a">&#9670;&#160;</a></span>GridCellToWorldPosX()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int GridCellToWorldPosX </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>a1</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7bfd4d4772829c50ee081de6631156ba" name="a7bfd4d4772829c50ee081de6631156ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7bfd4d4772829c50ee081de6631156ba">&#9670;&#160;</a></span>GridCellToWorldPosY()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int GridCellToWorldPosY </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>a1</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -486,24 +446,6 @@ Variables</h2></td></tr>
           <td class="memname">void UpdateActors_ODM </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a1b0e417839e3b8378a18e9a3ce73d00d" name="a1b0e417839e3b8378a18e9a3ce73d00d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1b0e417839e3b8378a18e9a3ce73d00d">&#9670;&#160;</a></span>WorldPosToGrid()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> WorldPosToGrid </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>&#160;</td>
-          <td class="paramname"><em>worldPos</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

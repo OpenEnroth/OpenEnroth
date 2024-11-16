@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;17627ec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;92be04a</span>
    </div>
   </td>
  </tr>
@@ -132,6 +132,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a28f61aea2ce029473ba8d478f097174b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab655e36b55e8995f2fd7214f584ca158"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnyConfigEntry.html#ab655e36b55e8995f2fd7214f584ca158">description</a> () const</td></tr>
 <tr class="separator:ab655e36b55e8995f2fd7214f584ca158"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afadff93725d9fc9b5d024324e43d304e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnyConfigEntry.html#afadff93725d9fc9b5d024324e43d304e">addListener</a> (void *ctx, std::function&lt; void()&gt; listener)</td></tr>
+<tr class="separator:afadff93725d9fc9b5d024324e43d304e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3eb19ef0e7eb0e138192c103f7c53ef6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnyConfigEntry.html#a3eb19ef0e7eb0e138192c103f7c53ef6">removeListeners</a> (void *ctx)</td></tr>
+<tr class="separator:a3eb19ef0e7eb0e138192c103f7c53ef6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -154,6 +158,8 @@ Private Attributes</h2></td></tr>
 <tr class="separator:a3d414ceef0f599b6e01b1de92a1445fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c29c0c1013210467a7db179d8d998b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAnyConfigEntry.html#a4d5a189adaecdb5828bdf4e8cee4414d">Validator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnyConfigEntry.html#a6c29c0c1013210467a7db179d8d998b9">_validator</a> = nullptr</td></tr>
 <tr class="separator:a6c29c0c1013210467a7db179d8d998b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a859a2e9b4e51fc29ddbb730f0b4cd7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; void *, std::function&lt; void()&gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnyConfigEntry.html#a1a859a2e9b4e51fc29ddbb730f0b4cd7">_listeners</a></td></tr>
+<tr class="separator:a1a859a2e9b4e51fc29ddbb730f0b4cd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a4d5a189adaecdb5828bdf4e8cee4414d" name="a4d5a189adaecdb5828bdf4e8cee4414d"></a>
@@ -249,6 +255,42 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="afadff93725d9fc9b5d024324e43d304e" name="afadff93725d9fc9b5d024324e43d304e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afadff93725d9fc9b5d024324e43d304e">&#9670;&#160;</a></span>addListener()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AnyConfigEntry::addListener </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; void()&gt;&#160;</td>
+          <td class="paramname"><em>listener</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a73356288cb4c8d1ff4eda0c8e737ce65" name="a73356288cb4c8d1ff4eda0c8e737ce65"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a73356288cb4c8d1ff4eda0c8e737ce65">&#9670;&#160;</a></span>defaultString()</h2>
 
@@ -330,6 +372,32 @@ Private Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3eb19ef0e7eb0e138192c103f7c53ef6" name="a3eb19ef0e7eb0e138192c103f7c53ef6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3eb19ef0e7eb0e138192c103f7c53ef6">&#9670;&#160;</a></span>removeListeners()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AnyConfigEntry::removeListeners </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>ctx</em></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
@@ -575,6 +643,28 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classAnyHandler.html">AnyHandler</a>* AnyConfigEntry::_handler = nullptr</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1a859a2e9b4e51fc29ddbb730f0b4cd7" name="a1a859a2e9b4e51fc29ddbb730f0b4cd7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a859a2e9b4e51fc29ddbb730f0b4cd7">&#9670;&#160;</a></span>_listeners</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::pair&lt;void *, std::function&lt;void()&gt; &gt; &gt; AnyConfigEntry::_listeners</td>
         </tr>
       </table>
   </td>

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;17627ec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;92be04a</span>
    </div>
   </td>
  </tr>
@@ -90,6 +90,8 @@ Inheritance diagram for detail::ImageBase&lt; T, Storage &gt;:</div>
   <map id="detail::ImageBase_3C_20T_2C_20Storage_20_3E_map" name="detail::ImageBase_3C_20T_2C_20Storage_20_3E_map">
 <area href="classImage.html" alt="Image&lt; Color &gt;" shape="rect" coords="0,56,193,80"/>
 <area href="classImage.html" alt="Image&lt; uint8_t &gt;" shape="rect" coords="203,56,396,80"/>
+<area href="classImage.html" alt="Image&lt; int16_t &gt;" shape="rect" coords="406,56,599,80"/>
+<area href="classImage.html" alt="Image&lt; std::array&lt; Vec3, 2 &gt; &gt;" shape="rect" coords="609,56,802,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -109,10 +111,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aac9e104b0bb8438adbfba4f206d691e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83a11fcecd846ac60134010816201cb7"><td class="memItemLeft" align="right" valign="top">std::span&lt; const T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1ImageBase.html#a83a11fcecd846ac60134010816201cb7">operator[]</a> (ssize_t y) const</td></tr>
 <tr class="separator:a83a11fcecd846ac60134010816201cb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a35f80d78c6d136e9505edc7318efdd2b"><td class="memItemLeft" align="right" valign="top">T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1ImageBase.html#a35f80d78c6d136e9505edc7318efdd2b">operator[]</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> point)</td></tr>
+<tr class="separator:a35f80d78c6d136e9505edc7318efdd2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9aa93a9cc1cf3ae62761471652b028b2"><td class="memItemLeft" align="right" valign="top">const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1ImageBase.html#a9aa93a9cc1cf3ae62761471652b028b2">operator[]</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> point) const</td></tr>
+<tr class="separator:a9aa93a9cc1cf3ae62761471652b028b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17fabb2763be04b13b8a29fddef40862"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1ImageBase.html#a17fabb2763be04b13b8a29fddef40862">operator bool</a> () const</td></tr>
 <tr class="separator:a17fabb2763be04b13b8a29fddef40862"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48bb48adf1e09e2ac1ab481b70e99925"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1ImageBase.html#a48bb48adf1e09e2ac1ab481b70e99925">reset</a> ()</td></tr>
 <tr class="separator:a48bb48adf1e09e2ac1ab481b70e99925"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2450b6088200d7a70af396a1c9b37a2a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classdetail_1_1ImageBase.html#a2450b6088200d7a70af396a1c9b37a2a">fill</a> (const T &amp;color)</td></tr>
+<tr class="separator:a2450b6088200d7a70af396a1c9b37a2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -124,6 +132,34 @@ Protected Attributes</h2></td></tr>
 <tr class="separator:a9ae2999dd0735b2a64fe03647aac8b9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a2450b6088200d7a70af396a1c9b37a2a" name="a2450b6088200d7a70af396a1c9b37a2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2450b6088200d7a70af396a1c9b37a2a">&#9670;&#160;</a></span>fill()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T , class Storage &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classdetail_1_1ImageBase.html">detail::ImageBase</a>&lt; T, Storage &gt;::fill </td>
+          <td>(</td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>color</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a01dead01a94343849bde7815bebccad4" name="a01dead01a94343849bde7815bebccad4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a01dead01a94343849bde7815bebccad4">&#9670;&#160;</a></span>height()</h2>
 
@@ -178,8 +214,64 @@ template&lt;class T , class Storage &gt; </div>
 
 </div>
 </div>
+<a id="a35f80d78c6d136e9505edc7318efdd2b" name="a35f80d78c6d136e9505edc7318efdd2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a35f80d78c6d136e9505edc7318efdd2b">&#9670;&#160;</a></span>operator[]() <span class="overload">[1/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T , class Storage &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T &amp; <a class="el" href="classdetail_1_1ImageBase.html">detail::ImageBase</a>&lt; T, Storage &gt;::operator[] </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>point</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9aa93a9cc1cf3ae62761471652b028b2" name="a9aa93a9cc1cf3ae62761471652b028b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9aa93a9cc1cf3ae62761471652b028b2">&#9670;&#160;</a></span>operator[]() <span class="overload">[2/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T , class Storage &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const T &amp; <a class="el" href="classdetail_1_1ImageBase.html">detail::ImageBase</a>&lt; T, Storage &gt;::operator[] </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>point</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aac9e104b0bb8438adbfba4f206d691e0" name="aac9e104b0bb8438adbfba4f206d691e0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aac9e104b0bb8438adbfba4f206d691e0">&#9670;&#160;</a></span>operator[]() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aac9e104b0bb8438adbfba4f206d691e0">&#9670;&#160;</a></span>operator[]() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -207,7 +299,7 @@ template&lt;class T , class Storage &gt; </div>
 </div>
 </div>
 <a id="a83a11fcecd846ac60134010816201cb7" name="a83a11fcecd846ac60134010816201cb7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a83a11fcecd846ac60134010816201cb7">&#9670;&#160;</a></span>operator[]() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a83a11fcecd846ac60134010816201cb7">&#9670;&#160;</a></span>operator[]() <span class="overload">[4/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

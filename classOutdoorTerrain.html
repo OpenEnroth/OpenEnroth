@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;17627ec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;92be04a</span>
    </div>
   </td>
  </tr>
@@ -70,9 +70,11 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classOutdoorTerrain-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">OutdoorTerrain Class Reference</div></div>
 </div><!--header-->
@@ -80,66 +82,84 @@ $(function() {
 
 <p><code>#include &lt;OutdoorTerrain.h&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOutdoorTerrain_1_1TileGeometry.html">TileGeometry</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad863d416520e3b46bb203c9dddeaf142"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#ad863d416520e3b46bb203c9dddeaf142">ZeroLandscape</a> ()</td></tr>
-<tr class="separator:ad863d416520e3b46bb203c9dddeaf142"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7855e5cb4925c10807977ec11f08478d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a7855e5cb4925c10807977ec11f08478d">LoadBaseTileIds</a> ()</td></tr>
-<tr class="separator:a7855e5cb4925c10807977ec11f08478d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b29aa09d9e1afb47177000551d9a59c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a8b29aa09d9e1afb47177000551d9a59c">CreateDebugTerrain</a> ()</td></tr>
-<tr class="separator:a8b29aa09d9e1afb47177000551d9a59c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad2865b106a90e424c770689dc5bb6999"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#ad2865b106a90e424c770689dc5bb6999">heightByGrid</a> (<a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> gridPos)</td></tr>
-<tr class="separator:ad2865b106a90e424c770689dc5bb6999"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0927fbc5b372f29793368fd63226ada3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a0927fbc5b372f29793368fd63226ada3">heightByPos</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;pos)</td></tr>
-<tr class="separator:a0927fbc5b372f29793368fd63226ada3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ee050f7e71c90675e68927fd1bb5d3f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a6ee050f7e71c90675e68927fd1bb5d3f">tileIdByGrid</a> (<a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> gridPos) const</td></tr>
-<tr class="separator:a6ee050f7e71c90675e68927fd1bb5d3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab84d661cc2a8d48374808529d774e717"><td class="memItemLeft" align="right" valign="top"><a class="el" href="TileEnums_8h.html#a6f6116001463ca6b36775defb5606ee5">TileSet</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#ab84d661cc2a8d48374808529d774e717">tileSetByGrid</a> (<a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> gridPos) const</td></tr>
-<tr class="separator:ab84d661cc2a8d48374808529d774e717"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bd4026ce3de626c470a3faa9550ddb0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a7bd4026ce3de626c470a3faa9550ddb0">soundIdByGrid</a> (<a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> gridPos, bool isRunning) const</td></tr>
-<tr class="separator:a7bd4026ce3de626c470a3faa9550ddb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a01bda0797f76437b45c21a0259e01c5f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a01bda0797f76437b45c21a0259e01c5f">isWaterByGrid</a> (<a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> gridPos) const</td></tr>
-<tr class="separator:a01bda0797f76437b45c21a0259e01c5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca5c69fdc83df42e8007c3bc863f70a3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#aca5c69fdc83df42e8007c3bc863f70a3">isWaterOrShoreByGrid</a> (<a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> gridPos) const</td></tr>
-<tr class="separator:aca5c69fdc83df42e8007c3bc863f70a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee38e16b3ce8612ba58040392704bf5e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#aee38e16b3ce8612ba58040392704bf5e">OutdoorTerrain</a> ()</td></tr>
+<tr class="separator:aee38e16b3ce8612ba58040392704bf5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae452be2e2491d9898015b4c9ad584263"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#ae452be2e2491d9898015b4c9ad584263">createDebugTerrain</a> ()</td></tr>
+<tr class="separator:ae452be2e2491d9898015b4c9ad584263"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af33486cf6f925e3980b6547283a8575f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#af33486cf6f925e3980b6547283a8575f">changeSeason</a> (int month)</td></tr>
+<tr class="separator:af33486cf6f925e3980b6547283a8575f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9c6a7e3945ae82568803f820eb726ce"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#ac9c6a7e3945ae82568803f820eb726ce">heightByGrid</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> gridPos) const</td></tr>
+<tr class="separator:ac9c6a7e3945ae82568803f820eb726ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36f9b58a2f7b796bed097e00b9e15ff2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a36f9b58a2f7b796bed097e00b9e15ff2">heightByPos</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;pos) const</td></tr>
+<tr class="separator:a36f9b58a2f7b796bed097e00b9e15ff2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa4b3e40ea46d416a37cfa28c60ab065a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#aa4b3e40ea46d416a37cfa28c60ab065a">vertexByGridUnsafe</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> gridPos) const</td></tr>
+<tr class="separator:aa4b3e40ea46d416a37cfa28c60ab065a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07394224e1ebc70be7952fcfbe0ec14c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a07394224e1ebc70be7952fcfbe0ec14c">tileIdByGrid</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> gridPos) const</td></tr>
+<tr class="separator:a07394224e1ebc70be7952fcfbe0ec14c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a25ad184f8567ea57f126ac4df542bb"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structTileData.html">TileData</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a9a25ad184f8567ea57f126ac4df542bb">tileDataByGrid</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> gridPos) const</td></tr>
+<tr class="separator:a9a25ad184f8567ea57f126ac4df542bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66d290e879b988d6c0fc3a1284fb1f3c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a66d290e879b988d6c0fc3a1284fb1f3c">tilesetByGrid</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> gridPos) const</td></tr>
+<tr class="separator:a66d290e879b988d6c0fc3a1284fb1f3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d3afe2c77444790db18db9675cd029b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a9d3afe2c77444790db18db9675cd029b">tilesetByPos</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;pos) const</td></tr>
+<tr class="separator:a9d3afe2c77444790db18db9675cd029b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a487bef0793d20842c0fe332fb6a2c0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a8a487bef0793d20842c0fe332fb6a2c0">isWaterByGrid</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> gridPos) const</td></tr>
+<tr class="separator:a8a487bef0793d20842c0fe332fb6a2c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb97228ce61ed1bbe82042f09b2f0704"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#adb97228ce61ed1bbe82042f09b2f0704">isWaterByPos</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;pos) const</td></tr>
 <tr class="separator:adb97228ce61ed1bbe82042f09b2f0704"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae6e4d1e3b444abcb52f91b5d1e4e5a3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#aae6e4d1e3b444abcb52f91b5d1e4e5a3">isWaterOrShoreByGrid</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> gridPos) const</td></tr>
+<tr class="separator:aae6e4d1e3b444abcb52f91b5d1e4e5a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e561f8a6cada19d35d671abf03b1326"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a8e561f8a6cada19d35d671abf03b1326">normalByPos</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;pos) const</td></tr>
 <tr class="separator:a8e561f8a6cada19d35d671abf03b1326"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab187b63fcd05bd71b9c3f1d297452c3f"><td class="memItemLeft" align="right" valign="top">const std::array&lt; <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>, 2 &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#ab187b63fcd05bd71b9c3f1d297452c3f">normalsByGridUnsafe</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> gridPos) const</td></tr>
+<tr class="separator:ab187b63fcd05bd71b9c3f1d297452c3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33e445fdb7035926c2faee789a0319b3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a33e445fdb7035926c2faee789a0319b3">isSlopeTooHighByPos</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;pos) const</td></tr>
 <tr class="separator:a33e445fdb7035926c2faee789a0319b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af66e54cbf88490b6fc53c40a66a8113e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structOutdoorTileGeometry.html">OutdoorTileGeometry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#af66e54cbf88490b6fc53c40a66a8113e">tileGeometryByGrid</a> (<a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> gridPos) const</td></tr>
-<tr class="separator:af66e54cbf88490b6fc53c40a66a8113e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:ab53979e779ed97eae72464c239d403f2"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structOutdoorTileType.html">OutdoorTileType</a>, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#ab53979e779ed97eae72464c239d403f2">pTileTypes</a></td></tr>
-<tr class="separator:ab53979e779ed97eae72464c239d403f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62bc7849971d022a31dcceaeb4e12c52"><td class="memItemLeft" align="right" valign="top">std::array&lt; uint8_t, 128 *128 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a62bc7849971d022a31dcceaeb4e12c52">pHeightmap</a> = {}</td></tr>
-<tr class="separator:a62bc7849971d022a31dcceaeb4e12c52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a522ded1aa1e38e9fa8c234bf00c4d6fb"><td class="memItemLeft" align="right" valign="top">std::array&lt; uint8_t, 128 *128 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a522ded1aa1e38e9fa8c234bf00c4d6fb">pTilemap</a> = {}</td></tr>
-<tr class="separator:a522ded1aa1e38e9fa8c234bf00c4d6fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a38390f77a630ecce9c3f206e75e83736"><td class="memItemLeft" align="right" valign="top">std::array&lt; uint8_t, 128 *128 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a38390f77a630ecce9c3f206e75e83736">pAttributemap</a> = {}</td></tr>
-<tr class="separator:a38390f77a630ecce9c3f206e75e83736"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4213bc7be1f56ecf40f632e99ff97eb4"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a4213bc7be1f56ecf40f632e99ff97eb4">pTerrainNormals</a></td></tr>
-<tr class="separator:a4213bc7be1f56ecf40f632e99ff97eb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af93a6b6ad7d653f8058349dc7a76d91f"><td class="memItemLeft" align="right" valign="top">std::array&lt; unsigned short, 128 *128 *2 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#af93a6b6ad7d653f8058349dc7a76d91f">pTerrainNormalIndices</a></td></tr>
-<tr class="separator:af93a6b6ad7d653f8058349dc7a76d91f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
-<tr class="memitem:a89ff43d584e9f982e0385a72039800db"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a89ff43d584e9f982e0385a72039800db">mapToGlobalTileId</a> (int localTileId) const</td></tr>
-<tr class="separator:a89ff43d584e9f982e0385a72039800db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0ccabadb67366ba5ba9f32094fb9a3b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#ab0ccabadb67366ba5ba9f32094fb9a3b">recalculateNormals</a> ()</td></tr>
+<tr class="separator:ab0ccabadb67366ba5ba9f32094fb9a3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf3d427151589ce1fcdc5c22a301f7be"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structOutdoorTerrain_1_1TileGeometry.html">TileGeometry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#adf3d427151589ce1fcdc5c22a301f7be">tileGeometryByGrid</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> gridPos) const</td></tr>
+<tr class="separator:adf3d427151589ce1fcdc5c22a301f7be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a5d32bb9c29d22a5a0ce9af5079a34d05"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a>, 4 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a5d32bb9c29d22a5a0ce9af5079a34d05">_tilesets</a></td></tr>
+<tr class="separator:a5d32bb9c29d22a5a0ce9af5079a34d05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56a6f1e57e2c47e6c68a187ffff86e99"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classImage.html">Image</a>&lt; uint8_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a56a6f1e57e2c47e6c68a187ffff86e99">_heightMap</a></td></tr>
+<tr class="separator:a56a6f1e57e2c47e6c68a187ffff86e99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a764cc2ce1922e9ff28236364bfdc6236"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classImage.html">Image</a>&lt; int16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a764cc2ce1922e9ff28236364bfdc6236">_tileMap</a></td></tr>
+<tr class="separator:a764cc2ce1922e9ff28236364bfdc6236"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87629d386df93480049c390e08639fdb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classImage.html">Image</a>&lt; int16_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a87629d386df93480049c390e08639fdb">_originalTileMap</a></td></tr>
+<tr class="separator:a87629d386df93480049c390e08639fdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06c17f682eea7f2106ca282a6af90cca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classImage.html">Image</a>&lt; std::array&lt; <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>, 2 &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#a06c17f682eea7f2106ca282a6af90cca">_normalMap</a></td></tr>
+<tr class="separator:a06c17f682eea7f2106ca282a6af90cca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:ac95aa490a84c051de3c875ab132c92c7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classOutdoorTerrain.html#ac95aa490a84c051de3c875ab132c92c7">reconstruct</a> (const <a class="el" href="structOutdoorLocation__MM7.html">OutdoorLocation_MM7</a> &amp;src, <a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a> *dst)</td></tr>
+<tr class="separator:ac95aa490a84c051de3c875ab132c92c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a8b29aa09d9e1afb47177000551d9a59c" name="a8b29aa09d9e1afb47177000551d9a59c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8b29aa09d9e1afb47177000551d9a59c">&#9670;&#160;</a></span>CreateDebugTerrain()</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Terrain for outdoor location.</p>
+<p >Contains geometry &amp; tile data, and provides some convenience methods for accessing it.</p>
+<p >All methods do bounds checking, so this class effectively presents a view into a location that's infinite in size. Methods ending with <code>-Unsafe</code> don't do bounds checking. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="aee38e16b3ce8612ba58040392704bf5e" name="aee38e16b3ce8612ba58040392704bf5e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee38e16b3ce8612ba58040392704bf5e">&#9670;&#160;</a></span>OutdoorTerrain()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void OutdoorTerrain::CreateDebugTerrain </td>
+          <td class="memname">OutdoorTerrain::OutdoorTerrain </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -149,17 +169,18 @@ Private Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ad2865b106a90e424c770689dc5bb6999" name="ad2865b106a90e424c770689dc5bb6999"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad2865b106a90e424c770689dc5bb6999">&#9670;&#160;</a></span>heightByGrid()</h2>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="af33486cf6f925e3980b6547283a8575f" name="af33486cf6f925e3980b6547283a8575f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af33486cf6f925e3980b6547283a8575f">&#9670;&#160;</a></span>changeSeason()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int OutdoorTerrain::heightByGrid </td>
+          <td class="memname">void OutdoorTerrain::changeSeason </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a>&#160;</td>
-          <td class="paramname"><em>gridPos</em></td><td>)</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>month</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -167,8 +188,51 @@ Private Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a0927fbc5b372f29793368fd63226ada3" name="a0927fbc5b372f29793368fd63226ada3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0927fbc5b372f29793368fd63226ada3">&#9670;&#160;</a></span>heightByPos()</h2>
+<a id="ae452be2e2491d9898015b4c9ad584263" name="ae452be2e2491d9898015b4c9ad584263"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae452be2e2491d9898015b4c9ad584263">&#9670;&#160;</a></span>createDebugTerrain()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void OutdoorTerrain::createDebugTerrain </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac9c6a7e3945ae82568803f820eb726ce" name="ac9c6a7e3945ae82568803f820eb726ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9c6a7e3945ae82568803f820eb726ce">&#9670;&#160;</a></span>heightByGrid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int OutdoorTerrain::heightByGrid </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>gridPos</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gridPos</td><td>Grid coordinates. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Terrain height at <code>gridPos</code>. </dd></dl>
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x00488F2E, 0x0047EE16 </dd></dl>
+
+</div>
+</div>
+<a id="a36f9b58a2f7b796bed097e00b9e15ff2" name="a36f9b58a2f7b796bed097e00b9e15ff2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36f9b58a2f7b796bed097e00b9e15ff2">&#9670;&#160;</a></span>heightByPos()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -178,10 +242,17 @@ Private Member Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;&#160;</td>
           <td class="paramname"><em>pos</em></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pos</td><td>World coordinates, only xy component is used by this function. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Terrain height at given position. </dd></dl>
 <dl class="section user"><dt>Original binary offset:</dt><dd>0x0048257A </dd></dl>
 
 </div>
@@ -212,8 +283,8 @@ Private Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a01bda0797f76437b45c21a0259e01c5f" name="a01bda0797f76437b45c21a0259e01c5f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a01bda0797f76437b45c21a0259e01c5f">&#9670;&#160;</a></span>isWaterByGrid()</h2>
+<a id="a8a487bef0793d20842c0fe332fb6a2c0" name="a8a487bef0793d20842c0fe332fb6a2c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a487bef0793d20842c0fe332fb6a2c0">&#9670;&#160;</a></span>isWaterByGrid()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -221,7 +292,7 @@ Private Member Functions</h2></td></tr>
         <tr>
           <td class="memname">bool OutdoorTerrain::isWaterByGrid </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
           <td class="paramname"><em>gridPos</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -255,8 +326,8 @@ Private Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aca5c69fdc83df42e8007c3bc863f70a3" name="aca5c69fdc83df42e8007c3bc863f70a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aca5c69fdc83df42e8007c3bc863f70a3">&#9670;&#160;</a></span>isWaterOrShoreByGrid()</h2>
+<a id="aae6e4d1e3b444abcb52f91b5d1e4e5a3" name="aae6e4d1e3b444abcb52f91b5d1e4e5a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae6e4d1e3b444abcb52f91b5d1e4e5a3">&#9670;&#160;</a></span>isWaterOrShoreByGrid()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -264,54 +335,11 @@ Private Member Functions</h2></td></tr>
         <tr>
           <td class="memname">bool OutdoorTerrain::isWaterOrShoreByGrid </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
           <td class="paramname"><em>gridPos</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7855e5cb4925c10807977ec11f08478d" name="a7855e5cb4925c10807977ec11f08478d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7855e5cb4925c10807977ec11f08478d">&#9670;&#160;</a></span>LoadBaseTileIds()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void OutdoorTerrain::LoadBaseTileIds </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a89ff43d584e9f982e0385a72039800db" name="a89ff43d584e9f982e0385a72039800db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a89ff43d584e9f982e0385a72039800db">&#9670;&#160;</a></span>mapToGlobalTileId()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int OutdoorTerrain::mapToGlobalTileId </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>localTileId</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 </div>
@@ -342,55 +370,111 @@ Private Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a7bd4026ce3de626c470a3faa9550ddb0" name="a7bd4026ce3de626c470a3faa9550ddb0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7bd4026ce3de626c470a3faa9550ddb0">&#9670;&#160;</a></span>soundIdByGrid()</h2>
+<a id="ab187b63fcd05bd71b9c3f1d297452c3f" name="ab187b63fcd05bd71b9c3f1d297452c3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab187b63fcd05bd71b9c3f1d297452c3f">&#9670;&#160;</a></span>normalsByGridUnsafe()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a> OutdoorTerrain::soundIdByGrid </td>
+          <td class="memname">const std::array&lt; <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>, 2 &gt; &amp; OutdoorTerrain::normalsByGridUnsafe </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a>&#160;</td>
-          <td class="paramname"><em>gridPos</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>isRunning</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>gridPos</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<dl class="section user"><dt>Original binary offset:</dt><dd>0x47EE49 </dd></dl>
 
 </div>
 </div>
-<a id="af66e54cbf88490b6fc53c40a66a8113e" name="af66e54cbf88490b6fc53c40a66a8113e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af66e54cbf88490b6fc53c40a66a8113e">&#9670;&#160;</a></span>tileGeometryByGrid()</h2>
+<a id="ab0ccabadb67366ba5ba9f32094fb9a3b" name="ab0ccabadb67366ba5ba9f32094fb9a3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0ccabadb67366ba5ba9f32094fb9a3b">&#9670;&#160;</a></span>recalculateNormals()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void OutdoorTerrain::recalculateNormals </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9a25ad184f8567ea57f126ac4df542bb" name="a9a25ad184f8567ea57f126ac4df542bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a25ad184f8567ea57f126ac4df542bb">&#9670;&#160;</a></span>tileDataByGrid()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="structOutdoorTileGeometry.html">OutdoorTileGeometry</a> OutdoorTerrain::tileGeometryByGrid </td>
+          <td class="memname">const <a class="el" href="structTileData.html">TileData</a> &amp; OutdoorTerrain::tileDataByGrid </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
           <td class="paramname"><em>gridPos</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gridPos</td><td>Grid coordinates. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Tile data from the global tile table for the tile at <code>gridPos</code>. </dd></dl>
+<dl class="section user"><dt>Original binary offset:</dt><dd>0x47ED08 </dd></dl>
 
 </div>
 </div>
-<a id="a6ee050f7e71c90675e68927fd1bb5d3f" name="a6ee050f7e71c90675e68927fd1bb5d3f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ee050f7e71c90675e68927fd1bb5d3f">&#9670;&#160;</a></span>tileIdByGrid()</h2>
+<a id="adf3d427151589ce1fcdc5c22a301f7be" name="adf3d427151589ce1fcdc5c22a301f7be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf3d427151589ce1fcdc5c22a301f7be">&#9670;&#160;</a></span>tileGeometryByGrid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structOutdoorTerrain_1_1TileGeometry.html">OutdoorTerrain::TileGeometry</a> OutdoorTerrain::tileGeometryByGrid </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>gridPos</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a07394224e1ebc70be7952fcfbe0ec14c" name="a07394224e1ebc70be7952fcfbe0ec14c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07394224e1ebc70be7952fcfbe0ec14c">&#9670;&#160;</a></span>tileIdByGrid()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -398,7 +482,7 @@ Private Member Functions</h2></td></tr>
         <tr>
           <td class="memname">int OutdoorTerrain::tileIdByGrid </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
           <td class="paramname"><em>gridPos</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -414,16 +498,16 @@ Private Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ab84d661cc2a8d48374808529d774e717" name="ab84d661cc2a8d48374808529d774e717"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab84d661cc2a8d48374808529d774e717">&#9670;&#160;</a></span>tileSetByGrid()</h2>
+<a id="a66d290e879b988d6c0fc3a1284fb1f3c" name="a66d290e879b988d6c0fc3a1284fb1f3c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66d290e879b988d6c0fc3a1284fb1f3c">&#9670;&#160;</a></span>tilesetByGrid()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="TileEnums_8h.html#a6f6116001463ca6b36775defb5606ee5">TileSet</a> OutdoorTerrain::tileSetByGrid </td>
+          <td class="memname"><a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a> OutdoorTerrain::tilesetByGrid </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
           <td class="paramname"><em>gridPos</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -439,104 +523,194 @@ Private Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ad863d416520e3b46bb203c9dddeaf142" name="ad863d416520e3b46bb203c9dddeaf142"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad863d416520e3b46bb203c9dddeaf142">&#9670;&#160;</a></span>ZeroLandscape()</h2>
+<a id="a9d3afe2c77444790db18db9675cd029b" name="a9d3afe2c77444790db18db9675cd029b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d3afe2c77444790db18db9675cd029b">&#9670;&#160;</a></span>tilesetByPos()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool OutdoorTerrain::ZeroLandscape </td>
+          <td class="memname"><a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a> OutdoorTerrain::tilesetByPos </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td class="paramtype">const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;&#160;</td>
+          <td class="paramname"><em>pos</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa4b3e40ea46d416a37cfa28c60ab065a" name="aa4b3e40ea46d416a37cfa28c60ab065a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa4b3e40ea46d416a37cfa28c60ab065a">&#9670;&#160;</a></span>vertexByGridUnsafe()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Vec_8h.html#adf6e1d7d066bb09da957cc89f2b3ceb2">Vec3i</a> OutdoorTerrain::vertexByGridUnsafe </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>gridPos</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a id="ac95aa490a84c051de3c875ab132c92c7" name="ac95aa490a84c051de3c875ab132c92c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac95aa490a84c051de3c875ab132c92c7">&#9670;&#160;</a></span>reconstruct</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void reconstruct </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structOutdoorLocation__MM7.html">OutdoorLocation_MM7</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classOutdoorTerrain.html">OutdoorTerrain</a> *&#160;</td>
+          <td class="paramname"><em>dst</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a38390f77a630ecce9c3f206e75e83736" name="a38390f77a630ecce9c3f206e75e83736"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a38390f77a630ecce9c3f206e75e83736">&#9670;&#160;</a></span>pAttributemap</h2>
+<a id="a56a6f1e57e2c47e6c68a187ffff86e99" name="a56a6f1e57e2c47e6c68a187ffff86e99"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56a6f1e57e2c47e6c68a187ffff86e99">&#9670;&#160;</a></span>_heightMap</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;uint8_t, 128 * 128&gt; OutdoorTerrain::pAttributemap = {}</td>
+          <td class="memname"><a class="el" href="classImage.html">Image</a>&lt;uint8_t&gt; OutdoorTerrain::_heightMap</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a62bc7849971d022a31dcceaeb4e12c52" name="a62bc7849971d022a31dcceaeb4e12c52"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62bc7849971d022a31dcceaeb4e12c52">&#9670;&#160;</a></span>pHeightmap</h2>
+<a id="a06c17f682eea7f2106ca282a6af90cca" name="a06c17f682eea7f2106ca282a6af90cca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06c17f682eea7f2106ca282a6af90cca">&#9670;&#160;</a></span>_normalMap</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;uint8_t, 128 * 128&gt; OutdoorTerrain::pHeightmap = {}</td>
+          <td class="memname"><a class="el" href="classImage.html">Image</a>&lt;std::array&lt;<a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>, 2&gt; &gt; OutdoorTerrain::_normalMap</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="af93a6b6ad7d653f8058349dc7a76d91f" name="af93a6b6ad7d653f8058349dc7a76d91f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af93a6b6ad7d653f8058349dc7a76d91f">&#9670;&#160;</a></span>pTerrainNormalIndices</h2>
+<a id="a87629d386df93480049c390e08639fdb" name="a87629d386df93480049c390e08639fdb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87629d386df93480049c390e08639fdb">&#9670;&#160;</a></span>_originalTileMap</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;unsigned short, 128 * 128 * 2&gt; OutdoorTerrain::pTerrainNormalIndices</td>
+          <td class="memname"><a class="el" href="classImage.html">Image</a>&lt;int16_t&gt; OutdoorTerrain::_originalTileMap</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a4213bc7be1f56ecf40f632e99ff97eb4" name="a4213bc7be1f56ecf40f632e99ff97eb4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4213bc7be1f56ecf40f632e99ff97eb4">&#9670;&#160;</a></span>pTerrainNormals</h2>
+<a id="a764cc2ce1922e9ff28236364bfdc6236" name="a764cc2ce1922e9ff28236364bfdc6236"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a764cc2ce1922e9ff28236364bfdc6236">&#9670;&#160;</a></span>_tileMap</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>&gt; OutdoorTerrain::pTerrainNormals</td>
+          <td class="memname"><a class="el" href="classImage.html">Image</a>&lt;int16_t&gt; OutdoorTerrain::_tileMap</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a522ded1aa1e38e9fa8c234bf00c4d6fb" name="a522ded1aa1e38e9fa8c234bf00c4d6fb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a522ded1aa1e38e9fa8c234bf00c4d6fb">&#9670;&#160;</a></span>pTilemap</h2>
+<a id="a5d32bb9c29d22a5a0ce9af5079a34d05" name="a5d32bb9c29d22a5a0ce9af5079a34d05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d32bb9c29d22a5a0ce9af5079a34d05">&#9670;&#160;</a></span>_tilesets</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;uint8_t, 128 * 128&gt; OutdoorTerrain::pTilemap = {}</td>
+          <td class="memname">std::array&lt;<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a>, 4&gt; OutdoorTerrain::_tilesets</td>
         </tr>
       </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ab53979e779ed97eae72464c239d403f2" name="ab53979e779ed97eae72464c239d403f2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab53979e779ed97eae72464c239d403f2">&#9670;&#160;</a></span>pTileTypes</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::array&lt;<a class="el" href="structOutdoorTileType.html">OutdoorTileType</a>, 4&gt; OutdoorTerrain::pTileTypes</td>
-        </tr>
-      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

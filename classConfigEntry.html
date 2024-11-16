@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;17627ec</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;92be04a</span>
    </div>
   </td>
  </tr>
@@ -71,6 +71,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-types">Private Types</a> &#124;
 <a href="#pri-static-methods">Static Private Member Functions</a> &#124;
 <a href="classConfigEntry-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">ConfigEntry&lt; T &gt; Class Template Reference</div></div>
@@ -115,6 +116,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6b1eb52a52ebd5c13fcd9d667e02c8a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d5c7be93e08dc45411dab48c27d1c17"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classConfigEntry.html#a4d5c7be93e08dc45411dab48c27d1c17">cycleDecrement</a> ()</td></tr>
 <tr class="separator:a4d5c7be93e08dc45411dab48c27d1c17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18874ac00cb9f4f9f6d67b50c1a80f27"><td class="memTemplParams" colspan="2">template&lt;std::invocable&lt; T &gt; Listener&gt; </td></tr>
+<tr class="memitem:a18874ac00cb9f4f9f6d67b50c1a80f27"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classConfigEntry.html#a18874ac00cb9f4f9f6d67b50c1a80f27">addListener</a> (void *ctx, Listener listener)</td></tr>
+<tr class="separator:a18874ac00cb9f4f9f6d67b50c1a80f27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afadff93725d9fc9b5d024324e43d304e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classConfigEntry.html#afadff93725d9fc9b5d024324e43d304e">addListener</a> (void *ctx, std::function&lt; void()&gt; listener)</td></tr>
+<tr class="separator:afadff93725d9fc9b5d024324e43d304e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classAnyConfigEntry"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classAnyConfigEntry')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classAnyConfigEntry.html">AnyConfigEntry</a></td></tr>
 <tr class="memitem:acaa3c5a325a0c07404ba0f375587f890 inherit pub_methods_classAnyConfigEntry"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnyConfigEntry.html#acaa3c5a325a0c07404ba0f375587f890">AnyConfigEntry</a> (<a class="el" href="classConfigSection.html">ConfigSection</a> *<a class="el" href="classAnyConfigEntry.html#a14d1c66ac099197b9991ccb41d892e43">section</a>, std::string_view <a class="el" href="classAnyConfigEntry.html#a28f61aea2ce029473ba8d478f097174b">name</a>, std::string_view <a class="el" href="classAnyConfigEntry.html#ab655e36b55e8995f2fd7214f584ca158">description</a>, <a class="el" href="classAnyHandler.html">AnyHandler</a> *handler, std::any <a class="el" href="classAnyConfigEntry.html#a4833c752ee8aa29a4a6f1e91f9b5ac82">defaultValue</a>, <a class="el" href="classAnyConfigEntry.html#a4d5a189adaecdb5828bdf4e8cee4414d">Validator</a> <a class="el" href="classAnyConfigEntry.html#a1bf7df3f8f477720e9e775a5e6c6f6fc">validator</a>)</td></tr>
 <tr class="separator:acaa3c5a325a0c07404ba0f375587f890 inherit pub_methods_classAnyConfigEntry"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -142,6 +148,15 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a28f61aea2ce029473ba8d478f097174b inherit pub_methods_classAnyConfigEntry"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab655e36b55e8995f2fd7214f584ca158 inherit pub_methods_classAnyConfigEntry"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnyConfigEntry.html#ab655e36b55e8995f2fd7214f584ca158">description</a> () const</td></tr>
 <tr class="separator:ab655e36b55e8995f2fd7214f584ca158 inherit pub_methods_classAnyConfigEntry"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afadff93725d9fc9b5d024324e43d304e inherit pub_methods_classAnyConfigEntry"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnyConfigEntry.html#afadff93725d9fc9b5d024324e43d304e">addListener</a> (void *ctx, std::function&lt; void()&gt; listener)</td></tr>
+<tr class="separator:afadff93725d9fc9b5d024324e43d304e inherit pub_methods_classAnyConfigEntry"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3eb19ef0e7eb0e138192c103f7c53ef6 inherit pub_methods_classAnyConfigEntry"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnyConfigEntry.html#a3eb19ef0e7eb0e138192c103f7c53ef6">removeListeners</a> (void *ctx)</td></tr>
+<tr class="separator:a3eb19ef0e7eb0e138192c103f7c53ef6 inherit pub_methods_classAnyConfigEntry"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-types" name="pri-types"></a>
+Private Types</h2></td></tr>
+<tr class="memitem:a7e4f42fd845a6d5b5b48d016f1465b4e"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classConfigEntry.html#a7e4f42fd845a6d5b5b48d016f1465b4e">base_type</a> = <a class="el" href="classAnyConfigEntry.html">AnyConfigEntry</a></td></tr>
+<tr class="separator:a7e4f42fd845a6d5b5b48d016f1465b4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
@@ -158,6 +173,31 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a1bf7df3f8f477720e9e775a5e6c6f6fc inherit pro_methods_classAnyConfigEntry"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classAnyConfigEntry.html#a4d5a189adaecdb5828bdf4e8cee4414d">Validator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAnyConfigEntry.html#a1bf7df3f8f477720e9e775a5e6c6f6fc">validator</a> () const</td></tr>
 <tr class="separator:a1bf7df3f8f477720e9e775a5e6c6f6fc inherit pro_methods_classAnyConfigEntry"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a7e4f42fd845a6d5b5b48d016f1465b4e" name="a7e4f42fd845a6d5b5b48d016f1465b4e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e4f42fd845a6d5b5b48d016f1465b4e">&#9670;&#160;</a></span>base_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="classConfigEntry.html">ConfigEntry</a>&lt; T &gt;::base_type =  <a class="el" href="classAnyConfigEntry.html">AnyConfigEntry</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ada5f4280d2592ada542c1b1375bf33f4" name="ada5f4280d2592ada542c1b1375bf33f4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ada5f4280d2592ada542c1b1375bf33f4">&#9670;&#160;</a></span>ConfigEntry() <span class="overload">[1/4]</span></h2>
@@ -324,6 +364,84 @@ template&lt;class T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a18874ac00cb9f4f9f6d67b50c1a80f27" name="a18874ac00cb9f4f9f6d67b50c1a80f27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18874ac00cb9f4f9f6d67b50c1a80f27">&#9670;&#160;</a></span>addListener() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<div class="memtemplate">
+template&lt;std::invocable&lt; T &gt; Listener&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classConfigEntry.html">ConfigEntry</a>&lt; T &gt;::addListener </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Listener&#160;</td>
+          <td class="paramname"><em>listener</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="afadff93725d9fc9b5d024324e43d304e" name="afadff93725d9fc9b5d024324e43d304e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afadff93725d9fc9b5d024324e43d304e">&#9670;&#160;</a></span>addListener() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AnyConfigEntry::addListener </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>ctx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; void()&gt;&#160;</td>
+          <td class="paramname"><em>listener</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a4d5c7be93e08dc45411dab48c27d1c17" name="a4d5c7be93e08dc45411dab48c27d1c17"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4d5c7be93e08dc45411dab48c27d1c17">&#9670;&#160;</a></span>cycleDecrement()</h2>
 
