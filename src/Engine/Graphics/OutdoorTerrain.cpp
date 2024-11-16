@@ -11,7 +11,7 @@
 
 #include "Outdoor.h"
 
-int static mapToGlobalTileId(const std::array<int, 4> &baseIds, int localTileId) {
+static int mapToGlobalTileId(const std::array<int, 4> &baseIds, int localTileId) {
     // Tiles in tilemap:
     // [0..90) are mapped as-is, but seem to be mostly invalid. Only global tile ids [1..12] are valid (all are dirt),
     //         the rest are "pending", effectively invalid.
@@ -157,35 +157,38 @@ bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
 
     TileGeometry tile = tileGeometryByGrid(gridPos);
 
-    int dx = std::abs(pos.x - tile.x0), dz = std::abs(tile.y0 - pos.y);
+    int dx = pos.x - tile.x0;
+    int dy = tile.y0 - pos.y;
 
-    int y1, y2, y3;
-    if (dz >= dx) {
-        y1 = tile.z01;
-        y2 = tile.z11;
-        y3 = tile.z00;
+    assert(dx >= 0);
+    assert(dy >= 0);
+
+    int z1, z2, z3;
+    if (dy >= dx) {
         //  lower-left triangle
-        //  y3 | \
+        //  z3 | \
         //     |   \
         //     |     \
         //     |______ \
-        //  y1           y2
+        //  z1           z2
+        z1 = tile.z01;
+        z2 = tile.z11;
+        z3 = tile.z00;
     } else {
-        y1 = tile.z10;
-        y2 = tile.z00;
-        y3 = tile.z11;
-
-        // upper-right
-        //  y2_______ y1
+        // upper-right triangle
+        //  z2_______ z1
         //    \     |
         //      \   |
         //        \ |
-        //          y3
+        //          z3
+        z1 = tile.z10;
+        z2 = tile.z00;
+        z3 = tile.z11;
     }
 
-    int y_min = std::min(y1, std::min(y2, y3));  // не верно при подъёме на склон
-    int y_max = std::max(y1, std::max(y2, y3));
-    return (y_max - y_min) > 512;
+    int yMin = std::min({z1, z2, z3});
+    int yMax = std::max({z1, z2, z3});
+    return yMax - yMin > 512;
 }
 
 void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
