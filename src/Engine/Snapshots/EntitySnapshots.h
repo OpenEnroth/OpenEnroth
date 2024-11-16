@@ -176,7 +176,7 @@ struct TileData_MM7 {
     std::array<char, 16> tileName;
     uint16_t tileId;
     uint16_t bitmapId;
-    uint16_t tileSet;
+    uint16_t tileset;
     uint16_t section;
     uint16_t attributes;
 };
@@ -1359,8 +1359,6 @@ struct OutdoorTileType_MM7 {
 };
 static_assert(sizeof(OutdoorTileType_MM7) == 4);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(OutdoorTileType_MM7)
-
-void reconstruct(const OutdoorTileType_MM7 &src, OutdoorTileType *dst);
 
 
 struct SaveGameHeader_MM7 {

@@ -38,6 +38,8 @@
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/MapInfo.h"
 #include "Engine/LOD.h"
+#include "Engine/Seasons.h"
+#include "Engine/Data/TileEnumFunctions.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -188,7 +190,7 @@ void OutdoorLocation::ExecDraw(unsigned int bRedraw) {
     engine->StackPartyTorchLight();
 
     // engine->PrepareBloodsplats(); // not used?
-    UpdateDiscoveredArea(WorldPosToGrid(pParty->pos));
+    UpdateDiscoveredArea(worldToGrid(pParty->pos));
 
     uNumDecorationsDrawnThisFrame = 0;
     uNumSpritesDrawnThisFrame = 0;
@@ -247,11 +249,6 @@ double OutdoorLocation::GetFogDensityByTime() {
         pWeather->bNight = true;
         return 60.0 * 0.016666668;
     }
-}
-
-TileData *OutdoorLocation::getTileDescByPos(const Vec3f &pos) {
-    Vec2i gridPos = WorldPosToGrid(pos);
-    return getTileDescByGrid(gridPos.x, gridPos.y);
 }
 
 //----- (00488F5C) --------------------------------------------------------
@@ -367,20 +364,7 @@ int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos) {
         return 2;
     }
 
-    switch (getTileDescByPos(pos)->tileset) {
-        case TILE_SET_GRASS:
-            return 1;
-        case TILE_SET_SNOW:
-        case TILE_SET_SWAMP:
-            return 3;
-        case TILE_SET_COOLED_LAVA:
-        case TILE_SET_BADLANDS:
-            return 4;
-        case TILE_SET_DESERT:
-            return 5;
-        default:
-            return 2;
-    }
+    return foodRequiredForTileset(pTerrain.tilesetByPos(pos));
 }
 
 //----- (00489487) --------------------------------------------------------
@@ -429,7 +413,7 @@ void OutdoorLocation::CreateDebugLocation() {
     this->location_filename = "i6.odm";
     this->location_file_description = "MM6 Outdoor v1.00";
 
-    this->pTerrain.CreateDebugTerrain();
+    this->pTerrain.createDebugTerrain();
     this->pSpawnPoints.clear();
 
     this->pOMAP.fill(0);
@@ -564,54 +548,9 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     }
 
     this->sky_texture = assets->getBitmap(loc_time.sky_texture_name);
-}
 
-TileData *OutdoorLocation::getTileDescByGrid(int sX, int sY) {
-    int tileId = pTerrain.tileIdByGrid(Vec2i(sX, sY));
-
-    if (engine->config->graphics.SeasonsChange.value()) {
-        switch (pParty->uCurrentMonth) {
-            case 11:
-            case 0:
-            case 1:            // winter
-                if (tileId >= 90) {  // Tileset_Grass begins at TileID = 90
-                    if (tileId <= 95)  // some grastyl entries
-                        tileId = 348;
-                    else if (tileId <= 113)  // rest of grastyl & all grdrt*
-                        tileId = 348 + (tileId - 96);
-                }
-                /*switch (v3)
-                {
-                case 102: v3 = 354; break;  // grdrtNE -> SNdrtne
-                case 104: v3 = 356; break;  // grdrtNW -> SNdrtnw
-                case 108: v3 = 360; break;  // grdrtN  -> SNdrtn
-                }*/
-                break;
-
-            case 2:
-            case 3:
-            case 4:  // spring
-            case 8:
-            case 9:
-            case 10:  // autumn
-                if (tileId >= 90 &&
-                    tileId <= 113)  // just convert all Tileset_Grass to dirt
-                    tileId = 1;
-                break;
-
-            case 5:
-            case 6:
-            case 7:  // summer
-                // all tiles are green grass by default
-                break;
-
-            default:
-                assert(pParty->uCurrentMonth >= 0 &&
-                       pParty->uCurrentMonth < 12);
-        }
-    }
-
-    return &pTileTable->tiles[tileId];
+    if (engine->config->graphics.SeasonsChange.value())
+        pOutdoor->pTerrain.changeSeason(pParty->uCurrentMonth);
 }
 
 //----- (0047EF60) --------------------------------------------------------
@@ -1047,6 +986,15 @@ OutdoorLocation::OutdoorLocation() {
     this->sky_texture = nullptr;
 
     uLastSunlightUpdateMinute = 0;
+
+    engine->config->graphics.SeasonsChange.addListener(this, [this](bool seasonsChange) {
+        pTerrain.changeSeason(seasonsChange ? pParty->uCurrentMonth : 6);
+        render->ReleaseTerrain();
+    });
+}
+
+OutdoorLocation::~OutdoorLocation() {
+    engine->config->graphics.SeasonsChange.removeListeners(this);
 }
 
 // TODO(pskelton): Magic numbers
@@ -1466,8 +1414,8 @@ void ODM_ProcessPartyActions() {
         pParty->setAirborne(true);
 
     Vec3f partyOldPosition = pParty->pos;
-    Vec2i partyOldGridPos = WorldPosToGrid(pParty->pos);
-    Vec2i partyNewGridPos = WorldPosToGrid(partyNewPos);
+    Vec2i partyOldGridPos = worldToGrid(pParty->pos);
+    Vec2i partyNewGridPos = worldToGrid(partyNewPos);
 
     // this gets if tile is not water
     bool partyCurrentOnLand = !pOutdoor->pTerrain.isWaterByGrid(partyOldGridPos);
@@ -1611,12 +1559,11 @@ void ODM_ProcessPartyActions() {
                     bool isModelWalk = !partyNotOnModel && pOutdoor->pBModels[modelId].pFaces[faceId].Visible();
                     SoundId sound = SOUND_Invalid;
                     if (partyIsRunning) {
-                        if (walkDelta >= 4 ) {
+                        if (walkDelta >= 4) {
                             if (isModelWalk) {
                                 sound = SOUND_RunWood;
                             } else {
-                                // Old comment: 56 is ground run
-                                sound = pOutdoor->pTerrain.soundIdByGrid(WorldPosToGrid(partyOldPosition), true);
+                                sound = walkSoundForTileset(pOutdoor->pTerrain.tilesetByPos(partyOldPosition), true);
                             }
                         }
                     } else if (partyIsWalking) {
@@ -1624,7 +1571,7 @@ void ODM_ProcessPartyActions() {
                             if (isModelWalk) {
                                 sound = SOUND_RunWood;
                             } else {
-                                sound = pOutdoor->pTerrain.soundIdByGrid(WorldPosToGrid(partyOldPosition), false);
+                                sound = walkSoundForTileset(pOutdoor->pTerrain.tilesetByPos(partyOldPosition), false);
                             }
                         }
                     }
@@ -1854,17 +1801,16 @@ void UpdateActors_ODM() {
             if (!uIsFlying && !tile1IsLand && !uIsAboveFloor && Actor_On_Terrain) {
                 // on water and shouldnt be
                 bool tileTestLand = false;  // reset land found
-                Vec2i gridPos = WorldPosToGrid(pActors[Actor_ITR].pos);
+                Vec2i gridPos = worldToGrid(pActors[Actor_ITR].pos);
                 for (int i = gridPos.x - 1; i <= gridPos.x + 1; i++) {
                     // scan surrounding cells for land
                     for (int j = gridPos.y - 1; j <= gridPos.y + 1; j++) {
                         tileTestLand = !pOutdoor->pTerrain.isWaterByGrid({i, j});
                         if (tileTestLand) {  // found land
-                            int target_x = GridCellToWorldPosX(i);
-                            int target_y = GridCellToWorldPosY(j);
+                            Vec2i target = gridToWorld({i, j});
                             if (pActors[Actor_ITR].CanAct()) {  // head to land
-                                pActors[Actor_ITR].yawAngle = TrigLUT.atan2(target_x - pActors[Actor_ITR].pos.x,
-                                                                             target_y - pActors[Actor_ITR].pos.y);
+                                pActors[Actor_ITR].yawAngle = TrigLUT.atan2(target.x - pActors[Actor_ITR].pos.x,
+                                                                             target.y - pActors[Actor_ITR].pos.y);
                                 pActors[Actor_ITR].currentActionTime = 0_ticks;
                                 pActors[Actor_ITR].currentActionLength = 128_ticks;
                                 pActors[Actor_ITR].aiState = Fleeing;
@@ -2052,24 +1998,6 @@ int sub_47C3D7_get_fog_specular(int unused, int isSky, float screen_depth) {
     if (isSky) v7 = 248;
     return (255 - v7) << 24;
 }
-
-//----- (0047F44B) --------------------------------------------------------
-//----- (0047F458) --------------------------------------------------------
-Vec2i WorldPosToGrid(Vec3f worldPos) {
-    int worldX = worldPos.x;
-    int worldY = worldPos.y;
-
-    // sar is in original exe, resulting -880 / 512 = -1 and -880 sar 9 = -2.
-    int gridX = (worldX >> 9) + 64;
-    int gridY = 63 - (worldY >> 9);
-    return Vec2i(gridX, gridY);
-}
-
-//----- (0047F469) --------------------------------------------------------
-int GridCellToWorldPosX(int a1) { return (a1 - 64) << 9; }
-
-//----- (0047F476) --------------------------------------------------------
-int GridCellToWorldPosY(int a1) { return (64 - a1) << 9; }
 
 //----- (00436A6D) --------------------------------------------------------
 double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int unumverts) {

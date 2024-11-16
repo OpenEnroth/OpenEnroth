@@ -13,6 +13,7 @@
  * Struct fields are laid out in the order in which they are laid out in binary files.
  */
 
+// TODO(captainurist): snapshot/reconstruct functions belong to the classes themselves. Also drop raw* functions.
 
 class Blob;
 class BSPModel;
@@ -88,9 +89,9 @@ struct OutdoorLocation_MM7 {
     std::array<uint8_t, 128 * 128> heightMap;
     std::array<uint8_t, 128 * 128> tileMap;
     std::array<uint8_t, 128 * 128> attributeMap;
-    uint32_t normalCount;
+    uint32_t normalCount; // Number of elements in `normals`.
     std::array<uint32_t , 128 * 128 * 2> someOtherMap; // Not used in OE, not even sure what this is.
-    std::array<uint16_t, 128 * 128 * 2> normalMap;
+    std::array<uint16_t, 128 * 128 * 2> normalMap; // Indices into `normals`, unused as we recalculate normals on load.
     std::vector<Vec3f> normals;
     std::vector<BSPModelData_MM7> models;
     std::vector<BSPModelExtras_MM7> modelExtras;

@@ -8,6 +8,7 @@
 #include <utility>
 
 #include "Library/Color/Color.h"
+#include "Library/Geometry/Point.h"
 #include "Library/Geometry/Size.h"
 
 #include "Utility/Memory/FreeDeleter.h"
@@ -63,6 +64,14 @@ class ImageBase {
         return const_cast<ImageBase &>(*this)[y];
     }
 
+    [[nodiscard]] T &operator[](Pointi point) {
+        return (*this)[point.y][point.x];
+    }
+
+    [[nodiscard]] const T &operator[](Pointi point) const {
+        return const_cast<ImageBase &>(*this)[point];
+    }
+
     explicit operator bool() const {
         return static_cast<bool>(_pixels.get());
     }
@@ -71,6 +80,10 @@ class ImageBase {
         _width = 0;
         _height = 0;
         _pixels.reset();
+    }
+
+    void fill(const T &color) {
+        std::fill_n(pixels().data(), pixels().size(), color);
     }
 
  protected: // Directly accessible from derived classes.
@@ -149,6 +162,16 @@ class Image : public detail::ImageBase<T, std::unique_ptr<T, FreeDeleter>> {
         Image result = uninitialized(width, height);
         std::copy_n(pixels, result.pixels().size(), result.pixels().data());
         return result;
+    }
+
+    /**
+     * Creates a copy of another image.
+     *
+     * @param other                     Image to copy.
+     * @return                          Newly allocated `Image` containing a copy of `other`.
+     */
+    static Image copy(const Image &other) {
+        return copy(other.width(), other.height(), other.pixels().data());
     }
 
     // The rest is inherited from ImageBase.

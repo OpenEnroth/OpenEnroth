@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
-set(ENGINE_DATA_SOURCES)
+set(ENGINE_DATA_SOURCES
+        TileEnumFunctions.cpp)
 
 set(ENGINE_DATA_HEADERS
         AutonoteEnums.h
@@ -15,8 +16,9 @@ set(ENGINE_DATA_HEADERS
         IconFrameData.h
         PortraitFrameData.h
         TileData.h
-        TileEnums.h)
+        TileEnums.h
+        TileEnumFunctions.h)
 
-add_library(engine_data INTERFACE ${ENGINE_DATA_SOURCES} ${ENGINE_DATA_HEADERS})
-target_link_libraries(engine_data INTERFACE library_serialization utility)
+add_library(engine_data STATIC ${ENGINE_DATA_SOURCES} ${ENGINE_DATA_HEADERS})
+target_link_libraries(engine_data PUBLIC library_serialization utility)
 target_check_style(engine_data)

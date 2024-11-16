@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Utility/Flags.h"
-#include "Utility/Segment.h"
 
 enum class TileFlag {
     TILE_BURN = 0x1,
@@ -62,41 +61,37 @@ enum class TileVariant {
 };
 using enum TileVariant;
 
-inline Segment<TileVariant> allSpecialTileSects() {
-    return {TILE_VARIANT_FIRST_SPECIAL, TILE_VARIANT_LAST_SPECIAL};
-}
-
 /**
  * Tile set id.
  *
  * Most of these tile sets don't exist in mm7 data, see comments.
  */
-enum class TileSet {
-    TILE_SET_INVALID = 255, // Tile with id 0 has tile set = 255.
-    TILE_SET_GRASS = 0,
-    TILE_SET_SNOW = 1,
-    TILE_SET_DESERT = 2, // Sand.
-    TILE_SET_COOLED_LAVA = 3, // Somehow this tileset is all dirt in the data files.
-    TILE_SET_DIRT = 4, // This one has only 3 tiles.
-    TILE_SET_WATER = 5, // Water tile & shoreline tiles.
-    TILE_SET_BADLANDS = 6, // Looks like Deyja.
-    TILE_SET_SWAMP = 7,
-    TILE_SET_TROPICAL = 8, // This is all dirt.
-    TILE_SET_CITY = 9, // This is sand too, lol.
-    TILE_SET_ROAD_GRASS_COBBLE = 10, // Cobble road on dirt actually.
-    TILE_SET_ROAD_GRASS_DIRT = 11, // This is all dirt.
-    TILE_SET_ROAD_SNOW_COBBLE = 12, // This is all dirt.
-    TILE_SET_ROAD_SNOW_DIRT = 13, // This is all dirt.
-    TILE_SET_ROAD_SAND_COBBLE = 14, // This doesn't exist in mm7 tiles at all.
-    TILE_SET_ROAD_SAND_DIRT = 15, // This doesn't exist in mm7 tiles at all.
-    TILE_SET_ROAD_VOLCANO_COBBLE = 16, // This is all dirt.
-    TILE_SET_ROAD_VOLCANO_DIRT = 17, // This is all dirt.
-    TILE_SET_ROAD_CRACKED_COBBLE = 22, // This is all dirt.
-    TILE_SET_ROAD_CRACKED_DIRT = 23, // This is all dirt.
-    TILE_SET_ROAD_SWAMP_COBBLE = 24, // This is all dirt.
-    TILE_SET_ROAD_SWAMP_DIRT = 25, // This is all dirt.
-    TILE_SET_ROAD_TROPICAL_COBBLE = 26, // This is all dirt.
-    TILE_SET_ROAD_TROPICAL_DIRT = 27, // This is all dirt.
-    TILE_SET_ROAD_CITY_STONE = 28, // This is all dirt.
+enum class Tileset {
+    TILESET_INVALID = 255, // Tile with id 0 has tile set = 255.
+    TILESET_GRASS = 0,
+    TILESET_SNOW = 1,
+    TILESET_DESERT = 2, // Sand.
+    TILESET_COOLED_LAVA = 3, // Somehow this tileset is all dirt in the data files.
+    TILESET_DIRT = 4, // This one has only 3 tiles.
+    TILESET_WATER = 5, // Water tile & shoreline tiles.
+    TILESET_BADLANDS = 6, // Looks like Deyja.
+    TILESET_SWAMP = 7,
+    TILESET_TROPICAL = 8, // This is all dirt.
+    TILESET_CITY = 9, // This is sand too, lol.
+    TILESET_ROAD_GRASS_COBBLE = 10, // Cobble road on dirt actually.
+    TILESET_ROAD_GRASS_DIRT = 11, // This is all dirt.
+    TILESET_ROAD_SNOW_COBBLE = 12, // This is all dirt.
+    TILESET_ROAD_SNOW_DIRT = 13, // This is all dirt.
+    TILESET_ROAD_SAND_COBBLE = 14, // This doesn't exist in mm7 tiles at all.
+    TILESET_ROAD_SAND_DIRT = 15, // This doesn't exist in mm7 tiles at all.
+    TILESET_ROAD_VOLCANO_COBBLE = 16, // This is all dirt.
+    TILESET_ROAD_VOLCANO_DIRT = 17, // This is all dirt.
+    TILESET_ROAD_CRACKED_COBBLE = 22, // This is all dirt.
+    TILESET_ROAD_CRACKED_DIRT = 23, // This is all dirt.
+    TILESET_ROAD_SWAMP_COBBLE = 24, // This is all dirt.
+    TILESET_ROAD_SWAMP_DIRT = 25, // This is all dirt.
+    TILESET_ROAD_TROPICAL_COBBLE = 26, // This is all dirt.
+    TILESET_ROAD_TROPICAL_DIRT = 27, // This is all dirt.
+    TILESET_ROAD_CITY_STONE = 28, // This is all dirt.
 };
-using enum TileSet;
+using enum Tileset;

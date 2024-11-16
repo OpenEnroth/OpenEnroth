@@ -518,27 +518,6 @@ void Camera3D::CalculateRotations(int cameraYaw, int cameraPitch) {
     _pitchRotationCosine = std::cos((pi_double + pi_double) * _viewPitch / 2048.0);
 }
 
-//----- (00436A6D) --------------------------------------------------------
-float Camera3D::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int uStripType) {
-    float result = FLT_MAX;
-    for (unsigned i = 0; i < uStripType; i++) {
-        if (pVertices[i].vWorldPosition.z < result) {
-            result = pVertices[i].vWorldPosition.z;
-        }
-    }
-    return result;
-}
-
-//----- (00436A40) --------------------------------------------------------
-float Camera3D::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int uStripType) {
-    float result = FLT_MIN;
-    for (unsigned i = 0; i < uStripType; i++) {
-        if (pVertex[i].vWorldPosition.z > result)
-            result = pVertex[i].vWorldPosition.z;
-    }
-    return result;
-}
-
 void Camera3D::CullByNearClip(RenderVertexSoft *pverts, unsigned *unumverts) {
     float near = GetNearClip();
 

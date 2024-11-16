@@ -29,6 +29,7 @@ struct DMap {
 
 struct OutdoorLocation {
     OutdoorLocation();
+    ~OutdoorLocation();
     // int New_SKY_NIGHT_ID;
     void ExecDraw(unsigned int bRedraw);
     void PrepareActorsDrawList();
@@ -44,15 +45,6 @@ struct OutdoorLocation {
     bool InitalizeActors(MapId a1);
     double GetFogDensityByTime();
 
-    /**
-     * @offset 0x488EEF
-     */
-    TileData *getTileDescByPos(const Vec3f &pos);
-
-    /**
-     * @offset 0x47ED08
-     */
-    TileData *getTileDescByGrid(int uX, int uZ);
     bool Initialize(std::string_view filename, int days_played,
                     int respawn_interval_days,
                     bool * outdoors_was_respawned);
@@ -126,10 +118,7 @@ void SetUnderwaterFog();
 void loadAndPrepareODM(MapId mapid, bool bLoading);
 Color GetLevelFogColor();
 int sub_47C3D7_get_fog_specular(int unused, int a2, float a3);
-Vec2i WorldPosToGrid(Vec3f worldPos);
 
-int GridCellToWorldPosX(int);
-int GridCellToWorldPosY(int);
 void sub_481ED9_MessWithODMRenderParams();
 void TeleportToStartingPoint(MapStartPoint point);  // idb
 
