@@ -8,6 +8,7 @@
 #include <utility>
 
 #include "Library/Color/Color.h"
+#include "Library/Geometry/Point.h"
 #include "Library/Geometry/Size.h"
 
 #include "Utility/Memory/FreeDeleter.h"
@@ -61,6 +62,14 @@ class ImageBase {
 
     [[nodiscard]] std::span<const T> operator[](ssize_t y) const {
         return const_cast<ImageBase &>(*this)[y];
+    }
+
+    [[nodiscard]] T &operator[](Pointi point) {
+        return (*this)[point.y][point.x];
+    }
+
+    [[nodiscard]] const T &operator[](Pointi point) const {
+        return const_cast<ImageBase &>(*this)[point];
     }
 
     explicit operator bool() const {

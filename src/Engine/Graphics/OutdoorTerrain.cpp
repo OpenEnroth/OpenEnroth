@@ -34,14 +34,14 @@ static int mapToGlobalTileId(const std::array<int, 4> &baseIds, int localTileId)
 
 //----- (0047F44B) --------------------------------------------------------
 //----- (0047F458) --------------------------------------------------------
-Vec2i WorldPosToGrid(Vec3f worldPos) {
+Pointi WorldPosToGrid(Vec3f worldPos) {
     int worldX = worldPos.x;
     int worldY = worldPos.y;
 
     // sar is in original exe, resulting -880 / 512 = -1 and -880 sar 9 = -2.
     int gridX = (worldX >> 9) + 64;
     int gridY = 63 - (worldY >> 9);
-    return Vec2i(gridX, gridY);
+    return Pointi(gridX, gridY);
 }
 
 //----- (0047F469) --------------------------------------------------------
@@ -51,9 +51,10 @@ int GridCellToWorldPosX(int a1) { return (a1 - 64) << 9; }
 int GridCellToWorldPosY(int a1) { return (64 - a1) << 9; }
 
 OutdoorTerrain::OutdoorTerrain() {
+    // Map is 127x127 squares.
     pHeightmap = Image<uint8_t>::solid(128, 128, 0);
-    pTilemap = Image<int16_t>::solid(128, 128, 0);
-    pTerrainNormals = Image<std::array<Vec3f, 2>>::solid(128, 128, {Vec3f(0, 0, 1), Vec3f(0, 0, 1)});
+    pTilemap = Image<int16_t>::solid(127, 127, 0);
+    pTerrainNormals = Image<std::array<Vec3f, 2>>::solid(127, 127, {Vec3f(0, 0, 1), Vec3f(0, 0, 1)});
 }
 
 void OutdoorTerrain::CreateDebugTerrain() {
@@ -69,11 +70,11 @@ void OutdoorTerrain::CreateDebugTerrain() {
     pTileTypes[3] = TILESET_ROAD_GRASS_COBBLE;
 }
 
-int OutdoorTerrain::heightByGrid(Vec2i gridPos) const {
+int OutdoorTerrain::heightByGrid(Pointi gridPos) const {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return 0;
 
-    return 32 * pHeightmap[gridPos.y][gridPos.x];
+    return 32 * pHeightmap[gridPos];
 }
 
 int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
@@ -90,7 +91,7 @@ int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
     //                     party would be jerked up upon coming ashore, and this just looks ugly. Find a way to
     //                     reimplement this properly.
 
-    Vec2i gridPos = WorldPosToGrid(pos);
+    Pointi gridPos = WorldPosToGrid(pos);
 
     TileGeometry tile = tileGeometryByGrid(gridPos);
 
@@ -121,38 +122,38 @@ int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
     }
 }
 
-int OutdoorTerrain::tileIdByGrid(Vec2i gridPos) const {
+int OutdoorTerrain::tileIdByGrid(Pointi gridPos) const {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return 0;
 
-    return pTilemap[gridPos.y][gridPos.x];
+    return pTilemap[gridPos];
 }
 
-Tileset OutdoorTerrain::tilesetByGrid(Vec2i gridPos) const {
+Tileset OutdoorTerrain::tilesetByGrid(Pointi gridPos) const {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return TILESET_INVALID;
 
-    return pTileTable->tiles[pTilemap[gridPos.y][gridPos.x]].tileset;
+    return pTileTable->tiles[pTilemap[gridPos]].tileset;
 }
 
 Tileset OutdoorTerrain::tilesetByPos(const Vec3f &pos) const {
     return tilesetByGrid(WorldPosToGrid(pos));
 }
 
-bool OutdoorTerrain::isWaterByGrid(Vec2i gridPos) const {
+bool OutdoorTerrain::isWaterByGrid(Pointi gridPos) const {
     return pTileTable->tiles[tileIdByGrid(gridPos)].uAttributes & TILE_WATER;
-}
-
-bool OutdoorTerrain::isWaterOrShoreByGrid(Vec2i gridPos) const {
-    return pTileTable->tiles[tileIdByGrid(gridPos)].uAttributes & (TILE_WATER | TILE_SHORE);
 }
 
 bool OutdoorTerrain::isWaterByPos(const Vec3f &pos) const {
     return isWaterByGrid(WorldPosToGrid(pos));
 }
 
+bool OutdoorTerrain::isWaterOrShoreByGrid(Pointi gridPos) const {
+    return pTileTable->tiles[tileIdByGrid(gridPos)].uAttributes & (TILE_WATER | TILE_SHORE);
+}
+
 Vec3f OutdoorTerrain::normalByPos(const Vec3f &pos) const {
-    Vec2i gridPos = WorldPosToGrid(pos);
+    Pointi gridPos = WorldPosToGrid(pos);
 
     int x0 = GridCellToWorldPosX(gridPos.x);
     int y0 = GridCellToWorldPosY(gridPos.y);
@@ -164,14 +165,14 @@ Vec3f OutdoorTerrain::normalByPos(const Vec3f &pos) const {
     assert(dy >= 0);
 
     if (dy >= dx) {
-        return pTerrainNormals[gridPos.y][gridPos.x][1];
+        return pTerrainNormals[gridPos][1];
     } else {
-        return pTerrainNormals[gridPos.y][gridPos.x][0];
+        return pTerrainNormals[gridPos][0];
     }
 }
 
 bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
-    Vec2i gridPos = WorldPosToGrid(pos);
+    Pointi gridPos = WorldPosToGrid(pos);
 
     TileGeometry tile = tileGeometryByGrid(gridPos);
 
@@ -216,19 +217,20 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
         baseTileIds[i] = pTileTable->tileId(dst->pTileTypes[i], TILE_VARIANT_BASE1);
     }
 
-    for (int y = 0; y < 128; y++) {
-        for (int x = 0; x < 128; x++) {
+    for (int y = 0; y < 128; y++)
+        for (int x = 0; x < 128; x++)
             dst->pHeightmap[y][x] = src.heightMap[y * 128 + x];
+
+    for (int y = 0; y < 127; y++)
+        for (int x = 0; x < 127; x++)
             dst->pTilemap[y][x] = mapToGlobalTileId(baseTileIds, src.tileMap[y * 128 + x]);
-        }
-    }
 
     dst->recalculateNormals();
 }
 
 void OutdoorTerrain::recalculateNormals() {
-    for (int y = 0; y < 128; y++) {
-        for (int x = 0; x < 128; x++) {
+    for (int y = 0; y < 127; y++) {
+        for (int x = 0; x < 127; x++) {
             TileGeometry tile = tileGeometryByGrid({x, y});
 
             Vec3f a2 = Vec3f(tile.x1, tile.y1, tile.z11) - Vec3f(tile.x0, tile.y1, tile.z01);
@@ -255,15 +257,15 @@ void OutdoorTerrain::recalculateNormals() {
     }
 }
 
-OutdoorTerrain::TileGeometry OutdoorTerrain::tileGeometryByGrid(Vec2i gridPos) const {
+OutdoorTerrain::TileGeometry OutdoorTerrain::tileGeometryByGrid(Pointi gridPos) const {
     TileGeometry result;
     result.x0 = GridCellToWorldPosX(gridPos.x);
     result.y0 = GridCellToWorldPosY(gridPos.y);
     result.x1 = GridCellToWorldPosX(gridPos.x + 1);
     result.y1 = GridCellToWorldPosY(gridPos.y + 1);
     result.z00 = heightByGrid(gridPos);
-    result.z01 = heightByGrid(gridPos + Vec2i(0, 1));
-    result.z10 = heightByGrid(gridPos + Vec2i(1, 0));
-    result.z11 = heightByGrid(gridPos + Vec2i(1, 1));
+    result.z01 = heightByGrid(gridPos + Pointi(0, 1));
+    result.z10 = heightByGrid(gridPos + Pointi(1, 0));
+    result.z11 = heightByGrid(gridPos + Pointi(1, 1));
     return result;
 }

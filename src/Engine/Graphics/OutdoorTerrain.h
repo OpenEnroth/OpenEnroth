@@ -2,7 +2,7 @@
 
 #include <array>
 
-#include "Library/Geometry/Vec.h"
+#include "Library/Geometry/Point.h"
 #include "Library/Image/Image.h"
 
 #include "Engine/Data/TileEnums.h"
@@ -11,7 +11,7 @@ struct OutdoorLocation_MM7;
 
 int GridCellToWorldPosX(int);
 int GridCellToWorldPosY(int);
-Vec2i WorldPosToGrid(Vec3f worldPos);
+Pointi WorldPosToGrid(Vec3f worldPos);
 
 class OutdoorTerrain {
  public:
@@ -24,30 +24,30 @@ class OutdoorTerrain {
      * @return                          Terrain height at `gridPos`.
      * @offset 0x00488F2E, 0x0047EE16
      */
-    int heightByGrid(Vec2i gridPos) const;
-
-    Vec3i vertexByGrid(Vec2i gridPos) const {
-        // TODO(captainurist): we do no bounds checks here, and shouldn't do any in other places.
-
-        return Vec3i(GridCellToWorldPosX(gridPos.x), GridCellToWorldPosY(gridPos.y), heightByGrid(gridPos));
-    }
+    int heightByGrid(Pointi gridPos) const;
 
     /**
+     * @param pos                       World coordinates, only xy component is used by this function.
+     * @return                          Terrain height at given position.
      * @offset 0x0048257A
      */
     int heightByPos(const Vec3f &pos) const;
+
+    Vec3i vertexByGrid(Pointi gridPos) const {
+        return Vec3i(GridCellToWorldPosX(gridPos.x), GridCellToWorldPosY(gridPos.y), heightByGrid(gridPos));
+    }
 
     /**
      * @param gridPos                   Grid coordinates.
      * @return                          Tile id at `gridPos` that can then be used to get tile data from `TileTable`.
      */
-    int tileIdByGrid(Vec2i gridPos) const;
+    int tileIdByGrid(Pointi gridPos) const;
 
     /**
      * @param gridPos                   Grid coordinates.
      * @return                          Tile set for the tile at `gridPos`, or `Tileset_NULL` if the tile is invalid.
      */
-    Tileset tilesetByGrid(Vec2i gridPos) const;
+    Tileset tilesetByGrid(Pointi gridPos) const;
 
     Tileset tilesetByPos(const Vec3f &pos) const;
 
@@ -56,11 +56,11 @@ class OutdoorTerrain {
      * @return                          Whether the tile at `gridPos` is a water tile. Note that shore tiles are
      *                                  different from water tiles.
      */
-    bool isWaterByGrid(Vec2i gridPos) const;
-
-    bool isWaterOrShoreByGrid(Vec2i gridPos) const;
+    bool isWaterByGrid(Pointi gridPos) const;
 
     bool isWaterByPos(const Vec3f &pos) const;
+
+    bool isWaterOrShoreByGrid(Pointi gridPos) const;
 
     /**
      * @param pos                       World coordinates, only xy component is used by this function.
@@ -69,8 +69,8 @@ class OutdoorTerrain {
      */
     Vec3f normalByPos(const Vec3f &pos) const;
 
-    const std::array<Vec3f, 2> &normalsByGrid(Vec2i gridPos) const {
-        return pTerrainNormals[gridPos.y][gridPos.x];
+    const std::array<Vec3f, 2> &normalsByGrid(Pointi gridPos) const {
+        return pTerrainNormals[gridPos];
     }
 
     /**
@@ -95,7 +95,7 @@ class OutdoorTerrain {
     };
 
     void recalculateNormals();
-    TileGeometry tileGeometryByGrid(Vec2i gridPos) const;
+    TileGeometry tileGeometryByGrid(Pointi gridPos) const;
 
  private:
     std::array<Tileset, 4> pTileTypes; // Tileset ids used in this location, [3] is road tileset.
