@@ -1360,8 +1360,6 @@ struct OutdoorTileType_MM7 {
 static_assert(sizeof(OutdoorTileType_MM7) == 4);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(OutdoorTileType_MM7)
 
-void reconstruct(const OutdoorTileType_MM7 &src, OutdoorTileType *dst);
-
 
 struct SaveGameHeader_MM7 {
     std::array<char, 20> name;

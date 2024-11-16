@@ -1797,11 +1797,6 @@ void reconstruct(const PersistentVariables_MM7 &src, PersistentVariables *dst) {
     dst->decorVars = src.decorVars;
 }
 
-void reconstruct(const OutdoorTileType_MM7 &src, OutdoorTileType *dst) {
-    dst->tileset = static_cast<TileSet>(src.tileset);
-    dst->uTileID = src.tileId;
-}
-
 void snapshot(const SaveGameHeader &src, SaveGameHeader_MM7 *dst) {
     memzero(dst);
 

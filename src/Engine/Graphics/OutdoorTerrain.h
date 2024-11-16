@@ -9,18 +9,17 @@
 
 struct OutdoorLocation_MM7;
 
-struct OutdoorTileType {
-    TileSet tileset = TILE_SET_INVALID;
-    uint16_t uTileID = 0;
-};
-
 class OutdoorTerrain {
  public:
     OutdoorTerrain();
 
-    void ZeroLandscape();
     void CreateDebugTerrain();
 
+    /**
+     * @param gridPos                   Grid coordinates.
+     * @return                          Terrain height at `gridPos`.
+     * @offset 0x00488F2E, 0x0047EE16
+     */
     int heightByGrid(Vec2i gridPos) const;
 
     /**
@@ -67,10 +66,10 @@ class OutdoorTerrain {
      */
     bool isSlopeTooHighByPos(const Vec3f &pos) const;
 
-    std::array<OutdoorTileType, 4> pTileTypes; // [3] is road tileset.
-    Image<uint8_t> pHeightmap;
-    Image<uint8_t> pTilemap; // TODO(captainurist): place TILEIDS here on load!
-    Image<std::array<Vec3f, 2>> pTerrainNormals;
+    std::array<TileSet, 4> pTileTypes; // Tileset ids used in this location, [3] is road tileset.
+    Image<uint8_t> pHeightmap; // Height map, to get actual height multiply by 32.
+    Image<int16_t> pTilemap; // Tile id map, indices into the global tile table.
+    Image<std::array<Vec3f, 2>> pTerrainNormals; // Terrain normal map, two normals per tile for two triangles.
 
     friend void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst);
 
@@ -87,8 +86,6 @@ class OutdoorTerrain {
     };
 
  private:
-    void LoadBaseTileIds();
     void recalculateNormals();
     TileGeometry tileGeometryByGrid(Vec2i gridPos) const;
-    int mapToGlobalTileId(int localTileId) const;
 };

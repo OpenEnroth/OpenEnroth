@@ -11,30 +11,46 @@
 
 #include "Outdoor.h"
 
-OutdoorTerrain::OutdoorTerrain() {
-    pHeightmap = Image<uint8_t>::solid(128, 128, 0);
-    pTilemap = Image<uint8_t>::solid(128, 128, 0);
-    pTerrainNormals = Image<std::array<Vec3f, 2>>::solid(128, 128, {});
+int static mapToGlobalTileId(const std::array<int, 4> &baseIds, int localTileId) {
+    // Tiles in tilemap:
+    // [0..90) are mapped as-is, but seem to be mostly invalid. Only global tile ids [1..12] are valid (all are dirt),
+    //         the rest are "pending", effectively invalid.
+    // [90..126) map to tileset #1.
+    // [126..162) map to tileset #2.
+    // [162..198) map to tileset #3.
+    // [198..234) map to tileset #4 (road).
+    // [234..255) are invalid.
+
+    if (localTileId < 90)
+        return localTileId;
+
+    if (localTileId >= 234)
+        return 0;
+
+    int tileSetIndex = (localTileId - 90) / 36;
+    int tileSetOffset = (localTileId - 90) % 36;
+    return baseIds[tileSetIndex] + tileSetOffset;
 }
 
-//----- (0047CCE2) --------------------------------------------------------
-void OutdoorTerrain::ZeroLandscape() {
-    pHeightmap.fill(0);
-    pTilemap.fill(90);
-    pTerrainNormals.fill({Vec3f(0, 0, 1), Vec3f(0, 0, 1)});
+OutdoorTerrain::OutdoorTerrain() {
+    pHeightmap = Image<uint8_t>::solid(128, 128, 0);
+    pTilemap = Image<int16_t>::solid(128, 128, 0);
+    pTerrainNormals = Image<std::array<Vec3f, 2>>::solid(128, 128, {Vec3f(0, 0, 1), Vec3f(0, 0, 1)});
 }
 
 void OutdoorTerrain::CreateDebugTerrain() {
-    ZeroLandscape();
-    pTileTypes[0].tileset = TILE_SET_GRASS;
-    pTileTypes[1].tileset = TILE_SET_WATER;
-    pTileTypes[2].tileset = TILE_SET_BADLANDS;
-    pTileTypes[3].tileset = TILE_SET_ROAD_GRASS_COBBLE;
-    LoadBaseTileIds();
+    int tileId = pTileTable->tileId(TILE_SET_GRASS, TILE_VARIANT_BASE1);
+
+    pHeightmap.fill(0);
+    pTilemap.fill(tileId);
+    pTerrainNormals.fill({Vec3f(0, 0, 1), Vec3f(0, 0, 1)});
+
+    pTileTypes[0] = TILE_SET_GRASS;
+    pTileTypes[1] = TILE_SET_WATER;
+    pTileTypes[2] = TILE_SET_BADLANDS;
+    pTileTypes[3] = TILE_SET_ROAD_GRASS_COBBLE;
 }
 
-//----- (00488F2E) --------------------------------------------------------
-//----- (0047EE16) --------------------------------------------------------
 int OutdoorTerrain::heightByGrid(Vec2i gridPos) const {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return 0;
@@ -91,23 +107,14 @@ int OutdoorTerrain::tileIdByGrid(Vec2i gridPos) const {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return 0;
 
-    return mapToGlobalTileId(pTilemap[gridPos.y][gridPos.x]);
+    return pTilemap[gridPos.y][gridPos.x];
 }
 
 TileSet OutdoorTerrain::tileSetByGrid(Vec2i gridPos) const {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
         return TILE_SET_INVALID;
 
-    int localTileId = pTilemap[gridPos.y][gridPos.x];
-
-    if (localTileId >= 1 && localTileId <= 12)
-        return TILE_SET_DIRT; // See comment in mapToGlobalTileId.
-
-    if (localTileId >= 234 || localTileId < 90)
-        return TILE_SET_INVALID;
-
-    int tileSetIndex = (localTileId - 90) / 36;
-    return pTileTypes[tileSetIndex].tileset;
+    return pTileTable->tiles[pTilemap[gridPos.y][gridPos.x]].tileset;
 }
 
 TileSet OutdoorTerrain::tileSetByPos(const Vec3f &pos) const {
@@ -182,23 +189,20 @@ bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
 }
 
 void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
-    reconstruct(src.tileTypes, &dst->pTileTypes);
-    dst->LoadBaseTileIds();
+    std::array<int, 4> baseTileIds;
+    for (int i = 0; i < 4; i++) {
+        dst->pTileTypes[i] = static_cast<TileSet>(src.tileTypes[i].tileset);
+        baseTileIds[i] = pTileTable->tileId(dst->pTileTypes[i], TILE_VARIANT_BASE1);
+    }
 
     for (int y = 0; y < 128; y++) {
         for (int x = 0; x < 128; x++) {
             dst->pHeightmap[y][x] = src.heightMap[y * 128 + x];
-            dst->pTilemap[y][x] = src.tileMap[y * 128 + x];
+            dst->pTilemap[y][x] = mapToGlobalTileId(baseTileIds, src.tileMap[y * 128 + x]);
         }
     }
 
     dst->recalculateNormals();
-}
-
-//----- (0047F420) --------------------------------------------------------
-void OutdoorTerrain::LoadBaseTileIds() {
-    for (unsigned i = 0; i < 3; ++i)
-        pTileTypes[i].uTileID = pTileTable->tileIdForTileset(pTileTypes[i].tileset, 1);
 }
 
 void OutdoorTerrain::recalculateNormals() {
@@ -241,25 +245,4 @@ OutdoorTerrain::TileGeometry OutdoorTerrain::tileGeometryByGrid(Vec2i gridPos) c
     result.z10 = heightByGrid(gridPos + Vec2i(1, 0));
     result.z11 = heightByGrid(gridPos + Vec2i(1, 1));
     return result;
-}
-
-int OutdoorTerrain::mapToGlobalTileId(int localTileId) const {
-    // Tiles in tilemap:
-    // [0..90) are mapped as-is, but seem to be mostly invalid. Only global tile ids [1..12] are valid (all are dirt),
-    //         the rest are "pending", effectively invalid.
-    // [90..126) map to tileset #1.
-    // [126..162) map to tileset #2.
-    // [162..198) map to tileset #3.
-    // [198..234) map to tileset #4 (road).
-    // [234..255) are invalid.
-
-    if (localTileId < 90)
-        return localTileId;
-
-    if (localTileId >= 234)
-        return 0;
-
-    int tileSetIndex = (localTileId - 90) / 36;
-    int tileSetOffset = (localTileId - 90) % 36;
-    return pTileTypes[tileSetIndex].uTileID + tileSetOffset;
 }
