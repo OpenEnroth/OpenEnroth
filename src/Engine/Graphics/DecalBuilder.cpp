@@ -230,7 +230,7 @@ bool DecalBuilder::ApplyBloodSplat_OutdoorFace(ODMFace *pFace) {
 
 //----- (0049BE8A) --------------------------------------------------------
 // apply outdoor blodsplats - check to see if bloodsplat hits terrain triangle
-bool DecalBuilder::ApplyBloodSplatToTerrain(bool fading, Vec3f *terrnorm, float *tridotdist,
+bool DecalBuilder::ApplyBloodSplatToTerrain(bool fading, const Vec3f &terrnorm, float *tridotdist,
                                             RenderVertexSoft *triverts, const int whichsplat) {
     // tracks how many decals are applied to this tri
     this->uNumSplatsThisFace = 0;
@@ -240,8 +240,8 @@ bool DecalBuilder::ApplyBloodSplatToTerrain(bool fading, Vec3f *terrnorm, float 
 
     if (NumBloodsplats > 0) {
        // check plane distance
-       *tridotdist = -dot(triverts->vWorldPosition, *terrnorm);
-       float planedist = dot(*terrnorm, bloodsplat_container->pBloodsplats_to_apply[whichsplat].pos) + *tridotdist + 0.5f;
+       *tridotdist = -dot(triverts->vWorldPosition, terrnorm);
+       float planedist = dot(terrnorm, bloodsplat_container->pBloodsplats_to_apply[whichsplat].pos) + *tridotdist + 0.5f;
 
         if (planedist <= bloodsplat_container->pBloodsplats_to_apply[whichsplat].radius) {
             // blood splat hits this terrain tri

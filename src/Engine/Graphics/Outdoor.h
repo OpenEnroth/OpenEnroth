@@ -121,10 +121,7 @@ void SetUnderwaterFog();
 void loadAndPrepareODM(MapId mapid, bool bLoading);
 Color GetLevelFogColor();
 int sub_47C3D7_get_fog_specular(int unused, int a2, float a3);
-Vec2i WorldPosToGrid(Vec3f worldPos);
 
-int GridCellToWorldPosX(int);
-int GridCellToWorldPosY(int);
 void sub_481ED9_MessWithODMRenderParams();
 void TeleportToStartingPoint(MapStartPoint point);  // idb
 

@@ -1997,24 +1997,6 @@ int sub_47C3D7_get_fog_specular(int unused, int isSky, float screen_depth) {
     return (255 - v7) << 24;
 }
 
-//----- (0047F44B) --------------------------------------------------------
-//----- (0047F458) --------------------------------------------------------
-Vec2i WorldPosToGrid(Vec3f worldPos) {
-    int worldX = worldPos.x;
-    int worldY = worldPos.y;
-
-    // sar is in original exe, resulting -880 / 512 = -1 and -880 sar 9 = -2.
-    int gridX = (worldX >> 9) + 64;
-    int gridY = 63 - (worldY >> 9);
-    return Vec2i(gridX, gridY);
-}
-
-//----- (0047F469) --------------------------------------------------------
-int GridCellToWorldPosX(int a1) { return (a1 - 64) << 9; }
-
-//----- (0047F476) --------------------------------------------------------
-int GridCellToWorldPosY(int a1) { return (64 - a1) << 9; }
-
 //----- (00436A6D) --------------------------------------------------------
 double OutdoorLocation::GetPolygonMinZ(RenderVertexSoft *pVertices, unsigned int unumverts) {
     double result = FLT_MAX;

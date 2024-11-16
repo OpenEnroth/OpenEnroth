@@ -9,6 +9,10 @@
 
 struct OutdoorLocation_MM7;
 
+int GridCellToWorldPosX(int);
+int GridCellToWorldPosY(int);
+Vec2i WorldPosToGrid(Vec3f worldPos);
+
 class OutdoorTerrain {
  public:
     OutdoorTerrain();
@@ -21,6 +25,12 @@ class OutdoorTerrain {
      * @offset 0x00488F2E, 0x0047EE16
      */
     int heightByGrid(Vec2i gridPos) const;
+
+    Vec3i vertexByGrid(Vec2i gridPos) const {
+        // TODO(captainurist): we do no bounds checks here, and shouldn't do any in other places.
+
+        return Vec3i(GridCellToWorldPosX(gridPos.x), GridCellToWorldPosY(gridPos.y), heightByGrid(gridPos));
+    }
 
     /**
      * @offset 0x0048257A
@@ -59,17 +69,16 @@ class OutdoorTerrain {
      */
     Vec3f normalByPos(const Vec3f &pos) const;
 
+    const std::array<Vec3f, 2> &normalsByGrid(Vec2i gridPos) const {
+        return pTerrainNormals[gridPos.y][gridPos.x];
+    }
+
     /**
      * @param pos                       World coordinates, only xy component is used by this function.
      * @return                          Whether terrain slope at given position is too high to be climbed or stood on.
      * @offset 0x004823F4
      */
     bool isSlopeTooHighByPos(const Vec3f &pos) const;
-
-    std::array<Tileset, 4> pTileTypes; // Tileset ids used in this location, [3] is road tileset.
-    Image<uint8_t> pHeightmap; // Height map, to get actual height multiply by 32.
-    Image<int16_t> pTilemap; // Tile id map, indices into the global tile table.
-    Image<std::array<Vec3f, 2>> pTerrainNormals; // Terrain normal map, two normals per tile for two triangles.
 
     friend void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst);
 
@@ -85,7 +94,12 @@ class OutdoorTerrain {
         int z11 = 0;
     };
 
- private:
     void recalculateNormals();
     TileGeometry tileGeometryByGrid(Vec2i gridPos) const;
+
+ private:
+    std::array<Tileset, 4> pTileTypes; // Tileset ids used in this location, [3] is road tileset.
+    Image<uint8_t> pHeightmap; // Height map, to get actual height multiply by 32.
+    Image<int16_t> pTilemap; // Tile id map, indices into the global tile table.
+    Image<std::array<Vec3f, 2>> pTerrainNormals; // Terrain normal map, two normals per tile for two triangles.
 };

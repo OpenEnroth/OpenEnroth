@@ -1459,13 +1459,9 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
         int heightScale = 32;
 
         // generate vertex locations
-        for (unsigned int y = 0; y < 128; ++y) {
-            for (unsigned int x = 0; x < 128; ++x) {
-                pTerrainVertices[y * 128 + x].vWorldPosition.x = (-64.0f + x) * blockScale;
-                pTerrainVertices[y * 128 + x].vWorldPosition.y = (64.0f - y) * blockScale;
-                pTerrainVertices[y * 128 + x].vWorldPosition.z = heightScale * pOutdoor->pTerrain.pHeightmap[y][x];
-            }
-        }
+        for (int y = 0; y < 128; ++y)
+            for (int x = 0; x < 128; ++x)
+                pTerrainVertices[y * 128 + x].vWorldPosition = pOutdoor->pTerrain.vertexByGrid({x, y}).toFloat();
 
         // reserve first 7 layers for water tiles in unit 0
         auto wtrtexture = this->hd_water_tile_anim[0];
@@ -1532,8 +1528,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 }
 
                 // next calculate all vertices vertices
-                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[y][x][0];
-                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[y][x][1];
+                const auto &[norm, norm2] = pOutdoor->pTerrain.normalsByGrid({x, y});
 
                 // calc each vertex
                 // [0] - x,y        n1
@@ -1544,9 +1539,9 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 terrshaderstore[6 * (x + (127 * y))].v = 0;
                 terrshaderstore[6 * (x + (127 * y))].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y))].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y))].normx = norm->x;
-                terrshaderstore[6 * (x + (127 * y))].normy = norm->y;
-                terrshaderstore[6 * (x + (127 * y))].normz = norm->z;
+                terrshaderstore[6 * (x + (127 * y))].normx = norm.x;
+                terrshaderstore[6 * (x + (127 * y))].normy = norm.y;
+                terrshaderstore[6 * (x + (127 * y))].normz = norm.z;
                 terrshaderstore[6 * (x + (127 * y))].attribs = 0;
 
                 // [1] - x+1,y+1    n1
@@ -1557,9 +1552,9 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 terrshaderstore[6 * (x + (127 * y)) + 1].v = 1;
                 terrshaderstore[6 * (x + (127 * y)) + 1].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 1].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 1].normx = norm->x;
-                terrshaderstore[6 * (x + (127 * y)) + 1].normy = norm->y;
-                terrshaderstore[6 * (x + (127 * y)) + 1].normz = norm->z;
+                terrshaderstore[6 * (x + (127 * y)) + 1].normx = norm.x;
+                terrshaderstore[6 * (x + (127 * y)) + 1].normy = norm.y;
+                terrshaderstore[6 * (x + (127 * y)) + 1].normz = norm.z;
                 terrshaderstore[6 * (x + (127 * y)) + 1].attribs = 0;
 
                 // [2] - x+1,y      n1
@@ -1570,9 +1565,9 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 terrshaderstore[6 * (x + (127 * y)) + 2].v = 0;
                 terrshaderstore[6 * (x + (127 * y)) + 2].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 2].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 2].normx = norm->x;
-                terrshaderstore[6 * (x + (127 * y)) + 2].normy = norm->y;
-                terrshaderstore[6 * (x + (127 * y)) + 2].normz = norm->z;
+                terrshaderstore[6 * (x + (127 * y)) + 2].normx = norm.x;
+                terrshaderstore[6 * (x + (127 * y)) + 2].normy = norm.y;
+                terrshaderstore[6 * (x + (127 * y)) + 2].normz = norm.z;
                 terrshaderstore[6 * (x + (127 * y)) + 2].attribs = 0;
 
                 // [3] - x,y        n2
@@ -1583,9 +1578,9 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 terrshaderstore[6 * (x + (127 * y)) + 3].v = 0;
                 terrshaderstore[6 * (x + (127 * y)) + 3].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 3].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 3].normx = norm2->x;
-                terrshaderstore[6 * (x + (127 * y)) + 3].normy = norm2->y;
-                terrshaderstore[6 * (x + (127 * y)) + 3].normz = norm2->z;
+                terrshaderstore[6 * (x + (127 * y)) + 3].normx = norm2.x;
+                terrshaderstore[6 * (x + (127 * y)) + 3].normy = norm2.y;
+                terrshaderstore[6 * (x + (127 * y)) + 3].normz = norm2.z;
                 terrshaderstore[6 * (x + (127 * y)) + 3].attribs = 0;
 
                 // [4] - x,y+1      n2
@@ -1596,9 +1591,9 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 terrshaderstore[6 * (x + (127 * y)) + 4].v = 1;
                 terrshaderstore[6 * (x + (127 * y)) + 4].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 4].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 4].normx = norm2->x;
-                terrshaderstore[6 * (x + (127 * y)) + 4].normy = norm2->y;
-                terrshaderstore[6 * (x + (127 * y)) + 4].normz = norm2->z;
+                terrshaderstore[6 * (x + (127 * y)) + 4].normx = norm2.x;
+                terrshaderstore[6 * (x + (127 * y)) + 4].normy = norm2.y;
+                terrshaderstore[6 * (x + (127 * y)) + 4].normz = norm2.z;
                 terrshaderstore[6 * (x + (127 * y)) + 4].attribs = 0;
 
                 // [5] - x+1,y+1    n2
@@ -1609,9 +1604,9 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 terrshaderstore[6 * (x + (127 * y)) + 5].v = 1;
                 terrshaderstore[6 * (x + (127 * y)) + 5].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 5].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 5].normx = norm2->x;
-                terrshaderstore[6 * (x + (127 * y)) + 5].normy = norm2->y;
-                terrshaderstore[6 * (x + (127 * y)) + 5].normz = norm2->z;
+                terrshaderstore[6 * (x + (127 * y)) + 5].normx = norm2.x;
+                terrshaderstore[6 * (x + (127 * y)) + 5].normy = norm2.y;
+                terrshaderstore[6 * (x + (127 * y)) + 5].normz = norm2.z;
                 terrshaderstore[6 * (x + (127 * y)) + 5].attribs = 0;
             }
         }
@@ -1944,28 +1939,27 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 // splat hits this square of terrain
                 bool fading = pOutdoor->pTerrain.isWaterOrShoreByGrid({loopx, loopy});
 
-                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[loopy][loopx][0];
-                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[loopy][loopx][1];
+                const auto &[norm, norm2] = pOutdoor->pTerrain.normalsByGrid({loopx, loopy});
 
                 float Light_tile_dist = 0.0;
 
                 // top tri
-                float _f1 = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
+                float _f1 = norm.x * pOutdoor->vSunlight.x + norm.y * pOutdoor->vSunlight.y + norm.z * pOutdoor->vSunlight.z;
                 int dimming_level = std::clamp(static_cast<int>(20.0f - floorf(20.0f * _f1 + 0.5f)), 0, 31);
 
                 decal_builder->ApplyBloodSplatToTerrain(fading, norm, &Light_tile_dist, VertexRenderList, i);
                 Planef plane;
-                plane.normal = *norm;
+                plane.normal = norm;
                 plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)
                     decal_builder->BuildAndApplyDecals(31 - dimming_level, LocationTerrain, plane, 3, VertexRenderList, 0, -1);
 
                 //bottom tri
-                float _f = norm2->x * pOutdoor->vSunlight.x + norm2->y * pOutdoor->vSunlight.y + norm2->z * pOutdoor->vSunlight.z;
+                float _f = norm2.x * pOutdoor->vSunlight.x + norm2.y * pOutdoor->vSunlight.y + norm2.z * pOutdoor->vSunlight.z;
                 dimming_level = std::clamp(static_cast<int>(20.0 - floorf(20.0 * _f + 0.5f)), 0, 31);
 
                 decal_builder->ApplyBloodSplatToTerrain(fading, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
-                plane.normal = *norm2;
+                plane.normal = norm2;
                 plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)
                     decal_builder->BuildAndApplyDecals(31 - dimming_level, LocationTerrain, plane, 3, (VertexRenderList + 3), 0, -1);
