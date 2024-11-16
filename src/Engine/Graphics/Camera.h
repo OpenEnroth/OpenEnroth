@@ -27,11 +27,6 @@ struct Camera3D {
         RenderVertexSoft *pVertices,
         signed int NumFrustumPlanes);
 
-    float GetPolygonMaxZ(RenderVertexSoft *pVertex,
-                          unsigned int uStripType);
-    float GetPolygonMinZ(RenderVertexSoft *pVertices,
-                          unsigned int uStripType);
-
     void LightmapNeerClip(RenderVertexSoft *pInVertices,
                           int uNumInVertices,
                           RenderVertexSoft *pOutVertices,
