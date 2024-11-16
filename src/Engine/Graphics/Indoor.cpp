@@ -146,7 +146,7 @@ void PrepareDrawLists_BLV() {
     //pStationaryLightsStack->uNumLightsActive = 0;
     engine->StackPartyTorchLight();
 
-    pBspRenderer->Init();
+    pBspRenderer->Render();
 
     render->DrawSpriteObjects();
     pOutdoor->PrepareActorsDrawList();
@@ -945,6 +945,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     uCurrentlyLoadedLevelType = LEVEL_INDOOR;
     pBLVRenderParams->uPartySectorID = 0;
     pBLVRenderParams->uPartyEyeSectorID = 0;
+    pBspRenderer->Clear();
 
     engine->SetUnderwater(isMapUnderwater(mapid));
 

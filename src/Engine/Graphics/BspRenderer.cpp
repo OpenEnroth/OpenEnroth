@@ -196,12 +196,17 @@ void BspRenderer::AddSector(int sectorId) {
 }
 
 
-//----- (0043F953) --------------------------------------------------------
-void BspRenderer::Init() {
+void BspRenderer::Clear() {
     // reset lists
     num_faces = 0;
     num_nodes = 0;
     uNumVisibleNotEmptySectors = 0;
+}
+
+
+//----- (0043F953) --------------------------------------------------------
+void BspRenderer::Render() {
+    Clear();
 
     if (pBLVRenderParams->uPartySectorID) {
         // set to current sector - using eye sector here because feet can be in other sector on horizontal portal
