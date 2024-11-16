@@ -27,9 +27,9 @@ static int mapToGlobalTileId(const std::array<int, 4> &baseIds, int localTileId)
     if (localTileId >= 234)
         return 0;
 
-    int tileSetIndex = (localTileId - 90) / 36;
-    int tileSetOffset = (localTileId - 90) % 36;
-    return baseIds[tileSetIndex] + tileSetOffset;
+    int tilesetIndex = (localTileId - 90) / 36;
+    int tilesetOffset = (localTileId - 90) % 36;
+    return baseIds[tilesetIndex] + tilesetOffset;
 }
 
 OutdoorTerrain::OutdoorTerrain() {
@@ -39,16 +39,16 @@ OutdoorTerrain::OutdoorTerrain() {
 }
 
 void OutdoorTerrain::CreateDebugTerrain() {
-    int tileId = pTileTable->tileId(TILE_SET_GRASS, TILE_VARIANT_BASE1);
+    int tileId = pTileTable->tileId(TILESET_GRASS, TILE_VARIANT_BASE1);
 
     pHeightmap.fill(0);
     pTilemap.fill(tileId);
     pTerrainNormals.fill({Vec3f(0, 0, 1), Vec3f(0, 0, 1)});
 
-    pTileTypes[0] = TILE_SET_GRASS;
-    pTileTypes[1] = TILE_SET_WATER;
-    pTileTypes[2] = TILE_SET_BADLANDS;
-    pTileTypes[3] = TILE_SET_ROAD_GRASS_COBBLE;
+    pTileTypes[0] = TILESET_GRASS;
+    pTileTypes[1] = TILESET_WATER;
+    pTileTypes[2] = TILESET_BADLANDS;
+    pTileTypes[3] = TILESET_ROAD_GRASS_COBBLE;
 }
 
 int OutdoorTerrain::heightByGrid(Vec2i gridPos) const {
@@ -110,15 +110,15 @@ int OutdoorTerrain::tileIdByGrid(Vec2i gridPos) const {
     return pTilemap[gridPos.y][gridPos.x];
 }
 
-TileSet OutdoorTerrain::tileSetByGrid(Vec2i gridPos) const {
+Tileset OutdoorTerrain::tilesetByGrid(Vec2i gridPos) const {
     if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
-        return TILE_SET_INVALID;
+        return TILESET_INVALID;
 
     return pTileTable->tiles[pTilemap[gridPos.y][gridPos.x]].tileset;
 }
 
-TileSet OutdoorTerrain::tileSetByPos(const Vec3f &pos) const {
-    return tileSetByGrid(WorldPosToGrid(pos));
+Tileset OutdoorTerrain::tilesetByPos(const Vec3f &pos) const {
+    return tilesetByGrid(WorldPosToGrid(pos));
 }
 
 bool OutdoorTerrain::isWaterByGrid(Vec2i gridPos) const {
@@ -194,7 +194,7 @@ bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
 void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
     std::array<int, 4> baseTileIds;
     for (int i = 0; i < 4; i++) {
-        dst->pTileTypes[i] = static_cast<TileSet>(src.tileTypes[i].tileset);
+        dst->pTileTypes[i] = static_cast<Tileset>(src.tileTypes[i].tileset);
         baseTileIds[i] = pTileTable->tileId(dst->pTileTypes[i], TILE_VARIANT_BASE1);
     }
 

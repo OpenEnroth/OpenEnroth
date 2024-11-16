@@ -364,7 +364,7 @@ int OutdoorLocation::getNumFoodRequiredToRestInCurrentPos(const Vec3f &pos) {
         return 2;
     }
 
-    return foodRequiredForTileSet(pTerrain.tileSetByPos(pos));
+    return foodRequiredForTileset(pTerrain.tilesetByPos(pos));
 }
 
 //----- (00489487) --------------------------------------------------------
@@ -1560,7 +1560,7 @@ void ODM_ProcessPartyActions() {
                             if (isModelWalk) {
                                 sound = SOUND_RunWood;
                             } else {
-                                sound = walkSoundForTileSet(pOutdoor->pTerrain.tileSetByPos(partyOldPosition), true);
+                                sound = walkSoundForTileset(pOutdoor->pTerrain.tilesetByPos(partyOldPosition), true);
                             }
                         }
                     } else if (partyIsWalking) {
@@ -1568,7 +1568,7 @@ void ODM_ProcessPartyActions() {
                             if (isModelWalk) {
                                 sound = SOUND_RunWood;
                             } else {
-                                sound = walkSoundForTileSet(pOutdoor->pTerrain.tileSetByPos(partyOldPosition), false);
+                                sound = walkSoundForTileset(pOutdoor->pTerrain.tilesetByPos(partyOldPosition), false);
                             }
                         }
                     }

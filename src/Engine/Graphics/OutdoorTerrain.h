@@ -37,9 +37,9 @@ class OutdoorTerrain {
      * @param gridPos                   Grid coordinates.
      * @return                          Tile set for the tile at `gridPos`, or `Tileset_NULL` if the tile is invalid.
      */
-    TileSet tileSetByGrid(Vec2i gridPos) const;
+    Tileset tilesetByGrid(Vec2i gridPos) const;
 
-    TileSet tileSetByPos(const Vec3f &pos) const;
+    Tileset tilesetByPos(const Vec3f &pos) const;
 
     /**
      * @param gridPos                   Grid coordinates.
@@ -66,7 +66,7 @@ class OutdoorTerrain {
      */
     bool isSlopeTooHighByPos(const Vec3f &pos) const;
 
-    std::array<TileSet, 4> pTileTypes; // Tileset ids used in this location, [3] is road tileset.
+    std::array<Tileset, 4> pTileTypes; // Tileset ids used in this location, [3] is road tileset.
     Image<uint8_t> pHeightmap; // Height map, to get actual height multiply by 32.
     Image<int16_t> pTilemap; // Tile id map, indices into the global tile table.
     Image<std::array<Vec3f, 2>> pTerrainNormals; // Terrain normal map, two normals per tile for two triangles.

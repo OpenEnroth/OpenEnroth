@@ -9,11 +9,11 @@ inline Segment<TileVariant> allSpecialTileVariants() {
 }
 
 /**
- * @param tileSet                       Tileset to get walk/run sound for.
+ * @param tileset                       Tileset to get walk/run sound for.
  * @param isRunning                     Run flag.
  * @return                              Sound id to use.
  * @offset 0x47EE49
  */
-SoundId walkSoundForTileSet(TileSet tileSet, bool isRunning);
+SoundId walkSoundForTileset(Tileset tileset, bool isRunning);
 
-int foodRequiredForTileSet(TileSet tileSet);
+int foodRequiredForTileset(Tileset tileset);

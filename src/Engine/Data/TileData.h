@@ -8,7 +8,7 @@
 struct TileData {
     std::string name;
     uint16_t uTileID = 0;
-    TileSet tileset = TILE_SET_INVALID;
+    Tileset tileset = TILESET_INVALID;
     TileVariant uSection = TILE_VARIANT_BASE1;
     TileFlags uAttributes;
 };

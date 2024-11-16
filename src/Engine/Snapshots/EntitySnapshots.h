@@ -176,7 +176,7 @@ struct TileData_MM7 {
     std::array<char, 16> tileName;
     uint16_t tileId;
     uint16_t bitmapId;
-    uint16_t tileSet;
+    uint16_t tileset;
     uint16_t section;
     uint16_t attributes;
 };

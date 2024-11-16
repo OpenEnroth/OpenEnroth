@@ -7,7 +7,7 @@ int tileIdForSeason(int tileId, int month) {
     case 11:
     case 0:
     case 1: // winter
-        if (tileId >= 90 && tileId <= 113) { // TILE_SET_GRASS
+        if (tileId >= 90 && tileId <= 113) { // TILESET_GRASS
             if (tileId <= 95)  // some grastyl entries
                 return 348;
             return 348 + (tileId - 96);
@@ -20,7 +20,7 @@ int tileIdForSeason(int tileId, int month) {
     case 8:
     case 9:
     case 10: // autumn
-        if (tileId >= 90 && tileId <= 113)  // just convert all TILE_SET_GRASS to dirt
+        if (tileId >= 90 && tileId <= 113)  // just convert all TILESET_GRASS to dirt
             return 1;
         return tileId;
 
