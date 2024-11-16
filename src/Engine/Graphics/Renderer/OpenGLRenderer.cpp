@@ -1461,7 +1461,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
         // generate vertex locations
         for (int y = 0; y < 128; ++y)
             for (int x = 0; x < 128; ++x)
-                pTerrainVertices[y * 128 + x].vWorldPosition = pOutdoor->pTerrain.vertexByGrid({x, y}).toFloat();
+                pTerrainVertices[y * 128 + x].vWorldPosition = pOutdoor->pTerrain.vertexByGridUnsafe({x, y}).toFloat();
 
         // reserve first 7 layers for water tiles in unit 0
         auto wtrtexture = this->hd_water_tile_anim[0];
@@ -1528,7 +1528,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 }
 
                 // next calculate all vertices vertices
-                const auto &[norm, norm2] = pOutdoor->pTerrain.normalsByGrid({x, y});
+                const auto &[norm, norm2] = pOutdoor->pTerrain.normalsByGridUnsafe({x, y});
 
                 // calc each vertex
                 // [0] - x,y        n1
@@ -1939,7 +1939,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 // splat hits this square of terrain
                 bool fading = pOutdoor->pTerrain.isWaterOrShoreByGrid({loopx, loopy});
 
-                const auto &[norm, norm2] = pOutdoor->pTerrain.normalsByGrid({loopx, loopy});
+                const auto &[norm, norm2] = pOutdoor->pTerrain.normalsByGridUnsafe({loopx, loopy});
 
                 float Light_tile_dist = 0.0;
 

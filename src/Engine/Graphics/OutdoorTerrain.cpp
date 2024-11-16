@@ -20,7 +20,6 @@ static int mapToGlobalTileId(const std::array<int, 4> &baseIds, int localTileId)
     // [162..198) map to tileset #3.
     // [198..234) map to tileset #4 (road).
     // [234..255) are invalid.
-
     if (localTileId < 90)
         return localTileId;
 
@@ -30,6 +29,11 @@ static int mapToGlobalTileId(const std::array<int, 4> &baseIds, int localTileId)
     int tilesetIndex = (localTileId - 90) / 36;
     int tilesetOffset = (localTileId - 90) % 36;
     return baseIds[tilesetIndex] + tilesetOffset;
+}
+
+template<class Image>
+static bool contains(const Image &image, Pointi point) {
+    return point.x >= 0 && point.x < image.width() && point.y >= 0 && point.y <= image.height();
 }
 
 //----- (0047F44B) --------------------------------------------------------
@@ -71,7 +75,7 @@ void OutdoorTerrain::CreateDebugTerrain() {
 }
 
 int OutdoorTerrain::heightByGrid(Pointi gridPos) const {
-    if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
+    if (!contains(pHeightmap, gridPos))
         return 0;
 
     return 32 * pHeightmap[gridPos];
@@ -123,14 +127,14 @@ int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
 }
 
 int OutdoorTerrain::tileIdByGrid(Pointi gridPos) const {
-    if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
+    if (!contains(pTilemap, gridPos))
         return 0;
 
     return pTilemap[gridPos];
 }
 
 Tileset OutdoorTerrain::tilesetByGrid(Pointi gridPos) const {
-    if (gridPos.x < 0 || gridPos.x > 127 || gridPos.y < 0 || gridPos.y > 127)
+    if (!contains(pTilemap, gridPos))
         return TILESET_INVALID;
 
     return pTileTable->tiles[pTilemap[gridPos]].tileset;
@@ -154,6 +158,8 @@ bool OutdoorTerrain::isWaterOrShoreByGrid(Pointi gridPos) const {
 
 Vec3f OutdoorTerrain::normalByPos(const Vec3f &pos) const {
     Pointi gridPos = WorldPosToGrid(pos);
+    if (!contains(pTerrainNormals, gridPos))
+        return Vec3f(0, 0, 1);
 
     int x0 = GridCellToWorldPosX(gridPos.x);
     int y0 = GridCellToWorldPosY(gridPos.y);
@@ -229,8 +235,8 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
 }
 
 void OutdoorTerrain::recalculateNormals() {
-    for (int y = 0; y < 127; y++) {
-        for (int x = 0; x < 127; x++) {
+    for (int y = 0; y < pTerrainNormals.height(); y++) {
+        for (int x = 0; x < pTerrainNormals.width(); x++) {
             TileGeometry tile = tileGeometryByGrid({x, y});
 
             Vec3f a2 = Vec3f(tile.x1, tile.y1, tile.z11) - Vec3f(tile.x0, tile.y1, tile.z01);

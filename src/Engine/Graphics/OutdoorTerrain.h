@@ -33,8 +33,8 @@ class OutdoorTerrain {
      */
     int heightByPos(const Vec3f &pos) const;
 
-    Vec3i vertexByGrid(Pointi gridPos) const {
-        return Vec3i(GridCellToWorldPosX(gridPos.x), GridCellToWorldPosY(gridPos.y), heightByGrid(gridPos));
+    Vec3i vertexByGridUnsafe(Pointi gridPos) const {
+        return Vec3i(GridCellToWorldPosX(gridPos.x), GridCellToWorldPosY(gridPos.y), 32 * pHeightmap[gridPos]);
     }
 
     /**
@@ -69,7 +69,7 @@ class OutdoorTerrain {
      */
     Vec3f normalByPos(const Vec3f &pos) const;
 
-    const std::array<Vec3f, 2> &normalsByGrid(Pointi gridPos) const {
+    const std::array<Vec3f, 2> &normalsByGridUnsafe(Pointi gridPos) const {
         return pTerrainNormals[gridPos];
     }
 
