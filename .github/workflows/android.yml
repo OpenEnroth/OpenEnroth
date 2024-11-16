@@ -109,7 +109,6 @@ jobs:
         uses: hendrikmuhs/ccache-action@v1.2.14
         with:
           key: 'android-${{matrix.configuration}}-${{matrix.architecture}}'
-          save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
           verbose: 2
           max-size: ${{ fromJson('["200M", "600M"]')[matrix.architecture == 'universal'] }}
 
