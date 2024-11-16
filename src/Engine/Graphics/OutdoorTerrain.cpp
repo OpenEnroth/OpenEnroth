@@ -238,15 +238,11 @@ void OutdoorTerrain::recalculateNormals() {
             Vec3f b2 = Vec3f(tile.v0.x, tile.v0.y, tile.z00) - Vec3f(tile.v1.x, tile.v0.y, tile.z10);
             Vec3f b1 = Vec3f(tile.v1.x, tile.v1.y, tile.z11) - Vec3f(tile.v1.x, tile.v0.y, tile.z10);
 
-            // TODO(captainurist): use normalize() & retrace.
-
             Vec3f an = cross(a2, a1);
-            float amag = an.length();
-            an /= amag;
+            an.normalize();
 
             Vec3f bn = cross(b2, b1);
-            float bmag = bn.length();
-            bn /= bmag;
+            bn.normalize();
 
             assert(an.z > 0);
             assert(bn.z > 0);
