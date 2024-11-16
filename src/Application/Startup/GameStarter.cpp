@@ -276,7 +276,7 @@ void GameStarter::run() {
 
         _application->component<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
         _config->save(ufs->openForWriting(configName).get());
-        logger->info("Configuration file '{}' saved!", configName);
+        logger->info("Configuration file '{}' saved!", ufs->displayPath(configName));
     } catch (const std::exception &e) {
         // Log the exception so that it goes to all registered loggers.
         logger->critical("Terminated with exception: {}", e.what());
