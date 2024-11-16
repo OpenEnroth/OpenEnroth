@@ -52,16 +52,16 @@ class OutdoorTerrain {
      * @return                          Terrain height at `gridPos`.
      * @offset 0x00488F2E, 0x0047EE16
      */
-    int heightByGrid(Pointi gridPos) const;
+    [[nodiscard]] int heightByGrid(Pointi gridPos) const;
 
     /**
      * @param pos                       World coordinates, only xy component is used by this function.
      * @return                          Terrain height at given position.
      * @offset 0x0048257A
      */
-    int heightByPos(const Vec3f &pos) const;
+    [[nodiscard]] int heightByPos(const Vec3f &pos) const;
 
-    Vec3i vertexByGridUnsafe(Pointi gridPos) const {
+    [[nodiscard]] Vec3i vertexByGridUnsafe(Pointi gridPos) const {
         Vec2i tmp = gridToWorld(gridPos);
         return Vec3i(tmp.x, tmp.y, 32 * _heightMap[gridPos]);
     }
@@ -70,35 +70,35 @@ class OutdoorTerrain {
      * @param gridPos                   Grid coordinates.
      * @return                          Tile id at `gridPos` that can then be used to get tile data from `TileTable`.
      */
-    int tileIdByGrid(Pointi gridPos) const;
+    [[nodiscard]] int tileIdByGrid(Pointi gridPos) const;
 
     /**
      * @param gridPos                   Grid coordinates.
      * @return                          Tile set for the tile at `gridPos`, or `Tileset_NULL` if the tile is invalid.
      */
-    Tileset tilesetByGrid(Pointi gridPos) const;
+    [[nodiscard]] Tileset tilesetByGrid(Pointi gridPos) const;
 
-    Tileset tilesetByPos(const Vec3f &pos) const;
+    [[nodiscard]] Tileset tilesetByPos(const Vec3f &pos) const;
 
     /**
      * @param gridPos                   Grid coordinates.
      * @return                          Whether the tile at `gridPos` is a water tile. Note that shore tiles are
      *                                  different from water tiles.
      */
-    bool isWaterByGrid(Pointi gridPos) const;
+    [[nodiscard]] bool isWaterByGrid(Pointi gridPos) const;
 
-    bool isWaterByPos(const Vec3f &pos) const;
+    [[nodiscard]] bool isWaterByPos(const Vec3f &pos) const;
 
-    bool isWaterOrShoreByGrid(Pointi gridPos) const;
+    [[nodiscard]] bool isWaterOrShoreByGrid(Pointi gridPos) const;
 
     /**
      * @param pos                       World coordinates, only xy component is used by this function.
      * @return                          Terrain normal at given position. Terrain normals always point up (`z > 0`).
      * @offset 0x0046DCC8
      */
-    Vec3f normalByPos(const Vec3f &pos) const;
+    [[nodiscard]] Vec3f normalByPos(const Vec3f &pos) const;
 
-    const std::array<Vec3f, 2> &normalsByGridUnsafe(Pointi gridPos) const {
+    [[nodiscard]] const std::array<Vec3f, 2> &normalsByGridUnsafe(Pointi gridPos) const {
         return _normalMap[gridPos];
     }
 
@@ -107,7 +107,7 @@ class OutdoorTerrain {
      * @return                          Whether terrain slope at given position is too high to be climbed or stood on.
      * @offset 0x004823F4
      */
-    bool isSlopeTooHighByPos(const Vec3f &pos) const;
+    [[nodiscard]] bool isSlopeTooHighByPos(const Vec3f &pos) const;
 
     friend void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst);
 
@@ -122,7 +122,7 @@ class OutdoorTerrain {
     };
 
     void recalculateNormals();
-    TileGeometry tileGeometryByGrid(Pointi gridPos) const;
+    [[nodiscard]] TileGeometry tileGeometryByGrid(Pointi gridPos) const;
 
  private:
     std::array<Tileset, 4> _tilesets; // Tileset ids used in this location, [3] is road tileset.
