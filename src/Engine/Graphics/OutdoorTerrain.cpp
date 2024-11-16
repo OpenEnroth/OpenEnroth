@@ -4,6 +4,10 @@
 #include <algorithm>
 
 #include "Engine/Tables/TileTable.h"
+#include "Engine/Snapshots/CompositeSnapshots.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
+
+#include "Library/Snapshots/CommonSnapshots.h"
 
 #include "Outdoor.h"
 
@@ -13,12 +17,6 @@ bool OutdoorTerrain::ZeroLandscape() {
     this->pTilemap.fill(90);
     this->pAttributemap.fill(0);
     return true;
-}
-
-//----- (0047F420) --------------------------------------------------------
-void OutdoorTerrain::LoadBaseTileIds() {
-    for (unsigned i = 0; i < 3; ++i)
-        pTileTypes[i].uTileID = pTileTable->tileIdForTileset(pTileTypes[i].tileset, 1);
 }
 
 void OutdoorTerrain::CreateDebugTerrain() {
@@ -176,6 +174,22 @@ bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
     int y_min = std::min(y1, std::min(y2, y3));  // не верно при подъёме на склон
     int y_max = std::max(y1, std::max(y2, y3));
     return (y_max - y_min) > 512;
+}
+
+void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
+    reconstruct(src.tileTypes, &dst->pTileTypes);
+    dst->LoadBaseTileIds();
+
+    reconstruct(src.heightMap, &dst->pHeightmap);
+    reconstruct(src.tileMap, &dst->pTilemap);
+    reconstruct(src.attributeMap, &dst->pAttributemap);
+    dst->recalculateNormals();
+}
+
+//----- (0047F420) --------------------------------------------------------
+void OutdoorTerrain::LoadBaseTileIds() {
+    for (unsigned i = 0; i < 3; ++i)
+        pTileTypes[i].uTileID = pTileTable->tileIdForTileset(pTileTypes[i].tileset, 1);
 }
 
 void OutdoorTerrain::recalculateNormals() {

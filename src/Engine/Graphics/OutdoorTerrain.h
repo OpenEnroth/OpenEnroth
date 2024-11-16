@@ -1,13 +1,12 @@
 #pragma once
 
 #include <array>
-#include <vector>
 
 #include "Library/Geometry/Vec.h"
 
 #include "Engine/Data/TileEnums.h"
 
-#include "Media/Audio/SoundEnums.h"
+struct OutdoorLocation_MM7;
 
 struct OutdoorTileType {
     TileSet tileset = TILE_SET_INVALID;
@@ -17,7 +16,6 @@ struct OutdoorTileType {
 class OutdoorTerrain {
  public:
     bool ZeroLandscape();
-    void LoadBaseTileIds();
     void CreateDebugTerrain();
 
     int heightByGrid(Vec2i gridPos) const;
@@ -68,12 +66,11 @@ class OutdoorTerrain {
 
     std::array<OutdoorTileType, 4> pTileTypes; // [3] is road tileset.
     std::array<uint8_t, 128 * 128> pHeightmap = {};
-    std::array<uint8_t, 128 * 128> pTilemap = {};
+    std::array<uint8_t, 128 * 128> pTilemap = {}; // TODO(captainurist): place TILEIDS here on load!
     std::array<uint8_t, 128 * 128> pAttributemap = {};
     std::array<Vec3f, 128 * 128 * 2> pTerrainNormals;
 
-    // TODO(captainurist): make private, also reconstruct() functions belong to the classes themselves.
-    void recalculateNormals();
+    friend void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst);
 
  private:
     struct TileGeometry {
@@ -88,6 +85,8 @@ class OutdoorTerrain {
     };
 
  private:
+    void LoadBaseTileIds();
+    void recalculateNormals();
     TileGeometry tileGeometryByGrid(Vec2i gridPos) const;
     int mapToGlobalTileId(int localTileId) const;
 };
