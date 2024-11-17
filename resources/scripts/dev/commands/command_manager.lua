@@ -87,21 +87,24 @@ local CommandManager = {
             params = command.customParser(paramsString)
         end
 
+        local message, result = "", false
         ---TODO(Gerark) unpack is deprecated in 5.4 but need to check why the alternative is not working at runtime.
         --- Probably we're running on an older version. If that's the case we should align the linter version
         ---@diagnostic disable-next-line: deprecated
-        local message, result = callback(unpack(params))
-        if message == nil or result == nil then
-            return
-                "The command " ..
-                commandName .. " does not return a valid message or result. Check the return statements in your script",
-                false
+        local status, err = pcall(function () message, result = callback(unpack(params)) end)
+        if not status then
+            result = false
+            message = "The command " ..
+                commandName .. " has failed miserably. Error:\n" .. err
+        elseif message == nil or result == nil then
+            result = false
+            message = "The command " ..
+                commandName .. " does not return a valid message or result. Check the return statements in your script"
         elseif type(message) ~= "string" then
-            return
-                "The command " ..
+            result = false
+            message = "The command " ..
                 commandName ..
-                " does not return a valid message. The message must be a string. Current message type: " .. type(message),
-                false
+                " does not return a valid message. The message must be a string. Current message type: " .. type(message)
         end
 
         return message, result
