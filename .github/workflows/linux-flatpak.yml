@@ -64,7 +64,6 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2.14
       with:
         key: 'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
-        save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
         verbose: 2
         max-size: 200M
         
