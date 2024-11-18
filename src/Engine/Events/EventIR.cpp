@@ -4,7 +4,6 @@
 #include <string>
 
 #include "Engine/Events/EventEnums.h"
-#include "Engine/Events/RawEvent.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/NPCTable.h"
@@ -14,6 +13,8 @@
 
 #include "Utility/String/Transformations.h"
 #include "Utility/Exception.h"
+#include "Utility/SequentialBlobReader.h"
+#include "Utility/Unaligned.h"
 
 #include "EventEnumFunctions.h"
 
@@ -838,362 +839,364 @@ std::string EventIR::toString() const {
     return fmt::format("{}: UNPROCESSED/{}", step, ::toString(type));
 }
 
-EventIR EventIR::parse(const RawEvent *evt, size_t size) {
+EventIR EventIR::parse(const uint8_t *evt, const size_t size) {
     EventIR ir;
-    ir.type = evt->_e_type;
-    ir.step = evt->v3;
+    // TODO(yoctozepto): fix size once passed correctly in
+    SequentialBlobReader sbr(evt, size - 3);
 
-    auto requireSize = [&](size_t minSize) {
+    ir.step = sbr.read<uint8_t>();
+    ir.type = EventType(sbr.read<uint8_t>());
+
+    bool requireSizeCalled = false;
+
+    const auto requireSize = [&](size_t minSize) {
+        requireSizeCalled = true;
         if (size < minSize)
             throw Exception("Invalid evt record size for event '{}': expected at least {} bytes, got {} bytes", ::toString(ir.type), minSize, size);
     };
 
-    auto parseString = [&](const uint8_t *ptr) {
-        const uint8_t *end = &evt->_e_size + size;
-        assert(ptr >= &evt->v5);
-        assert(ptr < end);
-
-        size_t runway = end - ptr;
-        const uint8_t *pos = static_cast<const uint8_t *>(memchr(ptr, 0, runway));
-        size_t length = pos == nullptr ? runway : pos - ptr;
-        return std::string(reinterpret_cast<const char *>(ptr), length);
-    };
-
     // TODO(captainurist): verify enum ranges here.
+    // TODO(yoctozepto): which are present in global events and which in local?
 
     switch (ir.type) {
         case EVENT_Exit:
+            requireSize(6);
+            sbr.read<uint8_t>();  // TODO(yoctozepto): useless byte there to consume?
             break;
         case EVENT_SpeakInHouse:
             requireSize(6);
-            ir.data.house_id = static_cast<HouseId>(EVT_DWORD(&evt->v5));
+            ir.data.house_id = static_cast<HouseId>(sbr.read<uint32_t>());
             break;
         case EVENT_PlaySound:
             requireSize(17);
-            ir.data.sound_descr.sound_id = static_cast<SoundId>(EVT_DWORD(&evt->v5));
-            ir.data.sound_descr.x = EVT_DWORD(&evt->v9);
-            ir.data.sound_descr.y = EVT_DWORD(&evt->v13);
+            ir.data.sound_descr.sound_id = static_cast<SoundId>(sbr.read<uint32_t>());  // TODO(yoctozepto): this downcasts a DWORD to WORD
+            ir.data.sound_descr.x = sbr.read<uint32_t>();
+            ir.data.sound_descr.y = sbr.read<uint32_t>();
             break;
         case EVENT_MouseOver:
             requireSize(6);
-            ir.data.text_id = evt->v5;
+            ir.data.text_id = sbr.read<uint8_t>();
             ir.step = -1; // Step duplicated for other command, so ignore it
             break;
-        case EVENT_LocationName:
-            ir.step = -1; // Step duplicated for other command, so ignore it
-            break;
+        //case EVENT_LocationName:
+        //    ir.step = -1; // Step duplicated for other command, so ignore it
+        //    break;
         case EVENT_MoveToMap:
             requireSize(32);
-            ir.data.move_map_descr.x = EVT_DWORD(&evt->v5);
-            ir.data.move_map_descr.y = EVT_DWORD(&evt->v9);
-            ir.data.move_map_descr.z = EVT_DWORD(&evt->v13);
-            ir.data.move_map_descr.yaw = EVT_DWORD(&evt->v17);
-            ir.data.move_map_descr.pitch = EVT_DWORD(&evt->v21);
-            ir.data.move_map_descr.zspeed = EVT_DWORD(&evt->v25);
-            ir.data.move_map_descr.house_id = static_cast<HouseId>(evt->v29); // TODO(captainurist): Is this correct? Houses can have ids > 255.
-            ir.data.move_map_descr.exit_pic_id = evt->v30;
-            ir.str = parseString(&evt->v31);
+            ir.data.move_map_descr.x = sbr.read<uint32_t>();
+            ir.data.move_map_descr.y = sbr.read<uint32_t>();
+            ir.data.move_map_descr.z = sbr.read<uint32_t>();
+            ir.data.move_map_descr.yaw = sbr.read<uint32_t>();
+            ir.data.move_map_descr.pitch = sbr.read<uint32_t>();
+            ir.data.move_map_descr.zspeed = sbr.read<uint32_t>();
+            ir.data.move_map_descr.house_id = static_cast<HouseId>(sbr.read<uint8_t>()); // TODO(captainurist): Is this correct? Houses can have ids > 255.
+            ir.data.move_map_descr.exit_pic_id = sbr.read<uint8_t>();
+            ir.str = sbr.readString();
             break;
         case EVENT_OpenChest:
             requireSize(6);
-            ir.data.chest_id = evt->v5;
+            ir.data.chest_id = sbr.read<uint8_t>();
             break;
-        case EVENT_ShowFace:
-            requireSize(7);
-            ir.who = static_cast<CharacterChoosePolicy>(evt->v5);
-            ir.data.portrait_id = static_cast<CharacterPortrait>(evt->v6);
-            break;
+        //case EVENT_ShowFace:
+        //    requireSize(7);
+        //    ir.who = static_cast<CharacterChoosePolicy>(sbr.read<uint8_t>());
+        //    ir.data.portrait_id = static_cast<CharacterPortrait>(sbr.read<uint8_t>());
+        //    break;
         case EVENT_ReceiveDamage:
             requireSize(11);
-            ir.data.damage_descr.damage_type = static_cast<DamageType>(evt->v6);
-            ir.data.damage_descr.damage = EVT_DWORD(&evt->v7);
+            sbr.read<uint8_t>();  // TODO(yoctozepto): one byte is skipped?
+            ir.data.damage_descr.damage_type = static_cast<DamageType>(sbr.read<uint8_t>());
+            ir.data.damage_descr.damage = sbr.read<uint32_t>();
             break;
-        case EVENT_SetSnow:
-            requireSize(7);
-            ir.data.snow_descr.is_nop = evt->v5;
-            ir.data.snow_descr.is_enable = evt->v6;
-            break;
+        //case EVENT_SetSnow:
+        //    requireSize(7);
+        //    ir.data.snow_descr.is_nop = sbr.read<uint8_t>();
+        //    ir.data.snow_descr.is_enable = sbr.read<uint8_t>();
+        //    break;
         case EVENT_SetTexture:
             requireSize(10);
-            ir.data.sprite_texture_descr.cog = EVT_DWORD(&evt->v5);
-            ir.str = parseString(&evt->v9);
+            ir.data.sprite_texture_descr.cog = sbr.read<uint32_t>();
+            ir.str = sbr.readString();
             break;
         case EVENT_ShowMovie:
             requireSize(8);
-            ir.data.movie_unknown_field = evt->v6;
-            ir.str = parseString(&evt->v7);
+            sbr.read<uint8_t>();  // TODO(yoctozepto): one byte is skipped?
+            ir.data.movie_unknown_field = sbr.read<uint8_t>();
+            ir.str = sbr.readString();
             break;
         case EVENT_SetSprite:
             requireSize(11);
-            ir.data.sprite_texture_descr.cog = EVT_DWORD(&evt->v5);
-            ir.data.sprite_texture_descr.hide = evt->v9;
-            ir.str = parseString(&evt->v10);
+            ir.data.sprite_texture_descr.cog = sbr.read<uint32_t>();
+            ir.data.sprite_texture_descr.hide = sbr.read<uint8_t>();
+            ir.str = sbr.readString();
             break;
         case EVENT_Compare:
             requireSize(11);
-            ir.target_step = evt->v11;
-            ir.data.variable_descr.type = static_cast<VariableType>(EVT_WORD(&evt->v5));
-            ir.data.variable_descr.value = EVT_DWORD(&evt->v7);
+            ir.data.variable_descr.type = static_cast<VariableType>(sbr.read<uint16_t>());
+            ir.data.variable_descr.value = sbr.read<uint32_t>();
+            ir.target_step = sbr.read<uint8_t>();
             break;
         case EVENT_ChangeDoorState:
             requireSize(7);
-            ir.data.door_descr.door_id = evt->v5;
-            ir.data.door_descr.door_action = static_cast<DoorAction>(evt->v6);
+            ir.data.door_descr.door_id = sbr.read<uint8_t>();
+            ir.data.door_descr.door_action = static_cast<DoorAction>(sbr.read<uint8_t>());
             break;
         case EVENT_Add:
         case EVENT_Substract:
         case EVENT_Set:
             requireSize(8);
-            ir.data.variable_descr.type = static_cast<VariableType>(EVT_WORD(&evt->v5));
-            ir.data.variable_descr.value = EVT_DWORD(&evt->v7);
+            ir.data.variable_descr.type = static_cast<VariableType>(sbr.read<uint16_t>());
+            ir.data.variable_descr.value = sbr.read<uint32_t>();
             break;
         case EVENT_SummonMonsters:
             requireSize(28);
-            ir.data.monster_descr.type = evt->v5;
-            ir.data.monster_descr.level = evt->v6;
-            ir.data.monster_descr.count = evt->v7;
-            ir.data.monster_descr.x = EVT_DWORD(&evt->v8);
-            ir.data.monster_descr.y = EVT_DWORD(&evt->v12);
-            ir.data.monster_descr.z = EVT_DWORD(&evt->v16);
-            ir.data.monster_descr.group = EVT_DWORD(&evt->v20);
-            ir.data.monster_descr.name_id = EVT_DWORD(&evt->v24);
+            ir.data.monster_descr.type = sbr.read<uint8_t>();
+            ir.data.monster_descr.level = sbr.read<uint8_t>();
+            ir.data.monster_descr.count = sbr.read<uint8_t>();
+            ir.data.monster_descr.x = sbr.read<uint32_t>();
+            ir.data.monster_descr.y = sbr.read<uint32_t>();
+            ir.data.monster_descr.z = sbr.read<uint32_t>();
+            ir.data.monster_descr.group = sbr.read<uint32_t>();
+            ir.data.monster_descr.name_id = sbr.read<uint32_t>();
             break;
         case EVENT_CastSpell:
             requireSize(32);
-            ir.data.spell_descr.spell_id = static_cast<SpellId>(evt->v5);
-            ir.data.spell_descr.spell_mastery = static_cast<CharacterSkillMastery>(evt->v6 + 1);
-            ir.data.spell_descr.spell_level = evt->v7;
-            ir.data.spell_descr.fromx = EVT_DWORD(&evt->v8);
-            ir.data.spell_descr.fromy = EVT_DWORD(&evt->v12);
-            ir.data.spell_descr.fromz = EVT_DWORD(&evt->v16);
-            ir.data.spell_descr.tox = EVT_DWORD(&evt->v20);
-            ir.data.spell_descr.toy = EVT_DWORD(&evt->v24);
-            ir.data.spell_descr.toz = EVT_DWORD(&evt->v28);
+            ir.data.spell_descr.spell_id = static_cast<SpellId>(sbr.read<uint8_t>());
+            ir.data.spell_descr.spell_mastery = static_cast<CharacterSkillMastery>(sbr.read<uint8_t>() + 1);  // TODO(yoctozepto): why add 1? it is not done with Event_CheckSkill
+            ir.data.spell_descr.spell_level = sbr.read<uint8_t>();
+            ir.data.spell_descr.fromx = sbr.read<uint32_t>();
+            ir.data.spell_descr.fromy = sbr.read<uint32_t>();
+            ir.data.spell_descr.fromz = sbr.read<uint32_t>();
+            ir.data.spell_descr.tox = sbr.read<uint32_t>();
+            ir.data.spell_descr.toy = sbr.read<uint32_t>();
+            ir.data.spell_descr.toz = sbr.read<uint32_t>();
             break;
         case EVENT_SpeakNPC:
             requireSize(9);
-            ir.data.npc_descr.npc_id = EVT_DWORD(&evt->v5);
+            ir.data.npc_descr.npc_id = sbr.read<uint32_t>();
             break;
         case EVENT_SetFacesBit:
             requireSize(14);
-            ir.data.faces_bit_descr.cog = EVT_DWORD(&evt->v5);
-            ir.data.faces_bit_descr.face_bit = static_cast<FaceAttribute>(EVT_DWORD(&evt->v9));
-            ir.data.faces_bit_descr.is_on = evt->v13;
+            ir.data.faces_bit_descr.cog = sbr.read<uint32_t>();
+            ir.data.faces_bit_descr.face_bit = static_cast<FaceAttribute>(sbr.read<uint32_t>());
+            ir.data.faces_bit_descr.is_on = sbr.read<uint8_t>();
             break;
-        case EVENT_ToggleActorFlag:
-            requireSize(14);
-            ir.data.actor_flag_descr.id = EVT_DWORD(&evt->v5);
-            ir.data.actor_flag_descr.attr = static_cast<ActorAttribute>(EVT_DWORD(&evt->v9));
-            ir.data.actor_flag_descr.is_set = evt->v13;
-            break;
+        //case EVENT_ToggleActorFlag:
+        //    requireSize(14);
+        //    ir.data.actor_flag_descr.id = sbr.read<uint32_t>();
+        //    ir.data.actor_flag_descr.attr = static_cast<ActorAttribute>(sbr.read<uint32_t>());
+        //    ir.data.actor_flag_descr.is_set = sbr.read<uint8_t>();
+        //    break;
         case EVENT_RandomGoTo:
             requireSize(11);
-            ir.data.random_goto_descr.random_goto[0] = evt->v5;
-            ir.data.random_goto_descr.random_goto[1] = evt->v6;
-            ir.data.random_goto_descr.random_goto[2] = evt->v7;
-            ir.data.random_goto_descr.random_goto[3] = evt->v8;
-            ir.data.random_goto_descr.random_goto[4] = evt->v9;
-            ir.data.random_goto_descr.random_goto[5] = evt->v10;
-            ir.data.random_goto_descr.random_goto_len = 1 + !!evt->v6 + !!evt->v7 + !!evt->v8 + !!evt->v9 + !!evt->v10;
+            {
+                auto &rgt = ir.data.random_goto_descr;
+                rgt.random_goto_len = 0;
+                for (int i = 0; i < rgt.random_goto.size(); i++) {
+                    rgt.random_goto[i] = sbr.read<uint8_t>();
+                    if (rgt.random_goto[i] > 0) {
+                        rgt.random_goto_len++;
+                    }
+                }
+                assert(rgt.random_goto_len > 0);
+            }
             break;
-        case EVENT_InputString:
-            requireSize(9);
-            ir.data.text_id = EVT_DWORD(&evt->v5);
-            break;
+        //case EVENT_InputString:
+        //    requireSize(9);
+        //    ir.data.text_id = sbr.read<uint32_t>();
+        //    break;
         case EVENT_StatusText:
             requireSize(9);
-            ir.data.text_id = EVT_DWORD(&evt->v5);
+            ir.data.text_id = sbr.read<uint32_t>();
             break;
         case EVENT_ShowMessage:
             requireSize(9);
-            ir.data.text_id = EVT_DWORD(&evt->v5);
+            ir.data.text_id = sbr.read<uint32_t>();
             break;
         case EVENT_OnTimer:
-            requireSize(13);
-            ir.data.timer_descr.is_yearly = evt->v5;
-            ir.data.timer_descr.is_monthly = evt->v6;
-            ir.data.timer_descr.is_weekly = evt->v7;
-            ir.data.timer_descr.daily_start_hour = evt->v8;
-            ir.data.timer_descr.daily_start_minute = evt->v9;
-            ir.data.timer_descr.daily_start_second = evt->v10;
-            ir.data.timer_descr.alt_halfmin_interval = evt->v11 + (evt->v12 << 8);
+        case EVENT_OnLongTimer:
+            requireSize(15);
+            ir.data.timer_descr.is_yearly = sbr.read<uint8_t>();
+            ir.data.timer_descr.is_monthly = sbr.read<uint8_t>();
+            ir.data.timer_descr.is_weekly = sbr.read<uint8_t>();
+            ir.data.timer_descr.daily_start_hour = sbr.read<uint8_t>();
+            ir.data.timer_descr.daily_start_minute = sbr.read<uint8_t>();
+            ir.data.timer_descr.daily_start_second = sbr.read<uint8_t>();
+            ir.data.timer_descr.alt_halfmin_interval = sbr.read<uint16_t>();
+            sbr.read<uint16_t>();  // TODO(yoctozepto): useless word there to consume?
             break;
         case EVENT_ToggleIndoorLight:
             requireSize(10);
-            ir.data.light_descr.light_id = EVT_DWORD(&evt->v5);
-            ir.data.light_descr.is_enable = evt->v9;
+            ir.data.light_descr.light_id = sbr.read<uint32_t>();
+            ir.data.light_descr.is_enable = sbr.read<uint8_t>();
             break;
-        case EVENT_PressAnyKey:
-            // Nothing?
-            break;
-        case EVENT_SummonItem:
-            requireSize(27);
-            ir.data.summon_item_descr.sprite = static_cast<SpriteId>(EVT_DWORD(&evt->v5));
-            ir.data.summon_item_descr.x = EVT_DWORD(&evt->v9);
-            ir.data.summon_item_descr.y = EVT_DWORD(&evt->v13);
-            ir.data.summon_item_descr.z = EVT_DWORD(&evt->v17);
-            ir.data.summon_item_descr.speed = EVT_DWORD(&evt->v21);
-            ir.data.summon_item_descr.count = evt->v25;
-            ir.data.summon_item_descr.random_rotate = evt->v26;
-            break;
+        //case EVENT_PressAnyKey:
+        //    // Nothing?
+        //    break;
+        //case EVENT_SummonItem:
+        //    requireSize(27);
+        //    ir.data.summon_item_descr.sprite = static_cast<SpriteId>(sbr.read<uint32_t>());  // TODO(yoctozepto): this downcasts a DWORD to WORD
+        //    ir.data.summon_item_descr.x = sbr.read<uint32_t>();
+        //    ir.data.summon_item_descr.y = sbr.read<uint32_t>();
+        //    ir.data.summon_item_descr.z = sbr.read<uint32_t>();
+        //    ir.data.summon_item_descr.speed = sbr.read<uint32_t>();
+        //    ir.data.summon_item_descr.count = sbr.read<uint8_t>();
+        //    ir.data.summon_item_descr.random_rotate = sbr.read<uint8_t>();
+        //    break;
         case EVENT_ForPartyMember:
             requireSize(6);
-            ir.who = static_cast<CharacterChoosePolicy>(evt->v5);
+            ir.who = static_cast<CharacterChoosePolicy>(sbr.read<uint8_t>());
             break;
         case EVENT_Jmp:
             requireSize(6);
-            ir.target_step = evt->v5;
+            ir.target_step = sbr.read<uint8_t>();
             break;
         case EVENT_OnMapReload:
-            // Nothing?
-            break;
-        case EVENT_OnLongTimer:
-            requireSize(13);
-            ir.data.timer_descr.is_yearly = evt->v5;
-            ir.data.timer_descr.is_monthly = evt->v6;
-            ir.data.timer_descr.is_weekly = evt->v7;
-            ir.data.timer_descr.daily_start_hour = evt->v8;
-            ir.data.timer_descr.daily_start_minute = evt->v9;
-            ir.data.timer_descr.daily_start_second = evt->v10;
-            ir.data.timer_descr.alt_halfmin_interval = evt->v11 + (evt->v12 << 8);
+            requireSize(6);
+            sbr.read<uint8_t>();  // TODO(yoctozepto): useless byte there to consume?
             break;
         case EVENT_SetNPCTopic:
             requireSize(14);
-            ir.data.npc_topic_descr.npc_id = EVT_DWORD(&evt->v5);
-            ir.data.npc_topic_descr.index = evt->v9;
-            ir.data.npc_topic_descr.event_id = EVT_DWORD(&evt->v10);
+            ir.data.npc_topic_descr.npc_id = sbr.read<uint32_t>();
+            ir.data.npc_topic_descr.index = sbr.read<uint8_t>();
+            ir.data.npc_topic_descr.event_id = sbr.read<uint32_t>();
             break;
         case EVENT_MoveNPC:
             requireSize(10);
-            ir.data.npc_move_descr.npc_id = EVT_DWORD(&evt->v5);
-            ir.data.npc_move_descr.location_id = static_cast<HouseId>(EVT_DWORD(&evt->v9));
+            ir.data.npc_move_descr.npc_id = sbr.read<uint32_t>();
+            ir.data.npc_move_descr.location_id = static_cast<HouseId>(sbr.read<uint32_t>());
             break;
         case EVENT_GiveItem:
             requireSize(11);
-            ir.data.give_item_descr.treasure_level = static_cast<ItemTreasureLevel>(evt->v5);
-            ir.data.give_item_descr.treasure_type = static_cast<RandomItemType>(evt->v6);
-            ir.data.give_item_descr.item_id = static_cast<ItemId>(EVT_DWORD(&evt->v7));
+            ir.data.give_item_descr.treasure_level = static_cast<ItemTreasureLevel>(sbr.read<uint8_t>());
+            ir.data.give_item_descr.treasure_type = static_cast<RandomItemType>(sbr.read<uint8_t>());
+            ir.data.give_item_descr.item_id = static_cast<ItemId>(sbr.read<uint32_t>());
             break;
         case EVENT_ChangeEvent:
             requireSize(9);
-            ir.data.event_id = EVT_DWORD(&evt->v5);
+            ir.data.event_id = sbr.read<uint32_t>();
             break;
         case EVENT_CheckSkill:
             requireSize(12);
-            ir.data.check_skill_descr.skill_type = static_cast<CharacterSkillType>(evt->v5);
-            ir.data.check_skill_descr.skill_mastery = static_cast<CharacterSkillMastery>(evt->v6);
-            ir.data.check_skill_descr.skill_level = EVT_DWORD(&evt->v7);
-            ir.target_step = evt->v11;
+            ir.data.check_skill_descr.skill_type = static_cast<CharacterSkillType>(sbr.read<uint8_t>());
+            ir.data.check_skill_descr.skill_mastery = static_cast<CharacterSkillMastery>(sbr.read<uint8_t>());
+            ir.data.check_skill_descr.skill_level = sbr.read<uint32_t>();
+            ir.target_step = sbr.read<uint8_t>();
             break;
         case EVENT_OnCanShowDialogItemCmp:
             requireSize(12);
-            ir.data.variable_descr.type = static_cast<VariableType>(EVT_WORD(&evt->v5));
-            ir.data.variable_descr.value = EVT_DWORD(&evt->v7);
-            ir.target_step = evt->v11;
+            ir.data.variable_descr.type = static_cast<VariableType>(sbr.read<uint16_t>());
+            ir.data.variable_descr.value = sbr.read<uint32_t>();
+            ir.target_step = sbr.read<uint8_t>();
             break;
         case EVENT_EndCanShowDialogItem:
+            requireSize(6);
+            sbr.read<uint8_t>();  // TODO(yoctozepto): useless byte there to consume?
             break;
         case EVENT_SetCanShowDialogItem:
             requireSize(6);
-            ir.data.can_show_npc_dialogue = evt->v5;
+            ir.data.can_show_npc_dialogue = sbr.read<uint8_t>();
             break;
         case EVENT_SetNPCGroupNews:
             requireSize(13);
-            ir.data.npc_groups_descr.groups_id = EVT_DWORD(&evt->v5);
-            ir.data.npc_groups_descr.group = EVT_DWORD(&evt->v9);
+            ir.data.npc_groups_descr.groups_id = sbr.read<uint32_t>();
+            ir.data.npc_groups_descr.group = sbr.read<uint32_t>();
             break;
-        case EVENT_SetActorGroup:
-            // TODO
-            break;
+        //case EVENT_SetActorGroup:
+        //    // TODO
+        //    break;
         case EVENT_NPCSetItem:
+        case EVENT_SetActorItem:
             requireSize(14);
-            ir.data.npc_item_descr.id = EVT_DWORD(&evt->v5);
-            ir.data.npc_item_descr.item = static_cast<ItemId>(EVT_DWORD(&evt->v9));
-            ir.data.npc_item_descr.is_give = evt->v13;
+            ir.data.npc_item_descr.id = sbr.read<uint32_t>();
+            ir.data.npc_item_descr.item = static_cast<ItemId>(sbr.read<uint32_t>());
+            ir.data.npc_item_descr.is_give = sbr.read<uint8_t>();
             break;
         case EVENT_SetNPCGreeting:
             requireSize(13);
-            ir.data.npc_descr.npc_id = EVT_DWORD(&evt->v5);
-            ir.data.npc_descr.greeting = EVT_DWORD(&evt->v9);
+            ir.data.npc_descr.npc_id = sbr.read<uint32_t>();
+            ir.data.npc_descr.greeting = sbr.read<uint32_t>();
             break;
         case EVENT_IsActorKilled:
             requireSize(12);
-            ir.data.actor_descr.policy = static_cast<ActorKillCheckPolicy>(evt->v5);
-            ir.data.actor_descr.param = EVT_DWORD(&evt->v6);
-            ir.data.actor_descr.num = evt->v10;
-            ir.target_step = evt->v11;
+            ir.data.actor_descr.policy = static_cast<ActorKillCheckPolicy>(sbr.read<uint8_t>());
+            ir.data.actor_descr.param = sbr.read<uint32_t>();
+            ir.data.actor_descr.num = sbr.read<uint8_t>();
+            ir.target_step = sbr.read<uint8_t>();
             break;
-        case EVENT_CanShowTopic_IsActorKilled:
-            requireSize(12);
-            ir.data.actor_descr.policy = static_cast<ActorKillCheckPolicy>(evt->v5);
-            ir.data.actor_descr.param = EVT_DWORD(&evt->v6);
-            ir.data.actor_descr.num = evt->v10;
-            ir.target_step = evt->v11;
-            break;
+        //case EVENT_CanShowTopic_IsActorKilled:
+        //    requireSize(12);
+        //    ir.data.actor_descr.policy = static_cast<ActorKillCheckPolicy>(sbr.read<uint8_t>());
+        //    ir.data.actor_descr.param = sbr.read<uint32_t>();
+        //    ir.data.actor_descr.num = sbr.read<uint8_t>();
+        //    ir.target_step = sbr.read<uint8_t>();
+        //    break;
         case EVENT_OnMapLeave:
-            // Nothing?
+            requireSize(6);
+            sbr.read<uint8_t>();  // TODO(yoctozepto): useless byte there to consume?
             break;
-        case EVENT_ChangeGroup:
-            // TODO
-            break;
-        case EVENT_ChangeGroupAlly:
-            // TODO
-            break;
+        //case EVENT_ChangeGroup:
+        //    // TODO
+        //    break;
+        //case EVENT_ChangeGroupAlly:
+        //    // TODO
+        //    break;
         case EVENT_CheckSeason:
             requireSize(7);
-            ir.data.season = static_cast<Season>(evt->v5);
-            ir.target_step = evt->v6;
+            ir.data.season = static_cast<Season>(sbr.read<uint8_t>());
+            ir.target_step = sbr.read<uint8_t>();
             break;
         case EVENT_ToggleActorGroupFlag:
             requireSize(14);
-            ir.data.actor_flag_descr.id = EVT_DWORD(&evt->v5);
-            ir.data.actor_flag_descr.attr = ActorAttribute(EVT_DWORD(&evt->v9));
-            ir.data.actor_flag_descr.is_set = evt->v13;
+            ir.data.actor_flag_descr.id = sbr.read<uint32_t>();
+            ir.data.actor_flag_descr.attr = ActorAttribute(sbr.read<uint32_t>());
+            ir.data.actor_flag_descr.is_set = sbr.read<uint8_t>();
             break;
         case EVENT_ToggleChestFlag:
             requireSize(14);
-            ir.data.chest_flag_descr.chest_id = EVT_DWORD(&evt->v5);
-            ir.data.chest_flag_descr.flag = (ChestFlag)EVT_DWORD(&evt->v9);
-            ir.data.chest_flag_descr.is_set = evt->v13;
+            ir.data.chest_flag_descr.chest_id = sbr.read<uint32_t>();
+            ir.data.chest_flag_descr.flag = (ChestFlag)sbr.read<uint32_t>();  // TODO(yoctozepto): this downcasts a DWORD to WORD
+            ir.data.chest_flag_descr.is_set = sbr.read<uint8_t>();
             break;
         case EVENT_CharacterAnimation:
             requireSize(7);
-            ir.who = static_cast<CharacterChoosePolicy>(evt->v5);
-            ir.data.speech_id = static_cast<CharacterSpeech>(evt->v6);
+            ir.who = static_cast<CharacterChoosePolicy>(sbr.read<uint8_t>());
+            ir.data.speech_id = static_cast<CharacterSpeech>(sbr.read<uint8_t>());
             break;
-        case EVENT_SetActorItem:
-            requireSize(14);
-            ir.data.npc_item_descr.id = EVT_DWORD(&evt->v5);
-            ir.data.npc_item_descr.item = static_cast<ItemId>(EVT_DWORD(&evt->v9));
-            ir.data.npc_item_descr.is_give = evt->v13;
-            break;
-        case EVENT_OnDateTimer:
-            // TODO
-            break;
-        case EVENT_EnableDateTimer:
-            // TODO
-            break;
-        case EVENT_StopAnimation:
-            // TODO
-            break;
-        case EVENT_CheckItemsCount:
-            // TODO
-            break;
-        case EVENT_RemoveItems:
-            // TODO
-            break;
-        case EVENT_SpecialJump:
-            // TODO
-            break;
-        case EVENT_IsTotalBountyHuntingAwardInRange:
-            // TODO
-            break;
-        case EVENT_IsNPCInParty:
-            // TODO
-            break;
+        //case EVENT_OnDateTimer:
+        //    // TODO
+        //    break;
+        //case EVENT_EnableDateTimer:
+        //    // TODO
+        //    break;
+        //case EVENT_StopAnimation:
+        //    // TODO
+        //    break;
+        //case EVENT_CheckItemsCount:
+        //    // TODO
+        //    break;
+        //case EVENT_RemoveItems:
+        //    // TODO
+        //    break;
+        //case EVENT_SpecialJump:
+        //    // TODO
+        //    break;
+        //case EVENT_IsTotalBountyHuntingAwardInRange:
+        //    // TODO
+        //    break;
+        //case EVENT_IsNPCInParty:
+        //    // TODO
+        //    break;
         default:
+            // assert that we discerned all what we read
+            assert(false && "please report");
             break;
     }
+
+    assert(requireSizeCalled && "please report");
+
+    // assert that we read it all
+    assert(!sbr.readable() && "please report");
 
     return ir;
 }

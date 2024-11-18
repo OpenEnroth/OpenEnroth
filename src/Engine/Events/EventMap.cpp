@@ -15,25 +15,23 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/MapAccess.h"
 #include "Utility/Exception.h"
-
-#include "RawEvent.h"
+#include "Utility/Unaligned.h"
 
 EventMap EventMap::load(const Blob &rawData) {
     EventMap result;
 
-    const char *pos = reinterpret_cast<const char *>(rawData.data());
-    const char *end = pos + rawData.size();
+    const uint8_t *pos = reinterpret_cast<const uint8_t *>(rawData.data());
+    const uint8_t *const end = pos + rawData.size();
     while (pos < end) {
-        const RawEvent *evt = reinterpret_cast<const RawEvent *>(pos);
-
-        size_t size = evt->_e_size + 1; // +1 because we also count the size byte.
+        // TODO(yoctozepto): don't count the size byte...
+        size_t size = *pos + 1; // +1 because we also count the size byte.
         if (size < 5)
             throw Exception("Invalid evt record size: expected at least {}, got {}", 5, size);
         if (pos + size > end)
             throw Exception("Encountered corrupted evt binary data");
 
-        int eventId = EVT_WORD(&evt->v1);
-        result.add(eventId, EventIR::parse(evt, size));
+        int eventId = readUnaligned<uint16_t>(pos + 1);
+        result.add(eventId, EventIR::parse(pos + 3, size));
         pos += size;
     }
 

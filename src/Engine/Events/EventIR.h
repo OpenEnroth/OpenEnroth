@@ -14,12 +14,10 @@
 #include "Engine/Spells/SpellEnums.h"
 #include "Media/Audio/SoundEnums.h"
 
-struct RawEvent;
-
 class EventIR {
  public:
     std::string toString() const;
-    static EventIR parse(const RawEvent *evt, size_t size);
+    static EventIR parse(const uint8_t *evt, const size_t size);
 
     EventType type;
     int step;
@@ -37,7 +35,7 @@ class EventIR {
         int movie_unknown_field;
         int can_show_npc_dialogue;
         struct {
-            std::array<int, 6> random_goto;
+            std::array<int, 6> random_goto;  // TODO(yoctozepto): only a byte is read in
             int random_goto_len;
         } random_goto_descr;
         struct {
