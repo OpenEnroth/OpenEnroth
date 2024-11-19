@@ -259,15 +259,6 @@ void GameStarter::migrateUserData() {
             }
         }
     }
-
-    if (ufs->exists(configName)) {
-        logger->info("    Target config exists, skipping config migration.");
-    } else if (!dfs->exists(configName)) {
-        logger->info("    No config file to migrate.");
-    } else {
-        ufs->write(configName, dfs->read(configName));
-        logger->info("    Copied '{}'.", configName);
-    }
 }
 
 void GameStarter::run() {

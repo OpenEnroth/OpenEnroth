@@ -24,7 +24,6 @@ void Config::save(std::string_view path) const {
 }
 
 void Config::load(InputStream *stream) {
-    // We'd rather handle FS errors on our side.
     std::istringstream stdStream(stream->readAll());
 
     ini::IniFile ini;
