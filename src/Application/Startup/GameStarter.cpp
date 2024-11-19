@@ -262,15 +262,6 @@ void GameStarter::migrateUserData() {
             }
         }
     }
-
-    if (ufs->exists(configName)) {
-        logger->info("    Target config exists, skipping config migration.");
-    } else if (!dfs->exists(configName)) {
-        logger->info("    No config file to migrate.");
-    } else {
-        ufs->write(configName, dfs->read(configName));
-        logger->info("    Copied '{}'.", configName);
-    }
 }
 
 void GameStarter::run() {
@@ -279,7 +270,7 @@ void GameStarter::run() {
 
         _application->component<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
         _config->save(ufs->openForWriting(configName).get());
-        logger->info("Configuration file '{}' saved!", configName);
+        logger->info("Configuration file '{}' saved!", ufs->displayPath(configName));
     } catch (const std::exception &e) {
         // Log the exception so that it goes to all registered loggers.
         logger->critical("Terminated with exception: {}", e.what());
