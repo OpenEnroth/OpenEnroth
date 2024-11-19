@@ -37,7 +37,11 @@ else()
         add_executable(OpenEnroth ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
 
         install(TARGETS OpenEnroth)
-    endif() 
+    endif()
+    
+    if(CMAKE_BUILD_TYPE MATCHES "Debug")
+        target_compile_definitions(OpenEnroth PRIVATE DEBUG_FLAG)
+    endif()
 
     target_check_style(OpenEnroth)
     target_link_libraries(OpenEnroth PUBLIC application library_cli library_platform_main library_stack_trace)
