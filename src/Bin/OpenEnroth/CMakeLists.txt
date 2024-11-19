@@ -40,7 +40,7 @@ else()
     endif()
     
     if(CMAKE_BUILD_TYPE MATCHES "Debug")
-        target_compile_definitions(OpenEnroth PRIVATE DEBUG_FLAG)
+        target_compile_definitions(OpenEnroth PUBLIC DEBUG_FLAG)
     endif()
 
     target_check_style(OpenEnroth)
