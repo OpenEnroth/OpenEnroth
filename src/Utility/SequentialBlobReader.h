@@ -8,6 +8,7 @@
 
 #include "Unaligned.h"
 
+// TODO(yoctozepto, captainurist): consider refactoring due to Utility/Streams/InputStream having a similar abstraction
 class SequentialBlobReader {
  public:
     SequentialBlobReader(const uint8_t *data, size_t size);
