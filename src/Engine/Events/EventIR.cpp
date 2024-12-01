@@ -854,6 +854,7 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
 
     // TODO(captainurist): verify enum ranges here.
     // TODO(yoctozepto): which are present in global events and which in local?
+    // TODO(yoctozepto): some types (marked with further TODOs) are not present in used MM7 data - their parsing might thus be wrong
 
     switch (ir.type) {
         case EVENT_Exit:
@@ -875,9 +876,9 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             ir.data.text_id = sbr.read<uint8_t>();
             ir.step = -1; // Step duplicated for other command, so ignore it
             break;
-        //case EVENT_LocationName:
-        //    ir.step = -1; // Step duplicated for other command, so ignore it
-        //    break;
+        case EVENT_LocationName:  // TODO(yoctozepto): not present in used MM7 data
+            ir.step = -1; // Step duplicated for other command, so ignore it
+            break;
         case EVENT_MoveToMap:
             requireSize(32);
             ir.data.move_map_descr.x = sbr.read<uint32_t>();
@@ -894,22 +895,22 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             requireSize(6);
             ir.data.chest_id = sbr.read<uint8_t>();
             break;
-        //case EVENT_ShowFace:
-        //    requireSize(7);
-        //    ir.who = static_cast<CharacterChoosePolicy>(sbr.read<uint8_t>());
-        //    ir.data.portrait_id = static_cast<CharacterPortrait>(sbr.read<uint8_t>());
-        //    break;
+        case EVENT_ShowFace:  // TODO(yoctozepto): not present in used MM7 data
+            requireSize(7);
+            ir.who = static_cast<CharacterChoosePolicy>(sbr.read<uint8_t>());
+            ir.data.portrait_id = static_cast<CharacterPortrait>(sbr.read<uint8_t>());
+            break;
         case EVENT_ReceiveDamage:
             requireSize(11);
             sbr.read<uint8_t>();  // TODO(yoctozepto): one byte is skipped?
             ir.data.damage_descr.damage_type = static_cast<DamageType>(sbr.read<uint8_t>());
             ir.data.damage_descr.damage = sbr.read<uint32_t>();
             break;
-        //case EVENT_SetSnow:
-        //    requireSize(7);
-        //    ir.data.snow_descr.is_nop = sbr.read<uint8_t>();
-        //    ir.data.snow_descr.is_enable = sbr.read<uint8_t>();
-        //    break;
+        case EVENT_SetSnow:  // TODO(yoctozepto): not present in used MM7 data
+            requireSize(7);
+            ir.data.snow_descr.is_nop = sbr.read<uint8_t>();
+            ir.data.snow_descr.is_enable = sbr.read<uint8_t>();
+            break;
         case EVENT_SetTexture:
             requireSize(10);
             ir.data.sprite_texture_descr.cog = sbr.read<uint32_t>();
@@ -978,12 +979,12 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             ir.data.faces_bit_descr.face_bit = static_cast<FaceAttribute>(sbr.read<uint32_t>());
             ir.data.faces_bit_descr.is_on = sbr.read<uint8_t>();
             break;
-        //case EVENT_ToggleActorFlag:
-        //    requireSize(14);
-        //    ir.data.actor_flag_descr.id = sbr.read<uint32_t>();
-        //    ir.data.actor_flag_descr.attr = static_cast<ActorAttribute>(sbr.read<uint32_t>());
-        //    ir.data.actor_flag_descr.is_set = sbr.read<uint8_t>();
-        //    break;
+        case EVENT_ToggleActorFlag:  // TODO(yoctozepto): not present in used MM7 data
+            requireSize(14);
+            ir.data.actor_flag_descr.id = sbr.read<uint32_t>();
+            ir.data.actor_flag_descr.attr = static_cast<ActorAttribute>(sbr.read<uint32_t>());
+            ir.data.actor_flag_descr.is_set = sbr.read<uint8_t>();
+            break;
         case EVENT_RandomGoTo:
             requireSize(11);
             {
@@ -998,10 +999,10 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
                 assert(rgt.random_goto_len > 0);
             }
             break;
-        //case EVENT_InputString:
-        //    requireSize(9);
-        //    ir.data.text_id = sbr.read<uint32_t>();
-        //    break;
+        case EVENT_InputString:  // TODO(yoctozepto): not present in used MM7 data
+            requireSize(9);
+            ir.data.text_id = sbr.read<uint32_t>();
+            break;
         case EVENT_StatusText:
             requireSize(9);
             ir.data.text_id = sbr.read<uint32_t>();
@@ -1027,19 +1028,19 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             ir.data.light_descr.light_id = sbr.read<uint32_t>();
             ir.data.light_descr.is_enable = sbr.read<uint8_t>();
             break;
-        //case EVENT_PressAnyKey:
-        //    // Nothing?
-        //    break;
-        //case EVENT_SummonItem:
-        //    requireSize(27);
-        //    ir.data.summon_item_descr.sprite = static_cast<SpriteId>(sbr.read<uint32_t>());  // TODO(yoctozepto): this downcasts a DWORD to WORD
-        //    ir.data.summon_item_descr.x = sbr.read<uint32_t>();
-        //    ir.data.summon_item_descr.y = sbr.read<uint32_t>();
-        //    ir.data.summon_item_descr.z = sbr.read<uint32_t>();
-        //    ir.data.summon_item_descr.speed = sbr.read<uint32_t>();
-        //    ir.data.summon_item_descr.count = sbr.read<uint8_t>();
-        //    ir.data.summon_item_descr.random_rotate = sbr.read<uint8_t>();
-        //    break;
+        case EVENT_PressAnyKey:  // TODO(yoctozepto): not present in used MM7 data
+            // Nothing?
+            break;
+        case EVENT_SummonItem:  // TODO(yoctozepto): not present in used MM7 data
+            requireSize(27);
+            ir.data.summon_item_descr.sprite = static_cast<SpriteId>(sbr.read<uint32_t>());  // TODO(yoctozepto): this downcasts a DWORD to WORD
+            ir.data.summon_item_descr.x = sbr.read<uint32_t>();
+            ir.data.summon_item_descr.y = sbr.read<uint32_t>();
+            ir.data.summon_item_descr.z = sbr.read<uint32_t>();
+            ir.data.summon_item_descr.speed = sbr.read<uint32_t>();
+            ir.data.summon_item_descr.count = sbr.read<uint8_t>();
+            ir.data.summon_item_descr.random_rotate = sbr.read<uint8_t>();
+            break;
         case EVENT_ForPartyMember:
             requireSize(6);
             ir.who = static_cast<CharacterChoosePolicy>(sbr.read<uint8_t>());
@@ -1099,9 +1100,9 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             ir.data.npc_groups_descr.groups_id = sbr.read<uint32_t>();
             ir.data.npc_groups_descr.group = sbr.read<uint32_t>();
             break;
-        //case EVENT_SetActorGroup:
-        //    // TODO
-        //    break;
+        case EVENT_SetActorGroup:  // TODO(yoctozepto): not present in used MM7 data
+            // TODO
+            break;
         case EVENT_NPCSetItem:
         case EVENT_SetActorItem:
             requireSize(14);
@@ -1121,23 +1122,23 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             ir.data.actor_descr.num = sbr.read<uint8_t>();
             ir.target_step = sbr.read<uint8_t>();
             break;
-        //case EVENT_CanShowTopic_IsActorKilled:
-        //    requireSize(12);
-        //    ir.data.actor_descr.policy = static_cast<ActorKillCheckPolicy>(sbr.read<uint8_t>());
-        //    ir.data.actor_descr.param = sbr.read<uint32_t>();
-        //    ir.data.actor_descr.num = sbr.read<uint8_t>();
-        //    ir.target_step = sbr.read<uint8_t>();
-        //    break;
+        case EVENT_CanShowTopic_IsActorKilled:  // TODO(yoctozepto): not present in used MM7 data
+            requireSize(12);
+            ir.data.actor_descr.policy = static_cast<ActorKillCheckPolicy>(sbr.read<uint8_t>());
+            ir.data.actor_descr.param = sbr.read<uint32_t>();
+            ir.data.actor_descr.num = sbr.read<uint8_t>();
+            ir.target_step = sbr.read<uint8_t>();
+            break;
         case EVENT_OnMapLeave:
             requireSize(6);
             sbr.read<uint8_t>();  // TODO(yoctozepto): useless byte there to consume?
             break;
-        //case EVENT_ChangeGroup:
-        //    // TODO
-        //    break;
-        //case EVENT_ChangeGroupAlly:
-        //    // TODO
-        //    break;
+        case EVENT_ChangeGroup:  // TODO(yoctozepto): not present in used MM7 data
+            // TODO
+            break;
+        case EVENT_ChangeGroupAlly:  // TODO(yoctozepto): not present in used MM7 data
+            // TODO
+            break;
         case EVENT_CheckSeason:
             requireSize(7);
             ir.data.season = static_cast<Season>(sbr.read<uint8_t>());
@@ -1160,30 +1161,30 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             ir.who = static_cast<CharacterChoosePolicy>(sbr.read<uint8_t>());
             ir.data.speech_id = static_cast<CharacterSpeech>(sbr.read<uint8_t>());
             break;
-        //case EVENT_OnDateTimer:
-        //    // TODO
-        //    break;
-        //case EVENT_EnableDateTimer:
-        //    // TODO
-        //    break;
-        //case EVENT_StopAnimation:
-        //    // TODO
-        //    break;
-        //case EVENT_CheckItemsCount:
-        //    // TODO
-        //    break;
-        //case EVENT_RemoveItems:
-        //    // TODO
-        //    break;
-        //case EVENT_SpecialJump:
-        //    // TODO
-        //    break;
-        //case EVENT_IsTotalBountyHuntingAwardInRange:
-        //    // TODO
-        //    break;
-        //case EVENT_IsNPCInParty:
-        //    // TODO
-        //    break;
+        case EVENT_OnDateTimer:  // TODO(yoctozepto): not present in used MM7 data
+            // TODO
+            break;
+        case EVENT_EnableDateTimer:  // TODO(yoctozepto): not present in used MM7 data
+            // TODO
+            break;
+        case EVENT_StopAnimation:  // TODO(yoctozepto): not present in used MM7 data
+            // TODO
+            break;
+        case EVENT_CheckItemsCount:  // TODO(yoctozepto): not present in used MM7 data
+            // TODO
+            break;
+        case EVENT_RemoveItems:  // TODO(yoctozepto): not present in used MM7 data
+            // TODO
+            break;
+        case EVENT_SpecialJump:  // TODO(yoctozepto): not present in used MM7 data
+            // TODO
+            break;
+        case EVENT_IsTotalBountyHuntingAwardInRange:  // TODO(yoctozepto): not present in used MM7 data
+            // TODO
+            break;
+        case EVENT_IsNPCInParty:  // TODO(yoctozepto): not present in used MM7 data
+            // TODO
+            break;
         default:
             // assert that we discerned all what we read
             assert(false && "please report");
