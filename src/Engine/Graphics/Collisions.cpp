@@ -289,7 +289,7 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
             if (have_collision && move_distance < collision_state.adjusted_move_distance) {
                 // TODO(pskelton): should this be a config value
                 // We allow for a bit of negative movement in case we are already too close to the surface and need pushback
-                if (move_distance > -10.0f) {
+                if (move_distance > -100.0f) {
                     collision_state.adjusted_move_distance = move_distance;
                     collision_state.collisionPos = col_pos;
                     collision_state.pid = face_pid;
