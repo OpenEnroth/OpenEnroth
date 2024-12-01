@@ -587,18 +587,22 @@ void CollideWithParty(bool jagged_top) {
     CollideWithCylinder(pParty->pos, 2 * pParty->radius, pParty->height, Pid::character(0), jagged_top);
 }
 
+// TODO(pskelton): further standardise - extract common logic from party collision
 void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) {
+    constexpr float closestdist = 0.25f; // Closest allowed approach to collision surface - needs adjusting
+
     collision_state.total_move_distance = 0;
-    collision_state.check_hi = true;
     collision_state.radius_hi = actor.radius;
     collision_state.radius_lo = actor.radius;
+    collision_state.check_hi = true;
 
-    for (int attempt = 0; attempt < 100; attempt++) {
-        collision_state.position_lo = actor.pos + Vec3f(0, 0, actor.radius + 1);
-        collision_state.position_hi = actor.pos + Vec3f(0, 0, actor.height - actor.radius - 1);
+    for (int attempt = 0; attempt < 5; attempt++) {
+        collision_state.position_lo = actor.pos + Vec3f(0, 0, collision_state.radius_lo);
+        collision_state.position_hi = actor.pos + Vec3f(0, 0, actor.height - collision_state.radius_lo);
         collision_state.position_hi.z = std::max(collision_state.position_hi.z, collision_state.position_lo.z);
         collision_state.velocity = actor.velocity;
         collision_state.uSectorID = actor.sectorId;
+
         if (collision_state.PrepareAndCheckIfStationary())
             break;
 
@@ -609,16 +613,20 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             CollideWithParty(false);
             _46ED8A_collide_against_sprite_objects(Pid(OBJECT_Actor, actor.id));
             for (int j = 0; j < ai_arrays_size; j++)
-                if (ai_near_actors_ids[j] != actor.id && CollideWithActor(ai_near_actors_ids[j], 40))
-                    actorCollisions++;
+               if (ai_near_actors_ids[j] != actor.id && CollideWithActor(ai_near_actors_ids[j], 40))
+                   actorCollisions++;
             if (CollideIndoorWithPortals())
                 break;
         }
         bool isInCrowd = actorCollisions > 1;
 
-        Vec3f newPos = actor.pos + collision_state.adjusted_move_distance * collision_state.direction;
+        // Set new position but moved back slightly so we never touch the face
+        Vec3f newPos = actor.pos + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction;
+        // Adjust the collision position with the same offset
+        collision_state.collisionPos -= closestdist * collision_state.direction;
+
         int newFaceID = -1;
-        float newFloorZ = GetIndoorFloorZ(newPos, &collision_state.uSectorID, &newFaceID);
+        float newFloorZ = GetIndoorFloorZ(newPos + Vec3f(0, 0, collision_state.radius_lo), &collision_state.uSectorID, &newFaceID);
         if (newFloorZ == -30000)
             break; // New pos is out of bounds, running more iterations won't help.
 
@@ -646,12 +654,16 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             break; // We'll try again in the next frame.
         }
 
-        actor.pos = newPos;
-        actor.sectorId = collision_state.uSectorID;
-        if (fuzzyEquals(collision_state.adjusted_move_distance, collision_state.move_distance))
-            break; // No collisions happened.
+        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
+            actor.pos = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo));
+            break; // And we're done with collisions.
+        }
 
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
+        actor.pos = newPos;
+
+        actor.sectorId = collision_state.uSectorID;
+
         int id = collision_state.pid.id();
         ObjectType type = collision_state.pid.type();
 
@@ -691,38 +703,45 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         if (type == OBJECT_Face) {
             BLVFace *face = &pIndoor->pFaces[id];
+            bool bFaceSlopeTooSteep = face->facePlane.normal.z > 0.0f && face->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
 
-            if (pIndoor->pFaces[id].uPolygonType == POLYGON_Floor) {
-                if (actor.velocity.z < 0) actor.velocity.z = 0;
-                actor.pos.z = newFloorZ;
-                if (actor.velocity.lengthSqr() < 400) {
-                    actor.velocity.x = 0;
-                    actor.velocity.y = 0;
-                }
-            } else {
-                bool bFaceSlopeTooSteep = face->facePlane.normal.z >= 0.0f && face->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
-                float velocityDotNormal = dot(face->facePlane.normal, actor.velocity);
-                velocityDotNormal = std::max(std::abs(velocityDotNormal), collision_state.speed / 8);
-                actor.velocity += velocityDotNormal * face->facePlane.normal;
+            // new sliding plane
+            Vec3f slidePlaneOrigin = collision_state.collisionPos;
+            // drag high collision down to low level for slide direction
+            if (collision_state.hiCollision)
+                slidePlaneOrigin -= Vec3f(0, 0, actor.height - 2 * collision_state.radius_lo);
+            Vec3f slidePlaneNormal = newPos + Vec3f(0, 0, collision_state.radius_lo) - slidePlaneOrigin;
+            slidePlaneNormal.normalize();
+            float destPlaneDist = dot(collision_state.new_position_lo - slidePlaneOrigin, slidePlaneNormal);
+            Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
+            Vec3f newDirection = newDestination - slidePlaneOrigin;
 
-                if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
-                    float overshoot = collision_state.radius_lo - face->facePlane.signedDistanceTo(actor.pos);
-                    if (overshoot > 0)
-                        actor.pos += overshoot * pIndoor->pFaces[id].facePlane.normal;
-                    actor.yawAngle = TrigLUT.atan2(actor.velocity.x, actor.velocity.y);
-                }
+            // Cant push uphill on steep faces
+            if (bFaceSlopeTooSteep && newDirection.z > 0)
+                newDirection.z = 0;
 
-                // Cant push uphill on steep faces
-                if (bFaceSlopeTooSteep && actor.velocity.z > 0)
-                    actor.velocity.z = 0;
+            newDirection.normalize();
 
-                // Push away from the surface and add a touch down for better slide
-                if (bFaceSlopeTooSteep)
-                    actor.velocity += Vec3f(face->facePlane.normal.x, face->facePlane.normal.y, -2) * 10;
-            }
+            // Push away from the surface and add a touch down for better slide
+            if (bFaceSlopeTooSteep)
+                actor.velocity += Vec3f(face->facePlane.normal.x, face->facePlane.normal.y, -2) * 10;
+
+            // set movement speed along sliding plane
+            actor.velocity = newDirection * dot(newDirection, actor.velocity);
+            // rotate actors future movement along sliding plane
+            actor.yawAngle = TrigLUT.atan2(actor.velocity.x, actor.velocity.y);
+
 
             if (pIndoor->pFaces[id].uAttributes & FACE_TriggerByMonster)
                 eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, Pid(), 1);
+            
+            if (pIndoor->pFaces[id].uPolygonType == POLYGON_Floor) {
+                // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
+                // weve collided with its edge and we should step up onto its level.
+                if (actor.velocity.z > 0.0f)
+                    actor.pos.z = newFloorZ;
+            }
+            continue;
         }
 
         actor.velocity *= 0.89263916f; // was 58500 fp
@@ -854,12 +873,13 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius;
     collision_state.check_hi = true;
-    for (unsigned i = 0; i < 5; i++) {
-        collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);
-        collision_state.position_lo = pParty->pos + Vec3f(0, 0, collision_state.radius_lo);
-        collision_state.velocity = pParty->velocity;
 
+    for (unsigned i = 0; i < 5; i++) {
+        collision_state.position_lo = pParty->pos + Vec3f(0, 0, collision_state.radius_lo);
+        collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);
+        collision_state.velocity = pParty->velocity;
         collision_state.uSectorID = sectorId;
+
         Duration dt; // zero means use actual dt
         if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT)
             dt = 26_ticks;
@@ -880,14 +900,13 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                 break; // No portal collisions => can break.
         }
 
-        Vec3f adjusted_pos;
         // Set new position but moved back slightly so we never touch the face
-        adjusted_pos = pParty->pos + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction;
+        Vec3f adjusted_pos = pParty->pos + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction;
         // Adjust the collision position with the same offset
         collision_state.collisionPos -= closestdist * collision_state.direction;
 
-        float adjusted_floor_z = GetIndoorFloorZ(adjusted_pos + Vec3f(0, 0, collision_state.radius_lo), &collision_state.uSectorID, faceId);
-        if (adjusted_floor_z == -30000 || adjusted_floor_z - pParty->pos.z > 128) {
+        float newFloorZ = GetIndoorFloorZ(adjusted_pos + Vec3f(0, 0, collision_state.radius_lo), &collision_state.uSectorID, faceId);
+        if (newFloorZ == -30000 || newFloorZ - pParty->pos.z > 128) {
             // intended world position isnt valid so dont move there
             return; // TODO: whaaa?
         }
@@ -989,13 +1008,12 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                 *faceEvent = pIndoor->pFaceExtras[pFace->uFaceExtraID].uEventID;
 
             if (pFace->uPolygonType == POLYGON_Floor) {
-                float new_party_z_tmp = pIndoor->pVertices[*pFace->pVertexIDs].z;
                 // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
                 // weve collided with its edge and we should step up onto its level.
                 if (pParty->velocity.z > 0.0f)
-                    pParty->pos.z = new_party_z_tmp;
-                if (pParty->uFallStartZ - new_party_z_tmp < 512)
-                    pParty->uFallStartZ = new_party_z_tmp;
+                    pParty->pos.z = newFloorZ;
+                if (pParty->uFallStartZ - newFloorZ < 512)
+                    pParty->uFallStartZ = newFloorZ;
             }
             continue;
         }
