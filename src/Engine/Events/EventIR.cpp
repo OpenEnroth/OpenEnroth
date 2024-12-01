@@ -996,7 +996,9 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
                         rgt.random_goto_len++;
                     }
                 }
-                assert(rgt.random_goto_len > 0);
+                if (rgt.random_goto_len == 0) {
+                    throw Exception("RandomGoTo event has 0 targets");
+                }
             }
             break;
         case EVENT_InputString:  // TODO(yoctozepto): not present in used MM7 data
@@ -1186,15 +1188,15 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             // TODO
             break;
         default:
-            // assert that we discerned all what we read
-            assert(false && "please report");
+            throw Exception("Unknown evt type: {}", static_cast<uint8_t>(ir.type));
             break;
     }
 
     assert(requireSizeCalled && "please report");
 
-    // assert that we read it all
-    assert(!sbr.readable() && "please report");
+    if (sbr.readable()) {
+        throw Exception("Some evt data has not been parsed for evt type: {}", ::toString(ir.type));
+    }
 
     return ir;
 }
