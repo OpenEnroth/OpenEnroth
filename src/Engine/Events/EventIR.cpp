@@ -13,7 +13,6 @@
 
 #include "Utility/String/Transformations.h"
 #include "Utility/Exception.h"
-#include "Utility/SequentialBlobReader.h"
 #include "Utility/Unaligned.h"
 
 #include "EventEnumFunctions.h"
@@ -839,10 +838,8 @@ std::string EventIR::toString() const {
     return fmt::format("{}: UNPROCESSED/{}", step, ::toString(type));
 }
 
-EventIR EventIR::parse(const uint8_t *evt, const size_t size) {
+EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
     EventIR ir;
-    // TODO(yoctozepto): fix size once passed correctly in
-    SequentialBlobReader sbr(evt, size - 3);
 
     ir.step = sbr.read<uint8_t>();
     ir.type = EventType(sbr.read<uint8_t>());

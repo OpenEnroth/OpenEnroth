@@ -14,10 +14,12 @@
 #include "Engine/Spells/SpellEnums.h"
 #include "Media/Audio/SoundEnums.h"
 
+#include "Utility/SequentialBlobReader.h"
+
 class EventIR {
  public:
     std::string toString() const;
-    static EventIR parse(const uint8_t *evt, const size_t size);
+    static EventIR parse(SequentialBlobReader &sbr, const size_t size);
 
     EventType type;
     int step;
