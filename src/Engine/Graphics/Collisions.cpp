@@ -734,7 +734,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
             if (pIndoor->pFaces[id].uAttributes & FACE_TriggerByMonster)
                 eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, Pid(), 1);
-            
+
             if (pIndoor->pFaces[id].uPolygonType == POLYGON_Floor) {
                 // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
                 // weve collided with its edge and we should step up onto its level.
