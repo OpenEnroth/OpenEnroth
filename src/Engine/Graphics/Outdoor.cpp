@@ -2020,27 +2020,32 @@ double OutdoorLocation::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int u
     return result;
 }
 
+// TODO(pskelton): move this - used both indoors and out
 void TeleportToStartingPoint(MapStartPoint point) {
     std::string pName = toString(point);
 
     if (pDecorationList->GetDecorIdByName(pName) != DECORATION_NULL) {
-        if (!pLevelDecorations.empty()) {
-            for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
-                if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
-                    pParty->pos = pLevelDecorations[i].vPosition;
-                    // Spawn point in Harmondale from Barrow Downs is up in the sky, vanilla worked it around by
-                    // always placing the party on the ground.
-                    // TODO: (Chaosit) dummy variables created for the sake of passing pointers
-                    bool bOnWater = false;
-                    int bModelPid;
+        for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
+            if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
+                pParty->pos = pLevelDecorations[i].vPosition;
+                // Spawn point in Harmondale from Barrow Downs is up in the sky, vanilla worked it around by
+                // always placing the party on the ground.
+                // TODO: (Chaosit) dummy variables created for the sake of passing pointers
+                bool bOnWater = false;
+                int bModelPid;
+                if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
                     pParty->pos.z = ODM_GetFloorLevel(pParty->pos, &bOnWater, &bModelPid);
-                    pParty->velocity = Vec3f();
-                    pParty->uFallStartZ = pParty->pos.z;
-                    pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
-                    pParty->_viewPitch = 0;
+                } else {
+                    int face = -1;
+                    pParty->pos.z = BLV_GetFloorLevel(pParty->pos, pIndoor->GetSector(pParty->pos), &face);
                 }
+                pParty->velocity = Vec3f();
+                pParty->uFallStartZ = pParty->pos.z;
+                pParty->_viewYaw = pLevelDecorations[i]._yawAngle;
+                pParty->_viewPitch = 0;
             }
         }
+
         if (engine->_teleportPoint.isValid()) {
             engine->_teleportPoint.doTeleport(true);
         }
