@@ -2022,18 +2022,18 @@ double OutdoorLocation::GetPolygonMaxZ(RenderVertexSoft *pVertex, unsigned int u
 
 // TODO(pskelton): move this - used both indoors and out
 void TeleportToStartingPoint(MapStartPoint point) {
-    std::string pName = toString(point);
+    DecorationId decID = pDecorationList->GetDecorIdByName(toString(point));
 
-    if (pDecorationList->GetDecorIdByName(pName) != DECORATION_NULL) {
+    if (decID != DECORATION_NULL) {
         for (size_t i = 0; i < pLevelDecorations.size(); ++i) {
-            if (pLevelDecorations[i].uDecorationDescID == pDecorationList->GetDecorIdByName(pName)) {
+            if (pLevelDecorations[i].uDecorationDescID == decID) {
                 pParty->pos = pLevelDecorations[i].vPosition;
-                // Spawn point in Harmondale from Barrow Downs is up in the sky, vanilla worked it around by
-                // always placing the party on the ground.
-                // TODO: (Chaosit) dummy variables created for the sake of passing pointers
-                bool bOnWater = false;
-                int bModelPid;
                 if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+                    // Spawn point in Harmondale from Barrow Downs is up in the sky, vanilla worked it around by
+                    // always placing the party on the ground.
+                    // TODO: (Chaosit) dummy variables created for the sake of passing pointers
+                    bool bOnWater = false;
+                    int bModelPid;
                     pParty->pos.z = ODM_GetFloorLevel(pParty->pos, &bOnWater, &bModelPid);
                 } else {
                     int face = -1;
