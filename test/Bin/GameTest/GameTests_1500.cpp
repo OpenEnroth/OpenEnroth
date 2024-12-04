@@ -482,3 +482,12 @@ GAME_TEST(Issues, Issue1837) {
     test.playTraceFromTestData("issue_1837.mm7", "issue_1837.json");
     EXPECT_FLOAT_EQ(pParty->pos.z, 1.0f);
 }
+
+GAME_TEST(Issues, Issue1890) {
+    //Stuck *in* stairs when leaving the Mercenary Guild
+    auto yPos = tapes.custom([]() { return static_cast<int>(pParty->pos.y); });
+    test.playTraceFromTestData("issue_1890.mm7", "issue_1890.json");
+    EXPECT_EQ(engine->_currentLoadedMapId, MAP_TATALIA);
+    EXPECT_CONTAINS(yPos, 16803); // starting point
+    EXPECT_LT(yPos.back(), 16700); // moved forwards
+}
