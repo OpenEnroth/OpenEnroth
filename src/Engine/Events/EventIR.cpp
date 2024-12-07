@@ -904,7 +904,7 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             break;
         case EVENT_ReceiveDamage:
             requireSize(11);
-            ir.who = static_cast<CharacterChoosePolicy>(sbr.read<uint8_t>()   );
+            ir.who = static_cast<CharacterChoosePolicy>(sbr.read<uint8_t>());
             ir.data.damage_descr.damage_type = static_cast<DamageType>(sbr.read<uint8_t>());
             ir.data.damage_descr.damage = sbr.read<uint32_t>();
             break;
