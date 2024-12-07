@@ -839,7 +839,9 @@ std::string EventIR::toString() const {
 }
 
 EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
-    EventIR ir;
+    // TODO(yoctozepto): zeroing-out the struct to prevent values from previous events from lingering;
+    //                   this makes it slightly easier to spot uninitialised members but, since the 0s may have a proper meaning, not always;
+    EventIR ir = {};
 
     ir.step = sbr.read<uint8_t>();
     ir.type = EventType(sbr.read<uint8_t>());
@@ -859,7 +861,7 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
     switch (ir.type) {
         case EVENT_Exit:
             requireSize(6);
-            sbr.read<uint8_t>();  // TODO(yoctozepto): useless byte there to consume?
+            sbr.read<uint8_t>();  // TODO(yoctozepto): always 0 in MM7 data, check MM6&8
             break;
         case EVENT_SpeakInHouse:
             requireSize(6);
@@ -902,11 +904,11 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             break;
         case EVENT_ReceiveDamage:
             requireSize(11);
-            sbr.read<uint8_t>();  // TODO(yoctozepto): one byte is skipped?
+            ir.who = static_cast<CharacterChoosePolicy>(sbr.read<uint8_t>()   );
             ir.data.damage_descr.damage_type = static_cast<DamageType>(sbr.read<uint8_t>());
             ir.data.damage_descr.damage = sbr.read<uint32_t>();
             break;
-        case EVENT_SetSnow:  // TODO(yoctozepto): not present in used MM7 data
+        case EVENT_SetSnow:  // TODO(yoctozepto): not present in used MM7 data; likely present in MM6
             requireSize(7);
             ir.data.snow_descr.is_nop = sbr.read<uint8_t>();
             ir.data.snow_descr.is_enable = sbr.read<uint8_t>();
@@ -918,8 +920,8 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             break;
         case EVENT_ShowMovie:
             requireSize(8);
-            sbr.read<uint8_t>();  // TODO(yoctozepto): one byte is skipped?
-            ir.data.movie_unknown_field = sbr.read<uint8_t>();
+            sbr.read<uint8_t>();  // TODO(yoctozepto): always 1 in MM7 data, check MM6&8
+            ir.data.movie_unknown_field = sbr.read<uint8_t>();  // NOTE(yoctozepto): seems to be a boolean as it takes either 0 or 1 in MM7 data
             ir.str = sbr.readString();
             break;
         case EVENT_SetSprite:
@@ -1001,7 +1003,7 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
                 }
             }
             break;
-        case EVENT_InputString:  // TODO(yoctozepto): not present in used MM7 data
+        case EVENT_InputString:  // TODO(yoctozepto): not present in used MM7 data; likely present in MM8 (e.g., Escaton's riddles)
             requireSize(9);
             ir.data.text_id = sbr.read<uint32_t>();
             break;
@@ -1023,7 +1025,7 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             ir.data.timer_descr.daily_start_minute = sbr.read<uint8_t>();
             ir.data.timer_descr.daily_start_second = sbr.read<uint8_t>();
             ir.data.timer_descr.alt_halfmin_interval = sbr.read<uint16_t>();
-            sbr.read<uint16_t>();  // TODO(yoctozepto): useless word there to consume?
+            sbr.read<uint16_t>();  // TODO(yoctozepto): always 0 in MM7 data, check MM6&8
             break;
         case EVENT_ToggleIndoorLight:
             requireSize(10);
@@ -1053,7 +1055,7 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             break;
         case EVENT_OnMapReload:
             requireSize(6);
-            sbr.read<uint8_t>();  // TODO(yoctozepto): useless byte there to consume?
+            sbr.read<uint8_t>();  // TODO(yoctozepto): always 0 in MM7 data, check MM6&8
             break;
         case EVENT_SetNPCTopic:
             requireSize(14);
@@ -1091,7 +1093,7 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             break;
         case EVENT_EndCanShowDialogItem:
             requireSize(6);
-            sbr.read<uint8_t>();  // TODO(yoctozepto): useless byte there to consume?
+            sbr.read<uint8_t>();  // TODO(yoctozepto): always 0 in MM7 data, check MM6&8
             break;
         case EVENT_SetCanShowDialogItem:
             requireSize(6);
@@ -1133,7 +1135,7 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             break;
         case EVENT_OnMapLeave:
             requireSize(6);
-            sbr.read<uint8_t>();  // TODO(yoctozepto): useless byte there to consume?
+            sbr.read<uint8_t>();  // TODO(yoctozepto): always 0 in MM7 data, check MM6&8
             break;
         case EVENT_ChangeGroup:  // TODO(yoctozepto): not present in used MM7 data
             // TODO
