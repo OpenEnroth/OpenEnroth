@@ -127,6 +127,8 @@ void EngineController::goToMainMenu() {
             throw Exception("Couldn't return to main menu");
     };
 
+    closeOverlays();
+
     // Skip movies.
     while (current_screen_type == SCREEN_VIDEO) {
         maybeThrow();

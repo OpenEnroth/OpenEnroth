@@ -495,6 +495,10 @@ void Engine::toggleOverlays() {
     _overlaySystem.setEnabled(!isEnabled);
 }
 
+void Engine::disableOverlays() {
+    _overlaySystem.setEnabled(false);
+}
+
 /*
 Result::Code Game::PickKeyboard(bool bOutline, struct unnamed_F93E6C *a3, struct
 unnamed_F93E6C *a4)

@@ -104,6 +104,7 @@ class Engine {
     inline void SetFog(bool is_fog) { this->is_fog = is_fog; } // fog off rather than on??
 
     void toggleOverlays();
+    void disableOverlays();
 
     bool is_underwater = false;
     bool is_saturate_faces = false;
