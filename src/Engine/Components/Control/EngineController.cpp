@@ -12,6 +12,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 
+#include "Engine/Engine.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
@@ -127,7 +128,7 @@ void EngineController::goToMainMenu() {
             throw Exception("Couldn't return to main menu");
     };
 
-    closeOverlays();
+    engine->disableOverlays();
 
     // Skip movies.
     while (current_screen_type == SCREEN_VIDEO) {

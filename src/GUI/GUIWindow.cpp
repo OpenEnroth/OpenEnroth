@@ -123,9 +123,6 @@ constinit const IndexedArray<Color, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> u
     {CHARACTER_BUFF_WATER_WALK,         colorTable.AzureRadiance},
 };
 
-void closeOverlays() {
-    engine->disableOverlays();
-}
 
 void SetCurrentMenuID(MenuType uMenu) {
     sCurrentMenuID = uMenu;

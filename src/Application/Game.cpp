@@ -118,7 +118,7 @@ int Game::run() {
                 render->flushAndScale();
                 engine->drawOverlay();
                 render->swapBuffers();
-                
+
                 MessageLoopWithWait();
             }
         }

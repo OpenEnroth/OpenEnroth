@@ -388,8 +388,6 @@ extern GraphicsImage *ui_ar_up_up;
 extern GraphicsImage *ui_leather_mm6;
 extern GraphicsImage *ui_leather_mm7;
 
-void closeOverlays();
-
 extern MenuType sCurrentMenuID;
 void SetCurrentMenuID(MenuType);
 MenuType GetCurrentMenuID();
