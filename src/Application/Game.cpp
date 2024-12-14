@@ -115,9 +115,10 @@ int Game::run() {
                 // This method should be interpreted as a future RetainedUISystem::update()
                 // It does update all the GUIWindow alive + it does various hacks
                 GUI_UpdateWindows();
-
-                render->Present();
-
+                render->flushAndScale();
+                engine->drawOverlay();
+                render->swapBuffers();
+                
                 MessageLoopWithWait();
             }
         }
