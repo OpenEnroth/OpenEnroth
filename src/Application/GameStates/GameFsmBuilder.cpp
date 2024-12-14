@@ -6,8 +6,9 @@
 #include <utility>
 #include <memory>
 
-#include "LoadStep2State.h"
 #include "CreditsState.h"
+#include "LoadSlotState.h"
+#include "LoadStep2State.h"
 #include "MainMenuState.h"
 #include "StartState.h"
 #include "VideoState.h"
@@ -45,10 +46,14 @@ void GameFsmBuilder::_buildMainMenu(FsmBuilder &builder) {
     builder
     .state<MainMenuState>("MainMenu")
         .on("newGame").exitFsm()
-        .on("loadGame").exitFsm()
+        .on("loadGame").jumpTo("LoadSlot")
         .on("quickLoadGame").exitFsm()
         .on("credits").jumpTo("Credits")
         .on("exitGame").exitFsm()
+
+    .state<LoadSlotState>("LoadSlot")
+        .on("slotConfirmed").exitFsm()
+        .on("back").jumpTo("MainMenu")
 
     .state<CreditsState>("Credits")
         .on("back").jumpTo("MainMenu");
