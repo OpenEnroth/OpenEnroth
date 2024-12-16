@@ -483,6 +483,14 @@ GAME_TEST(Issues, Issue1837) {
     EXPECT_FLOAT_EQ(pParty->pos.z, 1.0f);
 }
 
+GAME_TEST(Issues, Issue1869) {
+    // Face overflow in Tunnels to Eeofol
+    auto faceCount = tapes.custom([]() { return pBspRenderer->num_faces; });
+    test.playTraceFromTestData("issue_1869.mm7", "issue_1869.json");
+    EXPECT_EQ(engine->_currentLoadedMapId, MAP_TUNNELS_TO_EEOFOL);
+    EXPECT_LT(faceCount.max(), 1400);
+}
+
 GAME_TEST(Issues, Issue1898) {
     // Doors in School of Sorcery hurt all party members instead of the active one
     auto totalHealth = tapes.totalHp();
