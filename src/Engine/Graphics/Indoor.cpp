@@ -427,7 +427,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
             logger->warning("GetSector fail: {}, {}, {}", sX, sY, sZ);
             return 0;
         } else {
-            logger->warning("GetSector: Returning backup sector bounding!");
+            logger->warning("GetSector: Returning backup sector bounding! {}, {}, {}", sX, sY, sZ);
             return backupboundingsector;
         }
     }
@@ -845,19 +845,20 @@ void UpdateActors_BLV() {
         if (actor.aiState == Removed || actor.aiState == Disabled || actor.aiState == Summoned || actor.moveSpeed == 0)
             continue;
 
-        int uFaceID;
-        float floorZ = GetIndoorFloorZ(actor.pos, &actor.sectorId, &uFaceID);
+        int uFaceID = -1;
+        float floorZ = GetIndoorFloorZ(actor.pos + Vec3f(0, 0, actor.radius), &actor.sectorId, &uFaceID);
 
-        if (actor.sectorId == 0 || floorZ <= -30000)
-            continue;
+        if (uFaceID == -1 || floorZ <= -30000) {
+            floorZ = GetApproximateIndoorFloorZ(actor.pos + Vec3f(0, 0, actor.radius), &actor.sectorId, &uFaceID);
+            if (floorZ <= -30000 || uFaceID == -1) {
+                assert(false);  // level built with errors
+                return;
+            }
+        }
 
         bool isFlying = actor.monsterInfo.flying;
         if (!actor.CanAct())
             isFlying = false;
-
-        bool isAboveGround = false;
-        if (actor.pos.z > floorZ + 1)
-            isAboveGround = true;
 
         // make bloodsplat when the ground is hit
         if (!actor.donebloodsplat) {
@@ -906,7 +907,9 @@ void UpdateActors_BLV() {
                 actor.velocity.z *= 0.83923339843f;
         }
 
-        if (actor.pos.z <= floorZ) {
+        bool isAboveGround = actor.pos.z > floorZ + 1;
+
+        if (!isAboveGround) {
             actor.pos.z = floorZ + 1;
             if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
                 if (actor.velocity.z < 0)
@@ -916,18 +919,29 @@ void UpdateActors_BLV() {
                     actor.velocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
             }
         } else {
-            if (isAboveGround && !isFlying)
+            if (!isFlying)
                 actor.velocity.z += -8 * pEventTimer->dt().ticks() * GetGravityStrength();
         }
 
-        if (actor.velocity.lengthSqr() >= 400) {
-            ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
-        } else {
-            actor.velocity = Vec3f(0, 0, 0);
+        if (actor.velocity.xy().lengthSqr() < 400) {
+            actor.velocity.x = 0;
+            actor.velocity.y = 0;
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
                 if (actor.aiState == Dead)
                     actor.aiState = Removed;
             }
+        }
+
+        Vec3f oldPos = actor.pos;
+        Vec3f savedspeed = actor.velocity;
+
+        // horizontal
+        actor.velocity.z = 0;
+        ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
+        // vertical -  only when horizonal motion hasnt caused height gain
+        if (actor.pos.z <= oldPos.z) {
+            actor.velocity = Vec3f(0, 0, savedspeed.z);
+            ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
         }
     }
 }
@@ -1602,9 +1616,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     if (pParty->bFlying)  // disable flight
         pParty->bFlying = false;
 
-    if (floorZ == -30000 || faceId == -1) {
+    if (floorZ <= -30000 || faceId == -1) {
         floorZ = GetApproximateIndoorFloorZ(pParty->pos + Vec3f(0, 0, pParty->radius), &sectorId, &faceId);
-        if (floorZ == -30000 || faceId == -1) {
+        if (floorZ <= -30000 || faceId == -1) {
             assert(false);  // level built with errors
             return;
         }
