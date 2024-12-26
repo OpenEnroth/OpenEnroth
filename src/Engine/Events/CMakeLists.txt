@@ -12,7 +12,6 @@ set(ENGINE_EVENTS_HEADERS
         EventMap.h
         EventInterpreter.h
         EventEnums.h
-        RawEvent.h
         Processor.h
         EventEnumFunctions.h)
 

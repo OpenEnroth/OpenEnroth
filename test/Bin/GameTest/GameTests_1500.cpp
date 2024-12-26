@@ -482,3 +482,30 @@ GAME_TEST(Issues, Issue1837) {
     test.playTraceFromTestData("issue_1837.mm7", "issue_1837.json");
     EXPECT_FLOAT_EQ(pParty->pos.z, 1.0f);
 }
+
+GAME_TEST(Issues, Issue1869) {
+    // Face overflow in Tunnels to Eeofol
+    auto faceCount = tapes.custom([]() { return pBspRenderer->num_faces; });
+    test.playTraceFromTestData("issue_1869.mm7", "issue_1869.json");
+    EXPECT_EQ(engine->_currentLoadedMapId, MAP_TUNNELS_TO_EEOFOL);
+    EXPECT_LT(faceCount.max(), 1400);
+}
+
+GAME_TEST(Issues, Issue1898) {
+    // Doors in School of Sorcery hurt all party members instead of the active one
+    auto totalHealth = tapes.totalHp();
+    auto charHealth = charTapes.hp(0);
+    test.playTraceFromTestData("issue_1898.mm7", "issue_1898.json");
+    EXPECT_EQ(engine->_currentLoadedMapId, MAP_SCHOOL_OF_SORCERY);
+    EXPECT_LT(totalHealth.delta(), 0);
+    EXPECT_EQ(charHealth.delta(), totalHealth.delta()); // all health lost from one character
+}
+
+GAME_TEST(Issues, Issue1890) {
+    //Stuck *in* stairs when leaving the Mercenary Guild
+    auto yPos = tapes.custom([]() { return static_cast<int>(pParty->pos.y); });
+    test.playTraceFromTestData("issue_1890.mm7", "issue_1890.json");
+    EXPECT_EQ(engine->_currentLoadedMapId, MAP_TATALIA);
+    EXPECT_CONTAINS(yPos, 16803); // starting point
+    EXPECT_LT(yPos.back(), 16700); // moved forwards
+}

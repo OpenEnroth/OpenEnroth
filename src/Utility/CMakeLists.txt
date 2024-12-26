@@ -4,6 +4,7 @@ set(UTILITY_SOURCES
         Exception.cpp
         Math/TrigLut.cpp
         Memory/Blob.cpp
+        SequentialBlobReader.cpp
         Streams/BlobInputStream.cpp
         Streams/BlobOutputStream.cpp
         Streams/FileInputStream.cpp
@@ -31,6 +32,7 @@ set(UTILITY_HEADERS
         Memory/MemSet.h
         ScopeGuard.h
         Segment.h
+        SequentialBlobReader.h
         Streams/BlobInputStream.h
         Streams/BlobOutputStream.h
         Streams/FileInputStream.h
