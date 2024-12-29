@@ -56,6 +56,8 @@
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Exception.h"
 
+#include "Io/Mouse.h"
+
 MapStartPoint uLevel_StartingPointType;
 
 OutdoorLocation *pOutdoor = nullptr;
@@ -1080,9 +1082,6 @@ void ODM_ProcessPartyActions() {
     bool partyIsWalking = false;
     bool noFlightBob = false;
 
-    int partyViewNewYaw = pParty->_viewYaw;
-    int partyViewNewPitch = pParty->_viewPitch;
-
     bool flyDown{ false };
 
     // TODO(captainurist): #time think about a better way to write this formula.
@@ -1117,47 +1116,47 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_TurnLeft:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    partyViewNewYaw += engine->config->settings.TurnSpeed.value();  // discrete turn
+                    pParty->_viewYaw += engine->config->settings.TurnSpeed.value();  // discrete turn
                 else
-                    partyViewNewYaw += dturn * fTurnSpeedMultiplier;  // time-based smooth turn
+                    pParty->_viewYaw += dturn * fTurnSpeedMultiplier;  // time-based smooth turn
 
-                partyViewNewYaw &= TrigLUT.uDoublePiMask;
+                pParty->_viewYaw &= TrigLUT.uDoublePiMask;
                 break;
 
             case PARTY_TurnRight:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    partyViewNewYaw -= engine->config->settings.TurnSpeed.value();
+                    pParty->_viewYaw -= engine->config->settings.TurnSpeed.value();
                 else
-                    partyViewNewYaw -= dturn * fTurnSpeedMultiplier;
+                    pParty->_viewYaw -= dturn * fTurnSpeedMultiplier;
 
-                partyViewNewYaw &= TrigLUT.uDoublePiMask;
+                pParty->_viewYaw &= TrigLUT.uDoublePiMask;
                 break;
 
             case PARTY_FastTurnLeft:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    partyViewNewYaw += engine->config->settings.TurnSpeed.value();
+                    pParty->_viewYaw += engine->config->settings.TurnSpeed.value();
                 else
-                    partyViewNewYaw += 2.0f * fTurnSpeedMultiplier * dturn;
+                    pParty->_viewYaw += 2.0f * fTurnSpeedMultiplier * dturn;
 
-                partyViewNewYaw &= TrigLUT.uDoublePiMask;
+                pParty->_viewYaw &= TrigLUT.uDoublePiMask;
                 break;
 
             case PARTY_FastTurnRight:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    partyViewNewYaw -= engine->config->settings.TurnSpeed.value();
+                    pParty->_viewYaw -= engine->config->settings.TurnSpeed.value();
                 else
-                    partyViewNewYaw -= 2.0f * fTurnSpeedMultiplier * dturn;
+                    pParty->_viewYaw -= 2.0f * fTurnSpeedMultiplier * dturn;
 
-                partyViewNewYaw &= TrigLUT.uDoublePiMask;
+                pParty->_viewYaw &= TrigLUT.uDoublePiMask;
                 break;
 
             case PARTY_StrafeLeft:
             {
-                float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
+                float sin_y = sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
                 float dx = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputSpeed.x -= 3 * dx / 4;
 
-                float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
+                float cos_y = cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
                 float dy = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputSpeed.y += 3 * dy / 4;
 
@@ -1166,11 +1165,11 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_StrafeRight:
             {
-                float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
+                float sin_y = sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
                 float dx = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputSpeed.x += 3 * dx / 4;
 
-                float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
+                float cos_y = cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
                 float dy = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 partyInputSpeed.y -= 3 * dy / 4;
 
@@ -1179,8 +1178,8 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_WalkForward:
             {
-                float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0),
-                      cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
+                float sin_y = sinf(2 * pi_double * pParty->_viewYaw / 2048.0),
+                      cos_y = cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
 
                 float dx = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 float dy = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
@@ -1198,8 +1197,8 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_RunForward:
             {
-                float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
-                float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
+                float sin_y = sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
+                float cos_y = cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
 
                 float dx = cos_y * pParty->walkSpeed * fWalkSpeedMultiplier;
                 float dy = sin_y * pParty->walkSpeed * fWalkSpeedMultiplier;
@@ -1230,8 +1229,8 @@ void ODM_ProcessPartyActions() {
             } break;
 
             case PARTY_WalkBackward: {
-                float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
-                float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
+                float sin_y = sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
+                float cos_y = cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
 
                 float dx = cos_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 partyInputSpeed.x -= dx;
@@ -1243,8 +1242,8 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_RunBackward:
             {
-                float sin_y = sinf(2 * pi_double * partyViewNewYaw / 2048.0);
-                float cos_y = cosf(2 * pi_double * partyViewNewYaw / 2048.0);
+                float sin_y = sinf(2 * pi_double * pParty->_viewYaw / 2048.0);
+                float cos_y = cosf(2 * pi_double * pParty->_viewYaw / 2048.0);
 
                 float dx = cos_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 float dy = sin_y * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
@@ -1260,24 +1259,28 @@ void ODM_ProcessPartyActions() {
             } break;
 
             case PARTY_CenterView:
-                partyViewNewPitch = 0;
+                pParty->_viewPitch = 0;
                 break;
 
             case PARTY_LookUp:
-                partyViewNewPitch += engine->config->settings.VerticalTurnSpeed.value();
-                if (partyViewNewPitch > 128) partyViewNewPitch = 128;
+                pParty->_viewPitch += engine->config->settings.VerticalTurnSpeed.value();
+                if (pParty->_viewPitch > 128) pParty->_viewPitch = 128;
                 if (pParty->hasActiveCharacter()) {
                     pParty->activeCharacter().playReaction(SPEECH_LOOK_UP);
                 }
                 break;
 
             case PARTY_LookDown:
-                partyViewNewPitch -= engine->config->settings.VerticalTurnSpeed.value();
-                if (partyViewNewPitch < -128) partyViewNewPitch = -128;
+                pParty->_viewPitch -= engine->config->settings.VerticalTurnSpeed.value();
+                if (pParty->_viewPitch < -128) pParty->_viewPitch = -128;
                 if (pParty->hasActiveCharacter()) {
                     pParty->activeCharacter().playReaction(SPEECH_LOOK_DOWN);
                 }
                 break;
+
+            case PARTY_MouseLook:
+                mouse->DoMouseLook();
+				break;
 
             case PARTY_Jump:
                 if ((!partyAtHighSlope || floorFaceId) &&
@@ -1326,10 +1329,6 @@ void ODM_ProcessPartyActions() {
         partyInputSpeed.y = 0;
         partyInputSpeed.x = 0;
     }
-
-    // set party look angles
-    pParty->_viewYaw = partyViewNewYaw;
-    pParty->_viewPitch = partyViewNewPitch;
 
     Vec3f partyNewPos = pParty->pos;
 

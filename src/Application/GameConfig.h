@@ -572,6 +572,7 @@ class GameConfig : public Config {
         Key DialogRight = {this, "dialog_right", PlatformKey::KEY_RIGHT, "Dialog right key."};
         Key DialogSelect = {this, "dialog_select", PlatformKey::KEY_RETURN, "Dialog select key."};
         Key Escape = {this, "escape", PlatformKey::KEY_ESCAPE, "Escape key."};
+        Key ToggleMouseLook = { this, "toggle_mouse_look", PlatformKey::KEY_F10, "Toggle mouse look key." };
     };
 
     Keybindings keybindings{this};

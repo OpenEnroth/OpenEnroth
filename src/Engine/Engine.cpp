@@ -196,7 +196,6 @@ void Engine::drawHUD() {
 
     // mouse->DrawPickedItem();
     mouse->DrawCursor();
-    mouse->Activate();
 }
 
 //----- (0044103C) --------------------------------------------------------
@@ -212,8 +211,6 @@ void Engine::Draw() {
 void Engine::DrawGUI() {
     render->ResetUIClipRect();
 
-    // if (render->pRenderD3D)
-    mouse->DrawCursorToTarget();
     GameUI_DrawRightPanelFrames();
     _statusBar->draw();
 
@@ -438,9 +435,6 @@ Engine::Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem)
 
 //----- (0044E7F3) --------------------------------------------------------
 Engine::~Engine() {
-    if (mouse)
-        mouse->Deactivate();
-
     delete pEventTimer;
     delete pCamera3D;
     pAudioPlayer.reset();

@@ -52,6 +52,8 @@
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Exception.h"
 
+#include "Io/Mouse.h"
+
 IndoorLocation *pIndoor = nullptr;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
 
@@ -1652,12 +1654,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     if (pIndoor->pFaces[faceId].isFluid())
         on_water = true;
 
-    // Party angle in XY plane.
-    int angle = pParty->_viewYaw;
-
-    // Vertical party angle (basically azimuthal angle in polar coordinates).
-    int vertical_angle = pParty->_viewPitch;
-
     // Calculate rotation in ticks (1024 ticks per 180 degree).
     // TODO(captainurist): #time think about a better way to write this formula.
     int rotation =
@@ -1669,85 +1665,89 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         switch (pPartyActionQueue->Next()) {
             case PARTY_TurnLeft:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle + (int) engine->config->settings.TurnSpeed.value());
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + (int) engine->config->settings.TurnSpeed.value());
                 else
-                    angle = TrigLUT.uDoublePiMask & (angle + static_cast<int>(rotation * fTurnSpeedMultiplier));
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + static_cast<int>(rotation * fTurnSpeedMultiplier));
                 break;
             case PARTY_TurnRight:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle - (int) engine->config->settings.TurnSpeed.value());
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - (int) engine->config->settings.TurnSpeed.value());
                 else
-                    angle = TrigLUT.uDoublePiMask & (angle - static_cast<int>(rotation * fTurnSpeedMultiplier));
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - static_cast<int>(rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnLeft:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle + (int) engine->config->settings.TurnSpeed.value());
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + (int) engine->config->settings.TurnSpeed.value());
                 else
-                    angle = TrigLUT.uDoublePiMask & (angle + static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnRight:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle - (int) engine->config->settings.TurnSpeed.value());
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - (int) engine->config->settings.TurnSpeed.value());
                 else
-                    angle = TrigLUT.uDoublePiMask & (angle - static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_StrafeLeft:
-                pParty->velocity.x -= TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
-                pParty->velocity.y += TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.x -= TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.y += TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_StrafeRight:
-                pParty->velocity.y -= TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
-                pParty->velocity.x += TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.y -= TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.x += TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkForward:
-                pParty->velocity.x += TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier;
-                pParty->velocity.y += TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.x += TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.y += TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkBackward:
-                pParty->velocity.x -= TrigLUT.cos(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
-                pParty->velocity.y -= TrigLUT.sin(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.x -= TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.y -= TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_RunForward:
-                pParty->velocity.x += TrigLUT.cos(angle) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
-                pParty->velocity.y += TrigLUT.sin(angle) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.x += TrigLUT.cos(pParty->_viewYaw) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.y += TrigLUT.sin(pParty->_viewYaw) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
                 party_running_flag = true;
                 break;
 
             case PARTY_RunBackward:
-                pParty->velocity.x -= TrigLUT.cos(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
-                pParty->velocity.y -= TrigLUT.sin(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.x -= TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.y -= TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_LookUp:
-                vertical_angle += engine->config->settings.VerticalTurnSpeed.value();
-                if (vertical_angle > 128)
-                    vertical_angle = 128;
+                pParty->_viewPitch += engine->config->settings.VerticalTurnSpeed.value();
+                if (pParty->_viewPitch > 128)
+                    pParty->_viewPitch = 128;
                 if (pParty->hasActiveCharacter())
                     pParty->activeCharacter().playReaction(SPEECH_LOOK_UP);
                 break;
 
             case PARTY_LookDown:
-                vertical_angle -= engine->config->settings.VerticalTurnSpeed.value();
-                if (vertical_angle < -128)
-                    vertical_angle = -128;
+                pParty->_viewPitch -= engine->config->settings.VerticalTurnSpeed.value();
+                if (pParty->_viewPitch < -128)
+                    pParty->_viewPitch = -128;
                 if (pParty->hasActiveCharacter())
                     pParty->activeCharacter().playReaction(SPEECH_LOOK_DOWN);
                 break;
 
             case PARTY_CenterView:
-                vertical_angle = 0;
+                pParty->_viewPitch = 0;
+                break;
+
+            case PARTY_MouseLook:
+                mouse->DoMouseLook();
                 break;
 
             case PARTY_Jump:
@@ -1870,8 +1870,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->setAirborne(true);
 
     pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
-    pParty->_viewYaw = angle;
-    pParty->_viewPitch = vertical_angle;
 
     if (!isAboveGround && pIndoor->pFaces[faceId].uAttributes & FACE_IsLava)
         pParty->uFlags |= PARTY_FLAG_BURNING;

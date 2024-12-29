@@ -207,8 +207,6 @@ void GameWindowHandler::OnMouseLeftClick(Pointi position) {
     } else {
         pMediaPlayer->StopMovie();
 
-        mouse->SetMouseClick(position.x, position.y);
-
         if (GetCurrentMenuID() == MENU_CREATEPARTY) {
             UI_OnKeyDown(PlatformKey::KEY_SELECT);
         }
@@ -227,8 +225,6 @@ void GameWindowHandler::OnMouseRightClick(Pointi position) {
         ArcomageGame::OnMouseClick(1, true);
     } else {
         pMediaPlayer->StopMovie();
-
-        mouse->SetMouseClick(position.x, position.y);
 
         if (engine) {
             engine->PickMouse(pCamera3D->GetMouseInfoDepth(), position.x, position.y, &vis_allsprites_filter, &vis_door_filter);
@@ -277,7 +273,7 @@ void GameWindowHandler::OnMouseMove(Pointi position, bool left_button, bool righ
         ArcomageGame::OnMouseClick(1, right_button);
     } else {
         if (mouse) {
-            mouse->SetMouseClick(position.x, position.y);
+            mouse->SetMousePosition(position.x, position.y);
         }
     }
 }
@@ -305,6 +301,10 @@ void GameWindowHandler::OnKey(PlatformKey key) {
     } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::CycleFilter, key)) {
         OnCycleFilter();
         return;
+    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleMouseLook, key)) {
+        if (current_screen_type == SCREEN_GAME)
+			mouse->ToggleMouseLook();
+		return;
     }
 
     if (currently_selected_action_for_binding != Io::InputAction::Invalid) {
