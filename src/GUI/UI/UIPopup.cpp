@@ -1843,7 +1843,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         {
             if (GetCurrentMenuID() > MENU_MAIN) break;
             mouse->DoMouseLook();
-            
+
             if ((signed int)pY > (signed int)pViewport->uViewportBR_Y) {
                 int characterIndex = pX / 118;
                 if (characterIndex < 4) { // portaits zone

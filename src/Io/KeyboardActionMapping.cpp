@@ -106,7 +106,7 @@ std::array<CKeyListElement, std::to_underlying(InputAction::Count)> keyMappingPa
     CKeyListElement("KEY_DIALOGRIGHT", PlatformKey::KEY_RIGHT, Io::InputAction::DialogRight, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_DIALOGSELECT", PlatformKey::KEY_PAGEDOWN, Io::InputAction::DialogSelect, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_ESCAPE", PlatformKey::KEY_ESCAPE, Io::InputAction::Escape, KeyToggleType::TOGGLE_OneTimePress),
-	CKeyListElement("KEY_TOGGLEMOUSELOOK", PlatformKey::KEY_F10, Io::InputAction::ToggleMouseLook, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_TOGGLEMOUSELOOK", PlatformKey::KEY_F10, Io::InputAction::ToggleMouseLook, KeyToggleType::TOGGLE_OneTimePress),
 };
 
 
@@ -304,7 +304,7 @@ GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigKey(InputAction a
         case(InputAction::DialogRight): return &config->keybindings.DialogRight;
         case(InputAction::DialogSelect): return &config->keybindings.DialogSelect;
         case(InputAction::Escape): return &config->keybindings.Escape;
-		case(InputAction::ToggleMouseLook): return &config->keybindings.ToggleMouseLook;
+        case(InputAction::ToggleMouseLook): return &config->keybindings.ToggleMouseLook;
         default: break;
     }
 

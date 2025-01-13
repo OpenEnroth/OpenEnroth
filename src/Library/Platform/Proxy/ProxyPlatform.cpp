@@ -30,11 +30,11 @@ bool ProxyPlatform::isCursorShown() const {
 }
 
 Pointi ProxyPlatform::getCursorPosition() const {
-	return nonNullBase()->getCursorPosition();
+    return nonNullBase()->getCursorPosition();
 }
 
 void ProxyPlatform::setCursorPosition(const Pointi& position) const {
-	nonNullBase()->setCursorPosition(position);
+    nonNullBase()->setCursorPosition(position);
 }
 
 std::vector<Recti> ProxyPlatform::displayGeometries() const {

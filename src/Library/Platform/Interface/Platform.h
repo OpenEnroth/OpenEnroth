@@ -123,7 +123,7 @@ class Platform {
     /**
 	 * Sets the mouse cursor position.
      *
-     * @param                           Position of where to place the cursor.
+     * @param pos                          Position of where to place the cursor.
      */
     virtual void setCursorPosition(const Pointi &pos) const = 0;
 

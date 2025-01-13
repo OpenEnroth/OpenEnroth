@@ -303,8 +303,8 @@ void GameWindowHandler::OnKey(PlatformKey key) {
         return;
     } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleMouseLook, key)) {
         if (current_screen_type == SCREEN_GAME)
-			mouse->ToggleMouseLook();
-		return;
+            mouse->ToggleMouseLook();
+        return;
     }
 
     if (currently_selected_action_for_binding != Io::InputAction::Invalid) {

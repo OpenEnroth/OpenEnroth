@@ -1280,7 +1280,7 @@ void ODM_ProcessPartyActions() {
 
             case PARTY_MouseLook:
                 mouse->DoMouseLook();
-				break;
+                break;
 
             case PARTY_Jump:
                 if ((!partyAtHighSlope || floorFaceId) &&

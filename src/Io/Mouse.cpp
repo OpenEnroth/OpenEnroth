@@ -198,13 +198,13 @@ void Io::Mouse::DrawPickedItem() {
 }
 
 void Io::Mouse::SetMousePosition(int x, int y) {
-	logger->info("Mouse position: x={}, y={}", x, y);
+    logger->info("Mouse position: x={}, y={}", x, y);
     if (_mouseLook) {
-		_mouseLookChange.x = x - uMouseX;
-		_mouseLookChange.y = y - uMouseY;
+        _mouseLookChange.x = x - uMouseX;
+        _mouseLookChange.y = y - uMouseY;
         if (_mouseLookChange.x != 0 || _mouseLookChange.y != 0) {
             pPartyActionQueue->Add(PARTY_MouseLook);
-			platform->setCursorPosition({ uMouseX, uMouseY }); // this causes another mouse move event - might be better to poll mouse position once per frame rather than on event
+            platform->setCursorPosition({ uMouseX, uMouseY }); // this causes another mouse move event - might be better to poll mouse position once per frame rather than on event
         }
     } else {
         uMouseX = x;
@@ -304,24 +304,23 @@ void Io::Mouse::UI_OnMouseLeftClick() {
 }
 
 void Io::Mouse::SetMouseLook(bool enable) {
-	_mouseLook = enable;
-	if (enable) {
-		//platform->setCursorShown(false);
-		platform->setCursorPosition({ uMouseX, uMouseY });
-	}
-	else {
-		//platform->setCursorShown(true);
-	}
+    _mouseLook = enable;
+    if (enable) {
+        //platform->setCursorShown(false);
+        platform->setCursorPosition({ uMouseX, uMouseY });
+    } else {
+        //platform->setCursorShown(true);
+    }
 }
 
 void Io::Mouse::ToggleMouseLook() {
-	SetMouseLook(!_mouseLook);
+    SetMouseLook(!_mouseLook);
 }
 
 void Io::Mouse::DoMouseLook() {
-	if (!_mouseLook) {
-		return;
-	}
+    if (!_mouseLook) {
+        return;
+    }
 
     const float sensitivity = 5.0f;
     logger->info("MouseLook: x={} , y= {}", engine->mouse->_mouseLookChange.x, engine->mouse->_mouseLookChange.y);

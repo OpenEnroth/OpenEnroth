@@ -40,7 +40,7 @@ Pointi NullPlatform::getCursorPosition() const {
 }
 
 void NullPlatform::setCursorPosition(const Pointi &position) const {
-	// Okay?
+    // Okay?
 }
 
 std::vector<Recti> NullPlatform::displayGeometries() const {

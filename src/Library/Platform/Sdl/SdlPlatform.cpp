@@ -103,20 +103,19 @@ bool SdlPlatform::isCursorShown() const {
     }
 }
 
-Pointi SdlPlatform::getCursorPosition() const
-{
+Pointi SdlPlatform::getCursorPosition() const {
     if (!_initialized)
         return {};
 
-	Pointi result;
-	SDL_GetMouseState(&result.x, &result.y);
+    Pointi result;
+    SDL_GetMouseState(&result.x, &result.y);
 
     return result;
 }
 
 void SdlPlatform::setCursorPosition(const Pointi &position) const {
-	if (!_initialized)
-		return;
+    if (!_initialized)
+        return;
     SDL_WarpMouseInWindow(nullptr, position.x, position.y);
 }
 
