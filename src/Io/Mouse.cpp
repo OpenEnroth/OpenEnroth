@@ -125,6 +125,12 @@ void Io::Mouse::DrawCursor() {
             pos.y -= (this->cursor_img->height()) / 2;
 
             render->DrawTextureNew(pos.x / 640., pos.y / 480., this->cursor_img);
+        } else if (_mouseLook) {
+            platform->setCursorShown(false);
+            auto pointer = assets->getImage_ColorKey("MICON2", colorTable.Black /*colorTable.TealMask*/);
+            int x = pViewport->uScreenCenterX - pointer->width() / 2;
+            int y = pViewport->uScreenCenterY - pointer->height() / 2;
+            render->DrawTextureNew(x / 640., y / 480., pointer);
         } else {
             platform->setCursorShown(true);
         }
@@ -198,13 +204,12 @@ void Io::Mouse::DrawPickedItem() {
 }
 
 void Io::Mouse::SetMousePosition(int x, int y) {
-    logger->info("Mouse position: x={}, y={}", x, y);
     if (_mouseLook) {
         _mouseLookChange.x = x - uMouseX;
         _mouseLookChange.y = y - uMouseY;
         if (_mouseLookChange.x != 0 || _mouseLookChange.y != 0) {
             pPartyActionQueue->Add(PARTY_MouseLook);
-            platform->setCursorPosition({ uMouseX, uMouseY }); // this causes another mouse move event - might be better to poll mouse position once per frame rather than on event
+            platform->setCursorPosition({ uMouseX, uMouseY }); // TODO(pskelton): this causes another mouse move event - might be better to poll mouse position once per frame rather than on event
         }
     } else {
         uMouseX = x;
@@ -306,10 +311,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
 void Io::Mouse::SetMouseLook(bool enable) {
     _mouseLook = enable;
     if (enable) {
-        //platform->setCursorShown(false);
         platform->setCursorPosition({ uMouseX, uMouseY });
-    } else {
-        //platform->setCursorShown(true);
     }
 }
 
@@ -322,8 +324,7 @@ void Io::Mouse::DoMouseLook() {
         return;
     }
 
-    const float sensitivity = 5.0f;
-    logger->info("MouseLook: x={} , y= {}", engine->mouse->_mouseLookChange.x, engine->mouse->_mouseLookChange.y);
+    const float sensitivity = 5.0f; // TODO(pskelton): move to config value
     float modX = engine->mouse->_mouseLookChange.x * sensitivity;
     float modY = engine->mouse->_mouseLookChange.y * sensitivity;
     engine->mouse->_mouseLookChange.x = 0;
