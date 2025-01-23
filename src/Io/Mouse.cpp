@@ -115,8 +115,6 @@ void Io::Mouse::DrawCursor() {
     if (pParty->pPickedItem.itemId != ITEM_NULL) {
         DrawPickedItem();
     } else {
-        ClearPickedItem();
-
         // for other cursor img ie target mouse
         if (this->cursor_img) {
             platform->setCursorShown(false);
@@ -185,8 +183,6 @@ void Io::Mouse::DrawCursor() {
     */
 }
 
-void Io::Mouse::ClearPickedItem() { pPickedItem = nullptr; }
-
 void Io::Mouse::DrawPickedItem() {
     if (pParty->pPickedItem.itemId == ITEM_NULL)
         return;
@@ -194,12 +190,15 @@ void Io::Mouse::DrawPickedItem() {
     GraphicsImage *pTexture = assets->getImage_Alpha(pParty->pPickedItem.GetIconName());
     if (!pTexture) return;
 
+	float posX = (uMouseX + pickedItemOffsetX) / 640.0f;
+	float posY = (uMouseY + pickedItemOffsetY) / 480.0f;
+
     if (pParty->pPickedItem.IsBroken()) {
-        render->DrawTransparentRedShade(uMouseX / 640.0f, uMouseY / 480.0f, pTexture);
+        render->DrawTransparentRedShade(posX, posY, pTexture);
     } else if (!pParty->pPickedItem.IsIdentified()) {
-        render->DrawTransparentGreenShade(uMouseX / 640.0f, uMouseY / 480.0f, pTexture);
+        render->DrawTransparentGreenShade(posX, posY, pTexture);
     } else {
-        render->DrawTextureNew(uMouseX / 640.0f, uMouseY / 480.0f, pTexture);
+        render->DrawTextureNew(posX, posY, pTexture);
     }
 }
 
