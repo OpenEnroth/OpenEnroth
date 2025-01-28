@@ -26,6 +26,7 @@
 
 #include "GUI/UI/UIChest.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/ItemGrid.h"
 
 #include "Io/Mouse.h"
 
@@ -453,9 +454,9 @@ void Chest::OnChestLeftClick() {
     int pX;
     int pY;
     mouse->GetClickPos(&pX, &pY);
-    int inventoryYCoord = (pY - (pChestPixelOffsetY[chest->uChestBitmapID])) / 32;
-    int inventoryXCoord = (pX - (pChestPixelOffsetX[chest->uChestBitmapID])) / 32;
 
+    int inventoryYCoord = (pY + mouse->pickedItemOffsetY - (pChestPixelOffsetY[chest->uChestBitmapID])) / 32;
+    int inventoryXCoord = (pX + mouse->pickedItemOffsetX - (pChestPixelOffsetX[chest->uChestBitmapID])) / 32;
     int invMatrixIndex = inventoryXCoord + (chestheight * inventoryYCoord);
 
     if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
@@ -477,7 +478,19 @@ void Chest::OnChestLeftClick() {
                 if (chest->igChestItems[itemindex].isGold()) {
                     pParty->partyFindsGold(chest->igChestItems[itemindex].goldAmount, GOLD_RECEIVE_SHARE);
                 } else {
-                    pParty->setHoldingItem(&chest->igChestItems[itemindex]);
+                    // calc offsets of where on the item was clicked
+                    // first need index of top left corner of the item
+                    int cornerX = invMatrixIndex % chestwidth;
+                    int cornerY = invMatrixIndex / chestwidth;
+                    int itemXOffset = pX + mouse->pickedItemOffsetX - pChestPixelOffsetX[chest->uChestBitmapID] - (cornerX * 32);
+                    int itemYOffset = pY + mouse->pickedItemOffsetY - pChestPixelOffsetY[chest->uChestBitmapID] - (cornerY * 32);
+
+                    auto item = &chest->igChestItems[itemindex];
+                    auto tex = assets->getImage_Alpha(item->GetIconName());
+                    itemXOffset -= itemOffset(tex->width());
+                    itemYOffset -= itemOffset(tex->height());
+
+                    pParty->setHoldingItem(item, -itemXOffset, -itemYOffset);
                 }
 
                 RemoveItemAtChestIndex(invMatrixIndex);

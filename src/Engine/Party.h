@@ -79,7 +79,7 @@ struct Party {
     /**
      * @offset 0x4936E1
      */
-    void setHoldingItem(ItemGen *pItem);
+    void setHoldingItem(ItemGen *pItem, int offsetX = 0, int offsetY = 0);
 
     /**
     * Sets _activeCharacter to the first character that can act
