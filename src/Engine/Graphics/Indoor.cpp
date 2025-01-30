@@ -188,7 +188,6 @@ void BLVRenderParams::Reset() {
 
     this->uTargetWidth = render->GetRenderDimensions().w;
     this->uTargetHeight = render->GetRenderDimensions().h;
-    this->pTargetZBuffer = render->pActiveZBuffer;
     this->uNumFacesRenderedThisFrame = 0;
 }
 

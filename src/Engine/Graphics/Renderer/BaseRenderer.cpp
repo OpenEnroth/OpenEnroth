@@ -374,7 +374,6 @@ void BaseRenderer::TransformBillboardsAndSetPalettesODM() {
     SoftwareBillboard billboard = {0};
     billboard.sParentBillboardID = -1;
     //  billboard.pTarget = render->pTargetSurface;
-    billboard.pTargetZ = render->pActiveZBuffer;
     //  billboard.uTargetPitch = render->uTargetSurfacePitch;
     billboard.uViewportX = pViewport->uViewportTL_X;
     billboard.uViewportY = pViewport->uViewportTL_Y;

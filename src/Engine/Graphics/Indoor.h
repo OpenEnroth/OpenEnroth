@@ -270,7 +270,6 @@ struct BLVRenderParams {
     unsigned int uViewportY;
     unsigned int uViewportZ;
     unsigned int uViewportW;
-    int *pTargetZBuffer = nullptr;
     int uViewportHeight = 0;
     int uViewportWidth = 0;
     int uViewportCenterX = 0;
