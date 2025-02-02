@@ -733,7 +733,7 @@ std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
     return foundActors;
 }
 
-// TODO(pskelton): z buffer must go
+// TODO(pskelton): z buffer only used for paperdolls now - contain zbuffer within char window?
 void BaseRenderer::CreateZBuffer() {
     if (pActiveZBuffer)
         free(pActiveZBuffer);
@@ -745,12 +745,12 @@ void BaseRenderer::CreateZBuffer() {
     ClearZBuffer();
 }
 
-// TODO(pskelton): z buffer must go
+// TODO(pskelton): z buffer only used for paperdolls now - contain zbuffer within char window?
 void BaseRenderer::ClearZBuffer() {
     memset32(this->pActiveZBuffer, 0xFFFF0000, _zBufferRect.w * _zBufferRect.h);
 }
 
-// TODO(pskelton): zbuffer must go
+// TODO(pskelton): z buffer only used for paperdolls now - contain zbuffer within char window?
 void BaseRenderer::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVal) {
     if (!img) return;
 
