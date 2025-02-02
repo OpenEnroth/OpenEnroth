@@ -185,7 +185,7 @@ void GUIWindow_Spellbook::Update() {
                             pX_coord = pViewport->uViewportTL_X + iconPos.Xpos;
                             pY_coord = pViewport->uViewportTL_Y + iconPos.Ypos;
 
-                            Rect iconRect = { pX_coord, pY_coord, pTexture->width(), pTexture->height() };
+                            Recti iconRect = Recti(pX_coord, pY_coord, pTexture->width(), pTexture->height());
                             if (iconRect.contains(mousePos)) { // mouseover highlight
                                 if (SBPageCSpellsTextureList[index + 1]) {
                                     render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, SBPageCSpellsTextureList[index + 1]);

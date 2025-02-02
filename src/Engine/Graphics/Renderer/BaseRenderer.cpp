@@ -762,8 +762,8 @@ void BaseRenderer::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int z
     // crop to zbuffer rect
     int xStart = std::max(-uOutX, 0);
     int yStart = std::max(-uOutY, 0);
-    int xEnd = std::min(image.width(), _zBufferRect.w - uOutX);
-    int yEnd = std::min(image.height(), _zBufferRect.h - uOutY);
+    int xEnd = std::min(static_cast<int>(image.width()), _zBufferRect.w - uOutX);
+    int yEnd = std::min(static_cast<int>(image.height()), _zBufferRect.h - uOutY);
 
     for (int ys = yStart; ys < yEnd; ys++) {
         auto imageLine = image[ys];
