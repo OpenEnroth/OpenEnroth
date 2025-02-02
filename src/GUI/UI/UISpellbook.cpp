@@ -155,8 +155,6 @@ void GUIWindow_Spellbook::Update() {
 
     drawCurrentSchoolBackground();
 
-    render->ClearZBuffer();
-
     for (MagicSchool page : allMagicSchools()) {
         CharacterSkillType skill = skillForMagicSchool(page);
 

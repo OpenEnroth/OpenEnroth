@@ -369,7 +369,6 @@ void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, in
 void Chest::PlaceItems(int uChestID) {  // only sued for setup
     char chest_cells_map[144];   // [sp+Ch] [bp-A0h]@1
 
-    render->ClearZBuffer();
     int uChestArea = pChestWidthsByType[vChests[uChestID].uChestBitmapID] * pChestHeightsByType[vChests[uChestID].uChestBitmapID];
     memset(chest_cells_map, 0, 144);
     // fill cell map at random positions
