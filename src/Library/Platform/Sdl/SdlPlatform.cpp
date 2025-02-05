@@ -116,7 +116,7 @@ Pointi SdlPlatform::getCursorPosition() const {
 void SdlPlatform::setCursorPosition(const Pointi &position) const {
     if (!_initialized)
         return;
-    SDL_WarpMouseInWindow(nullptr, position.x, position.y);
+    SDL_WarpMouseGlobal(position.x, position.y);
 }
 
 std::vector<Recti> SdlPlatform::displayGeometries() const {
