@@ -181,7 +181,7 @@ var searchData=
   ['_5flatestontransition_178',['_latestOnTransition',['../classFsmBuilder.html#ac99763429c669be6a2185b8760e47059',1,'FsmBuilder']]],
   ['_5flateststate_179',['_latestState',['../classFsmBuilder.html#a05a3cd6b0abbd04d17135f2cd0d969ba',1,'FsmBuilder']]],
   ['_5flazyinitialization_180',['_lazyInitialization',['../classGraphicsImage.html#ae45c95d4d90e4d1967ed98640606a087',1,'GraphicsImage']]],
-  ['_5flevel_181',['_level',['../classCombinedSkillValue.html#a71963ea1834aca2c2633b7cbe09b46a4',1,'CombinedSkillValue::_level()'],['../classLogCategory.html#a4f48c1c7db2bc60f087f3f11411a08f0',1,'LogCategory::_level()']]],
+  ['_5flevel_181',['_level',['../classLogCategory.html#a4f48c1c7db2bc60f087f3f11411a08f0',1,'LogCategory::_level()'],['../classCombinedSkillValue.html#a71963ea1834aca2c2633b7cbe09b46a4',1,'CombinedSkillValue::_level()']]],
   ['_5flevelstrings_182',['_levelStrings',['../classEngine.html#a17633f8ba730a25c08f82328ef969838',1,'Engine']]],
   ['_5flisteners_183',['_listeners',['../classAnyConfigEntry.html#a1a859a2e9b4e51fc29ddbb730f0b4cd7',1,'AnyConfigEntry']]],
   ['_5floader_184',['_loader',['../classGraphicsImage.html#a75a5cc39c4dbfbcc006b3185bfbfa715',1,'GraphicsImage']]],
@@ -419,5 +419,6 @@ var searchData=
   ['_5fyawrotationsine_416',['_yawRotationSine',['../structCamera3D.html#a7d6da6a039fcd5868b4f7e459ca57c98',1,'Camera3D']]],
   ['_5fyawrotationspeed_417',['_yawRotationSpeed',['../structParty.html#ac2575a6f31903c0006a7ed59d7ae6085',1,'Party']]],
   ['_5fz_418',['_z',['../structParticle.html#a12a5cb9bc2784118f2549f0fcca184c1',1,'Particle']]],
-  ['_5fzspeed_419',['_zSpeed',['../classTeleportPoint.html#a69c805a404826575b2bda47911432a63',1,'TeleportPoint']]]
+  ['_5fzbufferrect_419',['_zBufferRect',['../classRenderer.html#a5c2ff569b5117aa0259587b39744fa49',1,'Renderer']]],
+  ['_5fzspeed_420',['_zSpeed',['../classTeleportPoint.html#a69c805a404826575b2bda47911432a63',1,'TeleportPoint']]]
 ];

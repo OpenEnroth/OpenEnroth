@@ -490,7 +490,7 @@ var searchData=
   ['_5fwidth_487',['_width',['../classdetail_1_1ImageBase.html#ab8cccc246dfb6a12b0ede22116067665',1,'detail::ImageBase']]],
   ['_5fwindow_488',['_window',['../classPlatformApplication.html#a1c22b6d8f88b1792bc4638db35e75019',1,'PlatformApplication::_window()'],['../classSdlOpenGLContext.html#a5188b52cdb68ade606fa0490c0e1152b',1,'SdlOpenGLContext::_window()'],['../classSdlWindow.html#a677db36072426313885afece983d9a2a',1,'SdlWindow::_window()']]],
   ['_5fwindowbyid_489',['_windowById',['../classSdlPlatformSharedState.html#a1b4897ab03bfb25e0d09e7dd48ce7072',1,'SdlPlatformSharedState']]],
-  ['_5fwrite_490',['_write',['../classMemoryFileSystem.html#ac0d34e0d29ed3c902d67dd6989d1e9ee',1,'MemoryFileSystem::_write()'],['../classDirectoryFileSystem.html#a56958ad9af3cca5d1c42a9b05323f01e',1,'DirectoryFileSystem::_write()'],['../classFileSystem.html#a3344f3d92d1bad5c22133ca94e0d3682',1,'FileSystem::_write()'],['../classReadOnlyFileSystem.html#a8add80fbf74892389003d7a7ba26ceac',1,'ReadOnlyFileSystem::_write()'],['../classLowercaseFileSystem.html#a6a2ceadd2f7a8abf910b5315ffe6dee1',1,'LowercaseFileSystem::_write()'],['../classMaskingFileSystem.html#a28b8b6a7f47cfbbabb2ef321f8ef120d',1,'MaskingFileSystem::_write()'],['../classMountingFileSystem.html#a028da508a1c3a13548e761807dc1408b',1,'MountingFileSystem::_write()'],['../classProxyFileSystem.html#af00544ab72d58b8b271553ee5703db3d',1,'ProxyFileSystem::_write()']]],
+  ['_5fwrite_490',['_write',['../classMountingFileSystem.html#a028da508a1c3a13548e761807dc1408b',1,'MountingFileSystem::_write()'],['../classDirectoryFileSystem.html#a56958ad9af3cca5d1c42a9b05323f01e',1,'DirectoryFileSystem::_write()'],['../classFileSystem.html#a3344f3d92d1bad5c22133ca94e0d3682',1,'FileSystem::_write()'],['../classReadOnlyFileSystem.html#a8add80fbf74892389003d7a7ba26ceac',1,'ReadOnlyFileSystem::_write()'],['../classLowercaseFileSystem.html#a6a2ceadd2f7a8abf910b5315ffe6dee1',1,'LowercaseFileSystem::_write()'],['../classMaskingFileSystem.html#a28b8b6a7f47cfbbabb2ef321f8ef120d',1,'MaskingFileSystem::_write()'],['../classMemoryFileSystem.html#ac0d34e0d29ed3c902d67dd6989d1e9ee',1,'MemoryFileSystem::_write()'],['../classProxyFileSystem.html#af00544ab72d58b8b271553ee5703db3d',1,'ProxyFileSystem::_write()']]],
   ['_5fx_491',['_x',['../structParticle.html#a8a1ee0bb21d24dec02b5b89ab0782c7d',1,'Particle']]],
   ['_5fy_492',['_y',['../structParticle.html#a1c8322bae84281ee01027751550742ec',1,'Particle']]],
   ['_5fyaw_493',['_yaw',['../classTeleportPoint.html#a1941fa9efd3587a155efb016a5917f62',1,'TeleportPoint']]],
@@ -500,5 +500,6 @@ var searchData=
   ['_5fyawrotationsine_497',['_yawRotationSine',['../structCamera3D.html#a7d6da6a039fcd5868b4f7e459ca57c98',1,'Camera3D']]],
   ['_5fyawrotationspeed_498',['_yawRotationSpeed',['../structParty.html#ac2575a6f31903c0006a7ed59d7ae6085',1,'Party']]],
   ['_5fz_499',['_z',['../structParticle.html#a12a5cb9bc2784118f2549f0fcca184c1',1,'Particle']]],
-  ['_5fzspeed_500',['_zSpeed',['../classTeleportPoint.html#a69c805a404826575b2bda47911432a63',1,'TeleportPoint']]]
+  ['_5fzbufferrect_500',['_zBufferRect',['../classRenderer.html#a5c2ff569b5117aa0259587b39744fa49',1,'Renderer']]],
+  ['_5fzspeed_501',['_zSpeed',['../classTeleportPoint.html#a69c805a404826575b2bda47911432a63',1,'TeleportPoint']]]
 ];
