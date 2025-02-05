@@ -2179,9 +2179,11 @@ void OnPaperdollLeftClick() {
         // player->pEquipment.uGlove);
 
     } else {  // z picking as before
-        v34 =
-            render
-                ->pActiveZBuffer[mouse->uMouseX + mouse->uMouseY * render->GetRenderDimensions().w] & 0xFFFF;
+        v34 = 0;
+        if (render->_zBufferRect.contains({ mouse->uMouseX, mouse->uMouseY })) {
+            v34 = render->pActiveZBuffer[(mouse->uMouseX - render->_zBufferRect.x) + (mouse->uMouseY - render->_zBufferRect.y) * render->_zBufferRect.w] & 0xFFFF;
+        }
+
         if (v34) {
             // v36 = v34 - 1;
             // v38 = &pCharacters[pParty->_activeCharacter]->pInventoryItemList[v34 - 1];

@@ -37,8 +37,6 @@ void GUIWindow_Chest::Update() {
         CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
         render->DrawTextureNew(pBtn_ExitCancel->uX / 640.0f, pBtn_ExitCancel->uY / 480.0f, ui_exit_cancel_button_background);
     } else if (current_screen_type == SCREEN_CHEST) {
-        render->ClearZBuffer();
-
         int uChestID = _chestId;
         int chestBitmapId = vChests[uChestID].uChestBitmapID;
         int chest_offs_x = pChestPixelOffsetX[chestBitmapId];

@@ -180,7 +180,10 @@ class Renderer {
     virtual void endOverlays() = 0;
 
     std::shared_ptr<GameConfig> config = nullptr;
+
+    Recti _zBufferRect{ 478, 7, 153, 344 };
     int *pActiveZBuffer;
+
     Color uFogColor;
     int hd_water_current_frame;
     GraphicsImage *hd_water_tile_anim[7];

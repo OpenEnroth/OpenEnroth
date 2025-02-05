@@ -301,7 +301,6 @@ bool enterHouse(HouseId uHouseID) {
     }
 
     current_npc_text.clear();
-    render->ClearZBuffer();
 
     int openHours = houseTable[uHouseID].uOpenTime;
     int closeHours = houseTable[uHouseID].uCloseTime;
@@ -551,8 +550,6 @@ void selectProprietorDialogueOption(DialogueId option) {
     }
 
     pParty->placeHeldItemInInventoryOrDrop();
-
-    render->ClearZBuffer();
 
     window_SpeakInHouse->houseDialogueOptionSelected(option);
     window_SpeakInHouse->reinitDialogueWindow();

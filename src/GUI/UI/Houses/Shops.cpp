@@ -917,7 +917,6 @@ void GUIWindow_Shop::houseScreenClick() {
             if (pParty->activeCharacter().pInventoryItemList[pItemID - 1].canSellRepairIdentifyAt(houseId())) {
                 _transactionPerformed = true;
                 pParty->activeCharacter().SalesProcess(invindex, pItemID - 1, houseId());
-                render->ClearZBuffer();
                 pParty->activeCharacter().playReaction(SPEECH_ITEM_SOLD);
                 return;
             }
@@ -1131,7 +1130,6 @@ void GUIWindow_Shop::houseScreenClick() {
                     pParty->TakeGold(uPriceItemService);
                 }
                 boughtItem->Reset();
-                render->ClearZBuffer();
                 pParty->activeCharacter().playReaction(SPEECH_ITEM_BUY);
                 return;
             } else {

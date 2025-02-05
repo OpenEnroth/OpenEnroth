@@ -2100,7 +2100,10 @@ void Inventory_ItemPopupAndAlchemy() {
         static const int slotSize = 32;
 
         if (!ringscreenactive()) { // rings not displayed
-            int item_pid = (render->pActiveZBuffer[pX + pY * render->GetRenderDimensions().w] & 0xFFFF) - 1;
+            int item_pid = -1;
+            if (render->_zBufferRect.contains({ pX, pY })) {
+                item_pid += render->pActiveZBuffer[(pX - render->_zBufferRect.x) + (pY - render->_zBufferRect.y) * render->_zBufferRect.w] & 0xFFFF;
+            }
             // zbuffer still used for paperdolls
 
             if (item_pid != -1) {
