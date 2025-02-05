@@ -987,8 +987,12 @@ int Character::GetActualStat(CharacterAttribute stat) const {
             break;
     }
 
-    int uConditionMult = pConditionAttributeModifier
-        [stat][std::to_underlying(GetMajorConditionIdx())];  // weak from disease or poison ect
+    float uConditionMult = 100.0f;
+    if (this->conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED, CONDITION_PETRIFIED }))
+        for (Condition cond : allConditions())  // accumulate all condition effects
+            if (this->conditions.Has(cond))
+                uConditionMult *= 0.01f * pConditionAttributeModifier[stat][std::to_underlying(cond)];  // weak from disease or poison ect
+
     int magicBonus = GetMagicalBonus(stat);
     int itemBonus = GetItemsBonus(stat);
 
