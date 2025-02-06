@@ -151,11 +151,9 @@ void GUIWindow_Spellbook::openSpellbook() {
 
 void GUIWindow_Spellbook::Update() {
     const Character &player = pParty->activeCharacter();
-    unsigned int pX_coord, pY_coord;
+    int pX_coord, pY_coord;
 
     drawCurrentSchoolBackground();
-
-    render->ClearZBuffer();
 
     for (MagicSchool page : allMagicSchools()) {
         CharacterSkillType skill = skillForMagicSchool(page);
@@ -173,6 +171,8 @@ void GUIWindow_Spellbook::Update() {
             }
             render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, pPageTexture);
 
+            Pointi mousePos = mouse->GetCursorPos();
+
             for (SpellId spell : spellsForMagicSchool(player.lastOpenedSpellbookPage)) {
                 int index = spellIndexInMagicSchool(spell);
                 if (player.bHaveSpell[spell] || engine->config->debug.AllMagic.value()) {
@@ -185,27 +185,17 @@ void GUIWindow_Spellbook::Update() {
                             pX_coord = pViewport->uViewportTL_X + iconPos.Xpos;
                             pY_coord = pViewport->uViewportTL_Y + iconPos.Ypos;
 
-                            render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, pTexture);
-                            render->ZDrawTextureAlpha(iconPos.Xpos / 640.0f, iconPos.Ypos / 480.0f, pTexture, index + 1);
+                            Recti iconRect = Recti(pX_coord, pY_coord, pTexture->width(), pTexture->height());
+                            if (iconRect.contains(mousePos)) { // mouseover highlight
+                                if (SBPageCSpellsTextureList[index + 1]) {
+                                    render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, SBPageCSpellsTextureList[index + 1]);
+                                }
+                            } else {
+                                render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, pTexture);
+                            }
                         }
                     }
                 }
-            }
-        }
-    }
-
-    Pointi pt = mouse->GetCursorPos();
-    Sizei renDims = render->GetRenderDimensions();
-    if (pt.x < renDims.w && pt.y < renDims.h) {
-        int idx = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderDimensions().w] & 0xFFFF;
-        if (idx) {
-            if (SBPageCSpellsTextureList[idx]) {
-                SpellBookIconPos &iconPos = pIconPos[player.lastOpenedSpellbookPage][pSpellbookSpellIndices[player.lastOpenedSpellbookPage][idx]];
-
-                pX_coord = pViewport->uViewportTL_X + iconPos.Xpos;
-                pY_coord = pViewport->uViewportTL_Y + iconPos.Ypos;
-
-                render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, SBPageCSpellsTextureList[idx]);
             }
         }
     }

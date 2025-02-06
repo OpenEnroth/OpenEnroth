@@ -338,7 +338,6 @@ void GUIWindow_MagicGuild::houseScreenClick() {
                         _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);
                         boughtItem.Reset();
-                        render->ClearZBuffer();
                         pParty->activeCharacter().playReaction(SPEECH_ITEM_BUY);
                         return;
                     }

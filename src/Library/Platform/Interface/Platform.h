@@ -116,12 +116,12 @@ class Platform {
     virtual bool isCursorShown() const = 0;
 
     /**
-     * Gets the mouse cursor position.
+     * Gets the global mouse cursor position.
      */
     virtual Pointi getCursorPosition() const = 0;
 
     /**
-	 * Sets the mouse cursor position.
+     * Sets the global mouse cursor position.
      *
      * @param pos                          Position of where to place the cursor.
      */
