@@ -123,7 +123,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR (CMAKE_CXX_COMPILER_ID STREQUAL "Cla
         endif ()
     elseif(OE_USE_LD_GOLD AND COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
         message(STATUS "Using gold linker.")
-        if (OE_CHECK_SYNTAX)
+        if (NOT OE_CHECK_SYNTAX)
             message(FATAL_ERROR "The gold linker not supported at this time and is known to have problems. Please use lld or mold.")
         endif()
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=gold")
