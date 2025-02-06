@@ -23,6 +23,9 @@ class SdlPlatform: public Platform {
     virtual void setCursorShown(bool cursorShown) override;
     virtual bool isCursorShown() const override;
 
+    virtual Pointi getCursorPosition() const override;
+    virtual void setCursorPosition(const Pointi& position) const override;
+
     virtual std::vector<Recti> displayGeometries() const override;
 
     virtual void showMessageBox(const std::string &title, const std::string &message) const override;

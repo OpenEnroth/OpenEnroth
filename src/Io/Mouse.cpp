@@ -26,6 +26,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Library/Logger/Logger.h"
+
 std::shared_ptr<Io::Mouse> mouse = nullptr;
 
 void Io::Mouse::GetClickPos(int *pX, int *pY) {
@@ -56,56 +58,24 @@ void Io::Mouse::SetCursorImage(std::string_view name) {
 
     ClearCursor();
     if (name == "MICON1") {  // arrow
-        this->bActive = false;
-        this->field_C = 1;
+        this->_arrowCursor = true;
         platform->setCursorShown(true);
         this->cursor_img = nullptr;
     } else {  // cursor is item or another bitmap
         this->cursor_img = assets->getImage_ColorKey(name, colorTable.Black /*colorTable.TealMask*/);
         this->AllocCursorSystemMem();
-        this->field_C = 0;
-        this->bActive = true;
+        this->_arrowCursor = false;
     }
-}
-
-void Io::Mouse::_469AE4() {
-    this->field_8 = 1;
-
-    Pointi pt = GetCursorPos();
-
-    auto v3 = pt.y;
-    auto v2 = pt.x;
-
-    this->uMouseX = v2;
-    this->uMouseY = v3;
-
-    Sizei renDims = render->GetPresentDimensions();
-    if (true /*render->bWindowMode*/ &&
-        (v2 < 0 || v3 < 0 || v2 > renDims.w - 1 ||
-         v3 > renDims.h - 1)) {
-        this->bActive = false;
-        this->field_8 = 0;
-    }
-
-    if (this->field_C) {
-        this->bActive = false;
-    }
-
-    this->field_8 = 0;
 }
 
 void Io::Mouse::ClearCursor() {
-    this->bActive = false;
     free(this->pCursorBitmap_sysmem);
     this->pCursorBitmap_sysmem = nullptr;
     free(this->pCursorBitmap2_sysmem);
     this->pCursorBitmap2_sysmem = nullptr;
-    free(this->ptr_90);
-    this->ptr_90 = nullptr;
 }
 
 void Io::Mouse::AllocCursorSystemMem() {
-    bActive = false;
     if (!pCursorBitmap_sysmem)
         pCursorBitmap_sysmem = (uint16_t *)DoAllocCursorMem();
     if (!pCursorBitmap2_sysmem)
@@ -119,33 +89,21 @@ Pointi Io::Mouse::GetCursorPos() {
 }
 
 void Io::Mouse::Initialize() {
-    this->bActive = false;
     this->bInitialized = true;
 
     // this->field_8 = 0;//Ritor1: result incorrect uMouseX,
     // this->uMouseY in _469AE4()
-    this->uCursorBitmapPitch = 0;  // Ritor1: it's include
-    for (int i = 0; i < 13; i++) this->field_5C[i] = 0;
 
     this->pCursorBitmapPos.x = 0;
     this->pCursorBitmapPos.y = 0;
     this->uMouseX = 0;
     this->uMouseY = 0;
     this->pCursorBitmap_sysmem = nullptr;
-    this->field_34 = 0;
     this->pCursorBitmap2_sysmem = nullptr;
 
     SetCursorImage("MICON3");
     SetCursorImage("MICON2");
     SetCursorImage("MICON1");
-}
-
-void Io::Mouse::SetActive(bool active) { bActive = active; }
-
-void Io::Mouse::Deactivate() {
-    if (bInitialized) {
-        SetActive(false);
-    }
 }
 
 void Io::Mouse::DrawCursor() {
@@ -167,6 +125,12 @@ void Io::Mouse::DrawCursor() {
             pos.y -= (this->cursor_img->height()) / 2;
 
             render->DrawTextureNew(pos.x / 640., pos.y / 480., this->cursor_img);
+        } else if (_mouseLook) {
+            platform->setCursorShown(false);
+            auto pointer = assets->getImage_ColorKey("MICON2", colorTable.Black /*colorTable.TealMask*/);
+            int x = pViewport->uScreenCenterX - pointer->width() / 2;
+            int y = pViewport->uScreenCenterY - pointer->height() / 2;
+            render->DrawTextureNew(x / 640., y / 480., pointer);
         } else {
             platform->setCursorShown(true);
         }
@@ -174,9 +138,9 @@ void Io::Mouse::DrawCursor() {
 
     /*
       if (this->bInitialized) {
-        if (!this->field_8 && this->bActive && !this->field_C) //Uninitialized
+        if (!this->field_8 && this->bActive && !this->_arrowCursor) //Uninitialized
     memory access(this->field_8) pMouse->_469AE4();  // Ritor1: странная,
-    непонятная функция this->field_F4 = 1; if (this->field_C) { this->field_F4 =
+    непонятная функция this->field_F4 = 1; if (this->_arrowCursor) { this->field_F4 =
     0; return;
         }
 
@@ -221,20 +185,7 @@ void Io::Mouse::DrawCursor() {
     */
 }
 
-void Io::Mouse::Activate() { bActive = true; }
-
 void Io::Mouse::ClearPickedItem() { pPickedItem = nullptr; }
-
-void Io::Mouse::DrawCursorToTarget() {  //??? DrawCursorWithItem
-    return;
-
-    if (pPickedItem == nullptr) {
-        return;
-    }
-    //пишем на экран курсор с вещью
-    render->DrawTextureNew(uCursorWithItemX / 640.0f,
-                                uCursorWithItemY / 480.0f, pPickedItem);
-}
 
 void Io::Mouse::DrawPickedItem() {
     if (pParty->pPickedItem.uItemID == ITEM_NULL)
@@ -252,11 +203,18 @@ void Io::Mouse::DrawPickedItem() {
     }
 }
 
-void Io::Mouse::ChangeActivation(int a1) { this->bActive = a1; }
-
-void Io::Mouse::SetMouseClick(int x, int y) {
-    uMouseX = x;
-    uMouseY = y;
+void Io::Mouse::SetMousePosition(int x, int y) {
+    if (_mouseLook) {
+        _mouseLookChange.x = x - uMouseX;
+        _mouseLookChange.y = y - uMouseY;
+        if (_mouseLookChange.x != 0 || _mouseLookChange.y != 0) {
+            pPartyActionQueue->Add(PARTY_MouseLook);
+            platform->setCursorPosition({ uMouseX, uMouseY }); // TODO(pskelton): this causes another mouse move event - might be better to poll mouse position once per frame rather than on event
+        }
+    } else {
+        uMouseX = x;
+        uMouseY = y;
+    }
 }
 
 void Io::Mouse::UI_OnMouseLeftClick() {
@@ -350,6 +308,34 @@ void Io::Mouse::UI_OnMouseLeftClick() {
     }
 }
 
+void Io::Mouse::SetMouseLook(bool enable) {
+    _mouseLook = enable;
+    if (enable) {
+        platform->setCursorPosition({ uMouseX, uMouseY });
+    }
+}
+
+void Io::Mouse::ToggleMouseLook() {
+    SetMouseLook(!_mouseLook);
+}
+
+void Io::Mouse::DoMouseLook() {
+    if (!_mouseLook) {
+        return;
+    }
+
+    const float sensitivity = 5.0f; // TODO(pskelton): move to config value
+    float modX = engine->mouse->_mouseLookChange.x * sensitivity;
+    float modY = engine->mouse->_mouseLookChange.y * sensitivity;
+    engine->mouse->_mouseLookChange.x = 0;
+    engine->mouse->_mouseLookChange.y = 0;
+    pParty->_viewPitch -= modY;
+    pParty->_viewPitch = std::clamp(pParty->_viewPitch, -128, 128);
+    pParty->_viewYaw -= modX;
+    pParty->_viewYaw &= TrigLUT.uDoublePiMask;
+}
+
+// TODO(pskelton): Move this to keyboard
 bool UI_OnKeyDown(PlatformKey key) {
     for (GUIWindow *win : lWindowList) {
         if (!win->receives_keyboard_input) {

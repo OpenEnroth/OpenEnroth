@@ -103,6 +103,22 @@ bool SdlPlatform::isCursorShown() const {
     }
 }
 
+Pointi SdlPlatform::getCursorPosition() const {
+    if (!_initialized)
+        return {};
+
+    Pointi result;
+    SDL_GetMouseState(&result.x, &result.y);
+
+    return result;
+}
+
+void SdlPlatform::setCursorPosition(const Pointi &position) const {
+    if (!_initialized)
+        return;
+    SDL_WarpMouseGlobal(position.x, position.y);
+}
+
 std::vector<Recti> SdlPlatform::displayGeometries() const {
     if (!_initialized)
         return {};

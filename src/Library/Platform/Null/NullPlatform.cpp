@@ -35,6 +35,14 @@ bool NullPlatform::isCursorShown() const {
     return _cursorShown;
 }
 
+Pointi NullPlatform::getCursorPosition() const {
+    return Pointi{}; // Okay?
+}
+
+void NullPlatform::setCursorPosition(const Pointi &position) const {
+    // Okay?
+}
+
 std::vector<Recti> NullPlatform::displayGeometries() const {
     return _state->options.displayGeometries;
 }
