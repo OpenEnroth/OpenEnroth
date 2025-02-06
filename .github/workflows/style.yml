@@ -54,7 +54,7 @@ jobs:
 
       - name: Configure
         run: |
-          cmake -B build -DOE_USE_DUMMY_DEPENDENCIES=ON -DOE_LLS_COMMAND=./lua-language-server/build/bin/lua-language-server
+          cmake -B build -DOE_USE_DUMMY_DEPENDENCIES=ON -DOE_LLS_COMMAND=./lua-language-server/build/bin/lua-language-server -DOE_CHECK_SYNTAX=ON
 
       - name: Check style
         working-directory: build
