@@ -103,7 +103,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR (CMAKE_CXX_COMPILER_ID STREQUAL "Cla
     # Detect available linkers.
     check_linker_flag(CXX "-fuse-ld=mold" COMPILER_RT_HAS_FUSE_LD_MOLD_FLAG)
     check_linker_flag(CXX "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
-    check_linker_flag(CXX "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
+    # check_linker_flag(CXX "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
 
     if(OE_USE_LD_MOLD AND COMPILER_RT_HAS_FUSE_LD_MOLD_FLAG)
         message(STATUS "Using mold linker.")
