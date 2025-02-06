@@ -42,6 +42,8 @@ set(OE_USE_LD_MOLD ON CACHE BOOL "Use mold linker if available.")
 set(OE_USE_LD_LLD ON CACHE BOOL "Use lld linker if available, note that mold takes precedence.")
 set(OE_USE_LD_GOLD ON CACHE BOOL "Use GNU gold linker if available, note that mold and lld takes precedence.")
 
+set(OE_CHECK_SYNTAX OFF CACHE BOOL "Allow gold linker for syntax check only.")
+
 if(OE_USE_PREBUILT_DEPENDENCIES AND OE_USE_DUMMY_DEPENDENCIES)
     message(FATAL_ERROR "Only one of OE_USE_PREBUILT_DEPENDENCIES and OE_USE_DUMMY_DEPENDENCIES must be set.")
 endif()
@@ -103,7 +105,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR (CMAKE_CXX_COMPILER_ID STREQUAL "Cla
     # Detect available linkers.
     check_linker_flag(CXX "-fuse-ld=mold" COMPILER_RT_HAS_FUSE_LD_MOLD_FLAG)
     check_linker_flag(CXX "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
-    # check_linker_flag(CXX "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
+    check_linker_flag(CXX "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
 
     if(OE_USE_LD_MOLD AND COMPILER_RT_HAS_FUSE_LD_MOLD_FLAG)
         message(STATUS "Using mold linker.")
@@ -121,7 +123,9 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR (CMAKE_CXX_COMPILER_ID STREQUAL "Cla
         endif ()
     elseif(OE_USE_LD_GOLD AND COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
         message(STATUS "Using gold linker.")
-        message(FATAL_ERROR "The gold linker not supported at this time and is known to have problems. Please use lld or mold.")
+        if (OE_CHECK_SYNTAX)
+            message(FATAL_ERROR "The gold linker not supported at this time and is known to have problems. Please use lld or mold.")
+        endif()
         set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=gold")
     elseif(OE_BUILD_PLATFORM STREQUAL "linux")
         message(WARNING "Supported linkers are lld and mold, other linkers may cause issues.")
