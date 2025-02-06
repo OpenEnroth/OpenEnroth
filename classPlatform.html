@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;df075a7</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fe0ebb8</span>
    </div>
   </td>
  </tr>
@@ -107,6 +107,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a27eb9af9ffb8cd8926f846d2bd8dccec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a83d0a698d370a1b7f7e4afac8a2a8436"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a83d0a698d370a1b7f7e4afac8a2a8436">isCursorShown</a> () const =0</td></tr>
 <tr class="separator:a83d0a698d370a1b7f7e4afac8a2a8436"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a513bb5b872031c8392e770bd7f6eab20"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a513bb5b872031c8392e770bd7f6eab20">getCursorPosition</a> () const =0</td></tr>
+<tr class="separator:a513bb5b872031c8392e770bd7f6eab20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e72cc43cca3842886da1a5bd3c26b7a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a1e72cc43cca3842886da1a5bd3c26b7a">setCursorPosition</a> (const <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> &amp;pos) const =0</td></tr>
+<tr class="separator:a1e72cc43cca3842886da1a5bd3c26b7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c6d2e487c1fd6856a67bfd8df7be370"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="Rect_8h.html#a32073cc1967b01302be5d39e09079649">Recti</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#a7c6d2e487c1fd6856a67bfd8df7be370">displayGeometries</a> () const =0</td></tr>
 <tr class="separator:a7c6d2e487c1fd6856a67bfd8df7be370"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae58aa82a21e9c175726d344d2251306e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatform.html#ae58aa82a21e9c175726d344d2251306e">showMessageBox</a> (const std::string &amp;title, const std::string &amp;message) const =0</td></tr>
@@ -320,6 +324,34 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a513bb5b872031c8392e770bd7f6eab20" name="a513bb5b872031c8392e770bd7f6eab20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a513bb5b872031c8392e770bd7f6eab20">&#9670;&#160;</a></span>getCursorPosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> Platform::getCursorPosition </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Gets the global mouse cursor position. </p>
+
+<p>Implemented in <a class="el" href="classNullPlatform.html#a80b3fde344c33203e3f48fee419613f3">NullPlatform</a>, <a class="el" href="classProxyPlatform.html#aee2da80d206d7ba883e04cf4e42fa38f">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#afe1994d8ed2b915875c210bac402d8de">SdlPlatform</a>.</p>
+
+</div>
+</div>
 <a id="a83d0a698d370a1b7f7e4afac8a2a8436" name="a83d0a698d370a1b7f7e4afac8a2a8436"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a83d0a698d370a1b7f7e4afac8a2a8436">&#9670;&#160;</a></span>isCursorShown()</h2>
 
@@ -346,6 +378,41 @@ Static Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Whether the system cursor is currently shown on top of windows created by this platform. </dd></dl>
 
 <p>Implemented in <a class="el" href="classNullPlatform.html#ac518b77188177d923627c41ce1da7a43">NullPlatform</a>, <a class="el" href="classProxyPlatform.html#a2fadbb702534e0734e790232161244b1">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#a2cb45469b50a1520a0a161bf72870826">SdlPlatform</a>.</p>
+
+</div>
+</div>
+<a id="a1e72cc43cca3842886da1a5bd3c26b7a" name="a1e72cc43cca3842886da1a5bd3c26b7a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e72cc43cca3842886da1a5bd3c26b7a">&#9670;&#160;</a></span>setCursorPosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void Platform::setCursorPosition </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> &amp;&#160;</td>
+          <td class="paramname"><em>pos</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Sets the global mouse cursor position.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pos</td><td>Position of where to place the cursor. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classNullPlatform.html#af923c9d8f63df03d40fc4a4dcb3668af">NullPlatform</a>, <a class="el" href="classProxyPlatform.html#a64ada78811e364909651a40b07d4ffb1">ProxyPlatform</a>, and <a class="el" href="classSdlPlatform.html#acded6b57624177ce41ec9b4d55138ba4">SdlPlatform</a>.</p>
 
 </div>
 </div>
