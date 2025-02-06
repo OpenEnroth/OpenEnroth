@@ -1370,7 +1370,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                     // Disallow if wand will lose charges
                     bool chargeFailed = false;
-                    if (uNewCharges < item->uNumCharges) {
+                    if (uNewCharges <= item->uNumCharges) {
                         chargeFailed = true;
                     } else {
                         item->uMaxCharges = uNewCharges;

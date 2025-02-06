@@ -2301,7 +2301,7 @@ void Inventory_ItemPopupAndAlchemy() {
             int newCharges = item->uMaxCharges * invMaxChargesDecrease;
 
             // Disallow if wand will lose charges
-            if (newCharges < item->uNumCharges) {
+            if (newCharges <= item->uNumCharges) {
                 engine->_statusBar->setEvent(LSTR_WAND_ALREADY_CHARGED);
                 pAudioPlayer->playUISound(SOUND_spellfail0201);
             } else {
