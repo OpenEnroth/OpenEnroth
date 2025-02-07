@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fe0ebb8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;620c65f</span>
    </div>
   </td>
  </tr>
@@ -89,6 +89,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineGlobals_8h.html">Engine/EngineGlobals.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Character_8h.html">Engine/Objects/Character.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CharacterEnumFunctions_8h.html">Engine/Objects/CharacterEnumFunctions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Renderer_8h.html">Engine/Graphics/Renderer/Renderer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Viewport_8h.html">Engine/Graphics/Viewport.h</a>&quot;</code><br />
@@ -130,6 +131,8 @@ Functions</h2></td></tr>
 <tr class="separator:aac0f9b87a84dae2b0bc932ae358b132c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1766baf83a8b27a8ec3f6bc12593b098"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UICharacter_8cpp.html#a1766baf83a8b27a8ec3f6bc12593b098">CharacterUI_InventoryTab_Draw</a> (<a class="el" href="classCharacter.html">Character</a> *player, bool Cover_Strip)</td></tr>
 <tr class="separator:a1766baf83a8b27a8ec3f6bc12593b098"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c0912106862bf1f5e4e2fadcac42a42"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UICharacter_8cpp.html#a2c0912106862bf1f5e4e2fadcac42a42">CharacterUI_DrawPickedItemUnderlay</a> (<a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a> offset)</td></tr>
+<tr class="separator:a2c0912106862bf1f5e4e2fadcac42a42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9202ee763b884c4e538a0c6aff16e5b3"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UICharacter_8cpp.html#a9202ee763b884c4e538a0c6aff16e5b3">CharacterUI_DrawItem</a> (int x, int y, <a class="el" href="structItemGen.html">ItemGen</a> *item, int id, <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *item_texture, bool doZDraw)</td></tr>
 <tr class="separator:a9202ee763b884c4e538a0c6aff16e5b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3dc82bd2fd4b2b316d9d380df5907c4f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UICharacter_8cpp.html#a3dc82bd2fd4b2b316d9d380df5907c4f">CharacterUI_DrawPaperdollWithRingOverlay</a> (<a class="el" href="classCharacter.html">Character</a> *player)</td></tr>
@@ -458,6 +461,24 @@ Variables</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classCharacter.html">Character</a> *&#160;</td>
           <td class="paramname"><em>player</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2c0912106862bf1f5e4e2fadcac42a42" name="a2c0912106862bf1f5e4e2fadcac42a42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c0912106862bf1f5e4e2fadcac42a42">&#9670;&#160;</a></span>CharacterUI_DrawPickedItemUnderlay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void CharacterUI_DrawPickedItemUnderlay </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Vec_8h.html#a117a07b9e7c47a4975f94512a951bd73">Vec2i</a>&#160;</td>
+          <td class="paramname"><em>offset</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
