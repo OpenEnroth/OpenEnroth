@@ -10,6 +10,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
+#include "Engine/Objects/Character.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Viewport.h"
@@ -1284,6 +1285,10 @@ void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
         render->DrawTextureNew(8 / 640.0f, 305 / 480.0f, ui_character_inventory_background_strip);
     }
 
+    render->SetUIClipRect({ 14, 17, 32 * 14, 32 * 9 });
+    CharacterUI_DrawPickedItemUnderlay({ 14, 17 });
+    render->ResetUIClipRect();
+
     for (unsigned i = 0; i < 126; ++i) {
         if (player->pInventoryMatrix[i] <= 0) continue;
         if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uItemID == ITEM_NULL)
@@ -1296,6 +1301,23 @@ void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
         signed int X_offset = itemOffset(pTexture->width());
         signed int Y_offset = itemOffset(pTexture->height());
         CharacterUI_DrawItem(uCellX + X_offset, uCellY + Y_offset, &(player->pInventoryItemList[player->pInventoryMatrix[i] - 1]), Cover_Strip);
+    }
+}
+
+void CharacterUI_DrawPickedItemUnderlay(Vec2i offset) {
+    if (pParty->pPickedItem.uItemID != ITEM_NULL) {
+        // draw shadow of position
+        int pY;
+        int pX;
+        mouse->GetClickPos(&pX, &pY);
+
+        int inventoryXCoord = (pX + mouse->pickedItemOffsetX - offset.x) / 32;
+        int inventoryYCoord = (pY + mouse->pickedItemOffsetY - offset.y) / 32;
+        auto img = assets->getImage_Alpha(pParty->pPickedItem.GetIconName());
+        int itemWidth = GetSizeInInventorySlots(img->width());
+        int itemHeight = GetSizeInInventorySlots(img->height());
+
+        render->FillRectFast(inventoryXCoord * 32 + offset.x, inventoryYCoord * 32 + offset.y, itemWidth * 32, itemHeight * 32, Color(96, 96, 96, 128));
     }
 }
 
