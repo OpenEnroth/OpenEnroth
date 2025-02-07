@@ -5,12 +5,14 @@
 #include <vector>
 #include <string>
 
+#include "Library/Logger/Logger.h"
+
 #include "NullPlatformSharedState.h"
 #include "NullWindow.h"
 #include "NullEventLoop.h"
 
-NullPlatform::NullPlatform(NullPlatformOptions options): _state(std::make_unique<NullPlatformSharedState>()) {
-    _state->options = std::move(options);
+NullPlatform::NullPlatform(NullPlatformOptions options): _state(std::make_unique<NullPlatformSharedState>(std::move(options))) {
+    assert(logger); // Some of NullPlatform classes log.
 }
 
 NullPlatform::~NullPlatform() = default;
@@ -28,19 +30,22 @@ std::vector<PlatformGamepad *> NullPlatform::gamepads() {
 }
 
 void NullPlatform::setCursorShown(bool cursorShown) {
-    _cursorShown = cursorShown;
+    _state->cursorShown = cursorShown;
 }
 
 bool NullPlatform::isCursorShown() const {
-    return _cursorShown;
+    return _state->cursorShown;
 }
 
 Pointi NullPlatform::getCursorPosition() const {
-    return Pointi{}; // Okay?
+    return _state->cursorPos;
 }
 
 void NullPlatform::setCursorPosition(const Pointi &position) const {
-    // Okay?
+    const Recti &screen = _state->options.displayGeometries[0];
+
+    _state->cursorPos = Pointi(std::clamp(position.x, screen.x, screen.x + screen.w - 1),
+                               std::clamp(position.y, screen.y, screen.y + screen.h - 1));
 }
 
 std::vector<Recti> NullPlatform::displayGeometries() const {
@@ -48,7 +53,7 @@ std::vector<Recti> NullPlatform::displayGeometries() const {
 }
 
 void NullPlatform::showMessageBox(const std::string &title, const std::string &message) const {
-    // Okay?
+    // No GUI in null platform.
 }
 
 int64_t NullPlatform::tickCount() const {
