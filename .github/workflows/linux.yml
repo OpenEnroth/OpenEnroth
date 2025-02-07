@@ -119,7 +119,6 @@ jobs:
           make Run_UnitTest
 
       - name: Run game tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true'
         working-directory: build
         run: |
           make Run_GameTest_Headless_Parallel
@@ -127,7 +126,7 @@ jobs:
           OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
       - name: Run retrace tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration != 'Debug'
+        if: matrix.configuration != 'Debug'
         working-directory: build
         run: |
           make Run_RetraceTest_Headless_Parallel
