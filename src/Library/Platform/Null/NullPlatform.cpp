@@ -37,17 +37,6 @@ bool NullPlatform::isCursorShown() const {
     return _state->cursorShown;
 }
 
-Pointi NullPlatform::getCursorPosition() const {
-    return _state->cursorPos;
-}
-
-void NullPlatform::setCursorPosition(const Pointi &position) const {
-    const Recti &screen = _state->options.displayGeometries[0];
-
-    _state->cursorPos = Pointi(std::clamp(position.x, screen.x, screen.x + screen.w - 1),
-                               std::clamp(position.y, screen.y, screen.y + screen.h - 1));
-}
-
 std::vector<Recti> NullPlatform::displayGeometries() const {
     return _state->options.displayGeometries;
 }

@@ -45,6 +45,8 @@ class SdlWindow : public PlatformWindow {
 
     virtual void activate() override;
 
+    virtual void warpMouse(Pointi position) override;
+
     virtual std::unique_ptr<PlatformOpenGLContext> createOpenGLContext(const PlatformOpenGLOptions &options) override;
 
     uint32_t id() const {

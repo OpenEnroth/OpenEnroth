@@ -207,6 +207,8 @@ void GameWindowHandler::OnMouseLeftClick(Pointi position) {
     } else {
         pMediaPlayer->StopMovie();
 
+        mouse->SetMousePosition(position.x, position.y);
+
         if (GetCurrentMenuID() == MENU_CREATEPARTY) {
             UI_OnKeyDown(PlatformKey::KEY_SELECT);
         }
@@ -225,6 +227,8 @@ void GameWindowHandler::OnMouseRightClick(Pointi position) {
         ArcomageGame::OnMouseClick(1, true);
     } else {
         pMediaPlayer->StopMovie();
+
+        mouse->SetMousePosition(position.x, position.y);
 
         if (engine) {
             engine->PickMouse(pCamera3D->GetMouseInfoDepth(), position.x, position.y, &vis_allsprites_filter, &vis_door_filter);

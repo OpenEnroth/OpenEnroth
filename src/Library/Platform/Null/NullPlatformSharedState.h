@@ -11,7 +11,7 @@ class NullOpenGLContext;
 
 class NullPlatformSharedState {
  public:
-    NullPlatformSharedState(NullPlatformOptions options) {
+    explicit NullPlatformSharedState(NullPlatformOptions options) {
         assert(!options.displayGeometries.empty());
 
         cursorPos = options.displayGeometries[0].topLeft();
