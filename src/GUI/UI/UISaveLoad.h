@@ -25,6 +25,13 @@ class GUIWindow_Load : public GUIWindow {
 
     virtual void Update() override;
 
+    void slotSelected(int slotIndex);
+    void loadButtonPressed();
+    void downArrowPressed(int maxSlots);
+    void upArrowPressed();
+    void cancelButtonPressed();
+    void scroll(int maxSlots);
+
  protected:
     GraphicsImage *main_menu_background;
 
@@ -33,6 +40,3 @@ class GUIWindow_Load : public GUIWindow {
     GraphicsImage *saveload_ui_loadu;
     GraphicsImage *saveload_ui_x_u;
 };
-
-void MainMenuLoad_Loop();
-void MainMenuLoad_EventLoop();
