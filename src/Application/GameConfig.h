@@ -261,6 +261,9 @@ class GameConfig : public Config {
         Bool RegenStacking = {this, "regen_stacking", true,
             "Disable for vanilla like mode where only one item will trigger HP/SP regeneration."};
 
+		Bool DestroyDischargedWands = { this, "destroy_discharged_wands", false,
+			"Destroy wands when they reach 0 charges." };
+
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)

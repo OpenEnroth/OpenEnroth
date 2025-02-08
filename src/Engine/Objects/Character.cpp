@@ -6809,13 +6809,6 @@ bool Character::characterHitOrMiss(Actor *pActor, int distancemod, int skillmod)
 
 //----- (0042ECB5) --------------------------------------------------------
 void Character::_42ECB5_CharacterAttacksActor() {
-    //  char *v5; // eax@8
-    //  unsigned int v9; // ecx@21
-    //  char *v11; // eax@26
-    //  unsigned int v12; // eax@47
-    //  SoundID v24; // [sp-4h] [bp-40h]@58
-
-    // result = pParty->activeCharacter().CanAct();
     Character *character = &pParty->activeCharacter();
     if (!character->CanAct()) return;
 
@@ -6829,35 +6822,25 @@ void Character::_42ECB5_CharacterAttacksActor() {
     if (bow_idx && character->pInventoryItemList[bow_idx - 1].IsBroken())
         bow_idx = 0;
 
-    // v32 = 0;
     ItemId wand_item_id = ITEM_NULL;
-    // v33 = 0;
-
     ItemId laser_weapon_item_id = ITEM_NULL;
 
     int main_hand_idx = character->pEquipment[ITEM_SLOT_MAIN_HAND];
     if (main_hand_idx) {
         const ItemGen *item = &character->pInventoryItemList[main_hand_idx - 1];
-        // v5 = (char *)v1 + 36 * v4;
         if (!item->IsBroken()) {
-            // v28b = &v1->pInventoryItems[v4].uItemID;
-            // v6 = v1->pInventoryItems[v4].uItemID;//*((int *)v5 + 124);
             if (item->isWand()) {
-                if (item->uNumCharges <= 0)
-                    character->pEquipment[ITEM_SLOT_MAIN_HAND] =
-                        0;  // wand discharged - unequip
-                else
-                    wand_item_id = item->uItemID;  // *((int *)v5 + 124);
+                if (item->uNumCharges <= 0) {
+                    if (engine->config->gameplay.DestroyDischargedWands.value())
+                        character->pEquipment[ITEM_SLOT_MAIN_HAND] = 0;  // wand discharged - unequip
+                } else {
+                    wand_item_id = item->uItemID;
+                }
             } else if (isAncientWeapon(item->uItemID)) {
-                laser_weapon_item_id = item->uItemID;  // *((int *)v5 + 124);
+                laser_weapon_item_id = item->uItemID;
             }
         }
     }
-
-    // v30 = 0;
-    // v29 = 0;
-    // v28 = 0;
-    // v7 = pMouse->uPointingObjectID;
 
     Pid target_pid = mouse->uPointingObjectID;
     ObjectType target_type = target_pid.type();
@@ -6898,7 +6881,8 @@ void Character::_42ECB5_CharacterAttacksActor() {
         pushSpellOrRangedAttack(spellForWand(character->pInventoryItemList[main_hand_idx - 1].uItemID),
                                 pParty->activeCharacterIndex() - 1, WANDS_SKILL_VALUE, 0, pParty->activeCharacterIndex() + 8);
 
-        if (!--character->pInventoryItemList[main_hand_idx - 1].uNumCharges)
+        // reduce wand charges
+        if (!--character->pInventoryItemList[main_hand_idx - 1].uNumCharges && engine->config->gameplay.DestroyDischargedWands.value())
             character->pEquipment[ITEM_SLOT_MAIN_HAND] = 0;
     } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
         melee_attack = true;
@@ -6916,8 +6900,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0, 0);
     } else {
         melee_attack = true;
-        // ; // actor out of range or no actor; no ranged weapon so melee
-        // attacking air
+        // actor out of range or no actor; no ranged weapon so melee attacking air
     }
 
     if (!pParty->bTurnBasedModeOn && melee_attack) {
