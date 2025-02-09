@@ -7,11 +7,7 @@
 #include "Engine/Seasons.h"
 
 #include "Outdoor.h"
-
-template<class Image>
-static bool contains(const Image &image, Pointi point) {
-    return point.x >= 0 && point.x < image.width() && point.y >= 0 && point.y < image.height();
-}
+#include "Engine/Data/TileEnumFunctions.h"
 
 OutdoorTerrain::OutdoorTerrain() {
     // Map is 127x127 squares.
@@ -31,18 +27,19 @@ void OutdoorTerrain::createDebugTerrain() {
     _tilesets[0] = TILESET_GRASS;
     _tilesets[1] = TILESET_WATER;
     _tilesets[2] = TILESET_BADLANDS;
-    _tilesets[3] = TILESET_ROAD_GRASS_COBBLE;
+    _tilesets[3] = TILESET_COBBLE_ROAD;
 }
 
 void OutdoorTerrain::changeSeason(int month) {
     assert(month >= 0 && month <= 11);
     std::ranges::transform(_originalTileMap.pixels(), _tileMap.pixels().begin(), [&] (int tileId) {
-        return tileIdForSeason(tileId, month);
+        const TileData &tileData = pTileTable->tile(tileId);
+        return pTileTable->tileId(tilesetForSeason(tileData.tileset, month), tileData.variant);
     });
 }
 
 int OutdoorTerrain::heightByGrid(Pointi gridPos) const {
-    if (!contains(_heightMap, gridPos))
+    if (!_heightMap.rect().contains(gridPos))
         return 0;
 
     return 32 * _heightMap[gridPos];
@@ -94,21 +91,21 @@ int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
 }
 
 int OutdoorTerrain::tileIdByGrid(Pointi gridPos) const {
-    if (!contains(_tileMap, gridPos))
+    if (!_tileMap.rect().contains(gridPos))
         return 0;
 
     return _tileMap[gridPos];
 }
 
 const TileData &OutdoorTerrain::tileDataByGrid(Pointi gridPos) const {
-    return pTileTable->tiles[tileIdByGrid(gridPos)];
+    return pTileTable->tile(tileIdByGrid(gridPos));
 }
 
 Tileset OutdoorTerrain::tilesetByGrid(Pointi gridPos) const {
-    if (!contains(_tileMap, gridPos))
+    if (!_tileMap.rect().contains(gridPos))
         return TILESET_INVALID;
 
-    return pTileTable->tiles[_tileMap[gridPos]].tileset;
+    return pTileTable->tile(_tileMap[gridPos]).tileset;
 }
 
 Tileset OutdoorTerrain::tilesetByPos(const Vec3f &pos) const {
@@ -116,7 +113,7 @@ Tileset OutdoorTerrain::tilesetByPos(const Vec3f &pos) const {
 }
 
 bool OutdoorTerrain::isWaterByGrid(Pointi gridPos) const {
-    return pTileTable->tiles[tileIdByGrid(gridPos)].uAttributes & TILE_WATER;
+    return pTileTable->tile(tileIdByGrid(gridPos)).flags & TILE_WATER;
 }
 
 bool OutdoorTerrain::isWaterByPos(const Vec3f &pos) const {
@@ -124,12 +121,12 @@ bool OutdoorTerrain::isWaterByPos(const Vec3f &pos) const {
 }
 
 bool OutdoorTerrain::isWaterOrShoreByGrid(Pointi gridPos) const {
-    return pTileTable->tiles[tileIdByGrid(gridPos)].uAttributes & (TILE_WATER | TILE_SHORE);
+    return pTileTable->tile(tileIdByGrid(gridPos)).flags & (TILE_WATER | TILE_SHORE);
 }
 
 Vec3f OutdoorTerrain::normalByPos(const Vec3f &pos) const {
     Pointi gridPos = worldToGrid(pos);
-    if (!contains(_normalMap, gridPos))
+    if (!_normalMap.rect().contains(gridPos))
         return Vec3f(0, 0, 1);
 
     Vec2i o = gridToWorld(gridPos);
@@ -206,6 +203,34 @@ void OutdoorTerrain::recalculateNormals() {
 
             _normalMap[y][x][0] = bn;
             _normalMap[y][x][1] = an;
+        }
+    }
+}
+
+void OutdoorTerrain::recalculateTransitions() {
+    auto snappedTilesetByGrid = [this](Pointi pos) {
+        pos.x = std::clamp(pos.x, 0, static_cast<int>(_originalTileMap.width() - 1));
+        pos.y = std::clamp(pos.y, 0, static_cast<int>(_originalTileMap.height() - 1));
+        return pTileTable->tile(_originalTileMap[pos]).tileset;
+    };
+
+    for (int y = 0; y < _originalTileMap.height(); y++) {
+        for (int x = 0; x < _originalTileMap.width(); x++) {
+            const TileData &tileData = pTileTable->tile(_originalTileMap[y][x]);
+            if (isRoad(tileData.tileset) || tileData.tileset == TILESET_DIRT) // No transitions for roads & dirt.
+                continue;
+
+            Pointi pos(x, y);
+            Directions transitions = 0;
+            for (Direction dir : allDirections())
+                if (snappedTilesetByGrid(pos + offsetForDirection(dir)) != tileData.tileset)
+                    transitions |= dir;
+            if (transitions == DIRECTION_NONE)
+                continue;
+
+            int tileId = pTileTable->tileId(tileData.tileset, tileVariantForTransitionDirections(transitions));
+            if (tileId)
+                _originalTileMap[y][x] = tileId;
         }
     }
 }

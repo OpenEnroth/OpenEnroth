@@ -264,7 +264,7 @@ GAME_TEST(Issues, Issue1226a) {
 
     game.teleportTo(MAP_HARMONDALE, Vec3f(-16000, 12500, 0), 0);
     game.restAndHeal();
-    EXPECT_EQ(pOutdoor->pTerrain.tilesetByPos(pParty->pos), TILESET_ROAD_GRASS_COBBLE);
+    EXPECT_EQ(pOutdoor->pTerrain.tilesetByPos(pParty->pos), TILESET_COBBLE_ROAD);
     EXPECT_EQ(pParty->uNumFoodRations, 5); // Road => rest should cost 2 food.
 }
 

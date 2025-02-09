@@ -22,7 +22,6 @@ int itemOffset(int dimension) {
 
 Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft) {
     Pointi relativePos = mousePos - inventoryTopLeft;
-    // TODO(captainurist): divIntDown is >> 5
     return Pointi(divIntDown(relativePos.x, 32), divIntDown(relativePos.y, 32));
 }
 

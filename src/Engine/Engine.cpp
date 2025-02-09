@@ -65,6 +65,7 @@
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
 #include "Engine/EngineFileSystem.h"
+#include "Graphics/TileGenerator.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -710,6 +711,9 @@ void Engine::MM7_Initialize() {
 
     pMediaPlayer = new MPlayer();
     pMediaPlayer->Initialize();
+
+    TileGenerator generator;
+    generator.generateTiles();
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 }

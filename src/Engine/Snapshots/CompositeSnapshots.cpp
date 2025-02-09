@@ -17,6 +17,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
+#include "Engine/Data/TileEnumFunctions.h"
 #include "Engine/Tables/TileTable.h"
 
 #include "GUI/GUIFont.h"
@@ -379,8 +380,8 @@ static int mapToGlobalTileId(const std::array<int, 4> &baseIds, int localTileId)
 void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
     std::array<int, 4> baseTileIds;
     for (int i = 0; i < 4; i++) {
-        dst->_tilesets[i] = static_cast<Tileset>(src.tileTypes[i].tileset);
-        baseTileIds[i] = pTileTable->tileId(dst->_tilesets[i], TILE_VARIANT_BASE1);
+        reconstruct(src.tileTypes[i].tileset, &dst->_tilesets[i]);
+        baseTileIds[i] = pTileTable->tileId(dst->_tilesets[i], isRoad(dst->_tilesets[i]) ? TILE_VARIANT_ROAD_N_S_E_W : TILE_VARIANT_BASE1);
     }
 
     for (int y = 0; y < 128; y++)
@@ -390,9 +391,11 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
     for (int y = 0; y < 127; y++)
         for (int x = 0; x < 127; x++)
             dst->_originalTileMap[y][x] = mapToGlobalTileId(baseTileIds, src.tileMap[y * 128 + x]);
-    dst->_tileMap = Image<int16_t>::copy(dst->_originalTileMap);
 
     dst->recalculateNormals();
+    dst->recalculateTransitions();
+
+    dst->_tileMap = Image<int16_t>::copy(dst->_originalTileMap);
 }
 
 void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
