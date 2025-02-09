@@ -1252,8 +1252,7 @@ std::string Character::GetMeleeDamageString() {
 
     ItemGen *mainHandItem = GetMainHandItem();
 
-    if (mainHandItem != nullptr && (mainHandItem->uItemID >= ITEM_WAND_OF_FIRE) &&
-        (mainHandItem->uItemID <= ITEM_MYSTIC_WAND_OF_INCINERATION)) {
+    if (mainHandItem != nullptr && isWand(mainHandItem->uItemID) && mainHandItem->uNumCharges > 0) {
         return std::string(localization->GetString(LSTR_WAND));
     } else if (mainHandItem != nullptr && isAncientWeapon(mainHandItem->uItemID)) {
         min_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MIN);  // blasters
@@ -1277,7 +1276,7 @@ std::string Character::GetRangedDamageString() {
 
     ItemGen *mainHandItem = GetMainHandItem();
 
-    if (mainHandItem != nullptr && isWand(mainHandItem->uItemID)) {
+    if (mainHandItem != nullptr && isWand(mainHandItem->uItemID) && mainHandItem->uNumCharges > 0) {
         return std::string(localization->GetString(LSTR_WAND));
     } else if (mainHandItem != nullptr && isAncientWeapon(mainHandItem->uItemID)) {
         min_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MIN, true);  // blasters
@@ -1408,7 +1407,7 @@ bool Character::IsUnarmed() const {
 bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
     unsigned i = pEquipment[uEquipIndex];
     if (i)
-        return !pInventoryItemList[i - 1].IsBroken();
+        return !pInventoryItemList[i - 1].IsBroken() && (!pInventoryItemList[i - 1].isWand() || pInventoryItemList[i - 1].uNumCharges > 0);
     else
         return false;
 }
