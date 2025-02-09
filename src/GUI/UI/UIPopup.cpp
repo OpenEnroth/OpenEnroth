@@ -330,7 +330,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
     // added so window is correct size with broken items
     iteminfo_window.uFrameHeight = inspect_item_image->height() + itemYspacing + 54;
 
-    if (!pItemTable->pItems[inspect_item->itemId].uItemID_Rep_St)
+    if (!pItemTable->pItems[inspect_item->itemId].identifyDifficulty)
         inspect_item->SetIdentified();
 
     int GoldAmount = 0;
@@ -2270,7 +2270,7 @@ void Inventory_ItemPopupAndAlchemy() {
                     pParty->activeCharacter().SetVariable(VAR_AutoNotes, pItemTable->potionNotes[potionSrc1][potionSrc2]);
                 }
             }
-            if (!(pItemTable->pItems[item->itemId].uItemID_Rep_St)) {
+            if (!(pItemTable->pItems[item->itemId].identifyDifficulty)) {
                 item->flags |= ITEM_IDENTIFIED;
             }
             pParty->activeCharacter().playReaction(SPEECH_POTION_SUCCESS);

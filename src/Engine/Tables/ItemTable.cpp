@@ -165,37 +165,37 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         }
         pItems[item_counter].uDamageMod = atoi(tokens[7]);
         pItems[item_counter].uMaterial = valueOr(materialMap, tokens[8], RARITY_COMMON);
-        pItems[item_counter].uItemID_Rep_St = atoi(tokens[9]);
+        pItems[item_counter].identifyDifficulty = atoi(tokens[9]);
         pItems[item_counter].pUnidentifiedName = removeQuotes(tokens[10]);
         pItems[item_counter].uSpriteID = static_cast<SpriteId>(atoi(tokens[11]));
 
-        pItems[item_counter]._additional_value = ITEM_ENCHANTMENT_NULL;
-        pItems[item_counter]._bonus_type = {};
+        pItems[item_counter].specialEnchantment = ITEM_ENCHANTMENT_NULL;
+        pItems[item_counter].attributeEnchantment = {};
         if (pItems[item_counter].uMaterial == RARITY_SPECIAL) {
             for (CharacterAttribute ii : allEnchantableAttributes()) {
                 if (ascii::noCaseEquals(tokens[12], standardEnchantments[ii].pOfName)) { // TODO(captainurist): #unicode this is not ascii
-                    pItems[item_counter]._bonus_type = ii;
+                    pItems[item_counter].attributeEnchantment = ii;
                     break;
                 }
             }
-            if (!pItems[item_counter]._bonus_type) {
+            if (!pItems[item_counter].attributeEnchantment) {
                 for (ItemEnchantment ii : pSpecialEnchantments.indices()) {
                     if (ascii::noCaseEquals(tokens[12], pSpecialEnchantments[ii].pNameAdd)) { // TODO(captainurist): #unicode this is not ascii
-                        pItems[item_counter]._additional_value = ii;
+                        pItems[item_counter].specialEnchantment = ii;
                     }
                 }
             }
         }
 
         if ((pItems[item_counter].uMaterial == RARITY_SPECIAL) &&
-            (pItems[item_counter]._bonus_type)) {
+            (pItems[item_counter].attributeEnchantment)) {
             char b_s = atoi(tokens[13]);
             if (b_s)
-                pItems[item_counter]._bonus_strength = b_s;
+                pItems[item_counter].attributeEnchantmentStrength = b_s;
             else
-                pItems[item_counter]._bonus_strength = 1;
+                pItems[item_counter].attributeEnchantmentStrength = 1;
         } else {
-            pItems[item_counter]._bonus_strength = 0;
+            pItems[item_counter].attributeEnchantmentStrength = 0;
         }
         pItems[item_counter].uEquipX = atoi(tokens[14]);
         pItems[item_counter].uEquipY = atoi(tokens[15]);
@@ -266,10 +266,9 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
 //----- (00456D17) --------------------------------------------------------
 void ItemTable::SetSpecialBonus(ItemGen *pItem) {
     if (pItems[pItem->itemId].uMaterial == RARITY_SPECIAL) {
-        pItem->attributeEnchantment = pItems[pItem->itemId]._bonus_type;
-        pItem->specialEnchantment =
-                pItems[pItem->itemId]._additional_value;
-        pItem->attributeEnchantmentStrength = pItems[pItem->itemId]._bonus_strength;
+        pItem->attributeEnchantment = pItems[pItem->itemId].attributeEnchantment;
+        pItem->specialEnchantment = pItems[pItem->itemId].specialEnchantment;
+        pItem->attributeEnchantmentStrength = pItems[pItem->itemId].attributeEnchantmentStrength;
     }
 }
 
@@ -536,7 +535,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
 
     if (outItem->itemId == ITEM_SPELLBOOK_DIVINE_INTERVENTION && !pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
         outItem->itemId = ITEM_SPELLBOOK_SUNRAY;
-    if (pItemTable->pItems[outItem->itemId].uItemID_Rep_St)
+    if (pItemTable->pItems[outItem->itemId].identifyDifficulty)
         outItem->flags = 0;
     else
         outItem->flags = ITEM_IDENTIFIED;

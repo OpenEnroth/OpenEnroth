@@ -126,10 +126,8 @@ struct ItemGen {  // 0x24
                                     // special temporary enchantments.
 };
 
-struct ItemDesc {  // 30h
-    // Item # |Pic File|Name|Value|Equip Stat|Skill Group|Mod1|Mod2|material|
-    /// ID/Rep/St|Not identified name|Sprite Index|VarA|VarB|Equip X|Equip
-    /// Y|Notes
+// TODO(captainurist): Move to Engine/Data.
+struct ItemDesc {
     std::string iconName = ""; // Item's icon as shown in character inventory, stored in icons.lod.
     std::string name = ""; // Item's base name, w/o any enchantments.
     std::string pUnidentifiedName = ""; // Unidentified name.
@@ -140,20 +138,16 @@ struct ItemDesc {  // 30h
     int16_t uEquipX = 0; // Paperdoll offset for the item sprite when equipped, relative to the item type-specific anchor point.
     int16_t uEquipY = 0;
     ItemType uEquipType = ITEM_TYPE_NONE; // Item type.
-    CharacterSkillType uSkillType = CHARACTER_SKILL_MISC; // Skill associated with the item. E.g. CHARACTER_SKILL_SWORD.
+    CharacterSkillType uSkillType = CHARACTER_SKILL_MISC; // Skill associated with the item. E.g. `CHARACTER_SKILL_SWORD`.
     uint8_t uDamageDice = 0; // Damage dice.
     uint8_t uDamageRoll = 0;
     uint8_t uDamageMod = 0;
     ItemRarity uMaterial = RARITY_COMMON; // Item rarity.
-    ItemEnchantment _additional_value = ITEM_ENCHANTMENT_NULL;       // 22 26
-    std::optional<CharacterAttribute> _bonus_type;
-    char _bonus_strength = 0;         // 24 28
-    char field_25 = 0;                // 25  29
-    char field_26 = 0;                // 26   2A
-    char field_27 = 0;                // 27   2b
-    IndexedArray<uint8_t, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> uChanceByTreasureLvl = {{}};
-    unsigned char uItemID_Rep_St = 0;  // 2e 32
-    char field_2f = 0;
+    ItemEnchantment specialEnchantment = ITEM_ENCHANTMENT_NULL; // Special enchantment, applied only to `RARITY_SPECIAL` items.
+    std::optional<CharacterAttribute> attributeEnchantment; // Attribute enchantment, applied only to `RARITY_SPECIAL` items.
+    int attributeEnchantmentStrength = 0; // Strength of the attribute enchantment above.
+    IndexedArray<uint8_t, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> uChanceByTreasureLvl = {{}}; // Weights for seeing this item in random loot by treasure level.
+    int identifyDifficulty = 0; // Value that the id item skill is checked against, 0 means always identified.
 };
 
 std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder);

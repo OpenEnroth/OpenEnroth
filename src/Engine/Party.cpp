@@ -1034,7 +1034,7 @@ void Party::placeHeldItemInInventoryOrDrop() {
 }
 
 bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
-    if (!pItemTable->pItems[pItem->itemId].uItemID_Rep_St) {
+    if (!pItemTable->pItems[pItem->itemId].identifyDifficulty) {
         pItem->SetIdentified();
     }
 

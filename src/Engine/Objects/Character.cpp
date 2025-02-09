@@ -816,7 +816,7 @@ bool Character::CanIdentify(ItemGen *pItem) const {
 
     // check item level against skill
     bool result = (multiplier * val.level()) >=
-                  pItemTable->pItems[pItem->itemId].uItemID_Rep_St;
+                  pItemTable->pItems[pItem->itemId].identifyDifficulty;
 
     return result;
 }
@@ -837,7 +837,7 @@ bool Character::CanRepair(ItemGen *pItem) const {
 
     // check item level against skill
     bool result = (multiplier * val.level()) >=
-                  pItemTable->pItems[pItem->itemId].uItemID_Rep_St;
+                  pItemTable->pItems[pItem->itemId].identifyDifficulty;
 
     return result;
 }
