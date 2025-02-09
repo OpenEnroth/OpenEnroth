@@ -16,6 +16,7 @@ class Mouse {
     inline Mouse() : cursor_img(nullptr) {
         pCursorBitmap_sysmem = nullptr;
         pCursorBitmap2_sysmem = nullptr;
+        pPickedItem = nullptr;
         uMouseX = 0;
         uMouseY = 0;
     }
@@ -31,6 +32,7 @@ class Mouse {
     Pointi GetCursorPos();
     void Initialize();
     void DrawCursor();
+    void ClearPickedItem();
     void DrawPickedItem();
     void SetMousePosition(int x, int y);
 
@@ -47,8 +49,9 @@ class Mouse {
     GraphicsImage *cursor_img = nullptr;
     uint16_t *pCursorBitmap_sysmem = nullptr;
     uint8_t *pCursorBitmap2_sysmem = nullptr;
-    int pickedItemOffsetX = 0;
-    int pickedItemOffsetY = 0;
+    GraphicsImage *pPickedItem = nullptr;
+    int uCursorWithItemX = 0;
+    int uCursorWithItemY = 0;
     Pointi pCursorBitmapPos{};
     std::string cursor_name;
     int uMouseX = 0;
