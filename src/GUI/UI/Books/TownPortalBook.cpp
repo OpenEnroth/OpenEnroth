@@ -9,7 +9,7 @@
 #include "Engine/SaveLoad.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/MapInfo.h"
 

@@ -15,7 +15,7 @@
 #include "Engine/Components/Random/EngineRandomComponent.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/HouseTable.h"
-#include "Engine/Events/EventMap.h"
+#include "Engine/Evt/EvtProgram.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/DecorationEnums.h"
 #include "Engine/Objects/DecorationList.h"
@@ -209,17 +209,17 @@ int runHouseIdCodeGen(const CodeGenOptions &options, GameResourceManager *resour
             continue; // Not a level file.
 
         std::string mapName = mapIdEnumName(mapInfoByFileName(mapStats, fileName));
-        EventMap eventMap = EventMap::load(resourceManager->getEventsFile(fileName.substr(0, fileName.size() - 4) + ".evt"));
+        EvtProgram eventMap = EvtProgram::load(resourceManager->getEventsFile(fileName.substr(0, fileName.size() - 4) + ".evt"));
 
         for (const EventTrigger &trigger : eventMap.enumerateTriggers(EVENT_SpeakInHouse)) {
-            HouseId houseId = eventMap.event(trigger.eventId, trigger.eventStep).data.house_id;
+            HouseId houseId = eventMap.instruction(trigger.eventId, trigger.eventStep).data.house_id;
             if (houseId == HOUSE_INVALID)
                 throw Exception("Invalid house id encountered in house event");
             mapNamesByHouseId[houseId].insert(mapName);
         }
 
         for (const EventTrigger &trigger : eventMap.enumerateTriggers(EVENT_MoveToMap)) {
-            HouseId houseId = eventMap.event(trigger.eventId, trigger.eventStep).data.move_map_descr.house_id;
+            HouseId houseId = eventMap.instruction(trigger.eventId, trigger.eventStep).data.move_map_descr.house_id;
             if (houseId != HOUSE_INVALID)
                 mapNamesByHouseId[houseId].insert(mapName);
         }
