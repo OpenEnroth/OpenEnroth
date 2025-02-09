@@ -86,6 +86,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL 
     add_compile_options(-Werror=invalid-noreturn) # function declared 'noreturn' should not return.
     add_compile_options(-Werror=uninitialized) # variable 'x' is used uninitialized.
     add_compile_options(-Werror=delete-abstract-non-virtual-dtor) # delete called on 'x' that is abstract but has non-virtual destructor.
+    add_compile_options(-Werror=switch) # enumeration value not handled in switch.
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     add_compile_options(/we4834) # Discarding return value of function with 'nodiscard' attribute.
     add_compile_options(/we4172) # Returning address of local variable or temporary.
