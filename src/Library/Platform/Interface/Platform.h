@@ -15,7 +15,6 @@ class PlatformWindow;
 class PlatformEventLoop;
 class PlatformEventHandler;
 class PlatformGamepad;
-class Logger;
 
 /**
  * Platform abstraction layer.
@@ -114,18 +113,6 @@ class Platform {
      *                                  platform.
      */
     virtual bool isCursorShown() const = 0;
-
-    /**
-     * Gets the global mouse cursor position.
-     */
-    virtual Pointi getCursorPosition() const = 0;
-
-    /**
-     * Sets the global mouse cursor position.
-     *
-     * @param pos                          Position of where to place the cursor.
-     */
-    virtual void setCursorPosition(const Pointi &pos) const = 0;
 
     /**
      * @return                          Geometries of all monitors on current system, or an empty vector in case of an

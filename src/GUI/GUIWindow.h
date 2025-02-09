@@ -260,7 +260,6 @@ void CharacterUI_InventoryTab_Draw(Character *player, bool a2);
 void CharacterUI_DrawPaperdoll(Character *player);
 void CharacterUI_DrawPaperdollWithRingOverlay(Character *player);
 void CharacterUI_ReleaseButtons();
-void CharacterUI_DrawPickedItemUnderlay(Vec2i offset);
 
 /**
  * @offset 0x417AD4

@@ -83,6 +83,10 @@ void ProxyWindow::activate() {
     nonNullBase()->activate();
 }
 
+void ProxyWindow::warpMouse(Pointi position) {
+    nonNullBase()->warpMouse(position);
+}
+
 std::unique_ptr<PlatformOpenGLContext> ProxyWindow::createOpenGLContext(const PlatformOpenGLOptions &options) {
     return nonNullBase()->createOpenGLContext(options);
 }

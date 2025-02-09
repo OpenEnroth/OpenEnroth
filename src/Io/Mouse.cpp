@@ -40,8 +40,6 @@ void Io::Mouse::RemoveHoldingItem() {
     if (this->cursor_name != "MICON2") {
         SetCursorImage("MICON1");
     }
-    pickedItemOffsetX = 0;
-    pickedItemOffsetY = 0;
 }
 
 void Io::Mouse::SetCursorBitmapFromItemID(ItemId uItemID) {
@@ -117,6 +115,8 @@ void Io::Mouse::DrawCursor() {
     if (pParty->pPickedItem.uItemID != ITEM_NULL) {
         DrawPickedItem();
     } else {
+        ClearPickedItem();
+
         // for other cursor img ie target mouse
         if (this->cursor_img) {
             platform->setCursorShown(false);
@@ -185,6 +185,8 @@ void Io::Mouse::DrawCursor() {
     */
 }
 
+void Io::Mouse::ClearPickedItem() { pPickedItem = nullptr; }
+
 void Io::Mouse::DrawPickedItem() {
     if (pParty->pPickedItem.uItemID == ITEM_NULL)
         return;
@@ -192,15 +194,12 @@ void Io::Mouse::DrawPickedItem() {
     GraphicsImage *pTexture = assets->getImage_Alpha(pParty->pPickedItem.GetIconName());
     if (!pTexture) return;
 
-    float posX = (uMouseX + pickedItemOffsetX) / 640.0f;
-    float posY = (uMouseY + pickedItemOffsetY) / 480.0f;
-
     if (pParty->pPickedItem.IsBroken()) {
-        render->DrawTransparentRedShade(posX, posY, pTexture);
+        render->DrawTransparentRedShade(uMouseX / 640.0f, uMouseY / 480.0f, pTexture);
     } else if (!pParty->pPickedItem.IsIdentified()) {
-        render->DrawTransparentGreenShade(posX, posY, pTexture);
+        render->DrawTransparentGreenShade(uMouseX / 640.0f, uMouseY / 480.0f, pTexture);
     } else {
-        render->DrawTextureNew(posX, posY, pTexture);
+        render->DrawTextureNew(uMouseX / 640.0f, uMouseY / 480.0f, pTexture);
     }
 }
 
@@ -210,7 +209,7 @@ void Io::Mouse::SetMousePosition(int x, int y) {
         _mouseLookChange.y = y - uMouseY;
         if (_mouseLookChange.x != 0 || _mouseLookChange.y != 0) {
             pPartyActionQueue->Add(PARTY_MouseLook);
-            platform->setCursorPosition({ uMouseX, uMouseY }); // TODO(pskelton): this causes another mouse move event - might be better to poll mouse position once per frame rather than on event
+            window->warpMouse({uMouseX, uMouseY}); // TODO(pskelton): this causes another mouse move event - might be better to poll mouse position once per frame rather than on event
         }
     } else {
         uMouseX = x;
@@ -312,7 +311,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
 void Io::Mouse::SetMouseLook(bool enable) {
     _mouseLook = enable;
     if (enable) {
-        platform->setCursorPosition({ uMouseX, uMouseY });
+        window->warpMouse({uMouseX, uMouseY});
     }
 }
 
@@ -326,10 +325,10 @@ void Io::Mouse::DoMouseLook() {
     }
 
     const float sensitivity = 5.0f; // TODO(pskelton): move to config value
-    float modX = engine->mouse->_mouseLookChange.x * sensitivity;
-    float modY = engine->mouse->_mouseLookChange.y * sensitivity;
-    engine->mouse->_mouseLookChange.x = 0;
-    engine->mouse->_mouseLookChange.y = 0;
+    float modX = _mouseLookChange.x * sensitivity;
+    float modY = _mouseLookChange.y * sensitivity;
+    _mouseLookChange.x = 0;
+    _mouseLookChange.y = 0;
     pParty->_viewPitch -= modY;
     pParty->_viewPitch = std::clamp(pParty->_viewPitch, -128, 128);
     pParty->_viewYaw -= modX;

@@ -170,6 +170,10 @@ void SdlWindow::activate() {
     SDL_RaiseWindow(_window);
 }
 
+void SdlWindow::warpMouse(Pointi position) {
+    SDL_WarpMouseInWindow(_window, position.x, position.y);
+}
+
 std::unique_ptr<PlatformOpenGLContext> SdlWindow::createOpenGLContext(const PlatformOpenGLOptions &options) {
     int version;
 

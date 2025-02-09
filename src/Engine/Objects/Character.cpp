@@ -51,7 +51,6 @@
 #include "GUI/UI/UISpell.h"
 #include "GUI/UI/UIDialogue.h"
 #include "GUI/UI/Books/AutonotesBook.h"
-#include "GUI/UI/ItemGrid.h"
 
 #include "Library/Logger/Logger.h"
 
@@ -651,7 +650,7 @@ int Character::CreateItemInInventory(unsigned int uSlot, ItemId uItemID) {
 
         return 0;
     } else {  // place items
-        PutItemAtInventoryIndex(uItemID, freeSlot, uSlot);
+        PutItemArInventoryIndex(uItemID, freeSlot, uSlot);
         this->pInventoryItemList[freeSlot].uItemID = uItemID;
     }
 
@@ -739,7 +738,7 @@ int Character::CreateItemInInventory2(unsigned int index,
     if (freeSlot == -1) {  // no room
         result = 0;
     } else {
-        PutItemAtInventoryIndex(Src->uItemID, freeSlot, index);
+        PutItemArInventoryIndex(Src->uItemID, freeSlot, index);
         pInventoryItemList[freeSlot] = *Src;
         result = freeSlot + 1;
     }
@@ -748,7 +747,7 @@ int Character::CreateItemInInventory2(unsigned int index,
 }
 
 //----- (0049298B) --------------------------------------------------------
-void Character::PutItemAtInventoryIndex(
+void Character::PutItemArInventoryIndex(
     ItemId uItemID, int itemListPos,
     int index) {  // originally accepted ItemGen *but needed only its uItemID
 
@@ -756,15 +755,13 @@ void Character::PutItemAtInventoryIndex(
     int slot_width = GetSizeInInventorySlots(img->width());
     int slot_height = GetSizeInInventorySlots(img->height());
 
+    // TODO(_): try to come up with a better
+    // solution. negative values are used when
+    // drawing the inventory - nothing is drawn
     if (slot_width > 0) {
-        int *pInvPos = &pInventoryMatrix[index];
-        for (int i = 0; i < slot_height; i++) {
-            memset32(pInvPos, -1 - index,
-                     slot_width);  // TODO(_): try to come up with a better
-                                   // solution. negative values are used when
-                                   // drawing the inventory - nothing is drawn
-            pInvPos += INVENTORY_SLOTS_WIDTH;
-        }
+        for (int i = 0; i < slot_height; i++)
+            for (int j = 0; j < slot_width; j++)
+                pInventoryMatrix[index + i * INVENTORY_SLOTS_WIDTH + j] = -1 - index;
     }
 
     pInventoryMatrix[index] = itemListPos + 1;
@@ -786,11 +783,9 @@ void Character::RemoveItemAtInventoryIndex(unsigned int index) {
     }
 
     if (slot_width > 0) {
-        int *pInvPos = &pInventoryMatrix[index];
-        for (int i = 0; i < slot_height; i++) {
-            memset32(pInvPos, 0, slot_width);
-            pInvPos += INVENTORY_SLOTS_WIDTH;
-        }
+        for (int i = 0; i < slot_height; i++)
+            for (int j = 0; j < slot_width; j++)
+                pInventoryMatrix[index + i * INVENTORY_SLOTS_WIDTH + j] = 0;
     }
 }
 
@@ -6558,115 +6553,113 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
 }
 
 void Character::OnInventoryLeftClick() {
-    if (current_character_screen_window != WINDOW_CharacterWindow_Inventory) {
-        return;
-    }
+    ItemId pickedItemId;  // esi@12
+    unsigned int invItemIndex;  // eax@12
+    unsigned int itemPos;       // eax@18
+    ItemGen tmpItem;            // [sp+Ch] [bp-3Ch]@1
 
-    int pY;
-    int pX;
-    mouse->GetClickPos(&pX, &pY);
+    CastSpellInfo *pSpellInfo;
 
-    int inventoryXCoord = (pX + mouse->pickedItemOffsetX - 14) / 32;
-    int inventoryYCoord = (pY + mouse->pickedItemOffsetY - 17) / 32;
-    int invMatrixIndex = inventoryXCoord + (INVENTORY_SLOTS_WIDTH * inventoryYCoord);
+    if (current_character_screen_window == WINDOW_CharacterWindow_Inventory) {
+        int pY;
+        int pX;
+        mouse->GetClickPos(&pX, &pY);
 
-    if (inventoryYCoord >= 0 && inventoryYCoord < INVENTORY_SLOTS_HEIGHT &&
-        inventoryXCoord >= 0 && inventoryXCoord < INVENTORY_SLOTS_WIDTH) {
-        if (IsEnchantingInProgress) {
-            unsigned int enchantedItemPos = this->GetItemListAtInventoryIndex(invMatrixIndex);
+        int inventoryYCoord = (pY - 17) / 32;
+        int inventoryXCoord = (pX - 14) / 32;
+        int invMatrixIndex = inventoryXCoord + (INVENTORY_SLOTS_WIDTH * inventoryYCoord);
 
-            if (enchantedItemPos) {
-                /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
-                    *0x7Fu;
-                    *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
-                    *pParty->activeCharacterIndex() - 1;
-                    *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
-                    *enchantedItemPos - 1;
-                    *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
-                    *invMatrixIndex;*/
-                CastSpellInfo* pSpellInfo;
-                pSpellInfo = pGUIWindow_CastTargetedSpell->spellInfo();
-                pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
-                pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex() - 1;
-                pSpellInfo->targetInventoryIndex = enchantedItemPos - 1;
-                ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos - 1];
-                IsEnchantingInProgress = false;
+        if (inventoryYCoord >= 0 && inventoryYCoord < INVENTORY_SLOTS_HEIGHT &&
+            inventoryXCoord >= 0 && inventoryXCoord < INVENTORY_SLOTS_WIDTH) {
+            if (IsEnchantingInProgress) {
+                unsigned int enchantedItemPos = this->GetItemListAtInventoryIndex(invMatrixIndex);
 
-                engine->_messageQueue->clear();
+                if (enchantedItemPos) {
+                    /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
+                     *0x7Fu;
+                     *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 2) =
+                     *pParty->activeCharacterIndex() - 1;
+                     *((int *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
+                     *enchantedItemPos - 1;
+                     *((short *)pGUIWindow_CastTargetedSpell->ptr_1C + 3) =
+                     *invMatrixIndex;*/
+                    pSpellInfo = pGUIWindow_CastTargetedSpell->spellInfo();
+                    pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
+                    pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex() - 1;
+                    pSpellInfo->targetInventoryIndex = enchantedItemPos - 1;
+                    ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos - 1];
+                    IsEnchantingInProgress = false;
 
-                mouse->SetCursorImage("MICON1");
-                AfterEnchClickEventId = UIMSG_Escape;
-                AfterEnchClickEventSecondParam = 0;
-                AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
-            }
+                    engine->_messageQueue->clear();
 
-            return;
-        }
-
-        if (ptr_50C9A4_ItemToEnchant)
-            return;
-
-        auto item = this->GetItemAtInventoryIndex(invMatrixIndex);
-        if (!item && pParty->pPickedItem.uItemID == ITEM_NULL) {
-            return; // nothing to do
-        }
-
-        // calc offsets of where on the item was clicked
-        // first need index of top left corner of the item
-        int cornerInd = GetItemMainInventoryIndex(invMatrixIndex);
-        int cornerX = cornerInd % INVENTORY_SLOTS_WIDTH;
-        int cornerY = cornerInd / INVENTORY_SLOTS_WIDTH;
-        int itemXOffset = pX + mouse->pickedItemOffsetX - 14 - (cornerX * 32);
-        int itemYOffset = pY + mouse->pickedItemOffsetY - 17 - (cornerY * 32);
-
-        if (item) {
-            auto tex = assets->getImage_Alpha(item->GetIconName());
-            itemXOffset -= itemOffset(tex->width());
-            itemYOffset -= itemOffset(tex->height());
-        }
-
-        if (pParty->pPickedItem.uItemID == ITEM_NULL) {
-            // pick up the item
-            pParty->setHoldingItem(item, -itemXOffset, -itemYOffset);
-            this->RemoveItemAtInventoryIndex(invMatrixIndex);
-            return;
-        } else {
-            if (item) {
-                // swap items
-                ItemGen tmpItem = *item;
-                int oldinvMatrixIndex = invMatrixIndex;
-                this->RemoveItemAtInventoryIndex(invMatrixIndex);
-                invMatrixIndex = GetItemMainInventoryIndex(invMatrixIndex);
-                int invItemIndex = this->GetItemListAtInventoryIndex(invMatrixIndex);
-
-                // try to add where we clicked
-                int emptyIndex = this->AddItem2(invMatrixIndex, &pParty->pPickedItem);
-                if (!emptyIndex) {
-                    // try to add anywhere
-                    emptyIndex = this->AddItem2(-1, &pParty->pPickedItem);
-                    if (!emptyIndex) {
-                        // failed to add, put back the old item
-                        this->PutItemAtInventoryIndex(tmpItem.uItemID, invItemIndex - 1, invMatrixIndex);
-                        return;
-                    }
+                    mouse->SetCursorImage("MICON1");
+                    AfterEnchClickEventId = UIMSG_Escape;
+                    AfterEnchClickEventSecondParam = 0;
+                    AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
                 }
 
-                mouse->RemoveHoldingItem();
-                pParty->setHoldingItem(&tmpItem);
                 return;
-            } else {
-                // place picked item
-                int itemPos = this->AddItem(invMatrixIndex, pParty->pPickedItem.uItemID);
+            }
 
-                if (itemPos) {
-                    this->pInventoryItemList[itemPos - 1] = pParty->pPickedItem;
-                    mouse->RemoveHoldingItem();
+            if (ptr_50C9A4_ItemToEnchant)
+                return;
+
+            pickedItemId = pParty->pPickedItem.uItemID;
+            invItemIndex = this->GetItemListAtInventoryIndex(invMatrixIndex);
+
+            if (pickedItemId == ITEM_NULL) {  // no hold item
+                if (!invItemIndex) {
+                    return;
+                } else {
+                    pParty->pPickedItem = this->pInventoryItemList[invItemIndex - 1];
+                    this->RemoveItemAtInventoryIndex(invMatrixIndex);
+                    pickedItemId = pParty->pPickedItem.uItemID;
+                    mouse->SetCursorImage(pItemTable->pItems[pickedItemId].iconName);
                     return;
                 }
-            }
-        }
-    }
-}
+            } else {  // hold item
+                if (invItemIndex) {
+                    ItemGen *invItemPtr = &this->pInventoryItemList[invItemIndex - 1];
+                    tmpItem = *invItemPtr;
+                    int oldinvMatrixIndex = invMatrixIndex;
+                    invMatrixIndex = GetItemMainInventoryIndex(invMatrixIndex);
+                    this->RemoveItemAtInventoryIndex(oldinvMatrixIndex);
+                    int emptyIndex = this->AddItem2(invMatrixIndex, &pParty->pPickedItem);
+
+                    if (!emptyIndex) {
+                        emptyIndex = this->AddItem2(-1, &pParty->pPickedItem);
+                        if (!emptyIndex) {
+                            this->PutItemArInventoryIndex(tmpItem.uItemID, invItemIndex - 1, invMatrixIndex);
+                            *invItemPtr = tmpItem;
+                            return;
+                        }
+                    }
+
+                    pParty->pPickedItem = tmpItem;
+                    mouse->SetCursorImage(pParty->pPickedItem.GetIconName());
+                    return;
+                } else {
+                    itemPos = this->AddItem(invMatrixIndex, pickedItemId);
+
+                    if (itemPos) {
+                        this->pInventoryItemList[itemPos - 1] = pParty->pPickedItem;
+                        mouse->RemoveHoldingItem();
+                        return;
+                    }
+
+                    // itemPos = this->AddItem(-1, pickedItemId);
+
+                    // if ( itemPos ) {
+                    //    memcpy(&this->pInventoryItemList[itemPos-1],
+                    // &pParty->pPickedItem, sizeof(ItemGen));
+                    //    pMouse->RemoveHoldingItem();
+                    //       return;
+                    // }
+                }
+            }  // held item or no
+        }  // limits
+    }      // char wind
+}  // func
 
 bool Character::IsWeak() const {
     return this->conditions.Has(CONDITION_WEAK);
