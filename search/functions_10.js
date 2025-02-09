@@ -112,8 +112,8 @@ var searchData=
   ['postevent_109',['postEvent',['../classEngineController.html#aeed9003818fbfedc8b03f346c0194738',1,'EngineController']]],
   ['potionenchantment_110',['potionEnchantment',['../ItemEnumFunctions_8h.html#ad1e780c9575d9bcdf3ebf0e98872e71d',1,'ItemEnumFunctions.h']]],
   ['prefix_111',['prefix',['../classFileSystemPathComponents.html#af846e30ee7ae53cf99c9250881f0be68',1,'FileSystemPathComponents']]],
-  ['prepare_112',['prepare',['../classEventInterpreter.html#aeb37ea90dc27a82dfe2b4a0d5d5a3576',1,'EventInterpreter::prepare()'],['../classMovie.html#ad368adb0afc36489e504f4851386943c',1,'Movie::prepare()'],['../classIMovie.html#a22706367518af29d5404d463986f0201',1,'IMovie::prepare()']]],
-  ['prepare_113',['Prepare',['../classFlatHirelings.html#a87ede48c221ddaa7170f9d0d72664297',1,'FlatHirelings']]],
+  ['prepare_112',['Prepare',['../classFlatHirelings.html#a87ede48c221ddaa7170f9d0d72664297',1,'FlatHirelings']]],
+  ['prepare_113',['prepare',['../classEventInterpreter.html#aeb37ea90dc27a82dfe2b4a0d5d5a3576',1,'EventInterpreter::prepare()'],['../classMovie.html#ad368adb0afc36489e504f4851386943c',1,'Movie::prepare()'],['../classIMovie.html#a22706367518af29d5404d463986f0201',1,'IMovie::prepare()']]],
   ['prepareactorrenderlist_5fblv_114',['PrepareActorRenderList_BLV',['../structIndoorLocation.html#a43b6b91a65216230bae6262211e277fd',1,'IndoorLocation']]],
   ['prepareactorsdrawlist_115',['PrepareActorsDrawList',['../structOutdoorLocation.html#ac5ac1e9b576a1975eeeca2cff64878ac',1,'OutdoorLocation']]],
   ['prepareandcheckifstationary_116',['PrepareAndCheckIfStationary',['../structCollisionState.html#a07294300c5ec3076e57db80130963e98',1,'CollisionState']]],
@@ -184,6 +184,6 @@ var searchData=
   ['pushspellorrangedattack_181',['pushSpellOrRangedAttack',['../CastSpellInfo_8cpp.html#ae28f6d8f77d31169894ce5a050b01f2b',1,'pushSpellOrRangedAttack(SpellId spell, int casterIndex, CombinedSkillValue skill_value, SpellCastFlags flags, int overrideSoundId):&#160;CastSpellInfo.cpp'],['../CastSpellInfo_8h.html#ae28f6d8f77d31169894ce5a050b01f2b',1,'pushSpellOrRangedAttack(SpellId spell, int casterIndex, CombinedSkillValue skill_value, SpellCastFlags flags, int overrideSoundId):&#160;CastSpellInfo.cpp']]],
   ['pushtemplespell_182',['pushTempleSpell',['../CastSpellInfo_8cpp.html#ac372a687c4d15e75d7e5e0ec1634be07',1,'pushTempleSpell(SpellId spell):&#160;CastSpellInfo.cpp'],['../CastSpellInfo_8h.html#ac372a687c4d15e75d7e5e0ec1634be07',1,'pushTempleSpell(SpellId spell):&#160;CastSpellInfo.cpp']]],
   ['putgolddialogue_183',['putGoldDialogue',['../classGUIWindow__Bank.html#a713b3a1ac81c35a9486a4e0bb4e8780e',1,'GUIWindow_Bank']]],
-  ['putitematinventoryindex_184',['PutItemAtInventoryIndex',['../classCharacter.html#a1e75b0b517ff0ac291024f660f35fc7f',1,'Character']]],
+  ['putitemarinventoryindex_184',['PutItemArInventoryIndex',['../classCharacter.html#ae0afeff8c75902ba8d40592ade1bcf01',1,'Character']]],
   ['putiteminchest_185',['PutItemInChest',['../structChest.html#a7c2032341f24e0b4b0bf5eae5f5bc71b',1,'Chest']]]
 ];

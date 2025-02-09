@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7f35f86</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a92ee53</span>
    </div>
   </td>
  </tr>
@@ -133,6 +133,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa7bae32f1184173ccc81c36aea766f49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78f32f6b20a72efdc7fabfc863ce4cfb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a78f32f6b20a72efdc7fabfc863ce4cfb">activate</a> ()=0</td></tr>
 <tr class="separator:a78f32f6b20a72efdc7fabfc863ce4cfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe436c73ff580ea4ae6743c2392fef92"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#abe436c73ff580ea4ae6743c2392fef92">warpMouse</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> <a class="el" href="classPlatformWindow.html#afdfed30e9a46dbc72ae02811f45b1553">position</a>)=0</td></tr>
+<tr class="separator:abe436c73ff580ea4ae6743c2392fef92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb80e3c3ab551dbcbee917633423090f"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classPlatformOpenGLContext.html">PlatformOpenGLContext</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#aeb80e3c3ab551dbcbee917633423090f">createOpenGLContext</a> (const <a class="el" href="structPlatformOpenGLOptions.html">PlatformOpenGLOptions</a> &amp;options)=0</td></tr>
 <tr class="separator:aeb80e3c3ab551dbcbee917633423090f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -687,6 +689,43 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implemented in <a class="el" href="classNullWindow.html#aa183cc80e3b4249f0dd6d7f07e960cc0">NullWindow</a>, <a class="el" href="classProxyWindow.html#a8bf9e9ce66a4dc67b63a320303fd6721">ProxyWindow</a>, and <a class="el" href="classSdlWindow.html#a57525cbc707ac76b5f5e9041ce2a276a">SdlWindow</a>.</p>
+
+</div>
+</div>
+<a id="abe436c73ff580ea4ae6743c2392fef92" name="abe436c73ff580ea4ae6743c2392fef92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe436c73ff580ea4ae6743c2392fef92">&#9670;&#160;</a></span>warpMouse()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void PlatformWindow::warpMouse </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Moves the mouse pointer inside this window.</p>
+<p >Note that this function has no corresponding getter, and this is intentional. Mouse pointer coords are passed in mouse events, and it's the only place to get them from.</p>
+<p >Also note that this call might generate an <code>EVENT_MOUSE_MOVE</code> event.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">position</td><td>Position in window coordinates to move mouse pointer to. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classNullWindow.html#a51ff21605a57b4c434d32b6d1ecf085d">NullWindow</a>, <a class="el" href="classProxyWindow.html#ad9e63022a46d4e0306668d2a67737a84">ProxyWindow</a>, and <a class="el" href="classSdlWindow.html#aadc07a244111146ed52cf39152bf6b55">SdlWindow</a>.</p>
 
 </div>
 </div>
