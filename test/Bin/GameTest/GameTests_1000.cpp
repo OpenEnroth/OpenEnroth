@@ -23,7 +23,7 @@
 
 static bool characterHasJar(int charIndex, int jarIndex) {
     for (const ItemGen &item : pParty->pCharacters[charIndex].pInventoryItemList)
-        if (item.uItemID == ITEM_QUEST_LICH_JAR_FULL && item.uHolderPlayer == jarIndex)
+        if (item.itemId == ITEM_QUEST_LICH_JAR_FULL && item.uHolderPlayer == jarIndex)
             return true;
     return false;
 }
@@ -321,7 +321,7 @@ GAME_TEST(Issues, Issue1274) {
 
 GAME_TEST(Issues, Issue1275) {
     // Clicking a store button while holding item causes black screen
-    auto heldTape = tapes.custom([] {return pParty->pPickedItem.uItemID; });
+    auto heldTape = tapes.custom([] {return pParty->pPickedItem.itemId; });
     auto dialoTape = tapes.custom([] {if (window_SpeakInHouse != nullptr) return window_SpeakInHouse->getCurrentDialogue(); return DIALOGUE_NULL; });
     test.playTraceFromTestData("issue_1275.mm7", "issue_1275.json");
     // make sure item is returned to inventory
@@ -409,7 +409,7 @@ GAME_TEST(Issues, Issue1331) {
     // This just means that the Titans' physical resistance was never "lucky enough" to roll the damage down to 1 two
     // times in a row.
     EXPECT_EQ(rngTape, tape(RANDOM_ENGINE_SEQUENTIAL));
-    EXPECT_EQ(pParty->pCharacters[2].GetBowItem()->special_enchantment, ITEM_ENCHANTMENT_TITAN_SLAYING);
+    EXPECT_EQ(pParty->pCharacters[2].GetBowItem()->specialEnchantment, ITEM_ENCHANTMENT_TITAN_SLAYING);
     EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "41 - 45");
     auto damageRange = hpsTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
     EXPECT_EQ(damageRange, tape(3, (43 + 13) * 2));
@@ -554,7 +554,7 @@ GAME_TEST(Issues, Issue1383) {
     Character character;
     character.pActiveSkills[CHARACTER_SKILL_MERCHANT] = CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER);
     ItemGen item;
-    item.uItemID = ITEM_SPELLBOOK_ARMAGEDDON;
+    item.itemId = ITEM_SPELLBOOK_ARMAGEDDON;
     int gmPrice = PriceCalculator::itemBuyingPriceForPlayer(&character, item.GetValue(), 10.0f);
     EXPECT_EQ(gmPrice, 7500);
     EXPECT_EQ(item.GetValue(), 7500);
@@ -845,12 +845,12 @@ GAME_TEST(Issues, Issue1482) {
 
 GAME_TEST(Issues, Issue1489) {
     // Cannot equip amulets or gauntlets
-    auto bootTape = tapes.custom([] { auto item = pParty->pCharacters[0].GetBootItem(); if (!item) return ITEM_NULL; return item->uItemID; });
-    auto helmetTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetHelmItem(); if (!item) return ITEM_NULL; return item->uItemID; });
-    auto beltTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetBeltItem(); if (!item) return ITEM_NULL; return item->uItemID; });
-    auto cloakTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetCloakItem(); if (!item) return ITEM_NULL; return item->uItemID; });
-    auto gauntletTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetGloveItem(); if (!item) return ITEM_NULL; return item->uItemID;; });
-    auto amuletTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetAmuletItem(); if (!item) return ITEM_NULL; return item->uItemID;; });
+    auto bootTape = tapes.custom([] { auto item = pParty->pCharacters[0].GetBootItem(); if (!item) return ITEM_NULL; return item->itemId; });
+    auto helmetTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetHelmItem(); if (!item) return ITEM_NULL; return item->itemId; });
+    auto beltTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetBeltItem(); if (!item) return ITEM_NULL; return item->itemId; });
+    auto cloakTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetCloakItem(); if (!item) return ITEM_NULL; return item->itemId; });
+    auto gauntletTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetGloveItem(); if (!item) return ITEM_NULL; return item->itemId;; });
+    auto amuletTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetAmuletItem(); if (!item) return ITEM_NULL; return item->itemId;; });
     test.playTraceFromTestData("issue_1489.mm7", "issue_1489.json");
 
     for (const auto& character : pParty->pCharacters) {

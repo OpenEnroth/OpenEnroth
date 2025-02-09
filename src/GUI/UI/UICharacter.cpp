@@ -1037,11 +1037,11 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         // main hand's item
         item = itemMainHand;
         if (item) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemTable->pItems[item->uItemID].uEquipX;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemTable->pItems[item->uItemID].uEquipY;
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemTable->pItems[item->itemId].uEquipX;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemTable->pItems[item->itemId].uEquipY;
 
             GraphicsImage *texture = nullptr;
-            if (item->uItemID == ITEM_BLASTER)
+            if (item->itemId == ITEM_BLASTER)
                 texture = assets->getImage_Alpha("item64v1");
 
             CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment[ITEM_SLOT_MAIN_HAND], texture, !bRingsShownInCharScreen);
@@ -1050,8 +1050,8 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         // bow
         item = player->GetBowItem();
         if (item) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][2][0] - pItemTable->pItems[item->uItemID].uEquipX;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][2][1] - pItemTable->pItems[item->uItemID].uEquipY;
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][2][0] - pItemTable->pItems[item->itemId].uEquipX;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][2][1] - pItemTable->pItems[item->itemId].uEquipY;
 
             CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment[ITEM_SLOT_BOW], nullptr, !bRingsShownInCharScreen);
         }
@@ -1059,7 +1059,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         // cloak
         item = player->GetCloakItem();
         if (item) {
-            index = valueOr(paperdoll_cloak_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_cloak_indexByType, item->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Cloak[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Cloak[pBodyComplection][index][1];
@@ -1075,7 +1075,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         // armor
         item = player->GetArmorItem();
         if (item) {
-            index = valueOr(paperdoll_armor_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_armor_indexByType, item->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Armor_Coord[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Armor_Coord[pBodyComplection][index][1];
@@ -1088,13 +1088,13 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         // boots
         item = player->GetBootItem();
         if (item) {
-            index = valueOr(paperdoll_boots_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_boots_indexByType, item->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Boot[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Boot[pBodyComplection][index][1];
 
                 GraphicsImage *texture = nullptr;
-                if (item->uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {
+                if (item->itemId == ITEM_ARTIFACT_HERMES_SANDALS) {
                     texture = paperdoll_flying_feet[player->uCurrentFace];
                 } else {
                     texture = paperdoll_boots_texture[pBodyComplection][index];
@@ -1118,7 +1118,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         // belt
         item = player->GetBeltItem();
         if (item) {
-            index = valueOr(paperdoll_belt_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_belt_indexByType, item->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Belt[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Belt[pBodyComplection][index][1];
@@ -1135,7 +1135,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         // armor's shoulders
         item = player->GetArmorItem();
         if (item) {
-            index = valueOr(paperdoll_armor_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_armor_indexByType, item->itemId, -1);
             if (index != -1) {
                 GraphicsImage *texture = nullptr;
                 // Some armors doesn't have sleeves so use normal one for two-handed or none if it also unavailable
@@ -1159,7 +1159,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         // cloak's collar
         item = player->GetCloakItem();
         if (item) {
-            index = valueOr(paperdoll_cloak_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_cloak_indexByType, item->itemId, -1);
             if (index != -1) {
                 // leather cloak has no collar
                 if (paperdoll_CloakCollar[pBodyComplection][index][0]) {
@@ -1183,13 +1183,13 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         // helm
         item = player->GetHelmItem();
         if (item) {
-            index = valueOr(paperdoll_helm_indexByType, item->uItemID, -1);
+            index = valueOr(paperdoll_helm_indexByType, item->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Helm[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Helm[pBodyComplection][index][1];
 
                 GraphicsImage *texture = nullptr;
-                if (IsDwarf != 1 || item->uItemID != ITEM_PHYNAXIAN_HELM)
+                if (IsDwarf != 1 || item->itemId != ITEM_PHYNAXIAN_HELM)
                     texture = paperdoll_helm_texture[std::to_underlying(player->GetSexByVoice())][index];
                 else
                     texture = paperdoll_dbrds[11];
@@ -1201,11 +1201,11 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         // main hand's item
         item = itemMainHand;
         if (item) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemTable->pItems[item->uItemID].uEquipX;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemTable->pItems[item->uItemID].uEquipY;
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemTable->pItems[item->itemId].uEquipX;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemTable->pItems[item->itemId].uEquipY;
 
             GraphicsImage *texture = nullptr;
-            if (item->uItemID == ITEM_BLASTER)
+            if (item->itemId == ITEM_BLASTER)
                 texture = assets->getImage_Alpha("item64v1");
 
             CharacterUI_DrawItem(item_X, item_Y, item, player->pEquipment[ITEM_SLOT_MAIN_HAND], texture, !bRingsShownInCharScreen);
@@ -1214,8 +1214,8 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         // offhand's item
         item = itemOffHand;
         if (item) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][0][0] - pItemTable->pItems[item->uItemID].uEquipX;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][0][1] - pItemTable->pItems[item->uItemID].uEquipY;
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][0][0] - pItemTable->pItems[item->itemId].uEquipX;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][0][1] - pItemTable->pItems[item->itemId].uEquipY;
 
             /*
              * MM6 artifacts.
@@ -1223,7 +1223,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
              * Also MM6 doesn't have variable size paperdoll's so cordinates need to account pPaperdoll_BodyX/Y.
              */
             if (item->GetPlayerSkillType() == CHARACTER_SKILL_DAGGER || item->GetPlayerSkillType() == CHARACTER_SKILL_SWORD) {
-                switch (item->uItemID) {
+                switch (item->itemId) {
                     case ITEM_SPELLBOOK_TORCH_LIGHT: // Mordred
                         item_X = 596;
                         item_Y = 86;
@@ -1286,7 +1286,7 @@ void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
 
     for (unsigned i = 0; i < 126; ++i) {
         if (player->pInventoryMatrix[i] <= 0) continue;
-        if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].uItemID == ITEM_NULL)
+        if (player->pInventoryItemList[player->pInventoryMatrix[i] - 1].itemId == ITEM_NULL)
             continue;
         unsigned int uCellY = 32 * (i / 14) + 17;
         unsigned int uCellX = 32 * (i % 14) + 14;
@@ -1774,9 +1774,9 @@ void OnPaperdollLeftClick() {
         twohandedequip = mainhandequip;
     }
 
-    ItemId pickeditem = pParty->pPickedItem.uItemID;
+    ItemId pickeditem = pParty->pPickedItem.itemId;
 
-    if (pParty->pPickedItem.uItemID != ITEM_NULL) {  // hold item
+    if (pParty->pPickedItem.itemId != ITEM_NULL) {  // hold item
         pEquipType = pParty->pPickedItem.GetItemEquipType();
         pSkillType = pParty->pPickedItem.GetPlayerSkillType();
 
@@ -1789,7 +1789,7 @@ void OnPaperdollLeftClick() {
                     return;
                 }
 
-                pickeditem = pParty->pPickedItem.uItemID;
+                pickeditem = pParty->pPickedItem.itemId;
             }
         } else {
             if ((pSkillType == CHARACTER_SKILL_SHIELD || pSkillType == CHARACTER_SKILL_SWORD || pSkillType == CHARACTER_SKILL_DAGGER) && mainhandequip &&
@@ -1807,7 +1807,7 @@ void OnPaperdollLeftClick() {
             return;
         }
 
-        if (pParty->pPickedItem.uItemID == ITEM_QUEST_WETSUIT) {  // wetsuit check is done above
+        if (pParty->pPickedItem.itemId == ITEM_QUEST_WETSUIT) {  // wetsuit check is done above
             pParty->activeCharacter().EquipBody(ITEM_TYPE_ARMOUR);
             WetsuitOn(pParty->activeCharacterIndex());
             return;
@@ -1836,7 +1836,7 @@ void OnPaperdollLeftClick() {
 
                 pParty->activeCharacter().EquipBody(pEquipType);  // equips item
 
-                if (pParty->pPickedItem.uItemID == ITEM_QUEST_WETSUIT) // just taken wetsuit off
+                if (pParty->pPickedItem.itemId == ITEM_QUEST_WETSUIT) // just taken wetsuit off
                     WetsuitOff(pParty->activeCharacterIndex());
 
                 return;
@@ -1964,7 +1964,7 @@ void OnPaperdollLeftClick() {
                 // -------------------------taken in hand(взять в руку)-------------------------------------------
             case ITEM_TYPE_SINGLE_HANDED:
             case ITEM_TYPE_WAND:
-                if (pParty->activeCharacter().hasUnderwaterSuitEquipped() && !isAncientWeapon(pParty->pPickedItem.uItemID)) {
+                if (pParty->activeCharacter().hasUnderwaterSuitEquipped() && !isAncientWeapon(pParty->pPickedItem.itemId)) {
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
                 }
@@ -1990,7 +1990,7 @@ void OnPaperdollLeftClick() {
                                 if (pEquipType != ITEM_TYPE_WAND) {
                                     return;
                                 }
-                                v50 = _this.uItemID;
+                                v50 = _this.itemId;
                                 break;
                             }
                             v23 = pParty->activeCharacter().findFreeInventoryListSlot();
@@ -2000,7 +2000,7 @@ void OnPaperdollLeftClick() {
                             pParty->activeCharacter().pEquipment[ITEM_SLOT_OFF_HAND] = v23 + 1;
                             mouse->RemoveHoldingItem();
                             if (pEquipType != ITEM_TYPE_WAND) return;
-                            v50 = pParty->activeCharacter().pInventoryItemList[v23].uItemID;
+                            v50 = pParty->activeCharacter().pInventoryItemList[v23].itemId;
                             break;
                         }
                     }
@@ -2023,7 +2023,7 @@ void OnPaperdollLeftClick() {
                 _this.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
                 pParty->activeCharacter().pInventoryItemList[mainhandequip] = _this;
                 pParty->activeCharacter().pEquipment[ITEM_SLOT_MAIN_HAND] = mainhandequip + 1;
-                if (pEquipType == ITEM_TYPE_WAND) v50 = _this.uItemID;
+                if (pEquipType == ITEM_TYPE_WAND) v50 = _this.itemId;
                 if (twohandedequip) {
                     pParty->activeCharacter().pEquipment[ITEM_SLOT_OFF_HAND] = 0;
                 }
@@ -2188,7 +2188,7 @@ void OnPaperdollLeftClick() {
             // v36 = v34 - 1;
             // v38 = &pCharacters[pParty->_activeCharacter]->pInventoryItemList[v34 - 1];
             pEquipType = pParty->activeCharacter().pInventoryItemList[v34 - 1].GetItemEquipType();
-            if (pParty->activeCharacter().pInventoryItemList[v34 - 1].uItemID == ITEM_QUEST_WETSUIT) {
+            if (pParty->activeCharacter().pInventoryItemList[v34 - 1].itemId == ITEM_QUEST_WETSUIT) {
                 if (engine->IsUnderwater()) {
                     pAudioPlayer->playUISound(SOUND_error);
                     return;

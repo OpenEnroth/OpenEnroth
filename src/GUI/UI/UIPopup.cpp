@@ -302,7 +302,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
     GUIWindow iteminfo_window;  // [sp+208h] [bp-70h]@2
     int v85;
 
-    if (inspect_item->uItemID == ITEM_NULL)
+    if (inspect_item->itemId == ITEM_NULL)
         return;
 
     auto inspect_item_image = assets->getImage_ColorKey(inspect_item->GetIconName());
@@ -330,7 +330,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
     // added so window is correct size with broken items
     iteminfo_window.uFrameHeight = inspect_item_image->height() + itemYspacing + 54;
 
-    if (!pItemTable->pItems[inspect_item->uItemID].uItemID_Rep_St)
+    if (!pItemTable->pItems[inspect_item->itemId].uItemID_Rep_St)
         inspect_item->SetIdentified();
 
     int GoldAmount = 0;
@@ -419,7 +419,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
             (itemYspacing + (float)iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image);
         iteminfo_window.DrawTitleText(
             assets->pFontArrus.get(), 0, 0xCu, colorTable.PaleCanary,
-            pItemTable->pItems[inspect_item->uItemID].pUnidentifiedName, 3);
+            pItemTable->pItems[inspect_item->itemId].pUnidentifiedName, 3);
         iteminfo_window.DrawTitleText(
             assets->pFontArrus.get(), 0x64u,
             ((int)iteminfo_window.uFrameHeight >> 1) -
@@ -438,7 +438,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
 
     text[0] = localization->FormatString(
         LSTR_FMT_TYPE_S,
-        pItemTable->pItems[inspect_item->uItemID].pUnidentifiedName);
+        pItemTable->pItems[inspect_item->itemId].pUnidentifiedName);
 
     switch (inspect_item->GetItemEquipType()) {
         case ITEM_TYPE_SINGLE_HANDED:
@@ -495,11 +495,11 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
             text[2] = fmt::format("{}: {} +{}",
                                   localization->GetString(LSTR_SPECIAL_2),
                                   pItemTable->standardEnchantments[*inspect_item->attributeEnchantment].pBonusStat,
-                                  inspect_item->m_enchantmentStrength);
-        } else if (inspect_item->special_enchantment != ITEM_ENCHANTMENT_NULL) {
+                                  inspect_item->attributeEnchantmentStrength);
+        } else if (inspect_item->specialEnchantment != ITEM_ENCHANTMENT_NULL) {
             text[2] = fmt::format("{}: {}",
                                   localization->GetString(LSTR_SPECIAL_2),
-                                  pItemTable->pSpecialEnchantments[inspect_item->special_enchantment].pBonusStatement);
+                                  pItemTable->pSpecialEnchantments[inspect_item->specialEnchantment].pBonusStatement);
         } else if (inspect_item->isWand()) {
             text[2] = fmt::sprintf(localization->GetString(LSTR_FMT_S_U_OUT_OF_U),
                                    localization->GetString(LSTR_CHARGES),
@@ -514,15 +514,15 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
     for (const std::string &s : text)
         if (!s.empty())
             Str_int += assets->pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100) + 3;
-    if (!pItemTable->pItems[inspect_item->uItemID].pDescription.empty())
+    if (!pItemTable->pItems[inspect_item->itemId].pDescription.empty())
         Str_int += assets->pFontSmallnum->CalcTextHeight(
-            pItemTable->pItems[inspect_item->uItemID].pDescription,
+            pItemTable->pItems[inspect_item->itemId].pDescription,
             iteminfo_window.uFrameWidth, 100);
     iteminfo_window.uFrameHeight = inspect_item_image->height() + itemYspacing + 54;
     if ((signed int)Str_int > (signed int)iteminfo_window.uFrameHeight)
         iteminfo_window.uFrameHeight = (unsigned int)Str_int;
     if (inspect_item->uAttributes & ITEM_TEMP_BONUS &&
-        (inspect_item->special_enchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment))
+        (inspect_item->specialEnchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment))
         iteminfo_window.uFrameHeight += assets->pFontComic->GetHeight();
     v85 = 0;
     if (assets->pFontArrus->GetHeight()) {
@@ -565,8 +565,8 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
             v34 += assets->pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100, 0) + 3;
         }
     }
-    if (!pItemTable->pItems[inspect_item->uItemID].pDescription.empty())
-        iteminfo_window.DrawText(assets->pFontSmallnum.get(), {100, v34}, colorTable.White, pItemTable->pItems[inspect_item->uItemID].pDescription);
+    if (!pItemTable->pItems[inspect_item->itemId].pDescription.empty())
+        iteminfo_window.DrawText(assets->pFontSmallnum.get(), {100, v34}, colorTable.White, pItemTable->pItems[inspect_item->itemId].pDescription);
     iteminfo_window.uFrameX += 12;
     iteminfo_window.uFrameWidth -= 24;
     iteminfo_window.DrawTitleText(assets->pFontArrus.get(), 0, 0xCu, colorTable.PaleCanary,
@@ -580,7 +580,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
         render->ResetUIClipRect();
     } else {
         if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
-            (inspect_item->special_enchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment)) {
+            (inspect_item->specialEnchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment)) {
             LongCivilDuration d = (inspect_item->uExpireTime - pParty->GetPlayingTime()).toLongCivilDuration();
 
             std::string txt4 = "Duration:";
@@ -1487,7 +1487,7 @@ void ShowPopupShopItem() {
                         else
                             item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
 
-                        if (item->uItemID != ITEM_NULL) {
+                        if (item->itemId != ITEM_NULL) {
                             testpos = ((60 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 70);
                             if (pt.x >= testpos && pt.x < (testpos + (shop_ui_items_in_store[testx]->width()))) {
                                 if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + (shop_ui_items_in_store[testx]->height()))) {
@@ -1516,7 +1516,7 @@ void ShowPopupShopItem() {
                         else
                             item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
 
-                        if (item->uItemID != ITEM_NULL) {
+                        if (item->itemId != ITEM_NULL) {
                             if (testx >= 4) {
                                 testpos = ((90 - (shop_ui_items_in_store[testx]->width() / 2)) + (testx * 105) - 420);  // low row
                             } else {
@@ -1551,7 +1551,7 @@ void ShowPopupShopItem() {
                         else
                             item = &pParty->specialItemsInShops[window_SpeakInHouse->houseId()][testx];
 
-                        if (item->uItemID != ITEM_NULL) {
+                        if (item->itemId != ITEM_NULL) {
                             if (pt.y > 152) {
                                 testpos = 75 * testx - (shop_ui_items_in_store[testx]->width() / 2) + 40 - 450;
                             } else {
@@ -1606,7 +1606,7 @@ void ShowPopupShopItem() {
 
             item = &pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx];
 
-            if (item->uItemID != ITEM_NULL) {
+            if (item->itemId != ITEM_NULL) {
                 int testpos;
                 if (pt.y >= 250) {
                     testpos = 32 + 70 * testx - 420;
@@ -1616,7 +1616,7 @@ void ShowPopupShopItem() {
 
                 if (pt.x >= testpos && pt.x <= testpos + (shop_ui_items_in_store[testx]->width())) {
                     if ((pt.y >= 90 && pt.y <= (90 + (shop_ui_items_in_store[testx]->height()))) || (pt.y >= 250 && pt.y <= (250 + (shop_ui_items_in_store[testx]->height())))) {
-                        showSpellbookInfo(pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx].uItemID);
+                        showSpellbookInfo(pParty->spellBooksInGuilds[window_SpeakInHouse->houseId()][testx].itemId);
                     }
                 }
             }
@@ -1773,7 +1773,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         }
     }
 
-    if (pParty->pPickedItem.uItemID != ITEM_NULL) {
+    if (pParty->pPickedItem.itemId != ITEM_NULL) {
         // Use item on character portrait
         for (int i = 0; i < pParty->pCharacters.size(); ++i) {
             if (pX > RightClickPortraitXmin[i] && pX < RightClickPortraitXmax[i] && pY > 375 && pY < 466) {
@@ -2173,17 +2173,17 @@ void Inventory_ItemPopupAndAlchemy() {
 
     CombinedSkillValue alchemySkill = pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_ALCHEMY);
 
-    if (pParty->pPickedItem.uItemID == ITEM_POTION_BOTTLE) {
+    if (pParty->pPickedItem.itemId == ITEM_POTION_BOTTLE) {
         GameUI_DrawItemInfo(item);
         return;
     }
 
-    if (isPotion(pParty->pPickedItem.uItemID) && isPotion(item->uItemID)) { // potion mixing
-        ItemId potionSrc1 = item->uItemID;
-        ItemId potionSrc2 = pParty->pPickedItem.uItemID;
+    if (isPotion(pParty->pPickedItem.itemId) && isPotion(item->itemId)) { // potion mixing
+        ItemId potionSrc1 = item->itemId;
+        ItemId potionSrc2 = pParty->pPickedItem.itemId;
 
         ItemId potionID;
-        if (pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST || item->uItemID == ITEM_POTION_CATALYST) {
+        if (pParty->pPickedItem.itemId == ITEM_POTION_CATALYST || item->itemId == ITEM_POTION_CATALYST) {
             potionID = ITEM_POTION_CATALYST;
         } else {
             potionID = pItemTable->potionCombination[potionSrc2][potionSrc1];
@@ -2251,18 +2251,18 @@ void Inventory_ItemPopupAndAlchemy() {
             rightClickItemActionPerformed = true;
             return;
         } else {  // if ( damage_level == 0 )
-            if (item->uItemID == ITEM_POTION_CATALYST && pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST) {
+            if (item->itemId == ITEM_POTION_CATALYST && pParty->pPickedItem.itemId == ITEM_POTION_CATALYST) {
                 // Both potions are catalyst: power is maximum of two
                 item->potionPower = std::max(item->potionPower, pParty->pPickedItem.potionPower);
-            } else if (item->uItemID == ITEM_POTION_CATALYST || pParty->pPickedItem.uItemID == ITEM_POTION_CATALYST) {
+            } else if (item->itemId == ITEM_POTION_CATALYST || pParty->pPickedItem.itemId == ITEM_POTION_CATALYST) {
                 // One of the potion is catalyst: power of potion is replaced by power of catalyst
-                if (item->uItemID == ITEM_POTION_CATALYST) {
-                    item->uItemID = pParty->pPickedItem.uItemID;
+                if (item->itemId == ITEM_POTION_CATALYST) {
+                    item->itemId = pParty->pPickedItem.itemId;
                 } else {
                     item->potionPower = pParty->pPickedItem.potionPower;
                 }
             } else {
-                item->uItemID = potionID;
+                item->itemId = potionID;
                 item->potionPower = (pParty->pPickedItem.potionPower + item->potionPower) / 2;
                 // Can be zero even for valid potion combination when resulting potion is of lower grade than it's components
                 // Example: "Cure Paralysis(white) + Cure Wounds(red) = Cure Wounds(red)"
@@ -2270,7 +2270,7 @@ void Inventory_ItemPopupAndAlchemy() {
                     pParty->activeCharacter().SetVariable(VAR_AutoNotes, pItemTable->potionNotes[potionSrc1][potionSrc2]);
                 }
             }
-            if (!(pItemTable->pItems[item->uItemID].uItemID_Rep_St)) {
+            if (!(pItemTable->pItems[item->itemId].uItemID_Rep_St)) {
                 item->uAttributes |= ITEM_IDENTIFIED;
             }
             pParty->activeCharacter().playReaction(SPEECH_POTION_SUCCESS);
@@ -2282,7 +2282,7 @@ void Inventory_ItemPopupAndAlchemy() {
             } else {
                 // Can't fit bottle in inventory - place it in hand
                 ItemGen bottle;
-                bottle.uItemID = ITEM_POTION_BOTTLE;
+                bottle.itemId = ITEM_POTION_BOTTLE;
                 bottle.uAttributes = ITEM_IDENTIFIED;
                 pParty->setHoldingItem(&bottle);
             }
@@ -2290,7 +2290,7 @@ void Inventory_ItemPopupAndAlchemy() {
         }
     }
 
-    if (pParty->pPickedItem.uItemID == ITEM_POTION_RECHARGE_ITEM) {
+    if (pParty->pPickedItem.itemId == ITEM_POTION_RECHARGE_ITEM) {
         if (item->isWand()) { // can recharge only wands
             int maxChargesDecreasePercent = 70 - pParty->pPickedItem.potionPower;
             if (maxChargesDecreasePercent < 0) {
@@ -2320,8 +2320,8 @@ void Inventory_ItemPopupAndAlchemy() {
         return;
     }
 
-    if (pParty->pPickedItem.uItemID == ITEM_POTION_HARDEN_ITEM) {
-        if (item->IsBroken() || isArtifact(item->uItemID)) {
+    if (pParty->pPickedItem.itemId == ITEM_POTION_HARDEN_ITEM) {
+        if (item->IsBroken() || isArtifact(item->itemId)) {
             // Sound error and stop right click item actions until button is released
             pAudioPlayer->playUISound(SOUND_error);
             rightClickItemActionPerformed = true;
@@ -2342,15 +2342,15 @@ void Inventory_ItemPopupAndAlchemy() {
         return;
     }
 
-    if (isEnchantingPotion(pParty->pPickedItem.uItemID)) {
-        if (item->IsBroken() || isArtifact(item->uItemID) || item->isPassiveEquipment() || item->isWand() || isAncientWeapon(item->uItemID)) {
+    if (isEnchantingPotion(pParty->pPickedItem.itemId)) {
+        if (item->IsBroken() || isArtifact(item->itemId) || item->isPassiveEquipment() || item->isWand() || isAncientWeapon(item->itemId)) {
             // Sound error and stop right click item actions until button is released
             pAudioPlayer->playUISound(SOUND_error);
             rightClickItemActionPerformed = true;
             return;
         }
         if (item->isWeapon()) {
-            if (item->special_enchantment != ITEM_ENCHANTMENT_NULL || item->attributeEnchantment) {
+            if (item->specialEnchantment != ITEM_ENCHANTMENT_NULL || item->attributeEnchantment) {
                 // Sound error and stop right click item actions until button is released
                 pAudioPlayer->playUISound(SOUND_error);
                 rightClickItemActionPerformed = true;
@@ -2359,7 +2359,7 @@ void Inventory_ItemPopupAndAlchemy() {
 
             Duration effectTime = Duration::fromMinutes(30 * pParty->pPickedItem.potionPower);
             item->UpdateTempBonus(pParty->GetPlayingTime());
-            item->special_enchantment = potionEnchantment(pParty->pPickedItem.uItemID);
+            item->specialEnchantment = potionEnchantment(pParty->pPickedItem.itemId);
             item->uExpireTime = pParty->GetPlayingTime() + effectTime;
             // Sound was missing previously
             item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
@@ -2374,15 +2374,15 @@ void Inventory_ItemPopupAndAlchemy() {
         return;
     }
 
-    if (isReagent(pParty->pPickedItem.uItemID) && item->uItemID == ITEM_POTION_BOTTLE) {
+    if (isReagent(pParty->pPickedItem.itemId) && item->itemId == ITEM_POTION_BOTTLE) {
         item->potionPower = alchemySkill.level() + pParty->pPickedItem.GetDamageDice();
-        switch (pParty->pPickedItem.uItemID) {
+        switch (pParty->pPickedItem.itemId) {
             case ITEM_REAGENT_WIDOWSWEEP_BERRIES:
             case ITEM_REAGENT_CRUSHED_ROSE_PETALS:
             case ITEM_REAGENT_VIAL_OF_TROLL_BLOOD:
             case ITEM_REAGENT_RUBY:
             case ITEM_REAGENT_DRAGONS_EYE:
-                item->uItemID = ITEM_POTION_CURE_WOUNDS;
+                item->itemId = ITEM_POTION_CURE_WOUNDS;
                 break;
 
             case ITEM_REAGENT_PHIRNA_ROOT:
@@ -2390,7 +2390,7 @@ void Inventory_ItemPopupAndAlchemy() {
             case ITEM_REAGENT_HARPY_FEATHER:
             case ITEM_REAGENT_MOONSTONE:
             case ITEM_REAGENT_ELVISH_TOADSTOOL:
-                item->uItemID = ITEM_POTION_MAGIC;
+                item->itemId = ITEM_POTION_MAGIC;
                 break;
 
             case ITEM_REAGENT_POPPYSNAPS:
@@ -2398,7 +2398,7 @@ void Inventory_ItemPopupAndAlchemy() {
             case ITEM_REAGENT_SULFUR:
             case ITEM_REAGENT_GARNET:
             case ITEM_REAGENT_VIAL_OF_DEVIL_ICHOR:
-                item->uItemID = ITEM_POTION_CURE_WEAKNESS;
+                item->itemId = ITEM_POTION_CURE_WEAKNESS;
                 break;
 
             case ITEM_REAGENT_MUSHROOM:
@@ -2406,7 +2406,7 @@ void Inventory_ItemPopupAndAlchemy() {
             case ITEM_REAGENT_VIAL_OF_OOZE_ENDOPLASM:
             case ITEM_REAGENT_MERCURY:
             case ITEM_REAGENT_PHILOSOPHERS_STONE:
-                item->uItemID = ITEM_POTION_CATALYST;
+                item->itemId = ITEM_POTION_CATALYST;
                 break;
             default:
                 break;

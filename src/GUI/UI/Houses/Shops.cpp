@@ -384,7 +384,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
     int item_X = 0;
 
     for (int i = 0; i < 6; ++i) {
-        bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
+        bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
         if (itemPresent) {
             render->DrawTextureNew(((60 - (shop_ui_items_in_store[i]->width() / 2)) + item_X) / 640.0f, (weaponYPos[i] + 30) / 480.0f, shop_ui_items_in_store[i]);
         }
@@ -395,7 +395,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
     if (checkIfPlayerCanInteract()) {
         int item_num = 0;
         for (int i = 0; i < 6; ++i) {
-            item_num += (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
+            item_num += (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
         }
 
         if (isStealingModeActive()) {
@@ -416,7 +416,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
                     item = &pParty->standartItemsInShops[houseId()][testx];
                 }
 
-                if (item->uItemID != ITEM_NULL) {  // item picking
+                if (item->itemId != ITEM_NULL) {  // item picking
                     int testpos = ((60 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 70);
 
                     if (pt.x >= testpos && pt.x < (testpos + (shop_ui_items_in_store[testx]->width()))) {
@@ -451,7 +451,7 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
     int item_x = 0;
 
     for (int i = 0; i < 8; ++i) {
-        bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
+        bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
 
         if (itemPresent) {
             if (i >= 4) {
@@ -468,7 +468,7 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
     if (checkIfPlayerCanInteract()) {
         int pItemCount = 0;
         for (int i = 0; i < 6; ++i) {
-            pItemCount += (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
+            pItemCount += (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
         }
 
         if (isStealingModeActive()) {
@@ -494,7 +494,7 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
                     item = &pParty->standartItemsInShops[houseId()][testx];
                 }
 
-                if (item->uItemID != ITEM_NULL) {
+                if (item->itemId != ITEM_NULL) {
                     int testpos;
                     if (testx >= 4) {
                         testpos = ((90 - (shop_ui_items_in_store[testx]->width() / 2)) + (testx * 105) - 420);
@@ -537,7 +537,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
 
     for (int i = 0; i < 12; ++i) {
-        bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
+        bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
         int itemx, itemy;
 
         if (itemPresent) {
@@ -572,7 +572,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
         int item_num = 0;
 
         for (int i = 0; i < 12; ++i) {
-            item_num += (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
+            item_num += (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
         }
 
         if (isStealingModeActive()) {
@@ -598,7 +598,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
                     item = &pParty->standartItemsInShops[houseId()][testx];
                 }
 
-                if (item->uItemID != ITEM_NULL) {
+                if (item->itemId != ITEM_NULL) {
                     int testpos;
                     if (pt.y > 152) {
                         testpos = 75 * testx - (shop_ui_items_in_store[testx]->width() / 2) + 40 - 450;
@@ -688,9 +688,9 @@ void GUIWindow_AlchemyShop::generateShopItems(bool isSpecial) {
         if (i < 6) {
             itemArray[i].Reset();
             if (isSpecial) {
-                itemArray[i].uItemID = grng->randomSample(allRecipeScrolls());
+                itemArray[i].itemId = grng->randomSample(allRecipeScrolls());
             } else {
-                itemArray[i].uItemID = ITEM_POTION_BOTTLE;
+                itemArray[i].itemId = ITEM_POTION_BOTTLE;
             }
         } else {
             pItemTable->generateItem(treasureLvl, bottomRowItemClass, &itemArray[i]);
@@ -790,13 +790,13 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DialogueId option) {
         HouseType shopType = buildingType();
         const std::array<ItemGen, 12> &itemArray = (option == DIALOGUE_SHOP_BUY_STANDARD) ? pParty->standartItemsInShops[houseId()] : pParty->specialItemsInShops[houseId()];
         for (int i = 0; i < itemAmountInShop[shopType]; ++i) {
-            if (itemArray[i].uItemID != ITEM_NULL) {
+            if (itemArray[i].itemId != ITEM_NULL) {
                 shop_ui_items_in_store[i] = assets->getImage_ColorKey(itemArray[i].GetIconName());
             }
         }
         if (shopType == HOUSE_TYPE_WEAPON_SHOP) {
             for (int i = 0; i < itemAmountInShop[shopType]; ++i) {
-                if (itemArray[i].uItemID != ITEM_NULL) {
+                if (itemArray[i].itemId != ITEM_NULL) {
                     // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
                     weaponYPos[i] = grng->random(300 - (shop_ui_items_in_store[i]->height()));
                 }
@@ -1021,7 +1021,7 @@ void GUIWindow_Shop::houseScreenClick() {
                     else
                         boughtItem = &pParty->specialItemsInShops[houseId()][testx];
 
-                    if (boughtItem->uItemID != ITEM_NULL) {
+                    if (boughtItem->itemId != ITEM_NULL) {
                         testpos = ((60 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 70);
                         if (pt.x >= testpos && pt.x < (testpos + (shop_ui_items_in_store[testx]->width()))) {
                             if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + (shop_ui_items_in_store[testx]->height()))) {
@@ -1044,7 +1044,7 @@ void GUIWindow_Shop::houseScreenClick() {
                     else
                         boughtItem = &pParty->specialItemsInShops[houseId()][testx];
 
-                    if (boughtItem->uItemID != ITEM_NULL) {
+                    if (boughtItem->itemId != ITEM_NULL) {
                         if (testx >= 4) {
                             testpos = ((90 - (shop_ui_items_in_store[testx]->width() / 2)) + (testx * 105) - 420);  // low row
                         } else {
@@ -1074,7 +1074,7 @@ void GUIWindow_Shop::houseScreenClick() {
                     else
                         boughtItem = &pParty->specialItemsInShops[houseId()][testx];
 
-                    if (boughtItem->uItemID != ITEM_NULL) {
+                    if (boughtItem->itemId != ITEM_NULL) {
                         if (pt.y > 152) {
                             testpos = 75 * testx - (shop_ui_items_in_store[testx]->width() / 2) + 40 - 450;
                         } else {
@@ -1118,7 +1118,7 @@ void GUIWindow_Shop::houseScreenClick() {
                 return;
             }
 
-            int itemSlot = pParty->activeCharacter().AddItem(-1, boughtItem->uItemID);
+            int itemSlot = pParty->activeCharacter().AddItem(-1, boughtItem->itemId);
             if (itemSlot) {
                 boughtItem->SetIdentified();
                 pParty->activeCharacter().pInventoryItemList[itemSlot - 1] = *boughtItem;

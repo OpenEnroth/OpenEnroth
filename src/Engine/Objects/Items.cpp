@@ -51,27 +51,27 @@ int ItemGen::_439DF3_get_additional_damage(DamageType *damage_type,
                                            bool *draintargetHP) {
     *draintargetHP = false;
     *damage_type = DAMAGE_FIRE;
-    if (uItemID == ITEM_NULL) return 0;
+    if (itemId == ITEM_NULL) return 0;
 
     UpdateTempBonus(pParty->GetPlayingTime());
-    if (uItemID == ITEM_ARTIFACT_IRON_FEATHER) {
+    if (itemId == ITEM_ARTIFACT_IRON_FEATHER) {
         *damage_type = DAMAGE_AIR;
         return grng->random(10) + 6;
     }
-    if (uItemID == ITEM_ARTIFACT_GHOULSBANE) {
+    if (itemId == ITEM_ARTIFACT_GHOULSBANE) {
         *damage_type = DAMAGE_FIRE;
         return grng->random(16) + 3;
     }
-    if (uItemID == ITEM_ARTIFACT_ULLYSES) {
+    if (itemId == ITEM_ARTIFACT_ULLYSES) {
         *damage_type = DAMAGE_WATER;
         return grng->random(4) + 9;
     }
-    if (uItemID == ITEM_RELIC_OLD_NICK) {
+    if (itemId == ITEM_RELIC_OLD_NICK) {
         *damage_type = DAMAGE_BODY;
         return 8;
     }
 
-    switch (special_enchantment) {
+    switch (specialEnchantment) {
         case ITEM_ENCHANTMENT_OF_COLD:
             *damage_type = DAMAGE_WATER;
             return grng->random(2) + 3;
@@ -147,7 +147,7 @@ void ItemGen::UpdateTempBonus(Time time) {
     if (this->uAttributes & ITEM_TEMP_BONUS) {
         if (time > this->uExpireTime) {
             this->attributeEnchantment = {};
-            this->special_enchantment = ITEM_ENCHANTMENT_NULL;
+            this->specialEnchantment = ITEM_ENCHANTMENT_NULL;
             this->uAttributes &= ~ITEM_TEMP_BONUS;
         }
     }
@@ -155,15 +155,15 @@ void ItemGen::UpdateTempBonus(Time time) {
 
 //----- (00456442) --------------------------------------------------------
 int ItemGen::GetValue() const {
-    int uBaseValue = pItemTable->pItems[this->uItemID].uValue;
+    int uBaseValue = pItemTable->pItems[this->itemId].uValue;
     if (uAttributes & ITEM_TEMP_BONUS || pItemTable->IsMaterialNonCommon(this))
         return uBaseValue;
     if (potionPower || attributeEnchantment) // TODO(captainurist): can drop potionPower?
-        return uBaseValue + 100 * m_enchantmentStrength;
+        return uBaseValue + 100 * attributeEnchantmentStrength;
 
-    if (special_enchantment != ITEM_ENCHANTMENT_NULL) {
-        int mod = (pItemTable->pSpecialEnchantments[special_enchantment].iTreasureLevel & 4);
-        int bonus = pItemTable->pSpecialEnchantments[special_enchantment].iValue;
+    if (specialEnchantment != ITEM_ENCHANTMENT_NULL) {
+        int mod = (pItemTable->pSpecialEnchantments[specialEnchantment].iTreasureLevel & 4);
+        int bonus = pItemTable->pSpecialEnchantments[specialEnchantment].iValue;
         if (!mod)
             return uBaseValue + bonus;
         else
@@ -177,7 +177,7 @@ std::string ItemGen::GetDisplayName() {
     if (IsIdentified()) {
         return GetIdentifiedName();
     } else {
-        return pItemTable->pItems[uItemID].pUnidentifiedName;
+        return pItemTable->pItems[itemId].pUnidentifiedName;
     }
 }
 
@@ -186,10 +186,10 @@ std::string ItemGen::GetIdentifiedName() {
     ItemType equip_type = GetItemEquipType();
     if ((equip_type == ITEM_TYPE_REAGENT) || (equip_type == ITEM_TYPE_POTION) ||
         (equip_type == ITEM_TYPE_GOLD)) {
-        return pItemTable->pItems[uItemID].name;
+        return pItemTable->pItems[itemId].name;
     }
 
-    if (uItemID == ITEM_QUEST_LICH_JAR_FULL) {  // Lich Jar
+    if (itemId == ITEM_QUEST_LICH_JAR_FULL) {  // Lich Jar
         if (uHolderPlayer >= 0 && uHolderPlayer < pParty->pCharacters.size()) {
             const std::string &player_name = pParty->pCharacters[uHolderPlayer].name;
             if (player_name.back() == 's')
@@ -201,39 +201,39 @@ std::string ItemGen::GetIdentifiedName() {
 
     if (!pItemTable->IsMaterialNonCommon(this)) {
         if (attributeEnchantment) {
-            return std::string(pItemTable->pItems[uItemID].name) + " " +
+            return std::string(pItemTable->pItems[itemId].name) + " " +
                    pItemTable->standardEnchantments[*attributeEnchantment].pOfName;
-        } else if (special_enchantment == ITEM_ENCHANTMENT_NULL) {
-            return pItemTable->pItems[uItemID].name;
+        } else if (specialEnchantment == ITEM_ENCHANTMENT_NULL) {
+            return pItemTable->pItems[itemId].name;
         } else {
-            if (special_enchantment == ITEM_ENCHANTMENT_VAMPIRIC
-                || special_enchantment == ITEM_ENCHANTMENT_DEMON_SLAYING
-                || special_enchantment == ITEM_ENCHANTMENT_DRAGON_SLAYING
-                || special_enchantment == ITEM_ENCHANTMENT_ROGUES
-                || special_enchantment == ITEM_ENCHANTMENT_WARRIORS
-                || special_enchantment == ITEM_ENCHANTMENT_WIZARDS
-                || special_enchantment == ITEM_ENCHANTMENT_ANTIQUE
-                || special_enchantment == ITEM_ENCHANTMENT_MONKS
-                || special_enchantment == ITEM_ENCHANTMENT_THIEVES
-                || special_enchantment == ITEM_ENCHANTMENT_SWIFT
-                || special_enchantment == ITEM_ENCHANTMENT_ELF_SLAYING
-                || special_enchantment == ITEM_ENCHANTMENT_UNDEAD_SLAYING
-                || special_enchantment == ITEM_ENCHANTMENT_ASSASINS
-                || special_enchantment == ITEM_ENCHANTMENT_BARBARIANS
+            if (specialEnchantment == ITEM_ENCHANTMENT_VAMPIRIC
+                || specialEnchantment == ITEM_ENCHANTMENT_DEMON_SLAYING
+                || specialEnchantment == ITEM_ENCHANTMENT_DRAGON_SLAYING
+                || specialEnchantment == ITEM_ENCHANTMENT_ROGUES
+                || specialEnchantment == ITEM_ENCHANTMENT_WARRIORS
+                || specialEnchantment == ITEM_ENCHANTMENT_WIZARDS
+                || specialEnchantment == ITEM_ENCHANTMENT_ANTIQUE
+                || specialEnchantment == ITEM_ENCHANTMENT_MONKS
+                || specialEnchantment == ITEM_ENCHANTMENT_THIEVES
+                || specialEnchantment == ITEM_ENCHANTMENT_SWIFT
+                || specialEnchantment == ITEM_ENCHANTMENT_ELF_SLAYING
+                || specialEnchantment == ITEM_ENCHANTMENT_UNDEAD_SLAYING
+                || specialEnchantment == ITEM_ENCHANTMENT_ASSASINS
+                || specialEnchantment == ITEM_ENCHANTMENT_BARBARIANS
             ) {            // enchantment and name positions inverted!
                 return fmt::format(
                     "{} {}",
-                    pItemTable->pSpecialEnchantments[special_enchantment].pNameAdd,
-                    pItemTable->pItems[uItemID].name
+                    pItemTable->pSpecialEnchantments[specialEnchantment].pNameAdd,
+                    pItemTable->pItems[itemId].name
                 );
             } else {
-                return std::string(pItemTable->pItems[uItemID].name) + " " +
-                       pItemTable->pSpecialEnchantments[special_enchantment].pNameAdd;
+                return std::string(pItemTable->pItems[itemId].name) + " " +
+                       pItemTable->pSpecialEnchantments[specialEnchantment].pNameAdd;
             }
         }
     }
 
-    return pItemTable->pItems[uItemID].name;
+    return pItemTable->pItems[itemId].name;
 }
 
 //----- (004505CC) --------------------------------------------------------
@@ -250,7 +250,7 @@ bool ItemGen::GenerateArtifact() {
 
     Reset();
     if (uNumArtifactsNotFound) {
-        uItemID = artifacts_list[grng->random(uNumArtifactsNotFound)];
+        itemId = artifacts_list[grng->random(uNumArtifactsNotFound)];
         pItemTable->SetSpecialBonus(this);
         return true;
     } else {
@@ -267,27 +267,27 @@ void ItemGen::generateGold(ItemTreasureLevel treasureLevel) {
     switch (treasureLevel) {
     case ITEM_TREASURE_LEVEL_1:
         goldAmount = grng->random(51) + 50;
-        uItemID = ITEM_GOLD_SMALL;
+        itemId = ITEM_GOLD_SMALL;
         break;
     case ITEM_TREASURE_LEVEL_2:
         goldAmount = grng->random(101) + 100;
-        uItemID = ITEM_GOLD_SMALL;
+        itemId = ITEM_GOLD_SMALL;
         break;
     case ITEM_TREASURE_LEVEL_3:
         goldAmount = grng->random(301) + 200;
-        uItemID = ITEM_GOLD_MEDIUM;
+        itemId = ITEM_GOLD_MEDIUM;
         break;
     case ITEM_TREASURE_LEVEL_4:
         goldAmount = grng->random(501) + 500;
-        uItemID = ITEM_GOLD_MEDIUM;
+        itemId = ITEM_GOLD_MEDIUM;
         break;
     case ITEM_TREASURE_LEVEL_5:
         goldAmount = grng->random(1001) + 1000;
-        uItemID = ITEM_GOLD_LARGE;
+        itemId = ITEM_GOLD_LARGE;
         break;
     case ITEM_TREASURE_LEVEL_6:
         goldAmount = grng->random(3001) + 2000;
-        uItemID = ITEM_GOLD_LARGE;
+        itemId = ITEM_GOLD_LARGE;
         break;
     default:
         assert(false);
@@ -668,7 +668,7 @@ void ItemGen::GetItemBonusSpecialEnchantment(const Character *owner,
                                              CharacterAttribute attrToGet,
                                              int *additiveBonus,
                                              int *halfSkillBonus) const {
-    auto pos = specialBonusMap.find(this->special_enchantment);
+    auto pos = specialBonusMap.find(this->specialEnchantment);
     if (pos == specialBonusMap.end())
         return;
 
@@ -693,7 +693,7 @@ void ItemGen::GetItemBonusSpecialEnchantment(const Character *owner,
 void ItemGen::GetItemBonusArtifact(const Character *owner,
                                    CharacterAttribute attrToGet,
                                    int *bonusSum) const {
-    auto pos = artifactBonusMap.find(this->uItemID);
+    auto pos = artifactBonusMap.find(this->itemId);
     if (pos == artifactBonusMap.end())
         return;
 
@@ -721,14 +721,14 @@ bool ItemGen::IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet) {
 
 ItemType ItemGen::GetItemEquipType() const {
     // to avoid nzi - is this safe??
-    if (this->uItemID == ITEM_NULL)
+    if (this->itemId == ITEM_NULL)
         return ITEM_TYPE_NONE;
     else
-        return pItemTable->pItems[this->uItemID].uEquipType;
+        return pItemTable->pItems[this->itemId].uEquipType;
 }
 
 CharacterSkillType ItemGen::GetPlayerSkillType() const {
-    CharacterSkillType skl = pItemTable->pItems[this->uItemID].uSkillType;
+    CharacterSkillType skl = pItemTable->pItems[this->itemId].uSkillType;
     if (skl == CHARACTER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
         // club skill not used but some items load it
         skl = CHARACTER_SKILL_MACE;
@@ -737,19 +737,19 @@ CharacterSkillType ItemGen::GetPlayerSkillType() const {
 }
 
 const std::string& ItemGen::GetIconName() const {
-    return pItemTable->pItems[this->uItemID].iconName;
+    return pItemTable->pItems[this->itemId].iconName;
 }
 
 uint8_t ItemGen::GetDamageDice() const {
-    return pItemTable->pItems[this->uItemID].uDamageDice;
+    return pItemTable->pItems[this->itemId].uDamageDice;
 }
 
 uint8_t ItemGen::GetDamageRoll() const {
-    return pItemTable->pItems[this->uItemID].uDamageRoll;
+    return pItemTable->pItems[this->itemId].uDamageRoll;
 }
 
 uint8_t ItemGen::GetDamageMod() const {
-    return pItemTable->pItems[this->uItemID].uDamageMod;
+    return pItemTable->pItems[this->itemId].uDamageMod;
 }
 
 //----- (0043C91D) --------------------------------------------------------
@@ -781,13 +781,13 @@ bool ItemGen::canSellRepairIdentifyAt(HouseId houseId) {
     if (this->IsStolen())
         return false;
 
-    if (isQuestItem(uItemID))
+    if (isQuestItem(itemId))
         return false; // Can't sell quest items.
 
-    if (isArtifact(uItemID) && !isSpawnableArtifact(uItemID))
+    if (isArtifact(itemId) && !isSpawnableArtifact(itemId))
         return false; // Can't sell quest artifacts, e.g. Hermes Sandals.
 
-    if (::isMessageScroll(uItemID) && !isRecipe(uItemID))
+    if (::isMessageScroll(itemId) && !isRecipe(itemId))
         return false; // Can't sell message scrolls. Recipes are sellable at alchemy shops.
 
     switch (houseTable[houseId].uType) {
@@ -800,7 +800,7 @@ bool ItemGen::canSellRepairIdentifyAt(HouseId houseId) {
         case HOUSE_TYPE_ALCHEMY_SHOP:
             return this->isReagent() ||
                    this->isPotion() ||
-                   (this->isMessageScroll() && isRecipe(this->uItemID));
+                   (this->isMessageScroll() && isRecipe(this->itemId));
         default:
             return false;
     }

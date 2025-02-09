@@ -446,19 +446,19 @@ void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst) {
 void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
     memzero(dst);
 
-    dst->itemID = std::to_underlying(src.uItemID);
-    if (isPotion(src.uItemID)) {
+    dst->itemID = std::to_underlying(src.itemId);
+    if (isPotion(src.itemId)) {
         dst->attributeEnchantmentOrPotionPower = src.potionPower;
     } else if (src.attributeEnchantment) {
         dst->attributeEnchantmentOrPotionPower = std::to_underlying(*src.attributeEnchantment) + 1;
     } else {
         dst->attributeEnchantmentOrPotionPower = 0;
     }
-    dst->enchantmentStrength = src.m_enchantmentStrength;
-    if (isGold(src.uItemID)) {
+    dst->enchantmentStrength = src.attributeEnchantmentStrength;
+    if (isGold(src.itemId)) {
         dst->specialEnchantmentOrGoldAmount = src.goldAmount;
     } else {
-        dst->specialEnchantmentOrGoldAmount = std::to_underlying(src.special_enchantment);
+        dst->specialEnchantmentOrGoldAmount = std::to_underlying(src.specialEnchantment);
     }
     dst->numCharges = src.uNumCharges;
     dst->attributes = std::to_underlying(src.uAttributes);
@@ -470,8 +470,8 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
 }
 
 void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
-    dst->uItemID = static_cast<ItemId>(src.itemID);
-    if (isPotion(dst->uItemID)) {
+    dst->itemId = static_cast<ItemId>(src.itemID);
+    if (isPotion(dst->itemId)) {
         dst->potionPower = src.attributeEnchantmentOrPotionPower;
         dst->attributeEnchantment = {};
     } else if (src.attributeEnchantmentOrPotionPower) {
@@ -481,13 +481,13 @@ void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
         dst->potionPower = 0;
         dst->attributeEnchantment = {};
     }
-    dst->m_enchantmentStrength = src.enchantmentStrength;
-    if (isGold(dst->uItemID)) {
+    dst->attributeEnchantmentStrength = src.enchantmentStrength;
+    if (isGold(dst->itemId)) {
         dst->goldAmount = src.specialEnchantmentOrGoldAmount;
-        dst->special_enchantment = ITEM_ENCHANTMENT_NULL;
+        dst->specialEnchantment = ITEM_ENCHANTMENT_NULL;
     } else {
         dst->goldAmount = 0;
-        dst->special_enchantment = static_cast<ItemEnchantment>(src.specialEnchantmentOrGoldAmount);
+        dst->specialEnchantment = static_cast<ItemEnchantment>(src.specialEnchantmentOrGoldAmount);
     }
     dst->uNumCharges = src.numCharges;
     dst->uAttributes = ItemFlags(src.attributes);
@@ -1637,7 +1637,7 @@ void reconstruct(const Chest_MM7 &src, Chest *dst) {
     // fix placedInChest field for old saves
     int chestArea = dst->pInventoryIndices.size();
     for (int item = 0; item < chestArea; item++) {
-        if (dst->igChestItems[item].uItemID == ITEM_NULL) {
+        if (dst->igChestItems[item].itemId == ITEM_NULL) {
             continue;
         }
         for (int position = 0; position < chestArea; position++) {

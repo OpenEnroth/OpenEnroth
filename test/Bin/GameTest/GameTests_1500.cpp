@@ -170,7 +170,7 @@ GAME_TEST(Issues, Issue1597) {
         pItemTable->generateItem(ITEM_TREASURE_LEVEL_5, RANDOM_ITEM_AMULET, &item);
         if (item.attributeEnchantment)
             attrEnchantmentsNum++;
-        if (item.special_enchantment != ITEM_ENCHANTMENT_NULL)
+        if (item.specialEnchantment != ITEM_ENCHANTMENT_NULL)
             specialEnchantmentsNum++;
     }
     EXPECT_NE(attrEnchantmentsNum, 0);
@@ -276,11 +276,11 @@ GAME_TEST(Issues, Issue1685) {
     pParty->pCharacters[1].name = "Nicholas";
 
     ItemGen jar1;
-    jar1.uItemID = ItemId::ITEM_QUEST_LICH_JAR_FULL;
+    jar1.itemId = ItemId::ITEM_QUEST_LICH_JAR_FULL;
     jar1.uHolderPlayer = 0;
 
     ItemGen jar2;
-    jar2.uItemID = ItemId::ITEM_QUEST_LICH_JAR_FULL;
+    jar2.itemId = ItemId::ITEM_QUEST_LICH_JAR_FULL;
     jar2.uHolderPlayer = 1;
 
     game.runGameRoutine([&] {

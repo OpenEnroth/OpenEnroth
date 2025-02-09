@@ -85,13 +85,13 @@ GAME_TEST(Issues, Issue198) {
     game.runGameRoutine([&] {
         forEachInventoryItem([](const ItemGen &item, int /*x*/, int /*y*/) {
             // Calling width() forces the texture to be created.
-            assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName)->width();
+            assets->getImage_ColorKey(pItemTable->pItems[item.itemId].iconName)->width();
         });
     });
 
     // Then can safely check everything.
     forEachInventoryItem([](const ItemGen &item, int x, int y) {
-        GraphicsImage *image = assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName);
+        GraphicsImage *image = assets->getImage_ColorKey(pItemTable->pItems[item.itemId].iconName);
         int width = GetSizeInInventorySlots(image->width());
         int height = GetSizeInInventorySlots(image->height());
 

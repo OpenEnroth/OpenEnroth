@@ -390,7 +390,7 @@ void oracleDialogue() {
         QuestBit quest_id = pair.first;
         if (pParty->_questBits[quest_id]) {
             ItemId search_item_id = pair.second;
-            if (!pParty->hasItem(search_item_id) && pParty->pPickedItem.uItemID != search_item_id) {
+            if (!pParty->hasItem(search_item_id) && pParty->pPickedItem.itemId != search_item_id) {
                 item_id = search_item_id;
                 break;
             }
@@ -415,7 +415,7 @@ void oracleDialogue() {
                 bool have_vessels_soul = false;
                 for (Character &player : pParty->pCharacters) {
                     for (int idx = 0; idx < Character::INVENTORY_SLOT_COUNT; idx++) {
-                        if (player.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL) {
+                        if (player.pInventoryItemList[idx].itemId == ITEM_QUEST_LICH_JAR_FULL) {
                             if (player.pInventoryItemList[idx].uHolderPlayer == -1) {
                                 item = &player.pInventoryItemList[idx];
                             }

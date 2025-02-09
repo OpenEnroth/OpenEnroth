@@ -687,11 +687,11 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     ItemGen *item = &pParty->pCharacters[pCastSpell->targetCharacterIndex].pInventoryItemList[pCastSpell->targetInventoryIndex];
                     item->UpdateTempBonus(pParty->GetPlayingTime());
-                    if (item->uItemID == ITEM_BLASTER ||
-                            item->uItemID == ITEM_BLASTER_RIFLE ||
+                    if (item->itemId == ITEM_BLASTER ||
+                            item->itemId == ITEM_BLASTER_RIFLE ||
                             item->IsBroken() ||
                             pItemTable->IsMaterialNonCommon(item) ||
-                            item->special_enchantment != ITEM_ENCHANTMENT_NULL ||
+                            item->specialEnchantment != ITEM_ENCHANTMENT_NULL ||
                             item->attributeEnchantment ||
                             !item->isWeapon()) {
                         AfterEnchClickEventId = UIMSG_Escape;
@@ -707,14 +707,14 @@ void CastSpellInfoHelpers::castSpell() {
                         case SPELL_FIRE_FIRE_AURA:
                             switch (spell_mastery) {
                                 case CHARACTER_SKILL_MASTERY_NOVICE:
-                                    item->special_enchantment = ITEM_ENCHANTMENT_OF_FIRE;
+                                    item->specialEnchantment = ITEM_ENCHANTMENT_OF_FIRE;
                                     break;
                                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                                    item->special_enchantment = ITEM_ENCHANTMENT_OF_FLAME;
+                                    item->specialEnchantment = ITEM_ENCHANTMENT_OF_FLAME;
                                     break;
                                 case CHARACTER_SKILL_MASTERY_MASTER:
                                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                                    item->special_enchantment = ITEM_ENCHANTMENT_OF_INFERNOS;
+                                    item->specialEnchantment = ITEM_ENCHANTMENT_OF_INFERNOS;
                                     break;
                                 default:
                                     assert(false);
@@ -723,7 +723,7 @@ void CastSpellInfoHelpers::castSpell() {
                             item->uAttributes |= ITEM_AURA_EFFECT_RED;
                             break;
                         case SPELL_DARK_VAMPIRIC_WEAPON:
-                            item->special_enchantment = ITEM_ENCHANTMENT_VAMPIRIC;
+                            item->specialEnchantment = ITEM_ENCHANTMENT_VAMPIRIC;
                             item->uAttributes |= ITEM_AURA_EFFECT_PURPLE;
                             break;
                         default:
@@ -1401,7 +1401,7 @@ void CastSpellInfoHelpers::castSpell() {
                     int rnd = grng->random(100);
                     pPlayer = &pParty->pCharacters[pCastSpell->targetCharacterIndex];
                     ItemGen *spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->targetInventoryIndex];
-                    ItemType this_equip_type = pItemTable->pItems[spell_item_to_enchant->uItemID].uEquipType;
+                    ItemType this_equip_type = pItemTable->pItems[spell_item_to_enchant->itemId].uEquipType;
 
                     // refs
                     // https://www.gog.com/forum/might_and_magic_series/a_little_enchant_item_testing_in_mm7
@@ -1413,10 +1413,10 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     if ((spell_mastery == CHARACTER_SKILL_MASTERY_MASTER || spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) &&
-                            isRegular(spell_item_to_enchant->uItemID) &&
-                            spell_item_to_enchant->special_enchantment == ITEM_ENCHANTMENT_NULL &&
+                            isRegular(spell_item_to_enchant->itemId) &&
+                            spell_item_to_enchant->specialEnchantment == ITEM_ENCHANTMENT_NULL &&
                             !spell_item_to_enchant->attributeEnchantment &&
-                            spell_item_to_enchant->m_enchantmentStrength == 0 &&
+                            spell_item_to_enchant->attributeEnchantmentStrength == 0 &&
                             !spell_item_to_enchant->IsBroken()) {
                         // break items with low value
                         if ((spell_item_to_enchant->GetValue() < 450 && !isWeapon(this_equip_type)) ||  // not weapons
@@ -1476,7 +1476,7 @@ void CastSpellInfoHelpers::castSpell() {
                                     // gm 6-12   - guess work needs checking
                                     if (spell_mastery== CHARACTER_SKILL_MASTERY_GRANDMASTER) ench_power = grng->random(7) + 6;
 
-                                    spell_item_to_enchant->m_enchantmentStrength = ench_power;
+                                    spell_item_to_enchant->attributeEnchantmentStrength = ench_power;
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
                                     ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                                     spell_failed = false;
@@ -1521,7 +1521,7 @@ void CastSpellInfoHelpers::castSpell() {
                                     }
 
                                     // set item ench
-                                    spell_item_to_enchant->special_enchantment = ench_array[step];
+                                    spell_item_to_enchant->specialEnchantment = ench_array[step];
                                     spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
                                     ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                                     spell_failed = false;
@@ -1976,22 +1976,22 @@ void CastSpellInfoHelpers::castSpell() {
                         ItemGen item;
                         item.Reset();
                         if (pActors[monster_id].carriedItemId != ITEM_NULL) {
-                            item.uItemID = pActors[monster_id].carriedItemId;
+                            item.itemId = pActors[monster_id].carriedItemId;
                         } else {
                             for (const ItemGen &actorItem : pActors[monster_id].items) {
-                                if (actorItem.uItemID != ITEM_NULL &&
-                                        pItemTable->pItems[actorItem.uItemID].uEquipType != ITEM_TYPE_GOLD) {
+                                if (actorItem.itemId != ITEM_NULL &&
+                                        pItemTable->pItems[actorItem.itemId].uEquipType != ITEM_TYPE_GOLD) {
                                     item = actorItem;
                                 }
                             }
                         }
                         if (gold_num > 0) {
-                            if (item.uItemID != ITEM_NULL)
+                            if (item.itemId != ITEM_NULL)
                                 engine->_statusBar->setEvent(fmt::format("({}), and {} gold", item.GetDisplayName(), gold_num));
                             else
                                 engine->_statusBar->setEvent(fmt::format("{} gold", gold_num));
                         } else {
-                            if (item.uItemID != ITEM_NULL) {
+                            if (item.itemId != ITEM_NULL) {
                                 engine->_statusBar->setEvent(fmt::format("({})", item.GetDisplayName()));
                             } else {
                                 engine->_statusBar->nothingHere();
@@ -2181,7 +2181,7 @@ void CastSpellInfoHelpers::castSpell() {
                         if (pSpriteObjects[obj_id].containing_item.isGold()) {
                             pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.goldAmount, GOLD_RECEIVE_SHARE);
                         } else {
-                            engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName);
+                            engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[obj_id].containing_item.itemId].pUnidentifiedName);
                             if (!pParty->addItemToParty(&pSpriteObjects[obj_id].containing_item)) {
                                 pParty->setHoldingItem(&pSpriteObjects[obj_id].containing_item);
                             }
@@ -2197,7 +2197,7 @@ void CastSpellInfoHelpers::castSpell() {
                             eventProcessor(pLevelDecorations[obj_id].uEventID, spell_targeted_at, 1);
                         }
                         // TODO(captainurist): investigate, that's a very weird std::to_underlying call.
-                        if (pLevelDecorations[std::to_underlying(pSpriteObjects[obj_id].containing_item.uItemID)].IsInteractive()) {
+                        if (pLevelDecorations[std::to_underlying(pSpriteObjects[obj_id].containing_item.itemId)].IsInteractive()) {
                             activeLevelDecoration = &pLevelDecorations[obj_id];
                             eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380, Pid(), 1);
                             activeLevelDecoration = nullptr;

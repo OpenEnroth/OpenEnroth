@@ -105,22 +105,26 @@ struct ItemGen {  // 0x24
         return ::isPassiveEquipment(GetItemEquipType());
     }
 
-    ItemId uItemID = ITEM_NULL;        // 0
+    ItemId itemId = ITEM_NULL;
     int potionPower = 0; // Only for potions.
     int goldAmount = 0; // Only for gold.
-    std::optional<CharacterAttribute> attributeEnchantment; // TODO(captainurist): introduce ATTRIBUTE_NULL?
-    int32_t m_enchantmentStrength = 0;  // 8
-    ItemEnchantment special_enchantment = ITEM_ENCHANTMENT_NULL;
-    int32_t uNumCharges = 0;           // 10
-    ItemFlags uAttributes = 0;          // 14
-    ItemSlot uBodyAnchor = ITEM_SLOT_INVALID; // 18
-    uint8_t uMaxCharges = 0;           // 19
 
-    /** Only for full lich jars. 0-based index of the character whose earthly remains are stored in it.
-     * Or whatever it is that's in the lich jar. */
-    int8_t uHolderPlayer = -1;
-    bool placedInChest = false;        // 1B (was unused, repurposed)
-    Time uExpireTime;        // uint64_t uExpireTime; //1C
+    // TODO(captainurist): introduce ATTRIBUTE_NULL?
+    std::optional<CharacterAttribute> attributeEnchantment; // Attribute enchantment, if any.
+    int32_t attributeEnchantmentStrength = 0; // Attribute enchantment strength - bonus value for the attribute.
+
+    ItemEnchantment specialEnchantment = ITEM_ENCHANTMENT_NULL; // Special named enchantment, if any.
+    int32_t uNumCharges = 0; // Number of wand charges, wand disappears when this gets down to 0.
+    ItemFlags uAttributes = 0; // Item flags.
+    ItemSlot uBodyAnchor = ITEM_SLOT_INVALID; // For equipped items - where is it equipped.
+    uint8_t uMaxCharges = 0; // Max charges in a wand. This is used when recharging.
+    int8_t uHolderPlayer = -1; // Only for full lich jars. 0-based index of the character whose earthly remains are stored in it.
+                               // Or whatever it is that's in the lich jar.
+    bool placedInChest = false; // OE addition, whether the item was placed in the chest inventory area. Some chests
+                                // are generated with more items than chest space, and this flag is used to track it.
+    Time uExpireTime; // Enchantment expiration time, if this item is temporarily enchanted. Note that both special
+                      // and attribute enchantments can be temporary, but in MM7 we only have special temporary
+                      // enchantments.
 };
 
 struct ItemDesc {  // 30h
@@ -134,7 +138,7 @@ struct ItemDesc {  // 30h
     uint32_t uValue = 0; // Item's base value in gold coins.
     SpriteId uSpriteID = SPRITE_NULL; // Sprite id that's used when item is dropped.
     int16_t field_1A = 0;
-    int16_t uEquipX = 0; // Paperdoll offset for the item sprite when equipped.
+    int16_t uEquipX = 0; // Paperdoll offset for the item sprite when equipped, relative to the item type-specific anchor point.
     int16_t uEquipY = 0;
     ItemType uEquipType = ITEM_TYPE_NONE; // Item type.
     CharacterSkillType uSkillType = CHARACTER_SKILL_MISC; // Skill associated with the item. E.g. CHARACTER_SKILL_SWORD.

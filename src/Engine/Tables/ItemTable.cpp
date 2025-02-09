@@ -265,24 +265,24 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
 
 //----- (00456D17) --------------------------------------------------------
 void ItemTable::SetSpecialBonus(ItemGen *pItem) {
-    if (pItems[pItem->uItemID].uMaterial == RARITY_SPECIAL) {
-        pItem->attributeEnchantment = pItems[pItem->uItemID]._bonus_type;
-        pItem->special_enchantment =
-                pItems[pItem->uItemID]._additional_value;
-        pItem->m_enchantmentStrength = pItems[pItem->uItemID]._bonus_strength;
+    if (pItems[pItem->itemId].uMaterial == RARITY_SPECIAL) {
+        pItem->attributeEnchantment = pItems[pItem->itemId]._bonus_type;
+        pItem->specialEnchantment =
+                pItems[pItem->itemId]._additional_value;
+        pItem->attributeEnchantmentStrength = pItems[pItem->itemId]._bonus_strength;
     }
 }
 
 //----- (00456D43) --------------------------------------------------------
 bool ItemTable::IsMaterialSpecial(const ItemGen *pItem) {
-    return this->pItems[pItem->uItemID].uMaterial == RARITY_SPECIAL;
+    return this->pItems[pItem->itemId].uMaterial == RARITY_SPECIAL;
 }
 
 //----- (00456D5E) --------------------------------------------------------
 bool ItemTable::IsMaterialNonCommon(const ItemGen *pItem) {
-    return pItems[pItem->uItemID].uMaterial == RARITY_SPECIAL ||
-           pItems[pItem->uItemID].uMaterial == RARITY_RELIC ||
-           pItems[pItem->uItemID].uMaterial == RARITY_ARTIFACT;
+    return pItems[pItem->itemId].uMaterial == RARITY_SPECIAL ||
+           pItems[pItem->itemId].uMaterial == RARITY_RELIC ||
+           pItems[pItem->itemId].uMaterial == RARITY_ARTIFACT;
 }
 
 //----- (00453B3C) --------------------------------------------------------
@@ -499,9 +499,9 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
 
             assert(foundWeight != cumulativeWeights.end());
 
-            outItem->uItemID = possibleItems[std::distance(cumulativeWeights.begin(), foundWeight)];
+            outItem->itemId = possibleItems[std::distance(cumulativeWeights.begin(), foundWeight)];
         } else {
-            outItem->uItemID = ITEM_CRUDE_LONGSWORD;
+            outItem->itemId = ITEM_CRUDE_LONGSWORD;
         }
     } else {
         // Trying to generate artifact
@@ -514,7 +514,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
             if ((grng->random(100) < 5) && !pParty->pIsArtifactFound[artifactRandomId] && !artifactLimitReached) {
                 pParty->pIsArtifactFound[artifactRandomId] = true;
                 outItem->uAttributes = 0;
-                outItem->uItemID = artifactRandomId;
+                outItem->itemId = artifactRandomId;
                 SetSpecialBonus(outItem);
                 return;
             }
@@ -525,24 +525,24 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
         for (ItemId itemId : allSpawnableItems()) {
             weightSum += pItems[itemId].uChanceByTreasureLvl[treasureLevel];
             if (weightSum >= randomWeight) {
-                outItem->uItemID = itemId;
+                outItem->itemId = itemId;
                 break;
             }
         }
     }
-    if (outItem->isPotion() && outItem->uItemID != ITEM_POTION_BOTTLE) {  // if it potion set potion spec
+    if (outItem->isPotion() && outItem->itemId != ITEM_POTION_BOTTLE) {  // if it potion set potion spec
         outItem->potionPower = grng->randomDice(2, 4) * std::to_underlying(treasureLevel);
     }
 
-    if (outItem->uItemID == ITEM_SPELLBOOK_DIVINE_INTERVENTION && !pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
-        outItem->uItemID = ITEM_SPELLBOOK_SUNRAY;
-    if (pItemTable->pItems[outItem->uItemID].uItemID_Rep_St)
+    if (outItem->itemId == ITEM_SPELLBOOK_DIVINE_INTERVENTION && !pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
+        outItem->itemId = ITEM_SPELLBOOK_SUNRAY;
+    if (pItemTable->pItems[outItem->itemId].uItemID_Rep_St)
         outItem->uAttributes = 0;
     else
         outItem->uAttributes = ITEM_IDENTIFIED;
 
     if (!outItem->isPotion()) {
-        outItem->special_enchantment = ITEM_ENCHANTMENT_NULL;
+        outItem->specialEnchantment = ITEM_ENCHANTMENT_NULL;
         outItem->attributeEnchantment = {};
     }
     // try get special enchantment
@@ -577,16 +577,16 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
                 }
                 assert(outItem->attributeEnchantment);
 
-                outItem->m_enchantmentStrength = bonusRanges[treasureLevel].minR + grng->random(bonusRanges[treasureLevel].maxR - bonusRanges[treasureLevel].minR + 1);
+                outItem->attributeEnchantmentStrength = bonusRanges[treasureLevel].minR + grng->random(bonusRanges[treasureLevel].maxR - bonusRanges[treasureLevel].minR + 1);
                 CharacterAttribute standardEnchantmentAttributeSkill = *outItem->attributeEnchantment;
                 if (standardEnchantmentAttributeSkill == ATTRIBUTE_SKILL_ARMSMASTER ||
                     standardEnchantmentAttributeSkill == ATTRIBUTE_SKILL_DODGE ||
                     standardEnchantmentAttributeSkill == ATTRIBUTE_SKILL_UNARMED) {
-                    outItem->m_enchantmentStrength /= 2;
+                    outItem->attributeEnchantmentStrength /= 2;
                 }
                 // if enchantment generated, it needs to actually have an effect
-                if (outItem->m_enchantmentStrength <= 0) {
-                    outItem->m_enchantmentStrength = 1;
+                if (outItem->attributeEnchantmentStrength <= 0) {
+                    outItem->attributeEnchantmentStrength = 1;
                 }
                 return;
             } else if (bonusChanceRoll >= uBonusChanceStandart[treasureLevel] + uBonusChanceSpecial[treasureLevel]) {
@@ -628,5 +628,5 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
     int pickedWeight = grng->random(weightSum) + 1;
     auto foundWeight = std::lower_bound(cumulativeWeights.begin(), cumulativeWeights.end(), pickedWeight);
     assert(foundWeight != cumulativeWeights.end());
-    outItem->special_enchantment = possibleEnchantments[std::distance(cumulativeWeights.begin(), foundWeight)];
+    outItem->specialEnchantment = possibleEnchantments[std::distance(cumulativeWeights.begin(), foundWeight)];
 }

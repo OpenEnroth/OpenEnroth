@@ -449,7 +449,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             item.Reset();
             pItemTable->generateItem(ir.data.give_item_descr.treasure_level, ir.data.give_item_descr.treasure_type, &item);
             if (ir.data.give_item_descr.item_id != ITEM_NULL) {
-                item.uItemID = ir.data.give_item_descr.item_id;
+                item.itemId = ir.data.give_item_descr.item_id;
             }
             pParty->setHoldingItem(&item);
             break;
