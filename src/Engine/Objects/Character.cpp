@@ -410,14 +410,14 @@ void Character::ItemsPotionDmgBreak(int enchant_count) {
                 int indexbreak =
                     item_index_tabl[grng->random(avalible_items)];  // random item
 
-                if (!(pInventoryItemList[indexbreak].uAttributes &
+                if (!(pInventoryItemList[indexbreak].flags &
                       ITEM_HARDENED))  // if its not hardened
-                    pInventoryItemList[indexbreak].uAttributes |=
+                    pInventoryItemList[indexbreak].flags |=
                         ITEM_BROKEN;  // break it
             }
         } else {
             for (int i = 0; i < avalible_items; ++i) {  // break everything
-                pInventoryItemList[item_index_tabl[i]].uAttributes |=
+                pInventoryItemList[item_index_tabl[i]].flags |=
                     ITEM_BROKEN;
             }
         }
@@ -676,7 +676,7 @@ void Character::WearItem(ItemId uItemID) {
         pInventoryItemList[item_indx].itemId = uItemID;
         ItemSlot item_body_anch = pEquipTypeToBodyAnchor[pItemTable->pItems[uItemID].uEquipType];
         pEquipment[item_body_anch] = item_indx + 1;
-        pInventoryItemList[item_indx].uBodyAnchor = item_body_anch;
+        pInventoryItemList[item_indx].equippedSlot = item_body_anch;
     }
 }
 
@@ -1252,7 +1252,7 @@ std::string Character::GetMeleeDamageString() {
 
     ItemGen *mainHandItem = GetMainHandItem();
 
-    if (mainHandItem != nullptr && isWand(mainHandItem->itemId) && mainHandItem->uNumCharges > 0) {
+    if (mainHandItem != nullptr && isWand(mainHandItem->itemId) && mainHandItem->numCharges > 0) {
         return std::string(localization->GetString(LSTR_WAND));
     } else if (mainHandItem != nullptr && isAncientWeapon(mainHandItem->itemId)) {
         min_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MIN);  // blasters
@@ -1276,7 +1276,7 @@ std::string Character::GetRangedDamageString() {
 
     ItemGen *mainHandItem = GetMainHandItem();
 
-    if (mainHandItem != nullptr && isWand(mainHandItem->itemId) && mainHandItem->uNumCharges > 0) {
+    if (mainHandItem != nullptr && isWand(mainHandItem->itemId) && mainHandItem->numCharges > 0) {
         return std::string(localization->GetString(LSTR_WAND));
     } else if (mainHandItem != nullptr && isAncientWeapon(mainHandItem->itemId)) {
         min_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MIN, true);  // blasters
@@ -1407,7 +1407,7 @@ bool Character::IsUnarmed() const {
 bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
     unsigned i = pEquipment[uEquipIndex];
     if (i)
-        return !pInventoryItemList[i - 1].IsBroken() && (!pInventoryItemList[i - 1].isWand() || pInventoryItemList[i - 1].uNumCharges > 0);
+        return !pInventoryItemList[i - 1].IsBroken() && (!pInventoryItemList[i - 1].isWand() || pInventoryItemList[i - 1].numCharges > 0);
     else
         return false;
 }
@@ -1543,8 +1543,8 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
                     actroPtr->carriedItemId = ITEM_NULL;
                     tempItem.itemId = carriedItemId;
                     if (pItemTable->pItems[carriedItemId].uEquipType == ITEM_TYPE_WAND) {
-                        tempItem.uNumCharges = grng->random(6) + pItemTable->pItems[carriedItemId].uDamageMod + 1;
-                        tempItem.uMaxCharges = tempItem.uNumCharges;
+                        tempItem.numCharges = grng->random(6) + pItemTable->pItems[carriedItemId].uDamageMod + 1;
+                        tempItem.maxCharges = tempItem.numCharges;
                     } else if (pItemTable->pItems[carriedItemId].uEquipType == ITEM_TYPE_POTION && carriedItemId != ITEM_POTION_BOTTLE) {
                         tempItem.potionPower = 2 * grng->random(4) + 2;
                     }
@@ -1607,7 +1607,7 @@ int Character::receiveDamage(signed int amount, DamageType dmg_type) {
         if (health <= -10) {  // break armor if health has dropped below -10
             ItemGen *equippedArmor = GetArmorItem();
             if (equippedArmor != nullptr) {  // check there is some armor
-                if (!(equippedArmor->uAttributes &
+                if (!(equippedArmor->flags &
                       ITEM_HARDENED)) {          // if its not hardened
                     equippedArmor->SetBroken();  // break it
                 }
@@ -1901,7 +1901,7 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
             case SPECIAL_ATTACK_BREAK_ANY:
             case SPECIAL_ATTACK_BREAK_ARMOR:
             case SPECIAL_ATTACK_BREAK_WEAPON:
-                if (!(itemtobreak->uAttributes & ITEM_HARDENED)) {
+                if (!(itemtobreak->flags & ITEM_HARDENED)) {
                     playReaction(SPEECH_ITEM_BROKEN);
                     itemtobreak->SetBroken();
                     pAudioPlayer->playUISound(SOUND_metal_vs_metal03h);
@@ -4376,7 +4376,7 @@ void Character::SetVariable(EvtVariable var_type, signed int var_value) {
                 for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
                     if (this->pInventoryItemList[i].itemId == ITEM_QUEST_LICH_JAR_EMPTY) {
                         this->pInventoryItemList[i].itemId = ITEM_QUEST_LICH_JAR_FULL;
-                        this->pInventoryItemList[i].uHolderPlayer = getCharacterIndex();
+                        this->pInventoryItemList[i].lichJarCharacterIndex = getCharacterIndex();
                     }
                 }
                 if (this->sResFireBase < 20) this->sResFireBase = 20;
@@ -4453,7 +4453,7 @@ void Character::SetVariable(EvtVariable var_type, signed int var_value) {
         case VAR_PlayerItemInHands:
             item.Reset();
             item.itemId = ItemId(var_value);
-            item.uAttributes = ITEM_IDENTIFIED;
+            item.flags = ITEM_IDENTIFIED;
             pParty->setHoldingItem(&item);
             if (isSpawnableArtifact(ItemId(var_value)))
                 pParty->pIsArtifactFound[ItemId(var_value)] = true;
@@ -5062,13 +5062,13 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
             return;
         case VAR_PlayerItemInHands:
             item.Reset();
-            item.uAttributes = ITEM_IDENTIFIED;
+            item.flags = ITEM_IDENTIFIED;
             item.itemId = ItemId(val);
             if (isSpawnableArtifact(ItemId(val))) {
                 pParty->pIsArtifactFound[ItemId(val)] = true;
             } else if (isWand(ItemId(val))) {
-                item.uNumCharges = grng->random(6) + item.GetDamageMod() + 1;
-                item.uMaxCharges = item.uNumCharges;
+                item.numCharges = grng->random(6) + item.GetDamageMod() + 1;
+                item.maxCharges = item.numCharges;
             }
             pParty->setHoldingItem(&item);
             return;
@@ -6100,16 +6100,16 @@ void Character::EquipBody(ItemType uEquipType) {
     itemInvLocation = pParty->activeCharacter().pEquipment[itemAnchor];
     if (itemInvLocation) {  //переодеться в другую вещь
         tempPickedItem = pParty->pPickedItem;
-        pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1].uBodyAnchor = ITEM_SLOT_INVALID;
+        pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1].equippedSlot = ITEM_SLOT_INVALID;
         pParty->pPickedItem.Reset();
         pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1]);
-        tempPickedItem.uBodyAnchor = itemAnchor;
+        tempPickedItem.equippedSlot = itemAnchor;
         pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1] = tempPickedItem;
         pParty->activeCharacter().pEquipment[itemAnchor] = itemInvLocation;
     } else {  // одеть вещь
         freeSlot = pParty->activeCharacter().findFreeInventoryListSlot();
         if (freeSlot >= 0) {
-            pParty->pPickedItem.uBodyAnchor = itemAnchor;
+            pParty->pPickedItem.equippedSlot = itemAnchor;
             pParty->activeCharacter().pInventoryItemList[freeSlot] = pParty->pPickedItem;
             pParty->activeCharacter().pEquipment[itemAnchor] = freeSlot + 1;
             mouse->RemoveHoldingItem();
@@ -6829,7 +6829,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         const ItemGen *item = &character->pInventoryItemList[main_hand_idx - 1];
         if (!item->IsBroken()) {
             if (item->isWand()) {
-                if (item->uNumCharges <= 0) {
+                if (item->numCharges <= 0) {
                     if (engine->config->gameplay.DestroyDischargedWands.value())
                         character->pEquipment[ITEM_SLOT_MAIN_HAND] = 0;  // wand discharged - unequip
                 } else {
@@ -6881,7 +6881,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
                                 pParty->activeCharacterIndex() - 1, WANDS_SKILL_VALUE, 0, pParty->activeCharacterIndex() + 8);
 
         // reduce wand charges
-        if (!--character->pInventoryItemList[main_hand_idx - 1].uNumCharges && engine->config->gameplay.DestroyDischargedWands.value())
+        if (!--character->pInventoryItemList[main_hand_idx - 1].numCharges && engine->config->gameplay.DestroyDischargedWands.value())
             character->pEquipment[ITEM_SLOT_MAIN_HAND] = 0;
     } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
         melee_attack = true;

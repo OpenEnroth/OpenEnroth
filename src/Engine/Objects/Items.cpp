@@ -144,11 +144,11 @@ void ItemGen::Reset() {
 
 //----- (00458260) --------------------------------------------------------
 void ItemGen::UpdateTempBonus(Time time) {
-    if (this->uAttributes & ITEM_TEMP_BONUS) {
-        if (time > this->uExpireTime) {
+    if (this->flags & ITEM_TEMP_BONUS) {
+        if (time > this->enchantmentExpirationTime) {
             this->attributeEnchantment = {};
             this->specialEnchantment = ITEM_ENCHANTMENT_NULL;
-            this->uAttributes &= ~ITEM_TEMP_BONUS;
+            this->flags &= ~ITEM_TEMP_BONUS;
         }
     }
 }
@@ -156,7 +156,7 @@ void ItemGen::UpdateTempBonus(Time time) {
 //----- (00456442) --------------------------------------------------------
 int ItemGen::GetValue() const {
     int uBaseValue = pItemTable->pItems[this->itemId].uValue;
-    if (uAttributes & ITEM_TEMP_BONUS || pItemTable->IsMaterialNonCommon(this))
+    if (flags & ITEM_TEMP_BONUS || pItemTable->IsMaterialNonCommon(this))
         return uBaseValue;
     if (potionPower || attributeEnchantment) // TODO(captainurist): can drop potionPower?
         return uBaseValue + 100 * attributeEnchantmentStrength;
@@ -190,8 +190,8 @@ std::string ItemGen::GetIdentifiedName() {
     }
 
     if (itemId == ITEM_QUEST_LICH_JAR_FULL) {  // Lich Jar
-        if (uHolderPlayer >= 0 && uHolderPlayer < pParty->pCharacters.size()) {
-            const std::string &player_name = pParty->pCharacters[uHolderPlayer].name;
+        if (lichJarCharacterIndex >= 0 && lichJarCharacterIndex < pParty->pCharacters.size()) {
+            const std::string &player_name = pParty->pCharacters[lichJarCharacterIndex].name;
             if (player_name.back() == 's')
                 return localization->FormatString(LSTR_FMT_JAR_2, player_name);
             else

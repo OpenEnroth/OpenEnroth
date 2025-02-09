@@ -1426,7 +1426,7 @@ void RegeneratePartyHealthMana() {
         if (character.classType == CLASS_LICH) {
             bool lich_has_jar = false;
             for (const ItemGen &item : character.pInventoryItemList)
-                if (item.itemId == ITEM_QUEST_LICH_JAR_FULL && item.uHolderPlayer == character.getCharacterIndex())
+                if (item.itemId == ITEM_QUEST_LICH_JAR_FULL && item.lichJarCharacterIndex == character.getCharacterIndex())
                     lich_has_jar = true;
 
             if (lich_has_jar) {

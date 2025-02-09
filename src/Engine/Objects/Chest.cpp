@@ -340,10 +340,10 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, int uChestID) {  // only used for setup?
     ItemId uItemID = vChests[uChestID].igChestItems[item_at_cell].itemId;
     pItemTable->SetSpecialBonus(&vChests[uChestID].igChestItems[item_at_cell]);
-    if (isWand(uItemID) && !vChests[uChestID].igChestItems[item_at_cell].uNumCharges) {
+    if (isWand(uItemID) && !vChests[uChestID].igChestItems[item_at_cell].numCharges) {
         int v6 = grng->random(21) + 10;
-        vChests[uChestID].igChestItems[item_at_cell].uNumCharges = v6;
-        vChests[uChestID].igChestItems[item_at_cell].uMaxCharges = v6;
+        vChests[uChestID].igChestItems[item_at_cell].numCharges = v6;
+        vChests[uChestID].igChestItems[item_at_cell].maxCharges = v6;
     }
 
     auto img = assets->getImage_Alpha(pItemTable->pItems[uItemID].iconName);

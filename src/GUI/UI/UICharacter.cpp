@@ -1857,7 +1857,7 @@ void OnPaperdollLeftClick() {
                         if (!pParty->activeCharacter().pEquipment[equippos]) {
                             freeslot = pParty->activeCharacter().findFreeInventoryListSlot();
                             if (freeslot >= 0) {  // drop ring into free space
-                                pParty->pPickedItem.uBodyAnchor = equippos;
+                                pParty->pPickedItem.equippedSlot = equippos;
                                 pParty->activeCharacter().pInventoryItemList[freeslot] = pParty->pPickedItem;
                                 pParty->activeCharacter().pEquipment[equippos] = freeslot + 1;
                                 mouse->RemoveHoldingItem();
@@ -1869,10 +1869,10 @@ void OnPaperdollLeftClick() {
                     // cant fit rings so swap out
                     freeslot = pParty->activeCharacter().pEquipment[ringSlot(5)] - 1;  // slot of last ring
                     _this = pParty->pPickedItem;  // copy hold item to this
-                    pParty->activeCharacter().pInventoryItemList[freeslot].uBodyAnchor = ITEM_SLOT_INVALID;
+                    pParty->activeCharacter().pInventoryItemList[freeslot].equippedSlot = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();  // drop holding item
                     pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[freeslot]); // set holding item to ring to swap out
-                    _this.uBodyAnchor = ITEM_SLOT_RING6;
+                    _this.equippedSlot = ITEM_SLOT_RING6;
                     pParty->activeCharacter().pInventoryItemList[freeslot] = _this;  // swap from this in
                     pParty->activeCharacter().pEquipment[ringSlot(5)] = freeslot + 1;  // anchor
                     return;
@@ -1892,7 +1892,7 @@ void OnPaperdollLeftClick() {
                         if (!pitem) {  // no item in slot so just drop
                             freeslot = pParty->activeCharacter().findFreeInventoryListSlot();
                             if (freeslot >= 0) {  // drop ring into free space
-                                pParty->pPickedItem.uBodyAnchor = pos;
+                                pParty->pPickedItem.equippedSlot = pos;
                                 pParty->activeCharacter().pInventoryItemList[freeslot] = pParty->pPickedItem;
                                 pParty->activeCharacter().pEquipment[pos] = freeslot + 1;
                                 mouse->RemoveHoldingItem();
@@ -1901,10 +1901,10 @@ void OnPaperdollLeftClick() {
                         } else {  // item so swap out
                             freeslot = pParty->activeCharacter().pEquipment[pos] - 1; // slot of ring selected
                             _this = pParty->pPickedItem;  // copy hold item to this
-                            pParty->activeCharacter().pInventoryItemList[freeslot].uBodyAnchor = ITEM_SLOT_INVALID;
+                            pParty->activeCharacter().pInventoryItemList[freeslot].equippedSlot = ITEM_SLOT_INVALID;
                             pParty->pPickedItem.Reset();  // drop holding item
                             pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[freeslot]); // set holding item to ring to swap out
-                            _this.uBodyAnchor = pos;
+                            _this.equippedSlot = pos;
                             pParty->activeCharacter().pInventoryItemList[freeslot] = _this;  // swap from this in
                             pParty->activeCharacter().pEquipment[pos] = freeslot + 1;  // anchor
                             return;
@@ -1929,10 +1929,10 @@ void OnPaperdollLeftClick() {
                 if (shieldequip) {  // смена щита щитом
                     --shieldequip;
                     _this = pParty->pPickedItem;
-                    pParty->activeCharacter().pInventoryItemList[shieldequip].uBodyAnchor = ITEM_SLOT_INVALID;
+                    pParty->activeCharacter().pInventoryItemList[shieldequip].equippedSlot = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();
                     pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[shieldequip]);
-                    _this.uBodyAnchor = ITEM_SLOT_OFF_HAND;
+                    _this.equippedSlot = ITEM_SLOT_OFF_HAND;
                     pParty->activeCharacter().pInventoryItemList[shieldequip] = _this;
                     pParty->activeCharacter().pEquipment[ITEM_SLOT_OFF_HAND] = shieldequip + 1;
                     if (twohandedequip == 0) {
@@ -1943,7 +1943,7 @@ void OnPaperdollLeftClick() {
                     if (freeslot < 0) return;
                     if (!twohandedequip) {  // обычная установка щита на пустую
                                             // руку
-                        pParty->pPickedItem.uBodyAnchor = ITEM_SLOT_OFF_HAND;
+                        pParty->pPickedItem.equippedSlot = ITEM_SLOT_OFF_HAND;
                         v17 = freeslot + 1;
                         pParty->activeCharacter().pInventoryItemList[freeslot] = pParty->pPickedItem;
                         pParty->activeCharacter().pEquipment[ITEM_SLOT_OFF_HAND] = v17;
@@ -1952,10 +1952,10 @@ void OnPaperdollLeftClick() {
                     }
                     mainhandequip--;  //ставим щит когда держит двуручный меч
                     _this = pParty->pPickedItem;
-                    pParty->activeCharacter().pInventoryItemList[mainhandequip].uBodyAnchor = ITEM_SLOT_INVALID;
+                    pParty->activeCharacter().pInventoryItemList[mainhandequip].equippedSlot = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();
                     pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[mainhandequip]);
-                    _this.uBodyAnchor = ITEM_SLOT_OFF_HAND;
+                    _this.equippedSlot = ITEM_SLOT_OFF_HAND;
                     pParty->activeCharacter().pInventoryItemList[freeslot] = _this;
                     pParty->activeCharacter().pEquipment[ITEM_SLOT_OFF_HAND] = freeslot + 1;
                 }
@@ -1981,10 +1981,10 @@ void OnPaperdollLeftClick() {
                             if (shieldequip) {
                                 --shieldequip;
                                 _this = pParty->pPickedItem;
-                                pParty->activeCharacter().pInventoryItemList[shieldequip].uBodyAnchor = ITEM_SLOT_INVALID;
+                                pParty->activeCharacter().pInventoryItemList[shieldequip].equippedSlot = ITEM_SLOT_INVALID;
                                 pParty->pPickedItem.Reset();
                                 pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[shieldequip]);
-                                _this.uBodyAnchor = ITEM_SLOT_OFF_HAND;
+                                _this.equippedSlot = ITEM_SLOT_OFF_HAND;
                                 pParty->activeCharacter().pInventoryItemList[shieldequip] = _this;
                                 pParty->activeCharacter().pEquipment[ITEM_SLOT_OFF_HAND] = shieldequip + 1;
                                 if (pEquipType != ITEM_TYPE_WAND) {
@@ -1995,7 +1995,7 @@ void OnPaperdollLeftClick() {
                             }
                             v23 = pParty->activeCharacter().findFreeInventoryListSlot();
                             if (v23 < 0) return;
-                            pParty->pPickedItem.uBodyAnchor = ITEM_SLOT_OFF_HAND;
+                            pParty->pPickedItem.equippedSlot = ITEM_SLOT_OFF_HAND;
                             pParty->activeCharacter().pInventoryItemList[v23] = pParty->pPickedItem;
                             pParty->activeCharacter().pEquipment[ITEM_SLOT_OFF_HAND] = v23 + 1;
                             mouse->RemoveHoldingItem();
@@ -2008,7 +2008,7 @@ void OnPaperdollLeftClick() {
                 if (!mainhandequip) {
                     v26 = pParty->activeCharacter().findFreeInventoryListSlot();
                     if (v26 < 0) return;
-                    pParty->pPickedItem.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
+                    pParty->pPickedItem.equippedSlot = ITEM_SLOT_MAIN_HAND;
                     pParty->activeCharacter().pInventoryItemList[v26] = pParty->pPickedItem;
                     pParty->activeCharacter().pEquipment[ITEM_SLOT_MAIN_HAND] = v26 + 1;
                     mouse->RemoveHoldingItem();
@@ -2017,10 +2017,10 @@ void OnPaperdollLeftClick() {
                 }
                 --mainhandequip;
                 _this = pParty->pPickedItem;
-                pParty->activeCharacter().pInventoryItemList[mainhandequip].uBodyAnchor = ITEM_SLOT_INVALID;
+                pParty->activeCharacter().pInventoryItemList[mainhandequip].equippedSlot = ITEM_SLOT_INVALID;
                 pParty->pPickedItem.Reset();
                 pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[mainhandequip]);
-                _this.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
+                _this.equippedSlot = ITEM_SLOT_MAIN_HAND;
                 pParty->activeCharacter().pInventoryItemList[mainhandequip] = _this;
                 pParty->activeCharacter().pEquipment[ITEM_SLOT_MAIN_HAND] = mainhandequip + 1;
                 if (pEquipType == ITEM_TYPE_WAND) v50 = _this.itemId;
@@ -2047,10 +2047,10 @@ void OnPaperdollLeftClick() {
                     }
                     --mainhandequip;
                     _this = pParty->pPickedItem;
-                    pParty->activeCharacter().pInventoryItemList[mainhandequip].uBodyAnchor = ITEM_SLOT_INVALID;
+                    pParty->activeCharacter().pInventoryItemList[mainhandequip].equippedSlot = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();
                     pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[mainhandequip]);
-                    _this.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
+                    _this.equippedSlot = ITEM_SLOT_MAIN_HAND;
                     pParty->activeCharacter().pInventoryItemList[mainhandequip] = _this;
                     pParty->activeCharacter().pEquipment[ITEM_SLOT_MAIN_HAND] = mainhandequip + 1;
                 } else {
@@ -2060,15 +2060,15 @@ void OnPaperdollLeftClick() {
                                             // щит(замещение щитом)
                             shieldequip--;
                             _this = pParty->pPickedItem;
-                            pParty->activeCharacter().pInventoryItemList[shieldequip].uBodyAnchor = ITEM_SLOT_INVALID;
+                            pParty->activeCharacter().pInventoryItemList[shieldequip].equippedSlot = ITEM_SLOT_INVALID;
                             pParty->pPickedItem.Reset();
                             pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[shieldequip]);
-                            _this.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
+                            _this.equippedSlot = ITEM_SLOT_MAIN_HAND;
                             pParty->activeCharacter().pInventoryItemList[freeslot] = _this;
                             pParty->activeCharacter().pEquipment[ITEM_SLOT_OFF_HAND] = 0;
                             pParty->activeCharacter().pEquipment[ITEM_SLOT_MAIN_HAND] = freeslot + 1;
                         } else {
-                            pParty->pPickedItem.uBodyAnchor = ITEM_SLOT_MAIN_HAND;
+                            pParty->pPickedItem.equippedSlot = ITEM_SLOT_MAIN_HAND;
                             pParty->activeCharacter().pInventoryItemList[freeslot] = pParty->pPickedItem;
                             pParty->activeCharacter().pEquipment[ITEM_SLOT_MAIN_HAND] = freeslot + 1;
                             mouse->RemoveHoldingItem();
@@ -2146,7 +2146,7 @@ void OnPaperdollLeftClick() {
         } else {
             if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
                 pParty->setHoldingItem(pitem);
-                pParty->activeCharacter().pEquipment[pitem->uBodyAnchor] = 0;
+                pParty->activeCharacter().pEquipment[pitem->equippedSlot] = 0;
                 pitem->Reset();
 
                 // pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[v34
@@ -2220,7 +2220,7 @@ void OnPaperdollLeftClick() {
             } else {
                 if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
                     pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[v34 - 1]);
-                    pParty->activeCharacter().pEquipment[pParty->activeCharacter().pInventoryItemList[v34 - 1].uBodyAnchor] = 0;
+                    pParty->activeCharacter().pEquipment[pParty->activeCharacter().pInventoryItemList[v34 - 1].equippedSlot] = 0;
                     pParty->activeCharacter().pInventoryItemList[v34 - 1].Reset();
                 }
             }

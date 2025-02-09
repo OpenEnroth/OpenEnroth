@@ -513,7 +513,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
             bool artifactLimitReached = (engine->config->gameplay.ArtifactLimit.value() != 0 && artifactsFound >= engine->config->gameplay.ArtifactLimit.value());
             if ((grng->random(100) < 5) && !pParty->pIsArtifactFound[artifactRandomId] && !artifactLimitReached) {
                 pParty->pIsArtifactFound[artifactRandomId] = true;
-                outItem->uAttributes = 0;
+                outItem->flags = 0;
                 outItem->itemId = artifactRandomId;
                 SetSpecialBonus(outItem);
                 return;
@@ -537,9 +537,9 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
     if (outItem->itemId == ITEM_SPELLBOOK_DIVINE_INTERVENTION && !pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
         outItem->itemId = ITEM_SPELLBOOK_SUNRAY;
     if (pItemTable->pItems[outItem->itemId].uItemID_Rep_St)
-        outItem->uAttributes = 0;
+        outItem->flags = 0;
     else
-        outItem->uAttributes = ITEM_IDENTIFIED;
+        outItem->flags = ITEM_IDENTIFIED;
 
     if (!outItem->isPotion()) {
         outItem->specialEnchantment = ITEM_ENCHANTMENT_NULL;
@@ -595,8 +595,8 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
         }
             break;
         case ITEM_TYPE_WAND:
-            outItem->uNumCharges = grng->random(6) + outItem->GetDamageMod() + 1;
-            outItem->uMaxCharges = outItem->uNumCharges;
+            outItem->numCharges = grng->random(6) + outItem->GetDamageMod() + 1;
+            outItem->maxCharges = outItem->numCharges;
             return;
         default:
             return;

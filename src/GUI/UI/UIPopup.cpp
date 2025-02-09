@@ -360,7 +360,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
         inspect_item->UpdateTempBonus(pParty->GetPlayingTime());
         if (inspect_item->IsBroken()) {
             if (pParty->activeCharacter().CanRepair(inspect_item) == 1)
-                inspect_item->uAttributes = inspect_item->uAttributes & ~ITEM_BROKEN | ITEM_IDENTIFIED;
+                inspect_item->flags = inspect_item->flags & ~ITEM_BROKEN | ITEM_IDENTIFIED;
             CharacterSpeech speech = SPEECH_REPAIR_FAIL;
             if (!inspect_item->IsBroken())
                 speech = SPEECH_REPAIR_SUCCESS;
@@ -503,8 +503,8 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
         } else if (inspect_item->isWand()) {
             text[2] = fmt::sprintf(localization->GetString(LSTR_FMT_S_U_OUT_OF_U),
                                    localization->GetString(LSTR_CHARGES),
-                                   inspect_item->uNumCharges,
-                                   inspect_item->uMaxCharges);
+                                   inspect_item->numCharges,
+                                   inspect_item->maxCharges);
         }
     }
     iteminfo_window.uFrameWidth -= 12;
@@ -521,7 +521,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
     iteminfo_window.uFrameHeight = inspect_item_image->height() + itemYspacing + 54;
     if ((signed int)Str_int > (signed int)iteminfo_window.uFrameHeight)
         iteminfo_window.uFrameHeight = (unsigned int)Str_int;
-    if (inspect_item->uAttributes & ITEM_TEMP_BONUS &&
+    if (inspect_item->flags & ITEM_TEMP_BONUS &&
         (inspect_item->specialEnchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment))
         iteminfo_window.uFrameHeight += assets->pFontComic->GetHeight();
     v85 = 0;
@@ -579,9 +579,9 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
         iteminfo_window.DrawText(assets->pFontComic.get(), {100, iteminfo_window.uFrameHeight - assets->pFontComic->GetHeight()}, colorTable.White, txt);
         render->ResetUIClipRect();
     } else {
-        if ((inspect_item->uAttributes & ITEM_TEMP_BONUS) &&
+        if ((inspect_item->flags & ITEM_TEMP_BONUS) &&
             (inspect_item->specialEnchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment)) {
-            LongCivilDuration d = (inspect_item->uExpireTime - pParty->GetPlayingTime()).toLongCivilDuration();
+            LongCivilDuration d = (inspect_item->enchantmentExpirationTime - pParty->GetPlayingTime()).toLongCivilDuration();
 
             std::string txt4 = "Duration:";
             bool formatting = false;
@@ -619,10 +619,10 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
         iteminfo_window.DrawText(assets->pFontComic.get(), {100, iteminfo_window.uFrameHeight - assets->pFontComic->GetHeight()}, colorTable.White, txt2);
 
         std::string txt3;
-        if (inspect_item->uAttributes & ITEM_STOLEN) {
+        if (inspect_item->flags & ITEM_STOLEN) {
             txt3 = localization->GetString(LSTR_STOLEN);
         } else {
-            if (!(inspect_item->uAttributes & ITEM_HARDENED)) {
+            if (!(inspect_item->flags & ITEM_HARDENED)) {
                 render->ResetUIClipRect();
                 return;
             }
@@ -2271,19 +2271,19 @@ void Inventory_ItemPopupAndAlchemy() {
                 }
             }
             if (!(pItemTable->pItems[item->itemId].uItemID_Rep_St)) {
-                item->uAttributes |= ITEM_IDENTIFIED;
+                item->flags |= ITEM_IDENTIFIED;
             }
             pParty->activeCharacter().playReaction(SPEECH_POTION_SUCCESS);
             mouse->RemoveHoldingItem();
             rightClickItemActionPerformed = true;
             int bottleId = pParty->activeCharacter().AddItem(-1, ITEM_POTION_BOTTLE);
             if (bottleId) {
-                pParty->activeCharacter().pInventoryItemList[bottleId - 1].uAttributes = ITEM_IDENTIFIED;
+                pParty->activeCharacter().pInventoryItemList[bottleId - 1].flags = ITEM_IDENTIFIED;
             } else {
                 // Can't fit bottle in inventory - place it in hand
                 ItemGen bottle;
                 bottle.itemId = ITEM_POTION_BOTTLE;
-                bottle.uAttributes = ITEM_IDENTIFIED;
+                bottle.flags = ITEM_IDENTIFIED;
                 pParty->setHoldingItem(&bottle);
             }
             return;
@@ -2298,16 +2298,16 @@ void Inventory_ItemPopupAndAlchemy() {
             }
 
             float invMaxChargesDecrease = (100 - maxChargesDecreasePercent) * 0.01;
-            int newCharges = item->uMaxCharges * invMaxChargesDecrease;
+            int newCharges = item->maxCharges * invMaxChargesDecrease;
 
             // Disallow if wand will lose charges
-            if (newCharges <= item->uNumCharges) {
+            if (newCharges <= item->numCharges) {
                 engine->_statusBar->setEvent(LSTR_WAND_ALREADY_CHARGED);
                 pAudioPlayer->playUISound(SOUND_spellfail0201);
             } else {
-                item->uMaxCharges = item->uNumCharges = newCharges;
+                item->maxCharges = item->numCharges = newCharges;
                 // Effect and sound was not present previously
-                item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
+                item->flags |= ITEM_AURA_EFFECT_GREEN;
                 ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                 pAudioPlayer->playSpellSound(SPELL_WATER_RECHARGE_ITEM, false, SOUND_MODE_UI);
             }
@@ -2328,7 +2328,7 @@ void Inventory_ItemPopupAndAlchemy() {
             return;
         }
         if (item->isWeapon() || item->isPassiveEquipment() || item->isWand()) {
-            item->uAttributes |= ITEM_AURA_EFFECT_RED | ITEM_HARDENED;
+            item->flags |= ITEM_AURA_EFFECT_RED | ITEM_HARDENED;
 
             // Sound was missing previously
             pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, false, SOUND_MODE_UI);
@@ -2360,9 +2360,9 @@ void Inventory_ItemPopupAndAlchemy() {
             Duration effectTime = Duration::fromMinutes(30 * pParty->pPickedItem.potionPower);
             item->UpdateTempBonus(pParty->GetPlayingTime());
             item->specialEnchantment = potionEnchantment(pParty->pPickedItem.itemId);
-            item->uExpireTime = pParty->GetPlayingTime() + effectTime;
+            item->enchantmentExpirationTime = pParty->GetPlayingTime() + effectTime;
             // Sound was missing previously
-            item->uAttributes |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
+            item->flags |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
             pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, false, SOUND_MODE_UI);
 
             ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);

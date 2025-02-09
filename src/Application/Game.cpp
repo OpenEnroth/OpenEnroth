@@ -539,7 +539,7 @@ void Game::processQueuedMessages() {
                                     }
                                     if (ptr_50C9A4_ItemToEnchant &&
                                         ptr_50C9A4_ItemToEnchant->itemId != ITEM_NULL) {
-                                        ptr_50C9A4_ItemToEnchant->uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK;
+                                        ptr_50C9A4_ItemToEnchant->flags &= ~ITEM_ENCHANT_ANIMATION_MASK;
                                         ItemEnchantmentTimer = 0_ticks;
                                         ptr_50C9A4_ItemToEnchant = nullptr;
                                     }

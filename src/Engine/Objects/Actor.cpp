@@ -3579,8 +3579,8 @@ void Actor::LootActor() {
         StatusBarItemFound(foundGold, pItemTable->pItems[Dst.itemId].pUnidentifiedName);
 
         if (Dst.isWand()) {
-            Dst.uNumCharges = grng->random(6) + Dst.GetDamageMod() + 1;
-            Dst.uMaxCharges = Dst.uNumCharges;
+            Dst.numCharges = grng->random(6) + Dst.GetDamageMod() + 1;
+            Dst.maxCharges = Dst.numCharges;
         }
         if (Dst.isPotion() && Dst.itemId != ITEM_POTION_BOTTLE) {
             Dst.potionPower = 2 * grng->random(4) + 2;

@@ -24,31 +24,31 @@ struct ItemGen {  // 0x24
     void GetItemBonusArtifact(const Character *owner, CharacterAttribute attrToGet, int *bonusSum) const;
     void GetItemBonusSpecialEnchantment(const Character *owner, CharacterAttribute attrToGet, int *additiveBonus, int *halfSkillBonus) const;
 
-    inline void ResetEnchantAnimation() { uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK; }
+    inline void ResetEnchantAnimation() { flags &= ~ITEM_ENCHANT_ANIMATION_MASK; }
     inline bool ItemEnchanted() const {
-        return uAttributes & ITEM_ENCHANT_ANIMATION_MASK;
+        return flags & ITEM_ENCHANT_ANIMATION_MASK;
     }
     inline bool AuraEffectRed() const {
-        return (uAttributes & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_RED;
+        return (flags & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_RED;
     }
     inline bool AuraEffectBlue() const {
-        return (uAttributes & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_BLUE;
+        return (flags & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_BLUE;
     }
     inline bool AuraEffectGreen() const {
-        return (uAttributes & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_GREEN;
+        return (flags & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_GREEN;
     }
     inline bool AuraEffectPurple() const {
-        return (uAttributes & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_PURPLE;
+        return (flags & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_PURPLE;
     }
 
     bool IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet);
 
-    inline bool IsBroken() const { return uAttributes & ITEM_BROKEN; }
-    inline void SetBroken() { uAttributes |= ITEM_BROKEN; }
-    inline bool IsIdentified() const { return uAttributes & ITEM_IDENTIFIED; }
-    inline void SetIdentified() { uAttributes |= ITEM_IDENTIFIED; }
-    inline bool IsStolen() const { return uAttributes & ITEM_STOLEN; }
-    inline void SetStolen() { uAttributes |= ITEM_STOLEN; }
+    inline bool IsBroken() const { return flags & ITEM_BROKEN; }
+    inline void SetBroken() { flags |= ITEM_BROKEN; }
+    inline bool IsIdentified() const { return flags & ITEM_IDENTIFIED; }
+    inline void SetIdentified() { flags |= ITEM_IDENTIFIED; }
+    inline bool IsStolen() const { return flags & ITEM_STOLEN; }
+    inline void SetStolen() { flags |= ITEM_STOLEN; }
 
     bool GenerateArtifact();
     void generateGold(ItemTreasureLevel treasureLevel);
@@ -111,20 +111,19 @@ struct ItemGen {  // 0x24
 
     // TODO(captainurist): introduce ATTRIBUTE_NULL?
     std::optional<CharacterAttribute> attributeEnchantment; // Attribute enchantment, if any.
-    int32_t attributeEnchantmentStrength = 0; // Attribute enchantment strength - bonus value for the attribute.
-
+    int attributeEnchantmentStrength = 0; // Attribute enchantment strength - bonus value for the attribute.
     ItemEnchantment specialEnchantment = ITEM_ENCHANTMENT_NULL; // Special named enchantment, if any.
-    int32_t uNumCharges = 0; // Number of wand charges, wand disappears when this gets down to 0.
-    ItemFlags uAttributes = 0; // Item flags.
-    ItemSlot uBodyAnchor = ITEM_SLOT_INVALID; // For equipped items - where is it equipped.
-    uint8_t uMaxCharges = 0; // Max charges in a wand. This is used when recharging.
-    int8_t uHolderPlayer = -1; // Only for full lich jars. 0-based index of the character whose earthly remains are stored in it.
-                               // Or whatever it is that's in the lich jar.
+    int numCharges = 0; // Number of wand charges, wand disappears when this gets down to 0.
+    int maxCharges = 0; // Max charges in a wand. This is used when recharging.
+    ItemFlags flags = 0; // Item flags.
+    ItemSlot equippedSlot = ITEM_SLOT_INVALID; // For equipped items - where is it equipped.
+    int lichJarCharacterIndex = -1; // Only for full lich jars. 0-based index of the character whose earthly remains are stored in it.
+                                    // Or whatever it is that's in the lich jar.
     bool placedInChest = false; // OE addition, whether the item was placed in the chest inventory area. Some chests
                                 // are generated with more items than chest space, and this flag is used to track it.
-    Time uExpireTime; // Enchantment expiration time, if this item is temporarily enchanted. Note that both special
-                      // and attribute enchantments can be temporary, but in MM7 we only have special temporary
-                      // enchantments.
+    Time enchantmentExpirationTime; // Enchantment expiration time, if this item is temporarily enchanted. Note that
+                                    // both special and attribute enchantments can be temporary, but in MM7 we only have
+                                    // special temporary enchantments.
 };
 
 struct ItemDesc {  // 30h

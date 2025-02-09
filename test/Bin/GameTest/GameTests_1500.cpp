@@ -277,11 +277,11 @@ GAME_TEST(Issues, Issue1685) {
 
     ItemGen jar1;
     jar1.itemId = ItemId::ITEM_QUEST_LICH_JAR_FULL;
-    jar1.uHolderPlayer = 0;
+    jar1.lichJarCharacterIndex = 0;
 
     ItemGen jar2;
     jar2.itemId = ItemId::ITEM_QUEST_LICH_JAR_FULL;
-    jar2.uHolderPlayer = 1;
+    jar2.lichJarCharacterIndex = 1;
 
     game.runGameRoutine([&] {
         // This code needs to be run in game thread b/c AddItem2 is loading textures...

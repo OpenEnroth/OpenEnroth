@@ -363,7 +363,7 @@ void GUIWindow_Shop::repairDialogue() {
         if (pItemID == 0)
             return;
 
-        if (pParty->activeCharacter().pInventoryItemList[pItemID - 1].uAttributes & ITEM_BROKEN) {
+        if (pParty->activeCharacter().pInventoryItemList[pItemID - 1].flags & ITEM_BROKEN) {
             ItemGen *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
             MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_REPAIR);
             std::string str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_REPAIR);
@@ -941,12 +941,12 @@ void GUIWindow_Shop::houseScreenClick() {
             int uPriceItemService = PriceCalculator::itemIdentificationPriceForPlayer(&pParty->activeCharacter(), fPriceMultiplier);
             ItemGen &item = pParty->activeCharacter().pInventoryItemList[pItemID - 1];
 
-            if (!(item.uAttributes & ITEM_IDENTIFIED)) {
+            if (!(item.flags & ITEM_IDENTIFIED)) {
                 if (item.canSellRepairIdentifyAt(houseId())) {
                     if (pParty->GetGold() >= uPriceItemService) {
                         _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);
-                        item.uAttributes |= ITEM_IDENTIFIED;
+                        item.flags |= ITEM_IDENTIFIED;
                         pParty->activeCharacter().playReaction(SPEECH_SHOP_IDENTIFY);
                         engine->_statusBar->setEvent(LSTR_DONE);
                         return;
@@ -981,12 +981,12 @@ void GUIWindow_Shop::houseScreenClick() {
             float fPriceMultiplier = houseTable[houseId()].fPriceMultiplier;
             int uPriceItemService = PriceCalculator::itemRepairPriceForPlayer(&pParty->activeCharacter(), item.GetValue(), fPriceMultiplier);
 
-            if (item.uAttributes & ITEM_BROKEN) {
+            if (item.flags & ITEM_BROKEN) {
                 if (item.canSellRepairIdentifyAt(houseId())) {
                     if (pParty->GetGold() >= uPriceItemService) {
                         _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);
-                        item.uAttributes = (item.uAttributes & ~ITEM_BROKEN) | ITEM_IDENTIFIED;
+                        item.flags = (item.flags & ~ITEM_BROKEN) | ITEM_IDENTIFIED;
                         pParty->activeCharacter().playReaction(SPEECH_SHOP_REPAIR);
                         engine->_statusBar->setEvent(LSTR_GOOD_AS_NEW);
                         return;

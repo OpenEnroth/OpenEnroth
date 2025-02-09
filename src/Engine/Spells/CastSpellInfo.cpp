@@ -720,19 +720,19 @@ void CastSpellInfoHelpers::castSpell() {
                                     assert(false);
                             }
 
-                            item->uAttributes |= ITEM_AURA_EFFECT_RED;
+                            item->flags |= ITEM_AURA_EFFECT_RED;
                             break;
                         case SPELL_DARK_VAMPIRIC_WEAPON:
                             item->specialEnchantment = ITEM_ENCHANTMENT_VAMPIRIC;
-                            item->uAttributes |= ITEM_AURA_EFFECT_PURPLE;
+                            item->flags |= ITEM_AURA_EFFECT_PURPLE;
                             break;
                         default:
                             assert(false);
                     }
 
                     if (spell_mastery < CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                        item->uExpireTime = pParty->GetPlayingTime() + Duration::fromHours(spell_level);
-                        item->uAttributes |= ITEM_TEMP_BONUS;
+                        item->enchantmentExpirationTime = pParty->GetPlayingTime() + Duration::fromHours(spell_level);
+                        item->flags |= ITEM_TEMP_BONUS;
                     }
 
                     ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
@@ -1366,15 +1366,15 @@ void CastSpellInfoHelpers::castSpell() {
                         spell_recharge_factor = 1.0;
                     }
 
-                    int uNewCharges = item->uMaxCharges * spell_recharge_factor;
+                    int uNewCharges = item->maxCharges * spell_recharge_factor;
 
                     // Disallow if wand will lose charges
                     bool chargeFailed = false;
-                    if (uNewCharges <= item->uNumCharges) {
+                    if (uNewCharges <= item->numCharges) {
                         chargeFailed = true;
                     } else {
-                        item->uMaxCharges = uNewCharges;
-                        item->uNumCharges = uNewCharges;
+                        item->maxCharges = uNewCharges;
+                        item->numCharges = uNewCharges;
                     }
 
                     if (uNewCharges <= 0 || chargeFailed) {
@@ -1387,7 +1387,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
 
-                    item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
+                    item->flags |= ITEM_AURA_EFFECT_GREEN;
                     ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                     break;
                 }
@@ -1421,14 +1421,14 @@ void CastSpellInfoHelpers::castSpell() {
                         // break items with low value
                         if ((spell_item_to_enchant->GetValue() < 450 && !isWeapon(this_equip_type)) ||  // not weapons
                                 (spell_item_to_enchant->GetValue() < 250 && isWeapon(this_equip_type))) {  // weapons
-                            if (!(spell_item_to_enchant->uAttributes & ITEM_HARDENED)) {
+                            if (!(spell_item_to_enchant->flags & ITEM_HARDENED)) {
                                 spell_item_to_enchant->SetBroken();
                             }
                             item_not_broken = false;
                         } else {
                             // random item break
                             if (rnd >= success_chance_percent) {
-                                if (!(spell_item_to_enchant->uAttributes & ITEM_HARDENED)) {
+                                if (!(spell_item_to_enchant->flags & ITEM_HARDENED)) {
                                     spell_item_to_enchant->SetBroken();
                                 }
                             } else {
@@ -1477,7 +1477,7 @@ void CastSpellInfoHelpers::castSpell() {
                                     if (spell_mastery== CHARACTER_SKILL_MASTERY_GRANDMASTER) ench_power = grng->random(7) + 6;
 
                                     spell_item_to_enchant->attributeEnchantmentStrength = ench_power;
-                                    spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
+                                    spell_item_to_enchant->flags |= ITEM_AURA_EFFECT_BLUE;
                                     ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                                     spell_failed = false;
                                 } else { // weapons or we won the lottery for special enchantment
@@ -1522,7 +1522,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     // set item ench
                                     spell_item_to_enchant->specialEnchantment = ench_array[step];
-                                    spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
+                                    spell_item_to_enchant->flags |= ITEM_AURA_EFFECT_BLUE;
                                     ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                                     spell_failed = false;
                                 }

@@ -23,7 +23,7 @@
 
 static bool characterHasJar(int charIndex, int jarIndex) {
     for (const ItemGen &item : pParty->pCharacters[charIndex].pInventoryItemList)
-        if (item.itemId == ITEM_QUEST_LICH_JAR_FULL && item.uHolderPlayer == jarIndex)
+        if (item.itemId == ITEM_QUEST_LICH_JAR_FULL && item.lichJarCharacterIndex == jarIndex)
             return true;
     return false;
 }

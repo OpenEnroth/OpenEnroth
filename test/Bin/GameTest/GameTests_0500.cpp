@@ -152,7 +152,7 @@ GAME_TEST(Issues, Issue571) {
 
 GAME_TEST(Issues, Issue573) {
     // Make Recharge Item effect non-decreasing
-    auto chargeTape = tapes.custom([] {  return pParty->pCharacters[1].pInventoryItemList[33].uNumCharges; });
+    auto chargeTape = tapes.custom([] {  return pParty->pCharacters[1].pInventoryItemList[33].numCharges; });
     auto manaTape = tapes.custom([] { return pParty->pCharacters[0].mana; });
     auto itemsTape = tapes.totalItemCount();
     test.playTraceFromTestData("issue_573.mm7", "issue_573.json");
@@ -167,7 +167,7 @@ GAME_TEST(Issues, Issue574) {
     auto itemsTape = tapes.totalItemCount();
     test.playTraceFromTestData("issue_574.mm7", "issue_574.json");
     EXPECT_EQ(itemsTape.delta(), -1); // Minus potion.
-    EXPECT_EQ(pParty->pPickedItem.uMaxCharges, pParty->pPickedItem.uNumCharges);
+    EXPECT_EQ(pParty->pPickedItem.maxCharges, pParty->pPickedItem.numCharges);
 }
 
 GAME_TEST(Issues, Issue578) {
@@ -528,7 +528,7 @@ GAME_TEST(Issues, Issue720) {
 
 GAME_TEST(Issues, Issue724) {
     // Test that item potion can be applied to equipped items.
-    auto hardenedTape = tapes.custom([] { return !!(pParty->pCharacters[3].GetItem(ITEM_SLOT_MAIN_HAND)->uAttributes & ITEM_HARDENED); });
+    auto hardenedTape = tapes.custom([] { return !!(pParty->pCharacters[3].GetItem(ITEM_SLOT_MAIN_HAND)->flags & ITEM_HARDENED); });
     test.playTraceFromTestData("issue_724.mm7", "issue_724.json");
     EXPECT_EQ(hardenedTape, tape(false, true));
 }

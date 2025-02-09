@@ -157,7 +157,7 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
                     if (key == "id") {
                         item.itemId = pair.second.as<ItemId>();
                     } else if (key == "holder") {
-                        item.uHolderPlayer = pair.second.as<int>() - 1; // character index in lua is 1-based
+                        item.lichJarCharacterIndex = pair.second.as<int>() - 1; // character index in lua is 1-based
                     }
                 }
                 return character->AddItem2(-1, &item) != 0;

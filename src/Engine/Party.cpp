@@ -815,7 +815,7 @@ void Party::restAndHeal() {
         if (pPlayer->classType == CLASS_LICH) {
             have_vessels_soul = false;
             for (unsigned i = 0; i < Character::INVENTORY_SLOT_COUNT; i++) {
-                if (pPlayer->pInventoryItemList[i].itemId == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID)
+                if (pPlayer->pInventoryItemList[i].itemId == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].lichJarCharacterIndex == pPlayerID)
                     have_vessels_soul = true;
             }
             if (!have_vessels_soul) {
