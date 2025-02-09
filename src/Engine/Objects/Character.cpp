@@ -755,15 +755,13 @@ void Character::PutItemArInventoryIndex(
     int slot_width = GetSizeInInventorySlots(img->width());
     int slot_height = GetSizeInInventorySlots(img->height());
 
+    // TODO(_): try to come up with a better
+    // solution. negative values are used when
+    // drawing the inventory - nothing is drawn
     if (slot_width > 0) {
-        int *pInvPos = &pInventoryMatrix[index];
-        for (int i = 0; i < slot_height; i++) {
-            memset32(pInvPos, -1 - index,
-                     slot_width);  // TODO(_): try to come up with a better
-                                   // solution. negative values are used when
-                                   // drawing the inventory - nothing is drawn
-            pInvPos += INVENTORY_SLOTS_WIDTH;
-        }
+        for (int i = 0; i < slot_height; i++)
+            for (int j = 0; j < slot_width; j++)
+                pInventoryMatrix[index + i * INVENTORY_SLOTS_WIDTH + j] = -1 - index;
     }
 
     pInventoryMatrix[index] = itemListPos + 1;
@@ -785,11 +783,9 @@ void Character::RemoveItemAtInventoryIndex(unsigned int index) {
     }
 
     if (slot_width > 0) {
-        int *pInvPos = &pInventoryMatrix[index];
-        for (int i = 0; i < slot_height; i++) {
-            memset32(pInvPos, 0, slot_width);
-            pInvPos += INVENTORY_SLOTS_WIDTH;
-        }
+        for (int i = 0; i < slot_height; i++)
+            for (int j = 0; j < slot_width; j++)
+                pInventoryMatrix[index + i * INVENTORY_SLOTS_WIDTH + j] = 0;
     }
 }
 
