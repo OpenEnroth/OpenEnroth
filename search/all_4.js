@@ -658,7 +658,7 @@ var searchData=
   ['drawlines_655',['DrawLines',['../classRenderer.html#a732e32e8a58a5895d144dead13b510fb',1,'Renderer::DrawLines()'],['../classOpenGLRenderer.html#a7cb0c3f5df7c18d15a2acd29a58d4b76',1,'OpenGLRenderer::DrawLines()'],['../classNullRenderer.html#ac324f1c338370a628e37fb8883f84078',1,'NullRenderer::DrawLines()']]],
   ['drawmasked_656',['DrawMasked',['../classBaseRenderer.html#aab2e56e43fdc0857fc257970670afa30',1,'BaseRenderer::DrawMasked()'],['../classRenderer.html#a63cd70e894d26c2b62f493520e14439e',1,'Renderer::DrawMasked()']]],
   ['drawmessagebox_657',['DrawMessageBox',['../classGUIWindow.html#ac0c28c954e40c6f2c7feb7022ece8052',1,'GUIWindow']]],
-  ['drawmonsterportrait_658',['DrawMonsterPortrait',['../classBaseRenderer.html#a6653c42563a70fe1833b17e0ca7a9931',1,'BaseRenderer::DrawMonsterPortrait()'],['../classRenderer.html#a2d0854d69b3ca8f00eb4c6de5db353e2',1,'Renderer::DrawMonsterPortrait()']]],
+  ['drawmonsterportrait_658',['DrawMonsterPortrait',['../classBaseRenderer.html#aaf93256a6a715eb1498e30ff48035532',1,'BaseRenderer::DrawMonsterPortrait()'],['../classRenderer.html#a4da9c0c67fb869deaaac15af314f89f4',1,'Renderer::DrawMonsterPortrait()']]],
   ['drawn_5fcard_5fanim_5fcnt_659',['drawn_card_anim_cnt',['../Arcomage_8cpp.html#a283d3e6e9b279818367755fe5ead782f',1,'Arcomage.cpp']]],
   ['drawn_5fcard_5fanim_5fstart_660',['drawn_card_anim_start',['../Arcomage_8cpp.html#a9021afd63e7ec946d1e563094c3dec8d',1,'Arcomage.cpp']]],
   ['drawn_5fcard_5fslot_5findex_661',['drawn_card_slot_index',['../Arcomage_8cpp.html#ad07421949931e14e5307ad6227354760',1,'Arcomage.cpp']]],
