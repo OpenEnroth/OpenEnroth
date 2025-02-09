@@ -349,18 +349,20 @@ bool LevelDecoration::IsObeliskChestActive() {
 //----- (0044C2F4) --------------------------------------------------------
 bool LevelDecoration::IsInteractive() {
     switch (uDecorationDescID) {
-        case DECORATION_TRASH_HEAP_4:    // trash pile
-        case DECORATION_CAMPFIRE_5:    // campfire
-        case DECORATION_CAULDRON_6:    // cauldron
-        case DECORATION_FRUIT_BOWL_11:   // fruit plate
-        case DECORATION_TRASH_HEAP_13:   // trash pile
-        case DECORATION_DIRT_14:   // dirt
-        case DECORATION_CASK_24:   // keg
-        case DECORATION_BARREL_34:   // barrel
-        case DECORATION_FIRE_184:  // fire
-        case DECORATION_MUSHROOM_187:  // mushroom
-        case DECORATION_MUSHROOM_190:  // mushroom
-            return true;
+    case DECORATION_TRASH_HEAP_4:    // trash pile
+    case DECORATION_CAMPFIRE_5:    // campfire
+    case DECORATION_CAULDRON_6:    // cauldron
+    case DECORATION_FRUIT_BOWL_11:   // fruit plate
+    case DECORATION_TRASH_HEAP_13:   // trash pile
+    case DECORATION_DIRT_14:   // dirt
+    case DECORATION_CASK_24:   // keg
+    case DECORATION_BARREL_34:   // barrel
+    case DECORATION_FIRE_184:  // fire
+    case DECORATION_MUSHROOM_187:  // mushroom
+    case DECORATION_MUSHROOM_190:  // mushroom
+        return true;
+    default:
+        break;
     }
 
     if (uDecorationDescID >= DECORATION_BEACON_FIRE_206 &&

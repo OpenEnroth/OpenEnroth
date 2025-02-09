@@ -84,6 +84,8 @@ struct ImGuiInputTextUserData {
         case ImGuiKey_DownArrow:
             step = 1;
             break;
+        default:
+            break;
         }
 
         *string = callback->call(data->EventFlag, step);

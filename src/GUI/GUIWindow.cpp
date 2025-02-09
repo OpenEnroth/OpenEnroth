@@ -915,8 +915,13 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 break;
 
             case 25:  // base prices
-                v29 = PriceCalculator::baseItemBuyingPrice(item->GetValue(), houseTable[houseId].fPriceMultiplier);
                 switch (shop_screen) {
+                case SHOP_SCREEN_INVALID:
+                    assert(false);
+                    [[fallthrough]];
+                case SHOP_SCREEN_BUY:
+                    v29 = PriceCalculator::baseItemBuyingPrice(item->GetValue(), houseTable[houseId].fPriceMultiplier);
+                    break;
                 case SHOP_SCREEN_SELL:
                     v29 = PriceCalculator::baseItemSellingPrice(item->GetValue(), houseTable[houseId].fPriceMultiplier);
                     break;

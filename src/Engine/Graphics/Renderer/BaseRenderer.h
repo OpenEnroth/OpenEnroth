@@ -35,7 +35,7 @@ class BaseRenderer : public Renderer {
     virtual void DrawTransparentGreenShade(float u, float v, GraphicsImage *pTexture) override;
     virtual void ClearBlack() override;
     virtual void BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) override;
-    virtual void DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait_Sprite, int Y_Offset) override;
+    virtual void DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait_Sprite, int Y_Offset) override;
     virtual void DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) override;
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;
     virtual void PresentBlackScreen() override;

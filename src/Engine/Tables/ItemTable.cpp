@@ -268,7 +268,7 @@ void ItemTable::SetSpecialBonus(ItemGen *pItem) {
     if (pItems[pItem->uItemID].uMaterial == RARITY_SPECIAL) {
         pItem->attributeEnchantment = pItems[pItem->uItemID]._bonus_type;
         pItem->special_enchantment =
-                (ItemEnchantment)pItems[pItem->uItemID]._additional_value;
+                pItems[pItem->uItemID]._additional_value;
         pItem->m_enchantmentStrength = pItems[pItem->uItemID]._bonus_strength;
     }
 }

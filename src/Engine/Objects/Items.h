@@ -127,21 +127,21 @@ struct ItemDesc {  // 30h
     // Item # |Pic File|Name|Value|Equip Stat|Skill Group|Mod1|Mod2|material|
     /// ID/Rep/St|Not identified name|Sprite Index|VarA|VarB|Equip X|Equip
     /// Y|Notes
-    std::string iconName = "";              // 0 4
-    std::string name = "";                  // 4 8
-    std::string pUnidentifiedName = "";      // 8 c
-    std::string pDescription = "";           // 0c 10
-    uint32_t uValue = 0;          // 10 14
-    SpriteId uSpriteID = SPRITE_NULL;   // 14 18
-    int16_t field_1A = 0;             // 16
-    int16_t uEquipX = 0;       // 18  1c
-    int16_t uEquipY = 0;       // 1a  1e
-    ItemType uEquipType = ITEM_TYPE_NONE;   // 1c 20
-    CharacterSkillType uSkillType = CHARACTER_SKILL_MISC;   // 1d 21
-    uint8_t uDamageDice = 0;  // 1e 22
-    uint8_t uDamageRoll = 0;  // 1f 23
-    uint8_t uDamageMod = 0;   // 20 24
-    ItemRarity uMaterial = RARITY_COMMON;    // 21 25
+    std::string iconName = ""; // Item's icon as shown in character inventory, stored in icons.lod.
+    std::string name = ""; // Item's base name, w/o any enchantments.
+    std::string pUnidentifiedName = ""; // Unidentified name.
+    std::string pDescription = ""; // Item description that's shown on right click.
+    uint32_t uValue = 0; // Item's base value in gold coins.
+    SpriteId uSpriteID = SPRITE_NULL; // Sprite id that's used when item is dropped.
+    int16_t field_1A = 0;
+    int16_t uEquipX = 0; // Paperdoll offset for the item sprite when equipped.
+    int16_t uEquipY = 0;
+    ItemType uEquipType = ITEM_TYPE_NONE; // Item type.
+    CharacterSkillType uSkillType = CHARACTER_SKILL_MISC; // Skill associated with the item. E.g. CHARACTER_SKILL_SWORD.
+    uint8_t uDamageDice = 0; // Damage dice.
+    uint8_t uDamageRoll = 0;
+    uint8_t uDamageMod = 0;
+    ItemRarity uMaterial = RARITY_COMMON; // Item rarity.
     ItemEnchantment _additional_value = ITEM_ENCHANTMENT_NULL;       // 22 26
     std::optional<CharacterAttribute> _bonus_type;
     char _bonus_strength = 0;         // 24 28
