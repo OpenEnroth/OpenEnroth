@@ -4,7 +4,7 @@
 #include <string>
 
 #include "Engine/Data/HouseEnums.h"
-#include "Engine/Events/EventEnums.h"
+#include "Engine/Evt/EvtEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/ChestEnums.h"
@@ -16,15 +16,15 @@
 
 #include "Utility/SequentialBlobReader.h"
 
-class EventIR {
+class EvtInstruction {
  public:
     std::string toString() const;
-    static EventIR parse(SequentialBlobReader &sbr, const size_t size);
+    static EvtInstruction parse(SequentialBlobReader &sbr, const size_t size);
 
-    EventType type;
+    EvtOpcode opcode;
     int step;
     int target_step;
-    CharacterChoosePolicy who;
+    EvtTargetCharacter who;
     std::string str;
     union {
         HouseId house_id;
@@ -50,7 +50,7 @@ class EventIR {
             bool is_give;
         } npc_item_descr;
         struct {
-            VariableType type;
+            EvtVariable type;
             int value;
         } variable_descr;
         struct {

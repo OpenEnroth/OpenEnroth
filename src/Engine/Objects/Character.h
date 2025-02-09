@@ -15,7 +15,7 @@
 #include "Engine/Objects/MonsterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Spells/SpellBuff.h"
-#include "Engine/Events/EventEnums.h"
+#include "Engine/Evt/EvtEnums.h"
 #include "Engine/Pid.h"
 
 #include "GUI/GUIEnums.h"
@@ -119,10 +119,10 @@ class Character {
 
     bool matchesAttackPreference(MonsterAttackPreference preference) const;
 
-    void SetVariable(VariableType var, signed int a3);
-    void AddVariable(VariableType var, signed int val);
-    void SubtractVariable(VariableType VarNum, signed int pValue);
-    bool CompareVariable(VariableType VarNum, signed int pValue);
+    void SetVariable(EvtVariable var, signed int a3);
+    void AddVariable(EvtVariable var, signed int val);
+    void SubtractVariable(EvtVariable VarNum, signed int pValue);
+    bool CompareVariable(EvtVariable VarNum, signed int pValue);
 
     /**
      * Use item on character.

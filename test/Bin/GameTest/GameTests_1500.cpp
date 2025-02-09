@@ -18,7 +18,7 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Outdoor.h"
-#include "Engine/Events/EventInterpreter.h"
+#include "Engine/Evt/EvtInterpreter.h"
 
 // 1500
 

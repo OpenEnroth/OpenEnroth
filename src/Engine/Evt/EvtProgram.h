@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include "Engine/Events/EventIR.h"
+#include "Engine/Evt/EvtInstruction.h"
 
 class Blob;
 
@@ -13,11 +13,11 @@ struct EventTrigger {
     int eventStep;
 };
 
-class EventMap {
+class EvtProgram {
  public:
-    static EventMap load(const Blob &rawData);
+    static EvtProgram load(const Blob &rawData);
 
-    void add(int eventId, EventIR ir);
+    void add(int eventId, EvtInstruction ir);
     void clear();
 
     bool hasEvent(int eventId) const {
@@ -27,23 +27,23 @@ class EventMap {
     /**
      * @param eventId                   Event id.
      * @param step                      Step in the script to get event for.
-     * @return                          Reference to an event for the given `eventId` and `step`.
-     * @throws Exception                If the event doesn't exist for the provided `eventId` and `step`.
+     * @return                          Reference to an instruction for the given `eventId` and `step`.
+     * @throws Exception                If the instruction doesn't exist for the provided `eventId` and `step`.
      */
-    const EventIR &event(int eventId, int step) const;
+    const EvtInstruction &instruction(int eventId, int step) const;
 
     /**
      * @param eventId                   Event id.
      * @return                          Reference to a list of events for the provided `eventId`.
      * @throws Exception                If there are no events for the provided `eventId`.
      */
-    const std::vector<EventIR>& events(int eventId) const;
+    const std::vector<EvtInstruction>& function(int eventId) const;
 
     /**
      * @param triggerType               Event type to look for.
      * @return                          List of all event positions that have the given event type.
      */
-    std::vector<EventTrigger> enumerateTriggers(EventType triggerType);
+    std::vector<EventTrigger> enumerateTriggers(EvtOpcode triggerType);
 
     /**
      *
@@ -63,5 +63,5 @@ class EventMap {
     void dump(int eventId) const;
 
  private:
-    std::unordered_map<int, std::vector<EventIR>> _eventsById;
+    std::unordered_map<int, std::vector<EvtInstruction>> _eventsById;
 };

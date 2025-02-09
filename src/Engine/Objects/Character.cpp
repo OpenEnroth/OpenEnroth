@@ -37,7 +37,7 @@
 #include "Engine/Tables/QuestTable.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Conditions.h"
-#include "Engine/Events/EventEnumFunctions.h"
+#include "Engine/Evt/EvtEnumFunctions.h"
 
 #include "Io/Mouse.h"
 
@@ -3930,7 +3930,7 @@ bool CmpSkillValue(int valToCompare, CombinedSkillValue skillValue) {
 }
 
 //----- (00449BB4) --------------------------------------------------------
-bool Character::CompareVariable(VariableType VarNum, int pValue) {
+bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
     // in some cases this calls only calls v4 >= pValue, which i've
     // changed to return false, since these values are supposed to
     // be positive and v4 was -1 by default
@@ -4333,7 +4333,7 @@ bool Character::CompareVariable(VariableType VarNum, int pValue) {
 }
 
 //----- (0044A5CB) --------------------------------------------------------
-void Character::SetVariable(VariableType var_type, signed int var_value) {
+void Character::SetVariable(EvtVariable var_type, signed int var_value) {
     int gold{}, food{};
     LocationInfo *ddm;
     ItemGen item;
@@ -4944,7 +4944,7 @@ void Character::SetSkillReaction() {
 }
 
 //----- (0044AFFB) --------------------------------------------------------
-void Character::AddVariable(VariableType var_type, signed int val) {
+void Character::AddVariable(EvtVariable var_type, signed int val) {
     int food{};
     LocationInfo *ddm;
     ItemGen item;
@@ -5524,7 +5524,7 @@ void Character::AddSkillByEvent(CharacterSkillType skill, uint16_t addSkillValue
 }
 
 //----- (0044B9C4) --------------------------------------------------------
-void Character::SubtractVariable(VariableType VarNum, signed int pValue) {
+void Character::SubtractVariable(EvtVariable VarNum, signed int pValue) {
     LocationInfo *locationHeader;  // eax@90
     int randGold;
     int randFood;

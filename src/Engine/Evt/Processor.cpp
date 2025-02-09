@@ -11,9 +11,9 @@
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Events/EventMap.h"
-#include "Engine/Events/EventIR.h"
-#include "Engine/Events/EventInterpreter.h"
+#include "Engine/Evt/EvtProgram.h"
+#include "Engine/Evt/EvtInstruction.h"
+#include "Engine/Evt/EvtInterpreter.h"
 #include "Engine/Party.h"
 
 #include "GUI/UI/UIStatusBar.h"
@@ -84,7 +84,7 @@ void checkDecorationEvents() {
     }
 }
 
-static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *triggers) {
+static void registerTimerTriggers(EvtOpcode triggerType, std::vector<MapTimer> *triggers) {
     std::vector<EventTrigger> timerTriggers = engine->_localEventMap.enumerateTriggers(triggerType);
 
     // TODO(Nik-RE-dev): using time of last visit will help timers only slightly because each map leaving resets it.
@@ -94,7 +94,7 @@ static void registerTimerTriggers(EventType triggerType, std::vector<MapTimer> *
     triggers->clear();
     for (EventTrigger &trigger : timerTriggers) {
         MapTimer timer;
-        EventIR ir = engine->_localEventMap.event(trigger.eventId, trigger.eventStep);
+        EvtInstruction ir = engine->_localEventMap.instruction(trigger.eventId, trigger.eventStep);
 
         if (ir.data.timer_descr.alt_halfmin_interval) {
             // Alternative interval is defined in terms of half-minutes
@@ -153,7 +153,7 @@ void eventProcessor(int eventId, Pid targetObj, bool canShowMessages, int startS
 
     dword_5B65C4_cancelEventProcessing = 0; // TODO: rename and contain in this module or better remove it altogether
 
-    EventInterpreter interpreter;
+    EvtInterpreter interpreter;
     logger->trace("Executing regular event starting from step {}", startStep);
     if (activeLevelDecoration) {
         engine->_globalEventMap.dump(eventId);
@@ -179,7 +179,7 @@ bool npcDialogueEventProcessor(int eventId, int startStep) {
         return false;
     }
 
-    EventInterpreter interpreter;
+    EvtInterpreter interpreter;
 
     logger->trace("Executing NPC dialogue event starting from step {}", startStep);
     LevelDecoration *oldDecoration = activeLevelDecoration;

@@ -20,7 +20,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Party.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Random/Random.h"
 
 #include "GUI/GUIWindow.h"

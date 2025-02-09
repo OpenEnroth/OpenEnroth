@@ -4,7 +4,9 @@
 
 #include "Library/Serialization/SerializationFwd.h"
 
-enum class EventType : uint8_t {
+// TODO(captainurist): rename the enum values properly
+
+enum class EvtOpcode : uint8_t {
     EVENT_Invalid = 0,
     EVENT_Exit = 1,
     EVENT_SpeakInHouse = 2,
@@ -74,10 +76,10 @@ enum class EventType : uint8_t {
     EVENT_IsTotalBountyHuntingAwardInRange = 67,
     EVENT_IsNPCInParty = 68,
 };
-using enum EventType;
-MM_DECLARE_SERIALIZATION_FUNCTIONS(EventType)
+using enum EvtOpcode;
+MM_DECLARE_SERIALIZATION_FUNCTIONS(EvtOpcode)
 
-enum class VariableType {
+enum class EvtVariable {
     VAR_Sex = 0x1,
     VAR_Class = 0x2,
     VAR_CurrentHP = 0x3,
@@ -245,7 +247,7 @@ enum class VariableType {
     VAR_Invisible = 0x13A,
     VAR_ItemEquipped = 0x13B,
 };
-using enum VariableType;
+using enum EvtVariable;
 
 enum class Season {
     SEASON_SPRING = 0,
@@ -256,7 +258,7 @@ enum class Season {
 using enum Season;
 
 // TODO(Nik-RE-dev): currently exclusive for MM7, need to be independent from players number
-enum class CharacterChoosePolicy {
+enum class EvtTargetCharacter {
     CHOOSE_PLAYER1 = 0,
     CHOOSE_PLAYER2 = 1,
     CHOOSE_PLAYER3 = 2,
@@ -266,5 +268,5 @@ enum class CharacterChoosePolicy {
     CHOOSE_PARTY = 5,
     CHOOSE_RANDOM = 6
 };
-using enum CharacterChoosePolicy;
+using enum EvtTargetCharacter;
 

@@ -6,7 +6,7 @@
 #include "Engine/Party.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/MapInfo.h"

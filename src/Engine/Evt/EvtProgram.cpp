@@ -1,4 +1,4 @@
-#include "EventMap.h"
+#include "EvtProgram.h"
 
 #include <ranges>
 #include <tuple>
@@ -17,8 +17,8 @@
 #include "Utility/Exception.h"
 #include "Utility/SequentialBlobReader.h"
 
-EventMap EventMap::load(const Blob &rawData) {
-    EventMap result;
+EvtProgram EvtProgram::load(const Blob &rawData) {
+    EvtProgram result;
 
     const uint8_t *pos = reinterpret_cast<const uint8_t *>(rawData.data());
     const uint8_t *const end = pos + rawData.size();
@@ -30,43 +30,43 @@ EventMap EventMap::load(const Blob &rawData) {
             throw Exception("Encountered corrupted evt binary data");
         SequentialBlobReader sbr(pos + 1, size - 1); // offset is 1 because we are skipping the `size` byte - it was already read
         int eventId = sbr.read<uint16_t>();
-        result.add(eventId, EventIR::parse(sbr, size));
+        result.add(eventId, EvtInstruction::parse(sbr, size));
         pos += size;
     }
 
     return result;
 }
 
-void EventMap::add(int eventId, EventIR ir) {
+void EvtProgram::add(int eventId, EvtInstruction ir) {
     _eventsById[eventId].push_back(std::move(ir));
 }
 
-void EventMap::clear() {
+void EvtProgram::clear() {
     _eventsById.clear();
 }
 
-const EventIR &EventMap::event(int eventId, int step) const {
-    for (const EventIR &ir : events(eventId))
+const EvtInstruction &EvtProgram::instruction(int eventId, int step) const {
+    for (const EvtInstruction &ir : function(eventId))
         if (ir.step == step)
             return ir;
     throw Exception("Event {}:{} not found", eventId, step);
 }
 
-const std::vector<EventIR>& EventMap::events(int eventId) const {
+const std::vector<EvtInstruction>& EvtProgram::function(int eventId) const {
     const auto *result = valuePtr(_eventsById, eventId);
     if (!result)
         throw Exception("Event {} not found", eventId);
     return *result;
 }
 
-std::vector<EventTrigger> EventMap::enumerateTriggers(EventType triggerType) {
+std::vector<EventTrigger> EvtProgram::enumerateTriggers(EvtOpcode triggerType) {
     std::vector<EventTrigger> result;
 
     for (const auto &[id, events] : _eventsById) {
-        for (const EventIR &event : events) {
+        for (const EvtInstruction &event : events) {
             // As retarded as it might look, there are scripts that have THREE EVENT_OnLongTimer instructions.
             // Thus, we might have several event triggers for the same event id.
-            if (event.type == triggerType) {
+            if (event.opcode == triggerType) {
                 EventTrigger trigger;
                 trigger.eventId = id;
                 trigger.eventStep = event.step;
@@ -80,15 +80,15 @@ std::vector<EventTrigger> EventMap::enumerateTriggers(EventType triggerType) {
     return result;
 }
 
-bool EventMap::hasHint(int eventId) const {
+bool EvtProgram::hasHint(int eventId) const {
     const auto* events = valuePtr(_eventsById, eventId);
     if (!events || events->size() < 2)
         return false;
 
-    return (*events)[0].type == EVENT_MouseOver && (*events)[1].type == EVENT_Exit;
+    return (*events)[0].opcode == EVENT_MouseOver && (*events)[1].opcode == EVENT_Exit;
 }
 
-std::string EventMap::hint(int eventId) const {
+std::string EvtProgram::hint(int eventId) const {
     std::string result;
     bool mouseOverFound = false;
 
@@ -97,14 +97,14 @@ std::string EventMap::hint(int eventId) const {
         return result;
     }
 
-    for (const EventIR &ir : *events) {
-        if (ir.type == EVENT_MouseOver) {
+    for (const EvtInstruction &ir : *events) {
+        if (ir.opcode == EVENT_MouseOver) {
             mouseOverFound = true;
             if (ir.data.text_id < engine->_levelStrings.size()) {
                 result = engine->_levelStrings[ir.data.text_id];
             }
         }
-        if (mouseOverFound && ir.type == EVENT_SpeakInHouse) {
+        if (mouseOverFound && ir.opcode == EVENT_SpeakInHouse) {
             if (houseTable.indices().contains(ir.data.house_id)) {
                 result = houseTable[ir.data.house_id].name;
             }
@@ -115,11 +115,11 @@ std::string EventMap::hint(int eventId) const {
     return result;
 }
 
-void EventMap::dump(int eventId) const {
+void EvtProgram::dump(int eventId) const {
     const auto *events = valuePtr(_eventsById, eventId);
     if (events) {
         logger->trace("Event: {}", eventId);
-        for (const EventIR &ir : *events) {
+        for (const EvtInstruction &ir : *events) {
             logger->trace("{}", ir.toString());
         }
     } else {
@@ -127,7 +127,7 @@ void EventMap::dump(int eventId) const {
     }
 }
 
-void EventMap::dumpAll() const {
+void EvtProgram::dumpAll() const {
     for (const auto &[id, _] : _eventsById) {
         dump(id);
     }
