@@ -92,6 +92,9 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
 
         if (result.retrace.traces.empty())
             throw Exception("No trace files to retrace.");
+
+        if (!result.logLevel)
+            result.logLevel = LOG_ERROR; // Default log level for retracing is LOG_ERROR.
     }
 
     if (result.subcommand == SUBCOMMAND_PLAY)
