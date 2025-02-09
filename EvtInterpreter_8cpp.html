@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Events/EventInterpreter.cpp File Reference</title>
+<title>OpenEnroth: src/Engine/Evt/EvtInterpreter.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a92ee53</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;12f99fb</span>
    </div>
   </td>
  </tr>
@@ -69,22 +69,22 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_eaa02307cc4840e18867bc607bee3cb2.html">Events</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_3f5c1a906d531129aef5705856644fe4.html">Evt</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">EventInterpreter.cpp File Reference</div></div>
+  <div class="headertitle"><div class="title">EvtInterpreter.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
 <code>#include &lt;functional&gt;</code><br />
 <code>#include &lt;tl/generator.hpp&gt;</code><br />
-<code>#include &quot;<a class="el" href="EventInterpreter_8h.html">Engine/Events/EventInterpreter.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="EventIR_8h.html">Engine/Events/EventIR.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Processor_8h.html">Engine/Events/Processor.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EvtInterpreter_8h.html">Engine/Evt/EvtInterpreter.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EvtInstruction_8h.html">Engine/Evt/EvtInstruction.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Processor_8h.html">Engine/Evt/Processor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Party_8h.html">Engine/Party.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Indoor_8h.html">Engine/Graphics/Indoor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Weather_8h.html">Engine/Graphics/Weather.h</a>&quot;</code><br />
@@ -111,12 +111,12 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a96f7d3f0e3f97f50a853ffcb110f0443"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EventInterpreter_8cpp.html#a96f7d3f0e3f97f50a853ffcb110f0443">checkSeason</a> (<a class="el" href="EventEnums_8h.html#ace3a72289effba7c41de4a566bd3c300">Season</a> season)</td></tr>
+<tr class="memitem:a96f7d3f0e3f97f50a853ffcb110f0443"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EvtInterpreter_8cpp.html#a96f7d3f0e3f97f50a853ffcb110f0443">checkSeason</a> (<a class="el" href="EvtEnums_8h.html#ace3a72289effba7c41de4a566bd3c300">Season</a> season)</td></tr>
 <tr class="separator:a96f7d3f0e3f97f50a853ffcb110f0443"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e597a77fa06fff3a9ce848aca741221"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EventInterpreter_8cpp.html#a8e597a77fa06fff3a9ce848aca741221">spawnMonsters</a> (int16_t typeindex, int16_t level, int count, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> pos, int group, int uUniqueName)</td></tr>
+<tr class="memitem:a8e597a77fa06fff3a9ce848aca741221"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EvtInterpreter_8cpp.html#a8e597a77fa06fff3a9ce848aca741221">spawnMonsters</a> (int16_t typeindex, int16_t level, int count, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> pos, int group, int uUniqueName)</td></tr>
 <tr class="separator:a8e597a77fa06fff3a9ce848aca741221"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa55bf6d676f8744680cebdbe56930072"><td class="memItemLeft" align="right" valign="top">static tl::generator&lt; <a class="el" href="classCharacter.html">Character</a> &amp; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EventInterpreter_8cpp.html#aa55bf6d676f8744680cebdbe56930072">iterateCharacters</a> (<a class="el" href="EventEnums_8h.html#ac6ba0e8b31393d270ae04a8e97786a69">CharacterChoosePolicy</a> who, <a class="el" href="classRandomEngine.html">RandomEngine</a> *rng)</td></tr>
-<tr class="separator:aa55bf6d676f8744680cebdbe56930072"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6fe95c135934d9c1387cdd494f5c5c1f"><td class="memItemLeft" align="right" valign="top">static tl::generator&lt; <a class="el" href="classCharacter.html">Character</a> &amp; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EvtInterpreter_8cpp.html#a6fe95c135934d9c1387cdd494f5c5c1f">iterateCharacters</a> (<a class="el" href="EvtEnums_8h.html#a29217bd9b51e9202ca5182b365fb00fd">EvtTargetCharacter</a> who, <a class="el" href="classRandomEngine.html">RandomEngine</a> *rng)</td></tr>
+<tr class="separator:a6fe95c135934d9c1387cdd494f5c5c1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a96f7d3f0e3f97f50a853ffcb110f0443" name="a96f7d3f0e3f97f50a853ffcb110f0443"></a>
@@ -131,7 +131,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">static bool checkSeason </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="EventEnums_8h.html#ace3a72289effba7c41de4a566bd3c300">Season</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="EvtEnums_8h.html#ace3a72289effba7c41de4a566bd3c300">Season</a>&#160;</td>
           <td class="paramname"><em>season</em></td><td>)</td>
           <td></td>
         </tr>
@@ -146,8 +146,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa55bf6d676f8744680cebdbe56930072" name="aa55bf6d676f8744680cebdbe56930072"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa55bf6d676f8744680cebdbe56930072">&#9670;&#160;</a></span>iterateCharacters()</h2>
+<a id="a6fe95c135934d9c1387cdd494f5c5c1f" name="a6fe95c135934d9c1387cdd494f5c5c1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fe95c135934d9c1387cdd494f5c5c1f">&#9670;&#160;</a></span>iterateCharacters()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -158,7 +158,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">static tl::generator&lt; <a class="el" href="classCharacter.html">Character</a> &amp; &gt; iterateCharacters </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="EventEnums_8h.html#ac6ba0e8b31393d270ae04a8e97786a69">CharacterChoosePolicy</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="EvtEnums_8h.html#a29217bd9b51e9202ca5182b365fb00fd">EvtTargetCharacter</a>&#160;</td>
           <td class="paramname"><em>who</em>, </td>
         </tr>
         <tr>

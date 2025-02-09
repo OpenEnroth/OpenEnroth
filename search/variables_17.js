@@ -17,7 +17,7 @@ var searchData=
   ['week_14',['week',['../structCivilTime.html#a6813141b1b3ded3e238745976d565415',1,'CivilTime']]],
   ['whichsplatsonthisface_15',['WhichSplatsOnThisFace',['../structDecalBuilder.html#a5a4ac6d3c1624d8501b38015507c4650',1,'DecalBuilder']]],
   ['white_16',['White',['../classColorTable.html#ad04377b10a0adf725ae2ccd9cfb7a89b',1,'ColorTable']]],
-  ['who_17',['who',['../classEventIR.html#a8fbf8afc86773d47371c21c7fda33938',1,'EventIR']]],
+  ['who_17',['who',['../classEvtInstruction.html#ac2c91a993777859ac5f195bb2111907e',1,'EvtInstruction']]],
   ['width_18',['width',['../structLodImageHeader__MM6.html#afbf0317e03a1df4942f462f45d8df497',1,'LodImageHeader_MM6::width()'],['../structLodSpriteHeader__MM6.html#afc7c171f2675cb54bf280cf8c6d849ca',1,'LodSpriteHeader_MM6::width()'],['../classAVVideoStream.html#ad6da5b243af338a89d4962e79d910543',1,'AVVideoStream::width()'],['../classMovie.html#af055977ae062d94b4db9f053d87ae8e1',1,'Movie::width()'],['../structstat__coord.html#af2e9db3199db9f3ff9977c8134a1af9e',1,'stat_coord::width()']]],
   ['width_19',['Width',['../classGameConfig_1_1Window.html#a52ab9e6da91d34573426dd23cc54eb46',1,'GameConfig::Window']]],
   ['widthln2_20',['widthLn2',['../structLodImageHeader__MM6.html#a9f8cd4b547272837a01537d47d108b0f',1,'LodImageHeader_MM6']]],

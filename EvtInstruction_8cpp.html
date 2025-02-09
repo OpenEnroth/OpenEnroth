@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenEnroth: src/Engine/Events/EventIR.cpp File Reference</title>
+<title>OpenEnroth: src/Engine/Evt/EvtInstruction.cpp File Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a92ee53</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;12f99fb</span>
    </div>
   </td>
  </tr>
@@ -69,19 +69,19 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_eaa02307cc4840e18867bc607bee3cb2.html">Events</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_3072bc1f55ed1280fe4fbe6b21c78379.html">Engine</a></li><li class="navelem"><a class="el" href="dir_3f5c1a906d531129aef5705856644fe4.html">Evt</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#func-members">Functions</a>  </div>
-  <div class="headertitle"><div class="title">EventIR.cpp File Reference</div></div>
+  <div class="headertitle"><div class="title">EvtInstruction.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="EventIR_8h.html">EventIR.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="EvtInstruction_8h.html">EvtInstruction.h</a>&quot;</code><br />
 <code>#include &lt;span&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
-<code>#include &quot;<a class="el" href="EventEnums_8h.html">Engine/Events/EventEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EvtEnums_8h.html">Engine/Evt/EvtEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Decoration_8h.html">Engine/Objects/Decoration.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="HouseTable_8h.html">Engine/Tables/HouseTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="NPCTable_8h.html">Engine/Tables/NPCTable.h</a>&quot;</code><br />
@@ -90,18 +90,18 @@ $(function() {
 <code>#include &quot;<a class="el" href="Transformations_8h.html">Utility/String/Transformations.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Exception_8h.html">Utility/Exception.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Unaligned_8h.html">Utility/Unaligned.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="EventEnumFunctions_8h.html">EventEnumFunctions.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EvtEnumFunctions_8h.html">EvtEnumFunctions.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:abbc7ecf54dafb8cd1f68c791ab45987f"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EventIR_8cpp.html#abbc7ecf54dafb8cd1f68c791ab45987f">getVariableSetStr</a> (<a class="el" href="EventEnums_8h.html#ac62972ff1b21a037e56530cde67309ab">VariableType</a> type, int value)</td></tr>
-<tr class="separator:abbc7ecf54dafb8cd1f68c791ab45987f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60e514dcd631994ea8220090d671c68a"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EventIR_8cpp.html#a60e514dcd631994ea8220090d671c68a">getVariableCompareStr</a> (<a class="el" href="EventEnums_8h.html#ac62972ff1b21a037e56530cde67309ab">VariableType</a> type, int value)</td></tr>
-<tr class="separator:a60e514dcd631994ea8220090d671c68a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab8fb11e05658c4e131fac937bf193755"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EvtInstruction_8cpp.html#ab8fb11e05658c4e131fac937bf193755">getVariableSetStr</a> (<a class="el" href="EvtEnums_8h.html#af1cd3e66d28d0790cdbc309857c7c409">EvtVariable</a> type, int value)</td></tr>
+<tr class="separator:ab8fb11e05658c4e131fac937bf193755"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71706e240cdad4acea7a3dbd304e2d6c"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EvtInstruction_8cpp.html#a71706e240cdad4acea7a3dbd304e2d6c">getVariableCompareStr</a> (<a class="el" href="EvtEnums_8h.html#af1cd3e66d28d0790cdbc309857c7c409">EvtVariable</a> type, int value)</td></tr>
+<tr class="separator:a71706e240cdad4acea7a3dbd304e2d6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a60e514dcd631994ea8220090d671c68a" name="a60e514dcd631994ea8220090d671c68a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a60e514dcd631994ea8220090d671c68a">&#9670;&#160;</a></span>getVariableCompareStr()</h2>
+<a id="a71706e240cdad4acea7a3dbd304e2d6c" name="a71706e240cdad4acea7a3dbd304e2d6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71706e240cdad4acea7a3dbd304e2d6c">&#9670;&#160;</a></span>getVariableCompareStr()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -112,7 +112,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">static std::string getVariableCompareStr </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="EventEnums_8h.html#ac62972ff1b21a037e56530cde67309ab">VariableType</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="EvtEnums_8h.html#af1cd3e66d28d0790cdbc309857c7c409">EvtVariable</a>&#160;</td>
           <td class="paramname"><em>type</em>, </td>
         </tr>
         <tr>
@@ -136,8 +136,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="abbc7ecf54dafb8cd1f68c791ab45987f" name="abbc7ecf54dafb8cd1f68c791ab45987f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abbc7ecf54dafb8cd1f68c791ab45987f">&#9670;&#160;</a></span>getVariableSetStr()</h2>
+<a id="ab8fb11e05658c4e131fac937bf193755" name="ab8fb11e05658c4e131fac937bf193755"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab8fb11e05658c4e131fac937bf193755">&#9670;&#160;</a></span>getVariableSetStr()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -148,7 +148,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">static std::string getVariableSetStr </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="EventEnums_8h.html#ac62972ff1b21a037e56530cde67309ab">VariableType</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="EvtEnums_8h.html#af1cd3e66d28d0790cdbc309857c7c409">EvtVariable</a>&#160;</td>
           <td class="paramname"><em>type</em>, </td>
         </tr>
         <tr>
