@@ -917,8 +917,8 @@ void Engine::_461103_load_level_sub() {
     pCamera3D->_viewPitch = 0;
     pCamera3D->_viewYaw = 0;
     uLevel_StartingPointType = MAP_START_POINT_PARTY;
-    if (pParty->pPickedItem.uItemID != ITEM_NULL)
-        mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.uItemID);
+    if (pParty->pPickedItem.itemId != ITEM_NULL)
+        mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.itemId);
 }
 
 //----- (0042F3D6) --------------------------------------------------------
@@ -1375,22 +1375,22 @@ void RegeneratePartyHealthMana() {
             if (character.HasItemEquipped(idx)) {
                 unsigned _idx = character.pEquipment[idx];
                 ItemGen equppedItem = character.pInventoryItemList[_idx - 1];
-                if (!isRegular(equppedItem.uItemID)) {
-                    if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF) {
+                if (!isRegular(equppedItem.itemId)) {
+                    if (equppedItem.itemId == ITEM_RELIC_ETHRICS_STAFF) {
                         character.health -= ticks5;
                     }
-                    if (equppedItem.uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {
+                    if (equppedItem.itemId == ITEM_ARTIFACT_HERMES_SANDALS) {
                         thisChar.hpRegen++;
                         thisChar.spRegen++;
                     }
-                    if (equppedItem.uItemID == ITEM_ARTIFACT_MINDS_EYE) {
+                    if (equppedItem.itemId == ITEM_ARTIFACT_MINDS_EYE) {
                         thisChar.spRegen++;
                     }
-                    if (equppedItem.uItemID == ITEM_ARTIFACT_HEROS_BELT) {
+                    if (equppedItem.itemId == ITEM_ARTIFACT_HEROS_BELT) {
                         thisChar.hpRegen++;
                     }
                 } else {
-                    ItemEnchantment special_enchantment = equppedItem.special_enchantment;
+                    ItemEnchantment special_enchantment = equppedItem.specialEnchantment;
                     if (special_enchantment == ITEM_ENCHANTMENT_OF_REGENERATION
                         || special_enchantment == ITEM_ENCHANTMENT_OF_LIFE
                         || special_enchantment == ITEM_ENCHANTMENT_OF_PHOENIX
@@ -1426,7 +1426,7 @@ void RegeneratePartyHealthMana() {
         if (character.classType == CLASS_LICH) {
             bool lich_has_jar = false;
             for (const ItemGen &item : character.pInventoryItemList)
-                if (item.uItemID == ITEM_QUEST_LICH_JAR_FULL && item.uHolderPlayer == character.getCharacterIndex())
+                if (item.itemId == ITEM_QUEST_LICH_JAR_FULL && item.lichJarCharacterIndex == character.getCharacterIndex())
                     lich_has_jar = true;
 
             if (lich_has_jar) {

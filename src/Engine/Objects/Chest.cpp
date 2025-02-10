@@ -273,7 +273,7 @@ int Chest::FindFreeItemSlot(int uChestID) {
     if (max_items <= 0) {
         item_count = -1;
     } else {
-        while (vChests[uChestID].igChestItems[item_count].uItemID != ITEM_NULL) {
+        while (vChests[uChestID].igChestItems[item_count].itemId != ITEM_NULL) {
             ++item_count;
             if (item_count >= max_items) {
                 item_count = -1;
@@ -295,7 +295,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
     if (firstFreeSlot == -1) return 0;
 
     if (position != -1) {
-        if (CanPlaceItemAt(position, put_item->uItemID, uChestID)) {
+        if (CanPlaceItemAt(position, put_item->itemId, uChestID)) {
             test_pos = position;
         } else {
             position = -1;  // try another position?? is this the right behavior
@@ -304,7 +304,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 
     if (position == -1) {  // no position specified
         for (int _i = 0; _i < max_size; _i++) {
-            if (Chest::CanPlaceItemAt(_i, put_item->uItemID, pGUIWindow_CurrentChest->chestId())) {
+            if (Chest::CanPlaceItemAt(_i, put_item->itemId, pGUIWindow_CurrentChest->chestId())) {
                 test_pos = _i;  // found somewhere to place item
                 break;
             }
@@ -338,12 +338,12 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 }
 
 void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, int uChestID) {  // only used for setup?
-    ItemId uItemID = vChests[uChestID].igChestItems[item_at_cell].uItemID;
+    ItemId uItemID = vChests[uChestID].igChestItems[item_at_cell].itemId;
     pItemTable->SetSpecialBonus(&vChests[uChestID].igChestItems[item_at_cell]);
-    if (isWand(uItemID) && !vChests[uChestID].igChestItems[item_at_cell].uNumCharges) {
+    if (isWand(uItemID) && !vChests[uChestID].igChestItems[item_at_cell].numCharges) {
         int v6 = grng->random(21) + 10;
-        vChests[uChestID].igChestItems[item_at_cell].uNumCharges = v6;
-        vChests[uChestID].igChestItems[item_at_cell].uMaxCharges = v6;
+        vChests[uChestID].igChestItems[item_at_cell].numCharges = v6;
+        vChests[uChestID].igChestItems[item_at_cell].maxCharges = v6;
     }
 
     auto img = assets->getImage_Alpha(pItemTable->pItems[uItemID].iconName);
@@ -387,7 +387,7 @@ void Chest::PlaceItems(int uChestID) {  // only sued for setup
     }
 
     for (int items_counter = 0; items_counter < uChestArea; ++items_counter) {
-        ItemId chest_item_id = vChests[uChestID].igChestItems[items_counter].uItemID;
+        ItemId chest_item_id = vChests[uChestID].igChestItems[items_counter].itemId;
         assert(chest_item_id >= ITEM_NULL && "Checking that generated items are valid");
         if (chest_item_id != ITEM_NULL && !vChests[uChestID].igChestItems[items_counter].placedInChest) {
             int test_position = 0;
@@ -459,7 +459,7 @@ void Chest::OnChestLeftClick() {
 
     if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
         inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
-        if (pParty->pPickedItem.uItemID != ITEM_NULL) {  // item held
+        if (pParty->pPickedItem.itemId != ITEM_NULL) {  // item held
             if (Chest::PutItemInChest(invMatrixIndex, &pParty->pPickedItem, uChestID)) {
                 mouse->RemoveHoldingItem();
             }
@@ -488,7 +488,7 @@ void Chest::OnChestLeftClick() {
 }
 
 void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using spacebar
-    if (pParty->pPickedItem.uItemID != ITEM_NULL || !pParty->hasActiveCharacter()) {
+    if (pParty->pPickedItem.itemId != ITEM_NULL || !pParty->hasActiveCharacter()) {
         return;
     }
 
@@ -513,10 +513,10 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
             goldamount += chestitem.goldAmount;
             goldcount++;
         } else {  // this should add item to invetory of active char - if that fails set as holding item and break
-            if (pParty->hasActiveCharacter() && (InventSlot = pParty->activeCharacter().AddItem(-1, chestitem.uItemID)) != 0) {  // can place
+            if (pParty->hasActiveCharacter() && (InventSlot = pParty->activeCharacter().AddItem(-1, chestitem.itemId)) != 0) {  // can place
                 pParty->activeCharacter().pInventoryItemList[InventSlot - 1] = chestitem;
                 grabcount++;
-                engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[chestitem.uItemID].pUnidentifiedName);
+                engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[chestitem.itemId].pUnidentifiedName);
             } else {  // no room so set as holding item
                 pParty->setHoldingItem(&chestitem);
                 RemoveItemAtChestIndex(loop);
@@ -545,12 +545,12 @@ void GenerateItemsInChest() {
     for (int i = 0; i < 20; ++i) {
         for (int j = 0; j < 140; ++j) {
             ItemGen *currItem = &vChests[i].igChestItems[j];
-            if (isRandomItem(currItem->uItemID)) {
+            if (isRandomItem(currItem->itemId)) {
                 currItem->placedInChest = false;
                 int additionaItemCount = grng->random(5);  // additional items in chect
                 additionaItemCount++;  // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
                 ItemTreasureLevel resultTreasureLevel = grng->randomSample(
-                    RemapTreasureLevel(randomItemTreasureLevel(currItem->uItemID), currMapInfo->mapTreasureLevel));
+                    RemapTreasureLevel(randomItemTreasureLevel(currItem->itemId), currMapInfo->mapTreasureLevel));
                 if (resultTreasureLevel != ITEM_TREASURE_LEVEL_7) {
                     for (int k = 0; k < additionaItemCount; k++) {
                         int whatToGenerateProb = grng->random(100);
@@ -563,7 +563,7 @@ void GenerateItemsInChest() {
                         }
 
                         for (int m = 0; m < 140; m++) {
-                            if (vChests[i].igChestItems[m].uItemID == ITEM_NULL) {
+                            if (vChests[i].igChestItems[m].itemId == ITEM_NULL) {
                                 currItem = &vChests[i].igChestItems[m];
                                 break;
                             }

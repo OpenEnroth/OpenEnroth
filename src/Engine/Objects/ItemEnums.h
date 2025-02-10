@@ -26,7 +26,7 @@ using enum DamageType;
 enum class ItemFlag : uint32_t {
     ITEM_IDENTIFIED = 0x1,
     ITEM_BROKEN = 0x2,
-    ITEM_TEMP_BONUS = 0x8,
+    ITEM_TEMP_BONUS = 0x8, // Has a temporary enchantment.
     ITEM_AURA_EFFECT_RED = 0x10,
     ITEM_AURA_EFFECT_BLUE = 0x20,
     ITEM_AURA_EFFECT_GREEN = 0x40,

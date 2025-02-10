@@ -34,7 +34,7 @@ static int mapToGlobalTileId(const std::array<int, 4> &baseIds, int localTileId)
 
 template<class Image>
 static bool contains(const Image &image, Pointi point) {
-    return point.x >= 0 && point.x < image.width() && point.y >= 0 && point.y <= image.height();
+    return point.x >= 0 && point.x < image.width() && point.y >= 0 && point.y < image.height();
 }
 
 OutdoorTerrain::OutdoorTerrain() {

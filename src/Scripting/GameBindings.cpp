@@ -155,9 +155,9 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
                 for (auto &&pair : itemTable) {
                     std::string_view key = pair.first.as<std::string_view>();
                     if (key == "id") {
-                        item.uItemID = pair.second.as<ItemId>();
+                        item.itemId = pair.second.as<ItemId>();
                     } else if (key == "holder") {
-                        item.uHolderPlayer = pair.second.as<int>() - 1; // character index in lua is 1-based
+                        item.lichJarCharacterIndex = pair.second.as<int>() - 1; // character index in lua is 1-based
                     }
                 }
                 return character->AddItem2(-1, &item) != 0;
@@ -198,7 +198,7 @@ void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &
     auto createItemTable = [&solState](const ItemDesc &itemDesc) {
         return solState.create_table_with(
             "name", itemDesc.name,
-            "level", itemDesc.uItemID_Rep_St
+            "level", itemDesc.identifyDifficulty
         );
     };
 

@@ -192,7 +192,7 @@ int Party::canActCount() const {
 void Party::setHoldingItem(ItemGen *pItem) {
     placeHeldItemInInventoryOrDrop();
     pPickedItem = *pItem;
-    mouse->SetCursorBitmapFromItemID(pPickedItem.uItemID);
+    mouse->SetCursorBitmapFromItemID(pPickedItem.itemId);
 }
 
 void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems entering shops
@@ -259,7 +259,7 @@ void Party::switchToNextActiveCharacter() {
 bool Party::hasItem(ItemId uItemID) {
     for (Character &player : this->pCharacters) {
         for (ItemGen &item : player.pInventoryItemList) {
-            if (item.uItemID == uItemID)
+            if (item.itemId == uItemID)
                 return true;
         }
     }
@@ -548,7 +548,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
                 }
             }
             for (int i = 0; i < Character::INVENTORY_SLOT_COUNT; i++) {
-                if (pCharacter.pInventoryItemList[i].uItemID != ITEM_NULL) {
+                if (pCharacter.pInventoryItemList[i].itemId != ITEM_NULL) {
                     pCharacter.pInventoryItemList[i].SetIdentified();
                 }
             }
@@ -644,7 +644,7 @@ void Party::Reset() {
 
     PartyTimes.shopBanTimes.fill(Time());
 
-    pPickedItem.uItemID = ITEM_NULL;
+    pPickedItem.itemId = ITEM_NULL;
 }
 
 void Party::yell() {
@@ -815,7 +815,7 @@ void Party::restAndHeal() {
         if (pPlayer->classType == CLASS_LICH) {
             have_vessels_soul = false;
             for (unsigned i = 0; i < Character::INVENTORY_SLOT_COUNT; i++) {
-                if (pPlayer->pInventoryItemList[i].uItemID == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID)
+                if (pPlayer->pInventoryItemList[i].itemId == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].lichJarCharacterIndex == pPlayerID)
                     have_vessels_soul = true;
             }
             if (!have_vessels_soul) {
@@ -997,12 +997,12 @@ void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {
 }
 
 void Party::dropHeldItem() {
-    if (pPickedItem.uItemID == ITEM_NULL) {
+    if (pPickedItem.itemId == ITEM_NULL) {
         return;
     }
 
     SpriteObject sprite;
-    sprite.uType = pItemTable->pItems[pPickedItem.uItemID].uSpriteID;
+    sprite.uType = pItemTable->pItems[pPickedItem.itemId].uSpriteID;
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
     sprite.spell_caster_pid = Pid(OBJECT_Character, 0);
     sprite.vPosition = pos + Vec3f(0, 0, eyeLevel);
@@ -1022,7 +1022,7 @@ void Party::dropHeldItem() {
 
 void Party::placeHeldItemInInventoryOrDrop() {
     // no picked item
-    if (pPickedItem.uItemID == ITEM_NULL) {
+    if (pPickedItem.itemId == ITEM_NULL) {
         return;
     }
 
@@ -1034,17 +1034,17 @@ void Party::placeHeldItemInInventoryOrDrop() {
 }
 
 bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
-    if (!pItemTable->pItems[pItem->uItemID].uItemID_Rep_St) {
+    if (!pItemTable->pItems[pItem->itemId].identifyDifficulty) {
         pItem->SetIdentified();
     }
 
-    if (!pItemTable->pItems[pItem->uItemID].iconName.empty()) {
+    if (!pItemTable->pItems[pItem->itemId].iconName.empty()) {
         int playerId = hasActiveCharacter() ? (pParty->_activeCharacter - 1) : 0;
         for (int i = 0; i < pCharacters.size(); i++, playerId++) {
             if (playerId >= pCharacters.size()) {
                 playerId = 0;
             }
-            int itemIndex = pCharacters[playerId].AddItem(-1, pItem->uItemID);
+            int itemIndex = pCharacters[playerId].AddItem(-1, pItem->itemId);
             if (itemIndex) {
                 pCharacters[playerId].pInventoryItemList[itemIndex - 1] = *pItem;
                 pItem->Reset();

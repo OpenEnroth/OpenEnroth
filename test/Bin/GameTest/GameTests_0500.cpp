@@ -134,7 +134,7 @@ GAME_TEST(Issues, Issue540) {
 GAME_TEST(Issues, Issue558) {
     // Check that performing alchemy does not cause out of bound access
     test.playTraceFromTestData("issue_558.mm7", "issue_558.json");
-    EXPECT_EQ(pParty->pPickedItem.uItemID, ITEM_POTION_CURE_WOUNDS);
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_POTION_CURE_WOUNDS);
 }
 
 GAME_TEST(Issues, Issue563) {
@@ -147,12 +147,12 @@ GAME_TEST(Issues, Issue571) {
     auto itemsTape = tapes.totalItemCount();
     test.playTraceFromTestData("issue_571.mm7", "issue_571.json");
     EXPECT_EQ(itemsTape.delta(), 0);
-    EXPECT_NE(pParty->pPickedItem.uItemID, ITEM_NULL);
+    EXPECT_NE(pParty->pPickedItem.itemId, ITEM_NULL);
 }
 
 GAME_TEST(Issues, Issue573) {
     // Make Recharge Item effect non-decreasing
-    auto chargeTape = tapes.custom([] {  return pParty->pCharacters[1].pInventoryItemList[33].uNumCharges; });
+    auto chargeTape = tapes.custom([] {  return pParty->pCharacters[1].pInventoryItemList[33].numCharges; });
     auto manaTape = tapes.custom([] { return pParty->pCharacters[0].mana; });
     auto itemsTape = tapes.totalItemCount();
     test.playTraceFromTestData("issue_573.mm7", "issue_573.json");
@@ -167,7 +167,7 @@ GAME_TEST(Issues, Issue574) {
     auto itemsTape = tapes.totalItemCount();
     test.playTraceFromTestData("issue_574.mm7", "issue_574.json");
     EXPECT_EQ(itemsTape.delta(), -1); // Minus potion.
-    EXPECT_EQ(pParty->pPickedItem.uMaxCharges, pParty->pPickedItem.uNumCharges);
+    EXPECT_EQ(pParty->pPickedItem.maxCharges, pParty->pPickedItem.numCharges);
 }
 
 GAME_TEST(Issues, Issue578) {
@@ -411,7 +411,7 @@ GAME_TEST(Issues, Issue675) {
     for (int i = 0; i < 300; i++) {
         for (ItemTreasureLevel level : levels) {
             pItemTable->generateItem(level, RANDOM_ITEM_ANY, &item);
-            if (isPotion(item.uItemID)) {
+            if (isPotion(item.itemId)) {
                 EXPECT_GE(item.potionPower, 1);
                 EXPECT_FALSE(item.attributeEnchantment);
             } else {
@@ -446,7 +446,7 @@ GAME_TEST(Issues, Issue677) {
 
 GAME_TEST(Issues, Issue680) {
     // Chest items duplicate sometimes
-    auto chestItemsCount = tapes.custom([] { return std::count_if(vChests[4].igChestItems.cbegin(), vChests[4].igChestItems.cend(), [&](ItemGen item) { return item.uItemID != ITEM_NULL; }); });
+    auto chestItemsCount = tapes.custom([] { return std::count_if(vChests[4].igChestItems.cbegin(), vChests[4].igChestItems.cend(), [&](ItemGen item) { return item.itemId != ITEM_NULL; }); });
     test.playTraceFromTestData("issue_680.mm7", "issue_680.json");
     // Make sure we havent gained any duplicates
     EXPECT_EQ(chestItemsCount.front(), chestItemsCount.back());
@@ -528,7 +528,7 @@ GAME_TEST(Issues, Issue720) {
 
 GAME_TEST(Issues, Issue724) {
     // Test that item potion can be applied to equipped items.
-    auto hardenedTape = tapes.custom([] { return !!(pParty->pCharacters[3].GetItem(ITEM_SLOT_MAIN_HAND)->uAttributes & ITEM_HARDENED); });
+    auto hardenedTape = tapes.custom([] { return !!(pParty->pCharacters[3].GetItem(ITEM_SLOT_MAIN_HAND)->flags & ITEM_HARDENED); });
     test.playTraceFromTestData("issue_724.mm7", "issue_724.json");
     EXPECT_EQ(hardenedTape, tape(false, true));
 }
@@ -609,7 +609,7 @@ GAME_TEST(Issues, Issue760) {
     auto itemsTape = tapes.totalItemCount();
     test.playTraceFromTestData("issue_760.mm7", "issue_760.json");
     EXPECT_EQ(itemsTape.delta(), 0);
-    EXPECT_EQ(pParty->pPickedItem.uItemID, ITEM_POTION_BOTTLE);
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_POTION_BOTTLE);
 }
 
 GAME_TEST(Issues, Issue774) {
@@ -896,7 +896,7 @@ GAME_TEST(Issues, Issue880) {
     auto objectsTape = tapes.custom( [] { return std::ranges::count_if(pSpriteObjects, [](const SpriteObject& obj) {return obj.uObjectDescID != 0; }); });
     test.playTraceFromTestData("issue_880.mm7", "issue_880.json");
     EXPECT_EQ(objectsTape.front(), objectsTape.back());
-    EXPECT_EQ(pSpriteObjects[0].containing_item.uItemID, ITEM_QUEST_ARCOMAGE_DECK);
+    EXPECT_EQ(pSpriteObjects[0].containing_item.itemId, ITEM_QUEST_ARCOMAGE_DECK);
 }
 
 GAME_TEST(Issues, Issue895) {

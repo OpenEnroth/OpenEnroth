@@ -112,7 +112,7 @@ void Io::Mouse::DrawCursor() {
     this->GetClickPos(&pos.x, &pos.y);
 
     // for party held item
-    if (pParty->pPickedItem.uItemID != ITEM_NULL) {
+    if (pParty->pPickedItem.itemId != ITEM_NULL) {
         DrawPickedItem();
     } else {
         ClearPickedItem();
@@ -188,7 +188,7 @@ void Io::Mouse::DrawCursor() {
 void Io::Mouse::ClearPickedItem() { pPickedItem = nullptr; }
 
 void Io::Mouse::DrawPickedItem() {
-    if (pParty->pPickedItem.uItemID == ITEM_NULL)
+    if (pParty->pPickedItem.itemId == ITEM_NULL)
         return;
 
     GraphicsImage *pTexture = assets->getImage_Alpha(pParty->pPickedItem.GetIconName());

@@ -156,16 +156,16 @@ void Actor::giveItem(signed int uActorID, ItemId uItemID, unsigned int bGive) {
         if (bGive) {
             if (pActors[uActorID].carriedItemId == ITEM_NULL)
                 pActors[uActorID].carriedItemId = uItemID;
-            else if (pActors[uActorID].items[0].uItemID == ITEM_NULL)
-                pActors[uActorID].items[0].uItemID = uItemID;
-            else if (pActors[uActorID].items[1].uItemID == ITEM_NULL)
-                pActors[uActorID].items[1].uItemID = uItemID;
+            else if (pActors[uActorID].items[0].itemId == ITEM_NULL)
+                pActors[uActorID].items[0].itemId = uItemID;
+            else if (pActors[uActorID].items[1].itemId == ITEM_NULL)
+                pActors[uActorID].items[1].itemId = uItemID;
         } else {
             if (pActors[uActorID].carriedItemId == uItemID)
                 pActors[uActorID].carriedItemId = ITEM_NULL;
-            else if (pActors[uActorID].items[0].uItemID == uItemID)
+            else if (pActors[uActorID].items[0].itemId == uItemID)
                 pActors[uActorID].items[0].Reset();
-            else if (pActors[uActorID].items[1].uItemID == uItemID)
+            else if (pActors[uActorID].items[1].itemId == uItemID)
                 pActors[uActorID].items[1].Reset();
         }
     }
@@ -193,11 +193,11 @@ void Actor::SetRandomGoldIfTheresNoItem() {
     int v2;  // edi@1
 
     v2 = 0;
-    if (this->items[3].uItemID == ITEM_NULL) {
+    if (this->items[3].itemId == ITEM_NULL) {
         if (this->monsterInfo.goldDiceRolls) {
             v2 = grng->randomDice(this->monsterInfo.goldDiceRolls, this->monsterInfo.goldDiceSides);
             if (v2) {
-                this->items[3].uItemID = ITEM_GOLD_SMALL;
+                this->items[3].itemId = ITEM_GOLD_SMALL;
                 this->items[3].goldAmount = v2;
             }
         }
@@ -1836,10 +1836,10 @@ void Actor::Die(unsigned int uActorID) {
 
     ItemGen drop;
     drop.Reset();
-    drop.uItemID = itemDropForMonsterType(monsterTypeForMonsterId(actor->monsterInfo.id));
+    drop.itemId = itemDropForMonsterType(monsterTypeForMonsterId(actor->monsterInfo.id));
 
-    if (grng->random(100) < 20 && drop.uItemID != ITEM_NULL) {
-        SpriteObject::dropItemAt(pItemTable->pItems[drop.uItemID].uSpriteID,
+    if (grng->random(100) < 20 && drop.itemId != ITEM_NULL) {
+        SpriteObject::dropItemAt(pItemTable->pItems[drop.itemId].uSpriteID,
                                  actor->pos + Vec3f(0, 0, 16), grng->random(200) + 200, 1, true, 0, &drop);
     }
 
@@ -3144,8 +3144,8 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
                 if (pMonster->buffs[ACTOR_BUFF_SHIELD].Active())
                     uDamageAmount /= 2;
                 IsAdditionalDamagePossible = true;
-                if (projectileSprite->containing_item.uItemID != ITEM_NULL &&
-                    projectileSprite->containing_item.special_enchantment == ITEM_ENCHANTMENT_OF_CARNAGE) {
+                if (projectileSprite->containing_item.itemId != ITEM_NULL &&
+                    projectileSprite->containing_item.specialEnchantment == ITEM_ENCHANTMENT_OF_CARNAGE) {
                     attackElement = DAMAGE_FIRE;
                 } else if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
                     character->playReaction(SPEECH_ATTACK_MISS);
@@ -3574,15 +3574,15 @@ void Actor::LootActor() {
     }
     if (this->carriedItemId != ITEM_NULL) {
         Dst.Reset();
-        Dst.uItemID = this->carriedItemId;
+        Dst.itemId = this->carriedItemId;
 
-        StatusBarItemFound(foundGold, pItemTable->pItems[Dst.uItemID].pUnidentifiedName);
+        StatusBarItemFound(foundGold, pItemTable->pItems[Dst.itemId].pUnidentifiedName);
 
         if (Dst.isWand()) {
-            Dst.uNumCharges = grng->random(6) + Dst.GetDamageMod() + 1;
-            Dst.uMaxCharges = Dst.uNumCharges;
+            Dst.numCharges = grng->random(6) + Dst.GetDamageMod() + 1;
+            Dst.maxCharges = Dst.numCharges;
         }
-        if (Dst.isPotion() && Dst.uItemID != ITEM_POTION_BOTTLE) {
+        if (Dst.isPotion() && Dst.itemId != ITEM_POTION_BOTTLE) {
             Dst.potionPower = 2 * grng->random(4) + 2;
         }
         pItemTable->SetSpecialBonus(&Dst);
@@ -3590,14 +3590,14 @@ void Actor::LootActor() {
             pParty->setHoldingItem(&Dst);
         }
         this->carriedItemId = ITEM_NULL;
-        if (this->items[0].uItemID != ITEM_NULL) {
+        if (this->items[0].itemId != ITEM_NULL) {
             if (!pParty->addItemToParty(&this->items[0])) {
                 pParty->placeHeldItemInInventoryOrDrop();
                 pParty->setHoldingItem(&this->items[0]);
             }
             this->items[0].Reset();
         }
-        if (this->items[1].uItemID != ITEM_NULL) {
+        if (this->items[1].itemId != ITEM_NULL) {
             if (!pParty->addItemToParty(&this->items[1])) {
                 pParty->placeHeldItemInInventoryOrDrop();
                 pParty->setHoldingItem(&this->items[1]);
@@ -3608,11 +3608,11 @@ void Actor::LootActor() {
         return;
     }
     if (this->ActorHasItem()) {
-        if (this->items[3].uItemID != ITEM_NULL) {
+        if (this->items[3].itemId != ITEM_NULL) {
             Dst = this->items[3];
             this->items[3].Reset();
 
-            StatusBarItemFound(foundGold, pItemTable->pItems[Dst.uItemID].pUnidentifiedName);
+            StatusBarItemFound(foundGold, pItemTable->pItems[Dst.itemId].pUnidentifiedName);
 
             if (!pParty->addItemToParty(&Dst)) {
                 pParty->setHoldingItem(&Dst);
@@ -3623,7 +3623,7 @@ void Actor::LootActor() {
         if (grng->random(100) < this->monsterInfo.treasureDropChance && this->monsterInfo.treasureLevel != ITEM_TREASURE_LEVEL_INVALID) {
             pItemTable->generateItem(this->monsterInfo.treasureLevel, this->monsterInfo.treasureType, &Dst);
 
-            StatusBarItemFound(foundGold, pItemTable->pItems[Dst.uItemID].pUnidentifiedName);
+            StatusBarItemFound(foundGold, pItemTable->pItems[Dst.itemId].pUnidentifiedName);
 
             if (!pParty->addItemToParty(&Dst)) {
                 pParty->setHoldingItem(&Dst);
@@ -3631,7 +3631,7 @@ void Actor::LootActor() {
             itemFound = true;
         }
     }
-    if (this->items[0].uItemID != ITEM_NULL) {
+    if (this->items[0].itemId != ITEM_NULL) {
         if (!pParty->addItemToParty(&this->items[0])) {
             pParty->placeHeldItemInInventoryOrDrop();
             pParty->setHoldingItem(&this->items[0]);
@@ -3639,7 +3639,7 @@ void Actor::LootActor() {
         }
         this->items[0].Reset();
     }
-    if (this->items[1].uItemID != ITEM_NULL) {
+    if (this->items[1].itemId != ITEM_NULL) {
         if (!pParty->addItemToParty(&this->items[1])) {
             pParty->placeHeldItemInInventoryOrDrop();
             pParty->setHoldingItem(&this->items[1]);

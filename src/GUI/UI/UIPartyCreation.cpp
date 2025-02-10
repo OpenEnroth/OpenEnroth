@@ -862,7 +862,7 @@ bool PartyCreationUI_LoopInternal() {
             }
 
             for (ItemGen &inventoryItem : pParty->pCharacters[i].pInventoryItemList) {
-                if (inventoryItem.uItemID != ITEM_NULL)
+                if (inventoryItem.itemId != ITEM_NULL)
                     inventoryItem.SetIdentified();
             }
         }
