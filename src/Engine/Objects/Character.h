@@ -253,7 +253,7 @@ class Character {
     int AddItem(int uSlot, ItemId uItemID);
     int AddItem2(int uSlot, ItemGen *Src);
     int CreateItemInInventory2(unsigned int index, ItemGen *Src);
-    void PutItemArInventoryIndex(ItemId uItemID, int itemListPos, int uSlot);
+    void PutItemAtInventoryIndex(ItemId uItemID, int itemListPos, int uSlot);
     void RemoveItemAtInventoryIndex(unsigned int uSlot);
     bool CanAct() const;
     bool CanSteal() const;
