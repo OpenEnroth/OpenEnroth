@@ -1156,25 +1156,15 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
 
 //----- (0048D0B9) --------------------------------------------------------
 int Character::GetRangedAttack() {
-    int result;
-    int weapbonus;
-    int skillbonus;
-
     ItemGen *mainHandItem = GetMainHandItem();
 
-    if (mainHandItem != nullptr && !isAncientWeapon(mainHandItem->itemId)) {  // no blasters
-        weapbonus = GetItemsBonus(ATTRIBUTE_RANGED_ATTACK) +
-                    GetParameterBonus(GetActualAccuracy());
-        skillbonus =
-            GetSkillBonus(ATTRIBUTE_RANGED_ATTACK) + weapbonus;
-        result = this->_ranged_atk_bonus +
-                 GetMagicalBonus(ATTRIBUTE_RANGED_ATTACK) +
-                 skillbonus;
+    if (mainHandItem && isAncientWeapon(mainHandItem->itemId)) {  // blasters TODO(pskelton): should wands be added #1927 ?
+        return GetActualAttack(true);
     } else {
-        result = GetActualAttack(true);
+        int weapbonus = GetItemsBonus(ATTRIBUTE_RANGED_ATTACK) + GetParameterBonus(GetActualAccuracy());
+        int skillbonus = GetSkillBonus(ATTRIBUTE_RANGED_ATTACK) + weapbonus;
+        return this->_ranged_atk_bonus + GetMagicalBonus(ATTRIBUTE_RANGED_ATTACK) + skillbonus;
     }
-
-    return result;
 }
 
 //----- (0048D124) --------------------------------------------------------
@@ -3005,13 +2995,11 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
 
         case ATTRIBUTE_ATTACK:
             if (this->IsUnarmed()) {
-                int unarmedSkill =
-                    this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level();
+                int unarmedSkill = this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level();
                 if (!unarmedSkill) {
                     return 0;
                 }
-                int multiplier = GetMultiplierForSkillLevel(
-                    CHARACTER_SKILL_UNARMED, 0, 1, 2, 2);
+                int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 1, 1, 2, 2);
                 return armsMasterBonus + multiplier * unarmedSkill;
             }
             for (ItemSlot i : allItemSlots()) {  // ?? what eh check behaviour
@@ -3023,7 +3011,7 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
                         if (currItemSkillType == CHARACTER_SKILL_BLASTER) {
                             int multiplier = GetMultiplierForSkillLevel(currItemSkillType, 1, 2, 3, 5);
                             return multiplier * currentItemSkillLevel;
-                        } else if (currItemSkillType == CHARACTER_SKILL_STAFF && this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level() > 0) {
+                        } else if (currItemSkillType == CHARACTER_SKILL_STAFF && this->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
                             int unarmedSkillLevel = this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level();
                             int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 1, 1, 2, 2);
                             return multiplier * unarmedSkillLevel + armsMasterBonus + currentItemSkillLevel;
