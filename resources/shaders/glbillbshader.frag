@@ -1,6 +1,8 @@
 #ifdef GL_ES
     precision highp float;
     precision highp usamplerBuffer;
+    precision highp int;
+    precision highp sampler2D;
 #endif
 
 in vec4 colour;
