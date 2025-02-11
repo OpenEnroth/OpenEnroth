@@ -1157,7 +1157,7 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
 int Character::GetRangedAttack() {
     ItemGen *mainHandItem = GetMainHandItem();
 
-    if (mainHandItem && isAncientWeapon(mainHandItem->itemId)) {  // no blasters TODO(pskelton): should wands be added #1927 ?
+    if (mainHandItem && isAncientWeapon(mainHandItem->itemId)) {  // blasters TODO(pskelton): should wands be added #1927 ?
         return GetActualAttack(true);
     } else {
         int weapbonus = GetItemsBonus(ATTRIBUTE_RANGED_ATTACK) + GetParameterBonus(GetActualAccuracy());
