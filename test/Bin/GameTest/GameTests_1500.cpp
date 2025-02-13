@@ -502,10 +502,32 @@ GAME_TEST(Issues, Issue1898) {
 }
 
 GAME_TEST(Issues, Issue1890) {
-    //Stuck *in* stairs when leaving the Mercenary Guild
+    // Stuck *in* stairs when leaving the Mercenary Guild
     auto yPos = tapes.custom([]() { return static_cast<int>(pParty->pos.y); });
     test.playTraceFromTestData("issue_1890.mm7", "issue_1890.json");
     EXPECT_EQ(engine->_currentLoadedMapId, MAP_TATALIA);
     EXPECT_CONTAINS(yPos, 16803); // starting point
     EXPECT_LT(yPos.back(), 16700); // moved forwards
+}
+
+GAME_TEST(Issues, Issue1910) {
+    // Insane condition doesn't affect character attributes when there is Weak condition.
+    // We test this for both vanilla & grayface condition priorities.
+    for (int i = 0; i < 2; i++) {
+        test.prepareForNextTest();
+        engine->config->gameplay.AlternativeConditionPriorities.setValue(i == 0);
+
+        auto intTape = charTapes.stat(0, ATTRIBUTE_INTELLIGENCE);
+        auto strTape = charTapes.stat(0, ATTRIBUTE_MIGHT);
+
+        game.startNewGame();
+        test.startTaping();
+        game.tick();
+        pParty->pCharacters[0].SetCondition(CONDITION_WEAK, 0);
+        pParty->pCharacters[0].SetCondition(CONDITION_INSANE, 0);
+        game.tick();
+
+        EXPECT_EQ(intTape, tape(5, 0)); // Int -90% b/c insane.
+        EXPECT_EQ(strTape, tape(30, 60)); // Str +100% b/c insane.
+    }
 }
