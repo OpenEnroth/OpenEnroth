@@ -24,7 +24,7 @@ enum class EvtOpcode : uint8_t {
     EVENT_Compare = 14,
     EVENT_ChangeDoorState = 15,
     EVENT_Add = 16,
-    EVENT_Substract = 17,
+    EVENT_Subtract = 17,
     EVENT_Set = 18,
     EVENT_SummonMonsters = 19,
 
