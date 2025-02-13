@@ -4846,14 +4846,11 @@ bool OpenGLRenderer::ReloadShaders() {
         glDeleteBuffers(1, &billbVBO);
         billbVBO = 0;
     }
-    if (paltex) {
-        glDeleteTextures(1, &paltex);
-        paltex = 0;
+    if (paltex2D) {
+        glDeleteTextures(1, &paltex2D);
+        paltex2D = 0;
     }
-    if (palbuf) {
-        glDeleteBuffers(1, &palbuf);
-        palbuf = 0;
-    }
+
     billbstorecnt = 0;
 
     if (decalVAO) {
@@ -5021,17 +5018,16 @@ void OpenGLRenderer::DrawTwodVerts() {
         glEnableVertexAttribArray(4);
     }
 
-    if (palbuf == 0) {
-        // generate palette buffer texture
+    GLint paltex2D_id = 9;
+    if (paltex2D == 0) {
         std::span<Color> palettes = pPaletteManager->paletteData();
-        glGenBuffers(1, &palbuf);
-        glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
-        glBufferData(GL_TEXTURE_BUFFER, palettes.size_bytes(), palettes.data(), GL_STATIC_DRAW);
-
-        glGenTextures(1, &paltex);
-        glBindTexture(GL_TEXTURE_BUFFER, paltex);
-        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
-        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+        glActiveTexture(GL_TEXTURE0 + paltex2D_id);
+        glGenTextures(1, &paltex2D);
+        glBindTexture(GL_TEXTURE_2D, paltex2D);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 1000, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, palettes.data());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
     // update buffer
@@ -5049,10 +5045,7 @@ void OpenGLRenderer::DrawTwodVerts() {
     twodshader.use();
 
     // set sampler to palette
-    glUniform1i(twodshader.uniformLocation("palbuf"), GLint(1));
-    glActiveTexture(GL_TEXTURE0 + 1);
-    glBindTexture(GL_TEXTURE_BUFFER, paltex);
-    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
+    glUniform1i(twodshader.uniformLocation("paltex2Df"), paltex2D_id);
     glActiveTexture(GL_TEXTURE0);
 
     // glEnable(GL_TEXTURE_2D);
