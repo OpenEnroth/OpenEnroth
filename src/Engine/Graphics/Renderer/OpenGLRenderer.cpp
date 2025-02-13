@@ -2568,17 +2568,16 @@ void OpenGLRenderer::DrawBillboards() {
         glEnableVertexAttribArray(5);
     }
 
-    if (palbuf == 0) {
-        // generate palette buffer texture
+    GLint paltex2D_id = 9;
+    if (paltex2D == 0) {
         std::span<Color> palettes = pPaletteManager->paletteData();
-        glGenBuffers(1, &palbuf);
-        glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
-        glBufferData(GL_TEXTURE_BUFFER, palettes.size_bytes(), palettes.data(), GL_STATIC_DRAW);
-
-        glGenTextures(1, &paltex);
-        glBindTexture(GL_TEXTURE_BUFFER, paltex);
-        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
-        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+        glActiveTexture(GL_TEXTURE0 + paltex2D_id);
+        glGenTextures(1, &paltex2D);
+        glBindTexture(GL_TEXTURE_2D, paltex2D);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 1000, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, palettes.data());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
     // update buffer
@@ -2597,10 +2596,8 @@ void OpenGLRenderer::DrawBillboards() {
     billbshader.use();
 
     // set sampler to palette
-    glUniform1i(billbshader.uniformLocation("palbuf"), GLint(1));
-    glActiveTexture(GL_TEXTURE0 + 1);
-    glBindTexture(GL_TEXTURE_BUFFER, paltex);
-    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
+    glUniform1i(billbshader.uniformLocation("paltex2D"), paltex2D_id);
+
     glActiveTexture(GL_TEXTURE0);
 
 
