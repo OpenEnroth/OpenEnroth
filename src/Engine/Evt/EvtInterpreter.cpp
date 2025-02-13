@@ -304,7 +304,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 character.AddVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
         case EVENT_Subtract:
-            if (ir.data.variable_descr.type == VAR_PlayerItemInHands && (_who == CHOOSE_PARTY /*|| _who == CHOOSE_ACTIVE*/)) {
+            if (ir.data.variable_descr.type == VAR_PlayerItemInHands/* && (_who == CHOOSE_PARTY || _who == CHOOSE_ACTIVE)*/) {
                 for (Character &character : pParty->pCharacters) {
                     if (character.hasItem((ItemId)ir.data.variable_descr.value, 1)) {
                         character.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
