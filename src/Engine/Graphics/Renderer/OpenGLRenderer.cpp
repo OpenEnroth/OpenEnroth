@@ -2574,7 +2574,7 @@ void OpenGLRenderer::DrawBillboards() {
         glActiveTexture(GL_TEXTURE0 + paltex2D_id);
         glGenTextures(1, &paltex2D);
         glBindTexture(GL_TEXTURE_2D, paltex2D);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 1000, 0,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, palettes.size() / 256, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, palettes.data());
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -2596,6 +2596,7 @@ void OpenGLRenderer::DrawBillboards() {
     billbshader.use();
 
     // set sampler to palette
+    glBindTexture(GL_TEXTURE_2D, paltex2D);
     glUniform1i(billbshader.uniformLocation("paltex2D"), paltex2D_id);
 
     glActiveTexture(GL_TEXTURE0);
@@ -5024,7 +5025,7 @@ void OpenGLRenderer::DrawTwodVerts() {
         glActiveTexture(GL_TEXTURE0 + paltex2D_id);
         glGenTextures(1, &paltex2D);
         glBindTexture(GL_TEXTURE_2D, paltex2D);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, 1000, 0,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, palettes.size() / 256, 0,
             GL_RGBA, GL_UNSIGNED_BYTE, palettes.data());
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -5045,7 +5046,9 @@ void OpenGLRenderer::DrawTwodVerts() {
     twodshader.use();
 
     // set sampler to palette
-    glUniform1i(twodshader.uniformLocation("paltex2Df"), paltex2D_id);
+    glBindTexture(GL_TEXTURE_2D, paltex2D);
+    glUniform1i(twodshader.uniformLocation("paltex2D"), paltex2D_id);
+
     glActiveTexture(GL_TEXTURE0);
 
     // glEnable(GL_TEXTURE_2D);

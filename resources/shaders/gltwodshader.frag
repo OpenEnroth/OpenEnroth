@@ -20,7 +20,7 @@ void main() {
 
     if (paletteid > 0)
         if (index > 0)
-            fragcol = vec4(newcol.r / 255.0, newcol.g / 255.0, newcol.b / 255.0, 1.0);
+            fragcol = vec4(newcol.r, newcol.g, newcol.b, 1.0);
 
     FragColour =  fragcol * colour;
 }
