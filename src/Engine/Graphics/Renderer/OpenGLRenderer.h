@@ -205,7 +205,7 @@ class OpenGLRenderer : public BaseRenderer {
 
     // billboards shader
     GLuint billbVBO{}, billbVAO{};
-    GLuint palbuf{}, paltex{};
+    GLuint paltex2D{};
 
     // decal shader
     GLuint decalVBO{}, decalVAO{};
