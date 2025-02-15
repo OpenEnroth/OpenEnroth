@@ -419,7 +419,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
             (itemYspacing + (float)iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image);
         iteminfo_window.DrawTitleText(
             assets->pFontArrus.get(), 0, 0xCu, colorTable.PaleCanary,
-            pItemTable->pItems[inspect_item->itemId].pUnidentifiedName, 3);
+            pItemTable->pItems[inspect_item->itemId].unidentifiedName, 3);
         iteminfo_window.DrawTitleText(
             assets->pFontArrus.get(), 0x64u,
             ((int)iteminfo_window.uFrameHeight >> 1) -
@@ -438,7 +438,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
 
     text[0] = localization->FormatString(
         LSTR_FMT_TYPE_S,
-        pItemTable->pItems[inspect_item->itemId].pUnidentifiedName);
+        pItemTable->pItems[inspect_item->itemId].unidentifiedName);
 
     switch (inspect_item->GetItemEquipType()) {
         case ITEM_TYPE_SINGLE_HANDED:
@@ -514,9 +514,9 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
     for (const std::string &s : text)
         if (!s.empty())
             Str_int += assets->pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100) + 3;
-    if (!pItemTable->pItems[inspect_item->itemId].pDescription.empty())
+    if (!pItemTable->pItems[inspect_item->itemId].description.empty())
         Str_int += assets->pFontSmallnum->CalcTextHeight(
-            pItemTable->pItems[inspect_item->itemId].pDescription,
+            pItemTable->pItems[inspect_item->itemId].description,
             iteminfo_window.uFrameWidth, 100);
     iteminfo_window.uFrameHeight = inspect_item_image->height() + itemYspacing + 54;
     if ((signed int)Str_int > (signed int)iteminfo_window.uFrameHeight)
@@ -565,8 +565,8 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
             v34 += assets->pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100, 0) + 3;
         }
     }
-    if (!pItemTable->pItems[inspect_item->itemId].pDescription.empty())
-        iteminfo_window.DrawText(assets->pFontSmallnum.get(), {100, v34}, colorTable.White, pItemTable->pItems[inspect_item->itemId].pDescription);
+    if (!pItemTable->pItems[inspect_item->itemId].description.empty())
+        iteminfo_window.DrawText(assets->pFontSmallnum.get(), {100, v34}, colorTable.White, pItemTable->pItems[inspect_item->itemId].description);
     iteminfo_window.uFrameX += 12;
     iteminfo_window.uFrameWidth -= 24;
     iteminfo_window.DrawTitleText(assets->pFontArrus.get(), 0, 0xCu, colorTable.PaleCanary,

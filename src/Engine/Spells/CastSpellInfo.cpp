@@ -1401,7 +1401,7 @@ void CastSpellInfoHelpers::castSpell() {
                     int rnd = grng->random(100);
                     pPlayer = &pParty->pCharacters[pCastSpell->targetCharacterIndex];
                     ItemGen *spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->targetInventoryIndex];
-                    ItemType this_equip_type = pItemTable->pItems[spell_item_to_enchant->itemId].uEquipType;
+                    ItemType this_equip_type = pItemTable->pItems[spell_item_to_enchant->itemId].type;
 
                     // refs
                     // https://www.gog.com/forum/might_and_magic_series/a_little_enchant_item_testing_in_mm7
@@ -1980,7 +1980,7 @@ void CastSpellInfoHelpers::castSpell() {
                         } else {
                             for (const ItemGen &actorItem : pActors[monster_id].items) {
                                 if (actorItem.itemId != ITEM_NULL &&
-                                        pItemTable->pItems[actorItem.itemId].uEquipType != ITEM_TYPE_GOLD) {
+                                        pItemTable->pItems[actorItem.itemId].type != ITEM_TYPE_GOLD) {
                                     item = actorItem;
                                 }
                             }
@@ -2181,7 +2181,7 @@ void CastSpellInfoHelpers::castSpell() {
                         if (pSpriteObjects[obj_id].containing_item.isGold()) {
                             pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.goldAmount, GOLD_RECEIVE_SHARE);
                         } else {
-                            engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[obj_id].containing_item.itemId].pUnidentifiedName);
+                            engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[obj_id].containing_item.itemId].unidentifiedName);
                             if (!pParty->addItemToParty(&pSpriteObjects[obj_id].containing_item)) {
                                 pParty->setHoldingItem(&pSpriteObjects[obj_id].containing_item);
                             }

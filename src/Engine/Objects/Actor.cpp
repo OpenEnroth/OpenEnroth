@@ -1839,7 +1839,7 @@ void Actor::Die(unsigned int uActorID) {
     drop.itemId = itemDropForMonsterType(monsterTypeForMonsterId(actor->monsterInfo.id));
 
     if (grng->random(100) < 20 && drop.itemId != ITEM_NULL) {
-        SpriteObject::dropItemAt(pItemTable->pItems[drop.itemId].uSpriteID,
+        SpriteObject::dropItemAt(pItemTable->pItems[drop.itemId].spriteId,
                                  actor->pos + Vec3f(0, 0, 16), grng->random(200) + 200, 1, true, 0, &drop);
     }
 
@@ -3576,7 +3576,7 @@ void Actor::LootActor() {
         Dst.Reset();
         Dst.itemId = this->carriedItemId;
 
-        StatusBarItemFound(foundGold, pItemTable->pItems[Dst.itemId].pUnidentifiedName);
+        StatusBarItemFound(foundGold, pItemTable->pItems[Dst.itemId].unidentifiedName);
 
         if (Dst.isWand()) {
             Dst.numCharges = grng->random(6) + Dst.GetDamageMod() + 1;
@@ -3612,7 +3612,7 @@ void Actor::LootActor() {
             Dst = this->items[3];
             this->items[3].Reset();
 
-            StatusBarItemFound(foundGold, pItemTable->pItems[Dst.itemId].pUnidentifiedName);
+            StatusBarItemFound(foundGold, pItemTable->pItems[Dst.itemId].unidentifiedName);
 
             if (!pParty->addItemToParty(&Dst)) {
                 pParty->setHoldingItem(&Dst);
@@ -3623,7 +3623,7 @@ void Actor::LootActor() {
         if (grng->random(100) < this->monsterInfo.treasureDropChance && this->monsterInfo.treasureLevel != ITEM_TREASURE_LEVEL_INVALID) {
             pItemTable->generateItem(this->monsterInfo.treasureLevel, this->monsterInfo.treasureType, &Dst);
 
-            StatusBarItemFound(foundGold, pItemTable->pItems[Dst.itemId].pUnidentifiedName);
+            StatusBarItemFound(foundGold, pItemTable->pItems[Dst.itemId].unidentifiedName);
 
             if (!pParty->addItemToParty(&Dst)) {
                 pParty->setHoldingItem(&Dst);

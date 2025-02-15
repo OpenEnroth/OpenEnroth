@@ -155,7 +155,7 @@ void ItemGen::UpdateTempBonus(Time time) {
 
 //----- (00456442) --------------------------------------------------------
 int ItemGen::GetValue() const {
-    int uBaseValue = pItemTable->pItems[this->itemId].uValue;
+    int uBaseValue = pItemTable->pItems[this->itemId].baseValue;
     if (flags & ITEM_TEMP_BONUS || pItemTable->IsMaterialNonCommon(this))
         return uBaseValue;
     if (potionPower || attributeEnchantment) // TODO(captainurist): can drop potionPower?
@@ -177,7 +177,7 @@ std::string ItemGen::GetDisplayName() {
     if (IsIdentified()) {
         return GetIdentifiedName();
     } else {
-        return pItemTable->pItems[itemId].pUnidentifiedName;
+        return pItemTable->pItems[itemId].unidentifiedName;
     }
 }
 
@@ -724,11 +724,11 @@ ItemType ItemGen::GetItemEquipType() const {
     if (this->itemId == ITEM_NULL)
         return ITEM_TYPE_NONE;
     else
-        return pItemTable->pItems[this->itemId].uEquipType;
+        return pItemTable->pItems[this->itemId].type;
 }
 
 CharacterSkillType ItemGen::GetPlayerSkillType() const {
-    CharacterSkillType skl = pItemTable->pItems[this->itemId].uSkillType;
+    CharacterSkillType skl = pItemTable->pItems[this->itemId].skill;
     if (skl == CHARACTER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
         // club skill not used but some items load it
         skl = CHARACTER_SKILL_MACE;
@@ -741,15 +741,15 @@ const std::string& ItemGen::GetIconName() const {
 }
 
 uint8_t ItemGen::GetDamageDice() const {
-    return pItemTable->pItems[this->itemId].uDamageDice;
+    return pItemTable->pItems[this->itemId].damageDice;
 }
 
 uint8_t ItemGen::GetDamageRoll() const {
-    return pItemTable->pItems[this->itemId].uDamageRoll;
+    return pItemTable->pItems[this->itemId].damageRoll;
 }
 
 uint8_t ItemGen::GetDamageMod() const {
-    return pItemTable->pItems[this->itemId].uDamageMod;
+    return pItemTable->pItems[this->itemId].damageMod;
 }
 
 //----- (0043C91D) --------------------------------------------------------
@@ -758,7 +758,7 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
     // and textures under original ids simply don't exist.
     int texture_id = std::to_underlying(valueOr(itemTextureIdByItemId, item_id, item_id));
 
-    switch (pItemTable->pItems[item_id].uEquipType) {
+    switch (pItemTable->pItems[item_id].type) {
         case ITEM_TYPE_ARMOUR:
             if (shoulder == 0)
                 return fmt::format("item{:03}v{}", texture_id, index);

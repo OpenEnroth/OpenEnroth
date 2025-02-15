@@ -11,6 +11,8 @@
 #include "Engine/Time/Time.h"
 #include "Engine/MapEnums.h"
 
+#include "Library/Geometry/Point.h"
+
 #include "Utility/IndexedArray.h"
 
 class Character;
@@ -130,19 +132,18 @@ struct ItemGen {  // 0x24
 struct ItemDesc {
     std::string iconName = ""; // Item's icon as shown in character inventory, stored in icons.lod.
     std::string name = ""; // Item's base name, w/o any enchantments.
-    std::string pUnidentifiedName = ""; // Unidentified name.
-    std::string pDescription = ""; // Item description that's shown on right click.
-    uint32_t uValue = 0; // Item's base value in gold coins.
-    SpriteId uSpriteID = SPRITE_NULL; // Sprite id that's used when item is dropped.
+    std::string unidentifiedName = ""; // Unidentified name.
+    std::string description = ""; // Item description that's shown on right click.
+    uint32_t baseValue = 0; // Item's base value in gold coins.
+    SpriteId spriteId = SPRITE_NULL; // Sprite id that's used when item is dropped.
     int16_t field_1A = 0;
-    int16_t uEquipX = 0; // Paperdoll offset for the item sprite when equipped, relative to the item type-specific anchor point.
-    int16_t uEquipY = 0;
-    ItemType uEquipType = ITEM_TYPE_NONE; // Item type.
-    CharacterSkillType uSkillType = CHARACTER_SKILL_MISC; // Skill associated with the item. E.g. `CHARACTER_SKILL_SWORD`.
-    uint8_t uDamageDice = 0; // Damage dice.
-    uint8_t uDamageRoll = 0;
-    uint8_t uDamageMod = 0;
-    ItemRarity uMaterial = RARITY_COMMON; // Item rarity.
+    Pointi paperdollAnchorOffset; // Paperdoll offset for the item sprite when equipped, relative to the item type-specific anchor point.
+    ItemType type = ITEM_TYPE_NONE; // Item type.
+    CharacterSkillType skill = CHARACTER_SKILL_MISC; // Skill associated with the item. E.g. `CHARACTER_SKILL_SWORD`.
+    uint8_t damageDice = 0; // Damage dice.
+    uint8_t damageRoll = 0;
+    uint8_t damageMod = 0;
+    ItemRarity rarity = RARITY_COMMON; // Item rarity.
     ItemEnchantment specialEnchantment = ITEM_ENCHANTMENT_NULL; // Special enchantment, applied only to `RARITY_SPECIAL` items.
     std::optional<CharacterAttribute> attributeEnchantment; // Attribute enchantment, applied only to `RARITY_SPECIAL` items.
     int attributeEnchantmentStrength = 0; // Strength of the attribute enchantment above.
