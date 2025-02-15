@@ -205,7 +205,7 @@ void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &
     table["items"] = solState.create_table_with(
         "getItemInfo", sol::as_function([&solState, createItemTable](ItemId itemId) {
             if (itemId >= ITEM_FIRST_VALID && itemId <= ITEM_LAST_VALID) {
-                const ItemDesc &itemDesc = pItemTable->pItems[itemId];
+                const ItemDesc &itemDesc = pItemTable->items[itemId];
                 return sol::object(solState, createItemTable(itemDesc));
             }
             return sol::make_object(solState, sol::lua_nil);

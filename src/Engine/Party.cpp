@@ -1004,7 +1004,7 @@ void Party::dropHeldItem() {
     }
 
     SpriteObject sprite;
-    sprite.uType = pItemTable->pItems[pPickedItem.itemId].spriteId;
+    sprite.uType = pItemTable->items[pPickedItem.itemId].spriteId;
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
     sprite.spell_caster_pid = Pid(OBJECT_Character, 0);
     sprite.vPosition = pos + Vec3f(0, 0, eyeLevel);
@@ -1036,11 +1036,11 @@ void Party::placeHeldItemInInventoryOrDrop() {
 }
 
 bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
-    if (!pItemTable->pItems[pItem->itemId].identifyDifficulty) {
+    if (!pItemTable->items[pItem->itemId].identifyDifficulty) {
         pItem->SetIdentified();
     }
 
-    if (!pItemTable->pItems[pItem->itemId].iconName.empty()) {
+    if (!pItemTable->items[pItem->itemId].iconName.empty()) {
         int playerId = hasActiveCharacter() ? (pParty->_activeCharacter - 1) : 0;
         for (int i = 0; i < pCharacters.size(); i++, playerId++) {
             if (playerId >= pCharacters.size()) {

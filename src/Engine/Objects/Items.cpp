@@ -155,7 +155,7 @@ void ItemGen::UpdateTempBonus(Time time) {
 
 //----- (00456442) --------------------------------------------------------
 int ItemGen::GetValue() const {
-    int uBaseValue = pItemTable->pItems[this->itemId].baseValue;
+    int uBaseValue = pItemTable->items[this->itemId].baseValue;
     if (flags & ITEM_TEMP_BONUS || pItemTable->IsMaterialNonCommon(this))
         return uBaseValue;
     if (potionPower || attributeEnchantment) // TODO(captainurist): can drop potionPower?
@@ -163,7 +163,7 @@ int ItemGen::GetValue() const {
 
     if (specialEnchantment != ITEM_ENCHANTMENT_NULL) {
         int mod = (pItemTable->pSpecialEnchantments[specialEnchantment].iTreasureLevel & 4);
-        int bonus = pItemTable->pSpecialEnchantments[specialEnchantment].iValue;
+        int bonus = pItemTable->pSpecialEnchantments[specialEnchantment].additionalValue;
         if (!mod)
             return uBaseValue + bonus;
         else
@@ -177,7 +177,7 @@ std::string ItemGen::GetDisplayName() {
     if (IsIdentified()) {
         return GetIdentifiedName();
     } else {
-        return pItemTable->pItems[itemId].unidentifiedName;
+        return pItemTable->items[itemId].unidentifiedName;
     }
 }
 
@@ -186,7 +186,7 @@ std::string ItemGen::GetIdentifiedName() {
     ItemType equip_type = GetItemEquipType();
     if ((equip_type == ITEM_TYPE_REAGENT) || (equip_type == ITEM_TYPE_POTION) ||
         (equip_type == ITEM_TYPE_GOLD)) {
-        return pItemTable->pItems[itemId].name;
+        return pItemTable->items[itemId].name;
     }
 
     if (itemId == ITEM_QUEST_LICH_JAR_FULL) {  // Lich Jar
@@ -201,10 +201,10 @@ std::string ItemGen::GetIdentifiedName() {
 
     if (!pItemTable->IsMaterialNonCommon(this)) {
         if (attributeEnchantment) {
-            return std::string(pItemTable->pItems[itemId].name) + " " +
-                   pItemTable->standardEnchantments[*attributeEnchantment].pOfName;
+            return std::string(pItemTable->items[itemId].name) + " " +
+                   pItemTable->standardEnchantments[*attributeEnchantment].itemSuffix;
         } else if (specialEnchantment == ITEM_ENCHANTMENT_NULL) {
-            return pItemTable->pItems[itemId].name;
+            return pItemTable->items[itemId].name;
         } else {
             if (specialEnchantment == ITEM_ENCHANTMENT_VAMPIRIC
                 || specialEnchantment == ITEM_ENCHANTMENT_DEMON_SLAYING
@@ -223,17 +223,17 @@ std::string ItemGen::GetIdentifiedName() {
             ) {            // enchantment and name positions inverted!
                 return fmt::format(
                     "{} {}",
-                    pItemTable->pSpecialEnchantments[specialEnchantment].pNameAdd,
-                    pItemTable->pItems[itemId].name
+                    pItemTable->pSpecialEnchantments[specialEnchantment].itemSuffixOrPrefix,
+                    pItemTable->items[itemId].name
                 );
             } else {
-                return std::string(pItemTable->pItems[itemId].name) + " " +
-                       pItemTable->pSpecialEnchantments[specialEnchantment].pNameAdd;
+                return std::string(pItemTable->items[itemId].name) + " " +
+                       pItemTable->pSpecialEnchantments[specialEnchantment].itemSuffixOrPrefix;
             }
         }
     }
 
-    return pItemTable->pItems[itemId].name;
+    return pItemTable->items[itemId].name;
 }
 
 //----- (004505CC) --------------------------------------------------------
@@ -724,11 +724,11 @@ ItemType ItemGen::GetItemEquipType() const {
     if (this->itemId == ITEM_NULL)
         return ITEM_TYPE_NONE;
     else
-        return pItemTable->pItems[this->itemId].type;
+        return pItemTable->items[this->itemId].type;
 }
 
 CharacterSkillType ItemGen::GetPlayerSkillType() const {
-    CharacterSkillType skl = pItemTable->pItems[this->itemId].skill;
+    CharacterSkillType skl = pItemTable->items[this->itemId].skill;
     if (skl == CHARACTER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
         // club skill not used but some items load it
         skl = CHARACTER_SKILL_MACE;
@@ -737,19 +737,19 @@ CharacterSkillType ItemGen::GetPlayerSkillType() const {
 }
 
 const std::string& ItemGen::GetIconName() const {
-    return pItemTable->pItems[this->itemId].iconName;
+    return pItemTable->items[this->itemId].iconName;
 }
 
 uint8_t ItemGen::GetDamageDice() const {
-    return pItemTable->pItems[this->itemId].damageDice;
+    return pItemTable->items[this->itemId].damageDice;
 }
 
 uint8_t ItemGen::GetDamageRoll() const {
-    return pItemTable->pItems[this->itemId].damageRoll;
+    return pItemTable->items[this->itemId].damageRoll;
 }
 
 uint8_t ItemGen::GetDamageMod() const {
-    return pItemTable->pItems[this->itemId].damageMod;
+    return pItemTable->items[this->itemId].damageMod;
 }
 
 //----- (0043C91D) --------------------------------------------------------
@@ -758,7 +758,7 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
     // and textures under original ids simply don't exist.
     int texture_id = std::to_underlying(valueOr(itemTextureIdByItemId, item_id, item_id));
 
-    switch (pItemTable->pItems[item_id].type) {
+    switch (pItemTable->items[item_id].type) {
         case ITEM_TYPE_ARMOUR:
             if (shoulder == 0)
                 return fmt::format("item{:03}v{}", texture_id, index);

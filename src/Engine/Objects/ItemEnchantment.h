@@ -18,21 +18,19 @@ struct CEnchantment {
     int statBonus = 0;
 };
 
-struct ItemEnchantmentTable {  // Bonus|Sta|Of
-                          // Name|Arm|Shld|Helm|Belt|Cape|Gaunt|Boot|Ring|Amul
-    std::string pBonusStat;
-    std::string pOfName;
-    IndexedArray<unsigned char, ITEM_TYPE_FIRST_NORMAL_ENCHANTABLE, ITEM_TYPE_LAST_NORMAL_ENCHANTABLE> chancesByItemType;
+// TODO(captainurist): belongs to Engine/Data.
+
+struct ItemEnchantmentTable {
+    std::string attributeName; // Name of the attribute this applies to, e.g. "Might" or "Armsmaster skill".
+    std::string itemSuffix; // Suffix for the enchanted item, e.g. "of Might" or "of Arms".
+    IndexedArray<unsigned char, ITEM_TYPE_FIRST_NORMAL_ENCHANTABLE, ITEM_TYPE_LAST_NORMAL_ENCHANTABLE> chanceByItemType;
 };
 
-struct ItemSpecialEnchantmentTable {  // 1Ch
-                                 // Bonus Stat|Name
-    // Add|W1|W2|Miss|Arm|Shld|Helm|Belt|Cape|Gaunt|Boot|Ring|Amul|Value|Lvl|Description
-    // fo special Bonuses and values
-
-    std::string pBonusStatement;   // 0
-    std::string pNameAdd;          // 4
-    IndexedArray<char, ITEM_TYPE_FIRST_SPECIAL_ENCHANTABLE, ITEM_TYPE_LAST_SPECIAL_ENCHANTABLE> to_item_apply;  // 8
-    int iValue;              // 14
-    int iTreasureLevel;      // 18
+struct ItemSpecialEnchantmentTable {
+    std::string description; // Enchantment description, e.g. "Explosive impact!".
+    std::string itemSuffixOrPrefix; // Suffix or prefix for the enchanted item, e.g. "of Carnage". Whether it's a prefix
+                                    // or a suffix is hardcoded in item name generation function.
+    IndexedArray<char, ITEM_TYPE_FIRST_SPECIAL_ENCHANTABLE, ITEM_TYPE_LAST_SPECIAL_ENCHANTABLE> chanceByItemType;
+    int additionalValue; // Value in gold added to enchanted item's base value.
+    int iTreasureLevel;
 };

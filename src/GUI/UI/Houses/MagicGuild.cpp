@@ -374,6 +374,6 @@ void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
         itemSpellbook->itemId = pItemNum;
         itemSpellbook->SetIdentified();
 
-        shop_ui_items_in_store[i] = assets->getImage_ColorKey(pItemTable->pItems[pItemNum].iconName);
+        shop_ui_items_in_store[i] = assets->getImage_ColorKey(pItemTable->items[pItemNum].iconName);
     }
 }

@@ -1401,7 +1401,7 @@ void CastSpellInfoHelpers::castSpell() {
                     int rnd = grng->random(100);
                     pPlayer = &pParty->pCharacters[pCastSpell->targetCharacterIndex];
                     ItemGen *spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->targetInventoryIndex];
-                    ItemType this_equip_type = pItemTable->pItems[spell_item_to_enchant->itemId].type;
+                    ItemType this_equip_type = pItemTable->items[spell_item_to_enchant->itemId].type;
 
                     // refs
                     // https://www.gog.com/forum/might_and_magic_series/a_little_enchant_item_testing_in_mm7
@@ -1441,9 +1441,9 @@ void CastSpellInfoHelpers::castSpell() {
                                     // finds how many possible enchaments and adds up to item apply values
                                     // if (pItemTable->pEnchantments_count > 0) {
                                     for (CharacterAttribute attr : allEnchantableAttributes()) {
-                                        const std::string &bonusStat = pItemTable->standardEnchantments[attr].pBonusStat;
+                                        const std::string &bonusStat = pItemTable->standardEnchantments[attr].attributeName;
                                         if (!bonusStat.empty()) {
-                                            int this_to_apply = pItemTable->standardEnchantments[attr].chancesByItemType[this_equip_type];
+                                            int this_to_apply = pItemTable->standardEnchantments[attr].chanceByItemType[this_equip_type];
                                             to_item_apply_sum += this_to_apply;
                                             if (this_to_apply) {
                                                 ench_array[ench_found] = attr;
@@ -1461,7 +1461,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     // step through until we hit that ench
                                     for (step = 0; step < ench_found; step++) {
-                                        current_item_apply_sum += pItemTable->standardEnchantments[ench_array[step]].chancesByItemType[this_equip_type];
+                                        current_item_apply_sum += pItemTable->standardEnchantments[ench_array[step]].chanceByItemType[this_equip_type];
                                         if (current_item_apply_sum >= target_item_apply_rand) {
                                             break;
                                         }
@@ -1488,7 +1488,7 @@ void CastSpellInfoHelpers::castSpell() {
                                     // finds how many possible enchaments and adds up to item apply values
                                     if (pItemTable->pSpecialEnchantments_count > 0) {
                                         for (ItemEnchantment spec_ench_loop : pItemTable->pSpecialEnchantments.indices()) {
-                                            const std::string &bonusStatement = pItemTable->pSpecialEnchantments[spec_ench_loop].pBonusStatement;
+                                            const std::string &bonusStatement = pItemTable->pSpecialEnchantments[spec_ench_loop].description;
                                             if (!bonusStatement.empty()) {
                                                 if (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel == 3) {
                                                     continue;
@@ -1496,7 +1496,7 @@ void CastSpellInfoHelpers::castSpell() {
                                                 if (spell_mastery == CHARACTER_SKILL_MASTERY_MASTER && (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel != 0)) {
                                                     continue;
                                                 }
-                                                int this_to_apply = pItemTable->pSpecialEnchantments[spec_ench_loop].to_item_apply[this_equip_type];
+                                                int this_to_apply = pItemTable->pSpecialEnchantments[spec_ench_loop].chanceByItemType[this_equip_type];
                                                 to_item_apply_sum += this_to_apply;
                                                 if (this_to_apply) {
                                                     ench_array[ench_found] = spec_ench_loop;
@@ -1514,7 +1514,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     // step through until we hit that ench
                                     for (step = 0; step < ench_found; step++) {
-                                        current_item_apply_sum += pItemTable->pSpecialEnchantments[ench_array[step]].to_item_apply[this_equip_type];
+                                        current_item_apply_sum += pItemTable->pSpecialEnchantments[ench_array[step]].chanceByItemType[this_equip_type];
                                         if (current_item_apply_sum >= target_item_apply_rand) {
                                             break;
                                         }
@@ -1980,7 +1980,7 @@ void CastSpellInfoHelpers::castSpell() {
                         } else {
                             for (const ItemGen &actorItem : pActors[monster_id].items) {
                                 if (actorItem.itemId != ITEM_NULL &&
-                                        pItemTable->pItems[actorItem.itemId].type != ITEM_TYPE_GOLD) {
+                                        pItemTable->items[actorItem.itemId].type != ITEM_TYPE_GOLD) {
                                     item = actorItem;
                                 }
                             }
@@ -2181,7 +2181,7 @@ void CastSpellInfoHelpers::castSpell() {
                         if (pSpriteObjects[obj_id].containing_item.isGold()) {
                             pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.goldAmount, GOLD_RECEIVE_SHARE);
                         } else {
-                            engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[obj_id].containing_item.itemId].unidentifiedName);
+                            engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->items[pSpriteObjects[obj_id].containing_item.itemId].unidentifiedName);
                             if (!pParty->addItemToParty(&pSpriteObjects[obj_id].containing_item)) {
                                 pParty->setHoldingItem(&pSpriteObjects[obj_id].containing_item);
                             }

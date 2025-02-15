@@ -217,14 +217,14 @@ void ViewingParams::_443365() {
 }
 
 void ItemInteraction(unsigned int item_id) {
-    if (pItemTable->pItems[pSpriteObjects[item_id].containing_item.itemId].type == ITEM_TYPE_GOLD) {
+    if (pItemTable->items[pSpriteObjects[item_id].containing_item.itemId].type == ITEM_TYPE_GOLD) {
         pParty->partyFindsGold(pSpriteObjects[item_id].containing_item.goldAmount, GOLD_RECEIVE_SHARE);
     } else {
         if (pParty->pPickedItem.itemId != ITEM_NULL) {
             return;
         }
 
-        engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[item_id].containing_item.itemId].unidentifiedName);
+        engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->items[pSpriteObjects[item_id].containing_item.itemId].unidentifiedName);
 
         // TODO: WTF? 184 / 185 qbits are associated with Tatalia's Mercenery Guild Harmondale raids. Are these about castle's tapestries ?
         if (pSpriteObjects[item_id].containing_item.itemId == ITEM_ARTIFACT_SPLITTER) {

@@ -330,7 +330,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
     // added so window is correct size with broken items
     iteminfo_window.uFrameHeight = inspect_item_image->height() + itemYspacing + 54;
 
-    if (!pItemTable->pItems[inspect_item->itemId].identifyDifficulty)
+    if (!pItemTable->items[inspect_item->itemId].identifyDifficulty)
         inspect_item->SetIdentified();
 
     int GoldAmount = 0;
@@ -419,7 +419,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
             (itemYspacing + (float)iteminfo_window.uFrameY + 30) / 480.0f, inspect_item_image);
         iteminfo_window.DrawTitleText(
             assets->pFontArrus.get(), 0, 0xCu, colorTable.PaleCanary,
-            pItemTable->pItems[inspect_item->itemId].unidentifiedName, 3);
+            pItemTable->items[inspect_item->itemId].unidentifiedName, 3);
         iteminfo_window.DrawTitleText(
             assets->pFontArrus.get(), 0x64u,
             ((int)iteminfo_window.uFrameHeight >> 1) -
@@ -438,7 +438,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
 
     text[0] = localization->FormatString(
         LSTR_FMT_TYPE_S,
-        pItemTable->pItems[inspect_item->itemId].unidentifiedName);
+        pItemTable->items[inspect_item->itemId].unidentifiedName);
 
     switch (inspect_item->GetItemEquipType()) {
         case ITEM_TYPE_SINGLE_HANDED:
@@ -494,12 +494,12 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
         } else if (inspect_item->attributeEnchantment) {
             text[2] = fmt::format("{}: {} +{}",
                                   localization->GetString(LSTR_SPECIAL_2),
-                                  pItemTable->standardEnchantments[*inspect_item->attributeEnchantment].pBonusStat,
+                                  pItemTable->standardEnchantments[*inspect_item->attributeEnchantment].attributeName,
                                   inspect_item->attributeEnchantmentStrength);
         } else if (inspect_item->specialEnchantment != ITEM_ENCHANTMENT_NULL) {
             text[2] = fmt::format("{}: {}",
                                   localization->GetString(LSTR_SPECIAL_2),
-                                  pItemTable->pSpecialEnchantments[inspect_item->specialEnchantment].pBonusStatement);
+                                  pItemTable->pSpecialEnchantments[inspect_item->specialEnchantment].description);
         } else if (inspect_item->isWand()) {
             text[2] = fmt::sprintf(localization->GetString(LSTR_FMT_S_U_OUT_OF_U),
                                    localization->GetString(LSTR_CHARGES),
@@ -514,9 +514,9 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
     for (const std::string &s : text)
         if (!s.empty())
             Str_int += assets->pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100) + 3;
-    if (!pItemTable->pItems[inspect_item->itemId].description.empty())
+    if (!pItemTable->items[inspect_item->itemId].description.empty())
         Str_int += assets->pFontSmallnum->CalcTextHeight(
-            pItemTable->pItems[inspect_item->itemId].description,
+            pItemTable->items[inspect_item->itemId].description,
             iteminfo_window.uFrameWidth, 100);
     iteminfo_window.uFrameHeight = inspect_item_image->height() + itemYspacing + 54;
     if ((signed int)Str_int > (signed int)iteminfo_window.uFrameHeight)
@@ -565,8 +565,8 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
             v34 += assets->pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100, 0) + 3;
         }
     }
-    if (!pItemTable->pItems[inspect_item->itemId].description.empty())
-        iteminfo_window.DrawText(assets->pFontSmallnum.get(), {100, v34}, colorTable.White, pItemTable->pItems[inspect_item->itemId].description);
+    if (!pItemTable->items[inspect_item->itemId].description.empty())
+        iteminfo_window.DrawText(assets->pFontSmallnum.get(), {100, v34}, colorTable.White, pItemTable->items[inspect_item->itemId].description);
     iteminfo_window.uFrameX += 12;
     iteminfo_window.uFrameWidth -= 24;
     iteminfo_window.DrawTitleText(assets->pFontArrus.get(), 0, 0xCu, colorTable.PaleCanary,
@@ -2270,7 +2270,7 @@ void Inventory_ItemPopupAndAlchemy() {
                     pParty->activeCharacter().SetVariable(VAR_AutoNotes, pItemTable->potionNotes[potionSrc1][potionSrc2]);
                 }
             }
-            if (!(pItemTable->pItems[item->itemId].identifyDifficulty)) {
+            if (!(pItemTable->items[item->itemId].identifyDifficulty)) {
                 item->flags |= ITEM_IDENTIFIED;
             }
             pParty->activeCharacter().playReaction(SPEECH_POTION_SUCCESS);

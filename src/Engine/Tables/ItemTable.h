@@ -28,8 +28,8 @@ struct ItemTable {
     bool IsMaterialSpecial(const ItemGen *pItem);
     bool IsMaterialNonCommon(const ItemGen *pItem);
 
-    IndexedArray<ItemDesc, ITEM_FIRST_VALID, ITEM_LAST_VALID> pItems;                   // 4-9604h
-    IndexedArray<ItemEnchantmentTable, ATTRIBUTE_FIRST_ENCHANTABLE, ATTRIBUTE_LAST_ENCHANTABLE> standardEnchantments;                // 9604h
+    IndexedArray<ItemDesc, ITEM_FIRST_VALID, ITEM_LAST_VALID> items;
+    IndexedArray<ItemEnchantmentTable, ATTRIBUTE_FIRST_ENCHANTABLE, ATTRIBUTE_LAST_ENCHANTABLE> standardEnchantments;
     IndexedArray<ItemSpecialEnchantmentTable, ITEM_ENCHANTMENT_FIRST_VALID, ITEM_ENCHANTMENT_LAST_VALID> pSpecialEnchantments;  // 97E4h -9FC4h
     char field_9FC4[5000];
     char field_B348[5000];

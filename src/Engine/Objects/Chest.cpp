@@ -247,7 +247,7 @@ bool Chest::CanPlaceItemAt(int test_cell_position, ItemId item_id, int uChestID)
     int chest_cell_heght = pChestHeightsByType[vChests[uChestID].uChestBitmapID];
     int chest_cell_width = pChestWidthsByType[vChests[uChestID].uChestBitmapID];
 
-    auto img = assets->getImage_ColorKey(pItemTable->pItems[item_id].iconName);
+    auto img = assets->getImage_ColorKey(pItemTable->items[item_id].iconName);
     int slot_width = GetSizeInInventorySlots(img->width());
     int slot_height = GetSizeInInventorySlots(img->height());
 
@@ -347,7 +347,7 @@ void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, in
         vChests[uChestID].igChestItems[item_at_cell].maxCharges = v6;
     }
 
-    auto img = assets->getImage_Alpha(pItemTable->pItems[uItemID].iconName);
+    auto img = assets->getImage_Alpha(pItemTable->items[uItemID].iconName);
 
     int v9 = img->width();
     if (v9 < 14) v9 = 14;
@@ -529,7 +529,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
             if (pParty->hasActiveCharacter() && (InventSlot = pParty->activeCharacter().AddItem(-1, chestitem.itemId)) != 0) {  // can place
                 pParty->activeCharacter().pInventoryItemList[InventSlot - 1] = chestitem;
                 grabcount++;
-                engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[chestitem.itemId].unidentifiedName);
+                engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->items[chestitem.itemId].unidentifiedName);
             } else {  // no room so set as holding item
                 pParty->setHoldingItem(&chestitem);
                 RemoveItemAtChestIndex(loop);
