@@ -545,13 +545,13 @@ GAME_TEST(Issues, Issue1925) {
         test.startTaping();
         game.tick();
 
-        // Equip staff.
-        ItemGen staff;
-        staff.itemId = ITEM_WAND_OF_FIRE;
-        staff.numCharges = staff.maxCharges = 1;
+        // Equip wand.
+        ItemGen wand;
+        wand.itemId = ITEM_WAND_OF_FIRE;
+        wand.numCharges = wand.maxCharges = 1;
         game.runGameRoutine([&] {
             // This code needs to be run in game thread b/c AddItem2 is loading textures...
-            pParty->pPickedItem = staff;
+            pParty->pPickedItem = wand;
             pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
         });
         game.tick();
@@ -564,11 +564,11 @@ GAME_TEST(Issues, Issue1925) {
 
         EXPECT_EQ(wandTape, wandsDisappear ? tape(false, true, false) : tape(false, true));
         if (!wandsDisappear) {
-            const ItemGen *dischargedStaff = pParty->pCharacters[0].GetItem(ITEM_SLOT_MAIN_HAND);
-            EXPECT_NE(dischargedStaff, nullptr);
-            EXPECT_EQ(dischargedStaff->itemId, ITEM_WAND_OF_FIRE);
-            EXPECT_EQ(dischargedStaff->numCharges, 0);
-            EXPECT_EQ(dischargedStaff->maxCharges, 1);
+            const ItemGen *dischargedWand = pParty->pCharacters[0].GetItem(ITEM_SLOT_MAIN_HAND);
+            EXPECT_NE(dischargedWand, nullptr);
+            EXPECT_EQ(dischargedWand->itemId, ITEM_WAND_OF_FIRE);
+            EXPECT_EQ(dischargedWand->numCharges, 0);
+            EXPECT_EQ(dischargedWand->maxCharges, 1);
         }
         EXPECT_CONTAINS(spritesTape.flattened(), SPRITE_SPELL_FIRE_FIRE_BOLT);
     }

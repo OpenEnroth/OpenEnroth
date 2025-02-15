@@ -306,7 +306,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
         case EVENT_Subtract:
             // We had a couple issues with quest items not being removed from inventory, and the reason was that the
             // character target wasn't properly set in the script. Thus, we don't even check `_who` here and just try
-            // to take the item from all characters.
+            // to take the item from all characters. See issues #1808 and #1912.
             if (ir.data.variable_descr.type == VAR_PlayerItemInHands/* && (_who == CHOOSE_PARTY || _who == CHOOSE_ACTIVE)*/) {
                 for (Character &character : pParty->pCharacters) {
                     if (character.hasItem((ItemId)ir.data.variable_descr.value, 1)) {
