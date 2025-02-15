@@ -276,11 +276,11 @@ GAME_TEST(Issues, Issue1685) {
     pParty->pCharacters[1].name = "Nicholas";
 
     ItemGen jar1;
-    jar1.itemId = ItemId::ITEM_QUEST_LICH_JAR_FULL;
+    jar1.itemId = ITEM_QUEST_LICH_JAR_FULL;
     jar1.lichJarCharacterIndex = 0;
 
     ItemGen jar2;
-    jar2.itemId = ItemId::ITEM_QUEST_LICH_JAR_FULL;
+    jar2.itemId = ITEM_QUEST_LICH_JAR_FULL;
     jar2.lichJarCharacterIndex = 1;
 
     game.runGameRoutine([&] {
@@ -513,9 +513,9 @@ GAME_TEST(Issues, Issue1890) {
 GAME_TEST(Issues, Issue1910) {
     // Insane condition doesn't affect character attributes when there is Weak condition.
     // We test this for both vanilla & grayface condition priorities.
-    for (int i = 0; i < 2; i++) {
+    for (bool useAlternativePriorities : {true, false}) {
         test.prepareForNextTest();
-        engine->config->gameplay.AlternativeConditionPriorities.setValue(i == 0);
+        engine->config->gameplay.AlternativeConditionPriorities.setValue(useAlternativePriorities);
 
         auto intTape = charTapes.stat(0, ATTRIBUTE_INTELLIGENCE);
         auto strTape = charTapes.stat(0, ATTRIBUTE_MIGHT);
@@ -529,5 +529,47 @@ GAME_TEST(Issues, Issue1910) {
 
         EXPECT_EQ(intTape, tape(5, 0)); // Int -90% b/c insane.
         EXPECT_EQ(strTape, tape(30, 60)); // Str +100% b/c insane.
+    }
+}
+
+GAME_TEST(Issues, Issue1925) {
+    // Test for wand behaviour.
+    for (bool wandsDisappear : {true, false}) {
+        test.prepareForNextTest();
+        engine->config->gameplay.DestroyDischargedWands.setValue(wandsDisappear);
+
+        auto wandTape = tapes.hasItem(ITEM_WAND_OF_FIRE);
+        auto spritesTape = tapes.sprites();
+
+        game.startNewGame();
+        test.startTaping();
+        game.tick();
+
+        // Equip staff.
+        ItemGen staff;
+        staff.itemId = ITEM_WAND_OF_FIRE;
+        staff.numCharges = staff.maxCharges = 1;
+        game.runGameRoutine([&] {
+            // This code needs to be run in game thread b/c AddItem2 is loading textures...
+            pParty->pPickedItem = staff;
+            pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
+        });
+        game.tick();
+
+        // Attack.
+        game.pressKey(PlatformKey::KEY_A);
+        game.tick();
+        game.releaseKey(PlatformKey::KEY_A);
+        game.tick();
+
+        EXPECT_EQ(wandTape, wandsDisappear ? tape(false, true, false) : tape(false, true));
+        if (!wandsDisappear) {
+            const ItemGen *dischargedStaff = pParty->pCharacters[0].GetItem(ITEM_SLOT_MAIN_HAND);
+            EXPECT_NE(dischargedStaff, nullptr);
+            EXPECT_EQ(dischargedStaff->itemId, ITEM_WAND_OF_FIRE);
+            EXPECT_EQ(dischargedStaff->numCharges, 0);
+            EXPECT_EQ(dischargedStaff->maxCharges, 1);
+        }
+        EXPECT_CONTAINS(spritesTape.flattened(), SPRITE_SPELL_FIRE_FIRE_BOLT);
     }
 }

@@ -6817,12 +6817,14 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
     int main_hand_idx = character->pEquipment[ITEM_SLOT_MAIN_HAND];
     if (main_hand_idx) {
-        const ItemGen *item = &character->pInventoryItemList[main_hand_idx - 1];
+        ItemGen *item = &character->pInventoryItemList[main_hand_idx - 1];
         if (!item->IsBroken()) {
             if (item->isWand()) {
                 if (item->numCharges <= 0) {
-                    if (engine->config->gameplay.DestroyDischargedWands.value())
-                        character->pEquipment[ITEM_SLOT_MAIN_HAND] = 0;  // wand discharged - unequip
+                    if (engine->config->gameplay.DestroyDischargedWands.value()) {
+                        character->pEquipment[ITEM_SLOT_MAIN_HAND] = 0; // Wand discharged - destroy it.
+                        item->Reset();
+                    }
                 } else {
                     wand_item_id = item->itemId;
                 }
@@ -6872,8 +6874,10 @@ void Character::_42ECB5_CharacterAttacksActor() {
                                 pParty->activeCharacterIndex() - 1, WANDS_SKILL_VALUE, 0, pParty->activeCharacterIndex() + 8);
 
         // reduce wand charges
-        if (!--character->pInventoryItemList[main_hand_idx - 1].numCharges && engine->config->gameplay.DestroyDischargedWands.value())
+        if (!--character->pInventoryItemList[main_hand_idx - 1].numCharges && engine->config->gameplay.DestroyDischargedWands.value()) {
+            character->pInventoryItemList[main_hand_idx - 1].Reset();
             character->pEquipment[ITEM_SLOT_MAIN_HAND] = 0;
+        }
     } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
         melee_attack = true;
 
