@@ -705,7 +705,7 @@ std::string EvtInstruction::toString() const {
             return fmt::format("{}: ChangeDoorState({}, {})", step, data.door_descr.door_id, std::to_underlying(data.door_descr.door_action));
         case EVENT_Add:
             return fmt::format("{}: Add({})", step, getVariableSetStr(data.variable_descr.type, data.variable_descr.value));
-        case EVENT_Substract:
+        case EVENT_Subtract:
             return fmt::format("{}: Sub({})", step, getVariableSetStr(data.variable_descr.type, data.variable_descr.value));
         case EVENT_Set:
             return fmt::format("{}: Set({})", step, getVariableSetStr(data.variable_descr.type, data.variable_descr.value));
@@ -942,7 +942,7 @@ EvtInstruction EvtInstruction::parse(SequentialBlobReader &sbr, const size_t siz
             ir.data.door_descr.door_action = static_cast<DoorAction>(sbr.read<uint8_t>());
             break;
         case EVENT_Add:
-        case EVENT_Substract:
+        case EVENT_Subtract:
         case EVENT_Set:
             requireSize(8);
             ir.data.variable_descr.type = static_cast<EvtVariable>(sbr.read<uint16_t>());
