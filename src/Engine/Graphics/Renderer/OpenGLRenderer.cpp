@@ -2568,7 +2568,7 @@ void OpenGLRenderer::DrawBillboards() {
         glEnableVertexAttribArray(5);
     }
 
-    GLint paltex2D_id = 9;
+    constexpr GLint paltex2D_id = 1;
     if (paltex2D == 0) {
         std::span<Color> palettes = pPaletteManager->paletteData();
         glActiveTexture(GL_TEXTURE0 + paltex2D_id);
@@ -2596,6 +2596,7 @@ void OpenGLRenderer::DrawBillboards() {
     billbshader.use();
 
     // set sampler to palette
+    glActiveTexture(GL_TEXTURE0 + paltex2D_id);
     glBindTexture(GL_TEXTURE_2D, paltex2D);
     glUniform1i(billbshader.uniformLocation("paltex2D"), paltex2D_id);
 
@@ -5019,7 +5020,7 @@ void OpenGLRenderer::DrawTwodVerts() {
         glEnableVertexAttribArray(4);
     }
 
-    GLint paltex2D_id = 9;
+    constexpr GLint paltex2D_id = 1;
     if (paltex2D == 0) {
         std::span<Color> palettes = pPaletteManager->paletteData();
         glActiveTexture(GL_TEXTURE0 + paltex2D_id);
@@ -5046,6 +5047,7 @@ void OpenGLRenderer::DrawTwodVerts() {
     twodshader.use();
 
     // set sampler to palette
+    glActiveTexture(GL_TEXTURE0 + paltex2D_id);
     glBindTexture(GL_TEXTURE_2D, paltex2D);
     glUniform1i(twodshader.uniformLocation("paltex2D"), paltex2D_id);
 
