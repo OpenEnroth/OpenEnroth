@@ -76,7 +76,7 @@ var searchData=
   ['event_5fspecialjump_73',['EVENT_SpecialJump',['../EvtEnums_8h.html#ac39850bb9bb1fe3f9171a064e810c997a4bfabde6c615a245192c4d56edf56ecf',1,'EvtEnums.h']]],
   ['event_5fstatustext_74',['EVENT_StatusText',['../EvtEnums_8h.html#ac39850bb9bb1fe3f9171a064e810c997a298f77d50d61020a883cf345b0db7f32',1,'EvtEnums.h']]],
   ['event_5fstopanimation_75',['EVENT_StopAnimation',['../EvtEnums_8h.html#ac39850bb9bb1fe3f9171a064e810c997a9e09356769c0a2c6f3224980a59ce49d',1,'EvtEnums.h']]],
-  ['event_5fsubstract_76',['EVENT_Substract',['../EvtEnums_8h.html#ac39850bb9bb1fe3f9171a064e810c997adcbd20ba32e82c35fa06b451e0ccf5ee',1,'EvtEnums.h']]],
+  ['event_5fsubtract_76',['EVENT_Subtract',['../EvtEnums_8h.html#ac39850bb9bb1fe3f9171a064e810c997a8ae88bf384ddeed10157b93da542f259',1,'EvtEnums.h']]],
   ['event_5fsummonitem_77',['EVENT_SummonItem',['../EvtEnums_8h.html#ac39850bb9bb1fe3f9171a064e810c997ad97ea5fc9ddeedd5abd750310112e891',1,'EvtEnums.h']]],
   ['event_5fsummonmonsters_78',['EVENT_SummonMonsters',['../EvtEnums_8h.html#ac39850bb9bb1fe3f9171a064e810c997a451f227c43f9e1aed45f57b1d02aafdd',1,'EvtEnums.h']]],
   ['event_5ftext_5finput_79',['EVENT_TEXT_INPUT',['../PlatformEnums_8h.html#a6a1d0a28a0e3e29d51315d4192d852f4a1a61ca57b32b51e8225d0d10119420f9',1,'PlatformEnums.h']]],
