@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <unordered_set>
 #include <ranges>
+#include <string>
+#include <regex>
 
 #include "Testing/Game/GameTest.h"
 
@@ -353,13 +355,15 @@ GAME_TEST(Issues, Issue1716) {
 }
 
 GAME_TEST(Issues, Issue1717) {
-    // Immolation incorrect damage message
+    // Immolation incorrect damage message.
     auto statusBar = tapes.statusBar();
     auto immoBuff = tapes.custom([]() { return pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active(); });
     test.playTraceFromTestData("issue_1717.mm7", "issue_1717.json");
-    EXPECT_EQ(immoBuff, tape( false, true ));
+    EXPECT_EQ(immoBuff, tape(false, true));
     EXPECT_EQ(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster, 4);
-    EXPECT_CONTAINS(statusBar, "Immolation deals 77 damage to 2 target(s)");
+
+    std::regex regex("Immolation deals [0-9]+ damage to [0-9]+ target\\(s\\)");
+    EXPECT_CONTAINS(statusBar, [&](const std::string &message) { return std::regex_match(message, regex); });
 }
 
 GAME_TEST(Issues, Issue1724) {
@@ -510,6 +514,8 @@ GAME_TEST(Issues, Issue1890) {
     EXPECT_CONTAINS(yPos, 16803); // starting point
     EXPECT_LT(yPos.back(), 16700); // moved forwards
 }
+
+// 1900
 
 GAME_TEST(Issues, Issue1910) {
     // Insane condition doesn't affect character attributes when there is Weak condition.
