@@ -21,7 +21,9 @@ set(ENGINE_DATA_HEADERS
         PortraitFrameData.h
         TileData.h
         TileEnums.h
-        TileEnumFunctions.h)
+        TileEnumFunctions.h
+        StandardEnchantmentData.h
+        SpecialEnchantmentData.h)
 
 add_library(engine_data STATIC ${ENGINE_DATA_SOURCES} ${ENGINE_DATA_HEADERS})
 target_link_libraries(engine_data PUBLIC library_serialization utility)

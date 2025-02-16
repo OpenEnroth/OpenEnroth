@@ -2,7 +2,8 @@
 
 #include <string>
 
-#include "Engine/Objects/ItemEnchantment.h"
+#include "Engine/Data/SpecialEnchantmentData.h"
+#include "Engine/Data/StandardEnchantmentData.h"
 #include "Engine/Objects/Items.h"
 
 #include "Utility/IndexedArray.h"
@@ -32,10 +33,10 @@ struct ItemTable {
     IndexedArray<ItemDesc, ITEM_FIRST_VALID, ITEM_LAST_VALID> items;
 
     /** Data for standard item enchantments. */
-    IndexedArray<ItemEnchantmentTable, ATTRIBUTE_FIRST_ENCHANTABLE, ATTRIBUTE_LAST_ENCHANTABLE> standardEnchantments;
+    IndexedArray<StandardEnchantmentData, ATTRIBUTE_FIRST_ENCHANTABLE, ATTRIBUTE_LAST_ENCHANTABLE> standardEnchantments;
 
     /** Data for special item enchantments. */
-    IndexedArray<ItemSpecialEnchantmentTable, ITEM_ENCHANTMENT_FIRST_VALID, ITEM_ENCHANTMENT_LAST_VALID> specialEnchantments;
+    IndexedArray<SpecialEnchantmentData, ITEM_ENCHANTMENT_FIRST_VALID, ITEM_ENCHANTMENT_LAST_VALID> specialEnchantments;
 
     char field_9FC4[5000];
     char field_B348[5000];
