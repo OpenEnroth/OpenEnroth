@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;799f350</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ad3653a</span>
    </div>
   </td>
  </tr>
@@ -113,7 +113,8 @@ Static Public Member Functions</h2></td></tr>
 <p >All strings accepted by and returned from methods of this class are UTF8-encoded.</p>
 <p >Why is this class not a part of <code><a class="el" href="classPlatform.html">Platform</a></code>? Mainly for the following reasons:</p><ul>
 <li><code><a class="el" href="classPlatform.html">Platform</a></code> handles an unrelated domain (UI and window management). Using a <code><a class="el" href="classNullPlatform.html">NullPlatform</a></code> while still relying on <code><a class="el" href="classEnvironment.html">Environment</a></code> working as usual looks like a perfectly valid use case.</li>
-<li>Posix and Windows <code><a class="el" href="classEnvironment.html">Environment</a></code> implementations don't depend on SDL, but if <code><a class="el" href="classEnvironment.html">Environment</a></code> was a part of <code><a class="el" href="classPlatform.html">Platform</a></code> then we'd still drag SDL with it (and into our unit tests). </li>
+<li>Posix and Windows <code><a class="el" href="classEnvironment.html">Environment</a></code> implementations don't depend on SDL, but if <code><a class="el" href="classEnvironment.html">Environment</a></code> was a part of <code><a class="el" href="classPlatform.html">Platform</a></code> then we'd still drag SDL with it (and into our unit tests).</li>
+<li><code><a class="el" href="classEnvironment.html">Environment</a></code> doesn't depend on <code><a class="el" href="classLogger.html">Logger</a></code>. </li>
 </ul>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a16aa6c8ad5c6d60acd39ca9b1f7eee19" name="a16aa6c8ad5c6d60acd39ca9b1f7eee19"></a>
