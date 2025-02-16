@@ -67,6 +67,10 @@ void LoadGame(int uSlot) {
     SaveGameHeader header;
     deserialize(*pSave_LOD, &header, tags::via<SaveGame_MM7>);
 
+    // Patch up event timer, which was updated by the deserialize call above.
+    pEventTimer->setPaused(true); // We're loading the game now => event timer is paused.
+    pEventTimer->setTurnBased(false);
+
     // TODO(captainurist): incapsulate this too
     pParty->bTurnBasedModeOn = false; // We always start in realtime after loading a game.
     for (size_t i = 0; i < 4; i++) {
@@ -113,9 +117,6 @@ void LoadGame(int uSlot) {
     current_screen_type = SCREEN_GAME;
 
     SetUserInterface(pParty->alignment);
-
-    pEventTimer->setPaused(false);
-    pEventTimer->setTurnBased(false);
 
     if (!pGames_LOD->exists(header.locationName)) {
         logger->error("Unable to find: {}!", header.locationName);
