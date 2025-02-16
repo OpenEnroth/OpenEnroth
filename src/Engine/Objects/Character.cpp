@@ -3011,7 +3011,7 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
                         if (currItemSkillType == CHARACTER_SKILL_BLASTER) {
                             int multiplier = GetMultiplierForSkillLevel(currItemSkillType, 1, 2, 3, 5);
                             return multiplier * currentItemSkillLevel;
-                        } else if (currItemSkillType == CHARACTER_SKILL_STAFF && this->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+                        } else if (currItemSkillType == CHARACTER_SKILL_STAFF && this->getActualSkillValue(CHARACTER_SKILL_STAFF).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
                             int unarmedSkillLevel = this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level();
                             int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 1, 1, 2, 2);
                             return multiplier * unarmedSkillLevel + armsMasterBonus + currentItemSkillLevel;
