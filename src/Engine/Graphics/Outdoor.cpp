@@ -630,7 +630,7 @@ void OutdoorLocation::ArrangeSpriteObjects() {
                 }
                 if (pSpriteObjects[i].containing_item.itemId != ITEM_NULL) {
                     if (pSpriteObjects[i].containing_item.itemId != ITEM_POTION_BOTTLE &&
-                        pItemTable->pItems[pSpriteObjects[i].containing_item.itemId].uEquipType == ITEM_TYPE_POTION &&
+                        pItemTable->items[pSpriteObjects[i].containing_item.itemId].type == ITEM_TYPE_POTION &&
                         !pSpriteObjects[i].containing_item.potionPower)
                         pSpriteObjects[i].containing_item.potionPower = grng->random(15) + 5;
                     pItemTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);

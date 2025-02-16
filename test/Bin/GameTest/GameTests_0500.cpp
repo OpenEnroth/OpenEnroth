@@ -413,13 +413,13 @@ GAME_TEST(Issues, Issue675) {
             pItemTable->generateItem(level, RANDOM_ITEM_ANY, &item);
             if (isPotion(item.itemId)) {
                 EXPECT_GE(item.potionPower, 1);
-                EXPECT_FALSE(item.attributeEnchantment);
+                EXPECT_FALSE(item.standardEnchantment);
             } else {
                 EXPECT_EQ(item.potionPower, 0);
-                if (item.attributeEnchantment) {
-                    EXPECT_GE(*item.attributeEnchantment, ATTRIBUTE_FIRST_ENCHANTABLE);
-                    EXPECT_LE(*item.attributeEnchantment, ATTRIBUTE_LAST_ENCHANTABLE);
-                    generatedEnchantments.insert(*item.attributeEnchantment);
+                if (item.standardEnchantment) {
+                    EXPECT_GE(*item.standardEnchantment, ATTRIBUTE_FIRST_ENCHANTABLE);
+                    EXPECT_LE(*item.standardEnchantment, ATTRIBUTE_LAST_ENCHANTABLE);
+                    generatedEnchantments.insert(*item.standardEnchantment);
                 }
             }
         }

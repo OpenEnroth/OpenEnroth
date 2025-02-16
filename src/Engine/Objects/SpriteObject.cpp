@@ -658,8 +658,8 @@ bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
     }
 
     if (!(pSpellObject.uAttributes & SPRITE_IGNORE_RANGE)) {
-        for (ItemId i : pItemTable->pItems.indices()) {
-            if (pItemTable->pItems[i].uSpriteID == sprite) {
+        for (ItemId i : pItemTable->items.indices()) {
+            if (pItemTable->items[i].spriteId == sprite) {
                 pSpellObject.containing_item.itemId = i;
             }
         }

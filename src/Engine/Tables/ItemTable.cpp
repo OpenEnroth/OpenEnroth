@@ -86,43 +86,42 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
     // Standard Bonuses by Group
-    chanceByItemTypeSums.fill(0);
+    standardEnchantmentChanceSumByItemType.fill(0);
     for (CharacterAttribute i : allEnchantableAttributes()) {
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
-        standardEnchantments[i].pBonusStat = removeQuotes(tokens[0]);
-        standardEnchantments[i].pOfName = removeQuotes(tokens[1]);
+        standardEnchantments[i].attributeName = removeQuotes(tokens[0]);
+        standardEnchantments[i].itemSuffix = removeQuotes(tokens[1]);
 
         int k = 2;
-        for (ItemType equipType : standardEnchantments[i].chancesByItemType.indices()) {
-            standardEnchantments[i].chancesByItemType[equipType] = atoi(tokens[k++]);
-            chanceByItemTypeSums[equipType] += standardEnchantments[i].chancesByItemType[equipType];
+        for (ItemType equipType : standardEnchantments[i].chanceByItemType.indices()) {
+            standardEnchantments[i].chanceByItemType[equipType] = atoi(tokens[k++]);
+            standardEnchantmentChanceSumByItemType[equipType] += standardEnchantments[i].chanceByItemType[equipType];
         }
     }
 
     // Bonus range for Standard by Level
     strtokSkipLines(5);
-    for (ItemTreasureLevel i : bonusRanges.indices()) {  // counted from 1
+    for (ItemTreasureLevel i : standardEnchantmentRangeByTreasureLevel.indices()) {  // counted from 1
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
         assert(tokens.size() == 4 && "Invalid number of tokens");
-        bonusRanges[i].minR = atoi(tokens[2]);
-        bonusRanges[i].maxR = atoi(tokens[3]);
+        standardEnchantmentRangeByTreasureLevel[i] = Segment(atoi(tokens[2]), atoi(tokens[3]));
     }
 
     txtRaw = resourceManager->getEventsFile("spcitems.txt").string_view();
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
-    for (ItemEnchantment i : pSpecialEnchantments.indices()) {
+    for (ItemEnchantment i : specialEnchantments.indices()) {
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
         assert(tokens.size() >= 17 && "Invalid number of tokens");
-        pSpecialEnchantments[i].pBonusStatement = removeQuotes(tokens[0]);
-        pSpecialEnchantments[i].pNameAdd = removeQuotes(tokens[1]);
+        specialEnchantments[i].description = removeQuotes(tokens[0]);
+        specialEnchantments[i].itemSuffixOrPrefix = removeQuotes(tokens[1]);
 
         int k = 2;
-        for (ItemType j : pSpecialEnchantments[i].to_item_apply.indices())
-            pSpecialEnchantments[i].to_item_apply[j] = atoi(tokens[k++]);
+        for (ItemType j : specialEnchantments[i].chanceByItemType.indices())
+            specialEnchantments[i].chanceByItemType[j] = atoi(tokens[k++]);
 
         int res = atoi(tokens[14]);
         int mask = 0;
@@ -133,11 +132,9 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
             res = atoi(tokens[14]);
             mask = 4;  // bit encode for when we need to multiply value
         }
-        pSpecialEnchantments[i].iValue = res;
-        pSpecialEnchantments[i].iTreasureLevel = (tolower(tokens[15][0]) - 'a') | mask;
+        specialEnchantments[i].additionalValue = res;
+        specialEnchantments[i].iTreasureLevel = (tolower(tokens[15][0]) - 'a') | mask;
     }
-
-    pSpecialEnchantments_count = 72;
 
     txtRaw = resourceManager->getEventsFile("items.txt").string_view();
     strtok(txtRaw.data(), "\r");
@@ -147,59 +144,59 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         auto tokens = tokenize(lineContent, '\t');
 
         ItemId item_counter = ItemId(atoi(tokens[0]));
-        pItems[item_counter].iconName = removeQuotes(tokens[1]);
-        pItems[item_counter].name = removeQuotes(tokens[2]);
-        pItems[item_counter].uValue = atoi(tokens[3]);
-        pItems[item_counter].uEquipType = valueOr(equipStatMap, tokens[4], ITEM_TYPE_NONE);
-        pItems[item_counter].uSkillType = valueOr(equipSkillMap, tokens[5], CHARACTER_SKILL_MISC);
+        items[item_counter].iconName = removeQuotes(tokens[1]);
+        items[item_counter].name = removeQuotes(tokens[2]);
+        items[item_counter].baseValue = atoi(tokens[3]);
+        items[item_counter].type = valueOr(equipStatMap, tokens[4], ITEM_TYPE_NONE);
+        items[item_counter].skill = valueOr(equipSkillMap, tokens[5], CHARACTER_SKILL_MISC);
         auto diceRollTokens = tokenize(tokens[6], 'd');
         if (diceRollTokens.size() == 2) {
-            pItems[item_counter].uDamageDice = atoi(diceRollTokens[0]);
-            pItems[item_counter].uDamageRoll = atoi(diceRollTokens[1]);
+            items[item_counter].damageDice = atoi(diceRollTokens[0]);
+            items[item_counter].damageRoll = atoi(diceRollTokens[1]);
         } else if (tolower(diceRollTokens[0][0]) != 's') {
-            pItems[item_counter].uDamageDice = atoi(diceRollTokens[0]);
-            pItems[item_counter].uDamageRoll = 1;
+            items[item_counter].damageDice = atoi(diceRollTokens[0]);
+            items[item_counter].damageRoll = 1;
         } else {
-            pItems[item_counter].uDamageDice = 0;
-            pItems[item_counter].uDamageRoll = 0;
+            items[item_counter].damageDice = 0;
+            items[item_counter].damageRoll = 0;
         }
-        pItems[item_counter].uDamageMod = atoi(tokens[7]);
-        pItems[item_counter].uMaterial = valueOr(materialMap, tokens[8], RARITY_COMMON);
-        pItems[item_counter].identifyDifficulty = atoi(tokens[9]);
-        pItems[item_counter].pUnidentifiedName = removeQuotes(tokens[10]);
-        pItems[item_counter].uSpriteID = static_cast<SpriteId>(atoi(tokens[11]));
+        items[item_counter].damageMod = atoi(tokens[7]);
+        items[item_counter].rarity = valueOr(materialMap, tokens[8], RARITY_COMMON);
+        items[item_counter].identifyDifficulty = atoi(tokens[9]);
+        items[item_counter].unidentifiedName = removeQuotes(tokens[10]);
+        items[item_counter].spriteId = static_cast<SpriteId>(atoi(tokens[11]));
 
-        pItems[item_counter].specialEnchantment = ITEM_ENCHANTMENT_NULL;
-        pItems[item_counter].attributeEnchantment = {};
-        if (pItems[item_counter].uMaterial == RARITY_SPECIAL) {
+        items[item_counter].specialEnchantment = ITEM_ENCHANTMENT_NULL;
+        items[item_counter].standardEnchantment = {};
+        if (items[item_counter].rarity == RARITY_SPECIAL) {
             for (CharacterAttribute ii : allEnchantableAttributes()) {
-                if (ascii::noCaseEquals(tokens[12], standardEnchantments[ii].pOfName)) { // TODO(captainurist): #unicode this is not ascii
-                    pItems[item_counter].attributeEnchantment = ii;
+                if (ascii::noCaseEquals(tokens[12], standardEnchantments[ii].itemSuffix)) { // TODO(captainurist): #unicode this is not ascii
+                    items[item_counter].standardEnchantment = ii;
                     break;
                 }
             }
-            if (!pItems[item_counter].attributeEnchantment) {
-                for (ItemEnchantment ii : pSpecialEnchantments.indices()) {
-                    if (ascii::noCaseEquals(tokens[12], pSpecialEnchantments[ii].pNameAdd)) { // TODO(captainurist): #unicode this is not ascii
-                        pItems[item_counter].specialEnchantment = ii;
+            if (!items[item_counter].standardEnchantment) {
+                for (ItemEnchantment ii : specialEnchantments.indices()) {
+                    if (ascii::noCaseEquals(tokens[12], specialEnchantments[ii].itemSuffixOrPrefix)) { // TODO(captainurist): #unicode this is not ascii
+                        items[item_counter].specialEnchantment = ii;
                     }
                 }
             }
         }
 
-        if ((pItems[item_counter].uMaterial == RARITY_SPECIAL) &&
-            (pItems[item_counter].attributeEnchantment)) {
+        if ((items[item_counter].rarity == RARITY_SPECIAL) &&
+            (items[item_counter].standardEnchantment)) {
             char b_s = atoi(tokens[13]);
             if (b_s)
-                pItems[item_counter].attributeEnchantmentStrength = b_s;
+                items[item_counter].standardEnchantmentStrength = b_s;
             else
-                pItems[item_counter].attributeEnchantmentStrength = 1;
+                items[item_counter].standardEnchantmentStrength = 1;
         } else {
-            pItems[item_counter].attributeEnchantmentStrength = 0;
+            items[item_counter].standardEnchantmentStrength = 0;
         }
-        pItems[item_counter].uEquipX = atoi(tokens[14]);
-        pItems[item_counter].uEquipY = atoi(tokens[15]);
-        pItems[item_counter].pDescription = removeQuotes(tokens[16]);
+        items[item_counter].paperdollAnchorOffset.x = atoi(tokens[14]);
+        items[item_counter].paperdollAnchorOffset.y = atoi(tokens[15]);
+        items[item_counter].description = removeQuotes(tokens[16]);
     }
 
     txtRaw = resourceManager->getEventsFile("rnditems.txt").string_view();
@@ -211,19 +208,19 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         assert(tokens.size() > 7 && "Invalid number of tokens");
 
         ItemId item_counter = ItemId(atoi(tokens[0]));
-        pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_1] = atoi(tokens[2]);
-        pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_2] = atoi(tokens[3]);
-        pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_3] = atoi(tokens[4]);
-        pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_4] = atoi(tokens[5]);
-        pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_5] = atoi(tokens[6]);
-        pItems[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_6] = atoi(tokens[7]);
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_1] = atoi(tokens[2]);
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_2] = atoi(tokens[3]);
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_3] = atoi(tokens[4]);
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_4] = atoi(tokens[5]);
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_5] = atoi(tokens[6]);
+        items[item_counter].uChanceByTreasureLvl[ITEM_TREASURE_LEVEL_6] = atoi(tokens[7]);
     }
 
     // ChanceByTreasureLvl Summ - to calculate chance
-    memset(&chanceByTreasureLevelSums, 0, 24);
-    for (ItemTreasureLevel i : chanceByTreasureLevelSums.indices())
-        for (ItemId j : pItems.indices())
-            chanceByTreasureLevelSums[i] += pItems[j].uChanceByTreasureLvl[i];
+    itemChanceSumByTreasureLevel.fill(0);
+    for (ItemTreasureLevel i : itemChanceSumByTreasureLevel.indices())
+        for (ItemId j : items.indices())
+            itemChanceSumByTreasureLevel[i] += items[j].uChanceByTreasureLvl[i];
 
     strtokSkipLines(5);
     for (int i = 0; i < 3; ++i) {
@@ -232,28 +229,28 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         assert(tokens.size() > 7 && "Invalid number of tokens");
         switch (i) {
             case 0:
-                uBonusChanceStandart[ITEM_TREASURE_LEVEL_1] = atoi(tokens[2]);
-                uBonusChanceStandart[ITEM_TREASURE_LEVEL_2] = atoi(tokens[3]);
-                uBonusChanceStandart[ITEM_TREASURE_LEVEL_3] = atoi(tokens[4]);
-                uBonusChanceStandart[ITEM_TREASURE_LEVEL_4] = atoi(tokens[5]);
-                uBonusChanceStandart[ITEM_TREASURE_LEVEL_5] = atoi(tokens[6]);
-                uBonusChanceStandart[ITEM_TREASURE_LEVEL_6] = atoi(tokens[7]);
+                standardEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_1] = atoi(tokens[2]);
+                standardEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_2] = atoi(tokens[3]);
+                standardEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_3] = atoi(tokens[4]);
+                standardEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_4] = atoi(tokens[5]);
+                standardEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_5] = atoi(tokens[6]);
+                standardEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_6] = atoi(tokens[7]);
                 break;
             case 1:
-                uBonusChanceSpecial[ITEM_TREASURE_LEVEL_1] = atoi(tokens[2]);
-                uBonusChanceSpecial[ITEM_TREASURE_LEVEL_2] = atoi(tokens[3]);
-                uBonusChanceSpecial[ITEM_TREASURE_LEVEL_3] = atoi(tokens[4]);
-                uBonusChanceSpecial[ITEM_TREASURE_LEVEL_4] = atoi(tokens[5]);
-                uBonusChanceSpecial[ITEM_TREASURE_LEVEL_5] = atoi(tokens[6]);
-                uBonusChanceSpecial[ITEM_TREASURE_LEVEL_6] = atoi(tokens[7]);
+                specialEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_1] = atoi(tokens[2]);
+                specialEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_2] = atoi(tokens[3]);
+                specialEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_3] = atoi(tokens[4]);
+                specialEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_4] = atoi(tokens[5]);
+                specialEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_5] = atoi(tokens[6]);
+                specialEnchantmentChanceForEquipment[ITEM_TREASURE_LEVEL_6] = atoi(tokens[7]);
                 break;
             case 2:
-                uBonusChanceWpSpecial[ITEM_TREASURE_LEVEL_1] = atoi(tokens[2]);
-                uBonusChanceWpSpecial[ITEM_TREASURE_LEVEL_2] = atoi(tokens[3]);
-                uBonusChanceWpSpecial[ITEM_TREASURE_LEVEL_3] = atoi(tokens[4]);
-                uBonusChanceWpSpecial[ITEM_TREASURE_LEVEL_4] = atoi(tokens[5]);
-                uBonusChanceWpSpecial[ITEM_TREASURE_LEVEL_5] = atoi(tokens[6]);
-                uBonusChanceWpSpecial[ITEM_TREASURE_LEVEL_6] = atoi(tokens[7]);
+                specialEnchantmentChanceForWeapons[ITEM_TREASURE_LEVEL_1] = atoi(tokens[2]);
+                specialEnchantmentChanceForWeapons[ITEM_TREASURE_LEVEL_2] = atoi(tokens[3]);
+                specialEnchantmentChanceForWeapons[ITEM_TREASURE_LEVEL_3] = atoi(tokens[4]);
+                specialEnchantmentChanceForWeapons[ITEM_TREASURE_LEVEL_4] = atoi(tokens[5]);
+                specialEnchantmentChanceForWeapons[ITEM_TREASURE_LEVEL_5] = atoi(tokens[6]);
+                specialEnchantmentChanceForWeapons[ITEM_TREASURE_LEVEL_6] = atoi(tokens[7]);
                 break;
         }
     }
@@ -265,23 +262,23 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
 
 //----- (00456D17) --------------------------------------------------------
 void ItemTable::SetSpecialBonus(ItemGen *pItem) {
-    if (pItems[pItem->itemId].uMaterial == RARITY_SPECIAL) {
-        pItem->attributeEnchantment = pItems[pItem->itemId].attributeEnchantment;
-        pItem->specialEnchantment = pItems[pItem->itemId].specialEnchantment;
-        pItem->attributeEnchantmentStrength = pItems[pItem->itemId].attributeEnchantmentStrength;
+    if (items[pItem->itemId].rarity == RARITY_SPECIAL) {
+        pItem->standardEnchantment = items[pItem->itemId].standardEnchantment;
+        pItem->specialEnchantment = items[pItem->itemId].specialEnchantment;
+        pItem->standardEnchantmentStrength = items[pItem->itemId].standardEnchantmentStrength;
     }
 }
 
 //----- (00456D43) --------------------------------------------------------
 bool ItemTable::IsMaterialSpecial(const ItemGen *pItem) {
-    return this->pItems[pItem->itemId].uMaterial == RARITY_SPECIAL;
+    return this->items[pItem->itemId].rarity == RARITY_SPECIAL;
 }
 
 //----- (00456D5E) --------------------------------------------------------
 bool ItemTable::IsMaterialNonCommon(const ItemGen *pItem) {
-    return pItems[pItem->itemId].uMaterial == RARITY_SPECIAL ||
-           pItems[pItem->itemId].uMaterial == RARITY_RELIC ||
-           pItems[pItem->itemId].uMaterial == RARITY_ARTIFACT;
+    return items[pItem->itemId].rarity == RARITY_SPECIAL ||
+           items[pItem->itemId].rarity == RARITY_RELIC ||
+           items[pItem->itemId].rarity == RARITY_ARTIFACT;
 }
 
 //----- (00453B3C) --------------------------------------------------------
@@ -303,12 +300,12 @@ void ItemTable::LoadPotions(const Blob &potions) {
         return;
     }
 
-    for (ItemId row : Segment<ItemId>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
+    for (ItemId row : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
         if (tokens.size() < 50) {
             logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row) - std::to_underlying(ITEM_FIRST_REAL_POTION), tokens.size());
             return;
         }
-        for (ItemId column : Segment<ItemId>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
+        for (ItemId column : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
             int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
             char *currValue = tokens[flatPotionId + 7];
             potion_value = atoi(currValue);
@@ -347,12 +344,12 @@ void ItemTable::LoadPotionNotes(const Blob &potionNotes) {
         return;
     }
 
-    for (ItemId row : Segment<ItemId>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
+    for (ItemId row : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
         if (tokens.size() < 50) {
             logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row), tokens.size());
             return;
         }
-        for (ItemId column : Segment<ItemId>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
+        for (ItemId column : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
             int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
             char *currValue = tokens[flatPotionId + 7];
             this->potionNotes[row][column] = atoi(currValue);
@@ -472,9 +469,9 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
 
         if (requestedSkill == CHARACTER_SKILL_INVALID) {  // no skill for this item needed
             for (ItemId itemId : allSpawnableItems()) {
-                if (pItems[itemId].uEquipType == requestedEquip) {
-                    if (pItems[itemId].uChanceByTreasureLvl[treasureLevel]) {
-                        weightSum += pItems[itemId].uChanceByTreasureLvl[treasureLevel];
+                if (items[itemId].type == requestedEquip) {
+                    if (items[itemId].uChanceByTreasureLvl[treasureLevel]) {
+                        weightSum += items[itemId].uChanceByTreasureLvl[treasureLevel];
                         possibleItems.push_back(itemId);
                         cumulativeWeights.push_back(weightSum);
                     }
@@ -482,9 +479,9 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
             }
         } else {  // have needed skill
             for (ItemId itemId : allSpawnableItems()) {
-                if (pItems[itemId].uSkillType == requestedSkill) {
-                    if (pItems[itemId].uChanceByTreasureLvl[treasureLevel]) {
-                        weightSum += pItems[itemId].uChanceByTreasureLvl[treasureLevel];
+                if (items[itemId].skill == requestedSkill) {
+                    if (items[itemId].uChanceByTreasureLvl[treasureLevel]) {
+                        weightSum += items[itemId].uChanceByTreasureLvl[treasureLevel];
                         possibleItems.push_back(itemId);
                         cumulativeWeights.push_back(weightSum);
                     }
@@ -520,9 +517,9 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
         }
 
         // Otherwise try to spawn any random item
-        int randomWeight = grng->random(this->chanceByTreasureLevelSums[treasureLevel]) + 1;
+        int randomWeight = grng->random(this->itemChanceSumByTreasureLevel[treasureLevel]) + 1;
         for (ItemId itemId : allSpawnableItems()) {
-            weightSum += pItems[itemId].uChanceByTreasureLvl[treasureLevel];
+            weightSum += items[itemId].uChanceByTreasureLvl[treasureLevel];
             if (weightSum >= randomWeight) {
                 outItem->itemId = itemId;
                 break;
@@ -535,21 +532,21 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
 
     if (outItem->itemId == ITEM_SPELLBOOK_DIVINE_INTERVENTION && !pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
         outItem->itemId = ITEM_SPELLBOOK_SUNRAY;
-    if (pItemTable->pItems[outItem->itemId].identifyDifficulty)
+    if (pItemTable->items[outItem->itemId].identifyDifficulty)
         outItem->flags = 0;
     else
         outItem->flags = ITEM_IDENTIFIED;
 
     if (!outItem->isPotion()) {
         outItem->specialEnchantment = ITEM_ENCHANTMENT_NULL;
-        outItem->attributeEnchantment = {};
+        outItem->standardEnchantment = {};
     }
     // try get special enchantment
     switch (outItem->GetItemEquipType()) {
         case ITEM_TYPE_SINGLE_HANDED:
         case ITEM_TYPE_TWO_HANDED:
         case ITEM_TYPE_BOW:
-            if (!uBonusChanceWpSpecial[treasureLevel] || grng->random(100) >= uBonusChanceWpSpecial[treasureLevel])
+            if (!specialEnchantmentChanceForWeapons[treasureLevel] || grng->random(100) >= specialEnchantmentChanceForWeapons[treasureLevel])
                 return;
             break;
         case ITEM_TYPE_ARMOUR:
@@ -561,34 +558,34 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
         case ITEM_TYPE_BOOTS:
         case ITEM_TYPE_RING:
         case ITEM_TYPE_AMULET: {
-            if (!uBonusChanceStandart[treasureLevel])
+            if (!standardEnchantmentChanceForEquipment[treasureLevel])
                 return;
             int bonusChanceRoll = grng->random(100);
-            if (bonusChanceRoll < uBonusChanceStandart[treasureLevel]) {
-                int enchantmentChanceSumRoll = grng->random(chanceByItemTypeSums[outItem->GetItemEquipType()]) + 1;
+            if (bonusChanceRoll < standardEnchantmentChanceForEquipment[treasureLevel]) {
+                int enchantmentChanceSumRoll = grng->random(standardEnchantmentChanceSumByItemType[outItem->GetItemEquipType()]) + 1;
                 int currentEnchantmentChancesSum = 0;
                 for (CharacterAttribute attr : allEnchantableAttributes()) {
                     if (currentEnchantmentChancesSum >= enchantmentChanceSumRoll)
                         break;
 
-                    currentEnchantmentChancesSum += standardEnchantments[attr].chancesByItemType[outItem->GetItemEquipType()];
-                    outItem->attributeEnchantment = attr;
+                    currentEnchantmentChancesSum += standardEnchantments[attr].chanceByItemType[outItem->GetItemEquipType()];
+                    outItem->standardEnchantment = attr;
                 }
-                assert(outItem->attributeEnchantment);
+                assert(outItem->standardEnchantment);
 
-                outItem->attributeEnchantmentStrength = bonusRanges[treasureLevel].minR + grng->random(bonusRanges[treasureLevel].maxR - bonusRanges[treasureLevel].minR + 1);
-                CharacterAttribute standardEnchantmentAttributeSkill = *outItem->attributeEnchantment;
+                outItem->standardEnchantmentStrength = grng->randomSample(standardEnchantmentRangeByTreasureLevel[treasureLevel]);
+                CharacterAttribute standardEnchantmentAttributeSkill = *outItem->standardEnchantment;
                 if (standardEnchantmentAttributeSkill == ATTRIBUTE_SKILL_ARMSMASTER ||
                     standardEnchantmentAttributeSkill == ATTRIBUTE_SKILL_DODGE ||
                     standardEnchantmentAttributeSkill == ATTRIBUTE_SKILL_UNARMED) {
-                    outItem->attributeEnchantmentStrength /= 2;
+                    outItem->standardEnchantmentStrength /= 2;
                 }
                 // if enchantment generated, it needs to actually have an effect
-                if (outItem->attributeEnchantmentStrength <= 0) {
-                    outItem->attributeEnchantmentStrength = 1;
+                if (outItem->standardEnchantmentStrength <= 0) {
+                    outItem->standardEnchantmentStrength = 1;
                 }
                 return;
-            } else if (bonusChanceRoll >= uBonusChanceStandart[treasureLevel] + uBonusChanceSpecial[treasureLevel]) {
+            } else if (bonusChanceRoll >= standardEnchantmentChanceForEquipment[treasureLevel] + specialEnchantmentChanceForEquipment[treasureLevel]) {
                 return;
             }
         }
@@ -603,8 +600,8 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
 
     cumulativeWeights.clear();
     weightSum = 0;
-    for (ItemEnchantment ench : pSpecialEnchantments.indices()) {
-        int tr_lv = (pSpecialEnchantments[ench].iTreasureLevel) & 3;
+    for (ItemEnchantment ench : specialEnchantments.indices()) {
+        int tr_lv = (specialEnchantments[ench].iTreasureLevel) & 3;
 
         // tr_lv  0 = treasure level 3/4
         // tr_lv  1 = treasure level 3/4/5
@@ -615,7 +612,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
             (treasureLevel == ITEM_TREASURE_LEVEL_4) && (tr_lv == 2 || tr_lv == 1 || tr_lv == 0) ||
             (treasureLevel == ITEM_TREASURE_LEVEL_5) && (tr_lv == 3 || tr_lv == 2 || tr_lv == 1) ||
             (treasureLevel == ITEM_TREASURE_LEVEL_6) && (tr_lv == 3)) {
-            int spc = pSpecialEnchantments[ench].to_item_apply[outItem->GetItemEquipType()];
+            int spc = specialEnchantments[ench].chanceByItemType[outItem->GetItemEquipType()];
             if (spc) {
                 weightSum += spc;
                 possibleEnchantments.push_back(ench);
