@@ -70,7 +70,7 @@ GAME_TEST(Issues, Issue1038) {
     auto conditionsTape = charTapes.conditions();
     test.playTraceFromTestData("issue_1038.mm7", "issue_1038.json");
     EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_GOOD, CONDITION_INSANE, CONDITION_GOOD, CONDITION_INSANE},
-                                               {CONDITION_SLEEP, CONDITION_INSANE, CONDITION_UNCONSCIOUS, CONDITION_UNCONSCIOUS}));
+                                               {CONDITION_SLEEP, CONDITION_INSANE, CONDITION_GOOD, CONDITION_UNCONSCIOUS}));
 }
 
 GAME_TEST(Issues, Issue1040) {
@@ -644,7 +644,7 @@ GAME_TEST(Prs, Pr1440) {
         EXPECT_EQ(table.GetFrameTexture(0, Duration::fromTicks(i)), tex1) << i;
 }
 
-GAME_TEST(Issues, Issue1447A) {
+GAME_TEST(Issues, Issue1447a) {
     // Fire bolt doesn't emit particles in turn based mode
     auto particlesTape = tapes.custom([] { return std::ranges::count_if(engine->particle_engine.get()->pParticles,
                                         [](const Particle &par) { return par.type != ParticleType_Invalid; }); });
@@ -654,7 +654,7 @@ GAME_TEST(Issues, Issue1447A) {
     EXPECT_GT(particlesTape.max(), 10);
 }
 
-GAME_TEST(Issues, Issue1447B) {
+GAME_TEST(Issues, Issue1447b) {
     // Fireball doesn't emit particles in turn based mode
     auto particlesTape = tapes.custom([] { return std::ranges::count_if(engine->particle_engine.get()->pParticles,
                                         [](const Particle& par) { return par.type != ParticleType_Invalid; }); });
@@ -664,7 +664,7 @@ GAME_TEST(Issues, Issue1447B) {
     EXPECT_GT(particlesTape.max(), 10);
 }
 
-GAME_TEST(Issues, Issue1447C) {
+GAME_TEST(Issues, Issue1447c) {
     // Acid blast doesn't emit particles in turn based mode
     auto particlesTape = tapes.custom([] { return std::ranges::count_if(engine->particle_engine.get()->pParticles,
                                         [](const Particle& par) { return par.type != ParticleType_Invalid; }); });

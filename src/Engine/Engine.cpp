@@ -538,6 +538,9 @@ void PrepareWorld(int _0_box_loading_1_fullscreen) {
     pMiscTimer->setPaused(true);
     CastSpellInfoHelpers::cancelSpellCastInProgress();
     DoPrepareWorld(false, (_0_box_loading_1_fullscreen == 0) + 1);
+
+    assert(pEventTimer->isPaused()); // DoPrepareWorld shouldn't un-pause.
+    assert(pMiscTimer->isPaused());
     pMiscTimer->setPaused(false);
     pEventTimer->setPaused(false);
 }
@@ -1028,7 +1031,7 @@ void back_to_game() {
         pGUIWindow_ScrollWindow = nullptr;
     }
 
-    if (current_screen_type == SCREEN_GAME && !pGUIWindow_CastTargetedSpell) {
+    if (current_screen_type == SCREEN_GAME && sCurrentMenuID == MENU_NONE && !pGUIWindow_CastTargetedSpell) {
         pEventTimer->setPaused(false);
     }
 }
