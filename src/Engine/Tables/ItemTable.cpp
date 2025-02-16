@@ -106,8 +106,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
         assert(tokens.size() == 4 && "Invalid number of tokens");
-        standardEnchantmentRangeByTreasureLevel[i].minR = atoi(tokens[2]);
-        standardEnchantmentRangeByTreasureLevel[i].maxR = atoi(tokens[3]);
+        standardEnchantmentRangeByTreasureLevel[i] = Segment(atoi(tokens[2]), atoi(tokens[3]));
     }
 
     txtRaw = resourceManager->getEventsFile("spcitems.txt").string_view();
@@ -574,7 +573,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
                 }
                 assert(outItem->standardEnchantment);
 
-                outItem->standardEnchantmentStrength = standardEnchantmentRangeByTreasureLevel[treasureLevel].minR + grng->random(standardEnchantmentRangeByTreasureLevel[treasureLevel].maxR - standardEnchantmentRangeByTreasureLevel[treasureLevel].minR + 1);
+                outItem->standardEnchantmentStrength = grng->randomSample(standardEnchantmentRangeByTreasureLevel[treasureLevel]);
                 CharacterAttribute standardEnchantmentAttributeSkill = *outItem->standardEnchantment;
                 if (standardEnchantmentAttributeSkill == ATTRIBUTE_SKILL_ARMSMASTER ||
                     standardEnchantmentAttributeSkill == ATTRIBUTE_SKILL_DODGE ||

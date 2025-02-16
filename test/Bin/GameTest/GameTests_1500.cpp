@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <unordered_set>
 #include <ranges>
 
@@ -572,4 +573,17 @@ GAME_TEST(Issues, Issue1925) {
         }
         EXPECT_CONTAINS(spritesTape.flattened(), SPRITE_SPELL_FIRE_FIRE_BOLT);
     }
+}
+
+GAME_TEST(Prs, Pr1934) {
+    // Should be able to generate standard enchantments with +25 bonus.
+    ItemGen item;
+    int maxStrength = 0;
+    for (int i = 0; i < 100; i++) {
+        pItemTable->generateItem(ITEM_TREASURE_LEVEL_6, RANDOM_ITEM_RING, &item);
+        if (item.standardEnchantment)
+            maxStrength = std::max(maxStrength, item.standardEnchantmentStrength);
+    }
+
+    EXPECT_EQ(maxStrength, 25);
 }

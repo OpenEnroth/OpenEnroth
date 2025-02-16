@@ -7,14 +7,10 @@
 #include "Engine/Objects/Items.h"
 
 #include "Utility/IndexedArray.h"
+#include "Utility/Segment.h"
 
 class GameResourceManager;
 class Blob;
-
-struct BonusRange {
-    unsigned int minR;
-    unsigned int maxR;
-}; // TODO(captainurist): Segment<int>?
 
 struct ItemTable {
     void Initialize(GameResourceManager *resourceManager);
@@ -73,7 +69,7 @@ struct ItemTable {
     IndexedArray<unsigned int, ITEM_TYPE_FIRST_NORMAL_ENCHANTABLE, ITEM_TYPE_LAST_NORMAL_ENCHANTABLE> standardEnchantmentChanceSumByItemType;
 
     /** Ranges of standard enchantment strength by item treasure level. */
-    IndexedArray<BonusRange, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> standardEnchantmentRangeByTreasureLevel;
+    IndexedArray<Segment<int>, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> standardEnchantmentRangeByTreasureLevel;
 };
 
 extern ItemTable *pItemTable;
