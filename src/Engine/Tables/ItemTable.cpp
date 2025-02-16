@@ -301,12 +301,12 @@ void ItemTable::LoadPotions(const Blob &potions) {
         return;
     }
 
-    for (ItemId row : Segment<ItemId>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
+    for (ItemId row : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
         if (tokens.size() < 50) {
             logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row) - std::to_underlying(ITEM_FIRST_REAL_POTION), tokens.size());
             return;
         }
-        for (ItemId column : Segment<ItemId>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
+        for (ItemId column : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
             int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
             char *currValue = tokens[flatPotionId + 7];
             potion_value = atoi(currValue);
@@ -345,12 +345,12 @@ void ItemTable::LoadPotionNotes(const Blob &potionNotes) {
         return;
     }
 
-    for (ItemId row : Segment<ItemId>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
+    for (ItemId row : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
         if (tokens.size() < 50) {
             logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row), tokens.size());
             return;
         }
-        for (ItemId column : Segment<ItemId>(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
+        for (ItemId column : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
             int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
             char *currValue = tokens[flatPotionId + 7];
             this->potionNotes[row][column] = atoi(currValue);
