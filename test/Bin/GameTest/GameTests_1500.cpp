@@ -532,6 +532,37 @@ GAME_TEST(Issues, Issue1910) {
     }
 }
 
+GAME_TEST(Issues, Issue1911) {
+    // Unarmed attack bonus is not applied when Monk is unarmed, but applied when wearing a staff.
+    game.startNewGame();
+    EXPECT_TRUE(pParty->pCharacters[0].IsUnarmed());
+
+    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_UNARMED] = CombinedSkillValue(1, CHARACTER_SKILL_MASTERY_NOVICE);
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 1);
+
+    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_UNARMED] = CombinedSkillValue(4, CHARACTER_SKILL_MASTERY_NOVICE);
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 4);
+
+    // Equip staff.
+    ItemGen staff;
+    staff.itemId = ITEM_STAFF;
+    game.runGameRoutine([&] {
+        // This code needs to be run in game thread b/c AddItem2 is loading textures...
+        pParty->pPickedItem = staff;
+        pParty->pCharacters[0].EquipBody(ITEM_TYPE_TWO_HANDED);
+    });
+    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue(1, CHARACTER_SKILL_MASTERY_NOVICE);
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 1); // +1 from staff skill.
+
+    // Check that master staff is not affected by unarmed.
+    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue(7, CHARACTER_SKILL_MASTERY_MASTER);
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 7); // +7 from staff skill.
+
+    // Check that GM staff works with unarmed.
+    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER);
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 14); // +10 from staff, +4 from unarmed.
+}
+
 GAME_TEST(Issues, Issue1925) {
     // Test for wand behaviour.
     for (bool wandsDisappear : {true, false}) {
