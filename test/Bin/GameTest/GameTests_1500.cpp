@@ -168,7 +168,7 @@ GAME_TEST(Issues, Issue1597) {
     int specialEnchantmentsNum = 0;
     for (int i = 0; i < 100; i++) {
         pItemTable->generateItem(ITEM_TREASURE_LEVEL_5, RANDOM_ITEM_AMULET, &item);
-        if (item.attributeEnchantment)
+        if (item.standardEnchantment)
             attrEnchantmentsNum++;
         if (item.specialEnchantment != ITEM_ENCHANTMENT_NULL)
             specialEnchantmentsNum++;

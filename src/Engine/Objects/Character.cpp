@@ -2635,10 +2635,10 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
                     if (pItemTable->IsMaterialNonCommon(currEquippedItem) &&
                         !pItemTable->IsMaterialSpecial(currEquippedItem)) {
                         currEquippedItem->GetItemBonusArtifact(this, attr, &v62);
-                    } else if (currEquippedItem->attributeEnchantment) {
-                        if (*currEquippedItem->attributeEnchantment == attr) {
+                    } else if (currEquippedItem->standardEnchantment) {
+                        if (*currEquippedItem->standardEnchantment == attr) {
                             // if (currEquippedItem->IsRegularEnchanmentForAttribute(attr))
-                            v5 += currEquippedItem->attributeEnchantmentStrength;
+                            v5 += currEquippedItem->standardEnchantmentStrength;
                         }
                     } else {
                         currEquippedItem->GetItemBonusSpecialEnchantment(this, attr, &v5, &v61);

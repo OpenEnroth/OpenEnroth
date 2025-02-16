@@ -28,29 +28,51 @@ struct ItemTable {
     bool IsMaterialSpecial(const ItemGen *pItem);
     bool IsMaterialNonCommon(const ItemGen *pItem);
 
+    /** Item data for all items in the game. */
     IndexedArray<ItemDesc, ITEM_FIRST_VALID, ITEM_LAST_VALID> items;
+
+    /** Data for standard item enchantments. */
     IndexedArray<ItemEnchantmentTable, ATTRIBUTE_FIRST_ENCHANTABLE, ATTRIBUTE_LAST_ENCHANTABLE> standardEnchantments;
-    IndexedArray<ItemSpecialEnchantmentTable, ITEM_ENCHANTMENT_FIRST_VALID, ITEM_ENCHANTMENT_LAST_VALID> pSpecialEnchantments;  // 97E4h -9FC4h
+
+    /** Data for special item enchantments. */
+    IndexedArray<ItemSpecialEnchantmentTable, ITEM_ENCHANTMENT_FIRST_VALID, ITEM_ENCHANTMENT_LAST_VALID> specialEnchantments;
+
     char field_9FC4[5000];
     char field_B348[5000];
     char field_C6D0[5000];
     char field_DA58[5000];
     char field_EDE0[384];
-    // 77B2h*2=EF64h  -102ECh
+
+    /** Mapping `potion1 x potion2 => potion3`. Alchemy recipes, basically.
+     *
+     * `ITEM_NULL` means "can't mix even if you try", and is set for cases when `potion1 == potion2`. Item ids in
+     * `[1, 4]` denote damage level from mixing. */
     IndexedArray<IndexedArray<ItemId, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION>, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION> potionCombination;
-    // 8176h*2=102ECh -11674
+
+    /** Index of autonote bit (`Party::_autonoteBits`) for the potion recipe. */
     IndexedArray<IndexedArray<uint16_t, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION>, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION> potionNotes;
-    IndexedArray<unsigned int, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> chanceByTreasureLevelSums;   // 11684
-    IndexedArray<unsigned int, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> uBonusChanceStandart;       // 1169c
-    IndexedArray<unsigned int, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> uBonusChanceSpecial;        // 116B4
-    IndexedArray<unsigned int, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> uBonusChanceWpSpecial;      // 116cc -116e4
-    IndexedArray<unsigned int, ITEM_TYPE_FIRST_NORMAL_ENCHANTABLE, ITEM_TYPE_LAST_NORMAL_ENCHANTABLE> chanceByItemTypeSums; // 116E4h -11708h
-    IndexedArray<BonusRange, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> bonusRanges;                 // 45C2h*4 =11708h
-    unsigned int pSpecialEnchantments_count;    // 11798h
-    char field_1179C;
-    char field_1179D;
-    char field_1179E;
-    char field_1179F;
+
+    /** Items have a per-treasure level chances to be randomly generated. This array is a per-treasure level sum of
+     * these chances for all items. Effectively used for weighted random sampling in item generation. */
+    IndexedArray<unsigned int, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> itemChanceSumByTreasureLevel;
+
+    /** Chance to get a standard enchantment on a non-weapon item, by treasure level. Number in `[0, 100]`. */
+    IndexedArray<unsigned int, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> standardEnchantmentChanceForEquipment;
+
+    /** Chance to get an attribute enchantment OR a special enchantment on a non-weapon item, by treasure level.
+     * Number in `[0, 100]`. This basically a cumulative chance to get some enchantment. */
+    IndexedArray<unsigned int, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> specialEnchantmentChanceForEquipment;
+
+    /** Chance to get a special enchantment on a weapon, by treasure level. Number in `[0, 100]`. */
+    IndexedArray<unsigned int, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> specialEnchantmentChanceForWeapons;
+
+    /** Standard enchantments have a per-item type chance to be randomly generated. This array is a per-item type
+     * sum of these chances for all standard enchantments. Effectively used for weighted random sampling in standard
+     * enchantment generation. */
+    IndexedArray<unsigned int, ITEM_TYPE_FIRST_NORMAL_ENCHANTABLE, ITEM_TYPE_LAST_NORMAL_ENCHANTABLE> standardEnchantmentChanceSumByItemType;
+
+    /** Ranges of standard enchantment strength by item treasure level. */
+    IndexedArray<BonusRange, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> standardEnchantmentRangeByTreasureLevel;
 };
 
 extern ItemTable *pItemTable;

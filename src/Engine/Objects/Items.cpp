@@ -146,7 +146,7 @@ void ItemGen::Reset() {
 void ItemGen::UpdateTempBonus(Time time) {
     if (this->flags & ITEM_TEMP_BONUS) {
         if (time > this->enchantmentExpirationTime) {
-            this->attributeEnchantment = {};
+            this->standardEnchantment = {};
             this->specialEnchantment = ITEM_ENCHANTMENT_NULL;
             this->flags &= ~ITEM_TEMP_BONUS;
         }
@@ -158,12 +158,12 @@ int ItemGen::GetValue() const {
     int uBaseValue = pItemTable->items[this->itemId].baseValue;
     if (flags & ITEM_TEMP_BONUS || pItemTable->IsMaterialNonCommon(this))
         return uBaseValue;
-    if (potionPower || attributeEnchantment) // TODO(captainurist): can drop potionPower?
-        return uBaseValue + 100 * attributeEnchantmentStrength;
+    if (potionPower || standardEnchantment) // TODO(captainurist): can drop potionPower?
+        return uBaseValue + 100 * standardEnchantmentStrength;
 
     if (specialEnchantment != ITEM_ENCHANTMENT_NULL) {
-        int mod = (pItemTable->pSpecialEnchantments[specialEnchantment].iTreasureLevel & 4);
-        int bonus = pItemTable->pSpecialEnchantments[specialEnchantment].additionalValue;
+        int mod = (pItemTable->specialEnchantments[specialEnchantment].iTreasureLevel & 4);
+        int bonus = pItemTable->specialEnchantments[specialEnchantment].additionalValue;
         if (!mod)
             return uBaseValue + bonus;
         else
@@ -200,9 +200,9 @@ std::string ItemGen::GetIdentifiedName() {
     }
 
     if (!pItemTable->IsMaterialNonCommon(this)) {
-        if (attributeEnchantment) {
+        if (standardEnchantment) {
             return std::string(pItemTable->items[itemId].name) + " " +
-                   pItemTable->standardEnchantments[*attributeEnchantment].itemSuffix;
+                   pItemTable->standardEnchantments[*standardEnchantment].itemSuffix;
         } else if (specialEnchantment == ITEM_ENCHANTMENT_NULL) {
             return pItemTable->items[itemId].name;
         } else {
@@ -223,12 +223,12 @@ std::string ItemGen::GetIdentifiedName() {
             ) {            // enchantment and name positions inverted!
                 return fmt::format(
                     "{} {}",
-                    pItemTable->pSpecialEnchantments[specialEnchantment].itemSuffixOrPrefix,
+                    pItemTable->specialEnchantments[specialEnchantment].itemSuffixOrPrefix,
                     pItemTable->items[itemId].name
                 );
             } else {
                 return std::string(pItemTable->items[itemId].name) + " " +
-                       pItemTable->pSpecialEnchantments[specialEnchantment].itemSuffixOrPrefix;
+                       pItemTable->specialEnchantments[specialEnchantment].itemSuffixOrPrefix;
             }
         }
     }
@@ -710,7 +710,7 @@ void ItemGen::GetItemBonusArtifact(const Character *owner,
 }
 
 bool ItemGen::IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet) {
-    //auto pos = specialBonusMap.find(this->attributeEnchantment);
+    //auto pos = specialBonusMap.find(this->standardEnchantment);
     //if (pos == specialBonusMap.end())
     //    return false;
 

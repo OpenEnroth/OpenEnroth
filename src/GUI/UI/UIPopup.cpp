@@ -491,15 +491,15 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
                 text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->potionPower);
         } else if (inspect_item->isReagent()) {
             text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->GetDamageDice());
-        } else if (inspect_item->attributeEnchantment) {
+        } else if (inspect_item->standardEnchantment) {
             text[2] = fmt::format("{}: {} +{}",
                                   localization->GetString(LSTR_SPECIAL_2),
-                                  pItemTable->standardEnchantments[*inspect_item->attributeEnchantment].attributeName,
-                                  inspect_item->attributeEnchantmentStrength);
+                                  pItemTable->standardEnchantments[*inspect_item->standardEnchantment].attributeName,
+                                  inspect_item->standardEnchantmentStrength);
         } else if (inspect_item->specialEnchantment != ITEM_ENCHANTMENT_NULL) {
             text[2] = fmt::format("{}: {}",
                                   localization->GetString(LSTR_SPECIAL_2),
-                                  pItemTable->pSpecialEnchantments[inspect_item->specialEnchantment].description);
+                                  pItemTable->specialEnchantments[inspect_item->specialEnchantment].description);
         } else if (inspect_item->isWand()) {
             text[2] = fmt::sprintf(localization->GetString(LSTR_FMT_S_U_OUT_OF_U),
                                    localization->GetString(LSTR_CHARGES),
@@ -522,7 +522,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
     if ((signed int)Str_int > (signed int)iteminfo_window.uFrameHeight)
         iteminfo_window.uFrameHeight = (unsigned int)Str_int;
     if (inspect_item->flags & ITEM_TEMP_BONUS &&
-        (inspect_item->specialEnchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment))
+        (inspect_item->specialEnchantment != ITEM_ENCHANTMENT_NULL || inspect_item->standardEnchantment))
         iteminfo_window.uFrameHeight += assets->pFontComic->GetHeight();
     v85 = 0;
     if (assets->pFontArrus->GetHeight()) {
@@ -580,7 +580,7 @@ void GameUI_DrawItemInfo(ItemGen *inspect_item) {
         render->ResetUIClipRect();
     } else {
         if ((inspect_item->flags & ITEM_TEMP_BONUS) &&
-            (inspect_item->specialEnchantment != ITEM_ENCHANTMENT_NULL || inspect_item->attributeEnchantment)) {
+            (inspect_item->specialEnchantment != ITEM_ENCHANTMENT_NULL || inspect_item->standardEnchantment)) {
             LongCivilDuration d = (inspect_item->enchantmentExpirationTime - pParty->GetPlayingTime()).toLongCivilDuration();
 
             std::string txt4 = "Duration:";
@@ -2350,7 +2350,7 @@ void Inventory_ItemPopupAndAlchemy() {
             return;
         }
         if (item->isWeapon()) {
-            if (item->specialEnchantment != ITEM_ENCHANTMENT_NULL || item->attributeEnchantment) {
+            if (item->specialEnchantment != ITEM_ENCHANTMENT_NULL || item->standardEnchantment) {
                 // Sound error and stop right click item actions until button is released
                 pAudioPlayer->playUISound(SOUND_error);
                 rightClickItemActionPerformed = true;

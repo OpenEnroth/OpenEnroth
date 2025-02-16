@@ -112,8 +112,8 @@ struct ItemGen {  // 0x24
     int goldAmount = 0; // Only for gold.
 
     // TODO(captainurist): introduce ATTRIBUTE_NULL?
-    std::optional<CharacterAttribute> attributeEnchantment; // Attribute enchantment, if any.
-    int attributeEnchantmentStrength = 0; // Attribute enchantment strength - bonus value for the attribute.
+    std::optional<CharacterAttribute> standardEnchantment; // Standard (attribute) enchantment, if any.
+    int standardEnchantmentStrength = 0; // Attribute enchantment strength - bonus value for the attribute.
     ItemEnchantment specialEnchantment = ITEM_ENCHANTMENT_NULL; // Special named enchantment, if any.
     int numCharges = 0; // Number of wand charges, wand disappears when this gets down to 0.
     int maxCharges = 0; // Max charges in a wand. This is used when recharging.
@@ -145,8 +145,8 @@ struct ItemDesc {
     uint8_t damageMod = 0;
     ItemRarity rarity = RARITY_COMMON; // Item rarity.
     ItemEnchantment specialEnchantment = ITEM_ENCHANTMENT_NULL; // Special enchantment, applied only to `RARITY_SPECIAL` items.
-    std::optional<CharacterAttribute> attributeEnchantment; // Attribute enchantment, applied only to `RARITY_SPECIAL` items.
-    int attributeEnchantmentStrength = 0; // Strength of the attribute enchantment above.
+    std::optional<CharacterAttribute> standardEnchantment; // Standard (attribute) enchantment, applied only to `RARITY_SPECIAL` items.
+    int standardEnchantmentStrength = 0; // Strength of the standard enchantment above.
     IndexedArray<uint8_t, ITEM_TREASURE_LEVEL_FIRST_RANDOM, ITEM_TREASURE_LEVEL_LAST_RANDOM> uChanceByTreasureLvl = {{}}; // Weights for seeing this item in random loot by treasure level.
     int identifyDifficulty = 0; // Value that the id item skill is checked against, 0 means always identified.
 };

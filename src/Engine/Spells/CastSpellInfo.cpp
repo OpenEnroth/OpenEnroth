@@ -692,7 +692,7 @@ void CastSpellInfoHelpers::castSpell() {
                             item->IsBroken() ||
                             pItemTable->IsMaterialNonCommon(item) ||
                             item->specialEnchantment != ITEM_ENCHANTMENT_NULL ||
-                            item->attributeEnchantment ||
+                            item->standardEnchantment ||
                             !item->isWeapon()) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
@@ -1415,8 +1415,8 @@ void CastSpellInfoHelpers::castSpell() {
                     if ((spell_mastery == CHARACTER_SKILL_MASTERY_MASTER || spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) &&
                             isRegular(spell_item_to_enchant->itemId) &&
                             spell_item_to_enchant->specialEnchantment == ITEM_ENCHANTMENT_NULL &&
-                            !spell_item_to_enchant->attributeEnchantment &&
-                            spell_item_to_enchant->attributeEnchantmentStrength == 0 &&
+                            !spell_item_to_enchant->standardEnchantment &&
+                            spell_item_to_enchant->standardEnchantmentStrength == 0 &&
                             !spell_item_to_enchant->IsBroken()) {
                         // break items with low value
                         if ((spell_item_to_enchant->GetValue() < 450 && !isWeapon(this_equip_type)) ||  // not weapons
@@ -1468,7 +1468,7 @@ void CastSpellInfoHelpers::castSpell() {
                                     }
 
                                     // assign ench and power
-                                    spell_item_to_enchant->attributeEnchantment = ench_array[step];
+                                    spell_item_to_enchant->standardEnchantment = ench_array[step];
 
                                     int ench_power = 0;
                                     // master 3-8  - guess work needs checking
@@ -1476,7 +1476,7 @@ void CastSpellInfoHelpers::castSpell() {
                                     // gm 6-12   - guess work needs checking
                                     if (spell_mastery== CHARACTER_SKILL_MASTERY_GRANDMASTER) ench_power = grng->random(7) + 6;
 
-                                    spell_item_to_enchant->attributeEnchantmentStrength = ench_power;
+                                    spell_item_to_enchant->standardEnchantmentStrength = ench_power;
                                     spell_item_to_enchant->flags |= ITEM_AURA_EFFECT_BLUE;
                                     ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                                     spell_failed = false;
@@ -1486,22 +1486,20 @@ void CastSpellInfoHelpers::castSpell() {
                                     ItemEnchantment ench_array[100] = {};
 
                                     // finds how many possible enchaments and adds up to item apply values
-                                    if (pItemTable->pSpecialEnchantments_count > 0) {
-                                        for (ItemEnchantment spec_ench_loop : pItemTable->pSpecialEnchantments.indices()) {
-                                            const std::string &bonusStatement = pItemTable->pSpecialEnchantments[spec_ench_loop].description;
-                                            if (!bonusStatement.empty()) {
-                                                if (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel == 3) {
-                                                    continue;
-                                                }
-                                                if (spell_mastery == CHARACTER_SKILL_MASTERY_MASTER && (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel != 0)) {
-                                                    continue;
-                                                }
-                                                int this_to_apply = pItemTable->pSpecialEnchantments[spec_ench_loop].chanceByItemType[this_equip_type];
-                                                to_item_apply_sum += this_to_apply;
-                                                if (this_to_apply) {
-                                                    ench_array[ench_found] = spec_ench_loop;
-                                                    ench_found++;
-                                                }
+                                    for (ItemEnchantment spec_ench_loop : pItemTable->specialEnchantments.indices()) {
+                                        const std::string &bonusStatement = pItemTable->specialEnchantments[spec_ench_loop].description;
+                                        if (!bonusStatement.empty()) {
+                                            if (pItemTable->specialEnchantments[spec_ench_loop].iTreasureLevel == 3) {
+                                                continue;
+                                            }
+                                            if (spell_mastery == CHARACTER_SKILL_MASTERY_MASTER && (pItemTable->specialEnchantments[spec_ench_loop].iTreasureLevel != 0)) {
+                                                continue;
+                                            }
+                                            int this_to_apply = pItemTable->specialEnchantments[spec_ench_loop].chanceByItemType[this_equip_type];
+                                            to_item_apply_sum += this_to_apply;
+                                            if (this_to_apply) {
+                                                ench_array[ench_found] = spec_ench_loop;
+                                                ench_found++;
                                             }
                                         }
                                     }
@@ -1514,7 +1512,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     // step through until we hit that ench
                                     for (step = 0; step < ench_found; step++) {
-                                        current_item_apply_sum += pItemTable->pSpecialEnchantments[ench_array[step]].chanceByItemType[this_equip_type];
+                                        current_item_apply_sum += pItemTable->specialEnchantments[ench_array[step]].chanceByItemType[this_equip_type];
                                         if (current_item_apply_sum >= target_item_apply_rand) {
                                             break;
                                         }

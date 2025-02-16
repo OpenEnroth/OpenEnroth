@@ -229,17 +229,17 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst);
 
 
 struct ItemGen_MM7 {
-    /* 00 */ int32_t itemId;
-    /* 04 */ int32_t attributeEnchantmentOrPotionPower; // Potion power for potions, attribute index + 1 for attribute enchantments.
-    /* 08 */ int32_t attributeEnchantmentStrength;
-    /* 0C */ int32_t specialEnchantmentOrGoldAmount; // Gold amount for gold, otherwise special enchantment.
-    /* 10 */ int32_t numCharges;
-    /* 14 */ uint32_t flags;
-    /* 18 */ uint8_t equippedSlot;
-    /* 19 */ uint8_t maxCharges;
-    /* 1A */ uint8_t lichJarCharacterIndex; // Only for full lich jars. 1-based index of the character whose essence it stored in it.
-    /* 1B */ uint8_t placedInChest; // Unknown unused 8-bit field, was repurposed.
-    /* 1C */ int64_t enchantmentExpirationTime;
+    int32_t itemId;
+    int32_t standardEnchantmentOrPotionPower; // Potion power for potions, attribute index + 1 for standard enchantments.
+    int32_t standardEnchantmentStrength;
+    int32_t specialEnchantmentOrGoldAmount; // Gold amount for gold, otherwise special enchantment.
+    int32_t numCharges;
+    uint32_t flags;
+    uint8_t equippedSlot;
+    uint8_t maxCharges;
+    uint8_t lichJarCharacterIndex; // Only for full lich jars. 1-based index of the character whose essence it stored in it.
+    uint8_t placedInChest; // Unknown unused 8-bit field, was repurposed.
+    int64_t enchantmentExpirationTime;
 };
 static_assert(sizeof(ItemGen_MM7) == 0x24);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ItemGen_MM7)
