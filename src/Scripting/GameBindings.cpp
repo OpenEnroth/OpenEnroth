@@ -195,7 +195,7 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
 void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &table) const {
     using FilterItemFunction = std::function<bool(ItemId)>;
 
-    auto createItemTable = [&solState](const ItemDesc &itemDesc) {
+    auto createItemTable = [&solState](const ItemData &itemDesc) {
         return solState.create_table_with(
             "name", itemDesc.name,
             "level", itemDesc.identifyDifficulty
@@ -205,7 +205,7 @@ void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &
     table["items"] = solState.create_table_with(
         "getItemInfo", sol::as_function([&solState, createItemTable](ItemId itemId) {
             if (itemId >= ITEM_FIRST_VALID && itemId <= ITEM_LAST_VALID) {
-                const ItemDesc &itemDesc = pItemTable->items[itemId];
+                const ItemData &itemDesc = pItemTable->items[itemId];
                 return sol::object(solState, createItemTable(itemDesc));
             }
             return sol::make_object(solState, sol::lua_nil);
