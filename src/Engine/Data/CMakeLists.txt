@@ -18,6 +18,7 @@ set(ENGINE_DATA_HEADERS
         HistoryData.h
         FrameEnums.h
         IconFrameData.h
+        ItemData.h
         PortraitFrameData.h
         TileData.h
         TileEnums.h

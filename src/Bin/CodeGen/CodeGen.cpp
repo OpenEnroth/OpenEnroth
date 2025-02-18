@@ -49,7 +49,7 @@ int runItemIdCodeGen(const CodeGenOptions &options, GameResourceManager *resourc
     map.insert(ITEM_NULL, "NULL", "");
 
     for(ItemId i : itemTable.items.indices()) {
-        const ItemDesc &desc = itemTable.items[i];
+        const ItemData &desc = itemTable.items[i];
         std::string icon = desc.iconName;
         std::string name = desc.name;
         std::string description = desc.description;

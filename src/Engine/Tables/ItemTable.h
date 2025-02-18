@@ -4,6 +4,7 @@
 
 #include "Engine/Data/SpecialEnchantmentData.h"
 #include "Engine/Data/StandardEnchantmentData.h"
+#include "Engine/Data/ItemData.h"
 #include "Engine/Objects/Items.h"
 
 #include "Utility/IndexedArray.h"
@@ -26,7 +27,7 @@ struct ItemTable {
     bool IsMaterialNonCommon(const ItemGen *pItem);
 
     /** Item data for all items in the game. */
-    IndexedArray<ItemDesc, ITEM_FIRST_VALID, ITEM_LAST_VALID> items;
+    IndexedArray<ItemData, ITEM_FIRST_VALID, ITEM_LAST_VALID> items;
 
     /** Data for standard item enchantments. */
     IndexedArray<StandardEnchantmentData, ATTRIBUTE_FIRST_ENCHANTABLE, ATTRIBUTE_LAST_ENCHANTABLE> standardEnchantments;
