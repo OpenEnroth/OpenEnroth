@@ -9,7 +9,7 @@ var searchData=
   ['basename_6',['baseName',['../structdetail_1_1LowercaseFileData.html#a73d702c5eee64a6b7fa1331e309ee4ad',1,'detail::LowercaseFileData']]],
   ['basespeed_7',['baseSpeed',['../structMonsterInfo__MM7.html#a36ea7db0726ee5b371dd5aeccf444de7',1,'MonsterInfo_MM7::baseSpeed()'],['../structMonsterInfo.html#a4a866acaa874f1177e62af88f83ac24b',1,'MonsterInfo::baseSpeed()']]],
   ['basestealingfine_8',['baseStealingFine',['../structMapInfo.html#a6c6786edce75b4fd06b4baecbf8804f0',1,'MapInfo']]],
-  ['basevalue_9',['baseValue',['../structItemDesc.html#ab126124725592fffaa5b8130b56ec2e2',1,'ItemDesc']]],
+  ['basevalue_9',['baseValue',['../structItemData.html#a3d3e6d642dc806566f6c542208eb969d',1,'ItemData']]],
   ['bbox_10',['bbox',['../structCollisionState.html#a6d1f6b79e8c539d0b5744024b178458f',1,'CollisionState']]],
   ['bdecompressed_11',['bDecompressed',['../structSoundInfo__MM7.html#ac89f29d53e524f7767a461a456008446',1,'SoundInfo_MM7']]],
   ['bdialogueui_5finitializeactor_5fnpc_5fid_12',['bDialogueUI_InitializeActor_NPC_ID',['../mm7__data_8h.html#aeec6b47a335bd82456f0dc589ee5ef97',1,'bDialogueUI_InitializeActor_NPC_ID():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#aeec6b47a335bd82456f0dc589ee5ef97',1,'bDialogueUI_InitializeActor_NPC_ID():&#160;mm7_data.cpp']]],
