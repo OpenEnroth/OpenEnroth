@@ -3,7 +3,7 @@
 #include "Engine/PriceCalculator.h"
 
 #include "Engine/Data/HouseData.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Objects/Character.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Party.h"

@@ -14,7 +14,7 @@
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Random/Random.h"

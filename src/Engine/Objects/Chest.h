@@ -4,12 +4,10 @@
 #include <string>
 #include <optional>
 
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Pid.h"
 
 #include "Library/Geometry/Vec.h"
-
-#include "Utility/Memory/Blob.h"
 
 #include "ChestEnums.h"
 

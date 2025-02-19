@@ -6,7 +6,7 @@
 #include <string>
 #include <algorithm>
 
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Objects/Character.h"
 #include "Engine/Time/Time.h"

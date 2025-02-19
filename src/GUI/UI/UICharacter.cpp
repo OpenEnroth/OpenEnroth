@@ -1019,7 +1019,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
     Item *itemMainHand = player->GetMainHandItem();
     Item *itemOffHand = player->GetOffHandItem();
-    bool bTwoHandedGrip = itemMainHand && (itemMainHand->GetItemEquipType() == ITEM_TYPE_TWO_HANDED || itemMainHand->GetPlayerSkillType() == CHARACTER_SKILL_SPEAR && !itemOffHand);
+    bool bTwoHandedGrip = itemMainHand && (itemMainHand->type() == ITEM_TYPE_TWO_HANDED || itemMainHand->GetPlayerSkillType() == CHARACTER_SKILL_SPEAR && !itemOffHand);
 
     // Aqua-Lung
     if (player->hasUnderwaterSuitEquipped()) {
@@ -1792,14 +1792,14 @@ void OnPaperdollLeftClick() {
     int mainhandequip = pParty->activeCharacter().pEquipment[ITEM_SLOT_MAIN_HAND];
     unsigned int shieldequip = pParty->activeCharacter().pEquipment[ITEM_SLOT_OFF_HAND];
 
-    if (mainhandequip && pParty->activeCharacter().pInventoryItemList[mainhandequip - 1].GetItemEquipType() == ITEM_TYPE_TWO_HANDED) {
+    if (mainhandequip && pParty->activeCharacter().pInventoryItemList[mainhandequip - 1].type() == ITEM_TYPE_TWO_HANDED) {
         twohandedequip = mainhandequip;
     }
 
     ItemId pickeditem = pParty->pPickedItem.itemId;
 
     if (pParty->pPickedItem.itemId != ITEM_NULL) {  // hold item
-        pEquipType = pParty->pPickedItem.GetItemEquipType();
+        pEquipType = pParty->pPickedItem.type();
         pSkillType = pParty->pPickedItem.GetPlayerSkillType();
 
         if (pSkillType == CHARACTER_SKILL_SPEAR) {
@@ -2209,7 +2209,7 @@ void OnPaperdollLeftClick() {
         if (v34) {
             // v36 = v34 - 1;
             // v38 = &pCharacters[pParty->_activeCharacter]->pInventoryItemList[v34 - 1];
-            pEquipType = pParty->activeCharacter().pInventoryItemList[v34 - 1].GetItemEquipType();
+            pEquipType = pParty->activeCharacter().pInventoryItemList[v34 - 1].type();
             if (pParty->activeCharacter().pInventoryItemList[v34 - 1].itemId == ITEM_QUEST_WETSUIT) {
                 if (engine->IsUnderwater()) {
                     pAudioPlayer->playUISound(SOUND_error);

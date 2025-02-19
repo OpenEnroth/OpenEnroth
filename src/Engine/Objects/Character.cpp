@@ -830,7 +830,7 @@ bool Character::CanRepair(Item *pItem) const {
     // TODO(Nik-RE-dev): is check for boots correct?
     if (CheckHiredNPCSpeciality(Smith) && pItem->isWeapon() ||
         CheckHiredNPCSpeciality(Armorer) && pItem->isArmor() ||
-        CheckHiredNPCSpeciality(Alchemist) && pItem->GetItemEquipType() >= ITEM_TYPE_BOOTS)
+        CheckHiredNPCSpeciality(Alchemist) && pItem->type() >= ITEM_TYPE_BOOTS)
         return true;  // check against hired help
 
     if (val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // gm repair
@@ -1379,7 +1379,7 @@ int Character::CalculateIncommingDamage(DamageType dmg_type, int dmg) {
 
 //----- (0048D62C) --------------------------------------------------------
 ItemType Character::GetEquippedItemEquipType(ItemSlot uEquipSlot) const {
-    return GetItem(uEquipSlot)->GetItemEquipType();
+    return GetItem(uEquipSlot)->type();
 }
 
 //----- (0048D651) --------------------------------------------------------
@@ -2627,13 +2627,12 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
                 if (HasItemEquipped(i)) {
                     currEquippedItem = GetItem(i);
                     if (attr == ATTRIBUTE_AC_BONUS) {
-                        if (isPassiveEquipment(currEquippedItem->GetItemEquipType())) {
+                        if (isPassiveEquipment(currEquippedItem->type())) {
                             v5 += currEquippedItem->GetDamageDice() +
                                   currEquippedItem->GetDamageMod();
                         }
                     }
-                    if (pItemTable->IsMaterialNonCommon(currEquippedItem) &&
-                        !pItemTable->IsMaterialSpecial(currEquippedItem)) {
+                    if (currEquippedItem->rarity() == RARITY_ARTIFACT || currEquippedItem->rarity() == RARITY_RELIC) {
                         currEquippedItem->GetItemBonusArtifact(this, attr, &v62);
                     } else if (currEquippedItem->standardEnchantment) {
                         if (*currEquippedItem->standardEnchantment == attr) {
@@ -7125,7 +7124,7 @@ MerchantPhrase Character::SelectPhrasesTransaction(Item *pItem, HouseType buildi
 
     merchantLevel = getActualSkillValue(CHARACTER_SKILL_MERCHANT).level();
     idemId = pItem->itemId;
-    equipType = pItem->GetItemEquipType();
+    equipType = pItem->type();
     itemValue = pItem->GetValue();
 
     switch (building_type) {

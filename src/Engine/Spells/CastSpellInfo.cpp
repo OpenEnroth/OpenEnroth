@@ -690,7 +690,7 @@ void CastSpellInfoHelpers::castSpell() {
                     if (item->itemId == ITEM_BLASTER ||
                             item->itemId == ITEM_BLASTER_RIFLE ||
                             item->IsBroken() ||
-                            pItemTable->IsMaterialNonCommon(item) ||
+                            item->rarity() != RARITY_COMMON ||
                             item->specialEnchantment != ITEM_ENCHANTMENT_NULL ||
                             item->standardEnchantment ||
                             !item->isWeapon()) {

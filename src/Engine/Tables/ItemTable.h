@@ -5,7 +5,7 @@
 #include "Engine/Data/SpecialEnchantmentData.h"
 #include "Engine/Data/StandardEnchantmentData.h"
 #include "Engine/Data/ItemData.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/Segment.h"
@@ -23,8 +23,6 @@ struct ItemTable {
      */
     void generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTreasureType, Item *pItem);
     void SetSpecialBonus(Item *pItem);
-    bool IsMaterialSpecial(const Item *pItem);
-    bool IsMaterialNonCommon(const Item *pItem);
 
     /** Item data for all items in the game. */
     IndexedArray<ItemData, ITEM_FIRST_VALID, ITEM_LAST_VALID> items;
@@ -47,7 +45,10 @@ struct ItemTable {
      * `[1, 4]` denote damage level from mixing. */
     IndexedArray<IndexedArray<ItemId, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION>, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION> potionCombination;
 
-    /** Index of autonote bit (`Party::_autonoteBits`) for the potion recipe. */
+    /** Index of autonote bit (`Party::_autonoteBits`) for the potion recipe.
+     *
+     * Can be zero for valid potion combination when resulting potion is of lower grade than it's components, e.g.
+     * Cure Paralysis (white) + Cure Wounds (red) = Cure Wounds (red). */
     IndexedArray<IndexedArray<uint16_t, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION>, ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION> potionNotes;
 
     /** Items have a per-treasure level chances to be randomly generated. This array is a per-treasure level sum of

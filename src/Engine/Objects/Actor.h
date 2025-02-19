@@ -4,7 +4,7 @@
 #include <string>
 
 #include "Engine/Spells/SpellBuff.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/CombinedSkillValue.h"
 #include "Engine/Pid.h"

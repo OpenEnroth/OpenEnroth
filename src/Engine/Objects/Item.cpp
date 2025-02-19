@@ -1,4 +1,4 @@
-#include "Engine/Objects/Items.h"
+#include "Item.h"
 
 #include <map>
 #include <string>
@@ -156,7 +156,7 @@ void Item::UpdateTempBonus(Time time) {
 //----- (00456442) --------------------------------------------------------
 int Item::GetValue() const {
     int uBaseValue = pItemTable->items[this->itemId].baseValue;
-    if (flags & ITEM_TEMP_BONUS || pItemTable->IsMaterialNonCommon(this))
+    if (flags & ITEM_TEMP_BONUS || rarity() != RARITY_COMMON)
         return uBaseValue;
     if (potionPower || standardEnchantment) // TODO(captainurist): can drop potionPower?
         return uBaseValue + 100 * standardEnchantmentStrength;
@@ -183,7 +183,7 @@ std::string Item::GetDisplayName() {
 
 //----- (004564B3) --------------------------------------------------------
 std::string Item::GetIdentifiedName() {
-    ItemType equip_type = GetItemEquipType();
+    ItemType equip_type = type();
     if ((equip_type == ITEM_TYPE_REAGENT) || (equip_type == ITEM_TYPE_POTION) ||
         (equip_type == ITEM_TYPE_GOLD)) {
         return pItemTable->items[itemId].name;
@@ -199,7 +199,7 @@ std::string Item::GetIdentifiedName() {
         }
     }
 
-    if (!pItemTable->IsMaterialNonCommon(this)) {
+    if (rarity() == RARITY_COMMON) {
         if (standardEnchantment) {
             return std::string(pItemTable->items[itemId].name) + " " +
                    pItemTable->standardEnchantments[*standardEnchantment].itemSuffix;
@@ -224,11 +224,12 @@ std::string Item::GetIdentifiedName() {
                 return fmt::format(
                     "{} {}",
                     pItemTable->specialEnchantments[specialEnchantment].itemSuffixOrPrefix,
-                    pItemTable->items[itemId].name
-                );
+                    pItemTable->items[itemId].name);
             } else {
-                return std::string(pItemTable->items[itemId].name) + " " +
-                       pItemTable->specialEnchantments[specialEnchantment].itemSuffixOrPrefix;
+                return fmt::format(
+                    "{} {}",
+                    pItemTable->items[itemId].name,
+                    pItemTable->specialEnchantments[specialEnchantment].itemSuffixOrPrefix);
             }
         }
     }
@@ -719,14 +720,6 @@ bool Item::IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet) {
     return false;
 }
 
-ItemType Item::GetItemEquipType() const {
-    // to avoid nzi - is this safe??
-    if (this->itemId == ITEM_NULL)
-        return ITEM_TYPE_NONE;
-    else
-        return pItemTable->items[this->itemId].type;
-}
-
 CharacterSkillType Item::GetPlayerSkillType() const {
     CharacterSkillType skl = pItemTable->items[this->itemId].skill;
     if (skl == CHARACTER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
@@ -804,6 +797,14 @@ bool Item::canSellRepairIdentifyAt(HouseId houseId) {
         default:
             return false;
     }
+}
+
+ItemType Item::type() const {
+    return itemId == ITEM_NULL ? ITEM_TYPE_NONE : pItemTable->items[itemId].type;
+}
+
+ItemRarity Item::rarity() const {
+    return pItemTable->items[itemId].rarity;
 }
 
 Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MapTreasureLevel mapTreasureLevel) {
