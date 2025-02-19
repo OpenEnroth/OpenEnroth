@@ -47,7 +47,7 @@ var searchData=
   ['levelmodifier_44',['levelModifier',['../structPlayer__MM7.html#a875b7a57a4216a03e2f38964326110aa',1,'Player_MM7']]],
   ['levels_45',['levels',['../classCharacterTapeRecorder.html#adef133a184d9546e3d8c349a0ca9ca11',1,'CharacterTapeRecorder']]],
   ['leveltype_46',['LevelType',['../MapEnums_8h.html#acaf0fa9ae53d9ba60cd809335aa4dd9c',1,'MapEnums.h']]],
-  ['lichjarcharacterindex_47',['lichJarCharacterIndex',['../structItemGen.html#a0d49c1634c92094bbf71d7745b18fae0',1,'ItemGen::lichJarCharacterIndex()'],['../structItemGen__MM7.html#a2503de6900bd3c77b9054971ee6b85b4',1,'ItemGen_MM7::lichJarCharacterIndex()']]],
+  ['lichjarcharacterindex_47',['lichJarCharacterIndex',['../structItem.html#acc9411287560fcc793652786a86b299e',1,'Item::lichJarCharacterIndex()'],['../structItemGen__MM7.html#a2503de6900bd3c77b9054971ee6b85b4',1,'ItemGen_MM7::lichJarCharacterIndex()']]],
   ['light_5fdescr_48',['light_descr',['../classEvtInstruction.html#ae1e1f774dd18ab0a7ab9ae2e95cbab1b',1,'EvtInstruction']]],
   ['light_5fid_49',['light_id',['../classEvtInstruction.html#acf9e2abc9ec8b16c5adda934cb522904',1,'EvtInstruction']]],
   ['lightmap_5fflags_5fuse_5fspecular_50',['LIGHTMAP_FLAGS_USE_SPECULAR',['../LightmapBuilder_8h.html#afa91bd12d027d8d90c418bc1c9695728',1,'LightmapBuilder.h']]],

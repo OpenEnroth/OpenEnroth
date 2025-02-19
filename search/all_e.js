@@ -162,7 +162,7 @@ var searchData=
   ['numbountiescollected_159',['numBountiesCollected',['../structParty__MM7.html#a6118876a385bf439b83cf33741b89ead',1,'Party_MM7']]],
   ['numbspverts_160',['numBSPverts',['../OpenGLRenderer_8cpp.html#a3b5a2d36c725b66030e4f39f7869bb00',1,'OpenGLRenderer.cpp']]],
   ['numcharactersattackedperspecialability_161',['numCharactersAttackedPerSpecialAbility',['../structMonsterInfo.html#acdfd0985debcd2c8cd5c4c1237ae4033',1,'MonsterInfo::numCharactersAttackedPerSpecialAbility()'],['../structMonsterInfo__MM7.html#ab280effd04e9a860909612c3f59f1209',1,'MonsterInfo_MM7::numCharactersAttackedPerSpecialAbility()']]],
-  ['numcharges_162',['numCharges',['../structItemGen.html#a9d2b882766a3426592610b6a89cfca21',1,'ItemGen::numCharges()'],['../structItemGen__MM7.html#a782e6406aa6712c1a7bfabe39dafb013',1,'ItemGen_MM7::numCharges()']]],
+  ['numcharges_162',['numCharges',['../structItem.html#ad11c7964e9d8e24bc57e7357047408d0',1,'Item::numCharges()'],['../structItemGen__MM7.html#a782e6406aa6712c1a7bfabe39dafb013',1,'ItemGen_MM7::numCharges()']]],
   ['numdeaths_163',['numDeaths',['../structParty__MM7.html#a4ad996029f168f141293fda02d35fda2',1,'Party_MM7']]],
   ['numdecalverts_164',['numdecalverts',['../OpenGLRenderer_8cpp.html#ad8ab09ce7e966384b163b1672abae1b3',1,'OpenGLRenderer.cpp']]],
   ['numdirectories_165',['numDirectories',['../structLodHeader.html#a8dc7d2124a1d4cdf78b81b72f8279ada',1,'LodHeader::numDirectories()'],['../structLodHeader__MM6.html#a07592e9a709288a41b1b2c624685c28a',1,'LodHeader_MM6::numDirectories()']]],

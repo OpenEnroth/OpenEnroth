@@ -710,7 +710,7 @@ var searchData=
   ['drawworld_707',['drawWorld',['../classEngine.html#a01f2f47484993e77f2787b8fd1d989f9',1,'Engine']]],
   ['drh_5ftexnames_5fby_5fface_708',['drh_texnames_by_face',['../UICharacter_8cpp.html#a6e18df0d386f302bfb1462d52d592d50',1,'UICharacter.cpp']]],
   ['drophelditem_709',['dropHeldItem',['../structParty.html#a0693aea0ed8b47d1ae9d99258818fb54',1,'Party']]],
-  ['dropitemat_710',['dropItemAt',['../structSpriteObject.html#aab4a9b289373e8ed9e30e57613fa362d',1,'SpriteObject']]],
+  ['dropitemat_710',['dropItemAt',['../structSpriteObject.html#aa136f1a107cd9f7ab88e224cc6875023',1,'SpriteObject']]],
   ['droptreasureat_711',['DropTreasureAt',['../Indoor_8h.html#ad1c3e70faa14d2455f85a31adf179094',1,'DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing):&#160;Indoor.cpp'],['../Indoor_8cpp.html#ad1c3e70faa14d2455f85a31adf179094',1,'DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing):&#160;Indoor.cpp']]],
   ['dstx_712',['dstX',['../structProjectileAnim.html#a36151ca9b1b9fbe74c51031170fc1f05',1,'ProjectileAnim']]],
   ['dsty_713',['dstY',['../structProjectileAnim.html#a7f74072719de0bc59426417a24b792c7',1,'ProjectileAnim']]],

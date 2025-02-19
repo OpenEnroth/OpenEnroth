@@ -40,7 +40,7 @@ var searchData=
   ['max_5ftower_5fheight_37',['max_tower_height',['../Arcomage_8cpp.html#a7af1ef558e36365ba646afc491ff889d',1,'Arcomage.cpp']]],
   ['maxactiveaiactors_38',['MaxActiveAIActors',['../classGameConfig_1_1Gameplay.html#a03f97cd8cf7a4cae62829afaa83b5703',1,'GameConfig::Gameplay']]],
   ['maxactors_39',['MaxActors',['../classGameConfig_1_1Gameplay.html#a83cb0db3e327b8e4b895a447d87d3740',1,'GameConfig::Gameplay']]],
-  ['maxcharges_40',['maxCharges',['../structItemGen.html#aadc08e8d890f26c0d4d0fe85d1e44e28',1,'ItemGen::maxCharges()'],['../structItemGen__MM7.html#ae457249b62aab53e49c7c7a6b517b3cf',1,'ItemGen_MM7::maxCharges()']]],
+  ['maxcharges_40',['maxCharges',['../structItem.html#addea31f64629b2703fb407ec696c1b7e',1,'Item::maxCharges()'],['../structItemGen__MM7.html#ae457249b62aab53e49c7c7a6b517b3cf',1,'ItemGen_MM7::maxCharges()']]],
   ['maxcharwidth_41',['maxcharwidth',['../classGUIFont.html#aebd86d031872f4f17ff52b0b1dde7abb',1,'GUIFont']]],
   ['maxelementbuffer_42',['maxElementBuffer',['../NuklearOverlayRenderer_8cpp.html#a4af79663b4a75d4e01d6b76db77b1b46',1,'NuklearOverlayRenderer.cpp']]],
   ['maxflightheight_43',['MaxFlightHeight',['../classGameConfig_1_1Gameplay.html#a5fe0c8366592af4c44bd8a0e50fd3e39',1,'GameConfig::Gameplay']]],

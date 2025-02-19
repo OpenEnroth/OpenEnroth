@@ -8,7 +8,7 @@ var searchData=
   ['_5f427546_5',['_427546',['../structstru319.html#a50d5e3e7c9a0c051896d5714cfe65c74',1,'stru319']]],
   ['_5f42ecb5_5fcharacterattacksactor_6',['_42ECB5_CharacterAttacksActor',['../classCharacter.html#a79b60679dd5ab0f916a32aa85530d46d',1,'Character']]],
   ['_5f42fa66_5fdo_5fexplosive_5fimpact_7',['_42FA66_do_explosive_impact',['../classCharacter.html#a5be7ec6dd3a0165d4aea96ee19b4f57f',1,'Character']]],
-  ['_5f439df3_5fget_5fadditional_5fdamage_8',['_439DF3_get_additional_damage',['../structItemGen.html#a882fbd113ad3783c4ec27d760a815c0e',1,'ItemGen']]],
+  ['_5f439df3_5fget_5fadditional_5fdamage_8',['_439DF3_get_additional_damage',['../structItem.html#a2e632e940b9c88b7d7cc24c3c565c086',1,'Item']]],
   ['_5f43b3e0_5fcalcdamage_9',['_43B3E0_CalcDamage',['../classActor.html#a16260386811b3f153944636e7f60b37e',1,'Actor']]],
   ['_5f43f55f_5fget_5fbillboard_5flight_5flevel_10',['_43F55F_get_billboard_light_level',['../LightmapBuilder_8cpp.html#ae9c04a501d9a011f780e3183b54a681d',1,'_43F55F_get_billboard_light_level(const RenderBillboard *a1, int uBaseLightLevel):&#160;LightmapBuilder.cpp'],['../LightmapBuilder_8h.html#ae9c04a501d9a011f780e3183b54a681d',1,'_43F55F_get_billboard_light_level(const RenderBillboard *a1, int uBaseLightLevel):&#160;LightmapBuilder.cpp']]],
   ['_5f44100d_5fshould_5falter_5fright_5fpanel_11',['_44100D_should_alter_right_panel',['../Engine_8h.html#a4c7c70729a3af9d53e1c4fe25879f2cb',1,'_44100D_should_alter_right_panel():&#160;Engine.cpp'],['../Engine_8cpp.html#a4c7c70729a3af9d53e1c4fe25879f2cb',1,'_44100D_should_alter_right_panel():&#160;Engine.cpp']]],

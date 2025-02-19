@@ -49,7 +49,7 @@ var searchData=
   ['updatesounds_46',['UpdateSounds',['../classAudioPlayer.html#ad7f77ef8ad0ba30e82dc34dc88156cb5',1,'AudioPlayer']]],
   ['updatespriteonimpact_47',['updateSpriteOnImpact',['../SpriteObject_8cpp.html#ab8a03e10e16b41f2710550dc779fe9e6',1,'SpriteObject.cpp']]],
   ['updatesunlightvectors_48',['UpdateSunlightVectors',['../structOutdoorLocation.html#ad1464d7a2aad592f0aff9786e636496e',1,'OutdoorLocation']]],
-  ['updatetempbonus_49',['UpdateTempBonus',['../structItemGen.html#ada9265a1100401f930e788f9236f3eda',1,'ItemGen']]],
+  ['updatetempbonus_49',['UpdateTempBonus',['../structItem.html#a17adacd3edfc9662713e6cc79fb24fa3',1,'Item']]],
   ['updatetexture_50',['UpdateTexture',['../classRenderer.html#a730bd0ca325cfa355f24576ac5de00e6',1,'Renderer::UpdateTexture()'],['../classOpenGLRenderer.html#a026adc11bf62d67e4191a7ebdfc697d3',1,'OpenGLRenderer::UpdateTexture()'],['../classNullRenderer.html#a63bd988b5e058ff6671f0e59991d5efd',1,'NullRenderer::UpdateTexture()']]],
   ['updateuserinput_5fand_5fmapspecificstuff_51',['UpdateUserInput_and_MapSpecificStuff',['../Engine_8cpp.html#a73fe5e8d7dc6ec78e5cc180d1915341b',1,'UpdateUserInput_and_MapSpecificStuff():&#160;Engine.cpp'],['../Engine_8h.html#a73fe5e8d7dc6ec78e5cc180d1915341b',1,'UpdateUserInput_and_MapSpecificStuff():&#160;Engine.cpp']]],
   ['updatevolumefromconfig_52',['UpdateVolumeFromConfig',['../classAudioPlayer.html#ab68568dacb09b3abcaacaa0a04d4d3b3',1,'AudioPlayer']]],

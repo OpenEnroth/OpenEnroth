@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;5d841b1</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0d72860</span>
    </div>
   </td>
  </tr>
@@ -94,7 +94,7 @@ $(function() {
   <tr class="even"><td class="entry"><a class="el" href="structParty.html#a2d849b9f0b9d8dfd28fb22a242a88beb">AddBankGold</a>(int amount)</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="structParty.html#a7eaf24414cd9849660f6b112047c88be">AddFine</a>(int amount)</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="structParty.html#a548d9c56d5aaf73c69feb412dc11ba4d">AddGold</a>(int amount)</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="structParty.html#afe2f8d187434ba10f860b7cebf94df8a">addItemToParty</a>(ItemGen *pItem, bool isSilent=false)</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="structParty.html#adfa2c5033c13de713fa5c6d055c5d593">addItemToParty</a>(Item *pItem, bool isSilent=false)</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="structParty.html#a0333a828cb051d9f86e142230644cce3">alignment</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="structParty.html#aac8c42ce898ea1bb9b891bc99bfb9278">arenaLevel</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="structParty.html#ac8ac3a51fad1afd732f5b87452c6f4fa">arenaState</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
@@ -163,7 +163,7 @@ $(function() {
   <tr class="odd"><td class="entry"><a class="el" href="structParty.html#aedd60eb7ec214a8188af54049d28fc95">playing_time</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="structParty.html#a95be0ad7db22ef01cc4f16e5fe99aedb">pos</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="structParty.html#ae4e69f33e47d7cf82acfc261b386de7e">pPartyBuffs</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structParty.html#aa0d4246542588ebae5609a8e8a4718d1">pPickedItem</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structParty.html#a4f37936796f34923a5a155b6a1ce4ef4">pPickedItem</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="structParty.html#ae640f8876d9c7573f6fbcf4e4d9b3c8a">pTurnBasedCharacterRecoveryTimes</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="structParty.html#a679d943d5f5a2147e2d83d57638cbb6e">radius</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="structParty.html#aaa6686874ea698d79177b7ba5d67d8bd">Reset</a>()</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
@@ -179,13 +179,13 @@ $(function() {
   <tr class="odd"><td class="entry"><a class="el" href="structParty.html#adda81a0e7a98449c63481d3dfcbaac86">SetFine</a>(int amount)</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="structParty.html#aaca153a4201f9c2474f8c1e2d50ac254">SetFood</a>(int amount)</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="structParty.html#ab5178a4318b20fc60d8a6b67b08ffaec">SetGold</a>(int amount, bool silent=false)</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structParty.html#a08bd1c6bc87ffeb329b29b318db0cff0">setHoldingItem</a>(ItemGen *pItem, int offsetX=0, int offsetY=0)</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structParty.html#aa9988bf9a1498d8121b27814700e96dd">setHoldingItem</a>(Item *pItem, int offsetX=0, int offsetY=0)</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="structParty.html#ac1735b7ca5bf5a21d18633e133768689">SetRedAlert</a>()</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="structParty.html#a8c2653cde43be97fd2c92ae5bc44cea7">SetYellowAlert</a>()</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="structParty.html#ad0e5e7c0be14473baab9ea60e09b342b">sPartySavedFlightZ</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structParty.html#a1e5f61203c8441b8be4758f94f8d7623">specialItemsInShops</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="structParty.html#a4b8c12dda7dbd100bcafcc29ad153e11">spellBooksInGuilds</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structParty.html#af2cef04f5eca7f62928b7eadd3bb388d">standartItemsInShops</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structParty.html#a556fc0de6abbcb7e1c3d269f29a711ef">specialItemsInShops</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="structParty.html#a1f9afcb0c55fc297d86a2b56da374b63">spellBooksInGuilds</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structParty.html#a28288ca7e2ef679c4e2c21ee9eede394">standartItemsInShops</a></td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="structParty.html#a07573c536b608417ee120fe8470e47a4">switchToNextActiveCharacter</a>()</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="structParty.html#a1a1fae0601f9fffaa69d5faeb6745fa3">TakeBankGold</a>(int amount)</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="structParty.html#ae3d08e8f8959150fc26ced36c90bf8a7">TakeFine</a>(int amount)</td><td class="entry"><a class="el" href="structParty.html">Party</a></td><td class="entry"></td></tr>

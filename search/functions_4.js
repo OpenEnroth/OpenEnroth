@@ -176,7 +176,7 @@ var searchData=
   ['drawtwodverts_173',['DrawTwodVerts',['../classNullRenderer.html#af834aeffc5610ce4d9b2a283bf5df135',1,'NullRenderer::DrawTwodVerts()'],['../classOpenGLRenderer.html#aaad4c7dcca97b5ca6a5fc05a43bb234b',1,'OpenGLRenderer::DrawTwodVerts()'],['../classRenderer.html#ae879e1e244a797c8f0da65482e6c53f1',1,'Renderer::DrawTwodVerts()']]],
   ['drawworld_174',['drawWorld',['../classEngine.html#a01f2f47484993e77f2787b8fd1d989f9',1,'Engine']]],
   ['drophelditem_175',['dropHeldItem',['../structParty.html#a0693aea0ed8b47d1ae9d99258818fb54',1,'Party']]],
-  ['dropitemat_176',['dropItemAt',['../structSpriteObject.html#aab4a9b289373e8ed9e30e57613fa362d',1,'SpriteObject']]],
+  ['dropitemat_176',['dropItemAt',['../structSpriteObject.html#aa136f1a107cd9f7ab88e224cc6875023',1,'SpriteObject']]],
   ['droptreasureat_177',['DropTreasureAt',['../Indoor_8cpp.html#ad1c3e70faa14d2455f85a31adf179094',1,'DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing):&#160;Indoor.cpp'],['../Indoor_8h.html#ad1c3e70faa14d2455f85a31adf179094',1,'DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing):&#160;Indoor.cpp']]],
   ['dt_178',['dt',['../classTimer.html#acf9c8ec0fa891d7fd7e42d21ff0a567f',1,'Timer']]],
   ['dummy_179',['dummy',['../classPid.html#a2b54090a269fa38086281f48604715d8',1,'Pid']]],

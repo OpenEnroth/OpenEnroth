@@ -102,7 +102,7 @@ var searchData=
   ['globalvalidatelist_99',['globalValidateList',['../PathResolver_8cpp.html#a769078cfe7d56aa96d7cac0bd9b38e7e',1,'PathResolver.cpp']]],
   ['glowradius_100',['glowRadius',['../structSpriteFrame__MM6.html#a6721b1ee6cb3f866bbca0eef7361882c',1,'SpriteFrame_MM6']]],
   ['gold_5ftransaction_5famount_101',['gold_transaction_amount',['../NPCTopics_8cpp.html#a4bb6508ee8f5604384798ce3ac89243b',1,'gold_transaction_amount():&#160;NPCTopics.cpp'],['../NPCTopics_8h.html#a4bb6508ee8f5604384798ce3ac89243b',1,'gold_transaction_amount():&#160;NPCTopics.cpp']]],
-  ['goldamount_102',['goldAmount',['../structItemGen.html#a8170975427065bb3cf0d5a1526d5486a',1,'ItemGen']]],
+  ['goldamount_102',['goldAmount',['../structItem.html#af5a90251bf492e4e7042fb2b24bfe8ae',1,'Item']]],
   ['golddicerolls_103',['goldDiceRolls',['../structMonsterInfo__MM7.html#a0b56d41829ad801f9519ab5446c156bb',1,'MonsterInfo_MM7::goldDiceRolls()'],['../structMonsterInfo.html#a7d5f14ea33d9ada55d5303d31a874d08',1,'MonsterInfo::goldDiceRolls()']]],
   ['golddicesides_104',['goldDiceSides',['../structMonsterInfo__MM7.html#aebf350ac842e36c10b4c41e924977ccd',1,'MonsterInfo_MM7::goldDiceSides()'],['../structMonsterInfo.html#a6a6d53ef8515b6f96f061fee3eebcb52',1,'MonsterInfo::goldDiceSides()']]],
   ['goldstealingdiesidesbymastery_105',['goldStealingDieSidesByMastery',['../Character_8cpp.html#ab5919b9625d780ed970286e9520fdc47',1,'Character.cpp']]],

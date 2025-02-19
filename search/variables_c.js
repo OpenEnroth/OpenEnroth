@@ -25,7 +25,7 @@ var searchData=
   ['level_5fdescription_22',['level_description',['../classLocalization.html#a51f5f753f0ca6933471b5db08550c4b8',1,'Localization']]],
   ['level_5ffilename_23',['level_filename',['../structOutdoorLocation.html#a5bbe10e6dab5e6755262800c932ea04a',1,'OutdoorLocation']]],
   ['levelmodifier_24',['levelModifier',['../structPlayer__MM7.html#a875b7a57a4216a03e2f38964326110aa',1,'Player_MM7']]],
-  ['lichjarcharacterindex_25',['lichJarCharacterIndex',['../structItemGen.html#a0d49c1634c92094bbf71d7745b18fae0',1,'ItemGen::lichJarCharacterIndex()'],['../structItemGen__MM7.html#a2503de6900bd3c77b9054971ee6b85b4',1,'ItemGen_MM7::lichJarCharacterIndex()']]],
+  ['lichjarcharacterindex_25',['lichJarCharacterIndex',['../structItem.html#acc9411287560fcc793652786a86b299e',1,'Item::lichJarCharacterIndex()'],['../structItemGen__MM7.html#a2503de6900bd3c77b9054971ee6b85b4',1,'ItemGen_MM7::lichJarCharacterIndex()']]],
   ['light_5fdescr_26',['light_descr',['../classEvtInstruction.html#ae1e1f774dd18ab0a7ab9ae2e95cbab1b',1,'EvtInstruction']]],
   ['light_5fid_27',['light_id',['../classEvtInstruction.html#acf9e2abc9ec8b16c5adda934cb522904',1,'EvtInstruction']]],
   ['lightmapdecals_28',['LightmapDecals',['../classGameConfig_1_1Debug.html#ac31d95295aefeeb6f4dd086a4aa6be6e',1,'GameConfig::Debug']]],

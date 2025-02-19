@@ -101,9 +101,9 @@ var searchData=
   ['polish_98',['polish',['../classdetail_1_1EnumSerializationTable.html#a66666275cd0b144cad9c311447b713c4',1,'detail::EnumSerializationTable']]],
   ['popmessage_99',['popMessage',['../structGUIFrameMessageQueue.html#a7186b916cd1b8491da17d04623fa76ff',1,'GUIFrameMessageQueue::popMessage()'],['../classGUIMessageQueue.html#a2b593610852861c1dd30df17a385dc07',1,'GUIMessageQueue::popMessage()']]],
   ['poponechunk_100',['popOneChunk',['../FileSystemPath_8cpp.html#acd5c136e54a75bd0897a8e9ddc20145c',1,'FileSystemPath.cpp']]],
-  ['populateartifactbonusmap_101',['PopulateArtifactBonusMap',['../structItemGen.html#a013945cdb35d3f925a4faeff65869ad1',1,'ItemGen']]],
-  ['populateregularbonusmap_102',['PopulateRegularBonusMap',['../structItemGen.html#a6d993c2fea656d0b2148172a11492494',1,'ItemGen']]],
-  ['populatespecialbonusmap_103',['PopulateSpecialBonusMap',['../structItemGen.html#a24496555ab86a985311fb65b43d123e2',1,'ItemGen']]],
+  ['populateartifactbonusmap_101',['PopulateArtifactBonusMap',['../structItem.html#a650f056f51db190ca9c30dfd93dfced3',1,'Item']]],
+  ['populateregularbonusmap_102',['PopulateRegularBonusMap',['../structItem.html#a04ef8b2b68f26815287e5e0e5cb2163b',1,'Item']]],
+  ['populatespecialbonusmap_103',['PopulateSpecialBonusMap',['../structItem.html#a87d05cada0136a9e2c92a63bac7ae1f0',1,'Item']]],
   ['portal_104',['Portal',['../structODMFace.html#a69bef3c1b237dc020066906e7a1c93c1',1,'ODMFace']]],
   ['portrait_105',['portrait',['../classCharacterTapeRecorder.html#a0b2eab6bebe1d52f2b19a689b9197096',1,'CharacterTapeRecorder']]],
   ['portraitforcondition_106',['portraitForCondition',['../CharacterEnumFunctions_8h.html#a86b18b765fd434923abc1c33bbbbfd79',1,'portraitForCondition(Condition condition):&#160;CharacterEnumFunctions.cpp'],['../CharacterEnumFunctions_8cpp.html#a86b18b765fd434923abc1c33bbbbfd79',1,'portraitForCondition(Condition condition):&#160;CharacterEnumFunctions.cpp']]],
@@ -185,5 +185,5 @@ var searchData=
   ['pushtemplespell_182',['pushTempleSpell',['../CastSpellInfo_8cpp.html#ac372a687c4d15e75d7e5e0ec1634be07',1,'pushTempleSpell(SpellId spell):&#160;CastSpellInfo.cpp'],['../CastSpellInfo_8h.html#ac372a687c4d15e75d7e5e0ec1634be07',1,'pushTempleSpell(SpellId spell):&#160;CastSpellInfo.cpp']]],
   ['putgolddialogue_183',['putGoldDialogue',['../classGUIWindow__Bank.html#a713b3a1ac81c35a9486a4e0bb4e8780e',1,'GUIWindow_Bank']]],
   ['putitematinventoryindex_184',['PutItemAtInventoryIndex',['../classCharacter.html#a1e75b0b517ff0ac291024f660f35fc7f',1,'Character']]],
-  ['putiteminchest_185',['PutItemInChest',['../structChest.html#a7c2032341f24e0b4b0bf5eae5f5bc71b',1,'Chest']]]
+  ['putiteminchest_185',['PutItemInChest',['../structChest.html#a6148ccfb30c10685b97ecbe83e4a2c72',1,'Chest']]]
 ];
