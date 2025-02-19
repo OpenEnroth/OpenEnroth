@@ -156,7 +156,7 @@ void Item::UpdateTempBonus(Time time) {
 //----- (00456442) --------------------------------------------------------
 int Item::GetValue() const {
     int uBaseValue = pItemTable->items[this->itemId].baseValue;
-    if (flags & ITEM_TEMP_BONUS || pItemTable->IsMaterialNonCommon(this))
+    if (flags & ITEM_TEMP_BONUS || rarity() != RARITY_COMMON)
         return uBaseValue;
     if (potionPower || standardEnchantment) // TODO(captainurist): can drop potionPower?
         return uBaseValue + 100 * standardEnchantmentStrength;
@@ -199,7 +199,7 @@ std::string Item::GetIdentifiedName() {
         }
     }
 
-    if (!pItemTable->IsMaterialNonCommon(this)) {
+    if (rarity() == RARITY_COMMON) {
         if (standardEnchantment) {
             return std::string(pItemTable->items[itemId].name) + " " +
                    pItemTable->standardEnchantments[*standardEnchantment].itemSuffix;
@@ -224,11 +224,12 @@ std::string Item::GetIdentifiedName() {
                 return fmt::format(
                     "{} {}",
                     pItemTable->specialEnchantments[specialEnchantment].itemSuffixOrPrefix,
-                    pItemTable->items[itemId].name
-                );
+                    pItemTable->items[itemId].name);
             } else {
-                return std::string(pItemTable->items[itemId].name) + " " +
-                       pItemTable->specialEnchantments[specialEnchantment].itemSuffixOrPrefix;
+                return fmt::format(
+                    "{} {}",
+                    pItemTable->items[itemId].name,
+                    pItemTable->specialEnchantments[specialEnchantment].itemSuffixOrPrefix);
             }
         }
     }
@@ -804,6 +805,10 @@ bool Item::canSellRepairIdentifyAt(HouseId houseId) {
         default:
             return false;
     }
+}
+
+ItemRarity Item::rarity() const {
+    return pItemTable->items[itemId].rarity;
 }
 
 Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MapTreasureLevel mapTreasureLevel) {

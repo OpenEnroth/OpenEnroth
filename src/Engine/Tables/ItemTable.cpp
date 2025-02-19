@@ -269,18 +269,6 @@ void ItemTable::SetSpecialBonus(Item *pItem) {
     }
 }
 
-//----- (00456D43) --------------------------------------------------------
-bool ItemTable::IsMaterialSpecial(const Item *pItem) {
-    return this->items[pItem->itemId].rarity == RARITY_SPECIAL;
-}
-
-//----- (00456D5E) --------------------------------------------------------
-bool ItemTable::IsMaterialNonCommon(const Item *pItem) {
-    return items[pItem->itemId].rarity == RARITY_SPECIAL ||
-           items[pItem->itemId].rarity == RARITY_RELIC ||
-           items[pItem->itemId].rarity == RARITY_ARTIFACT;
-}
-
 //----- (00453B3C) --------------------------------------------------------
 void ItemTable::LoadPotions(const Blob &potions) {
     //    char Text[90];

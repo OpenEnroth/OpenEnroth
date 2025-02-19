@@ -104,6 +104,8 @@ struct Item {
         return ::isPassiveEquipment(GetItemEquipType());
     }
 
+    ItemRarity rarity() const;
+
     ItemId itemId = ITEM_NULL;
     int potionPower = 0; // Only for potions.
     int goldAmount = 0; // Only for gold.

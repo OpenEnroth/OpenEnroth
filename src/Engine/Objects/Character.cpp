@@ -2632,8 +2632,7 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
                                   currEquippedItem->GetDamageMod();
                         }
                     }
-                    if (pItemTable->IsMaterialNonCommon(currEquippedItem) &&
-                        !pItemTable->IsMaterialSpecial(currEquippedItem)) {
+                    if (currEquippedItem->rarity() == RARITY_ARTIFACT || currEquippedItem->rarity() == RARITY_RELIC) {
                         currEquippedItem->GetItemBonusArtifact(this, attr, &v62);
                     } else if (currEquippedItem->standardEnchantment) {
                         if (*currEquippedItem->standardEnchantment == attr) {
