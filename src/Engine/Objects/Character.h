@@ -9,7 +9,7 @@
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Objects/CombinedSkillValue.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/MonsterEnums.h"

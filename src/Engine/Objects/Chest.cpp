@@ -15,7 +15,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Graphics/Sprites.h"

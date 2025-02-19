@@ -9,7 +9,7 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/MerchantTable.h"
 #include "Engine/Party.h"

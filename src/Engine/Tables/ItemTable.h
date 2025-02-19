@@ -5,7 +5,7 @@
 #include "Engine/Data/SpecialEnchantmentData.h"
 #include "Engine/Data/StandardEnchantmentData.h"
 #include "Engine/Data/ItemData.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/Segment.h"
