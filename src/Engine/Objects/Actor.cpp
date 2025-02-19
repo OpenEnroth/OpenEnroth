@@ -1834,7 +1834,7 @@ void Actor::Die(unsigned int uActorID) {
     for (SpellBuff &buff : actor->buffs)
         buff.Reset();
 
-    ItemGen drop;
+    Item drop;
     drop.Reset();
     drop.itemId = itemDropForMonsterType(monsterTypeForMonsterId(actor->monsterInfo.id));
 
@@ -3189,7 +3189,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
         } else {
             for (ItemSlot i : {ITEM_SLOT_OFF_HAND, ITEM_SLOT_MAIN_HAND}) {
                 if (character->HasItemEquipped(i)) {
-                    ItemGen *item;
+                    Item *item;
                     if (i == ITEM_SLOT_OFF_HAND)
                         item = character->GetOffHandItem();
                     else
@@ -3551,7 +3551,7 @@ void StatusBarItemFound(int num_gold_found, std::string_view item_unidentified_n
 
 //----- (00426A5A) --------------------------------------------------------
 void Actor::LootActor() {
-    ItemGen Dst;         // [sp+Ch] [bp-2Ch]@1
+    Item Dst;         // [sp+Ch] [bp-2Ch]@1
     bool itemFound;      // [sp+30h] [bp-8h]@1
 
     pParty->placeHeldItemInInventoryOrDrop();

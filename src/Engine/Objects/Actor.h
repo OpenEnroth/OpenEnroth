@@ -234,7 +234,7 @@ class Actor {
     IndexedArray<uint16_t, ANIM_First, ANIM_Last> spriteIds = {{}};
     IndexedArray<SoundId, ACTOR_SOUND_FIRST, ACTOR_SOUND_LAST> soundSampleIds = {{}};
     IndexedArray<SpellBuff, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> buffs;
-    std::array<ItemGen, 4> items;
+    std::array<Item, 4> items;
     unsigned int group = 0;
     MonsterType ally = MONSTER_TYPE_INVALID; // TODO(captainurist): document properly, and maybe rename.
     std::array<ActorJob, 8> scheduledJobs;

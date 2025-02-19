@@ -54,7 +54,7 @@ class GUIWindow_CharacterRecord : public GUIWindow {
 };
 
 bool ringscreenactive();
-static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, GraphicsImage *item_texture = nullptr, bool doZDraw = false);
+static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage *item_texture = nullptr, bool doZDraw = false);
 
 class GraphicsImage;
 extern GraphicsImage *ui_character_skills_background;

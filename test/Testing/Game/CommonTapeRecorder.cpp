@@ -44,7 +44,7 @@ TestTape<int> CommonTapeRecorder::totalItemCount() {
     return custom([] {
         int result = 0;
         for (const Character &character : pParty->pCharacters)
-            for (const ItemGen &item : character.pInventoryItemList)
+            for (const Item &item : character.pInventoryItemList)
                 result += item.itemId != ITEM_NULL;
         result += pParty->pPickedItem.itemId != ITEM_NULL;
         return result;

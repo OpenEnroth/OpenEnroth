@@ -869,7 +869,7 @@ void GameUI_WritePointedObjectStatusString() {
     int requiredSkillpoints;           // ecx@19
     UIMessageType pMessageType1;  // esi@24
     int invmatrixindex;                // eax@41
-    ItemGen *pItemGen;                 // ecx@44
+    Item *pItemGen;                 // ecx@44
     // int v16;                           // ecx@46
     Vis_PIDAndDepth pickedObject;        // eax@55
     signed int v18b;

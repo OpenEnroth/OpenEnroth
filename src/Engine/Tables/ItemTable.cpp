@@ -255,13 +255,13 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         }
     }
 
-    ItemGen::PopulateSpecialBonusMap();
-    ItemGen::PopulateArtifactBonusMap();
-    ItemGen::PopulateRegularBonusMap();
+    Item::PopulateSpecialBonusMap();
+    Item::PopulateArtifactBonusMap();
+    Item::PopulateRegularBonusMap();
 }
 
 //----- (00456D17) --------------------------------------------------------
-void ItemTable::SetSpecialBonus(ItemGen *pItem) {
+void ItemTable::SetSpecialBonus(Item *pItem) {
     if (items[pItem->itemId].rarity == RARITY_SPECIAL) {
         pItem->standardEnchantment = items[pItem->itemId].standardEnchantment;
         pItem->specialEnchantment = items[pItem->itemId].specialEnchantment;
@@ -270,12 +270,12 @@ void ItemTable::SetSpecialBonus(ItemGen *pItem) {
 }
 
 //----- (00456D43) --------------------------------------------------------
-bool ItemTable::IsMaterialSpecial(const ItemGen *pItem) {
+bool ItemTable::IsMaterialSpecial(const Item *pItem) {
     return this->items[pItem->itemId].rarity == RARITY_SPECIAL;
 }
 
 //----- (00456D5E) --------------------------------------------------------
-bool ItemTable::IsMaterialNonCommon(const ItemGen *pItem) {
+bool ItemTable::IsMaterialNonCommon(const Item *pItem) {
     return items[pItem->itemId].rarity == RARITY_SPECIAL ||
            items[pItem->itemId].rarity == RARITY_RELIC ||
            items[pItem->itemId].rarity == RARITY_ARTIFACT;
@@ -364,7 +364,7 @@ void ItemTable::LoadPotionNotes(const Blob &potionNotes) {
     }
 }
 
-void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTreasureType, ItemGen *outItem) {
+void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTreasureType, Item *outItem) {
     assert(isRandomTreasureLevel(treasureLevel));
 
     std::vector<ItemId> possibleItems;
@@ -373,7 +373,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
     int weightSum = 0;
 
     assert(outItem != NULL);
-    *outItem = ItemGen();
+    *outItem = Item();
 
     if (uTreasureType != RANDOM_ITEM_ANY) {  // generate known treasure type
         ItemType requestedEquip;

@@ -359,7 +359,7 @@ int Character::GetConditionDaysPassed(Condition condition) const {
     return diff.days() + 1;
 }
 
-ItemGen *Character::GetItemAtInventoryIndex(int inout_item_cell) {
+Item *Character::GetItemAtInventoryIndex(int inout_item_cell) {
     int inventory_index = this->GetItemListAtInventoryIndex(inout_item_cell);
 
     if (!inventory_index) {
@@ -708,7 +708,7 @@ int Character::AddItem(int index, ItemId uItemID) {
 }
 
 //----- (00492826) --------------------------------------------------------
-int Character::AddItem2(int index, ItemGen *Src) {  // are both required - check
+int Character::AddItem2(int index, Item *Src) {  // are both required - check
     pItemTable->SetSpecialBonus(Src);
 
     if (index == -1) {  // no loaction specified
@@ -732,7 +732,7 @@ int Character::AddItem2(int index, ItemGen *Src) {  // are both required - check
 
 //----- (0049289C) --------------------------------------------------------
 int Character::CreateItemInInventory2(unsigned int index,
-                                   ItemGen *Src) {  // are both required - check
+                                   Item *Src) {  // are both required - check
     signed int freeSlot = findFreeInventoryListSlot();
     int result;
 
@@ -770,7 +770,7 @@ void Character::PutItemAtInventoryIndex(
 
 //----- (00492A36) --------------------------------------------------------
 void Character::RemoveItemAtInventoryIndex(unsigned int index) {
-    ItemGen *item_in_slot = this->GetItemAtInventoryIndex(index);
+    Item *item_in_slot = this->GetItemAtInventoryIndex(index);
 
     auto img = assets->getImage_ColorKey(item_in_slot->GetIconName());
     int slot_width = GetSizeInInventorySlots(img->width());
@@ -807,7 +807,7 @@ int Character::GetMeditation() const {
 }
 
 //----- (004910D3) --------------------------------------------------------
-bool Character::CanIdentify(ItemGen *pItem) const {
+bool Character::CanIdentify(Item *pItem) const {
     CombinedSkillValue val = getActualSkillValue(CHARACTER_SKILL_ITEM_ID);
     int multiplier =
         GetMultiplierForSkillLevel(CHARACTER_SKILL_ITEM_ID, 1, 2, 3, 5);
@@ -823,7 +823,7 @@ bool Character::CanIdentify(ItemGen *pItem) const {
 }
 
 //----- (00491151) --------------------------------------------------------
-bool Character::CanRepair(ItemGen *pItem) const {
+bool Character::CanRepair(Item *pItem) const {
     CombinedSkillValue val = getActualSkillValue(CHARACTER_SKILL_REPAIR);
     int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_REPAIR, 1, 2, 3, 5);
 
@@ -1063,7 +1063,7 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
         mainWpnDmg = grng->random(3) + 1;
     } else {
         if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-            ItemGen *mainHandItemGen = this->GetMainHandItem();
+            Item *mainHandItemGen = this->GetMainHandItem();
             ItemId itemId = mainHandItemGen->itemId;
             bool addOneDice = false;
             if (pItemTable->items[itemId].skill == CHARACTER_SKILL_SPEAR &&
@@ -1077,8 +1077,8 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
         if (!ignoreOffhand) {
             if (this->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {  // has second hand got a weapon
                                                               // that not a shield
-                ItemGen *offHandItemGen =
-                    (ItemGen*)&this
+                Item *offHandItemGen =
+                    (Item*)&this
                         ->pInventoryItemList[this->pEquipment[ITEM_SLOT_OFF_HAND] - 1];
 
                 if (!offHandItemGen->isShield()) {
@@ -1105,7 +1105,7 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
     return dmgSum;
 }
 
-int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
+int Character::CalculateMeleeDmgToEnemyWithWeapon(Item *weapon,
                                                   MonsterId uTargetActorID,
                                                   bool addOneDice) {
     ItemId itemId = weapon->itemId;
@@ -1156,7 +1156,7 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
 
 //----- (0048D0B9) --------------------------------------------------------
 int Character::GetRangedAttack() {
-    ItemGen *mainHandItem = GetMainHandItem();
+    Item *mainHandItem = GetMainHandItem();
 
     if (mainHandItem && isAncientWeapon(mainHandItem->itemId)) {  // blasters TODO(pskelton): should wands be added #1927 ?
         return GetActualAttack(true);
@@ -1201,8 +1201,8 @@ int Character::CalculateRangedDamageTo(MonsterId uMonsterInfoID) {
     if (!HasItemEquipped(ITEM_SLOT_BOW))  // no bow
         return 0;
 
-    ItemGen *bow =
-        (ItemGen*)&this->pInventoryItemList[this->pEquipment[ITEM_SLOT_BOW] - 1];
+    Item *bow =
+        (Item*)&this->pInventoryItemList[this->pEquipment[ITEM_SLOT_BOW] - 1];
     ItemEnchantment itemenchant = bow->specialEnchantment;
 
     signed int dmgperroll = pItemTable->items[bow->itemId].damageRoll;
@@ -1241,7 +1241,7 @@ std::string Character::GetMeleeDamageString() {
     int min_damage;
     int max_damage;
 
-    ItemGen *mainHandItem = GetMainHandItem();
+    Item *mainHandItem = GetMainHandItem();
 
     if (mainHandItem != nullptr && isWand(mainHandItem->itemId) && mainHandItem->numCharges > 0) {
         return std::string(localization->GetString(LSTR_WAND));
@@ -1265,7 +1265,7 @@ std::string Character::GetRangedDamageString() {
     int min_damage;
     int max_damage;
 
-    ItemGen *mainHandItem = GetMainHandItem();
+    Item *mainHandItem = GetMainHandItem();
 
     if (mainHandItem != nullptr && isWand(mainHandItem->itemId) && mainHandItem->numCharges > 0) {
         return std::string(localization->GetString(LSTR_WAND));
@@ -1354,7 +1354,7 @@ int Character::CalculateIncommingDamage(DamageType dmg_type, int dmg) {
         }
     }
 
-    ItemGen *equippedArmor = GetArmorItem();
+    Item *equippedArmor = GetArmorItem();
     if ((dmg_type == DAMAGE_PHYSICAL) &&
         (equippedArmor != nullptr)) {      // physical damage and wearing armour
         if (!equippedArmor->IsBroken()) {  // armour isnt broken
@@ -1429,7 +1429,7 @@ bool Character::wearsItemAnywhere(ItemId item_id) const {
 
 //----- (0048D76C) --------------------------------------------------------
 int Character::StealFromShop(
-    ItemGen *itemToSteal, int extraStealDifficulty, int reputation,
+    Item *itemToSteal, int extraStealDifficulty, int reputation,
     int extraStealFine,
     int *fineIfFailed) {  // returns an int, but is the return value is compared
                           // to zero, so might change to bool
@@ -1522,7 +1522,7 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
 
             return STEAL_SUCCESS;
         } else if (random >= 40) {  // stealing an item
-            ItemGen tempItem;
+            Item tempItem;
             tempItem.Reset();
 
             int randslot = grng->random(4);
@@ -1540,7 +1540,7 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
                         tempItem.potionPower = 2 * grng->random(4) + 2;
                     }
                 } else {
-                    ItemGen *itemToSteal = &actroPtr->items[randslot];
+                    Item *itemToSteal = &actroPtr->items[randslot];
                     tempItem = *itemToSteal;
                     itemToSteal->Reset();
                     carriedItemId = tempItem.itemId;
@@ -1596,7 +1596,7 @@ int Character::receiveDamage(signed int amount, DamageType dmg_type) {
         }
 
         if (health <= -10) {  // break armor if health has dropped below -10
-            ItemGen *equippedArmor = GetArmorItem();
+            Item *equippedArmor = GetArmorItem();
             if (equippedArmor != nullptr) {  // check there is some armor
                 if (!(equippedArmor->flags &
                       ITEM_HARDENED)) {          // if its not hardened
@@ -1624,8 +1624,8 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
     int luckstat = GetActualLuck();
     signed int itemstobreakcounter = 0;
     char itemstobreaklist[140] {};
-    ItemGen *itemtocheck = nullptr;
-    ItemGen *itemtobreak = nullptr;
+    Item *itemtocheck = nullptr;
+    Item *itemtobreak = nullptr;
     unsigned int itemtostealinvindex = 0;
 
     switch (attType) {
@@ -1903,7 +1903,7 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
 
             case SPECIAL_ATTACK_STEAL: {
                 playReaction(SPEECH_ITEM_BROKEN);
-                ItemGen *actoritems = &pActor->items[0];
+                Item *actoritems = &pActor->items[0];
                 if (pActor->items[0].itemId != ITEM_NULL) {
                     actoritems = &pActor->items[1];
                     if (pActor->items[1].itemId != ITEM_NULL) {
@@ -1958,7 +1958,7 @@ DamageType Character::GetSpellDamageType(SpellId uSpellID) const {
 
 //----- (0048E1B5) --------------------------------------------------------
 Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
-    const ItemGen *weapon = nullptr;
+    const Item *weapon = nullptr;
     Duration weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_STAFF];
     if (attackUsesBow) {
         assert(HasItemEquipped(ITEM_SLOT_BOW));
@@ -2399,7 +2399,7 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
     CharacterSkillType v58;             // [sp-4h] [bp-20h]@10
     int v61;                    // [sp+10h] [bp-Ch]@1
     int v62;                    // [sp+14h] [bp-8h]@1
-    const ItemGen *currEquippedItem;  // [sp+20h] [bp+4h]@101
+    const Item *currEquippedItem;  // [sp+20h] [bp+4h]@101
     bool no_skills;
 
     v5 = 0;
@@ -2509,7 +2509,7 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
             } else {
                 if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
                     if (isWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
-                        const ItemGen *mainHandItem = GetMainHandItem();
+                        const Item *mainHandItem = GetMainHandItem();
                         v26 = mainHandItem->GetDamageRoll();
                         if (GetOffHandItem() != nullptr ||
                             mainHandItem->GetPlayerSkillType() != CHARACTER_SKILL_SPEAR) {
@@ -2525,7 +2525,7 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
                     !isWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                     return v5;
                 } else {
-                    const ItemGen *offHandItem = GetOffHandItem();
+                    const Item *offHandItem = GetOffHandItem();
                     v15 = offHandItem->GetDamageMod();
                     v14 = offHandItem->GetDamageDice() *
                           offHandItem->GetDamageRoll();
@@ -2560,7 +2560,7 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
             }
             if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
                 if (isWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
-                    const ItemGen *mainHandItem = GetMainHandItem();
+                    const Item *mainHandItem = GetMainHandItem();
                     v5 = mainHandItem->GetDamageDice() +
                          mainHandItem->GetDamageMod();
                     if (GetOffHandItem() == nullptr &&
@@ -2575,7 +2575,7 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
                 !isWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
                 return v5;
             } else {
-                const ItemGen *offHandItem = GetOffHandItem();
+                const Item *offHandItem = GetOffHandItem();
                 v14 = offHandItem->GetDamageMod();
                 v15 = offHandItem->GetDamageDice();
                 return v5 + v15 + v14;
@@ -2936,7 +2936,7 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
             unsigned int ACSum = 0;
 
             for (ItemSlot j : allItemSlots()) {
-                const ItemGen *currItem = GetItem(j);
+                const Item *currItem = GetItem(j);
                 if (currItem != nullptr && (!currItem->IsBroken())) {
                     CharacterSkillType itemSkillType = currItem->GetPlayerSkillType();
                     int currArmorSkillLevel = 0;
@@ -3004,7 +3004,7 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
             }
             for (ItemSlot i : allItemSlots()) {  // ?? what eh check behaviour
                 if (this->HasItemEquipped(i)) {
-                    const ItemGen *currItem = GetItem(i);
+                    const Item *currItem = GetItem(i);
                     if (currItem->isMeleeWeapon()) {
                         CharacterSkillType currItemSkillType = currItem->GetPlayerSkillType();
                         int currentItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
@@ -3026,7 +3026,7 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
         case ATTRIBUTE_RANGED_ATTACK:
             for (ItemSlot i : allItemSlots()) {
                 if (this->HasItemEquipped(i)) {
-                    const ItemGen *currItemPtr = GetItem(i);
+                    const Item *currItemPtr = GetItem(i);
                     if (currItemPtr->isWeapon()) {
                         CharacterSkillType currentItemSkillType = GetItem(i)->GetPlayerSkillType();
                         int currentItemSkillLevel = this->getActualSkillValue(currentItemSkillType).level();
@@ -3053,7 +3053,7 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
             }
             for (ItemSlot i : allItemSlots()) {
                 if (this->HasItemEquipped(i)) {
-                    const ItemGen *currItemPtr = GetItem(i);
+                    const Item *currItemPtr = GetItem(i);
                     if (currItemPtr->isMeleeWeapon()) {
                         CharacterSkillType currItemSkillType = currItemPtr->GetPlayerSkillType();
                         int currItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
@@ -4324,7 +4324,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
 void Character::SetVariable(EvtVariable var_type, signed int var_value) {
     int gold{}, food{};
     LocationInfo *ddm;
-    ItemGen item;
+    Item item;
 
     if (var_type >= VAR_History_0 && var_type <= VAR_History_28) {
         if (!pParty->PartyTimes.HistoryEventTimes[historyIndex(var_type)]) {
@@ -4935,7 +4935,7 @@ void Character::SetSkillReaction() {
 void Character::AddVariable(EvtVariable var_type, signed int val) {
     int food{};
     LocationInfo *ddm;
-    ItemGen item;
+    Item item;
 
     if (var_type >= VAR_Counter1 && var_type <= VAR_Counter10) {
         pParty->PartyTimes.CounterEventValues[std::to_underlying(var_type) - std::to_underlying(VAR_Counter1)] = pParty->GetPlayingTime();
@@ -6082,7 +6082,7 @@ void Character::EquipBody(ItemType uEquipType) {
     ItemSlot itemAnchor;          // ebx@1
     int itemInvLocation;     // edx@1
     int freeSlot;            // eax@3
-    ItemGen tempPickedItem;  // [sp+Ch] [bp-30h]@1
+    Item tempPickedItem;  // [sp+Ch] [bp-30h]@1
 
     tempPickedItem.Reset();
     itemAnchor = pEquipTypeToBodyAnchor[uEquipType];
@@ -6251,7 +6251,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
         }
 
         // play hit sound
-        ItemGen *equippedArmor = playerPtr->GetArmorItem();
+        Item *equippedArmor = playerPtr->GetArmorItem();
         SoundId soundToPlay;
         if (!equippedArmor || equippedArmor->IsBroken() ||
             (equippedArmor->GetPlayerSkillType() != CHARACTER_SKILL_CHAIN &&
@@ -6424,14 +6424,14 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                     playerPtr->GetArmorItem()->itemId == ITEM_ARTIFACT_GOVERNORS_ARMOR)
                     dmgToReceive >>= 1;
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                    ItemGen *mainHandItem = playerPtr->GetMainHandItem();
+                    Item *mainHandItem = playerPtr->GetMainHandItem();
                     if (mainHandItem->itemId == ITEM_RELIC_KELEBRIM ||
                         mainHandItem->itemId == ITEM_ARTIFACT_ELFBANE ||
                         (mainHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER))
                         dmgToReceive >>= 1;
                 }
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
-                    ItemGen *offHandItem = playerPtr->GetOffHandItem();
+                    Item *offHandItem = playerPtr->GetOffHandItem();
                     if (offHandItem->itemId == ITEM_RELIC_KELEBRIM ||
                         offHandItem->itemId == ITEM_ARTIFACT_ELFBANE ||
                         (offHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER))
@@ -6616,7 +6616,7 @@ void Character::OnInventoryLeftClick() {
         } else {
             if (item) {
                 // swap items
-                ItemGen tmpItem = *item;
+                Item tmpItem = *item;
                 int oldinvMatrixIndex = invMatrixIndex;
                 invMatrixIndex = GetItemMainInventoryIndex(invMatrixIndex);
                 int invItemIndex = this->GetItemListAtInventoryIndex(invMatrixIndex);
@@ -6707,40 +6707,40 @@ void Character::SetCondUnconsciousWithBlockCheck(int blockable) {
     SetCondition(CONDITION_UNCONSCIOUS, blockable);
 }
 
-ItemGen *Character::GetOffHandItem() { return GetItem(ITEM_SLOT_OFF_HAND); }
-const ItemGen *Character::GetOffHandItem() const { return GetItem(ITEM_SLOT_OFF_HAND); }
+Item *Character::GetOffHandItem() { return GetItem(ITEM_SLOT_OFF_HAND); }
+const Item *Character::GetOffHandItem() const { return GetItem(ITEM_SLOT_OFF_HAND); }
 
-ItemGen *Character::GetMainHandItem() { return GetItem(ITEM_SLOT_MAIN_HAND); }
-const ItemGen *Character::GetMainHandItem() const { return GetItem(ITEM_SLOT_MAIN_HAND); }
+Item *Character::GetMainHandItem() { return GetItem(ITEM_SLOT_MAIN_HAND); }
+const Item *Character::GetMainHandItem() const { return GetItem(ITEM_SLOT_MAIN_HAND); }
 
-ItemGen *Character::GetBowItem() { return GetItem(ITEM_SLOT_BOW); }
-const ItemGen *Character::GetBowItem() const { return GetItem(ITEM_SLOT_BOW); }
+Item *Character::GetBowItem() { return GetItem(ITEM_SLOT_BOW); }
+const Item *Character::GetBowItem() const { return GetItem(ITEM_SLOT_BOW); }
 
-ItemGen *Character::GetArmorItem() { return GetItem(ITEM_SLOT_ARMOUR); }
-const ItemGen *Character::GetArmorItem() const { return GetItem(ITEM_SLOT_ARMOUR); }
+Item *Character::GetArmorItem() { return GetItem(ITEM_SLOT_ARMOUR); }
+const Item *Character::GetArmorItem() const { return GetItem(ITEM_SLOT_ARMOUR); }
 
-ItemGen *Character::GetHelmItem() { return GetItem(ITEM_SLOT_HELMET); }
-const ItemGen *Character::GetHelmItem() const { return GetItem(ITEM_SLOT_HELMET); }
+Item *Character::GetHelmItem() { return GetItem(ITEM_SLOT_HELMET); }
+const Item *Character::GetHelmItem() const { return GetItem(ITEM_SLOT_HELMET); }
 
-ItemGen *Character::GetBeltItem() { return GetItem(ITEM_SLOT_BELT); }
-const ItemGen *Character::GetBeltItem() const { return GetItem(ITEM_SLOT_BELT); }
+Item *Character::GetBeltItem() { return GetItem(ITEM_SLOT_BELT); }
+const Item *Character::GetBeltItem() const { return GetItem(ITEM_SLOT_BELT); }
 
-ItemGen *Character::GetCloakItem() { return GetItem(ITEM_SLOT_CLOAK); }
-const ItemGen *Character::GetCloakItem() const { return GetItem(ITEM_SLOT_CLOAK); }
+Item *Character::GetCloakItem() { return GetItem(ITEM_SLOT_CLOAK); }
+const Item *Character::GetCloakItem() const { return GetItem(ITEM_SLOT_CLOAK); }
 
-ItemGen *Character::GetGloveItem() { return GetItem(ITEM_SLOT_GAUNTLETS); }
-const ItemGen *Character::GetGloveItem() const { return GetItem(ITEM_SLOT_GAUNTLETS); }
+Item *Character::GetGloveItem() { return GetItem(ITEM_SLOT_GAUNTLETS); }
+const Item *Character::GetGloveItem() const { return GetItem(ITEM_SLOT_GAUNTLETS); }
 
-ItemGen *Character::GetBootItem() { return GetItem(ITEM_SLOT_BOOTS); }
-const ItemGen *Character::GetBootItem() const { return GetItem(ITEM_SLOT_BOOTS); }
+Item *Character::GetBootItem() { return GetItem(ITEM_SLOT_BOOTS); }
+const Item *Character::GetBootItem() const { return GetItem(ITEM_SLOT_BOOTS); }
 
-ItemGen *Character::GetAmuletItem() { return GetItem(ITEM_SLOT_AMULET); }
-const ItemGen *Character::GetAmuletItem() const { return GetItem(ITEM_SLOT_AMULET); }
+Item *Character::GetAmuletItem() { return GetItem(ITEM_SLOT_AMULET); }
+const Item *Character::GetAmuletItem() const { return GetItem(ITEM_SLOT_AMULET); }
 
-ItemGen *Character::GetNthRingItem(int ringNum) { return GetItem(ringSlot(ringNum)); }
-const ItemGen *Character::GetNthRingItem(int ringNum) const { return GetItem(ringSlot(ringNum)); }
+Item *Character::GetNthRingItem(int ringNum) { return GetItem(ringSlot(ringNum)); }
+const Item *Character::GetNthRingItem(int ringNum) const { return GetItem(ringSlot(ringNum)); }
 
-ItemGen *Character::GetItem(ItemSlot index) {
+Item *Character::GetItem(ItemSlot index) {
     if (this->pEquipment[index] == 0) {
         return nullptr;
     }
@@ -6748,7 +6748,7 @@ ItemGen *Character::GetItem(ItemSlot index) {
     return &this->pInventoryItemList[this->pEquipment[index] - 1];
 }
 
-const ItemGen *Character::GetItem(ItemSlot index) const {
+const Item *Character::GetItem(ItemSlot index) const {
     return const_cast<Character *>(this)->GetItem(index);
 }
 
@@ -6817,7 +6817,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
     int main_hand_idx = character->pEquipment[ITEM_SLOT_MAIN_HAND];
     if (main_hand_idx) {
-        ItemGen *item = &character->pInventoryItemList[main_hand_idx - 1];
+        Item *item = &character->pInventoryItemList[main_hand_idx - 1];
         if (!item->IsBroken()) {
             if (item->isWand()) {
                 if (item->numCharges <= 0) {
@@ -7114,7 +7114,7 @@ bool Character::isClass(CharacterClass class_type, bool check_honorary) const {
 }
 
 //----- (00490EEE) --------------------------------------------------------
-MerchantPhrase Character::SelectPhrasesTransaction(ItemGen *pItem, HouseType building_type, HouseId houseId, ShopScreen ShopMenuType) {
+MerchantPhrase Character::SelectPhrasesTransaction(Item *pItem, HouseType building_type, HouseId houseId, ShopScreen ShopMenuType) {
     // TODO(_): probably move this somewhere else, not really Character:: stuff
     ItemId idemId;   // edx@1
     ItemType equipType;  // esi@1

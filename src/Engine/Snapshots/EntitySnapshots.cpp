@@ -443,7 +443,7 @@ void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst) {
     dst->isGMBuff = src.flags;
 }
 
-void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
+void snapshot(const Item &src, ItemGen_MM7 *dst) {
     memzero(dst);
 
     dst->itemId = std::to_underlying(src.itemId);
@@ -469,7 +469,7 @@ void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
     snapshot(src.enchantmentExpirationTime, &dst->enchantmentExpirationTime);
 }
 
-void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
+void reconstruct(const ItemGen_MM7 &src, Item *dst) {
     dst->itemId = static_cast<ItemId>(src.itemId);
     if (isPotion(dst->itemId)) {
         dst->potionPower = src.standardEnchantmentOrPotionPower;

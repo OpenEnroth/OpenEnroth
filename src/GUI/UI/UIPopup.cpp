@@ -296,7 +296,7 @@ void DrawPopupWindow(unsigned int uX, unsigned int uY, unsigned int uWidth,
 }
 
 //----- (0041D895) --------------------------------------------------------
-void GameUI_DrawItemInfo(ItemGen *inspect_item) {
+void GameUI_DrawItemInfo(Item *inspect_item) {
     unsigned int frameXpos;     // eax@3
     int v34;             // esi@81
     GUIWindow iteminfo_window;  // [sp+208h] [bp-70h]@2
@@ -1461,7 +1461,7 @@ void ShowPopupShopSkills() {
 //----- (004B1A2D) --------------------------------------------------------
 void ShowPopupShopItem() {
     // TODO(pskelton): Extract common item picking code
-    ItemGen *item;  // ecx@13
+    Item *item;  // ecx@13
     int invindex;
     int testpos;
     HouseType houseType = window_SpeakInHouse->buildingType();
@@ -2080,7 +2080,7 @@ void Inventory_ItemPopupAndAlchemy() {
         return;
     }
 
-    ItemGen *item = nullptr;
+    Item *item = nullptr;
 
     static const std::array<int, 6> ringsX = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
     static const std::array<int, 6> ringsY = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
@@ -2281,7 +2281,7 @@ void Inventory_ItemPopupAndAlchemy() {
                 pParty->activeCharacter().pInventoryItemList[bottleId - 1].flags = ITEM_IDENTIFIED;
             } else {
                 // Can't fit bottle in inventory - place it in hand
-                ItemGen bottle;
+                Item bottle;
                 bottle.itemId = ITEM_POTION_BOTTLE;
                 bottle.flags = ITEM_IDENTIFIED;
                 pParty->setHoldingItem(&bottle);
