@@ -189,7 +189,7 @@ GAME_TEST(Issues, Issue268_939) {
     EXPECT_EQ(pParty->pCharacters[0].GetRangedAttack(), 18);
     EXPECT_EQ(pParty->pCharacters[1].GetRangedAttack(), 23);
     EXPECT_EQ(pParty->pCharacters[2].GetRangedAttack(), 21);
-    EXPECT_EQ(pParty->pCharacters[3].GetRangedAttack(), 17);
+    EXPECT_EQ(pParty->pCharacters[3].GetRangedAttack(), 9); // was 17 in vanilla see #1927
     // dmg
     EXPECT_EQ(pParty->pCharacters[0].GetRangedDamageString(), "9 - 14");
     EXPECT_EQ(pParty->pCharacters[1].GetRangedDamageString(), "11 - 16");
