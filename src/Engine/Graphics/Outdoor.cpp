@@ -1501,6 +1501,7 @@ void ODM_ProcessPartyActions() {
     // new ground level
     float newFloorLevel = ODM_GetFloorLevel(partyNewPos, &partyIsOnWater, &floorFaceId);
     float newGroundLevel = newFloorLevel + 1;
+    partyNewPos.z = std::max(partyNewPos.z, newGroundLevel);
 
     // Falling damage
     if (!triggerID ||

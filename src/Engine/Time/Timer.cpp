@@ -1,5 +1,7 @@
 #include "Timer.h"
 
+#include <algorithm>
+
 #include "Engine/EngineGlobals.h"
 
 #include "Io/KeyboardInputHandler.h"
@@ -9,23 +11,20 @@ Timer *pEventTimer;
 
 //----- (00426317) --------------------------------------------------------
 Duration Timer::platformTime() {
-    Duration result = Duration::fromRealtimeMilliseconds(platform->tickCount());
-    if (result < _lastFrameTime) _lastFrameTime = 0_ticks;
-    return result;
+    return Duration::fromRealtimeMilliseconds(platform->tickCount());
 }
 
 //----- (004263B7) --------------------------------------------------------
 void Timer::tick() {
-    Duration new_time = platformTime();
+    Duration newTime = platformTime();
 
-    // TODO(captainurist): this magically works with EventTracer because of how Time() is written:
-    // it sets uStartTime to zero if it's larger than current time. And TickCount() in EventTracer starts at zero.
-    // This looks very fragile, but rethinking it would require diving into how timers work.
-    _dt = new_time - _lastFrameTime;
-    _lastFrameTime = new_time;
+    // TODO(captainurist): This is needed because we roll back time in tests. We're dancing around with 32_ticks to
+    //                     maintain trace compatibility. Think how to do this better.
+    if (newTime < _lastFrameTime)
+        _lastFrameTime = std::max(0_ticks, newTime - 32_ticks);
 
-    if (_dt > 32_ticks)
-        _dt = 32_ticks; // 32 is 250ms
+    _dt = newTime - _lastFrameTime;
+    _lastFrameTime = newTime;
 
     if (!_paused && !_turnBased)
         _time += _dt;

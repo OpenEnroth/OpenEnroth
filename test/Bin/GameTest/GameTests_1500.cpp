@@ -407,8 +407,8 @@ GAME_TEST(Issues, Issue1726) {
 GAME_TEST(Issues, Issue1786) {
     // Casting a quick spell that's not in spellbook asserts
     auto sprites = tapes.sprites();
-    test.startTaping();
     game.startNewGame();
+    test.startTaping();
     pParty->pCharacters[3].uQuickSpell = SPELL_FIRE_FIRE_BOLT;
     EXPECT_FALSE(pParty->pCharacters[3].bHaveSpell[SPELL_FIRE_FIRE_BOLT]);
 
