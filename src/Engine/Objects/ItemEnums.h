@@ -1122,3 +1122,11 @@ enum class RandomItemType {
     RANDOM_ITEM_LAST_SPAWNABLE = RANDOM_ITEM_GEM
 };
 using enum RandomItemType;
+
+enum class ItemSource {
+    ITEM_SOURCE_MAP,
+    ITEM_SOURCE_MONSTER,
+    ITEM_SOURCE_CHEST,
+    ITEM_SOURCE_RNG
+};
+using enum ItemSource;

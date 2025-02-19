@@ -807,6 +807,23 @@ ItemRarity Item::rarity() const {
     return pItemTable->items[itemId].rarity;
 }
 
+void Item::postGenerate(ItemSource source) {
+    if (itemId == ITEM_NULL)
+        return;
+
+    if (rarity() == RARITY_SPECIAL) {
+        standardEnchantment = pItemTable->items[itemId].standardEnchantment;
+        specialEnchantment = pItemTable->items[itemId].specialEnchantment;
+        standardEnchantmentStrength = pItemTable->items[itemId].standardEnchantmentStrength;
+    }
+
+    if (type() == ITEM_TYPE_POTION && itemId != ITEM_POTION_BOTTLE && potionPower == 0) {
+        if (source == ITEM_SOURCE_MAP) {
+            potionPower = grng->random(15) + 5;
+        }
+    }
+}
+
 Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MapTreasureLevel mapTreasureLevel) {
     // Mapping [item_level][map_level] -> [actual_level_min, actual_level_max];
     // Rows are item treasure levels, columns are map treasure levels. Not using IndexedArray to keep things terse.
