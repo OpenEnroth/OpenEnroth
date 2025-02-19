@@ -530,7 +530,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
         outItem->standardEnchantment = {};
     }
     // try get special enchantment
-    switch (outItem->GetItemEquipType()) {
+    switch (outItem->type()) {
         case ITEM_TYPE_SINGLE_HANDED:
         case ITEM_TYPE_TWO_HANDED:
         case ITEM_TYPE_BOW:
@@ -550,13 +550,13 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
                 return;
             int bonusChanceRoll = grng->random(100);
             if (bonusChanceRoll < standardEnchantmentChanceForEquipment[treasureLevel]) {
-                int enchantmentChanceSumRoll = grng->random(standardEnchantmentChanceSumByItemType[outItem->GetItemEquipType()]) + 1;
+                int enchantmentChanceSumRoll = grng->random(standardEnchantmentChanceSumByItemType[outItem->type()]) + 1;
                 int currentEnchantmentChancesSum = 0;
                 for (CharacterAttribute attr : allEnchantableAttributes()) {
                     if (currentEnchantmentChancesSum >= enchantmentChanceSumRoll)
                         break;
 
-                    currentEnchantmentChancesSum += standardEnchantments[attr].chanceByItemType[outItem->GetItemEquipType()];
+                    currentEnchantmentChancesSum += standardEnchantments[attr].chanceByItemType[outItem->type()];
                     outItem->standardEnchantment = attr;
                 }
                 assert(outItem->standardEnchantment);
@@ -600,7 +600,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
             (treasureLevel == ITEM_TREASURE_LEVEL_4) && (tr_lv == 2 || tr_lv == 1 || tr_lv == 0) ||
             (treasureLevel == ITEM_TREASURE_LEVEL_5) && (tr_lv == 3 || tr_lv == 2 || tr_lv == 1) ||
             (treasureLevel == ITEM_TREASURE_LEVEL_6) && (tr_lv == 3)) {
-            int spc = specialEnchantments[ench].chanceByItemType[outItem->GetItemEquipType()];
+            int spc = specialEnchantments[ench].chanceByItemType[outItem->type()];
             if (spc) {
                 weightSum += spc;
                 possibleEnchantments.push_back(ench);

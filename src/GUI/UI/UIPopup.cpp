@@ -440,7 +440,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
         LSTR_FMT_TYPE_S,
         pItemTable->items[inspect_item->itemId].unidentifiedName);
 
-    switch (inspect_item->GetItemEquipType()) {
+    switch (inspect_item->type()) {
         case ITEM_TYPE_SINGLE_HANDED:
         case ITEM_TYPE_TWO_HANDED: {
             text[1] = fmt::format("{}: +{}   {}: {}d{}",

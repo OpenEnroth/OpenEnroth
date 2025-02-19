@@ -183,7 +183,7 @@ std::string Item::GetDisplayName() {
 
 //----- (004564B3) --------------------------------------------------------
 std::string Item::GetIdentifiedName() {
-    ItemType equip_type = GetItemEquipType();
+    ItemType equip_type = type();
     if ((equip_type == ITEM_TYPE_REAGENT) || (equip_type == ITEM_TYPE_POTION) ||
         (equip_type == ITEM_TYPE_GOLD)) {
         return pItemTable->items[itemId].name;
@@ -720,14 +720,6 @@ bool Item::IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet) {
     return false;
 }
 
-ItemType Item::GetItemEquipType() const {
-    // to avoid nzi - is this safe??
-    if (this->itemId == ITEM_NULL)
-        return ITEM_TYPE_NONE;
-    else
-        return pItemTable->items[this->itemId].type;
-}
-
 CharacterSkillType Item::GetPlayerSkillType() const {
     CharacterSkillType skl = pItemTable->items[this->itemId].skill;
     if (skl == CHARACTER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
@@ -805,6 +797,10 @@ bool Item::canSellRepairIdentifyAt(HouseId houseId) {
         default:
             return false;
     }
+}
+
+ItemType Item::type() const {
+    return itemId == ITEM_NULL ? ITEM_TYPE_NONE : pItemTable->items[itemId].type;
 }
 
 ItemRarity Item::rarity() const {

@@ -58,7 +58,6 @@ struct Item {
     void Reset();
     int _439DF3_get_additional_damage(DamageType *a2, bool *vampiyr);
 
-    ItemType GetItemEquipType() const;
     CharacterSkillType GetPlayerSkillType() const;
     const std::string& GetIconName() const;
     uint8_t GetDamageDice() const;
@@ -67,42 +66,44 @@ struct Item {
     bool canSellRepairIdentifyAt(HouseId houseId);
 
     bool isGold() const {
-        return GetItemEquipType() == ITEM_TYPE_GOLD;
+        return type() == ITEM_TYPE_GOLD;
     }
     bool isShield() const {
-        return GetItemEquipType() == ITEM_TYPE_SHIELD;
+        return type() == ITEM_TYPE_SHIELD;
     }
     bool isWand() const {
-        return GetItemEquipType() == ITEM_TYPE_WAND;
+        return type() == ITEM_TYPE_WAND;
     }
     bool isPotion() const {
-        return GetItemEquipType() == ITEM_TYPE_POTION;
+        return type() == ITEM_TYPE_POTION;
     }
     bool isBook() const {
-        return GetItemEquipType() == ITEM_TYPE_BOOK;
+        return type() == ITEM_TYPE_BOOK;
     }
     bool isReagent() const {
-        return GetItemEquipType() == ITEM_TYPE_REAGENT;
+        return type() == ITEM_TYPE_REAGENT;
     }
     bool isSpellScroll() const {
-        return GetItemEquipType() == ITEM_TYPE_SPELL_SCROLL;
+        return type() == ITEM_TYPE_SPELL_SCROLL;
     }
     bool isMessageScroll() const {
-        return GetItemEquipType() == ITEM_TYPE_MESSAGE_SCROLL;
+        return type() == ITEM_TYPE_MESSAGE_SCROLL;
     }
 
     bool isMeleeWeapon() const {
-        return GetItemEquipType() == ITEM_TYPE_SINGLE_HANDED || GetItemEquipType() == ITEM_TYPE_TWO_HANDED;
+        return type() == ITEM_TYPE_SINGLE_HANDED || type() == ITEM_TYPE_TWO_HANDED;
     }
     bool isWeapon() const {
-        return ::isWeapon(GetItemEquipType());
+        return ::isWeapon(type());
     }
     bool isArmor() const {
-        return ::isArmor(GetItemEquipType());
+        return ::isArmor(type());
     }
     bool isPassiveEquipment() const {
-        return ::isPassiveEquipment(GetItemEquipType());
+        return ::isPassiveEquipment(type());
     }
+
+    ItemType type() const;
 
     ItemRarity rarity() const;
 
