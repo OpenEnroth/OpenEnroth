@@ -628,13 +628,7 @@ void OutdoorLocation::ArrangeSpriteObjects() {
                 if (!(pSpriteObjects[i].uAttributes & SPRITE_DROPPED_BY_PLAYER) && !pSpriteObjects[i].IsUnpickable()) {
                     pSpriteObjects[i].vPosition.z = pOutdoor->pTerrain.heightByPos(pSpriteObjects[i].vPosition);
                 }
-                if (pSpriteObjects[i].containing_item.itemId != ITEM_NULL) {
-                    if (pSpriteObjects[i].containing_item.itemId != ITEM_POTION_BOTTLE &&
-                        pItemTable->items[pSpriteObjects[i].containing_item.itemId].type == ITEM_TYPE_POTION &&
-                        !pSpriteObjects[i].containing_item.potionPower)
-                        pSpriteObjects[i].containing_item.potionPower = grng->random(15) + 5;
-                    pItemTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);
-                }
+                pSpriteObjects[i].containing_item.postGenerate(ITEM_SOURCE_MAP);
             }
         }
     }
