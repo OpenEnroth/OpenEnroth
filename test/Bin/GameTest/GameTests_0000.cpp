@@ -579,6 +579,12 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     checkSkills({ {0, 10}, {1, 11}, {2, 14}, {3, 9} });
 }
 
+GAME_TEST(Issues, Issue414) {
+    test.playTraceFromTestData("issue_414.mm7", "issue_414.json");
+    EXPECT_EQ(pParty->pCharacters[2].mana, 253);
+    EXPECT_EQ(pParty->pCharacters[3].mana, 690);
+}
+
 GAME_TEST(Issues, Issue416) {
     // Area in The Dragon Caves is inaccessible
     test.playTraceFromTestData("issue_416.mm7", "issue_416.json");
