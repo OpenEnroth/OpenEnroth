@@ -22,7 +22,7 @@
 #include "Media/Audio/AudioPlayer.h"
 
 static bool characterHasJar(int charIndex, int jarIndex) {
-    for (const ItemGen &item : pParty->pCharacters[charIndex].pInventoryItemList)
+    for (const Item &item : pParty->pCharacters[charIndex].pInventoryItemList)
         if (item.itemId == ITEM_QUEST_LICH_JAR_FULL && item.lichJarCharacterIndex == jarIndex)
             return true;
     return false;
@@ -553,7 +553,7 @@ GAME_TEST(Issues, Issue1383) {
 
     Character character;
     character.pActiveSkills[CHARACTER_SKILL_MERCHANT] = CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER);
-    ItemGen item;
+    Item item;
     item.itemId = ITEM_SPELLBOOK_ARMAGEDDON;
     int gmPrice = PriceCalculator::itemBuyingPriceForPlayer(&character, item.GetValue(), 10.0f);
     EXPECT_EQ(gmPrice, 7500);

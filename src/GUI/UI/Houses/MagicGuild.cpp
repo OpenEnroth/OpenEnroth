@@ -225,7 +225,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                 testx += 6;
             }
 
-            ItemGen *item = &pParty->spellBooksInGuilds[houseId()][testx];
+            Item *item = &pParty->spellBooksInGuilds[houseId()][testx];
 
             if (item->itemId != ITEM_NULL) {
                 int testpos;
@@ -310,7 +310,7 @@ void GUIWindow_MagicGuild::houseScreenClick() {
             testx += 6;
         }
 
-        ItemGen &boughtItem = pParty->spellBooksInGuilds[houseId()][testx];
+        Item &boughtItem = pParty->spellBooksInGuilds[houseId()][testx];
         if (boughtItem.itemId != ITEM_NULL) {
             int testpos;
             if (pt.y >= 250) {
@@ -369,7 +369,7 @@ void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
             }
         }
 
-        ItemGen *itemSpellbook = &pParty->spellBooksInGuilds[houseId()][i];
+        Item *itemSpellbook = &pParty->spellBooksInGuilds[houseId()][i];
         itemSpellbook->Reset();
         itemSpellbook->itemId = pItemNum;
         itemSpellbook->SetIdentified();

@@ -1,7 +1,7 @@
 #pragma once
 
 class Character;
-struct ItemGen;
+struct Item;
 struct HouseData;
 
 // Class to calculate various prices and overall deal with them
@@ -87,7 +87,7 @@ class PriceCalculator {
      * @returns                         Price that player will get for selling an item.
      * @offset 0x4B8102
      */
-    static int itemSellingPriceForPlayer(const Character *player, const ItemGen &item, float priceMultiplier);
+    static int itemSellingPriceForPlayer(const Character *player, const Item &item, float priceMultiplier);
 
     /**
      * Originally was a method of class `Character`.

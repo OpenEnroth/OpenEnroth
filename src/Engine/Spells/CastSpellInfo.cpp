@@ -685,7 +685,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_VAMPIRIC_WEAPON:
                 case SPELL_FIRE_FIRE_AURA:
                 {
-                    ItemGen *item = &pParty->pCharacters[pCastSpell->targetCharacterIndex].pInventoryItemList[pCastSpell->targetInventoryIndex];
+                    Item *item = &pParty->pCharacters[pCastSpell->targetCharacterIndex].pInventoryItemList[pCastSpell->targetInventoryIndex];
                     item->UpdateTempBonus(pParty->GetPlayingTime());
                     if (item->itemId == ITEM_BLASTER ||
                             item->itemId == ITEM_BLASTER_RIFLE ||
@@ -1340,7 +1340,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_WATER_RECHARGE_ITEM:
                 {
-                    ItemGen *item = &pParty->pCharacters[pCastSpell->targetCharacterIndex].pInventoryItemList[pCastSpell->targetInventoryIndex];
+                    Item *item = &pParty->pCharacters[pCastSpell->targetCharacterIndex].pInventoryItemList[pCastSpell->targetInventoryIndex];
                     if (!item->isWand() || item->IsBroken()) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
@@ -1400,7 +1400,7 @@ void CastSpellInfoHelpers::castSpell() {
                     bool spell_failed = true;
                     int rnd = grng->random(100);
                     pPlayer = &pParty->pCharacters[pCastSpell->targetCharacterIndex];
-                    ItemGen *spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->targetInventoryIndex];
+                    Item *spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->targetInventoryIndex];
                     ItemType this_equip_type = pItemTable->items[spell_item_to_enchant->itemId].type;
 
                     // refs
@@ -1971,12 +1971,12 @@ void CastSpellInfoHelpers::castSpell() {
                         if (pActors[monster_id].items[3].isGold()) {
                             gold_num = pActors[monster_id].items[3].goldAmount;
                         }
-                        ItemGen item;
+                        Item item;
                         item.Reset();
                         if (pActors[monster_id].carriedItemId != ITEM_NULL) {
                             item.itemId = pActors[monster_id].carriedItemId;
                         } else {
-                            for (const ItemGen &actorItem : pActors[monster_id].items) {
+                            for (const Item &actorItem : pActors[monster_id].items) {
                                 if (actorItem.itemId != ITEM_NULL &&
                                         pItemTable->items[actorItem.itemId].type != ITEM_TYPE_GOLD) {
                                     item = actorItem;

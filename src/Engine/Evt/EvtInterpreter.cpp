@@ -448,7 +448,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         case EVENT_GiveItem:
         {
-            ItemGen item;
+            Item item;
             item.Reset();
             pItemTable->generateItem(ir.data.give_item_descr.treasure_level, ir.data.give_item_descr.treasure_type, &item);
             if (ir.data.give_item_descr.item_id != ITEM_NULL) {

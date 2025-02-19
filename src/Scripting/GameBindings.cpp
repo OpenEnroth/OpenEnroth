@@ -151,7 +151,7 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
         }),
         "addCustomItemToInventory", sol::as_function([](int characterIndex, sol::table itemTable) {
             if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
-                ItemGen item;
+                Item item;
                 for (auto &&pair : itemTable) {
                     std::string_view key = pair.first.as<std::string_view>();
                     if (key == "id") {

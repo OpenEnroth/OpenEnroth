@@ -1000,7 +1000,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
     int index;
     int item_X;
     int item_Y;
-    ItemGen *item;
+    Item *item;
 
     int IsDwarf;
     int pBodyComplection;
@@ -1017,8 +1017,8 @@ void CharacterUI_DrawPaperdoll(Character *player) {
     render->ResetUIClipRect();
     render->DrawTextureNew(467 / 640.0f, 0, ui_character_inventory_paperdoll_background);
 
-    ItemGen *itemMainHand = player->GetMainHandItem();
-    ItemGen *itemOffHand = player->GetOffHandItem();
+    Item *itemMainHand = player->GetMainHandItem();
+    Item *itemOffHand = player->GetOffHandItem();
     bool bTwoHandedGrip = itemMainHand && (itemMainHand->GetItemEquipType() == ITEM_TYPE_TWO_HANDED || itemMainHand->GetPlayerSkillType() == CHARACTER_SKILL_SPEAR && !itemOffHand);
 
     // Aqua-Lung
@@ -1321,7 +1321,7 @@ void CharacterUI_DrawPickedItemUnderlay(Vec2i offset) {
     }
 }
 
-static void CharacterUI_DrawItem(int x, int y, ItemGen *item, int id, GraphicsImage *item_texture, bool doZDraw) {
+static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage *item_texture, bool doZDraw) {
     if (!item_texture)
         item_texture = assets->getImage_Alpha(item->GetIconName());
 
@@ -1766,7 +1766,7 @@ void OnPaperdollLeftClick() {
     int slot = 32;
     ItemSlot pos = ITEM_SLOT_INVALID;
 
-    ItemGen *pitem = NULL;  // condesnse with this??
+    Item *pitem = NULL;  // condesnse with this??
                             // pitem.Reset();
 
     // uint16_t v5; // ax@7
@@ -1787,7 +1787,7 @@ void OnPaperdollLeftClick() {
     CastSpellInfo *pSpellInfo;
 
     int twohandedequip = 0;
-    ItemGen _this;  // [sp+Ch] [bp-40h]@1
+    Item _this;  // [sp+Ch] [bp-40h]@1
     _this.Reset();
     int mainhandequip = pParty->activeCharacter().pEquipment[ITEM_SLOT_MAIN_HAND];
     unsigned int shieldequip = pParty->activeCharacter().pEquipment[ITEM_SLOT_OFF_HAND];

@@ -14,7 +14,7 @@
 
 class Character;
 
-struct ItemGen {  // 0x24
+struct Item {
     static void PopulateSpecialBonusMap();
     static void PopulateRegularBonusMap();
     static void PopulateArtifactBonusMap();
@@ -129,4 +129,4 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder);
 
 Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MapTreasureLevel mapTreasureLevel);
 
-extern ItemGen *ptr_50C9A4_ItemToEnchant;
+extern Item *ptr_50C9A4_ItemToEnchant;

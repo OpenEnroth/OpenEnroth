@@ -177,7 +177,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
 
         if (chestindex) {
             int itemindex = chestindex - 1;
-            ItemGen *item = &chest->igChestItems[itemindex];
+            Item *item = &chest->igChestItems[itemindex];
 
             ///////////////////////////////////////////////
             // normal picking
@@ -285,7 +285,7 @@ int Chest::FindFreeItemSlot(int uChestID) {
     return item_count;
 }
 
-int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
+int Chest::PutItemInChest(int position, Item *put_item, int uChestID) {
     int firstFreeSlot = FindFreeItemSlot(uChestID);
 
     int max_size = pChestWidthsByType[vChests[uChestID].uChestBitmapID] *
@@ -423,7 +423,7 @@ void RemoveItemAtChestIndex(int index) {
     Chest *chest = &vChests[pGUIWindow_CurrentChest->chestId()];
 
     int chestindex = chest->pInventoryIndices[index];
-    ItemGen *item_in_slot = &chest->igChestItems[chestindex - 1];
+    Item *item_in_slot = &chest->igChestItems[chestindex - 1];
 
     auto img = assets->getImage_ColorKey(item_in_slot->GetIconName());
     int slot_width = GetSizeInInventorySlots(img->width());
@@ -519,7 +519,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
         if (chestindex <= 0) continue;  // no item here
 
         int itemindex = chestindex - 1;
-        ItemGen chestitem = chest->igChestItems[itemindex];
+        Item chestitem = chest->igChestItems[itemindex];
         chestitem.placedInChest = false;
         if (chestitem.isGold()) {
             pParty->partyFindsGold(chestitem.goldAmount, GOLD_RECEIVE_SHARE);
@@ -557,7 +557,7 @@ void GenerateItemsInChest() {
     MapInfo *currMapInfo = &pMapStats->pInfos[engine->_currentLoadedMapId];
     for (int i = 0; i < 20; ++i) {
         for (int j = 0; j < 140; ++j) {
-            ItemGen *currItem = &vChests[i].igChestItems[j];
+            Item *currItem = &vChests[i].igChestItems[j];
             if (isRandomItem(currItem->itemId)) {
                 currItem->placedInChest = false;
                 int additionaItemCount = grng->random(5);  // additional items in chect

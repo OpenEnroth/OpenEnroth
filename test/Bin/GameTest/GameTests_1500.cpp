@@ -166,7 +166,7 @@ GAME_TEST(Issues, Issue1569) {
 
 GAME_TEST(Issues, Issue1597) {
     // Test that generated amulets with high enough treasure level have enchantment on them
-    ItemGen item;
+    Item item;
     int attrEnchantmentsNum = 0;
     int specialEnchantmentsNum = 0;
     for (int i = 0; i < 100; i++) {
@@ -278,11 +278,11 @@ GAME_TEST(Issues, Issue1685) {
     pParty->pCharacters[0].name = "Kolya";
     pParty->pCharacters[1].name = "Nicholas";
 
-    ItemGen jar1;
+    Item jar1;
     jar1.itemId = ITEM_QUEST_LICH_JAR_FULL;
     jar1.lichJarCharacterIndex = 0;
 
-    ItemGen jar2;
+    Item jar2;
     jar2.itemId = ITEM_QUEST_LICH_JAR_FULL;
     jar2.lichJarCharacterIndex = 1;
 
@@ -551,7 +551,7 @@ GAME_TEST(Issues, Issue1911) {
     EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 4);
 
     // Equip staff.
-    ItemGen staff;
+    Item staff;
     staff.itemId = ITEM_STAFF;
     game.runGameRoutine([&] {
         // This code needs to be run in game thread b/c AddItem2 is loading textures...
@@ -584,7 +584,7 @@ GAME_TEST(Issues, Issue1925) {
         game.tick();
 
         // Equip wand.
-        ItemGen wand;
+        Item wand;
         wand.itemId = ITEM_WAND_OF_FIRE;
         wand.numCharges = wand.maxCharges = 1;
         game.runGameRoutine([&] {
@@ -602,7 +602,7 @@ GAME_TEST(Issues, Issue1925) {
 
         EXPECT_EQ(wandTape, wandsDisappear ? tape(false, true, false) : tape(false, true));
         if (!wandsDisappear) {
-            const ItemGen *dischargedWand = pParty->pCharacters[0].GetItem(ITEM_SLOT_MAIN_HAND);
+            const Item *dischargedWand = pParty->pCharacters[0].GetItem(ITEM_SLOT_MAIN_HAND);
             EXPECT_NE(dischargedWand, nullptr);
             EXPECT_EQ(dischargedWand->itemId, ITEM_WAND_OF_FIRE);
             EXPECT_EQ(dischargedWand->numCharges, 0);
@@ -614,7 +614,7 @@ GAME_TEST(Issues, Issue1925) {
 
 GAME_TEST(Prs, Pr1934) {
     // Should be able to generate standard enchantments with +25 bonus.
-    ItemGen item;
+    Item item;
     int maxStrength = 0;
     for (int i = 0; i < 100; i++) {
         pItemTable->generateItem(ITEM_TREASURE_LEVEL_6, RANDOM_ITEM_RING, &item);

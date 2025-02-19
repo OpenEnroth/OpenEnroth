@@ -42,7 +42,7 @@ struct ChestDesc;
 struct DecorationDesc;
 struct FontHeader;
 struct GUICharMetric;
-struct ItemGen;
+struct Item;
 struct LevelDecoration;
 struct LocationInfo;
 struct LocationTime;
@@ -244,8 +244,8 @@ struct ItemGen_MM7 {
 static_assert(sizeof(ItemGen_MM7) == 0x24);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ItemGen_MM7)
 
-void snapshot(const ItemGen &src, ItemGen_MM7 *dst);
-void reconstruct(const ItemGen_MM7 &src, ItemGen *dst);
+void snapshot(const Item &src, ItemGen_MM7 *dst);
+void reconstruct(const ItemGen_MM7 &src, Item *dst);
 
 
 struct SpellBuff_MM7 {

@@ -189,7 +189,7 @@ int Party::canActCount() const {
     return result;
 }
 
-void Party::setHoldingItem(ItemGen *pItem, int offsetX, int offsetY) {
+void Party::setHoldingItem(Item *pItem, int offsetX, int offsetY) {
     placeHeldItemInInventoryOrDrop();
     pPickedItem = *pItem;
     mouse->SetCursorBitmapFromItemID(pPickedItem.itemId);
@@ -260,7 +260,7 @@ void Party::switchToNextActiveCharacter() {
 
 bool Party::hasItem(ItemId uItemID) {
     for (Character &player : this->pCharacters) {
-        for (ItemGen &item : player.pInventoryItemList) {
+        for (Item &item : player.pInventoryItemList) {
             if (item.itemId == uItemID)
                 return true;
         }
@@ -377,7 +377,7 @@ unsigned int Party::getPartyFame() {
 
 void Party::createDefaultParty(bool bDebugGiveItems) {
     signed int uNumPlayers;  // [sp+18h] [bp-28h]@1
-    ItemGen Dst;             // [sp+1Ch] [bp-24h]@10
+    Item Dst;             // [sp+1Ch] [bp-24h]@10
 
     pHireling1Name[0] = 0;
     pHireling2Name[0] = 0;
@@ -1035,7 +1035,7 @@ void Party::placeHeldItemInInventoryOrDrop() {
     }
 }
 
-bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
+bool Party::addItemToParty(Item *pItem, bool isSilent) {
     if (!pItemTable->items[pItem->itemId].identifyDifficulty) {
         pItem->SetIdentified();
     }

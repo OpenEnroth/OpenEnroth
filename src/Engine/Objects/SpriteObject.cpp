@@ -644,7 +644,7 @@ bool SpriteObject::applyShrinkRayAoe() {
 }
 
 bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
-                              bool randomRotate, SpriteAttributes attributes, ItemGen *item) {
+                              bool randomRotate, SpriteAttributes attributes, Item *item) {
     SpriteObject pSpellObject;
 
     pSpellObject.uType = sprite;

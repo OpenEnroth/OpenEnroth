@@ -79,7 +79,7 @@ struct Party {
     /**
      * @offset 0x4936E1
      */
-    void setHoldingItem(ItemGen *pItem, int offsetX = 0, int offsetY = 0);
+    void setHoldingItem(Item *pItem, int offsetX = 0, int offsetY = 0);
 
     /**
     * Sets _activeCharacter to the first character that can act
@@ -104,7 +104,7 @@ struct Party {
     /**
      * @offset 0x48C6F6
      */
-    bool addItemToParty(ItemGen *pItem, bool isSilent = false);
+    bool addItemToParty(Item *pItem, bool isSilent = false);
 
     /**
      * @offset 0x43AD34
@@ -331,11 +331,11 @@ struct Party {
     std::array<Character, 4> pCharacters;
     std::array<NPCData, 2> pHirelings;
     std::array<NPCSacrificeStatus, 2> pHirelingsSacrifice;
-    ItemGen pPickedItem;
+    Item pPickedItem;
     PartyFlags uFlags;
-    IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> standartItemsInShops;
-    IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> specialItemsInShops;
-    IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> spellBooksInGuilds;
+    IndexedArray<std::array<Item, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> standartItemsInShops;
+    IndexedArray<std::array<Item, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> specialItemsInShops;
+    IndexedArray<std::array<Item, 12>, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> spellBooksInGuilds;
     std::string pHireling1Name;
     std::string pHireling2Name;
     Duration armageddon_timer;

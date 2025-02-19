@@ -18,7 +18,7 @@
 
 #include "Utility/MapAccess.h"
 
-ItemGen *ptr_50C9A4_ItemToEnchant;
+Item *ptr_50C9A4_ItemToEnchant;
 
 ItemTable *pItemTable;  // 005D29E0
 
@@ -47,7 +47,7 @@ static std::unordered_map<ItemId, ItemId> itemTextureIdByItemId = {
 };
 
 //----- (00439DF3) --------------------------------------------------------
-int ItemGen::_439DF3_get_additional_damage(DamageType *damage_type,
+int Item::_439DF3_get_additional_damage(DamageType *damage_type,
                                            bool *draintargetHP) {
     *draintargetHP = false;
     *damage_type = DAMAGE_FIRE;
@@ -138,12 +138,12 @@ int ItemGen::_439DF3_get_additional_damage(DamageType *damage_type,
 }
 
 //----- (00402F07) --------------------------------------------------------
-void ItemGen::Reset() {
-    *this = ItemGen();
+void Item::Reset() {
+    *this = Item();
 }
 
 //----- (00458260) --------------------------------------------------------
-void ItemGen::UpdateTempBonus(Time time) {
+void Item::UpdateTempBonus(Time time) {
     if (this->flags & ITEM_TEMP_BONUS) {
         if (time > this->enchantmentExpirationTime) {
             this->standardEnchantment = {};
@@ -154,7 +154,7 @@ void ItemGen::UpdateTempBonus(Time time) {
 }
 
 //----- (00456442) --------------------------------------------------------
-int ItemGen::GetValue() const {
+int Item::GetValue() const {
     int uBaseValue = pItemTable->items[this->itemId].baseValue;
     if (flags & ITEM_TEMP_BONUS || pItemTable->IsMaterialNonCommon(this))
         return uBaseValue;
@@ -173,7 +173,7 @@ int ItemGen::GetValue() const {
 }
 
 //----- (00456499) --------------------------------------------------------
-std::string ItemGen::GetDisplayName() {
+std::string Item::GetDisplayName() {
     if (IsIdentified()) {
         return GetIdentifiedName();
     } else {
@@ -182,7 +182,7 @@ std::string ItemGen::GetDisplayName() {
 }
 
 //----- (004564B3) --------------------------------------------------------
-std::string ItemGen::GetIdentifiedName() {
+std::string Item::GetIdentifiedName() {
     ItemType equip_type = GetItemEquipType();
     if ((equip_type == ITEM_TYPE_REAGENT) || (equip_type == ITEM_TYPE_POTION) ||
         (equip_type == ITEM_TYPE_GOLD)) {
@@ -237,7 +237,7 @@ std::string ItemGen::GetIdentifiedName() {
 }
 
 //----- (004505CC) --------------------------------------------------------
-bool ItemGen::GenerateArtifact() {
+bool Item::GenerateArtifact() {
     signed int uNumArtifactsNotFound;  // esi@1
     std::array<ItemId, 32> artifacts_list;
 
@@ -258,7 +258,7 @@ bool ItemGen::GenerateArtifact() {
     }
 }
 
-void ItemGen::generateGold(ItemTreasureLevel treasureLevel) {
+void Item::generateGold(ItemTreasureLevel treasureLevel) {
     assert(isRandomTreasureLevel(treasureLevel));
 
     Reset();
@@ -305,7 +305,7 @@ static void AddToMap(std::map<Key, std::map<CharacterAttribute, CEnchantment>> &
     submap[subkey] = CEnchantment(bonusValue, skill);
 }
 
-void ItemGen::PopulateSpecialBonusMap() {
+void Item::PopulateSpecialBonusMap() {
     // of Protection, +10 to all Resistances (description in txt says all 4, need to verify!)
     AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_PROTECTION, ATTRIBUTE_RESIST_AIR, 10);
     AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_PROTECTION, ATTRIBUTE_RESIST_BODY, 10);
@@ -455,7 +455,7 @@ void ItemGen::PopulateSpecialBonusMap() {
 }
 
 // TODO: where is it used?
-void ItemGen::PopulateRegularBonusMap() {
+void Item::PopulateRegularBonusMap() {
     // of Might
     AddToMap(regularBonusMap, 1, ATTRIBUTE_MIGHT);
 
@@ -529,7 +529,7 @@ void ItemGen::PopulateRegularBonusMap() {
     AddToMap(regularBonusMap, 24, ATTRIBUTE_SKILL_UNARMED);
 }
 
-void ItemGen::PopulateArtifactBonusMap() {
+void Item::PopulateArtifactBonusMap() {
     // Puck
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_PUCK, ATTRIBUTE_SPEED, 40);
 
@@ -664,7 +664,7 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_LADYS_ESCORT, ATTRIBUTE_RESIST_BODY, 10);
 }
 
-void ItemGen::GetItemBonusSpecialEnchantment(const Character *owner,
+void Item::GetItemBonusSpecialEnchantment(const Character *owner,
                                              CharacterAttribute attrToGet,
                                              int *additiveBonus,
                                              int *halfSkillBonus) const {
@@ -690,7 +690,7 @@ void ItemGen::GetItemBonusSpecialEnchantment(const Character *owner,
     }
 }
 
-void ItemGen::GetItemBonusArtifact(const Character *owner,
+void Item::GetItemBonusArtifact(const Character *owner,
                                    CharacterAttribute attrToGet,
                                    int *bonusSum) const {
     auto pos = artifactBonusMap.find(this->itemId);
@@ -709,7 +709,7 @@ void ItemGen::GetItemBonusArtifact(const Character *owner,
     }
 }
 
-bool ItemGen::IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet) {
+bool Item::IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet) {
     //auto pos = specialBonusMap.find(this->standardEnchantment);
     //if (pos == specialBonusMap.end())
     //    return false;
@@ -719,7 +719,7 @@ bool ItemGen::IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet) {
     return false;
 }
 
-ItemType ItemGen::GetItemEquipType() const {
+ItemType Item::GetItemEquipType() const {
     // to avoid nzi - is this safe??
     if (this->itemId == ITEM_NULL)
         return ITEM_TYPE_NONE;
@@ -727,7 +727,7 @@ ItemType ItemGen::GetItemEquipType() const {
         return pItemTable->items[this->itemId].type;
 }
 
-CharacterSkillType ItemGen::GetPlayerSkillType() const {
+CharacterSkillType Item::GetPlayerSkillType() const {
     CharacterSkillType skl = pItemTable->items[this->itemId].skill;
     if (skl == CHARACTER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
         // club skill not used but some items load it
@@ -736,19 +736,19 @@ CharacterSkillType ItemGen::GetPlayerSkillType() const {
     return skl;
 }
 
-const std::string& ItemGen::GetIconName() const {
+const std::string& Item::GetIconName() const {
     return pItemTable->items[this->itemId].iconName;
 }
 
-uint8_t ItemGen::GetDamageDice() const {
+uint8_t Item::GetDamageDice() const {
     return pItemTable->items[this->itemId].damageDice;
 }
 
-uint8_t ItemGen::GetDamageRoll() const {
+uint8_t Item::GetDamageRoll() const {
     return pItemTable->items[this->itemId].damageRoll;
 }
 
-uint8_t ItemGen::GetDamageMod() const {
+uint8_t Item::GetDamageMod() const {
     return pItemTable->items[this->itemId].damageMod;
 }
 
@@ -777,7 +777,7 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
 }
 
 //----- (004BDAAF) --------------------------------------------------------
-bool ItemGen::canSellRepairIdentifyAt(HouseId houseId) {
+bool Item::canSellRepairIdentifyAt(HouseId houseId) {
     if (this->IsStolen())
         return false;
 

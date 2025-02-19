@@ -21,10 +21,10 @@ struct ItemTable {
     /**
      * @offset 0x456620
      */
-    void generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTreasureType, ItemGen *pItem);
-    void SetSpecialBonus(ItemGen *pItem);
-    bool IsMaterialSpecial(const ItemGen *pItem);
-    bool IsMaterialNonCommon(const ItemGen *pItem);
+    void generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTreasureType, Item *pItem);
+    void SetSpecialBonus(Item *pItem);
+    bool IsMaterialSpecial(const Item *pItem);
+    bool IsMaterialNonCommon(const Item *pItem);
 
     /** Item data for all items in the game. */
     IndexedArray<ItemData, ITEM_FIRST_VALID, ITEM_LAST_VALID> items;
