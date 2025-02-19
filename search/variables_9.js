@@ -29,8 +29,8 @@ var searchData=
   ['intelligencebonus_26',['intelligenceBonus',['../structPlayer__MM7.html#ab81ff50a0c5a90f3ac332e2b06cc6155',1,'Player_MM7']]],
   ['interval_27',['interval',['../structMapTimer.html#a02d87187f031028968629dbac89c1611',1,'MapTimer']]],
   ['intheshopflag0_28',['inTheShopFlag0',['../structParty__MM7.html#aef4ba6845268011fde1b09a611717bfc',1,'Party_MM7']]],
-  ['intheshopflags_29',['InTheShopFlags',['../structParty.html#afc2ef3c803e980b0a27d7f4a67a18f76',1,'Party']]],
-  ['intheshopflags_30',['inTheShopFlags',['../structParty__MM7.html#a51e524019cc28378e776d7ccc51e007e',1,'Party_MM7']]],
+  ['intheshopflags_29',['inTheShopFlags',['../structParty__MM7.html#a51e524019cc28378e776d7ccc51e007e',1,'Party_MM7']]],
+  ['intheshopflags_30',['InTheShopFlags',['../structParty.html#afc2ef3c803e980b0a27d7f4a67a18f76',1,'Party']]],
   ['ints012_31',['ints012',['../Snapshots__ut_8cpp.html#aa4b11bde9aa5ba93ab288dd99d58c3c6',1,'Snapshots_ut.cpp']]],
   ['ints012345_32',['ints012345',['../Snapshots__ut_8cpp.html#a64d17920553fbe857d36fde47ab17d25',1,'Snapshots_ut.cpp']]],
   ['ints345_33',['ints345',['../Snapshots__ut_8cpp.html#a02828a9cae313ad8ad23bf5896032a95',1,'Snapshots_ut.cpp']]],
@@ -77,6 +77,6 @@ var searchData=
   ['items_74',['items',['../structItemTable.html#ae8b9a15fc292c9130ffa675ae56f72bd',1,'ItemTable::items()'],['../classActor.html#a4090d55bf716ab24afa78f117ec59002',1,'Actor::items()']]],
   ['itemsuffix_75',['itemSuffix',['../structStandardEnchantmentData.html#a5be9258319d32b17c461abd100ff8f61',1,'StandardEnchantmentData']]],
   ['itemsuffixorprefix_76',['itemSuffixOrPrefix',['../structSpecialEnchantmentData.html#a4326ae19c24cc91dbc71bc4c8a1a8370',1,'SpecialEnchantmentData']]],
-  ['itemtextureidbyitemid_77',['itemTextureIdByItemId',['../Items_8cpp.html#a119fceb33c76e0232e193eb0c2836da5',1,'Items.cpp']]],
+  ['itemtextureidbyitemid_77',['itemTextureIdByItemId',['../Item_8cpp.html#a119fceb33c76e0232e193eb0c2836da5',1,'Item.cpp']]],
   ['itreasurelevel_78',['iTreasureLevel',['../structSpecialEnchantmentData.html#a0d78c83805ebb69f5529d7b5c4984ce2',1,'SpecialEnchantmentData']]]
 ];

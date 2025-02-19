@@ -188,7 +188,7 @@ var searchData=
   ['specialabilitytype_185',['specialAbilityType',['../structMonsterInfo.html#aa1b51d58f412dba2c151c364f0c9787d',1,'MonsterInfo::specialAbilityType()'],['../structMonsterInfo__MM7.html#a0314f96ede97ac803c67452f0c13df17',1,'MonsterInfo_MM7::specialAbilityType()']]],
   ['specialattacklevel_186',['specialAttackLevel',['../structMonsterInfo__MM7.html#a18352910019a981860c60e17d1bd7884',1,'MonsterInfo_MM7::specialAttackLevel()'],['../structMonsterInfo.html#a46284f3b76c82f94a5772d1e9961e5d2',1,'MonsterInfo::specialAttackLevel()']]],
   ['specialattacktype_187',['specialAttackType',['../structMonsterInfo.html#a6d923b43b62f284119655b462fdf35b6',1,'MonsterInfo::specialAttackType()'],['../structMonsterInfo__MM7.html#a80aa055d12a7752064b19662b2f5781b',1,'MonsterInfo_MM7::specialAttackType()']]],
-  ['specialbonusmap_188',['specialBonusMap',['../Items_8cpp.html#af51f872c5661e2d93c6f8deb7ddc7c43',1,'Items.cpp']]],
+  ['specialbonusmap_188',['specialBonusMap',['../Item_8cpp.html#af51f872c5661e2d93c6f8deb7ddc7c43',1,'Item.cpp']]],
   ['specialenchantment_189',['specialEnchantment',['../structItemData.html#aefb28a5e8a9d1bd27c3983a35265bd4a',1,'ItemData::specialEnchantment()'],['../structItem.html#a5c195f2115504b69f6fec7f513a8a60a',1,'Item::specialEnchantment()']]],
   ['specialenchantmentchanceforequipment_190',['specialEnchantmentChanceForEquipment',['../structItemTable.html#a48481ddd433bcc0bd387439c7441cb2b',1,'ItemTable']]],
   ['specialenchantmentchanceforweapons_191',['specialEnchantmentChanceForWeapons',['../structItemTable.html#a549ac3b4be7dac1e61b16a6c0d24bb32',1,'ItemTable']]],

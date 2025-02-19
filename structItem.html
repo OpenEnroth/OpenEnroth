@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0d72860</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2b74b36</span>
    </div>
   </td>
  </tr>
@@ -78,7 +78,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;Items.h&gt;</code></p>
+<p><code>#include &lt;Item.h&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -128,8 +128,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a34fc4cc3e2abbfeef3fa23aeafb64475"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e632e940b9c88b7d7cc24c3c565c086"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItem.html#a2e632e940b9c88b7d7cc24c3c565c086">_439DF3_get_additional_damage</a> (<a class="el" href="ItemEnums_8h.html#aede113aaae4be64c871e8712183fb868">DamageType</a> *a2, bool *vampiyr)</td></tr>
 <tr class="separator:a2e632e940b9c88b7d7cc24c3c565c086"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9656869335f82ffb095aa8cd1a9f7c62"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ItemEnums_8h.html#a864f4309a8be832c132131de01024150">ItemType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItem.html#a9656869335f82ffb095aa8cd1a9f7c62">GetItemEquipType</a> () const</td></tr>
-<tr class="separator:a9656869335f82ffb095aa8cd1a9f7c62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a769f9fbbdeee66300c83c1202510bcfe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItem.html#a769f9fbbdeee66300c83c1202510bcfe">GetPlayerSkillType</a> () const</td></tr>
 <tr class="separator:a769f9fbbdeee66300c83c1202510bcfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af297b8a95813d67c9c80b375d9a7da43"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItem.html#af297b8a95813d67c9c80b375d9a7da43">GetIconName</a> () const</td></tr>
@@ -166,6 +164,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a97bb3fb937ba76269b59d3f29d9c76c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0d76e4d2d457962a7595079ba6e1084"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItem.html#ad0d76e4d2d457962a7595079ba6e1084">isPassiveEquipment</a> () const</td></tr>
 <tr class="separator:ad0d76e4d2d457962a7595079ba6e1084"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6bed8b747538cd7a80d8d0294fe337a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ItemEnums_8h.html#a864f4309a8be832c132131de01024150">ItemType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItem.html#ab6bed8b747538cd7a80d8d0294fe337a">type</a> () const</td></tr>
+<tr class="separator:ab6bed8b747538cd7a80d8d0294fe337a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b71d4864294468ad6ae2d820f0a3e80"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ItemEnums_8h.html#aaa78c9db44eeb3c39f09d7fe2ae398b5">ItemRarity</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItem.html#a0b71d4864294468ad6ae2d820f0a3e80">rarity</a> () const</td></tr>
+<tr class="separator:a0b71d4864294468ad6ae2d820f0a3e80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -584,23 +586,6 @@ Public Attributes</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a9656869335f82ffb095aa8cd1a9f7c62" name="a9656869335f82ffb095aa8cd1a9f7c62"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9656869335f82ffb095aa8cd1a9f7c62">&#9670;&#160;</a></span>GetItemEquipType()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="ItemEnums_8h.html#a864f4309a8be832c132131de01024150">ItemType</a> Item::GetItemEquipType </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -1134,6 +1119,23 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a0b71d4864294468ad6ae2d820f0a3e80" name="a0b71d4864294468ad6ae2d820f0a3e80"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b71d4864294468ad6ae2d820f0a3e80">&#9670;&#160;</a></span>rarity()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ItemEnums_8h.html#aaa78c9db44eeb3c39f09d7fe2ae398b5">ItemRarity</a> Item::rarity </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a34fc4cc3e2abbfeef3fa23aeafb64475" name="a34fc4cc3e2abbfeef3fa23aeafb64475"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a34fc4cc3e2abbfeef3fa23aeafb64475">&#9670;&#160;</a></span>Reset()</h2>
 
@@ -1247,6 +1249,23 @@ Public Attributes</h2></td></tr>
 <span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab6bed8b747538cd7a80d8d0294fe337a" name="ab6bed8b747538cd7a80d8d0294fe337a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6bed8b747538cd7a80d8d0294fe337a">&#9670;&#160;</a></span>type()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="ItemEnums_8h.html#a864f4309a8be832c132131de01024150">ItemType</a> Item::type </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 </div>
@@ -1453,8 +1472,8 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following files:<ul>
-<li>src/Engine/Objects/<a class="el" href="Items_8h.html">Items.h</a></li>
-<li>src/Engine/Objects/<a class="el" href="Items_8cpp.html">Items.cpp</a></li>
+<li>src/Engine/Objects/<a class="el" href="Item_8h.html">Item.h</a></li>
+<li>src/Engine/Objects/<a class="el" href="Item_8cpp.html">Item.cpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

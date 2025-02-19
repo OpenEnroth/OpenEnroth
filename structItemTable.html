@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0d72860</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2b74b36</span>
    </div>
   </td>
  </tr>
@@ -91,10 +91,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a275239f9fb1a62a768ad13565ee27bdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abd1370452aad61f4cf7b7b12ebb92a0f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItemTable.html#abd1370452aad61f4cf7b7b12ebb92a0f">SetSpecialBonus</a> (<a class="el" href="structItem.html">Item</a> *pItem)</td></tr>
 <tr class="separator:abd1370452aad61f4cf7b7b12ebb92a0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4571ef585b62fdf6c0919e3a51f68f8b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItemTable.html#a4571ef585b62fdf6c0919e3a51f68f8b">IsMaterialSpecial</a> (const <a class="el" href="structItem.html">Item</a> *pItem)</td></tr>
-<tr class="separator:a4571ef585b62fdf6c0919e3a51f68f8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f37e3a7641cd3430619b25e433743db"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structItemTable.html#a3f37e3a7641cd3430619b25e433743db">IsMaterialNonCommon</a> (const <a class="el" href="structItem.html">Item</a> *pItem)</td></tr>
-<tr class="separator:a3f37e3a7641cd3430619b25e433743db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -178,42 +174,6 @@ Public Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classGameResourceManager.html">GameResourceManager</a> *&#160;</td>
           <td class="paramname"><em>resourceManager</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a3f37e3a7641cd3430619b25e433743db" name="a3f37e3a7641cd3430619b25e433743db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f37e3a7641cd3430619b25e433743db">&#9670;&#160;</a></span>IsMaterialNonCommon()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool ItemTable::IsMaterialNonCommon </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structItem.html">Item</a> *&#160;</td>
-          <td class="paramname"><em>pItem</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a4571ef585b62fdf6c0919e3a51f68f8b" name="a4571ef585b62fdf6c0919e3a51f68f8b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4571ef585b62fdf6c0919e3a51f68f8b">&#9670;&#160;</a></span>IsMaterialSpecial()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool ItemTable::IsMaterialSpecial </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="structItem.html">Item</a> *&#160;</td>
-          <td class="paramname"><em>pItem</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -403,7 +363,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Index of autonote bit (<code><a class="el" href="structParty.html#abc8c4df983fff66a162f2e54e027a922">Party::_autonoteBits</a></code>) for the potion recipe. </p>
+<p >Index of autonote bit (<code><a class="el" href="structParty.html#abc8c4df983fff66a162f2e54e027a922">Party::_autonoteBits</a></code>) for the potion recipe.</p>
+<p >Can be zero for valid potion combination when resulting potion is of lower grade than it's components, e.g. Cure Paralysis (white) + Cure Wounds (red) = Cure Wounds (red). </p>
 
 </div>
 </div>
