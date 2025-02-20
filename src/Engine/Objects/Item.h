@@ -107,6 +107,8 @@ struct Item {
 
     ItemRarity rarity() const;
 
+    void postGenerate(ItemSource source);
+
     ItemId itemId = ITEM_NULL;
     int potionPower = 0; // Only for potions.
     int goldAmount = 0; // Only for gold.
