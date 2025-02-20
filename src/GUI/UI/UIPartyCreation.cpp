@@ -710,7 +710,7 @@ GUIWindow_PartyCreation::~GUIWindow_PartyCreation() {
 
 //----- (00497526) --------------------------------------------------------
 bool PartyCreationUI_LoopInternal() {
-    ItemGen item;
+    Item item;
     bool party_not_creation_flag;
 
     party_not_creation_flag = false;
@@ -861,8 +861,8 @@ bool PartyCreationUI_LoopInternal() {
                 break;
             }
 
-            for (ItemGen &inventoryItem : pParty->pCharacters[i].pInventoryItemList) {
-                if (inventoryItem.uItemID != ITEM_NULL)
+            for (Item &inventoryItem : pParty->pCharacters[i].pInventoryItemList) {
+                if (inventoryItem.itemId != ITEM_NULL)
                     inventoryItem.SetIdentified();
             }
         }

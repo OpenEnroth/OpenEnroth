@@ -8,7 +8,7 @@
 #include "Engine/Engine.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Time/Timer.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -644,7 +644,7 @@ bool SpriteObject::applyShrinkRayAoe() {
 }
 
 bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
-                              bool randomRotate, SpriteAttributes attributes, ItemGen *item) {
+                              bool randomRotate, SpriteAttributes attributes, Item *item) {
     SpriteObject pSpellObject;
 
     pSpellObject.uType = sprite;
@@ -658,9 +658,9 @@ bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
     }
 
     if (!(pSpellObject.uAttributes & SPRITE_IGNORE_RANGE)) {
-        for (ItemId i : pItemTable->pItems.indices()) {
-            if (pItemTable->pItems[i].uSpriteID == sprite) {
-                pSpellObject.containing_item.uItemID = i;
+        for (ItemId i : pItemTable->items.indices()) {
+            if (pItemTable->items[i].spriteId == sprite) {
+                pSpellObject.containing_item.itemId = i;
             }
         }
     }
@@ -788,8 +788,8 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         case SPRITE_PROJECTILE_EXPLOSIVE: {
             // Note that ITEM_SPELLBOOK_FIREBALL is an MM6 remnant here,
             // in MM6 it was Percival artifact (id 405) which has swiftness and carnage enchantments
-            if (object->containing_item.uItemID != ITEM_SPELLBOOK_FIREBALL &&
-                object->containing_item.special_enchantment != ITEM_ENCHANTMENT_OF_CARNAGE) {
+            if (object->containing_item.itemId != ITEM_SPELLBOOK_FIREBALL &&
+                object->containing_item.specialEnchantment != ITEM_ENCHANTMENT_OF_CARNAGE) {
                 object->spellSpriteStop();
                 applySpellSpriteDamage(uLayingItemID, pid);
                 SpriteObject::OnInteraction(uLayingItemID);

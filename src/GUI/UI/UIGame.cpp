@@ -9,7 +9,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/BSPModel.h"
 #include "Engine/Objects/DecorationList.h"
 #include "Engine/Objects/Decoration.h"
@@ -608,8 +608,8 @@ void GUIWindow_GameOptions::Update() {
 
 void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
     Character *player = &pParty->pCharacters[uPlayerID - 1];
-    if (pParty->pPickedItem.uItemID != ITEM_NULL) {
-        if (int slot = player->AddItem(-1, pParty->pPickedItem.uItemID)) {
+    if (pParty->pPickedItem.itemId != ITEM_NULL) {
+        if (int slot = player->AddItem(-1, pParty->pPickedItem.itemId)) {
             player->pInventoryItemList[slot - 1] = pParty->pPickedItem;
             mouse->RemoveHoldingItem();
             return;
@@ -869,7 +869,7 @@ void GameUI_WritePointedObjectStatusString() {
     int requiredSkillpoints;           // ecx@19
     UIMessageType pMessageType1;  // esi@24
     int invmatrixindex;                // eax@41
-    ItemGen *pItemGen;                 // ecx@44
+    Item *pItemGen;                 // ecx@44
     // int v16;                           // ecx@46
     Vis_PIDAndDepth pickedObject;        // eax@55
     signed int v18b;
@@ -912,7 +912,7 @@ void GameUI_WritePointedObjectStatusString() {
                     uLastPointedObjectID = Pid();
                     return;
                 }
-                if (pickedObject.depth >= 0x200u || pParty->pPickedItem.uItemID != ITEM_NULL) {
+                if (pickedObject.depth >= 0x200u || pParty->pPickedItem.itemId != ITEM_NULL) {
                     engine->_statusBar->setPermanent(pSpriteObjects[pickedObjectID].containing_item.GetDisplayName());
                 } else {
                     engine->_statusBar->setPermanent(LSTR_FMT_GET_S, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName());
@@ -1017,7 +1017,7 @@ void GameUI_WritePointedObjectStatusString() {
                                               // - 1];
 
                     // TODO(captainurist): get rid of this std::to_underlying cast.
-                    if (pItemGen != NULL) pickedObjectID = std::to_underlying(pItemGen->uItemID);
+                    if (pItemGen != NULL) pickedObjectID = std::to_underlying(pItemGen->itemId);
                     // if (!pItemID)
                     // return;
                     // item =

@@ -8,7 +8,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Objects/DecorationList.h"
@@ -196,7 +196,6 @@ void Engine::drawHUD() {
 
     // mouse->DrawPickedItem();
     mouse->DrawCursor();
-    mouse->Activate();
 }
 
 //----- (0044103C) --------------------------------------------------------
@@ -212,8 +211,6 @@ void Engine::Draw() {
 void Engine::DrawGUI() {
     render->ResetUIClipRect();
 
-    // if (render->pRenderD3D)
-    mouse->DrawCursorToTarget();
     GameUI_DrawRightPanelFrames();
     _statusBar->draw();
 
@@ -438,9 +435,6 @@ Engine::Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem)
 
 //----- (0044E7F3) --------------------------------------------------------
 Engine::~Engine() {
-    if (mouse)
-        mouse->Deactivate();
-
     delete pEventTimer;
     delete pCamera3D;
     pAudioPlayer.reset();
@@ -544,6 +538,9 @@ void PrepareWorld(int _0_box_loading_1_fullscreen) {
     pMiscTimer->setPaused(true);
     CastSpellInfoHelpers::cancelSpellCastInProgress();
     DoPrepareWorld(false, (_0_box_loading_1_fullscreen == 0) + 1);
+
+    assert(pEventTimer->isPaused()); // DoPrepareWorld shouldn't un-pause.
+    assert(pMiscTimer->isPaused());
     pMiscTimer->setPaused(false);
     pEventTimer->setPaused(false);
 }
@@ -776,7 +773,7 @@ void Engine::SecondaryInitialization() {
     initializeMerchants(engine->_gameResourceManager->getEventsFile("merchant.txt"));
     initializeMessageScrolls(engine->_gameResourceManager->getEventsFile("scroll.txt"));
 
-    engine->_globalEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile("global.evt"));
+    engine->_globalEventMap = EvtProgram::load(engine->_gameResourceManager->getEventsFile("global.evt"));
 
     pBitmaps_LOD->reserveLoadedTextures();
     pSprites_LOD->reserveLoadedSprites();
@@ -931,8 +928,8 @@ void Engine::_461103_load_level_sub() {
     pCamera3D->_viewPitch = 0;
     pCamera3D->_viewYaw = 0;
     uLevel_StartingPointType = MAP_START_POINT_PARTY;
-    if (pParty->pPickedItem.uItemID != ITEM_NULL)
-        mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.uItemID);
+    if (pParty->pPickedItem.itemId != ITEM_NULL)
+        mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.itemId);
 }
 
 //----- (0042F3D6) --------------------------------------------------------
@@ -1042,7 +1039,7 @@ void back_to_game() {
         pGUIWindow_ScrollWindow = nullptr;
     }
 
-    if (current_screen_type == SCREEN_GAME && !pGUIWindow_CastTargetedSpell) {
+    if (current_screen_type == SCREEN_GAME && sCurrentMenuID == MENU_NONE && !pGUIWindow_CastTargetedSpell) {
         pEventTimer->setPaused(false);
     }
 }
@@ -1388,23 +1385,23 @@ void RegeneratePartyHealthMana() {
         for (ItemSlot idx : allItemSlots()) {
             if (character.HasItemEquipped(idx)) {
                 unsigned _idx = character.pEquipment[idx];
-                ItemGen equppedItem = character.pInventoryItemList[_idx - 1];
-                if (!isRegular(equppedItem.uItemID)) {
-                    if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF) {
+                Item equppedItem = character.pInventoryItemList[_idx - 1];
+                if (!isRegular(equppedItem.itemId)) {
+                    if (equppedItem.itemId == ITEM_RELIC_ETHRICS_STAFF) {
                         character.health -= ticks5;
                     }
-                    if (equppedItem.uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {
+                    if (equppedItem.itemId == ITEM_ARTIFACT_HERMES_SANDALS) {
                         thisChar.hpRegen++;
                         thisChar.spRegen++;
                     }
-                    if (equppedItem.uItemID == ITEM_ARTIFACT_MINDS_EYE) {
+                    if (equppedItem.itemId == ITEM_ARTIFACT_MINDS_EYE) {
                         thisChar.spRegen++;
                     }
-                    if (equppedItem.uItemID == ITEM_ARTIFACT_HEROS_BELT) {
+                    if (equppedItem.itemId == ITEM_ARTIFACT_HEROS_BELT) {
                         thisChar.hpRegen++;
                     }
                 } else {
-                    ItemEnchantment special_enchantment = equppedItem.special_enchantment;
+                    ItemEnchantment special_enchantment = equppedItem.specialEnchantment;
                     if (special_enchantment == ITEM_ENCHANTMENT_OF_REGENERATION
                         || special_enchantment == ITEM_ENCHANTMENT_OF_LIFE
                         || special_enchantment == ITEM_ENCHANTMENT_OF_PHOENIX
@@ -1439,8 +1436,8 @@ void RegeneratePartyHealthMana() {
         // Lich mana/health drain/regen.
         if (character.classType == CLASS_LICH) {
             bool lich_has_jar = false;
-            for (const ItemGen &item : character.pInventoryItemList)
-                if (item.uItemID == ITEM_QUEST_LICH_JAR_FULL && item.uHolderPlayer == character.getCharacterIndex())
+            for (const Item &item : character.pInventoryItemList)
+                if (item.itemId == ITEM_QUEST_LICH_JAR_FULL && item.lichJarCharacterIndex == character.getCharacterIndex())
                     lich_has_jar = true;
 
             if (lich_has_jar) {
@@ -1499,7 +1496,7 @@ void loadMapEventsAndStrings(MapId mapid) {
 
     initLevelStrings(engine->_gameResourceManager->getEventsFile(fmt::format("{}.str", mapNameWithoutExt)));
 
-    engine->_localEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile(fmt::format("{}.evt", mapNameWithoutExt)));
+    engine->_localEventMap = EvtProgram::load(engine->_gameResourceManager->getEventsFile(fmt::format("{}.evt", mapNameWithoutExt)));
 }
 
 bool _44100D_should_alter_right_panel() {

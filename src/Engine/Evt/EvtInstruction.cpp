@@ -1,9 +1,9 @@
-#include "EventIR.h"
+#include "EvtInstruction.h"
 
 #include <span>
 #include <string>
 
-#include "Engine/Events/EventEnums.h"
+#include "Engine/Evt/EvtEnums.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/NPCTable.h"
@@ -15,9 +15,9 @@
 #include "Utility/Exception.h"
 #include "Utility/Unaligned.h"
 
-#include "EventEnumFunctions.h"
+#include "EvtEnumFunctions.h"
 
-static std::string getVariableSetStr(VariableType type, int value) {
+static std::string getVariableSetStr(EvtVariable type, int value) {
     if (type >= VAR_MapPersistentVariable_0 && type <= VAR_MapPersistentVariable_74) {
         return fmt::format("MapVars[{}], {}", std::to_underlying(type) - std::to_underlying(VAR_MapPersistentVariable_0), value);
     }
@@ -340,7 +340,7 @@ static std::string getVariableSetStr(VariableType type, int value) {
     }
 }
 
-static std::string getVariableCompareStr(VariableType type, int value) {
+static std::string getVariableCompareStr(EvtVariable type, int value) {
     if (type >= VAR_MapPersistentVariable_0 && type <= VAR_MapPersistentVariable_74) {
         return fmt::format("MapVars[{}] >= {}", std::to_underlying(type) - std::to_underlying(VAR_MapPersistentVariable_0), value);
     }
@@ -663,8 +663,8 @@ static std::string getVariableCompareStr(VariableType type, int value) {
     }
 }
 
-std::string EventIR::toString() const {
-    switch (type) {
+std::string EvtInstruction::toString() const {
+    switch (opcode) {
         case EVENT_Exit:
             return fmt::format("{}: Exit", step);
         case EVENT_SpeakInHouse:
@@ -705,7 +705,7 @@ std::string EventIR::toString() const {
             return fmt::format("{}: ChangeDoorState({}, {})", step, data.door_descr.door_id, std::to_underlying(data.door_descr.door_action));
         case EVENT_Add:
             return fmt::format("{}: Add({})", step, getVariableSetStr(data.variable_descr.type, data.variable_descr.value));
-        case EVENT_Substract:
+        case EVENT_Subtract:
             return fmt::format("{}: Sub({})", step, getVariableSetStr(data.variable_descr.type, data.variable_descr.value));
         case EVENT_Set:
             return fmt::format("{}: Set({})", step, getVariableSetStr(data.variable_descr.type, data.variable_descr.value));
@@ -835,30 +835,30 @@ std::string EventIR::toString() const {
             break;
     }
 
-    return fmt::format("{}: UNPROCESSED/{}", step, ::toString(type));
+    return fmt::format("{}: UNPROCESSED/{}", step, ::toString(opcode));
 }
 
-EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
+EvtInstruction EvtInstruction::parse(SequentialBlobReader &sbr, const size_t size) {
     // TODO(yoctozepto): zeroing-out the struct to prevent values from previous events from lingering;
     //                   this makes it slightly easier to spot uninitialised members but, since the 0s may have a proper meaning, not always;
-    EventIR ir = {};
+    EvtInstruction ir = {};
 
     ir.step = sbr.read<uint8_t>();
-    ir.type = EventType(sbr.read<uint8_t>());
+    ir.opcode = EvtOpcode(sbr.read<uint8_t>());
 
     bool requireSizeCalled = false;
 
     const auto requireSize = [&](size_t minSize) {
         requireSizeCalled = true;
         if (size < minSize)
-            throw Exception("Invalid evt record size for event '{}': expected at least {} bytes, got {} bytes", ::toString(ir.type), minSize, size);
+            throw Exception("Invalid evt record size for event '{}': expected at least {} bytes, got {} bytes", ::toString(ir.opcode), minSize, size);
     };
 
     // TODO(captainurist): verify enum ranges here.
     // TODO(yoctozepto): which are present in global events and which in local?
     // TODO(yoctozepto): some types (marked with further TODOs) are not present in used MM7 data - their parsing might thus be wrong
 
-    switch (ir.type) {
+    switch (ir.opcode) {
         case EVENT_Exit:
             requireSize(6);
             sbr.read<uint8_t>();  // TODO(yoctozepto): always 0 in MM7 data, check MM6&8
@@ -899,12 +899,12 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             break;
         case EVENT_ShowFace:  // TODO(yoctozepto): not present in used MM7 data
             requireSize(7);
-            ir.who = static_cast<CharacterChoosePolicy>(sbr.read<uint8_t>());
+            ir.who = static_cast<EvtTargetCharacter>(sbr.read<uint8_t>());
             ir.data.portrait_id = static_cast<CharacterPortrait>(sbr.read<uint8_t>());
             break;
         case EVENT_ReceiveDamage:
             requireSize(11);
-            ir.who = static_cast<CharacterChoosePolicy>(sbr.read<uint8_t>());
+            ir.who = static_cast<EvtTargetCharacter>(sbr.read<uint8_t>());
             ir.data.damage_descr.damage_type = static_cast<DamageType>(sbr.read<uint8_t>());
             ir.data.damage_descr.damage = sbr.read<uint32_t>();
             break;
@@ -932,7 +932,7 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             break;
         case EVENT_Compare:
             requireSize(11);
-            ir.data.variable_descr.type = static_cast<VariableType>(sbr.read<uint16_t>());
+            ir.data.variable_descr.type = static_cast<EvtVariable>(sbr.read<uint16_t>());
             ir.data.variable_descr.value = sbr.read<uint32_t>();
             ir.target_step = sbr.read<uint8_t>();
             break;
@@ -942,10 +942,10 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             ir.data.door_descr.door_action = static_cast<DoorAction>(sbr.read<uint8_t>());
             break;
         case EVENT_Add:
-        case EVENT_Substract:
+        case EVENT_Subtract:
         case EVENT_Set:
             requireSize(8);
-            ir.data.variable_descr.type = static_cast<VariableType>(sbr.read<uint16_t>());
+            ir.data.variable_descr.type = static_cast<EvtVariable>(sbr.read<uint16_t>());
             ir.data.variable_descr.value = sbr.read<uint32_t>();
             break;
         case EVENT_SummonMonsters:
@@ -1047,7 +1047,7 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             break;
         case EVENT_ForPartyMember:
             requireSize(6);
-            ir.who = static_cast<CharacterChoosePolicy>(sbr.read<uint8_t>());
+            ir.who = static_cast<EvtTargetCharacter>(sbr.read<uint8_t>());
             break;
         case EVENT_Jmp:
             requireSize(6);
@@ -1087,7 +1087,7 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             break;
         case EVENT_OnCanShowDialogItemCmp:
             requireSize(12);
-            ir.data.variable_descr.type = static_cast<VariableType>(sbr.read<uint16_t>());
+            ir.data.variable_descr.type = static_cast<EvtVariable>(sbr.read<uint16_t>());
             ir.data.variable_descr.value = sbr.read<uint32_t>();
             ir.target_step = sbr.read<uint8_t>();
             break;
@@ -1162,7 +1162,7 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             break;
         case EVENT_CharacterAnimation:
             requireSize(7);
-            ir.who = static_cast<CharacterChoosePolicy>(sbr.read<uint8_t>());
+            ir.who = static_cast<EvtTargetCharacter>(sbr.read<uint8_t>());
             ir.data.speech_id = static_cast<CharacterSpeech>(sbr.read<uint8_t>());
             break;
         case EVENT_OnDateTimer:  // TODO(yoctozepto): not present in used MM7 data
@@ -1190,14 +1190,14 @@ EventIR EventIR::parse(SequentialBlobReader &sbr, const size_t size) {
             // TODO
             break;
         default:
-            throw Exception("Unknown evt type: {}", static_cast<uint8_t>(ir.type));
+            throw Exception("Unknown evt type: {}", static_cast<uint8_t>(ir.opcode));
             break;
     }
 
     assert(requireSizeCalled && "please report");
 
     if (sbr.readable()) {
-        throw Exception("Some evt data has not been parsed for evt type: {}", ::toString(ir.type));
+        throw Exception("Some evt data has not been parsed for evt type: {}", ::toString(ir.opcode));
     }
 
     return ir;

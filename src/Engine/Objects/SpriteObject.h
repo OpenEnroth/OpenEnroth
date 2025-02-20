@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Objects/SpriteEnums.h"
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Spells/SpellEnums.h"
@@ -61,7 +61,7 @@ struct SpriteObject {
      * @offset 0x42F7EB
      */
     static bool dropItemAt(SpriteId spriteType, Vec3f pos, int speed, int count = 1,
-                           bool randomRotate = false, SpriteAttributes attributes = 0, ItemGen *item = nullptr);
+                           bool randomRotate = false, SpriteAttributes attributes = 0, Item *item = nullptr);
     static void createSplashObject(Vec3f pos);
     static void InitializeSpriteObjects();
 
@@ -77,7 +77,7 @@ struct SpriteObject {
     Duration timeSinceCreated;
     Duration tempLifetime;
     int16_t field_22_glow_radius_multiplier = 1;
-    ItemGen containing_item;
+    Item containing_item;
     SpellId uSpellID = SPELL_NONE;
     int spell_level = 0;
     CharacterSkillMastery spell_skill = CHARACTER_SKILL_MASTERY_NONE;

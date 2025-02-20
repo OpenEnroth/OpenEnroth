@@ -82,7 +82,8 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(InputAction, CASE_INSENSITIVE, {
     {InputAction::DialogLeft, "DIALOG LEFT"},
     {InputAction::DialogRight, "DIALOG RIGHT"},
     {InputAction::DialogSelect, "DIALOG SELECT"},
-    {InputAction::Escape, "ESCAPE"}
+    {InputAction::Escape, "ESCAPE"},
+    {InputAction::ToggleMouseLook, "TOGGLE MOUSE LOOK"}
 });
 
 std::string GetDisplayName(InputAction action) {

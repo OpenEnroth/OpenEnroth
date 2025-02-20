@@ -1,4 +1,4 @@
-#include "Engine/Objects/Items.h"
+#include "Item.h"
 
 #include <map>
 #include <string>
@@ -18,7 +18,7 @@
 
 #include "Utility/MapAccess.h"
 
-ItemGen *ptr_50C9A4_ItemToEnchant;
+Item *ptr_50C9A4_ItemToEnchant;
 
 ItemTable *pItemTable;  // 005D29E0
 
@@ -47,31 +47,31 @@ static std::unordered_map<ItemId, ItemId> itemTextureIdByItemId = {
 };
 
 //----- (00439DF3) --------------------------------------------------------
-int ItemGen::_439DF3_get_additional_damage(DamageType *damage_type,
+int Item::_439DF3_get_additional_damage(DamageType *damage_type,
                                            bool *draintargetHP) {
     *draintargetHP = false;
     *damage_type = DAMAGE_FIRE;
-    if (uItemID == ITEM_NULL) return 0;
+    if (itemId == ITEM_NULL) return 0;
 
     UpdateTempBonus(pParty->GetPlayingTime());
-    if (uItemID == ITEM_ARTIFACT_IRON_FEATHER) {
+    if (itemId == ITEM_ARTIFACT_IRON_FEATHER) {
         *damage_type = DAMAGE_AIR;
         return grng->random(10) + 6;
     }
-    if (uItemID == ITEM_ARTIFACT_GHOULSBANE) {
+    if (itemId == ITEM_ARTIFACT_GHOULSBANE) {
         *damage_type = DAMAGE_FIRE;
         return grng->random(16) + 3;
     }
-    if (uItemID == ITEM_ARTIFACT_ULLYSES) {
+    if (itemId == ITEM_ARTIFACT_ULLYSES) {
         *damage_type = DAMAGE_WATER;
         return grng->random(4) + 9;
     }
-    if (uItemID == ITEM_RELIC_OLD_NICK) {
+    if (itemId == ITEM_RELIC_OLD_NICK) {
         *damage_type = DAMAGE_BODY;
         return 8;
     }
 
-    switch (special_enchantment) {
+    switch (specialEnchantment) {
         case ITEM_ENCHANTMENT_OF_COLD:
             *damage_type = DAMAGE_WATER;
             return grng->random(2) + 3;
@@ -138,32 +138,32 @@ int ItemGen::_439DF3_get_additional_damage(DamageType *damage_type,
 }
 
 //----- (00402F07) --------------------------------------------------------
-void ItemGen::Reset() {
-    *this = ItemGen();
+void Item::Reset() {
+    *this = Item();
 }
 
 //----- (00458260) --------------------------------------------------------
-void ItemGen::UpdateTempBonus(Time time) {
-    if (this->uAttributes & ITEM_TEMP_BONUS) {
-        if (time > this->uExpireTime) {
-            this->attributeEnchantment = {};
-            this->special_enchantment = ITEM_ENCHANTMENT_NULL;
-            this->uAttributes &= ~ITEM_TEMP_BONUS;
+void Item::UpdateTempBonus(Time time) {
+    if (this->flags & ITEM_TEMP_BONUS) {
+        if (time > this->enchantmentExpirationTime) {
+            this->standardEnchantment = {};
+            this->specialEnchantment = ITEM_ENCHANTMENT_NULL;
+            this->flags &= ~ITEM_TEMP_BONUS;
         }
     }
 }
 
 //----- (00456442) --------------------------------------------------------
-int ItemGen::GetValue() const {
-    int uBaseValue = pItemTable->pItems[this->uItemID].uValue;
-    if (uAttributes & ITEM_TEMP_BONUS || pItemTable->IsMaterialNonCommon(this))
+int Item::GetValue() const {
+    int uBaseValue = pItemTable->items[this->itemId].baseValue;
+    if (flags & ITEM_TEMP_BONUS || rarity() != RARITY_COMMON)
         return uBaseValue;
-    if (potionPower || attributeEnchantment) // TODO(captainurist): can drop potionPower?
-        return uBaseValue + 100 * m_enchantmentStrength;
+    if (potionPower || standardEnchantment) // TODO(captainurist): can drop potionPower?
+        return uBaseValue + 100 * standardEnchantmentStrength;
 
-    if (special_enchantment != ITEM_ENCHANTMENT_NULL) {
-        int mod = (pItemTable->pSpecialEnchantments[special_enchantment].iTreasureLevel & 4);
-        int bonus = pItemTable->pSpecialEnchantments[special_enchantment].iValue;
+    if (specialEnchantment != ITEM_ENCHANTMENT_NULL) {
+        int mod = (pItemTable->specialEnchantments[specialEnchantment].iTreasureLevel & 4);
+        int bonus = pItemTable->specialEnchantments[specialEnchantment].additionalValue;
         if (!mod)
             return uBaseValue + bonus;
         else
@@ -173,25 +173,25 @@ int ItemGen::GetValue() const {
 }
 
 //----- (00456499) --------------------------------------------------------
-std::string ItemGen::GetDisplayName() {
+std::string Item::GetDisplayName() {
     if (IsIdentified()) {
         return GetIdentifiedName();
     } else {
-        return pItemTable->pItems[uItemID].pUnidentifiedName;
+        return pItemTable->items[itemId].unidentifiedName;
     }
 }
 
 //----- (004564B3) --------------------------------------------------------
-std::string ItemGen::GetIdentifiedName() {
-    ItemType equip_type = GetItemEquipType();
+std::string Item::GetIdentifiedName() {
+    ItemType equip_type = type();
     if ((equip_type == ITEM_TYPE_REAGENT) || (equip_type == ITEM_TYPE_POTION) ||
         (equip_type == ITEM_TYPE_GOLD)) {
-        return pItemTable->pItems[uItemID].name;
+        return pItemTable->items[itemId].name;
     }
 
-    if (uItemID == ITEM_QUEST_LICH_JAR_FULL) {  // Lich Jar
-        if (uHolderPlayer >= 0 && uHolderPlayer < pParty->pCharacters.size()) {
-            const std::string &player_name = pParty->pCharacters[uHolderPlayer].name;
+    if (itemId == ITEM_QUEST_LICH_JAR_FULL) {  // Lich Jar
+        if (lichJarCharacterIndex >= 0 && lichJarCharacterIndex < pParty->pCharacters.size()) {
+            const std::string &player_name = pParty->pCharacters[lichJarCharacterIndex].name;
             if (player_name.back() == 's')
                 return localization->FormatString(LSTR_FMT_JAR_2, player_name);
             else
@@ -199,45 +199,46 @@ std::string ItemGen::GetIdentifiedName() {
         }
     }
 
-    if (!pItemTable->IsMaterialNonCommon(this)) {
-        if (attributeEnchantment) {
-            return std::string(pItemTable->pItems[uItemID].name) + " " +
-                   pItemTable->standardEnchantments[*attributeEnchantment].pOfName;
-        } else if (special_enchantment == ITEM_ENCHANTMENT_NULL) {
-            return pItemTable->pItems[uItemID].name;
+    if (rarity() == RARITY_COMMON) {
+        if (standardEnchantment) {
+            return std::string(pItemTable->items[itemId].name) + " " +
+                   pItemTable->standardEnchantments[*standardEnchantment].itemSuffix;
+        } else if (specialEnchantment == ITEM_ENCHANTMENT_NULL) {
+            return pItemTable->items[itemId].name;
         } else {
-            if (special_enchantment == ITEM_ENCHANTMENT_VAMPIRIC
-                || special_enchantment == ITEM_ENCHANTMENT_DEMON_SLAYING
-                || special_enchantment == ITEM_ENCHANTMENT_DRAGON_SLAYING
-                || special_enchantment == ITEM_ENCHANTMENT_ROGUES
-                || special_enchantment == ITEM_ENCHANTMENT_WARRIORS
-                || special_enchantment == ITEM_ENCHANTMENT_WIZARDS
-                || special_enchantment == ITEM_ENCHANTMENT_ANTIQUE
-                || special_enchantment == ITEM_ENCHANTMENT_MONKS
-                || special_enchantment == ITEM_ENCHANTMENT_THIEVES
-                || special_enchantment == ITEM_ENCHANTMENT_SWIFT
-                || special_enchantment == ITEM_ENCHANTMENT_ELF_SLAYING
-                || special_enchantment == ITEM_ENCHANTMENT_UNDEAD_SLAYING
-                || special_enchantment == ITEM_ENCHANTMENT_ASSASINS
-                || special_enchantment == ITEM_ENCHANTMENT_BARBARIANS
+            if (specialEnchantment == ITEM_ENCHANTMENT_VAMPIRIC
+                || specialEnchantment == ITEM_ENCHANTMENT_DEMON_SLAYING
+                || specialEnchantment == ITEM_ENCHANTMENT_DRAGON_SLAYING
+                || specialEnchantment == ITEM_ENCHANTMENT_ROGUES
+                || specialEnchantment == ITEM_ENCHANTMENT_WARRIORS
+                || specialEnchantment == ITEM_ENCHANTMENT_WIZARDS
+                || specialEnchantment == ITEM_ENCHANTMENT_ANTIQUE
+                || specialEnchantment == ITEM_ENCHANTMENT_MONKS
+                || specialEnchantment == ITEM_ENCHANTMENT_THIEVES
+                || specialEnchantment == ITEM_ENCHANTMENT_SWIFT
+                || specialEnchantment == ITEM_ENCHANTMENT_ELF_SLAYING
+                || specialEnchantment == ITEM_ENCHANTMENT_UNDEAD_SLAYING
+                || specialEnchantment == ITEM_ENCHANTMENT_ASSASINS
+                || specialEnchantment == ITEM_ENCHANTMENT_BARBARIANS
             ) {            // enchantment and name positions inverted!
                 return fmt::format(
                     "{} {}",
-                    pItemTable->pSpecialEnchantments[special_enchantment].pNameAdd,
-                    pItemTable->pItems[uItemID].name
-                );
+                    pItemTable->specialEnchantments[specialEnchantment].itemSuffixOrPrefix,
+                    pItemTable->items[itemId].name);
             } else {
-                return std::string(pItemTable->pItems[uItemID].name) + " " +
-                       pItemTable->pSpecialEnchantments[special_enchantment].pNameAdd;
+                return fmt::format(
+                    "{} {}",
+                    pItemTable->items[itemId].name,
+                    pItemTable->specialEnchantments[specialEnchantment].itemSuffixOrPrefix);
             }
         }
     }
 
-    return pItemTable->pItems[uItemID].name;
+    return pItemTable->items[itemId].name;
 }
 
 //----- (004505CC) --------------------------------------------------------
-bool ItemGen::GenerateArtifact() {
+bool Item::GenerateArtifact() {
     signed int uNumArtifactsNotFound;  // esi@1
     std::array<ItemId, 32> artifacts_list;
 
@@ -250,7 +251,7 @@ bool ItemGen::GenerateArtifact() {
 
     Reset();
     if (uNumArtifactsNotFound) {
-        uItemID = artifacts_list[grng->random(uNumArtifactsNotFound)];
+        itemId = artifacts_list[grng->random(uNumArtifactsNotFound)];
         pItemTable->SetSpecialBonus(this);
         return true;
     } else {
@@ -258,7 +259,7 @@ bool ItemGen::GenerateArtifact() {
     }
 }
 
-void ItemGen::generateGold(ItemTreasureLevel treasureLevel) {
+void Item::generateGold(ItemTreasureLevel treasureLevel) {
     assert(isRandomTreasureLevel(treasureLevel));
 
     Reset();
@@ -267,27 +268,27 @@ void ItemGen::generateGold(ItemTreasureLevel treasureLevel) {
     switch (treasureLevel) {
     case ITEM_TREASURE_LEVEL_1:
         goldAmount = grng->random(51) + 50;
-        uItemID = ITEM_GOLD_SMALL;
+        itemId = ITEM_GOLD_SMALL;
         break;
     case ITEM_TREASURE_LEVEL_2:
         goldAmount = grng->random(101) + 100;
-        uItemID = ITEM_GOLD_SMALL;
+        itemId = ITEM_GOLD_SMALL;
         break;
     case ITEM_TREASURE_LEVEL_3:
         goldAmount = grng->random(301) + 200;
-        uItemID = ITEM_GOLD_MEDIUM;
+        itemId = ITEM_GOLD_MEDIUM;
         break;
     case ITEM_TREASURE_LEVEL_4:
         goldAmount = grng->random(501) + 500;
-        uItemID = ITEM_GOLD_MEDIUM;
+        itemId = ITEM_GOLD_MEDIUM;
         break;
     case ITEM_TREASURE_LEVEL_5:
         goldAmount = grng->random(1001) + 1000;
-        uItemID = ITEM_GOLD_LARGE;
+        itemId = ITEM_GOLD_LARGE;
         break;
     case ITEM_TREASURE_LEVEL_6:
         goldAmount = grng->random(3001) + 2000;
-        uItemID = ITEM_GOLD_LARGE;
+        itemId = ITEM_GOLD_LARGE;
         break;
     default:
         assert(false);
@@ -305,7 +306,7 @@ static void AddToMap(std::map<Key, std::map<CharacterAttribute, CEnchantment>> &
     submap[subkey] = CEnchantment(bonusValue, skill);
 }
 
-void ItemGen::PopulateSpecialBonusMap() {
+void Item::PopulateSpecialBonusMap() {
     // of Protection, +10 to all Resistances (description in txt says all 4, need to verify!)
     AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_PROTECTION, ATTRIBUTE_RESIST_AIR, 10);
     AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_PROTECTION, ATTRIBUTE_RESIST_BODY, 10);
@@ -455,7 +456,7 @@ void ItemGen::PopulateSpecialBonusMap() {
 }
 
 // TODO: where is it used?
-void ItemGen::PopulateRegularBonusMap() {
+void Item::PopulateRegularBonusMap() {
     // of Might
     AddToMap(regularBonusMap, 1, ATTRIBUTE_MIGHT);
 
@@ -529,7 +530,7 @@ void ItemGen::PopulateRegularBonusMap() {
     AddToMap(regularBonusMap, 24, ATTRIBUTE_SKILL_UNARMED);
 }
 
-void ItemGen::PopulateArtifactBonusMap() {
+void Item::PopulateArtifactBonusMap() {
     // Puck
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_PUCK, ATTRIBUTE_SPEED, 40);
 
@@ -664,11 +665,11 @@ void ItemGen::PopulateArtifactBonusMap() {
     AddToMap(artifactBonusMap, ITEM_ARTIFACT_LADYS_ESCORT, ATTRIBUTE_RESIST_BODY, 10);
 }
 
-void ItemGen::GetItemBonusSpecialEnchantment(const Character *owner,
+void Item::GetItemBonusSpecialEnchantment(const Character *owner,
                                              CharacterAttribute attrToGet,
                                              int *additiveBonus,
                                              int *halfSkillBonus) const {
-    auto pos = specialBonusMap.find(this->special_enchantment);
+    auto pos = specialBonusMap.find(this->specialEnchantment);
     if (pos == specialBonusMap.end())
         return;
 
@@ -690,10 +691,10 @@ void ItemGen::GetItemBonusSpecialEnchantment(const Character *owner,
     }
 }
 
-void ItemGen::GetItemBonusArtifact(const Character *owner,
+void Item::GetItemBonusArtifact(const Character *owner,
                                    CharacterAttribute attrToGet,
                                    int *bonusSum) const {
-    auto pos = artifactBonusMap.find(this->uItemID);
+    auto pos = artifactBonusMap.find(this->itemId);
     if (pos == artifactBonusMap.end())
         return;
 
@@ -709,8 +710,8 @@ void ItemGen::GetItemBonusArtifact(const Character *owner,
     }
 }
 
-bool ItemGen::IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet) {
-    //auto pos = specialBonusMap.find(this->attributeEnchantment);
+bool Item::IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet) {
+    //auto pos = specialBonusMap.find(this->standardEnchantment);
     //if (pos == specialBonusMap.end())
     //    return false;
 
@@ -719,16 +720,8 @@ bool ItemGen::IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet) {
     return false;
 }
 
-ItemType ItemGen::GetItemEquipType() const {
-    // to avoid nzi - is this safe??
-    if (this->uItemID == ITEM_NULL)
-        return ITEM_TYPE_NONE;
-    else
-        return pItemTable->pItems[this->uItemID].uEquipType;
-}
-
-CharacterSkillType ItemGen::GetPlayerSkillType() const {
-    CharacterSkillType skl = pItemTable->pItems[this->uItemID].uSkillType;
+CharacterSkillType Item::GetPlayerSkillType() const {
+    CharacterSkillType skl = pItemTable->items[this->itemId].skill;
     if (skl == CHARACTER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
         // club skill not used but some items load it
         skl = CHARACTER_SKILL_MACE;
@@ -736,20 +729,20 @@ CharacterSkillType ItemGen::GetPlayerSkillType() const {
     return skl;
 }
 
-const std::string& ItemGen::GetIconName() const {
-    return pItemTable->pItems[this->uItemID].iconName;
+const std::string& Item::GetIconName() const {
+    return pItemTable->items[this->itemId].iconName;
 }
 
-uint8_t ItemGen::GetDamageDice() const {
-    return pItemTable->pItems[this->uItemID].uDamageDice;
+uint8_t Item::GetDamageDice() const {
+    return pItemTable->items[this->itemId].damageDice;
 }
 
-uint8_t ItemGen::GetDamageRoll() const {
-    return pItemTable->pItems[this->uItemID].uDamageRoll;
+uint8_t Item::GetDamageRoll() const {
+    return pItemTable->items[this->itemId].damageRoll;
 }
 
-uint8_t ItemGen::GetDamageMod() const {
-    return pItemTable->pItems[this->uItemID].uDamageMod;
+uint8_t Item::GetDamageMod() const {
+    return pItemTable->items[this->itemId].damageMod;
 }
 
 //----- (0043C91D) --------------------------------------------------------
@@ -758,7 +751,7 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
     // and textures under original ids simply don't exist.
     int texture_id = std::to_underlying(valueOr(itemTextureIdByItemId, item_id, item_id));
 
-    switch (pItemTable->pItems[item_id].uEquipType) {
+    switch (pItemTable->items[item_id].type) {
         case ITEM_TYPE_ARMOUR:
             if (shoulder == 0)
                 return fmt::format("item{:03}v{}", texture_id, index);
@@ -777,17 +770,17 @@ std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
 }
 
 //----- (004BDAAF) --------------------------------------------------------
-bool ItemGen::canSellRepairIdentifyAt(HouseId houseId) {
+bool Item::canSellRepairIdentifyAt(HouseId houseId) {
     if (this->IsStolen())
         return false;
 
-    if (isQuestItem(uItemID))
+    if (isQuestItem(itemId))
         return false; // Can't sell quest items.
 
-    if (isArtifact(uItemID) && !isSpawnableArtifact(uItemID))
+    if (isArtifact(itemId) && !isSpawnableArtifact(itemId))
         return false; // Can't sell quest artifacts, e.g. Hermes Sandals.
 
-    if (::isMessageScroll(uItemID) && !isRecipe(uItemID))
+    if (::isMessageScroll(itemId) && !isRecipe(itemId))
         return false; // Can't sell message scrolls. Recipes are sellable at alchemy shops.
 
     switch (houseTable[houseId].uType) {
@@ -800,10 +793,18 @@ bool ItemGen::canSellRepairIdentifyAt(HouseId houseId) {
         case HOUSE_TYPE_ALCHEMY_SHOP:
             return this->isReagent() ||
                    this->isPotion() ||
-                   (this->isMessageScroll() && isRecipe(this->uItemID));
+                   (this->isMessageScroll() && isRecipe(this->itemId));
         default:
             return false;
     }
+}
+
+ItemType Item::type() const {
+    return itemId == ITEM_NULL ? ITEM_TYPE_NONE : pItemTable->items[itemId].type;
+}
+
+ItemRarity Item::rarity() const {
+    return pItemTable->items[itemId].rarity;
 }
 
 Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MapTreasureLevel mapTreasureLevel) {

@@ -125,7 +125,6 @@ struct RenderBillboardD3D {
 // TODO(pskelton): Simplify/remove/combine different billboard structs
 struct SoftwareBillboard {
     void *pTarget;
-    int *pTargetZ;
     int screen_space_x;
     int screen_space_y;
     int screen_space_z;

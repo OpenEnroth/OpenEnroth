@@ -15,7 +15,7 @@
 #include "Engine/Localization.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/SpriteObject.h"
 #include "Engine/Graphics/Sprites.h"
@@ -26,6 +26,7 @@
 
 #include "GUI/UI/UIChest.h"
 #include "GUI/UI/UIStatusBar.h"
+#include "GUI/UI/ItemGrid.h"
 
 #include "Io/Mouse.h"
 
@@ -176,7 +177,7 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
 
         if (chestindex) {
             int itemindex = chestindex - 1;
-            ItemGen *item = &chest->igChestItems[itemindex];
+            Item *item = &chest->igChestItems[itemindex];
 
             ///////////////////////////////////////////////
             // normal picking
@@ -246,7 +247,7 @@ bool Chest::CanPlaceItemAt(int test_cell_position, ItemId item_id, int uChestID)
     int chest_cell_heght = pChestHeightsByType[vChests[uChestID].uChestBitmapID];
     int chest_cell_width = pChestWidthsByType[vChests[uChestID].uChestBitmapID];
 
-    auto img = assets->getImage_ColorKey(pItemTable->pItems[item_id].iconName);
+    auto img = assets->getImage_ColorKey(pItemTable->items[item_id].iconName);
     int slot_width = GetSizeInInventorySlots(img->width());
     int slot_height = GetSizeInInventorySlots(img->height());
 
@@ -273,7 +274,7 @@ int Chest::FindFreeItemSlot(int uChestID) {
     if (max_items <= 0) {
         item_count = -1;
     } else {
-        while (vChests[uChestID].igChestItems[item_count].uItemID != ITEM_NULL) {
+        while (vChests[uChestID].igChestItems[item_count].itemId != ITEM_NULL) {
             ++item_count;
             if (item_count >= max_items) {
                 item_count = -1;
@@ -284,7 +285,7 @@ int Chest::FindFreeItemSlot(int uChestID) {
     return item_count;
 }
 
-int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
+int Chest::PutItemInChest(int position, Item *put_item, int uChestID) {
     int firstFreeSlot = FindFreeItemSlot(uChestID);
 
     int max_size = pChestWidthsByType[vChests[uChestID].uChestBitmapID] *
@@ -295,7 +296,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
     if (firstFreeSlot == -1) return 0;
 
     if (position != -1) {
-        if (CanPlaceItemAt(position, put_item->uItemID, uChestID)) {
+        if (CanPlaceItemAt(position, put_item->itemId, uChestID)) {
             test_pos = position;
         } else {
             position = -1;  // try another position?? is this the right behavior
@@ -304,7 +305,7 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 
     if (position == -1) {  // no position specified
         for (int _i = 0; _i < max_size; _i++) {
-            if (Chest::CanPlaceItemAt(_i, put_item->uItemID, pGUIWindow_CurrentChest->chestId())) {
+            if (Chest::CanPlaceItemAt(_i, put_item->itemId, pGUIWindow_CurrentChest->chestId())) {
                 test_pos = _i;  // found somewhere to place item
                 break;
             }
@@ -338,15 +339,15 @@ int Chest::PutItemInChest(int position, ItemGen *put_item, int uChestID) {
 }
 
 void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, int uChestID) {  // only used for setup?
-    ItemId uItemID = vChests[uChestID].igChestItems[item_at_cell].uItemID;
+    ItemId uItemID = vChests[uChestID].igChestItems[item_at_cell].itemId;
     pItemTable->SetSpecialBonus(&vChests[uChestID].igChestItems[item_at_cell]);
-    if (isWand(uItemID) && !vChests[uChestID].igChestItems[item_at_cell].uNumCharges) {
+    if (isWand(uItemID) && !vChests[uChestID].igChestItems[item_at_cell].numCharges) {
         int v6 = grng->random(21) + 10;
-        vChests[uChestID].igChestItems[item_at_cell].uNumCharges = v6;
-        vChests[uChestID].igChestItems[item_at_cell].uMaxCharges = v6;
+        vChests[uChestID].igChestItems[item_at_cell].numCharges = v6;
+        vChests[uChestID].igChestItems[item_at_cell].maxCharges = v6;
     }
 
-    auto img = assets->getImage_Alpha(pItemTable->pItems[uItemID].iconName);
+    auto img = assets->getImage_Alpha(pItemTable->items[uItemID].iconName);
 
     int v9 = img->width();
     if (v9 < 14) v9 = 14;
@@ -369,7 +370,6 @@ void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, in
 void Chest::PlaceItems(int uChestID) {  // only sued for setup
     char chest_cells_map[144];   // [sp+Ch] [bp-A0h]@1
 
-    render->ClearZBuffer();
     int uChestArea = pChestWidthsByType[vChests[uChestID].uChestBitmapID] * pChestHeightsByType[vChests[uChestID].uChestBitmapID];
     memset(chest_cells_map, 0, 144);
     // fill cell map at random positions
@@ -388,7 +388,7 @@ void Chest::PlaceItems(int uChestID) {  // only sued for setup
     }
 
     for (int items_counter = 0; items_counter < uChestArea; ++items_counter) {
-        ItemId chest_item_id = vChests[uChestID].igChestItems[items_counter].uItemID;
+        ItemId chest_item_id = vChests[uChestID].igChestItems[items_counter].itemId;
         assert(chest_item_id >= ITEM_NULL && "Checking that generated items are valid");
         if (chest_item_id != ITEM_NULL && !vChests[uChestID].igChestItems[items_counter].placedInChest) {
             int test_position = 0;
@@ -423,7 +423,7 @@ void RemoveItemAtChestIndex(int index) {
     Chest *chest = &vChests[pGUIWindow_CurrentChest->chestId()];
 
     int chestindex = chest->pInventoryIndices[index];
-    ItemGen *item_in_slot = &chest->igChestItems[chestindex - 1];
+    Item *item_in_slot = &chest->igChestItems[chestindex - 1];
 
     auto img = assets->getImage_ColorKey(item_in_slot->GetIconName());
     int slot_width = GetSizeInInventorySlots(img->width());
@@ -453,14 +453,14 @@ void Chest::OnChestLeftClick() {
     int pX;
     int pY;
     mouse->GetClickPos(&pX, &pY);
-    int inventoryYCoord = (pY - (pChestPixelOffsetY[chest->uChestBitmapID])) / 32;
-    int inventoryXCoord = (pX - (pChestPixelOffsetX[chest->uChestBitmapID])) / 32;
 
+    int inventoryYCoord = (pY + mouse->pickedItemOffsetY - (pChestPixelOffsetY[chest->uChestBitmapID])) / 32;
+    int inventoryXCoord = (pX + mouse->pickedItemOffsetX - (pChestPixelOffsetX[chest->uChestBitmapID])) / 32;
     int invMatrixIndex = inventoryXCoord + (chestheight * inventoryYCoord);
 
     if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
         inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
-        if (pParty->pPickedItem.uItemID != ITEM_NULL) {  // item held
+        if (pParty->pPickedItem.itemId != ITEM_NULL) {  // item held
             if (Chest::PutItemInChest(invMatrixIndex, &pParty->pPickedItem, uChestID)) {
                 mouse->RemoveHoldingItem();
             }
@@ -477,7 +477,19 @@ void Chest::OnChestLeftClick() {
                 if (chest->igChestItems[itemindex].isGold()) {
                     pParty->partyFindsGold(chest->igChestItems[itemindex].goldAmount, GOLD_RECEIVE_SHARE);
                 } else {
-                    pParty->setHoldingItem(&chest->igChestItems[itemindex]);
+                    // calc offsets of where on the item was clicked
+                    // first need index of top left corner of the item
+                    int cornerX = invMatrixIndex % chestwidth;
+                    int cornerY = invMatrixIndex / chestwidth;
+                    int itemXOffset = pX + mouse->pickedItemOffsetX - pChestPixelOffsetX[chest->uChestBitmapID] - (cornerX * 32);
+                    int itemYOffset = pY + mouse->pickedItemOffsetY - pChestPixelOffsetY[chest->uChestBitmapID] - (cornerY * 32);
+
+                    auto item = &chest->igChestItems[itemindex];
+                    auto tex = assets->getImage_Alpha(item->GetIconName());
+                    itemXOffset -= itemOffset(tex->width());
+                    itemYOffset -= itemOffset(tex->height());
+
+                    pParty->setHoldingItem(item, -itemXOffset, -itemYOffset);
                 }
 
                 RemoveItemAtChestIndex(invMatrixIndex);
@@ -489,7 +501,7 @@ void Chest::OnChestLeftClick() {
 }
 
 void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using spacebar
-    if (pParty->pPickedItem.uItemID != ITEM_NULL || !pParty->hasActiveCharacter()) {
+    if (pParty->pPickedItem.itemId != ITEM_NULL || !pParty->hasActiveCharacter()) {
         return;
     }
 
@@ -507,17 +519,17 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
         if (chestindex <= 0) continue;  // no item here
 
         int itemindex = chestindex - 1;
-        ItemGen chestitem = chest->igChestItems[itemindex];
+        Item chestitem = chest->igChestItems[itemindex];
         chestitem.placedInChest = false;
         if (chestitem.isGold()) {
             pParty->partyFindsGold(chestitem.goldAmount, GOLD_RECEIVE_SHARE);
             goldamount += chestitem.goldAmount;
             goldcount++;
         } else {  // this should add item to invetory of active char - if that fails set as holding item and break
-            if (pParty->hasActiveCharacter() && (InventSlot = pParty->activeCharacter().AddItem(-1, chestitem.uItemID)) != 0) {  // can place
+            if (pParty->hasActiveCharacter() && (InventSlot = pParty->activeCharacter().AddItem(-1, chestitem.itemId)) != 0) {  // can place
                 pParty->activeCharacter().pInventoryItemList[InventSlot - 1] = chestitem;
                 grabcount++;
-                engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[chestitem.uItemID].pUnidentifiedName);
+                engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->items[chestitem.itemId].unidentifiedName);
             } else {  // no room so set as holding item
                 pParty->setHoldingItem(&chestitem);
                 RemoveItemAtChestIndex(loop);
@@ -545,13 +557,13 @@ void GenerateItemsInChest() {
     MapInfo *currMapInfo = &pMapStats->pInfos[engine->_currentLoadedMapId];
     for (int i = 0; i < 20; ++i) {
         for (int j = 0; j < 140; ++j) {
-            ItemGen *currItem = &vChests[i].igChestItems[j];
-            if (isRandomItem(currItem->uItemID)) {
+            Item *currItem = &vChests[i].igChestItems[j];
+            if (isRandomItem(currItem->itemId)) {
                 currItem->placedInChest = false;
                 int additionaItemCount = grng->random(5);  // additional items in chect
                 additionaItemCount++;  // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
                 ItemTreasureLevel resultTreasureLevel = grng->randomSample(
-                    RemapTreasureLevel(randomItemTreasureLevel(currItem->uItemID), currMapInfo->mapTreasureLevel));
+                    RemapTreasureLevel(randomItemTreasureLevel(currItem->itemId), currMapInfo->mapTreasureLevel));
                 if (resultTreasureLevel != ITEM_TREASURE_LEVEL_7) {
                     for (int k = 0; k < additionaItemCount; k++) {
                         int whatToGenerateProb = grng->random(100);
@@ -564,7 +576,7 @@ void GenerateItemsInChest() {
                         }
 
                         for (int m = 0; m < 140; m++) {
-                            if (vChests[i].igChestItems[m].uItemID == ITEM_NULL) {
+                            if (vChests[i].igChestItems[m].itemId == ITEM_NULL) {
                                 currItem = &vChests[i].igChestItems[m];
                                 break;
                             }
@@ -585,8 +597,8 @@ void UpdateChestPositions() {
         // Can there be two EVENT_OpenChest in a single script, with different chests? If no, then we can
         // break out of the loop below early. If yes... Well. This should work.
         if (engine->_localEventMap.hasEvent(eventId))
-            for (const EventIR &event : engine->_localEventMap.events(eventId))
-                if (event.type == EVENT_OpenChest)
+            for (const EvtInstruction &event : engine->_localEventMap.function(eventId))
+                if (event.opcode == EVENT_OpenChest)
                     pointsByChestId[event.data.chest_id].push_back(position);
     };
 

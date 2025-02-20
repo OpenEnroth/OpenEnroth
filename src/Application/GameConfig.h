@@ -261,6 +261,9 @@ class GameConfig : public Config {
         Bool RegenStacking = {this, "regen_stacking", true,
             "Disable for vanilla like mode where only one item will trigger HP/SP regeneration."};
 
+        Bool DestroyDischargedWands = { this, "destroy_discharged_wands", false,
+            "Destroy wands when they reach 0 charges." };
+
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)
@@ -572,6 +575,7 @@ class GameConfig : public Config {
         Key DialogRight = {this, "dialog_right", PlatformKey::KEY_RIGHT, "Dialog right key."};
         Key DialogSelect = {this, "dialog_select", PlatformKey::KEY_RETURN, "Dialog select key."};
         Key Escape = {this, "escape", PlatformKey::KEY_ESCAPE, "Escape key."};
+        Key ToggleMouseLook = { this, "toggle_mouse_look", PlatformKey::KEY_F10, "Toggle mouse look key." };
     };
 
     Keybindings keybindings{this};

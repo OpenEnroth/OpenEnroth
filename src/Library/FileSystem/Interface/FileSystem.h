@@ -41,6 +41,16 @@ struct DirectoryEntry {
     friend std::strong_ordering operator<=>(const DirectoryEntry &l, const DirectoryEntry &r) = default;
 };
 
+// TODO(captainurist): I still think most of FSs should inherit from ProxyFS.
+//
+// TODO(captainurist): Masking is for the portable mode. Mask out non-relevant parts from the corresponding FSs.
+//
+// TODO(captainurist): internal functions should NOT throw? Honestly, makes a lot of sense. Just throw in FileSystem impl!
+//                     Is it OK for the underlying functions to throw? I think no. All exceptions should be `FileSystemException`s.
+//                     Then I'll also be able to drop the exists() -> ls() paired calls that are inherently race-y.
+//
+// TODO(captainurist): _ls(vector*) should append, not overwrite.
+
 /**
  * File system interface.
  *

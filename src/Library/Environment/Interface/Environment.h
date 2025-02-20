@@ -15,6 +15,7 @@
  *   `Environment` working as usual looks like a perfectly valid use case.
  * - Posix and Windows `Environment` implementations don't depend on SDL, but if `Environment` was a part of `Platform`
  *   then we'd still drag SDL with it (and into our unit tests).
+ * - `Environment` doesn't depend on `Logger`.
  */
 class Environment {
  public:

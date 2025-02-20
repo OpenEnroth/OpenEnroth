@@ -20,7 +20,7 @@
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Party.h"
 #include "Engine/Tables/ItemTable.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Random/Random.h"
 
 #include "GUI/GUIWindow.h"
@@ -379,7 +379,7 @@ void prepareArenaFight(ArenaLevel level) {
  * @brief Oracle's 'I lost it!' dialog option
  */
 void oracleDialogue() {
-    ItemGen *item = nullptr;
+    Item *item = nullptr;
     ItemId item_id = ITEM_NULL;
 
     // display "You never had it" if nothing missing will be found
@@ -390,7 +390,7 @@ void oracleDialogue() {
         QuestBit quest_id = pair.first;
         if (pParty->_questBits[quest_id]) {
             ItemId search_item_id = pair.second;
-            if (!pParty->hasItem(search_item_id) && pParty->pPickedItem.uItemID != search_item_id) {
+            if (!pParty->hasItem(search_item_id) && pParty->pPickedItem.itemId != search_item_id) {
                 item_id = search_item_id;
                 break;
             }
@@ -403,7 +403,7 @@ void oracleDialogue() {
         // TODO(captainurist): what if fmt throws?
         current_npc_text = fmt::sprintf(pNPCTopics[666].pText, // "Here's %s that you lost. Be careful" // NOLINT: this is not ::sprintf.
                                         fmt::format("{::}{}\f00000", colorTable.Sunflower.tag(),
-                                                    pItemTable->pItems[item_id].pUnidentifiedName));
+                                                    pItemTable->items[item_id].unidentifiedName));
     }
 
     // missing item is lich jar and we need to bind soul vessel to lich class character
@@ -415,11 +415,11 @@ void oracleDialogue() {
                 bool have_vessels_soul = false;
                 for (Character &player : pParty->pCharacters) {
                     for (int idx = 0; idx < Character::INVENTORY_SLOT_COUNT; idx++) {
-                        if (player.pInventoryItemList[idx].uItemID == ITEM_QUEST_LICH_JAR_FULL) {
-                            if (player.pInventoryItemList[idx].uHolderPlayer == -1) {
+                        if (player.pInventoryItemList[idx].itemId == ITEM_QUEST_LICH_JAR_FULL) {
+                            if (player.pInventoryItemList[idx].lichJarCharacterIndex == -1) {
                                 item = &player.pInventoryItemList[idx];
                             }
-                            if (player.pInventoryItemList[idx].uHolderPlayer == i) {
+                            if (player.pInventoryItemList[idx].lichJarCharacterIndex == i) {
                                 have_vessels_soul = true;
                             }
                         }
@@ -427,7 +427,7 @@ void oracleDialogue() {
                 }
 
                 if (item && !have_vessels_soul) {
-                    item->uHolderPlayer = i;
+                    item->lichJarCharacterIndex = i;
                     break;
                 }
             }

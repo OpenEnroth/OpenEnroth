@@ -96,6 +96,10 @@ void NullWindow::activate() {
     // Do nothing.
 }
 
+void NullWindow::warpMouse(Pointi) {
+    // Do nothing.
+}
+
 std::unique_ptr<PlatformOpenGLContext> NullWindow::createOpenGLContext(const PlatformOpenGLOptions &options) {
     return std::make_unique<NullOpenGLContext>(_state);
 }

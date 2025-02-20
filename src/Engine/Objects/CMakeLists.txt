@@ -7,7 +7,7 @@ set(ENGINE_OBJECTS_SOURCES
         Decoration.cpp
         DecorationList.cpp
         ItemEnumFunctions.cpp
-        Items.cpp
+        Item.cpp
         MonsterEnumFunctions.cpp
         Monsters.cpp
         NPC.cpp
@@ -28,7 +28,7 @@ set(ENGINE_OBJECTS_HEADERS
         ItemEnchantment.h
         ItemEnums.h
         ItemEnumFunctions.h
-        Items.h
+        Item.h
         Monsters.h
         MonsterEnums.h
         MonsterEnumFunctions.h

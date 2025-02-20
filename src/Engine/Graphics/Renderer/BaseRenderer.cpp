@@ -1,5 +1,6 @@
 #include "BaseRenderer.h"
 
+#include <algorithm>
 #include <cassert>
 #include <utility>
 #include <vector>
@@ -374,7 +375,6 @@ void BaseRenderer::TransformBillboardsAndSetPalettesODM() {
     SoftwareBillboard billboard = {0};
     billboard.sParentBillboardID = -1;
     //  billboard.pTarget = render->pTargetSurface;
-    billboard.pTargetZ = render->pActiveZBuffer;
     //  billboard.uTargetPitch = render->uTargetSurfacePitch;
     billboard.uViewportX = pViewport->uViewportTL_X;
     billboard.uViewportY = pViewport->uViewportTL_Y;
@@ -669,7 +669,7 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
     }
 }
 
-void BaseRenderer::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offset) {
+void BaseRenderer::DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait, int Y_Offset) {
     Recti rct;
     rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uWidth / 2;
     rct.y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
@@ -733,41 +733,43 @@ std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
     return foundActors;
 }
 
-// TODO(pskelton): z buffer must go
+// TODO(pskelton): z buffer only used for paperdolls now - contain zbuffer within char window?
 void BaseRenderer::CreateZBuffer() {
     if (pActiveZBuffer)
         free(pActiveZBuffer);
 
-    pActiveZBuffer = (int*)malloc(outputRender.w * outputRender.h * sizeof(int));
+    pActiveZBuffer = (int*)malloc(_zBufferRect.w * _zBufferRect.h * sizeof(int));
     if (!pActiveZBuffer)
         logger->error("Failed to create zbuffer");
 
     ClearZBuffer();
 }
 
-// TODO(pskelton): z buffer must go
+// TODO(pskelton): z buffer only used for paperdolls now - contain zbuffer within char window?
 void BaseRenderer::ClearZBuffer() {
-    memset32(this->pActiveZBuffer, 0xFFFF0000, outputRender.w * outputRender.h);
+    memset32(this->pActiveZBuffer, 0xFFFF0000, _zBufferRect.w * _zBufferRect.h);
 }
 
-// TODO(pskelton): zbuffer must go
+// TODO(pskelton): z buffer only used for paperdolls now - contain zbuffer within char window?
 void BaseRenderer::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVal) {
     if (!img) return;
 
-    int uOutX = static_cast<int>(u * outputRender.w);
-    int uOutY = static_cast<int>(v * outputRender.h);
+    // make relative to zbuffer rect
+    int uOutX = static_cast<int>(u * outputRender.w) - _zBufferRect.x;
+    int uOutY = static_cast<int>(v * outputRender.h) - _zBufferRect.y;
     const RgbaImage &image = img->rgba();
 
-    if (uOutX < 0)
-        uOutX = 0;
-    if (uOutY < 0)
-        uOutY = 0;
+    // crop to zbuffer rect
+    int xStart = std::max(-uOutX, 0);
+    int yStart = std::max(-uOutY, 0);
+    int xEnd = std::min(static_cast<int>(image.width()), _zBufferRect.w - uOutX);
+    int yEnd = std::min(static_cast<int>(image.height()), _zBufferRect.h - uOutY);
 
-    for (int ys = 0; ys < image.height(); ys++) {
+    for (int ys = yStart; ys < yEnd; ys++) {
         auto imageLine = image[ys];
-        for (int xs = 0; xs < image.width(); xs++) {
+        for (int xs = xStart; xs < xEnd; xs++) {
             if (imageLine[xs].a != 0) {
-                this->pActiveZBuffer[uOutX + xs + outputRender.w * (uOutY + ys)] = zVal;
+                this->pActiveZBuffer[uOutX + xs + _zBufferRect.w * (uOutY + ys)] = zVal;
             }
         }
     }

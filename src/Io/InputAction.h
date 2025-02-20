@@ -80,6 +80,7 @@ namespace Io {
         DialogRight,
         DialogSelect,
         Escape,
+        ToggleMouseLook,
 
         Count,
         Invalid = Count,

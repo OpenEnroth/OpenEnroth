@@ -7,7 +7,7 @@
 
 #include "Application/GameConfig.h"
 
-#include "Engine/Events/EventMap.h"
+#include "Engine/Evt/EvtProgram.h"
 #include "Engine/MapEnums.h"
 #include "Engine/TeleportPoint.h"
 #include "Engine/mm7_data.h"
@@ -122,8 +122,8 @@ class Engine {
     Vis *vis = nullptr;
     std::shared_ptr<Io::KeyboardInputHandler> keyboardInputHandler;
     std::shared_ptr<Io::KeyboardActionMapping> keyboardActionMapping;
-    EventMap _globalEventMap;
-    EventMap _localEventMap;
+    EvtProgram _globalEventMap;
+    EvtProgram _localEventMap;
     std::vector<std::string> _levelStrings;
     PersistentVariables _persistentVariables;
     MapId _currentLoadedMapId = MAP_INVALID;

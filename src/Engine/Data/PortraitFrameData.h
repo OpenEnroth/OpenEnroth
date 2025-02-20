@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Engine/Objects/CharacterEnums.h" // TODO(captainurist): doesn't belong here, move out.
+#include "Engine/Objects/CharacterEnums.h" // TODO(captainurist): Data -> Objects dependency, we don't want that.
 
 #include "Engine/Time/Duration.h"
 

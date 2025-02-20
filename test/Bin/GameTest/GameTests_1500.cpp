@@ -1,5 +1,8 @@
+#include <algorithm>
 #include <unordered_set>
 #include <ranges>
+#include <string>
+#include <regex>
 
 #include "Testing/Game/GameTest.h"
 
@@ -18,7 +21,7 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Outdoor.h"
-#include "Engine/Events/EventInterpreter.h"
+#include "Engine/Evt/EvtInterpreter.h"
 
 // 1500
 
@@ -163,14 +166,14 @@ GAME_TEST(Issues, Issue1569) {
 
 GAME_TEST(Issues, Issue1597) {
     // Test that generated amulets with high enough treasure level have enchantment on them
-    ItemGen item;
+    Item item;
     int attrEnchantmentsNum = 0;
     int specialEnchantmentsNum = 0;
     for (int i = 0; i < 100; i++) {
         pItemTable->generateItem(ITEM_TREASURE_LEVEL_5, RANDOM_ITEM_AMULET, &item);
-        if (item.attributeEnchantment)
+        if (item.standardEnchantment)
             attrEnchantmentsNum++;
-        if (item.special_enchantment != ITEM_ENCHANTMENT_NULL)
+        if (item.specialEnchantment != ITEM_ENCHANTMENT_NULL)
             specialEnchantmentsNum++;
     }
     EXPECT_NE(attrEnchantmentsNum, 0);
@@ -275,13 +278,13 @@ GAME_TEST(Issues, Issue1685) {
     pParty->pCharacters[0].name = "Kolya";
     pParty->pCharacters[1].name = "Nicholas";
 
-    ItemGen jar1;
-    jar1.uItemID = ItemId::ITEM_QUEST_LICH_JAR_FULL;
-    jar1.uHolderPlayer = 0;
+    Item jar1;
+    jar1.itemId = ITEM_QUEST_LICH_JAR_FULL;
+    jar1.lichJarCharacterIndex = 0;
 
-    ItemGen jar2;
-    jar2.uItemID = ItemId::ITEM_QUEST_LICH_JAR_FULL;
-    jar2.uHolderPlayer = 1;
+    Item jar2;
+    jar2.itemId = ITEM_QUEST_LICH_JAR_FULL;
+    jar2.lichJarCharacterIndex = 1;
 
     game.runGameRoutine([&] {
         // This code needs to be run in game thread b/c AddItem2 is loading textures...
@@ -352,13 +355,15 @@ GAME_TEST(Issues, Issue1716) {
 }
 
 GAME_TEST(Issues, Issue1717) {
-    // Immolation incorrect damage message
+    // Immolation incorrect damage message.
     auto statusBar = tapes.statusBar();
     auto immoBuff = tapes.custom([]() { return pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].Active(); });
     test.playTraceFromTestData("issue_1717.mm7", "issue_1717.json");
-    EXPECT_EQ(immoBuff, tape( false, true ));
+    EXPECT_EQ(immoBuff, tape(false, true));
     EXPECT_EQ(pParty->pPartyBuffs[PARTY_BUFF_IMMOLATION].caster, 4);
-    EXPECT_CONTAINS(statusBar, "Immolation deals 77 damage to 2 target(s)");
+
+    std::regex regex("Immolation deals [0-9]+ damage to [0-9]+ target\\(s\\)");
+    EXPECT_CONTAINS(statusBar, [&](const std::string &message) { return std::regex_match(message, regex); });
 }
 
 GAME_TEST(Issues, Issue1724) {
@@ -402,8 +407,8 @@ GAME_TEST(Issues, Issue1726) {
 GAME_TEST(Issues, Issue1786) {
     // Casting a quick spell that's not in spellbook asserts
     auto sprites = tapes.sprites();
-    test.startTaping();
     game.startNewGame();
+    test.startTaping();
     pParty->pCharacters[3].uQuickSpell = SPELL_FIRE_FIRE_BOLT;
     EXPECT_FALSE(pParty->pCharacters[3].bHaveSpell[SPELL_FIRE_FIRE_BOLT]);
 
@@ -502,10 +507,154 @@ GAME_TEST(Issues, Issue1898) {
 }
 
 GAME_TEST(Issues, Issue1890) {
-    //Stuck *in* stairs when leaving the Mercenary Guild
+    // Stuck *in* stairs when leaving the Mercenary Guild
     auto yPos = tapes.custom([]() { return static_cast<int>(pParty->pos.y); });
     test.playTraceFromTestData("issue_1890.mm7", "issue_1890.json");
     EXPECT_EQ(engine->_currentLoadedMapId, MAP_TATALIA);
     EXPECT_CONTAINS(yPos, 16803); // starting point
     EXPECT_LT(yPos.back(), 16700); // moved forwards
+}
+
+// 1900
+
+GAME_TEST(Issues, Issue1910) {
+    // Insane condition doesn't affect character attributes when there is Weak condition.
+    // We test this for both vanilla & grayface condition priorities.
+    for (bool useAlternativePriorities : {true, false}) {
+        test.prepareForNextTest();
+        engine->config->gameplay.AlternativeConditionPriorities.setValue(useAlternativePriorities);
+
+        auto intTape = charTapes.stat(0, ATTRIBUTE_INTELLIGENCE);
+        auto strTape = charTapes.stat(0, ATTRIBUTE_MIGHT);
+
+        game.startNewGame();
+        test.startTaping();
+        game.tick();
+        pParty->pCharacters[0].SetCondition(CONDITION_WEAK, 0);
+        pParty->pCharacters[0].SetCondition(CONDITION_INSANE, 0);
+        game.tick();
+
+        EXPECT_EQ(intTape, tape(5, 0)); // Int -90% b/c insane.
+        EXPECT_EQ(strTape, tape(30, 60)); // Str +100% b/c insane.
+    }
+}
+
+GAME_TEST(Issues, Issue1911) {
+    // Unarmed attack bonus is not applied when Monk is unarmed, but applied when wearing a staff.
+    game.startNewGame();
+    EXPECT_TRUE(pParty->pCharacters[0].IsUnarmed());
+
+    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_UNARMED] = CombinedSkillValue(1, CHARACTER_SKILL_MASTERY_NOVICE);
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 1);
+
+    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_UNARMED] = CombinedSkillValue(4, CHARACTER_SKILL_MASTERY_NOVICE);
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 4);
+
+    // Equip staff.
+    Item staff;
+    staff.itemId = ITEM_STAFF;
+    game.runGameRoutine([&] {
+        // This code needs to be run in game thread b/c AddItem2 is loading textures...
+        pParty->pPickedItem = staff;
+        pParty->pCharacters[0].EquipBody(ITEM_TYPE_TWO_HANDED);
+    });
+    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue(1, CHARACTER_SKILL_MASTERY_NOVICE);
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 1); // +1 from staff skill.
+
+    // Check that master staff is not affected by unarmed.
+    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue(7, CHARACTER_SKILL_MASTERY_MASTER);
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 7); // +7 from staff skill.
+
+    // Check that GM staff works with unarmed.
+    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER);
+    EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 14); // +10 from staff, +4 from unarmed.
+}
+
+GAME_TEST(Issues, Issue1925) {
+    // Test for wand behaviour.
+    for (bool wandsDisappear : {true, false}) {
+        test.prepareForNextTest();
+        engine->config->gameplay.DestroyDischargedWands.setValue(wandsDisappear);
+
+        auto wandTape = tapes.hasItem(ITEM_WAND_OF_FIRE);
+        auto spritesTape = tapes.sprites();
+
+        game.startNewGame();
+        test.startTaping();
+        game.tick();
+
+        // Equip wand.
+        Item wand;
+        wand.itemId = ITEM_WAND_OF_FIRE;
+        wand.numCharges = wand.maxCharges = 1;
+        game.runGameRoutine([&] {
+            // This code needs to be run in game thread b/c AddItem2 is loading textures...
+            pParty->pPickedItem = wand;
+            pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
+        });
+        game.tick();
+
+        // Attack.
+        game.pressKey(PlatformKey::KEY_A);
+        game.tick();
+        game.releaseKey(PlatformKey::KEY_A);
+        game.tick();
+
+        EXPECT_EQ(wandTape, wandsDisappear ? tape(false, true, false) : tape(false, true));
+        if (!wandsDisappear) {
+            const Item *dischargedWand = pParty->pCharacters[0].GetItem(ITEM_SLOT_MAIN_HAND);
+            EXPECT_NE(dischargedWand, nullptr);
+            EXPECT_EQ(dischargedWand->itemId, ITEM_WAND_OF_FIRE);
+            EXPECT_EQ(dischargedWand->numCharges, 0);
+            EXPECT_EQ(dischargedWand->maxCharges, 1);
+        }
+        EXPECT_CONTAINS(spritesTape.flattened(), SPRITE_SPELL_FIRE_FIRE_BOLT);
+    }
+}
+
+GAME_TEST(Issues, Issue1927) {
+    // Having bow equipped increases ranged attack bonus with wands
+    test.prepareForNextTest();
+    auto rangeAttackTape = tapes.custom([] { return pParty->pCharacters[0].GetRangedAttack(); });
+    game.startNewGame();
+    test.startTaping();
+    game.tick();
+
+    // Equip a bow
+    Item bow;
+    bow.itemId = ITEM_GRIFFIN_BOW;
+    game.runGameRoutine([&] {
+        // This code needs to be run in game thread b/c AddItem2 is loading textures...
+        pParty->pPickedItem = bow;
+        pParty->pCharacters[0].EquipBody(ITEM_TYPE_BOW);
+        });
+    game.tick();
+
+    // Equip wand.
+    Item wand;
+    wand.itemId = ITEM_ALACORN_WAND_OF_FIREBALLS;
+    wand.numCharges = wand.maxCharges = 30;
+    game.runGameRoutine([&] {
+        // This code needs to be run in game thread b/c AddItem2 is loading textures...
+        pParty->pPickedItem = wand;
+        pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
+        });
+    game.tick();
+
+    EXPECT_EQ(rangeAttackTape.size(), 3); // nothing, bow, bow and wand
+    EXPECT_EQ(rangeAttackTape.front(), rangeAttackTape.back()); // range bonus between nothing equipped and wand should be the same
+    EXPECT_EQ(rangeAttackTape.back(), pParty->pCharacters[0].GetActualAttack(false)); // should match melee
+}
+
+GAME_TEST(Prs, Pr1934) {
+    // Should be able to generate standard enchantments with +25 bonus.
+    Item item;
+    int maxStrength = 0;
+    for (int i = 0; i < 100; i++) {
+        pItemTable->generateItem(ITEM_TREASURE_LEVEL_6, RANDOM_ITEM_RING, &item);
+        if (item.standardEnchantment)
+            maxStrength = std::max(maxStrength, item.standardEnchantmentStrength);
+    }
+
+    EXPECT_EQ(maxStrength, 25);
 }

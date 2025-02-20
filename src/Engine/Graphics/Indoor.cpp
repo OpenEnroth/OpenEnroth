@@ -8,7 +8,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
@@ -51,6 +51,8 @@
 #include "Utility/String/Ascii.h"
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Exception.h"
+
+#include "Io/Mouse.h"
 
 IndoorLocation *pIndoor = nullptr;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
@@ -188,7 +190,6 @@ void BLVRenderParams::Reset() {
 
     this->uTargetWidth = render->GetRenderDimensions().w;
     this->uTargetHeight = render->GetRenderDimensions().h;
-    this->pTargetZBuffer = render->pActiveZBuffer;
     this->uNumFacesRenderedThisFrame = 0;
 }
 
@@ -1052,9 +1053,9 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
 
     for (int i = 0; i < pSpriteObjects.size(); ++i) {
         if (pSpriteObjects[i].uObjectDescID) {
-            if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL) {
-                if (pSpriteObjects[i].containing_item.uItemID != ITEM_POTION_BOTTLE &&
-                    pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == ITEM_TYPE_POTION &&
+            if (pSpriteObjects[i].containing_item.itemId != ITEM_NULL) {
+                if (pSpriteObjects[i].containing_item.itemId != ITEM_POTION_BOTTLE &&
+                    pItemTable->items[pSpriteObjects[i].containing_item.itemId].type == ITEM_TYPE_POTION &&
                     !pSpriteObjects[i].containing_item.potionPower)
                     pSpriteObjects[i].containing_item.potionPower = grng->random(15) + 5;
                 pItemTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);
@@ -1666,12 +1667,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     if (pIndoor->pFaces[faceId].isFluid())
         on_water = true;
 
-    // Party angle in XY plane.
-    int angle = pParty->_viewYaw;
-
-    // Vertical party angle (basically azimuthal angle in polar coordinates).
-    int vertical_angle = pParty->_viewPitch;
-
     // Calculate rotation in ticks (1024 ticks per 180 degree).
     // TODO(captainurist): #time think about a better way to write this formula.
     int rotation =
@@ -1683,85 +1678,89 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         switch (pPartyActionQueue->Next()) {
             case PARTY_TurnLeft:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle + (int) engine->config->settings.TurnSpeed.value());
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + (int) engine->config->settings.TurnSpeed.value());
                 else
-                    angle = TrigLUT.uDoublePiMask & (angle + static_cast<int>(rotation * fTurnSpeedMultiplier));
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + static_cast<int>(rotation * fTurnSpeedMultiplier));
                 break;
             case PARTY_TurnRight:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle - (int) engine->config->settings.TurnSpeed.value());
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - (int) engine->config->settings.TurnSpeed.value());
                 else
-                    angle = TrigLUT.uDoublePiMask & (angle - static_cast<int>(rotation * fTurnSpeedMultiplier));
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - static_cast<int>(rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnLeft:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle + (int) engine->config->settings.TurnSpeed.value());
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + (int) engine->config->settings.TurnSpeed.value());
                 else
-                    angle = TrigLUT.uDoublePiMask & (angle + static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnRight:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle - (int) engine->config->settings.TurnSpeed.value());
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - (int) engine->config->settings.TurnSpeed.value());
                 else
-                    angle = TrigLUT.uDoublePiMask & (angle - static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_StrafeLeft:
-                pParty->velocity.x -= TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
-                pParty->velocity.y += TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.x -= TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.y += TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_StrafeRight:
-                pParty->velocity.y -= TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
-                pParty->velocity.x += TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.y -= TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.x += TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkForward:
-                pParty->velocity.x += TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier;
-                pParty->velocity.y += TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.x += TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.y += TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkBackward:
-                pParty->velocity.x -= TrigLUT.cos(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
-                pParty->velocity.y -= TrigLUT.sin(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.x -= TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.y -= TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_RunForward:
-                pParty->velocity.x += TrigLUT.cos(angle) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
-                pParty->velocity.y += TrigLUT.sin(angle) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.x += TrigLUT.cos(pParty->_viewYaw) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.y += TrigLUT.sin(pParty->_viewYaw) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
                 party_running_flag = true;
                 break;
 
             case PARTY_RunBackward:
-                pParty->velocity.x -= TrigLUT.cos(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
-                pParty->velocity.y -= TrigLUT.sin(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.x -= TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.y -= TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_LookUp:
-                vertical_angle += engine->config->settings.VerticalTurnSpeed.value();
-                if (vertical_angle > 128)
-                    vertical_angle = 128;
+                pParty->_viewPitch += engine->config->settings.VerticalTurnSpeed.value();
+                if (pParty->_viewPitch > 128)
+                    pParty->_viewPitch = 128;
                 if (pParty->hasActiveCharacter())
                     pParty->activeCharacter().playReaction(SPEECH_LOOK_UP);
                 break;
 
             case PARTY_LookDown:
-                vertical_angle -= engine->config->settings.VerticalTurnSpeed.value();
-                if (vertical_angle < -128)
-                    vertical_angle = -128;
+                pParty->_viewPitch -= engine->config->settings.VerticalTurnSpeed.value();
+                if (pParty->_viewPitch < -128)
+                    pParty->_viewPitch = -128;
                 if (pParty->hasActiveCharacter())
                     pParty->activeCharacter().playReaction(SPEECH_LOOK_DOWN);
                 break;
 
             case PARTY_CenterView:
-                vertical_angle = 0;
+                pParty->_viewPitch = 0;
+                break;
+
+            case PARTY_MouseLook:
+                mouse->DoMouseLook();
                 break;
 
             case PARTY_Jump:
@@ -1884,8 +1883,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->setAirborne(true);
 
     pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
-    pParty->_viewYaw = angle;
-    pParty->_viewPitch = vertical_angle;
 
     if (!isAboveGround && pIndoor->pFaces[faceId].uAttributes & FACE_IsLava)
         pParty->uFlags |= PARTY_FLAG_BURNING;
@@ -2003,7 +2000,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing) {
     SpriteObject a1;
     pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
-    a1.uType = pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;
+    a1.uType = pItemTable->items[a1.containing_item.itemId].spriteId;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     a1.vPosition = pos;
     a1.uFacing = facing;
@@ -2036,12 +2033,12 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
         }
 
         a1a.containing_item.generateGold(a2->uItemIndex);
-        a1a.uType = pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
+        a1a.uType = pItemTable->items[a1a.containing_item.itemId].spriteId;
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
     } else {
         if (!a1a.containing_item.GenerateArtifact())
             return;
-        a1a.uType = pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
+        a1a.uType = pItemTable->items[a1a.containing_item.itemId].spriteId;
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
         a1a.containing_item.Reset();  // TODO(captainurist): this needs checking
     }

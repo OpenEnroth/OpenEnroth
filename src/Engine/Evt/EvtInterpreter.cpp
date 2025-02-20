@@ -4,9 +4,9 @@
 
 #include <tl/generator.hpp>
 
-#include "Engine/Events/EventInterpreter.h"
-#include "Engine/Events/EventIR.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/EvtInterpreter.h"
+#include "Engine/Evt/EvtInstruction.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Party.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Weather.h"
@@ -95,7 +95,7 @@ void spawnMonsters(int16_t typeindex, int16_t level, int count,
     }
 }
 
-static tl::generator<Character &> iterateCharacters(CharacterChoosePolicy who, RandomEngine *rng) {
+static tl::generator<Character &> iterateCharacters(EvtTargetCharacter who, RandomEngine *rng) {
     if (who >= CHOOSE_PLAYER1 && who <= CHOOSE_PLAYER4) {
         co_yield pParty->pCharacters[std::to_underlying(who)];
     } else if (who == CHOOSE_ACTIVE) {
@@ -110,11 +110,11 @@ static tl::generator<Character &> iterateCharacters(CharacterChoosePolicy who, R
     }
 }
 
-int EventInterpreter::executeOneEvent(int step, bool isNpc) {
-    EventIR ir;
+int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
+    EvtInstruction ir;
     bool stepFound = false;
 
-    for (const EventIR &irTmp : _events) {
+    for (const EvtInstruction &irTmp : _events) {
         if (irTmp.step == step) {
             ir = irTmp;
             stepFound = true;
@@ -128,7 +128,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
 
     // In NPC mode must process only NPC dialogue related events plus Exit
     if (isNpc) {
-        switch (ir.type) {
+        switch (ir.opcode) {
             case EVENT_Exit:
                 return -1;
             case EVENT_OnCanShowDialogItemCmp:
@@ -160,7 +160,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
         return step + 1;
     }
 
-    switch (ir.type) {
+    switch (ir.opcode) {
         case EVENT_Exit:
             return -1;
         case EVENT_SpeakInHouse:
@@ -303,12 +303,15 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             for (Character &character : iterateCharacters(_who, grng))
                 character.AddVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
             break;
-        case EVENT_Substract:
-            if (ir.data.variable_descr.type == VAR_PlayerItemInHands && _who == CHOOSE_PARTY) {
+        case EVENT_Subtract:
+            // We had a couple issues with quest items not being removed from inventory, and the reason was that the
+            // character target wasn't properly set in the script. Thus, we don't even check `_who` here and just try
+            // to take the item from all characters. See issues #1808 and #1912.
+            if (ir.data.variable_descr.type == VAR_PlayerItemInHands/* && (_who == CHOOSE_PARTY || _who == CHOOSE_ACTIVE)*/) {
                 for (Character &character : pParty->pCharacters) {
                     if (character.hasItem((ItemId)ir.data.variable_descr.value, 1)) {
                         character.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
-                        break;  // only take one item
+                        break;  // Only take one item.
                     }
                 }
             } else {
@@ -445,11 +448,11 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
             break;
         case EVENT_GiveItem:
         {
-            ItemGen item;
+            Item item;
             item.Reset();
             pItemTable->generateItem(ir.data.give_item_descr.treasure_level, ir.data.give_item_descr.treasure_type, &item);
             if (ir.data.give_item_descr.item_id != ITEM_NULL) {
-                item.uItemID = ir.data.give_item_descr.item_id;
+                item.itemId = ir.data.give_item_descr.item_id;
             }
             pParty->setHoldingItem(&item);
             break;
@@ -580,7 +583,7 @@ int EventInterpreter::executeOneEvent(int step, bool isNpc) {
     return step + 1;
 }
 
-bool EventInterpreter::executeRegular(int startStep) {
+bool EvtInterpreter::executeRegular(int startStep) {
     assert(startStep >= 0);
 
     if (!_eventId || !_events.size()) {
@@ -598,7 +601,7 @@ bool EventInterpreter::executeRegular(int startStep) {
     return _mapExitTriggered;
 }
 
-bool EventInterpreter::executeNpcDialogue(int startStep) {
+bool EvtInterpreter::executeNpcDialogue(int startStep) {
     assert(startStep >= 0);
 
     if (!_eventId) {
@@ -623,17 +626,17 @@ bool EventInterpreter::executeNpcDialogue(int startStep) {
     return !_readyToExit || _canShowOption;
 }
 
-void EventInterpreter::prepare(const EventMap &eventMap, int eventId, Pid objectPid, bool canShowMessages) {
+void EvtInterpreter::prepare(const EvtProgram &eventMap, int eventId, Pid objectPid, bool canShowMessages) {
     _eventId = eventId;
     _canShowMessages = canShowMessages;
     _objectPid = objectPid;
 
     _events.clear();
     if (eventMap.hasEvent(eventId)) {
-        _events = eventMap.events(eventId);
+        _events = eventMap.function(eventId);
     }
 }
 
-bool EventInterpreter::isValid() {
+bool EvtInterpreter::isValid() {
     return _events.size() > 0;
 }

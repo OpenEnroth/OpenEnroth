@@ -443,59 +443,59 @@ void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst) {
     dst->isGMBuff = src.flags;
 }
 
-void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
+void snapshot(const Item &src, ItemGen_MM7 *dst) {
     memzero(dst);
 
-    dst->itemID = std::to_underlying(src.uItemID);
-    if (isPotion(src.uItemID)) {
-        dst->attributeEnchantmentOrPotionPower = src.potionPower;
-    } else if (src.attributeEnchantment) {
-        dst->attributeEnchantmentOrPotionPower = std::to_underlying(*src.attributeEnchantment) + 1;
+    dst->itemId = std::to_underlying(src.itemId);
+    if (isPotion(src.itemId)) {
+        dst->standardEnchantmentOrPotionPower = src.potionPower;
+    } else if (src.standardEnchantment) {
+        dst->standardEnchantmentOrPotionPower = std::to_underlying(*src.standardEnchantment) + 1;
     } else {
-        dst->attributeEnchantmentOrPotionPower = 0;
+        dst->standardEnchantmentOrPotionPower = 0;
     }
-    dst->enchantmentStrength = src.m_enchantmentStrength;
-    if (isGold(src.uItemID)) {
+    dst->standardEnchantmentStrength = src.standardEnchantmentStrength;
+    if (isGold(src.itemId)) {
         dst->specialEnchantmentOrGoldAmount = src.goldAmount;
     } else {
-        dst->specialEnchantmentOrGoldAmount = std::to_underlying(src.special_enchantment);
+        dst->specialEnchantmentOrGoldAmount = std::to_underlying(src.specialEnchantment);
     }
-    dst->numCharges = src.uNumCharges;
-    dst->attributes = std::to_underlying(src.uAttributes);
-    dst->bodyAnchor = std::to_underlying(src.uBodyAnchor);
-    dst->maxCharges = src.uMaxCharges;
-    dst->holderPlayer = src.uHolderPlayer + 1;
+    dst->numCharges = src.numCharges;
+    dst->flags = std::to_underlying(src.flags);
+    dst->equippedSlot = std::to_underlying(src.equippedSlot);
+    dst->maxCharges = src.maxCharges;
+    dst->lichJarCharacterIndex = src.lichJarCharacterIndex + 1;
     dst->placedInChest = src.placedInChest;
-    snapshot(src.uExpireTime, &dst->expireTime);
+    snapshot(src.enchantmentExpirationTime, &dst->enchantmentExpirationTime);
 }
 
-void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
-    dst->uItemID = static_cast<ItemId>(src.itemID);
-    if (isPotion(dst->uItemID)) {
-        dst->potionPower = src.attributeEnchantmentOrPotionPower;
-        dst->attributeEnchantment = {};
-    } else if (src.attributeEnchantmentOrPotionPower) {
+void reconstruct(const ItemGen_MM7 &src, Item *dst) {
+    dst->itemId = static_cast<ItemId>(src.itemId);
+    if (isPotion(dst->itemId)) {
+        dst->potionPower = src.standardEnchantmentOrPotionPower;
+        dst->standardEnchantment = {};
+    } else if (src.standardEnchantmentOrPotionPower) {
         dst->potionPower = 0;
-        dst->attributeEnchantment = static_cast<CharacterAttribute>(src.attributeEnchantmentOrPotionPower - 1);
+        dst->standardEnchantment = static_cast<CharacterAttribute>(src.standardEnchantmentOrPotionPower - 1);
     } else {
         dst->potionPower = 0;
-        dst->attributeEnchantment = {};
+        dst->standardEnchantment = {};
     }
-    dst->m_enchantmentStrength = src.enchantmentStrength;
-    if (isGold(dst->uItemID)) {
+    dst->standardEnchantmentStrength = src.standardEnchantmentStrength;
+    if (isGold(dst->itemId)) {
         dst->goldAmount = src.specialEnchantmentOrGoldAmount;
-        dst->special_enchantment = ITEM_ENCHANTMENT_NULL;
+        dst->specialEnchantment = ITEM_ENCHANTMENT_NULL;
     } else {
         dst->goldAmount = 0;
-        dst->special_enchantment = static_cast<ItemEnchantment>(src.specialEnchantmentOrGoldAmount);
+        dst->specialEnchantment = static_cast<ItemEnchantment>(src.specialEnchantmentOrGoldAmount);
     }
-    dst->uNumCharges = src.numCharges;
-    dst->uAttributes = ItemFlags(src.attributes);
-    dst->uBodyAnchor = static_cast<ItemSlot>(src.bodyAnchor);
-    dst->uMaxCharges = src.maxCharges;
-    dst->uHolderPlayer = src.holderPlayer - 1;
+    dst->numCharges = src.numCharges;
+    dst->flags = ItemFlags(src.flags);
+    dst->equippedSlot = static_cast<ItemSlot>(src.equippedSlot);
+    dst->maxCharges = src.maxCharges;
+    dst->lichJarCharacterIndex = src.lichJarCharacterIndex - 1;
     dst->placedInChest = src.placedInChest;
-    reconstruct(src.expireTime, &dst->uExpireTime);
+    reconstruct(src.enchantmentExpirationTime, &dst->enchantmentExpirationTime);
 }
 
 void snapshot(const Party &src, Party_MM7 *dst) {
@@ -1637,7 +1637,7 @@ void reconstruct(const Chest_MM7 &src, Chest *dst) {
     // fix placedInChest field for old saves
     int chestArea = dst->pInventoryIndices.size();
     for (int item = 0; item < chestArea; item++) {
-        if (dst->igChestItems[item].uItemID == ITEM_NULL) {
+        if (dst->igChestItems[item].itemId == ITEM_NULL) {
             continue;
         }
         for (int position = 0; position < chestArea; position++) {

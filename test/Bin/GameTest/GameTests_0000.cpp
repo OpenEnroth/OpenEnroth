@@ -83,15 +83,15 @@ GAME_TEST(Issues, Issue198) {
 
     // Preload item images in the main thread first.
     game.runGameRoutine([&] {
-        forEachInventoryItem([](const ItemGen &item, int /*x*/, int /*y*/) {
+        forEachInventoryItem([](const Item &item, int /*x*/, int /*y*/) {
             // Calling width() forces the texture to be created.
-            assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName)->width();
+            assets->getImage_ColorKey(pItemTable->items[item.itemId].iconName)->width();
         });
     });
 
     // Then can safely check everything.
-    forEachInventoryItem([](const ItemGen &item, int x, int y) {
-        GraphicsImage *image = assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName);
+    forEachInventoryItem([](const Item &item, int x, int y) {
+        GraphicsImage *image = assets->getImage_ColorKey(pItemTable->items[item.itemId].iconName);
         int width = GetSizeInInventorySlots(image->width());
         int height = GetSizeInInventorySlots(image->height());
 
@@ -189,7 +189,7 @@ GAME_TEST(Issues, Issue268_939) {
     EXPECT_EQ(pParty->pCharacters[0].GetRangedAttack(), 18);
     EXPECT_EQ(pParty->pCharacters[1].GetRangedAttack(), 23);
     EXPECT_EQ(pParty->pCharacters[2].GetRangedAttack(), 21);
-    EXPECT_EQ(pParty->pCharacters[3].GetRangedAttack(), 17);
+    EXPECT_EQ(pParty->pCharacters[3].GetRangedAttack(), 9); // was 17 in vanilla see #1927
     // dmg
     EXPECT_EQ(pParty->pCharacters[0].GetRangedDamageString(), "9 - 14");
     EXPECT_EQ(pParty->pCharacters[1].GetRangedDamageString(), "11 - 16");
@@ -411,7 +411,7 @@ GAME_TEST(Issues, Issue355) {
     test.playTraceFromTestData("issue_355.mm7", "issue_355.json");
     auto damageRange = healthTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
     // 2d3+0 with a sequential engine can't roll 2 or 6, so all values should be in [3, 5]. Luck roll can drop this to 1/2...
-    EXPECT_EQ(damageRange, tape(3 /*1*/, 5));
+    EXPECT_EQ(damageRange, tape(2 /*1*/, 5));
 }
 
 GAME_TEST(Issues, Issue388) {

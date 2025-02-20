@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <memory>
+#include <exception>
 
 #include "Library/Platform/Interface/PlatformEventHandler.h"
 

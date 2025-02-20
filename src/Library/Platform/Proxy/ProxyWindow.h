@@ -31,5 +31,6 @@ class ProxyWindow : public ProxyBase<PlatformWindow> {
     virtual Marginsi frameMargins() const override;
     virtual void *nativeHandle() const override;
     virtual void activate() override;
+    virtual void warpMouse(Pointi position) override;
     virtual std::unique_ptr<PlatformOpenGLContext> createOpenGLContext(const PlatformOpenGLOptions &options) override;
 };

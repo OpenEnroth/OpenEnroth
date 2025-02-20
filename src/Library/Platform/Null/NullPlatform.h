@@ -26,5 +26,4 @@ class NullPlatform : public Platform {
 
  private:
     std::unique_ptr<NullPlatformSharedState> _state;
-    bool _cursorShown = true;
 };

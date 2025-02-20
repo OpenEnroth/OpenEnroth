@@ -4,12 +4,10 @@
 #include <string>
 #include <optional>
 
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Pid.h"
 
 #include "Library/Geometry/Vec.h"
-
-#include "Utility/Memory/Blob.h"
 
 #include "ChestEnums.h"
 
@@ -39,7 +37,7 @@ struct Chest {
 
     static bool CanPlaceItemAt(int test_cell_position, ItemId item_id, int uChestID);
     static int FindFreeItemSlot(int uChestID);
-    static int PutItemInChest(int a1, ItemGen *a2, int uChestID);
+    static int PutItemInChest(int a1, Item *a2, int uChestID);
     static void PlaceItemAt(unsigned int put_cell_pos, unsigned int uItemIdx, int uChestID);
     static void PlaceItems(int uChestID);
     static bool open(int uChestID, Pid objectPid);
@@ -50,7 +48,7 @@ struct Chest {
 
     uint16_t uChestBitmapID = 0;
     ChestFlags uFlags;
-    std::array<ItemGen, 140> igChestItems;
+    std::array<Item, 140> igChestItems;
     std::array<int16_t, 140> pInventoryIndices = {{}};  // 0x13b4 why is this a short?
 
     // Chest position, OE addition. Recalculated on level load in UpdateChestPositions. It's used to display

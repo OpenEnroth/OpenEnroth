@@ -12,7 +12,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnumFunctions.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Graphics/ParticleEngine.h"
 #include "Engine/Graphics/LightsStack.h"
@@ -158,7 +158,7 @@ bool Game::loop() {
                 break;
             }
 
-            pParty->pPickedItem.uItemID = ITEM_NULL;
+            pParty->pPickedItem.itemId = ITEM_NULL;
 
             engine->_transitionMapId = pMapStats->GetMapInfo(_config->gameplay.StartingMap.value());
 
@@ -538,8 +538,8 @@ void Game::processQueuedMessages() {
                                         AfterEnchClickEventTimeout = 0_ticks;
                                     }
                                     if (ptr_50C9A4_ItemToEnchant &&
-                                        ptr_50C9A4_ItemToEnchant->uItemID != ITEM_NULL) {
-                                        ptr_50C9A4_ItemToEnchant->uAttributes &= ~ITEM_ENCHANT_ANIMATION_MASK;
+                                        ptr_50C9A4_ItemToEnchant->itemId != ITEM_NULL) {
+                                        ptr_50C9A4_ItemToEnchant->flags &= ~ITEM_ENCHANT_ANIMATION_MASK;
                                         ItemEnchantmentTimer = 0_ticks;
                                         ptr_50C9A4_ItemToEnchant = nullptr;
                                     }

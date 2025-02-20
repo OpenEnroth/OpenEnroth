@@ -96,7 +96,7 @@ target_compile_definitions(engine PRIVATE
 
 add_subdirectory(Data)
 add_subdirectory(Components)
-add_subdirectory(Events)
+add_subdirectory(Evt)
 add_subdirectory(Graphics)
 add_subdirectory(Objects)
 add_subdirectory(Random)
