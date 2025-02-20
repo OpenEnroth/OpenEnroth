@@ -612,6 +612,40 @@ GAME_TEST(Issues, Issue1925) {
     }
 }
 
+GAME_TEST(Issues, Issue1927) {
+    // Having bow equipped increases ranged attack bonus with wands
+    test.prepareForNextTest();
+    auto rangeAttackTape = tapes.custom([] { return pParty->pCharacters[0].GetRangedAttack(); });
+    game.startNewGame();
+    test.startTaping();
+    game.tick();
+
+    // Equip a bow
+    Item bow;
+    bow.itemId = ITEM_GRIFFIN_BOW;
+    game.runGameRoutine([&] {
+        // This code needs to be run in game thread b/c AddItem2 is loading textures...
+        pParty->pPickedItem = bow;
+        pParty->pCharacters[0].EquipBody(ITEM_TYPE_BOW);
+        });
+    game.tick();
+
+    // Equip wand.
+    Item wand;
+    wand.itemId = ITEM_ALACORN_WAND_OF_FIREBALLS;
+    wand.numCharges = wand.maxCharges = 30;
+    game.runGameRoutine([&] {
+        // This code needs to be run in game thread b/c AddItem2 is loading textures...
+        pParty->pPickedItem = wand;
+        pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
+        });
+    game.tick();
+
+    EXPECT_EQ(rangeAttackTape.size(), 3); // nothing, bow, bow and wand
+    EXPECT_EQ(rangeAttackTape.front(), rangeAttackTape.back()); // range bonus between nothing equipped and wand should be the same
+    EXPECT_EQ(rangeAttackTape.back(), pParty->pCharacters[0].GetActualAttack(false)); // should match melee
+}
+
 GAME_TEST(Prs, Pr1934) {
     // Should be able to generate standard enchantments with +25 bonus.
     Item item;
