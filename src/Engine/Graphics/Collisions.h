@@ -38,6 +38,7 @@ struct CollisionState {
     int uSectorID = 0;  // Indoor sector id.
     Pid pid;  // Pid of the object that we're collided with.
     BBoxf bbox;
+    bool hiCollision = false;
 
     Vec3f collisionPos;  // Point at which nearest collision occurs (touching radii)
 };
