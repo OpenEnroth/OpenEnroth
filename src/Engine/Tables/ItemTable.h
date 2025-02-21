@@ -22,7 +22,6 @@ struct ItemTable {
      * @offset 0x456620
      */
     void generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTreasureType, Item *pItem);
-    void SetSpecialBonus(Item *pItem);
 
     /** Item data for all items in the game. */
     IndexedArray<ItemData, ITEM_FIRST_VALID, ITEM_LAST_VALID> items;

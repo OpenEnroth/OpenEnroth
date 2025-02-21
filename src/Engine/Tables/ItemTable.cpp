@@ -260,15 +260,6 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     Item::PopulateRegularBonusMap();
 }
 
-//----- (00456D17) --------------------------------------------------------
-void ItemTable::SetSpecialBonus(Item *pItem) {
-    if (items[pItem->itemId].rarity == RARITY_SPECIAL) {
-        pItem->standardEnchantment = items[pItem->itemId].standardEnchantment;
-        pItem->specialEnchantment = items[pItem->itemId].specialEnchantment;
-        pItem->standardEnchantmentStrength = items[pItem->itemId].standardEnchantmentStrength;
-    }
-}
-
 //----- (00453B3C) --------------------------------------------------------
 void ItemTable::LoadPotions(const Blob &potions) {
     //    char Text[90];
@@ -499,7 +490,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
                 pParty->pIsArtifactFound[artifactRandomId] = true;
                 outItem->flags = 0;
                 outItem->itemId = artifactRandomId;
-                SetSpecialBonus(outItem);
+                outItem->postGenerate(ITEM_SOURCE_UNKNOWN);
                 return;
             }
         }

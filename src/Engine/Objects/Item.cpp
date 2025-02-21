@@ -252,7 +252,7 @@ bool Item::GenerateArtifact() {
     Reset();
     if (uNumArtifactsNotFound) {
         itemId = artifacts_list[grng->random(uNumArtifactsNotFound)];
-        pItemTable->SetSpecialBonus(this);
+        postGenerate(ITEM_SOURCE_UNKNOWN);
         return true;
     } else {
         return false;
@@ -820,7 +820,21 @@ void Item::postGenerate(ItemSource source) {
     if (type() == ITEM_TYPE_POTION && itemId != ITEM_POTION_BOTTLE && potionPower == 0) {
         if (source == ITEM_SOURCE_MAP) {
             potionPower = grng->random(15) + 5;
+        } else if (source == ITEM_SOURCE_MONSTER) {
+            potionPower = 2 * grng->random(4) + 2; // TODO(captainurist): change to 2d4+2.
         }
+
+        assert(potionPower > 0);
+    }
+
+    if (type() == ITEM_TYPE_WAND && maxCharges == 0) {
+        if (source == ITEM_SOURCE_MONSTER || source == ITEM_SOURCE_SCRIPT) {
+            numCharges = maxCharges = grng->random(6) + GetDamageMod() + 1;
+        } else if (source == ITEM_SOURCE_CHEST) {
+            numCharges = maxCharges = grng->random(21) + 10;
+        }
+
+        // assert(maxCharges > 0); // TODO(captainurist): this asserts.
     }
 }
 

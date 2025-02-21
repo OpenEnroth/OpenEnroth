@@ -3575,17 +3575,10 @@ void Actor::LootActor() {
     if (this->carriedItemId != ITEM_NULL) {
         Dst.Reset();
         Dst.itemId = this->carriedItemId;
+        Dst.postGenerate(ITEM_SOURCE_MONSTER);
 
         StatusBarItemFound(foundGold, pItemTable->items[Dst.itemId].unidentifiedName);
 
-        if (Dst.isWand()) {
-            Dst.numCharges = grng->random(6) + Dst.GetDamageMod() + 1;
-            Dst.maxCharges = Dst.numCharges;
-        }
-        if (Dst.isPotion() && Dst.itemId != ITEM_POTION_BOTTLE) {
-            Dst.potionPower = 2 * grng->random(4) + 2;
-        }
-        pItemTable->SetSpecialBonus(&Dst);
         if (!pParty->addItemToParty(&Dst)) {
             pParty->setHoldingItem(&Dst);
         }

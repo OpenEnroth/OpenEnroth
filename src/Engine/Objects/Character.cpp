@@ -709,8 +709,6 @@ int Character::AddItem(int index, ItemId uItemID) {
 
 //----- (00492826) --------------------------------------------------------
 int Character::AddItem2(int index, Item *Src) {  // are both required - check
-    pItemTable->SetSpecialBonus(Src);
-
     if (index == -1) {  // no loaction specified
         for (int xcoord = 0; xcoord < INVENTORY_SLOTS_WIDTH; xcoord++) {
             for (int ycoord = 0; ycoord < INVENTORY_SLOTS_HEIGHT; ycoord++) {
@@ -1533,12 +1531,7 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
                 if (carriedItemId != ITEM_NULL) {  // load item into tempitem
                     actroPtr->carriedItemId = ITEM_NULL;
                     tempItem.itemId = carriedItemId;
-                    if (pItemTable->items[carriedItemId].type == ITEM_TYPE_WAND) {
-                        tempItem.numCharges = grng->random(6) + pItemTable->items[carriedItemId].damageMod + 1;
-                        tempItem.maxCharges = tempItem.numCharges;
-                    } else if (pItemTable->items[carriedItemId].type == ITEM_TYPE_POTION && carriedItemId != ITEM_POTION_BOTTLE) {
-                        tempItem.potionPower = 2 * grng->random(4) + 2;
-                    }
+                    tempItem.postGenerate(ITEM_SOURCE_MONSTER);
                 } else {
                     Item *itemToSteal = &actroPtr->items[randslot];
                     tempItem = *itemToSteal;
@@ -5052,12 +5045,10 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
             item.Reset();
             item.flags = ITEM_IDENTIFIED;
             item.itemId = ItemId(val);
-            if (isSpawnableArtifact(ItemId(val))) {
+            item.postGenerate(ITEM_SOURCE_SCRIPT);
+
+            if (isSpawnableArtifact(ItemId(val)))
                 pParty->pIsArtifactFound[ItemId(val)] = true;
-            } else if (isWand(ItemId(val))) {
-                item.numCharges = grng->random(6) + item.GetDamageMod() + 1;
-                item.maxCharges = item.numCharges;
-            }
             pParty->setHoldingItem(&item);
             return;
         case VAR_FixedGold:

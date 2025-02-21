@@ -107,6 +107,13 @@ struct Item {
 
     ItemRarity rarity() const;
 
+    /**
+     * Does post-processing for items, filling in special enchantments for items that should have them, and potion power
+     * and want charges if those are not set.
+     *
+     * @param source                    Where the item is coming from. MM7 used different item generation code for items
+     *                                  in chests / lying on the floor / carried by monsters.
+     */
     void postGenerate(ItemSource source);
 
     ItemId itemId = ITEM_NULL;
