@@ -624,3 +624,29 @@ GAME_TEST(Prs, Pr1934) {
 
     EXPECT_EQ(maxStrength, 25);
 }
+
+GAME_TEST(Issues, Issue1947) {
+    // Wand is generated with 0 charges in Tatalia.
+    auto mapTape = tapes.map();
+    game.startNewGame();
+    test.startTaping();
+    engine->config->debug.TownPortal.setValue(true);
+    engine->config->debug.AllMagic.setValue(true);
+
+    game.pressAndReleaseKey(PlatformKey::KEY_C);
+    game.tick();
+    game.pressGuiButton("SpellBook_School2"); // Water magic.
+    game.tick();
+    game.pressGuiButton("SpellBook_Spell8"); // Town portal.
+    game.tick();
+    game.pressGuiButton("SpellBook_Spell8"); // Confirm.
+    game.tick(3);
+    game.pressGuiButton("TownPortalBook_Marker10"); // Tatalia.
+    game.tick();
+    game.skipLoadingScreen();
+
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_TATALIA));
+    EXPECT_EQ(pSpriteObjects[4].containing_item.itemId, ITEM_ALACORN_WAND_OF_FIREBALLS);
+    EXPECT_EQ(pSpriteObjects[4].containing_item.numCharges, 0);
+    EXPECT_EQ(pSpriteObjects[4].containing_item.maxCharges, 0); // TODO(captainurist): this is the bug that needs fixing.
+}
