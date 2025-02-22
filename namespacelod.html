@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bfe2616</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2ecbd8c</span>
    </div>
   </td>
  </tr>
@@ -87,6 +87,8 @@ Functions</h2></td></tr>
 <tr class="separator:a342ac670a32a165de714ddf4eb120f1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8b61ce518c78df6307e60f7c5a79e6a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structLodImage.html">LodImage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#ac8b61ce518c78df6307e60f7c5a79e6a">decodeImage</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
 <tr class="separator:ac8b61ce518c78df6307e60f7c5a79e6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2eda3798d74a42545cd868789c820bf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#ad2eda3798d74a42545cd868789c820bf">decodeImageSize</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
+<tr class="separator:ad2eda3798d74a42545cd868789c820bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9045ab1c3fab6f9c7c949990c75d6374"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structLodSprite.html">LodSprite</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#a9045ab1c3fab6f9c7c949990c75d6374">decodeSprite</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
 <tr class="separator:a9045ab1c3fab6f9c7c949990c75d6374"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -147,6 +149,32 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Decoded <code><a class="el" href="structLodImage.html">LodImage</a></code>. </dd></dl>
+
+</div>
+</div>
+<a id="ad2eda3798d74a42545cd868789c820bf" name="ad2eda3798d74a42545cd868789c820bf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2eda3798d74a42545cd868789c820bf">&#9670;&#160;</a></span>decodeImageSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a> lod::decodeImageSize </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classBlob.html">Blob</a> &amp;&#160;</td>
+          <td class="paramname"><em>blob</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >This function processes <code>LOD_FILE_IMAGE</code> and <code>LOD_FILE_PALETTE</code> formats. It reads the image header and returns image size w/o decompressing the pixel data. For <code>LOD_FILE_PALETTE</code> returned image size will be zero.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">blob</td><td><a class="el" href="classImage.html">Image</a> <code><a class="el" href="classBlob.html">Blob</a></code>, as read from a LOD file. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classImage.html">Image</a> size. </dd></dl>
 
 </div>
 </div>

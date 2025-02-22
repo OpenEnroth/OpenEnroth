@@ -58,7 +58,7 @@ var searchData=
   ['isartifactfound_55',['isArtifactFound',['../structParty__MM7.html#a6309fbe0df9a6bb034390a88c124e4d2',1,'Party_MM7']]],
   ['isautorepeat_56',['isAutoRepeat',['../classPlatformKeyEvent.html#a75b4d6324f995cb4fc20d15c5967ecbb',1,'PlatformKeyEvent']]],
   ['isdoubleclick_57',['isDoubleClick',['../classPlatformMouseEvent.html#ae6dd07f6ed3e26152376d36d524c3e35',1,'PlatformMouseEvent']]],
-  ['isenchantinginprogress_58',['IsEnchantingInProgress',['../mm7__data_8h.html#aae8d81779f0b077da9737cdde8422d61',1,'IsEnchantingInProgress():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#aae8d81779f0b077da9737cdde8422d61',1,'IsEnchantingInProgress():&#160;mm7_data.cpp']]],
+  ['isenchantinginprogress_58',['IsEnchantingInProgress',['../mm7__data_8cpp.html#aae8d81779f0b077da9737cdde8422d61',1,'IsEnchantingInProgress():&#160;mm7_data.cpp'],['../mm7__data_8h.html#aae8d81779f0b077da9737cdde8422d61',1,'IsEnchantingInProgress():&#160;mm7_data.cpp']]],
   ['isgmbuff_59',['isGMBuff',['../structSpellBuff.html#a64220ef41c029b19e9e7c36c3e9bcb2c',1,'SpellBuff']]],
   ['ishisturn_60',['IsHisTurn',['../structArcomagePlayer.html#a03b280aeaaf6239d3a33ead04bd56efd',1,'ArcomagePlayer']]],
   ['iskeydown_5f_61',['isKeyDown_',['../classGameKeyboardController.html#ae3930e3ee9a19cfe9218deeb073ee794',1,'GameKeyboardController']]],
@@ -75,8 +75,9 @@ var searchData=
   ['itemenchantmenttimer_72',['ItemEnchantmentTimer',['../mm7__data_8cpp.html#a318643598a22e98cf1c5f0c1ce8636db',1,'ItemEnchantmentTimer():&#160;mm7_data.cpp'],['../mm7__data_8h.html#a318643598a22e98cf1c5f0c1ce8636db',1,'ItemEnchantmentTimer():&#160;mm7_data.cpp']]],
   ['itemid_73',['itemId',['../structItemGen__MM7.html#af879188f91afb0414126970132f4e657',1,'ItemGen_MM7::itemId()'],['../structItem.html#af7a2bf78b808071f4136a8e4c41fe7f5',1,'Item::itemId()']]],
   ['items_74',['items',['../structItemTable.html#ae8b9a15fc292c9130ffa675ae56f72bd',1,'ItemTable::items()'],['../classActor.html#a4090d55bf716ab24afa78f117ec59002',1,'Actor::items()']]],
-  ['itemsuffix_75',['itemSuffix',['../structStandardEnchantmentData.html#a5be9258319d32b17c461abd100ff8f61',1,'StandardEnchantmentData']]],
-  ['itemsuffixorprefix_76',['itemSuffixOrPrefix',['../structSpecialEnchantmentData.html#a4326ae19c24cc91dbc71bc4c8a1a8370',1,'SpecialEnchantmentData']]],
-  ['itemtextureidbyitemid_77',['itemTextureIdByItemId',['../Item_8cpp.html#a119fceb33c76e0232e193eb0c2836da5',1,'Item.cpp']]],
-  ['itreasurelevel_78',['iTreasureLevel',['../structSpecialEnchantmentData.html#a0d78c83805ebb69f5529d7b5c4984ce2',1,'SpecialEnchantmentData']]]
+  ['itemsizes_75',['itemSizes',['../structItemTable.html#a2ebfa2b7956d3a23339ae051fb14c24e',1,'ItemTable']]],
+  ['itemsuffix_76',['itemSuffix',['../structStandardEnchantmentData.html#a5be9258319d32b17c461abd100ff8f61',1,'StandardEnchantmentData']]],
+  ['itemsuffixorprefix_77',['itemSuffixOrPrefix',['../structSpecialEnchantmentData.html#a4326ae19c24cc91dbc71bc4c8a1a8370',1,'SpecialEnchantmentData']]],
+  ['itemtextureidbyitemid_78',['itemTextureIdByItemId',['../Item_8cpp.html#a119fceb33c76e0232e193eb0c2836da5',1,'Item.cpp']]],
+  ['itreasurelevel_79',['iTreasureLevel',['../structSpecialEnchantmentData.html#a0d78c83805ebb69f5529d7b5c4984ce2',1,'SpecialEnchantmentData']]]
 ];
