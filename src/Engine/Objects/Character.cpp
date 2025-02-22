@@ -612,7 +612,7 @@ void Character::SetCondition(Condition condition, int blockable) {
 
 bool Character::canFitItem(unsigned int uSlot, ItemId uItemID) const {
     Sizei itemSize = pItemTable->itemSizes[uItemID];
-    assert(itemSize.w > 0 && itemSize.w > 0);
+    assert(itemSize.h > 0 && itemSize.w > 0 && "Items should have nonzero dimensions");
 
     if ((itemSize.w + uSlot % INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_WIDTH &&
         (itemSize.h + uSlot / INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_HEIGHT) {

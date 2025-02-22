@@ -248,7 +248,7 @@ bool Chest::CanPlaceItemAt(int test_cell_position, ItemId item_id, int uChestID)
     int chest_cell_width = pChestWidthsByType[vChests[uChestID].uChestBitmapID];
 
     Sizei itemSize = pItemTable->itemSizes[item_id];
-    assert(itemSize.h > 0 && itemSize.w > 0);
+    assert(itemSize.h > 0 && itemSize.w > 0 && "Items should have nonzero dimensions");
 
     if ((itemSize.w + test_cell_position % chest_cell_width <= chest_cell_width) &&
         (itemSize.h + test_cell_position / chest_cell_width <= chest_cell_heght)) {
