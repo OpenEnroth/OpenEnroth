@@ -173,7 +173,7 @@ int Item::GetValue() const {
 }
 
 //----- (00456499) --------------------------------------------------------
-std::string Item::GetDisplayName() {
+std::string Item::GetDisplayName() const {
     if (IsIdentified()) {
         return GetIdentifiedName();
     } else {
@@ -182,7 +182,7 @@ std::string Item::GetDisplayName() {
 }
 
 //----- (004564B3) --------------------------------------------------------
-std::string Item::GetIdentifiedName() {
+std::string Item::GetIdentifiedName() const {
     ItemType equip_type = type();
     if ((equip_type == ITEM_TYPE_REAGENT) || (equip_type == ITEM_TYPE_POTION) ||
         (equip_type == ITEM_TYPE_GOLD)) {
@@ -252,7 +252,7 @@ bool Item::GenerateArtifact() {
     Reset();
     if (uNumArtifactsNotFound) {
         itemId = artifacts_list[grng->random(uNumArtifactsNotFound)];
-        pItemTable->SetSpecialBonus(this);
+        postGenerate(ITEM_SOURCE_UNKNOWN);
         return true;
     } else {
         return false;
@@ -804,7 +804,42 @@ ItemType Item::type() const {
 }
 
 ItemRarity Item::rarity() const {
-    return pItemTable->items[itemId].rarity;
+    return itemId == ITEM_NULL ? RARITY_COMMON : pItemTable->items[itemId].rarity;
+}
+
+Sizei Item::inventorySize() const {
+    return itemId == ITEM_NULL ? Sizei() : pItemTable->itemSizes[itemId];
+}
+
+void Item::postGenerate(ItemSource source) {
+    if (itemId == ITEM_NULL)
+        return;
+
+    if (rarity() == RARITY_SPECIAL) {
+        standardEnchantment = pItemTable->items[itemId].standardEnchantment;
+        specialEnchantment = pItemTable->items[itemId].specialEnchantment;
+        standardEnchantmentStrength = pItemTable->items[itemId].standardEnchantmentStrength;
+    }
+
+    if (type() == ITEM_TYPE_POTION && itemId != ITEM_POTION_BOTTLE && potionPower == 0) {
+        if (source == ITEM_SOURCE_MAP) {
+            potionPower = grng->random(15) + 5;
+        } else if (source == ITEM_SOURCE_MONSTER) {
+            potionPower = 2 * grng->random(4) + 2; // TODO(captainurist): change to 2d4+2.
+        }
+
+        assert(potionPower > 0);
+    }
+
+    if (type() == ITEM_TYPE_WAND && maxCharges == 0) {
+        if (source == ITEM_SOURCE_MONSTER || source == ITEM_SOURCE_SCRIPT) {
+            numCharges = maxCharges = grng->random(6) + GetDamageMod() + 1;
+        } else if (source == ITEM_SOURCE_CHEST) {
+            numCharges = maxCharges = grng->random(21) + 10;
+        }
+
+        // assert(maxCharges > 0); // TODO(captainurist): this asserts.
+    }
 }
 
 Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MapTreasureLevel mapTreasureLevel) {

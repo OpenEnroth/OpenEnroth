@@ -1313,11 +1313,9 @@ void CharacterUI_DrawPickedItemUnderlay(Vec2i offset) {
 
         int inventoryXCoord = (pX + mouse->pickedItemOffsetX - offset.x) / 32;
         int inventoryYCoord = (pY + mouse->pickedItemOffsetY - offset.y) / 32;
-        auto img = assets->getImage_Alpha(pParty->pPickedItem.GetIconName());
-        int itemWidth = GetSizeInInventorySlots(img->width());
-        int itemHeight = GetSizeInInventorySlots(img->height());
+        Sizei itemSize = pParty->pPickedItem.inventorySize();
 
-        render->FillRectFast(inventoryXCoord * 32 + offset.x, inventoryYCoord * 32 + offset.y, itemWidth * 32, itemHeight * 32, Color(96, 96, 96, 128));
+        render->FillRectFast(inventoryXCoord * 32 + offset.x, inventoryYCoord * 32 + offset.y, itemSize.w * 32, itemSize.h * 32, Color(96, 96, 96, 128));
     }
 }
 

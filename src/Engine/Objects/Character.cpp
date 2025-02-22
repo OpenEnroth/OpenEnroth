@@ -611,15 +611,13 @@ void Character::SetCondition(Condition condition, int blockable) {
 }
 
 bool Character::canFitItem(unsigned int uSlot, ItemId uItemID) const {
-    auto img = assets->getImage_ColorKey(pItemTable->items[uItemID].iconName);
-    int slotWidth = GetSizeInInventorySlots(img->width());
-    int slotHeight = GetSizeInInventorySlots(img->height());
+    Sizei itemSize = pItemTable->itemSizes[uItemID];
+    assert(itemSize.h > 0 && itemSize.w > 0 && "Items should have nonzero dimensions");
 
-    assert(slotHeight > 0 && slotWidth > 0 && "Items should have nonzero dimensions");
-    if ((slotWidth + uSlot % INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_WIDTH &&
-        (slotHeight + uSlot / INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_HEIGHT) {
-        for (int x = 0; x < slotWidth; x++) {
-            for (int y = 0; y < slotHeight; y++) {
+    if ((itemSize.w + uSlot % INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_WIDTH &&
+        (itemSize.h + uSlot / INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_HEIGHT) {
+        for (int x = 0; x < itemSize.w; x++) {
+            for (int y = 0; y < itemSize.h; y++) {
                 if (pInventoryMatrix[y * INVENTORY_SLOTS_WIDTH + x + uSlot] != 0) {
                     return false;
                 }
@@ -709,8 +707,6 @@ int Character::AddItem(int index, ItemId uItemID) {
 
 //----- (00492826) --------------------------------------------------------
 int Character::AddItem2(int index, Item *Src) {  // are both required - check
-    pItemTable->SetSpecialBonus(Src);
-
     if (index == -1) {  // no loaction specified
         for (int xcoord = 0; xcoord < INVENTORY_SLOTS_WIDTH; xcoord++) {
             for (int ycoord = 0; ycoord < INVENTORY_SLOTS_HEIGHT; ycoord++) {
@@ -752,18 +748,14 @@ void Character::PutItemAtInventoryIndex(
     ItemId uItemID, int itemListPos,
     int index) {  // originally accepted ItemGen *but needed only its uItemID
 
-    auto img = assets->getImage_ColorKey(pItemTable->items[uItemID].iconName);
-    int slot_width = GetSizeInInventorySlots(img->width());
-    int slot_height = GetSizeInInventorySlots(img->height());
+    Sizei itemSize = pItemTable->itemSizes[uItemID];
 
     // TODO(_): try to come up with a better
     // solution. negative values are used when
     // drawing the inventory - nothing is drawn
-    if (slot_width > 0) {
-        for (int i = 0; i < slot_height; i++)
-            for (int j = 0; j < slot_width; j++)
-                pInventoryMatrix[index + i * INVENTORY_SLOTS_WIDTH + j] = -1 - index;
-    }
+    for (int i = 0; i < itemSize.h; i++)
+        for (int j = 0; j < itemSize.w; j++)
+            pInventoryMatrix[index + i * INVENTORY_SLOTS_WIDTH + j] = -1 - index;
 
     pInventoryMatrix[index] = itemListPos + 1;
 }
@@ -772,9 +764,7 @@ void Character::PutItemAtInventoryIndex(
 void Character::RemoveItemAtInventoryIndex(unsigned int index) {
     Item *item_in_slot = this->GetItemAtInventoryIndex(index);
 
-    auto img = assets->getImage_ColorKey(item_in_slot->GetIconName());
-    int slot_width = GetSizeInInventorySlots(img->width());
-    int slot_height = GetSizeInInventorySlots(img->height());
+    Sizei itemSize = item_in_slot->inventorySize();
 
     item_in_slot->Reset();  // must get img details before reset
 
@@ -783,11 +773,9 @@ void Character::RemoveItemAtInventoryIndex(unsigned int index) {
         index = (-1 - inventory_index);
     }
 
-    if (slot_width > 0) {
-        for (int i = 0; i < slot_height; i++)
-            for (int j = 0; j < slot_width; j++)
-                pInventoryMatrix[index + i * INVENTORY_SLOTS_WIDTH + j] = 0;
-    }
+    for (int i = 0; i < itemSize.h; i++)
+        for (int j = 0; j < itemSize.w; j++)
+            pInventoryMatrix[index + i * INVENTORY_SLOTS_WIDTH + j] = 0;
 }
 
 //----- (0049107D) --------------------------------------------------------
@@ -1534,12 +1522,7 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
                 if (carriedItemId != ITEM_NULL) {  // load item into tempitem
                     actroPtr->carriedItemId = ITEM_NULL;
                     tempItem.itemId = carriedItemId;
-                    if (pItemTable->items[carriedItemId].type == ITEM_TYPE_WAND) {
-                        tempItem.numCharges = grng->random(6) + pItemTable->items[carriedItemId].damageMod + 1;
-                        tempItem.maxCharges = tempItem.numCharges;
-                    } else if (pItemTable->items[carriedItemId].type == ITEM_TYPE_POTION && carriedItemId != ITEM_POTION_BOTTLE) {
-                        tempItem.potionPower = 2 * grng->random(4) + 2;
-                    }
+                    tempItem.postGenerate(ITEM_SOURCE_MONSTER);
                 } else {
                     Item *itemToSteal = &actroPtr->items[randslot];
                     tempItem = *itemToSteal;
@@ -5053,12 +5036,10 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
             item.Reset();
             item.flags = ITEM_IDENTIFIED;
             item.itemId = ItemId(val);
-            if (isSpawnableArtifact(ItemId(val))) {
+            item.postGenerate(ITEM_SOURCE_SCRIPT);
+
+            if (isSpawnableArtifact(ItemId(val)))
                 pParty->pIsArtifactFound[ItemId(val)] = true;
-            } else if (isWand(ItemId(val))) {
-                item.numCharges = grng->random(6) + item.GetDamageMod() + 1;
-                item.maxCharges = item.numCharges;
-            }
             pParty->setHoldingItem(&item);
             return;
         case VAR_FixedGold:

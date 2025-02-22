@@ -1037,17 +1037,10 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    for (int i = 0; i < pSpriteObjects.size(); ++i) {
-        if (pSpriteObjects[i].uObjectDescID) {
-            if (pSpriteObjects[i].containing_item.itemId != ITEM_NULL) {
-                if (pSpriteObjects[i].containing_item.itemId != ITEM_POTION_BOTTLE &&
-                    pItemTable->items[pSpriteObjects[i].containing_item.itemId].type == ITEM_TYPE_POTION &&
-                    !pSpriteObjects[i].containing_item.potionPower)
-                    pSpriteObjects[i].containing_item.potionPower = grng->random(15) + 5;
-                pItemTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);
-            }
-        }
-    }
+    // TODO(captainurist): merge with ArrangeSpriteObjects?
+    for (int i = 0; i < pSpriteObjects.size(); ++i)
+        if (pSpriteObjects[i].uObjectDescID)
+            pSpriteObjects[i].containing_item.postGenerate(ITEM_SOURCE_MAP);
 
     // INDOOR initialize actors
     alertStatus = false;

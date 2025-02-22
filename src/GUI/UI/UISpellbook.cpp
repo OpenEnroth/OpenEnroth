@@ -140,8 +140,9 @@ void GUIWindow_Spellbook::openSpellbook() {
 
     for (MagicSchool school : allMagicSchools())
         if (player.pActiveSkills[skillForMagicSchool(school)] || engine->config->debug.AllMagic.value())
-            CreateButton(buttonPositions[school], {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, std::to_underlying(school),
-                         Io::InputAction::Invalid, localization->GetSpellSchoolName(school));
+            CreateButton(fmt::format("SpellBook_School{}", std::to_underlying(school)), buttonPositions[school],
+                         {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, std::to_underlying(school), Io::InputAction::Invalid,
+                         localization->GetSpellSchoolName(school));
 
     pBtn_InstallRemoveSpell = CreateButton({476, 450}, ui_spellbook_btn_quckspell->size(), 1, UIMSG_HintSelectRemoveQuickSpellBtn,
                                            UIMSG_ClickInstallRemoveQuickSpellBtn, 0, Io::InputAction::Invalid, "", {ui_spellbook_btn_quckspell_click});
