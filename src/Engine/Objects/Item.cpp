@@ -173,7 +173,7 @@ int Item::GetValue() const {
 }
 
 //----- (00456499) --------------------------------------------------------
-std::string Item::GetDisplayName() {
+std::string Item::GetDisplayName() const {
     if (IsIdentified()) {
         return GetIdentifiedName();
     } else {
@@ -182,7 +182,7 @@ std::string Item::GetDisplayName() {
 }
 
 //----- (004564B3) --------------------------------------------------------
-std::string Item::GetIdentifiedName() {
+std::string Item::GetIdentifiedName() const {
     ItemType equip_type = type();
     if ((equip_type == ITEM_TYPE_REAGENT) || (equip_type == ITEM_TYPE_POTION) ||
         (equip_type == ITEM_TYPE_GOLD)) {

@@ -53,8 +53,8 @@ struct Item {
     bool GenerateArtifact();
     void generateGold(ItemTreasureLevel treasureLevel);
     int GetValue() const;
-    std::string GetDisplayName();
-    std::string GetIdentifiedName();
+    std::string GetDisplayName() const;
+    std::string GetIdentifiedName() const;
     void UpdateTempBonus(Time time);
     void Reset();
     int _439DF3_get_additional_damage(DamageType *a2, bool *vampiyr);
