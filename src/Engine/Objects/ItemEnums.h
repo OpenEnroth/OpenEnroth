@@ -1014,7 +1014,7 @@ enum class ItemId : int32_t {
 using enum ItemId;
 
 enum class ItemType : uint8_t {
-    ITEM_TYPE_SINGLE_HANDED = 0,
+    ITEM_TYPE_SINGLE_HANDED = 0, // Also blasters.
     ITEM_TYPE_TWO_HANDED = 1,
     ITEM_TYPE_BOW = 2,
     ITEM_TYPE_ARMOUR = 3,

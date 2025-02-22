@@ -91,12 +91,10 @@ GAME_TEST(Issues, Issue198) {
 
     // Then can safely check everything.
     forEachInventoryItem([](const Item &item, int x, int y) {
-        GraphicsImage *image = assets->getImage_ColorKey(pItemTable->items[item.itemId].iconName);
-        int width = GetSizeInInventorySlots(image->width());
-        int height = GetSizeInInventorySlots(image->height());
+        Sizei itemSize = item.inventorySize();
 
-        EXPECT_LE(x + width, Character::INVENTORY_SLOTS_WIDTH);
-        EXPECT_LE(y + height, Character::INVENTORY_SLOTS_HEIGHT);
+        EXPECT_LE(x + itemSize.w, Character::INVENTORY_SLOTS_WIDTH);
+        EXPECT_LE(y + itemSize.h, Character::INVENTORY_SLOTS_HEIGHT);
     });
 }
 

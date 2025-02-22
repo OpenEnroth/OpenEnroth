@@ -7,6 +7,8 @@
 #include "Engine/Data/ItemData.h"
 #include "Engine/Objects/Item.h"
 
+#include "Library/Geometry/Size.h"
+
 #include "Utility/IndexedArray.h"
 #include "Utility/Segment.h"
 
@@ -17,6 +19,7 @@ struct ItemTable {
     void Initialize(GameResourceManager *resourceManager);
     void LoadPotions(const Blob &potions);
     void LoadPotionNotes(const Blob &potionNotes);
+    void LoadItemSizes();
 
     /**
      * @offset 0x456620
@@ -25,6 +28,9 @@ struct ItemTable {
 
     /** Item data for all items in the game. */
     IndexedArray<ItemData, ITEM_FIRST_VALID, ITEM_LAST_VALID> items;
+
+    /** Item sizes in inventory slots for all items in the game. */
+    IndexedArray<Sizei, ITEM_FIRST_VALID, ITEM_LAST_VALID> itemSizes;
 
     /** Data for standard item enchantments. */
     IndexedArray<StandardEnchantmentData, ATTRIBUTE_FIRST_ENCHANTABLE, ATTRIBUTE_LAST_ENCHANTABLE> standardEnchantments;

@@ -804,7 +804,11 @@ ItemType Item::type() const {
 }
 
 ItemRarity Item::rarity() const {
-    return pItemTable->items[itemId].rarity;
+    return itemId == ITEM_NULL ? RARITY_COMMON : pItemTable->items[itemId].rarity;
+}
+
+Sizei Item::inventorySize() const {
+    return itemId == ITEM_NULL ? Sizei() : pItemTable->itemSizes[itemId];
 }
 
 void Item::postGenerate(ItemSource source) {

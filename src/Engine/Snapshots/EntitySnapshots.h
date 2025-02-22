@@ -290,6 +290,7 @@ void snapshot(const RawCharacterConditions &src, CharacterConditions_MM7 *dst);
 void reconstruct(const CharacterConditions_MM7 &src, RawCharacterConditions *dst);
 
 
+// TODO(captainurist): Character_MM7.
 struct Player_MM7 {
     /* 0000 */ CharacterConditions_MM7 conditions;
     /* 00A0 */ uint64_t experience;

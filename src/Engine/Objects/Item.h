@@ -9,6 +9,7 @@
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Time/Time.h"
 #include "Engine/MapEnums.h"
+#include "Library/Geometry/Size.h"
 
 #include "Utility/IndexedArray.h"
 
@@ -106,6 +107,11 @@ struct Item {
     ItemType type() const;
 
     ItemRarity rarity() const;
+
+    /**
+     * @return                          This item's size in inventory slots.
+     */
+    Sizei inventorySize() const;
 
     /**
      * Does post-processing for items, filling in special enchantments for items that should have them, and potion power

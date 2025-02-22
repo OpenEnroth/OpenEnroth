@@ -10,11 +10,13 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/Party.h"
 #include "Engine/GameResourceManager.h"
 
 #include "GUI/UI/UIHouses.h"
 
+#include "Library/LodFormats/LodFormats.h"
 #include "Library/Logger/Logger.h"
 
 #include "Utility/String/Ascii.h"
@@ -258,6 +260,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     Item::PopulateSpecialBonusMap();
     Item::PopulateArtifactBonusMap();
     Item::PopulateRegularBonusMap();
+    LoadItemSizes();
 }
 
 //----- (00453B3C) --------------------------------------------------------
@@ -340,6 +343,23 @@ void ItemTable::LoadPotionNotes(const Blob &potionNotes) {
             return;
         }
         tokens = tokenize(test_string, '\t');
+    }
+}
+
+void ItemTable::LoadItemSizes() {
+    // Item sizes are loaded at startup directly from LOD image headers. This would have been an overkill back in 1999
+    // (think about all these random reads from your HDD) but is totally fine today. Another option would've been to
+    // precalculate these and place in a json file, but why precalculate what's cheap to recalculate?
+    LodReader reader(dfs->read("data/icons.lod"));
+
+    for (ItemId itemId : items.indices()) {
+        std::string iconName = items[itemId].iconName;
+
+        Sizei iconSize(1, 1); // Actual icon name that will be used in this case is "pending", see LodTextureCache.
+        if (reader.exists(iconName))
+            iconSize = lod::decodeImageSize(reader.read(iconName));
+
+        itemSizes[itemId] = Sizei(GetSizeInInventorySlots(iconSize.w), GetSizeInInventorySlots(iconSize.h));
     }
 }
 
