@@ -832,13 +832,13 @@ void Item::postGenerate(ItemSource source) {
     }
 
     if (type() == ITEM_TYPE_WAND && maxCharges == 0) {
-        if (source == ITEM_SOURCE_MONSTER || source == ITEM_SOURCE_SCRIPT) {
+        if (source == ITEM_SOURCE_MONSTER || source == ITEM_SOURCE_SCRIPT || source == ITEM_SOURCE_MAP) {
             numCharges = maxCharges = grng->random(6) + GetDamageMod() + 1;
         } else if (source == ITEM_SOURCE_CHEST) {
             numCharges = maxCharges = grng->random(21) + 10;
         }
 
-        // assert(maxCharges > 0); // TODO(captainurist): this asserts.
+        assert(maxCharges > 0);
     }
 }
 
