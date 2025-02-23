@@ -6119,7 +6119,7 @@ bool Character::hasUnderwaterSuitEquipped() {
     return true;
 }
 
-bool Character::hasItem(ItemId uItemID, bool checkHeldItem) {
+bool Character::hasItem(ItemId uItemID, bool checkHeldItem) const {
     if (!checkHeldItem || pParty->pPickedItem.itemId != uItemID) {
         for (unsigned i = 0; i < INVENTORY_SLOT_COUNT; ++i) {
             if (this->pInventoryMatrix[i] > 0) {

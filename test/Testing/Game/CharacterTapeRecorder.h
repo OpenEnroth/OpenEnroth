@@ -78,6 +78,9 @@ class CharacterTapeRecorder {
     TestTape<SpellId> quickSpell(int characterIndex);
     TestMultiTape<SpellId> quickSpells();
 
+    TestTape<bool> hasItem(int characterIndex, ItemId itemId);
+    TestMultiTape<bool> hasItem(ItemId itemId);
+
  private:
     static std::span<Character> characters();
 
