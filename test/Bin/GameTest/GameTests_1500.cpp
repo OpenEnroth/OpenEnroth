@@ -661,6 +661,8 @@ GAME_TEST(Prs, Pr1934) {
 
 GAME_TEST(Issues, Issue1947) {
     // Wand is generated with 0 charges in Tatalia.
+    // The wand in question does in fact have 0 charges in the data files, and NWC never wrote the code to post-process
+    // it on load like they did for wands in chests or wands carried by monsters. So we fixed that.
     auto mapTape = tapes.map();
     game.startNewGame();
     test.startTaping();
@@ -681,6 +683,6 @@ GAME_TEST(Issues, Issue1947) {
 
     EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_TATALIA));
     EXPECT_EQ(pSpriteObjects[4].containing_item.itemId, ITEM_ALACORN_WAND_OF_FIREBALLS);
-    EXPECT_EQ(pSpriteObjects[4].containing_item.numCharges, 0);
-    EXPECT_EQ(pSpriteObjects[4].containing_item.maxCharges, 0); // TODO(captainurist): this is the bug that needs fixing.
+    EXPECT_GT(pSpriteObjects[4].containing_item.numCharges, 0);
+    EXPECT_GT(pSpriteObjects[4].containing_item.maxCharges, 0);
 }
