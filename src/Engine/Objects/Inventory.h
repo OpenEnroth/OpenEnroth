@@ -16,7 +16,6 @@ struct Chest_MM7;
 // SO:
 // - ChestInventory : private Inventory, expose only relevant methods.
 // - snapshot / reconstruct should use public methods. So, not friends. This way we'll have 100% consistency.
-// - Add unit tests === actually easy, it's a GAME TEST. Link to game tests & you'll have everything you need. Just don't use game. and test.
 // - And write better docs.
 
 enum class InventoryLocation {
