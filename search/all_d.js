@@ -318,7 +318,7 @@ var searchData=
   ['might_20and_20magic_20trilogy_315',['Might and Magic Trilogy',['../index.html',1,'']]],
   ['might_5flist_316',['might_list',['../classMPlayer.html#a34a8b4edfaf8a0e1febbe1450effb7ea',1,'MPlayer']]],
   ['mightbonus_317',['mightBonus',['../structPlayer__MM7.html#af4ad882e1cc2506b33c083d898b4e6de',1,'Player_MM7']]],
-  ['migrateuserdata_318',['migrateUserData',['../classGameStarter.html#aea67d81f9b52ca40daf065c7f4097613',1,'GameStarter']]],
+  ['migratesaves_318',['migrateSaves',['../classGameStarter.html#a9dc0d1611a7c3970a8197f586df970ec',1,'GameStarter']]],
   ['mimosa_319',['Mimosa',['../classColorTable.html#ae95ac5386c50866fb496627da2888e5e',1,'ColorTable']]],
   ['min_320',['min',['../classAccessible.html#a8f98856706ff9530cddd8c879419df59',1,'Accessible']]],
   ['min_5flifespan_321',['min_lifespan',['../structeffect__params__struct.html#ae84537a935527fb7be6ca182787532fa',1,'effect_params_struct::min_lifespan()'],['../structexplosion__effect__struct.html#a351eacc6f9a25277442b181bae35f17c',1,'explosion_effect_struct::min_lifespan()']]],

@@ -55,7 +55,7 @@ var searchData=
   ['mercenaryguilddialog_52',['MercenaryGuildDialog',['../MercenaryGuild_8h.html#a245c59f82d964d80c2f0ed2b246fb637',1,'MercenaryGuild.h']]],
   ['mergingfilesystem_53',['MergingFileSystem',['../classMergingFileSystem.html#a759bc935efe4e7074431a48038128b2c',1,'MergingFileSystem']]],
   ['messageboxes_54',['messageBoxes',['../classCommonTapeRecorder.html#acce02821689faf5762958047df5a2301',1,'CommonTapeRecorder']]],
-  ['migrateuserdata_55',['migrateUserData',['../classGameStarter.html#aea67d81f9b52ca40daf065c7f4097613',1,'GameStarter']]],
+  ['migratesaves_55',['migrateSaves',['../classGameStarter.html#a9dc0d1611a7c3970a8197f586df970ec',1,'GameStarter']]],
   ['min_56',['min',['../classAccessible.html#a8f98856706ff9530cddd8c879419df59',1,'Accessible']]],
   ['minmax_57',['minMax',['../classAccessible.html#aead21420d5c80418c860dc0db6deb4e1',1,'Accessible']]],
   ['minutes_58',['minutes',['../classDuration.html#afec8c277e3a840ff926648bcfcce7cf1',1,'Duration']]],

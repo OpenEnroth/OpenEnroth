@@ -36,11 +36,12 @@ var searchData=
   ['output_33',['output',['../structLodToolOptions_1_1ExtractOptions.html#acf355e2f235ca1679ced30ddaa5932e4',1,'LodToolOptions::ExtractOptions']]],
   ['outputpresent_34',['outputPresent',['../classBaseRenderer.html#acc5cebdb8057cfe47ff2683575bcb2b2',1,'BaseRenderer']]],
   ['outputrender_35',['outputRender',['../classBaseRenderer.html#aad3378f6fef0acc26f608ab73f08ec45',1,'BaseRenderer']]],
-  ['overlayid_36',['overlayId',['../structSpellBuff__MM7.html#a0b20ebfff0491f10f19c2e4769ccca66',1,'SpellBuff_MM7']]],
-  ['overlayid_37',['overlayID',['../structSpellBuff.html#a71246715e120b97bffc46a7f6941ce6e',1,'SpellBuff']]],
+  ['overlayid_36',['overlayID',['../structSpellBuff.html#a71246715e120b97bffc46a7f6941ce6e',1,'SpellBuff']]],
+  ['overlayid_37',['overlayId',['../structSpellBuff__MM7.html#a0b20ebfff0491f10f19c2e4769ccca66',1,'SpellBuff_MM7']]],
   ['overlaylogcategory_38',['OverlayLogCategory',['../classOverlaySystem.html#ad4131de87a4b8ac0c56a22da605612a2',1,'OverlaySystem']]],
   ['overlays_39',['overlays',['../structSaveGame__MM7.html#a7554f18d1fb01cec9dfdb1c2f37db998',1,'SaveGame_MM7::overlays()'],['../structActiveOverlayList__MM7.html#a0adcd441f7eec0513d8d911cd19059d8',1,'ActiveOverlayList_MM7::overlays()']]],
-  ['overrideenvkey_40',['overrideEnvKey',['../structPathResolutionConfig.html#a45e92dd17af160a1d30e491d9040b694',1,'PathResolutionConfig']]],
-  ['overrideskillvalue_41',['overrideSkillValue',['../structCastSpellInfo.html#aa690b1cd149dbb9b4d7135a51ecf895b',1,'CastSpellInfo']]],
-  ['overridesoundid_42',['overrideSoundId',['../structCastSpellInfo.html#a3d3ba4ed05ebcc46ae146d9dc17742e4',1,'CastSpellInfo']]]
+  ['overridebuiltinresources_40',['OverrideBuiltInResources',['../classGameConfig_1_1Debug.html#a3c52101eeba4608c82f544e8b2938b58',1,'GameConfig::Debug']]],
+  ['overrideenvkey_41',['overrideEnvKey',['../structPathResolutionConfig.html#a45e92dd17af160a1d30e491d9040b694',1,'PathResolutionConfig']]],
+  ['overrideskillvalue_42',['overrideSkillValue',['../structCastSpellInfo.html#aa690b1cd149dbb9b4d7135a51ecf895b',1,'CastSpellInfo']]],
+  ['overridesoundid_43',['overrideSoundId',['../structCastSpellInfo.html#a3d3ba4ed05ebcc46ae146d9dc17742e4',1,'CastSpellInfo']]]
 ];
