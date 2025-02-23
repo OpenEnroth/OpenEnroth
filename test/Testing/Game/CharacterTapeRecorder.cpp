@@ -118,3 +118,11 @@ TestTape<SpellId> CharacterTapeRecorder::quickSpell(int characterIndex) {
 TestMultiTape<SpellId> CharacterTapeRecorder::quickSpells() {
     return custom(std::bind(&Character::uQuickSpell, _1));
 }
+
+TestTape<bool> CharacterTapeRecorder::hasItem(int characterIndex, ItemId itemId) {
+    return custom(characterIndex, std::bind(&Character::hasItem, _1, itemId, false));
+}
+
+TestMultiTape<bool> CharacterTapeRecorder::hasItem(ItemId itemId) {
+    return custom(std::bind(&Character::hasItem, _1, itemId, false));
+}

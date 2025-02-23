@@ -114,7 +114,7 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid) {
         count = TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS;
     }
     for (int i = 0; i < count; ++i) {
-        CreateButton(townPortalButtonsPos[i].topLeft(), townPortalButtonsPos[i].size(), 1, UIMSG_HintTownPortal, UIMSG_ClickTownInTP, i);
+        CreateButton(fmt::format("TownPortalBook_Marker{}", i), townPortalButtonsPos[i].topLeft(), townPortalButtonsPos[i].size(), 1, UIMSG_HintTownPortal, UIMSG_ClickTownInTP, i);
     }
 }
 

@@ -130,6 +130,9 @@ class GameConfig : public Config {
         Bool FullMonsterID = {this, "full_monster_id", false,
             "Full monster info on popup."};
 
+        Bool OverrideBuiltInResources = {this, "override_built_in_resources", false,
+            "Allow overriding built-in game resources (shaders and scripts) with files in game data folder."};
+
      private:
         static int ValidateFrameTime(int frameTime) {
             return std::max(frameTime, 1);

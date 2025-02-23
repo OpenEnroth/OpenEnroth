@@ -4,6 +4,7 @@
 
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"
+#include "Library/Geometry/Size.h"
 
 #include "LodFormatEnums.h"
 
@@ -63,6 +64,15 @@ Palette decodePalette(const Blob &blob);
  * @return                              Decoded `LodImage`.
  */
 LodImage decodeImage(const Blob &blob);
+
+/**
+ * This function processes `LOD_FILE_IMAGE` and `LOD_FILE_PALETTE` formats. It reads the image header and returns image
+ * size w/o decompressing the pixel data. For `LOD_FILE_PALETTE` returned image size will be zero.
+ *
+ * @param blob                          Image `Blob`, as read from a LOD file.
+ * @return                              Image size.
+ */
+Sizei decodeImageSize(const Blob &blob);
 
 /**
  * This function processes `LOD_FILE_SPRITE` format.

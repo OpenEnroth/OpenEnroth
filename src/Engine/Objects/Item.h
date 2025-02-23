@@ -9,6 +9,7 @@
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Time/Time.h"
 #include "Engine/MapEnums.h"
+#include "Library/Geometry/Size.h"
 
 #include "Utility/IndexedArray.h"
 
@@ -52,8 +53,8 @@ struct Item {
     bool GenerateArtifact();
     void generateGold(ItemTreasureLevel treasureLevel);
     int GetValue() const;
-    std::string GetDisplayName();
-    std::string GetIdentifiedName();
+    std::string GetDisplayName() const;
+    std::string GetIdentifiedName() const;
     void UpdateTempBonus(Time time);
     void Reset();
     int _439DF3_get_additional_damage(DamageType *a2, bool *vampiyr);
@@ -106,6 +107,20 @@ struct Item {
     ItemType type() const;
 
     ItemRarity rarity() const;
+
+    /**
+     * @return                          This item's size in inventory slots.
+     */
+    Sizei inventorySize() const;
+
+    /**
+     * Does post-processing for items, filling in special enchantments for items that should have them, and potion power
+     * and wand charges if those are not set.
+     *
+     * @param source                    Where the item is coming from. MM7 used different item generation code for items
+     *                                  in chests / lying on the floor / carried by monsters.
+     */
+    void postGenerate(ItemSource source);
 
     ItemId itemId = ITEM_NULL;
     int potionPower = 0; // Only for potions.

@@ -286,11 +286,8 @@ GAME_TEST(Issues, Issue1685) {
     jar2.itemId = ITEM_QUEST_LICH_JAR_FULL;
     jar2.lichJarCharacterIndex = 1;
 
-    game.runGameRoutine([&] {
-        // This code needs to be run in game thread b/c AddItem2 is loading textures...
-        pParty->pCharacters[0].AddItem2(-1, &jar1);
-        pParty->pCharacters[1].AddItem2(-1, &jar2);
-    });
+    pParty->pCharacters[0].AddItem2(-1, &jar1);
+    pParty->pCharacters[1].AddItem2(-1, &jar2);
 
     EXPECT_EQ(jar1.GetIdentifiedName(), "Kolya's Jar");
     EXPECT_EQ(jar2.GetIdentifiedName(), "Nicholas' Jar");
@@ -553,11 +550,8 @@ GAME_TEST(Issues, Issue1911) {
     // Equip staff.
     Item staff;
     staff.itemId = ITEM_STAFF;
-    game.runGameRoutine([&] {
-        // This code needs to be run in game thread b/c AddItem2 is loading textures...
-        pParty->pPickedItem = staff;
-        pParty->pCharacters[0].EquipBody(ITEM_TYPE_TWO_HANDED);
-    });
+    pParty->pPickedItem = staff;
+    pParty->pCharacters[0].EquipBody(ITEM_TYPE_TWO_HANDED);
     pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue(1, CHARACTER_SKILL_MASTERY_NOVICE);
     EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 1); // +1 from staff skill.
 
@@ -568,6 +562,17 @@ GAME_TEST(Issues, Issue1911) {
     // Check that GM staff works with unarmed.
     pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER);
     EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 14); // +10 from staff, +4 from unarmed.
+}
+
+GAME_TEST(Issues, Issue1912) {
+    // Trading a Red Potion for a Wealthy Hat doesn't remove the potion from the inventory.
+    auto potionTape = charTapes.hasItem(ITEM_POTION_CURE_WOUNDS);
+    auto hatTape = charTapes.hasItem(ITEM_QUEST_WEALTHY_HAT);
+    auto activeCharTape = tapes.activeCharacterIndex();
+    test.playTraceFromTestData("issue_1912.mm7", "issue_1912.json");
+    EXPECT_EQ(activeCharTape, tape(1)); // First char was talking.
+    EXPECT_EQ(potionTape, tape({false, true, false, false}, {false, false, false, false})); // But 2nd char had the potion.
+    EXPECT_EQ(hatTape, tape({false, false, false, false}, {true, false, false, false})); // We passed the hat to the 1st char.
 }
 
 GAME_TEST(Issues, Issue1925) {
@@ -587,11 +592,8 @@ GAME_TEST(Issues, Issue1925) {
         Item wand;
         wand.itemId = ITEM_WAND_OF_FIRE;
         wand.numCharges = wand.maxCharges = 1;
-        game.runGameRoutine([&] {
-            // This code needs to be run in game thread b/c AddItem2 is loading textures...
-            pParty->pPickedItem = wand;
-            pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
-        });
+        pParty->pPickedItem = wand;
+        pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
         game.tick();
 
         // Attack.
@@ -623,22 +625,16 @@ GAME_TEST(Issues, Issue1927) {
     // Equip a bow
     Item bow;
     bow.itemId = ITEM_GRIFFIN_BOW;
-    game.runGameRoutine([&] {
-        // This code needs to be run in game thread b/c AddItem2 is loading textures...
-        pParty->pPickedItem = bow;
-        pParty->pCharacters[0].EquipBody(ITEM_TYPE_BOW);
-        });
+    pParty->pPickedItem = bow;
+    pParty->pCharacters[0].EquipBody(ITEM_TYPE_BOW);
     game.tick();
 
     // Equip wand.
     Item wand;
     wand.itemId = ITEM_ALACORN_WAND_OF_FIREBALLS;
     wand.numCharges = wand.maxCharges = 30;
-    game.runGameRoutine([&] {
-        // This code needs to be run in game thread b/c AddItem2 is loading textures...
-        pParty->pPickedItem = wand;
-        pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
-        });
+    pParty->pPickedItem = wand;
+    pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
     game.tick();
 
     EXPECT_EQ(rangeAttackTape.size(), 3); // nothing, bow, bow and wand
@@ -657,4 +653,32 @@ GAME_TEST(Prs, Pr1934) {
     }
 
     EXPECT_EQ(maxStrength, 25);
+}
+
+GAME_TEST(Issues, Issue1947) {
+    // Wand is generated with 0 charges in Tatalia.
+    // The wand in question does in fact have 0 charges in the data files, and NWC never wrote the code to post-process
+    // it on load like they did for wands in chests or wands carried by monsters. So we fixed that.
+    auto mapTape = tapes.map();
+    game.startNewGame();
+    test.startTaping();
+    engine->config->debug.TownPortal.setValue(true);
+    engine->config->debug.AllMagic.setValue(true);
+
+    game.pressAndReleaseKey(PlatformKey::KEY_C);
+    game.tick();
+    game.pressGuiButton("SpellBook_School2"); // Water magic.
+    game.tick();
+    game.pressGuiButton("SpellBook_Spell8"); // Town portal.
+    game.tick();
+    game.pressGuiButton("SpellBook_Spell8"); // Confirm.
+    game.tick(3);
+    game.pressGuiButton("TownPortalBook_Marker10"); // Tatalia.
+    game.tick();
+    game.skipLoadingScreen();
+
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_TATALIA));
+    EXPECT_EQ(pSpriteObjects[4].containing_item.itemId, ITEM_ALACORN_WAND_OF_FIREBALLS);
+    EXPECT_GT(pSpriteObjects[4].containing_item.numCharges, 0);
+    EXPECT_GT(pSpriteObjects[4].containing_item.maxCharges, 0);
 }

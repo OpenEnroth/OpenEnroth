@@ -204,6 +204,20 @@ LodImage lod::decodeImage(const Blob &blob) {
     return result;
 }
 
+Sizei lod::decodeImageSize(const Blob &blob) {
+    LodFileFormat format = magic(blob, {});
+    if (format != LOD_FILE_IMAGE && format != LOD_FILE_PALETTE) {
+        format = magic(blob, {});
+        throw Exception("Cannot decode LOD entry of type '{}' as '{}'", toString(format), toString(LOD_FILE_IMAGE));
+    }
+
+    BlobInputStream stream(blob);
+    LodImageHeader_MM6 header;
+    deserialize(stream, &header);
+
+    return Sizei(header.width, header.height);
+}
+
 LodSprite lod::decodeSprite(const Blob &blob) {
     LodFileFormat format = magic(blob, {});
     if (format != LOD_FILE_SPRITE)

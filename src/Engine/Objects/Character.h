@@ -295,7 +295,7 @@ class Character {
     /**
      * @offset 0x43EE15
      */
-    bool hasItem(ItemId uItemID, bool checkHeldItem);
+    bool hasItem(ItemId uItemID, bool checkHeldItem) const;
     void OnInventoryLeftClick();
 
     bool characterHitOrMiss(Actor *pActor, int distancemod, int skillmod);

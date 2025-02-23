@@ -23,7 +23,7 @@ struct ItemData {
     CharacterSkillType skill = CHARACTER_SKILL_MISC; // Skill associated with the item. E.g. `CHARACTER_SKILL_SWORD`.
     int damageDice = 0; // Damage dice.
     int damageRoll = 0;
-    int damageMod = 0;
+    int damageMod = 0; // Also base charges for a wand, reagent power.
     ItemRarity rarity = RARITY_COMMON; // Item rarity.
     ItemEnchantment specialEnchantment = ITEM_ENCHANTMENT_NULL; // Special enchantment, applied only to `RARITY_SPECIAL` items.
     std::optional<CharacterAttribute> standardEnchantment; // Standard (attribute) enchantment, applied only to `RARITY_SPECIAL` items.

@@ -1014,7 +1014,7 @@ enum class ItemId : int32_t {
 using enum ItemId;
 
 enum class ItemType : uint8_t {
-    ITEM_TYPE_SINGLE_HANDED = 0,
+    ITEM_TYPE_SINGLE_HANDED = 0, // Also blasters.
     ITEM_TYPE_TWO_HANDED = 1,
     ITEM_TYPE_BOW = 2,
     ITEM_TYPE_ARMOUR = 3,
@@ -1122,3 +1122,12 @@ enum class RandomItemType {
     RANDOM_ITEM_LAST_SPAWNABLE = RANDOM_ITEM_GEM
 };
 using enum RandomItemType;
+
+enum class ItemSource {
+    ITEM_SOURCE_UNKNOWN,
+    ITEM_SOURCE_MAP,
+    ITEM_SOURCE_MONSTER,
+    ITEM_SOURCE_CHEST,
+    ITEM_SOURCE_SCRIPT,
+};
+using enum ItemSource;
