@@ -135,8 +135,6 @@ struct Item {
     ItemSlot equippedSlot = ITEM_SLOT_INVALID; // For equipped items - where is it equipped.
     int lichJarCharacterIndex = -1; // Only for full lich jars. 0-based index of the character whose earthly remains are stored in it.
                                     // Or whatever it is that's in the lich jar.
-    bool placedInChest = false; // OE addition, whether the item was placed in the chest inventory area. Some chests
-                                // are generated with more items than chest space, and this flag is used to track it.
     Time enchantmentExpirationTime; // Enchantment expiration time, if this item is temporarily enchanted. Note that
                                     // both special and attribute enchantments can be temporary, but in MM7 we only have
                                     // special temporary enchantments.
