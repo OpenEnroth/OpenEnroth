@@ -24,6 +24,7 @@
 #include "Engine/Data/IconFrameData.h"
 #include "Engine/Data/PortraitFrameData.h"
 #include "Engine/Data/TileData.h"
+#include "Engine/Tables/ChestTable.h"
 #include "Engine/Time/Time.h"
 
 #include "Media/Audio/SoundInfo.h"
@@ -31,6 +32,7 @@
 #include "GUI/GUIFont.h"
 
 #include "Library/Color/ColorTable.h"
+#include "Library/Logger/Logger.h"
 #include "Library/Snapshots/CommonSnapshots.h"
 
 #include "Utility/Memory/MemSet.h"
@@ -465,7 +467,6 @@ void snapshot(const Item &src, Item_MM7 *dst) {
     dst->equippedSlot = std::to_underlying(src.equippedSlot);
     dst->maxCharges = src.maxCharges;
     dst->lichJarCharacterIndex = src.lichJarCharacterIndex + 1;
-    dst->placedInChest = src.placedInChest;
     snapshot(src.enchantmentExpirationTime, &dst->enchantmentExpirationTime);
 }
 
@@ -498,7 +499,6 @@ void reconstruct(const Item_MM7 &src, Item *dst) {
     dst->equippedSlot = static_cast<ItemSlot>(src.equippedSlot);
     dst->maxCharges = src.maxCharges;
     dst->lichJarCharacterIndex = src.lichJarCharacterIndex - 1;
-    dst->placedInChest = src.placedInChest;
     reconstruct(src.enchantmentExpirationTime, &dst->enchantmentExpirationTime);
 }
 
@@ -1623,29 +1623,68 @@ void snapshot(const Chest &src, Chest_MM7 *dst) {
 
     dst->chestTypeId = src.chestTypeId;
     dst->flags = std::to_underlying(src.flags);
-    snapshot(src.items, &dst->items);
-    snapshot(src.inventoryMatrix, &dst->inventoryMatrix);
+    snapshot(src.inventory, dst);
 }
 
-void reconstruct(const Chest_MM7 &src, Chest *dst) {
+void reconstruct(const Chest_MM7 &src, Chest *dst, ContextTag<int> chestId) {
     dst->chestTypeId = src.chestTypeId;
     dst->flags = ChestFlags(src.flags);
-    reconstruct(src.items, &dst->items);
-    reconstruct(src.inventoryMatrix, &dst->inventoryMatrix);
+    reconstruct(src, &dst->inventory, chestId);
+}
 
-    // fix placedInChest field for old saves
-    int chestArea = dst->inventoryMatrix.size();
-    for (int item = 0; item < chestArea; item++) {
-        if (dst->items[item].itemId == ITEM_NULL) {
-            continue;
-        }
-        for (int position = 0; position < chestArea; position++) {
-            if (dst->inventoryMatrix[position] == item + 1) {
-                dst->items[item].placedInChest = true;
-                break;
+void snapshot(const ChestInventory &src, Chest_MM7 *dst) {
+    for (size_t i = 0; i < src._entries.size(); i++)
+        snapshot(src._entries[i].item(), &dst->items[i]);
+    snapshot(src._grid, &dst->inventoryMatrix, tags::cast<int, int16_t>);
+}
+
+void reconstruct(const Chest_MM7 &src, ChestInventory *dst, ContextTag<int> chestId) {
+    Sizei size = chestTable[src.chestTypeId].size;
+    *dst = ChestInventory(size);
+
+    std::array<bool, 140> processed = {{}};
+    std::array<Item, 140> items;
+    reconstruct(src.items, &items);
+
+    // Serialized chest inventory can be terribly broken, so we just check pretty much everything there is to check,
+    // and just log errors.
+
+    int maxIndex = size.w * size.h - 1;
+    for (int x = 0; x < size.w; x++) {
+        for (int y = 0; y < size.h; y++) {
+            int index = src.inventoryMatrix[x + y * size.w];
+            if (index > 0) {
+                index--;
+
+                if (index > maxIndex) {
+                    logger->error("Invalid item reference in chest #{} item grid, itemId={}, pos=({},{}), index={}",
+                                  *chestId, index, std::to_underlying(items[index].itemId), x, y, index);
+                    continue;
+                }
+
+                if (items[index].itemId == ITEM_NULL) {
+                    logger->error("Null item in chest #{}, itemId={}, pos=({},{})",
+                                  *chestId, std::to_underlying(items[index].itemId), x, y);
+                    continue;
+                }
+
+                if (processed[index]) {
+                    logger->error("Duplicate item in chest #{}, itemId={}, pos=({},{})",
+                                  *chestId, std::to_underlying(items[index].itemId), x, y);
+                    continue;
+                }
+
+                if (dst->canAddGridItem({x, y}, items[index].inventorySize())) {
+                    processed[index] = true;
+                    dst->addGridItemAtIndex({x, y}, items[index], index); // We need to preserve item indices.
+                }
             }
         }
     }
+
+    for (size_t i = 0; i < items.size(); i++)
+        if (!processed[i] && items[i].itemId != ITEM_NULL)
+            dst->addHiddenItemAtIndex(items[i], i); // We need to preserve item indices.
 }
 
 void reconstruct(const BLVLight_MM7 &src, BLVLight *dst) {
