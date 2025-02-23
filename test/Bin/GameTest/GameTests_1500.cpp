@@ -570,6 +570,17 @@ GAME_TEST(Issues, Issue1911) {
     EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 14); // +10 from staff, +4 from unarmed.
 }
 
+GAME_TEST(Issues, Issue1912) {
+    // Trading a Red Potion for a Wealthy Hat doesn't remove the potion from the inventory.
+    auto potionTape = charTapes.hasItem(ITEM_POTION_CURE_WOUNDS);
+    auto hatTape = charTapes.hasItem(ITEM_QUEST_WEALTHY_HAT);
+    auto activeCharTape = tapes.activeCharacterIndex();
+    test.playTraceFromTestData("issue_1912.mm7", "issue_1912.json");
+    EXPECT_EQ(activeCharTape, tape(1)); // First char was talking.
+    EXPECT_EQ(potionTape, tape({false, true, false, false}, {false, false, false, false})); // But 2nd char had the potion.
+    EXPECT_EQ(hatTape, tape({false, false, false, false}, {true, false, false, false})); // We passed the hat to the 1st char.
+}
+
 GAME_TEST(Issues, Issue1925) {
     // Test for wand behaviour.
     for (bool wandsDisappear : {true, false}) {
