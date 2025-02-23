@@ -286,11 +286,8 @@ GAME_TEST(Issues, Issue1685) {
     jar2.itemId = ITEM_QUEST_LICH_JAR_FULL;
     jar2.lichJarCharacterIndex = 1;
 
-    game.runGameRoutine([&] {
-        // This code needs to be run in game thread b/c AddItem2 is loading textures...
-        pParty->pCharacters[0].AddItem2(-1, &jar1);
-        pParty->pCharacters[1].AddItem2(-1, &jar2);
-    });
+    pParty->pCharacters[0].AddItem2(-1, &jar1);
+    pParty->pCharacters[1].AddItem2(-1, &jar2);
 
     EXPECT_EQ(jar1.GetIdentifiedName(), "Kolya's Jar");
     EXPECT_EQ(jar2.GetIdentifiedName(), "Nicholas' Jar");
@@ -553,11 +550,8 @@ GAME_TEST(Issues, Issue1911) {
     // Equip staff.
     Item staff;
     staff.itemId = ITEM_STAFF;
-    game.runGameRoutine([&] {
-        // This code needs to be run in game thread b/c AddItem2 is loading textures...
-        pParty->pPickedItem = staff;
-        pParty->pCharacters[0].EquipBody(ITEM_TYPE_TWO_HANDED);
-    });
+    pParty->pPickedItem = staff;
+    pParty->pCharacters[0].EquipBody(ITEM_TYPE_TWO_HANDED);
     pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue(1, CHARACTER_SKILL_MASTERY_NOVICE);
     EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 1); // +1 from staff skill.
 
@@ -598,11 +592,8 @@ GAME_TEST(Issues, Issue1925) {
         Item wand;
         wand.itemId = ITEM_WAND_OF_FIRE;
         wand.numCharges = wand.maxCharges = 1;
-        game.runGameRoutine([&] {
-            // This code needs to be run in game thread b/c AddItem2 is loading textures...
-            pParty->pPickedItem = wand;
-            pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
-        });
+        pParty->pPickedItem = wand;
+        pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
         game.tick();
 
         // Attack.
@@ -634,22 +625,16 @@ GAME_TEST(Issues, Issue1927) {
     // Equip a bow
     Item bow;
     bow.itemId = ITEM_GRIFFIN_BOW;
-    game.runGameRoutine([&] {
-        // This code needs to be run in game thread b/c AddItem2 is loading textures...
-        pParty->pPickedItem = bow;
-        pParty->pCharacters[0].EquipBody(ITEM_TYPE_BOW);
-        });
+    pParty->pPickedItem = bow;
+    pParty->pCharacters[0].EquipBody(ITEM_TYPE_BOW);
     game.tick();
 
     // Equip wand.
     Item wand;
     wand.itemId = ITEM_ALACORN_WAND_OF_FIREBALLS;
     wand.numCharges = wand.maxCharges = 30;
-    game.runGameRoutine([&] {
-        // This code needs to be run in game thread b/c AddItem2 is loading textures...
-        pParty->pPickedItem = wand;
-        pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
-        });
+    pParty->pPickedItem = wand;
+    pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
     game.tick();
 
     EXPECT_EQ(rangeAttackTape.size(), 3); // nothing, bow, bow and wand
