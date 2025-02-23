@@ -81,15 +81,6 @@ GAME_TEST(Issues, Issue198) {
         }
     };
 
-    // Preload item images in the main thread first.
-    game.runGameRoutine([&] {
-        forEachInventoryItem([](const Item &item, int /*x*/, int /*y*/) {
-            // Calling width() forces the texture to be created.
-            assets->getImage_ColorKey(pItemTable->items[item.itemId].iconName)->width();
-        });
-    });
-
-    // Then can safely check everything.
     forEachInventoryItem([](const Item &item, int x, int y) {
         Sizei itemSize = item.inventorySize();
 
