@@ -73,18 +73,10 @@ void GameStarter::initWithLogger() {
     // Init environment.
     _environment = Environment::createStandardEnvironment();
 
-    // Resolve user path, create user fs & file logger.
+    // Resolve user path & create user fs.
     resolveUserPath(_environment.get(), &_options);
     _fsStarter.initUserFs(_options.ramFsUserData, _options.userPath);
-
-    // Resolve data path, create data fs.
-    // TODO(captainurist): actually move datapath to config?
-    resolveDataPath(_environment.get(), &_options);
-    _fsStarter.initDataFs(_options.dataPath);
-
-    // Migrate saves & config if needed.
-    if (!_options.ramFsUserData && _options.dataPath != _options.userPath)
-        migrateUserData();
+    logger->info("Using user path '{}'.", ufs->displayPath(""));
 
     // Init config.
     _config = std::make_shared<GameConfig>();
@@ -95,9 +87,20 @@ void GameStarter::initWithLogger() {
         _config->reset();
         logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", ufs->displayPath(configName));
     }
+    logger->info("Built in resource override is {}.", _config->debug.OverrideBuiltInResources.value() ? "enabled" : "disabled");
 
-    // Finish logger init now that we know the desired log level.
+    // Finish logger init now that we have user fs and know the desired log level.
     _logStarter.initialize(ufs, _options.logLevel ? *_options.logLevel : _config->debug.LogLevel.value());
+
+    // Resolve data path, create data fs.
+    // TODO(captainurist): actually move datapath to config?
+    resolveDataPath(_environment.get(), &_options);
+    _fsStarter.initDataFs(_options.dataPath, _config->debug.OverrideBuiltInResources.value());
+    logger->info("Using data path '{}'.", _options.dataPath); // Can't use dfs->displayPath("") b/c it'll show "embedded://"...
+
+    // Migrate saves if needed. We don't migrate anything else.
+    if (!_options.ramFsUserData && _options.dataPath != _options.userPath)
+        migrateSaves();
 
     // Create platform.
     if (_options.headless) {
@@ -199,7 +202,6 @@ GameStarter::~GameStarter() {
 void GameStarter::resolveUserPath(Environment *environment, GameStarterOptions *options) {
     if (options->userPath.empty())
         options->userPath = resolveMm7UserPath(environment);
-    logger->info("Using user path '{}'.", options->userPath);
 }
 
 void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *options) {
@@ -227,7 +229,6 @@ void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *
     // Just use the last data path if all paths are invalid. We'll throw later.
     if (options->dataPath.empty())
         options->dataPath = candidates.back();
-    logger->info("Using data path '{}'.", options->dataPath);
 }
 
 void GameStarter::failOnInvalidPath(std::string_view dataPath, Platform *platform) {
@@ -243,11 +244,11 @@ void GameStarter::failOnInvalidPath(std::string_view dataPath, Platform *platfor
         dataPath
     );
     platform->showMessageBox("CRITICAL ERROR: missing resources", message);
-    throw Exception("Data folder '{}' validation failed", dataPath);
+    throw Exception("Data folder '{}' validation failed, missing '{}'", dataPath, missingFile);
 }
 
-void GameStarter::migrateUserData() {
-    logger->info("Migrating user data from '{}' to '{}'...", dfs->displayPath(""), ufs->displayPath(""));
+void GameStarter::migrateSaves() {
+    logger->info("Migrating save files from '{}' to '{}'...", dfs->displayPath("saves"), ufs->displayPath("saves"));
 
     if (ufs->exists("saves") && !ufs->ls("saves").empty()) {
         logger->info("    Target saves directory is not empty, skipping saves migration.");
