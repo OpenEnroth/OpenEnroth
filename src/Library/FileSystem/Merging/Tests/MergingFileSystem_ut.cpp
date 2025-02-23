@@ -69,3 +69,13 @@ UNIT_TEST(MergingFileSystem, ShrodingerMaxxxing) {
     }));
 }
 
+UNIT_TEST(MergingFileSystem, DisplayPathForExistingDir) {
+    MemoryFileSystem fs0("fs0");
+    MemoryFileSystem fs1("fs1");
+    fs1.write("a/b", Blob::fromString("B"));
+
+    MergingFileSystem fs({&fs0, &fs1});
+
+    EXPECT_EQ(fs.displayPath("a"), "fs1://a");
+    EXPECT_EQ(fs.displayPath("a/b"), "fs1://a/b");
+}
