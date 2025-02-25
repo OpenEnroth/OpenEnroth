@@ -1125,6 +1125,11 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
             const ODMFace* pODMFace = &pOutdoor->face(collision_state.pid);
             bool bFaceSlopeTooSteep = pODMFace->facePlane.normal.z > 0.0f && pODMFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
 
+            if (bFaceSlopeTooSteep) { // make small slopes walkable
+                if (pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1 < 128)
+                    bFaceSlopeTooSteep = false;
+            }
+
             if (pODMFace->facePlane.normal.z > 0 && !bFaceSlopeTooSteep)
                 *partyHasHitModel = true;
 
