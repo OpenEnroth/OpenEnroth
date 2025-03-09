@@ -858,15 +858,20 @@ int Character::GetDisarmTrap() const {
     return multiplier * val.level();
 }
 
-char Character::getLearningPercent() const {
+int Character::getLearningPercent() const {
+    int hirelingBonus = 0;
+    if (CheckHiredNPCSpeciality(Teacher)) hirelingBonus = 10;
+    if (CheckHiredNPCSpeciality(Instructor)) hirelingBonus += 15;
+    if (CheckHiredNPCSpeciality(Scholar)) hirelingBonus += 5;
+
     int skill = getActualSkillValue(CHARACTER_SKILL_LEARNING).level();
 
     if (skill) {
         int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_LEARNING, 1, 2, 3, 5);
 
-        return multiplier * skill + 9;
+        return hirelingBonus + multiplier * skill + 9;
     } else {
-        return 0;
+        return hirelingBonus;
     }
 }
 
@@ -2748,9 +2753,6 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
         } break;
 
         case CHARACTER_SKILL_LEARNING: {
-            if (CheckHiredNPCSpeciality(Teacher)) bonus = 10;
-            if (CheckHiredNPCSpeciality(Instructor)) bonus += 15;
-            if (CheckHiredNPCSpeciality(Scholar)) bonus += 5;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_LEARNING);
         } break;
 

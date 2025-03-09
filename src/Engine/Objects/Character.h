@@ -236,7 +236,7 @@ class Character {
      *
      * @offset 0x491317
      */
-    char getLearningPercent() const;
+    int getLearningPercent() const;
 
     /**
      * @offset 0x492528
