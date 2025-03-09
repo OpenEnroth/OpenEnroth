@@ -315,7 +315,7 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
         float diff = zCent - collision_state.position_lo.z;
         midPos.z = zCent;
         newMidPos.z = collision_state.new_position_lo.z + diff;
-        collide_once(midPos, newMidPos, collision_state.direction, collision_state.radius_hi, midPos.z - collision_state.position_lo.z);
+        collide_once(midPos, newMidPos, collision_state.direction, collision_state.radius_hi, diff);
     }
 }
 
