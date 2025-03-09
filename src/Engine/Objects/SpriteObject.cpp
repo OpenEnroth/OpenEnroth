@@ -179,13 +179,13 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             }
             pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
             if (object->uFlags & OBJECT_DESC_BOUNCE) {
-                int bounceZVel = -(pSpriteObjects[uLayingItemID].vVelocity.z / 2);
+                float bounceZVel = -(pSpriteObjects[uLayingItemID].vVelocity.z / 2.0f);
                 pSpriteObjects[uLayingItemID].vVelocity.z = bounceZVel;
-                if (bounceZVel < 10) {
-                    pSpriteObjects[uLayingItemID].vVelocity.z = 0;
+                if (bounceZVel < 10.0f) {
+                    pSpriteObjects[uLayingItemID].vVelocity.z = 0.0f;
                 }
             } else {
-                pSpriteObjects[uLayingItemID].vVelocity.z = 0;
+                pSpriteObjects[uLayingItemID].vVelocity.z = 0.0f;
             }
 
             pSpriteObjects[uLayingItemID].vVelocity *= 0.89263916f; // was 58500 fp
@@ -285,9 +285,15 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 return;
             }
         }
+
         if (collision_state.pid.type() == OBJECT_Decoration) {
-            break;
+            Vec2f deltaXY = pSpriteObjects[uLayingItemID].vPosition.xy() - pLevelDecorations[collision_state.pid.id()].vPosition.xy();
+            float velLenXY = pSpriteObjects[uLayingItemID].vVelocity.xy().length();
+            float velRotXY = atan2(deltaXY.x, deltaXY.y);
+            pSpriteObjects[uLayingItemID].vVelocity.x = cos(velRotXY) * velLenXY;
+            pSpriteObjects[uLayingItemID].vVelocity.y = sin(velRotXY) * velLenXY;
         }
+
         if (collision_state.pid.type() == OBJECT_Face) {
             const BSPModel *bmodel = &pOutdoor->model(collision_state.pid);
             const ODMFace *face = &pOutdoor->face(collision_state.pid);
@@ -318,16 +324,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 }
             }
         }
-        //LABEL_74:
         pSpriteObjects[uLayingItemID].vVelocity *= 0.89263916f; // was 58500 fp
     }
-    Vec2f deltaXY = pSpriteObjects[uLayingItemID].vPosition.xy() - pLevelDecorations[collision_state.pid.id()].vPosition.xy();
-    float velLenXY = pSpriteObjects[uLayingItemID].vVelocity.xy().length();
-    float velRotXY = atan2(deltaXY.x, deltaXY.y);
-
-    pSpriteObjects[uLayingItemID].vVelocity.x = cos(velRotXY) * velLenXY;
-    pSpriteObjects[uLayingItemID].vVelocity.y = sin(velRotXY - pi / 2) * velLenXY;
-    //goto LABEL_74; // This goto results in an infinite loop, commented out.
 }
 
 //----- (0047136C) --------------------------------------------------------
