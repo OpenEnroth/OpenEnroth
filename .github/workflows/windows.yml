@@ -71,7 +71,7 @@ jobs:
       # Restore ccache file from cache if possible so we don't have to download it.
       - name: Restore cached ccache
         id: ccache-cache
-        uses: actions/cache/restore@v4.1.2
+        uses: actions/cache/restore@v3
         with:
           path: 'C:\ProgramData\chocolatey\lib\ccache\'
           key: windows-ccache
