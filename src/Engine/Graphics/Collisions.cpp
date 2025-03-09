@@ -266,7 +266,7 @@ static bool CollidePointWithFace(BLVFace *face, const Vec3f &pos, const Vec3f &d
  * @param model_idx                     Model index, or `MODEL_INDOOR`.
 */
 static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_ethereal, int model_idx) {
-    auto collide_once = [&](const Vec3f &old_pos, const Vec3f &new_pos, const Vec3f &dir, int radius) {
+    auto collide_once = [&](const Vec3f &old_pos, const Vec3f &new_pos, const Vec3f &dir, int radius, float height) {
         float distance_old = face->facePlane.signedDistanceTo(old_pos);
         float distance_new = face->facePlane.signedDistanceTo(new_pos);
         if (distance_old > 0 && (distance_old <= radius || distance_new <= radius) && distance_new <= distance_old) {
@@ -291,17 +291,32 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
                     collision_state.adjusted_move_distance = move_distance;
                     collision_state.collisionPos = col_pos;
                     collision_state.pid = face_pid;
+                    collision_state.heightOffset = height;
                 }
             }
         }
     };
 
-    collide_once(collision_state.position_lo, collision_state.new_position_lo, collision_state.direction, collision_state.radius_lo);
+    collide_once(collision_state.position_lo, collision_state.new_position_lo, collision_state.direction, collision_state.radius_lo, 0.0f);
 
     if (!collision_state.check_hi)
         return;
 
-    collide_once(collision_state.position_hi, collision_state.new_position_hi, collision_state.direction, collision_state.radius_hi);
+    collide_once(collision_state.position_hi, collision_state.new_position_hi, collision_state.direction, collision_state.radius_hi, collision_state.position_hi.z - collision_state.position_lo.z);
+
+    // Test some more spheres in the middle of the body to catch some edge cases
+    Vec3f midPos = (collision_state.position_lo + collision_state.position_hi) / 2;
+    Vec3f newMidPos = (collision_state.new_position_lo + collision_state.new_position_hi) / 2;
+    collide_once(midPos, newMidPos, collision_state.direction, collision_state.radius_hi, midPos.z - collision_state.position_lo.z);
+
+    // Try and test the center of the face if its within our cylinder and not too close to the midpoint
+    float zCent = face->pBounding.center().z;
+    if (zCent > collision_state.position_lo.z && zCent < collision_state.position_hi.z && std::abs(midPos.z - zCent) > 10) {
+        float diff = zCent - collision_state.position_lo.z;
+        midPos.z = zCent;
+        newMidPos.z = collision_state.new_position_lo.z + diff;
+        collide_once(midPos, newMidPos, collision_state.direction, collision_state.radius_hi, diff);
+    }
 }
 
 /**
@@ -958,13 +973,13 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             if (bFaceSlopeTooSteep && pFace->Invisible() && pFace->uPolygonType == PolygonType::POLYGON_InBetweenFloorAndWall)
                 bFaceSlopeTooSteep = false;
 
-            // new sliding plane
-            Vec3f slidePlaneOrigin = collision_state.collisionPos;
+            // new sliding plane - drag collision down to correct level for slide direction
+            Vec3f slidePlaneOrigin = collision_state.collisionPos - Vec3f(0, 0, collision_state.heightOffset);
             Vec3f slidePlaneNormal = adjusted_pos + Vec3f(0, 0, collision_state.radius_lo) - slidePlaneOrigin;
             slidePlaneNormal.normalize();
             float destPlaneDist = dot(collision_state.new_position_lo - slidePlaneOrigin, slidePlaneNormal);
             Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
-            Vec3f newDirection = newDestination - collision_state.collisionPos;
+            Vec3f newDirection = newDestination - slidePlaneOrigin;
 
             // Cant push uphill on steep faces
             if (bFaceSlopeTooSteep && newDirection.z > 0)
@@ -986,7 +1001,7 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                 float new_party_z_tmp = pIndoor->pVertices[*pFace->pVertexIDs].z;
                 // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
                 // weve collided with its edge and we should step up onto its level.
-                if (pParty->velocity.z > 0.0f)
+                if (pParty->velocity.z > 0.0f && (new_party_z_tmp - pParty->pos.z) < 128)
                     pParty->pos.z = new_party_z_tmp;
                 if (pParty->uFallStartZ - new_party_z_tmp < 512)
                     pParty->uFallStartZ = new_party_z_tmp;
@@ -1125,6 +1140,11 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
             const ODMFace* pODMFace = &pOutdoor->face(collision_state.pid);
             bool bFaceSlopeTooSteep = pODMFace->facePlane.normal.z > 0.0f && pODMFace->facePlane.normal.z < 0.70767211914f; // Was 46378 fixpoint
 
+            if (bFaceSlopeTooSteep) { // make small slopes walkable
+                if (pODMFace->pBoundingBox.z2 - pODMFace->pBoundingBox.z1 < 128)
+                    bFaceSlopeTooSteep = false;
+            }
+
             if (pODMFace->facePlane.normal.z > 0 && !bFaceSlopeTooSteep)
                 *partyHasHitModel = true;
 
@@ -1136,13 +1156,13 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
                 *triggerID = pODMFace->sCogTriggeredID;  // this one triggers tour events / traps
             }
 
-            // new sliding plane
-            Vec3f slidePlaneOrigin = collision_state.collisionPos;
+            // new sliding plane - drag collision down to correct level for slide direction
+            Vec3f slidePlaneOrigin = collision_state.collisionPos - Vec3f(0, 0, collision_state.heightOffset);
             Vec3f slidePlaneNormal = newPosLow + Vec3f(0, 0, collision_state.radius_lo) - slidePlaneOrigin;
             slidePlaneNormal.normalize();
             float destPlaneDist = dot(collision_state.new_position_lo - slidePlaneOrigin, slidePlaneNormal);
             Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
-            Vec3f newDirection = newDestination - collision_state.collisionPos;
+            Vec3f newDirection = newDestination - slidePlaneOrigin;
 
             // Cant push uphill on steep faces
             if (bFaceSlopeTooSteep && newDirection.z > 0)
@@ -1165,8 +1185,9 @@ void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *
             if (pODMFace->uPolygonType == POLYGON_Floor) {
                 // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
                 // weve collided with its edge and we should step up onto its level.
-                if (pParty->velocity.z > 0.0f)
-                    pParty->pos.z = pOutdoor->pBModels[collision_state.pid.id() >> 6].pVertices[pODMFace->pVertexIDs[0]].z;
+                float newZ = pOutdoor->pBModels[collision_state.pid.id() >> 6].pVertices[pODMFace->pVertexIDs[0]].z;
+                if (pParty->velocity.z > 0.0f && (newZ - pParty->pos.z) < 128)
+                    pParty->pos.z = newZ;
             }
 
             continue;

@@ -30,7 +30,7 @@ static bool characterHasJar(int charIndex, int jarIndex) {
 
 // 1000
 
-GAME_TEST(Issues, Issues1004) {
+GAME_TEST(Issues, Issue1004) {
     // Collisions: Can walk right through the bridge on Emerald Isle
     auto xTape = tapes.custom([] { return pParty->pos.x; });
     test.playTraceFromTestData("issue_1004.mm7", "issue_1004.json");
