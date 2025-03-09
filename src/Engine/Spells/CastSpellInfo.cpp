@@ -75,8 +75,7 @@ static void initSpellSprite(SpriteObject *spritePtr,
 /**
  * Notify that spell casting failed.
  */
-static void spellFailed(CastSpellInfo *pCastSpell,
-                        int error_str_id) {
+static void spellFailed(CastSpellInfo *pCastSpell, int error_str_id) {
     engine->_statusBar->setEvent(error_str_id);
     pAudioPlayer->playUISound(SOUND_spellfail0201);
     pCastSpell->uSpellID = SPELL_NONE;
@@ -1394,13 +1393,12 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_WATER_ENCHANT_ITEM:
                 {
-                    uRequiredMana = 0;
                     int success_chance_percent = 10 * spell_level; // 10% chance of success per spell level
                     bool item_not_broken = true;
                     bool spell_failed = true;
                     int rnd = grng->random(100);
-                    pPlayer = &pParty->pCharacters[pCastSpell->targetCharacterIndex];
-                    Item *spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->targetInventoryIndex];
+                    auto pTargetPlayer = &pParty->pCharacters[pCastSpell->targetCharacterIndex];
+                    Item *spell_item_to_enchant = &pTargetPlayer->pInventoryItemList[pCastSpell->targetInventoryIndex];
                     ItemType this_equip_type = pItemTable->items[spell_item_to_enchant->itemId].type;
 
                     // refs
