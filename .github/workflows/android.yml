@@ -78,6 +78,11 @@ jobs:
           # Secrets cannot be referenced in if: blocks, so we have to work it around.
           SECRETS_KEYSTORE: '${{secrets.KEYSTORE}}'
 
+      - name: check files
+        run: |
+          ls -lha /usr/local/lib/android/sdk/ndk/
+          ls -lha /usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/
+
       - name: Get NDK
         id: get-ndk
         uses: nttld/setup-ndk@v1.5.0
@@ -88,6 +93,11 @@ jobs:
           link-to-sdk: true
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}          
+
+      - name: check files
+        run: |
+          ls -lha /usr/local/lib/android/sdk/ndk/
+          ls -lha /usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/
 
       - name: Install dependencies
         run: |
