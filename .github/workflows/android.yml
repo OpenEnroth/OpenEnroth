@@ -78,11 +78,6 @@ jobs:
           # Secrets cannot be referenced in if: blocks, so we have to work it around.
           SECRETS_KEYSTORE: '${{secrets.KEYSTORE}}'
 
-      - name: check files
-        run: |
-          ls -lha /usr/local/lib/android/sdk/ndk/
-          ls -lha /usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/
-
       - name: Get NDK
         id: get-ndk
         uses: nttld/setup-ndk@v1.5.0
@@ -96,11 +91,14 @@ jobs:
 
       - name: check files
         run: |
-          /usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ -v
           echo "ndK:"
           ls -lha /usr/local/lib/android/sdk/ndk/
           echo "bin"
           ls -lha /usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/
+          cd /usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/
+          pwd
+          ls -lha
+          /usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ -v
 
       - name: Install dependencies
         run: |
