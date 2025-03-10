@@ -83,9 +83,11 @@ jobs:
         uses: nttld/setup-ndk@v1.5.0
         with:
           ndk-version: '${{env.NDK_REVISION}}'
-          add-to-path: false
+          add-to-path: true
           local-cache: true
           link-to-sdk: true
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}          
 
       - name: Install dependencies
         run: |
