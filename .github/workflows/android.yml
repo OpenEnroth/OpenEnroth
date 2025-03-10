@@ -77,6 +77,10 @@ jobs:
         env:
           # Secrets cannot be referenced in if: blocks, so we have to work it around.
           SECRETS_KEYSTORE: '${{secrets.KEYSTORE}}'         
+
+      - name: check
+        run: |
+          ls -lhaR /home/runner/.setup-ndk/r26d/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/
           
       - name: Install dependencies
         run: |
