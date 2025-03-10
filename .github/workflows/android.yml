@@ -35,7 +35,7 @@ env:
   # This version is referenced in android/openenroth/build.gradle.
   # See https://developer.android.com/ndk/downloads for revision-to-version mapping.
   # When updating the version here you should also update it in the Dependencies repo!
-  NDK_REVISION: r26d
+  NDK_REVISION: r27c
 
 jobs:
   build_android:
