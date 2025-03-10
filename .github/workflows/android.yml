@@ -89,6 +89,7 @@ jobs:
 
       - name: check files
         run: |
+          ls -R /usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64
           /usr/local/lib/android/sdk/ndk/27.2.12479018/toolchains/llvm/prebuilt/linux-x86_64/bin/clang -dumpversion
 
       - name: Install dependencies
