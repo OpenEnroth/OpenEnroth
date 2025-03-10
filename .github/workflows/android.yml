@@ -76,18 +76,7 @@ jobs:
           encodedString: '${{env.SECRETS_KEYSTORE}}'
         env:
           # Secrets cannot be referenced in if: blocks, so we have to work it around.
-          SECRETS_KEYSTORE: '${{secrets.KEYSTORE}}'
-
-      - name: Get NDK
-        id: get-ndk
-        uses: nttld/setup-ndk@v1.5.0
-        with:
-          ndk-version: '${{env.NDK_REVISION}}'
-          add-to-path: true
-          local-cache: true
-          link-to-sdk: true
-        env:
-          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}          
+          SECRETS_KEYSTORE: '${{secrets.KEYSTORE}}'         
 
       - name: check files
         run: |
