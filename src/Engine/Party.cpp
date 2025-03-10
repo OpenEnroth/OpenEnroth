@@ -940,7 +940,7 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
                 pActivePlayerCount++;
             }
         }
-		// Split gained xp between active characters
+        // Split gained xp between active characters
         if (pActivePlayerCount) {
             int perCharXP = static_cast<int>(pEXPNum) / pActivePlayerCount;
             for (Character &player : this->pCharacters) {
