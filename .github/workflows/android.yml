@@ -78,6 +78,15 @@ jobs:
           # Secrets cannot be referenced in if: blocks, so we have to work it around.
           SECRETS_KEYSTORE: '${{secrets.KEYSTORE}}'         
 
+      - name: Get NDK
+        id: get-ndk
+        uses: nttld/setup-ndk@v1.5
+        with:
+          ndk-version: '${{env.NDK_REVISION}}'
+          add-to-path: false
+          local-cache: true
+          link-to-sdk: true
+
       - name: check files
         run: |
           echo "ndK:"
