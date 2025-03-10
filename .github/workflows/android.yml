@@ -89,10 +89,9 @@ jobs:
 
       - name: check files
         run: |
-          rm -rf /opt/hostedtoolcache/ndk/r27c/x64/toolchains/llvm/prebuilt/linux-x86_64/bin/
-          mkdir -p /opt/hostedtoolcache/ndk/r27c/x64/toolchains/llvm/prebuilt/linux-x86_64/bin/
-          ln -s /opt/hostedtoolcache/ndk/r27c/x64/toolchains/llvm/prebuilt/linux-x86_64/bin/ /home/runner/.setup-ndk/r27c/toolchains/llvm/prebuilt/linux-x86_64/bin/
-          /home/runner/.setup-ndk/r27c/toolchains/llvm/prebuilt/linux-x86_64/bin/ /opt/hostedtoolcache/ndk/r27c/x64/toolchains/llvm/prebuilt/linux-x86_64/bin/clang-18        
+          rm -rf /opt/hostedtoolcache/ndk/r27c/x64/toolchains/llvm/prebuilt/linux-x86_64/bin
+          mkdir -p /opt/hostedtoolcache/ndk/r27c/x64/toolchains/llvm/prebuilt/linux-x86_64/bin
+          ln -s /home/runner/.setup-ndk/r27c/toolchains/llvm/prebuilt/linux-x86_64/bin /opt/hostedtoolcache/ndk/r27c/x64/toolchains/llvm/prebuilt/linux-x86_64/bin
           
       - name: Install dependencies
         run: |
