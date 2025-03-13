@@ -929,25 +929,23 @@ int Party::GetPartyReputation() {
     return npcRep + ddm_dlv->reputation;
 }
 
+// TODO(pskelton): drop unsigned
 //----- (004269A2) --------------------------------------------------------
 void Party::GivePartyExp(unsigned int pEXPNum) {
-    signed int pActivePlayerCount;  // ecx@1
-    int pLearningPercent;           // eax@13
-    int playermodexp;
-
     if (pEXPNum > 0) {
-        pActivePlayerCount = 0;
+        // Count active characters
+        int pActivePlayerCount = 0;
         for (Character &player : this->pCharacters) {
             if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                 pActivePlayerCount++;
             }
         }
+        // Split gained xp between active characters
         if (pActivePlayerCount) {
-            pEXPNum = pEXPNum / pActivePlayerCount;
+            int perCharXP = static_cast<int>(pEXPNum) / pActivePlayerCount;
             for (Character &player : this->pCharacters) {
                 if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
-                    pLearningPercent = player.getLearningPercent();
-                    playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
+                    int playermodexp = perCharXP + perCharXP * player.getLearningPercent() / 100;
                     player.setXP(player.experience + playermodexp);
                 }
             }

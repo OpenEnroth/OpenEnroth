@@ -92,7 +92,8 @@ GAME_TEST(Issues, Issue1068) {
     // Kills assert if characters don't have learning skill, but party has an npc that gives learning boost.
     auto expTape = charTapes.experiences();
     test.playTraceFromTestData("issue_1068.mm7", "issue_1068.json");
-    EXPECT_EQ(expTape.frontBack(), tape({158039, 156727, 157646, 157417}, {158518, 157206, 158125, 157896}));
+    // party has a scholar +5%
+    EXPECT_EQ(expTape.frontBack(), tape({158039, 156727, 157646, 157417}, {158485, 157173, 158092, 157863}));
 }
 
 GAME_TEST(Issues, Issue1093) {
