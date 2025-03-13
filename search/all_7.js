@@ -349,7 +349,7 @@ var searchData=
   ['getitemtexturefilename_346',['GetItemTextureFilename',['../Item_8h.html#a9537cc90ace0779f692eab3efd94e9b9',1,'GetItemTextureFilename(ItemId item_id, int index, int shoulder):&#160;Item.cpp'],['../Item_8cpp.html#a9537cc90ace0779f692eab3efd94e9b9',1,'GetItemTextureFilename(ItemId item_id, int index, int shoulder):&#160;Item.cpp']]],
   ['getkey_347',['GetKey',['../classIo_1_1KeyboardActionMapping.html#a9781cb995aa68bec72f4b8ef114cbf3e',1,'Io::KeyboardActionMapping']]],
   ['getlearningdialogueskill_348',['GetLearningDialogueSkill',['../GUIDialogues_8h.html#a492933e2ef1e76c357c9cf2611c398bc',1,'GUIDialogues.h']]],
-  ['getlearningpercent_349',['getLearningPercent',['../classCharacter.html#a9f5bd062ed2c7fc5b1fbb94f475748b3',1,'Character']]],
+  ['getlearningpercent_349',['getLearningPercent',['../classCharacter.html#a1289de27fac3f889d04a8adc3c7c0eee',1,'Character']]],
   ['getleveldescription_350',['getLevelDescription',['../classLocalization.html#ae3516eb7f0ce7ce037f646f2d54e8a52',1,'Localization']]],
   ['getlevelfogcolor_351',['GetLevelFogColor',['../Outdoor_8h.html#afc756df02d61405f6513cdd2468c414e',1,'GetLevelFogColor():&#160;Outdoor.cpp'],['../Outdoor_8cpp.html#afc756df02d61405f6513cdd2468c414e',1,'GetLevelFogColor():&#160;Outdoor.cpp']]],
   ['getlifetime_352',['GetLifetime',['../structSpriteObject.html#a2ef8340a2c831a1587d850d9c8007ff2',1,'SpriteObject']]],
