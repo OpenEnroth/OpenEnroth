@@ -21,6 +21,10 @@ struct Rect {
         return x <= point.x && point.x < x + w && y <= point.y && point.y < y + h;
     }
 
+    bool contains(const Rect<T> &rect) {
+        return x <= rect.x && rect.x + rect.w <= x + w && y <= rect.y && rect.y + rect.h <= y + h;
+    }
+
     Point<T> topLeft() const {
         return {x, y};
     }
