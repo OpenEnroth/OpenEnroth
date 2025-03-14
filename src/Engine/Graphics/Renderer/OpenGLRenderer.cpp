@@ -3613,9 +3613,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     glUniform3f(outbuildshader.uniformLocation("sun.specular"), diffuseon * 0.35f * ambient, diffuseon * 0.28f * ambient, 0.0f);
 
     if (pParty->armageddon_timer) {
-        glUniform3f(terrainshader.uniformLocation("sun.ambient"), 1.0f, 0.0f, 0.0f);
-        glUniform3f(terrainshader.uniformLocation("sun.diffuse"), 1.0f, 0.0f, 0.0f);
-        glUniform3f(terrainshader.uniformLocation("sun.specular"), 0.0f, 0.0f, 0.0f);
+        glUniform3f(outbuildshader.uniformLocation("sun.ambient"), 1.0f, 0.0f, 0.0f);
+        glUniform3f(outbuildshader.uniformLocation("sun.diffuse"), 1.0f, 0.0f, 0.0f);
+        glUniform3f(outbuildshader.uniformLocation("sun.specular"), 0.0f, 0.0f, 0.0f);
     }
 
 
