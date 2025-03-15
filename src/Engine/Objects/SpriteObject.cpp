@@ -938,6 +938,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         }
 
         case SPRITE_SPELL_EARTH_ROCK_BLAST: {
+            if (object->uSpellID == SPELL_NONE) return 1;
             if (pid.type() == OBJECT_Face || pid.type() == OBJECT_Decoration || pid.type() == OBJECT_None) {
                 return 1;
             }
