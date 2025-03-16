@@ -2898,11 +2898,25 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
-                    for (unsigned i = 0; i < 50; i++) {
-                        Vec3f rand(grng->random(4096) - 2048, grng->random(4096) - 2048, 0);
+
+                    // Some flying Rocks as decoration:
+                    static const int rocksCount = 50,
+                        rocksRadius = 2048,
+                        rocksSpeedMin = 500,
+                        rocksSpeedMax = 1000,
+                        rocksRadiusSqr = rocksRadius * rocksRadius,
+                        rocksBoundingBox = rocksRadius * 4000 / 3141;
+                    const auto getCoord = []{ return grng->randomInSegment(-rocksBoundingBox, rocksBoundingBox); };
+                    unsigned i = 0;
+                    while ( i < rocksCount ) {
+                        Vec3f rand(getCoord(), getCoord(), 0);
+                        if (rand.lengthSqr() > rocksRadiusSqr)
+                            continue;
                         int terr_height = pOutdoor->pTerrain.heightByPos(pParty->pos + rand);
                         SpriteObject::dropItemAt(SPRITE_SPELL_EARTH_ROCK_BLAST,
-                                                 {rand.x + pParty->pos.x, rand.y + pParty->pos.y, terr_height + 16.0f}, grng->random(500) + 500);
+                                {rand.x + pParty->pos.x, rand.y + pParty->pos.y, terr_height + 16.0f},
+                                grng->randomInSegment(rocksSpeedMin, rocksSpeedMax));
+                        i++;
                     }
                     break;
                 }
