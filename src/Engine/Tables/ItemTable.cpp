@@ -288,12 +288,18 @@ void ItemTable::LoadPotions(const Blob &potions) {
             return;
         }
         for (ItemId column : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
-            int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
-            char *currValue = tokens[flatPotionId + 7];
-            potion_value = (ItemId)atoi(currValue);
-            if (potion_value == ITEM_NULL && currValue[0] == 'E') {
-                // values like "E{x}" represent damage level {x} when using invalid potion combination
-                potion_value = (ItemId)atoi(currValue + 1);
+            if (row == ITEM_POTION_SHIELD && column == ITEM_POTION_HARDEN_ITEM || column == ITEM_POTION_SHIELD && row == ITEM_POTION_HARDEN_ITEM) {
+                // Fix a vanilla bug that GrayFace fixes in a way OE doesn't see: Mixing a Potion of Water Resistance
+                potion_value = ITEM_POTION_WATER_RESISTANCE;
+            } else {
+                int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
+                char *currValue = tokens[flatPotionId + 7];
+                potion_value = (ItemId)atoi(currValue);
+                if(potion_value == ITEM_NULL && currValue[0] == 'E')
+                {
+                    // values like "E{x}" represent damage level {x} when using invalid potion combination
+                    potion_value = (ItemId)atoi(currValue + 1);
+                }
             }
             this->potionCombination[row][column] = potion_value;
         }
