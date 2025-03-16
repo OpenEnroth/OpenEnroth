@@ -2900,10 +2900,10 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     // Some flying Rocks as decoration:
-                    static const int rocksCount = 50,
-                        rocksRadius = 2048,
-                        rocksSpeedMin = 500,
-                        rocksSpeedMax = 1000,
+                    static const int rocksCount = 250,
+                        rocksRadius = 3200,
+                        rocksSpeedMin = 200,
+                        rocksSpeedMax = 1400,
                         rocksRadiusSqr = rocksRadius * rocksRadius,
                         rocksBoundingBox = rocksRadius * 4000 / 3141;
                     const auto getCoord = []{ return grng->randomInSegment(-rocksBoundingBox, rocksBoundingBox); };
