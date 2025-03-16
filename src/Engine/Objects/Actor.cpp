@@ -4536,10 +4536,10 @@ void evaluateAoeDamage() {
             pSpriteObj = &pSpriteObjects[attackerId];
             attackerType = pSpriteObjects[attackerId].spell_caster_pid.type();
             attackerId = pSpriteObjects[attackerId].spell_caster_pid.id();
-	        if (pSpriteObj->uType == SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT && attackerType == OBJECT_None)
-				// This is triggered by the rock blast decorations Armageddon spawns.
-				// If let through, they can trigger the assert near the end of the loop.
-		        continue;
+            // This is triggered by the rock blast decorations Armageddon spawns.
+            // If let through, they can trigger the assert near the end of the loop.
+            if (pSpriteObj->uType == SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT && attackerType == OBJECT_None)
+                continue;
         }
 
         if (attack.isMelee) {
