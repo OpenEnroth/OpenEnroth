@@ -267,7 +267,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
 void ItemTable::LoadPotions(const Blob &potions) {
     //    char Text[90];
     char *test_string;
-    uint8_t potion_value;
+    ItemId potion_value;
 
     std::vector<char *> tokens;
     std::string txtRaw(potions.string_view());
@@ -290,12 +290,12 @@ void ItemTable::LoadPotions(const Blob &potions) {
         for (ItemId column : Segment(ITEM_FIRST_REAL_POTION, ITEM_LAST_REAL_POTION)) {
             int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
             char *currValue = tokens[flatPotionId + 7];
-            potion_value = atoi(currValue);
-            if (!potion_value && currValue[0] == 'E') {
+            potion_value = (ItemId)atoi(currValue);
+            if (potion_value == ITEM_NULL && currValue[0] == 'E') {
                 // values like "E{x}" represent damage level {x} when using invalid potion combination
-                potion_value = atoi(currValue + 1);
+                potion_value = (ItemId)atoi(currValue + 1);
             }
-            this->potionCombination[row][column] = (ItemId)potion_value;
+            this->potionCombination[row][column] = potion_value;
         }
 
         test_string = strtok(NULL, "\r") + 1;
