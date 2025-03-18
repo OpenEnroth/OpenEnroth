@@ -294,11 +294,10 @@ void ItemTable::LoadPotions(const Blob &potions) {
             } else {
                 int flatPotionId = std::to_underlying(column) - std::to_underlying(ITEM_FIRST_REAL_POTION);
                 char *currValue = tokens[flatPotionId + 7];
-                potion_value = (ItemId)atoi(currValue);
-                if(potion_value == ITEM_NULL && currValue[0] == 'E')
-                {
+                potion_value = static_cast<ItemId>(atoi(currValue));
+                if (potion_value == ITEM_NULL && currValue[0] == 'E') {
                     // values like "E{x}" represent damage level {x} when using invalid potion combination
-                    potion_value = (ItemId)atoi(currValue + 1);
+                    potion_value = static_cast<ItemId>(atoi(currValue + 1));
                 }
             }
             this->potionCombination[row][column] = potion_value;
