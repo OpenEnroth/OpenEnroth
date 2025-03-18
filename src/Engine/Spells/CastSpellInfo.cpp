@@ -2900,13 +2900,12 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     // Some flying Rocks as decoration:
-                    static const int rocksCount = 250,
+                    static constexpr int rocksCount = 250,
                         rocksRadius = 3200,
-                        rocksSpeedMin = 200,
+                        rocksSpeedMin = 300,
                         rocksSpeedMax = 1400,
-                        rocksRadiusSqr = rocksRadius * rocksRadius,
-                        rocksBoundingBox = rocksRadius * 4000 / 3141;
-                    const auto getCoord = []{ return grng->randomInSegment(-rocksBoundingBox, rocksBoundingBox); };
+                        rocksRadiusSqr = rocksRadius * rocksRadius;
+                    const auto getCoord = []{ return vrng->randomInSegment(-rocksRadius, rocksRadius); };
                     unsigned i = 0;
                     while ( i < rocksCount ) {
                         Vec3f rand(getCoord(), getCoord(), 0);
@@ -2915,7 +2914,7 @@ void CastSpellInfoHelpers::castSpell() {
                         int terr_height = pOutdoor->pTerrain.heightByPos(pParty->pos + rand);
                         SpriteObject::dropItemAt(SPRITE_SPELL_EARTH_ROCK_BLAST,
                                 {rand.x + pParty->pos.x, rand.y + pParty->pos.y, terr_height + 16.0f},
-                                grng->randomInSegment(rocksSpeedMin, rocksSpeedMax));
+                                vrng->randomInSegment(rocksSpeedMin, rocksSpeedMax));
                         i++;
                     }
                     break;
