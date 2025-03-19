@@ -581,6 +581,14 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
             pActors[i].monsterInfo.exp = 0;
         }
     }
+
+    if (engine->_currentLoadedMapId == MapId::MAP_LINCOLN) {
+        // reduce maximum allowed radius in the Lincoln to stop act actors getting stuck in tight corridors
+        for (auto& act : pActors) {
+            act.radius = std::min(act.radius, static_cast<uint16_t>(140));
+        }
+    }
+
     bDialogueUI_InitializeActor_NPC_ID = 0;
     engine->_transitionMapId = MAP_INVALID;
     onMapLoad();
