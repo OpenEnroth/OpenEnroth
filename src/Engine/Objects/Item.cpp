@@ -789,7 +789,7 @@ bool Item::canSellRepairIdentifyAt(HouseId houseId) {
         case HOUSE_TYPE_ARMOR_SHOP:
             return this->isArmor();
         case HOUSE_TYPE_MAGIC_SHOP:
-            return this->GetPlayerSkillType() == CHARACTER_SKILL_MISC || this->isBook();
+            return (this->GetPlayerSkillType() == CHARACTER_SKILL_MISC && !isRecipe(this->itemId)) || this->isBook();
         case HOUSE_TYPE_ALCHEMY_SHOP:
             return this->isReagent() ||
                    this->isPotion() ||
