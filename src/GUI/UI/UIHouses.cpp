@@ -81,7 +81,7 @@ std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
     { "Necromancer Magic Shop01", 0xE, 0x2DC, HOUSE_TYPE_MAGIC_SHOP, 66, 0 },
     { "Dwarven Magic Shop01", 0x2A, 0x2EF, HOUSE_TYPE_MAGIC_SHOP, 91, 0 },
     { "Wizard Magic Shop", 0x1E, 0x2DF, HOUSE_TYPE_MAGIC_SHOP, 15, 0 },
-    { "Warlock Magic Shop", 0x7, 0x3B9, HOUSE_TYPE_MAGIC_SHOP, 15, 0 },
+    { "Warlock Magic Shop", 0x7, 0x3B9, HOUSE_TYPE_MAGIC_SHOP, 31, 0 },
     { "Elf Magic Shop", 0x24, 0x2CC, HOUSE_TYPE_MAGIC_SHOP, 82, 0 },
     { "Human Stables01", 0x21, 0x31, HOUSE_TYPE_STABLE, 48, 3 },
     { "Necromancer Stables", 0x21, 0x2DD, HOUSE_TYPE_STABLE, 67, 3 },
