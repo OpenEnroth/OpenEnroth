@@ -711,3 +711,18 @@ GAME_TEST(Issues, Issue1977) {
     EXPECT_EQ(component1Tape, tape(true, false));   // Used up components
     EXPECT_EQ(component2Tape, tape(true, false));
 }
+
+GAME_TEST(Issues, Issue1983) {
+    // It was possible to sell recipes at a magic shop, not only at the alchemist as intended.
+    auto recipeTape = tapes.hasItem(ITEM_RECIPE_REJUVENATION);
+    auto bookTape = tapes.hasItem(ITEM_SPELLBOOK_LIGHT_BOLT);
+    auto letterTape = tapes.hasItem(ITEM_MESSAGE_LETTER_FROM_MR_STANTLEY_2);
+    auto houseTape = tapes.house();
+    auto goldTape = tapes.gold();
+    test.playTraceFromTestData("issue_1983.mm7", "issue_1983.json");
+    EXPECT_EQ(recipeTape, tape(true)); // The recipe should still be there
+    EXPECT_EQ(bookTape, tape(true, false)); // The spellbook should be gone
+    EXPECT_EQ(letterTape, tape(true)); // The letter should still be there
+    EXPECT_CONTAINS(houseTape, HOUSE_MAGIC_SHOP_EMERALD_ISLAND);
+    EXPECT_EQ(goldTape.delta(), 365); // Sold the spellbook
+}
