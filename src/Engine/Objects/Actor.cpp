@@ -347,7 +347,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 sprite.spellCasterAbility = ABILITY_SPELL1;
 
                 spriteId = sprite.Create(yaw, pitch, pObjectList->pObjects[sprite.uObjectDescID].uSpeed, 0);
-                i = grng->random(1024) - 512;
+                j = grng->random(1024) - 512;
                 k = grng->random(1024) - 512;
             }
             if (spriteId != -1) {
