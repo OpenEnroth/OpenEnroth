@@ -699,6 +699,14 @@ GAME_TEST(Issues, Issue1966) {
     EXPECT_GT(std::ranges::count(spritesTape.flattened(), SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT), 10);
 }
 
+GAME_TEST(Issues, Issue1972) {
+    // Enemy AI meteor shower had a bad meteor distribution due to loop var overwrite.
+    // We want to check the damage dealt, not the meteor count (early loop exit causing different number of grnd calls).
+    // starting and ending HP are recorded and always compared by playTraceFromTestData, no need for a `charTapes.hps()`.
+    test.playTraceFromTestData("issue_1972.mm7", "issue_1972.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
+    EXPECT_EQ(engine->_currentLoadedMapId, MAP_LAND_OF_THE_GIANTS);
+}
+
 GAME_TEST(Issues, Issue1977) {
     // Mix a potion of water resistance: explodes without fix.
     // Disabling RNG checks on playback to actually see results even if the explosion uses a `grng` call.
