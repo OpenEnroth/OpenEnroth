@@ -747,3 +747,10 @@ GAME_TEST(Issues, Issue1983) {
     EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Water Resistance Recipe") && text.contains("is beyond my meager knowledge"); });
     EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Letter from Mr. Stantley") && text.contains("is beyond my meager knowledge"); });
 }
+
+GAME_TEST(Issues, Issue1990) {
+    // Test opening the Tularean Forest half-hidden chest, which generates a black potion:
+    EXPECT_NO_THROW(
+        test.playTraceFromTestData("issue_1990.mm7", "issue_1990.json");
+    );
+}
