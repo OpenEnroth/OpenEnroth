@@ -261,6 +261,7 @@ struct BLVRenderParams {
 
     void Reset();
 
+    // TODO(pskelton): move to party?
     int uPartySectorID = 0;
     int uPartyEyeSectorID = 0;
 

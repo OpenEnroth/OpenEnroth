@@ -606,7 +606,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
     collision_state.check_hi = true;
     collision_state.radius_hi = actor.radius;
     collision_state.radius_lo = actor.radius;
-
+    
     // Dont bother with hi check if lo radius covers actor height anyway
     if (actor.radius * 2 > actor.height) collision_state.check_hi = false;
 
@@ -669,8 +669,8 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
         actor.pos = adjusted_pos;
-        actor.sectorId = collision_state.uSectorID;
-
+		actor.sectorId = collision_state.uSectorID;
+        
         // break if weve moved far enough now
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) break; // And we're done with collisions.
 
@@ -730,15 +730,15 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
             Vec3f newDestination = collision_state.new_position_lo - destPlaneDist * slidePlaneNormal;
             Vec3f newDirection = newDestination - slidePlaneOrigin;
 
-                // Cant push uphill on steep faces
+            // Cant push uphill on steep faces
             if (bFaceSlopeTooSteep && newDirection.z > 0)
                 newDirection.z = 0;
 
             newDirection.normalize();
 
-                // Push away from the surface and add a touch down for better slide
-                if (bFaceSlopeTooSteep)
-                    actor.velocity += Vec3f(face->facePlane.normal.x, face->facePlane.normal.y, -2) * 10;
+            // Push away from the surface and add a touch down for better slide
+            if (bFaceSlopeTooSteep)
+                actor.velocity += Vec3f(face->facePlane.normal.x, face->facePlane.normal.y, -2) * 10;
 
             // set movement speed along sliding plane
             actor.velocity = newDirection * dot(newDirection, actor.velocity);
@@ -759,7 +759,7 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                     actor.velocity.x = 0;
                     actor.velocity.y = 0;
                 }
-        }
+            }  
         }
 
         actor.velocity *= 0.89263916f; // was 58500 fp
@@ -908,7 +908,8 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             CollideIndoorWithGeometry(true);
             CollideIndoorWithDecorations();
             // TODO(captainurist): why there is no call to _46ED8A_collide_against_sprite_objects?
-            //                     See ProcessPartyCollisionsODM.
+			//                     See ProcessPartyCollisionsODM.
+            // pskelton - probably because there are no/ very few sprite objects in BLV. The only ones i can think of are the trees in the fairy hill.
             if (!engine->config->gameplay.NoPartyActorCollisions.value()) {
                 for (int k = 0; k < pActors.size(); ++k)
                     CollideWithActor(k, 0);
@@ -917,9 +918,9 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
                 break; // No portal collisions => can break.
         }
 
-        Vec3f adjusted_pos;
         // Set new position but moved back slightly so we never touch the face
-        adjusted_pos = pParty->pos + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction;
+		if (collision_state.adjusted_move_distance > collision_state.move_distance) collision_state.adjusted_move_distance = collision_state.move_distance;
+        Vec3f adjusted_pos = pParty->pos + (collision_state.adjusted_move_distance - closestdist) * collision_state.direction;
         // Adjust the collision position with the same offset
         collision_state.collisionPos -= closestdist * collision_state.direction;
 
@@ -929,13 +930,12 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
             return; // TODO: whaaa?
         }
 
-        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
-            pParty->pos = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo));
-            break; // And we're done with collisions.
-        }
-
         collision_state.total_move_distance += collision_state.adjusted_move_distance;
         pParty->pos = adjusted_pos;
+        pBLVRenderParams->uPartySectorID = collision_state.uSectorID;
+        if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
+            break; // And we're done with collisions.
+        }
 
         if (collision_state.pid.type() == OBJECT_Actor) {
             if (pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active())
