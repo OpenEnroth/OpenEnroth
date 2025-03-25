@@ -849,8 +849,10 @@ void UpdateActors_BLV() {
         int uFaceID;
         float floorZ = GetIndoorFloorZ(actor.pos, &actor.sectorId, &uFaceID);
 
-        if (actor.sectorId == 0 || floorZ <= -30000)
+        if (actor.sectorId == 0 || floorZ <= -30000 || uFaceID == -1) {
+            assert(false);  // level built with errors
             continue;
+        }
 
         bool isFlying = actor.monsterInfo.flying;
         if (!actor.CanAct())
@@ -921,14 +923,25 @@ void UpdateActors_BLV() {
                 actor.velocity.z += -8 * pEventTimer->dt().ticks() * GetGravityStrength();
         }
 
-        if (actor.velocity.lengthSqr() >= 400) {
-            ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
-        } else {
-            actor.velocity = Vec3f(0, 0, 0);
+        
+        if (actor.velocity.xy().lengthSqr() < 400) {
+            actor.velocity.x = 0;
+			actor.velocity.y = 0;
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
                 if (actor.aiState == Dead)
                     actor.aiState = Removed;
             }
+        }
+
+		Vec3f oldPos = actor.pos;
+		Vec3f savedSpeed = actor.velocity;
+
+		actor.velocity.z = 0;
+        ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
+
+        if (actor.pos.z <= oldPos.z) {
+            actor.velocity = Vec3f(0, 0, savedSpeed.z);
+            ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
         }
     }
 }
@@ -1863,8 +1876,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
 
-    if (!isAboveGround && pIndoor->pFaces[faceId].uAttributes & FACE_IsLava)
-        pParty->uFlags |= PARTY_FLAG_BURNING;
+    if (faceId >= 0) // TODO(pskelton): investigate why this happens
+        if (!isAboveGround && pIndoor->pFaces[faceId].uAttributes & FACE_IsLava)
+            pParty->uFlags |= PARTY_FLAG_BURNING;
 
     if (faceEvent)
         eventProcessor(faceEvent, Pid(), 1);
