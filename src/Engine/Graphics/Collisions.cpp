@@ -1245,6 +1245,9 @@ bool hasShorterSolution(const float a, const float b, const float c, const float
     }
 
     if (inside) {
+        // TODO(pskelton): inside cylinder collisions (eg actor actor overlap) cause issues - disable for now.
+        // Consider if theres any instances where this could be reintroduced and useful.
+        return false;
         // We are inside and colliding - for cylinder
         if (alpha1 < 0.0f && alpha2 >= 0.0f) {
             *outNewSoln = 0.0f;
