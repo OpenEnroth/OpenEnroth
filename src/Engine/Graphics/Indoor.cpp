@@ -923,20 +923,19 @@ void UpdateActors_BLV() {
                 actor.velocity.z += -8 * pEventTimer->dt().ticks() * GetGravityStrength();
         }
 
-        
         if (actor.velocity.xy().lengthSqr() < 400) {
             actor.velocity.x = 0;
-			actor.velocity.y = 0;
+            actor.velocity.y = 0;
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
                 if (actor.aiState == Dead)
                     actor.aiState = Removed;
             }
         }
 
-		Vec3f oldPos = actor.pos;
-		Vec3f savedSpeed = actor.velocity;
+        Vec3f oldPos = actor.pos;
+        Vec3f savedSpeed = actor.velocity;
 
-		actor.velocity.z = 0;
+        actor.velocity.z = 0;
         ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
 
         if (actor.pos.z <= oldPos.z) {
@@ -944,10 +943,10 @@ void UpdateActors_BLV() {
             ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
         }
 
-		// update actor direction based on movement - better navigation if hit obstacle
-		Vec3f travel = actor.pos - oldPos;
+        // update actor direction based on movement - better navigation if hit obstacle
+        Vec3f travel = actor.pos - oldPos;
         if (travel.lengthSqr() > 128.f) {
-			actor.yawAngle = TrigLUT.atan2(travel.x, travel.y);
+            actor.yawAngle = TrigLUT.atan2(travel.x, travel.y);
         }
     }
 }
