@@ -742,8 +742,6 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
 
             // set movement speed along sliding plane
             actor.velocity = newDirection * dot(newDirection, actor.velocity);
-			// set yaw angle to match sliding direction
-            actor.yawAngle = TrigLUT.atan2(newDirection.x, newDirection.y);
 
             if (pIndoor->pFaces[id].uAttributes & FACE_TriggerByMonster)
                 eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, Pid(), 1);

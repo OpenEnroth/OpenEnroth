@@ -943,6 +943,12 @@ void UpdateActors_BLV() {
             actor.velocity = Vec3f(0, 0, savedSpeed.z);
             ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
         }
+
+		// update actor direction based on movement - better navigation if hit obstacle
+		Vec3f travel = actor.pos - oldPos;
+        if (travel.lengthSqr() > 128.f) {
+			actor.yawAngle = TrigLUT.atan2(travel.x, travel.y);
+        }
     }
 }
 
