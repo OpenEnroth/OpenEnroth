@@ -2900,7 +2900,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     // Some flying Rocks as decoration:
-                    static constexpr int rocksCount = 250,
+                    constexpr int rocksCount = 250,
                         rocksRadius = 3200,
                         rocksSpeedMin = 300,
                         rocksSpeedMax = 1400,
