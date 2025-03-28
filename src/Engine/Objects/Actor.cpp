@@ -923,16 +923,17 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
         }
         case OBJECT_Character: {
             out1 = pParty->pos + Vec3f(0, 0, pParty->height / 3);
+            float displace = engine->config->gameplay.SpellSourceDisplacement.value();
             if (id1 == 0) {
                 // Do nothing.
             } else if (id1 == 4) {
-                out1 += Vec3f::fromPolar(24, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(displace * 1.5f, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 3) {
-                out1 += Vec3f::fromPolar(8, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(displace * 0.5f, pParty->_viewYaw - TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 2) {
-                out1 += Vec3f::fromPolar(8, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(displace * 0.5f, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
             } else if (id1 == 1) {
-                out1 += Vec3f::fromPolar(24, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
+                out1 += Vec3f::fromPolar(displace * 1.5f, pParty->_viewYaw + TrigLUT.uIntegerHalfPi, 0);
             }
             break;
         }

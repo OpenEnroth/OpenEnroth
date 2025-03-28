@@ -267,6 +267,10 @@ class GameConfig : public Config {
         Bool DestroyDischargedWands = { this, "destroy_discharged_wands", false,
             "Destroy wands when they reach 0 charges." };
 
+        // Previous versions used a hardcoded distance of 16 per character
+        Float SpellSourceDisplacement = {this, "party_spell_displacement", 16.0f, &ValidateSpellSourceDisplacement,
+             "Determines how far the visual source of a spell cast by a party member is displaced horizontally, per party member."};
+
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)
@@ -309,6 +313,9 @@ class GameConfig : public Config {
         }
         static int ValidateMaxActiveAIActors(int num) {
             return std::clamp(num, 30, 500);
+        }
+        static float ValidateSpellSourceDisplacement(float num) {
+            return std::clamp(num, 0.0f, 50.0f);
         }
     };
 
