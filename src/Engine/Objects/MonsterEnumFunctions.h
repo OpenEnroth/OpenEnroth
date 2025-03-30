@@ -1,11 +1,14 @@
 #pragma once
 
 #include <span>
+#include <string>
 #include <utility>
 
 #include "Engine/Data/HouseEnums.h"
 
 #include "Utility/Segment.h"
+#include "Utility/IndexedArray.h"
+#include "Library/Color/ColorTable.h"
 
 #include "ItemEnums.h"
 #include "CharacterEnums.h"
@@ -96,3 +99,8 @@ inline MonsterSupertype supertypeForMonsterId(MonsterId monsterId) {
 //
 
 std::span<const MonsterAttackPreference> allMonsterAttackPreferences();
+
+// Lookup table for label and color of a monster's special attack (`SpecialAttackType`), like petrify or insanity:
+extern IndexedArray<std::pair<std::string, const Color *>, SPECIAL_ATTACK_FIRST, SPECIAL_ATTACK_LAST> monsterSpecialAttackDisplay;
+// Lookup table for label and color of a monster's special ability (`MonsterSpecialAbility`) - multi-shot, summoning or explode-on-death:
+extern IndexedArray<std::pair<std::string, const Color *>, MONSTER_SPECIAL_ABILITY_SHOT, MONSTER_SPECIAL_ABILITY_EXPLODE> monsterSpecialAbilityDisplay;

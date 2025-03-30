@@ -1,6 +1,7 @@
 #include <array>
 #include <algorithm>
 #include <string>
+#include <utility>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
@@ -182,7 +183,7 @@ IndexedArray<int, MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST> monster_popup_y_offsets
 };
 
 void Inventory_ItemPopupAndAlchemy();
-Color GetSpellColor(signed int a1);
+Color GetSpellColor(SpellId spellId);
 uint64_t GetExperienceRequiredForLevel(int level);
 
 /**
@@ -635,83 +636,109 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     }
 }
 
-void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
+/**
+ * Render the monster info popup
+ * @param uActorID ID of the actor to show info for
+ * @param pWindow The window to render into, or `null` to measure content only
+ * @return Actual width/height needed to render
+ */
+std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
+    /// Geometry hardcoded constants
+    const int X_LEFT_COLUMN = 12                            // "Effects" label
+        , X_EFFECT_LIST = X_LEFT_COLUMN + 16                // Effects list
+        , X_RIGHT_COLUMN = 150                              // Most right-side labels
+        , X_RIGHT_INDENTED = X_RIGHT_COLUMN + 20            // Resistance labels & extended spells/specials
+        , X_RIGHT_DEFAULT_SPELLS = X_RIGHT_COLUMN + 70      // Spells when "extended" is off
+        , X_RIGHT_DATA = X_RIGHT_COLUMN + 91                // Numbers
+        , X_POS_DOLL = X_LEFT_COLUMN + 1                    // 1px frame
+        , Y_POS_DOLL = 52
+        , SIZE_DOLL = 128
+        , Y_EFFECT_LIST = Y_POS_DOLL + SIZE_DOLL            // Lower edge doll frame - add an empty line!
+        , RIGHT_BOTTOM_MARGIN = 16;                         // Added to measured bottom and right edge of rendered text
+
     static Actor pMonsterInfoUI_Doll;
+    MonsterInfo &monsterInfo = pActors[uActorID].monsterInfo;
 
-    int Popup_Y_Offset = monster_popup_y_offsets[monsterTypeForMonsterId(pActors[uActorID].monsterInfo.id)] - 40;
-
-    Duration actionLen;
-    if (pActors[uActorID].monsterInfo.id == pMonsterInfoUI_Doll.monsterInfo.id) {
-        actionLen = pMonsterInfoUI_Doll.currentActionLength;
-    } else {
-        // copy actor info if different
-        pMonsterInfoUI_Doll = pActors[uActorID];
-        pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
-        pMonsterInfoUI_Doll.currentActionTime = 0_ticks;
-        actionLen = Duration::randomRealtimeSeconds(vrng, 1, 3);
-        pMonsterInfoUI_Doll.currentActionLength = actionLen;
-    }
-
-    if (pMonsterInfoUI_Doll.currentActionTime > actionLen) {
-        pMonsterInfoUI_Doll.currentActionTime = 0_ticks;
-        if (pMonsterInfoUI_Doll.currentActionAnimation == ANIM_Bored ||
-            pMonsterInfoUI_Doll.currentActionAnimation == ANIM_AtkMelee) {
-            pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Standing;
-            pMonsterInfoUI_Doll.currentActionLength = Duration::randomRealtimeSeconds(vrng, 1, 2);
+    /*------------------------------- Top and Doll -------------------------------*/
+    if (pWindow) {
+        Duration actionLen;
+        if (monsterInfo.id == pMonsterInfoUI_Doll.monsterInfo.id) {
+            actionLen = pMonsterInfoUI_Doll.currentActionLength;
         } else {
-            // rand();
+            // copy actor info if different
+            pMonsterInfoUI_Doll = pActors[uActorID];
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
-            if (!isPeasant(pMonsterInfoUI_Doll.monsterInfo.id) && vrng->random(30) < 100)
-                pMonsterInfoUI_Doll.currentActionAnimation = ANIM_AtkMelee;
-            pMonsterInfoUI_Doll.currentActionLength =
-                pSpriteFrameTable
-                    ->pSpriteSFrames[pActors[uActorID].spriteIds[pMonsterInfoUI_Doll.currentActionAnimation]]
-                    .uAnimLength;
+            pMonsterInfoUI_Doll.currentActionTime = 0_ticks;
+            actionLen = Duration::randomRealtimeSeconds(vrng, 1, 3);
+            pMonsterInfoUI_Doll.currentActionLength = actionLen;
         }
+
+        if (pMonsterInfoUI_Doll.currentActionTime > actionLen) {
+            pMonsterInfoUI_Doll.currentActionTime = 0_ticks;
+            if (pMonsterInfoUI_Doll.currentActionAnimation == ANIM_Bored ||
+                pMonsterInfoUI_Doll.currentActionAnimation == ANIM_AtkMelee) {
+                pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Standing;
+                pMonsterInfoUI_Doll.currentActionLength = Duration::randomRealtimeSeconds(vrng, 1, 2);
+            } else {
+                // rand();
+                pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
+                if (!isPeasant(pMonsterInfoUI_Doll.monsterInfo.id) && vrng->random(30) < 100)
+                    pMonsterInfoUI_Doll.currentActionAnimation = ANIM_AtkMelee;
+                pMonsterInfoUI_Doll.currentActionLength =
+                        pSpriteFrameTable
+                                ->pSpriteSFrames[pActors[uActorID].spriteIds[pMonsterInfoUI_Doll.currentActionAnimation]]
+                                .uAnimLength;
+            }
+        }
+
+        Recti doll_rect(pWindow->uFrameX + X_POS_DOLL, pWindow->uFrameY + Y_POS_DOLL, SIZE_DOLL, SIZE_DOLL);
+
+        {
+            SpriteFrame *Portrait_Sprite = pSpriteFrameTable->GetFrame(
+                    pActors[uActorID]
+                            .spriteIds[pMonsterInfoUI_Doll.currentActionAnimation],
+                    pMonsterInfoUI_Doll.currentActionTime);
+
+            // Draw portrait border
+            render->ResetUIClipRect();
+            render->FillRectFast(doll_rect.x, doll_rect.y, SIZE_DOLL, SIZE_DOLL, colorTable.Black);
+
+            Recti frameRect(doll_rect.topLeft() - Pointi(1, 1), doll_rect.bottomRight() + Pointi(1, 1));
+            render->BeginLines2D();
+            render->RasterLine2D(frameRect.topLeft(), frameRect.topRight(), colorTable.Jonquil);
+            render->RasterLine2D(frameRect.topRight(), frameRect.bottomRight(), colorTable.Jonquil);
+            render->RasterLine2D(frameRect.bottomRight(), frameRect.bottomLeft(), colorTable.Jonquil);
+            render->RasterLine2D(frameRect.bottomLeft(), frameRect.topLeft(), colorTable.Jonquil);
+            render->EndLines2D();
+
+            // Draw portrait
+            int Popup_Y_Offset = monster_popup_y_offsets[monsterTypeForMonsterId(monsterInfo.id)] - 40;
+            render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);
+        }
+        pMonsterInfoUI_Doll.currentActionTime += pMiscTimer->dt();
+
+        // Draw name and profession
+        std::string str;
+        if (pActors[uActorID].npcId) {
+            str = NameAndTitle(getNPCData(pActors[uActorID].npcId));
+        } else {
+            str = GetDisplayName(&pActors[uActorID]);
+        }
+        pWindow->DrawTitleText(assets->pFontComic.get(), 0, 12, colorTable.PaleCanary, str, 3);
+
+        // health bar
+        Actor::DrawHealthBar(&pActors[uActorID], pWindow);
     }
 
-    Recti doll_rect(pWindow->uFrameX + 13, pWindow->uFrameY + 52, 128, 128);
-
-    {
-        SpriteFrame *Portrait_Sprite = pSpriteFrameTable->GetFrame(
-            pActors[uActorID]
-                .spriteIds[pMonsterInfoUI_Doll.currentActionAnimation],
-            pMonsterInfoUI_Doll.currentActionTime);
-
-        // Draw portrait border
-        render->ResetUIClipRect();
-        render->FillRectFast(doll_rect.x, doll_rect.y, 128, 128, colorTable.Black);
-
-        Recti frameRect(doll_rect.topLeft() - Pointi(1, 1), doll_rect.bottomRight() + Pointi(1, 1));
-        render->BeginLines2D();
-        render->RasterLine2D(frameRect.topLeft(), frameRect.topRight(), colorTable.Jonquil);
-        render->RasterLine2D(frameRect.topRight(), frameRect.bottomRight(), colorTable.Jonquil);
-        render->RasterLine2D(frameRect.bottomRight(), frameRect.bottomLeft(), colorTable.Jonquil);
-        render->RasterLine2D(frameRect.bottomLeft(), frameRect.topLeft(), colorTable.Jonquil);
-        render->EndLines2D();
-
-        // Draw portrait
-        render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);
-    }
-    pMonsterInfoUI_Doll.currentActionTime += pMiscTimer->dt();
-
-    // Draw name and profession
-    std::string str;
-    if (pActors[uActorID].npcId) {
-        str = NameAndTitle(getNPCData(pActors[uActorID].npcId));
-    } else {
-        str = GetDisplayName(&pActors[uActorID]);
-    }
-    pWindow->DrawTitleText(assets->pFontComic.get(), 0, 0xCu, colorTable.PaleCanary, str, 3);
-
-    // health bar
-    Actor::DrawHealthBar(&pActors[uActorID], pWindow);
-
-    bool normal_level = false;
-    bool expert_level = false;
-    bool master_level = false;
-    bool grandmaster_level = false;
-    bool for_effects = false;
+    /*------------------------------- Determine Detail Level -------------------------------*/
+    // Debug option for full info
+    bool monster_full_informations = engine->config->debug.FullMonsterID.value();
+    bool normal_level = monster_full_informations;
+    bool expert_level = monster_full_informations;
+    bool master_level = monster_full_informations;
+    bool grandmaster_level = monster_full_informations;
+    bool for_effects = monster_full_informations;
+    bool showCurrentHp = monster_full_informations || pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Active();
 
     if (pParty->hasActiveCharacter()) {
         int skill_points = 0;
@@ -721,16 +748,16 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         if ((skill_points = idMonsterSkill.level()) > 0) {
             skill_mastery = idMonsterSkill.mastery();
             if (skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE) {
-                if (skill_points + 10 >= pActors[uActorID].monsterInfo.level) {
+                if (skill_points + 10 >= monsterInfo.level) {
                     normal_level = true;
                 }
             } else if (skill_mastery == CHARACTER_SKILL_MASTERY_EXPERT) {
-                if (2 * skill_points + 10 >= pActors[uActorID].monsterInfo.level) {
+                if (2 * skill_points + 10 >= monsterInfo.level) {
                     normal_level = true;
                     expert_level = true;
                 }
             } else if (skill_mastery == CHARACTER_SKILL_MASTERY_MASTER) {
-                if (3 * skill_points + 10 >= pActors[uActorID].monsterInfo.level) {
+                if (3 * skill_points + 10 >= monsterInfo.level) {
                     normal_level = true;
                     expert_level = true;
                     master_level = true;
@@ -750,7 +777,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
             !holdingMouseRightButton && skill_mastery != CHARACTER_SKILL_MASTERY_NONE) {
             CharacterSpeech speech;
             if (normal_level || expert_level || master_level || grandmaster_level) {
-                if (pActors[uActorID].monsterInfo.level >= pParty->activeCharacter().uLevel - 5)
+                if (monsterInfo.level >= pParty->activeCharacter().uLevel - 5)
                     speech = SPEECH_ID_MONSTER_STRONG;
                 else
                     speech = SPEECH_ID_MONSTER_WEAK;
@@ -761,184 +788,255 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         }
     }
 
-    // Debug option for full info
-    bool monster_full_informations = engine->config->debug.FullMonsterID.value();
-    if (monster_full_informations == true) {
-        normal_level = true;       //
-        expert_level = true;       //
-        master_level = true;       //
-        grandmaster_level = true;  //
-        for_effects = true;
-    }
+    // Additionally show Attack2 if Attack1 is visible, and Special Attack (Break, Insanity...) if Spells are visible:
+    bool extended = engine->config->settings.ExtendedMonsterInfo.value();
 
-    int pTextHeight = 0;
-    int pTextColorID = 0;
-    pWindow->DrawText(assets->pFontSmallnum.get(), {12, 196}, colorTable.Jonquil, localization->GetString(LSTR_EFFECTS));
+    /*------------------------------- Left side -------------------------------*/
+    GUIFont *font = assets->pFontSmallnum.get();
+    int lineAdvance = assets->pFontSmallnum->GetHeight() - 3;
+    int pTextHeight = Y_EFFECT_LIST + lineAdvance;  // Start effects below portrait
+    if (pWindow) pWindow->DrawText(font, {X_LEFT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_EFFECTS));
+    pTextHeight += lineAdvance;
     if (!for_effects) {
-        pWindow->DrawText(assets->pFontSmallnum.get(), {28, assets->pFontSmallnum->GetHeight() + 193}, colorTable.White, localization->GetString(LSTR_UNKNOWN_VALUE));
+        if (pWindow) pWindow->DrawText(font, {X_EFFECT_LIST, pTextHeight}, colorTable.White, localization->GetString(LSTR_UNKNOWN_VALUE));
+        pTextHeight += lineAdvance;
     } else {
-        std::string pText;
-        pTextHeight = assets->pFontSmallnum->GetHeight() + 193;
+        SpellId spellIdForBuff = SPELL_NONE;
+        LstrId textId = LSTR_223;
         for (ActorBuff buff : pActors[uActorID].buffs.indices()) {
             if (pActors[uActorID].buffs[buff].Active()) {
                 switch (buff) {
                     case ACTOR_BUFF_CHARM:
-                        pTextColorID = 60;
-                        pText = localization->GetString(LSTR_CHARMED);
+                        spellIdForBuff = SPELL_MIND_CHARM;
+                        textId = LSTR_CHARMED;
                         break;
                     case ACTOR_BUFF_SUMMONED:
-                        pTextColorID = 82;
-                        pText = localization->GetString(LSTR_SUMMONED);
+                        spellIdForBuff = SPELL_LIGHT_SUMMON_ELEMENTAL;
+                        textId = LSTR_SUMMONED;
                         break;
                     case ACTOR_BUFF_SHRINK:
-                        pTextColorID = 92;
-                        pText = localization->GetString(LSTR_SHRUNK);
+                        spellIdForBuff = SPELL_DARK_SHRINKING_RAY;
+                        textId = LSTR_SHRUNK;
                         break;
                     case ACTOR_BUFF_AFRAID:
-                        pTextColorID = 63;
-                        pText = localization->GetString(LSTR_AFRAID);
+                        spellIdForBuff = SPELL_MIND_MASS_FEAR;
+                        textId = LSTR_AFRAID;
                         break;
                     case ACTOR_BUFF_STONED:
-                        pText = localization->GetString(LSTR_STONED);
-                        pTextColorID = 81;
+                        spellIdForBuff = SPELL_LIGHT_PARALYZE;
+                        textId = LSTR_STONED;
                         break;
                     case ACTOR_BUFF_PARALYZED:
-                        pText = localization->GetString(LSTR_PARALYZED);
-                        pTextColorID = 81;
+                        spellIdForBuff = SPELL_LIGHT_PARALYZE;
+                        textId = LSTR_PARALYZED;
                         break;
                     case ACTOR_BUFF_SLOWED:
-                        pText = localization->GetString(LSTR_SLOWED);
-                        pTextColorID = 35;
+                        spellIdForBuff = SPELL_EARTH_SLOW;
+                        textId = LSTR_SLOWED;
                         break;
                     case ACTOR_BUFF_BERSERK:
-                        pText = localization->GetString(LSTR_BERSERK);
-                        pTextColorID = 62;
+                        spellIdForBuff = SPELL_MIND_BERSERK;
+                        textId = LSTR_BERSERK;
                         break;
                     case ACTOR_BUFF_SOMETHING_THAT_HALVES_AC:
                     case ACTOR_BUFF_MASS_DISTORTION:
-                        pTextColorID = 0;
                         continue;
                     case ACTOR_BUFF_FATE:
-                        pTextColorID = 47;
-                        pText = localization->GetString(LSTR_FATE);
+                        spellIdForBuff = SPELL_SPIRIT_FATE;
+                        textId = LSTR_FATE;
                         break;
                     case ACTOR_BUFF_ENSLAVED:
-                        pTextColorID = 66;
-                        pText = localization->GetString(LSTR_ENSLAVED);
+                        spellIdForBuff = SPELL_MIND_ENSLAVE;
+                        textId = LSTR_ENSLAVED;
                         break;
                     case ACTOR_BUFF_DAY_OF_PROTECTION:
-                        pTextColorID = 85;
-                        pText =
-                            localization->GetString(LSTR_DAY_OF_PROTECTION);
+                        spellIdForBuff = SPELL_LIGHT_DAY_OF_PROTECTION;
+                        textId = LSTR_DAY_OF_PROTECTION;
                         break;
                     case ACTOR_BUFF_HOUR_OF_POWER:
-                        pTextColorID = 86;
-                        pText = localization->GetString(LSTR_HOUR_OF_POWER);
+                        spellIdForBuff = SPELL_LIGHT_HOUR_OF_POWER;
+                        textId = LSTR_HOUR_OF_POWER;
                         break;
                     case ACTOR_BUFF_SHIELD:
-                        pTextColorID = 17;
-                        pText = localization->GetString(LSTR_SHIELD);
+                        spellIdForBuff = SPELL_AIR_SHIELD;
+                        textId = LSTR_SHIELD;
                         break;
                     case ACTOR_BUFF_STONESKIN:
-                        pTextColorID = 38;
-                        pText = localization->GetString(LSTR_STONESKIN);
+                        spellIdForBuff = SPELL_EARTH_STONESKIN;
+                        textId = LSTR_STONESKIN;
                         break;
                     case ACTOR_BUFF_BLESS:
-                        pTextColorID = 46;
-                        pText = localization->GetString(LSTR_BLESS);
+                        spellIdForBuff = SPELL_SPIRIT_BLESS;
+                        textId = LSTR_BLESS;
                         break;
                     case ACTOR_BUFF_HEROISM:
-                        pTextColorID = 51;
-                        pText = localization->GetString(LSTR_HEROISM);
+                        spellIdForBuff = SPELL_SPIRIT_HEROISM;
+                        textId = LSTR_HEROISM;
                         break;
                     case ACTOR_BUFF_HASTE:
-                        pTextColorID = 5;
-                        pText = localization->GetString(LSTR_HASTE);
+                        spellIdForBuff = SPELL_FIRE_HASTE;
+                        textId = LSTR_HASTE;
                         break;
                     case ACTOR_BUFF_PAIN_REFLECTION:
-                        pTextColorID = 95;
-                        pText =
-                            localization->GetString(LSTR_PAIN_REFLECTION);
+                        spellIdForBuff = SPELL_DARK_PAIN_REFLECTION;
+                        textId = LSTR_PAIN_REFLECTION;
                         break;
                     case ACTOR_BUFF_HAMMERHANDS:
-                        pTextColorID = 73;
-                        pText = localization->GetString(LSTR_HAMMERHANDS);
+                        spellIdForBuff = SPELL_BODY_HAMMERHANDS;
+                        textId = LSTR_HAMMERHANDS;
                         break;
                     default:
-                        break;
+                        continue;
                 }
-                if (!pText.empty()) {
-                    pWindow->DrawText(assets->pFontSmallnum.get(), {28, pTextHeight}, GetSpellColor(pTextColorID), pText);
-                    pTextHeight = pTextHeight + assets->pFontSmallnum->GetHeight() - 3;
-                }
+                if (pWindow)
+                    pWindow->DrawText(font, {X_EFFECT_LIST, pTextHeight}, GetSpellColor(spellIdForBuff), localization->GetString(textId));
+                pTextHeight += lineAdvance;
             }
         }
-        if (pText.empty()) {
-            pWindow->DrawText(assets->pFontSmallnum.get(), {28, pTextHeight}, colorTable.White, localization->GetString(LSTR_NONE));
+        if (textId == LSTR_223) {
+            if (pWindow) pWindow->DrawText(font, {X_EFFECT_LIST, pTextHeight}, colorTable.White, localization->GetString(LSTR_NONE));
+            pTextHeight += lineAdvance;
         }
     }
 
-    pTextHeight = doll_rect.y;
+    /*------------------------------- Right side -------------------------------*/
+    int leftTextHeight = pTextHeight;
+    pTextHeight = Y_POS_DOLL;
+    int maxWidth = 0; // The max width of the info at X_RIGHT_DATA
+    auto measureWidth = [font, &maxWidth](std::string_view s) {
+        int w = font->GetLineWidth(s);
+        if (w > maxWidth) maxWidth = w;
+    };
 
     std::string hpStr, acStr;
     if (normal_level) {
-        hpStr = fmt::format("{}", pActors[uActorID].monsterInfo.hp);
-        acStr = fmt::format("{}", pActors[uActorID].monsterInfo.ac);
+        hpStr = fmt::format("{}", monsterInfo.hp);
+        acStr = fmt::format("{}", monsterInfo.ac);
     } else {
         hpStr = acStr = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
-    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_HIT_POINTS));
-    pWindow->DrawText(assets->pFontSmallnum.get(), {252, pTextHeight}, colorTable.White, hpStr);
-    pTextHeight = doll_rect.y + assets->pFontSmallnum->GetHeight() - 3;
-    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ARMOR_CLASS));
-    pWindow->DrawText(assets->pFontSmallnum.get(), {252, pTextHeight}, colorTable.White, acStr);
-    pTextHeight = pTextHeight + assets->pFontSmallnum->GetHeight() - 6 + assets->pFontSmallnum->GetHeight();
+    if (showCurrentHp && extended)
+        hpStr = fmt::format("{} / {}", pActors[uActorID].currentHP, hpStr);
+    if (pWindow) {
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_HIT_POINTS));
+        pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, hpStr);
+    } else {
+        measureWidth(hpStr);
+    }
+    pTextHeight += lineAdvance;
+    if (pWindow) {
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ARMOR_CLASS));
+        pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, acStr);
+    } else {
+        measureWidth(acStr);
+    }
+    pTextHeight += 2 * lineAdvance;
 
     std::string attackStr, damageStr;
     if (expert_level) {
-        attackStr = displayNameForDamageType(pActors[uActorID].monsterInfo.attack1Type, localization);
-        if (pActors[uActorID].monsterInfo.attack1DamageBonus) {
-            damageStr = fmt::format("{}d{}+{}", pActors[uActorID].monsterInfo.attack1DamageDiceRolls, pActors[uActorID].monsterInfo.attack1DamageDiceSides,
-                                    pActors[uActorID].monsterInfo.attack1DamageBonus);
+        attackStr = displayNameForDamageType(monsterInfo.attack1Type, localization);
+        if (extended && monsterInfo.attack1MissileType) attackStr += " R";
+        if (monsterInfo.attack1DamageBonus) {
+            damageStr = fmt::format("{}d{}+{}", monsterInfo.attack1DamageDiceRolls, monsterInfo.attack1DamageDiceSides, monsterInfo.attack1DamageBonus);
         } else {
-            damageStr = fmt::format("{}d{}", pActors[uActorID].monsterInfo.attack1DamageDiceRolls, pActors[uActorID].monsterInfo.attack1DamageDiceSides);
+            damageStr = fmt::format("{}d{}", monsterInfo.attack1DamageDiceRolls, monsterInfo.attack1DamageDiceSides);
         }
     } else {
         attackStr = damageStr = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
-    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
-    pWindow->DrawText(assets->pFontSmallnum.get(), {231, pTextHeight}, colorTable.White, attackStr);
-    pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
-    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
-    pWindow->DrawText(assets->pFontSmallnum.get(), {231, pTextHeight}, colorTable.White, damageStr);
-    pTextHeight += assets->pFontSmallnum->GetHeight() - 6 + assets->pFontSmallnum->GetHeight();
+    if (pWindow) {
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
+        pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, attackStr);
+    } else {
+        measureWidth(attackStr);
+    }
+    pTextHeight += lineAdvance;
+    if (pWindow) {
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
+        pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, damageStr);
+    } else {
+        measureWidth(damageStr);
+    }
+    if (expert_level && extended && monsterInfo.attack2Chance > 0 && (monsterInfo.attack2DamageDiceRolls > 0 || monsterInfo.attack2DamageBonus > 0)) {
+        attackStr = displayNameForDamageType(monsterInfo.attack2Type, localization);
+        if (monsterInfo.attack2MissileType) attackStr += " R";
+        if (monsterInfo.attack2DamageBonus) {
+            damageStr = fmt::format("{}d{}+{}", monsterInfo.attack2DamageDiceRolls, monsterInfo.attack2DamageDiceSides, monsterInfo.attack2DamageBonus);
+        } else {
+            damageStr = fmt::format("{}d{}", monsterInfo.attack2DamageDiceRolls, monsterInfo.attack2DamageDiceSides);
+        }
+        pTextHeight += lineAdvance;
+        if (pWindow) {
+            pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
+            pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, attackStr);
+        } else {
+            measureWidth(attackStr);
+        }
+        pTextHeight += lineAdvance;
+        if (pWindow) {
+            pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
+            pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, damageStr);
+        } else {
+            measureWidth(damageStr);
+        }
+    }
+    if (master_level && extended && monsterInfo.specialAttackType != SPECIAL_ATTACK_NONE) {
+        pTextHeight += lineAdvance;
+        if (pWindow) {
+            auto [str, color] = monsterSpecialAttackDisplay[monsterInfo.specialAttackType];
+            pWindow->DrawText(font, {X_RIGHT_INDENTED, pTextHeight}, *color, str);
+        }
+    }
+    if (master_level && extended && monsterInfo.specialAbilityType != MONSTER_SPECIAL_ABILITY_NONE) {
+        pTextHeight += lineAdvance;
+        if (pWindow) {
+            auto [str, color] = monsterSpecialAbilityDisplay[monsterInfo.specialAbilityType];
+            pWindow->DrawText(font, {X_RIGHT_INDENTED, pTextHeight}, *color, str);
+        }
+    }
+    pTextHeight += 2 * lineAdvance;
 
     std::string spellTitleStr = localization->GetString(LSTR_SPELL);
-    std::string spell1Str, spell2Str;
+    std::string spell1Str, spell2Str, spell3Str; // 1 is in-line with spellTitleStr (only non-extended), 2 and 3 own lines
+    int spellX = extended ? X_RIGHT_INDENTED : X_RIGHT_DEFAULT_SPELLS;
     if (master_level) {
-        if (pActors[uActorID].monsterInfo.spell1Id == SPELL_NONE && pActors[uActorID].monsterInfo.spell2Id == SPELL_NONE) {
+        if (monsterInfo.spell1Id == SPELL_NONE && monsterInfo.spell2Id == SPELL_NONE) {
             spell1Str = localization->GetString(LSTR_NONE);
+            spellX = X_RIGHT_DATA;
         }
-        if (pActors[uActorID].monsterInfo.spell1Id != SPELL_NONE && pActors[uActorID].monsterInfo.spell2Id != SPELL_NONE) {
+        if (monsterInfo.spell1Id != SPELL_NONE && monsterInfo.spell2Id != SPELL_NONE) {
             spellTitleStr = localization->GetString(LSTR_SPELLS);
         }
-        if (pActors[uActorID].monsterInfo.spell1Id != SPELL_NONE) {
-            spell1Str = pSpellStats->pInfos[pActors[uActorID].monsterInfo.spell1Id].pShortName;
+        if (monsterInfo.spell1Id != SPELL_NONE) {
+            if (extended)
+                spell2Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell1Id].pShortName, monsterInfo.spell1SkillMastery.shortDescription());
+            else
+                spell1Str = pSpellStats->pInfos[monsterInfo.spell1Id].pShortName;
         }
-        if (pActors[uActorID].monsterInfo.spell2Id != SPELL_NONE) {
-            spell2Str = pSpellStats->pInfos[pActors[uActorID].monsterInfo.spell2Id].pShortName;
+        if (monsterInfo.spell2Id != SPELL_NONE) {
+            if (extended)
+                spell3Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell2Id].pShortName, monsterInfo.spell2SkillMastery.shortDescription());
+            else
+                spell2Str = pSpellStats->pInfos[monsterInfo.spell2Id].pShortName;
         }
     } else {
         spell1Str = localization->GetString(LSTR_UNKNOWN_VALUE);
+        spellX = X_RIGHT_DATA;
     }
-    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, spellTitleStr);
-    pWindow->DrawText(assets->pFontSmallnum.get(), {220, pTextHeight}, colorTable.White, spell1Str);
-    pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
+    if (pWindow) {
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, spellTitleStr);
+        if (!spell1Str.empty())
+            pWindow->DrawText(font, {spellX, pTextHeight}, colorTable.White, spell1Str);
+    }
     if (!spell2Str.empty()) {
-        pWindow->DrawText(assets->pFontSmallnum.get(), {220, pTextHeight}, colorTable.White, spell2Str);
-        pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
+        pTextHeight += lineAdvance;
+        if (pWindow) pWindow->DrawText(font, {spellX, pTextHeight}, colorTable.White, spell2Str);
     }
-    pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
+    if (!spell3Str.empty()) {
+        pTextHeight += lineAdvance;
+        if (pWindow) pWindow->DrawText(font, {spellX, pTextHeight}, colorTable.White, spell3Str);
+    }
+    pTextHeight += 2 * lineAdvance;
 
     std::array<std::string, 10> resTypes = {
         localization->GetSpellSchoolName(MAGIC_SCHOOL_FIRE),
@@ -954,59 +1052,70 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     };
 
     std::array<int, 10> resValues = {
-        pActors[uActorID].monsterInfo.resFire,
-        pActors[uActorID].monsterInfo.resAir,
-        pActors[uActorID].monsterInfo.resWater,
-        pActors[uActorID].monsterInfo.resEarth,
-        pActors[uActorID].monsterInfo.resSpirit,
-        pActors[uActorID].monsterInfo.resMind,
-        pActors[uActorID].monsterInfo.resBody,
-        pActors[uActorID].monsterInfo.resLight,
-        pActors[uActorID].monsterInfo.resDark,
-        pActors[uActorID].monsterInfo.resPhysical, // Physical & Dark were switched, was a bug?
+        monsterInfo.resFire,
+        monsterInfo.resAir,
+        monsterInfo.resWater,
+        monsterInfo.resEarth,
+        monsterInfo.resSpirit,
+        monsterInfo.resMind,
+        monsterInfo.resBody,
+        monsterInfo.resLight,
+        monsterInfo.resDark,
+        monsterInfo.resPhysical, // Physical & Dark were switched, was a bug?
     };
 
-    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_RESISTANCES));
-    pTextHeight = pTextHeight + assets->pFontSmallnum->GetHeight() - 3;
+    if (pWindow) pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_RESISTANCES));
+    pTextHeight += lineAdvance;
 
-    if (grandmaster_level) {
-        std::string resStr;
-        for (int i = 0; i < 10; i++) {
-            if (resValues[i] == 200) {
-                resStr = localization->GetString(LSTR_IMMUNE);
-            } else {
-                if (resValues[i]) {
+    std::string resStr;
+    for (int i = 0; i < 10; i++) {
+        if (!grandmaster_level) {
+            resStr = localization->GetString(LSTR_UNKNOWN_VALUE);
+        } else if (resValues[i] == 200) {
+            resStr = localization->GetString(LSTR_IMMUNE);
+        } else {
+            if (resValues[i]) {
+                if (extended)
+                    resStr = fmt::format("{}", resValues[i]);
+                else
                     resStr = localization->GetString(LSTR_RESISTANT);
-                } else {
-                    resStr = localization->GetString(LSTR_NONE);
-                }
+            } else {
+                resStr = localization->GetString(LSTR_NONE);
             }
+        }
 
-            pWindow->DrawText(assets->pFontSmallnum.get(), {170, pTextHeight}, colorTable.Jonquil, resTypes[i]);
-            pWindow->DrawText(assets->pFontSmallnum.get(), {241, pTextHeight}, colorTable.White, resStr);
-            pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
+        if (pWindow) {
+            pWindow->DrawText(font, {X_RIGHT_INDENTED, pTextHeight}, colorTable.Jonquil, resTypes[i]);
+            pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, resStr);
+        } else {
+            measureWidth(resStr);
         }
-    } else {
-        for (int i = 0; i < 10; ++i) {
-            pWindow->DrawText(assets->pFontSmallnum.get(), {170, pTextHeight}, colorTable.Jonquil, resTypes[i]);
-            pWindow->DrawText(assets->pFontSmallnum.get(), {241, pTextHeight}, colorTable.White, localization->GetString(LSTR_UNKNOWN_VALUE));
-            pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
-        }
+        pTextHeight += lineAdvance;
     }
 
+    /*------------------------------- Bottom -------------------------------*/
+    if (leftTextHeight > pTextHeight) pTextHeight = leftTextHeight;
+    pTextHeight += lineAdvance;
+
     // cast spell: Detect life
-    if (pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Active()) {
-        std::string str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_HIT_POINTS), pActors[uActorID].currentHP);
-        assets->pFontSmallnum->GetLineWidth(str);
-        pWindow->DrawTitleText(assets->pFontSmallnum.get(), 0, pWindow->uFrameHeight - assets->pFontSmallnum->GetHeight() - 12, colorTable.White, str, 3);
+    if (showCurrentHp && !extended) {
+        if (pWindow) {
+            std::string str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_HIT_POINTS), pActors[uActorID].currentHP);
+            pWindow->DrawTitleText(font, 0, pTextHeight, colorTable.White, str, 3);
+        }
+        pTextHeight += lineAdvance;
     }
 
     // Debug - show actor AI state with full information
     if (monster_full_informations) {
-        std::string str = fmt::format("ActorId: {}   AI State: {}", uActorID, std::to_underlying(pActors[uActorID].aiState));
-        assets->pFontSmallnum->GetLineWidth(str);
-        pWindow->DrawTitleText(assets->pFontSmallnum.get(), 0, pWindow->uFrameHeight - assets->pFontSmallnum->GetHeight() - 12, colorTable.White, str, 3);
+        if (pWindow) {
+            std::string str = fmt::format("ActorId: {}   AI State: {}", uActorID, std::to_underlying(pActors[uActorID].aiState));
+            pWindow->DrawTitleText(font, 0, pTextHeight, colorTable.White, str, 3);
+        }
+        pTextHeight += lineAdvance;
     }
+
+    return std::make_pair(X_RIGHT_DATA + maxWidth + RIGHT_BOTTOM_MARGIN, pTextHeight + RIGHT_BOTTOM_MARGIN);
 }
 
 /**
@@ -1889,17 +1998,20 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                 popup_window.uFrameY = 40;
                 // if ( render->pRenderD3D )
 
-                Pid v5 = engine->PickMouseInfoPopup().pid;
+                Pid pointedObject = engine->PickMouseInfoPopup().pid;
                 /*else
-                v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
-                if (v5.type() == OBJECT_Actor) {
+                pointedObject = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
+                if (pointedObject.type() == OBJECT_Actor) {
                     render->BeginScene2D();
-                    popup_window.DrawMessageBox(1);
-                    MonsterPopup_Draw(v5.id(), &popup_window);
+                    auto [w, h] = MonsterPopup_Draw(pointedObject.id(), nullptr);
+                    popup_window.uFrameWidth = w;
+                    popup_window.uFrameHeight = h;
+                    popup_window.DrawMessageBox(true);
+                    MonsterPopup_Draw(pointedObject.id(), &popup_window);
                 }
-                if (v5.type() == OBJECT_Item) {
-                    if (!(pObjectList->pObjects[pSpriteObjects[v5.id()].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
-                        GameUI_DrawItemInfo(&pSpriteObjects[v5.id()].containing_item);
+                if (pointedObject.type() == OBJECT_Item) {
+                    if (!(pObjectList->pObjects[pSpriteObjects[pointedObject.id()].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
+                        GameUI_DrawItemInfo(&pSpriteObjects[pointedObject.id()].containing_item);
                     }
                 }
             }
@@ -2428,18 +2540,17 @@ void Inventory_ItemPopupAndAlchemy() {
 }
 
 //----- (0045828B) --------------------------------------------------------
-Color GetSpellColor(signed int a1) {
-    if (a1 == 0) return colorTable.White;
-    if (a1 < 12) return colorTable.DarkOrange;
-    if (a1 < 23) return colorTable.Anakiwa;
-    if (a1 < 34) return colorTable.AzureRadiance;
-    if (a1 < 45) return colorTable.Gray;
-    if (a1 < 56) return colorTable.Mercury;
-    if (a1 < 67) return colorTable.PurplePink;
-    if (a1 < 78) return colorTable.FlushOrange;
-    if (a1 < 89) return colorTable.PaleCanary;
-    if (a1 < 100)
-        return colorTable.MoonRaker;
+Color GetSpellColor(SpellId spellId) {
+    if (spellId == SPELL_NONE) return colorTable.White;
+    if (spellId <= SPELL_FIRE_INCINERATE) return colorTable.DarkOrange;
+    if (spellId <= SPELL_AIR_STARBURST) return colorTable.Anakiwa;
+    if (spellId <= SPELL_WATER_LLOYDS_BEACON) return colorTable.AzureRadiance;
+    if (spellId <= SPELL_EARTH_MASS_DISTORTION) return colorTable.Gray;
+    if (spellId <= SPELL_SPIRIT_RESSURECTION) return colorTable.Mercury;
+    if (spellId <= SPELL_MIND_ENSLAVE) return colorTable.PurplePink;
+    if (spellId <= SPELL_BODY_POWER_CURE) return colorTable.FlushOrange;
+    if (spellId <= SPELL_LIGHT_DIVINE_INTERVENTION) return colorTable.PaleCanary;
+    if (spellId <= SPELL_DARK_SOULDRINKER) return colorTable.MoonRaker;
     else
         assert(false);
 

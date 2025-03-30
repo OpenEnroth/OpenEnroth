@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <utility>
+#include <string>
 
 #include "Engine/Objects/CharacterEnums.h"
 
@@ -32,6 +33,8 @@ class CombinedSkillValue {
     explicit operator bool() const { return _level > 0; }
 
     friend bool operator==(const CombinedSkillValue &l, const CombinedSkillValue &r) = default;
+
+    std::string shortDescription() const;
 
  private:
     int _level = 0;
