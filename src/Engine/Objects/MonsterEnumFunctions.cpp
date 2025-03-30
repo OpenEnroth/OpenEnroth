@@ -1,8 +1,8 @@
 #include "MonsterEnumFunctions.h"
 
+#include <string>
+#include <utility>
 #include <vector>
-
-#include "Utility/IndexedArray.h"
 
 struct MonsterData {
     CharacterSex sex = SEX_MALE;
@@ -333,3 +333,36 @@ std::span<const MonsterAttackPreference> allMonsterAttackPreferences() {
 
     return result;
 }
+
+
+IndexedArray<std::pair<std::string, const Color *>, SPECIAL_ATTACK_FIRST, SPECIAL_ATTACK_LAST> monsterSpecialAttackDisplay = {
+    {SPECIAL_ATTACK_CURSE, {"Curse", &colorTable.Cioccolato}},
+    {SPECIAL_ATTACK_WEAK, {"Weaken", &colorTable.Mimosa}},
+    {SPECIAL_ATTACK_SLEEP, {"Sleep", &colorTable.ScienceBlue}},
+    {SPECIAL_ATTACK_DRUNK, {"Drunk", &colorTable.NavyBlue}},
+    {SPECIAL_ATTACK_INSANE, {"Insanity", &colorTable.JazzberryJam}},
+    {SPECIAL_ATTACK_POISON_WEAK, {"Poison", &colorTable.Eucalyptus}},
+    {SPECIAL_ATTACK_POISON_MEDIUM, {"Poison", &colorTable.GreenTeal}},
+    {SPECIAL_ATTACK_POISON_SEVERE, {"Poison", &colorTable.VibrantGreen}},
+    {SPECIAL_ATTACK_DISEASE_WEAK, {"Disease", &colorTable.FlushOrange}},
+    {SPECIAL_ATTACK_DISEASE_MEDIUM, {"Disease", &colorTable.DarkOrange}},
+    {SPECIAL_ATTACK_DISEASE_SEVERE, {"Disease", &colorTable.OrangeyRed}},
+    {SPECIAL_ATTACK_PARALYZED, {"Paralyze", &colorTable.Primrose}},
+    {SPECIAL_ATTACK_UNCONSCIOUS, {"Knockout", &colorTable.StarkWhite}},
+    {SPECIAL_ATTACK_DEAD, {"Death", &colorTable.BloodRed}},
+    {SPECIAL_ATTACK_PETRIFIED, {"Petrify", &colorTable.MediumGrey}},
+    {SPECIAL_ATTACK_ERADICATED, {"Eradicate", &colorTable.MoonRaker}},
+    {SPECIAL_ATTACK_BREAK_ANY, {"Break Any", &colorTable.LaserLemon}},
+    {SPECIAL_ATTACK_BREAK_ARMOR, {"Break Armor", &colorTable.LaserLemon}},
+    {SPECIAL_ATTACK_BREAK_WEAPON, {"Break Weapon", &colorTable.LaserLemon}},
+    {SPECIAL_ATTACK_STEAL, {"Steal", &colorTable.DirtyYellow}},
+    {SPECIAL_ATTACK_AGING, {"Aging", &colorTable.White}},
+    {SPECIAL_ATTACK_MANA_DRAIN, {"SP Drain", &colorTable.BoltBlue}},
+    {SPECIAL_ATTACK_FEAR, {"Fear", &colorTable.CornFlowerBlue}}
+};
+
+IndexedArray<std::pair<std::string, const Color *>, MONSTER_SPECIAL_ABILITY_SHOT, MONSTER_SPECIAL_ABILITY_EXPLODE> monsterSpecialAbilityDisplay = {
+    {MONSTER_SPECIAL_ABILITY_SHOT, {"Multi-shot", &colorTable.Mercury}},
+    {MONSTER_SPECIAL_ABILITY_SUMMON, {"Summoner", &colorTable.EasternBlue}},
+    {MONSTER_SPECIAL_ABILITY_EXPLODE, {"Explodes", &colorTable.Sunflower}}
+};
