@@ -286,7 +286,7 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
 std::string MakeDateTimeString(Duration time) {
     CivilDuration d = time.toCivilDuration();
 
-    std::string str = "";
+    std::string str;
     if (d.days) {
         auto day_str = localization->GetString(LSTR_DAYS);
         if (d.days <= 1) day_str = localization->GetString(LSTR_DAY_CAPITALIZED);
@@ -314,6 +314,9 @@ std::string MakeDateTimeString(Duration time) {
 
         str += fmt::format("{} {} ", d.seconds, seconds_str);
     }
+
+    if (!str.empty() && str.back() == ' ')
+        str.pop_back();
 
     return str;
 }

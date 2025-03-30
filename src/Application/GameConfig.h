@@ -267,6 +267,8 @@ class GameConfig : public Config {
         Bool DestroyDischargedWands = { this, "destroy_discharged_wands", false,
             "Destroy wands when they reach 0 charges." };
 
+        Bool ShowProtectionMagicPower = {this, "show_prot_magic_power", true, "Display the remaining power of Protection from Magic in the Party Buffs popup."};
+
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)
