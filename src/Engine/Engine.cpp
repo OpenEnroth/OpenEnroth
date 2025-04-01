@@ -582,12 +582,18 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
         }
     }
 
-    if (engine->_currentLoadedMapId == MapId::MAP_LINCOLN) {
-        // reduce maximum allowed radius in the Lincoln to stop act actors getting stuck in tight corridors
-        for (auto& act : pActors) {
-            act.radius = std::min(act.radius, static_cast<uint16_t>(140));
+    // OE fix - reduce maximum allowed radius in the Lincoln to stop act actors getting stuck in tight corridors.
+    if (engine->_currentLoadedMapId == MAP_LINCOLN) {
+        for (Actor& actor : pActors) {
+            actor.radius = std::min(actor.radius, static_cast<uint16_t>(140));
         }
     }
+
+    // OE fix - replace spirit lash with bless for clerics of the moon in the temple of baa.
+    if (engine->_currentLoadedMapId == MAP_TEMPLE_OF_BAA)
+        for (Actor& actor : pActors)
+            if (actor.monsterInfo.spell2Id == SPELL_SPIRIT_SPIRIT_LASH)
+                actor.monsterInfo.spell2Id = SPELL_SPIRIT_BLESS;
 
     bDialogueUI_InitializeActor_NPC_ID = 0;
     engine->_transitionMapId = MAP_INVALID;

@@ -761,3 +761,14 @@ GAME_TEST(Issues, Issue1990) {
     EXPECT_GE(powerTape.back(), 5);
     EXPECT_LT(powerTape.back(), 20); // Potion power ended as initialized to 5-19.
 }
+
+GAME_TEST(Issues, Issue1997) {
+    // Temple of Baa Clerics casting Spirit Lash did trigger assert.
+    // We've replaced spirit lash with bless.
+    auto blessTape = actorTapes.countByBuff(ACTOR_BUFF_BLESS);
+    auto mapTape = tapes.map();
+    test.playTraceFromTestData("issue_1997.mm7", "issue_1997.json");
+    EXPECT_EQ(mapTape, tape(MAP_TEMPLE_OF_BAA));
+    EXPECT_EQ(blessTape.front(), 0);
+    EXPECT_GT(blessTape.back(), 0); // Bless was cast at least once.
+}
