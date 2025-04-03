@@ -511,6 +511,10 @@ void CollideOutdoorWithDecorations(Vec2i gridPos) {
 }
 
 bool CollideIndoorWithPortals() {
+    // TODO(pskelton): disable this for time being - this appears to be a obselete legacy collision remnant
+    // Causes issue where portal "collision" overrides actual wall collision 
+    return true;
+
     int portal_id = 0;            // [sp+10h] [bp-4h]@15
     float min_move_distance = std::numeric_limits<float>::max();
     for (unsigned int i = 0; i < pIndoor->pSectors[collision_state.uSectorID].uNumPortals; ++i) {
