@@ -747,11 +747,11 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
                 eventProcessor(pIndoor->pFaceExtras[pIndoor->pFaces[id].uFaceExtraID].uEventID, Pid(), 1);
 
             if (pIndoor->pFaces[id].uPolygonType == POLYGON_Floor) {
-                float new_party_z_tmp = pIndoor->pVertices[*face->pVertexIDs].z;
+                float new_floor_z_tmp = pIndoor->pVertices[*face->pVertexIDs].z;
                 // We dont collide with the rear of faces so hitting a floor poly with upwards direction means that
                 // weve collided with its edge and we should step up onto its level.
-                if (actor.velocity.z > 0.0f && (newFloorZ - actor.pos.z) < 128)
-                    actor.pos.z = newFloorZ;
+                if (actor.velocity.z > 0.0f && (new_floor_z_tmp - actor.pos.z) < 128)
+                    actor.pos.z = new_floor_z_tmp;
 
                 if (actor.velocity.lengthSqr() < 400) {
                     actor.velocity.x = 0;
