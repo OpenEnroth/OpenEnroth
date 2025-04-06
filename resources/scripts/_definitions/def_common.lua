@@ -38,9 +38,19 @@
 
 --- CONFIG Bindings
 
+--- @class ConfigInfo
+--- @field section string
+--- @field name string
+--- @field type string
+--- @field description string
+--- @field value string
+--- @field default string
+
 --- @class ConfigBindings
 --- @field setConfig fun(section: string, configName: string, value: any)
 --- @field getConfig fun(section: string, configName?: string): string
+--- @field resetConfig fun(section: string, configName?: string): string?
+--- @field listConfigs fun(section: string, filter: string): table<ConfigInfo>
 
 --- OVERLAY Bindings
 --- @class Overlay
