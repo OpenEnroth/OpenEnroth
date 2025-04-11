@@ -682,3 +682,19 @@ GAME_TEST(Issues, Issue1947) {
     EXPECT_GT(pSpriteObjects[4].containing_item.numCharges, 0);
     EXPECT_GT(pSpriteObjects[4].containing_item.maxCharges, 0);
 }
+
+GAME_TEST(Issues, Issue1966) {
+    // Assert crash casting Armageddon, happens when monsters are hit with Armageddon rocks.
+    auto mapTape = tapes.map();
+    auto itemCountTape = tapes.totalItemCount();
+    auto spritesTape = tapes.sprites();
+    test.playTraceFromTestData("issue_1966.mm7", "issue_1966.json");
+    EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_LAND_OF_THE_GIANTS));
+    EXPECT_EQ(itemCountTape.delta(), -1); // Minus armageddon scroll.
+
+    // Should have had a bunch of rocks in the air at some point due to Armageddon.
+    EXPECT_GT(std::ranges::max(spritesTape | std::views::transform([] (auto &&sprites) { return std::ranges::count(sprites, SPRITE_SPELL_EARTH_ROCK_BLAST); })), 100);
+
+    // Some rocks should have hit monsters - this is what was triggering the assertion.
+    EXPECT_GT(std::ranges::count(spritesTape.flattened(), SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT), 10);
+}
