@@ -706,7 +706,7 @@ GAME_TEST(Issues, Issue1977) {
     auto resultTape = tapes.hasItem(ITEM_POTION_WATER_RESISTANCE);
     auto component1Tape = tapes.hasItem(ITEM_POTION_SHIELD);
     auto component2Tape = tapes.hasItem(ITEM_POTION_HARDEN_ITEM);
-    test.playTraceFromTestData("issue_1977.mm7", "issue_1977.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
+    test.playTraceFromTestData("issue_1977.mm7", "issue_1977.json");
     EXPECT_EQ(resultTape, tape(false, true));       // Got a white potion
     EXPECT_EQ(component1Tape, tape(true, false));   // Used up components
     EXPECT_EQ(component2Tape, tape(true, false));
