@@ -701,10 +701,14 @@ GAME_TEST(Issues, Issue1966) {
 
 GAME_TEST(Issues, Issue1972) {
     // Enemy AI meteor shower had a bad meteor distribution due to loop var overwrite.
-    // We want to check the damage dealt, not the meteor count (early loop exit causing different number of grnd calls).
-    // starting and ending HP are recorded and always compared by playTraceFromTestData, no need for a `charTapes.hps()`.
+    auto spritesTape = tapes.sprites();
+    auto mapTape = tapes.map();
+    auto hpTape = tapes.totalHp();
     test.playTraceFromTestData("issue_1972.mm7", "issue_1972.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
-    EXPECT_EQ(engine->_currentLoadedMapId, MAP_LAND_OF_THE_GIANTS);
+    EXPECT_EQ(mapTape, tape(MAP_LAND_OF_THE_GIANTS));
+    int meteorCount = std::ranges::max(spritesTape | std::views::transform([] (auto &&sprites) { return std::ranges::count(sprites, SPRITE_SPELL_FIRE_METEOR_SHOWER); }));
+    EXPECT_EQ(meteorCount, 24); // 2x meteor shower cast at master. Might change to 12 on retrace.
+    EXPECT_LE(hpTape.delta(), -700); // Party should have received some damage. Checking this b/c retracing might break smth.
 }
 
 GAME_TEST(Issues, Issue1977) {
