@@ -2899,22 +2899,25 @@ void CastSpellInfoHelpers::castSpell() {
                         ++pTurnEngine->pending_actions;
                     }
 
-                    // Some flying Rocks as decoration:
+                    // Some flying rocks as decoration.
+                    // Vanilla code used to spawn 50 rocks in a 4096x4096 units square with speed in [500, 1000).
+                    // Using grng here because we want to pin the rocks in place in tests, and it just makes more sense
+                    // given that the rocks are added as in-game objects.
                     constexpr int rocksCount = 250,
                         rocksRadius = 3200,
                         rocksSpeedMin = 300,
                         rocksSpeedMax = 1400,
                         rocksRadiusSqr = rocksRadius * rocksRadius;
-                    const auto getCoord = []{ return vrng->randomInSegment(-rocksRadius, rocksRadius); };
-                    unsigned i = 0;
-                    while ( i < rocksCount ) {
+                    const auto getCoord = []{ return grng->randomInSegment(-rocksRadius, rocksRadius); };
+
+                    for (int i = 0; i < rocksCount;) {
                         Vec3f rand(getCoord(), getCoord(), 0);
                         if (rand.lengthSqr() > rocksRadiusSqr)
                             continue;
                         int terr_height = pOutdoor->pTerrain.heightByPos(pParty->pos + rand);
                         SpriteObject::dropItemAt(SPRITE_SPELL_EARTH_ROCK_BLAST,
                                 {rand.x + pParty->pos.x, rand.y + pParty->pos.y, terr_height + 16.0f},
-                                vrng->randomInSegment(rocksSpeedMin, rocksSpeedMax));
+                                grng->randomInSegment(rocksSpeedMin, rocksSpeedMax));
                         i++;
                     }
                     break;
