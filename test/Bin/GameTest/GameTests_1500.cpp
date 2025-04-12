@@ -711,3 +711,27 @@ GAME_TEST(Issues, Issue1977) {
     EXPECT_EQ(component1Tape, tape(true, false));   // Used up components
     EXPECT_EQ(component2Tape, tape(true, false));
 }
+
+GAME_TEST(Issues, Issue1983) {
+    // It was possible to sell recipes at a magic shop, not only at the alchemist as intended.
+    auto recipeTape = tapes.hasItem(ITEM_RECIPE_REJUVENATION);
+    auto bookTape = tapes.hasItem(ITEM_SPELLBOOK_LIGHT_BOLT);
+    auto letterTape = tapes.hasItem(ITEM_MESSAGE_LETTER_FROM_MR_STANTLEY_2);
+    auto houseTape = tapes.house();
+    auto goldTape = tapes.gold();
+    auto soundsTape = tapes.sounds();
+    auto textsTape = tapes.allGUIWindowsText();
+    test.playTraceFromTestData("issue_1983.mm7", "issue_1983.json");
+    EXPECT_EQ(recipeTape, tape(true)); // The recipe should still be there
+    EXPECT_EQ(bookTape, tape(true, false)); // The spellbook should be gone
+    EXPECT_EQ(letterTape, tape(true)); // The letter should still be there
+    EXPECT_CONTAINS(houseTape, HOUSE_MAGIC_SHOP_EMERALD_ISLAND);
+    EXPECT_EQ(goldTape.delta(), 365); // Sold the spellbook
+    EXPECT_CONTAINS(soundsTape.flattened(), SOUND_error); // Tried to sell unsellable items
+
+    // Merchant should have reacted properly to unsellable items.
+    EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Body Resistance Recipe") && text.contains("is beyond my meager knowledge"); });
+    EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Rejuvenation Recipe") && text.contains("is beyond my meager knowledge"); });
+    EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Water Resistance Recipe") && text.contains("is beyond my meager knowledge"); });
+    EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Letter from Mr. Stantley") && text.contains("is beyond my meager knowledge"); });
+}
