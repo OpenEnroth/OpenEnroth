@@ -22,6 +22,7 @@
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Evt/EvtInterpreter.h"
+#include "Engine/Objects/Chest.h"
 
 // 1500
 
@@ -746,4 +747,17 @@ GAME_TEST(Issues, Issue1983) {
     EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Rejuvenation Recipe") && text.contains("is beyond my meager knowledge"); });
     EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Water Resistance Recipe") && text.contains("is beyond my meager knowledge"); });
     EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Letter from Mr. Stantley") && text.contains("is beyond my meager knowledge"); });
+}
+
+GAME_TEST(Issues, Issue1990) {
+    // Test opening the Tularean Forest half-hidden chest, which generates a black potion.
+    auto screenTape = tapes.screen();
+    auto potionTape = tapes.custom([] { return vChests[6].igChestItems[6].itemId; });
+    auto powerTape = tapes.custom([] { return vChests[6].igChestItems[6].potionPower; });
+    test.playTraceFromTestData("issue_1990.mm7", "issue_1990.json");
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_CHEST)); // We have opened the chest.
+    EXPECT_EQ(potionTape, tape(ITEM_POTION_PURE_MIGHT));
+    EXPECT_EQ(powerTape.front(), 0); // Potion power started as uninitialized.
+    EXPECT_GE(powerTape.back(), 5);
+    EXPECT_LT(powerTape.back(), 20); // Potion power ended as initialized to 5-19.
 }
