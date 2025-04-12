@@ -632,6 +632,9 @@ class GameConfig : public Config {
         String Title = String(this, "title", "OpenEnroth", &ValidateTitle,
             "Game window title.");
 
+        String Icon = String(this, "icon_file_name", "",
+            "An image file to use as the application's icon.");
+
         Int Display = {this, "display", 0,
             "Display number as exposed by SDL. "
             "Order is platform-specific, e.g. on windows 0 is main display."};

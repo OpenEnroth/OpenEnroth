@@ -124,6 +124,7 @@ void GameWindowHandler::UpdateWindowFromConfig(const GameConfig *config) {
     window->setPosition(pos);
     window->resize(size);
     window->setTitle(config->window.Title.value());
+    window->setIcon(config->window.Icon.value());
     window->setGrabsMouse(config->window.MouseGrab.value());
     window->setWindowMode(mode);
     window->setResizable(config->window.Resizable.value());

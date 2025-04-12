@@ -16,7 +16,7 @@ By default, we are using prebuilt dependencies, and they are resolved automatica
 
 The only exception is Linux, where we're using SDL2 from the distribution, so you will need to install a development versions of SDL2 before building OpenEnroth. E.g. on Ubuntu:
 ```bash
-sudo apt-get install SDL2 SDL2-devel
+sudo apt-get install SDL2 SDL2-devel libsdl2-image-2.0-0 libsdl2-image-dev
 ```
 
 Additional dependencies:

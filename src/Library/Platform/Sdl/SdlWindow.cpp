@@ -5,6 +5,9 @@
 #include <memory>
 
 #include <SDL_syswm.h>
+#include <SDL_video.h>
+#include <SDL_image.h>
+
 #ifdef None
 #undef None
 #endif
@@ -32,6 +35,19 @@ void SdlWindow::setTitle(const std::string &title) {
 
 std::string SdlWindow::title() const {
     return SDL_GetWindowTitle(_window);
+}
+
+void SdlWindow::setIcon(const std::string &fileName) {
+    if (fileName.empty())
+        return;
+    SDL_Surface *surface = IMG_Load(fileName.c_str());
+    if (!surface) {
+        _state->logSdlError("IMG_Load");
+        return;
+    }
+    SDL_SetWindowIcon(_window, surface);
+    // Can't because only the SDL3 version returns a success bool: _state->logSdlError("SDL_SetWindowIcon");
+    SDL_FreeSurface(surface); //TODO: SDL doesn't say who is responsible in the SDL_SetWindowIcon usage
 }
 
 void SdlWindow::resize(const Sizei &size) {

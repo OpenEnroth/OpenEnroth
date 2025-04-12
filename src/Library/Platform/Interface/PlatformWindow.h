@@ -32,6 +32,8 @@ class PlatformWindow {
     virtual void setTitle(const std::string &title) = 0;
     virtual std::string title() const = 0;
 
+    virtual void setIcon(const std::string &fileName) = 0;
+
     virtual void resize(const Sizei &size) = 0;
     virtual Sizei size() const = 0;
 

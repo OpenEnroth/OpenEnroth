@@ -24,6 +24,9 @@ std::string NullWindow::title() const {
     return _title;
 }
 
+void NullWindow::setIcon(const std::string &fileName) {
+}
+
 void NullWindow::resize(const Sizei &size) {
     _size = size;
 }

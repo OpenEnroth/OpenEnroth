@@ -30,9 +30,11 @@ add_library(library_platform_main OBJECT ${PLATFORM_SDL_MAIN_SOURCES} ${PLATFORM
 target_check_style(library_platform_main)
 target_link_libraries(library_platform_main PRIVATE SDL2::SDL2OE)
 
+find_package(SDL2_image REQUIRED)
+
 add_library(library_platform_sdl STATIC ${PLATFORM_SDL_SOURCES} ${PLATFORM_SDL_HEADERS})
 target_check_style(library_platform_sdl)
-target_link_libraries(library_platform_sdl PUBLIC utility library_logger PRIVATE SDL2::SDL2OE)
+target_link_libraries(library_platform_sdl PUBLIC utility library_logger PRIVATE SDL2::SDL2OE SDL2_image::SDL2_image)
 
 # Currently we have only one implementation library defining Platform::createStandardPlatform function, but we used
 # to have two. So we're keeping the old mechanism with an additional library_platform_implementation library.

@@ -43,7 +43,7 @@ Getting Started on Ubuntu Linux
    * Run `innoextract -e -d <target-folder> <mm7-gog-folder>/setup_mm_7.exe`, where `<target-folder>` is the folder where you want to have game data extracted from the mm7 installer.
    * Check the files in `<target-folder>`, it should now contain the `app` subfolder. This is where game assets were extracted into.
 
-2. Install OpenEnroth dependencies with `sudo apt-get install libsdl2-dev libdwarf-dev libelf-dev`.
+2. Install OpenEnroth dependencies with `sudo apt-get install libsdl2-dev libsdl2-image-dev libdwarf-dev libelf-dev`.
 
 3. Download one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip the files.
 

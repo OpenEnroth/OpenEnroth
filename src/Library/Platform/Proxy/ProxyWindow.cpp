@@ -15,6 +15,10 @@ std::string ProxyWindow::title() const {
     return nonNullBase()->title();
 }
 
+void ProxyWindow::setIcon(const std::string &fileName) {
+    nonNullBase()->setIcon(fileName);
+}
+
 void ProxyWindow::resize(const Sizei &size) {
     nonNullBase()->resize(size);
 }
