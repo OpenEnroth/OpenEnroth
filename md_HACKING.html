@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ffcb3c8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ef61b31</span>
    </div>
   </td>
  </tr>
@@ -213,14 +213,24 @@ Testing</h1>
 <li>Use <code><a class="el" href="classTestController.html#af9fcbb7e65a9e0c5c0798c3f09790011">TestController::playTraceFromTestData</a></code> to play back your trace, and add the necessary checks around it.</li>
 </ul>
 <p >If you need to record a trace with non-standard FPS (e.g. if an issue doesn't reproduce on lower FPS values), set <code>debug.trace_frame_time_ms</code> config value before starting OpenEnroth for recording.</p>
-<p >To run all unit tests locally, build a <code>UnitTest</code> cmake target, or build &amp; run <code>OpenEnroth_UnitTest</code>.</p>
-<p >To run all game tests locally, set <code>OPENENROTH_MM7_PATH</code> environment variable to point to the location of the game assets, then build <code>Run_GameTest_Headless_Parallel</code> cmake target. Alternatively, you can build <code>OpenEnroth_GameTest</code>, and run it manually, passing the paths to both game assets and the test data via command line.</p>
-<p >If you need to look closely at the recorded trace, you can play it by running <code>OpenEnroth play --speed 0.5 &lt;path-to-trace.json&gt;</code>. Alternatively, if you already have a unit test that runs the recorded trace, you can run <code>OpenEnroth_GameTest --speed 0.5 --gtest_filter=&lt;test-suite-name&gt;.&lt;test-name&gt; --test-path &lt;path-to-test-data-folder&gt;</code>. Note that <code>--gtest_filter</code> needs that <code>=</code> and won't work if you try passing test name after a space.</p>
-<p >Changing game logic might result in failures in game tests because they check random number generator state after each frame, and this will show as <code>Random state desynchronized when playing back trace</code> message in test logs. This is intentional – we don't want accidental game logic changes. If the change was actually intentional, then you might need to either retrace or re-record the traces for the failing tests. To retrace, run <code>OpenEnroth retrace &lt;path-to-trace.json&gt;</code>. Note that you can pass multiple trace paths to this command.</p>
+<p >To run all unit tests locally, build a <code>OpenEnroth_UnitTest</code> cmake target and run <code>&lt;build-dir&gt;/test/Bin/UnitTest/OpenEnroth_UnitTest</code>.</p>
+<p >To run all game tests locally, set <code>OPENENROTH_MM7_PATH</code> environment variable to point to the location of the game assets, then build <code>Run_GameTest_Headless_Parallel</code> cmake target. Alternatively, you can build <code>OpenEnroth_GameTest</code>, and run it manually, passing the paths to both game assets and the test data via command line. Run <code>OpenEnroth_GameTest --help</code> for a list of options. Note that you can pass <code>--headless</code> to run tests in headless mode. You can use the test data from <code>&lt;build-dir&gt;/test/Bin/test_data/data</code>, which is automatically downloaded and updated by the <code>OpenEnroth_TestData</code> cmake target. Alternatively, if you cloned the OpenEnroth_TestData repository, you can use that.</p>
+<p >If you need to look closely at the recorded trace, you can play it by running <code>OpenEnroth play --speed 0.5 &lt;path-to-trace.json&gt;</code>. Alternatively, if you already have a unit test that runs the recorded trace, you can run <code>OpenEnroth_GameTest --speed 0.5 --gtest_filter=&lt;test-suite-name&gt;.&lt;test-name&gt; --test-path &lt;path-to-test-data-folder&gt;</code>. Note that <code>--gtest_filter</code> needs that <code>=</code> and won't work if you try passing the test name after a space.</p>
 <h1><a class="anchor" id="autotoc_md7"></a>
+How to deal with &lt;tt&gt;Random state desynchronized&lt;/tt&gt;</h1>
+<p >Changing game logic might result in failures in game tests because they check the random number generator state after each frame, and this will show as <code>Random state desynchronized when playing back trace</code> message in test logs. This is intentional – we don't want accidental game logic changes. <b>If</b> the change was actually intentional, then you will need to either retrace or re-record the traces for the failing tests as follows. These instructions assume your change is already submitted as PR backed from your fork, or will be.</p><ul>
+<li>Prepare to submit a PR to the <a href="https://github.com/OpenEnroth/OpenEnroth_TestData">OpenEnroth_TestData</a> repo: Fork and clone it if you haven't done so already.</li>
+<li>Reminder: Make sure your test data clone is up to date and has no uncommitted local changes, and create a branch.</li>
+<li>To retrace, run <code>OpenEnroth retrace &lt;path-to-trace.json&gt;</code>. Note that you can pass multiple trace paths to this command. Use paths into your clone of the test data (if you retrace the copies in <code>&lt;build-dir&gt;/test/Bin/test_data/data</code> you'll need to copy them over).</li>
+<li>Commit, push and PR the changes made by the retrace to OpenEnroth_TestData.</li>
+<li>Wait until a maintainer merges your PR - it doesn't matter to which branch (e.g. an interim branch dedicated to your PR in the main project). Copy the full 40-digit hash of the new commit that is present within the OpenEnroth/OpenEnroth_TestData repo.</li>
+<li>Back in the main OpenEnroth clone, paste that commit hash into the <code>GIT_TAG</code> key in <code>test/Bin/CMakeLists.txt</code>, replacing the one already there.</li>
+<li>Commit this to your main PR's branch and push it. The checks this push triggers should now succeed.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md8"></a>
 Scripting</h1>
 <p >We're using Lua as the scripting language, and all our scripts are currently located under the <code>resources/scripts</code> folder.</p>
-<h3><a class="anchor" id="autotoc_md8"></a>
+<h3><a class="anchor" id="autotoc_md9"></a>
 Lua Language Server</h3>
 <p >Script files undergo a syntax checking process during the build generation. If you intend to work with scripts, it is recommended to install the <a href="https://github.com/LuaLS/lua-language-server">Lua Language Server</a> to run the style checker locally. Follow these steps to setup <code>LuaLS</code> locally:</p><ul>
 <li>Install <code>LuaLS</code> through one of the <a href="https://luals.github.io/#other-install">following methods</a>. Ensure that the lua-language-server executable is available in the <code>PATH</code> environment variable.</li>
@@ -228,13 +238,13 @@ Lua Language Server</h3>
 <li>The <code>check_style</code> target is now including scripting in its tests.</li>
 </ul>
 <p >Little note: If <code>LuaLS</code> is not found, everything still build but no checks will be run against the Lua scripts.</p>
-<h3><a class="anchor" id="autotoc_md9"></a>
+<h3><a class="anchor" id="autotoc_md10"></a>
 Tools</h3>
 <p >To go through a better experience while working with scripts it is strongly recommended to use <a href="https://code.visualstudio.com/">VS Code</a> and <a href="https://luals.github.io/#vscode-install">install the LuaLS extension</a>. Just be sure to open the root repository folder in <code>VS Code</code>. By doing so <code>LuaLS</code> reads the correct configuration file used by the project</p>
-<h3><a class="anchor" id="autotoc_md10"></a>
+<h3><a class="anchor" id="autotoc_md11"></a>
 Modding ?</h3>
 <p >Scripting is currently used only for debugging purposes. Modding support is not planned for the near future. You can check the <a href="https://github.com/OpenEnroth/OpenEnroth/milestones">milestones</a> to get a better idea.</p>
-<h1><a class="anchor" id="autotoc_md11"></a>
+<h1><a class="anchor" id="autotoc_md12"></a>
 Console Commands</h1>
 <p >The game features a console capable of executing various Lua script commands. To activate this feature, please follow these steps:</p>
 <ol type="1">
@@ -243,10 +253,10 @@ Console Commands</h1>
 <li>Once in-game, press the <code>~</code> key to open the debug console.</li>
 </ol>
 <p >Currently, the console is only available while in-game.</p>
-<h1><a class="anchor" id="autotoc_md12"></a>
+<h1><a class="anchor" id="autotoc_md13"></a>
 Additional Resources</h1>
 <p >Old event decompiler and IDB files can be found <a href="https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0">here</a>. Feel free to ping <code>zipi#6029</code> on Discord for more info.</p>
-<h1><a class="anchor" id="autotoc_md13"></a>
+<h1><a class="anchor" id="autotoc_md14"></a>
 Support</h1>
 <p >Still having problems? Ask for help on our discord! <a href="https://discord.gg/jRCyPtq"><img src="https://img.shields.io/badge/chat-on%20discord-green.svg" alt="" style="pointer-events: none;" class="inline"/></a> </p>
 </div></div><!-- contents -->
