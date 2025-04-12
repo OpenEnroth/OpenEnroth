@@ -698,3 +698,16 @@ GAME_TEST(Issues, Issue1966) {
     // Some rocks should have hit monsters - this is what was triggering the assertion.
     EXPECT_GT(std::ranges::count(spritesTape.flattened(), SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT), 10);
 }
+
+GAME_TEST(Issues, Issue1977) {
+    // Mix a potion of water resistance: explodes without fix.
+    // Disabling RNG checks on playback to actually see results even if the explosion uses a `grng` call.
+    // Pre-fix output still ignores the EXPECT's below, playTrace terminates comparing character 3's hp.
+    auto resultTape = tapes.hasItem(ITEM_POTION_WATER_RESISTANCE);
+    auto component1Tape = tapes.hasItem(ITEM_POTION_SHIELD);
+    auto component2Tape = tapes.hasItem(ITEM_POTION_HARDEN_ITEM);
+    test.playTraceFromTestData("issue_1977.mm7", "issue_1977.json");
+    EXPECT_EQ(resultTape, tape(false, true));       // Got a white potion
+    EXPECT_EQ(component1Tape, tape(true, false));   // Used up components
+    EXPECT_EQ(component2Tape, tape(true, false));
+}
