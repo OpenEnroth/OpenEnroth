@@ -699,6 +699,18 @@ GAME_TEST(Issues, Issue1966) {
     EXPECT_GT(std::ranges::count(spritesTape.flattened(), SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT), 10);
 }
 
+GAME_TEST(Issues, Issue1972) {
+    // Enemy AI meteor shower had a bad meteor distribution due to loop var overwrite.
+    auto spritesTape = tapes.sprites();
+    auto mapTape = tapes.map();
+    auto hpTape = tapes.totalHp();
+    test.playTraceFromTestData("issue_1972.mm7", "issue_1972.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
+    EXPECT_EQ(mapTape, tape(MAP_LAND_OF_THE_GIANTS));
+    int meteorCount = std::ranges::max(spritesTape | std::views::transform([] (auto &&sprites) { return std::ranges::count(sprites, SPRITE_SPELL_FIRE_METEOR_SHOWER); }));
+    EXPECT_EQ(meteorCount, 24); // 2x meteor shower cast at master. Might change to 12 on retrace.
+    EXPECT_LE(hpTape.delta(), -700); // Party should have received some damage. Checking this b/c retracing might break smth.
+}
+
 GAME_TEST(Issues, Issue1977) {
     // Mix a potion of water resistance: explodes without fix.
     // Disabling RNG checks on playback to actually see results even if the explosion uses a `grng` call.
