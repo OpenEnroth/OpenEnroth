@@ -694,10 +694,10 @@ GAME_TEST(Issues, Issue1966) {
     EXPECT_EQ(itemCountTape.delta(), -1); // Minus armageddon scroll.
 
     // Should have had a bunch of rocks in the air at some point due to Armageddon.
-    EXPECT_GT(std::ranges::max(spritesTape | std::views::transform([] (auto &&sprites) { return std::ranges::count(sprites, SPRITE_SPELL_EARTH_ROCK_BLAST); })), 100);
+    EXPECT_GT(spritesTape.mapped([] (auto &&sprites) { return sprites.count(SPRITE_SPELL_EARTH_ROCK_BLAST); }).max(), 100);
 
     // Some rocks should have hit monsters - this is what was triggering the assertion.
-    EXPECT_GT(std::ranges::count(spritesTape.flattened(), SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT), 10);
+    EXPECT_GT(spritesTape.flattened().count(SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT), 10);
 }
 
 GAME_TEST(Issues, Issue1972) {
@@ -707,7 +707,7 @@ GAME_TEST(Issues, Issue1972) {
     auto hpTape = tapes.totalHp();
     test.playTraceFromTestData("issue_1972.mm7", "issue_1972.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
     EXPECT_EQ(mapTape, tape(MAP_LAND_OF_THE_GIANTS));
-    int meteorCount = std::ranges::max(spritesTape | std::views::transform([] (auto &&sprites) { return std::ranges::count(sprites, SPRITE_SPELL_FIRE_METEOR_SHOWER); }));
+    int meteorCount = spritesTape.mapped([] (auto &&sprites) { return sprites.count(SPRITE_SPELL_FIRE_METEOR_SHOWER); }).max();
     EXPECT_EQ(meteorCount, 24); // 2x meteor shower cast at master. Might change to 12 on retrace.
     EXPECT_LE(hpTape.delta(), -700); // Party should have received some damage. Checking this b/c retracing might break smth.
 }
