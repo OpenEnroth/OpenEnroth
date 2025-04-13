@@ -136,6 +136,13 @@ class Accessible : public Base {
         return result;
     }
 
+    template<class Mapper, class Result = std::invoke_result_t<Mapper, value_type>>
+    AccessibleVector<Result> mapped(Mapper mapper) const {
+        AccessibleVector<Result> result;
+        std::transform(begin(), end(), std::back_inserter(result), std::move(mapper));
+        return result;
+    }
+
     AccessibleVector<value_type> reversed() const {
         AccessibleVector<value_type> result;
         std::reverse_copy(begin(), end(), std::back_inserter(result));
@@ -159,6 +166,10 @@ class Accessible : public Base {
     template<class Predicate> requires std::is_invocable_v<Predicate, value_type>
     bool contains(Predicate predicate) const {
         return std::find_if(begin(), end(), std::move(predicate)) != end();
+    }
+
+    size_t count(const value_type &value) const {
+        return std::count(begin(), end(), value);
     }
 };
 
