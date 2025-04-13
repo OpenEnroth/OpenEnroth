@@ -22,6 +22,7 @@
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Evt/EvtInterpreter.h"
+#include "Engine/Objects/Chest.h"
 
 // 1500
 
@@ -681,4 +682,93 @@ GAME_TEST(Issues, Issue1947) {
     EXPECT_EQ(pSpriteObjects[4].containing_item.itemId, ITEM_ALACORN_WAND_OF_FIREBALLS);
     EXPECT_GT(pSpriteObjects[4].containing_item.numCharges, 0);
     EXPECT_GT(pSpriteObjects[4].containing_item.maxCharges, 0);
+}
+
+GAME_TEST(Issues, Issue1966) {
+    // Assert crash casting Armageddon, happens when monsters are hit with Armageddon rocks.
+    auto mapTape = tapes.map();
+    auto itemCountTape = tapes.totalItemCount();
+    auto spritesTape = tapes.sprites();
+    test.playTraceFromTestData("issue_1966.mm7", "issue_1966.json");
+    EXPECT_EQ(mapTape, tape(MAP_HARMONDALE, MAP_LAND_OF_THE_GIANTS));
+    EXPECT_EQ(itemCountTape.delta(), -1); // Minus armageddon scroll.
+
+    // Should have had a bunch of rocks in the air at some point due to Armageddon.
+    EXPECT_GT(std::ranges::max(spritesTape | std::views::transform([] (auto &&sprites) { return std::ranges::count(sprites, SPRITE_SPELL_EARTH_ROCK_BLAST); })), 100);
+
+    // Some rocks should have hit monsters - this is what was triggering the assertion.
+    EXPECT_GT(std::ranges::count(spritesTape.flattened(), SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT), 10);
+}
+
+GAME_TEST(Issues, Issue1972) {
+    // Enemy AI meteor shower had a bad meteor distribution due to loop var overwrite.
+    auto spritesTape = tapes.sprites();
+    auto mapTape = tapes.map();
+    auto hpTape = tapes.totalHp();
+    test.playTraceFromTestData("issue_1972.mm7", "issue_1972.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
+    EXPECT_EQ(mapTape, tape(MAP_LAND_OF_THE_GIANTS));
+    int meteorCount = std::ranges::max(spritesTape | std::views::transform([] (auto &&sprites) { return std::ranges::count(sprites, SPRITE_SPELL_FIRE_METEOR_SHOWER); }));
+    EXPECT_EQ(meteorCount, 24); // 2x meteor shower cast at master. Might change to 12 on retrace.
+    EXPECT_LE(hpTape.delta(), -700); // Party should have received some damage. Checking this b/c retracing might break smth.
+}
+
+GAME_TEST(Issues, Issue1977) {
+    // Mix a potion of water resistance: explodes without fix.
+    // Disabling RNG checks on playback to actually see results even if the explosion uses a `grng` call.
+    // Pre-fix output still ignores the EXPECT's below, playTrace terminates comparing character 3's hp.
+    auto resultTape = tapes.hasItem(ITEM_POTION_WATER_RESISTANCE);
+    auto component1Tape = tapes.hasItem(ITEM_POTION_SHIELD);
+    auto component2Tape = tapes.hasItem(ITEM_POTION_HARDEN_ITEM);
+    test.playTraceFromTestData("issue_1977.mm7", "issue_1977.json");
+    EXPECT_EQ(resultTape, tape(false, true));       // Got a white potion
+    EXPECT_EQ(component1Tape, tape(true, false));   // Used up components
+    EXPECT_EQ(component2Tape, tape(true, false));
+}
+
+GAME_TEST(Issues, Issue1983) {
+    // It was possible to sell recipes at a magic shop, not only at the alchemist as intended.
+    auto recipeTape = tapes.hasItem(ITEM_RECIPE_REJUVENATION);
+    auto bookTape = tapes.hasItem(ITEM_SPELLBOOK_LIGHT_BOLT);
+    auto letterTape = tapes.hasItem(ITEM_MESSAGE_LETTER_FROM_MR_STANTLEY_2);
+    auto houseTape = tapes.house();
+    auto goldTape = tapes.gold();
+    auto soundsTape = tapes.sounds();
+    auto textsTape = tapes.allGUIWindowsText();
+    test.playTraceFromTestData("issue_1983.mm7", "issue_1983.json");
+    EXPECT_EQ(recipeTape, tape(true)); // The recipe should still be there
+    EXPECT_EQ(bookTape, tape(true, false)); // The spellbook should be gone
+    EXPECT_EQ(letterTape, tape(true)); // The letter should still be there
+    EXPECT_CONTAINS(houseTape, HOUSE_MAGIC_SHOP_EMERALD_ISLAND);
+    EXPECT_EQ(goldTape.delta(), 365); // Sold the spellbook
+    EXPECT_CONTAINS(soundsTape.flattened(), SOUND_error); // Tried to sell unsellable items
+
+    // Merchant should have reacted properly to unsellable items.
+    EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Body Resistance Recipe") && text.contains("is beyond my meager knowledge"); });
+    EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Rejuvenation Recipe") && text.contains("is beyond my meager knowledge"); });
+    EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Water Resistance Recipe") && text.contains("is beyond my meager knowledge"); });
+    EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Letter from Mr. Stantley") && text.contains("is beyond my meager knowledge"); });
+}
+
+GAME_TEST(Issues, Issue1990) {
+    // Test opening the Tularean Forest half-hidden chest, which generates a black potion.
+    auto screenTape = tapes.screen();
+    auto potionTape = tapes.custom([] { return vChests[6].igChestItems[6].itemId; });
+    auto powerTape = tapes.custom([] { return vChests[6].igChestItems[6].potionPower; });
+    test.playTraceFromTestData("issue_1990.mm7", "issue_1990.json");
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_CHEST)); // We have opened the chest.
+    EXPECT_EQ(potionTape, tape(ITEM_POTION_PURE_MIGHT));
+    EXPECT_EQ(powerTape.front(), 0); // Potion power started as uninitialized.
+    EXPECT_GE(powerTape.back(), 5);
+    EXPECT_LT(powerTape.back(), 20); // Potion power ended as initialized to 5-19.
+}
+
+GAME_TEST(Issues, Issue1997) {
+    // Temple of Baa Clerics casting Spirit Lash did trigger assert.
+    // We've replaced spirit lash with bless.
+    auto blessTape = actorTapes.countByBuff(ACTOR_BUFF_BLESS);
+    auto mapTape = tapes.map();
+    test.playTraceFromTestData("issue_1997.mm7", "issue_1997.json");
+    EXPECT_EQ(mapTape, tape(MAP_TEMPLE_OF_BAA));
+    EXPECT_EQ(blessTape.front(), 0);
+    EXPECT_GT(blessTape.back(), 0); // Bless was cast at least once.
 }

@@ -789,7 +789,7 @@ bool Item::canSellRepairIdentifyAt(HouseId houseId) {
         case HOUSE_TYPE_ARMOR_SHOP:
             return this->isArmor();
         case HOUSE_TYPE_MAGIC_SHOP:
-            return this->GetPlayerSkillType() == CHARACTER_SKILL_MISC || this->isBook();
+            return (this->GetPlayerSkillType() == CHARACTER_SKILL_MISC && !isRecipe(this->itemId)) || this->isBook();
         case HOUSE_TYPE_ALCHEMY_SHOP:
             return this->isReagent() ||
                    this->isPotion() ||
@@ -822,7 +822,7 @@ void Item::postGenerate(ItemSource source) {
     }
 
     if (type() == ITEM_TYPE_POTION && itemId != ITEM_POTION_BOTTLE && potionPower == 0) {
-        if (source == ITEM_SOURCE_MAP) {
+        if (source == ITEM_SOURCE_MAP || source == ITEM_SOURCE_CHEST) {
             potionPower = grng->random(15) + 5;
         } else if (source == ITEM_SOURCE_MONSTER) {
             potionPower = 2 * grng->random(4) + 2; // TODO(captainurist): change to 2d4+2.
