@@ -39,7 +39,7 @@
 --- CONFIG Bindings
 
 --- @class ConfigBindings
---- @field setConfig fun(section: string, configName: string, value: any): boolean
+--- @field setConfig fun(section: string, configName: string, value: any)
 --- @field getConfig fun(section: string, configName?: string): string
 
 --- OVERLAY Bindings

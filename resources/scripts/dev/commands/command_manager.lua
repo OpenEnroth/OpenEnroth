@@ -95,7 +95,7 @@ local CommandManager = {
         if not status then
             result = false
             message = "The command " ..
-                commandName .. " has failed miserably. Error:\n" .. err
+                commandName .. " has failed miserably. " .. err
         elseif message == nil or result == nil then
             result = false
             message = "The command " ..

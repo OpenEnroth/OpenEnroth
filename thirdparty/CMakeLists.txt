@@ -14,8 +14,11 @@ add_subdirectory(magic_enum EXCLUDE_FROM_ALL)
 add_subdirectory(cli11 EXCLUDE_FROM_ALL)
 add_subdirectory(nlohmann_json EXCLUDE_FROM_ALL)
 add_subdirectory(mio EXCLUDE_FROM_ALL)
-add_subdirectory(sol2 EXCLUDE_FROM_ALL)
 add_subdirectory(imgui EXCLUDE_FROM_ALL)
+
+# sol2
+add_subdirectory(sol2 EXCLUDE_FROM_ALL)
+target_compile_definitions(sol2 INTERFACE SOL_EXCEPTIONS_ALWAYS_UNSAFE=1) # Make sure sol2 doesn't propagate C++ exceptions to luajit.
 
 # fmt
 add_subdirectory(fmt EXCLUDE_FROM_ALL)
