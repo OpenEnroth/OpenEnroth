@@ -81,6 +81,9 @@ class CharacterTapeRecorder {
     TestTape<bool> hasItem(int characterIndex, ItemId itemId);
     TestMultiTape<bool> hasItem(ItemId itemId);
 
+    TestTape<CharacterClass> clazz(int characterIndex);
+    TestMultiTape<CharacterClass> classes();
+
  private:
     static std::span<Character> characters();
 

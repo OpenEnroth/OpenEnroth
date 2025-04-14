@@ -448,6 +448,21 @@ GAME_TEST(Issues, Issue1807) {
     EXPECT_MISSES(textTape.flattened(), "Play"); // But there was no "Play" option.
 }
 
+GAME_TEST(Issues, Issue1808) {
+    // Vase quest item stays in inventory.
+    auto activeCharTape = tapes.activeCharacterIndex();
+    auto classTape = charTapes.clazz(1);
+    auto vaseTape = charTapes.hasItem(3, ITEM_QUEST_VASE);
+    auto vasesTape = tapes.hasItem(ITEM_QUEST_VASE);
+    auto goldTape = tapes.gold();
+    test.playTraceFromTestData("issue_1808.mm7", "issue_1808.json");
+    EXPECT_EQ(activeCharTape, tape(1)); // First character was active.
+    EXPECT_EQ(vaseTape, tape(true, false)); // Vase was taken from 3rd char.
+    EXPECT_EQ(vasesTape, tape(true, false)); // And it was the only vase we had.
+    EXPECT_EQ(classTape, tape(CLASS_THIEF, CLASS_ROGUE)); // 2nd char was promoted.
+    EXPECT_EQ(goldTape.delta(), +5000); // Quest reward.
+}
+
 GAME_TEST(Issues, Issue1849_1831) {
     // 1849 - Sectors get seen and activated on save load despite being behind closed doors
     // 1831 - Engine too eager to reveal indoor map
