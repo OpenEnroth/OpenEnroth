@@ -126,3 +126,11 @@ TestTape<bool> CharacterTapeRecorder::hasItem(int characterIndex, ItemId itemId)
 TestMultiTape<bool> CharacterTapeRecorder::hasItem(ItemId itemId) {
     return custom(std::bind(&Character::hasItem, _1, itemId, false));
 }
+
+TestTape<CharacterClass> CharacterTapeRecorder::clazz(int characterIndex) {
+    return custom(characterIndex, std::bind(&Character::classType, _1));
+}
+
+TestMultiTape<CharacterClass> CharacterTapeRecorder::classes() {
+    return custom(std::bind(&Character::classType, _1));
+}
