@@ -512,7 +512,7 @@ void CollideOutdoorWithDecorations(Vec2i gridPos) {
 
 bool CollideIndoorWithPortals() {
     // TODO(pskelton): disable this for time being - this appears to be a obselete legacy collision remnant
-    // Causes issue where portal "collision" overrides actual wall collision 
+    // Causes issue where portal "collision" overrides actual wall collision
     return true;
 
     int portal_id = 0;            // [sp+10h] [bp-4h]@15
