@@ -400,7 +400,7 @@ GAME_TEST(Issues, Issue355) {
     test.playTraceFromTestData("issue_355.mm7", "issue_355.json");
     auto damageRange = healthTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
     // 2d3+0 with a sequential engine can't roll 2 or 6, so all values should be in [3, 5]. Luck roll can drop this to 1/2...
-    EXPECT_EQ(damageRange, tape(2 /*1*/, 5));
+    EXPECT_EQ(damageRange, tape(3 /*1*/, 5));
 }
 
 GAME_TEST(Issues, Issue388) {
@@ -652,7 +652,7 @@ GAME_TEST(Issues, Issue489) {
     // Test that AOE version of Shrinking Ray spell works.
     auto chibisTape = actorTapes.countByBuff(ACTOR_BUFF_SHRINK);
     test.playTraceFromTestData("issue_489.mm7", "issue_489.json");
-    EXPECT_EQ(chibisTape, tape(0, 15));
+    EXPECT_EQ(chibisTape, tape(0, 14));
 }
 
 GAME_TEST(Issues, Issue490) {
