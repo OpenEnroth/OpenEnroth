@@ -125,7 +125,7 @@ class OutdoorTerrain {
      */
     [[nodiscard]] bool isSlopeTooHighByPos(const Vec3f &pos) const;
 
-    friend void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst);
+    friend void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst); // In CompositeSnapshots.cpp.
 
  private:
     struct TileGeometry {

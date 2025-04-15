@@ -22,7 +22,6 @@
 
 #include "Library/Color/Color.h"
 #include "Library/Geometry/Vec.h"
-#include "Library/Snapshots/RawSnapshots.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/IndexedBitset.h"
@@ -31,6 +30,7 @@
 
 class Actor;
 class GraphicsImage;
+struct CharacterConditions_MM7;
 
 enum class StealResult {
     STEAL_BUSTED = 0, // Failed to steal & was caught.
@@ -65,13 +65,7 @@ struct RegenData {
     int spRegen = 0; // From all sources, mp / 5 ticks.
 };
 
-struct RawCharacterConditions {
-    /** Game time when condition has started. Zero means that the character doesn't have a condition. */
-    IndexedArray<Time, CONDITION_FIRST, CONDITION_LAST> _times;
-};
-
-class CharacterConditions : private RawCharacterConditions {
-    MM_DECLARE_RAW_PRIVATE_BASE(RawCharacterConditions)
+class CharacterConditions {
  public: // NOLINT: no idea why linter is triggering here.
     [[nodiscard]] bool Has(Condition condition) const {
         return _times[condition].isValid();
@@ -104,6 +98,13 @@ class CharacterConditions : private RawCharacterConditions {
     [[nodiscard]] Time Get(Condition condition) const {
         return _times[condition];
     }
+
+    friend void snapshot(const CharacterConditions &src, CharacterConditions_MM7 *dst); // In EntitySnapshots.cpp.
+    friend void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst); // In EntitySnapshots.cpp.
+
+ private:
+    /** Game time when condition has started. Zero means that the character doesn't have a condition. */
+    IndexedArray<Time, CONDITION_FIRST, CONDITION_LAST> _times;
 };
 
 class Character {

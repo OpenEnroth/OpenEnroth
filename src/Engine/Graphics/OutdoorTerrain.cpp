@@ -4,33 +4,9 @@
 #include <algorithm>
 
 #include "Engine/Tables/TileTable.h"
-#include "Engine/Snapshots/CompositeSnapshots.h"
-#include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Seasons.h"
 
-#include "Library/Snapshots/CommonSnapshots.h"
-
 #include "Outdoor.h"
-
-static int mapToGlobalTileId(const std::array<int, 4> &baseIds, int localTileId) {
-    // Tiles in tilemap:
-    // [0..90) are mapped as-is, but seem to be mostly invalid. Only global tile ids [1..12] are valid (all are dirt),
-    //         the rest are "pending", effectively invalid.
-    // [90..126) map to tileset #1.
-    // [126..162) map to tileset #2.
-    // [162..198) map to tileset #3.
-    // [198..234) map to tileset #4 (road).
-    // [234..255) are invalid.
-    if (localTileId < 90)
-        return localTileId;
-
-    if (localTileId >= 234)
-        return 0;
-
-    int tilesetIndex = (localTileId - 90) / 36;
-    int tilesetOffset = (localTileId - 90) % 36;
-    return baseIds[tilesetIndex] + tilesetOffset;
-}
 
 template<class Image>
 static bool contains(const Image &image, Pointi point) {
@@ -207,25 +183,6 @@ bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
     int yMin = std::min({z1, z2, z3});
     int yMax = std::max({z1, z2, z3});
     return yMax - yMin > 512;
-}
-
-void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
-    std::array<int, 4> baseTileIds;
-    for (int i = 0; i < 4; i++) {
-        dst->_tilesets[i] = static_cast<Tileset>(src.tileTypes[i].tileset);
-        baseTileIds[i] = pTileTable->tileId(dst->_tilesets[i], TILE_VARIANT_BASE1);
-    }
-
-    for (int y = 0; y < 128; y++)
-        for (int x = 0; x < 128; x++)
-            dst->_heightMap[y][x] = src.heightMap[y * 128 + x];
-
-    for (int y = 0; y < 127; y++)
-        for (int x = 0; x < 127; x++)
-            dst->_originalTileMap[y][x] = mapToGlobalTileId(baseTileIds, src.tileMap[y * 128 + x]);
-    dst->_tileMap = Image<int16_t>::copy(dst->_originalTileMap);
-
-    dst->recalculateNormals();
 }
 
 void OutdoorTerrain::recalculateNormals() {
