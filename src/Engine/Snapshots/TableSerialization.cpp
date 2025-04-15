@@ -62,13 +62,11 @@ void deserialize(const TriBlob &src, DecorationList *dst) {
 }
 
 void deserialize(const TriBlob &src, IconFrameTable *dst) {
-    RawIconFrameTable *rawDst = &raw(*dst);
+    dst->_frames.clear();
+    deserialize(src.mm7, &dst->_frames, tags::append, tags::via<IconFrameData_MM7>);
+    dst->_textures.resize(dst->_frames.size());
 
-    rawDst->frames.clear();
-    deserialize(src.mm7, &rawDst->frames, tags::append, tags::via<IconFrameData_MM7>);
-    rawDst->textures.resize(rawDst->frames.size());
-
-    assert(!rawDst->frames.empty());
+    assert(!dst->_frames.empty());
 }
 
 void deserialize(const TriBlob &src, MonsterList *dst) {
@@ -143,5 +141,5 @@ void deserialize(const TriBlob &src, SoundList *dst) {
 
     // TODO(captainurist): there are duplicate ids in the sounds array, look into it.
     for (const SoundInfo &sound : sounds)
-        raw(*dst)._mapSounds[sound.uSoundID] = sound;
+        dst->_mapSounds[sound.uSoundID] = sound;
 }

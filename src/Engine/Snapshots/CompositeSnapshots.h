@@ -19,6 +19,7 @@ class Blob;
 class BSPModel;
 struct IndoorLocation;
 struct OutdoorLocation;
+class OutdoorTerrain;
 struct SpriteFrameTable;
 class LodReader;
 class LodWriter;
@@ -102,6 +103,7 @@ struct OutdoorLocation_MM7 {
     std::vector<SpawnPoint_MM7> spawnPoints;
 };
 
+void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst);
 void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst);
 void deserialize(InputStream &src, OutdoorLocation_MM7 *dst);
 

@@ -318,7 +318,7 @@ void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
         dst->flags |= FRAME_FIRST;
 }
 
-void snapshot(const RawTimer &src, Timer_MM7 *dst) {
+void snapshot(const Timer &src, Timer_MM7 *dst) {
     memzero(dst);
 
     dst->ready = true;
@@ -332,7 +332,7 @@ void snapshot(const RawTimer &src, Timer_MM7 *dst) {
     dst->totalGameTimeElapsed = src._time.ticks();
 }
 
-void reconstruct(const Timer_MM7 &src, RawTimer *dst) {
+void reconstruct(const Timer_MM7 &src, Timer *dst) {
     dst->_paused = src.paused;
     dst->_turnBased = src.turnBased;
     dst->_lastFrameTime = Duration::fromTicks(src.lastFrameTime);
@@ -754,13 +754,13 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uFine = src.fine;
 }
 
-void snapshot(const RawCharacterConditions &src, CharacterConditions_MM7 *dst) {
+void snapshot(const CharacterConditions &src, CharacterConditions_MM7 *dst) {
     memzero(dst);
 
     snapshot(src._times, &dst->times);
 }
 
-void reconstruct(const CharacterConditions_MM7 &src, RawCharacterConditions *dst) {
+void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst) {
     reconstruct(src.times, &dst->_times);
 }
 

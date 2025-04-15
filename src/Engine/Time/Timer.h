@@ -2,20 +2,11 @@
 
 #include <cstdint>
 
-#include "Library/Snapshots/RawSnapshots.h"
-
 #include "Duration.h"
 
-struct RawTimer {
-    bool _paused = false;
-    bool _turnBased = false;
-    Duration _lastFrameTime; // "Realtime" tick count, as Duration, at the last frame.
-    Duration _dt; // dt since last frame.
-    Duration _time; // Total time elapsed.
-};
+struct Timer_MM7;
 
-class Timer : private RawTimer {
-    MM_DECLARE_RAW_PRIVATE_BASE(RawTimer)
+class Timer {
  public: // NOLINT: Linter, why???
     Timer() = default;
 
@@ -43,8 +34,18 @@ class Timer : private RawTimer {
         return _time;
     }
 
+    friend void snapshot(const Timer &src, Timer_MM7 *dst); // In EntitySnapshots.cpp.
+    friend void reconstruct(const Timer_MM7 &src, Timer *dst); // In EntitySnapshots.cpp.
+
  private:
     Duration platformTime();
+
+ private:
+    bool _paused = false;
+    bool _turnBased = false;
+    Duration _lastFrameTime; // "Realtime" tick count, as Duration, at the last frame.
+    Duration _dt; // dt since last frame.
+    Duration _time; // Total time elapsed.
 };
 
 // TODO(captainurist): pAnimTimer?

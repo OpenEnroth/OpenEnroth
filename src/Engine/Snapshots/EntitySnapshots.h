@@ -21,8 +21,6 @@ class Actor;
 class Character;
 struct IconFrameData;
 class Pid;
-struct RawCharacterConditions;
-struct RawTimer;
 class SoundInfo;
 class SpriteFrame;
 class TextureFrame;
@@ -37,6 +35,7 @@ struct BLVLight;
 struct BLVMapOutline;
 struct BLVSector;
 struct BSPNode;
+class CharacterConditions;
 struct Chest;
 struct ChestDesc;
 struct DecorationDesc;
@@ -59,6 +58,7 @@ struct SaveGameHeader;
 struct SpawnPoint;
 struct SpellBuff;
 struct SpriteObject;
+class Timer;
 
 static_assert(sizeof(Vec3s) == 6);
 static_assert(sizeof(Vec3i) == 12);
@@ -286,8 +286,8 @@ struct CharacterConditions_MM7 {
 static_assert(sizeof(CharacterConditions_MM7) == 0xA0);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(CharacterConditions_MM7)
 
-void snapshot(const RawCharacterConditions &src, CharacterConditions_MM7 *dst);
-void reconstruct(const CharacterConditions_MM7 &src, RawCharacterConditions *dst);
+void snapshot(const CharacterConditions &src, CharacterConditions_MM7 *dst);
+void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst);
 
 
 // TODO(captainurist): Character_MM7.
@@ -585,8 +585,8 @@ struct Timer_MM7 {
 static_assert(sizeof(Timer_MM7) == 0x28);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Timer_MM7)
 
-void snapshot(const RawTimer &src, Timer_MM7 *dst);
-void reconstruct(const Timer_MM7 &src, RawTimer *dst);
+void snapshot(const Timer &src, Timer_MM7 *dst);
+void reconstruct(const Timer_MM7 &src, Timer *dst);
 
 
 struct ActiveOverlay_MM7 {
