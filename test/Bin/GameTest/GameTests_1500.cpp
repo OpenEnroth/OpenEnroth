@@ -448,6 +448,21 @@ GAME_TEST(Issues, Issue1807) {
     EXPECT_MISSES(textTape.flattened(), "Play"); // But there was no "Play" option.
 }
 
+GAME_TEST(Issues, Issue1808) {
+    // Vase quest item stays in inventory.
+    auto activeCharTape = tapes.activeCharacterIndex();
+    auto classTape = charTapes.clazz(1);
+    auto vaseTape = charTapes.hasItem(3, ITEM_QUEST_VASE);
+    auto vasesTape = tapes.hasItem(ITEM_QUEST_VASE);
+    auto goldTape = tapes.gold();
+    test.playTraceFromTestData("issue_1808.mm7", "issue_1808.json");
+    EXPECT_EQ(activeCharTape, tape(1)); // First character was active.
+    EXPECT_EQ(vaseTape, tape(true, false)); // Vase was taken from 3rd char.
+    EXPECT_EQ(vasesTape, tape(true, false)); // And it was the only vase we had.
+    EXPECT_EQ(classTape, tape(CLASS_THIEF, CLASS_ROGUE)); // 2nd char was promoted.
+    EXPECT_EQ(goldTape.delta(), +5000); // Quest reward.
+}
+
 GAME_TEST(Issues, Issue1849_1831) {
     // 1849 - Sectors get seen and activated on save load despite being behind closed doors
     // 1831 - Engine too eager to reveal indoor map
@@ -694,10 +709,10 @@ GAME_TEST(Issues, Issue1966) {
     EXPECT_EQ(itemCountTape.delta(), -1); // Minus armageddon scroll.
 
     // Should have had a bunch of rocks in the air at some point due to Armageddon.
-    EXPECT_GT(std::ranges::max(spritesTape | std::views::transform([] (auto &&sprites) { return std::ranges::count(sprites, SPRITE_SPELL_EARTH_ROCK_BLAST); })), 100);
+    EXPECT_GT(spritesTape.mapped([] (auto &&sprites) { return sprites.count(SPRITE_SPELL_EARTH_ROCK_BLAST); }).max(), 100);
 
     // Some rocks should have hit monsters - this is what was triggering the assertion.
-    EXPECT_GT(std::ranges::count(spritesTape.flattened(), SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT), 10);
+    EXPECT_GT(spritesTape.flattened().count(SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT), 10);
 }
 
 GAME_TEST(Issues, Issue1972) {
@@ -707,7 +722,7 @@ GAME_TEST(Issues, Issue1972) {
     auto hpTape = tapes.totalHp();
     test.playTraceFromTestData("issue_1972.mm7", "issue_1972.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
     EXPECT_EQ(mapTape, tape(MAP_LAND_OF_THE_GIANTS));
-    int meteorCount = std::ranges::max(spritesTape | std::views::transform([] (auto &&sprites) { return std::ranges::count(sprites, SPRITE_SPELL_FIRE_METEOR_SHOWER); }));
+    int meteorCount = spritesTape.mapped([] (auto &&sprites) { return sprites.count(SPRITE_SPELL_FIRE_METEOR_SHOWER); }).max();
     EXPECT_EQ(meteorCount, 24); // 2x meteor shower cast at master. Might change to 12 on retrace.
     EXPECT_LE(hpTape.delta(), -700); // Party should have received some damage. Checking this b/c retracing might break smth.
 }
