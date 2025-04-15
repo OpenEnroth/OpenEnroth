@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;10bf631</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b6fd866</span>
    </div>
   </td>
  </tr>
@@ -71,32 +71,29 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-attribs">Private Attributes</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classSoundList-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">SoundList Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;SoundList.h&gt;</code></p>
-<div class="dynheader">
-Inheritance diagram for SoundList:</div>
-<div class="dyncontent">
- <div class="center">
-  <img src="classSoundList.png" usemap="#SoundList_map" alt=""/>
-  <map id="SoundList_map" name="SoundList_map">
-<area href="structRawSoundList.html" alt="RawSoundList" shape="rect" coords="0,0,91,24"/>
-  </map>
-</div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a42f6c85a4e876ada6d4bfbde0b87965a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSoundInfo.html">SoundInfo</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSoundList.html#a42f6c85a4e876ada6d4bfbde0b87965a">soundInfo</a> (<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a> soundId)</td></tr>
 <tr class="separator:a42f6c85a4e876ada6d4bfbde0b87965a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pub_attribs_structRawSoundList"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_structRawSoundList')"><img src="closed.png" alt="-"/>&#160;Private Attributes inherited from <a class="el" href="structRawSoundList.html">RawSoundList</a></td></tr>
-<tr class="memitem:a046f2b6be8c21dad0f315d1687ca9719 inherit pub_attribs_structRawSoundList"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a>, <a class="el" href="classSoundInfo.html">SoundInfo</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structRawSoundList.html#a046f2b6be8c21dad0f315d1687ca9719">_mapSounds</a></td></tr>
-<tr class="separator:a046f2b6be8c21dad0f315d1687ca9719 inherit pub_attribs_structRawSoundList"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
+Private Attributes</h2></td></tr>
+<tr class="memitem:a03d291c29494464f62c42b48092fe369"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a>, <a class="el" href="classSoundInfo.html">SoundInfo</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSoundList.html#a03d291c29494464f62c42b48092fe369">_mapSounds</a></td></tr>
+<tr class="separator:a03d291c29494464f62c42b48092fe369"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a537889b979e666d914a03e7825c7205a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSoundList.html#a537889b979e666d914a03e7825c7205a">deserialize</a> (const <a class="el" href="structTriBlob.html">TriBlob</a> &amp;src, <a class="el" href="classSoundList.html">SoundList</a> *dst)</td></tr>
+<tr class="separator:a537889b979e666d914a03e7825c7205a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a42f6c85a4e876ada6d4bfbde0b87965a" name="a42f6c85a4e876ada6d4bfbde0b87965a"></a>
@@ -113,6 +110,66 @@ Additional Inherited Members</h2></td></tr>
           <td></td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a id="a537889b979e666d914a03e7825c7205a" name="a537889b979e666d914a03e7825c7205a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a537889b979e666d914a03e7825c7205a">&#9670;&#160;</a></span>deserialize</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void deserialize </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structTriBlob.html">TriBlob</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classSoundList.html">SoundList</a> *&#160;</td>
+          <td class="paramname"><em>dst</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a03d291c29494464f62c42b48092fe369" name="a03d291c29494464f62c42b48092fe369"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03d291c29494464f62c42b48092fe369">&#9670;&#160;</a></span>_mapSounds</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt;<a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a>, <a class="el" href="classSoundInfo.html">SoundInfo</a>&gt; SoundList::_mapSounds</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

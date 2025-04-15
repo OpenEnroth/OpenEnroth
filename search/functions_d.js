@@ -28,7 +28,7 @@ var searchData=
   ['mapitemcount_25',['mapItemCount',['../classCommonTapeRecorder.html#af56c6e713d4d19aedf0b5b14aa7a12b9',1,'CommonTapeRecorder::mapItemCount()'],['../classCommonTapeRecorder.html#ac95b03d7c55115a2ca321edbff19b212',1,'CommonTapeRecorder::mapItemCount(ItemId itemId)']]],
   ['mapkey_26',['MapKey',['../classIo_1_1KeyboardActionMapping.html#a2982f379a003e4fc99a9891d577ee248',1,'Io::KeyboardActionMapping::MapKey(InputAction action, PlatformKey key)'],['../classIo_1_1KeyboardActionMapping.html#a5f34666332dcdfc295d8cdf3fc389b8c',1,'Io::KeyboardActionMapping::MapKey(InputAction action, PlatformKey key, KeyToggleType type)']]],
   ['mapped_27',['mapped',['../classAccessible.html#a1c9a0dbf3d4434e473d8c0f6e3fd54ef',1,'Accessible']]],
-  ['maptoglobaltileid_28',['mapToGlobalTileId',['../OutdoorTerrain_8cpp.html#a5b8bc317be7889b73fd883dea7efcb99',1,'OutdoorTerrain.cpp']]],
+  ['maptoglobaltileid_28',['mapToGlobalTileId',['../CompositeSnapshots_8cpp.html#a5b8bc317be7889b73fd883dea7efcb99',1,'CompositeSnapshots.cpp']]],
   ['maptorender_29',['MapToRender',['../classGameWindowHandler.html#a85bcb10daa161a0f0809d4753632eecd',1,'GameWindowHandler']]],
   ['mapviewdown_30',['MapViewDown',['../structViewingParams.html#abe50448235e6dfe6b0f3c35dd2237501',1,'ViewingParams']]],
   ['mapviewleft_31',['MapViewLeft',['../structViewingParams.html#a29229f573111192b6bfc0c643283c93c',1,'ViewingParams']]],
