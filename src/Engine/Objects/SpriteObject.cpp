@@ -75,20 +75,21 @@ int SpriteObject::Create(int yaw, int pitch, int speed, int which_char) {
     _lastParticleTime = pMiscTimer->time();
 
     // move sprite so it looks like it originates from char portrait
+    float displace = engine->config->gameplay.SpellSourceDisplacement.value();
     switch (which_char) {
         case 0:
             break;  // do nothing
         case 1:
-            vPosition += Vec3f::fromPolar(24, uFacing + TrigLUT.uIntegerHalfPi, 0);
+            vPosition += Vec3f::fromPolar(displace * 1.5f, uFacing + TrigLUT.uIntegerHalfPi, 0);
             break;
         case 2:
-            vPosition += Vec3f::fromPolar(8, uFacing + TrigLUT.uIntegerHalfPi, 0);
+            vPosition += Vec3f::fromPolar(displace * 0.5f, uFacing + TrigLUT.uIntegerHalfPi, 0);
             break;
         case 3:
-            vPosition += Vec3f::fromPolar(8, uFacing - TrigLUT.uIntegerHalfPi, 0);
+            vPosition += Vec3f::fromPolar(displace * 0.5f, uFacing - TrigLUT.uIntegerHalfPi, 0);
             break;
         case 4:
-            vPosition += Vec3f::fromPolar(24, uFacing - TrigLUT.uIntegerHalfPi, 0);
+            vPosition += Vec3f::fromPolar(displace * 1.5f, uFacing - TrigLUT.uIntegerHalfPi, 0);
             break;
         default:
             assert(false);
