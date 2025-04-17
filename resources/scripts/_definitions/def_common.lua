@@ -41,16 +41,18 @@
 --- @class ConfigInfo
 --- @field section string
 --- @field name string
---- @field type string
 --- @field description string
 --- @field value string
 --- @field default string
 
 --- @class ConfigBindings
---- @field setConfig fun(section: string, configName: string, value: any)
---- @field getConfig fun(section: string, configName?: string): string
---- @field resetConfig fun(section: string, configName?: string): string?
---- @field listConfigs fun(section: string, filter: string): table<ConfigInfo>
+--- @field locateEntry fun(param1: string, param2?: string): any
+--- @field setEntryValue fun(entry: any, value: string)
+--- @field resetEntryValue fun(entry: any)
+--- @field toggleEntryValue fun(entry: any)
+--- @field entryValue fun(entry: any): string
+--- @field entryPath fun(entry: any): string
+--- @field listEntries fun(sectionName: string, filter: string): ConfigInfo[]
 
 --- OVERLAY Bindings
 --- @class Overlay
