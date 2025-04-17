@@ -305,13 +305,14 @@ void CastSpellInfoHelpers::castSpell() {
                     castSuccessful = false;
                 } else if (grng->random(100) >= success_chance_percent) {
                     spellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                    // Mana was not spend before on failure.
+                    // Mana was not spent before on failure.
                     pPlayer->SpendMana(uRequiredMana);
                     castSuccessful = false;
                 }
             }
             if (castSuccessful) {
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastTownPortal, Pid(OBJECT_Character, pCastSpell->casterCharacterIndex).packed(), 0);
+                int param2 = std::to_underlying(pCastSpell->flags & ON_CAST_CastViaScroll);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastTownPortal, Pid(OBJECT_Character, pCastSpell->casterCharacterIndex).packed(), param2);
                 pAudioPlayer->playSpellSound(pCastSpell->uSpellID, false, SOUND_MODE_EXCLUSIVE);
             }
         } else if (pCastSpell->uSpellID == SPELL_WATER_LLOYDS_BEACON) {
