@@ -20,7 +20,7 @@ sudo apt-get install SDL2 SDL2-devel
 ```
 
 Additional dependencies:
-* [CMake 3.27+](https://cmake.org/download/)
+* [CMake 3.x](https://cmake.org/download/). Note that CMake 4.x won't work.
 * [Python 3.x](https://www.python.org/downloads/) (optional, for style checks).
 
 Minimum required compiler versions are as follows:
@@ -57,8 +57,8 @@ Building on Windows
 * Get git (`https://git-scm.com/download/win`) and Visual Studio 2022.
 * Make sure you have Windows SDK v10.0.20348.0 or higher.
 * Clone, fork or download the repo `https://github.com/OpenEnroth/OpenEnroth`.
-* Setup Cmake:
-  * either install standalone cmake from the official website,
+* Setup CMake:
+  * either install standalone cmake from the official website (remember that you need CMake 3.x, not 4.x),
   * or add Microsoft one (that's coming with the VS installation) to your PATH environment variable (e.g `c:\Program Files\Microsoft Visual Studio\2022\<edition>\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin`). 
 * Open the folder in Visual Studio.
 * Select build configuration (x32 or x64) and wait for CMake configuration to complete.
