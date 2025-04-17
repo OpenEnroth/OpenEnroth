@@ -319,7 +319,8 @@ void CastSpellInfoHelpers::castSpell() {
             if (engine->_currentLoadedMapId == MAP_ARENA) {
                 spellFailed(pCastSpell, LSTR_SPELL_FAILED);
             } else {
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastLloydsBeacon, pCastSpell->casterCharacterIndex, spell_level);
+                int param2 = std::to_underlying(pCastSpell->flags & ON_CAST_CastViaScroll);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastLloydsBeacon, Pid(OBJECT_Character, pCastSpell->casterCharacterIndex).packed(), param2);
                 pCastSpell->flags |= ON_CAST_NoRecoverySpell;
             }
         } else {
