@@ -16,6 +16,6 @@ class GUIWindow_TownPortalBook : public GUIWindow_Book {
     void hintTown(int townId);
 
  private:
-    const Pid casterPid;
-    const SpellCastFlags castFlags;
+    const Pid _casterPid;
+    const SpellCastFlags _castFlags;
 };

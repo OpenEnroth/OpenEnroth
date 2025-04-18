@@ -90,7 +90,7 @@ GraphicsImage *ui_book_townportal_background = nullptr;
 GraphicsImage *ui_townportal_cheat_destination_icon = nullptr;
 
 GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid, SpellCastFlags castFlags)
-        : casterPid(casterPid), castFlags(castFlags) {
+        : _casterPid(casterPid), _castFlags(castFlags) {
     this->eWindowType = WindowType::WINDOW_TownPortal;
 
     ui_book_townportal_background = assets->getImage_Solid("townport");
@@ -183,16 +183,16 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
         Actor::InitializeActors();
     }
 
-    assert(casterPid.type() == OBJECT_Character);
+    assert(_casterPid.type() == OBJECT_Character);
 
-    int casterId = casterPid.id();
+    int casterId = _casterPid.id();
     if (casterId < pParty->pCharacters.size()) {
         // Town portal cast by character
         CharacterSkillMastery mastery;
         Character &character = pParty->pCharacters[casterId];
         if (engine->config->debug.AllMagic.value()) {
             mastery = CHARACTER_SKILL_MASTERY_GRANDMASTER;
-        } else if (castFlags & ON_CAST_CastViaScroll) {
+        } else if (_castFlags & ON_CAST_CastViaScroll) {
             // Cast from scroll
             mastery = SCROLL_OR_NPC_SPELL_SKILL_VALUE.mastery();
         } else {

@@ -18,10 +18,10 @@ class GUIWindow_LloydsBook : public GUIWindow_Book {
     void installOrRecallBeacon(int beaconId);
 
  private:
-    const Pid casterPid;
-    const SpellCastFlags castFlags;
+    const Pid _casterPid;
+    const SpellCastFlags _castFlags;
     int _maxBeacons;
     bool _recallingBeacon;
     int _spellLevel;
-    CharacterSkillMastery waterMastery;
+    CharacterSkillMastery _waterMastery;
 };
