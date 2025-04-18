@@ -699,6 +699,40 @@ GAME_TEST(Issues, Issue1947) {
     EXPECT_GT(pSpriteObjects[4].containing_item.maxCharges, 0);
 }
 
+GAME_TEST(Issues, Issue1961) {
+    // Enchant Item costs no SP.
+    auto manaTape = charTapes.mp(3);
+    game.startNewGame();
+    test.startTaping();
+
+    // Prepare an item to enchant.
+    pParty->pCharacters[3].pInventoryItemList.fill(Item());
+    pParty->pCharacters[3].pInventoryMatrix.fill(0);
+    pParty->pCharacters[3].AddItem(-1, ITEM_GOLDEN_CHAIN_MAIL);
+    const Item &chainmail = pParty->pCharacters[3].pInventoryItemList[0];
+    EXPECT_EQ(chainmail.itemId, ITEM_GOLDEN_CHAIN_MAIL);
+
+    // Learn enchant item.
+    pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_WATER] = CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER);
+    pParty->pCharacters[3].bHaveSpell[SPELL_WATER_ENCHANT_ITEM] = true;
+
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_4); // Select 4th char.
+    game.tick(1);
+    game.pressGuiButton("Game_CastSpell");
+    game.tick(1);
+    game.pressGuiButton("SpellBook_School2"); // Water magic.
+    game.tick(1);
+    game.pressGuiButton("SpellBook_Spell7"); // Enchant item.
+    game.tick(1);
+    game.pressGuiButton("SpellBook_Spell7"); // Confirm.
+    game.tick(2);
+    game.pressAndReleaseButton(BUTTON_LEFT, 30, 30);
+    game.tick(1); // Don't wait out the animation.
+
+    EXPECT_EQ(manaTape.delta(), -15);
+    EXPECT_TRUE(chainmail.standardEnchantment || chainmail.specialEnchantment != ITEM_ENCHANTMENT_NULL);
+}
+
 GAME_TEST(Issues, Issue1966) {
     // Assert crash casting Armageddon, happens when monsters are hit with Armageddon rocks.
     auto mapTape = tapes.map();
