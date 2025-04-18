@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b6fd866</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6e7a97a</span>
    </div>
   </td>
  </tr>
@@ -84,7 +84,7 @@ Dependencies</h1>
 <p >By default, we are using prebuilt dependencies, and they are resolved automatically during the cmake phase.</p>
 <p >The only exception is Linux, where we're using SDL2 from the distribution, so you will need to install a development versions of SDL2 before building OpenEnroth. E.g. on Ubuntu: </p><div class="fragment"><div class="line">sudo apt-get install SDL2 SDL2-devel</div>
 </div><!-- fragment --><p >Additional dependencies:</p><ul>
-<li><a href="https://cmake.org/download/">CMake 3.27+</a></li>
+<li><a href="https://cmake.org/download/">CMake 3.x</a>. Note that CMake 4.x won't work.</li>
 <li><a href="https://www.python.org/downloads/">Python 3.x</a> (optional, for style checks).</li>
 </ul>
 <p >Minimum required compiler versions are as follows:</p><ul>
@@ -112,8 +112,8 @@ Building on Windows</h1>
 <li>Get git (<code><a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a></code>) and Visual Studio 2022.</li>
 <li>Make sure you have Windows SDK v10.0.20348.0 or higher.</li>
 <li>Clone, fork or download the repo <code><a href="https://github.com/OpenEnroth/OpenEnroth">https://github.com/OpenEnroth/OpenEnroth</a></code>.</li>
-<li>Setup Cmake:<ul>
-<li>either install standalone cmake from the official website,</li>
+<li>Setup CMake:<ul>
+<li>either install standalone cmake from the official website (remember that you need CMake 3.x, not 4.x),</li>
 <li>or add Microsoft one (that's coming with the VS installation) to your PATH environment variable (e.g <code>c:\Program Files\Microsoft Visual Studio\2022\&lt;edition&gt;\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin</code>).</li>
 </ul>
 </li>
