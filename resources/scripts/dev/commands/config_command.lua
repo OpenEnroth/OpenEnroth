@@ -8,11 +8,11 @@ local Config = require "bindings.config"
 local function getConfig(param1, param2)
     local entry = nil
     if param2 == nil then
-        entry = Config.locateEntry(param1)
+        entry = Config.entry(param1)
     else
-        entry = Config.locateEntry(param1, param2)
+        entry = Config.entry(param1, param2)
     end
-    return Config.entryPath(entry) .. ": " .. Config.entryValue(entry), true
+    return entry.path .. ": " .. entry.value, true
 end
 
 ---Change the value of the configEntry
@@ -25,14 +25,14 @@ local function setConfig(param1, param2, param3)
     local entry = nil
     local value = ""
     if param3 == nil then
-        entry = Config.locateEntry(param1)
+        entry = Config.entry(param1)
         value = param2
     else
-        entry = Config.locateEntry(param1, param2)
+        entry = Config.entry(param1, param2)
         value = param3
     end
-    Config.setEntryValue(entry, value)
-    return Config.entryPath(entry) .. ": " .. Config.entryValue(entry), true
+    entry.value = value
+    return entry.path .. ": " .. entry.value, true
 end
 
 ---Reset the value of a configEntry to its default
@@ -43,12 +43,12 @@ end
 local function resetConfig(param1, param2)
     local entry = nil
     if param2 == nil then
-        entry = Config.locateEntry(param1)
+        entry = Config.entry(param1)
     else
-        entry = Config.locateEntry(param1, param2)
+        entry = Config.entry(param1, param2)
     end
-    Config.resetEntryValue(entry)
-    return Config.entryPath(entry) .. ": " .. Config.entryValue(entry), true
+    entry:reset()
+    return entry.path .. ": " .. entry.value, true
 end
 
 ---Toggle the boolean config value
@@ -59,12 +59,12 @@ end
 local function toggleConfig(param1, param2)
     local entry = nil
     if param2 == nil then
-        entry = Config.locateEntry(param1)
+        entry = Config.entry(param1)
     else
-        entry = Config.locateEntry(param1, param2)
+        entry = Config.entry(param1, param2)
     end
-    Config.toggleEntryValue(entry)
-    return Config.entryPath(entry) .. ": " .. Config.entryValue(entry), true
+    entry:toggle()
+    return entry.path .. ": " .. entry.value, true
 end
 
 ---List all matching configEntries
@@ -75,11 +75,11 @@ end
 local function listConfigs(param1, param2)
     local matches = nil
     if param1 == nil then
-        matches = Config.listEntries("", "")
+        matches = Config.list("", "")
     elseif param2 == nil then
-        matches = Config.listEntries("", param1)
+        matches = Config.list("", param1)
     else
-        matches = Config.listEntries(param1, param2)
+        matches = Config.list(param1, param2)
     end
 
     local count = #matches
@@ -87,20 +87,20 @@ local function listConfigs(param1, param2)
     if count == 0 then
         return "No matches", false
     elseif count == 1 then
-        local config = matches[1]
-        message = message .. "section: " .. config.section .. "\n"
-        message = message .. "name: " .. config.name .. "\n"
-        message = message .. "description: " .. config.description .. "\n"
-        message = message .. "default: " .. config.default .. "\n"
-        message = message .. "value: " .. config.value .. "\n"
+        local entry = matches[1]
+        message = message .. "section: " .. entry.section .. "\n"
+        message = message .. "name: " .. entry.name .. "\n"
+        message = message .. "description: " .. entry.description .. "\n"
+        message = message .. "default: " .. entry.default .. "\n"
+        message = message .. "value: " .. entry.value .. "\n"
     else
         local sectionHeader = nil
-        for _, config in pairs(matches) do
-            if (config.section ~= sectionHeader) then
-                sectionHeader = config.section
+        for _, entry in pairs(matches) do
+            if (entry.section ~= sectionHeader) then
+                sectionHeader = entry.section
                 message = message .. "[" .. sectionHeader .. "]\n"
             end
-            message = message .. "  " .. config.name .. ": " .. config.value .. "\n"
+            message = message .. "  " .. entry.name .. ": " .. entry.value .. "\n"
         end
     end
     return message, true

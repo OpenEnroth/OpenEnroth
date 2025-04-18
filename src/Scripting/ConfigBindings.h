@@ -12,13 +12,11 @@ class ConfigBindings : public IBindings {
     virtual sol::table createBindingTable(sol::state_view &solState) const override;
 
  private:
-    [[nodiscard]] static AnyConfigEntry *locateConfigEntry1(std::string_view entryName);
-    [[nodiscard]] static AnyConfigEntry *locateConfigEntry2(std::string_view sectionName, std::string_view entryName);
+    [[nodiscard]] static AnyConfigEntry *entry1(std::string_view entryName);
+    [[nodiscard]] static AnyConfigEntry *entry2(std::string_view sectionName, std::string_view entryName);
+    [[nodiscard]] static std::vector<AnyConfigEntry *> list(std::string_view sectionName, std::string_view filter);
 
-    static void setEntryValue(AnyConfigEntry *entry, std::string_view value);
-    static void resetEntryValue(AnyConfigEntry *entry);
-    static void toggleEntryValue(AnyConfigEntry *entry);
-    [[nodiscard]] static std::string entryValue(AnyConfigEntry *entry);
-    [[nodiscard]] static std::string entryPath(AnyConfigEntry *entry);
-    [[nodiscard]] static std::vector<AnyConfigEntry *> listEntries(std::string_view sectionName, std::string_view filter);
+    [[nodiscard]] static std::string path(AnyConfigEntry *entry);
+    [[nodiscard]] static std::string sectionName(AnyConfigEntry *entry);
+    static void toggle(AnyConfigEntry *entry);
 };

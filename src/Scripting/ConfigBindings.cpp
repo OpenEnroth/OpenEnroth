@@ -11,30 +11,24 @@
 #include "Utility/SmallVector.h"
 
 sol::table ConfigBindings::createBindingTable(sol::state_view &solState) const {
+    solState.new_usertype<AnyConfigEntry>("ConfigEntry",
+        "value", sol::property(&AnyConfigEntry::string, &AnyConfigEntry::setString),
+        "default", sol::property(&AnyConfigEntry::defaultString),
+        "name", sol::property(&AnyConfigEntry::name),
+        "section", sol::property(&ConfigBindings::sectionName),
+        "description", sol::property(&AnyConfigEntry::description),
+        "path", sol::property(&ConfigBindings::path),
+        "reset", sol::as_function(&AnyConfigEntry::reset),
+        "toggle", sol::as_function(&ConfigBindings::toggle)
+    );
+
     return solState.create_table_with(
-        "locateEntry", sol::overload(&locateConfigEntry1, &locateConfigEntry2),
-        "setEntryValue", &setEntryValue,
-        "resetEntryValue", resetEntryValue,
-        "toggleEntryValue", toggleEntryValue,
-        "entryValue", &entryValue,
-        "entryPath", &entryPath,
-        "listEntries", sol::as_function([solState] (std::optional<std::string_view> sectionName, std::optional<std::string_view> filter) mutable {
-            sol::table result = solState.create_table();
-            for (AnyConfigEntry *entry : listEntries(sectionName ? *sectionName : "", filter ? *filter : "")) {
-                result.add(solState.create_table_with(
-                    "section", entry->section()->name(),
-                    "name", entry->name(),
-                    "description", entry->description(),
-                    "value", entry->string(),
-                    "default", entry->defaultString()
-                ));
-            }
-            return result;
-        })
+        "entry", sol::overload(&ConfigBindings::entry1, &ConfigBindings::entry2),
+        "list", sol::as_function(&ConfigBindings::list)
     );
 }
 
-AnyConfigEntry *ConfigBindings::locateConfigEntry1(std::string_view entryName) {
+AnyConfigEntry *ConfigBindings::entry1(std::string_view entryName) {
     gch::small_vector<AnyConfigEntry *, 16> entries;
 
     for (const ConfigSection *section : engine->config->sections())
@@ -54,7 +48,7 @@ AnyConfigEntry *ConfigBindings::locateConfigEntry1(std::string_view entryName) {
     return entries[0];
 }
 
-AnyConfigEntry *ConfigBindings::locateConfigEntry2(std::string_view sectionName, std::string_view entryName) {
+AnyConfigEntry *ConfigBindings::entry2(std::string_view sectionName, std::string_view entryName) {
     ConfigSection *section = engine->config->section(sectionName);
     if (!section)
         throw Exception("Can't find config section '{}'", sectionName);
@@ -66,41 +60,7 @@ AnyConfigEntry *ConfigBindings::locateConfigEntry2(std::string_view sectionName,
     return entry;
 }
 
-void ConfigBindings::setEntryValue(AnyConfigEntry *entry, std::string_view value) {
-    if (!entry)
-        throw Exception("Can't set value of a null config entry.");
-    entry->setString(value);
-}
-
-void ConfigBindings::resetEntryValue(AnyConfigEntry *entry) {
-    if (!entry)
-        throw Exception("Can't reset value of a null config entry.");
-    entry->reset();
-}
-
-void ConfigBindings::toggleEntryValue(AnyConfigEntry *entry) {
-    if (!entry)
-        throw Exception("Can't toggle value of a null config entry.");
-    if (entry->type() != typeid(bool))
-        throw Exception("Can't toggle value of a non-boolean config entry.");
-    entry->setValue(!std::any_cast<bool>(entry->value()));
-}
-
-std::string ConfigBindings::entryValue(AnyConfigEntry *entry) {
-    if (!entry)
-        throw Exception("Can't get value of a null config entry.");
-    return entry->string();
-}
-
-std::string ConfigBindings::entryPath(AnyConfigEntry *entry) {
-    if (!entry)
-        throw Exception("Can't get path of a null config entry.");
-    if (!entry->section())
-        throw Exception("Can't get path of an orphaned config entry.");
-    return entry->section()->name() + "." + entry->name();
-}
-
-std::vector<AnyConfigEntry *> ConfigBindings::listEntries(std::string_view sectionName, std::string_view filter) {
+std::vector<AnyConfigEntry *> ConfigBindings::list(std::string_view sectionName, std::string_view filter) {
     std::vector<ConfigSection *> sections;
     if (sectionName.empty()) {
         sections = engine->config->sections();
@@ -124,4 +84,28 @@ std::vector<AnyConfigEntry *> ConfigBindings::listEntries(std::string_view secti
         }
     }
     return result;
+}
+
+void ConfigBindings::toggle(AnyConfigEntry *entry) {
+    if (!entry)
+        throw Exception("Can't toggle value of a null config entry.");
+    if (entry->type() != typeid(bool))
+        throw Exception("Can't toggle value of a non-boolean config entry.");
+    entry->setValue(!std::any_cast<bool>(entry->value()));
+}
+
+std::string ConfigBindings::path(AnyConfigEntry *entry) {
+    if (!entry)
+        throw Exception("Can't get path of a null config entry.");
+    if (!entry->section())
+        throw Exception("Can't get path of an orphaned config entry.");
+    return entry->section()->name() + "." + entry->name();
+}
+
+[[nodiscard]] std::string ConfigBindings::sectionName(AnyConfigEntry *entry) {
+    if (!entry)
+        throw Exception("Can't get section name of a null config entry.");
+    if (!entry->section())
+        throw Exception("Can't get section name of an orphaned config entry.");
+    return entry->section()->name();
 }
