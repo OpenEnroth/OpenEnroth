@@ -41,12 +41,21 @@ TestTape<int> CommonTapeRecorder::totalHp() {
 }
 
 TestTape<int> CommonTapeRecorder::totalItemCount(ItemId itemId) {
+    if (itemId == ITEM_NULL)
+        return custom([] {
+            int result = 0;
+            for (const Character &character : pParty->pCharacters)
+                for (const Item &item : character.pInventoryItemList)
+                    result += item.itemId != ITEM_NULL;
+            result += pParty->pPickedItem.itemId != ITEM_NULL;
+            return result;
+        });
     return custom([itemId] {
         int result = 0;
         for (const Character &character : pParty->pCharacters)
             for (const Item &item : character.pInventoryItemList)
-                result += (itemId == ITEM_NULL && item.itemId != ITEM_NULL) || item.itemId == itemId;
-        result += pParty->pPickedItem.itemId != ITEM_NULL;
+                result += item.itemId == itemId;
+        result += pParty->pPickedItem.itemId == itemId;
         return result;
     });
 }
