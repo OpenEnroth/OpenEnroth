@@ -3673,6 +3673,11 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
+        if (playerAffected->timeToRecovery) {
+            engine->_statusBar->setEvent(LSTR_PLAYER_IS_NOT_ACTIVE);
+            pAudioPlayer->playUISound(SOUND_error);
+            return;
+        }
 
         // TODO(Nik-RE-dev): spell scroll is removed before actual casting and will be consumed even if casting is canceled.
         SpellId scrollSpellId = spellForScroll(pParty->pPickedItem.itemId);
@@ -7237,10 +7242,11 @@ void Character::Zero() {
     uNumDivineInterventionCastsThisDay = 0;
     uNumArmageddonCasts = 0;
     uNumFireSpikeCasts = 0; // TODO(pskelton): firespike meant to remain permanantly??
-    for (int z = 0; z < vBeacons.size(); z++) {
-        vBeacons[z].image->Release();
+    for (int z = 0; z < 5; z++) {
+        if (vBeacons[z])
+            vBeacons[z]->image->Release();
+        vBeacons[z].reset();
     }
-    vBeacons.clear();
     // Character bits
     _characterEventBits.reset();
     _achievedAwardsBits.reset();
@@ -7279,16 +7285,12 @@ bool Character::matchesAttackPreference(MonsterAttackPreference preference) cons
 }
 
 void Character::cleanupBeacons() {
-    struct delete_beacon {
-        bool operator()(const LloydBeacon &beacon) const {
-            return (beacon.uBeaconTime < pParty->GetPlayingTime());
-        }
-    };
-    vBeacons.erase(std::remove_if(vBeacons.begin(), vBeacons.end(),
-        [](const LloydBeacon &beacon) {
-            return (beacon.uBeaconTime < pParty->GetPlayingTime());
-        }), vBeacons.end()
-    );
+    for (int i = 0; i < 5; i++) {
+        if (!vBeacons[i] || vBeacons[i]->uBeaconTime >= pParty->GetPlayingTime())
+            continue;
+        vBeacons[i]->image->Release();
+        vBeacons[i].reset();
+    }
 }
 
 bool Character::setBeacon(int index, Duration duration) {
@@ -7305,13 +7307,11 @@ bool Character::setBeacon(int index, Duration duration) {
     beacon._partyViewPitch = pParty->_viewPitch;
     beacon.mapId = engine->_currentLoadedMapId;
 
-    if (index < vBeacons.size()) {
+    if (vBeacons[index]) {
         // overwrite so clear image
-        vBeacons[index].image->Release();
-        vBeacons[index] = beacon;
-    } else {
-        vBeacons.push_back(beacon);
+        vBeacons[index]->image->Release();
     }
+    vBeacons[index] = beacon;
 
     return true;
 }
