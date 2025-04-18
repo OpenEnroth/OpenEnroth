@@ -47,7 +47,9 @@ class CommonTapeRecorder {
 
     TestTape<int> totalHp();
 
-    TestTape<int> totalItemCount(ItemId itemId = ITEM_NULL);
+    TestTape<int> totalItemCount();
+
+    TestTape<int> totalItemCount(ItemId itemId);
 
     TestTape<int> totalHirelings();
 
