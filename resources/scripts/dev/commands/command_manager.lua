@@ -70,7 +70,7 @@ local CommandManager = {
                 local par = #params > 0 and params[1] or "default"
                 local newCallback = callback[par]
                 if newCallback == nil then
-                    local message = "Invalid parameter at position " .. index .. " - Here's a list of valid values:\n"
+                    local message = "Invalid parameter '" .. par .. "' at position " .. index .. " - Here's a list of valid values:\n"
                     for key, _ in pairs(callback) do
                         if key ~= "default" then
                             message = message .. key .. "\n"
