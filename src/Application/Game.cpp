@@ -883,11 +883,11 @@ void Game::processQueuedMessages() {
                 continue;
 
             case UIMSG_OnCastTownPortal:
-                pGUIWindow_CurrentMenu = new GUIWindow_TownPortalBook(Pid::fromPacked(uMessageParam));
+                pGUIWindow_CurrentMenu = new GUIWindow_TownPortalBook(Pid::fromPacked(uMessageParam), static_cast<SpellCastFlags>(uMessageParam2));
                 continue;
 
             case UIMSG_OnCastLloydsBeacon:
-                pGUIWindow_CurrentMenu = new GUIWindow_LloydsBook(uMessageParam, uMessageParam2);
+                pGUIWindow_CurrentMenu = new GUIWindow_LloydsBook(Pid::fromPacked(uMessageParam), static_cast<SpellCastFlags>(uMessageParam2));
                 continue;
 
             case UIMSG_LloydBookFlipButton:

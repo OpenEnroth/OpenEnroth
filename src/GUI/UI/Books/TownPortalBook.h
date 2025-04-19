@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Engine/Pid.h"
+#include "Engine/Spells/CastSpellInfo.h"
 
 #include "GUI/UI/UIBooks.h"
 
 class GUIWindow_TownPortalBook : public GUIWindow_Book {
  public:
-    explicit GUIWindow_TownPortalBook(Pid casterPid);
+    explicit GUIWindow_TownPortalBook(Pid casterPid, SpellCastFlags castFlags);
     virtual ~GUIWindow_TownPortalBook() {}
 
     virtual void Update() override;
@@ -15,5 +16,6 @@ class GUIWindow_TownPortalBook : public GUIWindow_Book {
     void hintTown(int townId);
 
  private:
-    Pid _casterPid;
+    const Pid _casterPid;
+    const SpellCastFlags _castFlags;
 };

@@ -29,12 +29,19 @@ std::array<int, 5> lloydsBeacons_SomeYs = {{82, 82, 226, 226, 153}};
 GraphicsImage *ui_book_lloyds_border = nullptr;
 std::array<GraphicsImage *, 2> ui_book_lloyds_backgrounds;
 
-GUIWindow_LloydsBook::GUIWindow_LloydsBook(int casterId, int spellLevel) {
+IndexedArray<int, CHARACTER_SKILL_MASTERY_NONE, CHARACTER_SKILL_MASTERY_LAST> masteryToMaxBeacons = {
+        {CHARACTER_SKILL_MASTERY_NONE, 1},
+        {CHARACTER_SKILL_MASTERY_NOVICE, 1},
+        {CHARACTER_SKILL_MASTERY_EXPERT, 3},
+        {CHARACTER_SKILL_MASTERY_MASTER, 5},
+        {CHARACTER_SKILL_MASTERY_GRANDMASTER, 5}
+};
+
+GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFlags)
+        : _casterPid(casterPid), _castFlags(castFlags) {
     this->eWindowType = WindowType::WINDOW_LloydsBeacon;
 
     _recallingBeacon = false;
-    _casterId = casterId;
-    _spellLevel = spellLevel;
 
     if (!ui_book_lloyds_border) {
         ui_book_lloyds_border = assets->getImage_ColorKey("lb_bordr");
@@ -48,17 +55,18 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(int casterId, int spellLevel) {
     pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, 1, 0, UIMSG_LloydBookFlipButton, 0, Io::InputAction::Invalid, localization->GetString(LSTR_SET_BEACON));
     pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, 1, 0, UIMSG_LloydBookFlipButton, 1, Io::InputAction::Invalid, localization->GetString(LSTR_RECALL_BEACON));
 
-    CharacterSkillMastery waterMastery = pParty->pCharacters[_casterId].getActualSkillValue(CHARACTER_SKILL_WATER).mastery();
-
-    _maxBeacons = 1;
-    if (waterMastery == CHARACTER_SKILL_MASTERY_GRANDMASTER || waterMastery == CHARACTER_SKILL_MASTERY_MASTER) {
-        _maxBeacons = 5;
-    } else if (waterMastery == CHARACTER_SKILL_MASTERY_EXPERT) {
-        _maxBeacons = 3;
-    }
-
+    int casterId = casterPid.id();
+    assert(casterId < pParty->pCharacters.size());
     if (engine->config->debug.AllMagic.value()) {
         _maxBeacons = 5;
+        _waterMastery = CHARACTER_SKILL_MASTERY_GRANDMASTER;
+        _spellLevel = 10;
+    } else {
+        CombinedSkillValue skill = pParty->pCharacters[casterId].getActualSkillValue(CHARACTER_SKILL_WATER);
+        _maxBeacons = masteryToMaxBeacons[skill.mastery()];
+        if (castFlags & ON_CAST_CastViaScroll) skill = SCROLL_OR_NPC_SPELL_SKILL_VALUE;
+        _waterMastery = skill.mastery();
+        _spellLevel = skill.level();
     }
 
     for (int i = 0; i < _maxBeacons; ++i) {
@@ -66,13 +74,13 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(int casterId, int spellLevel) {
     }
 
     // purges expired beacons
-    pParty->pCharacters[_casterId].cleanupBeacons();
+    pParty->pCharacters[casterId].cleanupBeacons();
 }
 
 void GUIWindow_LloydsBook::Update() {
     render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
-    Character *pPlayer = &pParty->pCharacters[_casterId];
+    Character *pPlayer = &pParty->pCharacters[_casterPid.id()];
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_book_lloyds_backgrounds[_recallingBeacon ? 1 : 0]);
     std::string pText = localization->GetString(LSTR_RECALL_BEACON);
 
@@ -144,7 +152,7 @@ void GUIWindow_LloydsBook::flipButtonClicked(bool isRecalling) {
 }
 
 void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
-    Character &character = pParty->pCharacters[_casterId];
+    Character &character = pParty->pCharacters[_casterPid.id()];
 
     if (beaconId >= character.vBeacons.size()) {
         return;
@@ -172,23 +180,17 @@ void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
 }
 
 void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
-    Character &character = pParty->pCharacters[_casterId];
+    Character &character = pParty->pCharacters[_casterPid.id()];
     if ((character.vBeacons.size() <= beaconId) && _recallingBeacon) {
         return;
     }
 
-    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[CHARACTER_SKILL_MASTERY_EXPERT]);
-    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[CHARACTER_SKILL_MASTERY_MASTER]);
-    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER]);
-    character.SpendMana(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE]);
+    if (!(_castFlags & ON_CAST_CastViaScroll) && !engine->config->debug.AllMagic.value())
+        character.SpendMana(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].mana_per_skill[_waterMastery]);
 
-    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_EXPERT]);
-    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_MASTER]);
-    assert(pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER]);
-
-    Duration sRecoveryTime = pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE];
+    Duration sRecoveryTime = pSpellDatas[SPELL_WATER_LLOYDS_BEACON].recovery_per_skill[_waterMastery];
     if (pParty->bTurnBasedModeOn) {
-        pParty->pTurnBasedCharacterRecoveryTimes[_casterId] = sRecoveryTime;
+        pParty->pTurnBasedCharacterRecoveryTimes[_casterPid.id()] = sRecoveryTime;
         character.SetRecoveryTime(sRecoveryTime);
         pTurnEngine->ApplyPlayerAction();
     } else {
