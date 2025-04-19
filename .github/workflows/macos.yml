@@ -109,10 +109,14 @@ jobs:
           OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
       - name: Prepare files for release
-        run: |
-          mkdir dist
-          cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
-          hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            mkdir -p dist
+            cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
+            hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
 
       - name: Zip folder for release
         if: inputs.releaseTag != ''
