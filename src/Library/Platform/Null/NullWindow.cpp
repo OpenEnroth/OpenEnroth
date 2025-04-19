@@ -24,6 +24,10 @@ std::string NullWindow::title() const {
     return _title;
 }
 
+void NullWindow::setIcon(RgbaImageView image) {
+    // Do nothing.
+}
+
 void NullWindow::resize(const Sizei &size) {
     _size = size;
 }

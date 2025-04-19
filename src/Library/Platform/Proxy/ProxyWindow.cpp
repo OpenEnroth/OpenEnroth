@@ -15,6 +15,10 @@ std::string ProxyWindow::title() const {
     return nonNullBase()->title();
 }
 
+void ProxyWindow::setIcon(RgbaImageView image) {
+    nonNullBase()->setIcon(image);
+}
+
 void ProxyWindow::resize(const Sizei &size) {
     nonNullBase()->resize(size);
 }
