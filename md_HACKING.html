@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6034ea8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;cb7c685</span>
    </div>
   </td>
  </tr>
@@ -84,7 +84,7 @@ Dependencies</h1>
 <p >By default, we are using prebuilt dependencies, and they are resolved automatically during the cmake phase.</p>
 <p >The only exception is Linux, where we're using SDL2 from the distribution, so you will need to install a development versions of SDL2 before building OpenEnroth. E.g. on Ubuntu: </p><div class="fragment"><div class="line">sudo apt-get install SDL2 SDL2-devel</div>
 </div><!-- fragment --><p >Additional dependencies:</p><ul>
-<li><a href="https://cmake.org/download/">CMake 3.x</a>. Note that CMake 4.x won't work.</li>
+<li><a href="https://cmake.org/download/">CMake 3.27+</a>.</li>
 <li><a href="https://www.python.org/downloads/">Python 3.x</a> (optional, for style checks).</li>
 </ul>
 <p >Minimum required compiler versions are as follows:</p><ul>
@@ -113,7 +113,7 @@ Building on Windows</h1>
 <li>Make sure you have Windows SDK v10.0.20348.0 or higher.</li>
 <li>Clone, fork or download the repo <code><a href="https://github.com/OpenEnroth/OpenEnroth">https://github.com/OpenEnroth/OpenEnroth</a></code>.</li>
 <li>Setup CMake:<ul>
-<li>either install standalone cmake from the official website (remember that you need CMake 3.x, not 4.x),</li>
+<li>either install standalone cmake from the official website,</li>
 <li>or add Microsoft one (that's coming with the VS installation) to your PATH environment variable (e.g <code>c:\Program Files\Microsoft Visual Studio\2022\&lt;edition&gt;\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin</code>).</li>
 </ul>
 </li>
@@ -223,8 +223,7 @@ How to deal with &lt;tt&gt;Random state desynchronized&lt;/tt&gt;</h1>
 <li>Reminder: Make sure your test data clone is up to date and has no uncommitted local changes, and create a branch.</li>
 <li>To retrace, run <code>OpenEnroth retrace &lt;path-to-trace.json&gt;</code>. Note that you can pass multiple trace paths to this command. Use paths into your clone of the test data (if you retrace the copies in <code>&lt;build-dir&gt;/test/Bin/test_data/data</code> you'll need to copy them over).</li>
 <li>Commit, push and PR the changes made by the retrace to OpenEnroth_TestData.</li>
-<li>Wait until a maintainer merges your PR - it doesn't matter to which branch (e.g. an interim branch dedicated to your PR in the main project). Copy the full 40-digit hash of the new commit that is present within the OpenEnroth/OpenEnroth_TestData repo.</li>
-<li>Back in the main OpenEnroth clone, paste that commit hash into the <code>GIT_TAG</code> key in <code>test/Bin/CMakeLists.txt</code>, replacing the one already there.</li>
+<li>Back in the main OpenEnroth clone, paste the commit hash into the <code>GIT_TAG</code> key in <code>test/Bin/CMakeLists.txt</code>, replacing the one already there, and update the <code>GIT_REPOSITORY</code> to point to your clone of OpenEnroth_TestData.</li>
 <li>Commit this to your main PR's branch and push it. The checks this push triggers should now succeed.</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md8"></a>
