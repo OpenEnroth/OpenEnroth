@@ -44,7 +44,7 @@ void GUIWindow_Chest::Update() {
         int chestWidthCells = pChestWidthsByType[chestBitmapId];
         int chestHeghtCells = pChestHeightsByType[chestBitmapId];
 
-        GraphicsImage *chest_background = assets->getImage_ColorKey(fmt::format("chest{:02}", pChestList->vChests[chestBitmapId].uTextureID));
+        GraphicsImage *chest_background = assets->getImage_ColorKey(fmt::format("chest{:02}", pChestList->vChests[chestBitmapId].textureId));
         render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, chest_background);
 
         render->SetUIClipRect({ chest_offs_x, chest_offs_y, 32 * chestWidthCells, 32 * chestHeghtCells });

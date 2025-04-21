@@ -1018,10 +1018,11 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst);
 
 
 struct ChestDesc_MM7 {
-    std::array<char, 32> pName;
-    uint8_t uWidth;
-    uint8_t uHeight;
-    int16_t uTextureID;
+    std::array<char, 32> name; // Chest name, not actually used anywhere by the engine.
+    uint8_t width;
+    uint8_t height; // Supposed chest size in inventory cells. Always 14x10 in mm7 data, which is not valid. Actual
+                    // chest size is 9x9, and it's hardcoded by `textureId` in the binary.
+    int16_t textureId; // Chest texture id, in mm7 it's a value in [1, 8]. Actual texture is "chestXX" from icons.lod.
 };
 static_assert(sizeof(ChestDesc_MM7) == 36);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(ChestDesc_MM7)

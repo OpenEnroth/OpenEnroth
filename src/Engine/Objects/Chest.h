@@ -12,10 +12,7 @@
 #include "ChestEnums.h"
 
 struct ChestDesc {
-    std::string sName;
-    int uWidth = 0;
-    int uHeight = 0;
-    int uTextureID = 0;
+    int textureId = 0;
 };
 
 class ChestDescList {

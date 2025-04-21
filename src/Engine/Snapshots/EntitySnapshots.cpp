@@ -1587,10 +1587,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
 }
 
 void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst) {
-    reconstruct(src.pName, &dst->sName);
-    dst->uWidth = src.uWidth;
-    dst->uHeight = src.uHeight;
-    dst->uTextureID = src.uTextureID;
+    dst->textureId = src.textureId;
 }
 
 void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
