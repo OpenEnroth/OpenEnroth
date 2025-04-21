@@ -11,7 +11,6 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Localization.h"
 #include "Engine/Random/Random.h"
 #include "Engine/Objects/Actor.h"
@@ -154,21 +153,15 @@ bool Chest::open(int uChestID, Pid objectPid) {
 }
 
 bool Chest::ChestUI_WritePointedObjectStatusString() {
-    Pointi pt = mouse->GetCursorPos();
-    unsigned int pX = pt.x;
-    unsigned int pY = pt.y;
-
     Chest *chest = &vChests[pGUIWindow_CurrentChest->chestId()];
 
-    int chestheight = chestTable[chest->chestTypeId].size.h;
-    int chestwidth = chestTable[chest->chestTypeId].size.w;
+    Pointi mousePos = mouse->GetCursorPos();
+    Sizei chestSize = chestTable[chest->chestTypeId].size;
+    Pointi inventoryPos = (mousePos - chestTable[chest->chestTypeId].inventoryOffset) / 32;
 
-    int inventoryYCoord = (pY - (chestTable[chest->chestTypeId].inventoryOffset.y)) / 32;
-    int inventoryXCoord = (pX - (chestTable[chest->chestTypeId].inventoryOffset.x)) / 32;
-    int invMatrixIndex = inventoryXCoord + (chestheight * inventoryYCoord);
+    int invMatrixIndex = inventoryPos.x + (chestSize.w * inventoryPos.y);
 
-    if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
-        inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
+    if (Recti(Pointi(0, 0), chestSize).contains(inventoryPos)) {
         int chestindex = chest->inventoryMatrix[invMatrixIndex];
         if (chestindex < 0) {
             invMatrixIndex = (-(chestindex + 1));
@@ -244,17 +237,16 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
 }
 
 bool Chest::CanPlaceItemAt(int test_cell_position, ItemId item_id, int uChestID) {
-    int chest_cell_heght = chestTable[vChests[uChestID].chestTypeId].size.h;
-    int chest_cell_width = chestTable[vChests[uChestID].chestTypeId].size.w;
+    Sizei chestSize = chestTable[vChests[uChestID].chestTypeId].size;
+    Pointi testPos = Pointi(test_cell_position % chestSize.w, test_cell_position / chestSize.w);
 
     Sizei itemSize = pItemTable->itemSizes[item_id];
     assert(itemSize.h > 0 && itemSize.w > 0 && "Items should have nonzero dimensions");
 
-    if ((itemSize.w + test_cell_position % chest_cell_width <= chest_cell_width) &&
-        (itemSize.h + test_cell_position / chest_cell_width <= chest_cell_heght)) {
+    if (Recti(Pointi(0, 0), chestSize).contains(Recti(testPos, itemSize))) {
         for (int x = 0; x < itemSize.w; x++) {
             for (int y = 0; y < itemSize.h; y++) {
-                if (vChests[uChestID].inventoryMatrix[y * chest_cell_width + x + test_cell_position] != 0) {
+                if (vChests[uChestID].inventoryMatrix[y * chestSize.w + x + test_cell_position] != 0) {
                     return false;
                 }
             }
@@ -338,19 +330,12 @@ void Chest::PlaceItemAt(unsigned int put_cell_pos, unsigned int item_at_cell, in
     vChests[uChestID].items[item_at_cell].postGenerate(ITEM_SOURCE_CHEST);
 
     ItemId uItemID = vChests[uChestID].items[item_at_cell].itemId;
-    auto img = assets->getImage_Alpha(pItemTable->items[uItemID].iconName);
-
-    int v9 = img->width();
-    if (v9 < 14) v9 = 14;
-    unsigned int texture_cell_width = ((v9 - 14) >> 5) + 1;
-    int v10 = img->height();
-    if (v10 < 14) v10 = 14;
-    int textute_cell_height = ((v10 - 14) >> 5) + 1;
+    Sizei itemSize = pItemTable->itemSizes[uItemID];
 
     int chest_cell_width = chestTable[vChests[uChestID].chestTypeId].size.w;
     int chest_cell_row_pos = 0;
-    for (int i = 0; i < textute_cell_height; ++i) {
-        for (int j = 0; j < texture_cell_width; ++j)
+    for (int i = 0; i < itemSize.h; ++i) {
+        for (int j = 0; j < itemSize.w; ++j)
             vChests[uChestID].inventoryMatrix[put_cell_pos + chest_cell_row_pos + j] = (int16_t)-(put_cell_pos + 1);
         chest_cell_row_pos += chest_cell_width;
     }
@@ -434,19 +419,15 @@ void Chest::OnChestLeftClick() {
     int uChestID = pGUIWindow_CurrentChest->chestId();
     Chest *chest = &vChests[uChestID];
 
-    int chestheight = chestTable[chest->chestTypeId].size.h;
-    int chestwidth = chestTable[chest->chestTypeId].size.w;
+    Sizei chestSize = chestTable[chest->chestTypeId].size;
 
-    int pX;
-    int pY;
-    mouse->GetClickPos(&pX, &pY);
+    Pointi mousePos;
+    mouse->GetClickPos(&mousePos.x, &mousePos.y);
 
-    int inventoryYCoord = (pY + mouse->pickedItemOffsetY - (chestTable[chest->chestTypeId].inventoryOffset.y)) / 32;
-    int inventoryXCoord = (pX + mouse->pickedItemOffsetX - (chestTable[chest->chestTypeId].inventoryOffset.x)) / 32;
-    int invMatrixIndex = inventoryXCoord + (chestheight * inventoryYCoord);
+    Pointi inventoryPos = (mousePos + mouse->pickedItemOffset - chestTable[chest->chestTypeId].inventoryOffset) / 32;
+    int invMatrixIndex = inventoryPos.x + (chestSize.w * inventoryPos.y);
 
-    if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
-        inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
+    if (Recti(Pointi(0, 0), chestSize).contains(inventoryPos)) {
         if (pParty->pPickedItem.itemId != ITEM_NULL) {  // item held
             if (Chest::PutItemInChest(invMatrixIndex, &pParty->pPickedItem, uChestID)) {
                 mouse->RemoveHoldingItem();
@@ -466,17 +447,14 @@ void Chest::OnChestLeftClick() {
                 } else {
                     // calc offsets of where on the item was clicked
                     // first need index of top left corner of the item
-                    int cornerX = invMatrixIndex % chestwidth;
-                    int cornerY = invMatrixIndex / chestwidth;
-                    int itemXOffset = pX + mouse->pickedItemOffsetX - chestTable[chest->chestTypeId].inventoryOffset.x - (cornerX * 32);
-                    int itemYOffset = pY + mouse->pickedItemOffsetY - chestTable[chest->chestTypeId].inventoryOffset.y - (cornerY * 32);
+                    Pointi corner(invMatrixIndex % chestSize.w, invMatrixIndex / chestSize.w);
+                    Pointi offset = mousePos + mouse->pickedItemOffset - chestTable[chest->chestTypeId].inventoryOffset - (corner * 32);
 
                     auto item = &chest->items[itemindex];
                     auto tex = assets->getImage_Alpha(item->GetIconName());
-                    itemXOffset -= itemOffset(tex->width());
-                    itemYOffset -= itemOffset(tex->height());
+                    offset -= Pointi(itemOffset(tex->width()), itemOffset(tex->height()));
 
-                    pParty->setHoldingItem(item, -itemXOffset, -itemYOffset);
+                    pParty->setHoldingItem(item, -offset);
                 }
 
                 RemoveItemAtChestIndex(invMatrixIndex);

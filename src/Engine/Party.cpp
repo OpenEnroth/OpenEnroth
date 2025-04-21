@@ -189,12 +189,11 @@ int Party::canActCount() const {
     return result;
 }
 
-void Party::setHoldingItem(Item *pItem, int offsetX, int offsetY) {
+void Party::setHoldingItem(Item *pItem, Pointi offset) {
     placeHeldItemInInventoryOrDrop();
     pPickedItem = *pItem;
     mouse->SetCursorBitmapFromItemID(pPickedItem.itemId);
-    mouse->pickedItemOffsetX = offsetX;
-    mouse->pickedItemOffsetY = offsetY;
+    mouse->pickedItemOffset = offset;
 }
 
 void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems entering shops
