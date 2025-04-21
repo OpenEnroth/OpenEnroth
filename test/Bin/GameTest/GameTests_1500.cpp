@@ -61,6 +61,24 @@ GAME_TEST(Issues, Issue1519) {
     EXPECT_GT(flatMessageBoxesBody.filtered([](const auto &s) { return s.starts_with("The Baby Dragon"); }).size(), 0);
 }
 
+GAME_TEST(Issues, Issue1521) {
+    // Enemies spawned in mob pack stuck
+    test.playTraceFromTestData("issue_1521.mm7", "issue_1521.json");
+
+    // make sure actors are not stuck
+    constexpr Vec3f mobPos(9120, -25168, 703);
+    auto mobDist = [](const Actor& a) { return (a.pos - mobPos).length(); };
+    auto mobToMobDist = [](const Actor& a, const Actor& b) { return (a.pos - b.pos).length(); };
+
+    // make sure actors have moved from their spawn point
+    EXPECT_GT(mobDist(pActors[37]), 512.0f);
+    EXPECT_GT(mobDist(pActors[38]), 512.0f);
+    EXPECT_GT(mobDist(pActors[39]), 512.0f);
+    // and that they are not stuck to each other
+    EXPECT_GT(mobToMobDist(pActors[37], pActors[38]), 512.0f);
+    EXPECT_GT(mobToMobDist(pActors[38], pActors[39]), 512.0f);
+}
+
 GAME_TEST(Issues, Issue1522) {
     // Wizards not summoning light elementals
     auto actorsCount = actorTapes.totalCount();
