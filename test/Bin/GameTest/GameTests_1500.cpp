@@ -67,7 +67,7 @@ GAME_TEST(Issues, Issue1521) {
 
     // make sure actors are not stuck
     constexpr Vec3f mobPos(9120, -25168, 703);
-    auto mobDist = [](const Actor& a) { return (a.pos - mobPos).length(); };
+    auto mobDist = [&mobPos](const Actor& a) { return (a.pos - mobPos).length(); };
     auto mobToMobDist = [](const Actor& a, const Actor& b) { return (a.pos - b.pos).length(); };
 
     // make sure actors have moved from their spawn point
