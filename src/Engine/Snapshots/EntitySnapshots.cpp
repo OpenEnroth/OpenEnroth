@@ -1586,10 +1586,6 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     dst->initialPosition = src.initialPosition.toFloat();
 }
 
-void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst) {
-    dst->textureId = src.textureId;
-}
-
 void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
     reconstruct(src.name, &dst->name);
     reconstruct(src.type, &dst->type);
@@ -1619,27 +1615,27 @@ void reconstruct(const DecorationDesc_MM7 &src, DecorationDesc *dst) {
 void snapshot(const Chest &src, Chest_MM7 *dst) {
     memzero(dst);
 
-    dst->uChestBitmapID = src.uChestBitmapID;
-    dst->uFlags = std::to_underlying(src.uFlags);
-    snapshot(src.igChestItems, &dst->igChestItems);
-    snapshot(src.pInventoryIndices, &dst->pInventoryIndices);
+    dst->chestTypeId = src.chestTypeId;
+    dst->flags = std::to_underlying(src.flags);
+    snapshot(src.items, &dst->items);
+    snapshot(src.inventoryMatrix, &dst->inventoryMatrix);
 }
 
 void reconstruct(const Chest_MM7 &src, Chest *dst) {
-    dst->uChestBitmapID = src.uChestBitmapID;
-    dst->uFlags = ChestFlags(src.uFlags);
-    reconstruct(src.igChestItems, &dst->igChestItems);
-    reconstruct(src.pInventoryIndices, &dst->pInventoryIndices);
+    dst->chestTypeId = src.chestTypeId;
+    dst->flags = ChestFlags(src.flags);
+    reconstruct(src.items, &dst->items);
+    reconstruct(src.inventoryMatrix, &dst->inventoryMatrix);
 
     // fix placedInChest field for old saves
-    int chestArea = dst->pInventoryIndices.size();
+    int chestArea = dst->inventoryMatrix.size();
     for (int item = 0; item < chestArea; item++) {
-        if (dst->igChestItems[item].itemId == ITEM_NULL) {
+        if (dst->items[item].itemId == ITEM_NULL) {
             continue;
         }
         for (int position = 0; position < chestArea; position++) {
-            if (dst->pInventoryIndices[position] == item + 1) {
-                dst->igChestItems[item].placedInChest = true;
+            if (dst->inventoryMatrix[position] == item + 1) {
+                dst->items[item].placedInChest = true;
                 break;
             }
         }

@@ -37,7 +37,6 @@ struct BLVSector;
 struct BSPNode;
 class CharacterConditions;
 struct Chest;
-struct ChestDesc;
 struct DecorationDesc;
 struct FontHeader;
 struct GUICharMetric;
@@ -1017,17 +1016,15 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst);
 void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst);
 
 
-struct ChestDesc_MM7 {
+struct ChestData_MM7 {
     std::array<char, 32> name; // Chest name, not actually used anywhere by the engine.
     uint8_t width;
     uint8_t height; // Supposed chest size in inventory cells. Always 14x10 in mm7 data, which is not valid. Actual
                     // chest size is 9x9, and it's hardcoded by `textureId` in the binary.
     int16_t textureId; // Chest texture id, in mm7 it's a value in [1, 8]. Actual texture is "chestXX" from icons.lod.
 };
-static_assert(sizeof(ChestDesc_MM7) == 36);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(ChestDesc_MM7)
-
-void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst);
+static_assert(sizeof(ChestData_MM7) == 36);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(ChestData_MM7)
 
 
 struct DecorationDesc_MM6 {
@@ -1059,10 +1056,10 @@ void reconstruct(const DecorationDesc_MM7 &src, DecorationDesc *dst);
 
 
 struct Chest_MM7 {
-    uint16_t uChestBitmapID;
-    uint16_t uFlags;
-    std::array<ItemGen_MM7, 140> igChestItems;
-    std::array<int16_t, 140> pInventoryIndices;
+    uint16_t chestTypeId; // Index into chest table to get chest size & texture, in mm7 that's a value in [0, 7].
+    uint16_t flags;
+    std::array<ItemGen_MM7, 140> items;
+    std::array<int16_t, 140> inventoryMatrix;
 };
 static_assert(sizeof(Chest_MM7) == 5324);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Chest_MM7)

@@ -82,6 +82,7 @@
 
 #include "Library/Logger/Logger.h"
 #include "Library/BuildInfo/BuildInfo.h"
+#include "Tables/ChestTable.h"
 
 #include "Utility/String/Transformations.h"
 
@@ -697,9 +698,6 @@ void Engine::MM7_Initialize() {
     pMonsterList = new MonsterList;
     deserialize(triLoad("dmonlist.bin"), pMonsterList);
 
-    pChestList = new ChestDescList;
-    deserialize(triLoad("dchest.bin"), pChestList);
-
     pOverlayList = new OverlayList;
     deserialize(triLoad("doverlay.bin"), pOverlayList);
 
@@ -778,6 +776,7 @@ void Engine::SecondaryInitialization() {
     initializeTransitions(engine->_gameResourceManager->getEventsFile("trans.txt"));
     initializeMerchants(engine->_gameResourceManager->getEventsFile("merchant.txt"));
     initializeMessageScrolls(engine->_gameResourceManager->getEventsFile("scroll.txt"));
+    initializeChests();
 
     engine->_globalEventMap = EvtProgram::load(engine->_gameResourceManager->getEventsFile("global.evt"));
 
