@@ -227,7 +227,7 @@ void snapshot(const NPCData &src, NPCData_MM7 *dst);
 void reconstruct(const NPCData_MM7 &src, NPCData *dst);
 
 
-struct ItemGen_MM7 {
+struct Item_MM7 {
     int32_t itemId;
     int32_t standardEnchantmentOrPotionPower; // Potion power for potions, attribute index + 1 for standard enchantments.
     int32_t standardEnchantmentStrength;
@@ -240,11 +240,11 @@ struct ItemGen_MM7 {
     uint8_t placedInChest; // Unknown unused 8-bit field, was repurposed.
     int64_t enchantmentExpirationTime;
 };
-static_assert(sizeof(ItemGen_MM7) == 0x24);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(ItemGen_MM7)
+static_assert(sizeof(Item_MM7) == 0x24);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(Item_MM7)
 
-void snapshot(const Item &src, ItemGen_MM7 *dst);
-void reconstruct(const ItemGen_MM7 &src, Item *dst);
+void snapshot(const Item &src, Item_MM7 *dst);
+void reconstruct(const Item_MM7 &src, Item *dst);
 
 
 struct SpellBuff_MM7 {
@@ -338,8 +338,8 @@ struct Player_MM7 {
     /* 0208 */ int32_t purePersonalityUsed;
     /* 020C */ int32_t pureAccuracyUsed;
     /* 0210 */ int32_t pureMightUsed;
-    /* 0214 */ std::array<ItemGen_MM7, 126> inventoryItems;
-    /* .... */ std::array<ItemGen_MM7, 12> unusedItems;
+    /* 0214 */ std::array<Item_MM7, 126> inventoryItems;
+    /* .... */ std::array<Item_MM7, 12> unusedItems;
     /* 157C */ std::array<int32_t, 126> inventoryMatrix;
     /* 1774 */ int16_t resFireBase;
     /* 1776 */ int16_t resAirBase;
@@ -518,13 +518,13 @@ struct Party_MM7 {
     /* 0088C */ std::array<SpellBuff_MM7, 20> partyBuffs;
     /* 00954 */ std::array<Player_MM7, 4> players;
     /* 07644 */ std::array<NPCData_MM7, 2> hirelings;
-    /* 07754 */ ItemGen_MM7 pickedItem;
+    /* 07754 */ Item_MM7 pickedItem;
     /* 07778 */ uint32_t flags;
-    /* 0777C */ std::array<ItemGen_MM7, 12> standartItemsInShop0;
-                std::array<std::array<ItemGen_MM7, 12>, 52> standartItemsInShops;
-    /* 0D0EC */ std::array<ItemGen_MM7, 12> specialItemsInShop0;
-                std::array<std::array<ItemGen_MM7, 12>, 52> specialItemsInShops;
-    /* 12A5C */ std::array<std::array<ItemGen_MM7, 12>, 32> spellBooksInGuilds;
+    /* 0777C */ std::array<Item_MM7, 12> standartItemsInShop0;
+                std::array<std::array<Item_MM7, 12>, 52> standartItemsInShops;
+    /* 0D0EC */ std::array<Item_MM7, 12> specialItemsInShop0;
+                std::array<std::array<Item_MM7, 12>, 52> specialItemsInShops;
+    /* 12A5C */ std::array<std::array<Item_MM7, 12>, 32> spellBooksInGuilds;
     /* 1605C */ std::array<char, 24> field_1605C;
     /* 16074 */ std::array<char, 100> hireling1Name;
     /* 160D8 */ std::array<char, 100> hireling2Name;
@@ -794,7 +794,7 @@ struct Actor_MM7 {
     SpellBuff_MM7 actorBuffZeroUnused; // An artifact of the original memory layout, zero is ACTOR_BUFF_NONE.
                                        // It's not used for anything in vanilla and simply dropped in OE.
     std::array<SpellBuff_MM7, 21> pActorBuffs;
-    std::array<ItemGen_MM7, 4> ActorHasItems;
+    std::array<Item_MM7, 4> ActorHasItems;
     uint32_t uGroup;
     uint32_t uAlly;
     std::array<ActorJob_MM7, 8> pScheduledJobs;
@@ -996,7 +996,7 @@ struct SpriteObject_MM7 {
     uint16_t uTimeSinceCreated;
     int16_t tempLifetime;
     int16_t field_22_glow_radius_multiplier;
-    ItemGen_MM7 containing_item;
+    Item_MM7 containing_item;
     int uSpellID;
     int spell_level;
     int32_t spell_skill;
@@ -1058,7 +1058,7 @@ void reconstruct(const DecorationDesc_MM7 &src, DecorationDesc *dst);
 struct Chest_MM7 {
     uint16_t chestTypeId; // Index into chest table to get chest size & texture, in mm7 that's a value in [0, 7].
     uint16_t flags;
-    std::array<ItemGen_MM7, 140> items;
+    std::array<Item_MM7, 140> items;
     std::array<int16_t, 140> inventoryMatrix;
 };
 static_assert(sizeof(Chest_MM7) == 5324);
