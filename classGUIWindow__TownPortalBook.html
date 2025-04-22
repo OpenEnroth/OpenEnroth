@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f87addc</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;13fad5b</span>
    </div>
   </td>
  </tr>
@@ -91,8 +91,8 @@ Inheritance diagram for GUIWindow_TownPortalBook:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:acc0b31e2b36edaac7cf71ae3a39ac6af"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__TownPortalBook.html#acc0b31e2b36edaac7cf71ae3a39ac6af">GUIWindow_TownPortalBook</a> (<a class="el" href="classPid.html">Pid</a> casterPid)</td></tr>
-<tr class="separator:acc0b31e2b36edaac7cf71ae3a39ac6af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4adb5791c9cd18e72c4dad3d2a5fe092"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__TownPortalBook.html#a4adb5791c9cd18e72c4dad3d2a5fe092">GUIWindow_TownPortalBook</a> (<a class="el" href="classPid.html">Pid</a> casterPid, SpellCastFlags castFlags)</td></tr>
+<tr class="separator:a4adb5791c9cd18e72c4dad3d2a5fe092"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a045cca12775edadf0347de59ea8721a6"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__TownPortalBook.html#a045cca12775edadf0347de59ea8721a6">~GUIWindow_TownPortalBook</a> ()</td></tr>
 <tr class="separator:a045cca12775edadf0347de59ea8721a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56526447fe5178788eb7c1e551a04a00"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__TownPortalBook.html#a56526447fe5178788eb7c1e551a04a00">Update</a> () override</td></tr>
@@ -148,8 +148,10 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a67b34dd6663eb984251af47fc07cdb4d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classPid.html">Pid</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__TownPortalBook.html#a67b34dd6663eb984251af47fc07cdb4d">_casterPid</a></td></tr>
-<tr class="separator:a67b34dd6663eb984251af47fc07cdb4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a317d66b2375162065f8037edd78b5933"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classPid.html">Pid</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__TownPortalBook.html#a317d66b2375162065f8037edd78b5933">_casterPid</a></td></tr>
+<tr class="separator:a317d66b2375162065f8037edd78b5933"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac49264dee96b36900dc40fd95c735e3a"><td class="memItemLeft" align="right" valign="top">const SpellCastFlags&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIWindow__TownPortalBook.html#ac49264dee96b36900dc40fd95c735e3a">_castFlags</a></td></tr>
+<tr class="separator:ac49264dee96b36900dc40fd95c735e3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -238,8 +240,8 @@ Additional Inherited Members</h2></td></tr>
 <tr class="separator:af9fdcb4776315f8a95afb7a624318fb4 inherit pro_attribs_classGUIWindow__Book"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="acc0b31e2b36edaac7cf71ae3a39ac6af" name="acc0b31e2b36edaac7cf71ae3a39ac6af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc0b31e2b36edaac7cf71ae3a39ac6af">&#9670;&#160;</a></span>GUIWindow_TownPortalBook()</h2>
+<a id="a4adb5791c9cd18e72c4dad3d2a5fe092" name="a4adb5791c9cd18e72c4dad3d2a5fe092"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4adb5791c9cd18e72c4dad3d2a5fe092">&#9670;&#160;</a></span>GUIWindow_TownPortalBook()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -251,8 +253,18 @@ Additional Inherited Members</h2></td></tr>
           <td class="memname">GUIWindow_TownPortalBook::GUIWindow_TownPortalBook </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classPid.html">Pid</a>&#160;</td>
-          <td class="paramname"><em>casterPid</em></td><td>)</td>
+          <td class="paramname"><em>casterPid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">SpellCastFlags&#160;</td>
+          <td class="paramname"><em>castFlags</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -354,8 +366,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a67b34dd6663eb984251af47fc07cdb4d" name="a67b34dd6663eb984251af47fc07cdb4d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67b34dd6663eb984251af47fc07cdb4d">&#9670;&#160;</a></span>_casterPid</h2>
+<a id="a317d66b2375162065f8037edd78b5933" name="a317d66b2375162065f8037edd78b5933"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a317d66b2375162065f8037edd78b5933">&#9670;&#160;</a></span>_casterPid</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -364,7 +376,29 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classPid.html">Pid</a> GUIWindow_TownPortalBook::_casterPid</td>
+          <td class="memname">const <a class="el" href="classPid.html">Pid</a> GUIWindow_TownPortalBook::_casterPid</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac49264dee96b36900dc40fd95c735e3a" name="ac49264dee96b36900dc40fd95c735e3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac49264dee96b36900dc40fd95c735e3a">&#9670;&#160;</a></span>_castFlags</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const SpellCastFlags GUIWindow_TownPortalBook::_castFlags</td>
         </tr>
       </table>
   </td>
