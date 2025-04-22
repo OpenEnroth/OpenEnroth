@@ -3,8 +3,7 @@
 This document describes the development process we're following. It's required reading for anyone intending to contribute.
 
 
-Dependencies
-------------
+## Dependencies
 
 Main dependencies:
 * [SDL2](https://github.com/libsdl-org/SDL/tree/SDL2) — cross-platform media framework;
@@ -20,7 +19,7 @@ sudo apt-get install SDL2 SDL2-devel
 ```
 
 Additional dependencies:
-* [CMake 3.27+](https://cmake.org/download/)
+* [CMake 3.27+](https://cmake.org/download/).
 * [Python 3.x](https://www.python.org/downloads/) (optional, for style checks).
 
 Minimum required compiler versions are as follows:
@@ -34,8 +33,7 @@ The following IDEs have been tested and should work fine:
 * CLion (2022 or later).
 
 
-Building on \*nix platforms
----------------------------
+## Building on \*nix platforms
 
 This project uses the [CMake](https://cmake.org) build system.  Use the following commands to clone the repository and build OpenEnroth:
 
@@ -51,13 +49,12 @@ To cross-compile for 32-bit x86, you can pass `-m32` via compiler flags to cmake
 You can also select platform dependent [generator](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html) for your favorite IDE.
 
 
-Building on Windows
--------------------
+## Building on Windows
 
 * Get git (`https://git-scm.com/download/win`) and Visual Studio 2022.
 * Make sure you have Windows SDK v10.0.20348.0 or higher.
 * Clone, fork or download the repo `https://github.com/OpenEnroth/OpenEnroth`.
-* Setup Cmake:
+* Setup CMake:
   * either install standalone cmake from the official website,
   * or add Microsoft one (that's coming with the VS installation) to your PATH environment variable (e.g `c:\Program Files\Microsoft Visual Studio\2022\<edition>\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin`). 
 * Open the folder in Visual Studio.
@@ -71,8 +68,7 @@ __Be aware__ that Visual Studio has a bug with git submodules not syncing betwee
 So when checking out the branch or switching to different branch you may need to run the following command manually: `git submodule update --init`
 
 
-Coding style
-------------
+## Coding style
 
 For the C++ code we are following the [Google C++ Style Guide](http://google.github.io/styleguide/cppguide.html). Source code is automatically checked against it and pull request will fail if you don't follow it.
 
@@ -127,8 +123,7 @@ Error handling:
 There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.
 
 
-Code Organization
------------------
+## Code Organization
 
 OpenEnroth code is broken up as follows:
 * `thirdparty` – this is where all external libraries go.
@@ -141,8 +136,9 @@ Our basic guidelines for code organization are:
 * One `CMakeLists.txt` file per folder. Exceptions are /android, /CMakeModules and /resources.
 * One class per source file, with the name of the source file matching the name of the class. Exceptions are small structs, which are usually easier to pack into a single source file, and helper classes, which generally should stay next to the main class. Note that this guideline doesn't apply to source files that mainly declare functions.
 
-Testing
--------
+
+## Testing
+
 We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infrastructure to test game logic and small isolated classes.
 
 Tests in OpenEnroth fall into two categories:
@@ -170,20 +166,22 @@ To run all game tests locally, set `OPENENROTH_MM7_PATH` environment variable to
 
 If you need to look closely at the recorded trace, you can play it by running `OpenEnroth play --speed 0.5 <path-to-trace.json>`. Alternatively, if you already have a unit test that runs the recorded trace, you can run `OpenEnroth_GameTest --speed 0.5 --gtest_filter=<test-suite-name>.<test-name> --test-path <path-to-test-data-folder>`. Note that `--gtest_filter` needs that `=` and won't work if you try passing the test name after a space. 
 
-How to deal with `Random state desynchronized`
-----------------------------------------------
+
+## How to deal with `Random state desynchronized`
+
 Changing game logic might result in failures in game tests because they check the random number generator state after each frame, and this will show as `Random state desynchronized when playing back trace` message in test logs. This is intentional – we don't want accidental game logic changes. **If** the change was actually intentional, then you will need to either retrace or re-record the traces for the failing tests as follows. These instructions assume your change is already submitted as PR backed from your fork, or will be.
 * Prepare to submit a PR to the [OpenEnroth_TestData](https://github.com/OpenEnroth/OpenEnroth_TestData) repo: Fork and clone it if you haven't done so already.
 * Reminder: Make sure your test data clone is up to date and has no uncommitted local changes, and create a branch.
 * To retrace, run `OpenEnroth retrace <path-to-trace.json>`. Note that you can pass multiple trace paths to this command. Use paths into your clone of the test data (if you retrace the copies in `<build-dir>/test/Bin/test_data/data` you'll need to copy them over).
 * Commit, push and PR the changes made by the retrace to OpenEnroth_TestData.
-* Wait until a maintainer merges your PR - it doesn't matter to which branch (e.g. an interim branch dedicated to your PR in the main project). Copy the full 40-digit hash of the new commit that is present within the OpenEnroth/OpenEnroth_TestData repo.
-* Back in the main OpenEnroth clone, paste that commit hash into the `GIT_TAG` key in `test/Bin/CMakeLists.txt`, replacing the one already there.
+* Back in the main OpenEnroth clone, paste the commit hash into the `GIT_TAG` key in `test/Bin/CMakeLists.txt`, replacing the one already there, and update the `GIT_REPOSITORY` to point to your clone of OpenEnroth_TestData.
 * Commit this to your main PR's branch and push it. The checks this push triggers should now succeed.
 
-Scripting
----------
+
+## Scripting
+
 We're using Lua as the scripting language, and all our scripts are currently located under the `resources/scripts` folder.
+
 
 #### Lua Language Server
 Script files undergo a syntax checking process during the build generation. If you intend to work with scripts, it is recommended to install the [Lua Language Server](https://github.com/LuaLS/lua-language-server) to run the style checker locally. Follow these steps to setup `LuaLS` locally:
@@ -200,8 +198,9 @@ Just be sure to open the root repository folder in `VS Code`. By doing so `LuaLS
 #### Modding ?
 Scripting is currently used only for debugging purposes. Modding support is not planned for the near future. You can check the [milestones](https://github.com/OpenEnroth/OpenEnroth/milestones) to get a better idea.
 
-Console Commands
------------------
+
+## Console Commands
+
 The game features a console capable of executing various Lua script commands. To activate this feature, please follow these steps:
 
 1. Launch the game.
@@ -210,13 +209,12 @@ The game features a console capable of executing various Lua script commands. To
 
 Currently, the console is only available while in-game.
 
-Additional Resources
---------------------
+
+## Additional Resources
 
 Old event decompiler and IDB files can be found [here](https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0). Feel free to ping `zipi#6029` on Discord for more info.
 
 
-Support
--------
+## Support
 
 Still having problems? Ask for help on our discord! [![](https://img.shields.io/badge/chat-on%20discord-green.svg)](https://discord.gg/jRCyPtq)

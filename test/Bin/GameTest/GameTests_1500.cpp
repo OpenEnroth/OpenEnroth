@@ -61,6 +61,24 @@ GAME_TEST(Issues, Issue1519) {
     EXPECT_GT(flatMessageBoxesBody.filtered([](const auto &s) { return s.starts_with("The Baby Dragon"); }).size(), 0);
 }
 
+GAME_TEST(Issues, Issue1521) {
+    // Enemies spawned in mob pack stuck
+    test.playTraceFromTestData("issue_1521.mm7", "issue_1521.json");
+
+    // make sure actors are not stuck
+    constexpr Vec3f mobPos(9120, -25168, 703);
+    auto mobDist = [&mobPos](const Actor& a) { return (a.pos - mobPos).length(); };
+    auto mobToMobDist = [](const Actor& a, const Actor& b) { return (a.pos - b.pos).length(); };
+
+    // make sure actors have moved from their spawn point
+    EXPECT_GT(mobDist(pActors[37]), 512.0f);
+    EXPECT_GT(mobDist(pActors[38]), 512.0f);
+    EXPECT_GT(mobDist(pActors[39]), 512.0f);
+    // and that they are not stuck to each other
+    EXPECT_GT(mobToMobDist(pActors[37], pActors[38]), 512.0f);
+    EXPECT_GT(mobToMobDist(pActors[38], pActors[39]), 512.0f);
+}
+
 GAME_TEST(Issues, Issue1522) {
     // Wizards not summoning light elementals
     auto actorsCount = actorTapes.totalCount();
@@ -697,6 +715,40 @@ GAME_TEST(Issues, Issue1947) {
     EXPECT_EQ(pSpriteObjects[4].containing_item.itemId, ITEM_ALACORN_WAND_OF_FIREBALLS);
     EXPECT_GT(pSpriteObjects[4].containing_item.numCharges, 0);
     EXPECT_GT(pSpriteObjects[4].containing_item.maxCharges, 0);
+}
+
+GAME_TEST(Issues, Issue1961) {
+    // Enchant Item costs no SP.
+    auto manaTape = charTapes.mp(3);
+    game.startNewGame();
+    test.startTaping();
+
+    // Prepare an item to enchant.
+    pParty->pCharacters[3].pInventoryItemList.fill(Item());
+    pParty->pCharacters[3].pInventoryMatrix.fill(0);
+    pParty->pCharacters[3].AddItem(-1, ITEM_GOLDEN_CHAIN_MAIL);
+    const Item &chainmail = pParty->pCharacters[3].pInventoryItemList[0];
+    EXPECT_EQ(chainmail.itemId, ITEM_GOLDEN_CHAIN_MAIL);
+
+    // Learn enchant item.
+    pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_WATER] = CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER);
+    pParty->pCharacters[3].bHaveSpell[SPELL_WATER_ENCHANT_ITEM] = true;
+
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_4); // Select 4th char.
+    game.tick(1);
+    game.pressGuiButton("Game_CastSpell");
+    game.tick(1);
+    game.pressGuiButton("SpellBook_School2"); // Water magic.
+    game.tick(1);
+    game.pressGuiButton("SpellBook_Spell7"); // Enchant item.
+    game.tick(1);
+    game.pressGuiButton("SpellBook_Spell7"); // Confirm.
+    game.tick(2);
+    game.pressAndReleaseButton(BUTTON_LEFT, 30, 30);
+    game.tick(1); // Don't wait out the animation.
+
+    EXPECT_EQ(manaTape.delta(), -15);
+    EXPECT_TRUE(chainmail.standardEnchantment || chainmail.specialEnchantment != ITEM_ENCHANTMENT_NULL);
 }
 
 GAME_TEST(Issues, Issue1966) {

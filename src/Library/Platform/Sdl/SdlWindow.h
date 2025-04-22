@@ -18,6 +18,8 @@ class SdlWindow : public PlatformWindow {
     virtual void setTitle(const std::string &title) override;
     virtual std::string title() const override;
 
+    virtual void setIcon(RgbaImageView image) override;
+
     virtual void resize(const Sizei &size) override;
     virtual Sizei size() const override;
 

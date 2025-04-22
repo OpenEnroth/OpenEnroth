@@ -74,24 +74,28 @@ jobs:
           key: data-cache
 
       - name: Install dependencies
-        run: |
-          if [ "${{matrix.architecture}}" = "x86" ]; then
-            sudo dpkg --add-architecture i386
-          fi
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-          sudo apt-get update
-          if [ "${{matrix.architecture}}" = "x86" ]; then
-            sudo apt-get install -y gcc-13-multilib g++-13-multilib lld
-            sudo apt-get install -y libglu1-mesa-dev:i386
-            sudo apt-get install -y libsdl2-dev:i386
-            sudo apt-get install -y libdwarf-dev:i386 libelf-dev:i386
-          fi
-          if [ "${{matrix.architecture}}" = "x86_64" ]; then
-            sudo apt-get install -y gcc-13 g++-13 lld
-            sudo apt-get install -y libglu1-mesa-dev
-            sudo apt-get install -y libsdl2-dev
-            sudo apt-get install -y libdwarf-dev libelf-dev
-          fi
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            if [ "${{matrix.architecture}}" = "x86" ]; then
+              sudo dpkg --add-architecture i386
+            fi
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+            sudo apt-get update
+            if [ "${{matrix.architecture}}" = "x86" ]; then
+              sudo apt-get install -y gcc-13-multilib g++-13-multilib lld
+              sudo apt-get install -y libglu1-mesa-dev:i386
+              sudo apt-get install -y libsdl2-dev:i386
+              sudo apt-get install -y libdwarf-dev:i386 libelf-dev:i386
+            fi
+            if [ "${{matrix.architecture}}" = "x86_64" ]; then
+              sudo apt-get install -y gcc-13 g++-13 lld
+              sudo apt-get install -y libglu1-mesa-dev
+              sudo apt-get install -y libsdl2-dev
+              sudo apt-get install -y libdwarf-dev libelf-dev
+            fi
 
       - name: Run ccache
         uses: hendrikmuhs/ccache-action@v1.2.14
