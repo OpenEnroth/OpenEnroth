@@ -33,7 +33,7 @@ on:
 
 jobs:
   build_macos:
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -48,7 +48,7 @@ jobs:
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: 15.4
+          xcode-version: 16.3
 
       - name: Checkout
         uses: actions/checkout@v4.2.2
