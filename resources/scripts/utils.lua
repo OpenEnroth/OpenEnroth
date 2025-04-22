@@ -24,14 +24,60 @@ Utilities.isEmpty = function (s)
     return s == nil or s == ""
 end
 
---- Split the string according to the separator. Uses regex identifier
+--- Split the string according to the separator, respecting quoted substrings
 ---@param str string - base string
 ---@param separator string - separator to be used
 ---@return table<integer, string> - list of splitted strings
 Utilities.splitString = function (str, separator)
+    separator = separator or "%s"
     local result = {}
-    for value in str:gmatch("([^" .. separator .. "]+)") do
-        table.insert(result, value)
+    local len = #str
+    local i = 1
+    local current = ""
+    local inQuotes = false
+    local quoteChar = nil
+    local hadQuotes = false
+
+    while i <= len do
+        local c = str:sub(i, i)
+
+        if inQuotes then
+            if c == "\\" and i < len then
+                current = current .. str:sub(i + 1, i + 1)
+                i = i + 2
+            elseif c == quoteChar then
+                inQuotes = false
+                hadQuotes = true
+                i = i + 1
+            else
+                current = current .. c
+                i = i + 1
+            end
+        else
+            if c == '"' or c == "'" then
+                inQuotes = true
+                quoteChar = c
+                hadQuotes = false
+                i = i + 1
+            elseif c:match(separator) then
+                if #current > 0 or hadQuotes then
+                    table.insert(result, current)
+                    current = ""
+                    hadQuotes = false
+                end
+                i = i + 1
+                while i <= len and str:sub(i, i):match(separator) do
+                    i = i + 1
+                end
+            else
+                current = current .. c
+                i = i + 1
+            end
+        end
+    end
+
+    if #current > 0 or hadQuotes then
+        table.insert(result, current)
     end
 
     return result

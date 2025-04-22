@@ -46,7 +46,7 @@ local function createCheatCommandEntry(configValue)
     if arguments[1] == "config" and arguments[2] == "toggle" then
         local configName = arguments[3]
         drawFunction = function (entry)
-            local valueString = Config.getConfig(configName)
+            local valueString = Config.entry(configName).value
             local color = Utilities.toBoolean(valueString) and enabledColor or disabledColor
             imgui.pushStyleColor(imgui.ImGuiCol.ButtonHovered, color.r, color.g, color.b, color.a)
             color = Utilities.toBoolean(valueString) and enabledHoveredColor or disabledHoveredColor
@@ -69,7 +69,7 @@ end
 CheatOverlay.init = function ()
     local numberOfCommands = 40
     for i = 1, numberOfCommands do
-        local command = Config.getConfig("cheat_commands", string.format("command%02d", i))
+        local command = Config.entry("cheat_commands", string.format("command%02d", i)).value
         if command and not Utilities.isEmpty(command) then
             table.insert(availableCommands, createCheatCommandEntry(command))
         end
