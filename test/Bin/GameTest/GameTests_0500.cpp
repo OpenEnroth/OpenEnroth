@@ -446,7 +446,7 @@ GAME_TEST(Issues, Issue677) {
 
 GAME_TEST(Issues, Issue680) {
     // Chest items duplicate sometimes
-    auto chestItemsCount = tapes.custom([] { return std::count_if(vChests[4].igChestItems.cbegin(), vChests[4].igChestItems.cend(), [&](Item item) { return item.itemId != ITEM_NULL; }); });
+    auto chestItemsCount = tapes.custom([] { return std::count_if(vChests[4].items.cbegin(), vChests[4].items.cend(), [&](Item item) { return item.itemId != ITEM_NULL; }); });
     test.playTraceFromTestData("issue_680.mm7", "issue_680.json");
     // Make sure we havent gained any duplicates
     EXPECT_EQ(chestItemsCount.front(), chestItemsCount.back());

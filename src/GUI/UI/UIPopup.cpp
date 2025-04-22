@@ -1822,16 +1822,16 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
 
                 if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
                     inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
-                    int chestindex = vChests[pGUIWindow_CurrentChest->chestId()].pInventoryIndices[invMatrixIndex];
+                    int chestindex = vChests[pGUIWindow_CurrentChest->chestId()].inventoryMatrix[invMatrixIndex];
                     if (chestindex < 0) {
                         invMatrixIndex = (-(chestindex + 1));
-                        chestindex = vChests[pGUIWindow_CurrentChest->chestId()].pInventoryIndices[invMatrixIndex];
+                        chestindex = vChests[pGUIWindow_CurrentChest->chestId()].inventoryMatrix[invMatrixIndex];
                     }
 
                     if (chestindex) {
                         int itemindex = chestindex - 1;
 
-                        GameUI_DrawItemInfo(&vChests[pGUIWindow_CurrentChest->chestId()].igChestItems[itemindex]);
+                        GameUI_DrawItemInfo(&vChests[pGUIWindow_CurrentChest->chestId()].items[itemindex]);
                     }
                 }
             }
