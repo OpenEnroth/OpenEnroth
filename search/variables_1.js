@@ -15,7 +15,7 @@ var searchData=
   ['actor_5fflag_5fdescr_12',['actor_flag_descr',['../classEvtInstruction.html#a0689d218f93b3e13849f843020fbae23',1,'EvtInstruction']]],
   ['actor_5finitiative_13',['actor_initiative',['../structTurnBased__QueueElem.html#a6e6c47a75445b3ca4e283507b2607802',1,'TurnBased_QueueElem']]],
   ['actorbuffzerounused_14',['actorBuffZeroUnused',['../structActor__MM7.html#a98b7e3cdb44cadf6adfb1f192994d497',1,'Actor_MM7']]],
-  ['actorhasitems_15',['ActorHasItems',['../structActor__MM7.html#a7f020b9795d819b88a0c259e52334567',1,'Actor_MM7']]],
+  ['actorhasitems_15',['ActorHasItems',['../structActor__MM7.html#a523a23ac78a80f1088371c2e2dda3f9f',1,'Actor_MM7']]],
   ['actors_16',['actors',['../structOutdoorDelta__MM7.html#a8fea40aa028a9f95dbc7c8df72dda35f',1,'OutdoorDelta_MM7::actors()'],['../structIndoorDelta__MM7.html#a7ab779f1bd4fbd7e15ba215f84e876e9',1,'IndoorDelta_MM7::actors()']]],
   ['additionalvalue_17',['additionalValue',['../structSpecialEnchantmentData.html#a670e06de6697ba40e5d16ed99d72b218',1,'SpecialEnchantmentData']]],
   ['adjusted_5fmove_5fdistance_18',['adjusted_move_distance',['../structCollisionState.html#a28b8469f6c4da9223674b7ad9cf09df3',1,'CollisionState']]],

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;10a3033</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;897615f</span>
    </div>
   </td>
  </tr>
@@ -114,14 +114,14 @@ Static Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aa35029c6f9e97d6b013e3a61e76adf0c"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChest.html#aa35029c6f9e97d6b013e3a61e76adf0c">uChestBitmapID</a> = 0</td></tr>
-<tr class="separator:aa35029c6f9e97d6b013e3a61e76adf0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69e6bbb561b635482980bab1bbf5a046"><td class="memItemLeft" align="right" valign="top">ChestFlags&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChest.html#a69e6bbb561b635482980bab1bbf5a046">uFlags</a></td></tr>
-<tr class="separator:a69e6bbb561b635482980bab1bbf5a046"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a344906ac491ca53c530eef12c589c160"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structItem.html">Item</a>, 140 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChest.html#a344906ac491ca53c530eef12c589c160">igChestItems</a></td></tr>
-<tr class="separator:a344906ac491ca53c530eef12c589c160"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade78619c803a46133590ac58fb52ba53"><td class="memItemLeft" align="right" valign="top">std::array&lt; int16_t, 140 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChest.html#ade78619c803a46133590ac58fb52ba53">pInventoryIndices</a> = {{}}</td></tr>
-<tr class="separator:ade78619c803a46133590ac58fb52ba53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a6e42e28c23e10f3542c4f2b0f40d0b"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChest.html#a2a6e42e28c23e10f3542c4f2b0f40d0b">chestTypeId</a> = 0</td></tr>
+<tr class="separator:a2a6e42e28c23e10f3542c4f2b0f40d0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3acdc5363a981623d481dc92b485e666"><td class="memItemLeft" align="right" valign="top">ChestFlags&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChest.html#a3acdc5363a981623d481dc92b485e666">flags</a></td></tr>
+<tr class="separator:a3acdc5363a981623d481dc92b485e666"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0043386ce47e57b27d3864b1fcd415de"><td class="memItemLeft" align="right" valign="top">std::array&lt; <a class="el" href="structItem.html">Item</a>, 140 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChest.html#a0043386ce47e57b27d3864b1fcd415de">items</a></td></tr>
+<tr class="separator:a0043386ce47e57b27d3864b1fcd415de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57ce672614319eb07ed2e0886fec16d4"><td class="memItemLeft" align="right" valign="top">std::array&lt; int16_t, 140 &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChest.html#a57ce672614319eb07ed2e0886fec16d4">inventoryMatrix</a> = {{}}</td></tr>
+<tr class="separator:a57ce672614319eb07ed2e0886fec16d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68cbbe6c80c512386a4d6dd00201777d"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structChest.html#a68cbbe6c80c512386a4d6dd00201777d">position</a></td></tr>
 <tr class="separator:a68cbbe6c80c512386a4d6dd00201777d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -535,28 +535,56 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a344906ac491ca53c530eef12c589c160" name="a344906ac491ca53c530eef12c589c160"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a344906ac491ca53c530eef12c589c160">&#9670;&#160;</a></span>igChestItems</h2>
+<a id="a2a6e42e28c23e10f3542c4f2b0f40d0b" name="a2a6e42e28c23e10f3542c4f2b0f40d0b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a6e42e28c23e10f3542c4f2b0f40d0b">&#9670;&#160;</a></span>chestTypeId</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;<a class="el" href="structItem.html">Item</a>, 140&gt; Chest::igChestItems</td>
+          <td class="memname">uint16_t Chest::chestTypeId = 0</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ade78619c803a46133590ac58fb52ba53" name="ade78619c803a46133590ac58fb52ba53"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade78619c803a46133590ac58fb52ba53">&#9670;&#160;</a></span>pInventoryIndices</h2>
+<a id="a3acdc5363a981623d481dc92b485e666" name="a3acdc5363a981623d481dc92b485e666"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3acdc5363a981623d481dc92b485e666">&#9670;&#160;</a></span>flags</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::array&lt;int16_t, 140&gt; Chest::pInventoryIndices = {{}}</td>
+          <td class="memname">ChestFlags Chest::flags</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a57ce672614319eb07ed2e0886fec16d4" name="a57ce672614319eb07ed2e0886fec16d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57ce672614319eb07ed2e0886fec16d4">&#9670;&#160;</a></span>inventoryMatrix</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::array&lt;int16_t, 140&gt; Chest::inventoryMatrix = {{}}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0043386ce47e57b27d3864b1fcd415de" name="a0043386ce47e57b27d3864b1fcd415de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0043386ce47e57b27d3864b1fcd415de">&#9670;&#160;</a></span>items</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::array&lt;<a class="el" href="structItem.html">Item</a>, 140&gt; Chest::items</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -571,34 +599,6 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">std::optional&lt;<a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>&gt; Chest::position</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa35029c6f9e97d6b013e3a61e76adf0c" name="aa35029c6f9e97d6b013e3a61e76adf0c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa35029c6f9e97d6b013e3a61e76adf0c">&#9670;&#160;</a></span>uChestBitmapID</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">uint16_t Chest::uChestBitmapID = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a69e6bbb561b635482980bab1bbf5a046" name="a69e6bbb561b635482980bab1bbf5a046"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a69e6bbb561b635482980bab1bbf5a046">&#9670;&#160;</a></span>uFlags</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">ChestFlags Chest::uFlags</td>
         </tr>
       </table>
 </div><div class="memdoc">
