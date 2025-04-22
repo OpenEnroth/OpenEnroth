@@ -1003,7 +1003,7 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 
     // Debug - show actor AI state with full information
     if (monster_full_informations) {
-        std::string str = fmt::format("AI State: {}", std::to_underlying(pActors[uActorID].aiState));
+        std::string str = fmt::format("ActorId: {}   AI State: {}", uActorID, std::to_underlying(pActors[uActorID].aiState));
         assets->pFontSmallnum->GetLineWidth(str);
         pWindow->DrawTitleText(assets->pFontSmallnum.get(), 0, pWindow->uFrameHeight - assets->pFontSmallnum->GetHeight() - 12, colorTable.White, str, 3);
     }
