@@ -40,8 +40,7 @@ void Io::Mouse::RemoveHoldingItem() {
     if (this->cursor_name != "MICON2") {
         SetCursorImage("MICON1");
     }
-    pickedItemOffsetX = 0;
-    pickedItemOffsetY = 0;
+    pickedItemOffset = {};
 }
 
 void Io::Mouse::SetCursorBitmapFromItemID(ItemId uItemID) {
@@ -192,8 +191,8 @@ void Io::Mouse::DrawPickedItem() {
     GraphicsImage *pTexture = assets->getImage_Alpha(pParty->pPickedItem.GetIconName());
     if (!pTexture) return;
 
-    float posX = (uMouseX + pickedItemOffsetX) / 640.0f;
-    float posY = (uMouseY + pickedItemOffsetY) / 480.0f;
+    float posX = (uMouseX + pickedItemOffset.x) / 640.0f;
+    float posY = (uMouseY + pickedItemOffset.y) / 480.0f;
 
     if (pParty->pPickedItem.IsBroken()) {
         render->DrawTransparentRedShade(posX, posY, pTexture);

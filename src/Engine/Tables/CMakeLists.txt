@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(ENGINE_TABLES_SOURCES
+        ChestTable.cpp
         NPCTable.cpp
         ItemTable.cpp
         FactionTable.cpp
@@ -18,6 +19,7 @@ set(ENGINE_TABLES_SOURCES
         MessageScrollTable.cpp)
 
 set(ENGINE_TABLES_HEADERS
+        ChestTable.h
         NPCTable.h
         ItemTable.h
         FactionTable.h

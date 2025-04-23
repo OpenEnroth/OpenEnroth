@@ -11,7 +11,11 @@
 #include "Engine/Objects/Character.h"
 #include "Engine/Time/Time.h"
 #include "Engine/Time/Timer.h"
+
 #include "Media/Audio/SoundEnums.h"
+
+#include "Library/Geometry/Point.h"
+
 #include "Utility/IndexedBitset.h"
 
 #include "ArenaEnums.h"
@@ -79,7 +83,7 @@ struct Party {
     /**
      * @offset 0x4936E1
      */
-    void setHoldingItem(Item *pItem, int offsetX = 0, int offsetY = 0);
+    void setHoldingItem(Item *pItem, Pointi offset = {});
 
     /**
     * Sets _activeCharacter to the first character that can act

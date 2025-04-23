@@ -50,6 +50,10 @@ struct Vec2 {
         return r * l;
     }
 
+    friend Vec2 operator-(const Vec2 &v) {
+        return Vec2(-v.x, -v.y);
+    }
+
     Vec2 &operator+=(const Vec2 &v) {
         *this = *this + v;
         return *this;

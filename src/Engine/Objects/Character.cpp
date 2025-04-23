@@ -6532,8 +6532,8 @@ void Character::OnInventoryLeftClick() {
     int pX;
     mouse->GetClickPos(&pX, &pY);
 
-    int inventoryXCoord = (pX + mouse->pickedItemOffsetX - 14) / 32;
-    int inventoryYCoord = (pY + mouse->pickedItemOffsetY - 17) / 32;
+    int inventoryXCoord = (pX + mouse->pickedItemOffset.x - 14) / 32;
+    int inventoryYCoord = (pY + mouse->pickedItemOffset.y - 17) / 32;
     int invMatrixIndex = inventoryXCoord + (INVENTORY_SLOTS_WIDTH * inventoryYCoord);
 
     if (inventoryYCoord >= 0 && inventoryYCoord < INVENTORY_SLOTS_HEIGHT &&
@@ -6582,8 +6582,8 @@ void Character::OnInventoryLeftClick() {
         int cornerInd = GetItemMainInventoryIndex(invMatrixIndex);
         int cornerX = cornerInd % INVENTORY_SLOTS_WIDTH;
         int cornerY = cornerInd / INVENTORY_SLOTS_WIDTH;
-        int itemXOffset = pX + mouse->pickedItemOffsetX - 14 - (cornerX * 32);
-        int itemYOffset = pY + mouse->pickedItemOffsetY - 17 - (cornerY * 32);
+        int itemXOffset = pX + mouse->pickedItemOffset.x - 14 - (cornerX * 32);
+        int itemYOffset = pY + mouse->pickedItemOffset.y - 17 - (cornerY * 32);
 
         if (item) {
             auto tex = assets->getImage_Alpha(item->GetIconName());
@@ -6593,7 +6593,7 @@ void Character::OnInventoryLeftClick() {
 
         if (pParty->pPickedItem.itemId == ITEM_NULL) {
             // pick up the item
-            pParty->setHoldingItem(item, -itemXOffset, -itemYOffset);
+            pParty->setHoldingItem(item, {-itemXOffset, -itemYOffset});
             this->RemoveItemAtInventoryIndex(invMatrixIndex);
             return;
         } else {

@@ -12,6 +12,7 @@ set(ENGINE_DATA_HEADERS
         AutonoteData.h
         AwardData.h
         AwardEnums.h
+        ChestData.h
         HouseData.h
         HouseEnums.h
         HouseEnumFunctions.h

@@ -1311,8 +1311,8 @@ void CharacterUI_DrawPickedItemUnderlay(Vec2i offset) {
         int pX;
         mouse->GetClickPos(&pX, &pY);
 
-        int inventoryXCoord = (pX + mouse->pickedItemOffsetX - offset.x) / 32;
-        int inventoryYCoord = (pY + mouse->pickedItemOffsetY - offset.y) / 32;
+        int inventoryXCoord = (pX + mouse->pickedItemOffset.x - offset.x) / 32;
+        int inventoryYCoord = (pY + mouse->pickedItemOffset.y - offset.y) / 32;
         Sizei itemSize = pParty->pPickedItem.inventorySize();
 
         render->FillRectFast(inventoryXCoord * 32 + offset.x, inventoryYCoord * 32 + offset.y, itemSize.w * 32, itemSize.h * 32, Color(96, 96, 96, 128));

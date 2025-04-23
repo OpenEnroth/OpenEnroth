@@ -35,19 +35,6 @@ void deserialize(const TriBlob &src, PortraitFrameTable *dst) {
     assert(!dst->pFrames.empty());
 }
 
-void deserialize(const TriBlob &src, ChestDescList *dst) {
-    dst->vChests.clear();
-
-    if (src.mm6)
-        deserialize(src.mm6, &dst->vChests, tags::append, tags::via<ChestDesc_MM7>);
-    if (src.mm7)
-        deserialize(src.mm7, &dst->vChests, tags::append, tags::via<ChestDesc_MM7>);
-    if (src.mm8)
-        deserialize(src.mm8, &dst->vChests, tags::append, tags::via<ChestDesc_MM7>);
-
-    assert(!dst->vChests.empty());
-}
-
 void deserialize(const TriBlob &src, DecorationList *dst) {
     dst->pDecorations.clear();
 
