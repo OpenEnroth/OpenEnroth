@@ -50,9 +50,9 @@ endfunction()
 
 macro(resolve_dependencies) # Intentionally a macro - we want set() to work in parent scope.
     if(OE_USE_PREBUILT_DEPENDENCIES)
-        # "r4" is version as set in yml files in OpenEnroth_Dependencies, "master" is a branch name. This way it's
+        # "r6" is version as set in yml files in OpenEnroth_Dependencies, "master" is a branch name. This way it's
         # possible to test with dependencies built from different branches of the OpenEnroth_Dependencies repo.
-        set(PREBUILT_DEPS_TAG "deps_r5_master")
+        set(PREBUILT_DEPS_TAG "deps_r6_master")
 
         message(STATUS "Using prebuilt dependencies with PREBUILT_DEPS_TAG=${PREBUILT_DEPS_TAG}")
 
@@ -62,7 +62,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         endif()
 
         set(PREBUILT_DEPS_FILENAME "${OE_BUILD_PLATFORM}_${PREBUILT_DEPS_BUILD_TYPE}_${OE_BUILD_ARCHITECTURE}.zip")
-        set(PREBUILT_DEPS_DIR "${CMAKE_CURRENT_BINARY_DIR}/dependencies")
+        set(PREBUILT_DEPS_DIR "${CMAKE_CURRENT_BINARY_DIR}/dependencies/${PREBUILT_DEPS_TAG}")
         if (NOT EXISTS "${PREBUILT_DEPS_DIR}/${PREBUILT_DEPS_FILENAME}")
             download_prebuilt_dependencies("${PREBUILT_DEPS_TAG}" "${PREBUILT_DEPS_FILENAME}" "${PREBUILT_DEPS_DIR}" DOWNLOAD_STATUS)
             if(NOT DOWNLOAD_STATUS EQUAL 0)
