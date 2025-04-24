@@ -2284,7 +2284,7 @@ void Inventory_ItemPopupAndAlchemy() {
                 Item bottle;
                 bottle.itemId = ITEM_POTION_BOTTLE;
                 bottle.flags = ITEM_IDENTIFIED;
-                pParty->setHoldingItem(&bottle);
+                pParty->setHoldingItem(bottle);
             }
             return;
         }

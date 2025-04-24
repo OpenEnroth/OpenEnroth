@@ -3580,20 +3580,20 @@ void Actor::LootActor() {
         StatusBarItemFound(foundGold, pItemTable->items[Dst.itemId].unidentifiedName);
 
         if (!pParty->addItemToParty(&Dst)) {
-            pParty->setHoldingItem(&Dst);
+            pParty->setHoldingItem(Dst);
         }
         this->carriedItemId = ITEM_NULL;
         if (this->items[0].itemId != ITEM_NULL) {
             if (!pParty->addItemToParty(&this->items[0])) {
                 pParty->placeHeldItemInInventoryOrDrop();
-                pParty->setHoldingItem(&this->items[0]);
+                pParty->setHoldingItem(this->items[0]);
             }
             this->items[0].Reset();
         }
         if (this->items[1].itemId != ITEM_NULL) {
             if (!pParty->addItemToParty(&this->items[1])) {
                 pParty->placeHeldItemInInventoryOrDrop();
-                pParty->setHoldingItem(&this->items[1]);
+                pParty->setHoldingItem(this->items[1]);
             }
             this->items[1].Reset();
         }
@@ -3608,7 +3608,7 @@ void Actor::LootActor() {
             StatusBarItemFound(foundGold, pItemTable->items[Dst.itemId].unidentifiedName);
 
             if (!pParty->addItemToParty(&Dst)) {
-                pParty->setHoldingItem(&Dst);
+                pParty->setHoldingItem(Dst);
             }
             itemFound = true;
         }
@@ -3619,7 +3619,7 @@ void Actor::LootActor() {
             StatusBarItemFound(foundGold, pItemTable->items[Dst.itemId].unidentifiedName);
 
             if (!pParty->addItemToParty(&Dst)) {
-                pParty->setHoldingItem(&Dst);
+                pParty->setHoldingItem(Dst);
             }
             itemFound = true;
         }
@@ -3627,7 +3627,7 @@ void Actor::LootActor() {
     if (this->items[0].itemId != ITEM_NULL) {
         if (!pParty->addItemToParty(&this->items[0])) {
             pParty->placeHeldItemInInventoryOrDrop();
-            pParty->setHoldingItem(&this->items[0]);
+            pParty->setHoldingItem(this->items[0]);
             itemFound = true;
         }
         this->items[0].Reset();
@@ -3635,7 +3635,7 @@ void Actor::LootActor() {
     if (this->items[1].itemId != ITEM_NULL) {
         if (!pParty->addItemToParty(&this->items[1])) {
             pParty->placeHeldItemInInventoryOrDrop();
-            pParty->setHoldingItem(&this->items[1]);
+            pParty->setHoldingItem(this->items[1]);
             itemFound = true;
         }
         this->items[1].Reset();

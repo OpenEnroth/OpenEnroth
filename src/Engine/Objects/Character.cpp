@@ -1537,7 +1537,7 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
 
                 if (carriedItemId != ITEM_NULL) {
                     engine->_statusBar->setEvent(LSTR_FMT_S_STOLE_D_ITEM, this->name, pItemTable->items[carriedItemId].unidentifiedName);
-                    pParty->setHoldingItem(&tempItem);
+                    pParty->setHoldingItem(tempItem);
                     return STEAL_SUCCESS;
                 }
             }
@@ -4428,7 +4428,7 @@ void Character::SetVariable(EvtVariable var_type, signed int var_value) {
             item.Reset();
             item.itemId = ItemId(var_value);
             item.flags = ITEM_IDENTIFIED;
-            pParty->setHoldingItem(&item);
+            pParty->setHoldingItem(item);
             if (isSpawnableArtifact(ItemId(var_value)))
                 pParty->pIsArtifactFound[ItemId(var_value)] = true;
             return;
@@ -5042,7 +5042,7 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
 
             if (isSpawnableArtifact(ItemId(val)))
                 pParty->pIsArtifactFound[ItemId(val)] = true;
-            pParty->setHoldingItem(&item);
+            pParty->setHoldingItem(item);
             return;
         case VAR_FixedGold:
             pParty->partyFindsGold(val, GOLD_RECEIVE_NOSHARE_MSG);
@@ -6074,7 +6074,7 @@ void Character::EquipBody(ItemType uEquipType) {
         tempPickedItem = pParty->pPickedItem;
         pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1].equippedSlot = ITEM_SLOT_INVALID;
         pParty->pPickedItem.Reset();
-        pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1]);
+        pParty->setHoldingItem(pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1]);
         tempPickedItem.equippedSlot = itemAnchor;
         pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1] = tempPickedItem;
         pParty->activeCharacter().pEquipment[itemAnchor] = itemInvLocation;
@@ -6593,7 +6593,7 @@ void Character::OnInventoryLeftClick() {
 
         if (pParty->pPickedItem.itemId == ITEM_NULL) {
             // pick up the item
-            pParty->setHoldingItem(item, {-itemXOffset, -itemYOffset});
+            pParty->setHoldingItem(*item, {-itemXOffset, -itemYOffset});
             this->RemoveItemAtInventoryIndex(invMatrixIndex);
             return;
         } else {
@@ -6618,7 +6618,7 @@ void Character::OnInventoryLeftClick() {
                 }
 
                 mouse->RemoveHoldingItem();
-                pParty->setHoldingItem(&tmpItem);
+                pParty->setHoldingItem(tmpItem);
                 return;
             } else {
                 // place picked item
