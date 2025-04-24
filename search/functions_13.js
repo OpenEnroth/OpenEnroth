@@ -89,7 +89,7 @@ var searchData=
   ['setfrustumtocamera_86',['SetFrustumToCamera',['../structBspRenderer__ViewportNode.html#aa6f43f4bf0495d164def9c58198d056a',1,'BspRenderer_ViewportNode']]],
   ['setgold_87',['SetGold',['../structParty.html#ab5178a4318b20fc60d8a6b67b08ffaec',1,'Party']]],
   ['setgrabsmouse_88',['setGrabsMouse',['../classPlatformWindow.html#a4ff8b36e32513a88db79209e26a97054',1,'PlatformWindow::setGrabsMouse()'],['../classNullWindow.html#a5efff0497f47a4c7ec26125f1adbdd15',1,'NullWindow::setGrabsMouse()'],['../classProxyWindow.html#a5ad1c1ca3a1dad15aa14b8567a165512',1,'ProxyWindow::setGrabsMouse()'],['../classSdlWindow.html#abac08b30397fdafb69838ed748813478',1,'SdlWindow::setGrabsMouse()']]],
-  ['setholdingitem_89',['setHoldingItem',['../structParty.html#aafcbfd223c6aff62c929c87664e8cab6',1,'Party']]],
+  ['setholdingitem_89',['setHoldingItem',['../structParty.html#ad8394a8f592731e2af5206a533fb6313',1,'Party']]],
   ['seticon_90',['setIcon',['../classPlatformWindow.html#aa0a5b323b27f0c20c43a5bb4c69897f1',1,'PlatformWindow::setIcon()'],['../classNullWindow.html#a1e76b4c460695adaabde86722d79c9cf',1,'NullWindow::setIcon()'],['../classProxyWindow.html#a5eb1cff9c21c5716ff96e1ec0126feba',1,'ProxyWindow::setIcon()'],['../classSdlWindow.html#acd3183c4acc05063c3e63a251ee54347',1,'SdlWindow::setIcon()']]],
   ['setidentified_91',['SetIdentified',['../structItem.html#a66e9ac3936f92dcf001127576d79eb1b',1,'Item']]],
   ['setinitialized_92',['SetInitialized',['../structChest.html#a640eac22e4e8cc8c4972830e0de1ae6e',1,'Chest']]],
