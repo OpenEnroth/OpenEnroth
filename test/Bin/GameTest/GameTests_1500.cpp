@@ -779,6 +779,16 @@ GAME_TEST(Issues, Issue1972) {
     EXPECT_LE(hpTape.delta(), -700); // Party should have received some damage. Checking this b/c retracing might break smth.
 }
 
+GAME_TEST(Issues, Issue1974) {
+    // Monsters can climb vertical walls where in MM7 they could not
+    test.playTraceFromTestData("issue_1974.mm7", "issue_1974.json");
+    // Make sure all the monsters have stayed below
+    constexpr std::array<int, 12> monsterIds = { 0, 31, 32, 33, 48, 49, 50, 51, 52, 53, 54, 55 };
+    for (auto ids : monsterIds) {
+        EXPECT_LT(pActors[ids].pos.z, -1375);
+    }
+}
+
 GAME_TEST(Issues, Issue1977) {
     // Mix a potion of water resistance: explodes without fix.
     // Disabling RNG checks on playback to actually see results even if the explosion uses a `grng` call.
