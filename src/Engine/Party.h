@@ -81,9 +81,11 @@ struct Party {
     bool hasItem(ItemId uItemID);
 
     /**
+     * @param item                      Item to hold in mouse.
+     * @param offset                    Item's bitmap offset relative to cursor position. Always non-positive.
      * @offset 0x4936E1
      */
-    void setHoldingItem(Item *pItem, Pointi offset = {});
+    void setHoldingItem(const Item &item, Pointi offset = {});
 
     /**
     * Sets _activeCharacter to the first character that can act

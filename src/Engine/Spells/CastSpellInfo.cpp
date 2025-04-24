@@ -2181,7 +2181,7 @@ void CastSpellInfoHelpers::castSpell() {
                         } else {
                             engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->items[pSpriteObjects[obj_id].containing_item.itemId].unidentifiedName);
                             if (!pParty->addItemToParty(&pSpriteObjects[obj_id].containing_item)) {
-                                pParty->setHoldingItem(&pSpriteObjects[obj_id].containing_item);
+                                pParty->setHoldingItem(pSpriteObjects[obj_id].containing_item);
                             }
                         }
                         SpriteObject::OnInteraction(obj_id);
