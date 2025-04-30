@@ -439,8 +439,9 @@
 #define LSTR_WAND_ALREADY_CHARGED           683  // "Wand already charged!"
 #define LSTR_ENERGY                         684  // "Energy"
 #define LSTR_IMMOLATION_DAMAGE              685  // "Immolation deals %d damage to %d target(s)
+#define LSTR_REMAINING_POWER                686  // "Remaining power: %d"
 
-#define MAX_LOC_STRINGS MM7_LOC_STRINGS + 9
+#define MAX_LOC_STRINGS MM7_LOC_STRINGS + 10
 
 class Localization {
  public:
