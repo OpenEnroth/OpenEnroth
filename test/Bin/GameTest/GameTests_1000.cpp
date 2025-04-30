@@ -444,8 +444,9 @@ GAME_TEST(Issues, Issue1340) {
         Blob origHarmondale = pGames_LOD->read("d29.dlv");
         EXPECT_EQ(saveHarmondale.string_view(), origHarmondale.string_view());
     });
-    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_CASTLE_HARMONDALE)); // Emerald Isle -> Castle Harmondale. Map change is important because
-                                                      // we want to trigger map respawn on first visit.
+
+    // Emerald Isle -> Castle Harmondale. Map change is important because we want to trigger map respawn on first visit.
+    EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_CASTLE_HARMONDALE));
     EXPECT_CONTAINS(screenTape, SCREEN_CHEST);
     EXPECT_GT(goldTape.delta(), 0); // Party should have picked some gold from the chest.
     EXPECT_MISSES(statusTape, "You found 0 gold!"); // No piles of 0 size.
