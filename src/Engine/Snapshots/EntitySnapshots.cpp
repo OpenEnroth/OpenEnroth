@@ -764,7 +764,7 @@ void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst) {
     reconstruct(src.times, &dst->_times);
 }
 
-void snapshot(const Character &src, Player_MM7 *dst) {
+void snapshot(const Character &src, Character_MM7 *dst) {
     memzero(dst);
 
     snapshot(src.conditions, &dst->conditions);
@@ -884,7 +884,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->numFireSpikeCasts = src.uNumFireSpikeCasts;
 }
 
-void reconstruct(const Player_MM7 &src, Character *dst) {
+void reconstruct(const Character_MM7 &src, Character *dst) {
     dst->Zero();
     reconstruct(src.conditions, &dst->conditions);
 
