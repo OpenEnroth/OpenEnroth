@@ -6,7 +6,7 @@ var searchData=
   ['value_3',['value',['../structConfigPatchEntry.html#a7131b1935860044cdfcf6d11e41e90f4',1,'ConfigPatchEntry::value()'],['../classPlatformGamepadAxisEvent.html#a1fcda63b8faadbb81e5077ce5e3334cb',1,'PlatformGamepadAxisEvent::value()'],['../structInt__MM.html#a7669c8e442ac2fa7349028831e0c247e',1,'Int_MM::value()'],['../classEvtInstruction.html#a3f92a511d76fe448ea86fc63c2973e43',1,'EvtInstruction::value()']]],
   ['vao_4',['vao',['../structnk__device.html#a808576f36d442ea8c5fc6f918eed2e83',1,'nk_device']]],
   ['variable_5fdescr_5',['variable_descr',['../classEvtInstruction.html#ab6e2462fe4460779caadd0265ea02a7e',1,'EvtInstruction']]],
-  ['vbeacons_6',['vBeacons',['../classCharacter.html#ae4690d0a322870e900e1433296d6471f',1,'Character']]],
+  ['vbeacons_6',['vBeacons',['../classCharacter.html#ae5b481722e47407a7455e4d9bc0fdc4a',1,'Character']]],
   ['vbo_7',['vbo',['../structnk__device.html#a7dabcbbe7165896ba25e029d1f1f9213',1,'nk_device']]],
   ['vboundingcenter_8',['vBoundingCenter',['../classBSPModel.html#ac1cd7c370ff417e51fba7e29ca1640ff',1,'BSPModel::vBoundingCenter()'],['../structBSPModelData__MM7.html#ad2d1f9f2a5e4ec64697e7d5029da11e6',1,'BSPModelData_MM7::vBoundingCenter()']]],
   ['vbuttons_9',['vButtons',['../classGUIWindow.html#aba80b69979e2d28049eb073dde019f82',1,'GUIWindow']]],
