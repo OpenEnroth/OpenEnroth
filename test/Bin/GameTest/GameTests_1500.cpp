@@ -600,8 +600,8 @@ GAME_TEST(Issues, Issue1911) {
 
 GAME_TEST(Issues, Issue1912) {
     // Trading a Red Potion for a Wealthy Hat doesn't remove the potion from the inventory.
-    auto potionTape = charTapes.hasItem(ITEM_POTION_CURE_WOUNDS);
-    auto hatTape = charTapes.hasItem(ITEM_QUEST_WEALTHY_HAT);
+    auto potionTape = charTapes.haveItem(ITEM_POTION_CURE_WOUNDS);
+    auto hatTape = charTapes.haveItem(ITEM_QUEST_WEALTHY_HAT);
     auto activeCharTape = tapes.activeCharacterIndex();
     test.playTraceFromTestData("issue_1912.mm7", "issue_1912.json");
     EXPECT_EQ(activeCharTape, tape(1)); // First char was talking.

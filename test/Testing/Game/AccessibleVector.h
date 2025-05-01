@@ -129,6 +129,14 @@ class Accessible : public Base {
         return result;
     }
 
+    auto sliced(size_t subIndex) const {
+        using element_type = std::iter_value_t<decltype(std::declval<const value_type *>()->begin())>;
+        AccessibleVector<element_type> result;
+        for (const auto &chunk : *this)
+            result.push_back(chunk[subIndex]);
+        return result;
+    }
+
     template<class Filter>
     AccessibleVector<value_type> filtered(Filter filter) const {
         AccessibleVector<value_type> result;
