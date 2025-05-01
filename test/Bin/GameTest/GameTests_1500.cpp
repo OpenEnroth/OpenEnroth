@@ -717,6 +717,18 @@ GAME_TEST(Issues, Issue1947) {
     EXPECT_GT(pSpriteObjects[4].containing_item.maxCharges, 0);
 }
 
+GAME_TEST(Issues, Issue1956) {
+    // Crash shortly after entering Land of Giants
+    test.playTraceFromTestData("issue_1956.mm7", "issue_1956.json");
+    // trace launches a load of items down the slope
+    // test that they all slow down and all are in bounds
+    const BBoxf limitBox = BBoxf::cubic(Vec3f(), 32768.0f);
+    for (const auto& item : pSpriteObjects) {
+        EXPECT_LT(item.vVelocity.length(), 100.0f);
+        EXPECT_TRUE(limitBox.contains(item.vPosition));
+    }
+}
+
 GAME_TEST(Issues, Issue1961) {
     // Enchant Item costs no SP.
     auto manaTape = charTapes.mp(3);
