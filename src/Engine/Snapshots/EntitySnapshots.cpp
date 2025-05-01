@@ -867,16 +867,16 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->talkFrameSet = 0;
 
     for (unsigned int i = 0; i < 5; ++i) {
-        if (i >= src.vBeacons.size()) {
+        if (!src.vBeacons[i]) {
             continue;
         }
-        snapshot(src.vBeacons[i].uBeaconTime, &dst->installedBeacons[i].beaconTime);
-        dst->installedBeacons[i].partyPosX = src.vBeacons[i]._partyPos.x;
-        dst->installedBeacons[i].partyPosY = src.vBeacons[i]._partyPos.y;
-        dst->installedBeacons[i].partyPosZ = src.vBeacons[i]._partyPos.z;
-        dst->installedBeacons[i].partyViewYaw = src.vBeacons[i]._partyViewYaw;
-        dst->installedBeacons[i].partyViewPitch = src.vBeacons[i]._partyViewPitch;
-        dst->installedBeacons[i].mapIndexInGamesLod = valueOr(gamesLodIndexByMapId, src.vBeacons[i].mapId, -1);
+        snapshot(src.vBeacons[i]->uBeaconTime, &dst->installedBeacons[i].beaconTime);
+        dst->installedBeacons[i].partyPosX = src.vBeacons[i]->_partyPos.x;
+        dst->installedBeacons[i].partyPosY = src.vBeacons[i]->_partyPos.y;
+        dst->installedBeacons[i].partyPosZ = src.vBeacons[i]->_partyPos.z;
+        dst->installedBeacons[i].partyViewYaw = src.vBeacons[i]->_partyViewYaw;
+        dst->installedBeacons[i].partyViewPitch = src.vBeacons[i]->_partyViewPitch;
+        dst->installedBeacons[i].mapIndexInGamesLod = valueOr(gamesLodIndexByMapId, src.vBeacons[i]->mapId, -1);
     }
 
     dst->numDivineInterventionCasts = src.uNumDivineInterventionCastsThisDay;
@@ -1106,9 +1106,11 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->portraitImageIndex = src.portraitImageIndex;
     dst->talkAnimation = TalkAnimation();
 
-    for (int z = 0; z < dst->vBeacons.size(); z++)
-        dst->vBeacons[z].image->Release();
-    dst->vBeacons.clear();
+    for (int z = 0; z < 5; z++) {
+        if (dst->vBeacons[z])
+            dst->vBeacons[z]->image->Release();
+        dst->vBeacons[z].reset();
+    }
 
     for (unsigned int i = 0; i < 5; ++i) {
         if (src.installedBeacons[i].beaconTime != 0) {
@@ -1120,7 +1122,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
             beacon._partyViewYaw = src.installedBeacons[i].partyViewYaw;
             beacon._partyViewPitch = src.installedBeacons[i].partyViewPitch;
             beacon.mapId = valueOr(mapIdByGamesLodIndex, src.installedBeacons[i].mapIndexInGamesLod, MAP_INVALID);
-            dst->vBeacons.push_back(beacon);
+            dst->vBeacons[i] = beacon;
         }
     }
 

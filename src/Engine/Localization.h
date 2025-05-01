@@ -440,8 +440,9 @@
 #define LSTR_ENERGY                         684  // "Energy"
 #define LSTR_IMMOLATION_DAMAGE              685  // "Immolation deals %d damage to %d target(s)
 #define LSTR_REMAINING_POWER                686  // "Remaining power: %d"
+#define LSTR_PLAYER_IS_NOT_ACTIVE           687  // "That player is not active"
 
-#define MAX_LOC_STRINGS MM7_LOC_STRINGS + 10
+#define MAX_LOC_STRINGS MM7_LOC_STRINGS + 11
 
 class Localization {
  public:
