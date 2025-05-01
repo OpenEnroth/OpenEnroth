@@ -74,7 +74,7 @@ var searchData=
   ['binarytags_2eh_71',['BinaryTags.h',['../BinaryTags_8h.html',1,'']]],
   ['bind_72',['bind',['../classSdlOpenGLContext.html#a827bc1dc8610dba418ec463fbc737ee9',1,'SdlOpenGLContext::bind()'],['../classProxyOpenGLContext.html#aeed052f589e1b39bbb002113be03cfdd',1,'ProxyOpenGLContext::bind()'],['../classNullOpenGLContext.html#a5554686dc7a58e7382c41e7302815f01',1,'NullOpenGLContext::bind()'],['../classPlatformOpenGLContext.html#adc75ee2e5b6736369658848bb170f830',1,'PlatformOpenGLContext::bind()']]],
   ['binitialized_73',['bInitialized',['../classIo_1_1Mouse.html#ad596a27e9667e9ea087bbee85d8850fa',1,'Io::Mouse']]],
-  ['birthyear_74',['birthYear',['../structPlayer__MM7.html#a4d5e6d27cef8ffa99e2e7ea0eedb760c',1,'Player_MM7']]],
+  ['birthyear_74',['birthYear',['../structCharacter__MM7.html#a28d1860e80ec2d93f056cd3119f763e1',1,'Character_MM7']]],
   ['bitmap_75',['bitmap',['../structLODSprite.html#a30ca2eb644893e6b15fdd0116c86214a',1,'LODSprite']]],
   ['bitmapid_76',['bitmapId',['../structTileData__MM7.html#ab32d21527cc66686d5f48ad5102366b4',1,'TileData_MM7::bitmapId()'],['../structBLVFace__MM7.html#a1b53aecf5b50100c33c273d7d8cbc94a',1,'BLVFace_MM7::bitmapId()']]],
   ['bitmaps_77',['bitmaps',['../classAssetsManager.html#aee22e571e910db19832f9c88011b7a57',1,'AssetsManager']]],

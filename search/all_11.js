@@ -95,7 +95,7 @@ var searchData=
   ['quicksavegame_92',['QuickSaveGame',['../SaveLoad_8h.html#ad73be4fc4c1b5b157e35ce88af02d5b8',1,'QuickSaveGame():&#160;SaveLoad.cpp'],['../SaveLoad_8cpp.html#ad73be4fc4c1b5b157e35ce88af02d5b8',1,'QuickSaveGame():&#160;SaveLoad.cpp']]],
   ['quicksavename_93',['QuickSaveName',['../classGameConfig_1_1Gameplay.html#a85a41f1cc8c6adf5cfd6f8139a8610b4',1,'GameConfig::Gameplay']]],
   ['quicksavescount_94',['QuickSavesCount',['../classGameConfig_1_1Gameplay.html#ab0b99938dc819fff4a2a5285c68e6ca7',1,'GameConfig::Gameplay']]],
-  ['quickspell_95',['quickSpell',['../structPlayer__MM7.html#ace707a23551d85cf6529a015267c3a9e',1,'Player_MM7::quickSpell()'],['../classCharacterTapeRecorder.html#add4d15a39dcf2346a22ca41f06869c35',1,'CharacterTapeRecorder::quickSpell(int characterIndex)']]],
+  ['quickspell_95',['quickSpell',['../structCharacter__MM7.html#a25e55f6514190f4185de5c0ee6024d2c',1,'Character_MM7::quickSpell()'],['../classCharacterTapeRecorder.html#add4d15a39dcf2346a22ca41f06869c35',1,'CharacterTapeRecorder::quickSpell(int characterIndex)']]],
   ['quickspells_96',['quickSpells',['../classCharacterTapeRecorder.html#a37082af2544a643f7eb578bef77970e0',1,'CharacterTapeRecorder']]],
   ['quit_97',['quit',['../classPlatformEventLoop.html#a86243e0d297d5c8d74e10eccb65679b3',1,'PlatformEventLoop::quit()'],['../classNullEventLoop.html#a89ede41dcc2d2fe3607f3244fdab9020',1,'NullEventLoop::quit()'],['../classProxyEventLoop.html#a16ecbd3804189d6ea5907b08c379f8e0',1,'ProxyEventLoop::quit()'],['../classSdlEventLoop.html#ad83ec550f07d9bf2d4c187879beac6c9',1,'SdlEventLoop::quit()']]]
 ];

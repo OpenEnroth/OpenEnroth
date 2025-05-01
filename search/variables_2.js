@@ -30,7 +30,7 @@ var searchData=
   ['billbvao_27',['billbVAO',['../classOpenGLRenderer.html#acf7056356032ec2eb50706756d493b1b',1,'OpenGLRenderer']]],
   ['billbvbo_28',['billbVBO',['../classOpenGLRenderer.html#a04075a9ee8c64ed4fc7526f424b24560',1,'OpenGLRenderer']]],
   ['binitialized_29',['bInitialized',['../classIo_1_1Mouse.html#ad596a27e9667e9ea087bbee85d8850fa',1,'Io::Mouse']]],
-  ['birthyear_30',['birthYear',['../structPlayer__MM7.html#a4d5e6d27cef8ffa99e2e7ea0eedb760c',1,'Player_MM7']]],
+  ['birthyear_30',['birthYear',['../structCharacter__MM7.html#a28d1860e80ec2d93f056cd3119f763e1',1,'Character_MM7']]],
   ['bitmap_31',['bitmap',['../structLODSprite.html#a30ca2eb644893e6b15fdd0116c86214a',1,'LODSprite']]],
   ['bitmapid_32',['bitmapId',['../structTileData__MM7.html#ab32d21527cc66686d5f48ad5102366b4',1,'TileData_MM7::bitmapId()'],['../structBLVFace__MM7.html#a1b53aecf5b50100c33c273d7d8cbc94a',1,'BLVFace_MM7::bitmapId()']]],
   ['bitmaps_33',['bitmaps',['../classAssetsManager.html#aee22e571e910db19832f9c88011b7a57',1,'AssetsManager']]],

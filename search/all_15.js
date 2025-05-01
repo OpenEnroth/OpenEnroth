@@ -620,7 +620,7 @@ var searchData=
   ['unused_5fparam_5f7_617',['unused_param_7',['../structexplosion__effect__struct.html#a697a7f8fcf7dc42d06524daa33aa46bb',1,'explosion_effect_struct']]],
   ['unused_5fparam_5f8_618',['unused_param_8',['../structexplosion__effect__struct.html#a01314330999c2616a2e9349b024faa8f',1,'explosion_effect_struct']]],
   ['unused_5fparam_5f9_619',['unused_param_9',['../structexplosion__effect__struct.html#af8a10682d5c459a8dc334c1e8bf7ed3d',1,'explosion_effect_struct']]],
-  ['unuseditems_620',['unusedItems',['../structPlayer__MM7.html#a7a90c8b82b29c47a7418e2a8a1b219b8',1,'Player_MM7']]],
+  ['unuseditems_620',['unusedItems',['../structCharacter__MM7.html#a5ec39817c1a30ec25da424f74c5ceee0',1,'Character_MM7']]],
   ['uobjectdescid_621',['uObjectDescID',['../structSpriteObject.html#ac586dd22ee37ddfd58f433e209cf8d72',1,'SpriteObject::uObjectDescID()'],['../structSpriteObject__MM7.html#aa6ff6ee5c73972593a95f421737b5dc4',1,'SpriteObject_MM7::uObjectDescID()']]],
   ['uobjectid_622',['uObjectID',['../structObjectDesc__MM7.html#a24572b1936868a7dea6502128eca136a',1,'ObjectDesc_MM7::uObjectID()'],['../structObjectDesc__MM6.html#ad3d95e95e1ee860920024937f10d5067',1,'ObjectDesc_MM6::uObjectID()'],['../structObjectDesc.html#a53e5d91043565d3c41912fc027372080',1,'ObjectDesc::uObjectID()']]],
   ['uopenspeed_623',['uOpenSpeed',['../structBLVDoor.html#a404d6362ad88d519570b7c43ac3f4daa',1,'BLVDoor::uOpenSpeed()'],['../structBLVDoor__MM7.html#a159833f981823f6870041028199019b4',1,'BLVDoor_MM7::uOpenSpeed()']]],
