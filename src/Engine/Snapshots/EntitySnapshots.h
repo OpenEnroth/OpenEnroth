@@ -289,8 +289,7 @@ void snapshot(const CharacterConditions &src, CharacterConditions_MM7 *dst);
 void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst);
 
 
-// TODO(captainurist): Character_MM7.
-struct Player_MM7 {
+struct Character_MM7 {
     /* 0000 */ CharacterConditions_MM7 conditions;
     /* 00A0 */ uint64_t experience;
     /* 00A8 */ std::array<char, 16> name;
@@ -411,11 +410,11 @@ struct Player_MM7 {
     /* 1B3B */ char field_1B3B;
     /* 1B3C */
 };
-static_assert(sizeof(Player_MM7) == 0x1B3C);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(Player_MM7)
+static_assert(sizeof(Character_MM7) == 0x1B3C);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(Character_MM7)
 
-void snapshot(const Character &src, Player_MM7 *dst);
-void reconstruct(const Player_MM7 &src, Character *dst);
+void snapshot(const Character &src, Character_MM7 *dst);
+void reconstruct(const Character_MM7 &src, Character *dst);
 
 
 struct PartyTimeStruct_MM7 {
@@ -516,7 +515,7 @@ struct Party_MM7 {
     /* 00884 */ int32_t flags2;
     /* 00888 */ uint32_t alignment;
     /* 0088C */ std::array<SpellBuff_MM7, 20> partyBuffs;
-    /* 00954 */ std::array<Player_MM7, 4> players;
+    /* 00954 */ std::array<Character_MM7, 4> players;
     /* 07644 */ std::array<NPCData_MM7, 2> hirelings;
     /* 07754 */ Item_MM7 pickedItem;
     /* 07778 */ uint32_t flags;
