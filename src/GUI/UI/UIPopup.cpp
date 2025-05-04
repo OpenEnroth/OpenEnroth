@@ -1,6 +1,7 @@
 #include <array>
 #include <algorithm>
 #include <string>
+#include <utility>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
