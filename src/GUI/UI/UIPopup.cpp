@@ -737,6 +737,7 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     bool master_level = monster_full_informations;
     bool grandmaster_level = monster_full_informations;
     bool for_effects = monster_full_informations;
+    bool showCurrentHp = monster_full_informations || pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Active();
 
     if (pParty->hasActiveCharacter()) {
         int skill_points = 0;
@@ -908,6 +909,8 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     } else {
         hpStr = acStr = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
+    if (showCurrentHp && extended)
+        hpStr = fmt::format("{} / {}", pActors[uActorID].currentHP, hpStr);
     if (pWindow) {
         pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_HIT_POINTS));
         pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, hpStr);
@@ -976,8 +979,8 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     pTextHeight += 2 * lineAdvance;
 
     std::string spellTitleStr = localization->GetString(LSTR_SPELL);
-    std::string spell1Str, spell2Str;
-    int spellX = extended ? 200 : X_RIGHT_DEFAULT_SPELLS;
+    std::string spell1Str, spell2Str, spell3Str; // 1 is in-line with spellTitleStr (only non-extended), 2 and 3 own lines
+    int spellX = extended ? X_RIGHT_INDENTED : X_RIGHT_DEFAULT_SPELLS;
     if (master_level) {
         if (monsterInfo.spell1Id == SPELL_NONE && monsterInfo.spell2Id == SPELL_NONE) {
             spell1Str = localization->GetString(LSTR_NONE);
@@ -988,13 +991,13 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         }
         if (monsterInfo.spell1Id != SPELL_NONE) {
             if (extended)
-                spell1Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell1Id].pShortName, monsterInfo.spell1SkillMastery.shortDescription());
+                spell2Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell1Id].pShortName, monsterInfo.spell1SkillMastery.shortDescription());
             else
                 spell1Str = pSpellStats->pInfos[monsterInfo.spell1Id].pShortName;
         }
         if (monsterInfo.spell2Id != SPELL_NONE) {
             if (extended)
-                spell2Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell2Id].pShortName, monsterInfo.spell2SkillMastery.shortDescription());
+                spell3Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell2Id].pShortName, monsterInfo.spell2SkillMastery.shortDescription());
             else
                 spell2Str = pSpellStats->pInfos[monsterInfo.spell2Id].pShortName;
         }
@@ -1003,11 +1006,16 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     }
     if (pWindow) {
         pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, spellTitleStr);
-        pWindow->DrawText(font, {spellX, pTextHeight}, colorTable.White, spell1Str);
+        if (!spell1Str.empty())
+            pWindow->DrawText(font, {spellX, pTextHeight}, colorTable.White, spell1Str);
     }
     if (!spell2Str.empty()) {
         pTextHeight += lineAdvance;
         if (pWindow) pWindow->DrawText(font, {spellX, pTextHeight}, colorTable.White, spell2Str);
+    }
+    if (!spell3Str.empty()) {
+        pTextHeight += lineAdvance;
+        if (pWindow) pWindow->DrawText(font, {spellX, pTextHeight}, colorTable.White, spell3Str);
     }
     pTextHeight += 2 * lineAdvance;
 
@@ -1069,7 +1077,7 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     pTextHeight += lineAdvance;
 
     // cast spell: Detect life
-    if (monster_full_informations || pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Active()) {
+    if (showCurrentHp && !extended) {
         if (pWindow) {
             std::string str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_HIT_POINTS), pActors[uActorID].currentHP);
             pWindow->DrawTitleText(font, 0, pTextHeight, colorTable.White, str, 3);
