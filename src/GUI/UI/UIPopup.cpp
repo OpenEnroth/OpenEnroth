@@ -1020,6 +1020,7 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         }
     } else {
         spell1Str = localization->GetString(LSTR_UNKNOWN_VALUE);
+        spellX = X_RIGHT_DATA;
     }
     if (pWindow) {
         pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, spellTitleStr);
