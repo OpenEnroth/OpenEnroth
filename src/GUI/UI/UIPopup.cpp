@@ -639,9 +639,9 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
  * Render the monster info popup
  * @param uActorID ID of the actor to show info for
  * @param pWindow The window to render into, or `null` to measure content only
- * @return Actual height needed to render
+ * @return Actual width/height needed to render
  */
-int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
+std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     /// Geometry hardcoded constants
     const int X_LEFT_COLUMN = 12                            // "Effects" label
         , X_EFFECT_LIST = X_LEFT_COLUMN + 16                // Effects list
@@ -653,7 +653,7 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         , Y_POS_DOLL = 52
         , SIZE_DOLL = 128
         , Y_EFFECT_LIST = Y_POS_DOLL + SIZE_DOLL            // Lower edge doll frame - add an empty line!
-        , BOTTOM_MARGIN = 16;                         // Added to measured bottom of rendered text
+        , RIGHT_BOTTOM_MARGIN = 16;                         // Added to measured bottom and right edge of rendered text
 
     static Actor pMonsterInfoUI_Doll;
     MonsterInfo &monsterInfo = pActors[uActorID].monsterInfo;
@@ -901,6 +901,11 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     /*------------------------------- Right side -------------------------------*/
     int leftTextHeight = pTextHeight;
     pTextHeight = Y_POS_DOLL;
+    int maxWidth = 0; // The max width of the info at X_RIGHT_DATA
+    auto measureWidth = [font, &maxWidth](std::string_view s) {
+        int w = font->GetLineWidth(s);
+        if (w > maxWidth) maxWidth = w;
+    };
 
     std::string hpStr, acStr;
     if (normal_level) {
@@ -914,11 +919,15 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     if (pWindow) {
         pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_HIT_POINTS));
         pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, hpStr);
+    } else {
+        measureWidth(hpStr);
     }
     pTextHeight += lineAdvance;
     if (pWindow) {
         pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ARMOR_CLASS));
         pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, acStr);
+    } else {
+        measureWidth(acStr);
     }
     pTextHeight += 2 * lineAdvance;
 
@@ -937,11 +946,15 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     if (pWindow) {
         pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
         pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, attackStr);
+    } else {
+        measureWidth(attackStr);
     }
     pTextHeight += lineAdvance;
     if (pWindow) {
         pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
         pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, damageStr);
+    } else {
+        measureWidth(damageStr);
     }
     if (expert_level && extended && monsterInfo.attack2Chance > 0 && (monsterInfo.attack2DamageDiceRolls > 0 || monsterInfo.attack2DamageBonus > 0)) {
         attackStr = displayNameForDamageType(monsterInfo.attack2Type, localization);
@@ -955,11 +968,15 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         if (pWindow) {
             pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
             pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, attackStr);
+        } else {
+            measureWidth(attackStr);
         }
         pTextHeight += lineAdvance;
         if (pWindow) {
             pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
             pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, damageStr);
+        } else {
+            measureWidth(damageStr);
         }
     }
     if (master_level && extended && monsterInfo.specialAttackType != SPECIAL_ATTACK_NONE) {
@@ -1068,6 +1085,8 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         if (pWindow) {
             pWindow->DrawText(font, {X_RIGHT_INDENTED, pTextHeight}, colorTable.Jonquil, resTypes[i]);
             pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, resStr);
+        } else {
+            measureWidth(resStr);
         }
         pTextHeight += lineAdvance;
     }
@@ -1094,7 +1113,7 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         pTextHeight += lineAdvance;
     }
 
-    return pTextHeight + BOTTOM_MARGIN;
+    return std::make_pair(X_RIGHT_DATA + maxWidth + RIGHT_BOTTOM_MARGIN, pTextHeight + RIGHT_BOTTOM_MARGIN);
 }
 
 /**
@@ -1982,7 +2001,9 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 pointedObject = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
                 if (pointedObject.type() == OBJECT_Actor) {
                     render->BeginScene2D();
-                    popup_window.uFrameHeight = MonsterPopup_Draw(pointedObject.id(), nullptr);
+                    auto [w, h] = MonsterPopup_Draw(pointedObject.id(), nullptr);
+                    popup_window.uFrameWidth = w;
+                    popup_window.uFrameHeight = h;
                     popup_window.DrawMessageBox(true);
                     MonsterPopup_Draw(pointedObject.id(), &popup_window);
                 }
