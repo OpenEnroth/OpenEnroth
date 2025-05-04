@@ -635,6 +635,12 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     }
 }
 
+/**
+ * Render the monster info popup
+ * @param uActorID ID of the actor to show info for
+ * @param pWindow The window to render into, or `null` to measure content only
+ * @return Actual height needed to render
+ */
 int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     static Actor pMonsterInfoUI_Doll;
     MonsterInfo &monsterInfo = pActors[uActorID].monsterInfo;
@@ -691,7 +697,7 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
             render->EndLines2D();
 
             // Draw portrait
-            int Popup_Y_Offset = monster_popup_y_offsets[monsterTypeForMonsterId(monsterInfo.id)] - pWindow->uFrameY;
+            int Popup_Y_Offset = monster_popup_y_offsets[monsterTypeForMonsterId(monsterInfo.id)] - 40;
             render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);
         }
         pMonsterInfoUI_Doll.currentActionTime += pMiscTimer->dt();
@@ -768,9 +774,10 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     // Additionally show Attack2 if Attack1 is visible, and Special Attack (Break, Insanity...) if Spells are visible:
     bool extended = engine->config->settings.ExtendedMonsterInfo.value();
 
-    int pTextHeight = 180;  // Start effects below portrait
+    int pTextHeight = 180;  // Start effects below portrait (see doll_rect: 52+128)
     SpellId spellIdForBuff = SPELL_NONE;
     int lineAdvance = assets->pFontSmallnum->GetHeight() - 3;
+    pTextHeight += lineAdvance;
     if (pWindow) pWindow->DrawText(assets->pFontSmallnum.get(), {12, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_EFFECTS));
     pTextHeight += lineAdvance;
     if (!for_effects) {
@@ -798,20 +805,20 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                         textId = LSTR_AFRAID;
                         break;
                     case ACTOR_BUFF_STONED:
-                        textId = LSTR_STONED;
                         spellIdForBuff = SPELL_LIGHT_PARALYZE;
+                        textId = LSTR_STONED;
                         break;
                     case ACTOR_BUFF_PARALYZED:
-                        textId = LSTR_PARALYZED;
                         spellIdForBuff = SPELL_LIGHT_PARALYZE;
+                        textId = LSTR_PARALYZED;
                         break;
                     case ACTOR_BUFF_SLOWED:
-                        textId = LSTR_SLOWED;
                         spellIdForBuff = SPELL_EARTH_SLOW;
+                        textId = LSTR_SLOWED;
                         break;
                     case ACTOR_BUFF_BERSERK:
-                        textId = LSTR_BERSERK;
                         spellIdForBuff = SPELL_MIND_BERSERK;
+                        textId = LSTR_BERSERK;
                         break;
                     case ACTOR_BUFF_SOMETHING_THAT_HALVES_AC:
                     case ACTOR_BUFF_MASS_DISTORTION:
@@ -861,13 +868,11 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                         textId = LSTR_HAMMERHANDS;
                         break;
                     default:
-                        break;
+                        continue;
                 }
-                if (textId != 0) {
-                    if (pWindow)
-                        pWindow->DrawText(assets->pFontSmallnum.get(), {28, pTextHeight}, GetSpellColor(spellIdForBuff), localization->GetString(textId));
-                    pTextHeight += lineAdvance;
-                }
+                if (pWindow)
+                    pWindow->DrawText(assets->pFontSmallnum.get(), {28, pTextHeight}, GetSpellColor(spellIdForBuff), localization->GetString(textId));
+                pTextHeight += lineAdvance;
             }
         }
         if (textId == 0) {
@@ -877,7 +882,7 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     }
 
     int leftTextHeight = pTextHeight;
-    pTextHeight = 52;
+    pTextHeight = 52;  // See doll_rect: This is the upper edge of the 'portrait'
 
     std::string hpStr, acStr;
     if (normal_level) {
@@ -1952,7 +1957,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 if (pointedObject.type() == OBJECT_Actor) {
                     render->BeginScene2D();
                     popup_window.uFrameHeight = MonsterPopup_Draw(pointedObject.id(), nullptr);
-                    popup_window.DrawMessageBox(1);
+                    popup_window.DrawMessageBox(true);
                     MonsterPopup_Draw(pointedObject.id(), &popup_window);
                 }
                 if (pointedObject.type() == OBJECT_Item) {
