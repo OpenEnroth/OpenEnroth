@@ -642,9 +642,23 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
  * @return Actual height needed to render
  */
 int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
+    /// Geometry hardcoded constants
+    const int X_LEFT_COLUMN = 12                            // "Effects" label
+        , X_EFFECT_LIST = X_LEFT_COLUMN + 16                // Effects list
+        , X_RIGHT_COLUMN = 150                              // Most right-side labels
+        , X_RIGHT_INDENTED = X_RIGHT_COLUMN + 20            // Resistance labels & extended spells/specials
+        , X_RIGHT_DEFAULT_SPELLS = X_RIGHT_COLUMN + 70      // Spells when "extended" is off
+        , X_RIGHT_DATA = X_RIGHT_COLUMN + 91                // Numbers
+        , X_POS_DOLL = X_LEFT_COLUMN + 1                    // 1px frame
+        , Y_POS_DOLL = 52
+        , SIZE_DOLL = 128
+        , Y_EFFECT_LIST = Y_POS_DOLL + SIZE_DOLL            // Lower edge doll frame - add an empty line!
+        , BOTTOM_MARGIN = 16;                         // Added to measured bottom of rendered text
+
     static Actor pMonsterInfoUI_Doll;
     MonsterInfo &monsterInfo = pActors[uActorID].monsterInfo;
 
+    /*------------------------------- Top and Doll -------------------------------*/
     if (pWindow) {
         Duration actionLen;
         if (monsterInfo.id == pMonsterInfoUI_Doll.monsterInfo.id) {
@@ -676,7 +690,7 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
             }
         }
 
-        Recti doll_rect(pWindow->uFrameX + 13, pWindow->uFrameY + 52, 128, 128);
+        Recti doll_rect(pWindow->uFrameX + X_POS_DOLL, pWindow->uFrameY + Y_POS_DOLL, SIZE_DOLL, SIZE_DOLL);
 
         {
             SpriteFrame *Portrait_Sprite = pSpriteFrameTable->GetFrame(
@@ -686,7 +700,7 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 
             // Draw portrait border
             render->ResetUIClipRect();
-            render->FillRectFast(doll_rect.x, doll_rect.y, 128, 128, colorTable.Black);
+            render->FillRectFast(doll_rect.x, doll_rect.y, SIZE_DOLL, SIZE_DOLL, colorTable.Black);
 
             Recti frameRect(doll_rect.topLeft() - Pointi(1, 1), doll_rect.bottomRight() + Pointi(1, 1));
             render->BeginLines2D();
@@ -715,6 +729,7 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         Actor::DrawHealthBar(&pActors[uActorID], pWindow);
     }
 
+    /*------------------------------- Determine Detail Level -------------------------------*/
     // Debug option for full info
     bool monster_full_informations = engine->config->debug.FullMonsterID.value();
     bool normal_level = monster_full_informations;
@@ -774,16 +789,17 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     // Additionally show Attack2 if Attack1 is visible, and Special Attack (Break, Insanity...) if Spells are visible:
     bool extended = engine->config->settings.ExtendedMonsterInfo.value();
 
-    int pTextHeight = 180;  // Start effects below portrait (see doll_rect: 52+128)
-    SpellId spellIdForBuff = SPELL_NONE;
+    /*------------------------------- Left side -------------------------------*/
+    GUIFont *font = assets->pFontSmallnum.get();
     int lineAdvance = assets->pFontSmallnum->GetHeight() - 3;
-    pTextHeight += lineAdvance;
-    if (pWindow) pWindow->DrawText(assets->pFontSmallnum.get(), {12, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_EFFECTS));
+    int pTextHeight = Y_EFFECT_LIST + lineAdvance;  // Start effects below portrait
+    if (pWindow) pWindow->DrawText(font, {X_LEFT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_EFFECTS));
     pTextHeight += lineAdvance;
     if (!for_effects) {
-        if (pWindow) pWindow->DrawText(assets->pFontSmallnum.get(), {28, pTextHeight}, colorTable.White, localization->GetString(LSTR_UNKNOWN_VALUE));
+        if (pWindow) pWindow->DrawText(font, {X_EFFECT_LIST, pTextHeight}, colorTable.White, localization->GetString(LSTR_UNKNOWN_VALUE));
         pTextHeight += lineAdvance;
     } else {
+        SpellId spellIdForBuff = SPELL_NONE;
         int textId = 0;
         for (ActorBuff buff : pActors[uActorID].buffs.indices()) {
             if (pActors[uActorID].buffs[buff].Active()) {
@@ -871,18 +887,19 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
                         continue;
                 }
                 if (pWindow)
-                    pWindow->DrawText(assets->pFontSmallnum.get(), {28, pTextHeight}, GetSpellColor(spellIdForBuff), localization->GetString(textId));
+                    pWindow->DrawText(font, {X_EFFECT_LIST, pTextHeight}, GetSpellColor(spellIdForBuff), localization->GetString(textId));
                 pTextHeight += lineAdvance;
             }
         }
         if (textId == 0) {
-            if (pWindow) pWindow->DrawText(assets->pFontSmallnum.get(), {28, pTextHeight}, colorTable.White, localization->GetString(LSTR_NONE));
+            if (pWindow) pWindow->DrawText(font, {X_EFFECT_LIST, pTextHeight}, colorTable.White, localization->GetString(LSTR_NONE));
             pTextHeight += lineAdvance;
         }
     }
 
+    /*------------------------------- Right side -------------------------------*/
     int leftTextHeight = pTextHeight;
-    pTextHeight = 52;  // See doll_rect: This is the upper edge of the 'portrait'
+    pTextHeight = Y_POS_DOLL;
 
     std::string hpStr, acStr;
     if (normal_level) {
@@ -892,13 +909,13 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         hpStr = acStr = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
     if (pWindow) {
-        pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_HIT_POINTS));
-        pWindow->DrawText(assets->pFontSmallnum.get(), {241, pTextHeight}, colorTable.White, hpStr);
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_HIT_POINTS));
+        pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, hpStr);
     }
     pTextHeight += lineAdvance;
     if (pWindow) {
-        pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ARMOR_CLASS));
-        pWindow->DrawText(assets->pFontSmallnum.get(), {241, pTextHeight}, colorTable.White, acStr);
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ARMOR_CLASS));
+        pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, acStr);
     }
     pTextHeight += 2 * lineAdvance;
 
@@ -915,13 +932,13 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         attackStr = damageStr = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
     if (pWindow) {
-        pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
-        pWindow->DrawText(assets->pFontSmallnum.get(), {241, pTextHeight}, colorTable.White, attackStr);
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
+        pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, attackStr);
     }
     pTextHeight += lineAdvance;
     if (pWindow) {
-        pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
-        pWindow->DrawText(assets->pFontSmallnum.get(), {241, pTextHeight}, colorTable.White, damageStr);
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
+        pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, damageStr);
     }
     if (expert_level && extended && monsterInfo.attack2Chance > 0 && (monsterInfo.attack2DamageDiceRolls > 0 || monsterInfo.attack2DamageBonus > 0)) {
         attackStr = displayNameForDamageType(monsterInfo.attack2Type, localization);
@@ -933,38 +950,38 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         }
         pTextHeight += lineAdvance;
         if (pWindow) {
-            pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
-            pWindow->DrawText(assets->pFontSmallnum.get(), {241, pTextHeight}, colorTable.White, attackStr);
+            pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
+            pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, attackStr);
         }
         pTextHeight += lineAdvance;
         if (pWindow) {
-            pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
-            pWindow->DrawText(assets->pFontSmallnum.get(), {241, pTextHeight}, colorTable.White, damageStr);
+            pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
+            pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, damageStr);
         }
     }
     if (master_level && extended && monsterInfo.specialAttackType != SPECIAL_ATTACK_NONE) {
         pTextHeight += lineAdvance;
         if (pWindow) {
             auto [str, color] = monsterSpecialAttackDisplay[monsterInfo.specialAttackType];
-            pWindow->DrawText(assets->pFontSmallnum.get(), {200, pTextHeight}, *color, str);
+            pWindow->DrawText(font, {X_RIGHT_INDENTED, pTextHeight}, *color, str);
         }
     }
     if (master_level && extended && monsterInfo.specialAbilityType != MONSTER_SPECIAL_ABILITY_NONE) {
         pTextHeight += lineAdvance;
         if (pWindow) {
             auto [str, color] = monsterSpecialAbilityDisplay[monsterInfo.specialAbilityType];
-            pWindow->DrawText(assets->pFontSmallnum.get(), {200, pTextHeight}, *color, str);
+            pWindow->DrawText(font, {X_RIGHT_INDENTED, pTextHeight}, *color, str);
         }
     }
     pTextHeight += 2 * lineAdvance;
 
     std::string spellTitleStr = localization->GetString(LSTR_SPELL);
     std::string spell1Str, spell2Str;
-    int spellX = extended ? 200 : 220;
+    int spellX = extended ? 200 : X_RIGHT_DEFAULT_SPELLS;
     if (master_level) {
         if (monsterInfo.spell1Id == SPELL_NONE && monsterInfo.spell2Id == SPELL_NONE) {
             spell1Str = localization->GetString(LSTR_NONE);
-            spellX = 241;
+            spellX = X_RIGHT_DATA;
         }
         if (monsterInfo.spell1Id != SPELL_NONE && monsterInfo.spell2Id != SPELL_NONE) {
             spellTitleStr = localization->GetString(LSTR_SPELLS);
@@ -985,12 +1002,12 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         spell1Str = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
     if (pWindow) {
-        pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, spellTitleStr);
-        pWindow->DrawText(assets->pFontSmallnum.get(), {spellX, pTextHeight}, colorTable.White, spell1Str);
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, spellTitleStr);
+        pWindow->DrawText(font, {spellX, pTextHeight}, colorTable.White, spell1Str);
     }
     if (!spell2Str.empty()) {
         pTextHeight += lineAdvance;
-        if (pWindow) pWindow->DrawText(assets->pFontSmallnum.get(), {spellX, pTextHeight}, colorTable.White, spell2Str);
+        if (pWindow) pWindow->DrawText(font, {spellX, pTextHeight}, colorTable.White, spell2Str);
     }
     pTextHeight += 2 * lineAdvance;
 
@@ -1020,7 +1037,7 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         monsterInfo.resPhysical, // Physical & Dark were switched, was a bug?
     };
 
-    if (pWindow) pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_RESISTANCES));
+    if (pWindow) pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_RESISTANCES));
     pTextHeight += lineAdvance;
 
     std::string resStr;
@@ -1041,11 +1058,13 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         }
 
         if (pWindow) {
-            pWindow->DrawText(assets->pFontSmallnum.get(), {170, pTextHeight}, colorTable.Jonquil, resTypes[i]);
-            pWindow->DrawText(assets->pFontSmallnum.get(), {241, pTextHeight}, colorTable.White, resStr);
+            pWindow->DrawText(font, {X_RIGHT_INDENTED, pTextHeight}, colorTable.Jonquil, resTypes[i]);
+            pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, resStr);
         }
         pTextHeight += lineAdvance;
     }
+
+    /*------------------------------- Bottom -------------------------------*/
     if (leftTextHeight > pTextHeight) pTextHeight = leftTextHeight;
     pTextHeight += lineAdvance;
 
@@ -1053,8 +1072,7 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     if (monster_full_informations || pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Active()) {
         if (pWindow) {
             std::string str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_HIT_POINTS), pActors[uActorID].currentHP);
-            //assets->pFontSmallnum->GetLineWidth(str);
-            pWindow->DrawTitleText(assets->pFontSmallnum.get(), 0, pTextHeight, colorTable.White, str, 3);
+            pWindow->DrawTitleText(font, 0, pTextHeight, colorTable.White, str, 3);
         }
         pTextHeight += lineAdvance;
     }
@@ -1063,12 +1081,12 @@ int MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     if (monster_full_informations) {
         if (pWindow) {
             std::string str = fmt::format("ActorId: {}   AI State: {}", uActorID, std::to_underlying(pActors[uActorID].aiState));
-            pWindow->DrawTitleText(assets->pFontSmallnum.get(), 0, pTextHeight, colorTable.White, str, 3);
+            pWindow->DrawTitleText(font, 0, pTextHeight, colorTable.White, str, 3);
         }
         pTextHeight += lineAdvance;
     }
 
-    return pTextHeight + 16;
+    return pTextHeight + BOTTOM_MARGIN;
 }
 
 /**
