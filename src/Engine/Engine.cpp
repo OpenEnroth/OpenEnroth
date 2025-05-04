@@ -85,6 +85,7 @@
 #include "Tables/ChestTable.h"
 
 #include "Utility/String/Transformations.h"
+#include "TurnEngine/TurnEngine.h"
 
 /*
 
@@ -555,6 +556,8 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
     // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?
     attackList.clear();
+    // Clearing actors lists mean turn engine queue will have invalid actor ids
+    std::erase_if(pTurnEngine->pQueue, [](const auto& item) { return item.uPackedID.type() == OBJECT_Actor; });
     int configLimit = engine->config->gameplay.MaxActors.value();
     ai_near_actors_targets_pid.resize(configLimit, Pid());
     ai_near_actors_ids.resize(configLimit);
