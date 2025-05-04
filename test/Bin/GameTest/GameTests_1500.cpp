@@ -600,8 +600,8 @@ GAME_TEST(Issues, Issue1911) {
 
 GAME_TEST(Issues, Issue1912) {
     // Trading a Red Potion for a Wealthy Hat doesn't remove the potion from the inventory.
-    auto potionTape = charTapes.hasItem(ITEM_POTION_CURE_WOUNDS);
-    auto hatTape = charTapes.hasItem(ITEM_QUEST_WEALTHY_HAT);
+    auto potionTape = charTapes.haveItem(ITEM_POTION_CURE_WOUNDS);
+    auto hatTape = charTapes.haveItem(ITEM_QUEST_WEALTHY_HAT);
     auto activeCharTape = tapes.activeCharacterIndex();
     test.playTraceFromTestData("issue_1912.mm7", "issue_1912.json");
     EXPECT_EQ(activeCharTape, tape(1)); // First char was talking.
@@ -715,6 +715,18 @@ GAME_TEST(Issues, Issue1947) {
     EXPECT_EQ(pSpriteObjects[4].containing_item.itemId, ITEM_ALACORN_WAND_OF_FIREBALLS);
     EXPECT_GT(pSpriteObjects[4].containing_item.numCharges, 0);
     EXPECT_GT(pSpriteObjects[4].containing_item.maxCharges, 0);
+}
+
+GAME_TEST(Issues, Issue1956) {
+    // Crash shortly after entering Land of Giants
+    test.playTraceFromTestData("issue_1956.mm7", "issue_1956.json");
+    // trace launches a load of items down the slope
+    // test that they all slow down and all are in bounds
+    const BBoxf limitBox = BBoxf::cubic(Vec3f(), 32768.0f);
+    for (const auto& item : pSpriteObjects) {
+        EXPECT_LT(item.vVelocity.length(), 100.0f);
+        EXPECT_TRUE(limitBox.contains(item.vPosition));
+    }
 }
 
 GAME_TEST(Issues, Issue1961) {

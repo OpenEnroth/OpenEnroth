@@ -454,7 +454,7 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             if (ir.data.give_item_descr.item_id != ITEM_NULL) {
                 item.itemId = ir.data.give_item_descr.item_id;
             }
-            pParty->setHoldingItem(&item);
+            pParty->setHoldingItem(item);
             break;
         }
         case EVENT_ChangeEvent:

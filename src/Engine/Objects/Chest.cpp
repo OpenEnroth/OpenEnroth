@@ -450,8 +450,8 @@ void Chest::OnChestLeftClick() {
                     Pointi corner(invMatrixIndex % chestSize.w, invMatrixIndex / chestSize.w);
                     Pointi offset = mousePos + mouse->pickedItemOffset - chestTable[chest->chestTypeId].inventoryOffset - (corner * 32);
 
-                    auto item = &chest->items[itemindex];
-                    auto tex = assets->getImage_Alpha(item->GetIconName());
+                    const Item &item = chest->items[itemindex];
+                    GraphicsImage *tex = assets->getImage_Alpha(item.GetIconName());
                     offset -= Pointi(itemOffset(tex->width()), itemOffset(tex->height()));
 
                     pParty->setHoldingItem(item, -offset);
@@ -496,7 +496,7 @@ void Chest::GrabItem(bool all) {  // new fucntion to grab items from chest using
                 grabcount++;
                 engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->items[chestitem.itemId].unidentifiedName);
             } else {  // no room so set as holding item
-                pParty->setHoldingItem(&chestitem);
+                pParty->setHoldingItem(chestitem);
                 RemoveItemAtChestIndex(loop);
                 pParty->activeCharacter().playReaction(SPEECH_NO_ROOM);
                 break;

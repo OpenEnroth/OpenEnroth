@@ -1433,6 +1433,11 @@ static void drawBuffPopupWindow() {
             popupWindow.DrawText(assets->pFontComic.get(), {52, yPos}, spellTooltipColors[i], localization->GetPartyBuffName(i));
             DrawBuff_remaining_time_string(yPos, &popupWindow, remaingTime, assets->pFontComic.get());
             stringCount++;
+            if (i == PARTY_BUFF_PROTECTION_FROM_MAGIC && engine->config->gameplay.ShowProtectionMagicPower.value()) {
+                yPos = stringCount * assets->pFontComic->GetHeight() + 40;
+                popupWindow.DrawText(assets->pFontComic.get(), {32, yPos}, colorTable.White, "\r020" + localization->FormatString(LSTR_REMAINING_POWER, pParty->pPartyBuffs[i].power));
+                stringCount++;
+            }
         }
     }
 }
@@ -2342,7 +2347,7 @@ void Inventory_ItemPopupAndAlchemy() {
                 Item bottle;
                 bottle.itemId = ITEM_POTION_BOTTLE;
                 bottle.flags = ITEM_IDENTIFIED;
-                pParty->setHoldingItem(&bottle);
+                pParty->setHoldingItem(bottle);
             }
             return;
         }

@@ -105,8 +105,8 @@ void GUIWindow_LloydsBook::Update() {
     }
 
     for (size_t beaconId = 0; beaconId < _maxBeacons; beaconId++) {
-        if ((beaconId >= pPlayer->vBeacons.size()) && _recallingBeacon) {
-            break;
+        if (_recallingBeacon && !pPlayer->vBeacons[beaconId]) {
+            continue;
         }
 
         pWindow.uFrameWidth = 92;
@@ -118,8 +118,8 @@ void GUIWindow_LloydsBook::Update() {
 
         render->DrawTextureNew(lloydsBeacons_SomeXs[beaconId] / 640.0f, lloydsBeacons_SomeYs[beaconId] / 480.0f, ui_book_lloyds_border);
 
-        if (beaconId < pPlayer->vBeacons.size()) {
-            LloydBeacon &beacon = pPlayer->vBeacons[beaconId];
+        if (pPlayer->vBeacons[beaconId]) {
+            LloydBeacon &beacon = pPlayer->vBeacons[beaconId].value();
             render->DrawTextureNew(lloydsBeaconsPreviewXs[beaconId] / 640.0f, lloydsBeaconsPreviewYs[beaconId] / 480.0f, beacon.image);
             std::string Str = pMapStats->pInfos[beacon.mapId].name;
             int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(Str, pWindow.uFrameWidth, 0);
@@ -154,11 +154,11 @@ void GUIWindow_LloydsBook::flipButtonClicked(bool isRecalling) {
 void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
     Character &character = pParty->pCharacters[_casterPid.id()];
 
-    if (beaconId >= character.vBeacons.size()) {
+    if (!character.vBeacons[beaconId]) {
         return;
     }
 
-    LloydBeacon &beacon = character.vBeacons[beaconId];
+    LloydBeacon &beacon = *character.vBeacons[beaconId];
     if (_recallingBeacon) {
         if (beacon.uBeaconTime) {
             std::string mapName = pMapStats->pInfos[beacon.mapId].name;
@@ -181,7 +181,7 @@ void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
 
 void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
     Character &character = pParty->pCharacters[_casterPid.id()];
-    if ((character.vBeacons.size() <= beaconId) && _recallingBeacon) {
+    if (_recallingBeacon && !character.vBeacons[beaconId]) {
         return;
     }
 
@@ -198,19 +198,20 @@ void GUIWindow_LloydsBook::installOrRecallBeacon(int beaconId) {
     }
     pAudioPlayer->playSpellSound(SPELL_WATER_LLOYDS_BEACON, false, SOUND_MODE_UI);
     if (_recallingBeacon) {
-        if (engine->_currentLoadedMapId != character.vBeacons[beaconId].mapId) {
+        LloydBeacon &beacon = *character.vBeacons[beaconId];
+        if (engine->_currentLoadedMapId != beacon.mapId) {
             // TODO(Nik-RE-dev): need separate function for teleportation to other maps
             AutoSave();
             onMapLeave();
-            engine->_transitionMapId = character.vBeacons[beaconId].mapId;
+            engine->_transitionMapId = beacon.mapId;
             dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
             uGameState = GAME_STATE_CHANGE_LOCATION;
-            engine->_teleportPoint.setTeleportTarget(character.vBeacons[beaconId]._partyPos, character.vBeacons[beaconId]._partyViewYaw, character.vBeacons[beaconId]._partyViewPitch, 0);
+            engine->_teleportPoint.setTeleportTarget(beacon._partyPos, beacon._partyViewYaw, beacon._partyViewPitch, 0);
         } else {
-            pParty->pos = character.vBeacons[beaconId]._partyPos;
+            pParty->pos = beacon._partyPos;
             pParty->uFallStartZ = pParty->pos.z;
-            pParty->_viewYaw = character.vBeacons[beaconId]._partyViewYaw;
-            pParty->_viewPitch = character.vBeacons[beaconId]._partyViewPitch;
+            pParty->_viewYaw = beacon._partyViewYaw;
+            pParty->_viewPitch = beacon._partyViewPitch;
         }
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         pGUIWindow_CurrentMenu->Release();

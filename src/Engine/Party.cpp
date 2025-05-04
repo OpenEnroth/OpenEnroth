@@ -189,9 +189,11 @@ int Party::canActCount() const {
     return result;
 }
 
-void Party::setHoldingItem(Item *pItem, Pointi offset) {
+void Party::setHoldingItem(const Item &item, Pointi offset) {
+    assert(offset.x <= 0 && offset.y <= 0);
+
     placeHeldItemInInventoryOrDrop();
-    pPickedItem = *pItem;
+    pPickedItem = item;
     mouse->SetCursorBitmapFromItemID(pPickedItem.itemId);
     mouse->pickedItemOffset = offset;
 }

@@ -234,7 +234,7 @@ void ItemInteraction(unsigned int item_id) {
             pParty->_questBits.set(QBIT_REMOVE_FEAR_FOUND);
         }
         if (!pParty->addItemToParty(&pSpriteObjects[item_id].containing_item)) {
-            pParty->setHoldingItem(&pSpriteObjects[item_id].containing_item);
+            pParty->setHoldingItem(pSpriteObjects[item_id].containing_item);
         }
     }
     SpriteObject::OnInteraction(item_id);

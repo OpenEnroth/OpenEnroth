@@ -83,6 +83,10 @@ bool Localization::Initialize() {
         this->localization_strings[LSTR_ENERGY] = "Energy";
     if (this->localization_strings[LSTR_IMMOLATION_DAMAGE].empty())
         this->localization_strings[LSTR_IMMOLATION_DAMAGE] = "Immolation deals %d damage to %d target(s)";
+    if (this->localization_strings[LSTR_REMAINING_POWER].empty())
+        this->localization_strings[LSTR_REMAINING_POWER] = "Remaining power: %d";
+    if (this->localization_strings[LSTR_PLAYER_IS_NOT_ACTIVE].empty())
+        this->localization_strings[LSTR_PLAYER_IS_NOT_ACTIVE] = "That player is not active";
 
     InitializeMm6ItemCategories();
 

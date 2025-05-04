@@ -76,10 +76,10 @@ void LoadGame(int uSlot) {
     for (size_t i = 0; i < 4; i++) {
         Character *player = &pParty->pCharacters[i];
         for (size_t j = 0; j < 5; j++) {
-            if (j >= player->vBeacons.size()) {
+            if (!player->vBeacons[j]) {
                 continue;
             }
-            LloydBeacon &beacon = player->vBeacons[j];
+            LloydBeacon &beacon = *player->vBeacons[j];
             std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
             //beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
             beacon.image = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(pSave_LOD.get(), str));
@@ -190,12 +190,12 @@ std::pair<SaveGameHeader, Blob> CreateSaveData(bool resetWorld, std::string_view
     for (size_t i = 0; i < 4; ++i) {  // 4 - players
         Character *player = &pParty->pCharacters[i];
         for (size_t j = 0; j < 5; ++j) {  // 5 - images
-            if (j >= player->vBeacons.size()) {
+            if (!player->vBeacons[j]) {
                 continue;
             }
-            LloydBeacon *beacon = &player->vBeacons[j];
-            GraphicsImage *image = beacon->image;
-            if ((beacon->uBeaconTime.isValid()) && (image != nullptr)) {
+            LloydBeacon &beacon = *player->vBeacons[j];
+            GraphicsImage *image = beacon.image;
+            if (beacon.uBeaconTime.isValid() && image != nullptr) {
                 assert(image->rgba());
                 std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
                 lodWriter.write(str, pcx::encode(image->rgba()));

@@ -455,7 +455,7 @@ class Character {
     Duration portraitTimeLength;
     int16_t portraitImageIndex;
     TalkAnimation talkAnimation;
-    std::vector<LloydBeacon> vBeacons;
+    std::array<std::optional<LloydBeacon>, 5> vBeacons;
     char uNumDivineInterventionCastsThisDay;
     char uNumArmageddonCasts;
     char uNumFireSpikeCasts;
@@ -470,4 +470,3 @@ int CharacterCreation_GetUnspentAttributePointCount();
  * @offset 0x49387A
  */
 int cycleCharacter(bool backwards);
-

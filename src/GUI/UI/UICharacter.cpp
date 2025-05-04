@@ -1891,7 +1891,7 @@ void OnPaperdollLeftClick() {
                     _this = pParty->pPickedItem;  // copy hold item to this
                     pParty->activeCharacter().pInventoryItemList[freeslot].equippedSlot = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();  // drop holding item
-                    pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[freeslot]); // set holding item to ring to swap out
+                    pParty->setHoldingItem(pParty->activeCharacter().pInventoryItemList[freeslot]); // set holding item to ring to swap out
                     _this.equippedSlot = ITEM_SLOT_RING6;
                     pParty->activeCharacter().pInventoryItemList[freeslot] = _this;  // swap from this in
                     pParty->activeCharacter().pEquipment[ringSlot(5)] = freeslot + 1;  // anchor
@@ -1923,7 +1923,7 @@ void OnPaperdollLeftClick() {
                             _this = pParty->pPickedItem;  // copy hold item to this
                             pParty->activeCharacter().pInventoryItemList[freeslot].equippedSlot = ITEM_SLOT_INVALID;
                             pParty->pPickedItem.Reset();  // drop holding item
-                            pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[freeslot]); // set holding item to ring to swap out
+                            pParty->setHoldingItem(pParty->activeCharacter().pInventoryItemList[freeslot]); // set holding item to ring to swap out
                             _this.equippedSlot = pos;
                             pParty->activeCharacter().pInventoryItemList[freeslot] = _this;  // swap from this in
                             pParty->activeCharacter().pEquipment[pos] = freeslot + 1;  // anchor
@@ -1951,7 +1951,7 @@ void OnPaperdollLeftClick() {
                     _this = pParty->pPickedItem;
                     pParty->activeCharacter().pInventoryItemList[shieldequip].equippedSlot = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();
-                    pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[shieldequip]);
+                    pParty->setHoldingItem(pParty->activeCharacter().pInventoryItemList[shieldequip]);
                     _this.equippedSlot = ITEM_SLOT_OFF_HAND;
                     pParty->activeCharacter().pInventoryItemList[shieldequip] = _this;
                     pParty->activeCharacter().pEquipment[ITEM_SLOT_OFF_HAND] = shieldequip + 1;
@@ -1974,7 +1974,7 @@ void OnPaperdollLeftClick() {
                     _this = pParty->pPickedItem;
                     pParty->activeCharacter().pInventoryItemList[mainhandequip].equippedSlot = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();
-                    pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[mainhandequip]);
+                    pParty->setHoldingItem(pParty->activeCharacter().pInventoryItemList[mainhandequip]);
                     _this.equippedSlot = ITEM_SLOT_OFF_HAND;
                     pParty->activeCharacter().pInventoryItemList[freeslot] = _this;
                     pParty->activeCharacter().pEquipment[ITEM_SLOT_OFF_HAND] = freeslot + 1;
@@ -2003,7 +2003,7 @@ void OnPaperdollLeftClick() {
                                 _this = pParty->pPickedItem;
                                 pParty->activeCharacter().pInventoryItemList[shieldequip].equippedSlot = ITEM_SLOT_INVALID;
                                 pParty->pPickedItem.Reset();
-                                pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[shieldequip]);
+                                pParty->setHoldingItem(pParty->activeCharacter().pInventoryItemList[shieldequip]);
                                 _this.equippedSlot = ITEM_SLOT_OFF_HAND;
                                 pParty->activeCharacter().pInventoryItemList[shieldequip] = _this;
                                 pParty->activeCharacter().pEquipment[ITEM_SLOT_OFF_HAND] = shieldequip + 1;
@@ -2039,7 +2039,7 @@ void OnPaperdollLeftClick() {
                 _this = pParty->pPickedItem;
                 pParty->activeCharacter().pInventoryItemList[mainhandequip].equippedSlot = ITEM_SLOT_INVALID;
                 pParty->pPickedItem.Reset();
-                pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[mainhandequip]);
+                pParty->setHoldingItem(pParty->activeCharacter().pInventoryItemList[mainhandequip]);
                 _this.equippedSlot = ITEM_SLOT_MAIN_HAND;
                 pParty->activeCharacter().pInventoryItemList[mainhandequip] = _this;
                 pParty->activeCharacter().pEquipment[ITEM_SLOT_MAIN_HAND] = mainhandequip + 1;
@@ -2069,7 +2069,7 @@ void OnPaperdollLeftClick() {
                     _this = pParty->pPickedItem;
                     pParty->activeCharacter().pInventoryItemList[mainhandequip].equippedSlot = ITEM_SLOT_INVALID;
                     pParty->pPickedItem.Reset();
-                    pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[mainhandequip]);
+                    pParty->setHoldingItem(pParty->activeCharacter().pInventoryItemList[mainhandequip]);
                     _this.equippedSlot = ITEM_SLOT_MAIN_HAND;
                     pParty->activeCharacter().pInventoryItemList[mainhandequip] = _this;
                     pParty->activeCharacter().pEquipment[ITEM_SLOT_MAIN_HAND] = mainhandequip + 1;
@@ -2082,7 +2082,7 @@ void OnPaperdollLeftClick() {
                             _this = pParty->pPickedItem;
                             pParty->activeCharacter().pInventoryItemList[shieldequip].equippedSlot = ITEM_SLOT_INVALID;
                             pParty->pPickedItem.Reset();
-                            pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[shieldequip]);
+                            pParty->setHoldingItem(pParty->activeCharacter().pInventoryItemList[shieldequip]);
                             _this.equippedSlot = ITEM_SLOT_MAIN_HAND;
                             pParty->activeCharacter().pInventoryItemList[freeslot] = _this;
                             pParty->activeCharacter().pEquipment[ITEM_SLOT_OFF_HAND] = 0;
@@ -2165,7 +2165,7 @@ void OnPaperdollLeftClick() {
             AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
         } else {
             if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
-                pParty->setHoldingItem(pitem);
+                pParty->setHoldingItem(*pitem);
                 pParty->activeCharacter().pEquipment[pitem->equippedSlot] = 0;
                 pitem->Reset();
 
@@ -2239,7 +2239,7 @@ void OnPaperdollLeftClick() {
                 AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(2);
             } else {
                 if (!ptr_50C9A4_ItemToEnchant) {  // снять вещь
-                    pParty->setHoldingItem(&pParty->activeCharacter().pInventoryItemList[v34 - 1]);
+                    pParty->setHoldingItem(pParty->activeCharacter().pInventoryItemList[v34 - 1]);
                     pParty->activeCharacter().pEquipment[pParty->activeCharacter().pInventoryItemList[v34 - 1].equippedSlot] = 0;
                     pParty->activeCharacter().pInventoryItemList[v34 - 1].Reset();
                 }
@@ -2247,7 +2247,7 @@ void OnPaperdollLeftClick() {
         } else {  // снять лук
             if (pParty->activeCharacter().pEquipment[ITEM_SLOT_BOW]) {
                 _this = pParty->activeCharacter().pInventoryItemList[pParty->activeCharacter().pEquipment[ITEM_SLOT_BOW] - 1];
-                pParty->setHoldingItem(&_this);
+                pParty->setHoldingItem(_this);
                 _this.Reset();
                 pParty->activeCharacter().pEquipment[ITEM_SLOT_BOW] = 0;
             }

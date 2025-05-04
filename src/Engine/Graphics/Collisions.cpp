@@ -425,7 +425,7 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
             continue;
 
         float distance = std::abs(pFace->facePlane.signedDistanceTo(collision_state.position_lo));
-        if(distance > collision_state.move_distance + 16)
+        if (distance > collision_state.move_distance + collision_state.radius_lo)
             continue;
 
         pSectorsArray[totalSectors++] =
@@ -438,11 +438,11 @@ void CollideIndoorWithGeometry(bool ignore_ethereal) {
 
         int totalFaces = pSector->uNumFloors + pSector->uNumWalls + pSector->uNumCeilings;
         for (int j = 0; j < totalFaces; j++) {
-            BLVFace *face = &pIndoor->pFaces[pSector->pFloors[j]];
+            int face_id = pSector->pFloors[j];
+            BLVFace *face = &pIndoor->pFaces[face_id];
             if (face->isPortal() || !collision_state.bbox.intersects(face->pBounding))
                 continue;
 
-            int face_id = pSector->pFloors[j];
             // TODO(pskelton): Modify game data face attribs to ethereal eventually - hack so that secret tunnel under prison bed can be accessed
             if (engine->_currentLoadedMapId == MAP_CASTLE_HARMONDALE)
                 if (face_id == 385 || face_id == 405 || face_id == 4602 || face_id == 4606)
