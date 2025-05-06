@@ -838,6 +838,22 @@ GAME_TEST(Issues, Issue1983) {
     EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Letter from Mr. Stantley") && text.contains("is beyond my meager knowledge"); });
 }
 
+GAME_TEST(Issues, Issue1989) {
+    // Crash entering Wormthrax' cave in turn mode
+    auto mapTape = tapes.map();
+    auto turnTape = tapes.turnBasedMode();
+
+    test.playTraceFromTestData("issue_1989.mm7", "issue_1989.json", [] { EXPECT_TRUE([] {
+        for (const auto& act : pActors)
+            if ((pParty->pos - act.pos).lengthSqr() < 400) // troll is nearby
+                return true;
+        return false; });
+    });
+    EXPECT_EQ(mapTape, tape(MAP_TATALIA, MAP_WROMTHRAXS_CAVE));
+    EXPECT_EQ(turnTape, tape(false, true)); // turn mode
+    EXPECT_EQ(pActors.size(), 1); // here be dragon
+}
+
 GAME_TEST(Issues, Issue1990) {
     // Test opening the Tularean Forest half-hidden chest, which generates a black potion.
     auto screenTape = tapes.screen();
