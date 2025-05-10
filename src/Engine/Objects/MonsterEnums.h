@@ -483,6 +483,9 @@ enum class SpecialAttackType : uint8_t {
     SPECIAL_ATTACK_AGING = 21,
     SPECIAL_ATTACK_MANA_DRAIN = 22,
     SPECIAL_ATTACK_FEAR = 23,
+
+    SPECIAL_ATTACK_FIRST = SPECIAL_ATTACK_CURSE,
+    SPECIAL_ATTACK_LAST = SPECIAL_ATTACK_FEAR
 };
 using enum SpecialAttackType;
 
