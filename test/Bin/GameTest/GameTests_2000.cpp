@@ -6,6 +6,45 @@
 
 // 2000
 
+GAME_TEST(Issues, Issue2002) {
+    // Character recovery is carried over when loading a saved game in turn based mode
+    // start game and enter turn based mode
+    game.startNewGame();
+    game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
+    game.tick(15);
+    for (int i = 0; i < 3; ++i) {
+        game.pressKey(PlatformKey::KEY_A); // Attack with 3 chars
+        game.tick();
+        game.releaseKey(PlatformKey::KEY_A);
+        game.tick();
+    }
+
+    // check recovery
+    EXPECT_TRUE(pParty->bTurnBasedModeOn);
+    for (int i = 0; i < 3; ++i) {
+        EXPECT_TRUE(pParty->pCharacters[i].timeToRecovery > 0_ticks);
+    }
+    EXPECT_FALSE(pParty->pCharacters[3].timeToRecovery > 0_ticks);
+
+    // now load a saved game
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+    game.tick(2);
+    game.pressGuiButton("GameMenu_LoadGame");
+    game.tick(10);
+    game.pressGuiButton("LoadMenu_Slot0");
+    game.tick(2);
+    game.pressGuiButton("LoadMenu_Load");
+    game.tick(2);
+    game.skipLoadingScreen();
+    game.tick(2);
+
+    // check recovery again
+    for (int i = 0; i < 4; i++) {
+        EXPECT_FALSE(pParty->pCharacters[i].timeToRecovery > 0_ticks);
+    }
+    EXPECT_FALSE(pParty->bTurnBasedModeOn);
+}
+
 GAME_TEST(Issues, Issue2017) {
     // Bats move through closed doors in Barrow XII
     test.playTraceFromTestData("issue_2017.mm7", "issue_2017.json");
