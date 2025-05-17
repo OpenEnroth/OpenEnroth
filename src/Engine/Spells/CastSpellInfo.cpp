@@ -1277,7 +1277,7 @@ void CastSpellInfoHelpers::castSpell() {
                             break;
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-					auto pos = pParty->pos + Vec3f(0, 0, pParty->height / 3);
+                    auto pos = pParty->pos + Vec3f(0, 0, pParty->height / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pos);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
@@ -2702,7 +2702,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     // TODO(pskelton): was pParty->uPartyHeight / 2
-					auto pos = pParty->pos + Vec3f(0, 0, pParty->height / 3);
+                    auto pos = pParty->pos + Vec3f(0, 0, pParty->height / 3);
                     pSpellSprite.uSectorID = pIndoor->GetSector(pos);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
