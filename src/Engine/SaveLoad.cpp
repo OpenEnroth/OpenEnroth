@@ -35,6 +35,7 @@
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Lod/LodWriter.h"
+#include "TurnEngine/TurnEngine.h"
 
 SavegameList *pSavegameList = new SavegameList;
 
@@ -57,6 +58,10 @@ void LoadGame(int uSlot) {
 
     // TODO(captainurist): remained from Party::Reset, doesn't really belong here (or in Party::Reset).
     current_character_screen_window = WINDOW_CharacterWindow_Stats;
+    if (pParty->bTurnBasedModeOn) {
+        pTurnEngine->End(false);
+        pParty->bTurnBasedModeOn = false;
+    }
 
     std::string filename = fmt::format("saves/{}", pSavegameList->pFileList[uSlot]);
 
