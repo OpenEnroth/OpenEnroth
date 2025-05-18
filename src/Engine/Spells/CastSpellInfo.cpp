@@ -1092,18 +1092,19 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.uSectorID = pIndoor->GetSector(pos);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
+                    // uFacing is used to determine the sprite translation and is the same for each
+                    pSpellSprite.uFacing = (short)target_direction.uYawAngle;
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     int spell_spray_angle_start = ONE_THIRD_PI / -2;
                     int spell_spray_angle_end = ONE_THIRD_PI / 2;
+                    int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     while (spell_spray_angle_start <= spell_spray_angle_end) {
+                        // vPosition is modified by Create so reset for each loop
                         pSpellSprite.vPosition = pos;
                         pSpellSprite.timeSinceCreated = Duration::randomRealtimeMilliseconds(grng, 500);
-                        pSpellSprite.uFacing = (short)target_direction.uYawAngle;
-                        int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                        int yaw = spell_spray_angle_start + target_direction.uYawAngle;
-                        if (pSpellSprite.Create(yaw, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
+                        if (pSpellSprite.Create(spell_spray_angle_start + target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
                             pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
                         }
@@ -1281,13 +1282,14 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.uSectorID = pIndoor->GetSector(pos);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
+                    // uFacing is used to determine the sprite translation and is the same for each
+                    pSpellSprite.uFacing = target_direction.uYawAngle;
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     if (shots_num == 1) {
                         pSpellSprite.vPosition = pos;
-                        pSpellSprite.uFacing = target_direction.uYawAngle;
                         if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
                             pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
@@ -1295,17 +1297,15 @@ void CastSpellInfoHelpers::castSpell() {
                     } else {
                         int spell_spray_angle_start = ONE_THIRD_PI / -2;
                         int spell_spray_angle_end = ONE_THIRD_PI / 2;
-                        if (spell_spray_angle_start <= spell_spray_angle_end) {
-                            do {
-                                pSpellSprite.vPosition = pos;
-                                pSpellSprite.uFacing = target_direction.uYawAngle;
-                                if (pSpellSprite.Create(spell_spray_angle_start + target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
-                                    pParty->bTurnBasedModeOn) {
-                                    ++pTurnEngine->pending_actions;
-                                }
-                                spell_spray_angle_start += ONE_THIRD_PI / (shots_num - 1);
-                            } while (spell_spray_angle_start <= spell_spray_angle_end);
-                        }
+                        do {
+                            // vPosition is modified by Create so reset for each loop
+                            pSpellSprite.vPosition = pos;
+                            if (pSpellSprite.Create(spell_spray_angle_start + target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
+                                pParty->bTurnBasedModeOn) {
+                                ++pTurnEngine->pending_actions;
+                            }
+                            spell_spray_angle_start += ONE_THIRD_PI / (shots_num - 1);
+                        } while (spell_spray_angle_start <= spell_spray_angle_end);
                     }
                     break;
                 }
@@ -2706,23 +2706,23 @@ void CastSpellInfoHelpers::castSpell() {
                     pSpellSprite.uSectorID = pIndoor->GetSector(pos);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
+                    // uFacing is used to determine the sprite translation and is the same for each
+                    pSpellSprite.uFacing = target_direction.uYawAngle;
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     int spell_spray_angle_start = ONE_THIRD_PI / -2;
                     int spell_spray_angle_end = ONE_THIRD_PI / 2;
-                    if (spell_spray_angle_start <= spell_spray_angle_end) {
-                        do {
-                            pSpellSprite.uFacing = target_direction.uYawAngle;
-                            pSpellSprite.vPosition = pos;
-                            int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                            if (pSpellSprite.Create(spell_spray_angle_start + target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
-                                pParty->bTurnBasedModeOn) {
-                                ++pTurnEngine->pending_actions;
-                            }
-                            spell_spray_angle_start += ONE_THIRD_PI / (blades_cound - 1);
-                        } while (spell_spray_angle_start <= spell_spray_angle_end);
-                    }
+                    int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                    do {
+                        // vPosition is modified by Create so reset for each loop
+                        pSpellSprite.vPosition = pos;
+                        if (pSpellSprite.Create(spell_spray_angle_start + target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
+                            pParty->bTurnBasedModeOn) {
+                            ++pTurnEngine->pending_actions;
+                        }
+                        spell_spray_angle_start += ONE_THIRD_PI / (blades_cound - 1);
+                    } while (spell_spray_angle_start <= spell_spray_angle_end);
                     break;
                 }
 
