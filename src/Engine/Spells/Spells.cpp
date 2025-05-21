@@ -234,7 +234,7 @@ IndexedArray<SpellData, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pSpellDatas = {
     {SPELL_EARTH_ROCK_BLAST,            SpellData(15, 15, 15, 15,   90,   90,   90,   80,  0,  8, 0, CHARACTER_SKILL_MASTERY_MASTER)},
     {SPELL_EARTH_TELEKINESIS,           SpellData(20, 20, 20, 20,  150,  150,  150,  150,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
     {SPELL_EARTH_DEATH_BLOSSOM,         SpellData(25, 25, 25, 25,  100,  100,  100,   90, 20,  1, 0, CHARACTER_SKILL_MASTERY_MASTER)},
-    {SPELL_EARTH_MASS_DISTORTION,       SpellData(30, 30, 30, 30,   90,   90,   90,   90, 25,  0, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)},
+    {SPELL_EARTH_MASS_DISTORTION,       SpellData(30, 30, 30, 30,   90,   90,   90,   90, 25,  2, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)},
 
     {SPELL_SPIRIT_DETECT_LIFE,          SpellData( 1,  1,  1,  1,  100,  100,  100,  100,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
     {SPELL_SPIRIT_BLESS,                SpellData( 2,  2,  2,  2,  100,  100,  100,  100,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
@@ -809,7 +809,7 @@ int CalcSpellDamage(SpellId uSpellID, int spellLevel, CharacterSkillMastery skil
         }
         result = grng->randomDice(spellLevel, diceSides);
     } else if (uSpellID == SPELL_EARTH_MASS_DISTORTION) {
-        result = currentHp * (pSpellDatas[SPELL_EARTH_MASS_DISTORTION].baseDamage + 2 * spellLevel) / 100;
+        result = currentHp * (pSpellDatas[SPELL_EARTH_MASS_DISTORTION].baseDamage + pSpellDatas[uSpellID].bonusSkillDamage * spellLevel) / 100;
     } else {
         result = pSpellDatas[uSpellID].baseDamage + grng->randomDice(spellLevel, pSpellDatas[uSpellID].bonusSkillDamage);
     }
