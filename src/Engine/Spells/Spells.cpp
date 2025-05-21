@@ -812,6 +812,8 @@ int CalcSpellDamage(SpellId uSpellID, int spellLevel, CharacterSkillMastery skil
         result = pSpellDatas[uSpellID].baseDamage + grng->randomDice(spellLevel, 2); // does 2 damage per point of skill at GM
     } else if (uSpellID == SPELL_EARTH_MASS_DISTORTION) {
         result = currentHp * (pSpellDatas[SPELL_EARTH_MASS_DISTORTION].baseDamage + pSpellDatas[uSpellID].bonusSkillDamage * spellLevel) / 100;
+    } else if (uSpellID == SPELL_SPIRIT_SPIRIT_LASH) {
+        result = pSpellDatas[uSpellID].baseDamage + spellLevel + grng->randomDice(spellLevel, pSpellDatas[uSpellID].bonusSkillDamage - 1); // damage is 2-8 per point of skill
     } else {
         result = pSpellDatas[uSpellID].baseDamage + grng->randomDice(spellLevel, pSpellDatas[uSpellID].bonusSkillDamage);
     }
