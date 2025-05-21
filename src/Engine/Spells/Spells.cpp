@@ -808,6 +808,8 @@ int CalcSpellDamage(SpellId uSpellID, int spellLevel, CharacterSkillMastery skil
                 return 0;
         }
         result = grng->randomDice(spellLevel, diceSides);
+    } else if (uSpellID == SPELL_EARTH_DEATH_BLOSSOM && skillMastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+        result = pSpellDatas[uSpellID].baseDamage + grng->randomDice(spellLevel, 2); // does 2 damage per point of skill at GM
     } else if (uSpellID == SPELL_EARTH_MASS_DISTORTION) {
         result = currentHp * (pSpellDatas[SPELL_EARTH_MASS_DISTORTION].baseDamage + pSpellDatas[uSpellID].bonusSkillDamage * spellLevel) / 100;
     } else {
