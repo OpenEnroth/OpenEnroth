@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 ExternalProject_Add(OpenEnroth_TestData
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}/test_data_tmp
         GIT_REPOSITORY https://github.com/OpenEnroth/OpenEnroth_TestData.git
-        GIT_TAG 20e62ba936aaeb2a03bec2d217516057e95c1d7e
+        GIT_TAG 57bf8f40b2785fed95dd019b4f9126a5d4a43325
         SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/test_data
         CONFIGURE_COMMAND ""
         BUILD_COMMAND ""
