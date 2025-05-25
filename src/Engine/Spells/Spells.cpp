@@ -196,7 +196,7 @@ IndexedArray<SpellData, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pSpellDatas = {
     {SPELL_FIRE_FIREBALL,               SpellData( 8 , 8,  8,  8,  100,  100,   90,   80,  0,  6, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
     {SPELL_FIRE_FIRE_SPIKE,             SpellData(10, 10, 10, 10,  150,  150,  150,  150,  0,  6, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
     {SPELL_FIRE_IMMOLATION,             SpellData(15, 15, 15, 15,  120,  120,  120,  120,  0,  6, 0, CHARACTER_SKILL_MASTERY_MASTER)},
-    {SPELL_FIRE_METEOR_SHOWER,          SpellData(20, 20, 20, 20,  100,  100,  100,   90,  8,  1, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_FIRE_METEOR_SHOWER,          SpellData(20, 20, 20, 20,  100,  100,  100,   90,  0,  8, 0, CHARACTER_SKILL_MASTERY_MASTER)},
     {SPELL_FIRE_INFERNO,                SpellData(25, 25, 25, 25,  100,  100,  100,   90, 12,  1, 0, CHARACTER_SKILL_MASTERY_MASTER)},
     {SPELL_FIRE_INCINERATE,             SpellData(30, 30, 30, 30,   90,   90,   90,   90, 15, 15, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)},
 
@@ -234,7 +234,7 @@ IndexedArray<SpellData, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pSpellDatas = {
     {SPELL_EARTH_ROCK_BLAST,            SpellData(15, 15, 15, 15,   90,   90,   90,   80,  0,  8, 0, CHARACTER_SKILL_MASTERY_MASTER)},
     {SPELL_EARTH_TELEKINESIS,           SpellData(20, 20, 20, 20,  150,  150,  150,  150,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
     {SPELL_EARTH_DEATH_BLOSSOM,         SpellData(25, 25, 25, 25,  100,  100,  100,   90, 20,  1, 0, CHARACTER_SKILL_MASTERY_MASTER)},
-    {SPELL_EARTH_MASS_DISTORTION,       SpellData(30, 30, 30, 30,   90,   90,   90,   90, 25,  0, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)},
+    {SPELL_EARTH_MASS_DISTORTION,       SpellData(30, 30, 30, 30,   90,   90,   90,   90, 25,  2, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)},
 
     {SPELL_SPIRIT_DETECT_LIFE,          SpellData( 1,  1,  1,  1,  100,  100,  100,  100,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
     {SPELL_SPIRIT_BLESS,                SpellData( 2,  2,  2,  2,  100,  100,  100,  100,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
@@ -257,7 +257,7 @@ IndexedArray<SpellData, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> pSpellDatas = {
     {SPELL_MIND_BERSERK,                SpellData(10, 10, 10, 10,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_EXPERT)},
     {SPELL_MIND_MASS_FEAR,              SpellData(15, 15, 15, 15,   80,   80,   80,   80,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
     {SPELL_MIND_CURE_INSANITY,          SpellData(20, 20, 20, 20,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_MASTER)},
-    {SPELL_MIND_PSYCHIC_SHOCK,          SpellData(25, 25, 25, 25,  110,  110,  110,  100, 12,  1, 0, CHARACTER_SKILL_MASTERY_MASTER)},
+    {SPELL_MIND_PSYCHIC_SHOCK,          SpellData(25, 25, 25, 25,  110,  110,  110,  100, 12, 12, 0, CHARACTER_SKILL_MASTERY_MASTER)},
     {SPELL_MIND_ENSLAVE,                SpellData(30, 30, 30, 30,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_GRANDMASTER)},
 
     {SPELL_BODY_CURE_WEAKNESS,          SpellData( 1,  1,  1,  1,  120,  120,  120,  120,  0,  0, 0, CHARACTER_SKILL_MASTERY_NOVICE)},
@@ -808,8 +808,12 @@ int CalcSpellDamage(SpellId uSpellID, int spellLevel, CharacterSkillMastery skil
                 return 0;
         }
         result = grng->randomDice(spellLevel, diceSides);
+    } else if (uSpellID == SPELL_EARTH_DEATH_BLOSSOM && skillMastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+        result = pSpellDatas[uSpellID].baseDamage + spellLevel * 2; // does 2 damage per point of skill at GM
     } else if (uSpellID == SPELL_EARTH_MASS_DISTORTION) {
-        result = currentHp * (pSpellDatas[SPELL_EARTH_MASS_DISTORTION].baseDamage + 2 * spellLevel) / 100;
+        result = currentHp * (pSpellDatas[SPELL_EARTH_MASS_DISTORTION].baseDamage + pSpellDatas[uSpellID].bonusSkillDamage * spellLevel) / 100;
+    } else if (uSpellID == SPELL_SPIRIT_SPIRIT_LASH) {
+        result = pSpellDatas[uSpellID].baseDamage + spellLevel + grng->randomDice(spellLevel, pSpellDatas[uSpellID].bonusSkillDamage - 1); // damage is 2-8 per point of skill
     } else {
         result = pSpellDatas[uSpellID].baseDamage + grng->randomDice(spellLevel, pSpellDatas[uSpellID].bonusSkillDamage);
     }
