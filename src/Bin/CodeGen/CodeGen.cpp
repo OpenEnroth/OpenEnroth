@@ -516,7 +516,7 @@ int runLstrCodegen(const CodeGenOptions &options, GameResourceManager *resourceM
         if (chunks.size() != 2)
             throw Exception("Invalid localization file");
 
-        std::string_view id = chunks[0];
+        int id = fromString<int>(chunks[0]);
         std::string text = trimRemoveQuotes(chunks[1]);
 
         std::string enumName = toUpperCaseEnum(text);
@@ -524,6 +524,26 @@ int runLstrCodegen(const CodeGenOptions &options, GameResourceManager *resourceM
             auto pos = enumName.rfind('_', 40);
             if (pos != std::string_view::npos)
                 enumName = enumName.substr(0, pos);
+        }
+
+        if (id == 72) {
+            enumName = "EMPTY_SAVE";
+        } else if (id == 99 || id == 101 || id == 103 || id == 106) {
+            enumName = "RACE_" + enumName;
+        } else if (id == 379 || id == 392 || id == 399 || id == 402 || id == 434) {
+            enumName = "REPUTATION_" + enumName;
+        } else if (id >= 506 && id <= 509) {
+            enumName = "NAME_" + enumName;
+        } else if (id >= 578 && id <= 581) {
+            enumName = "ARENA_DIFFICULTY_" + enumName;
+        } else if (id == 630) {
+            enumName = "UNKNOWN_VALUE";
+        } else if (id == 675) {
+            enumName = "GOOD_ENDING";
+        } else if (id == 676) {
+            enumName = "EVIL_ENDING";
+        } else if (enumName == "DAY" || enumName == "SIR" || enumName == "LADY") {
+            enumName += std::isupper(text[0]) ? "_CAPITALIZED" : "_LOWERCASE";
         }
 
         if (text.size() > 80) {
@@ -536,7 +556,7 @@ int runLstrCodegen(const CodeGenOptions &options, GameResourceManager *resourceM
             if (c < '\0' || c > '\x7f')
                 c = ' ';
 
-        map.insert(fromString<int>(id), enumName, "\"" + text + "\"");
+        map.insert(id, enumName, "\"" + text + "\"");
     }
 
     map.dump(stdout, "LSTR_");
