@@ -26,6 +26,7 @@ CodeGenOptions CodeGenOptions::parse(int argc, char **argv) {
     app->add_subcommand("music", "Generate music ids enum.", result.subcommand, SUBCOMMAND_MUSIC)->fallthrough();
     app->add_subcommand("decorations", "Generate decorations ids enum.", result.subcommand, SUBCOMMAND_DECORATIONS)->fallthrough();
     app->add_subcommand("speech_portraits", "Generate speech / portraits table.", result.subcommand, SUBCOMMAND_SPEECH_PORTRAITS)->fallthrough();
+    app->add_subcommand("localization_strings", "Generate localization strings enum.", result.subcommand, SUBCOMMAND_LSTR_ID)->fallthrough();
 
     app->parse(argc, argv, result.helpPrinted);
     return result;
