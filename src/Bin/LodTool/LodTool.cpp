@@ -66,8 +66,9 @@ std::pair<Blob, std::string> decodeLodEntry(Blob entry, std::string name, bool r
         return {png::encode(sprite.image), name + ".png"};
     }
 
+    // We have pcx images inside compressed entries, so to support this we just re-run the function.
     if (format == LOD_FILE_COMPRESSED || format == LOD_FILE_PSEUDO_IMAGE)
-        return {lod::decodeCompressed(entry), name};
+        return decodeLodEntry(lod::decodeCompressed(entry), name, raw);
 
     return {std::move(entry), std::move(name)};
 }
