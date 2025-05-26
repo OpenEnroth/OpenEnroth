@@ -75,7 +75,7 @@ static void initSpellSprite(SpriteObject *spritePtr,
 /**
  * Notify that spell casting failed.
  */
-static void spellFailed(CastSpellInfo *pCastSpell, int error_str_id) {
+static void spellFailed(CastSpellInfo *pCastSpell, LstrId error_str_id) {
     engine->_statusBar->setEvent(error_str_id);
     pAudioPlayer->playUISound(SOUND_spellfail0201);
     pCastSpell->uSpellID = SPELL_NONE;
