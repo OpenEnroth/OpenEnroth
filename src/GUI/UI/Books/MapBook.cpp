@@ -135,7 +135,7 @@ void GUIWindow_MapBook::Update() {
         map_window.DrawTitleText(assets->pFontBookTitle.get(), -14, 12, ui_book_map_title_color, pMapStats->pInfos[engine->_currentLoadedMapId].name, 3);
     }
 
-    auto party_coordinates = localization->FormatString(LSTR_FMT_X_D_Y_D, static_cast<int>(pParty->pos.x), static_cast<int>(pParty->pos.y));
+    auto party_coordinates = localization->FormatString(LSTR_X_D_Y_D, static_cast<int>(pParty->pos.x), static_cast<int>(pParty->pos.y));
 
     map_window.uFrameX = 0;
     map_window.DrawTitleText(assets->pFontComic.get(), 0, 320, ui_book_map_coordinates_color, party_coordinates, 0);

@@ -638,7 +638,7 @@ void MM7_LoadLods() {
 
     // TODO(captainurist):
     // on error in `open` we had this:
-    // Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
+    // Error(localization->GetString(LSTR_MIGHT_AND_MAGIC_VII_IS_HAVING_TROUBLE), localization->GetString(LSTR_REINSTALL_NECESSARY));
     // however, at this point localization isn't initialized yet, so this was a guaranteed crash.
     // Implement proper user-facing error reporting!
 
@@ -1125,7 +1125,7 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
             } else {
                 if (!character.hasUnderwaterSuitEquipped()) {
                     character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE); // TODO(pskelton): fire damage?
-                    engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
+                    engine->_statusBar->setEventShort(LSTR_YOU_ARE_DROWNING);
                 } else {
                     character.playEmotion(PORTRAIT_SMILE, 0_ticks);
                 }
@@ -1140,7 +1140,7 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
         for (Character &character : pParty->pCharacters) {
             character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
         }
-        engine->_statusBar->setEventShort(LSTR_ON_FIRE);
+        engine->_statusBar->setEventShort(LSTR_YOU_ARE_BURNING);
     }
 
     RegeneratePartyHealthMana();

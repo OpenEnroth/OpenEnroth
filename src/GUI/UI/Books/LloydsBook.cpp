@@ -162,7 +162,7 @@ void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
     if (_recallingBeacon) {
         if (beacon.uBeaconTime) {
             std::string mapName = pMapStats->pInfos[beacon.mapId].name;
-            engine->_statusBar->setPermanent(LSTR_FMT_RECALL_TO_S, mapName);
+            engine->_statusBar->setPermanent(LSTR_RECALL_TO_S, mapName);
         }
     } else {
         std::string mapName = "Not in Map Stats";
@@ -172,9 +172,9 @@ void GUIWindow_LloydsBook::hintBeaconSlot(int beaconId) {
 
         if (beacon.uBeaconTime) {
             std::string mapName2 = pMapStats->pInfos[beacon.mapId].name;
-            engine->_statusBar->setPermanent(LSTR_FMT_SET_S_OVER_S, mapName, mapName2);
+            engine->_statusBar->setPermanent(LSTR_SET_S_OVER_S, mapName, mapName2);
         } else {
-            engine->_statusBar->setPermanent(LSTR_FMT_SET_S_TO_S, mapName);
+            engine->_statusBar->setPermanent(LSTR_SET_TO_S, mapName);
         }
     }
 }

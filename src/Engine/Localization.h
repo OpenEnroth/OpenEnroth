@@ -78,7 +78,7 @@ class Localization {
         case CHARACTER_SKILL_MASTERY_NOVICE: return GetString(LSTR_NORMAL);
         case CHARACTER_SKILL_MASTERY_EXPERT: return GetString(LSTR_EXPERT);
         case CHARACTER_SKILL_MASTERY_MASTER: return GetString(LSTR_MASTER);
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER: return GetString(LSTR_GRAND);
+        case CHARACTER_SKILL_MASTERY_GRANDMASTER: return GetString(LSTR_GRAND_1);
         default:
             assert(false);
             return dummy_string;

@@ -437,7 +437,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     std::array<std::string, 3> text;
 
     text[0] = localization->FormatString(
-        LSTR_FMT_TYPE_S,
+        LSTR_TYPE_S,
         pItemTable->items[inspect_item->itemId].unidentifiedName);
 
     switch (inspect_item->type()) {
@@ -493,12 +493,12 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
             text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->GetDamageDice());
         } else if (inspect_item->standardEnchantment) {
             text[2] = fmt::format("{}: {} +{}",
-                                  localization->GetString(LSTR_SPECIAL_2),
+                                  localization->GetString(LSTR_SPECIAL),
                                   pItemTable->standardEnchantments[*inspect_item->standardEnchantment].attributeName,
                                   inspect_item->standardEnchantmentStrength);
         } else if (inspect_item->specialEnchantment != ITEM_ENCHANTMENT_NULL) {
             text[2] = fmt::format("{}: {}",
-                                  localization->GetString(LSTR_SPECIAL_2),
+                                  localization->GetString(LSTR_SPECIAL),
                                   pItemTable->specialEnchantments[inspect_item->specialEnchantment].description);
         } else if (inspect_item->isWand()) {
             text[2] = fmt::sprintf(localization->GetString(LSTR_FMT_S_U_OUT_OF_U),
@@ -1022,7 +1022,7 @@ std::string CharacterUI_GetSkillDescText(int uPlayerID, CharacterSkillType uPlay
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)),
-        assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND)),
+        assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND_1)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_BONUS_2))
     });
 
@@ -1160,10 +1160,10 @@ void CharacterUI_StatsTab_ShowHint() {
 
             std::string str;
             if (eligbleLevel > pParty->activeCharacter().uLevel) {
-                str = localization->FormatString(LSTR_ELIGIBLE_TO_LEVELUP, eligbleLevel);
+                str = localization->FormatString(LSTR_YOU_ARE_ELIGIBLE_TO_TRAIN_TO_U, eligbleLevel);
             }
             int nextLevelExp = GetExperienceRequiredForLevel(eligbleLevel) - pParty->activeCharacter().experience;
-            str += "\n" + localization->FormatString(LSTR_XP_UNTIL_NEXT_LEVEL, nextLevelExp, eligbleLevel + 1);
+            str += "\n" + localization->FormatString(LSTR_YOU_NEED_D_MORE_EXPERIENCE_TO_TRAIN_TO, nextLevelExp, eligbleLevel + 1);
             str = std::string(localization->getExpDescription()) + "\n \n" + str;
 
             CharacterUI_DrawTooltip(localization->GetString(LSTR_EXPERIENCE), str);
@@ -1269,7 +1269,7 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)),
-        assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND))
+        assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND_1))
     });
 
     std::string str = fmt::format(
@@ -1278,7 +1278,7 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
         localization->GetString(LSTR_NORMAL), v5 + 3, v5 + 10, spell->pBasicSkillDesc,
         localization->GetString(LSTR_EXPERT), v5 + 3, v5 + 10, spell->pExpertSkillDesc,
         localization->GetString(LSTR_MASTER), v5 + 3, v5 + 10, spell->pMasterSkillDesc,
-        localization->GetString(LSTR_GRAND), v5 + 3, v5 + 10, spell->pGrandmasterSkillDesc
+        localization->GetString(LSTR_GRAND_1), v5 + 3, v5 + 10, spell->pGrandmasterSkillDesc
     );
     spell_info_window.uFrameHeight += assets->pFontSmallnum->CalcTextHeight(
         str, spell_info_window.uFrameWidth, 0
@@ -1410,14 +1410,14 @@ void showSpellbookInfo(ItemId spellbook) {
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)),
-        assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND))});
+        assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND_1))});
 
     std::string str = fmt::format("{}\n\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}",
                                   pSpellStats->pInfos[spell].pDescription,
                                   localization->GetString(LSTR_NORMAL), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pBasicSkillDesc,
                                   localization->GetString(LSTR_EXPERT), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pExpertSkillDesc,
                                   localization->GetString(LSTR_MASTER), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pMasterSkillDesc,
-                                  localization->GetString(LSTR_GRAND), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pGrandmasterSkillDesc);
+                                  localization->GetString(LSTR_GRAND_1), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pGrandmasterSkillDesc);
 
     popup.uFrameHeight += assets->pFontSmallnum->CalcTextHeight(str, popup.uFrameWidth, 0);
     if (popup.uFrameHeight < 150) {
@@ -1704,7 +1704,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     }
 
     auto active_spells = localization->FormatString(
-        LSTR_FMT_ACTIVE_SPELLS_S,
+        LSTR_ACTIVE_SPELLS_S,
         uFramesetIDa == 0 ? localization->GetString(LSTR_NONE) : "");
     window->DrawText(assets->pFontArrus.get(), {14, 114}, colorTable.White, active_spells);
 }
@@ -1800,7 +1800,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
             if (!pParty->activeCharacter().CanAct()) {
                 static std::string hint_reference;
                 hint_reference = localization->FormatString(
-                    LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
+                    LSTR_S_IS_IN_NO_CONDITION_TO_S,
                     pParty->activeCharacter().name,
                     localization->GetString(LSTR_IDENTIFY_ITEMS)
                 );
@@ -1971,12 +1971,12 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                             break;
                         case UIMSG_PlayerCreationClickPlus:  // Plus button info
                             pStr = localization->GetString(LSTR_ADD);
-                            popup_window.sHint = localization->GetString(LSTR_SKILL_INCREASE_HINT);
+                            popup_window.sHint = localization->GetString(LSTR_ADDS_A_POINT_FROM_THE_HIGHLIGHTED_SKILL);
                             break;
                         case UIMSG_PlayerCreationClickMinus:  // Minus button
                                                               // info
                             pStr = localization->GetString(LSTR_SUBTRACT);
-                            popup_window.sHint = localization->GetString(LSTR_SKILL_DECREASE_HINT);
+                            popup_window.sHint = localization->GetString(LSTR_SUBTRACTS_A_POINT_FROM_THE_HIGHLIGHTED);
                             break;
                         case UIMSG_PlayerCreationSelectActiveSkill:  // Available
                                                                      // skill
@@ -2001,12 +2001,12 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                             break;
                         case UIMSG_PlayerCreationClickOK:  // OK Info
                             popup_window.sHint = localization->GetString(
-                                LSTR_ACCEPT_PARTY_HINT);
+                                LSTR_CLICK_HERE_TO_ACCEPT_THIS_PARTY_AND);
                             pStr = localization->GetString(LSTR_OK_BUTTON);
                             break;
                         case UIMSG_PlayerCreationClickReset:  // Clear info
                             popup_window.sHint = localization->GetString(
-                                LSTR_RESET_HINT);
+                                LSTR_CLEARS_ALL_PARTY_STATS_AND_SKILLS);
                             pStr = localization->GetString(LSTR_CLEAR_BUTTON);
                             break;
                         case UIMSG_PlayerCreation_SelectAttribute:  // Character
@@ -2160,7 +2160,7 @@ void Inventory_ItemPopupAndAlchemy() {
     // check character condition
     if (!pParty->activeCharacter().CanAct()) {
         static std::string hint_reference;
-        hint_reference = localization->FormatString(LSTR_FMT_S_IS_IN_NO_CODITION_TO_S, pParty->activeCharacter().name,
+        hint_reference = localization->FormatString(LSTR_S_IS_IN_NO_CONDITION_TO_S, pParty->activeCharacter().name,
                                                     localization->GetString(LSTR_IDENTIFY_ITEMS));
 
         GUIWindow message_window;
@@ -2252,7 +2252,7 @@ void Inventory_ItemPopupAndAlchemy() {
             if (pParty->activeCharacter().CanAct()) {
                 pParty->activeCharacter().playReaction(SPEECH_POTION_EXPLODE);
             }
-            engine->_statusBar->setEvent(LSTR_OOPS);
+            engine->_statusBar->setEvent(LSTR_OOOPS);
             mouse->RemoveHoldingItem();
             rightClickItemActionPerformed = true;
             return;

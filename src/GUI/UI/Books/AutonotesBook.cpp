@@ -70,7 +70,7 @@ GUIWindow_AutonotesBook::GUIWindow_AutonotesBook() : GUIWindow_Book() {
     pBtn_Book_6 = CreateButton({pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 226}, {50, 34}, 1, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_SEER), Io::InputAction::Invalid, localization->GetString(LSTR_SEER_NOTES), {ui_book_button6_on});
     pBtn_Autonotes_Misc = CreateButton({pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 264}, {50, 34}, 1, 0,
-        UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_MISC), Io::InputAction::Invalid, localization->GetString(LSTR_MISC_NOTES), {ui_book_button7_on});
+        UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_MISC), Io::InputAction::Invalid, localization->GetString(LSTR_MISCELLANEOUS_NOTES), {ui_book_button7_on});
     pBtn_Autonotes_Instructors = CreateButton({pViewport->uViewportTL_X + 397, pViewport->uViewportTL_Y + 302}, {50, 34}, 1, 0,
         UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NOTES_INSTRUCTORS), Io::InputAction::Invalid, localization->GetString(LSTR_INSTRUCTORS), {ui_book_button8_on});
 
@@ -206,7 +206,7 @@ void GUIWindow_AutonotesBook::Update() {
     autonotes_window.uFrameY = game_viewport_y;
     autonotes_window.uFrameZ = game_viewport_z;
     autonotes_window.uFrameW = game_viewport_w;
-    autonotes_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_autonotes_title_color, localization->GetString(LSTR_AUTONOTES), 3);
+    autonotes_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_autonotes_title_color, localization->GetString(LSTR_AUTO_NOTES), 3);
 
     // for other text
     autonotes_window.uFrameX = 48;

@@ -574,7 +574,7 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(int uActiveCharacter, Scree
     pCharacterScreen_ExitBtn = CreateButton({pViewport->uViewportTL_X + 371, pViewport->uViewportTL_Y + 308},
                                             paperdoll_dbrds[1]->size(), 1, 0,
                                             UIMSG_ClickExitCharacterWindowBtn, 0, Io::InputAction::Invalid,
-                                            localization->GetString(LSTR_DIALOGUE_EXIT),
+                                            localization->GetString(LSTR_EXIT),
                                             {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
     CreateButton({0, 0}, {476, 345}, 1, 122, UIMSG_InventoryLeftClick, 0);
     pCharacterScreen_DetalizBtn = CreateButton({600, 300}, {30, 30}, 1, 0,
@@ -750,7 +750,7 @@ TargetedSpellUI *CastSpellInfo::GetCastSpellInInventoryWindow() {
     current_screen_type = SCREEN_CASTING;
     TargetedSpellUI *CS_inventory_window = new GUIWindow_Inventory_CastSpell({0, 0}, render->GetRenderDimensions(), this, "");
     pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton({394, 318}, {75, 33}, 1, 0,
-        UIMSG_ClickExitCharacterWindowBtn, 0, Io::InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT),
+        UIMSG_ClickExitCharacterWindowBtn, 0, Io::InputAction::Invalid, localization->GetString(LSTR_EXIT),
         {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
     CS_inventory_window->CreateButton({0, 0}, {0x1DCu, 0x159u}, 1, 122, UIMSG_InventoryLeftClick, 0);
     pCharacterScreen_DollBtn = CS_inventory_window->CreateButton({0x1DCu, 0}, {0xA4u, 0x159u}, 1, 0, UIMSG_ClickPaperdoll, 0);

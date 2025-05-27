@@ -98,9 +98,9 @@ GUIWindow_Travel::GUIWindow_Travel() : GUIWindow_Transition(WINDOW_Travel, SCREE
     transition_ui_icon = assets->getImage_Solid("outside");
 
     if (engine->_currentLoadedMapId != MAP_INVALID) {
-        hint = localization->FormatString(LSTR_FMT_LEAVE_S, pMapStats->pInfos[engine->_currentLoadedMapId].name);
+        hint = localization->FormatString(LSTR_LEAVE_S, pMapStats->pInfos[engine->_currentLoadedMapId].name);
     } else {
-        hint = localization->GetString(LSTR_DIALOGUE_EXIT);
+        hint = localization->GetString(LSTR_EXIT);
     }
 
     createButtons(hint, localization->GetString(LSTR_STAY_IN_THIS_AREA), UIMSG_OnTravelByFoot, UIMSG_CancelTravelByFoot);
@@ -126,12 +126,12 @@ void GUIWindow_Travel::Update() {
 
         std::string str;
         if (getTravelTime() == 1) {
-            str = localization->FormatString(LSTR_FMT_IT_TAKES_D_DAY_TO_S, 1, pMapStats->pInfos[destinationMap].name);
+            str = localization->FormatString(LSTR_IT_WILL_TAKE_D_DAY_TO_CROSS_TO_S, 1, pMapStats->pInfos[destinationMap].name);
         } else {
-            str = localization->FormatString(LSTR_FMT_IT_TAKES_D_DAYS_TO_S, getTravelTime(), pMapStats->pInfos[destinationMap].name);
+            str = localization->FormatString(LSTR_IT_WILL_TAKE_D_DAYS_TO_TRAVEL_TO_S, getTravelTime(), pMapStats->pInfos[destinationMap].name);
         }
         str += "\n \n";
-        str += localization->FormatString(LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S, pMapStats->pInfos[engine->_currentLoadedMapId].name);
+        str += localization->FormatString(LSTR_DO_YOU_WISH_TO_LEAVE_S_1, pMapStats->pInfos[engine->_currentLoadedMapId].name);
 
         travel_window.DrawTitleText(assets->pFontCreate.get(), 0, (212 - assets->pFontCreate->CalcTextHeight(str, travel_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
     }
@@ -162,9 +162,9 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
             destMap = pMapStats->pInfos[engine->_currentLoadedMapId].fileName;
         }
         if (pMapStats->GetMapInfo(destMap) != MAP_INVALID) {
-            hint = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(destMap)].name);
+            hint = localization->FormatString(LSTR_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(destMap)].name);
         } else {
-            hint = localization->GetString(LSTR_DIALOGUE_EXIT);
+            hint = localization->GetString(LSTR_EXIT);
             if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[houseTable[transitionHouse].uAnimationID].uRoomSoundId)
                 playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
         }
@@ -174,9 +174,9 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
             _transitionStringId = getSpecialTransferMessageIndex(locationName);
     } else if (!getSpecialTransferMessageIndex(locationName)) { // transfer to outdoors - no special message
         if (engine->_currentLoadedMapId != MAP_INVALID) {
-            hint = localization->FormatString(LSTR_FMT_LEAVE_S, pMapStats->pInfos[engine->_currentLoadedMapId].name);
+            hint = localization->FormatString(LSTR_LEAVE_S, pMapStats->pInfos[engine->_currentLoadedMapId].name);
         } else {
-            hint = localization->GetString(LSTR_DIALOGUE_EXIT);
+            hint = localization->GetString(LSTR_EXIT);
         }
         if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[houseTable[transitionHouse].uAnimationID].uRoomSoundId)
             playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
@@ -214,7 +214,7 @@ void GUIWindow_IndoorEntryExit::Update() {
         unsigned int vertMargin = (212 - assets->pFontCreate->CalcTextHeight(pTransitionStrings[_transitionStringId], transition_window.uFrameWidth, 0)) / 2 + 101;
         transition_window.DrawTitleText(assets->pFontCreate.get(), 0, vertMargin, colorTable.White, pTransitionStrings[_transitionStringId], 3);
     } else if (map_id != MAP_INVALID) {
-        std::string str = localization->FormatString(LSTR_FMT_DO_YOU_WISH_TO_LEAVE_S_2, pMapStats->pInfos[map_id].name);
+        std::string str = localization->FormatString(LSTR_DO_YOU_WISH_TO_LEAVE_S_2, pMapStats->pInfos[map_id].name);
         unsigned int vertMargin = (212 - assets->pFontCreate->CalcTextHeight(str, transition_window.uFrameWidth, 0)) / 2 + 101;
         transition_window.DrawTitleText(assets->pFontCreate.get(), 0, vertMargin, colorTable.White, str, 3);
     } else {

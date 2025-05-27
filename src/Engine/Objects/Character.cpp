@@ -662,7 +662,7 @@ bool Character::HasSkill(CharacterSkillType skill) const {
         return true;
     } else {
         // TODO(captainurist): this doesn't belong to a getter!!!
-        engine->_statusBar->setEvent(LSTR_FMT_S_DOES_NOT_HAVE_SKILL, this->name);
+        engine->_statusBar->setEvent(LSTR_S_DOES_NOT_HAVE_THE_SKILL, this->name);
         return false;
     }
 }
@@ -1483,7 +1483,7 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
     if (grng->random(100) < 5 || fineIfFailed > currMaxItemValue ||
         actroPtr->ActorEnemy()) {  // busted
         Actor::AggroSurroundingPeasants(uActorID, 1);
-        engine->_statusBar->setEvent(LSTR_FMT_S_WAS_CAUGHT_STEALING, this->name);
+        engine->_statusBar->setEvent(LSTR_S_WAS_CAUGHT_STEALING, this->name);
         return STEAL_BUSTED;
     } else {
         int random = grng->random(100);
@@ -1491,7 +1491,7 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
         if (random >= 70) {  // stealing gold
             if (!actroPtr->items[3].isGold()) {
                 // no gold to steal - fail
-                engine->_statusBar->setEvent(LSTR_FMT_S_FAILED_TO_STEAL, this->name);
+                engine->_statusBar->setEvent(LSTR_S_FAILED_TO_STEAL_ANYTHING, this->name);
                 return STEAL_NOTHING;
             }
 
@@ -1509,9 +1509,9 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
 
             if (stolenGold) {
                 pParty->partyFindsGold(stolenGold, GOLD_RECEIVE_NOSHARE_SILENT);
-                engine->_statusBar->setEvent(LSTR_FMT_S_STOLE_D_GOLD, this->name, stolenGold);
+                engine->_statusBar->setEvent(LSTR_S_STOLE_D_GOLD, this->name, stolenGold);
             } else {
-                engine->_statusBar->setEvent(LSTR_FMT_S_FAILED_TO_STEAL, this->name);
+                engine->_statusBar->setEvent(LSTR_S_FAILED_TO_STEAL_ANYTHING, this->name);
             }
 
             return STEAL_SUCCESS;
@@ -1543,7 +1543,7 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
             }
         }
 
-        engine->_statusBar->setEvent(LSTR_FMT_S_FAILED_TO_STEAL, this->name);
+        engine->_statusBar->setEvent(LSTR_S_FAILED_TO_STEAL_ANYTHING, this->name);
         return STEAL_NOTHING;
     }
 }
@@ -3398,7 +3398,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             playerAffected->Heal(2);
             playerAffected->playReaction(SPEECH_DRINK_POTION);
         } else {
-            engine->_statusBar->setEvent(LSTR_FMT_S_CANT_BE_USED_THIS_WAY, pParty->pPickedItem.GetDisplayName());
+            engine->_statusBar->setEvent(LSTR_S_CAN_NOT_BE_USED_THAT_WAY, pParty->pPickedItem.GetDisplayName());
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
@@ -3637,7 +3637,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                 break;
 
             default:
-                engine->_statusBar->setEvent(LSTR_FMT_S_CANT_BE_USED_THIS_WAY, pParty->pPickedItem.GetDisplayName());
+                engine->_statusBar->setEvent(LSTR_S_CAN_NOT_BE_USED_THAT_WAY, pParty->pPickedItem.GetDisplayName());
                 pAudioPlayer->playUISound(SOUND_error);
                 return;
         }
@@ -3664,12 +3664,12 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             return;
         }
         if (!playerAffected->CanAct()) {
-            engine->_statusBar->setEvent(LSTR_FMT_THAT_PLAYER_IS_S, localization->GetCharacterConditionName(playerAffected->GetMajorConditionIdx()));
+            engine->_statusBar->setEvent(LSTR_THAT_PLAYER_IS_S, localization->GetCharacterConditionName(playerAffected->GetMajorConditionIdx()));
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
         if (engine->IsUnderwater()) {
-            engine->_statusBar->setEvent(LSTR_CANT_DO_UNDERWATER);
+            engine->_statusBar->setEvent(LSTR_YOU_CAN_NOT_DO_THAT_WHILE_YOU_ARE);
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
@@ -3700,12 +3700,12 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
     if (pParty->pPickedItem.isBook()) {
         SpellId bookSpellId = spellForSpellbook(pParty->pPickedItem.itemId);
         if (playerAffected->bHaveSpell[bookSpellId]) {
-            engine->_statusBar->setEvent(LSTR_FMT_YOU_ALREADY_KNOW_S_SPELL, pParty->pPickedItem.GetDisplayName());
+            engine->_statusBar->setEvent(LSTR_YOU_ALREADY_KNOW_THE_S_SPELL, pParty->pPickedItem.GetDisplayName());
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
         if (!playerAffected->CanAct()) {
-            engine->_statusBar->setEvent(LSTR_FMT_THAT_PLAYER_IS_S, localization->GetCharacterConditionName(playerAffected->GetMajorConditionIdx()));
+            engine->_statusBar->setEvent(LSTR_THAT_PLAYER_IS_S, localization->GetCharacterConditionName(playerAffected->GetMajorConditionIdx()));
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
@@ -3715,7 +3715,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         CombinedSkillValue val = playerAffected->getSkillValue(skill);
 
         if (requiredMastery > val.mastery() || val.level() == 0) {
-            engine->_statusBar->setEvent(LSTR_FMT_DONT_HAVE_SKILL_TO_LEAN_S, pParty->pPickedItem.GetDisplayName());
+            engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_THE_SKILL_TO_LEARN_S, pParty->pPickedItem.GetDisplayName());
             playerAffected->playReaction(SPEECH_CANT_LEARN_SPELL);
             return;
         }
@@ -3753,7 +3753,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             return;
         }
 
-        engine->_statusBar->setEvent(LSTR_FMT_THAT_PLAYER_IS_S, localization->GetCharacterConditionName(playerAffected->GetMajorConditionIdx()));
+        engine->_statusBar->setEvent(LSTR_THAT_PLAYER_IS_S, localization->GetCharacterConditionName(playerAffected->GetMajorConditionIdx()));
         pAudioPlayer->playUISound(SOUND_error);
         return;
     }
@@ -3888,7 +3888,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             TeleportToNWCDungeon();
             return;
         } else {
-            engine->_statusBar->setEvent(LSTR_FMT_S_CANT_BE_USED_THIS_WAY, pParty->pPickedItem.GetDisplayName());
+            engine->_statusBar->setEvent(LSTR_S_CAN_NOT_BE_USED_THAT_WAY, pParty->pPickedItem.GetDisplayName());
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
@@ -4443,7 +4443,7 @@ void Character::SetVariable(EvtVariable var_type, signed int var_value) {
         case VAR_RandomGold:
             gold = grng->random(var_value) + 1;
             pParty->SetGold(gold);
-            engine->_statusBar->setEvent(LSTR_FMT_YOU_HAVE_D_GOLD, gold);
+            engine->_statusBar->setEvent(LSTR_YOU_HAVE_LU_GOLD, gold);
             GameUI_DrawFoodAndGold();
             return;
         case VAR_FixedFood:
@@ -4453,7 +4453,7 @@ void Character::SetVariable(EvtVariable var_type, signed int var_value) {
         case VAR_RandomFood:
             food = grng->random(var_value) + 1;
             pParty->SetFood(food);
-            engine->_statusBar->setEvent(LSTR_FMT_YOU_HAVE_D_FOOD, food);
+            engine->_statusBar->setEvent(LSTR_YOU_HAVE_LU_FOOD, food);
             GameUI_DrawFoodAndGold();
             PlayAwardSound_Anim();
             return;
@@ -4976,7 +4976,7 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
             if (val == 0) val = 1;
             food = grng->random(val) + 1;
             pParty->GiveFood(food);
-            engine->_statusBar->setEvent(LSTR_FMT_YOU_FIND_D_FOOD, food);
+            engine->_statusBar->setEvent(LSTR_YOU_FIND_LU_FOOD, food);
             GameUI_DrawFoodAndGold();
             PlayAwardSound();
             return;
@@ -5082,7 +5082,7 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
             return;
         case VAR_FixedFood:
             pParty->GiveFood(val);
-            engine->_statusBar->setEvent(LSTR_FMT_YOU_FIND_D_FOOD, val);
+            engine->_statusBar->setEvent(LSTR_YOU_FIND_LU_FOOD, val);
             PlayAwardSound();
             return;
         case VAR_MightBonus:
@@ -5586,7 +5586,7 @@ void Character::SubtractVariable(EvtVariable VarNum, signed int pValue) {
             if (randGold > pParty->GetGold())
                 randGold = pParty->GetGold();
             pParty->TakeGold(randGold);
-            engine->_statusBar->setEvent(LSTR_FMT_YOU_LOSE_D_GOLD, randGold);
+            engine->_statusBar->setEvent(LSTR_YOU_LOSE_LU_GOLD, randGold);
             GameUI_DrawFoodAndGold();
             return;
         case VAR_FixedFood:
@@ -5598,7 +5598,7 @@ void Character::SubtractVariable(EvtVariable VarNum, signed int pValue) {
             if (randFood > pParty->GetFood())
                 randFood = pParty->GetFood();
             pParty->TakeFood(randFood);
-            engine->_statusBar->setEvent(LSTR_FMT_YOU_LOSE_D_FOOD, randFood);
+            engine->_statusBar->setEvent(LSTR_YOU_LOSE_LU_FOOD, randFood);
             GameUI_DrawFoodAndGold();
             PlayAwardSound_AnimSubtract();
             return;
@@ -6233,7 +6233,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
         // GM unarmed 1% chance to evade attacks per skill point
         if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
             grng->random(100) < playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).level()) {
-            engine->_statusBar->setEvent(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name);
+            engine->_statusBar->setEvent(LSTR_S_EVADES_DAMAGE, playerPtr->name);
             playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
             return;
         }
@@ -6389,7 +6389,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                 // GM unarmed 1% chance to evade attack per skill point
                 if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
                     grng->random(100) < playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).level()) {
-                    engine->_statusBar->setEvent(LSTR_FMT_S_EVADES_DAMAGE, playerPtr->name);
+                    engine->_statusBar->setEvent(LSTR_S_EVADES_DAMAGE, playerPtr->name);
                     playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
                     return;
                 }

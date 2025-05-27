@@ -816,7 +816,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
             case 5:
                 time = pParty->GetPlayingTime().toCivilTime();
                 if (time.hour >= 11 && time.hour < 20) {
-                    result += localization->GetString(LSTR_DAY);
+                    result += localization->GetString(LSTR_DAY_LOWERCASE);
                 } else if (time.hour >= 5 && time.hour < 11) {
                     result += localization->GetString(LSTR_MORNING);
                 } else {
@@ -832,9 +832,9 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 break;
             case 7:
                 if (pPlayer->uSex == SEX_FEMALE)
-                    result += localization->GetString(LSTR_LADY);
+                    result += localization->GetString(LSTR_LADY_CAPITALIZED);
                 else
-                    result += localization->GetString(LSTR_SIR);
+                    result += localization->GetString(LSTR_SIR_CAPITALIZED);
                 break;
             case 8:
                 for (int bit : possibleAddressingAwardBits) {
@@ -858,7 +858,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 break;
             case 10:
                 if (pPlayer->uSex == SEX_FEMALE)
-                    result += localization->GetString(LSTR_LADY);
+                    result += localization->GetString(LSTR_LADY_CAPITALIZED);
                 else
                     result += localization->GetString(LSTR_LORD);
                 break;
@@ -989,7 +989,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                     break;
                 }
                 time = a6->toCivilTime();
-                result += localization->FormatString(LSTR_FMT_S_D_D, localization->GetMonthName(time.month - 1), time.day, time.year);
+                result += localization->FormatString(LSTR_S_D_D, localization->GetMonthName(time.month - 1), time.day, time.year);
                 break;
             case 31:
             case 32:
@@ -1012,7 +1012,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 }
 
                 time = pParty->PartyTimes._s_times[mask - 51].toCivilTime();
-                result += localization->FormatString(LSTR_FMT_S_D_D, localization->GetMonthName(time.month - 1), time.day, time.year);
+                result += localization->FormatString(LSTR_S_D_D, localization->GetMonthName(time.month - 1), time.day, time.year);
                 break;
             }
         }
@@ -1142,7 +1142,7 @@ void UI_Create() {
     game_ui_tome_autonotes = assets->getImage_ColorKey("ib-td2-A");
     pBtn_Autonotes = pPrimaryWindow->CreateButton({527, 353}, game_ui_tome_autonotes->size(), 1, 0,
                                                   UIMSG_OpenAutonotes, 0, Io::InputAction::Autonotes,
-                                                  localization->GetString(LSTR_AUTONOTES), { game_ui_tome_autonotes });
+                                                  localization->GetString(LSTR_AUTO_NOTES), { game_ui_tome_autonotes });
 
     game_ui_tome_maps = assets->getImage_ColorKey("ib-td3-A");
     pBtn_Maps = pPrimaryWindow->CreateButton({546, 353}, game_ui_tome_maps->size(), 1, 0,
@@ -1201,7 +1201,7 @@ void UI_Create() {
 
 
 std::string NameAndTitle(std::string_view name, std::string_view title) {
-    return localization->FormatString(LSTR_FMT_S_THE_S, name, title);
+    return localization->FormatString(LSTR_S_THE_S, name, title);
 }
 
 

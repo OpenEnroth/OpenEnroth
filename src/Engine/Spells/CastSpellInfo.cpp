@@ -223,7 +223,7 @@ void CastSpellInfoHelpers::castSpell() {
         }
 
         if (isRegularSpell(pCastSpell->uSpellID) && !pPlayer->CanCastSpell(uRequiredMana)) {
-            spellFailed(pCastSpell, LSTR_NOT_ENOUGH_SPELLPOINTS);
+            spellFailed(pCastSpell, LSTR_NOT_ENOUGH_SPELL_POINTS);
             continue;
         }
 
@@ -974,7 +974,7 @@ void CastSpellInfoHelpers::castSpell() {
                     assert(spell_mastery >= CHARACTER_SKILL_MASTERY_MASTER);
 
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                        spellFailed(pCastSpell, LSTR_CANT_METEOR_SHOWER_INDOORS);
+                        spellFailed(pCastSpell, LSTR_CANT_CAST_METEOR_SHOWER_INDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -1021,7 +1021,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_FIRE_INFERNO:
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                        spellFailed(pCastSpell, LSTR_CANT_INFERNO_OUTDOORS);
+                        spellFailed(pCastSpell, LSTR_CANT_CAST_INFERNO_OUTDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -1116,7 +1116,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_AIR_JUMP:
                 {
                     if (pParty->isAirborne()) {
-                        spellFailed(pCastSpell, LSTR_CANT_JUMP_AIRBORNE);
+                        spellFailed(pCastSpell, LSTR_CANT_CAST_JUMP_WHILE_AIRBORNE);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -1146,7 +1146,7 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
                     if (pParty->GetRedOrYellowAlert()) {
-                        spellFailed(pCastSpell, LSTR_HOSTILE_CREATURES_NEARBY);
+                        spellFailed(pCastSpell, LSTR_THERE_ARE_HOSTILE_CREATURES_NEARBY);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -1159,7 +1159,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_AIR_FLY:
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                        spellFailed(pCastSpell, LSTR_CANT_FLY_INDOORS);
+                        spellFailed(pCastSpell, LSTR_CAN_NOT_CAST_FLY_INDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -1179,7 +1179,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_AIR_STARBURST:
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                        spellFailed(pCastSpell, LSTR_CANT_STARBURST_INDOORS);
+                        spellFailed(pCastSpell, LSTR_CANT_CAST_STARBURST_INDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -1532,7 +1532,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     if (spell_failed) {
-                        spellFailed(pCastSpell, item_not_broken ? LSTR_SPELL_FAILED : LSTR_ITEM_TOO_LAME);
+                        spellFailed(pCastSpell, item_not_broken ? LSTR_SPELL_FAILED : LSTR_ITEM_IS_NOT_OF_HIGH_ENOUGH_QUALITY);
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].playReaction(SPEECH_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
@@ -2182,7 +2182,7 @@ void CastSpellInfoHelpers::castSpell() {
                         if (pSpriteObjects[obj_id].containing_item.isGold()) {
                             pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.goldAmount, GOLD_RECEIVE_SHARE);
                         } else {
-                            engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->items[pSpriteObjects[obj_id].containing_item.itemId].unidentifiedName);
+                            engine->_statusBar->setEvent(LSTR_YOU_FOUND_AN_ITEM_S, pItemTable->items[pSpriteObjects[obj_id].containing_item.itemId].unidentifiedName);
                             if (!pParty->addItemToParty(&pSpriteObjects[obj_id].containing_item)) {
                                 pParty->setHoldingItem(pSpriteObjects[obj_id].containing_item);
                             }
@@ -2449,7 +2449,7 @@ void CastSpellInfoHelpers::castSpell() {
                         }
                     }
                     if (mon_num >= max_summoned) {
-                        spellFailed(pCastSpell, LSTR_SUMMONS_LIMIT_REACHED);
+                        spellFailed(pCastSpell, LSTR_THIS_CHARACTER_CANT_SUMMON_ANY_MORE);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -2488,7 +2488,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_LIGHT_PRISMATIC_LIGHT:
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                        spellFailed(pCastSpell, LSTR_CANT_PRISMATIC_OUTDOORS);
+                        spellFailed(pCastSpell, LSTR_CANT_CAST_PRISMATIC_LIGHT_OUTDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -2652,7 +2652,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int monster_id = pCastSpell->targetPid.id();
                     if (monster_id == -1) {
-                        spellFailed(pCastSpell, LSTR_NO_VALID_SPELL_TARGET);
+                        spellFailed(pCastSpell, LSTR_NO_VALID_TARGET_EXISTS);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
@@ -2882,7 +2882,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_ARMAGEDDON:
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                        spellFailed(pCastSpell, LSTR_CANT_ARMAGEDDON_INDOORS);
+                        spellFailed(pCastSpell, LSTR_CANT_CAST_ARMAGEDDON_INDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }

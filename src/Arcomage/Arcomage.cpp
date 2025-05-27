@@ -1427,7 +1427,7 @@ void DrawPlayersText() {
     Pointi text_position;
 
     if (need_to_discard_card) {
-        text_buff = localization->GetString(LSTR_ARCOMAGE_CARD_DISCARD);
+        text_buff = localization->GetString(LSTR_DISCARD_A_CARD);
         text_position.x = 320 - pArcomageGame->pfntArrus->GetLineWidth(text_buff) / 2;
         text_position.y = 306;
         am_DrawText(text_buff, &text_position);

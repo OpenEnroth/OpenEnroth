@@ -159,7 +159,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
 
         case WindMaster: {
             if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                engine->_statusBar->setEvent(LSTR_CANT_FLY_INDOORS);
+                engine->_statusBar->setEvent(LSTR_CAN_NOT_CAST_FLY_INDOORS);
                 pAudioPlayer->playUISound(SOUND_fizzle);
             } else {
                 // Spell power was changed to 0 because it does not have meaning for this buff
