@@ -729,6 +729,16 @@ GAME_TEST(Issues, Issue1956) {
     }
 }
 
+GAME_TEST(Issues, Issue1958) {
+    // Assert failing when trying to claim an already claimed bounty.
+    auto textsTape = tapes.allGUIWindowsText();
+    auto goldTape = tapes.gold();
+    test.playTraceFromTestData("issue_1958.mm7", "issue_1958.json");
+    EXPECT_CONTAINS(textsTape.flattened(), [](std::string_view s) { return s.contains("Congratulations on defeating the"); }); // Bounty message.
+    EXPECT_CONTAINS(textsTape.flattened(), [](std::string_view s) { return s.contains("Someone has already claimed the bounty this month."); }); // Bounty already claimed message.
+    EXPECT_EQ(goldTape.delta(), +1400); // We got the bounty.
+}
+
 GAME_TEST(Issues, Issue1961) {
     // Enchant Item costs no SP.
     auto manaTape = charTapes.mp(3);
