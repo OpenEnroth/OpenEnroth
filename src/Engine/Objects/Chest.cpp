@@ -155,7 +155,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
 bool Chest::ChestUI_WritePointedObjectStatusString() {
     Chest *chest = &vChests[pGUIWindow_CurrentChest->chestId()];
 
-    Pointi mousePos = mouse->GetCursorPos();
+    Pointi mousePos = mouse->position();
     Sizei chestSize = chestTable[chest->chestTypeId].size;
     Pointi inventoryPos = (mousePos - chestTable[chest->chestTypeId].inventoryOffset) / 32;
 
@@ -421,8 +421,7 @@ void Chest::OnChestLeftClick() {
 
     Sizei chestSize = chestTable[chest->chestTypeId].size;
 
-    Pointi mousePos;
-    mouse->GetClickPos(&mousePos.x, &mousePos.y);
+    Pointi mousePos = mouse->position();
 
     Pointi inventoryPos = (mousePos + mouse->pickedItemOffset - chestTable[chest->chestTypeId].inventoryOffset) / 32;
     int invMatrixIndex = inventoryPos.x + (chestSize.w * inventoryPos.y);

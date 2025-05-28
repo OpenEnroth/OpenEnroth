@@ -189,7 +189,7 @@ uint64_t GetExperienceRequiredForLevel(int level);
  * @offset 0x4179BC
  */
 static void CharacterUI_DrawTooltip(std::string_view title, std::string_view content) {
-    Pointi pt = mouse->GetCursorPos();
+    Pointi pt = mouse->position();
 
     GUIWindow popup_window;
     popup_window.uFrameWidth = 384;
@@ -312,7 +312,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     iteminfo_window.uFrameHeight = 180;
     iteminfo_window.uFrameY = 40;
 
-    Pointi pt = mouse->GetCursorPos();
+    Pointi pt = mouse->position();
     if (pt.x <= 320)
         frameXpos = pt.x + 30;
     else
@@ -1052,9 +1052,9 @@ std::string CharacterUI_GetSkillDescText(int uPlayerID, CharacterSkillType uPlay
 }
 
 void CharacterUI_SkillsTab_ShowHint() {
-    int pX = 0;
-    int pY = 0;
-    mouse->GetClickPos(&pX, &pY);
+    Pointi mousePos = mouse->position();
+    int pX = mousePos.x;
+    int pY = mousePos.y;
 
     if (pX < 24 || pX > 455 || pY < 18 || pY > 36) {
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
@@ -1077,7 +1077,7 @@ void CharacterUI_StatsTab_ShowHint() {
     std::string pHourWord;  // ecx@17
     std::string pDayWord;   // eax@20
 
-    Pointi pt = mouse->GetCursorPos();
+    Pointi pt = mouse->position();
     for (pStringNum = 0; pStringNum < stat_string_coord.size(); ++pStringNum) {
         if (pt.x >= stat_string_coord[pStringNum].x &&
             pt.x <= stat_string_coord[pStringNum].x +
@@ -1250,7 +1250,7 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
     unsigned int v3;              // eax@2
     GUIWindow spell_info_window;  // [sp+Ch] [bp-68h]@4
 
-    Pointi pt = mouse->GetCursorPos();
+    Pointi pt = mouse->position();
 
     spell = &pSpellStats->pInfos[spell_id];
     if (pt.y <= 250)
@@ -1392,7 +1392,7 @@ void showSpellbookInfo(ItemId spellbook) {
     assert(isSpellbook(spellbook));
     SpellId spell = spellForSpellbook(spellbook);
 
-    Pointi cursorPos = EngineIocContainer::ResolveMouse()->GetCursorPos();
+    Pointi cursorPos = EngineIocContainer::ResolveMouse()->position();
     int popupVertPos = 30;
     if (cursorPos.y <= 320) {
         popupVertPos = cursorPos.y + 30;
@@ -1441,9 +1441,9 @@ void showSpellbookInfo(ItemId spellbook) {
 
 //----- new function
 void ShowPopupShopSkills() {
-    int pX = 0;
-    int pY = 0;
-    mouse->GetClickPos(&pX, &pY);
+    Pointi mousePos = mouse->position();
+    int pX = mousePos.x;
+    int pY = mousePos.y;
 
     if (pDialogueWindow && pDialogueWindow->pNumPresenceButton != 0) {
         for (GUIButton *pButton : pDialogueWindow->vButtons) {
@@ -1478,7 +1478,7 @@ void ShowPopupShopItem() {
     if (dialogue < DIALOGUE_SHOP_BUY_STANDARD)
         return;
 
-    Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+    Pointi pt = EngineIocContainer::ResolveMouse()->position();
     int testx;
 
     if (houseType <= HOUSE_TYPE_ALCHEMY_SHOP) {
@@ -1756,7 +1756,7 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
 }
 
 //----- (00416D62) --------------------------------------------------------
-void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
+void UI_OnMouseRightClick(Pointi mousePos) {
     std::string pStr;        // edi@85
     GUIWindow popup_window;  // [sp+4h] [bp-74h]@32
 
@@ -1764,8 +1764,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         return;
 
 
-    unsigned int pX = mouse_x;
-    unsigned int pY = mouse_y;
+    unsigned int pX = mousePos.x;
+    unsigned int pY = mousePos.y;
 
     // if ( render->bWindowMode )
     {
@@ -1911,7 +1911,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 (signed int)pX > (signed int)pViewport->uViewportBR_X ||
                 (signed int)pY < (signed int)pViewport->uViewportTL_Y ||
                 (signed int)pY > (signed int)pViewport->uViewportBR_Y ||
-                ((popup_window.sHint = GetMapBookHintText(mouse_x, mouse_y)).empty())) {
+                ((popup_window.sHint = GetMapBookHintText(mousePos.x, mousePos.y)).empty())) {
                 break;
             }
             popup_window.uFrameWidth = (assets->pFontArrus->GetLineWidth(popup_window.sHint) + 32) + 0.5f;
@@ -2090,8 +2090,9 @@ void Inventory_ItemPopupAndAlchemy() {
     static const std::array<int, 6> ringsX = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
     static const std::array<int, 6> ringsY = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
 
-    int pX, pY;
-    mouse->GetClickPos(&pX, &pY);
+    Pointi mousePos = mouse->position();
+    int pX = mousePos.x;
+    int pY = mousePos.y;
 
     int inventoryYCoord = (pY - 17) / 32;
     int inventoryXCoord = (pX - 14) / 32;
@@ -2119,27 +2120,27 @@ void Inventory_ItemPopupAndAlchemy() {
         } else {  // rings displayed
             ItemSlot pos = ITEM_SLOT_INVALID;
 
-            if (mouse->uMouseX < 490 || mouse->uMouseX > 618) {
+            if (mouse->position().x < 490 || mouse->position().x > 618) {
                 return;
             }
 
-            if (mouse->uMouseY < 88 || mouse->uMouseY > 282) {
+            if (mouse->position().y < 88 || mouse->position().y > 282) {
                 return;
             }
 
-            if (mouse->uMouseX >= amuletx && mouse->uMouseX <= (amuletx + slotSize) &&
-                mouse->uMouseY >= amulety && mouse->uMouseY <= (amulety + 2 * slotSize)) {
+            if (mouse->position().x >= amuletx && mouse->position().x <= (amuletx + slotSize) &&
+                mouse->position().y >= amulety && mouse->position().y <= (amulety + 2 * slotSize)) {
                 pos = ITEM_SLOT_AMULET;
             }
 
-            if (mouse->uMouseX >= glovex && mouse->uMouseX <= (glovex + slotSize) &&
-                mouse->uMouseY >= glovey && mouse->uMouseY <= (glovey + 2 * slotSize)) {
+            if (mouse->position().x >= glovex && mouse->position().x <= (glovex + slotSize) &&
+                mouse->position().y >= glovey && mouse->position().y <= (glovey + 2 * slotSize)) {
                 pos = ITEM_SLOT_GAUNTLETS;
             }
 
             for (int i = 0; i < 6; ++i) {
-                if (mouse->uMouseX >= ringsX[i] && mouse->uMouseX <= (ringsX[i] + slotSize) &&
-                    mouse->uMouseY >= ringsY[i] && mouse->uMouseY <= (ringsY[i] + slotSize)) {
+                if (mouse->position().x >= ringsX[i] && mouse->position().x <= (ringsX[i] + slotSize) &&
+                    mouse->position().y >= ringsY[i] && mouse->position().y <= (ringsY[i] + slotSize)) {
                     pos = ringSlot(i);
                 }
             }

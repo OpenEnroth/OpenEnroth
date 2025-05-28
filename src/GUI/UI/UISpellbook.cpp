@@ -172,7 +172,7 @@ void GUIWindow_Spellbook::Update() {
             }
             render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, pPageTexture);
 
-            Pointi mousePos = mouse->GetCursorPos();
+            Pointi mousePos = mouse->position();
 
             for (SpellId spell : spellsForMagicSchool(player.lastOpenedSpellbookPage)) {
                 int index = spellIndexInMagicSchool(spell);

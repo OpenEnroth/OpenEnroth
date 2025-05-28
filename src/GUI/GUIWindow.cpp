@@ -223,7 +223,7 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
         w = renDims.h;
     }
 
-    Pointi cursor = mouse->GetCursorPos();
+    Pointi cursor = mouse->position();
     if ((int)this->uFrameX >= x) {
         if ((int)(this->uFrameWidth + this->uFrameX) > z) {
             this->uFrameX = z - this->uFrameWidth;
@@ -592,7 +592,7 @@ void GUI_UpdateWindows() {
 
     if (isHoldingMouseRightButton()) {
         std::shared_ptr<Io::Mouse> mouse = EngineIocContainer::ResolveMouse();
-        UI_OnMouseRightClick(mouse->GetCursorPos().x, mouse->GetCursorPos().y);
+        UI_OnMouseRightClick(mouse->position());
     }
 }
 

@@ -702,7 +702,9 @@ std::string GameUI_GetMinimapHintText() {
     int pX;      // [sp+28h] [bp-4h]@1
 
     std::string result;
-    mouse->GetClickPos(&pX, &pY);
+    Pointi mousePos = mouse->position();
+    pX = mousePos.x;
+    pY = mousePos.y;
     v3 = 1.0 / (float)((signed int)viewparams->uMinimapZoom * 0.000015258789);
     global_coord_X =
         (int64_t)((double)(pX - 557) * v3 + (double)pParty->pos.x);
@@ -889,7 +891,9 @@ void GameUI_WritePointedObjectStatusString() {
     // int testing;
 
     mouse->uPointingObjectID = Pid();
-    mouse->GetClickPos(&pX, &pY);
+    Pointi mousePos = mouse->position();
+    pX = mousePos.x;
+    pY = mousePos.y;
     Sizei renDims = render->GetRenderDimensions();
     if (pX < 0 || pX > renDims.w - 1 || pY < 0 || pY > renDims.h - 1)
         return;

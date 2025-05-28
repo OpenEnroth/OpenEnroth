@@ -267,7 +267,7 @@ void CharacterUI_DrawPickedItemUnderlay(Vec2i offset);
  */
 Color GetSkillColor(CharacterClass uPlayerClass, CharacterSkillType uPlayerSkillType, CharacterSkillMastery skill_mastery);
 
-void UI_OnMouseRightClick(int mouse_x, int mouse_y);
+void UI_OnMouseRightClick(Pointi mousePos);
 
 void GUI_UpdateWindows();
 Color GetConditionDrawColor(Condition uConditionIdx);  // idb

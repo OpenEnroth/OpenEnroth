@@ -30,9 +30,20 @@
 
 std::shared_ptr<Io::Mouse> mouse = nullptr;
 
-void Io::Mouse::GetClickPos(int *pX, int *pY) {
-    *pX = uMouseX;
-    *pY = uMouseY;
+Pointi Io::Mouse::position() const {
+    return _position;
+}
+
+void Io::Mouse::setPosition(Pointi position) {
+    if (_mouseLook) {
+        _mouseLookChange = position - _position;
+        if (_mouseLookChange.x != 0 || _mouseLookChange.y != 0) {
+            pPartyActionQueue->Add(PARTY_MouseLook);
+            window->warpMouse(_position); // TODO(pskelton): this causes another mouse move event - might be better to poll mouse position once per frame rather than on event
+        }
+    } else {
+        _position = position;
+    }
 }
 
 void Io::Mouse::RemoveHoldingItem() {
@@ -85,10 +96,6 @@ void Io::Mouse::AllocCursorSystemMem() {
 
 void *Io::Mouse::DoAllocCursorMem() { return nullptr; }
 
-Pointi Io::Mouse::GetCursorPos() {
-    return Pointi(this->uMouseX, this->uMouseY);
-}
-
 void Io::Mouse::Initialize() {
     this->bInitialized = true;
 
@@ -97,8 +104,6 @@ void Io::Mouse::Initialize() {
 
     this->pCursorBitmapPos.x = 0;
     this->pCursorBitmapPos.y = 0;
-    this->uMouseX = 0;
-    this->uMouseY = 0;
     this->pCursorBitmap_sysmem = nullptr;
     this->pCursorBitmap2_sysmem = nullptr;
 
@@ -109,8 +114,7 @@ void Io::Mouse::Initialize() {
 
 void Io::Mouse::DrawCursor() {
     // get mouse pos
-    Pointi pos;
-    this->GetClickPos(&pos.x, &pos.y);
+    Pointi pos = this->position();
 
     // for party held item
     if (pParty->pPickedItem.itemId != ITEM_NULL) {
@@ -191,8 +195,9 @@ void Io::Mouse::DrawPickedItem() {
     GraphicsImage *pTexture = assets->getImage_Alpha(pParty->pPickedItem.GetIconName());
     if (!pTexture) return;
 
-    float posX = (uMouseX + pickedItemOffset.x) / 640.0f;
-    float posY = (uMouseY + pickedItemOffset.y) / 480.0f;
+    Pointi mousePos = this->position();
+    float posX = (mousePos.x + pickedItemOffset.x) / 640.0f;
+    float posY = (mousePos.y + pickedItemOffset.y) / 480.0f;
 
     if (pParty->pPickedItem.IsBroken()) {
         render->DrawTransparentRedShade(posX, posY, pTexture);
@@ -200,20 +205,6 @@ void Io::Mouse::DrawPickedItem() {
         render->DrawTransparentGreenShade(posX, posY, pTexture);
     } else {
         render->DrawTextureNew(posX, posY, pTexture);
-    }
-}
-
-void Io::Mouse::SetMousePosition(int x, int y) {
-    if (_mouseLook) {
-        _mouseLookChange.x = x - uMouseX;
-        _mouseLookChange.y = y - uMouseY;
-        if (_mouseLookChange.x != 0 || _mouseLookChange.y != 0) {
-            pPartyActionQueue->Add(PARTY_MouseLook);
-            window->warpMouse({uMouseX, uMouseY}); // TODO(pskelton): this causes another mouse move event - might be better to poll mouse position once per frame rather than on event
-        }
-    } else {
-        uMouseX = x;
-        uMouseY = y;
     }
 }
 
@@ -235,9 +226,9 @@ void Io::Mouse::UI_OnMouseLeftClick() {
         return;
     }
 
-    int x = 0;
-    int y = 0;
-    GetClickPos(&x, &y);
+    Pointi mousePos = this->position();
+    int x = mousePos.x;
+    int y = mousePos.y;
 
     if (GetCurrentMenuID() != MENU_NONE || current_screen_type != SCREEN_GAME ||
         !keyboardInputHandler->IsStealingToggled() || !pViewport->Contains(x, y)) {
@@ -311,7 +302,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
 void Io::Mouse::SetMouseLook(bool enable) {
     _mouseLook = enable;
     if (enable) {
-        window->warpMouse({uMouseX, uMouseY});
+        window->warpMouse(_position);
     }
 }
 
@@ -380,9 +371,9 @@ bool UI_OnKeyDown(PlatformKey key) {
             }
             return true;
         } else if (key == PlatformKey::KEY_SELECT) {
-            int uClickX;
-            int uClickY;
-            EngineIocContainer::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
+            Pointi mousePos = EngineIocContainer::ResolveMouse()->position();
+            int uClickX = mousePos.x;
+            int uClickY = mousePos.y;
             int v4 = win->pStartingPosActiveItem;
             int v28 = v4 + win->pNumPresenceButton;
             if (v4 < v4 + win->pNumPresenceButton) {
@@ -425,9 +416,9 @@ bool UI_OnKeyDown(PlatformKey key) {
             engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
         } else if (key == PlatformKey::KEY_PAGEDOWN) { // not button event from user, but a call from GUI_UpdateWindows to track mouse
             if (!win->_msgOnKeyboardSelect) {
-                int uClickX;
-                int uClickY;
-                EngineIocContainer::ResolveMouse()->GetClickPos(&uClickX, &uClickY);
+                Pointi mousePos = EngineIocContainer::ResolveMouse()->position();
+                int uClickX = mousePos.x;
+                int uClickY = mousePos.y;
                 int v29 = win->pStartingPosActiveItem + win->pNumPresenceButton;
                 for (int v4 = win->pStartingPosActiveItem; v4 < v29; ++v4) {
                     GUIButton *pButton = win->GetControl(v4);

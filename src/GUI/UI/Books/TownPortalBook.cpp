@@ -121,7 +121,7 @@ void GUIWindow_TownPortalBook::Update() {
     render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
     GUIWindow townPortalWindow;
-    Pointi cursorPos = mouse->GetCursorPos();
+    Pointi cursorPos = mouse->position();
     bool townPortalCheats = engine->config->debug.TownPortal.value();
     int count = townPortalCheats ? TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS : TOWN_PORTAL_DESTINATION_COUNT;
 
