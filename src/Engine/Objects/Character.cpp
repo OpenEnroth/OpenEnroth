@@ -3883,6 +3883,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             //v5 = Pid(OBJECT_Character, player_num + 49);
             //pAudioPlayer->playSound(SOUND_quest, v5);
             pAudioPlayer->playUISound(SOUND_quest);
+            engine->_statusBar->setEvent(LSTR_2_SKILL_POINTS);
             playerAffected->uSkillPoints += 2;
         } else if (pParty->pPickedItem.itemId == ITEM_TEMPLE_IN_A_BOTTLE) {
             TeleportToNWCDungeon();
