@@ -218,7 +218,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
             return;
         }
 
-        Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+        Pointi pt = EngineIocContainer::ResolveMouse()->position();
         int testx = (pt.x - 32) / 70;
         if (testx >= 0 && testx < 6) {
             if (pt.y >= 250) {
@@ -302,7 +302,7 @@ void GUIWindow_MagicGuild::houseScreenClick() {
         return;
     }
 
-    Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+    Pointi pt = EngineIocContainer::ResolveMouse()->position();
 
     int testx = (pt.x - 32) / 70;
     if (testx >= 0 && testx < 6) {

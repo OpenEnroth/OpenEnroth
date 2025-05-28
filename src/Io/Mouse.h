@@ -16,11 +16,11 @@ class Mouse {
     inline Mouse() : cursor_img(nullptr) {
         pCursorBitmap_sysmem = nullptr;
         pCursorBitmap2_sysmem = nullptr;
-        uMouseX = 0;
-        uMouseY = 0;
     }
 
-    void GetClickPos(int *pX, int *pY);
+    Pointi position() const;
+    void setPosition(Pointi position);
+
     void RemoveHoldingItem();
     void SetCursorBitmapFromItemID(ItemId uItemID);
     void SetCurrentCursorBitmap();
@@ -28,11 +28,9 @@ class Mouse {
     void ClearCursor();
     void AllocCursorSystemMem();
     void *DoAllocCursorMem();
-    Pointi GetCursorPos();
     void Initialize();
     void DrawCursor();
     void DrawPickedItem();
-    void SetMousePosition(int x, int y);
 
     void UI_OnMouseLeftClick();
 
@@ -50,8 +48,7 @@ class Mouse {
     Pointi pickedItemOffset = {}; // Offset of the item's bitmap relative to cursor position, always non-positive.
     Pointi pCursorBitmapPos{};
     std::string cursor_name;
-    int uMouseX = 0;
-    int uMouseY = 0;
+    Pointi _position;
 
     bool _mouseLook = false;
     Pointi _mouseLookChange;

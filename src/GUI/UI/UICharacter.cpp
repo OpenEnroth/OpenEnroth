@@ -766,7 +766,7 @@ TargetedSpellUI *CastSpellInfo::GetCastSpellInInventoryWindow() {
 static int drawSkillTable(Character *player, int x, int y, const std::initializer_list<CharacterSkillType> skill_list,
                           int right_margin, std::string_view skill_group_name) {
     int y_offset = y;
-    Pointi pt = mouse->GetCursorPos();
+    Pointi pt = mouse->position();
 
     auto str = fmt::format("{}\r{:03}{}", skill_group_name, right_margin, localization->GetString(LSTR_LEVEL));
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {x, y}, ui_character_header_text_color, str);
@@ -1307,9 +1307,9 @@ void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
 void CharacterUI_DrawPickedItemUnderlay(Vec2i offset) {
     if (pParty->pPickedItem.itemId != ITEM_NULL) {
         // draw shadow of position
-        int pY;
-        int pX;
-        mouse->GetClickPos(&pX, &pY);
+        Pointi mousePos = mouse->position();
+        int pX = mousePos.x;
+        int pY = mousePos.y;
 
         int inventoryXCoord = (pX + mouse->pickedItemOffset.x - offset.x) / 32;
         int inventoryYCoord = (pY + mouse->pickedItemOffset.y - offset.y) / 32;
@@ -1749,8 +1749,8 @@ void WetsuitOff(int uPlayerID) {
 
 //----- (00468F8A) --------------------------------------------------------
 void OnPaperdollLeftClick() {
-    int mousex = mouse->uMouseX;
-    int mousey = mouse->uMouseY;
+    int mousex = mouse->position().x;
+    int mousey = mouse->position().y;
 
     static int RingsX[6] = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
     static int RingsY[6] = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
@@ -1996,7 +1996,7 @@ void OnPaperdollLeftClick() {
                 // dagger at expert or sword at master in left hand
                 if (pSkillType == CHARACTER_SKILL_DAGGER && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_DAGGER).mastery() >= CHARACTER_SKILL_MASTERY_EXPERT)
                     || pSkillType == CHARACTER_SKILL_SWORD && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SWORD).mastery() >= CHARACTER_SKILL_MASTERY_MASTER)) {
-                    if ((signed int)mouse->uMouseX >= 560) {
+                    if ((signed int)mouse->position().x >= 560) {
                         if (!twohandedequip) {
                             if (shieldequip) {
                                 --shieldequip;
@@ -2200,8 +2200,8 @@ void OnPaperdollLeftClick() {
 
     } else {  // z picking as before
         v34 = 0;
-        if (render->_zBufferRect.contains({ mouse->uMouseX, mouse->uMouseY })) {
-            v34 = render->pActiveZBuffer[(mouse->uMouseX - render->_zBufferRect.x) + (mouse->uMouseY - render->_zBufferRect.y) * render->_zBufferRect.w] & 0xFFFF;
+        if (render->_zBufferRect.contains(mouse->position())) {
+            v34 = render->pActiveZBuffer[(mouse->position().x - render->_zBufferRect.x) + (mouse->position().y - render->_zBufferRect.y) * render->_zBufferRect.w] & 0xFFFF;
         }
 
         if (v34) {

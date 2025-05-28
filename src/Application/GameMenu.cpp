@@ -191,8 +191,8 @@ void Menu::EventLoop() {
                     // Too few saves to scroll yet
                     break;
                 }
-                int mx{}, my{};
-                mouse->GetClickPos(&mx, &my);
+                Pointi mousePos = mouse->position();
+                int mx = mousePos.x, my = mousePos.y;
                 // 216 is offset down from top (216)
                 my -= 216;
                 // 107 is total height of bar
@@ -281,7 +281,7 @@ void Menu::EventLoop() {
                     gammalevel++;
                     new OnButtonClick2({213, 161}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
-                    Pointi pt = mouse->GetCursorPos();
+                    Pointi pt = mouse->position();
                     gammalevel = (pt.x - 42) / 17;
                 }
 
@@ -315,7 +315,7 @@ void Menu::EventLoop() {
                     new_level += 1;
                     new OnButtonClick2({435, 216}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
-                    Pointi pt = mouse->GetCursorPos();
+                    Pointi pt = mouse->position();
                     new_level = (pt.x - 263) / 17;  // for mouse
                 }
 
@@ -334,7 +334,7 @@ void Menu::EventLoop() {
                     new_level += 1;
                     new OnButtonClick2({435, 162}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
-                    Pointi pt = mouse->GetCursorPos();
+                    Pointi pt = mouse->position();
                     new_level = (pt.x - 263) / 17;
                 }
 
@@ -365,7 +365,7 @@ void Menu::EventLoop() {
                     new_level += 1;
                     new OnButtonClick2({435, 270}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
-                    Pointi pt = mouse->GetCursorPos();
+                    Pointi pt = mouse->position();
                     new_level = (pt.x - 263) / 17;
                 }
 

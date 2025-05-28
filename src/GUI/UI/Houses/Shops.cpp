@@ -285,7 +285,7 @@ void GUIWindow_Shop::sellDialogue() {
     if (checkIfPlayerCanInteract()) {
         engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_ITEM_TO_SELL), colorTable.White);
 
-        Pointi pt = dialogwin.mouse->GetCursorPos();
+        Pointi pt = dialogwin.mouse->position();
 
         int invindex = ((pt.x - 14) / 32) + 14 * ((pt.y - 17) / 32);
         if (pt.x <= 13 || pt.x >= 462)
@@ -315,7 +315,7 @@ void GUIWindow_Shop::identifyDialogue() {
     if (checkIfPlayerCanInteract()) {
         engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_ITEM_TO_IDENTIFY), colorTable.White);
 
-        Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+        Pointi pt = EngineIocContainer::ResolveMouse()->position();
 
         int invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
         if (pt.x <= 13 || pt.x >= 462)
@@ -353,7 +353,7 @@ void GUIWindow_Shop::repairDialogue() {
     if (checkIfPlayerCanInteract()) {
         engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_ITEM_TO_REPAIR), colorTable.White);
 
-        Pointi pt = dialogwin.mouse->GetCursorPos();
+        Pointi pt = dialogwin.mouse->position();
 
         int invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
         if (pt.x <= 13 || pt.x >= 462)
@@ -405,7 +405,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
         }
 
         if (item_num) {
-            Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+            Pointi pt = EngineIocContainer::ResolveMouse()->position();
             Item *item;
 
             int testx = (pt.x - 30) / 70;
@@ -478,7 +478,7 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
         }
 
         if (pItemCount) {
-            Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+            Pointi pt = EngineIocContainer::ResolveMouse()->position();
 
             // testx limits check
             int testx = (pt.x - 40) / 105;
@@ -582,7 +582,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
         }
 
         if (item_num) {
-            Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+            Pointi pt = EngineIocContainer::ResolveMouse()->position();
 
             // testx limits check
             int testx = (pt.x) / 75;
@@ -894,7 +894,7 @@ void GUIWindow_Shop::houseScreenClick() {
         return;
     }
 
-    Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+    Pointi pt = EngineIocContainer::ResolveMouse()->position();
 
     switch (_currentDialogue) {
         case DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {

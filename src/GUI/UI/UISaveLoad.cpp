@@ -395,8 +395,8 @@ void MainMenuLoad_EventLoop() {
                 // Too few saves to scroll yet
                 break;
             }
-            int mx{}, my{};
-            mouse->GetClickPos(&mx, &my);
+            Pointi mousePos = mouse->position();
+            int mx = mousePos.x, my = mousePos.y;
             // 276 is offset down from top (216 + 60 frame)
             my -= 276;
             // 107 is total height of bar

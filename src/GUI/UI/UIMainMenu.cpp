@@ -43,7 +43,7 @@ GUIWindow_MainMenu::~GUIWindow_MainMenu() {
 void GUIWindow_MainMenu::Update() {
     render->DrawTextureNew(0, 0, main_menu_background);
 
-    Pointi pt = mouse->GetCursorPos();
+    Pointi pt = mouse->position();
 
     GraphicsImage *pTexture = nullptr;
     for (GUIButton *pButton : vButtons) {
