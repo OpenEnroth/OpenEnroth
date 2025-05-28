@@ -1529,7 +1529,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, 18}, colorTable.White, str1);
 
     // Left column
-    auto formatLeftCol = [] (int lstr, int current, int max) {
+    auto formatLeftCol = [] (LstrId lstr, int current, int max) {
         Color color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
         if (max < 1000) {
             return fmt::format("{}{::}\r424{}\f00000 /\t185{}\n", localization->GetString(lstr), color16.tag(), current, max);
@@ -1594,7 +1594,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
     pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {26, pY}, colorTable.White, str13, 226, 0);
 
     // Right column
-    auto formatRightCol = [] (int lstr, int current, int max, bool immune = false) {
+    auto formatRightCol = [] (LstrId lstr, int current, int max, bool immune = false) {
         Color color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
         if (immune) {
             return fmt::format("{}{::}\r180{}\n", localization->GetString(lstr), color16.tag(), localization->GetString(LSTR_IMMUNE));
