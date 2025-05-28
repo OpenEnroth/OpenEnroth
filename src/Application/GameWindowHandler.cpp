@@ -234,7 +234,7 @@ void GameWindowHandler::OnMouseRightClick(Pointi position) {
             engine->PickMouse(pCamera3D->GetMouseInfoDepth(), position.x, position.y, &vis_allsprites_filter, &vis_door_filter);
         }
 
-        UI_OnMouseRightClick(position.x, position.y);
+        UI_OnMouseRightClick(position);
     }
 }
 

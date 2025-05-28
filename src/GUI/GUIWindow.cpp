@@ -592,7 +592,7 @@ void GUI_UpdateWindows() {
 
     if (isHoldingMouseRightButton()) {
         std::shared_ptr<Io::Mouse> mouse = EngineIocContainer::ResolveMouse();
-        UI_OnMouseRightClick(mouse->position().x, mouse->position().y);
+        UI_OnMouseRightClick(mouse->position());
     }
 }
 

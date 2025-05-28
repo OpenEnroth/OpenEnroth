@@ -1756,7 +1756,7 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
 }
 
 //----- (00416D62) --------------------------------------------------------
-void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
+void UI_OnMouseRightClick(Pointi mousePos) {
     std::string pStr;        // edi@85
     GUIWindow popup_window;  // [sp+4h] [bp-74h]@32
 
@@ -1764,8 +1764,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         return;
 
 
-    unsigned int pX = mouse_x;
-    unsigned int pY = mouse_y;
+    unsigned int pX = mousePos.x;
+    unsigned int pY = mousePos.y;
 
     // if ( render->bWindowMode )
     {
@@ -1911,7 +1911,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 (signed int)pX > (signed int)pViewport->uViewportBR_X ||
                 (signed int)pY < (signed int)pViewport->uViewportTL_Y ||
                 (signed int)pY > (signed int)pViewport->uViewportBR_Y ||
-                ((popup_window.sHint = GetMapBookHintText(mouse_x, mouse_y)).empty())) {
+                ((popup_window.sHint = GetMapBookHintText(mousePos.x, mousePos.y)).empty())) {
                 break;
             }
             popup_window.uFrameWidth = (assets->pFontArrus->GetLineWidth(popup_window.sHint) + 32) + 0.5f;
