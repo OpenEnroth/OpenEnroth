@@ -528,6 +528,8 @@ int runLstrCodegen(const CodeGenOptions &options, GameResourceManager *resourceM
 
         if (id == 72) {
             enumName = "EMPTY_SAVE";
+        } else if (id == 79) {
+            enumName = "EXIT_DIALOGUE";
         } else if (id == 99 || id == 101 || id == 103 || id == 106) {
             enumName = "RACE_" + enumName;
         } else if (id == 379 || id == 392 || id == 399 || id == 402 || id == 434) {

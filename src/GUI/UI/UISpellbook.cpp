@@ -147,7 +147,7 @@ void GUIWindow_Spellbook::openSpellbook() {
     pBtn_InstallRemoveSpell = CreateButton({476, 450}, ui_spellbook_btn_quckspell->size(), 1, UIMSG_HintSelectRemoveQuickSpellBtn,
                                            UIMSG_ClickInstallRemoveQuickSpellBtn, 0, Io::InputAction::Invalid, "", {ui_spellbook_btn_quckspell_click});
     pBtn_CloseBook = CreateButton({561, 450}, ui_spellbook_btn_close->size(), 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
-                                  localization->GetString(LSTR_EXIT), {ui_spellbook_btn_close_click});
+                                  localization->GetString(LSTR_EXIT_DIALOGUE), {ui_spellbook_btn_close_click});
 }
 
 void GUIWindow_Spellbook::Update() {

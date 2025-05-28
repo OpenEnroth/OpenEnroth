@@ -80,7 +80,7 @@ enum class LstrId {
     LSTR_ERADICATED = 76,                                // "Eradicated"
     LSTR_UNARMED = 77,                                   // "Unarmed"
     LSTR_CALENDAR = 78,                                  // "Calendar"
-    LSTR_EXIT = 79,                                      // "Exit"
+    LSTR_EXIT_DIALOGUE = 79,                             // "Exit"
     LSTR_EXIT_BUILDING = 80,                             // "Exit Building"
     LSTR_EXIT_REST = 81,                                 // "Exit Rest"
     LSTR_ARE_YOU_SURE_CLICK_AGAIN_TO_QUIT = 82,          // "Are you sure?  Click again to quit"

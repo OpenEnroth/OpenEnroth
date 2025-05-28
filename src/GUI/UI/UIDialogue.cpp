@@ -112,7 +112,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
     prev_screen_type = current_screen_type;
     current_screen_type = SCREEN_NPC_DIALOGUE;
     pBtn_ExitCancel = CreateButton({0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
-                                   localization->GetString(LSTR_EXIT), {ui_exit_cancel_button_background});
+                                   localization->GetString(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
 
     int text_line_height = assets->pFontArrus->GetHeight() - 3;
     NPCData *speakingNPC = getNPCData(speakingNpcId);
@@ -363,7 +363,7 @@ void selectNPCDialogueOption(DialogueId option) {
             ((GUIWindow_Dialogue*)pDialogueWindow)->setDisplayedDialogueType(newTopic);
             pDialogueWindow->DeleteButtons();
             pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
-                                                            localization->GetString(LSTR_EXIT), {ui_exit_cancel_button_background});
+                                                            localization->GetString(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
 
             for (int i = 0; i < topics.size(); i++) {
                 pDialogueWindow->CreateButton({480, 160 + i * 30}, {140, 30}, 1, 0, UIMSG_SelectNPCDialogueOption, std::to_underlying(topics[i]), Io::InputAction::Invalid, "");

@@ -100,7 +100,7 @@ GUIWindow_Travel::GUIWindow_Travel() : GUIWindow_Transition(WINDOW_Travel, SCREE
     if (engine->_currentLoadedMapId != MAP_INVALID) {
         hint = localization->FormatString(LSTR_LEAVE_S, pMapStats->pInfos[engine->_currentLoadedMapId].name);
     } else {
-        hint = localization->GetString(LSTR_EXIT);
+        hint = localization->GetString(LSTR_EXIT_DIALOGUE);
     }
 
     createButtons(hint, localization->GetString(LSTR_STAY_IN_THIS_AREA), UIMSG_OnTravelByFoot, UIMSG_CancelTravelByFoot);
@@ -164,7 +164,7 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
         if (pMapStats->GetMapInfo(destMap) != MAP_INVALID) {
             hint = localization->FormatString(LSTR_ENTER_S, pMapStats->pInfos[pMapStats->GetMapInfo(destMap)].name);
         } else {
-            hint = localization->GetString(LSTR_EXIT);
+            hint = localization->GetString(LSTR_EXIT_DIALOGUE);
             if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[houseTable[transitionHouse].uAnimationID].uRoomSoundId)
                 playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
         }
@@ -176,7 +176,7 @@ GUIWindow_IndoorEntryExit::GUIWindow_IndoorEntryExit(HouseId transitionHouse, un
         if (engine->_currentLoadedMapId != MAP_INVALID) {
             hint = localization->FormatString(LSTR_LEAVE_S, pMapStats->pInfos[engine->_currentLoadedMapId].name);
         } else {
-            hint = localization->GetString(LSTR_EXIT);
+            hint = localization->GetString(LSTR_EXIT_DIALOGUE);
         }
         if (transitionHouse != HOUSE_INVALID && pAnimatedRooms[houseTable[transitionHouse].uAnimationID].uRoomSoundId)
             playHouseSound(transitionHouse, HOUSE_SOUND_GENERAL_GREETING);
