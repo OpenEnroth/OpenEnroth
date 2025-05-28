@@ -2,16 +2,25 @@
 
 #include <cassert>
 
-static inline int roundIntDownToBase(int i, int base) {
-    return i - i % base;
+static int roundIntDown(int a, int b) {
+    return a - a % b;
 }
 
-int itemOffset(int widthOrHeight) {
-    int width = widthOrHeight;
-    if (width < 14) width = 14;
+static int divIntDown(int a, int b) {
+    return a >= 0 ? a / b : -1 - (-1 - a) / b;
+}
 
-    int X_offset = (roundIntDownToBase(width - 14, 32) + 32 - width) / 2;
+int itemOffset(int dimension) {
+    if (dimension < 14)
+        dimension = 14;
 
-    assert(-6 <= X_offset && X_offset <= 9);
-    return X_offset;
+    int offset = (roundIntDown(dimension - 14, 32) + 32 - dimension) / 2;
+
+    assert(-6 <= offset && offset <= 9);
+    return offset;
+}
+
+Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft) {
+    Pointi relativePos = mousePos - inventoryTopLeft;
+    return Pointi(divIntDown(relativePos.x, 32), divIntDown(relativePos.y, 32));
 }

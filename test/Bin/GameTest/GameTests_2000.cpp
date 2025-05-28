@@ -94,3 +94,19 @@ GAME_TEST(Issues, Issue2021_2022) {
     EXPECT_EQ(lloydSlot1Tape, tape(false)); // Top left slot stayed empty
     EXPECT_EQ(pmBuffTape, tape(false)); // Not Prot Mg buff received
 }
+
+GAME_TEST(Issues, Issue2061) {
+    // Game Crashes if you click the border of the inventory screen.
+    game.startNewGame();
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_I);
+    game.tick();
+    game.pressAndReleaseButton(BUTTON_LEFT, 3, 20); // This used to assert.
+    game.tick();
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_NULL); // Shouldn't pick anything.
+}
+
+

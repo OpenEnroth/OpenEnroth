@@ -157,7 +157,8 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
 
     Pointi mousePos = mouse->position();
     Sizei chestSize = chestTable[chest->chestTypeId].size;
-    Pointi inventoryPos = (mousePos - chestTable[chest->chestTypeId].inventoryOffset) / 32;
+    // TODO(captainurist): need to use mouse->pickedItemOffset here?
+    Pointi inventoryPos = mapToInventoryGrid(mousePos, chestTable[chest->chestTypeId].inventoryOffset);
 
     int invMatrixIndex = inventoryPos.x + (chestSize.w * inventoryPos.y);
 
@@ -423,7 +424,7 @@ void Chest::OnChestLeftClick() {
 
     Pointi mousePos = mouse->position();
 
-    Pointi inventoryPos = (mousePos + mouse->pickedItemOffset - chestTable[chest->chestTypeId].inventoryOffset) / 32;
+    Pointi inventoryPos = mapToInventoryGrid(mousePos + mouse->pickedItemOffset, chestTable[chest->chestTypeId].inventoryOffset);
     int invMatrixIndex = inventoryPos.x + (chestSize.w * inventoryPos.y);
 
     if (Recti(Pointi(0, 0), chestSize).contains(inventoryPos)) {

@@ -1308,14 +1308,10 @@ void CharacterUI_DrawPickedItemUnderlay(Vec2i offset) {
     if (pParty->pPickedItem.itemId != ITEM_NULL) {
         // draw shadow of position
         Pointi mousePos = mouse->position();
-        int pX = mousePos.x;
-        int pY = mousePos.y;
-
-        int inventoryXCoord = (pX + mouse->pickedItemOffset.x - offset.x) / 32;
-        int inventoryYCoord = (pY + mouse->pickedItemOffset.y - offset.y) / 32;
+        Pointi inventoryPos = mapToInventoryGrid(mousePos + mouse->pickedItemOffset, offset);
         Sizei itemSize = pParty->pPickedItem.inventorySize();
 
-        render->FillRectFast(inventoryXCoord * 32 + offset.x, inventoryYCoord * 32 + offset.y, itemSize.w * 32, itemSize.h * 32, Color(96, 96, 96, 128));
+        render->FillRectFast(inventoryPos.x * 32 + offset.x, inventoryPos.y * 32 + offset.y, itemSize.w * 32, itemSize.h * 32, Color(96, 96, 96, 128));
     }
 }
 
@@ -1996,7 +1992,7 @@ void OnPaperdollLeftClick() {
                 // dagger at expert or sword at master in left hand
                 if (pSkillType == CHARACTER_SKILL_DAGGER && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_DAGGER).mastery() >= CHARACTER_SKILL_MASTERY_EXPERT)
                     || pSkillType == CHARACTER_SKILL_SWORD && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SWORD).mastery() >= CHARACTER_SKILL_MASTERY_MASTER)) {
-                    if ((signed int)mouse->position().x >= 560) {
+                    if (mouse->position().x >= 560) {
                         if (!twohandedequip) {
                             if (shieldequip) {
                                 --shieldequip;

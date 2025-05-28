@@ -6534,12 +6534,11 @@ void Character::OnInventoryLeftClick() {
     }
 
     Pointi mousePos = mouse->position();
-    int inventoryXCoord = (mousePos.x + mouse->pickedItemOffset.x - 14) / 32;
-    int inventoryYCoord = (mousePos.y + mouse->pickedItemOffset.y - 17) / 32;
-    int invMatrixIndex = inventoryXCoord + (INVENTORY_SLOTS_WIDTH * inventoryYCoord);
+    Pointi inventoryPos = mapToInventoryGrid(mousePos + mouse->pickedItemOffset, Pointi(14, 17));
+    int invMatrixIndex = inventoryPos.x + (INVENTORY_SLOTS_WIDTH * inventoryPos.y);
 
-    if (inventoryYCoord >= 0 && inventoryYCoord < INVENTORY_SLOTS_HEIGHT &&
-        inventoryXCoord >= 0 && inventoryXCoord < INVENTORY_SLOTS_WIDTH) {
+    if (inventoryPos.y >= 0 && inventoryPos.y < INVENTORY_SLOTS_HEIGHT &&
+        inventoryPos.x >= 0 && inventoryPos.x < INVENTORY_SLOTS_WIDTH) {
         if (IsEnchantingInProgress) {
             unsigned int enchantedItemPos = this->GetItemListAtInventoryIndex(invMatrixIndex);
 
