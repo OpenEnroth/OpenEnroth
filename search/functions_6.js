@@ -58,7 +58,7 @@ var searchData=
   ['forcylinder_55',['forCylinder',['../structBBox.html#ace34ce7ae26ce8b9b36c4b892247d26c',1,'BBox']]],
   ['format_56',['format',['../structfmt_1_1formatter_3_01ColorTag_01_4.html#a3fecca0d544bcc21d44178b901b80299',1,'fmt::formatter&lt; ColorTag &gt;']]],
   ['formatmessage_57',['formatMessage',['../classFileSystemException.html#aa53116fabd3fbaa4bf95eb1db68aac30',1,'FileSystemException']]],
-  ['formatstring_58',['FormatString',['../classLocalization.html#a984213807ef1983fd8a29dd28cb0c001',1,'Localization']]],
+  ['formatstring_58',['FormatString',['../classLocalization.html#a12115adf5ab39db48faadc1b9398e84f',1,'Localization']]],
   ['forpoints_59',['forPoints',['../structBBox.html#a859c7ec0852841b844028f2607cbb526',1,'BBox']]],
   ['fortype_60',['forType',['../classAnyHandler.html#ac7377d8fc4e97687b18ed6f537bb16c9',1,'AnyHandler']]],
   ['frame_5ftable_5ftxt_5fparser_61',['frame_table_txt_parser',['../FrameTableInc_8cpp.html#a39d450fec938881b88cebb43a38bdd8e',1,'frame_table_txt_parser(const char *str_to_parse, FrameTableTxtLine *tokens_table):&#160;FrameTableInc.cpp'],['../FrameTableInc_8h.html#af6a0457c02cc89a855b976c5affd025b',1,'frame_table_txt_parser(const char *pString, FrameTableTxtLine *a2):&#160;FrameTableInc.cpp']]],

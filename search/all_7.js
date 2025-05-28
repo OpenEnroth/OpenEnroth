@@ -450,7 +450,7 @@ var searchData=
   ['getsprite_447',['getSprite',['../classAssetsManager.html#a6ac51ed9b432c3b1b79bad5d3655d797',1,'AssetsManager']]],
   ['getspriteframe_448',['getSpriteFrame',['../structSpriteObject.html#ae3889d1599fb7d222c101c42b992f35e',1,'SpriteObject']]],
   ['getstatcolor_449',['GetStatColor',['../classCharacter.html#a381349b3eb9e34c83d09dd329611a47a',1,'Character']]],
-  ['getstring_450',['GetString',['../classLocalization.html#a0e27a456fea41840b5249df9e4cdd87d',1,'Localization']]],
+  ['getstring_450',['GetString',['../classLocalization.html#a12b6345c5ad2e0c22cc4199a287aaf0e',1,'Localization']]],
   ['getstringheight2_451',['GetStringHeight2',['../classGUIFont.html#a7f240fc5ce7d453430eed083ce4c27f7',1,'GUIFont']]],
   ['getteleportmap_452',['getTeleportMap',['../classTeleportPoint.html#a2ca150e2261be556af85e2f02accdd8f',1,'TeleportPoint']]],
   ['gettextinput_453',['GetTextInput',['../classIo_1_1KeyboardInputHandler.html#a14b4cfa0477f73b105805d9887279561',1,'Io::KeyboardInputHandler']]],

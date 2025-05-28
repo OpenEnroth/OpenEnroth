@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4723f2e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0482cac</span>
    </div>
   </td>
  </tr>
@@ -84,11 +84,11 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a76effecdc8b0d509e81e75f2273265af"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a76effecdc8b0d509e81e75f2273265af">Initialize</a> ()</td></tr>
 <tr class="separator:a76effecdc8b0d509e81e75f2273265af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e27a456fea41840b5249df9e4cdd87d"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a0e27a456fea41840b5249df9e4cdd87d">GetString</a> (unsigned int index) const</td></tr>
-<tr class="separator:a0e27a456fea41840b5249df9e4cdd87d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a984213807ef1983fd8a29dd28cb0c001"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
-<tr class="memitem:a984213807ef1983fd8a29dd28cb0c001"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLocalization.html#a984213807ef1983fd8a29dd28cb0c001">FormatString</a> (unsigned int index, Args &amp;&amp;... args) const</td></tr>
-<tr class="separator:a984213807ef1983fd8a29dd28cb0c001"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12b6345c5ad2e0c22cc4199a287aaf0e"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a12b6345c5ad2e0c22cc4199a287aaf0e">GetString</a> (<a class="el" href="LocalizationEnums_8h.html#a43af50279618dad534b9c9ba56b36655">LstrId</a> index) const</td></tr>
+<tr class="separator:a12b6345c5ad2e0c22cc4199a287aaf0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12115adf5ab39db48faadc1b9398e84f"><td class="memTemplParams" colspan="2">template&lt;class... Args&gt; </td></tr>
+<tr class="memitem:a12115adf5ab39db48faadc1b9398e84f"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classLocalization.html#a12115adf5ab39db48faadc1b9398e84f">FormatString</a> (<a class="el" href="LocalizationEnums_8h.html#a43af50279618dad534b9c9ba56b36655">LstrId</a> index, Args &amp;&amp;... args) const</td></tr>
+<tr class="separator:a12115adf5ab39db48faadc1b9398e84f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9d9b080718df24aae3eeb2f8a35913d"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#ad9d9b080718df24aae3eeb2f8a35913d">GetDayName</a> (unsigned int index) const</td></tr>
 <tr class="separator:ad9d9b080718df24aae3eeb2f8a35913d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a58cff61b1518db820debb82e8bf795"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a8a58cff61b1518db820debb82e8bf795">GetMonthName</a> (unsigned int index) const</td></tr>
@@ -203,8 +203,8 @@ Private Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:affad899cbacc16fdd0fcae13b97b68a3"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#affad899cbacc16fdd0fcae13b97b68a3">localization_raw</a></td></tr>
 <tr class="separator:affad899cbacc16fdd0fcae13b97b68a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6b3d6d6edcc41a470abf7701b8c1bb9"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#ab6b3d6d6edcc41a470abf7701b8c1bb9">localization_strings</a></td></tr>
-<tr class="separator:ab6b3d6d6edcc41a470abf7701b8c1bb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42d9b3ce1f6718003339c588471ff3c3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; std::string, <a class="el" href="LocalizationEnums_8h.html#a43af50279618dad534b9c9ba56b36655a03dbee238ddf8924ccda7f85ed201d5e">LSTR_FIRST</a>, <a class="el" href="LocalizationEnums_8h.html#a43af50279618dad534b9c9ba56b36655affb14a59e09635c9423c7dfdccb1d24e">LSTR_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#a42d9b3ce1f6718003339c588471ff3c3">localization_strings</a></td></tr>
+<tr class="separator:a42d9b3ce1f6718003339c588471ff3c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad960bf51a35041341abd4d8592f740cb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#ad960bf51a35041341abd4d8592f740cb">class_desc_raw</a></td></tr>
 <tr class="separator:ad960bf51a35041341abd4d8592f740cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9351880f9d111459fd3e0c1767dfd40"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLocalization.html#ad9351880f9d111459fd3e0c1767dfd40">attribute_desc_raw</a></td></tr>
@@ -317,8 +317,8 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a984213807ef1983fd8a29dd28cb0c001" name="a984213807ef1983fd8a29dd28cb0c001"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a984213807ef1983fd8a29dd28cb0c001">&#9670;&#160;</a></span>FormatString()</h2>
+<a id="a12115adf5ab39db48faadc1b9398e84f" name="a12115adf5ab39db48faadc1b9398e84f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12115adf5ab39db48faadc1b9398e84f">&#9670;&#160;</a></span>FormatString()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -331,7 +331,7 @@ template&lt;class... Args&gt; </div>
         <tr>
           <td class="memname">std::string Localization::FormatString </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype"><a class="el" href="LocalizationEnums_8h.html#a43af50279618dad534b9c9ba56b36655">LstrId</a>&#160;</td>
           <td class="paramname"><em>index</em>, </td>
         </tr>
         <tr>
@@ -1335,8 +1335,8 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
-<a id="a0e27a456fea41840b5249df9e4cdd87d" name="a0e27a456fea41840b5249df9e4cdd87d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e27a456fea41840b5249df9e4cdd87d">&#9670;&#160;</a></span>GetString()</h2>
+<a id="a12b6345c5ad2e0c22cc4199a287aaf0e" name="a12b6345c5ad2e0c22cc4199a287aaf0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12b6345c5ad2e0c22cc4199a287aaf0e">&#9670;&#160;</a></span>GetString()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1344,7 +1344,7 @@ template&lt;class... Args&gt; </div>
         <tr>
           <td class="memname">const std::string &amp; Localization::GetString </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype"><a class="el" href="LocalizationEnums_8h.html#a43af50279618dad534b9c9ba56b36655">LstrId</a>&#160;</td>
           <td class="paramname"><em>index</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -2207,8 +2207,8 @@ template&lt;class... Args&gt; </div>
 
 </div>
 </div>
-<a id="ab6b3d6d6edcc41a470abf7701b8c1bb9" name="ab6b3d6d6edcc41a470abf7701b8c1bb9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6b3d6d6edcc41a470abf7701b8c1bb9">&#9670;&#160;</a></span>localization_strings</h2>
+<a id="a42d9b3ce1f6718003339c588471ff3c3" name="a42d9b3ce1f6718003339c588471ff3c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42d9b3ce1f6718003339c588471ff3c3">&#9670;&#160;</a></span>localization_strings</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2217,7 +2217,7 @@ template&lt;class... Args&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::string&gt; Localization::localization_strings</td>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;std::string, <a class="el" href="LocalizationEnums_8h.html#a43af50279618dad534b9c9ba56b36655a03dbee238ddf8924ccda7f85ed201d5e">LSTR_FIRST</a>, <a class="el" href="LocalizationEnums_8h.html#a43af50279618dad534b9c9ba56b36655affb14a59e09635c9423c7dfdccb1d24e">LSTR_LAST</a>&gt; Localization::localization_strings</td>
         </tr>
       </table>
   </td>

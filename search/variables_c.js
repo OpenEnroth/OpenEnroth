@@ -47,7 +47,7 @@ var searchData=
   ['loc_5ftime_44',['loc_time',['../structOutdoorLocation.html#a91bce837704480d6412b409096d8bea5',1,'OutdoorLocation']]],
   ['localization_45',['localization',['../Localization_8h.html#acce22610cffe19ad6cc8f577cd611b8b',1,'localization():&#160;Localization.cpp'],['../Localization_8cpp.html#acce22610cffe19ad6cc8f577cd611b8b',1,'localization():&#160;Localization.cpp']]],
   ['localization_5fraw_46',['localization_raw',['../classLocalization.html#affad899cbacc16fdd0fcae13b97b68a3',1,'Localization']]],
-  ['localization_5fstrings_47',['localization_strings',['../classLocalization.html#ab6b3d6d6edcc41a470abf7701b8c1bb9',1,'Localization']]],
+  ['localization_5fstrings_47',['localization_strings',['../classLocalization.html#a42d9b3ce1f6718003339c588471ff3c3',1,'Localization']]],
   ['location2d_48',['Location2D',['../structNPCData.html#ac47df05161d15a3228421ecfb1377522',1,'NPCData']]],
   ['location2d_49',['location2d',['../structNPCData__MM7.html#aee53060c3df409618fc2a3a18ba7b2d9',1,'NPCData_MM7']]],
   ['location_5ffile_5fdescription_50',['location_file_description',['../structOutdoorLocation.html#aa6e2db54629c256934e756cbc261ce84',1,'OutdoorLocation']]],

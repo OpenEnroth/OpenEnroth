@@ -712,13 +712,14 @@ var searchData=
   ['subcommand_5fhouse_5fid_709',['SUBCOMMAND_HOUSE_ID',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a9ae233ca7d4d8d6a5dd75d05b342c98a',1,'CodeGenOptions']]],
   ['subcommand_5fitem_5fid_710',['SUBCOMMAND_ITEM_ID',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a29f567fa151ccc2ce5988d5fa2cfbde2',1,'CodeGenOptions']]],
   ['subcommand_5fls_711',['SUBCOMMAND_LS',['../structLodToolOptions.html#abcc21db1b7bbfbf2f3e735e81958863ba638f628ac60cb53e0efdbf491a9fc0b9',1,'LodToolOptions']]],
-  ['subcommand_5fmap_5fid_712',['SUBCOMMAND_MAP_ID',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a34adb4fefc0687679d00c93a3e21ce91',1,'CodeGenOptions']]],
-  ['subcommand_5fmonster_5fid_713',['SUBCOMMAND_MONSTER_ID',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a8289cd1c62bfcb9eb127a578c3215ddc',1,'CodeGenOptions']]],
-  ['subcommand_5fmonster_5ftype_714',['SUBCOMMAND_MONSTER_TYPE',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a364c6ccc16d66629b4e5fd9b5007c84f',1,'CodeGenOptions']]],
-  ['subcommand_5fmusic_715',['SUBCOMMAND_MUSIC',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226aed01925541e088cf7a9e8afc3158c986',1,'CodeGenOptions']]],
-  ['subcommand_5fnone_716',['SUBCOMMAND_NONE',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a745ca9977da10b91ea23c9ff55d82975',1,'CodeGenOptions']]],
-  ['subcommand_5fplay_717',['SUBCOMMAND_PLAY',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2a37b7775a0b058c6712038ab75647f8bf',1,'OpenEnrothOptions']]],
-  ['subcommand_5fretrace_718',['SUBCOMMAND_RETRACE',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2af67b035a3a3941ba21dbe7245a72cb32',1,'OpenEnrothOptions']]],
-  ['subcommand_5fspeech_5fportraits_719',['SUBCOMMAND_SPEECH_PORTRAITS',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a96e5d586d7525833eb566424218be6d4',1,'CodeGenOptions']]],
-  ['summoned_720',['Summoned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda046bfcaf387649f3c78b193d321d4dd6',1,'ActorEnums.h']]]
+  ['subcommand_5flstr_5fid_712',['SUBCOMMAND_LSTR_ID',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a28a2cf1cbd9bda253c7f6d55fc7a50c9',1,'CodeGenOptions']]],
+  ['subcommand_5fmap_5fid_713',['SUBCOMMAND_MAP_ID',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a34adb4fefc0687679d00c93a3e21ce91',1,'CodeGenOptions']]],
+  ['subcommand_5fmonster_5fid_714',['SUBCOMMAND_MONSTER_ID',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a8289cd1c62bfcb9eb127a578c3215ddc',1,'CodeGenOptions']]],
+  ['subcommand_5fmonster_5ftype_715',['SUBCOMMAND_MONSTER_TYPE',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a364c6ccc16d66629b4e5fd9b5007c84f',1,'CodeGenOptions']]],
+  ['subcommand_5fmusic_716',['SUBCOMMAND_MUSIC',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226aed01925541e088cf7a9e8afc3158c986',1,'CodeGenOptions']]],
+  ['subcommand_5fnone_717',['SUBCOMMAND_NONE',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a745ca9977da10b91ea23c9ff55d82975',1,'CodeGenOptions']]],
+  ['subcommand_5fplay_718',['SUBCOMMAND_PLAY',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2a37b7775a0b058c6712038ab75647f8bf',1,'OpenEnrothOptions']]],
+  ['subcommand_5fretrace_719',['SUBCOMMAND_RETRACE',['../structOpenEnrothOptions.html#a4bbb727c7a75a2faa5102089da3963c2af67b035a3a3941ba21dbe7245a72cb32',1,'OpenEnrothOptions']]],
+  ['subcommand_5fspeech_5fportraits_720',['SUBCOMMAND_SPEECH_PORTRAITS',['../structCodeGenOptions.html#a9bb003af95e5f619b8827faf6eac5226a96e5d586d7525833eb566424218be6d4',1,'CodeGenOptions']]],
+  ['summoned_721',['Summoned',['../ActorEnums_8h.html#a75a2677e7281dc615368b0814c395feda046bfcaf387649f3c78b193d321d4dd6',1,'ActorEnums.h']]]
 ];
