@@ -271,7 +271,7 @@ void prepareArenaFight(ArenaLevel level) {
     GUIWindow window = *pDialogueWindow;
     window.uFrameWidth = game_viewport_width;
     window.uFrameZ = 452;
-    int textHeight = assets->pFontArrus->CalcTextHeight(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth, 13) + 7;
+    int textHeight = assets->pFontArrus->CalcTextHeight(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON_THE_MONSTERS), window.uFrameWidth, 13) + 7;
 
     // TODO(pskelton): This doesnt work properly and we dont want draw calls here
     render->BeginScene3D();
@@ -284,7 +284,7 @@ void prepareArenaFight(ArenaLevel level) {
      render->BeginScene2D();
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - textHeight) / 480.0f, ui_leather_mm7, textHeight);
     render->DrawTextureNew(8 / 640.0f, (347 - textHeight) / 480.0f, _591428_endcap);
-    std::string text = assets->pFontArrus->FitTextInAWindow(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth, 13);
+    std::string text = assets->pFontArrus->FitTextInAWindow(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON_THE_MONSTERS), window.uFrameWidth, 13);
     pDialogueWindow->DrawText(assets->pFontArrus.get(), {13, 354 - textHeight}, colorTable.White, text);
     render->Present();
 
@@ -481,18 +481,18 @@ std::string masteryTeacherOptionString() {
 
     if (currClassMaxMastery < masteryLevelBeingTaught) {
         if (skillMaxMasteryPerClass[getTier2Class(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(getTier2Class(pClassType)));
+            return localization->FormatString(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->GetClassName(getTier2Class(pClassType)));
         } else if (skillMaxMasteryPerClass[getTier3LightClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught &&
                 skillMaxMasteryPerClass[getTier3DarkClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED_2,
+            return localization->FormatString(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_OR_S_TO,
                     localization->GetClassName(getTier3LightClass(pClassType)),
                     localization->GetClassName(getTier3DarkClass(pClassType)));
         } else if (skillMaxMasteryPerClass[getTier3LightClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(getTier3LightClass(pClassType)));
+            return localization->FormatString(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->GetClassName(getTier3LightClass(pClassType)));
         } else if (skillMaxMasteryPerClass[getTier3DarkClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(getTier3DarkClass(pClassType)));
+            return localization->FormatString(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->GetClassName(getTier3DarkClass(pClassType)));
         } else {
-            return localization->FormatString(LSTR_FMT_SKILL_CANT_BE_LEARNED, localization->GetClassName(pClassType));
+            return localization->FormatString(LSTR_THIS_SKILL_LEVEL_CAN_NOT_BE_LEARNED_BY, localization->GetClassName(pClassType));
         }
     }
 
@@ -577,7 +577,7 @@ std::string masteryTeacherOptionString() {
 
     membershipOrTrainingApproved = true;
 
-    return localization->FormatString(LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD, localization->MasteryNameLong(masteryLevelBeingTaught),
+    return localization->FormatString(LSTR_BECOME_S_IN_S_FOR_LU_GOLD, localization->MasteryNameLong(masteryLevelBeingTaught),
                                       localization->GetSkillName(skillBeingTaught), gold_transaction_amount);
 }
 
@@ -597,13 +597,13 @@ std::string npcDialogueOptionString(DialogueId topic, NPCData *npcData) {
         return pNPCTopics[npcData->dialogue_6_evt_id].pTopic;
       case DIALOGUE_HIRE_FIRE:
         if (npcData->Hired()) {
-            return localization->FormatString(LSTR_HIRE_RELEASE, npcData->name);
+            return localization->FormatString(LSTR_DISMISS_S, npcData->name);
         } else {
             return localization->GetString(LSTR_HIRE);
         }
       case DIALOGUE_13_hiring_related:
         if (npcData->Hired()) {
-            return localization->FormatString(LSTR_HIRE_RELEASE, npcData->name);
+            return localization->FormatString(LSTR_DISMISS_S, npcData->name);
         } else {
             return localization->GetString(LSTR_JOIN);
         }
@@ -795,7 +795,7 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
             }
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         } else {
-            engine->_statusBar->setEvent(LSTR_RATIONS_FULL);
+            engine->_statusBar->setEvent(LSTR_YOUR_PACKS_ARE_ALREADY_FULL);
         }
     } else if (topic == DIALOGUE_HIRE_FIRE) {
         if (npcData->Hired()) {
@@ -817,12 +817,12 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
             return;
         }
         if (!pParty->pHirelings[0].name.empty() && !pParty->pHirelings[1].name.empty()) {
-            engine->_statusBar->setEvent(LSTR_HIRE_NO_ROOM);
+            engine->_statusBar->setEvent(LSTR_I_CANNOT_JOIN_YOU_YOURE_PARTY_IS_FULL);
         } else {
             if (npcData->profession != Burglar) {
                 // burglars have no hiring price
                 if (pParty->GetGold() < pNPCStats->pProfessions[npcData->profession].uHirePrice) {
-                    engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+                    engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
                     dialogue_show_profession_details = false;
                     //uDialogueType = DIALOGUE_13_hiring_related;
                     if (pParty->hasActiveCharacter()) {

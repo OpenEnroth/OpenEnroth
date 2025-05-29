@@ -15,7 +15,7 @@ TargetedSpellUI::TargetedSpellUI(WindowType windowType, Pointi position, Sizei d
 
     pEventTimer->setPaused(true);
     mouse->SetCursorImage("MICON2");
-    engine->_statusBar->setEvent(LSTR_CHOOSE_TARGET);
+    engine->_statusBar->setEvent(LSTR_SELECT_TARGET);
 }
 
 TargetedSpellUI_Hirelings::TargetedSpellUI_Hirelings(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)

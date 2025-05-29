@@ -224,7 +224,7 @@ void ItemInteraction(unsigned int item_id) {
             return;
         }
 
-        engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->items[pSpriteObjects[item_id].containing_item.itemId].unidentifiedName);
+        engine->_statusBar->setEvent(LSTR_YOU_FOUND_AN_ITEM_S, pItemTable->items[pSpriteObjects[item_id].containing_item.itemId].unidentifiedName);
 
         // TODO: WTF? 184 / 185 qbits are associated with Tatalia's Mercenery Guild Harmondale raids. Are these about castle's tapestries ?
         if (pSpriteObjects[item_id].containing_item.itemId == ITEM_ARTIFACT_SPLITTER) {

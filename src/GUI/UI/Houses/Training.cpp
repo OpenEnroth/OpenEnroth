@@ -38,13 +38,13 @@ void GUIWindow_Training::mainDialogue() {
     std::string trainText = "";
 
     if (pParty->activeCharacter().uLevel >= trainingHallMaxLevels[houseId()]) {
-        trainText = fmt::format("{}\n \n{}", localization->GetString(LSTR_TEACHER_LEVEL_TOO_LOW), localization->GetString(LSTR_CANT_TRAIN_FURTHER));
+        trainText = fmt::format("{}\n \n{}", localization->GetString(LSTR_WITH_YOUR_SKILLS_YOU_SHOULD_BE_WORKING), localization->GetString(LSTR_SORRY_BUT_WE_ARE_UNABLE_TO_TRAIN_YOU));
     } else {
         if (pParty->activeCharacter().experience < expForNextLevel) {
             uint64_t expDelta = expForNextLevel - pParty->activeCharacter().experience;
-            trainText = localization->FormatString(LSTR_XP_UNTIL_NEXT_LEVEL, expDelta, pParty->activeCharacter().uLevel + 1);
+            trainText = localization->FormatString(LSTR_YOU_NEED_D_MORE_EXPERIENCE_TO_TRAIN_TO, expDelta, pParty->activeCharacter().uLevel + 1);
         } else {
-            trainText = localization->FormatString(LSTR_FMT_TRAIN_LEVEL_D_FOR_D_GOLD, pParty->activeCharacter().uLevel + 1, pPrice);
+            trainText = localization->FormatString(LSTR_TRAIN_TO_LEVEL_D_FOR_D_GOLD, pParty->activeCharacter().uLevel + 1, pPrice);
         }
     }
 
@@ -86,14 +86,14 @@ void GUIWindow_Training::trainDialogue() {
                 }
                 pParty->activeCharacter().playReaction(SPEECH_LEVEL_UP);
 
-                engine->_statusBar->setEvent(LSTR_FMT_S_NOW_LEVEL_D, pParty->activeCharacter().name,
+                engine->_statusBar->setEvent(LSTR_S_IS_NOW_LEVEL_LU_AND_HAS_EARNED_LU, pParty->activeCharacter().name,
                                     pParty->activeCharacter().uLevel, pParty->activeCharacter().uLevel / 10 + 5);
 
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
                 return;
             }
 
-            engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+            engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
             playHouseSound(houseId(), HOUSE_SOUND_TRAINING_NOT_ENOUGH_GOLD);
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
             return;

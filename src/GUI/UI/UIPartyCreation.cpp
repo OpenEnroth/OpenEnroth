@@ -315,9 +315,9 @@ void GUIWindow_PartyCreation::Update() {
     }
 
     pTextCenter = ui_partycreation_font->AlignText_Center(
-        640, localization->GetString(LSTR_CREATE_PARTY_FANCY));
+        640, localization->GetString(LSTR_C_R_E_A_T_E_P_A_R_T_Y));
     pGUIWindow_CurrentMenu->DrawText(ui_partycreation_font.get(), {pTextCenter + 1, 0}, colorTable.White,
-        localization->GetString(LSTR_CREATE_PARTY_FANCY));
+        localization->GetString(LSTR_C_R_E_A_T_E_P_A_R_T_Y));
 
     render->DrawTextureNew(17 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pCharacters[0].uCurrentFace]);
     render->DrawTextureNew(176 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pCharacters[1].uCurrentFace]);
@@ -540,8 +540,8 @@ void GUIWindow_PartyCreation::Update() {
     }
 
     pTextCenter = assets->pFontCreate->AlignText_Center(
-        0x5C, localization->GetString(LSTR_BONUS));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 533, 394}, colorTable.Tacha, localization->GetString(LSTR_BONUS));
+                0x5C, localization->GetString(LSTR_BONUS_1));
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 533, 394}, colorTable.Tacha, localization->GetString(LSTR_BONUS_1));
 
     // force draw so overlays dont get muddled
     render->DrawTwodVerts();
@@ -555,9 +555,9 @@ void GUIWindow_PartyCreation::Update() {
 
     if (errorMessageExpireTime > pMiscTimer->time()) {
         GUIWindow message_window;
-        message_window.sHint = localization->GetString(LSTR_PARTY_UNASSIGNED_POINTS);
+        message_window.sHint = localization->GetString(LSTR_CREATE_PARTY_CANNOT_BE_COMPLETED_UNLESS);
         if (pBonusNum < 0)
-            message_window.sHint = localization->GetString(LSTR_PARTY_TOO_MUCH_POINTS);
+            message_window.sHint = localization->GetString(LSTR_YOU_CANT_SPEND_MORE_THAN_50_POINTS);
         message_window.uFrameWidth = 300;
         message_window.uFrameHeight = 100;
         message_window.uFrameX = 170;

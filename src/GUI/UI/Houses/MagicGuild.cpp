@@ -175,7 +175,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
     int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
 
     if (haveLearnableSkills) {
-        std::string skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, pPrice);
+        std::string skill_price_label = localization->FormatString(LSTR_SKILL_COST_LU, pPrice);
         working_window.DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.White, skill_price_label, 3);
     }
 
@@ -210,7 +210,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                 ++itemcount;
         }
 
-        engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), colorTable.White);
+        engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_THE_ITEM_TO_BUY), colorTable.White);
 
         if (!itemcount) {  // shop empty
             Time nextGenTime = pParty->PartyTimes.guildNextRefreshTime[houseId()];
@@ -327,7 +327,7 @@ void GUIWindow_MagicGuild::houseScreenClick() {
 
                     if (pParty->GetGold() < uPriceItemService) {
                         playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
-                        engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+                        engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
                         return;
                     }
 
@@ -343,7 +343,7 @@ void GUIWindow_MagicGuild::houseScreenClick() {
                     }
 
                     pParty->activeCharacter().playReaction(SPEECH_NO_ROOM);
-                    engine->_statusBar->setEvent(LSTR_INVENTORY_IS_FULL);
+                    engine->_statusBar->setEvent(LSTR_PACK_IS_FULL);
                 }
             }
         }
