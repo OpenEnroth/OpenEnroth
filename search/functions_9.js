@@ -315,7 +315,7 @@ var searchData=
   ['itemenchanted_312',['ItemEnchanted',['../structItem.html#adf3c9c588a65b9b6f3576fc29550e985',1,'Item']]],
   ['itemidentificationpriceforplayer_313',['itemIdentificationPriceForPlayer',['../classPriceCalculator.html#a03513dd492faa91e0b3038b24a6d97fe',1,'PriceCalculator']]],
   ['iteminteraction_314',['ItemInteraction',['../Viewport_8cpp.html#ad2fc7671d4f9ef2ac5c25246e2c74bca',1,'Viewport.cpp']]],
-  ['itemoffset_315',['itemOffset',['../ItemGrid_8cpp.html#a2dde032be88f195449c48d2964fd4363',1,'itemOffset(int widthOrHeight):&#160;ItemGrid.cpp'],['../ItemGrid_8h.html#acecb5150c32d37fc877d83c6ef972561',1,'itemOffset(int dimension):&#160;ItemGrid.cpp']]],
+  ['itemoffset_315',['itemOffset',['../ItemGrid_8cpp.html#acecb5150c32d37fc877d83c6ef972561',1,'itemOffset(int dimension):&#160;ItemGrid.cpp'],['../ItemGrid_8h.html#acecb5150c32d37fc877d83c6ef972561',1,'itemOffset(int dimension):&#160;ItemGrid.cpp']]],
   ['itemrepairpriceforplayer_316',['itemRepairPriceForPlayer',['../classPriceCalculator.html#ae33a8bbc366f154885de029eed43eaf8',1,'PriceCalculator']]],
   ['itemsellingpriceforplayer_317',['itemSellingPriceForPlayer',['../classPriceCalculator.html#a4c98aa5a112e33e5979ffdbdb10ba867',1,'PriceCalculator']]],
   ['itemspotiondmgbreak_318',['ItemsPotionDmgBreak',['../classCharacter.html#a2d92a23abf8222682292747b03e0e1d0',1,'Character']]],

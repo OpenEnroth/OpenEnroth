@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0482cac</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;2cd8f2d</span>
    </div>
   </td>
  </tr>
@@ -83,15 +83,55 @@ $(function() {
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a5584f7df9d072b238f90f4312442ac7f"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemGrid_8cpp.html#a5584f7df9d072b238f90f4312442ac7f">roundIntDownToBase</a> (int <a class="el" href="Json__ut_8cpp.html#a7e98b8a17c0aad30ba64d47b74e2a6c1">i</a>, int base)</td></tr>
-<tr class="separator:a5584f7df9d072b238f90f4312442ac7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2dde032be88f195449c48d2964fd4363"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemGrid_8cpp.html#a2dde032be88f195449c48d2964fd4363">itemOffset</a> (int widthOrHeight)</td></tr>
-<tr class="memdesc:a2dde032be88f195449c48d2964fd4363"><td class="mdescLeft">&#160;</td><td class="mdescRight">itemOffset Calculate offsets for placing items on a grid.  <a href="ItemGrid_8cpp.html#a2dde032be88f195449c48d2964fd4363">More...</a><br /></td></tr>
-<tr class="separator:a2dde032be88f195449c48d2964fd4363"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a629bca9e5fc52bf2cc545cf66e9f837d"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemGrid_8cpp.html#a629bca9e5fc52bf2cc545cf66e9f837d">roundIntDown</a> (int a, int b)</td></tr>
+<tr class="separator:a629bca9e5fc52bf2cc545cf66e9f837d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44771f1b186e71b132afbe64ec51c8c0"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemGrid_8cpp.html#a44771f1b186e71b132afbe64ec51c8c0">divIntDown</a> (int a, int b)</td></tr>
+<tr class="separator:a44771f1b186e71b132afbe64ec51c8c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acecb5150c32d37fc877d83c6ef972561"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemGrid_8cpp.html#acecb5150c32d37fc877d83c6ef972561">itemOffset</a> (int dimension)</td></tr>
+<tr class="memdesc:acecb5150c32d37fc877d83c6ef972561"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate offsets for placing items in inventory grid.  <a href="ItemGrid_8cpp.html#acecb5150c32d37fc877d83c6ef972561">More...</a><br /></td></tr>
+<tr class="separator:acecb5150c32d37fc877d83c6ef972561"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dec1549385d59265a5f9a6032a2719b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemGrid_8cpp.html#a7dec1549385d59265a5f9a6032a2719b">mapToInventoryGrid</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> mousePos, <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> inventoryTopLeft)</td></tr>
+<tr class="separator:a7dec1549385d59265a5f9a6032a2719b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a2dde032be88f195449c48d2964fd4363" name="a2dde032be88f195449c48d2964fd4363"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2dde032be88f195449c48d2964fd4363">&#9670;&#160;</a></span>itemOffset()</h2>
+<a id="a44771f1b186e71b132afbe64ec51c8c0" name="a44771f1b186e71b132afbe64ec51c8c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44771f1b186e71b132afbe64ec51c8c0">&#9670;&#160;</a></span>divIntDown()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int divIntDown </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acecb5150c32d37fc877d83c6ef972561" name="acecb5150c32d37fc877d83c6ef972561"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acecb5150c32d37fc877d83c6ef972561">&#9670;&#160;</a></span>itemOffset()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -106,20 +146,56 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>itemOffset Calculate offsets for placing items on a grid. </p>
+<p>Calculate offsets for placing items in inventory grid. </p>
+<p >Inventory grid have 32x32 pixels cells. Items don't exactly fit into the grid, but are slightly smaller or larger. The function calculates offsets for the item to be centered. Calculations are the same for height and width.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">dimension</td><td>width or height of the item</td></tr>
+    <tr><td class="paramname">dimension</td><td>Width or height of the item. </td></tr>
   </table>
   </dd>
 </dl>
-<p>Inventory grid have 32x32 cells. Items don't exactly fit into the grid, but are slightly smaller or larger. The function calculates offsets for the item to be centered. Calculations are the same for length and width.</p>
-<dl class="section return"><dt>Returns</dt><dd>offset in pixels </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Offset in pixels. </dd></dl>
 
 </div>
 </div>
-<a id="a5584f7df9d072b238f90f4312442ac7f" name="a5584f7df9d072b238f90f4312442ac7f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5584f7df9d072b238f90f4312442ac7f">&#9670;&#160;</a></span>roundIntDownToBase()</h2>
+<a id="a7dec1549385d59265a5f9a6032a2719b" name="a7dec1549385d59265a5f9a6032a2719b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7dec1549385d59265a5f9a6032a2719b">&#9670;&#160;</a></span>mapToInventoryGrid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> mapToInventoryGrid </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>mousePos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>inventoryTopLeft</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mousePos</td><td>Mouse position. </td></tr>
+    <tr><td class="paramname">inventoryTopLeft</td><td>Top left position of the inventory grid. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Inventory grid position, in grid coordinates. Might be out of grid if the mouse position is out of grid. </dd></dl>
+
+</div>
+</div>
+<a id="a629bca9e5fc52bf2cc545cf66e9f837d" name="a629bca9e5fc52bf2cc545cf66e9f837d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a629bca9e5fc52bf2cc545cf66e9f837d">&#9670;&#160;</a></span>roundIntDown()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -128,16 +204,16 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static int roundIntDownToBase </td>
+          <td class="memname">static int roundIntDown </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>i</em>, </td>
+          <td class="paramname"><em>a</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>base</em>&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -147,7 +223,7 @@ Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

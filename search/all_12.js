@@ -376,7 +376,7 @@ var searchData=
   ['round_5fto_5fint_373',['round_to_int',['../OurMath_8h.html#a50ee4d4946888926bdf5a920129a322a',1,'OurMath.h']]],
   ['roundeddown_374',['roundedDown',['../classDuration.html#a38628b8045d1d8446cc78900a869d826',1,'Duration']]],
   ['roundedup_375',['roundedUp',['../classDuration.html#ab07581d5061ba744794fc3519e8bd5c6',1,'Duration']]],
-  ['roundintdowntobase_376',['roundIntDownToBase',['../ItemGrid_8cpp.html#a5584f7df9d072b238f90f4312442ac7f',1,'ItemGrid.cpp']]],
+  ['roundintdown_376',['roundIntDown',['../ItemGrid_8cpp.html#a629bca9e5fc52bf2cc545cf66e9f837d',1,'ItemGrid.cpp']]],
   ['run_377',['run',['../classGame.html#a99fb161fbbe87d25a8b73265a0611e58',1,'Game::run()'],['../classGameStarter.html#a44317299c07aea79edfe3933d8507783',1,'GameStarter::run()']]],
   ['runbeaconscodegen_378',['runBeaconsCodeGen',['../CodeGen_8cpp.html#a304f890cc29e145c628820932a72df3c',1,'CodeGen.cpp']]],
   ['runbountyhuntcodegen_379',['runBountyHuntCodeGen',['../CodeGen_8cpp.html#acdcdc5d53ad448ed9a691a7c24d045a8',1,'CodeGen.cpp']]],

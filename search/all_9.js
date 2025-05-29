@@ -1527,7 +1527,7 @@ var searchData=
   ['itemid_1524',['ItemId',['../ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b',1,'ItemEnums.h']]],
   ['itemidentificationpriceforplayer_1525',['itemIdentificationPriceForPlayer',['../classPriceCalculator.html#a03513dd492faa91e0b3038b24a6d97fe',1,'PriceCalculator']]],
   ['iteminteraction_1526',['ItemInteraction',['../Viewport_8cpp.html#ad2fc7671d4f9ef2ac5c25246e2c74bca',1,'Viewport.cpp']]],
-  ['itemoffset_1527',['itemOffset',['../ItemGrid_8h.html#acecb5150c32d37fc877d83c6ef972561',1,'itemOffset(int dimension):&#160;ItemGrid.cpp'],['../ItemGrid_8cpp.html#a2dde032be88f195449c48d2964fd4363',1,'itemOffset(int widthOrHeight):&#160;ItemGrid.cpp']]],
+  ['itemoffset_1527',['itemOffset',['../ItemGrid_8h.html#acecb5150c32d37fc877d83c6ef972561',1,'itemOffset(int dimension):&#160;ItemGrid.cpp'],['../ItemGrid_8cpp.html#acecb5150c32d37fc877d83c6ef972561',1,'itemOffset(int dimension):&#160;ItemGrid.cpp']]],
   ['itemrarity_1528',['ItemRarity',['../ItemEnums_8h.html#aaa78c9db44eeb3c39f09d7fe2ae398b5',1,'ItemEnums.h']]],
   ['itemrepairpriceforplayer_1529',['itemRepairPriceForPlayer',['../classPriceCalculator.html#ae33a8bbc366f154885de029eed43eaf8',1,'PriceCalculator']]],
   ['items_1530',['items',['../structItemTable.html#ae8b9a15fc292c9130ffa675ae56f72bd',1,'ItemTable::items()'],['../structChest__MM7.html#a5c38b8a137d8488e6a81d7ced89dbee6',1,'Chest_MM7::items()'],['../structChest.html#a0043386ce47e57b27d3864b1fcd415de',1,'Chest::items()'],['../classActor.html#a4090d55bf716ab24afa78f117ec59002',1,'Actor::items()']]],
