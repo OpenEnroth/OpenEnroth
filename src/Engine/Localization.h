@@ -10,6 +10,7 @@
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/PartyEnums.h"
+#include "Objects/ActorEnums.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/String/Format.h"
@@ -51,6 +52,10 @@ class Localization {
 
     const std::string &GetCharacterBuffName(CharacterBuff index) const {
         return this->character_buff_names[index];
+    }
+
+    const std::string &GetActorBuffName(ActorBuff index) const {
+        return this->actor_buff_names[index];
     }
 
     const std::string &GetClassName(CharacterClass index) const {
@@ -243,6 +248,7 @@ class Localization {
     IndexedArray<std::string, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> spell_school_names;
     IndexedArray<std::string, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> party_buff_names;
     IndexedArray<std::string, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> character_buff_names;
+    IndexedArray<std::string, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> actor_buff_names;
     IndexedArray<std::string, CLASS_FIRST, CLASS_LAST> class_names;
     IndexedArray<std::string, CLASS_FIRST, CLASS_LAST> class_desciptions;
     IndexedArray<std::string, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> attribute_names;

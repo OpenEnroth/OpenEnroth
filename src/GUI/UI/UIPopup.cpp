@@ -27,6 +27,8 @@
 #include "Engine/MapEnumFunctions.h"
 #include "Engine/Time/Timer.h"
 #include "Engine/Conditions.h"
+#include "Engine/Objects/ActorEnumFunctions.h"
+#include "Engine/Spells/SpellEnumFunctions.h"
 
 #include "Io/Mouse.h"
 
@@ -35,6 +37,7 @@
 #include "GUI/UI/Books/MapBook.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIPopup.h"
+
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIChest.h"
@@ -801,100 +804,21 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         if (pWindow) pWindow->DrawText(font, {X_EFFECT_LIST, pTextHeight}, colorTable.White, localization->GetString(LSTR_UNKNOWN_VALUE));
         pTextHeight += lineAdvance;
     } else {
-        SpellId spellIdForBuff = SPELL_NONE;
-        LstrId textId = LSTR_223;
+        bool hasBuffs = false;
         for (ActorBuff buff : pActors[uActorID].buffs.indices()) {
             if (pActors[uActorID].buffs[buff].Active()) {
-                switch (buff) {
-                    case ACTOR_BUFF_CHARM:
-                        spellIdForBuff = SPELL_MIND_CHARM;
-                        textId = LSTR_CHARMED;
-                        break;
-                    case ACTOR_BUFF_SUMMONED:
-                        spellIdForBuff = SPELL_LIGHT_SUMMON_ELEMENTAL;
-                        textId = LSTR_SUMMONED;
-                        break;
-                    case ACTOR_BUFF_SHRINK:
-                        spellIdForBuff = SPELL_DARK_SHRINKING_RAY;
-                        textId = LSTR_SHRUNK;
-                        break;
-                    case ACTOR_BUFF_AFRAID:
-                        spellIdForBuff = SPELL_MIND_MASS_FEAR;
-                        textId = LSTR_AFRAID;
-                        break;
-                    case ACTOR_BUFF_STONED:
-                        spellIdForBuff = SPELL_LIGHT_PARALYZE;
-                        textId = LSTR_STONED;
-                        break;
-                    case ACTOR_BUFF_PARALYZED:
-                        spellIdForBuff = SPELL_LIGHT_PARALYZE;
-                        textId = LSTR_PARALYZED;
-                        break;
-                    case ACTOR_BUFF_SLOWED:
-                        spellIdForBuff = SPELL_EARTH_SLOW;
-                        textId = LSTR_SLOWED;
-                        break;
-                    case ACTOR_BUFF_BERSERK:
-                        spellIdForBuff = SPELL_MIND_BERSERK;
-                        textId = LSTR_BERSERK;
-                        break;
-                    case ACTOR_BUFF_SOMETHING_THAT_HALVES_AC:
-                    case ACTOR_BUFF_MASS_DISTORTION:
-                        continue;
-                    case ACTOR_BUFF_FATE:
-                        spellIdForBuff = SPELL_SPIRIT_FATE;
-                        textId = LSTR_FATE;
-                        break;
-                    case ACTOR_BUFF_ENSLAVED:
-                        spellIdForBuff = SPELL_MIND_ENSLAVE;
-                        textId = LSTR_ENSLAVED;
-                        break;
-                    case ACTOR_BUFF_DAY_OF_PROTECTION:
-                        spellIdForBuff = SPELL_LIGHT_DAY_OF_PROTECTION;
-                        textId = LSTR_DAY_OF_PROTECTION;
-                        break;
-                    case ACTOR_BUFF_HOUR_OF_POWER:
-                        spellIdForBuff = SPELL_LIGHT_HOUR_OF_POWER;
-                        textId = LSTR_HOUR_OF_POWER;
-                        break;
-                    case ACTOR_BUFF_SHIELD:
-                        spellIdForBuff = SPELL_AIR_SHIELD;
-                        textId = LSTR_SHIELD;
-                        break;
-                    case ACTOR_BUFF_STONESKIN:
-                        spellIdForBuff = SPELL_EARTH_STONESKIN;
-                        textId = LSTR_STONESKIN;
-                        break;
-                    case ACTOR_BUFF_BLESS:
-                        spellIdForBuff = SPELL_SPIRIT_BLESS;
-                        textId = LSTR_BLESS;
-                        break;
-                    case ACTOR_BUFF_HEROISM:
-                        spellIdForBuff = SPELL_SPIRIT_HEROISM;
-                        textId = LSTR_HEROISM;
-                        break;
-                    case ACTOR_BUFF_HASTE:
-                        spellIdForBuff = SPELL_FIRE_HASTE;
-                        textId = LSTR_HASTE;
-                        break;
-                    case ACTOR_BUFF_PAIN_REFLECTION:
-                        spellIdForBuff = SPELL_DARK_PAIN_REFLECTION;
-                        textId = LSTR_PAIN_REFLECTION;
-                        break;
-                    case ACTOR_BUFF_HAMMERHANDS:
-                        spellIdForBuff = SPELL_BODY_HAMMERHANDS;
-                        textId = LSTR_HAMMERHANDS;
-                        break;
-                    default:
-                        continue;
+                hasBuffs = true;
+                std::string text = localization->GetActorBuffName(buff);
+                if (!text.empty()) {
+                    if (pWindow)
+                        pWindow->DrawText(font, {X_EFFECT_LIST, pTextHeight}, GetSpellColor(spellForActorBuff(buff)), text);
+                    pTextHeight += lineAdvance;
                 }
-                if (pWindow)
-                    pWindow->DrawText(font, {X_EFFECT_LIST, pTextHeight}, GetSpellColor(spellIdForBuff), localization->GetString(textId));
-                pTextHeight += lineAdvance;
             }
         }
-        if (textId == LSTR_223) {
-            if (pWindow) pWindow->DrawText(font, {X_EFFECT_LIST, pTextHeight}, colorTable.White, localization->GetString(LSTR_NONE));
+        if (!hasBuffs) {
+            if (pWindow)
+                pWindow->DrawText(font, {X_EFFECT_LIST, pTextHeight}, colorTable.White, localization->GetString(LSTR_NONE));
             pTextHeight += lineAdvance;
         }
     }
@@ -2541,21 +2465,23 @@ void Inventory_ItemPopupAndAlchemy() {
 
 //----- (0045828B) --------------------------------------------------------
 Color GetSpellColor(SpellId spellId) {
-    if (spellId == SPELL_NONE) return colorTable.White;
-    if (spellId <= SPELL_FIRE_INCINERATE) return colorTable.DarkOrange;
-    if (spellId <= SPELL_AIR_STARBURST) return colorTable.Anakiwa;
-    if (spellId <= SPELL_WATER_LLOYDS_BEACON) return colorTable.AzureRadiance;
-    if (spellId <= SPELL_EARTH_MASS_DISTORTION) return colorTable.Gray;
-    if (spellId <= SPELL_SPIRIT_RESSURECTION) return colorTable.Mercury;
-    if (spellId <= SPELL_MIND_ENSLAVE) return colorTable.PurplePink;
-    if (spellId <= SPELL_BODY_POWER_CURE) return colorTable.FlushOrange;
-    if (spellId <= SPELL_LIGHT_DIVINE_INTERVENTION) return colorTable.PaleCanary;
-    if (spellId <= SPELL_DARK_SOULDRINKER) return colorTable.MoonRaker;
-    else
-        assert(false);
+    if (spellId == SPELL_NONE)
+        return colorTable.White;
 
-    logger->warning("No color returned - GetSpellColor!");
-    return colorTable.White;
+    switch (magicSchoolForSpell(spellId)) {
+    case MAGIC_SCHOOL_FIRE: return colorTable.DarkOrange;
+    case MAGIC_SCHOOL_AIR: return colorTable.Anakiwa;
+    case MAGIC_SCHOOL_WATER: return colorTable.AzureRadiance;
+    case MAGIC_SCHOOL_EARTH: return colorTable.Gray;
+    case MAGIC_SCHOOL_SPIRIT: return colorTable.Mercury;
+    case MAGIC_SCHOOL_MIND: return colorTable.PurplePink;
+    case MAGIC_SCHOOL_BODY: return colorTable.FlushOrange;
+    case MAGIC_SCHOOL_LIGHT: return colorTable.PaleCanary;
+    case MAGIC_SCHOOL_DARK: return colorTable.MoonRaker;
+    default:
+        assert(false);
+        return colorTable.White;
+    }
 }
 
 //----- (004B46F8) --------------------------------------------------------
