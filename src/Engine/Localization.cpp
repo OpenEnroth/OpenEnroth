@@ -75,6 +75,34 @@ bool Localization::Initialize() {
     this->localization_strings[LSTR_REMAINING_POWER] = "Remaining power: %d";
     this->localization_strings[LSTR_PLAYER_IS_NOT_ACTIVE] = "That player is not active";
 
+    this->special_attack_names[SPECIAL_ATTACK_CURSE] = "Curse";
+    this->special_attack_names[SPECIAL_ATTACK_WEAK] = "Weaken";
+    this->special_attack_names[SPECIAL_ATTACK_SLEEP] = "Sleep";
+    this->special_attack_names[SPECIAL_ATTACK_DRUNK] = "Drunk"; // "Inebriate"?
+    this->special_attack_names[SPECIAL_ATTACK_INSANE] = "Insanity";
+    this->special_attack_names[SPECIAL_ATTACK_POISON_WEAK] = "Poison";
+    this->special_attack_names[SPECIAL_ATTACK_POISON_MEDIUM] = "Poison";
+    this->special_attack_names[SPECIAL_ATTACK_POISON_SEVERE] = "Poison";
+    this->special_attack_names[SPECIAL_ATTACK_DISEASE_WEAK] = "Disease";
+    this->special_attack_names[SPECIAL_ATTACK_DISEASE_MEDIUM] = "Disease";
+    this->special_attack_names[SPECIAL_ATTACK_DISEASE_SEVERE] = "Disease";
+    this->special_attack_names[SPECIAL_ATTACK_PARALYZED] = "Paralyze";
+    this->special_attack_names[SPECIAL_ATTACK_UNCONSCIOUS] = "Knockout";
+    this->special_attack_names[SPECIAL_ATTACK_DEAD] = "Death";
+    this->special_attack_names[SPECIAL_ATTACK_PETRIFIED] = "Petrify";
+    this->special_attack_names[SPECIAL_ATTACK_ERADICATED] = "Eradicate";
+    this->special_attack_names[SPECIAL_ATTACK_BREAK_ANY] = "Break Item";
+    this->special_attack_names[SPECIAL_ATTACK_BREAK_ARMOR] = "Break Armor";
+    this->special_attack_names[SPECIAL_ATTACK_BREAK_WEAPON] = "Break Weapon";
+    this->special_attack_names[SPECIAL_ATTACK_STEAL] = "Steal";
+    this->special_attack_names[SPECIAL_ATTACK_AGING] = "Aging";
+    this->special_attack_names[SPECIAL_ATTACK_MANA_DRAIN] = "SP Drain";
+    this->special_attack_names[SPECIAL_ATTACK_FEAR] = "Fear";
+
+    this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_SHOT] = "Multi-shot";
+    this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_SUMMON] = "Summoner";
+    this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_EXPLODE] = "Explodes";
+
     InitializeMm6ItemCategories();
 
     InitializeMonthNames();

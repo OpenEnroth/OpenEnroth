@@ -16,6 +16,7 @@
 #include "Utility/String/Format.h"
 
 #include "LocalizationEnums.h"
+#include "Objects/MonsterEnums.h"
 
 class Localization {
  public:
@@ -136,6 +137,14 @@ class Localization {
 
     const std::string &GetNpcProfessionName(NpcProfession prof) const {
         return this->npc_profession_names[prof];
+    }
+
+    const std::string &GetSpecialAttackName(SpecialAttackType index) const {
+        return this->special_attack_names[index];
+    }
+
+    const std::string &GetMonsterSpecialAbilityName(MonsterSpecialAbility index) const {
+        return this->monster_special_ability_names[index];
     }
 
     const std::string &getHPDescription() const {
@@ -261,6 +270,8 @@ class Localization {
     IndexedArray<std::string, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_grand;
     IndexedArray<std::string, CONDITION_FIRST, CONDITION_LAST> character_conditions;
     IndexedArray<std::string, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> npc_profession_names;
+    IndexedArray<std::string, SPECIAL_ATTACK_FIRST, SPECIAL_ATTACK_LAST> special_attack_names;
+    IndexedArray<std::string, MONSTER_SPECIAL_ABILITY_FIRST, MONSTER_SPECIAL_ABILITY_LAST> monster_special_ability_names;
     std::string hp_description;
     std::string sp_description;
     std::string armour_class_description;

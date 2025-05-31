@@ -185,6 +185,40 @@ IndexedArray<int, MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST> monster_popup_y_offsets
     {MONSTER_TYPE_UNUSED_RAT,               0},
 };
 
+// OE addition - colors for monster special attack text.
+static constexpr IndexedArray<Color, SPECIAL_ATTACK_FIRST, SPECIAL_ATTACK_LAST> monsterSpecialAttackColors = {
+    {SPECIAL_ATTACK_CURSE,          colorTable.Cioccolato},
+    {SPECIAL_ATTACK_WEAK,           colorTable.Mimosa},
+    {SPECIAL_ATTACK_SLEEP,          colorTable.ScienceBlue},
+    {SPECIAL_ATTACK_DRUNK,          colorTable.NavyBlue},
+    {SPECIAL_ATTACK_INSANE,         colorTable.JazzberryJam},
+    {SPECIAL_ATTACK_POISON_WEAK,    colorTable.Eucalyptus},
+    {SPECIAL_ATTACK_POISON_MEDIUM,  colorTable.GreenTeal},
+    {SPECIAL_ATTACK_POISON_SEVERE,  colorTable.VibrantGreen},
+    {SPECIAL_ATTACK_DISEASE_WEAK,   colorTable.FlushOrange},
+    {SPECIAL_ATTACK_DISEASE_MEDIUM, colorTable.DarkOrange},
+    {SPECIAL_ATTACK_DISEASE_SEVERE, colorTable.OrangeyRed},
+    {SPECIAL_ATTACK_PARALYZED,      colorTable.Primrose},
+    {SPECIAL_ATTACK_UNCONSCIOUS,    colorTable.StarkWhite},
+    {SPECIAL_ATTACK_DEAD,           colorTable.BloodRed},
+    {SPECIAL_ATTACK_PETRIFIED,      colorTable.MediumGrey},
+    {SPECIAL_ATTACK_ERADICATED,     colorTable.MoonRaker},
+    {SPECIAL_ATTACK_BREAK_ANY,      colorTable.LaserLemon},
+    {SPECIAL_ATTACK_BREAK_ARMOR,    colorTable.LaserLemon},
+    {SPECIAL_ATTACK_BREAK_WEAPON,   colorTable.LaserLemon},
+    {SPECIAL_ATTACK_STEAL,          colorTable.DirtyYellow},
+    {SPECIAL_ATTACK_AGING,          colorTable.White},
+    {SPECIAL_ATTACK_MANA_DRAIN,     colorTable.BoltBlue},
+    {SPECIAL_ATTACK_FEAR,           colorTable.CornFlowerBlue}
+};
+
+// OE addition - colors for monster special ability text.
+static constexpr IndexedArray<Color, MONSTER_SPECIAL_ABILITY_FIRST, MONSTER_SPECIAL_ABILITY_LAST> monsterSpecialAbilityColors = {
+    {MONSTER_SPECIAL_ABILITY_SHOT, colorTable.Mercury},
+    {MONSTER_SPECIAL_ABILITY_SUMMON, colorTable.EasternBlue},
+    {MONSTER_SPECIAL_ABILITY_EXPLODE, colorTable.Sunflower}
+};
+
 void Inventory_ItemPopupAndAlchemy();
 Color GetSpellColor(SpellId spellId);
 uint64_t GetExperienceRequiredForLevel(int level);
@@ -856,10 +890,13 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     }
     pTextHeight += 2 * lineAdvance;
 
+
+    // TODO(captainurist): Display ranged attack as "Ranged attack". This currently doesn't fit in the table, we used to
+    //                     just do attackStr + " R" but that's cryptic. Redo properly with dynamic alignment.
+
     std::string attackStr, damageStr;
     if (expert_level) {
         attackStr = displayNameForDamageType(monsterInfo.attack1Type, localization);
-        if (extended && monsterInfo.attack1MissileType) attackStr += " R";
         if (monsterInfo.attack1DamageBonus) {
             damageStr = fmt::format("{}d{}+{}", monsterInfo.attack1DamageDiceRolls, monsterInfo.attack1DamageDiceSides, monsterInfo.attack1DamageBonus);
         } else {
@@ -883,7 +920,6 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     }
     if (expert_level && extended && monsterInfo.attack2Chance > 0 && (monsterInfo.attack2DamageDiceRolls > 0 || monsterInfo.attack2DamageBonus > 0)) {
         attackStr = displayNameForDamageType(monsterInfo.attack2Type, localization);
-        if (monsterInfo.attack2MissileType) attackStr += " R";
         if (monsterInfo.attack2DamageBonus) {
             damageStr = fmt::format("{}d{}+{}", monsterInfo.attack2DamageDiceRolls, monsterInfo.attack2DamageDiceSides, monsterInfo.attack2DamageBonus);
         } else {
@@ -907,15 +943,17 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
     if (master_level && extended && monsterInfo.specialAttackType != SPECIAL_ATTACK_NONE) {
         pTextHeight += lineAdvance;
         if (pWindow) {
-            auto [str, color] = monsterSpecialAttackDisplay[monsterInfo.specialAttackType];
-            pWindow->DrawText(font, {X_RIGHT_INDENTED, pTextHeight}, *color, str);
+            pWindow->DrawText(font, {X_RIGHT_INDENTED, pTextHeight},
+                              monsterSpecialAttackColors[monsterInfo.specialAttackType],
+                              localization->GetSpecialAttackName(monsterInfo.specialAttackType));
         }
     }
     if (master_level && extended && monsterInfo.specialAbilityType != MONSTER_SPECIAL_ABILITY_NONE) {
         pTextHeight += lineAdvance;
         if (pWindow) {
-            auto [str, color] = monsterSpecialAbilityDisplay[monsterInfo.specialAbilityType];
-            pWindow->DrawText(font, {X_RIGHT_INDENTED, pTextHeight}, *color, str);
+            pWindow->DrawText(font, {X_RIGHT_INDENTED, pTextHeight},
+                              monsterSpecialAbilityColors[monsterInfo.specialAbilityType],
+                              localization->GetMonsterSpecialAbilityName(monsterInfo.specialAbilityType));
         }
     }
     pTextHeight += 2 * lineAdvance;
