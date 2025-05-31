@@ -1,6 +1,7 @@
 #include "FrameLimiter.h"
 
 #include <chrono>
+#include <thread>
 
 static int64_t nowNs() {
     // We're going through std::chrono here and not through Platform because we need actual clock time, not
@@ -17,11 +18,12 @@ void FrameLimiter::reset() {
 }
 
 void FrameLimiter::tick(int targetFps) {
-  int64_t targetDeltaNs = 1'000'000'000 / targetFps;
+  int64_t targetDeltaNs = 1'000'000'000 / 120;
 
-  int64_t diff = nowNs() - _lastFrameTimeNs;
+  int64_t currentNs = nowNs();
+  int64_t diff = currentNs - _lastFrameTimeNs;
   if (diff < targetDeltaNs)
-    _Thrd_sleep_for((targetDeltaNs - diff) / 1'000'000);
+    std::this_thread::sleep_for(std::chrono::nanoseconds(targetDeltaNs - diff));
 
-  _lastFrameTimeNs = nowNs();
+  _lastFrameTimeNs = currentNs + (targetDeltaNs - diff);
 }
