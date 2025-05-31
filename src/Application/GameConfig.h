@@ -613,7 +613,7 @@ class GameConfig : public Config {
         // TODO(captainurist): move to [audio]?
         Bool WalkSound = {this, "walk_sound", true, "Enable footsteps sound when walking."};
 
-        Bool ExtendedMonsterInfo = {this, "extended_monster_info", false, "Display second and special attack in the Monster Info popup."};
+        Bool ExtendedMonsterInfo = {this, "extended_monster_info", true, "Display second and special attack in the Monster Info popup."};
 
      private:
         static int ValidateLevel(int level) {
