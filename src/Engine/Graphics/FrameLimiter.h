@@ -12,4 +12,6 @@ class FrameLimiter {
 
  private:
     int64_t _lastFrameTimeNs = 0;
+
+    #define SPIN_TIME_FRACTION 10
 };
