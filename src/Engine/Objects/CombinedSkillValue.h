@@ -34,8 +34,6 @@ class CombinedSkillValue {
 
     friend bool operator==(const CombinedSkillValue &l, const CombinedSkillValue &r) = default;
 
-    std::string shortDescription() const;
-
  private:
     int _level = 0;
     CharacterSkillMastery _mastery = CHARACTER_SKILL_MASTERY_NONE;

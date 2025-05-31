@@ -1,10 +1,8 @@
 #pragma once
 
-#include <cstdio>
 #include <array>
 #include <string>
 #include <utility>
-#include <vector>
 
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
@@ -16,6 +14,7 @@
 #include "Utility/String/Format.h"
 
 #include "LocalizationEnums.h"
+#include "Objects/CombinedSkillValue.h"
 #include "Objects/MonsterEnums.h"
 
 class Localization {
@@ -27,7 +26,7 @@ class Localization {
     template<class... Args>
     std::string FormatString(LstrId index, Args &&... args) const {
         // TODO(captainurist): what if fmt throws?
-        return fmt::sprintf(GetString(index), std::forward<Args>(args)...);
+        return fmt::sprintf(GetString(index), std::forward<Args>(args)...); // NOLINT: not std::sprintf.
         // TODO(captainurist): there was also a call to sprintfex_internal after a call to vsprintf.
     }
 
@@ -78,6 +77,8 @@ class Localization {
     const std::string &GetSkillName(CharacterSkillType index) const {
         return this->skill_names[index];
     }
+
+    std::string SkillValueShortString(CombinedSkillValue skillValue) const;
 
     const std::string &MasteryName(CharacterSkillMastery mastery) const {
         switch (mastery) {
@@ -272,6 +273,7 @@ class Localization {
     IndexedArray<std::string, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> npc_profession_names;
     IndexedArray<std::string, SPECIAL_ATTACK_FIRST, SPECIAL_ATTACK_LAST> special_attack_names;
     IndexedArray<std::string, MONSTER_SPECIAL_ABILITY_FIRST, MONSTER_SPECIAL_ABILITY_LAST> monster_special_ability_names;
+    IndexedArray<std::string, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> skill_value_short_templates;
     std::string hp_description;
     std::string sp_description;
     std::string armour_class_description;

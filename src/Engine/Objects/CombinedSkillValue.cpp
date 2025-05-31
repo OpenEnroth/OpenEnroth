@@ -85,13 +85,3 @@ int CombinedSkillValue::level() const {
 CharacterSkillMastery CombinedSkillValue::mastery() const {
     return _mastery;
 }
-
-std::string CombinedSkillValue::shortDescription() const {
-    static const IndexedArray<std::string, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> masteryMarkers = {
-        {CHARACTER_SKILL_MASTERY_NOVICE, ""},
-        {CHARACTER_SKILL_MASTERY_EXPERT, "E"},
-        {CHARACTER_SKILL_MASTERY_MASTER, "M"},
-        {CHARACTER_SKILL_MASTERY_GRANDMASTER, "G"}
-    };
-    return fmt::format("{}{}", masteryMarkers[_mastery], _level);
-}

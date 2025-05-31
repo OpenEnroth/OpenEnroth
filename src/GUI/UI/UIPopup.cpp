@@ -971,13 +971,13 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
         }
         if (monsterInfo.spell1Id != SPELL_NONE) {
             if (extended)
-                spell2Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell1Id].pShortName, monsterInfo.spell1SkillMastery.shortDescription());
+                spell2Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell1Id].pShortName, localization->SkillValueShortString(monsterInfo.spell1SkillMastery));
             else
                 spell1Str = pSpellStats->pInfos[monsterInfo.spell1Id].pShortName;
         }
         if (monsterInfo.spell2Id != SPELL_NONE) {
             if (extended)
-                spell3Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell2Id].pShortName, monsterInfo.spell2SkillMastery.shortDescription());
+                spell3Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell2Id].pShortName, localization->SkillValueShortString(monsterInfo.spell2SkillMastery));
             else
                 spell2Str = pSpellStats->pInfos[monsterInfo.spell2Id].pShortName;
         }

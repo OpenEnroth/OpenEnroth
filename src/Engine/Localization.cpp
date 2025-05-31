@@ -17,6 +17,13 @@ const std::string &Localization::GetString(LstrId index) const {
     return this->localization_strings[index];
 }
 
+std::string Localization::SkillValueShortString(CombinedSkillValue skillValue) const {
+    if (skillValue.mastery() == CHARACTER_SKILL_MASTERY_NONE)
+        return {};
+
+    return fmt::sprintf(this->skill_value_short_templates[skillValue.mastery()], skillValue.level()); // NOLINT: not std::sprintf.
+}
+
 //----- (00452C49) --------------------------------------------------------
 bool Localization::Initialize() {
     char *tmp_pos;     // eax@3
@@ -102,6 +109,11 @@ bool Localization::Initialize() {
     this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_SHOT] = "Multi-shot";
     this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_SUMMON] = "Summoner";
     this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_EXPLODE] = "Explodes";
+
+    this->skill_value_short_templates[CHARACTER_SKILL_MASTERY_NOVICE] = "%d";
+    this->skill_value_short_templates[CHARACTER_SKILL_MASTERY_EXPERT] = "%dE";
+    this->skill_value_short_templates[CHARACTER_SKILL_MASTERY_MASTER] = "%dM";
+    this->skill_value_short_templates[CHARACTER_SKILL_MASTERY_GRANDMASTER] = "%dG";
 
     InitializeMm6ItemCategories();
 
