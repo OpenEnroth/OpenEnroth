@@ -18,15 +18,15 @@ void FrameLimiter::reset() {
 }
 
 void FrameLimiter::tick(int targetFps) {
-  int64_t targetDeltaNs = 1'000'000'000 / targetFps;
+    int64_t targetDeltaNs = 1'000'000'000 / targetFps;
 
-  int64_t currentTimeNs = nowNs();
-  int64_t diff = currentTimeNs - _lastFrameTimeNs;
-  if (diff < targetDeltaNs)
-  {
-    std::this_thread::sleep_for(std::chrono::nanoseconds(targetDeltaNs - diff));
-    currentTimeNs += (targetDeltaNs - diff);
-  }
+    int64_t currentTimeNs = nowNs();
+    int64_t diff = currentTimeNs - _lastFrameTimeNs;
+    if (diff < targetDeltaNs)
+    {
+        std::this_thread::sleep_for(std::chrono::nanoseconds(targetDeltaNs - diff));
+        currentTimeNs += (targetDeltaNs - diff);
+    }
 
-  _lastFrameTimeNs = currentTimeNs;
+    _lastFrameTimeNs = currentTimeNs;
 }
