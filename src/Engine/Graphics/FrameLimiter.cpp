@@ -17,12 +17,11 @@ void FrameLimiter::reset() {
 }
 
 void FrameLimiter::tick(int targetFps) {
-    int64_t targetDeltaNs = 1'000'000'000 / targetFps;
+  int64_t targetDeltaNs = 1'000'000'000 / targetFps;
 
-    int64_t currentTimeNs;
-    do {
-        currentTimeNs = nowNs();
-    } while (currentTimeNs - _lastFrameTimeNs < targetDeltaNs);
+  int64_t diff = nowNs() - _lastFrameTimeNs;
+  if (diff < targetDeltaNs)
+    _Thrd_sleep_for((targetDeltaNs - diff) / 1'000'000);
 
-    _lastFrameTimeNs = currentTimeNs;
+  _lastFrameTimeNs = nowNs();
 }
