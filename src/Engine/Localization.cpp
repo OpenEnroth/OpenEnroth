@@ -17,6 +17,13 @@ const std::string &Localization::GetString(LstrId index) const {
     return this->localization_strings[index];
 }
 
+std::string Localization::SkillValueShortString(CombinedSkillValue skillValue) const {
+    if (skillValue.mastery() == CHARACTER_SKILL_MASTERY_NONE)
+        return {};
+
+    return fmt::sprintf(this->skill_value_short_templates[skillValue.mastery()], skillValue.level()); // NOLINT: not std::sprintf.
+}
+
 //----- (00452C49) --------------------------------------------------------
 bool Localization::Initialize() {
     char *tmp_pos;     // eax@3
@@ -74,6 +81,39 @@ bool Localization::Initialize() {
     this->localization_strings[LSTR_IMMOLATION_DAMAGE] = "Immolation deals %d damage to %d target(s)";
     this->localization_strings[LSTR_REMAINING_POWER] = "Remaining power: %d";
     this->localization_strings[LSTR_PLAYER_IS_NOT_ACTIVE] = "That player is not active";
+
+    this->special_attack_names[SPECIAL_ATTACK_CURSE] = "Curse";
+    this->special_attack_names[SPECIAL_ATTACK_WEAK] = "Weaken";
+    this->special_attack_names[SPECIAL_ATTACK_SLEEP] = "Sleep";
+    this->special_attack_names[SPECIAL_ATTACK_DRUNK] = "Drunk"; // "Inebriate"?
+    this->special_attack_names[SPECIAL_ATTACK_INSANE] = "Insanity";
+    this->special_attack_names[SPECIAL_ATTACK_POISON_WEAK] = "Poison";
+    this->special_attack_names[SPECIAL_ATTACK_POISON_MEDIUM] = "Poison";
+    this->special_attack_names[SPECIAL_ATTACK_POISON_SEVERE] = "Poison";
+    this->special_attack_names[SPECIAL_ATTACK_DISEASE_WEAK] = "Disease";
+    this->special_attack_names[SPECIAL_ATTACK_DISEASE_MEDIUM] = "Disease";
+    this->special_attack_names[SPECIAL_ATTACK_DISEASE_SEVERE] = "Disease";
+    this->special_attack_names[SPECIAL_ATTACK_PARALYZED] = "Paralyze";
+    this->special_attack_names[SPECIAL_ATTACK_UNCONSCIOUS] = "Knockout";
+    this->special_attack_names[SPECIAL_ATTACK_DEAD] = "Death";
+    this->special_attack_names[SPECIAL_ATTACK_PETRIFIED] = "Petrify";
+    this->special_attack_names[SPECIAL_ATTACK_ERADICATED] = "Eradicate";
+    this->special_attack_names[SPECIAL_ATTACK_BREAK_ANY] = "Break Item";
+    this->special_attack_names[SPECIAL_ATTACK_BREAK_ARMOR] = "Break Armor";
+    this->special_attack_names[SPECIAL_ATTACK_BREAK_WEAPON] = "Break Weapon";
+    this->special_attack_names[SPECIAL_ATTACK_STEAL] = "Steal";
+    this->special_attack_names[SPECIAL_ATTACK_AGING] = "Aging";
+    this->special_attack_names[SPECIAL_ATTACK_MANA_DRAIN] = "SP Drain";
+    this->special_attack_names[SPECIAL_ATTACK_FEAR] = "Fear";
+
+    this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_SHOT] = "Multi-shot";
+    this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_SUMMON] = "Summoner";
+    this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_EXPLODE] = "Explodes";
+
+    this->skill_value_short_templates[CHARACTER_SKILL_MASTERY_NOVICE] = "%d";
+    this->skill_value_short_templates[CHARACTER_SKILL_MASTERY_EXPERT] = "%dE";
+    this->skill_value_short_templates[CHARACTER_SKILL_MASTERY_MASTER] = "%dM";
+    this->skill_value_short_templates[CHARACTER_SKILL_MASTERY_GRANDMASTER] = "%dG";
 
     InitializeMm6ItemCategories();
 
@@ -140,6 +180,28 @@ void Localization::InitializeSpellNames() {
     this->character_buff_names[CHARACTER_BUFF_SPEED]            = this->localization_strings[LSTR_TEMP_SPEED];
     this->character_buff_names[CHARACTER_BUFF_RESIST_WATER]     = this->localization_strings[LSTR_WATER_RES];
     this->character_buff_names[CHARACTER_BUFF_WATER_WALK]       = this->localization_strings[LSTR_WATER_BREATHING];
+
+    this->actor_buff_names[ACTOR_BUFF_CHARM]                    = this->localization_strings[LSTR_CHARMED];
+    this->actor_buff_names[ACTOR_BUFF_SUMMONED]                 = this->localization_strings[LSTR_SUMMONED];
+    this->actor_buff_names[ACTOR_BUFF_SHRINK]                   = this->localization_strings[LSTR_SHRUNK];
+    this->actor_buff_names[ACTOR_BUFF_AFRAID]                   = this->localization_strings[LSTR_AFRAID];
+    this->actor_buff_names[ACTOR_BUFF_STONED]                   = this->localization_strings[LSTR_STONED];
+    this->actor_buff_names[ACTOR_BUFF_PARALYZED]                = this->localization_strings[LSTR_PARALYZED];
+    this->actor_buff_names[ACTOR_BUFF_SLOWED]                   = this->localization_strings[LSTR_SLOWED];
+    this->actor_buff_names[ACTOR_BUFF_BERSERK]                  = this->localization_strings[LSTR_BERSERK];
+    this->actor_buff_names[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC] = {};
+    this->actor_buff_names[ACTOR_BUFF_MASS_DISTORTION]          = {};
+    this->actor_buff_names[ACTOR_BUFF_FATE]                     = this->localization_strings[LSTR_FATE];
+    this->actor_buff_names[ACTOR_BUFF_ENSLAVED]                 = this->localization_strings[LSTR_ENSLAVED];
+    this->actor_buff_names[ACTOR_BUFF_DAY_OF_PROTECTION]        = this->localization_strings[LSTR_DAY_OF_PROTECTION];
+    this->actor_buff_names[ACTOR_BUFF_HOUR_OF_POWER]            = this->localization_strings[LSTR_HOUR_OF_POWER];
+    this->actor_buff_names[ACTOR_BUFF_SHIELD]                   = this->localization_strings[LSTR_SHIELD];
+    this->actor_buff_names[ACTOR_BUFF_STONESKIN]                = this->localization_strings[LSTR_STONESKIN];
+    this->actor_buff_names[ACTOR_BUFF_BLESS]                    = this->localization_strings[LSTR_BLESS];
+    this->actor_buff_names[ACTOR_BUFF_HEROISM]                  = this->localization_strings[LSTR_HEROISM];
+    this->actor_buff_names[ACTOR_BUFF_HASTE]                    = this->localization_strings[LSTR_HASTE];
+    this->actor_buff_names[ACTOR_BUFF_PAIN_REFLECTION]          = this->localization_strings[LSTR_PAIN_REFLECTION];
+    this->actor_buff_names[ACTOR_BUFF_HAMMERHANDS]              = this->localization_strings[LSTR_HAMMERHANDS];
 }
 
 void Localization::InitializeNpcProfessionNames() {

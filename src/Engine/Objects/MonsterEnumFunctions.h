@@ -1,11 +1,14 @@
 #pragma once
 
 #include <span>
+#include <string>
 #include <utility>
 
 #include "Engine/Data/HouseEnums.h"
 
 #include "Utility/Segment.h"
+#include "Utility/IndexedArray.h"
+#include "Library/Color/ColorTable.h"
 
 #include "ItemEnums.h"
 #include "CharacterEnums.h"

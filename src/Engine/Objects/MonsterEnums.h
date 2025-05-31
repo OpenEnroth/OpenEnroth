@@ -432,6 +432,9 @@ enum class MonsterSpecialAbility {
     MONSTER_SPECIAL_ABILITY_SHOT = 0x1,
     MONSTER_SPECIAL_ABILITY_SUMMON = 0x2,
     MONSTER_SPECIAL_ABILITY_EXPLODE = 0x3,
+
+    MONSTER_SPECIAL_ABILITY_FIRST = MONSTER_SPECIAL_ABILITY_SHOT,
+    MONSTER_SPECIAL_ABILITY_LAST = MONSTER_SPECIAL_ABILITY_EXPLODE,
 };
 using enum MonsterSpecialAbility;
 
@@ -458,6 +461,7 @@ enum class MonsterSupertype {
 };
 using enum MonsterSupertype;
 
+// TODO(captainurist): MonsterSpecialAttack
 enum class SpecialAttackType : uint8_t {
     SPECIAL_ATTACK_NONE = 0,
     SPECIAL_ATTACK_CURSE = 1,
@@ -483,6 +487,9 @@ enum class SpecialAttackType : uint8_t {
     SPECIAL_ATTACK_AGING = 21,
     SPECIAL_ATTACK_MANA_DRAIN = 22,
     SPECIAL_ATTACK_FEAR = 23,
+
+    SPECIAL_ATTACK_FIRST = SPECIAL_ATTACK_CURSE,
+    SPECIAL_ATTACK_LAST = SPECIAL_ATTACK_FEAR
 };
 using enum SpecialAttackType;
 

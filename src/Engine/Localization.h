@@ -1,20 +1,21 @@
 #pragma once
 
-#include <cstdio>
 #include <array>
 #include <string>
 #include <utility>
-#include <vector>
 
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/PartyEnums.h"
+#include "Objects/ActorEnums.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/String/Format.h"
 
 #include "LocalizationEnums.h"
+#include "Objects/CombinedSkillValue.h"
+#include "Objects/MonsterEnums.h"
 
 class Localization {
  public:
@@ -25,7 +26,7 @@ class Localization {
     template<class... Args>
     std::string FormatString(LstrId index, Args &&... args) const {
         // TODO(captainurist): what if fmt throws?
-        return fmt::sprintf(GetString(index), std::forward<Args>(args)...);
+        return fmt::sprintf(GetString(index), std::forward<Args>(args)...); // NOLINT: not std::sprintf.
         // TODO(captainurist): there was also a call to sprintfex_internal after a call to vsprintf.
     }
 
@@ -53,6 +54,10 @@ class Localization {
         return this->character_buff_names[index];
     }
 
+    const std::string &GetActorBuffName(ActorBuff index) const {
+        return this->actor_buff_names[index];
+    }
+
     const std::string &GetClassName(CharacterClass index) const {
         return this->class_names[index];
     }
@@ -72,6 +77,8 @@ class Localization {
     const std::string &GetSkillName(CharacterSkillType index) const {
         return this->skill_names[index];
     }
+
+    std::string SkillValueShortString(CombinedSkillValue skillValue) const;
 
     const std::string &MasteryName(CharacterSkillMastery mastery) const {
         switch (mastery) {
@@ -131,6 +138,14 @@ class Localization {
 
     const std::string &GetNpcProfessionName(NpcProfession prof) const {
         return this->npc_profession_names[prof];
+    }
+
+    const std::string &GetSpecialAttackName(SpecialAttackType index) const {
+        return this->special_attack_names[index];
+    }
+
+    const std::string &GetMonsterSpecialAbilityName(MonsterSpecialAbility index) const {
+        return this->monster_special_ability_names[index];
     }
 
     const std::string &getHPDescription() const {
@@ -243,6 +258,7 @@ class Localization {
     IndexedArray<std::string, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> spell_school_names;
     IndexedArray<std::string, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> party_buff_names;
     IndexedArray<std::string, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> character_buff_names;
+    IndexedArray<std::string, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> actor_buff_names;
     IndexedArray<std::string, CLASS_FIRST, CLASS_LAST> class_names;
     IndexedArray<std::string, CLASS_FIRST, CLASS_LAST> class_desciptions;
     IndexedArray<std::string, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> attribute_names;
@@ -255,6 +271,9 @@ class Localization {
     IndexedArray<std::string, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_grand;
     IndexedArray<std::string, CONDITION_FIRST, CONDITION_LAST> character_conditions;
     IndexedArray<std::string, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> npc_profession_names;
+    IndexedArray<std::string, SPECIAL_ATTACK_FIRST, SPECIAL_ATTACK_LAST> special_attack_names;
+    IndexedArray<std::string, MONSTER_SPECIAL_ABILITY_FIRST, MONSTER_SPECIAL_ABILITY_LAST> monster_special_ability_names;
+    IndexedArray<std::string, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> skill_value_short_templates;
     std::string hp_description;
     std::string sp_description;
     std::string armour_class_description;

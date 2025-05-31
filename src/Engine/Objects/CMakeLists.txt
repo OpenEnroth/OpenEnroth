@@ -19,6 +19,7 @@ set(ENGINE_OBJECTS_SOURCES
 set(ENGINE_OBJECTS_HEADERS
         Actor.h
         ActorEnums.h
+        ActorEnumFunctions.h
         Chest.h
         ChestEnums.h
         CombinedSkillValue.h

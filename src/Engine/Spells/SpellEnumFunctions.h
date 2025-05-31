@@ -18,7 +18,7 @@ inline Segment<SpellId> allRegularSpells() {
 }
 
 /**
- * Is spell target is item in inventory?
+ * @returns                             Whether the spell is targeting an inventory item.
  */
 inline bool isSpellTargetsItem(SpellId uSpellID) {
     return uSpellID == SPELL_WATER_ENCHANT_ITEM ||
