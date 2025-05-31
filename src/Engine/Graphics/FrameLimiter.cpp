@@ -18,7 +18,7 @@ void FrameLimiter::reset() {
 }
 
 void FrameLimiter::tick(int targetFps) {
-  int64_t targetDeltaNs = 1'000'000'000 / 120;
+  int64_t targetDeltaNs = 1'000'000'000 / targetFps;
 
   int64_t currentNs = nowNs();
   int64_t diff = currentNs - _lastFrameTimeNs;
