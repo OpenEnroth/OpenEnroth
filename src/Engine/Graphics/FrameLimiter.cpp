@@ -18,15 +18,22 @@ void FrameLimiter::reset() {
 }
 
 void FrameLimiter::tick(int targetFps) {
-    int64_t targetDeltaNs = 1'000'000'000 / targetFps;
+    int64_t _targetDeltaNs = 1'000'000'000 / targetFps;
+    int64_t _spinTimeNs = _targetDeltaNs / SPIN_TIME_FRACTION;
+    int64_t _currentTimeNs = nowNs();
+    int64_t diff = _currentTimeNs - _lastFrameTimeNs + _spinTimeNs;
 
-    int64_t currentTimeNs = nowNs();
-    int64_t diff = currentTimeNs - _lastFrameTimeNs;
-    if (diff < targetDeltaNs)
+    // sleep
+    if (diff < _targetDeltaNs)
     {
-        std::this_thread::sleep_for(std::chrono::nanoseconds(targetDeltaNs - diff));
-        currentTimeNs += (targetDeltaNs - diff);
+        int64_t diff2 = _targetDeltaNs - diff;
+        std::this_thread::sleep_for(std::chrono::nanoseconds(diff2));
+        _currentTimeNs += diff2;
     }
 
-    _lastFrameTimeNs = currentTimeNs;
+    // spin
+    while (_currentTimeNs - _lastFrameTimeNs < _targetDeltaNs)
+        _currentTimeNs = nowNs();
+
+    _lastFrameTimeNs = _currentTimeNs;
 }
