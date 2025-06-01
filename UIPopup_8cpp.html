@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9c3a249</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;41aa8a2</span>
    </div>
   </td>
  </tr>
@@ -83,6 +83,7 @@ $(function() {
 <div class="textblock"><code>#include &lt;array&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineIocContainer_8h.html">Engine/EngineIocContainer.h</a>&quot;</code><br />
@@ -107,6 +108,8 @@ $(function() {
 <code>#include &quot;<a class="el" href="MapEnumFunctions_8h.html">Engine/MapEnumFunctions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Timer_8h.html">Engine/Time/Timer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Conditions_8h.html">Engine/Conditions.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ActorEnumFunctions_8h.html">Engine/Objects/ActorEnumFunctions.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="SpellEnumFunctions_8h.html">Engine/Spells/SpellEnumFunctions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Mouse_8h.html">Io/Mouse.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIButton_8h.html">GUI/GUIButton.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIMessageQueue_8h.html">GUI/GUIMessageQueue.h</a>&quot;</code><br />
@@ -129,8 +132,8 @@ Classes</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a5e07aedb53720976b171f006eecac70a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#a5e07aedb53720976b171f006eecac70a">Inventory_ItemPopupAndAlchemy</a> ()</td></tr>
 <tr class="separator:a5e07aedb53720976b171f006eecac70a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2efaa0781befb9945ef056e308c8eff0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#a2efaa0781befb9945ef056e308c8eff0">GetSpellColor</a> (signed int a1)</td></tr>
-<tr class="separator:a2efaa0781befb9945ef056e308c8eff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c9f3bdc32387c5b0e137589fbe2a2af"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#a7c9f3bdc32387c5b0e137589fbe2a2af">GetSpellColor</a> (<a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a> spellId)</td></tr>
+<tr class="separator:a7c9f3bdc32387c5b0e137589fbe2a2af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ff4540fde6912df464fdc62bcb9987c"><td class="memItemLeft" align="right" valign="top">uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#a4ff4540fde6912df464fdc62bcb9987c">GetExperienceRequiredForLevel</a> (int level)</td></tr>
 <tr class="separator:a4ff4540fde6912df464fdc62bcb9987c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2db32dc19879325cf7f258ddcf9f363"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#ae2db32dc19879325cf7f258ddcf9f363">CharacterUI_DrawTooltip</a> (std::string_view title, std::string_view content)</td></tr>
@@ -139,8 +142,8 @@ Functions</h2></td></tr>
 <tr class="separator:ae63663fb59f9435405c4bbbb6cc18dfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afab027e815c38e5e7e477240e5dcdb08"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#afab027e815c38e5e7e477240e5dcdb08">GameUI_DrawItemInfo</a> (<a class="el" href="structItem.html">Item</a> *inspect_item)</td></tr>
 <tr class="separator:afab027e815c38e5e7e477240e5dcdb08"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf003c892749d9a7dbf4b8b594f082ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#abf003c892749d9a7dbf4b8b594f082ff">MonsterPopup_Draw</a> (unsigned int uActorID, <a class="el" href="classGUIWindow.html">GUIWindow</a> *pWindow)</td></tr>
-<tr class="separator:abf003c892749d9a7dbf4b8b594f082ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46be69ef84fea42fa8732526bc6cfc8f"><td class="memItemLeft" align="right" valign="top">std::pair&lt; int, int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#a46be69ef84fea42fa8732526bc6cfc8f">MonsterPopup_Draw</a> (unsigned int uActorID, <a class="el" href="classGUIWindow.html">GUIWindow</a> *pWindow)</td></tr>
+<tr class="separator:a46be69ef84fea42fa8732526bc6cfc8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d52b09e97e118d53922bc7e448f93da"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#a1d52b09e97e118d53922bc7e448f93da">CharacterUI_GetSkillDescText</a> (int uPlayerID, <a class="el" href="CharacterEnums_8h.html#afb7e1cb64c82efee699c6bd5b7467bb3">CharacterSkillType</a> uPlayerSkillType)</td></tr>
 <tr class="memdesc:a1d52b09e97e118d53922bc7e448f93da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generating message for skill description popup.  <a href="UIPopup_8cpp.html#a1d52b09e97e118d53922bc7e448f93da">More...</a><br /></td></tr>
 <tr class="separator:a1d52b09e97e118d53922bc7e448f93da"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -199,6 +202,10 @@ Variables</h2></td></tr>
 <tr class="separator:a1e0bb2e5df8caceb874ccbac8afb592b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a874ec375cd76aeee9a3785a82b5e7865"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; int, <a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492ae54e2826c95f933757729f0caacb3fe3">MONSTER_TYPE_FIRST</a>, <a class="el" href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492a6907e7b994b395eb5dd5960289731699">MONSTER_TYPE_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#a874ec375cd76aeee9a3785a82b5e7865">monster_popup_y_offsets</a></td></tr>
 <tr class="separator:a874ec375cd76aeee9a3785a82b5e7865"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20c993d80bfe2fb50e6341741ec81660"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structColor.html">Color</a>, <a class="el" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240aaa5fd79bb5490a9f69d910797ae9b705">SPECIAL_ATTACK_FIRST</a>, <a class="el" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a261952c6183d47cb6e7f84709cc66986">SPECIAL_ATTACK_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#a20c993d80bfe2fb50e6341741ec81660">monsterSpecialAttackColors</a></td></tr>
+<tr class="separator:a20c993d80bfe2fb50e6341741ec81660"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff7b966d71cc243bf2476249ec17a428"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; <a class="el" href="structColor.html">Color</a>, <a class="el" href="MonsterEnums_8h.html#a218b53e162aceef51fd7cc3187d53e10a0bebe2e844edddcfc2a08e3671c99516">MONSTER_SPECIAL_ABILITY_FIRST</a>, <a class="el" href="MonsterEnums_8h.html#a218b53e162aceef51fd7cc3187d53e10aa5e92b9732f10de91740f15f28f3e213">MONSTER_SPECIAL_ABILITY_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="UIPopup_8cpp.html#aff7b966d71cc243bf2476249ec17a428">monsterSpecialAbilityColors</a></td></tr>
+<tr class="separator:aff7b966d71cc243bf2476249ec17a428"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ae2db32dc19879325cf7f258ddcf9f363" name="ae2db32dc19879325cf7f258ddcf9f363"></a>
@@ -476,8 +483,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a2efaa0781befb9945ef056e308c8eff0" name="a2efaa0781befb9945ef056e308c8eff0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2efaa0781befb9945ef056e308c8eff0">&#9670;&#160;</a></span>GetSpellColor()</h2>
+<a id="a7c9f3bdc32387c5b0e137589fbe2a2af" name="a7c9f3bdc32387c5b0e137589fbe2a2af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c9f3bdc32387c5b0e137589fbe2a2af">&#9670;&#160;</a></span>GetSpellColor()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -485,8 +492,8 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="structColor.html">Color</a> GetSpellColor </td>
           <td>(</td>
-          <td class="paramtype">signed int&#160;</td>
-          <td class="paramname"><em>a1</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a>&#160;</td>
+          <td class="paramname"><em>spellId</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -511,14 +518,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="abf003c892749d9a7dbf4b8b594f082ff" name="abf003c892749d9a7dbf4b8b594f082ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf003c892749d9a7dbf4b8b594f082ff">&#9670;&#160;</a></span>MonsterPopup_Draw()</h2>
+<a id="a46be69ef84fea42fa8732526bc6cfc8f" name="a46be69ef84fea42fa8732526bc6cfc8f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46be69ef84fea42fa8732526bc6cfc8f">&#9670;&#160;</a></span>MonsterPopup_Draw()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void MonsterPopup_Draw </td>
+          <td class="memname">std::pair&lt; int, int &gt; MonsterPopup_Draw </td>
           <td>(</td>
           <td class="paramtype">unsigned int&#160;</td>
           <td class="paramname"><em>uActorID</em>, </td>
@@ -536,6 +543,15 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Render the monster info popup </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uActorID</td><td>ID of the actor to show info for </td></tr>
+    <tr><td class="paramname">pWindow</td><td>The window to render into, or <code>null</code> to measure content only </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Actual width/height needed to render </dd></dl>
+<p >Geometry hardcoded constants</p>
 
 </div>
 </div>
@@ -763,6 +779,131 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+</div>
+</div>
+<a id="aff7b966d71cc243bf2476249ec17a428" name="aff7b966d71cc243bf2476249ec17a428"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff7b966d71cc243bf2476249ec17a428">&#9670;&#160;</a></span>monsterSpecialAbilityColors</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="structColor.html">Color</a>, <a class="el" href="MonsterEnums_8h.html#a218b53e162aceef51fd7cc3187d53e10a0bebe2e844edddcfc2a08e3671c99516">MONSTER_SPECIAL_ABILITY_FIRST</a>, <a class="el" href="MonsterEnums_8h.html#a218b53e162aceef51fd7cc3187d53e10aa5e92b9732f10de91740f15f28f3e213">MONSTER_SPECIAL_ABILITY_LAST</a>&gt; monsterSpecialAbilityColors</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a218b53e162aceef51fd7cc3187d53e10a46be1df2ae2c0af6f5b0c180afb9735e">MONSTER_SPECIAL_ABILITY_SHOT</a>, <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#ae295ccac01825dc6e3dc6bc182c4b068">Mercury</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a218b53e162aceef51fd7cc3187d53e10aa389623db6b99a7454f7916dd300fc68">MONSTER_SPECIAL_ABILITY_SUMMON</a>, <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#a6b332decfa280785829a71987f91a8a0">EasternBlue</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a218b53e162aceef51fd7cc3187d53e10a1210b74070324772c696471c4abef50c">MONSTER_SPECIAL_ABILITY_EXPLODE</a>, <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#adbfbf72335f93915fb15fb0c71cdb2ec">Sunflower</a>}</div>
+<div class="line">}</div>
+<div class="ttc" id="aColorTable_8h_html_a8a767f6294b9f9875531d84ed6528558"><div class="ttname"><a href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a></div><div class="ttdeci">constexpr ColorTable colorTable</div><div class="ttdef"><b>Definition:</b> ColorTable.h:80</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a218b53e162aceef51fd7cc3187d53e10a1210b74070324772c696471c4abef50c"><div class="ttname"><a href="MonsterEnums_8h.html#a218b53e162aceef51fd7cc3187d53e10a1210b74070324772c696471c4abef50c">MonsterSpecialAbility::MONSTER_SPECIAL_ABILITY_EXPLODE</a></div><div class="ttdeci">@ MONSTER_SPECIAL_ABILITY_EXPLODE</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a218b53e162aceef51fd7cc3187d53e10a46be1df2ae2c0af6f5b0c180afb9735e"><div class="ttname"><a href="MonsterEnums_8h.html#a218b53e162aceef51fd7cc3187d53e10a46be1df2ae2c0af6f5b0c180afb9735e">MonsterSpecialAbility::MONSTER_SPECIAL_ABILITY_SHOT</a></div><div class="ttdeci">@ MONSTER_SPECIAL_ABILITY_SHOT</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a218b53e162aceef51fd7cc3187d53e10aa389623db6b99a7454f7916dd300fc68"><div class="ttname"><a href="MonsterEnums_8h.html#a218b53e162aceef51fd7cc3187d53e10aa389623db6b99a7454f7916dd300fc68">MonsterSpecialAbility::MONSTER_SPECIAL_ABILITY_SUMMON</a></div><div class="ttdeci">@ MONSTER_SPECIAL_ABILITY_SUMMON</div></div>
+<div class="ttc" id="aclassColorTable_html_a6b332decfa280785829a71987f91a8a0"><div class="ttname"><a href="classColorTable.html#a6b332decfa280785829a71987f91a8a0">ColorTable::EasternBlue</a></div><div class="ttdeci">const Color EasternBlue</div><div class="ttdef"><b>Definition:</b> ColorTable.h:25</div></div>
+<div class="ttc" id="aclassColorTable_html_adbfbf72335f93915fb15fb0c71cdb2ec"><div class="ttname"><a href="classColorTable.html#adbfbf72335f93915fb15fb0c71cdb2ec">ColorTable::Sunflower</a></div><div class="ttdeci">const Color Sunflower</div><div class="ttdef"><b>Definition:</b> ColorTable.h:39</div></div>
+<div class="ttc" id="aclassColorTable_html_ae295ccac01825dc6e3dc6bc182c4b068"><div class="ttname"><a href="classColorTable.html#ae295ccac01825dc6e3dc6bc182c4b068">ColorTable::Mercury</a></div><div class="ttdeci">const Color Mercury</div><div class="ttdef"><b>Definition:</b> ColorTable.h:31</div></div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a20c993d80bfe2fb50e6341741ec81660" name="a20c993d80bfe2fb50e6341741ec81660"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20c993d80bfe2fb50e6341741ec81660">&#9670;&#160;</a></span>monsterSpecialAttackColors</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;<a class="el" href="structColor.html">Color</a>, <a class="el" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240aaa5fd79bb5490a9f69d910797ae9b705">SPECIAL_ATTACK_FIRST</a>, <a class="el" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a261952c6183d47cb6e7f84709cc66986">SPECIAL_ATTACK_LAST</a>&gt; monsterSpecialAttackColors</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">constexpr</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a5317f2caf6e2da8abf4d6cb38429ed07">SPECIAL_ATTACK_CURSE</a>,          <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#a4f6097c33839960d81ceff94751383cd">Cioccolato</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240aba48b167c302dee47a32a9b9f78cbbcc">SPECIAL_ATTACK_WEAK</a>,           <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#ae95ac5386c50866fb496627da2888e5e">Mimosa</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a20713ac3a6b15d645c11c9e91c071336">SPECIAL_ATTACK_SLEEP</a>,          <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#ad53679d3508e1bd3a22e9f2074b6f103">ScienceBlue</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a01587a51b40e2232c0d00795b2252cfd">SPECIAL_ATTACK_DRUNK</a>,          <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#a2cb4bafe0b5600124e67985ed9fbd432">NavyBlue</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a1143f4bc77080303401ae99973e5c0eb">SPECIAL_ATTACK_INSANE</a>,         <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#a064068157c526aa27ca8c5d98a6d880f">JazzberryJam</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a7a18af1087219542bcf8954f245dd652">SPECIAL_ATTACK_POISON_WEAK</a>,    <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#a6e6a79e7aafb31a34b94fd9697895080">Eucalyptus</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a39706e599da62cd2b4e2a6f6d2cdcdd3">SPECIAL_ATTACK_POISON_MEDIUM</a>,  <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#a53f0b2e9bf0659add7d93905b6aa9c8f">GreenTeal</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240ad4a563215324519a815806fe505adc1e">SPECIAL_ATTACK_POISON_SEVERE</a>,  <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#aad8231c7801e6c0867870c6fc41942b3">VibrantGreen</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a67f02faac7707d28f58d46a78ede3f15">SPECIAL_ATTACK_DISEASE_WEAK</a>,   <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#aa5f1e144ff561fc2d09860b55382ee86">FlushOrange</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a0b07fb273e3b2ded1e1d52d256fb66fd">SPECIAL_ATTACK_DISEASE_MEDIUM</a>, <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#a14ad739424d020175fa5225e8d517005">DarkOrange</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a7370454995480398b74e5029c1ca827d">SPECIAL_ATTACK_DISEASE_SEVERE</a>, <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#ad3310ee3bf23f12ff7f0d711b3a7e0d1">OrangeyRed</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a0beaf5c8b1b1d58439629b61b0e10581">SPECIAL_ATTACK_PARALYZED</a>,      <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#a05045b27d673ca9556a3135d9469ee3d">Primrose</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a82030081cbaa734ab3fe4b0f4e3c0092">SPECIAL_ATTACK_UNCONSCIOUS</a>,    <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#aab475130e87268cf64130c12ccba3b99">StarkWhite</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240acf72f3fa9d5b18575641df92e8249550">SPECIAL_ATTACK_DEAD</a>,           <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#ac951be2ebb0438c86a8a790cbe96bc57">BloodRed</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a7a0755c315e9936cf3b62cc59499b63d">SPECIAL_ATTACK_PETRIFIED</a>,      <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#adcdcd75f94f7c6f24084899340cf3d04">MediumGrey</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a6f1530dd80d3850fb77e3f0b11231af5">SPECIAL_ATTACK_ERADICATED</a>,     <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#a75610b8575a854d65bcb134187bd9047">MoonRaker</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a8ec2ce5827ebf3903d54ea31998526c1">SPECIAL_ATTACK_BREAK_ANY</a>,      <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#a29c1208b817477530eae2d86754769ef">LaserLemon</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a5775b29e75867868c16d049c8efbf467">SPECIAL_ATTACK_BREAK_ARMOR</a>,    <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#a29c1208b817477530eae2d86754769ef">LaserLemon</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240aeeab8e2f89f13fcdfdfffdeed41621bc">SPECIAL_ATTACK_BREAK_WEAPON</a>,   <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#a29c1208b817477530eae2d86754769ef">LaserLemon</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240af7546f545a828bff6efadc7449caf971">SPECIAL_ATTACK_STEAL</a>,          <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#ad867ba51bf787fd4a978ab01dd7fc361">DirtyYellow</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a648f949872e11c9cdad2813f26e93bca">SPECIAL_ATTACK_AGING</a>,          <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#ad04377b10a0adf725ae2ccd9cfb7a89b">White</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240aa2298f4b9c0feba216712cff2ff2ce1a">SPECIAL_ATTACK_MANA_DRAIN</a>,     <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#a9f0180cb4d6d9c018c62b15d907555db">BoltBlue</a>},</div>
+<div class="line">    {<a class="code hl_enumvalue" href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240ab179e45ea1969793dba13c28feb7bb74">SPECIAL_ATTACK_FEAR</a>,           <a class="code hl_variable" href="ColorTable_8h.html#a8a767f6294b9f9875531d84ed6528558">colorTable</a>.<a class="code hl_variable" href="classColorTable.html#a778adc2bf303e0a5702d5bcb3150214d">CornFlowerBlue</a>}</div>
+<div class="line">}</div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a01587a51b40e2232c0d00795b2252cfd"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a01587a51b40e2232c0d00795b2252cfd">SpecialAttackType::SPECIAL_ATTACK_DRUNK</a></div><div class="ttdeci">@ SPECIAL_ATTACK_DRUNK</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a0b07fb273e3b2ded1e1d52d256fb66fd"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a0b07fb273e3b2ded1e1d52d256fb66fd">SpecialAttackType::SPECIAL_ATTACK_DISEASE_MEDIUM</a></div><div class="ttdeci">@ SPECIAL_ATTACK_DISEASE_MEDIUM</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a0beaf5c8b1b1d58439629b61b0e10581"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a0beaf5c8b1b1d58439629b61b0e10581">SpecialAttackType::SPECIAL_ATTACK_PARALYZED</a></div><div class="ttdeci">@ SPECIAL_ATTACK_PARALYZED</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a1143f4bc77080303401ae99973e5c0eb"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a1143f4bc77080303401ae99973e5c0eb">SpecialAttackType::SPECIAL_ATTACK_INSANE</a></div><div class="ttdeci">@ SPECIAL_ATTACK_INSANE</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a20713ac3a6b15d645c11c9e91c071336"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a20713ac3a6b15d645c11c9e91c071336">SpecialAttackType::SPECIAL_ATTACK_SLEEP</a></div><div class="ttdeci">@ SPECIAL_ATTACK_SLEEP</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a39706e599da62cd2b4e2a6f6d2cdcdd3"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a39706e599da62cd2b4e2a6f6d2cdcdd3">SpecialAttackType::SPECIAL_ATTACK_POISON_MEDIUM</a></div><div class="ttdeci">@ SPECIAL_ATTACK_POISON_MEDIUM</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a5317f2caf6e2da8abf4d6cb38429ed07"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a5317f2caf6e2da8abf4d6cb38429ed07">SpecialAttackType::SPECIAL_ATTACK_CURSE</a></div><div class="ttdeci">@ SPECIAL_ATTACK_CURSE</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a5775b29e75867868c16d049c8efbf467"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a5775b29e75867868c16d049c8efbf467">SpecialAttackType::SPECIAL_ATTACK_BREAK_ARMOR</a></div><div class="ttdeci">@ SPECIAL_ATTACK_BREAK_ARMOR</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a648f949872e11c9cdad2813f26e93bca"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a648f949872e11c9cdad2813f26e93bca">SpecialAttackType::SPECIAL_ATTACK_AGING</a></div><div class="ttdeci">@ SPECIAL_ATTACK_AGING</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a67f02faac7707d28f58d46a78ede3f15"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a67f02faac7707d28f58d46a78ede3f15">SpecialAttackType::SPECIAL_ATTACK_DISEASE_WEAK</a></div><div class="ttdeci">@ SPECIAL_ATTACK_DISEASE_WEAK</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a6f1530dd80d3850fb77e3f0b11231af5"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a6f1530dd80d3850fb77e3f0b11231af5">SpecialAttackType::SPECIAL_ATTACK_ERADICATED</a></div><div class="ttdeci">@ SPECIAL_ATTACK_ERADICATED</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a7370454995480398b74e5029c1ca827d"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a7370454995480398b74e5029c1ca827d">SpecialAttackType::SPECIAL_ATTACK_DISEASE_SEVERE</a></div><div class="ttdeci">@ SPECIAL_ATTACK_DISEASE_SEVERE</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a7a0755c315e9936cf3b62cc59499b63d"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a7a0755c315e9936cf3b62cc59499b63d">SpecialAttackType::SPECIAL_ATTACK_PETRIFIED</a></div><div class="ttdeci">@ SPECIAL_ATTACK_PETRIFIED</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a7a18af1087219542bcf8954f245dd652"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a7a18af1087219542bcf8954f245dd652">SpecialAttackType::SPECIAL_ATTACK_POISON_WEAK</a></div><div class="ttdeci">@ SPECIAL_ATTACK_POISON_WEAK</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a82030081cbaa734ab3fe4b0f4e3c0092"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a82030081cbaa734ab3fe4b0f4e3c0092">SpecialAttackType::SPECIAL_ATTACK_UNCONSCIOUS</a></div><div class="ttdeci">@ SPECIAL_ATTACK_UNCONSCIOUS</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240a8ec2ce5827ebf3903d54ea31998526c1"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240a8ec2ce5827ebf3903d54ea31998526c1">SpecialAttackType::SPECIAL_ATTACK_BREAK_ANY</a></div><div class="ttdeci">@ SPECIAL_ATTACK_BREAK_ANY</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240aa2298f4b9c0feba216712cff2ff2ce1a"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240aa2298f4b9c0feba216712cff2ff2ce1a">SpecialAttackType::SPECIAL_ATTACK_MANA_DRAIN</a></div><div class="ttdeci">@ SPECIAL_ATTACK_MANA_DRAIN</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240ab179e45ea1969793dba13c28feb7bb74"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240ab179e45ea1969793dba13c28feb7bb74">SpecialAttackType::SPECIAL_ATTACK_FEAR</a></div><div class="ttdeci">@ SPECIAL_ATTACK_FEAR</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240aba48b167c302dee47a32a9b9f78cbbcc"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240aba48b167c302dee47a32a9b9f78cbbcc">SpecialAttackType::SPECIAL_ATTACK_WEAK</a></div><div class="ttdeci">@ SPECIAL_ATTACK_WEAK</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240acf72f3fa9d5b18575641df92e8249550"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240acf72f3fa9d5b18575641df92e8249550">SpecialAttackType::SPECIAL_ATTACK_DEAD</a></div><div class="ttdeci">@ SPECIAL_ATTACK_DEAD</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240ad4a563215324519a815806fe505adc1e"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240ad4a563215324519a815806fe505adc1e">SpecialAttackType::SPECIAL_ATTACK_POISON_SEVERE</a></div><div class="ttdeci">@ SPECIAL_ATTACK_POISON_SEVERE</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240aeeab8e2f89f13fcdfdfffdeed41621bc"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240aeeab8e2f89f13fcdfdfffdeed41621bc">SpecialAttackType::SPECIAL_ATTACK_BREAK_WEAPON</a></div><div class="ttdeci">@ SPECIAL_ATTACK_BREAK_WEAPON</div></div>
+<div class="ttc" id="aMonsterEnums_8h_html_a33747f2b58d51bbbb59a1f4f18d4d240af7546f545a828bff6efadc7449caf971"><div class="ttname"><a href="MonsterEnums_8h.html#a33747f2b58d51bbbb59a1f4f18d4d240af7546f545a828bff6efadc7449caf971">SpecialAttackType::SPECIAL_ATTACK_STEAL</a></div><div class="ttdeci">@ SPECIAL_ATTACK_STEAL</div></div>
+<div class="ttc" id="aclassColorTable_html_a05045b27d673ca9556a3135d9469ee3d"><div class="ttname"><a href="classColorTable.html#a05045b27d673ca9556a3135d9469ee3d">ColorTable::Primrose</a></div><div class="ttdeci">const Color Primrose</div><div class="ttdef"><b>Definition:</b> ColorTable.h:33</div></div>
+<div class="ttc" id="aclassColorTable_html_a064068157c526aa27ca8c5d98a6d880f"><div class="ttname"><a href="classColorTable.html#a064068157c526aa27ca8c5d98a6d880f">ColorTable::JazzberryJam</a></div><div class="ttdeci">const Color JazzberryJam</div><div class="ttdef"><b>Definition:</b> ColorTable.h:65</div></div>
+<div class="ttc" id="aclassColorTable_html_a14ad739424d020175fa5225e8d517005"><div class="ttname"><a href="classColorTable.html#a14ad739424d020175fa5225e8d517005">ColorTable::DarkOrange</a></div><div class="ttdeci">const Color DarkOrange</div><div class="ttdef"><b>Definition:</b> ColorTable.h:23</div></div>
+<div class="ttc" id="aclassColorTable_html_a29c1208b817477530eae2d86754769ef"><div class="ttname"><a href="classColorTable.html#a29c1208b817477530eae2d86754769ef">ColorTable::LaserLemon</a></div><div class="ttdeci">const Color LaserLemon</div><div class="ttdef"><b>Definition:</b> ColorTable.h:29</div></div>
+<div class="ttc" id="aclassColorTable_html_a2cb4bafe0b5600124e67985ed9fbd432"><div class="ttname"><a href="classColorTable.html#a2cb4bafe0b5600124e67985ed9fbd432">ColorTable::NavyBlue</a></div><div class="ttdeci">const Color NavyBlue</div><div class="ttdef"><b>Definition:</b> ColorTable.h:59</div></div>
+<div class="ttc" id="aclassColorTable_html_a4f6097c33839960d81ceff94751383cd"><div class="ttname"><a href="classColorTable.html#a4f6097c33839960d81ceff94751383cd">ColorTable::Cioccolato</a></div><div class="ttdeci">const Color Cioccolato</div><div class="ttdef"><b>Definition:</b> ColorTable.h:64</div></div>
+<div class="ttc" id="aclassColorTable_html_a53f0b2e9bf0659add7d93905b6aa9c8f"><div class="ttname"><a href="classColorTable.html#a53f0b2e9bf0659add7d93905b6aa9c8f">ColorTable::GreenTeal</a></div><div class="ttdeci">const Color GreenTeal</div><div class="ttdef"><b>Definition:</b> ColorTable.h:50</div></div>
+<div class="ttc" id="aclassColorTable_html_a6e6a79e7aafb31a34b94fd9697895080"><div class="ttname"><a href="classColorTable.html#a6e6a79e7aafb31a34b94fd9697895080">ColorTable::Eucalyptus</a></div><div class="ttdeci">const Color Eucalyptus</div><div class="ttdef"><b>Definition:</b> ColorTable.h:77</div></div>
+<div class="ttc" id="aclassColorTable_html_a75610b8575a854d65bcb134187bd9047"><div class="ttname"><a href="classColorTable.html#a75610b8575a854d65bcb134187bd9047">ColorTable::MoonRaker</a></div><div class="ttdeci">const Color MoonRaker</div><div class="ttdef"><b>Definition:</b> ColorTable.h:30</div></div>
+<div class="ttc" id="aclassColorTable_html_a778adc2bf303e0a5702d5bcb3150214d"><div class="ttname"><a href="classColorTable.html#a778adc2bf303e0a5702d5bcb3150214d">ColorTable::CornFlowerBlue</a></div><div class="ttdeci">const Color CornFlowerBlue</div><div class="ttdef"><b>Definition:</b> ColorTable.h:22</div></div>
+<div class="ttc" id="aclassColorTable_html_a9f0180cb4d6d9c018c62b15d907555db"><div class="ttname"><a href="classColorTable.html#a9f0180cb4d6d9c018c62b15d907555db">ColorTable::BoltBlue</a></div><div class="ttdeci">const Color BoltBlue</div><div class="ttdef"><b>Definition:</b> ColorTable.h:72</div></div>
+<div class="ttc" id="aclassColorTable_html_aa5f1e144ff561fc2d09860b55382ee86"><div class="ttname"><a href="classColorTable.html#aa5f1e144ff561fc2d09860b55382ee86">ColorTable::FlushOrange</a></div><div class="ttdeci">const Color FlushOrange</div><div class="ttdef"><b>Definition:</b> ColorTable.h:26</div></div>
+<div class="ttc" id="aclassColorTable_html_aab475130e87268cf64130c12ccba3b99"><div class="ttname"><a href="classColorTable.html#aab475130e87268cf64130c12ccba3b99">ColorTable::StarkWhite</a></div><div class="ttdeci">const Color StarkWhite</div><div class="ttdef"><b>Definition:</b> ColorTable.h:38</div></div>
+<div class="ttc" id="aclassColorTable_html_aad8231c7801e6c0867870c6fc41942b3"><div class="ttname"><a href="classColorTable.html#aad8231c7801e6c0867870c6fc41942b3">ColorTable::VibrantGreen</a></div><div class="ttdeci">const Color VibrantGreen</div><div class="ttdef"><b>Definition:</b> ColorTable.h:57</div></div>
+<div class="ttc" id="aclassColorTable_html_ac951be2ebb0438c86a8a790cbe96bc57"><div class="ttname"><a href="classColorTable.html#ac951be2ebb0438c86a8a790cbe96bc57">ColorTable::BloodRed</a></div><div class="ttdeci">const Color BloodRed</div><div class="ttdef"><b>Definition:</b> ColorTable.h:56</div></div>
+<div class="ttc" id="aclassColorTable_html_ad04377b10a0adf725ae2ccd9cfb7a89b"><div class="ttname"><a href="classColorTable.html#ad04377b10a0adf725ae2ccd9cfb7a89b">ColorTable::White</a></div><div class="ttdeci">const Color White</div><div class="ttdef"><b>Definition:</b> ColorTable.h:45</div></div>
+<div class="ttc" id="aclassColorTable_html_ad3310ee3bf23f12ff7f0d711b3a7e0d1"><div class="ttname"><a href="classColorTable.html#ad3310ee3bf23f12ff7f0d711b3a7e0d1">ColorTable::OrangeyRed</a></div><div class="ttdeci">const Color OrangeyRed</div><div class="ttdef"><b>Definition:</b> ColorTable.h:46</div></div>
+<div class="ttc" id="aclassColorTable_html_ad53679d3508e1bd3a22e9f2074b6f103"><div class="ttname"><a href="classColorTable.html#ad53679d3508e1bd3a22e9f2074b6f103">ColorTable::ScienceBlue</a></div><div class="ttdeci">const Color ScienceBlue</div><div class="ttdef"><b>Definition:</b> ColorTable.h:52</div></div>
+<div class="ttc" id="aclassColorTable_html_ad867ba51bf787fd4a978ab01dd7fc361"><div class="ttname"><a href="classColorTable.html#ad867ba51bf787fd4a978ab01dd7fc361">ColorTable::DirtyYellow</a></div><div class="ttdeci">const Color DirtyYellow</div><div class="ttdef"><b>Definition:</b> ColorTable.h:51</div></div>
+<div class="ttc" id="aclassColorTable_html_adcdcd75f94f7c6f24084899340cf3d04"><div class="ttname"><a href="classColorTable.html#adcdcd75f94f7c6f24084899340cf3d04">ColorTable::MediumGrey</a></div><div class="ttdeci">const Color MediumGrey</div><div class="ttdef"><b>Definition:</b> ColorTable.h:48</div></div>
+<div class="ttc" id="aclassColorTable_html_ae95ac5386c50866fb496627da2888e5e"><div class="ttname"><a href="classColorTable.html#ae95ac5386c50866fb496627da2888e5e">ColorTable::Mimosa</a></div><div class="ttdeci">const Color Mimosa</div><div class="ttdef"><b>Definition:</b> ColorTable.h:71</div></div>
+</div><!-- fragment -->
 </div>
 </div>
 <a id="ae51b5b2c821d69dc618f47eefa08d535" name="ae51b5b2c821d69dc618f47eefa08d535"></a>
