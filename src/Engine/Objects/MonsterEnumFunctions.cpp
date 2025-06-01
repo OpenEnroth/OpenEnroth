@@ -1,8 +1,8 @@
 #include "MonsterEnumFunctions.h"
 
+#include <string>
+#include <utility>
 #include <vector>
-
-#include "Utility/IndexedArray.h"
 
 struct MonsterData {
     CharacterSex sex = SEX_MALE;

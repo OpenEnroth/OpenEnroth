@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <utility>
+#include <string>
 
 #include "Engine/Objects/CharacterEnums.h"
 
