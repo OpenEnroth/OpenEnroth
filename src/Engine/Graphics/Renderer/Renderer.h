@@ -8,6 +8,7 @@
 #include "Library/Color/Color.h"
 #include "Library/Color/ColorTable.h"
 #include "Library/Geometry/Rect.h"
+#include "Engine/HitMap.h"
 
 #include "TextureRenderId.h"
 #include "Engine/Graphics/RenderEntities.h"
@@ -179,10 +180,17 @@ class Renderer {
     virtual void beginOverlays() = 0;
     virtual void endOverlays() = 0;
 
+    /**
+     * Query the equipment hit map for hit testing.
+     *
+     * @param screenPos                 Screen position to query (absolute screen coordinates).
+     * @return                          Item ID at the position, or 0 if no equipment found.
+     */
+    virtual int QueryEquipmentHitMap(Pointi screenPos) = 0;
+
     std::shared_ptr<GameConfig> config = nullptr;
 
-    Recti _zBufferRect{ 478, 7, 153, 344 };
-    int *pActiveZBuffer;
+    HitMap<int> _equipmentHitMap;
 
     Color uFogColor;
     int hd_water_current_frame;
