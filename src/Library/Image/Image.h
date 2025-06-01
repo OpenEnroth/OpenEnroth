@@ -9,6 +9,7 @@
 
 #include "Library/Color/Color.h"
 #include "Library/Geometry/Point.h"
+#include "Library/Geometry/Rect.h"
 #include "Library/Geometry/Size.h"
 
 #include "Utility/Memory/FreeDeleter.h"
@@ -53,6 +54,10 @@ class ImageBase {
 
     [[nodiscard]] Sizei size() const {
         return Sizei(_width, _height); // Narrowing ssize_t -> int, but we're not expecting images 2B pixels wide.
+    }
+
+    [[nodiscard]] Recti rect() const {
+        return Recti(Pointi(0, 0), size());
     }
 
     [[nodiscard]] std::span<T> operator[](ssize_t y) {

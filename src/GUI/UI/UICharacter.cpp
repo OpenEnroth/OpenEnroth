@@ -2196,9 +2196,7 @@ void OnPaperdollLeftClick() {
 
     } else {  // z picking as before
         v34 = 0;
-        if (render->_zBufferRect.contains(mouse->position())) {
-            v34 = render->pActiveZBuffer[(mouse->position().x - render->_zBufferRect.x) + (mouse->position().y - render->_zBufferRect.y) * render->_zBufferRect.w] & 0xFFFF;
-        }
+        v34 = render->QueryEquipmentHitMap(mouse->position()) & 0xFFFF;
 
         if (v34) {
             // v36 = v34 - 1;

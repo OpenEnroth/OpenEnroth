@@ -2183,10 +2183,7 @@ void Inventory_ItemPopupAndAlchemy() {
 
         if (!ringscreenactive()) { // rings not displayed
             int item_pid = -1;
-            if (render->_zBufferRect.contains({ pX, pY })) {
-                item_pid += render->pActiveZBuffer[(pX - render->_zBufferRect.x) + (pY - render->_zBufferRect.y) * render->_zBufferRect.w] & 0xFFFF;
-            }
-            // zbuffer still used for paperdolls
+            item_pid += render->QueryEquipmentHitMap({pX, pY}) & 0xFFFF;
 
             if (item_pid != -1) {
                 item = &pParty->activeCharacter().pInventoryItemList[item_pid];

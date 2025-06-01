@@ -46,6 +46,8 @@ class BaseRenderer : public Renderer {
     virtual void ClearZBuffer() override;
     virtual void ZDrawTextureAlpha(float u, float v, GraphicsImage *pTexture, int zVal) override;
 
+    virtual int QueryEquipmentHitMap(Pointi screenPos) override;
+
     bool Reinitialize(bool firstInit) override;
 
     virtual Sizei GetRenderDimensions() override;
