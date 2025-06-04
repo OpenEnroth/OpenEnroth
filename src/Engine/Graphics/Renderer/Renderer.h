@@ -52,7 +52,6 @@ class Renderer {
 
     virtual bool InitializeFullscreen() = 0;
 
-    virtual void CreateZBuffer() = 0;
     virtual void Release() = 0;
 
     virtual bool SwitchToWindow() = 0;
