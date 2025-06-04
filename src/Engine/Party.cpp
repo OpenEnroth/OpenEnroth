@@ -190,7 +190,7 @@ int Party::canActCount() const {
 }
 
 void Party::setHoldingItem(const Item &item, Pointi offset) {
-    assert(offset.x <= 9 && offset.y <= 9); // max item size grid offset is 9
+    assert(offset.x <= 9 && offset.y <= 9); // max item size grid offset is 9 see itemOffset in ItemGrid.cpp
 
     placeHeldItemInInventoryOrDrop();
     pPickedItem = item;
