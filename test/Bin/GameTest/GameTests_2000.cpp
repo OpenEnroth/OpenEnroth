@@ -109,4 +109,14 @@ GAME_TEST(Issues, Issue2061) {
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_NULL); // Shouldn't pick anything.
 }
 
-
+GAME_TEST(Issues, Issue2075) {
+    // Paralyze works on dead enemies
+    auto turnBased = tapes.custom([] { return pParty->bTurnBasedModeOn; });
+    auto statusTape = tapes.statusBar();
+    auto actorsTape = tapes.custom([] { return pActors[2].aiState; });
+    test.playTraceFromTestData("issue_2075.mm7", "issue_2075.json");
+    EXPECT_TRUE(turnBased.back());
+    EXPECT_CONTAINS(statusTape, "Spell failed");
+    EXPECT_EQ(actorsTape.back(), Dead);
+    EXPECT_EQ(actorsTape.size(), 1);
+}
