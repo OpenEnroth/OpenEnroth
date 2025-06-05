@@ -161,7 +161,7 @@ local function renderLeafMenuCommand(command, commandPath, tokens)
                     imgui.pushStyleColor(imgui.ImGuiCol.Text, 1, 0, 0, 1) -- Red color for required params
                     imgui.textUnformatted("(required)")
                     imgui.popStyleColor()
-                elseif not Utilities.canBeConvertedTo(dataParam.value, paramInfo.type) then
+                elseif not Utilities.canStringBeConvertedTo(dataParam.value, paramInfo.type) then
                     canExecute = false
                     imgui.sameLine()
                     imgui.pushStyleColor(imgui.ImGuiCol.Text, 1, 0.5, 0, 1) -- Orange color for invalid params

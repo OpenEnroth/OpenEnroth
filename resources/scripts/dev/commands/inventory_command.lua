@@ -5,10 +5,9 @@ local addItemToInventory = function (itemId, characterIndex)
         characterIndex = Game.party.getActiveCharacter()
     end
 
-    local itemEnumValue = stringToEnum(Game.ItemType, itemId)
-    local item = Game.items.getItemInfo(itemEnumValue)
+    local item = Game.items.getItemInfo(itemId)
     if item then
-        local result = Game.party.addItemToInventory(characterIndex, itemEnumValue)
+        local result = Game.party.addItemToInventory(characterIndex, itemId)
         local character = Game.party.getCharacterInfo(characterIndex, { "name" })
         if result then
             return character.name .. " gained item: " .. item.name, true
@@ -19,6 +18,11 @@ local addItemToInventory = function (itemId, characterIndex)
     else
         return "Can't give item: " .. itemId .. " - Item does not exist.", false
     end
+end
+
+local addItemToInventoryByName = function (itemName, characterIndex)
+    local itemId = stringToEnum(Game.ItemType, itemName)
+    return addItemToInventory(itemId, characterIndex)
 end
 
 local addRandomItemToInventory = function (characterIndex, filterFunction)
@@ -39,7 +43,7 @@ end
 local subCommands = {
     {
         name = "add",
-        callback = addItemToInventory,
+        callback = addItemToInventoryByName,
         params = {
             {
                 name = "itemId",

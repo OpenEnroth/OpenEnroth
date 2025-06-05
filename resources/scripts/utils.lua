@@ -194,13 +194,13 @@ end
 --- Get the index of a value in a table treated as a map
 --- @param t table<any, any> - The table to be searched
 --- @param value any - The value to be searched
---- @return integer|nil - The zero-based index of the value in the table, or nil if not found
+--- @return integer|nil
 Utilities.getIndexByValue = function (t, value)
     local i = 0
     for _, v in pairs(t) do
         i = i + 1
         if v == value then
-            return i -- Return zero-based index
+            return i
         end
     end
     return nil
@@ -209,13 +209,13 @@ end
 --- Get the index of a key in a table treated as a map
 --- @param t table<any, any> - The table to be searched
 --- @param key any - The key to be searched
---- @return integer|nil - The zero-based index of the key in the table, or nil if not found
+--- @return integer|nil
 Utilities.getIndexByKey = function (t, key)
     local i = 0
     for k, _ in pairs(t) do
         i = i + 1
         if k == key then
-            return i -- Return zero-based index
+            return i
         end
     end
     return nil
@@ -326,7 +326,10 @@ Utilities.tointeger = function (value)
     return result
 end
 
-Utilities.canBeConvertedTo = function (value, typeName)
+--- @param value string
+--- @param typeName "number" | "characterIndex" | "boolean" | "string" | "enum"
+--- @return boolean
+Utilities.canStringBeConvertedTo = function (value, typeName)
     if type(value) == typeName then
         return true
     end
@@ -336,7 +339,7 @@ Utilities.canBeConvertedTo = function (value, typeName)
     elseif typeName == "characterIndex" then
         return Utilities.tointeger(value) ~= nil
     elseif typeName == "boolean" then
-        return value == "true" or value == "false"
+        return string.lower(value) == "true" or string.lower(value) == "false"
     elseif typeName == "string" or typeName == "enum" then
         return type(value) == "string"
     end

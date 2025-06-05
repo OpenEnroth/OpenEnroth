@@ -110,7 +110,7 @@ std::string ConfigBindings::getType(AnyConfigEntry *entry) {
         return "number";
     }
 
-    return "string"; // treat as a generic string any other type
+    return "string"; // any other type is treated as a string
 }
 
 std::string ConfigBindings::path(AnyConfigEntry *entry) {
