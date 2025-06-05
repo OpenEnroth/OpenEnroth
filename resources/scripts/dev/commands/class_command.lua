@@ -21,11 +21,18 @@ local function becomeLich(charIndex)
 end
 
 local subCommands = {
-    lich = becomeLich
+    {
+        name = "lich",
+        callback = becomeLich,
+        params = {
+            { name = "char", type = "characterIndex", optional = true, description = "Character index to become a Lich. Defaults to current character." }
+        },
+        description = "Changes the character's class to Lich and gives them a Lich Jar."
+    }
 }
 
 return {
     name = "class",
     description = "Change and get information about character class",
-    callback = subCommands
+    subCommands = subCommands
 }

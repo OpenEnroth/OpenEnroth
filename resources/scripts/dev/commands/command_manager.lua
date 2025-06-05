@@ -4,12 +4,23 @@ local Utilities = require "utils"
 
 ---@alias CommandFunction fun(parameter...):string, boolean
 
+---@class CommandParameter
+---@field name string
+---@field type string
+---@field optional? boolean
+---@field description string
+---@field enumValues? table<string, any>  -- Used for enum types, contains the possible values for the parameter
+---@field defaultValue? fun():string
+---@field renderer? fun(dataParam: DataParameter, infoParam: CommandParameter, allDataParams: table<string, DataParameter>):boolean
+---@field resetOnOtherParamChange? fun():string|nil
+
 ---@class Command
 ---@field name string
 ---@field description string
 ---@field details string
----@field callback CommandFunction | table<string, CommandFunction>
----@field customParser? fun(commandLine:string): table<string>
+---@field callback? CommandFunction
+---@field subCommands? table<integer, Command>
+---@field params? table<integer, CommandParameter>
 
 ---@type table<string, Command>
 local commandList = {}
@@ -62,36 +73,66 @@ local CommandManager = {
         end
 
         local index = 1
-        local callback = command.callback
-        local params = {}
-        if not command.customParser then
-            params = Utilities.splitString(paramsString, "%s")
-            while type(callback) == "table" do
-                local par = #params > 0 and params[1] or "default"
-                local newCallback = callback[par]
-                if newCallback == nil then
-                    local message = "Invalid parameter '" .. par .. "' at position " .. index .. " - Here's a list of valid values:\n"
-                    for key, _ in pairs(callback) do
-                        if key ~= "default" then
-                            message = message .. key .. "\n"
-                        end
-                    end
-                    return message, false
-                else
-                    table.remove(params, 1)
-                    callback = newCallback
+        local finalCommand = command
+
+        local commandParameters = Utilities.splitString(paramsString, "%s")
+        while finalCommand.callback == nil do
+            local subCommandName = #commandParameters > 0 and commandParameters[1] or "default"
+
+            --- @type Command
+            local subCommand = Utilities.findIf(
+                finalCommand.subCommands,
+                function (item)
+                    return item.name == subCommandName
                 end
-                index = index + 1
+            )
+
+            if subCommand == nil then
+                local message = "Invalid parameter '" ..
+                    subCommandName .. "' at position " .. index .. " - Here's a list of valid values:\n"
+                for _, item in ipairs(finalCommand.subCommands) do
+                    if item.name ~= "default" then
+                        message = message .. item.name .. "\n"
+                    end
+                end
+                return message, false
+            else
+                finalCommand = subCommand
+                table.remove(commandParameters, 1)
             end
-        else
-            params = command.customParser(paramsString)
+            index = index + 1
         end
 
         local message, result = "", false
-        ---TODO(Gerark) unpack is deprecated in 5.4 but need to check why the alternative is not working at runtime.
-        --- Probably we're running on an older version. If that's the case we should align the linter version
-        ---@diagnostic disable-next-line: deprecated
-        local status, err = pcall(function () message, result = callback(unpack(params)) end)
+        ---@type boolean, string|nil
+        local status, err = pcall(
+            function ()
+                ---let's convert the params to the expected types, if we don't do this the pcall is going to fail giving us errors similar to "cannot convert string to number"
+                ---@type table<integer, any>
+                local finalParams = {}
+                if finalCommand.params ~= nil then
+                    for i, param in ipairs(commandParameters) do
+                        if finalCommand.params[i] then
+                            local paramType = finalCommand.params[i].type
+                            if paramType == "number" then
+                                table.insert(finalParams, tonumber(param))
+                            elseif paramType == "boolean" then
+                                table.insert(finalParams, Utilities.toBoolean(param))
+                            elseif paramType == "characterIndex" then
+                                table.insert(finalParams, tonumber(param))
+                            else
+                                table.insert(finalParams, param)
+                            end
+                        end
+                    end
+                end
+
+                ---TODO(Gerark) unpack is deprecated in 5.4 but need to check why the alternative is not working at runtime.
+                --- Probably we're running on an older version. If that's the case we should align the linter version
+                ---@diagnostic disable-next-line: deprecated
+                message, result = finalCommand.callback(unpack(finalParams))
+            end
+        )
         if not status then
             result = false
             message = "The command " ..
@@ -104,7 +145,8 @@ local CommandManager = {
             result = false
             message = "The command " ..
                 commandName ..
-                " does not return a valid message. The message must be a string. Current message type: " .. type(message)
+                " does not return a valid message. The message must be a string. Current message type: " ..
+                tostring(type(message))
         end
 
         return message, result

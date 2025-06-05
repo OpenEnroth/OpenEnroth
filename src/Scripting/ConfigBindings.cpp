@@ -19,7 +19,8 @@ sol::table ConfigBindings::createBindingTable(sol::state_view &solState) const {
         "description", sol::property(&AnyConfigEntry::description),
         "path", sol::property(&ConfigBindings::path),
         "reset", sol::as_function(&AnyConfigEntry::reset),
-        "toggle", sol::as_function(&ConfigBindings::toggle)
+        "toggle", sol::as_function(&ConfigBindings::toggle),
+        "getType", sol::as_function(&ConfigBindings::getType)
     );
 
     return solState.create_table_with(
@@ -92,6 +93,24 @@ void ConfigBindings::toggle(AnyConfigEntry *entry) {
     if (entry->type() != typeid(bool))
         throw Exception("Can't toggle value of a non-boolean config entry.");
     entry->setValue(!std::any_cast<bool>(entry->value()));
+}
+
+std::string ConfigBindings::getType(AnyConfigEntry *entry) {
+    if (!entry) {
+        throw Exception("Can't get type of a null config entry.");
+    }
+
+    if (entry->type() == typeid(bool)) {
+        return "boolean";
+    } else if (entry->type() == typeid(std::string)) {
+        return "string";
+    } else if (entry->type() == typeid(float)) {
+        return "number";
+    } else if (entry->type() == typeid(int)) {
+        return "number";
+    }
+
+    return "string"; // treat as a generic string any other type
 }
 
 std::string ConfigBindings::path(AnyConfigEntry *entry) {

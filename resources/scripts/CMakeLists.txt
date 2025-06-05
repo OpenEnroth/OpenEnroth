@@ -22,7 +22,6 @@ set(SCRIPTS_SOURCES
     dev/commands/hp_command.lua
     dev/commands/inventory_command.lua
     dev/commands/mana_command.lua
-    dev/commands/run_lua_command.lua
     dev/commands/skillpoints_command.lua
     dev/commands/skills_command.lua
     dev/commands/xp_command.lua

@@ -1,4 +1,5 @@
 local Config = require "bindings.config"
+local CommandUtilities = require "dev.commands.command_utils"
 
 ---Get the value of a configEntry
 ---@param param1 string         - config entry name OR config section name
@@ -106,12 +107,131 @@ local function listConfigs(param1, param2)
     return message, true
 end
 
+-- Build the list of available sections as if they were enums value
+--- @type table<string, integer>
+local configSectionsEnum = {}
+--- @type table<string, table<string, integer>>
+local configEntriesEnum = {}
+
+local matches = Config.list("", "")
+
+local sectionIndexValue = 1
+local entryIndexValue = 1
+for _, entry in pairs(matches) do
+    if configSectionsEnum[entry.section] == nil then
+        configSectionsEnum[entry.section] = sectionIndexValue
+        configEntriesEnum[entry.section] = {}
+        sectionIndexValue = sectionIndexValue + 1
+    end
+
+    configEntriesEnum[entry.section][entry.name] = entryIndexValue
+    entryIndexValue = entryIndexValue + 1
+end
+
+--- @param dataParam DataParameter
+--- @param infoParam CommandParameter
+--- @param allDataParams table<string, DataParameter>
+--- @return boolean
+local function renderConfigValue(dataParam, infoParam, allDataParams)
+    if allDataParams.section.value == nil or allDataParams.entry.value == nil then
+        return false
+    end
+
+    --- @type string
+    local sectionName = allDataParams.section.value
+    --- @type string
+    local entryName = allDataParams.entry.value
+    local entry = Config.entry(sectionName, entryName)
+    if dataParam.value == nil then
+        dataParam.value = tostring(entry.value)
+    end
+    return CommandUtilities.defaultParamRenderer(entry:getType(), dataParam, infoParam, allDataParams)
+end
+
 local subCommands = {
-    get = getConfig,
-    set = setConfig,
-    toggle = toggleConfig,
-    reset = resetConfig,
-    list = listConfigs,
+    {
+        name = "get",
+        callback = getConfig,
+        params = {
+            { name = "section", type = "enum", enumValues = configSectionsEnum },
+            {
+                name = "entry",
+                type = "enum",
+                enumValues = function (params)
+                    return configEntriesEnum[params.section.value]
+                end,
+            }
+        },
+        description = "Get the value of a config entry."
+    },
+    {
+        name = "set",
+        callback = setConfig,
+        params = {
+            { name = "section", type = "enum", enumValues = configSectionsEnum, description = "Name of the config entry to set." },
+            {
+                name = "entry",
+                type = "enum",
+                enumValues = function (params)
+                    return configEntriesEnum[params.section.value]
+                end,
+                description = "Name of the config entry to set."
+            },
+            {
+                name = "value",
+                type = "string",
+                description = "New value to set for the config entry.",
+                resetOnOtherParamChange = function () return nil end,
+                renderer = renderConfigValue
+            }
+        },
+        description = "Set the value of a config entry."
+    },
+    {
+        name = "reset",
+        callback = resetConfig,
+        params = {
+            { name = "section", type = "enum", enumValues = configSectionsEnum },
+            {
+                name = "entry",
+                type = "enum",
+                enumValues = function (params)
+                    return configEntriesEnum[params.section.value]
+                end,
+            }
+        },
+        description = "Reset the value of a config entry to its default."
+    },
+    {
+        name = "toggle",
+        callback = toggleConfig,
+        params = {
+            { name = "section", type = "enum", enumValues = configSectionsEnum },
+            {
+                name = "entry",
+                type = "enum",
+                enumValues = function (params)
+                    return configEntriesEnum[params.section.value]
+                end,
+            }
+        },
+        description = "Toggle the boolean value of a config entry."
+    },
+    {
+        name = "list",
+        callback = listConfigs,
+        params = {
+            { name = "section", type = "enum", enumValues = configSectionsEnum },
+            {
+                name = "entry",
+                type = "enum",
+                enumValues = function (params)
+                    return configEntriesEnum[params.section.value]
+                end,
+            }
+        },
+        description = "Show config entry."
+    }
 }
 
 return {
@@ -140,5 +260,5 @@ return {
         unless the match is unique, in which case
         all attributes of the entry are listed.
 ]],
-    callback = subCommands
+    subCommands = subCommands
 }

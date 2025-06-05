@@ -14,7 +14,7 @@
 --- @field setNextWindowSizeConstraints fun(minX: number, minH: number, maxX: number, maxH: number)
 --- @field isWindowHovered fun(flags:ImGuiHoveredFlags) : boolean
 --- Child
---- @field beginChild fun(name:string, width:number, height:number, showBorder:boolean) : boolean
+--- @field beginChild fun(name:string, width:number, height:number, showBorder:boolean, flags:ImGuiWindowFlags) : boolean
 --- @field endChild fun()
 --- Text
 --- @field text fun(text:string)
@@ -25,6 +25,7 @@
 --- @field button fun(text:string, width:number, height: number) : boolean
 --- InputText
 --- @field inputTextWithHint fun(name:string, hint:string, text:string, flags:ImGuiInputTextFlags, callback: fun(event:ImGuiInputTextFlags, param1:any) : string) : string, boolean
+--- @field inputTextWithHint fun(name:string, hint:string, text:string, flags:ImGuiInputTextFlags) : string, boolean
 --- Checkbox
 --- @field checkbox fun(label:string, value:boolean) : boolean
 --- Table
@@ -33,11 +34,24 @@
 --- @field tableNextRow fun()
 --- @field tableSetColumnIndex fun(column:integer)
 --- @field tableGetColumnCount fun(): integer
+--- Combo
+--- @field combo fun(label:string, currentItem:integer, items:string) : boolean, integer
+--- MenuBar
+--- @field beginMenuBar fun() : boolean
+--- @field endMenuBar fun()
+--- @field beginMenu fun(label:string) : boolean
+--- @field beginMenu fun(label:string, enabled:boolean) : boolean
+--- @field endMenu fun()
+--- @field menuItem fun(label:string) : boolean
+--- @field menuItem fun(label:string, enabled:boolean) : boolean
 --- Scroll
 --- @field setScrollHereY fun(scroll:number)
 --- Layout
 --- @field sameLine fun()
 --- @field getFrameHeightWithSpacing fun()
+--- @field separator fun()
+--- @field alignTextToFramePadding fun()
+--- @field dummy fun(width:number, height:number)
 --- Focus
 --- @field setKeyboardFocusHere fun(index:integer)
 --- @field isItemFocused fun() : boolean

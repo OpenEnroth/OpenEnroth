@@ -5,9 +5,10 @@ local addItemToInventory = function (itemId, characterIndex)
         characterIndex = Game.party.getActiveCharacter()
     end
 
-    local item = Game.items.getItemInfo(itemId)
+    local itemEnumValue = stringToEnum(Game.ItemType, itemId)
+    local item = Game.items.getItemInfo(itemEnumValue)
     if item then
-        local result = Game.party.addItemToInventory(characterIndex, itemId)
+        local result = Game.party.addItemToInventory(characterIndex, itemEnumValue)
         local character = Game.party.getCharacterInfo(characterIndex, { "name" })
         if result then
             return character.name .. " gained item: " .. item.name, true
@@ -36,14 +37,42 @@ local addRandomSpecialItemToInventory = function (characterIndex, minLevel)
 end
 
 local subCommands = {
-    add = addItemToInventory,
-    addrandom = addRandomItemToInventory,
-    addrandomspecial = addRandomSpecialItemToInventory
+    {
+        name = "add",
+        callback = addItemToInventory,
+        params = {
+            {
+                name = "itemId",
+                type = "enum",
+                enumValues = Game.ItemType,
+                description = "Item ID to add to the inventory."
+            },
+            { name = "char", type = "characterIndex", description = "Character index to add the item to. Defaults to active character." }
+        },
+        description = "Adds the specified item to the character's inventory."
+    },
+    {
+        name = "addrandom",
+        callback = addRandomItemToInventory,
+        params = {
+            { name = "char", type = "characterIndex", description = "Character index to add the random item to. Defaults to active character." }
+        },
+        description = "Adds a random item to the character's inventory."
+    },
+    {
+        name = "addrandomspecial",
+        callback = addRandomSpecialItemToInventory,
+        params = {
+            { name = "char",     type = "characterIndex", description = "Character index to add the random special item to. Defaults to active character." },
+            { name = "minLevel", type = "number",         description = "Minimum level of the special item." }
+        },
+        description = "Adds a random special item (level >= 6) to the character's inventory."
+    },
 }
 
 return {
     name = "inventory",
     description = "Add/Remove items from character inventory.",
     details = "",
-    callback = subCommands
+    subCommands = subCommands
 }

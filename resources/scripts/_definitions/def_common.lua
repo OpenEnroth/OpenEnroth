@@ -47,6 +47,7 @@
 --- @field path string
 --- @field reset fun()
 --- @field toggle fun()
+--- @field getType fun(): string
 
 --- @class ConfigBindings
 --- @field entry fun(param1: string, param2?: string): ConfigEntry
