@@ -42,7 +42,6 @@ class BaseRenderer : public Renderer {
 
     virtual std::vector<Actor*> getActorsInViewport(int pDepth) override;
 
-    virtual void CreateZBuffer() override;
     virtual void ClearZBuffer() override;
     virtual void ZDrawTextureAlpha(float u, float v, GraphicsImage *pTexture, int zVal) override;
 

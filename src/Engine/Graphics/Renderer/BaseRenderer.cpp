@@ -35,7 +35,6 @@
 
 bool BaseRenderer::Initialize() {
     updateRenderDimensions();
-    CreateZBuffer();
     return true;
 }
 
@@ -733,10 +732,6 @@ std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
     return foundActors;
 }
 
-void BaseRenderer::CreateZBuffer() {
-    ClearZBuffer();
-}
-
 void BaseRenderer::ClearZBuffer() {
     _equipmentHitMap.clear();
 }
@@ -753,7 +748,6 @@ void BaseRenderer::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int z
 
 bool BaseRenderer::Reinitialize(bool firstInit) {
     updateRenderDimensions();
-    CreateZBuffer();
     return true;
 }
 
