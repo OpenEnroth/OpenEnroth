@@ -550,7 +550,8 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     // Vanilla behaviour changed:
                     // before if spell was targeted wrong, mana was spend on spell failure
-                    if (!spell_targeted_at || spell_targeted_at.type() != OBJECT_Actor) {
+                    if (!spell_targeted_at || spell_targeted_at.type() != OBJECT_Actor || pActors[spell_targeted_at.id()].aiState == Dead ||
+                        pActors[spell_targeted_at.id()].aiState == Dying) {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
