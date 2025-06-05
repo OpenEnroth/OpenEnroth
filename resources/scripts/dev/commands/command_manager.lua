@@ -143,10 +143,11 @@ local CommandManager = {
                 commandName .. " does not return a valid message or result. Check the return statements in your script"
         elseif type(message) ~= "string" then
             result = false
+            -- This tostring call is required to solve the "can't infer type" errors when concatenating strings two lines above
+            local typeString = tostring(type(message))
             message = "The command " ..
                 commandName ..
-                " does not return a valid message. The message must be a string. Current message type: " ..
-                tostring(type(message))
+                " does not return a valid message. The message must be a string. Current message type: " .. typeString
         end
 
         return message, result
