@@ -132,7 +132,7 @@ int inputTextCallback(ImGuiInputTextCallbackData *data) {
     return 0;
 }
 
-std::tuple<std::string, bool> imGuiInputTextWithHint(const std::string& label, const std::string& hint, std::string text, ImGuiInputTextFlags flags) {
+std::tuple<std::string, bool> imGuiInputTextWithHint(const std::string &label, const std::string &hint, std::string text, ImGuiInputTextFlags flags) {
     ImGuiInputTextUserData userData{ &text, nullptr };
     bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), text.data(), text.capacity() + 1, flags | ImGuiInputTextFlags_CallbackResize, inputTextCallback, &userData);
     return { text, selected };
