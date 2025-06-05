@@ -6538,6 +6538,17 @@ void Character::OnInventoryLeftClick() {
     Pointi inventoryPos = mapToInventoryGrid(mousePos + mouse->pickedItemOffset, Pointi(14, 17));
     int invMatrixIndex = inventoryPos.x + (INVENTORY_SLOTS_WIDTH * inventoryPos.y);
 
+    // If a held item is overlapping outside the grid
+    if (pParty->pPickedItem.itemId != ITEM_NULL) {
+        Sizei itemSize = pParty->pPickedItem.inventorySize();
+        if (inventoryPos.x < 0 || inventoryPos.y < 0 ||
+            inventoryPos.x + itemSize.w > INVENTORY_SLOTS_WIDTH ||
+            inventoryPos.y + itemSize.h > INVENTORY_SLOTS_HEIGHT) {
+            pAudioPlayer->playUISound(SOUND_error);
+            return;
+        }
+    }
+
     if (inventoryPos.y >= 0 && inventoryPos.y < INVENTORY_SLOTS_HEIGHT &&
         inventoryPos.x >= 0 && inventoryPos.x < INVENTORY_SLOTS_WIDTH) {
         if (IsEnchantingInProgress) {
