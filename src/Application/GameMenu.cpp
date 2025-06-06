@@ -56,7 +56,7 @@ void Game_StartNewGameWhilePlaying(bool force_start) {
         current_screen_type = SCREEN_GAME;
         engine->_statusBar->clearAll();
     } else {
-        engine->_statusBar->setEvent(LSTR_START_NEW_GAME_PROMPT);
+        engine->_statusBar->setEvent(LSTR_ARE_YOU_SURE_CLICK_AGAIN_TO_START_A_NEW);
         pAudioPlayer->playUISound(SOUND_quest);
         confirmationState = CONFIRM_NEW_GAME;
     }
@@ -72,7 +72,7 @@ void Game_QuitGameWhilePlaying(bool force_quit) {
         uGameState = GAME_STATE_GAME_QUITTING_TO_MAIN_MENU;
         engine->_statusBar->clearAll();
     } else {
-        engine->_statusBar->setEvent(LSTR_EXIT_GAME_PROMPT);
+        engine->_statusBar->setEvent(LSTR_ARE_YOU_SURE_CLICK_AGAIN_TO_QUIT);
         pAudioPlayer->playUISound(SOUND_quest);
         confirmationState = CONFIRM_QUIT;
     }
@@ -144,7 +144,7 @@ void Menu::EventLoop() {
                         pSavegameList->selectedSlot = pSavegameList->saveListPosition + param;
                     } else {
                         keyboardInputHandler->StartTextInput(TextInputType::Text, 19, pGUIWindow_CurrentMenu);
-                        if (pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name != localization->GetString(LSTR_EMPTY_SAVESLOT)) {
+                        if (pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name != localization->GetString(LSTR_EMPTY_SAVE)) {
                             keyboardInputHandler->SetTextInput(pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name);
                         }
                     }
@@ -173,7 +173,7 @@ void Menu::EventLoop() {
                 continue;
             case UIMSG_Game_OpenSaveGameDialog: {
                 if (engine->_currentLoadedMapId == MAP_ARENA) {
-                    engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_ARENA);
+                    engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_THE_ARENA);
                     pAudioPlayer->playUISound(SOUND_error);
                 } else {
                     pGUIWindow_CurrentMenu->Release();
@@ -191,8 +191,8 @@ void Menu::EventLoop() {
                     // Too few saves to scroll yet
                     break;
                 }
-                int mx{}, my{};
-                mouse->GetClickPos(&mx, &my);
+                Pointi mousePos = mouse->position();
+                int mx = mousePos.x, my = mousePos.y;
                 // 216 is offset down from top (216)
                 my -= 216;
                 // 107 is total height of bar
@@ -281,7 +281,7 @@ void Menu::EventLoop() {
                     gammalevel++;
                     new OnButtonClick2({213, 161}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
-                    Pointi pt = mouse->GetCursorPos();
+                    Pointi pt = mouse->position();
                     gammalevel = (pt.x - 42) / 17;
                 }
 
@@ -315,7 +315,7 @@ void Menu::EventLoop() {
                     new_level += 1;
                     new OnButtonClick2({435, 216}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
-                    Pointi pt = mouse->GetCursorPos();
+                    Pointi pt = mouse->position();
                     new_level = (pt.x - 263) / 17;  // for mouse
                 }
 
@@ -334,7 +334,7 @@ void Menu::EventLoop() {
                     new_level += 1;
                     new OnButtonClick2({435, 162}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
-                    Pointi pt = mouse->GetCursorPos();
+                    Pointi pt = mouse->position();
                     new_level = (pt.x - 263) / 17;
                 }
 
@@ -365,7 +365,7 @@ void Menu::EventLoop() {
                     new_level += 1;
                     new OnButtonClick2({435, 270}, {0, 0}, pBtn_SliderRight, std::string(), false);
                 } else {
-                    Pointi pt = mouse->GetCursorPos();
+                    Pointi pt = mouse->position();
                     new_level = (pt.x - 263) / 17;
                 }
 

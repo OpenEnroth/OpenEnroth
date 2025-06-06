@@ -64,6 +64,10 @@ FsmAction LoadSlotState::update() {
             _uiLoadSaveSlot->scroll(param1);
             break;
         }
+        case UIMSG_QuickLoad: {
+            _uiLoadSaveSlot->quickLoad();
+            break;
+        }
         default:
             break;
         }

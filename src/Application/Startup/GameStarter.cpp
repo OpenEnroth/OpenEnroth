@@ -33,9 +33,7 @@
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
-#include "Library/Logger/LogSink.h"
-#include "Library/Logger/DistLogSink.h"
-#include "Library/Logger/BufferLogSink.h"
+#include "Library/Image/Png.h"
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/Platform/Null/NullPlatform.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
@@ -59,7 +57,6 @@ constexpr std::string_view configName = "openenroth.ini";
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
     // Init logging.
-    _logStarter.initPrimary();
     Engine::LogEngineBuildInfo();
 
     try {
@@ -74,19 +71,10 @@ void GameStarter::initWithLogger() {
     // Init environment.
     _environment = Environment::createStandardEnvironment();
 
-    // Resolve user path, create user fs & file logger.
+    // Resolve user path & create user fs.
     resolveUserPath(_environment.get(), &_options);
     _fsStarter.initUserFs(_options.ramFsUserData, _options.userPath);
-    _logStarter.initSecondary(ufs);
-
-    // Resolve data path, create data fs.
-    // TODO(captainurist): actually move datapath to config?
-    resolveDataPath(_environment.get(), &_options);
-    _fsStarter.initDataFs(_options.dataPath);
-
-    // Migrate saves & config if needed.
-    if (!_options.ramFsUserData && _options.dataPath != _options.userPath)
-        migrateUserData();
+    logger->info("Using user path '{}'.", ufs->displayPath(""));
 
     // Init config.
     _config = std::make_shared<GameConfig>();
@@ -97,9 +85,20 @@ void GameStarter::initWithLogger() {
         _config->reset();
         logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", ufs->displayPath(configName));
     }
+    logger->info("Built in resource override is {}.", _config->debug.OverrideBuiltInResources.value() ? "enabled" : "disabled");
 
-    // Finish logger init now that we know the desired log level.
-    _logStarter.initFinal(_options.logLevel ? *_options.logLevel : _config->debug.LogLevel.value());
+    // Finish logger init now that we have user fs and know the desired log level.
+    _logStarter.initialize(ufs, _options.logLevel ? *_options.logLevel : _config->debug.LogLevel.value());
+
+    // Resolve data path, create data fs.
+    // TODO(captainurist): actually move datapath to config?
+    resolveDataPath(_environment.get(), &_options);
+    _fsStarter.initDataFs(_options.dataPath, _config->debug.OverrideBuiltInResources.value());
+    logger->info("Using data path '{}'.", _options.dataPath); // Can't use dfs->displayPath("") b/c it'll show "embedded://"...
+
+    // Migrate saves if needed. We don't migrate anything else.
+    if (!_options.ramFsUserData && _options.dataPath != _options.userPath)
+        migrateSaves();
 
     // Create platform.
     if (_options.headless) {
@@ -124,6 +123,12 @@ void GameStarter::initWithLogger() {
     ::window = _application->window();
     ::eventHandler = _application->eventHandler();
     ::openGLContext = _application->openGLContext(); // OK to store into a global even if not yet initialized
+
+    // On linux the only way to set window icon is through an API call. On other OSes this is handled by external
+    // mechanisms.
+#if defined(__linux__) && !defined(__ANDROID__)
+    window->setIcon(png::decode(dfs->read("images/OpenEnroth.png")));
+#endif
 
     // Install & set up components.
     // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
@@ -185,6 +190,9 @@ void GameStarter::initWithLogger() {
 GameStarter::~GameStarter() {
     _application->removeComponent<EngineControlComponent>(); // Join the control thread first.
 
+    _game.reset();
+    _engine.reset();
+
     ::engine = nullptr;
     ::render = nullptr;
     ::application = nullptr;
@@ -198,7 +206,6 @@ GameStarter::~GameStarter() {
 void GameStarter::resolveUserPath(Environment *environment, GameStarterOptions *options) {
     if (options->userPath.empty())
         options->userPath = resolveMm7UserPath(environment);
-    logger->info("Using user path '{}'.", options->userPath);
 }
 
 void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *options) {
@@ -226,7 +233,6 @@ void GameStarter::resolveDataPath(Environment *environment, GameStarterOptions *
     // Just use the last data path if all paths are invalid. We'll throw later.
     if (options->dataPath.empty())
         options->dataPath = candidates.back();
-    logger->info("Using data path '{}'.", options->dataPath);
 }
 
 void GameStarter::failOnInvalidPath(std::string_view dataPath, Platform *platform) {
@@ -242,11 +248,11 @@ void GameStarter::failOnInvalidPath(std::string_view dataPath, Platform *platfor
         dataPath
     );
     platform->showMessageBox("CRITICAL ERROR: missing resources", message);
-    throw Exception("Data folder '{}' validation failed", dataPath);
+    throw Exception("Data folder '{}' validation failed, missing '{}'", dataPath, missingFile);
 }
 
-void GameStarter::migrateUserData() {
-    logger->info("Migrating user data from '{}' to '{}'...", dfs->displayPath(""), ufs->displayPath(""));
+void GameStarter::migrateSaves() {
+    logger->info("Migrating save files from '{}' to '{}'...", dfs->displayPath("saves"), ufs->displayPath("saves"));
 
     if (ufs->exists("saves") && !ufs->ls("saves").empty()) {
         logger->info("    Target saves directory is not empty, skipping saves migration.");
@@ -261,15 +267,6 @@ void GameStarter::migrateUserData() {
             }
         }
     }
-
-    if (ufs->exists(configName)) {
-        logger->info("    Target config exists, skipping config migration.");
-    } else if (!dfs->exists(configName)) {
-        logger->info("    No config file to migrate.");
-    } else {
-        ufs->write(configName, dfs->read(configName));
-        logger->info("    Copied '{}'.", configName);
-    }
 }
 
 void GameStarter::run() {
@@ -278,7 +275,7 @@ void GameStarter::run() {
 
         _application->component<GameWindowHandler>()->UpdateConfigFromWindow(_config.get());
         _config->save(ufs->openForWriting(configName).get());
-        logger->info("Configuration file '{}' saved!", configName);
+        logger->info("Configuration file '{}' saved!", ufs->displayPath(configName));
     } catch (const std::exception &e) {
         // Log the exception so that it goes to all registered loggers.
         logger->critical("Terminated with exception: {}", e.what());

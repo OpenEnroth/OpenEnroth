@@ -43,7 +43,7 @@ class Character;
 struct NPCData;
 class GraphicsImage;
 class TargetedSpellUI;
-struct ItemGen;
+struct Item;
 
 class GUIWindow {
  public:
@@ -260,13 +260,14 @@ void CharacterUI_InventoryTab_Draw(Character *player, bool a2);
 void CharacterUI_DrawPaperdoll(Character *player);
 void CharacterUI_DrawPaperdollWithRingOverlay(Character *player);
 void CharacterUI_ReleaseButtons();
+void CharacterUI_DrawPickedItemUnderlay(Vec2i offset);
 
 /**
  * @offset 0x417AD4
  */
 Color GetSkillColor(CharacterClass uPlayerClass, CharacterSkillType uPlayerSkillType, CharacterSkillMastery skill_mastery);
 
-void UI_OnMouseRightClick(int mouse_x, int mouse_y);
+void UI_OnMouseRightClick(Pointi mousePos);
 
 void GUI_UpdateWindows();
 Color GetConditionDrawColor(Condition uConditionIdx);  // idb
@@ -291,7 +292,7 @@ bool isHoldingMouseRightButton();
  * @offset 0x495461
  */
 std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *npc,
-                                ItemGen *item = nullptr, HouseId houseId = HOUSE_INVALID, ShopScreen shop_screen = SHOP_SCREEN_INVALID,
+                                Item *item = nullptr, HouseId houseId = HOUSE_INVALID, ShopScreen shop_screen = SHOP_SCREEN_INVALID,
                                 Time *a6 = nullptr);
 
 

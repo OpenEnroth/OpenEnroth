@@ -127,5 +127,6 @@ unsigned OpenGLShader::loadShader(const Blob &source, int type, bool openGLES) {
         return 0;
     }
 
+    logger->info("Loaded shader '{}'.", source.displayPath());
     return result;
 }

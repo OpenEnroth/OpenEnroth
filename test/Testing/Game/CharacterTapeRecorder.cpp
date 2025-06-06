@@ -118,3 +118,27 @@ TestTape<SpellId> CharacterTapeRecorder::quickSpell(int characterIndex) {
 TestMultiTape<SpellId> CharacterTapeRecorder::quickSpells() {
     return custom(std::bind(&Character::uQuickSpell, _1));
 }
+
+TestTape<bool> CharacterTapeRecorder::hasItem(int characterIndex, ItemId itemId) {
+    return custom(characterIndex, std::bind(&Character::hasItem, _1, itemId, false));
+}
+
+TestMultiTape<bool> CharacterTapeRecorder::haveItem(ItemId itemId) {
+    return custom(std::bind(&Character::hasItem, _1, itemId, false));
+}
+
+TestTape<CharacterClass> CharacterTapeRecorder::clazz(int characterIndex) {
+    return custom(characterIndex, std::bind(&Character::classType, _1));
+}
+
+TestMultiTape<CharacterClass> CharacterTapeRecorder::classes() {
+    return custom(std::bind(&Character::classType, _1));
+}
+
+TestTape<bool> CharacterTapeRecorder::isRecovering(int characterIndex) {
+    return custom(characterIndex, [] (const Character &character) { return character.timeToRecovery > 0_ticks; });
+}
+
+TestMultiTape<bool> CharacterTapeRecorder::areRecovering() {
+    return custom([] (const Character &character) { return character.timeToRecovery > 0_ticks; });
+}

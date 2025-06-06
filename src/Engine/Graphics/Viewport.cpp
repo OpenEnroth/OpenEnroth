@@ -1,7 +1,7 @@
 #include "Engine/Graphics/Viewport.h"
 
 #include "Engine/Engine.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Objects/DecorationList.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -217,24 +217,24 @@ void ViewingParams::_443365() {
 }
 
 void ItemInteraction(unsigned int item_id) {
-    if (pItemTable->pItems[pSpriteObjects[item_id].containing_item.uItemID].uEquipType == ITEM_TYPE_GOLD) {
+    if (pItemTable->items[pSpriteObjects[item_id].containing_item.itemId].type == ITEM_TYPE_GOLD) {
         pParty->partyFindsGold(pSpriteObjects[item_id].containing_item.goldAmount, GOLD_RECEIVE_SHARE);
     } else {
-        if (pParty->pPickedItem.uItemID != ITEM_NULL) {
+        if (pParty->pPickedItem.itemId != ITEM_NULL) {
             return;
         }
 
-        engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[item_id].containing_item.uItemID].pUnidentifiedName);
+        engine->_statusBar->setEvent(LSTR_YOU_FOUND_AN_ITEM_S, pItemTable->items[pSpriteObjects[item_id].containing_item.itemId].unidentifiedName);
 
         // TODO: WTF? 184 / 185 qbits are associated with Tatalia's Mercenery Guild Harmondale raids. Are these about castle's tapestries ?
-        if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_ARTIFACT_SPLITTER) {
+        if (pSpriteObjects[item_id].containing_item.itemId == ITEM_ARTIFACT_SPLITTER) {
             pParty->_questBits.set(QBIT_SPLITTER_FOUND);
         }
-        if (pSpriteObjects[item_id].containing_item.uItemID == ITEM_SPELLBOOK_REMOVE_FEAR) {
+        if (pSpriteObjects[item_id].containing_item.itemId == ITEM_SPELLBOOK_REMOVE_FEAR) {
             pParty->_questBits.set(QBIT_REMOVE_FEAR_FOUND);
         }
         if (!pParty->addItemToParty(&pSpriteObjects[item_id].containing_item)) {
-            pParty->setHoldingItem(&pSpriteObjects[item_id].containing_item);
+            pParty->setHoldingItem(pSpriteObjects[item_id].containing_item);
         }
     }
     SpriteObject::OnInteraction(item_id);
@@ -331,7 +331,7 @@ void Engine::onGameViewportClick() {
                    pParty->activeCharacter().uQuickSpell != SPELL_NONE &&
                    IsSpellQuickCastableOnShiftClick(pParty->activeCharacter().uQuickSpell)) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_CastQuickSpell, 0, 0);
-        } else if (pParty->pPickedItem.uItemID != ITEM_NULL) {
+        } else if (pParty->pPickedItem.itemId != ITEM_NULL) {
             pParty->dropHeldItem();
         } else {
             pAudioPlayer->playUISound(SOUND_error);
@@ -353,7 +353,7 @@ void Engine::onGameViewportClick() {
 
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             if (!pIndoor->pFaces[pid.id()].Clickable()) {
-                if (pParty->pPickedItem.uItemID == ITEM_NULL) {
+                if (pParty->pPickedItem.itemId == ITEM_NULL) {
                     engine->_statusBar->nothingHere();
                 } else {
                     pParty->dropHeldItem();
@@ -365,7 +365,7 @@ void Engine::onGameViewportClick() {
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             const ODMFace &model = pOutdoor->face(pid);
             if (!model.Clickable()) {
-                if (pParty->pPickedItem.uItemID == ITEM_NULL) {
+                if (pParty->pPickedItem.itemId == ITEM_NULL) {
                     engine->_statusBar->nothingHere();
                 } else {
                     pParty->dropHeldItem();

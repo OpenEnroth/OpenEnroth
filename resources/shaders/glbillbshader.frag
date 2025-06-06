@@ -1,6 +1,7 @@
 #ifdef GL_ES
+    precision highp int;
     precision highp float;
-    precision highp usamplerBuffer;
+    precision highp sampler2D;
 #endif
 
 in vec4 colour;
@@ -18,7 +19,7 @@ struct FogParam {
 };
 
 uniform sampler2D texture0;
-uniform usamplerBuffer palbuf;
+uniform sampler2D paltex2D;
 uniform FogParam fog;
 uniform float gamma;
 
@@ -27,11 +28,11 @@ float getFogRatio(FogParam fogpar, float dist);
 void main() {
     vec4 fragcol = texture(texture0, texuv);
     int index = int(fragcol.r * 255.0);
-    vec4 newcol = vec4(texelFetch(palbuf, int(256 * paletteid + index)));
+    vec4 newcol = vec4(texelFetch(paltex2D, ivec2(index, paletteid), 0));
 
     if (paletteid > 0)
         if (index > 0)
-            fragcol = vec4(newcol.r / 255.0, newcol.g / 255.0, newcol.b / 255.0, 1.0);
+            fragcol = vec4(newcol.r, newcol.g, newcol.b, 1.0);
 
     fragcol *= colour;
 

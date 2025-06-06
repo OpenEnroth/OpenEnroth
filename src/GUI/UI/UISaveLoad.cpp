@@ -68,7 +68,7 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRen
         std::string str = fmt::format("saves/{}", file_name);
         if (!ufs->exists(str)) {
             pSavegameList->pSavegameUsedSlots[i] = false;
-            pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_EMPTY_SAVESLOT);
+            pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_EMPTY_SAVE);
         } else {
             pLODFile.open(ufs->read(str), LOD_ALLOW_DUPLICATES);
             deserialize(pLODFile.read("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
@@ -161,7 +161,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
         std::string str = fmt::format("saves/{}", pSavegameList->pFileList[i]);
         if (!ufs->exists(str)) {
             pSavegameList->pSavegameUsedSlots[i] = false;
-            pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_EMPTY_SAVESLOT);
+            pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_EMPTY_SAVE);
             continue;
         }
 
@@ -369,8 +369,8 @@ void GUIWindow_Load::scroll(int maxSlots) {
         // Too few saves to scroll yet
         return;
     }
-    int mx{}, my{};
-    mouse->GetClickPos(&mx, &my);
+    Pointi mousePos = mouse->position();
+    int mx = mousePos.x, my = mousePos.y;
     // 276 is offset down from top (216 + 60 frame)
     my -= 276;
     // 107 is total height of bar
@@ -379,4 +379,16 @@ void GUIWindow_Load::scroll(int maxSlots) {
     newlistpost = std::clamp(newlistpost, 0, (maxSlots - 7));
     pSavegameList->saveListPosition = newlistpost;
     pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+}
+
+void GUIWindow_Load::quickLoad() {
+    int slot = GetQuickSaveSlot();
+    if (slot != -1) {
+        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+        pSavegameList->selectedSlot = slot;
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
+    } else {
+        logger->error("QuickLoadGame:: No quick save could be found!");
+        pAudioPlayer->playUISound(SOUND_error);
+    }
 }

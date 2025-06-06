@@ -38,9 +38,19 @@
 
 --- CONFIG Bindings
 
+--- @class ConfigEntry
+--- @field value string
+--- @field default string
+--- @field name string
+--- @field section string
+--- @field description string
+--- @field path string
+--- @field reset fun()
+--- @field toggle fun()
+
 --- @class ConfigBindings
---- @field setConfig fun(section: string, configName: string, value: any): boolean
---- @field getConfig fun(section: string, configName?: string): string
+--- @field entry fun(param1: string, param2?: string): ConfigEntry
+--- @field list fun(sectionName: string, filter: string): ConfigEntry[]
 
 --- OVERLAY Bindings
 --- @class Overlay

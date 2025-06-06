@@ -8,7 +8,7 @@
 #include "Engine/Engine.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Time/Timer.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -144,10 +144,10 @@ static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
 
 void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
     ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID];
-    bool isHighSlope = IsTerrainSlopeTooHigh(pSpriteObjects[uLayingItemID].vPosition);
+    bool isHighSlope = pOutdoor->pTerrain.isSlopeTooHighByPos(pSpriteObjects[uLayingItemID].vPosition);
     int bmodelPid = 0;
     bool onWater = false;
-    float level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition, object->uHeight, &onWater, &bmodelPid, 0);
+    float level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition, &onWater, &bmodelPid);
     bool isAboveGround = pSpriteObjects[uLayingItemID].vPosition.z > level + 1;
     if (!isAboveGround && onWater) {
         int splashZ = level + 60;
@@ -162,8 +162,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         if (isAboveGround) {
             pSpriteObjects[uLayingItemID].vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
         } else if (isHighSlope) {
-            Vec3f normf;
-            ODM_GetTerrainNormalAt(pSpriteObjects[uLayingItemID].vPosition, &normf);
+            Vec3f normf = pOutdoor->pTerrain.normalByPos(pSpriteObjects[uLayingItemID].vPosition);
             pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
             pSpriteObjects[uLayingItemID].vVelocity.z -= (pEventTimer->dt().ticks() * GetGravityStrength());
 
@@ -180,13 +179,13 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             }
             pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
             if (object->uFlags & OBJECT_DESC_BOUNCE) {
-                int bounceZVel = -(pSpriteObjects[uLayingItemID].vVelocity.z / 2);
+                float bounceZVel = -(pSpriteObjects[uLayingItemID].vVelocity.z / 2.0f);
                 pSpriteObjects[uLayingItemID].vVelocity.z = bounceZVel;
-                if (bounceZVel < 10) {
-                    pSpriteObjects[uLayingItemID].vVelocity.z = 0;
+                if (bounceZVel < 10.0f) {
+                    pSpriteObjects[uLayingItemID].vVelocity.z = 0.0f;
                 }
             } else {
-                pSpriteObjects[uLayingItemID].vVelocity.z = 0;
+                pSpriteObjects[uLayingItemID].vVelocity.z = 0.0f;
             }
 
             pSpriteObjects[uLayingItemID].vVelocity *= 0.89263916f; // was 58500 fp
@@ -227,7 +226,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         }
 
         CollideOutdoorWithModels(false);
-        CollideOutdoorWithDecorations(WorldPosToGrid(pSpriteObjects[uLayingItemID].vPosition));
+        CollideOutdoorWithDecorations(worldToGrid(pSpriteObjects[uLayingItemID].vPosition));
         ObjectType casterType = pSpriteObjects[uLayingItemID].spell_caster_pid.type();
         if (casterType != OBJECT_Character) {
             CollideWithParty(false);
@@ -251,7 +250,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         bool collisionOnWater = false;
         int collisionBmodelPid = 0;
         Vec3f collisionPos = collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1);
-        float collisionLevel = ODM_GetFloorLevel(collisionPos, object->uHeight, &collisionOnWater, &collisionBmodelPid, 0);
+        float collisionLevel = ODM_GetFloorLevel(collisionPos, &collisionOnWater, &collisionBmodelPid);
         // TOOD(Nik-RE-dev): why initail "onWater" is used?
         if (onWater && collisionZ < (collisionLevel + 60)) {
             int splashZ = level + 60;
@@ -286,9 +285,15 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 return;
             }
         }
+
         if (collision_state.pid.type() == OBJECT_Decoration) {
-            break;
+            Vec2f deltaXY = pSpriteObjects[uLayingItemID].vPosition.xy() - pLevelDecorations[collision_state.pid.id()].vPosition.xy();
+            float velLenXY = pSpriteObjects[uLayingItemID].vVelocity.xy().length();
+            float velRotXY = atan2(deltaXY.x, deltaXY.y);
+            pSpriteObjects[uLayingItemID].vVelocity.x = cos(velRotXY) * velLenXY;
+            pSpriteObjects[uLayingItemID].vVelocity.y = sin(velRotXY) * velLenXY;
         }
+
         if (collision_state.pid.type() == OBJECT_Face) {
             const BSPModel *bmodel = &pOutdoor->model(collision_state.pid);
             const ODMFace *face = &pOutdoor->face(collision_state.pid);
@@ -319,16 +324,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 }
             }
         }
-        //LABEL_74:
         pSpriteObjects[uLayingItemID].vVelocity *= 0.89263916f; // was 58500 fp
     }
-    Vec2f deltaXY = pSpriteObjects[uLayingItemID].vPosition.xy() - pLevelDecorations[collision_state.pid.id()].vPosition.xy();
-    float velLenXY = pSpriteObjects[uLayingItemID].vVelocity.xy().length();
-    float velRotXY = atan2(deltaXY.x, deltaXY.y);
-
-    pSpriteObjects[uLayingItemID].vVelocity.x = cos(velRotXY) * velLenXY;
-    pSpriteObjects[uLayingItemID].vVelocity.y = sin(velRotXY - pi / 2) * velLenXY;
-    //goto LABEL_74; // This goto results in an infinite loop, commented out.
 }
 
 //----- (0047136C) --------------------------------------------------------
@@ -645,7 +642,7 @@ bool SpriteObject::applyShrinkRayAoe() {
 }
 
 bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
-                              bool randomRotate, SpriteAttributes attributes, ItemGen *item) {
+                              bool randomRotate, SpriteAttributes attributes, Item *item) {
     SpriteObject pSpellObject;
 
     pSpellObject.uType = sprite;
@@ -659,9 +656,9 @@ bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
     }
 
     if (!(pSpellObject.uAttributes & SPRITE_IGNORE_RANGE)) {
-        for (ItemId i : pItemTable->pItems.indices()) {
-            if (pItemTable->pItems[i].uSpriteID == sprite) {
-                pSpellObject.containing_item.uItemID = i;
+        for (ItemId i : pItemTable->items.indices()) {
+            if (pItemTable->items[i].spriteId == sprite) {
+                pSpellObject.containing_item.itemId = i;
             }
         }
     }
@@ -789,8 +786,8 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
         case SPRITE_PROJECTILE_EXPLOSIVE: {
             // Note that ITEM_SPELLBOOK_FIREBALL is an MM6 remnant here,
             // in MM6 it was Percival artifact (id 405) which has swiftness and carnage enchantments
-            if (object->containing_item.uItemID != ITEM_SPELLBOOK_FIREBALL &&
-                object->containing_item.special_enchantment != ITEM_ENCHANTMENT_OF_CARNAGE) {
+            if (object->containing_item.itemId != ITEM_SPELLBOOK_FIREBALL &&
+                object->containing_item.specialEnchantment != ITEM_ENCHANTMENT_OF_CARNAGE) {
                 object->spellSpriteStop();
                 applySpellSpriteDamage(uLayingItemID, pid);
                 SpriteObject::OnInteraction(uLayingItemID);

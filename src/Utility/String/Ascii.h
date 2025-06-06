@@ -21,6 +21,10 @@ inline char toUpper(char c) {
     return isLower(c) ? c - 'a' + 'A' : c;
 }
 
+inline bool isSpace(char c) {
+    return c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f' || c == '\v';
+}
+
 std::string toLower(std::string_view text);
 std::string toUpper(std::string_view text);
 

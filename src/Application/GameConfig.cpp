@@ -72,7 +72,6 @@ GameConfig::CheatCommands::CheatCommands(GameConfig *config) : ConfigSection(con
 
 void GameConfig::CheatCommands::_addCommand(int commandIndex, const std::string& defaultValue) {
     std::string name = fmt::format("command{:02}", commandIndex + 1);
-    auto item = std::make_unique<String>(this, name, defaultValue,
-        "Cheat Command. Example: 'xp add 1000|Give 1000 xp to current Character'");
-    CommandList.push_back(std::move(item));
+    auto item = std::make_unique<String>(this, name, defaultValue, fmt::format("Cheat command #{}.", commandIndex + 1));
+    _commandList.push_back(std::move(item));
 }

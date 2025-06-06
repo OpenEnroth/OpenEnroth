@@ -14,7 +14,7 @@
 #include "Engine/Graphics/LocationFunctions.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Random/Random.h"
@@ -254,7 +254,7 @@ void GUIWindow_Shop::mainDialogue() {
     }
 
     std::vector<std::string> optionsText = {localization->GetString(LSTR_STANDARD), localization->GetString(LSTR_SPECIAL),
-                                            localization->GetString(LSTR_DISPLAY), localization->GetString(LSTR_LEARN_SKILLS)};
+                                            localization->GetString(LSTR_DISPLAY_INVENTORY), localization->GetString(LSTR_LEARN_SKILLS)};
 
     drawOptions(optionsText, colorTable.Sunflower);
 }
@@ -283,9 +283,9 @@ void GUIWindow_Shop::sellDialogue() {
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
     if (checkIfPlayerCanInteract()) {
-        engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_ITEM_TO_SELL), colorTable.White);
+        engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_THE_ITEM_TO_SELL), colorTable.White);
 
-        Pointi pt = dialogwin.mouse->GetCursorPos();
+        Pointi pt = dialogwin.mouse->position();
 
         int invindex = ((pt.x - 14) / 32) + 14 * ((pt.y - 17) / 32);
         if (pt.x <= 13 || pt.x >= 462)
@@ -293,7 +293,7 @@ void GUIWindow_Shop::sellDialogue() {
 
         int pItemID = pParty->activeCharacter().GetItemListAtInventoryIndex(invindex);
         if (pItemID) {
-            ItemGen *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
+            Item *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
             MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_SELL);
             std::string str = BuildDialogueString(pMerchantsSellPhrases[phrases_id], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_SELL);
             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
@@ -313,9 +313,9 @@ void GUIWindow_Shop::identifyDialogue() {
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
     if (checkIfPlayerCanInteract()) {
-        engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_ITEM_TO_IDENTIFY), colorTable.White);
+        engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_THE_ITEM_TO_IDENTIFY), colorTable.White);
 
-        Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+        Pointi pt = EngineIocContainer::ResolveMouse()->position();
 
         int invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
         if (pt.x <= 13 || pt.x >= 462)
@@ -324,7 +324,7 @@ void GUIWindow_Shop::identifyDialogue() {
         int pItemID = pParty->activeCharacter().GetItemListAtInventoryIndex(invindex);
 
         if (pItemID) {
-            ItemGen *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
+            Item *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
 
             std::string str;
             if (!item->IsIdentified()) {
@@ -351,9 +351,9 @@ void GUIWindow_Shop::repairDialogue() {
     CharacterUI_InventoryTab_Draw(&pParty->activeCharacter(), true);
 
     if (checkIfPlayerCanInteract()) {
-        engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_ITEM_TO_REPAIR), colorTable.White);
+        engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_THE_ITEM_TO_REPAIR), colorTable.White);
 
-        Pointi pt = dialogwin.mouse->GetCursorPos();
+        Pointi pt = dialogwin.mouse->position();
 
         int invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
         if (pt.x <= 13 || pt.x >= 462)
@@ -363,8 +363,8 @@ void GUIWindow_Shop::repairDialogue() {
         if (pItemID == 0)
             return;
 
-        if (pParty->activeCharacter().pInventoryItemList[pItemID - 1].uAttributes & ITEM_BROKEN) {
-            ItemGen *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
+        if (pParty->activeCharacter().pInventoryItemList[pItemID - 1].flags & ITEM_BROKEN) {
+            Item *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
             MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_REPAIR);
             std::string str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_REPAIR);
             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
@@ -384,7 +384,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
     int item_X = 0;
 
     for (int i = 0; i < 6; ++i) {
-        bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
+        bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
         if (itemPresent) {
             render->DrawTextureNew(((60 - (shop_ui_items_in_store[i]->width() / 2)) + item_X) / 640.0f, (weaponYPos[i] + 30) / 480.0f, shop_ui_items_in_store[i]);
         }
@@ -395,18 +395,18 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
     if (checkIfPlayerCanInteract()) {
         int item_num = 0;
         for (int i = 0; i < 6; ++i) {
-            item_num += (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
+            item_num += (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
         }
 
         if (isStealingModeActive()) {
             engine->_statusBar->drawForced(localization->GetString(LSTR_STEAL_ITEM), colorTable.White);
         } else {
-            engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), colorTable.White);
+            engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_THE_ITEM_TO_BUY), colorTable.White);
         }
 
         if (item_num) {
-            Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
-            ItemGen *item;
+            Pointi pt = EngineIocContainer::ResolveMouse()->position();
+            Item *item;
 
             int testx = (pt.x - 30) / 70;
             if (testx >= 0 && testx < 6) {  // testx limits check
@@ -416,7 +416,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
                     item = &pParty->standartItemsInShops[houseId()][testx];
                 }
 
-                if (item->uItemID != ITEM_NULL) {  // item picking
+                if (item->itemId != ITEM_NULL) {  // item picking
                     int testpos = ((60 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 70);
 
                     if (pt.x >= testpos && pt.x < (testpos + (shop_ui_items_in_store[testx]->width()))) {
@@ -426,7 +426,7 @@ void GUIWindow_WeaponShop::shopWaresDialogue(bool isSpecial) {
                                 MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, HOUSE_TYPE_WEAPON_SHOP, houseId(), SHOP_SCREEN_BUY);
                                 str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             } else {
-                                str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
+                                str = BuildDialogueString(localization->GetString(LSTR_STEAL_24), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             }
                             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
                             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
@@ -451,7 +451,7 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
     int item_x = 0;
 
     for (int i = 0; i < 8; ++i) {
-        bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
+        bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
 
         if (itemPresent) {
             if (i >= 4) {
@@ -468,17 +468,17 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
     if (checkIfPlayerCanInteract()) {
         int pItemCount = 0;
         for (int i = 0; i < 6; ++i) {
-            pItemCount += (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
+            pItemCount += (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
         }
 
         if (isStealingModeActive()) {
             engine->_statusBar->drawForced(localization->GetString(LSTR_STEAL_ITEM), colorTable.White);
         } else {
-            engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), colorTable.White);
+            engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_THE_ITEM_TO_BUY), colorTable.White);
         }
 
         if (pItemCount) {
-            Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+            Pointi pt = EngineIocContainer::ResolveMouse()->position();
 
             // testx limits check
             int testx = (pt.x - 40) / 105;
@@ -487,14 +487,14 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
                     testx += 4;
                 }
 
-                ItemGen *item;
+                Item *item;
                 if (isSpecial) {
                     item = &pParty->specialItemsInShops[houseId()][testx];
                 } else {
                     item = &pParty->standartItemsInShops[houseId()][testx];
                 }
 
-                if (item->uItemID != ITEM_NULL) {
+                if (item->itemId != ITEM_NULL) {
                     int testpos;
                     if (testx >= 4) {
                         testpos = ((90 - (shop_ui_items_in_store[testx]->width() / 2)) + (testx * 105) - 420);
@@ -513,7 +513,7 @@ void GUIWindow_ArmorShop::shopWaresDialogue(bool isSpecial) {
                                 MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_BUY);
                                 str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             } else {
-                                str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
+                                str = BuildDialogueString(localization->GetString(LSTR_STEAL_24), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             }
                             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
                             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
@@ -537,7 +537,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, shop_ui_background);
 
     for (int i = 0; i < 12; ++i) {
-        bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
+        bool itemPresent = (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
         int itemx, itemy;
 
         if (itemPresent) {
@@ -572,17 +572,17 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
         int item_num = 0;
 
         for (int i = 0; i < 12; ++i) {
-            item_num += (isSpecial ? pParty->specialItemsInShops[houseId()][i].uItemID : pParty->standartItemsInShops[houseId()][i].uItemID) != ITEM_NULL;
+            item_num += (isSpecial ? pParty->specialItemsInShops[houseId()][i].itemId : pParty->standartItemsInShops[houseId()][i].itemId) != ITEM_NULL;
         }
 
         if (isStealingModeActive()) {
             engine->_statusBar->drawForced(localization->GetString(LSTR_STEAL_ITEM), colorTable.White);
         } else {
-            engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), colorTable.White);
+            engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_THE_ITEM_TO_BUY), colorTable.White);
         }
 
         if (item_num) {
-            Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+            Pointi pt = EngineIocContainer::ResolveMouse()->position();
 
             // testx limits check
             int testx = (pt.x) / 75;
@@ -591,14 +591,14 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
                     testx += 6;
                 }
 
-                ItemGen *item;
+                Item *item;
                 if (isSpecial) {
                     item = &pParty->specialItemsInShops[houseId()][testx];
                 } else {
                     item = &pParty->standartItemsInShops[houseId()][testx];
                 }
 
-                if (item->uItemID != ITEM_NULL) {
+                if (item->itemId != ITEM_NULL) {
                     int testpos;
                     if (pt.y > 152) {
                         testpos = 75 * testx - (shop_ui_items_in_store[testx]->width() / 2) + 40 - 450;
@@ -617,7 +617,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
                                 MerchantPhrase phrase = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_BUY);
                                 str = BuildDialogueString(pMerchantsBuyPhrases[phrase], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             } else {
-                                str = BuildDialogueString(localization->GetString(LSTR_STEAL_ITEM_FMT), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
+                                str = BuildDialogueString(localization->GetString(LSTR_STEAL_24), pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_BUY);
                             }
                             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
                             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
@@ -632,7 +632,7 @@ void GUIWindow_MagicAlchemyShop::shopWaresDialogue(bool isSpecial) {
 }
 
 void GUIWindow_WeaponShop::generateShopItems(bool isSpecial) {
-    std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
+    std::array<Item, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
     const ITEM_VARIATION variation = isSpecial ? weaponShopVariationSpecial[houseId()] : weaponShopVariationStandard[houseId()];
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
@@ -645,7 +645,7 @@ void GUIWindow_WeaponShop::generateShopItems(bool isSpecial) {
 }
 
 void GUIWindow_ArmorShop::generateShopItems(bool isSpecial) {
-    std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
+    std::array<Item, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
     const ITEM_VARIATION variationTop = isSpecial ? armorShopTopRowVariationSpecial[houseId()] : armorShopTopRowVariationStandard[houseId()];
     const ITEM_VARIATION variationBottom = isSpecial ? armorShopBottomRowVariationSpecial[houseId()] : armorShopBottomRowVariationStandard[houseId()];
 
@@ -668,7 +668,7 @@ void GUIWindow_ArmorShop::generateShopItems(bool isSpecial) {
 }
 
 void GUIWindow_MagicShop::generateShopItems(bool isSpecial) {
-    std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
+    std::array<Item, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
     ItemTreasureLevel treasureLvl = isSpecial ? magicShopVariationSpecial[houseId()] : magicShopVariationStandard[houseId()];
 
     for (int i = 0; i < itemAmountInShop[buildingType()]; i++) {
@@ -680,7 +680,7 @@ void GUIWindow_MagicShop::generateShopItems(bool isSpecial) {
 }
 
 void GUIWindow_AlchemyShop::generateShopItems(bool isSpecial) {
-    std::array<ItemGen, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
+    std::array<Item, 12> &itemArray = isSpecial ? pParty->specialItemsInShops[houseId()] : pParty->standartItemsInShops[houseId()];
     ItemTreasureLevel treasureLvl = isSpecial ? alchemyShopVariationSpecial[houseId()] : alchemyShopVariationStandard[houseId()];
     RandomItemType bottomRowItemClass = isSpecial ? RANDOM_ITEM_POTION : RANDOM_ITEM_REAGENT;
 
@@ -688,9 +688,9 @@ void GUIWindow_AlchemyShop::generateShopItems(bool isSpecial) {
         if (i < 6) {
             itemArray[i].Reset();
             if (isSpecial) {
-                itemArray[i].uItemID = grng->randomSample(allRecipeScrolls());
+                itemArray[i].itemId = grng->randomSample(allRecipeScrolls());
             } else {
-                itemArray[i].uItemID = ITEM_POTION_BOTTLE;
+                itemArray[i].itemId = ITEM_POTION_BOTTLE;
             }
         } else {
             pItemTable->generateItem(treasureLvl, bottomRowItemClass, &itemArray[i]);
@@ -788,15 +788,15 @@ void GUIWindow_Shop::houseDialogueOptionSelected(DialogueId option) {
         }
 
         HouseType shopType = buildingType();
-        const std::array<ItemGen, 12> &itemArray = (option == DIALOGUE_SHOP_BUY_STANDARD) ? pParty->standartItemsInShops[houseId()] : pParty->specialItemsInShops[houseId()];
+        const std::array<Item, 12> &itemArray = (option == DIALOGUE_SHOP_BUY_STANDARD) ? pParty->standartItemsInShops[houseId()] : pParty->specialItemsInShops[houseId()];
         for (int i = 0; i < itemAmountInShop[shopType]; ++i) {
-            if (itemArray[i].uItemID != ITEM_NULL) {
+            if (itemArray[i].itemId != ITEM_NULL) {
                 shop_ui_items_in_store[i] = assets->getImage_ColorKey(itemArray[i].GetIconName());
             }
         }
         if (shopType == HOUSE_TYPE_WEAPON_SHOP) {
             for (int i = 0; i < itemAmountInShop[shopType]; ++i) {
-                if (itemArray[i].uItemID != ITEM_NULL) {
+                if (itemArray[i].itemId != ITEM_NULL) {
                     // Note that we're using grng here for a reason - we want recorded mouse clicks to work.
                     weaponYPos[i] = grng->random(300 - (shop_ui_items_in_store[i]->height()));
                 }
@@ -894,7 +894,7 @@ void GUIWindow_Shop::houseScreenClick() {
         return;
     }
 
-    Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+    Pointi pt = EngineIocContainer::ResolveMouse()->position();
 
     switch (_currentDialogue) {
         case DIALOGUE_SHOP_DISPLAY_EQUIPMENT: {
@@ -917,7 +917,6 @@ void GUIWindow_Shop::houseScreenClick() {
             if (pParty->activeCharacter().pInventoryItemList[pItemID - 1].canSellRepairIdentifyAt(houseId())) {
                 _transactionPerformed = true;
                 pParty->activeCharacter().SalesProcess(invindex, pItemID - 1, houseId());
-                render->ClearZBuffer();
                 pParty->activeCharacter().playReaction(SPEECH_ITEM_SOLD);
                 return;
             }
@@ -940,21 +939,21 @@ void GUIWindow_Shop::houseScreenClick() {
 
             float fPriceMultiplier = houseTable[houseId()].fPriceMultiplier;
             int uPriceItemService = PriceCalculator::itemIdentificationPriceForPlayer(&pParty->activeCharacter(), fPriceMultiplier);
-            ItemGen &item = pParty->activeCharacter().pInventoryItemList[pItemID - 1];
+            Item &item = pParty->activeCharacter().pInventoryItemList[pItemID - 1];
 
-            if (!(item.uAttributes & ITEM_IDENTIFIED)) {
+            if (!(item.flags & ITEM_IDENTIFIED)) {
                 if (item.canSellRepairIdentifyAt(houseId())) {
                     if (pParty->GetGold() >= uPriceItemService) {
                         _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);
-                        item.uAttributes |= ITEM_IDENTIFIED;
+                        item.flags |= ITEM_IDENTIFIED;
                         pParty->activeCharacter().playReaction(SPEECH_SHOP_IDENTIFY);
                         engine->_statusBar->setEvent(LSTR_DONE);
                         return;
                     }
 
                     playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
-                    engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+                    engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
                     return;
                 }
 
@@ -978,23 +977,23 @@ void GUIWindow_Shop::houseScreenClick() {
                 return;
             }
 
-            ItemGen &item = pParty->activeCharacter().pInventoryItemList[pItemID - 1];
+            Item &item = pParty->activeCharacter().pInventoryItemList[pItemID - 1];
             float fPriceMultiplier = houseTable[houseId()].fPriceMultiplier;
             int uPriceItemService = PriceCalculator::itemRepairPriceForPlayer(&pParty->activeCharacter(), item.GetValue(), fPriceMultiplier);
 
-            if (item.uAttributes & ITEM_BROKEN) {
+            if (item.flags & ITEM_BROKEN) {
                 if (item.canSellRepairIdentifyAt(houseId())) {
                     if (pParty->GetGold() >= uPriceItemService) {
                         _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);
-                        item.uAttributes = (item.uAttributes & ~ITEM_BROKEN) | ITEM_IDENTIFIED;
+                        item.flags = (item.flags & ~ITEM_BROKEN) | ITEM_IDENTIFIED;
                         pParty->activeCharacter().playReaction(SPEECH_SHOP_REPAIR);
                         engine->_statusBar->setEvent(LSTR_GOOD_AS_NEW);
                         return;
                     }
 
                     playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
-                    engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+                    engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
                     return;
                 }
 
@@ -1011,7 +1010,7 @@ void GUIWindow_Shop::houseScreenClick() {
         case DIALOGUE_SHOP_BUY_SPECIAL: {
             int testx;
             int testpos;
-            ItemGen *boughtItem = nullptr;
+            Item *boughtItem = nullptr;
 
             switch (buildingType()) {
               case HOUSE_TYPE_WEAPON_SHOP:
@@ -1022,7 +1021,7 @@ void GUIWindow_Shop::houseScreenClick() {
                     else
                         boughtItem = &pParty->specialItemsInShops[houseId()][testx];
 
-                    if (boughtItem->uItemID != ITEM_NULL) {
+                    if (boughtItem->itemId != ITEM_NULL) {
                         testpos = ((60 - (shop_ui_items_in_store[testx]->width() / 2)) + testx * 70);
                         if (pt.x >= testpos && pt.x < (testpos + (shop_ui_items_in_store[testx]->width()))) {
                             if (pt.y >= weaponYPos[testx] + 30 && pt.y < (weaponYPos[testx] + 30 + (shop_ui_items_in_store[testx]->height()))) {
@@ -1045,7 +1044,7 @@ void GUIWindow_Shop::houseScreenClick() {
                     else
                         boughtItem = &pParty->specialItemsInShops[houseId()][testx];
 
-                    if (boughtItem->uItemID != ITEM_NULL) {
+                    if (boughtItem->itemId != ITEM_NULL) {
                         if (testx >= 4) {
                             testpos = ((90 - (shop_ui_items_in_store[testx]->width() / 2)) + (testx * 105) - 420);  // low row
                         } else {
@@ -1075,7 +1074,7 @@ void GUIWindow_Shop::houseScreenClick() {
                     else
                         boughtItem = &pParty->specialItemsInShops[houseId()][testx];
 
-                    if (boughtItem->uItemID != ITEM_NULL) {
+                    if (boughtItem->itemId != ITEM_NULL) {
                         if (pt.y > 152) {
                             testpos = 75 * testx - (shop_ui_items_in_store[testx]->width() / 2) + 40 - 450;
                         } else {
@@ -1115,11 +1114,11 @@ void GUIWindow_Shop::houseScreenClick() {
                 }
             } else if (pParty->GetGold() < uPriceItemService) {
                 playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
-                engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+                engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
                 return;
             }
 
-            int itemSlot = pParty->activeCharacter().AddItem(-1, boughtItem->uItemID);
+            int itemSlot = pParty->activeCharacter().AddItem(-1, boughtItem->itemId);
             if (itemSlot) {
                 boughtItem->SetIdentified();
                 pParty->activeCharacter().pInventoryItemList[itemSlot - 1] = *boughtItem;
@@ -1131,12 +1130,11 @@ void GUIWindow_Shop::houseScreenClick() {
                     pParty->TakeGold(uPriceItemService);
                 }
                 boughtItem->Reset();
-                render->ClearZBuffer();
                 pParty->activeCharacter().playReaction(SPEECH_ITEM_BUY);
                 return;
             } else {
                 pParty->activeCharacter().playReaction(SPEECH_NO_ROOM);
-                engine->_statusBar->setEvent(LSTR_INVENTORY_IS_FULL);
+                engine->_statusBar->setEvent(LSTR_PACK_IS_FULL);
                 return;
             }
             break;

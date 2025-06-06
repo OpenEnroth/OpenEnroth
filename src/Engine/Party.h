@@ -6,12 +6,16 @@
 #include <string>
 #include <algorithm>
 
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Objects/Character.h"
 #include "Engine/Time/Time.h"
 #include "Engine/Time/Timer.h"
+
 #include "Media/Audio/SoundEnums.h"
+
+#include "Library/Geometry/Point.h"
+
 #include "Utility/IndexedBitset.h"
 
 #include "ArenaEnums.h"
@@ -77,9 +81,11 @@ struct Party {
     bool hasItem(ItemId uItemID);
 
     /**
+     * @param item                      Item to hold in mouse.
+     * @param offset                    Item's bitmap offset relative to cursor position. Always non-positive.
      * @offset 0x4936E1
      */
-    void setHoldingItem(ItemGen *pItem);
+    void setHoldingItem(const Item &item, Pointi offset = {});
 
     /**
     * Sets _activeCharacter to the first character that can act
@@ -104,7 +110,7 @@ struct Party {
     /**
      * @offset 0x48C6F6
      */
-    bool addItemToParty(ItemGen *pItem, bool isSilent = false);
+    bool addItemToParty(Item *pItem, bool isSilent = false);
 
     /**
      * @offset 0x43AD34
@@ -331,11 +337,11 @@ struct Party {
     std::array<Character, 4> pCharacters;
     std::array<NPCData, 2> pHirelings;
     std::array<NPCSacrificeStatus, 2> pHirelingsSacrifice;
-    ItemGen pPickedItem;
+    Item pPickedItem;
     PartyFlags uFlags;
-    IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> standartItemsInShops;
-    IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> specialItemsInShops;
-    IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> spellBooksInGuilds;
+    IndexedArray<std::array<Item, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> standartItemsInShops;
+    IndexedArray<std::array<Item, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> specialItemsInShops;
+    IndexedArray<std::array<Item, 12>, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> spellBooksInGuilds;
     std::string pHireling1Name;
     std::string pHireling2Name;
     Duration armageddon_timer;

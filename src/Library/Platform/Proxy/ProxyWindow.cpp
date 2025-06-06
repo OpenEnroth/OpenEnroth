@@ -15,6 +15,10 @@ std::string ProxyWindow::title() const {
     return nonNullBase()->title();
 }
 
+void ProxyWindow::setIcon(RgbaImageView image) {
+    nonNullBase()->setIcon(image);
+}
+
 void ProxyWindow::resize(const Sizei &size) {
     nonNullBase()->resize(size);
 }
@@ -81,6 +85,10 @@ void *ProxyWindow::nativeHandle() const {
 
 void ProxyWindow::activate() {
     nonNullBase()->activate();
+}
+
+void ProxyWindow::warpMouse(Pointi position) {
+    nonNullBase()->warpMouse(position);
 }
 
 std::unique_ptr<PlatformOpenGLContext> ProxyWindow::createOpenGLContext(const PlatformOpenGLOptions &options) {

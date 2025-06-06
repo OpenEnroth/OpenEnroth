@@ -2,7 +2,6 @@
 
 #include "Utility/Memory/Blob.h"
 
-class ChestDescList;
 class DecorationList;
 class ObjectList;
 class SoundList;
@@ -24,8 +23,6 @@ struct TriBlob {
  * @offset 0x00494C0F
  */
 void deserialize(const TriBlob &src, PortraitFrameTable *dst);
-
-void deserialize(const TriBlob &src, ChestDescList *dst);
 
 /**
  * @offset 0x0045864C

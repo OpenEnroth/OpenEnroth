@@ -140,22 +140,21 @@ void GUIWindow_Spellbook::openSpellbook() {
 
     for (MagicSchool school : allMagicSchools())
         if (player.pActiveSkills[skillForMagicSchool(school)] || engine->config->debug.AllMagic.value())
-            CreateButton(buttonPositions[school], {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, std::to_underlying(school),
-                         Io::InputAction::Invalid, localization->GetSpellSchoolName(school));
+            CreateButton(fmt::format("SpellBook_School{}", std::to_underlying(school)), buttonPositions[school],
+                         {50, 36}, 1, 0, UIMSG_OpenSpellbookPage, std::to_underlying(school), Io::InputAction::Invalid,
+                         localization->GetSpellSchoolName(school));
 
     pBtn_InstallRemoveSpell = CreateButton({476, 450}, ui_spellbook_btn_quckspell->size(), 1, UIMSG_HintSelectRemoveQuickSpellBtn,
                                            UIMSG_ClickInstallRemoveQuickSpellBtn, 0, Io::InputAction::Invalid, "", {ui_spellbook_btn_quckspell_click});
     pBtn_CloseBook = CreateButton({561, 450}, ui_spellbook_btn_close->size(), 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
-                                  localization->GetString(LSTR_DIALOGUE_EXIT), {ui_spellbook_btn_close_click});
+                                  localization->GetString(LSTR_EXIT_DIALOGUE), {ui_spellbook_btn_close_click});
 }
 
 void GUIWindow_Spellbook::Update() {
     const Character &player = pParty->activeCharacter();
-    unsigned int pX_coord, pY_coord;
+    int pX_coord, pY_coord;
 
     drawCurrentSchoolBackground();
-
-    render->ClearZBuffer();
 
     for (MagicSchool page : allMagicSchools()) {
         CharacterSkillType skill = skillForMagicSchool(page);
@@ -173,6 +172,8 @@ void GUIWindow_Spellbook::Update() {
             }
             render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, pPageTexture);
 
+            Pointi mousePos = mouse->position();
+
             for (SpellId spell : spellsForMagicSchool(player.lastOpenedSpellbookPage)) {
                 int index = spellIndexInMagicSchool(spell);
                 if (player.bHaveSpell[spell] || engine->config->debug.AllMagic.value()) {
@@ -185,27 +186,17 @@ void GUIWindow_Spellbook::Update() {
                             pX_coord = pViewport->uViewportTL_X + iconPos.Xpos;
                             pY_coord = pViewport->uViewportTL_Y + iconPos.Ypos;
 
-                            render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, pTexture);
-                            render->ZDrawTextureAlpha(iconPos.Xpos / 640.0f, iconPos.Ypos / 480.0f, pTexture, index + 1);
+                            Recti iconRect = Recti(pX_coord, pY_coord, pTexture->width(), pTexture->height());
+                            if (iconRect.contains(mousePos)) { // mouseover highlight
+                                if (SBPageCSpellsTextureList[index + 1]) {
+                                    render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, SBPageCSpellsTextureList[index + 1]);
+                                }
+                            } else {
+                                render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, pTexture);
+                            }
                         }
                     }
                 }
-            }
-        }
-    }
-
-    Pointi pt = mouse->GetCursorPos();
-    Sizei renDims = render->GetRenderDimensions();
-    if (pt.x < renDims.w && pt.y < renDims.h) {
-        int idx = render->pActiveZBuffer[pt.x + pt.y * render->GetRenderDimensions().w] & 0xFFFF;
-        if (idx) {
-            if (SBPageCSpellsTextureList[idx]) {
-                SpellBookIconPos &iconPos = pIconPos[player.lastOpenedSpellbookPage][pSpellbookSpellIndices[player.lastOpenedSpellbookPage][idx]];
-
-                pX_coord = pViewport->uViewportTL_X + iconPos.Xpos;
-                pY_coord = pViewport->uViewportTL_Y + iconPos.Ypos;
-
-                render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, SBPageCSpellsTextureList[idx]);
             }
         }
     }

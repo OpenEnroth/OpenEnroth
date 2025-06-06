@@ -189,10 +189,13 @@ int Party::canActCount() const {
     return result;
 }
 
-void Party::setHoldingItem(ItemGen *pItem) {
+void Party::setHoldingItem(const Item &item, Pointi offset) {
+    assert(offset.x <= 0 && offset.y <= 0);
+
     placeHeldItemInInventoryOrDrop();
-    pPickedItem = *pItem;
-    mouse->SetCursorBitmapFromItemID(pPickedItem.uItemID);
+    pPickedItem = item;
+    mouse->SetCursorBitmapFromItemID(pPickedItem.itemId);
+    mouse->pickedItemOffset = offset;
 }
 
 void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems entering shops
@@ -258,8 +261,8 @@ void Party::switchToNextActiveCharacter() {
 
 bool Party::hasItem(ItemId uItemID) {
     for (Character &player : this->pCharacters) {
-        for (ItemGen &item : player.pInventoryItemList) {
-            if (item.uItemID == uItemID)
+        for (Item &item : player.pInventoryItemList) {
+            if (item.itemId == uItemID)
                 return true;
         }
     }
@@ -375,7 +378,7 @@ unsigned int Party::getPartyFame() {
 
 void Party::createDefaultParty(bool bDebugGiveItems) {
     signed int uNumPlayers;  // [sp+18h] [bp-28h]@1
-    ItemGen Dst;             // [sp+1Ch] [bp-24h]@10
+    Item Dst;             // [sp+1Ch] [bp-24h]@10
 
     pHireling1Name[0] = 0;
     pHireling2Name[0] = 0;
@@ -383,7 +386,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     pHirelings.fill(NPCData());
     pHirelingsSacrifice.fill(NPCSacrificeStatus());
 
-    this->pCharacters[0].name = localization->GetString(LSTR_PC_NAME_ZOLTAN);
+    this->pCharacters[0].name = localization->GetString(LSTR_NAME_ZOLTAN);
     this->pCharacters[0].uPrevFace = 17;
     this->pCharacters[0].uCurrentFace = 17;
     this->pCharacters[0].uPrevVoiceID = 17;
@@ -400,7 +403,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_BOW] = CombinedSkillValue::novice();
     this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_SWORD] = CombinedSkillValue::novice();
 
-    this->pCharacters[1].name = localization->GetString(LSTR_PC_NAME_RODERIC);
+    this->pCharacters[1].name = localization->GetString(LSTR_NAME_RODERICK);
     this->pCharacters[1].uPrevFace = 3;
     this->pCharacters[1].uCurrentFace = 3;
     this->pCharacters[1].uPrevVoiceID = 3;
@@ -417,7 +420,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_DAGGER] = CombinedSkillValue::novice();
     this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_TRAP_DISARM] = CombinedSkillValue::novice();
 
-    this->pCharacters[2].name = localization->GetString(LSTR_PC_NAME_SERENA);
+    this->pCharacters[2].name = localization->GetString(LSTR_NAME_SERENA);
     this->pCharacters[2].uPrevFace = 14;
     this->pCharacters[2].uCurrentFace = 14;
     this->pCharacters[2].uPrevVoiceID = 14;
@@ -434,7 +437,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_BODY] = CombinedSkillValue::novice();
     this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_MACE] = CombinedSkillValue::novice();
 
-    this->pCharacters[3].name = localization->GetString(LSTR_PC_NAME_ALEXIS);
+    this->pCharacters[3].name = localization->GetString(LSTR_NAME_ALEXIS);
     this->pCharacters[3].uPrevFace = 10;
     this->pCharacters[3].uCurrentFace = 10;
     this->pCharacters[3].uPrevVoiceID = 10;
@@ -548,7 +551,7 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
                 }
             }
             for (int i = 0; i < Character::INVENTORY_SLOT_COUNT; i++) {
-                if (pCharacter.pInventoryItemList[i].uItemID != ITEM_NULL) {
+                if (pCharacter.pInventoryItemList[i].itemId != ITEM_NULL) {
                     pCharacter.pInventoryItemList[i].SetIdentified();
                 }
             }
@@ -585,7 +588,7 @@ void Party::Reset() {
     pCharacters[0].uVoiceID = 17;
     pCharacters[0].SetInitialStats();
     pCharacters[0].uSex = pCharacters[0].GetSexByVoice();
-    pCharacters[0].name = localization->GetString(LSTR_PC_NAME_ZOLTAN);
+    pCharacters[0].name = localization->GetString(LSTR_NAME_ZOLTAN);
 
     pCharacters[1].ChangeClass(CLASS_THIEF);
     pCharacters[1].uCurrentFace = 3;
@@ -593,7 +596,7 @@ void Party::Reset() {
     pCharacters[1].uVoiceID = 3;
     pCharacters[1].SetInitialStats();
     pCharacters[1].uSex = pCharacters[1].GetSexByVoice();
-    pCharacters[1].name = localization->GetString(LSTR_PC_NAME_RODERIC);
+    pCharacters[1].name = localization->GetString(LSTR_NAME_RODERICK);
 
     pCharacters[2].ChangeClass(CLASS_CLERIC);
     pCharacters[2].uCurrentFace = 14;
@@ -601,7 +604,7 @@ void Party::Reset() {
     pCharacters[2].uVoiceID = 14;
     pCharacters[2].SetInitialStats();
     pCharacters[2].uSex = pCharacters[3].GetSexByVoice();
-    pCharacters[2].name = localization->GetString(LSTR_PC_NAME_SERENA);
+    pCharacters[2].name = localization->GetString(LSTR_NAME_SERENA);
 
     pCharacters[3].ChangeClass(CLASS_SORCERER);
     pCharacters[3].uCurrentFace = 10;
@@ -609,7 +612,7 @@ void Party::Reset() {
     pCharacters[3].uVoiceID = 10;
     pCharacters[3].SetInitialStats();
     pCharacters[3].uSex = pCharacters[3].GetSexByVoice();
-    pCharacters[3].name = localization->GetString(LSTR_PC_NAME_ALEXIS);
+    pCharacters[3].name = localization->GetString(LSTR_NAME_ALEXIS);
 
     for (Character &player : this->pCharacters) {
         player.timeToRecovery = 0_ticks;
@@ -644,7 +647,7 @@ void Party::Reset() {
 
     PartyTimes.shopBanTimes.fill(Time());
 
-    pPickedItem.uItemID = ITEM_NULL;
+    pPickedItem.itemId = ITEM_NULL;
 }
 
 void Party::yell() {
@@ -815,7 +818,7 @@ void Party::restAndHeal() {
         if (pPlayer->classType == CLASS_LICH) {
             have_vessels_soul = false;
             for (unsigned i = 0; i < Character::INVENTORY_SLOT_COUNT; i++) {
-                if (pPlayer->pInventoryItemList[i].uItemID == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].uHolderPlayer == pPlayerID)
+                if (pPlayer->pInventoryItemList[i].itemId == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].lichJarCharacterIndex == pPlayerID)
                     have_vessels_soul = true;
             }
             if (!have_vessels_soul) {
@@ -927,25 +930,23 @@ int Party::GetPartyReputation() {
     return npcRep + ddm_dlv->reputation;
 }
 
+// TODO(pskelton): drop unsigned
 //----- (004269A2) --------------------------------------------------------
 void Party::GivePartyExp(unsigned int pEXPNum) {
-    signed int pActivePlayerCount;  // ecx@1
-    int pLearningPercent;           // eax@13
-    int playermodexp;
-
     if (pEXPNum > 0) {
-        pActivePlayerCount = 0;
+        // Count active characters
+        int pActivePlayerCount = 0;
         for (Character &player : this->pCharacters) {
             if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                 pActivePlayerCount++;
             }
         }
+        // Split gained xp between active characters
         if (pActivePlayerCount) {
-            pEXPNum = pEXPNum / pActivePlayerCount;
+            int perCharXP = static_cast<int>(pEXPNum) / pActivePlayerCount;
             for (Character &player : this->pCharacters) {
                 if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
-                    pLearningPercent = player.getLearningPercent();
-                    playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
+                    int playermodexp = perCharXP + perCharXP * player.getLearningPercent() / 100;
                     player.setXP(player.experience + playermodexp);
                 }
             }
@@ -960,7 +961,7 @@ void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {
     std::string status;
     if (policy == GOLD_RECEIVE_NOSHARE_SILENT) {
     } else if (policy == GOLD_RECEIVE_NOSHARE_MSG) {
-        status = localization->FormatString(LSTR_FMT_YOU_FOUND_D_GOLD, amount);
+        status = localization->FormatString(LSTR_YOU_FOUND_LU_GOLD, amount);
     } else {
         FlatHirelings buf;
         buf.Prepare();
@@ -985,9 +986,9 @@ void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {
             if (hirelingSalaries < 1) {
                 hirelingSalaries = 1;
             }
-            status = localization->FormatString(LSTR_FMT_YOU_FOUND_D_GOLD_FOLLOWERS, goldToGain, hirelingSalaries);
+            status = localization->FormatString(LSTR_YOU_FOUND_LU_GOLD_FOLLOWERS_TAKE_LU, goldToGain, hirelingSalaries);
         } else {
-            status = localization->FormatString(LSTR_FMT_YOU_FOUND_D_GOLD, amount);
+            status = localization->FormatString(LSTR_YOU_FOUND_LU_GOLD, amount);
         }
     }
     AddGold(goldToGain - hirelingSalaries);
@@ -997,12 +998,12 @@ void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {
 }
 
 void Party::dropHeldItem() {
-    if (pPickedItem.uItemID == ITEM_NULL) {
+    if (pPickedItem.itemId == ITEM_NULL) {
         return;
     }
 
     SpriteObject sprite;
-    sprite.uType = pItemTable->pItems[pPickedItem.uItemID].uSpriteID;
+    sprite.uType = pItemTable->items[pPickedItem.itemId].spriteId;
     sprite.uObjectDescID = pObjectList->ObjectIDByItemID(sprite.uType);
     sprite.spell_caster_pid = Pid(OBJECT_Character, 0);
     sprite.vPosition = pos + Vec3f(0, 0, eyeLevel);
@@ -1022,7 +1023,7 @@ void Party::dropHeldItem() {
 
 void Party::placeHeldItemInInventoryOrDrop() {
     // no picked item
-    if (pPickedItem.uItemID == ITEM_NULL) {
+    if (pPickedItem.itemId == ITEM_NULL) {
         return;
     }
 
@@ -1033,18 +1034,18 @@ void Party::placeHeldItemInInventoryOrDrop() {
     }
 }
 
-bool Party::addItemToParty(ItemGen *pItem, bool isSilent) {
-    if (!pItemTable->pItems[pItem->uItemID].uItemID_Rep_St) {
+bool Party::addItemToParty(Item *pItem, bool isSilent) {
+    if (!pItemTable->items[pItem->itemId].identifyDifficulty) {
         pItem->SetIdentified();
     }
 
-    if (!pItemTable->pItems[pItem->uItemID].iconName.empty()) {
+    if (!pItemTable->items[pItem->itemId].iconName.empty()) {
         int playerId = hasActiveCharacter() ? (pParty->_activeCharacter - 1) : 0;
         for (int i = 0; i < pCharacters.size(); i++, playerId++) {
             if (playerId >= pCharacters.size()) {
                 playerId = 0;
             }
-            int itemIndex = pCharacters[playerId].AddItem(-1, pItem->uItemID);
+            int itemIndex = pCharacters[playerId].AddItem(-1, pItem->itemId);
             if (itemIndex) {
                 pCharacters[playerId].pInventoryItemList[itemIndex - 1] = *pItem;
                 pItem->Reset();

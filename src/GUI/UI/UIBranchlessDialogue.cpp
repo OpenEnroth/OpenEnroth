@@ -1,7 +1,7 @@
 #include "UIBranchlessDialogue.h"
 
 #include "Engine/AssetsManager.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Party.h"
@@ -13,7 +13,7 @@
 
 #include "Io/KeyboardInputHandler.h"
 
-GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EventType event) : GUIWindow(WINDOW_GreetingNPC, {0, 0}, render->GetRenderDimensions()), _event(event) {
+GUIWindow_BranchlessDialogue::GUIWindow_BranchlessDialogue(EvtOpcode event) : GUIWindow(WINDOW_GreetingNPC, {0, 0}, render->GetRenderDimensions()), _event(event) {
     prev_screen_type = current_screen_type;
     keyboardInputHandler->StartTextInput(Io::TextInputType::Text, 15, this);
     current_screen_type = SCREEN_BRANCHLESS_NPC_DIALOG;
@@ -93,7 +93,7 @@ void GUIWindow_BranchlessDialogue::Update() {
     }
 }
 
-void startBranchlessDialogue(int eventid, int entryline, EventType type) {
+void startBranchlessDialogue(int eventid, int entryline, EvtOpcode type) {
     if (!pGUIWindow_BranchlessDialogue) {
         pMiscTimer->setPaused(true);
         pEventTimer->setPaused(true);

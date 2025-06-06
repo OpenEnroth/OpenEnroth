@@ -223,7 +223,7 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
         w = renDims.h;
     }
 
-    Pointi cursor = mouse->GetCursorPos();
+    Pointi cursor = mouse->position();
     if ((int)this->uFrameX >= x) {
         if ((int)(this->uFrameWidth + this->uFrameX) > z) {
             this->uFrameX = z - this->uFrameWidth;
@@ -286,7 +286,7 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
 std::string MakeDateTimeString(Duration time) {
     CivilDuration d = time.toCivilDuration();
 
-    std::string str = "";
+    std::string str;
     if (d.days) {
         auto day_str = localization->GetString(LSTR_DAYS);
         if (d.days <= 1) day_str = localization->GetString(LSTR_DAY_CAPITALIZED);
@@ -314,6 +314,9 @@ std::string MakeDateTimeString(Duration time) {
 
         str += fmt::format("{} {} ", d.seconds, seconds_str);
     }
+
+    if (!str.empty() && str.back() == ' ')
+        str.pop_back();
 
     return str;
 }
@@ -417,10 +420,12 @@ void GUIWindow::DrawFlashingInputCursor(int uX, int uY, GUIFont *a2) {
 
 GUIWindow::GUIWindow() {
     this->mouse = EngineIocContainer::ResolveMouse();
+    this->mouse->SetMouseLook(false);
 }
 
 GUIWindow::GUIWindow(WindowType windowType, Pointi position, Sizei dimensions, std::string_view hint): eWindowType(windowType) {
     this->mouse = EngineIocContainer::ResolveMouse();
+    this->mouse->SetMouseLook(false);
 
     logger->trace("New window: {}", toString(windowType));
     lWindowList.push_front(this);
@@ -587,7 +592,7 @@ void GUI_UpdateWindows() {
 
     if (isHoldingMouseRightButton()) {
         std::shared_ptr<Io::Mouse> mouse = EngineIocContainer::ResolveMouse();
-        UI_OnMouseRightClick(mouse->GetCursorPos().x, mouse->GetCursorPos().y);
+        UI_OnMouseRightClick(mouse->position());
     }
 }
 
@@ -778,7 +783,7 @@ Color GetSkillColor(CharacterClass uPlayerClass, CharacterSkillType uPlayerSkill
     return ui_character_skillinfo_cant_learn;
 }
 
-std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *npc, ItemGen *item, HouseId houseId, ShopScreen shop_screen, Time *a6) {
+std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *npc, Item *item, HouseId houseId, ShopScreen shop_screen, Time *a6) {
     std::string v1;
     Character *pPlayer;       // ebx@3
     int v29;               // eax@68
@@ -811,7 +816,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
             case 5:
                 time = pParty->GetPlayingTime().toCivilTime();
                 if (time.hour >= 11 && time.hour < 20) {
-                    result += localization->GetString(LSTR_DAY);
+                    result += localization->GetString(LSTR_DAY_LOWERCASE);
                 } else if (time.hour >= 5 && time.hour < 11) {
                     result += localization->GetString(LSTR_MORNING);
                 } else {
@@ -827,9 +832,9 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 break;
             case 7:
                 if (pPlayer->uSex == SEX_FEMALE)
-                    result += localization->GetString(LSTR_LADY);
+                    result += localization->GetString(LSTR_LADY_CAPITALIZED);
                 else
-                    result += localization->GetString(LSTR_SIR);
+                    result += localization->GetString(LSTR_SIR_CAPITALIZED);
                 break;
             case 8:
                 for (int bit : possibleAddressingAwardBits) {
@@ -853,7 +858,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 break;
             case 10:
                 if (pPlayer->uSex == SEX_FEMALE)
-                    result += localization->GetString(LSTR_LADY);
+                    result += localization->GetString(LSTR_LADY_CAPITALIZED);
                 else
                     result += localization->GetString(LSTR_LORD);
                 break;
@@ -913,8 +918,13 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 break;
 
             case 25:  // base prices
-                v29 = PriceCalculator::baseItemBuyingPrice(item->GetValue(), houseTable[houseId].fPriceMultiplier);
                 switch (shop_screen) {
+                case SHOP_SCREEN_INVALID:
+                    assert(false);
+                    [[fallthrough]];
+                case SHOP_SCREEN_BUY:
+                    v29 = PriceCalculator::baseItemBuyingPrice(item->GetValue(), houseTable[houseId].fPriceMultiplier);
+                    break;
                 case SHOP_SCREEN_SELL:
                     v29 = PriceCalculator::baseItemSellingPrice(item->GetValue(), houseTable[houseId].fPriceMultiplier);
                     break;
@@ -979,7 +989,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                     break;
                 }
                 time = a6->toCivilTime();
-                result += localization->FormatString(LSTR_FMT_S_D_D, localization->GetMonthName(time.month - 1), time.day, time.year);
+                result += localization->FormatString(LSTR_S_D_D, localization->GetMonthName(time.month - 1), time.day, time.year);
                 break;
             case 31:
             case 32:
@@ -1002,7 +1012,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                 }
 
                 time = pParty->PartyTimes._s_times[mask - 51].toCivilTime();
-                result += localization->FormatString(LSTR_FMT_S_D_D, localization->GetMonthName(time.month - 1), time.day, time.year);
+                result += localization->FormatString(LSTR_S_D_D, localization->GetMonthName(time.month - 1), time.day, time.year);
                 break;
             }
         }
@@ -1041,7 +1051,12 @@ void WindowManager::DeleteAllVisibleWindows() {
 
     current_screen_type = SCREEN_GAME;
     engine->_messageQueue->clearAll();
+
+    // TODO(captainurist): Unload() un-pauses the event timer, which is not always the right thing to do.
+    //                     So we hack. Find a better way.
+    bool wasPaused = pEventTimer->isPaused();
     pMediaPlayer->Unload();
+    pEventTimer->setPaused(wasPaused);
 }
 
 void MainMenuUI_LoadFontsAndSomeStuff() {
@@ -1127,7 +1142,7 @@ void UI_Create() {
     game_ui_tome_autonotes = assets->getImage_ColorKey("ib-td2-A");
     pBtn_Autonotes = pPrimaryWindow->CreateButton({527, 353}, game_ui_tome_autonotes->size(), 1, 0,
                                                   UIMSG_OpenAutonotes, 0, Io::InputAction::Autonotes,
-                                                  localization->GetString(LSTR_AUTONOTES), { game_ui_tome_autonotes });
+                                                  localization->GetString(LSTR_AUTO_NOTES), { game_ui_tome_autonotes });
 
     game_ui_tome_maps = assets->getImage_ColorKey("ib-td3-A");
     pBtn_Maps = pPrimaryWindow->CreateButton({546, 353}, game_ui_tome_maps->size(), 1, 0,
@@ -1186,7 +1201,7 @@ void UI_Create() {
 
 
 std::string NameAndTitle(std::string_view name, std::string_view title) {
-    return localization->FormatString(LSTR_FMT_S_THE_S, name, title);
+    return localization->FormatString(LSTR_S_THE_S, name, title);
 }
 
 

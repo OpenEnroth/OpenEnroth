@@ -83,3 +83,30 @@ UNIT_TEST(StringSplit, DefaultConstructed) {
         } ()
     ));
 }
+
+UNIT_TEST(StringSplit, ForwardRange) {
+    auto ss = split("1.2.3", '.');
+
+    auto pos = ss.begin();
+    EXPECT_EQ(*pos, "1");
+    EXPECT_EQ(*pos, "1"); // Double deref is OK.
+
+    auto pos0 = pos;
+    auto pos1 = pos++;
+    EXPECT_EQ(*pos0, "1"); // Copying works.
+    EXPECT_EQ(*pos1, "1"); // Suffix++ works...
+    EXPECT_EQ(*pos, "2"); // ...as expected.
+
+    auto pos2 = ++pos;
+    EXPECT_EQ(*pos2, "3"); // Prefix++ works as expected too.
+    EXPECT_EQ(*pos, "3");
+
+    pos++;
+    EXPECT_EQ(pos, ss.end());
+}
+
+UNIT_TEST(StringSplit, BorrowedRange) {
+    auto mismatch = std::ranges::mismatch(split("a/b/c", '/'), split("a.b.z", '.'));
+    EXPECT_EQ(*mismatch.in1, "c");
+    EXPECT_EQ(*mismatch.in2, "z");
+}

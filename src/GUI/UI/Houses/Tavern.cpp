@@ -30,8 +30,8 @@ void GUIWindow_Tavern::mainDialogue() {
     int pPriceFood = PriceCalculator::tavernFoodCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
     int foodNum = houseTable[houseId()].fPriceMultiplier;
 
-    std::vector<std::string> optionsText = {localization->FormatString(LSTR_FMT_RENT_ROOM_FOR_D_GOLD, pPriceRoom),
-                                            localization->FormatString(LSTR_FMT_BUY_D_FOOD_FOR_D_GOLD, foodNum, pPriceFood),
+    std::vector<std::string> optionsText = {localization->FormatString(LSTR_RENT_ROOM_FOR_D_GOLD, pPriceRoom),
+                                            localization->FormatString(LSTR_FILL_PACKS_TO_D_DAYS_FOR_D_GOLD, foodNum, pPriceFood),
                                             localization->GetString(LSTR_LEARN_SKILLS)};
 
     if (houseId() != HOUSE_TAVERN_EMERALD_ISLAND) {
@@ -133,7 +133,7 @@ void GUIWindow_Tavern::restDialogue() {
         window_SpeakInHouse = 0;
         return;
     }
-    engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+    engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
     playHouseSound(houseId(), HOUSE_SOUND_TAVERN_NOT_ENOUGH_GOLD);
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }
@@ -142,7 +142,7 @@ void GUIWindow_Tavern::buyFoodDialogue() {
     int pPriceFood = PriceCalculator::tavernFoodCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
 
     if ((double)pParty->GetFood() >= houseTable[houseId()].fPriceMultiplier) {
-        engine->_statusBar->setEvent(LSTR_RATIONS_FULL);
+        engine->_statusBar->setEvent(LSTR_YOUR_PACKS_ARE_ALREADY_FULL);
         if (pParty->hasActiveCharacter()) {
             pParty->activeCharacter().playReaction(SPEECH_PACKS_FULL);
         }
@@ -156,7 +156,7 @@ void GUIWindow_Tavern::buyFoodDialogue() {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return;
     }
-    engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+    engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
     playHouseSound(houseId(), HOUSE_SOUND_TAVERN_NOT_ENOUGH_GOLD);
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }

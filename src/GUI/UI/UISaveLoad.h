@@ -31,6 +31,7 @@ class GUIWindow_Load : public GUIWindow {
     void upArrowPressed();
     void cancelButtonPressed();
     void scroll(int maxSlots);
+    void quickLoad();
 
  protected:
     GraphicsImage *main_menu_background;

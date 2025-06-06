@@ -13,11 +13,13 @@
  * Struct fields are laid out in the order in which they are laid out in binary files.
  */
 
+// TODO(captainurist): snapshot/reconstruct functions belong to the classes themselves. Also drop raw* functions.
 
 class Blob;
 class BSPModel;
 struct IndoorLocation;
 struct OutdoorLocation;
+class OutdoorTerrain;
 struct SpriteFrameTable;
 class LodReader;
 class LodWriter;
@@ -84,13 +86,13 @@ struct OutdoorLocation_MM7 {
     std::array<char, 32> desciption;
     std::array<char, 32> skyTexture;
     std::array<char, 32> groundTilesetUnused;
-    std::array<OutdoorLocationTileType_MM7, 4> tileTypes;
+    std::array<OutdoorTileType_MM7, 4> tileTypes;
     std::array<uint8_t, 128 * 128> heightMap;
     std::array<uint8_t, 128 * 128> tileMap;
     std::array<uint8_t, 128 * 128> attributeMap;
-    uint32_t normalCount;
+    uint32_t normalCount; // Number of elements in `normals`.
     std::array<uint32_t , 128 * 128 * 2> someOtherMap; // Not used in OE, not even sure what this is.
-    std::array<uint16_t, 128 * 128 * 2> normalMap;
+    std::array<uint16_t, 128 * 128 * 2> normalMap; // Indices into `normals`, unused as we recalculate normals on load.
     std::vector<Vec3f> normals;
     std::vector<BSPModelData_MM7> models;
     std::vector<BSPModelExtras_MM7> modelExtras;
@@ -101,6 +103,7 @@ struct OutdoorLocation_MM7 {
     std::vector<SpawnPoint_MM7> spawnPoints;
 };
 
+void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst);
 void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst);
 void deserialize(InputStream &src, OutdoorLocation_MM7 *dst);
 

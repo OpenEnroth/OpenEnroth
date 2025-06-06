@@ -15,6 +15,7 @@ struct CodeGenOptions : GameStarterOptions {
         SUBCOMMAND_MUSIC,
         SUBCOMMAND_DECORATIONS,
         SUBCOMMAND_SPEECH_PORTRAITS,
+        SUBCOMMAND_LSTR_ID,
     };
     using enum Subcommand;
 

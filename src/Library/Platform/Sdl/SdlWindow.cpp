@@ -34,6 +34,29 @@ std::string SdlWindow::title() const {
     return SDL_GetWindowTitle(_window);
 }
 
+void SdlWindow::setIcon(RgbaImageView image) {
+    // Note that this doesn't copy the pixel data.
+    SDL_Surface *icon = SDL_CreateRGBSurfaceFrom(
+        const_cast<Color *>(image.pixels().data()),
+        image.width(),
+        image.height(),
+        32,                 // Bits per pixel
+        image.width() * 4,  // Pitch (bytes per row)
+        0x000000FF,         // Rmask
+        0x0000FF00,         // Gmask
+        0x00FF0000,         // Bmask
+        0xFF000000          // Amask
+    );
+
+    if (icon == NULL) {
+        _state->logSdlError("SDL_CreateRGBSurfaceFrom");
+        return;
+    }
+
+    SDL_SetWindowIcon(_window, icon);
+    SDL_FreeSurface(icon);
+}
+
 void SdlWindow::resize(const Sizei &size) {
     SDL_SetWindowSize(_window, size.w, size.h);
 }
@@ -168,6 +191,10 @@ void *SdlWindow::nativeHandle() const {
 
 void SdlWindow::activate() {
     SDL_RaiseWindow(_window);
+}
+
+void SdlWindow::warpMouse(Pointi position) {
+    SDL_WarpMouseInWindow(_window, position.x, position.y);
 }
 
 std::unique_ptr<PlatformOpenGLContext> SdlWindow::createOpenGLContext(const PlatformOpenGLOptions &options) {

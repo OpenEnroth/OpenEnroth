@@ -34,7 +34,7 @@ void GUIWindow_Temple::healDialogue() {
 
     int price = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()].fPriceMultiplier);
     if (pParty->GetGold() < price) {
-        engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+        engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
         playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return;
@@ -105,7 +105,7 @@ void GUIWindow_Temple::donateDialogue() {
         pParty->activeCharacter().playReaction(SPEECH_TEMPLE_DONATE);
         engine->_statusBar->setEvent(LSTR_THANK_YOU);
     } else {
-        engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+        engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
     }
     engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
 }

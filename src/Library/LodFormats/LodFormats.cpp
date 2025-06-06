@@ -125,7 +125,7 @@ Blob lod::decodeCompressed(const Blob &blob) {
         }
         if (header.decompressedSize)
             result = zlib::uncompress(result, header.decompressedSize);
-        return result;
+        return result.withDisplayPath(blob.displayPath());
     }
 
     if (format == LOD_FILE_PSEUDO_IMAGE) {
@@ -136,10 +136,10 @@ Blob lod::decodeCompressed(const Blob &blob) {
         Blob result = stream.readBlobOrFail(header.dataSize);
         if (header.decompressedSize)
             result = zlib::uncompress(result, header.decompressedSize);
-        return result;
+        return result.withDisplayPath(blob.displayPath());
     }
 
-    throw Exception("Cannot uncompress LOD entry of type '{}', operation is not supported", toString(format));
+    throw Exception("Cannot uncompress LOD entry '{}' of type '{}', operation is not supported", blob.displayPath(), toString(format));
 }
 
 Blob lod::encodeCompressed(const Blob &blob) {
@@ -157,7 +157,7 @@ Blob lod::encodeCompressed(const Blob &blob) {
 Palette lod::decodePalette(const Blob &blob) {
     LodFileFormat format = magic(blob, {});
     if (format != LOD_FILE_PALETTE && format != LOD_FILE_IMAGE)
-        throw Exception("Cannot decode LOD entry of type '{}' as '{}'", toString(format), toString(LOD_FILE_PALETTE));
+        throw Exception("Cannot decode LOD entry '{}' of type '{}' as '{}'", blob.displayPath(), toString(format), toString(LOD_FILE_PALETTE));
 
     MemoryInputStream stream(blob.data(), blob.size());
     LodImageHeader_MM6 header;
@@ -174,7 +174,7 @@ LodImage lod::decodeImage(const Blob &blob) {
     LodFileFormat format = magic(blob, {});
     if (format != LOD_FILE_IMAGE && format != LOD_FILE_PALETTE) {
         format = magic(blob, {});
-        throw Exception("Cannot decode LOD entry of type '{}' as '{}'", toString(format), toString(LOD_FILE_IMAGE));
+        throw Exception("Cannot decode LOD entry '{}' of type '{}' as '{}'", blob.displayPath(), toString(format), toString(LOD_FILE_IMAGE));
     }
 
     BlobInputStream stream(blob);
@@ -190,8 +190,9 @@ LodImage lod::decodeImage(const Blob &blob) {
         // Note that this check isn't redundant. The checks in magic() only check sizes as written in the header.
         // Actual stream size might be different.
         if (pixels.size() < header.width * header.height)
-            throw Exception("Cannot decode LOD entry of type '{}': expected {}x{}={} pixels, got {}",
-                            toString(LOD_FILE_IMAGE), header.width, header.height, header.width * header.height, pixels.size());
+            throw Exception("Cannot decode LOD entry '{}' of type '{}': expected {}x{}={} pixels, got {}",
+                            blob.displayPath(), toString(LOD_FILE_IMAGE), header.width, header.height,
+                            header.width * header.height, pixels.size());
     }
 
     LodImage result;
@@ -204,10 +205,24 @@ LodImage lod::decodeImage(const Blob &blob) {
     return result;
 }
 
+Sizei lod::decodeImageSize(const Blob &blob) {
+    LodFileFormat format = magic(blob, {});
+    if (format != LOD_FILE_IMAGE && format != LOD_FILE_PALETTE) {
+        format = magic(blob, {});
+        throw Exception("Cannot decode LOD entry '{}' of type '{}' as '{}'", blob.displayPath(), toString(format), toString(LOD_FILE_IMAGE));
+    }
+
+    BlobInputStream stream(blob);
+    LodImageHeader_MM6 header;
+    deserialize(stream, &header);
+
+    return Sizei(header.width, header.height);
+}
+
 LodSprite lod::decodeSprite(const Blob &blob) {
     LodFileFormat format = magic(blob, {});
     if (format != LOD_FILE_SPRITE)
-        throw Exception("Cannot decode LOD entry of type '{}' as '{}'", toString(format), toString(LOD_FILE_SPRITE));
+        throw Exception("Cannot decode LOD entry '{}' of type '{}' as '{}'", blob.displayPath(), toString(format), toString(LOD_FILE_SPRITE));
 
     BlobInputStream stream(blob);
     LodSpriteHeader_MM6 header;
@@ -232,7 +247,8 @@ LodSprite lod::decodeSprite(const Blob &blob) {
 
         if (line.begin < 0 || line.end < 0 || line.begin > header.width || line.end > header.width || line.begin > line.end ||
             line.offset > pixels.size() || line.offset + line.end - line.begin > pixels.size())
-            throw Exception("Cannot decode LOD entry of type '{}': invalid sprite line encountered at y={}", toString(LOD_FILE_SPRITE), y);
+            throw Exception("Cannot decode LOD entry '{}' of type '{}': invalid sprite line encountered at y={}",
+                            blob.displayPath(), toString(LOD_FILE_SPRITE), y);
 
         memcpy(result.image[y].data() + line.begin, static_cast<const char *>(pixels.data()) + line.offset, line.end - line.begin);
     }

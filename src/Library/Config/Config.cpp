@@ -10,6 +10,8 @@
 #include "Utility/Streams/FileInputStream.h"
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/MapAccess.h"
+#include "Utility/String/Format.h"
+#include "Utility/String/Wrap.h"
 
 void Config::load(std::string_view path) {
     FileInputStream stream(path); // Will throw if file doesn't exist.
@@ -22,10 +24,10 @@ void Config::save(std::string_view path) const {
 }
 
 void Config::load(InputStream *stream) {
-    // We'd rather handle FS errors on our side.
     std::istringstream stdStream(stream->readAll());
 
     ini::IniFile ini;
+    ini.setCommentChar(';'); // Use ini comment char, not '#'.
     ini.decode(stdStream); // This can throw.
 
     for (const auto &[sectionName, iniSection] : ini)
@@ -36,16 +38,21 @@ void Config::load(InputStream *stream) {
 }
 
 void Config::save(OutputStream *stream) const {
-    ini::IniFile ini;
-    for (ConfigSection *section : sections())
-        for (AnyConfigEntry *entry : section->entries())
-            ini[section->name()][entry->name()] = entry->string();
+    // ini::IniFile doesn't support comments so we just write things out ourselves.
+    for (ConfigSection *section : sections()) {
+        stream->write(fmt::format("[{}]\n", section->name()));
 
-    std::ostringstream stdStream;
-    ini.encode(stdStream); // This can throw.
+        for (AnyConfigEntry *entry : section->entries()) {
+            if (!entry->description().empty())
+                for (const std::string &line : wrapText(entry->description(), 78))
+                    stream->write(fmt::format("; {}\n", line));
+            stream->write(fmt::format("; Default is '{}'.\n", entry->defaultString()));
+            stream->write(fmt::format("{} = {}\n", entry->name(), entry->string()));
+            stream->write("\n");
+        }
 
-    // Same here - we'd rather handle FS errors on our side.
-    stream->write(stdStream.str());
+        stream->write("\n");
+    }
 }
 
 void Config::reset() {

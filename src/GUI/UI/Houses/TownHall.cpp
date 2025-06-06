@@ -192,7 +192,11 @@ void GUIWindow_TownHall::bountyHuntingDialogueOptionClicked() {
 
 std::string GUIWindow_TownHall::bountyHuntingText() {
     assert(!_bountyHuntText.empty());
-    assert(_bountyHuntMonsterId != MONSTER_INVALID);
+
+    // This happens when you claim a bounty and revisit the town hall the same month.
+    // Assumes _bountyHuntText is already containing the "someone has already" text (pNPCTopics[353]).
+    if (_bountyHuntMonsterId == MONSTER_INVALID)
+        return _bountyHuntText;
 
     // TODO(captainurist): what do we do with exceptions inside fmt?
     std::string name = fmt::format("{::}{}{::}", colorTable.PaleCanary.tag(), pMonsterStats->infos[_bountyHuntMonsterId].name, colorTable.White.tag());

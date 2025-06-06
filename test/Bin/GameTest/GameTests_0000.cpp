@@ -81,22 +81,11 @@ GAME_TEST(Issues, Issue198) {
         }
     };
 
-    // Preload item images in the main thread first.
-    game.runGameRoutine([&] {
-        forEachInventoryItem([](const ItemGen &item, int /*x*/, int /*y*/) {
-            // Calling width() forces the texture to be created.
-            assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName)->width();
-        });
-    });
+    forEachInventoryItem([](const Item &item, int x, int y) {
+        Sizei itemSize = item.inventorySize();
 
-    // Then can safely check everything.
-    forEachInventoryItem([](const ItemGen &item, int x, int y) {
-        GraphicsImage *image = assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName);
-        int width = GetSizeInInventorySlots(image->width());
-        int height = GetSizeInInventorySlots(image->height());
-
-        EXPECT_LE(x + width, Character::INVENTORY_SLOTS_WIDTH);
-        EXPECT_LE(y + height, Character::INVENTORY_SLOTS_HEIGHT);
+        EXPECT_LE(x + itemSize.w, Character::INVENTORY_SLOTS_WIDTH);
+        EXPECT_LE(y + itemSize.h, Character::INVENTORY_SLOTS_HEIGHT);
     });
 }
 
@@ -189,7 +178,7 @@ GAME_TEST(Issues, Issue268_939) {
     EXPECT_EQ(pParty->pCharacters[0].GetRangedAttack(), 18);
     EXPECT_EQ(pParty->pCharacters[1].GetRangedAttack(), 23);
     EXPECT_EQ(pParty->pCharacters[2].GetRangedAttack(), 21);
-    EXPECT_EQ(pParty->pCharacters[3].GetRangedAttack(), 17);
+    EXPECT_EQ(pParty->pCharacters[3].GetRangedAttack(), 9); // was 17 in vanilla see #1927
     // dmg
     EXPECT_EQ(pParty->pCharacters[0].GetRangedDamageString(), "9 - 14");
     EXPECT_EQ(pParty->pCharacters[1].GetRangedDamageString(), "11 - 16");
@@ -663,7 +652,7 @@ GAME_TEST(Issues, Issue489) {
     // Test that AOE version of Shrinking Ray spell works.
     auto chibisTape = actorTapes.countByBuff(ACTOR_BUFF_SHRINK);
     test.playTraceFromTestData("issue_489.mm7", "issue_489.json");
-    EXPECT_EQ(chibisTape, tape(0, 15));
+    EXPECT_EQ(chibisTape, tape(0, 14));
 }
 
 GAME_TEST(Issues, Issue490) {

@@ -129,10 +129,25 @@ class Accessible : public Base {
         return result;
     }
 
+    auto sliced(size_t subIndex) const {
+        using element_type = std::iter_value_t<decltype(std::declval<const value_type *>()->begin())>;
+        AccessibleVector<element_type> result;
+        for (const auto &chunk : *this)
+            result.push_back(chunk[subIndex]);
+        return result;
+    }
+
     template<class Filter>
     AccessibleVector<value_type> filtered(Filter filter) const {
         AccessibleVector<value_type> result;
         std::copy_if(begin(), end(), std::back_inserter(result), std::move(filter));
+        return result;
+    }
+
+    template<class Mapper, class Result = std::invoke_result_t<Mapper, value_type>>
+    AccessibleVector<Result> mapped(Mapper mapper) const {
+        AccessibleVector<Result> result;
+        std::transform(begin(), end(), std::back_inserter(result), std::move(mapper));
         return result;
     }
 
@@ -159,6 +174,10 @@ class Accessible : public Base {
     template<class Predicate> requires std::is_invocable_v<Predicate, value_type>
     bool contains(Predicate predicate) const {
         return std::find_if(begin(), end(), std::move(predicate)) != end();
+    }
+
+    size_t count(const value_type &value) const {
+        return std::count(begin(), end(), value);
     }
 };
 

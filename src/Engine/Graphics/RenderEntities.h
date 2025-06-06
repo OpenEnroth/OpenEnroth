@@ -75,6 +75,8 @@ struct RenderVertexSoft {
     float u = 0;
     float v = 0;
     float flt_2C = 0;
+
+    friend bool operator==(const RenderVertexSoft &l, const RenderVertexSoft &r) = default;
 };
 
 struct RenderVertexD3D3 {
@@ -123,7 +125,6 @@ struct RenderBillboardD3D {
 // TODO(pskelton): Simplify/remove/combine different billboard structs
 struct SoftwareBillboard {
     void *pTarget;
-    int *pTargetZ;
     int screen_space_x;
     int screen_space_y;
     int screen_space_z;

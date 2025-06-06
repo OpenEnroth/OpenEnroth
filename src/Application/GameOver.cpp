@@ -83,7 +83,7 @@ void CreateWinnerCertificate() {
             i * (pFont->GetHeight() - 2) + pFont->GetHeight() + 46,
             colorTable.Black,
             localization->FormatString(
-                LSTR_FMT_S_THE_LEVEL_D_S,
+                LSTR_S_THE_LEVEL_U_S,
                 pParty->pCharacters[i].name,
                 pParty->pCharacters[i].GetBaseLevel(),
                 localization->GetClassName(pParty->pCharacters[i].classType)),
@@ -108,7 +108,7 @@ void CreateWinnerCertificate() {
         fmt::format("{} {} {}, {} {}, {} {} ", localization->GetString(LSTR_TOTAL_TIME), years, v9, months, v8, days, v7), 3);
 
     pWindow.DrawTitleText(pFont.get(), 1, pWindow.uFrameHeight, colorTable.Black,
-        localization->FormatString(LSTR_FMT_YOUR_SCORE_D, v23), 3);
+        localization->FormatString(LSTR_YOUR_SCORE_LU, v23), 3);
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 

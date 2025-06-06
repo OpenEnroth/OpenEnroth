@@ -62,7 +62,7 @@ void initializeNPCDialogue(int npcId, int bPlayerSaysHello, Actor *actor) {
 
     HouseNpcDesc desc;
     desc.type = HOUSE_NPC;
-    desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCInfo->name);
+    desc.label = localization->FormatString(LSTR_CONVERSE_WITH_S, pNPCInfo->name);
     desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCInfo->uPortraitID));
     desc.npc = pNPCInfo;
 
@@ -112,7 +112,7 @@ GUIWindow_Dialogue::GUIWindow_Dialogue(DialogWindowType type) : GUIWindow(WINDOW
     prev_screen_type = current_screen_type;
     current_screen_type = SCREEN_NPC_DIALOGUE;
     pBtn_ExitCancel = CreateButton({0x1D7u, 0x1BDu}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
-                                   localization->GetString(LSTR_DIALOGUE_EXIT), {ui_exit_cancel_button_background});
+                                   localization->GetString(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
 
     int text_line_height = assets->pFontArrus->GetHeight() - 3;
     NPCData *speakingNPC = getNPCData(speakingNpcId);
@@ -211,19 +211,19 @@ void GUIWindow_Dialogue::Update() {
         }
 
         case DIALOGUE_ARENA_WELCOME:
-            dialogue_string = localization->GetString(LSTR_ARENA_WELCOME);
+            dialogue_string = localization->GetString(LSTR_WELCOME_TO_THE_ARENA_OF_LIFE_AND_DEATH);
             break;
 
         case DIALOGUE_ARENA_FIGHT_NOT_OVER_YET:
-            dialogue_string = localization->GetString(LSTR_ARENA_PREMATURE_EXIT);
+            dialogue_string = localization->GetString(LSTR_GET_BACK_IN_THERE_YOU_WIMPS);
             break;
 
         case DIALOGUE_ARENA_REWARD:
-            dialogue_string = localization->FormatString(LSTR_ARENA_REWARD, gold_transaction_amount);
+            dialogue_string = localization->FormatString(LSTR_CONGRATULATIONS_ON_YOUR_WIN_HERES_YOUR, gold_transaction_amount);
             break;
 
         case DIALOGUE_ARENA_ALREADY_WON:
-            dialogue_string = localization->GetString(LSTR_ARENA_AREADY_WON);
+            dialogue_string = localization->GetString(LSTR_YOU_ALREADY_WON_THIS_TRIP_TO_THE_ARENA);
             break;
 
         default:
@@ -363,7 +363,7 @@ void selectNPCDialogueOption(DialogueId option) {
             ((GUIWindow_Dialogue*)pDialogueWindow)->setDisplayedDialogueType(newTopic);
             pDialogueWindow->DeleteButtons();
             pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {0xA9u, 0x23u}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
-                                                            localization->GetString(LSTR_DIALOGUE_EXIT), {ui_exit_cancel_button_background});
+                                                            localization->GetString(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
 
             for (int i = 0; i < topics.size(); i++) {
                 pDialogueWindow->CreateButton({480, 160 + i * 30}, {140, 30}, 1, 0, UIMSG_SelectNPCDialogueOption, std::to_underlying(topics[i]), Io::InputAction::Invalid, "");

@@ -8,7 +8,7 @@
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Graphics/DecalBuilder.h"
 #include "Engine/Objects/DecorationList.h"
@@ -18,6 +18,7 @@
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -81,8 +82,10 @@
 
 #include "Library/Logger/Logger.h"
 #include "Library/BuildInfo/BuildInfo.h"
+#include "Tables/ChestTable.h"
 
 #include "Utility/String/Transformations.h"
+#include "TurnEngine/TurnEngine.h"
 
 /*
 
@@ -195,7 +198,6 @@ void Engine::drawHUD() {
 
     // mouse->DrawPickedItem();
     mouse->DrawCursor();
-    mouse->Activate();
 }
 
 //----- (0044103C) --------------------------------------------------------
@@ -211,8 +213,6 @@ void Engine::Draw() {
 void Engine::DrawGUI() {
     render->ResetUIClipRect();
 
-    // if (render->pRenderD3D)
-    mouse->DrawCursorToTarget();
     GameUI_DrawRightPanelFrames();
     _statusBar->draw();
 
@@ -279,7 +279,7 @@ void Engine::DrawGUI() {
         if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
             int sector_id = pBLVRenderParams->uPartySectorID;
             pPrimaryWindow->DrawText(assets->pFontArrus.get(), { 16, debug_info_offset }, colorTable.White,
-                                     fmt::format("Party Sector ID:       {}/{}\n", sector_id, pIndoor->pSectors.size()));
+                                     fmt::format("Party Sector ID:       {}/{} ({})\n", sector_id, pIndoor->pSectors.size(), pBLVRenderParams->uPartyEyeSectorID));
             debug_info_offset += 16;
         }
 
@@ -291,11 +291,11 @@ void Engine::DrawGUI() {
             int uFaceID;
             int sector_id = pBLVRenderParams->uPartySectorID;
             float floor_level = BLV_GetFloorLevel(pParty->pos/* + Vec3f(0,0,40) */, sector_id, &uFaceID);
-            floor_level_str = fmt::format("BLV_GetFloorLevel: {}   face_id {}\n", floor_level, uFaceID);
+            floor_level_str = fmt::format("BLV_GetFloorLevel: {}   face_id {}\nNodes: {}, Faces: {} ({}), Sectors: {}\n", floor_level, uFaceID, pBspRenderer->num_nodes, pBspRenderer->num_faces, pBLVRenderParams->uNumFacesRenderedThisFrame, pBspRenderer->uNumVisibleNotEmptySectors);
         } else if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
             bool on_water = false;
             int bmodel_pid;
-            float floor_level = ODM_GetFloorLevel(pParty->pos, 0, &on_water, &bmodel_pid, false);
+            float floor_level = ODM_GetFloorLevel(pParty->pos, &on_water, &bmodel_pid);
             floor_level_str = fmt::format(
                 "ODM_GetFloorLevel: {}   on_water: {}  on: {}\n",
                 floor_level, on_water ? "true" : "false",
@@ -437,9 +437,6 @@ Engine::Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem)
 
 //----- (0044E7F3) --------------------------------------------------------
 Engine::~Engine() {
-    if (mouse)
-        mouse->Deactivate();
-
     delete pEventTimer;
     delete pCamera3D;
     pAudioPlayer.reset();
@@ -473,25 +470,29 @@ Vis_PIDAndDepth Engine::PickKeyboard(float pick_depth, Vis_SelectionFilter *spri
 }
 
 Vis_PIDAndDepth Engine::PickMouseInfoPopup() {
-    Pointi pt = mouse->GetCursorPos();
+    Pointi pt = mouse->position();
     // TODO(captainurist): Right now we can have popups for monsters that are not reachable with a bow, and this is OK.
     //                     However, such monsters also don't get a hint displayed on mouseover. Probably should fix this?
     return PickMouse(pCamera3D->GetMouseInfoDepth(), pt.x, pt.y, &vis_allsprites_filter, &vis_face_filter);
 }
 
 Vis_PIDAndDepth Engine::PickMouseTarget() {
-    Pointi pt = mouse->GetCursorPos();
+    Pointi pt = mouse->position();
     return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_sprite_targets_filter, &vis_face_filter);
 }
 
 Vis_PIDAndDepth Engine::PickMouseNormal() {
-    Pointi pt = mouse->GetCursorPos();
+    Pointi pt = mouse->position();
     return PickMouse(config->gameplay.RangedAttackDepth.value(), pt.x, pt.y, &vis_items_filter, &vis_face_filter);
 }
 
 void Engine::toggleOverlays() {
     bool isEnabled = _overlaySystem.isEnabled();
     _overlaySystem.setEnabled(!isEnabled);
+}
+
+void Engine::disableOverlays() {
+    _overlaySystem.setEnabled(false);
 }
 
 /*
@@ -535,10 +536,13 @@ void UpdateUserInput_and_MapSpecificStuff() {
 void PrepareWorld(int _0_box_loading_1_fullscreen) {
     Vis *vis = EngineIocContainer::ResolveVis();
 
+    CastSpellInfoHelpers::cancelSpellCastInProgress();
     pEventTimer->setPaused(true);
     pMiscTimer->setPaused(true);
-    CastSpellInfoHelpers::cancelSpellCastInProgress();
     DoPrepareWorld(false, (_0_box_loading_1_fullscreen == 0) + 1);
+
+    assert(pEventTimer->isPaused()); // DoPrepareWorld shouldn't un-pause.
+    assert(pMiscTimer->isPaused());
     pMiscTimer->setPaused(false);
     pEventTimer->setPaused(false);
 }
@@ -552,6 +556,8 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
     // TODO(captainurist): need to zero this one out when loading a save, but is this a proper place to do that?
     attackList.clear();
+    // Clearing actors lists mean turn engine queue will have invalid actor ids
+    std::erase_if(pTurnEngine->pQueue, [](const auto& item) { return item.uPackedID.type() == OBJECT_Actor; });
     int configLimit = engine->config->gameplay.MaxActors.value();
     ai_near_actors_targets_pid.resize(configLimit, Pid());
     ai_near_actors_ids.resize(configLimit);
@@ -565,7 +571,7 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
     if (isMapIndoor(engine->_transitionMapId))
         loadAndPrepareBLV(engine->_transitionMapId, bLoading);
     else
-        loadAndPrepareODM(engine->_transitionMapId, bLoading, 0);
+        loadAndPrepareODM(engine->_transitionMapId, bLoading);
 
     pNPCStats->setNPCNamesOnLoad();
     engine->_461103_load_level_sub();
@@ -579,6 +585,20 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
             pActors[i].monsterInfo.exp = 0;
         }
     }
+
+    // OE fix - reduce maximum allowed radius in the Lincoln to stop act actors getting stuck in tight corridors.
+    if (engine->_currentLoadedMapId == MAP_LINCOLN) {
+        for (Actor& actor : pActors) {
+            actor.radius = std::min(actor.radius, static_cast<uint16_t>(140));
+        }
+    }
+
+    // OE fix - replace spirit lash with bless for clerics of the moon in the temple of baa.
+    if (engine->_currentLoadedMapId == MAP_TEMPLE_OF_BAA)
+        for (Actor& actor : pActors)
+            if (actor.monsterInfo.spell2Id == SPELL_SPIRIT_SPIRIT_LASH)
+                actor.monsterInfo.spell2Id = SPELL_SPIRIT_BLESS;
+
     bDialogueUI_InitializeActor_NPC_ID = 0;
     engine->_transitionMapId = MAP_INVALID;
     onMapLoad();
@@ -618,7 +638,7 @@ void MM7_LoadLods() {
 
     // TODO(captainurist):
     // on error in `open` we had this:
-    // Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
+    // Error(localization->GetString(LSTR_MIGHT_AND_MAGIC_VII_IS_HAVING_TROUBLE), localization->GetString(LSTR_REINSTALL_NECESSARY));
     // however, at this point localization isn't initialized yet, so this was a guaranteed crash.
     // Implement proper user-facing error reporting!
 
@@ -680,9 +700,6 @@ void Engine::MM7_Initialize() {
 
     pMonsterList = new MonsterList;
     deserialize(triLoad("dmonlist.bin"), pMonsterList);
-
-    pChestList = new ChestDescList;
-    deserialize(triLoad("dchest.bin"), pChestList);
 
     pOverlayList = new OverlayList;
     deserialize(triLoad("doverlay.bin"), pOverlayList);
@@ -762,8 +779,9 @@ void Engine::SecondaryInitialization() {
     initializeTransitions(engine->_gameResourceManager->getEventsFile("trans.txt"));
     initializeMerchants(engine->_gameResourceManager->getEventsFile("merchant.txt"));
     initializeMessageScrolls(engine->_gameResourceManager->getEventsFile("scroll.txt"));
+    initializeChests();
 
-    engine->_globalEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile("global.evt"));
+    engine->_globalEventMap = EvtProgram::load(engine->_gameResourceManager->getEventsFile("global.evt"));
 
     pBitmaps_LOD->reserveLoadedTextures();
     pSprites_LOD->reserveLoadedSprites();
@@ -918,8 +936,8 @@ void Engine::_461103_load_level_sub() {
     pCamera3D->_viewPitch = 0;
     pCamera3D->_viewYaw = 0;
     uLevel_StartingPointType = MAP_START_POINT_PARTY;
-    if (pParty->pPickedItem.uItemID != ITEM_NULL)
-        mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.uItemID);
+    if (pParty->pPickedItem.itemId != ITEM_NULL)
+        mouse->SetCursorBitmapFromItemID(pParty->pPickedItem.itemId);
 }
 
 //----- (0042F3D6) --------------------------------------------------------
@@ -1029,7 +1047,7 @@ void back_to_game() {
         pGUIWindow_ScrollWindow = nullptr;
     }
 
-    if (current_screen_type == SCREEN_GAME && !pGUIWindow_CastTargetedSpell) {
+    if (current_screen_type == SCREEN_GAME && sCurrentMenuID == MENU_NONE && !pGUIWindow_CastTargetedSpell) {
         pEventTimer->setPaused(false);
     }
 }
@@ -1107,7 +1125,7 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
             } else {
                 if (!character.hasUnderwaterSuitEquipped()) {
                     character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE); // TODO(pskelton): fire damage?
-                    engine->_statusBar->setEventShort(LSTR_YOURE_DROWNING);
+                    engine->_statusBar->setEventShort(LSTR_YOU_ARE_DROWNING);
                 } else {
                     character.playEmotion(PORTRAIT_SMILE, 0_ticks);
                 }
@@ -1122,7 +1140,7 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
         for (Character &character : pParty->pCharacters) {
             character.receiveDamage((int64_t)character.GetMaxHealth() * 0.1, DAMAGE_FIRE);
         }
-        engine->_statusBar->setEventShort(LSTR_ON_FIRE);
+        engine->_statusBar->setEventShort(LSTR_YOU_ARE_BURNING);
     }
 
     RegeneratePartyHealthMana();
@@ -1375,23 +1393,23 @@ void RegeneratePartyHealthMana() {
         for (ItemSlot idx : allItemSlots()) {
             if (character.HasItemEquipped(idx)) {
                 unsigned _idx = character.pEquipment[idx];
-                ItemGen equppedItem = character.pInventoryItemList[_idx - 1];
-                if (!isRegular(equppedItem.uItemID)) {
-                    if (equppedItem.uItemID == ITEM_RELIC_ETHRICS_STAFF) {
+                Item equppedItem = character.pInventoryItemList[_idx - 1];
+                if (!isRegular(equppedItem.itemId)) {
+                    if (equppedItem.itemId == ITEM_RELIC_ETHRICS_STAFF) {
                         character.health -= ticks5;
                     }
-                    if (equppedItem.uItemID == ITEM_ARTIFACT_HERMES_SANDALS) {
+                    if (equppedItem.itemId == ITEM_ARTIFACT_HERMES_SANDALS) {
                         thisChar.hpRegen++;
                         thisChar.spRegen++;
                     }
-                    if (equppedItem.uItemID == ITEM_ARTIFACT_MINDS_EYE) {
+                    if (equppedItem.itemId == ITEM_ARTIFACT_MINDS_EYE) {
                         thisChar.spRegen++;
                     }
-                    if (equppedItem.uItemID == ITEM_ARTIFACT_HEROS_BELT) {
+                    if (equppedItem.itemId == ITEM_ARTIFACT_HEROS_BELT) {
                         thisChar.hpRegen++;
                     }
                 } else {
-                    ItemEnchantment special_enchantment = equppedItem.special_enchantment;
+                    ItemEnchantment special_enchantment = equppedItem.specialEnchantment;
                     if (special_enchantment == ITEM_ENCHANTMENT_OF_REGENERATION
                         || special_enchantment == ITEM_ENCHANTMENT_OF_LIFE
                         || special_enchantment == ITEM_ENCHANTMENT_OF_PHOENIX
@@ -1426,8 +1444,8 @@ void RegeneratePartyHealthMana() {
         // Lich mana/health drain/regen.
         if (character.classType == CLASS_LICH) {
             bool lich_has_jar = false;
-            for (const ItemGen &item : character.pInventoryItemList)
-                if (item.uItemID == ITEM_QUEST_LICH_JAR_FULL && item.uHolderPlayer == character.getCharacterIndex())
+            for (const Item &item : character.pInventoryItemList)
+                if (item.itemId == ITEM_QUEST_LICH_JAR_FULL && item.lichJarCharacterIndex == character.getCharacterIndex())
                     lich_has_jar = true;
 
             if (lich_has_jar) {
@@ -1486,7 +1504,7 @@ void loadMapEventsAndStrings(MapId mapid) {
 
     initLevelStrings(engine->_gameResourceManager->getEventsFile(fmt::format("{}.str", mapNameWithoutExt)));
 
-    engine->_localEventMap = EventMap::load(engine->_gameResourceManager->getEventsFile(fmt::format("{}.evt", mapNameWithoutExt)));
+    engine->_localEventMap = EvtProgram::load(engine->_gameResourceManager->getEventsFile(fmt::format("{}.evt", mapNameWithoutExt)));
 }
 
 bool _44100D_should_alter_right_panel() {

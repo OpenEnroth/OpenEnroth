@@ -9,7 +9,7 @@
 #include "Engine/SaveLoad.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/TurnEngine/TurnEngine.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/MapInfo.h"
 
@@ -89,10 +89,9 @@ static std::array<GraphicsImage *, TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS> ui
 GraphicsImage *ui_book_townportal_background = nullptr;
 GraphicsImage *ui_townportal_cheat_destination_icon = nullptr;
 
-GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid) {
+GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid, SpellCastFlags castFlags)
+        : _casterPid(casterPid), _castFlags(castFlags) {
     this->eWindowType = WindowType::WINDOW_TownPortal;
-
-    _casterPid = casterPid;
 
     ui_book_townportal_background = assets->getImage_Solid("townport");
 
@@ -114,7 +113,7 @@ GUIWindow_TownPortalBook::GUIWindow_TownPortalBook(Pid casterPid) {
         count = TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS;
     }
     for (int i = 0; i < count; ++i) {
-        CreateButton(townPortalButtonsPos[i].topLeft(), townPortalButtonsPos[i].size(), 1, UIMSG_HintTownPortal, UIMSG_ClickTownInTP, i);
+        CreateButton(fmt::format("TownPortalBook_Marker{}", i), townPortalButtonsPos[i].topLeft(), townPortalButtonsPos[i].size(), 1, UIMSG_HintTownPortal, UIMSG_ClickTownInTP, i);
     }
 }
 
@@ -122,7 +121,7 @@ void GUIWindow_TownPortalBook::Update() {
     render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
     GUIWindow townPortalWindow;
-    Pointi cursorPos = mouse->GetCursorPos();
+    Pointi cursorPos = mouse->position();
     bool townPortalCheats = engine->config->debug.TownPortal.value();
     int count = townPortalCheats ? TOWN_PORTAL_DESTINATION_COUNT_WITH_CHEATS : TOWN_PORTAL_DESTINATION_COUNT;
 
@@ -188,25 +187,29 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
 
     int casterId = _casterPid.id();
     if (casterId < pParty->pCharacters.size()) {
-        // Town portal casted by character
-        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[CHARACTER_SKILL_MASTERY_EXPERT]);
-        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[CHARACTER_SKILL_MASTERY_MASTER]);
-        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER]);
-        pParty->pCharacters[casterId].SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE]);
+        // Town portal cast by character
+        CharacterSkillMastery mastery;
+        Character &character = pParty->pCharacters[casterId];
+        if (engine->config->debug.AllMagic.value()) {
+            mastery = CHARACTER_SKILL_MASTERY_GRANDMASTER;
+        } else if (_castFlags & ON_CAST_CastViaScroll) {
+            // Cast from scroll
+            mastery = SCROLL_OR_NPC_SPELL_SKILL_VALUE.mastery();
+        } else {
+            mastery = character.getActualSkillValue(CHARACTER_SKILL_WATER).mastery();
+            character.SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[mastery]);
+        }
 
-        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_EXPERT]);
-        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_MASTER]);
-        assert(pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE] == pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_GRANDMASTER]);
-        Duration sRecoveryTime = pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[CHARACTER_SKILL_MASTERY_NOVICE];
+        Duration sRecoveryTime = pSpellDatas[SPELL_WATER_TOWN_PORTAL].recovery_per_skill[mastery];
         if (pParty->bTurnBasedModeOn) {
             pParty->pTurnBasedCharacterRecoveryTimes[casterId] = sRecoveryTime;
-            pParty->pCharacters[casterId].SetRecoveryTime(sRecoveryTime);
+            character.SetRecoveryTime(sRecoveryTime);
             pTurnEngine->ApplyPlayerAction();
         } else {
-            pParty->pCharacters[casterId].SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * sRecoveryTime);
+            character.SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * sRecoveryTime);
         }
     } else {
-        // Town portal casted by hireling
+        // Town portal cast by hireling
         pParty->pHirelings[casterId - pParty->pCharacters.size()].bHasUsedTheAbility = 1;
     }
 

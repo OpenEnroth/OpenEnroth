@@ -71,7 +71,7 @@ jobs:
       # Restore ccache file from cache if possible so we don't have to download it.
       - name: Restore cached ccache
         id: ccache-cache
-        uses: actions/cache/restore@v4.1.2
+        uses: actions/cache/restore@v3
         with:
           path: 'C:\ProgramData\chocolatey\lib\ccache\'
           key: windows-ccache
@@ -102,7 +102,6 @@ jobs:
         uses: hendrikmuhs/ccache-action@v1.2.14
         with:
           key: 'windows-${{matrix.configuration}}-${{matrix.architecture}}'
-          save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
           verbose: 2
           max-size: 200M
           
@@ -128,7 +127,6 @@ jobs:
 
       # Only run gametest if we restored game data.
       - name: Run game tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true'
         working-directory: build
         run: |
           ninja Run_GameTest_Headless_Parallel
@@ -136,7 +134,7 @@ jobs:
           OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
 
       - name: Run retrace tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration != 'Debug'
+        if: matrix.configuration != 'Debug'
         working-directory: build
         run: |
           ninja Run_RetraceTest_Headless_Parallel

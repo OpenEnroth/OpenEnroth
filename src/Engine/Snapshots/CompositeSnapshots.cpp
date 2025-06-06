@@ -17,6 +17,7 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
+#include "Engine/Tables/TileTable.h"
 
 #include "GUI/GUIFont.h"
 
@@ -219,8 +220,8 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.spriteObjects, &pSpriteObjects);
 
     for (size_t i = 0; i < pSpriteObjects.size(); ++i) {
-        if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL && !(pSpriteObjects[i].uAttributes & SPRITE_MISSILE)) {
-            pSpriteObjects[i].uType = static_cast<SpriteId>(pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uSpriteID);
+        if (pSpriteObjects[i].containing_item.itemId != ITEM_NULL && !(pSpriteObjects[i].uAttributes & SPRITE_MISSILE)) {
+            pSpriteObjects[i].uType = static_cast<SpriteId>(pItemTable->items[pSpriteObjects[i].containing_item.itemId].spriteId);
             pSpriteObjects[i].uObjectDescID = pObjectList->ObjectIDByItemID(pSpriteObjects[i].uType);
         }
     }
@@ -352,21 +353,51 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     }
 }
 
+static int mapToGlobalTileId(const std::array<int, 4> &baseIds, int localTileId) {
+    // Tiles in tilemap:
+    // [0..90) are mapped as-is, but seem to be mostly invalid. Only global tile ids [1..12] are valid (all are dirt),
+    //         the rest are "pending", effectively invalid.
+    // [90..126) map to tileset #1.
+    // [126..162) map to tileset #2.
+    // [162..198) map to tileset #3.
+    // [198..234) map to tileset #4 (road).
+    // [234..255) are invalid.
+    if (localTileId < 90)
+        return localTileId;
+
+    if (localTileId >= 234)
+        return 0;
+
+    int tilesetIndex = (localTileId - 90) / 36;
+    int tilesetOffset = (localTileId - 90) % 36;
+    return baseIds[tilesetIndex] + tilesetOffset;
+}
+
+void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
+    std::array<int, 4> baseTileIds;
+    for (int i = 0; i < 4; i++) {
+        dst->_tilesets[i] = static_cast<Tileset>(src.tileTypes[i].tileset);
+        baseTileIds[i] = pTileTable->tileId(dst->_tilesets[i], TILE_VARIANT_BASE1);
+    }
+
+    for (int y = 0; y < 128; y++)
+        for (int x = 0; x < 128; x++)
+            dst->_heightMap[y][x] = src.heightMap[y * 128 + x];
+
+    for (int y = 0; y < 127; y++)
+        for (int x = 0; x < 127; x++)
+            dst->_originalTileMap[y][x] = mapToGlobalTileId(baseTileIds, src.tileMap[y * 128 + x]);
+    dst->_tileMap = Image<int16_t>::copy(dst->_originalTileMap);
+
+    dst->recalculateNormals();
+}
+
 void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
     reconstruct(src.name, &dst->level_filename);
     reconstruct(src.fileName, &dst->location_filename);
     reconstruct(src.desciption, &dst->location_file_description);
     reconstruct(src.skyTexture, &dst->sky_texture_filename);
-    // src.groundTilesetUnused is just dropped
-    reconstruct(src.tileTypes, &dst->pTerrain.pTileTypes);
-    dst->pTerrain.LoadBaseTileIds();
-
-    reconstruct(src.heightMap, &dst->pTerrain.pHeightmap);
-    reconstruct(src.tileMap, &dst->pTerrain.pTilemap);
-    reconstruct(src.attributeMap, &dst->pTerrain.pAttributemap);
-
-    reconstruct(src.normalMap, &dst->pTerrain.pTerrainNormalIndices);
-    reconstruct(src.normals, &dst->pTerrain.pTerrainNormals);
+    reconstruct(src, &dst->pTerrain);
 
     dst->pBModels.clear();
     for (size_t i = 0; i < src.models.size(); i++) {

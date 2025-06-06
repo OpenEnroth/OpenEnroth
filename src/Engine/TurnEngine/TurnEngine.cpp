@@ -691,6 +691,8 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                         pActors[actor_id].monsterInfo.hostilityType =
                             HOSTILITY_LONG;
                     break;
+                case HOSTILITY_FRIENDLY:
+                    break;
             }
             if (pActors[actor_id].monsterInfo.hostilityType == HOSTILITY_LONG && v22 &&
                 (signed int)v9 < 5120) {
@@ -876,6 +878,9 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
             if (v11 < 2560)
                 pActors[uActorID].monsterInfo.hostilityType =
                     HOSTILITY_LONG;
+            break;
+        case HOSTILITY_LONG: // TODO(captainurist): why is this not handled?
+        case HOSTILITY_FRIENDLY:
             break;
     }
     if (pActors[uActorID].buffs[ACTOR_BUFF_AFRAID].Active()) {

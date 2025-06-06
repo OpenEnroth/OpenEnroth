@@ -2,25 +2,25 @@
 
 #include <string>
 
-#include "Engine/Events/EventEnums.h"
+#include "Engine/Evt/EvtEnums.h"
 
 #include "GUI/GUIWindow.h"
 
 class GUIWindow_BranchlessDialogue : public GUIWindow {
  public:
-    explicit GUIWindow_BranchlessDialogue(EventType event);
+    explicit GUIWindow_BranchlessDialogue(EvtOpcode event);
     virtual ~GUIWindow_BranchlessDialogue() {}
 
     virtual void Update() override;
     virtual void Release() override;
 
-    EventType event() const {
+    EvtOpcode event() const {
         return _event;
     }
 
  private:
-    EventType _event = EVENT_Invalid;
+    EvtOpcode _event = EVENT_Invalid;
 };
 
-void startBranchlessDialogue(int eventid, int entryline, EventType type);
+void startBranchlessDialogue(int eventid, int entryline, EvtOpcode type);
 void releaseBranchlessDialogue();

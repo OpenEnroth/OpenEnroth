@@ -5,12 +5,14 @@
 #include <vector>
 #include <string>
 
+#include "Library/Logger/Logger.h"
+
 #include "NullPlatformSharedState.h"
 #include "NullWindow.h"
 #include "NullEventLoop.h"
 
-NullPlatform::NullPlatform(NullPlatformOptions options): _state(std::make_unique<NullPlatformSharedState>()) {
-    _state->options = std::move(options);
+NullPlatform::NullPlatform(NullPlatformOptions options): _state(std::make_unique<NullPlatformSharedState>(std::move(options))) {
+    assert(logger); // Some of NullPlatform classes log.
 }
 
 NullPlatform::~NullPlatform() = default;
@@ -28,11 +30,11 @@ std::vector<PlatformGamepad *> NullPlatform::gamepads() {
 }
 
 void NullPlatform::setCursorShown(bool cursorShown) {
-    _cursorShown = cursorShown;
+    _state->cursorShown = cursorShown;
 }
 
 bool NullPlatform::isCursorShown() const {
-    return _cursorShown;
+    return _state->cursorShown;
 }
 
 std::vector<Recti> NullPlatform::displayGeometries() const {
@@ -40,7 +42,7 @@ std::vector<Recti> NullPlatform::displayGeometries() const {
 }
 
 void NullPlatform::showMessageBox(const std::string &title, const std::string &message) const {
-    // Okay?
+    // No GUI in null platform.
 }
 
 int64_t NullPlatform::tickCount() const {

@@ -12,6 +12,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
 
+#include "Engine/Engine.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
@@ -126,6 +127,8 @@ void EngineController::goToMainMenu() {
         if (++counter >= 128)
             throw Exception("Couldn't return to main menu");
     };
+
+    engine->disableOverlays();
 
     // Skip movies.
     while (current_screen_type == SCREEN_VIDEO) {

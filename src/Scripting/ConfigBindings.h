@@ -3,14 +3,20 @@
 #include "IBindings.h"
 
 #include <string>
+#include <vector>
+
+class AnyConfigEntry;
 
 class ConfigBindings : public IBindings {
  public:
     virtual sol::table createBindingTable(sol::state_view &solState) const override;
 
  private:
-    [[nodiscard]] static bool setConfigValue1(std::string_view sectionName, std::string_view configName, std::string_view value);
-    [[nodiscard]] static bool setConfigValue2(std::string_view configName, std::string_view value);
-    [[nodiscard]] static std::optional<std::string> getConfigValue1(std::string_view sectionName, std::string_view configName);
-    [[nodiscard]] static std::optional<std::string> getConfigValue2(std::string_view configName);
+    [[nodiscard]] static AnyConfigEntry *entry1(std::string_view entryName);
+    [[nodiscard]] static AnyConfigEntry *entry2(std::string_view sectionName, std::string_view entryName);
+    [[nodiscard]] static std::vector<AnyConfigEntry *> list(std::string_view sectionName, std::string_view filter);
+
+    [[nodiscard]] static std::string path(AnyConfigEntry *entry);
+    [[nodiscard]] static std::string sectionName(AnyConfigEntry *entry);
+    static void toggle(AnyConfigEntry *entry);
 };

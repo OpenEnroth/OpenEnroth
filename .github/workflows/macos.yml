@@ -33,7 +33,7 @@ on:
 
 jobs:
   build_macos:
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -48,7 +48,7 @@ jobs:
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: 14.3
+          xcode-version: 16.3
 
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -68,7 +68,6 @@ jobs:
         uses: hendrikmuhs/ccache-action@v1.2.14
         with:
           key: 'macos-${{matrix.configuration}}-${{matrix.architecture}}'
-          save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
           verbose: 2
           max-size: 200M
 
@@ -95,7 +94,6 @@ jobs:
           make Run_UnitTest
 
       - name: Run game tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true'
         working-directory: build
         run: |
           make Run_GameTest_Headless_Parallel
@@ -103,7 +101,7 @@ jobs:
           OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
       - name: Run retrace tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration != 'Debug'
+        if: matrix.configuration != 'Debug'
         working-directory: build
         run: |
           make Run_RetraceTest_Headless_Parallel
@@ -111,10 +109,14 @@ jobs:
           OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
       - name: Prepare files for release
-        run: |
-          mkdir dist
-          cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
-          hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            mkdir -p dist
+            cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
+            hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
 
       - name: Zip folder for release
         if: inputs.releaseTag != ''

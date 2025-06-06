@@ -27,6 +27,14 @@ jobs:
           submodules: recursive
           ref: '${{inputs.myCommit}}'
 
+      # OE builds with lld and with mold, and configure step fails if one is not found. We don't need the linker for
+      # the style checks, but it's easier to just install it than work this around in CMakeLists.
+      - name: Install mold
+        uses: rui314/setup-mold@v1
+        with:
+          mold-version: 2.36.0
+          make-default: false
+
       - name: Restore cached lua-language-server
         id: lls-cache
         uses: actions/cache@v4

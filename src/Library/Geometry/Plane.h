@@ -17,6 +17,8 @@ struct Planef {
     [[nodiscard]] float signedDistanceTo(const Vec3f &point) const {
         return this->dist + this->normal.x * point.x + this->normal.y * point.y + this->normal.z * point.z;
     }
+
+    friend bool operator==(const Planef& l, const Planef& r) = default;
 };
 static_assert(sizeof(Planef) == 16);
 

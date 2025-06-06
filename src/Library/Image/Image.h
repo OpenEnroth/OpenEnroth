@@ -8,6 +8,8 @@
 #include <utility>
 
 #include "Library/Color/Color.h"
+#include "Library/Geometry/Point.h"
+#include "Library/Geometry/Rect.h"
 #include "Library/Geometry/Size.h"
 
 #include "Utility/Memory/FreeDeleter.h"
@@ -54,6 +56,10 @@ class ImageBase {
         return Sizei(_width, _height); // Narrowing ssize_t -> int, but we're not expecting images 2B pixels wide.
     }
 
+    [[nodiscard]] Recti rect() const {
+        return Recti(Pointi(0, 0), size());
+    }
+
     [[nodiscard]] std::span<T> operator[](ssize_t y) {
         assert(y >= 0 && y < _height);
         return {_pixels.get() + y * _width, _pixels.get() + (y + 1) * _width};
@@ -61,6 +67,14 @@ class ImageBase {
 
     [[nodiscard]] std::span<const T> operator[](ssize_t y) const {
         return const_cast<ImageBase &>(*this)[y];
+    }
+
+    [[nodiscard]] T &operator[](Pointi point) {
+        return (*this)[point.y][point.x];
+    }
+
+    [[nodiscard]] const T &operator[](Pointi point) const {
+        return const_cast<ImageBase &>(*this)[point];
     }
 
     explicit operator bool() const {
@@ -71,6 +85,10 @@ class ImageBase {
         _width = 0;
         _height = 0;
         _pixels.reset();
+    }
+
+    void fill(const T &color) {
+        std::fill_n(pixels().data(), pixels().size(), color);
     }
 
  protected: // Directly accessible from derived classes.
@@ -149,6 +167,16 @@ class Image : public detail::ImageBase<T, std::unique_ptr<T, FreeDeleter>> {
         Image result = uninitialized(width, height);
         std::copy_n(pixels, result.pixels().size(), result.pixels().data());
         return result;
+    }
+
+    /**
+     * Creates a copy of another image.
+     *
+     * @param other                     Image to copy.
+     * @return                          Newly allocated `Image` containing a copy of `other`.
+     */
+    static Image copy(const Image &other) {
+        return copy(other.width(), other.height(), other.pixels().data());
     }
 
     // The rest is inherited from ImageBase.

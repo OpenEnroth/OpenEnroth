@@ -14,13 +14,16 @@ add_subdirectory(magic_enum EXCLUDE_FROM_ALL)
 add_subdirectory(cli11 EXCLUDE_FROM_ALL)
 add_subdirectory(nlohmann_json EXCLUDE_FROM_ALL)
 add_subdirectory(mio EXCLUDE_FROM_ALL)
-add_subdirectory(sol2 EXCLUDE_FROM_ALL)
 add_subdirectory(imgui EXCLUDE_FROM_ALL)
+
+# sol2
+add_subdirectory(sol2 EXCLUDE_FROM_ALL)
+target_compile_definitions(sol2 INTERFACE SOL_EXCEPTIONS_ALWAYS_UNSAFE=1) # Make sure sol2 doesn't propagate C++ exceptions to luajit.
 
 # fmt
 add_subdirectory(fmt EXCLUDE_FROM_ALL)
 target_compile_definitions(fmt INTERFACE FMT_USE_NONTYPE_TEMPLATE_ARGS) # Enable _cf literals.
-if(OE_BUILD_COMPILER STREQUAL "msvc")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     target_compile_definitions(fmt INTERFACE FMT_CONSTEVAL=) # MSVC chokes on fmt consteval formatting, so we define FMT_CONSTEVAL=<empty>.
 endif()
 
@@ -45,7 +48,9 @@ add_subdirectory(small_vector EXCLUDE_FROM_ALL)
 # spdlog
 set(SPDLOG_FMT_EXTERNAL ON)
 set(SPDLOG_DISABLE_DEFAULT_LOGGER ON)
-set(SPDLOG_WCHAR_SUPPORT ON) # Use unicode APIs on Windows.
+if(OE_BUILD_PLATFORM STREQUAL "windows")
+    set(SPDLOG_WCHAR_SUPPORT ON) # Use unicode APIs on Windows.
+endif()
 add_subdirectory(spdlog EXCLUDE_FROM_ALL)
 
 # googletest

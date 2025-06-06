@@ -4,7 +4,6 @@ set(LIBRARY_SNAPSHOTS_SOURCES)
 
 set(LIBRARY_SNAPSHOTS_HEADERS
         CommonSnapshots.h
-        RawSnapshots.h
         SnapshotSerialization.h
         SnapshotConcepts.h)
 

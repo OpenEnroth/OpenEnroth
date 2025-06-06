@@ -41,12 +41,23 @@ TestTape<int> CommonTapeRecorder::totalHp() {
 }
 
 TestTape<int> CommonTapeRecorder::totalItemCount() {
-    return custom([] {
+    return custom([]{
         int result = 0;
         for (const Character &character : pParty->pCharacters)
-            for (const ItemGen &item : character.pInventoryItemList)
-                result += item.uItemID != ITEM_NULL;
-        result += pParty->pPickedItem.uItemID != ITEM_NULL;
+            for (const Item &item : character.pInventoryItemList)
+                result += item.itemId != ITEM_NULL;
+        result += pParty->pPickedItem.itemId != ITEM_NULL;
+        return result;
+    });
+}
+
+TestTape<int> CommonTapeRecorder::totalItemCount(ItemId itemId) {
+    return custom([itemId] {
+        int result = 0;
+        for (const Character &character : pParty->pCharacters)
+            for (const Item &item : character.pInventoryItemList)
+                result += item.itemId == itemId;
+        result += pParty->pPickedItem.itemId == itemId;
         return result;
     });
 }
@@ -110,7 +121,7 @@ TestTape<bool> CommonTapeRecorder::turnBasedMode() {
 TestTape<int> CommonTapeRecorder::mapItemCount() {
     return custom([] {
         return static_cast<int>(std::ranges::count_if(pSpriteObjects, [] (const SpriteObject &object) {
-            return object.uObjectDescID != 0 && object.containing_item.uItemID != ITEM_NULL;
+            return object.uObjectDescID != 0 && object.containing_item.itemId != ITEM_NULL;
         }));
     });
 }
@@ -118,7 +129,7 @@ TestTape<int> CommonTapeRecorder::mapItemCount() {
 TestTape<int> CommonTapeRecorder::mapItemCount(ItemId itemId) {
     return custom([itemId] {
         return static_cast<int>(std::ranges::count_if(pSpriteObjects, [itemId] (const SpriteObject &object) {
-            return object.uObjectDescID != 0 && object.containing_item.uItemID == itemId;
+            return object.uObjectDescID != 0 && object.containing_item.itemId == itemId;
         }));
     });
 }

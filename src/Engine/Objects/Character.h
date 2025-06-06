@@ -9,20 +9,19 @@
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/ActorEnums.h"
 #include "Engine/Objects/CombinedSkillValue.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Objects/ItemEnums.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Objects/MonsterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
 #include "Engine/Spells/SpellBuff.h"
-#include "Engine/Events/EventEnums.h"
+#include "Engine/Evt/EvtEnums.h"
 #include "Engine/Pid.h"
 
 #include "GUI/GUIEnums.h"
 
 #include "Library/Color/Color.h"
 #include "Library/Geometry/Vec.h"
-#include "Library/Snapshots/RawSnapshots.h"
 
 #include "Utility/IndexedArray.h"
 #include "Utility/IndexedBitset.h"
@@ -31,6 +30,7 @@
 
 class Actor;
 class GraphicsImage;
+struct CharacterConditions_MM7;
 
 enum class StealResult {
     STEAL_BUSTED = 0, // Failed to steal & was caught.
@@ -65,13 +65,7 @@ struct RegenData {
     int spRegen = 0; // From all sources, mp / 5 ticks.
 };
 
-struct RawCharacterConditions {
-    /** Game time when condition has started. Zero means that the character doesn't have a condition. */
-    IndexedArray<Time, CONDITION_FIRST, CONDITION_LAST> _times;
-};
-
-class CharacterConditions : private RawCharacterConditions {
-    MM_DECLARE_RAW_PRIVATE_BASE(RawCharacterConditions)
+class CharacterConditions {
  public: // NOLINT: no idea why linter is triggering here.
     [[nodiscard]] bool Has(Condition condition) const {
         return _times[condition].isValid();
@@ -104,6 +98,13 @@ class CharacterConditions : private RawCharacterConditions {
     [[nodiscard]] Time Get(Condition condition) const {
         return _times[condition];
     }
+
+    friend void snapshot(const CharacterConditions &src, CharacterConditions_MM7 *dst); // In EntitySnapshots.cpp.
+    friend void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst); // In EntitySnapshots.cpp.
+
+ private:
+    /** Game time when condition has started. Zero means that the character doesn't have a condition. */
+    IndexedArray<Time, CONDITION_FIRST, CONDITION_LAST> _times;
 };
 
 class Character {
@@ -119,10 +120,10 @@ class Character {
 
     bool matchesAttackPreference(MonsterAttackPreference preference) const;
 
-    void SetVariable(VariableType var, signed int a3);
-    void AddVariable(VariableType var, signed int val);
-    void SubtractVariable(VariableType VarNum, signed int pValue);
-    bool CompareVariable(VariableType VarNum, signed int pValue);
+    void SetVariable(EvtVariable var, signed int a3);
+    void AddVariable(EvtVariable var, signed int val);
+    void SubtractVariable(EvtVariable VarNum, signed int pValue);
+    bool CompareVariable(EvtVariable VarNum, signed int pValue);
 
     /**
      * Use item on character.
@@ -175,7 +176,7 @@ class Character {
     bool HasItemEquipped(ItemSlot uEquipIndex) const;
     bool HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const;
     bool WearsItem(ItemId item_id, ItemSlot equip_type) const;
-    int StealFromShop(ItemGen *itemToSteal, int extraStealDifficulty,
+    int StealFromShop(Item *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);
     StealResult StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
     void Heal(int amount);
@@ -223,11 +224,11 @@ class Character {
     void resetTempBonuses();
     Color GetStatColor(CharacterAttribute uStat) const;
     bool DiscardConditionIfLastsLongerThan(Condition uCondition, Time time);
-    MerchantPhrase SelectPhrasesTransaction(ItemGen *pItem, HouseType building_type, HouseId houseId, ShopScreen ShopMenuType);
+    MerchantPhrase SelectPhrasesTransaction(Item *pItem, HouseType building_type, HouseId houseId, ShopScreen ShopMenuType);
     int GetBodybuilding() const;
     int GetMeditation() const;
-    bool CanIdentify(ItemGen *pItem) const;
-    bool CanRepair(ItemGen *pItem) const;
+    bool CanIdentify(Item *pItem) const;
+    bool CanRepair(Item *pItem) const;
     int GetPerception() const;
     int GetDisarmTrap() const;
 
@@ -236,7 +237,7 @@ class Character {
      *
      * @offset 0x491317
      */
-    char getLearningPercent() const;
+    int getLearningPercent() const;
 
     /**
      * @offset 0x492528
@@ -251,9 +252,9 @@ class Character {
     bool HasSkill(CharacterSkillType skill) const;
     void WearItem(ItemId uItemID);
     int AddItem(int uSlot, ItemId uItemID);
-    int AddItem2(int uSlot, ItemGen *Src);
-    int CreateItemInInventory2(unsigned int index, ItemGen *Src);
-    void PutItemArInventoryIndex(ItemId uItemID, int itemListPos, int uSlot);
+    int AddItem2(int uSlot, Item *Src);
+    int CreateItemInInventory2(unsigned int index, Item *Src);
+    void PutItemAtInventoryIndex(ItemId uItemID, int itemListPos, int uSlot);
     void RemoveItemAtInventoryIndex(unsigned int uSlot);
     bool CanAct() const;
     bool CanSteal() const;
@@ -277,7 +278,7 @@ class Character {
     void ItemsPotionDmgBreak(int enchant_count);
     unsigned int GetItemListAtInventoryIndex(int inout_item_cell);
     unsigned int GetItemMainInventoryIndex(int inout_item_cell);
-    ItemGen *GetItemAtInventoryIndex(int inout_item_cell);
+    Item *GetItemAtInventoryIndex(int inout_item_cell);
     int GetConditionDaysPassed(Condition condition) const;
     bool NothingOrJustBlastersEquipped() const;
     void SalesProcess(unsigned int inventory_idnx, int item_index, HouseId houseId);  // 0x4BE2DD
@@ -295,13 +296,13 @@ class Character {
     /**
      * @offset 0x43EE15
      */
-    bool hasItem(ItemId uItemID, bool checkHeldItem);
+    bool hasItem(ItemId uItemID, bool checkHeldItem) const;
     void OnInventoryLeftClick();
 
     bool characterHitOrMiss(Actor *pActor, int distancemod, int skillmod);
 
     unsigned int GetMultiplierForSkillLevel(CharacterSkillType uSkillType, int mult1, int mult2, int mult3, int mult4) const;
-    int CalculateMeleeDmgToEnemyWithWeapon(ItemGen *weapon,
+    int CalculateMeleeDmgToEnemyWithWeapon(Item *weapon,
                                            MonsterId uTargetActorID,
                                            bool addOneDice);
     bool wearsItemAnywhere(ItemId item_id) const;
@@ -340,31 +341,31 @@ class Character {
     inline bool IsMale() const { return GetSexByVoice() == SEX_MALE; }
     inline bool IsFemale() const { return !IsMale(); }
 
-    ItemGen *GetMainHandItem();
-    ItemGen *GetOffHandItem();
-    ItemGen *GetBowItem();
-    ItemGen *GetArmorItem();
-    ItemGen *GetHelmItem();
-    ItemGen *GetBeltItem();
-    ItemGen *GetCloakItem();
-    ItemGen *GetGloveItem();
-    ItemGen *GetBootItem();
-    ItemGen *GetAmuletItem();
-    ItemGen *GetNthRingItem(int ringNum);
-    ItemGen *GetItem(ItemSlot index);
+    Item *GetMainHandItem();
+    Item *GetOffHandItem();
+    Item *GetBowItem();
+    Item *GetArmorItem();
+    Item *GetHelmItem();
+    Item *GetBeltItem();
+    Item *GetCloakItem();
+    Item *GetGloveItem();
+    Item *GetBootItem();
+    Item *GetAmuletItem();
+    Item *GetNthRingItem(int ringNum);
+    Item *GetItem(ItemSlot index);
 
-    const ItemGen *GetMainHandItem() const;
-    const ItemGen *GetOffHandItem() const;
-    const ItemGen *GetBowItem() const;
-    const ItemGen *GetArmorItem() const;
-    const ItemGen *GetHelmItem() const;
-    const ItemGen *GetBeltItem() const;
-    const ItemGen *GetCloakItem() const;
-    const ItemGen *GetGloveItem() const;
-    const ItemGen *GetBootItem() const;
-    const ItemGen *GetAmuletItem() const;
-    const ItemGen *GetNthRingItem(int ringNum) const;
-    const ItemGen *GetItem(ItemSlot index) const;
+    const Item *GetMainHandItem() const;
+    const Item *GetOffHandItem() const;
+    const Item *GetBowItem() const;
+    const Item *GetArmorItem() const;
+    const Item *GetHelmItem() const;
+    const Item *GetBeltItem() const;
+    const Item *GetCloakItem() const;
+    const Item *GetGloveItem() const;
+    const Item *GetBootItem() const;
+    const Item *GetAmuletItem() const;
+    const Item *GetNthRingItem(int ringNum) const;
+    const Item *GetItem(ItemSlot index) const;
 
     // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.
     /**
@@ -401,7 +402,7 @@ class Character {
     IndexedBitset<1, 512> _achievedAwardsBits;
     IndexedArray<bool, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> bHaveSpell;
     IndexedArray<bool, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> _pureStatPotionUsed;
-    std::array<ItemGen, INVENTORY_SLOT_COUNT> pInventoryItemList;
+    std::array<Item, INVENTORY_SLOT_COUNT> pInventoryItemList;
     std::array<int, INVENTORY_SLOT_COUNT> pInventoryMatrix; // 0 => empty cell
                                                             // positive => subtract 1 to get an index into pInventoryItemList.
                                                             // negative => negate & subtract 1 to get a real index into pInventoryMatrix.
@@ -454,7 +455,7 @@ class Character {
     Duration portraitTimeLength;
     int16_t portraitImageIndex;
     TalkAnimation talkAnimation;
-    std::vector<LloydBeacon> vBeacons;
+    std::array<std::optional<LloydBeacon>, 5> vBeacons;
     char uNumDivineInterventionCastsThisDay;
     char uNumArmageddonCasts;
     char uNumFireSpikeCasts;
@@ -469,4 +470,3 @@ int CharacterCreation_GetUnspentAttributePointCount();
  * @offset 0x49387A
  */
 int cycleCharacter(bool backwards);
-

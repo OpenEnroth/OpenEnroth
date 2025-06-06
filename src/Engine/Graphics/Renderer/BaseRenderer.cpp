@@ -1,5 +1,6 @@
 #include "BaseRenderer.h"
 
+#include <algorithm>
 #include <cassert>
 #include <utility>
 #include <vector>
@@ -374,7 +375,6 @@ void BaseRenderer::TransformBillboardsAndSetPalettesODM() {
     SoftwareBillboard billboard = {0};
     billboard.sParentBillboardID = -1;
     //  billboard.pTarget = render->pTargetSurface;
-    billboard.pTargetZ = render->pActiveZBuffer;
     //  billboard.uTargetPitch = render->uTargetSurfacePitch;
     billboard.uViewportX = pViewport->uViewportTL_X;
     billboard.uViewportY = pViewport->uViewportTL_Y;
@@ -669,7 +669,7 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
     }
 }
 
-void BaseRenderer::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offset) {
+void BaseRenderer::DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait, int Y_Offset) {
     Recti rct;
     rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uWidth / 2;
     rct.y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
@@ -733,44 +733,22 @@ std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
     return foundActors;
 }
 
-// TODO(pskelton): z buffer must go
 void BaseRenderer::CreateZBuffer() {
-    if (pActiveZBuffer)
-        free(pActiveZBuffer);
-
-    pActiveZBuffer = (int*)malloc(outputRender.w * outputRender.h * sizeof(int));
-    if (!pActiveZBuffer)
-        logger->error("Failed to create zbuffer");
-
     ClearZBuffer();
 }
 
-// TODO(pskelton): z buffer must go
 void BaseRenderer::ClearZBuffer() {
-    memset32(this->pActiveZBuffer, 0xFFFF0000, outputRender.w * outputRender.h);
+    _equipmentHitMap.clear();
 }
 
-// TODO(pskelton): zbuffer must go
 void BaseRenderer::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVal) {
     if (!img) return;
 
-    int uOutX = static_cast<int>(u * outputRender.w);
-    int uOutY = static_cast<int>(v * outputRender.h);
-    const RgbaImage &image = img->rgba();
+    // Convert normalized coordinates to screen pixel coordinates
+    int screenX = static_cast<int>(u * outputRender.w);
+    int screenY = static_cast<int>(v * outputRender.h);
 
-    if (uOutX < 0)
-        uOutX = 0;
-    if (uOutY < 0)
-        uOutY = 0;
-
-    for (int ys = 0; ys < image.height(); ys++) {
-        auto imageLine = image[ys];
-        for (int xs = 0; xs < image.width(); xs++) {
-            if (imageLine[xs].a != 0) {
-                this->pActiveZBuffer[uOutX + xs + outputRender.w * (uOutY + ys)] = zVal;
-            }
-        }
-    }
+    _equipmentHitMap.add(Pointi(screenX, screenY), img, zVal);
 }
 
 bool BaseRenderer::Reinitialize(bool firstInit) {
@@ -793,4 +771,8 @@ void BaseRenderer::updateRenderDimensions() {
         outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
     else
         outputRender = outputPresent;
+}
+
+int BaseRenderer::QueryEquipmentHitMap(Pointi screenPos) {
+    return _equipmentHitMap.query(screenPos, 0);
 }

@@ -8,6 +8,7 @@
 #include "Library/Color/Color.h"
 #include "Library/Color/ColorTable.h"
 #include "Library/Geometry/Rect.h"
+#include "Engine/HitMap.h"
 
 #include "TextureRenderId.h"
 #include "Engine/Graphics/RenderEntities.h"
@@ -102,7 +103,7 @@ class Renderer {
     virtual void ZDrawTextureAlpha(float u, float v, GraphicsImage *pTexture, int zVal) = 0;
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t, int start_opacity, int end_opacity) = 0;
     virtual void TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) = 0;
-    virtual void DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait_Sprite, int Y_Offset) = 0;
+    virtual void DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait_Sprite, int Y_Offset) = 0;
 
     virtual void DrawMasked(float u, float v, GraphicsImage *img,
                             int color_dimming_level,
@@ -179,8 +180,18 @@ class Renderer {
     virtual void beginOverlays() = 0;
     virtual void endOverlays() = 0;
 
+    /**
+     * Query the equipment hit map for hit testing.
+     *
+     * @param screenPos                 Screen position to query (absolute screen coordinates).
+     * @return                          Item ID at the position, or 0 if no equipment found.
+     */
+    virtual int QueryEquipmentHitMap(Pointi screenPos) = 0;
+
     std::shared_ptr<GameConfig> config = nullptr;
-    int *pActiveZBuffer;
+
+    HitMap<int> _equipmentHitMap;
+
     Color uFogColor;
     int hd_water_current_frame;
     GraphicsImage *hd_water_tile_anim[7];
@@ -203,7 +214,6 @@ extern RenderBillboard pBillboardRenderList[500];
 extern unsigned int uNumBillboardsToDraw;
 extern int uNumSpritesDrawnThisFrame;
 
-extern RenderVertexSoft array_507D30[50];
 extern RenderVertexSoft VertexRenderList[50];
 extern RenderVertexSoft array_73D150[20];
 

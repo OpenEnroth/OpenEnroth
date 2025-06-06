@@ -21,8 +21,6 @@ class Actor;
 class Character;
 struct IconFrameData;
 class Pid;
-struct RawCharacterConditions;
-struct RawTimer;
 class SoundInfo;
 class SpriteFrame;
 class TextureFrame;
@@ -37,12 +35,12 @@ struct BLVLight;
 struct BLVMapOutline;
 struct BLVSector;
 struct BSPNode;
+class CharacterConditions;
 struct Chest;
-struct ChestDesc;
 struct DecorationDesc;
 struct FontHeader;
 struct GUICharMetric;
-struct ItemGen;
+struct Item;
 struct LevelDecoration;
 struct LocationInfo;
 struct LocationTime;
@@ -50,7 +48,7 @@ struct MonsterDesc;
 struct NPCData;
 struct ODMFace;
 struct ObjectDesc;
-struct OutdoorLocationTileType;
+struct OutdoorTileType;
 struct OverlayDesc;
 struct Party;
 struct PersistentVariables;
@@ -59,6 +57,7 @@ struct SaveGameHeader;
 struct SpawnPoint;
 struct SpellBuff;
 struct SpriteObject;
+class Timer;
 
 static_assert(sizeof(Vec3s) == 6);
 static_assert(sizeof(Vec3i) == 12);
@@ -176,7 +175,7 @@ struct TileData_MM7 {
     std::array<char, 16> tileName;
     uint16_t tileId;
     uint16_t bitmapId;
-    uint16_t tileSet;
+    uint16_t tileset;
     uint16_t section;
     uint16_t attributes;
 };
@@ -228,24 +227,24 @@ void snapshot(const NPCData &src, NPCData_MM7 *dst);
 void reconstruct(const NPCData_MM7 &src, NPCData *dst);
 
 
-struct ItemGen_MM7 {
-    /* 00 */ int32_t itemID;
-    /* 04 */ int32_t attributeEnchantmentOrPotionPower; // Potion power for potions, attribute index + 1 for attribute enchantments.
-    /* 08 */ int32_t enchantmentStrength;
-    /* 0C */ int32_t specialEnchantmentOrGoldAmount; // Gold amount for gold, otherwise special enchantment.
-    /* 10 */ int32_t numCharges;
-    /* 14 */ uint32_t attributes;
-    /* 18 */ uint8_t bodyAnchor;
-    /* 19 */ uint8_t maxCharges;
-    /* 1A */ uint8_t holderPlayer; // Only for full lich jars. 1-based index of the character whose essence it stored in it.
-    /* 1B */ uint8_t placedInChest; // unknown unused 8-bit field, was repurposed
-    /* 1C */ int64_t expireTime;
+struct Item_MM7 {
+    int32_t itemId;
+    int32_t standardEnchantmentOrPotionPower; // Potion power for potions, attribute index + 1 for standard enchantments.
+    int32_t standardEnchantmentStrength;
+    int32_t specialEnchantmentOrGoldAmount; // Gold amount for gold, otherwise special enchantment.
+    int32_t numCharges;
+    uint32_t flags;
+    uint8_t equippedSlot;
+    uint8_t maxCharges;
+    uint8_t lichJarCharacterIndex; // Only for full lich jars. 1-based index of the character whose essence it stored in it.
+    uint8_t placedInChest; // Unknown unused 8-bit field, was repurposed.
+    int64_t enchantmentExpirationTime;
 };
-static_assert(sizeof(ItemGen_MM7) == 0x24);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(ItemGen_MM7)
+static_assert(sizeof(Item_MM7) == 0x24);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(Item_MM7)
 
-void snapshot(const ItemGen &src, ItemGen_MM7 *dst);
-void reconstruct(const ItemGen_MM7 &src, ItemGen *dst);
+void snapshot(const Item &src, Item_MM7 *dst);
+void reconstruct(const Item_MM7 &src, Item *dst);
 
 
 struct SpellBuff_MM7 {
@@ -286,11 +285,11 @@ struct CharacterConditions_MM7 {
 static_assert(sizeof(CharacterConditions_MM7) == 0xA0);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(CharacterConditions_MM7)
 
-void snapshot(const RawCharacterConditions &src, CharacterConditions_MM7 *dst);
-void reconstruct(const CharacterConditions_MM7 &src, RawCharacterConditions *dst);
+void snapshot(const CharacterConditions &src, CharacterConditions_MM7 *dst);
+void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst);
 
 
-struct Player_MM7 {
+struct Character_MM7 {
     /* 0000 */ CharacterConditions_MM7 conditions;
     /* 00A0 */ uint64_t experience;
     /* 00A8 */ std::array<char, 16> name;
@@ -338,8 +337,8 @@ struct Player_MM7 {
     /* 0208 */ int32_t purePersonalityUsed;
     /* 020C */ int32_t pureAccuracyUsed;
     /* 0210 */ int32_t pureMightUsed;
-    /* 0214 */ std::array<ItemGen_MM7, 126> inventoryItems;
-    /* .... */ std::array<ItemGen_MM7, 12> unusedItems;
+    /* 0214 */ std::array<Item_MM7, 126> inventoryItems;
+    /* .... */ std::array<Item_MM7, 12> unusedItems;
     /* 157C */ std::array<int32_t, 126> inventoryMatrix;
     /* 1774 */ int16_t resFireBase;
     /* 1776 */ int16_t resAirBase;
@@ -411,11 +410,11 @@ struct Player_MM7 {
     /* 1B3B */ char field_1B3B;
     /* 1B3C */
 };
-static_assert(sizeof(Player_MM7) == 0x1B3C);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(Player_MM7)
+static_assert(sizeof(Character_MM7) == 0x1B3C);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(Character_MM7)
 
-void snapshot(const Character &src, Player_MM7 *dst);
-void reconstruct(const Player_MM7 &src, Character *dst);
+void snapshot(const Character &src, Character_MM7 *dst);
+void reconstruct(const Character_MM7 &src, Character *dst);
 
 
 struct PartyTimeStruct_MM7 {
@@ -516,15 +515,15 @@ struct Party_MM7 {
     /* 00884 */ int32_t flags2;
     /* 00888 */ uint32_t alignment;
     /* 0088C */ std::array<SpellBuff_MM7, 20> partyBuffs;
-    /* 00954 */ std::array<Player_MM7, 4> players;
+    /* 00954 */ std::array<Character_MM7, 4> players;
     /* 07644 */ std::array<NPCData_MM7, 2> hirelings;
-    /* 07754 */ ItemGen_MM7 pickedItem;
+    /* 07754 */ Item_MM7 pickedItem;
     /* 07778 */ uint32_t flags;
-    /* 0777C */ std::array<ItemGen_MM7, 12> standartItemsInShop0;
-                std::array<std::array<ItemGen_MM7, 12>, 52> standartItemsInShops;
-    /* 0D0EC */ std::array<ItemGen_MM7, 12> specialItemsInShop0;
-                std::array<std::array<ItemGen_MM7, 12>, 52> specialItemsInShops;
-    /* 12A5C */ std::array<std::array<ItemGen_MM7, 12>, 32> spellBooksInGuilds;
+    /* 0777C */ std::array<Item_MM7, 12> standartItemsInShop0;
+                std::array<std::array<Item_MM7, 12>, 52> standartItemsInShops;
+    /* 0D0EC */ std::array<Item_MM7, 12> specialItemsInShop0;
+                std::array<std::array<Item_MM7, 12>, 52> specialItemsInShops;
+    /* 12A5C */ std::array<std::array<Item_MM7, 12>, 32> spellBooksInGuilds;
     /* 1605C */ std::array<char, 24> field_1605C;
     /* 16074 */ std::array<char, 100> hireling1Name;
     /* 160D8 */ std::array<char, 100> hireling2Name;
@@ -584,8 +583,8 @@ struct Timer_MM7 {
 static_assert(sizeof(Timer_MM7) == 0x28);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Timer_MM7)
 
-void snapshot(const RawTimer &src, Timer_MM7 *dst);
-void reconstruct(const Timer_MM7 &src, RawTimer *dst);
+void snapshot(const Timer &src, Timer_MM7 *dst);
+void reconstruct(const Timer_MM7 &src, Timer *dst);
 
 
 struct ActiveOverlay_MM7 {
@@ -794,7 +793,7 @@ struct Actor_MM7 {
     SpellBuff_MM7 actorBuffZeroUnused; // An artifact of the original memory layout, zero is ACTOR_BUFF_NONE.
                                        // It's not used for anything in vanilla and simply dropped in OE.
     std::array<SpellBuff_MM7, 21> pActorBuffs;
-    std::array<ItemGen_MM7, 4> ActorHasItems;
+    std::array<Item_MM7, 4> ActorHasItems;
     uint32_t uGroup;
     uint32_t uAlly;
     std::array<ActorJob_MM7, 8> pScheduledJobs;
@@ -816,8 +815,8 @@ struct BLVDoor_MM7 {
     uint32_t uTimeSinceTriggered;
     Vec3i vDirection;
     uint32_t uMoveLength;
-    uint32_t uCloseSpeed;
     uint32_t uOpenSpeed;
+    uint32_t uCloseSpeed;
     uint32_t pVertexIDs;
     uint32_t pFaceIDs;
     uint32_t pSectorIDs;
@@ -996,7 +995,7 @@ struct SpriteObject_MM7 {
     uint16_t uTimeSinceCreated;
     int16_t tempLifetime;
     int16_t field_22_glow_radius_multiplier;
-    ItemGen_MM7 containing_item;
+    Item_MM7 containing_item;
     int uSpellID;
     int spell_level;
     int32_t spell_skill;
@@ -1016,16 +1015,15 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst);
 void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst);
 
 
-struct ChestDesc_MM7 {
-    std::array<char, 32> pName;
-    uint8_t uWidth;
-    uint8_t uHeight;
-    int16_t uTextureID;
+struct ChestData_MM7 {
+    std::array<char, 32> name; // Chest name, not actually used anywhere by the engine.
+    uint8_t width;
+    uint8_t height; // Supposed chest size in inventory cells. Always 14x10 in mm7 data, which is not valid. Actual
+                    // chest size is 9x9, and it's hardcoded by `textureId` in the binary.
+    int16_t textureId; // Chest texture id, in mm7 it's a value in [1, 8]. Actual texture is "chestXX" from icons.lod.
 };
-static_assert(sizeof(ChestDesc_MM7) == 36);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(ChestDesc_MM7)
-
-void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst);
+static_assert(sizeof(ChestData_MM7) == 36);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(ChestData_MM7)
 
 
 struct DecorationDesc_MM6 {
@@ -1057,10 +1055,10 @@ void reconstruct(const DecorationDesc_MM7 &src, DecorationDesc *dst);
 
 
 struct Chest_MM7 {
-    uint16_t uChestBitmapID;
-    uint16_t uFlags;
-    std::array<ItemGen_MM7, 140> igChestItems;
-    std::array<int16_t, 140> pInventoryIndices;
+    uint16_t chestTypeId; // Index into chest table to get chest size & texture, in mm7 that's a value in [0, 7].
+    uint16_t flags;
+    std::array<Item_MM7, 140> items;
+    std::array<int16_t, 140> inventoryMatrix;
 };
 static_assert(sizeof(Chest_MM7) == 5324);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Chest_MM7)
@@ -1353,14 +1351,12 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVHeader_MM7)
 // so no reconstruct() overloads for it.
 
 
-struct OutdoorLocationTileType_MM7 {
+struct OutdoorTileType_MM7 {
     uint16_t tileset;
     uint16_t tileId;
 };
-static_assert(sizeof(OutdoorLocationTileType_MM7) == 4);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(OutdoorLocationTileType_MM7)
-
-void reconstruct(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType *dst);
+static_assert(sizeof(OutdoorTileType_MM7) == 4);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(OutdoorTileType_MM7)
 
 
 struct SaveGameHeader_MM7 {

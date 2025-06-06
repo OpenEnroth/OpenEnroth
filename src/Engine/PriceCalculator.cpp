@@ -3,7 +3,7 @@
 #include "Engine/PriceCalculator.h"
 
 #include "Engine/Data/HouseData.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Objects/Character.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Party.h"
@@ -80,7 +80,7 @@ int PriceCalculator::itemBuyingPriceForPlayer(const Character *player, int realV
     return price;
 }
 
-int PriceCalculator::itemSellingPriceForPlayer(const Character *player, const ItemGen &item, float priceMultiplier) {
+int PriceCalculator::itemSellingPriceForPlayer(const Character *player, const Item &item, float priceMultiplier) {
     int realValue = item.GetValue();
     int result = static_cast<int>((realValue / (priceMultiplier + 2.0)) + realValue * playerMerchant(player) / 100.0);
 

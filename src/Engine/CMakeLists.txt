@@ -24,7 +24,8 @@ set(ENGINE_SOURCES
         TeleportPoint.cpp
         GameResourceManager.cpp
         mm7_data.cpp
-        mm7text_ru.cpp)
+        mm7text_ru.cpp
+        Seasons.cpp)
 
 set(ENGINE_HEADERS
         ArenaEnumFunctions.h
@@ -54,7 +55,7 @@ set(ENGINE_HEADERS
         GameResourceManager.h
         mm7_data.h
         stru314.h
-        Data/AutonoteData.h)
+        Seasons.h)
 
 add_library(engine STATIC ${ENGINE_SOURCES} ${ENGINE_HEADERS})
 target_check_style(engine)
@@ -89,13 +90,13 @@ target_link_libraries(engine
 
 target_compile_definitions(engine PRIVATE
         PROJECT_VERSION="${PROJECT_VERSION}"
-        OE_BUILD_COMPILER="${OE_BUILD_COMPILER}"
+        OE_BUILD_COMPILER="${CMAKE_CXX_COMPILER_ID}"
         OE_BUILD_PLATFORM="${OE_BUILD_PLATFORM}"
         OE_BUILD_ARCHITECTURE="${OE_BUILD_ARCHITECTURE}")
 
 add_subdirectory(Data)
 add_subdirectory(Components)
-add_subdirectory(Events)
+add_subdirectory(Evt)
 add_subdirectory(Graphics)
 add_subdirectory(Objects)
 add_subdirectory(Random)

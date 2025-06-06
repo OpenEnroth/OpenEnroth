@@ -227,7 +227,8 @@ SDL_LogPriority translatePlatformLogLevel(LogLevel logLevel) {
     case LOG_INFO:      return SDL_LOG_PRIORITY_INFO;
     case LOG_WARNING:   return SDL_LOG_PRIORITY_WARN;
     case LOG_ERROR:     return SDL_LOG_PRIORITY_ERROR;
-    case LOG_CRITICAL:  return SDL_LOG_PRIORITY_CRITICAL;
+    case LOG_CRITICAL:
+    case LOG_NONE:      return SDL_LOG_PRIORITY_CRITICAL; // SDL doesn't have LOG_NONE, so this is the best we can do.
     }
 }
 

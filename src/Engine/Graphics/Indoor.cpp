@@ -8,7 +8,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Collisions.h"
 #include "Engine/Graphics/DecalBuilder.h"
@@ -51,6 +51,8 @@
 #include "Utility/String/Ascii.h"
 #include "Utility/Math/TrigLut.h"
 #include "Utility/Exception.h"
+
+#include "Io/Mouse.h"
 
 IndoorLocation *pIndoor = nullptr;
 BLVRenderParams *pBLVRenderParams = new BLVRenderParams;
@@ -137,9 +139,6 @@ static constexpr IndexedArray<SoundId, MAP_FIRST, MAP_LAST> pDoorSoundIDsByLocat
 
 //----- (0043F39E) --------------------------------------------------------
 void PrepareDrawLists_BLV() {
-    // unsigned int v7;  // ebx@8
-    BLVSector *v8;    // esi@8
-
     pBLVRenderParams->Reset();
     uNumDecorationsDrawnThisFrame = 0;
     uNumSpritesDrawnThisFrame = 0;
@@ -149,17 +148,17 @@ void PrepareDrawLists_BLV() {
     //pStationaryLightsStack->uNumLightsActive = 0;
     engine->StackPartyTorchLight();
 
-    PrepareBspRenderList_BLV();
+    pBspRenderer->Render();
 
     render->DrawSpriteObjects();
     pOutdoor->PrepareActorsDrawList();
 
      for (unsigned i = 0; i < pBspRenderer->uNumVisibleNotEmptySectors; ++i) {
-         int v7 = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
-         v8 = &pIndoor->pSectors[pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
+         int sectorId = pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i];
+         BLVSector *sector = &pIndoor->pSectors[pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom[i]];
 
-        for (unsigned j = 0; j < v8->uNumDecorations; ++j)
-            pIndoor->PrepareDecorationsRenderList_BLV(v8->pDecorationIDs[j], v7);
+        for (unsigned j = 0; j < sector->uNumDecorations; ++j)
+            pIndoor->PrepareDecorationsRenderList_BLV(sector->pDecorationIDs[j], sectorId);
      }
 
     FindBillboardsLightLevels_BLV();
@@ -191,7 +190,6 @@ void BLVRenderParams::Reset() {
 
     this->uTargetWidth = render->GetRenderDimensions().w;
     this->uTargetHeight = render->GetRenderDimensions().h;
-    this->pTargetZBuffer = render->pActiveZBuffer;
     this->uNumFacesRenderedThisFrame = 0;
 }
 
@@ -226,7 +224,7 @@ void BLVFace::FromODM(ODMFace *face) {
 }
 
 //----- (004AE5BA) --------------------------------------------------------
-GraphicsImage *BLVFace::GetTexture() {
+GraphicsImage *BLVFace::GetTexture() const {
     if (this->IsTextureFrameTable())
         // TODO(captainurist): using pEventTimer here is weird. This means that e.g. cleric in the haunted mansion is
         //                     not animated in turn-based mode. Use misc timer? Also see ODMFace::GetTexture.
@@ -653,7 +651,34 @@ bool BLVFaceExtra::HasEventHint() {
     return hasEventHint(this->uEventID);
 }
 
-//----- (0046F228) --------------------------------------------------------
+void BLV_InitialiseDoors() {
+    for (unsigned i = 0; i < pIndoor->pDoors.size(); ++i) {
+        auto *door = &pIndoor->pDoors[i];
+        int distance = 0;
+        if (door->uState == DOOR_OPEN) {
+            distance = 0;
+        } else if (door->uState == DOOR_OPENING) {
+            distance = door->uMoveLength - (door->uTimeSinceTriggered.realtimeMilliseconds() * door->uOpenSpeed / 1000);
+            if (distance <= 0) {
+                distance = 0;
+                door->uState = DOOR_OPEN;
+            }
+        } else if (door->uState == DOOR_CLOSED || door->uAttributes & DOOR_TRIGGERED) {
+            distance = door->uMoveLength;
+        } else if (door->uState == DOOR_CLOSING) {
+            distance = door->uTimeSinceTriggered.realtimeMilliseconds() * door->uCloseSpeed / 1000;
+            if (distance >= door->uMoveLength) {
+                distance = door->uMoveLength;
+                door->uState = DOOR_CLOSED;
+            }
+        } else {
+            assert(false && "Invalid door state when initalising doors - please provide a save game");
+        }
+
+        BLV_UpdateDoorGeometry(door, distance);
+    }
+}
+
 void BLV_UpdateDoors() {
     SoundId eDoorSoundID = SOUND_wood_door0101;
     if (engine->_currentLoadedMapId != MAP_INVALID)
@@ -664,97 +689,151 @@ void BLV_UpdateDoors() {
         BLVDoor *door = &pIndoor->pDoors[i];
 
         // door not moving currently
-        if (door->uState == DOOR_CLOSED || door->uState == DOOR_OPEN) {
-            door->uAttributes &= ~DOOR_SETTING_UP;
+        if (door->uState == DOOR_OPEN || door->uState == DOOR_CLOSED) {
             continue;
         }
-        bool shouldPlaySound = !(door->uAttributes & (DOOR_SETTING_UP | DOOR_NOSOUND)) && door->uNumVertices != 0;
+
+        bool shouldPlaySound = !(door->uAttributes & DOOR_NOSOUND) && door->uNumVertices != 0;
 
         door->uTimeSinceTriggered += pEventTimer->dt();
 
-        int openDistance;     // [sp+60h] [bp-4h]@6
-        if (door->uState == DOOR_OPENING) {
-            openDistance = door->uTimeSinceTriggered.realtimeMilliseconds() * door->uOpenSpeed / 1000;
+        int closeDistance = 0;     // [sp+60h] [bp-4h]@6
+        if (door->uState == DOOR_CLOSING) {
+            closeDistance = door->uTimeSinceTriggered.realtimeMilliseconds() * door->uCloseSpeed / 1000;
 
-            if (openDistance >= door->uMoveLength) {
-                openDistance = door->uMoveLength;
-                door->uState = DOOR_OPEN;
+            if (closeDistance >= door->uMoveLength) {
+                closeDistance = door->uMoveLength;
+                door->uState = DOOR_CLOSED;
                 if (shouldPlaySound)
                     pAudioPlayer->playSound(doorClosedSound(eDoorSoundID), SOUND_MODE_PID, Pid(OBJECT_Door, i));
             } else if (shouldPlaySound) {
                 pAudioPlayer->playSound(eDoorSoundID, SOUND_MODE_PID, Pid(OBJECT_Door, i));
             }
         } else {
-            assert(door->uState == DOOR_CLOSING);
+            assert(door->uState == DOOR_OPENING);
 
-            int closeDistance = door->uTimeSinceTriggered.realtimeMilliseconds() * door->uCloseSpeed / 1000;
-            if (closeDistance >= door->uMoveLength) {
-                openDistance = 0;
-                door->uState = DOOR_CLOSED;
+            int openDistance = door->uTimeSinceTriggered.realtimeMilliseconds() * door->uOpenSpeed / 1000;
+            if (openDistance >= door->uMoveLength) {
+                closeDistance = 0;
+                door->uState = DOOR_OPEN;
                 if (shouldPlaySound)
                     pAudioPlayer->playSound(doorClosedSound(eDoorSoundID), SOUND_MODE_PID, Pid(OBJECT_Door, i));
             } else {
-                openDistance = door->uMoveLength - closeDistance;
+                closeDistance = door->uMoveLength - openDistance;
                 if (shouldPlaySound)
                     pAudioPlayer->playSound(eDoorSoundID, SOUND_MODE_PID, Pid(OBJECT_Door, i));
             }
         }
 
-        // adjust verts to how open the door is
-        for (int j = 0; j < door->uNumVertices; ++j) {
-            pIndoor->pVertices[door->pVertexIDs[j]].x = door->vDirection.x * openDistance + door->pXOffsets[j];
-            pIndoor->pVertices[door->pVertexIDs[j]].y = door->vDirection.y * openDistance + door->pYOffsets[j];
-            pIndoor->pVertices[door->pVertexIDs[j]].z = door->vDirection.z * openDistance + door->pZOffsets[j];
+        BLV_UpdateDoorGeometry(door, closeDistance);
+    }
+}
+
+void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
+    // adjust verts to how open the door is
+    for (int j = 0; j < door->uNumVertices; ++j) {
+        pIndoor->pVertices[door->pVertexIDs[j]].x = door->vDirection.x * distance + door->pXOffsets[j];
+        pIndoor->pVertices[door->pVertexIDs[j]].y = door->vDirection.y * distance + door->pYOffsets[j];
+        pIndoor->pVertices[door->pVertexIDs[j]].z = door->vDirection.z * distance + door->pZOffsets[j];
+    }
+
+    for (int j = 0; j < door->uNumFaces; ++j) {
+        BLVFace* face = &pIndoor->pFaces[door->pFaceIDs[j]];
+        const Vec3f& facePoint = pIndoor->pVertices[face->pVertexIDs[0]];
+        face->facePlane.dist = -dot(facePoint, face->facePlane.normal);
+        face->zCalc.init(face->facePlane);
+
+        Vec3f v;
+        Vec3f u;
+        face->_get_normals(&u, &v);
+        BLVFaceExtra* extras = &pIndoor->pFaceExtras[face->uFaceExtraID];
+        extras->sTextureDeltaU = 0;
+        extras->sTextureDeltaV = 0;
+
+        float minU = std::numeric_limits<float>::infinity();
+        float minV = std::numeric_limits<float>::infinity();
+        float maxU = -std::numeric_limits<float>::infinity();
+        float maxV = -std::numeric_limits<float>::infinity();
+        for (unsigned k = 0; k < face->uNumVertices; ++k) {
+            Vec3f point = pIndoor->pVertices[face->pVertexIDs[k]];
+            float pointU = dot(point, u);
+            float pointV = dot(point, v);
+            minU = std::min(minU, pointU);
+            minV = std::min(minV, pointV);
+            maxU = std::max(maxU, pointU);
+            maxV = std::max(maxV, pointV);
+            face->pVertexUIDs[k] = pointU;
+            face->pVertexVIDs[k] = pointV;
         }
 
-        for (int j = 0; j < door->uNumFaces; ++j) {
-            BLVFace *face = &pIndoor->pFaces[door->pFaceIDs[j]];
-            const Vec3f &facePoint = pIndoor->pVertices[face->pVertexIDs[0]];
-            face->facePlane.dist = -dot(facePoint, face->facePlane.normal);
-            face->zCalc.init(face->facePlane);
-
-            Vec3f v;
-            Vec3f u;
-            face->_get_normals(&u, &v);
-            BLVFaceExtra *extras = &pIndoor->pFaceExtras[face->uFaceExtraID];
-            extras->sTextureDeltaU = 0;
-            extras->sTextureDeltaV = 0;
-
-            float minU = std::numeric_limits<float>::infinity();
-            float minV = std::numeric_limits<float>::infinity();
-            float maxU = -std::numeric_limits<float>::infinity();
-            float maxV = -std::numeric_limits<float>::infinity();
-            for (unsigned k = 0; k < face->uNumVertices; ++k) {
-                Vec3f point = pIndoor->pVertices[face->pVertexIDs[k]];
-                float pointU = dot(point, u);
-                float pointV = dot(point, v);
-                minU = std::min(minU, pointU);
-                minV = std::min(minV, pointV);
-                maxU = std::max(maxU, pointU);
-                maxV = std::max(maxV, pointV);
-                face->pVertexUIDs[k] = pointU;
-                face->pVertexVIDs[k] = pointV;
-            }
-
-            if (face->uAttributes & FACE_TexAlignLeft) {
-                extras->sTextureDeltaU -= minU;
-            } else if (face->uAttributes & FACE_TexAlignRight && face->resource) {
-                extras->sTextureDeltaU -= maxU + face->GetTexture()->width();
-            }
-
-            if (face->uAttributes & FACE_TexAlignDown) {
-                extras->sTextureDeltaV -= minV;
-            } else if (face->uAttributes & FACE_TexAlignBottom && face->resource) {
-                extras->sTextureDeltaV -= maxV + face->GetTexture()->height();
-            }
-
-            if (face->uAttributes & FACE_TexMoveByDoor) {
-                float udot = dot(door->vDirection, u);
-                float vdot = dot(door->vDirection, v);
-                extras->sTextureDeltaU = -udot * openDistance + door->pDeltaUs[j];
-                extras->sTextureDeltaV = -vdot * openDistance + door->pDeltaVs[j];
-            }
+        if (face->uAttributes & FACE_TexAlignLeft) {
+            extras->sTextureDeltaU -= minU;
+        } else if (face->uAttributes & FACE_TexAlignRight && face->resource) {
+            extras->sTextureDeltaU -= maxU + face->GetTexture()->width();
         }
+
+        if (face->uAttributes & FACE_TexAlignDown) {
+            extras->sTextureDeltaV -= minV;
+        } else if (face->uAttributes & FACE_TexAlignBottom && face->resource) {
+            extras->sTextureDeltaV -= maxV + face->GetTexture()->height();
+        }
+
+        if (face->uAttributes & FACE_TexMoveByDoor) {
+            float udot = dot(door->vDirection, u);
+            float vdot = dot(door->vDirection, v);
+            extras->sTextureDeltaU = -udot * distance + door->pDeltaUs[j];
+            extras->sTextureDeltaV = -vdot * distance + door->pDeltaVs[j];
+        }
+    }
+}
+
+void switchDoorAnimation(unsigned int uDoorID, DoorAction action) {
+    auto pos = std::ranges::find(pIndoor->pDoors, uDoorID, &BLVDoor::uDoorID);
+    if (pos == pIndoor->pDoors.end()) {
+        logger->error("Unable to find Door ID: {}!", uDoorID);
+        return;
+    }
+
+    BLVDoor& door = *pos;
+
+    if (action == DOOR_ACTION_TRIGGER) {
+        if (door.uState == DOOR_OPENING || door.uState == DOOR_CLOSING)
+            return;
+
+        door.uTimeSinceTriggered = 0_ticks;
+
+        if (door.uState == DOOR_CLOSED) {
+            door.uState = DOOR_OPENING;
+        } else {
+            assert(door.uState == DOOR_OPEN);
+            door.uState = DOOR_CLOSING;
+        }
+    } else if (action == DOOR_ACTION_OPEN) {
+        if (door.uState == DOOR_OPEN || door.uState == DOOR_OPENING)
+            return;
+
+        if (door.uState == DOOR_CLOSED) {
+            door.uTimeSinceTriggered = 0_ticks;
+        } else {
+            assert(door.uState == DOOR_CLOSING);
+            int totalTimeMs = 1000 * door.uMoveLength / door.uOpenSpeed;
+            int timeLeftMs = door.uTimeSinceTriggered.realtimeMilliseconds() * door.uCloseSpeed / door.uOpenSpeed;
+            door.uTimeSinceTriggered = Duration::fromRealtimeMilliseconds(totalTimeMs - timeLeftMs);
+        }
+        door.uState = DOOR_OPENING;
+    } else if (action == DOOR_ACTION_CLOSE) {
+        if (door.uState == DOOR_CLOSED || door.uState == DOOR_CLOSING)
+            return;
+
+        if (door.uState == DOOR_OPEN) {
+            door.uTimeSinceTriggered = 0_ticks;
+        } else {
+            assert(door.uState == DOOR_OPENING);
+            int totalTimeMs = 1000 * door.uMoveLength / door.uCloseSpeed;
+            int timeLeftMs = door.uTimeSinceTriggered.realtimeMilliseconds() * door.uOpenSpeed / door.uCloseSpeed;
+            door.uTimeSinceTriggered = Duration::fromRealtimeMilliseconds(totalTimeMs - timeLeftMs);
+        }
+        door.uState = DOOR_CLOSING;
     }
 }
 
@@ -770,8 +849,12 @@ void UpdateActors_BLV() {
         int uFaceID;
         float floorZ = GetIndoorFloorZ(actor.pos, &actor.sectorId, &uFaceID);
 
-        if (actor.sectorId == 0 || floorZ <= -30000)
+        if (actor.sectorId == 0 || floorZ <= -30000 || uFaceID == -1) {
+            // TODO(pskelton): asserts trips on test 416 with Dragons OOB - consider running actor check on file load
+            // to correct positions so this assert can be reinstated.
+            //assert(false);  // level built with errors
             continue;
+        }
 
         bool isFlying = actor.monsterInfo.flying;
         if (!actor.CanAct())
@@ -842,14 +925,30 @@ void UpdateActors_BLV() {
                 actor.velocity.z += -8 * pEventTimer->dt().ticks() * GetGravityStrength();
         }
 
-        if (actor.velocity.lengthSqr() >= 400) {
-            ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
-        } else {
-            actor.velocity = Vec3f(0, 0, 0);
+        if (actor.velocity.xy().lengthSqr() < 400) {
+            actor.velocity.x = 0;
+            actor.velocity.y = 0;
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
                 if (actor.aiState == Dead)
                     actor.aiState = Removed;
             }
+        }
+
+        Vec3f oldPos = actor.pos;
+        Vec3f savedSpeed = actor.velocity;
+
+        actor.velocity.z = 0;
+        ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
+
+        if (actor.pos.z <= oldPos.z) {
+            actor.velocity = Vec3f(0, 0, savedSpeed.z);
+            ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
+        }
+
+        // update actor direction based on movement - better navigation if hit obstacle
+        Vec3f travel = actor.pos - oldPos;
+        if (travel.lengthSqr() > 128.f) {
+            actor.yawAngle = TrigLUT.atan2(travel.x, travel.y);
         }
     }
 }
@@ -867,6 +966,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
     uCurrentlyLoadedLevelType = LEVEL_INDOOR;
     pBLVRenderParams->uPartySectorID = 0;
     pBLVRenderParams->uPartyEyeSectorID = 0;
+    pBspRenderer->Clear();
 
     engine->SetUnderwater(isMapUnderwater(mapid));
 
@@ -910,25 +1010,7 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
         RespawnGlobalDecorations();
     }
 
-    // TODO(captainurist): that's some convoluted logic. We set up doors, set uTimeSinceTriggered to 120sec, and thus
-    //                     they snap into place on the next frame. Just init them properly!
-    for (unsigned i = 0; i < pIndoor->pDoors.size(); ++i) {
-        if (pIndoor->pDoors[i].uAttributes & DOOR_TRIGGERED) {
-            pIndoor->pDoors[i].uState = DOOR_OPENING;
-            pIndoor->pDoors[i].uTimeSinceTriggered = 15360_ticks;
-            pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
-        }
-
-        if (pIndoor->pDoors[i].uState == DOOR_CLOSED) {
-            pIndoor->pDoors[i].uState = DOOR_CLOSING;
-            pIndoor->pDoors[i].uTimeSinceTriggered = 15360_ticks;
-            pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
-        } else if (pIndoor->pDoors[i].uState == DOOR_OPEN) {
-            pIndoor->pDoors[i].uState = DOOR_OPENING;
-            pIndoor->pDoors[i].uTimeSinceTriggered = 15360_ticks;
-            pIndoor->pDoors[i].uAttributes = DOOR_SETTING_UP;
-        }
-    }
+    BLV_InitialiseDoors();
 
     /*for (unsigned i = 0; i < pIndoor->uNumFaces; ++i)
     {
@@ -975,17 +1057,10 @@ void loadAndPrepareBLV(MapId mapid, bool bLoading) {
 
     pGameLoadingUI_ProgressBar->Progress();
 
-    for (int i = 0; i < pSpriteObjects.size(); ++i) {
-        if (pSpriteObjects[i].uObjectDescID) {
-            if (pSpriteObjects[i].containing_item.uItemID != ITEM_NULL) {
-                if (pSpriteObjects[i].containing_item.uItemID != ITEM_POTION_BOTTLE &&
-                    pItemTable->pItems[pSpriteObjects[i].containing_item.uItemID].uEquipType == ITEM_TYPE_POTION &&
-                    !pSpriteObjects[i].containing_item.potionPower)
-                    pSpriteObjects[i].containing_item.potionPower = grng->random(15) + 5;
-                pItemTable->SetSpecialBonus(&pSpriteObjects[i].containing_item);
-            }
-        }
-    }
+    // TODO(captainurist): merge with ArrangeSpriteObjects?
+    for (int i = 0; i < pSpriteObjects.size(); ++i)
+        if (pSpriteObjects[i].uObjectDescID)
+            pSpriteObjects[i].containing_item.postGenerate(ITEM_SOURCE_MAP);
 
     // INDOOR initialize actors
     alertStatus = false;
@@ -1591,12 +1666,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     if (pIndoor->pFaces[faceId].isFluid())
         on_water = true;
 
-    // Party angle in XY plane.
-    int angle = pParty->_viewYaw;
-
-    // Vertical party angle (basically azimuthal angle in polar coordinates).
-    int vertical_angle = pParty->_viewPitch;
-
     // Calculate rotation in ticks (1024 ticks per 180 degree).
     // TODO(captainurist): #time think about a better way to write this formula.
     int rotation =
@@ -1608,85 +1677,89 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         switch (pPartyActionQueue->Next()) {
             case PARTY_TurnLeft:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle + (int) engine->config->settings.TurnSpeed.value());
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + (int) engine->config->settings.TurnSpeed.value());
                 else
-                    angle = TrigLUT.uDoublePiMask & (angle + static_cast<int>(rotation * fTurnSpeedMultiplier));
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + static_cast<int>(rotation * fTurnSpeedMultiplier));
                 break;
             case PARTY_TurnRight:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle - (int) engine->config->settings.TurnSpeed.value());
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - (int) engine->config->settings.TurnSpeed.value());
                 else
-                    angle = TrigLUT.uDoublePiMask & (angle - static_cast<int>(rotation * fTurnSpeedMultiplier));
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - static_cast<int>(rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnLeft:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle + (int) engine->config->settings.TurnSpeed.value());
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + (int) engine->config->settings.TurnSpeed.value());
                 else
-                    angle = TrigLUT.uDoublePiMask & (angle + static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw + static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_FastTurnRight:
                 if (engine->config->settings.TurnSpeed.value() > 0)
-                    angle = TrigLUT.uDoublePiMask & (angle - (int) engine->config->settings.TurnSpeed.value());
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - (int) engine->config->settings.TurnSpeed.value());
                 else
-                    angle = TrigLUT.uDoublePiMask & (angle - static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
+                    pParty->_viewYaw = TrigLUT.uDoublePiMask & (pParty->_viewYaw - static_cast<int>(2.0f * rotation * fTurnSpeedMultiplier));
                 break;
 
             case PARTY_StrafeLeft:
-                pParty->velocity.x -= TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
-                pParty->velocity.y += TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.x -= TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.y += TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_StrafeRight:
-                pParty->velocity.y -= TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
-                pParty->velocity.x += TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.y -= TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
+                pParty->velocity.x += TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier / 2;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkForward:
-                pParty->velocity.x += TrigLUT.cos(angle) * pParty->walkSpeed * fWalkSpeedMultiplier;
-                pParty->velocity.y += TrigLUT.sin(angle) * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.x += TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.y += TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_WalkBackward:
-                pParty->velocity.x -= TrigLUT.cos(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
-                pParty->velocity.y -= TrigLUT.sin(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.x -= TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.y -= TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_RunForward:
-                pParty->velocity.x += TrigLUT.cos(angle) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
-                pParty->velocity.y += TrigLUT.sin(angle) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.x += TrigLUT.cos(pParty->_viewYaw) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
+                pParty->velocity.y += TrigLUT.sin(pParty->_viewYaw) * 2 * pParty->walkSpeed * fWalkSpeedMultiplier;
                 party_running_flag = true;
                 break;
 
             case PARTY_RunBackward:
-                pParty->velocity.x -= TrigLUT.cos(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
-                pParty->velocity.y -= TrigLUT.sin(angle) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.x -= TrigLUT.cos(pParty->_viewYaw) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
+                pParty->velocity.y -= TrigLUT.sin(pParty->_viewYaw) * pParty->walkSpeed * fBackwardWalkSpeedMultiplier;
                 party_walking_flag = true;
                 break;
 
             case PARTY_LookUp:
-                vertical_angle += engine->config->settings.VerticalTurnSpeed.value();
-                if (vertical_angle > 128)
-                    vertical_angle = 128;
+                pParty->_viewPitch += engine->config->settings.VerticalTurnSpeed.value();
+                if (pParty->_viewPitch > 128)
+                    pParty->_viewPitch = 128;
                 if (pParty->hasActiveCharacter())
                     pParty->activeCharacter().playReaction(SPEECH_LOOK_UP);
                 break;
 
             case PARTY_LookDown:
-                vertical_angle -= engine->config->settings.VerticalTurnSpeed.value();
-                if (vertical_angle < -128)
-                    vertical_angle = -128;
+                pParty->_viewPitch -= engine->config->settings.VerticalTurnSpeed.value();
+                if (pParty->_viewPitch < -128)
+                    pParty->_viewPitch = -128;
                 if (pParty->hasActiveCharacter())
                     pParty->activeCharacter().playReaction(SPEECH_LOOK_DOWN);
                 break;
 
             case PARTY_CenterView:
-                vertical_angle = 0;
+                pParty->_viewPitch = 0;
+                break;
+
+            case PARTY_MouseLook:
+                mouse->DoMouseLook();
                 break;
 
             case PARTY_Jump:
@@ -1809,64 +1882,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->setAirborne(true);
 
     pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
-    pParty->_viewYaw = angle;
-    pParty->_viewPitch = vertical_angle;
 
-    if (!isAboveGround && pIndoor->pFaces[faceId].uAttributes & FACE_IsLava)
-        pParty->uFlags |= PARTY_FLAG_BURNING;
+    if (faceId >= 0) // TODO(pskelton): investigate why this happens
+        if (!isAboveGround && pIndoor->pFaces[faceId].uAttributes & FACE_IsLava)
+            pParty->uFlags |= PARTY_FLAG_BURNING;
 
     if (faceEvent)
         eventProcessor(faceEvent, Pid(), 1);
-}
-
-void switchDoorAnimation(unsigned int uDoorID, DoorAction a2) {
-    auto pos = std::ranges::find(pIndoor->pDoors, uDoorID, &BLVDoor::uDoorID);
-    if (pos == pIndoor->pDoors.end()) {
-        logger->error("Unable to find Door ID: {}!", uDoorID);
-        return;
-    }
-
-    BLVDoor &door = *pos;
-
-    if (a2 == DOOR_ACTION_TRIGGER) {
-        if (door.uState == DOOR_CLOSING || door.uState == DOOR_OPENING)
-            return;
-
-        door.uTimeSinceTriggered = 0_ticks;
-
-        if (door.uState == DOOR_OPEN) {
-            door.uState = DOOR_CLOSING;
-        } else {
-            assert(door.uState == DOOR_CLOSED);
-            door.uState = DOOR_OPENING;
-        }
-    } else if (a2 == DOOR_ACTION_CLOSE) {
-        if (door.uState == DOOR_CLOSED || door.uState == DOOR_CLOSING)
-            return;
-
-        if (door.uState == DOOR_OPEN) {
-            door.uTimeSinceTriggered = 0_ticks;
-        } else if (door.uTimeSinceTriggered != 15360_ticks) {
-            assert(door.uState == DOOR_OPENING);
-            int totalTimeMs = 1000 * door.uMoveLength / door.uCloseSpeed;
-            int timeLeftMs = door.uTimeSinceTriggered.realtimeMilliseconds() * door.uOpenSpeed / door.uCloseSpeed;
-            door.uTimeSinceTriggered = Duration::fromRealtimeMilliseconds(totalTimeMs - timeLeftMs);
-        }
-        door.uState = DOOR_CLOSING;
-    } else if (a2 == DOOR_ACTION_OPEN) {
-        if (door.uState == DOOR_OPEN || door.uState == DOOR_OPENING)
-            return;
-
-        if (door.uState == DOOR_CLOSED) {
-            door.uTimeSinceTriggered = 0_ticks;
-        } else if (door.uTimeSinceTriggered != 15360_ticks) {
-            assert(door.uState == DOOR_CLOSING);
-            int totalTimeMs = 1000 * door.uMoveLength / door.uOpenSpeed;
-            int timeLeftMs = door.uTimeSinceTriggered.realtimeMilliseconds() * door.uCloseSpeed / door.uOpenSpeed;
-            door.uTimeSinceTriggered = Duration::fromRealtimeMilliseconds(totalTimeMs - timeLeftMs);
-        }
-        door.uState = DOOR_OPENING;
-    }
 }
 
 //----- (004088E9) --------------------------------------------------------
@@ -1915,7 +1937,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
             enc_spawn_point.uMonsterIndex = enc_index;
 
             // get proposed floor level
-            enc_spawn_point.vPosition.z = ODM_GetFloorLevel(enc_spawn_point.vPosition, 0, &bInWater, &modelPID, 0);
+            enc_spawn_point.vPosition.z = ODM_GetFloorLevel(enc_spawn_point.vPosition, &bInWater, &modelPID);
 
             // check spawn point is not in a model
             for (BSPModel &model : pOutdoor->pBModels) {
@@ -1978,7 +2000,7 @@ int SpawnEncounterMonsters(MapInfo *map_info, int enc_index) {
 int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f pos, uint16_t facing) {
     SpriteObject a1;
     pItemTable->generateItem(trs_level, trs_type, &a1.containing_item);
-    a1.uType = pItemTable->pItems[a1.containing_item.uItemID].uSpriteID;
+    a1.uType = pItemTable->items[a1.containing_item.itemId].spriteId;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     a1.vPosition = pos;
     a1.uFacing = facing;
@@ -2011,12 +2033,12 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
         }
 
         a1a.containing_item.generateGold(a2->uItemIndex);
-        a1a.uType = pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
+        a1a.uType = pItemTable->items[a1a.containing_item.itemId].spriteId;
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
     } else {
         if (!a1a.containing_item.GenerateArtifact())
             return;
-        a1a.uType = pItemTable->pItems[a1a.containing_item.uItemID].uSpriteID;
+        a1a.uType = pItemTable->items[a1a.containing_item.itemId].spriteId;
         a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
         a1a.containing_item.Reset();  // TODO(captainurist): this needs checking
     }

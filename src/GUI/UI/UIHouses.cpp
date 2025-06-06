@@ -81,7 +81,7 @@ std::array<const HouseAnimDescr, 196> pAnimatedRooms = { {  // 0x4E5F70
     { "Necromancer Magic Shop01", 0xE, 0x2DC, HOUSE_TYPE_MAGIC_SHOP, 66, 0 },
     { "Dwarven Magic Shop01", 0x2A, 0x2EF, HOUSE_TYPE_MAGIC_SHOP, 91, 0 },
     { "Wizard Magic Shop", 0x1E, 0x2DF, HOUSE_TYPE_MAGIC_SHOP, 15, 0 },
-    { "Warlock Magic Shop", 0x7, 0x3B9, HOUSE_TYPE_MAGIC_SHOP, 15, 0 },
+    { "Warlock Magic Shop", 0x7, 0x3B9, HOUSE_TYPE_MAGIC_SHOP, 31, 0 },
     { "Elf Magic Shop", 0x24, 0x2CC, HOUSE_TYPE_MAGIC_SHOP, 82, 0 },
     { "Human Stables01", 0x21, 0x31, HOUSE_TYPE_STABLE, 48, 3 },
     { "Necromancer Stables", 0x21, 0x2DD, HOUSE_TYPE_STABLE, 67, 3 },
@@ -301,7 +301,6 @@ bool enterHouse(HouseId uHouseID) {
     }
 
     current_npc_text.clear();
-    render->ClearZBuffer();
 
     int openHours = houseTable[uHouseID].uOpenTime;
     int closeHours = houseTable[uHouseID].uCloseTime;
@@ -323,7 +322,7 @@ bool enterHouse(HouseId uHouseID) {
         CivilTime openCivilTime = openTime.toCivilTime();
         CivilTime closeCivilTime = closeTime.toCivilTime();
 
-        engine->_statusBar->setEvent(LSTR_FMT_OPEN_TIME,
+        engine->_statusBar->setEvent(LSTR_THIS_PLACE_IS_OPEN_FROM_DS_TO_DS,
                                      openCivilTime.hourAmPm,
                                      localization->GetAmPm(openCivilTime.isPm),
                                      closeCivilTime.hourAmPm,
@@ -339,7 +338,7 @@ bool enterHouse(HouseId uHouseID) {
         if (!(pParty->PartyTimes.shopBanTimes[uHouseID]) || (pParty->PartyTimes.shopBanTimes[uHouseID] <= pParty->GetPlayingTime())) {
             pParty->PartyTimes.shopBanTimes[uHouseID] = Time();
         } else {
-            engine->_statusBar->setEvent(LSTR_BANNED_FROM_SHOP);
+            engine->_statusBar->setEvent(LSTR_YOUVE_BEEN_BANNED_FROM_THIS_SHOP);
             return false;
         }
     }
@@ -392,7 +391,7 @@ void prepareHouse(HouseId house) {
     if (proprietorId) {
         HouseNpcDesc desc;
         desc.type = HOUSE_PROPRIETOR;
-        desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, houseTable[house].pProprieterName);
+        desc.label = localization->FormatString(LSTR_CONVERSE_WITH_S, houseTable[house].pProprieterName);
         desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", proprietorId));
 
         houseNpcs.push_back(desc);
@@ -404,7 +403,7 @@ void prepareHouse(HouseId house) {
             if (!(pNPCStats->pNPCData[i].uFlags & NPC_HIRED)) {
                 HouseNpcDesc desc;
                 desc.type = HOUSE_NPC;
-                desc.label = localization->FormatString(LSTR_FMT_CONVERSE_WITH_S, pNPCStats->pNPCData[i].name);
+                desc.label = localization->FormatString(LSTR_CONVERSE_WITH_S, pNPCStats->pNPCData[i].name);
                 desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCStats->pNPCData[i].uPortraitID));
                 desc.npc = &pNPCStats->pNPCData[i];
 
@@ -428,7 +427,7 @@ void prepareHouse(HouseId house) {
 
             HouseNpcDesc desc;
             desc.type = HOUSE_TRANSITION;
-            desc.label = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].name);
+            desc.label = localization->FormatString(LSTR_ENTER_S, pMapStats->pInfos[id].name);
             desc.icon = assets->getImage_ColorKey(pHouse_ExitPictures[static_cast<int>(id)]);
             desc.targetMapID = id;
 
@@ -551,8 +550,6 @@ void selectProprietorDialogueOption(DialogueId option) {
     }
 
     pParty->placeHeldItemInInventoryOrDrop();
-
-    render->ClearZBuffer();
 
     window_SpeakInHouse->houseDialogueOptionSelected(option);
     window_SpeakInHouse->reinitDialogueWindow();
@@ -678,7 +675,6 @@ void createHouseUI(HouseId houseId) {
 // TODO(Nik-RE-dev): looks like this function is not needed anymore
 void BackToHouseMenu() {
     auto pMouse = EngineIocContainer::ResolveMouse();
-    pMouse->ClearPickedItem();
     // TODO(Nik-RE-dev): Looks like it's artifact of MM6
 #if 0
     if (window_SpeakInHouse && window_SpeakInHouse->houseId() == 165 &&
@@ -717,7 +713,7 @@ void GUIWindow_House::houseNPCDialogue() {
         house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         house_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
         if (pTransitionStrings[std::to_underlying(id)].empty()) { // TODO(captainurist): this is a weird access into pTransitionStrings, investigate & add docs
-            auto str = localization->FormatString(LSTR_FMT_ENTER_S, pMapStats->pInfos[id].name);
+            auto str = localization->FormatString(LSTR_ENTER_S, pMapStats->pInfos[id].name);
             house_window.DrawTitleText(assets->pFontCreate.get(), 0, (212 - assets->pFontCreate->CalcTextHeight(str, house_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
             return;
         }
@@ -830,7 +826,7 @@ bool GUIWindow_House::checkIfPlayerCanInteract() {
         window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-        std::string str = localization->FormatString(LSTR_FMT_S_IS_IN_NO_CODITION_TO_S, pParty->activeCharacter().name, localization->GetString(LSTR_DO_ANYTHING));
+        std::string str = localization->FormatString(LSTR_S_IS_IN_NO_CONDITION_TO_S, pParty->activeCharacter().name, localization->GetString(LSTR_DO_ANYTHING));
         window.DrawTitleText(assets->pFontArrus.get(), 0, (212 - assets->pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0)) / 2 + 101, ui_house_player_cant_interact_color, str, 3);
         return false;
     }
@@ -1046,15 +1042,15 @@ void GUIWindow_House::learnSkillsDialogue(Color selectColor) {
 
     if (!haveLearnableSkills) {
         Character &player = pParty->activeCharacter();
-        std::string str = localization->FormatString(LSTR_FMT_SEEK_KNOWLEDGE_ELSEWHERE, player.name, localization->GetClassName(player.classType));
-        str = str + "\n \n" + localization->GetString(LSTR_NO_FURTHER_OFFERS);
+        std::string str = localization->FormatString(LSTR_SEEK_KNOWLEDGE_ELSEWHERE_S_THE_S, player.name, localization->GetClassName(player.classType));
+        str = str + "\n \n" + localization->GetString(LSTR_I_CAN_OFFER_YOU_NOTHING_FURTHER);
 
         int text_height = assets->pFontArrus->CalcTextHeight(str, dialogue.uFrameWidth, 0);
         dialogue.DrawTitleText(assets->pFontArrus.get(), 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - text_height) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.PaleCanary, str, 3);
         return;
     }
 
-    std::string skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, cost);
+    std::string skill_price_label = localization->FormatString(LSTR_SKILL_COST_LU, cost);
     dialogue.DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.White, skill_price_label, 3);
 
     drawOptions(optionsText, selectColor, 18);
@@ -1065,7 +1061,7 @@ void GUIWindow_House::learnSelectedSkill(CharacterSkillType skill) {
     if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != CHARACTER_SKILL_MASTERY_NONE) {
         if (!pParty->activeCharacter().pActiveSkills[skill]) {
             if (pParty->GetGold() < pPrice) {
-                engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+                engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
                 if (buildingType() == HOUSE_TYPE_TRAINING_GROUND) {
                     playHouseSound(houseId(), HOUSE_SOUND_TRAINING_NOT_ENOUGH_GOLD);
                 } else if (buildingType() == HOUSE_TYPE_TAVERN) {

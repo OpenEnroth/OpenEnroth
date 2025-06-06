@@ -5,7 +5,7 @@
 
 #include "Engine/Engine.h"
 #include "Engine/EngineGlobals.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Camera.h"
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Graphics/Outdoor.h"
@@ -75,8 +75,7 @@ static void initSpellSprite(SpriteObject *spritePtr,
 /**
  * Notify that spell casting failed.
  */
-static void spellFailed(CastSpellInfo *pCastSpell,
-                        int error_str_id) {
+static void spellFailed(CastSpellInfo *pCastSpell, LstrId error_str_id) {
     engine->_statusBar->setEvent(error_str_id);
     pAudioPlayer->playUISound(SOUND_spellfail0201);
     pCastSpell->uSpellID = SPELL_NONE;
@@ -224,7 +223,7 @@ void CastSpellInfoHelpers::castSpell() {
         }
 
         if (isRegularSpell(pCastSpell->uSpellID) && !pPlayer->CanCastSpell(uRequiredMana)) {
-            spellFailed(pCastSpell, LSTR_NOT_ENOUGH_SPELLPOINTS);
+            spellFailed(pCastSpell, LSTR_NOT_ENOUGH_SPELL_POINTS);
             continue;
         }
 
@@ -306,20 +305,22 @@ void CastSpellInfoHelpers::castSpell() {
                     castSuccessful = false;
                 } else if (grng->random(100) >= success_chance_percent) {
                     spellFailed(pCastSpell, LSTR_SPELL_FAILED);
-                    // Mana was not spend before on failure.
+                    // Mana was not spent before on failure.
                     pPlayer->SpendMana(uRequiredMana);
                     castSuccessful = false;
                 }
             }
             if (castSuccessful) {
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastTownPortal, Pid(OBJECT_Character, pCastSpell->casterCharacterIndex).packed(), 0);
+                int param2 = std::to_underlying(pCastSpell->flags & ON_CAST_CastViaScroll);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastTownPortal, Pid(OBJECT_Character, pCastSpell->casterCharacterIndex).packed(), param2);
                 pAudioPlayer->playSpellSound(pCastSpell->uSpellID, false, SOUND_MODE_EXCLUSIVE);
             }
         } else if (pCastSpell->uSpellID == SPELL_WATER_LLOYDS_BEACON) {
             if (engine->_currentLoadedMapId == MAP_ARENA) {
                 spellFailed(pCastSpell, LSTR_SPELL_FAILED);
             } else {
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastLloydsBeacon, pCastSpell->casterCharacterIndex, spell_level);
+                int param2 = std::to_underlying(pCastSpell->flags & ON_CAST_CastViaScroll);
+                engine->_messageQueue->addMessageCurrentFrame(UIMSG_OnCastLloydsBeacon, Pid(OBJECT_Character, pCastSpell->casterCharacterIndex).packed(), param2);
                 pCastSpell->flags |= ON_CAST_NoRecoverySpell;
             }
         } else {
@@ -685,14 +686,14 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_VAMPIRIC_WEAPON:
                 case SPELL_FIRE_FIRE_AURA:
                 {
-                    ItemGen *item = &pParty->pCharacters[pCastSpell->targetCharacterIndex].pInventoryItemList[pCastSpell->targetInventoryIndex];
+                    Item *item = &pParty->pCharacters[pCastSpell->targetCharacterIndex].pInventoryItemList[pCastSpell->targetInventoryIndex];
                     item->UpdateTempBonus(pParty->GetPlayingTime());
-                    if (item->uItemID == ITEM_BLASTER ||
-                            item->uItemID == ITEM_BLASTER_RIFLE ||
+                    if (item->itemId == ITEM_BLASTER ||
+                            item->itemId == ITEM_BLASTER_RIFLE ||
                             item->IsBroken() ||
-                            pItemTable->IsMaterialNonCommon(item) ||
-                            item->special_enchantment != ITEM_ENCHANTMENT_NULL ||
-                            item->attributeEnchantment ||
+                            item->rarity() != RARITY_COMMON ||
+                            item->specialEnchantment != ITEM_ENCHANTMENT_NULL ||
+                            item->standardEnchantment ||
                             !item->isWeapon()) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
@@ -707,32 +708,32 @@ void CastSpellInfoHelpers::castSpell() {
                         case SPELL_FIRE_FIRE_AURA:
                             switch (spell_mastery) {
                                 case CHARACTER_SKILL_MASTERY_NOVICE:
-                                    item->special_enchantment = ITEM_ENCHANTMENT_OF_FIRE;
+                                    item->specialEnchantment = ITEM_ENCHANTMENT_OF_FIRE;
                                     break;
                                 case CHARACTER_SKILL_MASTERY_EXPERT:
-                                    item->special_enchantment = ITEM_ENCHANTMENT_OF_FLAME;
+                                    item->specialEnchantment = ITEM_ENCHANTMENT_OF_FLAME;
                                     break;
                                 case CHARACTER_SKILL_MASTERY_MASTER:
                                 case CHARACTER_SKILL_MASTERY_GRANDMASTER:
-                                    item->special_enchantment = ITEM_ENCHANTMENT_OF_INFERNOS;
+                                    item->specialEnchantment = ITEM_ENCHANTMENT_OF_INFERNOS;
                                     break;
                                 default:
                                     assert(false);
                             }
 
-                            item->uAttributes |= ITEM_AURA_EFFECT_RED;
+                            item->flags |= ITEM_AURA_EFFECT_RED;
                             break;
                         case SPELL_DARK_VAMPIRIC_WEAPON:
-                            item->special_enchantment = ITEM_ENCHANTMENT_VAMPIRIC;
-                            item->uAttributes |= ITEM_AURA_EFFECT_PURPLE;
+                            item->specialEnchantment = ITEM_ENCHANTMENT_VAMPIRIC;
+                            item->flags |= ITEM_AURA_EFFECT_PURPLE;
                             break;
                         default:
                             assert(false);
                     }
 
                     if (spell_mastery < CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                        item->uExpireTime = pParty->GetPlayingTime() + Duration::fromHours(spell_level);
-                        item->uAttributes |= ITEM_TEMP_BONUS;
+                        item->enchantmentExpirationTime = pParty->GetPlayingTime() + Duration::fromHours(spell_level);
+                        item->flags |= ITEM_TEMP_BONUS;
                     }
 
                     ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
@@ -973,7 +974,7 @@ void CastSpellInfoHelpers::castSpell() {
                     assert(spell_mastery >= CHARACTER_SKILL_MASTERY_MASTER);
 
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                        spellFailed(pCastSpell, LSTR_CANT_METEOR_SHOWER_INDOORS);
+                        spellFailed(pCastSpell, LSTR_CANT_CAST_METEOR_SHOWER_INDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -1020,7 +1021,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_FIRE_INFERNO:
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                        spellFailed(pCastSpell, LSTR_CANT_INFERNO_OUTDOORS);
+                        spellFailed(pCastSpell, LSTR_CANT_CAST_INFERNO_OUTDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -1087,21 +1088,23 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
+                    auto pos = pParty->pos + Vec3f(0, 0, pParty->height / 3);
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pos);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
+                    // uFacing is used to determine the sprite translation and is the same for each
+                    pSpellSprite.uFacing = (short)target_direction.uYawAngle;
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     int spell_spray_angle_start = ONE_THIRD_PI / -2;
                     int spell_spray_angle_end = ONE_THIRD_PI / 2;
+                    int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     while (spell_spray_angle_start <= spell_spray_angle_end) {
+                        // vPosition is modified by Create so reset for each loop
+                        pSpellSprite.vPosition = pos;
                         pSpellSprite.timeSinceCreated = Duration::randomRealtimeMilliseconds(grng, 500);
-                        pSpellSprite.uFacing = spell_spray_angle_start + (short)target_direction.uYawAngle;
-                        int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                        int yaw = spell_spray_angle_start + target_direction.uYawAngle;
-                        if (pSpellSprite.Create(yaw, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
+                        if (pSpellSprite.Create(spell_spray_angle_start + target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
                             pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
                         }
@@ -1113,7 +1116,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_AIR_JUMP:
                 {
                     if (pParty->isAirborne()) {
-                        spellFailed(pCastSpell, LSTR_CANT_JUMP_AIRBORNE);
+                        spellFailed(pCastSpell, LSTR_CANT_CAST_JUMP_WHILE_AIRBORNE);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -1143,7 +1146,7 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
                     if (pParty->GetRedOrYellowAlert()) {
-                        spellFailed(pCastSpell, LSTR_HOSTILE_CREATURES_NEARBY);
+                        spellFailed(pCastSpell, LSTR_THERE_ARE_HOSTILE_CREATURES_NEARBY);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -1156,7 +1159,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_AIR_FLY:
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                        spellFailed(pCastSpell, LSTR_CANT_FLY_INDOORS);
+                        spellFailed(pCastSpell, LSTR_CAN_NOT_CAST_FLY_INDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -1176,7 +1179,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_AIR_STARBURST:
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                        spellFailed(pCastSpell, LSTR_CANT_STARBURST_INDOORS);
+                        spellFailed(pCastSpell, LSTR_CANT_CAST_STARBURST_INDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -1275,16 +1278,18 @@ void CastSpellInfoHelpers::castSpell() {
                             break;
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-                    pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
+                    auto pos = pParty->pos + Vec3f(0, 0, pParty->height / 3);
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pos);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
+                    // uFacing is used to determine the sprite translation and is the same for each
+                    pSpellSprite.uFacing = target_direction.uYawAngle;
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
                     if (shots_num == 1) {
-                        pSpellSprite.uFacing = target_direction.uYawAngle;
+                        pSpellSprite.vPosition = pos;
                         if (pSpellSprite.Create(target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
                             pParty->bTurnBasedModeOn) {
                             ++pTurnEngine->pending_actions;
@@ -1292,16 +1297,15 @@ void CastSpellInfoHelpers::castSpell() {
                     } else {
                         int spell_spray_angle_start = ONE_THIRD_PI / -2;
                         int spell_spray_angle_end = ONE_THIRD_PI / 2;
-                        if (spell_spray_angle_start <= spell_spray_angle_end) {
-                            do {
-                                pSpellSprite.uFacing = spell_spray_angle_start + target_direction.uYawAngle;
-                                if (pSpellSprite.Create(pSpellSprite.uFacing, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
-                                    pParty->bTurnBasedModeOn) {
-                                    ++pTurnEngine->pending_actions;
-                                }
-                                spell_spray_angle_start += ONE_THIRD_PI / (shots_num - 1);
-                            } while (spell_spray_angle_start <= spell_spray_angle_end);
-                        }
+                        do {
+                            // vPosition is modified by Create so reset for each loop
+                            pSpellSprite.vPosition = pos;
+                            if (pSpellSprite.Create(spell_spray_angle_start + target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
+                                pParty->bTurnBasedModeOn) {
+                                ++pTurnEngine->pending_actions;
+                            }
+                            spell_spray_angle_start += ONE_THIRD_PI / (shots_num - 1);
+                        } while (spell_spray_angle_start <= spell_spray_angle_end);
                     }
                     break;
                 }
@@ -1340,7 +1344,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_WATER_RECHARGE_ITEM:
                 {
-                    ItemGen *item = &pParty->pCharacters[pCastSpell->targetCharacterIndex].pInventoryItemList[pCastSpell->targetInventoryIndex];
+                    Item *item = &pParty->pCharacters[pCastSpell->targetCharacterIndex].pInventoryItemList[pCastSpell->targetInventoryIndex];
                     if (!item->isWand() || item->IsBroken()) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
@@ -1366,15 +1370,15 @@ void CastSpellInfoHelpers::castSpell() {
                         spell_recharge_factor = 1.0;
                     }
 
-                    int uNewCharges = item->uMaxCharges * spell_recharge_factor;
+                    int uNewCharges = item->maxCharges * spell_recharge_factor;
 
                     // Disallow if wand will lose charges
                     bool chargeFailed = false;
-                    if (uNewCharges < item->uNumCharges) {
+                    if (uNewCharges <= item->numCharges) {
                         chargeFailed = true;
                     } else {
-                        item->uMaxCharges = uNewCharges;
-                        item->uNumCharges = uNewCharges;
+                        item->maxCharges = uNewCharges;
+                        item->numCharges = uNewCharges;
                     }
 
                     if (uNewCharges <= 0 || chargeFailed) {
@@ -1387,21 +1391,20 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
 
-                    item->uAttributes |= ITEM_AURA_EFFECT_GREEN;
+                    item->flags |= ITEM_AURA_EFFECT_GREEN;
                     ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                     break;
                 }
 
                 case SPELL_WATER_ENCHANT_ITEM:
                 {
-                    uRequiredMana = 0;
                     int success_chance_percent = 10 * spell_level; // 10% chance of success per spell level
                     bool item_not_broken = true;
                     bool spell_failed = true;
                     int rnd = grng->random(100);
-                    pPlayer = &pParty->pCharacters[pCastSpell->targetCharacterIndex];
-                    ItemGen *spell_item_to_enchant = &pPlayer->pInventoryItemList[pCastSpell->targetInventoryIndex];
-                    ItemType this_equip_type = pItemTable->pItems[spell_item_to_enchant->uItemID].uEquipType;
+                    auto pTargetPlayer = &pParty->pCharacters[pCastSpell->targetCharacterIndex];
+                    Item *spell_item_to_enchant = &pTargetPlayer->pInventoryItemList[pCastSpell->targetInventoryIndex];
+                    ItemType this_equip_type = pItemTable->items[spell_item_to_enchant->itemId].type;
 
                     // refs
                     // https://www.gog.com/forum/might_and_magic_series/a_little_enchant_item_testing_in_mm7
@@ -1413,22 +1416,22 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     if ((spell_mastery == CHARACTER_SKILL_MASTERY_MASTER || spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) &&
-                            isRegular(spell_item_to_enchant->uItemID) &&
-                            spell_item_to_enchant->special_enchantment == ITEM_ENCHANTMENT_NULL &&
-                            !spell_item_to_enchant->attributeEnchantment &&
-                            spell_item_to_enchant->m_enchantmentStrength == 0 &&
+                            isRegular(spell_item_to_enchant->itemId) &&
+                            spell_item_to_enchant->specialEnchantment == ITEM_ENCHANTMENT_NULL &&
+                            !spell_item_to_enchant->standardEnchantment &&
+                            spell_item_to_enchant->standardEnchantmentStrength == 0 &&
                             !spell_item_to_enchant->IsBroken()) {
                         // break items with low value
                         if ((spell_item_to_enchant->GetValue() < 450 && !isWeapon(this_equip_type)) ||  // not weapons
                                 (spell_item_to_enchant->GetValue() < 250 && isWeapon(this_equip_type))) {  // weapons
-                            if (!(spell_item_to_enchant->uAttributes & ITEM_HARDENED)) {
+                            if (!(spell_item_to_enchant->flags & ITEM_HARDENED)) {
                                 spell_item_to_enchant->SetBroken();
                             }
                             item_not_broken = false;
                         } else {
                             // random item break
                             if (rnd >= success_chance_percent) {
-                                if (!(spell_item_to_enchant->uAttributes & ITEM_HARDENED)) {
+                                if (!(spell_item_to_enchant->flags & ITEM_HARDENED)) {
                                     spell_item_to_enchant->SetBroken();
                                 }
                             } else {
@@ -1441,9 +1444,9 @@ void CastSpellInfoHelpers::castSpell() {
                                     // finds how many possible enchaments and adds up to item apply values
                                     // if (pItemTable->pEnchantments_count > 0) {
                                     for (CharacterAttribute attr : allEnchantableAttributes()) {
-                                        const std::string &bonusStat = pItemTable->standardEnchantments[attr].pBonusStat;
+                                        const std::string &bonusStat = pItemTable->standardEnchantments[attr].attributeName;
                                         if (!bonusStat.empty()) {
-                                            int this_to_apply = pItemTable->standardEnchantments[attr].chancesByItemType[this_equip_type];
+                                            int this_to_apply = pItemTable->standardEnchantments[attr].chanceByItemType[this_equip_type];
                                             to_item_apply_sum += this_to_apply;
                                             if (this_to_apply) {
                                                 ench_array[ench_found] = attr;
@@ -1461,14 +1464,14 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     // step through until we hit that ench
                                     for (step = 0; step < ench_found; step++) {
-                                        current_item_apply_sum += pItemTable->standardEnchantments[ench_array[step]].chancesByItemType[this_equip_type];
+                                        current_item_apply_sum += pItemTable->standardEnchantments[ench_array[step]].chanceByItemType[this_equip_type];
                                         if (current_item_apply_sum >= target_item_apply_rand) {
                                             break;
                                         }
                                     }
 
                                     // assign ench and power
-                                    spell_item_to_enchant->attributeEnchantment = ench_array[step];
+                                    spell_item_to_enchant->standardEnchantment = ench_array[step];
 
                                     int ench_power = 0;
                                     // master 3-8  - guess work needs checking
@@ -1476,8 +1479,8 @@ void CastSpellInfoHelpers::castSpell() {
                                     // gm 6-12   - guess work needs checking
                                     if (spell_mastery== CHARACTER_SKILL_MASTERY_GRANDMASTER) ench_power = grng->random(7) + 6;
 
-                                    spell_item_to_enchant->m_enchantmentStrength = ench_power;
-                                    spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
+                                    spell_item_to_enchant->standardEnchantmentStrength = ench_power;
+                                    spell_item_to_enchant->flags |= ITEM_AURA_EFFECT_BLUE;
                                     ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                                     spell_failed = false;
                                 } else { // weapons or we won the lottery for special enchantment
@@ -1486,22 +1489,20 @@ void CastSpellInfoHelpers::castSpell() {
                                     ItemEnchantment ench_array[100] = {};
 
                                     // finds how many possible enchaments and adds up to item apply values
-                                    if (pItemTable->pSpecialEnchantments_count > 0) {
-                                        for (ItemEnchantment spec_ench_loop : pItemTable->pSpecialEnchantments.indices()) {
-                                            const std::string &bonusStatement = pItemTable->pSpecialEnchantments[spec_ench_loop].pBonusStatement;
-                                            if (!bonusStatement.empty()) {
-                                                if (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel == 3) {
-                                                    continue;
-                                                }
-                                                if (spell_mastery == CHARACTER_SKILL_MASTERY_MASTER && (pItemTable->pSpecialEnchantments[spec_ench_loop].iTreasureLevel != 0)) {
-                                                    continue;
-                                                }
-                                                int this_to_apply = pItemTable->pSpecialEnchantments[spec_ench_loop].to_item_apply[this_equip_type];
-                                                to_item_apply_sum += this_to_apply;
-                                                if (this_to_apply) {
-                                                    ench_array[ench_found] = spec_ench_loop;
-                                                    ench_found++;
-                                                }
+                                    for (ItemEnchantment spec_ench_loop : pItemTable->specialEnchantments.indices()) {
+                                        const std::string &bonusStatement = pItemTable->specialEnchantments[spec_ench_loop].description;
+                                        if (!bonusStatement.empty()) {
+                                            if (pItemTable->specialEnchantments[spec_ench_loop].iTreasureLevel == 3) {
+                                                continue;
+                                            }
+                                            if (spell_mastery == CHARACTER_SKILL_MASTERY_MASTER && (pItemTable->specialEnchantments[spec_ench_loop].iTreasureLevel != 0)) {
+                                                continue;
+                                            }
+                                            int this_to_apply = pItemTable->specialEnchantments[spec_ench_loop].chanceByItemType[this_equip_type];
+                                            to_item_apply_sum += this_to_apply;
+                                            if (this_to_apply) {
+                                                ench_array[ench_found] = spec_ench_loop;
+                                                ench_found++;
                                             }
                                         }
                                     }
@@ -1514,15 +1515,15 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     // step through until we hit that ench
                                     for (step = 0; step < ench_found; step++) {
-                                        current_item_apply_sum += pItemTable->pSpecialEnchantments[ench_array[step]].to_item_apply[this_equip_type];
+                                        current_item_apply_sum += pItemTable->specialEnchantments[ench_array[step]].chanceByItemType[this_equip_type];
                                         if (current_item_apply_sum >= target_item_apply_rand) {
                                             break;
                                         }
                                     }
 
                                     // set item ench
-                                    spell_item_to_enchant->special_enchantment = ench_array[step];
-                                    spell_item_to_enchant->uAttributes |= ITEM_AURA_EFFECT_BLUE;
+                                    spell_item_to_enchant->specialEnchantment = ench_array[step];
+                                    spell_item_to_enchant->flags |= ITEM_AURA_EFFECT_BLUE;
                                     ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                                     spell_failed = false;
                                 }
@@ -1531,7 +1532,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     if (spell_failed) {
-                        spellFailed(pCastSpell, item_not_broken ? LSTR_SPELL_FAILED : LSTR_ITEM_TOO_LAME);
+                        spellFailed(pCastSpell, item_not_broken ? LSTR_SPELL_FAILED : LSTR_ITEM_IS_NOT_OF_HIGH_ENOUGH_QUALITY);
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].playReaction(SPEECH_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
@@ -1973,25 +1974,25 @@ void CastSpellInfoHelpers::castSpell() {
                         if (pActors[monster_id].items[3].isGold()) {
                             gold_num = pActors[monster_id].items[3].goldAmount;
                         }
-                        ItemGen item;
+                        Item item;
                         item.Reset();
                         if (pActors[monster_id].carriedItemId != ITEM_NULL) {
-                            item.uItemID = pActors[monster_id].carriedItemId;
+                            item.itemId = pActors[monster_id].carriedItemId;
                         } else {
-                            for (const ItemGen &actorItem : pActors[monster_id].items) {
-                                if (actorItem.uItemID != ITEM_NULL &&
-                                        pItemTable->pItems[actorItem.uItemID].uEquipType != ITEM_TYPE_GOLD) {
+                            for (const Item &actorItem : pActors[monster_id].items) {
+                                if (actorItem.itemId != ITEM_NULL &&
+                                        pItemTable->items[actorItem.itemId].type != ITEM_TYPE_GOLD) {
                                     item = actorItem;
                                 }
                             }
                         }
                         if (gold_num > 0) {
-                            if (item.uItemID != ITEM_NULL)
+                            if (item.itemId != ITEM_NULL)
                                 engine->_statusBar->setEvent(fmt::format("({}), and {} gold", item.GetDisplayName(), gold_num));
                             else
                                 engine->_statusBar->setEvent(fmt::format("{} gold", gold_num));
                         } else {
-                            if (item.uItemID != ITEM_NULL) {
+                            if (item.itemId != ITEM_NULL) {
                                 engine->_statusBar->setEvent(fmt::format("({})", item.GetDisplayName()));
                             } else {
                                 engine->_statusBar->nothingHere();
@@ -2181,9 +2182,9 @@ void CastSpellInfoHelpers::castSpell() {
                         if (pSpriteObjects[obj_id].containing_item.isGold()) {
                             pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.goldAmount, GOLD_RECEIVE_SHARE);
                         } else {
-                            engine->_statusBar->setEvent(LSTR_FMT_YOU_FOUND_ITEM, pItemTable->pItems[pSpriteObjects[obj_id].containing_item.uItemID].pUnidentifiedName);
+                            engine->_statusBar->setEvent(LSTR_YOU_FOUND_AN_ITEM_S, pItemTable->items[pSpriteObjects[obj_id].containing_item.itemId].unidentifiedName);
                             if (!pParty->addItemToParty(&pSpriteObjects[obj_id].containing_item)) {
-                                pParty->setHoldingItem(&pSpriteObjects[obj_id].containing_item);
+                                pParty->setHoldingItem(pSpriteObjects[obj_id].containing_item);
                             }
                         }
                         SpriteObject::OnInteraction(obj_id);
@@ -2197,7 +2198,7 @@ void CastSpellInfoHelpers::castSpell() {
                             eventProcessor(pLevelDecorations[obj_id].uEventID, spell_targeted_at, 1);
                         }
                         // TODO(captainurist): investigate, that's a very weird std::to_underlying call.
-                        if (pLevelDecorations[std::to_underlying(pSpriteObjects[obj_id].containing_item.uItemID)].IsInteractive()) {
+                        if (pLevelDecorations[std::to_underlying(pSpriteObjects[obj_id].containing_item.itemId)].IsInteractive()) {
                             activeLevelDecoration = &pLevelDecorations[obj_id];
                             eventProcessor(engine->_persistentVariables.decorVars[pLevelDecorations[obj_id].eventVarId] + 380, Pid(), 1);
                             activeLevelDecoration = nullptr;
@@ -2448,7 +2449,7 @@ void CastSpellInfoHelpers::castSpell() {
                         }
                     }
                     if (mon_num >= max_summoned) {
-                        spellFailed(pCastSpell, LSTR_SUMMONS_LIMIT_REACHED);
+                        spellFailed(pCastSpell, LSTR_THIS_CHARACTER_CANT_SUMMON_ANY_MORE);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -2487,7 +2488,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_LIGHT_PRISMATIC_LIGHT:
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-                        spellFailed(pCastSpell, LSTR_CANT_PRISMATIC_OUTDOORS);
+                        spellFailed(pCastSpell, LSTR_CANT_CAST_PRISMATIC_LIGHT_OUTDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -2651,7 +2652,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int monster_id = pCastSpell->targetPid.id();
                     if (monster_id == -1) {
-                        spellFailed(pCastSpell, LSTR_NO_VALID_SPELL_TARGET);
+                        spellFailed(pCastSpell, LSTR_NO_VALID_TARGET_EXISTS);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
                         setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
@@ -2701,26 +2702,27 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     // TODO(pskelton): was pParty->uPartyHeight / 2
-                    pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);
-                    pSpellSprite.uSectorID = pIndoor->GetSector(pSpellSprite.vPosition);
+                    auto pos = pParty->pos + Vec3f(0, 0, pParty->height / 3);
+                    pSpellSprite.uSectorID = pIndoor->GetSector(pos);
                     pSpellSprite.spell_target_pid = spell_targeted_at;
                     pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
+                    // uFacing is used to determine the sprite translation and is the same for each
+                    pSpellSprite.uFacing = target_direction.uYawAngle;
                     if (pParty->bTurnBasedModeOn) {
                         pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
                     }
                     int spell_spray_angle_start = ONE_THIRD_PI / -2;
                     int spell_spray_angle_end = ONE_THIRD_PI / 2;
-                    if (spell_spray_angle_start <= spell_spray_angle_end) {
-                        do {
-                            pSpellSprite.uFacing = spell_spray_angle_start + target_direction.uYawAngle;
-                            int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
-                            if (pSpellSprite.Create(pSpellSprite.uFacing, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
-                                pParty->bTurnBasedModeOn) {
-                                ++pTurnEngine->pending_actions;
-                            }
-                            spell_spray_angle_start += ONE_THIRD_PI / (blades_cound - 1);
-                        } while (spell_spray_angle_start <= spell_spray_angle_end);
-                    }
+                    int spell_speed = pObjectList->pObjects[pSpellSprite.uObjectDescID].uSpeed;
+                    do {
+                        // vPosition is modified by Create so reset for each loop
+                        pSpellSprite.vPosition = pos;
+                        if (pSpellSprite.Create(spell_spray_angle_start + target_direction.uYawAngle, target_direction.uPitchAngle, spell_speed, pCastSpell->casterCharacterIndex + 1) != -1 &&
+                            pParty->bTurnBasedModeOn) {
+                            ++pTurnEngine->pending_actions;
+                        }
+                        spell_spray_angle_start += ONE_THIRD_PI / (blades_cound - 1);
+                    } while (spell_spray_angle_start <= spell_spray_angle_end);
                     break;
                 }
 
@@ -2880,7 +2882,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_ARMAGEDDON:
                 {
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
-                        spellFailed(pCastSpell, LSTR_CANT_ARMAGEDDON_INDOORS);
+                        spellFailed(pCastSpell, LSTR_CANT_CAST_ARMAGEDDON_INDOORS);
                         setSpellRecovery(pCastSpell, failureRecoveryTime);
                         continue;
                     }
@@ -2902,12 +2904,27 @@ void CastSpellInfoHelpers::castSpell() {
                     if (pParty->bTurnBasedModeOn) {
                         ++pTurnEngine->pending_actions;
                     }
-                    for (unsigned i = 0; i < 50; i++) {
-                        Vec3f rand(grng->random(4096) - 2048, grng->random(4096) - 2048, 0);
-                        bool bOnWater = false;
-                        int terr_height = GetTerrainHeightsAroundParty2(pParty->pos + rand, &bOnWater, 0);
+
+                    // Some flying rocks as decoration.
+                    // Vanilla code used to spawn 50 rocks in a 4096x4096 units square with speed in [500, 1000).
+                    // Using grng here because we want to pin the rocks in place in tests, and it just makes more sense
+                    // given that the rocks are added as in-game objects.
+                    constexpr int rocksCount = 250,
+                        rocksRadius = 3200,
+                        rocksSpeedMin = 300,
+                        rocksSpeedMax = 1400,
+                        rocksRadiusSqr = rocksRadius * rocksRadius;
+                    const auto getCoord = []{ return grng->randomInSegment(-rocksRadius, rocksRadius); };
+
+                    for (int i = 0; i < rocksCount;) {
+                        Vec3f rand(getCoord(), getCoord(), 0);
+                        if (rand.lengthSqr() > rocksRadiusSqr)
+                            continue;
+                        int terr_height = pOutdoor->pTerrain.heightByPos(pParty->pos + rand);
                         SpriteObject::dropItemAt(SPRITE_SPELL_EARTH_ROCK_BLAST,
-                                                 {rand.x + pParty->pos.x, rand.y + pParty->pos.y, terr_height + 16.0f}, grng->random(500) + 500);
+                                {rand.x + pParty->pos.x, rand.y + pParty->pos.y, terr_height + 16.0f},
+                                grng->randomInSegment(rocksSpeedMin, rocksSpeedMax));
+                        i++;
                     }
                     break;
                 }
