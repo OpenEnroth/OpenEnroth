@@ -46,9 +46,6 @@ GraphicsImage *saveload_ui_x_d = nullptr;
 
 static GraphicsImage *scrollstop = nullptr;
 
-// TODO(Nik-RE-dev): drop variable and load game only on double click
-static bool isLoadSlotClicked = false;
-
 GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRenderDimensions()) {
     saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
     saveload_ui_save_up = assets->getImage_ColorKey("save_up");

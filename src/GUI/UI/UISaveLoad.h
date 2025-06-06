@@ -34,10 +34,11 @@ class GUIWindow_Load : public GUIWindow {
     void quickLoad();
 
  protected:
-    GraphicsImage *main_menu_background;
+    bool isLoadSlotClicked{};
+    GraphicsImage *main_menu_background{};
 
-    GraphicsImage *saveload_ui_load_up;
-    GraphicsImage *saveload_ui_loadsave;
-    GraphicsImage *saveload_ui_loadu;
-    GraphicsImage *saveload_ui_x_u;
+    GraphicsImage *saveload_ui_load_up{};
+    GraphicsImage *saveload_ui_loadsave{};
+    GraphicsImage *saveload_ui_loadu{};
+    GraphicsImage *saveload_ui_x_u{};
 };
