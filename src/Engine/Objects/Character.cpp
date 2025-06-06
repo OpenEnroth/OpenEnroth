@@ -698,7 +698,6 @@ int Character::AddItem(int index, ItemId uItemID) {
     }
 
     if (!canFitItem(index, uItemID)) {
-        pAudioPlayer->playUISound(SOUND_error);
         return 0;  // cant fit item
     }
 
