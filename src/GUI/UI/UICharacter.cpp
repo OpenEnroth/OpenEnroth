@@ -1023,6 +1023,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
     // Aqua-Lung
     if (player->hasUnderwaterSuitEquipped()) {
+        // TODO(captainurist): need to also z-draw arms and wrists.
         render->DrawTextureNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID]);
         if (!bRingsShownInCharScreen)
             render->ZDrawTextureAlpha(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID], player->pEquipment[ITEM_SLOT_ARMOUR]);

@@ -211,7 +211,6 @@ RgbaImage OpenGLRenderer::ReadScreenPixels() {
 
 bool OpenGLRenderer::InitializeFullscreen() {
     // pViewport->ResetScreen();
-    // CreateZBuffer();
 
     return true;
 }
@@ -4477,7 +4476,6 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
 bool OpenGLRenderer::SwitchToWindow() {
     // pViewport->ResetScreen();
-    // CreateZBuffer();
 
     return true;
 }
