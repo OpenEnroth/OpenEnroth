@@ -109,6 +109,36 @@ GAME_TEST(Issues, Issue2061) {
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_NULL); // Shouldn't pick anything.
 }
 
+GAME_TEST(Issues, Issue2066) {
+    // No error sound when trying to place item outside of inventory boundaries.
+    auto soundsTape = tapes.sounds();
+    game.startNewGame();
+    test.startTaping();
+
+    pParty->pCharacters[0].pInventoryItemList.fill(Item());
+    pParty->pCharacters[0].pInventoryMatrix.fill(0);
+    pParty->pCharacters[0].AddItem(-1, ITEM_LEATHER_ARMOR); // Add leather armor at (0, 0).
+
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_I);
+    game.tick();
+    game.pressAndReleaseButton(BUTTON_LEFT, 30, 30); // Pick up leather armor.
+    game.tick();
+    game.pressAndReleaseButton(BUTTON_LEFT, 30, 0); // Try to place outside inventory boundaries.
+    game.tick(2); // Two ticks so that the taping engine doesn't merge frames with SOUND_error.
+    game.pressAndReleaseButton(BUTTON_LEFT, 0, 30);
+    game.tick(2);
+    game.pressAndReleaseButton(BUTTON_LEFT, 476 - 60, 30);
+    game.tick(2);
+    game.pressAndReleaseButton(BUTTON_LEFT, 30, 345 - 60);
+    game.tick(2);
+
+    EXPECT_EQ(soundsTape.flattened().count(SOUND_error), 4); // Get 4 errors.
+}
+
 GAME_TEST(Issues, Issue2075) {
     // Paralyze works on dead enemies
     auto turnBased = tapes.custom([] { return pParty->bTurnBasedModeOn; });
@@ -120,3 +150,4 @@ GAME_TEST(Issues, Issue2075) {
     EXPECT_EQ(actorsTape.back(), Dead);
     EXPECT_EQ(actorsTape.size(), 1);
 }
+
