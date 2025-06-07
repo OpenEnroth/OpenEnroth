@@ -1888,28 +1888,12 @@ void UI_OnMouseRightClick(Pointi mousePos) {
             } else {
                 // this could be put into a chest function
 
-                int chestheight =
-                    9;  // pChestHeightsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
-                int chestwidth = 9;
-                int inventoryYCoord = (pY - 34) / 32;  // use pchestoffsets??
+                int inventoryYCoord = (pY - 34) / 32;  // TODO(captainurist): use pchestoffsets
                 int inventoryXCoord = (pX - 42) / 32;
-                int invMatrixIndex =
-                    inventoryXCoord + (chestheight * inventoryYCoord);
 
-                if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
-                    inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
-                    int chestindex = vChests[pGUIWindow_CurrentChest->chestId()].inventoryMatrix[invMatrixIndex];
-                    if (chestindex < 0) {
-                        invMatrixIndex = (-(chestindex + 1));
-                        chestindex = vChests[pGUIWindow_CurrentChest->chestId()].inventoryMatrix[invMatrixIndex];
-                    }
-
-                    if (chestindex) {
-                        int itemindex = chestindex - 1;
-
-                        GameUI_DrawItemInfo(&vChests[pGUIWindow_CurrentChest->chestId()].items[itemindex]);
-                    }
-                }
+                InventoryEntry *entry = vChests[pGUIWindow_CurrentChest->chestId()].inventory.gridItem({inventoryXCoord, inventoryYCoord});
+                if (entry)
+                    GameUI_DrawItemInfo(&entry->item());
             }
             break;
         }
