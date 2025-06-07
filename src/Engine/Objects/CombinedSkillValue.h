@@ -14,6 +14,14 @@ class CombinedSkillValue {
     CombinedSkillValue();
     CombinedSkillValue(int level, CharacterSkillMastery mastery);
 
+    /**
+     * @param level                     Skill level to check.
+     * @param mastery                   Skill mastery to check.
+     * @return                          Whether the provided skill-mastery pair is valid. Note that `CombinedSkillValue`
+     *                                  constructor asserts on invalid skill-mastery pairs.
+     */
+    static bool isValid(int level, CharacterSkillMastery mastery);
+
     static CombinedSkillValue none();
     static CombinedSkillValue novice(int level = 1);
     static CombinedSkillValue increaseLevel(CombinedSkillValue current);
