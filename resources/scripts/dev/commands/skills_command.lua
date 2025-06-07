@@ -81,16 +81,87 @@ local function learnAllSkills()
 end
 
 local subCommands = {
-    set = setSkill,
-    level = setSkillLevel,
-    mastery = setSkillMastery,
-    get = getSkills,
-    learn_all = learnAllSkills,
-    default = getSkills
+    {
+        name = "set",
+        callback = setSkill,
+        params = {
+            {
+                name = "skill",
+                type = "enum",
+                enumValues = Game.SkillType,
+                description = "Skill to set."
+            },
+            {
+                name = "level",
+                type = "number",
+                description = "Level of the skill."
+            },
+            {
+                name = "mastery",
+                type = "enum",
+                enumValues = Game.SkillMastery,
+                description = "Mastery of the skill."
+            },
+            {
+                name = "char",
+                type = "characterIndex",
+                description = "Character index to set skill for."
+            }
+        },
+        description = "Sets the specified skill for the character."
+    },
+    {
+        name = "level",
+        callback = setSkillLevel,
+        params = {
+            {
+                name = "skill",
+                type = "enum",
+                enumValues = Game.SkillType,
+                description = "Skill to set level for."
+            },
+            { name = "level", type = "number",         description = "Level of the skill." },
+            { name = "char",  type = "characterIndex", description = "Character index to set skill level for." }
+        },
+        description = "Sets the specified skill level for the character."
+    },
+    {
+        name = "mastery",
+        callback = setSkillMastery,
+        params = {
+            {
+                name = "skill",
+                type = "enum",
+                enumValues = Game.SkillType,
+                optional = false,
+                description = "Skill to set mastery for."
+            },
+            {
+                name = "mastery",
+                type = "enum",
+                enumValues = Game.SkillMastery,
+                optional = false,
+                description = "Mastery of the skill."
+            },
+            { name = "char", type = "characterIndex", optional = true, description = "Character index to set skill mastery for." }
+        },
+        description =
+        "Sets the specified skill mastery for the character."
+    },
+    {
+        name = "get",
+        callback = getSkills,
+        description = "Shows all skills of all characters in the party."
+    },
+    {
+        name = "learn_all",
+        callback = learnAllSkills,
+        description = "Learn all skills available for each character in the party."
+    },
 }
 
 return {
     name = "skills",
     description = "Modify character skills",
-    callback = subCommands
+    subCommands = subCommands
 }

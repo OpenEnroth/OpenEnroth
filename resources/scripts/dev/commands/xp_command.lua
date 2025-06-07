@@ -12,17 +12,51 @@ local givePartyXp = function (xp)
 end
 
 local subCommands = {
-    get = Utilities.showCharsProperty("xp"),
-    rem = Utilities.changeCharProperty("xp", Utilities.opType.rem, true, tonumber),
-    add = Utilities.changeCharProperty("xp", Utilities.opType.add, true, tonumber),
-    set = Utilities.changeCharProperty("xp", Utilities.opType.set, true, tonumber),
-    party = givePartyXp,
-    default = Utilities.showCharsProperty("xp")
+    {
+        name = "get",
+        callback = Utilities.showCharsProperty("xp"),
+        description = "Shows the current experience points of all characters in the party."
+    },
+    {
+        name = "rem",
+        callback = Utilities.changeCharProperty("xp", Utilities.opType.rem, true, tonumber),
+        params = {
+            { name = "xp",   type = "number",         optional = false, description = "Amount of experience points to remove." },
+            { name = "char", type = "characterIndex", optional = false, description = "Character index to remove experience points from." }
+        },
+        description = "Removes the specified amount of experience points from the character."
+    },
+    {
+        name = "add",
+        callback = Utilities.changeCharProperty("xp", Utilities.opType.add, true, tonumber),
+        params = {
+            { name = "xp",   type = "number",         optional = false, description = "Amount of experience points to add." },
+            { name = "char", type = "characterIndex", optional = false, description = "Character index to add experience points to." }
+        },
+        description = "Adds the specified amount of experience points to the character."
+    },
+    {
+        name = "set",
+        callback = Utilities.changeCharProperty("xp", Utilities.opType.set, true, tonumber),
+        params = {
+            { name = "xp",   type = "number",         optional = false, description = "Amount of experience points to set." },
+            { name = "char", type = "characterIndex", optional = false, description = "Character index to set experience points for." }
+        },
+        description = "Sets the character's experience points to the specified value."
+    },
+    {
+        name = "party",
+        callback = givePartyXp,
+        params = {
+            { name = "xp", type = "number", optional = false, description = "Amount of experience points to give to the party." }
+        },
+        description = "Gives the specified amount of experience points to the party."
+    }
 }
 
 return {
     name = "xp",
     description = "Change the amount of experience points for the party.",
     details = "",
-    callback = subCommands
+    subCommands = subCommands
 }

@@ -19,4 +19,5 @@ class ConfigBindings : public IBindings {
     [[nodiscard]] static std::string path(AnyConfigEntry *entry);
     [[nodiscard]] static std::string sectionName(AnyConfigEntry *entry);
     static void toggle(AnyConfigEntry *entry);
+    [[nodiscard]] static std::string getType(AnyConfigEntry* entry);
 };

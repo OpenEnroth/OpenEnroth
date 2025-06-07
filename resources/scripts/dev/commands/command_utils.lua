@@ -1,4 +1,8 @@
 local Game = require "bindings.game"
+local Overlay = require "bindings.overlay"
+local Utilities = require "utils"
+
+local imgui = Overlay.imgui
 
 ---@class CommandUtilities
 local CommandUtilities = {}
@@ -148,6 +152,93 @@ CommandUtilities.characterOrCurrent = function (charIndex)
         return Game.party.getActiveCharacter()
     end
     return charIndex
+end
+
+CommandUtilities.renderCharacterIndexParam = function (name, value)
+    local result = value
+    for i = 1, Game.party.getPartySize() do
+        local characterInfo = Game.party.getCharacterInfo(i, { "name" })
+        imgui.sameLine()
+
+        if value == tostring(i) then
+            imgui.pushStyleColor(imgui.ImGuiCol.Button, 0.5, 0.5, 0.5, 1)
+        else
+            imgui.pushStyleColor(imgui.ImGuiCol.Button, 0.2, 0.2, 0.2, 1)
+        end
+
+        if imgui.button(characterInfo.name .. "##" .. name .. i) then
+            result = tostring(i)
+        end
+        imgui.popStyleColor()
+    end
+    return result;
+end
+
+--- @param name string
+--- @param value string
+--- @param enumValues table<string, integer>|fun(value:any):table
+--- @param allDataParams table<string, any>
+--- @return string
+CommandUtilities.renderEnumParam = function (name, value, enumValues, allDataParams)
+    if not enumValues then
+        imgui.textUnformatted("Enum values not provided for property " .. name)
+        return ""
+    end
+
+    --- @type table<string, integer>
+    local values = {}
+    if type(enumValues) == "function" then
+        values = enumValues(allDataParams)
+    else
+        values = enumValues
+    end
+
+    local index = Utilities.getIndexByKey(values, value)
+    if index == nil then
+        index = 1
+        value = Utilities.getKeyAtIndex(values, 1)
+    end
+
+    imgui.sameLine()
+    local options = enumTableToZeroSeparatedList(values)
+    local changed, selectedValue = imgui.combo("##" .. name, index, options)
+    if changed then
+        value = Utilities.getKeyAtIndex(values, selectedValue)
+    end
+
+    return value
+end
+
+CommandUtilities.renderStringParam = function (name, value)
+    imgui.sameLine()
+    return imgui.inputTextWithHint("##" .. name, name, value, imgui.ImGuiInputTextFlags.None)
+end
+
+CommandUtilities.renderNumberParam = function (name, value)
+    imgui.sameLine()
+    return imgui.inputTextWithHint("##" .. name, name, value, imgui.ImGuiInputTextFlags.CharsDecimal)
+end
+
+CommandUtilities.renderBooleanParam = function (name, value)
+    imgui.sameLine()
+    return tostring(imgui.checkbox("##" .. name, Utilities.toBoolean(value)))
+end
+
+CommandUtilities.defaultParamRenderer = function (type, dataParam, infoParam, allDataParams)
+    local prevValue = dataParam.value
+    if type == "characterIndex" then
+        dataParam.value = CommandUtilities.renderCharacterIndexParam(infoParam.name, dataParam.value)
+    elseif type == "enum" then
+        dataParam.value = CommandUtilities.renderEnumParam(infoParam.name, dataParam.value,
+            infoParam.enumValues, allDataParams)
+    elseif type == "boolean" then
+        dataParam.value = CommandUtilities.renderBooleanParam(infoParam.name, dataParam.value)
+    elseif type == "number" then
+        dataParam.value = CommandUtilities.renderNumberParam(infoParam.name, dataParam.value)
+    else
+        dataParam.value = CommandUtilities.renderStringParam(infoParam.name, dataParam.value)
+    end
+    return dataParam.value ~= prevValue
 end
 
 return CommandUtilities

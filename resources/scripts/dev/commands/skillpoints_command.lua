@@ -15,17 +15,51 @@ local function addSpParty(skillPoints)
 end
 
 local subCommands = {
-    get = Utilities.showCharsProperty("sp"),
-    rem = Utilities.changeCharProperty("sp", Utilities.opType.rem, true, tonumber),
-    add = Utilities.changeCharProperty("sp", Utilities.opType.add, true, tonumber),
-    set = Utilities.changeCharProperty("sp", Utilities.opType.set, true, tonumber),
-    add_party = addSpParty,
-    default = Utilities.showCharsProperty("sp")
+    {
+        name = "get",
+        callback = Utilities.showCharsProperty("sp"),
+        description = "Shows the current skill points of all characters in the party."
+    },
+    {
+        name = "rem",
+        callback = Utilities.changeCharProperty("sp", Utilities.opType.rem, true, tonumber),
+        params = {
+            { name = "sp",   type = "number",         optional = false, description = "Amount of skill points to remove." },
+            { name = "char", type = "characterIndex", optional = false, description = "Character index to remove skill points from." }
+        },
+        description = "Removes the specified amount of skill points from the character."
+    },
+    {
+        name = "add",
+        callback = Utilities.changeCharProperty("sp", Utilities.opType.add, true, tonumber),
+        params = {
+            { name = "sp",   type = "number",         optional = false, description = "Amount of skill points to add." },
+            { name = "char", type = "characterIndex", optional = false, description = "Character index to add skill points to." }
+        },
+        description = "Adds the specified amount of skill points to the character."
+    },
+    {
+        name = "set",
+        callback = Utilities.changeCharProperty("sp", Utilities.opType.set, true, tonumber),
+        params = {
+            { name = "sp",   type = "number",         optional = false, description = "Amount of skill points to set." },
+            { name = "char", type = "characterIndex", optional = false, description = "Character index to set skill points for." }
+        },
+        description = "Sets the character's skill points to the specified value."
+    },
+    {
+        name = "add_party",
+        callback = addSpParty,
+        params = {
+            { name = "sp", type = "number", optional = false, description = "Amount of skill points to add to all characters in the party." }
+        },
+        description = "Adds the specified amount of skill points to all characters in the party."
+    }
 }
 
 return {
     name = "sp",
     description = "Change the amount of skill points for the party.",
     details = "",
-    callback = subCommands
+    subCommands = subCommands
 }

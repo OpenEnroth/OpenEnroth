@@ -1,5 +1,6 @@
 local CommandUtils = require "dev.commands.command_utils"
 local Game = require "bindings.game"
+local Utilities = require "utils"
 
 local function cycleAlignment()
     local alignment = Game.party.getAlignment()
@@ -34,15 +35,39 @@ local deserializer = function (strValue)
 end
 
 local subCommands = {
-    get = CommandUtils.showProperty(getter, "alignment", serializer),
-    set = CommandUtils.changeProperty(getter, setter, CommandUtils.opType.set, "alignment", deserializer, serializer),
-    cycle = cycleAlignment,
-    default = CommandUtils.showProperty(getter, "alignment", serializer)
+    {
+        name = "get",
+        callback = CommandUtils.showProperty(getter, "alignment", serializer),
+        description = "Shows the current alignment of the party."
+    },
+    {
+        name = "set",
+        callback = CommandUtils.changeProperty(getter, setter, CommandUtils.opType.set, "alignment", deserializer,
+            serializer),
+        params = {
+            {
+                name = "alignment",
+                type = "enum",
+                enumValues = Game.PartyAlignment,
+                optional = false,
+                defaultValue = function ()
+                    return Utilities.getKeyByValue(Game.PartyAlignment, Game.party.getAlignment())
+                end,
+                description = "Alignment to set."
+            }
+        },
+        description = "Sets the party's alignment to the specified value."
+    },
+    {
+        name = "cycle",
+        callback = cycleAlignment,
+        description = "Cycles the party's alignment through Good, Neutral, and Evil."
+    }
 }
 
 return {
     name = "alignment",
     description = "Change the alignment of the party.",
     details = "",
-    callback = subCommands
+    subCommands = subCommands
 }
