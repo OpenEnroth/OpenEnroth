@@ -168,6 +168,11 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         items[item_counter].unidentifiedName = removeQuotes(tokens[10]);
         items[item_counter].spriteId = static_cast<SpriteId>(atoi(tokens[11]));
 
+        if (items[item_counter].type == ITEM_TYPE_REAGENT) {
+            items[item_counter].reagentPower = items[item_counter].damageDice;
+            items[item_counter].damageDice = items[item_counter].damageRoll = items[item_counter].damageMod = 0;
+        }
+
         items[item_counter].specialEnchantment = ITEM_ENCHANTMENT_NULL;
         items[item_counter].standardEnchantment = {};
         if (items[item_counter].rarity == RARITY_SPECIAL) {

@@ -21,9 +21,10 @@ struct ItemData {
     Pointi paperdollAnchorOffset; // Paperdoll offset for the item sprite when equipped, relative to the item type-specific anchor point.
     ItemType type = ITEM_TYPE_NONE; // Item type.
     CharacterSkillType skill = CHARACTER_SKILL_MISC; // Skill associated with the item. E.g. `CHARACTER_SKILL_SWORD`.
-    int damageDice = 0; // Damage dice.
-    int damageRoll = 0;
-    int damageMod = 0; // Also base charges for a wand, reagent power.
+    int damageDice = 0; // Damage dice, base AC for armor.
+    int damageRoll = 0; // Always 1 for armor.
+    int damageMod = 0; // Also base charges for wands. Additional AC for armor, effective AC = damageDice+damageMod.
+    int reagentPower = 0; // Reagent power, only for reagents. Originally was stored in `damageDice`.
     ItemRarity rarity = RARITY_COMMON; // Item rarity.
     ItemEnchantment specialEnchantment = ITEM_ENCHANTMENT_NULL; // Special enchantment, applied only to `RARITY_SPECIAL` items.
     std::optional<CharacterAttribute> standardEnchantment; // Standard (attribute) enchantment, applied only to `RARITY_SPECIAL` items.

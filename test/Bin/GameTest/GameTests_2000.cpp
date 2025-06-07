@@ -151,3 +151,14 @@ GAME_TEST(Issues, Issue2075) {
     EXPECT_EQ(actorsTape.size(), 1);
 }
 
+GAME_TEST(Prs, Pr2083) {
+    // Check that wands are generated with correct number of charges.
+    for (int i = 0; i < 100; i++) {
+        Item wand;
+        wand.itemId = ITEM_MYSTIC_WAND_OF_SHRAPMETAL;
+        wand.postGenerate(ITEM_SOURCE_MONSTER);
+        EXPECT_EQ(wand.numCharges, wand.maxCharges);
+        EXPECT_GE(wand.numCharges, 15+1);
+        EXPECT_LE(wand.numCharges, 15+6);
+    }
+}

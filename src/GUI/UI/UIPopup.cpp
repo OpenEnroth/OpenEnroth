@@ -528,7 +528,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
             if (inspect_item->potionPower)
                 text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->potionPower);
         } else if (inspect_item->isReagent()) {
-            text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->GetDamageDice());
+            text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->GetReagentPower());
         } else if (inspect_item->standardEnchantment) {
             text[2] = fmt::format("{}: {} +{}",
                                   localization->GetString(LSTR_SPECIAL),
@@ -2452,7 +2452,7 @@ void Inventory_ItemPopupAndAlchemy() {
     }
 
     if (isReagent(pParty->pPickedItem.itemId) && item->itemId == ITEM_POTION_BOTTLE) {
-        item->potionPower = alchemySkill.level() + pParty->pPickedItem.GetDamageDice();
+        item->potionPower = alchemySkill.level() + pParty->pPickedItem.GetReagentPower();
         switch (pParty->pPickedItem.itemId) {
             case ITEM_REAGENT_WIDOWSWEEP_BERRIES:
             case ITEM_REAGENT_CRUSHED_ROSE_PETALS:

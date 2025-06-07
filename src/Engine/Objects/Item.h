@@ -64,6 +64,7 @@ struct Item {
     uint8_t GetDamageDice() const;
     uint8_t GetDamageRoll() const;
     uint8_t GetDamageMod() const;
+    int GetReagentPower() const;
     bool canSellRepairIdentifyAt(HouseId houseId);
 
     bool isGold() const {
