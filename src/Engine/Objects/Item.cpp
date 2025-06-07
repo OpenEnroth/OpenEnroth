@@ -22,7 +22,6 @@ Item *ptr_50C9A4_ItemToEnchant;
 
 ItemTable *pItemTable;  // 005D29E0
 
-static std::map<int, std::map<CharacterAttribute, CEnchantment>> regularBonusMap;
 static std::map<ItemEnchantment, std::map<CharacterAttribute, CEnchantment>> specialBonusMap;
 static std::map<ItemId, std::map<CharacterAttribute, CEnchantment>> artifactBonusMap;
 
@@ -453,81 +452,6 @@ void Item::PopulateSpecialBonusMap() {
     // of the Ocean
     AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_OCEAN, ATTRIBUTE_RESIST_WATER, 10);
     AddToMap(specialBonusMap, ITEM_ENCHANTMENT_OF_OCEAN, ATTRIBUTE_SKILL_ALCHEMY, 2, CHARACTER_SKILL_ALCHEMY);
-}
-
-// TODO: where is it used?
-void Item::PopulateRegularBonusMap() {
-    // of Might
-    AddToMap(regularBonusMap, 1, ATTRIBUTE_MIGHT);
-
-    // of Thought
-    AddToMap(regularBonusMap, 2, ATTRIBUTE_INTELLIGENCE);
-
-    // of Charm
-    AddToMap(regularBonusMap, 3, ATTRIBUTE_PERSONALITY);
-
-    // of Vigor
-    AddToMap(regularBonusMap, 4, ATTRIBUTE_ENDURANCE);
-
-    // of Precision
-    AddToMap(regularBonusMap, 5, ATTRIBUTE_ACCURACY);
-
-    // of Speed
-    AddToMap(regularBonusMap, 6, ATTRIBUTE_SPEED);
-
-    // of Luck
-    AddToMap(regularBonusMap, 7, ATTRIBUTE_LUCK);
-
-    // of Health
-    AddToMap(regularBonusMap, 8, ATTRIBUTE_HEALTH);
-
-    // of Magic
-    AddToMap(regularBonusMap, 9, ATTRIBUTE_MANA);
-
-    // of Defense
-    AddToMap(regularBonusMap, 10, ATTRIBUTE_AC_BONUS);
-
-    // of Fire Resistance
-    AddToMap(regularBonusMap, 11, ATTRIBUTE_RESIST_FIRE);
-
-    // of Air Resistance
-    AddToMap(regularBonusMap, 12, ATTRIBUTE_RESIST_AIR);
-
-    // of Water Resistance
-    AddToMap(regularBonusMap, 13, ATTRIBUTE_RESIST_WATER);
-
-    // of Earth Resistance
-    AddToMap(regularBonusMap, 14, ATTRIBUTE_RESIST_EARTH);
-
-    // of Mind Resistance
-    AddToMap(regularBonusMap, 15, ATTRIBUTE_RESIST_MIND);
-
-    // of Body Resistance
-    AddToMap(regularBonusMap, 16, ATTRIBUTE_RESIST_BODY);
-
-    // of Alchemy
-    AddToMap(regularBonusMap, 17, ATTRIBUTE_SKILL_ALCHEMY);
-
-    // of Stealing
-    AddToMap(regularBonusMap, 18, ATTRIBUTE_SKILL_STEALING);
-
-    // of Disarming
-    AddToMap(regularBonusMap, 19, ATTRIBUTE_SKILL_TRAP_DISARM);
-
-    // of Items
-    AddToMap(regularBonusMap, 20, ATTRIBUTE_SKILL_ITEM_ID);
-
-    // of Monsters
-    AddToMap(regularBonusMap, 21, ATTRIBUTE_SKILL_MONSTER_ID);
-
-    // of Arms
-    AddToMap(regularBonusMap, 22, ATTRIBUTE_SKILL_ARMSMASTER);
-
-    // of Dodging
-    AddToMap(regularBonusMap, 23, ATTRIBUTE_SKILL_DODGE);
-
-    // of the Fist
-    AddToMap(regularBonusMap, 24, ATTRIBUTE_SKILL_UNARMED);
 }
 
 void Item::PopulateArtifactBonusMap() {

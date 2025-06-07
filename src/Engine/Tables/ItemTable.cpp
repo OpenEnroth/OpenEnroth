@@ -259,7 +259,6 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
 
     Item::PopulateSpecialBonusMap();
     Item::PopulateArtifactBonusMap();
-    Item::PopulateRegularBonusMap();
     LoadItemSizes();
 }
 
