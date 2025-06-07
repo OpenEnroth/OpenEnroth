@@ -6,7 +6,6 @@ local SpCommand = require "dev.commands.skillpoints_command"
 local FoodCommand = require "dev.commands.food_command"
 local AlignmentCommand = require "dev.commands.alignment_command"
 local InventoryCommand = require "dev.commands.inventory_command"
-local LuaCommand = require "dev.commands.run_lua_command"
 local ClearConsoleCommand = require "dev.commands.cls_command"
 local ConditionCommand = require "dev.commands.condition_command"
 local HpCommand = require "dev.commands.hp_command"
@@ -46,7 +45,6 @@ GameCommands.registerGameCommands = function ()
     CommandManager.register(FoodCommand)
     CommandManager.register(AlignmentCommand)
     CommandManager.register(InventoryCommand)
-    CommandManager.register(LuaCommand)
     CommandManager.register(ClearConsoleCommand)
     CommandManager.register(reloadShadersCommand)
     CommandManager.register(ConditionCommand)

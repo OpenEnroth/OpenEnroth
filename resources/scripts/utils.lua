@@ -24,6 +24,32 @@ Utilities.isEmpty = function (s)
     return s == nil or s == ""
 end
 
+--- Find an element inside the table using a function
+---@param t table<any, any> - table to be searched
+---@param func fun(value:any):boolean - function that returns true if the value matches the search criteria
+---@return any - the key and value of the first element that matches the criteria, or nil if not found
+Utilities.findIf = function (t, func)
+    for _, v in ipairs(t) do
+        if func(v) then
+            return v
+        end
+    end
+    return nil
+end
+
+--- Find the index of an element inside the table using a function
+--- @param t table<any, any> - table to be searched
+--- @param func fun(value:any):boolean - function that returns true if the value matches the search criteria
+--- @return integer|nil - the index of the first element that matches the criteria, or nil if not found
+Utilities.findIndex = function (t, func)
+    for i, v in ipairs(t) do
+        if func(v) then
+            return i
+        end
+    end
+    return nil
+end
+
 --- Split the string according to the separator, respecting quoted substrings
 ---@param str string - base string
 ---@param separator string - separator to be used
@@ -97,7 +123,7 @@ end
 ---
 ---@param enumTable any - The enum table ( ex: Game.SkillType, Game.SkillMastery )
 ---@param value any
----@return string
+---@return string|nil
 function enumToString(enumTable, value)
     ---@cast enumTable table<string, any>
     for k, v in pairs(enumTable) do
@@ -106,7 +132,7 @@ function enumToString(enumTable, value)
         end
     end
 
-    return ""
+    return nil
 end
 
 ---@param enumTable any - The enum table ( ex: Game.SkillType, Game.SkillMastery )
@@ -120,7 +146,104 @@ function stringToEnum(enumTable, valueStr)
         end
     end
 
-    return 0
+    return nil
+end
+
+--- Convert an enum table to string containing all the keys separated by \0 (zero) separator. Useful for imgui combo boxes
+--- @param enumTable any - The enum table ( ex: Game.SkillType, Game.SkillMastery )
+--- @return string - A zero-separated list of strings representing the enum keys
+function enumTableToZeroSeparatedList(enumTable)
+    ---@cast enumTable table<string, any>
+    local result = {}
+    for k, _ in pairs(enumTable) do
+        table.insert(result, k)
+    end
+    return table.concat(result, "\0") .. "\0"
+end
+
+--- Get the nth element of a table treated as a map
+--- @param t table<any, any> - The table to be searched
+--- @param index integer - The index of the element to be retrieved
+--- @return any - The value of the nth element, or nil if the index is out of bounds
+Utilities.getValueAtIndex = function (t, index)
+    local i = 0
+    for _, v in pairs(t) do
+        i = i + 1
+        if i == index then
+            return v
+        end
+    end
+    return nil
+end
+
+--- Get the nth key of a table treated as a map
+--- @param t table<any, any> - The table to be searched
+--- @param index integer - The index of the key to be retrieved
+--- @return any - The key of the nth element, or nil if the index is out of bounds
+Utilities.getKeyAtIndex = function (t, index)
+    local i = 0
+    for k, _ in pairs(t) do
+        i = i + 1
+        if i == index then
+            return k
+        end
+    end
+    return nil
+end
+
+--- Get the index of a value in a table treated as a map
+--- @param t table<any, any> - The table to be searched
+--- @param value any - The value to be searched
+--- @return integer|nil
+Utilities.getIndexByValue = function (t, value)
+    local i = 0
+    for _, v in pairs(t) do
+        i = i + 1
+        if v == value then
+            return i
+        end
+    end
+    return nil
+end
+
+--- Get the index of a key in a table treated as a map
+--- @param t table<any, any> - The table to be searched
+--- @param key any - The key to be searched
+--- @return integer|nil
+Utilities.getIndexByKey = function (t, key)
+    local i = 0
+    for k, _ in pairs(t) do
+        i = i + 1
+        if k == key then
+            return i
+        end
+    end
+    return nil
+end
+
+--- Get the key of a value in a table treated as a map
+--- @param t table<any, any> - The table to be searched
+--- @param value any - The value to be searched
+--- @return any - The key of the value in the table, or nil if not found
+Utilities.getKeyByValue = function (t, value)
+    for k, v in pairs(t) do
+        if v == value then
+            return k
+        end
+    end
+    return nil
+end
+
+--- Create a list of strings from an enum table
+---@param enumTable any - The enum table ( ex: Game.SkillType, Game.SkillMastery )
+---@return table<integer, string>
+function enumTableToStringList(enumTable)
+    ---@cast enumTable table<string, any>
+    local result = {}
+    for k, _ in pairs(enumTable) do
+        table.insert(result, k)
+    end
+    return result
 end
 
 ---@class Rect
@@ -165,11 +288,63 @@ Utilities.color = function (r, g, b, a)
     }
 end
 
----@param table table<any, any>
-Utilities.printTable = function (table)
-    for k, v in pairs(table) do
-        print(k, v)
+---@param t table<any, any>
+---@param indent integer
+---@param seen table<table<any, any>, boolean>
+Utilities.printTable = function (t, indent, seen)
+    indent = indent or 0
+    seen = seen or {}
+    if seen[t] then
+        print(string.rep(" ", indent) .. "*cycle*")
+        return
     end
+    seen[t] = true
+
+    for k, v in pairs(t) do
+        local key = tostring(k)
+        if type(v) == "table" then
+            print(string.rep(" ", indent) .. key .. ":")
+            Utilities.printTable(v, indent + 2, seen)
+        else
+            print(string.rep(" ", indent) .. key .. " = " .. tostring(v))
+        end
+    end
+end
+
+---@param value string|number|integer
+---@return integer|nil
+Utilities.tointeger = function (value)
+    local result = nil
+    if type(value) == "string" then
+        local number = tonumber(value)
+        ---@cast number integer
+        result = number;
+    elseif type(value) == "number" then
+        ---@cast value integer
+        result = value
+    end
+    return result
+end
+
+--- @param value string
+--- @param typeName "number" | "characterIndex" | "boolean" | "string" | "enum"
+--- @return boolean
+Utilities.canStringBeConvertedTo = function (value, typeName)
+    if type(value) == typeName then
+        return true
+    end
+
+    if typeName == "number" then
+        return tonumber(value) ~= nil
+    elseif typeName == "characterIndex" then
+        return Utilities.tointeger(value) ~= nil
+    elseif typeName == "boolean" then
+        return string.lower(value) == "true" or string.lower(value) == "false"
+    elseif typeName == "string" or typeName == "enum" then
+        return type(value) == "string"
+    end
+
+    return false
 end
 
 return Utilities
