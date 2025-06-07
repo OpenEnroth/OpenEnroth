@@ -46,9 +46,6 @@ GraphicsImage *saveload_ui_x_d = nullptr;
 
 static GraphicsImage *scrollstop = nullptr;
 
-// TODO(Nik-RE-dev): drop variable and load game only on double click
-static bool isLoadSlotClicked = false;
-
 GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRenderDimensions()) {
     saveload_ui_loadsave = assets->getImage_ColorKey("loadsave");
     saveload_ui_save_up = assets->getImage_ColorKey("save_up");
@@ -328,117 +325,67 @@ static void UI_DrawSaveLoad(bool save) {
     }
 }
 
-void MainMenuLoad_EventLoop() {
-    while (engine->_messageQueue->haveMessages()) {
-        UIMessageType msg;
-        int param, param2;
-        engine->_messageQueue->popMessage(&msg, &param, &param2);
-
-        switch (msg) {
-        case UIMSG_LoadGame: {
-            if (!pSavegameList->pSavegameUsedSlots[pSavegameList->selectedSlot]) {
-                break;
-            }
-            SetCurrentMenuID(MENU_LoadingProcInMainMenu);
-            break;
-        }
-        case UIMSG_SelectLoadSlot: {
-            // main menu save/load wnd   clicking on savegame lines
-            if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
-                keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
-            assert(current_screen_type != SCREEN_SAVEGAME); // No savegame in main menu
-            if (isLoadSlotClicked && pSavegameList->selectedSlot == param + pSavegameList->saveListPosition) {
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
-            } else {
-                pSavegameList->selectedSlot = param + pSavegameList->saveListPosition;
-                isLoadSlotClicked = true;
-            }
-            break;
-        }
-        case UIMSG_SaveLoadBtn: {
-            new OnSaveLoad({pGUIWindow_CurrentMenu->uFrameX + 241, pGUIWindow_CurrentMenu->uFrameY + 302}, {61, 28}, pBtnLoadSlot);
-            break;
-        }
-        case UIMSG_DownArrow: {
-            if (pSavegameList->saveListPosition + 7 < param) {
-                ++pSavegameList->saveListPosition;
-            }
-            new OnButtonClick2({pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 323}, {0, 0}, pBtnDownArrow);
-            break;
-        }
-        case UIMSG_ArrowUp: {
-            --pSavegameList->saveListPosition;
-            if (pSavegameList->saveListPosition < 0)
-                pSavegameList->saveListPosition = 0;
-            new OnButtonClick2({pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197}, {0, 0}, pBtnArrowUp);
-            break;
-        }
-        case UIMSG_Cancel: {
-            new OnCancel3({pGUIWindow_CurrentMenu->uFrameX + 350, pGUIWindow_CurrentMenu->uFrameY + 302}, {61, 28}, pBtnCancel);
-            break;
-        }
-        case UIMSG_Escape: {
-            // if (current_screen_type == SCREEN_LOADGAME)
-            {
-                // crt_deconstruct_ptr_6A0118();
-
-                SetCurrentMenuID(MENU_MAIN);
-                current_screen_type = SCREEN_GAME;
-                pEventTimer->setPaused(false);
-                break;
-            }
-            break;
-        }
-        case UIMSG_SaveLoadScroll: {
-            // pskelton add for scroll click
-            if (param < 7) {
-                // Too few saves to scroll yet
-                break;
-            }
-            Pointi mousePos = mouse->position();
-            int mx = mousePos.x, my = mousePos.y;
-            // 276 is offset down from top (216 + 60 frame)
-            my -= 276;
-            // 107 is total height of bar
-            float fmy = static_cast<float>(my) / 107.0f;
-            int newlistpost = std::round((param - 7) * fmy);
-            newlistpost = std::clamp(newlistpost, 0, (param - 7));
-            pSavegameList->saveListPosition = newlistpost;
-            pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-            break;
-        }
-        case UIMSG_QuickLoad: {
-            int slot = GetQuickSaveSlot();
-            if (slot != -1) {
-                pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-                pSavegameList->selectedSlot = slot;
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
-            } else {
-                logger->error("QuickLoadGame:: No quick save could be found!");
-                pAudioPlayer->playUISound(SOUND_error);
-            }
-            break;
-        }
-        default:
-            break;
-        }
+void GUIWindow_Load::slotSelected(int slotIndex) {
+    // main menu save/load wnd   clicking on savegame lines
+    if (pGUIWindow_CurrentMenu->keyboard_input_status == WINDOW_INPUT_IN_PROGRESS)
+        keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_NONE);
+    assert(current_screen_type != SCREEN_SAVEGAME); // No savegame in main menu
+    if (isLoadSlotClicked && pSavegameList->selectedSlot == slotIndex + pSavegameList->saveListPosition) {
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
+    } else {
+        pSavegameList->selectedSlot = slotIndex + pSavegameList->saveListPosition;
+        isLoadSlotClicked = true;
     }
 }
 
-void MainMenuLoad_Loop() {
-    current_screen_type = SCREEN_LOADGAME;
-    pGUIWindow_CurrentMenu = new GUIWindow_Load(false);
-    isLoadSlotClicked = false;
+void GUIWindow_Load::loadButtonPressed() {
+    new OnSaveLoad({ pGUIWindow_CurrentMenu->uFrameX + 241, pGUIWindow_CurrentMenu->uFrameY + 302 }, { 61, 28 }, pBtnLoadSlot);
+}
 
-    while (GetCurrentMenuID() == MENU_SAVELOAD && current_screen_type == SCREEN_LOADGAME) {
-        MessageLoopWithWait();
-
-        render->BeginScene2D();
-        GUI_UpdateWindows();
-        MainMenuLoad_EventLoop();
-        render->Present();
+void GUIWindow_Load::downArrowPressed(int maxSlots) {
+    if (pSavegameList->saveListPosition + 7 < maxSlots) {
+        ++pSavegameList->saveListPosition;
     }
+    new OnButtonClick2({ pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 323 }, { 0, 0 }, pBtnDownArrow);
+}
 
-    pGUIWindow_CurrentMenu->Release();
-    pGUIWindow_CurrentMenu = nullptr;
+void GUIWindow_Load::upArrowPressed() {
+    --pSavegameList->saveListPosition;
+    if (pSavegameList->saveListPosition < 0)
+        pSavegameList->saveListPosition = 0;
+    new OnButtonClick2({ pGUIWindow_CurrentMenu->uFrameX + 215, pGUIWindow_CurrentMenu->uFrameY + 197 }, { 0, 0 }, pBtnArrowUp);
+}
+
+void GUIWindow_Load::cancelButtonPressed() {
+    new OnCancel3({ pGUIWindow_CurrentMenu->uFrameX + 350, pGUIWindow_CurrentMenu->uFrameY + 302 }, { 61, 28 }, pBtnCancel);
+}
+
+void GUIWindow_Load::scroll(int maxSlots) {
+    // pskelton add for scroll click
+    if (maxSlots < 7) {
+        // Too few saves to scroll yet
+        return;
+    }
+    Pointi mousePos = mouse->position();
+    int mx = mousePos.x, my = mousePos.y;
+    // 276 is offset down from top (216 + 60 frame)
+    my -= 276;
+    // 107 is total height of bar
+    float fmy = static_cast<float>(my) / 107.0f;
+    int newlistpost = std::round((maxSlots - 7) * fmy);
+    newlistpost = std::clamp(newlistpost, 0, (maxSlots - 7));
+    pSavegameList->saveListPosition = newlistpost;
+    pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+}
+
+void GUIWindow_Load::quickLoad() {
+    int slot = GetQuickSaveSlot();
+    if (slot != -1) {
+        pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+        pSavegameList->selectedSlot = slot;
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_LoadGame, 0, 0);
+    } else {
+        logger->error("QuickLoadGame:: No quick save could be found!");
+        pAudioPlayer->playUISound(SOUND_error);
+    }
 }
