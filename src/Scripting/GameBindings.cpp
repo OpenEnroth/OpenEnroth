@@ -18,6 +18,8 @@
 
 #include "GUI/GUIWindow.h"
 
+#include "Utility/Exception.h"
+
 Character *getCharacterByIndex(int characterIndex);
 sol::table createCharacterConditionTable(sol::state_view &luaState, const Character &character);
 sol::table createCharacterSkillsTable(sol::state_view &luaState, const Character &character);
@@ -130,15 +132,21 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
                     } else if (key == "skill") {
                         sol::table skillValueTable = val.second.as<sol::table>();
                         CombinedSkillValue current = character->getActualSkillValue(skillValueTable["id"]);
+
                         auto level = skillValueTable.get<std::optional<int>>("level");
+                        if (!level)
+                            level = current.level();
+
                         auto mastery = skillValueTable.get<std::optional<CharacterSkillMastery>>("mastery");
-                        CombinedSkillValue skillValue(
-                            level ? *level : current.level(),
-                            mastery ? *mastery : current.mastery()
-                        );
-                        character->setSkillValue(skillValueTable["id"], skillValue);
+                        if (!mastery)
+                            mastery = current.mastery();
+
+                        if (!CombinedSkillValue::isValid(*level, *mastery))
+                            throw Exception("Invalid skill-mastery pair '{} {}'", *level, static_cast<int>(*mastery)); // TODO(captainurist): #enum need proper toDisplayString.
+
+                        character->setSkillValue(skillValueTable["id"], CombinedSkillValue(*level, *mastery));
                     } else {
-                        logger->warning("Invalid key for set_character_info. Used key: {}", key);
+                        throw Exception("Invalid key for set_character_info. Used key: {}", key);
                     }
                 }
             }

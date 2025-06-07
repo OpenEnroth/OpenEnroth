@@ -7,8 +7,7 @@
 #include "Utility/String/Format.h"
 
 CombinedSkillValue::CombinedSkillValue(int level, CharacterSkillMastery mastery) {
-    assert(level >= 0 && level <= 63);
-    assert((level == 0) ^ (mastery != CHARACTER_SKILL_MASTERY_NONE));
+    assert(isValid(level, mastery));
 
     _level = level;
     _mastery = mastery;
@@ -17,6 +16,16 @@ CombinedSkillValue::CombinedSkillValue(int level, CharacterSkillMastery mastery)
 CombinedSkillValue::CombinedSkillValue() {
     _level = 0;
     _mastery = CHARACTER_SKILL_MASTERY_NONE;
+}
+
+bool CombinedSkillValue::isValid(int level, CharacterSkillMastery mastery) {
+    if (level < 0 || level > 63)
+        return false;
+
+    if ((level == 0) == (mastery != CHARACTER_SKILL_MASTERY_NONE))
+        return false;
+
+    return true;
 }
 
 CombinedSkillValue CombinedSkillValue::none() {
