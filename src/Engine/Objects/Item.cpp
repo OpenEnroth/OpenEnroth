@@ -745,6 +745,10 @@ uint8_t Item::GetDamageMod() const {
     return pItemTable->items[this->itemId].damageMod;
 }
 
+int Item::GetReagentPower() const {
+    return pItemTable->items[this->itemId].reagentPower;
+}
+
 //----- (0043C91D) --------------------------------------------------------
 std::string GetItemTextureFilename(ItemId item_id, int index, int shoulder) {
     // For some reason artifact textures are stored using different ids,
