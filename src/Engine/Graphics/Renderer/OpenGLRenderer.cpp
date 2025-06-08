@@ -4704,15 +4704,11 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
     BaseRenderer::Reinitialize(firstInit);
 
     if (!firstInit) {
-        viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.value(); //8
-        viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.value(); //8
-        viewparams->uScreen_BttmR_X = outputRender.w - engine->config->graphics.ViewPortX2.value(); //468;
-        viewparams->uScreen_BttmR_Y = outputRender.h - engine->config->graphics.ViewPortY2.value(); //352;
-
-        pViewport->SetViewport(viewparams->uScreen_topL_X, 
-                               viewparams->uScreen_topL_Y,
-                               viewparams->uScreen_BttmR_X,
-                               viewparams->uScreen_BttmR_Y);
+        // @TODO(Baste) this is initialized to the same value in three spots!
+        pViewport->SetViewport(engine->config->graphics.ViewPortX1.value(), //8
+                               engine->config->graphics.ViewPortY1.value(), //8
+                               outputRender.w - engine->config->graphics.ViewPortX2.value(), //468;
+                               outputRender.h - engine->config->graphics.ViewPortY2.value()); //352;
     }
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background

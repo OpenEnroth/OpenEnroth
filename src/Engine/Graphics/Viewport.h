@@ -43,12 +43,6 @@ struct ViewingParams {
     void AdjustPosition();
     void _443365();
 
-    // viewport coords
-    unsigned int uScreen_topL_X = 0; // 8
-    unsigned int uScreen_topL_Y = 0; // 8
-    unsigned int uScreen_BttmR_X = 0; // 468
-    unsigned int uScreen_BttmR_Y = 0;  // 352
-
     int field_20 = 0;
     unsigned int uMinimapZoom = 0;
     unsigned int uMapBookMapZoom = 0;

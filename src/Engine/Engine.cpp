@@ -609,10 +609,11 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
 //----- (004647AB) --------------------------------------------------------
 void FinalInitialization() {
-    pViewport->SetViewport(viewparams->uScreen_topL_X,
-                           viewparams->uScreen_topL_Y,
-                           viewparams->uScreen_BttmR_X,
-                           viewparams->uScreen_BttmR_Y);
+    // @TODO(Baste) this is initialized to the same value in three spots!
+    pViewport->SetViewport(engine->config->graphics.ViewPortX1.value(),
+                           engine->config->graphics.ViewPortY1.value(),
+                           render->GetRenderDimensions().w - engine->config->graphics.ViewPortX2.value(),
+                           render->GetRenderDimensions().h - engine->config->graphics.ViewPortY2.value());
 
     InitializeTurnBasedAnimations(&stru_50C198);
     pBitmaps_LOD->reserveLoadedTextures();
@@ -807,12 +808,6 @@ void Engine::Initialize() {
 //----- (00466082) --------------------------------------------------------
 void MM6_Initialize() {
     viewparams = new ViewingParams;
-    Sizei wsize = window->size();
-    viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.value(); //8
-    viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.value(); //8
-    viewparams->uScreen_BttmR_X = wsize.w - engine->config->graphics.ViewPortX2.value(); //468;
-    viewparams->uScreen_BttmR_Y = wsize.h - engine->config->graphics.ViewPortY2.value(); //352;
-
     pAudioPlayer = std::make_unique<AudioPlayer>();
 
     pODMRenderParams = new ODMRenderParams;
@@ -840,10 +835,11 @@ void MM7Initialization() {
         viewparams->field_20 &= 0xFFFFFF00;
     }
 
-    pViewport->SetViewport(viewparams->uScreen_topL_X, 
-                           viewparams->uScreen_topL_Y,
-                           viewparams->uScreen_BttmR_X,
-                           viewparams->uScreen_BttmR_Y);
+    // @TODO(Baste) this is initialized to the same value in three spots!
+    pViewport->SetViewport(engine->config->graphics.ViewPortX1.value(),
+                           engine->config->graphics.ViewPortY1.value(),
+                           render->GetRenderDimensions().w - engine->config->graphics.ViewPortX2.value(),
+                           render->GetRenderDimensions().h - engine->config->graphics.ViewPortY2.value());
 }
 
 //----- (00464479) --------------------------------------------------------
