@@ -6,22 +6,19 @@
 
 class GraphicsImage;
 
-// TODO(pskelton): combined viewport and viewing params?? or at least not have multiple places
-// where screen coords and viewport coords are held
-
 struct Viewport {
-    void SetViewport(int uX, int uY, int uZ, int uW);
+    void SetViewport(int topLeft_X, int topLeft_Y, int bottomRight_X, int bottomRight_Y);
     bool Contains(unsigned int x, unsigned int y);
 
-    int uViewportTL_X;
-    int uViewportTL_Y;
-    int uViewportBR_X;
-    int uViewportBR_Y;
+    int viewportTL_X;
+    int viewportTL_Y;
+    int viewportBR_X;
+    int viewportBR_Y;
 
-    int uViewportWidth;
-    int uViewportHeight;
-    int uViewportCenterX;
-    int uViewportCenterY;
+    int viewportWidth;
+    int viewportHeight;
+    int viewportCenterX;
+    int viewportCenterY;
 };
 
 extern Viewport *pViewport;

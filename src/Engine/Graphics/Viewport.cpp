@@ -24,32 +24,27 @@
 #include "Media/Audio/AudioPlayer.h"
 
 //----- (004C0262) --------------------------------------------------------
-void Viewport::SetViewport(int sTL_X, int sTL_Y, int sBR_X, int sBR_Y) {
-    unsigned int tl_x;  // edx@1
-    unsigned int br_x;  // esi@1
-    unsigned int tl_y;  // edi@3
-    unsigned int br_y;  // eax@3
+void Viewport::SetViewport(int topLeft_X, int topLeft_Y, int bottomRight_X, int bottomRight_Y) {
+    unsigned int tl_x = std::min(topLeft_X, bottomRight_X);
+    unsigned int br_x = std::max(topLeft_X, bottomRight_X);
 
-    tl_x = std::min(sTL_X, sBR_X);
-    br_x = std::max(sTL_X, sBR_X);
+    unsigned int tl_y = std::min(topLeft_Y, bottomRight_Y);
+    unsigned int br_y = std::max(topLeft_Y, bottomRight_Y);
 
-    tl_y = std::min(sTL_Y, sBR_Y);
-    br_y = std::max(sTL_Y, sBR_Y);
+    this->viewportTL_Y = tl_y;
+    this->viewportTL_X = tl_x;
+    this->viewportBR_X = br_x;
+    this->viewportBR_Y = br_y;
 
-    this->uViewportTL_Y = tl_y;
-    this->uViewportTL_X = tl_x;
-    this->uViewportBR_X = br_x;
-    this->uViewportBR_Y = br_y;
-
-    this->uViewportWidth = br_x - tl_x + 1;
-    this->uViewportHeight = br_y - tl_y + 1;
-    this->uViewportCenterX = (signed int)(br_x + tl_x) / 2;
-    this->uViewportCenterY = (signed int)(br_y + tl_y) / 2;
+    this->viewportWidth = br_x - tl_x + 1;
+    this->viewportHeight = br_y - tl_y + 1;
+    this->viewportCenterX = (signed int)(br_x + tl_x) / 2;
+    this->viewportCenterY = (signed int)(br_y + tl_y) / 2;
 }
 
 bool Viewport::Contains(unsigned int x, unsigned int y) {
-    return ((int)x >= uViewportTL_X && (int)x <= uViewportBR_X &&
-            (int)y >= uViewportTL_Y && (int)y <= uViewportBR_Y);
+    return ((int)x >= viewportTL_X && (int)x <= viewportBR_X &&
+            (int)y >= viewportTL_Y && (int)y <= viewportBR_Y);
 }
 
 //----- (00443219) --------------------------------------------------------

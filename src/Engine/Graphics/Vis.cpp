@@ -558,12 +558,12 @@ bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3f IntersectPoint, signed int sM
 
 //----- (0046A0A1) --------------------------------------------------------
 int UnprojectX(int x) {
-    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->uViewportCenterX - x);
+    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->viewportCenterX - x);
 }
 
 //----- (0046A0F6) --------------------------------------------------------
 int UnprojectY(int y) {
-    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->uViewportCenterY - y);
+    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->viewportCenterY - y);
 }
 
 //----- (004C248E) --------------------------------------------------------
@@ -840,10 +840,10 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
 
     // billboard will be visible somewhere on screen - clamp billboard corners to screen viewport
     auto& billboard = render->pBillboardRenderListD3D[uD3DBillboardIdx];
-    float bbVisibleLeft = std::clamp(billboard.pQuads[0].pos.x, (float)pViewport->uViewportTL_X, (float)pViewport->uViewportBR_X);
-    float bbVisibleRight = std::clamp(billboard.pQuads[3].pos.x, (float)pViewport->uViewportTL_X, (float)pViewport->uViewportBR_X);
-    float bbVisibleTop = std::clamp(billboard.pQuads[0].pos.y, (float)pViewport->uViewportTL_Y, (float)pViewport->uViewportBR_Y);
-    float bbVisibleBottom = std::clamp(billboard.pQuads[1].pos.y, (float)pViewport->uViewportTL_Y, (float)pViewport->uViewportBR_Y);
+    float bbVisibleLeft = std::clamp(billboard.pQuads[0].pos.x, (float)pViewport->viewportTL_X, (float)pViewport->viewportBR_X);
+    float bbVisibleRight = std::clamp(billboard.pQuads[3].pos.x, (float)pViewport->viewportTL_X, (float)pViewport->viewportBR_X);
+    float bbVisibleTop = std::clamp(billboard.pQuads[0].pos.y, (float)pViewport->viewportTL_Y, (float)pViewport->viewportBR_Y);
+    float bbVisibleBottom = std::clamp(billboard.pQuads[1].pos.y, (float)pViewport->viewportTL_Y, (float)pViewport->viewportBR_Y);
 
     // test visible polygon center first
     float test_x = (bbVisibleLeft + bbVisibleRight) * 0.5f;

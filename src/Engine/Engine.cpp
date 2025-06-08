@@ -450,10 +450,10 @@ void Engine::LogEngineBuildInfo() {
 //----- (0044EA5E) --------------------------------------------------------
 Vis_PIDAndDepth Engine::PickMouse(float fPickDepth, int uMouseX, int uMouseY,
                                   Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter) {
-    if (uMouseX >= pViewport->uViewportTL_X &&
-        uMouseX <= pViewport->uViewportBR_X &&
-        uMouseY >= pViewport->uViewportTL_Y &&
-        uMouseY <= pViewport->uViewportBR_Y) {
+    if (uMouseX >= pViewport->viewportTL_X &&
+        uMouseX <= pViewport->viewportBR_X &&
+        uMouseY >= pViewport->viewportTL_Y &&
+        uMouseY <= pViewport->viewportBR_Y) {
         return vis->PickMouse(fPickDepth, uMouseX, uMouseY, sprite_filter, face_filter);
     } else {
         return Vis_PIDAndDepth();
@@ -831,8 +831,6 @@ void MM7Initialization() {
         pODMRenderParams->building_gamme = 0;
         pODMRenderParams->shading_dist_shademist = 4096;
         pODMRenderParams->outdoor_no_wavy_water = 0;
-    } else {
-        viewparams->field_20 &= 0xFFFFFF00;
     }
 
     // @TODO(Baste) this is initialized to the same value in three spots!

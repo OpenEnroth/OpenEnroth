@@ -254,7 +254,7 @@ void GUIWindow_Dialogue::Update() {
 
     // Message window(Окно сообщения)----
     if (!dialogue_string.empty()) {
-        window.uFrameWidth = pViewport->uViewportWidth;
+        window.uFrameWidth = pViewport->viewportWidth;
         window.uFrameZ = 452;
         GUIFont *font = assets->pFontArrus.get();
         pTextHeight = assets->pFontArrus->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;

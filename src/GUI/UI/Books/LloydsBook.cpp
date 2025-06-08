@@ -88,11 +88,11 @@ void GUIWindow_LloydsBook::Update() {
 
     GUIWindow pWindow;
     pWindow.uFrameWidth = 428;
-    pWindow.uFrameHeight = pViewport->uViewportHeight;
-    pWindow.uFrameX = pViewport->uViewportTL_X;
-    pWindow.uFrameY = pViewport->uViewportTL_Y;
+    pWindow.uFrameHeight = pViewport->viewportHeight;
+    pWindow.uFrameX = pViewport->viewportTL_X;
+    pWindow.uFrameY = pViewport->viewportTL_Y;
     pWindow.uFrameZ = 435;
-    pWindow.uFrameW = pViewport->uViewportBR_Y;
+    pWindow.uFrameW = pViewport->viewportBR_Y;
 
     if (!_recallingBeacon) {
         pText = localization->GetString(LSTR_SET_BEACON);

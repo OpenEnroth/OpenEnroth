@@ -40,7 +40,7 @@ void GUIWindow_BranchlessDialogue::Update() {
         branchless_dialogue_str = current_npc_text;
 
     GUIWindow BranchlessDlg_window;
-    BranchlessDlg_window.uFrameWidth = pViewport->uViewportWidth;
+    BranchlessDlg_window.uFrameWidth = pViewport->viewportWidth;
     BranchlessDlg_window.uFrameZ = 452;
     int pTextHeight = assets->pFontArrus->CalcTextHeight(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12) + 7;
     if (352 - pTextHeight < 8) {

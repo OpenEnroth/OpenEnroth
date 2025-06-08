@@ -1356,7 +1356,7 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
     );
     if ((signed int)spell_info_window.uFrameHeight < 150)
         spell_info_window.uFrameHeight = 150;
-    spell_info_window.uFrameWidth = pViewport->uViewportWidth;
+    spell_info_window.uFrameWidth = pViewport->viewportWidth;
     spell_info_window.DrawMessageBox(false);
     spell_info_window.uFrameWidth -= 12;
     spell_info_window.uFrameHeight -= 12;
@@ -1494,7 +1494,7 @@ void showSpellbookInfo(ItemId spellbook) {
     if (popup.uFrameHeight < 150) {
         popup.uFrameHeight = 150;
     }
-    popup.uFrameWidth = pViewport->uViewportWidth;
+    popup.uFrameWidth = pViewport->viewportWidth;
     popup.DrawMessageBox(false);
     popup.uFrameWidth -= 12;
     popup.uFrameHeight -= 12;
@@ -1920,7 +1920,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
             if (GetCurrentMenuID() > MENU_MAIN) break;
             mouse->DoMouseLook();
 
-            if ((signed int)pY > (signed int)pViewport->uViewportBR_Y) {
+            if ((signed int)pY > (signed int)pViewport->viewportBR_Y) {
                 int characterIndex = pX / 118;
                 if (characterIndex < 4) { // portaits zone
                     popup_window.sHint.clear();
@@ -1930,7 +1930,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                     popup_window.uFrameY = 60;
                     GameUI_CharacterQuickRecord_Draw(&popup_window, characterIndex);
                 }
-            } else if ((int)pX > pViewport->uViewportBR_X) {
+            } else if ((int)pX > pViewport->viewportBR_X) {
                 if (pY >= 130) {
                     if (pX >= 476 && pX <= 636 && pY >= 240 && pY <= 300) {  // buff_tooltip zone
                         drawBuffPopupWindow();
@@ -1981,10 +1981,10 @@ void UI_OnMouseRightClick(Pointi mousePos) {
         }
         case SCREEN_BOOKS: {
             if (pGUIWindow_CurrentMenu->eWindowType != WINDOW_MapsBook ||
-                (signed int)pX < (signed int)pViewport->uViewportTL_X ||
-                (signed int)pX > (signed int)pViewport->uViewportBR_X ||
-                (signed int)pY < (signed int)pViewport->uViewportTL_Y ||
-                (signed int)pY > (signed int)pViewport->uViewportBR_Y ||
+                (signed int)pX < (signed int)pViewport->viewportTL_X ||
+                (signed int)pX > (signed int)pViewport->viewportBR_X ||
+                (signed int)pY < (signed int)pViewport->viewportTL_Y ||
+                (signed int)pY > (signed int)pViewport->viewportBR_Y ||
                 ((popup_window.sHint = GetMapBookHintText(mousePos.x, mousePos.y)).empty())) {
                 break;
             }

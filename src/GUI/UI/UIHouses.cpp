@@ -744,7 +744,7 @@ void GUIWindow_House::drawNpcHouseGreetingMessage(NPCData *npcData) {
             if (npcData->greet) {
                 std::string greetString;
 
-                int uFrameWidth = pViewport->uViewportWidth;
+                int uFrameWidth = pViewport->viewportWidth;
                 int uFrameZ = 452;
                 if (npcData->uFlags & NPC_GREETED_SECOND) {
                     greetString = pNPCStats->pNPCGreetings[npcData->greet].pGreeting2;

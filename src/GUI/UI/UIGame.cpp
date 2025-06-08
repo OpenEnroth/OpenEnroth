@@ -202,8 +202,8 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
 void GUIWindow_GameMenu::Update() {
     // -----------------------------------
     // 004156F0 GUI_UpdateWindows --- part
-    render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f,
-                                pViewport->uViewportTL_Y / 480.0f,
+    render->DrawTextureNew(pViewport->viewportTL_X / 640.0f,
+                                pViewport->viewportTL_Y / 480.0f,
                                 game_ui_menu_options);
 }
 
@@ -855,7 +855,7 @@ void GameUI_DrawLifeManaBars() {
 
 //----- (0041B3B6) --------------------------------------------------------
 void GameUI_DrawRightPanel() {
-    render->DrawTextureNew(pViewport->uViewportBR_X / 640.0f, 0,
+    render->DrawTextureNew(pViewport->viewportBR_X / 640.0f, 0,
                                 game_ui_right_panel_frame);
 }
 
