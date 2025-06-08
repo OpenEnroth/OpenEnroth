@@ -263,7 +263,7 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
     fov_y_deg = (180.0 / pi) * 2.0 * std::atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDistPixels);
 
     screenCenterX = (double)pViewport->uScreenCenterX;
-    screenCenterY = (double)pViewport->uScreenCenterY - pViewport->uScreen_TL_Y;
+    screenCenterY = (double)pViewport->uScreenCenterY - pViewport->uViewportTL_Y;
 
     aspect = float(game_viewport_width / float(game_viewport_height));
 }

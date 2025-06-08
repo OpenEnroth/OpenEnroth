@@ -4712,14 +4712,10 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
         game_viewport_width = game_viewport_z - game_viewport_x;
         game_viewport_height = game_viewport_w - game_viewport_y;
 
-        viewparams->uSomeY = viewparams->uScreen_topL_Y;
-        viewparams->uSomeX = viewparams->uScreen_topL_X;
-        viewparams->uSomeZ = viewparams->uScreen_BttmR_X;
-        viewparams->uSomeW = viewparams->uScreen_BttmR_Y;
-
-        pViewport->SetScreen(viewparams->uScreen_topL_X, viewparams->uScreen_topL_Y,
-                            viewparams->uScreen_BttmR_X,
-                            viewparams->uScreen_BttmR_Y);
+        pViewport->SetViewport(viewparams->uScreen_topL_X, 
+                               viewparams->uScreen_topL_Y,
+                               viewparams->uScreen_BttmR_X,
+                               viewparams->uScreen_BttmR_Y);
     }
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background

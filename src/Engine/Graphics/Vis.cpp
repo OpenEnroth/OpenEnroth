@@ -840,10 +840,10 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
 
     // billboard will be visible somewhere on screen - clamp billboard corners to screen viewport
     auto& billboard = render->pBillboardRenderListD3D[uD3DBillboardIdx];
-    float bbVisibleLeft = std::clamp(billboard.pQuads[0].pos.x, (float)pViewport->uScreen_TL_X, (float)pViewport->uScreen_BR_X);
-    float bbVisibleRight = std::clamp(billboard.pQuads[3].pos.x, (float)pViewport->uScreen_TL_X, (float)pViewport->uScreen_BR_X);
-    float bbVisibleTop = std::clamp(billboard.pQuads[0].pos.y, (float)pViewport->uScreen_TL_Y, (float)pViewport->uScreen_BR_Y);
-    float bbVisibleBottom = std::clamp(billboard.pQuads[1].pos.y, (float)pViewport->uScreen_TL_Y, (float)pViewport->uScreen_BR_Y);
+    float bbVisibleLeft = std::clamp(billboard.pQuads[0].pos.x, (float)pViewport->uViewportTL_X, (float)pViewport->uViewportBR_X);
+    float bbVisibleRight = std::clamp(billboard.pQuads[3].pos.x, (float)pViewport->uViewportTL_X, (float)pViewport->uViewportBR_X);
+    float bbVisibleTop = std::clamp(billboard.pQuads[0].pos.y, (float)pViewport->uViewportTL_Y, (float)pViewport->uViewportBR_Y);
+    float bbVisibleBottom = std::clamp(billboard.pQuads[1].pos.y, (float)pViewport->uViewportTL_Y, (float)pViewport->uViewportBR_Y);
 
     // test visible polygon center first
     float test_x = (bbVisibleLeft + bbVisibleRight) * 0.5f;

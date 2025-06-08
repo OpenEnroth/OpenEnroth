@@ -177,10 +177,10 @@ void BLVRenderParams::Reset() {
 
 
     {
-        this->uViewportX = pViewport->uScreen_TL_X;
-        this->uViewportY = pViewport->uScreen_TL_Y;
-        this->uViewportZ = pViewport->uScreen_BR_X;
-        this->uViewportW = pViewport->uScreen_BR_Y;
+        this->uViewportX = pViewport->uViewportTL_X;
+        this->uViewportY = pViewport->uViewportTL_Y;
+        this->uViewportZ = pViewport->uViewportBR_X;
+        this->uViewportW = pViewport->uViewportBR_Y;
 
         this->uViewportWidth = uViewportZ - uViewportX + 1;
         this->uViewportHeight = uViewportW - uViewportY + 1;

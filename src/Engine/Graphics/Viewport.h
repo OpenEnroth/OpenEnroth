@@ -10,19 +10,8 @@ class GraphicsImage;
 // where screen coords and viewport coords are held
 
 struct Viewport {
-    inline Viewport() {
-        SetScreen(0, 0, 639, 479);
-    }
-
-    void ResetScreen();
-    void SetScreen(int uX, int uY, int uZ, int uW);
     void SetViewport(int uX, int uY, int uZ, int uW);
     bool Contains(unsigned int x, unsigned int y);
-
-    int uScreen_TL_X;  // 0
-    int uScreen_TL_Y;  // 0
-    int uScreen_BR_X;  // 639
-    int uScreen_BR_Y;  // 479
 
     int uViewportTL_X;
     int uViewportTL_Y;
@@ -53,11 +42,6 @@ struct ViewingParams {
     void CenterOnPartyZoomOut();
     void AdjustPosition();
     void _443365();
-
-    int uSomeX = 0;  // game screen co ords
-    int uSomeY = 0;
-    int uSomeZ = 0;
-    int uSomeW = 0;
 
     // viewport coords
     unsigned int uScreen_topL_X = 0; // 8
