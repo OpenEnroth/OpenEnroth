@@ -200,12 +200,13 @@ void GUIWindow_AutonotesBook::Update() {
     }
 
     // for title
-    autonotes_window.uFrameWidth = game_viewport_width;
-    autonotes_window.uFrameHeight = game_viewport_height;
-    autonotes_window.uFrameX = game_viewport_x;
-    autonotes_window.uFrameY = game_viewport_y;
-    autonotes_window.uFrameZ = game_viewport_z;
-    autonotes_window.uFrameW = game_viewport_w;
+    autonotes_window.uFrameWidth = pViewport->uViewportWidth;
+    autonotes_window.uFrameHeight = pViewport->uViewportHeight;
+    autonotes_window.uFrameX = pViewport->uViewportTL_X;
+    autonotes_window.uFrameY = pViewport->uViewportTL_Y;
+    autonotes_window.uFrameZ = pViewport->uViewportBR_X;
+    autonotes_window.uFrameW = pViewport->uViewportBR_Y;
+
     autonotes_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_autonotes_title_color, localization->GetString(LSTR_AUTO_NOTES), 3);
 
     // for other text

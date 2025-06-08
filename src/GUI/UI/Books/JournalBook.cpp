@@ -81,12 +81,13 @@ void GUIWindow_JournalBook::Update() {
     }
 
     if (_journalIdx.size() && !_journalEntryPage[_currentIdx]) {  // for title
-        journal_window.uFrameWidth = game_viewport_width;
-        journal_window.uFrameX = game_viewport_x;
-        journal_window.uFrameY = game_viewport_y;
-        journal_window.uFrameHeight = game_viewport_height;
-        journal_window.uFrameZ = game_viewport_z;
-        journal_window.uFrameW = game_viewport_w;
+        journal_window.uFrameWidth = pViewport->uViewportWidth;
+        journal_window.uFrameHeight = pViewport->uViewportHeight;
+        journal_window.uFrameX = pViewport->uViewportTL_X;
+        journal_window.uFrameY = pViewport->uViewportTL_Y;
+        journal_window.uFrameZ = pViewport->uViewportBR_X;
+        journal_window.uFrameW = pViewport->uViewportBR_Y;
+
         if (!pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle.empty()) {
             journal_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_journal_title_color, pHistoryTable->historyLines[_journalIdx[_currentIdx]].pPageTitle, 3);
         }

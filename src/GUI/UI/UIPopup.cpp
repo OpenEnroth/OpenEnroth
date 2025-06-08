@@ -1356,8 +1356,8 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
     );
     if ((signed int)spell_info_window.uFrameHeight < 150)
         spell_info_window.uFrameHeight = 150;
-    spell_info_window.uFrameWidth = game_viewport_width;
-    spell_info_window.DrawMessageBox(0);
+    spell_info_window.uFrameWidth = pViewport->uViewportWidth;
+    spell_info_window.DrawMessageBox(false);
     spell_info_window.uFrameWidth -= 12;
     spell_info_window.uFrameHeight -= 12;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + spell_info_window.uFrameWidth - 1;
@@ -1494,8 +1494,8 @@ void showSpellbookInfo(ItemId spellbook) {
     if (popup.uFrameHeight < 150) {
         popup.uFrameHeight = 150;
     }
-    popup.uFrameWidth = game_viewport_width;
-    popup.DrawMessageBox(0);
+    popup.uFrameWidth = pViewport->uViewportWidth;
+    popup.DrawMessageBox(false);
     popup.uFrameWidth -= 12;
     popup.uFrameHeight -= 12;
     popup.uFrameZ = popup.uFrameX + popup.uFrameWidth - 1;

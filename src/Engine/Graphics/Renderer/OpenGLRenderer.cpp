@@ -1001,8 +1001,8 @@ RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int heig
 
     // TODO(captainurist): subImage().scale()
     RgbaImage sPixels = ReadScreenPixels();
-    float interval_x = static_cast<float>(game_viewport_width) / width;
-    float interval_y = static_cast<float>(game_viewport_height) / height;
+    float interval_x = static_cast<float>(pViewport->uViewportWidth) / width;
+    float interval_y = static_cast<float>(pViewport->uViewportHeight) / height;
 
     RgbaImage pPixels = RgbaImage::solid(width, height, Color());
 
@@ -1401,8 +1401,8 @@ void OpenGLRenderer::_set_ortho_projection(bool gameviewport) {
         glViewport(0, 0, outputRender.w, outputRender.h);
         projmat = glm::ortho(float(0), float(outputRender.w), float(outputRender.h), float(0), float(-1), float(1));
     } else {  // project to game viewport
-        glViewport(game_viewport_x, outputRender.h-game_viewport_w-1, game_viewport_width, game_viewport_height);
-        projmat = glm::ortho(float(game_viewport_x), float(game_viewport_z), float(game_viewport_w), float(game_viewport_y), float(1), float(-1));
+        glViewport(pViewport->uViewportTL_X, outputRender.h- pViewport->uViewportBR_Y -1, pViewport->uViewportWidth, pViewport->uViewportHeight);
+        projmat = glm::ortho(float(pViewport->uViewportTL_X), float(pViewport->uViewportBR_X), float(pViewport->uViewportBR_Y), float(pViewport->uViewportTL_Y), float(1), float(-1));
     }
 }
 
@@ -1977,12 +1977,12 @@ void OpenGLRenderer::DrawOutdoorSky() {
     // lowers clouds as party goes up
     float  horizon_height_offset = ((double)(pCamera3D->ViewPlaneDistPixels * pCamera3D->vCameraPos.z)
         / ((double)pCamera3D->ViewPlaneDistPixels + pCamera3D->GetFarClip())
-        + (double)(pViewport->uScreenCenterY));
+        + (double)(pViewport->uViewportCenterY));
 
     float depth_to_far_clip = std::cos((double)pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
     float height_to_far_clip = std::sin((double)pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
 
-    float bot_y_proj = ((double)(pViewport->uScreenCenterY) -
+    float bot_y_proj = ((double)(pViewport->uViewportCenterY) -
         (double)pCamera3D->ViewPlaneDistPixels /
         (depth_to_far_clip + 0.0000001) *
         (height_to_far_clip - (double)pCamera3D->vCameraPos.z));
@@ -2035,7 +2035,7 @@ void OpenGLRenderer::DrawOutdoorSky() {
 
         for (unsigned i = 0; i < uNumVertices; ++i) {
             // outbound screen X dist
-            float x_dist = widthperpixel * (pViewport->uScreenCenterX - VertexRenderList[i].vWorldViewProjX);
+            float x_dist = widthperpixel * (pViewport->uViewportCenterX - VertexRenderList[i].vWorldViewProjX);
             // outbound screen y dist
             float y_dist = widthperpixel * (horizon_height_offset - VertexRenderList[i].vWorldViewProjY);
 
@@ -4704,13 +4704,10 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
     BaseRenderer::Reinitialize(firstInit);
 
     if (!firstInit) {
-        game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.value(); //8
-        game_viewport_y = viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.value(); //8
-        game_viewport_z = viewparams->uScreen_BttmR_X = outputRender.w - engine->config->graphics.ViewPortX2.value(); //468;
-        game_viewport_w = viewparams->uScreen_BttmR_Y = outputRender.h - engine->config->graphics.ViewPortY2.value(); //352;
-
-        game_viewport_width = game_viewport_z - game_viewport_x;
-        game_viewport_height = game_viewport_w - game_viewport_y;
+        viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.value(); //8
+        viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.value(); //8
+        viewparams->uScreen_BttmR_X = outputRender.w - engine->config->graphics.ViewPortX2.value(); //468;
+        viewparams->uScreen_BttmR_Y = outputRender.h - engine->config->graphics.ViewPortY2.value(); //352;
 
         pViewport->SetViewport(viewparams->uScreen_topL_X, 
                                viewparams->uScreen_topL_Y,

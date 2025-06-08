@@ -18,6 +18,7 @@
 #include "Engine/MapInfo.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
+#include "Engine/Graphics/Viewport.h"
 #include "Engine/Tables/HouseTable.h"
 #include "Engine/Tables/TransitionTable.h"
 
@@ -743,7 +744,7 @@ void GUIWindow_House::drawNpcHouseGreetingMessage(NPCData *npcData) {
             if (npcData->greet) {
                 std::string greetString;
 
-                int uFrameWidth = game_viewport_width;
+                int uFrameWidth = pViewport->uViewportWidth;
                 int uFrameZ = 452;
                 if (npcData->uFlags & NPC_GREETED_SECOND) {
                     greetString = pNPCStats->pNPCGreetings[npcData->greet].pGreeting2;

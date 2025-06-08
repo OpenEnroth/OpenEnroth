@@ -257,21 +257,21 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         halfFovTan = std::tan(blv_fov_rad / 2.0);
 
-    ViewPlaneDistPixels = (double)pViewport->uScreenWidth * 0.5 / halfFovTan;
+    ViewPlaneDistPixels = (double)pViewport->uViewportWidth * 0.5 / halfFovTan;
 
     // calculate vertical FOV in degrees for GL rendering
-    fov_y_deg = (180.0 / pi) * 2.0 * std::atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDistPixels);
+    fov_y_deg = (180.0 / pi) * 2.0 * std::atan((pViewport->uViewportHeight / 2.0) / pCamera3D->ViewPlaneDistPixels);
 
-    screenCenterX = (double)pViewport->uScreenCenterX;
-    screenCenterY = (double)pViewport->uScreenCenterY - pViewport->uViewportTL_Y;
+    screenCenterX = (double)pViewport->uViewportCenterX;
+    screenCenterY = (double)pViewport->uViewportCenterY - pViewport->uViewportTL_Y;
 
-    aspect = float(game_viewport_width / float(game_viewport_height));
+    aspect = float(pViewport->uViewportWidth / float(pViewport->uViewportHeight));
 }
 
 //----- (004374E8) --------------------------------------------------------
 void Camera3D::BuildViewFrustum() {
     float HalfAngleX = (pi / 2.0) - (odm_fov_rad / 2.0);
-    float HalfAngleY = (pi / 2.0) - (std::atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDistPixels));
+    float HalfAngleY = (pi / 2.0) - (std::atan((pViewport->uViewportHeight / 2.0) / pCamera3D->ViewPlaneDistPixels));
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         HalfAngleX = (pi / 2.0) - (blv_fov_rad / 2.0);
@@ -456,9 +456,9 @@ void Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, b
         v->_rhw = RHW;
         viewscalefactor = RHW * ViewPlaneDistPixels;
 
-        v->vWorldViewProjX = (double)pViewport->uScreenCenterX -
+        v->vWorldViewProjX = (double)pViewport->uViewportCenterX -
                              viewscalefactor * (double)v->vWorldViewPosition.y;
-        v->vWorldViewProjY = (double)pViewport->uScreenCenterY -
+        v->vWorldViewProjY = (double)pViewport->uViewportCenterY -
                              viewscalefactor * (double)v->vWorldViewPosition.z;
 
         if (fit_into_viewport) {

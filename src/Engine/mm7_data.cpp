@@ -147,13 +147,6 @@ std::array<int32_t, 128 * 3> sphereVertInd = {  // indicies for triangle in sphe
 //-------------------------------------------------------------------------
 // Data declarations
 
-int game_viewport_width;
-int game_viewport_height;
-int game_viewport_x;
-int game_viewport_y;
-int game_viewport_z;
-int game_viewport_w;
-
 char _4D864C_force_sw_render_rules;
 
 float flt_4D84E8 = 0.0f;

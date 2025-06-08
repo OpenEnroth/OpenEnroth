@@ -64,12 +64,12 @@ void GUIWindow_QuestBook::Update() {
     }
 
     // for title
-    questbook_window.uFrameWidth = game_viewport_width;
-    questbook_window.uFrameHeight = game_viewport_height;
-    questbook_window.uFrameX = game_viewport_x;
-    questbook_window.uFrameY = game_viewport_y;
-    questbook_window.uFrameZ = game_viewport_z;
-    questbook_window.uFrameW = game_viewport_w;
+    questbook_window.uFrameWidth = pViewport->uViewportWidth;
+    questbook_window.uFrameHeight = pViewport->uViewportHeight;
+    questbook_window.uFrameX = pViewport->uViewportTL_X;
+    questbook_window.uFrameY = pViewport->uViewportTL_Y;
+    questbook_window.uFrameZ = pViewport->uViewportBR_X;
+    questbook_window.uFrameW = pViewport->uViewportBR_Y;
     questbook_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_quests_title_color, localization->GetString(LSTR_CURRENT_QUESTS), 3);
 
     // for other text

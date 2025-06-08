@@ -18,10 +18,10 @@ struct Viewport {
     int uViewportBR_X;
     int uViewportBR_Y;
 
-    int uScreenWidth;
-    int uScreenHeight;
-    int uScreenCenterX;
-    int uScreenCenterY;
+    int uViewportWidth;
+    int uViewportHeight;
+    int uViewportCenterX;
+    int uViewportCenterY;
 };
 
 extern Viewport *pViewport;

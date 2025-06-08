@@ -15,6 +15,8 @@
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/Books/LloydsBook.h"
+
+#include "Engine/Graphics/Viewport.h"
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
@@ -85,12 +87,13 @@ void GUIWindow_LloydsBook::Update() {
     std::string pText = localization->GetString(LSTR_RECALL_BEACON);
 
     GUIWindow pWindow;
-    pWindow.uFrameX = game_viewport_x;
-    pWindow.uFrameY = game_viewport_y;
     pWindow.uFrameWidth = 428;
-    pWindow.uFrameHeight = game_viewport_height;
+    pWindow.uFrameHeight = pViewport->uViewportHeight;
+    pWindow.uFrameX = pViewport->uViewportTL_X;
+    pWindow.uFrameY = pViewport->uViewportTL_Y;
     pWindow.uFrameZ = 435;
-    pWindow.uFrameW = game_viewport_w;
+    pWindow.uFrameW = pViewport->uViewportBR_Y;
+
     if (!_recallingBeacon) {
         pText = localization->GetString(LSTR_SET_BEACON);
     }

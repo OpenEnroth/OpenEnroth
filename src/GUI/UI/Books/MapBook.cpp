@@ -124,12 +124,12 @@ void GUIWindow_MapBook::Update() {
     render->ResetUIClipRect();
 
     GUIWindow map_window;
-    map_window.uFrameWidth = game_viewport_width;
-    map_window.uFrameHeight = game_viewport_height;
-    map_window.uFrameX = game_viewport_x;
-    map_window.uFrameY = game_viewport_y;
-    map_window.uFrameZ = game_viewport_z;
-    map_window.uFrameW = game_viewport_w;
+    map_window.uFrameWidth = pViewport->uViewportWidth;
+    map_window.uFrameHeight = pViewport->uViewportHeight;
+    map_window.uFrameX = pViewport->uViewportTL_X;
+    map_window.uFrameY = pViewport->uViewportTL_Y;
+    map_window.uFrameZ = pViewport->uViewportBR_X;
+    map_window.uFrameW = pViewport->uViewportBR_Y;
 
     if (engine->_currentLoadedMapId != MAP_INVALID) {
         map_window.DrawTitleText(assets->pFontBookTitle.get(), -14, 12, ui_book_map_title_color, pMapStats->pInfos[engine->_currentLoadedMapId].name, 3);

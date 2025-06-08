@@ -558,12 +558,12 @@ bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3f IntersectPoint, signed int sM
 
 //----- (0046A0A1) --------------------------------------------------------
 int UnprojectX(int x) {
-    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->uScreenCenterX - x);
+    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->uViewportCenterX - x);
 }
 
 //----- (0046A0F6) --------------------------------------------------------
 int UnprojectY(int y) {
-    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->uScreenCenterY - y);
+    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->uViewportCenterY - y);
 }
 
 //----- (004C248E) --------------------------------------------------------

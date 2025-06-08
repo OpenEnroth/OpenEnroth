@@ -808,13 +808,10 @@ void Engine::Initialize() {
 void MM6_Initialize() {
     viewparams = new ViewingParams;
     Sizei wsize = window->size();
-    game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.value(); //8
-    game_viewport_y = viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.value(); //8
-    game_viewport_z = viewparams->uScreen_BttmR_X = wsize.w - engine->config->graphics.ViewPortX2.value(); //468;
-    game_viewport_w = viewparams->uScreen_BttmR_Y = wsize.h - engine->config->graphics.ViewPortY2.value(); //352;
-
-    game_viewport_width = game_viewport_z - game_viewport_x;
-    game_viewport_height = game_viewport_w - game_viewport_y;
+    viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.value(); //8
+    viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.value(); //8
+    viewparams->uScreen_BttmR_X = wsize.w - engine->config->graphics.ViewPortX2.value(); //468;
+    viewparams->uScreen_BttmR_Y = wsize.h - engine->config->graphics.ViewPortY2.value(); //352;
 
     pAudioPlayer = std::make_unique<AudioPlayer>();
 

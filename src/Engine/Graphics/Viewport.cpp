@@ -41,10 +41,10 @@ void Viewport::SetViewport(int sTL_X, int sTL_Y, int sBR_X, int sBR_Y) {
     this->uViewportBR_X = br_x;
     this->uViewportBR_Y = br_y;
 
-    this->uScreenWidth = br_x - tl_x + 1;
-    this->uScreenHeight = br_y - tl_y + 1;
-    this->uScreenCenterX = (signed int)(br_x + tl_x) / 2;
-    this->uScreenCenterY = (signed int)(br_y + tl_y) / 2;
+    this->uViewportWidth = br_x - tl_x + 1;
+    this->uViewportHeight = br_y - tl_y + 1;
+    this->uViewportCenterX = (signed int)(br_x + tl_x) / 2;
+    this->uViewportCenterY = (signed int)(br_y + tl_y) / 2;
 }
 
 bool Viewport::Contains(unsigned int x, unsigned int y) {
