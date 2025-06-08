@@ -176,7 +176,7 @@ bool GameWindowHandler::OnChar(PlatformKey key, int c) {
         textInputHandled |= keyboardInputHandler->ProcessTextInput(PlatformKey::KEY_CHAR, c);
     }
 
-    if (!textInputHandled && !viewparams->field_4C) {
+    if (!textInputHandled) {
         return GUI_HandleHotkey(key);  // try other hotkeys
     }
     return false;
@@ -323,8 +323,7 @@ void GameWindowHandler::OnKey(PlatformKey key) {
     } else {
         pMediaPlayer->StopMovie();
         if (keyboardActionMapping->IsKeyMatchAction(InputAction::Return, key)) {
-            if (!viewparams->field_4C)
-                UI_OnKeyDown(key);
+            UI_OnKeyDown(key);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, key)) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, window_SpeakInHouse != 0, 0);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
@@ -342,9 +341,7 @@ void GameWindowHandler::OnKey(PlatformKey key) {
             || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogSelect, key)) {
             if (current_screen_type != SCREEN_GAME &&
                 current_screen_type != SCREEN_GAMEOVER_WINDOW) {
-                if (!viewparams->field_4C) {
-                    UI_OnKeyDown(key);
-                }
+                UI_OnKeyDown(key);
             }
         }
     }

@@ -27,7 +27,6 @@ struct ViewingParams {
     inline ViewingParams() {
         draw_sw_outlines = false;
         draw_d3d_outlines = false;
-        field_4C = 0;
     }
 
     void CenterOnPartyZoomIn();
@@ -38,25 +37,17 @@ struct ViewingParams {
     void MapViewRight();
     void CenterOnPartyZoomOut();
     void AdjustPosition();
-    void _443365();
+    void _443365(); // Sets indoor_center and minimap zoom based on level type.
 
-    int field_20 = 0;
     unsigned int uMinimapZoom = 0;
     unsigned int uMapBookMapZoom = 0;
     int sViewCenterX = 0;
     int sViewCenterY = 0;
     int16_t indoor_center_x = 0;
     int16_t indoor_center_y = 0;
-    int field_3C = 0;
     GraphicsImage *location_minimap = nullptr;  // unsigned int uTextureID_LocationMap; ::40
-    int field_4C = 0;
     int draw_sw_outlines = 0;
     int draw_d3d_outlines = 0;
-    int field_58 = 0;
-    int field_5C = 0;
-    int field_60 = 0;
-    int field_64 = 0;
-    int field_68 = 0;
     Color pPalette[256] {};
 };
 
