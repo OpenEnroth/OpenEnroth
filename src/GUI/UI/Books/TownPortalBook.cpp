@@ -12,6 +12,7 @@
 #include "Engine/Evt/Processor.h"
 #include "Engine/Spells/Spells.h"
 #include "Engine/MapInfo.h"
+#include "Engine/Graphics/Viewport.h"
 
 #include "GUI/GUIMessageQueue.h"
 #include "GUI/UI/UIStatusBar.h"
@@ -128,12 +129,12 @@ void GUIWindow_TownPortalBook::Update() {
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_book_townportal_background);
     render->DrawTextureNew(471 / 640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
 
-    townPortalWindow.uFrameX = game_viewport_x;
-    townPortalWindow.uFrameY = game_viewport_y;
-    townPortalWindow.uFrameWidth = game_viewport_width;
-    townPortalWindow.uFrameHeight = game_viewport_height;
-    townPortalWindow.uFrameZ = game_viewport_z;
-    townPortalWindow.uFrameW = game_viewport_w;
+    townPortalWindow.uFrameWidth = pViewport->viewportWidth;
+    townPortalWindow.uFrameHeight = pViewport->viewportHeight;
+    townPortalWindow.uFrameX = pViewport->viewportTL_X;
+    townPortalWindow.uFrameY = pViewport->viewportTL_Y;
+    townPortalWindow.uFrameZ = pViewport->viewportBR_X;
+    townPortalWindow.uFrameW = pViewport->viewportBR_Y;
 
     if (townPortalCheats) {
         // draw grey icons for cheat locations

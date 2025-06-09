@@ -1,4 +1,6 @@
-#include "Engine/Graphics/Viewport.h"
+#include "Viewport.h"
+
+#include <algorithm>
 
 #include "Engine/Engine.h"
 #include "Engine/Evt/Processor.h"
@@ -24,68 +26,27 @@
 #include "Media/Audio/AudioPlayer.h"
 
 //----- (004C0262) --------------------------------------------------------
-void Viewport::SetScreen(int sTL_X, int sTL_Y, int sBR_X, int sBR_Y) {
-    unsigned int tl_x;  // edx@1
-    unsigned int br_x;  // esi@1
-    unsigned int tl_y;  // edi@3
-    unsigned int br_y;  // eax@3
+void Viewport::SetViewport(int topLeft_X, int topLeft_Y, int bottomRight_X, int bottomRight_Y) {
+    unsigned int tl_x = std::min(topLeft_X, bottomRight_X);
+    unsigned int br_x = std::max(topLeft_X, bottomRight_X);
 
-    tl_x = sTL_X;
-    br_x = sBR_X;
-    if (sTL_X > sBR_X) {
-        br_x = sTL_X;  // swap x's
-        tl_x = sBR_X;
-    }
-    tl_y = sTL_Y;
-    br_y = sBR_Y;
-    if (sTL_Y > sBR_Y) {
-        br_y = sTL_Y;  // swap y's
-        tl_y = sBR_Y;
-    }
-    this->uScreen_TL_X = tl_x;
-    this->uScreen_TL_Y = tl_y;
-    this->uScreen_BR_X = br_x;
-    this->uScreen_BR_Y = br_y;
-    this->uScreenWidth = br_x - tl_x + 1;
-    this->uScreenHeight = br_y - tl_y + 1;
-    this->uScreenCenterX = (signed int)(br_x + tl_x) / 2;
-    // if ( render->pRenderD3D == 0 )
-    //    this->uScreenCenterY = this->uScreen_BR_Y - fixpoint_mul(field_30,
-    //    uScreenHeight);
-    // else
-    this->uScreenCenterY = (br_y + tl_y) / 2;
-    SetViewport(this->uScreen_TL_X, this->uScreen_TL_Y, this->uScreen_BR_X,
-                this->uScreen_BR_Y);
-}
+    unsigned int tl_y = std::min(topLeft_Y, bottomRight_Y);
+    unsigned int br_y = std::max(topLeft_Y, bottomRight_Y);
 
-//----- (004C02F8) --------------------------------------------------------
-void Viewport::ResetScreen() {
-    SetScreen(uScreen_TL_X, uScreen_TL_Y, uScreen_BR_X, uScreen_BR_Y);
+    this->viewportTL_Y = tl_y;
+    this->viewportTL_X = tl_x;
+    this->viewportBR_X = br_x;
+    this->viewportBR_Y = br_y;
+
+    this->viewportWidth = br_x - tl_x + 1;
+    this->viewportHeight = br_y - tl_y + 1;
+    this->viewportCenterX = (signed int)(br_x + tl_x) / 2;
+    this->viewportCenterY = (signed int)(br_y + tl_y) / 2;
 }
 
 bool Viewport::Contains(unsigned int x, unsigned int y) {
-    return ((int)x >= uViewportTL_X && (int)x <= uViewportBR_X &&
-            (int)y >= uViewportTL_Y && (int)y <= uViewportBR_Y);
-}
-
-void Viewport::SetViewport(int sTL_X, int sTL_Y, int sBR_X, int sBR_Y) {
-    int tl_x;
-    int tl_y;
-    int br_x;
-    int br_y;
-
-    tl_x = sTL_X;
-    if (sTL_X < this->uScreen_TL_X) tl_x = this->uScreen_TL_X;
-    tl_y = sTL_Y;
-    if (sTL_Y < this->uScreen_TL_Y) tl_y = this->uScreen_TL_Y;
-    br_x = sBR_X;
-    if (sBR_X > this->uScreen_BR_X) br_x = this->uScreen_BR_X;
-    br_y = sBR_Y;
-    if (sBR_Y > this->uScreen_BR_Y) br_y = this->uScreen_BR_Y;
-    this->uViewportTL_Y = tl_y;
-    this->uViewportTL_X = tl_x;
-    this->uViewportBR_X = br_x;
-    this->uViewportBR_Y = br_y;
+    return ((int)x >= viewportTL_X && (int)x <= viewportBR_X &&
+            (int)y >= viewportTL_Y && (int)y <= viewportBR_Y);
 }
 
 //----- (00443219) --------------------------------------------------------

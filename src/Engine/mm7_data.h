@@ -26,13 +26,6 @@ class GraphicsImage;
 //-------------------------------------------------------------------------
 // Data declarations
 
-extern int game_viewport_width;
-extern int game_viewport_height;
-extern int game_viewport_x;
-extern int game_viewport_y;
-extern int game_viewport_z;
-extern int game_viewport_w;
-
 extern float flt_4D84E8;
 
 extern unsigned int uGammaPos;

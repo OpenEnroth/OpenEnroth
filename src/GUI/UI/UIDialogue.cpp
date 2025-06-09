@@ -14,6 +14,7 @@
 #include "Engine/mm7_data.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
+#include "Engine/Graphics/Viewport.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIButton.h"
@@ -253,7 +254,7 @@ void GUIWindow_Dialogue::Update() {
 
     // Message window(Окно сообщения)----
     if (!dialogue_string.empty()) {
-        window.uFrameWidth = game_viewport_width;
+        window.uFrameWidth = pViewport->viewportWidth;
         window.uFrameZ = 452;
         GUIFont *font = assets->pFontArrus.get();
         pTextHeight = assets->pFontArrus->CalcTextHeight(dialogue_string, window.uFrameWidth, 13) + 7;

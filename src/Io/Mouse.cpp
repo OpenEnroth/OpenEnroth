@@ -131,8 +131,8 @@ void Io::Mouse::DrawCursor() {
         } else if (_mouseLook) {
             platform->setCursorShown(false);
             auto pointer = assets->getImage_ColorKey("MICON2", colorTable.Black /*colorTable.TealMask*/);
-            int x = pViewport->uScreenCenterX - pointer->width() / 2;
-            int y = pViewport->uScreenCenterY - pointer->height() / 2;
+            int x = pViewport->viewportCenterX - pointer->width() / 2;
+            int y = pViewport->viewportCenterY - pointer->height() / 2;
             render->DrawTextureNew(x / 640., y / 480., pointer);
         } else {
             platform->setCursorShown(true);

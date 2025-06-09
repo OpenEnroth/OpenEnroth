@@ -114,8 +114,8 @@ void GUIWindow_Spellbook::openSpellbook() {
 
         int index = spellIndexInMagicSchool(spell);
         CreateButton(fmt::format("SpellBook_Spell{}", index),
-                     {pViewport->uViewportTL_X + pIconPos[chapter][pSpellbookSpellIndices[chapter][index + 1]].Xpos,
-                     pViewport->uViewportTL_Y + pIconPos[chapter][pSpellbookSpellIndices[chapter][index + 1]].Ypos},
+                     {pViewport->viewportTL_X + pIconPos[chapter][pSpellbookSpellIndices[chapter][index + 1]].Xpos,
+                     pViewport->viewportTL_Y + pIconPos[chapter][pSpellbookSpellIndices[chapter][index + 1]].Ypos},
                      SBPageSSpellsTextureList[index + 1]->size(), 1, UIMSG_Spellbook_ShowHightlightedSpellInfo,
                      UIMSG_SelectSpell, std::to_underlying(spell));
         pageSpells++;
@@ -183,8 +183,8 @@ void GUIWindow_Spellbook::Update() {
                         if (pTexture) {
                             SpellBookIconPos &iconPos = pIconPos[player.lastOpenedSpellbookPage][pSpellbookSpellIndices[player.lastOpenedSpellbookPage][index + 1]];
 
-                            pX_coord = pViewport->uViewportTL_X + iconPos.Xpos;
-                            pY_coord = pViewport->uViewportTL_Y + iconPos.Ypos;
+                            pX_coord = pViewport->viewportTL_X + iconPos.Xpos;
+                            pY_coord = pViewport->viewportTL_Y + iconPos.Ypos;
 
                             Recti iconRect = Recti(pX_coord, pY_coord, pTexture->width(), pTexture->height());
                             if (iconRect.contains(mousePos)) { // mouseover highlight

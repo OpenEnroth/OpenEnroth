@@ -18,6 +18,7 @@
 #include "Engine/Engine.h"
 
 #include "Arcomage/Arcomage.h"
+#include "Engine/Graphics/Viewport.h"
 
 #include "Media/MediaPlayer.h"
 
@@ -61,7 +62,7 @@ void GUIWindow_Tavern::arcomageRulesDialogue() {
 
     GUIFont *font;
     std::string str = pNPCTopics[354].pText;
-    dialog_window.uFrameWidth = game_viewport_width;
+    dialog_window.uFrameWidth = pViewport->viewportWidth;
     dialog_window.uFrameZ = 452;
     int pTextHeight = assets->pFontArrus->CalcTextHeight(str, dialog_window.uFrameWidth, 12) + 7;
     if (352 - pTextHeight < 8) {
@@ -82,7 +83,7 @@ void GUIWindow_Tavern::arcomageVictoryCondDialogue() {
     dialog_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
     std::string label = pNPCTopics[arcomageTopicForTavern(houseId())].pText;
-    dialog_window.uFrameWidth = game_viewport_width;
+    dialog_window.uFrameWidth = pViewport->viewportWidth;
     dialog_window.uFrameZ = 452;
     int pTextHeight = assets->pFontArrus->CalcTextHeight(label, dialog_window.uFrameWidth, 12) + 7;
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);

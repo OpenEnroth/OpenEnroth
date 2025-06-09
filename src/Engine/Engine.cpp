@@ -450,10 +450,10 @@ void Engine::LogEngineBuildInfo() {
 //----- (0044EA5E) --------------------------------------------------------
 Vis_PIDAndDepth Engine::PickMouse(float fPickDepth, int uMouseX, int uMouseY,
                                   Vis_SelectionFilter *sprite_filter, Vis_SelectionFilter *face_filter) {
-    if (uMouseX >= pViewport->uScreen_TL_X &&
-        uMouseX <= pViewport->uScreen_BR_X &&
-        uMouseY >= pViewport->uScreen_TL_Y &&
-        uMouseY <= pViewport->uScreen_BR_Y) {
+    if (uMouseX >= pViewport->viewportTL_X &&
+        uMouseX <= pViewport->viewportBR_X &&
+        uMouseY >= pViewport->viewportTL_Y &&
+        uMouseY <= pViewport->viewportBR_Y) {
         return vis->PickMouse(fPickDepth, uMouseX, uMouseY, sprite_filter, face_filter);
     } else {
         return Vis_PIDAndDepth();
@@ -609,13 +609,11 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
 //----- (004647AB) --------------------------------------------------------
 void FinalInitialization() {
-    pViewport->SetScreen(
-        viewparams->uSomeX,
-        viewparams->uSomeY,
-        viewparams->uSomeZ,
-        viewparams->uSomeW
-    );
-    pViewport->ResetScreen();
+    // @TODO(Baste) this is initialized to the same value in three spots!
+    pViewport->SetViewport(engine->config->graphics.ViewPortX1.value(),
+                           engine->config->graphics.ViewPortY1.value(),
+                           render->GetRenderDimensions().w - engine->config->graphics.ViewPortX2.value(),
+                           render->GetRenderDimensions().h - engine->config->graphics.ViewPortY2.value());
 
     InitializeTurnBasedAnimations(&stru_50C198);
     pBitmaps_LOD->reserveLoadedTextures();
@@ -810,15 +808,6 @@ void Engine::Initialize() {
 //----- (00466082) --------------------------------------------------------
 void MM6_Initialize() {
     viewparams = new ViewingParams;
-    Sizei wsize = window->size();
-    game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.value(); //8
-    game_viewport_y = viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.value(); //8
-    game_viewport_z = viewparams->uScreen_BttmR_X = wsize.w - engine->config->graphics.ViewPortX2.value(); //468;
-    game_viewport_w = viewparams->uScreen_BttmR_Y = wsize.h - engine->config->graphics.ViewPortY2.value(); //352;
-
-    game_viewport_width = game_viewport_z - game_viewport_x;
-    game_viewport_height = game_viewport_w - game_viewport_y;
-
     pAudioPlayer = std::make_unique<AudioPlayer>();
 
     pODMRenderParams = new ODMRenderParams;
@@ -842,18 +831,13 @@ void MM7Initialization() {
         pODMRenderParams->building_gamme = 0;
         pODMRenderParams->shading_dist_shademist = 4096;
         pODMRenderParams->outdoor_no_wavy_water = 0;
-    } else {
-        viewparams->field_20 &= 0xFFFFFF00;
     }
 
-    viewparams->uSomeY = viewparams->uScreen_topL_Y;
-    viewparams->uSomeX = viewparams->uScreen_topL_X;
-    viewparams->uSomeZ = viewparams->uScreen_BttmR_X;
-    viewparams->uSomeW = viewparams->uScreen_BttmR_Y;
-
-    pViewport->SetScreen(viewparams->uScreen_topL_X, viewparams->uScreen_topL_Y,
-                         viewparams->uScreen_BttmR_X,
-                         viewparams->uScreen_BttmR_Y);
+    // @TODO(Baste) this is initialized to the same value in three spots!
+    pViewport->SetViewport(engine->config->graphics.ViewPortX1.value(),
+                           engine->config->graphics.ViewPortY1.value(),
+                           render->GetRenderDimensions().w - engine->config->graphics.ViewPortX2.value(),
+                           render->GetRenderDimensions().h - engine->config->graphics.ViewPortY2.value());
 }
 
 //----- (00464479) --------------------------------------------------------

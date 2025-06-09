@@ -177,10 +177,10 @@ void BLVRenderParams::Reset() {
 
 
     {
-        this->uViewportX = pViewport->uScreen_TL_X;
-        this->uViewportY = pViewport->uScreen_TL_Y;
-        this->uViewportZ = pViewport->uScreen_BR_X;
-        this->uViewportW = pViewport->uScreen_BR_Y;
+        this->uViewportX = pViewport->viewportTL_X;
+        this->uViewportY = pViewport->viewportTL_Y;
+        this->uViewportZ = pViewport->viewportBR_X;
+        this->uViewportW = pViewport->viewportBR_Y;
 
         this->uViewportWidth = uViewportZ - uViewportX + 1;
         this->uViewportHeight = uViewportW - uViewportY + 1;
@@ -1292,9 +1292,9 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
             int screen_space_half_width = static_cast<int>(billb_scale * v11->hw_sprites[(int64_t)v9]->uWidth / 2.0f);
             int screen_space_height = static_cast<int>(billb_scale * v11->hw_sprites[(int64_t)v9]->uHeight);
 
-            if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
-                projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
-                if (projected_y >= pViewport->uViewportTL_Y && (projected_y - screen_space_height) <= pViewport->uViewportBR_Y) {
+            if (projected_x + screen_space_half_width >= (signed int)pViewport->viewportTL_X &&
+                projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
+                if (projected_y >= pViewport->viewportTL_Y && (projected_y - screen_space_height) <= pViewport->viewportBR_Y) {
                     assert(uNumBillboardsToDraw < 500);
                     ++uNumBillboardsToDraw;
                     ++uNumDecorationsDrawnThisFrame;

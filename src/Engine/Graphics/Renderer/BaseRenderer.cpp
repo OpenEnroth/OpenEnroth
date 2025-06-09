@@ -185,9 +185,9 @@ void BaseRenderer::DrawSpriteObjects() {
                     int screen_space_half_width = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uWidth / 2.0f);
                     int screen_space_height = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uHeight);
 
-                    if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
-                        projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
-                        if (projected_y >= pViewport->uViewportTL_Y && (projected_y - screen_space_height) <= pViewport->uViewportBR_Y) {
+                    if (projected_x + screen_space_half_width >= (signed int)pViewport->viewportTL_X &&
+                        projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
+                        if (projected_y >= pViewport->viewportTL_Y && (projected_y - screen_space_height) <= pViewport->viewportBR_Y) {
                             object->uAttributes |= SPRITE_VISIBLE;
                             pBillboardRenderList[::uNumBillboardsToDraw].uPaletteIndex = frame->GetPaletteIndex();
                             pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
@@ -323,9 +323,9 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                             int screen_space_half_width = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uWidth / 2.0f);
                             int screen_space_height = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uHeight);
 
-                            if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
-                                projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
-                                if (projected_y >= pViewport->uViewportTL_Y && (projected_y - screen_space_height) <= pViewport->uViewportBR_Y) {
+                            if (projected_x + screen_space_half_width >= (signed int)pViewport->viewportTL_X &&
+                                projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
+                                if (projected_y >= pViewport->viewportTL_Y && (projected_y - screen_space_height) <= pViewport->viewportBR_Y) {
                                     ::uNumBillboardsToDraw++;
                                     ++uNumDecorationsDrawnThisFrame;
 
@@ -375,10 +375,10 @@ void BaseRenderer::TransformBillboardsAndSetPalettesODM() {
     billboard.sParentBillboardID = -1;
     //  billboard.pTarget = render->pTargetSurface;
     //  billboard.uTargetPitch = render->uTargetSurfacePitch;
-    billboard.uViewportX = pViewport->uViewportTL_X;
-    billboard.uViewportY = pViewport->uViewportTL_Y;
-    billboard.uViewportZ = pViewport->uViewportBR_X - 1;
-    billboard.uViewportW = pViewport->uViewportBR_Y;
+    billboard.uViewportX = pViewport->viewportTL_X;
+    billboard.uViewportY = pViewport->viewportTL_Y;
+    billboard.uViewportZ = pViewport->viewportBR_X - 1;
+    billboard.uViewportW = pViewport->viewportBR_Y;
     pODMRenderParams->uNumBillboards = ::uNumBillboardsToDraw;
 
     for (unsigned int i = 0; i < ::uNumBillboardsToDraw; ++i) {
@@ -682,10 +682,10 @@ void BaseRenderer::DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait, i
 
 void BaseRenderer::DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) {
     Recti targetrect{};
-    targetrect.x = pViewport->uViewportTL_X;
-    targetrect.y = pViewport->uViewportTL_Y;
-    targetrect.w = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
-    targetrect.h = pViewport->uViewportBR_Y - pViewport->uViewportTL_Y;
+    targetrect.x = pViewport->viewportTL_X;
+    targetrect.y = pViewport->viewportTL_Y;
+    targetrect.w = pViewport->viewportBR_X - pViewport->viewportTL_X;
+    targetrect.h = pViewport->viewportBR_Y - pViewport->viewportTL_Y;
 
     DrawImage(texture, targetrect, palette, colorTable.MediumGrey);
 }

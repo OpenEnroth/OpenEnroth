@@ -213,10 +213,10 @@ void GUIWindow::DrawMessageBox(bool inside_game_viewport) {
     int y = 0;
     int z, w;
     if (inside_game_viewport) {
-        x = pViewport->uViewportTL_X;
-        z = pViewport->uViewportBR_X;
-        y = pViewport->uViewportTL_Y;
-        w = pViewport->uViewportBR_Y;
+        x = pViewport->viewportTL_X;
+        z = pViewport->viewportBR_X;
+        y = pViewport->viewportTL_Y;
+        w = pViewport->viewportBR_Y;
     } else {
         Sizei renDims = render->GetRenderDimensions();
         z = renDims.w;

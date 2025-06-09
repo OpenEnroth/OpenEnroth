@@ -269,7 +269,7 @@ void prepareArenaFight(ArenaLevel level) {
     pParty->arenaLevel = level;
 
     GUIWindow window = *pDialogueWindow;
-    window.uFrameWidth = game_viewport_width;
+    window.uFrameWidth = pViewport->viewportWidth;
     window.uFrameZ = 452;
     int textHeight = assets->pFontArrus->CalcTextHeight(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON_THE_MONSTERS), window.uFrameWidth, 13) + 7;
 
