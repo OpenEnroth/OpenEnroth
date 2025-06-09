@@ -9,6 +9,7 @@
 #include "Library/Geometry/Vec.h"
 
 #include "ChestEnums.h"
+#include "Inventory.h"
 
 struct Chest {
     inline bool Initialized() const {
@@ -35,12 +36,12 @@ struct Chest {
 
     uint16_t chestTypeId = 0;
     ChestFlags flags;
-    std::array<Item, 140> items;
-    std::array<int16_t, 140> inventoryMatrix = {{}};  // 0x13b4 why is this a short?
 
     // Chest position, OE addition. Recalculated on level load in UpdateChestPositions. It's used to display
     // trap explosions in the same place regardless of which chest face was clicked.
     std::optional<Vec3f> position;
+
+    ChestInventory inventory;
 };
 
 void RemoveItemAtChestIndex(int index);

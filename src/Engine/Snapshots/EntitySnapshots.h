@@ -36,7 +36,9 @@ struct BLVMapOutline;
 struct BLVSector;
 struct BSPNode;
 class CharacterConditions;
+class CharacterInventory;
 struct Chest;
+class ChestInventory;
 struct DecorationDesc;
 struct FontHeader;
 struct GUICharMetric;
@@ -237,7 +239,7 @@ struct Item_MM7 {
     uint8_t equippedSlot;
     uint8_t maxCharges;
     uint8_t lichJarCharacterIndex; // Only for full lich jars. 1-based index of the character whose essence it stored in it.
-    uint8_t placedInChest; // Unknown unused 8-bit field, was repurposed.
+    uint8_t _pad;
     int64_t enchantmentExpirationTime;
 };
 static_assert(sizeof(Item_MM7) == 0x24);
@@ -415,6 +417,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(Character_MM7)
 
 void snapshot(const Character &src, Character_MM7 *dst);
 void reconstruct(const Character_MM7 &src, Character *dst);
+void snapshot(const CharacterInventory &src, Character_MM7 *dst);
+void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<int> characterIndex);
 
 
 struct PartyTimeStruct_MM7 {
@@ -1064,7 +1068,9 @@ static_assert(sizeof(Chest_MM7) == 5324);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Chest_MM7)
 
 void snapshot(const Chest &src, Chest_MM7 *dst);
-void reconstruct(const Chest_MM7 &src, Chest *dst);
+void reconstruct(const Chest_MM7 &src, Chest *dst, ContextTag<int> chestId);
+void snapshot(const ChestInventory &src, Chest_MM7 *dst);
+void reconstruct(const Chest_MM7 &src, ChestInventory *dst, ContextTag<int> chestId);
 
 
 struct BLVLight_MM6 {
