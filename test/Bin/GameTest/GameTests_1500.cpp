@@ -924,8 +924,8 @@ GAME_TEST(Issues, Issue1990) {
     // Test opening the Tularean Forest half-hidden chest, which generates a black potion.
     auto screenTape = tapes.screen();
     auto powerTape = tapes.custom([] {
-        InventoryEntry *entry = vChests[6].inventory.findEntry(ITEM_POTION_PURE_MIGHT);
-        return entry ? entry->item().potionPower : -1;
+        InventoryEntry entry = vChests[6].inventory.find(ITEM_POTION_PURE_MIGHT);
+        return entry ? entry.item().potionPower : -1;
     });
     test.playTraceFromTestData("issue_1990.mm7", "issue_1990.json");
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_CHEST)); // We have opened the chest.

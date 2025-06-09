@@ -1135,6 +1135,12 @@ void reconstruct(const Character_MM7 &src, Character *dst) {
     dst->uNumFireSpikeCasts = src.numFireSpikeCasts;
 }
 
+void snapshot(const CharacterInventory &src, Character_MM7 *dst) {
+}
+
+void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<int> characterIndex) {
+}
+
 void snapshot(const IconFrameData &src, IconFrameData_MM7 *dst) {
     memzero(dst);
 
@@ -1633,8 +1639,8 @@ void reconstruct(const Chest_MM7 &src, Chest *dst, ContextTag<int> chestId) {
 }
 
 void snapshot(const ChestInventory &src, Chest_MM7 *dst) {
-    for (size_t i = 0; i < src._entries.size(); i++)
-        snapshot(src._entries[i].item(), &dst->items[i]);
+    for (size_t i = 0; i < src._records.size(); i++)
+        snapshot(src._records[i].item, &dst->items[i]);
     snapshot(src._grid, &dst->inventoryMatrix, tags::cast<int, int16_t>);
 }
 
@@ -1677,9 +1683,9 @@ void reconstruct(const Chest_MM7 &src, ChestInventory *dst, ContextTag<int> ches
                     continue;
                 }
 
-                if (dst->canAddGridItem({x, y}, items[index].inventorySize())) {
+                if (dst->canAdd({x, y}, items[index].inventorySize())) {
                     processed[index] = true;
-                    dst->addGridItemAtIndex({x, y}, items[index], index); // We need to preserve item indices.
+                    dst->addAt({x, y}, items[index], index); // We need to preserve item indices.
                 }
             }
         }
@@ -1687,7 +1693,7 @@ void reconstruct(const Chest_MM7 &src, ChestInventory *dst, ContextTag<int> ches
 
     for (size_t i = 0; i < items.size(); i++)
         if (!processed[i] && items[i].itemId != ITEM_NULL)
-            dst->addHiddenItemAtIndex(items[i], i); // We need to preserve item indices.
+            dst->stashAt(items[i], i); // We need to preserve item indices.
 }
 
 void reconstruct(const BLVLight_MM7 &src, BLVLight *dst) {

@@ -47,15 +47,15 @@ void GUIWindow_Chest::Update() {
         CharacterUI_DrawPickedItemUnderlay({ chest_offs_x, chest_offs_y });
         render->ResetUIClipRect();
 
-        for (InventoryEntry *entry : vChests[uChestID].inventory.entries()) {
-            if (entry->zone() != INVENTORY_ZONE_GRID)
+        for (InventoryEntry entry : vChests[uChestID].inventory.entries()) {
+            if (entry.zone() != INVENTORY_ZONE_GRID)
                 continue;
 
-            auto item_texture = assets->getImage_ColorKey(entry->item().GetIconName());
+            auto item_texture = assets->getImage_ColorKey(entry.item().GetIconName());
             int X_offset = itemOffset(item_texture->width());
             int Y_offset = itemOffset(item_texture->height());
-            int itemPixelPosX = chest_offs_x + 32 * entry->geometry().x + X_offset;
-            int itemPixelPosY = chest_offs_y + 32 * entry->geometry().y + Y_offset;
+            int itemPixelPosX = chest_offs_x + 32 * entry.geometry().x + X_offset;
+            int itemPixelPosY = chest_offs_y + 32 * entry.geometry().y + Y_offset;
 
             assert(0 < itemPixelPosX && itemPixelPosX < 640);
             assert(0 < itemPixelPosY && itemPixelPosY < 480);
