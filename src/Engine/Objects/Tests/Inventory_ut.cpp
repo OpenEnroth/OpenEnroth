@@ -10,7 +10,7 @@ GAME_TEST(Inventory, Initialization) {
 }
 
 GAME_TEST(Inventory, Storage) {
-    Inventory inventory(Sizei(5, 5));
+    Inventory inventory(Sizei(5, 5), Inventory::MAX_ITEMS);
 
     Item sword;
     sword.itemId = ITEM_CRUDE_LONGSWORD;
@@ -26,7 +26,7 @@ GAME_TEST(Inventory, Storage) {
 }
 
 GAME_TEST(Inventory, StorageCells) {
-    Inventory inventory(Sizei(9, 9));
+    Inventory inventory(Sizei(9, 9), Inventory::MAX_ITEMS);
 
     Item helm;
     helm.itemId = ITEM_FULL_HELM; // Size = 2x2.
@@ -41,7 +41,7 @@ GAME_TEST(Inventory, StorageCells) {
 }
 
 GAME_TEST(Inventory, CrazyBigItem) {
-    Inventory inventory(Sizei(2, 2));
+    Inventory inventory(Sizei(2, 2), Inventory::MAX_ITEMS);
 
     Item helm;
     helm.itemId = ITEM_FULL_HELM; // Size = 2x2, fills whole inventory.
@@ -71,7 +71,7 @@ GAME_TEST(Inventory, StorageFull) {
 }
 
 GAME_TEST(Inventory, Equipment) {
-    Inventory inventory(Sizei(5, 5));
+    Inventory inventory(Sizei(5, 5), Inventory::MAX_ITEMS);
     Item ring;
     ring.itemId = ITEM_BRASS_RING;
 
@@ -86,7 +86,7 @@ GAME_TEST(Inventory, Equipment) {
 }
 
 GAME_TEST(Inventory, Burial) {
-    Inventory inventory(Sizei(5, 5));
+    Inventory inventory(Sizei(5, 5), Inventory::MAX_ITEMS);
     Item ring;
     ring.itemId = ITEM_BRASS_RING;
 
@@ -101,7 +101,7 @@ GAME_TEST(Inventory, Burial) {
 }
 
 GAME_TEST(Inventory, TakeItem) {
-    Inventory inventory(Sizei(5, 5));
+    Inventory inventory(Sizei(5, 5), Inventory::MAX_ITEMS);
     Item sword;
     sword.itemId = ITEM_CRUDE_LONGSWORD;
 

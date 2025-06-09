@@ -1640,7 +1640,10 @@ void snapshot(const ChestInventory &src, Chest_MM7 *dst) {
 
 void reconstruct(const Chest_MM7 &src, ChestInventory *dst, ContextTag<int> chestId) {
     Sizei size = chestTable[src.chestTypeId].size;
-    *dst = ChestInventory(size);
+
+    // Using Inventory::MAX_ITEMS here because chests can be filled to the brim with stuff beyond the obvious
+    // capacity=WxH limit, and I believe this wasn't enforced in any way by the engine.
+    *dst = ChestInventory(size, Inventory::MAX_ITEMS);
 
     std::array<bool, 140> processed = {{}};
     std::array<Item, 140> items;

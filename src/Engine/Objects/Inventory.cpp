@@ -7,9 +7,9 @@
 #include "Engine/Tables/ChestTable.h"
 #include "Library/Logger/Logger.h"
 
-Inventory::Inventory(Sizei storageSize, int capacity) : _gridSize(storageSize), _capacity(capacity) {
-    assert(storageSize.w > 0 && storageSize.h > 0);
-    assert(storageSize.w * storageSize.h <= MAX_ITEMS);
+Inventory::Inventory(Sizei gridSize, int capacity) : _gridSize(gridSize), _capacity(capacity) {
+    assert(gridSize.w > 0 && gridSize.h > 0);
+    assert(gridSize.w * gridSize.h <= MAX_ITEMS);
     assert(capacity > 0);
     assert(capacity <= MAX_ITEMS);
 }
