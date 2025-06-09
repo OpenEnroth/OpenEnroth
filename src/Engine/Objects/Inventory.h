@@ -4,6 +4,7 @@
 #include <array>
 #include <ranges>
 #include <optional>
+#include <span>
 
 #include "Library/Geometry/Size.h"
 #include "Library/Geometry/Point.h"
@@ -152,7 +153,7 @@ class Inventory {
      *                                  entries are never invalid.
      */
     [[nodiscard]] auto entries() {
-        return std::views::iota(0, static_cast<int>(MAX_ITEMS)) // TODO(captainurist): _capacity
+        return std::views::iota(0, _capacity)
             | std::views::filter([this](int i) { return _records[i].item.itemId != ITEM_NULL; })
             | std::views::transform([this](int i) { return InventoryEntry(this, i); });
     }
@@ -162,7 +163,7 @@ class Inventory {
      *                                  entries are never invalid.
      */
     [[nodiscard]] auto entries() const {
-        return std::views::iota(0, static_cast<int>(MAX_ITEMS)) // TODO(captainurist): _capacity
+        return std::views::iota(0, _capacity)
             | std::views::filter([this](int i) { return _records[i].item.itemId != ITEM_NULL; })
             | std::views::transform([this](int i) { return InventoryConstEntry(this, i); });
     }
@@ -172,7 +173,7 @@ class Inventory {
      *                                  `ITEM_NULL`.
      */
     [[nodiscard]] auto items(this auto &&self) {
-        return self._records // TODO(captainurist): _capacity
+        return self.availableRecords()
             | std::views::filter([](auto &&data) { return data.item.itemId != ITEM_NULL; })
             | std::views::transform([](auto &&data) { return data.item; });
     }
@@ -236,18 +237,22 @@ class Inventory {
  private:
     friend class InventoryConstEntry;
 
-    int findFreeIndex() const;
-    bool isGridFree(Pointi position, Sizei size) const;
-    InventoryEntry addAt(Pointi position, const Item &item, int index);
-    InventoryEntry stashAt(const Item &item, int index);
-    void checkInvariants() const;
-
     struct InventoryRecord {
         Item item;
         InventoryZone zone = INVENTORY_ZONE_STASH;
         Pointi position;
         ItemSlot slot = ITEM_SLOT_INVALID;
     };
+
+    [[nodiscard]] int findFreeIndex() const;
+    [[nodiscard]] bool isGridFree(Pointi position, Sizei size) const;
+    InventoryEntry addAt(Pointi position, const Item &item, int index);
+    InventoryEntry stashAt(const Item &item, int index);
+    void checkInvariants() const;
+
+    [[nodiscard]] auto availableRecords(this auto &&self) {
+        return std::span(self._records.data(), self._records.data() + self._capacity);
+    }
 
  private:
     /** Inventory storage area size in cells. */
@@ -333,8 +338,8 @@ class CharacterInventory : private Inventory {
 //
 
 InventoryConstEntry::InventoryConstEntry(const Inventory *inventory, int index) : _inventory(inventory), _index(index) {
-    assert(inventory);
-    assert(index >= 0 && index < Inventory::MAX_ITEMS); // TODO(captainurist): _capacity
+    assert(_inventory);
+    assert(_index >= 0 && _index < _inventory->_capacity);
 }
 
 InventoryConstEntry::operator bool() const {
