@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <array>
 #include <ranges>
 #include <optional>
@@ -14,13 +15,19 @@
 #include "Item.h"
 
 struct Chest_MM7;
+struct Character_MM7;
 class ChestInventory;
+class CharacterInventory;
+class Inventory;
 
+/**
+ * Logical location of an `Item` inside an `Inventory`.
+ */
 enum class InventoryZone {
     /** Item is effectively hidden. Applies only to chest inventory. MM7 had chests that were filled to the brim with
      * stuff, so that there was simply not enough chest space to place all the items, and some items ended up hidden.
      * See `chest_try_place_items` config option. */
-    INVENTORY_ZONE_HIDDEN = 0,
+    INVENTORY_ZONE_STASH = 0,
 
     /** Item is stored in the inventory grid. */
     INVENTORY_ZONE_GRID = 1,
@@ -30,53 +37,72 @@ enum class InventoryZone {
 };
 using enum InventoryZone;
 
-struct InventoryEntry {
+
+/**
+ * Lightweight, pointer‑like descriptor giving `const` access to an item owned by an `Inventory`.
+ *
+ * `InventoryConstEntry` can be in an invalid state. Check for validity with `operator bool` before calling any of the
+ * methods!
+ */
+class InventoryConstEntry {
+ public:
+    InventoryConstEntry() = default;
+
+    [[nodiscard]] inline explicit operator bool() const;
+
+    [[nodiscard]] inline const Item &item() const;
+
+    [[nodiscard]] inline InventoryZone zone() const;
+
+    [[nodiscard]] inline Recti geometry() const;
+
+    [[nodiscard]] inline ItemSlot slot() const;
+
+    [[nodiscard]] inline int index() const;
+
+    [[nodiscard]] bool operator!() const {
+        return !static_cast<bool>(*this);
+    }
+
+ protected:
+    friend class Inventory;
+
+    inline InventoryConstEntry(const Inventory *inventory, int index);
+
+ private:
+    const Inventory *_inventory = nullptr;
+    int _index = -1;
+};
+
+
+/**
+ * Mutable counterpart to `InventoryConstEntry`, allowing modification of the referenced `Item`.
+ */
+class InventoryEntry : public InventoryConstEntry {
  public:
     InventoryEntry() = default;
 
-    /**
-     * @returns                         Item in this entry. If you got this entry from one of `Inventory` methods,
-     *                                  it will never be `ITEM_NULL`.
-     */
-    [[nodiscard]] const Item &item() const {
-        return _item;
+    [[nodiscard]] Item &item() const {
+        return const_cast<Item &>(InventoryConstEntry::item());
     }
 
-    [[nodiscard]] Item &item() {
-        return _item;
-    }
-
-    /**
-     * @returns                         Where is the item located.
-     */
-    [[nodiscard]] InventoryZone zone() const {
-        return _zone;
-    }
-
-    /**
-     * @returns                         Only for items in grid - item geometry in inventory cells.
-     */
-    [[nodiscard]] Recti geometry() const {
-        return _zone == INVENTORY_ZONE_GRID ? Recti(_position, _item.inventorySize()) : Recti();
-    }
-
-    /**
-     * @returns                         Only for equipped items - item slot.
-     */
-    [[nodiscard]] ItemSlot slot() const {
-        return _slot;
-    }
-
- private:
+ protected:
     friend class Inventory;
 
- private:
-    Item _item;
-    InventoryZone _zone = INVENTORY_ZONE_HIDDEN;
-    Pointi _position;
-    ItemSlot _slot = ITEM_SLOT_INVALID;
+    InventoryEntry(Inventory *inventory, int index) : InventoryConstEntry(inventory, index) {}
 };
 
+
+/**
+ * Core container that stores items for both chests and characters.
+ *
+ * `Inventory` stores items inside an array, so all items have indices. These indices are exposed through
+ * `InventoryConstEntry::index` and `Inventory::entry(int)`. In practice there shouldn't be a lot of use cases where
+ * direct access to item indices is needed.
+ *
+ * @see ChestInventory
+ * @see CharacterInventory
+ */
 class Inventory {
  public:
     static constexpr std::size_t MAX_ITEMS = 140;
@@ -122,13 +148,23 @@ class Inventory {
     }
 
     /**
-     * @return                          A range of `InventoryEntry *` pointers for items in this inventory. Returned
-     *                                  pointers are never null, and items are never `ITEM_NULL`.
+     * @return                          A range of `InventoryEntry` objects for items in this inventory. Returned
+     *                                  entries are never invalid.
      */
-    [[nodiscard]] auto entries(this auto &&self) {
-        return self._entries
-            | std::views::filter([](auto &&entry) { return entry._item.itemId != ITEM_NULL; })
-            | std::views::transform([](auto &&entry) { return std::addressof(entry); });
+    [[nodiscard]] auto entries() {
+        return std::views::iota(0, static_cast<int>(MAX_ITEMS)) // TODO(captainurist): _capacity
+            | std::views::filter([this](int i) { return _records[i].item.itemId != ITEM_NULL; })
+            | std::views::transform([this](int i) { return InventoryEntry(this, i); });
+    }
+
+    /**
+     * @return                          A range of `InventoryConstEntry` objects for items in this inventory. Returned
+     *                                  entries are never invalid.
+     */
+    [[nodiscard]] auto entries() const {
+        return std::views::iota(0, static_cast<int>(MAX_ITEMS)) // TODO(captainurist): _capacity
+            | std::views::filter([this](int i) { return _records[i].item.itemId != ITEM_NULL; })
+            | std::views::transform([this](int i) { return InventoryConstEntry(this, i); });
     }
 
     /**
@@ -136,60 +172,82 @@ class Inventory {
      *                                  `ITEM_NULL`.
      */
     [[nodiscard]] auto items(this auto &&self) {
-        return self._entries
-            | std::views::filter([](auto &&entry) { return entry._item.itemId != ITEM_NULL; })
-            | std::views::transform([](auto &&entry) { return entry._item; });
+        return self._records // TODO(captainurist): _capacity
+            | std::views::filter([](auto &&data) { return data.item.itemId != ITEM_NULL; })
+            | std::views::transform([](auto &&data) { return data.item; });
     }
 
     /**
      * @param position                  Grid position to look up an item.
-     * @return                          Item at provided grip position, or `nullptr` if `position` is out of bounds or
-     *                                  if the grid at `position` is empty.
+     * @return                          Inventory entry at provided grid position, or an invalid entry if `position` is
+     *                                  out of bounds or if the grid at `position` is empty.
      */
-    [[nodiscard]] InventoryEntry *gridItem(Pointi position);
-    [[nodiscard]] const InventoryEntry *gridItem(Pointi position) const {
-        return const_cast<Inventory *>(this)->gridItem(position);
+    [[nodiscard]] InventoryEntry entry(Pointi position);
+    [[nodiscard]] InventoryConstEntry entry(Pointi position) const {
+        return const_cast<Inventory *>(this)->entry(position);
     }
 
     /**
      * @param slot                      Equipment slot to look up an item.
-     * @return                          Item equipped in `slot`, or `nullptr` if nothing is equipped in `slot`.
+     * @return                          Inventory entry for an item equipped in `slot`, or an invalid entry if that slot
+     *                                  is empty.
      */
-    [[nodiscard]] InventoryEntry *equippedItem(ItemSlot slot);
-    [[nodiscard]] const InventoryEntry *equippedItem(ItemSlot slot) const {
-        return const_cast<Inventory *>(this)->equippedItem(slot);
+    [[nodiscard]] InventoryEntry entry(ItemSlot slot);
+    [[nodiscard]] InventoryConstEntry entry(ItemSlot slot) const {
+        return const_cast<Inventory *>(this)->entry(slot);
     }
 
-    [[nodiscard]] bool canAddGridItem(Pointi position, Sizei size) const;
-    InventoryEntry *addGridItem(Pointi position, const Item &item);
-
-    [[nodiscard]] bool canAddEquippedItem(ItemSlot slot) const;
-    InventoryEntry *addEquippedItem(ItemSlot slot, const Item &item);
-
-    [[nodiscard]] bool canAddHiddenItem() const;
-    InventoryEntry *addHiddenItem(const Item &item);
-
-    Item takeItem(InventoryEntry *entry);
-
-    [[nodiscard]] std::optional<Pointi> findGridSpace(Sizei size) const;
-    [[nodiscard]] std::optional<Pointi> findGridSpace(const Item &item) const {
-        return findGridSpace(item.inventorySize());
+    /**
+     * @param index                     Entry index to look up an item.
+     * @return                          Inventory entry at `index`, or an invalid entry if `index` is out of bounds or
+     *                                  if there is no item at `index`.
+     */
+    [[nodiscard]] InventoryEntry entry(int index);
+    [[nodiscard]] InventoryConstEntry entry(int index) const {
+        return const_cast<Inventory *>(this)->entry(index);
     }
 
-    [[nodiscard]] InventoryEntry *findEntry(ItemId itemId);
-    [[nodiscard]] const InventoryEntry *findEntry(ItemId itemId) const {
-        return const_cast<Inventory *>(this)->findEntry(itemId);
+    [[nodiscard]] bool canAdd(Pointi position, Sizei size) const;
+    InventoryEntry add(Pointi position, const Item &item);
+
+    [[nodiscard]] bool canEquip(ItemSlot slot) const;
+    InventoryEntry equip(ItemSlot slot, const Item &item);
+
+    [[nodiscard]] bool canStash() const;
+    InventoryEntry stash(const Item &item);
+
+    Item take(InventoryEntry entry);
+
+    [[nodiscard]] std::optional<Pointi> findSpace(Sizei size) const;
+    [[nodiscard]] std::optional<Pointi> findSpace(const Item &item) const {
+        return findSpace(item.inventorySize());
+    }
+
+    [[nodiscard]] InventoryEntry find(ItemId itemId);
+    [[nodiscard]] InventoryConstEntry find(ItemId itemId) const {
+        return const_cast<Inventory *>(this)->find(itemId);
     }
 
     friend void snapshot(const ChestInventory &src, Chest_MM7 *dst);
     friend void reconstruct(const Chest_MM7 &src, ChestInventory *dst, ContextTag<int> chestId);
+    friend void snapshot(const CharacterInventory &src, Character_MM7 *dst);
+    friend void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<int> characterIndex);
 
  private:
+    friend class InventoryConstEntry;
+
     int findFreeIndex() const;
     bool isGridFree(Pointi position, Sizei size) const;
-    InventoryEntry *addGridItemAtIndex(Pointi position, const Item &item, int index);
-    InventoryEntry *addHiddenItemAtIndex(const Item &item, int index);
+    InventoryEntry addAt(Pointi position, const Item &item, int index);
+    InventoryEntry stashAt(const Item &item, int index);
     void checkInvariants() const;
+
+    struct InventoryRecord {
+        Item item;
+        InventoryZone zone = INVENTORY_ZONE_STASH;
+        Pointi position;
+        ItemSlot slot = ITEM_SLOT_INVALID;
+    };
 
  private:
     /** Inventory storage area size in cells. */
@@ -202,7 +260,7 @@ class Inventory {
     int _capacity = 0;
 
     /** All items in inventory. `ITEM_NULL` means the slot is empty. */
-    std::array<InventoryEntry, MAX_ITEMS> _entries;
+    std::array<InventoryRecord, MAX_ITEMS> _records;
 
     /** Backpack grid. 0 means empty cell. Positive number is an index into `_entries` plus one. Negative number is
      * an index into the main slot in `_grid` minus one. */
@@ -212,6 +270,10 @@ class Inventory {
     IndexedArray<int, ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID> _equipment = {{}};
 };
 
+
+/**
+ * Thin facade that exposes only the chest‑appropriate subset of `Inventory` interface.
+ */
 class ChestInventory : private Inventory {
  public:
     using Inventory::Inventory;
@@ -220,15 +282,14 @@ class ChestInventory : private Inventory {
     using Inventory::gridSize;
     using Inventory::gridRect;
     using Inventory::entries;
-    using Inventory::items;
-    using Inventory::gridItem;
-    using Inventory::canAddGridItem;
-    using Inventory::addGridItem;
-    using Inventory::canAddHiddenItem;
-    using Inventory::addHiddenItem;
-    using Inventory::takeItem;
-    using Inventory::findGridSpace;
-    using Inventory::findEntry;
+    using Inventory::entry;
+    using Inventory::canAdd;
+    using Inventory::add;
+    using Inventory::canStash;
+    using Inventory::stash;
+    using Inventory::take;
+    using Inventory::findSpace;
+    using Inventory::find;
 
     friend void snapshot(const ChestInventory &src, Chest_MM7 *dst);
     friend void reconstruct(const Chest_MM7 &src, ChestInventory *dst, ContextTag<int> chestId);
@@ -236,3 +297,71 @@ class ChestInventory : private Inventory {
  private:
     friend class Inventory;
 };
+
+
+/**
+ * Thin facade that exposes only the character‑appropriate subset of `Inventory` interface.
+ */
+class CharacterInventory : private Inventory {
+ public:
+    using Inventory::Inventory;
+    using Inventory::size;
+    using Inventory::capacity;
+    using Inventory::gridSize;
+    using Inventory::gridRect;
+    using Inventory::entries;
+    using Inventory::items;
+    using Inventory::entry;
+    using Inventory::canAdd;
+    using Inventory::add;
+    using Inventory::canEquip;
+    using Inventory::equip;
+    using Inventory::take;
+    using Inventory::findSpace;
+    using Inventory::find;
+
+    friend void snapshot(const CharacterInventory &src, Character_MM7 *dst);
+    friend void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<int> characterIndex);
+
+ private:
+    friend class Inventory;
+};
+
+
+//
+// InventoryConstEntry implementation follow.
+//
+
+InventoryConstEntry::InventoryConstEntry(const Inventory *inventory, int index) : _inventory(inventory), _index(index) {
+    assert(inventory);
+    assert(index >= 0 && index < Inventory::MAX_ITEMS); // TODO(captainurist): _capacity
+}
+
+InventoryConstEntry::operator bool() const {
+    return _inventory && _inventory->_records[_index].item.itemId != ITEM_NULL;
+}
+
+const Item &InventoryConstEntry::item() const {
+    assert(!!*this);
+    return _inventory->_records[_index].item;
+}
+
+InventoryZone InventoryConstEntry::zone() const {
+    assert(!!*this);
+    return _inventory->_records[_index].zone;
+}
+
+Recti InventoryConstEntry::geometry() const {
+    assert(!!*this);
+    const auto &data = _inventory->_records[_index];
+    return data.zone == INVENTORY_ZONE_GRID ? Recti(data.position, data.item.inventorySize()) : Recti();
+}
+
+ItemSlot InventoryConstEntry::slot() const {
+    assert(!!*this);
+    return _inventory->_records[_index].slot;
+}
+
+int InventoryConstEntry::index() const {
+    return _index;
+}

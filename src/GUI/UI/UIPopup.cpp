@@ -1891,9 +1891,9 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                 int inventoryYCoord = (pY - 34) / 32;  // TODO(captainurist): use pchestoffsets
                 int inventoryXCoord = (pX - 42) / 32;
 
-                InventoryEntry *entry = vChests[pGUIWindow_CurrentChest->chestId()].inventory.gridItem({inventoryXCoord, inventoryYCoord});
+                InventoryEntry entry = vChests[pGUIWindow_CurrentChest->chestId()].inventory.entry({inventoryXCoord, inventoryYCoord});
                 if (entry)
-                    GameUI_DrawItemInfo(&entry->item());
+                    GameUI_DrawItemInfo(&entry.item());
             }
             break;
         }
