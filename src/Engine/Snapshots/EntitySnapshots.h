@@ -36,6 +36,7 @@ struct BLVMapOutline;
 struct BLVSector;
 struct BSPNode;
 class CharacterConditions;
+class CharacterInventory;
 struct Chest;
 class ChestInventory;
 struct DecorationDesc;
@@ -416,6 +417,8 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(Character_MM7)
 
 void snapshot(const Character &src, Character_MM7 *dst);
 void reconstruct(const Character_MM7 &src, Character *dst);
+void snapshot(const CharacterInventory &src, Character_MM7 *dst);
+void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<int> characterIndex);
 
 
 struct PartyTimeStruct_MM7 {

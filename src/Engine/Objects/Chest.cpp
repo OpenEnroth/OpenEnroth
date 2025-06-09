@@ -159,9 +159,9 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
     // TODO(captainurist): need to use mouse->pickedItemOffset here?
     Pointi inventoryPos = mapToInventoryGrid(mousePos, chestTable[chest->chestTypeId].inventoryOffset);
 
-    const InventoryEntry *entry = chest->inventory.gridItem(inventoryPos);
+    const InventoryEntry entry = chest->inventory.entry(inventoryPos);
     if (entry) {
-        engine->_statusBar->setPermanent(entry->item().GetDisplayName());
+        engine->_statusBar->setPermanent(entry.item().GetDisplayName());
         uLastPointedObjectID = Pid::dummy();
         return 1;
     } else {
@@ -192,30 +192,30 @@ void Chest::PlaceItems(int uChestID) { // only used for setup
     }
 
     Sizei chestSize = chest.inventory.gridSize();
-    for (InventoryEntry *entry : chest.inventory.entries()) {
-        if (entry->zone() != INVENTORY_ZONE_HIDDEN)
+    for (InventoryEntry entry : chest.inventory.entries()) {
+        if (entry.zone() != INVENTORY_ZONE_STASH)
             continue;
 
-        assert(!isRandomItem(entry->item().itemId) && "Checking that generated items are valid");
+        assert(!isRandomItem(entry.item().itemId) && "Checking that generated items are valid");
 
-        Sizei itemSize = entry->item().inventorySize();
+        Sizei itemSize = entry.item().inventorySize();
         for (int i = 0; i < uChestArea; i++) {
             Pointi pos(chest_cells_map[i] % chestSize.w, chest_cells_map[i] / chestSize.w);
 
-            if (chest.inventory.canAddGridItem(pos, itemSize)) {
+            if (chest.inventory.canAdd(pos, itemSize)) {
                 // TODO(captainurist): this is a weird place to call postGenerate, and we won't call it for items that
                 //                     end up buried. But it's here b/c we don't want to break the traces, at least now.
                 //                     Redo this properly and write a small test.
-                entry->item().postGenerate(ITEM_SOURCE_CHEST);
-                entry = chest.inventory.addGridItem(pos, chest.inventory.takeItem(entry));
+                entry.item().postGenerate(ITEM_SOURCE_CHEST);
+                entry = chest.inventory.add(pos, chest.inventory.take(entry));
                 if (chest.flags & CHEST_OPENED)
-                    entry->item().SetIdentified();
+                    entry.item().SetIdentified();
                 break;
             }
         }
 
-        if (entry->zone() == INVENTORY_ZONE_HIDDEN)
-            logger->trace("Cannot place item with id {} in the chest!", std::to_underlying(entry->item().itemId));
+        if (entry.zone() == INVENTORY_ZONE_STASH)
+            logger->trace("Cannot place item with id {} in the chest!", std::to_underlying(entry.item().itemId));
     }
 
     chest.SetInitialized(true);
@@ -239,19 +239,19 @@ void Chest::OnChestLeftClick() {
 
     if (pParty->pPickedItem.itemId != ITEM_NULL) {  // item held
         std::optional<Pointi> pos;
-        if (chest->inventory.canAddGridItem(inventoryPos, pParty->pPickedItem.inventorySize())) {
+        if (chest->inventory.canAdd(inventoryPos, pParty->pPickedItem.inventorySize())) {
             pos = inventoryPos;
         } else {
-            pos = chest->inventory.findGridSpace(pParty->pPickedItem);
+            pos = chest->inventory.findSpace(pParty->pPickedItem);
         }
 
         if (pos) {
-            chest->inventory.addGridItem(*pos, pParty->pPickedItem);
+            chest->inventory.add(*pos, pParty->pPickedItem);
             mouse->RemoveHoldingItem();
         }
     } else {
-        if (InventoryEntry *entry = chest->inventory.gridItem(inventoryPos)) {
-            Item item = chest->inventory.takeItem(entry);
+        if (InventoryEntry entry = chest->inventory.entry(inventoryPos)) {
+            Item item = chest->inventory.take(entry);
 
             if (item.isGold()) {
                 pParty->partyFindsGold(item.goldAmount, GOLD_RECEIVE_SHARE);
@@ -283,24 +283,24 @@ void Chest::GrabItem(bool all) {  // new function to grab items from chest using
     int chestId = pGUIWindow_CurrentChest->chestId();
     Chest *chest = &vChests[chestId];
 
-    for (InventoryEntry *entry : chest->inventory.entries()) {
-        if (entry->item().isGold()) {
-            pParty->partyFindsGold(entry->item().goldAmount, GOLD_RECEIVE_SHARE);
-            goldamount += entry->item().goldAmount;
+    for (InventoryEntry entry : chest->inventory.entries()) {
+        if (entry.item().isGold()) {
+            pParty->partyFindsGold(entry.item().goldAmount, GOLD_RECEIVE_SHARE);
+            goldamount += entry.item().goldAmount;
             goldcount++;
         } else {  // this should add item to invetory of active char - if that fails set as holding item and break
-            if (pParty->hasActiveCharacter() && (InventSlot = pParty->activeCharacter().AddItem(-1, entry->item().itemId)) != 0) {  // can place
-                pParty->activeCharacter().pInventoryItemList[InventSlot - 1] = entry->item();
+            if (pParty->hasActiveCharacter() && (InventSlot = pParty->activeCharacter().AddItem(-1, entry.item().itemId)) != 0) {  // can place
+                pParty->activeCharacter().pInventoryItemList[InventSlot - 1] = entry.item();
                 grabcount++;
-                engine->_statusBar->setEvent(LSTR_YOU_FOUND_AN_ITEM_S, pItemTable->items[entry->item().itemId].unidentifiedName);
+                engine->_statusBar->setEvent(LSTR_YOU_FOUND_AN_ITEM_S, pItemTable->items[entry.item().itemId].unidentifiedName);
             } else {  // no room so set as holding item
-                pParty->setHoldingItem(entry->item());
-                chest->inventory.takeItem(entry);
+                pParty->setHoldingItem(entry.item());
+                chest->inventory.take(entry);
                 pParty->activeCharacter().playReaction(SPEECH_NO_ROOM);
                 break;
             }
         }
-        chest->inventory.takeItem(entry);
+        chest->inventory.take(entry);
         if (all == false)  // only grab 1 item
             break;
     }
@@ -319,12 +319,12 @@ void Chest::GrabItem(bool all) {  // new function to grab items from chest using
 void GenerateItemsInChest() {
     MapInfo *currMapInfo = &pMapStats->pInfos[engine->_currentLoadedMapId];
     for (int i = 0; i < 20; ++i) {
-        for (InventoryEntry *entry : vChests[i].inventory.entries()) {
-            if (isRandomItem(entry->item().itemId)) {
+        for (InventoryEntry entry : vChests[i].inventory.entries()) {
+            if (isRandomItem(entry.item().itemId)) {
                 int additionaItemCount = grng->random(5);  // additional items in chect
                 additionaItemCount++;  // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
                 ItemTreasureLevel resultTreasureLevel = grng->randomSample(
-                    RemapTreasureLevel(randomItemTreasureLevel(entry->item().itemId), currMapInfo->mapTreasureLevel));
+                    RemapTreasureLevel(randomItemTreasureLevel(entry.item().itemId), currMapInfo->mapTreasureLevel));
 
                 if (resultTreasureLevel != ITEM_TREASURE_LEVEL_7) {
                     for (int k = 0; k < additionaItemCount; k++) {
@@ -339,17 +339,17 @@ void GenerateItemsInChest() {
                         }
                         if (item.itemId != ITEM_NULL) {
                             if (entry) {
-                                entry->item() = item;
-                                entry = nullptr;
+                                entry.item() = item;
+                                entry = {};
                             } else {
-                                vChests[i].inventory.addHiddenItem(item);
+                                vChests[i].inventory.stash(item);
                             }
                         }
                     }
                 } else {
                     Item item;
                     item.GenerateArtifact();
-                    vChests[i].inventory.addHiddenItem(item);
+                    vChests[i].inventory.stash(item);
                 }
             }
         }
