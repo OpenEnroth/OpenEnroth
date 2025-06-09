@@ -27,7 +27,7 @@ var searchData=
   ['validateverticalturnspeed_24',['ValidateVerticalTurnSpeed',['../classGameConfig_1_1Settings.html#afe359821bec506e9ff64326af6d808e2',1,'GameConfig::Settings']]],
   ['validatewidth_25',['ValidateWidth',['../classGameConfig_1_1Window.html#a11b80f0b4abd4f14f6412aeb01955a50',1,'GameConfig::Window']]],
   ['validator_26',['validator',['../classAnyConfigEntry.html#a1bf7df3f8f477720e9e775a5e6c6f6fc',1,'AnyConfigEntry']]],
-  ['value_27',['value',['../classdetail_1_1FileSystemTrieNode.html#aefbcd40b76502632a4f53dde2e5b15c1',1,'detail::FileSystemTrieNode::value()'],['../classConfigEntry.html#a010be505ebdea4d00b8bc92f23f0bbfd',1,'ConfigEntry::value()'],['../classdetail_1_1FileSystemTrieNode.html#a7b255cff5e76ecec4cfc3b91a272442e',1,'detail::FileSystemTrieNode::value()'],['../classTextureRenderId.html#a306ec0c8a0dd3491960314097d52122c',1,'TextureRenderId::value()'],['../classAnyConfigEntry.html#ad594ad35178b51b18572b265b6e24a0f',1,'AnyConfigEntry::value()']]],
+  ['value_27',['value',['../classdetail_1_1FileSystemTrieNode.html#aefbcd40b76502632a4f53dde2e5b15c1',1,'detail::FileSystemTrieNode::value() const'],['../classdetail_1_1FileSystemTrieNode.html#a7b255cff5e76ecec4cfc3b91a272442e',1,'detail::FileSystemTrieNode::value()'],['../classConfigEntry.html#a010be505ebdea4d00b8bc92f23f0bbfd',1,'ConfigEntry::value()'],['../classTextureRenderId.html#a306ec0c8a0dd3491960314097d52122c',1,'TextureRenderId::value()'],['../classAnyConfigEntry.html#ad594ad35178b51b18572b265b6e24a0f',1,'AnyConfigEntry::value()']]],
   ['valueor_28',['valueOr',['../MapAccess_8h.html#a36aac4b6e69a318e2dfd9d440fbeb95a',1,'MapAccess.h']]],
   ['valueptr_29',['valuePtr',['../MapAccess_8h.html#ad016f215ef0c0b70b0c3c3c23a385cd6',1,'MapAccess.h']]],
   ['values_30',['values',['../classdetail_1_1TestTapeState.html#a206f13f0b4b34206c8f50cd0e82783ce',1,'detail::TestTapeState']]],
@@ -40,10 +40,9 @@ var searchData=
   ['view_37',['view',['../classBlob.html#ad738cfac6bf6406c04784fd7689d24af',1,'Blob::view(std::string_view data)'],['../classBlob.html#a14c523d7452abe45c8d25bd7db76f41d',1,'Blob::view(const void *data, size_t size)']]],
   ['viewclip_38',['ViewClip',['../structCamera3D.html#aa7c2b7d9c37b4025b0f46741e947ffed',1,'Camera3D']]],
   ['viewingparams_39',['ViewingParams',['../structViewingParams.html#a3e14ff3b831e0e7a77d6113cd0090465',1,'ViewingParams']]],
-  ['viewport_40',['Viewport',['../structViewport.html#a9fde8f966d9802dd42254acf0ed05386',1,'Viewport']]],
-  ['viewproject_5ftrueifstillvisible_5fblv_41',['ViewProject_TrueIfStillVisible_BLV',['../classParticleEngine.html#ad63c7069319085019cf0c086e38cce06',1,'ParticleEngine']]],
-  ['viewtransform_42',['ViewTransform',['../structCamera3D.html#a525586eca7cf9a04905be7702dae1625',1,'Camera3D::ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z)'],['../structCamera3D.html#ab3c08c9e2fe1391ce8a21fb5ae8ae504',1,'Camera3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices)']]],
-  ['visible_43',['Visible',['../structODMFace.html#a8113cb0afb1f45cc292fd22959459daa',1,'ODMFace::Visible()'],['../structBLVFace.html#ab0f27bf592ba9ca357dde5deef3459b4',1,'BLVFace::Visible()']]],
-  ['visit_44',['visit',['../classPlatformIntrospection.html#a83040febef70b51af271589ae4c1f532',1,'PlatformIntrospection']]],
-  ['visitinternal_45',['visitInternal',['../classPlatformIntrospection.html#a1a984691e737325e8abf75d978b6b574',1,'PlatformIntrospection']]]
+  ['viewproject_5ftrueifstillvisible_5fblv_40',['ViewProject_TrueIfStillVisible_BLV',['../classParticleEngine.html#ad63c7069319085019cf0c086e38cce06',1,'ParticleEngine']]],
+  ['viewtransform_41',['ViewTransform',['../structCamera3D.html#a525586eca7cf9a04905be7702dae1625',1,'Camera3D::ViewTransform(int x, int y, int z, int *transformed_x, int *transformed_y, int *transformed_z)'],['../structCamera3D.html#ab3c08c9e2fe1391ce8a21fb5ae8ae504',1,'Camera3D::ViewTransform(RenderVertexSoft *a1a, unsigned int uNumVertices)']]],
+  ['visible_42',['Visible',['../structODMFace.html#a8113cb0afb1f45cc292fd22959459daa',1,'ODMFace::Visible()'],['../structBLVFace.html#ab0f27bf592ba9ca357dde5deef3459b4',1,'BLVFace::Visible()']]],
+  ['visit_43',['visit',['../classPlatformIntrospection.html#a83040febef70b51af271589ae4c1f532',1,'PlatformIntrospection']]],
+  ['visitinternal_44',['visitInternal',['../classPlatformIntrospection.html#a1a984691e737325e8abf75d978b6b574',1,'PlatformIntrospection']]]
 ];
