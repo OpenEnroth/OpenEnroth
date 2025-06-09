@@ -81,7 +81,16 @@ class Inventory {
  public:
     static constexpr std::size_t MAX_ITEMS = 140;
 
-    explicit Inventory(Sizei storageSize = Sizei(1, 1), int capacity = MAX_ITEMS);
+    /**
+     * Constructs a 1x1 inventory that can hold `MAX_ITEMS` items.
+     */
+    Inventory() : Inventory(Sizei(1, 1), MAX_ITEMS) {}
+
+    /**
+     * @param gridSize                  Size of inventory's grid, WxH must be less or equal to `MAX_ITEMS`.
+     * @param capacity                  Inventory capacity, must be less or equal to `MAX_ITEMS`.
+     */
+    explicit Inventory(Sizei gridSize, int capacity);
 
     /**
      * @return                          How many items are currently held in this inventory object.
@@ -91,7 +100,7 @@ class Inventory {
     }
 
     /**
-     * @return                          How many items can this inventory object hold, it's always `WxH`.
+     * @return                          How many items can this inventory object hold.
      */
     [[nodiscard]] int capacity() const {
         return _capacity;
