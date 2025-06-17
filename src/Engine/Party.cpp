@@ -376,10 +376,7 @@ unsigned int Party::getPartyFame() {
         UINT_MAX);  // min wasn't present, but could be incorrect without it
 }
 
-void Party::createDefaultParty(bool bDebugGiveItems) {
-    signed int uNumPlayers;  // [sp+18h] [bp-28h]@1
-    Item Dst;             // [sp+1Ch] [bp-24h]@10
-
+void Party::createDefaultParty() {
     pHireling1Name[0] = 0;
     pHireling2Name[0] = 0;
     this->hirelingScrollPosition = 0;
@@ -467,96 +464,6 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
         }
 
         pCharacter.portraitTimePassed = 0_ticks;
-
-        if (bDebugGiveItems) {
-            Dst.Reset();
-            pItemTable->generateItem(ITEM_TREASURE_LEVEL_2, RANDOM_ITEM_RING, &Dst);
-            pCharacter.AddItem2(-1, &Dst);
-            for (CharacterSkillType skill : allVisibleSkills()) {
-                if (pCharacter.pActiveSkills[skill]) {
-                    switch (skill) {
-                        case CHARACTER_SKILL_STAFF:
-                            pCharacter.WearItem(ITEM_STAFF);
-                            break;
-                        case CHARACTER_SKILL_SWORD:
-                            pCharacter.WearItem(ITEM_CRUDE_LONGSWORD);
-                            break;
-                        case CHARACTER_SKILL_DAGGER:
-                            pCharacter.WearItem(ITEM_DAGGER);
-                            break;
-                        case CHARACTER_SKILL_AXE:
-                            pCharacter.WearItem(ITEM_CRUDE_AXE);
-                            break;
-                        case CHARACTER_SKILL_SPEAR:
-                            pCharacter.WearItem(ITEM_CRUDE_SPEAR);
-                            break;
-                        case CHARACTER_SKILL_BOW:
-                            pCharacter.WearItem(ITEM_CROSSBOW);
-                            break;
-                        case CHARACTER_SKILL_MACE:
-                            pCharacter.WearItem(ITEM_MACE);
-                            break;
-                        case CHARACTER_SKILL_SHIELD:
-                            pCharacter.WearItem(ITEM_WOODEN_BUCKLER);
-                            break;
-                        case CHARACTER_SKILL_LEATHER:
-                            pCharacter.WearItem(ITEM_LEATHER_ARMOR);
-                            break;
-                        case CHARACTER_SKILL_CHAIN:
-                            pCharacter.WearItem(ITEM_CHAIN_MAIL);
-                            break;
-                        case CHARACTER_SKILL_PLATE:
-                            pCharacter.WearItem(ITEM_PLATE_ARMOR);
-                            break;
-                        case CHARACTER_SKILL_FIRE:
-                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_FIRE_BOLT);
-                            break;
-                        case CHARACTER_SKILL_AIR:
-                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_FEATHER_FALL);
-                            break;
-                        case CHARACTER_SKILL_WATER:
-                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_POISON_SPRAY);
-                            break;
-                        case CHARACTER_SKILL_EARTH:
-                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_SLOW);
-                            break;
-                        case CHARACTER_SKILL_SPIRIT:
-                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_BLESS);
-                            break;
-                        case CHARACTER_SKILL_MIND:
-                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_MIND_BLAST);
-                            break;
-                        case CHARACTER_SKILL_BODY:
-                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_HEAL);
-                            break;
-                        case CHARACTER_SKILL_ITEM_ID:
-                        case CHARACTER_SKILL_REPAIR:
-                        case CHARACTER_SKILL_MEDITATION:
-                        case CHARACTER_SKILL_PERCEPTION:
-                        case CHARACTER_SKILL_DIPLOMACY:
-                        case CHARACTER_SKILL_TRAP_DISARM:
-                        case CHARACTER_SKILL_LEARNING:
-                            pCharacter.AddItem(-1, ITEM_POTION_BOTTLE);
-                            pCharacter.AddItem(-1, grng->randomSample(allLevel1Reagents())); // Add simple reagent.
-                            break;
-                        case CHARACTER_SKILL_DODGE:
-                            pCharacter.AddItem(-1, ITEM_LEATHER_BOOTS);
-                            break;
-                        case CHARACTER_SKILL_UNARMED:
-                            pCharacter.AddItem(-1, ITEM_GAUNTLETS);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-            for (int i = 0; i < Character::INVENTORY_SLOT_COUNT; i++) {
-                if (pCharacter.pInventoryItemList[i].itemId != ITEM_NULL) {
-                    pCharacter.pInventoryItemList[i].SetIdentified();
-                }
-            }
-        }
-
         pCharacter.health = pCharacter.GetMaxHealth();
         pCharacter.mana = pCharacter.GetMaxMana();
     }
