@@ -71,7 +71,7 @@ struct Party {
     /**
      * @offset 0x49137D
      */
-    void createDefaultParty(bool bDebugGiveItems = false);
+    void createDefaultParty();
     void Reset();
     void ResetPosMiscAndSpellBuffs();
 
