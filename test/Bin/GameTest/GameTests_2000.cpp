@@ -1,5 +1,6 @@
 #include "Testing/Game/GameTest.h"
 
+#include "Engine/Engine.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
 
@@ -137,6 +138,17 @@ GAME_TEST(Issues, Issue2066) {
     game.tick(2);
 
     EXPECT_EQ(soundsTape.flattened().count(SOUND_error), 4); // Get 4 errors.
+}
+
+GAME_TEST(Issues, Issue2074) {
+    // Re-entering castle gryphonheart causes NPCs to become hostile
+    auto mapTape = tapes.map();
+    test.playTraceFromTestData("issue_2074.mm7", "issue_2074.json");
+    EXPECT_EQ(mapTape, tape(MAP_ERATHIA, MAP_CASTLE_GRYPHONHEART, MAP_ERATHIA, MAP_CASTLE_GRYPHONHEART));
+
+    for (const auto& actor : pActors)
+        EXPECT_EQ(std::to_underlying(actor.attributes & ACTOR_AGGRESSOR), 0); // Check that the NPCs arent hostile
+    EXPECT_EQ(engine->_persistentVariables.mapVars[4], 0); // check for persistant castle aggro var - 2 when angered
 }
 
 GAME_TEST(Issues, Issue2075) {
