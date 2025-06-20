@@ -63,7 +63,8 @@ void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config, const Conf
     config->settings.VoiceLevel.setValue(1.0);
     config->settings.SoundLevel.setValue(1.0);
     config->window.MouseGrab.setValue(false);
-    config->graphics.FPSLimit.setValue(0); // Unlimited
+    config->graphics.FPSLimit.setValue(0); // Unlimited.
+    config->graphics.AlwaysCustomCursor.setValue(true); // We want to see the mouse pointer.
     config->debug.NoVideo.setValue(config->debug.TraceNoVideo.value());
     config->gameplay.NoPartyActorCollisions.setValue(config->debug.TraceNoPartyActorCollisions.value());
     pAudioPlayer->UpdateVolumeFromConfig();
