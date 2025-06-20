@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b5f43c4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;919ca15</span>
    </div>
   </td>
  </tr>
@@ -181,6 +181,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a9e6e20c2dc6be37c0c3ca89f863bf2dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34d79caca4e0efe3ff29de24096372d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGameConfig.html#a5858beb3b808b4e962a2d040e2f3964b">Float</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameConfig_1_1Graphics.html#a34d79caca4e0efe3ff29de24096372d2">Lightness</a> = {this, &quot;lightness&quot;, 1.1f, &quot;Colour lightness multiplier for textures and palettes&quot;}</td></tr>
 <tr class="separator:a34d79caca4e0efe3ff29de24096372d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afae0ea37571496cf053bcf16dcce5a61"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGameConfig.html#a7be40f32922e33b7ecfd85e54cbc8b5b">Bool</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameConfig_1_1Graphics.html#afae0ea37571496cf053bcf16dcce5a61">AlwaysCustomCursor</a></td></tr>
+<tr class="separator:afae0ea37571496cf053bcf16dcce5a61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-static-methods" name="pri-static-methods"></a>
 Static Private Member Functions</h2></td></tr>
@@ -382,6 +384,22 @@ Static Private Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="afae0ea37571496cf053bcf16dcce5a61" name="afae0ea37571496cf053bcf16dcce5a61"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afae0ea37571496cf053bcf16dcce5a61">&#9670;&#160;</a></span>AlwaysCustomCursor</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classGameConfig.html#a7be40f32922e33b7ecfd85e54cbc8b5b">Bool</a> GameConfig::Graphics::AlwaysCustomCursor</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Initial value:</b><div class="fragment"><div class="line">= {<span class="keyword">this</span>, <span class="stringliteral">&quot;always_custom_cursor&quot;</span>, <span class="keyword">false</span>,</div>
+<div class="line">            <span class="stringliteral">&quot;Always draw a custom cursor using the graphics API and hide the system cursor, even if it&#39;s the default mouse arrow cursor.&quot;</span>}</div>
+</div><!-- fragment -->
+</div>
+</div>
 <a id="ad6049b997c6e381ba9fba7deb1f06d74" name="ad6049b997c6e381ba9fba7deb1f06d74"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad6049b997c6e381ba9fba7deb1f06d74">&#9670;&#160;</a></span>BloodSplats</h2>
 
@@ -648,7 +666,7 @@ Static Private Member Functions</h2></td></tr>
 <b>Initial value:</b><div class="fragment"><div class="line">= {<span class="keyword">this</span>, <span class="stringliteral">&quot;render_filter&quot;</span>, 2, &amp;<a class="code hl_function" href="classGameConfig_1_1Graphics.html#afca4136e373c6f36ea4fa68e6669837c">ValidateRenderFilter</a>,</div>
 <div class="line">                            <span class="stringliteral">&quot;Filtering method when scaling rendered framebuffer to window dimensions if they differ.&quot;</span></div>
 <div class="line">                            <span class="stringliteral">&quot; 0 - disabled (render dimensions will always match window dimensions), 1 - linear filter, 2 - nearest filter&quot;</span>}</div>
-<div class="ttc" id="aclassGameConfig_1_1Graphics_html_afca4136e373c6f36ea4fa68e6669837c"><div class="ttname"><a href="classGameConfig_1_1Graphics.html#afca4136e373c6f36ea4fa68e6669837c">GameConfig::Graphics::ValidateRenderFilter</a></div><div class="ttdeci">static int ValidateRenderFilter(int filter)</div><div class="ttdef"><b>Definition:</b> GameConfig.h:497</div></div>
+<div class="ttc" id="aclassGameConfig_1_1Graphics_html_afca4136e373c6f36ea4fa68e6669837c"><div class="ttname"><a href="classGameConfig_1_1Graphics.html#afca4136e373c6f36ea4fa68e6669837c">GameConfig::Graphics::ValidateRenderFilter</a></div><div class="ttdeci">static int ValidateRenderFilter(int filter)</div><div class="ttdef"><b>Definition:</b> GameConfig.h:500</div></div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -756,7 +774,7 @@ Static Private Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">= {<span class="keyword">this</span>, <span class="stringliteral">&quot;torchlight_distance&quot;</span>, 800, &amp;<a class="code hl_function" href="classGameConfig_1_1Graphics.html#ab7ff204bc1b23315faa19f771fcbf5dd">ValidateTorchlight</a>,</div>
 <div class="line">                                  <span class="stringliteral">&quot;Torchlight distance per power level. Use 0 to disable torchlight.&quot;</span>}</div>
-<div class="ttc" id="aclassGameConfig_1_1Graphics_html_ab7ff204bc1b23315faa19f771fcbf5dd"><div class="ttname"><a href="classGameConfig_1_1Graphics.html#ab7ff204bc1b23315faa19f771fcbf5dd">GameConfig::Graphics::ValidateTorchlight</a></div><div class="ttdeci">static int ValidateTorchlight(int distance)</div><div class="ttdef"><b>Definition:</b> GameConfig.h:479</div></div>
+<div class="ttc" id="aclassGameConfig_1_1Graphics_html_ab7ff204bc1b23315faa19f771fcbf5dd"><div class="ttname"><a href="classGameConfig_1_1Graphics.html#ab7ff204bc1b23315faa19f771fcbf5dd">GameConfig::Graphics::ValidateTorchlight</a></div><div class="ttdeci">static int ValidateTorchlight(int distance)</div><div class="ttdef"><b>Definition:</b> GameConfig.h:482</div></div>
 </div><!-- fragment -->
 </div>
 </div>
