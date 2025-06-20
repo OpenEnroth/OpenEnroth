@@ -469,6 +469,9 @@ class GameConfig : public Config {
         Float Saturation = {this, "saturation", 0.65f, "Colour saturation multiplier for textures and palettes"};
         Float Lightness = {this, "lightness", 1.1f, "Colour lightness multiplier for textures and palettes"};
 
+        Bool AlwaysCustomCursor = {this, "always_custom_cursor", false,
+            "Always draw a custom cursor using the graphics API and hide the system cursor, even if it's the default mouse arrow cursor."};
+
      private:
         static int ValidateGamma(int level) {
             return std::clamp(level, 0, 9);
