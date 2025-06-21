@@ -65,14 +65,33 @@ bool Inventory::canAdd(Pointi position, Sizei size) const {
     return isGridFree(position, size);
 }
 
+bool Inventory::canAdd(Sizei size) const {
+    return !!findSpace(size);
+}
+
 InventoryEntry Inventory::add(Pointi position, const Item &item) {
     assert(item.itemId != ITEM_NULL);
-    assert(canAdd(position, item.inventorySize()));
+    assert(canAdd(position, item));
 
     int index = findFreeIndex();
     assert(index != -1); // Can store item => we should have free indices.
 
     return addAt(position, item, index);
+}
+
+InventoryEntry Inventory::add(const Item &item) {
+    std::optional<Pointi> position = findSpace(item);
+    assert(position);
+    return add(*position, item);
+}
+
+InventoryEntry Inventory::tryAdd(Pointi position, const Item &item) {
+    return canAdd(position, item) ? add(position, item) : InventoryEntry();
+}
+
+InventoryEntry Inventory::tryAdd(const Item &item) {
+    std::optional<Pointi> position = findSpace(item);
+    return position ? add(*position, item) : InventoryEntry();
 }
 
 bool Inventory::canEquip(ItemSlot slot) const {
@@ -86,17 +105,11 @@ InventoryEntry Inventory::equip(ItemSlot slot, const Item &item) {
     int index = findFreeIndex();
     assert(index != -1); // Can equip item => we should have free indices.
 
-    _equipment[slot] = index + 1;
+    return equipAt(slot, item, index);
+}
 
-    InventoryRecord &record = _records[index];
-    record.item = item;
-    record.zone = INVENTORY_ZONE_EQUIPMENT;
-    record.position = Pointi();
-    record.slot = slot;
-    _size++;
-
-    checkInvariants();
-    return InventoryEntry(this, index);
+InventoryEntry Inventory::tryEquip(ItemSlot slot, const Item &item) {
+    return canEquip(slot) ? equip(slot, item) : InventoryEntry();
 }
 
 bool Inventory::canStash() const {
@@ -111,6 +124,10 @@ InventoryEntry Inventory::stash(const Item &item) {
     assert(index != -1);
 
     return stashAt(item, index);
+}
+
+InventoryEntry Inventory::tryStash(const Item &item) {
+    return canStash() ? stash(item) : InventoryEntry();
 }
 
 Item Inventory::take(InventoryEntry entry) {
@@ -129,7 +146,7 @@ Item Inventory::take(InventoryEntry entry) {
         _equipment[entry.slot()] = 0;
     }
 
-    Item result = entry.item();
+    Item result = *entry;
     _records[entry.index()] = {};
     _size--;
 
@@ -146,8 +163,8 @@ std::optional<Pointi> Inventory::findSpace(Sizei size) const {
     if (_gridSize.w < size.w || _gridSize.h < size.h)
         return std::nullopt;
 
-    for (int y = 0, yy = _gridSize.h - size.h + 1; y < yy; y++)
-        for (int x = 0, xx = _gridSize.w - size.w + 1; x < xx; x++)
+    for (int x = 0, xx = _gridSize.w - size.w + 1; x < xx; x++)
+        for (int y = 0, yy = _gridSize.h - size.h + 1; y < yy; y++)
             if (isGridFree(Pointi(x, y), size))
                 return Pointi(x, y);
 
@@ -161,10 +178,17 @@ InventoryEntry Inventory::find(ItemId itemId) {
     return {};
 }
 
+void Inventory::clear() {
+    _size = 0;
+    _records.fill(InventoryRecord());
+    _grid.fill(0);
+    _equipment.fill(0);
+    checkInvariants();
+}
+
 int Inventory::findFreeIndex() const {
-    // TODO(captainurist): _capacity
-    auto pos = std::ranges::find_if(_records, [](const InventoryRecord &data) { return data.item.itemId == ITEM_NULL; });
-    return pos == _records.end() ? -1 : pos - _records.begin();
+    auto pos = std::ranges::find_if(availableRecords(), [](const InventoryRecord &data) { return data.item.itemId == ITEM_NULL; });
+    return pos == availableRecords().end() ? -1 : pos - availableRecords().begin();
 }
 
 bool Inventory::isGridFree(Pointi position, Sizei size) const {
@@ -189,6 +213,20 @@ InventoryEntry Inventory::addAt(Pointi position, const Item &item, int index) {
     record.zone = INVENTORY_ZONE_GRID;
     record.position = position;
     record.slot = ITEM_SLOT_INVALID;
+    _size++;
+
+    checkInvariants();
+    return InventoryEntry(this, index);
+}
+
+InventoryEntry Inventory::equipAt(ItemSlot slot, const Item &item, int index) {
+    _equipment[slot] = index + 1;
+
+    InventoryRecord &record = _records[index];
+    record.item = item;
+    record.zone = INVENTORY_ZONE_EQUIPMENT;
+    record.position = Pointi();
+    record.slot = slot;
     _size++;
 
     checkInvariants();

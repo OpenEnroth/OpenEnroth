@@ -51,7 +51,7 @@ void GUIWindow_Chest::Update() {
             if (entry.zone() != INVENTORY_ZONE_GRID)
                 continue;
 
-            auto item_texture = assets->getImage_ColorKey(entry.item().GetIconName());
+            auto item_texture = assets->getImage_ColorKey(entry->GetIconName());
             int X_offset = itemOffset(item_texture->width());
             int Y_offset = itemOffset(item_texture->height());
             int itemPixelPosX = chest_offs_x + 32 * entry.geometry().x + X_offset;

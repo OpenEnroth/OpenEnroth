@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "Engine/Engine.h"
 #include "Engine/EngineCallObserver.h"
@@ -315,33 +316,23 @@ void Character::SpendMana(unsigned int uRequiredMana) {
 }
 
 //----- (004BE2DD) --------------------------------------------------------
-void Character::SalesProcess(unsigned int inventory_idnx, int item_index, HouseId houseId) {
+void Character::SalesProcess(InventoryEntry entry, HouseId houseId) {
     float shop_mult = houseTable[houseId].fPriceMultiplier;
-    int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, pInventoryItemList[item_index], shop_mult);
+    int sell_price = PriceCalculator::itemSellingPriceForPlayer(this, *entry, shop_mult);
 
     // remove item and add gold
-    RemoveItemAtInventoryIndex(inventory_idnx);
+    inventory.take(entry);
     pParty->AddGold(sell_price);
 }
 
 //----- (0043EEF3) --------------------------------------------------------
 bool Character::NothingOrJustBlastersEquipped() const {
-    signed int item_idx;
-    ItemId item_id;
-
-    // scan through all equipped items
-    for (ItemSlot i : allItemSlots()) {
-        item_idx = pEquipment[i];
-
-        if (item_idx) {
-            item_id = pInventoryItemList[item_idx - 1].itemId;
-
-            if (!isAncientWeapon(item_id))
+    for (ItemSlot i : allItemSlots())
+        if (InventoryConstEntry entry = inventory.entry(i))
+            if (!isAncientWeapon(entry->itemId))
                 return false;
-        }
-    }
 
-    return true;  // nothing or just blaster equipped
+    return true; // nothing or just blaster equipped
 }
 
 //----- (004B8040) --------------------------------------------------------
@@ -359,69 +350,26 @@ int Character::GetConditionDaysPassed(Condition condition) const {
     return diff.days() + 1;
 }
 
-Item *Character::GetItemAtInventoryIndex(int inout_item_cell) {
-    int inventory_index = this->GetItemListAtInventoryIndex(inout_item_cell);
-
-    if (!inventory_index) {
-        return nullptr;
-    }
-
-    return &this->pInventoryItemList[inventory_index - 1];
-}
-
-//----- (00421E75) --------------------------------------------------------
-unsigned int Character::GetItemListAtInventoryIndex(int inout_item_cell) {
-    int cell_idx = inout_item_cell;
-    if (cell_idx > 125 || cell_idx < 0) return 0;
-
-    int inventory_index = this->pInventoryMatrix[cell_idx];
-    if (inventory_index < 0) {  // not pointed to main item cell so redirect
-        inventory_index = this->pInventoryMatrix[-1 - inventory_index];
-    }
-
-    return inventory_index;  // returns item list position + 1
-}
-
-unsigned int Character::GetItemMainInventoryIndex(int inout_item_cell) {
-    int cell_idx = inout_item_cell;
-    if (cell_idx > 125 || cell_idx < 0) return 0;
-
-    int inventory_index = this->pInventoryMatrix[cell_idx];
-    if (inventory_index < 0) {  // not pointed to main item cell so redirect
-        cell_idx = (-(inventory_index + 1));
-    }
-
-    return cell_idx;
-}
-
 //----- (004160CA) --------------------------------------------------------
-void Character::ItemsPotionDmgBreak(int enchant_count) {
-    int avalible_items = 0;
+void Character::ItemsPotionDmgBreak(int count) {
+    std::vector<InventoryEntry> entries;
+    for (InventoryEntry entry : inventory.entries())
+        if (isRegular(entry->itemId))
+            entries.push_back(entry);
 
-    int16_t item_index_tabl[INVENTORY_SLOT_COUNT];  // table holding items
-    memset(item_index_tabl, 0, sizeof(item_index_tabl));  // set to zero
+    if (entries.empty())
+        return;
 
-    for (int i = 0; i < INVENTORY_SLOT_COUNT; ++i)  // scan through and log in table
-        if (isRegular(pInventoryItemList[i].itemId))
-            item_index_tabl[avalible_items++] = i;
+    if (count) {
+        for (int i = 0; i < count; ++i) {
+            InventoryEntry indexbreak = entries[grng->random(entries.size())];
 
-    if (avalible_items) {  // is there anything to break
-        if (enchant_count) {
-            for (int i = 0; i < enchant_count; ++i) {
-                int indexbreak =
-                    item_index_tabl[grng->random(avalible_items)];  // random item
-
-                if (!(pInventoryItemList[indexbreak].flags &
-                      ITEM_HARDENED))  // if its not hardened
-                    pInventoryItemList[indexbreak].flags |=
-                        ITEM_BROKEN;  // break it
-            }
-        } else {
-            for (int i = 0; i < avalible_items; ++i) {  // break everything
-                pInventoryItemList[item_index_tabl[i]].flags |=
-                    ITEM_BROKEN;
-            }
+            if (!(indexbreak->flags & ITEM_HARDENED))
+                indexbreak->flags |= ITEM_BROKEN;
         }
+    } else {
+        for (InventoryEntry entry : entries) // break everything on eradication, item hardening doesn't help in this case.
+            entry->flags |= ITEM_BROKEN;
     }
 }
 
@@ -610,52 +558,6 @@ void Character::SetCondition(Condition condition, int blockable) {
     return;
 }
 
-bool Character::canFitItem(unsigned int uSlot, ItemId uItemID) const {
-    Sizei itemSize = pItemTable->itemSizes[uItemID];
-    assert(itemSize.h > 0 && itemSize.w > 0 && "Items should have nonzero dimensions");
-
-    if ((itemSize.w + uSlot % INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_WIDTH &&
-        (itemSize.h + uSlot / INVENTORY_SLOTS_WIDTH) <= INVENTORY_SLOTS_HEIGHT) {
-        for (int x = 0; x < itemSize.w; x++) {
-            for (int y = 0; y < itemSize.h; y++) {
-                if (pInventoryMatrix[y * INVENTORY_SLOTS_WIDTH + x + uSlot] != 0) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-    return false;
-}
-
-int Character::findFreeInventoryListSlot() const {
-    for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
-        if (pInventoryItemList[i].itemId == ITEM_NULL) {
-            return i;  // space at i
-        }
-    }
-
-    return -1;  // no room
-}
-
-//----- (00492600) --------------------------------------------------------
-int Character::CreateItemInInventory(unsigned int uSlot, ItemId uItemID) {
-    signed int freeSlot = findFreeInventoryListSlot();
-
-    if (freeSlot == -1) {  // no room
-        if (pParty->hasActiveCharacter()) {
-            pParty->activeCharacter().playReaction(SPEECH_NO_ROOM);
-        }
-
-        return 0;
-    } else {  // place items
-        PutItemAtInventoryIndex(uItemID, freeSlot, uSlot);
-        this->pInventoryItemList[freeSlot].itemId = uItemID;
-    }
-
-    return freeSlot + 1;  // return slot no + 1
-}
-
 //----- (00492700) --------------------------------------------------------
 bool Character::HasSkill(CharacterSkillType skill) const {
     if (this->pActiveSkills[skill]) {
@@ -665,116 +567,6 @@ bool Character::HasSkill(CharacterSkillType skill) const {
         engine->_statusBar->setEvent(LSTR_S_DOES_NOT_HAVE_THE_SKILL, this->name);
         return false;
     }
-}
-
-//----- (00492745) --------------------------------------------------------
-void Character::WearItem(ItemId uItemID) {
-    int item_indx = findFreeInventoryListSlot();
-
-    if (item_indx != -1) {
-        pInventoryItemList[item_indx].itemId = uItemID;
-        ItemSlot item_body_anch = pEquipTypeToBodyAnchor[pItemTable->items[uItemID].type];
-        pEquipment[item_body_anch] = item_indx + 1;
-        pInventoryItemList[item_indx].equippedSlot = item_body_anch;
-    }
-}
-
-//----- (004927A8) --------------------------------------------------------
-int Character::AddItem(int index, ItemId uItemID) {
-    if (uItemID == ITEM_NULL) {
-        return 0;
-    }
-
-    if (index == -1) {  // no location specified - search for space
-        for (int xcoord = 0; xcoord < INVENTORY_SLOTS_WIDTH; xcoord++) {
-            for (int ycoord = 0; ycoord < INVENTORY_SLOTS_HEIGHT; ycoord++) {
-                if (canFitItem(ycoord * INVENTORY_SLOTS_WIDTH + xcoord, uItemID)) {  // found space
-                    return CreateItemInInventory(ycoord * INVENTORY_SLOTS_WIDTH + xcoord, uItemID);
-                }
-            }
-        }
-
-        return 0;  // no space cant add item
-    }
-
-    if (!canFitItem(index, uItemID)) {
-        return 0;  // cant fit item
-    }
-
-    return CreateItemInInventory(index, uItemID);  // return location
-}
-
-//----- (00492826) --------------------------------------------------------
-int Character::AddItem2(int index, Item *Src) {  // are both required - check
-    if (index == -1) {  // no loaction specified
-        for (int xcoord = 0; xcoord < INVENTORY_SLOTS_WIDTH; xcoord++) {
-            for (int ycoord = 0; ycoord < INVENTORY_SLOTS_HEIGHT; ycoord++) {
-                if (canFitItem(ycoord * INVENTORY_SLOTS_WIDTH + xcoord,
-                               Src->itemId)) {  // found space
-                    return CreateItemInInventory2(
-                        ycoord * INVENTORY_SLOTS_WIDTH + xcoord, Src);
-                }
-            }
-        }
-
-        return 0;
-    }
-
-    if (!canFitItem(index, Src->itemId)) return 0;
-
-    return CreateItemInInventory2(index, Src);
-}
-
-//----- (0049289C) --------------------------------------------------------
-int Character::CreateItemInInventory2(unsigned int index,
-                                   Item *Src) {  // are both required - check
-    signed int freeSlot = findFreeInventoryListSlot();
-    int result;
-
-    if (freeSlot == -1) {  // no room
-        result = 0;
-    } else {
-        PutItemAtInventoryIndex(Src->itemId, freeSlot, index);
-        pInventoryItemList[freeSlot] = *Src;
-        result = freeSlot + 1;
-    }
-
-    return result;
-}
-
-//----- (0049298B) --------------------------------------------------------
-void Character::PutItemAtInventoryIndex(
-    ItemId uItemID, int itemListPos,
-    int index) {  // originally accepted ItemGen *but needed only its uItemID
-
-    Sizei itemSize = pItemTable->itemSizes[uItemID];
-
-    // TODO(_): try to come up with a better
-    // solution. negative values are used when
-    // drawing the inventory - nothing is drawn
-    for (int i = 0; i < itemSize.h; i++)
-        for (int j = 0; j < itemSize.w; j++)
-            pInventoryMatrix[index + i * INVENTORY_SLOTS_WIDTH + j] = -1 - index;
-
-    pInventoryMatrix[index] = itemListPos + 1;
-}
-
-//----- (00492A36) --------------------------------------------------------
-void Character::RemoveItemAtInventoryIndex(unsigned int index) {
-    Item *item_in_slot = this->GetItemAtInventoryIndex(index);
-
-    Sizei itemSize = item_in_slot->inventorySize();
-
-    item_in_slot->Reset();  // must get img details before reset
-
-    int inventory_index = this->pInventoryMatrix[index];
-    if (inventory_index < 0) {  // not pointed to main item cell so redirect
-        index = (-1 - inventory_index);
-    }
-
-    for (int i = 0; i < itemSize.h; i++)
-        for (int j = 0; j < itemSize.w; j++)
-            pInventoryMatrix[index + i * INVENTORY_SLOTS_WIDTH + j] = 0;
 }
 
 //----- (0049107D) --------------------------------------------------------
@@ -1059,7 +851,7 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
             ItemId itemId = mainHandItemGen->itemId;
             bool addOneDice = false;
             if (pItemTable->items[itemId].skill == CHARACTER_SKILL_SPEAR &&
-                !this->pEquipment[ITEM_SLOT_OFF_HAND])  // using spear in two hands adds a dice roll
+                !this->inventory.entry(ITEM_SLOT_OFF_HAND))  // using spear in two hands adds a dice roll
                 addOneDice = true;
 
             mainWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(
@@ -1069,9 +861,7 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
         if (!ignoreOffhand) {
             if (this->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {  // has second hand got a weapon
                                                               // that not a shield
-                Item *offHandItemGen =
-                    (Item*)&this
-                        ->pInventoryItemList[this->pEquipment[ITEM_SLOT_OFF_HAND] - 1];
+                Item *offHandItemGen = this->GetOffHandItem();
 
                 if (!offHandItemGen->isShield()) {
                     offHndWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(
@@ -1194,8 +984,7 @@ int Character::CalculateRangedDamageTo(MonsterId uMonsterInfoID) {
     if (!HasItemEquipped(ITEM_SLOT_BOW))  // no bow
         return 0;
 
-    Item *bow =
-        (Item*)&this->pInventoryItemList[this->pEquipment[ITEM_SLOT_BOW] - 1];
+    Item *bow = this->GetBowItem();
     ItemEnchantment itemenchant = bow->specialEnchantment;
 
     signed int dmgperroll = pItemTable->items[bow->itemId].damageRoll;
@@ -1389,9 +1178,9 @@ bool Character::IsUnarmed() const {
 
 //----- (0048D6AA) --------------------------------------------------------
 bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
-    unsigned i = pEquipment[uEquipIndex];
-    if (i)
-        return !pInventoryItemList[i - 1].IsBroken() && (!pInventoryItemList[i - 1].isWand() || pInventoryItemList[i - 1].numCharges > 0);
+    InventoryConstEntry entry = inventory.entry(uEquipIndex);
+    if (entry)
+        return !entry->IsBroken() && (!entry->isWand() || entry->numCharges > 0);
     else
         return false;
 }
@@ -1610,11 +1399,9 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
     int statcheck;
     int statcheckbonus;
     int luckstat = GetActualLuck();
-    signed int itemstobreakcounter = 0;
-    char itemstobreaklist[140] {};
-    Item *itemtocheck = nullptr;
-    Item *itemtobreak = nullptr;
-    unsigned int itemtostealinvindex = 0;
+    std::vector<InventoryEntry> itemstobreaklist;
+    InventoryEntry itemtobreak;
+    InventoryEntry itemtostealinvindex;
 
     switch (attType) {
         case SPECIAL_ATTACK_CURSE:
@@ -1662,18 +1449,14 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
             break;
 
         case SPECIAL_ATTACK_BREAK_ANY:
-            for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
-                itemtocheck = &this->pInventoryItemList[i];
+            for (InventoryEntry entry : inventory.entries())
+                if (isRegular(entry->itemId) && !entry->IsBroken())
+                    itemstobreaklist.push_back(entry);
 
-                if (isRegular(itemtocheck->itemId) && !itemtocheck->IsBroken()) {
-                    itemstobreaklist[itemstobreakcounter++] = i;
-                }
-            }
+            if (itemstobreaklist.empty()) return 0;
 
-            if (!itemstobreakcounter) return 0;
+            itemtobreak = grng->randomSample(itemstobreaklist);
 
-            itemtobreak = &this->pInventoryItemList
-                               [itemstobreaklist[grng->random(itemstobreakcounter)]];
             statcheckbonus =
                 3 * (std::to_underlying(pItemTable->items[itemtobreak->itemId].rarity) +
                      itemtobreak->GetDamageMod());
@@ -1683,20 +1466,16 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
             for (ItemSlot i : allItemSlots()) {
                 if (HasItemEquipped(i)) {
                     if (i == ITEM_SLOT_ARMOUR)
-                        itemstobreaklist[itemstobreakcounter++] =
-                            this->pEquipment[ITEM_SLOT_ARMOUR] - 1;
+                        itemstobreaklist.push_back(inventory.entry(i));
 
-                    if ((i == ITEM_SLOT_OFF_HAND || i == ITEM_SLOT_MAIN_HAND) &&
-                        GetEquippedItemEquipType(i) == ITEM_TYPE_SHIELD)
-                        itemstobreaklist[itemstobreakcounter++] =
-                            this->pEquipment[i] - 1;
+                    if ((i == ITEM_SLOT_OFF_HAND || i == ITEM_SLOT_MAIN_HAND) && GetEquippedItemEquipType(i) == ITEM_TYPE_SHIELD)
+                        itemstobreaklist.push_back(inventory.entry(i));
                 }
             }
 
-            if (!itemstobreakcounter) return 0;
+            if (itemstobreaklist.empty()) return 0;
 
-            itemtobreak = &this->pInventoryItemList
-                               [itemstobreaklist[grng->random(itemstobreakcounter)]];
+            itemtobreak = grng->randomSample(itemstobreaklist);
             statcheckbonus =
                 3 * (std::to_underlying(pItemTable->items[itemtobreak->itemId].rarity) +
                      itemtobreak->GetDamageMod());
@@ -1706,45 +1485,30 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
             for (ItemSlot i : allItemSlots()) {
                 if (HasItemEquipped(i)) {
                     if (i == ITEM_SLOT_BOW)
-                        itemstobreaklist[itemstobreakcounter++] =
-                            (unsigned char)(this->pEquipment[ITEM_SLOT_BOW]) - 1;
+                        itemstobreaklist.push_back(inventory.entry(i));
 
                     if ((i == ITEM_SLOT_OFF_HAND || i == ITEM_SLOT_MAIN_HAND) &&
-                        (GetEquippedItemEquipType(i) ==
-                             ITEM_TYPE_SINGLE_HANDED ||
-                         GetEquippedItemEquipType(i) ==
-                             ITEM_TYPE_TWO_HANDED))
-                        itemstobreaklist[itemstobreakcounter++] =
-                            this->pEquipment[i] - 1;
+                        (GetEquippedItemEquipType(i) == ITEM_TYPE_SINGLE_HANDED || GetEquippedItemEquipType(i) == ITEM_TYPE_TWO_HANDED))
+                        itemstobreaklist.push_back(inventory.entry(i));
                 }
             }
 
-            if (!itemstobreakcounter) return 0;
+            if (!itemstobreaklist.empty()) return 0;
 
-            itemtobreak = &this->pInventoryItemList
-                               [itemstobreaklist[grng->random(itemstobreakcounter)]];
+            itemtobreak = grng->randomSample(itemstobreaklist);
             statcheckbonus =
                 3 * (std::to_underlying(pItemTable->items[itemtobreak->itemId].rarity) +
                      itemtobreak->GetDamageMod());
             break;
 
         case SPECIAL_ATTACK_STEAL:
-            for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
-                int ItemPosInList = this->pInventoryMatrix[i];
+            for (InventoryEntry entry : inventory.entries())
+                if (isRegular(entry->itemId))
+                    itemstobreaklist.push_back(entry);
 
-                if (ItemPosInList > 0) {
-                    itemtocheck = &this->pInventoryItemList[ItemPosInList - 1];
+            if (itemstobreaklist.empty()) return 0;
 
-                    if (isRegular(itemtocheck->itemId)) {
-                        itemstobreaklist[itemstobreakcounter++] = i;
-                    }
-                }
-            }
-
-            if (!itemstobreakcounter) return 0;
-
-            itemtostealinvindex =
-                itemstobreaklist[grng->random(itemstobreakcounter)];
+            itemtostealinvindex = grng->randomSample(itemstobreaklist);
             statcheck = GetActualAccuracy();
             statcheckbonus = GetParameterBonus(statcheck);
             break;
@@ -1900,8 +1664,7 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
                     }
                 }
 
-                *actoritems = this->pInventoryItemList[this->pInventoryMatrix[itemtostealinvindex] - 1];
-                RemoveItemAtInventoryIndex(itemtostealinvindex);
+                *actoritems = inventory.take(itemtostealinvindex);
                 pAudioPlayer->playUISound(SOUND_metal_vs_metal03h);
                 spell_fx_renderer->SetPlayerBuffAnim(SPELL_DISEASE, whichplayer);
                 return 1;
@@ -3416,7 +3179,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                 this->SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * 100_ticks);
             }
         //}
-        mouse->RemoveHoldingItem();
+        pParty->takeHoldingItem();
         return;
     }
 
@@ -3654,7 +3417,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         } else {
             this->SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * 100_ticks);
         }
-        mouse->RemoveHoldingItem();
+        pParty->takeHoldingItem();
         return;
     }
 
@@ -3681,12 +3444,12 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         // TODO(Nik-RE-dev): spell scroll is removed before actual casting and will be consumed even if casting is canceled.
         SpellId scrollSpellId = spellForScroll(pParty->pPickedItem.itemId);
         if (isSpellTargetsItem(scrollSpellId)) {
-            mouse->RemoveHoldingItem();
+            pParty->takeHoldingItem();
             pGUIWindow_CurrentMenu->Release();
             current_screen_type = SCREEN_GAME;
             pushScrollSpell(scrollSpellId, targetCharacter);
         } else {
-            mouse->RemoveHoldingItem();
+            pParty->takeHoldingItem();
             // Process spell on next frame after game exits inventory window.
             engine->_messageQueue->addMessageNextFrame(UIMSG_SpellScrollUse, std::to_underlying(scrollSpellId), targetCharacter);
             if (current_screen_type != SCREEN_GAME && pGUIWindow_CurrentMenu && (pGUIWindow_CurrentMenu->eWindowType != WINDOW_null)) {
@@ -3741,7 +3504,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
         //           thisb->SetRecoveryTime(flt_6BE3A4_debug_recmod1 * 213.3333333333333);
         //         }
         //       }
-        mouse->RemoveHoldingItem();
+        pParty->takeHoldingItem();
         return;
     }
 
@@ -3893,7 +3656,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             return;
         }
 
-        mouse->RemoveHoldingItem();
+        pParty->takeHoldingItem();
         return;
     }
 }
@@ -3962,12 +3725,9 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
             return pParty->_questBits[static_cast<QuestBit>(pValue)]; // TODO(captainurist): values coming from scripts should be bound-checked.
         case VAR_PlayerItemInHands:
             // for (int i = 0; i < 138; i++)
-            for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
-                if (pInventoryItemList[i].itemId == ItemId(pValue)) {
-                    return true;
-                }
-            }
-            return pParty->pPickedItem.itemId == ItemId(pValue);
+            if (inventory.find(static_cast<ItemId>(pValue)))
+                return true;
+            return pParty->pPickedItem.itemId == static_cast<ItemId>(pValue);
 
         case VAR_Hour:
             return pParty->GetPlayingTime().toCivilTime().hour == pValue;
@@ -4228,8 +3988,8 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
                                 // regeneration
             v4 = 0;
             for (Character &character : pParty->pCharacters) {
-                for (int invPos = 0; invPos < INVENTORY_SLOT_COUNT; invPos++) {
-                    ItemId itemId = character.pInventoryItemList[invPos].itemId;
+                for (InventoryEntry entry : character.inventory.entries()) {
+                    ItemId itemId = entry->itemId;
 
                     switch (itemId) {
                         case ITEM_SPELLBOOK_REGENERATION:
@@ -4352,10 +4112,10 @@ void Character::SetVariable(EvtVariable var_type, signed int var_value) {
         case VAR_Class:
             this->classType = (CharacterClass)var_value;
             if ((CharacterClass)var_value == CLASS_LICH) {
-                for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
-                    if (this->pInventoryItemList[i].itemId == ITEM_QUEST_LICH_JAR_EMPTY) {
-                        this->pInventoryItemList[i].itemId = ITEM_QUEST_LICH_JAR_FULL;
-                        this->pInventoryItemList[i].lichJarCharacterIndex = getCharacterIndex();
+                for (InventoryEntry entry : inventory.entries()) {
+                    if (entry->itemId == ITEM_QUEST_LICH_JAR_EMPTY) {
+                        entry->itemId = ITEM_QUEST_LICH_JAR_FULL;
+                        entry->lichJarCharacterIndex = getCharacterIndex();
                     }
                 }
                 if (this->sResFireBase < 20) this->sResFireBase = 20;
@@ -5551,26 +5311,14 @@ void Character::SubtractVariable(EvtVariable VarNum, signed int pValue) {
             this->playReaction(SPEECH_AWARD_GOT);
             return;
         case VAR_PlayerItemInHands:
-            for (ItemSlot i : allItemSlots()) {
-                int id_ = this->pEquipment[i];
-                if (id_ > 0) {
-                    if (this->pInventoryItemList[this->pEquipment[i] - 1]
-                            .itemId == ItemId(pValue)) {
-                        this->pEquipment[i] = 0;
-                    }
+            for (InventoryEntry entry : inventory.entries()) {
+                if (entry->itemId == static_cast<ItemId>(pValue)) {
+                    inventory.take(entry);
+                    return;
                 }
             }
-            for (int i = 0; i < INVENTORY_SLOT_COUNT; i++) {
-                int id_ = this->pInventoryMatrix[i];
-                if (id_ > 0) {
-                    if (this->pInventoryItemList[id_ - 1].itemId == ItemId(pValue)) {
-                        RemoveItemAtInventoryIndex(i);
-                        return;
-                    }
-                }
-            }
-            if (pParty->pPickedItem.itemId == ItemId(pValue)) {
-                mouse->RemoveHoldingItem();
+            if (pParty->pPickedItem.itemId == static_cast<ItemId>(pValue)) {
+                pParty->takeHoldingItem();
                 return;
             }
             return;
@@ -6067,30 +5815,14 @@ void Character::SubtractSkillByEvent(CharacterSkillType skill, uint16_t subSkill
 
 //----- (00467E7F) --------------------------------------------------------
 void Character::EquipBody(ItemType uEquipType) {
-    ItemSlot itemAnchor;          // ebx@1
-    int itemInvLocation;     // edx@1
-    int freeSlot;            // eax@3
-    Item tempPickedItem;  // [sp+Ch] [bp-30h]@1
-
-    tempPickedItem.Reset();
-    itemAnchor = pEquipTypeToBodyAnchor[uEquipType];
-    itemInvLocation = pParty->activeCharacter().pEquipment[itemAnchor];
-    if (itemInvLocation) {  //переодеться в другую вещь
-        tempPickedItem = pParty->pPickedItem;
-        pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1].equippedSlot = ITEM_SLOT_INVALID;
-        pParty->pPickedItem.Reset();
-        pParty->setHoldingItem(pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1]);
-        tempPickedItem.equippedSlot = itemAnchor;
-        pParty->activeCharacter().pInventoryItemList[itemInvLocation - 1] = tempPickedItem;
-        pParty->activeCharacter().pEquipment[itemAnchor] = itemInvLocation;
-    } else {  // одеть вещь
-        freeSlot = pParty->activeCharacter().findFreeInventoryListSlot();
-        if (freeSlot >= 0) {
-            pParty->pPickedItem.equippedSlot = itemAnchor;
-            pParty->activeCharacter().pInventoryItemList[freeSlot] = pParty->pPickedItem;
-            pParty->activeCharacter().pEquipment[itemAnchor] = freeSlot + 1;
-            mouse->RemoveHoldingItem();
-        }
+    ItemSlot itemAnchor = pEquipTypeToBodyAnchor[uEquipType];
+    if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(itemAnchor)) {
+        Item tmpItem = pParty->activeCharacter().inventory.take(entry);
+        pParty->activeCharacter().inventory.equip(itemAnchor, pParty->takeHoldingItem());
+        pParty->setHoldingItem(tmpItem);
+    } else {
+        if (pParty->activeCharacter().inventory.canEquip(itemAnchor))
+            pParty->activeCharacter().inventory.equip(itemAnchor, pParty->takeHoldingItem());
     }
 }
 
@@ -6128,23 +5860,7 @@ bool Character::hasUnderwaterSuitEquipped() {
 
 bool Character::hasItem(ItemId uItemID, bool checkHeldItem) const {
     if (!checkHeldItem || pParty->pPickedItem.itemId != uItemID) {
-        for (unsigned i = 0; i < INVENTORY_SLOT_COUNT; ++i) {
-            if (this->pInventoryMatrix[i] > 0) {
-                if (this
-                        ->pInventoryItemList[this->pInventoryMatrix[i] - 1]
-                        .itemId == uItemID)
-                    return true;
-            }
-        }
-        for (ItemSlot i : allItemSlots()) {
-            if (this->pEquipment[i]) {
-                if (this
-                        ->pInventoryItemList[this->pEquipment[i] - 1]
-                        .itemId == uItemID)
-                    return true;
-            }
-        }
-        return false;
+        return !!inventory.find(uItemID);
     } else {
         return true;
     }
@@ -6535,7 +6251,6 @@ void Character::OnInventoryLeftClick() {
 
     Pointi mousePos = mouse->position();
     Pointi inventoryPos = mapToInventoryGrid(mousePos + mouse->pickedItemOffset, Pointi(14, 17));
-    int invMatrixIndex = inventoryPos.x + (INVENTORY_SLOTS_WIDTH * inventoryPos.y);
 
     // If a held item is overlapping outside the grid
     if (pParty->pPickedItem.itemId != ITEM_NULL) {
@@ -6551,7 +6266,7 @@ void Character::OnInventoryLeftClick() {
     if (inventoryPos.y >= 0 && inventoryPos.y < INVENTORY_SLOTS_HEIGHT &&
         inventoryPos.x >= 0 && inventoryPos.x < INVENTORY_SLOTS_WIDTH) {
         if (IsEnchantingInProgress) {
-            unsigned int enchantedItemPos = this->GetItemListAtInventoryIndex(invMatrixIndex);
+            InventoryEntry enchantedItemPos = inventory.entry(inventoryPos);
 
             if (enchantedItemPos) {
                 /* *((char *)pGUIWindow_CastTargetedSpell->ptr_1C + 8) &=
@@ -6566,8 +6281,8 @@ void Character::OnInventoryLeftClick() {
                 pSpellInfo = pGUIWindow_CastTargetedSpell->spellInfo();
                 pSpellInfo->flags &= ~ON_CAST_TargetedEnchantment;
                 pSpellInfo->targetCharacterIndex = pParty->activeCharacterIndex() - 1;
-                pSpellInfo->targetInventoryIndex = enchantedItemPos - 1;
-                ptr_50C9A4_ItemToEnchant = &this->pInventoryItemList[enchantedItemPos - 1];
+                pSpellInfo->targetInventoryIndex = enchantedItemPos.index();
+                ptr_50C9A4_ItemToEnchant = enchantedItemPos.get();
                 IsEnchantingInProgress = false;
 
                 engine->_messageQueue->clear();
@@ -6584,61 +6299,55 @@ void Character::OnInventoryLeftClick() {
         if (ptr_50C9A4_ItemToEnchant)
             return;
 
-        auto item = this->GetItemAtInventoryIndex(invMatrixIndex);
-        if (!item && pParty->pPickedItem.itemId == ITEM_NULL) {
+        InventoryEntry entry = inventory.entry(inventoryPos);
+        if (!entry && pParty->pPickedItem.itemId == ITEM_NULL) {
             return; // nothing to do
         }
 
         // calc offsets of where on the item was clicked
         // first need index of top left corner of the item
-        int cornerInd = GetItemMainInventoryIndex(invMatrixIndex);
-        int cornerX = cornerInd % INVENTORY_SLOTS_WIDTH;
-        int cornerY = cornerInd / INVENTORY_SLOTS_WIDTH;
-        int itemXOffset = mousePos.x + mouse->pickedItemOffset.x - 14 - (cornerX * 32);
-        int itemYOffset = mousePos.y + mouse->pickedItemOffset.y - 17 - (cornerY * 32);
+        Pointi corner = inventory.entry(inventoryPos).geometry().topLeft();
+        int itemXOffset = mousePos.x + mouse->pickedItemOffset.x - 14 - (corner.x * 32);
+        int itemYOffset = mousePos.y + mouse->pickedItemOffset.y - 17 - (corner.y * 32);
 
-        if (item) {
-            auto tex = assets->getImage_Alpha(item->GetIconName());
+        if (entry) {
+            auto tex = assets->getImage_Alpha(entry->GetIconName());
             itemXOffset -= itemOffset(tex->width());
             itemYOffset -= itemOffset(tex->height());
         }
 
         if (pParty->pPickedItem.itemId == ITEM_NULL) {
             // pick up the item
-            pParty->setHoldingItem(*item, {-itemXOffset, -itemYOffset});
-            this->RemoveItemAtInventoryIndex(invMatrixIndex);
+            pParty->setHoldingItem(inventory.take(entry), {-itemXOffset, -itemYOffset});
             return;
         } else {
-            if (item) {
-                // swap items
-                Item tmpItem = *item;
-                int oldinvMatrixIndex = invMatrixIndex;
-                invMatrixIndex = GetItemMainInventoryIndex(invMatrixIndex);
-                int invItemIndex = this->GetItemListAtInventoryIndex(invMatrixIndex);
-                this->RemoveItemAtInventoryIndex(invMatrixIndex);
+            if (entry) {
+                // take out
+                Pointi pos = entry.geometry().topLeft();
+                Item tmp = inventory.take(entry);
+                //Item tmpItem = *item;
+                //int oldinvMatrixIndex = invMatrixIndex;
+                //invMatrixIndex = GetItemMainInventoryIndex(invMatrixIndex);
+                //int invItemIndex = this->GetItemListAtInventoryIndex(invMatrixIndex);
+                //this->RemoveItemAtInventoryIndex(invMatrixIndex);
 
                 // try to add where we clicked
-                int emptyIndex = this->AddItem2(invMatrixIndex, &pParty->pPickedItem);
-                if (!emptyIndex) {
+                if (!inventory.tryAdd(pos, pParty->pPickedItem)) {
                     // try to add anywhere
-                    emptyIndex = this->AddItem2(-1, &pParty->pPickedItem);
-                    if (!emptyIndex) {
+                    if (!inventory.tryAdd(pParty->pPickedItem)) {
                         // failed to add, put back the old item
-                        this->AddItem2(invMatrixIndex, &tmpItem);
+                        inventory.add(pos, tmp);
                         return;
                     }
                 }
 
-                mouse->RemoveHoldingItem();
-                pParty->setHoldingItem(tmpItem);
+                pParty->takeHoldingItem();
+                pParty->setHoldingItem(tmp);
                 return;
             } else {
                 // place picked item
-                int itemPos = this->AddItem(invMatrixIndex, pParty->pPickedItem.itemId);
-
-                if (itemPos) {
-                    this->pInventoryItemList[itemPos - 1] = pParty->pPickedItem;
-                    mouse->RemoveHoldingItem();
+                if (inventory.tryAdd(inventoryPos, pParty->pPickedItem)) {
+                    pParty->takeHoldingItem();
                     return;
                 }
             }
@@ -6736,11 +6445,7 @@ Item *Character::GetNthRingItem(int ringNum) { return GetItem(ringSlot(ringNum))
 const Item *Character::GetNthRingItem(int ringNum) const { return GetItem(ringSlot(ringNum)); }
 
 Item *Character::GetItem(ItemSlot index) {
-    if (this->pEquipment[index] == 0) {
-        return nullptr;
-    }
-
-    return &this->pInventoryItemList[this->pEquipment[index] - 1];
+    return this->inventory.entry(index).get();
 }
 
 const Item *Character::GetItem(ItemSlot index) const {
@@ -6803,28 +6508,26 @@ void Character::_42ECB5_CharacterAttacksActor() {
         pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Reset();
 
     // v31 = character->pEquipment[ITEM_SLOT_BOW];
-    int bow_idx = character->pEquipment[ITEM_SLOT_BOW];
-    if (bow_idx && character->pInventoryItemList[bow_idx - 1].IsBroken())
-        bow_idx = 0;
+    InventoryEntry bow = character->inventory.entry(ITEM_SLOT_BOW);
+    if (bow && bow->IsBroken())
+        bow = nullptr;
 
     ItemId wand_item_id = ITEM_NULL;
     ItemId laser_weapon_item_id = ITEM_NULL;
 
-    int main_hand_idx = character->pEquipment[ITEM_SLOT_MAIN_HAND];
-    if (main_hand_idx) {
-        Item *item = &character->pInventoryItemList[main_hand_idx - 1];
-        if (!item->IsBroken()) {
-            if (item->isWand()) {
-                if (item->numCharges <= 0) {
+    InventoryEntry main_hand = character->inventory.entry(ITEM_SLOT_MAIN_HAND);
+    if (main_hand) {
+        if (!main_hand->IsBroken()) {
+            if (main_hand->isWand()) {
+                if (main_hand->numCharges <= 0) {
                     if (engine->config->gameplay.DestroyDischargedWands.value()) {
-                        character->pEquipment[ITEM_SLOT_MAIN_HAND] = 0; // Wand discharged - destroy it.
-                        item->Reset();
+                        character->inventory.take(main_hand);
                     }
                 } else {
-                    wand_item_id = item->itemId;
+                    wand_item_id = main_hand->itemId;
                 }
-            } else if (isAncientWeapon(item->itemId)) {
-                laser_weapon_item_id = item->itemId;
+            } else if (isAncientWeapon(main_hand->itemId)) {
+                laser_weapon_item_id = main_hand->itemId;
             }
         }
     }
@@ -6864,14 +6567,12 @@ void Character::_42ECB5_CharacterAttacksActor() {
     } else if (wand_item_id != ITEM_NULL) {
         shooting_wand = true;
 
-        int main_hand_idx = character->pEquipment[ITEM_SLOT_MAIN_HAND];
-        pushSpellOrRangedAttack(spellForWand(character->pInventoryItemList[main_hand_idx - 1].itemId),
+        pushSpellOrRangedAttack(spellForWand(wand_item_id),
                                 pParty->activeCharacterIndex() - 1, WANDS_SKILL_VALUE, 0, pParty->activeCharacterIndex() + 8);
 
         // reduce wand charges
-        if (!--character->pInventoryItemList[main_hand_idx - 1].numCharges && engine->config->gameplay.DestroyDischargedWands.value()) {
-            character->pInventoryItemList[main_hand_idx - 1].Reset();
-            character->pEquipment[ITEM_SLOT_MAIN_HAND] = 0;
+        if (!--main_hand->numCharges && engine->config->gameplay.DestroyDischargedWands.value()) {
+            character->inventory.take(main_hand);
         }
     } else if (target_type == OBJECT_Actor && actor_distance <= 407.2) {
         melee_attack = true;
@@ -6884,7 +6585,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         if (character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
             character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
             _42FA66_do_explosive_impact(actor->pos + Vec3f(0, 0, actor->height / 2), 0, 512, pParty->activeCharacterIndex());
-    } else if (bow_idx) {
+    } else if (bow) {
         shooting_bow = true;
         pushSpellOrRangedAttack(SPELL_BOW_ARROW, pParty->activeCharacterIndex() - 1, CombinedSkillValue::none(), 0, 0);
     } else {
@@ -6907,9 +6608,8 @@ void Character::_42ECB5_CharacterAttacksActor() {
     } else if (shotting_laser) {
         skill = CHARACTER_SKILL_BLASTER;
     } else {
-        int main_hand_idx = character->pEquipment[ITEM_SLOT_MAIN_HAND];
-        if (character->HasItemEquipped(ITEM_SLOT_MAIN_HAND) && main_hand_idx)
-            skill = character->pInventoryItemList[main_hand_idx - 1].GetPlayerSkillType();
+        if (character->HasItemEquipped(ITEM_SLOT_MAIN_HAND) && main_hand)
+            skill = main_hand->GetPlayerSkillType();
 
         pTurnEngine->ApplyPlayerAction();
     }
@@ -7235,9 +6935,7 @@ void Character::Zero() {
     pActiveSkills[CHARACTER_SKILL_CLUB] = CombinedSkillValue::novice(); // Hidden skills, always known.
     pActiveSkills[CHARACTER_SKILL_MISC] = CombinedSkillValue::novice();
     // Inventory
-    pEquipment.fill(0);
-    pInventoryMatrix.fill(0);
-    for (unsigned i = 0; i < INVENTORY_SLOT_COUNT; ++i) pInventoryItemList[i].Reset();
+    inventory = CharacterInventory();
     // Buffs
     for (auto& buf : pCharacterBuffs) {
         buf.Reset();

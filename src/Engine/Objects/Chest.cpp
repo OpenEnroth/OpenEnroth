@@ -159,9 +159,9 @@ bool Chest::ChestUI_WritePointedObjectStatusString() {
     // TODO(captainurist): need to use mouse->pickedItemOffset here?
     Pointi inventoryPos = mapToInventoryGrid(mousePos, chestTable[chest->chestTypeId].inventoryOffset);
 
-    const InventoryEntry entry = chest->inventory.entry(inventoryPos);
+    InventoryEntry entry = chest->inventory.entry(inventoryPos);
     if (entry) {
-        engine->_statusBar->setPermanent(entry.item().GetDisplayName());
+        engine->_statusBar->setPermanent(entry->GetDisplayName());
         uLastPointedObjectID = Pid::dummy();
         return 1;
     } else {
@@ -196,9 +196,9 @@ void Chest::PlaceItems(int uChestID) { // only used for setup
         if (entry.zone() != INVENTORY_ZONE_STASH)
             continue;
 
-        assert(!isRandomItem(entry.item().itemId) && "Checking that generated items are valid");
+        assert(!isRandomItem(entry->itemId) && "Checking that generated items are valid");
 
-        Sizei itemSize = entry.item().inventorySize();
+        Sizei itemSize = entry->inventorySize();
         for (int i = 0; i < uChestArea; i++) {
             Pointi pos(chest_cells_map[i] % chestSize.w, chest_cells_map[i] / chestSize.w);
 
@@ -206,16 +206,16 @@ void Chest::PlaceItems(int uChestID) { // only used for setup
                 // TODO(captainurist): this is a weird place to call postGenerate, and we won't call it for items that
                 //                     end up buried. But it's here b/c we don't want to break the traces, at least now.
                 //                     Redo this properly and write a small test.
-                entry.item().postGenerate(ITEM_SOURCE_CHEST);
-                entry = chest.inventory.add(pos, chest.inventory.take(entry));
+                entry->postGenerate(ITEM_SOURCE_CHEST);
                 if (chest.flags & CHEST_OPENED)
-                    entry.item().SetIdentified();
+                    entry->SetIdentified();
+                chest.inventory.add(pos, chest.inventory.take(entry));
                 break;
             }
         }
 
         if (entry.zone() == INVENTORY_ZONE_STASH)
-            logger->trace("Cannot place item with id {} in the chest!", std::to_underlying(entry.item().itemId));
+            logger->trace("Cannot place item with id {} in the chest!", std::to_underlying(entry->itemId));
     }
 
     chest.SetInitialized(true);
@@ -239,15 +239,14 @@ void Chest::OnChestLeftClick() {
 
     if (pParty->pPickedItem.itemId != ITEM_NULL) {  // item held
         std::optional<Pointi> pos;
-        if (chest->inventory.canAdd(inventoryPos, pParty->pPickedItem.inventorySize())) {
+        if (chest->inventory.canAdd(inventoryPos, pParty->pPickedItem)) {
             pos = inventoryPos;
         } else {
             pos = chest->inventory.findSpace(pParty->pPickedItem);
         }
 
         if (pos) {
-            chest->inventory.add(*pos, pParty->pPickedItem);
-            mouse->RemoveHoldingItem();
+            chest->inventory.add(*pos, pParty->takeHoldingItem());
         }
     } else {
         if (InventoryEntry entry = chest->inventory.entry(inventoryPos)) {
@@ -284,17 +283,21 @@ void Chest::GrabItem(bool all) {  // new function to grab items from chest using
     Chest *chest = &vChests[chestId];
 
     for (InventoryEntry entry : chest->inventory.entries()) {
-        if (entry.item().isGold()) {
-            pParty->partyFindsGold(entry.item().goldAmount, GOLD_RECEIVE_SHARE);
-            goldamount += entry.item().goldAmount;
+        if (entry->isGold()) {
+            pParty->partyFindsGold(entry->goldAmount, GOLD_RECEIVE_SHARE);
+            goldamount += entry->goldAmount;
             goldcount++;
         } else {  // this should add item to invetory of active char - if that fails set as holding item and break
-            if (pParty->hasActiveCharacter() && (InventSlot = pParty->activeCharacter().AddItem(-1, entry.item().itemId)) != 0) {  // can place
-                pParty->activeCharacter().pInventoryItemList[InventSlot - 1] = entry.item();
+            std::optional<Pointi> pos;
+            if (pParty->hasActiveCharacter())
+                pos = pParty->activeCharacter().inventory.findSpace(*entry);
+
+            if (pos) {  // can place
+                pParty->activeCharacter().inventory.add(*pos, *entry);
                 grabcount++;
-                engine->_statusBar->setEvent(LSTR_YOU_FOUND_AN_ITEM_S, pItemTable->items[entry.item().itemId].unidentifiedName);
+                engine->_statusBar->setEvent(LSTR_YOU_FOUND_AN_ITEM_S, pItemTable->items[entry->itemId].unidentifiedName);
             } else {  // no room so set as holding item
-                pParty->setHoldingItem(entry.item());
+                pParty->setHoldingItem(*entry);
                 chest->inventory.take(entry);
                 pParty->activeCharacter().playReaction(SPEECH_NO_ROOM);
                 break;
@@ -320,11 +323,11 @@ void GenerateItemsInChest() {
     MapInfo *currMapInfo = &pMapStats->pInfos[engine->_currentLoadedMapId];
     for (int i = 0; i < 20; ++i) {
         for (InventoryEntry entry : vChests[i].inventory.entries()) {
-            if (isRandomItem(entry.item().itemId)) {
+            if (isRandomItem(entry->itemId)) {
                 int additionaItemCount = grng->random(5);  // additional items in chect
                 additionaItemCount++;  // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
                 ItemTreasureLevel resultTreasureLevel = grng->randomSample(
-                    RemapTreasureLevel(randomItemTreasureLevel(entry.item().itemId), currMapInfo->mapTreasureLevel));
+                    RemapTreasureLevel(randomItemTreasureLevel(entry->itemId), currMapInfo->mapTreasureLevel));
 
                 if (resultTreasureLevel != ITEM_TREASURE_LEVEL_7) {
                     for (int k = 0; k < additionaItemCount; k++) {
@@ -339,7 +342,7 @@ void GenerateItemsInChest() {
                         }
                         if (item.itemId != ITEM_NULL) {
                             if (entry) {
-                                entry.item() = item;
+                                *entry = item;
                                 entry = {};
                             } else {
                                 vChests[i].inventory.stash(item);

@@ -4,6 +4,7 @@
 
 #include "GUI/UI/UIGame.h"
 
+#include "ItemGrid.h"
 #include "Application/Game.h"
 
 #include "Engine/AssetsManager.h"
@@ -609,9 +610,8 @@ void GUIWindow_GameOptions::Update() {
 void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
     Character *player = &pParty->pCharacters[uPlayerID - 1];
     if (pParty->pPickedItem.itemId != ITEM_NULL) {
-        if (int slot = player->AddItem(-1, pParty->pPickedItem.itemId)) {
-            player->pInventoryItemList[slot - 1] = pParty->pPickedItem;
-            mouse->RemoveHoldingItem();
+        if (std::optional<Pointi> pos = player->inventory.findSpace(pParty->pPickedItem)) {
+            player->inventory.add(*pos, pParty->takeHoldingItem());
             return;
         }
 
@@ -877,7 +877,6 @@ void GameUI_WritePointedObjectStatusString() {
     int requiredSkillpoints;           // ecx@19
     UIMessageType pMessageType1;  // esi@24
     int invmatrixindex;                // eax@41
-    Item *pItemGen;                 // ecx@44
     // int v16;                           // ecx@46
     Vis_PIDAndDepth pickedObject;        // eax@55
     signed int v18b;
@@ -1015,19 +1014,17 @@ void GameUI_WritePointedObjectStatusString() {
                     // inventoryXCoord = (pX - 14) / 32;
                     // invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH *
                     // inventoryYCoord);
-                    invmatrixindex = ((pX - 14) / 32) + 14 * ((pY - 17) / 32);
+                    Pointi gridPos = mapToInventoryGrid(Pointi(pX, pY), Pointi(14, 17));
+
                     // if (mouse.x <= 13 || mouse.x >= 462)
                     // return;
                     // testing =
                     // pParty->activeCharacter().GetItemIDAtInventoryIndex(invmatrixindex);
-                    pItemGen =
-                        pParty->activeCharacter().GetItemAtInventoryIndex(
-                            invmatrixindex);  // (ItemGen
-                                              // *)&pParty->activeCharacter().pInventoryItemList[testing
-                                              // - 1];
+                    InventoryEntry pItemGen =
+                        pParty->activeCharacter().inventory.entry(gridPos);
 
                     // TODO(captainurist): get rid of this std::to_underlying cast.
-                    if (pItemGen != NULL) pickedObjectID = std::to_underlying(pItemGen->itemId);
+                    if (pItemGen) pickedObjectID = std::to_underlying(pItemGen->itemId);
                     // if (!pItemID)
                     // return;
                     // item =
