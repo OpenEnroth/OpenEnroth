@@ -152,7 +152,7 @@ GAME_TEST(Issues, Issue571) {
 
 GAME_TEST(Issues, Issue573) {
     // Make Recharge Item effect non-decreasing
-    auto chargeTape = tapes.custom([] {  return pParty->pCharacters[1].pInventoryItemList[33].numCharges; });
+    auto chargeTape = tapes.custom([] {  return pParty->pCharacters[1].inventory.entry(33)->numCharges; });
     auto manaTape = tapes.custom([] { return pParty->pCharacters[0].mana; });
     auto itemsTape = tapes.totalItemCount();
     test.playTraceFromTestData("issue_573.mm7", "issue_573.json");

@@ -160,12 +160,13 @@ EventTraceGameState EngineTraceStateAccessor::makeGameState() {
         traceCharacter.speed = character.GetActualSpeed();
         traceCharacter.luck = character.GetActualLuck();
 
-        for (int index : character.pEquipment)
-            if (index > 0)
-                traceCharacter.equipment.emplace_back(toDebugString(character.pInventoryItemList[index - 1]));
-        for (int index : character.pInventoryMatrix)
-            if (index > 0)
-                traceCharacter.backpack.emplace_back(toDebugString(character.pInventoryItemList[index - 1]));
+        for (ItemSlot slot : allItemSlots())
+            if (InventoryConstEntry entry = character.inventory.entry(slot))
+                traceCharacter.equipment.emplace_back(toDebugString(*entry));
+        for (int y = 0; y < character.inventory.gridSize().h; y++)
+            for (int x = 0; x < character.inventory.gridSize().w; x++)
+                if (InventoryConstEntry entry = character.inventory.entry(Pointi(x, y)); entry && entry.geometry().topLeft() == Pointi(x, y))
+                    traceCharacter.backpack.emplace_back(toDebugString(*entry));
     }
     return result;
 }

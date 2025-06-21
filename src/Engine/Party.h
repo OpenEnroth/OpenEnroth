@@ -87,6 +87,8 @@ struct Party {
      */
     void setHoldingItem(const Item &item, Pointi offset = {});
 
+    Item takeHoldingItem();
+
     /**
     * Sets _activeCharacter to the first character that can act
     * Added to fix some nzi access problems

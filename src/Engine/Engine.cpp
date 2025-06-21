@@ -1376,8 +1376,7 @@ void RegeneratePartyHealthMana() {
         // Item regeneration
         for (ItemSlot idx : allItemSlots()) {
             if (character.HasItemEquipped(idx)) {
-                unsigned _idx = character.pEquipment[idx];
-                Item equppedItem = character.pInventoryItemList[_idx - 1];
+                Item equppedItem = *character.inventory.entry(idx);
                 if (!isRegular(equppedItem.itemId)) {
                     if (equppedItem.itemId == ITEM_RELIC_ETHRICS_STAFF) {
                         character.health -= ticks5;
@@ -1428,7 +1427,7 @@ void RegeneratePartyHealthMana() {
         // Lich mana/health drain/regen.
         if (character.classType == CLASS_LICH) {
             bool lich_has_jar = false;
-            for (const Item &item : character.pInventoryItemList)
+            for (const Item &item : character.inventory.items())
                 if (item.itemId == ITEM_QUEST_LICH_JAR_FULL && item.lichJarCharacterIndex == character.getCharacterIndex())
                     lich_has_jar = true;
 

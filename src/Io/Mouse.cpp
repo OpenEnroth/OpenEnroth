@@ -46,14 +46,6 @@ void Io::Mouse::setPosition(Pointi position) {
     }
 }
 
-void Io::Mouse::RemoveHoldingItem() {
-    pParty->pPickedItem.Reset();
-    if (this->cursor_name != "MICON2") {
-        SetCursorImage("MICON1");
-    }
-    pickedItemOffset = {};
-}
-
 void Io::Mouse::SetCursorBitmapFromItemID(ItemId uItemID) {
     SetCursorImage(pItemTable->items[uItemID].iconName);
 }

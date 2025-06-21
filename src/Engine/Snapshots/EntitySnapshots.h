@@ -2,10 +2,11 @@
 
 #include <array>
 
+#include "Engine/Objects/ItemEnums.h"
+
 #include "Library/Geometry/Vec.h"
 #include "Library/Geometry/Plane.h"
 #include "Library/Geometry/BBox.h"
-
 #include "Library/Binary/BinarySerialization.h"
 
 /**
@@ -245,7 +246,7 @@ struct Item_MM7 {
 static_assert(sizeof(Item_MM7) == 0x24);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Item_MM7)
 
-void snapshot(const Item &src, Item_MM7 *dst);
+void snapshot(const Item &src, Item_MM7 *dst, ContextTag<ItemSlot> slot);
 void reconstruct(const Item_MM7 &src, Item *dst);
 
 
@@ -416,7 +417,7 @@ static_assert(sizeof(Character_MM7) == 0x1B3C);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Character_MM7)
 
 void snapshot(const Character &src, Character_MM7 *dst);
-void reconstruct(const Character_MM7 &src, Character *dst);
+void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> characterIndex);
 void snapshot(const CharacterInventory &src, Character_MM7 *dst);
 void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<int> characterIndex);
 

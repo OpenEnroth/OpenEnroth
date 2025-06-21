@@ -66,27 +66,14 @@ GAME_TEST(Issues, Issue198) {
     // Check that items can't end up out of bounds of character's inventory.
     test.playTraceFromTestData("issue_198.mm7", "issue_198.json");
 
-    auto forEachInventoryItem = [](auto &&callback) {
-        for (const Character &character : pParty->pCharacters) {
-            for (int inventorySlot = 0; inventorySlot < Character::INVENTORY_SLOT_COUNT; inventorySlot++) {
-                int itemIndex = character.pInventoryMatrix[inventorySlot];
-                if (itemIndex <= 0)
-                    continue; // Empty or non-primary cell.
+    for (const Character &character : pParty->pCharacters) {
+        for (InventoryConstEntry entry : character.inventory.entries()) {
+            Recti geometry = entry.geometry();
 
-                int x = inventorySlot % Character::INVENTORY_SLOTS_WIDTH;
-                int y = inventorySlot / Character::INVENTORY_SLOTS_WIDTH;
-
-                callback(character.pInventoryItemList[itemIndex - 1], x, y);
-            }
+            EXPECT_LE(geometry.x + geometry.w, Character::INVENTORY_SLOTS_WIDTH);
+            EXPECT_LE(geometry.y + geometry.h, Character::INVENTORY_SLOTS_HEIGHT);
         }
-    };
-
-    forEachInventoryItem([](const Item &item, int x, int y) {
-        Sizei itemSize = item.inventorySize();
-
-        EXPECT_LE(x + itemSize.w, Character::INVENTORY_SLOTS_WIDTH);
-        EXPECT_LE(y + itemSize.h, Character::INVENTORY_SLOTS_HEIGHT);
-    });
+    }
 }
 
 // 200

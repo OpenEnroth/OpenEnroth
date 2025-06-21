@@ -445,7 +445,7 @@ void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst) {
     dst->isGMBuff = src.flags;
 }
 
-void snapshot(const Item &src, Item_MM7 *dst) {
+void snapshot(const Item &src, Item_MM7 *dst, ContextTag<ItemSlot> slot) {
     memzero(dst);
 
     dst->itemId = std::to_underlying(src.itemId);
@@ -464,7 +464,7 @@ void snapshot(const Item &src, Item_MM7 *dst) {
     }
     dst->numCharges = src.numCharges;
     dst->flags = std::to_underlying(src.flags);
-    dst->equippedSlot = std::to_underlying(src.equippedSlot);
+    dst->equippedSlot = std::to_underlying(*slot);
     dst->maxCharges = src.maxCharges;
     dst->lichJarCharacterIndex = src.lichJarCharacterIndex + 1;
     snapshot(src.enchantmentExpirationTime, &dst->enchantmentExpirationTime);
@@ -496,7 +496,7 @@ void reconstruct(const Item_MM7 &src, Item *dst) {
     }
     dst->numCharges = src.numCharges;
     dst->flags = ItemFlags(src.flags);
-    dst->equippedSlot = static_cast<ItemSlot>(src.equippedSlot);
+    // src.equippedSlot is ignored - we handle it externally.
     dst->maxCharges = src.maxCharges;
     dst->lichJarCharacterIndex = src.lichJarCharacterIndex - 1;
     reconstruct(src.enchantmentExpirationTime, &dst->enchantmentExpirationTime);
@@ -607,15 +607,15 @@ void snapshot(const Party &src, Party_MM7 *dst) {
         }
     }
 
-    snapshot(src.pPickedItem, &dst->pickedItem);
+    snapshot(src.pPickedItem, &dst->pickedItem, tags::context(ITEM_SLOT_INVALID));
 
     dst->flags = std::to_underlying(src.uFlags);
 
     dst->standartItemsInShop0.fill({});
-    snapshot(src.standartItemsInShops, &dst->standartItemsInShops);
+    snapshot(src.standartItemsInShops, &dst->standartItemsInShops, tags::context(ITEM_SLOT_INVALID));
     dst->specialItemsInShop0.fill({});
-    snapshot(src.specialItemsInShops, &dst->specialItemsInShops);
-    snapshot(src.spellBooksInGuilds, &dst->spellBooksInGuilds);
+    snapshot(src.specialItemsInShops, &dst->specialItemsInShops, tags::context(ITEM_SLOT_INVALID));
+    snapshot(src.spellBooksInGuilds, &dst->spellBooksInGuilds, tags::context(ITEM_SLOT_INVALID));
 
     snapshot(src.pHireling1Name, &dst->hireling1Name);
     snapshot(src.pHireling2Name, &dst->hireling2Name);
@@ -723,7 +723,8 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     }
 
     reconstruct(src.partyBuffs, &dst->pPartyBuffs);
-    reconstruct(src.players, &dst->pCharacters);
+    for (int i = 0; i < 4; i++)
+        reconstruct(src.players[i], &dst->pCharacters[i], tags::context(i));
     reconstruct(src.hirelings, &dst->pHirelings);
 
     // Vanilla stored NPC sacrifice status in NPC evt values.
@@ -811,8 +812,7 @@ void snapshot(const Character &src, Character_MM7 *dst) {
     dst->pureAccuracyUsed = src._pureStatPotionUsed[ATTRIBUTE_ACCURACY];
     dst->pureMightUsed = src._pureStatPotionUsed[ATTRIBUTE_MIGHT];
 
-    snapshot(src.pInventoryItemList, &dst->inventoryItems);
-    snapshot(src.pInventoryMatrix, &dst->inventoryMatrix);
+    snapshot(src.inventory, dst);
 
     dst->resFireBase = src.sResFireBase;
     dst->resAirBase = src.sResAirBase;
@@ -847,8 +847,6 @@ void snapshot(const Character &src, Character_MM7 *dst) {
     dst->health = src.health;
     dst->mana = src.mana;
     dst->birthYear = src.uBirthYear;
-
-    snapshot(src.pEquipment, &dst->equipment);
 
     dst->lastOpenedSpellbookPage = std::to_underlying(src.lastOpenedSpellbookPage);
     dst->quickSpell = std::to_underlying(src.uQuickSpell);
@@ -888,7 +886,7 @@ void snapshot(const Character &src, Character_MM7 *dst) {
     dst->numFireSpikeCasts = src.uNumFireSpikeCasts;
 }
 
-void reconstruct(const Character_MM7 &src, Character *dst) {
+void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> characterIndex) {
     dst->Zero();
     reconstruct(src.conditions, &dst->conditions);
 
@@ -1052,8 +1050,7 @@ void reconstruct(const Character_MM7 &src, Character *dst) {
     dst->_pureStatPotionUsed[ATTRIBUTE_ACCURACY] = src.pureAccuracyUsed;
     dst->_pureStatPotionUsed[ATTRIBUTE_MIGHT] = src.pureMightUsed;
 
-    reconstruct(src.inventoryItems, &dst->pInventoryItemList);
-    reconstruct(src.inventoryMatrix, &dst->pInventoryMatrix);
+    reconstruct(src, &dst->inventory, characterIndex);
 
     dst->sResFireBase = src.resFireBase;
     dst->sResAirBase = src.resAirBase;
@@ -1088,8 +1085,6 @@ void reconstruct(const Character_MM7 &src, Character *dst) {
     dst->health = src.health;
     dst->mana = src.mana;
     dst->uBirthYear = src.birthYear;
-
-    reconstruct(src.equipment, &dst->pEquipment);
 
     dst->lastOpenedSpellbookPage = static_cast<MagicSchool>(src.lastOpenedSpellbookPage);
     dst->uQuickSpell = static_cast<SpellId>(src.quickSpell);
@@ -1136,9 +1131,108 @@ void reconstruct(const Character_MM7 &src, Character *dst) {
 }
 
 void snapshot(const CharacterInventory &src, Character_MM7 *dst) {
+    for (size_t i = 0; i < 126; i++)
+        snapshot(src._records[i].item, &dst->inventoryItems[i], tags::context(src._records[i].slot));
+    for (size_t i = 0; i < 126; i++)
+        dst->inventoryMatrix[i] = src._grid[i];
+
+    snapshot(src._equipment, &dst->equipment, tags::cast<int, uint32_t>);
+    for (ItemSlot slot : allItemSlots())
+        if (InventoryConstEntry entry = src.entry(slot))
+            dst->inventoryItems[entry.index()].equippedSlot = std::to_underlying(slot);
 }
 
 void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<int> characterIndex) {
+    *dst = CharacterInventory();
+
+    std::array<bool, 126> processed = {{}};
+    std::array<Item, 126> items;
+    reconstruct(src.inventoryItems, &items);
+
+    // Serialized character inventory can be quite broken, so we just check pretty much everything there is to check,
+    // and just log errors.
+
+    Sizei size = dst->gridSize();
+    int maxIndex = size.w * size.h;
+    for (int x = 0; x < size.w; x++) {
+        for (int y = 0; y < size.h; y++) {
+            int index = src.inventoryMatrix[x + y * size.w];
+            if (index <= 0)
+                continue;
+            index--;
+
+            if (index > maxIndex) {
+                logger->error("Invalid item reference in backpack for character #{}, itemId={}, index={}, pos=({},{})",
+                              *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
+                continue;
+            }
+
+            if (items[index].itemId == ITEM_NULL) {
+                logger->error("Null item in backpack for character #{}, itemId={}, index={}, pos=({},{})",
+                              *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
+                continue;
+            }
+
+            if (processed[index]) {
+                logger->error("Duplicate item in backpack for character #{}, itemId={}, index={}, pos=({},{})",
+                              *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
+                continue;
+            }
+
+            if (dst->canAdd({x, y}, items[index])) {
+                processed[index] = true;
+                dst->addAt({x, y}, items[index], index); // We need to preserve item indices.
+            } else {
+                logger->error("Overlapping item in backpack for character #{}, itemId={}, index={}, pos=({},{})",
+                              *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
+            }
+        }
+    }
+
+    for (ItemSlot slot : allItemSlots()) {
+        int index = src.equipment[std::to_underlying(slot) - std::to_underlying(ITEM_SLOT_FIRST_VALID)];
+        if (index <= 0)
+            continue;
+        index--;
+
+        if (index > maxIndex) {
+            logger->error("Invalid item reference in equipment for character #{}, itemId={}, index={}, slot={}",
+                          *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
+            continue;
+        }
+
+        if (items[index].itemId == ITEM_NULL) {
+            logger->error("Null item in equipment for character #{}, itemId={}, index={}, slot={}",
+                          *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
+            continue;
+        }
+
+        if (processed[index]) {
+            logger->error("Duplicate item in equipment for character #{}, itemId={}, index={}, slot={}",
+                          *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
+            continue;
+        }
+
+        if (dst->canEquip(slot)) {
+            processed[index] = true;
+            dst->equipAt(slot, items[index], index); // We need to preserve item indices.
+        } else {
+            logger->error("Overlapping items in equipment for character #{}, itemId={}, index={}, slot={}",
+                          *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
+        }
+    }
+
+    for (size_t index = 0; index < items.size(); index++) {
+        if (processed[index] || items[index].itemId == ITEM_NULL)
+            continue;
+
+        if (std::optional<Pointi> pos = dst->findSpace(items[index])) {
+            dst->addAt(*pos, items[index], index);
+        } else {
+            logger->error("Item was dropped from inventory for character #{}, itemId={}, index={}",
+                          *characterIndex, std::to_underlying(items[index].itemId), index);
+        }
+    }
 }
 
 void snapshot(const IconFrameData &src, IconFrameData_MM7 *dst) {
@@ -1301,7 +1395,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     snapshot(src.spriteIds, &dst->pSpriteIDs);
     snapshot(src.soundSampleIds, &dst->pSoundSampleIDs, tags::cast<SoundId, uint16_t>);
     snapshot(src.buffs, &dst->pActorBuffs);
-    snapshot(src.items, &dst->ActorHasItems);
+    snapshot(src.items, &dst->ActorHasItems, tags::context(ITEM_SLOT_INVALID));
 
     dst->uGroup = src.group;
     dst->uAlly = std::to_underlying(src.ally);
@@ -1562,7 +1656,7 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->uTimeSinceCreated = src.timeSinceCreated.ticks();
     dst->tempLifetime = src.tempLifetime.ticks();
     dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
-    snapshot(src.containing_item, &dst->containing_item);
+    snapshot(src.containing_item, &dst->containing_item, tags::context(ITEM_SLOT_INVALID));
     dst->uSpellID = std::to_underlying(src.uSpellID);
     dst->spell_level = src.spell_level;
     dst->spell_skill = std::to_underlying(src.spell_skill);
@@ -1639,17 +1733,16 @@ void reconstruct(const Chest_MM7 &src, Chest *dst, ContextTag<int> chestId) {
 }
 
 void snapshot(const ChestInventory &src, Chest_MM7 *dst) {
-    for (size_t i = 0; i < src._records.size(); i++)
-        snapshot(src._records[i].item, &dst->items[i]);
-    snapshot(src._grid, &dst->inventoryMatrix, tags::cast<int, int16_t>);
+    for (size_t i = 0; i < 140; i++)
+        snapshot(src._records[i].item, &dst->items[i], tags::context(ITEM_SLOT_INVALID));
+    for (size_t i = 0; i < 140; i++)
+        dst->inventoryMatrix[i] = src._grid[i];
 }
 
 void reconstruct(const Chest_MM7 &src, ChestInventory *dst, ContextTag<int> chestId) {
     Sizei size = chestTable[src.chestTypeId].size;
 
-    // Using Inventory::MAX_ITEMS here because chests can be filled to the brim with stuff beyond the obvious
-    // capacity=WxH limit, and I believe this wasn't enforced in any way by the engine.
-    *dst = ChestInventory(size, Inventory::MAX_ITEMS);
+    *dst = ChestInventory(size);
 
     std::array<bool, 140> processed = {{}};
     std::array<Item, 140> items;
@@ -1662,38 +1755,38 @@ void reconstruct(const Chest_MM7 &src, ChestInventory *dst, ContextTag<int> ches
     for (int x = 0; x < size.w; x++) {
         for (int y = 0; y < size.h; y++) {
             int index = src.inventoryMatrix[x + y * size.w];
-            if (index > 0) {
-                index--;
+            if (index <= 0)
+                continue;
+            index--;
 
-                if (index > maxIndex) {
-                    logger->error("Invalid item reference in chest #{} item grid, itemId={}, pos=({},{}), index={}",
-                                  *chestId, index, std::to_underlying(items[index].itemId), x, y, index);
-                    continue;
-                }
+            if (index > maxIndex) {
+                logger->error("Invalid item reference in chest #{} item grid, itemId={}, index={}, pos=({},{})",
+                              *chestId, std::to_underlying(items[index].itemId), index, x, y);
+                continue;
+            }
 
-                if (items[index].itemId == ITEM_NULL) {
-                    logger->error("Null item in chest #{}, itemId={}, pos=({},{})",
-                                  *chestId, std::to_underlying(items[index].itemId), x, y);
-                    continue;
-                }
+            if (items[index].itemId == ITEM_NULL) {
+                logger->error("Null item in chest #{}, itemId={}, index={}, pos=({},{})",
+                              *chestId, std::to_underlying(items[index].itemId), index, x, y);
+                continue;
+            }
 
-                if (processed[index]) {
-                    logger->error("Duplicate item in chest #{}, itemId={}, pos=({},{})",
-                                  *chestId, std::to_underlying(items[index].itemId), x, y);
-                    continue;
-                }
+            if (processed[index]) {
+                logger->error("Duplicate item in chest #{}, itemId={}, index={}, pos=({},{})",
+                              *chestId, std::to_underlying(items[index].itemId), index, x, y);
+                continue;
+            }
 
-                if (dst->canAdd({x, y}, items[index].inventorySize())) {
-                    processed[index] = true;
-                    dst->addAt({x, y}, items[index], index); // We need to preserve item indices.
-                }
+            if (dst->canAdd({x, y}, items[index])) {
+                processed[index] = true;
+                dst->addAt({x, y}, items[index], index); // We need to preserve item indices.
             }
         }
     }
 
-    for (size_t i = 0; i < items.size(); i++)
-        if (!processed[i] && items[i].itemId != ITEM_NULL)
-            dst->stashAt(items[i], i); // We need to preserve item indices.
+    for (size_t index = 0; index < items.size(); index++)
+        if (!processed[index] && items[index].itemId != ITEM_NULL)
+            dst->stashAt(items[index], index); // We need to preserve item indices.
 }
 
 void reconstruct(const BLVLight_MM7 &src, BLVLight *dst) {
