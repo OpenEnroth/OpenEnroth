@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;24fd40a</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;243b642</span>
    </div>
   </td>
  </tr>
@@ -81,17 +81,18 @@ $(function() {
   <tr class="odd"><td class="entry"><a class="el" href="structBBox.html#a5ae8258c76b07a7b57ea110ebe26c2f6">cubic</a>(const Vec3&lt; T &gt; &amp;center, T halfSide)</td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">static</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="structBBox.html#ace34ce7ae26ce8b9b36c4b892247d26c">forCylinder</a>(const Vec3&lt; T &gt; bottomCenter, T radius, T height)</td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">static</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="structBBox.html#a859c7ec0852841b844028f2607cbb526">forPoints</a>(const Vec3&lt; T &gt; &amp;a, const Vec3&lt; T &gt; &amp;b)</td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">static</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structBBox.html#af68d3a984897712087f732183c1f5c80">intersects</a>(const BBox&lt; U &gt; &amp;other) const</td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="structBBox.html#a3dbbbfc1b1ca102d3c7d7e3d279004ea">intersectsCube</a>(const Vec3&lt; U &gt; &amp;center, V halfSide) const</td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structBBox.html#a7668d173d66fea989f6879566bfe61b3">intersectsCuboid</a>(const Vec3&lt; U &gt; &amp;center, const Vec3&lt; U &gt; &amp;halfSize) const</td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="structBBox.html#aa28609de80af66aad58428fbc81d11e9">operator|</a></td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"><span class="mlabel">friend</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structBBox.html#aae5714ca283625da5330415218efb5ae">size</a>() const</td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="structBBox.html#a45a9e0da881ab01f1b36223acb8c927f">x1</a></td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structBBox.html#a587b0f0fef10e2a36b821cbfc292c24b">x2</a></td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="structBBox.html#a2d27e15f98db454850c399be928fe92a">y1</a></td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structBBox.html#a4094e6598f42bf024db360df681455c1">y2</a></td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="structBBox.html#a4e10024138e7a5d1bf0a45321a48d7c8">z1</a></td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structBBox.html#afe9d1ae7f6b50842fc44d27aa379307f">z2</a></td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structBBox.html#ad2efdbade8346a15ee6ade404dcfb5e1">forPoints</a>(const Range &amp;range)</td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span><span class="mlabel">static</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="structBBox.html#af68d3a984897712087f732183c1f5c80">intersects</a>(const BBox&lt; U &gt; &amp;other) const</td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structBBox.html#a3dbbbfc1b1ca102d3c7d7e3d279004ea">intersectsCube</a>(const Vec3&lt; U &gt; &amp;center, V halfSide) const</td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="structBBox.html#a7668d173d66fea989f6879566bfe61b3">intersectsCuboid</a>(const Vec3&lt; U &gt; &amp;center, const Vec3&lt; U &gt; &amp;halfSize) const</td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structBBox.html#aa28609de80af66aad58428fbc81d11e9">operator|</a></td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"><span class="mlabel">friend</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="structBBox.html#aae5714ca283625da5330415218efb5ae">size</a>() const</td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structBBox.html#a45a9e0da881ab01f1b36223acb8c927f">x1</a></td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="structBBox.html#a587b0f0fef10e2a36b821cbfc292c24b">x2</a></td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structBBox.html#a2d27e15f98db454850c399be928fe92a">y1</a></td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="structBBox.html#a4094e6598f42bf024db360df681455c1">y2</a></td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="structBBox.html#a4e10024138e7a5d1bf0a45321a48d7c8">z1</a></td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="structBBox.html#afe9d1ae7f6b50842fc44d27aa379307f">z2</a></td><td class="entry"><a class="el" href="structBBox.html">BBox&lt; T &gt;</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
