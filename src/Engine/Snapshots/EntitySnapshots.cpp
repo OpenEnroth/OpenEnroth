@@ -1146,6 +1146,7 @@ void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<i
     *dst = CharacterInventory();
 
     std::array<bool, 126> processed = {{}};
+    std::array<bool, 126> pending = {{}};
     std::array<Item, 126> items;
     reconstruct(src.inventoryItems, &items);
 
@@ -1183,6 +1184,7 @@ void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<i
                 processed[index] = true;
                 dst->addAt({x, y}, items[index], index); // We need to preserve item indices.
             } else {
+                pending[index] = true;
                 logger->error("Overlapping item in backpack for character #{}, itemId={}, index={}, pos=({},{})",
                               *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
             }
@@ -1217,6 +1219,7 @@ void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<i
             processed[index] = true;
             dst->equipAt(slot, items[index], index); // We need to preserve item indices.
         } else {
+            pending[index] = true;
             logger->error("Overlapping items in equipment for character #{}, itemId={}, index={}, slot={}",
                           *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
         }
@@ -1226,10 +1229,13 @@ void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<i
         if (processed[index] || items[index].itemId == ITEM_NULL)
             continue;
 
-        if (std::optional<Pointi> pos = dst->findSpace(items[index])) {
+        if (!pending[index]) {
+            logger->error("Invisible item was dropped from inventory for character #{}, itemId={}, index={}",
+                          *characterIndex, std::to_underlying(items[index].itemId), index);
+        } else if (std::optional<Pointi> pos = dst->findSpace(items[index])) {
             dst->addAt(*pos, items[index], index);
         } else {
-            logger->error("Item was dropped from inventory for character #{}, itemId={}, index={}",
+            logger->error("Overlapping item was dropped from inventory for character #{}, itemId={}, index={}",
                           *characterIndex, std::to_underlying(items[index].itemId), index);
         }
     }
