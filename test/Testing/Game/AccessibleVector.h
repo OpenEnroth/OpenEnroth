@@ -14,7 +14,7 @@ template<class T>
 using AccessibleVector = Accessible<std::vector<T>>;
 
 /**
- * Extension point for `delta` and `pairwiseDelta` methods of the `Accessible` classes. Effectively computes a delta
+ * Extension point for `delta` and `adjacentDeltas` methods of the `Accessible` classes. Effectively computes a delta
  * between `l` and 'r', i.e. `r - l`.
  *
  * This function is overloaded for `Accessible` classes, and it can also be overloaded for `std::tuple` / `std::pair`
@@ -120,6 +120,8 @@ class Accessible : public Base {
         return {*pair.first, *pair.second};
     }
 
+    // TODO(captainurist): just rename the methods to flatten / slice / unique / filter etc.
+
     auto flattened() const {
         using element_type = std::iter_value_t<decltype(std::declval<const value_type *>()->begin())>;
         AccessibleVector<element_type> result;
@@ -134,6 +136,12 @@ class Accessible : public Base {
         AccessibleVector<element_type> result;
         for (const auto &chunk : *this)
             result.push_back(chunk[subIndex]);
+        return result;
+    }
+
+    AccessibleVector<value_type> uniqued() const {
+        AccessibleVector<value_type> result;
+        std::unique_copy(begin(), end(), std::back_inserter(result));
         return result;
     }
 

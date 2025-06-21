@@ -46,6 +46,33 @@ struct BBox {
         return result;
     }
 
+    template<class Range>
+    [[nodiscard]] static BBox forPoints(const Range &range) {
+        auto pos = std::begin(range);
+        auto end = std::end(range);
+        if (pos == end)
+            return BBox();
+
+        BBox result;
+        result.x1 = pos->x;
+        result.x2 = pos->x;
+        result.y1 = pos->y;
+        result.y2 = pos->y;
+        result.z1 = pos->z;
+        result.z2 = pos->z;
+
+        while (++pos != end) {
+            result.x1 = std::min(result.x1, pos->x);
+            result.x2 = std::max(result.x2, pos->x);
+            result.y1 = std::min(result.y1, pos->y);
+            result.y2 = std::max(result.y2, pos->y);
+            result.z1 = std::min(result.z1, pos->z);
+            result.z2 = std::max(result.z2, pos->z);
+        }
+
+        return result;
+    }
+
     [[nodiscard]] static BBox forCylinder(const Vec3<T> bottomCenter, T radius, T height) {
         assert(radius >= 0 && height >= 0);
 
