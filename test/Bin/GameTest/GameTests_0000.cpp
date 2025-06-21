@@ -333,10 +333,31 @@ GAME_TEST(Issues, Issue293c) {
 
 GAME_TEST(Issues, Issue294) {
     // Testing that party auto-casting shrapnel successfully targets rats & kills them, gaining experience.
-    auto experienceTape = tapes.totalExperience();
+    auto deadActorsTape = actorTapes.countByState(Dead);
+    auto ratStateTape = actorTapes.aiState(79);
+    auto ratPositionTape = tapes.custom([] { return pActors[79].pos; });
+    auto recoveringTape = charTapes.areRecovering();
+    auto spritesTape = tapes.sprites();
     test.playTraceFromTestData("issue_294.mm7", "issue_294.json");
-    // EXPECT_GT(experienceTape.delta(), 0); // Expect the giant rat to be dead after four shrapnel casts from character #4.
-    // TODO(captainurist): ^passes now, but for the wrong reason - the rat decided to move after recent patches
+
+    // Only the 4th char acted.
+    EXPECT_EQ(recoveringTape.sliced(0).uniqued(), tape(false));
+    EXPECT_EQ(recoveringTape.sliced(1).uniqued(), tape(false));
+    EXPECT_EQ(recoveringTape.sliced(2).uniqued(), tape(false));
+    EXPECT_EQ(recoveringTape.sliced(3).uniqued(), tape(false, true, false));
+
+    // Sharpmetal was cast.
+    EXPECT_CONTAINS(spritesTape.flattened(), SPRITE_SPELL_DARK_SHARPMETAL_IMPACT);
+
+    // Giant rat died after a sharpmetal cast from character #4.
+    EXPECT_EQ(deadActorsTape.delta(), +1);
+    EXPECT_EQ(ratStateTape.frontBack(), tape(Standing, Dead));
+
+    // Rat didn't move much.
+    Vec3f positionJitter = BBoxf::forPoints(ratPositionTape).size();
+    EXPECT_LT(positionJitter.x, 100);
+    EXPECT_LT(positionJitter.y, 100);
+    EXPECT_LT(positionJitter.z, 100);
 }
 
 // 300
