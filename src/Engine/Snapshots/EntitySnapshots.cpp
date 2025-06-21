@@ -477,6 +477,10 @@ void reconstruct(const Item_MM7 &src, Item *dst) {
     } else if (src.standardEnchantmentOrPotionPower) {
         dst->potionPower = 0;
         dst->standardEnchantment = static_cast<CharacterAttribute>(src.standardEnchantmentOrPotionPower - 1);
+
+        // TODO(captainurist): Do this properly for every single enum in this file.
+        if (!allEnchantableAttributes().contains(*dst->standardEnchantment))
+            dst->standardEnchantment = {};
     } else {
         dst->potionPower = 0;
         dst->standardEnchantment = {};

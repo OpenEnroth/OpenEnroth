@@ -23,6 +23,8 @@ struct EventTraceCharacterState {
     int accuracy = 0;
     int speed = 0;
     int luck = 0;
+    std::vector<std::string> equipment;
+    std::vector<std::string> backpack;
 };
 
 struct EventTraceGameState {
