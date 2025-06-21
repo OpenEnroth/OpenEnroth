@@ -23,6 +23,7 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Evt/EvtInterpreter.h"
 #include "Engine/Objects/Chest.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
 
 // 1500
 
@@ -799,6 +800,18 @@ GAME_TEST(Issues, Issue1972) {
     int meteorCount = spritesTape.mapped([] (auto &&sprites) { return sprites.count(SPRITE_SPELL_FIRE_METEOR_SHOWER); }).max();
     EXPECT_EQ(meteorCount, 24); // 2x meteor shower cast at master. Might change to 12 on retrace.
     EXPECT_LE(hpTape.delta(), -700); // Party should have received some damage. Checking this b/c retracing might break smth.
+}
+
+GAME_TEST(Issues, Issue1973) {
+    // We have saves with item enchanted with ATTRIBUTE_LEVEL enchantment, which is outside the enchantable range.
+    Item_MM7 itemMm7 = {};
+    itemMm7.itemId = std::to_underlying(ITEM_ANGELS_RING);
+    itemMm7.standardEnchantmentOrPotionPower = std::to_underlying(ATTRIBUTE_LEVEL) + 1;
+
+    Item item = {};
+    reconstruct(itemMm7, &item);
+    EXPECT_EQ(item.standardEnchantment, std::nullopt);
+    EXPECT_EQ(item.GetIdentifiedName(), "Angel's Ring"); // This call used to assert.
 }
 
 GAME_TEST(Issues, Issue1974) {
