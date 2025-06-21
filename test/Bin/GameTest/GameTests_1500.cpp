@@ -3,6 +3,7 @@
 #include <ranges>
 #include <string>
 #include <regex>
+#include <vector>
 
 #include "Testing/Game/GameTest.h"
 
@@ -737,6 +738,48 @@ GAME_TEST(Issues, Issue1958) {
     EXPECT_CONTAINS(textsTape.flattened(), [](std::string_view s) { return s.contains("Congratulations on defeating the"); }); // Bounty message.
     EXPECT_CONTAINS(textsTape.flattened(), [](std::string_view s) { return s.contains("Someone has already claimed the bounty this month."); }); // Bounty already claimed message.
     EXPECT_EQ(goldTape.delta(), +1400); // We got the bounty.
+}
+
+GAME_TEST(Issues, Issue1959) {
+    // Sparks are off-center.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    engine->config->debug.AllMagic.setValue(true);
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+
+    pParty->pos = Vec3f(12552, 2000, 1); // In front of the bridge.
+    game.tick();
+
+    for (int i = 0; i < 4; i++) {
+        pParty->setActiveCharacterIndex(i + 1);
+        game.pressGuiButton("Game_CastSpell");
+        game.tick();
+        game.pressGuiButton("SpellBook_School1"); // Air magic.
+        game.tick();
+        game.pressGuiButton("SpellBook_Spell3"); // Sparks.
+        game.tick();
+        game.pressGuiButton("SpellBook_Spell3"); // Confirm.
+        game.tick(30); // Wait for the sparks to settle.
+
+        std::vector<float> angles;
+        for (const SpriteObject &sprite : pSpriteObjects)
+            if (sprite.uType == SPRITE_SPELL_AIR_SPARKS)
+                angles.push_back(std::atan2(sprite.vPosition.y - pParty->pos.y, sprite.vPosition.x - pParty->pos.x) / M_PI * 180);
+        ASSERT_EQ(angles.size(), 9);
+        EXPECT_TRUE(std::ranges::is_sorted(angles));
+        EXPECT_GT(angles.front(), 90 - 40);
+        EXPECT_LT(angles.front(), 90 + 40);
+
+        // Allow 2 degrees jitter, used to be up to 10 degrees before.
+        float cone = angles.back() - angles.front();
+        float dir = (angles.front() + angles.back()) / 2;
+        EXPECT_GT(cone, 60 - 2);
+        EXPECT_LT(cone, 60 + 2);
+        EXPECT_GT(dir, 90 - 2);
+        EXPECT_LT(dir, 90 + 2);
+
+        game.tick(10); // Wait a bit so that when the next salvo settles, the current one would disappear.
+    }
 }
 
 GAME_TEST(Issues, Issue1961) {
