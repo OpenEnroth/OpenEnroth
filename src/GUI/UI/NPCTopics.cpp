@@ -414,15 +414,11 @@ void oracleDialogue() {
             if (pParty->pCharacters[i].classType == CLASS_LICH) {
                 bool have_vessels_soul = false;
                 for (Character &player : pParty->pCharacters) {
-                    for (int idx = 0; idx < Character::INVENTORY_SLOT_COUNT; idx++) {
-                        if (player.pInventoryItemList[idx].itemId == ITEM_QUEST_LICH_JAR_FULL) {
-                            if (player.pInventoryItemList[idx].lichJarCharacterIndex == -1) {
-                                item = &player.pInventoryItemList[idx];
-                            }
-                            if (player.pInventoryItemList[idx].lichJarCharacterIndex == i) {
-                                have_vessels_soul = true;
-                            }
-                        }
+                    for (Item &jar : player.inventory.items(ITEM_QUEST_LICH_JAR_FULL)) {
+                        if (jar.lichJarCharacterIndex == -1)
+                            item = &jar;
+                        if (jar.lichJarCharacterIndex == i)
+                            have_vessels_soul = true;
                     }
                 }
 

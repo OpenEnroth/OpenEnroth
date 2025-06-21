@@ -20,3 +20,5 @@ int itemOffset(int dimension);
  *                                      position is out of grid.
  */
 Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft);
+
+Pointi mapFromInventoryGrid(Pointi gridPos, Pointi inventoryTopLeft);

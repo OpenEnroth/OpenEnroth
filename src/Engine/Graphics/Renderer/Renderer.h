@@ -183,9 +183,10 @@ class Renderer {
      * Query the equipment hit map for hit testing.
      *
      * @param screenPos                 Screen position to query (absolute screen coordinates).
-     * @return                          Item ID at the position, or 0 if no equipment found.
+     * @param defaultValue              Default value to return.
+     * @return                          Item ID at the position, or `defaultValue` if no equipment found.
      */
-    virtual int QueryEquipmentHitMap(Pointi screenPos) = 0;
+    virtual int QueryEquipmentHitMap(Pointi screenPos, int defaultValue) = 0;
 
     std::shared_ptr<GameConfig> config = nullptr;
 

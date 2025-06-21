@@ -21,7 +21,6 @@ class Mouse {
     Pointi position() const;
     void setPosition(Pointi position);
 
-    void RemoveHoldingItem();
     void SetCursorBitmapFromItemID(ItemId uItemID);
     void SetCurrentCursorBitmap();
     void SetCursorImage(std::string_view name);

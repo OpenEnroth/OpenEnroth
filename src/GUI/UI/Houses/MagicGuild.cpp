@@ -331,10 +331,10 @@ void GUIWindow_MagicGuild::houseScreenClick() {
                         return;
                     }
 
-                    int itemSlot = pParty->activeCharacter().AddItem(-1, boughtItem. itemId);
-                    if (itemSlot) {
+                    std::optional<Pointi> pos = pParty->activeCharacter().inventory.findSpace(boughtItem);
+                    if (pos) {
                         boughtItem.SetIdentified();
-                        pParty->activeCharacter().pInventoryItemList[itemSlot - 1] = boughtItem;
+                        pParty->activeCharacter().inventory.add(*pos, boughtItem);
                         _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);
                         boughtItem.Reset();

@@ -767,6 +767,6 @@ void BaseRenderer::updateRenderDimensions() {
         outputRender = outputPresent;
 }
 
-int BaseRenderer::QueryEquipmentHitMap(Pointi screenPos) {
-    return _equipmentHitMap.query(screenPos, 0);
+int BaseRenderer::QueryEquipmentHitMap(Pointi screenPos, int defaultValue) {
+    return _equipmentHitMap.query(screenPos, defaultValue);
 }
