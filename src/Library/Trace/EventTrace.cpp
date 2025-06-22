@@ -193,7 +193,9 @@ MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceCharacterState, (
     (endurance, "endurance"),
     (accuracy, "accuracy"),
     (speed, "speed"),
-    (luck, "luck")
+    (luck, "luck"),
+    (equipment, "equipment"),
+    (backpack, "backpack")
 ))
 
 MM_DEFINE_JSON_STRUCT_SERIALIZATION_FUNCTIONS(EventTraceGameState, (
