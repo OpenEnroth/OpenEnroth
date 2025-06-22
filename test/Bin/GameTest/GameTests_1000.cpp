@@ -249,7 +249,7 @@ GAME_TEST(Issues, Issue1251a) {
     auto dragonhealth = tapes.custom([] { return pActors[0].currentHP; });
     test.playTraceFromTestData("issue_1251a.mm7", "issue_1251a.json");
 
-    auto damageRange = dragonhealth.reversed().adjacentDeltas().minMax();
+    auto damageRange = dragonhealth.reverse().adjacentDeltas().minMax();
     EXPECT_GE(damageRange.front(), 8);
     EXPECT_LE(damageRange.back(), 48);
 }
@@ -269,10 +269,10 @@ GAME_TEST(Issues, Issue1253) {
     auto messageBoxesBody = tapes.allGUIWindowsText();
     test.playTraceFromTestData("issue_1253.mm7", "issue_1253.json");
     // message box text was displayed.
-    auto flatMessageBoxes = messageBoxesTape.flattened();
-    auto flatMessageBoxesBody = messageBoxesBody.flattened();
+    auto flatMessageBoxes = messageBoxesTape.flatten();
+    auto flatMessageBoxesBody = messageBoxesBody.flatten();
     EXPECT_GT(flatMessageBoxes.size(), 0);
-    EXPECT_GT(flatMessageBoxesBody.filtered([](const auto& s) { return s.starts_with("Perception skill is increased by"); }).size(), 0);
+    EXPECT_GT(flatMessageBoxesBody.filter([](const auto& s) { return s.starts_with("Perception skill is increased by"); }).size(), 0);
     EXPECT_FALSE(pParty->hasActiveCharacter());
     EXPECT_EQ(current_screen_type, SCREEN_GAME);
 }
@@ -412,9 +412,9 @@ GAME_TEST(Issues, Issue1331) {
     EXPECT_EQ(rngTape, tape(RANDOM_ENGINE_SEQUENTIAL));
     EXPECT_EQ(pParty->pCharacters[2].GetBowItem()->specialEnchantment, ITEM_ENCHANTMENT_TITAN_SLAYING);
     EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "41 - 45");
-    auto damageRange = hpsTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
+    auto damageRange = hpsTape.reverse().adjacentDeltas().flatten().filter([] (int damage) { return damage > 0; }).minMax();
     EXPECT_EQ(damageRange, tape(3, (43 + 13) * 2));
-    auto totalDamages = hpsTape.reversed().delta();
+    auto totalDamages = hpsTape.reverse().delta();
     EXPECT_TRUE(std::ranges::all_of(totalDamages, [](int damage) { return damage > 300; })); // Both titans are now pin cushions.
 }
 
@@ -726,7 +726,7 @@ GAME_TEST(Issues, Issue1449) {
     EXPECT_FALSE(iconsTape.back().empty());
 
     // Then we just check that the necessary animation frames were actually displayed.
-    auto flatIcons = iconsTape.flattened();
+    auto flatIcons = iconsTape.flatten();
     for (const char *icon : {"ia01-001", "ia01-002", "ia01-003", "ia01-004", "ia01-005", "ia01-006", "ia01-007", "ia01-008", "ia01-009", "ia01-010"})
         EXPECT_CONTAINS(flatIcons, icon); // Check opening hand animation.
     for (const char *icon : {"ia01-011", "ia01-012", "ia01-013", "ia01-014"})
@@ -783,10 +783,10 @@ GAME_TEST(Issues, Issue1466) {
     auto messageBoxesBody = tapes.allGUIWindowsText();
     test.playTraceFromTestData("issue_1466.mm7", "issue_1466.json");
     // message box body text was displayed.
-    auto flatMessageBoxes = messageBoxesTape.flattened();
-    auto flatMessageBoxesBody = messageBoxesBody.flattened();
+    auto flatMessageBoxes = messageBoxesTape.flatten();
+    auto flatMessageBoxesBody = messageBoxesBody.flatten();
     EXPECT_GT(flatMessageBoxes.size(), 0);
-    EXPECT_GT(flatMessageBoxesBody.filtered([](const auto& s) { return s.starts_with("Inferno burns all"); }).size(), 0);
+    EXPECT_GT(flatMessageBoxesBody.filter([](const auto& s) { return s.starts_with("Inferno burns all"); }).size(), 0);
     EXPECT_FALSE(pParty->pCharacters[0].HasSkill(CHARACTER_SKILL_FIRE));
     EXPECT_EQ(current_screen_type, SCREEN_GAME);
 }

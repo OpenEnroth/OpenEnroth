@@ -341,13 +341,13 @@ GAME_TEST(Issues, Issue294) {
     test.playTraceFromTestData("issue_294.mm7", "issue_294.json");
 
     // Only the 4th char acted.
-    EXPECT_EQ(recoveringTape.sliced(0).uniqued(), tape(false));
-    EXPECT_EQ(recoveringTape.sliced(1).uniqued(), tape(false));
-    EXPECT_EQ(recoveringTape.sliced(2).uniqued(), tape(false));
-    EXPECT_EQ(recoveringTape.sliced(3).uniqued(), tape(false, true, false));
+    EXPECT_EQ(recoveringTape.slice(0).unique(), tape(false));
+    EXPECT_EQ(recoveringTape.slice(1).unique(), tape(false));
+    EXPECT_EQ(recoveringTape.slice(2).unique(), tape(false));
+    EXPECT_EQ(recoveringTape.slice(3).unique(), tape(false, true, false));
 
     // Sharpmetal was cast.
-    EXPECT_CONTAINS(spritesTape.flattened(), SPRITE_SPELL_DARK_SHARPMETAL_IMPACT);
+    EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_DARK_SHARPMETAL_IMPACT);
 
     // Giant rat died after a sharpmetal cast from character #4.
     EXPECT_EQ(deadActorsTape.delta(), +1);
@@ -419,7 +419,7 @@ GAME_TEST(Issues, Issue355) {
     // GOG: 6-2. OpenEnroth: 9-5.
     auto healthTape = charTapes.hps();
     test.playTraceFromTestData("issue_355.mm7", "issue_355.json");
-    auto damageRange = healthTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
+    auto damageRange = healthTape.reverse().adjacentDeltas().flatten().filter([] (int damage) { return damage > 0; }).minMax();
     // 2d3+0 with a sequential engine can't roll 2 or 6, so all values should be in [3, 5]. Luck roll can drop this to 1/2...
     EXPECT_EQ(damageRange, tape(3 /*1*/, 5));
 }
@@ -531,7 +531,7 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     // we should be teleported to harmondale
     EXPECT_EQ(mapTape, tape(MAP_CASTLE_LAMBENT, MAP_HARMONDALE));
     // ending message box was displayed.
-    auto flatMessageBoxes = messageBoxesTape.flattened();
+    auto flatMessageBoxes = messageBoxesTape.flatten();
     EXPECT_EQ(flatMessageBoxes.size(), 1);
     EXPECT_TRUE(flatMessageBoxes.front().starts_with("Congratulations Adventurer"));
 
