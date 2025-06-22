@@ -67,12 +67,12 @@ GAME_TEST(Issues, Issue2018) {
     EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_ERATHIA, MAP_EMERALD_ISLAND));
     EXPECT_EQ(scrollsLBTape.frontBack(), tape(6, 4)); // Used 2 Lloyd's out of 6, ignore intervening steps from pickup and r-click.
     EXPECT_EQ(scrollsTPTape.frontBack(), tape(4, 2)); // Also used 2 Town Portal because it fails once on the Thief.
-    EXPECT_MISSES(recoveryTape.sliced(0), true); // Char 0 didn't do anything.
-    EXPECT_CONTAINS(recoveryTape.sliced(1), true); // Char 1 did cast a spell.
-    EXPECT_LT(mpTape.sliced(1).max(), 20); // Char 1 didn't have enough mana for the spells cast.
-    EXPECT_MISSES(recoveryTape.sliced(2), true); // Char 2 didn't do anything.
-    EXPECT_CONTAINS(recoveryTape.sliced(3), true); // Char 3 did cast a spell.
-    EXPECT_LT(mpTape.sliced(3).max(), 20); // Char 3 didn't have enough mana for the spells cast.
+    EXPECT_MISSES(recoveryTape.slice(0), true); // Char 0 didn't do anything.
+    EXPECT_CONTAINS(recoveryTape.slice(1), true); // Char 1 did cast a spell.
+    EXPECT_LT(mpTape.slice(1).max(), 20); // Char 1 didn't have enough mana for the spells cast.
+    EXPECT_MISSES(recoveryTape.slice(2), true); // Char 2 didn't do anything.
+    EXPECT_CONTAINS(recoveryTape.slice(3), true); // Char 3 did cast a spell.
+    EXPECT_LT(mpTape.slice(3).max(), 20); // Char 3 didn't have enough mana for the spells cast.
     EXPECT_EQ(mpTape.back(), mpTape.front()); // No mana was spent.
 }
 
@@ -90,7 +90,7 @@ GAME_TEST(Issues, Issue2021_2022) {
     test.playTraceFromTestData("issue_2021_2022.mm7", "issue_2021_2022.json");
     EXPECT_EQ(mapTape, tape(MAP_EMERALD_ISLAND, MAP_ERATHIA, MAP_EMERALD_ISLAND));
     EXPECT_EQ(scrollsPMTape.delta(), 0); // No Protection from Magic scroll used
-    EXPECT_CONTAINS(soundsTape.flattened(), SOUND_error);
+    EXPECT_CONTAINS(soundsTape.flatten(), SOUND_error);
     EXPECT_CONTAINS(statusTape, "That player is not active");
     EXPECT_EQ(lloydSlot1Tape, tape(false)); // Top left slot stayed empty
     EXPECT_EQ(pmBuffTape, tape(false)); // Not Prot Mg buff received
@@ -137,7 +137,7 @@ GAME_TEST(Issues, Issue2066) {
     game.pressAndReleaseButton(BUTTON_LEFT, 30, 345 - 60);
     game.tick(2);
 
-    EXPECT_EQ(soundsTape.flattened().count(SOUND_error), 4); // Get 4 errors.
+    EXPECT_EQ(soundsTape.flatten().count(SOUND_error), 4); // Get 4 errors.
 }
 
 GAME_TEST(Issues, Issue2074) {

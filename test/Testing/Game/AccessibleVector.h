@@ -120,9 +120,7 @@ class Accessible : public Base {
         return {*pair.first, *pair.second};
     }
 
-    // TODO(captainurist): just rename the methods to flatten / slice / unique / filter etc.
-
-    auto flattened() const {
+    auto flatten() const {
         using element_type = std::iter_value_t<decltype(std::declval<const value_type *>()->begin())>;
         AccessibleVector<element_type> result;
         for (const auto &chunk : *this)
@@ -131,7 +129,7 @@ class Accessible : public Base {
         return result;
     }
 
-    auto sliced(size_t subIndex) const {
+    auto slice(size_t subIndex) const {
         using element_type = std::iter_value_t<decltype(std::declval<const value_type *>()->begin())>;
         AccessibleVector<element_type> result;
         for (const auto &chunk : *this)
@@ -139,27 +137,27 @@ class Accessible : public Base {
         return result;
     }
 
-    AccessibleVector<value_type> uniqued() const {
+    AccessibleVector<value_type> unique() const {
         AccessibleVector<value_type> result;
         std::unique_copy(begin(), end(), std::back_inserter(result));
         return result;
     }
 
     template<class Filter>
-    AccessibleVector<value_type> filtered(Filter filter) const {
+    AccessibleVector<value_type> filter(Filter filter) const {
         AccessibleVector<value_type> result;
         std::copy_if(begin(), end(), std::back_inserter(result), std::move(filter));
         return result;
     }
 
     template<class Mapper, class Result = std::invoke_result_t<Mapper, value_type>>
-    AccessibleVector<Result> mapped(Mapper mapper) const {
+    AccessibleVector<Result> map(Mapper mapper) const {
         AccessibleVector<Result> result;
         std::transform(begin(), end(), std::back_inserter(result), std::move(mapper));
         return result;
     }
 
-    AccessibleVector<value_type> reversed() const {
+    AccessibleVector<value_type> reverse() const {
         AccessibleVector<value_type> result;
         std::reverse_copy(begin(), end(), std::back_inserter(result));
         return result;

@@ -833,7 +833,7 @@ GAME_TEST(Issues, Issue833a) {
     test.playTraceFromTestData("issue_833a.mm7", "issue_833a.json");
     EXPECT_EQ(manaTape.delta(), -2);
     EXPECT_EQ(quickSpellTape, tape(SPELL_FIRE_FIRE_BOLT));
-    EXPECT_CONTAINS(spritesTape.flattened(), SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT); // Fire bolt was cast by 1st character.
+    EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT); // Fire bolt was cast by 1st character.
 }
 
 GAME_TEST(Issues, Issue833b) {
@@ -846,7 +846,7 @@ GAME_TEST(Issues, Issue833b) {
     EXPECT_EQ(manaTape.delta(), 0);
     EXPECT_EQ(quickSpellTape, tape(SPELL_NONE));
     EXPECT_EQ(actorsHpTape.size(), 1); // No one was hurt.
-    EXPECT_CONTAINS(soundsTape.flattened(), SOUND_error);
+    EXPECT_CONTAINS(soundsTape.flatten(), SOUND_error);
 }
 
 GAME_TEST(Issues, Issue840) {
