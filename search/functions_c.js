@@ -49,7 +49,7 @@ var searchData=
   ['loadsounddatasource_46',['loadSoundDataSource',['../classAudioPlayer.html#aab42078dea7a617dc1bfa2cad873570b',1,'AudioPlayer']]],
   ['loadspellbook_47',['loadSpellbook',['../classGUIWindow__Spellbook.html#a30efd5eb7191050b3c597b17931d971f',1,'GUIWindow_Spellbook']]],
   ['loadsprite_48',['loadSprite',['../classLodSpriteCache.html#a7b13b3286aa6a7d423f87af45a43d3cd',1,'LodSpriteCache']]],
-  ['loadspritefromfile_49',['LoadSpriteFromFile',['../classLodSpriteCache.html#aed2d3bbea1699863561e9a22d57c5334',1,'LodSpriteCache']]],
+  ['loadspritefromfile_49',['LoadSpriteFromFile',['../classLodSpriteCache.html#a0a24c11e637a65c5bb3f3060d0dc5b2e',1,'LodSpriteCache']]],
   ['loadsprites_50',['LoadSprites',['../structArcomageGame.html#a5e632cce248759bfa53a957daf3d05f1',1,'ArcomageGame']]],
   ['loadtexture_51',['loadTexture',['../classIconFrameTable.html#aaf67d25c8d5158d7d1d844eedfa34420',1,'IconFrameTable::loadTexture()'],['../classLodTextureCache.html#a03c9d698c78827ec44f46310edc7333b',1,'LodTextureCache::loadTexture(std::string_view pContainer, bool useDummyOnError=true)']]],
   ['loadtexturefromlod_52',['LoadTextureFromLOD',['../classLodTextureCache.html#a65009c640f70e57549a5da587bc478a9',1,'LodTextureCache']]],

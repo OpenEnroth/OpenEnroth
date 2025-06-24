@@ -1104,7 +1104,7 @@ var searchData=
   ['sprite_5fblaster_5fprojectile_1101',['SPRITE_BLASTER_PROJECTILE',['../SpriteEnums_8h.html#ae4d6ddfadb3940c82f97cb293b7397f4acf58684fe1818d90fe4dca3bbc31701e',1,'SpriteEnums.h']]],
   ['sprite_5fdropped_5fby_5fplayer_1102',['SPRITE_DROPPED_BY_PLAYER',['../SpriteEnums_8h.html#a33ff8e5a067f92e0d66dc6534785ee25a7be9206f96b936b09ed49361407cf840',1,'SpriteEnums.h']]],
   ['sprite_5fhalt_5fturn_5fbased_1103',['SPRITE_HALT_TURN_BASED',['../SpriteEnums_8h.html#a33ff8e5a067f92e0d66dc6534785ee25a765cfe487674e854ed4b0948cf7508a0',1,'SpriteEnums.h']]],
-  ['sprite_5fheader_1104',['sprite_header',['../classSprite.html#a238c6da3a4430d9c0dcc78e498e3d108',1,'Sprite']]],
+  ['sprite_5fheader_1104',['sprite_header',['../classSprite.html#a02f4c57aa0dea67851568efe1fbd2d17',1,'Sprite']]],
   ['sprite_5fignore_5frange_1105',['SPRITE_IGNORE_RANGE',['../SpriteEnums_8h.html#a33ff8e5a067f92e0d66dc6534785ee25ac299f043656a1ef2719fa0d1bcf14863',1,'SpriteEnums.h']]],
   ['sprite_5fmissile_1106',['SPRITE_MISSILE',['../SpriteEnums_8h.html#a33ff8e5a067f92e0d66dc6534785ee25aadcffb2de6fba0cfff10e9e45182430d',1,'SpriteEnums.h']]],
   ['sprite_5fno_5fz_5fbuffer_1107',['SPRITE_NO_Z_BUFFER',['../SpriteEnums_8h.html#a33ff8e5a067f92e0d66dc6534785ee25a6807632af2e81c4a3c0b853ad9e56712',1,'SpriteEnums.h']]],

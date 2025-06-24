@@ -237,7 +237,7 @@ var searchData=
   ['spherevertpos_234',['sphereVertPos',['../SpellFxRenderer_8h.html#a144384e2dfc57f6c345c2cdbbe555ea5',1,'sphereVertPos():&#160;mm7_data.cpp'],['../mm7__data_8cpp.html#a144384e2dfc57f6c345c2cdbbe555ea5',1,'sphereVertPos():&#160;mm7_data.cpp']]],
   ['spregen_235',['spRegen',['../structRegenData.html#a6914afe31a674ba97fe2f8fa85bcf8ef',1,'RegenData']]],
   ['sprite_236',['sprite',['../classEvtInstruction.html#a3ecee3bc8be0428844e6084964bb8821',1,'EvtInstruction']]],
-  ['sprite_5fheader_237',['sprite_header',['../classSprite.html#a238c6da3a4430d9c0dcc78e498e3d108',1,'Sprite']]],
+  ['sprite_5fheader_237',['sprite_header',['../classSprite.html#a02f4c57aa0dea67851568efe1fbd2d17',1,'Sprite']]],
   ['sprite_5ftexture_5fdescr_238',['sprite_texture_descr',['../classEvtInstruction.html#ad548b9a0f4940e15bd37ed871fb9ac83',1,'EvtInstruction']]],
   ['spriteframesetgroup_239',['spriteFramesetGroup',['../structOverlayDesc.html#a442d3d2f7e89d9dc931700deab119843',1,'OverlayDesc::spriteFramesetGroup()'],['../structOverlayDesc__MM7.html#a8b6781745b87926369bbdecc4fa04bb7',1,'OverlayDesc_MM7::spriteFramesetGroup()']]],
   ['spriteframetime_240',['spriteFrameTime',['../structActiveOverlay.html#a7199a1c983c3cf012064fa027578528e',1,'ActiveOverlay::spriteFrameTime()'],['../structActiveOverlay__MM7.html#a18b16a3665bd1ae2d6ffcd9133d3e278',1,'ActiveOverlay_MM7::spriteFrameTime()']]],
