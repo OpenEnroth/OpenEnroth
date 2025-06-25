@@ -14,4 +14,10 @@ namespace pcx {
 RgbaImage decode(const Blob &data);
 
 Blob encode(RgbaImageView image);
+
+/**
+ * @param data                          Compressed PCX image data.
+ * @return                              Whether the data signature matches the PCX format.
+ */
+bool detect(const Blob &data);
 }  // namespace pcx
