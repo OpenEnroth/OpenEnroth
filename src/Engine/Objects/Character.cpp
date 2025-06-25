@@ -6325,11 +6325,6 @@ void Character::OnInventoryLeftClick() {
                 // take out
                 Pointi pos = entry.geometry().topLeft();
                 Item tmp = inventory.take(entry);
-                //Item tmpItem = *item;
-                //int oldinvMatrixIndex = invMatrixIndex;
-                //invMatrixIndex = GetItemMainInventoryIndex(invMatrixIndex);
-                //int invItemIndex = this->GetItemListAtInventoryIndex(invMatrixIndex);
-                //this->RemoveItemAtInventoryIndex(invMatrixIndex);
 
                 // try to add where we clicked
                 if (!inventory.tryAdd(pos, pParty->pPickedItem)) {

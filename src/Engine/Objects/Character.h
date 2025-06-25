@@ -110,11 +110,8 @@ class CharacterConditions {
 
 class Character {
  public:
-    static constexpr unsigned int INVENTORY_SLOTS_WIDTH = 14;
+    static constexpr unsigned int INVENTORY_SLOTS_WIDTH = 14; // TODO(captainurist): drop these consts, they don't belong here.
     static constexpr unsigned int INVENTORY_SLOTS_HEIGHT = 9;
-
-    // Maximum number of items the character inventory can hold.
-    // static constexpr unsigned int INVENTORY_SLOT_COUNT = INVENTORY_SLOTS_WIDTH * INVENTORY_SLOTS_HEIGHT;
 
     Character();
     void Zero();

@@ -855,7 +855,7 @@ bool PartyCreationUI_LoopInternal() {
                 pParty->pCharacters[i].inventory.add(Item(ITEM_GAUNTLETS));
                 break;
             case CHARACTER_SKILL_CLUB:
-                // pParty->pCharacters[i].inventory.add(-1, ITEM_CLUB);
+                // pParty->pCharacters[i].inventory.add(Item(ITEM_CLUB));
                 break;
             default:
                 break;
