@@ -13,7 +13,7 @@
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
-#include "Library/LodFormats/LodFormats.h"
+#include "Library/LodFormats/LodSprite.h"
 #include "Library/Logger/Logger.h"
 
 // List of textures that require additional processing for transparent pixels.

@@ -2,25 +2,17 @@
 
 #include <string>
 
+#include "LodFont.h"
 #include "Library/Image/Image.h"
 #include "Library/Image/Palette.h"
 #include "Library/Geometry/Size.h"
 
 #include "LodFormatEnums.h"
+#include "LodImage.h"
+#include "LodSprite.h"
+#include "LodFont.h"
 
 class Blob;
-
-struct LodSprite {
-    GrayscaleImage image;
-    int paletteId = 0;
-};
-
-struct LodImage {
-    GrayscaleImage image;
-    Palette palette;
-    bool zeroIsTransparent = false; // Means that zero palette entry should be treated as transparent.
-                                    // This, however, is sometimes overridden in user code.
-};
 
 namespace lod {
 
@@ -81,5 +73,13 @@ Sizei decodeImageSize(const Blob &blob);
  * @return                              Decoded `LodSprite`.
  */
 LodSprite decodeSprite(const Blob &blob);
+
+/**
+ * This function processes `LOD_FILE_FONT` format.
+ *
+ * @param blob                          Font `blob`, as read from a LOD file.
+ * @return                              Decoded `LodFont`.
+ */
+LodFont decodeFont(const Blob &blob);
 
 } // namespace lod

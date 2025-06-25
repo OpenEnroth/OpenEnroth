@@ -8,25 +8,7 @@
 #include "Library/Color/Color.h"
 #include "Library/Image/Palette.h"
 #include "Library/Geometry/Point.h"
-
-struct GUICharMetric {
-    int32_t uLeftSpacing;
-    int32_t uWidth;
-    int32_t uRightSpacing;
-};
-
-struct FontHeader {
-    uint8_t cFirstChar = 0;
-    uint8_t cLastChar = 0;
-    uint16_t uFontHeight = 0;
-    std::array<GUICharMetric, 256> pMetrics = {{}};
-    std::array<uint32_t, 256> font_pixels_offset = {{}};
-};
-
-struct FontData {
-    FontHeader header;
-    std::vector<uint8_t> pixels;
-};
+#include "Library/LodFormats/LodFont.h"
 
 class GUIWindow;
 class GraphicsImage;
@@ -82,7 +64,6 @@ class GUIFont {
     int GetStringHeight2(GUIFont *secondFont, std::string_view text_str,
                          GUIWindow *pWindow, int startX, int a6);
 
-    int maxcharwidth = 0;
     GraphicsImage *fonttex = nullptr;
     GraphicsImage *fontshadow = nullptr;
 
@@ -94,8 +75,8 @@ class GUIFont {
                             std::string_view text, int line_width);
 
  private:
-    FontData pData;
-    Palette palette;
+    LodFont _font;
+    Palette _palette;
 };
 
 void ReloadFonts();
