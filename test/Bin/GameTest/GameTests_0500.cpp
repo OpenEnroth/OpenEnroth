@@ -152,7 +152,7 @@ GAME_TEST(Issues, Issue571) {
 
 GAME_TEST(Issues, Issue573) {
     // Make Recharge Item effect non-decreasing
-    auto chargeTape = tapes.custom([] {  return pParty->pCharacters[1].pInventoryItemList[33].numCharges; });
+    auto chargeTape = tapes.custom([] {  return pParty->pCharacters[1].inventory.entry(33)->numCharges; });
     auto manaTape = tapes.custom([] { return pParty->pCharacters[0].mana; });
     auto itemsTape = tapes.totalItemCount();
     test.playTraceFromTestData("issue_573.mm7", "issue_573.json");
@@ -446,12 +446,10 @@ GAME_TEST(Issues, Issue677) {
 
 GAME_TEST(Issues, Issue680) {
     // Chest items duplicate sometimes
-    auto chestItemsCount = tapes.custom([] { return std::count_if(vChests[4].items.cbegin(), vChests[4].items.cend(), [&](Item item) { return item.itemId != ITEM_NULL; }); });
+    auto chestItemsCount = tapes.custom([] { return vChests[4].inventory.size(); });
     test.playTraceFromTestData("issue_680.mm7", "issue_680.json");
-    // Make sure we havent gained any duplicates
-    EXPECT_EQ(chestItemsCount.front(), chestItemsCount.back());
-    // And that items were added and removed
-    EXPECT_GE(chestItemsCount.size(), 2);
+    EXPECT_EQ(chestItemsCount.front(), chestItemsCount.back()); // Make sure we havent gained any duplicates.
+    EXPECT_GE(chestItemsCount.size(), 2); // And that items were added and removed.
 }
 
 GAME_TEST(Issues, Issue681) {

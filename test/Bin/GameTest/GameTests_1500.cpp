@@ -307,8 +307,8 @@ GAME_TEST(Issues, Issue1685) {
     jar2.itemId = ITEM_QUEST_LICH_JAR_FULL;
     jar2.lichJarCharacterIndex = 1;
 
-    pParty->pCharacters[0].AddItem2(-1, &jar1);
-    pParty->pCharacters[1].AddItem2(-1, &jar2);
+    pParty->pCharacters[0].inventory.add(jar1);
+    pParty->pCharacters[1].inventory.add(jar2);
 
     EXPECT_EQ(jar1.GetIdentifiedName(), "Kolya's Jar");
     EXPECT_EQ(jar2.GetIdentifiedName(), "Nicholas' Jar");
@@ -719,6 +719,34 @@ GAME_TEST(Issues, Issue1947) {
     EXPECT_GT(pSpriteObjects[4].containing_item.maxCharges, 0);
 }
 
+GAME_TEST(Prs, Pr1953) {
+    // Items were duplicated when trying to wear armor on top of existing armor.
+    game.startNewGame();
+
+    Character &char0 = pParty->pCharacters[0];
+    char0.inventory.clear();
+    char0.inventory.add(Item(ITEM_LEATHER_ARMOR));
+    char0.inventory.equip(ITEM_SLOT_ARMOUR, Item(ITEM_ROYAL_LEATHER));
+
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_I); // Open inventory.
+    game.tick();
+    game.pressAndReleaseButton(BUTTON_LEFT, 20, 20); // Pick up leather armor.
+    game.tick();
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_LEATHER_ARMOR);
+    EXPECT_EQ(char0.inventory.size(), 1);
+    game.pressAndReleaseButton(BUTTON_LEFT, 600, 60); // Wear it, replacing royal leather that's worn.
+    game.tick(1);
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_ROYAL_LEATHER);
+    EXPECT_EQ(char0.inventory.size(), 1);
+    ASSERT_FALSE(char0.inventory.entry(Pointi(0, 0)));
+    ASSERT_TRUE(char0.inventory.entry(ITEM_SLOT_ARMOUR));
+    EXPECT_EQ(char0.inventory.entry(ITEM_SLOT_ARMOUR)->itemId, ITEM_LEATHER_ARMOR);
+}
+
 GAME_TEST(Issues, Issue1956) {
     // Crash shortly after entering Land of Giants
     test.playTraceFromTestData("issue_1956.mm7", "issue_1956.json");
@@ -790,10 +818,8 @@ GAME_TEST(Issues, Issue1961) {
     test.startTaping();
 
     // Prepare an item to enchant.
-    pParty->pCharacters[3].pInventoryItemList.fill(Item());
-    pParty->pCharacters[3].pInventoryMatrix.fill(0);
-    pParty->pCharacters[3].AddItem(-1, ITEM_GOLDEN_CHAIN_MAIL);
-    const Item &chainmail = pParty->pCharacters[3].pInventoryItemList[0];
+    pParty->pCharacters[3].inventory.clear();
+    const Item &chainmail = *pParty->pCharacters[3].inventory.add(Pointi(0, 0), Item(ITEM_GOLDEN_CHAIN_MAIL));
     EXPECT_EQ(chainmail.itemId, ITEM_GOLDEN_CHAIN_MAIL);
 
     // Learn enchant item.
@@ -923,11 +949,12 @@ GAME_TEST(Issues, Issue1989) {
 GAME_TEST(Issues, Issue1990) {
     // Test opening the Tularean Forest half-hidden chest, which generates a black potion.
     auto screenTape = tapes.screen();
-    auto potionTape = tapes.custom([] { return vChests[6].items[6].itemId; });
-    auto powerTape = tapes.custom([] { return vChests[6].items[6].potionPower; });
+    auto powerTape = tapes.custom([] {
+        InventoryEntry entry = vChests[6].inventory.find(ITEM_POTION_PURE_MIGHT);
+        return entry ? entry->potionPower : -1;
+    });
     test.playTraceFromTestData("issue_1990.mm7", "issue_1990.json");
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_CHEST)); // We have opened the chest.
-    EXPECT_EQ(potionTape, tape(ITEM_POTION_PURE_MIGHT));
     EXPECT_EQ(powerTape.front(), 0); // Potion power started as uninitialized.
     EXPECT_GE(powerTape.back(), 5);
     EXPECT_LT(powerTape.back(), 20); // Potion power ended as initialized to 5-19.

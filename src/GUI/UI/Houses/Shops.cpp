@@ -24,6 +24,7 @@
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
+#include "GUI/UI/ItemGrid.h"
 #include "GUI/UI/UIHouses.h"
 #include "GUI/UI/UIStatusBar.h"
 
@@ -286,16 +287,14 @@ void GUIWindow_Shop::sellDialogue() {
         engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_THE_ITEM_TO_SELL), colorTable.White);
 
         Pointi pt = dialogwin.mouse->position();
-
-        int invindex = ((pt.x - 14) / 32) + 14 * ((pt.y - 17) / 32);
         if (pt.x <= 13 || pt.x >= 462)
             return;
 
-        int pItemID = pParty->activeCharacter().GetItemListAtInventoryIndex(invindex);
-        if (pItemID) {
-            Item *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
-            MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_SELL);
-            std::string str = BuildDialogueString(pMerchantsSellPhrases[phrases_id], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_SELL);
+        Pointi gridPos = mapToInventoryGrid(pt, Pointi(14, 17));
+
+        if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(gridPos)) {
+            MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(entry.get(), buildingType(), houseId(), SHOP_SCREEN_SELL);
+            std::string str = BuildDialogueString(pMerchantsSellPhrases[phrases_id], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, entry.get(), houseId(), SHOP_SCREEN_SELL);
             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
             dialogwin.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, str, 3);
         }
@@ -316,15 +315,13 @@ void GUIWindow_Shop::identifyDialogue() {
         engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_THE_ITEM_TO_IDENTIFY), colorTable.White);
 
         Pointi pt = EngineIocContainer::ResolveMouse()->position();
-
-        int invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
         if (pt.x <= 13 || pt.x >= 462)
             return;
 
-        int pItemID = pParty->activeCharacter().GetItemListAtInventoryIndex(invindex);
+        Pointi gridPos = mapToInventoryGrid(pt, Pointi(14, 17));
 
-        if (pItemID) {
-            Item *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
+        if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(gridPos)) {
+            Item *item = entry.get();
 
             std::string str;
             if (!item->IsIdentified()) {
@@ -354,17 +351,17 @@ void GUIWindow_Shop::repairDialogue() {
         engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_THE_ITEM_TO_REPAIR), colorTable.White);
 
         Pointi pt = dialogwin.mouse->position();
-
-        int invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
         if (pt.x <= 13 || pt.x >= 462)
             return;
 
-        int pItemID = pParty->activeCharacter().GetItemListAtInventoryIndex(invindex);
-        if (pItemID == 0)
+        Pointi gridPos = mapToInventoryGrid(pt, Pointi(14, 17));
+
+        InventoryEntry entry = pParty->activeCharacter().inventory.entry(gridPos);
+        if (!entry)
             return;
 
-        if (pParty->activeCharacter().pInventoryItemList[pItemID - 1].flags & ITEM_BROKEN) {
-            Item *item = &pParty->activeCharacter().pInventoryItemList[pItemID - 1];
+        if (entry->flags & ITEM_BROKEN) {
+            Item *item = entry.get();
             MerchantPhrase phrases_id = pParty->activeCharacter().SelectPhrasesTransaction(item, buildingType(), houseId(), SHOP_SCREEN_REPAIR);
             std::string str = BuildDialogueString(pMerchantsRepairPhrases[phrases_id], pParty->activeCharacterIndex() - 1, houseNpcs[currentHouseNpc].npc, item, houseId(), SHOP_SCREEN_REPAIR);
             int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(str, dialogwin.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
@@ -904,19 +901,20 @@ void GUIWindow_Shop::houseScreenClick() {
         }
 
         case DIALOGUE_SHOP_SELL: {
-            int invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
             if (pt.x <= 13 || pt.x >= 462) {
                 return;
             }
 
-            int pItemID = pParty->activeCharacter().GetItemListAtInventoryIndex(invindex);
-            if (!pItemID) {
+            Pointi gridPos = mapToInventoryGrid(pt, Pointi(14, 17));
+
+            InventoryEntry entry = pParty->activeCharacter().inventory.entry(gridPos);
+            if (!entry) {
                 return;
             }
 
-            if (pParty->activeCharacter().pInventoryItemList[pItemID - 1].canSellRepairIdentifyAt(houseId())) {
+            if (entry->canSellRepairIdentifyAt(houseId())) {
                 _transactionPerformed = true;
-                pParty->activeCharacter().SalesProcess(invindex, pItemID - 1, houseId());
+                pParty->activeCharacter().SalesProcess(entry, houseId());
                 pParty->activeCharacter().playReaction(SPEECH_ITEM_SOLD);
                 return;
             }
@@ -927,19 +925,20 @@ void GUIWindow_Shop::houseScreenClick() {
         }
 
         case DIALOGUE_SHOP_IDENTIFY: {
-            int invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
             if (pt.x <= 13 || pt.x >= 462) {
                 return;
             }
 
-            int pItemID = pParty->activeCharacter().GetItemListAtInventoryIndex(invindex);
-            if (!pItemID) {
+            Pointi gridPos = mapToInventoryGrid(pt, Pointi(14, 17));
+
+            InventoryEntry entry = pParty->activeCharacter().inventory.entry(gridPos);
+            if (!entry) {
                 return;
             }
 
             float fPriceMultiplier = houseTable[houseId()].fPriceMultiplier;
             int uPriceItemService = PriceCalculator::itemIdentificationPriceForPlayer(&pParty->activeCharacter(), fPriceMultiplier);
-            Item &item = pParty->activeCharacter().pInventoryItemList[pItemID - 1];
+            Item &item = *entry;
 
             if (!(item.flags & ITEM_IDENTIFIED)) {
                 if (item.canSellRepairIdentifyAt(houseId())) {
@@ -967,17 +966,18 @@ void GUIWindow_Shop::houseScreenClick() {
         }
 
         case DIALOGUE_SHOP_REPAIR: {
-            int invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
             if (pt.x <= 13 || pt.x >= 462) {
                 return;
             }
 
-            int pItemID = pParty->activeCharacter().GetItemListAtInventoryIndex(invindex);
-            if (!pItemID) {
+            Pointi gridPos = mapToInventoryGrid(pt, Pointi(14, 17));
+
+            InventoryEntry entry = pParty->activeCharacter().inventory.entry(gridPos);
+            if (!entry) {
                 return;
             }
 
-            Item &item = pParty->activeCharacter().pInventoryItemList[pItemID - 1];
+            Item &item = *entry;
             float fPriceMultiplier = houseTable[houseId()].fPriceMultiplier;
             int uPriceItemService = PriceCalculator::itemRepairPriceForPlayer(&pParty->activeCharacter(), item.GetValue(), fPriceMultiplier);
 
@@ -1118,12 +1118,11 @@ void GUIWindow_Shop::houseScreenClick() {
                 return;
             }
 
-            int itemSlot = pParty->activeCharacter().AddItem(-1, boughtItem->itemId);
-            if (itemSlot) {
+            if (std::optional<Pointi> gridPos = pParty->activeCharacter().inventory.findSpace(*boughtItem)) {
                 boughtItem->SetIdentified();
-                pParty->activeCharacter().pInventoryItemList[itemSlot - 1] = *boughtItem;
+                InventoryEntry entry = pParty->activeCharacter().inventory.add(*gridPos, *boughtItem);
                 if (stealResult != 0) {  // stolen
-                    pParty->activeCharacter().pInventoryItemList[itemSlot - 1].SetStolen();
+                    entry->SetStolen();
                     processStealingResult(stealResult, fine);
                 } else {
                     _transactionPerformed = true;

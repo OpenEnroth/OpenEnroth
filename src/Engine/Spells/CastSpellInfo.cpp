@@ -256,7 +256,7 @@ void CastSpellInfoHelpers::castSpell() {
             pSpellSprite.spell_target_pid = spell_targeted_at;
             pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
             pSpellSprite.uFacing = target_direction.uYawAngle;
-            pSpellSprite.containing_item = pPlayer->pInventoryItemList[pPlayer->pEquipment[ITEM_SLOT_BOW] - 1];
+            pSpellSprite.containing_item = *pPlayer->inventory.entry(ITEM_SLOT_BOW);
             pSpellSprite.uAttributes |= SPRITE_MISSILE;
             if (pParty->bTurnBasedModeOn) {
                 pSpellSprite.uAttributes |= SPRITE_HALT_TURN_BASED;
@@ -280,7 +280,7 @@ void CastSpellInfoHelpers::castSpell() {
             pSpellSprite.spell_target_pid = spell_targeted_at;
             pSpellSprite.field_60_distance_related_prolly_lod = target_direction.uDistance;
             pSpellSprite.uFacing = target_direction.uYawAngle;
-            pSpellSprite.containing_item = pPlayer->pInventoryItemList[pPlayer->pEquipment[ITEM_SLOT_MAIN_HAND] - 1];
+            pSpellSprite.containing_item = *pPlayer->inventory.entry(ITEM_SLOT_MAIN_HAND);
             // &pParty->pCharacters[pCastSpell->uPlayerID].spellbook.pDarkSpellbook.bIsSpellAvailable[36
             // *
             // pParty->pCharacters[pCastSpell->uPlayerID].pEquipment[ITEM_SLOT_MAIN_HAND] + 5], );
@@ -687,7 +687,7 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_DARK_VAMPIRIC_WEAPON:
                 case SPELL_FIRE_FIRE_AURA:
                 {
-                    Item *item = &pParty->pCharacters[pCastSpell->targetCharacterIndex].pInventoryItemList[pCastSpell->targetInventoryIndex];
+                    Item *item = pParty->pCharacters[pCastSpell->targetCharacterIndex].inventory.entry(pCastSpell->targetInventoryIndex).get();
                     item->UpdateTempBonus(pParty->GetPlayingTime());
                     if (item->itemId == ITEM_BLASTER ||
                             item->itemId == ITEM_BLASTER_RIFLE ||
@@ -1345,8 +1345,8 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_WATER_RECHARGE_ITEM:
                 {
-                    Item *item = &pParty->pCharacters[pCastSpell->targetCharacterIndex].pInventoryItemList[pCastSpell->targetInventoryIndex];
-                    if (!item->isWand() || item->IsBroken()) {
+                    InventoryEntry entry = pParty->pCharacters[pCastSpell->targetCharacterIndex].inventory.entry(pCastSpell->targetInventoryIndex);
+                    if (!entry || !entry->isWand() || entry->IsBroken()) {
                         AfterEnchClickEventId = UIMSG_Escape;
                         AfterEnchClickEventSecondParam = 0;
                         AfterEnchClickEventTimeout = Duration::fromRealtimeSeconds(1); // was 1 tick, increased to make message readable
@@ -1371,15 +1371,15 @@ void CastSpellInfoHelpers::castSpell() {
                         spell_recharge_factor = 1.0;
                     }
 
-                    int uNewCharges = item->maxCharges * spell_recharge_factor;
+                    int uNewCharges = entry->maxCharges * spell_recharge_factor;
 
                     // Disallow if wand will lose charges
                     bool chargeFailed = false;
-                    if (uNewCharges <= item->numCharges) {
+                    if (uNewCharges <= entry->numCharges) {
                         chargeFailed = true;
                     } else {
-                        item->maxCharges = uNewCharges;
-                        item->numCharges = uNewCharges;
+                        entry->maxCharges = uNewCharges;
+                        entry->numCharges = uNewCharges;
                     }
 
                     if (uNewCharges <= 0 || chargeFailed) {
@@ -1392,7 +1392,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
 
-                    item->flags |= ITEM_AURA_EFFECT_GREEN;
+                    entry->flags |= ITEM_AURA_EFFECT_GREEN;
                     ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                     break;
                 }
@@ -1404,7 +1404,9 @@ void CastSpellInfoHelpers::castSpell() {
                     bool spell_failed = true;
                     int rnd = grng->random(100);
                     auto pTargetPlayer = &pParty->pCharacters[pCastSpell->targetCharacterIndex];
-                    Item *spell_item_to_enchant = &pTargetPlayer->pInventoryItemList[pCastSpell->targetInventoryIndex];
+                    InventoryEntry spell_item_to_enchant_entry = pTargetPlayer->inventory.entry(pCastSpell->targetInventoryIndex);
+                    Item *spell_item_to_enchant = spell_item_to_enchant_entry.get();
+
                     ItemType this_equip_type = pItemTable->items[spell_item_to_enchant->itemId].type;
 
                     // refs

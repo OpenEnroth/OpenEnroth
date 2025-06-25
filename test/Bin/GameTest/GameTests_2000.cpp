@@ -116,9 +116,8 @@ GAME_TEST(Issues, Issue2066) {
     game.startNewGame();
     test.startTaping();
 
-    pParty->pCharacters[0].pInventoryItemList.fill(Item());
-    pParty->pCharacters[0].pInventoryMatrix.fill(0);
-    pParty->pCharacters[0].AddItem(-1, ITEM_LEATHER_ARMOR); // Add leather armor at (0, 0).
+    pParty->pCharacters[0].inventory.clear();
+    pParty->pCharacters[0].inventory.add(Pointi(0, 0), Item(ITEM_LEATHER_ARMOR)); // Add leather armor at (0, 0).
 
     game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
     game.tick();

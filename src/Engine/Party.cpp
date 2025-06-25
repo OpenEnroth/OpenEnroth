@@ -116,10 +116,10 @@ void Party::Zero() {
     uNumArcomageLoses = 0;
     bTurnBasedModeOn = false;
     uFlags2 = 0;
-    alignment = PartyAlignment::PartyAlignment_Neutral;
+    alignment = PartyAlignment_Neutral;
     for (SpellBuff &buff : pPartyBuffs)
         buff.Reset();
-    pPickedItem.Reset();
+    takeHoldingItem();
     uFlags = 0;
 
     for (HouseId i : standartItemsInShops.indices())
@@ -198,6 +198,17 @@ void Party::setHoldingItem(const Item &item, Pointi offset) {
     mouse->pickedItemOffset = offset;
 }
 
+Item Party::takeHoldingItem() {
+    Item result = pPickedItem;
+    if (result.itemId == ITEM_NULL)
+        return result;
+
+    pPickedItem.Reset();
+    mouse->SetCursorImage("MICON1");
+    mouse->pickedItemOffset = {};
+    return result;
+}
+
 void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems entering shops
     for (int i = 0; i < this->pCharacters.size(); ++i) {
         if (this->pCharacters[i].CanAct()) {
@@ -260,12 +271,9 @@ void Party::switchToNextActiveCharacter() {
 }
 
 bool Party::hasItem(ItemId uItemID) {
-    for (Character &player : this->pCharacters) {
-        for (Item &item : player.pInventoryItemList) {
-            if (item.itemId == uItemID)
-                return true;
-        }
-    }
+    for (Character &player : this->pCharacters)
+        if (player.inventory.find(uItemID))
+            return true;
     return false;
 }
 
@@ -724,10 +732,9 @@ void Party::restAndHeal() {
         pPlayer->mana = pPlayer->GetMaxMana();
         if (pPlayer->classType == CLASS_LICH) {
             have_vessels_soul = false;
-            for (unsigned i = 0; i < Character::INVENTORY_SLOT_COUNT; i++) {
-                if (pPlayer->pInventoryItemList[i].itemId == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].lichJarCharacterIndex == pPlayerID)
+            for (const Item &jar : pPlayer->inventory.items(ITEM_QUEST_LICH_JAR_FULL))
+                if (jar.lichJarCharacterIndex == pPlayerID)
                     have_vessels_soul = true;
-            }
             if (!have_vessels_soul) {
                 pPlayer->health = pPlayer->GetMaxHealth() / 2;
                 pPlayer->mana = pPlayer->GetMaxMana() / 2;
@@ -925,7 +932,7 @@ void Party::dropHeldItem() {
     // v9 = UnprojectX(v1->x);
     sprite.Create(_viewYaw, 184, 200, 0);  //+ UnprojectX(v1->x), 184, 200, 0);
 
-    mouse->RemoveHoldingItem();
+    pParty->takeHoldingItem();
 }
 
 void Party::placeHeldItemInInventoryOrDrop() {
@@ -935,7 +942,7 @@ void Party::placeHeldItemInInventoryOrDrop() {
     }
 
     if (addItemToParty(&pPickedItem, true)) {
-        mouse->RemoveHoldingItem();
+        pParty->takeHoldingItem();
     } else {
         dropHeldItem();
     }
@@ -947,14 +954,12 @@ bool Party::addItemToParty(Item *pItem, bool isSilent) {
     }
 
     if (!pItemTable->items[pItem->itemId].iconName.empty()) {
-        int playerId = hasActiveCharacter() ? (pParty->_activeCharacter - 1) : 0;
+        int playerId = hasActiveCharacter() ? pParty->_activeCharacter - 1 : 0;
         for (int i = 0; i < pCharacters.size(); i++, playerId++) {
             if (playerId >= pCharacters.size()) {
                 playerId = 0;
             }
-            int itemIndex = pCharacters[playerId].AddItem(-1, pItem->itemId);
-            if (itemIndex) {
-                pCharacters[playerId].pInventoryItemList[itemIndex - 1] = *pItem;
+            if (pCharacters[playerId].inventory.tryAdd(*pItem)) {
                 pItem->Reset();
                 if (!isSilent) {
                     pAudioPlayer->playUISound(SOUND_gold01);

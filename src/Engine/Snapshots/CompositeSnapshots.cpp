@@ -226,7 +226,10 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
         }
     }
 
-    reconstruct(src.chests, &vChests);
+    vChests.resize(src.chests.size());
+    for (size_t i = 0; i < src.chests.size(); ++i)
+        reconstruct(src.chests[i], &vChests[i], tags::context<int>(i));
+
     reconstruct(src.doors, &dst->pDoors);
     reconstruct(src.doorsData, &dst->ptr_0002B4_doors_ddata);
 
@@ -506,7 +509,11 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
         pActors[i].id = i;
 
     reconstruct(src.spriteObjects, &pSpriteObjects);
-    reconstruct(src.chests, &vChests);
+
+    vChests.resize(src.chests.size());
+    for (size_t i = 0; i < src.chests.size(); ++i)
+        reconstruct(src.chests[i], &vChests[i], tags::context<int>(i));
+
     reconstruct(src.eventVariables, &engine->_persistentVariables);
     reconstruct(src.locationTime, &dst->loc_time);
 }
