@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;20d1359</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;52af553</span>
    </div>
   </td>
  </tr>
@@ -80,6 +80,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;array&gt;</code><br />
+<code>#include &quot;<a class="el" href="ItemEnums_8h.html">Engine/Objects/ItemEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Vec_8h.html">Library/Geometry/Vec.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Plane_8h.html">Library/Geometry/Plane.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="BBox_8h.html">Library/Geometry/BBox.h</a>&quot;</code><br />
@@ -246,8 +247,8 @@ Functions</h2></td></tr>
 <tr class="separator:aa55d9c1d3e9347c1db4d8526ca340835"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9b40ba2df247661c6d3502f0f545328"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#ac9b40ba2df247661c6d3502f0f545328">reconstruct</a> (const <a class="el" href="structNPCData__MM7.html">NPCData_MM7</a> &amp;src, <a class="el" href="structNPCData.html">NPCData</a> *dst)</td></tr>
 <tr class="separator:ac9b40ba2df247661c6d3502f0f545328"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa3ce1e8e338628cd2bc505dfcf0edf41"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#aa3ce1e8e338628cd2bc505dfcf0edf41">snapshot</a> (const <a class="el" href="structItem.html">Item</a> &amp;src, <a class="el" href="structItem__MM7.html">Item_MM7</a> *dst)</td></tr>
-<tr class="separator:aa3ce1e8e338628cd2bc505dfcf0edf41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3164767c5861bfe177cf5021830882f3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#a3164767c5861bfe177cf5021830882f3">snapshot</a> (const <a class="el" href="structItem.html">Item</a> &amp;src, <a class="el" href="structItem__MM7.html">Item_MM7</a> *dst, <a class="el" href="classContextTag.html">ContextTag</a>&lt; <a class="el" href="ItemEnums_8h.html#a1802cee34436e71f014395b507c72351">ItemSlot</a> &gt; slot)</td></tr>
+<tr class="separator:a3164767c5861bfe177cf5021830882f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39a960d5c28cb768df0f5c77f75ee608"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#a39a960d5c28cb768df0f5c77f75ee608">reconstruct</a> (const <a class="el" href="structItem__MM7.html">Item_MM7</a> &amp;src, <a class="el" href="structItem.html">Item</a> *dst)</td></tr>
 <tr class="separator:a39a960d5c28cb768df0f5c77f75ee608"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47922d1afac1bd04ae64b0eb9f3cd8aa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#a47922d1afac1bd04ae64b0eb9f3cd8aa">snapshot</a> (const <a class="el" href="structSpellBuff.html">SpellBuff</a> &amp;src, <a class="el" href="structSpellBuff__MM7.html">SpellBuff_MM7</a> *dst)</td></tr>
@@ -260,8 +261,12 @@ Functions</h2></td></tr>
 <tr class="separator:a1dd6741010d49a8b117daf640b0d4f2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d91397644d52493e3f508af8196b2e5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#a4d91397644d52493e3f508af8196b2e5">snapshot</a> (const <a class="el" href="classCharacter.html">Character</a> &amp;src, <a class="el" href="structCharacter__MM7.html">Character_MM7</a> *dst)</td></tr>
 <tr class="separator:a4d91397644d52493e3f508af8196b2e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7daba0fdd06d2811b0cfa5364cdf0543"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#a7daba0fdd06d2811b0cfa5364cdf0543">reconstruct</a> (const <a class="el" href="structCharacter__MM7.html">Character_MM7</a> &amp;src, <a class="el" href="classCharacter.html">Character</a> *dst)</td></tr>
-<tr class="separator:a7daba0fdd06d2811b0cfa5364cdf0543"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0cd28f5e4c19aa9a967b71cd364c0cac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#a0cd28f5e4c19aa9a967b71cd364c0cac">reconstruct</a> (const <a class="el" href="structCharacter__MM7.html">Character_MM7</a> &amp;src, <a class="el" href="classCharacter.html">Character</a> *dst, <a class="el" href="classContextTag.html">ContextTag</a>&lt; int &gt; characterIndex)</td></tr>
+<tr class="separator:a0cd28f5e4c19aa9a967b71cd364c0cac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f1fd6ae94181ca8bf40a87e29aaf817"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#a9f1fd6ae94181ca8bf40a87e29aaf817">snapshot</a> (const <a class="el" href="classCharacterInventory.html">CharacterInventory</a> &amp;src, <a class="el" href="structCharacter__MM7.html">Character_MM7</a> *dst)</td></tr>
+<tr class="separator:a9f1fd6ae94181ca8bf40a87e29aaf817"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55149fd65cc698cc8a2ca10d9c217c76"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#a55149fd65cc698cc8a2ca10d9c217c76">reconstruct</a> (const <a class="el" href="structCharacter__MM7.html">Character_MM7</a> &amp;src, <a class="el" href="classCharacterInventory.html">CharacterInventory</a> *dst, <a class="el" href="classContextTag.html">ContextTag</a>&lt; int &gt; characterIndex)</td></tr>
+<tr class="separator:a55149fd65cc698cc8a2ca10d9c217c76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22c68c3b3a729f832e70dbfc30448b58"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#a22c68c3b3a729f832e70dbfc30448b58">snapshot</a> (const <a class="el" href="structParty.html">Party</a> &amp;src, <a class="el" href="structParty__MM7.html">Party_MM7</a> *dst)</td></tr>
 <tr class="separator:a22c68c3b3a729f832e70dbfc30448b58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89104e5c3d12de2b09e74717cdec70a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#a89104e5c3d12de2b09e74717cdec70a0">reconstruct</a> (const <a class="el" href="structParty__MM7.html">Party_MM7</a> &amp;src, <a class="el" href="structParty.html">Party</a> *dst)</td></tr>
@@ -324,8 +329,12 @@ Functions</h2></td></tr>
 <tr class="separator:aa5d2bce903d1bfc9e2d0c3b9186a266c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af98c3618c4d46d8bf5a06e2455eb090f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#af98c3618c4d46d8bf5a06e2455eb090f">snapshot</a> (const <a class="el" href="structChest.html">Chest</a> &amp;src, <a class="el" href="structChest__MM7.html">Chest_MM7</a> *dst)</td></tr>
 <tr class="separator:af98c3618c4d46d8bf5a06e2455eb090f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a519225754b79b136efecac4730164532"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#a519225754b79b136efecac4730164532">reconstruct</a> (const <a class="el" href="structChest__MM7.html">Chest_MM7</a> &amp;src, <a class="el" href="structChest.html">Chest</a> *dst)</td></tr>
-<tr class="separator:a519225754b79b136efecac4730164532"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab57c58185ddb53df946f0c92c96fad95"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#ab57c58185ddb53df946f0c92c96fad95">reconstruct</a> (const <a class="el" href="structChest__MM7.html">Chest_MM7</a> &amp;src, <a class="el" href="structChest.html">Chest</a> *dst, <a class="el" href="classContextTag.html">ContextTag</a>&lt; int &gt; chestId)</td></tr>
+<tr class="separator:ab57c58185ddb53df946f0c92c96fad95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ed142164902154b5907e423164d5cbd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#a7ed142164902154b5907e423164d5cbd">snapshot</a> (const <a class="el" href="classChestInventory.html">ChestInventory</a> &amp;src, <a class="el" href="structChest__MM7.html">Chest_MM7</a> *dst)</td></tr>
+<tr class="separator:a7ed142164902154b5907e423164d5cbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7140890350f6ce8ec801ab4f97245df3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#a7140890350f6ce8ec801ab4f97245df3">reconstruct</a> (const <a class="el" href="structChest__MM7.html">Chest_MM7</a> &amp;src, <a class="el" href="classChestInventory.html">ChestInventory</a> *dst, <a class="el" href="classContextTag.html">ContextTag</a>&lt; int &gt; chestId)</td></tr>
+<tr class="separator:a7140890350f6ce8ec801ab4f97245df3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9106bf87cde83c858bb4ff8420f4ee4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#ab9106bf87cde83c858bb4ff8420f4ee4">reconstruct</a> (const <a class="el" href="structBLVLight__MM7.html">BLVLight_MM7</a> &amp;src, <a class="el" href="structBLVLight.html">BLVLight</a> *dst)</td></tr>
 <tr class="separator:ab9106bf87cde83c858bb4ff8420f4ee4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a271bbc9f9fbb64f556d79e637dd91b66"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="EntitySnapshots_8h.html#a271bbc9f9fbb64f556d79e637dd91b66">reconstruct</a> (const <a class="el" href="structOverlayDesc__MM7.html">OverlayDesc_MM7</a> &amp;src, <a class="el" href="structOverlayDesc.html">OverlayDesc</a> *dst)</td></tr>
@@ -370,7 +379,7 @@ Functions</h2></td></tr>
 <p >All structs here can be directly memory-mapped / memcpy'd from the game files. This layer is mainly needed so that the engine has 100% freedom to change data layout without breaking backward compatibility. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a id="a3bc5196b39e922c39b40071d2c3863c0" name="a3bc5196b39e922c39b40071d2c3863c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3bc5196b39e922c39b40071d2c3863c0">&#9670;&#160;</a></span>reconstruct() <span class="overload">[1/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3bc5196b39e922c39b40071d2c3863c0">&#9670;&#160;</a></span>reconstruct() <span class="overload">[1/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -398,7 +407,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a51060b0096d6d30923fecc45079702bd" name="a51060b0096d6d30923fecc45079702bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a51060b0096d6d30923fecc45079702bd">&#9670;&#160;</a></span>reconstruct() <span class="overload">[2/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a51060b0096d6d30923fecc45079702bd">&#9670;&#160;</a></span>reconstruct() <span class="overload">[2/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -426,7 +435,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ada4494d1e5a1d1c14a87a016a4acf94f" name="ada4494d1e5a1d1c14a87a016a4acf94f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ada4494d1e5a1d1c14a87a016a4acf94f">&#9670;&#160;</a></span>reconstruct() <span class="overload">[3/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ada4494d1e5a1d1c14a87a016a4acf94f">&#9670;&#160;</a></span>reconstruct() <span class="overload">[3/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -454,7 +463,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a330480ca9960fbe2e5662fabeb6c0610" name="a330480ca9960fbe2e5662fabeb6c0610"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a330480ca9960fbe2e5662fabeb6c0610">&#9670;&#160;</a></span>reconstruct() <span class="overload">[4/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a330480ca9960fbe2e5662fabeb6c0610">&#9670;&#160;</a></span>reconstruct() <span class="overload">[4/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -482,7 +491,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="acfbe57ea870fc8ca545fcda8d0f084a7" name="acfbe57ea870fc8ca545fcda8d0f084a7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acfbe57ea870fc8ca545fcda8d0f084a7">&#9670;&#160;</a></span>reconstruct() <span class="overload">[5/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#acfbe57ea870fc8ca545fcda8d0f084a7">&#9670;&#160;</a></span>reconstruct() <span class="overload">[5/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -510,7 +519,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a417363bff7a6e69328368e38d55d35b6" name="a417363bff7a6e69328368e38d55d35b6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a417363bff7a6e69328368e38d55d35b6">&#9670;&#160;</a></span>reconstruct() <span class="overload">[6/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a417363bff7a6e69328368e38d55d35b6">&#9670;&#160;</a></span>reconstruct() <span class="overload">[6/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -538,7 +547,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a06eb491ac6b984ec62b3ec0d8d7735b9" name="a06eb491ac6b984ec62b3ec0d8d7735b9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a06eb491ac6b984ec62b3ec0d8d7735b9">&#9670;&#160;</a></span>reconstruct() <span class="overload">[7/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a06eb491ac6b984ec62b3ec0d8d7735b9">&#9670;&#160;</a></span>reconstruct() <span class="overload">[7/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -566,7 +575,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a2dfd49b160ee21bda547835cd229ed39" name="a2dfd49b160ee21bda547835cd229ed39"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2dfd49b160ee21bda547835cd229ed39">&#9670;&#160;</a></span>reconstruct() <span class="overload">[8/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2dfd49b160ee21bda547835cd229ed39">&#9670;&#160;</a></span>reconstruct() <span class="overload">[8/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -594,7 +603,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a2b21ec3a52cb82c15188eab78963408f" name="a2b21ec3a52cb82c15188eab78963408f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2b21ec3a52cb82c15188eab78963408f">&#9670;&#160;</a></span>reconstruct() <span class="overload">[9/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b21ec3a52cb82c15188eab78963408f">&#9670;&#160;</a></span>reconstruct() <span class="overload">[9/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -622,7 +631,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ab9106bf87cde83c858bb4ff8420f4ee4" name="ab9106bf87cde83c858bb4ff8420f4ee4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab9106bf87cde83c858bb4ff8420f4ee4">&#9670;&#160;</a></span>reconstruct() <span class="overload">[10/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9106bf87cde83c858bb4ff8420f4ee4">&#9670;&#160;</a></span>reconstruct() <span class="overload">[10/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -650,7 +659,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a1cd17a9437efb09a90d73d41e5a0fe9d" name="a1cd17a9437efb09a90d73d41e5a0fe9d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1cd17a9437efb09a90d73d41e5a0fe9d">&#9670;&#160;</a></span>reconstruct() <span class="overload">[11/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cd17a9437efb09a90d73d41e5a0fe9d">&#9670;&#160;</a></span>reconstruct() <span class="overload">[11/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -678,7 +687,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a8335ecc4f61455235fae3c3b9f085fa5" name="a8335ecc4f61455235fae3c3b9f085fa5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8335ecc4f61455235fae3c3b9f085fa5">&#9670;&#160;</a></span>reconstruct() <span class="overload">[12/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8335ecc4f61455235fae3c3b9f085fa5">&#9670;&#160;</a></span>reconstruct() <span class="overload">[12/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -706,7 +715,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a5cc81bc42d3ddb73c4d94dcabfbd50c9" name="a5cc81bc42d3ddb73c4d94dcabfbd50c9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5cc81bc42d3ddb73c4d94dcabfbd50c9">&#9670;&#160;</a></span>reconstruct() <span class="overload">[13/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5cc81bc42d3ddb73c4d94dcabfbd50c9">&#9670;&#160;</a></span>reconstruct() <span class="overload">[13/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -733,8 +742,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a7daba0fdd06d2811b0cfa5364cdf0543" name="a7daba0fdd06d2811b0cfa5364cdf0543"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7daba0fdd06d2811b0cfa5364cdf0543">&#9670;&#160;</a></span>reconstruct() <span class="overload">[14/51]</span></h2>
+<a id="a0cd28f5e4c19aa9a967b71cd364c0cac" name="a0cd28f5e4c19aa9a967b71cd364c0cac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0cd28f5e4c19aa9a967b71cd364c0cac">&#9670;&#160;</a></span>reconstruct() <span class="overload">[14/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -749,7 +758,47 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="classCharacter.html">Character</a> *&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classContextTag.html">ContextTag</a>&lt; int &gt;&#160;</td>
+          <td class="paramname"><em>characterIndex</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a55149fd65cc698cc8a2ca10d9c217c76" name="a55149fd65cc698cc8a2ca10d9c217c76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55149fd65cc698cc8a2ca10d9c217c76">&#9670;&#160;</a></span>reconstruct() <span class="overload">[15/53]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void reconstruct </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structCharacter__MM7.html">Character_MM7</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classCharacterInventory.html">CharacterInventory</a> *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classContextTag.html">ContextTag</a>&lt; int &gt;&#160;</td>
+          <td class="paramname"><em>characterIndex</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -762,7 +811,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a1dd6741010d49a8b117daf640b0d4f2d" name="a1dd6741010d49a8b117daf640b0d4f2d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1dd6741010d49a8b117daf640b0d4f2d">&#9670;&#160;</a></span>reconstruct() <span class="overload">[15/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1dd6741010d49a8b117daf640b0d4f2d">&#9670;&#160;</a></span>reconstruct() <span class="overload">[16/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -789,8 +838,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a519225754b79b136efecac4730164532" name="a519225754b79b136efecac4730164532"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a519225754b79b136efecac4730164532">&#9670;&#160;</a></span>reconstruct() <span class="overload">[16/51]</span></h2>
+<a id="ab57c58185ddb53df946f0c92c96fad95" name="ab57c58185ddb53df946f0c92c96fad95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab57c58185ddb53df946f0c92c96fad95">&#9670;&#160;</a></span>reconstruct() <span class="overload">[17/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -805,7 +854,47 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="structChest.html">Chest</a> *&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classContextTag.html">ContextTag</a>&lt; int &gt;&#160;</td>
+          <td class="paramname"><em>chestId</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7140890350f6ce8ec801ab4f97245df3" name="a7140890350f6ce8ec801ab4f97245df3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7140890350f6ce8ec801ab4f97245df3">&#9670;&#160;</a></span>reconstruct() <span class="overload">[18/53]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void reconstruct </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="structChest__MM7.html">Chest_MM7</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classChestInventory.html">ChestInventory</a> *&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classContextTag.html">ContextTag</a>&lt; int &gt;&#160;</td>
+          <td class="paramname"><em>chestId</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -818,7 +907,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="adbaa050e733b070a77a5147cde4094b8" name="adbaa050e733b070a77a5147cde4094b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adbaa050e733b070a77a5147cde4094b8">&#9670;&#160;</a></span>reconstruct() <span class="overload">[17/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adbaa050e733b070a77a5147cde4094b8">&#9670;&#160;</a></span>reconstruct() <span class="overload">[19/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -846,7 +935,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="aa5d2bce903d1bfc9e2d0c3b9186a266c" name="aa5d2bce903d1bfc9e2d0c3b9186a266c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5d2bce903d1bfc9e2d0c3b9186a266c">&#9670;&#160;</a></span>reconstruct() <span class="overload">[18/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5d2bce903d1bfc9e2d0c3b9186a266c">&#9670;&#160;</a></span>reconstruct() <span class="overload">[20/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -874,7 +963,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a2f543c95704bfddfac0de4ec073e52d6" name="a2f543c95704bfddfac0de4ec073e52d6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2f543c95704bfddfac0de4ec073e52d6">&#9670;&#160;</a></span>reconstruct() <span class="overload">[19/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f543c95704bfddfac0de4ec073e52d6">&#9670;&#160;</a></span>reconstruct() <span class="overload">[21/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -902,7 +991,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a9893b38c7f5d97885ac6da5a82fde487" name="a9893b38c7f5d97885ac6da5a82fde487"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9893b38c7f5d97885ac6da5a82fde487">&#9670;&#160;</a></span>reconstruct() <span class="overload">[20/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9893b38c7f5d97885ac6da5a82fde487">&#9670;&#160;</a></span>reconstruct() <span class="overload">[22/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -930,7 +1019,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a2cb7230d374f7beeca591ca322cecf0b" name="a2cb7230d374f7beeca591ca322cecf0b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2cb7230d374f7beeca591ca322cecf0b">&#9670;&#160;</a></span>reconstruct() <span class="overload">[21/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cb7230d374f7beeca591ca322cecf0b">&#9670;&#160;</a></span>reconstruct() <span class="overload">[23/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -958,7 +1047,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a39a960d5c28cb768df0f5c77f75ee608" name="a39a960d5c28cb768df0f5c77f75ee608"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39a960d5c28cb768df0f5c77f75ee608">&#9670;&#160;</a></span>reconstruct() <span class="overload">[22/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a39a960d5c28cb768df0f5c77f75ee608">&#9670;&#160;</a></span>reconstruct() <span class="overload">[24/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -986,7 +1075,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a02498b11b73c3b3e276db392af65270b" name="a02498b11b73c3b3e276db392af65270b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a02498b11b73c3b3e276db392af65270b">&#9670;&#160;</a></span>reconstruct() <span class="overload">[23/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a02498b11b73c3b3e276db392af65270b">&#9670;&#160;</a></span>reconstruct() <span class="overload">[25/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1014,7 +1103,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a518f23cfb8930768478dc0558c1ccc81" name="a518f23cfb8930768478dc0558c1ccc81"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a518f23cfb8930768478dc0558c1ccc81">&#9670;&#160;</a></span>reconstruct() <span class="overload">[24/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a518f23cfb8930768478dc0558c1ccc81">&#9670;&#160;</a></span>reconstruct() <span class="overload">[26/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1042,7 +1131,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a01f25131c35398436d7942470cebed14" name="a01f25131c35398436d7942470cebed14"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a01f25131c35398436d7942470cebed14">&#9670;&#160;</a></span>reconstruct() <span class="overload">[25/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a01f25131c35398436d7942470cebed14">&#9670;&#160;</a></span>reconstruct() <span class="overload">[27/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1070,7 +1159,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a3952333f9ba20ba0b3114f36110646d3" name="a3952333f9ba20ba0b3114f36110646d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3952333f9ba20ba0b3114f36110646d3">&#9670;&#160;</a></span>reconstruct() <span class="overload">[26/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3952333f9ba20ba0b3114f36110646d3">&#9670;&#160;</a></span>reconstruct() <span class="overload">[28/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1098,7 +1187,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a11220999195ea3f56c5724e90a9c69ab" name="a11220999195ea3f56c5724e90a9c69ab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11220999195ea3f56c5724e90a9c69ab">&#9670;&#160;</a></span>reconstruct() <span class="overload">[27/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a11220999195ea3f56c5724e90a9c69ab">&#9670;&#160;</a></span>reconstruct() <span class="overload">[29/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1126,7 +1215,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ac9b40ba2df247661c6d3502f0f545328" name="ac9b40ba2df247661c6d3502f0f545328"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac9b40ba2df247661c6d3502f0f545328">&#9670;&#160;</a></span>reconstruct() <span class="overload">[28/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9b40ba2df247661c6d3502f0f545328">&#9670;&#160;</a></span>reconstruct() <span class="overload">[30/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1154,7 +1243,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ade30417e9dc3723c5ebcab2487942747" name="ade30417e9dc3723c5ebcab2487942747"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade30417e9dc3723c5ebcab2487942747">&#9670;&#160;</a></span>reconstruct() <span class="overload">[29/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ade30417e9dc3723c5ebcab2487942747">&#9670;&#160;</a></span>reconstruct() <span class="overload">[31/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1182,7 +1271,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a826c91927ddac3fab7e91ddf7353e624" name="a826c91927ddac3fab7e91ddf7353e624"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a826c91927ddac3fab7e91ddf7353e624">&#9670;&#160;</a></span>reconstruct() <span class="overload">[30/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a826c91927ddac3fab7e91ddf7353e624">&#9670;&#160;</a></span>reconstruct() <span class="overload">[32/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1210,7 +1299,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a88aca27f2bfdbdfe537cf2757066d341" name="a88aca27f2bfdbdfe537cf2757066d341"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a88aca27f2bfdbdfe537cf2757066d341">&#9670;&#160;</a></span>reconstruct() <span class="overload">[31/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a88aca27f2bfdbdfe537cf2757066d341">&#9670;&#160;</a></span>reconstruct() <span class="overload">[33/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1238,7 +1327,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a271bbc9f9fbb64f556d79e637dd91b66" name="a271bbc9f9fbb64f556d79e637dd91b66"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a271bbc9f9fbb64f556d79e637dd91b66">&#9670;&#160;</a></span>reconstruct() <span class="overload">[32/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a271bbc9f9fbb64f556d79e637dd91b66">&#9670;&#160;</a></span>reconstruct() <span class="overload">[34/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1266,7 +1355,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a89104e5c3d12de2b09e74717cdec70a0" name="a89104e5c3d12de2b09e74717cdec70a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a89104e5c3d12de2b09e74717cdec70a0">&#9670;&#160;</a></span>reconstruct() <span class="overload">[33/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a89104e5c3d12de2b09e74717cdec70a0">&#9670;&#160;</a></span>reconstruct() <span class="overload">[35/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1294,7 +1383,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a15887aca6ca8d0f46c471043b71e808d" name="a15887aca6ca8d0f46c471043b71e808d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a15887aca6ca8d0f46c471043b71e808d">&#9670;&#160;</a></span>reconstruct() <span class="overload">[34/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a15887aca6ca8d0f46c471043b71e808d">&#9670;&#160;</a></span>reconstruct() <span class="overload">[36/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1322,7 +1411,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a9c2ab8bbcb7d6c0b611570fe80d88096" name="a9c2ab8bbcb7d6c0b611570fe80d88096"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9c2ab8bbcb7d6c0b611570fe80d88096">&#9670;&#160;</a></span>reconstruct() <span class="overload">[35/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c2ab8bbcb7d6c0b611570fe80d88096">&#9670;&#160;</a></span>reconstruct() <span class="overload">[37/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1350,7 +1439,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="aeade909ac9bfa06a68eaa28d872e1ca7" name="aeade909ac9bfa06a68eaa28d872e1ca7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aeade909ac9bfa06a68eaa28d872e1ca7">&#9670;&#160;</a></span>reconstruct() <span class="overload">[36/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aeade909ac9bfa06a68eaa28d872e1ca7">&#9670;&#160;</a></span>reconstruct() <span class="overload">[38/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1378,7 +1467,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a96e469e6409fb01f4be75931f568b834" name="a96e469e6409fb01f4be75931f568b834"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a96e469e6409fb01f4be75931f568b834">&#9670;&#160;</a></span>reconstruct() <span class="overload">[37/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a96e469e6409fb01f4be75931f568b834">&#9670;&#160;</a></span>reconstruct() <span class="overload">[39/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1406,7 +1495,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a67c1abe345723b91476257c6c539a3f6" name="a67c1abe345723b91476257c6c539a3f6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67c1abe345723b91476257c6c539a3f6">&#9670;&#160;</a></span>reconstruct() <span class="overload">[38/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a67c1abe345723b91476257c6c539a3f6">&#9670;&#160;</a></span>reconstruct() <span class="overload">[40/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1434,7 +1523,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="abe993b34dc2373da787afe78d3a7e524" name="abe993b34dc2373da787afe78d3a7e524"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abe993b34dc2373da787afe78d3a7e524">&#9670;&#160;</a></span>reconstruct() <span class="overload">[39/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#abe993b34dc2373da787afe78d3a7e524">&#9670;&#160;</a></span>reconstruct() <span class="overload">[41/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1462,7 +1551,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0e1620553408f2b315e7c0e4c777960d" name="a0e1620553408f2b315e7c0e4c777960d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0e1620553408f2b315e7c0e4c777960d">&#9670;&#160;</a></span>reconstruct() <span class="overload">[40/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e1620553408f2b315e7c0e4c777960d">&#9670;&#160;</a></span>reconstruct() <span class="overload">[42/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1490,7 +1579,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="acfe291eae8fdfd127e41c23432d91b05" name="acfe291eae8fdfd127e41c23432d91b05"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acfe291eae8fdfd127e41c23432d91b05">&#9670;&#160;</a></span>reconstruct() <span class="overload">[41/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#acfe291eae8fdfd127e41c23432d91b05">&#9670;&#160;</a></span>reconstruct() <span class="overload">[43/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1518,7 +1607,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a39a6fae625acef9c1f53909eb33e753a" name="a39a6fae625acef9c1f53909eb33e753a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a39a6fae625acef9c1f53909eb33e753a">&#9670;&#160;</a></span>reconstruct() <span class="overload">[42/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a39a6fae625acef9c1f53909eb33e753a">&#9670;&#160;</a></span>reconstruct() <span class="overload">[44/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1546,7 +1635,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a3ee2bea55014bc9533bd1579cf531007" name="a3ee2bea55014bc9533bd1579cf531007"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ee2bea55014bc9533bd1579cf531007">&#9670;&#160;</a></span>reconstruct() <span class="overload">[43/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ee2bea55014bc9533bd1579cf531007">&#9670;&#160;</a></span>reconstruct() <span class="overload">[45/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1574,7 +1663,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a7d1be69ab2ddf9301efcedb9613b3d1c" name="a7d1be69ab2ddf9301efcedb9613b3d1c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7d1be69ab2ddf9301efcedb9613b3d1c">&#9670;&#160;</a></span>reconstruct() <span class="overload">[44/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d1be69ab2ddf9301efcedb9613b3d1c">&#9670;&#160;</a></span>reconstruct() <span class="overload">[46/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1602,7 +1691,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ae3a15ffaad0c58d324a18038370ac4bd" name="ae3a15ffaad0c58d324a18038370ac4bd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae3a15ffaad0c58d324a18038370ac4bd">&#9670;&#160;</a></span>reconstruct() <span class="overload">[45/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3a15ffaad0c58d324a18038370ac4bd">&#9670;&#160;</a></span>reconstruct() <span class="overload">[47/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1630,7 +1719,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="aecbc9283ff6274a0aa9508be6ac60680" name="aecbc9283ff6274a0aa9508be6ac60680"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aecbc9283ff6274a0aa9508be6ac60680">&#9670;&#160;</a></span>reconstruct() <span class="overload">[46/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aecbc9283ff6274a0aa9508be6ac60680">&#9670;&#160;</a></span>reconstruct() <span class="overload">[48/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1658,7 +1747,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="aba9b3f9862ce812ea07d858a4343d4ac" name="aba9b3f9862ce812ea07d858a4343d4ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba9b3f9862ce812ea07d858a4343d4ac">&#9670;&#160;</a></span>reconstruct() <span class="overload">[47/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aba9b3f9862ce812ea07d858a4343d4ac">&#9670;&#160;</a></span>reconstruct() <span class="overload">[49/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1686,7 +1775,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="aa98c636655b2f94b43dbcca151dff749" name="aa98c636655b2f94b43dbcca151dff749"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa98c636655b2f94b43dbcca151dff749">&#9670;&#160;</a></span>reconstruct() <span class="overload">[48/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa98c636655b2f94b43dbcca151dff749">&#9670;&#160;</a></span>reconstruct() <span class="overload">[50/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1714,7 +1803,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a71abc0c3c81191855c8158980b7868cd" name="a71abc0c3c81191855c8158980b7868cd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a71abc0c3c81191855c8158980b7868cd">&#9670;&#160;</a></span>reconstruct() <span class="overload">[49/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a71abc0c3c81191855c8158980b7868cd">&#9670;&#160;</a></span>reconstruct() <span class="overload">[51/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1742,7 +1831,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="aa9882bc9c7b4c19b5f72a62a2e29a785" name="aa9882bc9c7b4c19b5f72a62a2e29a785"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa9882bc9c7b4c19b5f72a62a2e29a785">&#9670;&#160;</a></span>reconstruct() <span class="overload">[50/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9882bc9c7b4c19b5f72a62a2e29a785">&#9670;&#160;</a></span>reconstruct() <span class="overload">[52/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1770,7 +1859,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ac42698e14eef2bfc92df20af2e7a3e69" name="ac42698e14eef2bfc92df20af2e7a3e69"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac42698e14eef2bfc92df20af2e7a3e69">&#9670;&#160;</a></span>reconstruct() <span class="overload">[51/51]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac42698e14eef2bfc92df20af2e7a3e69">&#9670;&#160;</a></span>reconstruct() <span class="overload">[53/53]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1798,7 +1887,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a7601ab493b79b540bd320c1715c2c57a" name="a7601ab493b79b540bd320c1715c2c57a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7601ab493b79b540bd320c1715c2c57a">&#9670;&#160;</a></span>snapshot() <span class="overload">[1/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7601ab493b79b540bd320c1715c2c57a">&#9670;&#160;</a></span>snapshot() <span class="overload">[1/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1826,7 +1915,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ac23d665f93368bbea3b883359bd00bb3" name="ac23d665f93368bbea3b883359bd00bb3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac23d665f93368bbea3b883359bd00bb3">&#9670;&#160;</a></span>snapshot() <span class="overload">[2/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac23d665f93368bbea3b883359bd00bb3">&#9670;&#160;</a></span>snapshot() <span class="overload">[2/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1854,7 +1943,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a11b7f799f42bfd843a011c8020005796" name="a11b7f799f42bfd843a011c8020005796"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11b7f799f42bfd843a011c8020005796">&#9670;&#160;</a></span>snapshot() <span class="overload">[3/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a11b7f799f42bfd843a011c8020005796">&#9670;&#160;</a></span>snapshot() <span class="overload">[3/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1882,7 +1971,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a216712f61f75eaef91e6776768f1c90f" name="a216712f61f75eaef91e6776768f1c90f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a216712f61f75eaef91e6776768f1c90f">&#9670;&#160;</a></span>snapshot() <span class="overload">[4/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a216712f61f75eaef91e6776768f1c90f">&#9670;&#160;</a></span>snapshot() <span class="overload">[4/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1910,7 +1999,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a97351bb7bf472362b3b5db84fc25e754" name="a97351bb7bf472362b3b5db84fc25e754"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97351bb7bf472362b3b5db84fc25e754">&#9670;&#160;</a></span>snapshot() <span class="overload">[5/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a97351bb7bf472362b3b5db84fc25e754">&#9670;&#160;</a></span>snapshot() <span class="overload">[5/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1938,7 +2027,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a12928c0861992b5b73f3bf9bac562d9e" name="a12928c0861992b5b73f3bf9bac562d9e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a12928c0861992b5b73f3bf9bac562d9e">&#9670;&#160;</a></span>snapshot() <span class="overload">[6/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a12928c0861992b5b73f3bf9bac562d9e">&#9670;&#160;</a></span>snapshot() <span class="overload">[6/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1966,7 +2055,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ad189f4d23ce1d2d2043a2fb9973c6c9a" name="ad189f4d23ce1d2d2043a2fb9973c6c9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad189f4d23ce1d2d2043a2fb9973c6c9a">&#9670;&#160;</a></span>snapshot() <span class="overload">[7/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad189f4d23ce1d2d2043a2fb9973c6c9a">&#9670;&#160;</a></span>snapshot() <span class="overload">[7/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1994,7 +2083,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a1f0286a3803e665fbc7be9d9d2a72910" name="a1f0286a3803e665fbc7be9d9d2a72910"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f0286a3803e665fbc7be9d9d2a72910">&#9670;&#160;</a></span>snapshot() <span class="overload">[8/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f0286a3803e665fbc7be9d9d2a72910">&#9670;&#160;</a></span>snapshot() <span class="overload">[8/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2022,7 +2111,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a4d91397644d52493e3f508af8196b2e5" name="a4d91397644d52493e3f508af8196b2e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4d91397644d52493e3f508af8196b2e5">&#9670;&#160;</a></span>snapshot() <span class="overload">[9/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d91397644d52493e3f508af8196b2e5">&#9670;&#160;</a></span>snapshot() <span class="overload">[9/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2050,7 +2139,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a4465452753d42aafa168c2a364eb1f5a" name="a4465452753d42aafa168c2a364eb1f5a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4465452753d42aafa168c2a364eb1f5a">&#9670;&#160;</a></span>snapshot() <span class="overload">[10/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4465452753d42aafa168c2a364eb1f5a">&#9670;&#160;</a></span>snapshot() <span class="overload">[10/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2077,8 +2166,36 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a9f1fd6ae94181ca8bf40a87e29aaf817" name="a9f1fd6ae94181ca8bf40a87e29aaf817"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f1fd6ae94181ca8bf40a87e29aaf817">&#9670;&#160;</a></span>snapshot() <span class="overload">[11/30]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void snapshot </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classCharacterInventory.html">CharacterInventory</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structCharacter__MM7.html">Character_MM7</a> *&#160;</td>
+          <td class="paramname"><em>dst</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="af98c3618c4d46d8bf5a06e2455eb090f" name="af98c3618c4d46d8bf5a06e2455eb090f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af98c3618c4d46d8bf5a06e2455eb090f">&#9670;&#160;</a></span>snapshot() <span class="overload">[11/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af98c3618c4d46d8bf5a06e2455eb090f">&#9670;&#160;</a></span>snapshot() <span class="overload">[12/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2105,8 +2222,36 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a7ed142164902154b5907e423164d5cbd" name="a7ed142164902154b5907e423164d5cbd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ed142164902154b5907e423164d5cbd">&#9670;&#160;</a></span>snapshot() <span class="overload">[13/30]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void snapshot </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classChestInventory.html">ChestInventory</a> &amp;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structChest__MM7.html">Chest_MM7</a> *&#160;</td>
+          <td class="paramname"><em>dst</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a3f78e888f36bb14371568b56ab2a7565" name="a3f78e888f36bb14371568b56ab2a7565"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f78e888f36bb14371568b56ab2a7565">&#9670;&#160;</a></span>snapshot() <span class="overload">[12/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f78e888f36bb14371568b56ab2a7565">&#9670;&#160;</a></span>snapshot() <span class="overload">[14/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2134,7 +2279,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a8b5287890812dc016240cdfeff516a1f" name="a8b5287890812dc016240cdfeff516a1f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8b5287890812dc016240cdfeff516a1f">&#9670;&#160;</a></span>snapshot() <span class="overload">[13/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b5287890812dc016240cdfeff516a1f">&#9670;&#160;</a></span>snapshot() <span class="overload">[15/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2161,8 +2306,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aa3ce1e8e338628cd2bc505dfcf0edf41" name="aa3ce1e8e338628cd2bc505dfcf0edf41"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa3ce1e8e338628cd2bc505dfcf0edf41">&#9670;&#160;</a></span>snapshot() <span class="overload">[14/28]</span></h2>
+<a id="a3164767c5861bfe177cf5021830882f3" name="a3164767c5861bfe177cf5021830882f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3164767c5861bfe177cf5021830882f3">&#9670;&#160;</a></span>snapshot() <span class="overload">[16/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2177,7 +2322,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="structItem__MM7.html">Item_MM7</a> *&#160;</td>
-          <td class="paramname"><em>dst</em>&#160;</td>
+          <td class="paramname"><em>dst</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classContextTag.html">ContextTag</a>&lt; <a class="el" href="ItemEnums_8h.html#a1802cee34436e71f014395b507c72351">ItemSlot</a> &gt;&#160;</td>
+          <td class="paramname"><em>slot</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -2190,7 +2341,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ab6e9b80d7ec9c93f7b93d05adc58850a" name="ab6e9b80d7ec9c93f7b93d05adc58850a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6e9b80d7ec9c93f7b93d05adc58850a">&#9670;&#160;</a></span>snapshot() <span class="overload">[15/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6e9b80d7ec9c93f7b93d05adc58850a">&#9670;&#160;</a></span>snapshot() <span class="overload">[17/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2218,7 +2369,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ad8b1c2e97dce342086ea2268afff93a1" name="ad8b1c2e97dce342086ea2268afff93a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad8b1c2e97dce342086ea2268afff93a1">&#9670;&#160;</a></span>snapshot() <span class="overload">[16/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8b1c2e97dce342086ea2268afff93a1">&#9670;&#160;</a></span>snapshot() <span class="overload">[18/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2246,7 +2397,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a14b0e7079ef0b8a46fa088432f221768" name="a14b0e7079ef0b8a46fa088432f221768"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a14b0e7079ef0b8a46fa088432f221768">&#9670;&#160;</a></span>snapshot() <span class="overload">[17/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a14b0e7079ef0b8a46fa088432f221768">&#9670;&#160;</a></span>snapshot() <span class="overload">[19/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2274,7 +2425,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="aa55d9c1d3e9347c1db4d8526ca340835" name="aa55d9c1d3e9347c1db4d8526ca340835"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa55d9c1d3e9347c1db4d8526ca340835">&#9670;&#160;</a></span>snapshot() <span class="overload">[18/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa55d9c1d3e9347c1db4d8526ca340835">&#9670;&#160;</a></span>snapshot() <span class="overload">[20/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2302,7 +2453,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a22c68c3b3a729f832e70dbfc30448b58" name="a22c68c3b3a729f832e70dbfc30448b58"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a22c68c3b3a729f832e70dbfc30448b58">&#9670;&#160;</a></span>snapshot() <span class="overload">[19/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a22c68c3b3a729f832e70dbfc30448b58">&#9670;&#160;</a></span>snapshot() <span class="overload">[21/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2330,7 +2481,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="afafd4cb5b1c583613147173334283178" name="afafd4cb5b1c583613147173334283178"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afafd4cb5b1c583613147173334283178">&#9670;&#160;</a></span>snapshot() <span class="overload">[20/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#afafd4cb5b1c583613147173334283178">&#9670;&#160;</a></span>snapshot() <span class="overload">[22/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2358,7 +2509,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a309bd5fdfc4b41bcf2e3dd41758decfc" name="a309bd5fdfc4b41bcf2e3dd41758decfc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a309bd5fdfc4b41bcf2e3dd41758decfc">&#9670;&#160;</a></span>snapshot() <span class="overload">[21/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a309bd5fdfc4b41bcf2e3dd41758decfc">&#9670;&#160;</a></span>snapshot() <span class="overload">[23/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2386,7 +2537,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ae6a7dd2a8964ce23eec9db345d405461" name="ae6a7dd2a8964ce23eec9db345d405461"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae6a7dd2a8964ce23eec9db345d405461">&#9670;&#160;</a></span>snapshot() <span class="overload">[22/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6a7dd2a8964ce23eec9db345d405461">&#9670;&#160;</a></span>snapshot() <span class="overload">[24/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2414,7 +2565,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a47922d1afac1bd04ae64b0eb9f3cd8aa" name="a47922d1afac1bd04ae64b0eb9f3cd8aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a47922d1afac1bd04ae64b0eb9f3cd8aa">&#9670;&#160;</a></span>snapshot() <span class="overload">[23/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a47922d1afac1bd04ae64b0eb9f3cd8aa">&#9670;&#160;</a></span>snapshot() <span class="overload">[25/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2442,7 +2593,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a70adce5c192128d2353924467b857135" name="a70adce5c192128d2353924467b857135"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a70adce5c192128d2353924467b857135">&#9670;&#160;</a></span>snapshot() <span class="overload">[24/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a70adce5c192128d2353924467b857135">&#9670;&#160;</a></span>snapshot() <span class="overload">[26/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2470,7 +2621,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ae28288df3e89aa37bc20dcaa5f341d04" name="ae28288df3e89aa37bc20dcaa5f341d04"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae28288df3e89aa37bc20dcaa5f341d04">&#9670;&#160;</a></span>snapshot() <span class="overload">[25/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae28288df3e89aa37bc20dcaa5f341d04">&#9670;&#160;</a></span>snapshot() <span class="overload">[27/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2498,7 +2649,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a4c53f49f554ac151058992fb4d0a997c" name="a4c53f49f554ac151058992fb4d0a997c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4c53f49f554ac151058992fb4d0a997c">&#9670;&#160;</a></span>snapshot() <span class="overload">[26/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c53f49f554ac151058992fb4d0a997c">&#9670;&#160;</a></span>snapshot() <span class="overload">[28/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2526,7 +2677,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="a13b0bf54835541e1b5f604482c2ba840" name="a13b0bf54835541e1b5f604482c2ba840"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a13b0bf54835541e1b5f604482c2ba840">&#9670;&#160;</a></span>snapshot() <span class="overload">[27/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a13b0bf54835541e1b5f604482c2ba840">&#9670;&#160;</a></span>snapshot() <span class="overload">[29/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2554,7 +2705,7 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a id="ae433a3b7a74764a6dcc7d74d08095273" name="ae433a3b7a74764a6dcc7d74d08095273"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae433a3b7a74764a6dcc7d74d08095273">&#9670;&#160;</a></span>snapshot() <span class="overload">[28/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae433a3b7a74764a6dcc7d74d08095273">&#9670;&#160;</a></span>snapshot() <span class="overload">[30/30]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

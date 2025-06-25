@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;20d1359</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;52af553</span>
    </div>
   </td>
  </tr>
@@ -92,6 +92,8 @@ Functions</h2></td></tr>
 <tr class="separator:acecb5150c32d37fc877d83c6ef972561"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7dec1549385d59265a5f9a6032a2719b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemGrid_8cpp.html#a7dec1549385d59265a5f9a6032a2719b">mapToInventoryGrid</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> mousePos, <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> inventoryTopLeft)</td></tr>
 <tr class="separator:a7dec1549385d59265a5f9a6032a2719b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79c905cbd1d853988fe37284d3f4cc71"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemGrid_8cpp.html#a79c905cbd1d853988fe37284d3f4cc71">mapFromInventoryGrid</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> gridPos, <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> inventoryTopLeft)</td></tr>
+<tr class="separator:a79c905cbd1d853988fe37284d3f4cc71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a44771f1b186e71b132afbe64ec51c8c0" name="a44771f1b186e71b132afbe64ec51c8c0"></a>
@@ -147,7 +149,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Calculate offsets for placing items in inventory grid. </p>
-<p >Inventory grid have 32x32 pixels cells. Items don't exactly fit into the grid, but are slightly smaller or larger. The function calculates offsets for the item to be centered. Calculations are the same for height and width.</p>
+<p ><a class="el" href="classInventory.html">Inventory</a> grid have 32x32 pixels cells. Items don't exactly fit into the grid, but are slightly smaller or larger. The function calculates offsets for the item to be centered. Calculations are the same for height and width.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dimension</td><td>Width or height of the item. </td></tr>
@@ -155,6 +157,34 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Offset in pixels. </dd></dl>
+
+</div>
+</div>
+<a id="a79c905cbd1d853988fe37284d3f4cc71" name="a79c905cbd1d853988fe37284d3f4cc71"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79c905cbd1d853988fe37284d3f4cc71">&#9670;&#160;</a></span>mapFromInventoryGrid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> mapFromInventoryGrid </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>gridPos</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>inventoryTopLeft</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -190,7 +220,7 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Inventory grid position, in grid coordinates. Might be out of grid if the mouse position is out of grid. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classInventory.html">Inventory</a> grid position, in grid coordinates. Might be out of grid if the mouse position is out of grid. </dd></dl>
 
 </div>
 </div>
