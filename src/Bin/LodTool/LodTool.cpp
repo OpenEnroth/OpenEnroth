@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <string>
 #include <utility>
+#include <algorithm>
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
@@ -17,13 +18,38 @@
 #include "Utility/String/Transformations.h"
 #include "Utility/UnicodeCrt.h"
 
+RgbaImage renderFont(const LodFont &font) {
+    int charHeight = font.height();
+    int charWidth = 0;
+    for (int c = 0; c < 255; c++)
+        charWidth = std::max(charWidth, font.metrics(c).width);
+
+    RgbaImage image = RgbaImage::solid(charWidth * 16, charHeight * 16, Color(0, 0, 0, 255));
+
+    for (int c = 0; c < 255; c++) {
+        int x0 = (c % 16) * charWidth;
+        int y0 = (c / 16) * charHeight;
+
+        GrayscaleImageView glyph = font.image(c);
+        for (int y = 0; y < glyph.height(); y++) {
+            for (int x = 0; x < glyph.width(); x++) {
+                int gray = glyph[y][x];
+                if (gray == 1)
+                    gray = 128; // Make the shadow gray.
+                image[y0 + y][x0 + x] = Color(gray, gray, gray, 255);
+            }
+        }
+    }
+
+    return image;
+}
+
 std::pair<Blob, std::string> decodeLodEntry(Blob entry, std::string name, bool raw) {
     if (raw)
         return {std::move(entry), std::move(name)};
 
     if (pcx::detect(entry))
-        return {png::encode(pcx::decode(entry)),
-                (name.ends_with(".pcx") ? name.substr(0, name.size() - 4) : name) + ".png"};
+        return {png::encode(pcx::decode(entry)), name + ".png"};
 
     LodFileFormat format = lod::magic(entry, name);
 
@@ -43,6 +69,11 @@ std::pair<Blob, std::string> decodeLodEntry(Blob entry, std::string name, bool r
     if (format == LOD_FILE_SPRITE) {
         LodSprite sprite = lod::decodeSprite(entry);
         return {png::encode(sprite.image), name + ".png"};
+    }
+
+    if (format == LOD_FILE_FONT) {
+        LodFont lodFont = lod::decodeFont(entry);
+        return {png::encode(renderFont(lodFont)), name + ".png"};
     }
 
     // We have pcx images inside compressed entries, so to support this we just re-run the function.

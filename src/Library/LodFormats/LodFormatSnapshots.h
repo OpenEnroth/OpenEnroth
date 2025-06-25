@@ -5,6 +5,9 @@
 
 #include "Library/Binary/MemCopySerialization.h"
 
+struct LodFontHeader;
+struct LodFontMetrics;
+struct LodFontAtlas;
 
 #pragma pack(push, 1)
 
@@ -68,5 +71,58 @@ struct LodSpriteLine_MM6 {
 };
 static_assert(sizeof(LodSpriteLine_MM6) == 8);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(LodSpriteLine_MM6)
+
+/**
+ * @see https://github.com/might-and-magic/fnt-generator/blob/master/fntgen.py#L217
+ * @see https://github.com/GrayFace/MMExtension/blob/master/Scripts/Structs/01%20common%20structs.lua#L3034
+ */
+struct LodFontHeader_MM7 {
+    uint8_t firstChar; // Always 30 or 31. Internet says can also be 64.
+    uint8_t lastChar; // Always 255.
+    uint8_t field_3; // Always 8.
+    uint8_t field_4; // Always 0.
+    uint8_t field_5; // Always 0.
+    uint8_t height;
+    uint8_t field_7; // Always 0.
+    uint8_t field_8; // Always 0.
+    uint32_t paletteCount; // Always 0.
+    std::array<uint32_t, 5> palettes; // Always 0. Looks like these were pointers originally.
+};
+static_assert(sizeof(LodFontHeader_MM7) == 32);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontHeader_MM7)
+
+void reconstruct(const LodFontHeader_MM7 &src, LodFontHeader *dst);
+
+struct LodFontMetrics_MM7 {
+    int32_t leftSpacing;
+    int32_t width;
+    int32_t rightSpacing;
+};
+static_assert(sizeof(LodFontMetrics_MM7) == 12);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontMetrics_MM7)
+
+void reconstruct(const LodFontMetrics_MM7 &src, LodFontMetrics *dst);
+
+struct LodFontAtlas_MM7 {
+    std::array<LodFontMetrics_MM7, 256> metrics;
+    std::array<uint32_t, 256> offsets;
+};
+static_assert(sizeof(LodFontAtlas_MM7) == 4096);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontAtlas_MM7)
+
+void reconstruct(const LodFontAtlas_MM7 &src, LodFontAtlas *dst);
+
+/**
+ * This is used for 'calig.fnt' in MM7 'icons.lod'. This font is not loaded by the engine. Not sure if it's from
+ * pre-MM6 days or just a result of some experiments by the dev team.
+ */
+struct LodFontAtlas_MMX {
+    std::array<uint8_t, 256> widths;
+    std::array<uint32_t, 256> offsets;
+};
+static_assert(sizeof(LodFontAtlas_MMX) == 1280);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(LodFontAtlas_MMX)
+
+void reconstruct(const LodFontAtlas_MMX &src, LodFontAtlas *dst);
 
 #pragma pack(pop)
