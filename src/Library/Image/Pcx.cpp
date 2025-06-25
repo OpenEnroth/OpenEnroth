@@ -45,16 +45,16 @@ typedef struct bstreamer {
     const uint8_t *buffer, *buffer_end, *buffer_start;
 } bstreamer;
 
-static inline void bs_init(bstreamer *bs, const uint8_t *buf, int buf_size) {
+static void bs_init(bstreamer *bs, const uint8_t *buf, int buf_size) {
     bs->buffer = bs->buffer_start = buf;
     bs->buffer_end = buf + buf_size;
 }
 
-static inline int bs_get_bytes_left(bstreamer *bs) {
+static int bs_get_bytes_left(bstreamer *bs) {
     return bs->buffer_end - bs->buffer;
 }
 
-static inline unsigned int bs_get_byte(bstreamer *bs) {
+static unsigned int bs_get_byte(bstreamer *bs) {
     unsigned int byte;
     if (bs_get_bytes_left(bs) > 0) {
         byte = bs->buffer[0];
@@ -65,7 +65,7 @@ static inline unsigned int bs_get_byte(bstreamer *bs) {
     return 0;
 }
 
-static inline unsigned int bs_get_buffer(bstreamer *bs, uint8_t *dst, unsigned int size) {
+static unsigned int bs_get_buffer(bstreamer *bs, uint8_t *dst, unsigned int size) {
     int size_min = std::min((unsigned int)(bs->buffer_end - bs->buffer), size);
     memcpy(dst, bs->buffer, size_min);
     bs->buffer += size_min;
@@ -236,4 +236,25 @@ Blob pcx::encode(RgbaImageView image) {
     size_t packed_size = output - pcx_data.get();
     assert(packed_size <= worstCase);
     return Blob::fromMalloc(pcx_data.release(), packed_size);
+}
+
+bool pcx::detect(const Blob &data) {
+    if (data.size() < 4)
+        return false;
+
+    // Check for PCX signature:
+    // - s[0] should be 0x0A (PCX identifier).
+    // - s[1] should be one of the valid version numbers (0x00, 0x02, 0x03, 0x04, 0x05)
+    // - s[2] should be 0x01 (indicating RLE encoding)
+    // - s[3] should be one of the common bits per pixel values (0x01, 0x02, 0x04, 0x08)
+    std::string_view s = data.string_view();
+    if (s[0] != '\x0A')
+        return false;
+    if (s[1] != '\x00' && s[1] != '\x02' && s[1] != '\x03' && s[1] != '\x04' && s[1] != '\x05')
+        return false;
+    if (s[2] != '\x01')
+        return false;
+    if (s[3] != '\x01' && s[3] != '\x02' && s[3] != '\x04' && s[3] != '\x08')
+        return false;
+    return true;
 }

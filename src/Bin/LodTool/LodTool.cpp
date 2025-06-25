@@ -17,32 +17,11 @@
 #include "Utility/String/Transformations.h"
 #include "Utility/UnicodeCrt.h"
 
-bool isPcx(const Blob &blob) {
-    if (blob.size() < 4)
-        return false;
-
-    // Check for PCX signature:
-    // - s[0] should be 0x0A (PCX identifier).
-    // - s[1] should be one of the valid version numbers (0x00, 0x02, 0x03, 0x04, 0x05)
-    // - s[2] should be 0x01 (indicating RLE encoding)
-    // - s[3] should be one of the common bits per pixel values (0x01, 0x02, 0x04, 0x08)
-    std::string_view s = blob.string_view();
-    if (s[0] != '\x0A')
-        return false;
-    if (s[1] != '\x00' && s[1] != '\x02' && s[1] != '\x03' && s[1] != '\x04' && s[1] != '\x05')
-        return false;
-    if (s[2] != '\x01')
-        return false;
-    if (s[3] != '\x01' && s[3] != '\x02' && s[3] != '\x04' && s[3] != '\x08')
-        return false;
-    return true;
-}
-
 std::pair<Blob, std::string> decodeLodEntry(Blob entry, std::string name, bool raw) {
     if (raw)
         return {std::move(entry), std::move(name)};
 
-    if (isPcx(entry))
+    if (pcx::detect(entry))
         return {png::encode(pcx::decode(entry)),
                 (name.ends_with(".pcx") ? name.substr(0, name.size() - 4) : name) + ".png"};
 
