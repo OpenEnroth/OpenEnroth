@@ -5,6 +5,7 @@
 #include <string>
 #include <utility>
 
+#include "Inventory.h"
 #include "Engine/Data/HouseEnums.h"
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/ActorEnums.h"
@@ -109,11 +110,8 @@ class CharacterConditions {
 
 class Character {
  public:
-    static constexpr unsigned int INVENTORY_SLOTS_WIDTH = 14;
+    static constexpr unsigned int INVENTORY_SLOTS_WIDTH = 14; // TODO(captainurist): drop these consts, they don't belong here.
     static constexpr unsigned int INVENTORY_SLOTS_HEIGHT = 9;
-
-    // Maximum number of items the character inventory can hold.
-    static constexpr unsigned int INVENTORY_SLOT_COUNT = INVENTORY_SLOTS_WIDTH * INVENTORY_SLOTS_HEIGHT;
 
     Character();
     void Zero();
@@ -239,23 +237,7 @@ class Character {
      */
     int getLearningPercent() const;
 
-    /**
-     * @offset 0x492528
-     */
-    bool canFitItem(unsigned int uSlot, ItemId uItemID) const;
-
-    /**
-     * @offset 0x4925E6
-     */
-    int findFreeInventoryListSlot() const;
-    int CreateItemInInventory(unsigned int uSlot, ItemId uItemID);
     bool HasSkill(CharacterSkillType skill) const;
-    void WearItem(ItemId uItemID);
-    int AddItem(int uSlot, ItemId uItemID);
-    int AddItem2(int uSlot, Item *Src);
-    int CreateItemInInventory2(unsigned int index, Item *Src);
-    void PutItemAtInventoryIndex(ItemId uItemID, int itemListPos, int uSlot);
-    void RemoveItemAtInventoryIndex(unsigned int uSlot);
     bool CanAct() const;
     bool CanSteal() const;
     bool CanEquip_RaceAndAlignmentCheck(ItemId uItemID) const;
@@ -275,13 +257,10 @@ class Character {
      * @offset 0x494A25
      */
     void playEmotion(CharacterPortrait newPortrait, Duration duration);
-    void ItemsPotionDmgBreak(int enchant_count);
-    unsigned int GetItemListAtInventoryIndex(int inout_item_cell);
-    unsigned int GetItemMainInventoryIndex(int inout_item_cell);
-    Item *GetItemAtInventoryIndex(int inout_item_cell);
+    void ItemsPotionDmgBreak(int count);
     int GetConditionDaysPassed(Condition condition) const;
     bool NothingOrJustBlastersEquipped() const;
-    void SalesProcess(unsigned int inventory_idnx, int item_index, HouseId houseId);  // 0x4BE2DD
+    void SalesProcess(InventoryEntry entry, HouseId houseId);  // 0x4BE2DD
     bool Recover(Duration dt);
     bool CanCastSpell(unsigned int uRequiredMana);
     void SpendMana(unsigned int uRequiredMana);
@@ -402,10 +381,7 @@ class Character {
     IndexedBitset<1, 512> _achievedAwardsBits;
     IndexedArray<bool, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> bHaveSpell;
     IndexedArray<bool, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> _pureStatPotionUsed;
-    std::array<Item, INVENTORY_SLOT_COUNT> pInventoryItemList;
-    std::array<int, INVENTORY_SLOT_COUNT> pInventoryMatrix; // 0 => empty cell
-                                                            // positive => subtract 1 to get an index into pInventoryItemList.
-                                                            // negative => negate & subtract 1 to get a real index into pInventoryMatrix.
+    CharacterInventory inventory;
     int16_t sResFireBase;
     int16_t sResAirBase;
     int16_t sResWaterBase;
@@ -437,8 +413,6 @@ class Character {
     int health;
     int mana;
     unsigned int uBirthYear;
-    IndexedArray<unsigned int, ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID> pEquipment; // 0 => empty,
-                                                                                        // non-zero => subtract 1 to get an index into pInventoryItemList.
     MagicSchool lastOpenedSpellbookPage;
     SpellId uQuickSpell;
     IndexedBitset<1, 512> _characterEventBits;

@@ -14,7 +14,7 @@ template<class T>
 using AccessibleVector = Accessible<std::vector<T>>;
 
 /**
- * Extension point for `delta` and `pairwiseDelta` methods of the `Accessible` classes. Effectively computes a delta
+ * Extension point for `delta` and `adjacentDeltas` methods of the `Accessible` classes. Effectively computes a delta
  * between `l` and 'r', i.e. `r - l`.
  *
  * This function is overloaded for `Accessible` classes, and it can also be overloaded for `std::tuple` / `std::pair`
@@ -120,7 +120,7 @@ class Accessible : public Base {
         return {*pair.first, *pair.second};
     }
 
-    auto flattened() const {
+    auto flatten() const {
         using element_type = std::iter_value_t<decltype(std::declval<const value_type *>()->begin())>;
         AccessibleVector<element_type> result;
         for (const auto &chunk : *this)
@@ -129,7 +129,7 @@ class Accessible : public Base {
         return result;
     }
 
-    auto sliced(size_t subIndex) const {
+    auto slice(size_t subIndex) const {
         using element_type = std::iter_value_t<decltype(std::declval<const value_type *>()->begin())>;
         AccessibleVector<element_type> result;
         for (const auto &chunk : *this)
@@ -137,21 +137,27 @@ class Accessible : public Base {
         return result;
     }
 
+    AccessibleVector<value_type> unique() const {
+        AccessibleVector<value_type> result;
+        std::unique_copy(begin(), end(), std::back_inserter(result));
+        return result;
+    }
+
     template<class Filter>
-    AccessibleVector<value_type> filtered(Filter filter) const {
+    AccessibleVector<value_type> filter(Filter filter) const {
         AccessibleVector<value_type> result;
         std::copy_if(begin(), end(), std::back_inserter(result), std::move(filter));
         return result;
     }
 
     template<class Mapper, class Result = std::invoke_result_t<Mapper, value_type>>
-    AccessibleVector<Result> mapped(Mapper mapper) const {
+    AccessibleVector<Result> map(Mapper mapper) const {
         AccessibleVector<Result> result;
         std::transform(begin(), end(), std::back_inserter(result), std::move(mapper));
         return result;
     }
 
-    AccessibleVector<value_type> reversed() const {
+    AccessibleVector<value_type> reverse() const {
         AccessibleVector<value_type> result;
         std::reverse_copy(begin(), end(), std::back_inserter(result));
         return result;

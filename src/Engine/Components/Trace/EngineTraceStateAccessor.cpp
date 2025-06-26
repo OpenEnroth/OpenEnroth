@@ -15,6 +15,51 @@
 
 #include "Utility/String/Ascii.h"
 
+// TODO(captainurist): doesn't belong here
+static std::string makeValidUtf8(const std::string& input) {
+    std::string output;
+    size_t i = 0;
+    const size_t len = input.size();
+
+    while (i < len) {
+        unsigned char c = input[i];
+
+        // Single-byte (ASCII)
+        if (c <= 0x7F) {
+            output += c;
+            ++i;
+        } else if ((c >> 5) == 0x6 && i + 1 < len &&          // 110xxxxx (2 bytes)
+                 (input[i + 1] & 0xC0) == 0x80) {
+            output += c;
+            output += input[i + 1];
+            i += 2;
+
+        } else if ((c >> 4) == 0xE && i + 2 < len &&          // 1110xxxx (3 bytes)
+                 (input[i + 1] & 0xC0) == 0x80 &&
+                 (input[i + 2] & 0xC0) == 0x80) {
+            output += c;
+            output += input[i + 1];
+            output += input[i + 2];
+            i += 3;
+        } else if ((c >> 3) == 0x1E && i + 3 < len &&         // 11110xxx (4 bytes)
+                 (input[i + 1] & 0xC0) == 0x80 &&
+                 (input[i + 2] & 0xC0) == 0x80 &&
+                 (input[i + 3] & 0xC0) == 0x80) {
+            output += c;
+            output += input[i + 1];
+            output += input[i + 2];
+            output += input[i + 3];
+            i += 4;
+        } else {
+            // Invalid UTF-8 byte sequence
+            output += '?';
+            ++i;
+        }
+    }
+
+    return output;
+}
+
 static bool shouldSkip(const GameConfig *config, const ConfigSection *section, const AnyConfigEntry *entry) {
     return
         (section == &config->window && entry != &config->window.Width && entry != &config->window.Height) ||
@@ -63,13 +108,43 @@ void EngineTraceStateAccessor::prepareForPlayback(GameConfig *config, const Conf
     config->settings.VoiceLevel.setValue(1.0);
     config->settings.SoundLevel.setValue(1.0);
     config->window.MouseGrab.setValue(false);
-    config->graphics.FPSLimit.setValue(0); // Unlimited
+    config->graphics.FPSLimit.setValue(0); // Unlimited.
+    config->graphics.AlwaysCustomCursor.setValue(true); // We want to see the mouse pointer.
     config->debug.NoVideo.setValue(config->debug.TraceNoVideo.value());
     config->gameplay.NoPartyActorCollisions.setValue(config->debug.TraceNoPartyActorCollisions.value());
     pAudioPlayer->UpdateVolumeFromConfig();
 }
 
 EventTraceGameState EngineTraceStateAccessor::makeGameState() {
+    auto toDebugString = [](const Item &item) {
+        std::string result;
+        if (item.isWand()) {
+            result = fmt::format("{} [{}/{}]", item.GetIdentifiedName(), item.numCharges, item.maxCharges);
+        } else if (item.isPotion() && item.itemId != ITEM_POTION_BOTTLE) {
+            std::string name = item.GetIdentifiedName();
+            if (name.ends_with("Potion")) {
+                result = fmt::format("{} [{}]", name, item.potionPower);
+            } else {
+                result = fmt::format("{} Potion [{}]", name, item.potionPower);
+            }
+        } else if (item.isSpellScroll()) {
+            result = fmt::format("Scroll of {}", item.GetIdentifiedName());
+        } else if (item.standardEnchantment) {
+            result = fmt::format("{} [+{}]", item.GetIdentifiedName(), item.standardEnchantmentStrength);
+        } else if (item.itemId == ITEM_QUEST_LICH_JAR_FULL) {
+            result = fmt::format("{} [{}]", item.GetIdentifiedName(), item.lichJarCharacterIndex);
+        } else {
+            result = item.GetIdentifiedName();
+        }
+
+        if (!item.IsIdentified())
+            result += " [UNID]";
+        if (item.IsBroken())
+            result += " [BROKEN]";
+
+        return makeValidUtf8(result);
+    };
+
     EventTraceGameState result;
     result.locationName = ascii::toLower(pMapStats->pInfos[engine->_currentLoadedMapId].fileName);
     result.partyPosition = pParty->pos.toInt();
@@ -84,6 +159,14 @@ EventTraceGameState EngineTraceStateAccessor::makeGameState() {
         traceCharacter.accuracy = character.GetActualAccuracy();
         traceCharacter.speed = character.GetActualSpeed();
         traceCharacter.luck = character.GetActualLuck();
+
+        for (ItemSlot slot : allItemSlots())
+            if (InventoryConstEntry entry = character.inventory.entry(slot))
+                traceCharacter.equipment.emplace_back(toDebugString(*entry));
+        for (int y = 0; y < character.inventory.gridSize().h; y++)
+            for (int x = 0; x < character.inventory.gridSize().w; x++)
+                if (InventoryConstEntry entry = character.inventory.entry(Pointi(x, y)); entry && entry.geometry().topLeft() == Pointi(x, y))
+                    traceCharacter.backpack.emplace_back(toDebugString(*entry));
     }
     return result;
 }

@@ -3,6 +3,7 @@
 #include <ranges>
 #include <string>
 #include <regex>
+#include <vector>
 
 #include "Testing/Game/GameTest.h"
 
@@ -23,6 +24,7 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Evt/EvtInterpreter.h"
 #include "Engine/Objects/Chest.h"
+#include "Engine/Snapshots/EntitySnapshots.h"
 
 // 1500
 
@@ -46,7 +48,7 @@ GAME_TEST(Issues, Issue1515) {
     // No dispel magic sound
     auto soundsTape = tapes.sounds();
     test.playTraceFromTestData("issue_1515.mm7", "issue_1515.json");
-    EXPECT_CONTAINS(soundsTape.flattened(), SOUND_RechargeItem); // dispel magic
+    EXPECT_CONTAINS(soundsTape.flatten(), SOUND_RechargeItem); // dispel magic
 }
 
 GAME_TEST(Issues, Issue1519) {
@@ -55,10 +57,10 @@ GAME_TEST(Issues, Issue1519) {
     auto messageBoxesBody = tapes.allGUIWindowsText();
     test.playTraceFromTestData("issue_1519.mm7", "issue_1519.json");
     // message box body text was displayed.
-    auto flatMessageBoxes = messageBoxesTape.flattened();
-    auto flatMessageBoxesBody = messageBoxesBody.flattened();
+    auto flatMessageBoxes = messageBoxesTape.flatten();
+    auto flatMessageBoxesBody = messageBoxesBody.flatten();
     EXPECT_GT(flatMessageBoxes.size(), 0);
-    EXPECT_GT(flatMessageBoxesBody.filtered([](const auto &s) { return s.starts_with("The Baby Dragon"); }).size(), 0);
+    EXPECT_GT(flatMessageBoxesBody.filter([](const auto &s) { return s.starts_with("The Baby Dragon"); }).size(), 0);
 }
 
 GAME_TEST(Issues, Issue1521) {
@@ -94,7 +96,7 @@ GAME_TEST(Issues, Issue1524) {
     // More enemy spells without sound
     auto soundsTape = tapes.sounds();
     test.playTraceFromTestData("issue_1524.mm7", "issue_1524.json");
-    EXPECT_CONTAINS(soundsTape.flattened(), SOUND_Sacrifice2); // pain reflection sound
+    EXPECT_CONTAINS(soundsTape.flatten(), SOUND_Sacrifice2); // pain reflection sound
 }
 
 GAME_TEST(Issues, Issue1532) {
@@ -216,7 +218,7 @@ GAME_TEST(Issues, Issue1655) {
     EXPECT_EQ(pActors[73].monsterInfo.id, MONSTER_BLASTERGUY_C);
     EXPECT_EQ(pActors[73].monsterInfo.spell1Id, SPELL_NONE);
     EXPECT_EQ(pActors[73].monsterInfo.spell1UseChance, 15);
-    auto beatingsTape = expressionsTape.filtered([] (const auto &expressions) {
+    auto beatingsTape = expressionsTape.filter([] (const auto &expressions) {
         return expressions.containsAny(PORTRAIT_DMGRECVD_MINOR, PORTRAIT_DMGRECVD_MODERATE, PORTRAIT_DMGRECVD_MAJOR);
     });
     EXPECT_GE(beatingsTape.size(), 25);
@@ -249,7 +251,7 @@ GAME_TEST(Issues, Issue1666) {
     auto soundsTape = tapes.sounds();
     test.playTraceFromTestData("issue_1666.mm7", "issue_1666.json");
     EXPECT_EQ(mapTape.size(), 2);
-    int count = soundsTape.flattened().filtered([](const auto& sound) { return sound == SOUND_splash; }).size();
+    int count = soundsTape.flatten().filter([](const auto& sound) { return sound == SOUND_splash; }).size();
     EXPECT_EQ(count, 1); // jump splash at start
 }
 
@@ -305,8 +307,8 @@ GAME_TEST(Issues, Issue1685) {
     jar2.itemId = ITEM_QUEST_LICH_JAR_FULL;
     jar2.lichJarCharacterIndex = 1;
 
-    pParty->pCharacters[0].AddItem2(-1, &jar1);
-    pParty->pCharacters[1].AddItem2(-1, &jar2);
+    pParty->pCharacters[0].inventory.add(jar1);
+    pParty->pCharacters[1].inventory.add(jar2);
 
     EXPECT_EQ(jar1.GetIdentifiedName(), "Kolya's Jar");
     EXPECT_EQ(jar2.GetIdentifiedName(), "Nicholas' Jar");
@@ -364,7 +366,7 @@ GAME_TEST(Issues, Issue1716) {
     auto specialAttack = tapes.specialAttacks();
     auto pmCountTape = tapes.custom([]() { return pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].power; });
     test.playTraceFromTestData("issue_1716.mm7", "issue_1716.json");
-    EXPECT_CONTAINS(specialAttack.flattened(), SPECIAL_ATTACK_PARALYZED); // Paralysis attacks were made
+    EXPECT_CONTAINS(specialAttack.flatten(), SPECIAL_ATTACK_PARALYZED); // Paralysis attacks were made
     int paraCount = std::ranges::count_if(pParty->pCharacters, [](Character& ch) { return ch.IsParalyzed(); });
     EXPECT_EQ(paraCount, 0); // No one ended up paralysed
     EXPECT_LT(pmCountTape.back(), pmCountTape.front()); // PM saved us
@@ -390,7 +392,7 @@ GAME_TEST(Issues, Issue1724) {
     auto zombieActor = tapes.custom([]() {return std::ranges::count_if(pActors, [](const Actor &act) { return (act.currentHP < 1) && act.CanAct(); }); } );
     test.playTraceFromTestData("issue_1724.mm7", "issue_1724.json");
 
-     EXPECT_GT(statusBar.filtered([](const auto &s) { return s.starts_with("Immolation deals"); }).size(), 0);// test for immolation message
+     EXPECT_GT(statusBar.filter([](const auto &s) { return s.starts_with("Immolation deals"); }).size(), 0);// test for immolation message
     EXPECT_GT(partyXP.back(), partyXP.front());
     EXPECT_EQ(tbState.back(), true);
     EXPECT_EQ(zombieActor.max(), 0);
@@ -404,8 +406,8 @@ GAME_TEST(Issues, Issue1725) {
     auto bit123Tape = tapes.questBit(QBIT_123);
     test.playTraceFromTestData("issue_1725.mm7", "issue_1725.json");
     EXPECT_EQ(screenTape.back(), SCREEN_HOUSE); // Make sure we end up back in the throne room
-    EXPECT_GT(textTape.flattened().filtered([](const auto &s) { return s.starts_with("THAT WAS AWESOME!"); }).size(), 0);
-    EXPECT_CONTAINS(textTape.flattened(), "Exit Building"); // And can exit it
+    EXPECT_GT(textTape.flatten().filter([](const auto &s) { return s.starts_with("THAT WAS AWESOME!"); }).size(), 0);
+    EXPECT_CONTAINS(textTape.flatten(), "Exit Building"); // And can exit it
     EXPECT_EQ(bit120Tape, tape(false, true));
     EXPECT_EQ(bit123Tape, tape(true, false));
 }
@@ -416,8 +418,8 @@ GAME_TEST(Issues, Issue1726) {
     test.playTraceFromTestData("issue_1726.mm7", "issue_1726.json");
     int GMcount = std::ranges::count_if(pParty->pCharacters, [](const Character &ch) { return ch.getActualSkillValue(CHARACTER_SKILL_BLASTER).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER; });
     EXPECT_EQ(GMcount, 0); // no one ends up grand master
-    EXPECT_GT(textTape.flattened().filtered([](const auto& s) { return s.starts_with("Your skills improve!  If your Skill with the Blaster"); }).size(), 0); // blaster requirements shown
-    EXPECT_CONTAINS(textTape.flattened(), "You don't meet the requirements, and cannot be taught until you do."); // but we dont meet them
+    EXPECT_GT(textTape.flatten().filter([](const auto& s) { return s.starts_with("Your skills improve!  If your Skill with the Blaster"); }).size(), 0); // blaster requirements shown
+    EXPECT_CONTAINS(textTape.flatten(), "You don't meet the requirements, and cannot be taught until you do."); // but we dont meet them
 }
 
 GAME_TEST(Issues, Issue1786) {
@@ -462,8 +464,8 @@ GAME_TEST(Issues, Issue1807) {
     test.playTraceFromTestData("issue_1807.mm7", "issue_1807.json");
     EXPECT_EQ(deckTape, tape(false)); // No deck.
     EXPECT_CONTAINS(houseTape, HOUSE_TAVERN_HARMONDALE); // We've visited the Harmondale tavern.
-    EXPECT_CONTAINS(textTape.flattened(), "Victory Conditions"); // We've seen the Arcomage dialog.
-    EXPECT_MISSES(textTape.flattened(), "Play"); // But there was no "Play" option.
+    EXPECT_CONTAINS(textTape.flatten(), "Victory Conditions"); // We've seen the Arcomage dialog.
+    EXPECT_MISSES(textTape.flatten(), "Play"); // But there was no "Play" option.
 }
 
 GAME_TEST(Issues, Issue1808) {
@@ -487,7 +489,7 @@ GAME_TEST(Issues, Issue1849_1831) {
     auto nearDoor = tapes.custom([]() {return pParty->pos.x > -7800 && pParty->pos.x < -7400 && pParty->pos.y < -470; });
     auto sectors = tapes.custom([]() {return pBspRenderer->pVisibleSectorIDs_toDrawDecorsActorsEtcFrom; });
     test.playTraceFromTestData("issue_1849.mm7", "issue_1849.json"); // this loads a save
-    auto flat = sectors.flattened();
+    auto flat = sectors.flatten();
     EXPECT_MISSES(flat, 58); // sectors not exposed
     EXPECT_MISSES(flat, 32);
     EXPECT_CONTAINS(nearDoor, true); // position take us close to wall
@@ -644,7 +646,7 @@ GAME_TEST(Issues, Issue1925) {
             EXPECT_EQ(dischargedWand->numCharges, 0);
             EXPECT_EQ(dischargedWand->maxCharges, 1);
         }
-        EXPECT_CONTAINS(spritesTape.flattened(), SPRITE_SPELL_FIRE_FIRE_BOLT);
+        EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT);
     }
 }
 
@@ -717,6 +719,34 @@ GAME_TEST(Issues, Issue1947) {
     EXPECT_GT(pSpriteObjects[4].containing_item.maxCharges, 0);
 }
 
+GAME_TEST(Prs, Pr1953) {
+    // Items were duplicated when trying to wear armor on top of existing armor.
+    game.startNewGame();
+
+    Character &char0 = pParty->pCharacters[0];
+    char0.inventory.clear();
+    char0.inventory.add(Item(ITEM_LEATHER_ARMOR));
+    char0.inventory.equip(ITEM_SLOT_ARMOUR, Item(ITEM_ROYAL_LEATHER));
+
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_I); // Open inventory.
+    game.tick();
+    game.pressAndReleaseButton(BUTTON_LEFT, 20, 20); // Pick up leather armor.
+    game.tick();
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_LEATHER_ARMOR);
+    EXPECT_EQ(char0.inventory.size(), 1);
+    game.pressAndReleaseButton(BUTTON_LEFT, 600, 60); // Wear it, replacing royal leather that's worn.
+    game.tick(1);
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_ROYAL_LEATHER);
+    EXPECT_EQ(char0.inventory.size(), 1);
+    ASSERT_FALSE(char0.inventory.entry(Pointi(0, 0)));
+    ASSERT_TRUE(char0.inventory.entry(ITEM_SLOT_ARMOUR));
+    EXPECT_EQ(char0.inventory.entry(ITEM_SLOT_ARMOUR)->itemId, ITEM_LEATHER_ARMOR);
+}
+
 GAME_TEST(Issues, Issue1956) {
     // Crash shortly after entering Land of Giants
     test.playTraceFromTestData("issue_1956.mm7", "issue_1956.json");
@@ -734,9 +764,51 @@ GAME_TEST(Issues, Issue1958) {
     auto textsTape = tapes.allGUIWindowsText();
     auto goldTape = tapes.gold();
     test.playTraceFromTestData("issue_1958.mm7", "issue_1958.json");
-    EXPECT_CONTAINS(textsTape.flattened(), [](std::string_view s) { return s.contains("Congratulations on defeating the"); }); // Bounty message.
-    EXPECT_CONTAINS(textsTape.flattened(), [](std::string_view s) { return s.contains("Someone has already claimed the bounty this month."); }); // Bounty already claimed message.
+    EXPECT_CONTAINS(textsTape.flatten(), [](std::string_view s) { return s.contains("Congratulations on defeating the"); }); // Bounty message.
+    EXPECT_CONTAINS(textsTape.flatten(), [](std::string_view s) { return s.contains("Someone has already claimed the bounty this month."); }); // Bounty already claimed message.
     EXPECT_EQ(goldTape.delta(), +1400); // We got the bounty.
+}
+
+GAME_TEST(Issues, Issue1959) {
+    // Sparks are off-center.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    engine->config->debug.AllMagic.setValue(true);
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+
+    pParty->pos = Vec3f(12552, 2000, 1); // In front of the bridge.
+    game.tick();
+
+    for (int i = 0; i < 4; i++) {
+        pParty->setActiveCharacterIndex(i + 1);
+        game.pressGuiButton("Game_CastSpell");
+        game.tick();
+        game.pressGuiButton("SpellBook_School1"); // Air magic.
+        game.tick();
+        game.pressGuiButton("SpellBook_Spell3"); // Sparks.
+        game.tick();
+        game.pressGuiButton("SpellBook_Spell3"); // Confirm.
+        game.tick(30); // Wait for the sparks to settle.
+
+        std::vector<float> angles;
+        for (const SpriteObject &sprite : pSpriteObjects)
+            if (sprite.uType == SPRITE_SPELL_AIR_SPARKS)
+                angles.push_back(std::atan2(sprite.vPosition.y - pParty->pos.y, sprite.vPosition.x - pParty->pos.x) / M_PI * 180);
+        ASSERT_EQ(angles.size(), 9);
+        EXPECT_TRUE(std::ranges::is_sorted(angles));
+        EXPECT_GT(angles.front(), 90 - 40);
+        EXPECT_LT(angles.front(), 90 + 40);
+
+        // Allow 2 degrees jitter, used to be up to 10 degrees before.
+        float cone = angles.back() - angles.front();
+        float dir = (angles.front() + angles.back()) / 2;
+        EXPECT_GT(cone, 60 - 2);
+        EXPECT_LT(cone, 60 + 2);
+        EXPECT_GT(dir, 90 - 2);
+        EXPECT_LT(dir, 90 + 2);
+
+        game.tick(10); // Wait a bit so that when the next salvo settles, the current one would disappear.
+    }
 }
 
 GAME_TEST(Issues, Issue1961) {
@@ -746,10 +818,8 @@ GAME_TEST(Issues, Issue1961) {
     test.startTaping();
 
     // Prepare an item to enchant.
-    pParty->pCharacters[3].pInventoryItemList.fill(Item());
-    pParty->pCharacters[3].pInventoryMatrix.fill(0);
-    pParty->pCharacters[3].AddItem(-1, ITEM_GOLDEN_CHAIN_MAIL);
-    const Item &chainmail = pParty->pCharacters[3].pInventoryItemList[0];
+    pParty->pCharacters[3].inventory.clear();
+    const Item &chainmail = *pParty->pCharacters[3].inventory.add(Pointi(0, 0), Item(ITEM_GOLDEN_CHAIN_MAIL));
     EXPECT_EQ(chainmail.itemId, ITEM_GOLDEN_CHAIN_MAIL);
 
     // Learn enchant item.
@@ -783,10 +853,10 @@ GAME_TEST(Issues, Issue1966) {
     EXPECT_EQ(itemCountTape.delta(), -1); // Minus armageddon scroll.
 
     // Should have had a bunch of rocks in the air at some point due to Armageddon.
-    EXPECT_GT(spritesTape.mapped([] (auto &&sprites) { return sprites.count(SPRITE_SPELL_EARTH_ROCK_BLAST); }).max(), 100);
+    EXPECT_GT(spritesTape.map([] (auto &&sprites) { return sprites.count(SPRITE_SPELL_EARTH_ROCK_BLAST); }).max(), 100);
 
     // Some rocks should have hit monsters - this is what was triggering the assertion.
-    EXPECT_GT(spritesTape.flattened().count(SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT), 10);
+    EXPECT_GT(spritesTape.flatten().count(SPRITE_SPELL_EARTH_ROCK_BLAST_IMPACT), 10);
 }
 
 GAME_TEST(Issues, Issue1972) {
@@ -796,9 +866,21 @@ GAME_TEST(Issues, Issue1972) {
     auto hpTape = tapes.totalHp();
     test.playTraceFromTestData("issue_1972.mm7", "issue_1972.json", TRACE_PLAYBACK_SKIP_RANDOM_CHECKS);
     EXPECT_EQ(mapTape, tape(MAP_LAND_OF_THE_GIANTS));
-    int meteorCount = spritesTape.mapped([] (auto &&sprites) { return sprites.count(SPRITE_SPELL_FIRE_METEOR_SHOWER); }).max();
+    int meteorCount = spritesTape.map([] (auto &&sprites) { return sprites.count(SPRITE_SPELL_FIRE_METEOR_SHOWER); }).max();
     EXPECT_EQ(meteorCount, 24); // 2x meteor shower cast at master. Might change to 12 on retrace.
     EXPECT_LE(hpTape.delta(), -700); // Party should have received some damage. Checking this b/c retracing might break smth.
+}
+
+GAME_TEST(Issues, Issue1973) {
+    // We have saves with item enchanted with ATTRIBUTE_LEVEL enchantment, which is outside the enchantable range.
+    Item_MM7 itemMm7 = {};
+    itemMm7.itemId = std::to_underlying(ITEM_ANGELS_RING);
+    itemMm7.standardEnchantmentOrPotionPower = std::to_underlying(ATTRIBUTE_LEVEL) + 1;
+
+    Item item = {};
+    reconstruct(itemMm7, &item);
+    EXPECT_EQ(item.standardEnchantment, std::nullopt);
+    EXPECT_EQ(item.GetIdentifiedName(), "Angel's Ring"); // This call used to assert.
 }
 
 GAME_TEST(Issues, Issue1974) {
@@ -839,13 +921,13 @@ GAME_TEST(Issues, Issue1983) {
     EXPECT_EQ(letterTape, tape(true)); // The letter should still be there
     EXPECT_CONTAINS(houseTape, HOUSE_MAGIC_SHOP_EMERALD_ISLAND);
     EXPECT_EQ(goldTape.delta(), 365); // Sold the spellbook
-    EXPECT_CONTAINS(soundsTape.flattened(), SOUND_error); // Tried to sell unsellable items
+    EXPECT_CONTAINS(soundsTape.flatten(), SOUND_error); // Tried to sell unsellable items
 
     // Merchant should have reacted properly to unsellable items.
-    EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Body Resistance Recipe") && text.contains("is beyond my meager knowledge"); });
-    EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Rejuvenation Recipe") && text.contains("is beyond my meager knowledge"); });
-    EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Water Resistance Recipe") && text.contains("is beyond my meager knowledge"); });
-    EXPECT_CONTAINS(textsTape.flattened(), [] (std::string_view text) { return text.contains("Letter from Mr. Stantley") && text.contains("is beyond my meager knowledge"); });
+    EXPECT_CONTAINS(textsTape.flatten(), [] (std::string_view text) { return text.contains("Body Resistance Recipe") && text.contains("is beyond my meager knowledge"); });
+    EXPECT_CONTAINS(textsTape.flatten(), [] (std::string_view text) { return text.contains("Rejuvenation Recipe") && text.contains("is beyond my meager knowledge"); });
+    EXPECT_CONTAINS(textsTape.flatten(), [] (std::string_view text) { return text.contains("Water Resistance Recipe") && text.contains("is beyond my meager knowledge"); });
+    EXPECT_CONTAINS(textsTape.flatten(), [] (std::string_view text) { return text.contains("Letter from Mr. Stantley") && text.contains("is beyond my meager knowledge"); });
 }
 
 GAME_TEST(Issues, Issue1989) {
@@ -867,11 +949,12 @@ GAME_TEST(Issues, Issue1989) {
 GAME_TEST(Issues, Issue1990) {
     // Test opening the Tularean Forest half-hidden chest, which generates a black potion.
     auto screenTape = tapes.screen();
-    auto potionTape = tapes.custom([] { return vChests[6].items[6].itemId; });
-    auto powerTape = tapes.custom([] { return vChests[6].items[6].potionPower; });
+    auto powerTape = tapes.custom([] {
+        InventoryEntry entry = vChests[6].inventory.find(ITEM_POTION_PURE_MIGHT);
+        return entry ? entry->potionPower : -1;
+    });
     test.playTraceFromTestData("issue_1990.mm7", "issue_1990.json");
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_CHEST)); // We have opened the chest.
-    EXPECT_EQ(potionTape, tape(ITEM_POTION_PURE_MIGHT));
     EXPECT_EQ(powerTape.front(), 0); // Potion power started as uninitialized.
     EXPECT_GE(powerTape.back(), 5);
     EXPECT_LT(powerTape.back(), 20); // Potion power ended as initialized to 5-19.

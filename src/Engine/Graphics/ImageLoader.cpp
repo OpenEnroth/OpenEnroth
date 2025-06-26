@@ -13,6 +13,7 @@
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
+#include "Library/LodFormats/LodFormats.h"
 #include "Library/Logger/Logger.h"
 
 // List of textures that require additional processing for transparent pixels.
@@ -219,14 +220,14 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
 bool Sprites_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
     Sprite *pSprite = lod->loadSprite(this->resource_name);
 
-    size_t w = pSprite->sprite_header->bitmap.width();
-    size_t h = pSprite->sprite_header->bitmap.height();
+    size_t w = pSprite->sprite_header->image.width();
+    size_t h = pSprite->sprite_header->image.height();
 
     *rgbaImage = RgbaImage::solid(w, h, Color());
 
     for (size_t y = 0; y < h; y++) {
         for (size_t x = 0; x < w; x++) {
-            uint8_t index = pSprite->sprite_header->bitmap[y][x];
+            uint8_t index = pSprite->sprite_header->image[y][x];
             (*rgbaImage)[y][x] = Color(index, 0, 0, index == 0 ? 0 : 255);
         }
     }

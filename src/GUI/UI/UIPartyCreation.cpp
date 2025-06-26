@@ -760,7 +760,7 @@ bool PartyCreationUI_LoopInternal() {
             }
         }
         pItemTable->generateItem(ITEM_TREASURE_LEVEL_2, RANDOM_ITEM_RING, &item);
-        pParty->pCharacters[i].AddItem2(-1, &item);
+        pParty->pCharacters[i].inventory.add(item);
 
         pParty->pCharacters[i].health = pParty->pCharacters[i].GetMaxHealth();
         pParty->pCharacters[i].mana = pParty->pCharacters[i].GetMaxMana();
@@ -769,67 +769,67 @@ bool PartyCreationUI_LoopInternal() {
 
             switch (j) {
             case CHARACTER_SKILL_STAFF:
-                pParty->pCharacters[i].AddItem(-1, ITEM_STAFF);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_STAFF));
                 break;
             case CHARACTER_SKILL_SWORD:
-                pParty->pCharacters[i].AddItem(-1, ITEM_CRUDE_LONGSWORD);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_CRUDE_LONGSWORD));
                 break;
             case CHARACTER_SKILL_DAGGER:
-                pParty->pCharacters[i].AddItem(-1, ITEM_DAGGER);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_DAGGER));
                 break;
             case CHARACTER_SKILL_AXE:
-                pParty->pCharacters[i].AddItem(-1, ITEM_CRUDE_AXE);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_CRUDE_AXE));
                 break;
             case CHARACTER_SKILL_SPEAR:
-                pParty->pCharacters[i].AddItem(-1, ITEM_CRUDE_SPEAR);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_CRUDE_SPEAR));
                 break;
             case CHARACTER_SKILL_BOW:
-                pParty->pCharacters[i].AddItem(-1, ITEM_CROSSBOW);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_CROSSBOW));
                 break;
             case CHARACTER_SKILL_MACE:
-                pParty->pCharacters[i].AddItem(-1, ITEM_MACE);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_MACE));
                 break;
             case CHARACTER_SKILL_BLASTER:
                 logger->error("No blasters at startup :p");
                 break;
             case CHARACTER_SKILL_SHIELD:
-                pParty->pCharacters[i].AddItem(-1, ITEM_WOODEN_BUCKLER);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_WOODEN_BUCKLER));
                 break;
             case CHARACTER_SKILL_LEATHER:
-                pParty->pCharacters[i].AddItem(-1, ITEM_LEATHER_ARMOR);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_LEATHER_ARMOR));
                 break;
             case CHARACTER_SKILL_CHAIN:
-                pParty->pCharacters[i].AddItem(-1, ITEM_CHAIN_MAIL);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_CHAIN_MAIL));
                 break;
             case CHARACTER_SKILL_PLATE:
-                pParty->pCharacters[i].AddItem(-1, ITEM_PLATE_ARMOR);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_PLATE_ARMOR));
                 break;
             case CHARACTER_SKILL_FIRE:
-                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_FIRE_BOLT);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_SPELLBOOK_FIRE_BOLT));
                 pParty->pCharacters[i].bHaveSpell[SPELL_FIRE_TORCH_LIGHT] = true;
                 break;
             case CHARACTER_SKILL_AIR:
-                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_FEATHER_FALL);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_SPELLBOOK_FEATHER_FALL));
                 pParty->pCharacters[i].bHaveSpell[SPELL_AIR_WIZARD_EYE] = true;
                 break;
             case CHARACTER_SKILL_WATER:
-                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_POISON_SPRAY);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_SPELLBOOK_POISON_SPRAY));
                 pParty->pCharacters[i].bHaveSpell[SPELL_WATER_AWAKEN] = true;
                 break;
             case CHARACTER_SKILL_EARTH:
-                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_SLOW);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_SPELLBOOK_SLOW));
                 pParty->pCharacters[i].bHaveSpell[SPELL_EARTH_STUN] = true;
                 break;
             case CHARACTER_SKILL_SPIRIT:
-                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_BLESS);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_SPELLBOOK_BLESS));
                 pParty->pCharacters[i].bHaveSpell[SPELL_SPIRIT_DETECT_LIFE] = true;
                 break;
             case CHARACTER_SKILL_MIND:
-                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_MIND_BLAST);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_SPELLBOOK_MIND_BLAST));
                 pParty->pCharacters[i].bHaveSpell[SPELL_MIND_REMOVE_FEAR] = true;
                 break;
             case CHARACTER_SKILL_BODY:
-                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_HEAL);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_SPELLBOOK_HEAL));
                 pParty->pCharacters[i].bHaveSpell[SPELL_BODY_CURE_WEAKNESS] = true;
                 break;
             case CHARACTER_SKILL_LIGHT:
@@ -845,26 +845,24 @@ bool PartyCreationUI_LoopInternal() {
             case CHARACTER_SKILL_PERCEPTION:
             case CHARACTER_SKILL_TRAP_DISARM:
             case CHARACTER_SKILL_LEARNING:
-                pParty->pCharacters[i].AddItem(-1, ITEM_POTION_BOTTLE);
-                pParty->pCharacters[i].AddItem(-1, grng->randomSample(allLevel1Reagents()));
+                pParty->pCharacters[i].inventory.add(Item(ITEM_POTION_BOTTLE));
+                pParty->pCharacters[i].inventory.add(Item(grng->randomSample(allLevel1Reagents())));
                 break;
             case CHARACTER_SKILL_DODGE:
-                pParty->pCharacters[i].AddItem(-1, ITEM_LEATHER_BOOTS);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_LEATHER_BOOTS));
                 break;
             case CHARACTER_SKILL_UNARMED:
-                pParty->pCharacters[i].AddItem(-1, ITEM_GAUNTLETS);
+                pParty->pCharacters[i].inventory.add(Item(ITEM_GAUNTLETS));
                 break;
             case CHARACTER_SKILL_CLUB:
-                // pParty->pCharacters[i].AddItem(-1, ITEM_CLUB);
+                // pParty->pCharacters[i].inventory.add(Item(ITEM_CLUB));
                 break;
             default:
                 break;
             }
 
-            for (Item &inventoryItem : pParty->pCharacters[i].pInventoryItemList) {
-                if (inventoryItem.itemId != ITEM_NULL)
-                    inventoryItem.SetIdentified();
-            }
+            for (InventoryEntry entry : pParty->pCharacters[i].inventory.entries())
+                entry->SetIdentified();
         }
     }
 

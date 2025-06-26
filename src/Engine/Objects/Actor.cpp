@@ -3039,7 +3039,6 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
     if (pMonster->aiState == Fleeing) pMonster->attributes |= ACTOR_FLEEING;
     bool hit_will_stun = false, hit_will_paralyze = false;
     if (!projectileSprite) {
-        int main_hand_idx = character->pEquipment[ITEM_SLOT_MAIN_HAND];
         IsAdditionalDamagePossible = true;
         if (character->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
             CharacterSkillType main_hand_skill = character->GetMainHandItem()->GetPlayerSkillType();
@@ -4271,257 +4270,167 @@ void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_m
 }
 
 //----- (0044F57C) --------------------------------------------------------
-void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5) {
-    // a3 for abc modify
-    // a4 count
+void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int countOverride, int aggro) {
     assert(spawn->uKind == OBJECT_Actor);
 
     char v8;               // zf@5
-    int v12;               // edx@9
-    // int v18;               // esi@31
-    int v23;               // edx@36
-    int v24;        // edi@36
-    int v25;               // ecx@36
-    MonsterDesc *v27;      // edi@48
-    MonsterId v28;        // eax@48
-    int v32;               // eax@50
-    int v37;               // eax@51
-    int v38;               // eax@52
-    int v39;               // edi@52
-    std::string v40;       // [sp-18h] [bp-100h]@60
-    // const char *v44;       // [sp-8h] [bp-F0h]@13
-    std::string pTexture;        // [sp-4h] [bp-ECh]@9
-                           //  char Str[32]; // [sp+Ch] [bp-DCh]@60
-    std::string Str2;           // [sp+2Ch] [bp-BCh]@29
-    MonsterInfo *Src;      // [sp+A8h] [bp-40h]@50
-    int v50;               // [sp+ACh] [bp-3Ch]@47
-    std::string Source;         // [sp+B0h] [bp-38h]@20
-    int v52;               // [sp+D0h] [bp-18h]@34
-    int v53;               // [sp+D4h] [bp-14h]@34
-    int pSector;           // [sp+D8h] [bp-10h]@32
-    int pPosX;             // [sp+DCh] [bp-Ch]@32
-    int NumToSpawn;               // [sp+E0h] [bp-8h]@8
-    int v57;               // [sp+E4h] [bp-4h]@1
-
-    // auto a2 = spawn;
-    v57 = 0;
-    // v5 = pMapInfo;
-    // v6 = spawn;
-    int v7 = GetAlertStatus();
-
-    if (v7)
+    if (GetAlertStatus())
         v8 = (spawn->uAttributes & 1) == 0;
     else
         v8 = (spawn->uAttributes & 1) == 1;
     if (v8) return;
 
-    // result = (void *)(spawn->uIndex - 1);
-    NumToSpawn = 1;
+    int NumToSpawn = 1;
+    std::string baseTextureName;
+    int monsterCategoryOddsSet = 0;
     switch (spawn->uMonsterIndex - 1) {
         case 0:
-            // v9 = pMapInfo->uEncounterMonster1AtLeast;
-            // v10 = rand();
-            // v11 = pMapInfo->uEncounterMonster1AtMost;
-            // pTexture = pMapInfo->pEncounterMonster1Texture;
-            v12 = grng->random(pMapInfo->encounter1MaxCount - pMapInfo->encounter1MinCount + 1);
-            // v13 = pMapInfo->Dif_M1;
-            v57 = pMapInfo->Dif_M1;
-            NumToSpawn = pMapInfo->encounter1MinCount + v12;
-            Source = pMapInfo->encounter1MonsterTexture;
-            break;
-        case 3:
-            // pTexture = pMapInfo->pEncounterMonster1Texture;
-            // v44 = "%s A";
-            Source = pMapInfo->encounter1MonsterTexture + " A";
-            break;
-        case 4:
-            // pTexture = pMapInfo->pEncounterMonster2Texture;
-            // v44 = "%s A";
-            Source = pMapInfo->encounter2MonsterTexture + " A";
-            break;
-        case 5:
-            // pTexture = pMapInfo->pEncounterMonster3Texture;
-            // v44 = "%s A";
-            Source = pMapInfo->encounter3MonsterTexture + " A";
+            monsterCategoryOddsSet = pMapInfo->Dif_M1;
+            NumToSpawn = pMapInfo->encounter1MinCount + grng->random(pMapInfo->encounter1MaxCount - pMapInfo->encounter1MinCount + 1);
+            baseTextureName = pMapInfo->encounter1MonsterTexture;
             break;
         case 1:
-            // v9 = pMapInfo->uEncounterMonster2AtLeast;
-            // v14 = rand();
-            // v15 = pMapInfo->uEncounterMonster2AtMost;
-            // pTexture = pMapInfo->pEncounterMonster2Texture;
-            v12 = grng->random(pMapInfo->encounter2MaxCount - pMapInfo->encounter2MinCount + 1);
-            // v13 = pMapInfo->Dif_M2;
-            v57 = pMapInfo->Dif_M2;
-            NumToSpawn = pMapInfo->encounter2MinCount + v12;
-            Source = pMapInfo->encounter2MonsterTexture;
-            break;
-        case 6:
-            // pTexture = pMapInfo->pEncounterMonster1Texture;
-            // v44 = "%s B";
-            Source = pMapInfo->encounter1MonsterTexture + " B";
-            break;
-        case 7:
-            // pTexture = pMapInfo->pEncounterMonster2Texture;
-            // v44 = "%s B";
-            Source = pMapInfo->encounter2MonsterTexture + " B";
-            break;
-        case 8:
-            // pTexture = pMapInfo->pEncounterMonster3Texture;
-            // v44 = "%s B";
-            Source = pMapInfo->encounter3MonsterTexture + " B";
+            monsterCategoryOddsSet = pMapInfo->Dif_M2;
+            NumToSpawn = pMapInfo->encounter2MinCount + grng->random(pMapInfo->encounter2MaxCount - pMapInfo->encounter2MinCount + 1);
+            baseTextureName = pMapInfo->encounter2MonsterTexture;
             break;
         case 2:
-            // v9 = pMapInfo->uEncounterMonster3AtLeast;
-            // v16 = rand();
-            // v17 = pMapInfo->uEncounterMonster3AtMost;
-            // pTexture = pMapInfo->pEncounterMonster3Texture;
-            v12 = grng->random(pMapInfo->encounter3MaxCount - pMapInfo->encounter3MinCount + 1);
-            // v13 = pMapInfo->Dif_M3;
-            v57 = pMapInfo->Dif_M3;
-            NumToSpawn = pMapInfo->encounter3MinCount + v12;
-            Source = pMapInfo->encounter3MonsterTexture;
+            monsterCategoryOddsSet = pMapInfo->Dif_M3;
+            NumToSpawn = pMapInfo->encounter3MinCount + grng->random(pMapInfo->encounter3MaxCount - pMapInfo->encounter3MinCount + 1);
+            baseTextureName = pMapInfo->encounter3MonsterTexture;
+            break;
+        case 3:
+            baseTextureName = pMapInfo->encounter1MonsterTexture + " A";
+            break;
+        case 4:
+            baseTextureName = pMapInfo->encounter2MonsterTexture + " A";
+            break;
+        case 5:
+            baseTextureName = pMapInfo->encounter3MonsterTexture + " A";
+            break;
+        case 6:
+            baseTextureName = pMapInfo->encounter1MonsterTexture + " B";
+            break;
+        case 7:
+            baseTextureName = pMapInfo->encounter2MonsterTexture + " B";
+            break;
+        case 8:
+            baseTextureName = pMapInfo->encounter3MonsterTexture + " B";
             break;
         case 9:
-            // pTexture = pMapInfo->pEncounterMonster1Texture;
-            // v44 = "%s C";
-            Source = pMapInfo->encounter1MonsterTexture + " C";
+            baseTextureName = pMapInfo->encounter1MonsterTexture + " C";
             break;
         case 10:
-            // pTexture = pMapInfo->pEncounterMonster2Texture;
-            // v44 = "%s C";
-            Source = pMapInfo->encounter2MonsterTexture + " C";
+            baseTextureName = pMapInfo->encounter2MonsterTexture + " C";
             break;
         case 11:
-            // pTexture = pMapInfo->pEncounterMonster3Texture;
-            // v44 = "%s C";
-            Source = pMapInfo->encounter3MonsterTexture + " C";
+            baseTextureName = pMapInfo->encounter3MonsterTexture + " C";
             break;
         default:
             return;
     }
 
-    if (Source[0] == '0') return;
+    if (baseTextureName[0] == '0') return;
 
-    v57 += a3;
+    monsterCategoryOddsSet += monsterCatMod;
+    if (monsterCategoryOddsSet > 3) monsterCategoryOddsSet = 3;
 
-    // if (v57 == 4) assert(false);
-    if (v57 > 3) v57 = 3;
-
-    Str2 = Source;
-    if (a4) NumToSpawn = a4;
-    // v18 = NumToSpawn;
+    if (countOverride) NumToSpawn = countOverride;
     if (NumToSpawn <= 0) return;
 
     // Config multiplier now
     NumToSpawn = std::ceil(NumToSpawn * engine->config->gameplay.SpawnCountMultiplier.value());
     NumToSpawn = std::clamp(NumToSpawn, 1, engine->config->gameplay.MaxActors.value());
 
-    pSector = 0;
-    pPosX = spawn->vPosition.x;
-    a4 = spawn->vPosition.y;
-    a3 = spawn->vPosition.z;
+    int pSector = 0;
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         pSector = pIndoor->GetSector(spawn->vPosition);
-    v53 = 0;
-    v52 = (((uCurrentlyLoadedLevelType != LEVEL_OUTDOOR) - 1) & 0x40) + 64;
-
-
-
-    // if (v57 == 4) return;
 
     // spawning loop
-    for (int i = v53; i < NumToSpawn; ++i) {
+    std::string finalTextureName = baseTextureName;
+    for (int i = 0; i < NumToSpawn; ++i) {
         Actor *pMonster = AllocateActor(true);
         if (!pMonster)
             continue;
 
         // random monster levels ABC
-        if (v57) {
-            // if (v57 > 3) v57 = 3;
-
-            v23 = grng->random(100);
-            v24 = 3;  // 2 , 10 , 20 - C
-            v25 = (uint16_t)word_4E8152[3 * v57];  // v57 should be 1,2,3
-            if (v23 >= v25) {
-                if (v23 < v25 + (uint16_t)word_4E8152[3 * v57 + 1]) {
-                    v24 = 2;  // 8 , 20 , 30 - B
+        if (monsterCategoryOddsSet) {
+            int catRandom = grng->random(100);
+            int finalCat = 3;  // 2 , 10 , 20 - C
+            int lowThresh = word_4E8152[3 * monsterCategoryOddsSet];
+            if (catRandom >= lowThresh) {
+                if (catRandom < lowThresh + word_4E8152[3 * monsterCategoryOddsSet + 1]) {
+                    finalCat = 2;  // 8 , 20 , 30 - B
                 }
             } else {
-                v24 = 1;  // 90 , 70 , 50 - A
+                finalCat = 1;  // 90 , 70 , 50 - A
             }
 
-            if (v24 == 1) {
-                Str2 = Source + " A";
-            } else if (v24 == 2) {
-                Str2 = Source + " B";
+            if (finalCat == 1) {
+                finalTextureName = baseTextureName + " A";
+            } else if (finalCat == 2) {
+                finalTextureName = baseTextureName + " B";
             } else {
-                if (v24 != 3) continue;
-                Str2 = Source + " C";
+                finalTextureName = baseTextureName + " C";
             }
         }
 
-        MonsterId v50 = pMonsterList->GetMonsterIDByName(Str2);
-        pTexture = Str2;
+        MonsterId monsterDescID = pMonsterList->GetMonsterIDByName(finalTextureName);
+        MonsterDesc* monsterDesc = &pMonsterList->monsters[monsterDescID];
+        MonsterId monster = pMonsterStats->FindMonsterByTextureName(finalTextureName);
 
-        v27 = &pMonsterList->monsters[v50];
-        v28 = pMonsterStats->FindMonsterByTextureName(pTexture);
         // TODO(captainurist): MONSTER_ANGEL_A is monster #1, why do we even need this check?
-        if (v28 == MONSTER_INVALID) v28 = MONSTER_ANGEL_A;
-        Src = &pMonsterStats->infos[v28];
+        if (monster == MONSTER_INVALID) monster = MONSTER_ANGEL_A;
+
+        MonsterInfo* Src = &pMonsterStats->infos[monster];
         pMonster->name = Src->name;
         pMonster->currentHP = Src->hp;
-
-        // memcpy(&pMonster->pMonsterInfo, Src, sizeof(MonsterInfo));  // Uninitialized portail memory access
-
-        pMonster->monsterInfo = pMonsterStats->infos[v28];
-
-        pMonster->word_000086_some_monster_id = v50;
-        pMonster->radius = v27->monsterRadius;
-        pMonster->height = v27->monsterHeight;
-        pMonster->moveSpeed = v27->movementSpeed;
-        pMonster->initialPosition.x = spawn->vPosition.x;
-        pMonster->pos.x = spawn->vPosition.x;
+        pMonster->monsterInfo = pMonsterStats->infos[monster];
+        pMonster->word_000086_some_monster_id = monsterDescID;
+        pMonster->radius = monsterDesc->monsterRadius;
+        pMonster->height = monsterDesc->monsterHeight;
+        pMonster->moveSpeed = monsterDesc->movementSpeed;
+        pMonster->initialPosition = spawn->vPosition;
+        pMonster->pos = spawn->vPosition;
         pMonster->tetherDistance = 256;
-        pMonster->initialPosition.y = a4;
-        pMonster->pos.y = a4;
-        pMonster->initialPosition.z = a3;
-        pMonster->pos.z = a3;
         pMonster->sectorId = pSector;
         pMonster->group = spawn->uGroup;
         pMonster->PrepareSprites(0);
         pMonster->monsterInfo.hostilityType = HOSTILITY_FRIENDLY;
-        v32 = grng->random(2048);
-        a3 = TrigLUT.cos(v32) * v52;
-        pPosX = a3 + spawn->vPosition.x;
-        a3 = TrigLUT.sin(v32) * v52;
-        a4 = a3 + spawn->vPosition.y;
-        a3 = spawn->vPosition.z;
+
+        // TODO(pskelton): We calculate a new position for the monster, but we never use it.
+        int randomAngle = grng->random(2048);
+        int distance = (((uCurrentlyLoadedLevelType != LEVEL_OUTDOOR) - 1) & 0x40) + 64; // 64 indoor or 128 outdoor
+
+        Vec3f newPos;
+        newPos.x = TrigLUT.cos(randomAngle) * distance + spawn->vPosition.x;
+        newPos.y = TrigLUT.sin(randomAngle) * distance + spawn->vPosition.y;
+        newPos.z = spawn->vPosition.z;
+
         if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
-            if (a5)
+            if (aggro)
                 pMonster->attributes |= ACTOR_AGGRESSOR;
             continue;
         }
-        v37 = pIndoor->GetSector(pPosX, a4, spawn->vPosition.z);
-        if (v37 == pSector) {
-            v38 = BLV_GetFloorLevel(Vec3f(pPosX, a4, a3), v37);
-            v39 = v38;
-            if (v38 != -30000) {
-                if (std::abs(v38 - a3) <= 1024) {
-                    a3 = v39;
-                    if (a5)
+
+        int newSector = pIndoor->GetSector(newPos);
+        if (newSector == pSector) {
+            int newFloorLevel = BLV_GetFloorLevel(newPos, newSector);
+            if (newFloorLevel != -30000) {
+                if (std::abs(newFloorLevel - newPos.z) <= 1024) {
+                    newPos.z = newFloorLevel;
+                    if (aggro)
                         pMonster->attributes |= ACTOR_AGGRESSOR;
                     continue;
                 }
             }
         }
 
+        // TODO(pskelton): with above position should we either retry or fallback to spawn pos
+        // Cant just remove actors as they appear killed see #2074
         // Actor was spawned too far away, remove it.
-        pMonster->Remove();
-
-        // v53 = (char *)v53 + 1;
-        // result = v53;
+        //pMonster->Remove();
     }
-    // while ( (signed int)v53 < NumToSpawn );
 }
 
 void evaluateAoeDamage() {

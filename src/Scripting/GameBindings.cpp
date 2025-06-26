@@ -107,13 +107,13 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
             }
         }),
         "getCharacterInfo", sol::as_function([this, &solState](int characterIndex, QueryTable queryTable) {
-            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1)) {
                 return _characterInfoQueryTable->createTable(*character, queryTable);
             }
             return sol::make_object(solState, sol::lua_nil);
         }),
         "setCharacterInfo", sol::as_function([](int characterIndex, const sol::object &info) {
-            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1)) {
                 const sol::table &table = info.as<sol::table>();
                 for (auto &&val : table) {
                     std::string_view key = val.first.as<std::string_view>();
@@ -152,13 +152,12 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
             }
         }),
         "addItemToInventory", sol::as_function([](int characterIndex, ItemId itemId) {
-            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
-                return character->AddItem(-1, itemId) != 0;
-            }
+            if (Character *character = getCharacterByIndex(characterIndex - 1))
+                return !!character->inventory.tryAdd(Item(itemId));
             return false;
         }),
         "addCustomItemToInventory", sol::as_function([](int characterIndex, sol::table itemTable) {
-            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1)) {
                 Item item;
                 for (auto &&pair : itemTable) {
                     std::string_view key = pair.first.as<std::string_view>();
@@ -168,7 +167,7 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
                         item.lichJarCharacterIndex = pair.second.as<int>() - 1; // character index in lua is 1-based
                     }
                 }
-                return character->AddItem2(-1, &item) != 0;
+                return !!character->inventory.tryAdd(item);
             }
             return false;
         }),
@@ -178,12 +177,12 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
             }
         }),
         "playCharacterAwardSound", sol::as_function([](int characterIndex) {
-            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1)) {
                 character->PlayAwardSound_Anim();
             }
         }),
         "clearCondition", sol::as_function([](int characterIndex, std::optional<Condition> conditionToClear) {
-            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1)) {
                 if (conditionToClear) {
                     character->conditions.Reset(*conditionToClear);
                 } else {

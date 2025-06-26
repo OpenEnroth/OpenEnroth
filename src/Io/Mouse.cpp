@@ -46,14 +46,6 @@ void Io::Mouse::setPosition(Pointi position) {
     }
 }
 
-void Io::Mouse::RemoveHoldingItem() {
-    pParty->pPickedItem.Reset();
-    if (this->cursor_name != "MICON2") {
-        SetCursorImage("MICON1");
-    }
-    pickedItemOffset = {};
-}
-
 void Io::Mouse::SetCursorBitmapFromItemID(ItemId uItemID) {
     SetCursorImage(pItemTable->items[uItemID].iconName);
 }
@@ -69,11 +61,11 @@ void Io::Mouse::SetCursorImage(std::string_view name) {
         this->cursor_name = name;
 
     ClearCursor();
-    if (name == "MICON1") {  // arrow
+    if (name == "MICON1" && !engine->config->graphics.AlwaysCustomCursor.value()) { // Arrow cursor.
         this->_arrowCursor = true;
         platform->setCursorShown(true);
         this->cursor_img = nullptr;
-    } else {  // cursor is item or another bitmap
+    } else { // Cursor is item or another bitmap.
         this->cursor_img = assets->getImage_ColorKey(name, colorTable.Black /*colorTable.TealMask*/);
         this->AllocCursorSystemMem();
         this->_arrowCursor = false;

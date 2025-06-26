@@ -71,7 +71,7 @@ struct Party {
     /**
      * @offset 0x49137D
      */
-    void createDefaultParty(bool bDebugGiveItems = false);
+    void createDefaultParty();
     void Reset();
     void ResetPosMiscAndSpellBuffs();
 
@@ -86,6 +86,8 @@ struct Party {
      * @offset 0x4936E1
      */
     void setHoldingItem(const Item &item, Pointi offset = {});
+
+    Item takeHoldingItem();
 
     /**
     * Sets _activeCharacter to the first character that can act

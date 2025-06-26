@@ -47,19 +47,19 @@ void GUIWindow_Chest::Update() {
         CharacterUI_DrawPickedItemUnderlay({ chest_offs_x, chest_offs_y });
         render->ResetUIClipRect();
 
-        for (int item_counter = 0; item_counter < chestWidthCells * chestHeghtCells; ++item_counter) {
-            int chest_item_index = vChests[uChestID].inventoryMatrix[item_counter];
-            if (chest_item_index > 0) {
-                auto item_texture = assets->getImage_ColorKey(vChests[uChestID].items[chest_item_index - 1].GetIconName());
-                int X_offset = itemOffset(item_texture->width());
-                int Y_offset = itemOffset(item_texture->height());
-                int itemPixelPosX = chest_offs_x + 32 * (item_counter % chestWidthCells) + X_offset;
-                int itemPixelPosY = chest_offs_y + 32 * (item_counter / chestHeghtCells) + Y_offset;
+        for (InventoryEntry entry : vChests[uChestID].inventory.entries()) {
+            if (entry.zone() != INVENTORY_ZONE_GRID)
+                continue;
 
-                assert(0 < itemPixelPosX && itemPixelPosX < 640);
-                assert(0 < itemPixelPosY && itemPixelPosY < 480);
-                render->DrawTextureNew(itemPixelPosX / 640.0f, itemPixelPosY / 480.0f, item_texture);
-            }
+            auto item_texture = assets->getImage_ColorKey(entry->GetIconName());
+            int X_offset = itemOffset(item_texture->width());
+            int Y_offset = itemOffset(item_texture->height());
+            int itemPixelPosX = chest_offs_x + 32 * entry.geometry().x + X_offset;
+            int itemPixelPosY = chest_offs_y + 32 * entry.geometry().y + Y_offset;
+
+            assert(0 < itemPixelPosX && itemPixelPosX < 640);
+            assert(0 < itemPixelPosY && itemPixelPosY < 480);
+            render->DrawTextureNew(itemPixelPosX / 640.0f, itemPixelPosY / 480.0f, item_texture);
         }
 
         render->DrawTextureNew(pBtn_ExitCancel->uX / 640.0f, pBtn_ExitCancel->uY / 480.0f, ui_exit_cancel_button_background);

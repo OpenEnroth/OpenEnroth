@@ -2,10 +2,11 @@
 
 #include <array>
 
+#include "Engine/Objects/ItemEnums.h"
+
 #include "Library/Geometry/Vec.h"
 #include "Library/Geometry/Plane.h"
 #include "Library/Geometry/BBox.h"
-
 #include "Library/Binary/BinarySerialization.h"
 
 /**
@@ -36,7 +37,9 @@ struct BLVMapOutline;
 struct BLVSector;
 struct BSPNode;
 class CharacterConditions;
+class CharacterInventory;
 struct Chest;
+class ChestInventory;
 struct DecorationDesc;
 struct FontHeader;
 struct GUICharMetric;
@@ -237,13 +240,13 @@ struct Item_MM7 {
     uint8_t equippedSlot;
     uint8_t maxCharges;
     uint8_t lichJarCharacterIndex; // Only for full lich jars. 1-based index of the character whose essence it stored in it.
-    uint8_t placedInChest; // Unknown unused 8-bit field, was repurposed.
+    uint8_t _pad;
     int64_t enchantmentExpirationTime;
 };
 static_assert(sizeof(Item_MM7) == 0x24);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Item_MM7)
 
-void snapshot(const Item &src, Item_MM7 *dst);
+void snapshot(const Item &src, Item_MM7 *dst, ContextTag<ItemSlot> slot);
 void reconstruct(const Item_MM7 &src, Item *dst);
 
 
@@ -414,7 +417,9 @@ static_assert(sizeof(Character_MM7) == 0x1B3C);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Character_MM7)
 
 void snapshot(const Character &src, Character_MM7 *dst);
-void reconstruct(const Character_MM7 &src, Character *dst);
+void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> characterIndex);
+void snapshot(const CharacterInventory &src, Character_MM7 *dst);
+void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<int> characterIndex);
 
 
 struct PartyTimeStruct_MM7 {
@@ -1064,7 +1069,9 @@ static_assert(sizeof(Chest_MM7) == 5324);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(Chest_MM7)
 
 void snapshot(const Chest &src, Chest_MM7 *dst);
-void reconstruct(const Chest_MM7 &src, Chest *dst);
+void reconstruct(const Chest_MM7 &src, Chest *dst, ContextTag<int> chestId);
+void snapshot(const ChestInventory &src, Chest_MM7 *dst);
+void reconstruct(const Chest_MM7 &src, ChestInventory *dst, ContextTag<int> chestId);
 
 
 struct BLVLight_MM6 {
