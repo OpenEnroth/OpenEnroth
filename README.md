@@ -93,23 +93,15 @@ This will extract the game data to the new directory.
 ### Linux
 
 There are two options on Linux - loose executables to install wherever you like and a Flatpak package for ease of
-use. The key differences are:
-
-The Flatpak package is somewhat easier to use:
-  * Includes all the necessary dependencies to run OpenEnroth; this is useful if your system does not have the
-    required libraries available or the available versions are incompatible with the loose executable bundle
-  * Requires the game data to be in a specific location
-  * Can be used e.g. on a Steam Deck or on "immutable"/"atomic" Linux distributions
-    like [Bazzite](https://bazzite.gg/) or [Universal Blue](https://universal-blue.org/).
-
-The loose executable bundle is more flexible:
-  * May require you to install some libraries to your operating system
-  * Both the game executable and data can be installed anywhere on your computer
-
-The loose executables are built on Ubuntu 24.04 and may not work on other distributions - e.g. Fedora does not
-have a matching version of `libdwarf` available at all, so the loose executable will not run here.
+use.
 
 #### Flatpak
+
+The Flatpak package is the easiest choice if:
+  * You aren't using Ubuntu 24.04, or
+  * You cannot install system packages on your computer for any reason  (as long as Flatpak is
+    available), e.g. because you're using an "atomic"/"immutable" Linux distribution such as
+    Bazzite or SteamOS
 
 1. Check for Flatpak support:
    * Run `flatpak --version`.
@@ -120,11 +112,18 @@ have a matching version of `libdwarf` available at all, so the loose executable 
      prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases).
    * Run `flatpak install --user /path/to/io.github.openenroth.openenroth_*.flatpak` to install the OpenEnroth
      package.
-   * Create `~/.var/app/io.github.openenroth/openenroth/data/mm7`
-   * Move the game data (at least the `ANIMS`, `DATA`, `MUSIC` and `SOUNDS` directories) to this new directory
+   * Create `~/.var/app/io.github.openenroth/openenroth/data/mm7/data/`
+   * Move the game data (at least the `ANIMS`, `DATA`, `MUSIC` and `SOUNDS` directories) into this new directory
 3. Run OpenEnroth from your desktop's application menu or using `flatpak run io.github.openenroth.openenroth`
 
 #### Loose executables
+
+The loose executable bundle is the easier option if:
+  * You want easy access to the OpenEnroth executable for development or debugging
+  * You absolutely need specific control over the installation location for OpenEnroth and the game data
+  * You can install system packages (specifically, SDL2, `libdwarf`, `libelf` and `libgl1`)
+  * You're using Ubuntu 24.04 - other distributions may not have the required libraries available
+    or not in compatible versions
 
 1. Install the required libraries (SDL2, `libdwarf` and `libelf`):
    * `sudo apt-get install libsdl2-2* libdwarf1 libelf++* libgl1` (Ubuntu 24.04)
@@ -133,11 +132,10 @@ have a matching version of `libdwarf` available at all, so the loose executable 
 2. Install OpenEnroth:
    * Download one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip
      the files
-   * Create a new directory for your OpenEnroth installation and copy the `dist/OpenEnroth` executable from the
-     zip there
-   * Copy the game data (at least the `ANIMS`, `DATA`, `MUSIC` and `SOUNDS` directories) to your OpenEnroth
-     directory
-4. Run the `OpenEnroth` executable (you may need to run `chmod a+x OpenEnroth` first).
+   * Copy the game data (at least the `ANIMS`, `DATA`, `MUSIC` and `SOUNDS` directories) to the directory
+     you unzipped the release to, next to the `OpenEnroth` executable
+4. Run the `OpenEnroth` executable (you may need to run `chmod a+x OpenEnroth` first) from a terminal
+   or by double-clicking it in a file browser.
 
 # Game Assets Path Override
 
