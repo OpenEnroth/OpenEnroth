@@ -586,7 +586,7 @@ int Character::GetMeditation() const {
 }
 
 //----- (004910D3) --------------------------------------------------------
-bool Character::CanIdentify(Item *pItem) const {
+bool Character::CanIdentify(const Item &item) const {
     CombinedSkillValue val = getActualSkillValue(CHARACTER_SKILL_ITEM_ID);
     int multiplier =
         GetMultiplierForSkillLevel(CHARACTER_SKILL_ITEM_ID, 1, 2, 3, 5);
@@ -596,20 +596,20 @@ bool Character::CanIdentify(Item *pItem) const {
 
     // check item level against skill
     bool result = (multiplier * val.level()) >=
-                  pItemTable->items[pItem->itemId].identifyDifficulty;
+                  pItemTable->items[item.itemId].identifyAndRepairDifficulty;
 
     return result;
 }
 
 //----- (00491151) --------------------------------------------------------
-bool Character::CanRepair(Item *pItem) const {
+bool Character::CanRepair(const Item &item) const {
     CombinedSkillValue val = getActualSkillValue(CHARACTER_SKILL_REPAIR);
     int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_REPAIR, 1, 2, 3, 5);
 
     // TODO(Nik-RE-dev): is check for boots correct?
-    if (CheckHiredNPCSpeciality(Smith) && pItem->isWeapon() ||
-        CheckHiredNPCSpeciality(Armorer) && pItem->isArmor() ||
-        CheckHiredNPCSpeciality(Alchemist) && pItem->type() >= ITEM_TYPE_BOOTS)
+    if (CheckHiredNPCSpeciality(Smith) && item.isWeapon() ||
+        CheckHiredNPCSpeciality(Armorer) && item.isArmor() ||
+        CheckHiredNPCSpeciality(Alchemist) && item.type() >= ITEM_TYPE_BOOTS)
         return true;  // check against hired help
 
     if (val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // gm repair
@@ -617,7 +617,7 @@ bool Character::CanRepair(Item *pItem) const {
 
     // check item level against skill
     bool result = (multiplier * val.level()) >=
-                  pItemTable->items[pItem->itemId].identifyDifficulty;
+                  pItemTable->items[item.itemId].identifyAndRepairDifficulty;
 
     return result;
 }

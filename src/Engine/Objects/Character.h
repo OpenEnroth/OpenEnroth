@@ -222,8 +222,8 @@ class Character {
     MerchantPhrase SelectPhrasesTransaction(Item *pItem, HouseType building_type, HouseId houseId, ShopScreen ShopMenuType);
     int GetBodybuilding() const;
     int GetMeditation() const;
-    bool CanIdentify(Item *pItem) const;
-    bool CanRepair(Item *pItem) const;
+    bool CanIdentify(const Item &item) const;
+    bool CanRepair(const Item &item) const;
     int GetPerception() const;
     int GetDisarmTrap() const;
 
