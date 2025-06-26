@@ -4,6 +4,7 @@
 #include <string>
 #include <utility>
 #include <algorithm>
+#include <vector>
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
@@ -44,18 +45,29 @@ RgbaImage renderFont(const LodFont &font) {
     return image;
 }
 
-std::pair<Blob, std::string> decodeLodEntry(Blob entry, std::string name, bool raw) {
+class DecodedEntries : public std::vector<std::pair<Blob, std::string>> {
+ public:
+    DecodedEntries &&operator()(Blob entry, std::string name) {
+        // Need this helper b/c std::vector cannot be constructed from an initializer list with move-only elements.
+        emplace_back(std::move(entry), std::move(name));
+        return std::move(*this);
+    }
+};
+
+DecodedEntries decodeLodEntry(Blob entry, std::string name, bool raw) {
+    DecodedEntries result;
+
     if (raw)
-        return {std::move(entry), std::move(name)};
+        return result(std::move(entry), std::move(name));
 
     if (pcx::detect(entry))
-        return {png::encode(pcx::decode(entry)), name + ".png"};
+        return result(png::encode(pcx::decode(entry)), name + ".png");
 
     LodFileFormat format = lod::magic(entry, name);
 
     if (format == LOD_FILE_IMAGE) {
         LodImage lodImage = lod::decodeImage(entry);
-        return {png::encode(makeRgbaImage(lodImage.image, lodImage.palette)), name + ".png"};
+        return result(png::encode(makeRgbaImage(lodImage.image, lodImage.palette)), name + ".png");
     }
 
     if (format == LOD_FILE_PALETTE) {
@@ -63,24 +75,25 @@ std::pair<Blob, std::string> decodeLodEntry(Blob entry, std::string name, bool r
         RgbaImage palImage = RgbaImage::uninitialized(256, 1);
         for (size_t i = 0; i < 256; i++)
             palImage[0][i] = lodImage.palette.colors[i];
-        return {png::encode(palImage), name + ".png"};
+        return result(png::encode(palImage), name + ".png");
     }
 
     if (format == LOD_FILE_SPRITE) {
-        LodSprite sprite = lod::decodeSprite(entry);
-        return {png::encode(sprite.image), name + ".png"};
+        LodSprite lodSprite = lod::decodeSprite(entry);
+        return result(png::encode(lodSprite.image), name + ".png");
     }
 
     if (format == LOD_FILE_FONT) {
         LodFont lodFont = lod::decodeFont(entry);
-        return {png::encode(renderFont(lodFont)), name + ".png"};
+        return result(std::move(entry), name)
+                     (png::encode(renderFont(lodFont)), name + ".png");
     }
 
     // We have pcx images inside compressed entries, so to support this we just re-run the function.
     if (format == LOD_FILE_COMPRESSED || format == LOD_FILE_PSEUDO_IMAGE)
-        return decodeLodEntry(lod::decodeCompressed(entry), name, raw);
+        return decodeLodEntry(lod::decodeCompressed(entry), std::move(name), raw);
 
-    return {std::move(entry), std::move(name)};
+    return result(std::move(entry), std::move(name));
 }
 
 int runLs(const LodToolOptions &options) {
@@ -123,7 +136,7 @@ int runDump(const LodToolOptions &options) {
 
 int runCat(const LodToolOptions &options) {
     LodReader reader(options.lodPath, LOD_ALLOW_DUPLICATES);
-    auto [data, _] = decodeLodEntry(reader.read(options.cat.entry), options.cat.entry, options.raw);
+    auto [data, _] = std::move(decodeLodEntry(reader.read(options.cat.entry), options.cat.entry, options.raw)[0]);
     return fwrite(data.data(), data.size(), 1, stdout) != 1 ? 1 : 0;
 }
 
@@ -131,10 +144,9 @@ int runExtract(const LodToolOptions &options) {
     LodReader reader(options.lodPath, LOD_ALLOW_DUPLICATES);
     DirectoryFileSystem output(options.extract.output);
 
-    for (const std::string &entryName : reader.ls()) {
-        auto [data, name] = decodeLodEntry(reader.read(entryName), entryName, options.raw);
-        output.write(name, data);
-    }
+    for (const std::string &entryName : reader.ls())
+        for (const auto &[data, name] : decodeLodEntry(reader.read(entryName), entryName, options.raw))
+            output.write(name, data);
 
     return 0;
 }
