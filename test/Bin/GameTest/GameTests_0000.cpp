@@ -70,8 +70,8 @@ GAME_TEST(Issues, Issue198) {
         for (InventoryConstEntry entry : character.inventory.entries()) {
             Recti geometry = entry.geometry();
 
-            EXPECT_LE(geometry.x + geometry.w, Character::INVENTORY_SLOTS_WIDTH);
-            EXPECT_LE(geometry.y + geometry.h, Character::INVENTORY_SLOTS_HEIGHT);
+            EXPECT_LE(geometry.x + geometry.w, character.inventory.gridSize().w);
+            EXPECT_LE(geometry.y + geometry.h, character.inventory.gridSize().h);
         }
     }
 }

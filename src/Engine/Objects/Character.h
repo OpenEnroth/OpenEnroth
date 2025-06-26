@@ -110,9 +110,6 @@ class CharacterConditions {
 
 class Character {
  public:
-    static constexpr unsigned int INVENTORY_SLOTS_WIDTH = 14; // TODO(captainurist): drop these consts, they don't belong here.
-    static constexpr unsigned int INVENTORY_SLOTS_HEIGHT = 9;
-
     Character();
     void Zero();
 
