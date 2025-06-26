@@ -99,12 +99,15 @@ The Flatpak package is somewhat easier to use:
   * Includes all the necessary dependencies to run OpenEnroth; this is useful if your system does not have the
     required libraries available or the available versions are incompatible with the loose executable bundle
   * Requires the game data to be in a specific location
-  * Can be used e.g. on a Steam Deck or on "immutable"/"atomic" Linux distributions#
+  * Can be used e.g. on a Steam Deck or on "immutable"/"atomic" Linux distributions
     like [Bazzite](https://bazzite.gg/) or [Universal Blue](https://universal-blue.org/).
 
 The loose executable bundle is more flexible:
   * May require you to install some libraries to your operating system
   * Both the game executable and data can be installed anywhere on your computer
+
+The loose executables are built on Ubuntu 24.04 and may not work on other distributions - e.g. Fedora does not
+have a matching version of `libdwarf` available at all, so the loose executable will not run here.
 
 #### Flatpak
 
@@ -123,10 +126,10 @@ The loose executable bundle is more flexible:
 
 #### Loose executables
 
-1. Install the required libraries SDL2, `libdwarf` and `libelf`:
-   * `sudo apt-get install libsdl2 libdwarf libelf` (Ubuntu/Debian)
-   * `sudo dnf install SDL2 libdwarf elfutils-libelf` (RedHat/Fedora)
-   * For other distributions, check your distribution's user guides
+1. Install the required libraries (SDL2, `libdwarf` and `libelf`):
+   * `sudo apt-get install libsdl2-2* libdwarf1 libelf++* libgl1` (Ubuntu 24.04)
+   * For other distributions, check your distribution's user guides and package management tools to find
+     the correct package names for these libraries.
 2. Install OpenEnroth:
    * Download one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip
      the files
