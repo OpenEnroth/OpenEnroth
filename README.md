@@ -71,6 +71,16 @@ Once you have innoextract, create a new directory for the game data, then open a
 
 This will extract the game data to the new directory.
 
+### Game Assets Path Override
+
+You can set an environment variable called `OPENENROTH_MM7_PATH` to point to the location of the game data.
+If this variable is set, OpenEnroth will look for game assets only in the location it's pointing to. You
+might also want to add the following line to your shell profile (e.g. `~/.profile` on Linux or `~/.zshrc` on Mac):
+
+```
+export OPENENROTH_MM7_PATH="<path-to-mm7-game-assets>"
+```
+
 ## Installing OpenEnroth
 
 ### Windows
@@ -78,7 +88,6 @@ This will extract the game data to the new directory.
 1. Download one of the prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases) and unzip the files.
 2. Copy `OpenEnroth.exe` and `OpenEnroth.pdb` to the directory containing the game data.
 3. Run `OpenEnroth.exe`.
-
 
 ### macOS
 
@@ -89,24 +98,16 @@ This will extract the game data to the new directory.
    unsigned, without this step the app bundle won't start.
 4. Run `OpenEnroth.app`.
 
+### Linux (Flatpak)
 
-### Linux
-
-There are two options on Linux - loose executables to install wherever you like and a Flatpak package for ease of
-use.
-
-#### Flatpak
-
-The Flatpak package is the easiest choice if:
-  * You aren't using Ubuntu 24.04, or
-  * You cannot install system packages on your computer for any reason  (as long as Flatpak is
-    available), e.g. because you're using an "atomic"/"immutable" Linux distribution such as
-    Bazzite or SteamOS
+The Flatpak package is the easiest choice if you aren't using Ubuntu 24.04, or you cannot install system
+packages on your computer for any reason (as long as Flatpak is available), e.g. because you're using
+an "atomic"/"immutable" Linux distribution such as Bazzite or SteamOS.
 
 1. Check for Flatpak support:
    * Run `flatpak --version`.
    * If you receive a message listing a version number, you're ready to go; otherwise please visit
-     [https://flatpak.org/setup/](https://flatpak.org/setup/) and follow instructions there to set up.
+    [https://flatpak.org/setup/](https://flatpak.org/setup/) and follow instructions there to set up.
 2. Install OpenEnroth:
    * Download the `io.github.openenroth.openenroth_*.flatpak` package from one of the
      prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases).
@@ -116,7 +117,7 @@ The Flatpak package is the easiest choice if:
    * Move the game data (at least the `ANIMS`, `DATA`, `MUSIC` and `SOUNDS` directories) into this new directory
 3. Run OpenEnroth from your desktop's application menu or using `flatpak run io.github.openenroth.openenroth`
 
-#### Loose executables
+### Linux (Loose executable)
 
 The loose executable bundle is the easier option if:
   * You want easy access to the OpenEnroth executable for development or debugging
@@ -136,16 +137,6 @@ The loose executable bundle is the easier option if:
      you unzipped the release to, next to the `OpenEnroth` executable
 4. Run the `OpenEnroth` executable (you may need to run `chmod a+x OpenEnroth` first) from a terminal
    or by double-clicking it in a file browser.
-
-# Game Assets Path Override
-
-You can set `OPENENROTH_MM7_PATH` env variable to point to the location of the game assets. If this variable
-is set, OpenEnroth will look for game assets only in the location it's pointing to. You might also want to
-add the following line to your shell profile (e.g. `~/.profile` on Linux or `~/.zshrc` on Mac):
-
-```
-export OPENENROTH_MM7_PATH="<path-to-mm7-game-assets>"
-```
 
 
 # Development
