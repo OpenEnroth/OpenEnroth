@@ -1260,7 +1260,7 @@ void CharacterUI_StatsTab_ShowHint() {
         {
             bool hasBow = pParty->activeCharacter().GetBowItem() != nullptr;
             auto weapon = pParty->activeCharacter().GetMainHandItem();
-            bool hasBlaster = weapon && weapon->GetPlayerSkillType() == CHARACTER_SKILL_BLASTER;
+            bool hasBlaster = weapon && weapon->skill() == CHARACTER_SKILL_BLASTER;
             // TODO(captainurist): fmt can throw
             std::string description;
             if (hasBow || hasBlaster) {
