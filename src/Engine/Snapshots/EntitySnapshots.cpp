@@ -29,8 +29,6 @@
 
 #include "Media/Audio/SoundInfo.h"
 
-#include "GUI/GUIFont.h"
-
 #include "Library/Color/ColorTable.h"
 #include "Library/Logger/Logger.h"
 #include "Library/Snapshots/CommonSnapshots.h"
@@ -1587,29 +1585,6 @@ void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
     dst->uFirstBSPNode = src.uFirstBSPNode;
     dst->exit_tag = src.exit_tag;
     reconstruct(src.pBounding, &dst->pBounding);
-}
-
-void snapshot(const GUICharMetric &src, GUICharMetric_MM7 *dst) {
-    memzero(dst);
-
-    dst->uLeftSpacing = src.uLeftSpacing;
-    dst->uWidth = src.uWidth;
-    dst->uRightSpacing = src.uRightSpacing;
-}
-
-void reconstruct(const GUICharMetric_MM7 &src, GUICharMetric *dst) {
-    dst->uLeftSpacing = src.uLeftSpacing;
-    dst->uWidth = src.uWidth;
-    dst->uRightSpacing = src.uRightSpacing;
-}
-
-void reconstruct(const FontHeader_MM7 &src, FontHeader *dst) {
-    dst->cFirstChar = src.cFirstChar;
-    dst->cLastChar = src.cLastChar;
-    dst->uFontHeight = src.uFontHeight;
-
-    reconstruct(src.pMetrics, &dst->pMetrics);
-    reconstruct(src.font_pixels_offset, &dst->font_pixels_offset);
 }
 
 void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {

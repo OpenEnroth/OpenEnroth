@@ -41,8 +41,6 @@ class CharacterInventory;
 struct Chest;
 class ChestInventory;
 struct DecorationDesc;
-struct FontHeader;
-struct GUICharMetric;
 struct Item;
 struct LevelDecoration;
 struct LocationInfo;
@@ -892,38 +890,6 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVSector_MM7)
 
 void snapshot(const BLVSector &src, BLVSector_MM7 *dst);
 void reconstruct(const BLVSector_MM7 &src, BLVSector *dst);
-
-
-struct GUICharMetric_MM7 {
-    int32_t uLeftSpacing;
-    int32_t uWidth;
-    int32_t uRightSpacing;
-};
-static_assert(sizeof(GUICharMetric_MM7) == 12);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(GUICharMetric_MM7)
-
-void snapshot(const GUICharMetric &src, GUICharMetric_MM7 *dst);
-void reconstruct(const GUICharMetric_MM7 &src, GUICharMetric *dst);
-
-
-struct FontHeader_MM7 {
-    uint8_t cFirstChar;  // 0
-    uint8_t cLastChar;   // 1
-    uint8_t field_2;
-    uint8_t field_3;
-    uint8_t field_4;
-    uint16_t uFontHeight;  // 5-6
-    uint8_t field_7;
-    uint32_t palletes_count;
-    std::array<uint32_t, 5> pFontPalettes;
-    std::array<GUICharMetric_MM7, 256> pMetrics;
-    std::array<uint32_t, 256> font_pixels_offset;
-    // array of font pixels follows in the serialized representation.
-};
-static_assert(sizeof(FontHeader_MM7) == 0x1020);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(FontHeader_MM7)
-
-void reconstruct(const FontHeader_MM7 &src, FontHeader *dst);
 
 
 struct ODMFace_MM7 {
