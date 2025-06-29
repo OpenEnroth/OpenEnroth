@@ -323,38 +323,45 @@ void GenerateItemsInChest() {
     MapInfo *currMapInfo = &pMapStats->pInfos[engine->_currentLoadedMapId];
     for (int i = 0; i < 20; ++i) {
         for (InventoryEntry entry : vChests[i].inventory.entries()) {
-            if (isRandomItem(entry->itemId)) {
-                int additionaItemCount = grng->random(5);  // additional items in chect
-                additionaItemCount++;  // + 1 because it's the item at pChests[i].igChestItems[j] and the additional ones
-                ItemTreasureLevel resultTreasureLevel = grng->randomSample(
-                    RemapTreasureLevel(randomItemTreasureLevel(entry->itemId), currMapInfo->mapTreasureLevel));
+            if (!isRandomItem(entry->itemId))
+                continue;
 
-                if (resultTreasureLevel != ITEM_TREASURE_LEVEL_7) {
-                    for (int k = 0; k < additionaItemCount; k++) {
-                        Item item;
-                        int whatToGenerateProb = grng->random(100);
-                        if (whatToGenerateProb < 20) {
-                            // Do nothing.
-                        } else if (whatToGenerateProb < 60) {  // generate gold
-                            item.generateGold(resultTreasureLevel);
-                        } else {
-                            pItemTable->generateItem(resultTreasureLevel, RANDOM_ITEM_ANY, &item);
-                        }
-                        if (item.itemId != ITEM_NULL) {
-                            if (entry) {
-                                *entry = item;
-                                entry = {};
-                            } else {
-                                vChests[i].inventory.stash(item);
-                            }
-                        }
-                    }
+            int itemCount = grng->randomInSegment(1, 5); // TODO(captainurist): move down & retrace.
+            ItemTreasureLevel resultTreasureLevel = grng->randomSample(
+                RemapTreasureLevel(randomItemTreasureLevel(entry->itemId), currMapInfo->mapTreasureLevel));
+
+            if (resultTreasureLevel == ITEM_TREASURE_LEVEL_7) {
+                // TODO(captainurist): GenerateArtifact calls Reset on failure, this messes up inventory state. Rewrite properly.
+                Item item;
+                if (item.GenerateArtifact()) {
+                    *entry = item;
                 } else {
-                    Item item;
-                    item.GenerateArtifact();
-                    vChests[i].inventory.stash(item);
+                    vChests[i].inventory.take(entry);
+                }
+                continue;
+            }
+
+            for (int k = 0; k < itemCount; k++) {
+                Item item;
+                int whatToGenerateProb = grng->random(100);
+                if (whatToGenerateProb < 20) {
+                    // Do nothing.
+                } else if (whatToGenerateProb < 60) {  // generate gold
+                    item.generateGold(resultTreasureLevel);
+                } else {
+                    pItemTable->generateItem(resultTreasureLevel, RANDOM_ITEM_ANY, &item);
+                }
+                if (item.itemId != ITEM_NULL) {
+                    if (entry) {
+                        *entry = item;
+                        entry = {};
+                    } else {
+                        vChests[i].inventory.stash(item);
+                    }
                 }
             }
+            if (entry) // We didn't generate anything.
+                vChests[i].inventory.take(entry);
         }
     }
 }

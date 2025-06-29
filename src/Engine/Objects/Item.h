@@ -48,7 +48,7 @@ struct Item {
     inline bool IsStolen() const { return flags & ITEM_STOLEN; }
     inline void SetStolen() { flags |= ITEM_STOLEN; }
 
-    bool GenerateArtifact();
+    [[nodiscard]] bool GenerateArtifact();
     void generateGold(ItemTreasureLevel treasureLevel);
     int GetValue() const;
     std::string GetDisplayName() const;
