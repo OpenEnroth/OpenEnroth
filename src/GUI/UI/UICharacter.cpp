@@ -1019,7 +1019,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
 
     Item *itemMainHand = player->GetMainHandItem();
     Item *itemOffHand = player->GetOffHandItem();
-    bool bTwoHandedGrip = itemMainHand && (itemMainHand->type() == ITEM_TYPE_TWO_HANDED || itemMainHand->GetPlayerSkillType() == CHARACTER_SKILL_SPEAR && !itemOffHand);
+    bool bTwoHandedGrip = itemMainHand && (itemMainHand->type() == ITEM_TYPE_TWO_HANDED || itemMainHand->skill() == CHARACTER_SKILL_SPEAR && !itemOffHand);
 
     // Aqua-Lung
     if (player->hasUnderwaterSuitEquipped()) {
@@ -1224,7 +1224,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
              * These cases should never execute in MM7 as we have spell books in these positions.
              * Also MM6 doesn't have variable size paperdoll's so cordinates need to account pPaperdoll_BodyX/Y.
              */
-            if (item->GetPlayerSkillType() == CHARACTER_SKILL_DAGGER || item->GetPlayerSkillType() == CHARACTER_SKILL_SWORD) {
+            if (item->skill() == CHARACTER_SKILL_DAGGER || item->skill() == CHARACTER_SKILL_SWORD) {
                 switch (item->itemId) {
                     case ITEM_SPELLBOOK_TORCH_LIGHT: // Mordred
                         item_X = 596;
@@ -1782,7 +1782,7 @@ void OnPaperdollLeftClick() {
 
     if (pParty->pPickedItem.itemId != ITEM_NULL) {  // hold item
         pEquipType = pParty->pPickedItem.type();
-        pSkillType = pParty->pPickedItem.GetPlayerSkillType();
+        pSkillType = pParty->pPickedItem.skill();
 
         if (pSkillType == CHARACTER_SKILL_SPEAR) {
             if (shieldequip) {
@@ -1797,7 +1797,7 @@ void OnPaperdollLeftClick() {
             }
         } else {
             if ((pSkillType == CHARACTER_SKILL_SHIELD || pSkillType == CHARACTER_SKILL_SWORD || pSkillType == CHARACTER_SKILL_DAGGER) && mainhandequip &&
-                mainhandequip->GetPlayerSkillType() == CHARACTER_SKILL_SPEAR) {
+                mainhandequip->skill() == CHARACTER_SKILL_SPEAR) {
                 // cant use spear in one hand till master
                 if (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SPEAR).mastery() < CHARACTER_SKILL_MASTERY_MASTER) {
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);

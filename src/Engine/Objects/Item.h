@@ -57,7 +57,12 @@ struct Item {
     void Reset();
     int _439DF3_get_additional_damage(DamageType *a2, bool *vampiyr);
 
-    CharacterSkillType GetPlayerSkillType() const;
+    /**
+     * @return                          Character skill needed to wear this item. Will return `CHARACTER_SKILL_MISC`
+     *                                  for items that are not worn or don't have an associated skill (scrolls, gems,
+     *                                  boots, potions, reagents, etc).
+     */
+    CharacterSkillType skill() const;
     const std::string& GetIconName() const;
     uint8_t GetDamageDice() const;
     uint8_t GetDamageRoll() const;

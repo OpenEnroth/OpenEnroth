@@ -205,7 +205,7 @@ void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &
     auto createItemTable = [&solState](const ItemData &itemDesc) {
         return solState.create_table_with(
             "name", itemDesc.name,
-            "level", itemDesc.identifyDifficulty
+            "level", itemDesc.identifyAndRepairDifficulty
         );
     };
 

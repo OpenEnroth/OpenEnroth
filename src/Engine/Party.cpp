@@ -949,7 +949,7 @@ void Party::placeHeldItemInInventoryOrDrop() {
 }
 
 bool Party::addItemToParty(Item *pItem, bool isSilent) {
-    if (!pItemTable->items[pItem->itemId].identifyDifficulty) {
+    if (!pItemTable->items[pItem->itemId].identifyAndRepairDifficulty) {
         pItem->SetIdentified();
     }
 

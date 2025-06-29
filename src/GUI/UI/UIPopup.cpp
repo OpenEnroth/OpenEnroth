@@ -369,7 +369,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     // added so window is correct size with broken items
     iteminfo_window.uFrameHeight = inspect_item_image->height() + itemYspacing + 54;
 
-    if (!pItemTable->items[inspect_item->itemId].identifyDifficulty)
+    if (!pItemTable->items[inspect_item->itemId].identifyAndRepairDifficulty)
         inspect_item->SetIdentified();
 
     int GoldAmount = 0;
@@ -380,7 +380,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     if (pParty->hasActiveCharacter()) {
         // try to identify
         if (!inspect_item->IsIdentified()) {
-            if (pParty->activeCharacter().CanIdentify(inspect_item) == 1)
+            if (pParty->activeCharacter().CanIdentify(*inspect_item) == 1)
                 inspect_item->SetIdentified();
             CharacterSpeech speech = SPEECH_ID_ITEM_FAIL;
             if (!inspect_item->IsIdentified()) {
@@ -398,7 +398,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
         }
         inspect_item->UpdateTempBonus(pParty->GetPlayingTime());
         if (inspect_item->IsBroken()) {
-            if (pParty->activeCharacter().CanRepair(inspect_item) == 1)
+            if (pParty->activeCharacter().CanRepair(*inspect_item) == 1)
                 inspect_item->flags = inspect_item->flags & ~ITEM_BROKEN | ITEM_IDENTIFIED;
             CharacterSpeech speech = SPEECH_REPAIR_FAIL;
             if (!inspect_item->IsBroken())
@@ -1260,7 +1260,7 @@ void CharacterUI_StatsTab_ShowHint() {
         {
             bool hasBow = pParty->activeCharacter().GetBowItem() != nullptr;
             auto weapon = pParty->activeCharacter().GetMainHandItem();
-            bool hasBlaster = weapon && weapon->GetPlayerSkillType() == CHARACTER_SKILL_BLASTER;
+            bool hasBlaster = weapon && weapon->skill() == CHARACTER_SKILL_BLASTER;
             // TODO(captainurist): fmt can throw
             std::string description;
             if (hasBow || hasBlaster) {
@@ -2326,7 +2326,7 @@ void Inventory_ItemPopupAndAlchemy() {
                     pParty->activeCharacter().SetVariable(VAR_AutoNotes, pItemTable->potionNotes[potionSrc1][potionSrc2]);
                 }
             }
-            if (!(pItemTable->items[entry->itemId].identifyDifficulty)) {
+            if (!(pItemTable->items[entry->itemId].identifyAndRepairDifficulty)) {
                 entry->flags |= ITEM_IDENTIFIED;
             }
             pParty->activeCharacter().playReaction(SPEECH_POTION_SUCCESS);

@@ -644,13 +644,13 @@ bool Item::IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet) {
     return false;
 }
 
-CharacterSkillType Item::GetPlayerSkillType() const {
-    CharacterSkillType skl = pItemTable->items[this->itemId].skill;
-    if (skl == CHARACTER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
-        // club skill not used but some items load it
-        skl = CHARACTER_SKILL_MACE;
+CharacterSkillType Item::skill() const {
+    CharacterSkillType result = pItemTable->items[this->itemId].skill;
+    if (result == CHARACTER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
+        // club skill not used but some items load it.
+        result = CHARACTER_SKILL_MACE;
     }
-    return skl;
+    return result;
 }
 
 const std::string& Item::GetIconName() const {
@@ -717,7 +717,7 @@ bool Item::canSellRepairIdentifyAt(HouseId houseId) {
         case HOUSE_TYPE_ARMOR_SHOP:
             return this->isArmor();
         case HOUSE_TYPE_MAGIC_SHOP:
-            return (this->GetPlayerSkillType() == CHARACTER_SKILL_MISC && !isRecipe(this->itemId)) || this->isBook();
+            return (this->skill() == CHARACTER_SKILL_MISC && !isRecipe(this->itemId)) || this->isBook();
         case HOUSE_TYPE_ALCHEMY_SHOP:
             return this->isReagent() ||
                    this->isPotion() ||
