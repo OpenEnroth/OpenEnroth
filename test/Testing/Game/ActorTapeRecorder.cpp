@@ -5,7 +5,7 @@
 #include <deque>
 #include <functional>
 
-using namespace std::placeholders; // NOLINT
+#include "Utility/Lambda.h"
 
 ActorTapeRecorder::ActorTapeRecorder(TestController *controller) : _controller(controller) {
     assert(controller);

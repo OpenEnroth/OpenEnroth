@@ -20,6 +20,7 @@
 #include "Utility/Memory/Blob.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/Exception.h"
+#include "Utility/Lambda.h"
 
 enum {
     MIN_GLYPH_WIDTH = 1,
@@ -117,7 +118,7 @@ static std::optional<LodFileFormat> checkFont(const Blob &blob) {
     if (header.firstChar < header.lastChar && header.field_3 == 8 && header.field_4 == 0 && header.field_5 == 0 &&
         header.height >= MIN_GLYPH_HEIGHT && header.height <= MAX_GLYPH_HEIGHT && header.field_7 == 0 &&
         header.field_8 == 0 && header.paletteCount == 0 &&
-        std::ranges::all_of(header.palettes, [](const auto &pal) { return pal == 0; }))
+        std::ranges::all_of(header.palettes, _1 == 0))
         return LOD_FILE_FONT;
 
     return {};
