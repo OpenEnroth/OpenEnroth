@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['key_0',['Key',['../classGameConfig.html#abdf3edee52a683ff5591c1edff887e74',1,'GameConfig']]],
-  ['key_1',['key',['../structConfigPatchEntry.html#a592bb0e202f7e96833e2060c86dd5cb7',1,'ConfigPatchEntry::key()'],['../classPlatformKeyEvent.html#a47843d2ef4759e9938f79913f8999f54',1,'PlatformKeyEvent::key()'],['../classPlatformGamepadKeyEvent.html#a58f0340dfaa5b641a40cedd625b2eb20',1,'PlatformGamepadKeyEvent::key()']]],
+  ['key_0',['key',['../structConfigPatchEntry.html#a592bb0e202f7e96833e2060c86dd5cb7',1,'ConfigPatchEntry::key()'],['../classPlatformKeyEvent.html#a47843d2ef4759e9938f79913f8999f54',1,'PlatformKeyEvent::key()'],['../classPlatformGamepadKeyEvent.html#a58f0340dfaa5b641a40cedd625b2eb20',1,'PlatformGamepadKeyEvent::key()']]],
+  ['key_1',['Key',['../classGameConfig.html#abdf3edee52a683ff5591c1edff887e74',1,'GameConfig']]],
   ['key_2ecpp_2',['Key.cpp',['../Key_8cpp.html',1,'']]],
   ['key_2eh_3',['Key.h',['../Key_8h.html',1,'']]],
   ['key_5fa_4',['KEY_A',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca5df3f2093c573770f204c77c0dd75a31',1,'PlatformEnums.h']]],
