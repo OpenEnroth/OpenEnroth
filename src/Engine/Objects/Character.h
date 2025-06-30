@@ -110,9 +110,6 @@ class CharacterConditions {
 
 class Character {
  public:
-    static constexpr unsigned int INVENTORY_SLOTS_WIDTH = 14; // TODO(captainurist): drop these consts, they don't belong here.
-    static constexpr unsigned int INVENTORY_SLOTS_HEIGHT = 9;
-
     Character();
     void Zero();
 
@@ -225,8 +222,8 @@ class Character {
     MerchantPhrase SelectPhrasesTransaction(Item *pItem, HouseType building_type, HouseId houseId, ShopScreen ShopMenuType);
     int GetBodybuilding() const;
     int GetMeditation() const;
-    bool CanIdentify(Item *pItem) const;
-    bool CanRepair(Item *pItem) const;
+    bool CanIdentify(const Item &item) const;
+    bool CanRepair(const Item &item) const;
     int GetPerception() const;
     int GetDisarmTrap() const;
 
