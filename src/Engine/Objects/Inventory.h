@@ -27,16 +27,19 @@ class Inventory;
  * Logical location of an `Item` inside an `Inventory`.
  */
 enum class InventoryZone {
+    /** This is for invalid inventory entries. */
+    INVENTORY_ZONE_INVALID = 0,
+
     /** Item is effectively hidden. Applies only to chest inventory. MM7 had chests that were filled to the brim with
      * stuff, so that there was simply not enough chest space to place all the items, and some items ended up hidden.
      * See `chest_try_place_items` config option. */
-    INVENTORY_ZONE_STASH = 0,
+    INVENTORY_ZONE_STASH = 1,
 
     /** Item is stored in the inventory grid. */
-    INVENTORY_ZONE_GRID = 1,
+    INVENTORY_ZONE_GRID = 2,
 
     /** Item is worn by a character. Applies only to character inventory. */
-    INVENTORY_ZONE_EQUIPMENT = 2,
+    INVENTORY_ZONE_EQUIPMENT = 3,
 };
 using enum InventoryZone;
 
@@ -273,7 +276,7 @@ class Inventory {
 
     struct InventoryRecord {
         Item item;
-        InventoryZone zone = INVENTORY_ZONE_STASH;
+        InventoryZone zone = INVENTORY_ZONE_INVALID;
         Pointi position;
         ItemSlot slot = ITEM_SLOT_INVALID;
     };
@@ -408,7 +411,7 @@ inline const Item *InventoryConstEntry::get() const {
 }
 
 InventoryZone InventoryConstEntry::zone() const {
-    return *this ? _inventory->_records[_index].zone : INVENTORY_ZONE_STASH;
+    return *this ? _inventory->_records[_index].zone : INVENTORY_ZONE_INVALID;
 }
 
 Recti InventoryConstEntry::geometry() const {

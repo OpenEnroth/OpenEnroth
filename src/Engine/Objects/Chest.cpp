@@ -209,7 +209,7 @@ void Chest::PlaceItems(int uChestID) { // only used for setup
                 entry->postGenerate(ITEM_SOURCE_CHEST);
                 if (chest.flags & CHEST_OPENED)
                     entry->SetIdentified();
-                chest.inventory.add(pos, chest.inventory.take(entry));
+                entry = chest.inventory.add(pos, chest.inventory.take(entry));
                 break;
             }
         }

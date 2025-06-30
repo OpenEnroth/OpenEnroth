@@ -159,5 +159,5 @@ GAME_TEST(Inventory, EntryInvalidation) {
     EXPECT_FALSE(entry);
     EXPECT_EQ(entry.geometry(), Recti());
     EXPECT_EQ(entry.slot(), ITEM_SLOT_INVALID);
-    EXPECT_EQ(entry.zone(), INVENTORY_ZONE_STASH);
+    EXPECT_EQ(entry.zone(), INVENTORY_ZONE_INVALID);
 }
