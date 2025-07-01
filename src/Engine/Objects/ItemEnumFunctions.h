@@ -100,7 +100,7 @@ inline bool isAncientWeapon(ItemId item) {
 
 inline ItemTreasureLevel randomItemTreasureLevel(ItemId type) {
     assert(isRandomItem(type));
-    return ItemTreasureLevel(-std::to_underlying(type));
+    return static_cast<ItemTreasureLevel>(-std::to_underlying(type));
 }
 
 inline Segment<ItemId> spellbooksForSchool(MagicSchool school, CharacterSkillMastery maxMastery = CHARACTER_SKILL_MASTERY_GRANDMASTER) {

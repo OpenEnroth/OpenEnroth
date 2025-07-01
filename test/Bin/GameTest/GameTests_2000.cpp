@@ -3,6 +3,7 @@
 #include "Engine/Engine.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
+#include "Engine/Objects/Chest.h"
 
 
 // 2000
@@ -171,5 +172,17 @@ GAME_TEST(Prs, Pr2083) {
         EXPECT_EQ(wand.numCharges, wand.maxCharges);
         EXPECT_GE(wand.numCharges, 15+1);
         EXPECT_LE(wand.numCharges, 15+6);
+    }
+}
+
+GAME_TEST(Issues, Issue2099) {
+    // Opening chest asserts.
+    // We had chests generating with `ITEM_RANDOM_LEVEL_1` and asserting on open, we're just restarting the game three
+    // times (effectively with different random seeds), and checking the chests.
+    for (int iteration = 0; iteration < 3; iteration++) {
+        game.startNewGame();
+        for (const Chest &chest : vChests)
+            for (InventoryConstEntry entry : chest.inventory.entries())
+                EXPECT_FALSE(isRandomItem(entry->itemId));
     }
 }
