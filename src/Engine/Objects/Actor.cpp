@@ -3041,7 +3041,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
     if (!projectileSprite) {
         IsAdditionalDamagePossible = true;
         if (character->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-            CharacterSkillType main_hand_skill = character->GetMainHandItem()->GetPlayerSkillType();
+            CharacterSkillType main_hand_skill = character->GetMainHandItem()->skill();
             CharacterSkillMastery main_hand_mastery = character->getSkillValue(main_hand_skill).mastery();
             switch (main_hand_skill) {
                 case CHARACTER_SKILL_STAFF:

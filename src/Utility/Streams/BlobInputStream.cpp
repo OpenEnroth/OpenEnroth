@@ -93,7 +93,7 @@ Blob BlobInputStream::readBlobOrFail(size_t size) {
     assert(_pos);
 
     if (size > remaining())
-        throw Exception("Failed to read the requested number of bytes from a blob stream, requested {}, got {}", size, remaining());
+        throw Exception("Failed to read the requested number of bytes from a blob stream '{}', requested {}, got {}", _blob.displayPath(), size, remaining());
 
     Blob result = _blob.subBlob(position(), size);
     assert(result.size() == size);

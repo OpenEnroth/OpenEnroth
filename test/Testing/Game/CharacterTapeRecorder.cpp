@@ -5,7 +5,7 @@
 
 #include "Engine/Party.h"
 
-using namespace std::placeholders; // NOLINT
+#include "Utility/Lambda.h"
 
 CharacterTapeRecorder::CharacterTapeRecorder(TestController *controller) : _controller(controller) {
     assert(controller);

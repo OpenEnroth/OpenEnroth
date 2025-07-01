@@ -284,5 +284,10 @@ void Inventory::checkInvariants() const {
         assert(_records[index].zone == INVENTORY_ZONE_EQUIPMENT);
         assert(_records[index].item.itemId != ITEM_NULL);
     }
+
+    // Check that ITEM_NULL entries have INVENTORY_ZONE_INVALID. We check tail entries too.
+    for (int i = 0; i < MAX_ITEMS; i++)
+        if (_records[i].item.itemId == ITEM_NULL)
+            assert(_records[i].zone == INVENTORY_ZONE_INVALID);
 #endif
 }

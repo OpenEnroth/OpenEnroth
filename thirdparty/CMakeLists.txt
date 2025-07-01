@@ -75,3 +75,6 @@ endif()
 set(GENERATOR_BUILD_PACKAGE OFF)
 set(GENERATOR_BUILD_TESTS OFF)
 add_subdirectory(generator EXCLUDE_FROM_ALL)
+
+# lambda2
+add_subdirectory(lambda2)

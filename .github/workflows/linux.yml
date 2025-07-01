@@ -98,7 +98,7 @@ jobs:
             fi
 
       - name: Run ccache
-        uses: hendrikmuhs/ccache-action@v1.2.14
+        uses: hendrikmuhs/ccache-action@v1.2.18
         with:
           key: 'linux-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2

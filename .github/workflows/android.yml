@@ -34,7 +34,7 @@ on:
 env:
   # This version is referenced in android/openenroth/build.gradle.
   # When updating the version here you should also update it in the Dependencies repo!
-  NDK_VERSION: 26.3.11579264
+  NDK_VERSION: 28.1.13356709
 
 jobs:
   build_android:
@@ -100,7 +100,7 @@ jobs:
           cache: gradle
 
       - name: Run ccache
-        uses: hendrikmuhs/ccache-action@v1.2.14
+        uses: hendrikmuhs/ccache-action@v1.2.18
         with:
           key: 'android-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2

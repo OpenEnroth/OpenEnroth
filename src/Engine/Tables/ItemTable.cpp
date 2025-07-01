@@ -164,7 +164,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         }
         items[item_counter].damageMod = atoi(tokens[7]);
         items[item_counter].rarity = valueOr(materialMap, tokens[8], RARITY_COMMON);
-        items[item_counter].identifyDifficulty = atoi(tokens[9]);
+        items[item_counter].identifyAndRepairDifficulty = atoi(tokens[9]);
         items[item_counter].unidentifiedName = removeQuotes(tokens[10]);
         items[item_counter].spriteId = static_cast<SpriteId>(atoi(tokens[11]));
 
@@ -535,7 +535,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
 
     if (outItem->itemId == ITEM_SPELLBOOK_DIVINE_INTERVENTION && !pParty->_questBits[QBIT_DIVINE_INTERVENTION_RETRIEVED])
         outItem->itemId = ITEM_SPELLBOOK_SUNRAY;
-    if (pItemTable->items[outItem->itemId].identifyDifficulty)
+    if (pItemTable->items[outItem->itemId].identifyAndRepairDifficulty)
         outItem->flags = 0;
     else
         outItem->flags = ITEM_IDENTIFIED;

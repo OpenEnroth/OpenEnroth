@@ -586,7 +586,7 @@ int Character::GetMeditation() const {
 }
 
 //----- (004910D3) --------------------------------------------------------
-bool Character::CanIdentify(Item *pItem) const {
+bool Character::CanIdentify(const Item &item) const {
     CombinedSkillValue val = getActualSkillValue(CHARACTER_SKILL_ITEM_ID);
     int multiplier =
         GetMultiplierForSkillLevel(CHARACTER_SKILL_ITEM_ID, 1, 2, 3, 5);
@@ -596,20 +596,20 @@ bool Character::CanIdentify(Item *pItem) const {
 
     // check item level against skill
     bool result = (multiplier * val.level()) >=
-                  pItemTable->items[pItem->itemId].identifyDifficulty;
+                  pItemTable->items[item.itemId].identifyAndRepairDifficulty;
 
     return result;
 }
 
 //----- (00491151) --------------------------------------------------------
-bool Character::CanRepair(Item *pItem) const {
+bool Character::CanRepair(const Item &item) const {
     CombinedSkillValue val = getActualSkillValue(CHARACTER_SKILL_REPAIR);
     int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_REPAIR, 1, 2, 3, 5);
 
     // TODO(Nik-RE-dev): is check for boots correct?
-    if (CheckHiredNPCSpeciality(Smith) && pItem->isWeapon() ||
-        CheckHiredNPCSpeciality(Armorer) && pItem->isArmor() ||
-        CheckHiredNPCSpeciality(Alchemist) && pItem->type() >= ITEM_TYPE_BOOTS)
+    if (CheckHiredNPCSpeciality(Smith) && item.isWeapon() ||
+        CheckHiredNPCSpeciality(Armorer) && item.isArmor() ||
+        CheckHiredNPCSpeciality(Alchemist) && item.type() >= ITEM_TYPE_BOOTS)
         return true;  // check against hired help
 
     if (val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // gm repair
@@ -617,7 +617,7 @@ bool Character::CanRepair(Item *pItem) const {
 
     // check item level against skill
     bool result = (multiplier * val.level()) >=
-                  pItemTable->items[pItem->itemId].identifyDifficulty;
+                  pItemTable->items[item.itemId].identifyAndRepairDifficulty;
 
     return result;
 }
@@ -848,9 +848,8 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
     } else {
         if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
             Item *mainHandItemGen = this->GetMainHandItem();
-            ItemId itemId = mainHandItemGen->itemId;
             bool addOneDice = false;
-            if (pItemTable->items[itemId].skill == CHARACTER_SKILL_SPEAR &&
+            if (mainHandItemGen->skill() == CHARACTER_SKILL_SPEAR &&
                 !this->inventory.entry(ITEM_SLOT_OFF_HAND))  // using spear in two hands adds a dice roll
                 addOneDice = true;
 
@@ -930,7 +929,7 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(Item *weapon,
 
     // master dagger triple damage backstab
     if (getActualSkillValue(CHARACTER_SKILL_DAGGER).mastery() >= CHARACTER_SKILL_MASTERY_MASTER &&
-        pItemTable->items[itemId].skill == CHARACTER_SKILL_DAGGER && grng->random(100) < 10)
+        weapon->skill() == CHARACTER_SKILL_DAGGER && grng->random(100) < 10)
         totalDmg *= 3;
 
     return totalDmg;
@@ -1140,7 +1139,7 @@ int Character::CalculateIncommingDamage(DamageType dmg_type, int dmg) {
     if ((dmg_type == DAMAGE_PHYSICAL) &&
         (equippedArmor != nullptr)) {      // physical damage and wearing armour
         if (!equippedArmor->IsBroken()) {  // armour isnt broken
-            CharacterSkillType armor_skill = equippedArmor->GetPlayerSkillType();
+            CharacterSkillType armor_skill = equippedArmor->skill();
 
             // master and above half incoming damage
             if (armor_skill == CHARACTER_SKILL_PLATE) {
@@ -1166,7 +1165,7 @@ ItemType Character::GetEquippedItemEquipType(ItemSlot uEquipSlot) const {
 
 //----- (0048D651) --------------------------------------------------------
 CharacterSkillType Character::GetEquippedItemSkillType(ItemSlot uEquipSlot) const {
-    return GetItem(uEquipSlot)->GetPlayerSkillType();
+    return GetItem(uEquipSlot)->skill();
 }
 
 //----- (0048D676) --------------------------------------------------------
@@ -1714,7 +1713,7 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
     if (attackUsesBow) {
         assert(HasItemEquipped(ITEM_SLOT_BOW));
         weapon = GetBowItem();
-        weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
+        weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
     } else if (IsUnarmed() && getActualSkillValue(CHARACTER_SKILL_UNARMED).level() > 0) {
         weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_UNARMED];
     } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
@@ -1722,28 +1721,28 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
         if (weapon->isWand()) {
             weapon_recovery = pSpellDatas[spellForWand(weapon->itemId)].recovery_per_skill[CHARACTER_SKILL_MASTERY_EXPERT];
         } else {
-            weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
+            weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
         }
     }
 
     Duration shield_recovery;
     if (HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
         if (GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND) == ITEM_TYPE_SHIELD) {
-            CharacterSkillType skill_type = GetOffHandItem()->GetPlayerSkillType();
+            CharacterSkillType skill_type = GetOffHandItem()->skill();
             Duration shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
             float multiplier = GetArmorRecoveryMultiplierFromSkillLevel(skill_type, 1.0f, 0, 0, 0);
             shield_recovery = shield_base_recovery * multiplier;
         } else {
-            if (base_recovery_times_per_weapon_type[GetOffHandItem()->GetPlayerSkillType()] > weapon_recovery) {
+            if (base_recovery_times_per_weapon_type[GetOffHandItem()->skill()] > weapon_recovery) {
                 weapon = GetOffHandItem();
-                weapon_recovery = base_recovery_times_per_weapon_type[weapon->GetPlayerSkillType()];
+                weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
             }
         }
     }
 
     Duration armour_recovery;
     if (HasItemEquipped(ITEM_SLOT_ARMOUR)) {
-        CharacterSkillType armour_skill_type = GetArmorItem()->GetPlayerSkillType();
+        CharacterSkillType armour_skill_type = GetArmorItem()->skill();
         Duration base_armour_recovery = base_recovery_times_per_weapon_type[armour_skill_type];
         float multiplier;
 
@@ -1765,18 +1764,18 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
 
     Duration sword_axe_bow_recovery_reduction;
     if (weapon != nullptr) {
-        CombinedSkillValue weaponSkill = getActualSkillValue(weapon->GetPlayerSkillType());
+        CombinedSkillValue weaponSkill = getActualSkillValue(weapon->skill());
         if (weaponSkill.level() > 0 &&
-            (weapon->GetPlayerSkillType() == CHARACTER_SKILL_SWORD ||
-             weapon->GetPlayerSkillType() == CHARACTER_SKILL_AXE ||
-             weapon->GetPlayerSkillType() == CHARACTER_SKILL_BOW)) {
+            (weapon->skill() == CHARACTER_SKILL_SWORD ||
+             weapon->skill() == CHARACTER_SKILL_AXE ||
+             weapon->skill() == CHARACTER_SKILL_BOW)) {
             // Expert Sword, Axe & Bow reduce recovery
             if (weaponSkill.mastery() >= CHARACTER_SKILL_MASTERY_EXPERT)
                 sword_axe_bow_recovery_reduction = Duration::fromTicks(weaponSkill.level());
         }
     }
 
-    bool shooting_laser = weapon && weapon->GetPlayerSkillType() == CHARACTER_SKILL_BLASTER;
+    bool shooting_laser = weapon && weapon->skill() == CHARACTER_SKILL_BLASTER;
     assert(!shooting_laser || !attackUsesBow); // For blasters we expect attackUsesBow == false.
 
     Duration armsmaster_recovery_reduction;
@@ -2263,7 +2262,7 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
                         const Item *mainHandItem = GetMainHandItem();
                         v26 = mainHandItem->GetDamageRoll();
                         if (GetOffHandItem() != nullptr ||
-                            mainHandItem->GetPlayerSkillType() != CHARACTER_SKILL_SPEAR) {
+                            mainHandItem->skill() != CHARACTER_SKILL_SPEAR) {
                             v25 = mainHandItem->GetDamageDice();
                         } else {
                             v25 = mainHandItem->GetDamageDice() + 1;
@@ -2315,7 +2314,7 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
                     v5 = mainHandItem->GetDamageDice() +
                          mainHandItem->GetDamageMod();
                     if (GetOffHandItem() == nullptr &&
-                        mainHandItem->GetPlayerSkillType() == CHARACTER_SKILL_SPEAR) {
+                        mainHandItem->skill() == CHARACTER_SKILL_SPEAR) {
                         ++v5;
                     }
                 }
@@ -2685,7 +2684,7 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
             for (ItemSlot j : allItemSlots()) {
                 const Item *currItem = GetItem(j);
                 if (currItem != nullptr && (!currItem->IsBroken())) {
-                    CharacterSkillType itemSkillType = currItem->GetPlayerSkillType();
+                    CharacterSkillType itemSkillType = currItem->skill();
                     int currArmorSkillLevel = 0;
                     int multiplier = 0;
                     switch (itemSkillType) {
@@ -2753,7 +2752,7 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
                 if (this->HasItemEquipped(i)) {
                     const Item *currItem = GetItem(i);
                     if (currItem->isMeleeWeapon()) {
-                        CharacterSkillType currItemSkillType = currItem->GetPlayerSkillType();
+                        CharacterSkillType currItemSkillType = currItem->skill();
                         int currentItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
                         if (currItemSkillType == CHARACTER_SKILL_BLASTER) {
                             int multiplier = GetMultiplierForSkillLevel(currItemSkillType, 1, 2, 3, 5);
@@ -2775,7 +2774,7 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
                 if (this->HasItemEquipped(i)) {
                     const Item *currItemPtr = GetItem(i);
                     if (currItemPtr->isWeapon()) {
-                        CharacterSkillType currentItemSkillType = GetItem(i)->GetPlayerSkillType();
+                        CharacterSkillType currentItemSkillType = GetItem(i)->skill();
                         int currentItemSkillLevel = this->getActualSkillValue(currentItemSkillType).level();
                         if (currentItemSkillType == CHARACTER_SKILL_BOW) {
                             int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_BOW, 1, 1, 1, 1);
@@ -2802,7 +2801,7 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
                 if (this->HasItemEquipped(i)) {
                     const Item *currItemPtr = GetItem(i);
                     if (currItemPtr->isMeleeWeapon()) {
-                        CharacterSkillType currItemSkillType = currItemPtr->GetPlayerSkillType();
+                        CharacterSkillType currItemSkillType = currItemPtr->skill();
                         int currItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
                         int baseSkillBonus;
                         int multiplier;
@@ -5958,8 +5957,8 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
         Item *equippedArmor = playerPtr->GetArmorItem();
         SoundId soundToPlay;
         if (!equippedArmor || equippedArmor->IsBroken() ||
-            (equippedArmor->GetPlayerSkillType() != CHARACTER_SKILL_CHAIN &&
-             equippedArmor->GetPlayerSkillType() != CHARACTER_SKILL_PLATE)) {
+            (equippedArmor->skill() != CHARACTER_SKILL_CHAIN &&
+             equippedArmor->skill() != CHARACTER_SKILL_PLATE)) {
             soundToPlay = vrng->randomSample({SOUND_dull_armor_strike1, SOUND_dull_armor_strike2, SOUND_dull_armor_strike3, SOUND_dull_strike});
         } else {
             soundToPlay = vrng->randomSample({SOUND_metal_armor_strike1, SOUND_metal_armor_strike2, SOUND_metal_armor_strike3, SOUND_metal_vs_metal01h});
@@ -6253,18 +6252,12 @@ void Character::OnInventoryLeftClick() {
     Pointi inventoryPos = mapToInventoryGrid(mousePos + mouse->pickedItemOffset, Pointi(14, 17));
 
     // If a held item is overlapping outside the grid
-    if (pParty->pPickedItem.itemId != ITEM_NULL) {
-        Sizei itemSize = pParty->pPickedItem.inventorySize();
-        if (inventoryPos.x < 0 || inventoryPos.y < 0 ||
-            inventoryPos.x + itemSize.w > INVENTORY_SLOTS_WIDTH ||
-            inventoryPos.y + itemSize.h > INVENTORY_SLOTS_HEIGHT) {
-            pAudioPlayer->playUISound(SOUND_error);
-            return;
-        }
+    if (pParty->pPickedItem.itemId != ITEM_NULL && !inventory.gridRect().contains(Recti(inventoryPos, pParty->pPickedItem.inventorySize()))) {
+        pAudioPlayer->playUISound(SOUND_error);
+        return;
     }
 
-    if (inventoryPos.y >= 0 && inventoryPos.y < INVENTORY_SLOTS_HEIGHT &&
-        inventoryPos.x >= 0 && inventoryPos.x < INVENTORY_SLOTS_WIDTH) {
+    if (inventory.gridRect().contains(inventoryPos)) {
         if (IsEnchantingInProgress) {
             InventoryEntry enchantedItemPos = inventory.entry(inventoryPos);
 
@@ -6604,7 +6597,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
         skill = CHARACTER_SKILL_BLASTER;
     } else {
         if (character->HasItemEquipped(ITEM_SLOT_MAIN_HAND) && main_hand)
-            skill = main_hand->GetPlayerSkillType();
+            skill = main_hand->skill();
 
         pTurnEngine->ApplyPlayerAction();
     }
@@ -6834,7 +6827,7 @@ MerchantPhrase Character::SelectPhrasesTransaction(Item *pItem, HouseType buildi
         case HOUSE_TYPE_MAGIC_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
                 return MERCHANT_PHRASE_INVALID_ACTION;
-            if (pItemTable->items[idemId].skill != CHARACTER_SKILL_MISC)
+            if (pItem->skill() != CHARACTER_SKILL_MISC)
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
         case HOUSE_TYPE_ALCHEMY_SHOP:
