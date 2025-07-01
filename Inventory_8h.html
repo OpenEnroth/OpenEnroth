@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7d2d26b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8c54589</span>
    </div>
   </td>
  </tr>
@@ -110,9 +110,10 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:ad2ddb2a07c749c4a36028c8d528621f1"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Inventory_8h.html#ad2ddb2a07c749c4a36028c8d528621f1">InventoryZone</a> { <a class="el" href="Inventory_8h.html#ad2ddb2a07c749c4a36028c8d528621f1a3458020d5e25e740397487bc27fe47d2">INVENTORY_ZONE_STASH</a> = 0
-, <a class="el" href="Inventory_8h.html#ad2ddb2a07c749c4a36028c8d528621f1ad7c1dbdbed3f7d3e3c7bdc9db10b24ad">INVENTORY_ZONE_GRID</a> = 1
-, <a class="el" href="Inventory_8h.html#ad2ddb2a07c749c4a36028c8d528621f1ab31b2e34ad7da389efd5f0b8b606029a">INVENTORY_ZONE_EQUIPMENT</a> = 2
+<tr class="memitem:ad2ddb2a07c749c4a36028c8d528621f1"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Inventory_8h.html#ad2ddb2a07c749c4a36028c8d528621f1">InventoryZone</a> { <a class="el" href="Inventory_8h.html#ad2ddb2a07c749c4a36028c8d528621f1aeaad338e255d3056d069a4f3c11ecf34">INVENTORY_ZONE_INVALID</a> = 0
+, <a class="el" href="Inventory_8h.html#ad2ddb2a07c749c4a36028c8d528621f1a3458020d5e25e740397487bc27fe47d2">INVENTORY_ZONE_STASH</a> = 1
+, <a class="el" href="Inventory_8h.html#ad2ddb2a07c749c4a36028c8d528621f1ad7c1dbdbed3f7d3e3c7bdc9db10b24ad">INVENTORY_ZONE_GRID</a> = 2
+, <a class="el" href="Inventory_8h.html#ad2ddb2a07c749c4a36028c8d528621f1ab31b2e34ad7da389efd5f0b8b606029a">INVENTORY_ZONE_EQUIPMENT</a> = 3
  }</td></tr>
 <tr class="separator:ad2ddb2a07c749c4a36028c8d528621f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -138,7 +139,9 @@ Enumerations</h2></td></tr>
 </div><div class="memdoc">
 <p >Logical location of an <code><a class="el" href="structItem.html">Item</a></code> inside an <code><a class="el" href="classInventory.html">Inventory</a></code>. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad2ddb2a07c749c4a36028c8d528621f1a3458020d5e25e740397487bc27fe47d2" name="ad2ddb2a07c749c4a36028c8d528621f1a3458020d5e25e740397487bc27fe47d2"></a>INVENTORY_ZONE_STASH&#160;</td><td class="fielddoc"><p ><a class="el" href="structItem.html">Item</a> is effectively hidden. Applies only to chest inventory. MM7 had chests that were filled to the brim with stuff, so that there was simply not enough chest space to place all the items, and some items ended up hidden. See <code>chest_try_place_items</code> config option. </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad2ddb2a07c749c4a36028c8d528621f1aeaad338e255d3056d069a4f3c11ecf34" name="ad2ddb2a07c749c4a36028c8d528621f1aeaad338e255d3056d069a4f3c11ecf34"></a>INVENTORY_ZONE_INVALID&#160;</td><td class="fielddoc"><p >This is for invalid inventory entries. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad2ddb2a07c749c4a36028c8d528621f1a3458020d5e25e740397487bc27fe47d2" name="ad2ddb2a07c749c4a36028c8d528621f1a3458020d5e25e740397487bc27fe47d2"></a>INVENTORY_ZONE_STASH&#160;</td><td class="fielddoc"><p ><a class="el" href="structItem.html">Item</a> is effectively hidden. Applies only to chest inventory. MM7 had chests that were filled to the brim with stuff, so that there was simply not enough chest space to place all the items, and some items ended up hidden. See <code>chest_try_place_items</code> config option. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="ad2ddb2a07c749c4a36028c8d528621f1ad7c1dbdbed3f7d3e3c7bdc9db10b24ad" name="ad2ddb2a07c749c4a36028c8d528621f1ad7c1dbdbed3f7d3e3c7bdc9db10b24ad"></a>INVENTORY_ZONE_GRID&#160;</td><td class="fielddoc"><p ><a class="el" href="structItem.html">Item</a> is stored in the inventory grid. </p>
 </td></tr>
