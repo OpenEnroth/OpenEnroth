@@ -1178,10 +1178,7 @@ bool Character::IsUnarmed() const {
 //----- (0048D6AA) --------------------------------------------------------
 bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
     InventoryConstEntry entry = inventory.entry(uEquipIndex);
-    if (entry)
-        return !entry->IsBroken() && (!entry->isWand() || entry->numCharges > 0);
-    else
-        return false;
+    return entry && entry->isFunctional();
 }
 
 //----- (0048D6D0) --------------------------------------------------------
