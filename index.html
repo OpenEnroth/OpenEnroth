@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;a67c52b</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;461a523</span>
    </div>
   </td>
  </tr>
@@ -73,7 +73,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p ><a class="anchor" id="md_README"></a> <a href="https://github.com/OpenEnroth/OpenEnroth/actions/workflows/windows.yml"><img src="https://github.com/OpenEnroth/OpenEnroth/workflows/Windows/badge.svg" alt="Windows" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/OpenEnroth/OpenEnroth/actions/workflows/linux.yml"><img src="https://github.com/OpenEnroth/OpenEnroth/workflows/Linux/badge.svg" alt="Linux" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/OpenEnroth/OpenEnroth/actions/workflows/macos.yml"><img src="https://github.com/OpenEnroth/OpenEnroth/workflows/MacOS/badge.svg" alt="MacOS" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/OpenEnroth/OpenEnroth/actions/workflows/doxygen.yml"><img src="https://github.com/OpenEnroth/OpenEnroth/workflows/Doxygen/badge.svg" alt="Doxygen" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/OpenEnroth/OpenEnroth/actions/workflows/style.yml"><img src="https://github.com/OpenEnroth/OpenEnroth/workflows/Style/badge.svg" alt="Style Checker" style="pointer-events: none;" class="inline"/></a></p>
-<p >We are creating an extensible engine &amp; modding environment that would make it possible to play original Might&amp;Magic VI-VIII games on modern platforms with improved graphics and quality-of-life features expected of modern titles, and make modding and installing &amp; playing the mods a pleasurable experience.</p>
+<p >We are creating an extensible engine &amp; modding environment that would make it possible to play original Might &amp; Magic VI-VIII games on modern platforms with improved graphics and quality-of-life features expected of modern titles, and make modding and installing &amp; playing the mods a pleasurable experience.</p>
 <p >Currently only MM7 is playable. You can check out the <a href="https://github.com/OpenEnroth/OpenEnroth/milestones">milestones</a> to see where we're at.</p>
 <p ><img src="https://user-images.githubusercontent.com/24377109/79051217-491a7800-7c2f-11ea-85c7-f9120b7d79dd.png" alt="screenshot_main" class="inline"/></p>
 <h1><a class="anchor" id="autotoc_md16"></a>
@@ -85,50 +85,100 @@ Discord</h1>
 <p >Join our discord channel to discuss, track progress or get involved in the development of this project.</p>
 <p ><a href="https://discord.gg/jRCyPtq"><img src="https://img.shields.io/badge/chat-on%20discord-green.svg" alt="Discord channel invite" style="pointer-events: none;" class="inline"/></a></p>
 <h1><a class="anchor" id="autotoc_md18"></a>
-Getting Started on Windows</h1>
+Getting Started</h1>
+<p >Regardless of what system you want to play OpenEnroth on, you will need a copy of OpenEnroth and the Might and Magic VII game data. Where and how you install these on your computer depends on your operating system.</p>
+<h2><a class="anchor" id="autotoc_md19"></a>
+Getting the game data</h2>
+<p >You can buy Might and Magic VII from <a href="https://www.gog.com/en/game/might_and_magic_7_for_blood_and_honor">gog.com</a> and download the installer from there; if you have a copy from another source (eg. an original retail disc) this should also work with OpenEnroth.</p>
+<p >At the very least, OpenEnroth requires the <code>ANIMS</code>, <code>DATA</code>, <code>MUSIC</code> and <code>SOUNDS</code> directories from the game data.</p>
+<h3><a class="anchor" id="autotoc_md20"></a>
+Non-GOG versions</h3>
+<p >Install or extract your copy of the game as normal.</p>
+<h3><a class="anchor" id="autotoc_md21"></a>
+GOG Version</h3>
+<h4><a class="anchor" id="autotoc_md22"></a>
+Windows</h4>
+<p >On Windows, you can simply run the installer to extract the game data to your computer.</p>
+<h4><a class="anchor" id="autotoc_md23"></a>
+Linux and macOS</h4>
+<p >The installer cannot be run directly on Linux and macOS but you can use <code>innoextract</code> to extract its contents.</p>
+<ul>
+<li>On macOS, install <a href="https://brew.sh/">Homebrew</a> if you don't have it already (run <code>brew --version</code> in a Terminal window to see if you do) and install <code>innoextract</code> using <code>brew install innoextract</code></li>
+<li>On Linux, the exact command depends on your distribution.<ul>
+<li>For Ubuntu or Debian-based systems (including eg. Linux Mint, Pop!OS, etc): <code>sudo apt install -y innoextract</code></li>
+<li>For Fedora or other RedHat-based systems (<em>except</em> for "immutable" distributions like Bazzite): <code>sudo dnf install -y innoextract</code></li>
+<li>For other systems, please check the distribution's user guide. <a href="https://repology.org/project/innoextract/versions">Repology</a> has an extensive list of Linux distributions and the name of the package for innoextract on each.</li>
+</ul>
+</li>
+</ul>
+<p >Once you have innoextract, create a new directory for the game data, then open a terminal window and run:</p>
+<p ><code>innoextract -e -d &lt;new game data directory&gt; &lt;path to GOG installer .exe&gt;</code></p>
+<p >This will extract the game data to the new directory.</p>
+<h3><a class="anchor" id="autotoc_md24"></a>
+Game Assets Path Override</h3>
+<p >You can set an environment variable called <code>OPENENROTH_MM7_PATH</code> to point to the location of the game data. If this variable is set, OpenEnroth will look for game assets only in the location it's pointing to. You might also want to add the following line to your shell profile (e.g. <code>~/.profile</code> on Linux or <code>~/.zshrc</code> on Mac):</p>
+<div class="fragment"><div class="line">export OPENENROTH_MM7_PATH=&quot;&lt;path-to-mm7-game-assets&gt;&quot;</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md25"></a>
+Installing OpenEnroth</h2>
+<h3><a class="anchor" id="autotoc_md26"></a>
+Windows</h3>
 <ol type="1">
-<li>You will need a GoG or any other version of Might and Magic VII. Run the installer as usual.</li>
 <li>Download one of the prebuilt <a href="https://github.com/OpenEnroth/OpenEnroth/releases">releases</a> and unzip the files.</li>
-<li>From the <code>dist</code> folder inside the zip file copy <code>OpenEnroth.exe</code> and <code>OpenEnroth.pdb</code> to the folder where the game is installed.</li>
+<li>Copy <code>OpenEnroth.exe</code> and <code>OpenEnroth.pdb</code> to the directory containing the game data.</li>
 <li>Run <code>OpenEnroth.exe</code>.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md19"></a>
-Getting Started on Ubuntu Linux</h1>
+<h3><a class="anchor" id="autotoc_md27"></a>
+macOS</h3>
 <ol type="1">
-<li>You will need a GoG or any other version of Might and Magic VII. If you have an offline GoG installer, then follow these steps:<ul>
-<li>Install <code>innoextract</code> with <code>sudo apt-get install innoextract</code>.</li>
-<li>Run <code>innoextract -e -d &lt;target-folder&gt; &lt;mm7-gog-folder&gt;/setup_mm_7.exe</code>, where <code>&lt;target-folder&gt;</code> is the folder where you want to have game data extracted from the mm7 installer.</li>
-<li>Check the files in <code>&lt;target-folder&gt;</code>, it should now contain the <code>app</code> subfolder. This is where game assets were extracted into.</li>
-</ul>
-</li>
-<li>Install OpenEnroth dependencies with <code>sudo apt-get install libsdl2-dev libdwarf-dev libelf-dev</code>.</li>
-<li>Download one of the prebuilt <a href="https://github.com/OpenEnroth/OpenEnroth/releases">releases</a> and unzip the files.</li>
-<li>From the <code>dist</code> folder inside the zip file copy the <code>OpenEnroth</code> binary to <code>&lt;target-folder&gt;/app</code>.</li>
-<li>Run <code>OpenEnroth</code> binary.</li>
-</ol>
-<h1><a class="anchor" id="autotoc_md20"></a>
-Getting Started on MacOS</h1>
-<ol type="1">
-<li>You will need a GoG or any other version of Might and Magic VII. If you have an offline GoG installer, then follow these steps:<ul>
-<li>Install <code>innoextract</code> with <code>brew install innoextract</code>.</li>
-<li>Run <code>innoextract -e -d &lt;target-folder&gt; &lt;mm7-gog-folder&gt;/setup_mm_7.exe</code>, where <code>&lt;target-folder&gt;</code> is the folder where you want to have game data extracted from the mm7 installer.</li>
-<li>Check the files in <code>&lt;target-folder&gt;</code>, it should now contain the <code>app</code> subfolder. This is where game assets were extracted into.</li>
-</ul>
-</li>
-<li>Move extracted game assets to <code>~/Library/Application Support/OpenEnroth</code>. This is where <code>OpenEnroth</code> will look for game data.</li>
+<li>Move the game data to <code>~/Library/Application Support/OpenEnroth</code>, creating this directory if needed.</li>
 <li>Download one of the prebuilt <a href="https://github.com/OpenEnroth/OpenEnroth/releases">releases</a> and unzip the files.</li>
 <li>Run <code>xattr -rc &lt;extracted-path&gt;/dist/OpenEnroth.app</code>. This is needed because OpenEnroth binaries are unsigned, without this step the app bundle won't start.</li>
-<li>Start <code>OpenEnroth.app</code>.</li>
+<li>Run <code>OpenEnroth.app</code>.</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md21"></a>
-Game Assets Path Override</h1>
-<p >You can set <code>OPENENROTH_MM7_PATH</code> env variable to point to the location of the game assets. If this variable is set, OpenEnroth will look for game assets only in the location it's pointing to. You might also want to add the following line to your bash profile (e.g. <code>~/.profile</code> on Ubuntu):</p>
-<div class="fragment"><div class="line">export OPENENROTH_MM7_PATH=&quot;&lt;path-to-mm7-game-assets&gt;&quot;</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md22"></a>
+<h3><a class="anchor" id="autotoc_md28"></a>
+Linux (Flatpak)</h3>
+<p >The Flatpak package is the easiest choice if you aren't using Ubuntu 24.04, or you cannot install system packages on your computer for any reason (as long as Flatpak is available), e.g. because you're using an "atomic"/"immutable" Linux distribution such as Bazzite or SteamOS.</p>
+<ol type="1">
+<li>Check for Flatpak support:<ul>
+<li>Run <code>flatpak --version</code>.</li>
+<li>If you receive a message listing a version number, you're ready to go; otherwise please visit <a href="https://flatpak.org/setup/">https://flatpak.org/setup/</a> and follow instructions there to set up.</li>
+</ul>
+</li>
+<li>Install OpenEnroth:<ul>
+<li>Download the <code>io.github.openenroth.openenroth_*.flatpak</code> package from one of the prebuilt <a href="https://github.com/OpenEnroth/OpenEnroth/releases">releases</a>.</li>
+<li>Run <code>flatpak install --user /path/to/io.github.openenroth.openenroth_*.flatpak</code> to install the OpenEnroth package.</li>
+<li>Create <code>~/.var/app/io.github.openenroth/openenroth/data/mm7/data/</code></li>
+<li>Move the game data (at least the <code>ANIMS</code>, <code>DATA</code>, <code>MUSIC</code> and <code>SOUNDS</code> directories) into this new directory</li>
+</ul>
+</li>
+<li>Run OpenEnroth from your desktop's application menu or using <code>flatpak run io.github.openenroth.openenroth</code></li>
+</ol>
+<h3><a class="anchor" id="autotoc_md29"></a>
+Linux (Loose executable)</h3>
+<p >The loose executable bundle is the easier option if:</p><ul>
+<li>You want easy access to the OpenEnroth executable for development or debugging</li>
+<li>You absolutely need specific control over the installation location for OpenEnroth and the game data</li>
+<li>You can install system packages (specifically, SDL2, <code>libdwarf</code>, <code>libelf</code> and <code>libgl1</code>)</li>
+<li>You're using Ubuntu 24.04 - other distributions may not have the required libraries available or not in compatible versions</li>
+</ul>
+<ol type="1">
+<li>Install the required libraries (SDL2, <code>libdwarf</code> and <code>libelf</code>):<ul>
+<li><code>sudo apt-get install libsdl2-2* libdwarf1 libelf++* libgl1</code> (Ubuntu 24.04)</li>
+<li>For other distributions, check your distribution's user guides and package management tools to find the correct package names for these libraries.</li>
+</ul>
+</li>
+<li>Install OpenEnroth:<ul>
+<li>Download one of the prebuilt <a href="https://github.com/OpenEnroth/OpenEnroth/releases">releases</a> and unzip the files</li>
+<li>Copy the game data (at least the <code>ANIMS</code>, <code>DATA</code>, <code>MUSIC</code> and <code>SOUNDS</code> directories) to the directory you unzipped the release to, next to the <code>OpenEnroth</code> executable</li>
+</ul>
+</li>
+<li>Run the <code>OpenEnroth</code> executable (you may need to run <code>chmod a+x OpenEnroth</code> first) from a terminal or by double-clicking it in a file browser.</li>
+</ol>
+<h1><a class="anchor" id="autotoc_md30"></a>
 Development</h1>
 <p >See the <a class="el" href="md_HACKING.html">HACKING</a> document for information on how to compile or if you intend to contribute.</p>
 <p >See the code <a href="https://openenroth.github.io/OpenEnroth/index.html">DOCUMENTATION</a>.</p>
-<h1><a class="anchor" id="autotoc_md23"></a>
+<h1><a class="anchor" id="autotoc_md31"></a>
 Screenshots</h1>
 <p ><img src="https://user-images.githubusercontent.com/24377109/79051879-f04cde80-7c32-11ea-939d-1dcc97b46f5d.png" alt="screenshot_1" class="inline"/></p>
 <p ><img src="https://user-images.githubusercontent.com/24377109/79051881-f17e0b80-7c32-11ea-82cd-5e4993a1c071.png" alt="screenshot_2" class="inline"/></p>
