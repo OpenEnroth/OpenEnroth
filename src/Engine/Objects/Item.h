@@ -126,6 +126,12 @@ struct Item {
      */
     void postGenerate(ItemSource source);
 
+    /**
+     * @return                          Whether the item will work if equipped. Must not be broken, and must have
+     *                                  charges if it's a wand.
+     */
+    bool isFunctional() const;
+
     ItemId itemId = ITEM_NULL;
     int potionPower = 0; // Only for potions.
     int goldAmount = 0; // Only for gold.
