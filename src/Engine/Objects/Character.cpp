@@ -6100,7 +6100,16 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
             SpriteId spriteType = spritefrom->uType;
 
-            if (spritefrom->uType == SPRITE_ARROW_PROJECTILE) {  // arrows
+            if (spriteType == SPRITE_BLASTER_PROJECTILE ||
+                spriteType == SPRITE_PROJECTILE_AIRBOLT ||  // dragonflies firebolt
+                spriteType == SPRITE_PROJECTILE_EARTHBOLT ||
+                spriteType == SPRITE_PROJECTILE_FIREBOLT ||
+                spriteType == SPRITE_PROJECTILE_WATERBOLT ||
+                spriteType == SPRITE_PROJECTILE_520 ||
+                spriteType == SPRITE_PROJECTILE_525 ||
+                spriteType == SPRITE_PROJECTILE_530 ||
+                spriteType == SPRITE_PROJECTILE_LIGHTBOLT ||
+                spriteType == SPRITE_PROJECTILE_DARKBOLT) {
                 // GM unarmed 1% chance to evade attack per skill point
                 if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
                     grng->random(100) < playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).level()) {
@@ -6108,37 +6117,49 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                     playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
                     return;
                 }
-            } else if (spriteType == SPRITE_BLASTER_PROJECTILE ||
-                       spriteType == SPRITE_PROJECTILE_AIRBOLT ||  // dragonflies firebolt
-                       spriteType == SPRITE_PROJECTILE_EARTHBOLT ||
-                       spriteType == SPRITE_PROJECTILE_FIREBOLT ||
-                       spriteType == SPRITE_PROJECTILE_WATERBOLT ||
-                       spriteType == SPRITE_PROJECTILE_520 ||
-                       spriteType == SPRITE_PROJECTILE_525 ||
-                       spriteType == SPRITE_PROJECTILE_530 ||
-                       spriteType == SPRITE_PROJECTILE_LIGHTBOLT ||
-                       spriteType == SPRITE_PROJECTILE_DARKBOLT) {
-                // reduce missle damage with skills / armour
+            } else if (spritefrom->uType == SPRITE_ARROW_PROJECTILE) {  // arrows
+                // GM unarmed 1% chance to evade attack per skill point
+                if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
+                    grng->random(100) < playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).level()) {
+                    engine->_statusBar->setEvent(LSTR_S_EVADES_DAMAGE, playerPtr->name);
+                    playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
+                    return;
+                }
+                // reduce missile damage with skills / armour / enchantments / active buffs or artefacts
                 if (!actorPtr->ActorHitOrMiss(playerPtr)) return;
-                if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Active()) dmgToReceive >>= 1;
-                if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_SHIELDING)) dmgToReceive >>= 1;
-                if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_STORM)) dmgToReceive >>= 1;
-                if (playerPtr->HasItemEquipped(ITEM_SLOT_ARMOUR) &&
-                    playerPtr->GetArmorItem()->itemId == ITEM_ARTIFACT_GOVERNORS_ARMOR)
+
+                bool shieldApplied = false;
+                if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Active() ||
+                    playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_SHIELDING) ||
+                    playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_STORM)) {
                     dmgToReceive >>= 1;
-                if (playerPtr->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                    Item *mainHandItem = playerPtr->GetMainHandItem();
+                    shieldApplied = true;
+                }
+
+                if (!shieldApplied && playerPtr->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
+                    Item* mainHandItem = playerPtr->GetMainHandItem();
                     if (mainHandItem->itemId == ITEM_RELIC_KELEBRIM ||
                         mainHandItem->itemId == ITEM_ARTIFACT_ELFBANE ||
-                        (mainHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER))
+                        (mainHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)) {
                         dmgToReceive >>= 1;
+                        shieldApplied = true;
+                    }
                 }
-                if (playerPtr->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
-                    Item *offHandItem = playerPtr->GetOffHandItem();
+
+                if (!shieldApplied && playerPtr->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
+                    Item* offHandItem = playerPtr->GetOffHandItem();
                     if (offHandItem->itemId == ITEM_RELIC_KELEBRIM ||
                         offHandItem->itemId == ITEM_ARTIFACT_ELFBANE ||
-                        (offHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER))
+                        (offHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)) {
                         dmgToReceive >>= 1;
+                        shieldApplied = true;
+                    }
+                }
+
+                if (!shieldApplied && playerPtr->HasItemEquipped(ITEM_SLOT_ARMOUR) &&
+                    playerPtr->GetArmorItem()->itemId == ITEM_ARTIFACT_GOVERNORS_ARMOR) {
+                    dmgToReceive >>= 1;
+                    shieldApplied = true;
                 }
             }
 
