@@ -6,6 +6,7 @@
 #include <type_traits>
 #include <algorithm> // For std::find.
 #include <vector>
+#include <ranges>
 
 namespace detail {
 class SplitViewSentinel {};
