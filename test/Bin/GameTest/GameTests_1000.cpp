@@ -22,8 +22,8 @@
 #include "Media/Audio/AudioPlayer.h"
 
 static bool characterHasJar(int charIndex, int jarIndex) {
-    for (const Item &item : pParty->pCharacters[charIndex].inventory.items())
-        if (item.itemId == ITEM_QUEST_LICH_JAR_FULL && item.lichJarCharacterIndex == jarIndex)
+    for (InventoryEntry jar : pParty->pCharacters[charIndex].inventory.entries(ITEM_QUEST_LICH_JAR_FULL))
+        if (jar->lichJarCharacterIndex == jarIndex)
             return true;
     return false;
 }

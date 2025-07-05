@@ -120,19 +120,6 @@ GAME_TEST(Inventory, TakeItem) {
     EXPECT_FALSE(inventory.entry(ITEM_SLOT_MAIN_HAND));
 }
 
-GAME_TEST(Inventory, Iteration) {
-    // Checking that loops over inventory items with `Item &` compile.
-    Inventory inventory(Sizei(5, 5), Inventory::MAX_ITEMS);
-
-    for (Item &item : inventory.items()) {
-        EXPECT_FALSE(true);
-    }
-
-    for (Item &item : inventory.items(ITEM_ARTIFACT_ELFBANE)) {
-        EXPECT_FALSE(true);
-    }
-}
-
 GAME_TEST(Inventory, AddOrder) {
     // MM7 adds items to inventory by columns, so we check that our code does the same.
     Inventory inventory(Sizei(5, 5), Inventory::MAX_ITEMS);

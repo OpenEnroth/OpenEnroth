@@ -1427,8 +1427,8 @@ void RegeneratePartyHealthMana() {
         // Lich mana/health drain/regen.
         if (character.classType == CLASS_LICH) {
             bool lich_has_jar = false;
-            for (const Item &item : character.inventory.items())
-                if (item.itemId == ITEM_QUEST_LICH_JAR_FULL && item.lichJarCharacterIndex == character.getCharacterIndex())
+            for (InventoryEntry jar : character.inventory.entries(ITEM_QUEST_LICH_JAR_FULL))
+                if (jar->lichJarCharacterIndex == character.getCharacterIndex())
                     lich_has_jar = true;
 
             if (lich_has_jar) {

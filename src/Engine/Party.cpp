@@ -732,8 +732,8 @@ void Party::restAndHeal() {
         pPlayer->mana = pPlayer->GetMaxMana();
         if (pPlayer->classType == CLASS_LICH) {
             have_vessels_soul = false;
-            for (const Item &jar : pPlayer->inventory.items(ITEM_QUEST_LICH_JAR_FULL))
-                if (jar.lichJarCharacterIndex == pPlayerID)
+            for (InventoryEntry jar : pPlayer->inventory.entries(ITEM_QUEST_LICH_JAR_FULL))
+                if (jar->lichJarCharacterIndex == pPlayerID)
                     have_vessels_soul = true;
             if (!have_vessels_soul) {
                 pPlayer->health = pPlayer->GetMaxHealth() / 2;

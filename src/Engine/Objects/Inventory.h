@@ -181,24 +181,14 @@ class Inventory {
 
     /**
      * @param self                      `*this`.
-     * @return                          A range of `Item` objects for items in this inventory. Returned items are never
-     *                                  `ITEM_NULL`.
-     */
-    [[nodiscard]] auto items(this auto &&self) {
-        return self.availableRecords()
-            | std::views::filter([](auto &&record) { return record.item.itemId != ITEM_NULL; })
-            | std::views::transform(&InventoryRecord::item);
-    }
-
-    /**
-     * @param self                      `*this`.
      * @param itemId                    Item id to filter for.
-     * @return                          A range of `Item` objects for items in this inventory with the given `itemId`.
+     * @return                          A range of `InventoryEntry` or `InventoryConstEntry` objects for items in this
+     *                                  inventory with the given `itemId`. Returned entries are never invalid.
      */
-    [[nodiscard]] auto items(this auto &&self, ItemId itemId) {
-        return self.availableRecords()
-            | std::views::filter([itemId](auto &&record) { return record.item.itemId == itemId; })
-            | std::views::transform(&InventoryRecord::item);
+    [[nodiscard]] auto entries(this auto &&self, ItemId itemId) {
+        return std::views::iota(0, self._capacity)
+            | std::views::filter([&self, itemId](int i) { return self._records[i].item.itemId == itemId; })
+            | std::views::transform([&self](int i) { return std::conditional_t<std::is_const_v<std::remove_reference_t<decltype(self)>>, InventoryConstEntry, InventoryEntry>(&self, i); });
     }
 
     /**
@@ -329,7 +319,6 @@ class ChestInventory : private Inventory {
     using Inventory::gridSize;
     using Inventory::gridRect;
     using Inventory::entries;
-    using Inventory::items;
     using Inventory::entry;
     using Inventory::canAdd;
     using Inventory::add;
@@ -362,7 +351,6 @@ class CharacterInventory : private Inventory {
     using Inventory::gridSize;
     using Inventory::gridRect;
     using Inventory::entries;
-    using Inventory::items;
     using Inventory::entry;
     using Inventory::canAdd;
     using Inventory::add;

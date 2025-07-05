@@ -55,7 +55,7 @@ TestTape<int> CommonTapeRecorder::totalItemCount(ItemId itemId) {
     return custom([itemId] {
         int result = 0;
         for (const Character &character : pParty->pCharacters)
-            result += std::ranges::distance(character.inventory.items(itemId));
+            result += std::ranges::distance(character.inventory.entries(itemId));
         result += pParty->pPickedItem.itemId == itemId;
         return result;
     });
