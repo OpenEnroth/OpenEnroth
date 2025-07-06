@@ -277,7 +277,7 @@ void Inventory::checkInvariants() const {
     }
 
     // Check that equipment looks valid.
-    for (ItemSlot i : allItemSlots()) {
+    for (ItemSlot i : _equipment.indices()) {
         if (_equipment[i] == 0)
             continue;
         int index = _equipment[i] - 1;

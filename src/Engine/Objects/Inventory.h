@@ -176,7 +176,7 @@ class Inventory {
     [[nodiscard]] auto entries(this auto &&self) {
         return std::views::iota(0, self._capacity)
             | std::views::filter([&self](int i) { return self._records[i].item.itemId != ITEM_NULL; })
-            | std::views::transform([&self](int i) { return std::conditional_t<std::is_const_v<std::remove_reference_t<decltype(self)>>, InventoryConstEntry, InventoryEntry>(&self, i); });
+            | std::views::transform([&self](int i) { return self.entryAt(i); });
     }
 
     /**
@@ -188,7 +188,18 @@ class Inventory {
     [[nodiscard]] auto entries(this auto &&self, ItemId itemId) {
         return std::views::iota(0, self._capacity)
             | std::views::filter([&self, itemId](int i) { return self._records[i].item.itemId == itemId; })
-            | std::views::transform([&self](int i) { return std::conditional_t<std::is_const_v<std::remove_reference_t<decltype(self)>>, InventoryConstEntry, InventoryEntry>(&self, i); });
+            | std::views::transform([&self](int i) { return self.entryAt(i); });
+    }
+
+    /**
+     * @param self                      `*this`.
+     * @return                          A range of `InventoryEntry` or `InventoryConstEntry` objects for all equipped
+     *                                  items in this inventory. Returned entries are never invalid.
+     */
+    [[nodiscard]] auto equipment(this auto &&self) {
+        return self._equipment.indices()
+            | std::views::filter([&self](ItemSlot i) { return self._equipment[i] != 0; })
+            | std::views::transform([&self](ItemSlot i) { return self.entryAt(self._equipment[i] - 1); });
     }
 
     /**
@@ -282,6 +293,14 @@ class Inventory {
         return std::span(self._records.data(), self._records.data() + self._capacity);
     }
 
+    InventoryEntry entryAt(int index) {
+        return InventoryEntry(this, index);
+    }
+
+    InventoryConstEntry entryAt(int index) const {
+        return InventoryConstEntry(this, index);
+    }
+
  private:
     /** Inventory storage area size in cells. */
     Sizei _gridSize;
@@ -351,6 +370,7 @@ class CharacterInventory : private Inventory {
     using Inventory::gridSize;
     using Inventory::gridRect;
     using Inventory::entries;
+    using Inventory::equipment;
     using Inventory::entry;
     using Inventory::canAdd;
     using Inventory::add;

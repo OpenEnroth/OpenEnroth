@@ -327,11 +327,9 @@ void Character::SalesProcess(InventoryEntry entry, HouseId houseId) {
 
 //----- (0043EEF3) --------------------------------------------------------
 bool Character::NothingOrJustBlastersEquipped() const {
-    for (ItemSlot i : allItemSlots())
-        if (InventoryConstEntry entry = inventory.entry(i))
-            if (!isAncientWeapon(entry->itemId))
-                return false;
-
+    for (InventoryConstEntry entry : inventory.equipment())
+        if (!isAncientWeapon(entry->itemId))
+            return false;
     return true; // nothing or just blaster equipped
 }
 
@@ -1183,24 +1181,21 @@ bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
 
 //----- (0048D6D0) --------------------------------------------------------
 bool Character::HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const {
-    for (ItemSlot i : allItemSlots()) {  // search over equipped inventory
-        if (HasItemEquipped(i) && GetItem(i)->specialEnchantment == uEnchantment)
-            return true;  // check item equipped and is enchanted
-    }
-
-    return false;  // no echanted items equipped
+    for (InventoryConstEntry entry : inventory.equipment())
+        if (entry->isFunctional() && entry->specialEnchantment == uEnchantment)
+            return true;
+    return false;
 }
 
 //----- (0048D709) --------------------------------------------------------
 bool Character::WearsItem(ItemId item_id, ItemSlot equip_type) const {
-    // check aginst specific item and slot
-    assert(equip_type != ITEM_SLOT_INVALID && "Invalid item slot passed to WearsItem");
-    return (HasItemEquipped(equip_type) && GetItem(equip_type)->itemId == item_id);
+    InventoryConstEntry entry = inventory.entry(equip_type);
+    return entry && entry->isFunctional() && entry->itemId == item_id;
 }
 
 bool Character::wearsItemAnywhere(ItemId item_id) const {
-    for (ItemSlot i : allItemSlots())
-        if (WearsItem(item_id, i))
+    for (InventoryConstEntry entry : inventory.equipment())
+        if (entry->isFunctional() && entry->itemId == item_id)
             return true;
     return false;
 }
@@ -1459,15 +1454,10 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
             break;
 
         case SPECIAL_ATTACK_BREAK_ARMOR:
-            for (ItemSlot i : allItemSlots()) {
-                if (HasItemEquipped(i)) {
-                    if (i == ITEM_SLOT_ARMOUR)
-                        itemstobreaklist.push_back(inventory.entry(i));
-
-                    if ((i == ITEM_SLOT_OFF_HAND || i == ITEM_SLOT_MAIN_HAND) && GetEquippedItemEquipType(i) == ITEM_TYPE_SHIELD)
-                        itemstobreaklist.push_back(inventory.entry(i));
-                }
-            }
+            // Have to check for ITEM_QUEST_WETSUIT explicitly b/c it's ITEM_TYPE_NONE.
+            for (InventoryEntry entry : inventory.equipment())
+                if (!entry->IsBroken() && (entry->type() == ITEM_TYPE_ARMOUR || entry->type() == ITEM_TYPE_SHIELD || entry->itemId == ITEM_QUEST_WETSUIT))
+                    itemstobreaklist.push_back(entry);
 
             if (itemstobreaklist.empty()) return 0;
 
@@ -1478,16 +1468,10 @@ int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pAct
             break;
 
         case SPECIAL_ATTACK_BREAK_WEAPON:
-            for (ItemSlot i : allItemSlots()) {
-                if (HasItemEquipped(i)) {
-                    if (i == ITEM_SLOT_BOW)
-                        itemstobreaklist.push_back(inventory.entry(i));
-
-                    if ((i == ITEM_SLOT_OFF_HAND || i == ITEM_SLOT_MAIN_HAND) &&
-                        (GetEquippedItemEquipType(i) == ITEM_TYPE_SINGLE_HANDED || GetEquippedItemEquipType(i) == ITEM_TYPE_TWO_HANDED))
-                        itemstobreaklist.push_back(inventory.entry(i));
-                }
-            }
+            // TODO(captainurist): why doesn't this affect wands?
+            for (InventoryEntry entry : inventory.equipment())
+                if (!entry->IsBroken() && (entry->type() == ITEM_TYPE_BOW || entry->type() == ITEM_TYPE_SINGLE_HANDED || entry->type() == ITEM_TYPE_TWO_HANDED))
+                    itemstobreaklist.push_back(entry);
 
             if (!itemstobreaklist.empty()) return 0;
 
@@ -2116,20 +2100,19 @@ int Character::GetParameterBonus(int player_parameter) const {
 
 //----- (0048EA46) --------------------------------------------------------
 int Character::GetSpecialItemBonus(ItemEnchantment enchantment) const {
-    for (ItemSlot i : allItemSlots()) {
-        if (HasItemEquipped(i)) {
-            if (enchantment == ITEM_ENCHANTMENT_OF_RECOVERY) {
-                if (GetItem(i)->specialEnchantment ==
-                    ITEM_ENCHANTMENT_OF_RECOVERY ||
-                    (GetItem(i)->itemId ==
-                     ITEM_ARTIFACT_ELVEN_CHAINMAIL))
-                    return 50;
-            }
-            if (enchantment == ITEM_ENCHANTMENT_OF_FORCE) {
-                if (GetItem(i)->specialEnchantment ==
-                    ITEM_ENCHANTMENT_OF_FORCE)
-                    return 5;
-            }
+    for (InventoryConstEntry entry : inventory.equipment()) {
+        if (!entry->isFunctional())
+            continue;
+
+        if (enchantment == ITEM_ENCHANTMENT_OF_RECOVERY) {
+            if (entry->specialEnchantment == ITEM_ENCHANTMENT_OF_RECOVERY ||
+                entry->itemId == ITEM_ARTIFACT_ELVEN_CHAINMAIL)
+                return 50;
+        }
+
+        if (enchantment == ITEM_ENCHANTMENT_OF_FORCE) {
+            if (entry->specialEnchantment == ITEM_ENCHANTMENT_OF_FORCE)
+                return 5;
         }
     }
     return 0;
@@ -2146,7 +2129,6 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
     CharacterSkillType v58;             // [sp-4h] [bp-20h]@10
     int v61;                    // [sp+10h] [bp-Ch]@1
     int v62;                    // [sp+14h] [bp-8h]@1
-    const Item *currEquippedItem;  // [sp+20h] [bp+4h]@101
     bool no_skills;
 
     v5 = 0;
@@ -2370,25 +2352,22 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
         case ATTRIBUTE_SKILL_BOW:
         case ATTRIBUTE_SKILL_SHIELD:
         case ATTRIBUTE_SKILL_LEARNING:
-            for (ItemSlot i : allItemSlots()) {
-                if (HasItemEquipped(i)) {
-                    currEquippedItem = GetItem(i);
-                    if (attr == ATTRIBUTE_AC_BONUS) {
-                        if (isPassiveEquipment(currEquippedItem->type())) {
-                            v5 += currEquippedItem->GetDamageDice() +
-                                  currEquippedItem->GetDamageMod();
-                        }
+            for (InventoryConstEntry entry : inventory.equipment()) {
+                if (!entry->isFunctional())
+                    continue;
+
+                if (attr == ATTRIBUTE_AC_BONUS) {
+                    if (isPassiveEquipment(entry->type())) {
+                        v5 += entry->GetDamageDice() + entry->GetDamageMod();
                     }
-                    if (currEquippedItem->rarity() == RARITY_ARTIFACT || currEquippedItem->rarity() == RARITY_RELIC) {
-                        currEquippedItem->GetItemBonusArtifact(this, attr, &v62);
-                    } else if (currEquippedItem->standardEnchantment) {
-                        if (*currEquippedItem->standardEnchantment == attr) {
-                            // if (currEquippedItem->IsRegularEnchanmentForAttribute(attr))
-                            v5 += currEquippedItem->standardEnchantmentStrength;
-                        }
-                    } else {
-                        currEquippedItem->GetItemBonusSpecialEnchantment(this, attr, &v5, &v61);
-                    }
+                }
+
+                if (entry->rarity() == RARITY_ARTIFACT || entry->rarity() == RARITY_RELIC) {
+                    entry->GetItemBonusArtifact(this, attr, &v62);
+                } else if (entry->standardEnchantment == attr) {
+                    v5 += entry->standardEnchantmentStrength;
+                } else {
+                    entry->GetItemBonusSpecialEnchantment(this, attr, &v5, &v61);
                 }
             }
             return v5 + v62 + v61;
@@ -2678,53 +2657,47 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
             bool wearingLeather = false;
             unsigned int ACSum = 0;
 
-            for (ItemSlot j : allItemSlots()) {
-                const Item *currItem = GetItem(j);
-                if (currItem != nullptr && (!currItem->IsBroken())) {
-                    CharacterSkillType itemSkillType = currItem->skill();
-                    int currArmorSkillLevel = 0;
-                    int multiplier = 0;
-                    switch (itemSkillType) {
-                        case CHARACTER_SKILL_STAFF:
-                            currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
-                            multiplier = GetMultiplierForSkillLevel(
-                                itemSkillType, 0, 1, 1, 1);
-                            break;
-                        case CHARACTER_SKILL_SWORD:
-                        case CHARACTER_SKILL_SPEAR:
-                            currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
-                            multiplier = GetMultiplierForSkillLevel(
-                                itemSkillType, 0, 0, 0, 1);
-                            break;
-                        case CHARACTER_SKILL_SHIELD:
-                            currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
-                            wearingArmor = true;
-                            multiplier = GetMultiplierForSkillLevel(
-                                itemSkillType, 1, 1, 2, 2);
-                            break;
-                        case CHARACTER_SKILL_LEATHER:
-                            currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
-                            wearingLeather = true;
-                            multiplier = GetMultiplierForSkillLevel(
-                                itemSkillType, 1, 1, 2, 2);
-                            break;
-                        case CHARACTER_SKILL_CHAIN:
-                            currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
-                            wearingArmor = true;
-                            multiplier = GetMultiplierForSkillLevel(
-                                itemSkillType, 1, 1, 1, 1);
-                            break;
-                        case CHARACTER_SKILL_PLATE:
-                            currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
-                            wearingArmor = true;
-                            multiplier = GetMultiplierForSkillLevel(
-                                itemSkillType, 1, 1, 1, 1);
-                            break;
-                        default:
-                            break;
-                    }
-                    ACSum += multiplier * currArmorSkillLevel;
+            for (InventoryConstEntry item : inventory.equipment()) {
+                if (!item->isFunctional())
+                    continue;
+
+                CharacterSkillType itemSkillType = item->skill();
+                int currArmorSkillLevel = 0;
+                int multiplier = 0;
+                switch (itemSkillType) {
+                    case CHARACTER_SKILL_STAFF:
+                        currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
+                        multiplier = GetMultiplierForSkillLevel(itemSkillType, 0, 1, 1, 1);
+                        break;
+                    case CHARACTER_SKILL_SWORD:
+                    case CHARACTER_SKILL_SPEAR:
+                        currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
+                        multiplier = GetMultiplierForSkillLevel(itemSkillType, 0, 0, 0, 1);
+                        break;
+                    case CHARACTER_SKILL_SHIELD:
+                        currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
+                        wearingArmor = true;
+                        multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 2, 2);
+                        break;
+                    case CHARACTER_SKILL_LEATHER:
+                        currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
+                        wearingLeather = true;
+                        multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 2, 2);
+                        break;
+                    case CHARACTER_SKILL_CHAIN:
+                        currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
+                        wearingArmor = true;
+                        multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 1, 1);
+                        break;
+                    case CHARACTER_SKILL_PLATE:
+                        currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
+                        wearingArmor = true;
+                        multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 1, 1);
+                        break;
+                    default:
+                        break;
                 }
+                ACSum += multiplier * currArmorSkillLevel;
             }
 
             CombinedSkillValue dodgeValue = getActualSkillValue(CHARACTER_SKILL_DODGE);
@@ -2745,41 +2718,41 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
                 int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 1, 1, 2, 2);
                 return armsMasterBonus + multiplier * unarmedSkill;
             }
-            for (ItemSlot i : allItemSlots()) {  // ?? what eh check behaviour
-                if (this->HasItemEquipped(i)) {
-                    const Item *currItem = GetItem(i);
-                    if (currItem->isMeleeWeapon()) {
-                        CharacterSkillType currItemSkillType = currItem->skill();
-                        int currentItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
-                        if (currItemSkillType == CHARACTER_SKILL_BLASTER) {
-                            int multiplier = GetMultiplierForSkillLevel(currItemSkillType, 1, 2, 3, 5);
-                            return multiplier * currentItemSkillLevel;
-                        } else if (currItemSkillType == CHARACTER_SKILL_STAFF && this->getActualSkillValue(CHARACTER_SKILL_STAFF).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                            int unarmedSkillLevel = this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level();
-                            int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 1, 1, 2, 2);
-                            return multiplier * unarmedSkillLevel + armsMasterBonus + currentItemSkillLevel;
-                        } else {
-                            return armsMasterBonus + currentItemSkillLevel;
-                        }
+            for (InventoryConstEntry item : inventory.equipment()) {
+                if (!item->isFunctional())
+                    continue;
+
+                if (item->isMeleeWeapon()) {
+                    CharacterSkillType currItemSkillType = item->skill();
+                    int currentItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
+                    if (currItemSkillType == CHARACTER_SKILL_BLASTER) {
+                        int multiplier = GetMultiplierForSkillLevel(currItemSkillType, 1, 2, 3, 5);
+                        return multiplier * currentItemSkillLevel;
+                    } else if (currItemSkillType == CHARACTER_SKILL_STAFF && this->getActualSkillValue(CHARACTER_SKILL_STAFF).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+                        int unarmedSkillLevel = this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level();
+                        int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 1, 1, 2, 2);
+                        return multiplier * unarmedSkillLevel + armsMasterBonus + currentItemSkillLevel;
+                    } else {
+                        return armsMasterBonus + currentItemSkillLevel;
                     }
                 }
             }
             return 0;
 
         case ATTRIBUTE_RANGED_ATTACK:
-            for (ItemSlot i : allItemSlots()) {
-                if (this->HasItemEquipped(i)) {
-                    const Item *currItemPtr = GetItem(i);
-                    if (currItemPtr->isWeapon()) {
-                        CharacterSkillType currentItemSkillType = GetItem(i)->skill();
-                        int currentItemSkillLevel = this->getActualSkillValue(currentItemSkillType).level();
-                        if (currentItemSkillType == CHARACTER_SKILL_BOW) {
-                            int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_BOW, 1, 1, 1, 1);
-                            return multiplier * currentItemSkillLevel;
-                        } else if (currentItemSkillType == CHARACTER_SKILL_BLASTER) {
-                            int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_BLASTER, 1, 2, 3, 5);
-                            return multiplier * currentItemSkillLevel;
-                        }
+            for (InventoryConstEntry item : inventory.equipment()) {
+                if (!item->isFunctional())
+                    continue;
+
+                if (item->isWeapon()) {
+                    CharacterSkillType currentItemSkillType = item->skill();
+                    int currentItemSkillLevel = this->getActualSkillValue(currentItemSkillType).level();
+                    if (currentItemSkillType == CHARACTER_SKILL_BOW) {
+                        int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_BOW, 1, 1, 1, 1);
+                        return multiplier * currentItemSkillLevel;
+                    } else if (currentItemSkillType == CHARACTER_SKILL_BLASTER) {
+                        int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_BLASTER, 1, 2, 3, 5);
+                        return multiplier * currentItemSkillLevel;
                     }
                 }
             }
@@ -2794,47 +2767,44 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
                 int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 0, 1, 2, 2);
                 return multiplier * unarmedSkillLevel;
             }
-            for (ItemSlot i : allItemSlots()) {
-                if (this->HasItemEquipped(i)) {
-                    const Item *currItemPtr = GetItem(i);
-                    if (currItemPtr->isMeleeWeapon()) {
-                        CharacterSkillType currItemSkillType = currItemPtr->skill();
-                        int currItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
-                        int baseSkillBonus;
-                        int multiplier;
-                        switch (currItemSkillType) {
-                            case CHARACTER_SKILL_STAFF:
+            for (InventoryConstEntry item : inventory.equipment()) {
+                if (!item->isFunctional())
+                    continue;
 
-                                if (this->getActualSkillValue(CHARACTER_SKILL_STAFF).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
-                                    this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level() > 0) {
-                                    int unarmedSkillLevel = this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level();
-                                    int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 0, 1, 2, 2);
-                                    return multiplier * unarmedSkillLevel;
-                                } else {
-                                    return armsMasterBonus;
-                                }
-                                break;
-
-                            case CHARACTER_SKILL_DAGGER:
-                                multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_DAGGER, 0, 0, 0, 1);
-                                baseSkillBonus = multiplier * currItemSkillLevel;
-                                return armsMasterBonus + baseSkillBonus;
-                            case CHARACTER_SKILL_SWORD:
-                                multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_SWORD, 0, 0, 0, 0);
-                                baseSkillBonus = multiplier * currItemSkillLevel;
-                                return armsMasterBonus + baseSkillBonus;
-                            case CHARACTER_SKILL_MACE:
-                            case CHARACTER_SKILL_SPEAR:
-                                multiplier = GetMultiplierForSkillLevel(currItemSkillType, 0, 1, 1, 1);
-                                baseSkillBonus = multiplier * currItemSkillLevel;
-                                return armsMasterBonus + baseSkillBonus;
-                            case CHARACTER_SKILL_AXE:
-                                multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_AXE, 0, 0, 1, 1);
-                                baseSkillBonus = multiplier * currItemSkillLevel;
-                                return armsMasterBonus + baseSkillBonus;
-                            default:
-                                break;
+                if (item->isMeleeWeapon()) {
+                    CharacterSkillType currItemSkillType = item->skill();
+                    int currItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
+                    int baseSkillBonus;
+                    int multiplier;
+                    switch (currItemSkillType) {
+                    case CHARACTER_SKILL_STAFF:
+                        if (this->getActualSkillValue(CHARACTER_SKILL_STAFF).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
+                            this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level() > 0) {
+                            int unarmedSkillLevel = this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level();
+                            int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 0, 1, 2, 2);
+                            return multiplier * unarmedSkillLevel;
+                        } else {
+                            return armsMasterBonus;
                         }
+                    case CHARACTER_SKILL_DAGGER:
+                        multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_DAGGER, 0, 0, 0, 1);
+                        baseSkillBonus = multiplier * currItemSkillLevel;
+                        return armsMasterBonus + baseSkillBonus;
+                    case CHARACTER_SKILL_SWORD:
+                        multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_SWORD, 0, 0, 0, 0);
+                        baseSkillBonus = multiplier * currItemSkillLevel;
+                        return armsMasterBonus + baseSkillBonus;
+                    case CHARACTER_SKILL_MACE:
+                    case CHARACTER_SKILL_SPEAR:
+                        multiplier = GetMultiplierForSkillLevel(currItemSkillType, 0, 1, 1, 1);
+                        baseSkillBonus = multiplier * currItemSkillLevel;
+                        return armsMasterBonus + baseSkillBonus;
+                    case CHARACTER_SKILL_AXE:
+                        multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_AXE, 0, 0, 1, 1);
+                        baseSkillBonus = multiplier * currItemSkillLevel;
+                        return armsMasterBonus + baseSkillBonus;
+                    default:
+                        break;
                     }
                 }
             }
@@ -4055,12 +4025,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
         case VAR_Invisible:
             return pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active();
         case VAR_ItemEquipped:
-            for (ItemSlot i : allItemSlots()) {
-                if (HasItemEquipped(i) && GetItem(i)->itemId == ItemId(pValue)) {
-                    return true;
-                }
-            }
-            return false;
+            return wearsItemAnywhere(static_cast<ItemId>(pValue));
         default:
             return false;
     }
