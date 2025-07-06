@@ -1374,42 +1374,42 @@ void RegeneratePartyHealthMana() {
 
         RegenData thisChar;
         // Item regeneration
-        for (ItemSlot idx : allItemSlots()) {
-            if (character.HasItemEquipped(idx)) {
-                Item equppedItem = *character.inventory.entry(idx);
-                if (!isRegular(equppedItem.itemId)) {
-                    if (equppedItem.itemId == ITEM_RELIC_ETHRICS_STAFF) {
-                        character.health -= ticks5;
-                    }
-                    if (equppedItem.itemId == ITEM_ARTIFACT_HERMES_SANDALS) {
-                        thisChar.hpRegen++;
-                        thisChar.spRegen++;
-                    }
-                    if (equppedItem.itemId == ITEM_ARTIFACT_MINDS_EYE) {
-                        thisChar.spRegen++;
-                    }
-                    if (equppedItem.itemId == ITEM_ARTIFACT_HEROS_BELT) {
-                        thisChar.hpRegen++;
-                    }
-                } else {
-                    ItemEnchantment special_enchantment = equppedItem.specialEnchantment;
-                    if (special_enchantment == ITEM_ENCHANTMENT_OF_REGENERATION
-                        || special_enchantment == ITEM_ENCHANTMENT_OF_LIFE
-                        || special_enchantment == ITEM_ENCHANTMENT_OF_PHOENIX
-                        || special_enchantment == ITEM_ENCHANTMENT_OF_TROLL) {
-                        thisChar.hpRegen++;
-                    }
+        for (InventoryEntry item : character.inventory.equipment()) {
+            if (!item->isFunctional())
+                continue;
 
-                    if (special_enchantment == ITEM_ENCHANTMENT_OF_MANA
-                        || special_enchantment == ITEM_ENCHANTMENT_OF_ECLIPSE
-                        || special_enchantment == ITEM_ENCHANTMENT_OF_UNICORN) {
-                        thisChar.spRegen++;
-                    }
+            if (!isRegular(item->itemId)) {
+                if (item->itemId == ITEM_RELIC_ETHRICS_STAFF) {
+                    character.health -= ticks5;
+                }
+                if (item->itemId == ITEM_ARTIFACT_HERMES_SANDALS) {
+                    thisChar.hpRegen++;
+                    thisChar.spRegen++;
+                }
+                if (item->itemId == ITEM_ARTIFACT_MINDS_EYE) {
+                    thisChar.spRegen++;
+                }
+                if (item->itemId == ITEM_ARTIFACT_HEROS_BELT) {
+                    thisChar.hpRegen++;
+                }
+            } else {
+                ItemEnchantment special_enchantment = item->specialEnchantment;
+                if (special_enchantment == ITEM_ENCHANTMENT_OF_REGENERATION
+                    || special_enchantment == ITEM_ENCHANTMENT_OF_LIFE
+                    || special_enchantment == ITEM_ENCHANTMENT_OF_PHOENIX
+                    || special_enchantment == ITEM_ENCHANTMENT_OF_TROLL) {
+                    thisChar.hpRegen++;
+                }
 
-                    if (special_enchantment == ITEM_ENCHANTMENT_OF_PLENTY) {
-                        thisChar.hpRegen++;
-                        thisChar.spRegen++;
-                    }
+                if (special_enchantment == ITEM_ENCHANTMENT_OF_MANA
+                    || special_enchantment == ITEM_ENCHANTMENT_OF_ECLIPSE
+                    || special_enchantment == ITEM_ENCHANTMENT_OF_UNICORN) {
+                    thisChar.spRegen++;
+                }
+
+                if (special_enchantment == ITEM_ENCHANTMENT_OF_PLENTY) {
+                    thisChar.hpRegen++;
+                    thisChar.spRegen++;
                 }
             }
         }
@@ -1427,8 +1427,8 @@ void RegeneratePartyHealthMana() {
         // Lich mana/health drain/regen.
         if (character.classType == CLASS_LICH) {
             bool lich_has_jar = false;
-            for (const Item &item : character.inventory.items())
-                if (item.itemId == ITEM_QUEST_LICH_JAR_FULL && item.lichJarCharacterIndex == character.getCharacterIndex())
+            for (InventoryEntry jar : character.inventory.entries(ITEM_QUEST_LICH_JAR_FULL))
+                if (jar->lichJarCharacterIndex == character.getCharacterIndex())
                     lich_has_jar = true;
 
             if (lich_has_jar) {

@@ -379,7 +379,6 @@ void prepareArenaFight(ArenaLevel level) {
  * @brief Oracle's 'I lost it!' dialog option
  */
 void oracleDialogue() {
-    Item *item = nullptr;
     ItemId item_id = ITEM_NULL;
 
     // display "You never had it" if nothing missing will be found
@@ -413,17 +412,18 @@ void oracleDialogue() {
         for (int i = 0; i < pParty->pCharacters.size(); i++) {
             if (pParty->pCharacters[i].classType == CLASS_LICH) {
                 bool have_vessels_soul = false;
+                InventoryEntry jar;
                 for (Character &player : pParty->pCharacters) {
-                    for (Item &jar : player.inventory.items(ITEM_QUEST_LICH_JAR_FULL)) {
-                        if (jar.lichJarCharacterIndex == -1)
-                            item = &jar;
-                        if (jar.lichJarCharacterIndex == i)
+                    for (InventoryEntry entry : player.inventory.entries(ITEM_QUEST_LICH_JAR_FULL)) {
+                        if (entry->lichJarCharacterIndex == -1)
+                            jar = entry;
+                        if (entry->lichJarCharacterIndex == i)
                             have_vessels_soul = true;
                     }
                 }
 
-                if (item && !have_vessels_soul) {
-                    item->lichJarCharacterIndex = i;
+                if (jar && !have_vessels_soul) {
+                    jar->lichJarCharacterIndex = i;
                     break;
                 }
             }

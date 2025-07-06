@@ -770,6 +770,10 @@ void Item::postGenerate(ItemSource source) {
     }
 }
 
+bool Item::isFunctional() const {
+    return !IsBroken() && (!isWand() || numCharges > 0);
+}
+
 Segment<ItemTreasureLevel> RemapTreasureLevel(ItemTreasureLevel itemTreasureLevel, MapTreasureLevel mapTreasureLevel) {
     // Mapping [item_level][map_level] -> [actual_level_min, actual_level_max];
     // Rows are item treasure levels, columns are map treasure levels. Not using IndexedArray to keep things terse.
