@@ -17,6 +17,8 @@
 #include "Engine/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/mm7_data.h"
+#include "Engine/Graphics/Indoor.h"
+#include "Engine/Objects/Actor.h"
 
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -247,6 +249,34 @@ void EngineController::resizeWindow(int w, int h) {
     event->window = ::application->window();
     event->size = {w, h};
     postEvent(std::move(event));
+}
+
+void EngineController::spawnMonster(Vec3f position, MonsterId id) {
+    Actor *actor = AllocateActor(false);
+    if (!actor)
+        throw Exception("Failed to spawn monster {}", static_cast<int>(id));
+
+    actor->name = pMonsterStats->infos[id].name;
+    actor->currentHP = pMonsterStats->infos[id].hp;
+    actor->monsterInfo = pMonsterStats->infos[id];
+    actor->word_000086_some_monster_id = id;
+    actor->radius = pMonsterList->monsters[id].monsterRadius;
+    actor->height = pMonsterList->monsters[id].monsterHeight;
+    actor->monsterInfo.goldDiceRolls = 0;
+    actor->monsterInfo.treasureType = RANDOM_ITEM_ANY;
+    actor->monsterInfo.exp = 0;
+    actor->moveSpeed = pMonsterList->monsters[id].movementSpeed;
+    actor->initialPosition = position;
+    actor->pos = actor->initialPosition;
+    actor->sectorId = uCurrentlyLoadedLevelType == LEVEL_INDOOR ? pIndoor->GetSector(position) : 0;
+    actor->PrepareSprites(0);
+    actor->monsterInfo.hostilityType = HOSTILITY_LONG;
+    actor->ally = MONSTER_TYPE_INVALID;
+    actor->group = 0;
+    actor->currentActionTime = 0_ticks;
+    actor->aiState = Standing;
+    actor->currentActionLength = 0_ticks;
+    actor->UpdateAnimation();
 }
 
 GUIButton *EngineController::existingButton(std::string_view buttonId) {
