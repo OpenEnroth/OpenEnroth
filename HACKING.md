@@ -48,6 +48,14 @@ To cross-compile for 32-bit x86, you can pass `-m32` via compiler flags to cmake
 
 You can also select platform dependent [generator](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html) for your favorite IDE.
 
+### Additional Notes for MacOS
+* Make sure you have the latest Xcode installed. Do this through the App Store or by downloading it from the [Apple Developer website](https://developer.apple.com/download/more/).
+* Brew should come with the other dependencies.
+* When you run build config for CMake, you may run into OpenAL Soft not being found. If this occurs add the following to your build config command: -DOPENAL_ROOT=/opt/homebrew/opt/openal-soft. Like so:
+```
+$ cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug -DOPENAL_ROOT=/opt/homebrew/opt/openal-soft
+```
+
 
 ## Building on Windows
 
