@@ -56,18 +56,18 @@
 constexpr std::string_view configName = "openenroth.ini";
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
-    // Init logging.
+    // Note: basic logging is initialized in LogStarter constructor, so it's safe to log here.
     Engine::LogEngineBuildInfo();
 
     try {
-        initWithLogger();
+        initialize();
     } catch (const std::exception &e) {
         logger->critical("Terminated with exception: {}", e.what());
         throw;
     }
 }
 
-void GameStarter::initWithLogger() {
+void GameStarter::initialize() {
     // Init environment.
     _environment = Environment::createStandardEnvironment();
 

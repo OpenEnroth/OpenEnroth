@@ -3,6 +3,8 @@
 #include <string>
 #include <memory>
 
+#include "Engine/Objects/MonsterEnums.h"
+
 #include "Library/Platform/Interface/PlatformEnums.h"
 #include "Library/Platform/Interface/PlatformEvents.h"
 
@@ -93,6 +95,8 @@ class EngineController {
     void runGameRoutine(GameRoutine routine);
 
     void resizeWindow(int w, int h);
+
+    void spawnMonster(Vec3f position, MonsterId id);
 
  private:
     GUIButton *existingButton(std::string_view buttonId);

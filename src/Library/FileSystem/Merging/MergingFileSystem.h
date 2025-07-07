@@ -25,7 +25,9 @@
  * 5. Schrodingermaxxx and make both visible.
  * 
  * When picking between the options, we must remember that:
- * a. A tree of merging filesystems should behave the same way as a single flattened merging filesystem.
+ * a. A tree of `MergingFileSystem`s should behave the same way as a single flattened `MergingFileSystem`. E.g. if we
+ *    have a `MergingFileSystem` containing another `MergingFileSystem`, it should be no different from just having
+ *    a single `MergingFileSystem` with all the leaf filesystems added to it.
  * b. Ideally, each method of the merging filesystem should call into each of the base filesystems at most once.
  * c. The behavior shouldn't be surprising.
  * 
@@ -34,16 +36,24 @@
  * 
  * Point #2 fails (c).
  * 
- * Point #3 fails (a), (b) and (c).
+ * Point #3 fails (a), (b) and (c). How exactly it does it fail (a)? Imagine the following sequence of conflicts:
+ * folder `x`, file `x`, then again folder `x` and file `x`, with the first pair in the first `MergingFileSystem` and
+ * the second pair in the second `MergingFileSystem`, which are then merged into a single common `MergingFileSystem`.
+ * The common `MergingFileSystem` will merge the contents of the folders in this case, which (supposedly) would not
+ * be the case if all the conflicts were to happen inside a single `MergingFileSystem`. This can be worked around, but
+ * the workaround is questionable.
  * 
  * Point #4 fails (b), can be fixed in the same way as point #1. So, a viable option.
  * 
- * Point #5 satisfies all of the criteria, even though it's suffering a low-key bipolar disorder. So this is what we do.
+ * Point #5 satisfies all the criteria, even though it's suffering a low-key bipolar disorder. So this is what we do.
  */
 class MergingFileSystem : public ReadOnlyFileSystem {
  public:
     explicit MergingFileSystem(std::vector<const FileSystem *> bases);
     virtual ~MergingFileSystem();
+
+    // TODO(captainurist): think about smth like a displayPriority for _displayPath? Basically a FS that you want to
+    //                     forward displayPath calls to if there are conflicts (no files exist / multiple files exist).
 
  private:
     virtual bool _exists(FileSystemPathView path) const override;

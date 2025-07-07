@@ -4482,64 +4482,70 @@ bool OpenGLRenderer::SwitchToWindow() {
 
 
 bool OpenGLRenderer::Initialize() {
-    if (!BaseRenderer::Initialize()) {
+    if (!BaseRenderer::Initialize())
         return false;
+
+    if (!window)
+        return false;
+
+    PlatformOpenGLOptions opts;
+
+    // Set it only on startup as currently we don't support multiple contexts to be able to switch OpenGL<->OpenGLES in the middle of runtime.
+    OpenGLES = config->graphics.Renderer.value() == RENDERER_OPENGL_ES;
+
+    if (!OpenGLES) {
+        //  Use OpenGL 4.1 core
+        opts.versionMajor = 4;
+        opts.versionMinor = 1;
+        opts.profile = GL_PROFILE_CORE;
+    } else {
+        //  Use OpenGL ES 3.2
+        opts.versionMajor = 3;
+        opts.versionMinor = 2;
+        opts.profile = GL_PROFILE_ES;
     }
 
-    if (window != nullptr) {
-        PlatformOpenGLOptions opts;
+    //  Turn on 24bit Z buffer.
+    //  You may need to change this to 16 or 32 for your system
+    opts.depthBits = 24;
+    opts.stencilBits = 8;
 
-        // Set it only on startup as currently we don't support multiple contexts to be able to switch OpenGL<->OpenGLES in the middle of runtime.
-        OpenGLES = config->graphics.Renderer.value() == RENDERER_OPENGL_ES;
+    opts.vsyncMode = config->graphics.VSync.value() ? GL_VSYNC_ADAPTIVE : GL_VSYNC_NONE;
 
-        if (!OpenGLES) {
-            //  Use OpenGL 4.1 core
-            opts.versionMajor = 4;
-            opts.versionMinor = 1;
-            opts.profile = GL_PROFILE_CORE;
-        } else {
-            //  Use OpenGL ES 3.2
-            opts.versionMajor = 3;
-            opts.versionMinor = 2;
-            opts.profile = GL_PROFILE_ES;
-        }
+    application->initializeOpenGLContext(opts);
 
-        //  Turn on 24bit Z buffer.
-        //  You may need to change this to 16 or 32 for your system
-        opts.depthBits = 24;
-        opts.stencilBits = 8;
+    auto gladLoadFunc = [](void *ptr, const char *name) {
+        return reinterpret_cast<GLADapiproc>(static_cast<PlatformOpenGLContext *>(ptr)->getProcAddress(name));
+    };
 
-        opts.vsyncMode = config->graphics.VSync.value() ? GL_VSYNC_ADAPTIVE : GL_VSYNC_NONE;
+    int version;
+    if (OpenGLES)
+        version = gladLoadGLES2UserPtr(gladLoadFunc, openGLContext);
+    else
+        version = gladLoadGLUserPtr(gladLoadFunc, openGLContext);
 
-        application->initializeOpenGLContext(opts);
+    auto glGetStringSafe = [] (int id) {
+        // Need this wrapper b/c glGetString can return nullptr, actually happens under OpenGL 1.1 when called for
+        // GL_SHADING_LANGUAGE_VERSION.
+        const char *result = reinterpret_cast<const char *>(glGetString(id));
+        return result ? result : "???";
+    };
 
-        auto gladLoadFunc = [](void *ptr, const char *name) {
-            return reinterpret_cast<GLADapiproc>(static_cast<PlatformOpenGLContext *>(ptr)->getProcAddress(name));
-        };
-
-        int version;
-        if (OpenGLES)
-            version = gladLoadGLES2UserPtr(gladLoadFunc, openGLContext);
-        else
-            version = gladLoadGLUserPtr(gladLoadFunc, openGLContext);
-
-        if (!version)
-            logger->warning("GLAD: Failed to initialize the OpenGL loader");
-
-        if (version) {
-            logger->info("SDL2: supported OpenGL: {}", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
-            logger->info("SDL2: supported GLSL: {}", reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
-            logger->info("SDL2: OpenGL version: {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
-        }
-
-        gladSetGLPostCallback(GL_Check_Errors);
-
-        _initImGui();
-
-        return Reinitialize(true);
+    if (!version) {
+        logger->error("GLAD: Failed to initialize the OpenGL loader");
+    } else {
+        logger->info("OpenGL version: {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
+        logger->info("OpenGL version string: {}", glGetStringSafe(GL_VERSION));
+        logger->info("GLSL version: {}", glGetStringSafe(GL_SHADING_LANGUAGE_VERSION));
+        // TODO(captainurist): this is probably the place to check OpenGL version & exit.
+        //                     openenroth requires opengl core 4.1 or opengles 3.2 capable gpu to run.
     }
 
-    return false;
+    gladSetGLPostCallback(GL_Check_Errors);
+
+    _initImGui();
+
+    return Reinitialize(true);
 }
 
 void OpenGLRenderer::_initImGui() {
