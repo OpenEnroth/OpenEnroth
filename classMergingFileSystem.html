@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7a076a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ee8b772</span>
    </div>
   </td>
  </tr>
@@ -214,12 +214,12 @@ Additional Inherited Members</h2></td></tr>
 <li>Conflicting path is not visible through the merged filesystem at all.</li>
 <li>Schrodingermaxxx and make both visible.</li>
 </ol>
-<p >When picking between the options, we must remember that: a. A tree of merging filesystems should behave the same way as a single flattened merging filesystem. b. Ideally, each method of the merging filesystem should call into each of the base filesystems at most once. c. The behavior shouldn't be surprising.</p>
+<p >When picking between the options, we must remember that: a. A tree of <code><a class="el" href="classMergingFileSystem.html">MergingFileSystem</a></code>s should behave the same way as a single flattened <code><a class="el" href="classMergingFileSystem.html">MergingFileSystem</a></code>. E.g. if we have a <code><a class="el" href="classMergingFileSystem.html">MergingFileSystem</a></code> containing another <code><a class="el" href="classMergingFileSystem.html">MergingFileSystem</a></code>, it should be no different from just having a single <code><a class="el" href="classMergingFileSystem.html">MergingFileSystem</a></code> with all the leaf filesystems added to it. b. Ideally, each method of the merging filesystem should call into each of the base filesystems at most once. c. The behavior shouldn't be surprising.</p>
 <p >Point #1 above fails (b) and (c). We can fix (b) by introducing a <code>walk()</code> method to <code><a class="el" href="classFileSystem.html">FileSystem</a></code> that would return the longest existing prefix of a path, but then we're still left with the fact that behaviour is surprising.</p>
 <p >Point #2 fails (c).</p>
-<p >Point #3 fails (a), (b) and (c).</p>
+<p >Point #3 fails (a), (b) and (c). How exactly it does it fail (a)? Imagine the following sequence of conflicts: folder <code>x</code>, file <code>x</code>, then again folder <code>x</code> and file <code>x</code>, with the first pair in the first <code><a class="el" href="classMergingFileSystem.html">MergingFileSystem</a></code> and the second pair in the second <code><a class="el" href="classMergingFileSystem.html">MergingFileSystem</a></code>, which are then merged into a single common <code><a class="el" href="classMergingFileSystem.html">MergingFileSystem</a></code>. The common <code><a class="el" href="classMergingFileSystem.html">MergingFileSystem</a></code> will merge the contents of the folders in this case, which (supposedly) would not be the case if all the conflicts were to happen inside a single <code><a class="el" href="classMergingFileSystem.html">MergingFileSystem</a></code>. This can be worked around, but the workaround is questionable.</p>
 <p >Point #4 fails (b), can be fixed in the same way as point #1. So, a viable option.</p>
-<p >Point #5 satisfies all of the criteria, even though it's suffering a low-key bipolar disorder. So this is what we do. </p>
+<p >Point #5 satisfies all the criteria, even though it's suffering a low-key bipolar disorder. So this is what we do. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a759bc935efe4e7074431a48038128b2c" name="a759bc935efe4e7074431a48038128b2c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a759bc935efe4e7074431a48038128b2c">&#9670;&#160;</a></span>MergingFileSystem()</h2>

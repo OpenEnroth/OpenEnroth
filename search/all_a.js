@@ -3,7 +3,7 @@ var searchData=
   ['jail_2ecpp_0',['Jail.cpp',['../Jail_8cpp.html',1,'']]],
   ['jail_2eh_1',['Jail.h',['../Jail_8h.html',1,'']]],
   ['jazzberryjam_2',['JazzberryJam',['../classColorTable.html#a064068157c526aa27ca8c5d98a6d880f',1,'ColorTable']]],
-  ['join_3',['join',['../Join_8h.html#a5ef95759f5d26a7f3d0b7f2a1937e657',1,'join(Strings &amp;&amp;strings, char sep):&#160;Join.h'],['../Join_8h.html#a6f647795bd210b8edbc5c1a311207025',1,'join(Joinables &amp;&amp;... joinables):&#160;Join.h']]],
+  ['join_3',['join',['../Join_8h.html#a679cec651cf53924a8213e42198cb177',1,'join(Strings &amp;&amp;strings, char sep):&#160;Join.h'],['../Join_8h.html#a6f647795bd210b8edbc5c1a311207025',1,'join(Joinables &amp;&amp;... joinables):&#160;Join.h']]],
   ['join_2eh_4',['Join.h',['../Join_8h.html',1,'']]],
   ['join_5fut_2ecpp_5',['Join_ut.cpp',['../Join__ut_8cpp.html',1,'']]],
   ['joinabletostring_6',['JoinableToString',['../conceptJoinableToString.html',1,'']]],
