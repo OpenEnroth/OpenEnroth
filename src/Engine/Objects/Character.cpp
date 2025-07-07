@@ -6062,7 +6062,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
             SpriteId spriteType = spritefrom->uType;
 
-            if (spritefrom->uType == SPRITE_ARROW_PROJECTILE) {  // arrows
+            if (spriteType == SPRITE_ARROW_PROJECTILE) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point
                 if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
                     grng->random(100) < playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).level()) {
@@ -6070,7 +6070,11 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                     playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
                     return;
                 }
-            } else if (spriteType == SPRITE_BLASTER_PROJECTILE ||
+            }
+
+            // TODO(captainurist): I don't think magic projectiles should be in this list.
+            if (spriteType == SPRITE_ARROW_PROJECTILE ||
+                       spriteType == SPRITE_BLASTER_PROJECTILE ||
                        spriteType == SPRITE_PROJECTILE_AIRBOLT ||  // dragonflies firebolt
                        spriteType == SPRITE_PROJECTILE_EARTHBOLT ||
                        spriteType == SPRITE_PROJECTILE_FIREBOLT ||
@@ -6082,7 +6086,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                        spriteType == SPRITE_PROJECTILE_DARKBOLT) {
                 // reduce missle damage with skills / armour
                 if (!actorPtr->ActorHitOrMiss(playerPtr)) return;
-                if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Active()) dmgToReceive >>= 1;
+                if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Active()) dmgToReceive >>= 1; // TODO(captainurist): Check for PARTY_BUFF_SHIELD too!
                 if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_SHIELDING)) dmgToReceive >>= 1;
                 if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_STORM)) dmgToReceive >>= 1;
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_ARMOUR) &&

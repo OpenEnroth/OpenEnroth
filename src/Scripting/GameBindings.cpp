@@ -55,6 +55,7 @@ sol::table GameBindings::createBindingTable(sol::state_view &solState) const {
     _registerPartyBindings(solState, table);
     _registerItemBindings(solState, table);
     _registerEnums(solState, table);
+    _registerFunctions(solState, table);
     return table;
 }
 
@@ -360,6 +361,12 @@ void GameBindings::_registerEnums(sol::state_view &solState, sol::table &table) 
     table.new_enum<false>("ItemType",
         "LichJarFull", ITEM_QUEST_LICH_JAR_FULL
     );
+}
+
+void GameBindings::_registerFunctions(sol::state_view &solState, sol::table &table) const {
+    table["debugCallback"] = sol::as_function([] {
+        // Do nothing. You can write your code here.
+    });
 }
 
 Character *getCharacterByIndex(int characterIndex) {

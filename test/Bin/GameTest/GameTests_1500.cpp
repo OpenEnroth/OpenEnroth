@@ -367,7 +367,7 @@ GAME_TEST(Issues, Issue1716) {
     auto pmCountTape = tapes.custom([]() { return pParty->pPartyBuffs[PARTY_BUFF_PROTECTION_FROM_MAGIC].power; });
     test.playTraceFromTestData("issue_1716.mm7", "issue_1716.json");
     EXPECT_CONTAINS(specialAttack.flatten(), SPECIAL_ATTACK_PARALYZED); // Paralysis attacks were made
-    int paraCount = std::ranges::count_if(pParty->pCharacters, [](Character& ch) { return ch.IsParalyzed(); });
+    int paraCount = std::ranges::count_if(pParty->pCharacters, &Character::IsParalyzed);
     EXPECT_EQ(paraCount, 0); // No one ended up paralysed
     EXPECT_LT(pmCountTape.back(), pmCountTape.front()); // PM saved us
 }
