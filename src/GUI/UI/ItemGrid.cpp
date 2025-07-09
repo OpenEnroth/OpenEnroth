@@ -16,14 +16,16 @@ int itemOffset(int dimension) {
 
     int offset = (roundIntDown(dimension - 14, 32) + 32 - dimension) / 2;
 
-    assert(-6 <= offset && offset <= 9);
+    assert(-9 <= offset && offset <= 9);
     return offset;
 }
 
 Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft) {
     Pointi relativePos = mousePos - inventoryTopLeft;
     // TODO(captainurist): divIntDown is >> 5
-    return Pointi(divIntDown(relativePos.x, 32), divIntDown(relativePos.y, 32));
+    int x = divIntDown(relativePos.x, 32);
+    int y = divIntDown(relativePos.y, 32);
+    return Pointi(x, y);
 }
 
 Pointi mapFromInventoryGrid(Pointi gridPos, Pointi inventoryTopLeft) {

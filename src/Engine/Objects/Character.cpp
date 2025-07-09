@@ -6215,8 +6215,13 @@ void Character::OnInventoryLeftClick() {
     }
 
     Pointi mousePos = mouse->position();
-    Pointi inventoryPos = mapToInventoryGrid(mousePos + mouse->pickedItemOffset, Pointi(14, 17));
-
+    Pointi mouseOffset = mouse->pickedItemOffset;
+    if(pParty->pPickedItem.itemId != ITEM_NULL) {
+        // If the mouse is picking up an item, we need to adjust the offset
+        // so that the item is centered when dropping.
+        mouseOffset += Pointi(16, 16);
+    }
+    Pointi inventoryPos = mapToInventoryGrid(mousePos + mouseOffset, Pointi(14, 17));
     // If a held item is overlapping outside the grid
     if (pParty->pPickedItem.itemId != ITEM_NULL && !inventory.gridRect().contains(Recti(inventoryPos, pParty->pPickedItem.inventorySize()))) {
         pAudioPlayer->playUISound(SOUND_error);
@@ -6266,8 +6271,8 @@ void Character::OnInventoryLeftClick() {
         // calc offsets of where on the item was clicked
         // first need index of top left corner of the item
         Pointi corner = inventory.entry(inventoryPos).geometry().topLeft();
-        int itemXOffset = mousePos.x + mouse->pickedItemOffset.x - 14 - (corner.x * 32);
-        int itemYOffset = mousePos.y + mouse->pickedItemOffset.y - 17 - (corner.y * 32);
+        int itemXOffset = mousePos.x + mouseOffset.x - 14 - (corner.x * 32);
+        int itemYOffset = mousePos.y + mouseOffset.y - 17 - (corner.y * 32);
 
         if (entry) {
             auto tex = assets->getImage_Alpha(entry->GetIconName());
@@ -6297,12 +6302,13 @@ void Character::OnInventoryLeftClick() {
 
                 pParty->takeHoldingItem();
                 pParty->setHoldingItem(tmp);
-                return;
             } else {
                 // place picked item
                 if (inventory.tryAdd(inventoryPos, pParty->pPickedItem)) {
                     pParty->takeHoldingItem();
-                    return;
+                } else {
+                    // failed to add to inventory, keep holding the item
+                    pAudioPlayer->playUISound(SOUND_error);
                 }
             }
         }
