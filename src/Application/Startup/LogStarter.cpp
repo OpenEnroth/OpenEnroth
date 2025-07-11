@@ -16,6 +16,9 @@ LogStarter::LogStarter() {
     // We write to a buffer until the desired log level is known.
     _bufferLogSink = std::make_unique<BufferLogSink>();
     _rootLogSink->addLogSink(_bufferLogSink.get());
+
+    // Quiet down FFMPEG logs a little.
+    logger->setLevel(*LogCategory::instance("ffmpeg"), LOG_ERROR);
 }
 
 LogStarter::~LogStarter() {
