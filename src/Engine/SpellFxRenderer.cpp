@@ -45,64 +45,67 @@ Color ModulateColor(Color diffuse, float multiplier) {
 }
 
 //----- (0042620A) --------------------------------------------------------
-bool sr_42620A(RenderVertexSoft *p) { // maybe near clipping on projectiles
-    //  int16_t v1; // fps@1
-    uint8_t v2;   // c0@2
-    char v3;              // c2@2
-    uint8_t v4;   // c3@2
-                          //  bool result; // eax@2
-    uint8_t v6;   // c0@4
-    char v7;              // c2@4
-    uint8_t v8;   // c3@4
-    uint8_t v9;   // c0@6
-    char v10;             // c2@6
-    uint8_t v11;  // c3@6
-    float v13;            // ST04_4@7
-    float v14;            // ST00_4@7
-    float v17;            // ST04_4@8
-    float v18;            // ST00_4@8
+/**
+ * Clips a projectile (represented by two vertices) to the camera's view plane.
+ *
+ * This function checks if the projectile's endpoints are in front of, behind, or on the view plane.
+ * If either endpoint is behind the view plane, it attempts to clip the projectile so that only the visible
+ * portion remains. The function modifies the positions of the vertices as needed to ensure proper clipping.
+ *
+ * @param p Pointer to an array of two RenderVertexSoft objects representing the projectile's endpoints.
+ *          - p[0]: First endpoint
+ *          - p[1]: Second endpoint
+ * @return true if the projectile is at least partially visible (after clipping), false if it is completely behind the view plane.
+ *
+ * Details:
+ * - Checks the position of each endpoint relative to the view plane.
+ * - If both endpoints are behind the view plane, the projectile is rejected.
+ * - If one endpoint is behind, the function interpolates the position of the endpoint to the view plane.
+ * - Uses linear interpolation to calculate the intersection point with the view plane.
+ * - Modifies the endpoint positions in-place.
+ */
+bool ClipProjectileToViewPlane(RenderVertexSoft *p) { // maybe near clipping on projectiles
+    // Calculate if the first endpoint is behind the view plane
+    bool pBehind = p->vWorldViewPosition.x < pCamera3D->ViewPlaneDistPixels;
+    // Calculate if the second endpoint is in front of the view plane
+    bool pInFront = pCamera3D->ViewPlaneDistPixels < p[1].vWorldViewPosition.x;
+    // Calculate if the second endpoint is exactly on the view plane
+    // TODO (mcgreentn): should we use an epsilon here?
+    bool pOnPlane = pCamera3D->ViewPlaneDistPixels == p[1].vWorldViewPosition.x;
 
-    if (p->vWorldViewPosition.x < pCamera3D->ViewPlaneDistPixels ||
-        (v2 = pCamera3D->ViewPlaneDistPixels < p[1].vWorldViewPosition.x, v3 = 0,
-         v4 = pCamera3D->ViewPlaneDistPixels == p[1].vWorldViewPosition.x,
-
-         !(v2 | v4))) {
-        if (p->vWorldViewPosition.x < pCamera3D->ViewPlaneDistPixels) {
-            v6 = pCamera3D->ViewPlaneDistPixels < p[1].vWorldViewPosition.x;
-            v7 = 0;
-            v8 = pCamera3D->ViewPlaneDistPixels == p[1].vWorldViewPosition.x;
-
-            if (!(v6 | v8)) {
-                //logger->Info("sr_42620A reject");
+    // If the first endpoint is behind or the second is not in front/on the plane
+    if (pBehind || !(pInFront | pOnPlane)) {
+        // If both endpoints are behind, reject the projectile
+        if (pBehind) {
+            if (!(pInFront | pOnPlane)) {
                 return false;
             }
         }
-        //logger->Info("sr_42620A pass");
-        v9 = pCamera3D->ViewPlaneDistPixels < p->vWorldViewPosition.x;
-        v10 = 0;
-        v11 = pCamera3D->ViewPlaneDistPixels == p->vWorldViewPosition.x;
-
-        if (v9 | v11) {
-            float v16 =
+        // If the second endpoint is in front/on the plane, clip the second endpoint to the view plane
+        if (pInFront | pOnPlane) {
+            float invDeltaX =
                 1.0f / (p->vWorldViewPosition.x - p[1].vWorldViewPosition.x);
-            v17 = (p->vWorldViewPosition.y - p[1].vWorldViewPosition.y) * v16;
-            v18 = (p->vWorldViewPosition.z - p[1].vWorldViewPosition.z) * v16;
-            float v19 = pCamera3D->ViewPlaneDistPixels - p[1].vWorldViewPosition.x;
-            p[1].vWorldViewPosition.x = v19 + p[1].vWorldViewPosition.x;
-            p[1].vWorldViewPosition.y = v17 * v19 + p[1].vWorldViewPosition.y;
-            p[1].vWorldViewPosition.z = v19 * v18 + p[1].vWorldViewPosition.z;
+            float deltaY = (p->vWorldViewPosition.y - p[1].vWorldViewPosition.y) * invDeltaX;
+            float deltaZ = (p->vWorldViewPosition.z - p[1].vWorldViewPosition.z) * invDeltaX;
+            float deltaXToPlane = pCamera3D->ViewPlaneDistPixels - p[1].vWorldViewPosition.x;
+            // Move the second endpoint to the intersection with the view plane
+            p[1].vWorldViewPosition.x = deltaXToPlane + p[1].vWorldViewPosition.x;
+            p[1].vWorldViewPosition.y = deltaY * deltaXToPlane + p[1].vWorldViewPosition.y;
+            p[1].vWorldViewPosition.z = deltaXToPlane * deltaZ + p[1].vWorldViewPosition.z;
         } else {
-            float v12 =
+            // Otherwise, clip the first endpoint to the view plane
+            float invDeltaX =
                 1.0f / (p[1].vWorldViewPosition.x - p->vWorldViewPosition.x);
-            v13 = (p[1].vWorldViewPosition.y - p->vWorldViewPosition.y) * v12;
-            v14 = (p[1].vWorldViewPosition.z - p->vWorldViewPosition.z) * v12;
-            float v15 = pCamera3D->ViewPlaneDistPixels - p->vWorldViewPosition.x;
-            p->vWorldViewPosition.x = v15 + p->vWorldViewPosition.x;
-            p->vWorldViewPosition.y = v13 * v15 + p->vWorldViewPosition.y;
-            p->vWorldViewPosition.z = v15 * v14 + p->vWorldViewPosition.z;
+            float deltaY = (p[1].vWorldViewPosition.y - p->vWorldViewPosition.y) * invDeltaX;
+            float deltaZ = (p[1].vWorldViewPosition.z - p->vWorldViewPosition.z) * invDeltaX;
+            float deltaXToPlane = pCamera3D->ViewPlaneDistPixels - p->vWorldViewPosition.x;
+            // Move the first endpoint to the intersection with the view plane
+            p->vWorldViewPosition.x = deltaXToPlane + p->vWorldViewPosition.x;
+            p->vWorldViewPosition.y = deltaY * deltaXToPlane + p->vWorldViewPosition.y;
+            p->vWorldViewPosition.z = deltaXToPlane * deltaZ + p->vWorldViewPosition.z;
         }
     }
-
+    // At least part of the projectile is visible
     return true;
 }
 
