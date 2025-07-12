@@ -157,32 +157,30 @@ void SpellFxRenderer::DoAddProjectile(float srcX, float srcY, float srcZ,
 
 //----- (004A7298) --------------------------------------------------------
 void SpellFxRenderer::DrawProjectiles() {
-    float v10;              // ST1C_4@8
-    float v11;              // ST0C_4@8
-    RenderVertexSoft v[2];  // [sp+30h] [bp-68h]@1
+    float srcWidthScale;    // width scaling factor for source point
+    float dstWidthScale;    // width scaling factor for destination point
+    RenderVertexSoft v[2];  // array to hold two vertices for the projectile
 
     for (int i = 0; i < uNumProjectiles; ++i) {
+        // For each projectile
         ProjectileAnim *p = &pProjectiles[i];
 
-        v[0].vWorldPosition.x = p->srcX;
-        v[0].vWorldPosition.y = p->srcY;
-        v[0].vWorldPosition.z = p->srcZ;
-        v[1].vWorldPosition.x = p->dstX;
-        v[1].vWorldPosition.y = p->dstY;
-        v[1].vWorldPosition.z = p->dstZ;
+        // get the source and destination positions
+        v[0].vWorldPosition = Vec3f(p->srcX, p->srcY, p->srcZ);
+        v[1].vWorldPosition = Vec3f(p->dstX, p->dstY, p->dstZ);
         pCamera3D->ViewTransform(v, 2);
 
-        sr_42620A(v);
+        ClipProjectileToViewPlane(v);
 
         pCamera3D->Project(v, 2, 0);
 
         // 20.0f is width scaling factor
-        v10 = pCamera3D->ViewPlaneDistPixels / v[1].vWorldViewPosition.x * 20.0f;
-        v11 = pCamera3D->ViewPlaneDistPixels / v[0].vWorldViewPosition.x * 20.0f;
+        dstWidthScale = pCamera3D->ViewPlaneDistPixels / v[1].vWorldViewPosition.x * 20.0f;
+        srcWidthScale = pCamera3D->ViewPlaneDistPixels / v[0].vWorldViewPosition.x * 20.0f;
         render->DrawProjectile(v[0].vWorldViewProjX, v[0].vWorldViewProjY,
-                               v[0].vWorldViewPosition.x, v11,
+                               v[0].vWorldViewPosition.x, srcWidthScale,
                                v[1].vWorldViewProjX, v[1].vWorldViewProjY,
-                               v[1].vWorldViewPosition.x, v10, p->texture);
+                               v[1].vWorldViewPosition.x, dstWidthScale, p->texture);
     }
 }
 
