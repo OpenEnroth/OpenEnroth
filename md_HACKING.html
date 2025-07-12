@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;c6774f4</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7eb0c4b</span>
    </div>
   </td>
  </tr>
@@ -106,7 +106,12 @@ Building on *nix platforms</h1>
 <div class="line">$ cmake --build build</div>
 </div><!-- fragment --><p >To cross-compile for 32-bit x86, you can pass <code>-m32</code> via compiler flags to cmake. In the snipped above that would mean running <code>export CFLAGS="-m32" CXXFLAGS="-m32"</code> first.</p>
 <p >You can also select platform dependent <a href="https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html">generator</a> for your favorite IDE.</p>
-<h1><a class="anchor" id="autotoc_md3"></a>
+<h2><a class="anchor" id="autotoc_md3"></a>
+Additional Notes for MacOS</h2>
+<ul>
+<li>Make sure you have the latest Xcode installed. Do this through the App Store or by downloading it from the <a href="https://developer.apple.com/download/more/">Apple Developer website</a>.</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md4"></a>
 Building on Windows</h1>
 <ul>
 <li>Get git (<code><a href="https://git-scm.com/download/win">https://git-scm.com/download/win</a></code>) and Visual Studio 2022.</li>
@@ -124,7 +129,7 @@ Building on Windows</h1>
 </ul>
 <p >If you wish you can also disable prebuilt dependencies by turning off <code>OE_USE_PREBUILT_DEPENDENCIES</code> cmake option and pass your own dependencies source, e.g. via <a href="https://github.com/microsoft/vcpkg">vcpkg</a> integration.</p>
 <p ><b>Be aware</b> that Visual Studio has a bug with git submodules not syncing between branches. So when checking out the branch or switching to different branch you may need to run the following command manually: <code>git submodule update --init</code></p>
-<h1><a class="anchor" id="autotoc_md4"></a>
+<h1><a class="anchor" id="autotoc_md5"></a>
 Coding style</h1>
 <p >For the C++ code we are following the <a href="http://google.github.io/styleguide/cppguide.html">Google C++ Style Guide</a>. Source code is automatically checked against it and pull request will fail if you don't follow it.</p>
 <p >To perform a style check before pushing anything you can build <code>check_style</code> target. In Visual Studio you can do that by going to <em><b>Solution Explorer → Change Views → CMake targets</b></em>. Right click and build <code>check_style</code>, errors will be listed in output.</p>
@@ -180,7 +185,7 @@ Coding style</h1>
 <li>We don't yet have a mechanism for displaying errors to the user through the UI. This document will be updated once this is implemented.</li>
 </ul>
 <p >There is a lot of code in the project that doesn't follow these conventions. Please feel free to fix it, preferably not mixing up style and logical changes in the same PR.</p>
-<h1><a class="anchor" id="autotoc_md5"></a>
+<h1><a class="anchor" id="autotoc_md6"></a>
 Code Organization</h1>
 <p >OpenEnroth code is broken up as follows:</p><ul>
 <li><code>thirdparty</code> – this is where all external libraries go.</li>
@@ -193,7 +198,7 @@ Code Organization</h1>
 <li>One <code>CMakeLists.txt</code> file per folder. Exceptions are /android, /CMakeModules and /resources.</li>
 <li>One class per source file, with the name of the source file matching the name of the class. Exceptions are small structs, which are usually easier to pack into a single source file, and helper classes, which generally should stay next to the main class. Note that this guideline doesn't apply to source files that mainly declare functions.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md6"></a>
+<h1><a class="anchor" id="autotoc_md7"></a>
 Testing</h1>
 <p >We strive for a good test coverage of the project, and while we're not there yet, the current policy is to add tests for all the bugs we fix, as long as the fix is testable. E.g. graphical glitches are generally very hard to test, but we have the infrastructure to test game logic and small isolated classes.</p>
 <p >Tests in OpenEnroth fall into two categories:</p><ul>
@@ -216,7 +221,7 @@ Testing</h1>
 <p >To run all unit tests locally, build a <code>OpenEnroth_UnitTest</code> cmake target and run <code>&lt;build-dir&gt;/test/Bin/UnitTest/OpenEnroth_UnitTest</code>.</p>
 <p >To run all game tests locally, set <code>OPENENROTH_MM7_PATH</code> environment variable to point to the location of the game assets, then build <code>Run_GameTest_Headless_Parallel</code> cmake target. Alternatively, you can build <code>OpenEnroth_GameTest</code>, and run it manually, passing the paths to both game assets and the test data via command line. Run <code>OpenEnroth_GameTest --help</code> for a list of options. Note that you can pass <code>--headless</code> to run tests in headless mode. You can use the test data from <code>&lt;build-dir&gt;/test/Bin/test_data/data</code>, which is automatically downloaded and updated by the <code>OpenEnroth_TestData</code> cmake target. Alternatively, if you cloned the OpenEnroth_TestData repository, you can use that.</p>
 <p >If you need to look closely at the recorded trace, you can play it by running <code>OpenEnroth play --speed 0.5 &lt;path-to-trace.json&gt;</code>. Alternatively, if you already have a unit test that runs the recorded trace, you can run <code>OpenEnroth_GameTest --speed 0.5 --gtest_filter=&lt;test-suite-name&gt;.&lt;test-name&gt; --test-path &lt;path-to-test-data-folder&gt;</code>. Note that <code>--gtest_filter</code> needs that <code>=</code> and won't work if you try passing the test name after a space.</p>
-<h1><a class="anchor" id="autotoc_md7"></a>
+<h1><a class="anchor" id="autotoc_md8"></a>
 How to deal with &lt;tt&gt;Random state desynchronized&lt;/tt&gt;</h1>
 <p >Changing game logic might result in failures in game tests because they check the random number generator state after each frame, and this will show as <code>Random state desynchronized when playing back trace</code> message in test logs. This is intentional – we don't want accidental game logic changes. <b>If</b> the change was actually intentional, then you will need to either retrace or re-record the traces for the failing tests as follows. These instructions assume your change is already submitted as PR backed from your fork, or will be.</p><ul>
 <li>Prepare to submit a PR to the <a href="https://github.com/OpenEnroth/OpenEnroth_TestData">OpenEnroth_TestData</a> repo: Fork and clone it if you haven't done so already.</li>
@@ -226,10 +231,10 @@ How to deal with &lt;tt&gt;Random state desynchronized&lt;/tt&gt;</h1>
 <li>Back in the main OpenEnroth clone, paste the commit hash into the <code>GIT_TAG</code> key in <code>test/Bin/CMakeLists.txt</code>, replacing the one already there, and update the <code>GIT_REPOSITORY</code> to point to your clone of OpenEnroth_TestData.</li>
 <li>Commit this to your main PR's branch and push it. The checks this push triggers should now succeed.</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md8"></a>
+<h1><a class="anchor" id="autotoc_md9"></a>
 Scripting</h1>
 <p >We're using Lua as the scripting language, and all our scripts are currently located under the <code>resources/scripts</code> folder.</p>
-<h3><a class="anchor" id="autotoc_md9"></a>
+<h3><a class="anchor" id="autotoc_md10"></a>
 Lua Language Server</h3>
 <p >Script files undergo a syntax checking process during the build generation. If you intend to work with scripts, it is recommended to install the <a href="https://github.com/LuaLS/lua-language-server">Lua Language Server</a> to run the style checker locally. Follow these steps to setup <code>LuaLS</code> locally:</p><ul>
 <li>Install <code>LuaLS</code> through one of the <a href="https://luals.github.io/#other-install">following methods</a>. Ensure that the lua-language-server executable is available in the <code>PATH</code> environment variable.</li>
@@ -237,13 +242,13 @@ Lua Language Server</h3>
 <li>The <code>check_style</code> target is now including scripting in its tests.</li>
 </ul>
 <p >Little note: If <code>LuaLS</code> is not found, everything still build but no checks will be run against the Lua scripts.</p>
-<h3><a class="anchor" id="autotoc_md10"></a>
+<h3><a class="anchor" id="autotoc_md11"></a>
 Tools</h3>
 <p >To go through a better experience while working with scripts it is strongly recommended to use <a href="https://code.visualstudio.com/">VS Code</a> and <a href="https://luals.github.io/#vscode-install">install the LuaLS extension</a>. Just be sure to open the root repository folder in <code>VS Code</code>. By doing so <code>LuaLS</code> reads the correct configuration file used by the project</p>
-<h3><a class="anchor" id="autotoc_md11"></a>
+<h3><a class="anchor" id="autotoc_md12"></a>
 Modding ?</h3>
 <p >Scripting is currently used only for debugging purposes. Modding support is not planned for the near future. You can check the <a href="https://github.com/OpenEnroth/OpenEnroth/milestones">milestones</a> to get a better idea.</p>
-<h1><a class="anchor" id="autotoc_md12"></a>
+<h1><a class="anchor" id="autotoc_md13"></a>
 Console Commands</h1>
 <p >The game features a console capable of executing various Lua script commands. To activate this feature, please follow these steps:</p>
 <ol type="1">
@@ -252,10 +257,10 @@ Console Commands</h1>
 <li>Once in-game, press the <code>~</code> key to open the debug console.</li>
 </ol>
 <p >Currently, the console is only available while in-game.</p>
-<h1><a class="anchor" id="autotoc_md13"></a>
+<h1><a class="anchor" id="autotoc_md14"></a>
 Additional Resources</h1>
 <p >Old event decompiler and IDB files can be found <a href="https://www.dropbox.com/sh/if4u3lphn633oit/AADUYMxNcrkAU6epJ50RskyXa?dl=0">here</a>. Feel free to ping <code>zipi#6029</code> on Discord for more info.</p>
-<h1><a class="anchor" id="autotoc_md14"></a>
+<h1><a class="anchor" id="autotoc_md15"></a>
 Support</h1>
 <p >Still having problems? Ask for help on our discord! <a href="https://discord.gg/jRCyPtq"><img src="https://img.shields.io/badge/chat-on%20discord-green.svg" alt="" style="pointer-events: none;" class="inline"/></a> </p>
 </div></div><!-- contents -->
