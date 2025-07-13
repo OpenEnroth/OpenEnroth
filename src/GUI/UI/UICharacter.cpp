@@ -1312,10 +1312,10 @@ void CharacterUI_DrawPickedItemUnderlay(Vec2i gridOffset) {
 
         // this is a correction so that the shadow is drawn in the same place as the item
         // in the inventory grid, and that it is not drawn centered on the mouse cursor
-        mouseOffset += Pointi(16, 16);
+        
         Pointi inventoryPos = mapToInventoryGrid(
             Pointi(mousePos.x + mouseOffset.x, mousePos.y + mouseOffset.y),
-            gridOffset
+            gridOffset, true
         );
         Sizei itemSize = pParty->pPickedItem.inventorySize();
 

@@ -6216,12 +6216,8 @@ void Character::OnInventoryLeftClick() {
 
     Pointi mousePos = mouse->position();
     Pointi mouseOffset = mouse->pickedItemOffset;
-    if(pParty->pPickedItem.itemId != ITEM_NULL) {
-        // If the mouse is picking up an item, we need to adjust the offset
-        // so that the item is centered when dropping.
-        mouseOffset += Pointi(16, 16);
-    }
-    Pointi inventoryPos = mapToInventoryGrid(mousePos + mouseOffset, Pointi(14, 17));
+
+    Pointi inventoryPos = mapToInventoryGrid(mousePos + mouseOffset, Pointi(14, 17), (pParty->pPickedItem.itemId != ITEM_NULL));
     // If a held item is overlapping outside the grid
     if (pParty->pPickedItem.itemId != ITEM_NULL && !inventory.gridRect().contains(Recti(inventoryPos, pParty->pPickedItem.inventorySize()))) {
         pAudioPlayer->playUISound(SOUND_error);

@@ -19,6 +19,6 @@ int itemOffset(int dimension);
  * @return                              Inventory grid position, in grid coordinates. Might be out of grid if the mouse
  *                                      position is out of grid.
  */
-Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft);
+Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft, bool isHoldingItem = false);
 
 Pointi mapFromInventoryGrid(Pointi gridPos, Pointi inventoryTopLeft);

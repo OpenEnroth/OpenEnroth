@@ -20,7 +20,11 @@ int itemOffset(int dimension) {
     return offset;
 }
 
-Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft) {
+Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft, bool isHoldingItem) {
+    if(isHoldingItem) {
+        // If holding an item, we want to snap to the center of the grid cell rather than the edge
+        mousePos += Pointi(16, 16)
+    }
     Pointi relativePos = mousePos - inventoryTopLeft;
     // TODO(captainurist): divIntDown is >> 5
     int x = divIntDown(relativePos.x, 32);
