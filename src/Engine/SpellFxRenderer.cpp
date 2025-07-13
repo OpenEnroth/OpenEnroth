@@ -1128,13 +1128,12 @@ void SpellFxRenderer::_4A8BFC_prismatic_light() {  // for SPELL_LIGHT_PRISMATIC_
 
 //----- (004A8C27) --------------------------------------------------------
 void SpellFxRenderer::RenderSpecialEffects() {
-    double v4;         // st7@4
-    double v5;         // st6@4
-    float v7;          // ST14_4@6
-    Duration v8;   // ST14_4@8
-    SpriteFrame *v10;  // eax@8
-    // int v11; // edi@8
-    RenderVertexD3D3 vd3d[4];  // [sp+60h] [bp-8Ch]@9
+    double fadeProgress;         // st7@4 (renamed from v4)
+    double fadeAmount;           // st6@4 (renamed from v5)
+    float fadeAlpha;             // ST14_4@6 (renamed from v7)
+    Duration animElapsed;        // ST14_4@8 (renamed from v8)
+    SpriteFrame *prismaticFrame; // eax@8 (renamed from v10)
+    RenderVertexD3D3 vd3d[4];    // [sp+60h] [bp-8Ch]@9
 
     if (uNumProjectiles) {
         DrawProjectiles();
@@ -1143,23 +1142,22 @@ void SpellFxRenderer::RenderSpecialEffects() {
 
     field_204 = 0;
     if (uFadeTime > 0_ticks) {
-        v4 = (double)uFadeTime.ticks() / (double)uFadeLength.ticks();
-        v5 = 1.0 - v4 * v4;
-        // v6 = v5;
-        if (v5 > 0.9) v5 = 1.0 - (v5 - 0.9) * 10.0;
-        v7 = v5;
-        render->ScreenFade(uFadeColor, v7);
+        fadeProgress = (double)uFadeTime.ticks() / (double)uFadeLength.ticks();
+        fadeAmount = 1.0 - fadeProgress * fadeProgress;
+        if (fadeAmount > 0.9) fadeAmount = 1.0 - (fadeAmount - 0.9) * 10.0;
+        fadeAlpha = fadeAmount;
+        render->ScreenFade(uFadeColor, fadeAlpha);
         uFadeTime -= pEventTimer->dt();
     }
 
     if (uAnimLength > 0_ticks) {
         // prismatic light
-        v8 = pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
-        v10 = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), v8);
-        int pal = v10->GetPaletteIndex();
+        animElapsed = pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
+        prismaticFrame = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), animElapsed);
+        int pal = prismaticFrame->GetPaletteIndex();
         uAnimLength -= pEventTimer->dt();
 
-        render->DrawSpecialEffectsQuad(v10->hw_sprites[0]->texture, pal);
+        render->DrawSpecialEffectsQuad(prismaticFrame->hw_sprites[0]->texture, pal);
     }
 }
 
