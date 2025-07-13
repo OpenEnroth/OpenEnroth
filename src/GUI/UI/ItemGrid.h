@@ -16,9 +16,12 @@ int itemOffset(int dimension);
 /**
  * @param mousePos                      Mouse position.
  * @param inventoryTopLeft              Top left position of the inventory grid.
+ * @param isHoldingItem                 Whether the player is holding an item.
+ *                                      If true, the mouse position is adjusted to snap to the center of the grid cell
+ *                                      rather than the edge.
  * @return                              Inventory grid position, in grid coordinates. Might be out of grid if the mouse
  *                                      position is out of grid.
  */
-Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft);
+Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft, bool isHoldingItem = false);
 
 Pointi mapFromInventoryGrid(Pointi gridPos, Pointi inventoryTopLeft);
