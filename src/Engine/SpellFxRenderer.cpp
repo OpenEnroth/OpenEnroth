@@ -991,31 +991,29 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
 //----- (004A89BD) --------------------------------------------------------
 void SpellFxRenderer::SetPlayerBuffAnim(SpellId uSpellID,
                                         uint16_t uPlayerID) {
-    // SpellFxRenderer *v3; // edi@1
-    PlayerBuffAnim *v4;  // esi@1
-    const char *v6;      // [sp-4h] [bp-10h]@2
+    PlayerBuffAnim *pBuffAnim = &pCharacterBuffs[uPlayerID];
+    const char *iconName;  // was v6
 
-    v4 = &pCharacterBuffs[uPlayerID];
-    v4->uSpellAnimTimeElapsed = 0_ticks;
-    v4->bRender = uSpellID != SPELL_NONE;
+    pBuffAnim->uSpellAnimTimeElapsed = 0_ticks;
+    pBuffAnim->bRender = uSpellID != SPELL_NONE;
 
     switch (uSpellID) {
         case SPELL_DISEASE:
-            v6 = "zapp";
+            iconName = "zapp";
             break;
 
         case BECOME_MAGIC_GUILD_MEMBER:
         case SPELL_AIR_FEATHER_FALL:
         case SPELL_SPIRIT_DETECT_LIFE:
         case SPELL_SPIRIT_FATE:
-            v6 = "spboost1";
+            iconName = "spboost1";
             break;
 
         case SPELL_QUEST_COMPLETED:
         case SPELL_AIR_INVISIBILITY:
         case SPELL_WATER_WATER_WALK:
         case SPELL_SPIRIT_PRESERVATION:
-            v6 = "spboost2";
+            iconName = "spboost2";
             break;
 
         case SPELL_STAT_DECREASE:
@@ -1023,13 +1021,13 @@ void SpellFxRenderer::SetPlayerBuffAnim(SpellId uSpellID,
         case SPELL_LIGHT_DAY_OF_THE_GODS:
         case SPELL_LIGHT_DAY_OF_PROTECTION:
         case SPELL_LIGHT_DIVINE_INTERVENTION:
-            v6 = "spboost3";
+            iconName = "spboost3";
             break;
 
         case SPELL_SPIRIT_REMOVE_CURSE:
         case SPELL_MIND_REMOVE_FEAR:
         case SPELL_BODY_CURE_WEAKNESS:
-            v6 = "spheal1";
+            iconName = "spheal1";
             break;
 
         case SPELL_SPIRIT_SHARED_LIFE:
@@ -1039,70 +1037,70 @@ void SpellFxRenderer::SetPlayerBuffAnim(SpellId uSpellID,
         case SPELL_BODY_CURE_POISON:
         case SPELL_BODY_CURE_DISEASE:
         case SPELL_DARK_SACRIFICE:
-            v6 = "spheal2";
+            iconName = "spheal2";
             break;
 
         case SPELL_BODY_POWER_CURE:
         case SPELL_DARK_SOULDRINKER:
-            v6 = "spheal3";
+            iconName = "spheal3";
             break;
 
         case SPELL_FIRE_PROTECTION_FROM_FIRE:
         case SPELL_FIRE_IMMOLATION:
-            v6 = "spell03";
+            iconName = "spell03";
             break;
 
         case SPELL_FIRE_HASTE:
-            v6 = "spell05";
+            iconName = "spell05";
             break;
         case SPELL_AIR_PROTECTION_FROM_AIR:
-            v6 = "spell14";
+            iconName = "spell14";
             break;
         case SPELL_AIR_SHIELD:
-            v6 = "spell17";
+            iconName = "spell17";
             break;
         case SPELL_WATER_PROTECTION_FROM_WATER:
-            v6 = "spell25";
+            iconName = "spell25";
             break;
         case SPELL_EARTH_PROTECTION_FROM_EARTH:
-            v6 = "spell36";
+            iconName = "spell36";
             break;
         case SPELL_EARTH_STONESKIN:
-            v6 = "spell38";
+            iconName = "spell38";
             break;
         case SPELL_SPIRIT_BLESS:
-            v6 = "spell46";
+            iconName = "spell46";
             break;
         case SPELL_SPIRIT_HEROISM:
-            v6 = "spell51";
+            iconName = "spell51";
             break;
         case SPELL_SPIRIT_RESSURECTION:
-            v6 = "spell55";
+            iconName = "spell55";
             break;
         case SPELL_MIND_PROTECTION_FROM_MIND:
-            v6 = "spell58";
+            iconName = "spell58";
             break;
         case SPELL_BODY_PROTECTION_FROM_BODY:
-            v6 = "spell69";
+            iconName = "spell69";
             break;
         case SPELL_BODY_REGENERATION:
-            v6 = "spell71";
+            iconName = "spell71";
             break;
         case SPELL_BODY_HAMMERHANDS:
-            v6 = "spell73";
+            iconName = "spell73";
             break;
         case SPELL_BODY_PROTECTION_FROM_MAGIC:
-            v6 = "spell75";
+            iconName = "spell75";
             break;
 
         default:
-            v4->bRender = false;
+            pBuffAnim->bRender = false;
             return;
     }
 
-    v4->uSpellIconID = pIconsFrameTable->animationId(v6);
-    if (v4->bRender)
-        v4->uSpellAnimTime = pIconsFrameTable->animationLength(v4->uSpellIconID);
+    pBuffAnim->uSpellIconID = pIconsFrameTable->animationId(iconName);
+    if (pBuffAnim->bRender)
+        pBuffAnim->uSpellAnimTime = pIconsFrameTable->animationLength(pBuffAnim->uSpellIconID);
 }
 
 void SpellFxRenderer::SetPartyBuffAnim(SpellId uSpellID) {
