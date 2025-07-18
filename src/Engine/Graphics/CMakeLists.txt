@@ -23,7 +23,6 @@ set(ENGINE_GRAPHICS_SOURCES
         PortalFunctions.cpp
         Sprites.cpp
         TextureFrameTable.cpp
-        Texture_MM7.cpp
         TurnBasedOverlay.cpp
         Viewport.cpp
         Vis.cpp
@@ -54,7 +53,6 @@ set(ENGINE_GRAPHICS_HEADERS
         RenderEntities.h
         Sprites.h
         TextureFrameTable.h
-        Texture_MM7.h
         TurnBasedOverlay.h
         Viewport.h
         Vis.h
