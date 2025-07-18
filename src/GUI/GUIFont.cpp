@@ -12,12 +12,10 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
 
-#include "Engine/Snapshots/CompositeSnapshots.h"
-
 #include "GUI/GUIWindow.h"
+#include "Library/LodFormats/LodImage.h"
 
 #include "Library/Logger/Logger.h"
-#include "Library/Snapshots/SnapshotSerialization.h"
 
 void ReloadFonts() {
     if (assets->pFontBookOnlyShadow)
@@ -65,7 +63,7 @@ std::unique_ptr<GUIFont> GUIFont::LoadFont(std::string_view pFontFile, std::stri
 
     result->_font = lod::decodeFont(pIcons_LOD->LoadCompressedTexture(pFontFile));
 
-    Texture_MM7 *pallete_texture = pIcons_LOD->loadTexture(pFontPalette);
+    LodImage *pallete_texture = pIcons_LOD->loadTexture(pFontPalette);
     if (!pallete_texture) {
         logger->error("Unable to open {}", pFontPalette);
     } else {
