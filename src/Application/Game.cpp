@@ -715,7 +715,7 @@ void Game::processQueuedMessages() {
                 DialogueEnding();
 
                 if (engine->_teleportPoint.isValid()) {
-                    if (!engine->_teleportPoint.getTeleportMap().starts_with('0')) {
+                    if (!engine->_teleportPoint.getTeleportMap().starts_with('0')) { // '0' means teleportation within the current map.
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                         bool leavingArena = engine->_currentLoadedMapId == MAP_ARENA;
                         onMapLeave();
@@ -723,7 +723,6 @@ void Game::processQueuedMessages() {
                         if (leavingArena)
                             pParty->GetPlayingTime() += Duration::fromDays(4);
                     } else {
-                        // TODO(captainurist): mm7 map names never start with '0', what is this about?
                         engine->_teleportPoint.doTeleport(true);
                         engine->_teleportPoint.invalidate();
                     }
@@ -1167,7 +1166,7 @@ void Game::processQueuedMessages() {
                     //    mapIdx = static_cast<MAP_TYPE>(grng->random(pMapStats->uNumMaps + 1));
                     MapInfo *pMapInfo = &pMapStats->pInfos[mapIdx];
 
-                    if (grng->random(100) + 1 <= pMapInfo->encounterChance) {
+                    if (grng->random(100) + 1 <= pMapInfo->encounterChance && !engine->config->debug.NoActors.value()) {
                         v91 = grng->random(100);
                         v92 = pMapInfo->encounter1Chance;
                         v93 = v91 + 1;

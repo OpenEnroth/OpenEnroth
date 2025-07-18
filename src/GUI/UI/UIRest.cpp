@@ -91,7 +91,7 @@ GUIWindow_Rest::GUIWindow_Rest()
     // auto wnd = new GUIWindow_Rest(0, 0, window->GetWidth(),
     // window->GetHeight());
     pButton_RestUI_Exit = CreateButton({280, 297}, {154, 37}, 1, 0, UIMSG_ExitRest, 0, Io::InputAction::Invalid, "", {rest_ui_btn_exit});
-    pButton_RestUI_Main = CreateButton({24, 154}, {225, 37}, 1, 0, UIMSG_Rest8Hour, 0, Io::InputAction::Rest8Hours, "", {rest_ui_btn_4});
+    pButton_RestUI_Main = CreateButton("Rest_RestAndHeal", {24, 154}, {225, 37}, 1, 0, UIMSG_Rest8Hour, 0, Io::InputAction::Rest8Hours, "", {rest_ui_btn_4});
     pButton_RestUI_WaitUntilDawn = CreateButton({61, 232}, {154, 33}, 1, 0, UIMSG_WaitTillDawn, 0, Io::InputAction::WaitTillDawn, "", {rest_ui_btn_1});
     pButton_RestUI_Wait1Hour = CreateButton({61, 264}, {154, 33}, 1, 0, UIMSG_Wait1Hour, 0, Io::InputAction::WaitHour, "", {rest_ui_btn_2});
     pButton_RestUI_Wait5Minutes = CreateButton({61, 296}, {154, 33}, 1, 0, UIMSG_Wait5Minutes, 0, Io::InputAction::Wait5Minutes, "", {rest_ui_btn_3});
