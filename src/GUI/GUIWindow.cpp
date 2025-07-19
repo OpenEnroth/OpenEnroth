@@ -1064,15 +1064,15 @@ void MainMenuUI_LoadFontsAndSomeStuff() {
     //     pSRZBufferLineOffsets[i] = 640 * i;  // must be 640 - needs sorting
     // }
     if (!assets->pFontArrus)
-        assets->pFontArrus = GUIFont::LoadFont("arrus.fnt", "FONTPAL");
+        assets->pFontArrus = GUIFont::LoadFont("arrus.fnt");
     if (!assets->pFontLucida)
-        assets->pFontLucida = GUIFont::LoadFont("lucida.fnt", "FONTPAL");
+        assets->pFontLucida = GUIFont::LoadFont("lucida.fnt");
     if (!assets->pFontCreate)
-        assets->pFontCreate = GUIFont::LoadFont("create.fnt", "FONTPAL");
+        assets->pFontCreate = GUIFont::LoadFont("create.fnt");
     if (!assets->pFontSmallnum)
-        assets->pFontSmallnum = GUIFont::LoadFont("smallnum.fnt", "FONTPAL");
+        assets->pFontSmallnum = GUIFont::LoadFont("smallnum.fnt");
     if (!assets->pFontComic)
-        assets->pFontComic = GUIFont::LoadFont("comic.fnt", "FONTPAL");
+        assets->pFontComic = GUIFont::LoadFont("comic.fnt");
 }
 
 static void LoadPartyBuffIcons() {

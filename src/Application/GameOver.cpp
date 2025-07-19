@@ -51,7 +51,7 @@ void CreateWinnerCertificate() {
     pWindow.uFrameHeight = 338;
     pWindow.uFrameZ = 543;
     pWindow.uFrameW = 397;
-    std::unique_ptr<GUIFont> pFont = GUIFont::LoadFont("endgame.fnt", "FONTPAL");
+    std::unique_ptr<GUIFont> pFont = GUIFont::LoadFont("endgame.fnt");
 
     std::string pInString;
     if (pParty->isPartyGood())
