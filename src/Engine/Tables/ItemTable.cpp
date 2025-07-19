@@ -514,7 +514,6 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
                 pParty->pIsArtifactFound[artifactRandomId] = true;
                 outItem->flags = 0;
                 outItem->itemId = artifactRandomId;
-                outItem->postGenerate(ITEM_SOURCE_UNKNOWN);
                 return;
             }
         }

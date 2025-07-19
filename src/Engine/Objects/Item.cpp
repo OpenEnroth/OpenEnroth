@@ -251,7 +251,6 @@ bool Item::GenerateArtifact() {
     Reset();
     if (uNumArtifactsNotFound) {
         itemId = artifacts_list[grng->random(uNumArtifactsNotFound)];
-        postGenerate(ITEM_SOURCE_UNKNOWN);
         return true;
     } else {
         return false;
