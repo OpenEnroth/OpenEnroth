@@ -18,7 +18,7 @@ class GUIFont {
     GUIFont();
     ~GUIFont();
 
-    static std::unique_ptr<GUIFont> LoadFont(std::string_view pFontFile, std::string_view pFontPalette);
+    static std::unique_ptr<GUIFont> LoadFont(std::string_view pFontFile);
 
     void CreateFontTex();
     void ReleaseFontTex();
@@ -59,7 +59,7 @@ class GUIFont {
     // TODO: these should take std::string_view
     void DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY,
                           unsigned int w, unsigned int h, Color firstColor,
-                          Color secondColor, std::string_view pString,
+                          Color secondColor, Color shadowColor, std::string_view pString,
                           GraphicsImage *image);
     int GetStringHeight2(GUIFont *secondFont, std::string_view text_str,
                          GUIWindow *pWindow, int startX, int a6);
@@ -71,12 +71,11 @@ class GUIFont {
     std::string FitTwoFontStringINWindow(std::string_view inString, GUIFont *pFontSecond,
                                     GUIWindow *pWindow, int startPixlOff,
                                     bool return_on_carriage = false);
-    void DrawTextLineToBuff(Color color, Color *uX_buff_pos,
+    void DrawTextLineToBuff(Color color, Color shadowColor, Color *uX_buff_pos,
                             std::string_view text, int line_width);
 
  private:
     LodFont _font;
-    Palette _palette;
 };
 
 void ReloadFonts();

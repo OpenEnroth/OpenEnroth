@@ -15,8 +15,6 @@
 #include "GUI/GUIWindow.h"
 #include "Library/LodFormats/LodImage.h"
 
-#include "Library/Logger/Logger.h"
-
 void ReloadFonts() {
     if (assets->pFontBookOnlyShadow)
         assets->pFontBookOnlyShadow->CreateFontTex();
@@ -58,18 +56,10 @@ GUIFont::~GUIFont() {
     ReleaseFontTex();
 }
 
-std::unique_ptr<GUIFont> GUIFont::LoadFont(std::string_view pFontFile, std::string_view pFontPalette) {
+std::unique_ptr<GUIFont> GUIFont::LoadFont(std::string_view pFontFile) {
     std::unique_ptr<GUIFont> result = std::make_unique<GUIFont>();
 
     result->_font = lod::decodeFont(pIcons_LOD->LoadCompressedTexture(pFontFile));
-
-    LodImage *pallete_texture = pIcons_LOD->loadTexture(pFontPalette);
-    if (!pallete_texture) {
-        logger->error("Unable to open {}", pFontPalette);
-    } else {
-        result->_palette = pallete_texture->palette;
-    }
-
     result->CreateFontTex();
 
     return result;
@@ -186,7 +176,7 @@ Color GUIFont::DrawTextLine(std::string_view text, Color color, Color defaultCol
 }
 
 void DrawCharToBuff(Color *draw_buff, const uint8_t *pCharPixels, int uCharWidth, int uCharHeight,
-                    const Palette &pFontPalette, Color draw_color, int line_width) {
+                    Color draw_color, Color shadowColor, int line_width) {
     assert(draw_color.a > 0);
 
     const uint8_t *pPixels = pCharPixels;
@@ -195,7 +185,7 @@ void DrawCharToBuff(Color *draw_buff, const uint8_t *pCharPixels, int uCharWidth
             uint8_t char_pxl = *pPixels++;
             if (char_pxl) {
                 if (char_pxl == 1) {
-                    *draw_buff = pFontPalette.colors[1];
+                    *draw_buff = shadowColor;
                 } else {
                     *draw_buff = draw_color;
                 }
@@ -206,7 +196,7 @@ void DrawCharToBuff(Color *draw_buff, const uint8_t *pCharPixels, int uCharWidth
     }
 }
 
-void GUIFont::DrawTextLineToBuff(Color color, Color *uX_buff_pos, std::string_view text, int line_width) {
+void GUIFont::DrawTextLineToBuff(Color color, Color shadowColor, Color *uX_buff_pos, std::string_view text, int line_width) {
     assert(color.a > 0);
 
     if (text.empty()) {
@@ -238,7 +228,7 @@ void GUIFont::DrawTextLineToBuff(Color color, Color *uX_buff_pos, std::string_vi
                         uX_pos += _font.metrics(c).leftSpacing;
                     }
                     const uint8_t *pCharPixels = _font.image(c).pixels().data();
-                    DrawCharToBuff(uX_pos, pCharPixels, uCharWidth, _font.height(), _palette, text_color, line_width);
+                    DrawCharToBuff(uX_pos, pCharPixels, uCharWidth, _font.height(), text_color, shadowColor, line_width);
                     uX_pos += uCharWidth;
                     if (i < text_length) {
                         uX_pos += _font.metrics(c).rightSpacing;
@@ -662,7 +652,7 @@ int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, std
 }
 
 void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h,
-                               Color firstColor, Color secondColor, std::string_view pString,
+                               Color firstColor, Color secondColor, Color shadowColor, std::string_view pString,
                                GraphicsImage *image) {
     GUIWindow draw_window;
     draw_window.uFrameHeight = h;
@@ -693,7 +683,7 @@ void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, u
             if (line_w < 0) {
                 line_w = 0;
             }
-            currentFont->DrawTextLineToBuff(currentColor, &curr_pixel_pos[line_w + half_frameX],
+            currentFont->DrawTextLineToBuff(currentColor, shadowColor, &curr_pixel_pos[line_w + half_frameX],
                 work_string, image->width());
             curr_pixel_pos += image->width() * (currentFont->GetHeight() - 3);
             std::getline(stream, work_string);
