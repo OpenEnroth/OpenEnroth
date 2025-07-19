@@ -749,7 +749,7 @@ void Item::postGenerate(ItemSource source) {
     }
 
     if (type() == ITEM_TYPE_POTION && itemId != ITEM_POTION_BOTTLE && potionPower == 0) {
-        if (source == ITEM_SOURCE_MAP || source == ITEM_SOURCE_CHEST) {
+        if (source == ITEM_SOURCE_MAP || source == ITEM_SOURCE_CHEST || source == ITEM_SOURCE_SCRIPT) {
             potionPower = grng->random(15) + 5;
         } else if (source == ITEM_SOURCE_MONSTER) {
             potionPower = 2 * grng->random(4) + 2; // TODO(captainurist): change to 2d4+2.
