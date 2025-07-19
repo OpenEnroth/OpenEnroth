@@ -42,9 +42,9 @@ void GUIWindow_Temple::healDialogue() {
 
     bool setZombie = false;
     if (houseId() == HOUSE_TEMPLE_DEYJA || houseId() == HOUSE_TEMPLE_PIT || houseId() == HOUSE_TEMPLE_MOUNT_NIGHON) {
-        setZombie = pParty->activeCharacter().conditions.Has(CONDITION_ZOMBIE);
-        if (!pParty->activeCharacter().conditions.Has(CONDITION_ZOMBIE)) {
-            if (pParty->activeCharacter().conditions.HasAny({CONDITION_ERADICATED, CONDITION_PETRIFIED, CONDITION_DEAD})) {
+        setZombie = pParty->activeCharacter().conditions.has(CONDITION_ZOMBIE);
+        if (!pParty->activeCharacter().conditions.has(CONDITION_ZOMBIE)) {
+            if (pParty->activeCharacter().conditions.hasAny({CONDITION_ERADICATED, CONDITION_PETRIFIED, CONDITION_DEAD})) {
                 pParty->activeCharacter().uPrevFace = pParty->activeCharacter().uCurrentFace;
                 pParty->activeCharacter().uPrevVoiceID = pParty->activeCharacter().uVoiceID;
                 pParty->activeCharacter().uVoiceID = (pParty->activeCharacter().GetSexByVoice() != SEX_MALE) + 23;
@@ -54,16 +54,16 @@ void GUIWindow_Temple::healDialogue() {
             }
         }
     } else {
-        if (pParty->activeCharacter().conditions.Has(CONDITION_ZOMBIE)) {
+        if (pParty->activeCharacter().conditions.has(CONDITION_ZOMBIE)) {
             pParty->activeCharacter().uCurrentFace = pParty->activeCharacter().uPrevFace;
             pParty->activeCharacter().uVoiceID = pParty->activeCharacter().uPrevVoiceID;
             GameUI_ReloadPlayerPortraits(pParty->activeCharacterIndex() - 1, pParty->activeCharacter().uPrevFace);
         }
     }
 
-    pParty->activeCharacter().conditions.ResetAll();
+    pParty->activeCharacter().conditions.resetAll();
     if (setZombie) {
-        pParty->activeCharacter().conditions.Set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
+        pParty->activeCharacter().conditions.set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
     }
     pParty->TakeGold(price);
     pParty->activeCharacter().health = pParty->activeCharacter().GetMaxHealth();

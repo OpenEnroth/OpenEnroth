@@ -1187,9 +1187,9 @@ void CharacterUI_StatsTab_ShowHint() {
             std::string str = std::string(localization->getCharacterConditionDescription()) + "\n";
 
             for (Condition condition : conditionImportancyTable()) {
-                if (pParty->activeCharacter().conditions.Has(condition)) {
+                if (pParty->activeCharacter().conditions.has(condition)) {
                     str += " \n";
-                    Duration condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.Get(condition);
+                    Duration condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.get(condition);
                     CivilDuration d = condition_time.toCivilDuration();
                     pTextColor = GetConditionDrawColor(condition);
                     str += fmt::format("{::}{}\f00000 - ", pTextColor.tag(), localization->GetCharacterConditionName(condition));

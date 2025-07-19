@@ -338,11 +338,11 @@ int Character::GetConditionDaysPassed(Condition condition) const {
     // PS - CHECK ?? is this the intedned behavior - RETURN
     // NUMBER OF DAYS CONDITION HAS BEEN ACTIVE FOR
 
-    if (!this->conditions.Has(condition))
+    if (!this->conditions.has(condition))
         return 0;
 
     Time playtime = pParty->GetPlayingTime();
-    Time condtime = this->conditions.Get(condition);
+    Time condtime = this->conditions.get(condition);
     Duration diff = playtime - condtime;
 
     return diff.days() + 1;
@@ -436,7 +436,7 @@ bool Character::CanEquip_RaceAndAlignmentCheck(ItemId uItemID) const {
 
 //----- (00492D65) --------------------------------------------------------
 void Character::SetCondition(Condition condition, int blockable) {
-    if (conditions.Has(condition))  // cant get the same condition twice
+    if (conditions.has(condition))  // cant get the same condition twice
         return;
 
     if (blockable && blockCondition(this, condition))
@@ -512,7 +512,7 @@ void Character::SetCondition(Condition condition, int blockable) {
                 return;
             }
 
-            conditions.ResetAll();
+            conditions.resetAll();
             health = GetMaxHealth();
             mana = 0;
             uPrevFace = uCurrentFace;
@@ -538,7 +538,7 @@ void Character::SetCondition(Condition condition, int blockable) {
         playersBefore += character.CanAct() ? 1 : 0;
     }
 
-    conditions.Set(condition, pParty->GetPlayingTime());  // set condition
+    conditions.set(condition, pParty->GetPlayingTime());  // set condition
 
     int playersAfter = 0;
     Character *remainingPlayer = nullptr;
@@ -767,9 +767,9 @@ int Character::GetActualStat(CharacterAttribute stat) const {
     }
 
     float uConditionMult = 100.0f;
-    if (this->conditions.HasNone({ CONDITION_DEAD, CONDITION_ERADICATED, CONDITION_PETRIFIED }))
+    if (this->conditions.hasNone({ CONDITION_DEAD, CONDITION_ERADICATED, CONDITION_PETRIFIED }))
         for (Condition cond : allConditions())  // accumulate all condition effects
-            if (this->conditions.Has(cond))
+            if (this->conditions.has(cond))
                 uConditionMult *= 0.01f * pConditionAttributeModifier[stat][std::to_underlying(cond)];  // weak from disease or poison ect
 
     int magicBonus = GetMagicalBonus(stat);
@@ -1341,14 +1341,14 @@ void Character::Heal(int amount) {
 
         if (IsUnconcious()) {
             if (health > 0) {  // wake up if health rises above 0
-                conditions.Reset(CONDITION_UNCONSCIOUS);
+                conditions.reset(CONDITION_UNCONSCIOUS);
             }
         }
     }
 }
 
 int Character::receiveDamage(signed int amount, DamageType dmg_type) {
-    conditions.Reset(CONDITION_SLEEP);  // wake up if asleep
+    conditions.reset(CONDITION_SLEEP);  // wake up if asleep
     signed int recieved_dmg = CalculateIncommingDamage(dmg_type, amount);  // get damage
     // for no damage cheat - moved from elsewhere
     if (!engine->config->debug.NoDamage.value()) {
@@ -2081,7 +2081,7 @@ void Character::RandomizeName() {
 //----- (0048E9F4) --------------------------------------------------------
 Condition Character::GetMajorConditionIdx() const {
     for (Condition condition : conditionImportancyTable()) {
-        if (conditions.Has(condition))
+        if (conditions.has(condition))
             return condition;  // return worst condition
     }
     return CONDITION_GOOD;  // condition good
@@ -3098,8 +3098,8 @@ Color Character::GetStatColor(CharacterAttribute uStat) const {
 //----- (004908A8) --------------------------------------------------------
 bool Character::DiscardConditionIfLastsLongerThan(Condition uCondition,
                                                   Time time) {
-    if (conditions.Has(uCondition) && time < conditions.Get(uCondition)) {
-        conditions.Reset(uCondition);
+    if (conditions.has(uCondition) && time < conditions.get(uCondition)) {
+        conditions.reset(uCondition);
         return true;
     } else {
         return false;
@@ -3170,27 +3170,27 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                 break;
 
             case ITEM_POTION_CURE_WEAKNESS:
-                playerAffected->conditions.Reset(CONDITION_WEAK);
+                playerAffected->conditions.reset(CONDITION_WEAK);
                 break;
 
             case ITEM_POTION_CURE_DISEASE:
-                playerAffected->conditions.Reset(CONDITION_DISEASE_SEVERE);
-                playerAffected->conditions.Reset(CONDITION_DISEASE_MEDIUM);
-                playerAffected->conditions.Reset(CONDITION_DISEASE_WEAK);
+                playerAffected->conditions.reset(CONDITION_DISEASE_SEVERE);
+                playerAffected->conditions.reset(CONDITION_DISEASE_MEDIUM);
+                playerAffected->conditions.reset(CONDITION_DISEASE_WEAK);
                 break;
 
             case ITEM_POTION_CURE_POISON:
-                playerAffected->conditions.Reset(CONDITION_POISON_SEVERE);
-                playerAffected->conditions.Reset(CONDITION_POISON_MEDIUM);
-                playerAffected->conditions.Reset(CONDITION_POISON_WEAK);
+                playerAffected->conditions.reset(CONDITION_POISON_SEVERE);
+                playerAffected->conditions.reset(CONDITION_POISON_MEDIUM);
+                playerAffected->conditions.reset(CONDITION_POISON_WEAK);
                 break;
 
             case ITEM_POTION_AWAKEN:
-                playerAffected->conditions.Reset(CONDITION_SLEEP);
+                playerAffected->conditions.reset(CONDITION_SLEEP);
                 break;
 
             case ITEM_POTION_HASTE:
-                if (!playerAffected->conditions.Has(CONDITION_WEAK)) {
+                if (!playerAffected->conditions.has(CONDITION_WEAK)) {
                     playerAffected->pCharacterBuffs[CHARACTER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
                 }
                 break;
@@ -3225,15 +3225,15 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                 break;
 
             case ITEM_POTION_REMOVE_FEAR:
-                playerAffected->conditions.Reset(CONDITION_FEAR);
+                playerAffected->conditions.reset(CONDITION_FEAR);
                 break;
 
             case ITEM_POTION_REMOVE_CURSE:
-                playerAffected->conditions.Reset(CONDITION_CURSED);
+                playerAffected->conditions.reset(CONDITION_CURSED);
                 break;
 
             case ITEM_POTION_CURE_INSANITY:
-                playerAffected->conditions.Reset(CONDITION_INSANE);
+                playerAffected->conditions.reset(CONDITION_INSANE);
                 break;
 
             case ITEM_POTION_MIGHT_BOOST:
@@ -3273,19 +3273,19 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                 break;
 
             case ITEM_POTION_CURE_PARALYSIS:
-                playerAffected->conditions.Reset(CONDITION_PARALYZED);
+                playerAffected->conditions.reset(CONDITION_PARALYZED);
                 break;
 
             case ITEM_POTION_DIVINE_RESTORATION:
             {
-                Time deadTime = playerAffected->conditions.Get(CONDITION_DEAD);
-                Time petrifedTime = playerAffected->conditions.Get(CONDITION_PETRIFIED);
-                Time eradicatedTime = playerAffected->conditions.Get(CONDITION_ERADICATED);
+                Time deadTime = playerAffected->conditions.get(CONDITION_DEAD);
+                Time petrifedTime = playerAffected->conditions.get(CONDITION_PETRIFIED);
+                Time eradicatedTime = playerAffected->conditions.get(CONDITION_ERADICATED);
                 // TODO(Nik-RE-dev): why not playerAffected?
-                conditions.ResetAll();
-                playerAffected->conditions.Set(CONDITION_DEAD, deadTime);
-                playerAffected->conditions.Set(CONDITION_PETRIFIED, petrifedTime);
-                playerAffected->conditions.Set(CONDITION_ERADICATED, eradicatedTime);
+                conditions.resetAll();
+                playerAffected->conditions.set(CONDITION_DEAD, deadTime);
+                playerAffected->conditions.set(CONDITION_PETRIFIED, petrifedTime);
+                playerAffected->conditions.set(CONDITION_ERADICATED, eradicatedTime);
                 break;
             }
 
@@ -3342,7 +3342,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                 break;
 
             case ITEM_POTION_STONE_TO_FLESH:
-                playerAffected->conditions.Reset(CONDITION_PETRIFIED);
+                playerAffected->conditions.reset(CONDITION_PETRIFIED);
                 break;
 
             case ITEM_POTION_PURE_LUCK:
@@ -3870,39 +3870,39 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
         case VAR_LearningSkill:
             return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_LEARNING]);
         case VAR_Cursed:
-            return conditions.Has(CONDITION_CURSED);
+            return conditions.has(CONDITION_CURSED);
         case VAR_Weak:
-            return conditions.Has(CONDITION_WEAK);
+            return conditions.has(CONDITION_WEAK);
         case VAR_Asleep:
-            return conditions.Has(CONDITION_SLEEP);
+            return conditions.has(CONDITION_SLEEP);
         case VAR_Afraid:
-            return conditions.Has(CONDITION_FEAR);
+            return conditions.has(CONDITION_FEAR);
         case VAR_Drunk:
-            return conditions.Has(CONDITION_DRUNK);
+            return conditions.has(CONDITION_DRUNK);
         case VAR_Insane:
-            return conditions.Has(CONDITION_INSANE);
+            return conditions.has(CONDITION_INSANE);
         case VAR_PoisonedGreen:
-            return conditions.Has(CONDITION_POISON_WEAK);
+            return conditions.has(CONDITION_POISON_WEAK);
         case VAR_DiseasedGreen:
-            return conditions.Has(CONDITION_DISEASE_WEAK);
+            return conditions.has(CONDITION_DISEASE_WEAK);
         case VAR_PoisonedYellow:
-            return conditions.Has(CONDITION_POISON_MEDIUM);
+            return conditions.has(CONDITION_POISON_MEDIUM);
         case VAR_DiseasedYellow:
-            return conditions.Has(CONDITION_DISEASE_MEDIUM);
+            return conditions.has(CONDITION_DISEASE_MEDIUM);
         case VAR_PoisonedRed:
-            return conditions.Has(CONDITION_POISON_SEVERE);
+            return conditions.has(CONDITION_POISON_SEVERE);
         case VAR_DiseasedRed:
-            return conditions.Has(CONDITION_DISEASE_SEVERE);
+            return conditions.has(CONDITION_DISEASE_SEVERE);
         case VAR_Paralyzed:
-            return conditions.Has(CONDITION_PARALYZED);
+            return conditions.has(CONDITION_PARALYZED);
         case VAR_Unconsious:
-            return conditions.Has(CONDITION_UNCONSCIOUS);
+            return conditions.has(CONDITION_UNCONSCIOUS);
         case VAR_Dead:
-            return conditions.Has(CONDITION_DEAD);
+            return conditions.has(CONDITION_DEAD);
         case VAR_Stoned:
-            return conditions.Has(CONDITION_PETRIFIED);
+            return conditions.has(CONDITION_PETRIFIED);
         case VAR_Eradicated:
-            return conditions.Has(CONDITION_ERADICATED);
+            return conditions.has(CONDITION_ERADICATED);
         case VAR_MajorCondition: {
             Condition condition = GetMajorConditionIdx();
             if (condition != CONDITION_GOOD) {
@@ -4393,7 +4393,7 @@ void Character::SetVariable(EvtVariable var_type, signed int var_value) {
             PlayAwardSound_Anim();
             return;
         case VAR_MajorCondition:
-            conditions.ResetAll();
+            conditions.resetAll();
             PlayAwardSound_Anim();
             return;
         case VAR_AutoNotes:
@@ -4990,7 +4990,7 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
             PlayAwardSound_Anim97();
             return;
         case VAR_MajorCondition:
-            conditions.ResetAll();
+            conditions.resetAll();
             PlayAwardSound_Anim97();
             return;
         case VAR_AutoNotes:
@@ -5602,71 +5602,71 @@ void Character::SubtractVariable(EvtVariable VarNum, signed int pValue) {
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_Cursed:
-            this->conditions.Reset(CONDITION_CURSED);
+            this->conditions.reset(CONDITION_CURSED);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_Weak:
-            this->conditions.Reset(CONDITION_WEAK);
+            this->conditions.reset(CONDITION_WEAK);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_Asleep:
-            this->conditions.Reset(CONDITION_SLEEP);
+            this->conditions.reset(CONDITION_SLEEP);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_Afraid:
-            this->conditions.Reset(CONDITION_FEAR);
+            this->conditions.reset(CONDITION_FEAR);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_Drunk:
-            this->conditions.Reset(CONDITION_DRUNK);
+            this->conditions.reset(CONDITION_DRUNK);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_Insane:
-            this->conditions.Reset(CONDITION_INSANE);
+            this->conditions.reset(CONDITION_INSANE);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_PoisonedGreen:
-            this->conditions.Reset(CONDITION_POISON_WEAK);
+            this->conditions.reset(CONDITION_POISON_WEAK);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_DiseasedGreen:
-            this->conditions.Reset(CONDITION_DISEASE_WEAK);
+            this->conditions.reset(CONDITION_DISEASE_WEAK);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_PoisonedYellow:
-            this->conditions.Reset(CONDITION_POISON_MEDIUM);
+            this->conditions.reset(CONDITION_POISON_MEDIUM);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_DiseasedYellow:
-            this->conditions.Reset(CONDITION_DISEASE_MEDIUM);
+            this->conditions.reset(CONDITION_DISEASE_MEDIUM);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_PoisonedRed:
-            this->conditions.Reset(CONDITION_POISON_SEVERE);
+            this->conditions.reset(CONDITION_POISON_SEVERE);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_DiseasedRed:
-            this->conditions.Reset(CONDITION_DISEASE_SEVERE);
+            this->conditions.reset(CONDITION_DISEASE_SEVERE);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_Paralyzed:
-            this->conditions.Reset(CONDITION_PARALYZED);
+            this->conditions.reset(CONDITION_PARALYZED);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_Unconsious:
-            this->conditions.Reset(CONDITION_UNCONSCIOUS);
+            this->conditions.reset(CONDITION_UNCONSCIOUS);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_Dead:
-            this->conditions.Reset(CONDITION_DEAD);
+            this->conditions.reset(CONDITION_DEAD);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_Stoned:
-            this->conditions.Reset(CONDITION_PETRIFIED);
+            this->conditions.reset(CONDITION_PETRIFIED);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_Eradicated:
-            this->conditions.Reset(CONDITION_ERADICATED);
+            this->conditions.reset(CONDITION_ERADICATED);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_AutoNotes:
@@ -6310,43 +6310,43 @@ void Character::OnInventoryLeftClick() {
 }
 
 bool Character::IsWeak() const {
-    return this->conditions.Has(CONDITION_WEAK);
+    return this->conditions.has(CONDITION_WEAK);
 }
 
 bool Character::IsDead() const {
-    return this->conditions.Has(CONDITION_DEAD);
+    return this->conditions.has(CONDITION_DEAD);
 }
 
 bool Character::IsEradicated() const {
-    return this->conditions.Has(CONDITION_ERADICATED);
+    return this->conditions.has(CONDITION_ERADICATED);
 }
 
 bool Character::IsZombie() const {
-    return this->conditions.Has(CONDITION_ZOMBIE);
+    return this->conditions.has(CONDITION_ZOMBIE);
 }
 
 bool Character::IsCursed() const {
-    return this->conditions.Has(CONDITION_CURSED);
+    return this->conditions.has(CONDITION_CURSED);
 }
 
 bool Character::IsPetrified() const {
-    return this->conditions.Has(CONDITION_PETRIFIED);
+    return this->conditions.has(CONDITION_PETRIFIED);
 }
 
 bool Character::IsUnconcious() const {
-    return this->conditions.Has(CONDITION_UNCONSCIOUS);
+    return this->conditions.has(CONDITION_UNCONSCIOUS);
 }
 
 bool Character::IsAsleep() const {
-    return this->conditions.Has(CONDITION_SLEEP);
+    return this->conditions.has(CONDITION_SLEEP);
 }
 
 bool Character::IsParalyzed() const {
-    return this->conditions.Has(CONDITION_PARALYZED);
+    return this->conditions.has(CONDITION_PARALYZED);
 }
 
 bool Character::IsDrunk() const {
-    return this->conditions.Has(CONDITION_DRUNK);
+    return this->conditions.has(CONDITION_DRUNK);
 }
 
 void Character::SetCondWeakWithBlockCheck(int blockable) {
@@ -6861,7 +6861,7 @@ void Character::Zero() {
     mana = uFullManaBonus = _mana_related = 0;
     sACModifier = 0;
 
-    conditions.ResetAll();
+    conditions.resetAll();
 
     uBirthYear = sAgeModifier = 0;
     uLevel = sLevelModifier = 0;

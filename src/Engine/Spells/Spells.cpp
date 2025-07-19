@@ -869,7 +869,7 @@ void armageddonProgress() {
     }
 
     for (Character &player : pParty->pCharacters) {
-        if (!player.conditions.HasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+        if (!player.conditions.hasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
             player.receiveDamage(outgoingDamage, DAMAGE_MAGIC);
         }
     }

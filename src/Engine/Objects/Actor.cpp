@@ -3321,7 +3321,7 @@ int stru319::which_player_to_attack(Actor *pActor) {
                     if (!pParty->pCharacters[i].matchesAttackPreference(preference))
                         continue;
 
-                    if (pParty->pCharacters[i].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
+                    if (pParty->pCharacters[i].conditions.hasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
                                                                    CONDITION_PETRIFIED, CONDITION_ERADICATED}))
                         victims[victimCount++] = i;
                 }
@@ -3331,7 +3331,7 @@ int stru319::which_player_to_attack(Actor *pActor) {
             return victims[grng->random(victimCount)];
     }
     for (int i = 0; i < pParty->pCharacters.size(); ++i) {
-        if (pParty->pCharacters[i].conditions.HasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
+        if (pParty->pCharacters[i].conditions.hasNone({CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD,
                                                        CONDITION_PETRIFIED, CONDITION_ERADICATED}))
             victims[victimCount++] = i;
     }
@@ -4496,7 +4496,7 @@ void evaluateAoeDamage() {
                 // check line of sight to party
                 if (Check_LineOfSight(pParty->pos + Vec3f(0, 0, pParty->eyeLevel), attack.pos)) {
                     for (int i = 0; i < pParty->pCharacters.size(); i++) {
-                        if (pParty->pCharacters[i].conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+                        if (pParty->pCharacters[i].conditions.hasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             DamageCharacterFromMonster(attack.pid, attack.attackSpecial, i);
                         }
                     }
