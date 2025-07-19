@@ -28,10 +28,10 @@
 #include "Utility/IndexedBitset.h"
 
 #include "TalkAnimation.h"
+#include "CharacterConditions.h"
 
 class Actor;
 class GraphicsImage;
-struct CharacterConditions_MM7;
 
 enum class StealResult {
     STEAL_BUSTED = 0, // Failed to steal & was caught.
@@ -64,48 +64,6 @@ struct RegenData {
     int hpRegen = 0; // From all sources except for regeneration buff, hp / 5 ticks.
     int hpSpellRegen = 0; // From regeneration buff, hp / 5 ticks.
     int spRegen = 0; // From all sources, mp / 5 ticks.
-};
-
-class CharacterConditions {
- public: // NOLINT: no idea why linter is triggering here.
-    [[nodiscard]] bool Has(Condition condition) const {
-        return _times[condition].isValid();
-    }
-
-    [[nodiscard]] bool HasAny(std::initializer_list<Condition> conditions) const {
-        for (Condition condition : conditions)
-            if (Has(condition))
-                return true;
-        return false;
-    }
-
-    [[nodiscard]] bool HasNone(std::initializer_list<Condition> conditions) const {
-        return !HasAny(conditions);
-    }
-
-    void Reset(Condition condition) {
-        _times[condition] = Time();
-    }
-
-    void ResetAll() {
-        for (Time &time : _times)
-            time = Time();
-    }
-
-    void Set(Condition condition, Time time) {
-        _times[condition] = time;
-    }
-
-    [[nodiscard]] Time Get(Condition condition) const {
-        return _times[condition];
-    }
-
-    friend void snapshot(const CharacterConditions &src, CharacterConditions_MM7 *dst); // In EntitySnapshots.cpp.
-    friend void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst); // In EntitySnapshots.cpp.
-
- private:
-    /** Game time when condition has started. Zero means that the character doesn't have a condition. */
-    IndexedArray<Time, CONDITION_FIRST, CONDITION_LAST> _times;
 };
 
 class Character {

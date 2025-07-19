@@ -137,7 +137,7 @@ static bool blockConditionWithProtectionFromMagic(const ConditionTableEntry &ent
 }
 
 bool blockCondition(Character *character, Condition condition) {
-    assert(!character->conditions.Has(condition)); // Expected to be checked externally.
+    assert(!character->conditions.has(condition)); // Expected to be checked externally.
 
     const ConditionTableEntry &entry = conditionArray[condition];
     if (blockConditionWithProtectionFromMagic(entry))

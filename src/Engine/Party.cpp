@@ -531,7 +531,7 @@ void Party::Reset() {
 
     for (Character &player : this->pCharacters) {
         player.timeToRecovery = 0_ticks;
-        player.conditions.ResetAll();
+        player.conditions.resetAll();
 
         for (SpellBuff &buff : player.pCharacterBuffs) {
             buff.Reset();
@@ -717,15 +717,15 @@ void Party::restAndHeal() {
             buff.Reset();
 
         pPlayer->resetTempBonuses();
-        if (pPlayer->conditions.HasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+        if (pPlayer->conditions.hasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
             continue;
         }
 
-        pPlayer->conditions.Reset(CONDITION_UNCONSCIOUS);
-        pPlayer->conditions.Reset(CONDITION_DRUNK);
-        pPlayer->conditions.Reset(CONDITION_FEAR);
-        pPlayer->conditions.Reset(CONDITION_SLEEP);
-        pPlayer->conditions.Reset(CONDITION_WEAK);
+        pPlayer->conditions.reset(CONDITION_UNCONSCIOUS);
+        pPlayer->conditions.reset(CONDITION_DRUNK);
+        pPlayer->conditions.reset(CONDITION_FEAR);
+        pPlayer->conditions.reset(CONDITION_SLEEP);
+        pPlayer->conditions.reset(CONDITION_WEAK);
 
         pPlayer->timeToRecovery = 0_ticks;
         pPlayer->health = pPlayer->GetMaxHealth();
@@ -741,20 +741,20 @@ void Party::restAndHeal() {
             }
         }
 
-        if (pPlayer->conditions.Has(CONDITION_ZOMBIE)) {
+        if (pPlayer->conditions.has(CONDITION_ZOMBIE)) {
             pPlayer->mana = 0;
             pPlayer->health /= 2;
-        } else if (pPlayer->conditions.HasAny({CONDITION_POISON_SEVERE, CONDITION_DISEASE_SEVERE})) {
+        } else if (pPlayer->conditions.hasAny({CONDITION_POISON_SEVERE, CONDITION_DISEASE_SEVERE})) {
             pPlayer->health /= 4;
             pPlayer->mana /= 4;
-        } else if (pPlayer->conditions.HasAny({CONDITION_POISON_MEDIUM, CONDITION_DISEASE_MEDIUM})) {
+        } else if (pPlayer->conditions.hasAny({CONDITION_POISON_MEDIUM, CONDITION_DISEASE_MEDIUM})) {
             pPlayer->health /= 3;
             pPlayer->mana /= 3;
-        } else if (pPlayer->conditions.HasAny({CONDITION_POISON_WEAK, CONDITION_DISEASE_WEAK})) {
+        } else if (pPlayer->conditions.hasAny({CONDITION_POISON_WEAK, CONDITION_DISEASE_WEAK})) {
             pPlayer->health /= 2;
             pPlayer->mana /= 2;
         }
-        if (pPlayer->conditions.Has(CONDITION_INSANE))
+        if (pPlayer->conditions.has(CONDITION_INSANE))
             pPlayer->mana = 0;
         updateCharactersAndHirelingsEmotions();
     }
@@ -851,7 +851,7 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
         // Count active characters
         int pActivePlayerCount = 0;
         for (Character &player : this->pCharacters) {
-            if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+            if (player.conditions.hasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                 pActivePlayerCount++;
             }
         }
@@ -859,7 +859,7 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
         if (pActivePlayerCount) {
             int perCharXP = static_cast<int>(pEXPNum) / pActivePlayerCount;
             for (Character &player : this->pCharacters) {
-                if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+                if (player.conditions.hasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                     int playermodexp = perCharXP + perCharXP * player.getLearningPercent() / 100;
                     player.setXP(player.experience + playermodexp);
                 }

@@ -121,7 +121,7 @@ GAME_TEST(Issues, Issue521) {
 
 GAME_TEST(Issues, Issue527) {
     // Check Cure Disease spell works
-    auto diseaseTape = tapes.custom([] { return pParty->pCharacters[0].conditions.Has(CONDITION_DISEASE_WEAK); });
+    auto diseaseTape = tapes.custom([] { return pParty->pCharacters[0].conditions.has(CONDITION_DISEASE_WEAK); });
     test.playTraceFromTestData("issue_527.mm7", "issue_527.json");
     EXPECT_EQ(diseaseTape, tape(true, false)); // Disease healed!
 }
@@ -209,8 +209,8 @@ GAME_TEST(Issues, Issue611) {
     // expect chars to be healed and zombies
     EXPECT_EQ(pParty->pCharacters[0].health, 45);
     EXPECT_EQ(pParty->pCharacters[1].health, 39);
-    EXPECT_EQ(pParty->pCharacters[2].conditions.Has(CONDITION_ZOMBIE), true);
-    EXPECT_EQ(pParty->pCharacters[3].conditions.Has(CONDITION_ZOMBIE), true);
+    EXPECT_EQ(pParty->pCharacters[2].conditions.has(CONDITION_ZOMBIE), true);
+    EXPECT_EQ(pParty->pCharacters[3].conditions.has(CONDITION_ZOMBIE), true);
 }
 
 GAME_TEST(Issues, Issue613a) {

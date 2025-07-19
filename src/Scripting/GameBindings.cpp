@@ -185,9 +185,9 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
         "clearCondition", sol::as_function([](int characterIndex, std::optional<Condition> conditionToClear) {
             if (Character *character = getCharacterByIndex(characterIndex - 1)) {
                 if (conditionToClear) {
-                    character->conditions.Reset(*conditionToClear);
+                    character->conditions.reset(*conditionToClear);
                 } else {
-                    character->conditions.ResetAll();
+                    character->conditions.resetAll();
                 }
             }
         }),
@@ -382,7 +382,7 @@ sol::table createCharacterConditionTable(sol::state_view &luaState, const Charac
     sol::table result = luaState.create_table();
 
     for (auto &&condition : allConditions()) {
-        if (character.conditions.Has(condition)) {
+        if (character.conditions.has(condition)) {
             result[condition] = true;
         }
     }
