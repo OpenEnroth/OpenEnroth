@@ -3,6 +3,7 @@
 #include "Engine/Engine.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
+#include "Engine/Graphics/Outdoor.h"
 #include "Engine/Objects/Chest.h"
 
 
@@ -185,4 +186,26 @@ GAME_TEST(Issues, Issue2099) {
             for (InventoryConstEntry entry : chest.inventory.entries())
                 EXPECT_FALSE(isRandomItem(entry->itemId));
     }
+}
+
+GAME_TEST(Issues, Issue2118) {
+    auto potionsTape = tapes.totalItemCount(ITEM_TYPE_POTION);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    game.teleportTo(MAP_MERCENARY_GUILD, Vec3f(-1160, 3340, -127), 270);
+
+    for (int i = 0; i < 50; i++) {
+        game.pressAndReleaseButton(BUTTON_LEFT, 200, 200);
+        game.tick();
+        engine->_persistentVariables.mapVars[4] = 0; // This one is increased on each click, so we cheat.
+    }
+
+    EXPECT_LT(potionsTape.front(), potionsTape.back()); // Got some potions.
+
+    for (const Character &character : pParty->pCharacters)
+        for (InventoryConstEntry item : character.inventory.entries())
+            if (item->isPotion() && item->itemId != ITEM_POTION_BOTTLE)
+                EXPECT_GT(item->potionPower, 0); // Potions were properly generated.
 }
