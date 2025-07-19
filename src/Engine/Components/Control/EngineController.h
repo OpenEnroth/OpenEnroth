@@ -14,6 +14,7 @@
 
 class GUIButton;
 class PlatformEvent;
+class Actor;
 
 /**
  * This is the interface to be used from a control routine to control the game thread.
@@ -96,7 +97,7 @@ class EngineController {
 
     void resizeWindow(int w, int h);
 
-    void spawnMonster(Vec3f position, MonsterId id);
+    Actor *spawnMonster(Vec3f position, MonsterId id);
 
  private:
     GUIButton *existingButton(std::string_view buttonId);

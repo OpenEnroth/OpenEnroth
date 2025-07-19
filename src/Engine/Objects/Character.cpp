@@ -6084,28 +6084,36 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                        spriteType == SPRITE_PROJECTILE_530 ||
                        spriteType == SPRITE_PROJECTILE_LIGHTBOLT ||
                        spriteType == SPRITE_PROJECTILE_DARKBOLT) {
+                bool shielded = false;
+
                 // reduce missle damage with skills / armour
-                if (!actorPtr->ActorHitOrMiss(playerPtr)) return;
-                if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Active()) dmgToReceive >>= 1; // TODO(captainurist): Check for PARTY_BUFF_SHIELD too!
-                if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_SHIELDING)) dmgToReceive >>= 1;
-                if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_STORM)) dmgToReceive >>= 1;
-                if (playerPtr->HasItemEquipped(ITEM_SLOT_ARMOUR) &&
-                    playerPtr->GetArmorItem()->itemId == ITEM_ARTIFACT_GOVERNORS_ARMOR)
-                    dmgToReceive >>= 1;
+                if (!actorPtr->ActorHitOrMiss(playerPtr))
+                    return;
+                if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Active())
+                    shielded = true; // TODO(captainurist): Check for PARTY_BUFF_SHIELD too!
+                if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_SHIELDING))
+                    shielded = true;
+                if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_STORM))
+                    shielded = true;
+                if (playerPtr->HasItemEquipped(ITEM_SLOT_ARMOUR) && playerPtr->GetArmorItem()->itemId == ITEM_ARTIFACT_GOVERNORS_ARMOR)
+                    shielded = true;
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
                     Item *mainHandItem = playerPtr->GetMainHandItem();
                     if (mainHandItem->itemId == ITEM_RELIC_KELEBRIM ||
                         mainHandItem->itemId == ITEM_ARTIFACT_ELFBANE ||
                         (mainHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER))
-                        dmgToReceive >>= 1;
+                        shielded = true;
                 }
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
                     Item *offHandItem = playerPtr->GetOffHandItem();
                     if (offHandItem->itemId == ITEM_RELIC_KELEBRIM ||
                         offHandItem->itemId == ITEM_ARTIFACT_ELFBANE ||
                         (offHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER))
-                        dmgToReceive >>= 1;
+                        shielded = true;
                 }
+
+                if (shielded)
+                    dmgToReceive >>= 1;
             }
 
             if (actorPtr->buffs[ACTOR_BUFF_SHRINK].Active()) {
