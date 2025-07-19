@@ -12,8 +12,8 @@
 #include "GUI/GUIMessageQueue.h"
 
 GUICredits::GUICredits() : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDimensions()) {
-    _fontQuick = GUIFont::LoadFont("quick.fnt", "FONTPAL");
-    _fontCChar = GUIFont::LoadFont("cchar.fnt", "FONTPAL");
+    _fontQuick = GUIFont::LoadFont("quick.fnt");
+    _fontCChar = GUIFont::LoadFont("cchar.fnt");
 
     _mm6TitleTexture = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
 
@@ -29,7 +29,7 @@ GUICredits::GUICredits() : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDi
     int height = _fontQuick->GetStringHeight2(_fontCChar.get(), text, &credit_window, 0, 1) + 2 * credit_window.uFrameHeight;
     _creditsTexture = GraphicsImage::Create(width, height);
 
-    _fontQuick->DrawCreditsEntry(_fontCChar.get(), 0, credit_window.uFrameHeight, width, height, colorTable.CornFlowerBlue, colorTable.Primrose, text, _creditsTexture);
+    _fontQuick->DrawCreditsEntry(_fontCChar.get(), 0, credit_window.uFrameHeight, width, height, colorTable.CornFlowerBlue, colorTable.Primrose, colorTable.Black, text, _creditsTexture);
 
     render->Update_Texture(_creditsTexture);
 
