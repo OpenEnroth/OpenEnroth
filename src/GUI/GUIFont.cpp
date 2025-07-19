@@ -547,6 +547,9 @@ int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, std
         return pLineWidth;
     }
 
+    assert(false);
+    return 0; // TODO(captainurist): The code below is never called, and it's messed up - \r is used for color tags, \f for right justification.
+
     render->BeginTextNew(fonttex, fontshadow);
 
     unsigned int text_width = 0;
