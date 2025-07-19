@@ -188,6 +188,67 @@ GAME_TEST(Issues, Issue2099) {
     }
 }
 
+GAME_TEST(Issues, Issue2109) {
+    // Shield spell effect being applied from multiple sources.
+    // What we had in this test before the fix was that the damage received was reduced 2^6 times, so was always zero.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    auto hpTape = charTapes.hp(0);
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+
+    // Move party in front of the bridge.
+    pParty->pos = Vec3f(12552, 2000, 1);
+
+    // Wizard's eye is handy for debugging this test.
+    Time tomorrow = pParty->GetPlayingTime() + Duration::fromDays(1);
+    pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(tomorrow, CHARACTER_SKILL_MASTERY_GRANDMASTER, 30, 0, 0);
+
+    // Make sure only the 1st char is alive.
+    for (int i = 1; i < 4; i++)
+        pParty->pCharacters[i].SetCondDeadWithBlockCheck(false);
+
+    // Prepare char0 properly.
+    Character &char0 = pParty->pCharacters[0];
+    char0.sLevelModifier = 100;
+    char0.health = pParty->pCharacters[0].GetMaxHealth();
+    char0._stats[ATTRIBUTE_LUCK] = 0; // We don't want luck rolls that decrease damage dealt.
+
+    // Apply shield from potions & spells.
+    char0.pCharacterBuffs[CHARACTER_BUFF_SHIELD].Apply(tomorrow, CHARACTER_SKILL_MASTERY_GRANDMASTER, 30, 0, 0);
+    pParty->pPartyBuffs[PARTY_BUFF_SHIELD].Apply(tomorrow, CHARACTER_SKILL_MASTERY_GRANDMASTER, 30, 0, 0);
+
+    // Equip all shield-giving gear.
+    Item ring1(ITEM_ANGELS_RING);
+    ring1.specialEnchantment = ITEM_ENCHANTMENT_OF_SHIELDING;
+    char0.inventory.equip(ITEM_SLOT_RING1, ring1);
+
+    Item ring2(ITEM_ANGELS_RING);
+    ring2.specialEnchantment = ITEM_ENCHANTMENT_OF_STORM;
+    char0.inventory.equip(ITEM_SLOT_RING2, ring2);
+
+    char0.setSkillValue(CHARACTER_SKILL_PLATE, CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_EXPERT)); // We don't want plate's damage reduction at Master.
+    char0.inventory.equip(ITEM_SLOT_ARMOUR, Item(ITEM_ARTIFACT_GOVERNORS_ARMOR));
+
+    char0.setSkillValue(CHARACTER_SKILL_SHIELD, CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER)); // But we want GM shield for shielding.
+    char0.inventory.equip(ITEM_SLOT_OFF_HAND, Item(ITEM_BRONZE_SHIELD));
+
+    // At this point we have 6 sources of shielding. Spawn archers & let them shoot.
+    engine->config->debug.NoActors.setValue(false);
+    for (int i = 0; i < 4; i++) {
+        game.tick(7);
+        Actor *archer = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_ELF_ARCHER_A);
+        archer->monsterInfo.level = 200; // Make the archers miss less.
+    }
+    game.tick(150);
+
+    ASSERT_GE(hpTape.size(), 2); // Should have received some damage.
+    auto damageRange = hpTape.reverse().adjacentDeltas().minMax();
+    EXPECT_GE(damageRange[0], 3); // Elf archer's damage is 4d2+2 (so 6-10), after shield it's 3-5.
+    EXPECT_LE(damageRange[1], 5);
+}
+
 GAME_TEST(Issues, Issue2118) {
     auto potionsTape = tapes.totalItemCount(ITEM_TYPE_POTION);
 

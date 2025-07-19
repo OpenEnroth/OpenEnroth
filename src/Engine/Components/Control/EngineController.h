@@ -15,6 +15,7 @@
 
 class GUIButton;
 class PlatformEvent;
+class Actor;
 
 /**
  * This is the interface to be used from a control routine to control the game thread.
@@ -101,7 +102,7 @@ class EngineController {
 
     void restAndHeal();
 
-    void spawnMonster(Vec3f position, MonsterId id);
+    Actor *spawnMonster(Vec3f position, MonsterId id);
 
     void teleportTo(MapId map, Vec3f position, int viewYaw);
 
