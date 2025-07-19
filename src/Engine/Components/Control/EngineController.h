@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Engine/Objects/MonsterEnums.h"
+#include "Engine/MapEnums.h"
 
 #include "Library/Platform/Interface/PlatformEnums.h"
 #include "Library/Platform/Interface/PlatformEvents.h"
@@ -55,6 +56,8 @@ class EngineController {
      */
     void pressGuiButton(std::string_view buttonId);
 
+    void goToGame();
+
     /**
      * Opens main menu no matter the current game state.
      */
@@ -96,7 +99,11 @@ class EngineController {
 
     void resizeWindow(int w, int h);
 
+    void restAndHeal();
+
     void spawnMonster(Vec3f position, MonsterId id);
+
+    void teleportTo(MapId map, Vec3f position, int viewYaw);
 
  private:
     GUIButton *existingButton(std::string_view buttonId);

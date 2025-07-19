@@ -41,7 +41,7 @@ TestTape<int> CommonTapeRecorder::totalHp() {
 }
 
 TestTape<int> CommonTapeRecorder::totalItemCount() {
-    return custom([]{
+    return custom([] {
         int result = 0;
         for (const Character &character : pParty->pCharacters)
             result += character.inventory.size();
@@ -57,6 +57,17 @@ TestTape<int> CommonTapeRecorder::totalItemCount(ItemId itemId) {
         for (const Character &character : pParty->pCharacters)
             result += std::ranges::distance(character.inventory.entries(itemId));
         result += pParty->pPickedItem.itemId == itemId;
+        return result;
+    });
+}
+
+TestTape<int> CommonTapeRecorder::totalItemCount(ItemType itemType) {
+    return custom([itemType] {
+        int result = 0;
+        for (const Character &character : pParty->pCharacters)
+            for (InventoryConstEntry item : character.inventory.entries())
+                result += item->type() == itemType;
+        result += pParty->pPickedItem.type() == itemType;
         return result;
     });
 }

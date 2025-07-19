@@ -1124,7 +1124,6 @@ enum class RandomItemType {
 using enum RandomItemType;
 
 enum class ItemSource {
-    ITEM_SOURCE_UNKNOWN,
     ITEM_SOURCE_MAP,
     ITEM_SOURCE_MONSTER,
     ITEM_SOURCE_CHEST,
