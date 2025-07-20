@@ -642,7 +642,7 @@ void GUIWindow_CharacterRecord::createAwardsScrollBar() {
 void GUIWindow_CharacterRecord::Update() {
     auto player = &pParty->activeCharacter();
 
-    render->ClearZBuffer();
+    render->ClearHitMap();
     switch (current_character_screen_window) {
         case WINDOW_CharacterWindow_Stats: {
             CharacterUI_ReleaseButtons();
@@ -1026,7 +1026,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         // TODO(captainurist): need to also z-draw arms and wrists.
         render->DrawTextureNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID]);
         if (!bRingsShownInCharScreen)
-            render->ZDrawTextureAlpha(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID], player->inventory.entry(ITEM_SLOT_ARMOUR).index());
+            render->DrawToHitMap(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID], player->inventory.entry(ITEM_SLOT_ARMOUR).index());
 
         // hands aren't in two handed grip pose
         if (!bTwoHandedGrip) {
@@ -1349,7 +1349,7 @@ static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage
     }
 
     if (doZDraw)
-        render->ZDrawTextureAlpha(x / 640.0f, y / 480.0f, item_texture, id);
+        render->DrawToHitMap(x / 640.0f, y / 480.0f, item_texture, id);
 }
 
 //----- (0043E825) --------------------------------------------------------
@@ -2115,7 +2115,7 @@ void OnPaperdollLeftClick() {
         // player->pEquipment.uGlove);
 
     } else {  // z picking as before
-        int v34 = render->QueryEquipmentHitMap(mouse->position(), -1);
+        int v34 = render->QueryHitMap(mouse->position(), -1);
         InventoryEntry entry = pParty->activeCharacter().inventory.entry(v34);
 
         if (entry) {

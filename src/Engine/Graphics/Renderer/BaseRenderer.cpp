@@ -610,7 +610,7 @@ void BaseRenderer::DrawMasked(float u, float v, GraphicsImage *pTexture, int col
 }
 
 void BaseRenderer::ClearBlack() {  // used only at start and in game over win
-    ClearZBuffer();
+    ClearHitMap();
     ClearTarget(Color());
 }
 
@@ -696,12 +696,6 @@ void BaseRenderer::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
     spell_fx_renderer->RenderSpecialEffects();
 }
 
-void BaseRenderer::PresentBlackScreen() {
-    BeginScene2D();
-    ClearBlack();
-    Present();
-}
-
 // TODO: should this be combined / moved out of render
 std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
     std::vector<Actor*> foundActors;
@@ -732,11 +726,11 @@ std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
     return foundActors;
 }
 
-void BaseRenderer::ClearZBuffer() {
+void BaseRenderer::ClearHitMap() {
     _equipmentHitMap.clear();
 }
 
-void BaseRenderer::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVal) {
+void BaseRenderer::DrawToHitMap(float u, float v, GraphicsImage *img, int zVal) {
     if (!img) return;
 
     // Convert normalized coordinates to screen pixel coordinates
@@ -767,6 +761,6 @@ void BaseRenderer::updateRenderDimensions() {
         outputRender = outputPresent;
 }
 
-int BaseRenderer::QueryEquipmentHitMap(Pointi screenPos, int defaultValue) {
+int BaseRenderer::QueryHitMap(Pointi screenPos, int defaultValue) {
     return _equipmentHitMap.query(screenPos, defaultValue);
 }
