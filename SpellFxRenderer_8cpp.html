@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;8d89bd6</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ab31e6f</span>
    </div>
   </td>
  </tr>
@@ -101,10 +101,48 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:adfdca3528ea63b77b0ae62825f5a1d7b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpellFxRenderer_8cpp.html#adfdca3528ea63b77b0ae62825f5a1d7b">ModulateColor</a> (<a class="el" href="structColor.html">Color</a> diffuse, float multiplier)</td></tr>
 <tr class="separator:adfdca3528ea63b77b0ae62825f5a1d7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa97d07e8f9dcd48e23efa7be5eebc100"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpellFxRenderer_8cpp.html#aa97d07e8f9dcd48e23efa7be5eebc100">sr_42620A</a> (<a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *p)</td></tr>
-<tr class="separator:aa97d07e8f9dcd48e23efa7be5eebc100"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f7aabbfac973e88e50c03ef8819488e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpellFxRenderer_8cpp.html#a6f7aabbfac973e88e50c03ef8819488e">ClipProjectileToViewPlane</a> (<a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *p)</td></tr>
+<tr class="separator:a6f7aabbfac973e88e50c03ef8819488e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a6f7aabbfac973e88e50c03ef8819488e" name="a6f7aabbfac973e88e50c03ef8819488e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f7aabbfac973e88e50c03ef8819488e">&#9670;&#160;</a></span>ClipProjectileToViewPlane()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool ClipProjectileToViewPlane </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Clips a projectile (represented by two vertices) to the camera's view plane.</p>
+<p >This function checks if the projectile's endpoints are in front of, behind, or on the view plane. If either endpoint is behind the view plane, it attempts to clip the projectile so that only the visible portion remains. The function modifies the positions of the vertices as needed to ensure proper clipping.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>Pointer to an array of two <a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> objects representing the projectile's endpoints.<ul>
+<li>p[0]: First endpoint</li>
+<li>p[1]: Second endpoint </li>
+</ul>
+</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the projectile is at least partially visible (after clipping), false if it is completely behind the view plane.</dd></dl>
+<p>Details:</p><ul>
+<li>Checks the position of each endpoint relative to the view plane.</li>
+<li>If both endpoints are behind the view plane, the projectile is rejected.</li>
+<li>If one endpoint is behind, the function interpolates the position of the endpoint to the view plane.</li>
+<li>Uses linear interpolation to calculate the intersection point with the view plane.</li>
+<li>Modifies the endpoint positions in-place. </li>
+</ul>
+
+</div>
+</div>
 <a id="adfdca3528ea63b77b0ae62825f5a1d7b" name="adfdca3528ea63b77b0ae62825f5a1d7b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adfdca3528ea63b77b0ae62825f5a1d7b">&#9670;&#160;</a></span>ModulateColor()</h2>
 
@@ -127,24 +165,6 @@ Functions</h2></td></tr>
           <td></td>
           <td>)</td>
           <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="aa97d07e8f9dcd48e23efa7be5eebc100" name="aa97d07e8f9dcd48e23efa7be5eebc100"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa97d07e8f9dcd48e23efa7be5eebc100">&#9670;&#160;</a></span>sr_42620A()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool sr_42620A </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structRenderVertexSoft.html">RenderVertexSoft</a> *&#160;</td>
-          <td class="paramname"><em>p</em></td><td>)</td>
-          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
