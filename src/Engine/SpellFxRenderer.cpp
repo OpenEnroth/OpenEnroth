@@ -45,64 +45,67 @@ Color ModulateColor(Color diffuse, float multiplier) {
 }
 
 //----- (0042620A) --------------------------------------------------------
-bool sr_42620A(RenderVertexSoft *p) { // maybe near clipping on projectiles
-    //  int16_t v1; // fps@1
-    uint8_t v2;   // c0@2
-    char v3;              // c2@2
-    uint8_t v4;   // c3@2
-                          //  bool result; // eax@2
-    uint8_t v6;   // c0@4
-    char v7;              // c2@4
-    uint8_t v8;   // c3@4
-    uint8_t v9;   // c0@6
-    char v10;             // c2@6
-    uint8_t v11;  // c3@6
-    float v13;            // ST04_4@7
-    float v14;            // ST00_4@7
-    float v17;            // ST04_4@8
-    float v18;            // ST00_4@8
+/**
+ * Clips a projectile (represented by two vertices) to the camera's view plane.
+ *
+ * This function checks if the projectile's endpoints are in front of, behind, or on the view plane.
+ * If either endpoint is behind the view plane, it attempts to clip the projectile so that only the visible
+ * portion remains. The function modifies the positions of the vertices as needed to ensure proper clipping.
+ *
+ * @param p Pointer to an array of two RenderVertexSoft objects representing the projectile's endpoints.
+ *          - p[0]: First endpoint
+ *          - p[1]: Second endpoint
+ * @return true if the projectile is at least partially visible (after clipping), false if it is completely behind the view plane.
+ *
+ * Details:
+ * - Checks the position of each endpoint relative to the view plane.
+ * - If both endpoints are behind the view plane, the projectile is rejected.
+ * - If one endpoint is behind, the function interpolates the position of the endpoint to the view plane.
+ * - Uses linear interpolation to calculate the intersection point with the view plane.
+ * - Modifies the endpoint positions in-place.
+ */
+bool ClipProjectileToViewPlane(RenderVertexSoft *p) { // maybe near clipping on projectiles
+    // Calculate if the first endpoint is behind the view plane
+    bool pBehind = p->vWorldViewPosition.x < pCamera3D->ViewPlaneDistPixels;
+    // Calculate if the second endpoint is in front of the view plane
+    bool pInFront = pCamera3D->ViewPlaneDistPixels < p[1].vWorldViewPosition.x;
+    // Calculate if the second endpoint is exactly on the view plane
+    // TODO (mcgreentn): should we use an epsilon here?
+    bool pOnPlane = pCamera3D->ViewPlaneDistPixels == p[1].vWorldViewPosition.x;
 
-    if (p->vWorldViewPosition.x < pCamera3D->ViewPlaneDistPixels ||
-        (v2 = pCamera3D->ViewPlaneDistPixels < p[1].vWorldViewPosition.x, v3 = 0,
-         v4 = pCamera3D->ViewPlaneDistPixels == p[1].vWorldViewPosition.x,
-
-         !(v2 | v4))) {
-        if (p->vWorldViewPosition.x < pCamera3D->ViewPlaneDistPixels) {
-            v6 = pCamera3D->ViewPlaneDistPixels < p[1].vWorldViewPosition.x;
-            v7 = 0;
-            v8 = pCamera3D->ViewPlaneDistPixels == p[1].vWorldViewPosition.x;
-
-            if (!(v6 | v8)) {
-                //logger->Info("sr_42620A reject");
+    // If the first endpoint is behind or the second is not in front/on the plane
+    if (pBehind || !(pInFront | pOnPlane)) {
+        // If both endpoints are behind, reject the projectile
+        if (pBehind) {
+            if (!(pInFront | pOnPlane)) {
                 return false;
             }
         }
-        //logger->Info("sr_42620A pass");
-        v9 = pCamera3D->ViewPlaneDistPixels < p->vWorldViewPosition.x;
-        v10 = 0;
-        v11 = pCamera3D->ViewPlaneDistPixels == p->vWorldViewPosition.x;
-
-        if (v9 | v11) {
-            float v16 =
+        // If the second endpoint is in front/on the plane, clip the second endpoint to the view plane
+        if (pInFront | pOnPlane) {
+            float invDeltaX =
                 1.0f / (p->vWorldViewPosition.x - p[1].vWorldViewPosition.x);
-            v17 = (p->vWorldViewPosition.y - p[1].vWorldViewPosition.y) * v16;
-            v18 = (p->vWorldViewPosition.z - p[1].vWorldViewPosition.z) * v16;
-            float v19 = pCamera3D->ViewPlaneDistPixels - p[1].vWorldViewPosition.x;
-            p[1].vWorldViewPosition.x = v19 + p[1].vWorldViewPosition.x;
-            p[1].vWorldViewPosition.y = v17 * v19 + p[1].vWorldViewPosition.y;
-            p[1].vWorldViewPosition.z = v19 * v18 + p[1].vWorldViewPosition.z;
+            float deltaY = (p->vWorldViewPosition.y - p[1].vWorldViewPosition.y) * invDeltaX;
+            float deltaZ = (p->vWorldViewPosition.z - p[1].vWorldViewPosition.z) * invDeltaX;
+            float deltaXToPlane = pCamera3D->ViewPlaneDistPixels - p[1].vWorldViewPosition.x;
+            // Move the second endpoint to the intersection with the view plane
+            p[1].vWorldViewPosition.x = deltaXToPlane + p[1].vWorldViewPosition.x;
+            p[1].vWorldViewPosition.y = deltaY * deltaXToPlane + p[1].vWorldViewPosition.y;
+            p[1].vWorldViewPosition.z = deltaXToPlane * deltaZ + p[1].vWorldViewPosition.z;
         } else {
-            float v12 =
+            // Otherwise, clip the first endpoint to the view plane
+            float invDeltaX =
                 1.0f / (p[1].vWorldViewPosition.x - p->vWorldViewPosition.x);
-            v13 = (p[1].vWorldViewPosition.y - p->vWorldViewPosition.y) * v12;
-            v14 = (p[1].vWorldViewPosition.z - p->vWorldViewPosition.z) * v12;
-            float v15 = pCamera3D->ViewPlaneDistPixels - p->vWorldViewPosition.x;
-            p->vWorldViewPosition.x = v15 + p->vWorldViewPosition.x;
-            p->vWorldViewPosition.y = v13 * v15 + p->vWorldViewPosition.y;
-            p->vWorldViewPosition.z = v15 * v14 + p->vWorldViewPosition.z;
+            float deltaY = (p[1].vWorldViewPosition.y - p->vWorldViewPosition.y) * invDeltaX;
+            float deltaZ = (p[1].vWorldViewPosition.z - p->vWorldViewPosition.z) * invDeltaX;
+            float deltaXToPlane = pCamera3D->ViewPlaneDistPixels - p->vWorldViewPosition.x;
+            // Move the first endpoint to the intersection with the view plane
+            p->vWorldViewPosition.x = deltaXToPlane + p->vWorldViewPosition.x;
+            p->vWorldViewPosition.y = deltaY * deltaXToPlane + p->vWorldViewPosition.y;
+            p->vWorldViewPosition.z = deltaXToPlane * deltaZ + p->vWorldViewPosition.z;
         }
     }
-
+    // At least part of the projectile is visible
     return true;
 }
 
@@ -154,32 +157,30 @@ void SpellFxRenderer::DoAddProjectile(float srcX, float srcY, float srcZ,
 
 //----- (004A7298) --------------------------------------------------------
 void SpellFxRenderer::DrawProjectiles() {
-    float v10;              // ST1C_4@8
-    float v11;              // ST0C_4@8
-    RenderVertexSoft v[2];  // [sp+30h] [bp-68h]@1
+    float srcWidthScale;    // width scaling factor for source point
+    float dstWidthScale;    // width scaling factor for destination point
+    RenderVertexSoft v[2];  // array to hold two vertices for the projectile
 
     for (int i = 0; i < uNumProjectiles; ++i) {
+        // For each projectile
         ProjectileAnim *p = &pProjectiles[i];
 
-        v[0].vWorldPosition.x = p->srcX;
-        v[0].vWorldPosition.y = p->srcY;
-        v[0].vWorldPosition.z = p->srcZ;
-        v[1].vWorldPosition.x = p->dstX;
-        v[1].vWorldPosition.y = p->dstY;
-        v[1].vWorldPosition.z = p->dstZ;
+        // get the source and destination positions
+        v[0].vWorldPosition = Vec3f(p->srcX, p->srcY, p->srcZ);
+        v[1].vWorldPosition = Vec3f(p->dstX, p->dstY, p->dstZ);
         pCamera3D->ViewTransform(v, 2);
 
-        sr_42620A(v);
+        ClipProjectileToViewPlane(v);
 
         pCamera3D->Project(v, 2, 0);
 
         // 20.0f is width scaling factor
-        v10 = pCamera3D->ViewPlaneDistPixels / v[1].vWorldViewPosition.x * 20.0f;
-        v11 = pCamera3D->ViewPlaneDistPixels / v[0].vWorldViewPosition.x * 20.0f;
+        dstWidthScale = pCamera3D->ViewPlaneDistPixels / v[1].vWorldViewPosition.x * 20.0f;
+        srcWidthScale = pCamera3D->ViewPlaneDistPixels / v[0].vWorldViewPosition.x * 20.0f;
         render->DrawProjectile(v[0].vWorldViewProjX, v[0].vWorldViewProjY,
-                               v[0].vWorldViewPosition.x, v11,
+                               v[0].vWorldViewPosition.x, srcWidthScale,
                                v[1].vWorldViewProjX, v[1].vWorldViewProjY,
-                               v[1].vWorldViewPosition.x, v10, p->texture);
+                               v[1].vWorldViewPosition.x, dstWidthScale, p->texture);
     }
 }
 
@@ -990,31 +991,29 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
 //----- (004A89BD) --------------------------------------------------------
 void SpellFxRenderer::SetPlayerBuffAnim(SpellId uSpellID,
                                         uint16_t uPlayerID) {
-    // SpellFxRenderer *v3; // edi@1
-    PlayerBuffAnim *v4;  // esi@1
-    const char *v6;      // [sp-4h] [bp-10h]@2
+    PlayerBuffAnim *pBuffAnim = &pCharacterBuffs[uPlayerID];
+    const char *iconName;  // was v6
 
-    v4 = &pCharacterBuffs[uPlayerID];
-    v4->uSpellAnimTimeElapsed = 0_ticks;
-    v4->bRender = uSpellID != SPELL_NONE;
+    pBuffAnim->uSpellAnimTimeElapsed = 0_ticks;
+    pBuffAnim->bRender = uSpellID != SPELL_NONE;
 
     switch (uSpellID) {
         case SPELL_DISEASE:
-            v6 = "zapp";
+            iconName = "zapp";
             break;
 
         case BECOME_MAGIC_GUILD_MEMBER:
         case SPELL_AIR_FEATHER_FALL:
         case SPELL_SPIRIT_DETECT_LIFE:
         case SPELL_SPIRIT_FATE:
-            v6 = "spboost1";
+            iconName = "spboost1";
             break;
 
         case SPELL_QUEST_COMPLETED:
         case SPELL_AIR_INVISIBILITY:
         case SPELL_WATER_WATER_WALK:
         case SPELL_SPIRIT_PRESERVATION:
-            v6 = "spboost2";
+            iconName = "spboost2";
             break;
 
         case SPELL_STAT_DECREASE:
@@ -1022,13 +1021,13 @@ void SpellFxRenderer::SetPlayerBuffAnim(SpellId uSpellID,
         case SPELL_LIGHT_DAY_OF_THE_GODS:
         case SPELL_LIGHT_DAY_OF_PROTECTION:
         case SPELL_LIGHT_DIVINE_INTERVENTION:
-            v6 = "spboost3";
+            iconName = "spboost3";
             break;
 
         case SPELL_SPIRIT_REMOVE_CURSE:
         case SPELL_MIND_REMOVE_FEAR:
         case SPELL_BODY_CURE_WEAKNESS:
-            v6 = "spheal1";
+            iconName = "spheal1";
             break;
 
         case SPELL_SPIRIT_SHARED_LIFE:
@@ -1038,70 +1037,70 @@ void SpellFxRenderer::SetPlayerBuffAnim(SpellId uSpellID,
         case SPELL_BODY_CURE_POISON:
         case SPELL_BODY_CURE_DISEASE:
         case SPELL_DARK_SACRIFICE:
-            v6 = "spheal2";
+            iconName = "spheal2";
             break;
 
         case SPELL_BODY_POWER_CURE:
         case SPELL_DARK_SOULDRINKER:
-            v6 = "spheal3";
+            iconName = "spheal3";
             break;
 
         case SPELL_FIRE_PROTECTION_FROM_FIRE:
         case SPELL_FIRE_IMMOLATION:
-            v6 = "spell03";
+            iconName = "spell03";
             break;
 
         case SPELL_FIRE_HASTE:
-            v6 = "spell05";
+            iconName = "spell05";
             break;
         case SPELL_AIR_PROTECTION_FROM_AIR:
-            v6 = "spell14";
+            iconName = "spell14";
             break;
         case SPELL_AIR_SHIELD:
-            v6 = "spell17";
+            iconName = "spell17";
             break;
         case SPELL_WATER_PROTECTION_FROM_WATER:
-            v6 = "spell25";
+            iconName = "spell25";
             break;
         case SPELL_EARTH_PROTECTION_FROM_EARTH:
-            v6 = "spell36";
+            iconName = "spell36";
             break;
         case SPELL_EARTH_STONESKIN:
-            v6 = "spell38";
+            iconName = "spell38";
             break;
         case SPELL_SPIRIT_BLESS:
-            v6 = "spell46";
+            iconName = "spell46";
             break;
         case SPELL_SPIRIT_HEROISM:
-            v6 = "spell51";
+            iconName = "spell51";
             break;
         case SPELL_SPIRIT_RESSURECTION:
-            v6 = "spell55";
+            iconName = "spell55";
             break;
         case SPELL_MIND_PROTECTION_FROM_MIND:
-            v6 = "spell58";
+            iconName = "spell58";
             break;
         case SPELL_BODY_PROTECTION_FROM_BODY:
-            v6 = "spell69";
+            iconName = "spell69";
             break;
         case SPELL_BODY_REGENERATION:
-            v6 = "spell71";
+            iconName = "spell71";
             break;
         case SPELL_BODY_HAMMERHANDS:
-            v6 = "spell73";
+            iconName = "spell73";
             break;
         case SPELL_BODY_PROTECTION_FROM_MAGIC:
-            v6 = "spell75";
+            iconName = "spell75";
             break;
 
         default:
-            v4->bRender = false;
+            pBuffAnim->bRender = false;
             return;
     }
 
-    v4->uSpellIconID = pIconsFrameTable->animationId(v6);
-    if (v4->bRender)
-        v4->uSpellAnimTime = pIconsFrameTable->animationLength(v4->uSpellIconID);
+    pBuffAnim->uSpellIconID = pIconsFrameTable->animationId(iconName);
+    if (pBuffAnim->bRender)
+        pBuffAnim->uSpellAnimTime = pIconsFrameTable->animationLength(pBuffAnim->uSpellIconID);
 }
 
 void SpellFxRenderer::SetPartyBuffAnim(SpellId uSpellID) {
@@ -1127,13 +1126,12 @@ void SpellFxRenderer::_4A8BFC_prismatic_light() {  // for SPELL_LIGHT_PRISMATIC_
 
 //----- (004A8C27) --------------------------------------------------------
 void SpellFxRenderer::RenderSpecialEffects() {
-    double v4;         // st7@4
-    double v5;         // st6@4
-    float v7;          // ST14_4@6
-    Duration v8;   // ST14_4@8
-    SpriteFrame *v10;  // eax@8
-    // int v11; // edi@8
-    RenderVertexD3D3 vd3d[4];  // [sp+60h] [bp-8Ch]@9
+    double fadeProgress;         // st7@4 (renamed from v4)
+    double fadeAmount;           // st6@4 (renamed from v5)
+    float fadeAlpha;             // ST14_4@6 (renamed from v7)
+    Duration animElapsed;        // ST14_4@8 (renamed from v8)
+    SpriteFrame *prismaticFrame; // eax@8 (renamed from v10)
+    RenderVertexD3D3 vd3d[4];    // [sp+60h] [bp-8Ch]@9
 
     if (uNumProjectiles) {
         DrawProjectiles();
@@ -1142,23 +1140,22 @@ void SpellFxRenderer::RenderSpecialEffects() {
 
     field_204 = 0;
     if (uFadeTime > 0_ticks) {
-        v4 = (double)uFadeTime.ticks() / (double)uFadeLength.ticks();
-        v5 = 1.0 - v4 * v4;
-        // v6 = v5;
-        if (v5 > 0.9) v5 = 1.0 - (v5 - 0.9) * 10.0;
-        v7 = v5;
-        render->ScreenFade(uFadeColor, v7);
+        fadeProgress = (double)uFadeTime.ticks() / (double)uFadeLength.ticks();
+        fadeAmount = 1.0 - fadeProgress * fadeProgress;
+        if (fadeAmount > 0.9) fadeAmount = 1.0 - (fadeAmount - 0.9) * 10.0;
+        fadeAlpha = fadeAmount;
+        render->ScreenFade(uFadeColor, fadeAlpha);
         uFadeTime -= pEventTimer->dt();
     }
 
     if (uAnimLength > 0_ticks) {
         // prismatic light
-        v8 = pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
-        v10 = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), v8);
-        int pal = v10->GetPaletteIndex();
+        animElapsed = pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
+        prismaticFrame = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), animElapsed);
+        int pal = prismaticFrame->GetPaletteIndex();
         uAnimLength -= pEventTimer->dt();
 
-        render->DrawSpecialEffectsQuad(v10->hw_sprites[0]->texture, pal);
+        render->DrawSpecialEffectsQuad(prismaticFrame->hw_sprites[0]->texture, pal);
     }
 }
 
