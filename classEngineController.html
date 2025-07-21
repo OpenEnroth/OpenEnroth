@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;737e97c</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;837baa4</span>
    </div>
   </td>
  </tr>
@@ -114,6 +114,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae7aa4b58adeb246bc3e300aa46f69058"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7aadd14420fdedc931e62224ab8fd9c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineController.html#a7aadd14420fdedc931e62224ab8fd9c0">pressGuiButton</a> (std::string_view buttonId)</td></tr>
 <tr class="separator:a7aadd14420fdedc931e62224ab8fd9c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56cac16f2c6d8f45f353cb598d26abb0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineController.html#a56cac16f2c6d8f45f353cb598d26abb0">goToGame</a> ()</td></tr>
+<tr class="separator:a56cac16f2c6d8f45f353cb598d26abb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a325c4382a96a2bdab8082c3793da6bfa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineController.html#a325c4382a96a2bdab8082c3793da6bfa">goToMainMenu</a> ()</td></tr>
 <tr class="separator:a325c4382a96a2bdab8082c3793da6bfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87d3e22742a629101dc27d0463899bfe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineController.html#a87d3e22742a629101dc27d0463899bfe">startNewGame</a> ()</td></tr>
@@ -128,8 +130,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6c5f0921fa661e54726b268508a3271b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa49095fb9cd4fbc3f3eeadebd92a2512"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineController.html#aa49095fb9cd4fbc3f3eeadebd92a2512">resizeWindow</a> (int <a class="el" href="EventTrace_8cpp.html#aad57484016654da87125db86f4227ea3">w</a>, int <a class="el" href="EventTrace_8cpp.html#a5e36941b3d856737e81516acd45edc50">h</a>)</td></tr>
 <tr class="separator:aa49095fb9cd4fbc3f3eeadebd92a2512"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e79cc85a64b392e5e2f5f4858022732"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineController.html#a8e79cc85a64b392e5e2f5f4858022732">restAndHeal</a> ()</td></tr>
+<tr class="separator:a8e79cc85a64b392e5e2f5f4858022732"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a17e8377363cbe129a9627af7c113f4e1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineController.html#a17e8377363cbe129a9627af7c113f4e1">spawnMonster</a> (<a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> position, <a class="el" href="MonsterEnums_8h.html#a9c8dbe33f930c23cbaddd4e0afad01ba">MonsterId</a> id)</td></tr>
 <tr class="separator:a17e8377363cbe129a9627af7c113f4e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa96a87afa511616d0b35e8d0dd117539"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineController.html#aa96a87afa511616d0b35e8d0dd117539">teleportTo</a> (<a class="el" href="MapEnums_8h.html#a270ed629fcd100c7ea16f8c87ebb86a0">MapId</a> map, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> position, int viewYaw)</td></tr>
+<tr class="separator:aa96a87afa511616d0b35e8d0dd117539"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -234,6 +240,23 @@ Private Attributes</h2></td></tr>
 <span class="mlabels"><span class="mlabel">private</span></span>  </td>
   </tr>
 </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a56cac16f2c6d8f45f353cb598d26abb0" name="a56cac16f2c6d8f45f353cb598d26abb0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56cac16f2c6d8f45f353cb598d26abb0">&#9670;&#160;</a></span>goToGame()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void EngineController::goToGame </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
 </div><div class="memdoc">
 
 </div>
@@ -560,6 +583,23 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a8e79cc85a64b392e5e2f5f4858022732" name="a8e79cc85a64b392e5e2f5f4858022732"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e79cc85a64b392e5e2f5f4858022732">&#9670;&#160;</a></span>restAndHeal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void EngineController::restAndHeal </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a6c5f0921fa661e54726b268508a3271b" name="a6c5f0921fa661e54726b268508a3271b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6c5f0921fa661e54726b268508a3271b">&#9670;&#160;</a></span>runGameRoutine()</h2>
 
@@ -671,6 +711,40 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p >Start new game no matter the current game state. </p>
+
+</div>
+</div>
+<a id="aa96a87afa511616d0b35e8d0dd117539" name="aa96a87afa511616d0b35e8d0dd117539"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa96a87afa511616d0b35e8d0dd117539">&#9670;&#160;</a></span>teleportTo()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void EngineController::teleportTo </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="MapEnums_8h.html#a270ed629fcd100c7ea16f8c87ebb86a0">MapId</a>&#160;</td>
+          <td class="paramname"><em>map</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a>&#160;</td>
+          <td class="paramname"><em>position</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>viewYaw</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
