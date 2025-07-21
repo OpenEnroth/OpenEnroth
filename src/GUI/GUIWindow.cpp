@@ -1182,7 +1182,7 @@ void UI_Create() {
     pBtn_CastSpell = pPrimaryWindow->CreateButton("Game_CastSpell", {476, 450}, game_ui_btn_cast->size(), 1, 0,
                                                   UIMSG_SpellBookWindow, 0, Io::InputAction::Cast,
                                                   localization->GetString(LSTR_CAST_SPELL), { game_ui_btn_cast });
-    pBtn_Rest = pPrimaryWindow->CreateButton({518, 450}, game_ui_btn_rest->size(), 1, 0,
+    pBtn_Rest = pPrimaryWindow->CreateButton("Game_Rest", {518, 450}, game_ui_btn_rest->size(), 1, 0,
                                              UIMSG_RestWindow, 0, Io::InputAction::Rest,
                                              localization->GetString(LSTR_REST), { game_ui_btn_rest });
     pBtn_QuickReference = pPrimaryWindow->CreateButton({560, 450}, game_ui_btn_quickref->size(), 1, 0,

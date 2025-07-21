@@ -164,7 +164,7 @@ GAME_TEST(Issues, Issue1175) {
 }
 
 GAME_TEST(Issues, Issue1191) {
-    // Warlock's dragon should add +3 to Self magic skills. Dragon also consumes food when resting.
+    // Warlock's dragon should add +3 to Self magic skills. Baby dragon also consumes food when resting.
     auto foodTape = tapes.food();
     auto timeTape = tapes.time();
     test.playTraceFromTestData("issue_1191.mm7", "issue_1191.json");
@@ -234,14 +234,72 @@ GAME_TEST(Issues, Issue1197) {
 
 // 1200
 
-GAME_TEST(Issues, Issue1226) {
-    // Check that food consumed while resting on different tiles is correct
-    // Also check that baby dragon consumes only one additional food
-    auto loc = tapes.map();
+GAME_TEST(Issues, Issue1226a) {
+    // Check that food consumed while resting on different tiles is correct.
+    engine->config->debug.NoActors.setValue(true);
+
+    game.startNewGame();
+    pParty->uNumFoodRations = 20;
+    game.restAndHeal();
+    EXPECT_EQ(pParty->uNumFoodRations, 18); // Standing on a bridge => rest should cost 2 food.
+
+    game.teleportTo(MAP_LAND_OF_THE_GIANTS, Vec3f(10000, 4070, 0), 0);
+    game.restAndHeal();
+    EXPECT_EQ(pOutdoor->pTerrain.tilesetByPos(pParty->pos), TILESET_SNOW);
+    EXPECT_EQ(pParty->uNumFoodRations, 15); // Snow => rest should cost 3 food.
+
+    game.teleportTo(MAP_LAND_OF_THE_GIANTS, Vec3f(11302, 4135, 0), 0);
+    game.restAndHeal();
+    EXPECT_EQ(pOutdoor->pTerrain.tilesetByPos(pParty->pos), TILESET_BADLANDS);
+    EXPECT_EQ(pParty->uNumFoodRations, 11); // Badlands => rest should cost 4 food.
+
+    game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
+    game.restAndHeal();
+    EXPECT_EQ(pParty->uNumFoodRations, 9); // Dungeon => rest should cost 2 food.
+
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-18000, 12500, 0), 0);
+    game.restAndHeal();
+    EXPECT_EQ(pOutdoor->pTerrain.tilesetByPos(pParty->pos), TILESET_DIRT);
+    EXPECT_EQ(pParty->uNumFoodRations, 7); // Dirt => rest should cost 2 food.
+
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-16000, 12500, 0), 0);
+    game.restAndHeal();
+    EXPECT_EQ(pOutdoor->pTerrain.tilesetByPos(pParty->pos), TILESET_ROAD_GRASS_COBBLE);
+    EXPECT_EQ(pParty->uNumFoodRations, 5); // Road => rest should cost 2 food.
+}
+
+GAME_TEST(Issues, Issue1226b) {
+    // Check that baby dragon consumes one additional food even when there are no warlocks in the party.
     auto foodTape = tapes.food();
-    test.playTraceFromTestData("issue_1226.mm7", "issue_1226.json");
-    EXPECT_EQ(loc, tape(MAP_LAND_OF_THE_GIANTS, MAP_CASTLE_HARMONDALE, MAP_HARMONDALE, MAP_CASTLE_HARMONDALE));
-    EXPECT_EQ(foodTape, tape(30, 25, 21, 17, 14, 11));
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+
+    NPCData &dragon = pNPCStats->pNPCData[57];
+    dragon.uFlags |= NPC_HIRED;
+    pParty->pHirelings[1] = dragon;
+    pParty->pHireling2Name = dragon.name;
+    game.tick(1);
+    game.restAndHeal();
+
+    EXPECT_EQ(pOutdoor->getNumFoodRequiredToRestInCurrentPos(pParty->pos), 2);
+    EXPECT_EQ(foodTape.delta(), -3); // +1 food consumed b/c of the baby dragon.
+}
+
+GAME_TEST(Issues, Issue1226c) {
+    // Check that resting in repaired Castle Harmondale consumes 0 food.
+    auto foodTape = tapes.food();
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+
+    pParty->_questBits[QBIT_HARMONDALE_REBUILT] = true;
+    game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
+    game.restAndHeal();
+
+    EXPECT_EQ(foodTape.delta(), 0);
 }
 
 GAME_TEST(Issues, Issue1251a) {
