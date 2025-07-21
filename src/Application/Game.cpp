@@ -566,7 +566,7 @@ void Game::processQueuedMessages() {
                                     if (currentRestType != REST_NONE) {
                                         Rest(remainingRestTime);
                                         for (Character &character : pParty->pCharacters) {
-                                            character.conditions.Reset(CONDITION_SLEEP);
+                                            character.conditions.reset(CONDITION_SLEEP);
                                         }
                                     }
                                     if (rest_ui_sky_frame_current) {
@@ -1086,7 +1086,7 @@ void Game::processQueuedMessages() {
                 pParty->restAndHeal();
                 pParty->days_played_without_rest = 0;
                 for (Character &character : pParty->pCharacters) {
-                    character.conditions.Set(CONDITION_SLEEP, Time::fromTicks(1));
+                    character.conditions.set(CONDITION_SLEEP, Time::fromTicks(1));
                 }
                 continue;
             }
@@ -1157,7 +1157,7 @@ void Game::processQueuedMessages() {
                     }
                 } else {
                     for (Character &character : pParty->pCharacters) {
-                        character.conditions.Set(CONDITION_SLEEP, pParty->GetPlayingTime());
+                        character.conditions.set(CONDITION_SLEEP, pParty->GetPlayingTime());
                     }
                     MapId mapIdx = engine->_currentLoadedMapId;
                     assert(mapIdx != MAP_INVALID);
@@ -1181,7 +1181,7 @@ void Game::processQueuedMessages() {
 
                         if (encounter_index) {
                             pPlayerNum = grng->random(4);
-                            pParty->pCharacters[pPlayerNum].conditions.Reset(CONDITION_SLEEP);
+                            pParty->pCharacters[pPlayerNum].conditions.reset(CONDITION_SLEEP);
                             Rest(Duration::fromHours(1) + Duration::fromMinutes(grng->random(6)));
                             remainingRestTime = Duration();
                             currentRestType = REST_NONE;
@@ -1198,7 +1198,7 @@ void Game::processQueuedMessages() {
                     pParty->restAndHeal();
                     pParty->days_played_without_rest = 0;
                     for (Character &character : pParty->pCharacters) {
-                        character.conditions.Set(CONDITION_SLEEP, Time::fromTicks(1));
+                        character.conditions.set(CONDITION_SLEEP, Time::fromTicks(1));
                     }
                 }
                 continue;
@@ -1741,7 +1741,7 @@ void Game::gameLoop() {
                     pParty->bTurnBasedModeOn = false;
                 }
                 for (Character &character : pParty->pCharacters) {
-                    character.conditions.ResetAll();
+                    character.conditions.resetAll();
                     character.pCharacterBuffs.fill(
                         SpellBuff());  // ???
                                        // memset(pParty->pCharacters[i].conditions_times.data(),

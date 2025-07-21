@@ -578,7 +578,7 @@ GAME_TEST(Issues, Issue1364) {
 GAME_TEST(Issues, Issue1368) {
     // maybeWakeSoloSurvivor() error
     auto canActTape = tapes.custom([] { return pParty->canActCount(); });
-    auto sleepTape = tapes.custom([] { return pParty->pCharacters[0].conditions.Has(CONDITION_SLEEP); });
+    auto sleepTape = tapes.custom([] { return pParty->pCharacters[0].conditions.has(CONDITION_SLEEP); });
     test.playTraceFromTestData("issue_1368.mm7", "issue_1368.json");
     EXPECT_EQ(canActTape.min(), 0); // No one can act - try waking.
     EXPECT_CONTAINS(sleepTape, true); // Should've been asleep.
