@@ -678,7 +678,7 @@ var searchData=
   ['spawncountmultiplier_675',['SpawnCountMultiplier',['../classGameConfig_1_1Gameplay.html#a32865d48fd324dcdd226796abf916a44',1,'GameConfig::Gameplay']]],
   ['spawnencounter_676',['SpawnEncounter',['../Actor_8cpp.html#a9cad50668b04b77f29dea28acaa9c9a7',1,'SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int countOverride, int aggro):&#160;Actor.cpp'],['../Actor_8h.html#a9cad50668b04b77f29dea28acaa9c9a7',1,'SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int countOverride, int aggro):&#160;Actor.cpp']]],
   ['spawnencountermonsters_677',['SpawnEncounterMonsters',['../Indoor_8cpp.html#a9b37ce513996c958704b75ff9e7cdbef',1,'SpawnEncounterMonsters(MapInfo *map_info, int enc_index):&#160;Indoor.cpp'],['../Indoor_8h.html#a5c0727b9b9f6cdd555de87fabcea1a75',1,'SpawnEncounterMonsters(MapInfo *a1, int a2):&#160;Indoor.cpp']]],
-  ['spawnmonster_678',['spawnMonster',['../classEngineController.html#a17e8377363cbe129a9627af7c113f4e1',1,'EngineController']]],
+  ['spawnmonster_678',['spawnMonster',['../classEngineController.html#a04e069f84c89837dcf6f2d848a80e25c',1,'EngineController']]],
   ['spawnmonsters_679',['spawnMonsters',['../EvtInterpreter_8cpp.html#a8e597a77fa06fff3a9ce848aca741221',1,'spawnMonsters(int16_t typeindex, int16_t level, int count, Vec3f pos, int group, int uUniqueName):&#160;EvtInterpreter.cpp'],['../EvtInterpreter_8h.html#a8e597a77fa06fff3a9ce848aca741221',1,'spawnMonsters(int16_t typeindex, int16_t level, int count, Vec3f pos, int group, int uUniqueName):&#160;EvtInterpreter.cpp']]],
   ['spawnpoint_680',['SpawnPoint',['../structSpawnPoint.html',1,'']]],
   ['spawnpoint_2eh_681',['SpawnPoint.h',['../SpawnPoint_8h.html',1,'']]],
