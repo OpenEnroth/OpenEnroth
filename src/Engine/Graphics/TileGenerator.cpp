@@ -108,31 +108,38 @@ void TileGenerator::blendTile(RgbaImageView base, RgbaImageView dirt, RgbaImageV
         return std::abs(l.r - r.r) + std::abs(l.g - r.g) + std::abs(l.b - r.b);
     };
 
-    auto blend = [](const Color &l, const Color &r) {
-        return Color((l.r + r.r) / 2, (l.g + r.g) / 2, (l.b + r.b) / 2);
-    };
-
     std::span<const Color> basePixels = base.pixels();
     std::span<const Color> dirtPixels = dirt.pixels();
     std::span<const Color> layer1Pixels = layer1.pixels();
     std::span<Color> layer0Pixels = layer0->pixels();
 
+    const int tolerance = 30;
+
     for (int xy = 0; xy < basePixels.size(); xy++) {
-        // If it's dirt in layer0 or layer1 then take it from the dirt texture.
-        if (dist(layer0Pixels[xy], dirtPixels[xy]) < 30 || dist(layer1Pixels[xy], dirtPixels[xy]) < 30) {
-            layer0Pixels[xy] = dirtPixels[xy];
+        int dirt0 = dist(layer0Pixels[xy], dirtPixels[xy]);
+        int dirt1 = dist(layer1Pixels[xy], dirtPixels[xy]);
+        bool isDirt0 = dirt0 < tolerance;
+        bool isDirt1 = dirt1 < tolerance;
+        if (isDirt0 && isDirt1) {
+            if (dirt1 < dirt0)
+                layer0Pixels[xy] = layer1Pixels[xy];
             continue;
+        } else if (isDirt0) {
+            continue;
+        } else if (isDirt1) {
+            layer0Pixels[xy] = layer1Pixels[xy];
         }
 
-        bool diff0 = layer0Pixels[xy] != basePixels[xy];
-        bool diff1 = layer1Pixels[xy] != basePixels[xy];
-
-        // If both layers are different from base then blend them. Otherwise, pick the one different from base.
-        if (diff0 && diff1) {
-            layer0Pixels[xy] = blend(layer0Pixels[xy], layer1Pixels[xy]);
-        } else if (diff0) {
+        int transition0 = dist(layer0Pixels[xy], basePixels[xy]);
+        int transition1 = dist(layer1Pixels[xy], basePixels[xy]);
+        bool isTransition0 = transition0 >= tolerance;
+        bool isTransition1 = transition1 >= tolerance;
+        if (isTransition0 && isTransition1) {
+            if (transition1 > transition0)
+                layer0Pixels[xy] = layer1Pixels[xy];
+        } else if (isTransition0) {
             // Do nothing.
-        } else if (diff1) {
+        } else if (isTransition1) {
             layer0Pixels[xy] = layer1Pixels[xy];
         } else {
             // Do nothing.
