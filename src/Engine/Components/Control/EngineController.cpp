@@ -278,12 +278,13 @@ void EngineController::restAndHeal() {
     tick(); // This is when the characters actually wake up.
 }
 
-void EngineController::spawnMonster(Vec3f position, MonsterId id) {
+Actor *EngineController::spawnMonster(Vec3f position, MonsterId id) {
     Actor *actor = AllocateActor(false);
     if (!actor)
         throw Exception("Failed to spawn monster {}", static_cast<int>(id));
 
     actor->name = pMonsterStats->infos[id].name;
+    actor->attributes |= ACTOR_AGGRESSOR; // Make the monster unconditionally hostile.
     actor->currentHP = pMonsterStats->infos[id].hp;
     actor->monsterInfo = pMonsterStats->infos[id];
     actor->word_000086_some_monster_id = id;
@@ -304,6 +305,8 @@ void EngineController::spawnMonster(Vec3f position, MonsterId id) {
     actor->aiState = Standing;
     actor->currentActionLength = 0_ticks;
     actor->UpdateAnimation();
+
+    return actor;
 }
 
 void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw) {
