@@ -34,8 +34,13 @@ void OutdoorTerrain::changeSeason(int month) {
     assert(month >= 0 && month <= 11);
     std::ranges::transform(_originalTileMap.pixels(), _tileMap.pixels().begin(), [&] (int tileId) {
         const TileData &tileData = pTileTable->tile(tileId);
-        return pTileTable->tileId(tilesetForSeason(tileData.tileset, month), tileData.variant);
+        Tileset tileset = tilesetForSeason(tileData.tileset, month);
+        TileVariant variant = tileset == TILESET_DIRT ? TILE_VARIANT_BASE1 : tileData.variant;
+        return pTileTable->tileId(tileset, variant);
     });
+
+    // The call below is needed b/c in winter some snow->dirt->grass transitions turn into just snow.
+    recalculateTransitions(&_tileMap);
 }
 
 int OutdoorTerrain::heightByGrid(Pointi gridPos) const {
@@ -207,16 +212,18 @@ void OutdoorTerrain::recalculateNormals() {
     }
 }
 
-void OutdoorTerrain::recalculateTransitions() {
-    auto snappedTilesetByGrid = [this](Pointi pos) {
-        pos.x = std::clamp(pos.x, 0, static_cast<int>(_originalTileMap.width() - 1));
-        pos.y = std::clamp(pos.y, 0, static_cast<int>(_originalTileMap.height() - 1));
-        return pTileTable->tile(_originalTileMap[pos]).tileset;
+void OutdoorTerrain::recalculateTransitions(Image<int16_t> *tileMap) {
+    Image<int16_t> &map = *tileMap;
+
+    auto snappedTilesetByGrid = [&map](Pointi pos) {
+        pos.x = std::clamp(pos.x, 0, static_cast<int>(map.width() - 1));
+        pos.y = std::clamp(pos.y, 0, static_cast<int>(map.height() - 1));
+        return pTileTable->tile(map[pos]).tileset;
     };
 
-    for (int y = 0; y < _originalTileMap.height(); y++) {
-        for (int x = 0; x < _originalTileMap.width(); x++) {
-            const TileData &tileData = pTileTable->tile(_originalTileMap[y][x]);
+    for (int y = 0; y < map.height(); y++) {
+        for (int x = 0; x < map.width(); x++) {
+            const TileData &tileData = pTileTable->tile(map[y][x]);
             if (isRoad(tileData.tileset) || tileData.tileset == TILESET_DIRT) // No transitions for roads & dirt.
                 continue;
 
@@ -225,12 +232,10 @@ void OutdoorTerrain::recalculateTransitions() {
             for (Direction dir : allDirections())
                 if (snappedTilesetByGrid(pos + offsetForDirection(dir)) != tileData.tileset)
                     transitions |= dir;
-            if (transitions == DIRECTION_NONE)
-                continue;
 
             int tileId = pTileTable->tileId(tileData.tileset, tileVariantForTransitionDirections(transitions));
             if (tileId)
-                _originalTileMap[y][x] = tileId;
+                map[y][x] = tileId;
         }
     }
 }

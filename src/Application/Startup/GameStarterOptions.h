@@ -13,4 +13,5 @@ struct GameStarterOptions {
                                 // from/to disk. This also means that default config will be used.
     bool headless = false; // Run in headless mode.
     bool tracingRng = false; // Use tracing random engine?
+    bool quickStart = false; // Skip whatever slow initialization that we have, including additional asset generation.
 };

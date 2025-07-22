@@ -6,6 +6,7 @@
 #include "Utility/MapAccess.h"
 
 static const std::unordered_map<TileVariant, Directions> transitionDirectionsByTileVariant = {
+    {TILE_VARIANT_BASE1,                    DIRECTION_NONE},
     {TILE_VARIANT_TRANSITION_N,             DIRECTION_N},
     {TILE_VARIANT_TRANSITION_S,             DIRECTION_S},
     {TILE_VARIANT_TRANSITION_E,             DIRECTION_E},
@@ -107,8 +108,6 @@ int foodRequiredForTileset(Tileset tileset) {
 }
 
 TileVariant tileVariantForTransitionDirections(Directions directions) {
-    assert(directions != DIRECTION_NONE);
-
     // First we need to canonize the directions a bit.
     if (directions & DIRECTION_N)
         directions &= ~(DIRECTION_NE | DIRECTION_NW);

@@ -393,7 +393,7 @@ void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
             dst->_originalTileMap[y][x] = mapToGlobalTileId(baseTileIds, src.tileMap[y * 128 + x]);
 
     dst->recalculateNormals();
-    dst->recalculateTransitions();
+    dst->recalculateTransitions(&dst->_tileMap);
 
     dst->_tileMap = Image<int16_t>::copy(dst->_originalTileMap);
 }

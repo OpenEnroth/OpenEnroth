@@ -87,6 +87,10 @@ void GameStarter::initialize() {
     }
     logger->info("Built in resource override is {}.", _config->debug.OverrideBuiltInResources.value() ? "enabled" : "disabled");
 
+    // Patch config.
+    if (_options.quickStart)
+        _config->graphics.GenerateTiles.setValue(false);
+
     // Finish logger init now that we have user fs and know the desired log level.
     _logStarter.initialize(ufs, _options.logLevel ? *_options.logLevel : _config->debug.LogLevel.value());
 
