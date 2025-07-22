@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;b1489c8</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;534cfc3</span>
    </div>
   </td>
  </tr>
@@ -91,8 +91,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a92c1cdc9683a9335feb67e4b66fc73c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afac885ed5f27ba3979fd8b4b885c687c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structColor.html#afac885ed5f27ba3979fd8b4b885c687c">c32</a> () const</td></tr>
 <tr class="separator:afac885ed5f27ba3979fd8b4b885c687c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61e8c128b8890149fa5429322c6a6a18"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structColorf.html">Colorf</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structColor.html#a61e8c128b8890149fa5429322c6a6a18">toColorf</a> () const</td></tr>
-<tr class="separator:a61e8c128b8890149fa5429322c6a6a18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04f8a1e4198b676d1612ca5442526b5a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structColorf.html">Colorf</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structColor.html#a04f8a1e4198b676d1612ca5442526b5a">toColorf</a> () const</td></tr>
+<tr class="separator:a04f8a1e4198b676d1612ca5442526b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a958a4f457ca1e9ebaed63f87e65a169d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structHsvColorf.html">HsvColorf</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structColor.html#a958a4f457ca1e9ebaed63f87e65a169d">toHsvColorf</a> () const</td></tr>
+<tr class="separator:a958a4f457ca1e9ebaed63f87e65a169d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7e75551d740e6f048e9857af967426c"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="structdetail_1_1ColorTag.html">detail::ColorTag</a>&lt; <a class="el" href="structColor.html">Color</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structColor.html#ae7e75551d740e6f048e9857af967426c">tag</a> () const</td></tr>
 <tr class="separator:ae7e75551d740e6f048e9857af967426c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -324,15 +326,15 @@ Friends</h2></td></tr>
 <p >For example: </p><div class="fragment"><div class="line">std::string <a class="code hl_variable" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a> = fmt::format(<span class="stringliteral">&quot;{::}{}{::} more text&quot;</span>, <a class="code hl_function" href="structColor.html#a1f3353ab5941b4ff491ef2417e439fc5">Color</a>(255, 255, 255).<a class="code hl_function" href="structColor.html#ae7e75551d740e6f048e9857af967426c">tag</a>(), <span class="stringliteral">&quot;text&quot;</span>, <a class="code hl_function" href="structColor.html#a1f3353ab5941b4ff491ef2417e439fc5">Color</a>().<a class="code hl_function" href="structColor.html#ae7e75551d740e6f048e9857af967426c">tag</a>());</div>
 <div class="ttc" id="aJson__ut_8cpp_html_a3691308f2a4c2f6983f2880d32e29c84"><div class="ttname"><a href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a></div><div class="ttdeci">s</div><div class="ttdef"><b>Definition:</b> Json_ut.cpp:85</div></div>
 <div class="ttc" id="astructColor_html_a1f3353ab5941b4ff491ef2417e439fc5"><div class="ttname"><a href="structColor.html#a1f3353ab5941b4ff491ef2417e439fc5">Color::Color</a></div><div class="ttdeci">constexpr Color()=default</div></div>
-<div class="ttc" id="astructColor_html_ae7e75551d740e6f048e9857af967426c"><div class="ttname"><a href="structColor.html#ae7e75551d740e6f048e9857af967426c">Color::tag</a></div><div class="ttdeci">constexpr detail::ColorTag&lt; Color &gt; tag() const</div><div class="ttdef"><b>Definition:</b> Color.h:82</div></div>
+<div class="ttc" id="astructColor_html_ae7e75551d740e6f048e9857af967426c"><div class="ttname"><a href="structColor.html#ae7e75551d740e6f048e9857af967426c">Color::tag</a></div><div class="ttdeci">constexpr detail::ColorTag&lt; Color &gt; tag() const</div><div class="ttdef"><b>Definition:</b> Color.h:86</div></div>
 </div><!-- fragment --><p >The code above will set string <code>s</code> to <code>"\f65535text\f00000 more text"</code>.</p>
 <p >Note that the only supported format specifier for color tags is <code>"{::}"</code>. This is done intentionally so that the user won't accidentally mix up color introducers with other <code>fmt::format</code> args.</p>
 <dl class="section return"><dt>Returns</dt><dd>Tag that can be used with <code>fmt::format</code>. </dd></dl>
 
 </div>
 </div>
-<a id="a61e8c128b8890149fa5429322c6a6a18" name="a61e8c128b8890149fa5429322c6a6a18"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a61e8c128b8890149fa5429322c6a6a18">&#9670;&#160;</a></span>toColorf()</h2>
+<a id="a04f8a1e4198b676d1612ca5442526b5a" name="a04f8a1e4198b676d1612ca5442526b5a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04f8a1e4198b676d1612ca5442526b5a">&#9670;&#160;</a></span>toColorf()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -341,7 +343,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr <a class="el" href="structColorf.html">Colorf</a> Color::toColorf </td>
+          <td class="memname"><a class="el" href="structColorf.html">Colorf</a> Color::toColorf </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -349,7 +351,32 @@ Friends</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">constexpr</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a958a4f457ca1e9ebaed63f87e65a169d" name="a958a4f457ca1e9ebaed63f87e65a169d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a958a4f457ca1e9ebaed63f87e65a169d">&#9670;&#160;</a></span>toHsvColorf()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structHsvColorf.html">HsvColorf</a> Color::toHsvColorf </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
