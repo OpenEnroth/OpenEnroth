@@ -1,7 +1,7 @@
 var searchData=
 [
   ['query_0',['query',['../classHitMap.html#adfba4892f693e1bca0a2b4c494981f7b',1,'HitMap']]],
-  ['queryequipmenthitmap_1',['QueryEquipmentHitMap',['../classBaseRenderer.html#a756b9e751ff21a2e55d8c850e7ead9fa',1,'BaseRenderer::QueryEquipmentHitMap()'],['../classRenderer.html#a1879d0c4e168eac14ae9ce1e6fa43c7e',1,'Renderer::QueryEquipmentHitMap()']]],
+  ['queryhitmap_1',['QueryHitMap',['../classBaseRenderer.html#a8bcc09edf4f9e6c82e435e16a97305ac',1,'BaseRenderer::QueryHitMap()'],['../classRenderer.html#a8de4d72e480b8da3f01f10c23a2d63e0',1,'Renderer::QueryHitMap()']]],
   ['queryregistry_2',['queryRegistry',['../classAndroidEnvironment.html#a91593072ba23c3ab3c34c3f2abab45b9',1,'AndroidEnvironment::queryRegistry()'],['../classEnvironment.html#a0811fcfdd1d8af4062182e7a6eb4a79d',1,'Environment::queryRegistry()'],['../classPosixEnvironment.html#aa83d7bf780c03ce0b647eac609451df5',1,'PosixEnvironment::queryRegistry()'],['../classWinEnvironment.html#aa57af65555300ca3ea813f7d038595ea',1,'WinEnvironment::queryRegistry()']]],
   ['questbit_3',['questBit',['../classCommonTapeRecorder.html#a21f9e48428bdcea52aa4aac9bf188463',1,'CommonTapeRecorder']]],
   ['quickload_4',['quickLoad',['../classGUIWindow__Load.html#a51d3178ef23ad8e8cca6555efd02bd72',1,'GUIWindow_Load']]],
