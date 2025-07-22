@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;534cfc3</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7218e03</span>
    </div>
   </td>
  </tr>
@@ -90,7 +90,6 @@ $(function() {
 <code>#include &quot;<a class="el" href="Engine_2Graphics_2Image_8h.html">Engine/Graphics/Image.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GUIWindow_8h.html">GUI/GUIWindow.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LodImage_8h.html">Library/LodFormats/LodImage.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Logger_8h.html">Library/Logger/Logger.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -98,12 +97,12 @@ Functions</h2></td></tr>
 <tr class="separator:a1d6c4719482ed9e33477a25e109829e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64ca718d5f2a661aca0df9b891bb5bb9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structColor.html">Color</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIFont_8cpp.html#a64ca718d5f2a661aca0df9b891bb5bb9">parseColorTag</a> (const char *tag, const <a class="el" href="structColor.html">Color</a> &amp;defaultColor)</td></tr>
 <tr class="separator:a64ca718d5f2a661aca0df9b891bb5bb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7088ffbe880c803e0d69c369b8dbadea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIFont_8cpp.html#a7088ffbe880c803e0d69c369b8dbadea">DrawCharToBuff</a> (<a class="el" href="structColor.html">Color</a> *draw_buff, const uint8_t *pCharPixels, int uCharWidth, int uCharHeight, const <a class="el" href="structPalette.html">Palette</a> &amp;pFontPalette, <a class="el" href="structColor.html">Color</a> draw_color, int line_width)</td></tr>
-<tr class="separator:a7088ffbe880c803e0d69c369b8dbadea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57e4df312dbe3ae725a3b37973422e17"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GUIFont_8cpp.html#a57e4df312dbe3ae725a3b37973422e17">DrawCharToBuff</a> (<a class="el" href="structColor.html">Color</a> *draw_buff, const uint8_t *pCharPixels, int uCharWidth, int uCharHeight, <a class="el" href="structColor.html">Color</a> draw_color, <a class="el" href="structColor.html">Color</a> shadowColor, int line_width)</td></tr>
+<tr class="separator:a57e4df312dbe3ae725a3b37973422e17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a7088ffbe880c803e0d69c369b8dbadea" name="a7088ffbe880c803e0d69c369b8dbadea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7088ffbe880c803e0d69c369b8dbadea">&#9670;&#160;</a></span>DrawCharToBuff()</h2>
+<a id="a57e4df312dbe3ae725a3b37973422e17" name="a57e4df312dbe3ae725a3b37973422e17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57e4df312dbe3ae725a3b37973422e17">&#9670;&#160;</a></span>DrawCharToBuff()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -135,14 +134,14 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="structPalette.html">Palette</a> &amp;&#160;</td>
-          <td class="paramname"><em>pFontPalette</em>, </td>
+          <td class="paramtype"><a class="el" href="structColor.html">Color</a>&#160;</td>
+          <td class="paramname"><em>draw_color</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="structColor.html">Color</a>&#160;</td>
-          <td class="paramname"><em>draw_color</em>, </td>
+          <td class="paramname"><em>shadowColor</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

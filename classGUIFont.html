@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;534cfc3</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7218e03</span>
    </div>
   </td>
  </tr>
@@ -112,15 +112,15 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9d3edac8d8d9c42464a37269bcbc3fe3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af742d8574247589cc88004cbc27b1962"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#af742d8574247589cc88004cbc27b1962">FitTextInAWindow</a> (std::string_view inString, int width, int uX, bool return_on_carriage=false)</td></tr>
 <tr class="separator:af742d8574247589cc88004cbc27b1962"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c2bf1d1b1c03f3144addd2d1555dfc3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#a2c2bf1d1b1c03f3144addd2d1555dfc3">DrawCreditsEntry</a> (<a class="el" href="classGUIFont.html">GUIFont</a> *pSecondFont, int uFrameX, int uFrameY, unsigned int <a class="el" href="EventTrace_8cpp.html#aad57484016654da87125db86f4227ea3">w</a>, unsigned int <a class="el" href="EventTrace_8cpp.html#a5e36941b3d856737e81516acd45edc50">h</a>, <a class="el" href="structColor.html">Color</a> firstColor, <a class="el" href="structColor.html">Color</a> secondColor, std::string_view pString, <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *image)</td></tr>
-<tr class="separator:a2c2bf1d1b1c03f3144addd2d1555dfc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af218003677d54b9ddbab376f2d22ddbc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#af218003677d54b9ddbab376f2d22ddbc">DrawCreditsEntry</a> (<a class="el" href="classGUIFont.html">GUIFont</a> *pSecondFont, int uFrameX, int uFrameY, unsigned int <a class="el" href="EventTrace_8cpp.html#aad57484016654da87125db86f4227ea3">w</a>, unsigned int <a class="el" href="EventTrace_8cpp.html#a5e36941b3d856737e81516acd45edc50">h</a>, <a class="el" href="structColor.html">Color</a> firstColor, <a class="el" href="structColor.html">Color</a> secondColor, <a class="el" href="structColor.html">Color</a> shadowColor, std::string_view pString, <a class="el" href="classGraphicsImage.html">GraphicsImage</a> *image)</td></tr>
+<tr class="separator:af218003677d54b9ddbab376f2d22ddbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f240fc5ce7d453430eed083ce4c27f7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#a7f240fc5ce7d453430eed083ce4c27f7">GetStringHeight2</a> (<a class="el" href="classGUIFont.html">GUIFont</a> *secondFont, std::string_view text_str, <a class="el" href="classGUIWindow.html">GUIWindow</a> *pWindow, int startX, int a6)</td></tr>
 <tr class="separator:a7f240fc5ce7d453430eed083ce4c27f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a204c95245c729c193bd24f35212cb7a0"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classGUIFont.html">GUIFont</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#a204c95245c729c193bd24f35212cb7a0">LoadFont</a> (std::string_view pFontFile, std::string_view pFontPalette)</td></tr>
-<tr class="separator:a204c95245c729c193bd24f35212cb7a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3528d6aa1e65af0ead3179168266e48"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classGUIFont.html">GUIFont</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#ae3528d6aa1e65af0ead3179168266e48">LoadFont</a> (std::string_view pFontFile)</td></tr>
+<tr class="separator:ae3528d6aa1e65af0ead3179168266e48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -133,17 +133,24 @@ Public Attributes</h2></td></tr>
 Private Member Functions</h2></td></tr>
 <tr class="memitem:a257d4d59c6743de9482037aea11c89f9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#a257d4d59c6743de9482037aea11c89f9">FitTwoFontStringINWindow</a> (std::string_view inString, <a class="el" href="classGUIFont.html">GUIFont</a> *pFontSecond, <a class="el" href="classGUIWindow.html">GUIWindow</a> *pWindow, int startPixlOff, bool return_on_carriage=false)</td></tr>
 <tr class="separator:a257d4d59c6743de9482037aea11c89f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af59f0ba4456ce4455a23150f66fe9be6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#af59f0ba4456ce4455a23150f66fe9be6">DrawTextLineToBuff</a> (<a class="el" href="structColor.html">Color</a> color, <a class="el" href="structColor.html">Color</a> *uX_buff_pos, std::string_view text, int line_width)</td></tr>
-<tr class="separator:af59f0ba4456ce4455a23150f66fe9be6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74fb46c26c6279fdd197642a0446ba87"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#a74fb46c26c6279fdd197642a0446ba87">DrawTextLineToBuff</a> (<a class="el" href="structColor.html">Color</a> color, <a class="el" href="structColor.html">Color</a> shadowColor, <a class="el" href="structColor.html">Color</a> *uX_buff_pos, std::string_view text, int line_width)</td></tr>
+<tr class="separator:a74fb46c26c6279fdd197642a0446ba87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
 <tr class="memitem:abafaf012070cf50b61e37c71bdf97c94"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classLodFont.html">LodFont</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#abafaf012070cf50b61e37c71bdf97c94">_font</a></td></tr>
 <tr class="separator:abafaf012070cf50b61e37c71bdf97c94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a3f1554f51ce8f89433aa2c7330583c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPalette.html">Palette</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#a7a3f1554f51ce8f89433aa2c7330583c">_palette</a></td></tr>
-<tr class="separator:a7a3f1554f51ce8f89433aa2c7330583c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Some notes on markup characters supported by <code><a class="el" href="classGUIFont.html">GUIFont</a></code> functions.</p>
+<ul>
+<li><code>\n</code> is a regular line feed.</li>
+<li><code>\tXXX</code>, where <code>XXX</code> is decimal offset in pixels. Moves the caret to a position offset by <code>XXX</code> to the right from the start of the line. This is how aligned tables are implemented.</li>
+<li><code>\rXXX</code>, where <code>XXX</code> is a decimal offset in pixels. Moves the caret so that the rest of the line is right-justified, with the given offset from the right window border. This is used e.g. in the create party screen.</li>
+<li><code>\fXXXXX</code>, where <code>XXXXX</code> is a decimal color code for 16-bit color to use for the text that follows.</li>
+</ul>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structColor.html#ae10f29129352c18d3836387c7e8b996f">Color::fromC16</a> </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af1e57c42973559767b8dc38e30860186" name="af1e57c42973559767b8dc38e30860186"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af1e57c42973559767b8dc38e30860186">&#9670;&#160;</a></span>GUIFont()</h2>
 
@@ -272,8 +279,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a2c2bf1d1b1c03f3144addd2d1555dfc3" name="a2c2bf1d1b1c03f3144addd2d1555dfc3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2c2bf1d1b1c03f3144addd2d1555dfc3">&#9670;&#160;</a></span>DrawCreditsEntry()</h2>
+<a id="af218003677d54b9ddbab376f2d22ddbc" name="af218003677d54b9ddbab376f2d22ddbc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af218003677d54b9ddbab376f2d22ddbc">&#9670;&#160;</a></span>DrawCreditsEntry()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -319,6 +326,12 @@ Private Attributes</h2></td></tr>
           <td></td>
           <td class="paramtype"><a class="el" href="structColor.html">Color</a>&#160;</td>
           <td class="paramname"><em>secondColor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structColor.html">Color</a>&#160;</td>
+          <td class="paramname"><em>shadowColor</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -493,7 +506,7 @@ Private Attributes</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">text</td><td>Input line of text. </td></tr>
-    <tr><td class="paramname">color</td><td><a class="el" href="structColor.html">Color</a> that the text should be started to be drawn at - this allows feeding in the color returned from the previous call to maintain correct color when its split onto a new line. </td></tr>
+    <tr><td class="paramname">color</td><td><a class="el" href="structColor.html">Color</a> that the text should be started to be drawn at - this allows feeding in the color returned from the previous call to maintain correct color when it's split onto a new line. </td></tr>
     <tr><td class="paramname">defaultColor</td><td>The color that the text should return to on hitting a default color tag. </td></tr>
     <tr><td class="paramname">position</td><td>Position to draw the text line to. </td></tr>
     <tr><td class="paramname">max_len_pix</td><td>The maximum allowed width for this line of text.</td></tr>
@@ -504,8 +517,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="af59f0ba4456ce4455a23150f66fe9be6" name="af59f0ba4456ce4455a23150f66fe9be6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af59f0ba4456ce4455a23150f66fe9be6">&#9670;&#160;</a></span>DrawTextLineToBuff()</h2>
+<a id="a74fb46c26c6279fdd197642a0446ba87" name="a74fb46c26c6279fdd197642a0446ba87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74fb46c26c6279fdd197642a0446ba87">&#9670;&#160;</a></span>DrawTextLineToBuff()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -518,6 +531,12 @@ Private Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structColor.html">Color</a>&#160;</td>
           <td class="paramname"><em>color</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structColor.html">Color</a>&#160;</td>
+          <td class="paramname"><em>shadowColor</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -785,8 +804,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a204c95245c729c193bd24f35212cb7a0" name="a204c95245c729c193bd24f35212cb7a0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a204c95245c729c193bd24f35212cb7a0">&#9670;&#160;</a></span>LoadFont()</h2>
+<a id="ae3528d6aa1e65af0ead3179168266e48" name="ae3528d6aa1e65af0ead3179168266e48"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3528d6aa1e65af0ead3179168266e48">&#9670;&#160;</a></span>LoadFont()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -798,18 +817,8 @@ Private Attributes</h2></td></tr>
           <td class="memname">std::unique_ptr&lt; <a class="el" href="classGUIFont.html">GUIFont</a> &gt; GUIFont::LoadFont </td>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>pFontFile</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"><em>pFontFile</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>pFontPalette</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -850,28 +859,6 @@ Private Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname"><a class="el" href="classLodFont.html">LodFont</a> GUIFont::_font</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a7a3f1554f51ce8f89433aa2c7330583c" name="a7a3f1554f51ce8f89433aa2c7330583c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a3f1554f51ce8f89433aa2c7330583c">&#9670;&#160;</a></span>_palette</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="structPalette.html">Palette</a> GUIFont::_palette</td>
         </tr>
       </table>
   </td>

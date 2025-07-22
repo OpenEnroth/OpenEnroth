@@ -257,7 +257,7 @@ var searchData=
   ['_5fpad9_254',['_pad9',['../structBLVSector__MM7.html#a5cf0b779701721a856374057d945d673',1,'BLVSector_MM7']]],
   ['_5fpad_5f2_255',['_pad_2',['../structam__effects__struct.html#a5277a7d23637c58da815ccc15fc789ea',1,'am_effects_struct']]],
   ['_5fpad_5f3_256',['_pad_3',['../structam__effects__struct.html#a7b699b0f896f7b6a87658b80d3459064',1,'am_effects_struct']]],
-  ['_5fpalette_257',['_palette',['../classGraphicsImage.html#ac6682781bb09cb61d011f54168ba2a3e',1,'GraphicsImage::_palette()'],['../classGUIFont.html#a7a3f1554f51ce8f89433aa2c7330583c',1,'GUIFont::_palette()']]],
+  ['_5fpalette_257',['_palette',['../classGraphicsImage.html#ac6682781bb09cb61d011f54168ba2a3e',1,'GraphicsImage']]],
   ['_5fpaletteids_258',['_paletteIds',['../classPaletteManager.html#a31679fca4d9c90cbbe41f60b9dc58546',1,'PaletteManager']]],
   ['_5fpalettes_259',['_palettes',['../classPaletteManager.html#a66d8487e5695fd0e503073f02127a69d',1,'PaletteManager']]],
   ['_5fparent_260',['_parent',['../classdetail_1_1FileSystemTrieNode.html#a00159621182cb342d9b8ae47acc5fa4c',1,'detail::FileSystemTrieNode']]],
