@@ -209,21 +209,6 @@ RgbaImage OpenGLRenderer::ReadScreenPixels() {
     return result;
 }
 
-bool OpenGLRenderer::InitializeFullscreen() {
-    // pViewport->ResetScreen();
-
-    return true;
-}
-
-// when losing and regaining window focus - not required for OGL??
-void OpenGLRenderer::RestoreFrontBuffer() { logger->info("RenderGl - RestoreFrontBuffer"); }
-void OpenGLRenderer::RestoreBackBuffer() { logger->info("RenderGl - RestoreBackBuffer"); }
-
-void OpenGLRenderer::BltBackToFontFast(int a2, int a3, Recti *a4) {
-    logger->info("RenderGl - BltBackToFontFast");
-    // never called anywhere
-}
-
 void OpenGLRenderer::ClearTarget(Color uColor) {
     /* TODO(Gerark) Should we bind to the framebuffer before clearing?
     if (outputRender != outputPresent) {
@@ -973,11 +958,6 @@ void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *textu
     }
 }
 
-bool OpenGLRenderer::AreRenderSurfacesOk() {
-    logger->info("RenderGl - AreRenderSurfacesOk");
-    return true;
-}
-
 RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int height) {
     // TODO(pskelton): should this call drawworld instead??
 
@@ -1019,15 +999,6 @@ RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int heig
 
 RgbaImage OpenGLRenderer::MakeFullScreenshot() {
     return flipVertically(ReadScreenPixels());
-}
-
-// TODO(pskelton): drop - not required in gl renderer now
-void OpenGLRenderer::BeginLightmaps() { return; }
-void OpenGLRenderer::EndLightmaps() { return; }
-void OpenGLRenderer::BeginLightmaps2() { return; }
-void OpenGLRenderer::EndLightmaps2() { return; }
-bool OpenGLRenderer::DrawLightmap(Lightmap *pLightmap, Vec3f *pColorMult, float z_bias) {
-    return true;
 }
 
 struct GLdecalverts {
@@ -4473,13 +4444,6 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
         return;
 }
-
-bool OpenGLRenderer::SwitchToWindow() {
-    // pViewport->ResetScreen();
-
-    return true;
-}
-
 
 bool OpenGLRenderer::Initialize() {
     if (!BaseRenderer::Initialize())

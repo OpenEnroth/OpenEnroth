@@ -3,7 +3,6 @@
 #include <memory>
 #include <string>
 #include <map>
-#include <vector>
 
 #include <glad/gl.h> // NOLINT: this is not a C system include.
 #include <glm/glm.hpp>
@@ -34,20 +33,13 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void ClearTarget(Color uColor) override;
     virtual void Present() override;
 
-    virtual bool InitializeFullscreen() override;
-
     virtual void Release() override;
-
-    virtual bool SwitchToWindow() override;
 
     virtual void BeginLines2D() override;
     virtual void EndLines2D() override;
     virtual void RasterLine2D(Pointi a, Pointi b, Color uColor32) override;
     virtual void DrawLines(const RenderVertexD3D3 *vertices, int num_vertices) override;
 
-    virtual void RestoreFrontBuffer() override;
-    virtual void RestoreBackBuffer() override;
-    virtual void BltBackToFontFast(int a2, int a3, Recti *pSrcRect) override;
     virtual void BeginScene3D() override;
 
     virtual void DrawProjectile(float srcX, float srcY, float a3, float a4,
@@ -90,17 +82,8 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void DrawOutdoorSky() override;
     virtual void DrawOutdoorTerrain() override;
 
-    virtual bool AreRenderSurfacesOk() override;
-
     virtual RgbaImage MakeViewportScreenshot(const int width, const int height) override;
     virtual RgbaImage MakeFullScreenshot() override;
-
-    virtual void BeginLightmaps() override;
-    virtual void EndLightmaps() override;
-    virtual void BeginLightmaps2() override;
-    virtual void EndLightmaps2() override;
-    virtual bool DrawLightmap(Lightmap *pLightmap,
-                              Vec3f *pColorMult, float z_bias) override;
 
     virtual void BeginDecals() override;
     virtual void EndDecals() override;

@@ -2165,7 +2165,7 @@ void Inventory_ItemPopupAndAlchemy() {
         static const int slotSize = 32;
 
         if (!ringscreenactive()) { // rings not displayed
-            int item_pid = render->QueryEquipmentHitMap({pX, pY}, -1);
+            int item_pid = render->QueryHitMap({pX, pY}, -1);
             entry = pParty->activeCharacter().inventory.entry(item_pid);
         } else {  // rings displayed
             ItemSlot pos = ITEM_SLOT_INVALID;

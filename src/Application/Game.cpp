@@ -485,7 +485,7 @@ void Game::processQueuedMessages() {
                     continue;
                 }
 
-                render->ClearZBuffer();
+                render->ClearHitMap();
                 if (current_screen_type == SCREEN_GAME) {
                     if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
                         new OnButtonClick2({602, 450}, {0, 0}, pBtn_GameSettings, std::string(), false);
