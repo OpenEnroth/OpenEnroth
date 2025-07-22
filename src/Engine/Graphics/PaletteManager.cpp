@@ -56,18 +56,11 @@ Palette PaletteManager::createGrayscalePalette() {
 }
 
 Palette PaletteManager::createLoadedPalette(const Palette &palette) {
+    float xs = engine->config->graphics.Saturation.value();
+    float xv = engine->config->graphics.Lightness.value();
+
     Palette result;
-    float satConfig = engine->config->graphics.Saturation.value();
-    float lightConfig = engine->config->graphics.Lightness.value();
-
-    for (size_t i = 0; i < 256; i++) {
-        HsvColorf hsv = palette.colors[i].toColorf().toHsv();
-
-        hsv.v = std::clamp(hsv.v * lightConfig, 0.0f, 1.0f);
-        hsv.s = std::clamp(hsv.s * satConfig, 0.0f, 1.0f);
-
-        result.colors[i] = hsv.toRgb().toColor();
-    }
-
+    for (size_t i = 0; i < 256; i++)
+        result.colors[i] = palette.colors[i].toHsvColorf().adjusted(0, xs, xv).toColor();
     return result;
 }
