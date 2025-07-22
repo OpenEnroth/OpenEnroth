@@ -13,12 +13,24 @@
 class GUIWindow;
 class GraphicsImage;
 
+/**
+ * Some notes on markup characters supported by `GUIFont` functions.
+ *
+ * - `\n` is a regular line feed.
+ * - `\tXXX`, where `XXX` is decimal offset in pixels. Moves the caret to a position offset by `XXX` to the right from
+ *   the start of the line. This is how aligned tables are implemented.
+ * - `\rXXX`, where `XXX` is a decimal offset in pixels. Moves the caret so that the rest of the line is
+ *   right-justified, with the given offset from the right window border. This is used e.g. in the create party screen.
+ * - `\fXXXXX`, where `XXXXX` is a decimal color code for 16-bit color to use for the text that follows.
+ *
+ * @see Color::fromC16
+ */
 class GUIFont {
  public:
     GUIFont();
     ~GUIFont();
 
-    static std::unique_ptr<GUIFont> LoadFont(std::string_view pFontFile, std::string_view pFontPalette);
+    static std::unique_ptr<GUIFont> LoadFont(std::string_view pFontFile);
 
     void CreateFontTex();
     void ReleaseFontTex();
@@ -41,7 +53,7 @@ class GUIFont {
      * @param text                          Input line of text.
      * @param color                         Color that the text should be started to be drawn at - this allows feeding
      *                                      in the color returned from the previous call to maintain correct color when
-     *                                      its split onto a new line.
+     *                                      it's split onto a new line.
      * @param defaultColor                  The color that the text should return to on hitting a default color tag.
      * @param position                      Position to draw the text line to.
      * @param max_len_pix                   The maximum allowed width for this line of text.
@@ -59,7 +71,7 @@ class GUIFont {
     // TODO: these should take std::string_view
     void DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY,
                           unsigned int w, unsigned int h, Color firstColor,
-                          Color secondColor, std::string_view pString,
+                          Color secondColor, Color shadowColor, std::string_view pString,
                           GraphicsImage *image);
     int GetStringHeight2(GUIFont *secondFont, std::string_view text_str,
                          GUIWindow *pWindow, int startX, int a6);
@@ -71,12 +83,11 @@ class GUIFont {
     std::string FitTwoFontStringINWindow(std::string_view inString, GUIFont *pFontSecond,
                                     GUIWindow *pWindow, int startPixlOff,
                                     bool return_on_carriage = false);
-    void DrawTextLineToBuff(Color color, Color *uX_buff_pos,
+    void DrawTextLineToBuff(Color color, Color shadowColor, Color *uX_buff_pos,
                             std::string_view text, int line_width);
 
  private:
     LodFont _font;
-    Palette _palette;
 };
 
 void ReloadFonts();
