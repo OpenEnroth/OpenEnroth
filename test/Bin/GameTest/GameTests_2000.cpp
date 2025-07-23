@@ -6,6 +6,26 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Objects/Chest.h"
 
+void prepareForBattleTest() {
+    assert(engine->_currentLoadedMapId == MAP_EMERALD_ISLAND);
+
+    // Move party in front of the bridge.
+    pParty->pos = Vec3f(12552, 2000, 1);
+
+    // Wizard's eye is handy for debugging.
+    Time tomorrow = pParty->GetPlayingTime() + Duration::fromDays(1);
+    pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(tomorrow, CHARACTER_SKILL_MASTERY_GRANDMASTER, 30, 0, 0);
+
+    // Make sure only the 1st char is alive.
+    for (int i = 1; i < 4; i++)
+        pParty->pCharacters[i].SetCondDeadWithBlockCheck(false);
+
+    // We want char0 chonky.
+    Character &char0 = pParty->pCharacters[0];
+    char0.sLevelModifier = 100;
+    char0.health = pParty->pCharacters[0].GetMaxHealth();
+    char0._stats[ATTRIBUTE_LUCK] = 0; // We don't want luck rolls that decrease damage dealt.
+}
 
 // 2000
 
@@ -197,20 +217,10 @@ GAME_TEST(Issues, Issue2104) {
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     test.startTaping();
+    prepareForBattleTest();
 
-    // Move party in front of the bridge.
-    pParty->pos = Vec3f(12552, 2000, 1);
-
-    // Make sure only the 1st char is alive.
-    for (int i = 1; i < 4; i++)
-        pParty->pCharacters[i].SetCondDeadWithBlockCheck(false);
-
-    // And make sure he won't die from all the shooting.
+    // And make sure char0 has some armor.
     Character &char0 = pParty->pCharacters[0];
-    char0.sLevelModifier = 100;
-    char0.health = pParty->pCharacters[0].GetMaxHealth();
-
-    // And make sure he has some armor.
     char0.setSkillValue(CHARACTER_SKILL_LEATHER, CombinedSkillValue(1, CHARACTER_SKILL_MASTERY_NOVICE));
     char0.inventory.equip(ITEM_SLOT_ARMOUR, Item(ITEM_LEATHER_ARMOR));
 
@@ -236,18 +246,7 @@ GAME_TEST(Issues, Issue2108a) {
     engine->config->debug.AllMagic.setValue(true);
     game.startNewGame();
     test.startTaping();
-
-    // Move party in front of the bridge.
-    pParty->pos = Vec3f(12552, 2000, 1);
-
-    // Make sure only the 1st char is alive.
-    for (int i = 1; i < 4; i++)
-        pParty->pCharacters[i].SetCondDeadWithBlockCheck(false);
-
-    // And make sure he has enough HP.
-    Character &char0 = pParty->pCharacters[0];
-    char0.sLevelModifier = 100;
-    char0.health = pParty->pCharacters[0].GetMaxHealth();
+    prepareForBattleTest();
 
     // Cast shield.
     game.pressGuiButton("Game_CastSpell");
@@ -282,25 +281,11 @@ GAME_TEST(Issues, Issue2109) {
     engine->config->debug.NoActors.setValue(true);
     game.startNewGame();
     test.startTaping();
-
-    // Move party in front of the bridge.
-    pParty->pos = Vec3f(12552, 2000, 1);
-
-    // Wizard's eye is handy for debugging this test.
-    Time tomorrow = pParty->GetPlayingTime() + Duration::fromDays(1);
-    pParty->pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Apply(tomorrow, CHARACTER_SKILL_MASTERY_GRANDMASTER, 30, 0, 0);
-
-    // Make sure only the 1st char is alive.
-    for (int i = 1; i < 4; i++)
-        pParty->pCharacters[i].SetCondDeadWithBlockCheck(false);
-
-    // Prepare char0 properly.
-    Character &char0 = pParty->pCharacters[0];
-    char0.sLevelModifier = 100;
-    char0.health = pParty->pCharacters[0].GetMaxHealth();
-    char0._stats[ATTRIBUTE_LUCK] = 0; // We don't want luck rolls that decrease damage dealt.
+    prepareForBattleTest();
 
     // Apply shield from potions & spells.
+    Time tomorrow = pParty->GetPlayingTime() + Duration::fromDays(1);
+    Character &char0 = pParty->pCharacters[0];
     char0.pCharacterBuffs[CHARACTER_BUFF_SHIELD].Apply(tomorrow, CHARACTER_SKILL_MASTERY_GRANDMASTER, 30, 0, 0);
     pParty->pPartyBuffs[PARTY_BUFF_SHIELD].Apply(tomorrow, CHARACTER_SKILL_MASTERY_GRANDMASTER, 30, 0, 0);
 
@@ -335,6 +320,7 @@ GAME_TEST(Issues, Issue2109) {
 }
 
 GAME_TEST(Issues, Issue2118) {
+    // Clicking on wine racks crashes the game.
     auto potionsTape = tapes.totalItemCount(ITEM_TYPE_POTION);
 
     engine->config->debug.NoActors.setValue(true);
