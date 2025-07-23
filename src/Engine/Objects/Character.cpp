@@ -6084,13 +6084,14 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                        spriteType == SPRITE_PROJECTILE_530 ||
                        spriteType == SPRITE_PROJECTILE_LIGHTBOLT ||
                        spriteType == SPRITE_PROJECTILE_DARKBOLT) {
-                bool shielded = false;
-
-                // reduce missle damage with skills / armour
                 if (!actorPtr->ActorHitOrMiss(playerPtr))
                     return;
+
+                bool shielded = false;
                 if (playerPtr->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Active())
-                    shielded = true; // TODO(captainurist): Check for PARTY_BUFF_SHIELD too!
+                    shielded = true;
+                if (pParty->pPartyBuffs[PARTY_BUFF_SHIELD].Active())
+                    shielded = true;
                 if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_SHIELDING))
                     shielded = true;
                 if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_STORM))

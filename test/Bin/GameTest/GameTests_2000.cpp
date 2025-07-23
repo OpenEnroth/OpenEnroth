@@ -226,6 +226,53 @@ GAME_TEST(Issues, Issue2104) {
     ASSERT_GT(arrowCount, hitCount); // And missed some.
 }
 
+GAME_TEST(Issues, Issue2108a) {
+    // Shield spell does not work.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    auto hpTape = charTapes.hp(0);
+    auto spritesTape = tapes.sprites();
+
+    engine->config->debug.NoActors.setValue(true);
+    engine->config->debug.AllMagic.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+
+    // Move party in front of the bridge.
+    pParty->pos = Vec3f(12552, 2000, 1);
+
+    // Make sure only the 1st char is alive.
+    for (int i = 1; i < 4; i++)
+        pParty->pCharacters[i].SetCondDeadWithBlockCheck(false);
+
+    // And make sure he has enough HP.
+    Character &char0 = pParty->pCharacters[0];
+    char0.sLevelModifier = 100;
+    char0.health = pParty->pCharacters[0].GetMaxHealth();
+
+    // Cast shield.
+    game.pressGuiButton("Game_CastSpell");
+    game.tick(1);
+    game.pressGuiButton("SpellBook_School1"); // Air magic.
+    game.tick(1);
+    game.pressGuiButton("SpellBook_Spell5"); // 5 is Shield.
+    game.tick(1);
+    game.pressGuiButton("SpellBook_Spell5"); // Confirm.
+    game.tick(1);
+
+    // Spawn archers & wait.
+    engine->config->debug.NoActors.setValue(false);
+    for (int i = 0; i < 4; i++) {
+        game.tick(7);
+        game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_ELF_ARCHER_A);
+    }
+    game.tick(100);
+
+    ASSERT_GE(hpTape.size(), 2); // Should have received some damage.
+    auto damageRange = hpTape.reverse().adjacentDeltas().minMax();
+    EXPECT_GE(damageRange[0], 3); // Elf archer's damage is 4d2+2 (so 6-10), after shield it's 3-5.
+    EXPECT_LE(damageRange[1], 5);
+}
+
 GAME_TEST(Issues, Issue2109) {
     // Shield spell effect being applied from multiple sources.
     // What we had in this test before the fix was that the damage received was reduced 2^6 times, so was always zero.
