@@ -188,6 +188,44 @@ GAME_TEST(Issues, Issue2099) {
     }
 }
 
+GAME_TEST(Issues, Issue2104) {
+    // Enemies always hit with ranged attacks.
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    auto hpTape = charTapes.hp(0);
+    auto spritesTape = tapes.sprites();
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+
+    // Move party in front of the bridge.
+    pParty->pos = Vec3f(12552, 2000, 1);
+
+    // Make sure only the 1st char is alive.
+    for (int i = 1; i < 4; i++)
+        pParty->pCharacters[i].SetCondDeadWithBlockCheck(false);
+
+    // And make sure he won't die from all the shooting.
+    Character &char0 = pParty->pCharacters[0];
+    char0.sLevelModifier = 100;
+    char0.health = pParty->pCharacters[0].GetMaxHealth();
+
+    // And make sure he has some armor.
+    char0.setSkillValue(CHARACTER_SKILL_LEATHER, CombinedSkillValue(1, CHARACTER_SKILL_MASTERY_NOVICE));
+    char0.inventory.equip(ITEM_SLOT_ARMOUR, Item(ITEM_LEATHER_ARMOR));
+
+    // Spawn an archer & wait.
+    engine->config->debug.NoActors.setValue(false);
+    game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_ELF_ARCHER_A);
+    game.tick(300);
+
+    int arrowCount = spritesTape.count([](auto sprites) { return sprites.contains(SPRITE_ARROW_PROJECTILE); });
+    int hitCount = hpTape.size() - 1;
+
+    ASSERT_GT(hitCount, 0); // Should have hit some.
+    ASSERT_GT(arrowCount, hitCount); // And missed some.
+}
+
 GAME_TEST(Issues, Issue2109) {
     // Shield spell effect being applied from multiple sources.
     // What we had in this test before the fix was that the damage received was reduced 2^6 times, so was always zero.
