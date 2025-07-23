@@ -8,6 +8,7 @@
 #include "Engine/EngineFileSystem.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Sprites.h"
+#include "Engine/Graphics/TileGenerator.h"
 #include "Engine/LodTextureCache.h"
 #include "Engine/LodSpriteCache.h"
 #include "Engine/Graphics/PaletteManager.h"
@@ -221,6 +222,7 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
 }
 
 bool Bitmaps_GEN_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
+    pTileGenerator->ensureTile(this->resource_name);
     *rgbaImage = png::decode(ufs->read(this->resource_name));
 
     // Desaturate.

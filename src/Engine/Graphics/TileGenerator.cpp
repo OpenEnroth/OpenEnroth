@@ -11,7 +11,9 @@
 #include "Engine/Graphics/Image.h"
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Png.h"
+#include "Library/LodFormats/LodFormats.h"
 #include "Library/LodFormats/LodImage.h"
+#include "Library/Logger/Logger.h"
 
 #include "Library/Serialization/Serialization.h"
 
@@ -27,7 +29,7 @@ TileGenerator::TileGenerator() {
 
 TileGenerator::~TileGenerator() = default;
 
-void TileGenerator::generateTiles(bool force) {
+void TileGenerator::fillTable() {
     for (Tileset tileset : allTerrainTilesets()) {
         if (tileset == TILESET_DIRT || tileset == TILESET_WATER)
             continue; // We don't generate tiles for dirt and water tilesets. For dirt, it makes no sense, and for water we have a skill issue.
@@ -38,17 +40,26 @@ void TileGenerator::generateTiles(bool force) {
             tileData.tileset = tileset;
             tileData.variant = variant;
             tileData.flags = TILE_TRANSITION | TILE_GENERATED_TRANSITION;
-
-            if (!ufs->exists(tileData.name) || force)
-                ufs->write(tileData.name, png::encode(generateTile(tileset, variant)));
-
+            _tilesetVariantByName.emplace(tileData.name, std::pair(tileset, variant));
             pTileTable->addTile(std::move(tileData));
         }
     }
 }
 
+void TileGenerator::ensureTile(std::string_view name) {
+    assert(_tilesetVariantByName.contains(name));
+
+    if (ufs->exists(name))
+        return;
+
+    auto [tileset, variant] = *valuePtr(_tilesetVariantByName, name);
+    ufs->write(name, png::encode(generateTile(tileset, variant)));
+}
+
 RgbaImage TileGenerator::generateTile(Tileset tileset, TileVariant variant) {
     assert(allGeneratedTileVariants().contains(variant));
+
+    logger->info("Generating tile {}_{}.", toString(tileset), toString(variant));
 
     Directions currentDirections = 0;
     Directions targetDirections = transitionDirectionsForTileVariant(variant);
@@ -78,9 +89,9 @@ RgbaImageView TileGenerator::loadTile(Tileset tileset, TileVariant variant) {
     if (const RgbaImage *result = valuePtr(_tileByTilesetVariant, key))
         return *result;
 
-    // Need to load directly from LOD b/c AssetsManager hold saturation-adjusted images.
-    LodImage *image = pBitmaps_LOD->loadTexture(pTileTable->tile(pTileTable->tileId(tileset, variant)).name);
-    return _tileByTilesetVariant.emplace(key, makeRgbaImage(image->image, image->palette)).first->second;
+    // Need to load directly from LOD, caching layer contains desaturated images.
+    LodImage image = lod::decodeImage(pBitmaps_LOD->read(pTileTable->tile(pTileTable->tileId(tileset, variant)).name));
+    return _tileByTilesetVariant.emplace(key, makeRgbaImage(image.image, image.palette)).first->second;
 }
 
 TileVariant TileGenerator::findSpanningVariant(Directions currentDirections, Directions targetDirections) const {

@@ -712,10 +712,9 @@ void Engine::MM7_Initialize() {
     pMediaPlayer = new MPlayer();
     pMediaPlayer->Initialize();
 
-    if (engine->config->graphics.GenerateTiles.value()) {
-        TileGenerator generator;
-        generator.generateTiles();
-    }
+    pTileGenerator = new TileGenerator();
+    if (engine->config->graphics.GenerateTiles.value())
+        pTileGenerator->fillTable();
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 }
