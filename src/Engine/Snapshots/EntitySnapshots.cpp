@@ -24,6 +24,7 @@
 #include "Engine/Data/IconFrameData.h"
 #include "Engine/Data/PortraitFrameData.h"
 #include "Engine/Data/TileData.h"
+#include "Engine/Data/TileEnumFunctions.h"
 #include "Engine/Tables/ChestTable.h"
 #include "Engine/Time/Time.h"
 
@@ -294,12 +295,13 @@ void reconstruct(const TileData_MM7 &src, TileData *dst) {
     dst->name = ascii::toLower(dst->name);
 
     if (ascii::noCaseStartsWith(dst->name, "wtrdr"))
-        dst->name.insert(0, "h"); // mm7 uses hd water tiles with legacy names
+        dst->name.insert(0, "h"); // animated water only works with hwtrdr* tiles.
 
-    dst->uTileID = src.tileId;
-    dst->tileset = static_cast<Tileset>(src.tileset);
-    dst->uSection = static_cast<TileVariant>(src.section);
-    dst->uAttributes = static_cast<TileFlags>(src.attributes);
+    // We just ignore src.tileId & src.bitmapId.
+
+    reconstruct(src.tileset, &dst->tileset);
+    reconstruct(src.variant, &dst->variant, tags::context(isRoad(dst->tileset)), tags::context(dst->name));
+    dst->flags = static_cast<TileFlags>(src.flags);
 }
 
 void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {

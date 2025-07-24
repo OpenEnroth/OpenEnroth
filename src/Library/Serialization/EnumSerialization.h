@@ -16,24 +16,24 @@
 #include "EnumSerializer.h"
 
 /**
- * This macro generates lexical serialization functions for the provided enumeration type.. The typical use case is to
+ * This macro generates lexical serialization functions for the provided enumeration type. The typical use case is to
  * use it in the `cpp` file, and use `MM_DECLARE_SERIALIZATION_FUNCTIONS` in the header file.
  *
  * Note that it should be invoked from the namespace of the target enumeration type, otherwise argument-dependent
  * lookup won't find it, and unqualified calls to `serialize` / `trySerialize` / `deserialize` / `tryDeserialize`
- * won't work. `ToString` and `FromString` function objects also won't work.
+ * won't work. `toString` and `fromString` function objects also won't work.
  *
  * However, it might make sense to invoke this macro from several different namespaces to generate several sets of
  * serialization functions for the same type. In this case the serialization functions won't be discovered by ADL,
  * so you'll have to use qualified calls, but this is likely exactly what you'd want. The only downside is that
- * `ToString` / `FromString` global function objects won't work.
+ * `toString` / `fromString` global function objects won't work.
  *
  * Usage example:
  * ```
  * MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(Key, CASE_INSENSITIVE, {
- *     { Key::CapsLock, "Caps Lock" },
- *     { Key::CapsLock, "CapsLock" },    // Alternative string, used only for deserialization.
- *     { Key::CapsLock, "CPSLCK" },      // Can have several alternative strings.
+ *     {Key::CapsLock, "Caps Lock"},
+ *     {Key::CapsLock, "CapsLock"},    // Alternative string, used only for deserialization.
+ *     {Key::CapsLock, "CPSLCK"},      // Can have several alternative strings.
  *     // ...
  * })
  * ```

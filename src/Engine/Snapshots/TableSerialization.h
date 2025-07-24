@@ -11,7 +11,7 @@ struct OverlayList;
 struct PortraitFrameTable;
 struct SpriteFrameTable;
 struct TextureFrameTable;
-struct TileTable;
+class TileTable;
 
 struct TriBlob {
     Blob mm6;
@@ -53,9 +53,9 @@ void deserialize(const TriBlob &src, SpriteFrameTable *dst);
 
 void deserialize(const TriBlob &src, TextureFrameTable *dst);
 
+void deserialize(const TriBlob &src, SoundList *dst);
+
 /**
  * @offset 0x00488000
  */
 void deserialize(const TriBlob &src, TileTable *dst);
-
-void deserialize(const TriBlob &src, SoundList *dst);

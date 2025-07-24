@@ -23,6 +23,7 @@ set(ENGINE_GRAPHICS_SOURCES
         PortalFunctions.cpp
         Sprites.cpp
         TextureFrameTable.cpp
+        TileGenerator.cpp
         TurnBasedOverlay.cpp
         Viewport.cpp
         Vis.cpp
@@ -53,6 +54,7 @@ set(ENGINE_GRAPHICS_HEADERS
         RenderEntities.h
         Sprites.h
         TextureFrameTable.h
+        TileGenerator.h
         TurnBasedOverlay.h
         Viewport.h
         Vis.h

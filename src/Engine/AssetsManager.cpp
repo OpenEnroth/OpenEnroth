@@ -113,12 +113,17 @@ GraphicsImage *AssetsManager::getImage_PCXFromIconsLOD(std::string_view name) {
     return i->second;
 }
 
-GraphicsImage *AssetsManager::getBitmap(std::string_view name) {
+GraphicsImage *AssetsManager::getBitmap(std::string_view name, bool generated) {
     std::string filename = ascii::toLower(name);
 
     auto i = bitmaps.find(filename);
     if (i == bitmaps.end()) {
-        auto image = GraphicsImage::Create(std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, filename));
+        GraphicsImage *image = nullptr;
+        if (generated) {
+            image = GraphicsImage::Create(std::make_unique<Bitmaps_GEN_Loader>(filename));
+        } else {
+            image = GraphicsImage::Create(std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, filename));
+        }
         bitmaps[filename] = image;
         return image;
     }

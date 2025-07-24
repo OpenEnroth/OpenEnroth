@@ -4,14 +4,18 @@
 #include <string_view>
 #include <memory>
 
+#include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Sprites.h"
+#include "Engine/Graphics/TileGenerator.h"
 #include "Engine/LodTextureCache.h"
 #include "Engine/LodSpriteCache.h"
 #include "Engine/Graphics/PaletteManager.h"
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
+#include "Library/Image/Png.h"
 #include "Library/LodFormats/LodImage.h"
 #include "Library/LodFormats/LodSprite.h"
 #include "Library/Logger/Logger.h"
@@ -213,6 +217,19 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
             }
         }
     }
+
+    return true;
+}
+
+bool Bitmaps_GEN_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
+    pTileGenerator->ensureTile(this->resource_name);
+    *rgbaImage = png::decode(ufs->read(this->resource_name));
+
+    // Desaturate.
+    float xs = engine->config->graphics.Saturation.value();
+    float xv = engine->config->graphics.Lightness.value();
+    for (Color &pixel : rgbaImage->pixels())
+        pixel = pixel.toHsvColorf().adjusted(0, xs, xv).toColor();
 
     return true;
 }

@@ -138,6 +138,7 @@ class OutdoorTerrain {
     };
 
     void recalculateNormals();
+    void recalculateTransitions(Image<int16_t> *tileMap);
     [[nodiscard]] TileGeometry tileGeometryByGrid(Pointi gridPos) const;
 
  private:

@@ -60,6 +60,10 @@ Blob LodTextureCache::LoadCompressedTexture(std::string_view pContainer) {
     return lod::decodeCompressed(_reader.read(pContainer));
 }
 
+Blob LodTextureCache::read(std::string_view pContainer) {
+    return _reader.read(pContainer);
+}
+
 bool LodTextureCache::LoadTextureFromLOD(LodImage *pOutTex, std::string_view pContainer) {
     if (!_reader.exists(pContainer))
         return false;

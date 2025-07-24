@@ -7,6 +7,7 @@
 CodeGenOptions CodeGenOptions::parse(int argc, char **argv) {
     CodeGenOptions result;
     result.ramFsUserData = true; // CodeGen doesn't need user data.
+    result.quickStart = true;
     result.logLevel = LOG_CRITICAL; // CodeGen doesn't need logging.
 
     std::unique_ptr<CliApp> app = std::make_unique<CliApp>();

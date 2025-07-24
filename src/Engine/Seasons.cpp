@@ -35,6 +35,31 @@ int tileIdForSeason(int tileId, int month) {
     }
 }
 
+Tileset tilesetForSeason(Tileset tileset, int month) {
+    switch (month) {
+    case 11:
+    case 0:
+    case 1: // winter
+        return tileset == TILESET_GRASS ? TILESET_SNOW : tileset;
+
+    case 2:
+    case 3:
+    case 4: // spring
+    case 8:
+    case 9:
+    case 10: // autumn
+        return tileset == TILESET_GRASS ? TILESET_DIRT : tileset;
+
+    default:
+        assert(false);
+        [[fallthrough]];
+    case 5:
+    case 6:
+    case 7: // summer
+        return tileset;
+    }
+}
+
 int spriteIdForSeason(int spriteId, int month) {
     switch (month) {
     // case 531 (tree60), 536 (tree65), 537 (tree66) have no autumn/winter
