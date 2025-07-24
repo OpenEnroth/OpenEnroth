@@ -751,7 +751,7 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
             // if (render->pRenderD3D)
             {
                 if (/*a2->spell_caster_pid.type() != OBJECT_Actor &&*/
-                    a2->spell_caster_pid.type() != OBJECT_Item) {
+                    a2->spell_caster_pid.type() != OBJECT_Sprite) {
                     if (field_204 != 4) {
                         field_204++;
                         _4A7688_fireball_collision_particle(a2);

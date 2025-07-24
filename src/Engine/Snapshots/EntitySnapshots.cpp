@@ -1617,7 +1617,7 @@ void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
         dst->uItemIndex = ITEM_TREASURE_LEVEL_INVALID;
         dst->uMonsterIndex = src.uIndex;
     } else {
-        assert(dst->uKind == OBJECT_Item);
+        assert(dst->uKind == OBJECT_Sprite);
         dst->uItemIndex = static_cast<ItemTreasureLevel>(src.uIndex);
         dst->uMonsterIndex = 0;
     }

@@ -267,7 +267,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
 
             spriteId = sprite.Create(pDir->uYawAngle, pDir->uPitchAngle, pObjectList->pObjects[sprite.uObjectDescID].uSpeed, 0);
             if (spriteId != -1) {
-                pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Item, spriteId));
+                pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Sprite, spriteId));
             }
             break;
 
@@ -351,7 +351,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 k = grng->random(1024) - 512;
             }
             if (spriteId != -1) {
-                pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Item, spriteId));
+                pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Sprite, spriteId));
             }
             break;
         }
@@ -403,7 +403,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 } while (spell_spray_angle_start <= spell_spray_angle_end);
             }
             if (spriteId != -1) {
-                pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Item, spriteId));
+                pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Sprite, spriteId));
             }
             break;
         }
@@ -660,7 +660,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 } while (spell_spray_angle_start <= spell_spray_angle_end);
             }
             if (spriteId != -1) {
-                pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Item, spriteId));
+                pAudioPlayer->playSpellSound(uSpellID, false, SOUND_MODE_PID, Pid(OBJECT_Sprite, spriteId));
             }
             break;
         }
@@ -913,7 +913,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
     int id1 = uObj1ID.id();
     int id2 = uObj2ID.id();
     switch (uObj1ID.type()) {
-        case OBJECT_Item: {
+        case OBJECT_Sprite: {
             out1 = pSpriteObjects[id1].vPosition;
             break;
         }
@@ -953,7 +953,7 @@ void Actor::GetDirectionInfo(Pid uObj1ID, Pid uObj2ID,
     }
 
     switch (uObj2ID.type()) {
-        case OBJECT_Item: {
+        case OBJECT_Sprite: {
             out2 = pSpriteObjects[id2].vPosition;
             break;
         }
@@ -2340,7 +2340,7 @@ void Actor::ActorDamageFromMonster(Pid attacker_id,
     int pushDistance;  // [sp+20h] [bp+Ch]@34
 
     v4 = 0;
-    if (attacker_id.type() == OBJECT_Item) {
+    if (attacker_id.type() == OBJECT_Sprite) {
         v4 = pSpriteObjects[attacker_id.id()]
                  .field_60_distance_related_prolly_lod;
         attacker_id = pSpriteObjects[attacker_id.id()].spell_caster_pid;
@@ -3023,7 +3023,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
     v61 = 0;
     IsAdditionalDamagePossible = false;
     isLifeStealing = 0;
-    if (a1.type() == OBJECT_Item) {
+    if (a1.type() == OBJECT_Sprite) {
         projectileSprite = &pSpriteObjects[a1.id()];
         v61 = projectileSprite->field_60_distance_related_prolly_lod;
         a1 = projectileSprite->spell_caster_pid;
@@ -4062,7 +4062,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
             pos1 = pActors[obj1_pid].pos + Vec3f(0, 0, pActors[obj1_pid].height * 0.69999999);
             obj1_sector = pActors[obj1_pid].sectorId;
             break;
-        case OBJECT_Item:
+        case OBJECT_Sprite:
             pos1 = pSpriteObjects[obj1_pid].vPosition;
             obj1_sector = pSpriteObjects[obj1_pid].uSectorID;
             break;
@@ -4088,7 +4088,7 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
             pos2 = pActors[obj2_pid].pos + Vec3f(0, 0, pActors[obj2_pid].height * 0.69999999);
             obj2_sector = pActors[obj2_pid].sectorId;
             break;
-        case OBJECT_Item:
+        case OBJECT_Sprite:
             pos2 = pSpriteObjects[obj2_pid].vPosition;
             obj2_sector = pSpriteObjects[obj2_pid].uSectorID;
             break;
@@ -4441,7 +4441,7 @@ void evaluateAoeDamage() {
         int attackerId = attack.pid.id();
 
         // attacker is an item (sprite)
-        if (attackerType == OBJECT_Item) {
+        if (attackerType == OBJECT_Sprite) {
             pSpriteObj = &pSpriteObjects[attackerId];
             attackerType = pSpriteObjects[attackerId].spell_caster_pid.type();
             attackerId = pSpriteObjects[attackerId].spell_caster_pid.id();
@@ -4526,7 +4526,7 @@ void evaluateAoeDamage() {
                                         Actor::ActorDamageFromMonster(attack.pid, actorID, attVF, pSpriteObj->spellCasterAbility);
                                     }
                                     break;
-                                case OBJECT_Item:
+                                case OBJECT_Sprite:
                                     ItemDamageFromActor(attack.pid, actorID, attVF);
                                     break;
                                 default:
@@ -4570,7 +4570,7 @@ double sub_43AE12(signed int a1) {
 //----- (0043B057) --------------------------------------------------------
 void ItemDamageFromActor(Pid uObjID, unsigned int uActorID, const Vec3f &pVelocity) {
      if (!pActors[uActorID].IsNotAlive()) {
-        if (uObjID.type() == OBJECT_Item) {
+        if (uObjID.type() == OBJECT_Sprite) {
             if (pSpriteObjects[uObjID.id()].uSpellID != SPELL_NONE) {
                 int spellDamage = CalcSpellDamage(
                     pSpriteObjects[uObjID.id()].uSpellID,
