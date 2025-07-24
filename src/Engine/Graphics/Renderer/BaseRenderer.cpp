@@ -205,7 +205,7 @@ void BaseRenderer::DrawSpriteObjects() {
                             pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = projected_y;
                             pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z = view_x;
 
-                            pBillboardRenderList[::uNumBillboardsToDraw].object_pid = Pid(OBJECT_Item, i);
+                            pBillboardRenderList[::uNumBillboardsToDraw].object_pid = Pid(OBJECT_Sprite, i);
                             pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
                             pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = Color();
 

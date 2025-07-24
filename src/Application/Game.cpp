@@ -812,7 +812,7 @@ void Game::processQueuedMessages() {
                 if (type == OBJECT_Actor) {
                     interactionPossible = pActors[id].aiState == Dead;
                 }
-                if (type == OBJECT_Item) {
+                if (type == OBJECT_Sprite) {
                     interactionPossible = !(pObjectList->pObjects[pSpriteObjects[id].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE);
                 }
                 if (type == OBJECT_Decoration) {

@@ -1361,7 +1361,7 @@ void RegeneratePartyHealthMana() {
             spellSprite.vPosition.y = pActors[actorID].pos.y;
             spellSprite.vPosition.z = pActors[actorID].pos.z;
             spellSprite.spell_target_pid = Pid(OBJECT_Actor, actorID);
-            int thisDmg = Actor::DamageMonsterFromParty(Pid(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, Vec3f());
+            int thisDmg = Actor::DamageMonsterFromParty(Pid(OBJECT_Sprite, spellSprite.Create(0, 0, 0, 0)), actorID, Vec3f());
             if (thisDmg) hitCount++;
             totalDmg += thisDmg;
         }

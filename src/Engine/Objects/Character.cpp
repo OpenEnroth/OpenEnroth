@@ -5887,13 +5887,13 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
 
     /*    OBJECT_None = 0x0,
     OBJECT_Door = 0x1,
-    OBJECT_Item = 0x2,
+    OBJECT_Sprite = 0x2,
     OBJECT_Actor = 0x3,
     OBJECT_Character = 0x4,
     OBJECT_Decoration = 0x5,
     OBJECT_Face = 0x6,*/
 
-    if (pidtype != OBJECT_Item) {  // not an item
+    if (pidtype != OBJECT_Sprite) {  // not an item
         // hit by monster
         if (pidtype != OBJECT_Actor) assert(false);
 
@@ -6021,7 +6021,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
         ObjectType uActorType = spritefrom->spell_caster_pid.type();
         int uActorID = spritefrom->spell_caster_pid.id();
 
-        if (uActorType == OBJECT_Item) {
+        if (uActorType == OBJECT_Sprite) {
             Character *playerPtr;  // eax@81
 
             // select char target or pick random
@@ -6637,7 +6637,7 @@ void Character::_42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int a
 
     int id = a1a.Create(0, 0, 0, 0);
     if (id != -1) {
-        pushAoeAttack(Pid(OBJECT_Item, id), a5, a1a.vPosition, ABILITY_ATTACK1);
+        pushAoeAttack(Pid(OBJECT_Sprite, id), a5, a1a.vPosition, ABILITY_ATTACK1);
     }
 }
 

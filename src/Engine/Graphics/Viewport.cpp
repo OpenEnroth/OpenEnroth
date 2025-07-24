@@ -250,7 +250,7 @@ void Engine::onGameViewportClick() {
     // else
     //  v0 = render->pActiveZBuffer[v1->x + pSRZBufferLineOffsets[v1->y]];
 
-    if (pid.type() == OBJECT_Item) {
+    if (pid.type() == OBJECT_Sprite) {
         int item_id = pid.id();
         // v21 = (signed int)(uint16_t)v0 >> 3;
         if (pSpriteObjects[item_id].IsUnpickable() || item_id >= 1000 || !pSpriteObjects[item_id].uObjectDescID || !in_range) {

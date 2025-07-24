@@ -914,7 +914,7 @@ void GameUI_WritePointedObjectStatusString() {
             Vis_PIDAndDepth pickedObject = engine->PickMouseNormal();
             mouse->uPointingObjectID = pickedObject.pid;
             pickedObjectID = (signed)pickedObject.pid.id();
-            if (pickedObject.pid.type() == OBJECT_Item) {
+            if (pickedObject.pid.type() == OBJECT_Sprite) {
                 if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
                     mouse->uPointingObjectID = Pid();
                     engine->_statusBar->clearPermanent();

@@ -1956,7 +1956,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                     popup_window.DrawMessageBox(true);
                     MonsterPopup_Draw(pointedObject.id(), &popup_window);
                 }
-                if (pointedObject.type() == OBJECT_Item) {
+                if (pointedObject.type() == OBJECT_Sprite) {
                     if (!(pObjectList->pObjects[pSpriteObjects[pointedObject.id()].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
                         GameUI_DrawItemInfo(&pSpriteObjects[pointedObject.id()].containing_item);
                     }

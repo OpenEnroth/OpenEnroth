@@ -1510,7 +1510,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
     }
 
     switch (type) {
-        case OBJECT_Item: {  // take the item
+        case OBJECT_Sprite: {  // take the item
             if (pSpriteObjects[id].IsUnpickable() || id >= pSpriteObjects.size() || !pSpriteObjects[id].uObjectDescID) {
                 return 1;
             }
@@ -2011,7 +2011,7 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f p
 }
 
 void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
-    assert(a2->uKind == OBJECT_Item);
+    assert(a2->uKind == OBJECT_Sprite);
 
     SpriteObject a1a;
     a1a.containing_item.Reset();
