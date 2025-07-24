@@ -173,6 +173,7 @@ var searchData=
   ['_7estru314_170',['~stru314',['../structstru314.html#a19c9b3d11b111abb410af9cff3f6636b',1,'stru314']]],
   ['_7etemporarydir_171',['~TemporaryDir',['../classTemporaryDir.html#ae815f10f33f79ab481d1cc38ae0d0070',1,'TemporaryDir']]],
   ['_7etestcontroller_172',['~TestController',['../classTestController.html#ab8c9f06ec38003688261be84150c11ff',1,'TestController']]],
-  ['_7evidreader_173',['~VidReader',['../classVidReader.html#af03b6fefc7a74f9ebf18a7abf53a4e29',1,'VidReader']]],
-  ['_7ewindowmanager_174',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]]
+  ['_7etilegenerator_173',['~TileGenerator',['../classTileGenerator.html#a5c58b1574c0905421a1586529e48019f',1,'TileGenerator']]],
+  ['_7evidreader_174',['~VidReader',['../classVidReader.html#af03b6fefc7a74f9ebf18a7abf53a4e29',1,'VidReader']]],
+  ['_7ewindowmanager_175',['~WindowManager',['../classWindowManager.html#ad2c42494d2d9045b18a3a09e5920290f',1,'WindowManager']]]
 ];

@@ -12,5 +12,6 @@ var searchData=
   ['quicksave_9',['QuickSave',['../classGameConfig_1_1Gamepad.html#af22687f6c3582de7e81e91d5ed8c183e',1,'GameConfig::Gamepad::QuickSave()'],['../classGameConfig_1_1Keybindings.html#acf0450b470b0e108513a68ea3a6c5e7e',1,'GameConfig::Keybindings::QuickSave()']]],
   ['quicksavename_10',['QuickSaveName',['../classGameConfig_1_1Gameplay.html#a85a41f1cc8c6adf5cfd6f8139a8610b4',1,'GameConfig::Gameplay']]],
   ['quicksavescount_11',['QuickSavesCount',['../classGameConfig_1_1Gameplay.html#ab0b99938dc819fff4a2a5285c68e6ca7',1,'GameConfig::Gameplay']]],
-  ['quickspell_12',['quickSpell',['../structCharacter__MM7.html#a25e55f6514190f4185de5c0ee6024d2c',1,'Character_MM7']]]
+  ['quickspell_12',['quickSpell',['../structCharacter__MM7.html#a25e55f6514190f4185de5c0ee6024d2c',1,'Character_MM7']]],
+  ['quickstart_13',['quickStart',['../structGameStarterOptions.html#a98ebaa6659d0b266a5a190f861f4deb1',1,'GameStarterOptions']]]
 ];

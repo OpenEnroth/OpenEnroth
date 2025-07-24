@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7ea13a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;82daa3a</span>
    </div>
   </td>
  </tr>
@@ -78,20 +78,91 @@ $(function() {
   <div class="headertitle"><div class="title">TileEnumFunctions.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="TileEnums_8h.html">TileEnums.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &lt;span&gt;</code><br />
+<code>#include &lt;cassert&gt;</code><br />
+<code>#include &quot;<a class="el" href="TileEnums_8h.html">TileEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SoundEnums_8h.html">Media/Audio/SoundEnums.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Point_8h.html">Library/Geometry/Point.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Segment_8h.html">Utility/Segment.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ab57feb11371ae2f4989e037ad1e95ca0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8h.html#ab57feb11371ae2f4989e037ad1e95ca0">allSpecialTileVariants</a> ()</td></tr>
 <tr class="separator:ab57feb11371ae2f4989e037ad1e95ca0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77dc9e7f4f5067001ddbdae28f6b9d78"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8h.html#a77dc9e7f4f5067001ddbdae28f6b9d78">allTransitionTileVariants</a> ()</td></tr>
+<tr class="separator:a77dc9e7f4f5067001ddbdae28f6b9d78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae87af5b1d278a0c5ed7e0c7922076cdc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8h.html#ae87af5b1d278a0c5ed7e0c7922076cdc">allGeneratedTileVariants</a> ()</td></tr>
+<tr class="separator:ae87af5b1d278a0c5ed7e0c7922076cdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36019ea4a852e5708b1418c755ab1676"><td class="memItemLeft" align="right" valign="top">Directions&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8h.html#a36019ea4a852e5708b1418c755ab1676">transitionDirectionsForTileVariant</a> (<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a> tileVariant)</td></tr>
+<tr class="separator:a36019ea4a852e5708b1418c755ab1676"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeba241d06afe18a169c416571a18f6ee"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8h.html#aeba241d06afe18a169c416571a18f6ee">isRoad</a> (<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a> tileset)</td></tr>
+<tr class="separator:aeba241d06afe18a169c416571a18f6ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45df5f92e436824697751940f1c392e6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8h.html#a45df5f92e436824697751940f1c392e6">isTerrain</a> (<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a> tileset)</td></tr>
+<tr class="separator:a45df5f92e436824697751940f1c392e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86e8ea355d427a0e9e22236be51b0f77"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8h.html#a86e8ea355d427a0e9e22236be51b0f77">allTerrainTilesets</a> ()</td></tr>
+<tr class="separator:a86e8ea355d427a0e9e22236be51b0f77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af28b5548f6b506ad1d463d3b1f3dc4b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8h.html#af28b5548f6b506ad1d463d3b1f3dc4b6">walkSoundForTileset</a> (<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a> tileset, bool isRunning)</td></tr>
 <tr class="separator:af28b5548f6b506ad1d463d3b1f3dc4b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b4468b9d3c326ad6c9285e32cfbd018"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8h.html#a4b4468b9d3c326ad6c9285e32cfbd018">foodRequiredForTileset</a> (<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a> tileset)</td></tr>
 <tr class="separator:a4b4468b9d3c326ad6c9285e32cfbd018"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1674f19d4eea5f35ee48cfb93e5f6995"><td class="memItemLeft" align="right" valign="top">std::span&lt; const <a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aa">Direction</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8h.html#a1674f19d4eea5f35ee48cfb93e5f6995">allDirections</a> ()</td></tr>
+<tr class="separator:a1674f19d4eea5f35ee48cfb93e5f6995"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac09750f452e1ee9efc7aa14226669620"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8h.html#ac09750f452e1ee9efc7aa14226669620">offsetForDirection</a> (<a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aa">Direction</a> direction)</td></tr>
+<tr class="separator:ac09750f452e1ee9efc7aa14226669620"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11bddcf490ff59491e35650fb1feaf78"><td class="memItemLeft" align="right" valign="top"><a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8h.html#a11bddcf490ff59491e35650fb1feaf78">tileVariantForTransitionDirections</a> (Directions directions)</td></tr>
+<tr class="separator:a11bddcf490ff59491e35650fb1feaf78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a1674f19d4eea5f35ee48cfb93e5f6995" name="a1674f19d4eea5f35ee48cfb93e5f6995"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1674f19d4eea5f35ee48cfb93e5f6995">&#9670;&#160;</a></span>allDirections()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::span&lt; const <a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aa">Direction</a> &gt; allDirections </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae87af5b1d278a0c5ed7e0c7922076cdc" name="ae87af5b1d278a0c5ed7e0c7922076cdc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae87af5b1d278a0c5ed7e0c7922076cdc">&#9670;&#160;</a></span>allGeneratedTileVariants()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a> &gt; allGeneratedTileVariants </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ab57feb11371ae2f4989e037ad1e95ca0" name="ab57feb11371ae2f4989e037ad1e95ca0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab57feb11371ae2f4989e037ad1e95ca0">&#9670;&#160;</a></span>allSpecialTileVariants()</h2>
 
@@ -117,6 +188,56 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a86e8ea355d427a0e9e22236be51b0f77" name="a86e8ea355d427a0e9e22236be51b0f77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86e8ea355d427a0e9e22236be51b0f77">&#9670;&#160;</a></span>allTerrainTilesets()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a> &gt; allTerrainTilesets </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a77dc9e7f4f5067001ddbdae28f6b9d78" name="a77dc9e7f4f5067001ddbdae28f6b9d78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77dc9e7f4f5067001ddbdae28f6b9d78">&#9670;&#160;</a></span>allTransitionTileVariants()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a> &gt; allTransitionTileVariants </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a4b4468b9d3c326ad6c9285e32cfbd018" name="a4b4468b9d3c326ad6c9285e32cfbd018"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4b4468b9d3c326ad6c9285e32cfbd018">&#9670;&#160;</a></span>foodRequiredForTileset()</h2>
 
@@ -128,6 +249,120 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a>&#160;</td>
           <td class="paramname"><em>tileset</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aeba241d06afe18a169c416571a18f6ee" name="aeba241d06afe18a169c416571a18f6ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeba241d06afe18a169c416571a18f6ee">&#9670;&#160;</a></span>isRoad()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool isRoad </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a>&#160;</td>
+          <td class="paramname"><em>tileset</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a45df5f92e436824697751940f1c392e6" name="a45df5f92e436824697751940f1c392e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45df5f92e436824697751940f1c392e6">&#9670;&#160;</a></span>isTerrain()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool isTerrain </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a>&#160;</td>
+          <td class="paramname"><em>tileset</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac09750f452e1ee9efc7aa14226669620" name="ac09750f452e1ee9efc7aa14226669620"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac09750f452e1ee9efc7aa14226669620">&#9670;&#160;</a></span>offsetForDirection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> offsetForDirection </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aa">Direction</a>&#160;</td>
+          <td class="paramname"><em>direction</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a11bddcf490ff59491e35650fb1feaf78" name="a11bddcf490ff59491e35650fb1feaf78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11bddcf490ff59491e35650fb1feaf78">&#9670;&#160;</a></span>tileVariantForTransitionDirections()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a> tileVariantForTransitionDirections </td>
+          <td>(</td>
+          <td class="paramtype">Directions&#160;</td>
+          <td class="paramname"><em>directions</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a36019ea4a852e5708b1418c755ab1676" name="a36019ea4a852e5708b1418c755ab1676"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36019ea4a852e5708b1418c755ab1676">&#9670;&#160;</a></span>transitionDirectionsForTileVariant()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Directions transitionDirectionsForTileVariant </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a>&#160;</td>
+          <td class="paramname"><em>tileVariant</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

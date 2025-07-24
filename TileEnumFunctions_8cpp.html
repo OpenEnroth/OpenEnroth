@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7ea13a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;82daa3a</span>
    </div>
   </td>
  </tr>
@@ -74,19 +74,33 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">TileEnumFunctions.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="TileEnumFunctions_8h.html">TileEnumFunctions.h</a>&quot;</code><br />
 <code>#include &lt;cassert&gt;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
+<code>#include &quot;<a class="el" href="MapAccess_8h.html">Utility/MapAccess.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a36019ea4a852e5708b1418c755ab1676"><td class="memItemLeft" align="right" valign="top">Directions&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8cpp.html#a36019ea4a852e5708b1418c755ab1676">transitionDirectionsForTileVariant</a> (<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a> tileVariant)</td></tr>
+<tr class="separator:a36019ea4a852e5708b1418c755ab1676"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af28b5548f6b506ad1d463d3b1f3dc4b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SoundEnums_8h.html#ac4c17c8b309b1f9d7dc69286c18b871e">SoundId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8cpp.html#af28b5548f6b506ad1d463d3b1f3dc4b6">walkSoundForTileset</a> (<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a> tileset, bool isRunning)</td></tr>
 <tr class="separator:af28b5548f6b506ad1d463d3b1f3dc4b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4b4468b9d3c326ad6c9285e32cfbd018"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8cpp.html#a4b4468b9d3c326ad6c9285e32cfbd018">foodRequiredForTileset</a> (<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a> tileset)</td></tr>
 <tr class="separator:a4b4468b9d3c326ad6c9285e32cfbd018"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11bddcf490ff59491e35650fb1feaf78"><td class="memItemLeft" align="right" valign="top"><a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8cpp.html#a11bddcf490ff59491e35650fb1feaf78">tileVariantForTransitionDirections</a> (Directions directions)</td></tr>
+<tr class="separator:a11bddcf490ff59491e35650fb1feaf78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a488850194744d06d5a66091313d9a385"><td class="memItemLeft" align="right" valign="top">static const std::unordered_map&lt; <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a>, Directions &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8cpp.html#a488850194744d06d5a66091313d9a385">transitionDirectionsByTileVariant</a></td></tr>
+<tr class="separator:a488850194744d06d5a66091313d9a385"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb5a009623dd9861e3c8881f6f625790"><td class="memItemLeft" align="right" valign="top">static const std::unordered_map&lt; Directions, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnumFunctions_8cpp.html#acb5a009623dd9861e3c8881f6f625790">tileVariantByTransitionDirections</a> = <a class="el" href="MapAccess_8h.html#a2aed0bc8463ae11d4e4926066c245f8d">inverted</a>(<a class="el" href="TileEnumFunctions_8cpp.html#a488850194744d06d5a66091313d9a385">transitionDirectionsByTileVariant</a>)</td></tr>
+<tr class="separator:acb5a009623dd9861e3c8881f6f625790"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a4b4468b9d3c326ad6c9285e32cfbd018" name="a4b4468b9d3c326ad6c9285e32cfbd018"></a>
@@ -100,6 +114,42 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a>&#160;</td>
           <td class="paramname"><em>tileset</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a11bddcf490ff59491e35650fb1feaf78" name="a11bddcf490ff59491e35650fb1feaf78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11bddcf490ff59491e35650fb1feaf78">&#9670;&#160;</a></span>tileVariantForTransitionDirections()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a> tileVariantForTransitionDirections </td>
+          <td>(</td>
+          <td class="paramtype">Directions&#160;</td>
+          <td class="paramname"><em>directions</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a36019ea4a852e5708b1418c755ab1676" name="a36019ea4a852e5708b1418c755ab1676"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36019ea4a852e5708b1418c755ab1676">&#9670;&#160;</a></span>transitionDirectionsForTileVariant()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Directions transitionDirectionsForTileVariant </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a>&#160;</td>
+          <td class="paramname"><em>tileVariant</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -141,6 +191,51 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Sound id to use. </dd></dl>
 <dl class="section user"><dt>Original binary offset:</dt><dd>0x47EE49 </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="acb5a009623dd9861e3c8881f6f625790" name="acb5a009623dd9861e3c8881f6f625790"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb5a009623dd9861e3c8881f6f625790">&#9670;&#160;</a></span>tileVariantByTransitionDirections</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::unordered_map&lt;Directions, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a>&gt; tileVariantByTransitionDirections = <a class="el" href="MapAccess_8h.html#a2aed0bc8463ae11d4e4926066c245f8d">inverted</a>(<a class="el" href="TileEnumFunctions_8cpp.html#a488850194744d06d5a66091313d9a385">transitionDirectionsByTileVariant</a>)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a488850194744d06d5a66091313d9a385" name="a488850194744d06d5a66091313d9a385"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a488850194744d06d5a66091313d9a385">&#9670;&#160;</a></span>transitionDirectionsByTileVariant</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::unordered_map&lt;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a>, Directions&gt; transitionDirectionsByTileVariant</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

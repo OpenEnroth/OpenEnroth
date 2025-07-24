@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7ea13a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;82daa3a</span>
    </div>
   </td>
  </tr>
@@ -210,13 +210,13 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >This macro generates lexical serialization functions for the provided enumeration type.. The typical use case is to use it in the <code>cpp</code> file, and use <code>MM_DECLARE_SERIALIZATION_FUNCTIONS</code> in the header file.</p>
-<p >Note that it should be invoked from the namespace of the target enumeration type, otherwise argument-dependent lookup won't find it, and unqualified calls to <code>serialize</code> / <code>trySerialize</code> / <code>deserialize</code> / <code>tryDeserialize</code> won't work. <code>ToString</code> and <code>FromString</code> function objects also won't work.</p>
-<p >However, it might make sense to invoke this macro from several different namespaces to generate several sets of serialization functions for the same type. In this case the serialization functions won't be discovered by ADL, so you'll have to use qualified calls, but this is likely exactly what you'd want. The only downside is that <code>ToString</code> / <code>FromString</code> global function objects won't work.</p>
+<p >This macro generates lexical serialization functions for the provided enumeration type. The typical use case is to use it in the <code>cpp</code> file, and use <code>MM_DECLARE_SERIALIZATION_FUNCTIONS</code> in the header file.</p>
+<p >Note that it should be invoked from the namespace of the target enumeration type, otherwise argument-dependent lookup won't find it, and unqualified calls to <code>serialize</code> / <code>trySerialize</code> / <code>deserialize</code> / <code>tryDeserialize</code> won't work. <code>toString</code> and <code>fromString</code> function objects also won't work.</p>
+<p >However, it might make sense to invoke this macro from several different namespaces to generate several sets of serialization functions for the same type. In this case the serialization functions won't be discovered by ADL, so you'll have to use qualified calls, but this is likely exactly what you'd want. The only downside is that <code>toString</code> / <code>fromString</code> global function objects won't work.</p>
 <p >Usage example: </p><div class="fragment"><div class="line"><a class="code hl_define" href="EnumSerialization_8h.html#a9d7940ef229ff77ee6be852958b1fc00">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS</a>(Key, <a class="code hl_enumvalue" href="EnumSerializer_8h.html#aaa929f83398f109dfbff9789108b159ba2144545143b2322969cdd90988e5b4bc">CASE_INSENSITIVE</a>, {</div>
-<div class="line">    { Key::CapsLock, <span class="stringliteral">&quot;Caps Lock&quot;</span> },</div>
-<div class="line">    { Key::CapsLock, <span class="stringliteral">&quot;CapsLock&quot;</span> },    <span class="comment">// Alternative string, used only for deserialization.</span></div>
-<div class="line">    { Key::CapsLock, <span class="stringliteral">&quot;CPSLCK&quot;</span> },      <span class="comment">// Can have several alternative strings.</span></div>
+<div class="line">    {Key::CapsLock, <span class="stringliteral">&quot;Caps Lock&quot;</span>},</div>
+<div class="line">    {Key::CapsLock, <span class="stringliteral">&quot;CapsLock&quot;</span>},    <span class="comment">// Alternative string, used only for deserialization.</span></div>
+<div class="line">    {Key::CapsLock, <span class="stringliteral">&quot;CPSLCK&quot;</span>},      <span class="comment">// Can have several alternative strings.</span></div>
 <div class="line">    <span class="comment">// ...</span></div>
 <div class="line">})</div>
 <div class="ttc" id="aEnumSerialization_8h_html_a9d7940ef229ff77ee6be852958b1fc00"><div class="ttname"><a href="EnumSerialization_8h.html#a9d7940ef229ff77ee6be852958b1fc00">MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS</a></div><div class="ttdeci">#define MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(ENUM, CASE_SENSITIVITY,...)</div><div class="ttdef"><b>Definition:</b> EnumSerialization.h:47</div></div>
@@ -314,8 +314,8 @@ Macros</h2></td></tr>
 <div class="line">        if (!<a class="code hl_function" href="StandardSerialization_8cpp.html#a897b4104dc916637eb6e69bd81724456">tryDeserialize</a>(src, dst))                                                                                  \</div>
 <div class="line">            throwDeserializationError(src, #TYPE);                                                                      \</div>
 <div class="line">    }</div>
-<div class="ttc" id="aCompositeSnapshots_8cpp_html_a19304568664873e32a8849fbf0496588"><div class="ttname"><a href="CompositeSnapshots_8cpp.html#a19304568664873e32a8849fbf0496588">deserialize</a></div><div class="ttdeci">void deserialize(InputStream &amp;src, IndoorLocation_MM7 *dst)</div><div class="ttdef"><b>Definition:</b> CompositeSnapshots.cpp:150</div></div>
-<div class="ttc" id="aCompositeSnapshots_8cpp_html_ae8c705cd30d39d17b7c0769c8c303c83"><div class="ttname"><a href="CompositeSnapshots_8cpp.html#ae8c705cd30d39d17b7c0769c8c303c83">serialize</a></div><div class="ttdeci">void serialize(const IndoorDelta_MM7 &amp;src, OutputStream *dst)</div><div class="ttdef"><b>Definition:</b> CompositeSnapshots.cpp:282</div></div>
+<div class="ttc" id="aCompositeSnapshots_8cpp_html_a19304568664873e32a8849fbf0496588"><div class="ttname"><a href="CompositeSnapshots_8cpp.html#a19304568664873e32a8849fbf0496588">deserialize</a></div><div class="ttdeci">void deserialize(InputStream &amp;src, IndoorLocation_MM7 *dst)</div><div class="ttdef"><b>Definition:</b> CompositeSnapshots.cpp:151</div></div>
+<div class="ttc" id="aCompositeSnapshots_8cpp_html_ae8c705cd30d39d17b7c0769c8c303c83"><div class="ttname"><a href="CompositeSnapshots_8cpp.html#ae8c705cd30d39d17b7c0769c8c303c83">serialize</a></div><div class="ttdeci">void serialize(const IndoorDelta_MM7 &amp;src, OutputStream *dst)</div><div class="ttdef"><b>Definition:</b> CompositeSnapshots.cpp:283</div></div>
 </div><!-- fragment -->
 </div>
 </div>

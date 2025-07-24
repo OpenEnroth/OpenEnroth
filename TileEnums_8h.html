@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7ea13a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;82daa3a</span>
    </div>
   </td>
  </tr>
@@ -79,6 +79,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="Flags_8h.html">Utility/Flags.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="SerializationFwd_8h.html">Library/Serialization/SerializationFwd.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -99,83 +100,193 @@ Enumerations</h2></td></tr>
 , <a class="el" href="TileEnums_8h.html#a1fa96b94783c5faff3f772375d328794a64544e7b3731a0b5d2d858fd19b2ddf6">TILE_SCROLL_LEFT</a> = 0x1000
 , <br />
 &#160;&#160;<a class="el" href="TileEnums_8h.html#a1fa96b94783c5faff3f772375d328794ab6ca7756f82e660e7999100b5898dbe3">TILE_SCROLL_RIGHT</a> = 0x2000
+, <a class="el" href="TileEnums_8h.html#a1fa96b94783c5faff3f772375d328794aa447a0bb0ee4a8353368ea00aa0fb93f">TILE_GENERATED_TRANSITION</a> = 0x4000
 <br />
  }</td></tr>
 <tr class="separator:a1fa96b94783c5faff3f772375d328794"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a314b2ee8f491583c4f2faccb78eb16e2"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2">TileVariant</a> { <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a74eb0344a4b0e92abeef9984ee7adae2">TILE_VARIANT_INVALID</a> = 255
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a74eb0344a4b0e92abeef9984ee7adae2">TILE_VARIANT_INVALID</a> = -1
 , <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a58052f626d86ab07fa9423a44afa5170">TILE_VARIANT_BASE1</a> = 0
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2ab291e50519853236817024ad4f96f756">TILE_VARIANT_BASE2_NS</a> = 1
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a2d8a170597e23a0d2d3560de3b3c070d">TILE_VARIANT_BASE3_EW</a> = 2
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2aa104151bde53a454d4dfcc133503c292">TILE_VARIANT_BASE2</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2afa12e2e7a60e614fbab6ecbda19f6034">TILE_VARIANT_BASE3</a>
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a23b0ed4d8a12908c75197b10170f1e70">TILE_VARIANT_BASE4_NE</a> = 3
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a4406a84daa209281007a9a6c26b53892">TILE_VARIANT_SPECIAL1_NW</a> = 4
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2ad2f27b5194249422d1dbe4c6e5f51cea">TILE_VARIANT_SPECIAL2_SE</a> = 5
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a48f07c65ac3f8e8d3b962da618a9b6c1">TILE_VARIANT_SPECIAL3_SW</a> = 6
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2afdd41ffee359a5dc06825c36613b2a35">TILE_VARIANT_BASE4</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a5556c9fb084512372809f3caf0af826d">TILE_VARIANT_SPECIAL1</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a2a3d036f8930868e253efbe0693e03df">TILE_VARIANT_SPECIAL2</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2ac720a5dfe4fbc79b35d962ec3c136bca">TILE_VARIANT_SPECIAL3</a>
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a7ca10c233e747941ec5cc4c631603b77">TILE_VARIANT_SPECIAL4_NS_E</a> = 7
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a977181844b3f0624d6a2585744228235">TILE_VARIANT_SPECIAL5_NS_W</a> = 8
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a0475a31c4a4a0642de24523dfcc4f17f">TILE_VARIANT_SPECIAL6_EW_N</a> = 9
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a1126a858667118bf03e9cc4105998a87">TILE_VARIANT_SPECIAL7_EW_S</a> = 0xA
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a399a1074050d68c7d9112e271412e024">TILE_VARIANT_SPECIAL4</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2aea65c5b987451a716e018e256d036849">TILE_VARIANT_SPECIAL5</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2ae296092a5e1245e4c14a6da26c5754b9">TILE_VARIANT_SPECIAL6</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a7ec505d19e433f33491444b57c619c70">TILE_VARIANT_SPECIAL7</a>
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2aa9864bdc79a970f8ba78d828d6dbbdb2">TILE_VARIANT_SPECIAL8_NCAP</a> = 0xB
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2aac98894c4eeb47c2e85210526e0bdbf5">TILE_VARIANT_NE1_SE1_ECAP</a> = 0xC
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a7043b8c4b00b289904ce6a5cc6fe931f">TILE_VARIANT_SCAP</a> = 0xD
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2ab895e46b9b2c5914f5b43e96d599fdd2">TILE_VARIANT_NW1_SW1_WCAP</a> = 0xE
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a4fd7b0bf3f674aac1856a9a741c426a6">TILE_VARIANT_SPECIAL8</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a93d1d0dac3e807d40595a8e4f7b1df6d">TILE_VARIANT_ROAD_N_S_E_W</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a43ebb400eb44ec90aeba79957d910f9e">TILE_VARIANT_ROAD_N_S</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2ad02867f8e6025f064f3565e1088309f8">TILE_VARIANT_ROAD_E_W</a>
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a039ff648a5179a5ebf71622f21817f81">TILE_VARIANT_DN</a> = 0xF
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a7c8043e353b570ad7398a1eeca3f2af0">TILE_VARIANT_E1_DS</a> = 0x10
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a571cc1fa846978a12029cb1568d2f070">TILE_VARIANT_W1_DW</a> = 0x11
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a07b0705f67426df0f79db6a817c50dd9">TILE_VARIANT_N1_DE</a> = 0x12
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a5da7bb0e44cc038ba1be0ffc82af1b5f">TILE_VARIANT_ROAD_N_E</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a6cfe83ff592acc82904e78c136e7164a">TILE_VARIANT_ROAD_N_W</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a9382aea61ef309e6c160c716ca6074b5">TILE_VARIANT_ROAD_S_E</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a452db863d79ce3ebcf0da8ef01d7b712">TILE_VARIANT_ROAD_S_W</a>
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a168a0a93c70638cfd249cb1fc0388fdb">TILE_VARIANT_S1_DSW</a> = 0x13
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2af82a545776f4d4a126db1922a81b2768">TILE_VARIANT_XNE1_XSE1_DNE</a> = 0x14
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a3eefd5f505eceb8c5ceef90079a2b16c">TILE_VARIANT_DSE</a> = 0x15
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2af3d704d9b22406f7fee93f808d382d8f">TILE_VARIANT_XNW1_XSW1_DNW</a> = 0x16
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a93233cb891fbbb209299037c25999973">TILE_VARIANT_ROAD_N_S_E</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a8e2c7a26489b3f93d560d31ade891bb3">TILE_VARIANT_ROAD_N_S_W</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2aa67f9b60d854454530f9b2f62ee62b78">TILE_VARIANT_ROAD_N_E_W</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a58fb244aecf8f6b8227a21748da3a025">TILE_VARIANT_ROAD_S_E_W</a>
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a03067cef73a45535868e2f60cb0e1867">TILE_VARIANT_FIRST_SPECIAL</a> = TILE_VARIANT_SPECIAL1_NW
-, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a8fa7ffe863ce345a225415f0dd426e36">TILE_VARIANT_LAST_SPECIAL</a> = TILE_VARIANT_SPECIAL8_NCAP
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a1b10b10f2c772adb0b2da985ab7dfdb9">TILE_VARIANT_ROAD_N</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2af15467765bb989fe293a3c63cf198b84">TILE_VARIANT_ROAD_S</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a53e0e262951034ab98b66f8b97181f6c">TILE_VARIANT_ROAD_E</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a946a5307e116777e51e7987a4514daaf">TILE_VARIANT_ROAD_W</a>
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2aa8b7aff161743750b53577d014015b1c">TILE_VARIANT_ROAD_Y_N_S_E</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a2b83754d25857f2c79b687909c310855">TILE_VARIANT_ROAD_Y_N_S_W</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2abbab9ae5f3b6285e7f55752e23745ac9">TILE_VARIANT_ROAD_Y_N_E_W</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a608a69a50c5e4936ad4c3270193197d2">TILE_VARIANT_ROAD_Y_S_E_W</a>
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a4c9d60d4e02d09ee7c49e7531ee6f516">TILE_VARIANT_ROAD_D_N_E</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a6b152e89d879e48e762bc2f417a9c787">TILE_VARIANT_ROAD_D_N_W</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a50aecd049fe73de90b06b8b67bd842ed">TILE_VARIANT_ROAD_D_S_E</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a11ca2098c08993773529e6b2aa9182fb">TILE_VARIANT_ROAD_D_S_W</a>
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2afd4b20470b54930979f9b3d7e99a2a71">TILE_VARIANT_TRANSITION_N</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a01bac5afa138f633d6935b4874ed46ba">TILE_VARIANT_TRANSITION_S</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2ac2fccc4bdd23fafc5123cd7cb3315ac9">TILE_VARIANT_TRANSITION_E</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a59da82fc80ab5ab13b07fcf16e6336e2">TILE_VARIANT_TRANSITION_W</a>
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a65199ec7c207611b8c25693904201a38">TILE_VARIANT_TRANSITION_NE</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a8254696031eacbe853b1fc7539fcdc8a">TILE_VARIANT_TRANSITION_NW</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2adb38fa03c445b0ba7e46be041a3d9e3e">TILE_VARIANT_TRANSITION_SE</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a686034b4ce6f21adb24e54f632c5366d">TILE_VARIANT_TRANSITION_SW</a>
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a32ba8f3f408ae4f80004c94db6e657de">TILE_VARIANT_TRANSITION_N_E</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a24cc0eddb68f2b9e42ecd03088d001c7">TILE_VARIANT_TRANSITION_N_W</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a5c275b33ad167565a19b08e83bd95d49">TILE_VARIANT_TRANSITION_S_E</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a97434ef0e2ef1439f0eded972fc7ece2">TILE_VARIANT_TRANSITION_S_W</a>
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a3471f5e49cf63d7c6083e1041d2efa89">TILE_VARIANT_TRANSITION_N_S</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2ae9c3e2ce63e56941ab94f39bc4068ac5">TILE_VARIANT_TRANSITION_E_W</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2af415511759b65d263eedf985f644566a">TILE_VARIANT_TRANSITION_N_S_E</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2aae85e891c4b0080178836835f8951089">TILE_VARIANT_TRANSITION_N_S_W</a>
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a1d468c333376cfd259dfe4227e02d92f">TILE_VARIANT_TRANSITION_N_E_W</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2aca0f70591f0ac93d0af8b1f2a48931c6">TILE_VARIANT_TRANSITION_S_E_W</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a08f33646a002a61160f30c718700a9c6">TILE_VARIANT_TRANSITION_N_S_E_W</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a304447b7d3c098b636ee512d4873445c">TILE_VARIANT_TRANSITION_NE_NW</a>
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2ace50e15bc11c6049e3ae670d9600affa">TILE_VARIANT_TRANSITION_NE_SE</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a5ed1c6003a4ec69c5ff29c7de2831113">TILE_VARIANT_TRANSITION_NW_SW</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a67fcc4b8fcf6d65c854edd5fe230565c">TILE_VARIANT_TRANSITION_SE_SW</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2af661cfeda0917d49ab16768bae4b0de3">TILE_VARIANT_TRANSITION_NE_SW</a>
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a800b0b2cb9f695ac24c06e01254502de">TILE_VARIANT_TRANSITION_NW_SE</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a20a781360f188c21ad2f812a7eda74e8">TILE_VARIANT_TRANSITION_NE_NW_SE</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2aabd906bc10e67763fae1d23fd45fd878">TILE_VARIANT_TRANSITION_NE_NW_SW</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2ace56a056ac1431c988b38b2169d257c9">TILE_VARIANT_TRANSITION_NE_SE_SW</a>
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a65257186d987c6ba8d33f825ac64ecc3">TILE_VARIANT_TRANSITION_NW_SE_SW</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a6ced1fa6b846d13d56f7f4acb2cae08e">TILE_VARIANT_TRANSITION_NE_NW_SE_SW</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a1819b1f9c2ee3160a3d0bf9347506a34">TILE_VARIANT_TRANSITION_N_SE_SW</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a0300eee3ee31a68b2c77d1b5037f4092">TILE_VARIANT_TRANSITION_S_NE_NW</a>
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a831296b37a85e47ce635df4a128065fe">TILE_VARIANT_TRANSITION_E_NW_SW</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a85b30651145bf8eb70fa81886f9239fb">TILE_VARIANT_TRANSITION_W_NE_SE</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a8534cb3b3e4f672e8ae4cf80b78ba9a8">TILE_VARIANT_TRANSITION_N_SE</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a4d6ff3741e61ec61a1271049ffba104d">TILE_VARIANT_TRANSITION_N_SW</a>
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a8e3f4878ab9d7c6b0782673eaee2bd4c">TILE_VARIANT_TRANSITION_S_NE</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2ab464e192ab2806369715424b51def3ab">TILE_VARIANT_TRANSITION_S_NW</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2af18b23dfe4029af6310cec0536d31699">TILE_VARIANT_TRANSITION_E_NW</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a81ca1e852e18ce2f190100d493e7e565">TILE_VARIANT_TRANSITION_E_SW</a>
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a917e4f207d4a09e4d8c78554186a4948">TILE_VARIANT_TRANSITION_W_NE</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2aad3386e912f08d645141f8d28de75ee4">TILE_VARIANT_TRANSITION_W_SE</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a1061606fcc787e599d1399b07974c4ac">TILE_VARIANT_TRANSITION_N_E_SW</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2af16de4d1ab21916dec493cad61e84df4">TILE_VARIANT_TRANSITION_N_W_SE</a>
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a7bad3a077544eae99ac8cc8f6dcb791e">TILE_VARIANT_TRANSITION_S_E_NW</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a9bc33371e63590b527551c6454151e1a">TILE_VARIANT_TRANSITION_S_W_NE</a>
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a03067cef73a45535868e2f60cb0e1867">TILE_VARIANT_FIRST_SPECIAL</a> = TILE_VARIANT_SPECIAL1
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a8fa7ffe863ce345a225415f0dd426e36">TILE_VARIANT_LAST_SPECIAL</a> = TILE_VARIANT_SPECIAL8
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2ae85c570abe37af3529ebfda98427e5e3">TILE_VARIANT_FIRST_TRANSITION</a> = TILE_VARIANT_TRANSITION_N
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2a2bbba968b364bf5371a0fd428ce325ce">TILE_VARIANT_LAST_TRANSITION</a> = TILE_VARIANT_TRANSITION_S_W_NE
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2aea582c5c6c9dc82939ed13457739a39a">TILE_VARIANT_FIRST_GENERATED</a> = TILE_VARIANT_TRANSITION_N_S
+, <a class="el" href="TileEnums_8h.html#a314b2ee8f491583c4f2faccb78eb16e2af5e8b93a249a357e679de45a8bf14a39">TILE_VARIANT_LAST_GENERATED</a> = TILE_VARIANT_TRANSITION_S_W_NE
 <br />
  }</td></tr>
 <tr class="separator:a314b2ee8f491583c4f2faccb78eb16e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a99609636f78468750b0ddc52abb35ad9"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9">Tileset</a> { <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a13ccea762ddc5132f0fde21d1aa3a2b6">TILESET_INVALID</a> = 255
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a35ce8e01387562df037b36c1a285bd6a">TILESET_GRASS</a> = 0
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9aaa75064b176b30d9e56225d7bdfa9a50">TILESET_SNOW</a> = 1
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9ad7726f43f944277d3508864eaf0a3ff1">TILESET_DESERT</a> = 2
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a13ccea762ddc5132f0fde21d1aa3a2b6">TILESET_INVALID</a>
+, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a35ce8e01387562df037b36c1a285bd6a">TILESET_GRASS</a>
+, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9aaa75064b176b30d9e56225d7bdfa9a50">TILESET_SNOW</a>
+, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9ad7726f43f944277d3508864eaf0a3ff1">TILESET_DESERT</a>
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a0b2ef6f20f835b4e3654e717967b097a">TILESET_COOLED_LAVA</a> = 3
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a28394a8c40dbdbfe364f9e31a5636f21">TILESET_DIRT</a> = 4
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a738aae7c225e07000d19727dea4d44cd">TILESET_WATER</a> = 5
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a470dc74a166c2d8fefe50e9ad2207266">TILESET_BADLANDS</a> = 6
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a28394a8c40dbdbfe364f9e31a5636f21">TILESET_DIRT</a>
+, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a738aae7c225e07000d19727dea4d44cd">TILESET_WATER</a>
+, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a470dc74a166c2d8fefe50e9ad2207266">TILESET_BADLANDS</a>
+, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a6733c1e14c69a0d60650d41ede36fddb">TILESET_SWAMP</a>
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a6733c1e14c69a0d60650d41ede36fddb">TILESET_SWAMP</a> = 7
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9ac58d92689d9db90031b81f5067f71049">TILESET_TROPICAL</a> = 8
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a027c2cf1906c18c4c1863efcc595c451">TILESET_CITY</a> = 9
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a23a166d8e7c74f79d6909ef39bedd5f7">TILESET_ROAD_GRASS_COBBLE</a> = 10
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9ae77d877b8b5c45bc0fb708db6e4d3ff7">TILESET_COBBLE_ROAD</a>
+, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a700b8271ff016b0f586d59ec68a3e8aa">TILESET_FIRST_TERRAIN</a> = TILESET_GRASS
+, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9aa7ac9562afa931d5d2c79876d0bee462">TILESET_LAST_TERRAIN</a> = TILESET_SWAMP
+, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a30e12aba99a8f38de27b5df8c631ed5d">TILESET_FIRST_ROAD</a> = TILESET_COBBLE_ROAD
 , <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a5d2ec0b1521f2264716f431f743d0cbc">TILESET_ROAD_GRASS_DIRT</a> = 11
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a85ec196ef644aa7d7ab9d24a856d327d">TILESET_ROAD_SNOW_COBBLE</a> = 12
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9ae367e7628538947b2eb3f6d762121073">TILESET_ROAD_SNOW_DIRT</a> = 13
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9ad26432f3cccce7cedcdad25f5b961edb">TILESET_ROAD_SAND_COBBLE</a> = 14
-, <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a8de61020e460e0a6ae8353cb7f5aaf73">TILESET_ROAD_SAND_DIRT</a> = 15
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a2ef1f0888d186902bea08d91ba22af27">TILESET_ROAD_VOLCANO_COBBLE</a> = 16
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a1d76377dad08a0416777cc0a6c5b4cc0">TILESET_ROAD_VOLCANO_DIRT</a> = 17
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a2e3fa7191479abcfbf81972deea1d90b">TILESET_ROAD_CRACKED_COBBLE</a> = 22
-, <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a22ab31d0403c6b36772a0b68449d55f9">TILESET_ROAD_CRACKED_DIRT</a> = 23
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a1e1bcc1e0126a3ec1262d29888b94615">TILESET_ROAD_SWAMP_COBBLE</a> = 24
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a3db82f9a98fc6df97a05ed2e59e7ab8a">TILESET_ROAD_SWAMP_DIRT</a> = 25
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a8f6288da8dd46f455d8237c316afb581">TILESET_ROAD_TROPICAL_COBBLE</a> = 26
-, <br />
-&#160;&#160;<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a3d8184061f472e00c92ebf66b026ba3f">TILESET_ROAD_TROPICAL_DIRT</a> = 27
-, <a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9a163965ae107b43801cc8b3864418d289">TILESET_ROAD_CITY_STONE</a> = 28
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a99609636f78468750b0ddc52abb35ad9aaefbb4a6723c4da0d77e85905ac489e3">TILESET_LAST_ROAD</a> = TILESET_COBBLE_ROAD
 <br />
  }</td></tr>
 <tr class="separator:a99609636f78468750b0ddc52abb35ad9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a224b9163917ac32fc95a60d8c1eec3aa"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aa">Direction</a> { <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aaa5fe954f1842dedbd74649bde38d877bf">DIRECTION_NONE</a> = 0
+, <a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aaa71395cf5b8485c56c68b1e3ce2f15cdd">DIRECTION_N</a> = 0x1
+, <a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aaa461c22b5baa8b9bcc13a303d45bd6bc8">DIRECTION_S</a> = 0x2
+, <a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aaac76e385315a506cb1f1ac967a1317c03">DIRECTION_E</a> = 0x4
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aaa8646eea383e9e02b391377d902bd2a5c">DIRECTION_W</a> = 0x8
+, <a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aaa7d872560ecdf783ec58dc3bdfa055e83">DIRECTION_NE</a> = 0x10
+, <a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aaa262f42b4854cc7e66ff83990f492fa87">DIRECTION_NW</a> = 0x20
+, <a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aaaab7be41369cb04b0c6e05479139b7f4a">DIRECTION_SE</a> = 0x40
+, <br />
+&#160;&#160;<a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aaa017cce17e32a08a5265f5ef9f9f2ea3e">DIRECTION_SW</a> = 0x80
+<br />
+ }</td></tr>
+<tr class="separator:a224b9163917ac32fc95a60d8c1eec3aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a224b9163917ac32fc95a60d8c1eec3aa" name="a224b9163917ac32fc95a60d8c1eec3aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a224b9163917ac32fc95a60d8c1eec3aa">&#9670;&#160;</a></span>Direction</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="TileEnums_8h.html#a224b9163917ac32fc95a60d8c1eec3aa">Direction</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a224b9163917ac32fc95a60d8c1eec3aaa5fe954f1842dedbd74649bde38d877bf" name="a224b9163917ac32fc95a60d8c1eec3aaa5fe954f1842dedbd74649bde38d877bf"></a>DIRECTION_NONE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a224b9163917ac32fc95a60d8c1eec3aaa71395cf5b8485c56c68b1e3ce2f15cdd" name="a224b9163917ac32fc95a60d8c1eec3aaa71395cf5b8485c56c68b1e3ce2f15cdd"></a>DIRECTION_N&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a224b9163917ac32fc95a60d8c1eec3aaa461c22b5baa8b9bcc13a303d45bd6bc8" name="a224b9163917ac32fc95a60d8c1eec3aaa461c22b5baa8b9bcc13a303d45bd6bc8"></a>DIRECTION_S&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a224b9163917ac32fc95a60d8c1eec3aaac76e385315a506cb1f1ac967a1317c03" name="a224b9163917ac32fc95a60d8c1eec3aaac76e385315a506cb1f1ac967a1317c03"></a>DIRECTION_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a224b9163917ac32fc95a60d8c1eec3aaa8646eea383e9e02b391377d902bd2a5c" name="a224b9163917ac32fc95a60d8c1eec3aaa8646eea383e9e02b391377d902bd2a5c"></a>DIRECTION_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a224b9163917ac32fc95a60d8c1eec3aaa7d872560ecdf783ec58dc3bdfa055e83" name="a224b9163917ac32fc95a60d8c1eec3aaa7d872560ecdf783ec58dc3bdfa055e83"></a>DIRECTION_NE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a224b9163917ac32fc95a60d8c1eec3aaa262f42b4854cc7e66ff83990f492fa87" name="a224b9163917ac32fc95a60d8c1eec3aaa262f42b4854cc7e66ff83990f492fa87"></a>DIRECTION_NW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a224b9163917ac32fc95a60d8c1eec3aaaab7be41369cb04b0c6e05479139b7f4a" name="a224b9163917ac32fc95a60d8c1eec3aaaab7be41369cb04b0c6e05479139b7f4a"></a>DIRECTION_SE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a224b9163917ac32fc95a60d8c1eec3aaa017cce17e32a08a5265f5ef9f9f2ea3e" name="a224b9163917ac32fc95a60d8c1eec3aaa017cce17e32a08a5265f5ef9f9f2ea3e"></a>DIRECTION_SW&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <a id="a1fa96b94783c5faff3f772375d328794" name="a1fa96b94783c5faff3f772375d328794"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1fa96b94783c5faff3f772375d328794">&#9670;&#160;</a></span>TileFlag</h2>
 
@@ -209,6 +320,7 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="a1fa96b94783c5faff3f772375d328794a22be2e2b5c9ed29391e8e4704ef29659" name="a1fa96b94783c5faff3f772375d328794a22be2e2b5c9ed29391e8e4704ef29659"></a>TILE_SCROLL_UP&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a1fa96b94783c5faff3f772375d328794a64544e7b3731a0b5d2d858fd19b2ddf6" name="a1fa96b94783c5faff3f772375d328794a64544e7b3731a0b5d2d858fd19b2ddf6"></a>TILE_SCROLL_LEFT&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a1fa96b94783c5faff3f772375d328794ab6ca7756f82e660e7999100b5898dbe3" name="a1fa96b94783c5faff3f772375d328794ab6ca7756f82e660e7999100b5898dbe3"></a>TILE_SCROLL_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a1fa96b94783c5faff3f772375d328794aa447a0bb0ee4a8353368ea00aa0fb93f" name="a1fa96b94783c5faff3f772375d328794aa447a0bb0ee4a8353368ea00aa0fb93f"></a>TILE_GENERATED_TRANSITION&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -239,28 +351,15 @@ Enumerations</h2></td></tr>
 <tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a35ce8e01387562df037b36c1a285bd6a" name="a99609636f78468750b0ddc52abb35ad9a35ce8e01387562df037b36c1a285bd6a"></a>TILESET_GRASS&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9aaa75064b176b30d9e56225d7bdfa9a50" name="a99609636f78468750b0ddc52abb35ad9aaa75064b176b30d9e56225d7bdfa9a50"></a>TILESET_SNOW&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9ad7726f43f944277d3508864eaf0a3ff1" name="a99609636f78468750b0ddc52abb35ad9ad7726f43f944277d3508864eaf0a3ff1"></a>TILESET_DESERT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a0b2ef6f20f835b4e3654e717967b097a" name="a99609636f78468750b0ddc52abb35ad9a0b2ef6f20f835b4e3654e717967b097a"></a>TILESET_COOLED_LAVA&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a28394a8c40dbdbfe364f9e31a5636f21" name="a99609636f78468750b0ddc52abb35ad9a28394a8c40dbdbfe364f9e31a5636f21"></a>TILESET_DIRT&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a738aae7c225e07000d19727dea4d44cd" name="a99609636f78468750b0ddc52abb35ad9a738aae7c225e07000d19727dea4d44cd"></a>TILESET_WATER&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a470dc74a166c2d8fefe50e9ad2207266" name="a99609636f78468750b0ddc52abb35ad9a470dc74a166c2d8fefe50e9ad2207266"></a>TILESET_BADLANDS&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a6733c1e14c69a0d60650d41ede36fddb" name="a99609636f78468750b0ddc52abb35ad9a6733c1e14c69a0d60650d41ede36fddb"></a>TILESET_SWAMP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9ac58d92689d9db90031b81f5067f71049" name="a99609636f78468750b0ddc52abb35ad9ac58d92689d9db90031b81f5067f71049"></a>TILESET_TROPICAL&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a027c2cf1906c18c4c1863efcc595c451" name="a99609636f78468750b0ddc52abb35ad9a027c2cf1906c18c4c1863efcc595c451"></a>TILESET_CITY&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a23a166d8e7c74f79d6909ef39bedd5f7" name="a99609636f78468750b0ddc52abb35ad9a23a166d8e7c74f79d6909ef39bedd5f7"></a>TILESET_ROAD_GRASS_COBBLE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a5d2ec0b1521f2264716f431f743d0cbc" name="a99609636f78468750b0ddc52abb35ad9a5d2ec0b1521f2264716f431f743d0cbc"></a>TILESET_ROAD_GRASS_DIRT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a85ec196ef644aa7d7ab9d24a856d327d" name="a99609636f78468750b0ddc52abb35ad9a85ec196ef644aa7d7ab9d24a856d327d"></a>TILESET_ROAD_SNOW_COBBLE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9ae367e7628538947b2eb3f6d762121073" name="a99609636f78468750b0ddc52abb35ad9ae367e7628538947b2eb3f6d762121073"></a>TILESET_ROAD_SNOW_DIRT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9ad26432f3cccce7cedcdad25f5b961edb" name="a99609636f78468750b0ddc52abb35ad9ad26432f3cccce7cedcdad25f5b961edb"></a>TILESET_ROAD_SAND_COBBLE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a8de61020e460e0a6ae8353cb7f5aaf73" name="a99609636f78468750b0ddc52abb35ad9a8de61020e460e0a6ae8353cb7f5aaf73"></a>TILESET_ROAD_SAND_DIRT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a2ef1f0888d186902bea08d91ba22af27" name="a99609636f78468750b0ddc52abb35ad9a2ef1f0888d186902bea08d91ba22af27"></a>TILESET_ROAD_VOLCANO_COBBLE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a1d76377dad08a0416777cc0a6c5b4cc0" name="a99609636f78468750b0ddc52abb35ad9a1d76377dad08a0416777cc0a6c5b4cc0"></a>TILESET_ROAD_VOLCANO_DIRT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a2e3fa7191479abcfbf81972deea1d90b" name="a99609636f78468750b0ddc52abb35ad9a2e3fa7191479abcfbf81972deea1d90b"></a>TILESET_ROAD_CRACKED_COBBLE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a22ab31d0403c6b36772a0b68449d55f9" name="a99609636f78468750b0ddc52abb35ad9a22ab31d0403c6b36772a0b68449d55f9"></a>TILESET_ROAD_CRACKED_DIRT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a1e1bcc1e0126a3ec1262d29888b94615" name="a99609636f78468750b0ddc52abb35ad9a1e1bcc1e0126a3ec1262d29888b94615"></a>TILESET_ROAD_SWAMP_COBBLE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a3db82f9a98fc6df97a05ed2e59e7ab8a" name="a99609636f78468750b0ddc52abb35ad9a3db82f9a98fc6df97a05ed2e59e7ab8a"></a>TILESET_ROAD_SWAMP_DIRT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a8f6288da8dd46f455d8237c316afb581" name="a99609636f78468750b0ddc52abb35ad9a8f6288da8dd46f455d8237c316afb581"></a>TILESET_ROAD_TROPICAL_COBBLE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a3d8184061f472e00c92ebf66b026ba3f" name="a99609636f78468750b0ddc52abb35ad9a3d8184061f472e00c92ebf66b026ba3f"></a>TILESET_ROAD_TROPICAL_DIRT&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a163965ae107b43801cc8b3864418d289" name="a99609636f78468750b0ddc52abb35ad9a163965ae107b43801cc8b3864418d289"></a>TILESET_ROAD_CITY_STONE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9ae77d877b8b5c45bc0fb708db6e4d3ff7" name="a99609636f78468750b0ddc52abb35ad9ae77d877b8b5c45bc0fb708db6e4d3ff7"></a>TILESET_COBBLE_ROAD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a700b8271ff016b0f586d59ec68a3e8aa" name="a99609636f78468750b0ddc52abb35ad9a700b8271ff016b0f586d59ec68a3e8aa"></a>TILESET_FIRST_TERRAIN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9aa7ac9562afa931d5d2c79876d0bee462" name="a99609636f78468750b0ddc52abb35ad9aa7ac9562afa931d5d2c79876d0bee462"></a>TILESET_LAST_TERRAIN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9a30e12aba99a8f38de27b5df8c631ed5d" name="a99609636f78468750b0ddc52abb35ad9a30e12aba99a8f38de27b5df8c631ed5d"></a>TILESET_FIRST_ROAD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a99609636f78468750b0ddc52abb35ad9aaefbb4a6723c4da0d77e85905ac489e3" name="a99609636f78468750b0ddc52abb35ad9aaefbb4a6723c4da0d77e85905ac489e3"></a>TILESET_LAST_ROAD&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
@@ -284,39 +383,96 @@ Enumerations</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Tile variants inside a single tile set.</p>
-<p >There are two different tile set types in mm7:</p><ol type="1">
-<li>Normal tile sets.</li>
-<li>Road tile sets.</li>
-</ol>
-<p >The only road tile set we have in mm7 is cobble road over dirt. </p>
+<p >Tile variants inside a single tile set. </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a74eb0344a4b0e92abeef9984ee7adae2" name="a314b2ee8f491583c4f2faccb78eb16e2a74eb0344a4b0e92abeef9984ee7adae2"></a>TILE_VARIANT_INVALID&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a58052f626d86ab07fa9423a44afa5170" name="a314b2ee8f491583c4f2faccb78eb16e2a58052f626d86ab07fa9423a44afa5170"></a>TILE_VARIANT_BASE1&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2ab291e50519853236817024ad4f96f756" name="a314b2ee8f491583c4f2faccb78eb16e2ab291e50519853236817024ad4f96f756"></a>TILE_VARIANT_BASE2_NS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a2d8a170597e23a0d2d3560de3b3c070d" name="a314b2ee8f491583c4f2faccb78eb16e2a2d8a170597e23a0d2d3560de3b3c070d"></a>TILE_VARIANT_BASE3_EW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a23b0ed4d8a12908c75197b10170f1e70" name="a314b2ee8f491583c4f2faccb78eb16e2a23b0ed4d8a12908c75197b10170f1e70"></a>TILE_VARIANT_BASE4_NE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a4406a84daa209281007a9a6c26b53892" name="a314b2ee8f491583c4f2faccb78eb16e2a4406a84daa209281007a9a6c26b53892"></a>TILE_VARIANT_SPECIAL1_NW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2ad2f27b5194249422d1dbe4c6e5f51cea" name="a314b2ee8f491583c4f2faccb78eb16e2ad2f27b5194249422d1dbe4c6e5f51cea"></a>TILE_VARIANT_SPECIAL2_SE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a48f07c65ac3f8e8d3b962da618a9b6c1" name="a314b2ee8f491583c4f2faccb78eb16e2a48f07c65ac3f8e8d3b962da618a9b6c1"></a>TILE_VARIANT_SPECIAL3_SW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a7ca10c233e747941ec5cc4c631603b77" name="a314b2ee8f491583c4f2faccb78eb16e2a7ca10c233e747941ec5cc4c631603b77"></a>TILE_VARIANT_SPECIAL4_NS_E&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a977181844b3f0624d6a2585744228235" name="a314b2ee8f491583c4f2faccb78eb16e2a977181844b3f0624d6a2585744228235"></a>TILE_VARIANT_SPECIAL5_NS_W&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a0475a31c4a4a0642de24523dfcc4f17f" name="a314b2ee8f491583c4f2faccb78eb16e2a0475a31c4a4a0642de24523dfcc4f17f"></a>TILE_VARIANT_SPECIAL6_EW_N&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a1126a858667118bf03e9cc4105998a87" name="a314b2ee8f491583c4f2faccb78eb16e2a1126a858667118bf03e9cc4105998a87"></a>TILE_VARIANT_SPECIAL7_EW_S&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2aa9864bdc79a970f8ba78d828d6dbbdb2" name="a314b2ee8f491583c4f2faccb78eb16e2aa9864bdc79a970f8ba78d828d6dbbdb2"></a>TILE_VARIANT_SPECIAL8_NCAP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2aac98894c4eeb47c2e85210526e0bdbf5" name="a314b2ee8f491583c4f2faccb78eb16e2aac98894c4eeb47c2e85210526e0bdbf5"></a>TILE_VARIANT_NE1_SE1_ECAP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a7043b8c4b00b289904ce6a5cc6fe931f" name="a314b2ee8f491583c4f2faccb78eb16e2a7043b8c4b00b289904ce6a5cc6fe931f"></a>TILE_VARIANT_SCAP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2ab895e46b9b2c5914f5b43e96d599fdd2" name="a314b2ee8f491583c4f2faccb78eb16e2ab895e46b9b2c5914f5b43e96d599fdd2"></a>TILE_VARIANT_NW1_SW1_WCAP&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a039ff648a5179a5ebf71622f21817f81" name="a314b2ee8f491583c4f2faccb78eb16e2a039ff648a5179a5ebf71622f21817f81"></a>TILE_VARIANT_DN&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a7c8043e353b570ad7398a1eeca3f2af0" name="a314b2ee8f491583c4f2faccb78eb16e2a7c8043e353b570ad7398a1eeca3f2af0"></a>TILE_VARIANT_E1_DS&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a571cc1fa846978a12029cb1568d2f070" name="a314b2ee8f491583c4f2faccb78eb16e2a571cc1fa846978a12029cb1568d2f070"></a>TILE_VARIANT_W1_DW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a07b0705f67426df0f79db6a817c50dd9" name="a314b2ee8f491583c4f2faccb78eb16e2a07b0705f67426df0f79db6a817c50dd9"></a>TILE_VARIANT_N1_DE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a168a0a93c70638cfd249cb1fc0388fdb" name="a314b2ee8f491583c4f2faccb78eb16e2a168a0a93c70638cfd249cb1fc0388fdb"></a>TILE_VARIANT_S1_DSW&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2af82a545776f4d4a126db1922a81b2768" name="a314b2ee8f491583c4f2faccb78eb16e2af82a545776f4d4a126db1922a81b2768"></a>TILE_VARIANT_XNE1_XSE1_DNE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a3eefd5f505eceb8c5ceef90079a2b16c" name="a314b2ee8f491583c4f2faccb78eb16e2a3eefd5f505eceb8c5ceef90079a2b16c"></a>TILE_VARIANT_DSE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2af3d704d9b22406f7fee93f808d382d8f" name="a314b2ee8f491583c4f2faccb78eb16e2af3d704d9b22406f7fee93f808d382d8f"></a>TILE_VARIANT_XNW1_XSW1_DNW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2aa104151bde53a454d4dfcc133503c292" name="a314b2ee8f491583c4f2faccb78eb16e2aa104151bde53a454d4dfcc133503c292"></a>TILE_VARIANT_BASE2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2afa12e2e7a60e614fbab6ecbda19f6034" name="a314b2ee8f491583c4f2faccb78eb16e2afa12e2e7a60e614fbab6ecbda19f6034"></a>TILE_VARIANT_BASE3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2afdd41ffee359a5dc06825c36613b2a35" name="a314b2ee8f491583c4f2faccb78eb16e2afdd41ffee359a5dc06825c36613b2a35"></a>TILE_VARIANT_BASE4&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a5556c9fb084512372809f3caf0af826d" name="a314b2ee8f491583c4f2faccb78eb16e2a5556c9fb084512372809f3caf0af826d"></a>TILE_VARIANT_SPECIAL1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a2a3d036f8930868e253efbe0693e03df" name="a314b2ee8f491583c4f2faccb78eb16e2a2a3d036f8930868e253efbe0693e03df"></a>TILE_VARIANT_SPECIAL2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2ac720a5dfe4fbc79b35d962ec3c136bca" name="a314b2ee8f491583c4f2faccb78eb16e2ac720a5dfe4fbc79b35d962ec3c136bca"></a>TILE_VARIANT_SPECIAL3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a399a1074050d68c7d9112e271412e024" name="a314b2ee8f491583c4f2faccb78eb16e2a399a1074050d68c7d9112e271412e024"></a>TILE_VARIANT_SPECIAL4&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2aea65c5b987451a716e018e256d036849" name="a314b2ee8f491583c4f2faccb78eb16e2aea65c5b987451a716e018e256d036849"></a>TILE_VARIANT_SPECIAL5&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2ae296092a5e1245e4c14a6da26c5754b9" name="a314b2ee8f491583c4f2faccb78eb16e2ae296092a5e1245e4c14a6da26c5754b9"></a>TILE_VARIANT_SPECIAL6&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a7ec505d19e433f33491444b57c619c70" name="a314b2ee8f491583c4f2faccb78eb16e2a7ec505d19e433f33491444b57c619c70"></a>TILE_VARIANT_SPECIAL7&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a4fd7b0bf3f674aac1856a9a741c426a6" name="a314b2ee8f491583c4f2faccb78eb16e2a4fd7b0bf3f674aac1856a9a741c426a6"></a>TILE_VARIANT_SPECIAL8&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a93d1d0dac3e807d40595a8e4f7b1df6d" name="a314b2ee8f491583c4f2faccb78eb16e2a93d1d0dac3e807d40595a8e4f7b1df6d"></a>TILE_VARIANT_ROAD_N_S_E_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a43ebb400eb44ec90aeba79957d910f9e" name="a314b2ee8f491583c4f2faccb78eb16e2a43ebb400eb44ec90aeba79957d910f9e"></a>TILE_VARIANT_ROAD_N_S&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2ad02867f8e6025f064f3565e1088309f8" name="a314b2ee8f491583c4f2faccb78eb16e2ad02867f8e6025f064f3565e1088309f8"></a>TILE_VARIANT_ROAD_E_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a5da7bb0e44cc038ba1be0ffc82af1b5f" name="a314b2ee8f491583c4f2faccb78eb16e2a5da7bb0e44cc038ba1be0ffc82af1b5f"></a>TILE_VARIANT_ROAD_N_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a6cfe83ff592acc82904e78c136e7164a" name="a314b2ee8f491583c4f2faccb78eb16e2a6cfe83ff592acc82904e78c136e7164a"></a>TILE_VARIANT_ROAD_N_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a9382aea61ef309e6c160c716ca6074b5" name="a314b2ee8f491583c4f2faccb78eb16e2a9382aea61ef309e6c160c716ca6074b5"></a>TILE_VARIANT_ROAD_S_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a452db863d79ce3ebcf0da8ef01d7b712" name="a314b2ee8f491583c4f2faccb78eb16e2a452db863d79ce3ebcf0da8ef01d7b712"></a>TILE_VARIANT_ROAD_S_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a93233cb891fbbb209299037c25999973" name="a314b2ee8f491583c4f2faccb78eb16e2a93233cb891fbbb209299037c25999973"></a>TILE_VARIANT_ROAD_N_S_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a8e2c7a26489b3f93d560d31ade891bb3" name="a314b2ee8f491583c4f2faccb78eb16e2a8e2c7a26489b3f93d560d31ade891bb3"></a>TILE_VARIANT_ROAD_N_S_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2aa67f9b60d854454530f9b2f62ee62b78" name="a314b2ee8f491583c4f2faccb78eb16e2aa67f9b60d854454530f9b2f62ee62b78"></a>TILE_VARIANT_ROAD_N_E_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a58fb244aecf8f6b8227a21748da3a025" name="a314b2ee8f491583c4f2faccb78eb16e2a58fb244aecf8f6b8227a21748da3a025"></a>TILE_VARIANT_ROAD_S_E_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a1b10b10f2c772adb0b2da985ab7dfdb9" name="a314b2ee8f491583c4f2faccb78eb16e2a1b10b10f2c772adb0b2da985ab7dfdb9"></a>TILE_VARIANT_ROAD_N&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2af15467765bb989fe293a3c63cf198b84" name="a314b2ee8f491583c4f2faccb78eb16e2af15467765bb989fe293a3c63cf198b84"></a>TILE_VARIANT_ROAD_S&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a53e0e262951034ab98b66f8b97181f6c" name="a314b2ee8f491583c4f2faccb78eb16e2a53e0e262951034ab98b66f8b97181f6c"></a>TILE_VARIANT_ROAD_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a946a5307e116777e51e7987a4514daaf" name="a314b2ee8f491583c4f2faccb78eb16e2a946a5307e116777e51e7987a4514daaf"></a>TILE_VARIANT_ROAD_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2aa8b7aff161743750b53577d014015b1c" name="a314b2ee8f491583c4f2faccb78eb16e2aa8b7aff161743750b53577d014015b1c"></a>TILE_VARIANT_ROAD_Y_N_S_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a2b83754d25857f2c79b687909c310855" name="a314b2ee8f491583c4f2faccb78eb16e2a2b83754d25857f2c79b687909c310855"></a>TILE_VARIANT_ROAD_Y_N_S_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2abbab9ae5f3b6285e7f55752e23745ac9" name="a314b2ee8f491583c4f2faccb78eb16e2abbab9ae5f3b6285e7f55752e23745ac9"></a>TILE_VARIANT_ROAD_Y_N_E_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a608a69a50c5e4936ad4c3270193197d2" name="a314b2ee8f491583c4f2faccb78eb16e2a608a69a50c5e4936ad4c3270193197d2"></a>TILE_VARIANT_ROAD_Y_S_E_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a4c9d60d4e02d09ee7c49e7531ee6f516" name="a314b2ee8f491583c4f2faccb78eb16e2a4c9d60d4e02d09ee7c49e7531ee6f516"></a>TILE_VARIANT_ROAD_D_N_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a6b152e89d879e48e762bc2f417a9c787" name="a314b2ee8f491583c4f2faccb78eb16e2a6b152e89d879e48e762bc2f417a9c787"></a>TILE_VARIANT_ROAD_D_N_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a50aecd049fe73de90b06b8b67bd842ed" name="a314b2ee8f491583c4f2faccb78eb16e2a50aecd049fe73de90b06b8b67bd842ed"></a>TILE_VARIANT_ROAD_D_S_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a11ca2098c08993773529e6b2aa9182fb" name="a314b2ee8f491583c4f2faccb78eb16e2a11ca2098c08993773529e6b2aa9182fb"></a>TILE_VARIANT_ROAD_D_S_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2afd4b20470b54930979f9b3d7e99a2a71" name="a314b2ee8f491583c4f2faccb78eb16e2afd4b20470b54930979f9b3d7e99a2a71"></a>TILE_VARIANT_TRANSITION_N&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a01bac5afa138f633d6935b4874ed46ba" name="a314b2ee8f491583c4f2faccb78eb16e2a01bac5afa138f633d6935b4874ed46ba"></a>TILE_VARIANT_TRANSITION_S&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2ac2fccc4bdd23fafc5123cd7cb3315ac9" name="a314b2ee8f491583c4f2faccb78eb16e2ac2fccc4bdd23fafc5123cd7cb3315ac9"></a>TILE_VARIANT_TRANSITION_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a59da82fc80ab5ab13b07fcf16e6336e2" name="a314b2ee8f491583c4f2faccb78eb16e2a59da82fc80ab5ab13b07fcf16e6336e2"></a>TILE_VARIANT_TRANSITION_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a65199ec7c207611b8c25693904201a38" name="a314b2ee8f491583c4f2faccb78eb16e2a65199ec7c207611b8c25693904201a38"></a>TILE_VARIANT_TRANSITION_NE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a8254696031eacbe853b1fc7539fcdc8a" name="a314b2ee8f491583c4f2faccb78eb16e2a8254696031eacbe853b1fc7539fcdc8a"></a>TILE_VARIANT_TRANSITION_NW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2adb38fa03c445b0ba7e46be041a3d9e3e" name="a314b2ee8f491583c4f2faccb78eb16e2adb38fa03c445b0ba7e46be041a3d9e3e"></a>TILE_VARIANT_TRANSITION_SE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a686034b4ce6f21adb24e54f632c5366d" name="a314b2ee8f491583c4f2faccb78eb16e2a686034b4ce6f21adb24e54f632c5366d"></a>TILE_VARIANT_TRANSITION_SW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a32ba8f3f408ae4f80004c94db6e657de" name="a314b2ee8f491583c4f2faccb78eb16e2a32ba8f3f408ae4f80004c94db6e657de"></a>TILE_VARIANT_TRANSITION_N_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a24cc0eddb68f2b9e42ecd03088d001c7" name="a314b2ee8f491583c4f2faccb78eb16e2a24cc0eddb68f2b9e42ecd03088d001c7"></a>TILE_VARIANT_TRANSITION_N_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a5c275b33ad167565a19b08e83bd95d49" name="a314b2ee8f491583c4f2faccb78eb16e2a5c275b33ad167565a19b08e83bd95d49"></a>TILE_VARIANT_TRANSITION_S_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a97434ef0e2ef1439f0eded972fc7ece2" name="a314b2ee8f491583c4f2faccb78eb16e2a97434ef0e2ef1439f0eded972fc7ece2"></a>TILE_VARIANT_TRANSITION_S_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a3471f5e49cf63d7c6083e1041d2efa89" name="a314b2ee8f491583c4f2faccb78eb16e2a3471f5e49cf63d7c6083e1041d2efa89"></a>TILE_VARIANT_TRANSITION_N_S&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2ae9c3e2ce63e56941ab94f39bc4068ac5" name="a314b2ee8f491583c4f2faccb78eb16e2ae9c3e2ce63e56941ab94f39bc4068ac5"></a>TILE_VARIANT_TRANSITION_E_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2af415511759b65d263eedf985f644566a" name="a314b2ee8f491583c4f2faccb78eb16e2af415511759b65d263eedf985f644566a"></a>TILE_VARIANT_TRANSITION_N_S_E&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2aae85e891c4b0080178836835f8951089" name="a314b2ee8f491583c4f2faccb78eb16e2aae85e891c4b0080178836835f8951089"></a>TILE_VARIANT_TRANSITION_N_S_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a1d468c333376cfd259dfe4227e02d92f" name="a314b2ee8f491583c4f2faccb78eb16e2a1d468c333376cfd259dfe4227e02d92f"></a>TILE_VARIANT_TRANSITION_N_E_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2aca0f70591f0ac93d0af8b1f2a48931c6" name="a314b2ee8f491583c4f2faccb78eb16e2aca0f70591f0ac93d0af8b1f2a48931c6"></a>TILE_VARIANT_TRANSITION_S_E_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a08f33646a002a61160f30c718700a9c6" name="a314b2ee8f491583c4f2faccb78eb16e2a08f33646a002a61160f30c718700a9c6"></a>TILE_VARIANT_TRANSITION_N_S_E_W&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a304447b7d3c098b636ee512d4873445c" name="a314b2ee8f491583c4f2faccb78eb16e2a304447b7d3c098b636ee512d4873445c"></a>TILE_VARIANT_TRANSITION_NE_NW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2ace50e15bc11c6049e3ae670d9600affa" name="a314b2ee8f491583c4f2faccb78eb16e2ace50e15bc11c6049e3ae670d9600affa"></a>TILE_VARIANT_TRANSITION_NE_SE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a5ed1c6003a4ec69c5ff29c7de2831113" name="a314b2ee8f491583c4f2faccb78eb16e2a5ed1c6003a4ec69c5ff29c7de2831113"></a>TILE_VARIANT_TRANSITION_NW_SW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a67fcc4b8fcf6d65c854edd5fe230565c" name="a314b2ee8f491583c4f2faccb78eb16e2a67fcc4b8fcf6d65c854edd5fe230565c"></a>TILE_VARIANT_TRANSITION_SE_SW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2af661cfeda0917d49ab16768bae4b0de3" name="a314b2ee8f491583c4f2faccb78eb16e2af661cfeda0917d49ab16768bae4b0de3"></a>TILE_VARIANT_TRANSITION_NE_SW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a800b0b2cb9f695ac24c06e01254502de" name="a314b2ee8f491583c4f2faccb78eb16e2a800b0b2cb9f695ac24c06e01254502de"></a>TILE_VARIANT_TRANSITION_NW_SE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a20a781360f188c21ad2f812a7eda74e8" name="a314b2ee8f491583c4f2faccb78eb16e2a20a781360f188c21ad2f812a7eda74e8"></a>TILE_VARIANT_TRANSITION_NE_NW_SE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2aabd906bc10e67763fae1d23fd45fd878" name="a314b2ee8f491583c4f2faccb78eb16e2aabd906bc10e67763fae1d23fd45fd878"></a>TILE_VARIANT_TRANSITION_NE_NW_SW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2ace56a056ac1431c988b38b2169d257c9" name="a314b2ee8f491583c4f2faccb78eb16e2ace56a056ac1431c988b38b2169d257c9"></a>TILE_VARIANT_TRANSITION_NE_SE_SW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a65257186d987c6ba8d33f825ac64ecc3" name="a314b2ee8f491583c4f2faccb78eb16e2a65257186d987c6ba8d33f825ac64ecc3"></a>TILE_VARIANT_TRANSITION_NW_SE_SW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a6ced1fa6b846d13d56f7f4acb2cae08e" name="a314b2ee8f491583c4f2faccb78eb16e2a6ced1fa6b846d13d56f7f4acb2cae08e"></a>TILE_VARIANT_TRANSITION_NE_NW_SE_SW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a1819b1f9c2ee3160a3d0bf9347506a34" name="a314b2ee8f491583c4f2faccb78eb16e2a1819b1f9c2ee3160a3d0bf9347506a34"></a>TILE_VARIANT_TRANSITION_N_SE_SW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a0300eee3ee31a68b2c77d1b5037f4092" name="a314b2ee8f491583c4f2faccb78eb16e2a0300eee3ee31a68b2c77d1b5037f4092"></a>TILE_VARIANT_TRANSITION_S_NE_NW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a831296b37a85e47ce635df4a128065fe" name="a314b2ee8f491583c4f2faccb78eb16e2a831296b37a85e47ce635df4a128065fe"></a>TILE_VARIANT_TRANSITION_E_NW_SW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a85b30651145bf8eb70fa81886f9239fb" name="a314b2ee8f491583c4f2faccb78eb16e2a85b30651145bf8eb70fa81886f9239fb"></a>TILE_VARIANT_TRANSITION_W_NE_SE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a8534cb3b3e4f672e8ae4cf80b78ba9a8" name="a314b2ee8f491583c4f2faccb78eb16e2a8534cb3b3e4f672e8ae4cf80b78ba9a8"></a>TILE_VARIANT_TRANSITION_N_SE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a4d6ff3741e61ec61a1271049ffba104d" name="a314b2ee8f491583c4f2faccb78eb16e2a4d6ff3741e61ec61a1271049ffba104d"></a>TILE_VARIANT_TRANSITION_N_SW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a8e3f4878ab9d7c6b0782673eaee2bd4c" name="a314b2ee8f491583c4f2faccb78eb16e2a8e3f4878ab9d7c6b0782673eaee2bd4c"></a>TILE_VARIANT_TRANSITION_S_NE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2ab464e192ab2806369715424b51def3ab" name="a314b2ee8f491583c4f2faccb78eb16e2ab464e192ab2806369715424b51def3ab"></a>TILE_VARIANT_TRANSITION_S_NW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2af18b23dfe4029af6310cec0536d31699" name="a314b2ee8f491583c4f2faccb78eb16e2af18b23dfe4029af6310cec0536d31699"></a>TILE_VARIANT_TRANSITION_E_NW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a81ca1e852e18ce2f190100d493e7e565" name="a314b2ee8f491583c4f2faccb78eb16e2a81ca1e852e18ce2f190100d493e7e565"></a>TILE_VARIANT_TRANSITION_E_SW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a917e4f207d4a09e4d8c78554186a4948" name="a314b2ee8f491583c4f2faccb78eb16e2a917e4f207d4a09e4d8c78554186a4948"></a>TILE_VARIANT_TRANSITION_W_NE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2aad3386e912f08d645141f8d28de75ee4" name="a314b2ee8f491583c4f2faccb78eb16e2aad3386e912f08d645141f8d28de75ee4"></a>TILE_VARIANT_TRANSITION_W_SE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a1061606fcc787e599d1399b07974c4ac" name="a314b2ee8f491583c4f2faccb78eb16e2a1061606fcc787e599d1399b07974c4ac"></a>TILE_VARIANT_TRANSITION_N_E_SW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2af16de4d1ab21916dec493cad61e84df4" name="a314b2ee8f491583c4f2faccb78eb16e2af16de4d1ab21916dec493cad61e84df4"></a>TILE_VARIANT_TRANSITION_N_W_SE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a7bad3a077544eae99ac8cc8f6dcb791e" name="a314b2ee8f491583c4f2faccb78eb16e2a7bad3a077544eae99ac8cc8f6dcb791e"></a>TILE_VARIANT_TRANSITION_S_E_NW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a9bc33371e63590b527551c6454151e1a" name="a314b2ee8f491583c4f2faccb78eb16e2a9bc33371e63590b527551c6454151e1a"></a>TILE_VARIANT_TRANSITION_S_W_NE&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a03067cef73a45535868e2f60cb0e1867" name="a314b2ee8f491583c4f2faccb78eb16e2a03067cef73a45535868e2f60cb0e1867"></a>TILE_VARIANT_FIRST_SPECIAL&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a8fa7ffe863ce345a225415f0dd426e36" name="a314b2ee8f491583c4f2faccb78eb16e2a8fa7ffe863ce345a225415f0dd426e36"></a>TILE_VARIANT_LAST_SPECIAL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2ae85c570abe37af3529ebfda98427e5e3" name="a314b2ee8f491583c4f2faccb78eb16e2ae85c570abe37af3529ebfda98427e5e3"></a>TILE_VARIANT_FIRST_TRANSITION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2a2bbba968b364bf5371a0fd428ce325ce" name="a314b2ee8f491583c4f2faccb78eb16e2a2bbba968b364bf5371a0fd428ce325ce"></a>TILE_VARIANT_LAST_TRANSITION&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2aea582c5c6c9dc82939ed13457739a39a" name="a314b2ee8f491583c4f2faccb78eb16e2aea582c5c6c9dc82939ed13457739a39a"></a>TILE_VARIANT_FIRST_GENERATED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a314b2ee8f491583c4f2faccb78eb16e2af5e8b93a249a357e679de45a8bf14a39" name="a314b2ee8f491583c4f2faccb78eb16e2af5e8b93a249a357e679de45a8bf14a39"></a>TILE_VARIANT_LAST_GENERATED&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 </div>
