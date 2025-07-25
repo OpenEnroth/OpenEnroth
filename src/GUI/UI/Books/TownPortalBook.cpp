@@ -189,15 +189,15 @@ void GUIWindow_TownPortalBook::clickTown(int townId) {
     int casterId = _casterPid.id();
     if (casterId < pParty->pCharacters.size()) {
         // Town portal cast by character
-        CharacterSkillMastery mastery;
+        Mastery mastery;
         Character &character = pParty->pCharacters[casterId];
         if (engine->config->debug.AllMagic.value()) {
-            mastery = CHARACTER_SKILL_MASTERY_GRANDMASTER;
+            mastery = MASTERY_GRANDMASTER;
         } else if (_castFlags & ON_CAST_CastViaScroll) {
             // Cast from scroll
             mastery = SCROLL_OR_NPC_SPELL_SKILL_VALUE.mastery();
         } else {
-            mastery = character.getActualSkillValue(CHARACTER_SKILL_WATER).mastery();
+            mastery = character.getActualSkillValue(SKILL_WATER).mastery();
             character.SpendMana(pSpellDatas[SPELL_WATER_TOWN_PORTAL].mana_per_skill[mastery]);
         }
 

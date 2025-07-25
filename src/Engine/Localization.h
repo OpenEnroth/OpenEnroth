@@ -58,73 +58,73 @@ class Localization {
         return this->actor_buff_names[index];
     }
 
-    const std::string &GetClassName(CharacterClass index) const {
+    const std::string &GetClassName(Class index) const {
         return this->class_names[index];
     }
 
-    const std::string &GetClassDescription(CharacterClass index) const {
+    const std::string &GetClassDescription(Class index) const {
         return this->class_desciptions[index];
     }
 
-    const std::string &GetAttirubteName(CharacterAttribute index) const {
+    const std::string &GetAttirubteName(Attribute index) const {
         return this->attribute_names[index];
     }
 
-    const std::string &GetAttributeDescription(CharacterAttribute index) const {
+    const std::string &GetAttributeDescription(Attribute index) const {
         return this->attribute_descriptions[index];
     }
 
-    const std::string &GetSkillName(CharacterSkillType index) const {
+    const std::string &GetSkillName(Skill index) const {
         return this->skill_names[index];
     }
 
     std::string SkillValueShortString(CombinedSkillValue skillValue) const;
 
-    const std::string &MasteryName(CharacterSkillMastery mastery) const {
+    const std::string &MasteryName(Mastery mastery) const {
         switch (mastery) {
-        case CHARACTER_SKILL_MASTERY_NOVICE: return GetString(LSTR_NORMAL);
-        case CHARACTER_SKILL_MASTERY_EXPERT: return GetString(LSTR_EXPERT);
-        case CHARACTER_SKILL_MASTERY_MASTER: return GetString(LSTR_MASTER);
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER: return GetString(LSTR_GRAND_1);
+        case MASTERY_NOVICE: return GetString(LSTR_NORMAL);
+        case MASTERY_EXPERT: return GetString(LSTR_EXPERT);
+        case MASTERY_MASTER: return GetString(LSTR_MASTER);
+        case MASTERY_GRANDMASTER: return GetString(LSTR_GRAND_1);
         default:
             assert(false);
             return dummy_string;
         }
     }
 
-    const std::string &MasteryNameLong(CharacterSkillMastery mastery) const {
-        return mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER ? GetString(LSTR_GRANDMASTER) : MasteryName(mastery);
+    const std::string &MasteryNameLong(Mastery mastery) const {
+        return mastery == MASTERY_GRANDMASTER ? GetString(LSTR_GRANDMASTER) : MasteryName(mastery);
     }
 
-    const std::string &GetSkillDescription(CharacterSkillType index) const {
+    const std::string &GetSkillDescription(Skill index) const {
         return this->skill_descriptions[index];
     }
 
-    const std::string &GetSkillDescription(CharacterSkillType index, CharacterSkillMastery mastery) const {
+    const std::string &GetSkillDescription(Skill index, Mastery mastery) const {
         switch(mastery) {
-        case CHARACTER_SKILL_MASTERY_NOVICE: return GetSkillDescriptionNormal(index);
-        case CHARACTER_SKILL_MASTERY_EXPERT: return GetSkillDescriptionExpert(index);
-        case CHARACTER_SKILL_MASTERY_MASTER: return GetSkillDescriptionMaster(index);
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER: return GetSkillDescriptionGrand(index);
+        case MASTERY_NOVICE: return GetSkillDescriptionNormal(index);
+        case MASTERY_EXPERT: return GetSkillDescriptionExpert(index);
+        case MASTERY_MASTER: return GetSkillDescriptionMaster(index);
+        case MASTERY_GRANDMASTER: return GetSkillDescriptionGrand(index);
         default:
             assert(false);
             return dummy_string;
         }
     }
 
-    const std::string &GetSkillDescriptionNormal(CharacterSkillType index) const {
+    const std::string &GetSkillDescriptionNormal(Skill index) const {
         return this->skill_descriptions_normal[index];
     }
 
-    const std::string &GetSkillDescriptionExpert(CharacterSkillType index) const {
+    const std::string &GetSkillDescriptionExpert(Skill index) const {
         return this->skill_descriptions_expert[index];
     }
 
-    const std::string &GetSkillDescriptionMaster(CharacterSkillType index) const {
+    const std::string &GetSkillDescriptionMaster(Skill index) const {
         return this->skill_descriptions_master[index];
     }
 
-    const std::string &GetSkillDescriptionGrand(CharacterSkillType index) const {
+    const std::string &GetSkillDescriptionGrand(Skill index) const {
         return this->skill_descriptions_grand[index];
     }
 
@@ -263,17 +263,17 @@ class Localization {
     IndexedArray<std::string, CLASS_FIRST, CLASS_LAST> class_desciptions;
     IndexedArray<std::string, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> attribute_names;
     IndexedArray<std::string, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> attribute_descriptions;
-    IndexedArray<std::string, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_names;
-    IndexedArray<std::string, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions;
-    IndexedArray<std::string, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_normal;
-    IndexedArray<std::string, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_expert;
-    IndexedArray<std::string, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_master;
-    IndexedArray<std::string, CHARACTER_SKILL_INVALID, CHARACTER_SKILL_LAST_VISIBLE> skill_descriptions_grand;
+    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> skill_names;
+    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> skill_descriptions;
+    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> skill_descriptions_normal;
+    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> skill_descriptions_expert;
+    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> skill_descriptions_master;
+    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> skill_descriptions_grand;
     IndexedArray<std::string, CONDITION_FIRST, CONDITION_LAST> character_conditions;
     IndexedArray<std::string, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> npc_profession_names;
     IndexedArray<std::string, SPECIAL_ATTACK_FIRST, SPECIAL_ATTACK_LAST> special_attack_names;
     IndexedArray<std::string, MONSTER_SPECIAL_ABILITY_FIRST, MONSTER_SPECIAL_ABILITY_LAST> monster_special_ability_names;
-    IndexedArray<std::string, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> skill_value_short_templates;
+    IndexedArray<std::string, MASTERY_FIRST, MASTERY_LAST> skill_value_short_templates;
     std::string hp_description;
     std::string sp_description;
     std::string armour_class_description;

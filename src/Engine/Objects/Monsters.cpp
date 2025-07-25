@@ -130,15 +130,15 @@ CombinedSkillValue ParseSkillValue(std::string_view skillString, std::string_vie
     if (!tryDeserialize(skillString, &skill))
         return CombinedSkillValue::none(); // TODO(captainurist): this does happen, investigate.
 
-    CharacterSkillMastery mastery;
+    Mastery mastery;
     if (masteryString == "N") {
-        mastery = CHARACTER_SKILL_MASTERY_NOVICE;
+        mastery = MASTERY_NOVICE;
     } else if (masteryString == "E") {
-        mastery = CHARACTER_SKILL_MASTERY_EXPERT;
+        mastery = MASTERY_EXPERT;
     } else if (masteryString == "M") {
-        mastery = CHARACTER_SKILL_MASTERY_MASTER;
+        mastery = MASTERY_MASTER;
     } else if (masteryString == "G") {
-        mastery = CHARACTER_SKILL_MASTERY_GRANDMASTER;
+        mastery = MASTERY_GRANDMASTER;
     } else {
         throw Exception("Invalid character skill mastery string '{}'", masteryString);
     }

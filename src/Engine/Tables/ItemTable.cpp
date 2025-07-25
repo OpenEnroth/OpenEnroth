@@ -57,20 +57,20 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     equipStatMap["gold"] = ITEM_TYPE_GOLD;
     equipStatMap["gem"] = ITEM_TYPE_GEM;
 
-    std::map<std::string, CharacterSkillType, ascii::NoCaseLess> equipSkillMap;
-    equipSkillMap["staff"] = CHARACTER_SKILL_STAFF;
-    equipSkillMap["sword"] = CHARACTER_SKILL_SWORD;
-    equipSkillMap["dagger"] = CHARACTER_SKILL_DAGGER;
-    equipSkillMap["axe"] = CHARACTER_SKILL_AXE;
-    equipSkillMap["spear"] = CHARACTER_SKILL_SPEAR;
-    equipSkillMap["bow"] = CHARACTER_SKILL_BOW;
-    equipSkillMap["mace"] = CHARACTER_SKILL_MACE;
-    equipSkillMap["blaster"] = CHARACTER_SKILL_BLASTER;
-    equipSkillMap["shield"] = CHARACTER_SKILL_SHIELD;
-    equipSkillMap["leather"] = CHARACTER_SKILL_LEATHER;
-    equipSkillMap["chain"] = CHARACTER_SKILL_CHAIN;
-    equipSkillMap["plate"] = CHARACTER_SKILL_PLATE;
-    equipSkillMap["club"] = CHARACTER_SKILL_CLUB;
+    std::map<std::string, Skill, ascii::NoCaseLess> equipSkillMap;
+    equipSkillMap["staff"] = SKILL_STAFF;
+    equipSkillMap["sword"] = SKILL_SWORD;
+    equipSkillMap["dagger"] = SKILL_DAGGER;
+    equipSkillMap["axe"] = SKILL_AXE;
+    equipSkillMap["spear"] = SKILL_SPEAR;
+    equipSkillMap["bow"] = SKILL_BOW;
+    equipSkillMap["mace"] = SKILL_MACE;
+    equipSkillMap["blaster"] = SKILL_BLASTER;
+    equipSkillMap["shield"] = SKILL_SHIELD;
+    equipSkillMap["leather"] = SKILL_LEATHER;
+    equipSkillMap["chain"] = SKILL_CHAIN;
+    equipSkillMap["plate"] = SKILL_PLATE;
+    equipSkillMap["club"] = SKILL_CLUB;
 
     std::map<std::string, ItemRarity, ascii::NoCaseLess> materialMap;
     materialMap["artifact"] = RARITY_ARTIFACT;
@@ -89,7 +89,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     strtokSkipLines(3);
     // Standard Bonuses by Group
     standardEnchantmentChanceSumByItemType.fill(0);
-    for (CharacterAttribute i : allEnchantableAttributes()) {
+    for (Attribute i : allEnchantableAttributes()) {
         lineContent = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(lineContent, '\t');
         standardEnchantments[i].attributeName = removeQuotes(tokens[0]);
@@ -150,7 +150,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         items[item_counter].name = removeQuotes(tokens[2]);
         items[item_counter].baseValue = atoi(tokens[3]);
         items[item_counter].type = valueOr(equipStatMap, tokens[4], ITEM_TYPE_NONE);
-        items[item_counter].skill = valueOr(equipSkillMap, tokens[5], CHARACTER_SKILL_MISC);
+        items[item_counter].skill = valueOr(equipSkillMap, tokens[5], SKILL_MISC);
         auto diceRollTokens = tokenize(tokens[6], 'd');
         if (diceRollTokens.size() == 2) {
             items[item_counter].damageDice = atoi(diceRollTokens[0]);
@@ -176,7 +176,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         items[item_counter].specialEnchantment = ITEM_ENCHANTMENT_NULL;
         items[item_counter].standardEnchantment = {};
         if (items[item_counter].rarity == RARITY_SPECIAL) {
-            for (CharacterAttribute ii : allEnchantableAttributes()) {
+            for (Attribute ii : allEnchantableAttributes()) {
                 if (ascii::noCaseEquals(tokens[12], standardEnchantments[ii].itemSuffix)) { // TODO(captainurist): #unicode this is not ascii
                     items[item_counter].standardEnchantment = ii;
                     break;
@@ -380,7 +380,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
 
     if (uTreasureType != RANDOM_ITEM_ANY) {  // generate known treasure type
         ItemType requestedEquip;
-        CharacterSkillType requestedSkill = CHARACTER_SKILL_INVALID;
+        Skill requestedSkill = SKILL_INVALID;
         switch (uTreasureType) {
             case RANDOM_ITEM_WEAPON:
                 requestedEquip = ITEM_TYPE_SINGLE_HANDED;
@@ -389,40 +389,40 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
                 requestedEquip = ITEM_TYPE_ARMOUR;
                 break;
             case RANDOM_ITEM_MICS:
-                requestedSkill = CHARACTER_SKILL_MISC;
+                requestedSkill = SKILL_MISC;
                 break;
             case RANDOM_ITEM_SWORD:
-                requestedSkill = CHARACTER_SKILL_SWORD;
+                requestedSkill = SKILL_SWORD;
                 break;
             case RANDOM_ITEM_DAGGER:
-                requestedSkill = CHARACTER_SKILL_DAGGER;
+                requestedSkill = SKILL_DAGGER;
                 break;
             case RANDOM_ITEM_AXE:
-                requestedSkill = CHARACTER_SKILL_AXE;
+                requestedSkill = SKILL_AXE;
                 break;
             case RANDOM_ITEM_SPEAR:
-                requestedSkill = CHARACTER_SKILL_SPEAR;
+                requestedSkill = SKILL_SPEAR;
                 break;
             case RANDOM_ITEM_BOW:
-                requestedSkill = CHARACTER_SKILL_BOW;
+                requestedSkill = SKILL_BOW;
                 break;
             case RANDOM_ITEM_MACE:
-                requestedSkill = CHARACTER_SKILL_MACE;
+                requestedSkill = SKILL_MACE;
                 break;
             case RANDOM_ITEM_CLUB:
-                requestedSkill = CHARACTER_SKILL_CLUB;
+                requestedSkill = SKILL_CLUB;
                 break;
             case RANDOM_ITEM_STAFF:
-                requestedSkill = CHARACTER_SKILL_STAFF;
+                requestedSkill = SKILL_STAFF;
                 break;
             case RANDOM_ITEM_LEATHER_ARMOR:
-                requestedSkill = CHARACTER_SKILL_LEATHER;
+                requestedSkill = SKILL_LEATHER;
                 break;
             case RANDOM_ITEM_CHAIN_ARMOR:
-                requestedSkill = CHARACTER_SKILL_CHAIN;
+                requestedSkill = SKILL_CHAIN;
                 break;
             case RANDOM_ITEM_PLATE_ARMOR:
-                requestedSkill = CHARACTER_SKILL_PLATE;
+                requestedSkill = SKILL_PLATE;
                 break;
             case RANDOM_ITEM_SHIELD:
                 requestedEquip = ITEM_TYPE_SHIELD;
@@ -470,7 +470,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
                 break;
         }
 
-        if (requestedSkill == CHARACTER_SKILL_INVALID) {  // no skill for this item needed
+        if (requestedSkill == SKILL_INVALID) {  // no skill for this item needed
             for (ItemId itemId : allSpawnableItems()) {
                 if (items[itemId].type == requestedEquip) {
                     if (items[itemId].uChanceByTreasureLvl[treasureLevel]) {
@@ -566,7 +566,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
             if (bonusChanceRoll < standardEnchantmentChanceForEquipment[treasureLevel]) {
                 int enchantmentChanceSumRoll = grng->random(standardEnchantmentChanceSumByItemType[outItem->type()]) + 1;
                 int currentEnchantmentChancesSum = 0;
-                for (CharacterAttribute attr : allEnchantableAttributes()) {
+                for (Attribute attr : allEnchantableAttributes()) {
                     if (currentEnchantmentChancesSum >= enchantmentChanceSumRoll)
                         break;
 
@@ -576,7 +576,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
                 assert(outItem->standardEnchantment);
 
                 outItem->standardEnchantmentStrength = grng->randomSample(standardEnchantmentRangeByTreasureLevel[treasureLevel]);
-                CharacterAttribute standardEnchantmentAttributeSkill = *outItem->standardEnchantment;
+                Attribute standardEnchantmentAttributeSkill = *outItem->standardEnchantment;
                 if (standardEnchantmentAttributeSkill == ATTRIBUTE_SKILL_ARMSMASTER ||
                     standardEnchantmentAttributeSkill == ATTRIBUTE_SKILL_DODGE ||
                     standardEnchantmentAttributeSkill == ATTRIBUTE_SKILL_UNARMED) {

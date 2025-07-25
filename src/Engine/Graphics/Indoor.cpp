@@ -2046,7 +2046,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
     a1a.uSoundID = 0;
     a1a.uFacing = 0;
     a1a.vPosition = a2->vPosition;
-    a1a.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
+    a1a.spell_skill = MASTERY_NONE;
     a1a.spell_level = 0;
     a1a.uSpellID = SPELL_NONE;
     a1a.spell_target_pid = Pid();

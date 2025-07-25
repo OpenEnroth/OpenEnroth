@@ -61,8 +61,8 @@ GAME_TEST(Issues, Issue1034) {
 GAME_TEST(Issues, Issue1036) {
     // Test that elemental magic guilds teach Learning skill and self magic guilds teach Meditation skill.
     test.playTraceFromTestData("issue_1036.mm7", "issue_1036.json");
-    EXPECT_TRUE(pParty->pCharacters[2].pActiveSkills[CHARACTER_SKILL_LEARNING]);
-    EXPECT_TRUE(pParty->pCharacters[2].pActiveSkills[CHARACTER_SKILL_MEDITATION]);
+    EXPECT_TRUE(pParty->pCharacters[2].pActiveSkills[SKILL_LEARNING]);
+    EXPECT_TRUE(pParty->pCharacters[2].pActiveSkills[SKILL_MEDITATION]);
 }
 
 GAME_TEST(Issues, Issue1038) {
@@ -170,44 +170,44 @@ GAME_TEST(Issues, Issue1191) {
     test.playTraceFromTestData("issue_1191.mm7", "issue_1191.json");
 
     EXPECT_EQ(pParty->pCharacters[0].classType, CLASS_WARLOCK);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_FIRE).level(), 7);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_FIRE).level(), 10);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_AIR).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_AIR).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_WATER).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_WATER).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_EARTH).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_EARTH).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_SPIRIT).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_SPIRIT).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_MIND).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_MIND).level(), 9); // 4, +3 dragon, +2 Ruler's ring
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_BODY).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_BODY).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_DARK).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_DARK).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_FIRE).level(), 7);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_FIRE).level(), 10);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_AIR).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_AIR).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_WATER).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_WATER).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_EARTH).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_EARTH).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_SPIRIT).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_SPIRIT).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_MIND).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_MIND).level(), 9); // 4, +3 dragon, +2 Ruler's ring
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_BODY).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_BODY).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_DARK).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_DARK).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_LIGHT).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_LIGHT).level(), 0);
 
     EXPECT_EQ(pParty->pCharacters[2].classType, CLASS_WARLOCK);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_FIRE).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_FIRE).level(), 4);
-    EXPECT_LE(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_AIR).level(), 0);
-    EXPECT_LE(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_AIR).level(), 3); // She has no skill. 0 or 3 skill level is fine
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_WATER).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_WATER).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_EARTH).level(), 10);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_EARTH).level(), 18); // 10, +3 dragon, +5 ring
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_SPIRIT).level(), 10);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_SPIRIT).level(), 13);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_MIND).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_MIND).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_BODY).level(), 10);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_BODY).level(), 18); // 10, +3 dragon, +5 ring
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_DARK).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_DARK).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_FIRE).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_FIRE).level(), 4);
+    EXPECT_LE(pParty->pCharacters[2].getSkillValue(SKILL_AIR).level(), 0);
+    EXPECT_LE(pParty->pCharacters[2].getActualSkillValue(SKILL_AIR).level(), 3); // She has no skill. 0 or 3 skill level is fine
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_WATER).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_WATER).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_EARTH).level(), 10);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_EARTH).level(), 18); // 10, +3 dragon, +5 ring
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_SPIRIT).level(), 10);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_SPIRIT).level(), 13);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_MIND).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_MIND).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_BODY).level(), 10);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_BODY).level(), 18); // 10, +3 dragon, +5 ring
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_DARK).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_DARK).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_LIGHT).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_LIGHT).level(), 0);
 
     EXPECT_GT(timeTape.delta(), Duration::fromHours(8));
     EXPECT_EQ(pOutdoor->getNumFoodRequiredToRestInCurrentPos(pParty->pos), 2);
@@ -612,7 +612,7 @@ GAME_TEST(Issues, Issue1383) {
     pIndoor->dlv.reputation = 0; // Reputation is used for price calculations.
 
     Character character;
-    character.pActiveSkills[CHARACTER_SKILL_MERCHANT] = CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER);
+    character.pActiveSkills[SKILL_MERCHANT] = CombinedSkillValue(10, MASTERY_GRANDMASTER);
     Item item;
     item.itemId = ITEM_SPELLBOOK_ARMAGEDDON;
     int gmPrice = PriceCalculator::itemBuyingPriceForPlayer(&character, item.GetValue(), 10.0f);
@@ -620,7 +620,7 @@ GAME_TEST(Issues, Issue1383) {
     EXPECT_EQ(item.GetValue(), 7500);
 
     // Also check prices w/o skill, just in case.
-    character.pActiveSkills[CHARACTER_SKILL_MERCHANT] = CombinedSkillValue();
+    character.pActiveSkills[SKILL_MERCHANT] = CombinedSkillValue();
     int noobPrice = PriceCalculator::itemBuyingPriceForPlayer(&character, item.GetValue(), 10.0f);
     EXPECT_EQ(noobPrice, 75000);
 
@@ -845,7 +845,7 @@ GAME_TEST(Issues, Issue1466) {
     auto flatMessageBoxesBody = messageBoxesBody.flatten();
     EXPECT_GT(flatMessageBoxes.size(), 0);
     EXPECT_GT(flatMessageBoxesBody.filter([](const auto& s) { return s.starts_with("Inferno burns all"); }).size(), 0);
-    EXPECT_FALSE(pParty->pCharacters[0].HasSkill(CHARACTER_SKILL_FIRE));
+    EXPECT_FALSE(pParty->pCharacters[0].HasSkill(SKILL_FIRE));
     EXPECT_EQ(current_screen_type, SCREEN_GAME);
 }
 
@@ -909,7 +909,7 @@ GAME_TEST(Issues, Issue1479) {
     // Crash when identifying Chaos Hydra with ID Monster skill.
     auto expressionTape = charTapes.portrait(2);
     test.playTraceFromTestData("issue_1479.mm7", "issue_1479.json");
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_MONSTER_ID).mastery(), CHARACTER_SKILL_MASTERY_GRANDMASTER);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_MONSTER_ID).mastery(), MASTERY_GRANDMASTER);
     EXPECT_CONTAINS(expressionTape, PORTRAIT_47); // Reaction to strong monster id.
 }
 
@@ -936,7 +936,7 @@ GAME_TEST(Issues, Issue1489) {
     test.playTraceFromTestData("issue_1489.mm7", "issue_1489.json");
 
     for (const auto& character : pParty->pCharacters) {
-        EXPECT_TRUE(character.HasSkill(CHARACTER_SKILL_MISC));
+        EXPECT_TRUE(character.HasSkill(SKILL_MISC));
     }
     // Check items were removed and re-equipped
     EXPECT_EQ(bootTape.front(), bootTape.back());

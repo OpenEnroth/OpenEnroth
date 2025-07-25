@@ -80,7 +80,7 @@ struct SpriteObject {
     Item containing_item; // For arrows this contains the bow that was used, enchantments are checked on impact.
     SpellId uSpellID = SPELL_NONE;
     int spell_level = 0;
-    CharacterSkillMastery spell_skill = CHARACTER_SKILL_MASTERY_NONE;
+    Mastery spell_skill = MASTERY_NONE;
     int field_54 = 0;
     Pid spell_caster_pid;
     Pid spell_target_pid;

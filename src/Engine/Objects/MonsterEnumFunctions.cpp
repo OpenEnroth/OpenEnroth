@@ -5,12 +5,12 @@
 #include <vector>
 
 struct MonsterData {
-    CharacterSex sex = SEX_MALE;
+    Sex sex = SEX_MALE;
     Race race = RACE_HUMAN;
     bool appearsInArena = false;
 
     constexpr MonsterData() = default;
-    constexpr MonsterData(CharacterSex sex, Race race, bool appearsInArena) : sex(sex), race(race), appearsInArena(appearsInArena) {}
+    constexpr MonsterData(Sex sex, Race race, bool appearsInArena) : sex(sex), race(race), appearsInArena(appearsInArena) {}
 };
 
 // TODO(captainurist): a bit weird that all the monsters belong to RACE_HUMAN.
@@ -132,7 +132,7 @@ std::span<const MonsterId> allArenaMonsters() {
     return arenaMonsters;
 }
 
-CharacterSex sexForMonsterType(MonsterType monsterType) {
+Sex sexForMonsterType(MonsterType monsterType) {
     return dataByMonsterType[monsterType].sex;
 }
 

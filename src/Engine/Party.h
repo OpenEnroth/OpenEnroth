@@ -168,7 +168,7 @@ struct Party {
     inline bool wizardEyeActive() const {
         return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Active();
     }
-    inline CharacterSkillMastery wizardEyeSkillLevel() const {
+    inline Mastery wizardEyeSkillLevel() const {
         return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].skillMastery;
     }
     inline bool TorchlightActive() const {
@@ -183,7 +183,7 @@ struct Party {
     inline bool ImmolationActive() const {
         return pPartyBuffs[PARTY_BUFF_IMMOLATION].Active();
     }
-    inline CharacterSkillMastery ImmolationSkillLevel() const {
+    inline Mastery ImmolationSkillLevel() const {
         return pPartyBuffs[PARTY_BUFF_IMMOLATION].skillMastery;
     }
     inline bool FeatherFallActive() const {
@@ -260,7 +260,7 @@ struct Party {
      */
     size_t immolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange);
 
-    void setDelayedReaction(CharacterSpeech speech, int id) {
+    void setDelayedReaction(SpeechId speech, int id) {
         if (!_delayedReactionTimer) {
             _delayedReactionTimer = Duration::fromRealtimeSeconds(2);
             _delayedReactionSpeech = speech;
@@ -359,7 +359,7 @@ struct Party {
     Duration _roundingDt;  // keeps track of rounding remainder for recovery
 
     Duration _delayedReactionTimer;
-    CharacterSpeech _delayedReactionSpeech = SPEECH_NONE;
+    SpeechId _delayedReactionSpeech = SPEECH_NONE;
     int _delayedReactionCharacterId = -1;
 
     std::array<bool, 4> playerAlreadyPicked = {{}};  // Was at offset 0xAE3368 in vanilla, we moved it into Party in OE.

@@ -108,12 +108,12 @@ static constexpr IndexedArray<IndexedArray<CharacterCreationAttributeProps, ATTR
     }}
 };
 
-static constexpr IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> StealingMasteryBonuses = {
+static constexpr IndexedArray<int, MASTERY_FIRST, MASTERY_LAST> StealingMasteryBonuses = {
     // {CHARACTER_SKILL_MASTERY_NONE, 0},
-    {CHARACTER_SKILL_MASTERY_NOVICE, 100},
-    {CHARACTER_SKILL_MASTERY_EXPERT, 200},
-    {CHARACTER_SKILL_MASTERY_MASTER, 300},
-    {CHARACTER_SKILL_MASTERY_GRANDMASTER, 500}
+    {MASTERY_NOVICE, 100},
+    {MASTERY_EXPERT, 200},
+    {MASTERY_MASTER, 300},
+    {MASTERY_GRANDMASTER, 500}
 };  // dword_4EDEA0        //the zeroth element isn't accessed, it just
            // helps avoid -1 indexing, originally 4 element array off by one
 static constexpr std::array<int, 5> StealingRandomBonuses = { -200, -100, 0, 100, 200 };  // dword_4EDEB4
@@ -122,11 +122,11 @@ static constexpr std::array<int, 5> StealingRandomBonuses = { -200, -100, 0, 100
  * The amount of gold that a character can steal in one go is determined as `[skill_level]d[mastery_die]`, where
  * `skill_level` is the level of stealing skill, and `mastery_die` is picked from the table below.
  */
-static constexpr IndexedArray<int, CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST> goldStealingDieSidesByMastery = {
-    {CHARACTER_SKILL_MASTERY_NOVICE, 2},
-    {CHARACTER_SKILL_MASTERY_EXPERT, 4},
-    {CHARACTER_SKILL_MASTERY_MASTER, 6},
-    {CHARACTER_SKILL_MASTERY_GRANDMASTER, 10}
+static constexpr IndexedArray<int, MASTERY_FIRST, MASTERY_LAST> goldStealingDieSidesByMastery = {
+    {MASTERY_NOVICE, 2},
+    {MASTERY_EXPERT, 4},
+    {MASTERY_MASTER, 6},
+    {MASTERY_GRANDMASTER, 10}
 };
 
 static constexpr IndexedArray<ItemSlot, ITEM_TYPE_FIRST, ITEM_TYPE_LAST> pEquipTypeToBodyAnchor = {  // 4E8398
@@ -274,7 +274,7 @@ int CharacterCreation_GetUnspentAttributePointCount() {
     for (Character &character : pParty->pCharacters) {
         Race raceId = character.GetRace();
 
-        for (CharacterAttribute statNum : allStatAttributes()) {
+        for (Attribute statNum : allStatAttributes()) {
             CurrentStatValue = character._stats[statNum];
             StatBaseValue = StatTable[raceId][statNum].uBaseValue;
 
@@ -383,7 +383,7 @@ bool Character::CanAct() const {
 
 //----- (00492C40) --------------------------------------------------------
 bool Character::CanSteal() const {
-    return getActualSkillValue(CHARACTER_SKILL_STEALING).level() != 0;
+    return getActualSkillValue(SKILL_STEALING).level() != 0;
 }
 
 //----- (00492C4E) --------------------------------------------------------
@@ -557,7 +557,7 @@ void Character::SetCondition(Condition condition, int blockable) {
 }
 
 //----- (00492700) --------------------------------------------------------
-bool Character::HasSkill(CharacterSkillType skill) const {
+bool Character::HasSkill(Skill skill) const {
     if (this->pActiveSkills[skill]) {
         return true;
     } else {
@@ -570,26 +570,26 @@ bool Character::HasSkill(CharacterSkillType skill) const {
 //----- (0049107D) --------------------------------------------------------
 int Character::GetBodybuilding() const {
     int multiplier =
-        GetMultiplierForSkillLevel(CHARACTER_SKILL_BODYBUILDING, 1, 2, 3, 5);
+        GetMultiplierForSkillLevel(SKILL_BODYBUILDING, 1, 2, 3, 5);
 
-    return multiplier * getActualSkillValue(CHARACTER_SKILL_BODYBUILDING).level();
+    return multiplier * getActualSkillValue(SKILL_BODYBUILDING).level();
 }
 
 //----- (004910A8) --------------------------------------------------------
 int Character::GetMeditation() const {
     int multiplier =
-        GetMultiplierForSkillLevel(CHARACTER_SKILL_MEDITATION, 1, 2, 3, 5);
+        GetMultiplierForSkillLevel(SKILL_MEDITATION, 1, 2, 3, 5);
 
-    return multiplier * getActualSkillValue(CHARACTER_SKILL_MEDITATION).level();
+    return multiplier * getActualSkillValue(SKILL_MEDITATION).level();
 }
 
 //----- (004910D3) --------------------------------------------------------
 bool Character::CanIdentify(const Item &item) const {
-    CombinedSkillValue val = getActualSkillValue(CHARACTER_SKILL_ITEM_ID);
+    CombinedSkillValue val = getActualSkillValue(SKILL_ITEM_ID);
     int multiplier =
-        GetMultiplierForSkillLevel(CHARACTER_SKILL_ITEM_ID, 1, 2, 3, 5);
+        GetMultiplierForSkillLevel(SKILL_ITEM_ID, 1, 2, 3, 5);
 
-    if (CheckHiredNPCSpeciality(Scholar) || val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // always identify
+    if (CheckHiredNPCSpeciality(Scholar) || val.mastery() == MASTERY_GRANDMASTER)  // always identify
         return true;
 
     // check item level against skill
@@ -601,8 +601,8 @@ bool Character::CanIdentify(const Item &item) const {
 
 //----- (00491151) --------------------------------------------------------
 bool Character::CanRepair(const Item &item) const {
-    CombinedSkillValue val = getActualSkillValue(CHARACTER_SKILL_REPAIR);
-    int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_REPAIR, 1, 2, 3, 5);
+    CombinedSkillValue val = getActualSkillValue(SKILL_REPAIR);
+    int multiplier = GetMultiplierForSkillLevel(SKILL_REPAIR, 1, 2, 3, 5);
 
     // TODO(Nik-RE-dev): is check for boots correct?
     if (CheckHiredNPCSpeciality(Smith) && item.isWeapon() ||
@@ -610,7 +610,7 @@ bool Character::CanRepair(const Item &item) const {
         CheckHiredNPCSpeciality(Alchemist) && item.type() >= ITEM_TYPE_BOOTS)
         return true;  // check against hired help
 
-    if (val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // gm repair
+    if (val.mastery() == MASTERY_GRANDMASTER)  // gm repair
         return true;
 
     // check item level against skill
@@ -622,11 +622,11 @@ bool Character::CanRepair(const Item &item) const {
 
 //----- (0049125A) --------------------------------------------------------
 int Character::GetPerception() const {
-    CombinedSkillValue val = getActualSkillValue(CHARACTER_SKILL_PERCEPTION);
+    CombinedSkillValue val = getActualSkillValue(SKILL_PERCEPTION);
     int multiplier =
-        GetMultiplierForSkillLevel(CHARACTER_SKILL_PERCEPTION, 1, 2, 3, 5);
+        GetMultiplierForSkillLevel(SKILL_PERCEPTION, 1, 2, 3, 5);
 
-    if (val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // gm percept
+    if (val.mastery() == MASTERY_GRANDMASTER)  // gm percept
         return 10000;
 
     return multiplier * val.level();
@@ -634,11 +634,11 @@ int Character::GetPerception() const {
 
 //----- (004912B0) --------------------------------------------------------
 int Character::GetDisarmTrap() const {
-    CombinedSkillValue val = getActualSkillValue(CHARACTER_SKILL_TRAP_DISARM);
+    CombinedSkillValue val = getActualSkillValue(SKILL_TRAP_DISARM);
     int multiplier =
-        GetMultiplierForSkillLevel(CHARACTER_SKILL_TRAP_DISARM, 1, 2, 3, 5);
+        GetMultiplierForSkillLevel(SKILL_TRAP_DISARM, 1, 2, 3, 5);
 
-    if (val.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)  // gm disarm
+    if (val.mastery() == MASTERY_GRANDMASTER)  // gm disarm
         return 10000;
 
     if (HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_THIEVERY))  // item has increased disarm
@@ -653,10 +653,10 @@ int Character::getLearningPercent() const {
     if (CheckHiredNPCSpeciality(Instructor)) hirelingBonus += 15;
     if (CheckHiredNPCSpeciality(Scholar)) hirelingBonus += 5;
 
-    int skill = getActualSkillValue(CHARACTER_SKILL_LEARNING).level();
+    int skill = getActualSkillValue(SKILL_LEARNING).level();
 
     if (skill) {
-        int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_LEARNING, 1, 2, 3, 5);
+        int multiplier = GetMultiplierForSkillLevel(SKILL_LEARNING, 1, 2, 3, 5);
 
         return hirelingBonus + multiplier * skill + 9;
     } else {
@@ -699,7 +699,7 @@ int Character::GetBaseLuck() const {
     return GetBaseStat(ATTRIBUTE_LUCK);
 }
 
-int Character::GetBaseStat(CharacterAttribute stat) const {
+int Character::GetBaseStat(Attribute stat) const {
     return this->_stats[stat] + GetItemsBonus(stat);
 }
 
@@ -751,7 +751,7 @@ int Character::GetActualLuck() const {
 }
 
 //----- (new function) --------------------------------------------------------
-int Character::GetActualStat(CharacterAttribute stat) const {
+int Character::GetActualStat(Attribute stat) const {
     int attrValue = _stats[stat];
     int attrBonus = _statBonuses[stat];
 
@@ -847,7 +847,7 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
         if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
             Item *mainHandItemGen = this->GetMainHandItem();
             bool addOneDice = false;
-            if (mainHandItemGen->skill() == CHARACTER_SKILL_SPEAR &&
+            if (mainHandItemGen->skill() == SKILL_SPEAR &&
                 !this->inventory.entry(ITEM_SLOT_OFF_HAND))  // using spear in two hands adds a dice roll
                 addOneDice = true;
 
@@ -926,8 +926,8 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(Item *weapon,
     }
 
     // master dagger triple damage backstab
-    if (getActualSkillValue(CHARACTER_SKILL_DAGGER).mastery() >= CHARACTER_SKILL_MASTERY_MASTER &&
-        weapon->skill() == CHARACTER_SKILL_DAGGER && grng->random(100) < 10)
+    if (getActualSkillValue(SKILL_DAGGER).mastery() >= MASTERY_MASTER &&
+        weapon->skill() == SKILL_DAGGER && grng->random(100) < 10)
         totalDmg *= 3;
 
     return totalDmg;
@@ -1086,9 +1086,9 @@ Color Character::GetExperienceDisplayColor() {
 int Character::CalculateIncommingDamage(DamageType dmg_type, int dmg) {
     // TODO(captainurist): these are some weird casts to CharacterAttributeType
     if (classType == CLASS_LICH &&
-        ((CharacterAttribute)dmg_type == ATTRIBUTE_RESIST_MIND ||
-         (CharacterAttribute)dmg_type == ATTRIBUTE_RESIST_BODY ||
-         (CharacterAttribute)dmg_type == ATTRIBUTE_RESIST_SPIRIT))  // TODO(_): determine if spirit
+        ((Attribute)dmg_type == ATTRIBUTE_RESIST_MIND ||
+         (Attribute)dmg_type == ATTRIBUTE_RESIST_BODY ||
+         (Attribute)dmg_type == ATTRIBUTE_RESIST_SPIRIT))  // TODO(_): determine if spirit
                                                           // resistance should be handled
                                                           // by body res. modifier
         return 0;  // liches are not affected by self magics
@@ -1137,17 +1137,17 @@ int Character::CalculateIncommingDamage(DamageType dmg_type, int dmg) {
     if ((dmg_type == DAMAGE_PHYSICAL) &&
         (equippedArmor != nullptr)) {      // physical damage and wearing armour
         if (!equippedArmor->IsBroken()) {  // armour isnt broken
-            CharacterSkillType armor_skill = equippedArmor->skill();
+            Skill armor_skill = equippedArmor->skill();
 
             // master and above half incoming damage
-            if (armor_skill == CHARACTER_SKILL_PLATE) {
-                if (getActualSkillValue(CHARACTER_SKILL_PLATE).mastery() >= CHARACTER_SKILL_MASTERY_MASTER)
+            if (armor_skill == SKILL_PLATE) {
+                if (getActualSkillValue(SKILL_PLATE).mastery() >= MASTERY_MASTER)
                     return dmg / 2;
             }
 
             // grandmaster and chain damage reduce
-            if (armor_skill == CHARACTER_SKILL_CHAIN) {
-                if (getActualSkillValue(CHARACTER_SKILL_CHAIN).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)
+            if (armor_skill == SKILL_CHAIN) {
+                if (getActualSkillValue(SKILL_CHAIN).mastery() == MASTERY_GRANDMASTER)
                     return dmg * 2 / 3;
             }
         }
@@ -1162,7 +1162,7 @@ ItemType Character::GetEquippedItemEquipType(ItemSlot uEquipSlot) const {
 }
 
 //----- (0048D651) --------------------------------------------------------
-CharacterSkillType Character::GetEquippedItemSkillType(ItemSlot uEquipSlot) const {
+Skill Character::GetEquippedItemSkillType(ItemSlot uEquipSlot) const {
     return GetItem(uEquipSlot)->skill();
 }
 
@@ -1212,7 +1212,7 @@ int Character::StealFromShop(
     if (!itemToSteal || !CanAct()) {
         return 0;  // no item or cant act - no stealing
     } else {
-        CombinedSkillValue val = this->getActualSkillValue(CHARACTER_SKILL_STEALING);
+        CombinedSkillValue val = this->getActualSkillValue(SKILL_STEALING);
         int itemValue = itemToSteal->GetValue();
 
         if (itemToSteal->isWeapon())
@@ -1255,7 +1255,7 @@ StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, in
     if (!actroPtr->ActorHasItem())  // if actor does not have an item
         actroPtr->SetRandomGoldIfTheresNoItem();  // add some gold
 
-    CombinedSkillValue stealingSkill = this->getActualSkillValue(CHARACTER_SKILL_STEALING);
+    CombinedSkillValue stealingSkill = this->getActualSkillValue(SKILL_STEALING);
     int currMaxItemValue = StealingRandomBonuses[grng->random(5)] + stealingSkill.level() * StealingMasteryBonuses[stealingSkill.mastery()];
     int fineIfFailed = actroPtr->monsterInfo.level + 100 * (_steal_perm + reputation);
 
@@ -1690,17 +1690,17 @@ DamageType Character::GetSpellDamageType(SpellId uSpellID) const {
 //----- (0048E1B5) --------------------------------------------------------
 Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
     const Item *weapon = nullptr;
-    Duration weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_STAFF];
+    Duration weapon_recovery = base_recovery_times_per_weapon_type[SKILL_STAFF];
     if (attackUsesBow) {
         assert(HasItemEquipped(ITEM_SLOT_BOW));
         weapon = GetBowItem();
         weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
-    } else if (IsUnarmed() && getActualSkillValue(CHARACTER_SKILL_UNARMED).level() > 0) {
-        weapon_recovery = base_recovery_times_per_weapon_type[CHARACTER_SKILL_UNARMED];
+    } else if (IsUnarmed() && getActualSkillValue(SKILL_UNARMED).level() > 0) {
+        weapon_recovery = base_recovery_times_per_weapon_type[SKILL_UNARMED];
     } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
         weapon = GetMainHandItem();
         if (weapon->isWand()) {
-            weapon_recovery = pSpellDatas[spellForWand(weapon->itemId)].recovery_per_skill[CHARACTER_SKILL_MASTERY_EXPERT];
+            weapon_recovery = pSpellDatas[spellForWand(weapon->itemId)].recovery_per_skill[MASTERY_EXPERT];
         } else {
             weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
         }
@@ -1709,7 +1709,7 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
     Duration shield_recovery;
     if (HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
         if (GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND) == ITEM_TYPE_SHIELD) {
-            CharacterSkillType skill_type = GetOffHandItem()->skill();
+            Skill skill_type = GetOffHandItem()->skill();
             Duration shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
             float multiplier = GetArmorRecoveryMultiplierFromSkillLevel(skill_type, 1.0f, 0, 0, 0);
             shield_recovery = shield_base_recovery * multiplier;
@@ -1723,18 +1723,18 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
 
     Duration armour_recovery;
     if (HasItemEquipped(ITEM_SLOT_ARMOUR)) {
-        CharacterSkillType armour_skill_type = GetArmorItem()->skill();
+        Skill armour_skill_type = GetArmorItem()->skill();
         Duration base_armour_recovery = base_recovery_times_per_weapon_type[armour_skill_type];
         float multiplier;
 
-        if (armour_skill_type == CHARACTER_SKILL_LEATHER) {
+        if (armour_skill_type == SKILL_LEATHER) {
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0, 0, 0);
-        } else if (armour_skill_type == CHARACTER_SKILL_CHAIN) {
+        } else if (armour_skill_type == SKILL_CHAIN) {
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0.5f, 0, 0);
-        } else if (armour_skill_type == CHARACTER_SKILL_PLATE) {
+        } else if (armour_skill_type == SKILL_PLATE) {
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0.5f, 0.5f, 0);
         } else {
-            assert(armour_skill_type == CHARACTER_SKILL_MISC && GetArmorItem()->itemId == ITEM_QUEST_WETSUIT);
+            assert(armour_skill_type == SKILL_MISC && GetArmorItem()->itemId == ITEM_QUEST_WETSUIT);
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 1.0f, 1.0f, 1.0f);
         }
 
@@ -1747,24 +1747,24 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
     if (weapon != nullptr) {
         CombinedSkillValue weaponSkill = getActualSkillValue(weapon->skill());
         if (weaponSkill.level() > 0 &&
-            (weapon->skill() == CHARACTER_SKILL_SWORD ||
-             weapon->skill() == CHARACTER_SKILL_AXE ||
-             weapon->skill() == CHARACTER_SKILL_BOW)) {
+            (weapon->skill() == SKILL_SWORD ||
+             weapon->skill() == SKILL_AXE ||
+             weapon->skill() == SKILL_BOW)) {
             // Expert Sword, Axe & Bow reduce recovery
-            if (weaponSkill.mastery() >= CHARACTER_SKILL_MASTERY_EXPERT)
+            if (weaponSkill.mastery() >= MASTERY_EXPERT)
                 sword_axe_bow_recovery_reduction = Duration::fromTicks(weaponSkill.level());
         }
     }
 
-    bool shooting_laser = weapon && weapon->skill() == CHARACTER_SKILL_BLASTER;
+    bool shooting_laser = weapon && weapon->skill() == SKILL_BLASTER;
     assert(!shooting_laser || !attackUsesBow); // For blasters we expect attackUsesBow == false.
 
     Duration armsmaster_recovery_reduction;
     if (!attackUsesBow && !shooting_laser) {
-        CombinedSkillValue armsmasterSkill = getActualSkillValue(CHARACTER_SKILL_ARMSMASTER);
+        CombinedSkillValue armsmasterSkill = getActualSkillValue(SKILL_ARMSMASTER);
         if (armsmasterSkill.level() > 0) {
             armsmaster_recovery_reduction = Duration::fromTicks(armsmasterSkill.level());
-            if (armsmasterSkill.mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER)
+            if (armsmasterSkill.mastery() >= MASTERY_GRANDMASTER)
                 armsmaster_recovery_reduction *= 2;
         }
     }
@@ -1805,17 +1805,17 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
 }
 
 //----- new --------------------------------------------------------
-float Character::GetArmorRecoveryMultiplierFromSkillLevel(CharacterSkillType armour_skill_type, float mult1, float mult2, float mult3, float mult4) const {
-    CharacterSkillMastery skillMastery = getSkillValue(armour_skill_type).mastery();
+float Character::GetArmorRecoveryMultiplierFromSkillLevel(Skill armour_skill_type, float mult1, float mult2, float mult3, float mult4) const {
+    Mastery skillMastery = getSkillValue(armour_skill_type).mastery();
 
     switch (skillMastery) {
-        case CHARACTER_SKILL_MASTERY_NOVICE:
+        case MASTERY_NOVICE:
             return mult1;
-        case CHARACTER_SKILL_MASTERY_EXPERT:
+        case MASTERY_EXPERT:
             return mult2;
-        case CHARACTER_SKILL_MASTERY_MASTER:
+        case MASTERY_MASTER:
             return mult3;
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+        case MASTERY_GRANDMASTER:
             return mult4;
         default:
             assert(false);
@@ -1947,7 +1947,7 @@ unsigned int Character::GetActualAge() const {
 }
 
 //----- (0048E73F) --------------------------------------------------------
-int Character::GetBaseResistance(CharacterAttribute a2) const {
+int Character::GetBaseResistance(Attribute a2) const {
     int v7;  // esi@20
     int racialBonus = 0;
     const int16_t *resStat;
@@ -1992,22 +1992,22 @@ int Character::GetBaseResistance(CharacterAttribute a2) const {
 }
 
 //----- (0048E7D0) --------------------------------------------------------
-int Character::GetActualResistance(CharacterAttribute resistance) const {
+int Character::GetActualResistance(Attribute resistance) const {
     signed int v10 = 0;  // [sp+14h] [bp-4h]@1
     const int16_t *resStat;
     int result;
     int baseRes;
 
-    CombinedSkillValue leatherSkill = getActualSkillValue(CHARACTER_SKILL_LEATHER);
+    CombinedSkillValue leatherSkill = getActualSkillValue(SKILL_LEATHER);
 
     if (CheckHiredNPCSpeciality(Enchanter)) v10 = 20;
     if ((resistance == ATTRIBUTE_RESIST_FIRE ||
          resistance == ATTRIBUTE_RESIST_AIR ||
          resistance == ATTRIBUTE_RESIST_WATER ||
          resistance == ATTRIBUTE_RESIST_EARTH) &&
-        leatherSkill.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER &&
+        leatherSkill.mastery() == MASTERY_GRANDMASTER &&
         HasItemEquipped(ITEM_SLOT_ARMOUR) &&
-        GetEquippedItemSkillType(ITEM_SLOT_ARMOUR) == CHARACTER_SKILL_LEATHER)
+        GetEquippedItemSkillType(ITEM_SLOT_ARMOUR) == SKILL_LEATHER)
         v10 += leatherSkill.level();
 
     switch (resistance) {
@@ -2119,14 +2119,14 @@ int Character::GetSpecialItemBonus(ItemEnchantment enchantment) const {
 }
 
 //----- (0048EAAE) --------------------------------------------------------
-int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*= false*/) const {
+int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/) const {
     int v5;                     // edi@1
     int v14;                    // ecx@58
     int v15;                    // eax@58
     int v25;                    // ecx@80
     int v26;                    // edi@80
     int v56;                    // eax@365
-    CharacterSkillType v58;             // [sp-4h] [bp-20h]@10
+    Skill v58;             // [sp-4h] [bp-20h]@10
     int v61;                    // [sp+10h] [bp-Ch]@1
     int v62;                    // [sp+14h] [bp-8h]@1
     bool no_skills;
@@ -2138,67 +2138,67 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
     no_skills = false;
     switch (attr) {
         case ATTRIBUTE_SKILL_ALCHEMY:
-            v58 = CHARACTER_SKILL_ALCHEMY;
+            v58 = SKILL_ALCHEMY;
             break;
         case ATTRIBUTE_SKILL_STEALING:
-            v58 = CHARACTER_SKILL_STEALING;
+            v58 = SKILL_STEALING;
             break;
         case ATTRIBUTE_SKILL_TRAP_DISARM:
-            v58 = CHARACTER_SKILL_TRAP_DISARM;
+            v58 = SKILL_TRAP_DISARM;
             break;
         case ATTRIBUTE_SKILL_ITEM_ID:
-            v58 = CHARACTER_SKILL_ITEM_ID;
+            v58 = SKILL_ITEM_ID;
             break;
         case ATTRIBUTE_SKILL_MONSTER_ID:
-            v58 = CHARACTER_SKILL_MONSTER_ID;
+            v58 = SKILL_MONSTER_ID;
             break;
         case ATTRIBUTE_SKILL_ARMSMASTER:
-            v58 = CHARACTER_SKILL_ARMSMASTER;
+            v58 = SKILL_ARMSMASTER;
             break;
         case ATTRIBUTE_SKILL_DODGE:
-            v58 = CHARACTER_SKILL_DODGE;
+            v58 = SKILL_DODGE;
             break;
         case ATTRIBUTE_SKILL_UNARMED:
-            v58 = CHARACTER_SKILL_UNARMED;
+            v58 = SKILL_UNARMED;
             break;
         case ATTRIBUTE_SKILL_FIRE:
-            v58 = CHARACTER_SKILL_FIRE;
+            v58 = SKILL_FIRE;
             break;
         case ATTRIBUTE_SKILL_AIR:
-            v58 = CHARACTER_SKILL_AIR;
+            v58 = SKILL_AIR;
             break;
         case ATTRIBUTE_SKILL_WATER:
-            v58 = CHARACTER_SKILL_WATER;
+            v58 = SKILL_WATER;
             break;
         case ATTRIBUTE_SKILL_EARTH:
-            v58 = CHARACTER_SKILL_EARTH;
+            v58 = SKILL_EARTH;
             break;
         case ATTRIBUTE_SKILL_SPIRIT:
-            v58 = CHARACTER_SKILL_SPIRIT;
+            v58 = SKILL_SPIRIT;
             break;
         case ATTRIBUTE_SKILL_MIND:
-            v58 = CHARACTER_SKILL_MIND;
+            v58 = SKILL_MIND;
             break;
         case ATTRIBUTE_SKILL_BODY:
-            v58 = CHARACTER_SKILL_BODY;
+            v58 = SKILL_BODY;
             break;
         case ATTRIBUTE_SKILL_LIGHT:
-            v58 = CHARACTER_SKILL_LIGHT;
+            v58 = SKILL_LIGHT;
             break;
         case ATTRIBUTE_SKILL_DARK:
-            v58 = CHARACTER_SKILL_DARK;
+            v58 = SKILL_DARK;
             break;
         case ATTRIBUTE_SKILL_MEDITATION:
-            v58 = CHARACTER_SKILL_MEDITATION;
+            v58 = SKILL_MEDITATION;
             break;
         case ATTRIBUTE_SKILL_BOW:
-            v58 = CHARACTER_SKILL_BOW;
+            v58 = SKILL_BOW;
             break;
         case ATTRIBUTE_SKILL_SHIELD:
-            v58 = CHARACTER_SKILL_SHIELD;
+            v58 = SKILL_SHIELD;
             break;
         case ATTRIBUTE_SKILL_LEARNING:
-            v58 = CHARACTER_SKILL_LEARNING;
+            v58 = SKILL_LEARNING;
             break;
         default:
             no_skills = true;
@@ -2241,7 +2241,7 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
                         const Item *mainHandItem = GetMainHandItem();
                         v26 = mainHandItem->GetDamageRoll();
                         if (GetOffHandItem() != nullptr ||
-                            mainHandItem->skill() != CHARACTER_SKILL_SPEAR) {
+                            mainHandItem->skill() != SKILL_SPEAR) {
                             v25 = mainHandItem->GetDamageDice();
                         } else {
                             v25 = mainHandItem->GetDamageDice() + 1;
@@ -2293,7 +2293,7 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
                     v5 = mainHandItem->GetDamageDice() +
                          mainHandItem->GetDamageMod();
                     if (GetOffHandItem() == nullptr &&
-                        mainHandItem->skill() == CHARACTER_SKILL_SPEAR) {
+                        mainHandItem->skill() == SKILL_SPEAR) {
                         ++v5;
                     }
                 }
@@ -2378,7 +2378,7 @@ int Character::GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg /*
 }
 
 //----- (0048F73C) --------------------------------------------------------
-int Character::GetMagicalBonus(CharacterAttribute a2) const {
+int Character::GetMagicalBonus(Attribute a2) const {
     int v3 = 0;  // eax@4
     int v4 = 0;  // ecx@5
 
@@ -2455,10 +2455,10 @@ int Character::GetMagicalBonus(CharacterAttribute a2) const {
 }
 
 //----- (0048F882) --------------------------------------------------------
-int Character::actualSkillLevel(CharacterSkillType skill) const {
-    if (skill == CHARACTER_SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
+int Character::actualSkillLevel(Skill skill) const {
+    if (skill == SKILL_CLUB && engine->config->gameplay.TreatClubAsMace.value()) {
         // some items loaded in as clubs
-        skill = CHARACTER_SKILL_MACE;
+        skill = SKILL_MACE;
     }
 
     // Vanilla returned 0 for CHARACTER_SKILL_MISC here, we return 1.
@@ -2466,51 +2466,51 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
 
     int bonus = 0;
     switch (skill) {
-        case CHARACTER_SKILL_MONSTER_ID: {
+        case SKILL_MONSTER_ID: {
             if (CheckHiredNPCSpeciality(Hunter)) bonus = 6;
             if (CheckHiredNPCSpeciality(Sage)) bonus += 6;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_MONSTER_ID);
         } break;
 
-        case CHARACTER_SKILL_ARMSMASTER: {
+        case SKILL_ARMSMASTER: {
             if (CheckHiredNPCSpeciality(Armsmaster)) bonus = 2;
             if (CheckHiredNPCSpeciality(Weaponsmaster)) bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_ARMSMASTER);
         } break;
 
-        case CHARACTER_SKILL_STEALING: {
+        case SKILL_STEALING: {
             if (CheckHiredNPCSpeciality(Burglar)) bonus = 8;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_STEALING);
         } break;
 
-        case CHARACTER_SKILL_ALCHEMY: {
+        case SKILL_ALCHEMY: {
             if (CheckHiredNPCSpeciality(Herbalist)) bonus = 4;
             if (CheckHiredNPCSpeciality(Apothecary)) bonus += 8;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_ALCHEMY);
         } break;
 
-        case CHARACTER_SKILL_LEARNING: {
+        case SKILL_LEARNING: {
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_LEARNING);
         } break;
 
-        case CHARACTER_SKILL_UNARMED: {
+        case SKILL_UNARMED: {
             if (CheckHiredNPCSpeciality(Monk)) bonus = 2;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_UNARMED);
         } break;
 
-        case CHARACTER_SKILL_DODGE: {
+        case SKILL_DODGE: {
             if (CheckHiredNPCSpeciality(Monk)) bonus = 2;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_DODGE);
         } break;
 
-        case CHARACTER_SKILL_BOW:
+        case SKILL_BOW:
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_BOW);
             break;
-        case CHARACTER_SKILL_SHIELD:
+        case SKILL_SHIELD:
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_SHIELD);
             break;
 
-        case CHARACTER_SKILL_EARTH:
+        case SKILL_EARTH:
             if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
@@ -2518,7 +2518,7 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_EARTH);
             break;
-        case CHARACTER_SKILL_FIRE:
+        case SKILL_FIRE:
             if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
@@ -2526,7 +2526,7 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_FIRE);
             break;
-        case CHARACTER_SKILL_AIR:
+        case SKILL_AIR:
             if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
@@ -2534,7 +2534,7 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_AIR);
             break;
-        case CHARACTER_SKILL_WATER:
+        case SKILL_WATER:
             if (CheckHiredNPCSpeciality(Apprentice)) bonus = 2;
             if (CheckHiredNPCSpeciality(Mystic)) bonus += 3;
             if (CheckHiredNPCSpeciality(Spellmaster)) bonus += 4;
@@ -2542,7 +2542,7 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_WATER);
             break;
-        case CHARACTER_SKILL_SPIRIT:
+        case SKILL_SPIRIT:
             if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
             if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
             if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
@@ -2550,7 +2550,7 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_SPIRIT);
             break;
-        case CHARACTER_SKILL_MIND:
+        case SKILL_MIND:
             if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
             if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
             if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
@@ -2558,7 +2558,7 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_MIND);
             break;
-        case CHARACTER_SKILL_BODY:
+        case SKILL_BODY:
             if (CheckHiredNPCSpeciality(Acolyte2)) bonus = 2;
             if (CheckHiredNPCSpeciality(Initiate)) bonus += 3;
             if (CheckHiredNPCSpeciality(Prelate)) bonus += 4;
@@ -2566,32 +2566,32 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
                 bonus += 3;
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_BODY);
             break;
-        case CHARACTER_SKILL_LIGHT:
+        case SKILL_LIGHT:
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_LIGHT);
             break;
-        case CHARACTER_SKILL_DARK: {
+        case SKILL_DARK: {
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_DARK);
         } break;
 
-        case CHARACTER_SKILL_MERCHANT: {
+        case SKILL_MERCHANT: {
             if (CheckHiredNPCSpeciality(Trader)) bonus = 4;
             if (CheckHiredNPCSpeciality(Merchant)) bonus += 6;
             if (CheckHiredNPCSpeciality(Gypsy)) bonus += 3;
             if (CheckHiredNPCSpeciality(Duper)) bonus += 8;
         } break;
 
-        case CHARACTER_SKILL_PERCEPTION: {
+        case SKILL_PERCEPTION: {
             if (CheckHiredNPCSpeciality(Scout)) bonus = 6;
             if (CheckHiredNPCSpeciality(Psychic)) bonus += 5;
         } break;
 
-        case CHARACTER_SKILL_ITEM_ID:
+        case SKILL_ITEM_ID:
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_ITEM_ID);
             break;
-        case CHARACTER_SKILL_MEDITATION:
+        case SKILL_MEDITATION:
             bonus += GetItemsBonus(ATTRIBUTE_SKILL_MEDITATION);
             break;
-        case CHARACTER_SKILL_TRAP_DISARM: {
+        case SKILL_TRAP_DISARM: {
             if (CheckHiredNPCSpeciality(Tinker)) bonus = 4;
             if (CheckHiredNPCSpeciality(Locksmith)) bonus += 6;
             if (CheckHiredNPCSpeciality(Burglar)) bonus += 8;
@@ -2605,28 +2605,28 @@ int Character::actualSkillLevel(CharacterSkillType skill) const {
     return std::min(skills_max_level[skill], bonus + base);
 }
 
-CombinedSkillValue Character::getActualSkillValue(CharacterSkillType skill) const {
+CombinedSkillValue Character::getActualSkillValue(Skill skill) const {
     int level = actualSkillLevel(skill);
-    CharacterSkillMastery mastery = pActiveSkills[skill].mastery();
+    Mastery mastery = pActiveSkills[skill].mastery();
 
     if (level > 0)
-        mastery = std::max(mastery, CHARACTER_SKILL_MASTERY_NOVICE);
+        mastery = std::max(mastery, MASTERY_NOVICE);
 
     return CombinedSkillValue(level, mastery);
 }
 
 //----- (0048FC00) --------------------------------------------------------
-int Character::GetSkillBonus(CharacterAttribute inSkill) const {
+int Character::GetSkillBonus(Attribute inSkill) const {
                     // TODO(_): move the individual implementations to attribute
                     // classes once possible ?? check
     int armsMasterBonus = 0;
-    int armmaster_skill = getActualSkillValue(CHARACTER_SKILL_ARMSMASTER).level();
+    int armmaster_skill = getActualSkillValue(SKILL_ARMSMASTER).level();
     if (armmaster_skill > 0) {
         int multiplier = 0;
         if (inSkill == ATTRIBUTE_MELEE_DMG_BONUS) {
-            multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_ARMSMASTER, 0, 0, 1, 2);
+            multiplier = GetMultiplierForSkillLevel(SKILL_ARMSMASTER, 0, 0, 1, 2);
         } else if (inSkill == ATTRIBUTE_ATTACK) {
-            multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_ARMSMASTER, 0, 1, 1, 2);
+            multiplier = GetMultiplierForSkillLevel(SKILL_ARMSMASTER, 0, 1, 1, 2);
         }
         armsMasterBonus = multiplier * armmaster_skill;
     }
@@ -2634,8 +2634,8 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
     switch (inSkill) {
         case ATTRIBUTE_RANGED_DMG_BONUS:
             if (HasItemEquipped(ITEM_SLOT_BOW)) {
-                int bowSkillLevel = getActualSkillValue(CHARACTER_SKILL_BOW).level();
-                int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_BOW, 0, 0, 0, 1);
+                int bowSkillLevel = getActualSkillValue(SKILL_BOW).level();
+                int multiplier = GetMultiplierForSkillLevel(SKILL_BOW, 0, 0, 0, 1);
                 return multiplier * bowSkillLevel;
             }
             return 0;
@@ -2661,35 +2661,35 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
                 if (!item->isFunctional())
                     continue;
 
-                CharacterSkillType itemSkillType = item->skill();
+                Skill itemSkillType = item->skill();
                 int currArmorSkillLevel = 0;
                 int multiplier = 0;
                 switch (itemSkillType) {
-                    case CHARACTER_SKILL_STAFF:
+                    case SKILL_STAFF:
                         currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
                         multiplier = GetMultiplierForSkillLevel(itemSkillType, 0, 1, 1, 1);
                         break;
-                    case CHARACTER_SKILL_SWORD:
-                    case CHARACTER_SKILL_SPEAR:
+                    case SKILL_SWORD:
+                    case SKILL_SPEAR:
                         currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
                         multiplier = GetMultiplierForSkillLevel(itemSkillType, 0, 0, 0, 1);
                         break;
-                    case CHARACTER_SKILL_SHIELD:
+                    case SKILL_SHIELD:
                         currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
                         wearingArmor = true;
                         multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 2, 2);
                         break;
-                    case CHARACTER_SKILL_LEATHER:
+                    case SKILL_LEATHER:
                         currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
                         wearingLeather = true;
                         multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 2, 2);
                         break;
-                    case CHARACTER_SKILL_CHAIN:
+                    case SKILL_CHAIN:
                         currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
                         wearingArmor = true;
                         multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 1, 1);
                         break;
-                    case CHARACTER_SKILL_PLATE:
+                    case SKILL_PLATE:
                         currArmorSkillLevel = getActualSkillValue(itemSkillType).level();
                         wearingArmor = true;
                         multiplier = GetMultiplierForSkillLevel(itemSkillType, 1, 1, 1, 1);
@@ -2700,10 +2700,10 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
                 ACSum += multiplier * currArmorSkillLevel;
             }
 
-            CombinedSkillValue dodgeValue = getActualSkillValue(CHARACTER_SKILL_DODGE);
+            CombinedSkillValue dodgeValue = getActualSkillValue(SKILL_DODGE);
             int multiplier =
-                GetMultiplierForSkillLevel(CHARACTER_SKILL_DODGE, 1, 2, 3, 3);
-            if (!wearingArmor && (!wearingLeather || dodgeValue.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER)) {
+                GetMultiplierForSkillLevel(SKILL_DODGE, 1, 2, 3, 3);
+            if (!wearingArmor && (!wearingLeather || dodgeValue.mastery() == MASTERY_GRANDMASTER)) {
                 ACSum += multiplier * dodgeValue.level();
             }
             return ACSum;
@@ -2711,11 +2711,11 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
 
         case ATTRIBUTE_ATTACK:
             if (this->IsUnarmed()) {
-                int unarmedSkill = this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level();
+                int unarmedSkill = this->getActualSkillValue(SKILL_UNARMED).level();
                 if (!unarmedSkill) {
                     return 0;
                 }
-                int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 1, 1, 2, 2);
+                int multiplier = GetMultiplierForSkillLevel(SKILL_UNARMED, 1, 1, 2, 2);
                 return armsMasterBonus + multiplier * unarmedSkill;
             }
             for (InventoryConstEntry item : inventory.equipment()) {
@@ -2723,14 +2723,14 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
                     continue;
 
                 if (item->isMeleeWeapon()) {
-                    CharacterSkillType currItemSkillType = item->skill();
+                    Skill currItemSkillType = item->skill();
                     int currentItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
-                    if (currItemSkillType == CHARACTER_SKILL_BLASTER) {
+                    if (currItemSkillType == SKILL_BLASTER) {
                         int multiplier = GetMultiplierForSkillLevel(currItemSkillType, 1, 2, 3, 5);
                         return multiplier * currentItemSkillLevel;
-                    } else if (currItemSkillType == CHARACTER_SKILL_STAFF && this->getActualSkillValue(CHARACTER_SKILL_STAFF).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                        int unarmedSkillLevel = this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level();
-                        int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 1, 1, 2, 2);
+                    } else if (currItemSkillType == SKILL_STAFF && this->getActualSkillValue(SKILL_STAFF).mastery() == MASTERY_GRANDMASTER) {
+                        int unarmedSkillLevel = this->getActualSkillValue(SKILL_UNARMED).level();
+                        int multiplier = GetMultiplierForSkillLevel(SKILL_UNARMED, 1, 1, 2, 2);
                         return multiplier * unarmedSkillLevel + armsMasterBonus + currentItemSkillLevel;
                     } else {
                         return armsMasterBonus + currentItemSkillLevel;
@@ -2745,13 +2745,13 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
                     continue;
 
                 if (item->isWeapon()) {
-                    CharacterSkillType currentItemSkillType = item->skill();
+                    Skill currentItemSkillType = item->skill();
                     int currentItemSkillLevel = this->getActualSkillValue(currentItemSkillType).level();
-                    if (currentItemSkillType == CHARACTER_SKILL_BOW) {
-                        int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_BOW, 1, 1, 1, 1);
+                    if (currentItemSkillType == SKILL_BOW) {
+                        int multiplier = GetMultiplierForSkillLevel(SKILL_BOW, 1, 1, 1, 1);
                         return multiplier * currentItemSkillLevel;
-                    } else if (currentItemSkillType == CHARACTER_SKILL_BLASTER) {
-                        int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_BLASTER, 1, 2, 3, 5);
+                    } else if (currentItemSkillType == SKILL_BLASTER) {
+                        int multiplier = GetMultiplierForSkillLevel(SKILL_BLASTER, 1, 2, 3, 5);
                         return multiplier * currentItemSkillLevel;
                     }
                 }
@@ -2760,11 +2760,11 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
 
         case ATTRIBUTE_MELEE_DMG_BONUS:
             if (this->IsUnarmed()) {
-                int unarmedSkillLevel = this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level();
+                int unarmedSkillLevel = this->getActualSkillValue(SKILL_UNARMED).level();
                 if (!unarmedSkillLevel) {
                     return 0;
                 }
-                int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 0, 1, 2, 2);
+                int multiplier = GetMultiplierForSkillLevel(SKILL_UNARMED, 0, 1, 2, 2);
                 return multiplier * unarmedSkillLevel;
             }
             for (InventoryConstEntry item : inventory.equipment()) {
@@ -2772,35 +2772,35 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
                     continue;
 
                 if (item->isMeleeWeapon()) {
-                    CharacterSkillType currItemSkillType = item->skill();
+                    Skill currItemSkillType = item->skill();
                     int currItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
                     int baseSkillBonus;
                     int multiplier;
                     switch (currItemSkillType) {
-                    case CHARACTER_SKILL_STAFF:
-                        if (this->getActualSkillValue(CHARACTER_SKILL_STAFF).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
-                            this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level() > 0) {
-                            int unarmedSkillLevel = this->getActualSkillValue(CHARACTER_SKILL_UNARMED).level();
-                            int multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_UNARMED, 0, 1, 2, 2);
+                    case SKILL_STAFF:
+                        if (this->getActualSkillValue(SKILL_STAFF).mastery() >= MASTERY_GRANDMASTER &&
+                            this->getActualSkillValue(SKILL_UNARMED).level() > 0) {
+                            int unarmedSkillLevel = this->getActualSkillValue(SKILL_UNARMED).level();
+                            int multiplier = GetMultiplierForSkillLevel(SKILL_UNARMED, 0, 1, 2, 2);
                             return multiplier * unarmedSkillLevel;
                         } else {
                             return armsMasterBonus;
                         }
-                    case CHARACTER_SKILL_DAGGER:
-                        multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_DAGGER, 0, 0, 0, 1);
+                    case SKILL_DAGGER:
+                        multiplier = GetMultiplierForSkillLevel(SKILL_DAGGER, 0, 0, 0, 1);
                         baseSkillBonus = multiplier * currItemSkillLevel;
                         return armsMasterBonus + baseSkillBonus;
-                    case CHARACTER_SKILL_SWORD:
-                        multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_SWORD, 0, 0, 0, 0);
+                    case SKILL_SWORD:
+                        multiplier = GetMultiplierForSkillLevel(SKILL_SWORD, 0, 0, 0, 0);
                         baseSkillBonus = multiplier * currItemSkillLevel;
                         return armsMasterBonus + baseSkillBonus;
-                    case CHARACTER_SKILL_MACE:
-                    case CHARACTER_SKILL_SPEAR:
+                    case SKILL_MACE:
+                    case SKILL_SPEAR:
                         multiplier = GetMultiplierForSkillLevel(currItemSkillType, 0, 1, 1, 1);
                         baseSkillBonus = multiplier * currItemSkillLevel;
                         return armsMasterBonus + baseSkillBonus;
-                    case CHARACTER_SKILL_AXE:
-                        multiplier = GetMultiplierForSkillLevel(CHARACTER_SKILL_AXE, 0, 0, 1, 1);
+                    case SKILL_AXE:
+                        multiplier = GetMultiplierForSkillLevel(SKILL_AXE, 0, 0, 1, 1);
                         baseSkillBonus = multiplier * currItemSkillLevel;
                         return armsMasterBonus + baseSkillBonus;
                     default:
@@ -2817,17 +2817,17 @@ int Character::GetSkillBonus(CharacterAttribute inSkill) const {
 }
 
 unsigned int Character::GetMultiplierForSkillLevel(
-    CharacterSkillType uSkillType, int mult1, int mult2, int mult3,
+    Skill uSkillType, int mult1, int mult2, int mult3,
     int mult4) const {  // TODO(pskelton): ?? needs changing - check behavious
-    CharacterSkillMastery masteryLvl = getActualSkillValue(uSkillType).mastery();
+    Mastery masteryLvl = getActualSkillValue(uSkillType).mastery();
     switch (masteryLvl) {
-        case CHARACTER_SKILL_MASTERY_NOVICE:
+        case MASTERY_NOVICE:
             return mult1;
-        case CHARACTER_SKILL_MASTERY_EXPERT:
+        case MASTERY_EXPERT:
             return mult2;
-        case CHARACTER_SKILL_MASTERY_MASTER:
+        case MASTERY_MASTER:
             return mult3;
-        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+        case MASTERY_GRANDMASTER:
             return mult4;
         default:
             return 0;
@@ -2875,7 +2875,7 @@ std::string Character::GetRaceName() const {
 }
 
 //----- (00490141) --------------------------------------------------------
-CharacterSex Character::GetSexByVoice() const {
+Sex Character::GetSexByVoice() const {
     switch (this->uVoiceID) {
         case 0u:
         case 1u:
@@ -2914,7 +2914,7 @@ CharacterSex Character::GetSexByVoice() const {
 //----- (00490188) --------------------------------------------------------
 void Character::SetInitialStats() {
     Race race = GetRace();
-    for (CharacterAttribute stat : allStatAttributes())
+    for (Attribute stat : allStatAttributes())
         _stats[stat] = StatTable[race][stat].uBaseValue;
 }
 
@@ -2956,14 +2956,14 @@ void Character::SetSexByVoice() {
 }
 
 //----- (0049024A) --------------------------------------------------------
-void Character::ChangeClass(CharacterClass cls) {
+void Character::ChangeClass(Class cls) {
     classType = cls;
     uLevel = 1;
     experience = 251ll + grng->random(100);
     uBirthYear = 1147 - grng->random(6);
 
-    for (CharacterSkillType i : allVisibleSkills()) {
-        if (pSkillAvailabilityPerClass[std::to_underlying(classType) / 4][i] != CLASS_SKILL_PRIMARY) {
+    for (Skill i : allVisibleSkills()) {
+        if (pSkillAvailabilityPerClass[std::to_underlying(classType) / 4][i] != SKILL_AFFINITY_PRIMARY) {
             setSkillValue(i, CombinedSkillValue());
         } else {
             setSkillValue(i, CombinedSkillValue::novice());
@@ -2975,29 +2975,29 @@ void Character::ChangeClass(CharacterClass cls) {
 }
 
 //----- (004903C9) --------------------------------------------------------
-CharacterSkillType Character::GetSkillIdxByOrder(signed int order) {
+Skill Character::GetSkillIdxByOrder(signed int order) {
     int counter;  // edx@5
     bool canBeInactive;
-    ClassSkillAffinity requiredValue;
+    SkillAffinity requiredValue;
     signed int offset;
 
     if (order <= 1) {
         canBeInactive = false;
-        requiredValue = CLASS_SKILL_PRIMARY;  // 2 - primary skill
+        requiredValue = SKILL_AFFINITY_PRIMARY;  // 2 - primary skill
         offset = 0;
     } else if (order <= 3) {
         canBeInactive = false;
-        requiredValue = CLASS_SKILL_AVAILABLE;  // 1 - available
+        requiredValue = SKILL_AFFINITY_AVAILABLE;  // 1 - available
         offset = 2;
     } else if (order <= 12) {
         canBeInactive = true;
-        requiredValue = CLASS_SKILL_AVAILABLE;  // 1 - available
+        requiredValue = SKILL_AFFINITY_AVAILABLE;  // 1 - available
         offset = 4;
     } else {
-        return CHARACTER_SKILL_INVALID;
+        return SKILL_INVALID;
     }
     counter = 0;
-    for (CharacterSkillType i : allVisibleSkills()) {
+    for (Skill i : allVisibleSkills()) {
         if ((this->pActiveSkills[i] || canBeInactive) &&
             pSkillAvailabilityPerClass[std::to_underlying(classType) / 4][i] == requiredValue) {
             if (counter == order - offset) return i;
@@ -3005,12 +3005,12 @@ CharacterSkillType Character::GetSkillIdxByOrder(signed int order) {
         }
     }
 
-    return CHARACTER_SKILL_INVALID;
+    return SKILL_INVALID;
 }
 
 //----- (0049048D) --------------------------------------------------------
 // uint16_t PartyCreation_BtnMinusClick(Character *_this, int eAttribute)
-void Character::DecreaseAttribute(CharacterAttribute eAttribute) {
+void Character::DecreaseAttribute(Attribute eAttribute) {
     int pBaseValue;    // ecx@1
     int pDroppedStep;  // ebx@1
     int pStep;         // esi@1
@@ -3028,7 +3028,7 @@ void Character::DecreaseAttribute(CharacterAttribute eAttribute) {
 
 //----- (004905F5) --------------------------------------------------------
 // signed int  PartyCreation_BtnPlusClick(Character *this, int eAttribute)
-void Character::IncreaseAttribute(CharacterAttribute eAttribute) {
+void Character::IncreaseAttribute(Attribute eAttribute) {
     int maxValue;            // ebx@1
     signed int baseStep;     // edi@1
     signed int tmp;          // eax@17
@@ -3083,7 +3083,7 @@ void Character::resetTempBonuses() {
 }
 
 //----- (004907E7) --------------------------------------------------------
-Color Character::GetStatColor(CharacterAttribute uStat) const {
+Color Character::GetStatColor(Attribute uStat) const {
     int base_attribute_value = StatTable[GetRace()][uStat].uBaseValue;
 
     int attribute_value = _stats[uStat];
@@ -3191,36 +3191,36 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_HASTE:
                 if (!playerAffected->conditions.has(CONDITION_WEAK)) {
-                    playerAffected->pCharacterBuffs[CHARACTER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                    playerAffected->pCharacterBuffs[CHARACTER_BUFF_HASTE].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
                 }
                 break;
 
             case ITEM_POTION_HEROISM:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_HEROISM].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
                 break;
 
             case ITEM_POTION_BLESS:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_BLESS].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_BLESS].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
                 break;
 
             case ITEM_POTION_PRESERVATION:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_SHIELD:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_SHIELD].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_STONESKIN:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_STONESKIN].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
                 break;
 
             case ITEM_POTION_WATER_BREATHING:
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER, 5, 0, 0);
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER, 5, 0, 0);
                 // Drink potion reaction was missing
                 break;
 
@@ -3238,37 +3238,37 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_MIGHT_BOOST:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_STRENGTH].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_STRENGTH].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_INTELLECT_BOOST:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_INTELLIGENCE].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_INTELLIGENCE].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_PERSONALITY_BOOST:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_PERSONALITY].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_PERSONALITY].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_ENDURANCE_BOOST:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_ENDURANCE].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_ENDURANCE].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_SPEED_BOOST:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_SPEED].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_SPEED].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_ACCURACY_BOOST:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_ACCURACY].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_ACCURACY].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
@@ -3301,43 +3301,43 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
 
             case ITEM_POTION_LUCK_BOOST:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_LUCK].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_LUCK].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_FIRE_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_FIRE].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_AIR_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_AIR].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_WATER_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_WATER].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_EARTH_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_EARTH].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_MIND_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_MIND].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
             case ITEM_POTION_BODY_RESISTANCE:
                 // mastery was NONE
-                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + buffDuration, CHARACTER_SKILL_MASTERY_MASTER,
+                playerAffected->pCharacterBuffs[CHARACTER_BUFF_RESIST_BODY].Apply(pParty->GetPlayingTime() + buffDuration, MASTERY_MASTER,
                         potionStrength * 3, 0, 0);
                 break;
 
@@ -3352,7 +3352,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             case ITEM_POTION_PURE_PERSONALITY:
             case ITEM_POTION_PURE_ACCURACY:
             case ITEM_POTION_PURE_MIGHT: {
-                CharacterAttribute stat = statForPureStatPotion(pParty->pPickedItem.itemId);
+                Attribute stat = statForPureStatPotion(pParty->pPickedItem.itemId);
                 if (!playerAffected->_pureStatPotionUsed[stat]) {
                     playerAffected->_stats[stat] += 50;
                     playerAffected->_pureStatPotionUsed[stat] = true;
@@ -3438,8 +3438,8 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             return;
         }
 
-        CharacterSkillMastery requiredMastery = pSpellDatas[bookSpellId].skillMastery;
-        CharacterSkillType skill = skillForSpell(bookSpellId);
+        Mastery requiredMastery = pSpellDatas[bookSpellId].skillMastery;
+        Skill skill = skillForSpell(bookSpellId);
         CombinedSkillValue val = playerAffected->getSkillValue(skill);
 
         if (requiredMastery > val.mastery() || val.level() == 0) {
@@ -3794,81 +3794,81 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
         case VAR_MagicResistanceBonus:
             return this->sResMagicBonus >= pValue;
         case VAR_StaffSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_STAFF]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_STAFF]);
         case VAR_SwordSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_SWORD]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_SWORD]);
         case VAR_DaggerSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_DAGGER]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_DAGGER]);
         case VAR_AxeSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_AXE]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_AXE]);
         case VAR_SpearSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_SPEAR]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_SPEAR]);
         case VAR_BowSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_BOW]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_BOW]);
         case VAR_MaceSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MACE]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_MACE]);
         case VAR_BlasterSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_BLASTER]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_BLASTER]);
         case VAR_ShieldSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_SHIELD]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_SHIELD]);
         case VAR_LeatherSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_LEATHER]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_LEATHER]);
         case VAR_SkillChain:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_CHAIN]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_CHAIN]);
         case VAR_PlateSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_PLATE]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_PLATE]);
         case VAR_FireSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_FIRE]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_FIRE]);
         case VAR_AirSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_AIR]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_AIR]);
         case VAR_WaterSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_WATER]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_WATER]);
         case VAR_EarthSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_EARTH]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_EARTH]);
         case VAR_SpiritSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_SPIRIT]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_SPIRIT]);
         case VAR_MindSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MIND]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_MIND]);
         case VAR_BodySkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_BODY]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_BODY]);
         case VAR_LightSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_LIGHT]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_LIGHT]);
         case VAR_DarkSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_DARK]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_DARK]);
         case VAR_IdentifyItemSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_ITEM_ID]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_ITEM_ID]);
         case VAR_MerchantSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MERCHANT]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_MERCHANT]);
         case VAR_RepairSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_REPAIR]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_REPAIR]);
         case VAR_BodybuildingSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_BODYBUILDING]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_BODYBUILDING]);
         case VAR_MeditationSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MEDITATION]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_MEDITATION]);
         case VAR_PerceptionSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_PERCEPTION]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_PERCEPTION]);
         case VAR_DiplomacySkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_DIPLOMACY]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_DIPLOMACY]);
         case VAR_ThieverySkill:
             // Original binary had this:
             // Error("Thievery isn't used in events");
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_THIEVERY]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_THIEVERY]);
         case VAR_DisarmTrapSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_TRAP_DISARM]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_TRAP_DISARM]);
         case VAR_DodgeSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_DODGE]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_DODGE]);
         case VAR_UnarmedSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_UNARMED]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_UNARMED]);
         case VAR_IdentifyMonsterSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_MONSTER_ID]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_MONSTER_ID]);
         case VAR_ArmsmasterSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_ARMSMASTER]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_ARMSMASTER]);
         case VAR_StealingSkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_STEALING]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_STEALING]);
         case VAR_AlchemySkill:  // wasn't in the original
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_ALCHEMY]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_ALCHEMY]);
         case VAR_LearningSkill:
-            return CmpSkillValue(pValue, this->pActiveSkills[CHARACTER_SKILL_LEARNING]);
+            return CmpSkillValue(pValue, this->pActiveSkills[SKILL_LEARNING]);
         case VAR_Cursed:
             return conditions.has(CONDITION_CURSED);
         case VAR_Weak:
@@ -4067,12 +4067,12 @@ void Character::SetVariable(EvtVariable var_type, signed int var_value) {
 
     switch (var_type) {
         case VAR_Sex:
-            this->uSex = (CharacterSex)var_value;
+            this->uSex = (Sex)var_value;
             PlayAwardSound_Anim();
             return;
         case VAR_Class:
-            this->classType = (CharacterClass)var_value;
-            if ((CharacterClass)var_value == CLASS_LICH) {
+            this->classType = (Class)var_value;
+            if ((Class)var_value == CLASS_LICH) {
                 for (InventoryEntry entry : inventory.entries()) {
                     if (entry->itemId == ITEM_QUEST_LICH_JAR_EMPTY) {
                         entry->itemId = ITEM_QUEST_LICH_JAR_FULL;
@@ -4085,7 +4085,7 @@ void Character::SetVariable(EvtVariable var_type, signed int var_value) {
                 if (this->sResEarthBase < 20) this->sResEarthBase = 20;
                 this->sResMindBase = 200;
                 this->sResBodyBase = 200;
-                CharacterSex sex = this->GetSexByVoice();
+                Sex sex = this->GetSexByVoice();
                 this->uPrevVoiceID = this->uVoiceID;
                 this->uPrevFace = this->uCurrentFace;
                 if (sex == SEX_FEMALE) {
@@ -4463,150 +4463,150 @@ void Character::SetVariable(EvtVariable var_type, signed int var_value) {
             pParty->uNumArenaWins[ARENA_LEVEL_LORD] = var_value;
             return;
         case VAR_StaffSkill:
-            pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_STAFF] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_SwordSkill:
-            pActiveSkills[CHARACTER_SKILL_SWORD] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_SWORD] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_DaggerSkill:
-            pActiveSkills[CHARACTER_SKILL_DAGGER] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_DAGGER] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_AxeSkill:
-            pActiveSkills[CHARACTER_SKILL_AXE] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_AXE] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_SpearSkill:
-            pActiveSkills[CHARACTER_SKILL_SPEAR] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_SPEAR] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_BowSkill:
-            pActiveSkills[CHARACTER_SKILL_BOW] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_BOW] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_MaceSkill:
-            pActiveSkills[CHARACTER_SKILL_MACE] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_MACE] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_BlasterSkill:
-            pActiveSkills[CHARACTER_SKILL_BLASTER] = CombinedSkillValue::fromJoined(var_value);;
+            pActiveSkills[SKILL_BLASTER] = CombinedSkillValue::fromJoined(var_value);;
             SetSkillReaction();
             return;
         case VAR_ShieldSkill:
-            pActiveSkills[CHARACTER_SKILL_SHIELD] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_SHIELD] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_LeatherSkill:
-            pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_SkillChain:
-            pActiveSkills[CHARACTER_SKILL_CHAIN] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_CHAIN] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_PlateSkill:
-            pActiveSkills[CHARACTER_SKILL_PLATE] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_PLATE] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_FireSkill:
-            pActiveSkills[CHARACTER_SKILL_FIRE] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_FIRE] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_AirSkill:
-            pActiveSkills[CHARACTER_SKILL_AIR] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_AIR] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_WaterSkill:
-            pActiveSkills[CHARACTER_SKILL_WATER] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_WATER] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_EarthSkill:
-            pActiveSkills[CHARACTER_SKILL_EARTH] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_EARTH] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_SpiritSkill:
-            pActiveSkills[CHARACTER_SKILL_SPIRIT] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_SPIRIT] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_MindSkill:
-            pActiveSkills[CHARACTER_SKILL_MIND] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_MIND] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_BodySkill:
-            pActiveSkills[CHARACTER_SKILL_BODY] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_BODY] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_LightSkill:
-            pActiveSkills[CHARACTER_SKILL_LIGHT] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_LIGHT] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_DarkSkill:
-            pActiveSkills[CHARACTER_SKILL_DARK] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_DARK] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_IdentifyItemSkill:
-            pActiveSkills[CHARACTER_SKILL_ITEM_ID] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_ITEM_ID] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_MerchantSkill:
-            pActiveSkills[CHARACTER_SKILL_MERCHANT] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_MERCHANT] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_RepairSkill:
-            pActiveSkills[CHARACTER_SKILL_REPAIR] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_REPAIR] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_BodybuildingSkill:
-            pActiveSkills[CHARACTER_SKILL_BODYBUILDING] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_BODYBUILDING] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_MeditationSkill:
-            pActiveSkills[CHARACTER_SKILL_MEDITATION] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_MEDITATION] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_PerceptionSkill:
-            pActiveSkills[CHARACTER_SKILL_PERCEPTION] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_PERCEPTION] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_DiplomacySkill:
-            pActiveSkills[CHARACTER_SKILL_DIPLOMACY] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_DIPLOMACY] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_ThieverySkill:
             logger->error("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
-            pActiveSkills[CHARACTER_SKILL_TRAP_DISARM] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_TRAP_DISARM] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_DodgeSkill:
-            pActiveSkills[CHARACTER_SKILL_DODGE] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_DODGE] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_UnarmedSkill:
-            pActiveSkills[CHARACTER_SKILL_UNARMED] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_UNARMED] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_IdentifyMonsterSkill:
-            pActiveSkills[CHARACTER_SKILL_MONSTER_ID] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_MONSTER_ID] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_ArmsmasterSkill:
-            pActiveSkills[CHARACTER_SKILL_ARMSMASTER] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_ARMSMASTER] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_StealingSkill:
-            pActiveSkills[CHARACTER_SKILL_STEALING] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_STEALING] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_AlchemySkill:
-            pActiveSkills[CHARACTER_SKILL_ALCHEMY] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_ALCHEMY] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         case VAR_LearningSkill:
-            pActiveSkills[CHARACTER_SKILL_LEARNING] = CombinedSkillValue::fromJoined(var_value);
+            pActiveSkills[SKILL_LEARNING] = CombinedSkillValue::fromJoined(var_value);
             SetSkillReaction();
             return;
         default:
@@ -4630,7 +4630,7 @@ void Character::PlayAwardSound_Anim() {
 }
 
 //----- (new function) --------------------------------------------------------
-void Character::PlayAwardSound_Anim_Face(CharacterSpeech speech) {
+void Character::PlayAwardSound_Anim_Face(SpeechId speech) {
     this->playReaction(speech);
     PlayAwardSound_Anim();
 }
@@ -4702,11 +4702,11 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
             PlayAwardSound();
             return;
         case VAR_Sex:
-            this->uSex = (CharacterSex)val;
+            this->uSex = (Sex)val;
             PlayAwardSound_Anim97();
             return;
         case VAR_Class:
-            this->classType = (CharacterClass)val;
+            this->classType = (Class)val;
             PlayAwardSound_Anim97();
             return;
         case VAR_CurrentHP:
@@ -5046,150 +5046,150 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
             pParty->uNumArenaWins[ARENA_LEVEL_LORD] += val;
             return;
         case VAR_StaffSkill:
-            AddSkillByEvent(CHARACTER_SKILL_STAFF, val);
+            AddSkillByEvent(SKILL_STAFF, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_SwordSkill:
-            AddSkillByEvent(CHARACTER_SKILL_SWORD, val);
+            AddSkillByEvent(SKILL_SWORD, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_DaggerSkill:
-            AddSkillByEvent(CHARACTER_SKILL_DAGGER, val);;
+            AddSkillByEvent(SKILL_DAGGER, val);;
             PlayAwardSound_Anim97();
             return;
         case VAR_AxeSkill:
-            AddSkillByEvent(CHARACTER_SKILL_AXE, val);
+            AddSkillByEvent(SKILL_AXE, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_SpearSkill:
-            AddSkillByEvent(CHARACTER_SKILL_SPEAR, val);
+            AddSkillByEvent(SKILL_SPEAR, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_BowSkill:
-            AddSkillByEvent(CHARACTER_SKILL_BOW, val);
+            AddSkillByEvent(SKILL_BOW, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_MaceSkill:
-            AddSkillByEvent(CHARACTER_SKILL_MACE, val);;
+            AddSkillByEvent(SKILL_MACE, val);;
             PlayAwardSound_Anim97();
             return;
         case VAR_BlasterSkill:
-            AddSkillByEvent(CHARACTER_SKILL_BLASTER, val);
+            AddSkillByEvent(SKILL_BLASTER, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_ShieldSkill:
-            AddSkillByEvent(CHARACTER_SKILL_SHIELD, val);
+            AddSkillByEvent(SKILL_SHIELD, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_LeatherSkill:
-            AddSkillByEvent(CHARACTER_SKILL_LEATHER, val);
+            AddSkillByEvent(SKILL_LEATHER, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_SkillChain:
-            AddSkillByEvent(CHARACTER_SKILL_CHAIN, val);
+            AddSkillByEvent(SKILL_CHAIN, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_PlateSkill:
-            AddSkillByEvent(CHARACTER_SKILL_PLATE, val);
+            AddSkillByEvent(SKILL_PLATE, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_FireSkill:
-            AddSkillByEvent(CHARACTER_SKILL_FIRE, val);
+            AddSkillByEvent(SKILL_FIRE, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_AirSkill:
-            AddSkillByEvent(CHARACTER_SKILL_AIR, val);
+            AddSkillByEvent(SKILL_AIR, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_WaterSkill:
-            AddSkillByEvent(CHARACTER_SKILL_WATER, val);
+            AddSkillByEvent(SKILL_WATER, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_EarthSkill:
-            AddSkillByEvent(CHARACTER_SKILL_EARTH, val);
+            AddSkillByEvent(SKILL_EARTH, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_SpiritSkill:
-            AddSkillByEvent(CHARACTER_SKILL_SPIRIT, val);
+            AddSkillByEvent(SKILL_SPIRIT, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_MindSkill:
-            AddSkillByEvent(CHARACTER_SKILL_MIND, val);
+            AddSkillByEvent(SKILL_MIND, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_BodySkill:
-            AddSkillByEvent(CHARACTER_SKILL_BODY, val);
+            AddSkillByEvent(SKILL_BODY, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_LightSkill:
-            AddSkillByEvent(CHARACTER_SKILL_LIGHT, val);
+            AddSkillByEvent(SKILL_LIGHT, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_DarkSkill:
-            AddSkillByEvent(CHARACTER_SKILL_DARK, val);;
+            AddSkillByEvent(SKILL_DARK, val);;
             PlayAwardSound_Anim97();
             return;
         case VAR_IdentifyItemSkill:
-            AddSkillByEvent(CHARACTER_SKILL_ITEM_ID, val);
+            AddSkillByEvent(SKILL_ITEM_ID, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_MerchantSkill:
-            AddSkillByEvent(CHARACTER_SKILL_MERCHANT, val);
+            AddSkillByEvent(SKILL_MERCHANT, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_RepairSkill:
-            AddSkillByEvent(CHARACTER_SKILL_REPAIR, val);
+            AddSkillByEvent(SKILL_REPAIR, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_BodybuildingSkill:
-            AddSkillByEvent(CHARACTER_SKILL_BODYBUILDING, val);
+            AddSkillByEvent(SKILL_BODYBUILDING, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_MeditationSkill:
-            AddSkillByEvent(CHARACTER_SKILL_MEDITATION, val);
+            AddSkillByEvent(SKILL_MEDITATION, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_PerceptionSkill:
-            AddSkillByEvent(CHARACTER_SKILL_PERCEPTION, val);
+            AddSkillByEvent(SKILL_PERCEPTION, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_DiplomacySkill:
-            AddSkillByEvent(CHARACTER_SKILL_DIPLOMACY, val);
+            AddSkillByEvent(SKILL_DIPLOMACY, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_ThieverySkill:
             logger->error("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
-            AddSkillByEvent(CHARACTER_SKILL_TRAP_DISARM, val);
+            AddSkillByEvent(SKILL_TRAP_DISARM, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_DodgeSkill:
-            AddSkillByEvent(CHARACTER_SKILL_DODGE, val);
+            AddSkillByEvent(SKILL_DODGE, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_UnarmedSkill:
-            AddSkillByEvent(CHARACTER_SKILL_UNARMED, val);
+            AddSkillByEvent(SKILL_UNARMED, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_IdentifyMonsterSkill:
-            AddSkillByEvent(CHARACTER_SKILL_MONSTER_ID, val);
+            AddSkillByEvent(SKILL_MONSTER_ID, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_ArmsmasterSkill:
-            AddSkillByEvent(CHARACTER_SKILL_ARMSMASTER, val);
+            AddSkillByEvent(SKILL_ARMSMASTER, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_StealingSkill:
-            AddSkillByEvent(CHARACTER_SKILL_STEALING, val);
+            AddSkillByEvent(SKILL_STEALING, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_AlchemySkill:
-            AddSkillByEvent(CHARACTER_SKILL_ALCHEMY, val);
+            AddSkillByEvent(SKILL_ALCHEMY, val);
             PlayAwardSound_Anim97();
             return;
         case VAR_LearningSkill:
-            AddSkillByEvent(CHARACTER_SKILL_LEARNING, val);
+            AddSkillByEvent(SKILL_LEARNING, val);
             PlayAwardSound_Anim97();
             return;
         default:
@@ -5205,17 +5205,17 @@ void Character::PlayAwardSound_Anim97() {
 }
 
 //----- (new function) --------------------------------------------------------
-void Character::PlayAwardSound_Anim97_Face(CharacterSpeech speech) {
+void Character::PlayAwardSound_Anim97_Face(SpeechId speech) {
     this->playReaction(speech);
     PlayAwardSound_Anim97();
 }
 
 //----- (new function) --------------------------------------------------------
-void Character::AddSkillByEvent(CharacterSkillType skill, uint16_t addSkillValue) {
+void Character::AddSkillByEvent(Skill skill, uint16_t addSkillValue) {
     auto [addLevel, addMastery] = CombinedSkillValue::fromJoinedUnchecked(addSkillValue);
 
     int newLevel = pActiveSkills[skill].level() + addLevel;
-    CharacterSkillMastery newMastery = std::max(pActiveSkills[skill].mastery(), addMastery);
+    Mastery newMastery = std::max(pActiveSkills[skill].mastery(), addMastery);
 
     pActiveSkills[skill] = CombinedSkillValue(newLevel, newMastery);
 }
@@ -5455,150 +5455,150 @@ void Character::SubtractVariable(EvtVariable VarNum, signed int pValue) {
             this->PlayAwardSound_AnimSubtract_Face(SPEECH_STAT_BONUS_INC);
             return;
         case VAR_StaffSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_STAFF, pValue);
+            SubtractSkillByEvent(SKILL_STAFF, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_SwordSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_SWORD, pValue);
+            SubtractSkillByEvent(SKILL_SWORD, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_DaggerSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_DAGGER, pValue);;
+            SubtractSkillByEvent(SKILL_DAGGER, pValue);;
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_AxeSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_AXE, pValue);
+            SubtractSkillByEvent(SKILL_AXE, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_SpearSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_BOW, pValue);
+            SubtractSkillByEvent(SKILL_BOW, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_BowSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_BOW, pValue);
+            SubtractSkillByEvent(SKILL_BOW, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_MaceSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_MACE, pValue);
+            SubtractSkillByEvent(SKILL_MACE, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_BlasterSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_BLASTER, pValue);
+            SubtractSkillByEvent(SKILL_BLASTER, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_ShieldSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_SHIELD, pValue);;
+            SubtractSkillByEvent(SKILL_SHIELD, pValue);;
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_LeatherSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_LEATHER, pValue);
+            SubtractSkillByEvent(SKILL_LEATHER, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_SkillChain:
-            SubtractSkillByEvent(CHARACTER_SKILL_CHAIN, pValue);
+            SubtractSkillByEvent(SKILL_CHAIN, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_PlateSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_PLATE, pValue);
+            SubtractSkillByEvent(SKILL_PLATE, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_FireSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_FIRE, pValue);
+            SubtractSkillByEvent(SKILL_FIRE, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_AirSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_AIR, pValue);
+            SubtractSkillByEvent(SKILL_AIR, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_WaterSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_WATER, pValue);
+            SubtractSkillByEvent(SKILL_WATER, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_EarthSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_EARTH, pValue);
+            SubtractSkillByEvent(SKILL_EARTH, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_SpiritSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_SPIRIT, pValue);
+            SubtractSkillByEvent(SKILL_SPIRIT, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_MindSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_MIND, pValue);;
+            SubtractSkillByEvent(SKILL_MIND, pValue);;
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_BodySkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_BODY, pValue);
+            SubtractSkillByEvent(SKILL_BODY, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_LightSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_LIGHT, pValue);
+            SubtractSkillByEvent(SKILL_LIGHT, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_DarkSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_DARK, pValue);
+            SubtractSkillByEvent(SKILL_DARK, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_IdentifyItemSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_ITEM_ID, pValue);
+            SubtractSkillByEvent(SKILL_ITEM_ID, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_MerchantSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_MERCHANT, pValue);
+            SubtractSkillByEvent(SKILL_MERCHANT, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_RepairSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_REPAIR, pValue);
+            SubtractSkillByEvent(SKILL_REPAIR, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_BodybuildingSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_BODYBUILDING, pValue);
+            SubtractSkillByEvent(SKILL_BODYBUILDING, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_MeditationSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_MEDITATION, pValue);
+            SubtractSkillByEvent(SKILL_MEDITATION, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_PerceptionSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_PERCEPTION, pValue);
+            SubtractSkillByEvent(SKILL_PERCEPTION, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_DiplomacySkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_DIPLOMACY, pValue);
+            SubtractSkillByEvent(SKILL_DIPLOMACY, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_ThieverySkill:
             logger->error("Thieving unsupported");
             return;
         case VAR_DisarmTrapSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_TRAP_DISARM, pValue);
+            SubtractSkillByEvent(SKILL_TRAP_DISARM, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_DodgeSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_DODGE, pValue);
+            SubtractSkillByEvent(SKILL_DODGE, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_UnarmedSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_UNARMED, pValue);
+            SubtractSkillByEvent(SKILL_UNARMED, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_IdentifyMonsterSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_MONSTER_ID, pValue);
+            SubtractSkillByEvent(SKILL_MONSTER_ID, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_ArmsmasterSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_ARMSMASTER, pValue);
+            SubtractSkillByEvent(SKILL_ARMSMASTER, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_StealingSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_STEALING, pValue);
+            SubtractSkillByEvent(SKILL_STEALING, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_AlchemySkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_ALCHEMY, pValue);
+            SubtractSkillByEvent(SKILL_ALCHEMY, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_LearningSkill:
-            SubtractSkillByEvent(CHARACTER_SKILL_LEARNING, pValue);
+            SubtractSkillByEvent(SKILL_LEARNING, pValue);
             PlayAwardSound_AnimSubtract();
             return;
         case VAR_Cursed:
@@ -5756,13 +5756,13 @@ void Character::PlayAwardSound_AnimSubtract() {
 }
 
 //----- (new function) --------------------------------------------------------
-void Character::PlayAwardSound_AnimSubtract_Face(CharacterSpeech speech) {
+void Character::PlayAwardSound_AnimSubtract_Face(SpeechId speech) {
     this->playReaction(speech);
     PlayAwardSound_AnimSubtract();
 }
 
 //----- (new function) --------------------------------------------------------
-void Character::SubtractSkillByEvent(CharacterSkillType skill, uint16_t subSkillValue) {
+void Character::SubtractSkillByEvent(Skill skill, uint16_t subSkillValue) {
     auto [subLevel, subMastery] = CombinedSkillValue::fromJoinedUnchecked(subSkillValue);
 
     if (pActiveSkills[skill] == CombinedSkillValue::none())
@@ -5829,7 +5829,7 @@ bool Character::hasItem(ItemId uItemID, bool checkHeldItem) const {
 //----- (0043EDB9) --------------------------------------------------------
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
     Race race;  // edi@2
-    CharacterSex sex;       // eax@2
+    Sex sex;       // eax@2
 
     for (Character &character : pParty->pCharacters) {
         race = character.GetRace();
@@ -5908,8 +5908,8 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
             return;
 
         // GM unarmed 1% chance to evade attacks per skill point
-        if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
-            grng->random(100) < playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).level()) {
+        if (playerPtr->getActualSkillValue(SKILL_UNARMED).mastery() >= MASTERY_GRANDMASTER &&
+            grng->random(100) < playerPtr->getActualSkillValue(SKILL_UNARMED).level()) {
             engine->_statusBar->setEvent(LSTR_S_EVADES_DAMAGE, playerPtr->name);
             playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
             return;
@@ -5919,8 +5919,8 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
         Item *equippedArmor = playerPtr->GetArmorItem();
         SoundId soundToPlay;
         if (!equippedArmor || equippedArmor->IsBroken() ||
-            (equippedArmor->skill() != CHARACTER_SKILL_CHAIN &&
-             equippedArmor->skill() != CHARACTER_SKILL_PLATE)) {
+            (equippedArmor->skill() != SKILL_CHAIN &&
+             equippedArmor->skill() != SKILL_PLATE)) {
             soundToPlay = vrng->randomSample({SOUND_dull_armor_strike1, SOUND_dull_armor_strike2, SOUND_dull_armor_strike3, SOUND_dull_strike});
         } else {
             soundToPlay = vrng->randomSample({SOUND_metal_armor_strike1, SOUND_metal_armor_strike2, SOUND_metal_armor_strike3, SOUND_metal_vs_metal01h});
@@ -5983,7 +5983,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                             pParty->GivePartyExp(pMonsterStats->infos[actorPtr->monsterInfo.id].exp);
 
                         // kill speech
-                        CharacterSpeech speechToPlay = SPEECH_ATTACK_HIT;
+                        SpeechId speechToPlay = SPEECH_ATTACK_HIT;
                         if (vrng->random(100) < 20) {
                             speechToPlay = actorPtr->monsterInfo.hp >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
                         }
@@ -6064,8 +6064,8 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
 
             if (spriteType == SPRITE_ARROW_PROJECTILE) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point
-                if (playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).mastery() >= CHARACTER_SKILL_MASTERY_GRANDMASTER &&
-                    grng->random(100) < playerPtr->getActualSkillValue(CHARACTER_SKILL_UNARMED).level()) {
+                if (playerPtr->getActualSkillValue(SKILL_UNARMED).mastery() >= MASTERY_GRANDMASTER &&
+                    grng->random(100) < playerPtr->getActualSkillValue(SKILL_UNARMED).level()) {
                     engine->_statusBar->setEvent(LSTR_S_EVADES_DAMAGE, playerPtr->name);
                     playerPtr->playReaction(SPEECH_AVOID_DAMAGE);
                     return;
@@ -6102,14 +6102,14 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                     Item *mainHandItem = playerPtr->GetMainHandItem();
                     if (mainHandItem->itemId == ITEM_RELIC_KELEBRIM ||
                         mainHandItem->itemId == ITEM_ARTIFACT_ELFBANE ||
-                        (mainHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER))
+                        (mainHandItem->isShield() && playerPtr->getActualSkillValue(SKILL_SHIELD).mastery() == MASTERY_GRANDMASTER))
                         shielded = true;
                 }
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
                     Item *offHandItem = playerPtr->GetOffHandItem();
                     if (offHandItem->itemId == ITEM_RELIC_KELEBRIM ||
                         offHandItem->itemId == ITEM_ARTIFACT_ELFBANE ||
-                        (offHandItem->isShield() && playerPtr->getActualSkillValue(CHARACTER_SKILL_SHIELD).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER))
+                        (offHandItem->isShield() && playerPtr->getActualSkillValue(SKILL_SHIELD).mastery() == MASTERY_GRANDMASTER))
                         shielded = true;
                 }
 
@@ -6165,7 +6165,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                             if (actorPtr->monsterInfo.exp)
                                 pParty->GivePartyExp(pMonsterStats->infos[actorPtr->monsterInfo.id].exp);
 
-                            CharacterSpeech speechToPlay = SPEECH_ATTACK_HIT;
+                            SpeechId speechToPlay = SPEECH_ATTACK_HIT;
                             if (vrng->random(100) < 20) {
                                 speechToPlay = actorPtr->monsterInfo.hp >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
                             }
@@ -6562,14 +6562,14 @@ void Character::_42ECB5_CharacterAttacksActor() {
         character->SetRecoveryTime(debug_non_combat_recovery_mul * flt_debugrecmod3 * recovery);
     }
 
-    CharacterSkillType skill = CHARACTER_SKILL_STAFF;
+    Skill skill = SKILL_STAFF;
     if (shooting_wand) {
         return;
     } else if (shooting_bow) {
-        skill = CHARACTER_SKILL_BOW;
+        skill = SKILL_BOW;
         character->playReaction(SPEECH_SHOOT);
     } else if (shotting_laser) {
-        skill = CHARACTER_SKILL_BLASTER;
+        skill = SKILL_BLASTER;
     } else {
         if (character->HasItemEquipped(ITEM_SLOT_MAIN_HAND) && main_hand)
             skill = main_hand->skill();
@@ -6578,28 +6578,28 @@ void Character::_42ECB5_CharacterAttacksActor() {
     }
 
     switch (skill) {
-        case CHARACTER_SKILL_STAFF:
+        case SKILL_STAFF:
             pAudioPlayer->playUISound(SOUND_swing_with_blunt_weapon01);
             break;
-        case CHARACTER_SKILL_SWORD:
+        case SKILL_SWORD:
             pAudioPlayer->playUISound(SOUND_swing_with_sword01);
             break;
-        case CHARACTER_SKILL_DAGGER:
+        case SKILL_DAGGER:
             pAudioPlayer->playUISound(SOUND_swing_with_sword02);
             break;
-        case CHARACTER_SKILL_AXE:
+        case SKILL_AXE:
             pAudioPlayer->playUISound(SOUND_swing_with_axe01);
             break;
-        case CHARACTER_SKILL_SPEAR:
+        case SKILL_SPEAR:
             pAudioPlayer->playUISound(SOUND_swing_with_axe03);
             break;
-        case CHARACTER_SKILL_BOW:
+        case SKILL_BOW:
             pAudioPlayer->playUISound(SOUND_shoot_bow01);
             break;
-        case CHARACTER_SKILL_MACE:
+        case SKILL_MACE:
             pAudioPlayer->playUISound(SOUND_swing_with_blunt_weapon03);
             break;
-        case CHARACTER_SKILL_BLASTER:
+        case SKILL_BLASTER:
             pAudioPlayer->playUISound(SOUND_shoot_blaster01);
             break;
         default:
@@ -6618,7 +6618,7 @@ void Character::_42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int a
     a1a.containing_item.Reset();
     a1a.uSpellID = SPELL_FIRE_FIREBALL;
     a1a.spell_level = 8;
-    a1a.spell_skill = CHARACTER_SKILL_MASTERY_MASTER;
+    a1a.spell_skill = MASTERY_MASTER;
     a1a.uObjectDescID = pObjectList->ObjectIDByItemID(a1a.uType);
     a1a.vPosition = pos;
     a1a.uAttributes = 0;
@@ -6641,11 +6641,11 @@ void Character::_42FA66_do_explosive_impact(Vec3f pos, int a4, int16_t a5, int a
     }
 }
 
-CombinedSkillValue Character::getSkillValue(CharacterSkillType skill) const {
+CombinedSkillValue Character::getSkillValue(Skill skill) const {
     return pActiveSkills[skill];
 }
 
-void Character::setSkillValue(CharacterSkillType skill, const CombinedSkillValue &value) {
+void Character::setSkillValue(Skill skill, const CombinedSkillValue &value) {
     pActiveSkills[skill] = value;
 }
 
@@ -6674,7 +6674,7 @@ void Character::tickRegeneration(int tick5, const RegenData &rData, bool stackin
     }
 }
 
-void Character::playReaction(CharacterSpeech speech, int a3) {
+void Character::playReaction(SpeechId speech, int a3) {
     int speechCount = 0;
     int portraitCount = 0;
     int pickedSoundID = 0;
@@ -6702,7 +6702,7 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
         }
     }
     if (portraitCount) {
-        CharacterPortrait portrait = portraitVariants[speech][vrng->random(portraitCount)];
+        PortraitId portrait = portraitVariants[speech][vrng->random(portraitCount)];
         Duration expressionDuration;
         if (portrait == PORTRAIT_TALK && pickedSoundID) {
             if (pickedSoundID >= 0) {
@@ -6713,7 +6713,7 @@ void Character::playReaction(CharacterSpeech speech, int a3) {
     }
 }
 
-void Character::playEmotion(CharacterPortrait newPortrait, Duration duration) {
+void Character::playEmotion(PortraitId newPortrait, Duration duration) {
     // 38 - sparkles 1 character?
 
     if (portrait == PORTRAIT_DEAD ||
@@ -6747,7 +6747,7 @@ void Character::playEmotion(CharacterPortrait newPortrait, Duration duration) {
     portrait = newPortrait;
 }
 
-bool Character::isClass(CharacterClass class_type, bool check_honorary) const {
+bool Character::isClass(Class class_type, bool check_honorary) const {
     if (classType == class_type) {
         return true;
     }
@@ -6781,7 +6781,7 @@ MerchantPhrase Character::SelectPhrasesTransaction(Item *pItem, HouseType buildi
     int merchantLevel;     // [sp+10h] [bp-8h]@1
     int itemValue;
 
-    merchantLevel = getActualSkillValue(CHARACTER_SKILL_MERCHANT).level();
+    merchantLevel = getActualSkillValue(SKILL_MERCHANT).level();
     idemId = pItem->itemId;
     equipType = pItem->type();
     itemValue = pItem->GetValue();
@@ -6802,7 +6802,7 @@ MerchantPhrase Character::SelectPhrasesTransaction(Item *pItem, HouseType buildi
         case HOUSE_TYPE_MAGIC_SHOP:
             if (idemId >= ITEM_ARTIFACT_HERMES_SANDALS)
                 return MERCHANT_PHRASE_INVALID_ACTION;
-            if (pItem->skill() != CHARACTER_SKILL_MISC)
+            if (pItem->skill() != SKILL_MISC)
                 return MERCHANT_PHRASE_INCOMPATIBLE_ITEM;
             break;
         case HOUSE_TYPE_ALCHEMY_SHOP:
@@ -6895,8 +6895,8 @@ void Character::Zero() {
     sResDarkBase = sResDarkBonus = 0;
     // Skills
     pActiveSkills.fill(CombinedSkillValue());
-    pActiveSkills[CHARACTER_SKILL_CLUB] = CombinedSkillValue::novice(); // Hidden skills, always known.
-    pActiveSkills[CHARACTER_SKILL_MISC] = CombinedSkillValue::novice();
+    pActiveSkills[SKILL_CLUB] = CombinedSkillValue::novice(); // Hidden skills, always known.
+    pActiveSkills[SKILL_MISC] = CombinedSkillValue::novice();
     // Inventory
     inventory = CharacterInventory();
     // Buffs

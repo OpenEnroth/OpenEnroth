@@ -109,7 +109,7 @@ GAME_TEST(Issues, Issue1532) {
     // keep casting till the spell fails
     while (engine->_statusBar->get() != "Spell failed") {
         if (pParty->pCharacters[0].CanAct())
-            pushSpellOrRangedAttack(SPELL_FIRE_FIRE_SPIKE, 0, CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER), 0, 0);
+            pushSpellOrRangedAttack(SPELL_FIRE_FIRE_SPIKE, 0, CombinedSkillValue(10, MASTERY_GRANDMASTER), 0, 0);
         game.tick(1);
     }
 
@@ -177,7 +177,7 @@ GAME_TEST(Issues, Issue1547) {
 GAME_TEST(Issues, Issue1569) {
     // Armorer offer chain mail skill learning.
     auto screenTape = tapes.screen();
-    auto chainTape = charTapes.hasSkill(0, CHARACTER_SKILL_CHAIN);
+    auto chainTape = charTapes.hasSkill(0, SKILL_CHAIN);
     auto goldTape = tapes.gold();
     test.playTraceFromTestData("issue_1569.mm7", "issue_1569.json");
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_HOUSE, SCREEN_GAME)); // Visited the shop.
@@ -416,7 +416,7 @@ GAME_TEST(Issues, Issue1726) {
     // Blaster trainers do not check requirements and crash the game
     auto textTape = tapes.allGUIWindowsText();
     test.playTraceFromTestData("issue_1726.mm7", "issue_1726.json");
-    int GMcount = std::ranges::count_if(pParty->pCharacters, [](const Character &ch) { return ch.getActualSkillValue(CHARACTER_SKILL_BLASTER).mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER; });
+    int GMcount = std::ranges::count_if(pParty->pCharacters, [](const Character &ch) { return ch.getActualSkillValue(SKILL_BLASTER).mastery() == MASTERY_GRANDMASTER; });
     EXPECT_EQ(GMcount, 0); // no one ends up grand master
     EXPECT_GT(textTape.flatten().filter([](const auto& s) { return s.starts_with("Your skills improve!  If your Skill with the Blaster"); }).size(), 0); // blaster requirements shown
     EXPECT_CONTAINS(textTape.flatten(), "You don't meet the requirements, and cannot be taught until you do."); // but we dont meet them
@@ -577,10 +577,10 @@ GAME_TEST(Issues, Issue1911) {
     game.startNewGame();
     EXPECT_TRUE(pParty->pCharacters[0].IsUnarmed());
 
-    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_UNARMED] = CombinedSkillValue(1, CHARACTER_SKILL_MASTERY_NOVICE);
+    pParty->pCharacters[0].pActiveSkills[SKILL_UNARMED] = CombinedSkillValue(1, MASTERY_NOVICE);
     EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 1);
 
-    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_UNARMED] = CombinedSkillValue(4, CHARACTER_SKILL_MASTERY_NOVICE);
+    pParty->pCharacters[0].pActiveSkills[SKILL_UNARMED] = CombinedSkillValue(4, MASTERY_NOVICE);
     EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 4);
 
     // Equip staff.
@@ -588,15 +588,15 @@ GAME_TEST(Issues, Issue1911) {
     staff.itemId = ITEM_STAFF;
     pParty->pPickedItem = staff;
     pParty->pCharacters[0].EquipBody(ITEM_TYPE_TWO_HANDED);
-    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue(1, CHARACTER_SKILL_MASTERY_NOVICE);
+    pParty->pCharacters[0].pActiveSkills[SKILL_STAFF] = CombinedSkillValue(1, MASTERY_NOVICE);
     EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 1); // +1 from staff skill.
 
     // Check that master staff is not affected by unarmed.
-    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue(7, CHARACTER_SKILL_MASTERY_MASTER);
+    pParty->pCharacters[0].pActiveSkills[SKILL_STAFF] = CombinedSkillValue(7, MASTERY_MASTER);
     EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 7); // +7 from staff skill.
 
     // Check that GM staff works with unarmed.
-    pParty->pCharacters[0].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER);
+    pParty->pCharacters[0].pActiveSkills[SKILL_STAFF] = CombinedSkillValue(10, MASTERY_GRANDMASTER);
     EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 14); // +10 from staff, +4 from unarmed.
 }
 
@@ -823,7 +823,7 @@ GAME_TEST(Issues, Issue1961) {
     EXPECT_EQ(chainmail.itemId, ITEM_GOLDEN_CHAIN_MAIL);
 
     // Learn enchant item.
-    pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_WATER] = CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER);
+    pParty->pCharacters[3].pActiveSkills[SKILL_WATER] = CombinedSkillValue(10, MASTERY_GRANDMASTER);
     pParty->pCharacters[3].bHaveSpell[SPELL_WATER_ENCHANT_ITEM] = true;
 
     game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_4); // Select 4th char.

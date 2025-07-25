@@ -6,9 +6,9 @@
 //                     Enchantment unification makes sense, so finish this!
 struct CEnchantment {
     CEnchantment() {}
-    explicit CEnchantment(int bonus, CharacterSkillType skill = CHARACTER_SKILL_INVALID)
+    explicit CEnchantment(int bonus, Skill skill = SKILL_INVALID)
         : skillType(skill), statBonus(bonus) {}
 
-    CharacterSkillType skillType = CHARACTER_SKILL_INVALID;
+    Skill skillType = SKILL_INVALID;
     int statBonus = 0;
 };

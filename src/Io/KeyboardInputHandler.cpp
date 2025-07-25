@@ -243,7 +243,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
                     quickSpellNumber = SPELL_NONE; // Can end up here after setting the quick spell in all magic mode.
 
                 if (quickSpellNumber != SPELL_NONE) {
-                    CharacterSkillMastery skill_mastery = pParty->activeCharacter().getActualSkillValue(skillForSpell(quickSpellNumber)).mastery();
+                    Mastery skill_mastery = pParty->activeCharacter().getActualSkillValue(skillForSpell(quickSpellNumber)).mastery();
                     uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[skill_mastery];
                 }
             }

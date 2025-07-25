@@ -403,10 +403,10 @@ void Party::createDefaultParty() {
     this->pCharacters[0]._stats[ATTRIBUTE_ACCURACY] = 13;
     this->pCharacters[0]._stats[ATTRIBUTE_SPEED] = 14;
     this->pCharacters[0]._stats[ATTRIBUTE_LUCK] = 7;
-    this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_ARMSMASTER] = CombinedSkillValue::novice();
-    this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_BOW] = CombinedSkillValue::novice();
-    this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_SWORD] = CombinedSkillValue::novice();
+    this->pCharacters[0].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pCharacters[0].pActiveSkills[SKILL_ARMSMASTER] = CombinedSkillValue::novice();
+    this->pCharacters[0].pActiveSkills[SKILL_BOW] = CombinedSkillValue::novice();
+    this->pCharacters[0].pActiveSkills[SKILL_SWORD] = CombinedSkillValue::novice();
 
     this->pCharacters[1].name = localization->GetString(LSTR_NAME_RODERICK);
     this->pCharacters[1].uPrevFace = 3;
@@ -420,10 +420,10 @@ void Party::createDefaultParty() {
     this->pCharacters[1]._stats[ATTRIBUTE_ACCURACY] = 13;
     this->pCharacters[1]._stats[ATTRIBUTE_SPEED] = 13;
     this->pCharacters[1]._stats[ATTRIBUTE_LUCK] = 13;
-    this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_STEALING] = CombinedSkillValue::novice();
-    this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_DAGGER] = CombinedSkillValue::novice();
-    this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_TRAP_DISARM] = CombinedSkillValue::novice();
+    this->pCharacters[1].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pCharacters[1].pActiveSkills[SKILL_STEALING] = CombinedSkillValue::novice();
+    this->pCharacters[1].pActiveSkills[SKILL_DAGGER] = CombinedSkillValue::novice();
+    this->pCharacters[1].pActiveSkills[SKILL_TRAP_DISARM] = CombinedSkillValue::novice();
 
     this->pCharacters[2].name = localization->GetString(LSTR_NAME_SERENA);
     this->pCharacters[2].uPrevFace = 14;
@@ -437,10 +437,10 @@ void Party::createDefaultParty() {
     this->pCharacters[2]._stats[ATTRIBUTE_ACCURACY] = 7;
     this->pCharacters[2]._stats[ATTRIBUTE_SPEED] = 13;
     this->pCharacters[2]._stats[ATTRIBUTE_LUCK] = 7;
-    this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_ALCHEMY] = CombinedSkillValue::novice();
-    this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_BODY] = CombinedSkillValue::novice();
-    this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_MACE] = CombinedSkillValue::novice();
+    this->pCharacters[2].pActiveSkills[SKILL_ALCHEMY] = CombinedSkillValue::novice();
+    this->pCharacters[2].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pCharacters[2].pActiveSkills[SKILL_BODY] = CombinedSkillValue::novice();
+    this->pCharacters[2].pActiveSkills[SKILL_MACE] = CombinedSkillValue::novice();
 
     this->pCharacters[3].name = localization->GetString(LSTR_NAME_ALEXIS);
     this->pCharacters[3].uPrevFace = 10;
@@ -454,10 +454,10 @@ void Party::createDefaultParty() {
     this->pCharacters[3]._stats[ATTRIBUTE_ACCURACY] = 13;
     this->pCharacters[3]._stats[ATTRIBUTE_SPEED] = 13;
     this->pCharacters[3]._stats[ATTRIBUTE_LUCK] = 7;
-    this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR] = CombinedSkillValue::novice();
-    this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_FIRE] = CombinedSkillValue::novice();
-    this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue::novice();
+    this->pCharacters[3].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pCharacters[3].pActiveSkills[SKILL_AIR] = CombinedSkillValue::novice();
+    this->pCharacters[3].pActiveSkills[SKILL_FIRE] = CombinedSkillValue::novice();
+    this->pCharacters[3].pActiveSkills[SKILL_STAFF] = CombinedSkillValue::novice();
 
     for (Character &pCharacter : pCharacters) {
         if (pCharacter.classType == CLASS_KNIGHT)
