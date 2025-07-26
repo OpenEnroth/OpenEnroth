@@ -229,7 +229,7 @@ GAME_TEST(Issues, Issue2104) {
     game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_ELF_ARCHER_A);
     game.tick(300);
 
-    int arrowCount = spritesTape.count([](auto sprites) { return sprites.contains(SPRITE_ARROW_PROJECTILE); });
+    int arrowCount = spritesTape.count([](auto sprites) { return sprites.contains(SPRITE_PROJECTILE_ARROW); });
     int hitCount = hpTape.size() - 1;
 
     ASSERT_GT(hitCount, 0); // Should have hit some.

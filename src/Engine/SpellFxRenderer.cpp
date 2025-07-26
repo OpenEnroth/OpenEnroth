@@ -589,78 +589,78 @@ bool SpellFxRenderer::RenderAsSprite(SpriteObject *a2) {
     result = a2->uType;
 
     switch (a2->uType) {
-        case SPRITE_PROJECTILE_AIRBOLT:
-        case SPRITE_PROJECTILE_530:
+        case SPRITE_PROJECTILE_AIR_BOLT:
+        case SPRITE_PROJECTILE_SPIRIT_BOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
                 a2, colorTable.Azure, effpar01);
             return false;
-        case SPRITE_PROJECTILE_AIRBOLT_IMPACT:
-        case SPRITE_PROJECTILE_530_IMPACT:
+        case SPRITE_PROJECTILE_AIR_BOLT_IMPACT:
+        case SPRITE_PROJECTILE_SPIRIT_BOLT_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, colorTable.Azure, effpar01);
             return true;
 
-        case SPRITE_PROJECTILE_EARTHBOLT:
+        case SPRITE_PROJECTILE_EARTH_BOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
                 a2, colorTable.CarnabyTan, effpar01);
             return false;
-        case SPRITE_PROJECTILE_EARTHBOLT_IMPACT:
+        case SPRITE_PROJECTILE_EARTH_BOLT_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, colorTable.CarnabyTan, effpar01);
             return false;
 
-        case SPRITE_PROJECTILE_FIREBOLT:
+        case SPRITE_PROJECTILE_FIRE_BOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
                 a2, colorTable.OrangeyRed, effpar01);
             return false;
-        case SPRITE_PROJECTILE_FIREBOLT_IMPACT:
+        case SPRITE_PROJECTILE_FIRE_BOLT_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, colorTable.OrangeyRed, effpar01);
             return false;
 
-        case SPRITE_PROJECTILE_WATERBOLT:
+        case SPRITE_PROJECTILE_WATER_BOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
                 a2, colorTable.ScienceBlue, effpar01);
             return false;
-        case SPRITE_PROJECTILE_WATERBOLT_IMPACT:
+        case SPRITE_PROJECTILE_WATER_BOLT_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, colorTable.ScienceBlue, effpar01);
             return false;
 
-        case SPRITE_PROJECTILE_520:
+        case SPRITE_PROJECTILE_BODY_BOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
                 a2, colorTable.GreenTeal, effpar01);
             return false;
-        case SPRITE_PROJECTILE_520_IMPACT:
+        case SPRITE_PROJECTILE_BODY_BOLT_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, colorTable.GreenTeal, effpar01);
             return false;
 
-        case SPRITE_PROJECTILE_525:
+        case SPRITE_PROJECTILE_MIND_BOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
                 a2, colorTable.DirtyYellow, effpar01);
             return false;
-        case SPRITE_PROJECTILE_525_IMPACT:
+        case SPRITE_PROJECTILE_MIND_BOLT_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, colorTable.DirtyYellow, effpar01);
             return false;
 
-        case SPRITE_PROJECTILE_LIGHTBOLT:
+        case SPRITE_PROJECTILE_LIGHT_BOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
                 a2, colorTable.White, effpar01);
             return false;
-        case SPRITE_PROJECTILE_LIGHTBOLT_IMPACT:
+        case SPRITE_PROJECTILE_LIGHT_BOLT_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, colorTable.White, effpar01);
             return false;
 
-        case SPRITE_PROJECTILE_DARKBOLT:
+        case SPRITE_PROJECTILE_DARK_BOLT:
             _4A73AA_hanging_trace_particles___like_fire_strike_ice_blast_etc(
                 a2, colorTable.MediumGrey, effpar01);
             return false;
-        case SPRITE_PROJECTILE_DARKBOLT_IMPACT:
+        case SPRITE_PROJECTILE_DARK_BOLT_IMPACT:
             _4A75CC_single_spell_collision_particle(a2, colorTable.MediumGrey, effpar01);
             return false;
 
-        case SPRITE_ARROW_PROJECTILE:
-        case SPRITE_PROJECTILE_EXPLOSIVE:
-        case SPRITE_BLASTER_PROJECTILE:
+        case SPRITE_PROJECTILE_ARROW:
+        case SPRITE_PROJECTILE_FLAMING_ARROW:
+        case SPRITE_PROJECTILE_BLASTER:
             return true;
 
-        case SPRITE_BLASTER_IMPACT:
+        case SPRITE_PROJECTILE_BLASTER_IMPACT:
             AddMobileLight(a2, colorTable.Red, 256);
             return false;
 

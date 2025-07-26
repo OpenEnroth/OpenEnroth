@@ -760,30 +760,30 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             return 0;
         }
 
-        case SPRITE_PROJECTILE_AIRBOLT:
-        case SPRITE_PROJECTILE_EARTHBOLT:
-        case SPRITE_PROJECTILE_FIREBOLT:
-        case SPRITE_PROJECTILE_WATERBOLT:
-        case SPRITE_PROJECTILE_520:
-        case SPRITE_PROJECTILE_525:
-        case SPRITE_PROJECTILE_530:
-        case SPRITE_PROJECTILE_LIGHTBOLT:
-        case SPRITE_PROJECTILE_DARKBOLT: {
+        case SPRITE_PROJECTILE_AIR_BOLT:
+        case SPRITE_PROJECTILE_EARTH_BOLT:
+        case SPRITE_PROJECTILE_FIRE_BOLT:
+        case SPRITE_PROJECTILE_WATER_BOLT:
+        case SPRITE_PROJECTILE_BODY_BOLT:
+        case SPRITE_PROJECTILE_MIND_BOLT:
+        case SPRITE_PROJECTILE_SPIRIT_BOLT:
+        case SPRITE_PROJECTILE_LIGHT_BOLT:
+        case SPRITE_PROJECTILE_DARK_BOLT: {
             applySpellSpriteDamage(uLayingItemID, pid);
             updateSpriteOnImpact(object);
             if (object->uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            if (object->uType == SPRITE_BLASTER_PROJECTILE) {
+            if (object->uType == SPRITE_PROJECTILE_BLASTER) {
                 // TODO(Nik-RE-dev): unreachable, these cases does not process this sprite type
                 pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             }
             return 0;
         }
 
-        case SPRITE_ARROW_PROJECTILE:
-        case SPRITE_PROJECTILE_EXPLOSIVE: {
+        case SPRITE_PROJECTILE_ARROW:
+        case SPRITE_PROJECTILE_FLAMING_ARROW: {
             // Note that ITEM_SPELLBOOK_FIREBALL is an MM6 remnant here,
             // in MM6 it was Percival artifact (id 405) which has swiftness and carnage enchantments
             if (object->containing_item.itemId != ITEM_SPELLBOOK_FIREBALL &&
@@ -815,7 +815,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            if (object->uType != SPRITE_BLASTER_PROJECTILE) {
+            if (object->uType != SPRITE_PROJECTILE_BLASTER) {
                 pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
                 return 0;
             }
@@ -876,7 +876,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             return 0;
         }
 
-        case SPRITE_BLASTER_PROJECTILE: {
+        case SPRITE_PROJECTILE_BLASTER: {
             applySpellSpriteDamage(uLayingItemID, pid);
             updateSpriteOnImpact(object);
             if (object->uObjectDescID == 0) {
