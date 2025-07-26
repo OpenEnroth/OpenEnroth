@@ -123,8 +123,6 @@ class Character {
     bool CanTrainToNextLevel();
     Color GetExperienceDisplayColor();
     int CalculateIncommingDamage(DamageType dmg_type, int amount);
-    ItemType GetEquippedItemEquipType(ItemSlot uEquipSlot) const;
-    Skill GetEquippedItemSkillType(ItemSlot uEquipSlot) const;
     bool IsUnarmed() const;
     bool HasItemEquipped(ItemSlot uEquipIndex) const;
     bool HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const;
