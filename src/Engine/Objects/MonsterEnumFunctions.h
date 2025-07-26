@@ -58,7 +58,7 @@ inline bool isPeasant(MonsterId monsterId) {
     return isPeasant(monsterTypeForMonsterId(monsterId));
 }
 
-CharacterSex sexForMonsterType(MonsterType monsterType);
+Sex sexForMonsterType(MonsterType monsterType);
 
 Race raceForMonsterType(MonsterType monsterType);
 

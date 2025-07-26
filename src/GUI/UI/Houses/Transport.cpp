@@ -177,7 +177,7 @@ void GUIWindow_Transport::transportDialogue() {
         pParty->TakeGold(pPrice);
         playHouseSound(houseId(), HOUSE_SOUND_TRANSPORT_TRAVEL);
 
-        CharacterSpeech pSpeech;
+        SpeechId pSpeech;
         if (isBoat(houseId())) {
             pSpeech = SPEECH_TRAVEL_BOAT;
         } else {

@@ -28,18 +28,17 @@ enum class Condition : uint32_t {
 };
 using enum Condition;
 
-// TODO(pskelton): #enum drop CHARACTER_SKILL_ at start?
-enum class CharacterSkillMastery {
-    CHARACTER_SKILL_MASTERY_NONE = 0,
-    CHARACTER_SKILL_MASTERY_NOVICE = 1,
-    CHARACTER_SKILL_MASTERY_EXPERT = 2,
-    CHARACTER_SKILL_MASTERY_MASTER = 3,
-    CHARACTER_SKILL_MASTERY_GRANDMASTER = 4,
+enum class Mastery {
+    MASTERY_NONE = 0,
+    MASTERY_NOVICE = 1,
+    MASTERY_EXPERT = 2,
+    MASTERY_MASTER = 3,
+    MASTERY_GRANDMASTER = 4,
 
-    CHARACTER_SKILL_MASTERY_FIRST = CHARACTER_SKILL_MASTERY_NOVICE,
-    CHARACTER_SKILL_MASTERY_LAST = CHARACTER_SKILL_MASTERY_GRANDMASTER
+    MASTERY_FIRST = MASTERY_NOVICE,
+    MASTERY_LAST = MASTERY_GRANDMASTER
 };
-using enum CharacterSkillMastery;
+using enum Mastery;
 
 enum class CharacterBuff {
     CHARACTER_BUFF_RESIST_AIR = 0,
@@ -72,7 +71,7 @@ enum class CharacterBuff {
 };
 using enum CharacterBuff;
 
-enum class CharacterSpeech {
+enum class SpeechId {
     SPEECH_NONE = 0,
     SPEECH_KILL_WEAK_ENEMY = 1,
     SPEECH_KILL_STRONG_ENEMY = 2,
@@ -188,7 +187,7 @@ enum class CharacterSpeech {
     SPEECH_FIRST = SPEECH_NONE,
     SPEECH_LAST = SPEECH_110
 };
-using enum CharacterSpeech;
+using enum SpeechId;
 
 enum class Race {
     RACE_HUMAN = 0,
@@ -201,65 +200,64 @@ enum class Race {
 };
 using enum Race;
 
-enum class ClassSkillAffinity : uint8_t {
-    CLASS_SKILL_DENIED = 0,
-    CLASS_SKILL_AVAILABLE = 1,
-    CLASS_SKILL_PRIMARY = 2
+enum class SkillAffinity : uint8_t {
+    SKILL_AFFINITY_DENIED = 0,
+    SKILL_AFFINITY_AVAILABLE = 1,
+    SKILL_AFFINITY_PRIMARY = 2
 };
-using enum ClassSkillAffinity;
+using enum SkillAffinity;
 
-// TODO(pskelton): drop CHARACTER_ at start?
-enum class CharacterSkillType : int8_t {
-    CHARACTER_SKILL_INVALID = -1,
-    CHARACTER_SKILL_STAFF = 0,
-    CHARACTER_SKILL_SWORD = 1,
-    CHARACTER_SKILL_DAGGER = 2,
-    CHARACTER_SKILL_AXE = 3,
-    CHARACTER_SKILL_SPEAR = 4,
-    CHARACTER_SKILL_BOW = 5,
-    CHARACTER_SKILL_MACE = 6,
-    CHARACTER_SKILL_BLASTER = 7,
-    CHARACTER_SKILL_SHIELD = 8,
-    CHARACTER_SKILL_LEATHER = 9,
-    CHARACTER_SKILL_CHAIN = 10,
-    CHARACTER_SKILL_PLATE = 11,
-    CHARACTER_SKILL_FIRE = 12,
-    CHARACTER_SKILL_AIR = 13,
-    CHARACTER_SKILL_WATER = 14,
-    CHARACTER_SKILL_EARTH = 15,
-    CHARACTER_SKILL_SPIRIT = 16,
-    CHARACTER_SKILL_MIND = 17,
-    CHARACTER_SKILL_BODY = 18,
-    CHARACTER_SKILL_LIGHT = 19,
-    CHARACTER_SKILL_DARK = 20,
-    CHARACTER_SKILL_ITEM_ID = 21,
-    CHARACTER_SKILL_MERCHANT = 22,
-    CHARACTER_SKILL_REPAIR = 23,
-    CHARACTER_SKILL_BODYBUILDING = 24,
-    CHARACTER_SKILL_MEDITATION = 25,
-    CHARACTER_SKILL_PERCEPTION = 26,
-    CHARACTER_SKILL_DIPLOMACY = 27,
-    CHARACTER_SKILL_THIEVERY = 28,
-    CHARACTER_SKILL_TRAP_DISARM = 29,
-    CHARACTER_SKILL_DODGE = 30,
-    CHARACTER_SKILL_UNARMED = 31,
-    CHARACTER_SKILL_MONSTER_ID = 32,
-    CHARACTER_SKILL_ARMSMASTER = 33,
-    CHARACTER_SKILL_STEALING = 34,
-    CHARACTER_SKILL_ALCHEMY = 35,
-    CHARACTER_SKILL_LEARNING = 36,
-    CHARACTER_SKILL_CLUB = 37, // In vanilla clubs are using separate hidden & non-upgradable skill.
-    CHARACTER_SKILL_MISC = 38, // Hidden skill that's always 1. Used for wetsuits, for example.
+enum class Skill : int8_t {
+    SKILL_INVALID = -1,
+    SKILL_STAFF = 0,
+    SKILL_SWORD = 1,
+    SKILL_DAGGER = 2,
+    SKILL_AXE = 3,
+    SKILL_SPEAR = 4,
+    SKILL_BOW = 5,
+    SKILL_MACE = 6,
+    SKILL_BLASTER = 7,
+    SKILL_SHIELD = 8,
+    SKILL_LEATHER = 9,
+    SKILL_CHAIN = 10,
+    SKILL_PLATE = 11,
+    SKILL_FIRE = 12,
+    SKILL_AIR = 13,
+    SKILL_WATER = 14,
+    SKILL_EARTH = 15,
+    SKILL_SPIRIT = 16,
+    SKILL_MIND = 17,
+    SKILL_BODY = 18,
+    SKILL_LIGHT = 19,
+    SKILL_DARK = 20,
+    SKILL_ITEM_ID = 21,
+    SKILL_MERCHANT = 22,
+    SKILL_REPAIR = 23,
+    SKILL_BODYBUILDING = 24,
+    SKILL_MEDITATION = 25,
+    SKILL_PERCEPTION = 26,
+    SKILL_DIPLOMACY = 27, // Not used in MM7.
+    SKILL_THIEVERY = 28, // Not used in MM7.
+    SKILL_TRAP_DISARM = 29,
+    SKILL_DODGE = 30,
+    SKILL_UNARMED = 31,
+    SKILL_MONSTER_ID = 32,
+    SKILL_ARMSMASTER = 33,
+    SKILL_STEALING = 34,
+    SKILL_ALCHEMY = 35,
+    SKILL_LEARNING = 36,
+    SKILL_CLUB = 37, // In vanilla clubs are using separate hidden & non-upgradable skill.
+    SKILL_MISC = 38, // Hidden skill that's always 1. Used for wetsuits, for example.
 
-    CHARACTER_SKILL_FIRST_VISIBLE = CHARACTER_SKILL_STAFF,
-    CHARACTER_SKILL_LAST_VISIBLE = CHARACTER_SKILL_LEARNING,
+    SKILL_FIRST_VISIBLE = SKILL_STAFF,
+    SKILL_LAST_VISIBLE = SKILL_LEARNING,
 
-    CHARACTER_SKILL_FIRST = CHARACTER_SKILL_STAFF,
-    CHARACTER_SKILL_LAST = CHARACTER_SKILL_MISC,
+    SKILL_FIRST = SKILL_STAFF,
+    SKILL_LAST = SKILL_MISC,
 };
-using enum CharacterSkillType;
+using enum Skill;
 
-enum class CharacterClass : uint8_t {
+enum class Class : uint8_t {
     CLASS_KNIGHT = 0,
     CLASS_CAVALIER = 1,
     CLASS_CHAMPION = 2,
@@ -300,9 +298,9 @@ enum class CharacterClass : uint8_t {
     CLASS_FIRST = CLASS_KNIGHT,
     CLASS_LAST = CLASS_LICH
 };
-using enum CharacterClass;
+using enum Class;
 
-enum class CharacterPortrait : uint16_t {
+enum class PortraitId : uint16_t {
     PORTRAIT_INVALID = 0,
     PORTRAIT_NORMAL = 1,
     PORTRAIT_CURSED = 2,
@@ -369,18 +367,18 @@ enum class CharacterPortrait : uint16_t {
     PORTRAIT_DEAD = 98,
     PORTRAIT_ERADICATED = 99,
 };
-using enum CharacterPortrait;
+using enum PortraitId;
 
-enum class CharacterSex : uint8_t {
+enum class Sex : uint8_t {
     SEX_MALE = 0,
     SEX_FEMALE = 1,
 
     SEX_FIRST = SEX_MALE,
     SEX_LAST = SEX_FEMALE,
 };
-using enum CharacterSex;
+using enum Sex;
 
-enum class CharacterAttribute {
+enum class Attribute {
     ATTRIBUTE_MIGHT = 0,
     ATTRIBUTE_INTELLIGENCE = 1,
     ATTRIBUTE_PERSONALITY = 2,
@@ -439,4 +437,4 @@ enum class CharacterAttribute {
     ATTRIBUTE_FIRST_ENCHANTABLE = ATTRIBUTE_MIGHT,
     ATTRIBUTE_LAST_ENCHANTABLE = ATTRIBUTE_SKILL_UNARMED,
 };
-using enum CharacterAttribute;
+using enum Attribute;

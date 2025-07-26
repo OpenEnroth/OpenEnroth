@@ -1239,7 +1239,7 @@ void Game::processQueuedMessages() {
                 int skill_count = 0;
                 int uAction = 0;
                 for (MagicSchool page : allMagicSchools()) {
-                    CharacterSkillType skill = skillForMagicSchool(page);
+                    Skill skill = skillForMagicSchool(page);
                     if (pParty->activeCharacter().pActiveSkills[skill] || engine->config->debug.AllMagic.value()) {
                         if (pParty->activeCharacter().lastOpenedSpellbookPage == page)
                             uAction = skill_count;
@@ -1396,7 +1396,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_SkillUp:
             {
-                CharacterSkillType skill = static_cast<CharacterSkillType>(uMessageParam);
+                Skill skill = static_cast<Skill>(uMessageParam);
                 Character *character = &pParty->activeCharacter();
                 CombinedSkillValue skillValue = character->getSkillValue(skill);
                 int cost = skillValue.level() + 1;

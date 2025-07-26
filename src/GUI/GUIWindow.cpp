@@ -771,11 +771,11 @@ bool isHoldingMouseRightButton() {
     return holdingMouseRightButton;
 }
 
-Color GetSkillColor(CharacterClass uPlayerClass, CharacterSkillType uPlayerSkillType, CharacterSkillMastery skill_mastery) {
+Color GetSkillColor(Class uPlayerClass, Skill uPlayerSkillType, Mastery skill_mastery) {
     if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] >= skill_mastery) {
         return ui_character_skillinfo_can_learn;
     }
-    for (CharacterClass promotionClass : promotionsForClass(uPlayerClass)) {
+    for (Class promotionClass : promotionsForClass(uPlayerClass)) {
         if (skillMaxMasteryPerClass[promotionClass][uPlayerSkillType] >= skill_mastery) {
             return ui_character_skillinfo_can_learn_gm;
         }
@@ -1205,7 +1205,7 @@ std::string NameAndTitle(std::string_view name, std::string_view title) {
 }
 
 
-std::string NameAndTitle(std::string_view name, CharacterClass class_type) {
+std::string NameAndTitle(std::string_view name, Class class_type) {
     return NameAndTitle(
         name,
         localization->GetClassName(class_type)

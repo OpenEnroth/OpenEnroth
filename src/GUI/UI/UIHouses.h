@@ -102,7 +102,7 @@ class GUIWindow_House : public GUIWindow {
     void initializeProprietorDialogue();
     void initializeNPCDialogue(int npc);
     void initializeNPCDialogueButtons(std::vector<DialogueId> optionList);
-    void learnSelectedSkill(CharacterSkillType skill);
+    void learnSelectedSkill(Skill skill);
     void reinitDialogueWindow();
     bool checkIfPlayerCanInteract();
 

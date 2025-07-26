@@ -29,8 +29,8 @@ class EvtInstruction {
     union {
         HouseId house_id;
         int chest_id;
-        CharacterPortrait portrait_id;
-        CharacterSpeech speech_id;
+        PortraitId portrait_id;
+        SpeechId speech_id;
         int text_id;
         Season season;
         int event_id;
@@ -74,7 +74,7 @@ class EvtInstruction {
         } actor_flag_descr;
         struct {
             SpellId spell_id;
-            CharacterSkillMastery spell_mastery;
+            Mastery spell_mastery;
             int spell_level;
             int fromx;
             int fromy;
@@ -166,8 +166,8 @@ class EvtInstruction {
             int is_set;
         } chest_flag_descr;
         struct {
-            CharacterSkillType skill_type;
-            CharacterSkillMastery skill_mastery;
+            Skill skill_type;
+            Mastery skill_mastery;
             int skill_level;
         } check_skill_descr;
     } data;

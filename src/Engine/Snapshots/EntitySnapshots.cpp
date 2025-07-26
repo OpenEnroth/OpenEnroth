@@ -383,7 +383,7 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
     dst->dialogue_4_evt_id = src.evt_D;
     dst->dialogue_5_evt_id = src.evt_E;
     dst->dialogue_6_evt_id = src.evt_F;
-    dst->uSex = static_cast<CharacterSex>(src.sex);
+    dst->uSex = static_cast<Sex>(src.sex);
     dst->bHasUsedTheAbility = src.hasUsedAbility;
     dst->news_topic = src.newsTopic;
 }
@@ -439,7 +439,7 @@ void snapshot(const SpellBuff &src, SpellBuff_MM7 *dst) {
 void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst) {
     reconstruct(src.expireTime, &dst->expireTime);
     dst->power = src.power;
-    dst->skillMastery = static_cast<CharacterSkillMastery>(src.skillMastery);
+    dst->skillMastery = static_cast<Mastery>(src.skillMastery);
     dst->overlayID = src.overlayId;
     dst->caster = src.caster;
     dst->isGMBuff = src.flags;
@@ -477,7 +477,7 @@ void reconstruct(const Item_MM7 &src, Item *dst) {
         dst->standardEnchantment = {};
     } else if (src.standardEnchantmentOrPotionPower) {
         dst->potionPower = 0;
-        dst->standardEnchantment = static_cast<CharacterAttribute>(src.standardEnchantmentOrPotionPower - 1);
+        dst->standardEnchantment = static_cast<Attribute>(src.standardEnchantmentOrPotionPower - 1);
 
         // TODO(captainurist): Do this properly for every single enum in this file.
         if (!allEnchantableAttributes().contains(*dst->standardEnchantment))
@@ -800,7 +800,7 @@ void snapshot(const Character &src, Character_MM7 *dst) {
     dst->levelModifier = src.sLevelModifier;
     dst->ageModifier = src.sAgeModifier;
 
-    snapshot(src.pActiveSkills, &dst->activeSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
+    snapshot(src.pActiveSkills, &dst->activeSkills, tags::segment<SKILL_FIRST_VISIBLE, SKILL_LAST_VISIBLE>);
     snapshot(src._achievedAwardsBits, &dst->achievedAwardsBits, tags::reverseBits);
     snapshot(src.bHaveSpell, &dst->haveSpell);
 
@@ -1038,7 +1038,7 @@ void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> chara
     dst->sLevelModifier = src.levelModifier;
     dst->sAgeModifier = src.ageModifier;
 
-    reconstruct(src.activeSkills, &dst->pActiveSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
+    reconstruct(src.activeSkills, &dst->pActiveSkills, tags::segment<SKILL_FIRST_VISIBLE, SKILL_LAST_VISIBLE>);
     reconstruct(src.achievedAwardsBits, &dst->_achievedAwardsBits, tags::reverseBits);
     reconstruct(src.haveSpell, &dst->bHaveSpell);
 
@@ -1099,7 +1099,7 @@ void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> chara
     dst->_health_related = src.healthRelated;
     dst->uFullManaBonus = src.fullManaBonus;
     dst->_mana_related = src.manaRelated;
-    dst->portrait = static_cast<CharacterPortrait>(src.portrait);
+    dst->portrait = static_cast<PortraitId>(src.portrait);
     dst->portraitTimePassed = Duration::fromTicks(src.portraitTimePassed);
     dst->portraitTimeLength = Duration::fromTicks(src.portraitTimeLength);
     dst->portraitImageIndex = src.portraitImageIndex;
@@ -1666,7 +1666,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     reconstruct(src.containing_item, &dst->containing_item);
     dst->uSpellID = static_cast<SpellId>(src.uSpellID);
     dst->spell_level = src.spell_level;
-    dst->spell_skill = static_cast<CharacterSkillMastery>(src.spell_skill);
+    dst->spell_skill = static_cast<Mastery>(src.spell_skill);
     dst->field_54 = src.field_54;
     dst->spell_caster_pid = Pid::fromPacked(src.spell_caster_pid);
     dst->spell_target_pid = Pid::fromPacked(src.spell_target_pid);
@@ -1791,7 +1791,7 @@ void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
 }
 
 void reconstruct(const PortraitFrameData_MM7 &src, PortraitFrameData *dst) {
-    dst->portrait = static_cast<CharacterPortrait>(src.portrait);
+    dst->portrait = static_cast<PortraitId>(src.portrait);
     dst->textureIndex = src.textureIndex;
     dst->frameLength = Duration::fromTicks(src.frameLength * 8);
     dst->animationLength = Duration::fromTicks(src.animationLength * 8);

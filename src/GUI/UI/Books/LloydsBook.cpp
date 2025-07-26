@@ -31,12 +31,12 @@ std::array<int, 5> lloydsBeacons_SomeYs = {{82, 82, 226, 226, 153}};
 GraphicsImage *ui_book_lloyds_border = nullptr;
 std::array<GraphicsImage *, 2> ui_book_lloyds_backgrounds;
 
-IndexedArray<int, CHARACTER_SKILL_MASTERY_NONE, CHARACTER_SKILL_MASTERY_LAST> masteryToMaxBeacons = {
-        {CHARACTER_SKILL_MASTERY_NONE, 1},
-        {CHARACTER_SKILL_MASTERY_NOVICE, 1},
-        {CHARACTER_SKILL_MASTERY_EXPERT, 3},
-        {CHARACTER_SKILL_MASTERY_MASTER, 5},
-        {CHARACTER_SKILL_MASTERY_GRANDMASTER, 5}
+IndexedArray<int, MASTERY_NONE, MASTERY_LAST> masteryToMaxBeacons = {
+        {MASTERY_NONE, 1},
+        {MASTERY_NOVICE, 1},
+        {MASTERY_EXPERT, 3},
+        {MASTERY_MASTER, 5},
+        {MASTERY_GRANDMASTER, 5}
 };
 
 GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFlags)
@@ -61,10 +61,10 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
     assert(casterId < pParty->pCharacters.size());
     if (engine->config->debug.AllMagic.value()) {
         _maxBeacons = 5;
-        _waterMastery = CHARACTER_SKILL_MASTERY_GRANDMASTER;
+        _waterMastery = MASTERY_GRANDMASTER;
         _spellLevel = 10;
     } else {
-        CombinedSkillValue skill = pParty->pCharacters[casterId].getActualSkillValue(CHARACTER_SKILL_WATER);
+        CombinedSkillValue skill = pParty->pCharacters[casterId].getActualSkillValue(SKILL_WATER);
         _maxBeacons = masteryToMaxBeacons[skill.mastery()];
         if (castFlags & ON_CAST_CastViaScroll) skill = SCROLL_OR_NPC_SPELL_SKILL_VALUE;
         _waterMastery = skill.mastery();

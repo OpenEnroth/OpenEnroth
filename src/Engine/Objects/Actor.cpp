@@ -219,7 +219,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
     SpriteObject sprite;
     Actor *actorPtr = &pActors[uActorID];
     int realPoints = uSkillMastery.level();
-    CharacterSkillMastery masteryLevel = uSkillMastery.mastery();
+    Mastery masteryLevel = uSkillMastery.mastery();
     int distancemod = 3;
     int spriteId = -1;
 
@@ -253,7 +253,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.containing_item.Reset();
             sprite.uSpellID = uSpellID;
             sprite.spell_level = uSkillMastery.level();
-            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
+            sprite.spell_skill = MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = (short)pDir->uYawAngle;
             sprite.uSoundID = 0;
@@ -274,14 +274,14 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_FIRE_HASTE:
             // TODO(Nik-RE-dev): calculation of duration is strange
             switch (masteryLevel) {
-                case CHARACTER_SKILL_MASTERY_NOVICE:
-                case CHARACTER_SKILL_MASTERY_EXPERT:
+                case MASTERY_NOVICE:
+                case MASTERY_EXPERT:
                     spellLength = Duration::fromHours(1) + Duration::fromMinutes(realPoints);
                     break;
-                case CHARACTER_SKILL_MASTERY_MASTER:
+                case MASTERY_MASTER:
                     spellLength = Duration::fromMinutes(40 + 2 * realPoints);
                     break;
-                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                case MASTERY_GRANDMASTER:
                     spellLength = Duration::fromMinutes(45 + 3 * realPoints);
                     break;
                 default:
@@ -304,16 +304,16 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 default:
                     assert(false);
-                case CHARACTER_SKILL_MASTERY_NOVICE:
+                case MASTERY_NOVICE:
                     meteors = 8;
                     break;
-                case CHARACTER_SKILL_MASTERY_EXPERT:
+                case MASTERY_EXPERT:
                     meteors = 10;
                     break;
-                case CHARACTER_SKILL_MASTERY_MASTER:
+                case MASTERY_MASTER:
                     meteors = 12;
                     break;
-                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                case MASTERY_GRANDMASTER:
                     meteors = 14;
                     break;
             }
@@ -333,7 +333,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                 sprite.uType = SpellSpriteMapping[uSpellID];
                 sprite.uObjectDescID = GetObjDescId(uSpellID);
                 sprite.spell_level = uSkillMastery.level();
-                sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
+                sprite.spell_skill = MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
                 sprite.vPosition = pParty->pos + Vec3f(0, 0, originHeight + 2500);
                 sprite.uSpellID = SPELL_FIRE_METEOR_SHOWER;
                 sprite.uAttributes = 0;
@@ -360,16 +360,16 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         {
             int sparks;
             switch (masteryLevel) {
-                case CHARACTER_SKILL_MASTERY_NOVICE:
+                case MASTERY_NOVICE:
                     sparks = 3;
                     break;
-                case CHARACTER_SKILL_MASTERY_EXPERT:
+                case MASTERY_EXPERT:
                     sparks = 5;
                     break;
-                case CHARACTER_SKILL_MASTERY_MASTER:
+                case MASTERY_MASTER:
                     sparks = 7;
                     break;
-                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                case MASTERY_GRANDMASTER:
                     sparks = 9;
                     break;
                 default:
@@ -382,7 +382,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.containing_item.Reset();
             sprite.uSpellID = SPELL_AIR_SPARKS;
             sprite.spell_level = uSkillMastery.level();
-            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
+            sprite.spell_skill = MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
@@ -411,14 +411,14 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_AIR_SHIELD:
             // TODO(Nik-RE-dev): calculation of duration is strange
             switch (masteryLevel) {
-                case CHARACTER_SKILL_MASTERY_NOVICE:
-                case CHARACTER_SKILL_MASTERY_EXPERT:
+                case MASTERY_NOVICE:
+                case MASTERY_EXPERT:
                     spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 5 * realPoints);
                     break;
-                case CHARACTER_SKILL_MASTERY_MASTER:
+                case MASTERY_MASTER:
                     spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 15 * realPoints);
                     break;
-                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                case MASTERY_GRANDMASTER:
                     spellLength = Duration::fromHours(64 + realPoints);
                     break;
                 default:
@@ -434,14 +434,14 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_EARTH_STONESKIN:
             // TODO(Nik-RE-dev): calculation of duration is strange
             switch (masteryLevel) {
-                case CHARACTER_SKILL_MASTERY_NOVICE:
-                case CHARACTER_SKILL_MASTERY_EXPERT:
+                case MASTERY_NOVICE:
+                case MASTERY_EXPERT:
                     spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 5 * realPoints);
                     break;
-                case CHARACTER_SKILL_MASTERY_MASTER:
+                case MASTERY_MASTER:
                     spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 15 * realPoints);
                     break;
-                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                case MASTERY_GRANDMASTER:
                     spellLength = Duration::fromHours(64 + realPoints);
                     break;
                 default:
@@ -457,14 +457,14 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_SPIRIT_BLESS:
             // TODO(Nik-RE-dev): calculation of duration is strange
             switch (masteryLevel) {
-                case CHARACTER_SKILL_MASTERY_NOVICE:
-                case CHARACTER_SKILL_MASTERY_EXPERT:
+                case MASTERY_NOVICE:
+                case MASTERY_EXPERT:
                     spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 5 * realPoints);
                     break;
-                case CHARACTER_SKILL_MASTERY_MASTER:
+                case MASTERY_MASTER:
                     spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 15 * realPoints);
                     break;
-                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                case MASTERY_GRANDMASTER:
                     spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 20 * realPoints);
                     break;
                 default:
@@ -483,14 +483,14 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 default:
                     assert(false);
-                case CHARACTER_SKILL_MASTERY_NOVICE:
-                case CHARACTER_SKILL_MASTERY_EXPERT:
+                case MASTERY_NOVICE:
+                case MASTERY_EXPERT:
                     spellPower = 2 * realPoints + 40;
                     break;
-                case CHARACTER_SKILL_MASTERY_MASTER:
+                case MASTERY_MASTER:
                     spellPower = 3 * realPoints + 60;
                     break;
-                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                case MASTERY_GRANDMASTER:
                     spellPower = 6 * realPoints + 120;
                     break;
             }
@@ -504,14 +504,14 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_SPIRIT_HEROISM:
             // TODO(Nik-RE-dev): calculation of duration is strange
             switch (masteryLevel) {
-                case CHARACTER_SKILL_MASTERY_NOVICE:
-                case CHARACTER_SKILL_MASTERY_EXPERT:
+                case MASTERY_NOVICE:
+                case MASTERY_EXPERT:
                     spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 5 * realPoints);
                     break;
-                case CHARACTER_SKILL_MASTERY_MASTER:
+                case MASTERY_MASTER:
                     spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 15 * realPoints);
                     break;
-                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                case MASTERY_GRANDMASTER:
                     spellLength = Duration::fromHours(1) + Duration::fromMinutes(4 + 20 * realPoints);
                     break;
                 default:
@@ -569,16 +569,16 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             switch (masteryLevel) {
                 default:
                     assert(false);
-                case CHARACTER_SKILL_MASTERY_NOVICE:
-                case CHARACTER_SKILL_MASTERY_EXPERT:
+                case MASTERY_NOVICE:
+                case MASTERY_EXPERT:
                     spellLength = Duration::fromMinutes(64 + 5 * realPoints);
                     spellPower = realPoints;
                     break;
-                case CHARACTER_SKILL_MASTERY_MASTER:
+                case MASTERY_MASTER:
                     spellLength = Duration::fromMinutes(64 + 15 * realPoints);
                     spellPower = 3 * realPoints;
                     break;
-                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                case MASTERY_GRANDMASTER:
                     spellLength = Duration::fromMinutes(64 + 20 * realPoints);
                     spellPower = 4 * realPoints;
                     break;
@@ -593,14 +593,14 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_LIGHT_HOUR_OF_POWER:
             // TODO(Nik-RE-dev): calculation of duration is strange
             switch (masteryLevel) {
-                case CHARACTER_SKILL_MASTERY_NOVICE:
-                case CHARACTER_SKILL_MASTERY_EXPERT:
+                case MASTERY_NOVICE:
+                case MASTERY_EXPERT:
                     spellLength = Duration::fromMinutes(64 + 5 * realPoints);
                     break;
-                case CHARACTER_SKILL_MASTERY_MASTER:
+                case MASTERY_MASTER:
                     spellLength = Duration::fromMinutes(64 + 15 * realPoints);
                     break;
-                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                case MASTERY_GRANDMASTER:
                     spellLength = Duration::fromMinutes(64 + 20 * realPoints);
                     break;
                 default:
@@ -617,16 +617,16 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         {
             int pieces;
             switch (masteryLevel) {
-                case CHARACTER_SKILL_MASTERY_NOVICE:
+                case MASTERY_NOVICE:
                     pieces = 3;
                     break;
-                case CHARACTER_SKILL_MASTERY_EXPERT:
+                case MASTERY_EXPERT:
                     pieces = 5;
                     break;
-                case CHARACTER_SKILL_MASTERY_MASTER:
+                case MASTERY_MASTER:
                     pieces = 7;
                     break;
-                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                case MASTERY_GRANDMASTER:
                     pieces = 9;
                     break;
                 default:
@@ -639,7 +639,7 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
             sprite.containing_item.Reset();
             sprite.uSpellID = uSpellID;
             sprite.spell_level = uSkillMastery.level();
-            sprite.spell_skill = CHARACTER_SKILL_MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
+            sprite.spell_skill = MASTERY_NONE; // TODO(captainurist): why do we ignore passed skill mastery?
             sprite.vPosition = actorPtr->pos + Vec3f(0, 0, actorPtr->height / 2);
             sprite.uFacing = pDir->uYawAngle;
             sprite.uSoundID = 0;
@@ -668,12 +668,12 @@ void Actor::AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
         case SPELL_DARK_PAIN_REFLECTION:
             // TODO(Nik-RE-dev): calculation of duration is strange
             switch (masteryLevel) {
-                case CHARACTER_SKILL_MASTERY_NOVICE:
-                case CHARACTER_SKILL_MASTERY_EXPERT:
-                case CHARACTER_SKILL_MASTERY_MASTER:
+                case MASTERY_NOVICE:
+                case MASTERY_EXPERT:
+                case MASTERY_MASTER:
                     spellLength = Duration::fromMinutes(64) + Duration::fromSeconds(5 * 30 * realPoints);
                     break;
-                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                case MASTERY_GRANDMASTER:
                     spellLength = Duration::fromMinutes(64) + Duration::fromSeconds(15 * 30 * realPoints);
                     break;
                 default:
@@ -800,7 +800,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
     a1.vPosition.y = pActors[uActorID].pos.y;
     a1.vPosition.z = pActors[uActorID].pos.z + (pActors[uActorID].height * 0.75);
     a1.spell_level = 0;
-    a1.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
+    a1.spell_skill = MASTERY_NONE;
     a1.uFacing = pDir->uYawAngle;
     a1.uSoundID = 0;
     a1.uAttributes = 0;
@@ -849,7 +849,7 @@ void Actor::Explode(unsigned int uActorID) {  // death explosion for some actors
     a1.containing_item.Reset();
     a1.uSpellID = SPELL_NONE;
     a1.spell_level = 0;
-    a1.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
+    a1.spell_skill = MASTERY_NONE;
     a1.vPosition.x = pActors[uActorID].pos.x;
     a1.vPosition.y = pActors[uActorID].pos.y;
     a1.vPosition.z = pActors[uActorID].pos.z + (pActors[uActorID].height * 0.75);
@@ -1222,7 +1222,7 @@ int Actor::_43B3E0_CalcDamage(ActorAbility dmgSource) {
     int spellPower = 0;
     CombinedSkillValue skill;
     int skillLevel = 0;
-    CharacterSkillMastery skillMastery = CHARACTER_SKILL_MASTERY_NONE;
+    Mastery skillMastery = MASTERY_NONE;
 
     switch (dmgSource) {
         case ABILITY_ATTACK1:
@@ -3041,23 +3041,23 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
     if (!projectileSprite) {
         IsAdditionalDamagePossible = true;
         if (character->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-            CharacterSkillType main_hand_skill = character->GetMainHandItem()->skill();
-            CharacterSkillMastery main_hand_mastery = character->getSkillValue(main_hand_skill).mastery();
+            Skill main_hand_skill = character->GetMainHandItem()->skill();
+            Mastery main_hand_mastery = character->getSkillValue(main_hand_skill).mastery();
             switch (main_hand_skill) {
-                case CHARACTER_SKILL_STAFF:
-                    if (main_hand_mastery >= CHARACTER_SKILL_MASTERY_MASTER) {
-                        if (grng->random(100) < character->getActualSkillValue(CHARACTER_SKILL_STAFF).level())
+                case SKILL_STAFF:
+                    if (main_hand_mastery >= MASTERY_MASTER) {
+                        if (grng->random(100) < character->getActualSkillValue(SKILL_STAFF).level())
                             hit_will_stun = true;
                     }
                     break;
 
-                case CHARACTER_SKILL_MACE:
-                    if (main_hand_mastery >= CHARACTER_SKILL_MASTERY_MASTER) {
-                        if (grng->random(100) < character->getActualSkillValue(CHARACTER_SKILL_MACE).level())
+                case SKILL_MACE:
+                    if (main_hand_mastery >= MASTERY_MASTER) {
+                        if (grng->random(100) < character->getActualSkillValue(SKILL_MACE).level())
                             hit_will_stun = true;
                     }
-                    if (main_hand_mastery >= CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                        if (grng->random(100) < character->getActualSkillValue(CHARACTER_SKILL_MACE).level())
+                    if (main_hand_mastery >= MASTERY_GRANDMASTER) {
+                        if (grng->random(100) < character->getActualSkillValue(SKILL_MACE).level())
                             hit_will_paralyze = true;
                     }
                     break;
@@ -3092,8 +3092,8 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
             case SPELL_LASER_PROJECTILE:
                 // TODO: should be changed to GetActual* equivalents?
                 v61 = 1;
-                if (character->getSkillValue(CHARACTER_SKILL_BLASTER).mastery() >= CHARACTER_SKILL_MASTERY_MASTER)
-                    skillLevel = character->getSkillValue(CHARACTER_SKILL_BLASTER).level();
+                if (character->getSkillValue(SKILL_BLASTER).mastery() >= MASTERY_MASTER)
+                    skillLevel = character->getSkillValue(SKILL_BLASTER).level();
                 attackElement = DAMAGE_PHYSICAL;
                 uDamageAmount = character->CalculateMeleeDamageTo(true, true, MONSTER_INVALID);
                 if (!character->characterHitOrMiss(pMonster, v61, skillLevel)) {
@@ -3227,7 +3227,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
         if (pMonster->monsterInfo.exp)
             pParty->GivePartyExp(
                 pMonsterStats->infos[pMonster->monsterInfo.id].exp);
-        CharacterSpeech speech = SPEECH_ATTACK_HIT;
+        SpeechId speech = SPEECH_ATTACK_HIT;
         if (vrng->random(100) < 20) {
             speech = pMonster->monsterInfo.hp >= 100 ? SPEECH_KILL_STRONG_ENEMY : SPEECH_KILL_WEAK_ENEMY;
         }
@@ -3252,7 +3252,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
     }
     if (hit_will_paralyze && pMonster->CanAct() &&
         pMonster->DoesDmgTypeDoDamage(DAMAGE_EARTH)) {
-        CombinedSkillValue maceSkill = character->getActualSkillValue(CHARACTER_SKILL_MACE);
+        CombinedSkillValue maceSkill = character->getActualSkillValue(SKILL_MACE);
         pMonster->buffs[ACTOR_BUFF_PARALYZED].Apply(pParty->GetPlayingTime() + Duration::fromMinutes(maceSkill.level()), maceSkill.mastery(), 0, 0, 0);
         if (engine->config->settings.ShowHits.value()) {
             engine->_statusBar->setEvent(LSTR_S_PARALYZES_S, character->name, pMonster->name);
@@ -4205,13 +4205,13 @@ bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID) {
 }
 
 //----- (0044FA4C) --------------------------------------------------------
-void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, Duration duration) {
+void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Duration duration) {
     // size_t uActorIndex;            // [sp+10h] [bp-10h]@6
 
     const char *cMonsterName;       // [sp-4h] [bp-24h]@2
-    if (caster_skill_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER)
+    if (caster_skill_mastery == MASTERY_GRANDMASTER)
         cMonsterName = "Elemental Light C";
-    else if (caster_skill_mastery == CHARACTER_SKILL_MASTERY_MASTER)
+    else if (caster_skill_mastery == MASTERY_MASTER)
         cMonsterName = "Elemental Light B";
     else
         cMonsterName = "Elemental Light A";

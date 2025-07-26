@@ -23,5 +23,5 @@ class GUIWindow_LloydsBook : public GUIWindow_Book {
     int _maxBeacons;
     bool _recallingBeacon;
     int _spellLevel;
-    CharacterSkillMastery _waterMastery;
+    Mastery _waterMastery;
 };

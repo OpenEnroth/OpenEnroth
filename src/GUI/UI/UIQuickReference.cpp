@@ -109,7 +109,7 @@ void GUIWindow_QuickReference::Update() {
         pY += pFontHeight;
 
         int pSkillsCount = 0;
-        for (CharacterSkillType j : allVisibleSkills()) {
+        for (Skill j : allVisibleSkills()) {
             if (player.pActiveSkills[j]) {
                 ++pSkillsCount;
             }

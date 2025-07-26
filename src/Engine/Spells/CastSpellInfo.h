@@ -53,9 +53,9 @@ MM_DECLARE_FLAGS(SpellCastFlags, SpellCastFlag)
 MM_DECLARE_OPERATORS_FOR_FLAGS(SpellCastFlags)
 
 // Scrolls or NPC spells casted with MASTER mastery of skill level 5
-static const CombinedSkillValue SCROLL_OR_NPC_SPELL_SKILL_VALUE(5, CHARACTER_SKILL_MASTERY_MASTER);
+static const CombinedSkillValue SCROLL_OR_NPC_SPELL_SKILL_VALUE(5, MASTERY_MASTER);
 // Wands cast at novice mastery skill level 8
-static const CombinedSkillValue WANDS_SKILL_VALUE(8, CHARACTER_SKILL_MASTERY_NOVICE);
+static const CombinedSkillValue WANDS_SKILL_VALUE(8, MASTERY_NOVICE);
 
 struct CastSpellInfo {
     TargetedSpellUI *GetCastSpellInInventoryWindow();

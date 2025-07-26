@@ -365,9 +365,9 @@ GAME_TEST(Issues, Issue661) {
 GAME_TEST(Issues, Issue662) {
     // "of Air magic" should give floor(skill / 2) skill level bonus (like all other such bonuses)
     test.loadGameFromTestData("issue_662.mm7");
-    EXPECT_EQ(pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR], CombinedSkillValue(6, CHARACTER_SKILL_MASTERY_EXPERT));
+    EXPECT_EQ(pParty->pCharacters[3].pActiveSkills[SKILL_AIR], CombinedSkillValue(6, MASTERY_EXPERT));
     EXPECT_EQ(pParty->pCharacters[3].GetItemsBonus(ATTRIBUTE_SKILL_AIR), 3);
-    pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR] = CombinedSkillValue(5, CHARACTER_SKILL_MASTERY_EXPERT);
+    pParty->pCharacters[3].pActiveSkills[SKILL_AIR] = CombinedSkillValue(5, MASTERY_EXPERT);
     EXPECT_EQ(pParty->pCharacters[3].GetItemsBonus(ATTRIBUTE_SKILL_AIR), 2);
 }
 
@@ -405,7 +405,7 @@ GAME_TEST(Issues, Issue675) {
         ITEM_TREASURE_LEVEL_4, ITEM_TREASURE_LEVEL_5, ITEM_TREASURE_LEVEL_6
     };
 
-    std::unordered_set<CharacterAttribute> generatedEnchantments;
+    std::unordered_set<Attribute> generatedEnchantments;
 
     Item item;
     for (int i = 0; i < 300; i++) {

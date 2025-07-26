@@ -157,7 +157,7 @@ void GUIWindow_Spellbook::Update() {
     drawCurrentSchoolBackground();
 
     for (MagicSchool page : allMagicSchools()) {
-        CharacterSkillType skill = skillForMagicSchool(page);
+        Skill skill = skillForMagicSchool(page);
 
         if (player.pActiveSkills[skill] || engine->config->debug.AllMagic.value()) {
             auto pPageTexture = ui_spellbook_school_tabs[page][0];
