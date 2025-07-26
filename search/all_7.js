@@ -435,7 +435,7 @@ var searchData=
   ['getskillvalue_432',['getSkillValue',['../classCharacter.html#a38edd8eaa0ba70ad4ceccf7e54bebd43',1,'Character']]],
   ['getsoundlength_433',['getSoundLength',['../classAudioPlayer.html#ad50376e350615d5bae582122e8e40920',1,'AudioPlayer']]],
   ['getspdescription_434',['getSPDescription',['../classLocalization.html#a3a6fcdeed89b2e75239927853847bcb6',1,'Localization']]],
-  ['getspecialattackname_435',['GetSpecialAttackName',['../classLocalization.html#afdbc70ee341206170e2d8f7a91744356',1,'Localization']]],
+  ['getspecialattackname_435',['GetSpecialAttackName',['../classLocalization.html#ae576997b5161a631b4e63ab7ec32c788',1,'Localization']]],
   ['getspecialcase_436',['GetSpecialCase',['../mm7text__ru_8cpp.html#a4ea0da5e32471519f16ded7ce79fe77c',1,'mm7text_ru.cpp']]],
   ['getspecialgender_437',['GetSpecialGender',['../mm7text__ru_8cpp.html#a60e152118d795d22912d38e37a55dec9',1,'mm7text_ru.cpp']]],
   ['getspecialitembonus_438',['GetSpecialItemBonus',['../classCharacter.html#ada1f1230972a8da772eb743f7b2081d4',1,'Character']]],
