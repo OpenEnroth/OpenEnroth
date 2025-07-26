@@ -8,6 +8,7 @@
 #include "Engine/Party.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Objects/Chest.h"
+#include "Engine/Objects/MonsterEnumFunctions.h"
 
 void prepareForBattleTest() {
     assert(engine->_currentLoadedMapId == MAP_EMERALD_ISLAND);
@@ -25,7 +26,7 @@ void prepareForBattleTest() {
 
     // We want char0 chonky.
     Character &char0 = pParty->pCharacters[0];
-    char0.sLevelModifier = 100;
+    char0.sLevelModifier = 200;
     char0.health = pParty->pCharacters[0].GetMaxHealth();
     char0._stats[ATTRIBUTE_LUCK] = 0; // We don't want luck rolls that decrease damage dealt.
 }
@@ -205,30 +206,42 @@ GAME_TEST(Issues, Issue2099) {
 
 GAME_TEST(Issues, Issue2104) {
     // Enemies always hit with ranged attacks.
-    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
-    auto hpTape = charTapes.hp(0);
-    auto spritesTape = tapes.sprites();
+    // We test here that both arrows AND monster projectiles that deal magical damage can miss b/c of AC.
+    std::vector<MonsterProjectile> projectiles;
 
-    engine->config->debug.NoActors.setValue(true);
-    game.startNewGame();
-    test.startTaping();
-    prepareForBattleTest();
+    for (MonsterId monsterId : {MONSTER_ELF_ARCHER_A, MONSTER_DRAGON_A, MONSTER_DRAGON_B, MONSTER_DRAGON_C}) {
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+        auto hpTape = charTapes.hp(0);
+        auto spritesTape = tapes.sprites();
 
-    // And make sure char0 has some armor.
-    Character &char0 = pParty->pCharacters[0];
-    char0.setSkillValue(SKILL_LEATHER, CombinedSkillValue(1, MASTERY_NOVICE));
-    char0.inventory.equip(ITEM_SLOT_ARMOUR, Item(ITEM_LEATHER_ARMOR));
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest();
 
-    // Spawn an archer & wait.
-    engine->config->debug.NoActors.setValue(false);
-    game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_ELF_ARCHER_A);
-    game.tick(300);
+        // And make sure char0 has some armor.
+        Character &char0 = pParty->pCharacters[0];
+        char0.setSkillValue(SKILL_LEATHER, CombinedSkillValue(1, MASTERY_NOVICE));
+        char0.inventory.equip(ITEM_SLOT_ARMOUR, Item(ITEM_LEATHER_ARMOR));
 
-    int arrowCount = spritesTape.count([](auto sprites) { return sprites.contains(SPRITE_PROJECTILE_ARROW); });
-    int hitCount = hpTape.size() - 1;
+        // Spawn a monster & wait.
+        engine->config->debug.NoActors.setValue(false);
+        Actor *monster = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), monsterId);
+        monster->moveSpeed = 1; // Please stay in place.
+        monster->monsterInfo.level = 10; // Make all monsters the same level so that we don't have to tweak AC.
+        game.tick(300);
 
-    ASSERT_GT(hitCount, 0); // Should have hit some.
-    ASSERT_GT(arrowCount, hitCount); // And missed some.
+        int projectileCount = spritesTape.count([&](auto sprites) { return sprites.contains(spriteForMonsterProjectile(monster->monsterInfo.attack1MissileType)); });
+        int hitCount = hpTape.size() - 1;
+
+        ASSERT_GT(hitCount, 0); // Should have hit some.
+        ASSERT_GT(projectileCount, hitCount); // And missed some.
+
+        projectiles.push_back(monster->monsterInfo.attack1MissileType);
+    }
+
+    // Check that we did see both arrows & magical projectiles.
+    EXPECT_EQ(projectiles, tape(MONSTER_PROJECTILE_ARROW, MONSTER_PROJECTILE_AIR_BOLT, MONSTER_PROJECTILE_WATER_BOLT, MONSTER_PROJECTILE_FIRE_BOLT));
 }
 
 GAME_TEST(Issues, Issue2108a) {
