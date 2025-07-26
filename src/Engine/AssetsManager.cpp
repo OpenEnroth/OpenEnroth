@@ -16,6 +16,29 @@
 
 AssetsManager *assets = new AssetsManager();
 
+static void ReloadFonts() {
+    if (assets->pFontBookOnlyShadow)
+        assets->pFontBookOnlyShadow->CreateFontTex();
+    if (assets->pFontBookLloyds)
+        assets->pFontBookLloyds->CreateFontTex();
+    if (assets->pFontArrus)
+        assets->pFontArrus->CreateFontTex();
+    if (assets->pFontLucida)
+        assets->pFontLucida->CreateFontTex();
+    if (assets->pFontBookTitle)
+        assets->pFontBookTitle->CreateFontTex();
+    if (assets->pFontBookCalendar)
+        assets->pFontBookCalendar->CreateFontTex();
+    if (assets->pFontCreate)
+        assets->pFontCreate->CreateFontTex();
+    if (assets->pFontCChar)
+        assets->pFontCChar->CreateFontTex();
+    if (assets->pFontComic)
+        assets->pFontComic->CreateFontTex();
+    if (assets->pFontSmallnum)
+        assets->pFontSmallnum->CreateFontTex();
+}
+
 void AssetsManager::releaseAllTextures() {
     logger->trace("Render - Releasing Textures.");
     // clears any textures from gpu

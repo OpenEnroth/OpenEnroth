@@ -35,17 +35,32 @@ class GUIFont {
     void CreateFontTex();
     void ReleaseFontTex();
 
-    bool IsCharValid(unsigned char c) const;
     int GetHeight() const;
 
+    /**
+     * @param width                     Width of the rect to position the text in.
+     * @param str                       Text to position.
+     * @return                          X-offset for a call to `DrawTextLine` to make the text aligned, or 0 if the
+     *                                  text overflows.
+     */
     int AlignText_Center(int width, std::string_view str);
 
+    /**
+     * @param str                       Text to check.
+     * @return                          Width of the first line of `str`, in pixels. Note that `\t` counts as a line
+     *                                  break as it essentially starts a new table column.
+     */
     int GetLineWidth(std::string_view str);
 
-    int CalcTextHeight(std::string_view str, int width, int x_offset, bool return_on_carriage = false);
+    /**
+     * @param str                       Text to check.
+     * @param width                     Width of the window that the text should fit into.
+     * @param x                         Where the text starts relative to the window's left border.
+     * @return                          Wrapped text height, in pixels.
+     */
+    int CalcTextHeight(std::string_view str, int width, int x);
 
-    std::string GetPageTop(std::string_view pInString, GUIWindow *pWindow,
-                      unsigned int uX, int a5);
+    std::string GetPageTop(std::string_view str, GUIWindow *window, int x, int page);
 
     /**
      * Draws a single line of text.
@@ -56,17 +71,15 @@ class GUIFont {
      *                                      it's split onto a new line.
      * @param defaultColor                  The color that the text should return to on hitting a default color tag.
      * @param position                      Position to draw the text line to.
-     * @param max_len_pix                   The maximum allowed width for this line of text.
-     * 
      * @return                              Color that was used to draw text at the end of the line.
      */
-    Color DrawTextLine(std::string_view text, Color color, Color defaultColor, Pointi position, int max_len_pix);
+    Color DrawTextLine(std::string_view text, Color color, Color defaultColor, Pointi position);
     void DrawText(GUIWindow *window, Pointi position, Color color, std::string_view text, int maxHeight, Color shadowColor);
     int DrawTextInRect(GUIWindow *window, Pointi position,
                        Color color, std::string_view text, int rect_width,
                        int reverse_text);
 
-    std::string FitTextInAWindow(std::string_view inString, int width, int uX, bool return_on_carriage = false);
+    std::string WrapText(std::string_view inString, int width, int uX, bool return_on_carriage = false);
 
     // TODO: these should take std::string_view
     void DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY,
@@ -76,10 +89,8 @@ class GUIFont {
     int GetStringHeight2(GUIFont *secondFont, std::string_view text_str,
                          GUIWindow *pWindow, int startX, int a6);
 
-    GraphicsImage *fonttex = nullptr;
-    GraphicsImage *fontshadow = nullptr;
-
  private:
+    bool IsCharValid(unsigned char c) const;
     std::string FitTwoFontStringINWindow(std::string_view inString, GUIFont *pFontSecond,
                                     GUIWindow *pWindow, int startPixlOff,
                                     bool return_on_carriage = false);
@@ -88,6 +99,7 @@ class GUIFont {
 
  private:
     LodFont _font;
+    GraphicsImage *_mainTexture = nullptr;
+    GraphicsImage *_shadowTexture = nullptr;
 };
 
-void ReloadFonts();

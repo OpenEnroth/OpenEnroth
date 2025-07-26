@@ -6,37 +6,12 @@
 #include <ranges>
 #include <string>
 
-#include "Engine/AssetsManager.h"
 #include "Engine/LodTextureCache.h"
 
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
 
 #include "GUI/GUIWindow.h"
-#include "Library/LodFormats/LodImage.h"
-
-void ReloadFonts() {
-    if (assets->pFontBookOnlyShadow)
-        assets->pFontBookOnlyShadow->CreateFontTex();
-    if (assets->pFontBookLloyds)
-        assets->pFontBookLloyds->CreateFontTex();
-    if (assets->pFontArrus)
-        assets->pFontArrus->CreateFontTex();
-    if (assets->pFontLucida)
-        assets->pFontLucida->CreateFontTex();
-    if (assets->pFontBookTitle)
-        assets->pFontBookTitle->CreateFontTex();
-    if (assets->pFontBookCalendar)
-        assets->pFontBookCalendar->CreateFontTex();
-    if (assets->pFontCreate)
-        assets->pFontCreate->CreateFontTex();
-    if (assets->pFontCChar)
-        assets->pFontCChar->CreateFontTex();
-    if (assets->pFontComic)
-        assets->pFontComic->CreateFontTex();
-    if (assets->pFontSmallnum)
-        assets->pFontSmallnum->CreateFontTex();
-}
 
 static Color parseColorTag(const char *tag, const Color &defaultColor) {
     char color_code[20];
@@ -67,12 +42,12 @@ std::unique_ptr<GUIFont> GUIFont::LoadFont(std::string_view pFontFile) {
 
 // TODO(pskelton): Save built atlas so it doesnt get recalcualted on reload?
 void GUIFont::CreateFontTex() {
-    this->ReleaseFontTex();
+    ReleaseFontTex();
     // create blank textures
-    this->fonttex = GraphicsImage::Create(512, 512);
-    this->fontshadow = GraphicsImage::Create(512, 512);
-    Color *pPixelsfont = this->fonttex->rgba().pixels().data();
-    Color *pPixelsshadow = this->fontshadow->rgba().pixels().data();
+    _mainTexture = GraphicsImage::Create(512, 512);
+    _shadowTexture = GraphicsImage::Create(512, 512);
+    Color *pPixelsfont = _mainTexture->rgba().pixels().data();
+    Color *pPixelsshadow = _shadowTexture->rgba().pixels().data();
 
     // load in char pixels into squares within texture
     for (int l = 0; l < 256; l++) {
@@ -99,36 +74,119 @@ void GUIFont::CreateFontTex() {
         }
     }
 
-    render->Update_Texture(this->fonttex);
-    render->Update_Texture(this->fontshadow);
+    render->Update_Texture(_mainTexture);
+    render->Update_Texture(_shadowTexture);
 }
 
 void GUIFont::ReleaseFontTex() {
-    if (this->fonttex) {
-        this->fonttex->releaseRenderId();
-        this->fonttex->Release();
+    if (_mainTexture) {
+        _mainTexture->releaseRenderId();
+        _mainTexture->Release();
     }
-    if (this->fontshadow) {
-        this->fontshadow->releaseRenderId();
-        this->fontshadow->Release();
+    if (_shadowTexture) {
+        _shadowTexture->releaseRenderId();
+        _shadowTexture->Release();
     }
-}
-
-bool GUIFont::IsCharValid(unsigned char c) const {
-    return _font.supports(c) || (c == '\f') || (c == '\r') || (c == '\t') || (c == '\n');
 }
 
 int GUIFont::GetHeight() const {
     return _font.height();
 }
 
-Color GUIFont::DrawTextLine(std::string_view text, Color color, Color defaultColor, Pointi position, int max_len_pix) {
+int GUIFont::AlignText_Center(int width, std::string_view str) {
+    int position = (width - GetLineWidth(str)) / 2;
+    return (position < 0) ? 0 : position;
+}
+
+int GUIFont::GetLineWidth(std::string_view str) {
+    int result = 0;
+    for (int i = 0, len = str.length(); i < len; ++i) {
+        unsigned char c = str[i];
+        if (IsCharValid(c)) {
+            switch (c) {
+            case '\t':
+            case '\n':
+            case '\r':
+                return result;
+            case '\f':
+                i += 5;
+                break;
+            default:
+                if (i > 0) {
+                    result += _font.metrics(c).leftSpacing;
+                }
+                result += _font.metrics(c).width;
+                if (i < len - 1) {
+                    result += _font.metrics(c).rightSpacing;
+                }
+            }
+        }
+    }
+    return result;
+}
+
+int GUIFont::CalcTextHeight(std::string_view str, int width, int x) {
+    if (str.empty())
+        return 0;
+
+    int result = _font.height() - 6;
+    std::string wrappedStr = WrapText(str, width, x);
+    for (int i = 0, len = wrappedStr.length(); i < len; ++i) {
+        switch (wrappedStr[i]) {
+        case '\n':  // New line.
+            result += _font.height() - 3;
+            break;
+        case '\f':  // Color tag.
+            i += 5;
+            break;
+        case '\t':  // Move to next cell, offset from the left border.
+        case '\r':  // Right-justify, offset from the right border.
+            i += 3;
+            break;
+        default:
+            break;
+        }
+    }
+
+    return result;
+}
+
+std::string GUIFont::GetPageTop(std::string_view str, GUIWindow *window, int x, int page) {
+    if (str.empty())
+        return {};
+
+    int height = 0;
+    std::string wrappedText = WrapText(str, window->uFrameWidth, x);
+    for (int i = 0, len = wrappedText.length(); i < len; ++i) {
+        switch (wrappedText[i]) {
+        case '\n':  // New line.
+            height += _font.height() - 3;
+            if (height >= page * (window->uFrameHeight - (_font.height() - 3)))
+                return wrappedText.substr(i);
+            break;
+        case '\f':  // Color tag.
+            i += 5;
+            break;
+        case '\t':  // Move to next cell, offset from the left border.
+        case '\r':  // Right-justify, offset from the right border.
+            i += 3;
+            break;
+        default:
+            break;
+        }
+        if (height >= page * window->uFrameHeight)
+            break;
+    }
+    return wrappedText;
+}
+
+Color GUIFont::DrawTextLine(std::string_view text, Color color, Color defaultColor, Pointi position) {
     assert(color.a > 0);
 
     if (text.empty()) {
         return color;
     }
-    render->BeginTextNew(fonttex, fontshadow);
+    render->BeginTextNew(_mainTexture, _shadowTexture);
 
     Color text_color = color;
     size_t text_length = text.size();
@@ -240,106 +298,7 @@ void GUIFont::DrawTextLineToBuff(Color color, Color shadowColor, Color *uX_buff_
     }
 }
 
-std::string GUIFont::GetPageTop(std::string_view pInString, GUIWindow *pWindow, unsigned int uX, int a5) {
-    if (pInString.empty()) {
-        return "";
-    }
-
-    int text_height = 0;
-
-    std::string text_str = FitTextInAWindow(pInString, pWindow->uFrameWidth, uX);
-    int text_length = text_str.length();
-    for (int i = 0; i < text_length; ++i) {
-        unsigned char c = text_str[i];
-        if (IsCharValid(c)) {
-            switch (c) {
-            case '\n':  // Line Feed 0A 10
-                text_height += (_font.height() - 3);
-                if (text_height >= (int)(a5 * (pWindow->uFrameHeight - (_font.height() - 3)))) {
-                    return &text_str[i];
-                }
-                break;
-            case '\f':  // Form Feed, page eject 0C 12
-                i += 5;
-                break;
-            case '\t':  // Horizontal tab 09
-            case '\r':  // Carriage Return 0D 13
-                i += 3;
-                break;
-            }
-            if (text_height >= (int)(a5 * pWindow->uFrameHeight)) {
-                break;
-            }
-        }
-    }
-    return text_str;
-}
-
-int GUIFont::CalcTextHeight(std::string_view pString, int width, int uXOffset, bool return_on_carriage) {
-    if (pString.empty()) {
-        return 0;
-    }
-
-    int uAllHeght = _font.height() - 6;
-    std::string test_string = FitTextInAWindow(pString, width, uXOffset);
-    size_t uStringLen = pString.length();
-    for (int i = 0; i < uStringLen; ++i) {
-        unsigned char c = test_string[i];
-        if (IsCharValid(c)) {
-            switch (c) {
-            case '\n':  // Line Feed 0A 10
-                uAllHeght += _font.height() - 3;
-                break;
-            case '\f':  // Form Feed, page eject  0C 12
-                i += 5;
-                break;
-            case '\t':  // Horizontal tab 09
-            case '\r':  // Carriage Return 0D 13
-                if (!return_on_carriage) {
-                    i += 3;
-                }
-                break;
-            }
-        }
-    }
-
-    return uAllHeght;
-}
-
-int GUIFont::GetLineWidth(std::string_view inString) {
-    size_t str_len = inString.length();
-    int string_line_width = 0;
-    for (int i = 0; i < str_len; ++i) {
-        unsigned char c = inString[i];
-        if (IsCharValid(c)) {
-            switch (c) {
-            case '\t':
-            case '\n':
-            case '\r':
-                return string_line_width;
-            case '\f':
-                i += 5;
-                break;
-            default:
-                if (i > 0) {
-                    string_line_width += _font.metrics(c).leftSpacing;
-                }
-                string_line_width += _font.metrics(c).width;
-                if (i < str_len - 1) {
-                    string_line_width += _font.metrics(c).rightSpacing;
-                }
-            }
-        }
-    }
-    return string_line_width;
-}
-
-int GUIFont::AlignText_Center(int width, std::string_view pString) {
-    int position = (width - GetLineWidth(pString)) / 2;
-    return (position < 0) ? 0 : position;
-}
-
-std::string GUIFont::FitTextInAWindow(std::string_view inString, int width, int uX, bool return_on_carriage) {
+std::string GUIFont::WrapText(std::string_view inString, int width, int uX, bool return_on_carriage) {
     assert(uX < width);
 
     if (inString.empty()) {
@@ -428,7 +387,7 @@ void GUIFont::DrawText(GUIWindow *window, Pointi position, Color color, std::str
         return;
     }
 
-    render->BeginTextNew(fonttex, fontshadow);
+    render->BeginTextNew(_mainTexture, _shadowTexture);
 
     size_t v30 = text.length();
     if (!position.x) {
@@ -437,7 +396,7 @@ void GUIFont::DrawText(GUIWindow *window, Pointi position, Color color, std::str
 
     std::string string_begin = std::string(text);
     if (maxHeight == 0) {
-        string_begin = FitTextInAWindow(text, window->uFrameWidth, position.x);
+        string_begin = WrapText(text, window->uFrameWidth, position.x);
     }
     auto string_end = string_begin;
     auto string_base = string_begin;
@@ -488,7 +447,7 @@ void GUIFont::DrawText(GUIWindow *window, Pointi position, Color color, std::str
                     Dest[3] = 0;
                     v14 += 3;
                     left_margin = atoi(Dest);
-                    out_x = window->uFrameZ - this->GetLineWidth(&string_base[v14]) - left_margin;
+                    out_x = window->uFrameZ - GetLineWidth(&string_base[v14]) - left_margin;
                     out_y = position.y + window->uFrameY;
                     if (maxHeight != 0) {
                         if (_font.height() + out_y - 3 > maxHeight) {
@@ -541,16 +500,16 @@ int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, std
     size_t pNumLen = strlen(buf);
     if (pNumLen == 0) return 0;
 
-    unsigned int pLineWidth = this->GetLineWidth(buf);
+    unsigned int pLineWidth = GetLineWidth(buf);
     if (pLineWidth < rect_width) {
-        this->DrawText(window, position, color, buf, 0, colorTable.Black);
+        DrawText(window, position, color, buf, 0, colorTable.Black);
         return pLineWidth;
     }
 
     assert(false);
     return 0; // TODO(captainurist): The code below is never called, and it's messed up - \r is used for color tags, \f for right justification.
 
-    render->BeginTextNew(fonttex, fontshadow);
+    render->BeginTextNew(_mainTexture, _shadowTexture);
 
     unsigned int text_width = 0;
     if (reverse_text)
@@ -563,7 +522,7 @@ int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, std
             break;
         }
         uint8_t c = buf[i];
-        if (this->IsCharValid(c)) {
+        if (IsCharValid(c)) {
             switch (c) {
             case '\t':  // Horizontal tab 09
             case '\n':  // Line Feed 0A 10
@@ -586,7 +545,7 @@ int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, std
     buf[i - 1] = 0;
 
     pNumLen = strlen(buf);
-    unsigned int v28 = this->GetLineWidth(buf);
+    unsigned int v28 = GetLineWidth(buf);
     if (reverse_text)
         std::reverse(buf, buf + pNumLen);
 
@@ -596,7 +555,7 @@ int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, std
     int text_pos_y = position.y + window->uFrameY;
     for (i = 0; i < pNumLen; ++i) {
         uint8_t c = buf[i];
-        if (this->IsCharValid(c)) {
+        if (IsCharValid(c)) {
             switch (c) {
             case '\t': {  // Horizontal tab 09
                 char Str[6];
@@ -622,7 +581,7 @@ int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, std
                 strncpy(Str, &buf[i + 1], 3);
                 Str[3] = 0;
                 i += 3;
-                unsigned int v23 = this->GetLineWidth(&buf[i]);
+                unsigned int v23 = GetLineWidth(&buf[i]);
                 text_pos_x = window->uFrameZ - v23 - atoi(Str);
                 text_pos_y = position.y;
                 break;
@@ -695,6 +654,10 @@ void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, u
             }
         }
     }
+}
+
+bool GUIFont::IsCharValid(unsigned char c) const {
+    return _font.supports(c) || c == '\f' || c == '\r' || c == '\t' || c == '\n';
 }
 
 std::string GUIFont::FitTwoFontStringINWindow(std::string_view inString, GUIFont *pFontSecond, GUIWindow *pWindow, int startPixlOff, bool return_on_carriage) {

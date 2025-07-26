@@ -267,7 +267,7 @@ void GUIWindow_Dialogue::Update() {
             render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
 
         render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        pDialogueWindow->DrawText(font, {13, 354 - pTextHeight}, colorTable.White, font->FitTextInAWindow(dialogue_string, window.uFrameWidth, 13));
+        pDialogueWindow->DrawText(font, {13, 354 - pTextHeight}, colorTable.White, font->WrapText(dialogue_string, window.uFrameWidth, 13));
     }
 
     // Right panel(Правая панель)-------
