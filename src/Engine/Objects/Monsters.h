@@ -36,19 +36,19 @@ struct MonsterInfo {
     MonsterMovementType movementType = MONSTER_MOVEMENT_TYPE_SHORT;
     MonsterAiType aiType = MONSTER_AI_SUICIDE;
     MonsterHostility hostilityType = HOSTILITY_FRIENDLY;
-    SpecialAttackType specialAttackType = SPECIAL_ATTACK_NONE;
+    MonsterSpecialAttack specialAttackType = SPECIAL_ATTACK_NONE;
     uint8_t specialAttackLevel = 0;
     DamageType attack1Type = DAMAGE_FIRE; // TODO(captainurist): that's... a weird default.
     uint8_t attack1DamageDiceRolls = 0;
     uint8_t attack1DamageDiceSides = 0;
     uint8_t attack1DamageBonus = 0;
-    uint8_t attack1MissileType = 0; // TODO(captainurist): #enum see Actor::AI_RangedAttack.
+    MonsterProjectile attack1MissileType = MONSTER_PROJECTILE_NONE;
     uint8_t attack2Chance = 0;
     DamageType attack2Type = DAMAGE_FIRE; // TODO(captainurist): and here, weird default.
     uint8_t attack2DamageDiceRolls = 0;
     uint8_t attack2DamageDiceSides = 0;
     uint8_t attack2DamageBonus = 0;
-    uint8_t attack2MissileType = 0;
+    MonsterProjectile attack2MissileType = MONSTER_PROJECTILE_NONE;
     uint8_t spell1UseChance = 0; // In [0, 100].
     SpellId spell1Id = SPELL_NONE;
     CombinedSkillValue spell1SkillMastery;
@@ -72,7 +72,7 @@ struct MonsterInfo {
     uint8_t numCharactersAttackedPerSpecialAbility = 0;
     MonsterId id = MONSTER_INVALID;
     bool bloodSplatOnDeath = 0;  // true for bloodsplat on death
-    int16_t field_3C_some_special_attack = 0; // TODO(captainurist): what is this?
+    int16_t field_3C_some_special_attack = 0; // TODO(captainurist): MonsterId for MONSTER_SPECIAL_ABILITY_EXPLODE, DamageType for MONSTER_SPECIAL_ABILITY_EXPLODE. Split.
     int16_t field_3E = 0;
     unsigned int hp = 0;
     unsigned int ac = 0;

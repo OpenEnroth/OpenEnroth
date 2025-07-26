@@ -742,53 +742,16 @@ void Actor::AggroSurroundingPeasants(unsigned int uActorID, int a2) {
 
 //----- (00404874) --------------------------------------------------------
 void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
-                            int type, ActorAbility a4) {
+                            MonsterProjectile type, ActorAbility a4) {
+    if (type == MONSTER_PROJECTILE_NONE)
+        return;
+
     char specAb;  // al@1
     int v13;      // edx@28
 
     SpriteObject a1;  // [sp+Ch] [bp-74h]@1
+    a1.uType = spriteForMonsterProjectile(type);
 
-    switch (type) {
-        case 1:
-            a1.uType = SPRITE_ARROW_PROJECTILE;
-            break;
-        case 2:
-            a1.uType = SPRITE_PROJECTILE_EXPLOSIVE;
-            break;
-        case 3:
-            a1.uType = SPRITE_PROJECTILE_FIREBOLT;
-            break;
-        case 4:
-            a1.uType = SPRITE_PROJECTILE_AIRBOLT;
-            break;
-        case 5:
-            a1.uType = SPRITE_PROJECTILE_WATERBOLT;
-            break;
-        case 6:
-            a1.uType = SPRITE_PROJECTILE_EARTHBOLT;
-            break;
-        case 7:
-            a1.uType = SPRITE_PROJECTILE_530; // - one of MIND/BODY/SPIRIT
-            break;
-        case 8:
-            a1.uType = SPRITE_PROJECTILE_525; // - one of MIND/BODY/SPIRIT
-            break;
-        case 9:
-            a1.uType = SPRITE_PROJECTILE_520; // - one of MIND/BODY/SPIRIT
-            break;
-        case 10:
-            a1.uType = SPRITE_PROJECTILE_LIGHTBOLT;
-            break;
-        case 11:
-            a1.uType = SPRITE_PROJECTILE_DARKBOLT;
-            break;
-        case 13:
-            a1.uType = SPRITE_BLASTER_PROJECTILE;
-            break;
-        default:
-            return;
-    }
-    bool found = false;
     a1.uObjectDescID = pObjectList->ObjectIDByItemID(a1.uType);
     if (a1.uObjectDescID == 0) {
         logger->error("Item not found");
@@ -822,7 +785,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
     a1.Create(pDir->uYawAngle, pDir->uPitchAngle,
               pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
 
-    if (pActors[uActorID].monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_SHOT) {
+    if (pActors[uActorID].monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_MULTI_SHOT) {
         specAb = pActors[uActorID].monsterInfo.specialAbilityDamageDiceBonus;
         if (specAb == 2) {
             a1.vPosition.z += 40;
@@ -1887,7 +1850,7 @@ void Actor::AI_Pursue1(unsigned int uActorID, Pid a2, signed int arg0,
     v7 = &pActors[uActorID];
     v8 = Pid(OBJECT_Actor, uActorID);
     if (v7->monsterInfo.flying && !pParty->bFlying) {
-        if (v7->monsterInfo.attack1MissileType)
+        if (v7->monsterInfo.attack1MissileType != MONSTER_PROJECTILE_NONE)
             WantedZ = v7->radius + 512; // hovering above ground for missle
         else
             WantedZ = pParty->height; // eye height for melee
@@ -1987,7 +1950,7 @@ void Actor::AI_Pursue2(unsigned int uActorID, Pid a2,
     v7 = &pActors[uActorID];
     v8 = Pid(OBJECT_Actor, uActorID);
     if (v7->monsterInfo.flying && !pParty->bFlying) {
-        if (v7->monsterInfo.attack1MissileType &&
+        if (v7->monsterInfo.attack1MissileType != MONSTER_PROJECTILE_NONE &&
             uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
             v6 = v7->radius + 512;
         else
@@ -2043,7 +2006,7 @@ void Actor::AI_Pursue3(unsigned int uActorID, Pid a2,
     v6 = &pActors[uActorID];
     v7 = Pid(OBJECT_Actor, uActorID);
     if (v6->monsterInfo.flying && !pParty->bFlying) {
-        if (v6->monsterInfo.attack1MissileType &&
+        if (v6->monsterInfo.attack1MissileType != MONSTER_PROJECTILE_NONE &&
             uCurrentlyLoadedLevelType == LEVEL_OUTDOOR)
             v5 = v6->radius + 512;
         else
@@ -2674,7 +2637,7 @@ void Actor::UpdateActorAI() {
         if (pActor->monsterInfo.hostilityType == HOSTILITY_FRIENDLY ||
             pActor->monsterInfo.recoveryTime > 0_ticks ||
             radiusMultiplier * meleeRange < pDir->uDistance ||
-            uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting && !pActor->monsterInfo.attack1MissileType ||
+            uAIState != Pursuing && uAIState != Standing && uAIState != Tethered && uAIState != Fidgeting && pActor->monsterInfo.attack1MissileType == MONSTER_PROJECTILE_NONE ||
             uAIState != Stunned) {
             if (pActor->currentActionTime < pActor->currentActionLength) {
                 continue;
@@ -2757,7 +2720,7 @@ void Actor::UpdateActorAI() {
             if (v81 < 5120) {
                 v45 = pActor->special_ability_use_check(actor_id);
                 if (v45 == ABILITY_ATTACK1) {
-                    if (pActor->monsterInfo.attack1MissileType) {
+                    if (pActor->monsterInfo.attack1MissileType != MONSTER_PROJECTILE_NONE) {
                         if (pActor->monsterInfo.recoveryTime <= 0_ticks) {
                             Actor::AI_MissileAttack1(actor_id, target_pid, pDir);
                         } else if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
@@ -2842,7 +2805,7 @@ void Actor::UpdateActorAI() {
                 v58 = pActor->monsterInfo.recoveryTime * flt_debugrecmod3;
                 Actor::AI_Stand(actor_id, Pid::character(0), v58, &v72);
             }
-        } else if (!pActor->monsterInfo.attack2MissileType) {
+        } else if (pActor->monsterInfo.attack2MissileType == MONSTER_PROJECTILE_NONE) {
             if (v81 >= radiusMultiplier * meleeRange) {
                 if (pActor->monsterInfo.movementType == MONSTER_MOVEMENT_TYPE_STATIONARY) {
                     Actor::AI_Stand(actor_id, target_pid, v47, pDir);
