@@ -137,7 +137,7 @@ class Actor {
                                  AIDirection *pOut, int PreferedZ);
     static void Explode(unsigned int uActorID);
     static void AI_RangedAttack(unsigned int uActorID, AIDirection *a2,
-                                int type, ActorAbility a4);
+                                MonsterProjectile type, ActorAbility a4);
     static void AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                                SpellId uSpellID, ActorAbility a4, CombinedSkillValue uSkill);
     static void ActorDamageFromMonster(Pid attacker_id, unsigned int actor_id,

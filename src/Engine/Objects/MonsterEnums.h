@@ -429,11 +429,11 @@ using enum MonsterTier;
 
 enum class MonsterSpecialAbility {
     MONSTER_SPECIAL_ABILITY_NONE = 0x0,
-    MONSTER_SPECIAL_ABILITY_SHOT = 0x1,
+    MONSTER_SPECIAL_ABILITY_MULTI_SHOT = 0x1,
     MONSTER_SPECIAL_ABILITY_SUMMON = 0x2,
     MONSTER_SPECIAL_ABILITY_EXPLODE = 0x3,
 
-    MONSTER_SPECIAL_ABILITY_FIRST = MONSTER_SPECIAL_ABILITY_SHOT,
+    MONSTER_SPECIAL_ABILITY_FIRST = MONSTER_SPECIAL_ABILITY_MULTI_SHOT,
     MONSTER_SPECIAL_ABILITY_LAST = MONSTER_SPECIAL_ABILITY_EXPLODE,
 };
 using enum MonsterSpecialAbility;
@@ -461,8 +461,7 @@ enum class MonsterSupertype {
 };
 using enum MonsterSupertype;
 
-// TODO(captainurist): MonsterSpecialAttack
-enum class SpecialAttackType : uint8_t {
+enum class MonsterSpecialAttack : uint8_t {
     SPECIAL_ATTACK_NONE = 0,
     SPECIAL_ATTACK_CURSE = 1,
     SPECIAL_ATTACK_WEAK = 2,
@@ -491,7 +490,7 @@ enum class SpecialAttackType : uint8_t {
     SPECIAL_ATTACK_FIRST = SPECIAL_ATTACK_CURSE,
     SPECIAL_ATTACK_LAST = SPECIAL_ATTACK_FEAR
 };
-using enum SpecialAttackType;
+using enum MonsterSpecialAttack;
 
 enum class MonsterHostility {
     HOSTILITY_FRIENDLY = 0,
@@ -535,3 +534,20 @@ enum class MonsterAttackPreference : uint16_t {
 using enum MonsterAttackPreference;
 MM_DECLARE_FLAGS(MonsterAttackPreferences, MonsterAttackPreference)
 MM_DECLARE_OPERATORS_FOR_FLAGS(MonsterAttackPreferences)
+
+enum class MonsterProjectile {
+    MONSTER_PROJECTILE_NONE = 0,
+    MONSTER_PROJECTILE_ARROW = 1,
+    MONSTER_PROJECTILE_FLAMING_ARROW = 2,
+    MONSTER_PROJECTILE_FIRE_BOLT = 3,
+    MONSTER_PROJECTILE_AIR_BOLT = 4,
+    MONSTER_PROJECTILE_WATER_BOLT = 5,
+    MONSTER_PROJECTILE_EARTH_BOLT = 6,
+    MONSTER_PROJECTILE_SPIRIT_BOLT = 7,
+    MONSTER_PROJECTILE_MIND_BOLT = 8,
+    MONSTER_PROJECTILE_BODY_BOLT = 9,
+    MONSTER_PROJECTILE_LIGHT_BOLT = 10,
+    MONSTER_PROJECTILE_DARK_BOLT = 11,
+    MONSTER_PROJECTILE_ENERGY_BOLT = 13,
+};
+using enum MonsterProjectile;

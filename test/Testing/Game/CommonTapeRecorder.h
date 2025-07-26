@@ -116,7 +116,7 @@ class CommonTapeRecorder {
      *
      * @return                          Tape object.
      */
-    TestMultiTape<SpecialAttackType> specialAttacks();
+    TestMultiTape<MonsterSpecialAttack> specialAttacks();
 
  private:
     TestController *_controller = nullptr;

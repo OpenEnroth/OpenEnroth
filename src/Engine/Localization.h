@@ -140,7 +140,7 @@ class Localization {
         return this->npc_profession_names[prof];
     }
 
-    const std::string &GetSpecialAttackName(SpecialAttackType index) const {
+    const std::string &GetSpecialAttackName(MonsterSpecialAttack index) const {
         return this->special_attack_names[index];
     }
 

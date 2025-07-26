@@ -5,6 +5,7 @@
 #include "Engine/Party.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Objects/Chest.h"
+#include "Engine/Objects/MonsterEnumFunctions.h"
 
 void prepareForBattleTest() {
     assert(engine->_currentLoadedMapId == MAP_EMERALD_ISLAND);
@@ -210,30 +211,33 @@ GAME_TEST(Issues, Issue2099) {
 
 GAME_TEST(Issues, Issue2104) {
     // Enemies always hit with ranged attacks.
-    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
-    auto hpTape = charTapes.hp(0);
-    auto spritesTape = tapes.sprites();
+    // We test here that both arrows AND monster projectiles that deal magical damage can miss b/c of AC.
+    for (MonsterId monsterId : {MONSTER_ELF_ARCHER_A, MONSTER_DRAGON_A, MONSTER_DRAGON_B, MONSTER_DRAGON_C}) {
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+        auto hpTape = charTapes.hp(0);
+        auto spritesTape = tapes.sprites();
 
-    engine->config->debug.NoActors.setValue(true);
-    game.startNewGame();
-    test.startTaping();
-    prepareForBattleTest();
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest();
 
-    // And make sure char0 has some armor.
-    Character &char0 = pParty->pCharacters[0];
-    char0.setSkillValue(SKILL_LEATHER, CombinedSkillValue(1, MASTERY_NOVICE));
-    char0.inventory.equip(ITEM_SLOT_ARMOUR, Item(ITEM_LEATHER_ARMOR));
+        // And make sure char0 has some armor.
+        Character &char0 = pParty->pCharacters[0];
+        char0.setSkillValue(SKILL_LEATHER, CombinedSkillValue(1, MASTERY_NOVICE));
+        char0.inventory.equip(ITEM_SLOT_ARMOUR, Item(ITEM_LEATHER_ARMOR));
 
-    // Spawn an archer & wait.
-    engine->config->debug.NoActors.setValue(false);
-    game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_ELF_ARCHER_A);
-    game.tick(300);
+        // Spawn an archer & wait.
+        engine->config->debug.NoActors.setValue(false);
+        Actor *monster = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), monsterId);
+        game.tick(300);
 
-    int arrowCount = spritesTape.count([](auto sprites) { return sprites.contains(SPRITE_ARROW_PROJECTILE); });
-    int hitCount = hpTape.size() - 1;
+        int projectileCount = spritesTape.count([&](auto sprites) { return sprites.contains(spriteForMonsterProjectile(monster->monsterInfo.attack1MissileType)); });
+        int hitCount = hpTape.size() - 1;
 
-    ASSERT_GT(hitCount, 0); // Should have hit some.
-    ASSERT_GT(arrowCount, hitCount); // And missed some.
+        ASSERT_GT(hitCount, 0); // Should have hit some.
+        ASSERT_GT(projectileCount, hitCount); // And missed some.
+    }
 }
 
 GAME_TEST(Issues, Issue2108a) {

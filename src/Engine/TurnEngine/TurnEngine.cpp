@@ -700,13 +700,13 @@ void stru262_TurnBased::AI_Action_(int queue_index) {
                 pQueue[queue_index].AI_action_type = TE_AI_STAND;
                 switch (v14) {
                     case ABILITY_ATTACK1:
-                        if (pActors[actor_id].monsterInfo.attack1MissileType) {
+                        if (pActors[actor_id].monsterInfo.attack1MissileType != MONSTER_PROJECTILE_NONE) {
                             Actor::AI_MissileAttack1(actor_id, v22, &v18);
                             pQueue[queue_index].AI_action_type =
                                     TE_AI_RANGED_ATTACK;
                         }
                     case ABILITY_ATTACK2:
-                        if (pActors[actor_id].monsterInfo.attack2MissileType) {
+                        if (pActors[actor_id].monsterInfo.attack2MissileType != MONSTER_PROJECTILE_NONE) {
                             Actor::AI_MissileAttack2(actor_id, v22, &v18);
                             pQueue[queue_index].AI_action_type =
                                 TE_AI_RANGED_ATTACK;
@@ -939,7 +939,7 @@ bool stru262_TurnBased::ActorMove(signed int queue_position) {
         }
         if ((double)(signed int)v11 < meleeRange) return 0;
         if ((signed int)v11 < 5120) {
-            if (pActors[uActorID].monsterInfo.attack1MissileType &&
+            if (pActors[uActorID].monsterInfo.attack1MissileType != MONSTER_PROJECTILE_NONE &&
                 (signed int)v11 < 1024)
                 Actor::AI_Pursue1(uActorID, ai_near_actors_targets_pid[uActorID], uActorID, 32_ticks, &pDir);
             else
