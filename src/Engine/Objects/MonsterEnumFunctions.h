@@ -13,6 +13,7 @@
 #include "ItemEnums.h"
 #include "CharacterEnums.h"
 #include "MonsterEnums.h"
+#include "SpriteEnums.h"
 
 //
 // MonsterId
@@ -99,3 +100,10 @@ inline MonsterSupertype supertypeForMonsterId(MonsterId monsterId) {
 //
 
 std::span<const MonsterAttackPreference> allMonsterAttackPreferences();
+
+
+//
+// MonsterProjectile
+//
+
+SpriteId spriteForMonsterProjectile(MonsterProjectile projectile);

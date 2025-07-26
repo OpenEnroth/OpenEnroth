@@ -42,13 +42,13 @@ struct MonsterInfo {
     uint8_t attack1DamageDiceRolls = 0;
     uint8_t attack1DamageDiceSides = 0;
     uint8_t attack1DamageBonus = 0;
-    uint8_t attack1MissileType = 0; // TODO(captainurist): #enum see Actor::AI_RangedAttack.
+    MonsterProjectile attack1MissileType = MONSTER_PROJECTILE_NONE;
     uint8_t attack2Chance = 0;
     DamageType attack2Type = DAMAGE_FIRE; // TODO(captainurist): and here, weird default.
     uint8_t attack2DamageDiceRolls = 0;
     uint8_t attack2DamageDiceSides = 0;
     uint8_t attack2DamageBonus = 0;
-    uint8_t attack2MissileType = 0;
+    MonsterProjectile attack2MissileType = MONSTER_PROJECTILE_NONE;
     uint8_t spell1UseChance = 0; // In [0, 100].
     SpellId spell1Id = SPELL_NONE;
     CombinedSkillValue spell1SkillMastery;

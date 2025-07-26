@@ -19,8 +19,8 @@ MonsterList *pMonsterList;
 
 void ParseDamage(char *damage_str, uint8_t *dice_rolls,
                  uint8_t *dice_sides, uint8_t *dmg_bonus);
-int ParseMissleAttackType(const char *missle_attack_str);
-int ParseSpecialAttack(const char *spec_att_str);
+MonsterProjectile ParseMissleAttackType(const char *missle_attack_str);
+MonsterSpecialAttack ParseSpecialAttack(const char *spec_att_str);
 
 //----- (004548E2) --------------------------------------------------------
 SpellId ParseSpellType(FrameTableTxtLine *tbl, int *next_token) {
@@ -206,89 +206,92 @@ void ParseDamage(char *damage_str, uint8_t *dice_rolls,
 }
 
 //----- (00454E3A) --------------------------------------------------------
-int ParseMissleAttackType(const char *missle_attack_str) {
-    // TODO(captainurist): #enum
+MonsterProjectile ParseMissleAttackType(const char *missle_attack_str) {
+    // TODO(captainurist): this is broken, we get "FireAr" for flaming arrow here.
+
     if (ascii::noCaseEquals(missle_attack_str, "ARROW"))
-        return 1;
+        return MONSTER_PROJECTILE_ARROW;
     else if (ascii::noCaseEquals(missle_attack_str, "ARROWF"))
-        return 2;
+        return MONSTER_PROJECTILE_FLAMING_ARROW;
     else if (ascii::noCaseEquals(missle_attack_str, "FIRE"))
-        return 3;
+        return MONSTER_PROJECTILE_FIRE_BOLT;
     else if (ascii::noCaseEquals(missle_attack_str, "AIR"))
-        return 4;
+        return MONSTER_PROJECTILE_AIR_BOLT;
     else if (ascii::noCaseEquals(missle_attack_str, "WATER"))
-        return 5;
+        return MONSTER_PROJECTILE_WATER_BOLT;
     else if (ascii::noCaseEquals(missle_attack_str, "EARTH"))
-        return 6;
+        return MONSTER_PROJECTILE_EARTH_BOLT;
     else if (ascii::noCaseEquals(missle_attack_str, "SPIRIT"))
-        return 7;
+        return MONSTER_PROJECTILE_SPIRIT_BOLT;
     else if (ascii::noCaseEquals(missle_attack_str, "MIND"))
-        return 8;
+        return MONSTER_PROJECTILE_MIND_BOLT;
     else if (ascii::noCaseEquals(missle_attack_str, "BODY"))
-        return 9;
+        return MONSTER_PROJECTILE_BODY_BOLT;
     else if (ascii::noCaseEquals(missle_attack_str, "LIGHT"))
-        return 10;
+        return MONSTER_PROJECTILE_LIGHT_BOLT;
     else if (ascii::noCaseEquals(missle_attack_str, "DARK"))
-        return 11;
+        return MONSTER_PROJECTILE_DARK_BOLT;
     else if (ascii::noCaseEquals(missle_attack_str, "ENER"))
-        return 13;
+        return MONSTER_PROJECTILE_ENERGY_BOLT;
     else
-        return 0;
+        return MONSTER_PROJECTILE_NONE;
 }
 
-int ParseSpecialAttack(char *spec_att_str) {
+MonsterSpecialAttack ParseSpecialAttack(char *spec_att_str) {
     std::string tmp = ascii::toLower(spec_att_str);
 
-    // TODO(captainurist): we're getting strings like "Disease1" here, and they are not handled by the code below.
+    // TODO(captainurist):
+    // We are getting "Desease1" / "Desease2" / "Desease3" here and "Poison1" / "Poison2" / "Poison3" / "Poison3x2"
+    // These are not handled by the code below.
 
     if (tmp.starts_with("curse"))
-        return 1;
+        return SPECIAL_ATTACK_CURSE;
     else if (tmp.starts_with("weak"))
-        return 2;
+        return SPECIAL_ATTACK_WEAK;
     else if (tmp.starts_with("asleep"))
-        return 3;
+        return SPECIAL_ATTACK_SLEEP;
     else if (tmp.starts_with("afraid"))
-        return 23;
+        return SPECIAL_ATTACK_FEAR;
     else if (tmp.starts_with("drunk"))
-        return 4;
+        return SPECIAL_ATTACK_DRUNK;
     else if (tmp.starts_with("insane"))
-        return 5;
+        return SPECIAL_ATTACK_INSANE;
     else if (tmp.starts_with("poison weak"))
-        return 6;
+        return SPECIAL_ATTACK_POISON_WEAK;
     else if (tmp.starts_with("poison medium"))
-        return 7;
+        return SPECIAL_ATTACK_POISON_MEDIUM;
     else if (tmp.starts_with("poison severe"))
-        return 8;
+        return SPECIAL_ATTACK_POISON_SEVERE;
     else if (tmp.starts_with("disease weak"))
-        return 9;
+        return SPECIAL_ATTACK_DISEASE_WEAK;
     else if (tmp.starts_with("disease medium"))
-        return 10;
+        return SPECIAL_ATTACK_DISEASE_MEDIUM;
     else if (tmp.starts_with("disease severe"))
-        return 11;
+        return SPECIAL_ATTACK_DISEASE_SEVERE;
     else if (tmp.starts_with("paralyze"))
-        return 12;
+        return SPECIAL_ATTACK_PARALYZED;
     else if (tmp.starts_with("uncon"))
-        return 13;
+        return SPECIAL_ATTACK_UNCONSCIOUS;
     else if (tmp.starts_with("dead"))
-        return 14;
+        return SPECIAL_ATTACK_DEAD;
     else if (tmp.starts_with("stone"))
-        return 15;
+        return SPECIAL_ATTACK_PETRIFIED;
     else if (tmp.starts_with("errad"))
-        return 16;
+        return SPECIAL_ATTACK_ERADICATED;
     else if (tmp.starts_with("brkitem"))
-        return 17;
+        return SPECIAL_ATTACK_BREAK_ANY;
     else if (tmp.starts_with("brkarmor"))
-        return 18;
+        return SPECIAL_ATTACK_BREAK_ARMOR;
     else if (tmp.starts_with("brkweapon"))
-        return 19;
+        return SPECIAL_ATTACK_BREAK_WEAPON;
     else if (tmp.starts_with("steal"))
-        return 20;
+        return SPECIAL_ATTACK_STEAL;
     else if (tmp.starts_with("age"))
-        return 21;
+        return SPECIAL_ATTACK_AGING;
     else if (tmp.starts_with("drainsp"))
-        return 22;
+        return SPECIAL_ATTACK_MANA_DRAIN;
     else
-        return 0;
+        return SPECIAL_ATTACK_NONE;
 }
 
 //----- (004563FF) --------------------------------------------------------
@@ -706,8 +709,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                         int str_len = 0;
                         int str_pos = 0;
                         infos[curr_rec_num].specialAttackLevel = 1;
-                        infos[curr_rec_num].specialAttackType =
-                            (MonsterSpecialAttack)0;
+                        infos[curr_rec_num].specialAttackType = SPECIAL_ATTACK_NONE;
                         str_len = strlen(test_string);
                         if (str_len > 1) {
                             for (str_pos = 0; str_pos < str_len; ++str_pos) {
@@ -719,9 +721,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                                     break;
                                 }
                             }
-                            infos[curr_rec_num].specialAttackType =
-                                (MonsterSpecialAttack)ParseSpecialAttack(
-                                    test_string);
+                            infos[curr_rec_num].specialAttackType = ParseSpecialAttack(test_string);
                         }
                     } break;
                     case 17:

@@ -1,5 +1,6 @@
 #include "MonsterEnumFunctions.h"
 
+#include <cassert>
 #include <string>
 #include <utility>
 #include <vector>
@@ -332,4 +333,23 @@ std::span<const MonsterAttackPreference> allMonsterAttackPreferences() {
     };
 
     return result;
+}
+
+SpriteId spriteForMonsterProjectile(MonsterProjectile projectile) {
+    switch (projectile) {
+    default:                                assert(false); [[fallthrough]];
+    case MONSTER_PROJECTILE_NONE:           return SPRITE_NULL;
+    case MONSTER_PROJECTILE_ARROW:          return SPRITE_ARROW_PROJECTILE;
+    case MONSTER_PROJECTILE_FLAMING_ARROW:  return SPRITE_PROJECTILE_EXPLOSIVE;
+    case MONSTER_PROJECTILE_FIRE_BOLT:      return SPRITE_PROJECTILE_FIREBOLT;
+    case MONSTER_PROJECTILE_AIR_BOLT:       return SPRITE_PROJECTILE_AIRBOLT;
+    case MONSTER_PROJECTILE_WATER_BOLT:     return SPRITE_PROJECTILE_WATERBOLT;
+    case MONSTER_PROJECTILE_EARTH_BOLT:     return SPRITE_PROJECTILE_EARTHBOLT;
+    case MONSTER_PROJECTILE_SPIRIT_BOLT:    return SPRITE_PROJECTILE_530;
+    case MONSTER_PROJECTILE_MIND_BOLT:      return SPRITE_PROJECTILE_525;
+    case MONSTER_PROJECTILE_BODY_BOLT:      return SPRITE_PROJECTILE_520;
+    case MONSTER_PROJECTILE_LIGHT_BOLT:     return SPRITE_PROJECTILE_LIGHTBOLT;
+    case MONSTER_PROJECTILE_DARK_BOLT:      return SPRITE_PROJECTILE_DARKBOLT;
+    case MONSTER_PROJECTILE_ENERGY_BOLT:    return SPRITE_BLASTER_PROJECTILE;
+    }
 }
