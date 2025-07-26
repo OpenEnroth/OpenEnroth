@@ -785,7 +785,7 @@ void Actor::AI_RangedAttack(unsigned int uActorID, AIDirection *pDir,
     a1.Create(pDir->uYawAngle, pDir->uPitchAngle,
               pObjectList->pObjects[(int16_t)a1.uObjectDescID].uSpeed, 0);
 
-    if (pActors[uActorID].monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_SHOT) {
+    if (pActors[uActorID].monsterInfo.specialAbilityType == MONSTER_SPECIAL_ABILITY_MULTI_SHOT) {
         specAb = pActors[uActorID].monsterInfo.specialAbilityDamageDiceBonus;
         if (specAb == 2) {
             a1.vPosition.z += 40;

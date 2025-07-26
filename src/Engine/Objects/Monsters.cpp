@@ -872,7 +872,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                             //      v74 = v94.field_0;
                             if (parsed_field.uPropCount < 10) {
                                 if (ascii::noCaseEquals(parsed_field.pProperties[0], "shot")) {
-                                    infos[curr_rec_num].specialAbilityType = MONSTER_SPECIAL_ABILITY_SHOT;
+                                    infos[curr_rec_num].specialAbilityType = MONSTER_SPECIAL_ABILITY_MULTI_SHOT;
                                     infos[curr_rec_num]
                                         .specialAbilityDamageDiceBonus = atoi(
                                         (char *)(parsed_field.pProperties[1] +

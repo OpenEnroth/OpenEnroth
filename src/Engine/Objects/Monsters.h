@@ -72,7 +72,7 @@ struct MonsterInfo {
     uint8_t numCharactersAttackedPerSpecialAbility = 0;
     MonsterId id = MONSTER_INVALID;
     bool bloodSplatOnDeath = 0;  // true for bloodsplat on death
-    int16_t field_3C_some_special_attack = 0; // TODO(captainurist): what is this?
+    int16_t field_3C_some_special_attack = 0; // TODO(captainurist): MonsterId for MONSTER_SPECIAL_ABILITY_EXPLODE, DamageType for MONSTER_SPECIAL_ABILITY_EXPLODE. Split.
     int16_t field_3E = 0;
     unsigned int hp = 0;
     unsigned int ac = 0;

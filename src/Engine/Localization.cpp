@@ -106,7 +106,7 @@ bool Localization::Initialize() {
     this->special_attack_names[SPECIAL_ATTACK_MANA_DRAIN] = "SP Drain";
     this->special_attack_names[SPECIAL_ATTACK_FEAR] = "Fear";
 
-    this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_SHOT] = "Multi-shot";
+    this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_MULTI_SHOT] = "Multi-shot";
     this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_SUMMON] = "Summoner";
     this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_EXPLODE] = "Explodes";
 
