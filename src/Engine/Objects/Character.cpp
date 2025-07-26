@@ -5809,13 +5809,6 @@ bool Character::hasUnderwaterSuitEquipped() {
     return true;
 }
 
-bool Character::hasItem(ItemId uItemID, bool checkHeldItem) const {
-    if (!checkHeldItem || pParty->pPickedItem.itemId != uItemID) {
-        return !!inventory.find(uItemID);
-    } else {
-        return true;
-    }
-}
 //----- (0043EDB9) --------------------------------------------------------
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
     Race race;  // edi@2
