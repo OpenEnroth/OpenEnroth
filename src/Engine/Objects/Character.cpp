@@ -1382,7 +1382,7 @@ int Character::receiveDamage(signed int amount, DamageType dmg_type) {
 }
 
 //----- (0048DCF6) --------------------------------------------------------
-int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pActor) {  // long function - consider breaking into two??
+int Character::ReceiveSpecialAttackEffect(MonsterSpecialAttack attType, Actor *pActor) {  // long function - consider breaking into two??
     if (engine->callObserver) {
         engine->callObserver->notify(CALL_SPECIAL_ATTACK, attType);
     }

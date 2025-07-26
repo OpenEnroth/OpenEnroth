@@ -707,7 +707,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                         int str_pos = 0;
                         infos[curr_rec_num].specialAttackLevel = 1;
                         infos[curr_rec_num].specialAttackType =
-                            (SpecialAttackType)0;
+                            (MonsterSpecialAttack)0;
                         str_len = strlen(test_string);
                         if (str_len > 1) {
                             for (str_pos = 0; str_pos < str_len; ++str_pos) {
@@ -720,7 +720,7 @@ void MonsterStats::Initialize(const Blob &monsters) {
                                 }
                             }
                             infos[curr_rec_num].specialAttackType =
-                                (SpecialAttackType)ParseSpecialAttack(
+                                (MonsterSpecialAttack)ParseSpecialAttack(
                                     test_string);
                         }
                     } break;

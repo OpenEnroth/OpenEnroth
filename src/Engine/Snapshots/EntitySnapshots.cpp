@@ -1429,7 +1429,7 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.movementType = static_cast<MonsterMovementType>(src.pMonsterInfo.movementType);
     dst->monsterInfo.aiType = static_cast<MonsterAiType>(src.pMonsterInfo.aiType);
     dst->monsterInfo.hostilityType = static_cast<MonsterHostility>(src.pMonsterInfo.hostilityType);
-    dst->monsterInfo.specialAttackType = static_cast<SpecialAttackType>(src.pMonsterInfo.specialAttackType);
+    dst->monsterInfo.specialAttackType = static_cast<MonsterSpecialAttack>(src.pMonsterInfo.specialAttackType);
     dst->monsterInfo.specialAttackLevel = src.pMonsterInfo.specialAttackLevel;
     dst->monsterInfo.attack1Type = static_cast<DamageType>(src.pMonsterInfo.attack1Type);
     dst->monsterInfo.attack1DamageDiceRolls = src.pMonsterInfo.attack1DamageDiceRolls;

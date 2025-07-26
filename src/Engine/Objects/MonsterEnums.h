@@ -461,8 +461,7 @@ enum class MonsterSupertype {
 };
 using enum MonsterSupertype;
 
-// TODO(captainurist): MonsterSpecialAttack
-enum class SpecialAttackType : uint8_t {
+enum class MonsterSpecialAttack : uint8_t {
     SPECIAL_ATTACK_NONE = 0,
     SPECIAL_ATTACK_CURSE = 1,
     SPECIAL_ATTACK_WEAK = 2,
@@ -491,7 +490,7 @@ enum class SpecialAttackType : uint8_t {
     SPECIAL_ATTACK_FIRST = SPECIAL_ATTACK_CURSE,
     SPECIAL_ATTACK_LAST = SPECIAL_ATTACK_FEAR
 };
-using enum SpecialAttackType;
+using enum MonsterSpecialAttack;
 
 enum class MonsterHostility {
     HOSTILITY_FRIENDLY = 0,
