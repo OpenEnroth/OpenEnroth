@@ -1382,7 +1382,7 @@ int Character::receiveDamage(signed int amount, DamageType dmg_type) {
 }
 
 //----- (0048DCF6) --------------------------------------------------------
-int Character::ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pActor) {  // long function - consider breaking into two??
+int Character::ReceiveSpecialAttackEffect(MonsterSpecialAttack attType, Actor *pActor) {  // long function - consider breaking into two??
     if (engine->callObserver) {
         engine->callObserver->notify(CALL_SPECIAL_ATTACK, attType);
     }
@@ -6062,7 +6062,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
             SpriteId spriteType = spritefrom->uType;
 
-            if (spriteType == SPRITE_ARROW_PROJECTILE) {  // arrows
+            if (spriteType == SPRITE_PROJECTILE_ARROW) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point
                 if (playerPtr->getActualSkillValue(SKILL_UNARMED).mastery() >= MASTERY_GRANDMASTER &&
                     grng->random(100) < playerPtr->getActualSkillValue(SKILL_UNARMED).level()) {
@@ -6073,17 +6073,17 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
             }
 
             // TODO(captainurist): I don't think magic projectiles should be in this list.
-            if (spriteType == SPRITE_ARROW_PROJECTILE ||
-                       spriteType == SPRITE_BLASTER_PROJECTILE ||
-                       spriteType == SPRITE_PROJECTILE_AIRBOLT ||  // dragonflies firebolt
-                       spriteType == SPRITE_PROJECTILE_EARTHBOLT ||
-                       spriteType == SPRITE_PROJECTILE_FIREBOLT ||
-                       spriteType == SPRITE_PROJECTILE_WATERBOLT ||
-                       spriteType == SPRITE_PROJECTILE_520 ||
-                       spriteType == SPRITE_PROJECTILE_525 ||
-                       spriteType == SPRITE_PROJECTILE_530 ||
-                       spriteType == SPRITE_PROJECTILE_LIGHTBOLT ||
-                       spriteType == SPRITE_PROJECTILE_DARKBOLT) {
+            if (spriteType == SPRITE_PROJECTILE_ARROW ||
+                       spriteType == SPRITE_PROJECTILE_BLASTER ||
+                       spriteType == SPRITE_PROJECTILE_AIR_BOLT ||  // dragonflies firebolt
+                       spriteType == SPRITE_PROJECTILE_EARTH_BOLT ||
+                       spriteType == SPRITE_PROJECTILE_FIRE_BOLT ||
+                       spriteType == SPRITE_PROJECTILE_WATER_BOLT ||
+                       spriteType == SPRITE_PROJECTILE_BODY_BOLT ||
+                       spriteType == SPRITE_PROJECTILE_MIND_BOLT ||
+                       spriteType == SPRITE_PROJECTILE_SPIRIT_BOLT ||
+                       spriteType == SPRITE_PROJECTILE_LIGHT_BOLT ||
+                       spriteType == SPRITE_PROJECTILE_DARK_BOLT) {
                 if (!actorPtr->ActorHitOrMiss(playerPtr))
                     return;
 

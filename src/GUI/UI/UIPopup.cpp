@@ -215,7 +215,7 @@ static constexpr IndexedArray<Color, SPECIAL_ATTACK_FIRST, SPECIAL_ATTACK_LAST> 
 
 // OE addition - colors for monster special ability text.
 static constexpr IndexedArray<Color, MONSTER_SPECIAL_ABILITY_FIRST, MONSTER_SPECIAL_ABILITY_LAST> monsterSpecialAbilityColors = {
-    {MONSTER_SPECIAL_ABILITY_SHOT, colorTable.Mercury},
+    {MONSTER_SPECIAL_ABILITY_MULTI_SHOT, colorTable.Mercury},
     {MONSTER_SPECIAL_ABILITY_SUMMON, colorTable.EasternBlue},
     {MONSTER_SPECIAL_ABILITY_EXPLODE, colorTable.Sunflower}
 };
