@@ -23,7 +23,7 @@ var searchData=
   ['ready_20',['ready',['../structTimer__MM7.html#ad70ff751d5d505e28e07ae821c8d2c81',1,'Timer_MM7']]],
   ['reagentpower_21',['reagentPower',['../structItemData.html#afde20e2d7d1951fb6e8171b38441eb85',1,'ItemData']]],
   ['receives_5fkeyboard_5finput_22',['receives_keyboard_input',['../classGUIWindow.html#aaedaee57b8df9772e3d7a1a19d2b02e8',1,'GUIWindow']]],
-  ['recovery_5fper_5fskill_23',['recovery_per_skill',['../classSpellData.html#a0d294971f0e934ecff5939af7d0845bf',1,'SpellData']]],
+  ['recovery_5fper_5fskill_23',['recovery_per_skill',['../classSpellData.html#a4dc100badbaacec1a2c91782eed1da3d',1,'SpellData']]],
   ['recoverytime_24',['recoveryTime',['../structMonsterInfo.html#a5d703f4aaf0b57752b9dec3308158cfb',1,'MonsterInfo::recoveryTime()'],['../structMonsterInfo__MM7.html#abe3a230c9ba43e68efe3760e9b8340e0',1,'MonsterInfo_MM7::recoveryTime()']]],
   ['red_25',['Red',['../classColorTable.html#ad829a34e61c36e26851f8b5e2bfb49d7',1,'ColorTable']]],
   ['red_26',['red',['../structGLdecalverts.html#aaf45c445abb8d8eb45335455bba1ad00',1,'GLdecalverts']]],

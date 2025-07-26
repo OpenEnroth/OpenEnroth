@@ -62,7 +62,7 @@ var searchData=
   ['class_5fdesc_5fraw_59',['class_desc_raw',['../classLocalization.html#ad960bf51a35041341abd4d8592f740cb',1,'Localization']]],
   ['class_5fdesciptions_60',['class_desciptions',['../classLocalization.html#a9aacaeb11efe6a7ec38b8957b3580540',1,'Localization']]],
   ['class_5fnames_61',['class_names',['../classLocalization.html#aa4b1589089579f18147df88b248062e3',1,'Localization']]],
-  ['classtype_62',['classType',['../structCharacter__MM7.html#a1fa06f73c24119009545f17c0c1c0f26',1,'Character_MM7::classType()'],['../classCharacter.html#aa23cd3cddc9ceeba886c965a5b51f7c1',1,'Character::classType()']]],
+  ['classtype_62',['classType',['../structCharacter__MM7.html#a1fa06f73c24119009545f17c0c1c0f26',1,'Character_MM7::classType()'],['../classCharacter.html#a7e69f14236e248c4df9bfdf0053c28fe',1,'Character::classType()']]],
   ['cleanuproutine_63',['cleanupRoutine',['../structPlatformComponentStorage_1_1Data.html#ada180e2041aaddaa91d557fd1a408c64',1,'PlatformComponentStorage::Data']]],
   ['clear_64',['Clear',['../classGameConfig_1_1Keybindings.html#a6f4af553b48912d4240ededd66993eeb',1,'GameConfig::Keybindings::Clear()'],['../classGameConfig_1_1Gamepad.html#aba5f0f84f3b07a51ce0005a2f606430c',1,'GameConfig::Gamepad::Clear()']]],
   ['clipfardistance_65',['ClipFarDistance',['../classGameConfig_1_1Graphics.html#afa82b8df932db779f4caa0a2251b4c6c',1,'GameConfig::Graphics']]],

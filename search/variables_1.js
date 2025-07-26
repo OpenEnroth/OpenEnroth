@@ -91,7 +91,7 @@ var searchData=
   ['arrival_5fview_5fyaw_88',['arrival_view_yaw',['../structTransportInfo.html#acb8ad2be517bfd872af7302ae2bf22fe',1,'TransportInfo']]],
   ['arrivalpos_89',['arrivalPos',['../structTransportInfo.html#ad16cf1e345ee9cf53450766c291e404b',1,'TransportInfo']]],
   ['arrow_5fspin_5fperiod_5fms_90',['ARROW_SPIN_PERIOD_MS',['../UIPartyCreation_8cpp.html#a6ae74dcb04f6ebad83f7d8893acc99f0',1,'UIPartyCreation.cpp']]],
-  ['artifactbonusmap_91',['artifactBonusMap',['../Item_8cpp.html#a1725e27d23dda163b0446716972e375b',1,'Item.cpp']]],
+  ['artifactbonusmap_91',['artifactBonusMap',['../Item_8cpp.html#a5bb9720b17bffd39be1f463477d16615',1,'Item.cpp']]],
   ['artifactlimit_92',['ArtifactLimit',['../classGameConfig_1_1Gameplay.html#a402efe5bbd11c69751741d0d55b40b93',1,'GameConfig::Gameplay']]],
   ['aspect_93',['aspect',['../structCamera3D.html#a9d8856fa9b89a9eb60054b3acee58ba6',1,'Camera3D']]],
   ['assets_94',['assets',['../AssetsManager_8h.html#a645270130330d2d99964c967b7d33cd8',1,'assets():&#160;AssetsManager.cpp'],['../AssetsManager_8cpp.html#a645270130330d2d99964c967b7d33cd8',1,'assets():&#160;AssetsManager.cpp']]],

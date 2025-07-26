@@ -72,7 +72,7 @@ var searchData=
   ['exp_69',['exp',['../structMonsterInfo__MM7.html#a8494de554b163e9f2fa1a2df39c7f999',1,'MonsterInfo_MM7::exp()'],['../structMonsterInfo.html#abc2325a473a763176580cca13cae63c0',1,'MonsterInfo::exp()']]],
   ['exp_5fdescription_70',['exp_description',['../classLocalization.html#aaa0460073fd4a2e9d26a1a6499d1e643',1,'Localization']]],
   ['experience_71',['experience',['../classCharacter.html#a48e1e1c0150884f332453fd385a00148',1,'Character::experience()'],['../structCharacter__MM7.html#a024dfac3faf9a4d6105d38e4f63c977e',1,'Character_MM7::experience()']]],
-  ['expertskillmasterycost_72',['expertSkillMasteryCost',['../NPCTopics_8cpp.html#a69cb59fa9b67147d8b9459391bed602a',1,'NPCTopics.cpp']]],
+  ['expertskillmasterycost_72',['expertSkillMasteryCost',['../NPCTopics_8cpp.html#afa73f66b560b0945fa6f59ac85a935bb',1,'NPCTopics.cpp']]],
   ['expiretime_73',['expireTime',['../structSpellBuff.html#a74596eec2f5b092d20712fab52c0918d',1,'SpellBuff::expireTime()'],['../structSpellBuff__MM7.html#ab74076d372df2c2543479fb8f66c91bf',1,'SpellBuff_MM7::expireTime()']]],
   ['explosion_5feff_74',['explosion_eff',['../structam__effects__struct.html#a6c6098584f02d609d48ba2e064533c95',1,'am_effects_struct']]],
   ['extendedmonsterinfo_75',['ExtendedMonsterInfo',['../classGameConfig_1_1Settings.html#aabb9b2ccee86d4699513b9461c27b16e',1,'GameConfig::Settings']]],

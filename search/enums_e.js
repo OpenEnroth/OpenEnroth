@@ -16,5 +16,6 @@ var searchData=
   ['platformwindowmode_13',['PlatformWindowMode',['../PlatformEnums_8h.html#a7772d16a8207ba672642f139658d8f14',1,'PlatformEnums.h']]],
   ['platformwindoworientation_14',['PlatformWindowOrientation',['../PlatformEnums_8h.html#acef92f6f6dcb8940ab858cd4fe1c64bc',1,'PlatformEnums.h']]],
   ['pointercreationtype_15',['PointerCreationType',['../structVis__SelectionList.html#a9e474fcb1237991d944eecc3f71c5ee3',1,'Vis_SelectionList']]],
-  ['polygontype_16',['PolygonType',['../FaceEnums_8h.html#a91fb3e69af7609c2810f12d81ecf6fab',1,'FaceEnums.h']]]
+  ['polygontype_16',['PolygonType',['../FaceEnums_8h.html#a91fb3e69af7609c2810f12d81ecf6fab',1,'FaceEnums.h']]],
+  ['portraitid_17',['PortraitId',['../CharacterEnums_8h.html#a30b519bac633ed9e0ab60a81d3ab4822',1,'CharacterEnums.h']]]
 ];

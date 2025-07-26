@@ -407,7 +407,7 @@ var searchData=
   ['fromfile_404',['fromFile',['../classBlob.html#a6596e8e6cefe9db2a5066f15af2f48cf',1,'Blob']]],
   ['fromhours_405',['fromHours',['../classTime.html#a396a8a42d434cbe946b422e070900ce3',1,'Time::fromHours()'],['../classDuration.html#adcc628f36a9ae3e1cde40a284f3c1974',1,'Duration::fromHours()']]],
   ['fromjoined_406',['fromJoined',['../classCombinedSkillValue.html#af0189f81f6da00d031c2d03a837d2b4f',1,'CombinedSkillValue']]],
-  ['fromjoinedunchecked_407',['fromJoinedUnchecked',['../classCombinedSkillValue.html#ad0b60a17d01c4be2e86ccb6ab3b15707',1,'CombinedSkillValue']]],
+  ['fromjoinedunchecked_407',['fromJoinedUnchecked',['../classCombinedSkillValue.html#a719b074da148dc4aee58247820488218',1,'CombinedSkillValue']]],
   ['fromjsonblob_408',['fromJsonBlob',['../structEventTrace.html#a759d772409e9b0158e65439d15bee376',1,'EventTrace']]],
   ['frommalloc_409',['fromMalloc',['../classBlob.html#af8dd2df493213c9c038e94cd161f335d',1,'Blob::fromMalloc(std::unique_ptr&lt; void, FreeDeleter &gt; data, size_t size)'],['../classBlob.html#a08c54b538e212d9e2cea406770b3a18f',1,'Blob::fromMalloc(const void *data, size_t size)']]],
   ['fromminutes_410',['fromMinutes',['../classTime.html#ab61433d48ab4deeb9484895c348f99c0',1,'Time::fromMinutes()'],['../classDuration.html#a28c52f2148670f760e90a5c5bb1e23a2',1,'Duration::fromMinutes()']]],

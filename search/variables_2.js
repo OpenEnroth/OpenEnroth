@@ -5,7 +5,7 @@ var searchData=
   ['backsectorid_2',['backSectorId',['../structBLVFace__MM7.html#a88e3634fe2739596cad493cac67673a8',1,'BLVFace_MM7']]],
   ['backward_3',['Backward',['../classGameConfig_1_1Gamepad.html#aa2d0abf232213ea4f898086c8eac8095',1,'GameConfig::Gamepad::Backward()'],['../classGameConfig_1_1Keybindings.html#aa038beb5da59cbf22fd2555762e9099e',1,'GameConfig::Keybindings::Backward()']]],
   ['base_5f_4',['base_',['../classProxyBase.html#a24fd6fa6bad5b7ea47fd041927e6a9a8',1,'ProxyBase']]],
-  ['base_5frecovery_5ftimes_5fper_5fweapon_5ftype_5',['base_recovery_times_per_weapon_type',['../mm7__data_8cpp.html#ae638ed0fa1ca085af84fc81517f725df',1,'base_recovery_times_per_weapon_type():&#160;mm7_data.cpp'],['../mm7__data_8h.html#ae638ed0fa1ca085af84fc81517f725df',1,'base_recovery_times_per_weapon_type():&#160;mm7_data.cpp']]],
+  ['base_5frecovery_5ftimes_5fper_5fweapon_5ftype_5',['base_recovery_times_per_weapon_type',['../mm7__data_8cpp.html#ae30128f6aa4c91f71ffbe7fa4deb2e38',1,'base_recovery_times_per_weapon_type():&#160;mm7_data.cpp'],['../mm7__data_8h.html#ae30128f6aa4c91f71ffbe7fa4deb2e38',1,'base_recovery_times_per_weapon_type():&#160;mm7_data.cpp']]],
   ['basedamage_6',['baseDamage',['../classSpellData.html#a904cc9f132b6786270f1a4e68f59e91b',1,'SpellData']]],
   ['basename_7',['baseName',['../structdetail_1_1LowercaseFileData.html#a73d702c5eee64a6b7fa1331e309ee4ad',1,'detail::LowercaseFileData']]],
   ['basespeed_8',['baseSpeed',['../structMonsterInfo__MM7.html#a36ea7db0726ee5b371dd5aeccf444de7',1,'MonsterInfo_MM7::baseSpeed()'],['../structMonsterInfo.html#a4a866acaa874f1177e62af88f83ac24b',1,'MonsterInfo::baseSpeed()']]],

@@ -700,7 +700,7 @@ var searchData=
   ['useitem_697',['useItem',['../classCharacter.html#a9ed9309e2615635961a047eeb769783a',1,'Character']]],
   ['usenpcskill_698',['UseNPCSkill',['../NPC_8cpp.html#a567f6e7a3f87150b837ab15cba9b650b',1,'UseNPCSkill(NpcProfession profession, int id):&#160;NPC.cpp'],['../NPC_8h.html#a567f6e7a3f87150b837ab15cba9b650b',1,'UseNPCSkill(NpcProfession profession, int id):&#160;NPC.cpp']]],
   ['userpath_699',['userPath',['../structGameStarterOptions.html#a003e7381980d5356fa5456037e413b89',1,'GameStarterOptions']]],
-  ['usex_700',['uSex',['../structNPCData.html#a971698296cddb30d0e555baf15bfc702',1,'NPCData::uSex()'],['../classCharacter.html#ae9a26e146c1e47b03a3daf5d0e68ed32',1,'Character::uSex()']]],
+  ['usex_700',['uSex',['../structNPCData.html#a22c1bfb93500f7c179898d2186fd8d49',1,'NPCData::uSex()'],['../classCharacter.html#a94a69c57b8eb14f18363a959c34c0a34',1,'Character::uSex()']]],
   ['ushadetype_701',['uShadeType',['../structODMFace__MM7.html#a8369b3c7ac9a9dc205bc33c9c9660220',1,'ODMFace_MM7::uShadeType()'],['../structODMFace.html#a730f1982a78b860296918228b121a100',1,'ODMFace::uShadeType()']]],
   ['usize_702',['uSize',['../structVis__SelectionList.html#ac75b74c64383d5f76a717af2cb5671e1',1,'Vis_SelectionList']]],
   ['uskillpoints_703',['uSkillPoints',['../classCharacter.html#abacf3d2a3f94d99c7780f0dede2fc1ad',1,'Character']]],
