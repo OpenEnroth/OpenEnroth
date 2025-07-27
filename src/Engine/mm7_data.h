@@ -132,6 +132,9 @@ constexpr float flt_debugrecmod3 = 2.133333333333333f;
 
 constexpr float meleeRange = 307.2f;
 
+// maximum +/- XY distance party can reach outdoors
+constexpr float maxPartyAxisDistance = 22528.0f;
+
 extern int uPlayerCreationUI_SelectedCharacter;
 extern int uPlayerCreationUI_NameEditCharacter;
 extern int currentAddressingAwardBit;
