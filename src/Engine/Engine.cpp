@@ -1107,8 +1107,8 @@ void _494035_timed_effects__water_walking_damage__etc(Duration dt) {
     if (pParty->uFlags & PARTY_FLAG_WATER_DAMAGE && pParty->_6FC_water_lava_timer < pParty->GetPlayingTime()) {
         pParty->_6FC_water_lava_timer = pParty->GetPlayingTime() + 128_ticks;
         for (Character &character : pParty->pCharacters) {
-            if (character.WearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
-                character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
+            if (character.wearsItem(ITEM_RELIC_HARECKS_LEATHER, ITEM_SLOT_ARMOUR) ||
+                character.wearsEnchantedItem(ITEM_ENCHANTMENT_OF_WATER_WALKING) ||
                 character.pCharacterBuffs[CHARACTER_BUFF_WATER_WALK].Active()) {
                 character.playEmotion(PORTRAIT_SMILE, 0_ticks);
             } else {

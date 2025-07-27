@@ -1777,8 +1777,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->velocity.z += -2.0f * pEventTimer->dt().ticks() * GetGravityStrength();
         if (pParty->velocity.z < -500 && !bFeatherFall && pParty->pos.z - floorZ > 1000) {
             for (Character &character : pParty->pCharacters) {
-                if (!character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-                    !character.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS) &&
+                if (!character.wearsEnchantedItem(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
+                    !character.wearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS) &&
                     character.CanAct()) {  // was 8
                     character.playReaction(SPEECH_FALLING);
                 }

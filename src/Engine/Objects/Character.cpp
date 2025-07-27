@@ -641,7 +641,7 @@ int Character::GetDisarmTrap() const {
     if (val.mastery() == MASTERY_GRANDMASTER)  // gm disarm
         return 10000;
 
-    if (HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_THIEVERY))  // item has increased disarm
+    if (wearsEnchantedItem(ITEM_ENCHANTMENT_OF_THIEVERY))  // item has increased disarm
         multiplier++;
 
     return multiplier * val.level();
@@ -1169,22 +1169,22 @@ bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
 }
 
 //----- (0048D6D0) --------------------------------------------------------
-bool Character::HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const {
+bool Character::wearsEnchantedItem(ItemEnchantment enchantment) const {
     for (InventoryConstEntry entry : inventory.functionalEquipment())
-        if (entry->specialEnchantment == uEnchantment)
+        if (entry->specialEnchantment == enchantment)
             return true;
     return false;
 }
 
 //----- (0048D709) --------------------------------------------------------
-bool Character::WearsItem(ItemId item_id, ItemSlot equip_type) const {
-    InventoryConstEntry entry = inventory.functionalEntry(equip_type);
-    return entry && entry->itemId == item_id;
+bool Character::wearsItem(ItemId itemId, ItemSlot slot) const {
+    InventoryConstEntry entry = inventory.functionalEntry(slot);
+    return entry && entry->itemId == itemId;
 }
 
-bool Character::wearsItemAnywhere(ItemId item_id) const {
+bool Character::wearsItemAnywhere(ItemId itemId) const {
     for (InventoryConstEntry entry : inventory.functionalEquipment())
-        if (entry->itemId == item_id)
+        if (entry->itemId == itemId)
             return true;
     return false;
 }
@@ -2209,7 +2209,7 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
             return v5 + v56;
 
         case ATTRIBUTE_LEVEL:
-            if (!Character::HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_POWER)) return 0;
+            if (!Character::wearsEnchantedItem(ITEM_ENCHANTMENT_OF_POWER)) return 0;
             return 5;
             break;
 
@@ -6051,9 +6051,9 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                     shielded = true;
                 if (pParty->pPartyBuffs[PARTY_BUFF_SHIELD].Active())
                     shielded = true;
-                if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_SHIELDING))
+                if (playerPtr->wearsEnchantedItem(ITEM_ENCHANTMENT_OF_SHIELDING))
                     shielded = true;
-                if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_STORM))
+                if (playerPtr->wearsEnchantedItem(ITEM_ENCHANTMENT_OF_STORM))
                     shielded = true;
                 if (playerPtr->HasItemEquipped(ITEM_SLOT_ARMOUR) && playerPtr->GetArmorItem()->itemId == ITEM_ARTIFACT_GOVERNORS_ARMOR)
                     shielded = true;
@@ -6504,8 +6504,8 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
         Actor::DamageMonsterFromParty(Pid(OBJECT_Character, pParty->activeCharacterIndex() - 1),
                                       target_id, a3);
-        if (character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
-            character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
+        if (character->wearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
+            character->wearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
             _42FA66_do_explosive_impact(actor->pos + Vec3f(0, 0, actor->height / 2), 0, 512, pParty->activeCharacterIndex());
     } else if (bow) {
         shooting_bow = true;

@@ -125,8 +125,9 @@ class Character {
     int CalculateIncommingDamage(DamageType dmg_type, int amount);
     bool IsUnarmed() const;
     bool HasItemEquipped(ItemSlot uEquipIndex) const;
-    bool HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const;
-    bool WearsItem(ItemId item_id, ItemSlot equip_type) const;
+    bool wearsEnchantedItem(ItemEnchantment enchantment) const;
+    bool wearsItem(ItemId itemId, ItemSlot slot) const;
+    bool wearsItemAnywhere(ItemId itemId) const;
     int StealFromShop(Item *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);
     StealResult StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
@@ -231,7 +232,6 @@ class Character {
     int CalculateMeleeDmgToEnemyWithWeapon(Item *weapon,
                                            MonsterId uTargetActorID,
                                            bool addOneDice);
-    bool wearsItemAnywhere(ItemId item_id) const;
     float GetArmorRecoveryMultiplierFromSkillLevel(Skill armour_skill_type, float param2, float param3, float param4, float param5) const;
     void SetSkillReaction();
     void PlayAwardSound_Anim();

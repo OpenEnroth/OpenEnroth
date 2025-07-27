@@ -143,7 +143,7 @@ bool blockCondition(Character *character, Condition condition) {
     if (blockConditionWithProtectionFromMagic(entry))
         return true;
 
-    if (entry.enchantment != ITEM_ENCHANTMENT_NULL && character->HasEnchantedItemEquipped(entry.enchantment))
+    if (entry.enchantment != ITEM_ENCHANTMENT_NULL && character->wearsEnchantedItem(entry.enchantment))
         return true;
 
     for (const ConditionEquipment &pair : entry.equipment) {
@@ -154,7 +154,7 @@ bool blockCondition(Character *character, Condition condition) {
             if (character->wearsItemAnywhere(pair.item))
                 return true;
         } else {
-            if (character->WearsItem(pair.item, pair.slot))
+            if (character->wearsItem(pair.item, pair.slot))
                 return true;
         }
     }
