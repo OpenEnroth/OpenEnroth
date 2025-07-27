@@ -1672,11 +1672,6 @@ int Character::ReceiveSpecialAttackEffect(MonsterSpecialAttack attType, Actor *p
 
 // 48DCF6: using guessed type char var_94[140];
 
-//----- (0048E1A3) --------------------------------------------------------
-DamageType Character::GetSpellDamageType(SpellId uSpellID) const {
-    return pSpellStats->pInfos[uSpellID].damageType;
-}
-
 //----- (0048E1B5) --------------------------------------------------------
 Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
     const Item *weapon = nullptr;

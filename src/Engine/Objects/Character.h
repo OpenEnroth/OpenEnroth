@@ -138,8 +138,6 @@ class Character {
     int receiveDamage(signed int amount, DamageType dmg_type);
     int ReceiveSpecialAttackEffect(MonsterSpecialAttack attType, Actor *pActor);
 
-    // TODO(captainurist): move closer to Spells data.
-    DamageType GetSpellDamageType(SpellId uSpellID) const;
     Duration GetAttackRecoveryTime(bool attackUsesBow) const;
 
     int GetHealth() const { return this->health; }
