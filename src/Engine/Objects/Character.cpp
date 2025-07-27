@@ -1156,16 +1156,6 @@ int Character::CalculateIncommingDamage(DamageType dmg_type, int dmg) {
     return dmg;
 }
 
-//----- (0048D62C) --------------------------------------------------------
-ItemType Character::GetEquippedItemEquipType(ItemSlot uEquipSlot) const {
-    return GetItem(uEquipSlot)->type();
-}
-
-//----- (0048D651) --------------------------------------------------------
-Skill Character::GetEquippedItemSkillType(ItemSlot uEquipSlot) const {
-    return GetItem(uEquipSlot)->skill();
-}
-
 //----- (0048D676) --------------------------------------------------------
 bool Character::IsUnarmed() const {
     return !HasItemEquipped(ITEM_SLOT_MAIN_HAND) &&
@@ -1708,7 +1698,7 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
 
     Duration shield_recovery;
     if (HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
-        if (GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND) == ITEM_TYPE_SHIELD) {
+        if (inventory.entry(ITEM_SLOT_OFF_HAND)->isShield()) {
             Skill skill_type = GetOffHandItem()->skill();
             Duration shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
             float multiplier = GetArmorRecoveryMultiplierFromSkillLevel(skill_type, 1.0f, 0, 0, 0);
@@ -2007,7 +1997,7 @@ int Character::GetActualResistance(Attribute resistance) const {
          resistance == ATTRIBUTE_RESIST_EARTH) &&
         leatherSkill.mastery() == MASTERY_GRANDMASTER &&
         HasItemEquipped(ITEM_SLOT_ARMOUR) &&
-        GetEquippedItemSkillType(ITEM_SLOT_ARMOUR) == SKILL_LEATHER)
+        inventory.entry(ITEM_SLOT_ARMOUR)->skill() == SKILL_LEATHER)
         v10 += leatherSkill.level();
 
     switch (resistance) {
@@ -2237,7 +2227,7 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
                 return 3;
             } else {
                 if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                    if (isWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
+                    if (inventory.entry(ITEM_SLOT_MAIN_HAND)->isWeapon()) {
                         const Item *mainHandItem = GetMainHandItem();
                         v26 = mainHandItem->GetDamageRoll();
                         if (GetOffHandItem() != nullptr ||
@@ -2251,7 +2241,7 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
                 }
                 if (getOnlyMainHandDmg ||
                     !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-                    !isWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
+                    !inventory.entry(ITEM_SLOT_OFF_HAND)->isWeapon()) {
                     return v5;
                 } else {
                     const Item *offHandItem = GetOffHandItem();
@@ -2269,13 +2259,13 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
                 return 0;
             }
             if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                if (isWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
+                if (inventory.entry(ITEM_SLOT_MAIN_HAND)->isWeapon()) {
                     v5 = GetMainHandItem()->GetDamageMod();
                 }
             }
             if (getOnlyMainHandDmg ||
                 !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-                !isWeapon(this->GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
+                !inventory.entry(ITEM_SLOT_OFF_HAND)->isWeapon()) {
                 return v5;
             } else {
                 v56 = GetOffHandItem()->GetDamageMod();
@@ -2288,7 +2278,7 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
                 return 1;
             }
             if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                if (isWeapon(GetEquippedItemEquipType(ITEM_SLOT_MAIN_HAND))) {
+                if (inventory.entry(ITEM_SLOT_MAIN_HAND)->isWeapon()) {
                     const Item *mainHandItem = GetMainHandItem();
                     v5 = mainHandItem->GetDamageDice() +
                          mainHandItem->GetDamageMod();
@@ -2301,7 +2291,7 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
 
             if (getOnlyMainHandDmg ||
                 !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-                !isWeapon(GetEquippedItemEquipType(ITEM_SLOT_OFF_HAND))) {
+                !inventory.entry(ITEM_SLOT_OFF_HAND)->isWeapon()) {
                 return v5;
             } else {
                 const Item *offHandItem = GetOffHandItem();
@@ -5819,13 +5809,6 @@ bool Character::hasUnderwaterSuitEquipped() {
     return true;
 }
 
-bool Character::hasItem(ItemId uItemID, bool checkHeldItem) const {
-    if (!checkHeldItem || pParty->pPickedItem.itemId != uItemID) {
-        return !!inventory.find(uItemID);
-    } else {
-        return true;
-    }
-}
 //----- (0043EDB9) --------------------------------------------------------
 bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
     Race race;  // edi@2

@@ -123,8 +123,6 @@ class Character {
     bool CanTrainToNextLevel();
     Color GetExperienceDisplayColor();
     int CalculateIncommingDamage(DamageType dmg_type, int amount);
-    ItemType GetEquippedItemEquipType(ItemSlot uEquipSlot) const;
-    Skill GetEquippedItemSkillType(ItemSlot uEquipSlot) const;
     bool IsUnarmed() const;
     bool HasItemEquipped(ItemSlot uEquipIndex) const;
     bool HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const;
@@ -227,10 +225,6 @@ class Character {
      */
     bool hasUnderwaterSuitEquipped();
 
-    /**
-     * @offset 0x43EE15
-     */
-    bool hasItem(ItemId uItemID, bool checkHeldItem) const;
     void OnInventoryLeftClick();
 
     bool characterHitOrMiss(Actor *pActor, int distancemod, int skillmod);

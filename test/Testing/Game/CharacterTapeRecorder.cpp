@@ -120,11 +120,11 @@ TestMultiTape<SpellId> CharacterTapeRecorder::quickSpells() {
 }
 
 TestTape<bool> CharacterTapeRecorder::hasItem(int characterIndex, ItemId itemId) {
-    return custom(characterIndex, std::bind(&Character::hasItem, _1, itemId, false));
+    return custom(characterIndex, [=](const Character &character) { return !!character.inventory.find(itemId); });
 }
 
 TestMultiTape<bool> CharacterTapeRecorder::haveItem(ItemId itemId) {
-    return custom(std::bind(&Character::hasItem, _1, itemId, false));
+    return custom([=](const Character &character) { return !!character.inventory.find(itemId); });
 }
 
 TestTape<Class> CharacterTapeRecorder::clazz(int characterIndex) {

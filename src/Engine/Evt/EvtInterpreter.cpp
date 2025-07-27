@@ -308,8 +308,9 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             // character target wasn't properly set in the script. Thus, we don't even check `_who` here and just try
             // to take the item from all characters. See issues #1808 and #1912.
             if (ir.data.variable_descr.type == VAR_PlayerItemInHands/* && (_who == CHOOSE_PARTY || _who == CHOOSE_ACTIVE)*/) {
+                ItemId itemId = static_cast<ItemId>(ir.data.variable_descr.value);
                 for (Character &character : pParty->pCharacters) {
-                    if (character.hasItem((ItemId)ir.data.variable_descr.value, 1)) {
+                    if (pParty->pPickedItem.itemId == itemId || character.inventory.find(itemId)) {
                         character.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
                         break;  // Only take one item.
                     }
