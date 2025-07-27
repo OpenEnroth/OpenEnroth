@@ -755,7 +755,7 @@ void GUIWindow_House::drawNpcHouseGreetingMessage(NPCData *npcData) {
                 int textHeight = assets->pFontArrus->CalcTextHeight(greetString, uFrameWidth, 13) + 7;
                 render->DrawTextureCustomHeight(8 / 640.0f, (352 - textHeight) / 480.0f, ui_leather_mm7, textHeight);
                 render->DrawTextureNew(8 / 640.0f, (347 - textHeight) / 480.0f, _591428_endcap);
-                DrawText(assets->pFontArrus.get(), { 13, 354 - textHeight }, colorTable.White, assets->pFontArrus->FitTextInAWindow(greetString, uFrameWidth, 13));
+                DrawText(assets->pFontArrus.get(), { 13, 354 - textHeight }, colorTable.White, assets->pFontArrus->WrapText(greetString, uFrameWidth, 13));
             }
         }
     }
@@ -792,7 +792,7 @@ void GUIWindow_House::drawNpcHouseDialogueResponse() {
         }
         render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
         render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
-        DrawText(pTextFont, { 13, 354 - pTextHeight }, colorTable.White, pTextFont->FitTextInAWindow(current_npc_text, frameWidth, 13));
+        DrawText(pTextFont, { 13, 354 - pTextHeight }, colorTable.White, pTextFont->WrapText(current_npc_text, frameWidth, 13));
     }
 }
 
@@ -928,7 +928,7 @@ void GUIWindow_House::houseDialogManager() {
             int pTextBackgroundHeight = pTextHeight + 7;
             render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextBackgroundHeight) / 480.0f, ui_leather_mm7, pTextBackgroundHeight);
             render->DrawTextureNew(8 / 640.0f, (347 - pTextBackgroundHeight) / 480.0f, _591428_endcap);
-            DrawText(assets->pFontArrus.get(), {13, 354 - pTextBackgroundHeight}, colorTable.White, assets->pFontArrus->FitTextInAWindow(current_npc_text, pDialogWindow.uFrameWidth, 13));
+            DrawText(assets->pFontArrus.get(), {13, 354 - pTextBackgroundHeight}, colorTable.White, assets->pFontArrus->WrapText(current_npc_text, pDialogWindow.uFrameWidth, 13));
         }
 
         for (int i = 0; i < houseNpcs.size(); ++i) {

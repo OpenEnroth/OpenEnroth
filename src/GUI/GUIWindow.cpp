@@ -333,7 +333,7 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int vertical
         engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, std::string(text));
     }
     int width = this->uFrameWidth - horizontalMargin;
-    std::string resString = pFont->FitTextInAWindow(text, this->uFrameWidth, horizontalMargin);
+    std::string resString = pFont->WrapText(text, this->uFrameWidth, horizontalMargin);
     std::istringstream stream(resString);
     std::string line;
     int x = horizontalMargin + this->uFrameX;
@@ -341,7 +341,7 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int vertical
     Color lastcolor = color;
     while (std::getline(stream, line)) {
         int x_offset = pFont->AlignText_Center(width, line);
-        lastcolor = pFont->DrawTextLine(line, lastcolor, color, {x + x_offset, y}, render->GetRenderDimensions().w);
+        lastcolor = pFont->DrawTextLine(line, lastcolor, color, {x + x_offset, y});
         y += pFont->GetHeight() - lineSpacing;
     }
 }

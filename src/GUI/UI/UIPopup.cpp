@@ -601,7 +601,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     for (const std::string &s : text) {
         if (!s.empty()) {
             iteminfo_window.DrawText(assets->pFontComic.get(), {100, v34}, colorTable.White, s);
-            v34 += assets->pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100, 0) + 3;
+            v34 += assets->pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100) + 3;
         }
     }
     if (!pItemTable->items[inspect_item->itemId].description.empty())

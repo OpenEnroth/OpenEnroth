@@ -91,7 +91,7 @@ void CreateWinnerCertificate() {
         v23 += pParty->pCharacters[i].experience;
     }
     v23 = (int64_t)v23 / totalDays;
-    std::string v6 = pFont->FitTextInAWindow(pInString, pWindow.uFrameWidth, 12);
+    std::string v6 = pFont->WrapText(pInString, pWindow.uFrameWidth, 12);
     pWindow.DrawTitleText(pFont.get(), 1, 5 * (pFont->GetHeight() + 11), colorTable.Black, v6, 0);
 
     std::string v7 = localization->GetString(LSTR_DAY_CAPITALIZED);
