@@ -1379,10 +1379,7 @@ void RegeneratePartyHealthMana() {
 
         RegenData thisChar;
         // Item regeneration
-        for (InventoryEntry item : character.inventory.equipment()) {
-            if (!item->isFunctional())
-                continue;
-
+        for (InventoryEntry item : character.inventory.functionalEquipment()) {
             if (!isRegular(item->itemId)) {
                 if (item->itemId == ITEM_RELIC_ETHRICS_STAFF) {
                     character.health -= ticks5;

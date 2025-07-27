@@ -1165,27 +1165,26 @@ bool Character::IsUnarmed() const {
 
 //----- (0048D6AA) --------------------------------------------------------
 bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
-    InventoryConstEntry entry = inventory.entry(uEquipIndex);
-    return entry && entry->isFunctional();
+    return !!inventory.functionalEntry(uEquipIndex);
 }
 
 //----- (0048D6D0) --------------------------------------------------------
 bool Character::HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const {
-    for (InventoryConstEntry entry : inventory.equipment())
-        if (entry->isFunctional() && entry->specialEnchantment == uEnchantment)
+    for (InventoryConstEntry entry : inventory.functionalEquipment())
+        if (entry->specialEnchantment == uEnchantment)
             return true;
     return false;
 }
 
 //----- (0048D709) --------------------------------------------------------
 bool Character::WearsItem(ItemId item_id, ItemSlot equip_type) const {
-    InventoryConstEntry entry = inventory.entry(equip_type);
-    return entry && entry->isFunctional() && entry->itemId == item_id;
+    InventoryConstEntry entry = inventory.functionalEntry(equip_type);
+    return entry && entry->itemId == item_id;
 }
 
 bool Character::wearsItemAnywhere(ItemId item_id) const {
-    for (InventoryConstEntry entry : inventory.equipment())
-        if (entry->isFunctional() && entry->itemId == item_id)
+    for (InventoryConstEntry entry : inventory.functionalEquipment())
+        if (entry->itemId == item_id)
             return true;
     return false;
 }
@@ -2085,10 +2084,7 @@ int Character::GetParameterBonus(int player_parameter) const {
 
 //----- (0048EA46) --------------------------------------------------------
 int Character::GetSpecialItemBonus(ItemEnchantment enchantment) const {
-    for (InventoryConstEntry entry : inventory.equipment()) {
-        if (!entry->isFunctional())
-            continue;
-
+    for (InventoryConstEntry entry : inventory.functionalEquipment()) {
         if (enchantment == ITEM_ENCHANTMENT_OF_RECOVERY) {
             if (entry->specialEnchantment == ITEM_ENCHANTMENT_OF_RECOVERY ||
                 entry->itemId == ITEM_ARTIFACT_ELVEN_CHAINMAIL)
@@ -2337,10 +2333,7 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
         case ATTRIBUTE_SKILL_BOW:
         case ATTRIBUTE_SKILL_SHIELD:
         case ATTRIBUTE_SKILL_LEARNING:
-            for (InventoryConstEntry entry : inventory.equipment()) {
-                if (!entry->isFunctional())
-                    continue;
-
+            for (InventoryConstEntry entry : inventory.functionalEquipment()) {
                 if (attr == ATTRIBUTE_AC_BONUS) {
                     if (isPassiveEquipment(entry->type())) {
                         v5 += entry->GetDamageDice() + entry->GetDamageMod();
@@ -2642,10 +2635,7 @@ int Character::GetSkillBonus(Attribute inSkill) const {
             bool wearingLeather = false;
             unsigned int ACSum = 0;
 
-            for (InventoryConstEntry item : inventory.equipment()) {
-                if (!item->isFunctional())
-                    continue;
-
+            for (InventoryConstEntry item : inventory.functionalEquipment()) {
                 Skill itemSkillType = item->skill();
                 int currArmorSkillLevel = 0;
                 int multiplier = 0;
@@ -2703,10 +2693,7 @@ int Character::GetSkillBonus(Attribute inSkill) const {
                 int multiplier = GetMultiplierForSkillLevel(SKILL_UNARMED, 1, 1, 2, 2);
                 return armsMasterBonus + multiplier * unarmedSkill;
             }
-            for (InventoryConstEntry item : inventory.equipment()) {
-                if (!item->isFunctional())
-                    continue;
-
+            for (InventoryConstEntry item : inventory.functionalEquipment()) {
                 if (item->isMeleeWeapon()) {
                     Skill currItemSkillType = item->skill();
                     int currentItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
@@ -2725,10 +2712,7 @@ int Character::GetSkillBonus(Attribute inSkill) const {
             return 0;
 
         case ATTRIBUTE_RANGED_ATTACK:
-            for (InventoryConstEntry item : inventory.equipment()) {
-                if (!item->isFunctional())
-                    continue;
-
+            for (InventoryConstEntry item : inventory.functionalEquipment()) {
                 if (item->isWeapon()) {
                     Skill currentItemSkillType = item->skill();
                     int currentItemSkillLevel = this->getActualSkillValue(currentItemSkillType).level();
@@ -2752,10 +2736,7 @@ int Character::GetSkillBonus(Attribute inSkill) const {
                 int multiplier = GetMultiplierForSkillLevel(SKILL_UNARMED, 0, 1, 2, 2);
                 return multiplier * unarmedSkillLevel;
             }
-            for (InventoryConstEntry item : inventory.equipment()) {
-                if (!item->isFunctional())
-                    continue;
-
+            for (InventoryConstEntry item : inventory.functionalEquipment()) {
                 if (item->isMeleeWeapon()) {
                     Skill currItemSkillType = item->skill();
                     int currItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
