@@ -243,7 +243,7 @@ GAME_TEST(Issues, Issue1226a) {
     game.restAndHeal();
     EXPECT_EQ(pParty->uNumFoodRations, 18); // Standing on a bridge => rest should cost 2 food.
 
-    game.teleportTo(MAP_LAND_OF_THE_GIANTS, Vec3f(10000, 4070, 0), 0);
+    game.teleportTo(MAP_LAND_OF_THE_GIANTS, Vec3f(10000, 4070, 1069), 0);
     game.restAndHeal();
     EXPECT_EQ(pOutdoor->pTerrain.tilesetByPos(pParty->pos), TILESET_SNOW);
     EXPECT_EQ(pParty->uNumFoodRations, 15); // Snow => rest should cost 3 food.
@@ -257,7 +257,7 @@ GAME_TEST(Issues, Issue1226a) {
     game.restAndHeal();
     EXPECT_EQ(pParty->uNumFoodRations, 9); // Dungeon => rest should cost 2 food.
 
-    game.teleportTo(MAP_HARMONDALE, Vec3f(-18000, 12500, 0), 0);
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-18000, 12500, 480), 0);
     game.restAndHeal();
     EXPECT_EQ(pOutdoor->pTerrain.tilesetByPos(pParty->pos), TILESET_DIRT);
     EXPECT_EQ(pParty->uNumFoodRations, 7); // Dirt => rest should cost 2 food.

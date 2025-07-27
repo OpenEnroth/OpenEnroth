@@ -197,7 +197,10 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 savedEventStep = step + 1;
                 return -1;
             }
-            engine->_teleportPoint.setTeleportTarget(Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
+
+            // Only set point once in case of chained events
+            if (!engine->_teleportPoint.isValid())
+                engine->_teleportPoint.setTeleportTarget(Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
                                                      (ir.data.move_map_descr.yaw != -1) ? (ir.data.move_map_descr.yaw & TrigLUT.uDoublePiMask) : -1,
                                                      ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed);
 
@@ -228,8 +231,8 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                             pDialogueWindow = 0;
                         }
                     }
+                    return -1;
                 }
-                return -1;
             }
             break;
         }
