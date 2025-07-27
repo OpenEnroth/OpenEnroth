@@ -55,25 +55,33 @@ class GUIFont {
     /**
      * @param str                       Text to check.
      * @param width                     Width of the window that the text should fit into.
-     * @param x                         Where the text starts relative to the window's left border.
+     * @param x                         Where does the text start relative to the window's left border?
      * @return                          Wrapped text height, in pixels.
      */
     int CalcTextHeight(std::string_view str, int width, int x);
 
-    std::string GetPageTop(std::string_view str, GUIWindow *window, int x, int page);
+    /**
+     * @param str                       Multipage text to page-wrap.
+     * @param pageSize                  Size of a single page, in pixels.
+     * @param x                         Where does the text start relative to the page's left border?
+     * @param page                      Page number to get the text for, starts at 0.
+     * @return                          Text at the given `page`. Note that this function doesn't cut the text's tail.
+     */
+    std::string GetPageText(std::string_view str, Sizei pageSize, int x, int page);
 
     /**
-     * Draws a single line of text.
+     * Draws a single line of text. If provided text has more than a single line, only the 1st line is drawn.
      *
-     * @param text                          Input line of text.
-     * @param color                         Color that the text should be started to be drawn at - this allows feeding
-     *                                      in the color returned from the previous call to maintain correct color when
-     *                                      it's split onto a new line.
-     * @param defaultColor                  The color that the text should return to on hitting a default color tag.
-     * @param position                      Position to draw the text line to.
-     * @return                              Color that was used to draw text at the end of the line.
+     * @param text                      Input line of text.
+     * @param startColor                Color that the text should be started to be drawn with - this allows feeding
+     *                                  in the color returned from the previous call to maintain correct color when
+     *                                  the text is split into multiple lines.
+     * @param defaultColor              The color that the text should return to on hitting a default color tag.
+     * @param position                  Position to draw the text line at.
+     * @return                          Color that was used to draw text at the end of the line.
      */
-    Color DrawTextLine(std::string_view text, Color color, Color defaultColor, Pointi position);
+    Color DrawTextLine(std::string_view text, Color startColor, Color defaultColor, Pointi position);
+
     void DrawText(GUIWindow *window, Pointi position, Color color, std::string_view text, int maxHeight, Color shadowColor);
     int DrawTextInRect(GUIWindow *window, Pointi position,
                        Color color, std::string_view text, int rect_width,

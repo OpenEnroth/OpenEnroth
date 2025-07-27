@@ -116,7 +116,7 @@ void GUIWindow_JournalBook::Update() {
         NPCData dummyNpc;
         std::string str = BuildDialogueString(pHistoryTable->historyLines[_journalIdx[_currentIdx]].pText, 0, &dummyNpc, 0, HOUSE_INVALID,
                                               SHOP_SCREEN_INVALID, &pParty->PartyTimes.HistoryEventTimes[_journalIdx[_currentIdx] - 1]);
-        std::string pStringOnPage = assets->pFontBookOnlyShadow->GetPageTop(str, &journal_window, 1, _journalEntryPage[_currentIdx]);
+        std::string pStringOnPage = assets->pFontBookOnlyShadow->GetPageText(str, {journal_window.uFrameWidth, journal_window.uFrameHeight}, 1, _journalEntryPage[_currentIdx]);
         journal_window.DrawText(assets->pFontBookOnlyShadow.get(), {1, 0}, ui_book_journal_text_color, pStringOnPage,
                                 journal_window.uFrameY + journal_window.uFrameHeight, ui_book_journal_text_shadow);
     }
