@@ -3003,8 +3003,8 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
     bool hit_will_stun = false, hit_will_paralyze = false;
     if (!projectileSprite) {
         IsAdditionalDamagePossible = true;
-        if (character->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-            Skill main_hand_skill = character->GetMainHandItem()->skill();
+        if (InventoryEntry mainHandItem = character->inventory.functionalEntry(ITEM_SLOT_MAIN_HAND)) {
+            Skill main_hand_skill = mainHandItem->skill();
             Mastery main_hand_mastery = character->getSkillValue(main_hand_skill).mastery();
             switch (main_hand_skill) {
                 case SKILL_STAFF:
@@ -3149,12 +3149,7 @@ int Actor::DamageMonsterFromParty(Pid a1, unsigned int uActorID_Monster, const V
                 pMonster->CalcMagicalDamageToActor(attackElement, skillLevel);
         } else {
             for (ItemSlot i : {ITEM_SLOT_OFF_HAND, ITEM_SLOT_MAIN_HAND}) {
-                if (character->HasItemEquipped(i)) {
-                    Item *item;
-                    if (i == ITEM_SLOT_OFF_HAND)
-                        item = character->GetOffHandItem();
-                    else
-                        item = character->GetMainHandItem();
+                if (InventoryEntry item = character->inventory.functionalEntry(i)) {
                     skillLevel = item->_439DF3_get_additional_damage(&attackElement,
                                                              &isLifeStealing);
                     if (isLifeStealing && pMonster->currentHP > 0) {
