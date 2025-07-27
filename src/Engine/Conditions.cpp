@@ -5,11 +5,6 @@
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
 
-struct ConditionEquipment {
-    ItemId item = ITEM_NULL;
-    ItemSlot slot = ITEM_SLOT_INVALID;
-};
-
 enum class ConditionFlag {
     AFFECTED_BY_PROTECTION_FROM_MAGIC = 0x1,
     REQUIRES_GM_PROTECTION_FROM_MAGIC = 0x2
@@ -21,25 +16,19 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(ConditionFlags)
 struct ConditionTableEntry {
     ConditionFlags flags;
     ItemEnchantment enchantment = ITEM_ENCHANTMENT_NULL;
-    std::array<ConditionEquipment, 3> equipment = {{}};
+    std::array<ItemId, 3> items = {{}};
 
     constexpr ConditionTableEntry() = default;
     constexpr ConditionTableEntry(ConditionFlags flagsIn,
                                   ItemEnchantment enchantmentIn = ITEM_ENCHANTMENT_NULL,
                                   ItemId item1 = ITEM_NULL,
-                                  ItemSlot slot1 = ITEM_SLOT_INVALID,
                                   ItemId item2 = ITEM_NULL,
-                                  ItemSlot slot2 = ITEM_SLOT_INVALID,
-                                  ItemId item3 = ITEM_NULL,
-                                  ItemSlot slot3 = ITEM_SLOT_INVALID) { // NOLINT: we want an explicit constructor.
+                                  ItemId item3 = ITEM_NULL) { // NOLINT: we want an implicit constructor.
         flags = flagsIn;
         enchantment = enchantmentIn;
-        equipment[0].item = item1;
-        equipment[0].slot = slot1;
-        equipment[1].item = item2;
-        equipment[1].slot = slot2;
-        equipment[2].item = item3;
-        equipment[2].slot = slot3;
+        items[0] = item1;
+        items[1] = item2;
+        items[2] = item3;
     }
 };
 
@@ -47,30 +36,20 @@ static constexpr IndexedArray<ConditionTableEntry, CONDITION_CURSED, CONDITION_Z
     // hint: condname, protfrommagic, enchantment, ...
     {CONDITION_CURSED,          {0}},
     {CONDITION_WEAK,            {AFFECTED_BY_PROTECTION_FROM_MAGIC}},
-    {CONDITION_SLEEP,           {0, ITEM_ENCHANTMENT_OF_ALARMS,
-                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR}},
+    {CONDITION_SLEEP,           {0, ITEM_ENCHANTMENT_OF_ALARMS, ITEM_ARTIFACT_YORUBA}},
     {CONDITION_FEAR,            {0}},
     {CONDITION_DRUNK,           {0}},
-    {CONDITION_INSANE,          {0, ITEM_ENCHANTMENT_OF_SANITY,
-                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_POISON_WEAK,     {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_ANTIDOTES,
-                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_DISEASE_WEAK,    {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_IMMUNITY,
-                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_POISON_MEDIUM,   {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_ANTIDOTES,
-                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_DISEASE_MEDIUM,  {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_IMMUNITY,
-                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_POISON_SEVERE,   {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_ANTIDOTES,
-                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_DISEASE_SEVERE,  {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_IMMUNITY,
-                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK}},
-    {CONDITION_PARALYZED,       {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_FREEDOM,
-                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK, ITEM_ARTIFACT_GHOULSBANE, ITEM_SLOT_ANY}},
+    {CONDITION_INSANE,          {0, ITEM_ENCHANTMENT_OF_SANITY, ITEM_ARTIFACT_YORUBA, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP}},
+    {CONDITION_POISON_WEAK,     {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_ANTIDOTES, ITEM_ARTIFACT_YORUBA, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP}},
+    {CONDITION_DISEASE_WEAK,    {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_IMMUNITY, ITEM_ARTIFACT_YORUBA, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP}},
+    {CONDITION_POISON_MEDIUM,   {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_ANTIDOTES, ITEM_ARTIFACT_YORUBA, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP}},
+    {CONDITION_DISEASE_MEDIUM,  {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_IMMUNITY, ITEM_ARTIFACT_YORUBA, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP}},
+    {CONDITION_POISON_SEVERE,   {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_ANTIDOTES, ITEM_ARTIFACT_YORUBA, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP}},
+    {CONDITION_DISEASE_SEVERE,  {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_IMMUNITY, ITEM_ARTIFACT_YORUBA, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP}},
+    {CONDITION_PARALYZED,       {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_FREEDOM, ITEM_ARTIFACT_YORUBA, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_ARTIFACT_GHOULSBANE}},
     {CONDITION_UNCONSCIOUS,     {0}},
     {CONDITION_DEAD,            {AFFECTED_BY_PROTECTION_FROM_MAGIC | REQUIRES_GM_PROTECTION_FROM_MAGIC}},
-    {CONDITION_PETRIFIED,       {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_MEDUSA,
-                                 ITEM_ARTIFACT_YORUBA, ITEM_SLOT_ARMOUR, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_SLOT_CLOAK, ITEM_RELIC_KELEBRIM, ITEM_SLOT_ANY}},
+    {CONDITION_PETRIFIED,       {AFFECTED_BY_PROTECTION_FROM_MAGIC, ITEM_ENCHANTMENT_OF_MEDUSA, ITEM_ARTIFACT_YORUBA, ITEM_ARTIFACT_CLOAK_OF_THE_SHEEP, ITEM_RELIC_KELEBRIM}},
     {CONDITION_ERADICATED,      {AFFECTED_BY_PROTECTION_FROM_MAGIC | REQUIRES_GM_PROTECTION_FROM_MAGIC}},
     {CONDITION_ZOMBIE,          {0}}
 };
@@ -146,18 +125,9 @@ bool blockCondition(Character *character, Condition condition) {
     if (entry.enchantment != ITEM_ENCHANTMENT_NULL && character->wearsEnchantedItem(entry.enchantment))
         return true;
 
-    for (const ConditionEquipment &pair : entry.equipment) {
-        if (pair.item == ITEM_NULL)
-            break;
-
-        if (pair.slot == ITEM_SLOT_ANY) {
-            if (character->wearsItemAnywhere(pair.item))
-                return true;
-        } else {
-            if (character->wearsItem(pair.item, pair.slot))
-                return true;
-        }
-    }
+    for (ItemId itemId : entry.items)
+        if (itemId != ITEM_NULL && character->wearsItem(itemId))
+            return true;
 
     return false;
 }

@@ -1625,7 +1625,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     int fall_start;
-    if (pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)
+    if (pParty->FeatherFallActive() || pParty->wearsItem(ITEM_ARTIFACT_LADYS_ESCORT)
         || pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING)) {
         fall_start = floorZ;
         bFeatherFall = true;
@@ -1778,7 +1778,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         if (pParty->velocity.z < -500 && !bFeatherFall && pParty->pos.z - floorZ > 1000) {
             for (Character &character : pParty->pCharacters) {
                 if (!character.wearsEnchantedItem(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-                    !character.wearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS) &&
+                    !character.wearsItem(ITEM_ARTIFACT_HERMES_SANDALS) &&
                     character.CanAct()) {  // was 8
                     character.playReaction(SPEECH_FALLING);
                 }

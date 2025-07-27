@@ -1170,6 +1170,7 @@ bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
 
 //----- (0048D6D0) --------------------------------------------------------
 bool Character::wearsEnchantedItem(ItemEnchantment enchantment) const {
+    assert(enchantment != ITEM_ENCHANTMENT_NULL);
     for (InventoryConstEntry entry : inventory.functionalEquipment())
         if (entry->specialEnchantment == enchantment)
             return true;
@@ -1177,14 +1178,12 @@ bool Character::wearsEnchantedItem(ItemEnchantment enchantment) const {
 }
 
 //----- (0048D709) --------------------------------------------------------
-bool Character::wearsItem(ItemId itemId, ItemSlot slot) const {
-    InventoryConstEntry entry = inventory.functionalEntry(slot);
-    return entry && entry->itemId == itemId;
-}
-
-bool Character::wearsItemAnywhere(ItemId itemId) const {
-    for (InventoryConstEntry entry : inventory.functionalEquipment())
-        if (entry->itemId == itemId)
+bool Character::wearsItem(ItemId itemId) const {
+    assert(itemId != ITEM_NULL);
+    // TODO(captainurist): deal away with this. Wetsuits should have type = armor.
+    Segment<ItemSlot> slots = itemId == ITEM_QUEST_WETSUIT ? Segment(ITEM_SLOT_ARMOUR, ITEM_SLOT_ARMOUR) : itemSlotsForItemType(pItemTable->items[itemId].type);
+    for (ItemSlot slot : slots)
+        if (InventoryConstEntry entry = inventory.functionalEntry(slot); entry && entry->itemId == itemId)
             return true;
     return false;
 }
@@ -3991,7 +3990,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
         case VAR_Invisible:
             return pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active();
         case VAR_ItemEquipped:
-            return wearsItemAnywhere(static_cast<ItemId>(pValue));
+            return wearsItem(static_cast<ItemId>(pValue));
         default:
             return false;
     }
@@ -6504,8 +6503,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
         Actor::DamageMonsterFromParty(Pid(OBJECT_Character, pParty->activeCharacterIndex() - 1),
                                       target_id, a3);
-        if (character->wearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
-            character->wearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
+        if (character->wearsItem(ITEM_ARTIFACT_SPLITTER))
             _42FA66_do_explosive_impact(actor->pos + Vec3f(0, 0, actor->height / 2), 0, 512, pParty->activeCharacterIndex());
     } else if (bow) {
         shooting_bow = true;

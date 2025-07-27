@@ -126,8 +126,7 @@ class Character {
     bool IsUnarmed() const;
     bool HasItemEquipped(ItemSlot uEquipIndex) const;
     bool wearsEnchantedItem(ItemEnchantment enchantment) const;
-    bool wearsItem(ItemId itemId, ItemSlot slot) const;
-    bool wearsItemAnywhere(ItemId itemId) const;
+    bool wearsItem(ItemId itemId) const;
     int StealFromShop(Item *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);
     StealResult StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);

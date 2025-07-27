@@ -1045,7 +1045,7 @@ PartyAction ActionQueue::Next() {
 void Party::giveFallDamage(int distance) {
     for (Character &player : pParty->pCharacters) {  // receive falling damage
         if (!player.wearsEnchantedItem(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-            !player.wearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {
+            !player.wearsItem(ITEM_ARTIFACT_HERMES_SANDALS)) {
             player.receiveDamage((int)((distance) * (uint64_t)(player.GetMaxHealth() / 10)) / 256, DAMAGE_PHYSICAL);
             Duration bonus = Duration::fromTicks(20 - player.GetParameterBonus(player.GetActualEndurance()));
             player.SetRecoveryTime(bonus * debug_non_combat_recovery_mul * flt_debugrecmod3);
