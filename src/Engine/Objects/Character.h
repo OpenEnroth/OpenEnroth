@@ -124,7 +124,6 @@ class Character {
     Color GetExperienceDisplayColor();
     int CalculateIncommingDamage(DamageType dmg_type, int amount);
     bool IsUnarmed() const;
-    bool HasItemEquipped(ItemSlot uEquipIndex) const;
     bool wearsEnchantedItem(ItemEnchantment enchantment) const;
     bool wearsItem(ItemId itemId) const;
     int StealFromShop(Item *itemToSteal, int extraStealDifficulty,
