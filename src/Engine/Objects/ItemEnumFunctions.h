@@ -103,7 +103,7 @@ inline ItemTreasureLevel randomItemTreasureLevel(ItemId type) {
     return static_cast<ItemTreasureLevel>(-std::to_underlying(type));
 }
 
-inline Segment<ItemId> spellbooksForSchool(MagicSchool school, CharacterSkillMastery maxMastery = CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+inline Segment<ItemId> spellbooksForSchool(MagicSchool school, Mastery maxMastery = MASTERY_GRANDMASTER) {
     int spellSchoolSequential = std::to_underlying(school);
     int firstSpell = std::to_underlying(ITEM_FIRST_SPELLBOOK);
     int numSpells = spellCountForMastery(maxMastery);
@@ -168,7 +168,7 @@ SpellId spellForScroll(ItemId scroll);
 
 SpellId spellForWand(ItemId wand);
 
-inline CharacterAttribute statForPureStatPotion(ItemId pureStatPotion) {
+inline Attribute statForPureStatPotion(ItemId pureStatPotion) {
     switch (pureStatPotion) {
     default: assert(false); [[fallthrough]];
     case ITEM_POTION_PURE_LUCK:         return ATTRIBUTE_LUCK;

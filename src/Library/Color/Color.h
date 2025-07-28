@@ -55,13 +55,17 @@ struct Color {
         return result;
     }
 
-    [[nodiscard]] constexpr inline Colorf toColorf() const {
+    [[nodiscard]] Colorf toColorf() const {
         Colorf result;
         result.r = r / 255.0f;
         result.g = g / 255.0f;
         result.b = b / 255.0f;
         result.a = a / 255.0f;
         return result;
+    }
+
+    [[nodiscard]] HsvColorf toHsvColorf() const {
+        return toColorf().toHsvColorf();
     }
 
     /**

@@ -127,7 +127,7 @@ void BaseRenderer::DrawSpriteObjects() {
         // render as sprte 500 - 9081
         if (spell_fx_renderer->RenderAsSprite(object) ||
             ((object->uType < SPRITE_SPELL_FIRE_TORCH_LIGHT || object->uType >= SPRITE_10000) && // Not a spell sprite.
-             (object->uType < SPRITE_PROJECTILE_AIRBOLT || object->uType >= SPRITE_OBJECT_EXPLODE) && // Not a projectile.
+             (object->uType < SPRITE_PROJECTILE_AIR_BOLT || object->uType >= SPRITE_OBJECT_EXPLODE) && // Not a projectile.
              (object->uType < SPRITE_TRAP_FIRE || object->uType > SPRITE_TRAP_BODY))) { // Not a trap.
             SpriteFrame *frame = object->getSpriteFrame();
             if (frame->icon_name == "null" || frame->texture_name == "null") {
@@ -205,7 +205,7 @@ void BaseRenderer::DrawSpriteObjects() {
                             pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = projected_y;
                             pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z = view_x;
 
-                            pBillboardRenderList[::uNumBillboardsToDraw].object_pid = Pid(OBJECT_Item, i);
+                            pBillboardRenderList[::uNumBillboardsToDraw].object_pid = Pid(OBJECT_Sprite, i);
                             pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
                             pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = Color();
 
@@ -610,7 +610,7 @@ void BaseRenderer::DrawMasked(float u, float v, GraphicsImage *pTexture, int col
 }
 
 void BaseRenderer::ClearBlack() {  // used only at start and in game over win
-    ClearZBuffer();
+    ClearHitMap();
     ClearTarget(Color());
 }
 
@@ -696,12 +696,6 @@ void BaseRenderer::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
     spell_fx_renderer->RenderSpecialEffects();
 }
 
-void BaseRenderer::PresentBlackScreen() {
-    BeginScene2D();
-    ClearBlack();
-    Present();
-}
-
 // TODO: should this be combined / moved out of render
 std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
     std::vector<Actor*> foundActors;
@@ -732,11 +726,11 @@ std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
     return foundActors;
 }
 
-void BaseRenderer::ClearZBuffer() {
+void BaseRenderer::ClearHitMap() {
     _equipmentHitMap.clear();
 }
 
-void BaseRenderer::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVal) {
+void BaseRenderer::DrawToHitMap(float u, float v, GraphicsImage *img, int zVal) {
     if (!img) return;
 
     // Convert normalized coordinates to screen pixel coordinates
@@ -767,6 +761,6 @@ void BaseRenderer::updateRenderDimensions() {
         outputRender = outputPresent;
 }
 
-int BaseRenderer::QueryEquipmentHitMap(Pointi screenPos, int defaultValue) {
+int BaseRenderer::QueryHitMap(Pointi screenPos, int defaultValue) {
     return _equipmentHitMap.query(screenPos, defaultValue);
 }

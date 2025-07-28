@@ -25,7 +25,7 @@ struct Colorf {
      *
      * @return                          This color, converted to HSV.
      */
-    [[nodiscard]] HsvColorf toHsv() const;
+    [[nodiscard]] HsvColorf toHsvColorf() const;
 };
 static_assert(sizeof(Colorf) == 16);
 static_assert(alignof(Colorf) == 4);

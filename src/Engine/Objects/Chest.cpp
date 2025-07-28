@@ -103,7 +103,7 @@ bool Chest::open(int uChestID, Pid objectPid) {
             pOut = objectPos + Vec3f::fromPolar(pDepth, yawAngle, pitchAngle);
 
             pSpellObject.containing_item.Reset();
-            pSpellObject.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
+            pSpellObject.spell_skill = MASTERY_NONE;
             pSpellObject.spell_level = 0;
             pSpellObject.uSpellID = SPELL_NONE;
             pSpellObject.field_54 = 0;

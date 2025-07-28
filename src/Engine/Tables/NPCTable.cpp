@@ -482,7 +482,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
     int uPortretMax;
 
     MonsterType monsterType = monsterTypeForMonsterId(npc_uid);
-    CharacterSex uNPCSex = sexForMonsterType(monsterType);
+    Sex uNPCSex = sexForMonsterType(monsterType);
     uRace = raceForMonsterType(monsterType);
     pNPCDataBuff->uSex = uNPCSex;
     pNPCDataBuff->name = pNPCNames[grng->random(uNumNPCNames[uNPCSex])][uNPCSex];
@@ -587,7 +587,7 @@ void NPCStats::InitializeAdditionalNPCs(NPCData *pNPCDataBuff, MonsterId npc_uid
 }
 
 //----- (00495366) --------------------------------------------------------
-const std::string &NPCStats::sub_495366_MispronounceName(uint8_t firstLetter, CharacterSex genderId) {
+const std::string &NPCStats::sub_495366_MispronounceName(uint8_t firstLetter, Sex genderId) {
     int pickedName;  // edx@2
 
     if (firstLetter == dword_AE336C_LastMispronouncedNameFirstLetter) {

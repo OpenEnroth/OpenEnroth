@@ -48,7 +48,7 @@ void LoadStep2State::_drawMM7CopyrightWindow() {
     window.uFrameHeight = 256;
     window.uFrameX = 8;
     window.uFrameY = 30;
-    window.uFrameHeight = assets->pFontSmallnum->CalcTextHeight(localization->GetString(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), window.uFrameWidth, 24, 0);
+    window.uFrameHeight = assets->pFontSmallnum->CalcTextHeight(localization->GetString(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), window.uFrameWidth, 24);
     window.uFrameHeight += 2 * assets->pFontSmallnum->GetHeight() + 24;
     window.uFrameY = 470 - window.uFrameHeight;
     window.uFrameZ = window.uFrameX + window.uFrameWidth - 1;

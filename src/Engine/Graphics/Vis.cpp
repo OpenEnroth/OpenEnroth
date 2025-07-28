@@ -37,7 +37,7 @@ Vis_SelectionFilter vis_door_filter = {
 Vis_SelectionFilter vis_decoration_noevent_filter = {
     VisObjectType_Sprite, OBJECT_Decoration, -1, 0, ExclusionIfNoEvent};  // 00F93E6C
 Vis_SelectionFilter vis_items_filter = {
-    VisObjectType_Any, OBJECT_Item, -1, 0, None };  // static to sub_44EEA7
+    VisObjectType_Any, OBJECT_Sprite, -1, 0, None };  // static to sub_44EEA7
 
 //----- (004C1026) --------------------------------------------------------
 Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pick_depth) {
@@ -233,7 +233,7 @@ void Vis::PickBillboards_Mouse(float fPickDepth, float fX, float fY,
                 RenderBillboard *billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
 
                 Pid pid = billboard->object_pid;
-                if (pid.type() == OBJECT_Item && pSpriteObjects[pid.id()].uObjectDescID == 0)
+                if (pid.type() == OBJECT_Sprite && pSpriteObjects[pid.id()].uObjectDescID == 0)
                     continue; // Sprite object already removed.
 
                 list->AddObject(VisObjectType_Sprite, billboard->screen_space_z, billboard->object_pid);

@@ -393,7 +393,7 @@ void Menu::EventLoop() {
                 continue;
 
             case UIMSG_Escape:
-                render->ClearZBuffer();
+                render->ClearHitMap();
                 confirmationState = CONFIRM_NONE;
 
                 if (current_screen_type == SCREEN_MENU) {

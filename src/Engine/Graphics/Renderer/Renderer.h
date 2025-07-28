@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include <string>
 #include <vector>
 
 #include "Library/Image/Image.h"
@@ -24,7 +23,6 @@ class ParticleEngine;
 struct SpellFxRenderer;
 struct SpellFX_Billboard;
 class Vis;
-struct Lightmap;
 struct Decal;
 struct nk_context;
 
@@ -44,27 +42,29 @@ class Renderer {
     virtual bool Initialize() = 0;
 
     virtual void ClearBlack() = 0;
-    virtual void PresentBlackScreen() = 0;
 
     virtual RgbaImage ReadScreenPixels() = 0;
     virtual void ClearTarget(Color uColor) = 0;
     virtual void Present() = 0;
 
-    virtual bool InitializeFullscreen() = 0;
-
     virtual void Release() = 0;
-
-    virtual bool SwitchToWindow() = 0;
 
     virtual void BeginLines2D() = 0;
     virtual void EndLines2D() = 0;
     virtual void RasterLine2D(Pointi a, Pointi b, Color uColor32) = 0;
     virtual void DrawLines(const RenderVertexD3D3 *vertices, int num_vertices) = 0;
 
-    virtual void ClearZBuffer() = 0;
-    virtual void RestoreFrontBuffer() = 0;
-    virtual void RestoreBackBuffer() = 0;
-    virtual void BltBackToFontFast(int a2, int a3, Recti *a4) = 0;
+    virtual void ClearHitMap() = 0;
+    virtual void DrawToHitMap(float u, float v, GraphicsImage *pTexture, int value) = 0;
+    /**
+     * Query the equipment hit map for hit testing.
+     *
+     * @param screenPos                 Screen position to query (absolute screen coordinates).
+     * @param defaultValue              Default value to return.
+     * @return                          Item ID at the position, or `defaultValue` if no equipment found.
+     */
+    virtual int QueryHitMap(Pointi screenPos, int defaultValue) = 0;
+
     virtual void BeginScene3D() = 0;
 
     virtual void MakeParticleBillboardAndPush(SoftwareBillboard *a2,
@@ -99,7 +99,6 @@ class Renderer {
     virtual void DrawTextureOffset(int x, int y, int offset_x, int offset_y, GraphicsImage *) = 0;
     virtual void DrawImage(GraphicsImage *, const Recti &rect, int paletteid = 0, Color colourmask32 = colorTable.White) = 0;
 
-    virtual void ZDrawTextureAlpha(float u, float v, GraphicsImage *pTexture, int zVal) = 0;
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t, int start_opacity, int end_opacity) = 0;
     virtual void TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) = 0;
     virtual void DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait_Sprite, int Y_Offset) = 0;
@@ -129,8 +128,6 @@ class Renderer {
 
     virtual void DrawOutdoorTerrain() = 0;
 
-    virtual bool AreRenderSurfacesOk() = 0;
-
     /**
      * Takes a screenshot of the game viewport, w/o the UI elements.
      *
@@ -143,13 +140,6 @@ class Renderer {
     virtual RgbaImage MakeFullScreenshot() = 0;
 
     virtual std::vector<Actor *> getActorsInViewport(int pDepth) = 0;
-
-    virtual void BeginLightmaps() = 0;
-    virtual void EndLightmaps() = 0;
-    virtual void BeginLightmaps2() = 0;
-    virtual void EndLightmaps2() = 0;
-    virtual bool DrawLightmap(Lightmap *pLightmap,
-                              Vec3f *pColorMult, float z_bias) = 0;
 
     virtual void BeginDecals() = 0;
     virtual void EndDecals() = 0;
@@ -178,15 +168,6 @@ class Renderer {
     virtual void swapBuffers() = 0;
     virtual void beginOverlays() = 0;
     virtual void endOverlays() = 0;
-
-    /**
-     * Query the equipment hit map for hit testing.
-     *
-     * @param screenPos                 Screen position to query (absolute screen coordinates).
-     * @param defaultValue              Default value to return.
-     * @return                          Item ID at the position, or `defaultValue` if no equipment found.
-     */
-    virtual int QueryEquipmentHitMap(Pointi screenPos, int defaultValue) = 0;
 
     std::shared_ptr<GameConfig> config = nullptr;
 

@@ -13,6 +13,7 @@
 #include "ItemEnums.h"
 #include "CharacterEnums.h"
 #include "MonsterEnums.h"
+#include "SpriteEnums.h"
 
 //
 // MonsterId
@@ -58,7 +59,7 @@ inline bool isPeasant(MonsterId monsterId) {
     return isPeasant(monsterTypeForMonsterId(monsterId));
 }
 
-CharacterSex sexForMonsterType(MonsterType monsterType);
+Sex sexForMonsterType(MonsterType monsterType);
 
 Race raceForMonsterType(MonsterType monsterType);
 
@@ -99,3 +100,10 @@ inline MonsterSupertype supertypeForMonsterId(MonsterId monsterId) {
 //
 
 std::span<const MonsterAttackPreference> allMonsterAttackPreferences();
+
+
+//
+// MonsterProjectile
+//
+
+SpriteId spriteForMonsterProjectile(MonsterProjectile projectile);

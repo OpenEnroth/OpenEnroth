@@ -41,7 +41,7 @@ TestTape<int> CommonTapeRecorder::totalHp() {
 }
 
 TestTape<int> CommonTapeRecorder::totalItemCount() {
-    return custom([]{
+    return custom([] {
         int result = 0;
         for (const Character &character : pParty->pCharacters)
             result += character.inventory.size();
@@ -57,6 +57,17 @@ TestTape<int> CommonTapeRecorder::totalItemCount(ItemId itemId) {
         for (const Character &character : pParty->pCharacters)
             result += std::ranges::distance(character.inventory.entries(itemId));
         result += pParty->pPickedItem.itemId == itemId;
+        return result;
+    });
+}
+
+TestTape<int> CommonTapeRecorder::totalItemCount(ItemType itemType) {
+    return custom([itemType] {
+        int result = 0;
+        for (const Character &character : pParty->pCharacters)
+            for (InventoryConstEntry item : character.inventory.entries())
+                result += item->type() == itemType;
+        result += pParty->pPickedItem.type() == itemType;
         return result;
     });
 }
@@ -143,7 +154,8 @@ TestMultiTape<SpriteId> CommonTapeRecorder::sprites() {
     return custom([] {
         AccessibleVector<SpriteId> result;
         for (const SpriteObject &sprite : pSpriteObjects)
-            result.push_back(sprite.uType);
+            if (sprite.uObjectDescID != 0)
+                result.push_back(sprite.uType);
         return result;
     });
 }
@@ -172,6 +184,6 @@ TestMultiTape<std::string> CommonTapeRecorder::allGUIWindowsText() {
     return _controller->recordFunctionTape<std::string>(CALL_GUIWINDOW_DRAWTEXT);
 }
 
-TestMultiTape<SpecialAttackType> CommonTapeRecorder::specialAttacks() {
-    return _controller->recordFunctionTape<SpecialAttackType>(CALL_SPECIAL_ATTACK);
+TestMultiTape<MonsterSpecialAttack> CommonTapeRecorder::specialAttacks() {
+    return _controller->recordFunctionTape<MonsterSpecialAttack>(CALL_SPECIAL_ATTACK);
 }

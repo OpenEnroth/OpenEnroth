@@ -65,8 +65,8 @@ void GameBindings::_registerMiscBindings(sol::state_view &solState, sol::table &
         "goToScreen", sol::as_function([](int screenIndex) {
         SetCurrentMenuID(MenuType(screenIndex));
     }),
-        "canClassLearn", sol::as_function([](CharacterClass classType, CharacterSkillType skillType) {
-        return skillMaxMasteryPerClass[classType][skillType] > CHARACTER_SKILL_MASTERY_NONE;
+        "canClassLearn", sol::as_function([](Class classType, Skill skillType) {
+        return skillMaxMasteryPerClass[classType][skillType] > MASTERY_NONE;
     })
     );
 }
@@ -127,7 +127,7 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
                     } else if (key == "mana") {
                         character->mana = val.second.as<int>();
                     } else if (key == "class") {
-                        character->classType = val.second.as<CharacterClass>();
+                        character->classType = val.second.as<Class>();
                     } else if (key == "condition") {
                         character->SetCondition(val.second.as<Condition>(), false);
                     } else if (key == "skill") {
@@ -138,7 +138,7 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
                         if (!level)
                             level = current.level();
 
-                        auto mastery = skillValueTable.get<std::optional<CharacterSkillMastery>>("mastery");
+                        auto mastery = skillValueTable.get<std::optional<Mastery>>("mastery");
                         if (!mastery)
                             mastery = current.mastery();
 
@@ -185,9 +185,9 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
         "clearCondition", sol::as_function([](int characterIndex, std::optional<Condition> conditionToClear) {
             if (Character *character = getCharacterByIndex(characterIndex - 1)) {
                 if (conditionToClear) {
-                    character->conditions.Reset(*conditionToClear);
+                    character->conditions.reset(*conditionToClear);
                 } else {
-                    character->conditions.ResetAll();
+                    character->conditions.resetAll();
                 }
             }
         }),
@@ -264,53 +264,53 @@ void GameBindings::_registerEnums(sol::state_view &solState, sol::table &table) 
     );
 
     table.new_enum<false>("SkillType",
-        "Staff", CHARACTER_SKILL_STAFF,
-        "Sword", CHARACTER_SKILL_SWORD,
-        "Dagger", CHARACTER_SKILL_DAGGER,
-        "Axe", CHARACTER_SKILL_AXE,
-        "Spear", CHARACTER_SKILL_SPEAR,
-        "Bow", CHARACTER_SKILL_BOW,
-        "Mace", CHARACTER_SKILL_MACE,
-        "Blaster", CHARACTER_SKILL_BLASTER,
-        "Shield", CHARACTER_SKILL_SHIELD,
-        "Leather", CHARACTER_SKILL_LEATHER,
-        "Chain", CHARACTER_SKILL_CHAIN,
-        "Plate", CHARACTER_SKILL_PLATE,
-        "Fire", CHARACTER_SKILL_FIRE,
-        "Air", CHARACTER_SKILL_AIR,
-        "Water", CHARACTER_SKILL_WATER,
-        "Earth", CHARACTER_SKILL_EARTH,
-        "Spirit", CHARACTER_SKILL_SPIRIT,
-        "Mind", CHARACTER_SKILL_MIND,
-        "Body", CHARACTER_SKILL_BODY,
-        "Light", CHARACTER_SKILL_LIGHT,
-        "Dark", CHARACTER_SKILL_DARK,
-        "Item_ID", CHARACTER_SKILL_ITEM_ID,
-        "Merchant", CHARACTER_SKILL_MERCHANT,
-        "Repair", CHARACTER_SKILL_REPAIR,
-        "Bodybuilding", CHARACTER_SKILL_BODYBUILDING,
-        "Meditation", CHARACTER_SKILL_MEDITATION,
-        "Perception", CHARACTER_SKILL_PERCEPTION,
-        "Diplomacy", CHARACTER_SKILL_DIPLOMACY,
-        "Thievery", CHARACTER_SKILL_THIEVERY,
-        "Trap_Disarm", CHARACTER_SKILL_TRAP_DISARM,
-        "Dodge", CHARACTER_SKILL_DODGE,
-        "Unarmed", CHARACTER_SKILL_UNARMED,
-        "Monster_ID", CHARACTER_SKILL_MONSTER_ID,
-        "Armsmaster", CHARACTER_SKILL_ARMSMASTER,
-        "Stealing", CHARACTER_SKILL_STEALING,
-        "Alchemy", CHARACTER_SKILL_ALCHEMY,
-        "Learning", CHARACTER_SKILL_LEARNING,
-        "Club", CHARACTER_SKILL_CLUB,
-        "Misc", CHARACTER_SKILL_MISC
+        "Staff", SKILL_STAFF,
+        "Sword", SKILL_SWORD,
+        "Dagger", SKILL_DAGGER,
+        "Axe", SKILL_AXE,
+        "Spear", SKILL_SPEAR,
+        "Bow", SKILL_BOW,
+        "Mace", SKILL_MACE,
+        "Blaster", SKILL_BLASTER,
+        "Shield", SKILL_SHIELD,
+        "Leather", SKILL_LEATHER,
+        "Chain", SKILL_CHAIN,
+        "Plate", SKILL_PLATE,
+        "Fire", SKILL_FIRE,
+        "Air", SKILL_AIR,
+        "Water", SKILL_WATER,
+        "Earth", SKILL_EARTH,
+        "Spirit", SKILL_SPIRIT,
+        "Mind", SKILL_MIND,
+        "Body", SKILL_BODY,
+        "Light", SKILL_LIGHT,
+        "Dark", SKILL_DARK,
+        "Item_ID", SKILL_ITEM_ID,
+        "Merchant", SKILL_MERCHANT,
+        "Repair", SKILL_REPAIR,
+        "Bodybuilding", SKILL_BODYBUILDING,
+        "Meditation", SKILL_MEDITATION,
+        "Perception", SKILL_PERCEPTION,
+        "Diplomacy", SKILL_DIPLOMACY,
+        "Thievery", SKILL_THIEVERY,
+        "Trap_Disarm", SKILL_TRAP_DISARM,
+        "Dodge", SKILL_DODGE,
+        "Unarmed", SKILL_UNARMED,
+        "Monster_ID", SKILL_MONSTER_ID,
+        "Armsmaster", SKILL_ARMSMASTER,
+        "Stealing", SKILL_STEALING,
+        "Alchemy", SKILL_ALCHEMY,
+        "Learning", SKILL_LEARNING,
+        "Club", SKILL_CLUB,
+        "Misc", SKILL_MISC
     );
 
     table.new_enum<false>("SkillMastery",
-        "None", CHARACTER_SKILL_MASTERY_NONE,
-        "Novice", CHARACTER_SKILL_MASTERY_NOVICE,
-        "Expert", CHARACTER_SKILL_MASTERY_EXPERT,
-        "Master", CHARACTER_SKILL_MASTERY_MASTER,
-        "Grandmaster", CHARACTER_SKILL_MASTERY_GRANDMASTER
+        "None", MASTERY_NONE,
+        "Novice", MASTERY_NOVICE,
+        "Expert", MASTERY_EXPERT,
+        "Master", MASTERY_MASTER,
+        "Grandmaster", MASTERY_GRANDMASTER
     );
 
     table.new_enum<false>("ClassType",
@@ -382,7 +382,7 @@ sol::table createCharacterConditionTable(sol::state_view &luaState, const Charac
     sol::table result = luaState.create_table();
 
     for (auto &&condition : allConditions()) {
-        if (character.conditions.Has(condition)) {
+        if (character.conditions.has(condition)) {
             result[condition] = true;
         }
     }
@@ -391,7 +391,7 @@ sol::table createCharacterConditionTable(sol::state_view &luaState, const Charac
 
 sol::table createCharacterSkillsTable(sol::state_view &luaState, const Character &character) {
     sol::table result = luaState.create_table();
-    for (CharacterSkillType skillType : character.pActiveSkills.indices()) {
+    for (Skill skillType : character.pActiveSkills.indices()) {
         if (character.HasSkill(skillType)) {
             CombinedSkillValue skillValue = character.getActualSkillValue(skillType);
             result[skillType] = luaState.create_table_with(

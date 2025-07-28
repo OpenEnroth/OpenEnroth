@@ -24,6 +24,7 @@
 #include "Engine/Data/IconFrameData.h"
 #include "Engine/Data/PortraitFrameData.h"
 #include "Engine/Data/TileData.h"
+#include "Engine/Data/TileEnumFunctions.h"
 #include "Engine/Tables/ChestTable.h"
 #include "Engine/Time/Time.h"
 
@@ -294,12 +295,13 @@ void reconstruct(const TileData_MM7 &src, TileData *dst) {
     dst->name = ascii::toLower(dst->name);
 
     if (ascii::noCaseStartsWith(dst->name, "wtrdr"))
-        dst->name.insert(0, "h"); // mm7 uses hd water tiles with legacy names
+        dst->name.insert(0, "h"); // animated water only works with hwtrdr* tiles.
 
-    dst->uTileID = src.tileId;
-    dst->tileset = static_cast<Tileset>(src.tileset);
-    dst->uSection = static_cast<TileVariant>(src.section);
-    dst->uAttributes = static_cast<TileFlags>(src.attributes);
+    // We just ignore src.tileId & src.bitmapId.
+
+    reconstruct(src.tileset, &dst->tileset);
+    reconstruct(src.variant, &dst->variant, tags::context(isRoad(dst->tileset)), tags::context(dst->name));
+    dst->flags = static_cast<TileFlags>(src.flags);
 }
 
 void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
@@ -381,7 +383,7 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
     dst->dialogue_4_evt_id = src.evt_D;
     dst->dialogue_5_evt_id = src.evt_E;
     dst->dialogue_6_evt_id = src.evt_F;
-    dst->uSex = static_cast<CharacterSex>(src.sex);
+    dst->uSex = static_cast<Sex>(src.sex);
     dst->bHasUsedTheAbility = src.hasUsedAbility;
     dst->news_topic = src.newsTopic;
 }
@@ -437,7 +439,7 @@ void snapshot(const SpellBuff &src, SpellBuff_MM7 *dst) {
 void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst) {
     reconstruct(src.expireTime, &dst->expireTime);
     dst->power = src.power;
-    dst->skillMastery = static_cast<CharacterSkillMastery>(src.skillMastery);
+    dst->skillMastery = static_cast<Mastery>(src.skillMastery);
     dst->overlayID = src.overlayId;
     dst->caster = src.caster;
     dst->isGMBuff = src.flags;
@@ -475,7 +477,7 @@ void reconstruct(const Item_MM7 &src, Item *dst) {
         dst->standardEnchantment = {};
     } else if (src.standardEnchantmentOrPotionPower) {
         dst->potionPower = 0;
-        dst->standardEnchantment = static_cast<CharacterAttribute>(src.standardEnchantmentOrPotionPower - 1);
+        dst->standardEnchantment = static_cast<Attribute>(src.standardEnchantmentOrPotionPower - 1);
 
         // TODO(captainurist): Do this properly for every single enum in this file.
         if (!allEnchantableAttributes().contains(*dst->standardEnchantment))
@@ -798,7 +800,7 @@ void snapshot(const Character &src, Character_MM7 *dst) {
     dst->levelModifier = src.sLevelModifier;
     dst->ageModifier = src.sAgeModifier;
 
-    snapshot(src.pActiveSkills, &dst->activeSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
+    snapshot(src.pActiveSkills, &dst->activeSkills, tags::segment<SKILL_FIRST_VISIBLE, SKILL_LAST_VISIBLE>);
     snapshot(src._achievedAwardsBits, &dst->achievedAwardsBits, tags::reverseBits);
     snapshot(src.bHaveSpell, &dst->haveSpell);
 
@@ -1036,7 +1038,7 @@ void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> chara
     dst->sLevelModifier = src.levelModifier;
     dst->sAgeModifier = src.ageModifier;
 
-    reconstruct(src.activeSkills, &dst->pActiveSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
+    reconstruct(src.activeSkills, &dst->pActiveSkills, tags::segment<SKILL_FIRST_VISIBLE, SKILL_LAST_VISIBLE>);
     reconstruct(src.achievedAwardsBits, &dst->_achievedAwardsBits, tags::reverseBits);
     reconstruct(src.haveSpell, &dst->bHaveSpell);
 
@@ -1097,7 +1099,7 @@ void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> chara
     dst->_health_related = src.healthRelated;
     dst->uFullManaBonus = src.fullManaBonus;
     dst->_mana_related = src.manaRelated;
-    dst->portrait = static_cast<CharacterPortrait>(src.portrait);
+    dst->portrait = static_cast<PortraitId>(src.portrait);
     dst->portraitTimePassed = Duration::fromTicks(src.portraitTimePassed);
     dst->portraitTimeLength = Duration::fromTicks(src.portraitTimeLength);
     dst->portraitImageIndex = src.portraitImageIndex;
@@ -1339,13 +1341,13 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.attack1DamageDiceRolls = src.monsterInfo.attack1DamageDiceRolls;
     dst->pMonsterInfo.attack1DamageDiceSides = src.monsterInfo.attack1DamageDiceSides;
     dst->pMonsterInfo.attack1DamageBonus = src.monsterInfo.attack1DamageBonus;
-    dst->pMonsterInfo.attack1MissileType = src.monsterInfo.attack1MissileType;
+    dst->pMonsterInfo.attack1MissileType = std::to_underlying(src.monsterInfo.attack1MissileType);
     dst->pMonsterInfo.attack2Chance = src.monsterInfo.attack2Chance;
     dst->pMonsterInfo.attack2Type = std::to_underlying(src.monsterInfo.attack2Type);
     dst->pMonsterInfo.attack2DamageDiceRolls = src.monsterInfo.attack2DamageDiceRolls;
     dst->pMonsterInfo.attack2DamageDiceSides = src.monsterInfo.attack2DamageDiceSides;
     dst->pMonsterInfo.attack2DamageBonus = src.monsterInfo.attack2DamageBonus;
-    dst->pMonsterInfo.attack2MissileType = src.monsterInfo.attack2MissileType;
+    dst->pMonsterInfo.attack2MissileType = std::to_underlying(src.monsterInfo.attack2MissileType);
     dst->pMonsterInfo.spell1UseChance = src.monsterInfo.spell1UseChance;
     dst->pMonsterInfo.spell1Id = std::to_underlying(src.monsterInfo.spell1Id);
     dst->pMonsterInfo.spell2UseChance = src.monsterInfo.spell2UseChance;
@@ -1427,19 +1429,19 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.movementType = static_cast<MonsterMovementType>(src.pMonsterInfo.movementType);
     dst->monsterInfo.aiType = static_cast<MonsterAiType>(src.pMonsterInfo.aiType);
     dst->monsterInfo.hostilityType = static_cast<MonsterHostility>(src.pMonsterInfo.hostilityType);
-    dst->monsterInfo.specialAttackType = static_cast<SpecialAttackType>(src.pMonsterInfo.specialAttackType);
+    dst->monsterInfo.specialAttackType = static_cast<MonsterSpecialAttack>(src.pMonsterInfo.specialAttackType);
     dst->monsterInfo.specialAttackLevel = src.pMonsterInfo.specialAttackLevel;
     dst->monsterInfo.attack1Type = static_cast<DamageType>(src.pMonsterInfo.attack1Type);
     dst->monsterInfo.attack1DamageDiceRolls = src.pMonsterInfo.attack1DamageDiceRolls;
     dst->monsterInfo.attack1DamageDiceSides = src.pMonsterInfo.attack1DamageDiceSides;
     dst->monsterInfo.attack1DamageBonus = src.pMonsterInfo.attack1DamageBonus;
-    dst->monsterInfo.attack1MissileType = src.pMonsterInfo.attack1MissileType;
+    dst->monsterInfo.attack1MissileType = static_cast<MonsterProjectile>(src.pMonsterInfo.attack1MissileType);
     dst->monsterInfo.attack2Chance = src.pMonsterInfo.attack2Chance;
     dst->monsterInfo.attack2Type = static_cast<DamageType>(src.pMonsterInfo.attack2Type);
     dst->monsterInfo.attack2DamageDiceRolls = src.pMonsterInfo.attack2DamageDiceRolls;
     dst->monsterInfo.attack2DamageDiceSides = src.pMonsterInfo.attack2DamageDiceSides;
     dst->monsterInfo.attack2DamageBonus = src.pMonsterInfo.attack2DamageBonus;
-    dst->monsterInfo.attack2MissileType = src.pMonsterInfo.attack2MissileType;
+    dst->monsterInfo.attack2MissileType = static_cast<MonsterProjectile>(src.pMonsterInfo.attack2MissileType);
     dst->monsterInfo.spell1UseChance = src.pMonsterInfo.spell1UseChance;
     dst->monsterInfo.spell1Id = static_cast<SpellId>(src.pMonsterInfo.spell1Id);
     dst->monsterInfo.spell2UseChance = src.pMonsterInfo.spell2UseChance;
@@ -1615,7 +1617,7 @@ void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
         dst->uItemIndex = ITEM_TREASURE_LEVEL_INVALID;
         dst->uMonsterIndex = src.uIndex;
     } else {
-        assert(dst->uKind == OBJECT_Item);
+        assert(dst->uKind == OBJECT_Sprite);
         dst->uItemIndex = static_cast<ItemTreasureLevel>(src.uIndex);
         dst->uMonsterIndex = 0;
     }
@@ -1664,7 +1666,7 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     reconstruct(src.containing_item, &dst->containing_item);
     dst->uSpellID = static_cast<SpellId>(src.uSpellID);
     dst->spell_level = src.spell_level;
-    dst->spell_skill = static_cast<CharacterSkillMastery>(src.spell_skill);
+    dst->spell_skill = static_cast<Mastery>(src.spell_skill);
     dst->field_54 = src.field_54;
     dst->spell_caster_pid = Pid::fromPacked(src.spell_caster_pid);
     dst->spell_target_pid = Pid::fromPacked(src.spell_target_pid);
@@ -1789,7 +1791,7 @@ void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
 }
 
 void reconstruct(const PortraitFrameData_MM7 &src, PortraitFrameData *dst) {
-    dst->portrait = static_cast<CharacterPortrait>(src.portrait);
+    dst->portrait = static_cast<PortraitId>(src.portrait);
     dst->textureIndex = src.textureIndex;
     dst->frameLength = Duration::fromTicks(src.frameLength * 8);
     dst->animationLength = Duration::fromTicks(src.animationLength * 8);

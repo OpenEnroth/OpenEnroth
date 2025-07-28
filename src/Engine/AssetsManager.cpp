@@ -16,6 +16,29 @@
 
 AssetsManager *assets = new AssetsManager();
 
+static void ReloadFonts() {
+    if (assets->pFontBookOnlyShadow)
+        assets->pFontBookOnlyShadow->CreateFontTex();
+    if (assets->pFontBookLloyds)
+        assets->pFontBookLloyds->CreateFontTex();
+    if (assets->pFontArrus)
+        assets->pFontArrus->CreateFontTex();
+    if (assets->pFontLucida)
+        assets->pFontLucida->CreateFontTex();
+    if (assets->pFontBookTitle)
+        assets->pFontBookTitle->CreateFontTex();
+    if (assets->pFontBookCalendar)
+        assets->pFontBookCalendar->CreateFontTex();
+    if (assets->pFontCreate)
+        assets->pFontCreate->CreateFontTex();
+    if (assets->pFontCChar)
+        assets->pFontCChar->CreateFontTex();
+    if (assets->pFontComic)
+        assets->pFontComic->CreateFontTex();
+    if (assets->pFontSmallnum)
+        assets->pFontSmallnum->CreateFontTex();
+}
+
 void AssetsManager::releaseAllTextures() {
     logger->trace("Render - Releasing Textures.");
     // clears any textures from gpu
@@ -113,12 +136,17 @@ GraphicsImage *AssetsManager::getImage_PCXFromIconsLOD(std::string_view name) {
     return i->second;
 }
 
-GraphicsImage *AssetsManager::getBitmap(std::string_view name) {
+GraphicsImage *AssetsManager::getBitmap(std::string_view name, bool generated) {
     std::string filename = ascii::toLower(name);
 
     auto i = bitmaps.find(filename);
     if (i == bitmaps.end()) {
-        auto image = GraphicsImage::Create(std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, filename));
+        GraphicsImage *image = nullptr;
+        if (generated) {
+            image = GraphicsImage::Create(std::make_unique<Bitmaps_GEN_Loader>(filename));
+        } else {
+            image = GraphicsImage::Create(std::make_unique<Bitmaps_LOD_Loader>(pBitmaps_LOD, filename));
+        }
         bitmaps[filename] = image;
         return image;
     }

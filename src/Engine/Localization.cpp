@@ -18,7 +18,7 @@ const std::string &Localization::GetString(LstrId index) const {
 }
 
 std::string Localization::SkillValueShortString(CombinedSkillValue skillValue) const {
-    if (skillValue.mastery() == CHARACTER_SKILL_MASTERY_NONE)
+    if (skillValue.mastery() == MASTERY_NONE)
         return {};
 
     return fmt::sprintf(this->skill_value_short_templates[skillValue.mastery()], skillValue.level()); // NOLINT: not std::sprintf.
@@ -106,14 +106,14 @@ bool Localization::Initialize() {
     this->special_attack_names[SPECIAL_ATTACK_MANA_DRAIN] = "SP Drain";
     this->special_attack_names[SPECIAL_ATTACK_FEAR] = "Fear";
 
-    this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_SHOT] = "Multi-shot";
+    this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_MULTI_SHOT] = "Multi-shot";
     this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_SUMMON] = "Summoner";
     this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_EXPLODE] = "Explodes";
 
-    this->skill_value_short_templates[CHARACTER_SKILL_MASTERY_NOVICE] = "%d";
-    this->skill_value_short_templates[CHARACTER_SKILL_MASTERY_EXPERT] = "%dE";
-    this->skill_value_short_templates[CHARACTER_SKILL_MASTERY_MASTER] = "%dM";
-    this->skill_value_short_templates[CHARACTER_SKILL_MASTERY_GRANDMASTER] = "%dG";
+    this->skill_value_short_templates[MASTERY_NOVICE] = "%d";
+    this->skill_value_short_templates[MASTERY_EXPERT] = "%dE";
+    this->skill_value_short_templates[MASTERY_MASTER] = "%dM";
+    this->skill_value_short_templates[MASTERY_GRANDMASTER] = "%dG";
 
     InitializeMm6ItemCategories();
 
@@ -289,44 +289,44 @@ void Localization::InitializeCharacterConditionNames() {
 }
 
 void Localization::InitializeSkillNames() {
-    this->skill_names[CHARACTER_SKILL_STAFF]       = this->localization_strings[LSTR_STAFF];
-    this->skill_names[CHARACTER_SKILL_SWORD]       = this->localization_strings[LSTR_SWORD];
-    this->skill_names[CHARACTER_SKILL_DAGGER]      = this->localization_strings[LSTR_DAGGER];
-    this->skill_names[CHARACTER_SKILL_AXE]         = this->localization_strings[LSTR_AXE];
-    this->skill_names[CHARACTER_SKILL_SPEAR]       = this->localization_strings[LSTR_SPEAR];
-    this->skill_names[CHARACTER_SKILL_BOW]         = this->localization_strings[LSTR_BOW];
-    this->skill_names[CHARACTER_SKILL_MACE]        = this->localization_strings[LSTR_MACE];
-    this->skill_names[CHARACTER_SKILL_BLASTER]     = this->localization_strings[LSTR_BLASTER];
-    this->skill_names[CHARACTER_SKILL_SHIELD]      = this->localization_strings[LSTR_SHIELD];
-    this->skill_names[CHARACTER_SKILL_LEATHER]     = this->localization_strings[LSTR_LEATHER];
-    this->skill_names[CHARACTER_SKILL_CHAIN]       = this->localization_strings[LSTR_CHAIN];
-    this->skill_names[CHARACTER_SKILL_PLATE]       = this->localization_strings[LSTR_PLATE];
-    this->skill_names[CHARACTER_SKILL_FIRE]        = this->localization_strings[LSTR_FIRE_MAGIC];
-    this->skill_names[CHARACTER_SKILL_AIR]         = this->localization_strings[LSTR_AIR_MAGIC];
-    this->skill_names[CHARACTER_SKILL_WATER]       = this->localization_strings[LSTR_WATER_MAGIC];
-    this->skill_names[CHARACTER_SKILL_EARTH]       = this->localization_strings[LSTR_EARTH_MAGIC];
-    this->skill_names[CHARACTER_SKILL_SPIRIT]      = this->localization_strings[LSTR_SPIRIT_MAGIC];
-    this->skill_names[CHARACTER_SKILL_MIND]        = this->localization_strings[LSTR_MIND_MAGIC];
-    this->skill_names[CHARACTER_SKILL_BODY]        = this->localization_strings[LSTR_BODY_MAGIC];
-    this->skill_names[CHARACTER_SKILL_LIGHT]       = this->localization_strings[LSTR_LIGHT_MAGIC];
-    this->skill_names[CHARACTER_SKILL_DARK]        = this->localization_strings[LSTR_DARK_MAGIC];
-    this->skill_names[CHARACTER_SKILL_ITEM_ID]     = this->localization_strings[LSTR_IDENTIFY_ITEM];
-    this->skill_names[CHARACTER_SKILL_MERCHANT]    = this->localization_strings[LSTR_MERCHANT];
-    this->skill_names[CHARACTER_SKILL_REPAIR]      = this->localization_strings[LSTR_REPAIR_ITEM];
-    this->skill_names[CHARACTER_SKILL_BODYBUILDING] = this->localization_strings[LSTR_BODY_BUILDING];
-    this->skill_names[CHARACTER_SKILL_MEDITATION]  = this->localization_strings[LSTR_MEDITATION];
-    this->skill_names[CHARACTER_SKILL_PERCEPTION]  = this->localization_strings[LSTR_PERCEPTION];
-    this->skill_names[CHARACTER_SKILL_DIPLOMACY]   = this->localization_strings[LSTR_DIPLOMACY];
-    this->skill_names[CHARACTER_SKILL_THIEVERY]    = this->localization_strings[LSTR_THIEVERY];
-    this->skill_names[CHARACTER_SKILL_TRAP_DISARM] = this->localization_strings[LSTR_DISARM_TRAP];
-    this->skill_names[CHARACTER_SKILL_DODGE]       = this->localization_strings[LSTR_DODGING];
-    this->skill_names[CHARACTER_SKILL_UNARMED]     = this->localization_strings[LSTR_UNARMED];
-    this->skill_names[CHARACTER_SKILL_MONSTER_ID]  = this->localization_strings[LSTR_IDENTIFY_MONSTER];
-    this->skill_names[CHARACTER_SKILL_ARMSMASTER]  = this->localization_strings[LSTR_ARMSMASTER];
-    this->skill_names[CHARACTER_SKILL_STEALING]    = this->localization_strings[LSTR_STEALING];
-    this->skill_names[CHARACTER_SKILL_ALCHEMY]     = this->localization_strings[LSTR_ALCHEMY];
-    this->skill_names[CHARACTER_SKILL_LEARNING]    = this->localization_strings[LSTR_LEARNING];
-    this->skill_names[CHARACTER_SKILL_INVALID]     = this->localization_strings[LSTR_NONE]; // "None", used during character creation.
+    this->skill_names[SKILL_STAFF]       = this->localization_strings[LSTR_STAFF];
+    this->skill_names[SKILL_SWORD]       = this->localization_strings[LSTR_SWORD];
+    this->skill_names[SKILL_DAGGER]      = this->localization_strings[LSTR_DAGGER];
+    this->skill_names[SKILL_AXE]         = this->localization_strings[LSTR_AXE];
+    this->skill_names[SKILL_SPEAR]       = this->localization_strings[LSTR_SPEAR];
+    this->skill_names[SKILL_BOW]         = this->localization_strings[LSTR_BOW];
+    this->skill_names[SKILL_MACE]        = this->localization_strings[LSTR_MACE];
+    this->skill_names[SKILL_BLASTER]     = this->localization_strings[LSTR_BLASTER];
+    this->skill_names[SKILL_SHIELD]      = this->localization_strings[LSTR_SHIELD];
+    this->skill_names[SKILL_LEATHER]     = this->localization_strings[LSTR_LEATHER];
+    this->skill_names[SKILL_CHAIN]       = this->localization_strings[LSTR_CHAIN];
+    this->skill_names[SKILL_PLATE]       = this->localization_strings[LSTR_PLATE];
+    this->skill_names[SKILL_FIRE]        = this->localization_strings[LSTR_FIRE_MAGIC];
+    this->skill_names[SKILL_AIR]         = this->localization_strings[LSTR_AIR_MAGIC];
+    this->skill_names[SKILL_WATER]       = this->localization_strings[LSTR_WATER_MAGIC];
+    this->skill_names[SKILL_EARTH]       = this->localization_strings[LSTR_EARTH_MAGIC];
+    this->skill_names[SKILL_SPIRIT]      = this->localization_strings[LSTR_SPIRIT_MAGIC];
+    this->skill_names[SKILL_MIND]        = this->localization_strings[LSTR_MIND_MAGIC];
+    this->skill_names[SKILL_BODY]        = this->localization_strings[LSTR_BODY_MAGIC];
+    this->skill_names[SKILL_LIGHT]       = this->localization_strings[LSTR_LIGHT_MAGIC];
+    this->skill_names[SKILL_DARK]        = this->localization_strings[LSTR_DARK_MAGIC];
+    this->skill_names[SKILL_ITEM_ID]     = this->localization_strings[LSTR_IDENTIFY_ITEM];
+    this->skill_names[SKILL_MERCHANT]    = this->localization_strings[LSTR_MERCHANT];
+    this->skill_names[SKILL_REPAIR]      = this->localization_strings[LSTR_REPAIR_ITEM];
+    this->skill_names[SKILL_BODYBUILDING] = this->localization_strings[LSTR_BODY_BUILDING];
+    this->skill_names[SKILL_MEDITATION]  = this->localization_strings[LSTR_MEDITATION];
+    this->skill_names[SKILL_PERCEPTION]  = this->localization_strings[LSTR_PERCEPTION];
+    this->skill_names[SKILL_DIPLOMACY]   = this->localization_strings[LSTR_DIPLOMACY];
+    this->skill_names[SKILL_THIEVERY]    = this->localization_strings[LSTR_THIEVERY];
+    this->skill_names[SKILL_TRAP_DISARM] = this->localization_strings[LSTR_DISARM_TRAP];
+    this->skill_names[SKILL_DODGE]       = this->localization_strings[LSTR_DODGING];
+    this->skill_names[SKILL_UNARMED]     = this->localization_strings[LSTR_UNARMED];
+    this->skill_names[SKILL_MONSTER_ID]  = this->localization_strings[LSTR_IDENTIFY_MONSTER];
+    this->skill_names[SKILL_ARMSMASTER]  = this->localization_strings[LSTR_ARMSMASTER];
+    this->skill_names[SKILL_STEALING]    = this->localization_strings[LSTR_STEALING];
+    this->skill_names[SKILL_ALCHEMY]     = this->localization_strings[LSTR_ALCHEMY];
+    this->skill_names[SKILL_LEARNING]    = this->localization_strings[LSTR_LEARNING];
+    this->skill_names[SKILL_INVALID]     = this->localization_strings[LSTR_NONE]; // "None", used during character creation.
 
     // TODO(captainurist): Not currently used anywhere
     // this->skill_names[CHARACTER_SKILL_CLUB]        = this->localization_strings[LSTR_CLUB];
@@ -336,7 +336,7 @@ void Localization::InitializeSkillNames() {
 
     skill_desc_raw = engine->_gameResourceManager->getEventsFile("skilldes.txt").string_view();
     strtok(skill_desc_raw.data(), "\r");
-    for (CharacterSkillType i : allVisibleSkills()) {
+    for (Skill i : allVisibleSkills()) {
         char *test_string = strtok(NULL, "\r") + 1;
 
         if (test_string != NULL && strlen(test_string) > 0) {
@@ -400,7 +400,7 @@ void Localization::InitializeClassNames() {
 
     this->class_desc_raw = engine->_gameResourceManager->getEventsFile("class.txt").string_view();
     strtok(this->class_desc_raw.data(), "\r");
-    for (CharacterClass i : class_desciptions.indices()) {
+    for (Class i : class_desciptions.indices()) {
         char *test_string = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(test_string, '\t');
         assert(tokens.size() == 3 && "Invalid number of tokens");
@@ -490,7 +490,7 @@ void Localization::InitializeAttributeNames() {
             case 4:
             case 5:
             case 6:
-                this->attribute_descriptions[static_cast<CharacterAttribute>(i)] = removeQuotes(tokens[1]);
+                this->attribute_descriptions[static_cast<Attribute>(i)] = removeQuotes(tokens[1]);
                 break;
             case 7:
                 this->hp_description = removeQuotes(tokens[1]);

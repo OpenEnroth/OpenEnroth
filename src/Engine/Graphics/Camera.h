@@ -27,22 +27,6 @@ struct Camera3D {
         RenderVertexSoft *pVertices,
         signed int NumFrustumPlanes);
 
-    void LightmapNeerClip(RenderVertexSoft *pInVertices,
-                          int uNumInVertices,
-                          RenderVertexSoft *pOutVertices,
-                          unsigned int *pOutNumVertices);
-    void LightmapFarClip(RenderVertexSoft *pInVertices,
-                         int uNumInVertices,
-                         RenderVertexSoft *pOutVertices,
-                         unsigned int *pOutNumVertices);
-    void LightmapProject(unsigned int uNumInVertices,
-                 RenderVertexSoft *pOutVertices,
-                 RenderVertexSoft *pInVertices,
-                 signed int *pOutNumVertices);
-    bool CullFaceToFrustum(RenderVertexSoft *a1,
-                         unsigned int *pOutNumVertices,
-                         RenderVertexSoft *pVertices, signed int uNumVertices);
-
     bool CullFaceToFrustum(RenderVertexSoft *inVerts,
         unsigned int *pOutNumVertices,
         RenderVertexSoft *pOutVertices, Planef *frustum, signed int uNumPlanes);

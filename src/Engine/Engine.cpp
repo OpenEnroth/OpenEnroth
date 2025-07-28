@@ -65,6 +65,7 @@
 #include "Engine/GameResourceManager.h"
 #include "Engine/MapInfo.h"
 #include "Engine/EngineFileSystem.h"
+#include "Graphics/TileGenerator.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"
@@ -711,6 +712,10 @@ void Engine::MM7_Initialize() {
     pMediaPlayer = new MPlayer();
     pMediaPlayer->Initialize();
 
+    pTileGenerator = new TileGenerator();
+    if (engine->config->graphics.GenerateTiles.value())
+        pTileGenerator->fillTable();
+
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 }
 
@@ -1215,9 +1220,9 @@ void maybeWakeSoloSurvivor() {
 
     // Try waking up a single character.
     for (Character &character : pParty->pCharacters) {
-        if (character.conditions.Has(CONDITION_SLEEP)) {
-            if (character.conditions.HasNone({ CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED })) {
-                character.conditions.Reset(CONDITION_SLEEP);
+        if (character.conditions.has(CONDITION_SLEEP)) {
+            if (character.conditions.hasNone({ CONDITION_PARALYZED, CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED })) {
+                character.conditions.reset(CONDITION_SLEEP);
                 pParty->setActiveToFirstCanAct();
                 break;
             }
@@ -1297,7 +1302,7 @@ void RegeneratePartyHealthMana() {
                     cursed_times.value = 0;
                     pParty->uFlags &= ~PARTY_FLAG_STANDING_ON_WATER;
                 }
-                pParty->pCharacters[caster].conditions.Set(CONDITION_CURSED, cursed_times);
+                pParty->pCharacters[caster].conditions.set(CONDITION_CURSED, cursed_times);
             }
         }
     }
@@ -1356,7 +1361,7 @@ void RegeneratePartyHealthMana() {
             spellSprite.vPosition.y = pActors[actorID].pos.y;
             spellSprite.vPosition.z = pActors[actorID].pos.z;
             spellSprite.spell_target_pid = Pid(OBJECT_Actor, actorID);
-            int thisDmg = Actor::DamageMonsterFromParty(Pid(OBJECT_Item, spellSprite.Create(0, 0, 0, 0)), actorID, Vec3f());
+            int thisDmg = Actor::DamageMonsterFromParty(Pid(OBJECT_Sprite, spellSprite.Create(0, 0, 0, 0)), actorID, Vec3f());
             if (thisDmg) hitCount++;
             totalDmg += thisDmg;
         }
@@ -1369,7 +1374,7 @@ void RegeneratePartyHealthMana() {
 
     bool stacking = engine->config->gameplay.RegenStacking.value();
     for (Character &character : pParty->pCharacters) {
-        if (character.conditions.HasAny({CONDITION_DEAD, CONDITION_ERADICATED}))
+        if (character.conditions.hasAny({CONDITION_DEAD, CONDITION_ERADICATED}))
             continue; // No HP/MP regen/drain for dead characters.
 
         RegenData thisChar;
@@ -1442,21 +1447,21 @@ void RegeneratePartyHealthMana() {
         character.tickRegeneration(ticks5, thisChar, stacking);
 
         // Zombie mana/health drain.
-        if (character.conditions.Has(CONDITION_ZOMBIE)) {
+        if (character.conditions.has(CONDITION_ZOMBIE)) {
             character.health = std::min(character.health, std::max(character.GetMaxHealth() / 2, character.health - ticks5));
             character.mana = std::max(0, character.mana - ticks5);
         }
 
         // Wake up unconscious chars due to hp regen.
-        if (character.health > 0 && character.conditions.Has(CONDITION_UNCONSCIOUS))
-            character.conditions.Reset(CONDITION_UNCONSCIOUS);
+        if (character.health > 0 && character.conditions.has(CONDITION_UNCONSCIOUS))
+            character.conditions.reset(CONDITION_UNCONSCIOUS);
 
         // Knock out / kill chars due to hp drain.
         if (character.health <= 0) {
             int enduranceCheck = character.health + character.GetBaseEndurance();
             Condition targetCondition = enduranceCheck >= 1 || character.pCharacterBuffs[CHARACTER_BUFF_PRESERVATION].Active() ? CONDITION_UNCONSCIOUS : CONDITION_DEAD;
-            if (!character.conditions.Has(targetCondition))
-                character.conditions.Set(targetCondition, pParty->GetPlayingTime());
+            if (!character.conditions.has(targetCondition))
+                character.conditions.set(targetCondition, pParty->GetPlayingTime());
         }
     }
 

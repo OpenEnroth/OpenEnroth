@@ -356,7 +356,7 @@ void GameWindowHandler::OnFocusLost() {
 }
 
 void GameWindowHandler::OnPaint() {
-    if (render && render->AreRenderSurfacesOk()) {
+    if (render) {
         render->Present();
     }
 }
@@ -382,12 +382,6 @@ void GameWindowHandler::OnActivated() {
                 dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0400_MISC_TIMER;
             else
                 pMiscTimer->setPaused(false);
-
-            if (pMovie_Track) {  // pVideoPlayer->pSmackerMovie )
-                render->RestoreFrontBuffer();
-                render->RestoreBackBuffer();
-                // BackToHouseMenu();
-            }
         }
 
         pAudioPlayer->resumeSounds();

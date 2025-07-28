@@ -114,7 +114,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
             for (Character &player : pParty->pCharacters) {
                 player.health = player.GetMaxHealth();
                 for (Condition condition : standardConditionsExcludeDead) {
-                    player.conditions.Reset(condition);
+                    player.conditions.reset(condition);
                 }
                 player.playReaction(SPEECH_TEMPLE_HEAL);
             }
@@ -127,7 +127,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
                 for (Condition condition : standardConditionsIncludeDead) {
                     // Master healer heals all except Eradicated and zombie
                     if (condition != CONDITION_ERADICATED) {
-                        player.conditions.Reset(condition);
+                        player.conditions.reset(condition);
                     }
                 }
                 player.playReaction(SPEECH_TEMPLE_HEAL);
@@ -164,7 +164,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
             } else {
                 // Spell power was changed to 0 because it does not have meaning for this buff
                 pParty->pPartyBuffs[PARTY_BUFF_FLY]
-                    .Apply(pParty->GetPlayingTime() + Duration::fromHours(2), CHARACTER_SKILL_MASTERY_MASTER, 0, 0, 0);
+                    .Apply(pParty->GetPlayingTime() + Duration::fromHours(2), MASTERY_MASTER, 0, 0, 0);
                 // Mark buff as GM because NPC buff does not drain mana
                 pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff = true;
                 pAudioPlayer->playSpellSound(SPELL_AIR_FLY, false, SOUND_MODE_UI);
@@ -173,7 +173,7 @@ int UseNPCSkill(NpcProfession profession, int id) {
 
         case WaterMaster: {
             pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK]
-                .Apply(pParty->GetPlayingTime() + Duration::fromHours(3), CHARACTER_SKILL_MASTERY_MASTER, 0, 0, 0);
+                .Apply(pParty->GetPlayingTime() + Duration::fromHours(3), MASTERY_MASTER, 0, 0, 0);
             // Mark buff as GM because NPC buff does not drain mana
             pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff = true;
             pAudioPlayer->playSpellSound(SPELL_WATER_WATER_WALK, false, SOUND_MODE_UI);

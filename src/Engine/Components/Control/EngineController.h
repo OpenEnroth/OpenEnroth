@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "Engine/Objects/MonsterEnums.h"
+#include "Engine/MapEnums.h"
 
 #include "Library/Platform/Interface/PlatformEnums.h"
 #include "Library/Platform/Interface/PlatformEvents.h"
@@ -14,6 +15,7 @@
 
 class GUIButton;
 class PlatformEvent;
+class Actor;
 
 /**
  * This is the interface to be used from a control routine to control the game thread.
@@ -54,6 +56,8 @@ class EngineController {
      * @throws Exception                If the button with the provided id doesn't exist.
      */
     void pressGuiButton(std::string_view buttonId);
+
+    void goToGame();
 
     /**
      * Opens main menu no matter the current game state.
@@ -96,7 +100,11 @@ class EngineController {
 
     void resizeWindow(int w, int h);
 
-    void spawnMonster(Vec3f position, MonsterId id);
+    void restAndHeal();
+
+    Actor *spawnMonster(Vec3f position, MonsterId id);
+
+    void teleportTo(MapId map, Vec3f position, int viewYaw);
 
  private:
     GUIButton *existingButton(std::string_view buttonId);

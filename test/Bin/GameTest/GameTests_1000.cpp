@@ -61,8 +61,8 @@ GAME_TEST(Issues, Issue1034) {
 GAME_TEST(Issues, Issue1036) {
     // Test that elemental magic guilds teach Learning skill and self magic guilds teach Meditation skill.
     test.playTraceFromTestData("issue_1036.mm7", "issue_1036.json");
-    EXPECT_TRUE(pParty->pCharacters[2].pActiveSkills[CHARACTER_SKILL_LEARNING]);
-    EXPECT_TRUE(pParty->pCharacters[2].pActiveSkills[CHARACTER_SKILL_MEDITATION]);
+    EXPECT_TRUE(pParty->pCharacters[2].pActiveSkills[SKILL_LEARNING]);
+    EXPECT_TRUE(pParty->pCharacters[2].pActiveSkills[SKILL_MEDITATION]);
 }
 
 GAME_TEST(Issues, Issue1038) {
@@ -164,50 +164,50 @@ GAME_TEST(Issues, Issue1175) {
 }
 
 GAME_TEST(Issues, Issue1191) {
-    // Warlock's dragon should add +3 to Self magic skills. Dragon also consumes food when resting.
+    // Warlock's dragon should add +3 to Self magic skills. Baby dragon also consumes food when resting.
     auto foodTape = tapes.food();
     auto timeTape = tapes.time();
     test.playTraceFromTestData("issue_1191.mm7", "issue_1191.json");
 
     EXPECT_EQ(pParty->pCharacters[0].classType, CLASS_WARLOCK);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_FIRE).level(), 7);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_FIRE).level(), 10);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_AIR).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_AIR).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_WATER).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_WATER).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_EARTH).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_EARTH).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_SPIRIT).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_SPIRIT).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_MIND).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_MIND).level(), 9); // 4, +3 dragon, +2 Ruler's ring
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_BODY).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_BODY).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_DARK).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_DARK).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_FIRE).level(), 7);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_FIRE).level(), 10);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_AIR).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_AIR).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_WATER).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_WATER).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_EARTH).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_EARTH).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_SPIRIT).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_SPIRIT).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_MIND).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_MIND).level(), 9); // 4, +3 dragon, +2 Ruler's ring
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_BODY).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_BODY).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_DARK).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_DARK).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[0].getSkillValue(SKILL_LIGHT).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[0].getActualSkillValue(SKILL_LIGHT).level(), 0);
 
     EXPECT_EQ(pParty->pCharacters[2].classType, CLASS_WARLOCK);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_FIRE).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_FIRE).level(), 4);
-    EXPECT_LE(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_AIR).level(), 0);
-    EXPECT_LE(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_AIR).level(), 3); // She has no skill. 0 or 3 skill level is fine
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_WATER).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_WATER).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_EARTH).level(), 10);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_EARTH).level(), 18); // 10, +3 dragon, +5 ring
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_SPIRIT).level(), 10);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_SPIRIT).level(), 13);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_MIND).level(), 1);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_MIND).level(), 4);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_BODY).level(), 10);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_BODY).level(), 18); // 10, +3 dragon, +5 ring
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_DARK).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_DARK).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_LIGHT).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_FIRE).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_FIRE).level(), 4);
+    EXPECT_LE(pParty->pCharacters[2].getSkillValue(SKILL_AIR).level(), 0);
+    EXPECT_LE(pParty->pCharacters[2].getActualSkillValue(SKILL_AIR).level(), 3); // She has no skill. 0 or 3 skill level is fine
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_WATER).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_WATER).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_EARTH).level(), 10);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_EARTH).level(), 18); // 10, +3 dragon, +5 ring
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_SPIRIT).level(), 10);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_SPIRIT).level(), 13);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_MIND).level(), 1);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_MIND).level(), 4);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_BODY).level(), 10);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_BODY).level(), 18); // 10, +3 dragon, +5 ring
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_DARK).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_DARK).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[2].getSkillValue(SKILL_LIGHT).level(), 0);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_LIGHT).level(), 0);
 
     EXPECT_GT(timeTape.delta(), Duration::fromHours(8));
     EXPECT_EQ(pOutdoor->getNumFoodRequiredToRestInCurrentPos(pParty->pos), 2);
@@ -234,14 +234,72 @@ GAME_TEST(Issues, Issue1197) {
 
 // 1200
 
-GAME_TEST(Issues, Issue1226) {
-    // Check that food consumed while resting on different tiles is correct
-    // Also check that baby dragon consumes only one additional food
-    auto loc = tapes.map();
+GAME_TEST(Issues, Issue1226a) {
+    // Check that food consumed while resting on different tiles is correct.
+    engine->config->debug.NoActors.setValue(true);
+
+    game.startNewGame();
+    pParty->uNumFoodRations = 20;
+    game.restAndHeal();
+    EXPECT_EQ(pParty->uNumFoodRations, 18); // Standing on a bridge => rest should cost 2 food.
+
+    game.teleportTo(MAP_LAND_OF_THE_GIANTS, Vec3f(10000, 4070, 0), 0);
+    game.restAndHeal();
+    EXPECT_EQ(pOutdoor->pTerrain.tilesetByPos(pParty->pos), TILESET_SNOW);
+    EXPECT_EQ(pParty->uNumFoodRations, 15); // Snow => rest should cost 3 food.
+
+    game.teleportTo(MAP_LAND_OF_THE_GIANTS, Vec3f(11302, 4135, 0), 0);
+    game.restAndHeal();
+    EXPECT_EQ(pOutdoor->pTerrain.tilesetByPos(pParty->pos), TILESET_BADLANDS);
+    EXPECT_EQ(pParty->uNumFoodRations, 11); // Badlands => rest should cost 4 food.
+
+    game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
+    game.restAndHeal();
+    EXPECT_EQ(pParty->uNumFoodRations, 9); // Dungeon => rest should cost 2 food.
+
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-18000, 12500, 0), 0);
+    game.restAndHeal();
+    EXPECT_EQ(pOutdoor->pTerrain.tilesetByPos(pParty->pos), TILESET_DIRT);
+    EXPECT_EQ(pParty->uNumFoodRations, 7); // Dirt => rest should cost 2 food.
+
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-16000, 12500, 0), 0);
+    game.restAndHeal();
+    EXPECT_EQ(pOutdoor->pTerrain.tilesetByPos(pParty->pos), TILESET_COBBLE_ROAD);
+    EXPECT_EQ(pParty->uNumFoodRations, 5); // Road => rest should cost 2 food.
+}
+
+GAME_TEST(Issues, Issue1226b) {
+    // Check that baby dragon consumes one additional food even when there are no warlocks in the party.
     auto foodTape = tapes.food();
-    test.playTraceFromTestData("issue_1226.mm7", "issue_1226.json");
-    EXPECT_EQ(loc, tape(MAP_LAND_OF_THE_GIANTS, MAP_CASTLE_HARMONDALE, MAP_HARMONDALE, MAP_CASTLE_HARMONDALE));
-    EXPECT_EQ(foodTape, tape(30, 25, 21, 17, 14, 11));
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+
+    NPCData &dragon = pNPCStats->pNPCData[57];
+    dragon.uFlags |= NPC_HIRED;
+    pParty->pHirelings[1] = dragon;
+    pParty->pHireling2Name = dragon.name;
+    game.tick(1);
+    game.restAndHeal();
+
+    EXPECT_EQ(pOutdoor->getNumFoodRequiredToRestInCurrentPos(pParty->pos), 2);
+    EXPECT_EQ(foodTape.delta(), -3); // +1 food consumed b/c of the baby dragon.
+}
+
+GAME_TEST(Issues, Issue1226c) {
+    // Check that resting in repaired Castle Harmondale consumes 0 food.
+    auto foodTape = tapes.food();
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+
+    pParty->_questBits[QBIT_HARMONDALE_REBUILT] = true;
+    game.teleportTo(MAP_CASTLE_HARMONDALE, Vec3f(-5100, 2100, 0), 0);
+    game.restAndHeal();
+
+    EXPECT_EQ(foodTape.delta(), 0);
 }
 
 GAME_TEST(Issues, Issue1251a) {
@@ -520,7 +578,7 @@ GAME_TEST(Issues, Issue1364) {
 GAME_TEST(Issues, Issue1368) {
     // maybeWakeSoloSurvivor() error
     auto canActTape = tapes.custom([] { return pParty->canActCount(); });
-    auto sleepTape = tapes.custom([] { return pParty->pCharacters[0].conditions.Has(CONDITION_SLEEP); });
+    auto sleepTape = tapes.custom([] { return pParty->pCharacters[0].conditions.has(CONDITION_SLEEP); });
     test.playTraceFromTestData("issue_1368.mm7", "issue_1368.json");
     EXPECT_EQ(canActTape.min(), 0); // No one can act - try waking.
     EXPECT_CONTAINS(sleepTape, true); // Should've been asleep.
@@ -554,7 +612,7 @@ GAME_TEST(Issues, Issue1383) {
     pIndoor->dlv.reputation = 0; // Reputation is used for price calculations.
 
     Character character;
-    character.pActiveSkills[CHARACTER_SKILL_MERCHANT] = CombinedSkillValue(10, CHARACTER_SKILL_MASTERY_GRANDMASTER);
+    character.pActiveSkills[SKILL_MERCHANT] = CombinedSkillValue(10, MASTERY_GRANDMASTER);
     Item item;
     item.itemId = ITEM_SPELLBOOK_ARMAGEDDON;
     int gmPrice = PriceCalculator::itemBuyingPriceForPlayer(&character, item.GetValue(), 10.0f);
@@ -562,7 +620,7 @@ GAME_TEST(Issues, Issue1383) {
     EXPECT_EQ(item.GetValue(), 7500);
 
     // Also check prices w/o skill, just in case.
-    character.pActiveSkills[CHARACTER_SKILL_MERCHANT] = CombinedSkillValue();
+    character.pActiveSkills[SKILL_MERCHANT] = CombinedSkillValue();
     int noobPrice = PriceCalculator::itemBuyingPriceForPlayer(&character, item.GetValue(), 10.0f);
     EXPECT_EQ(noobPrice, 75000);
 
@@ -787,7 +845,7 @@ GAME_TEST(Issues, Issue1466) {
     auto flatMessageBoxesBody = messageBoxesBody.flatten();
     EXPECT_GT(flatMessageBoxes.size(), 0);
     EXPECT_GT(flatMessageBoxesBody.filter([](const auto& s) { return s.starts_with("Inferno burns all"); }).size(), 0);
-    EXPECT_FALSE(pParty->pCharacters[0].HasSkill(CHARACTER_SKILL_FIRE));
+    EXPECT_FALSE(pParty->pCharacters[0].HasSkill(SKILL_FIRE));
     EXPECT_EQ(current_screen_type, SCREEN_GAME);
 }
 
@@ -851,7 +909,7 @@ GAME_TEST(Issues, Issue1479) {
     // Crash when identifying Chaos Hydra with ID Monster skill.
     auto expressionTape = charTapes.portrait(2);
     test.playTraceFromTestData("issue_1479.mm7", "issue_1479.json");
-    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(CHARACTER_SKILL_MONSTER_ID).mastery(), CHARACTER_SKILL_MASTERY_GRANDMASTER);
+    EXPECT_EQ(pParty->pCharacters[2].getActualSkillValue(SKILL_MONSTER_ID).mastery(), MASTERY_GRANDMASTER);
     EXPECT_CONTAINS(expressionTape, PORTRAIT_47); // Reaction to strong monster id.
 }
 
@@ -878,7 +936,7 @@ GAME_TEST(Issues, Issue1489) {
     test.playTraceFromTestData("issue_1489.mm7", "issue_1489.json");
 
     for (const auto& character : pParty->pCharacters) {
-        EXPECT_TRUE(character.HasSkill(CHARACTER_SKILL_MISC));
+        EXPECT_TRUE(character.HasSkill(SKILL_MISC));
     }
     // Check items were removed and re-equipped
     EXPECT_EQ(bootTape.front(), bootTape.back());

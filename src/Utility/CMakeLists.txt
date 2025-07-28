@@ -22,6 +22,7 @@ set(UTILITY_HEADERS
         Embedded.h
         Exception.h
         Flags.h
+        Hash.h
         String/Format.h
         Types.h
         IndexedArray.h

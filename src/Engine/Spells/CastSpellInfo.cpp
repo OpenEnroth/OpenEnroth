@@ -58,7 +58,7 @@ static constexpr Duration SPELL_FAILURE_RECOVERY_TIME_ON_CURSE = 100_ticks;
  */
 static void initSpellSprite(SpriteObject *spritePtr,
                             int spellLevel,
-                            CharacterSkillMastery spellMastery,
+                            Mastery spellMastery,
                             CastSpellInfo *pCastSpell) {
     assert(spritePtr && spritePtr->uType != SPRITE_NULL);
     assert(pCastSpell->uSpellID != SPELL_NONE);
@@ -115,7 +115,7 @@ static void setSpellRecovery(CastSpellInfo *pCastSpell,
 
 // TODO(pskelton): caster index not supplied to buffs ".Apply"
 void CastSpellInfoHelpers::castSpell() {
-    CharacterSkillType which_skill;
+    Skill which_skill;
     AIDirection target_direction;
 
     static const int ONE_THIRD_PI = TrigLUT.uIntegerPi / 3;
@@ -184,7 +184,7 @@ void CastSpellInfoHelpers::castSpell() {
         }
 
         int spell_level;
-        CharacterSkillMastery spell_mastery;
+        Mastery spell_mastery;
         if (pCastSpell->overrideSkillValue) {
             // for spell scrolls - decode spell power and mastery
             spell_level = pCastSpell->overrideSkillValue.level();
@@ -198,7 +198,7 @@ void CastSpellInfoHelpers::castSpell() {
 
             if (engine->config->debug.AllMagic.value()) {
                 spell_level = 10;
-                spell_mastery = CHARACTER_SKILL_MASTERY_GRANDMASTER;
+                spell_mastery = MASTERY_GRANDMASTER;
             }
         }
 
@@ -216,8 +216,8 @@ void CastSpellInfoHelpers::castSpell() {
         failureRecoveryTime = recoveryTime * engine->config->gameplay.SpellFailureRecoveryMod.value();
 
         if (!pCastSpell->overrideSkillValue) {
-            if (which_skill == CHARACTER_SKILL_DARK && pParty->uCurrentHour == 0 && pParty->uCurrentMinute == 0 ||
-                which_skill == CHARACTER_SKILL_LIGHT && pParty->uCurrentHour == 12 && pParty->uCurrentMinute == 0) {  // free spells at midnight or midday
+            if (which_skill == SKILL_DARK && pParty->uCurrentHour == 0 && pParty->uCurrentMinute == 0 ||
+                which_skill == SKILL_LIGHT && pParty->uCurrentHour == 12 && pParty->uCurrentMinute == 0) {  // free spells at midnight or midday
                 uRequiredMana = 0;
             }
         }
@@ -244,7 +244,7 @@ void CastSpellInfoHelpers::castSpell() {
         // and spells that open additional menus like town portal or lloyd beacon
         if (pCastSpell->uSpellID == SPELL_BOW_ARROW) {
             int arrows = 1;
-            if (spell_mastery >= CHARACTER_SKILL_MASTERY_MASTER) {
+            if (spell_mastery >= MASTERY_MASTER) {
                 arrows = 2;
             }
 
@@ -299,7 +299,7 @@ void CastSpellInfoHelpers::castSpell() {
         } else if (pCastSpell->uSpellID == SPELL_WATER_TOWN_PORTAL) {
             int success_chance_percent = 10 * spell_level;
             bool castSuccessful = true;
-            if (spell_mastery != CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+            if (spell_mastery != MASTERY_GRANDMASTER) {
                 if (pParty->GetRedOrYellowAlert()) {
                     spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                     castSuccessful = false;
@@ -331,14 +331,14 @@ void CastSpellInfoHelpers::castSpell() {
                     switch (spell_mastery) {
                         default:
                             assert(false);
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             spell_power = 2;
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_power = 3;
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_MASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_power = 4;
                             break;
                     }
@@ -351,16 +351,16 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     int num_spikes;
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             num_spikes = 3;
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             num_spikes = 5;
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             num_spikes = 7;
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             num_spikes = 9;
                             break;
                         default:
@@ -409,7 +409,7 @@ void CastSpellInfoHelpers::castSpell() {
                     initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                     pSpellSprite.vPosition = pActors[monster_id].pos + Vec3f(0, 0, pActors[monster_id].height / 2);
                     pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, monster_id);
-                    Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, Vec3f());
+                    Actor::DamageMonsterFromParty(Pid(OBJECT_Sprite, pSpellSprite.Create(0, 0, 0, 0)), monster_id, Vec3f());
                     break;
                 }
 
@@ -428,7 +428,7 @@ void CastSpellInfoHelpers::castSpell() {
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = pActors[monster_id].pos;
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, monster_id);
-                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, Vec3f());
+                        Actor::DamageMonsterFromParty(Pid(OBJECT_Sprite, pSpellSprite.Create(0, 0, 0, 0)), monster_id, Vec3f());
                     }
                     break;
                 }
@@ -459,7 +459,7 @@ void CastSpellInfoHelpers::castSpell() {
                         setSpellRecovery(pCastSpell, recoveryTime);
                         continue;
                     }
-                    Actor::DamageMonsterFromParty(Pid(OBJECT_Item, obj_id), monster_id, Vec3f());
+                    Actor::DamageMonsterFromParty(Pid(OBJECT_Sprite, obj_id), monster_id, Vec3f());
                     break;
                 }
 
@@ -583,19 +583,19 @@ void CastSpellInfoHelpers::castSpell() {
                     int spell_power;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             spell_duration = Duration::fromMinutes(3 * spell_level);
                             spell_power = 2;
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromMinutes(5 * spell_level);
                             spell_power = 2;
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromMinutes(5 * spell_level);
                             spell_power = 4;
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromMinutes(5 * spell_level);
                             spell_power = 8;
                             break;
@@ -627,18 +627,18 @@ void CastSpellInfoHelpers::castSpell() {
                         Duration spell_duration;
 
                         switch (spell_mastery) {
-                            case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 have different durations
+                            case MASTERY_NOVICE: // MM6 have different durations
                                 // the only way to cast novice charm in MM7 is Wand of Charms
                                 assert(pCastSpell->overrideSkillValue && "SPELL_MIND_CHARM override");
                                 spell_duration = Duration::fromMinutes(5 * spell_level);
                                 break;
-                            case CHARACTER_SKILL_MASTERY_EXPERT:
+                            case MASTERY_EXPERT:
                                 spell_duration = Duration::fromMinutes(5 * spell_level);
                                 break;
-                            case CHARACTER_SKILL_MASTERY_MASTER:
+                            case MASTERY_MASTER:
                                 spell_duration = Duration::fromMinutes(10 * spell_level);
                                 break;
-                            case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                            case MASTERY_GRANDMASTER:
                                 // Time must be infinite until the player leaves the map
                                 spell_duration = Duration::fromYears(1);
                                 break;
@@ -708,14 +708,14 @@ void CastSpellInfoHelpers::castSpell() {
                     switch (pCastSpell->uSpellID) {
                         case SPELL_FIRE_FIRE_AURA:
                             switch (spell_mastery) {
-                                case CHARACTER_SKILL_MASTERY_NOVICE:
+                                case MASTERY_NOVICE:
                                     item->specialEnchantment = ITEM_ENCHANTMENT_OF_FIRE;
                                     break;
-                                case CHARACTER_SKILL_MASTERY_EXPERT:
+                                case MASTERY_EXPERT:
                                     item->specialEnchantment = ITEM_ENCHANTMENT_OF_FLAME;
                                     break;
-                                case CHARACTER_SKILL_MASTERY_MASTER:
-                                case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                                case MASTERY_MASTER:
+                                case MASTERY_GRANDMASTER:
                                     item->specialEnchantment = ITEM_ENCHANTMENT_OF_INFERNOS;
                                     break;
                                 default:
@@ -732,7 +732,7 @@ void CastSpellInfoHelpers::castSpell() {
                             assert(false);
                     }
 
-                    if (spell_mastery < CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+                    if (spell_mastery < MASTERY_GRANDMASTER) {
                         item->enchantmentExpirationTime = pParty->GetPlayingTime() + Duration::fromHours(spell_level);
                         item->flags |= ITEM_TEMP_BONUS;
                     }
@@ -747,16 +747,16 @@ void CastSpellInfoHelpers::castSpell() {
                     switch (spell_mastery) {
                         default:
                             assert(false);
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             spell_power = 1;
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_power = 1;
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_power = 3;
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_power = 10;
                             break;
                     }
@@ -809,14 +809,14 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 only
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_NOVICE: // MM6 only
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromHours(1) + Duration::fromMinutes(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromHours(1) + Duration::fromMinutes(3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromHours(1) + Duration::fromMinutes(4 * spell_level);
                             break;
                         default:
@@ -825,7 +825,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                     bool has_weak = false;
                     for (const Character &character : pParty->pCharacters) {
-                        if (character.conditions.Has(CONDITION_WEAK)) {
+                        if (character.conditions.has(CONDITION_WEAK)) {
                             has_weak = true;
                         }
                     }
@@ -847,14 +847,14 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_NOVICE:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromHours(1) + Duration::fromMinutes(5 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromHours(1) + Duration::fromMinutes(15 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromHours(spell_level + 1);
                             break;
                         default:
@@ -862,7 +862,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     int spell_power = spell_level + 5;
-                    if (spell_mastery == CHARACTER_SKILL_MASTERY_NOVICE) {
+                    if (spell_mastery == MASTERY_NOVICE) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].pCharacterBuffs[CHARACTER_BUFF_BLESS]
                             .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
@@ -891,7 +891,7 @@ void CastSpellInfoHelpers::castSpell() {
                         initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
                         pSpellSprite.vPosition = pActors[monster_id].pos - Vec3f(0, 0, pActors[monster_id].height * -0.8);
                         pSpellSprite.spell_target_pid = spell_targeted_at;
-                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), monster_id, Vec3f());
+                        Actor::DamageMonsterFromParty(Pid(OBJECT_Sprite, pSpellSprite.Create(0, 0, 0, 0)), monster_id, Vec3f());
                     } else {
                         spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         pPlayer->SpendMana(uRequiredMana); // decrease mana on failure
@@ -908,14 +908,14 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 only
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_NOVICE: // MM6 only
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromHours(1) + Duration::fromMinutes(5 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromHours(1) + Duration::fromMinutes(15 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromHours(spell_level + 1);
                             break;
                         default:
@@ -952,14 +952,14 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromMinutes(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromMinutes(10 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_NOVICE:
+                        case MASTERY_EXPERT:
                         default:
                             assert(false);
                     }
@@ -972,7 +972,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_FIRE_METEOR_SHOWER:
                 {
-                    assert(spell_mastery >= CHARACTER_SKILL_MASTERY_MASTER);
+                    assert(spell_mastery >= MASTERY_MASTER);
 
                     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
                         spellFailed(pCastSpell, LSTR_CANT_CAST_METEOR_SHOWER_INDOORS);
@@ -989,7 +989,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
                     int j = 0, k = 0;
                     int yaw, pitch;
-                    int meteor_num = (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) ? 20 : 16;
+                    int meteor_num = (spell_mastery == MASTERY_GRANDMASTER) ? 20 : 16;
                     for (; meteor_num; meteor_num--) {
                         int originHeight = grng->random(1000);
                         // TODO(Nik-RE-dev): condition is always false
@@ -1030,7 +1030,7 @@ void CastSpellInfoHelpers::castSpell() {
                     for (Actor *actor : render->getActorsInViewport(4096)) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
-                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, Vec3f());
+                        Actor::DamageMonsterFromParty(Pid(OBJECT_Sprite, pSpellSprite.Create(0, 0, 0, 0)), actor->id, Vec3f());
                         spell_fx_renderer->RenderAsSprite(&pSpellSprite);
                     }
                     spell_fx_renderer->FadeScreen__like_Turn_Undead_and_mb_Armageddon(colorTable.OrangeyRed, 64_ticks);
@@ -1049,14 +1049,14 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             spell_duration = Duration::fromMinutes(5 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromMinutes(10 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_MASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromHours(spell_level);
                             break;
                         default:
@@ -1073,16 +1073,16 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     int sparks_number;
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             sparks_number = 3;
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             sparks_number = 5;
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             sparks_number = 7;
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             sparks_number = 9;
                             break;
                         default:
@@ -1133,16 +1133,16 @@ void CastSpellInfoHelpers::castSpell() {
                     int spell_power;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromMinutes(10 * spell_level);
                             spell_power = 3 * spell_level;
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromHours(spell_level);
                             spell_power = 4 * spell_level;
                             break;
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_NOVICE:
+                        case MASTERY_EXPERT:
                         default:
                             assert(false);
                     }
@@ -1173,7 +1173,7 @@ void CastSpellInfoHelpers::castSpell() {
                         pParty->GetPlayingTime() + Duration::fromHours(spell_level),
                             spell_mastery, 0, 0,
                             pCastSpell->casterCharacterIndex + 1);
-                    pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff = (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER);
+                    pParty->pPartyBuffs[PARTY_BUFF_FLY].isGMBuff = (spell_mastery == MASTERY_GRANDMASTER);
                     break;
                 }
 
@@ -1228,16 +1228,16 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             spell_duration = Duration::fromMinutes(3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromHours(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromDays(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = 0_ticks;
                             break;
                         default:
@@ -1245,9 +1245,9 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     for (Character &character : pParty->pCharacters) {
-                        if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                            if (character.conditions.Has(CONDITION_SLEEP)) {
-                                character.conditions.Reset(CONDITION_SLEEP);
+                        if (spell_mastery == MASTERY_GRANDMASTER) {
+                            if (character.conditions.has(CONDITION_SLEEP)) {
+                                character.conditions.reset(CONDITION_SLEEP);
                                 character.playReaction(SPEECH_AWAKEN);
                             }
                         } else {
@@ -1265,16 +1265,16 @@ void CastSpellInfoHelpers::castSpell() {
                     switch (spell_mastery) {
                         default:
                             assert(false);
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             shots_num = 1;
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             shots_num = 3;
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             shots_num = 5;
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             shots_num = 7;
                             break;
                     }
@@ -1322,14 +1322,14 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 only
+                        case MASTERY_NOVICE: // MM6 only
                             spell_duration = Duration::fromMinutes(5 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromMinutes(10 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_MASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromHours(spell_level);
                             break;
                         default:
@@ -1339,7 +1339,7 @@ void CastSpellInfoHelpers::castSpell() {
                     spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                     pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK]
                         .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, pCastSpell->casterCharacterIndex + 1);
-                    pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff = (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER);
+                    pParty->pPartyBuffs[PARTY_BUFF_WATER_WALK].isGMBuff = (spell_mastery == MASTERY_GRANDMASTER);
                     break;
                 }
 
@@ -1357,11 +1357,11 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     double spell_recharge_factor;
-                    if (spell_mastery == CHARACTER_SKILL_MASTERY_NOVICE || spell_mastery == CHARACTER_SKILL_MASTERY_EXPERT) {
+                    if (spell_mastery == MASTERY_NOVICE || spell_mastery == MASTERY_EXPERT) {
                         spell_recharge_factor = (double)spell_level * 0.0099999998 + 0.5;  // 50 %
-                    } else if (spell_mastery == CHARACTER_SKILL_MASTERY_MASTER) {
+                    } else if (spell_mastery == MASTERY_MASTER) {
                         spell_recharge_factor = (double)spell_level * 0.0099999998 + 0.69999999;  // 30 %
-                    } else if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+                    } else if (spell_mastery == MASTERY_GRANDMASTER) {
                         spell_recharge_factor = (double)spell_level * 0.0099999998 + 0.80000001;  // 20 %
                     } else {
                         spell_recharge_factor = 0.0;
@@ -1414,11 +1414,11 @@ void CastSpellInfoHelpers::castSpell() {
                     // http://www.pottsland.com/mm6/enchant.shtml
                     // also see STDITEMS.tx and SPCITEMS.txt in Events.lod
 
-                    if ((spell_mastery == CHARACTER_SKILL_MASTERY_NOVICE || spell_mastery == CHARACTER_SKILL_MASTERY_EXPERT)) {
+                    if ((spell_mastery == MASTERY_NOVICE || spell_mastery == MASTERY_EXPERT)) {
                         assert(false); // SPELL_WATER_ENCHANT_ITEM is a master level spell
                     }
 
-                    if ((spell_mastery == CHARACTER_SKILL_MASTERY_MASTER || spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) &&
+                    if ((spell_mastery == MASTERY_MASTER || spell_mastery == MASTERY_GRANDMASTER) &&
                             isRegular(spell_item_to_enchant->itemId) &&
                             spell_item_to_enchant->specialEnchantment == ITEM_ENCHANTMENT_NULL &&
                             !spell_item_to_enchant->standardEnchantment &&
@@ -1442,11 +1442,11 @@ void CastSpellInfoHelpers::castSpell() {
                                 if (rnd < 80 && isPassiveEquipment(this_equip_type)) { // chance to roll standard enchantment on non-weapons
                                     int ench_found = 0;
                                     int to_item_apply_sum = 0;
-                                    CharacterAttribute ench_array[100] = {};
+                                    Attribute ench_array[100] = {};
 
                                     // finds how many possible enchaments and adds up to item apply values
                                     // if (pItemTable->pEnchantments_count > 0) {
-                                    for (CharacterAttribute attr : allEnchantableAttributes()) {
+                                    for (Attribute attr : allEnchantableAttributes()) {
                                         const std::string &bonusStat = pItemTable->standardEnchantments[attr].attributeName;
                                         if (!bonusStat.empty()) {
                                             int this_to_apply = pItemTable->standardEnchantments[attr].chanceByItemType[this_equip_type];
@@ -1478,9 +1478,9 @@ void CastSpellInfoHelpers::castSpell() {
 
                                     int ench_power = 0;
                                     // master 3-8  - guess work needs checking
-                                    if (spell_mastery == CHARACTER_SKILL_MASTERY_MASTER) ench_power = grng->random(6) + 3;
+                                    if (spell_mastery == MASTERY_MASTER) ench_power = grng->random(6) + 3;
                                     // gm 6-12   - guess work needs checking
-                                    if (spell_mastery== CHARACTER_SKILL_MASTERY_GRANDMASTER) ench_power = grng->random(7) + 6;
+                                    if (spell_mastery== MASTERY_GRANDMASTER) ench_power = grng->random(7) + 6;
 
                                     spell_item_to_enchant->standardEnchantmentStrength = ench_power;
                                     spell_item_to_enchant->flags |= ITEM_AURA_EFFECT_BLUE;
@@ -1498,7 +1498,7 @@ void CastSpellInfoHelpers::castSpell() {
                                             if (pItemTable->specialEnchantments[spec_ench_loop].iTreasureLevel == 3) {
                                                 continue;
                                             }
-                                            if (spell_mastery == CHARACTER_SKILL_MASTERY_MASTER && (pItemTable->specialEnchantments[spec_ench_loop].iTreasureLevel != 0)) {
+                                            if (spell_mastery == MASTERY_MASTER && (pItemTable->specialEnchantments[spec_ench_loop].iTreasureLevel != 0)) {
                                                 continue;
                                             }
                                             int this_to_apply = pItemTable->specialEnchantments[spec_ench_loop].chanceByItemType[this_equip_type];
@@ -1549,25 +1549,25 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 only
+                        case MASTERY_NOVICE: // MM6 only
                             spell_duration = Duration::fromMinutes(3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromHours(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromDays(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
                     }
 
-                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Has(CONDITION_PETRIFIED)) {
-                        if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_PETRIFIED);
+                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.has(CONDITION_PETRIFIED)) {
+                        if (spell_mastery == MASTERY_GRANDMASTER) {
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_PETRIFIED);
                         } else {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex]
                                 .DiscardConditionIfLastsLongerThan(CONDITION_PETRIFIED, pParty->GetPlayingTime() - spell_duration);
@@ -1623,14 +1623,14 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             spell_duration = Duration::fromMinutes(10 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromMinutes(30 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_MASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromHours(spell_level);
                             break;
                         default:
@@ -1647,16 +1647,16 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     int spell_power;
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             spell_power = spell_level;
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_power = 2 * spell_level;
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_power = 4 * spell_level;
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_power = 6 * spell_level;
                             break;
                         default:
@@ -1682,30 +1682,30 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 only
+                        case MASTERY_NOVICE: // MM6 only
                             spell_duration = Duration::fromMinutes(3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromHours(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromDays(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
                     }
 
-                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Has(CONDITION_CURSED)) {
-                        if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_CURSED);
+                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.has(CONDITION_CURSED)) {
+                        if (spell_mastery == MASTERY_GRANDMASTER) {
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_CURSED);
                         } else {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex]
                                 .DiscardConditionIfLastsLongerThan(CONDITION_CURSED, pParty->GetPlayingTime() - spell_duration);
                         }
-                        if (!pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Has(CONDITION_CURSED)) {
+                        if (!pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.has(CONDITION_CURSED)) {
                             spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         }
                     }
@@ -1717,19 +1717,19 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_EXPERT:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromHours(1) + Duration::fromMinutes(5 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromHours(1) + Duration::fromMinutes(15 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                         default:
                             assert(false);
                     }
 
-                    if (spell_mastery == CHARACTER_SKILL_MASTERY_NOVICE || spell_mastery == CHARACTER_SKILL_MASTERY_EXPERT) {
+                    if (spell_mastery == MASTERY_NOVICE || spell_mastery == MASTERY_EXPERT) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].pCharacterBuffs[CHARACTER_BUFF_PRESERVATION]
                             .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
@@ -1748,15 +1748,15 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             spell_duration = Duration::fromMinutes(3 + 1 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             // Was "3m + 1m * spell_level"
                             spell_duration = Duration::fromMinutes(3 + 3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_MASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromMinutes(3 + 5 * spell_level);
                             break;
                         default:
@@ -1783,27 +1783,27 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 only
+                        case MASTERY_NOVICE: // MM6 only
                             spell_duration = Duration::fromMinutes(3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT: // MM6 only
+                        case MASTERY_EXPERT: // MM6 only
                             spell_duration = Duration::fromHours(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromDays(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
                     }
 
-                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Has(CONDITION_DEAD)) {
+                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.has(CONDITION_DEAD)) {
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].health = 1;
-                        if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_DEAD);
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_UNCONSCIOUS);
+                        if (spell_mastery == MASTERY_GRANDMASTER) {
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_DEAD);
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_UNCONSCIOUS);
                         } else {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex]
                                 .DiscardConditionIfLastsLongerThan(CONDITION_DEAD, pParty->GetPlayingTime() - spell_duration);
@@ -1818,27 +1818,27 @@ void CastSpellInfoHelpers::castSpell() {
                 case SPELL_SPIRIT_SHARED_LIFE:
                 {
                     int shared_life_count;
-                    if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+                    if (spell_mastery == MASTERY_GRANDMASTER) {
                         shared_life_count = 4 * spell_level;
                     } else {
                         shared_life_count = 3 * spell_level;
                     }
                     int active_pl_num = 0;
                     for (const Character &character : pParty->pCharacters) {
-                        if (character.conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+                        if (character.conditions.hasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             shared_life_count += character.health;
                             active_pl_num++;
                         }
                     }
                     int mean_life = shared_life_count / active_pl_num;
                     for (size_t i = 0; i < pParty->pCharacters.size(); i++) {
-                        if (pParty->pCharacters[i].conditions.HasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+                        if (pParty->pCharacters[i].conditions.hasNone({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                             pParty->pCharacters[i].health = mean_life;
                             if (pParty->pCharacters[i].health > pParty->pCharacters[i].GetMaxHealth()) {
                                 pParty->pCharacters[i].health = pParty->pCharacters[i].GetMaxHealth();
                             }
                             if (pParty->pCharacters[i].health > 0) {
-                                pParty->pCharacters[i].conditions.Reset(CONDITION_UNCONSCIOUS);
+                                pParty->pCharacters[i].conditions.reset(CONDITION_UNCONSCIOUS);
                             }
                             spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, i);
                         }
@@ -1851,32 +1851,32 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 only
+                        case MASTERY_NOVICE: // MM6 only
                             spell_duration = Duration::fromMinutes(3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT: // MM6 only
+                        case MASTERY_EXPERT: // MM6 only
                             // Was 3 hours per spell level
                             spell_duration = Duration::fromHours(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER: // MM6 only
+                        case MASTERY_MASTER: // MM6 only
                             // Was 3 days per spell level
                             spell_duration = Duration::fromDays(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
                     }
 
-                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.HasAny({CONDITION_ERADICATED, CONDITION_DEAD})) {
-                        if (!pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Has(CONDITION_WEAK)) {
+                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.hasAny({CONDITION_ERADICATED, CONDITION_DEAD})) {
+                        if (!pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.has(CONDITION_WEAK)) {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex].playReaction(SPEECH_WEAK);
                         }
-                        if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_ERADICATED);
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_DEAD);
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_UNCONSCIOUS);
+                        if (spell_mastery == MASTERY_GRANDMASTER) {
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_ERADICATED);
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_DEAD);
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_UNCONSCIOUS);
                         } else {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex]
                                 .DiscardConditionIfLastsLongerThan(CONDITION_ERADICATED, pParty->GetPlayingTime() - spell_duration);
@@ -1897,16 +1897,16 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 only
+                        case MASTERY_NOVICE: // MM6 only
                             spell_duration = Duration::fromMinutes(3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromHours(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromDays(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = 0_ticks;
                             break;
                         default:
@@ -1914,9 +1914,9 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
-                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Has(CONDITION_PARALYZED)) {
-                        if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_PARALYZED);
+                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.has(CONDITION_PARALYZED)) {
+                        if (spell_mastery == MASTERY_GRANDMASTER) {
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_PARALYZED);
                         } else {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex]
                                 .DiscardConditionIfLastsLongerThan(CONDITION_PARALYZED, pParty->GetPlayingTime() - spell_duration);
@@ -1930,16 +1930,16 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             spell_duration = Duration::fromMinutes(3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromHours(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromDays(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = 0_ticks;
                             break;
                         default:
@@ -1947,9 +1947,9 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
-                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Has(CONDITION_FEAR)) {
-                        if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_FEAR);
+                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.has(CONDITION_FEAR)) {
+                        if (spell_mastery == MASTERY_GRANDMASTER) {
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_FEAR);
                         } else {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex]
                                 .DiscardConditionIfLastsLongerThan(CONDITION_FEAR, pParty->GetPlayingTime() - spell_duration);
@@ -2027,18 +2027,18 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromMinutes(5 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromMinutes(10 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             // TODO: is this correct?
                             // Spell description says that spell effect is infinite.
                             spell_duration = Duration::fromHours(1);
                             break;
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                         default:
                             assert(false);
                     }
@@ -2103,12 +2103,12 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 only
-                        case CHARACTER_SKILL_MASTERY_EXPERT: // MM6 only
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_NOVICE: // MM6 only
+                        case MASTERY_EXPERT: // MM6 only
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromMinutes(3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromMinutes(5 * spell_level);
                             break;
                         default:
@@ -2138,16 +2138,16 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 only
+                        case MASTERY_NOVICE: // MM6 only
                             spell_duration = Duration::fromMinutes(3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT: // MM6 only
+                        case MASTERY_EXPERT: // MM6 only
                             spell_duration = Duration::fromHours(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromDays(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = 0_ticks;
                             break;
                         default:
@@ -2155,12 +2155,12 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
-                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Has(CONDITION_INSANE)) {
-                        if (!pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Has(CONDITION_WEAK)) {
+                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.has(CONDITION_INSANE)) {
+                        if (!pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.has(CONDITION_WEAK)) {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex].playReaction(SPEECH_WEAK);
                         }
-                        if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_INSANE);
+                        if (spell_mastery == MASTERY_GRANDMASTER) {
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_INSANE);
                         } else {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex]
                                 .DiscardConditionIfLastsLongerThan(CONDITION_INSANE, pParty->GetPlayingTime() - spell_duration);
@@ -2181,7 +2181,7 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     int obj_id = spell_targeted_at.id();
-                    if (spell_targeted_at.type() == OBJECT_Item) {
+                    if (spell_targeted_at.type() == OBJECT_Sprite) {
                         if (pSpriteObjects[obj_id].containing_item.isGold()) {
                             pParty->partyFindsGold(pSpriteObjects[obj_id].containing_item.goldAmount, GOLD_RECEIVE_SHARE);
                         } else {
@@ -2225,25 +2225,25 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             spell_duration = Duration::fromMinutes(3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromHours(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromDays(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = 0_ticks;
                             break;
                         default:
                             assert(false);
                     }
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
-                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Has(CONDITION_WEAK)) {
-                        if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_WEAK);
+                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.has(CONDITION_WEAK)) {
+                        if (spell_mastery == MASTERY_GRANDMASTER) {
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_WEAK);
                         } else {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex]
                                 .DiscardConditionIfLastsLongerThan(CONDITION_WEAK, pParty->GetPlayingTime() - spell_duration);
@@ -2256,16 +2256,16 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     int heal_amount;
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             heal_amount = 2 * spell_level + 5;
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             heal_amount = 3 * spell_level + 5;
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             heal_amount = 4 * spell_level + 5;
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             heal_amount = 5 * spell_level + 5;
                             break;
                         default:
@@ -2295,16 +2295,16 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 only
+                        case MASTERY_NOVICE: // MM6 only
                             spell_duration = Duration::fromMinutes(3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromHours(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromDays(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = 0_ticks;
                             break;
                         default:
@@ -2312,11 +2312,11 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
-                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.HasAny({CONDITION_POISON_WEAK, CONDITION_POISON_MEDIUM, CONDITION_POISON_SEVERE})) {
-                        if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_POISON_WEAK);
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_POISON_MEDIUM);
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_POISON_SEVERE);
+                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.hasAny({CONDITION_POISON_WEAK, CONDITION_POISON_MEDIUM, CONDITION_POISON_SEVERE})) {
+                        if (spell_mastery == MASTERY_GRANDMASTER) {
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_POISON_WEAK);
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_POISON_MEDIUM);
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_POISON_SEVERE);
                         } else {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex]
                                 .DiscardConditionIfLastsLongerThan(CONDITION_POISON_WEAK, pParty->GetPlayingTime() - spell_duration);
@@ -2334,16 +2334,16 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 only
+                        case MASTERY_NOVICE: // MM6 only
                             spell_duration = Duration::fromMinutes(3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT: // MM6 only
+                        case MASTERY_EXPERT: // MM6 only
                             spell_duration = Duration::fromHours(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromDays(spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = 0_ticks;
                             break;
                         default:
@@ -2351,11 +2351,11 @@ void CastSpellInfoHelpers::castSpell() {
                     }
 
                     spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
-                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.HasAny({CONDITION_DISEASE_WEAK, CONDITION_DISEASE_MEDIUM, CONDITION_DISEASE_SEVERE})) {
-                        if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_DISEASE_WEAK);
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_DISEASE_MEDIUM);
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Reset(CONDITION_DISEASE_SEVERE);
+                    if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.hasAny({CONDITION_DISEASE_WEAK, CONDITION_DISEASE_MEDIUM, CONDITION_DISEASE_SEVERE})) {
+                        if (spell_mastery == MASTERY_GRANDMASTER) {
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_DISEASE_WEAK);
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_DISEASE_MEDIUM);
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.reset(CONDITION_DISEASE_SEVERE);
                         } else {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex]
                                 .DiscardConditionIfLastsLongerThan(CONDITION_DISEASE_WEAK, pParty->GetPlayingTime() - spell_duration);
@@ -2378,7 +2378,7 @@ void CastSpellInfoHelpers::castSpell() {
 
                 case SPELL_BODY_HAMMERHANDS:
                 {
-                    if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+                    if (spell_mastery == MASTERY_GRANDMASTER) {
                         spell_fx_renderer->SetPartyBuffAnim(pCastSpell->uSpellID);
                         for (Character &character : pParty->pCharacters) {
                             character.pCharacterBuffs[CHARACTER_BUFF_HAMMERHANDS]
@@ -2426,19 +2426,19 @@ void CastSpellInfoHelpers::castSpell() {
                     int max_summoned;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromMinutes(5 * spell_level);
                             max_summoned = 1;
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromMinutes(15 * spell_level);
                             max_summoned = 3;
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromMinutes(15 * spell_level);
                             max_summoned = 5;
                             break;
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                         default:
                             assert(false);
                     }
@@ -2466,18 +2466,18 @@ void CastSpellInfoHelpers::castSpell() {
                     int spell_power;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // MM6 have different durations
+                        case MASTERY_NOVICE: // MM6 have different durations
                         default:
                             assert(false);
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromHours(3 * spell_level);
                             spell_power = 3 * spell_level + 10;
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromHours(4 * spell_level);
                             spell_power = 4 * spell_level + 10;
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromHours(5 * spell_level);
                             spell_power = 5 * spell_level + 10;
                             break;
@@ -2501,7 +2501,7 @@ void CastSpellInfoHelpers::castSpell() {
                     for (Actor *actor : render->getActorsInViewport(4096)) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
-                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, Vec3f());
+                        Actor::DamageMonsterFromParty(Pid(OBJECT_Sprite, pSpellSprite.Create(0, 0, 0, 0)), actor->id, Vec3f());
                     }
                     spell_fx_renderer->_4A8BFC_prismatic_light();
                     break;
@@ -2513,15 +2513,15 @@ void CastSpellInfoHelpers::castSpell() {
                     int spell_power;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE: // In MM6 this spell is different and is of dark magic
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_NOVICE: // In MM6 this spell is different and is of dark magic
+                        case MASTERY_EXPERT:
                         default:
                             assert(false);
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromHours(4 * spell_level);
                             spell_power = 4 * spell_level;
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromHours(5 * spell_level);
                             spell_power = 5 * spell_level;
                             break;
@@ -2550,13 +2550,13 @@ void CastSpellInfoHelpers::castSpell() {
                     int target_spell_level;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             // Was "1h * spell_level + 1m" for other buffs
                             target_spell_level = spell_level * 4;
                             haste_duration = Duration::fromHours(1) + Duration::fromMinutes(3 * target_spell_level);
                             other_duration = Duration::fromHours(1) + Duration::fromMinutes(15 * target_spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             // In-game description says that the duration for non-haste buffs is "1h + (1h * spell_level) * 5",
                             // but what we have here is "1h + (15m * spell_level) * 5".
                             // And in the original decompiled code it was "1m + (15m * spell_level) * 5".
@@ -2571,8 +2571,8 @@ void CastSpellInfoHelpers::castSpell() {
                         // Novice and master durations was
                         // "1h + 4m * spell_level" for haste
                         // "1m + 20min * spell_level" for other buffs
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_NOVICE:
+                        case MASTERY_EXPERT:
                         default:
                             assert(false);
                     }
@@ -2580,7 +2580,7 @@ void CastSpellInfoHelpers::castSpell() {
                     for (Character &character : pParty->pCharacters) {
                        character.pCharacterBuffs[CHARACTER_BUFF_BLESS]
                             .Apply(pParty->GetPlayingTime() + other_duration, spell_mastery, target_skill_level, 0, 0);
-                        if (character.conditions.Has(CONDITION_WEAK)) {
+                        if (character.conditions.has(CONDITION_WEAK)) {
                             player_weak = true;
                         }
                     }
@@ -2608,7 +2608,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     for (Character &character : pParty->pCharacters) {
-                        character.conditions.ResetAll();
+                        character.conditions.resetAll();
                         character.health = character.GetMaxHealth();
                         character.mana = character.GetMaxMana();
                     }
@@ -2629,27 +2629,27 @@ void CastSpellInfoHelpers::castSpell() {
                     switch (spell_mastery) {
                         default:
                             assert(false);
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             target_monster_level = 2 * spell_level;
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             target_monster_level = 3 * spell_level;
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             target_monster_level = 4 * spell_level;
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             target_monster_level = 5 * spell_level;
                             break;
                     }
                     int zombie_hp_limit = target_monster_level * 10;
                     if (!pCastSpell->targetPid) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
-                        if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Has(CONDITION_DEAD)) {
+                        if (pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.has(CONDITION_DEAD)) {
                             pParty->pCharacters[pCastSpell->targetCharacterIndex].SetCondition(CONDITION_ZOMBIE, 1);
                             GameUI_ReloadPlayerPortraits(pCastSpell->targetCharacterIndex, (pParty->pCharacters[pCastSpell->targetCharacterIndex].GetSexByVoice() != SEX_MALE) + 23);
-                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.Set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
-                            // TODO: why call SetCondition and then conditions.Set?
+                            pParty->pCharacters[pCastSpell->targetCharacterIndex].conditions.set(CONDITION_ZOMBIE, pParty->GetPlayingTime());
+                            // TODO: why call SetCondition and then conditions.set?
                         }
                         break;
                     }
@@ -2688,16 +2688,16 @@ void CastSpellInfoHelpers::castSpell() {
                 {
                     int blades_cound;
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                             blades_cound = 5;
                             break;
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             blades_cound = 5;
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             blades_cound = 7;
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             blades_cound = 9;
                             break;
                         default:
@@ -2742,17 +2742,17 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
+                        case MASTERY_EXPERT:
                             spell_duration = Duration::fromMinutes(3 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromMinutes(5 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             // Time must be infinite until the player leaves the map
                             spell_duration = Duration::fromYears(1);
                             break;
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                         default:
                             assert(false);
                     }
@@ -2828,18 +2828,18 @@ void CastSpellInfoHelpers::castSpell() {
                     Duration spell_duration;
 
                     switch (spell_mastery) {
-                        case CHARACTER_SKILL_MASTERY_EXPERT:
-                        case CHARACTER_SKILL_MASTERY_MASTER:
+                        case MASTERY_EXPERT:
+                        case MASTERY_MASTER:
                             spell_duration = Duration::fromHours(1) + Duration::fromMinutes(5 * spell_level);
-                        case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                        case MASTERY_GRANDMASTER:
                             spell_duration = Duration::fromHours(1) + Duration::fromMinutes(15 * spell_level);
                             break;
-                        case CHARACTER_SKILL_MASTERY_NOVICE:
+                        case MASTERY_NOVICE:
                         default:
                             assert(false);
                     }
                     int spell_power = spell_level + 5;
-                    if (spell_mastery != CHARACTER_SKILL_MASTERY_MASTER && spell_mastery != CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+                    if (spell_mastery != MASTERY_MASTER && spell_mastery != MASTERY_GRANDMASTER) {
                         spell_fx_renderer->SetPlayerBuffAnim(pCastSpell->uSpellID, pCastSpell->targetCharacterIndex);
                         pParty->pCharacters[pCastSpell->targetCharacterIndex].pCharacterBuffs[CHARACTER_BUFF_PAIN_REFLECTION]
                             .Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, spell_power, 0, 0);
@@ -2860,7 +2860,7 @@ void CastSpellInfoHelpers::castSpell() {
                     for (Actor *actor : actorsInViewport) {
                         pSpellSprite.vPosition = actor->pos - Vec3f(0, 0, actor->height * -0.8);
                         pSpellSprite.spell_target_pid = Pid(OBJECT_Actor, actor->id);
-                        Actor::DamageMonsterFromParty(Pid(OBJECT_Item, pSpellSprite.Create(0, 0, 0, 0)), actor->id, Vec3f());
+                        Actor::DamageMonsterFromParty(Pid(OBJECT_Sprite, pSpellSprite.Create(0, 0, 0, 0)), actor->id, Vec3f());
                     }
                     int drained_health = (actorsInViewport.size() * (7 * spell_level + 25));
                     int active_pl_num = 0;
@@ -2890,7 +2890,7 @@ void CastSpellInfoHelpers::castSpell() {
                         continue;
                     }
                     int max_casts_a_day;
-                    if (spell_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+                    if (spell_mastery == MASTERY_GRANDMASTER) {
                         max_casts_a_day = 4;
                     } else {
                         max_casts_a_day = 3;
@@ -3076,36 +3076,36 @@ void pushSpellOrRangedAttack(SpellId spell,
 
             case SPELL_SPIRIT_BLESS:
                 if (!checkSkill) {
-                    checkSkill = character->pActiveSkills[CHARACTER_SKILL_SPIRIT];
+                    checkSkill = character->pActiveSkills[SKILL_SPIRIT];
                 }
-                if (checkSkill.mastery() < CHARACTER_SKILL_MASTERY_EXPERT && !engine->config->debug.AllMagic.value()) {
+                if (checkSkill.mastery() < MASTERY_EXPERT && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
             case SPELL_SPIRIT_PRESERVATION:
                 if (!checkSkill) {
-                    checkSkill = character->pActiveSkills[CHARACTER_SKILL_SPIRIT];
+                    checkSkill = character->pActiveSkills[SKILL_SPIRIT];
                 }
-                if (checkSkill.mastery() < CHARACTER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.value()) {
+                if (checkSkill.mastery() < MASTERY_MASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
             case SPELL_DARK_PAIN_REFLECTION:
                 if (!checkSkill) {
-                    checkSkill = character->pActiveSkills[CHARACTER_SKILL_DARK];
+                    checkSkill = character->pActiveSkills[SKILL_DARK];
                 }
-                if (checkSkill.mastery() < CHARACTER_SKILL_MASTERY_MASTER && !engine->config->debug.AllMagic.value()) {
+                if (checkSkill.mastery() < MASTERY_MASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
 
             case SPELL_BODY_HAMMERHANDS:
                 if (!checkSkill) {
-                    checkSkill = character->pActiveSkills[CHARACTER_SKILL_BODY];
+                    checkSkill = character->pActiveSkills[SKILL_BODY];
                 }
-                if (checkSkill.mastery() < CHARACTER_SKILL_MASTERY_GRANDMASTER && !engine->config->debug.AllMagic.value()) {
+                if (checkSkill.mastery() < MASTERY_GRANDMASTER && !engine->config->debug.AllMagic.value()) {
                     flags |= ON_CAST_TargetedCharacter;
                 }
                 break;
@@ -3192,7 +3192,7 @@ void pushSpellOrRangedAttack(SpellId spell,
 }
 
 void pushTempleSpell(SpellId spell) {
-    CombinedSkillValue skill_value = CombinedSkillValue(pParty->uCurrentDayOfMonth % 7 + 1, CHARACTER_SKILL_MASTERY_MASTER);
+    CombinedSkillValue skill_value = CombinedSkillValue(pParty->uCurrentDayOfMonth % 7 + 1, MASTERY_MASTER);
 
     pushSpellOrRangedAttack(spell, pParty->activeCharacterIndex() - 1, skill_value,
                             ON_CAST_TargetIsParty | ON_CAST_NoRecoverySpell, 0);

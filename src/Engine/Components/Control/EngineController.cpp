@@ -17,6 +17,8 @@
 #include "Engine/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/mm7_data.h"
+#include "Engine/Party.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Actor.h"
 
@@ -26,6 +28,27 @@
 
 #include "Utility/Exception.h"
 #include "Utility/ScopedRollback.h"
+
+namespace {
+class ThrowingTicker {
+ public:
+    explicit ThrowingTicker(EngineController *controller, std::string_view exceptionMessage, int maxTicks = 128) : _controller(controller), _exceptionMessage(exceptionMessage), _maxTicks(maxTicks) {}
+
+    void tick(int count = 1) {
+        for (int i = 0; i < count; i++) {
+            if (++_ticks >= _maxTicks)
+                throw Exception("{}", _exceptionMessage);
+            _controller->tick();
+        }
+    }
+
+ private:
+    EngineController *_controller = nullptr;
+    std::string _exceptionMessage;
+    int _ticks = 0;
+    int _maxTicks = 128;
+};
+} // anonymous namespace
 
 EngineController::EngineController(EngineControlStateHandle state): _state(std::move(state)) {}
 
@@ -124,39 +147,36 @@ void EngineController::pressGuiButton(std::string_view buttonId) {
     pressAndReleaseButton(BUTTON_LEFT, button->uX + button->uWidth / 2, button->uY + button->uHeight / 2);
 }
 
-void EngineController::goToMainMenu() {
-    auto maybeThrow = [counter = 0] () mutable {
-        if (++counter >= 128)
-            throw Exception("Couldn't return to main menu");
-    };
-
-    engine->disableOverlays();
+void EngineController::goToGame() {
+    ThrowingTicker ticker(this, "Couldn't return to game");
 
     // Skip movies.
     while (current_screen_type == SCREEN_VIDEO) {
-        maybeThrow();
         pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-        tick(1);
+        ticker.tick();
     }
 
     // Can't always leave key settings menu by pressing ESC, so need custom handling.
     if (current_screen_type == SCREEN_KEYBOARD_OPTIONS) {
         pressGuiButton("KeyBinding_Default");
-        tick(1);
+        ticker.tick();
     }
 
     // Leave to game screen if we're in the game, or to main menu if we're in menus.
     while (current_screen_type != SCREEN_GAME && GetCurrentMenuID() != MENU_MAIN) {
-        maybeThrow();
         pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-        tick(2); // Somehow tick(1) is not enough when we're trying to leave the game loading menu.
+        ticker.tick(2); // Somehow tick(1) is not enough when we're trying to leave the game loading menu.
     }
 
     // If game is starting up - wait for main menu to appear.
-    while (GetCurrentMenuID() == MENU_MAIN && lWindowList.empty()) {
-        maybeThrow();
-        tick(1);
-    }
+    while (GetCurrentMenuID() == MENU_MAIN && lWindowList.empty())
+        ticker.tick();
+}
+
+void EngineController::goToMainMenu() {
+    ThrowingTicker ticker(this, "Couldn't return to main menu");
+
+    goToGame();
 
     if (GetCurrentMenuID() == MENU_MAIN)
         return;
@@ -164,19 +184,16 @@ void EngineController::goToMainMenu() {
 
     // Go to in-game menu.
     while (current_screen_type != SCREEN_MENU) {
-        maybeThrow();
         pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-        tick(1);
+        ticker.tick();
     }
 
     // Leave to main menu from there.
     pressGuiButton("GameMenu_Quit");
     tick(1);
     pressGuiButton("GameMenu_Quit");
-    while (GetCurrentMenuID() != MENU_MAIN) {
-        maybeThrow();
-        tick(1);
-    }
+    while (GetCurrentMenuID() != MENU_MAIN)
+        ticker.tick();
 }
 
 void EngineController::startNewGame() {
@@ -189,17 +206,15 @@ void EngineController::startNewGame() {
 }
 
 void EngineController::skipLoadingScreen() {
-    int steps = 0;
-    while (!pGameLoadingUI_ProgressBar->IsActive()) {
-        tick(1);
-        steps++;
-        if (steps >= 128)
-            throw Exception("Can't skip a non-existent loading screen");
-    }
+    ThrowingTicker ticker1(this, "Can't skip a non-existent loading screen");
+    while (!pGameLoadingUI_ProgressBar->IsActive())
+        ticker1.tick();
+
+    ThrowingTicker ticker2(this, "Couldn't skip a loading screen");
     while (pGameLoadingUI_ProgressBar->IsActive())
-        tick(1);
+        ticker2.tick();
     while (dword_6BE364_game_settings_1 & GAME_SETTINGS_0080_SKIP_USER_INPUT_THIS_FRAME)
-        tick(1);
+        ticker2.tick();
 }
 
 Blob EngineController::saveGame() {
@@ -251,12 +266,25 @@ void EngineController::resizeWindow(int w, int h) {
     postEvent(std::move(event));
 }
 
-void EngineController::spawnMonster(Vec3f position, MonsterId id) {
+void EngineController::restAndHeal() {
+    ThrowingTicker ticker(this, "Couldn't finish rest & heal");
+
+    goToGame();
+    pressGuiButton("Game_Rest");
+    tick();
+    pressGuiButton("Rest_RestAndHeal");
+    while (current_screen_type != SCREEN_GAME)
+        ticker.tick();
+    tick(); // This is when the characters actually wake up.
+}
+
+Actor *EngineController::spawnMonster(Vec3f position, MonsterId id) {
     Actor *actor = AllocateActor(false);
     if (!actor)
         throw Exception("Failed to spawn monster {}", static_cast<int>(id));
 
     actor->name = pMonsterStats->infos[id].name;
+    actor->attributes |= ACTOR_AGGRESSOR; // Make the monster unconditionally hostile.
     actor->currentHP = pMonsterStats->infos[id].hp;
     actor->monsterInfo = pMonsterStats->infos[id];
     actor->word_000086_some_monster_id = id;
@@ -277,6 +305,26 @@ void EngineController::spawnMonster(Vec3f position, MonsterId id) {
     actor->aiState = Standing;
     actor->currentActionLength = 0_ticks;
     actor->UpdateAnimation();
+
+    return actor;
+}
+
+void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw) {
+    if (engine->_currentLoadedMapId != map) {
+        engine->_transitionMapId = map;
+        dword_6BE364_game_settings_1 |= GAME_SETTINGS_SKIP_WORLD_UPDATE;
+        uGameState = GAME_STATE_CHANGE_LOCATION;
+        engine->_teleportPoint.setTeleportTarget(position, viewYaw * 512 / 90, 0, 0);
+        onMapLeave();
+        tick();
+        skipLoadingScreen();
+    } else {
+        pParty->pos = position;
+        pParty->uFallStartZ = position.z;
+        pParty->_viewPitch = 0;
+        pParty->_viewYaw = viewYaw * 512 / 90;
+        tick();
+    }
 }
 
 GUIButton *EngineController::existingButton(std::string_view buttonId) {

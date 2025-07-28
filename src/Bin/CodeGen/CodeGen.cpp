@@ -481,7 +481,7 @@ int runDecorationsCodegen(const CodeGenOptions &options, GameResourceManager *re
 
 int runSpeechPortraitsCodegen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
     std::vector<std::array<std::string, 7>> table;
-    for (CharacterSpeech speech : portraitVariants.indices()) {
+    for (SpeechId speech : portraitVariants.indices()) {
         auto &line = table.emplace_back();
         line[0] = fmt::format("{{{}, ", toString(speech));
         line[1] = "{";
