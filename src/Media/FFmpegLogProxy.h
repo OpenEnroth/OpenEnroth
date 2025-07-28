@@ -8,8 +8,6 @@
 
 #include "Library/Logger/Logger.h"
 
-#include "FFmpegLogSource.h"
-
 class FFmpegLogProxy {
  public:
     explicit FFmpegLogProxy(Logger *logger);

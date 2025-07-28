@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "Utility/MapAccess.h"
+
 static std::unordered_map<std::string_view, LogCategory *> &logCategoriesStorage() {
     static std::unordered_map<std::string_view, LogCategory *> result; // Wrapping in a function static to avoid static init order fiasco.
     return result;
@@ -26,4 +28,8 @@ std::vector<LogCategory *> LogCategory::instances() {
     for (const auto &[_, category] : logCategoriesStorage())
         result.push_back(category);
     return result;
+}
+
+LogCategory *LogCategory::instance(std::string_view name) {
+    return valueOr(logCategoriesStorage(), name, nullptr);
 }

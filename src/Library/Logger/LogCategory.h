@@ -44,6 +44,7 @@ class LogCategory {
     }
 
     static std::vector<LogCategory *> instances();
+    static LogCategory *instance(std::string_view name);
 
  private:
     friend class Logger;
