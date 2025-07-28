@@ -17,9 +17,11 @@ int itemOffset(int dimension);
 /**
  * @param mousePos                      Mouse position.
  * @param inventoryTopLeft              Top left position of the inventory grid.
- * @param isHoldingItem                 Whether the player is holding an item.
- *                                      If true, the mouse position is adjusted to snap to the center of the grid cell
- *                                      rather than the edge.
+ * @param heldItem						The Item the player is holding (if exists).
+ *                                      If there is an item here, the mouse position is adjusted to snap to the center 
+ *										of the grid cell rather than the edge. 
+ *										If not, ItemId = ITEM_NULL, then the mouse position will not be adjusted
+ *										for items.
  * @return                              Inventory grid position, in grid coordinates. Might be out of grid if the mouse
  *                                      position is out of grid.
  */
