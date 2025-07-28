@@ -1314,7 +1314,7 @@ void CharacterUI_DrawPickedItemUnderlay(Vec2i gridOffset) {
         // in the inventory grid, and that it is not drawn centered on the mouse cursor
         Pointi inventoryPos = mapToInventoryGrid(
             Pointi(mousePos.x + mouseOffset.x, mousePos.y + mouseOffset.y),
-            gridOffset, true
+            gridOffset, pParty->pPickedItem
         );
         Sizei itemSize = pParty->pPickedItem.inventorySize();
 

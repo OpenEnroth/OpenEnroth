@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Library/Geometry/Point.h"
+#include <Engine/Objects/Item.h>
 
 /**
  * @brief Calculate offsets for placing items in inventory grid.
@@ -22,6 +23,6 @@ int itemOffset(int dimension);
  * @return                              Inventory grid position, in grid coordinates. Might be out of grid if the mouse
  *                                      position is out of grid.
  */
-Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft, bool isHoldingItem = false);
+Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft, Item heldItem = Item());
 
 Pointi mapFromInventoryGrid(Pointi gridPos, Pointi inventoryTopLeft);
