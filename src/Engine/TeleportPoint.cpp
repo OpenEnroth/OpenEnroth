@@ -35,11 +35,13 @@ void TeleportPoint::doTeleport(bool keepOnZero) {
         int floorFaceId = -1;
         float newFloorLevel = ODM_GetFloorLevel(_pos, &partyIsOnWater, &floorFaceId);
         if (_pos.x < -maxPartyAxisDistance || _pos.x > maxPartyAxisDistance ||
-            _pos.y < -maxPartyAxisDistance || _pos.y > maxPartyAxisDistance ||
-            _pos.z < newFloorLevel) {
+            _pos.y < -maxPartyAxisDistance || _pos.y > maxPartyAxisDistance ) {
             logger->error("TeleportPoint::doTeleport - Target position ({}, {}, {}) is out of bounds, skipping teleport", _pos.x, _pos.y, _pos.z);
             return;
         }
+        // Warn about teleport height - party will be correctly z positioned on next update
+        if (_pos.z < newFloorLevel)
+            logger->warning("TeleportPoint::doTeleport - Target position ({}, {}, {}) is below the floor level of {}", _pos.x, _pos.y, _pos.z, newFloorLevel);
     }
 
     Vec3f newPos = pParty->pos;

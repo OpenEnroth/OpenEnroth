@@ -198,8 +198,8 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 return -1;
             }
 
-            // Only set point once in case of chained events
-            if (!engine->_teleportPoint.isValid())
+            // TODO(pskelton): Fix #2117 this should be a data mod - stop it overwriting the teleport point
+            if (!(engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_teleportPoint.isValid()))
                 engine->_teleportPoint.setTeleportTarget(Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
                                                      (ir.data.move_map_descr.yaw != -1) ? (ir.data.move_map_descr.yaw & TrigLUT.uDoublePiMask) : -1,
                                                      ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed);
