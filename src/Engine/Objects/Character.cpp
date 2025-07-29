@@ -931,10 +931,10 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(Item *weapon,
 
 //----- (0048D0B9) --------------------------------------------------------
 int Character::GetRangedAttack() {
-    Item *mainHandItem = GetMainHandItem();
+    InventoryConstEntry mainHandItem = inventory.entry(ITEM_SLOT_MAIN_HAND);
 
     // blasters and charged wands
-    if (mainHandItem && (isAncientWeapon(mainHandItem->itemId) || (isWand(mainHandItem->itemId) && mainHandItem->numCharges > 0))) {
+    if (mainHandItem && (isAncientWeapon(mainHandItem->itemId) || (mainHandItem->isWand() && mainHandItem->numCharges > 0))) {
         return GetActualAttack(true);
     } else { // bows
         int weapbonus = GetItemsBonus(ATTRIBUTE_RANGED_ATTACK) + GetParameterBonus(GetActualAccuracy());
@@ -1016,11 +1016,11 @@ std::string Character::GetMeleeDamageString() {
     int min_damage;
     int max_damage;
 
-    Item *mainHandItem = GetMainHandItem();
+    InventoryConstEntry mainHandItem = inventory.entry(ITEM_SLOT_MAIN_HAND);
 
-    if (mainHandItem != nullptr && isWand(mainHandItem->itemId) && mainHandItem->numCharges > 0) {
+    if (mainHandItem && mainHandItem->isWand() && mainHandItem->numCharges > 0) {
         return std::string(localization->GetString(LSTR_WAND));
-    } else if (mainHandItem != nullptr && isAncientWeapon(mainHandItem->itemId)) {
+    } else if (mainHandItem && isAncientWeapon(mainHandItem->itemId)) {
         min_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MIN);  // blasters
         max_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MAX);
     } else {
@@ -1040,11 +1040,11 @@ std::string Character::GetRangedDamageString() {
     int min_damage;
     int max_damage;
 
-    Item *mainHandItem = GetMainHandItem();
+    InventoryConstEntry mainHandItem = inventory.entry(ITEM_SLOT_MAIN_HAND);
 
-    if (mainHandItem != nullptr && isWand(mainHandItem->itemId) && mainHandItem->numCharges > 0) {
+    if (mainHandItem && mainHandItem->isWand() && mainHandItem->numCharges > 0) {
         return std::string(localization->GetString(LSTR_WAND));
-    } else if (mainHandItem != nullptr && isAncientWeapon(mainHandItem->itemId)) {
+    } else if (mainHandItem && isAncientWeapon(mainHandItem->itemId)) {
         min_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MIN, true);  // blasters
         max_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MAX, true);
     } else {
@@ -2246,7 +2246,7 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
                 return 0;
             }
             if (InventoryConstEntry mainHandItem = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND); mainHandItem && mainHandItem->isWeapon()) { // Not a wand.
-                v5 = GetMainHandItem()->GetDamageMod();
+                v5 = mainHandItem->GetDamageMod();
             }
             if (getOnlyMainHandDmg ||
                 !inventory.functionalEntry(ITEM_SLOT_OFF_HAND) ||
