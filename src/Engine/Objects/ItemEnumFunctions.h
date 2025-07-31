@@ -183,6 +183,24 @@ inline Attribute statForPureStatPotion(ItemId pureStatPotion) {
 
 
 //
+// ItemSlot
+//
+
+inline Segment<ItemSlot> allRingSlots() {
+    return {ITEM_SLOT_RING1, ITEM_SLOT_RING6};
+}
+
+inline ItemSlot ringSlot(int index) {
+    assert(index >= 0 && index <= 5);
+    return static_cast<ItemSlot>(std::to_underlying(ITEM_SLOT_RING1) + index);
+}
+
+inline Segment<ItemSlot> allItemSlots() {
+    return {ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID};
+}
+
+
+//
 // ItemType
 //
 
@@ -213,22 +231,39 @@ inline bool isWeapon(ItemType type) {
     return type >= ITEM_TYPE_SINGLE_HANDED && type <= ITEM_TYPE_BOW;
 }
 
-
-//
-// ItemSlot
-//
-
-inline Segment<ItemSlot> allRingSlots() {
-    return {ITEM_SLOT_RING1, ITEM_SLOT_RING6};
-}
-
-inline ItemSlot ringSlot(int index) {
-    assert(index >= 0 && index <= 5);
-    return static_cast<ItemSlot>(std::to_underlying(ITEM_SLOT_RING1) + index);
-}
-
-inline Segment<ItemSlot> allItemSlots() {
-    return {ITEM_SLOT_FIRST_VALID, ITEM_SLOT_LAST_VALID};
+/**
+ * @param type                          Type to check.
+ * @return                              Item slots where an item of given type might be (but not necessarily can be)
+ *                                      equipped.
+ */
+inline Segment<ItemSlot> itemSlotsForItemType(ItemType type) {
+    switch (type) {
+    case ITEM_TYPE_SINGLE_HANDED:   return {ITEM_SLOT_OFF_HAND, ITEM_SLOT_MAIN_HAND};
+    case ITEM_TYPE_TWO_HANDED:      return {ITEM_SLOT_MAIN_HAND, ITEM_SLOT_MAIN_HAND};
+    case ITEM_TYPE_BOW:             return {ITEM_SLOT_BOW, ITEM_SLOT_BOW};
+    case ITEM_TYPE_ARMOUR:          return {ITEM_SLOT_ARMOUR, ITEM_SLOT_ARMOUR};
+    case ITEM_TYPE_SHIELD:          return {ITEM_SLOT_OFF_HAND, ITEM_SLOT_OFF_HAND};
+    case ITEM_TYPE_HELMET:          return {ITEM_SLOT_HELMET, ITEM_SLOT_HELMET};
+    case ITEM_TYPE_BELT:            return {ITEM_SLOT_BELT, ITEM_SLOT_BELT};
+    case ITEM_TYPE_CLOAK:           return {ITEM_SLOT_CLOAK, ITEM_SLOT_CLOAK};
+    case ITEM_TYPE_GAUNTLETS:       return {ITEM_SLOT_GAUNTLETS, ITEM_SLOT_GAUNTLETS};
+    case ITEM_TYPE_BOOTS:           return {ITEM_SLOT_BOOTS, ITEM_SLOT_BOOTS};
+    case ITEM_TYPE_RING:            return allRingSlots();
+    case ITEM_TYPE_AMULET:          return {ITEM_SLOT_AMULET, ITEM_SLOT_AMULET};
+    case ITEM_TYPE_WAND:            return {ITEM_SLOT_MAIN_HAND, ITEM_SLOT_MAIN_HAND};
+    default:
+        assert(false);
+        [[fallthrough]];
+    case ITEM_TYPE_REAGENT:
+    case ITEM_TYPE_POTION:
+    case ITEM_TYPE_SPELL_SCROLL:
+    case ITEM_TYPE_BOOK:
+    case ITEM_TYPE_MESSAGE_SCROLL:
+    case ITEM_TYPE_GOLD:
+    case ITEM_TYPE_GEM:
+    case ITEM_TYPE_NONE:
+        return {};
+    }
 }
 
 

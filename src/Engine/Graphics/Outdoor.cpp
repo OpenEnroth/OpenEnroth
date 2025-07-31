@@ -1014,7 +1014,7 @@ void ODM_ProcessPartyActions() {
     bool partyNotOnModel = floorFaceId == 0;
     int currentGroundLevel = floorZ + 1;
 
-    bool partyHasFeatherFall = pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)
+    bool partyHasFeatherFall = pParty->FeatherFallActive() || pParty->wearsItem(ITEM_ARTIFACT_LADYS_ESCORT)
                                     || pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
     if (partyHasFeatherFall)
         pParty->uFallStartZ = floorZ;
@@ -1375,8 +1375,8 @@ void ODM_ProcessPartyActions() {
                 !pParty->FeatherFallActive() &&
                 !(pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING))) {  // falling scream
                 for (int i = 0; i < 4; ++i) {
-                    if (!pParty->pCharacters[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-                        !pParty->pCharacters[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS) &&
+                    if (!pParty->pCharacters[i].wearsEnchantedItem(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
+                        !pParty->pCharacters[i].wearsItem(ITEM_ARTIFACT_HERMES_SANDALS) &&
                         pParty->pCharacters[i].CanAct())
                         pParty->pCharacters[i].playReaction(SPEECH_FALLING);
                 }
