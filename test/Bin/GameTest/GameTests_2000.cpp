@@ -208,6 +208,8 @@ GAME_TEST(Issues, Issue2099) {
     }
 }
 
+// 2100
+
 GAME_TEST(Issues, Issue2104) {
     // Enemies always hit with ranged attacks.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
@@ -317,6 +319,16 @@ GAME_TEST(Issues, Issue2109) {
     auto damageRange = hpTape.reverse().adjacentDeltas().minMax();
     EXPECT_GE(damageRange[0], 3); // Elf archer's damage is 4d2+2 (so 6-10), after shield it's 3-5.
     EXPECT_LE(damageRange[1], 5);
+}
+
+GAME_TEST(Issues, Issue2117) {
+    // Jumping down from Celeste crashes the game
+    auto mapTape = tapes.map();
+    auto posTape = tapes.custom([] { return pParty->pos; });
+    test.playTraceFromTestData("issue_2117.mm7", "issue_2117.json");
+    EXPECT_EQ(mapTape.front(), MAP_CELESTE);
+    EXPECT_EQ(mapTape.back(), MAP_BRACADA_DESERT); // Jumped down to the desert.
+    EXPECT_TRUE(posTape.contains(Vec3f(8146, 4379, 3700))); // Via the dodgy teleport step
 }
 
 GAME_TEST(Issues, Issue2118) {

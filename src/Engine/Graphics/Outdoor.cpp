@@ -289,13 +289,13 @@ MapId OutdoorLocation::getTravelDestination(int partyX, int partyY) {
         return MAP_INVALID;
 
     // Check which side of the map
-    if (partyX < -22528)
+    if (partyX < -maxPartyAxisDistance)
         direction = 3; // west
-    else if (partyX > 22528)
+    else if (partyX > maxPartyAxisDistance)
         direction = 2; // east
-    else if (partyY < -22528)
+    else if (partyY < -maxPartyAxisDistance)
         direction = 1; // south
-    else if (partyY > 22528)
+    else if (partyY > maxPartyAxisDistance)
         direction = 0; // north
     else
         return MAP_INVALID;
@@ -944,15 +944,13 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
 void ODM_UpdateUserInputAndOther() {
     ODM_ProcessPartyActions();
 
-    if (pParty->pos.x < -22528 || pParty->pos.x > 22528 ||
-        pParty->pos.y < -22528 || pParty->pos.y > 22528) {
+    if (pParty->pos.x < -maxPartyAxisDistance || pParty->pos.x > maxPartyAxisDistance ||
+        pParty->pos.y < -maxPartyAxisDistance || pParty->pos.y > maxPartyAxisDistance) {
         MapId mapid = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
         if (!engine->IsUnderwater() && (pParty->isAirborne() || (pParty->uFlags & (PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE)) ||
                              pParty->uFlags & PARTY_FLAG_BURNING || pParty->bFlying) || mapid == MAP_INVALID) {
-            if (pParty->pos.x < -22528) pParty->pos.x = -22528;
-            if (pParty->pos.x > 22528) pParty->pos.x = 22528;
-            if (pParty->pos.y < -22528) pParty->pos.y = -22528;
-            if (pParty->pos.y > 22528) pParty->pos.y = 22528;
+            pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
+            pParty->pos.y = std::clamp(pParty->pos.y, -maxPartyAxisDistance, maxPartyAxisDistance);
         } else {
             pDialogueWindow = new GUIWindow_Travel();  // TravelUI_Load();
         }

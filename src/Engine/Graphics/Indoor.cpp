@@ -172,7 +172,6 @@ void BLVRenderParams::Reset() {
 
     if (!this->uPartySectorID) {
         assert(false);  // shouldnt happen, please provide savegame
-        // TODO(captainurist): was able to trigger this by falling from the sky in Celeste, but couldn't reproduce.
     }
 
 
