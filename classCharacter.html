@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6e539ac</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;f32f0c9</span>
    </div>
   </td>
  </tr>
@@ -162,12 +162,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:abb915f6b0fb0e9112a29df6ac22dadb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee6e72d56c030883bb63453e30fd3294"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#aee6e72d56c030883bb63453e30fd3294">IsUnarmed</a> () const</td></tr>
 <tr class="separator:aee6e72d56c030883bb63453e30fd3294"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97014b5c9c5d8121fbf91f84d65cba62"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#a97014b5c9c5d8121fbf91f84d65cba62">HasItemEquipped</a> (<a class="el" href="ItemEnums_8h.html#a1802cee34436e71f014395b507c72351">ItemSlot</a> uEquipIndex) const</td></tr>
-<tr class="separator:a97014b5c9c5d8121fbf91f84d65cba62"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22d110bc9ebe55fc2e0ab4da23ab54b6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#a22d110bc9ebe55fc2e0ab4da23ab54b6">HasEnchantedItemEquipped</a> (<a class="el" href="ItemEnums_8h.html#ac421895557225f14060d6d8877946d80">ItemEnchantment</a> uEnchantment) const</td></tr>
-<tr class="separator:a22d110bc9ebe55fc2e0ab4da23ab54b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa91b1e1de344fe8824a148ced4e5db38"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#aa91b1e1de344fe8824a148ced4e5db38">WearsItem</a> (<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> item_id, <a class="el" href="ItemEnums_8h.html#a1802cee34436e71f014395b507c72351">ItemSlot</a> equip_type) const</td></tr>
-<tr class="separator:aa91b1e1de344fe8824a148ced4e5db38"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54559e1d7616205beca76bb33731b444"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#a54559e1d7616205beca76bb33731b444">wearsEnchantedItem</a> (<a class="el" href="ItemEnums_8h.html#ac421895557225f14060d6d8877946d80">ItemEnchantment</a> enchantment) const</td></tr>
+<tr class="separator:a54559e1d7616205beca76bb33731b444"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25938eeeccb2fc262e75fb6865bba2bc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#a25938eeeccb2fc262e75fb6865bba2bc">wearsItem</a> (<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> itemId) const</td></tr>
+<tr class="separator:a25938eeeccb2fc262e75fb6865bba2bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a757a6a948113d2ac2b525623f8891b84"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#a757a6a948113d2ac2b525623f8891b84">StealFromShop</a> (<a class="el" href="structItem.html">Item</a> *itemToSteal, int extraStealDifficulty, int reputation, int extraStealFine, int *fineIfFailed)</td></tr>
 <tr class="separator:a757a6a948113d2ac2b525623f8891b84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf54d2598d0906b7208ad2c9af910ee5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Character_8h.html#a51f13cd67eab73d698e32f940c0ba824">StealResult</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#aaf54d2598d0906b7208ad2c9af910ee5">StealFromActor</a> (unsigned int uActorID, int _steal_perm, int reputation)</td></tr>
@@ -178,8 +176,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:abc68bdbc798cc9a58fa65c11f05a457d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72d49ffcd09e80733f1dad338c70b8fa"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#a72d49ffcd09e80733f1dad338c70b8fa">ReceiveSpecialAttackEffect</a> (<a class="el" href="MonsterEnums_8h.html#a1df9618b5d7a552e42cafde238a35ce9">MonsterSpecialAttack</a> attType, <a class="el" href="classActor.html">Actor</a> *pActor)</td></tr>
 <tr class="separator:a72d49ffcd09e80733f1dad338c70b8fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab91ad48585f7d698dce825f6537f4844"><td class="memItemLeft" align="right" valign="top"><a class="el" href="ItemEnums_8h.html#aede113aaae4be64c871e8712183fb868">DamageType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#ab91ad48585f7d698dce825f6537f4844">GetSpellDamageType</a> (<a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a> uSpellID) const</td></tr>
-<tr class="separator:ab91ad48585f7d698dce825f6537f4844"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac47d482ced0904f85c3c98cccd9363a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDuration.html">Duration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#ac47d482ced0904f85c3c98cccd9363a1">GetAttackRecoveryTime</a> (bool attackUsesBow) const</td></tr>
 <tr class="separator:ac47d482ced0904f85c3c98cccd9363a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afccec033c459be725065e945be54187a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#afccec033c459be725065e945be54187a">GetHealth</a> () const</td></tr>
@@ -306,8 +302,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a77d7e0672a4e265ad8b4f66a0ee343fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adca245a757d5d785a4f28353308f2852"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#adca245a757d5d785a4f28353308f2852">CalculateMeleeDmgToEnemyWithWeapon</a> (<a class="el" href="structItem.html">Item</a> *weapon, <a class="el" href="MonsterEnums_8h.html#a9c8dbe33f930c23cbaddd4e0afad01ba">MonsterId</a> uTargetActorID, bool addOneDice)</td></tr>
 <tr class="separator:adca245a757d5d785a4f28353308f2852"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86de488f63b48ead2b8d6440069acd03"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#a86de488f63b48ead2b8d6440069acd03">wearsItemAnywhere</a> (<a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a> item_id) const</td></tr>
-<tr class="separator:a86de488f63b48ead2b8d6440069acd03"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f688abba6dcf874ab08be41a5c765aa"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#a1f688abba6dcf874ab08be41a5c765aa">GetArmorRecoveryMultiplierFromSkillLevel</a> (<a class="el" href="CharacterEnums_8h.html#a14ee7e5773dc54a7360c4a9ad21d1c47">Skill</a> armour_skill_type, float param2, float param3, float param4, float param5) const</td></tr>
 <tr class="separator:a1f688abba6dcf874ab08be41a5c765aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a656c2d9f0317e06d3bcd83a9f12b6b91"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classCharacter.html#a656c2d9f0317e06d3bcd83a9f12b6b91">SetSkillReaction</a> ()</td></tr>
@@ -2658,24 +2652,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ab91ad48585f7d698dce825f6537f4844" name="ab91ad48585f7d698dce825f6537f4844"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab91ad48585f7d698dce825f6537f4844">&#9670;&#160;</a></span>GetSpellDamageType()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="ItemEnums_8h.html#aede113aaae4be64c871e8712183fb868">DamageType</a> Character::GetSpellDamageType </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a>&#160;</td>
-          <td class="paramname"><em>uSpellID</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a7ff886e0776c1d22cf9fa0597ff0c423" name="a7ff886e0776c1d22cf9fa0597ff0c423"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7ff886e0776c1d22cf9fa0597ff0c423">&#9670;&#160;</a></span>GetStatColor()</h2>
 
@@ -2687,42 +2663,6 @@ Public Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype"><a class="el" href="CharacterEnums_8h.html#a15b1b83081915ae5239f81050ae0f550">Attribute</a>&#160;</td>
           <td class="paramname"><em>uStat</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a22d110bc9ebe55fc2e0ab4da23ab54b6" name="a22d110bc9ebe55fc2e0ab4da23ab54b6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a22d110bc9ebe55fc2e0ab4da23ab54b6">&#9670;&#160;</a></span>HasEnchantedItemEquipped()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool Character::HasEnchantedItemEquipped </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#ac421895557225f14060d6d8877946d80">ItemEnchantment</a>&#160;</td>
-          <td class="paramname"><em>uEnchantment</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a97014b5c9c5d8121fbf91f84d65cba62" name="a97014b5c9c5d8121fbf91f84d65cba62"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97014b5c9c5d8121fbf91f84d65cba62">&#9670;&#160;</a></span>HasItemEquipped()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool Character::HasItemEquipped </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a1802cee34436e71f014395b507c72351">ItemSlot</a>&#160;</td>
-          <td class="paramname"><em>uEquipIndex</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -4091,45 +4031,35 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aa91b1e1de344fe8824a148ced4e5db38" name="aa91b1e1de344fe8824a148ced4e5db38"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa91b1e1de344fe8824a148ced4e5db38">&#9670;&#160;</a></span>WearsItem()</h2>
+<a id="a54559e1d7616205beca76bb33731b444" name="a54559e1d7616205beca76bb33731b444"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54559e1d7616205beca76bb33731b444">&#9670;&#160;</a></span>wearsEnchantedItem()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool Character::WearsItem </td>
+          <td class="memname">bool Character::wearsEnchantedItem </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a>&#160;</td>
-          <td class="paramname"><em>item_id</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a1802cee34436e71f014395b507c72351">ItemSlot</a>&#160;</td>
-          <td class="paramname"><em>equip_type</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
+          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#ac421895557225f14060d6d8877946d80">ItemEnchantment</a>&#160;</td>
+          <td class="paramname"><em>enchantment</em></td><td>)</td>
+          <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a86de488f63b48ead2b8d6440069acd03" name="a86de488f63b48ead2b8d6440069acd03"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a86de488f63b48ead2b8d6440069acd03">&#9670;&#160;</a></span>wearsItemAnywhere()</h2>
+<a id="a25938eeeccb2fc262e75fb6865bba2bc" name="a25938eeeccb2fc262e75fb6865bba2bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25938eeeccb2fc262e75fb6865bba2bc">&#9670;&#160;</a></span>wearsItem()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool Character::wearsItemAnywhere </td>
+          <td class="memname">bool Character::wearsItem </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a238bdd793c3bf80cc1530e03ba5eca0b">ItemId</a>&#160;</td>
-          <td class="paramname"><em>item_id</em></td><td>)</td>
+          <td class="paramname"><em>itemId</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
