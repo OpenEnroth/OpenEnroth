@@ -118,7 +118,7 @@ int GUIFont::GetTextLenLimitedByWidth(std::string_view str, int maxWidth, int& r
             i += 5;
             break;
         default:
-            if (!IsCharValid(c))
+            if (!_font.supports(c))
                 break;
             if (i > 0)
                 resultWidth += _font.metrics(c).leftSpacing;
@@ -259,46 +259,41 @@ void DrawCharToBuff(Color *draw_buff, const uint8_t *pCharPixels, int uCharWidth
     }
 }
 
-void GUIFont::DrawTextLineToBuff(Color color, Color shadowColor, Color *uX_buff_pos, std::string_view text, int line_width) {
-    assert(color.a > 0);
+void GUIFont::DrawTextLineToBuff(Color startColor, Color shadowColor, Color *uX_buff_pos, std::string_view text, int line_width) {
+    assert(startColor.a > 0);
 
     if (text.empty()) {
         return;
     }
 
-    Color text_color = color;
-    size_t text_length = text.length();
+    Color color = startColor;
     Color *uX_pos = uX_buff_pos;
-    for (size_t i = 0; i < text_length; ++i) {
+    for (int i = 0, len = text.size(); i < len; ++i) {
         uint8_t c = text[i];
-        if (IsCharValid(c)) {
-            switch (c) {
-            case '\n':  // Line Feed 0A 10:
-                return;
-                break;
-            case '\f':  // Form Feed, page eject  0C 12
-                text_color = parseColorTag(&text[i + 1], color);
-                i += 5;
-                break;
-            case '\t':  // Horizontal tab 09
-            case '_':
-                break;
-            default:
-            {
-                int uCharWidth = _font.metrics(c).width;
-                if (uCharWidth) {
-                    if (i > 0) {
-                        uX_pos += _font.metrics(c).leftSpacing;
-                    }
-                    const uint8_t *pCharPixels = _font.image(c).pixels().data();
-                    DrawCharToBuff(uX_pos, pCharPixels, uCharWidth, _font.height(), text_color, shadowColor, line_width);
-                    uX_pos += uCharWidth;
-                    if (i < text_length) {
-                        uX_pos += _font.metrics(c).rightSpacing;
-                    }
-                }
-            }
-            }
+        switch (c) {
+        case '\n': // New line.
+            return;
+        case '\f': // Color tag.
+            color = parseColorTag(&text[i + 1], startColor);
+            i += 5;
+            break;
+        case '\t': // Move to next cell, offset from the left border.
+        case '_': // Use alternative font.
+            break;
+        default:
+            int charWidth = _font.metrics(c).width;
+            if (charWidth == 0)
+                break; // Non-supported chars have width == 0.
+
+            if (i > 0)
+                uX_pos += _font.metrics(c).leftSpacing;
+
+            const uint8_t *pCharPixels = _font.image(c).pixels().data();
+            DrawCharToBuff(uX_pos, pCharPixels, charWidth, _font.height(), color, shadowColor, line_width);
+            uX_pos += charWidth;
+
+            if (i < len - 1)
+                uX_pos += _font.metrics(c).rightSpacing;
         }
     }
 }
@@ -318,58 +313,59 @@ std::string GUIFont::WrapText(std::string_view inString, int width, int uX, bool
     for (int i = 0; i < inString.length(); i++) {
         unsigned char c = inString[i];
 
-        if (IsCharValid(c)) {
-            switch (c) {
-              case '\t': // Horizontal tab
-                {
-                    char digits[4];
-                    strncpy(digits, &inString[i + 1], 3);
-                    digits[3] = 0;
-                    lineWidth = atoi(digits) + uX;
-                    i += 3;
-                    break;
-                }
-              case '\n': // Line Feed
-                lineWidth = uX;
-                newlinePos = -1;
-                out += inString.substr(lastCopyPos, i - lastCopyPos);
-                out += "\n";
-                lastCopyPos = i + 1;
+        switch (c) {
+        case '\t': // Move to next cell, offset from the left border.
+            {
+                char digits[4];
+                strncpy(digits, &inString[i + 1], 3);
+                digits[3] = 0;
+                lineWidth = atoi(digits) + uX;
+                i += 3;
                 break;
-              case '\f': // Form Feed, page eject
-                i += 5;
+            }
+        case '\n': // New line.
+            lineWidth = uX;
+            newlinePos = -1;
+            out += inString.substr(lastCopyPos, i - lastCopyPos);
+            out += "\n";
+            lastCopyPos = i + 1;
+            break;
+        case '\f': // Color tag.
+            i += 5;
+            break;
+        case '\r': // Right-justify, offset from the right border.
+            if (!return_on_carriage) {
+                return std::string(inString); // TODO(captainurist): this return is very sus.
+            }
+            break;
+        case ' ':
+            lineWidth += _font.metrics(c).width;
+            newlinePos = i;
+            break;
+        default:
+            if (!_font.supports(c))
                 break;
-              case '\r': // Carriage Return
-                if (!return_on_carriage) {
-                    return std::string(inString); // TODO(captainurist): this return is very sus.
-                }
-                break;
-              case ' ': // Space
+
+            if ((lineWidth + _font.metrics(c).width + _font.metrics(c).leftSpacing + _font.metrics(c).rightSpacing) < width) {
+                if (i > newlinePos)
+                    lineWidth += _font.metrics(c).leftSpacing;
                 lineWidth += _font.metrics(c).width;
-                newlinePos = i;
-                break;
-              default:
-                if ((lineWidth + _font.metrics(c).width + _font.metrics(c).leftSpacing + _font.metrics(c).rightSpacing) < width) {
-                    if (i > newlinePos)
-                        lineWidth += _font.metrics(c).leftSpacing;
-                    lineWidth += _font.metrics(c).width;
-                    if (i < inString.length() - 1)
-                        lineWidth += _font.metrics(c).rightSpacing;
+                if (i < inString.length() - 1)
+                    lineWidth += _font.metrics(c).rightSpacing;
+            } else {
+                lineWidth = uX;
+                if (newlinePos >= 0) {
+                    out += inString.substr(lastCopyPos, newlinePos - lastCopyPos);
+                    out += "\n";
+                    i = newlinePos;
+                    lastCopyPos = i + 1;
                 } else {
-                    lineWidth = uX;
-                    if (newlinePos >= 0) {
-                        out += inString.substr(lastCopyPos, newlinePos - lastCopyPos);
-                        out += "\n";
-                        i = newlinePos;
-                        lastCopyPos = i + 1;
-                    } else {
-                        out += inString.substr(lastCopyPos, i - lastCopyPos);
-                        out += "\n";
-                        lastCopyPos = i;
-                        i--;
-                    }
-                    newlinePos = -1;
+                    out += inString.substr(lastCopyPos, i - lastCopyPos);
+                    out += "\n";
+                    lastCopyPos = i;
+                    i--;
                 }
+                newlinePos = -1;
             }
         }
     }
@@ -394,7 +390,6 @@ void GUIFont::DrawText(GUIWindow *window, Pointi position, Color color, std::str
 
     render->BeginTextNew(_mainTexture, _shadowTexture);
 
-    size_t v30 = text.length();
     if (!position.x) {
         position.x = 12;
     }
@@ -416,80 +411,73 @@ void GUIFont::DrawText(GUIWindow *window, Pointi position, Color color, std::str
     Color draw_color = color;
 
     char Dest[6] = { 0 };
-    size_t v14 = 0;
-    if (v30 > 0) {
-        do {
-            uint8_t c = string_base[v14];
-            if (_font.supports(c)
-                || c == '\f'
-                || c == '\r'
-                || c == '\t'
-                || c == '\n') {
-                switch (c) {
-                case '\t':
-                    strncpy(Dest, &string_base[v14 + 1], 3);
-                    Dest[3] = 0;
-                    v14 += 3;
-                    left_margin = atoi(Dest);
-                    out_x = position.x + window->uFrameX + left_margin;
-                    break;
-                case '\n':
-                    position.y = position.y + _font.height() - 3;
-                    out_y = position.y + window->uFrameY;
-                    out_x = position.x + window->uFrameX + left_margin;
-                    if (maxHeight != 0) {
-                        if (_font.height() + out_y - 3 > maxHeight) {
-                            return;
-                        }
-                    }
-                    break;
-                case '\f':
-                    draw_color = parseColorTag(&string_base[v14 + 1], color);
-                    v14 += 5;
-                    break;
-                case '\r':
-                    strncpy(Dest, &string_base[v14 + 1], 3);
-                    Dest[3] = 0;
-                    v14 += 3;
-                    left_margin = atoi(Dest);
-                    out_x = window->uFrameZ - GetLineWidth(&string_base[v14]) - left_margin;
-                    out_y = position.y + window->uFrameY;
-                    if (maxHeight != 0) {
-                        if (_font.height() + out_y - 3 > maxHeight) {
-                            return;
-                        }
-                        break;
-                    }
-                    break;
-
-                default:
-                    if (c == '\"' && string_base[v14 + 1] == '\"') {
-                        ++v14;
-                    }
-
-                    c = (uint8_t)string_base[v14];
-                    if (v14 > 0) {
-                        out_x += _font.metrics(c).leftSpacing;
-                    }
-
-                    int xsq = c % 16;
-                    int ysq = c / 16;
-                    float u1 = (xsq * 32.0f) / 512.0f;
-                    float u2 = (xsq * 32.0f + _font.metrics(c).width) / 512.0f;
-                    float v1 = (ysq * 32.0f) / 512.0f;
-                    float v2 = (ysq * 32.0f + _font.height()) / 512.0f;
-
-                    render->DrawTextNew(out_x, out_y, _font.metrics(c).width, _font.height(), u1, v1, u2, v2, 1, shadowColor);
-                    render->DrawTextNew(out_x, out_y, _font.metrics(c).width, _font.height(), u1, v1, u2, v2, 0, draw_color);
-
-                    out_x += _font.metrics(c).width;
-                    if (v14 < v30) {
-                        out_x += _font.metrics(c).rightSpacing;
-                    }
-                    break;
+    for (int i = 0, len = text.length(); i < len; i++) {
+        uint8_t c = string_base[i];
+        switch (c) {
+        case '\t': // Move to next cell, offset from the left border.
+            strncpy(Dest, &string_base[i + 1], 3);
+            Dest[3] = 0;
+            i += 3;
+            left_margin = atoi(Dest);
+            out_x = position.x + window->uFrameX + left_margin;
+            break;
+        case '\n': // New line.
+            position.y = position.y + _font.height() - 3;
+            out_y = position.y + window->uFrameY;
+            out_x = position.x + window->uFrameX + left_margin;
+            if (maxHeight != 0) {
+                if (_font.height() + out_y - 3 > maxHeight) {
+                    return;
                 }
             }
-        } while (++v14 < v30);
+            break;
+        case '\f': // Color tag.
+            draw_color = parseColorTag(&string_base[i + 1], color);
+            i += 5;
+            break;
+        case '\r': // Right-justify, offset from the right border.
+            strncpy(Dest, &string_base[i + 1], 3);
+            Dest[3] = 0;
+            i += 3;
+            left_margin = atoi(Dest);
+            out_x = window->uFrameZ - GetLineWidth(&string_base[i]) - left_margin;
+            out_y = position.y + window->uFrameY;
+            if (maxHeight != 0) {
+                if (_font.height() + out_y - 3 > maxHeight) {
+                    return;
+                }
+                break;
+            }
+            break;
+        default:
+            if (!_font.supports(c))
+                break;
+
+            if (c == '\"' && string_base[i + 1] == '\"') {
+                ++i;
+            }
+
+            c = (uint8_t)string_base[i];
+            if (i > 0) {
+                out_x += _font.metrics(c).leftSpacing;
+            }
+
+            int xsq = c % 16;
+            int ysq = c / 16;
+            float u1 = (xsq * 32.0f) / 512.0f;
+            float u2 = (xsq * 32.0f + _font.metrics(c).width) / 512.0f;
+            float v1 = (ysq * 32.0f) / 512.0f;
+            float v2 = (ysq * 32.0f + _font.height()) / 512.0f;
+
+            render->DrawTextNew(out_x, out_y, _font.metrics(c).width, _font.height(), u1, v1, u2, v2, 1, shadowColor);
+            render->DrawTextNew(out_x, out_y, _font.metrics(c).width, _font.height(), u1, v1, u2, v2, 0, draw_color);
+
+            out_x += _font.metrics(c).width;
+            if (i < len - 1) {
+                out_x += _font.metrics(c).rightSpacing;
+            }
+            break;
+        }
     }
     // render->EndTextNew();
 }
@@ -587,7 +575,7 @@ std::string GUIFont::FitTwoFontStringINWindow(std::string_view inString, GUIFont
 
         if (IsCharValid(c)) {
             switch (c) {
-              case '\t': // Horizontal tab
+              case '\t': // Move to next cell, offset from the left border.
                 {
                     char digits[4];
                     strncpy(digits, &inString[i + 1], 3);
@@ -596,7 +584,7 @@ std::string GUIFont::FitTwoFontStringINWindow(std::string_view inString, GUIFont
                     i += 3;
                     break;
                 }
-              case '\n': // Line Feed
+              case '\n': // New line.
                 lineWidth = startPixlOff;
                 newlinePos = -1;
                 out += inString.substr(lastCopyPos, i - lastCopyPos);
@@ -604,20 +592,20 @@ std::string GUIFont::FitTwoFontStringINWindow(std::string_view inString, GUIFont
                 lastCopyPos = i + 1;
                 currentFont = this;
                 break;
-              case '\f': // Form Feed, page eject
+              case '\f': // Color tag.
                 i += 5;
                 break;
-              case '\r': // Carriage Return
+              case '\r': // Right-justify, offset from the right border.
                 if (!return_on_carriage) {
                     return std::string(inString); // TODO(captainurist): very sus return.
                 }
                 break;
-              case ' ': // Space
+              case ' ':
                 lineWidth += currentFont->_font.metrics(c).width;
                 newlinePos = i;
                 newlineFont = currentFont;
                 break;
-              case '_':
+              case '_': // Use alternative font.
                 currentFont = pFontSecond;
                 break;
               default:
@@ -666,14 +654,14 @@ int GUIFont::GetStringHeight2(GUIFont *secondFont, std::string_view text_str, GU
         unsigned char c = test_string[i];
         if (IsCharValid(c)) {
             switch (c) {
-            case '\n':  // Line Feed 0A 10:
+            case '\n': // New line.
                 uAllHeght += GetHeight() - 3;
                 break;
-            case '\f':  // Form Feed, page eject  0C 12
+            case '\f': // Color tag.
                 i += 5;
                 break;
-            case '\t':  // Horizontal tab 09
-            case '\r':  // Carriage Return 0D 13
+            case '\t': // Move to next cell, offset from the left border.
+            case '\r': // Right-justify, offset from the right border.
                 if (a6 != 1)
                     i += 3;
                 break;

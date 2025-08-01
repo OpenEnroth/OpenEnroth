@@ -6,7 +6,6 @@
 #include <memory>
 
 #include "Library/Color/Color.h"
-#include "Library/Image/Palette.h"
 #include "Library/Geometry/Point.h"
 #include "Library/LodFormats/LodFont.h"
 
@@ -108,7 +107,7 @@ class GUIFont {
     std::string FitTwoFontStringINWindow(std::string_view inString, GUIFont *pFontSecond,
                                     GUIWindow *pWindow, int startPixlOff,
                                     bool return_on_carriage = false);
-    void DrawTextLineToBuff(Color color, Color shadowColor, Color *uX_buff_pos,
+    void DrawTextLineToBuff(Color startColor, Color shadowColor, Color *uX_buff_pos,
                             std::string_view text, int line_width);
 
  private:
