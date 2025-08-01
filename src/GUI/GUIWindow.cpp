@@ -351,14 +351,14 @@ void GUIWindow::DrawText(GUIFont *font, Pointi position, Color color, std::strin
     if (engine->callObserver) {
         engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, std::string(text));
     }
-    font->DrawText(this, position, color, text, maxHeight, shadowColor);
+    font->DrawText(frameRect(), position, color, text, maxHeight, shadowColor);
 }
 
 //----- (0044CB4F) --------------------------------------------------------
 int GUIWindow::DrawTextInRect(GUIFont *pFont, Pointi position,
                               Color uColor, std::string_view text, int rect_width,
                               int reverse_text) {
-    return pFont->DrawTextInRect(this, position, uColor, text, rect_width, reverse_text);
+    return pFont->DrawTextInRect(frameRect(), position, uColor, text, rect_width, reverse_text);
 }
 
 GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
