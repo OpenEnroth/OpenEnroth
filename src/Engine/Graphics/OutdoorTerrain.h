@@ -61,14 +61,14 @@ class OutdoorTerrain {
      * @return                          Terrain height at `gridPos`.
      * @offset 0x00488F2E, 0x0047EE16
      */
-    [[nodiscard]] int heightByGrid(Pointi gridPos) const;
+    [[nodiscard]] float heightByGrid(Pointi gridPos) const;
 
     /**
      * @param pos                       World coordinates, only xy component is used by this function.
      * @return                          Terrain height at given position.
      * @offset 0x0048257A
      */
-    [[nodiscard]] int heightByPos(const Vec3f &pos) const;
+    [[nodiscard]] float heightByPos(const Vec3f &pos) const;
 
     [[nodiscard]] Vec3i vertexByGridUnsafe(Pointi gridPos) const {
         Vec2i tmp = gridToWorld(gridPos);

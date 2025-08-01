@@ -43,33 +43,28 @@ void OutdoorTerrain::changeSeason(int month) {
     recalculateTransitions(&_tileMap);
 }
 
-int OutdoorTerrain::heightByGrid(Pointi gridPos) const {
+float OutdoorTerrain::heightByGrid(Pointi gridPos) const {
     if (!_heightMap.rect().contains(gridPos))
         return 0;
 
     return 32 * _heightMap[gridPos];
 }
 
-int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
-    // TODO(captainurist): This should return float. But we'll need to retrace.
-    int originz;          // ebx@11
-    int lz;          // eax@11
-    int rz;         // ecx@11
-    int rpos;         // [sp+10h] [bp-8h]@11
-    int lpos;         // [sp+24h] [bp+Ch]@11
-
+float OutdoorTerrain::heightByPos(const Vec3f &pos) const {
     // TODO(captainurist): this function had some code that would push the party -60 units down when on a water tile AND
     //                     not water-walking, but this isn't enabled in the game. I tried it, and it actually looks
     //                     good, as if the party is actually a bit submerged and swimming. The only problem is that
     //                     party would be jerked up upon coming ashore, and this just looks ugly. Find a way to
     //                     reimplement this properly.
-
     Pointi gridPos = worldToGrid(pos);
-
     TileGeometry tile = tileGeometryByGrid(gridPos);
-
     if (tile.z00 != tile.z10 || tile.z10 != tile.z11 || tile.z11 != tile.z01) {
         // On a slope.
+        int originz;
+        int lz;
+        int rz;
+        float rpos;
+        float lpos;
         if (std::abs(tile.v0.y - pos.y) >= std::abs(pos.x - tile.v0.x)) {
             originz = tile.z01;
             lz = tile.z11;
@@ -87,8 +82,7 @@ int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
         assert(lpos >= 0 && lpos < 512);
         assert(rpos >= 0 && rpos < 512);
 
-        // (x >> 9) is basically (x / 512) but with consistent rounding towards -inf.
-        return originz + ((rpos * (rz - originz)) >> 9) + ((lpos * (lz - originz)) >> 9);
+        return originz + rpos * (rz - originz) / 512 + lpos * (lz - originz) / 512;
     } else {
         // On flat terrain.
         return tile.z00;
