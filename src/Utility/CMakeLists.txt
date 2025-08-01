@@ -30,6 +30,7 @@ set(UTILITY_HEADERS
         Lambda.h
         Math/Float.h
         Math/TrigLut.h
+        Math/IntDiv.h
         Memory/Blob.h
         Memory/FreeDeleter.h
         Memory/MemSet.h
@@ -73,6 +74,7 @@ target_link_libraries(utility
 if(OE_BUILD_TESTS)
     set(TEST_UTILITY_SOURCES
             Math/Tests/Float_ut.cpp
+            Math/Tests/IntDiv_ut.cpp
             Memory/Tests/Blob_ut.cpp
             Streams/Tests/FileOutputStream_ut.cpp
             Streams/Tests/FileInputStream_ut.cpp
