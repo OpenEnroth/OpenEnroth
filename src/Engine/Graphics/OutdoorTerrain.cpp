@@ -84,8 +84,8 @@ int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
             rpos = tile.v0.y - pos.y;
         }
 
-        //assert(lpos >= 0 && lpos < 512); // TODO(captainurist): fails in rare cases b/c not all of our code is in floats
-        //assert(rpos >= 0 && rpos < 512);
+        assert(lpos >= 0 && lpos < 512);
+        assert(rpos >= 0 && rpos < 512);
 
         // (x >> 9) is basically (x / 512) but with consistent rounding towards -inf.
         return originz + ((rpos * (rz - originz)) >> 9) + ((lpos * (lz - originz)) >> 9);

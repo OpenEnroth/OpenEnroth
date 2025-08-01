@@ -31,8 +31,8 @@ inline Vec2i gridToWorld(Pointi gridPos) {
  * @offset 0x0047F44B, 0x0047F458
  */
 inline Pointi worldToGrid(const Vec3f &worldPos) {
-    int worldX = worldPos.x;
-    int worldY = worldPos.y;
+    int worldX = static_cast<int>(std::floor(worldPos.x)); // Truncate towards negative infinity.
+    int worldY = static_cast<int>(std::floor(worldPos.y));
 
     // sar is in original exe, resulting -880 / 512 = -1 and -880 sar 9 = -2.
     int gridX = (worldX >> 9) + 64;
