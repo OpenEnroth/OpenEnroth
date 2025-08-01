@@ -83,6 +83,10 @@ class GUIWindow {
 
     static void InitializeGUI();
 
+    [[nodiscard]] Recti frameRect() const {
+        return {uFrameX, uFrameY, uFrameWidth, uFrameHeight};
+    }
+
     int uFrameWidth = 0;
     int uFrameHeight = 0; // TODO(captainurist): frameRect
     int uFrameX = 0;
