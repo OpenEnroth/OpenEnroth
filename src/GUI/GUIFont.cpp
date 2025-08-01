@@ -613,6 +613,8 @@ std::string GUIFont::FitTwoFontStringINWindow(std::string_view inString, GUIFont
                     lastCopyPos = i;
                     i--;
                 }
+                if (currentFont == pFontSecond)
+                    out += "_";
                 newlinePos = -1;
             }
         }
