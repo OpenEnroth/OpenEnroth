@@ -91,16 +91,14 @@ class GUIFont {
 
     std::string WrapText(std::string_view inString, int width, int uX, bool return_on_carriage = false);
 
-    // TODO: these should take std::string_view
     void DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY,
                           unsigned int w, unsigned int h, Color firstColor,
                           Color secondColor, Color shadowColor, std::string_view pString,
                           GraphicsImage *image);
-    int GetStringHeight2(GUIFont *secondFont, std::string_view text_str, int width, int x, int a6);
+    int GetStringHeight2(GUIFont *secondFont, std::string_view text_str, int width, int x);
 
  private:
-    bool IsCharValid(unsigned char c) const;
-    std::string FitTwoFontStringINWindow(std::string_view inString, GUIFont *pFontSecond, int width, int x, bool return_on_carriage = false);
+    std::string FitTwoFontStringINWindow(std::string_view inString, GUIFont *pFontSecond, int width, int x);
     void DrawTextLineToBuff(Color startColor, Color shadowColor, Color *uX_buff_pos, std::string_view text, int line_width);
 
  private:

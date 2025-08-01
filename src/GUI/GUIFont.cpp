@@ -512,7 +512,7 @@ int GUIFont::DrawTextInRect(const Recti &rect, Pointi position, Color color, std
 void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h,
                                Color firstColor, Color secondColor, Color shadowColor, std::string_view pString,
                                GraphicsImage *image) {
-    std::string work_string = FitTwoFontStringINWindow(pString, pSecondFont, w, 0, 1);
+    std::string work_string = FitTwoFontStringINWindow(pString, pSecondFont, w, 0);
     std::istringstream stream(work_string);
     std::getline(stream, work_string);
 
@@ -544,11 +544,7 @@ void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, u
     }
 }
 
-bool GUIFont::IsCharValid(unsigned char c) const {
-    return _font.supports(c) || c == '\f' || c == '\r' || c == '\t' || c == '\n';
-}
-
-std::string GUIFont::FitTwoFontStringINWindow(std::string_view inString, GUIFont *pFontSecond, int width, int x, bool return_on_carriage) {
+std::string GUIFont::FitTwoFontStringINWindow(std::string_view inString, GUIFont *pFontSecond, int width, int x) {
     if (inString.empty()) {
         return "";
     }
@@ -562,65 +558,62 @@ std::string GUIFont::FitTwoFontStringINWindow(std::string_view inString, GUIFont
 
     for (int i = 0; i < inString.length(); i++) {
         unsigned char c = inString[i];
+        switch (c) {
+        case '\t': // Move to next cell, offset from the left border.
+            {
+                char digits[4];
+                strncpy(digits, &inString[i + 1], 3);
+                digits[3] = 0;
+                lineWidth = atoi(digits) + x;
+                i += 3;
+                break;
+            }
+        case '\n': // New line.
+            lineWidth = x;
+            newlinePos = -1;
+            out += inString.substr(lastCopyPos, i - lastCopyPos);
+            out += "\n";
+            lastCopyPos = i + 1;
+            currentFont = this;
+            break;
+        case '\f': // Color tag.
+            i += 5;
+            break;
+        case '\r': // Surprise! Here it's just a \r\n!
+            break;
+        case ' ':
+            lineWidth += currentFont->_font.metrics(c).width;
+            newlinePos = i;
+            newlineFont = currentFont;
+            break;
+        case '_': // Use alternative font.
+            currentFont = pFontSecond;
+            break;
+        default:
+            if (!currentFont->_font.supports(c))
+                break;
 
-        if (IsCharValid(c)) {
-            switch (c) {
-              case '\t': // Move to next cell, offset from the left border.
-                {
-                    char digits[4];
-                    strncpy(digits, &inString[i + 1], 3);
-                    digits[3] = 0;
-                    lineWidth = atoi(digits) + x;
-                    i += 3;
-                    break;
-                }
-              case '\n': // New line.
-                lineWidth = x;
-                newlinePos = -1;
-                out += inString.substr(lastCopyPos, i - lastCopyPos);
-                out += "\n";
-                lastCopyPos = i + 1;
-                currentFont = this;
-                break;
-              case '\f': // Color tag.
-                i += 5;
-                break;
-              case '\r': // Right-justify, offset from the right border.
-                if (!return_on_carriage) {
-                    return std::string(inString); // TODO(captainurist): very sus return.
-                }
-                break;
-              case ' ':
+            if ((lineWidth + currentFont->_font.metrics(c).width + currentFont->_font.metrics(c).leftSpacing + currentFont->_font.metrics(c).rightSpacing) < width) {
+                if (i > newlinePos)
+                    lineWidth += currentFont->_font.metrics(c).leftSpacing;
                 lineWidth += currentFont->_font.metrics(c).width;
-                newlinePos = i;
-                newlineFont = currentFont;
-                break;
-              case '_': // Use alternative font.
-                currentFont = pFontSecond;
-                break;
-              default:
-                if ((lineWidth + currentFont->_font.metrics(c).width + currentFont->_font.metrics(c).leftSpacing + currentFont->_font.metrics(c).rightSpacing) < width) {
-                    if (i > newlinePos)
-                        lineWidth += currentFont->_font.metrics(c).leftSpacing;
-                    lineWidth += currentFont->_font.metrics(c).width;
-                    if (i < inString.length() - 1)
-                        lineWidth += currentFont->_font.metrics(c).rightSpacing;
+                if (i < inString.length() - 1)
+                    lineWidth += currentFont->_font.metrics(c).rightSpacing;
+            } else {
+                lineWidth = x;
+                currentFont = newlineFont;
+                if (newlinePos >= 0) {
+                    out += inString.substr(lastCopyPos, newlinePos - lastCopyPos);
+                    out += "\n";
+                    i = newlinePos;
+                    lastCopyPos = i + 1;
                 } else {
-                    lineWidth = x;
-                    currentFont = newlineFont;
-                    if (newlinePos >= 0) {
-                        out += inString.substr(lastCopyPos, newlinePos - lastCopyPos);
-                        out += "\n";
-                        i = newlinePos;
-                        lastCopyPos = i + 1;
-                    } else {
-                        out += inString.substr(lastCopyPos, i - lastCopyPos);
-                        out += "\n";
-                        lastCopyPos = i;
-                        i--;
-                    }
-                    newlinePos = -1;
+                    out += inString.substr(lastCopyPos, i - lastCopyPos);
+                    out += "\n";
+                    lastCopyPos = i;
+                    i--;
                 }
+                newlinePos = -1;
             }
         }
     }
@@ -632,30 +625,25 @@ std::string GUIFont::FitTwoFontStringINWindow(std::string_view inString, GUIFont
     return out;
 }
 
-int GUIFont::GetStringHeight2(GUIFont *secondFont, std::string_view text_str, int width, int x, int a6) {
+int GUIFont::GetStringHeight2(GUIFont *secondFont, std::string_view text_str, int width, int x) {
     if (text_str.empty()) {
         return 0;
     }
 
     int uAllHeght = GetHeight() - 3;
-    std::string test_string = FitTwoFontStringINWindow(text_str, secondFont, width, x, 0);
+    std::string test_string = FitTwoFontStringINWindow(text_str, secondFont, width, x);
     size_t uStringLen = test_string.length();
     for (size_t i = 0; i < uStringLen; ++i) {
         unsigned char c = test_string[i];
-        if (IsCharValid(c)) {
-            switch (c) {
-            case '\n': // New line.
-                uAllHeght += GetHeight() - 3;
-                break;
-            case '\f': // Color tag.
-                i += 5;
-                break;
-            case '\t': // Move to next cell, offset from the left border.
-            case '\r': // Right-justify, offset from the right border.
-                if (a6 != 1)
-                    i += 3;
-                break;
-            }
+        switch (c) {
+        case '\n': // New line.
+            uAllHeght += GetHeight() - 3;
+            break;
+        case '\f': // Color tag.
+            i += 5;
+            break;
+        default:
+            break;
         }
     }
 
