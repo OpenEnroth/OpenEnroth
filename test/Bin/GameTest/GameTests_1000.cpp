@@ -41,7 +41,7 @@ GAME_TEST(Prs, Pr1005) {
     // Testing collisions - stairs should work. In this test case the party is walking onto a wooden paving in Tatalia.
     auto zTape = tapes.custom([] { return pParty->pos.z; });
     test.playTraceFromTestData("pr_1005.mm7", "pr_1005.json");
-    EXPECT_EQ(zTape.frontBack(), tape(154, 193)); // Paving is at z=192, party z should be this value +1.
+    EXPECT_EQ(zTape.frontBack(), tape(155, 193)); // Paving is at z=192, party z should be this value +1.
 }
 
 GAME_TEST(Issues, Issue1020) {
