@@ -21,7 +21,7 @@ GUICredits::GUICredits() : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDi
 
     std::string text{ engine->_gameResourceManager->getEventsFile("credits.txt").string_view() };
 
-    int height = _fontQuick->GetStringHeight2(_fontCChar.get(), text, creditsRect.w, 0, 1) + 2 * creditsRect.h;
+    int height = _fontQuick->GetStringHeight2(_fontCChar.get(), text, creditsRect.w, 0) + 2 * creditsRect.h;
     _creditsTexture = GraphicsImage::Create(creditsRect.w, height);
 
     _fontQuick->DrawCreditsEntry(_fontCChar.get(), 0, creditsRect.h, creditsRect.w, height, colorTable.CornFlowerBlue, colorTable.Primrose, colorTable.Black, text, _creditsTexture);
