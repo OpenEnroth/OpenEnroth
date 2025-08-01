@@ -468,7 +468,7 @@ GAME_TEST(Issues, Issue1331) {
     // This just means that the Titans' physical resistance was never "lucky enough" to roll the damage down to 1 two
     // times in a row.
     EXPECT_EQ(rngTape, tape(RANDOM_ENGINE_SEQUENTIAL));
-    EXPECT_EQ(pParty->pCharacters[2].GetBowItem()->specialEnchantment, ITEM_ENCHANTMENT_TITAN_SLAYING);
+    EXPECT_EQ(pParty->pCharacters[2].inventory.entry(ITEM_SLOT_BOW)->specialEnchantment, ITEM_ENCHANTMENT_TITAN_SLAYING);
     EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "41 - 45");
     auto damageRange = hpsTape.reverse().adjacentDeltas().flatten().filter([] (int damage) { return damage > 0; }).minMax();
     EXPECT_EQ(damageRange, tape(3, (43 + 13) * 2));
@@ -927,12 +927,16 @@ GAME_TEST(Issues, Issue1482) {
 
 GAME_TEST(Issues, Issue1489) {
     // Cannot equip amulets or gauntlets
-    auto bootTape = tapes.custom([] { auto item = pParty->pCharacters[0].GetBootItem(); if (!item) return ITEM_NULL; return item->itemId; });
-    auto helmetTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetHelmItem(); if (!item) return ITEM_NULL; return item->itemId; });
-    auto beltTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetBeltItem(); if (!item) return ITEM_NULL; return item->itemId; });
-    auto cloakTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetCloakItem(); if (!item) return ITEM_NULL; return item->itemId; });
-    auto gauntletTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetGloveItem(); if (!item) return ITEM_NULL; return item->itemId;; });
-    auto amuletTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetAmuletItem(); if (!item) return ITEM_NULL; return item->itemId;; });
+    auto equipmentId = [] (ItemSlot slot) -> ItemId {
+        InventoryConstEntry item = pParty->pCharacters[0].inventory.entry(slot);
+        return item ? item->itemId : ITEM_NULL;
+    };
+    auto bootTape = tapes.custom([=] { return equipmentId(ITEM_SLOT_BOOTS); });
+    auto helmetTape = tapes.custom([=] { return equipmentId(ITEM_SLOT_HELMET); });
+    auto beltTape = tapes.custom([=] { return equipmentId(ITEM_SLOT_BELT); });
+    auto cloakTape = tapes.custom([=] { return equipmentId(ITEM_SLOT_CLOAK); });
+    auto gauntletTape = tapes.custom([=] { return equipmentId(ITEM_SLOT_GAUNTLETS); });
+    auto amuletTape = tapes.custom([=] { return equipmentId(ITEM_SLOT_AMULET); });
     test.playTraceFromTestData("issue_1489.mm7", "issue_1489.json");
 
     for (const auto& character : pParty->pCharacters) {

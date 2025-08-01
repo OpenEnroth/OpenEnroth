@@ -220,7 +220,7 @@ class Character {
     /**
      * @offset 0x43EE77
      */
-    bool hasUnderwaterSuitEquipped();
+    bool hasUnderwaterSuitEquipped() const;
 
     void OnInventoryLeftClick();
 
@@ -264,32 +264,6 @@ class Character {
 
     inline bool IsMale() const { return GetSexByVoice() == SEX_MALE; }
     inline bool IsFemale() const { return !IsMale(); }
-
-    Item *GetMainHandItem();
-    Item *GetOffHandItem();
-    Item *GetBowItem();
-    Item *GetArmorItem();
-    Item *GetHelmItem();
-    Item *GetBeltItem();
-    Item *GetCloakItem();
-    Item *GetGloveItem();
-    Item *GetBootItem();
-    Item *GetAmuletItem();
-    Item *GetNthRingItem(int ringNum);
-    Item *GetItem(ItemSlot index);
-
-    const Item *GetMainHandItem() const;
-    const Item *GetOffHandItem() const;
-    const Item *GetBowItem() const;
-    const Item *GetArmorItem() const;
-    const Item *GetHelmItem() const;
-    const Item *GetBeltItem() const;
-    const Item *GetCloakItem() const;
-    const Item *GetGloveItem() const;
-    const Item *GetBootItem() const;
-    const Item *GetAmuletItem() const;
-    const Item *GetNthRingItem(int ringNum) const;
-    const Item *GetItem(ItemSlot index) const;
 
     // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.
     /**
