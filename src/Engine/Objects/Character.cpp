@@ -1129,23 +1129,20 @@ int Character::CalculateIncommingDamage(DamageType dmg_type, int dmg) {
         }
     }
 
-    Item *equippedArmor = GetArmorItem();
-    if ((dmg_type == DAMAGE_PHYSICAL) &&
-        (equippedArmor != nullptr)) {      // physical damage and wearing armour
-        if (!equippedArmor->IsBroken()) {  // armour isnt broken
-            Skill armor_skill = equippedArmor->skill();
+    InventoryConstEntry armor = inventory.functionalEntry(ITEM_SLOT_ARMOUR);
+    if (dmg_type == DAMAGE_PHYSICAL && armor) { // physical damage and wearing armour
+        Skill armor_skill = armor->skill();
 
-            // master and above half incoming damage
-            if (armor_skill == SKILL_PLATE) {
-                if (getActualSkillValue(SKILL_PLATE).mastery() >= MASTERY_MASTER)
-                    return dmg / 2;
-            }
+        // master and above half incoming damage
+        if (armor_skill == SKILL_PLATE) {
+            if (getActualSkillValue(SKILL_PLATE).mastery() >= MASTERY_MASTER)
+                return dmg / 2;
+        }
 
-            // grandmaster and chain damage reduce
-            if (armor_skill == SKILL_CHAIN) {
-                if (getActualSkillValue(SKILL_CHAIN).mastery() == MASTERY_GRANDMASTER)
-                    return dmg * 2 / 3;
-            }
+        // grandmaster and chain damage reduce
+        if (armor_skill == SKILL_CHAIN) {
+            if (getActualSkillValue(SKILL_CHAIN).mastery() == MASTERY_GRANDMASTER)
+                return dmg * 2 / 3;
         }
     }
 
@@ -1342,14 +1339,10 @@ int Character::receiveDamage(signed int amount, DamageType dmg_type) {
             SetCondDeadWithBlockCheck(false);
         }
 
-        if (health <= -10) {  // break armor if health has dropped below -10
-            Item *equippedArmor = GetArmorItem();
-            if (equippedArmor != nullptr) {  // check there is some armor
-                if (!(equippedArmor->flags &
-                      ITEM_HARDENED)) {          // if its not hardened
-                    equippedArmor->SetBroken();  // break it
-                }
-            }
+        // break armor if health has dropped below -10 (if it's not hardened).
+        if (health <= -10) {
+            if (InventoryEntry armor = inventory.entry(ITEM_SLOT_ARMOUR); armor && !(armor->flags & ITEM_HARDENED))
+                armor->SetBroken();
         }
     }
 
@@ -2200,7 +2193,7 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
 
         case ATTRIBUTE_RANGED_DMG_MAX:
             if (InventoryConstEntry bow = inventory.functionalEntry(ITEM_SLOT_BOW)) {
-                v5 = bow->GetDamageDice() * GetBowItem()->GetDamageRoll();
+                v5 = bow->GetDamageDice() * bow->GetDamageRoll();
                 v56 = bow->GetDamageMod();
                 return v5 + v56;
             } else {
@@ -2218,7 +2211,7 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
             } else {
                 if (InventoryConstEntry mainHandItem = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND); mainHandItem && mainHandItem->isWeapon()) { // Not a wand.
                     v26 = mainHandItem->GetDamageRoll();
-                    if (GetOffHandItem() != nullptr ||
+                    if (inventory.entry(ITEM_SLOT_OFF_HAND) ||
                         mainHandItem->skill() != SKILL_SPEAR) {
                         v25 = mainHandItem->GetDamageDice();
                     } else {
@@ -2231,7 +2224,7 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
                     !inventory.functionalEntry(ITEM_SLOT_OFF_HAND)->isWeapon()) {
                     return v5;
                 } else {
-                    const Item *offHandItem = GetOffHandItem();
+                    InventoryConstEntry offHandItem = inventory.entry(ITEM_SLOT_OFF_HAND);
                     v15 = offHandItem->GetDamageMod();
                     v14 = offHandItem->GetDamageDice() *
                           offHandItem->GetDamageRoll();
@@ -2241,24 +2234,24 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
             break;
 
         case ATTRIBUTE_MELEE_DMG_BONUS:
-        case ATTRIBUTE_ATTACK:
+        case ATTRIBUTE_ATTACK: {
             if (IsUnarmed()) {
                 return 0;
             }
             if (InventoryConstEntry mainHandItem = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND); mainHandItem && mainHandItem->isWeapon()) { // Not a wand.
                 v5 = mainHandItem->GetDamageMod();
             }
-            if (getOnlyMainHandDmg ||
-                !inventory.functionalEntry(ITEM_SLOT_OFF_HAND) ||
-                !inventory.functionalEntry(ITEM_SLOT_OFF_HAND)->isWeapon()) {
+            InventoryConstEntry offHandItem = inventory.functionalEntry(ITEM_SLOT_OFF_HAND);
+            if (getOnlyMainHandDmg || !offHandItem || !offHandItem->isWeapon()) {
                 return v5;
             } else {
-                v56 = GetOffHandItem()->GetDamageMod();
+                v56 = offHandItem->GetDamageMod();
                 return v5 + v56;
             }
             break;
+        }
 
-        case ATTRIBUTE_MELEE_DMG_MIN:
+        case ATTRIBUTE_MELEE_DMG_MIN: {
             if (IsUnarmed()) {
                 return 1;
             }
@@ -2270,17 +2263,16 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
                 }
             }
 
-            if (getOnlyMainHandDmg ||
-                !inventory.functionalEntry(ITEM_SLOT_OFF_HAND) ||
-                !inventory.functionalEntry(ITEM_SLOT_OFF_HAND)->isWeapon()) {
+            InventoryConstEntry offHandItem = inventory.functionalEntry(ITEM_SLOT_OFF_HAND);
+            if (getOnlyMainHandDmg || !offHandItem || !offHandItem->isWeapon()) {
                 return v5;
             } else {
-                const Item *offHandItem = GetOffHandItem();
                 v14 = offHandItem->GetDamageMod();
                 v15 = offHandItem->GetDamageDice();
                 return v5 + v15 + v14;
             }
             break;
+        }
 
         case ATTRIBUTE_MIGHT:
         case ATTRIBUTE_INTELLIGENCE:
@@ -5762,17 +5754,9 @@ int cycleCharacter(bool backwards) {
     return pParty->activeCharacterIndex();
 }
 
-bool Character::hasUnderwaterSuitEquipped() {
-    // the original function took the
-    // character number as a parameter. if it
-    // was 0, the whole party was checked.
-    // calls with the parameter 0 have been
-    // changed to calls to this for every
-    // character
-    if (GetArmorItem() == nullptr || GetArmorItem()->itemId != ITEM_QUEST_WETSUIT) {
-        return false;
-    }
-    return true;
+bool Character::hasUnderwaterSuitEquipped() const {
+    InventoryConstEntry armor = inventory.entry(ITEM_SLOT_ARMOUR);
+    return armor && armor->itemId == ITEM_QUEST_WETSUIT;
 }
 
 //----- (0043EDB9) --------------------------------------------------------
@@ -5865,11 +5849,9 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
         }
 
         // play hit sound
-        Item *equippedArmor = playerPtr->GetArmorItem();
+        InventoryConstEntry armor = playerPtr->inventory.functionalEntry(ITEM_SLOT_ARMOUR);
         SoundId soundToPlay;
-        if (!equippedArmor || equippedArmor->IsBroken() ||
-            (equippedArmor->skill() != SKILL_CHAIN &&
-             equippedArmor->skill() != SKILL_PLATE)) {
+        if (!armor || (armor->skill() != SKILL_CHAIN && armor->skill() != SKILL_PLATE)) {
             soundToPlay = vrng->randomSample({SOUND_dull_armor_strike1, SOUND_dull_armor_strike2, SOUND_dull_armor_strike3, SOUND_dull_strike});
         } else {
             soundToPlay = vrng->randomSample({SOUND_metal_armor_strike1, SOUND_metal_armor_strike2, SOUND_metal_armor_strike3, SOUND_metal_vs_metal01h});
@@ -6313,47 +6295,6 @@ void Character::SetCondDeadWithBlockCheck(int blockable) {
 
 void Character::SetCondUnconsciousWithBlockCheck(int blockable) {
     SetCondition(CONDITION_UNCONSCIOUS, blockable);
-}
-
-Item *Character::GetOffHandItem() { return GetItem(ITEM_SLOT_OFF_HAND); }
-const Item *Character::GetOffHandItem() const { return GetItem(ITEM_SLOT_OFF_HAND); }
-
-Item *Character::GetMainHandItem() { return GetItem(ITEM_SLOT_MAIN_HAND); }
-const Item *Character::GetMainHandItem() const { return GetItem(ITEM_SLOT_MAIN_HAND); }
-
-Item *Character::GetBowItem() { return GetItem(ITEM_SLOT_BOW); }
-const Item *Character::GetBowItem() const { return GetItem(ITEM_SLOT_BOW); }
-
-Item *Character::GetArmorItem() { return GetItem(ITEM_SLOT_ARMOUR); }
-const Item *Character::GetArmorItem() const { return GetItem(ITEM_SLOT_ARMOUR); }
-
-Item *Character::GetHelmItem() { return GetItem(ITEM_SLOT_HELMET); }
-const Item *Character::GetHelmItem() const { return GetItem(ITEM_SLOT_HELMET); }
-
-Item *Character::GetBeltItem() { return GetItem(ITEM_SLOT_BELT); }
-const Item *Character::GetBeltItem() const { return GetItem(ITEM_SLOT_BELT); }
-
-Item *Character::GetCloakItem() { return GetItem(ITEM_SLOT_CLOAK); }
-const Item *Character::GetCloakItem() const { return GetItem(ITEM_SLOT_CLOAK); }
-
-Item *Character::GetGloveItem() { return GetItem(ITEM_SLOT_GAUNTLETS); }
-const Item *Character::GetGloveItem() const { return GetItem(ITEM_SLOT_GAUNTLETS); }
-
-Item *Character::GetBootItem() { return GetItem(ITEM_SLOT_BOOTS); }
-const Item *Character::GetBootItem() const { return GetItem(ITEM_SLOT_BOOTS); }
-
-Item *Character::GetAmuletItem() { return GetItem(ITEM_SLOT_AMULET); }
-const Item *Character::GetAmuletItem() const { return GetItem(ITEM_SLOT_AMULET); }
-
-Item *Character::GetNthRingItem(int ringNum) { return GetItem(ringSlot(ringNum)); }
-const Item *Character::GetNthRingItem(int ringNum) const { return GetItem(ringSlot(ringNum)); }
-
-Item *Character::GetItem(ItemSlot index) {
-    return this->inventory.entry(index).get();
-}
-
-const Item *Character::GetItem(ItemSlot index) const {
-    return const_cast<Character *>(this)->GetItem(index);
 }
 
 int Character::getCharacterIndex() {

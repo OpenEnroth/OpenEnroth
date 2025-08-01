@@ -640,8 +640,8 @@ GAME_TEST(Issues, Issue1925) {
 
         EXPECT_EQ(wandTape, wandsDisappear ? tape(false, true, false) : tape(false, true));
         if (!wandsDisappear) {
-            const Item *dischargedWand = pParty->pCharacters[0].GetItem(ITEM_SLOT_MAIN_HAND);
-            EXPECT_NE(dischargedWand, nullptr);
+            InventoryConstEntry dischargedWand = pParty->pCharacters[0].inventory.entry(ITEM_SLOT_MAIN_HAND);
+            ASSERT_TRUE(!!dischargedWand);
             EXPECT_EQ(dischargedWand->itemId, ITEM_WAND_OF_FIRE);
             EXPECT_EQ(dischargedWand->numCharges, 0);
             EXPECT_EQ(dischargedWand->maxCharges, 1);

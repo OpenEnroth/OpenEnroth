@@ -1258,8 +1258,8 @@ void CharacterUI_StatsTab_ShowHint() {
 
         case 17:  // Missle Bonus
         {
-            bool hasBow = pParty->activeCharacter().GetBowItem() != nullptr;
-            auto weapon = pParty->activeCharacter().GetMainHandItem();
+            bool hasBow = !!pParty->activeCharacter().inventory.entry(ITEM_SLOT_BOW);
+            InventoryConstEntry weapon = pParty->activeCharacter().inventory.entry(ITEM_SLOT_MAIN_HAND);
             bool hasBlaster = weapon && weapon->skill() == SKILL_BLASTER;
             // TODO(captainurist): fmt can throw
             std::string description;
