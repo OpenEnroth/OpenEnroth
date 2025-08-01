@@ -375,7 +375,7 @@ std::string GUIFont::WrapText(std::string_view inString, int width, int uX, bool
     return out;
 }
 
-void GUIFont::DrawText(const Recti &rect, Pointi position, Color startColor, std::string_view text, int maxHeight, Color shadowColor) {
+void GUIFont::DrawText(const Recti &rect, Pointi position, Color startColor, std::string_view text, int maxY, Color shadowColor) {
     assert(startColor.a > 0);
 
     int left_margin = 0;
@@ -392,17 +392,15 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color startColor, std
         position.x = 12;
     }
 
-    std::string string_begin = std::string(text);
-    if (maxHeight == 0) {
-        string_begin = WrapText(text, rect.w, position.x);
+    std::string string_base = std::string(text);
+    if (maxY == 0) {
+        string_base = WrapText(text, rect.w, position.x);
     }
-    auto string_end = string_begin;
-    auto string_base = string_begin;
 
     int out_x = position.x + rect.x;
     int out_y = position.y + rect.y;
 
-    if (maxHeight != 0 && out_y + _font.height() > maxHeight) {
+    if (maxY != 0 && out_y + _font.height() > maxY) {
         return;
     }
 
@@ -423,8 +421,8 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color startColor, std
             position.y = position.y + _font.height() - 3;
             out_y = position.y + rect.y;
             out_x = position.x + rect.x + left_margin;
-            if (maxHeight != 0) {
-                if (_font.height() + out_y - 3 > maxHeight) {
+            if (maxY != 0) {
+                if (_font.height() + out_y - 3 > maxY) {
                     return;
                 }
             }
@@ -440,8 +438,8 @@ void GUIFont::DrawText(const Recti &rect, Pointi position, Color startColor, std
             left_margin = atoi(Dest);
             out_x = rect.x + rect.w - 1 - GetLineWidth(&string_base[i]) - left_margin;
             out_y = position.y + rect.y;
-            if (maxHeight != 0) {
-                if (_font.height() + out_y - 3 > maxHeight) {
+            if (maxY != 0) {
+                if (_font.height() + out_y - 3 > maxY) {
                     return;
                 }
                 break;

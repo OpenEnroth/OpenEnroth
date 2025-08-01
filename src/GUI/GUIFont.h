@@ -84,7 +84,7 @@ class GUIFont {
      */
     Color DrawTextLine(std::string_view text, Color startColor, Color defaultColor, Pointi position);
 
-    void DrawText(const Recti &rect, Pointi position, Color startColor, std::string_view text, int maxHeight, Color shadowColor);
+    void DrawText(const Recti &rect, Pointi position, Color startColor, std::string_view text, int maxY, Color shadowColor);
     int DrawTextInRect(const Recti &rect, Pointi position,
                        Color color, std::string_view text, int rect_width,
                        int reverse_text);
