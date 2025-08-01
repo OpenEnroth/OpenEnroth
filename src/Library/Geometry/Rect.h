@@ -12,10 +12,10 @@ struct Rect {
     T w = 0;
     T h = 0;
 
-    Rect() = default;
-    Rect(T x, T y, T w, T h): x(x), y(y), w(w), h(h) {}
-    Rect(Point<T> topLeft, Size<T> size): x(topLeft.x), y(topLeft.y), w(size.w), h(size.h) {}
-    Rect(Point<T> topLeft, Point<T> bottomRight) : x(topLeft.x), y(topLeft.y), w(bottomRight.x - topLeft.x), h(bottomRight.y - topLeft.y) {}
+    constexpr Rect() = default;
+    constexpr Rect(T x, T y, T w, T h): x(x), y(y), w(w), h(h) {}
+    constexpr Rect(Point<T> topLeft, Size<T> size): x(topLeft.x), y(topLeft.y), w(size.w), h(size.h) {}
+    constexpr Rect(Point<T> topLeft, Point<T> bottomRight) : x(topLeft.x), y(topLeft.y), w(bottomRight.x - topLeft.x), h(bottomRight.y - topLeft.y) {}
 
     [[nodiscard]] bool contains(const Point<T> &point) const {
         return x <= point.x && point.x < x + w && y <= point.y && point.y < y + h;
