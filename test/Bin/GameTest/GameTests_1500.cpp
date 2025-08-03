@@ -720,12 +720,7 @@ GAME_TEST(Prs, Pr1953) {
     char0.inventory.add(Item(ITEM_LEATHER_ARMOR));
     char0.inventory.equip(ITEM_SLOT_ARMOUR, Item(ITEM_ROYAL_LEATHER));
 
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_I); // Open inventory.
-    game.tick();
+    game.goToInventory(1);
     game.pressAndReleaseButton(BUTTON_LEFT, 20, 20); // Pick up leather armor.
     game.tick();
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_LEATHER_ARMOR);

@@ -59,6 +59,8 @@ class EngineController {
 
     void goToGame();
 
+    void goToInventory(int characterIndex);
+
     /**
      * Opens main menu no matter the current game state.
      */

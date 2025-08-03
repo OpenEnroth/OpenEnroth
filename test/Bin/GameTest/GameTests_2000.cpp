@@ -121,12 +121,7 @@ GAME_TEST(Issues, Issue2021_2022) {
 GAME_TEST(Issues, Issue2061) {
     // Game Crashes if you click the border of the inventory screen.
     game.startNewGame();
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_I);
-    game.tick();
+    game.goToInventory(1);
     game.pressAndReleaseButton(BUTTON_LEFT, 3, 20); // This used to assert.
     game.tick();
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_NULL); // Shouldn't pick anything.
@@ -141,12 +136,7 @@ GAME_TEST(Issues, Issue2066) {
     pParty->pCharacters[0].inventory.clear();
     pParty->pCharacters[0].inventory.add(Pointi(0, 0), Item(ITEM_LEATHER_ARMOR)); // Add leather armor at (0, 0).
 
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_I);
-    game.tick();
+    game.goToInventory(1);
     game.pressAndReleaseButton(BUTTON_LEFT, 30, 30); // Pick up leather armor.
     game.tick();
     game.pressAndReleaseButton(BUTTON_LEFT, 30, 0); // Try to place outside inventory boundaries.
