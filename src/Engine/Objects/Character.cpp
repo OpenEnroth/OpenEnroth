@@ -6185,6 +6185,7 @@ void Character::OnInventoryLeftClick() {
                     // try to add anywhere
                     if (!inventory.tryAdd(pParty->pPickedItem)) {
                         // failed to add, put back the old item
+                        pAudioPlayer->playUISound(SOUND_error);
                         inventory.add(pos, tmp);
                         return;
                     }
@@ -6197,7 +6198,8 @@ void Character::OnInventoryLeftClick() {
                 // place picked item
                 if (inventory.tryAdd(inventoryPos, pParty->pPickedItem)) {
                     pParty->takeHoldingItem();
-                    return;
+                } else {
+                    pAudioPlayer->playUISound(SOUND_error); // Overlapping items or out of inventory space.
                 }
             }
         }

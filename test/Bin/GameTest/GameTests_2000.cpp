@@ -344,7 +344,7 @@ GAME_TEST(Issues, Issue2118) {
                 EXPECT_GT(item->potionPower, 0); // Potions were properly generated.
 }
 
-GAME_TEST(Prs, Pr2157) {
+GAME_TEST(Prs, Pr2157a) {
     // Test that we can't equip items when inventory is full.
     auto soundsTape = tapes.sounds();
     game.startNewGame();
@@ -381,6 +381,7 @@ GAME_TEST(Prs, Pr2157) {
         Item(ITEM_WAND_OF_FIRE),
     };
     for (const Item &item : items) {
+        pParty->takeHoldingItem();
         pParty->setHoldingItem(item);
         game.pressAndReleaseButton(BUTTON_LEFT, 600, 200); // Try to equip.
         game.tick(2); // Two ticks so that the taping engine doesn't merge SOUND_error frames.
@@ -392,3 +393,31 @@ GAME_TEST(Prs, Pr2157) {
     EXPECT_TRUE(std::ranges::all_of(inventory.entries(), [] (InventoryEntry entry) { return entry->itemId == ITEM_BRASS_RING; })); // Backpack wasn't touched.
 }
 
+GAME_TEST(Prs, Pr2157b) {
+    // Test that we can't add items to grid when inventory is full.
+    auto soundsTape = tapes.sounds();
+    game.startNewGame();
+    game.goToInventory(1);
+    test.startTaping();
+
+    CharacterInventory &inventory = pParty->pCharacters[0].inventory;
+    inventory.clear();
+
+    // Fill inventory with brass rings. Leave one cell free.
+    Sizei gridSize = pParty->pCharacters[0].inventory.gridSize();
+    for (int x = 0; x < gridSize.w; x++)
+        for (int y = 0; y < gridSize.h; y++)
+            if (x != 0 || y != 0)
+                inventory.add({x, y}, Item(ITEM_BRASS_RING));
+    inventory.equip(ITEM_SLOT_RING1, Item(ITEM_BRASS_RING));
+
+    // Try to place another ring into the backpack.
+    pParty->setHoldingItem(Item(ITEM_DAZZLING_RING));
+    game.pressAndReleaseButton(BUTTON_LEFT, 20, 20);
+    game.tick();
+
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_DAZZLING_RING);
+    EXPECT_FALSE(inventory.find(ITEM_DAZZLING_RING));
+    EXPECT_EQ(soundsTape.flatten().count(SOUND_error), 1);
+    EXPECT_EQ(inventory.size(), 126);
+}
