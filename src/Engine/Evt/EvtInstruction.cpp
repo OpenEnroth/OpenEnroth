@@ -900,7 +900,7 @@ EvtInstruction EvtInstruction::parse(SequentialBlobReader &sbr, const size_t siz
         case EVENT_ShowFace:  // TODO(yoctozepto): not present in used MM7 data
             requireSize(7);
             ir.who = static_cast<EvtTargetCharacter>(sbr.read<uint8_t>());
-            ir.data.portrait_id = static_cast<CharacterPortrait>(sbr.read<uint8_t>());
+            ir.data.portrait_id = static_cast<PortraitId>(sbr.read<uint8_t>());
             break;
         case EVENT_ReceiveDamage:
             requireSize(11);
@@ -962,7 +962,7 @@ EvtInstruction EvtInstruction::parse(SequentialBlobReader &sbr, const size_t siz
         case EVENT_CastSpell:
             requireSize(32);
             ir.data.spell_descr.spell_id = static_cast<SpellId>(sbr.read<uint8_t>());
-            ir.data.spell_descr.spell_mastery = static_cast<CharacterSkillMastery>(sbr.read<uint8_t>() + 1);  // TODO(yoctozepto): why add 1? it is not done with Event_CheckSkill
+            ir.data.spell_descr.spell_mastery = static_cast<Mastery>(sbr.read<uint8_t>() + 1);  // TODO(yoctozepto): why add 1? it is not done with Event_CheckSkill
             ir.data.spell_descr.spell_level = sbr.read<uint8_t>();
             ir.data.spell_descr.fromx = sbr.read<uint32_t>();
             ir.data.spell_descr.fromy = sbr.read<uint32_t>();
@@ -1080,8 +1080,8 @@ EvtInstruction EvtInstruction::parse(SequentialBlobReader &sbr, const size_t siz
             break;
         case EVENT_CheckSkill:
             requireSize(12);
-            ir.data.check_skill_descr.skill_type = static_cast<CharacterSkillType>(sbr.read<uint8_t>());
-            ir.data.check_skill_descr.skill_mastery = static_cast<CharacterSkillMastery>(sbr.read<uint8_t>());
+            ir.data.check_skill_descr.skill_type = static_cast<Skill>(sbr.read<uint8_t>());
+            ir.data.check_skill_descr.skill_mastery = static_cast<Mastery>(sbr.read<uint8_t>());
             ir.data.check_skill_descr.skill_level = sbr.read<uint32_t>();
             ir.target_step = sbr.read<uint8_t>();
             break;
@@ -1163,7 +1163,7 @@ EvtInstruction EvtInstruction::parse(SequentialBlobReader &sbr, const size_t siz
         case EVENT_CharacterAnimation:
             requireSize(7);
             ir.who = static_cast<EvtTargetCharacter>(sbr.read<uint8_t>());
-            ir.data.speech_id = static_cast<CharacterSpeech>(sbr.read<uint8_t>());
+            ir.data.speech_id = static_cast<SpeechId>(sbr.read<uint8_t>());
             break;
         case EVENT_OnDateTimer:  // TODO(yoctozepto): not present in used MM7 data
             // TODO

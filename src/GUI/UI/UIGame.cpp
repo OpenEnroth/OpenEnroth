@@ -914,7 +914,7 @@ void GameUI_WritePointedObjectStatusString() {
             Vis_PIDAndDepth pickedObject = engine->PickMouseNormal();
             mouse->uPointingObjectID = pickedObject.pid;
             pickedObjectID = (signed)pickedObject.pid.id();
-            if (pickedObject.pid.type() == OBJECT_Item) {
+            if (pickedObject.pid.type() == OBJECT_Sprite) {
                 if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
                     mouse->uPointingObjectID = Pid();
                     engine->_statusBar->clearPermanent();
@@ -1093,7 +1093,7 @@ void GameUI_WritePointedObjectStatusString() {
                             break;
                         case 3:  // hovering over buttons
                             if (pButton->Contains(pX, pY)) {
-                                CharacterSkillType skill = static_cast<CharacterSkillType>(pButton->msg_param);
+                                Skill skill = static_cast<Skill>(pButton->msg_param);
                                 int skillLevel = pParty->activeCharacter().getSkillValue(skill).level();
                                 requiredSkillpoints = skillLevel + 1;
 
@@ -1402,15 +1402,15 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
     render->SetUIClipRect(rect);
 
     bool bWizardEyeActive = pParty->wizardEyeActive();
-    CharacterSkillMastery uWizardEyeSkillLevel = pParty->wizardEyeSkillLevel();
+    Mastery uWizardEyeSkillLevel = pParty->wizardEyeSkillLevel();
     if (CheckHiredNPCSpeciality(Cartographer)) {
         bWizardEyeActive = true;
-        uWizardEyeSkillLevel = uWizardEyeSkillLevel > CHARACTER_SKILL_MASTERY_EXPERT ? uWizardEyeSkillLevel : CHARACTER_SKILL_MASTERY_EXPERT;
+        uWizardEyeSkillLevel = uWizardEyeSkillLevel > MASTERY_EXPERT ? uWizardEyeSkillLevel : MASTERY_EXPERT;
     }
 
     if (engine->config->debug.WizardEye.value()) {
         bWizardEyeActive = true;
-        uWizardEyeSkillLevel = CHARACTER_SKILL_MASTERY_MASTER;
+        uWizardEyeSkillLevel = MASTERY_MASTER;
     }
 
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
@@ -1479,7 +1479,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
                     Vec2i linea = center + (zoom * Vert1).toInt();
                     Vec2i lineb = center + (zoom * Vert2).toInt();
 
-                    if (bWizardEyeActive && uWizardEyeSkillLevel >= CHARACTER_SKILL_MASTERY_MASTER &&
+                    if (bWizardEyeActive && uWizardEyeSkillLevel >= MASTERY_MASTER &&
                         (pIndoor->pFaces[pOutline->uFace1ID].Clickable() ||
                             pIndoor->pFaces[pOutline->uFace2ID].Clickable()) &&
                         (pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace1ID].uFaceExtraID].uEventID ||
@@ -1512,7 +1512,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
 
     // draw objects on the minimap
     if (bWizardEyeActive) {
-        if (uWizardEyeSkillLevel >= CHARACTER_SKILL_MASTERY_EXPERT) {
+        if (uWizardEyeSkillLevel >= MASTERY_EXPERT) {
             for (unsigned i = 0; i < pSpriteObjects.size(); ++i) {
                 if (pSpriteObjects[i].uType == SPRITE_NULL || !pSpriteObjects[i].uObjectDescID)
                     continue;

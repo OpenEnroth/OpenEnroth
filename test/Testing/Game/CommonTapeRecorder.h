@@ -51,6 +51,8 @@ class CommonTapeRecorder {
 
     TestTape<int> totalItemCount(ItemId itemId);
 
+    TestTape<int> totalItemCount(ItemType itemType);
+
     TestTape<int> totalHirelings();
 
     TestTape<bool> hasItem(ItemId itemId);
@@ -114,7 +116,7 @@ class CommonTapeRecorder {
      *
      * @return                          Tape object.
      */
-    TestMultiTape<SpecialAttackType> specialAttacks();
+    TestMultiTape<MonsterSpecialAttack> specialAttacks();
 
  private:
     TestController *_controller = nullptr;

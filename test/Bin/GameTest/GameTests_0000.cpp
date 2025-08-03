@@ -175,7 +175,7 @@ GAME_TEST(Issues, Issue268_939) {
     auto checkSkills = [](std::initializer_list<std::pair<int, int>> numSkillPairs) {
         for (auto pair : numSkillPairs) {
             int pSkillsCount = 0;
-            for (CharacterSkillType j : allVisibleSkills()) {
+            for (Skill j : allVisibleSkills()) {
                 if (pParty->pCharacters[pair.first].pActiveSkills[j]) {
                     ++pSkillsCount;
                 }
@@ -431,7 +431,7 @@ GAME_TEST(Issues, Issue388) {
 GAME_TEST(Issues, Issue395) {
     // Check that learning skill works as intended.
     auto expTape = charTapes.experiences();
-    auto learningTape = charTapes.skillLevels(CHARACTER_SKILL_LEARNING);
+    auto learningTape = charTapes.skillLevels(SKILL_LEARNING);
     test.playTraceFromTestData("issue_395.mm7", "issue_395.json");
     EXPECT_EQ(expTape.frontBack(), tape({100, 100, 100, 100}, {214, 228, 237, 258}));
     EXPECT_EQ(learningTape, tape({0, 4, 6, 10}));
@@ -443,7 +443,7 @@ GAME_TEST(Issues, Issue402) {
     // Attacking while wearing wetsuits shouldn't assert.
     auto checkCharactersWearWetsuits = [] {
         for (int i = 0; i < 4; i++)
-            EXPECT_TRUE(pParty->pCharacters[i].wearsItemAnywhere(ITEM_QUEST_WETSUIT));
+            EXPECT_TRUE(pParty->pCharacters[i].wearsItem(ITEM_QUEST_WETSUIT));
     };
 
     test.playTraceFromTestData("issue_402.mm7", "issue_402.json", [&] {
@@ -564,7 +564,7 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     auto checkSkills = [](std::initializer_list<std::pair<int, int>> numSkillPairs) {
         for (auto pair : numSkillPairs) {
             int pSkillsCount = 0;
-            for (CharacterSkillType j : allVisibleSkills()) {
+            for (Skill j : allVisibleSkills()) {
                 if (pParty->pCharacters[pair.first].pActiveSkills[j]) {
                     ++pSkillsCount;
                 }

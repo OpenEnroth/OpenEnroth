@@ -209,21 +209,6 @@ RgbaImage OpenGLRenderer::ReadScreenPixels() {
     return result;
 }
 
-bool OpenGLRenderer::InitializeFullscreen() {
-    // pViewport->ResetScreen();
-
-    return true;
-}
-
-// when losing and regaining window focus - not required for OGL??
-void OpenGLRenderer::RestoreFrontBuffer() { logger->info("RenderGl - RestoreFrontBuffer"); }
-void OpenGLRenderer::RestoreBackBuffer() { logger->info("RenderGl - RestoreBackBuffer"); }
-
-void OpenGLRenderer::BltBackToFontFast(int a2, int a3, Recti *a4) {
-    logger->info("RenderGl - BltBackToFontFast");
-    // never called anywhere
-}
-
 void OpenGLRenderer::ClearTarget(Color uColor) {
     /* TODO(Gerark) Should we bind to the framebuffer before clearing?
     if (outputRender != outputPresent) {
@@ -973,11 +958,6 @@ void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *textu
     }
 }
 
-bool OpenGLRenderer::AreRenderSurfacesOk() {
-    logger->info("RenderGl - AreRenderSurfacesOk");
-    return true;
-}
-
 RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int height) {
     // TODO(pskelton): should this call drawworld instead??
 
@@ -1019,15 +999,6 @@ RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int heig
 
 RgbaImage OpenGLRenderer::MakeFullScreenshot() {
     return flipVertically(ReadScreenPixels());
-}
-
-// TODO(pskelton): drop - not required in gl renderer now
-void OpenGLRenderer::BeginLightmaps() { return; }
-void OpenGLRenderer::EndLightmaps() { return; }
-void OpenGLRenderer::BeginLightmaps2() { return; }
-void OpenGLRenderer::EndLightmaps2() { return; }
-bool OpenGLRenderer::DrawLightmap(Lightmap *pLightmap, Vec3f *pColorMult, float z_bias) {
-    return true;
 }
 
 struct GLdecalverts {
@@ -1492,7 +1463,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     tilelayer = 0;
                 } else {
                     // else need to add it
-                    auto thistexture = assets->getBitmap(tile.name);
+                    auto thistexture = assets->getBitmap(tile.name, tile.flags & TILE_GENERATED_TRANSITION);
                     int width = thistexture->width();
                     // check size to see what unit it needs
                     int i;
@@ -1657,7 +1628,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                 if (tunit == unit) {
                     // get texture
-                    auto texture = assets->getBitmap(it->first);
+                    auto texture = assets->getBitmap(it->first, it->first.starts_with("generated")); // TODO(captainurist): terrible, terrible hack, redo this.
                     // send texture data to gpu
                     glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                         0,
@@ -4474,72 +4445,71 @@ void OpenGLRenderer::DrawIndoorFaces() {
         return;
 }
 
-bool OpenGLRenderer::SwitchToWindow() {
-    // pViewport->ResetScreen();
-
-    return true;
-}
-
-
 bool OpenGLRenderer::Initialize() {
-    if (!BaseRenderer::Initialize()) {
+    if (!BaseRenderer::Initialize())
         return false;
+
+    if (!window)
+        return false;
+
+    PlatformOpenGLOptions opts;
+
+    // Set it only on startup as currently we don't support multiple contexts to be able to switch OpenGL<->OpenGLES in the middle of runtime.
+    OpenGLES = config->graphics.Renderer.value() == RENDERER_OPENGL_ES;
+
+    if (!OpenGLES) {
+        //  Use OpenGL 4.1 core
+        opts.versionMajor = 4;
+        opts.versionMinor = 1;
+        opts.profile = GL_PROFILE_CORE;
+    } else {
+        //  Use OpenGL ES 3.2
+        opts.versionMajor = 3;
+        opts.versionMinor = 2;
+        opts.profile = GL_PROFILE_ES;
     }
 
-    if (window != nullptr) {
-        PlatformOpenGLOptions opts;
+    //  Turn on 24bit Z buffer.
+    //  You may need to change this to 16 or 32 for your system
+    opts.depthBits = 24;
+    opts.stencilBits = 8;
 
-        // Set it only on startup as currently we don't support multiple contexts to be able to switch OpenGL<->OpenGLES in the middle of runtime.
-        OpenGLES = config->graphics.Renderer.value() == RENDERER_OPENGL_ES;
+    opts.vsyncMode = config->graphics.VSync.value() ? GL_VSYNC_ADAPTIVE : GL_VSYNC_NONE;
 
-        if (!OpenGLES) {
-            //  Use OpenGL 4.1 core
-            opts.versionMajor = 4;
-            opts.versionMinor = 1;
-            opts.profile = GL_PROFILE_CORE;
-        } else {
-            //  Use OpenGL ES 3.2
-            opts.versionMajor = 3;
-            opts.versionMinor = 2;
-            opts.profile = GL_PROFILE_ES;
-        }
+    application->initializeOpenGLContext(opts);
 
-        //  Turn on 24bit Z buffer.
-        //  You may need to change this to 16 or 32 for your system
-        opts.depthBits = 24;
-        opts.stencilBits = 8;
+    auto gladLoadFunc = [](void *ptr, const char *name) {
+        return reinterpret_cast<GLADapiproc>(static_cast<PlatformOpenGLContext *>(ptr)->getProcAddress(name));
+    };
 
-        opts.vsyncMode = config->graphics.VSync.value() ? GL_VSYNC_ADAPTIVE : GL_VSYNC_NONE;
+    int version;
+    if (OpenGLES)
+        version = gladLoadGLES2UserPtr(gladLoadFunc, openGLContext);
+    else
+        version = gladLoadGLUserPtr(gladLoadFunc, openGLContext);
 
-        application->initializeOpenGLContext(opts);
+    auto glGetStringSafe = [] (int id) {
+        // Need this wrapper b/c glGetString can return nullptr, actually happens under OpenGL 1.1 when called for
+        // GL_SHADING_LANGUAGE_VERSION.
+        const char *result = reinterpret_cast<const char *>(glGetString(id));
+        return result ? result : "???";
+    };
 
-        auto gladLoadFunc = [](void *ptr, const char *name) {
-            return reinterpret_cast<GLADapiproc>(static_cast<PlatformOpenGLContext *>(ptr)->getProcAddress(name));
-        };
-
-        int version;
-        if (OpenGLES)
-            version = gladLoadGLES2UserPtr(gladLoadFunc, openGLContext);
-        else
-            version = gladLoadGLUserPtr(gladLoadFunc, openGLContext);
-
-        if (!version)
-            logger->warning("GLAD: Failed to initialize the OpenGL loader");
-
-        if (version) {
-            logger->info("SDL2: supported OpenGL: {}", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
-            logger->info("SDL2: supported GLSL: {}", reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
-            logger->info("SDL2: OpenGL version: {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
-        }
-
-        gladSetGLPostCallback(GL_Check_Errors);
-
-        _initImGui();
-
-        return Reinitialize(true);
+    if (!version) {
+        logger->error("GLAD: Failed to initialize the OpenGL loader");
+    } else {
+        logger->info("OpenGL version: {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
+        logger->info("OpenGL version string: {}", glGetStringSafe(GL_VERSION));
+        logger->info("GLSL version: {}", glGetStringSafe(GL_SHADING_LANGUAGE_VERSION));
+        // TODO(captainurist): this is probably the place to check OpenGL version & exit.
+        //                     openenroth requires opengl core 4.1 or opengles 3.2 capable gpu to run.
     }
 
-    return false;
+    gladSetGLPostCallback(GL_Check_Errors);
+
+    _initImGui();
+
+    return Reinitialize(true);
 }
 
 void OpenGLRenderer::_initImGui() {

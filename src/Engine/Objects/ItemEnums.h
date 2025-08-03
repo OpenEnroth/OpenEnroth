@@ -1070,8 +1070,6 @@ enum class ItemSlot : uint8_t {
     ITEM_SLOT_RING5 = 15,
     ITEM_SLOT_RING6 = 16,
 
-    ITEM_SLOT_ANY = 17,
-
     ITEM_SLOT_FIRST_VALID = ITEM_SLOT_OFF_HAND,
     ITEM_SLOT_LAST_VALID = ITEM_SLOT_RING6,
 };
@@ -1124,7 +1122,6 @@ enum class RandomItemType {
 using enum RandomItemType;
 
 enum class ItemSource {
-    ITEM_SOURCE_UNKNOWN,
     ITEM_SOURCE_MAP,
     ITEM_SOURCE_MONSTER,
     ITEM_SOURCE_CHEST,

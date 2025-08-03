@@ -42,8 +42,8 @@ class CharacterTapeRecorder {
     TestTape<int64_t> experience(int characterIndex);
     TestMultiTape<int64_t> experiences();
 
-    TestTape<CharacterPortrait> portrait(int characterIndex);
-    TestMultiTape<CharacterPortrait> portraits();
+    TestTape<PortraitId> portrait(int characterIndex);
+    TestMultiTape<PortraitId> portraits();
 
     TestTape<int> hp(int characterIndex);
     TestMultiTape<int> hps();
@@ -57,20 +57,20 @@ class CharacterTapeRecorder {
     TestTape<int> level(int characterIndex);
     TestMultiTape<int> levels();
 
-    TestTape<int> skillLevel(int characterIndex, CharacterSkillType skill);
-    TestMultiTape<int> skillLevels(CharacterSkillType skill);
+    TestTape<int> skillLevel(int characterIndex, Skill skill);
+    TestMultiTape<int> skillLevels(Skill skill);
 
-    TestTape<bool> hasSkill(int characterIndex, CharacterSkillType skill);
-    TestMultiTape<bool> haveSkills(CharacterSkillType skill);
+    TestTape<bool> hasSkill(int characterIndex, Skill skill);
+    TestMultiTape<bool> haveSkills(Skill skill);
 
     TestTape<Condition> condition(int characterIndex);
     TestMultiTape<Condition> conditions();
 
-    TestTape<int> resistance(int characterIndex, CharacterAttribute resistance);
-    TestMultiTape<int> resistances(CharacterAttribute resistance);
+    TestTape<int> resistance(int characterIndex, Attribute resistance);
+    TestMultiTape<int> resistances(Attribute resistance);
 
-    TestTape<int> stat(int characterIndex, CharacterAttribute stat);
-    TestMultiTape<int> stats(CharacterAttribute stat);
+    TestTape<int> stat(int characterIndex, Attribute stat);
+    TestMultiTape<int> stats(Attribute stat);
 
     TestTape<bool> hasBuff(int characterIndex, CharacterBuff buff);
     TestMultiTape<bool> haveBuffs(CharacterBuff buff);
@@ -81,8 +81,8 @@ class CharacterTapeRecorder {
     TestTape<bool> hasItem(int characterIndex, ItemId itemId);
     TestMultiTape<bool> haveItem(ItemId itemId);
 
-    TestTape<CharacterClass> clazz(int characterIndex);
-    TestMultiTape<CharacterClass> classes();
+    TestTape<Class> clazz(int characterIndex);
+    TestMultiTape<Class> classes();
 
     TestTape<bool> isRecovering(int characterIndex);
     TestMultiTape<bool> areRecovering();

@@ -11,6 +11,7 @@
 --- @field ClassType ClassTypeEnum | table<string, ClassType>
 --- @field ItemType ItemTypeEnum | table<string, ItemType>
 --- @field QBits table<string, QBits>
+--- @field debugCallback fun()
 
 --- @class SkillEntry
 --- @field id SkillType

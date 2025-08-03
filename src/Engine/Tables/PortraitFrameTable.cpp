@@ -5,14 +5,14 @@
 PortraitFrameTable *pPortraitFrameTable = nullptr;
 
 //----- (00494AED) --------------------------------------------------------
-int PortraitFrameTable::animationId(CharacterPortrait portrait) {
+int PortraitFrameTable::animationId(PortraitId portrait) {
     for (size_t i = 0; i < this->pFrames.size(); i++)
         if (this->pFrames[i].portrait == portrait)
             return i;
     return 0;
 }
 
-Duration PortraitFrameTable::animationDuration(CharacterPortrait portrait) {
+Duration PortraitFrameTable::animationDuration(PortraitId portrait) {
     int index = animationId(portrait);
     if (index == 0)
         return 0_ticks;

@@ -11,7 +11,7 @@ struct SpellBuff {
      * TODO(pskelton): check for inconsistent use of caster
      * caster = 0 for external source (potion / npc), 1 based for party character index
      */
-    bool Apply(Time time, CharacterSkillMastery uSkillMastery,
+    bool Apply(Time time, Mastery uSkillMastery,
                int uPower, int uOverlayID, uint8_t caster);
 
     /**
@@ -41,7 +41,7 @@ struct SpellBuff {
 
     Time expireTime;
     uint16_t power = 0; // Spell power, semantics are spell-specific.
-    CharacterSkillMastery skillMastery = CHARACTER_SKILL_MASTERY_NONE; // 1-4, normal to grandmaster.
+    Mastery skillMastery = MASTERY_NONE; // 1-4, normal to grandmaster.
     uint16_t overlayID = 0;
     uint8_t caster = 0;
     bool isGMBuff = false; // Buff was casted at grandmaster mastery

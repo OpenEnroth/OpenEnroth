@@ -167,6 +167,11 @@ class Accessible : public Base {
         return std::find(begin(), end(), value) != end();
     }
 
+    template<class Predicate> requires std::is_invocable_v<Predicate, value_type>
+    bool contains(Predicate predicate) const {
+        return std::find_if(begin(), end(), std::move(predicate)) != end();
+    }
+
     template<class... Args>
     bool containsAll(const Args &... args) const {
         return (contains(static_cast<value_type>(args)) && ...);
@@ -177,13 +182,13 @@ class Accessible : public Base {
         return (contains(static_cast<value_type>(args)) || ...);
     }
 
-    template<class Predicate> requires std::is_invocable_v<Predicate, value_type>
-    bool contains(Predicate predicate) const {
-        return std::find_if(begin(), end(), std::move(predicate)) != end();
-    }
-
     size_t count(const value_type &value) const {
         return std::count(begin(), end(), value);
+    }
+
+    template<class Predicate> requires std::is_invocable_v<Predicate, value_type>
+    size_t count(Predicate predicate) const {
+        return std::count_if(begin(), end(), std::move(predicate));
     }
 };
 

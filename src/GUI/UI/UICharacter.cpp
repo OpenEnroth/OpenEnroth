@@ -642,7 +642,7 @@ void GUIWindow_CharacterRecord::createAwardsScrollBar() {
 void GUIWindow_CharacterRecord::Update() {
     auto player = &pParty->activeCharacter();
 
-    render->ClearZBuffer();
+    render->ClearHitMap();
     switch (current_character_screen_window) {
         case WINDOW_CharacterWindow_Stats: {
             CharacterUI_ReleaseButtons();
@@ -763,7 +763,7 @@ TargetedSpellUI *CastSpellInfo::GetCastSpellInInventoryWindow() {
     return CS_inventory_window;
 }
 
-static int drawSkillTable(Character *player, int x, int y, const std::initializer_list<CharacterSkillType> skill_list,
+static int drawSkillTable(Character *player, int x, int y, const std::initializer_list<Skill> skill_list,
                           int right_margin, std::string_view skill_group_name) {
     int y_offset = y;
     Pointi pt = mouse->position();
@@ -772,14 +772,14 @@ static int drawSkillTable(Character *player, int x, int y, const std::initialize
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {x, y}, ui_character_header_text_color, str);
 
     int num_skills_drawn = 0;
-    for (CharacterSkillType skill : skill_list) {
+    for (Skill skill : skill_list) {
         for (size_t j = 0; j < pGUIWindow_CurrentMenu->vButtons.size(); ++j) {
             GUIButton *button = pGUIWindow_CurrentMenu->GetControl(j);
             if ((short)(button->uData) >= 0) {
                 continue;  // skips an of the stats skills innv awards buttons
             }
 
-            if (static_cast<CharacterSkillType>(button->uData & 0x7FFF) != skill) {
+            if (static_cast<Skill>(button->uData & 0x7FFF) != skill) {
                 continue;  // skips buttons that dont match skill
             }
 
@@ -803,8 +803,8 @@ static int drawSkillTable(Character *player, int x, int y, const std::initialize
                 skill_color = skill_mastery_color;
             }
 
-            CharacterSkillMastery skill_mastery = player->getSkillValue(skill).mastery();
-            if (skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE) {
+            Mastery skill_mastery = player->getSkillValue(skill).mastery();
+            if (skill_mastery == MASTERY_NOVICE) {
                 std::string Strsk;
                 if (skills_max_level[skill] == 1) { // Non-investable skill
                     Strsk = fmt::format("{}\r{:03}-", localization->GetSkillName(skill), right_margin);
@@ -813,7 +813,7 @@ static int drawSkillTable(Character *player, int x, int y, const std::initialize
                 }
                 pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, button->uY}, skill_color, Strsk);
             } else {
-                std::string skill_level_str = skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
+                std::string skill_level_str = skill_mastery == MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
 
                 if (skill_mastery_color == Color()) {
                     skill_mastery_color = ui_character_header_text_color;
@@ -1000,7 +1000,6 @@ void CharacterUI_DrawPaperdoll(Character *player) {
     int index;
     int item_X;
     int item_Y;
-    Item *item;
 
     int IsDwarf;
     int pBodyComplection;
@@ -1017,16 +1016,16 @@ void CharacterUI_DrawPaperdoll(Character *player) {
     render->ResetUIClipRect();
     render->DrawTextureNew(467 / 640.0f, 0, ui_character_inventory_paperdoll_background);
 
-    Item *itemMainHand = player->GetMainHandItem();
-    Item *itemOffHand = player->GetOffHandItem();
-    bool bTwoHandedGrip = itemMainHand && (itemMainHand->type() == ITEM_TYPE_TWO_HANDED || itemMainHand->skill() == CHARACTER_SKILL_SPEAR && !itemOffHand);
+    InventoryEntry itemMainHand = player->inventory.entry(ITEM_SLOT_MAIN_HAND);
+    InventoryEntry itemOffHand = player->inventory.entry(ITEM_SLOT_OFF_HAND);
+    bool bTwoHandedGrip = itemMainHand && (itemMainHand->type() == ITEM_TYPE_TWO_HANDED || itemMainHand->skill() == SKILL_SPEAR && !itemOffHand);
 
     // Aqua-Lung
     if (player->hasUnderwaterSuitEquipped()) {
         // TODO(captainurist): need to also z-draw arms and wrists.
         render->DrawTextureNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID]);
         if (!bRingsShownInCharScreen)
-            render->ZDrawTextureAlpha(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID], player->inventory.entry(ITEM_SLOT_ARMOUR).index());
+            render->DrawToHitMap(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID], player->inventory.entry(ITEM_SLOT_ARMOUR).index());
 
         // hands aren't in two handed grip pose
         if (!bTwoHandedGrip) {
@@ -1037,37 +1036,34 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         }
 
         // main hand's item
-        item = itemMainHand;
-        if (item) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemTable->items[item->itemId].paperdollAnchorOffset.x;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemTable->items[item->itemId].paperdollAnchorOffset.y;
+        if (itemMainHand) {
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.x;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.y;
 
             GraphicsImage *texture = nullptr;
-            if (item->itemId == ITEM_BLASTER)
+            if (itemMainHand->itemId == ITEM_BLASTER)
                 texture = assets->getImage_Alpha("item64v1");
 
-            CharacterUI_DrawItem(item_X, item_Y, item, player->inventory.entry(ITEM_SLOT_MAIN_HAND).index(), texture, !bRingsShownInCharScreen);
+            CharacterUI_DrawItem(item_X, item_Y, itemMainHand.get(), itemMainHand.index(), texture, !bRingsShownInCharScreen);
         }
     } else {
         // bow
-        item = player->GetBowItem();
-        if (item) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][2][0] - pItemTable->items[item->itemId].paperdollAnchorOffset.x;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][2][1] - pItemTable->items[item->itemId].paperdollAnchorOffset.y;
+        if (InventoryEntry bow = player->inventory.entry(ITEM_SLOT_BOW)) {
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][2][0] - pItemTable->items[bow->itemId].paperdollAnchorOffset.x;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][2][1] - pItemTable->items[bow->itemId].paperdollAnchorOffset.y;
 
-            CharacterUI_DrawItem(item_X, item_Y, item, player->inventory.entry(ITEM_SLOT_BOW).index(), nullptr, !bRingsShownInCharScreen);
+            CharacterUI_DrawItem(item_X, item_Y, bow.get(), bow.index(), nullptr, !bRingsShownInCharScreen);
         }
 
         // cloak
-        item = player->GetCloakItem();
-        if (item) {
-            index = valueOr(paperdoll_cloak_indexByType, item->itemId, -1);
+        if (InventoryEntry cloak = player->inventory.entry(ITEM_SLOT_CLOAK)) {
+            index = valueOr(paperdoll_cloak_indexByType, cloak->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Cloak[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Cloak[pBodyComplection][index][1];
 
                 GraphicsImage *texture = paperdoll_cloak_texture[pBodyComplection][index];
-                CharacterUI_DrawItem(item_X, item_Y, item, player->inventory.entry(ITEM_SLOT_CLOAK).index(), texture, !bRingsShownInCharScreen);
+                CharacterUI_DrawItem(item_X, item_Y, cloak.get(), cloak.index(), texture, !bRingsShownInCharScreen);
             }
         }
 
@@ -1075,34 +1071,32 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         render->DrawTextureNew(pPaperdoll_BodyX / 640.0f, pPaperdoll_BodyY / 480.0f, paperdoll_dbods[uPlayerID]);
 
         // armor
-        item = player->GetArmorItem();
-        if (item) {
-            index = valueOr(paperdoll_armor_indexByType, item->itemId, -1);
+        if (InventoryEntry armor = player->inventory.entry(ITEM_SLOT_ARMOUR)) {
+            index = valueOr(paperdoll_armor_indexByType, armor->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Armor_Coord[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Armor_Coord[pBodyComplection][index][1];
 
                 GraphicsImage *texture = paperdoll_armor_texture[pBodyComplection][index][0];
-                CharacterUI_DrawItem(item_X, item_Y, item, player->inventory.entry(ITEM_SLOT_ARMOUR).index(), texture, !bRingsShownInCharScreen);
+                CharacterUI_DrawItem(item_X, item_Y, armor.get(), armor.index(), texture, !bRingsShownInCharScreen);
             }
         }
 
         // boots
-        item = player->GetBootItem();
-        if (item) {
-            index = valueOr(paperdoll_boots_indexByType, item->itemId, -1);
+        if (InventoryEntry boots = player->inventory.entry(ITEM_SLOT_BOOTS)) {
+            index = valueOr(paperdoll_boots_indexByType, boots->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Boot[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Boot[pBodyComplection][index][1];
 
                 GraphicsImage *texture = nullptr;
-                if (item->itemId == ITEM_ARTIFACT_HERMES_SANDALS) {
+                if (boots->itemId == ITEM_ARTIFACT_HERMES_SANDALS) {
                     texture = paperdoll_flying_feet[player->uCurrentFace];
                 } else {
                     texture = paperdoll_boots_texture[pBodyComplection][index];
                 }
 
-                CharacterUI_DrawItem(item_X, item_Y, item, player->inventory.entry(ITEM_SLOT_BOOTS).index(), texture, !bRingsShownInCharScreen);
+                CharacterUI_DrawItem(item_X, item_Y, boots.get(), boots.index(), texture, !bRingsShownInCharScreen);
             }
         }
 
@@ -1118,9 +1112,8 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         }
 
         // belt
-        item = player->GetBeltItem();
-        if (item) {
-            index = valueOr(paperdoll_belt_indexByType, item->itemId, -1);
+        if (InventoryEntry belt = player->inventory.entry(ITEM_SLOT_BELT)) {
+            index = valueOr(paperdoll_belt_indexByType, belt->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Belt[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Belt[pBodyComplection][index][1];
@@ -1130,14 +1123,13 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                 else
                     texture = paperdoll_belt_texture[pBodyComplection - 2][index];
 
-                CharacterUI_DrawItem(item_X, item_Y, item, player->inventory.entry(ITEM_SLOT_BELT).index(), texture, !bRingsShownInCharScreen);
+                CharacterUI_DrawItem(item_X, item_Y, belt.get(), belt.index(), texture, !bRingsShownInCharScreen);
             }
         }
 
         // armor's shoulders
-        item = player->GetArmorItem();
-        if (item) {
-            index = valueOr(paperdoll_armor_indexByType, item->itemId, -1);
+        if (InventoryEntry armor = player->inventory.entry(ITEM_SLOT_ARMOUR)) {
+            index = valueOr(paperdoll_armor_indexByType, armor->itemId, -1);
             if (index != -1) {
                 GraphicsImage *texture = nullptr;
                 // Some armors doesn't have sleeves so use normal one for two-handed or none if it also unavailable
@@ -1154,14 +1146,13 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                 }
 
                 if (texture)
-                    CharacterUI_DrawItem(item_X, item_Y, item, player->inventory.entry(ITEM_SLOT_ARMOUR).index(), texture, !bRingsShownInCharScreen);
+                    CharacterUI_DrawItem(item_X, item_Y, armor.get(), armor.index(), texture, !bRingsShownInCharScreen);
             }
         }
 
         // cloak's collar
-        item = player->GetCloakItem();
-        if (item) {
-            index = valueOr(paperdoll_cloak_indexByType, item->itemId, -1);
+        if (InventoryEntry cloak = player->inventory.entry(ITEM_SLOT_CLOAK)) {
+            index = valueOr(paperdoll_cloak_indexByType, cloak->itemId, -1);
             if (index != -1) {
                 // leather cloak has no collar
                 if (paperdoll_CloakCollar[pBodyComplection][index][0]) {
@@ -1169,7 +1160,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                     item_Y = pPaperdoll_BodyY + paperdoll_CloakCollar[pBodyComplection][index][1];
 
                     GraphicsImage *texture = paperdoll_cloak_collar_texture[pBodyComplection][index];
-                    CharacterUI_DrawItem(item_X, item_Y, item, player->inventory.entry(ITEM_SLOT_CLOAK).index(), texture, !bRingsShownInCharScreen);
+                    CharacterUI_DrawItem(item_X, item_Y, cloak.get(), cloak.index(), texture, !bRingsShownInCharScreen);
                 }
             }
         }
@@ -1183,49 +1174,46 @@ void CharacterUI_DrawPaperdoll(Character *player) {
         }
 
         // helm
-        item = player->GetHelmItem();
-        if (item) {
-            index = valueOr(paperdoll_helm_indexByType, item->itemId, -1);
+        if (InventoryEntry helm = player->inventory.entry(ITEM_SLOT_HELMET)) {
+            index = valueOr(paperdoll_helm_indexByType, helm->itemId, -1);
             if (index != -1) {
                 item_X = pPaperdoll_BodyX + paperdoll_Helm[pBodyComplection][index][0];
                 item_Y = pPaperdoll_BodyY + paperdoll_Helm[pBodyComplection][index][1];
 
                 GraphicsImage *texture = nullptr;
-                if (IsDwarf != 1 || item->itemId != ITEM_PHYNAXIAN_HELM)
+                if (IsDwarf != 1 || helm->itemId != ITEM_PHYNAXIAN_HELM)
                     texture = paperdoll_helm_texture[std::to_underlying(player->GetSexByVoice())][index];
                 else
                     texture = paperdoll_dbrds[11];
 
-                CharacterUI_DrawItem(item_X, item_Y, item, player->inventory.entry(ITEM_SLOT_HELMET).index(), texture, !bRingsShownInCharScreen);
+                CharacterUI_DrawItem(item_X, item_Y, helm.get(), helm.index(), texture, !bRingsShownInCharScreen);
             }
         }
 
         // main hand's item
-        item = itemMainHand;
-        if (item) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemTable->items[item->itemId].paperdollAnchorOffset.x;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemTable->items[item->itemId].paperdollAnchorOffset.y;
+        if (itemMainHand) {
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][1][0] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.x;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][1][1] - pItemTable->items[itemMainHand->itemId].paperdollAnchorOffset.y;
 
             GraphicsImage *texture = nullptr;
-            if (item->itemId == ITEM_BLASTER)
+            if (itemMainHand->itemId == ITEM_BLASTER)
                 texture = assets->getImage_Alpha("item64v1");
 
-            CharacterUI_DrawItem(item_X, item_Y, item, player->inventory.entry(ITEM_SLOT_MAIN_HAND).index(), texture, !bRingsShownInCharScreen);
+            CharacterUI_DrawItem(item_X, item_Y, itemMainHand.get(), itemMainHand.index(), texture, !bRingsShownInCharScreen);
         }
 
         // offhand's item
-        item = itemOffHand;
-        if (item) {
-            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][0][0] - pItemTable->items[item->itemId].paperdollAnchorOffset.x;
-            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][0][1] - pItemTable->items[item->itemId].paperdollAnchorOffset.y;
+        if (itemOffHand) {
+            item_X = pPaperdoll_BodyX + paperdoll_Weapon[pBodyComplection][0][0] - pItemTable->items[itemOffHand->itemId].paperdollAnchorOffset.x;
+            item_Y = pPaperdoll_BodyY + paperdoll_Weapon[pBodyComplection][0][1] - pItemTable->items[itemOffHand->itemId].paperdollAnchorOffset.y;
 
             /*
              * MM6 artifacts.
              * These cases should never execute in MM7 as we have spell books in these positions.
              * Also MM6 doesn't have variable size paperdoll's so cordinates need to account pPaperdoll_BodyX/Y.
              */
-            if (item->skill() == CHARACTER_SKILL_DAGGER || item->skill() == CHARACTER_SKILL_SWORD) {
-                switch (item->itemId) {
+            if (itemOffHand->skill() == SKILL_DAGGER || itemOffHand->skill() == SKILL_SWORD) {
+                switch (itemOffHand->itemId) {
                     case ITEM_SPELLBOOK_TORCH_LIGHT: // Mordred
                         item_X = 596;
                         item_Y = 86;
@@ -1246,7 +1234,7 @@ void CharacterUI_DrawPaperdoll(Character *player) {
                 }
             }
 
-            CharacterUI_DrawItem(item_X, item_Y, item, player->inventory.entry(ITEM_SLOT_OFF_HAND).index(), nullptr, !bRingsShownInCharScreen);
+            CharacterUI_DrawItem(item_X, item_Y, itemOffHand.get(), itemOffHand.index(), nullptr, !bRingsShownInCharScreen);
         }
     }
 
@@ -1334,7 +1322,7 @@ static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage
 
         ItemEnchantmentTimer = std::max(0_ticks, ItemEnchantmentTimer - pEventTimer->dt());
         if (!ItemEnchantmentTimer) {
-            item->ResetEnchantAnimation();
+            item->ResetEnchantAnimation(); // TODO(captainurist): doesn't belong here, and doesn't belong in Item.
             ptr_50C9A4_ItemToEnchant = nullptr;
         }
 
@@ -1349,7 +1337,7 @@ static void CharacterUI_DrawItem(int x, int y, Item *item, int id, GraphicsImage
     }
 
     if (doZDraw)
-        render->ZDrawTextureAlpha(x / 640.0f, y / 480.0f, item_texture, id);
+        render->DrawToHitMap(x / 640.0f, y / 480.0f, item_texture, id);
 }
 
 //----- (0043E825) --------------------------------------------------------
@@ -1445,7 +1433,7 @@ void CharacterUI_LoadPaperdollTextures() {
 }
 
 void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
-    CharacterSkillType skill;
+    Skill skill;
 
     int buttons_count = 0;
     if (dword_507CC0_activ_ch) CharacterUI_ReleaseButtons();
@@ -1469,7 +1457,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     int uCurrFontHeght = assets->pFontLucida->GetHeight();
     int current_Y = 2 * uCurrFontHeght + 13;
     int width = 204;
-    for (CharacterSkillType skill : allWeaponSkills()) {
+    for (Skill skill : allWeaponSkills()) {
         if (curr_player->getSkillValue(skill).level()) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
@@ -1480,7 +1468,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     }
     if (!first_rows) current_Y += uCurrFontHeght - 3;
     current_Y += 2 * uCurrFontHeght - 6;
-    for (CharacterSkillType skill : allMagicSkills()) {
+    for (Skill skill : allMagicSkills()) {
         if (curr_player->getSkillValue(skill).level() /*&& buttons_count < 15*/) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
@@ -1490,7 +1478,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     }
     first_rows = 0;
     current_Y = 2 * uCurrFontHeght + 13;
-    for (CharacterSkillType skill : allArmorSkills()) {
+    for (Skill skill : allArmorSkills()) {
         if (curr_player->getSkillValue(skill).level()) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
@@ -1501,7 +1489,7 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_CreateButtons() {
     }
     if (!first_rows) current_Y += uCurrFontHeght - 3;
     current_Y += 2 * uCurrFontHeght - 6;
-    for (CharacterSkillType skill : allMiscSkills()) {
+    for (Skill skill : allMiscSkills()) {
         if (curr_player->getSkillValue(skill).level()) {
             current_Y += uCurrFontHeght - 3;
             ++buttons_count;
@@ -1763,7 +1751,7 @@ void OnPaperdollLeftClick() {
     // uint16_t v5; // ax@7
     // int equippos; // esi@27
     // int v8; // eax@29
-    CharacterSkillType pSkillType = CHARACTER_SKILL_INVALID;
+    Skill pSkillType = SKILL_INVALID;
 
     ItemType pEquipType = ITEM_TYPE_NONE;
     CastSpellInfo *pSpellInfo;
@@ -1784,10 +1772,10 @@ void OnPaperdollLeftClick() {
         pEquipType = pParty->pPickedItem.type();
         pSkillType = pParty->pPickedItem.skill();
 
-        if (pSkillType == CHARACTER_SKILL_SPEAR) {
+        if (pSkillType == SKILL_SPEAR) {
             if (shieldequip) {
                 // cant use spear in one hand till master
-                if (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SPEAR).mastery() < CHARACTER_SKILL_MASTERY_MASTER) {
+                if (pParty->activeCharacter().getActualSkillValue(SKILL_SPEAR).mastery() < MASTERY_MASTER) {
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
 
                     return;
@@ -1796,10 +1784,10 @@ void OnPaperdollLeftClick() {
                 pickeditem = pParty->pPickedItem.itemId;
             }
         } else {
-            if ((pSkillType == CHARACTER_SKILL_SHIELD || pSkillType == CHARACTER_SKILL_SWORD || pSkillType == CHARACTER_SKILL_DAGGER) && mainhandequip &&
-                mainhandequip->skill() == CHARACTER_SKILL_SPEAR) {
+            if ((pSkillType == SKILL_SHIELD || pSkillType == SKILL_SWORD || pSkillType == SKILL_DAGGER) && mainhandequip &&
+                mainhandequip->skill() == SKILL_SPEAR) {
                 // cant use spear in one hand till master
-                if (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SPEAR).mastery() < CHARACTER_SKILL_MASTERY_MASTER) {
+                if (pParty->activeCharacter().getActualSkillValue(SKILL_SPEAR).mastery() < MASTERY_MASTER) {
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
                     return;
                 }
@@ -1946,8 +1934,8 @@ void OnPaperdollLeftClick() {
                     return;
                 }
                 // dagger at expert or sword at master in left hand
-                if (pSkillType == CHARACTER_SKILL_DAGGER && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_DAGGER).mastery() >= CHARACTER_SKILL_MASTERY_EXPERT)
-                    || pSkillType == CHARACTER_SKILL_SWORD && (pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_SWORD).mastery() >= CHARACTER_SKILL_MASTERY_MASTER)) {
+                if (pSkillType == SKILL_DAGGER && (pParty->activeCharacter().getActualSkillValue(SKILL_DAGGER).mastery() >= MASTERY_EXPERT)
+                    || pSkillType == SKILL_SWORD && (pParty->activeCharacter().getActualSkillValue(SKILL_SWORD).mastery() >= MASTERY_MASTER)) {
                     if (mouse->position().x >= 560) {
                         if (!twohandedequip) {
                             if (shieldequip) {
@@ -2115,7 +2103,7 @@ void OnPaperdollLeftClick() {
         // player->pEquipment.uGlove);
 
     } else {  // z picking as before
-        int v34 = render->QueryEquipmentHitMap(mouse->position(), -1);
+        int v34 = render->QueryHitMap(mouse->position(), -1);
         InventoryEntry entry = pParty->activeCharacter().inventory.entry(v34);
 
         if (entry) {

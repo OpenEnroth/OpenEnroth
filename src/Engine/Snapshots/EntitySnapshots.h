@@ -9,6 +9,8 @@
 #include "Library/Geometry/BBox.h"
 #include "Library/Binary/BinarySerialization.h"
 
+#include "EnumSnapshots.h"
+
 /**
  * @file
  *
@@ -174,11 +176,11 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst);
 
 struct TileData_MM7 {
     std::array<char, 16> tileName;
-    uint16_t tileId;
-    uint16_t bitmapId;
-    uint16_t tileset;
-    uint16_t section;
-    uint16_t attributes;
+    uint16_t tileId; // Seems to be always 0 in mm7 data files.
+    uint16_t bitmapId; // Also seems to be always 0.
+    Tileset_MM7 tileset;
+    TileVariant_MM7 variant;
+    uint16_t flags;
 };
 static_assert(sizeof(TileData_MM7) == 26);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(TileData_MM7)
@@ -1325,7 +1327,7 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(BLVHeader_MM7)
 
 
 struct OutdoorTileType_MM7 {
-    uint16_t tileset;
+    Tileset_MM7 tileset;
     uint16_t tileId;
 };
 static_assert(sizeof(OutdoorTileType_MM7) == 4);

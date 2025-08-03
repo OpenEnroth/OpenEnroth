@@ -20,7 +20,7 @@ using enum NpcType;
 
 // TODO(Nik-RE-dev): remove
 //----- (0047730C) --------------------------------------------------------
-inline bool CheckPortretAgainstSex(int a1, CharacterSex) { return true; }
+inline bool CheckPortretAgainstSex(int a1, Sex) { return true; }
 
 bool PartyHasDragon();
 bool CheckHiredNPCSpeciality(NpcProfession prof);

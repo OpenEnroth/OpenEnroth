@@ -215,7 +215,7 @@ static constexpr IndexedArray<Color, SPECIAL_ATTACK_FIRST, SPECIAL_ATTACK_LAST> 
 
 // OE addition - colors for monster special ability text.
 static constexpr IndexedArray<Color, MONSTER_SPECIAL_ABILITY_FIRST, MONSTER_SPECIAL_ABILITY_LAST> monsterSpecialAbilityColors = {
-    {MONSTER_SPECIAL_ABILITY_SHOT, colorTable.Mercury},
+    {MONSTER_SPECIAL_ABILITY_MULTI_SHOT, colorTable.Mercury},
     {MONSTER_SPECIAL_ABILITY_SUMMON, colorTable.EasternBlue},
     {MONSTER_SPECIAL_ABILITY_EXPLODE, colorTable.Sunflower}
 };
@@ -382,7 +382,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
         if (!inspect_item->IsIdentified()) {
             if (pParty->activeCharacter().CanIdentify(*inspect_item) == 1)
                 inspect_item->SetIdentified();
-            CharacterSpeech speech = SPEECH_ID_ITEM_FAIL;
+            SpeechId speech = SPEECH_ID_ITEM_FAIL;
             if (!inspect_item->IsIdentified()) {
                 engine->_statusBar->setEvent(LSTR_IDENTIFY_FAILED);
             } else {
@@ -400,7 +400,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
         if (inspect_item->IsBroken()) {
             if (pParty->activeCharacter().CanRepair(*inspect_item) == 1)
                 inspect_item->flags = inspect_item->flags & ~ITEM_BROKEN | ITEM_IDENTIFIED;
-            CharacterSpeech speech = SPEECH_REPAIR_FAIL;
+            SpeechId speech = SPEECH_REPAIR_FAIL;
             if (!inspect_item->IsBroken())
                 speech = SPEECH_REPAIR_SUCCESS;
             else
@@ -601,7 +601,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     for (const std::string &s : text) {
         if (!s.empty()) {
             iteminfo_window.DrawText(assets->pFontComic.get(), {100, v34}, colorTable.White, s);
-            v34 += assets->pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100, 0) + 3;
+            v34 += assets->pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100) + 3;
         }
     }
     if (!pItemTable->items[inspect_item->itemId].description.empty())
@@ -780,28 +780,28 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
 
     if (pParty->hasActiveCharacter()) {
         int skill_points = 0;
-        CharacterSkillMastery skill_mastery = CHARACTER_SKILL_MASTERY_NONE;
-        CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_MONSTER_ID);
+        Mastery skill_mastery = MASTERY_NONE;
+        CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(SKILL_MONSTER_ID);
 
         if ((skill_points = idMonsterSkill.level()) > 0) {
             skill_mastery = idMonsterSkill.mastery();
-            if (skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE) {
+            if (skill_mastery == MASTERY_NOVICE) {
                 if (skill_points + 10 >= monsterInfo.level) {
                     normal_level = true;
                 }
-            } else if (skill_mastery == CHARACTER_SKILL_MASTERY_EXPERT) {
+            } else if (skill_mastery == MASTERY_EXPERT) {
                 if (2 * skill_points + 10 >= monsterInfo.level) {
                     normal_level = true;
                     expert_level = true;
                 }
-            } else if (skill_mastery == CHARACTER_SKILL_MASTERY_MASTER) {
+            } else if (skill_mastery == MASTERY_MASTER) {
                 if (3 * skill_points + 10 >= monsterInfo.level) {
                     normal_level = true;
                     expert_level = true;
                     master_level = true;
                     for_effects = true;
                 }
-            } else if (skill_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+            } else if (skill_mastery == MASTERY_GRANDMASTER) {
                 normal_level = true;
                 expert_level = true;
                 master_level = true;
@@ -812,8 +812,8 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
 
         // Only play reaction when right click on actor initially
         if (pActors[uActorID].aiState != Dead && pActors[uActorID].aiState != Dying &&
-            !holdingMouseRightButton && skill_mastery != CHARACTER_SKILL_MASTERY_NONE) {
-            CharacterSpeech speech;
+            !holdingMouseRightButton && skill_mastery != MASTERY_NONE) {
+            SpeechId speech;
             if (normal_level || expert_level || master_level || grandmaster_level) {
                 if (monsterInfo.level >= pParty->activeCharacter().uLevel - 5)
                     speech = SPEECH_ID_MONSTER_STRONG;
@@ -1089,7 +1089,7 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
   * @param uPlayerID                     Character identifier.
   * @param uPlayerSkillType              Skill type identifier.
   */
-std::string CharacterUI_GetSkillDescText(int uPlayerID, CharacterSkillType uPlayerSkillType) {
+std::string CharacterUI_GetSkillDescText(int uPlayerID, Skill uPlayerSkillType) {
     size_t line_width = std::max({
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
@@ -1105,7 +1105,7 @@ std::string CharacterUI_GetSkillDescText(int uPlayerID, CharacterSkillType uPlay
     if (!localization->GetSkillDescriptionNormal(uPlayerSkillType).empty()) {
         Description = fmt::format("{}\n\n", Description);
 
-        for (CharacterSkillMastery mastery : allSkillMasteries()) {
+        for (Mastery mastery : allSkillMasteries()) {
             Description += fmt::format(
                 "{::}{}\t{:03}:\t{:03}{}\t000\n",
                 GetSkillColor(pParty->pCharacters[uPlayerID].classType, uPlayerSkillType, mastery).tag(),
@@ -1132,7 +1132,7 @@ void CharacterUI_SkillsTab_ShowHint() {
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
             if (pButton->msg == UIMSG_SkillUp && pX >= pButton->uX &&
                 pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
-                CharacterSkillType skill = static_cast<CharacterSkillType>(pButton->msg_param);
+                Skill skill = static_cast<Skill>(pButton->msg_param);
                 std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill);
                 CharacterUI_DrawTooltip(localization->GetSkillName(skill), pSkillDescText);
             }
@@ -1170,8 +1170,8 @@ void CharacterUI_StatsTab_ShowHint() {
         case 5:
         case 6:
             CharacterUI_DrawTooltip(
-                localization->GetAttirubteName(static_cast<CharacterAttribute>(pStringNum)),
-                localization->GetAttributeDescription(static_cast<CharacterAttribute>(pStringNum)));
+                localization->GetAttirubteName(static_cast<Attribute>(pStringNum)),
+                localization->GetAttributeDescription(static_cast<Attribute>(pStringNum)));
             break;
         case 7:  // Health Points
             CharacterUI_DrawTooltip(localization->GetString(LSTR_HIT_POINTS), localization->getHPDescription());
@@ -1187,9 +1187,9 @@ void CharacterUI_StatsTab_ShowHint() {
             std::string str = std::string(localization->getCharacterConditionDescription()) + "\n";
 
             for (Condition condition : conditionImportancyTable()) {
-                if (pParty->activeCharacter().conditions.Has(condition)) {
+                if (pParty->activeCharacter().conditions.has(condition)) {
                     str += " \n";
-                    Duration condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.Get(condition);
+                    Duration condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.get(condition);
                     CivilDuration d = condition_time.toCivilDuration();
                     pTextColor = GetConditionDrawColor(condition);
                     str += fmt::format("{::}{}\f00000 - ", pTextColor.tag(), localization->GetCharacterConditionName(condition));
@@ -1258,9 +1258,9 @@ void CharacterUI_StatsTab_ShowHint() {
 
         case 17:  // Missle Bonus
         {
-            bool hasBow = pParty->activeCharacter().GetBowItem() != nullptr;
-            auto weapon = pParty->activeCharacter().GetMainHandItem();
-            bool hasBlaster = weapon && weapon->skill() == CHARACTER_SKILL_BLASTER;
+            bool hasBow = !!pParty->activeCharacter().inventory.entry(ITEM_SLOT_BOW);
+            InventoryConstEntry weapon = pParty->activeCharacter().inventory.entry(ITEM_SLOT_MAIN_HAND);
+            bool hasBlaster = weapon && weapon->skill() == SKILL_BLASTER;
             // TODO(captainurist): fmt can throw
             std::string description;
             if (hasBow || hasBlaster) {
@@ -1368,13 +1368,13 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
     spell_info_window.DrawText(assets->pFontSmallnum.get(), {120, 44}, colorTable.White, str);
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
-    CharacterSkillType skill = skillForMagicSchool(pParty->activeCharacter().lastOpenedSpellbookPage);
-    CharacterSkillMastery skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
+    Skill skill = skillForMagicSchool(pParty->activeCharacter().lastOpenedSpellbookPage);
+    Mastery skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
     spell_info_window.DrawTitleText(assets->pFontComic.get(), 12, 75, colorTable.White, localization->GetSkillName(skill), 3);
 
-    if (skill_mastery == CharacterSkillMastery::CHARACTER_SKILL_MASTERY_NONE) {
+    if (skill_mastery == Mastery::MASTERY_NONE) {
         if (engine->config->debug.AllMagic.value()) {
-            skill_mastery = CharacterSkillMastery::CHARACTER_SKILL_MASTERY_GRANDMASTER;
+            skill_mastery = Mastery::MASTERY_GRANDMASTER;
         } else {
             assert(false && "Character doesnt have this magic skill!");
         }
@@ -1507,7 +1507,7 @@ void showSpellbookInfo(ItemId spellbook) {
     popup.uFrameWidth = 108;
     popup.DrawTitleText(assets->pFontComic.get(), 0xCu, 0x4Bu, colorTable.White, localization->GetSkillName(skillForSpell(spell)), 3u);
 
-    str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spell].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE]);
+    str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spell].mana_per_skill[MASTERY_NOVICE]);
     popup.DrawTitleText(assets->pFontComic.get(), 0xCu, popup.uFrameHeight - assets->pFontComic->GetHeight() - 16, colorTable.White, str, 3);
 }
 
@@ -1522,7 +1522,7 @@ void ShowPopupShopSkills() {
             if (pX >= pButton->uX && pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
                 if (IsSkillLearningDialogue((DialogueId)pButton->msg_param)) {
                     auto skill_id = GetLearningDialogueSkill((DialogueId)pButton->msg_param);
-                    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] != CHARACTER_SKILL_MASTERY_NONE &&
+                    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] != MASTERY_NONE &&
                         !pParty->activeCharacter().pActiveSkills[skill_id]) {
                         // is this skill visible
                         std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill_id);
@@ -1956,7 +1956,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                     popup_window.DrawMessageBox(true);
                     MonsterPopup_Draw(pointedObject.id(), &popup_window);
                 }
-                if (pointedObject.type() == OBJECT_Item) {
+                if (pointedObject.type() == OBJECT_Sprite) {
                     if (!(pObjectList->pObjects[pSpriteObjects[pointedObject.id()].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
                         GameUI_DrawItemInfo(&pSpriteObjects[pointedObject.id()].containing_item);
                     }
@@ -2025,8 +2025,8 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                     (signed int)pY < (signed int)pButton->uW) {
                     switch (pButton->msg) {
                         case UIMSG_0:  // stats info
-                            popup_window.sHint = localization->GetAttributeDescription(static_cast<CharacterAttribute>(pButton->msg_param % 7));
-                            pStr = localization->GetAttirubteName(static_cast<CharacterAttribute>(pButton->msg_param % 7));
+                            popup_window.sHint = localization->GetAttributeDescription(static_cast<Attribute>(pButton->msg_param % 7));
+                            pStr = localization->GetAttirubteName(static_cast<Attribute>(pButton->msg_param % 7));
                             break;
                         case UIMSG_PlayerCreationClickPlus:  // Plus button info
                             pStr = localization->GetString(LSTR_ADD);
@@ -2055,8 +2055,8 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                             break;
                         case UIMSG_PlayerCreationSelectClass:  // Available
                                                                // Class Info
-                            popup_window.sHint = localization->GetClassDescription(static_cast<CharacterClass>(pButton->msg_param));
-                            pStr = localization->GetClassName(static_cast<CharacterClass>(pButton->msg_param));
+                            popup_window.sHint = localization->GetClassDescription(static_cast<Class>(pButton->msg_param));
+                            pStr = localization->GetClassName(static_cast<Class>(pButton->msg_param));
                             break;
                         case UIMSG_PlayerCreationClickOK:  // OK Info
                             popup_window.sHint = localization->GetString(
@@ -2083,7 +2083,7 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                             UIMSG_PlayerCreationRemoveDownSkill) {  // Sellected
                                                                     // skills info
                         pY = 0;
-                        if (pParty->pCharacters[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48) != CHARACTER_SKILL_INVALID) {
+                        if (pParty->pCharacters[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48) != SKILL_INVALID) {
                             static std::string hint_reference;
                             hint_reference = CharacterUI_GetSkillDescText(
                                 pButton->msg_param,
@@ -2165,7 +2165,7 @@ void Inventory_ItemPopupAndAlchemy() {
         static const int slotSize = 32;
 
         if (!ringscreenactive()) { // rings not displayed
-            int item_pid = render->QueryEquipmentHitMap({pX, pY}, -1);
+            int item_pid = render->QueryHitMap({pX, pY}, -1);
             entry = pParty->activeCharacter().inventory.entry(item_pid);
         } else {  // rings displayed
             ItemSlot pos = ITEM_SLOT_INVALID;
@@ -2227,7 +2227,7 @@ void Inventory_ItemPopupAndAlchemy() {
         return;
     }
 
-    CombinedSkillValue alchemySkill = pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_ALCHEMY);
+    CombinedSkillValue alchemySkill = pParty->activeCharacter().getActualSkillValue(SKILL_ALCHEMY);
 
     if (pParty->pPickedItem.itemId == ITEM_POTION_BOTTLE) {
         GameUI_DrawItemInfo(entry.get());
@@ -2259,21 +2259,21 @@ void Inventory_ItemPopupAndAlchemy() {
             // potionID >= ITEM_POTION_CURE_WOUNDS && potionID <= ITEM_POTION_CURE_WEAKNESS does not require skill
             if (potionID >= ITEM_POTION_CURE_DISEASE &&
                     potionID <= ITEM_POTION_AWAKEN &&
-                    alchemySkill.mastery() == CHARACTER_SKILL_MASTERY_NONE) {
+                    alchemySkill.mastery() == MASTERY_NONE) {
                 damage_level = 1;
             }
             if (potionID >= ITEM_POTION_HASTE &&
                     potionID <= ITEM_POTION_CURE_INSANITY &&
-                    alchemySkill.mastery() <= CHARACTER_SKILL_MASTERY_NOVICE) {
+                    alchemySkill.mastery() <= MASTERY_NOVICE) {
                 damage_level = 2;
             }
             if (potionID >= ITEM_POTION_MIGHT_BOOST &&
                     potionID <= ITEM_POTION_BODY_RESISTANCE &&
-                    alchemySkill.mastery() <= CHARACTER_SKILL_MASTERY_EXPERT) {
+                    alchemySkill.mastery() <= MASTERY_EXPERT) {
                 damage_level = 3;
             }
             if (potionID >= ITEM_POTION_STONE_TO_FLESH &&
-                    alchemySkill.mastery() <= CHARACTER_SKILL_MASTERY_MASTER) {
+                    alchemySkill.mastery() <= MASTERY_MASTER) {
                 damage_level = 4;
             }
         }

@@ -6,8 +6,8 @@
 #include "Engine/Time/Duration.h"
 
 struct PortraitFrameTable {
-    int animationId(CharacterPortrait portrait);
-    Duration animationDuration(CharacterPortrait portrait);
+    int animationId(PortraitId portrait);
+    Duration animationDuration(PortraitId portrait);
     int animationFrameIndex(int animationId, Duration frameTime);
 
     std::vector<PortraitFrameData> pFrames;

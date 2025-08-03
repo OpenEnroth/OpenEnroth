@@ -172,7 +172,6 @@ void BLVRenderParams::Reset() {
 
     if (!this->uPartySectorID) {
         assert(false);  // shouldnt happen, please provide savegame
-        // TODO(captainurist): was able to trigger this by falling from the sky in Celeste, but couldn't reproduce.
     }
 
 
@@ -1510,7 +1509,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
     }
 
     switch (type) {
-        case OBJECT_Item: {  // take the item
+        case OBJECT_Sprite: {  // take the item
             if (pSpriteObjects[id].IsUnpickable() || id >= pSpriteObjects.size() || !pSpriteObjects[id].uObjectDescID) {
                 return 1;
             }
@@ -1625,7 +1624,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     int fall_start;
-    if (pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)
+    if (pParty->FeatherFallActive() || pParty->wearsItem(ITEM_ARTIFACT_LADYS_ESCORT)
         || pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING)) {
         fall_start = floorZ;
         bFeatherFall = true;
@@ -1777,8 +1776,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->velocity.z += -2.0f * pEventTimer->dt().ticks() * GetGravityStrength();
         if (pParty->velocity.z < -500 && !bFeatherFall && pParty->pos.z - floorZ > 1000) {
             for (Character &character : pParty->pCharacters) {
-                if (!character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-                    !character.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS) &&
+                if (!character.wearsEnchantedItem(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
+                    !character.wearsItem(ITEM_ARTIFACT_HERMES_SANDALS) &&
                     character.CanAct()) {  // was 8
                     character.playReaction(SPEECH_FALLING);
                 }
@@ -2011,7 +2010,7 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f p
 }
 
 void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
-    assert(a2->uKind == OBJECT_Item);
+    assert(a2->uKind == OBJECT_Sprite);
 
     SpriteObject a1a;
     a1a.containing_item.Reset();
@@ -2046,7 +2045,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
     a1a.uSoundID = 0;
     a1a.uFacing = 0;
     a1a.vPosition = a2->vPosition;
-    a1a.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
+    a1a.spell_skill = MASTERY_NONE;
     a1a.spell_level = 0;
     a1a.uSpellID = SPELL_NONE;
     a1a.spell_target_pid = Pid();

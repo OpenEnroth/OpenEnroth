@@ -19,8 +19,8 @@ struct Item {
     static void PopulateSpecialBonusMap();
     static void PopulateArtifactBonusMap();
 
-    void GetItemBonusArtifact(const Character *owner, CharacterAttribute attrToGet, int *bonusSum) const;
-    void GetItemBonusSpecialEnchantment(const Character *owner, CharacterAttribute attrToGet, int *additiveBonus, int *halfSkillBonus) const;
+    void GetItemBonusArtifact(const Character *owner, Attribute attrToGet, int *bonusSum) const;
+    void GetItemBonusSpecialEnchantment(const Character *owner, Attribute attrToGet, int *additiveBonus, int *halfSkillBonus) const;
 
     inline void ResetEnchantAnimation() { flags &= ~ITEM_ENCHANT_ANIMATION_MASK; }
     inline bool ItemEnchanted() const {
@@ -39,7 +39,7 @@ struct Item {
         return (flags & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_PURPLE;
     }
 
-    bool IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet);
+    bool IsRegularEnchanmentForAttribute(Attribute attrToGet);
 
     inline bool IsBroken() const { return flags & ITEM_BROKEN; }
     inline void SetBroken() { flags |= ITEM_BROKEN; }
@@ -62,7 +62,7 @@ struct Item {
      *                                  for items that are not worn or don't have an associated skill (scrolls, gems,
      *                                  boots, potions, reagents, etc).
      */
-    CharacterSkillType skill() const;
+    Skill skill() const;
     const std::string& GetIconName() const;
     uint8_t GetDamageDice() const;
     uint8_t GetDamageRoll() const;
@@ -126,12 +126,18 @@ struct Item {
      */
     void postGenerate(ItemSource source);
 
+    /**
+     * @return                          Whether the item will work if equipped. Must not be broken, and must have
+     *                                  charges if it's a wand.
+     */
+    bool isFunctional() const;
+
     ItemId itemId = ITEM_NULL;
     int potionPower = 0; // Only for potions.
     int goldAmount = 0; // Only for gold.
 
     // TODO(captainurist): introduce ATTRIBUTE_NULL?
-    std::optional<CharacterAttribute> standardEnchantment; // Standard (attribute) enchantment, if any.
+    std::optional<Attribute> standardEnchantment; // Standard (attribute) enchantment, if any.
     int standardEnchantmentStrength = 0; // Attribute enchantment strength - bonus value for the attribute.
     ItemEnchantment specialEnchantment = ITEM_ENCHANTMENT_NULL; // Special named enchantment, if any.
     int numCharges = 0; // Number of wand charges, wand disappears when this gets down to 0.

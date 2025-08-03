@@ -333,7 +333,7 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int vertical
         engine->callObserver->notify(CALL_GUIWINDOW_DRAWTEXT, std::string(text));
     }
     int width = this->uFrameWidth - horizontalMargin;
-    std::string resString = pFont->FitTextInAWindow(text, this->uFrameWidth, horizontalMargin);
+    std::string resString = pFont->WrapText(text, this->uFrameWidth, horizontalMargin);
     std::istringstream stream(resString);
     std::string line;
     int x = horizontalMargin + this->uFrameX;
@@ -341,7 +341,7 @@ void GUIWindow::DrawTitleText(GUIFont *pFont, int horizontalMargin, int vertical
     Color lastcolor = color;
     while (std::getline(stream, line)) {
         int x_offset = pFont->AlignText_Center(width, line);
-        lastcolor = pFont->DrawTextLine(line, lastcolor, color, {x + x_offset, y}, render->GetRenderDimensions().w);
+        lastcolor = pFont->DrawTextLine(line, lastcolor, color, {x + x_offset, y});
         y += pFont->GetHeight() - lineSpacing;
     }
 }
@@ -771,11 +771,11 @@ bool isHoldingMouseRightButton() {
     return holdingMouseRightButton;
 }
 
-Color GetSkillColor(CharacterClass uPlayerClass, CharacterSkillType uPlayerSkillType, CharacterSkillMastery skill_mastery) {
+Color GetSkillColor(Class uPlayerClass, Skill uPlayerSkillType, Mastery skill_mastery) {
     if (skillMaxMasteryPerClass[uPlayerClass][uPlayerSkillType] >= skill_mastery) {
         return ui_character_skillinfo_can_learn;
     }
-    for (CharacterClass promotionClass : promotionsForClass(uPlayerClass)) {
+    for (Class promotionClass : promotionsForClass(uPlayerClass)) {
         if (skillMaxMasteryPerClass[promotionClass][uPlayerSkillType] >= skill_mastery) {
             return ui_character_skillinfo_can_learn_gm;
         }
@@ -1064,15 +1064,15 @@ void MainMenuUI_LoadFontsAndSomeStuff() {
     //     pSRZBufferLineOffsets[i] = 640 * i;  // must be 640 - needs sorting
     // }
     if (!assets->pFontArrus)
-        assets->pFontArrus = GUIFont::LoadFont("arrus.fnt", "FONTPAL");
+        assets->pFontArrus = GUIFont::LoadFont("arrus.fnt");
     if (!assets->pFontLucida)
-        assets->pFontLucida = GUIFont::LoadFont("lucida.fnt", "FONTPAL");
+        assets->pFontLucida = GUIFont::LoadFont("lucida.fnt");
     if (!assets->pFontCreate)
-        assets->pFontCreate = GUIFont::LoadFont("create.fnt", "FONTPAL");
+        assets->pFontCreate = GUIFont::LoadFont("create.fnt");
     if (!assets->pFontSmallnum)
-        assets->pFontSmallnum = GUIFont::LoadFont("smallnum.fnt", "FONTPAL");
+        assets->pFontSmallnum = GUIFont::LoadFont("smallnum.fnt");
     if (!assets->pFontComic)
-        assets->pFontComic = GUIFont::LoadFont("comic.fnt", "FONTPAL");
+        assets->pFontComic = GUIFont::LoadFont("comic.fnt");
 }
 
 static void LoadPartyBuffIcons() {
@@ -1182,7 +1182,7 @@ void UI_Create() {
     pBtn_CastSpell = pPrimaryWindow->CreateButton("Game_CastSpell", {476, 450}, game_ui_btn_cast->size(), 1, 0,
                                                   UIMSG_SpellBookWindow, 0, Io::InputAction::Cast,
                                                   localization->GetString(LSTR_CAST_SPELL), { game_ui_btn_cast });
-    pBtn_Rest = pPrimaryWindow->CreateButton({518, 450}, game_ui_btn_rest->size(), 1, 0,
+    pBtn_Rest = pPrimaryWindow->CreateButton("Game_Rest", {518, 450}, game_ui_btn_rest->size(), 1, 0,
                                              UIMSG_RestWindow, 0, Io::InputAction::Rest,
                                              localization->GetString(LSTR_REST), { game_ui_btn_rest });
     pBtn_QuickReference = pPrimaryWindow->CreateButton({560, 450}, game_ui_btn_quickref->size(), 1, 0,
@@ -1205,7 +1205,7 @@ std::string NameAndTitle(std::string_view name, std::string_view title) {
 }
 
 
-std::string NameAndTitle(std::string_view name, CharacterClass class_type) {
+std::string NameAndTitle(std::string_view name, Class class_type) {
     return NameAndTitle(
         name,
         localization->GetClassName(class_type)

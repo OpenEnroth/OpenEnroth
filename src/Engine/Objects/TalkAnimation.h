@@ -11,6 +11,6 @@ class TalkAnimation {
     int currentFrameIndex() const;
 
  private:
-    CharacterPortrait _currentPortrait = PORTRAIT_INVALID;
+    PortraitId _currentPortrait = PORTRAIT_INVALID;
     Duration _currentTime;
 };

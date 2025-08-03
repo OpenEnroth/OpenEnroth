@@ -40,6 +40,7 @@ set(ENGINE_OBJECTS_HEADERS
         NPCEnumFunctions.h
         ObjectList.h
         Character.h
+        CharacterConditions.h
         CharacterEnums.h
         CharacterEnumFunctions.h
         SpriteObject.h

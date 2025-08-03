@@ -197,9 +197,17 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
                 savedEventStep = step + 1;
                 return -1;
             }
-            engine->_teleportPoint.setTeleportTarget(Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
+
+            // TODO(pskelton): Fix #2117 this should be a data mod - stop it overwriting the teleport point
+            if (!(engine->_indoor->filename == "d25.blv" && _eventId == 451 && engine->_teleportPoint.isValid()))
+                engine->_teleportPoint.setTeleportTarget(Vec3f(ir.data.move_map_descr.x, ir.data.move_map_descr.y, ir.data.move_map_descr.z),
                                                      (ir.data.move_map_descr.yaw != -1) ? (ir.data.move_map_descr.yaw & TrigLUT.uDoublePiMask) : -1,
                                                      ir.data.move_map_descr.pitch, ir.data.move_map_descr.zspeed);
+
+            // TODO(pskelton): Fix #2117 this should be a data mod
+            if (engine->_indoor->filename == "d25.blv" && _eventId == 451 && ir.step == 1)
+                ir.str = "out06.odm";
+
             if (ir.str[0] == '0') { // teleport within map
                 if (engine->_teleportPoint.isValid()) {
                     engine->_teleportPoint.doTeleport(false);
@@ -308,8 +316,9 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             // character target wasn't properly set in the script. Thus, we don't even check `_who` here and just try
             // to take the item from all characters. See issues #1808 and #1912.
             if (ir.data.variable_descr.type == VAR_PlayerItemInHands/* && (_who == CHOOSE_PARTY || _who == CHOOSE_ACTIVE)*/) {
+                ItemId itemId = static_cast<ItemId>(ir.data.variable_descr.value);
                 for (Character &character : pParty->pCharacters) {
-                    if (character.hasItem((ItemId)ir.data.variable_descr.value, 1)) {
+                    if (pParty->pPickedItem.itemId == itemId || character.inventory.find(itemId)) {
                         character.SubtractVariable(ir.data.variable_descr.type, ir.data.variable_descr.value);
                         break;  // Only take one item.
                     }

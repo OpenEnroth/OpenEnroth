@@ -485,7 +485,7 @@ void Game::processQueuedMessages() {
                     continue;
                 }
 
-                render->ClearZBuffer();
+                render->ClearHitMap();
                 if (current_screen_type == SCREEN_GAME) {
                     if (!pGUIWindow_CastTargetedSpell) {  // Draw Menu
                         new OnButtonClick2({602, 450}, {0, 0}, pBtn_GameSettings, std::string(), false);
@@ -566,7 +566,7 @@ void Game::processQueuedMessages() {
                                     if (currentRestType != REST_NONE) {
                                         Rest(remainingRestTime);
                                         for (Character &character : pParty->pCharacters) {
-                                            character.conditions.Reset(CONDITION_SLEEP);
+                                            character.conditions.reset(CONDITION_SLEEP);
                                         }
                                     }
                                     if (rest_ui_sky_frame_current) {
@@ -637,14 +637,8 @@ void Game::processQueuedMessages() {
                                     current_screen_type = SCREEN_GAME;
                                     continue;
                                 case SCREEN_CHANGE_LOCATION: // escape
-                                    if (pParty->pos.x < -22528)
-                                        pParty->pos.x = -22528;
-                                    if (pParty->pos.x > 22528)
-                                        pParty->pos.x = 22528;
-                                    if (pParty->pos.y < -22528)
-                                        pParty->pos.y = -22528;
-                                    if (pParty->pos.y > 22528)
-                                        pParty->pos.y = 22528;
+                                    pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
+                                    pParty->pos.y = std::clamp(pParty->pos.y, -maxPartyAxisDistance, maxPartyAxisDistance);
                                     pMediaPlayer->Unload();
                                     DialogueEnding();
                                     onEscape();
@@ -715,7 +709,7 @@ void Game::processQueuedMessages() {
                 DialogueEnding();
 
                 if (engine->_teleportPoint.isValid()) {
-                    if (!engine->_teleportPoint.getTeleportMap().starts_with('0')) {
+                    if (!engine->_teleportPoint.getTeleportMap().starts_with('0')) { // '0' means teleportation within the current map.
                         //pGameLoadingUI_ProgressBar->Initialize(GUIProgressBar::TYPE_Box);
                         bool leavingArena = engine->_currentLoadedMapId == MAP_ARENA;
                         onMapLeave();
@@ -723,7 +717,6 @@ void Game::processQueuedMessages() {
                         if (leavingArena)
                             pParty->GetPlayingTime() += Duration::fromDays(4);
                     } else {
-                        // TODO(captainurist): mm7 map names never start with '0', what is this about?
                         engine->_teleportPoint.doTeleport(true);
                         engine->_teleportPoint.invalidate();
                     }
@@ -758,14 +751,8 @@ void Game::processQueuedMessages() {
                 travelMapId = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
                 if (!engine->IsUnderwater() && pParty->bFlying || travelMapId == MAP_INVALID) {
                     PlayButtonClickSound();
-                    if (pParty->pos.x < -22528)
-                        pParty->pos.x = -22528;
-                    if (pParty->pos.x > 22528)
-                        pParty->pos.x = 22528;
-                    if (pParty->pos.y < -22528)
-                        pParty->pos.y = -22528;
-                    if (pParty->pos.y > 22528)
-                        pParty->pos.y = 22528;
+                    pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
+                    pParty->pos.y = std::clamp(pParty->pos.y, -maxPartyAxisDistance, maxPartyAxisDistance);;
                     DialogueEnding();
                     current_screen_type = SCREEN_GAME;
                 } else {
@@ -794,14 +781,8 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_CancelTravelByFoot:
                 PlayButtonClickSound();
-                if (pParty->pos.x < -22528)
-                    pParty->pos.x = -22528;
-                if (pParty->pos.x > 22528)
-                    pParty->pos.x = 22528;
-                if (pParty->pos.y < -22528)
-                    pParty->pos.y = -22528;
-                if (pParty->pos.y > 22528)
-                    pParty->pos.y = 22528;
+                pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
+                pParty->pos.y = std::clamp(pParty->pos.y, -maxPartyAxisDistance, maxPartyAxisDistance);
                 DialogueEnding();
                 current_screen_type = SCREEN_GAME;
                 continue;
@@ -813,7 +794,7 @@ void Game::processQueuedMessages() {
                 if (type == OBJECT_Actor) {
                     interactionPossible = pActors[id].aiState == Dead;
                 }
-                if (type == OBJECT_Item) {
+                if (type == OBJECT_Sprite) {
                     interactionPossible = !(pObjectList->pObjects[pSpriteObjects[id].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE);
                 }
                 if (type == OBJECT_Decoration) {
@@ -1087,7 +1068,7 @@ void Game::processQueuedMessages() {
                 pParty->restAndHeal();
                 pParty->days_played_without_rest = 0;
                 for (Character &character : pParty->pCharacters) {
-                    character.conditions.Set(CONDITION_SLEEP, Time::fromTicks(1));
+                    character.conditions.set(CONDITION_SLEEP, Time::fromTicks(1));
                 }
                 continue;
             }
@@ -1158,7 +1139,7 @@ void Game::processQueuedMessages() {
                     }
                 } else {
                     for (Character &character : pParty->pCharacters) {
-                        character.conditions.Set(CONDITION_SLEEP, pParty->GetPlayingTime());
+                        character.conditions.set(CONDITION_SLEEP, pParty->GetPlayingTime());
                     }
                     MapId mapIdx = engine->_currentLoadedMapId;
                     assert(mapIdx != MAP_INVALID);
@@ -1167,7 +1148,7 @@ void Game::processQueuedMessages() {
                     //    mapIdx = static_cast<MAP_TYPE>(grng->random(pMapStats->uNumMaps + 1));
                     MapInfo *pMapInfo = &pMapStats->pInfos[mapIdx];
 
-                    if (grng->random(100) + 1 <= pMapInfo->encounterChance) {
+                    if (grng->random(100) + 1 <= pMapInfo->encounterChance && !engine->config->debug.NoActors.value()) {
                         v91 = grng->random(100);
                         v92 = pMapInfo->encounter1Chance;
                         v93 = v91 + 1;
@@ -1182,7 +1163,7 @@ void Game::processQueuedMessages() {
 
                         if (encounter_index) {
                             pPlayerNum = grng->random(4);
-                            pParty->pCharacters[pPlayerNum].conditions.Reset(CONDITION_SLEEP);
+                            pParty->pCharacters[pPlayerNum].conditions.reset(CONDITION_SLEEP);
                             Rest(Duration::fromHours(1) + Duration::fromMinutes(grng->random(6)));
                             remainingRestTime = Duration();
                             currentRestType = REST_NONE;
@@ -1199,7 +1180,7 @@ void Game::processQueuedMessages() {
                     pParty->restAndHeal();
                     pParty->days_played_without_rest = 0;
                     for (Character &character : pParty->pCharacters) {
-                        character.conditions.Set(CONDITION_SLEEP, Time::fromTicks(1));
+                        character.conditions.set(CONDITION_SLEEP, Time::fromTicks(1));
                     }
                 }
                 continue;
@@ -1240,7 +1221,7 @@ void Game::processQueuedMessages() {
                 int skill_count = 0;
                 int uAction = 0;
                 for (MagicSchool page : allMagicSchools()) {
-                    CharacterSkillType skill = skillForMagicSchool(page);
+                    Skill skill = skillForMagicSchool(page);
                     if (pParty->activeCharacter().pActiveSkills[skill] || engine->config->debug.AllMagic.value()) {
                         if (pParty->activeCharacter().lastOpenedSpellbookPage == page)
                             uAction = skill_count;
@@ -1397,7 +1378,7 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_SkillUp:
             {
-                CharacterSkillType skill = static_cast<CharacterSkillType>(uMessageParam);
+                Skill skill = static_cast<Skill>(uMessageParam);
                 Character *character = &pParty->activeCharacter();
                 CombinedSkillValue skillValue = character->getSkillValue(skill);
                 int cost = skillValue.level() + 1;
@@ -1742,7 +1723,7 @@ void Game::gameLoop() {
                     pParty->bTurnBasedModeOn = false;
                 }
                 for (Character &character : pParty->pCharacters) {
-                    character.conditions.ResetAll();
+                    character.conditions.resetAll();
                     character.pCharacterBuffs.fill(
                         SpellBuff());  // ???
                                        // memset(pParty->pCharacters[i].conditions_times.data(),

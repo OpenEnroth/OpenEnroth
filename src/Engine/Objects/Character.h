@@ -28,10 +28,10 @@
 #include "Utility/IndexedBitset.h"
 
 #include "TalkAnimation.h"
+#include "CharacterConditions.h"
 
 class Actor;
 class GraphicsImage;
-struct CharacterConditions_MM7;
 
 enum class StealResult {
     STEAL_BUSTED = 0, // Failed to steal & was caught.
@@ -66,48 +66,6 @@ struct RegenData {
     int spRegen = 0; // From all sources, mp / 5 ticks.
 };
 
-class CharacterConditions {
- public: // NOLINT: no idea why linter is triggering here.
-    [[nodiscard]] bool Has(Condition condition) const {
-        return _times[condition].isValid();
-    }
-
-    [[nodiscard]] bool HasAny(std::initializer_list<Condition> conditions) const {
-        for (Condition condition : conditions)
-            if (Has(condition))
-                return true;
-        return false;
-    }
-
-    [[nodiscard]] bool HasNone(std::initializer_list<Condition> conditions) const {
-        return !HasAny(conditions);
-    }
-
-    void Reset(Condition condition) {
-        _times[condition] = Time();
-    }
-
-    void ResetAll() {
-        for (Time &time : _times)
-            time = Time();
-    }
-
-    void Set(Condition condition, Time time) {
-        _times[condition] = time;
-    }
-
-    [[nodiscard]] Time Get(Condition condition) const {
-        return _times[condition];
-    }
-
-    friend void snapshot(const CharacterConditions &src, CharacterConditions_MM7 *dst); // In EntitySnapshots.cpp.
-    friend void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst); // In EntitySnapshots.cpp.
-
- private:
-    /** Game time when condition has started. Zero means that the character doesn't have a condition. */
-    IndexedArray<Time, CONDITION_FIRST, CONDITION_LAST> _times;
-};
-
 class Character {
  public:
     Character();
@@ -137,7 +95,7 @@ class Character {
     int GetBaseAccuracy() const;
     int GetBaseSpeed() const;
     int GetBaseLuck() const;
-    int GetBaseStat(CharacterAttribute stat) const;
+    int GetBaseStat(Attribute stat) const;
 
     int GetBaseLevel() const;
     int GetActualLevel() const;
@@ -149,7 +107,7 @@ class Character {
     int GetActualAccuracy() const;
     int GetActualSpeed() const;
     int GetActualLuck() const;
-    int GetActualStat(CharacterAttribute stat) const;
+    int GetActualStat(Attribute stat) const;
 
     int GetActualAttack(bool onlyMainHandDmg) const;
     int GetMeleeDamageMinimal() const;
@@ -165,12 +123,9 @@ class Character {
     bool CanTrainToNextLevel();
     Color GetExperienceDisplayColor();
     int CalculateIncommingDamage(DamageType dmg_type, int amount);
-    ItemType GetEquippedItemEquipType(ItemSlot uEquipSlot) const;
-    CharacterSkillType GetEquippedItemSkillType(ItemSlot uEquipSlot) const;
     bool IsUnarmed() const;
-    bool HasItemEquipped(ItemSlot uEquipIndex) const;
-    bool HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const;
-    bool WearsItem(ItemId item_id, ItemSlot equip_type) const;
+    bool wearsEnchantedItem(ItemEnchantment enchantment) const;
+    bool wearsItem(ItemId itemId) const;
     int StealFromShop(Item *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);
     StealResult StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
@@ -180,10 +135,8 @@ class Character {
      * @offset 0x48DC1E
      */
     int receiveDamage(signed int amount, DamageType dmg_type);
-    int ReceiveSpecialAttackEffect(SpecialAttackType attType, Actor *pActor);
+    int ReceiveSpecialAttackEffect(MonsterSpecialAttack attType, Actor *pActor);
 
-    // TODO(captainurist): move closer to Spells data.
-    DamageType GetSpellDamageType(SpellId uSpellID) const;
     Duration GetAttackRecoveryTime(bool attackUsesBow) const;
 
     int GetHealth() const { return this->health; }
@@ -195,29 +148,29 @@ class Character {
     int GetActualAC() const;
     unsigned int GetBaseAge() const;
     unsigned int GetActualAge() const;
-    int GetBaseResistance(CharacterAttribute a2) const;
-    int GetActualResistance(CharacterAttribute resistance) const;
+    int GetBaseResistance(Attribute a2) const;
+    int GetActualResistance(Attribute resistance) const;
     void SetRecoveryTime(Duration sRecoveryTime);
     void RandomizeName();
     Condition GetMajorConditionIdx() const;
     int GetParameterBonus(int character_parameter) const;
     int GetSpecialItemBonus(ItemEnchantment enchantment) const;
-    int GetItemsBonus(CharacterAttribute attr, bool getOnlyMainHandDmg = false) const;
-    int GetMagicalBonus(CharacterAttribute a2) const;
-    int actualSkillLevel(CharacterSkillType skill) const;
-    CombinedSkillValue getActualSkillValue(CharacterSkillType skill) const;
-    int GetSkillBonus(CharacterAttribute a2) const;
+    int GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg = false) const;
+    int GetMagicalBonus(Attribute a2) const;
+    int actualSkillLevel(Skill skill) const;
+    CombinedSkillValue getActualSkillValue(Skill skill) const;
+    int GetSkillBonus(Attribute a2) const;
     Race GetRace() const;
     std::string GetRaceName() const;
-    CharacterSex GetSexByVoice() const;
+    Sex GetSexByVoice() const;
     void SetInitialStats();
     void SetSexByVoice();
-    void ChangeClass(CharacterClass classType);
-    CharacterSkillType GetSkillIdxByOrder(signed int order);
-    void DecreaseAttribute(CharacterAttribute eAttribute);
-    void IncreaseAttribute(CharacterAttribute eAttribute);
+    void ChangeClass(Class classType);
+    Skill GetSkillIdxByOrder(signed int order);
+    void DecreaseAttribute(Attribute eAttribute);
+    void IncreaseAttribute(Attribute eAttribute);
     void resetTempBonuses();
-    Color GetStatColor(CharacterAttribute uStat) const;
+    Color GetStatColor(Attribute uStat) const;
     bool DiscardConditionIfLastsLongerThan(Condition uCondition, Time time);
     MerchantPhrase SelectPhrasesTransaction(Item *pItem, HouseType building_type, HouseId houseId, ShopScreen ShopMenuType);
     int GetBodybuilding() const;
@@ -234,7 +187,7 @@ class Character {
      */
     int getLearningPercent() const;
 
-    bool HasSkill(CharacterSkillType skill) const;
+    bool HasSkill(Skill skill) const;
     bool CanAct() const;
     bool CanSteal() const;
     bool CanEquip_RaceAndAlignmentCheck(ItemId uItemID) const;
@@ -243,17 +196,17 @@ class Character {
     /**
      * @offset 0x49327B
      */
-    bool isClass(CharacterClass class_type, bool check_honorary = true) const;
+    bool isClass(Class class_type, bool check_honorary = true) const;
 
     /**
      * @offset 0x4948B1
      */
-    void playReaction(CharacterSpeech speech, int a3 = 0);
+    void playReaction(SpeechId speech, int a3 = 0);
 
     /**
      * @offset 0x494A25
      */
-    void playEmotion(CharacterPortrait newPortrait, Duration duration);
+    void playEmotion(PortraitId newPortrait, Duration duration);
     void ItemsPotionDmgBreak(int count);
     int GetConditionDaysPassed(Condition condition) const;
     bool NothingOrJustBlastersEquipped() const;
@@ -267,31 +220,26 @@ class Character {
     /**
      * @offset 0x43EE77
      */
-    bool hasUnderwaterSuitEquipped();
+    bool hasUnderwaterSuitEquipped() const;
 
-    /**
-     * @offset 0x43EE15
-     */
-    bool hasItem(ItemId uItemID, bool checkHeldItem) const;
     void OnInventoryLeftClick();
 
     bool characterHitOrMiss(Actor *pActor, int distancemod, int skillmod);
 
-    unsigned int GetMultiplierForSkillLevel(CharacterSkillType uSkillType, int mult1, int mult2, int mult3, int mult4) const;
+    unsigned int GetMultiplierForSkillLevel(Skill uSkillType, int mult1, int mult2, int mult3, int mult4) const;
     int CalculateMeleeDmgToEnemyWithWeapon(Item *weapon,
                                            MonsterId uTargetActorID,
                                            bool addOneDice);
-    bool wearsItemAnywhere(ItemId item_id) const;
-    float GetArmorRecoveryMultiplierFromSkillLevel(CharacterSkillType armour_skill_type, float param2, float param3, float param4, float param5) const;
+    float GetArmorRecoveryMultiplierFromSkillLevel(Skill armour_skill_type, float param2, float param3, float param4, float param5) const;
     void SetSkillReaction();
     void PlayAwardSound_Anim();
-    void PlayAwardSound_Anim_Face(CharacterSpeech speech);
+    void PlayAwardSound_Anim_Face(SpeechId speech);
     void PlayAwardSound_Anim97();
-    void PlayAwardSound_Anim97_Face(CharacterSpeech speech);
-    void AddSkillByEvent(CharacterSkillType, uint16_t addSkillValue);
+    void PlayAwardSound_Anim97_Face(SpeechId speech);
+    void AddSkillByEvent(Skill, uint16_t addSkillValue);
     void PlayAwardSound_AnimSubtract();
-    void PlayAwardSound_AnimSubtract_Face(CharacterSpeech speech);
-    void SubtractSkillByEvent(CharacterSkillType skill, uint16_t subSkillValue);
+    void PlayAwardSound_AnimSubtract_Face(SpeechId speech);
+    void SubtractSkillByEvent(Skill skill, uint16_t subSkillValue);
 
     bool IsWeak() const;
     bool IsDead() const;
@@ -317,32 +265,6 @@ class Character {
     inline bool IsMale() const { return GetSexByVoice() == SEX_MALE; }
     inline bool IsFemale() const { return !IsMale(); }
 
-    Item *GetMainHandItem();
-    Item *GetOffHandItem();
-    Item *GetBowItem();
-    Item *GetArmorItem();
-    Item *GetHelmItem();
-    Item *GetBeltItem();
-    Item *GetCloakItem();
-    Item *GetGloveItem();
-    Item *GetBootItem();
-    Item *GetAmuletItem();
-    Item *GetNthRingItem(int ringNum);
-    Item *GetItem(ItemSlot index);
-
-    const Item *GetMainHandItem() const;
-    const Item *GetOffHandItem() const;
-    const Item *GetBowItem() const;
-    const Item *GetArmorItem() const;
-    const Item *GetHelmItem() const;
-    const Item *GetBeltItem() const;
-    const Item *GetCloakItem() const;
-    const Item *GetGloveItem() const;
-    const Item *GetBootItem() const;
-    const Item *GetAmuletItem() const;
-    const Item *GetNthRingItem(int ringNum) const;
-    const Item *GetItem(ItemSlot index) const;
-
     // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.
     /**
      * @return                          0-based index of this character in the party.
@@ -355,8 +277,8 @@ class Character {
     bool setBeacon(int index, Duration duration);
 
     // TODO(captainurist): check all usages, most should be using getActualSkillValue.
-    CombinedSkillValue getSkillValue(CharacterSkillType skill) const;
-    void setSkillValue(CharacterSkillType skill, const CombinedSkillValue &value);
+    CombinedSkillValue getSkillValue(Skill skill) const;
+    void setSkillValue(Skill skill, const CombinedSkillValue &value);
 
     void setXP(int xp);
 
@@ -365,8 +287,8 @@ class Character {
     CharacterConditions conditions;
     uint64_t experience;
     std::string name;
-    CharacterSex uSex;
-    CharacterClass classType;
+    Sex uSex;
+    Class classType;
     uint8_t uCurrentFace;
     IndexedArray<int, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> _stats;
     IndexedArray<int, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> _statBonuses;
@@ -374,7 +296,7 @@ class Character {
     uint16_t uLevel;
     int16_t sLevelModifier;
     int16_t sAgeModifier;
-    IndexedArray<CombinedSkillValue, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> pActiveSkills;
+    IndexedArray<CombinedSkillValue, SKILL_FIRST, SKILL_LAST> pActiveSkills;
     IndexedBitset<1, 512> _achievedAwardsBits;
     IndexedArray<bool, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> bHaveSpell;
     IndexedArray<bool, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> _pureStatPotionUsed;
@@ -421,7 +343,7 @@ class Character {
     char _health_related;
     char uFullManaBonus;
     char _mana_related;
-    CharacterPortrait portrait;
+    PortraitId portrait;
     Duration portraitTimePassed;
     Duration portraitTimeLength;
     int16_t portraitImageIndex;

@@ -265,7 +265,7 @@ void CharacterUI_DrawPickedItemUnderlay(Vec2i offset);
 /**
  * @offset 0x417AD4
  */
-Color GetSkillColor(CharacterClass uPlayerClass, CharacterSkillType uPlayerSkillType, CharacterSkillMastery skill_mastery);
+Color GetSkillColor(Class uPlayerClass, Skill uPlayerSkillType, Mastery skill_mastery);
 
 void UI_OnMouseRightClick(Pointi mousePos);
 
@@ -297,7 +297,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
 
 
 std::string NameAndTitle(std::string_view name, std::string_view title);
-std::string NameAndTitle(std::string_view name, CharacterClass class_type);
+std::string NameAndTitle(std::string_view name, Class class_type);
 std::string NameAndTitle(std::string_view name, NpcProfession profession);
 std::string NameAndTitle(NPCData *npc);
 

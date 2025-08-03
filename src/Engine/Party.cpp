@@ -403,10 +403,10 @@ void Party::createDefaultParty() {
     this->pCharacters[0]._stats[ATTRIBUTE_ACCURACY] = 13;
     this->pCharacters[0]._stats[ATTRIBUTE_SPEED] = 14;
     this->pCharacters[0]._stats[ATTRIBUTE_LUCK] = 7;
-    this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_ARMSMASTER] = CombinedSkillValue::novice();
-    this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_BOW] = CombinedSkillValue::novice();
-    this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_SWORD] = CombinedSkillValue::novice();
+    this->pCharacters[0].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pCharacters[0].pActiveSkills[SKILL_ARMSMASTER] = CombinedSkillValue::novice();
+    this->pCharacters[0].pActiveSkills[SKILL_BOW] = CombinedSkillValue::novice();
+    this->pCharacters[0].pActiveSkills[SKILL_SWORD] = CombinedSkillValue::novice();
 
     this->pCharacters[1].name = localization->GetString(LSTR_NAME_RODERICK);
     this->pCharacters[1].uPrevFace = 3;
@@ -420,10 +420,10 @@ void Party::createDefaultParty() {
     this->pCharacters[1]._stats[ATTRIBUTE_ACCURACY] = 13;
     this->pCharacters[1]._stats[ATTRIBUTE_SPEED] = 13;
     this->pCharacters[1]._stats[ATTRIBUTE_LUCK] = 13;
-    this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_STEALING] = CombinedSkillValue::novice();
-    this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_DAGGER] = CombinedSkillValue::novice();
-    this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_TRAP_DISARM] = CombinedSkillValue::novice();
+    this->pCharacters[1].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pCharacters[1].pActiveSkills[SKILL_STEALING] = CombinedSkillValue::novice();
+    this->pCharacters[1].pActiveSkills[SKILL_DAGGER] = CombinedSkillValue::novice();
+    this->pCharacters[1].pActiveSkills[SKILL_TRAP_DISARM] = CombinedSkillValue::novice();
 
     this->pCharacters[2].name = localization->GetString(LSTR_NAME_SERENA);
     this->pCharacters[2].uPrevFace = 14;
@@ -437,10 +437,10 @@ void Party::createDefaultParty() {
     this->pCharacters[2]._stats[ATTRIBUTE_ACCURACY] = 7;
     this->pCharacters[2]._stats[ATTRIBUTE_SPEED] = 13;
     this->pCharacters[2]._stats[ATTRIBUTE_LUCK] = 7;
-    this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_ALCHEMY] = CombinedSkillValue::novice();
-    this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_BODY] = CombinedSkillValue::novice();
-    this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_MACE] = CombinedSkillValue::novice();
+    this->pCharacters[2].pActiveSkills[SKILL_ALCHEMY] = CombinedSkillValue::novice();
+    this->pCharacters[2].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pCharacters[2].pActiveSkills[SKILL_BODY] = CombinedSkillValue::novice();
+    this->pCharacters[2].pActiveSkills[SKILL_MACE] = CombinedSkillValue::novice();
 
     this->pCharacters[3].name = localization->GetString(LSTR_NAME_ALEXIS);
     this->pCharacters[3].uPrevFace = 10;
@@ -454,10 +454,10 @@ void Party::createDefaultParty() {
     this->pCharacters[3]._stats[ATTRIBUTE_ACCURACY] = 13;
     this->pCharacters[3]._stats[ATTRIBUTE_SPEED] = 13;
     this->pCharacters[3]._stats[ATTRIBUTE_LUCK] = 7;
-    this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR] = CombinedSkillValue::novice();
-    this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_FIRE] = CombinedSkillValue::novice();
-    this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue::novice();
+    this->pCharacters[3].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pCharacters[3].pActiveSkills[SKILL_AIR] = CombinedSkillValue::novice();
+    this->pCharacters[3].pActiveSkills[SKILL_FIRE] = CombinedSkillValue::novice();
+    this->pCharacters[3].pActiveSkills[SKILL_STAFF] = CombinedSkillValue::novice();
 
     for (Character &pCharacter : pCharacters) {
         if (pCharacter.classType == CLASS_KNIGHT)
@@ -531,7 +531,7 @@ void Party::Reset() {
 
     for (Character &player : this->pCharacters) {
         player.timeToRecovery = 0_ticks;
-        player.conditions.ResetAll();
+        player.conditions.resetAll();
 
         for (SpellBuff &buff : player.pCharacterBuffs) {
             buff.Reset();
@@ -717,23 +717,23 @@ void Party::restAndHeal() {
             buff.Reset();
 
         pPlayer->resetTempBonuses();
-        if (pPlayer->conditions.HasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+        if (pPlayer->conditions.hasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
             continue;
         }
 
-        pPlayer->conditions.Reset(CONDITION_UNCONSCIOUS);
-        pPlayer->conditions.Reset(CONDITION_DRUNK);
-        pPlayer->conditions.Reset(CONDITION_FEAR);
-        pPlayer->conditions.Reset(CONDITION_SLEEP);
-        pPlayer->conditions.Reset(CONDITION_WEAK);
+        pPlayer->conditions.reset(CONDITION_UNCONSCIOUS);
+        pPlayer->conditions.reset(CONDITION_DRUNK);
+        pPlayer->conditions.reset(CONDITION_FEAR);
+        pPlayer->conditions.reset(CONDITION_SLEEP);
+        pPlayer->conditions.reset(CONDITION_WEAK);
 
         pPlayer->timeToRecovery = 0_ticks;
         pPlayer->health = pPlayer->GetMaxHealth();
         pPlayer->mana = pPlayer->GetMaxMana();
         if (pPlayer->classType == CLASS_LICH) {
             have_vessels_soul = false;
-            for (const Item &jar : pPlayer->inventory.items(ITEM_QUEST_LICH_JAR_FULL))
-                if (jar.lichJarCharacterIndex == pPlayerID)
+            for (InventoryEntry jar : pPlayer->inventory.entries(ITEM_QUEST_LICH_JAR_FULL))
+                if (jar->lichJarCharacterIndex == pPlayerID)
                     have_vessels_soul = true;
             if (!have_vessels_soul) {
                 pPlayer->health = pPlayer->GetMaxHealth() / 2;
@@ -741,20 +741,20 @@ void Party::restAndHeal() {
             }
         }
 
-        if (pPlayer->conditions.Has(CONDITION_ZOMBIE)) {
+        if (pPlayer->conditions.has(CONDITION_ZOMBIE)) {
             pPlayer->mana = 0;
             pPlayer->health /= 2;
-        } else if (pPlayer->conditions.HasAny({CONDITION_POISON_SEVERE, CONDITION_DISEASE_SEVERE})) {
+        } else if (pPlayer->conditions.hasAny({CONDITION_POISON_SEVERE, CONDITION_DISEASE_SEVERE})) {
             pPlayer->health /= 4;
             pPlayer->mana /= 4;
-        } else if (pPlayer->conditions.HasAny({CONDITION_POISON_MEDIUM, CONDITION_DISEASE_MEDIUM})) {
+        } else if (pPlayer->conditions.hasAny({CONDITION_POISON_MEDIUM, CONDITION_DISEASE_MEDIUM})) {
             pPlayer->health /= 3;
             pPlayer->mana /= 3;
-        } else if (pPlayer->conditions.HasAny({CONDITION_POISON_WEAK, CONDITION_DISEASE_WEAK})) {
+        } else if (pPlayer->conditions.hasAny({CONDITION_POISON_WEAK, CONDITION_DISEASE_WEAK})) {
             pPlayer->health /= 2;
             pPlayer->mana /= 2;
         }
-        if (pPlayer->conditions.Has(CONDITION_INSANE))
+        if (pPlayer->conditions.has(CONDITION_INSANE))
             pPlayer->mana = 0;
         updateCharactersAndHirelingsEmotions();
     }
@@ -851,7 +851,7 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
         // Count active characters
         int pActivePlayerCount = 0;
         for (Character &player : this->pCharacters) {
-            if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+            if (player.conditions.hasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                 pActivePlayerCount++;
             }
         }
@@ -859,7 +859,7 @@ void Party::GivePartyExp(unsigned int pEXPNum) {
         if (pActivePlayerCount) {
             int perCharXP = static_cast<int>(pEXPNum) / pActivePlayerCount;
             for (Character &player : this->pCharacters) {
-                if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+                if (player.conditions.hasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                     int playermodexp = perCharXP + perCharXP * player.getLearningPercent() / 100;
                     player.setXP(player.experience + playermodexp);
                 }
@@ -1044,8 +1044,8 @@ PartyAction ActionQueue::Next() {
 
 void Party::giveFallDamage(int distance) {
     for (Character &player : pParty->pCharacters) {  // receive falling damage
-        if (!player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-            !player.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {
+        if (!player.wearsEnchantedItem(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
+            !player.wearsItem(ITEM_ARTIFACT_HERMES_SANDALS)) {
             player.receiveDamage((int)((distance) * (uint64_t)(player.GetMaxHealth() / 10)) / 256, DAMAGE_PHYSICAL);
             Duration bonus = Duration::fromTicks(20 - player.GetParameterBonus(player.GetActualEndurance()));
             player.SetRecoveryTime(bonus * debug_non_combat_recovery_mul * flt_debugrecmod3);

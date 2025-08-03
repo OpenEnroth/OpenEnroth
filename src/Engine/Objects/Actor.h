@@ -137,7 +137,7 @@ class Actor {
                                  AIDirection *pOut, int PreferedZ);
     static void Explode(unsigned int uActorID);
     static void AI_RangedAttack(unsigned int uActorID, AIDirection *a2,
-                                int type, ActorAbility a4);
+                                MonsterProjectile type, ActorAbility a4);
     static void AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                                SpellId uSpellID, ActorAbility a4, CombinedSkillValue uSkill);
     static void ActorDamageFromMonster(Pid attacker_id, unsigned int actor_id,
@@ -261,7 +261,7 @@ void npcSetItem(int npc, ItemId item, int a3);
  */
 void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag, bool bValue);
 bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID);
-void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, Duration duration);
+void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Duration duration);
 void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int countOverride, int aggro);
 /**
  * @offset 0x438F8F

@@ -176,29 +176,42 @@ class Inventory {
     [[nodiscard]] auto entries(this auto &&self) {
         return std::views::iota(0, self._capacity)
             | std::views::filter([&self](int i) { return self._records[i].item.itemId != ITEM_NULL; })
-            | std::views::transform([&self](int i) { return std::conditional_t<std::is_const_v<std::remove_reference_t<decltype(self)>>, InventoryConstEntry, InventoryEntry>(&self, i); });
-    }
-
-    /**
-     * @param self                      `*this`.
-     * @return                          A range of `Item` objects for items in this inventory. Returned items are never
-     *                                  `ITEM_NULL`.
-     */
-    [[nodiscard]] auto items(this auto &&self) {
-        return self.availableRecords()
-            | std::views::filter([](auto &&record) { return record.item.itemId != ITEM_NULL; })
-            | std::views::transform(&InventoryRecord::item);
+            | std::views::transform([&self](int i) { return self.entryAt(i); });
     }
 
     /**
      * @param self                      `*this`.
      * @param itemId                    Item id to filter for.
-     * @return                          A range of `Item` objects for items in this inventory with the given `itemId`.
+     * @return                          A range of `InventoryEntry` or `InventoryConstEntry` objects for items in this
+     *                                  inventory with the given `itemId`. Returned entries are never invalid.
      */
-    [[nodiscard]] auto items(this auto &&self, ItemId itemId) {
-        return self.availableRecords()
-            | std::views::filter([itemId](auto &&record) { return record.item.itemId == itemId; })
-            | std::views::transform(&InventoryRecord::item);
+    [[nodiscard]] auto entries(this auto &&self, ItemId itemId) {
+        return std::views::iota(0, self._capacity)
+            | std::views::filter([&self, itemId](int i) { return self._records[i].item.itemId == itemId; })
+            | std::views::transform([&self](int i) { return self.entryAt(i); });
+    }
+
+    /**
+     * @param self                      `*this`.
+     * @return                          A range of `InventoryEntry` or `InventoryConstEntry` objects for all equipped
+     *                                  items in this inventory. Returned entries are never invalid.
+     */
+    [[nodiscard]] auto equipment(this auto &&self) {
+        return self._equipment.indices()
+            | std::views::filter([&self](ItemSlot i) { return self._equipment[i] != 0; })
+            | std::views::transform([&self](ItemSlot i) { return self.entryAt(self._equipment[i] - 1); });
+    }
+
+    /**
+     * @param self                      `*this`.
+     * @return                          A range of `InventoryEntry` or `InventoryConstEntry` objects for all equipped
+     *                                  items in this inventory that are functional (non-broken and not out of charges).
+     *                                  Returned entries are never invalid.
+     */
+    [[nodiscard]] auto functionalEquipment(this auto &&self) {
+        return self._equipment.indices()
+            | std::views::filter([&self](ItemSlot i) { return self._equipment[i] != 0 && self._records[self._equipment[i] - 1].item.isFunctional(); })
+            | std::views::transform([&self](ItemSlot i) { return self.entryAt(self._equipment[i] - 1); });
     }
 
     /**
@@ -219,6 +232,20 @@ class Inventory {
     [[nodiscard]] InventoryEntry entry(ItemSlot slot);
     [[nodiscard]] InventoryConstEntry entry(ItemSlot slot) const {
         return const_cast<Inventory *>(this)->entry(slot);
+    }
+
+    /**
+     * @param slot                      Equipment slot to look up an item.
+     * @return                          Inventory entry for an item equipped in `slot`, or an invalid entry if that slot
+     *                                  is empty or if the item in the slot is non-functional (broken or out of
+     *                                  charges).
+     */
+    [[nodiscard]] InventoryEntry functionalEntry(ItemSlot slot) {
+        InventoryEntry result = entry(slot);
+        return result && result->isFunctional() ? result : InventoryEntry();
+    }
+    [[nodiscard]] InventoryConstEntry functionalEntry(ItemSlot slot) const {
+        return const_cast<Inventory *>(this)->functionalEntry(slot);
     }
 
     /**
@@ -292,6 +319,14 @@ class Inventory {
         return std::span(self._records.data(), self._records.data() + self._capacity);
     }
 
+    InventoryEntry entryAt(int index) {
+        return InventoryEntry(this, index);
+    }
+
+    InventoryConstEntry entryAt(int index) const {
+        return InventoryConstEntry(this, index);
+    }
+
  private:
     /** Inventory storage area size in cells. */
     Sizei _gridSize;
@@ -329,7 +364,6 @@ class ChestInventory : private Inventory {
     using Inventory::gridSize;
     using Inventory::gridRect;
     using Inventory::entries;
-    using Inventory::items;
     using Inventory::entry;
     using Inventory::canAdd;
     using Inventory::add;
@@ -362,8 +396,10 @@ class CharacterInventory : private Inventory {
     using Inventory::gridSize;
     using Inventory::gridRect;
     using Inventory::entries;
-    using Inventory::items;
+    using Inventory::equipment;
+    using Inventory::functionalEquipment;
     using Inventory::entry;
+    using Inventory::functionalEntry;
     using Inventory::canAdd;
     using Inventory::add;
     using Inventory::tryAdd;

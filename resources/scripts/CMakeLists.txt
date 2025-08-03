@@ -16,6 +16,7 @@ set(SCRIPTS_SOURCES
     dev/commands/command_utils.lua
     dev/commands/condition_command.lua
     dev/commands/config_command.lua
+    dev/commands/debug_command.lua
     dev/commands/food_command.lua
     dev/commands/game_commands.lua
     dev/commands/gold_command.lua

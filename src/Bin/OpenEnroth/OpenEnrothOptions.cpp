@@ -86,6 +86,7 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
 
     if (result.subcommand == SUBCOMMAND_RETRACE) {
         result.ramFsUserData = true; // No config & no user data if retracing.
+        result.quickStart = true;
 
         if (!traceDir.empty()) {
             for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(traceDir))
@@ -101,8 +102,10 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
             result.logLevel = LOG_ERROR; // Default log level for retracing is LOG_ERROR.
     }
 
-    if (result.subcommand == SUBCOMMAND_PLAY)
+    if (result.subcommand == SUBCOMMAND_PLAY) {
         result.ramFsUserData = true; // No config & no user data if playing a trace.
+        result.quickStart = true;
+    }
 
     return result;
 }
