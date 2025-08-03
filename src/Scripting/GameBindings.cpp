@@ -356,10 +356,26 @@ void GameBindings::_registerEnums(sol::state_view &solState, sol::table &table) 
         "LightPath", QBIT_LIGHT_PATH
     );
 
-    // Let's not expose all the item types for now. I feel like it's too early.
-    table.new_enum<false>("ItemType",
-        "LichJarFull", ITEM_QUEST_LICH_JAR_FULL
-    );
+    sol::table itemTypeEnum = solState.create_table();
+    std::vector<std::pair<std::string, ItemId>> sortedItems;
+
+    for (ItemId itemId : pItemTable->items.indices()) {
+        const ItemData& itemDesc = pItemTable->items[itemId];
+        if (!itemDesc.name.empty()) {
+            std::string luaKey = itemDesc.name;
+            std::replace(luaKey.begin(), luaKey.end(), ' ', '_');
+            sortedItems.emplace_back(luaKey, itemId);
+        }
+    }
+
+    // Sort alphabetically by name  
+    std::sort(sortedItems.begin(), sortedItems.end());
+
+    for (const auto& [name, id] : sortedItems) {
+        itemTypeEnum[name] = std::to_underlying(id);
+    }
+
+    table["ItemType"] = itemTypeEnum;
 }
 
 Character *getCharacterByIndex(int characterIndex) {

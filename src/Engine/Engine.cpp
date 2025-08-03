@@ -711,6 +711,9 @@ void Engine::MM7_Initialize() {
     pMediaPlayer = new MPlayer();
     pMediaPlayer->Initialize();
 
+    pItemTable = new ItemTable();
+    pItemTable->Initialize(engine->_gameResourceManager.get());
+
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 }
 
@@ -733,9 +736,6 @@ void Engine::SecondaryInitialization() {
 
     pHistoryTable = new HistoryTable();
     pHistoryTable->Initialize(engine->_gameResourceManager->getEventsFile("history.txt"));
-
-    pItemTable = new ItemTable();
-    pItemTable->Initialize(engine->_gameResourceManager.get());
 
     initializeHouses(engine->_gameResourceManager->getEventsFile("2dEvents.txt"));
 
