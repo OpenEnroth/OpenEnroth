@@ -1,14 +1,14 @@
 #include "GameBindings.h"
 
 #include <algorithm>
+#include <string>
+#include <utility>
 #include <string_view>
 #include <memory>
 #include <vector>
 #include <ranges>
 #include <optional>
 #include <sol/sol.hpp>
-#include <string>
-#include <utility>
 
 #include "Engine/Party.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
