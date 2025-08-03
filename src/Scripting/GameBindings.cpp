@@ -1,11 +1,14 @@
 #include "GameBindings.h"
 
+#include <algorithm>
 #include <string_view>
 #include <memory>
 #include <vector>
 #include <ranges>
 #include <optional>
 #include <sol/sol.hpp>
+#include <string>
+#include <utility>
 
 #include "Engine/Party.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
@@ -369,7 +372,7 @@ void GameBindings::_registerEnums(sol::state_view &solState, sol::table &table) 
         }
     }
 
-    // Sort alphabetically by name  
+    // Sort alphabetically by name
     std::sort(sortedItems.begin(), sortedItems.end());
 
     for (const auto& [name, id] : sortedItems) {
