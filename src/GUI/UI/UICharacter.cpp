@@ -1753,7 +1753,7 @@ void OnPaperdollLeftClick() {
     // int v8; // eax@29
     Skill pSkillType = SKILL_INVALID;
 
-    ItemType pEquipType = ITEM_TYPE_NONE;
+    ItemType pEquipType = ITEM_TYPE_INVALID;
     CastSpellInfo *pSpellInfo;
 
     InventoryEntry twohandedequip;
