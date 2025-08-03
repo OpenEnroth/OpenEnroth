@@ -1745,7 +1745,7 @@ void OnPaperdollLeftClick() {
     static int amuletx = 493;
     static int amulety = 91;
 
-    int slot = 32;
+    int cellSize = 32;
     ItemSlot pos = ITEM_SLOT_INVALID;
 
     // uint16_t v5; // ax@7
@@ -1799,12 +1799,6 @@ void OnPaperdollLeftClick() {
             return;
         }
 
-        if (pParty->pPickedItem.itemId == ITEM_QUEST_WETSUIT) {  // wetsuit check is done above
-            pParty->activeCharacter().EquipBody(ITEM_TYPE_ARMOUR);
-            WetsuitOn(pParty->activeCharacterIndex());
-            return;
-        }
-
         switch (pEquipType) {
             case ITEM_TYPE_BOW:
             case ITEM_TYPE_ARMOUR:
@@ -1813,25 +1807,45 @@ void OnPaperdollLeftClick() {
             case ITEM_TYPE_CLOAK:
             case ITEM_TYPE_GAUNTLETS:
             case ITEM_TYPE_BOOTS:
-            case ITEM_TYPE_AMULET:
-
+            case ITEM_TYPE_AMULET: {
                 if (!pParty->activeCharacter().HasSkill(pSkillType)) {  // hasnt got the skill to use that
                     pParty->activeCharacter().playReaction(SPEECH_CANT_EQUIP);
                     return;
                 }
 
-                if (pParty->activeCharacter().hasUnderwaterSuitEquipped() &&
-                    (pEquipType != ITEM_TYPE_ARMOUR || engine->IsUnderwater())) {  // cant put anything on wearing wetsuit
+                if (pParty->activeCharacter().hasUnderwaterSuitEquipped() && (pEquipType != ITEM_TYPE_ARMOUR || engine->IsUnderwater())) {  // cant put anything on wearing wetsuit
                     pAudioPlayer->playUISound(SOUND_error);
                     return;
                 }
 
-                pParty->activeCharacter().EquipBody(pEquipType);  // equips item
+                bool puttingWetsuitsOn = pParty->pPickedItem.itemId == ITEM_QUEST_WETSUIT;
+                bool takingWetsuitsOff = false;
 
-                if (pParty->pPickedItem.itemId == ITEM_QUEST_WETSUIT) // just taken wetsuit off
+                assert(itemSlotsForItemType(pEquipType).size() == 1);
+                ItemSlot slot = itemSlotsForItemType(pEquipType)[0];
+                if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(slot)) {
+                    Item tmpItem = pParty->activeCharacter().inventory.take(entry);
+                    takingWetsuitsOff = tmpItem.itemId == ITEM_QUEST_WETSUIT;
+                    pParty->activeCharacter().inventory.equip(slot, pParty->takeHoldingItem());
+                    pParty->setHoldingItem(tmpItem);
+                } else {
+                    // Need to check canEquip here b/c we can run out of inventory space. The branch above doesn't need
+                    // this check b/c we're freeing space first.
+                    if (pParty->activeCharacter().inventory.canEquip(slot)) {
+                        pParty->activeCharacter().inventory.equip(slot, pParty->takeHoldingItem());
+                    } else {
+                        pAudioPlayer->playUISound(SOUND_error); // Out of inventory space.
+                        return;
+                    }
+                }
+
+                if (puttingWetsuitsOn)
+                    WetsuitOn(pParty->activeCharacterIndex());
+                if (takingWetsuitsOff)
                     WetsuitOff(pParty->activeCharacterIndex());
 
                 return;
+            }
 
                 // ------------------------dress rings(одевание колец)----------------------------------
             case ITEM_TYPE_RING:
@@ -1842,9 +1856,6 @@ void OnPaperdollLeftClick() {
                 }
 
                 if (!bRingsShownInCharScreen) {  // rings not displayd
-                    //слоты для колец
-                    // equippos = 0;
-
                     for (ItemSlot equippos : allRingSlots()) {
                         if (pParty->activeCharacter().inventory.canEquip(equippos)) {
                             pParty->activeCharacter().inventory.equip(equippos, pParty->takeHoldingItem());
@@ -1854,8 +1865,10 @@ void OnPaperdollLeftClick() {
 
                     // cant fit rings so swap out
                     InventoryEntry freeslot = pParty->activeCharacter().inventory.entry(ITEM_SLOT_RING6);  // slot of last ring
-                    if (!freeslot)
-                        return; // TODO(captainurist): no ring in ITEM_SLOT_RING6, but also no space in inventory, what do we do in this case?
+                    if (!freeslot) {
+                        pAudioPlayer->playUISound(SOUND_error); // Out of inventory space.
+                        return;
+                    }
 
                     Item tmp = pParty->activeCharacter().inventory.take(freeslot);
                     pParty->activeCharacter().inventory.equip(ITEM_SLOT_RING6, pParty->takeHoldingItem());
@@ -1865,9 +1878,9 @@ void OnPaperdollLeftClick() {
                 } else {  // rings displayed if in ring area
                     for (int i = 0; i < 6; ++i) {
                         if (mousex >= RingsX[i] &&
-                            mousex <= (RingsX[i] + slot) &&
+                            mousex <= (RingsX[i] + cellSize) &&
                             mousey >= RingsY[i] &&
-                            mousey <= (RingsY[i] + slot)) {  // check against ring slots
+                            mousey <= (RingsY[i] + cellSize)) {  // check against ring slots
                             pos = ringSlot(i);
                         }
                     }
@@ -1910,8 +1923,10 @@ void OnPaperdollLeftClick() {
                         return;
                     }
                 } else {
-                    if (!pParty->activeCharacter().inventory.canEquip(ITEM_SLOT_OFF_HAND))
+                    if (!pParty->activeCharacter().inventory.canEquip(ITEM_SLOT_OFF_HAND)) {
+                        pAudioPlayer->playUISound(SOUND_error); // Out of inventory space.
                         return;
+                    }
                     if (!twohandedequip) {  // обычная установка щита на пустую руку
                         pParty->activeCharacter().inventory.equip(ITEM_SLOT_OFF_HAND, pParty->takeHoldingItem());
                         return;
@@ -1947,8 +1962,10 @@ void OnPaperdollLeftClick() {
                                 }
                                 break;
                             }
-                            if (!pParty->activeCharacter().inventory.canEquip(ITEM_SLOT_OFF_HAND))
+                            if (!pParty->activeCharacter().inventory.canEquip(ITEM_SLOT_OFF_HAND)) {
+                                pAudioPlayer->playUISound(SOUND_error); // Out of inventory space.
                                 return;
+                            }
                             pParty->activeCharacter().inventory.equip(ITEM_SLOT_OFF_HAND, pParty->takeHoldingItem());
                             if (pEquipType != ITEM_TYPE_WAND) return;
                             break;
@@ -1956,7 +1973,10 @@ void OnPaperdollLeftClick() {
                     }
                 }
                 if (!mainhandequip) {
-                    if (!pParty->activeCharacter().inventory.canEquip(ITEM_SLOT_MAIN_HAND)) return;
+                    if (!pParty->activeCharacter().inventory.canEquip(ITEM_SLOT_MAIN_HAND)) {
+                        pAudioPlayer->playUISound(SOUND_error); // Out of inventory space.
+                        return;
+                    }
                     pParty->activeCharacter().inventory.equip(ITEM_SLOT_MAIN_HAND, pParty->takeHoldingItem());
                     if (pEquipType != ITEM_TYPE_WAND) return;
                     break;
@@ -1989,15 +2009,15 @@ void OnPaperdollLeftClick() {
                     pParty->activeCharacter().inventory.equip(ITEM_SLOT_MAIN_HAND, pParty->takeHoldingItem());
                     pParty->setHoldingItem(tmp);
                 } else {
-                    if (pParty->activeCharacter().inventory.canEquip(ITEM_SLOT_MAIN_HAND)) {
-                        if (shieldequip) {  // взять двуручный меч когда есть
-                                            // щит(замещение щитом)
-                            Item tmp = pParty->activeCharacter().inventory.take(shieldequip);
-                            pParty->activeCharacter().inventory.equip(ITEM_SLOT_MAIN_HAND, pParty->takeHoldingItem());
-                            pParty->setHoldingItem(tmp);
-                        } else {
-                            pParty->activeCharacter().inventory.equip(ITEM_SLOT_MAIN_HAND, pParty->takeHoldingItem());
-                        }
+                    if (shieldequip) {
+                        Item tmp = pParty->activeCharacter().inventory.take(shieldequip);
+                        pParty->activeCharacter().inventory.equip(ITEM_SLOT_MAIN_HAND, pParty->takeHoldingItem());
+                        pParty->setHoldingItem(tmp);
+                    } else if (pParty->activeCharacter().inventory.canEquip(ITEM_SLOT_MAIN_HAND)) {
+                        pParty->activeCharacter().inventory.equip(ITEM_SLOT_MAIN_HAND, pParty->takeHoldingItem());
+                    } else {
+                        pAudioPlayer->playUISound(SOUND_error); // Out of inventory space.
+                        return;
                     }
                 }
                 return;
@@ -2018,23 +2038,23 @@ void OnPaperdollLeftClick() {
 
         if (mousey < 88 || mousey > 282) return;
 
-        if (mousex >= amuletx && mousex <= (amuletx + slot) &&
-            mousey >= amulety && mousey <= (amulety + 2 * slot)) {
+        if (mousex >= amuletx && mousex <= (amuletx + cellSize) &&
+            mousey >= amulety && mousey <= (amulety + 2 * cellSize)) {
             // amulet
             // pitem = pParty->activeCharacter().GetAmuletItem(); //9
             pos = ITEM_SLOT_AMULET;
         }
 
-        if (mousex >= glovex && mousex <= (glovex + slot) && mousey >= glovey &&
-            mousey <= (glovey + 2 * slot)) {
+        if (mousex >= glovex && mousex <= (glovex + cellSize) && mousey >= glovey &&
+            mousey <= (glovey + 2 * cellSize)) {
             // glove
             // pitem = pParty->activeCharacter().GetGloveItem(); //7
             pos = ITEM_SLOT_GAUNTLETS;
         }
 
         for (int i = 0; i < 6; ++i) {
-            if (mousex >= RingsX[i] && mousex <= (RingsX[i] + slot) &&
-                mousey >= RingsY[i] && mousey <= (RingsY[i] + slot)) {
+            if (mousex >= RingsX[i] && mousex <= (RingsX[i] + cellSize) &&
+                mousey >= RingsY[i] && mousey <= (RingsY[i] + cellSize)) {
                 // ring
                 // pitem = pParty->activeCharacter().GetNthRingItem(i); //10+i
                 pos = ringSlot(i);
