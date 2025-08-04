@@ -344,6 +344,27 @@ GAME_TEST(Issues, Issue2118) {
                 EXPECT_GT(item->potionPower, 0); // Potions were properly generated.
 }
 
+GAME_TEST(Issues, Issue2123) {
+    // Crash in collisions involving Dragons
+    test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+    constexpr Vec3f problemPoint(12122.4883, 3494.72949, 743.489258); // position of dragon where the collision used to fail
+
+    auto distTape = tapes.custom([&problemPoint] { return (pActors[0].pos - problemPoint).length(); });
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+
+    // Spawn a dragon & wait.
+    engine->config->debug.NoActors.setValue(false);
+    Actor* monster = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_DRAGON_A);
+    game.tick(300);
+
+    EXPECT_LE(distTape.min(), pActors[0].radius + 5.0f); // weve been close enough to trigger the collision
+    EXPECT_GT(distTape.max(), 2500.0f); // and managed to move away again without assert
+    EXPECT_GT(distTape.back(), distTape.front()); // should be further out than spawn point
+}
+
 GAME_TEST(Prs, Pr2157a) {
     // Test that we can't equip items when inventory is full.
     auto soundsTape = tapes.sounds();
