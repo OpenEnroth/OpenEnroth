@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;91a0fe3</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bb44e0b</span>
    </div>
   </td>
  </tr>
@@ -81,6 +81,7 @@ $(function() {
 <div class="textblock"><code>#include &lt;cassert&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;initializer_list&gt;</code><br />
+<code>#include &lt;utility&gt;</code><br />
 <code>#include &quot;<a class="el" href="CharacterEnums_8h.html">Engine/Objects/CharacterEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SpellEnums_8h.html">Engine/Spells/SpellEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Segment_8h.html">Utility/Segment.h</a>&quot;</code><br />
@@ -149,16 +150,18 @@ Functions</h2></td></tr>
 <tr class="separator:a62b30cb74b6286344c5d9918ccd2ec8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4a8653c2b29d0720bd18fbd5cc3484bd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="ItemEnums_8h.html#a1802cee34436e71f014395b507c72351">ItemSlot</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnumFunctions_8h.html#a4a8653c2b29d0720bd18fbd5cc3484bd">allItemSlots</a> ()</td></tr>
 <tr class="separator:a4a8653c2b29d0720bd18fbd5cc3484bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67b8c2f3c90c63305804816733416fbc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnumFunctions_8h.html#a67b8c2f3c90c63305804816733416fbc">isPassiveEquipment</a> (<a class="el" href="ItemEnums_8h.html#a864f4309a8be832c132131de01024150">ItemType</a> type)</td></tr>
+<tr class="memitem:a67b8c2f3c90c63305804816733416fbc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnumFunctions_8h.html#a67b8c2f3c90c63305804816733416fbc">isPassiveEquipment</a> (<a class="el" href="ItemEnums_8h.html#a443f647757dde85043b49343f5cbe66b">ItemType</a> type)</td></tr>
 <tr class="separator:a67b8c2f3c90c63305804816733416fbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2aac5ad244c401fae8c069e1e41e21f7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnumFunctions_8h.html#a2aac5ad244c401fae8c069e1e41e21f7">isArmor</a> (<a class="el" href="ItemEnums_8h.html#a864f4309a8be832c132131de01024150">ItemType</a> type)</td></tr>
+<tr class="memitem:a2aac5ad244c401fae8c069e1e41e21f7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnumFunctions_8h.html#a2aac5ad244c401fae8c069e1e41e21f7">isArmor</a> (<a class="el" href="ItemEnums_8h.html#a443f647757dde85043b49343f5cbe66b">ItemType</a> type)</td></tr>
 <tr class="separator:a2aac5ad244c401fae8c069e1e41e21f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae76dd6bd75eeb14bb2f6bdbfecc19fa4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnumFunctions_8h.html#ae76dd6bd75eeb14bb2f6bdbfecc19fa4">isWeapon</a> (<a class="el" href="ItemEnums_8h.html#a864f4309a8be832c132131de01024150">ItemType</a> type)</td></tr>
+<tr class="memitem:ae76dd6bd75eeb14bb2f6bdbfecc19fa4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnumFunctions_8h.html#ae76dd6bd75eeb14bb2f6bdbfecc19fa4">isWeapon</a> (<a class="el" href="ItemEnums_8h.html#a443f647757dde85043b49343f5cbe66b">ItemType</a> type)</td></tr>
 <tr class="separator:ae76dd6bd75eeb14bb2f6bdbfecc19fa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55061dd3b2356df38b3064bb1aff278d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="ItemEnums_8h.html#a1802cee34436e71f014395b507c72351">ItemSlot</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnumFunctions_8h.html#a55061dd3b2356df38b3064bb1aff278d">itemSlotsForItemType</a> (<a class="el" href="ItemEnums_8h.html#a864f4309a8be832c132131de01024150">ItemType</a> type)</td></tr>
+<tr class="memitem:a55061dd3b2356df38b3064bb1aff278d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="ItemEnums_8h.html#a1802cee34436e71f014395b507c72351">ItemSlot</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnumFunctions_8h.html#a55061dd3b2356df38b3064bb1aff278d">itemSlotsForItemType</a> (<a class="el" href="ItemEnums_8h.html#a443f647757dde85043b49343f5cbe66b">ItemType</a> type)</td></tr>
 <tr class="separator:a55061dd3b2356df38b3064bb1aff278d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a76dd7f1452a9f77136d7c7d9ef76f9dc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="ItemEnums_8h.html#ac17d128fea2ce038be2a17b3c1737e25">RandomItemType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnumFunctions_8h.html#a76dd7f1452a9f77136d7c7d9ef76f9dc">allSpawnableRandomItemTypes</a> ()</td></tr>
 <tr class="separator:a76dd7f1452a9f77136d7c7d9ef76f9dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac16de2d9cb0fd30f87f50b9dc46bd678"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="ItemEnums_8h.html#a443f647757dde85043b49343f5cbe66b">ItemType</a>, <a class="el" href="CharacterEnums_8h.html#a14ee7e5773dc54a7360c4a9ad21d1c47">Skill</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemEnumFunctions_8h.html#ac16de2d9cb0fd30f87f50b9dc46bd678">itemTypeOrSkillForRandomItemType</a> (<a class="el" href="ItemEnums_8h.html#ac17d128fea2ce038be2a17b3c1737e25">RandomItemType</a> type)</td></tr>
+<tr class="separator:ac16de2d9cb0fd30f87f50b9dc46bd678"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a4a8653c2b29d0720bd18fbd5cc3484bd" name="a4a8653c2b29d0720bd18fbd5cc3484bd"></a>
@@ -405,7 +408,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">bool isArmor </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a864f4309a8be832c132131de01024150">ItemType</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a443f647757dde85043b49343f5cbe66b">ItemType</a>&#160;</td>
           <td class="paramname"><em>type</em></td><td>)</td>
           <td></td>
         </tr>
@@ -542,7 +545,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">bool isPassiveEquipment </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a864f4309a8be832c132131de01024150">ItemType</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a443f647757dde85043b49343f5cbe66b">ItemType</a>&#160;</td>
           <td class="paramname"><em>type</em></td><td>)</td>
           <td></td>
         </tr>
@@ -844,7 +847,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">bool isWeapon </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a864f4309a8be832c132131de01024150">ItemType</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a443f647757dde85043b49343f5cbe66b">ItemType</a>&#160;</td>
           <td class="paramname"><em>type</em></td><td>)</td>
           <td></td>
         </tr>
@@ -877,7 +880,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="ItemEnums_8h.html#a1802cee34436e71f014395b507c72351">ItemSlot</a> &gt; itemSlotsForItemType </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a864f4309a8be832c132131de01024150">ItemType</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#a443f647757dde85043b49343f5cbe66b">ItemType</a>&#160;</td>
           <td class="paramname"><em>type</em></td><td>)</td>
           <td></td>
         </tr>
@@ -895,6 +898,32 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="structItem.html">Item</a> slots where an item of given type might be (but not necessarily can be) equipped. </dd></dl>
+
+</div>
+</div>
+<a id="ac16de2d9cb0fd30f87f50b9dc46bd678" name="ac16de2d9cb0fd30f87f50b9dc46bd678"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac16de2d9cb0fd30f87f50b9dc46bd678">&#9670;&#160;</a></span>itemTypeOrSkillForRandomItemType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt; <a class="el" href="ItemEnums_8h.html#a443f647757dde85043b49343f5cbe66b">ItemType</a>, <a class="el" href="CharacterEnums_8h.html#a14ee7e5773dc54a7360c4a9ad21d1c47">Skill</a> &gt; itemTypeOrSkillForRandomItemType </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="ItemEnums_8h.html#ac17d128fea2ce038be2a17b3c1737e25">RandomItemType</a>&#160;</td>
+          <td class="paramname"><em>type</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
