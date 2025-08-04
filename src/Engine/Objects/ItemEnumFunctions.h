@@ -3,6 +3,7 @@
 #include <cassert>
 #include <string>
 #include <initializer_list>
+#include <utility>
 
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
@@ -273,4 +274,42 @@ inline Segment<ItemSlot> itemSlotsForItemType(ItemType type) {
 
 inline Segment<RandomItemType> allSpawnableRandomItemTypes() {
     return {RANDOM_ITEM_FIRST_SPAWNABLE, RANDOM_ITEM_LAST_SPAWNABLE};
+}
+
+inline std::pair<ItemType, Skill> itemTypeOrSkillForRandomItemType(RandomItemType type) {
+    switch (type) {
+    case RANDOM_ITEM_ANY:           return {ITEM_TYPE_INVALID,              SKILL_INVALID};
+    case RANDOM_ITEM_WEAPON:        return {ITEM_TYPE_SINGLE_HANDED,        SKILL_INVALID};
+    case RANDOM_ITEM_ARMOR:         return {ITEM_TYPE_ARMOUR,               SKILL_INVALID};
+    case RANDOM_ITEM_MICS:          return {ITEM_TYPE_INVALID,              SKILL_MISC};
+    case RANDOM_ITEM_SWORD:         return {ITEM_TYPE_INVALID,              SKILL_SWORD};
+    case RANDOM_ITEM_DAGGER:        return {ITEM_TYPE_INVALID,              SKILL_DAGGER};
+    case RANDOM_ITEM_AXE:           return {ITEM_TYPE_INVALID,              SKILL_AXE};
+    case RANDOM_ITEM_SPEAR:         return {ITEM_TYPE_INVALID,              SKILL_SPEAR};
+    case RANDOM_ITEM_BOW:           return {ITEM_TYPE_INVALID,              SKILL_BOW};
+    case RANDOM_ITEM_MACE:          return {ITEM_TYPE_INVALID,              SKILL_MACE};
+    case RANDOM_ITEM_CLUB:          return {ITEM_TYPE_INVALID,              SKILL_CLUB};
+    case RANDOM_ITEM_STAFF:         return {ITEM_TYPE_INVALID,              SKILL_STAFF};
+    case RANDOM_ITEM_LEATHER_ARMOR: return {ITEM_TYPE_INVALID,              SKILL_LEATHER};
+    case RANDOM_ITEM_CHAIN_ARMOR:   return {ITEM_TYPE_INVALID,              SKILL_CHAIN};
+    case RANDOM_ITEM_PLATE_ARMOR:   return {ITEM_TYPE_INVALID,              SKILL_PLATE};
+    case RANDOM_ITEM_SHIELD:        return {ITEM_TYPE_SHIELD,               SKILL_INVALID};
+    case RANDOM_ITEM_HELMET:        return {ITEM_TYPE_HELMET,               SKILL_INVALID};
+    case RANDOM_ITEM_BELT:          return {ITEM_TYPE_BELT,                 SKILL_INVALID};
+    case RANDOM_ITEM_CLOAK:         return {ITEM_TYPE_CLOAK,                SKILL_INVALID};
+    case RANDOM_ITEM_GAUNTLETS:     return {ITEM_TYPE_GAUNTLETS,            SKILL_INVALID};
+    case RANDOM_ITEM_BOOTS:         return {ITEM_TYPE_BOOTS,                SKILL_INVALID};
+    case RANDOM_ITEM_RING:          return {ITEM_TYPE_RING,                 SKILL_INVALID};
+    case RANDOM_ITEM_AMULET:        return {ITEM_TYPE_AMULET,               SKILL_INVALID};
+    case RANDOM_ITEM_WAND:          return {ITEM_TYPE_WAND,                 SKILL_INVALID};
+    case RANDOM_ITEM_SPELL_SCROLL:  return {ITEM_TYPE_SPELL_SCROLL,         SKILL_INVALID};
+    case RANDOM_ITEM_POTION:        return {ITEM_TYPE_POTION,               SKILL_INVALID};
+    case RANDOM_ITEM_REAGENT:       return {ITEM_TYPE_REAGENT,              SKILL_INVALID};
+    case RANDOM_ITEM_GEM:           return {ITEM_TYPE_GEM,                  SKILL_INVALID};
+    default:
+        // TODO(captainurist): Values 1-19 are supposedly mapped to ItemType, but are not used in MM7.
+        //                     Figure out if this is an MM6 remnant, if not then just drop.
+        assert(false);
+        return {static_cast<ItemType>(std::to_underlying(type) - 1), SKILL_INVALID};
+    }
 }
