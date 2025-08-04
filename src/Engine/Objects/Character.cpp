@@ -129,30 +129,6 @@ static constexpr IndexedArray<int, MASTERY_FIRST, MASTERY_LAST> goldStealingDieS
     {MASTERY_GRANDMASTER, 10}
 };
 
-static constexpr IndexedArray<ItemSlot, ITEM_TYPE_FIRST, ITEM_TYPE_LAST> pEquipTypeToBodyAnchor = {  // 4E8398
-    {ITEM_TYPE_SINGLE_HANDED,  ITEM_SLOT_MAIN_HAND},
-    {ITEM_TYPE_TWO_HANDED,     ITEM_SLOT_MAIN_HAND},
-    {ITEM_TYPE_BOW,            ITEM_SLOT_BOW},
-    {ITEM_TYPE_ARMOUR,         ITEM_SLOT_ARMOUR},
-    {ITEM_TYPE_SHIELD,         ITEM_SLOT_OFF_HAND},
-    {ITEM_TYPE_HELMET,         ITEM_SLOT_HELMET},
-    {ITEM_TYPE_BELT,           ITEM_SLOT_BELT},
-    {ITEM_TYPE_CLOAK,          ITEM_SLOT_CLOAK},
-    {ITEM_TYPE_GAUNTLETS,      ITEM_SLOT_GAUNTLETS},
-    {ITEM_TYPE_BOOTS,          ITEM_SLOT_BOOTS},
-    {ITEM_TYPE_RING,           ITEM_SLOT_RING1},
-    {ITEM_TYPE_AMULET,         ITEM_SLOT_AMULET},
-    {ITEM_TYPE_WAND,           ITEM_SLOT_MAIN_HAND},
-    {ITEM_TYPE_REAGENT,        ITEM_SLOT_INVALID},
-    {ITEM_TYPE_POTION,         ITEM_SLOT_INVALID},
-    {ITEM_TYPE_SPELL_SCROLL,   ITEM_SLOT_INVALID},
-    {ITEM_TYPE_BOOK,           ITEM_SLOT_INVALID},
-    {ITEM_TYPE_MESSAGE_SCROLL, ITEM_SLOT_INVALID},
-    {ITEM_TYPE_GOLD,           ITEM_SLOT_INVALID},
-    {ITEM_TYPE_GEM,            ITEM_SLOT_INVALID},
-    {ITEM_TYPE_NONE,           ITEM_SLOT_INVALID}
-};
-
 static constexpr unsigned char pBaseHealthByClass[12] = {40, 35, 35, 30, 30, 30,
                                         25, 20, 20, 0,  0,  0};
 static constexpr unsigned char pBaseManaByClass[12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0};
@@ -1168,9 +1144,7 @@ bool Character::wearsEnchantedItem(ItemEnchantment enchantment) const {
 //----- (0048D709) --------------------------------------------------------
 bool Character::wearsItem(ItemId itemId) const {
     assert(itemId != ITEM_NULL);
-    // TODO(captainurist): deal away with this. Wetsuits should have type = armor.
-    Segment<ItemSlot> slots = itemId == ITEM_QUEST_WETSUIT ? Segment(ITEM_SLOT_ARMOUR, ITEM_SLOT_ARMOUR) : itemSlotsForItemType(pItemTable->items[itemId].type);
-    for (ItemSlot slot : slots)
+    for (ItemSlot slot : itemSlotsForItemType(pItemTable->items[itemId].type))
         if (InventoryConstEntry entry = inventory.functionalEntry(slot); entry && entry->itemId == itemId)
             return true;
     return false;
@@ -1412,6 +1386,7 @@ int Character::ReceiveSpecialAttackEffect(MonsterSpecialAttack attType, Actor *p
             break;
 
         case SPECIAL_ATTACK_BREAK_ANY:
+            // TODO(captainurist): can't break wands b/c they are not regular items. Makes little in-game sense IMO.
             for (InventoryEntry entry : inventory.entries())
                 if (isRegular(entry->itemId) && !entry->IsBroken())
                     itemstobreaklist.push_back(entry);
@@ -1426,9 +1401,10 @@ int Character::ReceiveSpecialAttackEffect(MonsterSpecialAttack attType, Actor *p
             break;
 
         case SPECIAL_ATTACK_BREAK_ARMOR:
-            // Have to check for ITEM_QUEST_WETSUIT explicitly b/c it's ITEM_TYPE_NONE.
+            // TODO(captainurist): This can break a wetsuit, and this looks like vanilla behavior. But the code in
+            //                     SPECIAL_ATTACK_BREAK_ANY can't break a wetsuit. Huh.
             for (InventoryEntry entry : inventory.equipment())
-                if (!entry->IsBroken() && (entry->type() == ITEM_TYPE_ARMOUR || entry->type() == ITEM_TYPE_SHIELD || entry->itemId == ITEM_QUEST_WETSUIT))
+                if (!entry->IsBroken() && (entry->type() == ITEM_TYPE_ARMOUR || entry->type() == ITEM_TYPE_SHIELD))
                     itemstobreaklist.push_back(entry);
 
             if (itemstobreaklist.empty()) return 0;
@@ -5722,19 +5698,6 @@ void Character::SubtractSkillByEvent(Skill skill, uint16_t subSkillValue) {
     // TODO(pskelton): check - should this modify mastery as well
 }
 
-//----- (00467E7F) --------------------------------------------------------
-void Character::EquipBody(ItemType uEquipType) {
-    ItemSlot itemAnchor = pEquipTypeToBodyAnchor[uEquipType];
-    if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(itemAnchor)) {
-        Item tmpItem = pParty->activeCharacter().inventory.take(entry);
-        pParty->activeCharacter().inventory.equip(itemAnchor, pParty->takeHoldingItem());
-        pParty->setHoldingItem(tmpItem);
-    } else {
-        if (pParty->activeCharacter().inventory.canEquip(itemAnchor))
-            pParty->activeCharacter().inventory.equip(itemAnchor, pParty->takeHoldingItem());
-    }
-}
-
 int cycleCharacter(bool backwards) {
     int currentId = pParty->activeCharacterIndex() - 1;
 
@@ -6222,6 +6185,7 @@ void Character::OnInventoryLeftClick() {
                     // try to add anywhere
                     if (!inventory.tryAdd(pParty->pPickedItem)) {
                         // failed to add, put back the old item
+                        pAudioPlayer->playUISound(SOUND_error);
                         inventory.add(pos, tmp);
                         return;
                     }
@@ -6234,7 +6198,8 @@ void Character::OnInventoryLeftClick() {
                 // place picked item
                 if (inventory.tryAdd(inventoryPos, pParty->pPickedItem)) {
                     pParty->takeHoldingItem();
-                    return;
+                } else {
+                    pAudioPlayer->playUISound(SOUND_error); // Overlapping items or out of inventory space.
                 }
             }
         }

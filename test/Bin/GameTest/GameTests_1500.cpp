@@ -584,10 +584,7 @@ GAME_TEST(Issues, Issue1911) {
     EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 4);
 
     // Equip staff.
-    Item staff;
-    staff.itemId = ITEM_STAFF;
-    pParty->pPickedItem = staff;
-    pParty->pCharacters[0].EquipBody(ITEM_TYPE_TWO_HANDED);
+    pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, Item(ITEM_STAFF));
     pParty->pCharacters[0].pActiveSkills[SKILL_STAFF] = CombinedSkillValue(1, MASTERY_NOVICE);
     EXPECT_EQ(pParty->pCharacters[0].GetActualAttack(true), 1); // +1 from staff skill.
 
@@ -628,8 +625,7 @@ GAME_TEST(Issues, Issue1925) {
         Item wand;
         wand.itemId = ITEM_WAND_OF_FIRE;
         wand.numCharges = wand.maxCharges = 1;
-        pParty->pPickedItem = wand;
-        pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
+        pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, wand);
         game.tick();
 
         // Attack.
@@ -659,18 +655,14 @@ GAME_TEST(Issues, Issue1927) {
     game.tick();
 
     // Equip a bow
-    Item bow;
-    bow.itemId = ITEM_GRIFFIN_BOW;
-    pParty->pPickedItem = bow;
-    pParty->pCharacters[0].EquipBody(ITEM_TYPE_BOW);
+    pParty->pCharacters[0].inventory.equip(ITEM_SLOT_BOW, Item(ITEM_GRIFFIN_BOW));
     game.tick();
 
     // Equip wand.
     Item wand;
     wand.itemId = ITEM_ALACORN_WAND_OF_FIREBALLS;
     wand.numCharges = wand.maxCharges = 30;
-    pParty->pPickedItem = wand;
-    pParty->pCharacters[0].EquipBody(ITEM_TYPE_WAND);
+    pParty->pCharacters[0].inventory.equip(ITEM_SLOT_MAIN_HAND, wand);
     game.tick();
 
     EXPECT_EQ(rangeAttackTape.size(), 3); // nothing, bow, bow and wand
@@ -728,12 +720,7 @@ GAME_TEST(Prs, Pr1953) {
     char0.inventory.add(Item(ITEM_LEATHER_ARMOR));
     char0.inventory.equip(ITEM_SLOT_ARMOUR, Item(ITEM_ROYAL_LEATHER));
 
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_I); // Open inventory.
-    game.tick();
+    game.goToInventory(1);
     game.pressAndReleaseButton(BUTTON_LEFT, 20, 20); // Pick up leather armor.
     game.tick();
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_LEATHER_ARMOR);

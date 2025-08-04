@@ -215,7 +215,6 @@ class Character {
     bool CanCastSpell(unsigned int uRequiredMana);
     void SpendMana(unsigned int uRequiredMana);
     void PlayAwardSound();
-    void EquipBody(ItemType uEquipType);
 
     /**
      * @offset 0x43EE77

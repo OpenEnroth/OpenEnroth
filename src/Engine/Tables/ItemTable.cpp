@@ -265,6 +265,9 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     Item::PopulateSpecialBonusMap();
     Item::PopulateArtifactBonusMap();
     LoadItemSizes();
+
+    // Patch up the data - we want wetsuits to be armor.
+    items[ITEM_QUEST_WETSUIT].type = ITEM_TYPE_ARMOUR;
 }
 
 //----- (00453B3C) --------------------------------------------------------
