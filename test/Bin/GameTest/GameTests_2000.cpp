@@ -1,3 +1,6 @@
+#include <tuple>
+#include <vector>
+
 #include "Testing/Game/GameTest.h"
 
 #include "Engine/Engine.h"
@@ -363,6 +366,38 @@ GAME_TEST(Issues, Issue2123) {
     EXPECT_LE(distTape.min(), pActors[0].radius + 5.0f); // weve been close enough to trigger the collision
     EXPECT_GT(distTape.max(), 2500.0f); // and managed to move away again without assert
     EXPECT_GT(distTape.back(), distTape.front()); // should be further out than spawn point
+}
+
+GAME_TEST(Issues, Issue2142) {
+    // Monsters can't cause poisoned / deseased status
+    const std::vector<std::tuple<MonsterId, MonsterSpecialAttack, Condition>> monsterConditions = {
+        {MONSTER_BAT_A, SPECIAL_ATTACK_DISEASE_WEAK, CONDITION_DISEASE_WEAK },
+        {MONSTER_BAT_C, SPECIAL_ATTACK_DISEASE_MEDIUM, CONDITION_DISEASE_MEDIUM },
+        {MONSTER_DEVIL_B, SPECIAL_ATTACK_DISEASE_SEVERE, CONDITION_DISEASE_SEVERE },
+        {MONSTER_SPIDER_A, SPECIAL_ATTACK_POISON_WEAK, CONDITION_POISON_WEAK },
+        {MONSTER_SPIDER_B, SPECIAL_ATTACK_POISON_MEDIUM, CONDITION_POISON_MEDIUM },
+        {MONSTER_SPIDER_C, SPECIAL_ATTACK_POISON_SEVERE, CONDITION_POISON_SEVERE },
+    };
+
+    for (const auto &[monsterId, attack, condition] : monsterConditions) {
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+        auto specialAttack = tapes.specialAttacks();
+
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        pParty->pCharacters[0].setSkillValue(SKILL_BODYBUILDING, CombinedSkillValue(60, MASTERY_GRANDMASTER)); // EXTRA CHONKS.
+        prepareForBattleTest();
+
+        // Spawn monsters and wait.
+        engine->config->debug.NoActors.setValue(false);
+        for (int i = 0; i < 4; i++)
+            game.spawnMonster(pParty->pos + Vec3f(0, 700, 0), monsterId);
+        game.tick(200);
+
+        EXPECT_CONTAINS(specialAttack.flatten(), attack); // Check that the special attack was used.
+        EXPECT_TRUE(pParty->pCharacters[0].conditions.has(condition)); // Check that the condition was applied.
+    }
 }
 
 GAME_TEST(Prs, Pr2157a) {

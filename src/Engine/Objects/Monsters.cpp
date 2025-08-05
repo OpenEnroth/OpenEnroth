@@ -286,12 +286,12 @@ MonsterSpecialAttack ParseSpecialAttack(char *spec_att_str) {
         return SPECIAL_ATTACK_AGING;
     else if (tmp.starts_with("drainsp"))
         return SPECIAL_ATTACK_MANA_DRAIN;
-	else if (tmp.starts_with("none") || tmp.starts_with("0"))
+    else if (tmp.starts_with("none") || tmp.starts_with("0"))
         return SPECIAL_ATTACK_NONE;
     else
-		logger->warning("ParseSpecialAttack:: Unknown monster special attack '{}'", tmp);
+        logger->warning("ParseSpecialAttack:: Unknown monster special attack '{}'", tmp);
 
-	return SPECIAL_ATTACK_NONE;
+    return SPECIAL_ATTACK_NONE;
 }
 
 //----- (004563FF) --------------------------------------------------------
