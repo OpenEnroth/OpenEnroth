@@ -24,8 +24,9 @@ int itemOffset(int dimension) {
 }
 
 Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft, Item* heldItem) {
+    // check if heldItem is null
 
-    if (heldItem->itemId != ITEM_NULL) {
+    if (heldItem && heldItem->itemId != ITEM_NULL) {
         // If holding an item, we want to snap to the center of the grid cell rather than the edge
         mousePos += Pointi(16, 16);
         // We need to calulate the image width and height and then define the item offset from that
