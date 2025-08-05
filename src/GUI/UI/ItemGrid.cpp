@@ -1,7 +1,7 @@
 #include "ItemGrid.h"
 
 #include <cassert>
-#include <Engine/Objects/Item.h>
+#include "Engine/Objects/Item.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/Image.h" // Add this include at the top of the file
 
@@ -33,7 +33,7 @@ Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft, Item* heldIt
         GraphicsImage *pTexture = assets->getImage_Alpha(heldItem->GetIconName());
         signed int X_offset = itemOffset(pTexture->width());
         signed int Y_offset = itemOffset(pTexture->height());
-		mousePos -= Pointi(X_offset, Y_offset);
+        mousePos -= Pointi(X_offset, Y_offset);
     }
     Pointi relativePos = mousePos - inventoryTopLeft;
     // TODO(captainurist): divIntDown is >> 5

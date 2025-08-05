@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Library/Geometry/Point.h"
-#include <Engine/Objects/Item.h>
+#include "Engine/Objects/Item.h"
 
 /**
  * @brief Calculate offsets for placing items in inventory grid.
