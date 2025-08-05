@@ -265,6 +265,9 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
     Item::PopulateSpecialBonusMap();
     Item::PopulateArtifactBonusMap();
     LoadItemSizes();
+
+    // Patch up the data - we want wetsuits to be armor.
+    items[ITEM_QUEST_WETSUIT].type = ITEM_TYPE_ARMOUR;
 }
 
 //----- (00453B3C) --------------------------------------------------------
@@ -379,115 +382,13 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
     *outItem = Item();
 
     if (uTreasureType != RANDOM_ITEM_ANY) {  // generate known treasure type
-        ItemType requestedEquip;
-        Skill requestedSkill = SKILL_INVALID;
-        switch (uTreasureType) {
-            case RANDOM_ITEM_WEAPON:
-                requestedEquip = ITEM_TYPE_SINGLE_HANDED;
-                break;
-            case RANDOM_ITEM_ARMOR:
-                requestedEquip = ITEM_TYPE_ARMOUR;
-                break;
-            case RANDOM_ITEM_MICS:
-                requestedSkill = SKILL_MISC;
-                break;
-            case RANDOM_ITEM_SWORD:
-                requestedSkill = SKILL_SWORD;
-                break;
-            case RANDOM_ITEM_DAGGER:
-                requestedSkill = SKILL_DAGGER;
-                break;
-            case RANDOM_ITEM_AXE:
-                requestedSkill = SKILL_AXE;
-                break;
-            case RANDOM_ITEM_SPEAR:
-                requestedSkill = SKILL_SPEAR;
-                break;
-            case RANDOM_ITEM_BOW:
-                requestedSkill = SKILL_BOW;
-                break;
-            case RANDOM_ITEM_MACE:
-                requestedSkill = SKILL_MACE;
-                break;
-            case RANDOM_ITEM_CLUB:
-                requestedSkill = SKILL_CLUB;
-                break;
-            case RANDOM_ITEM_STAFF:
-                requestedSkill = SKILL_STAFF;
-                break;
-            case RANDOM_ITEM_LEATHER_ARMOR:
-                requestedSkill = SKILL_LEATHER;
-                break;
-            case RANDOM_ITEM_CHAIN_ARMOR:
-                requestedSkill = SKILL_CHAIN;
-                break;
-            case RANDOM_ITEM_PLATE_ARMOR:
-                requestedSkill = SKILL_PLATE;
-                break;
-            case RANDOM_ITEM_SHIELD:
-                requestedEquip = ITEM_TYPE_SHIELD;
-                break;
-            case RANDOM_ITEM_HELMET:
-                requestedEquip = ITEM_TYPE_HELMET;
-                break;
-            case RANDOM_ITEM_BELT:
-                requestedEquip = ITEM_TYPE_BELT;
-                break;
-            case RANDOM_ITEM_CLOAK:
-                requestedEquip = ITEM_TYPE_CLOAK;
-                break;
-            case RANDOM_ITEM_GAUNTLETS:
-                requestedEquip = ITEM_TYPE_GAUNTLETS;
-                break;
-            case RANDOM_ITEM_BOOTS:
-                requestedEquip = ITEM_TYPE_BOOTS;
-                break;
-            case RANDOM_ITEM_RING:
-                requestedEquip = ITEM_TYPE_RING;
-                break;
-            case RANDOM_ITEM_AMULET:
-                requestedEquip = ITEM_TYPE_AMULET;
-                break;
-            case RANDOM_ITEM_WAND:
-                requestedEquip = ITEM_TYPE_WAND;
-                break;
-            case RANDOM_ITEM_SPELL_SCROLL:
-                requestedEquip = ITEM_TYPE_SPELL_SCROLL;
-                break;
-            case RANDOM_ITEM_POTION:
-                requestedEquip = ITEM_TYPE_POTION;
-                break;
-            case RANDOM_ITEM_REAGENT:
-                requestedEquip = ITEM_TYPE_REAGENT;
-                break;
-            case RANDOM_ITEM_GEM:
-                requestedEquip = ITEM_TYPE_GEM;
-                break;
-            default:
-                assert(false);  // check this condition
-                // TODO(captainurist): explore
-                requestedEquip = static_cast<ItemType>(std::to_underlying(uTreasureType) - 1);
-                break;
-        }
-
-        if (requestedSkill == SKILL_INVALID) {  // no skill for this item needed
-            for (ItemId itemId : allSpawnableItems()) {
-                if (items[itemId].type == requestedEquip) {
-                    if (items[itemId].uChanceByTreasureLvl[treasureLevel]) {
-                        weightSum += items[itemId].uChanceByTreasureLvl[treasureLevel];
-                        possibleItems.push_back(itemId);
-                        cumulativeWeights.push_back(weightSum);
-                    }
-                }
-            }
-        } else {  // have needed skill
-            for (ItemId itemId : allSpawnableItems()) {
-                if (items[itemId].skill == requestedSkill) {
-                    if (items[itemId].uChanceByTreasureLvl[treasureLevel]) {
-                        weightSum += items[itemId].uChanceByTreasureLvl[treasureLevel];
-                        possibleItems.push_back(itemId);
-                        cumulativeWeights.push_back(weightSum);
-                    }
+        auto [requestedType, requestedSkill] = itemTypeOrSkillForRandomItemType(uTreasureType);
+        for (ItemId itemId : allSpawnableItems()) {
+            if ((requestedType == ITEM_TYPE_INVALID || items[itemId].type == requestedType) && (requestedSkill == SKILL_INVALID || items[itemId].skill == requestedSkill)) {
+                if (items[itemId].uChanceByTreasureLvl[treasureLevel]) {
+                    weightSum += items[itemId].uChanceByTreasureLvl[treasureLevel];
+                    possibleItems.push_back(itemId);
+                    cumulativeWeights.push_back(weightSum);
                 }
             }
         }
@@ -503,7 +404,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
             outItem->itemId = ITEM_CRUDE_LONGSWORD;
         }
     } else {
-        // Trying to generate artifact
+        // Try to generate an artifact.
         if (treasureLevel == ITEM_TREASURE_LEVEL_6) {
             int artifactsFound = 0;
             ItemId artifactRandomId = grng->randomSample(allSpawnableArtifacts());
@@ -518,7 +419,7 @@ void ItemTable::generateItem(ItemTreasureLevel treasureLevel, RandomItemType uTr
             }
         }
 
-        // Otherwise try to spawn any random item
+        // Otherwise try to spawn any random item.
         int randomWeight = grng->random(this->itemChanceSumByTreasureLevel[treasureLevel]) + 1;
         for (ItemId itemId : allSpawnableItems()) {
             weightSum += items[itemId].uChanceByTreasureLvl[treasureLevel];

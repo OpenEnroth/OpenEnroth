@@ -431,7 +431,7 @@ GAME_TEST(Issues, Issue675) {
 GAME_TEST(Issues, Issue676) {
     // Jump spell doesn't work
     test.playTraceFromTestData("issue_676.mm7", "issue_676.json");
-    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12041, 11766, 909));
+    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12040, 11735, 900));
 }
 
 GAME_TEST(Issues, Issue677) {
@@ -526,7 +526,7 @@ GAME_TEST(Issues, Issue720) {
 
 GAME_TEST(Issues, Issue724) {
     // Test that item potion can be applied to equipped items.
-    auto hardenedTape = tapes.custom([] { return !!(pParty->pCharacters[3].GetItem(ITEM_SLOT_MAIN_HAND)->flags & ITEM_HARDENED); });
+    auto hardenedTape = tapes.custom([] { return !!(pParty->pCharacters[3].inventory.entry(ITEM_SLOT_MAIN_HAND)->flags & ITEM_HARDENED); });
     test.playTraceFromTestData("issue_724.mm7", "issue_724.json");
     EXPECT_EQ(hardenedTape, tape(false, true));
 }

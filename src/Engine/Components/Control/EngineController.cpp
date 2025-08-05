@@ -173,6 +173,20 @@ void EngineController::goToGame() {
         ticker.tick();
 }
 
+void EngineController::goToInventory(int characterIndex) {
+    goToGame();
+
+    if (GetCurrentMenuID() != MENU_NONE)
+        throw Exception("Can't go to inventory from the main menu");
+
+    pParty->setActiveCharacterIndex(characterIndex);
+    pressAndReleaseKey(PlatformKey::KEY_I);
+    tick(2); // Need two ticks for inventory to be shown.
+
+    if (current_screen_type != SCREEN_CHARACTERS || current_character_screen_window != WINDOW_CharacterWindow_Inventory)
+        throw Exception("Couldn't to go to inventory");
+}
+
 void EngineController::goToMainMenu() {
     ThrowingTicker ticker(this, "Couldn't return to main menu");
 

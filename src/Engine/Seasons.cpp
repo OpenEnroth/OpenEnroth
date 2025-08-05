@@ -2,39 +2,6 @@
 
 #include <cassert>
 
-int tileIdForSeason(int tileId, int month) {
-    switch (month) {
-    case 11:
-    case 0:
-    case 1: // winter
-        if (tileId >= 90 && tileId <= 113) { // TILESET_GRASS
-            if (tileId <= 95)  // some grastyl entries
-                return 348;
-            return 348 + (tileId - 96);
-        }
-        return tileId;
-
-    case 2:
-    case 3:
-    case 4: // spring
-    case 8:
-    case 9:
-    case 10: // autumn
-        if (tileId >= 90 && tileId <= 113)  // just convert all TILESET_GRASS to dirt
-            return 1;
-        return tileId;
-
-    default:
-        assert(false);
-        [[fallthrough]];
-    case 5:
-    case 6:
-    case 7: // summer
-        // All tiles are green grass by default.
-        return tileId;
-    }
-}
-
 Tileset tilesetForSeason(Tileset tileset, int month) {
     switch (month) {
     case 11:

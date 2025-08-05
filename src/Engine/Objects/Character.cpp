@@ -129,30 +129,6 @@ static constexpr IndexedArray<int, MASTERY_FIRST, MASTERY_LAST> goldStealingDieS
     {MASTERY_GRANDMASTER, 10}
 };
 
-static constexpr IndexedArray<ItemSlot, ITEM_TYPE_FIRST, ITEM_TYPE_LAST> pEquipTypeToBodyAnchor = {  // 4E8398
-    {ITEM_TYPE_SINGLE_HANDED,  ITEM_SLOT_MAIN_HAND},
-    {ITEM_TYPE_TWO_HANDED,     ITEM_SLOT_MAIN_HAND},
-    {ITEM_TYPE_BOW,            ITEM_SLOT_BOW},
-    {ITEM_TYPE_ARMOUR,         ITEM_SLOT_ARMOUR},
-    {ITEM_TYPE_SHIELD,         ITEM_SLOT_OFF_HAND},
-    {ITEM_TYPE_HELMET,         ITEM_SLOT_HELMET},
-    {ITEM_TYPE_BELT,           ITEM_SLOT_BELT},
-    {ITEM_TYPE_CLOAK,          ITEM_SLOT_CLOAK},
-    {ITEM_TYPE_GAUNTLETS,      ITEM_SLOT_GAUNTLETS},
-    {ITEM_TYPE_BOOTS,          ITEM_SLOT_BOOTS},
-    {ITEM_TYPE_RING,           ITEM_SLOT_RING1},
-    {ITEM_TYPE_AMULET,         ITEM_SLOT_AMULET},
-    {ITEM_TYPE_WAND,           ITEM_SLOT_MAIN_HAND},
-    {ITEM_TYPE_REAGENT,        ITEM_SLOT_INVALID},
-    {ITEM_TYPE_POTION,         ITEM_SLOT_INVALID},
-    {ITEM_TYPE_SPELL_SCROLL,   ITEM_SLOT_INVALID},
-    {ITEM_TYPE_BOOK,           ITEM_SLOT_INVALID},
-    {ITEM_TYPE_MESSAGE_SCROLL, ITEM_SLOT_INVALID},
-    {ITEM_TYPE_GOLD,           ITEM_SLOT_INVALID},
-    {ITEM_TYPE_GEM,            ITEM_SLOT_INVALID},
-    {ITEM_TYPE_NONE,           ITEM_SLOT_INVALID}
-};
-
 static constexpr unsigned char pBaseHealthByClass[12] = {40, 35, 35, 30, 30, 30,
                                         25, 20, 20, 0,  0,  0};
 static constexpr unsigned char pBaseManaByClass[12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0};
@@ -641,7 +617,7 @@ int Character::GetDisarmTrap() const {
     if (val.mastery() == MASTERY_GRANDMASTER)  // gm disarm
         return 10000;
 
-    if (HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_THIEVERY))  // item has increased disarm
+    if (wearsEnchantedItem(ITEM_ENCHANTMENT_OF_THIEVERY))  // item has increased disarm
         multiplier++;
 
     return multiplier * val.level();
@@ -844,25 +820,21 @@ int Character::CalculateMeleeDamageTo(bool ignoreSkillBonus, bool ignoreOffhand,
     if (IsUnarmed()) {  // no weapons
         mainWpnDmg = grng->random(3) + 1;
     } else {
-        if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-            Item *mainHandItemGen = this->GetMainHandItem();
+        if (InventoryEntry mainHandItem = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND)) {
             bool addOneDice = false;
-            if (mainHandItemGen->skill() == SKILL_SPEAR &&
+            if (mainHandItem->skill() == SKILL_SPEAR &&
                 !this->inventory.entry(ITEM_SLOT_OFF_HAND))  // using spear in two hands adds a dice roll
                 addOneDice = true;
 
             mainWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(
-                mainHandItemGen, uTargetActorID, addOneDice);
+                mainHandItem.get(), uTargetActorID, addOneDice);
         }
 
         if (!ignoreOffhand) {
-            if (this->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {  // has second hand got a weapon
-                                                              // that not a shield
-                Item *offHandItemGen = this->GetOffHandItem();
-
-                if (!offHandItemGen->isShield()) {
+            if (InventoryEntry offHandItem = inventory.functionalEntry(ITEM_SLOT_OFF_HAND)) {  // has second hand got a weapon that not a shield
+                if (!offHandItem->isShield()) {
                     offHndWpnDmg = CalculateMeleeDmgToEnemyWithWeapon(
-                        offHandItemGen, uTargetActorID, false);
+                        offHandItem.get(), uTargetActorID, false);
                 }
             }
         }
@@ -935,10 +907,10 @@ int Character::CalculateMeleeDmgToEnemyWithWeapon(Item *weapon,
 
 //----- (0048D0B9) --------------------------------------------------------
 int Character::GetRangedAttack() {
-    Item *mainHandItem = GetMainHandItem();
+    InventoryConstEntry mainHandItem = inventory.entry(ITEM_SLOT_MAIN_HAND);
 
     // blasters and charged wands
-    if (mainHandItem && (isAncientWeapon(mainHandItem->itemId) || (isWand(mainHandItem->itemId) && mainHandItem->numCharges > 0))) {
+    if (mainHandItem && (isAncientWeapon(mainHandItem->itemId) || (mainHandItem->isWand() && mainHandItem->numCharges > 0))) {
         return GetActualAttack(true);
     } else { // bows
         int weapbonus = GetItemsBonus(ATTRIBUTE_RANGED_ATTACK) + GetParameterBonus(GetActualAccuracy());
@@ -978,10 +950,10 @@ int Character::GetRangedDamageMax() {
 
 //----- (0048D1FE) --------------------------------------------------------
 int Character::CalculateRangedDamageTo(MonsterId uMonsterInfoID) {
-    if (!HasItemEquipped(ITEM_SLOT_BOW))  // no bow
+    InventoryEntry bow = inventory.functionalEntry(ITEM_SLOT_BOW);
+    if (!bow)
         return 0;
 
-    Item *bow = this->GetBowItem();
     ItemEnchantment itemenchant = bow->specialEnchantment;
 
     signed int dmgperroll = pItemTable->items[bow->itemId].damageRoll;
@@ -1020,11 +992,11 @@ std::string Character::GetMeleeDamageString() {
     int min_damage;
     int max_damage;
 
-    Item *mainHandItem = GetMainHandItem();
+    InventoryConstEntry mainHandItem = inventory.entry(ITEM_SLOT_MAIN_HAND);
 
-    if (mainHandItem != nullptr && isWand(mainHandItem->itemId) && mainHandItem->numCharges > 0) {
+    if (mainHandItem && mainHandItem->isWand() && mainHandItem->numCharges > 0) {
         return std::string(localization->GetString(LSTR_WAND));
-    } else if (mainHandItem != nullptr && isAncientWeapon(mainHandItem->itemId)) {
+    } else if (mainHandItem && isAncientWeapon(mainHandItem->itemId)) {
         min_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MIN);  // blasters
         max_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MAX);
     } else {
@@ -1044,11 +1016,11 @@ std::string Character::GetRangedDamageString() {
     int min_damage;
     int max_damage;
 
-    Item *mainHandItem = GetMainHandItem();
+    InventoryConstEntry mainHandItem = inventory.entry(ITEM_SLOT_MAIN_HAND);
 
-    if (mainHandItem != nullptr && isWand(mainHandItem->itemId) && mainHandItem->numCharges > 0) {
+    if (mainHandItem && mainHandItem->isWand() && mainHandItem->numCharges > 0) {
         return std::string(localization->GetString(LSTR_WAND));
-    } else if (mainHandItem != nullptr && isAncientWeapon(mainHandItem->itemId)) {
+    } else if (mainHandItem && isAncientWeapon(mainHandItem->itemId)) {
         min_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MIN, true);  // blasters
         max_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MAX, true);
     } else {
@@ -1133,23 +1105,20 @@ int Character::CalculateIncommingDamage(DamageType dmg_type, int dmg) {
         }
     }
 
-    Item *equippedArmor = GetArmorItem();
-    if ((dmg_type == DAMAGE_PHYSICAL) &&
-        (equippedArmor != nullptr)) {      // physical damage and wearing armour
-        if (!equippedArmor->IsBroken()) {  // armour isnt broken
-            Skill armor_skill = equippedArmor->skill();
+    InventoryConstEntry armor = inventory.functionalEntry(ITEM_SLOT_ARMOUR);
+    if (dmg_type == DAMAGE_PHYSICAL && armor) { // physical damage and wearing armour
+        Skill armor_skill = armor->skill();
 
-            // master and above half incoming damage
-            if (armor_skill == SKILL_PLATE) {
-                if (getActualSkillValue(SKILL_PLATE).mastery() >= MASTERY_MASTER)
-                    return dmg / 2;
-            }
+        // master and above half incoming damage
+        if (armor_skill == SKILL_PLATE) {
+            if (getActualSkillValue(SKILL_PLATE).mastery() >= MASTERY_MASTER)
+                return dmg / 2;
+        }
 
-            // grandmaster and chain damage reduce
-            if (armor_skill == SKILL_CHAIN) {
-                if (getActualSkillValue(SKILL_CHAIN).mastery() == MASTERY_GRANDMASTER)
-                    return dmg * 2 / 3;
-            }
+        // grandmaster and chain damage reduce
+        if (armor_skill == SKILL_CHAIN) {
+            if (getActualSkillValue(SKILL_CHAIN).mastery() == MASTERY_GRANDMASTER)
+                return dmg * 2 / 3;
         }
     }
 
@@ -1158,34 +1127,25 @@ int Character::CalculateIncommingDamage(DamageType dmg_type, int dmg) {
 
 //----- (0048D676) --------------------------------------------------------
 bool Character::IsUnarmed() const {
-    return !HasItemEquipped(ITEM_SLOT_MAIN_HAND) &&
-           (!HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-            GetOffHandItem()->isShield());
-}
-
-//----- (0048D6AA) --------------------------------------------------------
-bool Character::HasItemEquipped(ItemSlot uEquipIndex) const {
-    InventoryConstEntry entry = inventory.entry(uEquipIndex);
-    return entry && entry->isFunctional();
+    InventoryConstEntry mainHandItem = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND);
+    InventoryConstEntry offHandItem = inventory.functionalEntry(ITEM_SLOT_OFF_HAND);
+    return !mainHandItem && (!offHandItem || offHandItem->isShield());
 }
 
 //----- (0048D6D0) --------------------------------------------------------
-bool Character::HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const {
-    for (InventoryConstEntry entry : inventory.equipment())
-        if (entry->isFunctional() && entry->specialEnchantment == uEnchantment)
+bool Character::wearsEnchantedItem(ItemEnchantment enchantment) const {
+    assert(enchantment != ITEM_ENCHANTMENT_NULL);
+    for (InventoryConstEntry entry : inventory.functionalEquipment())
+        if (entry->specialEnchantment == enchantment)
             return true;
     return false;
 }
 
 //----- (0048D709) --------------------------------------------------------
-bool Character::WearsItem(ItemId item_id, ItemSlot equip_type) const {
-    InventoryConstEntry entry = inventory.entry(equip_type);
-    return entry && entry->isFunctional() && entry->itemId == item_id;
-}
-
-bool Character::wearsItemAnywhere(ItemId item_id) const {
-    for (InventoryConstEntry entry : inventory.equipment())
-        if (entry->isFunctional() && entry->itemId == item_id)
+bool Character::wearsItem(ItemId itemId) const {
+    assert(itemId != ITEM_NULL);
+    for (ItemSlot slot : itemSlotsForItemType(pItemTable->items[itemId].type))
+        if (InventoryConstEntry entry = inventory.functionalEntry(slot); entry && entry->itemId == itemId)
             return true;
     return false;
 }
@@ -1353,14 +1313,10 @@ int Character::receiveDamage(signed int amount, DamageType dmg_type) {
             SetCondDeadWithBlockCheck(false);
         }
 
-        if (health <= -10) {  // break armor if health has dropped below -10
-            Item *equippedArmor = GetArmorItem();
-            if (equippedArmor != nullptr) {  // check there is some armor
-                if (!(equippedArmor->flags &
-                      ITEM_HARDENED)) {          // if its not hardened
-                    equippedArmor->SetBroken();  // break it
-                }
-            }
+        // break armor if health has dropped below -10 (if it's not hardened).
+        if (health <= -10) {
+            if (InventoryEntry armor = inventory.entry(ITEM_SLOT_ARMOUR); armor && !(armor->flags & ITEM_HARDENED))
+                armor->SetBroken();
         }
     }
 
@@ -1430,6 +1386,7 @@ int Character::ReceiveSpecialAttackEffect(MonsterSpecialAttack attType, Actor *p
             break;
 
         case SPECIAL_ATTACK_BREAK_ANY:
+            // TODO(captainurist): can't break wands b/c they are not regular items. Makes little in-game sense IMO.
             for (InventoryEntry entry : inventory.entries())
                 if (isRegular(entry->itemId) && !entry->IsBroken())
                     itemstobreaklist.push_back(entry);
@@ -1444,9 +1401,10 @@ int Character::ReceiveSpecialAttackEffect(MonsterSpecialAttack attType, Actor *p
             break;
 
         case SPECIAL_ATTACK_BREAK_ARMOR:
-            // Have to check for ITEM_QUEST_WETSUIT explicitly b/c it's ITEM_TYPE_NONE.
+            // TODO(captainurist): This can break a wetsuit, and this looks like vanilla behavior. But the code in
+            //                     SPECIAL_ATTACK_BREAK_ANY can't break a wetsuit. Huh.
             for (InventoryEntry entry : inventory.equipment())
-                if (!entry->IsBroken() && (entry->type() == ITEM_TYPE_ARMOUR || entry->type() == ITEM_TYPE_SHIELD || entry->itemId == ITEM_QUEST_WETSUIT))
+                if (!entry->IsBroken() && (entry->type() == ITEM_TYPE_ARMOUR || entry->type() == ITEM_TYPE_SHIELD))
                     itemstobreaklist.push_back(entry);
 
             if (itemstobreaklist.empty()) return 0;
@@ -1672,23 +1630,17 @@ int Character::ReceiveSpecialAttackEffect(MonsterSpecialAttack attType, Actor *p
 
 // 48DCF6: using guessed type char var_94[140];
 
-//----- (0048E1A3) --------------------------------------------------------
-DamageType Character::GetSpellDamageType(SpellId uSpellID) const {
-    return pSpellStats->pInfos[uSpellID].damageType;
-}
-
 //----- (0048E1B5) --------------------------------------------------------
 Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
-    const Item *weapon = nullptr;
+    InventoryConstEntry weapon;
     Duration weapon_recovery = base_recovery_times_per_weapon_type[SKILL_STAFF];
     if (attackUsesBow) {
-        assert(HasItemEquipped(ITEM_SLOT_BOW));
-        weapon = GetBowItem();
+        weapon = inventory.functionalEntry(ITEM_SLOT_BOW);
+        assert(weapon);
         weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
     } else if (IsUnarmed() && getActualSkillValue(SKILL_UNARMED).level() > 0) {
         weapon_recovery = base_recovery_times_per_weapon_type[SKILL_UNARMED];
-    } else if (HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-        weapon = GetMainHandItem();
+    } else if (weapon = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND)) {
         if (weapon->isWand()) {
             weapon_recovery = pSpellDatas[spellForWand(weapon->itemId)].recovery_per_skill[MASTERY_EXPERT];
         } else {
@@ -1696,24 +1648,27 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
         }
     }
 
+    // TODO(captainurist): I don't like this logic. We first take the weapon with larger recovery time, then apply
+    //                     recovery bonuses. Should be the other way around.
+
     Duration shield_recovery;
-    if (HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
-        if (inventory.entry(ITEM_SLOT_OFF_HAND)->isShield()) {
-            Skill skill_type = GetOffHandItem()->skill();
+    if (InventoryConstEntry offHandItem = inventory.functionalEntry(ITEM_SLOT_OFF_HAND)) {
+        if (offHandItem->isShield()) {
+            Skill skill_type = offHandItem->skill();
             Duration shield_base_recovery = base_recovery_times_per_weapon_type[skill_type];
             float multiplier = GetArmorRecoveryMultiplierFromSkillLevel(skill_type, 1.0f, 0, 0, 0);
             shield_recovery = shield_base_recovery * multiplier;
         } else {
-            if (base_recovery_times_per_weapon_type[GetOffHandItem()->skill()] > weapon_recovery) {
-                weapon = GetOffHandItem();
+            if (base_recovery_times_per_weapon_type[offHandItem->skill()] > weapon_recovery) {
+                weapon = offHandItem;
                 weapon_recovery = base_recovery_times_per_weapon_type[weapon->skill()];
             }
         }
     }
 
     Duration armour_recovery;
-    if (HasItemEquipped(ITEM_SLOT_ARMOUR)) {
-        Skill armour_skill_type = GetArmorItem()->skill();
+    if (InventoryConstEntry armor = inventory.functionalEntry(ITEM_SLOT_ARMOUR)) {
+        Skill armour_skill_type = armor->skill();
         Duration base_armour_recovery = base_recovery_times_per_weapon_type[armour_skill_type];
         float multiplier;
 
@@ -1724,7 +1679,7 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
         } else if (armour_skill_type == SKILL_PLATE) {
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 0.5f, 0.5f, 0);
         } else {
-            assert(armour_skill_type == SKILL_MISC && GetArmorItem()->itemId == ITEM_QUEST_WETSUIT);
+            assert(armour_skill_type == SKILL_MISC && armor->itemId == ITEM_QUEST_WETSUIT);
             multiplier = GetArmorRecoveryMultiplierFromSkillLevel(armour_skill_type, 1.0f, 1.0f, 1.0f, 1.0f);
         }
 
@@ -1734,7 +1689,7 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
     Duration player_speed_recovery_reduction = Duration::fromTicks(GetParameterBonus(GetActualSpeed()));
 
     Duration sword_axe_bow_recovery_reduction;
-    if (weapon != nullptr) {
+    if (weapon) {
         CombinedSkillValue weaponSkill = getActualSkillValue(weapon->skill());
         if (weaponSkill.level() > 0 &&
             (weapon->skill() == SKILL_SWORD ||
@@ -1766,7 +1721,7 @@ Duration Character::GetAttackRecoveryTime(bool attackUsesBow) const {
         hasteRecoveryReduction = 25_ticks;
 
     Duration weapon_enchantment_recovery_reduction;
-    if (weapon != nullptr) {
+    if (weapon) {
         if (weapon->specialEnchantment == ITEM_ENCHANTMENT_SWIFT ||
             weapon->specialEnchantment == ITEM_ENCHANTMENT_OF_DARKNESS ||
             weapon->itemId == ITEM_ARTIFACT_PUCK)
@@ -1996,8 +1951,8 @@ int Character::GetActualResistance(Attribute resistance) const {
          resistance == ATTRIBUTE_RESIST_WATER ||
          resistance == ATTRIBUTE_RESIST_EARTH) &&
         leatherSkill.mastery() == MASTERY_GRANDMASTER &&
-        HasItemEquipped(ITEM_SLOT_ARMOUR) &&
-        inventory.entry(ITEM_SLOT_ARMOUR)->skill() == SKILL_LEATHER)
+        inventory.functionalEntry(ITEM_SLOT_ARMOUR) &&
+        inventory.functionalEntry(ITEM_SLOT_ARMOUR)->skill() == SKILL_LEATHER)
         v10 += leatherSkill.level();
 
     switch (resistance) {
@@ -2090,10 +2045,7 @@ int Character::GetParameterBonus(int player_parameter) const {
 
 //----- (0048EA46) --------------------------------------------------------
 int Character::GetSpecialItemBonus(ItemEnchantment enchantment) const {
-    for (InventoryConstEntry entry : inventory.equipment()) {
-        if (!entry->isFunctional())
-            continue;
-
+    for (InventoryConstEntry entry : inventory.functionalEquipment()) {
         if (enchantment == ITEM_ENCHANTMENT_OF_RECOVERY) {
             if (entry->specialEnchantment == ITEM_ENCHANTMENT_OF_RECOVERY ||
                 entry->itemId == ITEM_ARTIFACT_ELVEN_CHAINMAIL)
@@ -2200,25 +2152,32 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
     switch (attr) {  // TODO(_) would be nice to move these into separate functions
         case ATTRIBUTE_RANGED_DMG_BONUS:
         case ATTRIBUTE_RANGED_ATTACK:
-            if (HasItemEquipped(ITEM_SLOT_BOW)) v5 = GetBowItem()->GetDamageMod();
+            if (InventoryConstEntry bow = inventory.functionalEntry(ITEM_SLOT_BOW))
+                v5 = bow->GetDamageMod();
             return v5;
             break;
 
         case ATTRIBUTE_RANGED_DMG_MIN:
-            if (!HasItemEquipped(ITEM_SLOT_BOW)) return 0;
-            v5 = GetBowItem()->GetDamageMod();
-            v56 = GetBowItem()->GetDamageDice();
-            return v5 + v56;
+            if (InventoryConstEntry bow = inventory.functionalEntry(ITEM_SLOT_BOW)) {
+                v5 = bow->GetDamageMod();
+                v56 = bow->GetDamageDice();
+                return v5 + v56;
+            } else {
+                return 0;
+            }
             break;
 
         case ATTRIBUTE_RANGED_DMG_MAX:
-            if (!HasItemEquipped(ITEM_SLOT_BOW)) return 0;
-            v5 = GetBowItem()->GetDamageDice() * GetBowItem()->GetDamageRoll();
-            v56 = GetBowItem()->GetDamageMod();
-            return v5 + v56;
+            if (InventoryConstEntry bow = inventory.functionalEntry(ITEM_SLOT_BOW)) {
+                v5 = bow->GetDamageDice() * bow->GetDamageRoll();
+                v56 = bow->GetDamageMod();
+                return v5 + v56;
+            } else {
+                return 0;
+            }
 
         case ATTRIBUTE_LEVEL:
-            if (!Character::HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_POWER)) return 0;
+            if (!Character::wearsEnchantedItem(ITEM_ENCHANTMENT_OF_POWER)) return 0;
             return 5;
             break;
 
@@ -2226,25 +2185,22 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
             if (IsUnarmed()) {
                 return 3;
             } else {
-                if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                    if (inventory.entry(ITEM_SLOT_MAIN_HAND)->isWeapon()) {
-                        const Item *mainHandItem = GetMainHandItem();
-                        v26 = mainHandItem->GetDamageRoll();
-                        if (GetOffHandItem() != nullptr ||
-                            mainHandItem->skill() != SKILL_SPEAR) {
-                            v25 = mainHandItem->GetDamageDice();
-                        } else {
-                            v25 = mainHandItem->GetDamageDice() + 1;
-                        }
-                        v5 = mainHandItem->GetDamageMod() + v25 * v26;
+                if (InventoryConstEntry mainHandItem = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND); mainHandItem && mainHandItem->isWeapon()) { // Not a wand.
+                    v26 = mainHandItem->GetDamageRoll();
+                    if (inventory.entry(ITEM_SLOT_OFF_HAND) ||
+                        mainHandItem->skill() != SKILL_SPEAR) {
+                        v25 = mainHandItem->GetDamageDice();
+                    } else {
+                        v25 = mainHandItem->GetDamageDice() + 1;
                     }
+                    v5 = mainHandItem->GetDamageMod() + v25 * v26;
                 }
                 if (getOnlyMainHandDmg ||
-                    !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-                    !inventory.entry(ITEM_SLOT_OFF_HAND)->isWeapon()) {
+                    !inventory.functionalEntry(ITEM_SLOT_OFF_HAND) ||
+                    !inventory.functionalEntry(ITEM_SLOT_OFF_HAND)->isWeapon()) {
                     return v5;
                 } else {
-                    const Item *offHandItem = GetOffHandItem();
+                    InventoryConstEntry offHandItem = inventory.entry(ITEM_SLOT_OFF_HAND);
                     v15 = offHandItem->GetDamageMod();
                     v14 = offHandItem->GetDamageDice() *
                           offHandItem->GetDamageRoll();
@@ -2254,52 +2210,45 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
             break;
 
         case ATTRIBUTE_MELEE_DMG_BONUS:
-        case ATTRIBUTE_ATTACK:
+        case ATTRIBUTE_ATTACK: {
             if (IsUnarmed()) {
                 return 0;
             }
-            if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                if (inventory.entry(ITEM_SLOT_MAIN_HAND)->isWeapon()) {
-                    v5 = GetMainHandItem()->GetDamageMod();
-                }
+            if (InventoryConstEntry mainHandItem = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND); mainHandItem && mainHandItem->isWeapon()) { // Not a wand.
+                v5 = mainHandItem->GetDamageMod();
             }
-            if (getOnlyMainHandDmg ||
-                !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-                !inventory.entry(ITEM_SLOT_OFF_HAND)->isWeapon()) {
+            InventoryConstEntry offHandItem = inventory.functionalEntry(ITEM_SLOT_OFF_HAND);
+            if (getOnlyMainHandDmg || !offHandItem || !offHandItem->isWeapon()) {
                 return v5;
             } else {
-                v56 = GetOffHandItem()->GetDamageMod();
+                v56 = offHandItem->GetDamageMod();
                 return v5 + v56;
             }
             break;
+        }
 
-        case ATTRIBUTE_MELEE_DMG_MIN:
+        case ATTRIBUTE_MELEE_DMG_MIN: {
             if (IsUnarmed()) {
                 return 1;
             }
-            if (this->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                if (inventory.entry(ITEM_SLOT_MAIN_HAND)->isWeapon()) {
-                    const Item *mainHandItem = GetMainHandItem();
-                    v5 = mainHandItem->GetDamageDice() +
-                         mainHandItem->GetDamageMod();
-                    if (GetOffHandItem() == nullptr &&
-                        mainHandItem->skill() == SKILL_SPEAR) {
-                        ++v5;
-                    }
+            if (InventoryConstEntry mainHandItem = inventory.functionalEntry(ITEM_SLOT_MAIN_HAND); mainHandItem && mainHandItem->isWeapon()) { // Not a wand.
+                v5 = mainHandItem->GetDamageDice() +
+                     mainHandItem->GetDamageMod();
+                if (!inventory.entry(ITEM_SLOT_OFF_HAND) && mainHandItem->skill() == SKILL_SPEAR) {
+                    ++v5;
                 }
             }
 
-            if (getOnlyMainHandDmg ||
-                !this->HasItemEquipped(ITEM_SLOT_OFF_HAND) ||
-                !inventory.entry(ITEM_SLOT_OFF_HAND)->isWeapon()) {
+            InventoryConstEntry offHandItem = inventory.functionalEntry(ITEM_SLOT_OFF_HAND);
+            if (getOnlyMainHandDmg || !offHandItem || !offHandItem->isWeapon()) {
                 return v5;
             } else {
-                const Item *offHandItem = GetOffHandItem();
                 v14 = offHandItem->GetDamageMod();
                 v15 = offHandItem->GetDamageDice();
                 return v5 + v15 + v14;
             }
             break;
+        }
 
         case ATTRIBUTE_MIGHT:
         case ATTRIBUTE_INTELLIGENCE:
@@ -2342,10 +2291,7 @@ int Character::GetItemsBonus(Attribute attr, bool getOnlyMainHandDmg /*= false*/
         case ATTRIBUTE_SKILL_BOW:
         case ATTRIBUTE_SKILL_SHIELD:
         case ATTRIBUTE_SKILL_LEARNING:
-            for (InventoryConstEntry entry : inventory.equipment()) {
-                if (!entry->isFunctional())
-                    continue;
-
+            for (InventoryConstEntry entry : inventory.functionalEquipment()) {
                 if (attr == ATTRIBUTE_AC_BONUS) {
                     if (isPassiveEquipment(entry->type())) {
                         v5 += entry->GetDamageDice() + entry->GetDamageMod();
@@ -2623,7 +2569,7 @@ int Character::GetSkillBonus(Attribute inSkill) const {
 
     switch (inSkill) {
         case ATTRIBUTE_RANGED_DMG_BONUS:
-            if (HasItemEquipped(ITEM_SLOT_BOW)) {
+            if (inventory.functionalEntry(ITEM_SLOT_BOW)) {
                 int bowSkillLevel = getActualSkillValue(SKILL_BOW).level();
                 int multiplier = GetMultiplierForSkillLevel(SKILL_BOW, 0, 0, 0, 1);
                 return multiplier * bowSkillLevel;
@@ -2647,10 +2593,7 @@ int Character::GetSkillBonus(Attribute inSkill) const {
             bool wearingLeather = false;
             unsigned int ACSum = 0;
 
-            for (InventoryConstEntry item : inventory.equipment()) {
-                if (!item->isFunctional())
-                    continue;
-
+            for (InventoryConstEntry item : inventory.functionalEquipment()) {
                 Skill itemSkillType = item->skill();
                 int currArmorSkillLevel = 0;
                 int multiplier = 0;
@@ -2708,10 +2651,7 @@ int Character::GetSkillBonus(Attribute inSkill) const {
                 int multiplier = GetMultiplierForSkillLevel(SKILL_UNARMED, 1, 1, 2, 2);
                 return armsMasterBonus + multiplier * unarmedSkill;
             }
-            for (InventoryConstEntry item : inventory.equipment()) {
-                if (!item->isFunctional())
-                    continue;
-
+            for (InventoryConstEntry item : inventory.functionalEquipment()) {
                 if (item->isMeleeWeapon()) {
                     Skill currItemSkillType = item->skill();
                     int currentItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
@@ -2730,10 +2670,7 @@ int Character::GetSkillBonus(Attribute inSkill) const {
             return 0;
 
         case ATTRIBUTE_RANGED_ATTACK:
-            for (InventoryConstEntry item : inventory.equipment()) {
-                if (!item->isFunctional())
-                    continue;
-
+            for (InventoryConstEntry item : inventory.functionalEquipment()) {
                 if (item->isWeapon()) {
                     Skill currentItemSkillType = item->skill();
                     int currentItemSkillLevel = this->getActualSkillValue(currentItemSkillType).level();
@@ -2757,10 +2694,7 @@ int Character::GetSkillBonus(Attribute inSkill) const {
                 int multiplier = GetMultiplierForSkillLevel(SKILL_UNARMED, 0, 1, 2, 2);
                 return multiplier * unarmedSkillLevel;
             }
-            for (InventoryConstEntry item : inventory.equipment()) {
-                if (!item->isFunctional())
-                    continue;
-
+            for (InventoryConstEntry item : inventory.functionalEquipment()) {
                 if (item->isMeleeWeapon()) {
                     Skill currItemSkillType = item->skill();
                     int currItemSkillLevel = this->getActualSkillValue(currItemSkillType).level();
@@ -4015,7 +3949,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
         case VAR_Invisible:
             return pParty->pPartyBuffs[PARTY_BUFF_INVISIBILITY].Active();
         case VAR_ItemEquipped:
-            return wearsItemAnywhere(static_cast<ItemId>(pValue));
+            return wearsItem(static_cast<ItemId>(pValue));
         default:
             return false;
     }
@@ -5764,19 +5698,6 @@ void Character::SubtractSkillByEvent(Skill skill, uint16_t subSkillValue) {
     // TODO(pskelton): check - should this modify mastery as well
 }
 
-//----- (00467E7F) --------------------------------------------------------
-void Character::EquipBody(ItemType uEquipType) {
-    ItemSlot itemAnchor = pEquipTypeToBodyAnchor[uEquipType];
-    if (InventoryEntry entry = pParty->activeCharacter().inventory.entry(itemAnchor)) {
-        Item tmpItem = pParty->activeCharacter().inventory.take(entry);
-        pParty->activeCharacter().inventory.equip(itemAnchor, pParty->takeHoldingItem());
-        pParty->setHoldingItem(tmpItem);
-    } else {
-        if (pParty->activeCharacter().inventory.canEquip(itemAnchor))
-            pParty->activeCharacter().inventory.equip(itemAnchor, pParty->takeHoldingItem());
-    }
-}
-
 int cycleCharacter(bool backwards) {
     int currentId = pParty->activeCharacterIndex() - 1;
 
@@ -5796,17 +5717,9 @@ int cycleCharacter(bool backwards) {
     return pParty->activeCharacterIndex();
 }
 
-bool Character::hasUnderwaterSuitEquipped() {
-    // the original function took the
-    // character number as a parameter. if it
-    // was 0, the whole party was checked.
-    // calls with the parameter 0 have been
-    // changed to calls to this for every
-    // character
-    if (GetArmorItem() == nullptr || GetArmorItem()->itemId != ITEM_QUEST_WETSUIT) {
-        return false;
-    }
-    return true;
+bool Character::hasUnderwaterSuitEquipped() const {
+    InventoryConstEntry armor = inventory.entry(ITEM_SLOT_ARMOUR);
+    return armor && armor->itemId == ITEM_QUEST_WETSUIT;
 }
 
 //----- (0043EDB9) --------------------------------------------------------
@@ -5899,11 +5812,9 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
         }
 
         // play hit sound
-        Item *equippedArmor = playerPtr->GetArmorItem();
+        InventoryConstEntry armor = playerPtr->inventory.functionalEntry(ITEM_SLOT_ARMOUR);
         SoundId soundToPlay;
-        if (!equippedArmor || equippedArmor->IsBroken() ||
-            (equippedArmor->skill() != SKILL_CHAIN &&
-             equippedArmor->skill() != SKILL_PLATE)) {
+        if (!armor || (armor->skill() != SKILL_CHAIN && armor->skill() != SKILL_PLATE)) {
             soundToPlay = vrng->randomSample({SOUND_dull_armor_strike1, SOUND_dull_armor_strike2, SOUND_dull_armor_strike3, SOUND_dull_strike});
         } else {
             soundToPlay = vrng->randomSample({SOUND_metal_armor_strike1, SOUND_metal_armor_strike2, SOUND_metal_armor_strike3, SOUND_metal_vs_metal01h});
@@ -6075,27 +5986,19 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                     shielded = true;
                 if (pParty->pPartyBuffs[PARTY_BUFF_SHIELD].Active())
                     shielded = true;
-                if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_SHIELDING))
+                if (playerPtr->wearsEnchantedItem(ITEM_ENCHANTMENT_OF_SHIELDING))
                     shielded = true;
-                if (playerPtr->HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_STORM))
+                if (playerPtr->wearsEnchantedItem(ITEM_ENCHANTMENT_OF_STORM))
                     shielded = true;
-                if (playerPtr->HasItemEquipped(ITEM_SLOT_ARMOUR) && playerPtr->GetArmorItem()->itemId == ITEM_ARTIFACT_GOVERNORS_ARMOR)
+                if (playerPtr->wearsItem(ITEM_ARTIFACT_GOVERNORS_ARMOR))
                     shielded = true;
-                if (playerPtr->HasItemEquipped(ITEM_SLOT_MAIN_HAND)) {
-                    Item *mainHandItem = playerPtr->GetMainHandItem();
-                    if (mainHandItem->itemId == ITEM_RELIC_KELEBRIM ||
-                        mainHandItem->itemId == ITEM_ARTIFACT_ELFBANE ||
-                        (mainHandItem->isShield() && playerPtr->getActualSkillValue(SKILL_SHIELD).mastery() == MASTERY_GRANDMASTER))
-                        shielded = true;
-                }
-                if (playerPtr->HasItemEquipped(ITEM_SLOT_OFF_HAND)) {
-                    Item *offHandItem = playerPtr->GetOffHandItem();
-                    if (offHandItem->itemId == ITEM_RELIC_KELEBRIM ||
-                        offHandItem->itemId == ITEM_ARTIFACT_ELFBANE ||
-                        (offHandItem->isShield() && playerPtr->getActualSkillValue(SKILL_SHIELD).mastery() == MASTERY_GRANDMASTER))
-                        shielded = true;
-                }
-
+                if (playerPtr->wearsItem(ITEM_RELIC_KELEBRIM))
+                    shielded = true;
+                if (playerPtr->wearsItem(ITEM_ARTIFACT_ELFBANE))
+                    shielded = true;
+                if (InventoryConstEntry offHandItem = playerPtr->inventory.functionalEntry(ITEM_SLOT_OFF_HAND);
+                    offHandItem && offHandItem->isShield() && playerPtr->getActualSkillValue(SKILL_SHIELD).mastery() == MASTERY_GRANDMASTER)
+                    shielded = true;
                 if (shielded)
                     dmgToReceive >>= 1;
             }
@@ -6283,6 +6186,7 @@ void Character::OnInventoryLeftClick() {
                     // try to add anywhere
                     if (!inventory.tryAdd(pParty->pPickedItem)) {
                         // failed to add, put back the old item
+                        pAudioPlayer->playUISound(SOUND_error);
                         inventory.add(pos, tmp);
                         return;
                     }
@@ -6295,8 +6199,7 @@ void Character::OnInventoryLeftClick() {
                 if (inventory.tryAdd(inventoryPos, pParty->pPickedItem)) {
                     pParty->takeHoldingItem();
                 } else {
-                    // failed to add to inventory, keep holding the item
-                    pAudioPlayer->playUISound(SOUND_error);
+                    pAudioPlayer->playUISound(SOUND_error); // Overlapping items or out of inventory space.
                 }
             }
         }
@@ -6357,47 +6260,6 @@ void Character::SetCondDeadWithBlockCheck(int blockable) {
 
 void Character::SetCondUnconsciousWithBlockCheck(int blockable) {
     SetCondition(CONDITION_UNCONSCIOUS, blockable);
-}
-
-Item *Character::GetOffHandItem() { return GetItem(ITEM_SLOT_OFF_HAND); }
-const Item *Character::GetOffHandItem() const { return GetItem(ITEM_SLOT_OFF_HAND); }
-
-Item *Character::GetMainHandItem() { return GetItem(ITEM_SLOT_MAIN_HAND); }
-const Item *Character::GetMainHandItem() const { return GetItem(ITEM_SLOT_MAIN_HAND); }
-
-Item *Character::GetBowItem() { return GetItem(ITEM_SLOT_BOW); }
-const Item *Character::GetBowItem() const { return GetItem(ITEM_SLOT_BOW); }
-
-Item *Character::GetArmorItem() { return GetItem(ITEM_SLOT_ARMOUR); }
-const Item *Character::GetArmorItem() const { return GetItem(ITEM_SLOT_ARMOUR); }
-
-Item *Character::GetHelmItem() { return GetItem(ITEM_SLOT_HELMET); }
-const Item *Character::GetHelmItem() const { return GetItem(ITEM_SLOT_HELMET); }
-
-Item *Character::GetBeltItem() { return GetItem(ITEM_SLOT_BELT); }
-const Item *Character::GetBeltItem() const { return GetItem(ITEM_SLOT_BELT); }
-
-Item *Character::GetCloakItem() { return GetItem(ITEM_SLOT_CLOAK); }
-const Item *Character::GetCloakItem() const { return GetItem(ITEM_SLOT_CLOAK); }
-
-Item *Character::GetGloveItem() { return GetItem(ITEM_SLOT_GAUNTLETS); }
-const Item *Character::GetGloveItem() const { return GetItem(ITEM_SLOT_GAUNTLETS); }
-
-Item *Character::GetBootItem() { return GetItem(ITEM_SLOT_BOOTS); }
-const Item *Character::GetBootItem() const { return GetItem(ITEM_SLOT_BOOTS); }
-
-Item *Character::GetAmuletItem() { return GetItem(ITEM_SLOT_AMULET); }
-const Item *Character::GetAmuletItem() const { return GetItem(ITEM_SLOT_AMULET); }
-
-Item *Character::GetNthRingItem(int ringNum) { return GetItem(ringSlot(ringNum)); }
-const Item *Character::GetNthRingItem(int ringNum) const { return GetItem(ringSlot(ringNum)); }
-
-Item *Character::GetItem(ItemSlot index) {
-    return this->inventory.entry(index).get();
-}
-
-const Item *Character::GetItem(ItemSlot index) const {
-    return const_cast<Character *>(this)->GetItem(index);
 }
 
 int Character::getCharacterIndex() {
@@ -6530,8 +6392,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
 
         Actor::DamageMonsterFromParty(Pid(OBJECT_Character, pParty->activeCharacterIndex() - 1),
                                       target_id, a3);
-        if (character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_MAIN_HAND) ||
-            character->WearsItem(ITEM_ARTIFACT_SPLITTER, ITEM_SLOT_OFF_HAND))
+        if (character->wearsItem(ITEM_ARTIFACT_SPLITTER))
             _42FA66_do_explosive_impact(actor->pos + Vec3f(0, 0, actor->height / 2), 0, 512, pParty->activeCharacterIndex());
     } else if (bow) {
         shooting_bow = true;
@@ -6556,7 +6417,7 @@ void Character::_42ECB5_CharacterAttacksActor() {
     } else if (shotting_laser) {
         skill = SKILL_BLASTER;
     } else {
-        if (character->HasItemEquipped(ITEM_SLOT_MAIN_HAND) && main_hand)
+        if (character->inventory.functionalEntry(ITEM_SLOT_MAIN_HAND) && main_hand)
             skill = main_hand->skill();
 
         pTurnEngine->ApplyPlayerAction();

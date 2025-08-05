@@ -19,8 +19,8 @@ struct ItemData {
     int baseValue = 0; // Item's base value in gold coins.
     SpriteId spriteId = SPRITE_NULL; // Sprite id that's used when item is dropped.
     Pointi paperdollAnchorOffset; // Paperdoll offset for the item sprite when equipped, relative to the item type-specific anchor point.
-    ItemType type = ITEM_TYPE_NONE; // Item type.
-    Skill skill = SKILL_MISC; // Skill associated with the item. E.g. `CHARACTER_SKILL_SWORD`.
+    ItemType type = ITEM_TYPE_INVALID; // Item type. Is never `ITEM_TYPE_INVALID` for items in the game.
+    Skill skill = SKILL_INVALID; // Skill associated with the item. Is never `SKILL_INVALID` for items in the game.
     int damageDice = 0; // Damage dice, base AC for armor.
     int damageRoll = 0; // Always 1 for armor.
     int damageMod = 0; // Also base charges for wands. Additional AC for armor, effective AC = damageDice+damageMod.

@@ -121,12 +121,7 @@ GAME_TEST(Issues, Issue2021_2022) {
 GAME_TEST(Issues, Issue2061) {
     // Game Crashes if you click the border of the inventory screen.
     game.startNewGame();
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_I);
-    game.tick();
+    game.goToInventory(1);
     game.pressAndReleaseButton(BUTTON_LEFT, 3, 20); // This used to assert.
     game.tick();
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_NULL); // Shouldn't pick anything.
@@ -141,12 +136,7 @@ GAME_TEST(Issues, Issue2066) {
     pParty->pCharacters[0].inventory.clear();
     pParty->pCharacters[0].inventory.add(Pointi(0, 0), Item(ITEM_LEATHER_ARMOR)); // Add leather armor at (0, 0).
 
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_1);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_I);
-    game.tick();
+    game.goToInventory(1);
     game.pressAndReleaseButton(BUTTON_LEFT, 30, 30); // Pick up leather armor.
     game.tick();
     game.pressAndReleaseButton(BUTTON_LEFT, 30, 0); // Try to place outside inventory boundaries.
@@ -207,6 +197,8 @@ GAME_TEST(Issues, Issue2099) {
                 EXPECT_FALSE(isRandomItem(entry->itemId));
     }
 }
+
+// 2100
 
 GAME_TEST(Issues, Issue2104) {
     // Enemies always hit with ranged attacks.
@@ -319,6 +311,16 @@ GAME_TEST(Issues, Issue2109) {
     EXPECT_LE(damageRange[1], 5);
 }
 
+GAME_TEST(Issues, Issue2117) {
+    // Jumping down from Celeste crashes the game
+    auto mapTape = tapes.map();
+    auto posTape = tapes.custom([] { return pParty->pos; });
+    test.playTraceFromTestData("issue_2117.mm7", "issue_2117.json");
+    EXPECT_EQ(mapTape.front(), MAP_CELESTE);
+    EXPECT_EQ(mapTape.back(), MAP_BRACADA_DESERT); // Jumped down to the desert.
+    EXPECT_TRUE(posTape.contains(Vec3f(8146, 4379, 3700))); // Via the dodgy teleport step
+}
+
 GAME_TEST(Issues, Issue2118) {
     // Clicking on wine racks crashes the game.
     auto potionsTape = tapes.totalItemCount(ITEM_TYPE_POTION);
@@ -340,4 +342,82 @@ GAME_TEST(Issues, Issue2118) {
         for (InventoryConstEntry item : character.inventory.entries())
             if (item->isPotion() && item->itemId != ITEM_POTION_BOTTLE)
                 EXPECT_GT(item->potionPower, 0); // Potions were properly generated.
+}
+
+GAME_TEST(Prs, Pr2157a) {
+    // Test that we can't equip items when inventory is full.
+    auto soundsTape = tapes.sounds();
+    game.startNewGame();
+    game.goToInventory(1);
+    test.startTaping();
+
+    CharacterInventory &inventory = pParty->pCharacters[0].inventory;
+    pParty->pCharacters[0].setSkillValue(SKILL_SWORD, CombinedSkillValue::novice());
+    pParty->pCharacters[0].setSkillValue(SKILL_SHIELD, CombinedSkillValue::novice());
+    pParty->pCharacters[0].setSkillValue(SKILL_LEATHER, CombinedSkillValue::novice());
+    inventory.clear();
+
+    // Fill inventory with brass rings. This should eat up all available space.
+    Sizei gridSize = pParty->pCharacters[0].inventory.gridSize();
+    for (int x = 0; x < gridSize.w; x++)
+        for (int y = 0; y < gridSize.h; y++)
+            inventory.add({x, y}, Item(ITEM_BRASS_RING));
+
+    // Try to equip different items, check that error sound is played.
+    // The items below cover all item slots, plus we have a wetsuit here just to check that we don't trip on it.
+    std::array items = {
+        Item(ITEM_QUEST_WETSUIT),
+        Item(ITEM_CRUDE_LONGSWORD),
+        Item(ITEM_TWO_HANDED_SWORD),
+        Item(ITEM_LEATHER_ARMOR),
+        Item(ITEM_GOBLIN_SHIELD),
+        Item(ITEM_HORNED_HELM),
+        Item(ITEM_LEATHER_BELT),
+        Item(ITEM_LEATHER_CLOAK),
+        Item(ITEM_GAUNTLETS),
+        Item(ITEM_LEATHER_BOOTS),
+        Item(ITEM_DAZZLING_RING),
+        Item(ITEM_EYEBALL_AMULET),
+        Item(ITEM_WAND_OF_FIRE),
+    };
+    for (const Item &item : items) {
+        pParty->takeHoldingItem();
+        pParty->setHoldingItem(item);
+        game.pressAndReleaseButton(BUTTON_LEFT, 600, 200); // Try to equip.
+        game.tick(2); // Two ticks so that the taping engine doesn't merge SOUND_error frames.
+    }
+
+    EXPECT_EQ(soundsTape.flatten().count(SOUND_error), items.size());
+    EXPECT_EQ(inventory.size(), 126);
+    EXPECT_EQ(std::ranges::distance(inventory.equipment()), 0); // No items were equipped.
+    EXPECT_TRUE(std::ranges::all_of(inventory.entries(), [] (InventoryEntry entry) { return entry->itemId == ITEM_BRASS_RING; })); // Backpack wasn't touched.
+}
+
+GAME_TEST(Prs, Pr2157b) {
+    // Test that we can't add items to grid when inventory is full.
+    auto soundsTape = tapes.sounds();
+    game.startNewGame();
+    game.goToInventory(1);
+    test.startTaping();
+
+    CharacterInventory &inventory = pParty->pCharacters[0].inventory;
+    inventory.clear();
+
+    // Fill inventory with brass rings. Leave one cell free.
+    Sizei gridSize = pParty->pCharacters[0].inventory.gridSize();
+    for (int x = 0; x < gridSize.w; x++)
+        for (int y = 0; y < gridSize.h; y++)
+            if (x != 0 || y != 0)
+                inventory.add({x, y}, Item(ITEM_BRASS_RING));
+    inventory.equip(ITEM_SLOT_RING1, Item(ITEM_BRASS_RING));
+
+    // Try to place another ring into the backpack.
+    pParty->setHoldingItem(Item(ITEM_DAZZLING_RING));
+    game.pressAndReleaseButton(BUTTON_LEFT, 20, 20);
+    game.tick();
+
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_DAZZLING_RING);
+    EXPECT_FALSE(inventory.find(ITEM_DAZZLING_RING));
+    EXPECT_EQ(soundsTape.flatten().count(SOUND_error), 1);
+    EXPECT_EQ(inventory.size(), 126);
 }

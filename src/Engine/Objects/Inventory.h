@@ -203,6 +203,18 @@ class Inventory {
     }
 
     /**
+     * @param self                      `*this`.
+     * @return                          A range of `InventoryEntry` or `InventoryConstEntry` objects for all equipped
+     *                                  items in this inventory that are functional (non-broken and not out of charges).
+     *                                  Returned entries are never invalid.
+     */
+    [[nodiscard]] auto functionalEquipment(this auto &&self) {
+        return self._equipment.indices()
+            | std::views::filter([&self](ItemSlot i) { return self._equipment[i] != 0 && self._records[self._equipment[i] - 1].item.isFunctional(); })
+            | std::views::transform([&self](ItemSlot i) { return self.entryAt(self._equipment[i] - 1); });
+    }
+
+    /**
      * @param position                  Grid position to look up an item.
      * @return                          Inventory entry at provided grid position, or an invalid entry if `position` is
      *                                  out of bounds or if the grid at `position` is empty.
@@ -220,6 +232,20 @@ class Inventory {
     [[nodiscard]] InventoryEntry entry(ItemSlot slot);
     [[nodiscard]] InventoryConstEntry entry(ItemSlot slot) const {
         return const_cast<Inventory *>(this)->entry(slot);
+    }
+
+    /**
+     * @param slot                      Equipment slot to look up an item.
+     * @return                          Inventory entry for an item equipped in `slot`, or an invalid entry if that slot
+     *                                  is empty or if the item in the slot is non-functional (broken or out of
+     *                                  charges).
+     */
+    [[nodiscard]] InventoryEntry functionalEntry(ItemSlot slot) {
+        InventoryEntry result = entry(slot);
+        return result && result->isFunctional() ? result : InventoryEntry();
+    }
+    [[nodiscard]] InventoryConstEntry functionalEntry(ItemSlot slot) const {
+        return const_cast<Inventory *>(this)->functionalEntry(slot);
     }
 
     /**
@@ -371,7 +397,9 @@ class CharacterInventory : private Inventory {
     using Inventory::gridRect;
     using Inventory::entries;
     using Inventory::equipment;
+    using Inventory::functionalEquipment;
     using Inventory::entry;
+    using Inventory::functionalEntry;
     using Inventory::canAdd;
     using Inventory::add;
     using Inventory::tryAdd;

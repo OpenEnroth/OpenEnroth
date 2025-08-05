@@ -124,9 +124,8 @@ class Character {
     Color GetExperienceDisplayColor();
     int CalculateIncommingDamage(DamageType dmg_type, int amount);
     bool IsUnarmed() const;
-    bool HasItemEquipped(ItemSlot uEquipIndex) const;
-    bool HasEnchantedItemEquipped(ItemEnchantment uEnchantment) const;
-    bool WearsItem(ItemId item_id, ItemSlot equip_type) const;
+    bool wearsEnchantedItem(ItemEnchantment enchantment) const;
+    bool wearsItem(ItemId itemId) const;
     int StealFromShop(Item *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);
     StealResult StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
@@ -138,8 +137,6 @@ class Character {
     int receiveDamage(signed int amount, DamageType dmg_type);
     int ReceiveSpecialAttackEffect(MonsterSpecialAttack attType, Actor *pActor);
 
-    // TODO(captainurist): move closer to Spells data.
-    DamageType GetSpellDamageType(SpellId uSpellID) const;
     Duration GetAttackRecoveryTime(bool attackUsesBow) const;
 
     int GetHealth() const { return this->health; }
@@ -218,12 +215,11 @@ class Character {
     bool CanCastSpell(unsigned int uRequiredMana);
     void SpendMana(unsigned int uRequiredMana);
     void PlayAwardSound();
-    void EquipBody(ItemType uEquipType);
 
     /**
      * @offset 0x43EE77
      */
-    bool hasUnderwaterSuitEquipped();
+    bool hasUnderwaterSuitEquipped() const;
 
     void OnInventoryLeftClick();
 
@@ -233,7 +229,6 @@ class Character {
     int CalculateMeleeDmgToEnemyWithWeapon(Item *weapon,
                                            MonsterId uTargetActorID,
                                            bool addOneDice);
-    bool wearsItemAnywhere(ItemId item_id) const;
     float GetArmorRecoveryMultiplierFromSkillLevel(Skill armour_skill_type, float param2, float param3, float param4, float param5) const;
     void SetSkillReaction();
     void PlayAwardSound_Anim();
@@ -268,32 +263,6 @@ class Character {
 
     inline bool IsMale() const { return GetSexByVoice() == SEX_MALE; }
     inline bool IsFemale() const { return !IsMale(); }
-
-    Item *GetMainHandItem();
-    Item *GetOffHandItem();
-    Item *GetBowItem();
-    Item *GetArmorItem();
-    Item *GetHelmItem();
-    Item *GetBeltItem();
-    Item *GetCloakItem();
-    Item *GetGloveItem();
-    Item *GetBootItem();
-    Item *GetAmuletItem();
-    Item *GetNthRingItem(int ringNum);
-    Item *GetItem(ItemSlot index);
-
-    const Item *GetMainHandItem() const;
-    const Item *GetOffHandItem() const;
-    const Item *GetBowItem() const;
-    const Item *GetArmorItem() const;
-    const Item *GetHelmItem() const;
-    const Item *GetBeltItem() const;
-    const Item *GetCloakItem() const;
-    const Item *GetGloveItem() const;
-    const Item *GetBootItem() const;
-    const Item *GetAmuletItem() const;
-    const Item *GetNthRingItem(int ringNum) const;
-    const Item *GetItem(ItemSlot index) const;
 
     // TODO(Nik-RE-dev): use getCharacterIdInParty directly where this function is called.
     /**

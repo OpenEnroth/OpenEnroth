@@ -163,9 +163,9 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         double MapSizeScale = (double)(1 << (16 - loc_power));
         int stepX_r_resets =
             (unsigned int)(int64_t)
-            ((double)(center.x - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
+            ((double)(center.x - maxPartyAxisDistance / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
         int stepY_r = (int)(int64_t)
-            ((double)(-center.y - 22528 / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
+            ((double)(-center.y - maxPartyAxisDistance / (viewparams->uMapBookMapZoom / 384) + 32768) / MapSizeScale) << 16;
         int scaled_posY = stepY_r >> 16;
 
         static GraphicsImage *minimaptemp = nullptr;
@@ -320,8 +320,8 @@ std::string GetMapBookHintText(int mouse_x, int mouse_y) {
 
     // In the mapbook only lady Margaret dispays for defoult zoom(В
     // книге карты только Леди Маргарита всплывает при дефолтном зуме)
-    int map_tile_X = std::abs(global_coord_X + 22528) / 512;
-    int map_tile_Y = std::abs(global_coord_Y - 22528) / 512;
+    int map_tile_X = std::abs(global_coord_X + maxPartyAxisDistance) / 512;
+    int map_tile_Y = std::abs(global_coord_Y - maxPartyAxisDistance) / 512;
     if (pOutdoor->IsMapCellFullyRevealed(map_tile_X, map_tile_Y) &&
         uCurrentlyLoadedLevelType == LEVEL_OUTDOOR &&
         !pOutdoor->pBModels.empty()) {

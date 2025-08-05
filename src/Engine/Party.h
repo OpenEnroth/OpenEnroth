@@ -219,15 +219,13 @@ struct Party {
     }
 
     /**
-     * @param item_id                   Item type to check, e.g. `ITEM_ARTIFACT_LADYS_ESCORT`.
+     * @param itemId                    Item type to check, e.g. `ITEM_ARTIFACT_LADYS_ESCORT`.
      * @return                          Whether the provided item is worn by at least one member of the party.
      */
-    bool wearsItemAnywhere(ItemId item_id) const {
-        for (const Character &character : pCharacters) {
-            if (character.wearsItemAnywhere(item_id)) {
+    bool wearsItem(ItemId itemId) const {
+        for (const Character &character : pCharacters)
+            if (character.wearsItem(itemId))
                 return true;
-            }
-        }
         return false;
     }
 
