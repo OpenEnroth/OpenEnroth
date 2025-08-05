@@ -443,7 +443,7 @@ GAME_TEST(Issues, Issue402) {
     // Attacking while wearing wetsuits shouldn't assert.
     auto checkCharactersWearWetsuits = [] {
         for (int i = 0; i < 4; i++)
-            EXPECT_TRUE(pParty->pCharacters[i].wearsItemAnywhere(ITEM_QUEST_WETSUIT));
+            EXPECT_TRUE(pParty->pCharacters[i].wearsItem(ITEM_QUEST_WETSUIT));
     };
 
     test.playTraceFromTestData("issue_402.mm7", "issue_402.json", [&] {

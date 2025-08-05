@@ -41,7 +41,7 @@ GAME_TEST(Prs, Pr1005) {
     // Testing collisions - stairs should work. In this test case the party is walking onto a wooden paving in Tatalia.
     auto zTape = tapes.custom([] { return pParty->pos.z; });
     test.playTraceFromTestData("pr_1005.mm7", "pr_1005.json");
-    EXPECT_EQ(zTape.frontBack(), tape(154, 193)); // Paving is at z=192, party z should be this value +1.
+    EXPECT_EQ(zTape.frontBack(), tape(155, 193)); // Paving is at z=192, party z should be this value +1.
 }
 
 GAME_TEST(Issues, Issue1020) {
@@ -243,7 +243,7 @@ GAME_TEST(Issues, Issue1226a) {
     game.restAndHeal();
     EXPECT_EQ(pParty->uNumFoodRations, 18); // Standing on a bridge => rest should cost 2 food.
 
-    game.teleportTo(MAP_LAND_OF_THE_GIANTS, Vec3f(10000, 4070, 0), 0);
+    game.teleportTo(MAP_LAND_OF_THE_GIANTS, Vec3f(10000, 4070, 1069), 0);
     game.restAndHeal();
     EXPECT_EQ(pOutdoor->pTerrain.tilesetByPos(pParty->pos), TILESET_SNOW);
     EXPECT_EQ(pParty->uNumFoodRations, 15); // Snow => rest should cost 3 food.
@@ -257,7 +257,7 @@ GAME_TEST(Issues, Issue1226a) {
     game.restAndHeal();
     EXPECT_EQ(pParty->uNumFoodRations, 9); // Dungeon => rest should cost 2 food.
 
-    game.teleportTo(MAP_HARMONDALE, Vec3f(-18000, 12500, 0), 0);
+    game.teleportTo(MAP_HARMONDALE, Vec3f(-18000, 12500, 480), 0);
     game.restAndHeal();
     EXPECT_EQ(pOutdoor->pTerrain.tilesetByPos(pParty->pos), TILESET_DIRT);
     EXPECT_EQ(pParty->uNumFoodRations, 7); // Dirt => rest should cost 2 food.
@@ -468,7 +468,7 @@ GAME_TEST(Issues, Issue1331) {
     // This just means that the Titans' physical resistance was never "lucky enough" to roll the damage down to 1 two
     // times in a row.
     EXPECT_EQ(rngTape, tape(RANDOM_ENGINE_SEQUENTIAL));
-    EXPECT_EQ(pParty->pCharacters[2].GetBowItem()->specialEnchantment, ITEM_ENCHANTMENT_TITAN_SLAYING);
+    EXPECT_EQ(pParty->pCharacters[2].inventory.entry(ITEM_SLOT_BOW)->specialEnchantment, ITEM_ENCHANTMENT_TITAN_SLAYING);
     EXPECT_EQ(pParty->pCharacters[2].GetRangedDamageString(), "41 - 45");
     auto damageRange = hpsTape.reverse().adjacentDeltas().flatten().filter([] (int damage) { return damage > 0; }).minMax();
     EXPECT_EQ(damageRange, tape(3, (43 + 13) * 2));
@@ -927,12 +927,16 @@ GAME_TEST(Issues, Issue1482) {
 
 GAME_TEST(Issues, Issue1489) {
     // Cannot equip amulets or gauntlets
-    auto bootTape = tapes.custom([] { auto item = pParty->pCharacters[0].GetBootItem(); if (!item) return ITEM_NULL; return item->itemId; });
-    auto helmetTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetHelmItem(); if (!item) return ITEM_NULL; return item->itemId; });
-    auto beltTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetBeltItem(); if (!item) return ITEM_NULL; return item->itemId; });
-    auto cloakTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetCloakItem(); if (!item) return ITEM_NULL; return item->itemId; });
-    auto gauntletTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetGloveItem(); if (!item) return ITEM_NULL; return item->itemId;; });
-    auto amuletTape = tapes.custom([] {  auto item = pParty->pCharacters[0].GetAmuletItem(); if (!item) return ITEM_NULL; return item->itemId;; });
+    auto equipmentId = [] (ItemSlot slot) -> ItemId {
+        InventoryConstEntry item = pParty->pCharacters[0].inventory.entry(slot);
+        return item ? item->itemId : ITEM_NULL;
+    };
+    auto bootTape = tapes.custom([=] { return equipmentId(ITEM_SLOT_BOOTS); });
+    auto helmetTape = tapes.custom([=] { return equipmentId(ITEM_SLOT_HELMET); });
+    auto beltTape = tapes.custom([=] { return equipmentId(ITEM_SLOT_BELT); });
+    auto cloakTape = tapes.custom([=] { return equipmentId(ITEM_SLOT_CLOAK); });
+    auto gauntletTape = tapes.custom([=] { return equipmentId(ITEM_SLOT_GAUNTLETS); });
+    auto amuletTape = tapes.custom([=] { return equipmentId(ITEM_SLOT_AMULET); });
     test.playTraceFromTestData("issue_1489.mm7", "issue_1489.json");
 
     for (const auto& character : pParty->pCharacters) {

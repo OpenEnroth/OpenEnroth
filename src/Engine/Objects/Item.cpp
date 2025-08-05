@@ -727,7 +727,7 @@ bool Item::canSellRepairIdentifyAt(HouseId houseId) {
 }
 
 ItemType Item::type() const {
-    return itemId == ITEM_NULL ? ITEM_TYPE_NONE : pItemTable->items[itemId].type;
+    return itemId == ITEM_NULL ? ITEM_TYPE_INVALID : pItemTable->items[itemId].type;
 }
 
 ItemRarity Item::rarity() const {

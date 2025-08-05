@@ -249,7 +249,7 @@ void CastSpellInfoHelpers::castSpell() {
             }
 
             initSpellSprite(&pSpellSprite, spell_level, spell_mastery, pCastSpell);
-            if (pPlayer->WearsItem(ITEM_ARTIFACT_ULLYSES, ITEM_SLOT_BOW)) {
+            if (pPlayer->wearsItem(ITEM_ARTIFACT_ULLYSES)) {
                 pSpellSprite.uObjectDescID = pObjectList->ObjectIDByItemID(SPRITE_SPELL_WATER_ICE_BOLT);
             }
             pSpellSprite.vPosition = pParty->pos + Vec3f(0, 0, pParty->height / 3);

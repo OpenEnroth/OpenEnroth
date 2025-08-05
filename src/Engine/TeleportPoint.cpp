@@ -1,6 +1,11 @@
 #include "TeleportPoint.h"
 
 #include "Engine/Party.h"
+#include "Engine/Graphics/Indoor.h"
+#include "Engine/Graphics/Outdoor.h"
+#include "Engine/Graphics/LocationFunctions.h"
+
+#include "Library/Logger/Logger.h"
 
 void TeleportPoint::invalidate() {
     _teleportValid = false;
@@ -18,6 +23,26 @@ void TeleportPoint::setTeleportTarget(Vec3f pos, int yaw, int pitch, int zSpeed)
 
 void TeleportPoint::doTeleport(bool keepOnZero) {
     assert(_teleportValid);
+
+    // Test target position is valid
+    if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
+        if (!pIndoor->GetSector(_pos)) {
+            logger->error("TeleportPoint::doTeleport - Cannot GetSector for target position ({}, {}, {}), skipping teleport", _pos.x, _pos.y, _pos.z);
+            return;
+        }
+    } else {
+        bool partyIsOnWater = false;
+        int floorFaceId = -1;
+        float newFloorLevel = ODM_GetFloorLevel(_pos, &partyIsOnWater, &floorFaceId);
+        if (_pos.x < -maxPartyAxisDistance || _pos.x > maxPartyAxisDistance ||
+            _pos.y < -maxPartyAxisDistance || _pos.y > maxPartyAxisDistance ) {
+            logger->error("TeleportPoint::doTeleport - Target position ({}, {}, {}) is out of bounds, skipping teleport", _pos.x, _pos.y, _pos.z);
+            return;
+        }
+        // Warn about teleport height - party will be correctly z positioned on next update
+        if (_pos.z < newFloorLevel)
+            logger->warning("TeleportPoint::doTeleport - Target position ({}, {}, {}) is below the floor level of {}", _pos.x, _pos.y, _pos.z, newFloorLevel);
+    }
 
     Vec3f newPos = pParty->pos;
     Vec3f newSpeed = pParty->velocity;

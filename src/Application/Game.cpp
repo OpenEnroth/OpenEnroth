@@ -637,14 +637,8 @@ void Game::processQueuedMessages() {
                                     current_screen_type = SCREEN_GAME;
                                     continue;
                                 case SCREEN_CHANGE_LOCATION: // escape
-                                    if (pParty->pos.x < -22528)
-                                        pParty->pos.x = -22528;
-                                    if (pParty->pos.x > 22528)
-                                        pParty->pos.x = 22528;
-                                    if (pParty->pos.y < -22528)
-                                        pParty->pos.y = -22528;
-                                    if (pParty->pos.y > 22528)
-                                        pParty->pos.y = 22528;
+                                    pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
+                                    pParty->pos.y = std::clamp(pParty->pos.y, -maxPartyAxisDistance, maxPartyAxisDistance);
                                     pMediaPlayer->Unload();
                                     DialogueEnding();
                                     onEscape();
@@ -757,14 +751,8 @@ void Game::processQueuedMessages() {
                 travelMapId = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
                 if (!engine->IsUnderwater() && pParty->bFlying || travelMapId == MAP_INVALID) {
                     PlayButtonClickSound();
-                    if (pParty->pos.x < -22528)
-                        pParty->pos.x = -22528;
-                    if (pParty->pos.x > 22528)
-                        pParty->pos.x = 22528;
-                    if (pParty->pos.y < -22528)
-                        pParty->pos.y = -22528;
-                    if (pParty->pos.y > 22528)
-                        pParty->pos.y = 22528;
+                    pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
+                    pParty->pos.y = std::clamp(pParty->pos.y, -maxPartyAxisDistance, maxPartyAxisDistance);;
                     DialogueEnding();
                     current_screen_type = SCREEN_GAME;
                 } else {
@@ -793,14 +781,8 @@ void Game::processQueuedMessages() {
                 continue;
             case UIMSG_CancelTravelByFoot:
                 PlayButtonClickSound();
-                if (pParty->pos.x < -22528)
-                    pParty->pos.x = -22528;
-                if (pParty->pos.x > 22528)
-                    pParty->pos.x = 22528;
-                if (pParty->pos.y < -22528)
-                    pParty->pos.y = -22528;
-                if (pParty->pos.y > 22528)
-                    pParty->pos.y = 22528;
+                pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
+                pParty->pos.y = std::clamp(pParty->pos.y, -maxPartyAxisDistance, maxPartyAxisDistance);
                 DialogueEnding();
                 current_screen_type = SCREEN_GAME;
                 continue;

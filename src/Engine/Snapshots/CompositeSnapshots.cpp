@@ -29,6 +29,7 @@
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.vertices, &dst->pVertices);
     reconstruct(src.faces, &dst->pFaces);
+
     reconstruct(src.faceData, &dst->pLFaces);
 
     for (size_t i = 0, j = 0; i < dst->pFaces.size(); ++i) {
@@ -53,6 +54,30 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         j += pFace->uNumVertices + 1;
 
         assert(j <= dst->pLFaces.size());
+    }
+
+    // Face plane normals have come from fixed point values - recalculate them.
+    for (auto& face : dst->pFaces) {
+        if (face.uNumVertices < 3) continue;
+        Vec3f dir1 = (dst->pVertices[face.pVertexIDs[1]] - dst->pVertices[face.pVertexIDs[0]]);
+        Vec3f dir2, norm;
+        int i = 2;
+        for (; i < face.uNumVertices; i++) {
+            dir2 = (dst->pVertices[face.pVertexIDs[i]] - dst->pVertices[face.pVertexIDs[0]]);
+            if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
+                break; // Found a non-parallel edge.
+            }
+        }
+
+        if (i == face.uNumVertices) {
+            // If we didn't find a non-parallel edge, lets just round what were given.
+            // TODO(pskelton):  This shouldnt ever happen - test and drop
+            face.facePlane.normal /= face.facePlane.normal.length();
+        } else {
+            face.facePlane.normal = norm / norm.length();
+        }
+        face.facePlane.dist = -dot(face.facePlane.normal, dst->pVertices[face.pVertexIDs[0]]);
+        face.zCalc.init(face.facePlane);
     }
 
     for (size_t i = 0; i < dst->pFaces.size(); ++i) {
@@ -335,6 +360,31 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
 
     reconstruct(srcExtras.vertices, &dst->pVertices);
     reconstruct(srcExtras.faces, &dst->pFaces);
+
+    // TODO(pskelton): This code is common to ODM/BLV faces
+    // Face plane normals have come from fixed point values - recalculate them.
+    for (auto& face : dst->pFaces) {
+        if (face.uNumVertices < 3) continue;
+        Vec3f dir1 = (dst->pVertices[face.pVertexIDs[1]] - dst->pVertices[face.pVertexIDs[0]]);
+        Vec3f dir2, norm;
+        int i = 2;
+        for (; i < face.uNumVertices; i++) {
+            dir2 = (dst->pVertices[face.pVertexIDs[i]] - dst->pVertices[face.pVertexIDs[0]]);
+            if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
+                break; // Found a non-parallel edge.
+            }
+        }
+
+        if (i == face.uNumVertices) {
+            // If we didn't find a non-parallel edge, lets just round what were given.
+            // TODO(pskelton):  This shouldnt ever happen - test and drop
+            face.facePlane.normal /= face.facePlane.normal.length();
+        } else {
+            face.facePlane.normal = norm / norm.length();
+        }
+        face.facePlane.dist = -dot(face.facePlane.normal, dst->pVertices[face.pVertexIDs[0]]);
+        face.zCalc.init(face.facePlane);
+    }
 
     for (size_t i = 0; i < dst->pFaces.size(); i++)
         dst->pFaces[i].index = i;
