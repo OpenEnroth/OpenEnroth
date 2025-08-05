@@ -23,13 +23,13 @@ int itemOffset(int dimension) {
     return offset;
 }
 
-Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft, Item heldItem) {
+Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft, Item* heldItem) {
 
-    if (heldItem.itemId != ITEM_NULL) {
+    if (heldItem->itemId != ITEM_NULL) {
         // If holding an item, we want to snap to the center of the grid cell rather than the edge
         mousePos += Pointi(16, 16);
         // We need to calulate the image width and height and then define the item offset from that
-        GraphicsImage *pTexture = assets->getImage_Alpha(heldItem.GetIconName());
+        GraphicsImage *pTexture = assets->getImage_Alpha(heldItem->GetIconName());
         signed int X_offset = itemOffset(pTexture->width());
         signed int Y_offset = itemOffset(pTexture->height());
 		mousePos -= Pointi(X_offset, Y_offset);
