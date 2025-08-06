@@ -240,10 +240,6 @@ MonsterProjectile ParseMissleAttackType(const char *missle_attack_str) {
 MonsterSpecialAttack ParseSpecialAttack(char *spec_att_str) {
     std::string tmp = ascii::toLower(spec_att_str);
 
-    // TODO(captainurist):
-    // We are getting "Desease1" / "Desease2" / "Desease3" here and "Poison1" / "Poison2" / "Poison3" / "Poison3x2"
-    // These are not handled by the code below.
-
     if (tmp.starts_with("curse"))
         return SPECIAL_ATTACK_CURSE;
     else if (tmp.starts_with("weak"))
@@ -256,17 +252,17 @@ MonsterSpecialAttack ParseSpecialAttack(char *spec_att_str) {
         return SPECIAL_ATTACK_DRUNK;
     else if (tmp.starts_with("insane"))
         return SPECIAL_ATTACK_INSANE;
-    else if (tmp.starts_with("poison weak"))
+    else if (tmp.starts_with("poison weak") || tmp.starts_with("poison1"))
         return SPECIAL_ATTACK_POISON_WEAK;
-    else if (tmp.starts_with("poison medium"))
+    else if (tmp.starts_with("poison medium") || tmp.starts_with("poison2"))
         return SPECIAL_ATTACK_POISON_MEDIUM;
-    else if (tmp.starts_with("poison severe"))
+    else if (tmp.starts_with("poison severe") || tmp.starts_with("poison3"))
         return SPECIAL_ATTACK_POISON_SEVERE;
-    else if (tmp.starts_with("disease weak"))
+    else if (tmp.starts_with("disease weak") || tmp.starts_with("disease1"))
         return SPECIAL_ATTACK_DISEASE_WEAK;
-    else if (tmp.starts_with("disease medium"))
+    else if (tmp.starts_with("disease medium") || tmp.starts_with("disease2"))
         return SPECIAL_ATTACK_DISEASE_MEDIUM;
-    else if (tmp.starts_with("disease severe"))
+    else if (tmp.starts_with("disease severe") || tmp.starts_with("disease3"))
         return SPECIAL_ATTACK_DISEASE_SEVERE;
     else if (tmp.starts_with("paralyze"))
         return SPECIAL_ATTACK_PARALYZED;
@@ -290,8 +286,12 @@ MonsterSpecialAttack ParseSpecialAttack(char *spec_att_str) {
         return SPECIAL_ATTACK_AGING;
     else if (tmp.starts_with("drainsp"))
         return SPECIAL_ATTACK_MANA_DRAIN;
-    else
+    else if (tmp.starts_with("none") || tmp.starts_with("0"))
         return SPECIAL_ATTACK_NONE;
+    else
+        logger->warning("ParseSpecialAttack:: Unknown monster special attack '{}'", tmp);
+
+    return SPECIAL_ATTACK_NONE;
 }
 
 //----- (004563FF) --------------------------------------------------------
