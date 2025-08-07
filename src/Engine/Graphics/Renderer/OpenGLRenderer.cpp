@@ -4673,14 +4673,6 @@ void OpenGLRenderer::FillRectFast(int x, int y, int width, int height, Color col
 bool OpenGLRenderer::Reinitialize(bool firstInit) {
     BaseRenderer::Reinitialize(firstInit);
 
-    if (!firstInit) {
-        // @TODO(Baste) this is initialized to the same value in three spots!
-        pViewport->SetViewport(engine->config->graphics.ViewPortX1.value(), //8
-                               engine->config->graphics.ViewPortY1.value(), //8
-                               outputRender.w - engine->config->graphics.ViewPortX2.value(), //468;
-                               outputRender.h - engine->config->graphics.ViewPortY2.value()); //352;
-    }
-
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background
     glClearDepthf(1.0f);
 

@@ -741,6 +741,13 @@ void BaseRenderer::DrawToHitMap(float u, float v, GraphicsImage *img, int zVal) 
 }
 
 bool BaseRenderer::Reinitialize(bool firstInit) {
+    if (!firstInit) {
+        pViewport->SetViewport(engine->config->graphics.ViewPortX1.value(), //8
+                               engine->config->graphics.ViewPortY1.value(), //8
+                               outputRender.w - engine->config->graphics.ViewPortX2.value(), //468;
+                               outputRender.h - engine->config->graphics.ViewPortY2.value()); //352;
+    }
+
     updateRenderDimensions();
     return true;
 }
