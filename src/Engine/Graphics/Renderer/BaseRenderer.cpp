@@ -741,11 +741,6 @@ void BaseRenderer::DrawToHitMap(float u, float v, GraphicsImage *img, int zVal) 
 }
 
 bool BaseRenderer::Reinitialize(bool firstInit) {
-    pViewport->SetViewport(config->graphics.ViewPortX1.value(), // 8 in vanilla
-                           config->graphics.ViewPortY1.value(), // 8 in vanilla
-                           outputRender.w - config->graphics.ViewPortX2.value(),  // 468 in vanilla
-                           outputRender.h - config->graphics.ViewPortY2.value()); // 352 in vanilla
-
     updateRenderDimensions();
     return true;
 }
@@ -764,6 +759,11 @@ void BaseRenderer::updateRenderDimensions() {
         outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
     else
         outputRender = outputPresent;
+
+    pViewport->SetViewport(config->graphics.ViewPortX1.value(), // 8 in vanilla
+                           config->graphics.ViewPortY1.value(), // 8 in vanilla
+                           outputRender.w - config->graphics.ViewPortX2.value(),  // 468 in vanilla
+                           outputRender.h - config->graphics.ViewPortY2.value()); // 352 in vanilla
 }
 
 int BaseRenderer::QueryHitMap(Pointi screenPos, int defaultValue) {
