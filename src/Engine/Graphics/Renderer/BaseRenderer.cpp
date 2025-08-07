@@ -253,7 +253,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                     frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
                         v6 + Duration::fromTicks(v7));
 
-                    if (engine->config->graphics.SeasonsChange.value()) {
+                    if (config->graphics.SeasonsChange.value()) {
                         frame = LevelDecorationChangeSeason(decor_desc, v6 + Duration::fromTicks(v7), pParty->uCurrentMonth);
                     }
 
@@ -584,7 +584,7 @@ void BaseRenderer::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
 float BaseRenderer::GetGamma() {
     const float base = 0.60f;
     const float mult = 0.1f;
-    int level = engine->config->graphics.Gamma.value();
+    int level = config->graphics.Gamma.value();
     return base + mult * level;
 }
 
@@ -741,12 +741,10 @@ void BaseRenderer::DrawToHitMap(float u, float v, GraphicsImage *img, int zVal) 
 }
 
 bool BaseRenderer::Reinitialize(bool firstInit) {
-    if (!firstInit) {
-        pViewport->SetViewport(engine->config->graphics.ViewPortX1.value(), //8
-                               engine->config->graphics.ViewPortY1.value(), //8
-                               outputRender.w - engine->config->graphics.ViewPortX2.value(), //468;
-                               outputRender.h - engine->config->graphics.ViewPortY2.value()); //352;
-    }
+    pViewport->SetViewport(config->graphics.ViewPortX1.value(), // 8 in vanilla
+                           config->graphics.ViewPortY1.value(), // 8 in vanilla
+                           outputRender.w - config->graphics.ViewPortX2.value(),  // 468 in vanilla
+                           outputRender.h - config->graphics.ViewPortY2.value()); // 352 in vanilla
 
     updateRenderDimensions();
     return true;
