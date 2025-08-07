@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cassert>
 
+#include "Library/Serialization/Serialization.h"
+
 PlatformKey translateSdlKey(SDL_Scancode key) {
     switch (key) {
     case SDL_SCANCODE_F1:               return PlatformKey::KEY_F1;
@@ -124,6 +126,133 @@ PlatformKey translateSdlKey(SDL_Scancode key) {
     default:                            return PlatformKey::KEY_NONE;
     }
 }
+
+SDL_Scancode translatePlatformKey(PlatformKey key) {
+    switch (key) {
+    case PlatformKey::KEY_F1:           return SDL_SCANCODE_F1;
+    case PlatformKey::KEY_F2:           return SDL_SCANCODE_F2;
+    case PlatformKey::KEY_F3:           return SDL_SCANCODE_F3;
+    case PlatformKey::KEY_F4:           return SDL_SCANCODE_F4;
+    case PlatformKey::KEY_F5:           return SDL_SCANCODE_F5;
+    case PlatformKey::KEY_F6:           return SDL_SCANCODE_F6;
+    case PlatformKey::KEY_F7:           return SDL_SCANCODE_F7;
+    case PlatformKey::KEY_F8:           return SDL_SCANCODE_F8;
+    case PlatformKey::KEY_F9:           return SDL_SCANCODE_F9;
+    case PlatformKey::KEY_F10:          return SDL_SCANCODE_F10;
+    case PlatformKey::KEY_F11:          return SDL_SCANCODE_F11;
+    case PlatformKey::KEY_F12:          return SDL_SCANCODE_F12;
+    case PlatformKey::KEY_F13:          return SDL_SCANCODE_F13;
+    case PlatformKey::KEY_F14:          return SDL_SCANCODE_F14;
+    case PlatformKey::KEY_F15:          return SDL_SCANCODE_F15;
+    case PlatformKey::KEY_F16:          return SDL_SCANCODE_F16;
+    case PlatformKey::KEY_F17:          return SDL_SCANCODE_F17;
+    case PlatformKey::KEY_F18:          return SDL_SCANCODE_F18;
+    case PlatformKey::KEY_F19:          return SDL_SCANCODE_F19;
+    case PlatformKey::KEY_F20:          return SDL_SCANCODE_F20;
+    case PlatformKey::KEY_F21:          return SDL_SCANCODE_F21;
+    case PlatformKey::KEY_F22:          return SDL_SCANCODE_F22;
+    case PlatformKey::KEY_F23:          return SDL_SCANCODE_F23;
+    case PlatformKey::KEY_F24:          return SDL_SCANCODE_F24;
+
+    case PlatformKey::KEY_DIGIT_1:      return SDL_SCANCODE_1;
+    case PlatformKey::KEY_DIGIT_2:      return SDL_SCANCODE_2;
+    case PlatformKey::KEY_DIGIT_3:      return SDL_SCANCODE_3;
+    case PlatformKey::KEY_DIGIT_4:      return SDL_SCANCODE_4;
+    case PlatformKey::KEY_DIGIT_5:      return SDL_SCANCODE_5;
+    case PlatformKey::KEY_DIGIT_6:      return SDL_SCANCODE_6;
+    case PlatformKey::KEY_DIGIT_7:      return SDL_SCANCODE_7;
+    case PlatformKey::KEY_DIGIT_8:      return SDL_SCANCODE_8;
+    case PlatformKey::KEY_DIGIT_9:      return SDL_SCANCODE_9;
+    case PlatformKey::KEY_DIGIT_0:      return SDL_SCANCODE_0;
+
+    case PlatformKey::KEY_A:            return SDL_SCANCODE_A;
+    case PlatformKey::KEY_B:            return SDL_SCANCODE_B;
+    case PlatformKey::KEY_C:            return SDL_SCANCODE_C;
+    case PlatformKey::KEY_D:            return SDL_SCANCODE_D;
+    case PlatformKey::KEY_E:            return SDL_SCANCODE_E;
+    case PlatformKey::KEY_F:            return SDL_SCANCODE_F;
+    case PlatformKey::KEY_G:            return SDL_SCANCODE_G;
+    case PlatformKey::KEY_H:            return SDL_SCANCODE_H;
+    case PlatformKey::KEY_I:            return SDL_SCANCODE_I;
+    case PlatformKey::KEY_J:            return SDL_SCANCODE_J;
+    case PlatformKey::KEY_K:            return SDL_SCANCODE_K;
+    case PlatformKey::KEY_L:            return SDL_SCANCODE_L;
+    case PlatformKey::KEY_M:            return SDL_SCANCODE_M;
+    case PlatformKey::KEY_N:            return SDL_SCANCODE_N;
+    case PlatformKey::KEY_O:            return SDL_SCANCODE_O;
+    case PlatformKey::KEY_P:            return SDL_SCANCODE_P;
+    case PlatformKey::KEY_Q:            return SDL_SCANCODE_Q;
+    case PlatformKey::KEY_R:            return SDL_SCANCODE_R;
+    case PlatformKey::KEY_S:            return SDL_SCANCODE_S;
+    case PlatformKey::KEY_T:            return SDL_SCANCODE_T;
+    case PlatformKey::KEY_U:            return SDL_SCANCODE_U;
+    case PlatformKey::KEY_V:            return SDL_SCANCODE_V;
+    case PlatformKey::KEY_W:            return SDL_SCANCODE_W;
+    case PlatformKey::KEY_X:            return SDL_SCANCODE_X;
+    case PlatformKey::KEY_Y:            return SDL_SCANCODE_Y;
+    case PlatformKey::KEY_Z:            return SDL_SCANCODE_Z;
+
+    case PlatformKey::KEY_RETURN:       return SDL_SCANCODE_RETURN;
+    case PlatformKey::KEY_ESCAPE:       return SDL_SCANCODE_ESCAPE;
+    case PlatformKey::KEY_TAB:          return SDL_SCANCODE_TAB;
+    case PlatformKey::KEY_BACKSPACE:    return SDL_SCANCODE_BACKSPACE;
+    case PlatformKey::KEY_SPACE:        return SDL_SCANCODE_SPACE;
+    case PlatformKey::KEY_DECIMAL:      return SDL_SCANCODE_DECIMALSEPARATOR;
+    case PlatformKey::KEY_SEMICOLON:    return SDL_SCANCODE_SEMICOLON;
+    case PlatformKey::KEY_PERIOD:       return SDL_SCANCODE_PERIOD;
+    case PlatformKey::KEY_SLASH:        return SDL_SCANCODE_SLASH;
+    case PlatformKey::KEY_SINGLEQUOTE:  return SDL_SCANCODE_APOSTROPHE;
+    case PlatformKey::KEY_BACKSLASH:    return SDL_SCANCODE_BACKSLASH;
+    case PlatformKey::KEY_TILDE:        return SDL_SCANCODE_GRAVE;
+
+    case PlatformKey::KEY_SUBTRACT:     return SDL_SCANCODE_KP_MINUS;
+    case PlatformKey::KEY_ADD:          return SDL_SCANCODE_KP_PLUS;
+    case PlatformKey::KEY_COMMA:        return SDL_SCANCODE_COMMA;
+    case PlatformKey::KEY_LEFTBRACKET:  return SDL_SCANCODE_LEFTBRACKET;
+    case PlatformKey::KEY_RIGHTBRACKET: return  SDL_SCANCODE_RIGHTBRACKET;
+
+    case PlatformKey::KEY_LEFT:         return SDL_SCANCODE_LEFT;
+    case PlatformKey::KEY_RIGHT:        return SDL_SCANCODE_RIGHT;
+    case PlatformKey::KEY_UP:           return SDL_SCANCODE_UP;
+    case PlatformKey::KEY_DOWN:         return SDL_SCANCODE_DOWN;
+
+    case PlatformKey::KEY_PRINTSCREEN:  return SDL_SCANCODE_PRINTSCREEN;
+
+    case PlatformKey::KEY_INSERT:       return SDL_SCANCODE_INSERT;
+    case PlatformKey::KEY_HOME:         return SDL_SCANCODE_HOME;
+    case PlatformKey::KEY_END:          return SDL_SCANCODE_END;
+    case PlatformKey::KEY_PAGEUP:       return SDL_SCANCODE_PAGEUP;
+    case PlatformKey::KEY_PAGEDOWN:     return SDL_SCANCODE_PAGEDOWN;
+    case PlatformKey::KEY_DELETE:       return SDL_SCANCODE_DELETE;
+    case PlatformKey::KEY_SELECT:       return SDL_SCANCODE_SELECT;
+
+    case PlatformKey::KEY_CONTROL:      return SDL_SCANCODE_LCTRL;
+    case PlatformKey::KEY_ALT:          return SDL_SCANCODE_LALT;
+    case PlatformKey::KEY_SHIFT:        return  SDL_SCANCODE_LSHIFT;
+
+    case PlatformKey::KEY_NUMPAD_0:     return  SDL_SCANCODE_KP_0;
+    case PlatformKey::KEY_NUMPAD_1:     return  SDL_SCANCODE_KP_1;
+    case PlatformKey::KEY_NUMPAD_2:     return  SDL_SCANCODE_KP_2;
+    case PlatformKey::KEY_NUMPAD_3:     return  SDL_SCANCODE_KP_3;
+    case PlatformKey::KEY_NUMPAD_4:     return  SDL_SCANCODE_KP_4;
+    case PlatformKey::KEY_NUMPAD_5:     return  SDL_SCANCODE_KP_5;
+    case PlatformKey::KEY_NUMPAD_6:     return  SDL_SCANCODE_KP_6;
+    case PlatformKey::KEY_NUMPAD_7:     return  SDL_SCANCODE_KP_7;
+    case PlatformKey::KEY_NUMPAD_8:     return  SDL_SCANCODE_KP_8;
+    case PlatformKey::KEY_NUMPAD_9:     return  SDL_SCANCODE_KP_9;
+
+    default:                            return SDL_SCANCODE_UNKNOWN;
+    }
+}
+
+std::string getDisplayString(PlatformKey key)
+{
+    SDL_Scancode scanCode = translatePlatformKey(key);
+    SDL_Keycode keyCode = SDL_GetKeyFromScancode(scanCode);
+
+    return std::string(SDL_GetKeyName(keyCode));
+}
+
 
 PlatformKey translateSdlGamepadButton(SDL_GameControllerButton button) {
     switch (button) {

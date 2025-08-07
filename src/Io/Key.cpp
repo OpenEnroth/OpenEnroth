@@ -3,6 +3,8 @@
 #include <string>
 
 #include "Library/Serialization/EnumSerialization.h"
+#include "Library/Platform/Sdl/SdlEnumTranslation.h"
+
 
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformKey, CASE_INSENSITIVE, {
     {PlatformKey::KEY_F1,           "F1" },
@@ -147,7 +149,8 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformKey, CASE_INSENSITIVE, {
 std::string GetDisplayName(PlatformKey key) {
     if (key == PlatformKey::KEY_NONE)
         return "-NOT-SET-";
-    return toString(key); // Should always work.
+
+    return getDisplayString(key);
 }
 
 bool TryParseDisplayName(std::string_view displayName, PlatformKey *outKey) {
