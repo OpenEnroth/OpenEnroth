@@ -235,7 +235,7 @@ void Chest::OnChestLeftClick() {
     Chest *chest = &vChests[uChestID];
 
     Pointi mousePos = mouse->position();
-    Pointi inventoryPos = mapToInventoryGrid(mousePos + mouse->pickedItemOffset, chestTable[chest->chestTypeId].inventoryOffset);
+    Pointi inventoryPos = mapToInventoryGrid(mousePos + mouse->pickedItemOffset, chestTable[chest->chestTypeId].inventoryOffset, &pParty->pPickedItem);
 
     if (pParty->pPickedItem.itemId != ITEM_NULL) {  // item held
         std::optional<Pointi> pos;
