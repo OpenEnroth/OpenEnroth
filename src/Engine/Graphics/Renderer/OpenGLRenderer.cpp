@@ -1655,7 +1655,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     // actual drawing
 
     // terrain debug
-    if (engine->config->debug.Terrain.value())
+    if (config->debug.Terrain.value())
         // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
         if (!OpenGLES)
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -1834,7 +1834,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     //end terrain debug
-    if (engine->config->debug.Terrain.value())
+    if (config->debug.Terrain.value())
         // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
         if (!OpenGLES)
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -2033,26 +2033,26 @@ void OpenGLRenderer::DrawOutdoorSky() {
             VertexRenderList[i]._rhw = (double)(worldviewdepth);
         }
 
-        if (engine->config->graphics.Fog.value()) {
+        if (config->graphics.Fog.value()) {
             // fade sky
             VertexRenderList[4].vWorldViewProjX = (double)pViewport->viewportTL_X;
             VertexRenderList[4].vWorldViewProjY = (double)pViewport->viewportTL_Y;
             VertexRenderList[5].vWorldViewProjX = (double)pViewport->viewportTL_X;
-            VertexRenderList[5].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.value();
+            VertexRenderList[5].vWorldViewProjY = (double)bot_y_proj - config->graphics.FogHorizon.value();
             VertexRenderList[6].vWorldViewProjX = (double)pViewport->viewportBR_X;
-            VertexRenderList[6].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.value();
+            VertexRenderList[6].vWorldViewProjY = (double)bot_y_proj - config->graphics.FogHorizon.value();
             VertexRenderList[7].vWorldViewProjX = (double)pViewport->viewportBR_X;
             VertexRenderList[7].vWorldViewProjY = (double)pViewport->viewportTL_Y;
 
             // sub sky
             VertexRenderList[8].vWorldViewProjX = (double)pViewport->viewportTL_X;
-            VertexRenderList[8].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.value();
+            VertexRenderList[8].vWorldViewProjY = (double)bot_y_proj - config->graphics.FogHorizon.value();
             VertexRenderList[9].vWorldViewProjX = (double)pViewport->viewportTL_X;
             VertexRenderList[9].vWorldViewProjY = (double)pViewport->viewportBR_Y + 1;
             VertexRenderList[10].vWorldViewProjX = (double)pViewport->viewportBR_X;
             VertexRenderList[10].vWorldViewProjY = (double)pViewport->viewportBR_Y + 1;
             VertexRenderList[11].vWorldViewProjX = (double)pViewport->viewportBR_X;
-            VertexRenderList[11].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.value();
+            VertexRenderList[11].vWorldViewProjY = (double)bot_y_proj - config->graphics.FogHorizon.value();
         }
 
         _set_ortho_projection(1);
@@ -2116,7 +2116,7 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
         assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
     }
 
-    if (engine->config->graphics.Fog.value()) {
+    if (config->graphics.Fog.value()) {
         // draw blend sky
         // load up poly
         for (int z = 4; z < 6; z++) {
@@ -2256,7 +2256,7 @@ void OpenGLRenderer::DrawForcePerVerts() {
     int fpfogmiddle{};
     Color fpfogcol = GetLevelFogColor();
 
-    if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+    if (config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         if (fpfogcol != Color()) {
             fpfogstart = day_fogrange_1;
             fpfogmiddle = day_fogrange_2;
@@ -2321,7 +2321,7 @@ void OpenGLRenderer::DrawForcePerVerts() {
 void OpenGLRenderer::SetFogParametersGL() {
     Color fogcol = GetLevelFogColor();
 
-    if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+    if (config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         if (fogcol != Color()) {
             fogstart = day_fogrange_1;
             fogmiddle = day_fogrange_2;
@@ -2332,7 +2332,7 @@ void OpenGLRenderer::SetFogParametersGL() {
         } else {
             fogend = pCamera3D->GetFarClip();
             fogmiddle = 0.0f;
-            fogstart = fogend * engine->config->graphics.FogDepthRatio.value();
+            fogstart = fogend * config->graphics.FogDepthRatio.value();
 
             // grabs sky back fog colour
             Color uTint = GetActorTintColor(31, 0, fogend, 1, 0);
@@ -3140,8 +3140,8 @@ void OpenGLRenderer::swapBuffers() {
 
     openGLContext->swapBuffers();
 
-    if (engine->config->graphics.FPSLimit.value() > 0)
-        _frameLimiter.tick(engine->config->graphics.FPSLimit.value());
+    if (config->graphics.FPSLimit.value() > 0)
+        _frameLimiter.tick(config->graphics.FPSLimit.value());
 }
 
 void OpenGLRenderer::Present() {
@@ -3539,7 +3539,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // terrain debug
-    if (engine->config->debug.Terrain.value())
+    if (config->debug.Terrain.value())
         // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
         if (!OpenGLES)
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -3709,7 +3709,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     //end terrain debug
-    if (engine->config->debug.Terrain.value())
+    if (config->debug.Terrain.value())
         // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
         if (!OpenGLES)
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -4141,7 +4141,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         // terrain debug
-        if (engine->config->debug.Terrain.value())
+        if (config->debug.Terrain.value())
             // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
             if (!OpenGLES)
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -4386,7 +4386,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
 
         //end terrain debug
-        if (engine->config->debug.Terrain.value())
+        if (config->debug.Terrain.value())
             // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
             if (!OpenGLES)
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -4672,14 +4672,6 @@ void OpenGLRenderer::FillRectFast(int x, int y, int width, int height, Color col
 
 bool OpenGLRenderer::Reinitialize(bool firstInit) {
     BaseRenderer::Reinitialize(firstInit);
-
-    if (!firstInit) {
-        // @TODO(Baste) this is initialized to the same value in three spots!
-        pViewport->SetViewport(engine->config->graphics.ViewPortX1.value(), //8
-                               engine->config->graphics.ViewPortY1.value(), //8
-                               outputRender.w - engine->config->graphics.ViewPortX2.value(), //468;
-                               outputRender.h - engine->config->graphics.ViewPortY2.value()); //352;
-    }
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background
     glClearDepthf(1.0f);

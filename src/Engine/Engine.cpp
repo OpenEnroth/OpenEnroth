@@ -610,12 +610,6 @@ void DoPrepareWorld(bool bLoading, int _1_fullscreen_loading_2_box) {
 
 //----- (004647AB) --------------------------------------------------------
 void FinalInitialization() {
-    // @TODO(Baste) this is initialized to the same value in three spots!
-    pViewport->SetViewport(engine->config->graphics.ViewPortX1.value(),
-                           engine->config->graphics.ViewPortY1.value(),
-                           render->GetRenderDimensions().w - engine->config->graphics.ViewPortX2.value(),
-                           render->GetRenderDimensions().h - engine->config->graphics.ViewPortY2.value());
-
     InitializeTurnBasedAnimations(&stru_50C198);
     pBitmaps_LOD->reserveLoadedTextures();
     pSprites_LOD->reserveLoadedSprites();
@@ -837,12 +831,6 @@ void MM7Initialization() {
         pODMRenderParams->shading_dist_shademist = 4096;
         pODMRenderParams->outdoor_no_wavy_water = 0;
     }
-
-    // @TODO(Baste) this is initialized to the same value in three spots!
-    pViewport->SetViewport(engine->config->graphics.ViewPortX1.value(),
-                           engine->config->graphics.ViewPortY1.value(),
-                           render->GetRenderDimensions().w - engine->config->graphics.ViewPortX2.value(),
-                           render->GetRenderDimensions().h - engine->config->graphics.ViewPortY2.value());
 }
 
 //----- (00464479) --------------------------------------------------------
