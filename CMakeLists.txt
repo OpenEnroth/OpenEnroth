@@ -140,7 +140,7 @@ endif()
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>) # Enable assertions in libstdc++.
 elseif((CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC") OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
-    add_compile_definitions($<$<CONFIG:Debug>:_LIBCPP_ENABLE_ASSERTIONS=1>) # Enable assertions in libcxx.
+    add_compile_definitions($<$<CONFIG:Debug>:_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG>) # Enable assertions in libcxx.
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC"))
     add_compile_definitions(NOMINMAX) # Please don't pull in these macros from <Windows.h>
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS) # STL security warnings are just noise
