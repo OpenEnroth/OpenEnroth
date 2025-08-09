@@ -8,6 +8,8 @@
 #include "Library/Logger/LogEnums.h"
 
 PlatformKey translateSdlKey(SDL_Scancode key);
+SDL_Scancode translatePlatformKey(PlatformKey key);
+std::string getDisplayString(PlatformKey key);
 PlatformKey translateSdlGamepadButton(SDL_GameControllerButton button);
 PlatformKey translateSdlGamepadAxis(SDL_GameControllerAxis axis);
 PlatformModifiers translateSdlMods(uint16_t mods);
