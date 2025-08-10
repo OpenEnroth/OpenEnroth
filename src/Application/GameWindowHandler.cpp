@@ -542,18 +542,6 @@ bool GameWindowHandler::moveEvent(const PlatformMoveEvent *event) {
 
 bool GameWindowHandler::resizeEvent(const PlatformResizeEvent *event) {
     render->Reinitialize();
-
-    PlatformWindowMode mode = window->windowMode();
-    if (mode == WINDOW_MODE_WINDOWED || mode == WINDOW_MODE_BORDERLESS) {
-        auto [display, relativePos, wsize] = GetWindowRelativePosition();
-
-        engine->config->window.PositionX.setValue(relativePos.x);
-        engine->config->window.PositionY.setValue(relativePos.y);
-
-        engine->config->window.Width.setValue(wsize.w);
-        engine->config->window.Height.setValue(wsize.h);
-    }
-
     return false;
 }
 
