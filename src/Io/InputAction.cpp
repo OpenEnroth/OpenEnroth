@@ -66,8 +66,6 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(InputAction, CASE_INSENSITIVE, {
     {InputAction::Screenshot, "SCREENSHOT"},
     {InputAction::Console, "CONSOLE"},
     {InputAction::ToggleMouseGrab, "TOGGLE MOUSE GRAB"},
-    {InputAction::ToggleBorderless, "TOGGLE BORDERLESS"},
-    {InputAction::ToggleFullscreen, "TOGGLE FULLSCREEN"},
     {InputAction::ToggleResizable, "TOGGLE RESIZABLE"},
     {InputAction::CycleFilter, "CYCLE FILTER"},
     {InputAction::ReloadShaders, "RELOAD SHADERS"},
@@ -83,7 +81,8 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(InputAction, CASE_INSENSITIVE, {
     {InputAction::DialogRight, "DIALOG RIGHT"},
     {InputAction::DialogSelect, "DIALOG SELECT"},
     {InputAction::Escape, "ESCAPE"},
-    {InputAction::ToggleMouseLook, "TOGGLE MOUSE LOOK"}
+    {InputAction::ToggleMouseLook, "TOGGLE MOUSE LOOK"},
+    {InputAction::ToggleWindowMode, "TOGGLE WINDOW MODE"}
 });
 
 std::string GetDisplayName(InputAction action) {
