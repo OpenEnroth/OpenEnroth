@@ -541,7 +541,6 @@ bool GameWindowHandler::moveEvent(const PlatformMoveEvent *event) {
 }
 
 bool GameWindowHandler::resizeEvent(const PlatformResizeEvent *event) {
-
     render->Reinitialize();
 
     PlatformWindowMode mode = window->windowMode();
