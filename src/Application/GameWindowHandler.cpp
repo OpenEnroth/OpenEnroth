@@ -296,8 +296,8 @@ void GameWindowHandler::OnKey(PlatformKey key) {
     }  else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Screenshot, key)) {
         OnScreenshot();
         return;
-    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleBorderless, key)) {
-        OnToggleBorderless();
+    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleWindowMode, key)) {
+        OnToggleWindowMode();
         return;
     } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleResizable, key)) {
         OnToggleResizable();
@@ -316,8 +316,8 @@ void GameWindowHandler::OnKey(PlatformKey key) {
         keyboardInputHandler->ProcessTextInput(key, -1);
     } else if (pArcomageGame->bGameInProgress) {
         // TODO(pskelton): how should this be handled?
-        if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
-            OnToggleFullscreen();
+        if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleWindowMode, key) && !pMovie_Track) {
+            OnToggleWindowMode();
         }
         pArcomageGame->onKeyPress(key);
     } else {
@@ -326,8 +326,8 @@ void GameWindowHandler::OnKey(PlatformKey key) {
             UI_OnKeyDown(key);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, key)) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, window_SpeakInHouse != 0, 0);
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
-            OnToggleFullscreen();
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleWindowMode, key) && !pMovie_Track) {
+            OnToggleWindowMode();
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Console, key)) {
             engine->toggleOverlays();
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ReloadShaders, key) && current_screen_type == SCREEN_GAME) {
@@ -417,43 +417,20 @@ void GameWindowHandler::OnDeactivated() {
     }
 }
 
-void GameWindowHandler::OnToggleBorderless() {
+void GameWindowHandler::OnToggleWindowMode() {
     PlatformWindowMode mode = window->windowMode();
     switch (mode) {
-        case WINDOW_MODE_FULLSCREEN:
+        case WINDOW_MODE_WINDOWED:
+            mode = WINDOW_MODE_BORDERLESS;
+            break;
+        case WINDOW_MODE_BORDERLESS:
             mode = WINDOW_MODE_FULLSCREEN_BORDERLESS;
             break;
         case WINDOW_MODE_FULLSCREEN_BORDERLESS:
             mode = WINDOW_MODE_FULLSCREEN;
             break;
-        case WINDOW_MODE_WINDOWED:
-            mode = WINDOW_MODE_BORDERLESS;
-            break;
-        case WINDOW_MODE_BORDERLESS:
-            mode = WINDOW_MODE_WINDOWED;
-            break;
-        default:
-            assert(false); //should never get there.
-            break;
-    }
-
-    window->setWindowMode(mode);
-}
-
-void GameWindowHandler::OnToggleFullscreen() {
-    PlatformWindowMode mode = window->windowMode();
-    switch (mode) {
         case WINDOW_MODE_FULLSCREEN:
             mode = WINDOW_MODE_WINDOWED;
-            break;
-        case WINDOW_MODE_FULLSCREEN_BORDERLESS:
-            mode = WINDOW_MODE_BORDERLESS;
-            break;
-        case WINDOW_MODE_WINDOWED:
-            mode = WINDOW_MODE_FULLSCREEN;
-            break;
-        case WINDOW_MODE_BORDERLESS:
-            mode = WINDOW_MODE_FULLSCREEN_BORDERLESS;
             break;
         default:
             assert(false); //should never get there.

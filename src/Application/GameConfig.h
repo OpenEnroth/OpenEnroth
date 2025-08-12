@@ -378,8 +378,6 @@ class GameConfig : public Config {
         Key Screenshot = {this, "screenshot", PlatformKey::KEY_NONE, "Make screenshot key."};
         Key Console = {this, "console", PlatformKey::KEY_NONE, "Show/Hide overlays key."};
         Key ToggleMouseGrab = {this, "toggle_mouse_grab", PlatformKey::KEY_NONE, "Toggle mouse grab key."};
-        Key ToggleBorderless = {this, "toggle_borderless", PlatformKey::KEY_NONE, "Toggle window borderless key."};
-        Key ToggleFullscreen = {this, "toggle_fullscreen", PlatformKey::KEY_NONE, "Toggle window fullscreen key."};
         Key ToggleResizable = {this, "toggle_resizable", PlatformKey::KEY_NONE, "Toggle window resizable key."};
         Key CycleFilter = {this, "cycle_filter", PlatformKey::KEY_NONE, "Cycle rescale filter modes key."};
         Key ReloadShaders = {this, "reload_shaders", PlatformKey::KEY_NONE, "Reload shaders key."};
@@ -395,6 +393,7 @@ class GameConfig : public Config {
         Key DialogRight = {this, "dialog_right", PlatformKey::KEY_GAMEPAD_RIGHT, "Dialog right key."};
         Key DialogSelect = {this, "dialog_select", PlatformKey::KEY_GAMEPAD_A, "Dialog select key."};
         Key Escape = {this, "escape", PlatformKey::KEY_GAMEPAD_B, "Escape key."};
+        Key ToggleWindowMode = { this, "toggle_window_mode", PlatformKey::KEY_NONE, "Toggle window mode key." };
     };
 
     Gamepad gamepad{this};
@@ -569,8 +568,6 @@ class GameConfig : public Config {
         Key Screenshot = {this, "screenshot", PlatformKey::KEY_F2, "Make screenshot key."};
         Key Console = {this, "console", PlatformKey::KEY_TILDE, "Show/Hide overlays key."};
         Key ToggleMouseGrab = {this, "toggle_mouse_grab", PlatformKey::KEY_F1, "Toggle mouse grab key."};
-        Key ToggleBorderless = {this, "toggle_borderless", PlatformKey::KEY_F3, "Toggle window borderless key."};
-        Key ToggleFullscreen = {this, "toggle_fullscreen", PlatformKey::KEY_F4, "Toggle window fullscreen key."};
         Key ToggleResizable = {this, "toggle_resizable", PlatformKey::KEY_F6, "Toggle window resizable key."};
         Key CycleFilter = {this, "cycle_filter", PlatformKey::KEY_F7, "Cycle rescale filter modes key."};
         Key ReloadShaders = {this, "reload_shaders", PlatformKey::KEY_BACKSPACE, "Reload shaders key."};
@@ -587,6 +584,7 @@ class GameConfig : public Config {
         Key DialogSelect = {this, "dialog_select", PlatformKey::KEY_RETURN, "Dialog select key."};
         Key Escape = {this, "escape", PlatformKey::KEY_ESCAPE, "Escape key."};
         Key ToggleMouseLook = { this, "toggle_mouse_look", PlatformKey::KEY_F10, "Toggle mouse look key." };
+        Key ToggleWindowMode = { this, "toggle_window_mode", PlatformKey::KEY_F11, "Toggle window mode key." };
     };
 
     Keybindings keybindings{this};
