@@ -72,7 +72,7 @@ jobs:
     - name: Run ccache pr
       uses: hendrikmuhs/ccache-action@v1.2.18
       with:
-        key: 'pr-${{github.event.number}}-linux-${{matrix.configuration}}-${{matrix.architecture}}'
+        key: 'pr-${{github.event.number}}-linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
         restore-keys: |
           'pr-${{github.event.number}}-linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'|
           'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
