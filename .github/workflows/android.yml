@@ -60,7 +60,7 @@ jobs:
           sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish
 
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
         with:
           submodules: recursive
           ref: '${{inputs.myCommit}}'
@@ -105,15 +105,19 @@ jobs:
           key: 'android-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
           max-size: ${{ fromJson('["200M", "600M"]')[matrix.architecture == 'universal'] }}
+          append-timestamp: false
         if: github.event_name != 'pull_request'
         
-      - name: Run ccache
+      - name: Run ccache pr
         uses: hendrikmuhs/ccache-action@v1.2.18
         with:
-          key: 'linux-${{matrix.configuration}}-${{matrix.architecture}}'
+          key: 'pr-${{github.event.number}}-linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
+          restore-keys: |
+            'pr-${{github.event.number}}-linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'|
+            'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
-          max-size: ${{ fromJson('["200M", "600M"]')[matrix.architecture == 'universal'] }}
-          save: false
+          max-size: 200M
+          append-timestamp: false
         if: github.event_name == 'pull_request'
 
       - name: Build the app
