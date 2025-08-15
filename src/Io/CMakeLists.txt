@@ -16,5 +16,5 @@ set(IO_HEADERS
         Mouse.h)
 
 add_library(io STATIC ${IO_SOURCES} ${IO_HEADERS})
-target_link_libraries(io PUBLIC library_serialization)
+target_link_libraries(io PUBLIC library_serialization PRIVATE SDL2::SDL2OE)
 target_check_style(io)
