@@ -26,6 +26,8 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
+#include "Library/Logger/Logger.h"
+
 std::shared_ptr<Io::Mouse> mouse = nullptr;
 
 Pointi Io::Mouse::position() const {
@@ -293,10 +295,6 @@ void Io::Mouse::SetMouseLook(bool enable) {
     _mouseLook = enable;
     if (enable) {
         window->warpMouse(_position);
-        platform->setCursorShown(false);
-    }
-    else {
-        platform->setCursorShown(true);
     }
 }
 
