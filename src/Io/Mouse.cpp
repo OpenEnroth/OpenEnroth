@@ -26,9 +26,6 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-#include "Library/Logger/Logger.h"
-#include "../../out/build/x64-Release/dependencies/deps_r6_master/include/SDL2/SDL_mouse.h"
-
 std::shared_ptr<Io::Mouse> mouse = nullptr;
 
 Pointi Io::Mouse::position() const {
@@ -296,16 +293,10 @@ void Io::Mouse::SetMouseLook(bool enable) {
     _mouseLook = enable;
     if (enable) {
         window->warpMouse(_position);
-        SDL_Cursor* cursor; /* Make this variable visible in the point
-                       where you exit the program */
-        int32_t cursorData[2] = { 0, 0 };
-        cursor = SDL_CreateCursor((Uint8*)cursorData, (Uint8*)cursorData, 8, 8, 4, 4);
-        SDL_SetCursor(cursor);
+        platform->setCursorShown(false);
     }
     else {
-        SDL_Cursor* cursor;
-        cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
-        SDL_SetCursor(cursor);
+        platform->setCursorShown(true);
     }
 }
 
