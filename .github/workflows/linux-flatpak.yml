@@ -55,7 +55,7 @@ jobs:
         echo "CCACHE_DIR=$PWD" >> $GITHUB_ENV
         
     - name: Checkout
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v5.0.0
       with:
         submodules: recursive
         ref: '${{inputs.myCommit}}'
@@ -66,6 +66,20 @@ jobs:
         key: 'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
         verbose: 2
         max-size: 200M
+        append-timestamp: false
+      if: github.event_name != 'pull_request'
+        
+    - name: Run ccache pr
+      uses: hendrikmuhs/ccache-action@v1.2.18
+      with:
+        key: 'pr-${{github.event.number}}-linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
+        restore-keys: |
+          'pr-${{github.event.number}}-linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'|
+          'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
+        verbose: 2
+        max-size: 200M
+        append-timestamp: false
+      if: github.event_name == 'pull_request'
         
     - name: Run Flatpak build
       uses: flatpak/flatpak-github-actions/flatpak-builder@dcbd3a30d991a38708c318d17f5352cc1268c215

@@ -232,7 +232,7 @@ void ArcomageGame::onKeyPress(PlatformKey key) {
             pArcomageGame->check_exit = 0;
         }
 
-        if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::ToggleFullscreen, key) && !pMovie_Track) {
+        if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::ToggleWindowMode, key) && !pMovie_Track) {
             pArcomageGame->stru1.am_input_type = ARCO_MSG_SWITCH_FULLSCREEN;
         }
     }
