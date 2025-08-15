@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 # This is shared by GameTest & RetraceTest
 ExternalProject_Add(OpenEnroth_TestData
         PREFIX ${CMAKE_CURRENT_BINARY_DIR}/test_data_tmp
-        GIT_REPOSITORY https://github.com/mcgreentn/OpenEnroth_TestData.git
+        GIT_REPOSITORY https://github.com/OpenEnroth/OpenEnroth_TestData.git
         GIT_TAG fd7dda8dbedc139461f64969a1c082d2a1b349ce
         SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/test_data
         CONFIGURE_COMMAND ""

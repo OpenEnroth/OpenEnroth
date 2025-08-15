@@ -36,10 +36,7 @@ Pointi mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft, Item* heldIt
         mousePos -= Pointi(X_offset, Y_offset);
     }
     Pointi relativePos = mousePos - inventoryTopLeft;
-    // TODO(captainurist): divIntDown is >> 5
-    int x = divIntDown(relativePos.x, 32);
-    int y = divIntDown(relativePos.y, 32);
-    return Pointi(x, y);
+    return Pointi(divIntDown(relativePos.x, 32), divIntDown(relativePos.y, 32));
 }
 
 Pointi mapFromInventoryGrid(Pointi gridPos, Pointi inventoryTopLeft) {
