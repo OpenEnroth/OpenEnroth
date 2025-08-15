@@ -2,11 +2,8 @@ name: Populate Data Cache
 
 on:
   schedule:
-    # schedule build four times per day
-    - cron: "6 5 * * *"
-    - cron: "6 11 * * *"
-    - cron: "6 17 * * *"
-    - cron: "6 23 * * *"
+    # schedule build hourly
+    - cron: "16 * * * *"
   workflow_dispatch: # Allow to manually run a workflow
 
 jobs:

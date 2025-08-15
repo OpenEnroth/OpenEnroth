@@ -60,14 +60,14 @@ jobs:
           sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish
 
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
         with:
           submodules: recursive
           ref: '${{inputs.myCommit}}'
 
       - name: Restore data cache
         id: restore-data-cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4.2.4
         with:
           path: |
             OpenEnroth_GameData
@@ -103,6 +103,20 @@ jobs:
           key: 'linux-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
           max-size: 200M
+          append-timestamp: false
+        if: github.event_name != 'pull_request'
+        
+      - name: Run ccache pr
+        uses: hendrikmuhs/ccache-action@v1.2.18
+        with:
+          key: 'pr-${{github.event.number}}-linux-${{matrix.configuration}}-${{matrix.architecture}}'
+          restore-keys: |
+            'pr-${{github.event.number}}-linux-${{matrix.configuration}}-${{matrix.architecture}}'|
+            'linux-${{matrix.configuration}}-${{matrix.architecture}}'
+          verbose: 2
+          max-size: 200M
+          append-timestamp: false
+        if: github.event_name == 'pull_request'
 
       - name: Configure
         run: |
