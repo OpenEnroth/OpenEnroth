@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;27d525f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;646fa00</span>
    </div>
   </td>
  </tr>
@@ -80,6 +80,9 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="ItemGrid_8h.html">ItemGrid.h</a>&quot;</code><br />
 <code>#include &lt;cassert&gt;</code><br />
+<code>#include &quot;<a class="el" href="Item_8h.html">Engine/Objects/Item.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="AssetsManager_8h.html">Engine/AssetsManager.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Engine_2Graphics_2Image_8h.html">Engine/Graphics/Image.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -90,8 +93,8 @@ Functions</h2></td></tr>
 <tr class="memitem:acecb5150c32d37fc877d83c6ef972561"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemGrid_8cpp.html#acecb5150c32d37fc877d83c6ef972561">itemOffset</a> (int dimension)</td></tr>
 <tr class="memdesc:acecb5150c32d37fc877d83c6ef972561"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate offsets for placing items in inventory grid.  <a href="ItemGrid_8cpp.html#acecb5150c32d37fc877d83c6ef972561">More...</a><br /></td></tr>
 <tr class="separator:acecb5150c32d37fc877d83c6ef972561"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7dec1549385d59265a5f9a6032a2719b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemGrid_8cpp.html#a7dec1549385d59265a5f9a6032a2719b">mapToInventoryGrid</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> mousePos, <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> inventoryTopLeft)</td></tr>
-<tr class="separator:a7dec1549385d59265a5f9a6032a2719b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac9e64eb0eaa2b38ee20dae4449be6bb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemGrid_8cpp.html#aac9e64eb0eaa2b38ee20dae4449be6bb">mapToInventoryGrid</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> mousePos, <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> inventoryTopLeft, <a class="el" href="structItem.html">Item</a> *heldItem)</td></tr>
+<tr class="separator:aac9e64eb0eaa2b38ee20dae4449be6bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a79c905cbd1d853988fe37284d3f4cc71"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="ItemGrid_8cpp.html#a79c905cbd1d853988fe37284d3f4cc71">mapFromInventoryGrid</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> gridPos, <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> inventoryTopLeft)</td></tr>
 <tr class="separator:a79c905cbd1d853988fe37284d3f4cc71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -188,8 +191,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a7dec1549385d59265a5f9a6032a2719b" name="a7dec1549385d59265a5f9a6032a2719b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7dec1549385d59265a5f9a6032a2719b">&#9670;&#160;</a></span>mapToInventoryGrid()</h2>
+<a id="aac9e64eb0eaa2b38ee20dae4449be6bb" name="aac9e64eb0eaa2b38ee20dae4449be6bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac9e64eb0eaa2b38ee20dae4449be6bb">&#9670;&#160;</a></span>mapToInventoryGrid()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -204,7 +207,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
-          <td class="paramname"><em>inventoryTopLeft</em>&#160;</td>
+          <td class="paramname"><em>inventoryTopLeft</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structItem.html">Item</a> *&#160;</td>
+          <td class="paramname"><em>heldItem</em> = <code>nullptr</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -217,6 +226,7 @@ Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">mousePos</td><td>Mouse position. </td></tr>
     <tr><td class="paramname">inventoryTopLeft</td><td>Top left position of the inventory grid. </td></tr>
+    <tr><td class="paramname">heldItem</td><td>The <a class="el" href="structItem.html">Item</a> the player is holding (if exists). If there is an item here, the mouse position is adjusted to snap to the center of the grid cell rather than the edge. If not, ItemId = ITEM_NULL, then the mouse position will not be adjusted for items. </td></tr>
   </table>
   </dd>
 </dl>

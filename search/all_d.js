@@ -182,7 +182,7 @@ var searchData=
   ['mapstats_179',['MapStats',['../structMapStats.html',1,'']]],
   ['maptimer_180',['MapTimer',['../structMapTimer.html',1,'']]],
   ['maptoglobaltileid_181',['mapToGlobalTileId',['../CompositeSnapshots_8cpp.html#a5b8bc317be7889b73fd883dea7efcb99',1,'CompositeSnapshots.cpp']]],
-  ['maptoinventorygrid_182',['mapToInventoryGrid',['../ItemGrid_8cpp.html#a7dec1549385d59265a5f9a6032a2719b',1,'mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft):&#160;ItemGrid.cpp'],['../ItemGrid_8h.html#a7dec1549385d59265a5f9a6032a2719b',1,'mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft):&#160;ItemGrid.cpp']]],
+  ['maptoinventorygrid_182',['mapToInventoryGrid',['../ItemGrid_8cpp.html#aac9e64eb0eaa2b38ee20dae4449be6bb',1,'mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft, Item *heldItem):&#160;ItemGrid.cpp'],['../ItemGrid_8h.html#a58be2ad340ba288b0c62ecf95816e32e',1,'mapToInventoryGrid(Pointi mousePos, Pointi inventoryTopLeft, Item *heldItem=nullptr):&#160;ItemGrid.cpp']]],
   ['maptorender_183',['MapToRender',['../classGameWindowHandler.html#a85bcb10daa161a0f0809d4753632eecd',1,'GameWindowHandler']]],
   ['maptreasurelevel_184',['MapTreasureLevel',['../MapEnums_8h.html#a9caf6e49814ed45e74006ac1c02cbefe',1,'MapEnums.h']]],
   ['maptreasurelevel_185',['mapTreasureLevel',['../structMapInfo.html#a8eec1e764bbd0fdbb60c7d4dfe99fc9b',1,'MapInfo']]],
