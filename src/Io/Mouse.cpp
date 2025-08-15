@@ -111,7 +111,7 @@ void Io::Mouse::DrawCursor() {
     // for party held item
     if (pParty->pPickedItem.itemId != ITEM_NULL) {
         DrawPickedItem();
-		// hide cursor when holding item
+        // hide cursor when holding item
         platform->setCursorShown(false);
     } else {
         // for other cursor img ie target mouse
