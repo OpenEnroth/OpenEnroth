@@ -67,7 +67,7 @@ jobs:
         verbose: 2
         max-size: 200M
         append-timestamp: false
-      if: github.event_name != 'pull_request'    
+      if: github.event_name != 'pull_request'
         
     - name: Run ccache pr
       uses: hendrikmuhs/ccache-action@v1.2.18
