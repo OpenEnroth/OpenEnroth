@@ -78,8 +78,7 @@ jobs:
         with:
           key: 'pr-${{github.event.number}}-macos-${{matrix.configuration}}-${{matrix.architecture}}'
           restore-keys: |
-            'pr-${{github.event.number}}-macos-${{matrix.configuration}}-${{matrix.architecture}}'|
-            'macos-${{matrix.configuration}}-${{matrix.architecture}}'
+            'macos-${{matrix.configuration}}-${{matrix.architecture}}-'
           verbose: 2
           max-size: 200M
           append-timestamp: false

@@ -74,8 +74,7 @@ jobs:
       with:
         key: 'pr-${{github.event.number}}-linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
         restore-keys: |
-          'pr-${{github.event.number}}-linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'|
-          'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
+          'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}-'
         verbose: 2
         max-size: 200M
         append-timestamp: false
