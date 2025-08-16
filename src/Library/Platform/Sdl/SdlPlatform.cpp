@@ -85,7 +85,7 @@ std::vector<PlatformGamepad *> SdlPlatform::gamepads() {
 void SdlPlatform::setCursorShown(bool cursorShown) {
     if (!_initialized)
         return;
-	// Note SDL_ShowCursor doesnt actually work on newer Windows with older SDL.
+    // Note SDL_ShowCursor doesnt actually work on newer Windows with older SDL.
     if (cursorShown) {
         SDL_Cursor* cursor;
         cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
