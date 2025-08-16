@@ -15,8 +15,6 @@
 #include "SdlGamepad.h"
 #include "SdlEnumTranslation.h"
 
-#include "Library/Logger/Logger.h"
-
 static void SDLCALL sdlLogCallback(void *userdata, int category, SDL_LogPriority priority, const char *message) {
     LogLevel level = translateSdlLogLevel(priority);
     if (category == SDL_LOG_CATEGORY_ASSERT)
@@ -88,13 +86,11 @@ void SdlPlatform::setCursorShown(bool cursorShown) {
     if (!_initialized)
         return;
 	// Note SDL_ShowCursor doesnt actually work on newer Windows with older SDL.
-
     if (cursorShown) {
         SDL_Cursor* cursor;
         cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW);
         SDL_SetCursor(cursor);
-    }
-    else {
+    } else {
         SDL_Cursor* cursor;
         int32_t cursorData[2] = { 0, 0 };
         cursor = SDL_CreateCursor((Uint8*)cursorData, (Uint8*)cursorData, 8, 8, 4, 4);
