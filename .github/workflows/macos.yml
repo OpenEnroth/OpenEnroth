@@ -1,5 +1,6 @@
 name: MacOS
-
+permissions:
+  actions: write
 on:
   pull_request: null
   workflow_dispatch:

@@ -1,5 +1,6 @@
 name: Linux
-
+permissions:
+  actions: write
 on:
   pull_request: null
   workflow_dispatch:
