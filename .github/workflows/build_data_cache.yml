@@ -5,8 +5,6 @@ on:
     # schedule build hourly
     - cron: "*/10 * * * *"
   workflow_dispatch: # Allow to manually run a workflow
-  pull_request:
-    types: [opened, synchronize, reopened]
 
 jobs:
   build_data_cache:
