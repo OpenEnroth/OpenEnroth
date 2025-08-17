@@ -125,6 +125,22 @@ jobs:
           append-timestamp: false
         if: github.event_name == 'pull_request'
 
+      - name: Delete ccache cache
+        uses: DareFox/delete-cache-by-key@v1
+        with:
+          key: ccache-linux-${{matrix.configuration}}-${{matrix.architecture}}
+          attempts: 1
+          mode: startsWith
+        if: github.event_name != 'pull_request'
+
+      - name: Delete pr ccache cache
+        uses: DareFox/delete-cache-by-key@v1
+        with:
+          key: ccache-pr-${{github.event.number}}-linux-${{matrix.configuration}}-${{matrix.architecture}}
+          attempts: 1
+          mode: startsWith
+        if: github.event_name == 'pull_request'
+
       - name: Configure
         run: |
           if [ "${{matrix.architecture}}" = "x86" ]; then

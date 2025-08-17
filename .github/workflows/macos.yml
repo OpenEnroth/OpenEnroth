@@ -91,6 +91,22 @@ jobs:
           max-size: 200M
           append-timestamp: false
         if: github.event_name == 'pull_request'
+        
+      - name: Delete ccache cache
+        uses: DareFox/delete-cache-by-key@v1
+        with:
+          key: ccache-macos-${{matrix.configuration}}-${{matrix.architecture}}
+          attempts: 1
+          mode: startsWith
+        if: github.event_name != 'pull_request'
+
+      - name: Delete pr ccache cache
+        uses: DareFox/delete-cache-by-key@v1
+        with:
+          key: ccache-pr-${{github.event.number}}-macos-${{matrix.configuration}}-${{matrix.architecture}}
+          attempts: 1
+          mode: startsWith
+        if: github.event_name == 'pull_request'
 
       # MacOS deployment target here should be kept in sync with what's set in OpenEnroth_Dependencies:
       # https://github.com/OpenEnroth/OpenEnroth_Dependencies/blob/master/scripts/build_all.sh
