@@ -1,6 +1,5 @@
 name: MacOS
-permissions:
-  actions: write
+
 on:
   pull_request: null
   workflow_dispatch:
@@ -71,42 +70,15 @@ jobs:
           key: 'macos-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
           max-size: 200M
-          append-timestamp: false
         if: github.event_name != 'pull_request'
         
-      - name: Run ccache pr stage 1
+      - name: Run ccache pr
         uses: hendrikmuhs/ccache-action@v1.2.18
         with:
           key: 'macos-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
           max-size: 200M
-          append-timestamp: false
           save: false
-        if: github.event_name == 'pull_request'
-
-      - name: Run ccache pr stage 2
-        uses: hendrikmuhs/ccache-action@v1.2.18
-        with:
-          key: 'pr-${{github.event.number}}-macos-${{matrix.configuration}}-${{matrix.architecture}}'
-          verbose: 2
-          max-size: 200M
-          append-timestamp: false
-        if: github.event_name == 'pull_request'
-        
-      - name: Delete ccache cache
-        uses: DareFox/delete-cache-by-key@v1
-        with:
-          key: ccache-macos-${{matrix.configuration}}-${{matrix.architecture}}
-          attempts: 1
-          mode: startsWith
-        if: github.event_name != 'pull_request'
-
-      - name: Delete pr ccache cache
-        uses: DareFox/delete-cache-by-key@v1
-        with:
-          key: ccache-pr-${{github.event.number}}-macos-${{matrix.configuration}}-${{matrix.architecture}}
-          attempts: 1
-          mode: startsWith
         if: github.event_name == 'pull_request'
 
       # MacOS deployment target here should be kept in sync with what's set in OpenEnroth_Dependencies:
