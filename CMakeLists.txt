@@ -47,12 +47,13 @@ endif()
 
 # Find ccache / sccache.
 if(OE_USE_CCACHE)
+    message(STATUS "Find ccache.")
     find_program(CCACHE_FOUND ccache)
     if(CCACHE_FOUND)
-        # MSVC requires ccache to be setup this way https://github.com/ccache/ccache/wiki/MS-Visual-Studio
         # Check for if we detected a shim
         file(SIZE ${CCACHE_FOUND} FILE_SIZE_IN_BYTES)
         if(FILE_SIZE_IN_BYTES GREATER 500000)
+            # MSVC requires ccache to be setup this way https://github.com/ccache/ccache/wiki/MS-Visual-Studio
             if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 
                 message(STATUS "Using ccache at ${CCACHE_FOUND}.")

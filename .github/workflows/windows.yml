@@ -84,7 +84,6 @@ jobs:
           
       # Chocolatey uses shims so copy the ccache exe
       - name: Copy ccache exe
-        if: steps.ccache-cache.outputs.cache-hit == 'true'
         run: |
           copy C:\ProgramData\chocolatey\lib\ccache\tools\ccache-4.11.3-windows-x86_64\ccache.exe C:\ProgramData\chocolatey\bin\ccache.exe           
 
