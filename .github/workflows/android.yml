@@ -102,23 +102,20 @@ jobs:
       - name: Run ccache
         uses: hendrikmuhs/ccache-action@v1.2.18
         with:
-          key: 'android-${{matrix.configuration}}-${{matrix.architecture}}'
+          key: 'android-${{matrix.configuration}}-universal'
           verbose: 2
-          max-size: ${{ fromJson('["200M", "600M"]')[matrix.architecture == 'universal'] }}
-          append-timestamp: false
+          max-size: 600M
         if: github.event_name != 'pull_request'
         
-      - name: Run ccache pr
+      - name: Run ccache pr 
         uses: hendrikmuhs/ccache-action@v1.2.18
         with:
-          key: 'pr-${{github.event.number}}-linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
-          restore-keys: |
-            'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}-'
+          key: 'android-${{matrix.configuration}}-universal'
           verbose: 2
-          max-size: 200M
-          append-timestamp: false
+          max-size: 600M
+          save: false
         if: github.event_name == 'pull_request'
-
+        
       - name: Build the app
         working-directory: android
         run: |

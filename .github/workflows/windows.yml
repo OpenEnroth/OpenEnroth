@@ -104,18 +104,15 @@ jobs:
           key: 'windows-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
           max-size: 200M
-          append-timestamp: false
         if: github.event_name != 'pull_request'
         
       - name: Run ccache pr
         uses: hendrikmuhs/ccache-action@v1.2.18
         with:
-          key: 'pr-${{github.event.number}}-windows-${{matrix.configuration}}-${{matrix.architecture}}'
-          restore-keys: |
-            'windows-${{matrix.configuration}}-${{matrix.architecture}}-'
+          key: 'windows-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
           max-size: 200M
-          append-timestamp: false
+          save: false
         if: github.event_name == 'pull_request'
           
       # MSVC hit rate is higher with ignoring the hash_dir and is safe
