@@ -119,16 +119,17 @@ jobs:
           append-timestamp: false
         if: github.event_name == 'pull_request'
 
-      - name: Build the app
-        working-directory: android
-        run: |
-          ./gradlew "assemble${{matrix.configuration}}" --info --scan -Pandroid.native.buildOutput=verbose 
+      - uses: burrunan/gradle-cache-action@v1
+        name: Test
+        with:
+          job-id: android-${{matrix.configuration}}
+          arguments: --info -Pandroid.native.buildOutput=verbose "assemble${{matrix.configuration}}" 
         env:
           SIGNING_KEYSTORE: '${{steps.decode_keystore.outputs.filePath}}'
           SIGNING_KEY_ALIAS: '${{secrets.SIGNING_KEY_ALIAS}}'
           SIGNING_KEY_PASSWORD: '${{secrets.SIGNING_KEY_PASSWORD}}'
           SIGNING_STORE_PASSWORD: '${{secrets.SIGNING_STORE_PASSWORD}}'
-          CMAKE_BUILD_PARALLEL_LEVEL: 3
+          CMAKE_BUILD_PARALLEL_LEVEL: 4
           GITHUBARCH: '${{matrix.architecture}}'
 
       - name: List artifacts
