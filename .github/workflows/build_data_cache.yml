@@ -30,7 +30,7 @@ jobs:
         repository: OpenEnroth/OpenEnroth_GameData
         path: OpenEnroth_GameData
         lfs: 'true' # .vid files are stored in LFS.
-        token: '${{secrets.DATA_ACCESS_TOKEN}}'
+        token: ${{ secrets.DATA_ACCESS_TOKEN }}
 
     - name: Cache data
       if: steps.check-for-data-cache.outputs.cache-hit != 'true'
