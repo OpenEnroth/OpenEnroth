@@ -122,7 +122,7 @@ jobs:
       - name: Build the app
         working-directory: android
         run: |
-          ./gradlew "assemble${{matrix.configuration}}" --info -Pandroid.native.buildOutput=verbose
+          ./gradlew "assemble${{matrix.configuration}}" --info --scan -Pandroid.native.buildOutput=verbose 
         env:
           SIGNING_KEYSTORE: '${{steps.decode_keystore.outputs.filePath}}'
           SIGNING_KEY_ALIAS: '${{secrets.SIGNING_KEY_ALIAS}}'
