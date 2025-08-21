@@ -313,7 +313,7 @@ void Io::Mouse::DoMouseLook() {
     _mouseLookChange.x = 0;
     _mouseLookChange.y = 0;
     pParty->_viewPitch -= modY;
-    pParty->_viewPitch = std::clamp(pParty->_viewPitch, -128, 128);
+    pParty->_viewPitch = std::clamp(pParty->_viewPitch, -320, 320);
     pParty->_viewYaw -= modX;
     pParty->_viewYaw &= TrigLUT.uDoublePiMask;
 }

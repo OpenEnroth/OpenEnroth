@@ -47,14 +47,47 @@ endif()
 
 # Find ccache / sccache.
 if(OE_USE_CCACHE)
+    message(STATUS "Find ccache.")
     find_program(CCACHE_FOUND ccache)
     if(CCACHE_FOUND)
-        message(STATUS "Using ccache at ${CCACHE_FOUND}.")
-        set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_FOUND})
-        set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_FOUND})
+        # Check for if we detected a shim
+        file(SIZE ${CCACHE_FOUND} FILE_SIZE_IN_BYTES)
+        if(FILE_SIZE_IN_BYTES GREATER 500000)
+            # MSVC requires ccache to be setup this way https://github.com/ccache/ccache/wiki/MS-Visual-Studio
+            if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+
+                message(STATUS "Using ccache at ${CCACHE_FOUND}.")
+                set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_FOUND})
+                set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_FOUND})
+
+                file(COPY_FILE
+                    ${CCACHE_FOUND} ${CMAKE_BINARY_DIR}/cl.exe
+                    ONLY_IF_DIFFERENT)
+
+                # By default Visual Studio generators will use /Zi which is not compatible
+                # with ccache, so tell Visual Studio to use /Z7 instead.
+                message(STATUS "Setting MSVC debug information format to 'Embedded'")
+                set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
+
+                set(CMAKE_VS_GLOBALS
+                    "CLToolExe=cl.exe"
+                    "CLToolPath=${CMAKE_BINARY_DIR}"
+                    "UseMultiToolTask=true"
+                    "DebugInformationFormat=OldStyle"
+                )
+
+            else()
+                message(STATUS "Using ccache at ${CCACHE_FOUND}.")
+                set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_FOUND})
+                set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_FOUND})
+            endif()
+        else()
+            message(WARNING "ccache shim detected if you are using chocolatey you need to copy the exe from 'C:\\ProgramData\\chocolatey\\lib\\ccache\\tools' to 'C:\\ProgramData\\chocolatey\\bin'.")
+        endif()
     else()
         message(STATUS "ccache is not found.")
     endif()
+    message(STATUS "Not configured to use ccache.")
 endif()
 
 if(OE_USE_SCCACHE AND NOT CCACHE_FOUND)

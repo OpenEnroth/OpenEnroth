@@ -76,17 +76,16 @@ jobs:
           path: 'C:\ProgramData\chocolatey\lib\ccache\'
           key: windows-ccache
 
-      # Chocolatey uses shims so create the shim if we used the cached ccache exe
-      - name: Add ccache shim
-        if: steps.ccache-cache.outputs.cache-hit == 'true'
-        run: |
-          C:\ProgramData\chocolatey\tools\shimgen.exe -o=C:\ProgramData\chocolatey\bin\ccache.exe -p=C:\ProgramData\chocolatey\lib\ccache\tools\ccache-4.8.2-windows-x86_64\ccache.exe
-
       # If ccache can't be restored from cache upgrade it
       - name: Update ccache
         if: steps.ccache-cache.outputs.cache-hit != 'true'
         run: |
-          choco upgrade ccache --version=4.8.2
+          choco upgrade ccache --version=4.11.3
+          
+      # Chocolatey uses shims so copy the ccache exe
+      - name: Copy ccache exe
+        run: |
+          copy C:\ProgramData\chocolatey\lib\ccache\tools\ccache-4.11.3-windows-x86_64\ccache.exe C:\ProgramData\chocolatey\bin\ccache.exe           
 
       # If ccache can't be restored from cache after upgrade cache it
       - name: Save ccache to cache
@@ -104,18 +103,15 @@ jobs:
           key: 'windows-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
           max-size: 200M
-          append-timestamp: false
         if: github.event_name != 'pull_request'
         
       - name: Run ccache pr
         uses: hendrikmuhs/ccache-action@v1.2.18
         with:
-          key: 'pr-${{github.event.number}}-windows-${{matrix.configuration}}-${{matrix.architecture}}'
-          restore-keys: |
-            'windows-${{matrix.configuration}}-${{matrix.architecture}}-'
+          key: 'windows-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
           max-size: 200M
-          append-timestamp: false
+          save: false
         if: github.event_name == 'pull_request'
           
       # MSVC hit rate is higher with ignoring the hash_dir and is safe
