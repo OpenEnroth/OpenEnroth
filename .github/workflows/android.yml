@@ -120,8 +120,9 @@ jobs:
         if: github.event_name == 'pull_request'
 
       - uses: burrunan/gradle-cache-action@v1
-        name: Test
+        name: Build 
         with:
+          build-root-directory: android
           job-id: android-${{matrix.configuration}}
           arguments: assemble${{matrix.configuration}} --scan --info -Pandroid.native.buildOutput=verbose 
         env:
