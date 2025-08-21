@@ -1,8 +1,6 @@
 name: Build Release
 
 on:
-  schedule:
-    - cron: 16 11 * * *
   workflow_dispatch:
     inputs:
       myCommit:
@@ -11,8 +9,8 @@ on:
         default: ''
         type: string
   push:
-    tags:
-      - '*'
+    branches:
+      - 'master'
 
 env:
   TAG_NAME: nightly

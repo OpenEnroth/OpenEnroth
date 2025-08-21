@@ -103,18 +103,15 @@ jobs:
           key: 'linux-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
           max-size: 200M
-          append-timestamp: false
         if: github.event_name != 'pull_request'
         
       - name: Run ccache pr
         uses: hendrikmuhs/ccache-action@v1.2.18
         with:
-          key: 'pr-${{github.event.number}}-linux-${{matrix.configuration}}-${{matrix.architecture}}'
-          restore-keys: |
-            'linux-${{matrix.configuration}}-${{matrix.architecture}}-'
+          key: 'linux-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
           max-size: 200M
-          append-timestamp: false
+          save: false
         if: github.event_name == 'pull_request'
 
       - name: Configure
