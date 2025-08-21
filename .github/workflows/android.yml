@@ -128,7 +128,3 @@ jobs:
             android/openenroth/build/outputs/apk/release/openenroth-release.apk
             # Don't publish unsigned APKs:
             # android/openenroth/build/outputs/apk/release/openenroth-release-unsigned.apk
-
-      - name: Cleanup ccache
-        run: |
-          ccache -c
