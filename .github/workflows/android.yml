@@ -99,7 +99,7 @@ jobs:
           java-version: 17.0.6
           cache: gradle
 
-      - uses: burrunan/gradle-cache-action@v1
+      - uses: burrunan/gradle-cache-action@v3.0.1
         name: Build 
         with:
           build-root-directory: android
