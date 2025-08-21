@@ -123,7 +123,7 @@ jobs:
         name: Test
         with:
           job-id: android-${{matrix.configuration}}
-          arguments: --scan --info -Pandroid.native.buildOutput=verbose "assemble${{matrix.configuration}}" 
+          arguments: assemble${{matrix.configuration}} --scan --info -Pandroid.native.buildOutput=verbose 
         env:
           SIGNING_KEYSTORE: '${{steps.decode_keystore.outputs.filePath}}'
           SIGNING_KEY_ALIAS: '${{secrets.SIGNING_KEY_ALIAS}}'
