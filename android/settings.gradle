@@ -1,8 +1,8 @@
-include ':openenroth'
-
 plugins {
     'gradle-enterprise'
 }
+
+include ':openenroth'
 
 val isCiServer = System.getenv().containsKey("CI")
 
