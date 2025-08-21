@@ -39,9 +39,6 @@ android {
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
-            ndkBuild {
-                arguments '-j4'
-            }            
             if ( System.env['GITHUBARCH'] == "universal" || System.env['GITHUBARCH'] == null) {
                 cmake {
                     arguments "-DANDROID_STL=c++_static", "-DOE_BUILD_TESTS=OFF"
@@ -78,10 +75,7 @@ android {
         sourceSets.main {
             jniLibs.srcDir 'libs'
         }
-        externalNativeBuild {
-            ndkBuild {
-                arguments '-j4'
-            }            
+        externalNativeBuild {   
             cmake {
                 path 'jni/CMakeLists.txt'
                 version "3.24.0+"
