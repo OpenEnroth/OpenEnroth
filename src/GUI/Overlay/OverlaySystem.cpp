@@ -6,6 +6,7 @@
 #include <imgui/imgui.h> // NOLINT: not a C system header.
 
 #include "Application/GameConfig.h"
+#include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
@@ -42,6 +43,7 @@ void OverlaySystem::drawOverlays() {
     // Cycle Imgui even if overlays are disabled and we dont draw anything. This allows it to consume input events at the correct time - #1824.
     _renderer.beginOverlays();
     if (_isEnabled) {
+        platform->setCursorShown(true);
         for (auto &&[name, overlay] : _overlays) {
             overlay->update();
         }

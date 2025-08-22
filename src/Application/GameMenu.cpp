@@ -491,6 +491,7 @@ void Menu::MenuLoop() {
         engine->DrawGUI();
         GUI_UpdateWindows();
         engine->_statusBar->draw();
+        mouse->DrawCursor();
         render->Present();
 
         EventLoop();
