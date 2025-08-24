@@ -4520,6 +4520,7 @@ void OpenGLRenderer::_initImGui() {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+    io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;   // Dont allow ImGui to modify mouse cursor
 
     SDL_Window *sdlWindow = static_cast<SDL_Window *>(window->nativeHandle());
     ImGui_ImplSDL2_InitForOpenGL(sdlWindow, openGLContext->nativeHandle());

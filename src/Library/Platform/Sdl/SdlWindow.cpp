@@ -15,6 +15,8 @@
 #include "SdlEnumTranslation.h"
 #include "SdlOpenGLContext.h"
 
+#include "Application/GameWindowHandler.h"
+
 SdlWindow::SdlWindow(SdlPlatformSharedState *state, SDL_Window *window, uint32_t id): _state(state), _window(window), _id(id) {
     assert(state);
     assert(window);
@@ -194,6 +196,7 @@ void SdlWindow::activate() {
 }
 
 void SdlWindow::warpMouse(Pointi position) {
+    position = GameWindowHandler::MapFromRender(position);
     SDL_WarpMouseInWindow(_window, position.x, position.y);
 }
 

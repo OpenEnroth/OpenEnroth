@@ -111,6 +111,9 @@ void Io::Mouse::DrawCursor() {
     // for party held item
     if (pParty->pPickedItem.itemId != ITEM_NULL) {
         DrawPickedItem();
+        // hide cursor when holding item
+        // TODO(pskelton): not sure about this - get ux feedback
+        platform->setCursorShown(false);
     } else {
         // for other cursor img ie target mouse
         if (this->cursor_img) {
@@ -294,6 +297,7 @@ void Io::Mouse::UI_OnMouseLeftClick() {
 void Io::Mouse::SetMouseLook(bool enable) {
     _mouseLook = enable;
     if (enable) {
+        _position = { pViewport->viewportCenterX, pViewport->viewportCenterY };
         window->warpMouse(_position);
     }
 }
