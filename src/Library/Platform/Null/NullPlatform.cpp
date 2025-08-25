@@ -33,6 +33,10 @@ void NullPlatform::setCursorShown(bool cursorShown) {
     _state->cursorShown = cursorShown;
 }
 
+void NullPlatform::setCursorImage(int Cursor) {
+    _state->Cursor = Cursor;
+}
+
 bool NullPlatform::isCursorShown() const {
     return _state->cursorShown;
 }

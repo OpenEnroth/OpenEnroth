@@ -111,6 +111,7 @@ void Io::Mouse::DrawCursor() {
     // for party held item
     if (pParty->pPickedItem.itemId != ITEM_NULL) {
         DrawPickedItem();
+        platform->setCursorImage(1);
     } else {
         // for other cursor img ie target mouse
         if (this->cursor_img) {
@@ -128,6 +129,7 @@ void Io::Mouse::DrawCursor() {
             render->DrawTextureNew(x / 640., y / 480., pointer);
         } else {
             platform->setCursorShown(true);
+            platform->setCursorImage(0);
         }
     }
 

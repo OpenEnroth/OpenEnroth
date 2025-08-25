@@ -29,6 +29,8 @@ class SdlPlatform: public Platform {
 
     virtual int64_t tickCount() const override;
 
+    virtual void setCursorImage(int Cursor) override;
+
  private:
     bool _initialized = false;
     std::unique_ptr<SdlPlatformSharedState> _state;

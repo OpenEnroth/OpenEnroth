@@ -107,6 +107,13 @@ class Platform {
     virtual void setCursorShown(bool cursorShown) = 0;
 
     /**
+     * Sets the image for the cursor.
+     *
+     * @param Cursor               What cursor to show.
+     */
+    virtual void setCursorImage(int Cursor) = 0;
+
+    /**
      * Getter for `setCursorShown`.
      *
      * @return                          Whether the system cursor is currently shown on top of windows created by this

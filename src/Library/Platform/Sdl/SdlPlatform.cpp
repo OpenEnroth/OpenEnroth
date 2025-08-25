@@ -140,6 +140,36 @@ int64_t SdlPlatform::tickCount() const {
     return SDL_GetTicks64();
 }
 
+void SdlPlatform::setCursorImage(int Cursor) {
+    if (!_initialized)
+        return;
+
+    SDL_Cursor* NORMAL{
+        SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_ARROW)
+    };
+    SDL_Cursor* HOLD{
+        SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND)
+    };
+    SDL_Cursor* CLICK{
+        SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_WAIT)
+    };
+
+    switch (Cursor) {
+        case 1:
+            SDL_SetCursor(HOLD);
+            break;
+        case 2:
+            SDL_SetCursor(CLICK);
+            break;
+        default:
+        {
+            SDL_SetCursor(NORMAL);
+            break;
+        }
+    }
+
+}
+
 std::unique_ptr<Platform> Platform::createStandardPlatform() {
     return std::make_unique<SdlPlatform>();
 }

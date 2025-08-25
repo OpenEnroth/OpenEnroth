@@ -19,6 +19,7 @@ class NullPlatform : public Platform {
     virtual std::unique_ptr<PlatformEventLoop> createEventLoop() override;
     virtual std::vector<PlatformGamepad *> gamepads() override;
     virtual void setCursorShown(bool cursorShown) override;
+    virtual void setCursorImage(int Cursor) override;
     virtual bool isCursorShown() const override;
     virtual std::vector<Recti> displayGeometries() const override;
     virtual void showMessageBox(const std::string &title, const std::string &message) const override;
