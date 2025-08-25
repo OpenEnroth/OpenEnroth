@@ -20,4 +20,5 @@ class NullPlatformSharedState {
     NullPlatformOptions options;
     std::unordered_map<std::thread::id, NullOpenGLContext *> contextByThreadId;
     bool cursorShown = true;
+    bool Cursor = 0;
 };

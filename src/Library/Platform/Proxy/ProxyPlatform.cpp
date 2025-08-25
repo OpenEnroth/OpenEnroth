@@ -40,3 +40,7 @@ void ProxyPlatform::showMessageBox(const std::string &title, const std::string &
 int64_t ProxyPlatform::tickCount() const {
     return nonNullBase()->tickCount();
 }
+
+void ProxyPlatform::setCursorImage(int Cursor) {
+    return nonNullBase()->setCursorImage(Cursor);
+}
