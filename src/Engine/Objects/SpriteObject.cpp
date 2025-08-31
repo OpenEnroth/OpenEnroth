@@ -246,13 +246,13 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 CollideWithActor(j, 0);
             }
         }
-        int collisionZ = collision_state.new_position_lo.z - collision_state.radius_lo - 1;
+
         bool collisionOnWater = false;
         int collisionBmodelPid = 0;
         Vec3f collisionPos = collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1);
         float collisionLevel = ODM_GetFloorLevel(collisionPos, &collisionOnWater, &collisionBmodelPid);
         // TOOD(Nik-RE-dev): why initail "onWater" is used?
-        if (onWater && collisionZ < (collisionLevel + 60)) {
+        if (onWater && collisionPos.z < (collisionLevel + 60)) {
             int splashZ = level + 60;
             if (collisionBmodelPid) {
                 splashZ = collisionLevel + 30;
@@ -261,6 +261,15 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             SpriteObject::OnInteraction(uLayingItemID);
             return;
         }
+
+        // Will this collision cycle take the sprite under ground level
+        if (object->uFlags & OBJECT_DESC_INTERACTABLE) {
+            if (collisionPos.z < collisionLevel) {
+                if (!processSpellImpact(uLayingItemID, collision_state.pid))
+                    return;
+            }
+        }
+
         if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
             pSpriteObjects[uLayingItemID].vPosition = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1));
             //pSpriteObjects[uLayingItemID].vPosition.x = collision_state.new_position_lo.x;
