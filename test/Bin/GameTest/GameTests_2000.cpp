@@ -477,3 +477,16 @@ GAME_TEST(Prs, Pr2157b) {
     EXPECT_EQ(soundsTape.flatten().count(SOUND_error), 1);
     EXPECT_EQ(inventory.size(), 126);
 }
+
+GAME_TEST(Issues, Issue2186) {
+    // Consistent crashing in Grand Temple of the Sun Upper Level
+    auto maps = tapes.map();
+    test.playTraceFromTestData("issue_2186.mm7", "issue_2186.json");
+
+    EXPECT_CONTAINS(maps, MAP_EVENMORN_ISLAND); // we made it outside
+    EXPECT_EQ(maps.back(), MAP_GRAND_TEMPLE_OF_THE_SUN); // and back in
+    // and no actors are still underground
+    for (const auto &act : pActors) {
+        EXPECT_GT(act.pos.z, -1000);
+    }
+}
