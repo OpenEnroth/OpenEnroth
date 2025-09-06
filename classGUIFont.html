@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;4aaa0a0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;82f7e1a</span>
    </div>
   </td>
  </tr>
@@ -97,6 +97,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8b6996e840d9716ebeb250a29ba614de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adae3097d160e4df0518350f02d73a87a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#adae3097d160e4df0518350f02d73a87a">GetLineWidth</a> (std::string_view str)</td></tr>
 <tr class="separator:adae3097d160e4df0518350f02d73a87a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27c0e17949b1b2ba496409e77fc4874e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#a27c0e17949b1b2ba496409e77fc4874e">GetTextLenLimitedByWidth</a> (std::string_view str, int maxWidth, int &amp;resultWidth)</td></tr>
+<tr class="separator:a27c0e17949b1b2ba496409e77fc4874e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7dd2d5324a1346002f30f705762ead6c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#a7dd2d5324a1346002f30f705762ead6c">CalcTextHeight</a> (std::string_view str, int width, int x)</td></tr>
 <tr class="separator:a7dd2d5324a1346002f30f705762ead6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0fb4efc505ee81b1959ee4b560a1dc69"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGUIFont.html#a0fb4efc505ee81b1959ee4b560a1dc69">GetPageText</a> (std::string_view str, <a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a> pageSize, int x, int page)</td></tr>
@@ -760,6 +762,49 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a27c0e17949b1b2ba496409e77fc4874e" name="a27c0e17949b1b2ba496409e77fc4874e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a27c0e17949b1b2ba496409e77fc4874e">&#9670;&#160;</a></span>GetTextLenLimitedByWidth()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int GUIFont::GetTextLenLimitedByWidth </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>str</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>maxWidth</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int &amp;&#160;</td>
+          <td class="paramname"><em>resultWidth</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">str</td><td>Text to check. Should be a single line without tabs or right-justify. </td></tr>
+    <tr><td class="paramname">maxWidth</td><td>Width of the window that the text should fit into. </td></tr>
+    <tr><td class="paramname">resultWidth</td><td>Width of the substring (in pixels) that fits into maxWidth. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Length of substring that fits into maxWidth. </dd></dl>
 
 </div>
 </div>
