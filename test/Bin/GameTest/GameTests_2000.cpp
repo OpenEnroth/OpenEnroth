@@ -490,3 +490,21 @@ GAME_TEST(Issues, Issue2186) {
         EXPECT_GT(act.pos.z, -1000);
     }
 }
+
+GAME_TEST(Issues, Issue2188) {
+    // assert(false) when pressing Z when the character is unconscious.
+    // Assertion was triggering b/c the text "Unconscious" doesn't fit into the status field.
+    auto screenTape = tapes.screen();
+
+    game.startNewGame();
+    test.startTaping();
+    pParty->pCharacters[0].health = 0;
+    pParty->pCharacters[0].SetCondition(CONDITION_UNCONSCIOUS, false);
+
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_Z); // Open status menu.
+    game.tick(); // Shouldn't assert.
+
+    EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_UNCONSCIOUS);
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_QUICK_REFERENCE));
+}
