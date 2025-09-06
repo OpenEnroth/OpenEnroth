@@ -99,30 +99,41 @@ int GUIFont::AlignText_Center(int width, std::string_view str) {
 }
 
 int GUIFont::GetLineWidth(std::string_view str) {
-    int width = 0;
-    for (int i = 0, len = str.length(); i < len; ++i) {
+    int resultWidth = 0;
+    GetTextLenLimitedByWidth(str, INT_MAX, resultWidth);
+    return resultWidth;
+}
+
+int GUIFont::GetTextLenLimitedByWidth(std::string_view str, int maxWidth, int& resultWidth) {
+    int len = str.length();
+    resultWidth = 0;
+    for (int i = 0; i < len; ++i) {
         unsigned char c = str[i];
         switch (c) {
         case '\n': // New line.
         case '\t': // Move to next cell, offset from the left border.
         case '\r': // Right-justify, offset from the right border.
-            return width;
+            return i;
         case '\f': // Color tag.
             i += 5;
             break;
         default:
             if (!IsCharValid(c))
                 break;
-
             if (i > 0)
-                width += _font.metrics(c).leftSpacing;
-            width += _font.metrics(c).width;
+                resultWidth += _font.metrics(c).leftSpacing;
+            resultWidth += _font.metrics(c).width;
             if (i < len - 1)
-                width += _font.metrics(c).rightSpacing;
+                resultWidth += _font.metrics(c).rightSpacing;
+
+            if (resultWidth > maxWidth) {
+                return i;
+            }
         }
     }
-    return width;
+    return len;
 }
+
 
 int GUIFont::CalcTextHeight(std::string_view str, int width, int x) {
     if (str.empty())
@@ -498,113 +509,18 @@ int GUIFont::DrawTextInRect(GUIWindow *window, Pointi position, Color color, std
     if (pLineWidth < rect_width) {
         DrawText(window, position, color, buf, 0, colorTable.Black);
         return pLineWidth;
-    }
-
-    assert(false);
-    return 0; // TODO(captainurist): The code below is never called, and it's messed up - \r is used for color tags, \f for right justification.
-
-    render->BeginTextNew(_mainTexture, _shadowTexture);
-
-    unsigned int text_width = 0;
-    if (reverse_text)
-        std::reverse(buf, buf + pNumLen);
-
-    size_t Str1a = 0;
-    size_t i = 0;
-    for (i = 0; i < pNumLen; ++i) {
-        if (text_width >= rect_width) {
-            break;
-        }
-        uint8_t c = buf[i];
-        if (IsCharValid(c)) {
-            switch (c) {
-            case '\t':  // Horizontal tab 09
-            case '\n':  // Line Feed 0A 10
-            case '\r':  // Form Feed, page eject  0C 12
-                break;
-            case '\f':  // Carriage Return 0D 13
-                i += 5;
-                break;
-            default:
-                if (i > 0) {
-                    text_width += _font.metrics(c).leftSpacing;
-                }
-                text_width += _font.metrics(c).width;
-                if (i < pNumLen) {
-                    text_width += _font.metrics(c).rightSpacing;
-                }
-            }
+    } else {
+        int resultWidth = 0;
+        int textLen = GetTextLenLimitedByWidth(text, rect_width, resultWidth);
+        if (0 <= textLen && textLen < sizeof(buf)) {
+            buf[textLen] = '\0';
+            DrawText(window, position, color, buf, 0, colorTable.Black);
+            return rect_width;
+        } else {
+            assert(false);
+            return 0;
         }
     }
-    buf[i - 1] = 0;
-
-    pNumLen = strlen(buf);
-    unsigned int v28 = GetLineWidth(buf);
-    if (reverse_text)
-        std::reverse(buf, buf + pNumLen);
-
-    Color draw_color = color;
-
-    int text_pos_x = position.x + window->uFrameX;
-    int text_pos_y = position.y + window->uFrameY;
-    for (i = 0; i < pNumLen; ++i) {
-        uint8_t c = buf[i];
-        if (IsCharValid(c)) {
-            switch (c) {
-            case '\t': {  // Horizontal tab 09
-                char Str[6];
-                strncpy(Str, &buf[i + 1], 3);
-                Str[3] = 0;
-                //   atoi(Str);
-                i += 3;
-                break;
-            }
-            case '\n': {  // Line Feed 0A 10
-                unsigned int v24 = _font.height();
-                text_pos_x = position.x;
-                position.y = position.y + _font.height() - 3;
-                text_pos_y = position.y + _font.height() - 3;
-                break;
-            }
-            case '\r':  // Form Feed, page eject  0C 12
-                draw_color = parseColorTag(&buf[i + 1], color);
-                i += 5;
-                break;
-            case '\f': {  // Carriage Return 0D 13
-                char Str[6];
-                strncpy(Str, &buf[i + 1], 3);
-                Str[3] = 0;
-                i += 3;
-                unsigned int v23 = GetLineWidth(&buf[i]);
-                text_pos_x = window->uFrameZ - v23 - atoi(Str);
-                text_pos_y = position.y;
-                break;
-            }
-            default: {
-                unsigned int char_width = _font.metrics(c).width;
-                if (i > 0) {
-                    text_pos_x += _font.metrics(c).leftSpacing;
-                }
-                int xsq = c % 16;
-                int ysq = c / 16;
-                float u1 = (xsq * 32.0f) / 512.0f;
-                float u2 = (xsq * 32.0f + _font.metrics(c).width) / 512.0f;
-                float v1 = (ysq * 32.0f) / 512.0f;
-                float v2 = (ysq * 32.0f + _font.height()) / 512.0f;
-
-                render->DrawTextNew(text_pos_x, text_pos_y, _font.metrics(c).width, _font.height(), u1, v1, u2, v2, 1, colorTable.Black);
-                render->DrawTextNew(text_pos_x, text_pos_y, _font.metrics(c).width, _font.height(), u1, v1, u2, v2, 0, draw_color);
-
-                text_pos_x += char_width;
-                if (i < (int)pNumLen) {
-                    text_pos_x += _font.metrics(c).rightSpacing;
-                }
-            }
-            }
-        }
-    }
-    render->EndTextNew();
-    return v28;
 }
 
 void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h,
