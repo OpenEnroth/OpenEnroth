@@ -84,7 +84,7 @@ class GUIFont {
      */
     Color DrawTextLine(std::string_view text, Color startColor, Color defaultColor, Pointi position);
 
-    void DrawText(const Recti &rect, Pointi position, Color startColor, std::string_view text, int maxY, Color shadowColor);
+    void DrawText(const Recti &rect, Pointi position, Color defaultColor, std::string_view text, int maxY, Color shadowColor);
     int DrawTextInRect(const Recti &rect, Pointi position,
                        Color color, std::string_view text, int rect_width,
                        int reverse_text);
@@ -95,10 +95,10 @@ class GUIFont {
                           unsigned int w, unsigned int h, Color firstColor,
                           Color secondColor, Color shadowColor, std::string_view pString,
                           GraphicsImage *image);
-    int GetStringHeight2(GUIFont *secondFont, std::string_view text_str, int width, int x);
+    int GetStringHeightWithSecondFont(GUIFont *secondFont, std::string_view text_str, int width, int x);
 
  private:
-    std::string FitTwoFontStringINWindow(std::string_view inString, GUIFont *pFontSecond, int width, int x);
+    std::string FitTwoFontStringInWindow(std::string_view inString, GUIFont *pFontSecond, int width, int x);
     void DrawTextLineToBuff(Color startColor, Color shadowColor, Color *uX_buff_pos, std::string_view text, int line_width);
 
  private:
