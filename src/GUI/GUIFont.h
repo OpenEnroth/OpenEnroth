@@ -1,16 +1,12 @@
 #pragma once
 
-#include <array>
-#include <vector>
 #include <string>
 #include <memory>
 
 #include "Library/Color/Color.h"
-#include "Library/Image/Palette.h"
 #include "Library/Geometry/Point.h"
 #include "Library/LodFormats/LodFont.h"
 
-class GUIWindow;
 class GraphicsImage;
 
 /**
@@ -88,28 +84,22 @@ class GUIFont {
      */
     Color DrawTextLine(std::string_view text, Color startColor, Color defaultColor, Pointi position);
 
-    void DrawText(GUIWindow *window, Pointi position, Color color, std::string_view text, int maxHeight, Color shadowColor);
-    int DrawTextInRect(GUIWindow *window, Pointi position,
+    void DrawText(const Recti &rect, Pointi position, Color defaultColor, std::string_view text, int maxY, Color shadowColor);
+    int DrawTextInRect(const Recti &rect, Pointi position,
                        Color color, std::string_view text, int rect_width,
                        int reverse_text);
 
     std::string WrapText(std::string_view inString, int width, int uX, bool return_on_carriage = false);
 
-    // TODO: these should take std::string_view
     void DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY,
                           unsigned int w, unsigned int h, Color firstColor,
                           Color secondColor, Color shadowColor, std::string_view pString,
                           GraphicsImage *image);
-    int GetStringHeight2(GUIFont *secondFont, std::string_view text_str,
-                         GUIWindow *pWindow, int startX, int a6);
+    int GetStringHeightWithSecondFont(GUIFont *secondFont, std::string_view text_str, int width, int x);
 
  private:
-    bool IsCharValid(unsigned char c) const;
-    std::string FitTwoFontStringINWindow(std::string_view inString, GUIFont *pFontSecond,
-                                    GUIWindow *pWindow, int startPixlOff,
-                                    bool return_on_carriage = false);
-    void DrawTextLineToBuff(Color color, Color shadowColor, Color *uX_buff_pos,
-                            std::string_view text, int line_width);
+    std::string FitTwoFontStringInWindow(std::string_view inString, GUIFont *pFontSecond, int width, int x);
+    void DrawTextLineToBuff(Color startColor, Color shadowColor, Color *uX_buff_pos, std::string_view text, int line_width);
 
  private:
     LodFont _font;
