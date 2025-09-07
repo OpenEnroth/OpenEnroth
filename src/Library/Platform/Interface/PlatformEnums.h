@@ -207,16 +207,13 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(PlatformMouseButtons)
 /**
  * - `WINDOW_MODE_WINDOWED` is a normal window with frame.
  * - `WINDOW_MODE_BORDERLESS` is a window without frame.
- * - `WINDOW_MODE_FULLSCREEN` is a traditional exclusive fullscreen mode. It changes display resolution and makes
- *   the window the sole user of the display.
  * - `WINDOW_MODE_FULLSCREEN_BORDERLESS` is a modern fake fullscreen AKA frameless window resized to desktop resolution
  *   and moved to cover the whole desktop.
  */
 enum class PlatformWindowMode {
     WINDOW_MODE_WINDOWED = 0,
     WINDOW_MODE_BORDERLESS = 1,
-    WINDOW_MODE_FULLSCREEN = 2,
-    WINDOW_MODE_FULLSCREEN_BORDERLESS = 3,
+    WINDOW_MODE_FULLSCREEN_BORDERLESS = 2,
 };
 using enum PlatformWindowMode;
 

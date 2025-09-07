@@ -125,58 +125,58 @@ PlatformKey translateSdlKey(SDL_Scancode key) {
     }
 }
 
-PlatformKey translateSdlGamepadButton(SDL_GameControllerButton button) {
+PlatformKey translateSdlGamepadButton(SDL_GamepadButton button) {
     switch (button) {
-    case SDL_CONTROLLER_BUTTON_A:               return PlatformKey::KEY_GAMEPAD_A;
-    case SDL_CONTROLLER_BUTTON_B:               return PlatformKey::KEY_GAMEPAD_B;
-    case SDL_CONTROLLER_BUTTON_X:               return PlatformKey::KEY_GAMEPAD_X;
-    case SDL_CONTROLLER_BUTTON_Y:               return PlatformKey::KEY_GAMEPAD_Y;
+    case SDL_GAMEPAD_BUTTON_SOUTH:          return PlatformKey::KEY_GAMEPAD_A;
+    case SDL_GAMEPAD_BUTTON_EAST:           return PlatformKey::KEY_GAMEPAD_B;
+    case SDL_GAMEPAD_BUTTON_WEST:           return PlatformKey::KEY_GAMEPAD_X;
+    case SDL_GAMEPAD_BUTTON_NORTH:          return PlatformKey::KEY_GAMEPAD_Y;
 
-    case SDL_CONTROLLER_BUTTON_DPAD_LEFT:       return PlatformKey::KEY_GAMEPAD_LEFT;
-    case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:      return PlatformKey::KEY_GAMEPAD_RIGHT;
-    case SDL_CONTROLLER_BUTTON_DPAD_UP:         return PlatformKey::KEY_GAMEPAD_UP;
-    case SDL_CONTROLLER_BUTTON_DPAD_DOWN:       return PlatformKey::KEY_GAMEPAD_DOWN;
+    case SDL_GAMEPAD_BUTTON_DPAD_LEFT:      return PlatformKey::KEY_GAMEPAD_LEFT;
+    case SDL_GAMEPAD_BUTTON_DPAD_RIGHT:     return PlatformKey::KEY_GAMEPAD_RIGHT;
+    case SDL_GAMEPAD_BUTTON_DPAD_UP:        return PlatformKey::KEY_GAMEPAD_UP;
+    case SDL_GAMEPAD_BUTTON_DPAD_DOWN:      return PlatformKey::KEY_GAMEPAD_DOWN;
 
-    case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:    return PlatformKey::KEY_GAMEPAD_L1;
-    case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER:   return PlatformKey::KEY_GAMEPAD_R1;
-    case SDL_CONTROLLER_BUTTON_LEFTSTICK:       return PlatformKey::KEY_GAMEPAD_L3;
-    case SDL_CONTROLLER_BUTTON_RIGHTSTICK:      return PlatformKey::KEY_GAMEPAD_R3;
+    case SDL_GAMEPAD_BUTTON_LEFT_SHOULDER:  return PlatformKey::KEY_GAMEPAD_L1;
+    case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER: return PlatformKey::KEY_GAMEPAD_R1;
+    case SDL_GAMEPAD_BUTTON_LEFT_STICK:     return PlatformKey::KEY_GAMEPAD_L3;
+    case SDL_GAMEPAD_BUTTON_RIGHT_STICK:    return PlatformKey::KEY_GAMEPAD_R3;
 
-    case SDL_CONTROLLER_BUTTON_START:           return PlatformKey::KEY_GAMEPAD_START;
-    case SDL_CONTROLLER_BUTTON_BACK:            return PlatformKey::KEY_GAMEPAD_BACK;
+    case SDL_GAMEPAD_BUTTON_START:          return PlatformKey::KEY_GAMEPAD_START;
+    case SDL_GAMEPAD_BUTTON_BACK:           return PlatformKey::KEY_GAMEPAD_BACK;
 
-    case SDL_CONTROLLER_BUTTON_GUIDE:           return PlatformKey::KEY_GAMEPAD_GUIDE;
+    case SDL_GAMEPAD_BUTTON_GUIDE:          return PlatformKey::KEY_GAMEPAD_GUIDE;
 
-    // on DS4 touchpad is working like mouse by default and this event treated as left mouse click, so not expose
-    // case SDL_CONTROLLER_BUTTON_TOUCHPAD:        return PlatformKey::KEY_GAMEPAD_TOUCHPAD;
+    // on DS4 touchpad is working like mouse by default and this event treated as left mouse click, so do not expose.
+    // case SDL_GAMEPAD_BUTTON_TOUCHPAD:        return PlatformKey::KEY_GAMEPAD_TOUCHPAD;
 
     default:                                    return PlatformKey::KEY_NONE;
     }
 }
 
-PlatformKey translateSdlGamepadAxis(SDL_GameControllerAxis axis) {
+PlatformKey translateSdlGamepadAxis(SDL_GamepadAxis axis) {
     switch (axis) {
-    case SDL_CONTROLLER_AXIS_LEFTX:         return PlatformKey::KEY_GAMEPAD_LEFTSTICK_RIGHT;
-    case SDL_CONTROLLER_AXIS_LEFTY:         return PlatformKey::KEY_GAMEPAD_LEFTSTICK_DOWN;
-    case SDL_CONTROLLER_AXIS_RIGHTX:        return PlatformKey::KEY_GAMEPAD_RIGHTSTICK_RIGHT;
-    case SDL_CONTROLLER_AXIS_RIGHTY:        return PlatformKey::KEY_GAMEPAD_RIGHTSTICK_DOWN;
-    case SDL_CONTROLLER_AXIS_TRIGGERLEFT:   return PlatformKey::KEY_GAMEPAD_L2;
-    case SDL_CONTROLLER_AXIS_TRIGGERRIGHT:  return PlatformKey::KEY_GAMEPAD_R2;
+    case SDL_GAMEPAD_AXIS_LEFTX:            return PlatformKey::KEY_GAMEPAD_LEFTSTICK_RIGHT;
+    case SDL_GAMEPAD_AXIS_LEFTY:            return PlatformKey::KEY_GAMEPAD_LEFTSTICK_DOWN;
+    case SDL_GAMEPAD_AXIS_RIGHTX:           return PlatformKey::KEY_GAMEPAD_RIGHTSTICK_RIGHT;
+    case SDL_GAMEPAD_AXIS_RIGHTY:           return PlatformKey::KEY_GAMEPAD_RIGHTSTICK_DOWN;
+    case SDL_GAMEPAD_AXIS_LEFT_TRIGGER:     return PlatformKey::KEY_GAMEPAD_L2;
+    case SDL_GAMEPAD_AXIS_RIGHT_TRIGGER:    return PlatformKey::KEY_GAMEPAD_R2;
     default:                                return PlatformKey::KEY_NONE;
     }
 }
 
 PlatformModifiers translateSdlMods(uint16_t mods) {
     PlatformModifiers result;
-    if (static_cast<bool>(mods & KMOD_SHIFT) ^ static_cast<bool>(mods & KMOD_CAPS))
+    if (static_cast<bool>(mods & SDL_KMOD_SHIFT) ^ static_cast<bool>(mods & SDL_KMOD_CAPS))
         result |= MOD_SHIFT;
-    if (mods & KMOD_CTRL)
+    if (mods & SDL_KMOD_CTRL)
         result |= MOD_CTRL;
-    if (mods & KMOD_ALT)
+    if (mods & SDL_KMOD_ALT)
         result |= MOD_ALT;
-    if (mods & KMOD_GUI)
+    if (mods & SDL_KMOD_GUI)
         result |= MOD_META;
-    if (mods & KMOD_NUM)
+    if (mods & SDL_KMOD_NUM)
         result |= MOD_NUM;
     return result;
 }
@@ -210,7 +210,7 @@ int translatePlatformVSyncMode(PlatformVSyncMode vsyncMode) {
     }
 }
 
-SDL_GLprofile translatePlatformOpenGLProfile(PlatformOpenGLProfile profile) {
+SDL_GLProfile translatePlatformOpenGLProfile(PlatformOpenGLProfile profile) {
     switch (profile) {
     default:                        assert(false); [[fallthrough]];
     case GL_PROFILE_CORE:           return SDL_GL_CONTEXT_PROFILE_CORE;

@@ -1,11 +1,11 @@
 #include "SdlPlatform.h"
 
+#include <SDL3/SDL.h>
+
 #include <cassert>
 #include <memory>
 #include <vector>
 #include <string>
-
-#include <SDL.h>
 
 #include "Library/Logger/Logger.h"
 
@@ -14,6 +14,7 @@
 #include "SdlWindow.h"
 #include "SdlGamepad.h"
 #include "SdlEnumTranslation.h"
+#include "SdlFreeDeleter.h"
 
 static void SDLCALL sdlLogCallback(void *userdata, int category, SDL_LogPriority priority, const char *message) {
     LogLevel level = translateSdlLogLevel(priority);
@@ -28,9 +29,9 @@ SdlPlatform::SdlPlatform() {
 
     _state = std::make_unique<SdlPlatformSharedState>();
 
-    SDL_LogSetOutputFunction(&sdlLogCallback, _state.get());
+    SDL_SetLogOutputFunction(&sdlLogCallback, _state.get());
 
-    _initialized = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) == 0;
+    _initialized = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD);
     if (!_initialized) {
         _state->logSdlError("SDL_Init");
         return;
@@ -51,10 +52,11 @@ std::unique_ptr<PlatformWindow> SdlPlatform::createWindow() {
 #if __ANDROID__
     // TODO(captainurist): SDL orientation code turned out to be buggy and works only before window creation,
     //                     hardcode only landscape modes there for now.
-    SDL_SetHintWithPriority(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight", SDL_HINT_OVERRIDE);
+    if (!SDL_SetHintWithPriority(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight", SDL_HINT_OVERRIDE))
+        _state->logSdlError("SDL_SetHintWithPriority");
 #endif
 
-    SDL_Window *window = SDL_CreateWindow("", 0, 0, 100, 100, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL);
+    SDL_Window *window = SDL_CreateWindow("", 100, 100, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL);
     if (!window) {
         _state->logSdlError("SDL_CreateWindow");
         return nullptr;
@@ -86,38 +88,38 @@ void SdlPlatform::setCursorShown(bool cursorShown) {
     if (!_initialized)
         return;
 
-    if (SDL_ShowCursor(cursorShown ? SDL_ENABLE : SDL_DISABLE) < 0)
-        _state->logSdlError("SDL_ShowCursor");
+    if (cursorShown) {
+        if (!SDL_ShowCursor())
+            _state->logSdlError("SDL_ShowCursor");
+    } else {
+        if (!SDL_HideCursor())
+            _state->logSdlError("SDL_ShowCursor");
+    }
 }
 
 bool SdlPlatform::isCursorShown() const {
     if (!_initialized)
         return true;
 
-    int result = SDL_ShowCursor(SDL_QUERY);
-    if (result < 0) {
-        _state->logSdlError("SDL_ShowCursor");
-        return true;
-    } else {
-        return result == SDL_ENABLE;
-    }
+    return SDL_CursorVisible();
 }
 
 std::vector<Recti> SdlPlatform::displayGeometries() const {
     if (!_initialized)
         return {};
 
-    int displays = SDL_GetNumVideoDisplays();
-    if (displays < 0) {
-        _state->logSdlError("SDL_GetNumVideoDisplays");
+    int count = 0;
+    std::unique_ptr<SDL_DisplayID[], SdlFreeDeleter> displays(SDL_GetDisplays(&count));
+    if (!displays) {
+        _state->logSdlError("SDL_GetDisplays");
         return {};
     }
 
     std::vector<Recti> result;
 
     SDL_Rect rect;
-    for (int i = 0; i < displays; i++) {
-        if (SDL_GetDisplayBounds(i, &rect) != 0) {
+    for (int i = 0; i < count; i++) {
+        if (!SDL_GetDisplayBounds(displays[i], &rect)) {
             _state->logSdlError("SDL_GetDisplayBounds");
             return {};
         }
@@ -131,13 +133,14 @@ std::vector<Recti> SdlPlatform::displayGeometries() const {
 void SdlPlatform::showMessageBox(const std::string &title, const std::string &message) const {
     // No need to check _initialized here. From SDL docs:
     //     This function may be called at any time, even before SDL_Init()
-    SDL_ShowSimpleMessageBox(0, title.c_str(), message.c_str(), nullptr);
+    if (!SDL_ShowSimpleMessageBox(0, title.c_str(), message.c_str(), nullptr))
+        _state->logSdlError("SDL_ShowSimpleMessageBox");
 }
 
 int64_t SdlPlatform::tickCount() const {
     // No need to check _initialized here either.
     // Looking at implementation in SDL, this function works even w/o a call to SDL_Init.
-    return SDL_GetTicks64();
+    return SDL_GetTicks();
 }
 
 std::unique_ptr<Platform> Platform::createStandardPlatform() {

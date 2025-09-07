@@ -6,17 +6,12 @@ This document describes the development process we're following. It's required r
 ## Dependencies
 
 Main dependencies:
-* [SDL2](https://github.com/libsdl-org/SDL/tree/SDL2) — cross-platform media framework;
+* [SDL3](https://github.com/libsdl-org/SDL) — cross-platform media framework;
 * [FFmpeg](https://github.com/FFmpeg/FFmpeg) — video support;
 * [OpenAL Soft](https://github.com/kcat/openal-soft) — audio support;
 * [Zlib](https://github.com/madler/zlib) — compression.
 
 By default, we are using prebuilt dependencies, and they are resolved automatically during the cmake phase.
-
-The only exception is Linux, where we're using SDL2 from the distribution, so you will need to install a development versions of SDL2 before building OpenEnroth. E.g. on Ubuntu:
-```bash
-sudo apt-get install SDL2 SDL2-devel
-```
 
 Additional dependencies:
 * [CMake 3.27+](https://cmake.org/download/).

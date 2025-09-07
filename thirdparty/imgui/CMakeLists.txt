@@ -12,19 +12,19 @@ endfunction()
 
 copy_and_patch_imgui_file(${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_opengl3.h ${IMGUI_BACKENDS_SOURCE_DIR}/imgui/backends/imgui_impl_opengl3.h)
 copy_and_patch_imgui_file(${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_opengl3.cpp ${IMGUI_BACKENDS_SOURCE_DIR}/imgui/backends/imgui_impl_opengl3.cpp)
-copy_and_patch_imgui_file(${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_sdl2.h ${IMGUI_BACKENDS_SOURCE_DIR}/imgui/backends/imgui_impl_sdl2.h)
-copy_and_patch_imgui_file(${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_sdl2.cpp ${IMGUI_BACKENDS_SOURCE_DIR}/imgui/backends/imgui_impl_sdl2.cpp)
+copy_and_patch_imgui_file(${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_sdl3.h ${IMGUI_BACKENDS_SOURCE_DIR}/imgui/backends/imgui_impl_sdl3.h)
+copy_and_patch_imgui_file(${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends/imgui_impl_sdl3.cpp ${IMGUI_BACKENDS_SOURCE_DIR}/imgui/backends/imgui_impl_sdl3.cpp)
 
 set(IMGUI_BACKENDS_SOURCES
     ${IMGUI_BACKENDS_SOURCE_DIR}/imgui/backends/imgui_impl_opengl3.cpp
-    ${IMGUI_BACKENDS_SOURCE_DIR}/imgui/backends/imgui_impl_sdl2.cpp)
+    ${IMGUI_BACKENDS_SOURCE_DIR}/imgui/backends/imgui_impl_sdl3.cpp)
 
 set(IMGUI_BACKENDS_HEADERS
     ${IMGUI_BACKENDS_SOURCE_DIR}/imgui/backends/imgui_impl_opengl3.h
-    ${IMGUI_BACKENDS_SOURCE_DIR}/imgui/backends/imgui_impl_sdl2.h)
+    ${IMGUI_BACKENDS_SOURCE_DIR}/imgui/backends/imgui_impl_sdl3.h)
 
 add_library(imgui_backends STATIC ${IMGUI_BACKENDS_SOURCES} ${IMGUI_BACKENDS_HEADERS})
-target_link_libraries(imgui_backends PRIVATE SDL2::SDL2OE glad)
+target_link_libraries(imgui_backends PRIVATE SDL3::SDL3 glad)
 target_include_directories(imgui_backends PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/imgui/backends)
 
 set(IMGUI_SOURCES
