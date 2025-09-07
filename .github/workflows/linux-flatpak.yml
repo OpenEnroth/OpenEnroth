@@ -66,16 +66,7 @@ jobs:
         key: 'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
         verbose: 2
         max-size: 200M
-      if: github.event_name != 'pull_request'
-        
-    - name: Run ccache pr
-      uses: hendrikmuhs/ccache-action@v1.2.18
-      with:
-        key: 'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
-        verbose: 2
-        max-size: 200M
-        save: false
-      if: github.event_name == 'pull_request'      
+        save: ${{github.event_name != 'pull_request'}}
         
     - name: Run Flatpak build
       uses: flatpak/flatpak-github-actions/flatpak-builder@dcbd3a30d991a38708c318d17f5352cc1268c215
