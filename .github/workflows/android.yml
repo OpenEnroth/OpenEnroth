@@ -116,6 +116,11 @@ jobs:
           save: false
         if: github.event_name == 'pull_request'
 
+      - name: check time
+        run: |
+          ls -l /usr/local/lib/android/sdk/ndk/$NDK_VERSION/toolchains/llvm/prebuilt/linux-x86_64/bin/*
+          file /usr/local/lib/android/sdk/ndk/$NDK_VERSION/toolchains/llvm/prebuilt/linux-x86_64/bin/*
+
       - uses: burrunan/gradle-cache-action@v3.0.1
         name: Build 
         with:
