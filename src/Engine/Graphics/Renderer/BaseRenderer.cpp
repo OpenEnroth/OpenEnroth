@@ -755,6 +755,12 @@ Sizei BaseRenderer::GetPresentDimensions() {
 
 void BaseRenderer::updateRenderDimensions() {
     outputPresent = window->size();
+
+    // make sure that window size is in even dimensions
+    if (outputPresent.w & 1) outputPresent.w--;
+    if (outputPresent.h & 1) outputPresent.h--;
+    window->resize(outputPresent);
+
     if (config->graphics.RenderFilter.value() != 0)
         outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
     else

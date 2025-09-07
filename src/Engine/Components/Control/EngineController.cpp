@@ -144,6 +144,7 @@ void EngineController::pressAndReleaseButton(PlatformMouseButton button, int x, 
 void EngineController::pressGuiButton(std::string_view buttonId) {
     GUIButton *button = existingButton(buttonId);
 
+    // TODO(pskelton): this needs to be responsive to window scale?
     pressAndReleaseButton(BUTTON_LEFT, button->uX + button->uWidth / 2, button->uY + button->uHeight / 2);
 }
 

@@ -28,6 +28,8 @@
 
 #include "Library/Logger/Logger.h"
 
+#include "Application/GameWindowHandler.h"
+
 std::shared_ptr<Io::Mouse> mouse = nullptr;
 
 Pointi Io::Mouse::position() const {
@@ -39,7 +41,7 @@ void Io::Mouse::setPosition(Pointi position) {
         _mouseLookChange = position - _position;
         if (_mouseLookChange.x != 0 || _mouseLookChange.y != 0) {
             pPartyActionQueue->Add(PARTY_MouseLook);
-            window->warpMouse(_position); // TODO(pskelton): this causes another mouse move event - might be better to poll mouse position once per frame rather than on event
+            warpMouse(_position); // TODO(pskelton): this causes another mouse move event - might be better to poll mouse position once per frame rather than on event
         }
     } else {
         _position = position;
@@ -297,7 +299,7 @@ void Io::Mouse::SetMouseLook(bool enable) {
     _mouseLook = enable;
     if (enable) {
         _position = { pViewport->viewportCenterX, pViewport->viewportCenterY };
-        window->warpMouse(_position);
+        warpMouse(_position);
     }
 }
 
@@ -431,4 +433,10 @@ bool UI_OnKeyDown(PlatformKey key) {
     }
 
     return 0;
+}
+
+void Io::Mouse::warpMouse(Pointi position) {
+    // Map position to window coords
+    position = GameWindowHandler::MapFromRender(position);
+    window->warpMouse(position);
 }

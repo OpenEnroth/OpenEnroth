@@ -183,6 +183,7 @@ bool GameWindowHandler::OnChar(PlatformKey key, int c) {
 }
 
 Pointi GameWindowHandler::MapToRender(Pointi position) {
+    assert(render);
     Sizef renDims = {(float)render->GetRenderDimensions().w, (float)render->GetRenderDimensions().h};
     Sizef prDims = {(float)render->GetPresentDimensions().w, (float)render->GetPresentDimensions().h};
     Pointi result = position;
@@ -194,8 +195,28 @@ Pointi GameWindowHandler::MapToRender(Pointi position) {
         float w = renDims.w * ratioCorrection;
         float h = renDims.h * ratioCorrection;
 
-        result.x = (float)position.x / ratioCorrection - ((float)prDims.w / 2 - w / 2) / ratioCorrection;
-        result.y = (float)position.y / ratioCorrection - ((float)prDims.h / 2 - h / 2) / ratioCorrection;
+        result.x = std::round((position.x - (prDims.w / 2 - w / 2)) / ratioCorrection);
+        result.y = std::round((position.y - (prDims.h / 2 - h / 2)) / ratioCorrection);
+    }
+
+    return result;
+}
+
+Pointi GameWindowHandler::MapFromRender(Pointi position) {
+    assert(render);
+    Sizef renDims = {(float)render->GetRenderDimensions().w, (float)render->GetRenderDimensions().h};
+    Sizef prDims = {(float)render->GetPresentDimensions().w, (float)render->GetPresentDimensions().h};
+    Pointi result = position;
+
+    if (renDims != prDims) {
+        Sizef ratioCorections = {prDims.w / renDims.w, prDims.h / renDims.h};
+        float ratioCorrection = std::min(ratioCorections.w, ratioCorections.h);
+
+        float w = renDims.w * ratioCorrection;
+        float h = renDims.h * ratioCorrection;
+
+        result.x = std::round(position.x * ratioCorrection + (prDims.w / 2 - w / 2));
+        result.y = std::round(position.y * ratioCorrection + (prDims.h / 2 - h / 2));
     }
 
     return result;
