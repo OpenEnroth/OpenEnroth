@@ -102,20 +102,16 @@ jobs:
       - name: Run ccache
         uses: hendrikmuhs/ccache-action@v1.2.18
         with:
-          key: 'android-${{matrix.configuration}}-universal'
+          key: 'android-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
-          max-size: 600M
-        if: github.event_name != 'pull_request'
-        
-      - name: Run ccache pr 
-        uses: hendrikmuhs/ccache-action@v1.2.18
-        with:
-          key: 'android-${{matrix.configuration}}-universal'
-          verbose: 2
-          max-size: 600M
-          save: false
-        if: github.event_name == 'pull_request'
-        
+          max-size: 200M
+          save: ${{github.event_name != 'pull_request'}}
+
+      # Android hit rate drops to zero if we use hash_dir==true
+      - name: Configure ccache
+        run: |
+          ccache --set-config=hash_dir=false
+
       - name: Build the app
         working-directory: android
         run: |
