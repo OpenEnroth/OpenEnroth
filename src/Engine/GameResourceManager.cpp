@@ -17,5 +17,5 @@ void GameResourceManager::openGameResources() {
 }
 
 Blob GameResourceManager::getEventsFile(std::string_view filename) {
-    return lod::decodeCompressed(_eventsLodReader.read(filename));
+    return lod::decodeMaybeCompressed(_eventsLodReader.read(filename));
 }

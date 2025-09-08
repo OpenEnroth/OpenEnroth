@@ -67,3 +67,7 @@ class SndReader {
     Blob _snd;
     std::unordered_map<std::string, SndEntry> _files;
 };
+
+namespace snd {
+bool detect(const Blob &data);
+} // namespace snd
