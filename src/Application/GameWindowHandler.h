@@ -27,9 +27,6 @@ class GameWindowHandler : public PlatformEventFilter, private PlatformApplicatio
     std::tuple<int, Pointi, Sizei> GetWindowConfigPosition(const GameConfig *config);
     std::tuple<int, Pointi, Sizei> GetWindowRelativePosition(Pointi *position = nullptr);
 
-    static Pointi MapToRender(Pointi position);
-    static Pointi MapFromRender(Pointi position);
-
  private:
     friend class PlatformIntrospection;
 

@@ -28,8 +28,6 @@
 
 #include "Library/Logger/Logger.h"
 
-#include "Application/GameWindowHandler.h"
-
 std::shared_ptr<Io::Mouse> mouse = nullptr;
 
 Pointi Io::Mouse::position() const {
@@ -436,7 +434,7 @@ bool UI_OnKeyDown(PlatformKey key) {
 }
 
 void Io::Mouse::warpMouse(Pointi position) {
-    // Map position to window coords
-    position = GameWindowHandler::MapFromRender(position);
+    // Map position to output window coords
+    position = render->MapToPresent(position);
     window->warpMouse(position);
 }

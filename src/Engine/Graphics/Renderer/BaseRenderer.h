@@ -50,6 +50,8 @@ class BaseRenderer : public Renderer {
 
     virtual Sizei GetRenderDimensions() override;
     virtual Sizei GetPresentDimensions() override;
+    virtual Pointi MapToRender(Pointi position) override;
+    virtual Pointi MapToPresent(Pointi position) override;
 
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);

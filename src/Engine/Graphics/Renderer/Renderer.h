@@ -160,6 +160,9 @@ class Renderer {
 
     virtual Sizei GetRenderDimensions() = 0;
     virtual Sizei GetPresentDimensions() = 0;
+    virtual Pointi MapToRender(Pointi position) = 0;
+    virtual Pointi MapToPresent(Pointi position) = 0;
+
     virtual bool Reinitialize(bool firstInit = false) = 0;
     virtual bool ReloadShaders() = 0;
     virtual void DoRenderBillboards_D3D() = 0;
