@@ -75,7 +75,7 @@ android {
         sourceSets.main {
             jniLibs.srcDir 'libs'
         }
-        externalNativeBuild {   
+        externalNativeBuild {
             cmake {
                 path 'jni/CMakeLists.txt'
                 version "3.24.0+"
