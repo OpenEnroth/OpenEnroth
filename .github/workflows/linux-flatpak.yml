@@ -30,7 +30,9 @@ on:
   release:
     types:
       - published
-
+env:
+  CCACHE_COMPILERCHECK: content
+    
 jobs:
   build-flatpak-bundle:
     timeout-minutes: 60
@@ -65,7 +67,7 @@ jobs:
       with:
         key: 'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
         verbose: 2
-        max-size: 200M
+        max-size: 400M
         save: ${{github.event_name != 'pull_request'}}
         
     - name: Run Flatpak build
@@ -87,3 +89,7 @@ jobs:
         prerelease: true
         tag_name: '${{inputs.releaseTag}}'
         files: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.flatpak
+
+    - name: Cleanup ccache
+      run: |
+        ccache -c
