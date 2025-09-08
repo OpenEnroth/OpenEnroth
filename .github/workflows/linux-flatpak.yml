@@ -30,6 +30,7 @@ on:
   release:
     types:
       - published
+
 env:
   CCACHE_COMPILERCHECK: content
     
