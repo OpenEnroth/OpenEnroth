@@ -36,6 +36,7 @@ env:
   # When updating the version here you should also update it in the Dependencies repo!
   NDK_VERSION: 28.1.13356709
   CCACHE_COMPILERCHECK: content
+
 jobs:
   build_android:
     timeout-minutes: 60
