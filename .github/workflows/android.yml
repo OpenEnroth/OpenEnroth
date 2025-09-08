@@ -48,7 +48,7 @@ jobs:
           - Debug
           - Release
         # Magical: https://stackoverflow.com/questions/73630573/how-to-write-conditional-expressions-in-github-actions
-        architecture: ${{ fromJson('[["universal", "arm64-v8a", "armeabi-v7a", "x86_64"], ["arm64-v8a", "armeabi-v7a", "x86_64"]]')[inputs.releaseTag == ''] }}
+        architecture: ${{ fromJson('[["universal"], ["arm64-v8a", "armeabi-v7a", "x86_64"]]')[inputs.releaseTag == ''] }}
     steps:
       - name: Configure fast APT mirror
         uses: vegardit/fast-apt-mirror.sh@v1
@@ -105,7 +105,7 @@ jobs:
           key: 'android-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
           max-size: 600M
-        if: github.event_name != 'pull_request' && matrix.architecture != 'universal'
+        if: github.event_name != 'pull_request'
         
       - name: Run ccache pr 
         uses: hendrikmuhs/ccache-action@v1.2.18
@@ -119,10 +119,6 @@ jobs:
       - name: set time
         run: |
           find /usr/local/lib/android/sdk/ndk/$NDK_VERSION/toolchains/llvm/prebuilt/linux-x86_64/ -wholename '*/bin/clang*' -executable -type f,l -exec touch -h -t 202408130000 {} +
-
-      - name: check time
-        run: |
-          ls -l /usr/local/lib/android/sdk/ndk/$NDK_VERSION/toolchains/llvm/prebuilt/linux-x86_64/bin/*
 
       - uses: burrunan/gradle-cache-action@v3.0.1
         name: Build 
