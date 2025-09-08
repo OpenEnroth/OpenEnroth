@@ -112,7 +112,7 @@ jobs:
         with:
           key: 'android-${{matrix.configuration}}-universal'
           verbose: 2
-          max-size: 600M
+          max-size: 800M
           save: false
         if: github.event_name == 'pull_request'
 
