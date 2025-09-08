@@ -68,54 +68,16 @@ jobs:
         with:
           arch: '${{matrix.architecture}}'
 
-      # Restore ccache file from cache if possible so we don't have to download it.
-      - name: Restore cached ccache
-        id: ccache-cache
-        uses: actions/cache/restore@v3
-        with:
-          path: 'C:\ProgramData\chocolatey\lib\ccache\'
-          key: windows-ccache
-
-      # If ccache can't be restored from cache upgrade it
-      - name: Update ccache
-        if: steps.ccache-cache.outputs.cache-hit != 'true'
-        run: |
-          choco upgrade ccache --version=4.11.3
-          
-      # Chocolatey uses shims so copy the ccache exe
-      - name: Copy ccache exe
-        run: |
-          copy C:\ProgramData\chocolatey\lib\ccache\tools\ccache-4.11.3-windows-x86_64\ccache.exe C:\ProgramData\chocolatey\bin\ccache.exe           
-
-      # If ccache can't be restored from cache after upgrade cache it
-      - name: Save ccache to cache
-        if: steps.ccache-cache.outputs.cache-hit != 'true'
-        id: check-for-ccache-save
-        uses: actions/cache/save@v3
-        with:
-          path: 'C:\ProgramData\chocolatey\lib\ccache\'
-          key: windows-ccache
-
-      # GH action for ccache, only save cache if its on master branch or has a release build tag
       - name: Run ccache
         uses: hendrikmuhs/ccache-action@v1.2.18
         with:
           key: 'windows-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
           max-size: 200M
-        if: github.event_name != 'pull_request'
-        
-      - name: Run ccache pr
-        uses: hendrikmuhs/ccache-action@v1.2.18
-        with:
-          key: 'windows-${{matrix.configuration}}-${{matrix.architecture}}'
-          verbose: 2
-          max-size: 200M
-          save: false
-        if: github.event_name == 'pull_request'
-          
+          save: ${{github.event_name != 'pull_request'}}
+
       # MSVC hit rate is higher with ignoring the hash_dir and is safe
-      - name: Set ccache config values
+      - name: Configure ccache
         run: |
           ccache --set-config=hash_dir=false
 
