@@ -830,11 +830,13 @@ void CastSpellInfoHelpers::castSpell() {
                         }
                     }
                     if (has_weak) {
-                        // If any chanracter is in weak state, spell has no effect but mana is
-                        // spent
-                        // TODO: Vanilla bug here? See: https://www.celestialheavens.com/forum/10/7196
+                        // If any chanracter is in weak state, spell has no effect but mana is spent
                         pPlayer->SpendMana(uRequiredMana);
                         setSpellRecovery(pCastSpell, recoveryTime);
+						// Setting spellID to SPELL_NONE is important, otherwise the spell will be casted 
+                        // indefinitely until mana is empty
+                        // Calling spellFailed also works and is better feedback but is not vanilla behaviour
+                        pCastSpell->uSpellID = SPELL_NONE;
                         continue;
                     }
                     pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
