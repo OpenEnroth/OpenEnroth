@@ -58,6 +58,4 @@ class KeyboardActionMapping {
 };
 }  // namespace Io
 
-Io::KeyToggleType GetToggleType(Io::InputAction action);
-
 extern std::shared_ptr<Io::KeyboardActionMapping> keyboardActionMapping;
