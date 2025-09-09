@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ae03517</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0a02e3b</span>
    </div>
   </td>
  </tr>
@@ -85,17 +85,19 @@ $(function() {
 <code>#include &lt;utility&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
+<code>#include &lt;memory&gt;</code><br />
 <code>#include &quot;<a class="el" href="ImageFunctions_8h.html">Library/Image/ImageFunctions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Pcx_8h.html">Library/Image/Pcx.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Png_8h.html">Library/Image/Png.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LodReader_8h.html">Library/Lod/LodReader.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LodFormats_8h.html">Library/LodFormats/LodFormats.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DirectoryFileSystem_8h.html">Library/FileSystem/Directory/DirectoryFileSystem.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Serialization_8h.html">Library/Serialization/Serialization.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Magic_8h.html">Library/Magic/Magic.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Format_8h.html">Utility/String/Format.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Ascii_8h.html">Utility/String/Ascii.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Transformations_8h.html">Utility/String/Transformations.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UnicodeCrt_8h.html">Utility/UnicodeCrt.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ArchiveReader_8h.html">ArchiveReader.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -104,8 +106,10 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af49d35ce5362a8673e534fd3e0d86485"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Library_2Image_2Image_8h.html#ada8411436fef9ac499121bebb98f43cd">RgbaImage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#af49d35ce5362a8673e534fd3e0d86485">renderFont</a> (const <a class="el" href="classLodFont.html">LodFont</a> &amp;font)</td></tr>
-<tr class="separator:af49d35ce5362a8673e534fd3e0d86485"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74dfde49ebba026fff83fdd8565fe254"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#a74dfde49ebba026fff83fdd8565fe254">formatDescription</a> (<a class="el" href="MagicEnums_8h.html#a3897ef62e96b7b8629563ff9fa6daf47">MagicFileFormat</a> format)</td></tr>
+<tr class="separator:a74dfde49ebba026fff83fdd8565fe254"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a36f82a80e3d398caa973d0f6fe6be234"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="Library_2Image_2Image_8h.html#ada8411436fef9ac499121bebb98f43cd">RgbaImage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#a36f82a80e3d398caa973d0f6fe6be234">renderFont</a> (const <a class="el" href="classLodFont.html">LodFont</a> &amp;font)</td></tr>
+<tr class="separator:a36f82a80e3d398caa973d0f6fe6be234"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a183afbee800a048210bd2c8dc3d2d755"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classDecodedEntries.html">DecodedEntries</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#a183afbee800a048210bd2c8dc3d2d755">decodeLodEntry</a> (<a class="el" href="classBlob.html">Blob</a> entry, std::string name, bool raw)</td></tr>
 <tr class="separator:a183afbee800a048210bd2c8dc3d2d755"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9e6a27a663f91459cedf892057f73c7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="LodTool_8cpp.html#ab9e6a27a663f91459cedf892057f73c7">runLs</a> (const <a class="el" href="structLodToolOptions.html">LodToolOptions</a> &amp;options)</td></tr>
@@ -154,6 +158,32 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a74dfde49ebba026fff83fdd8565fe254" name="a74dfde49ebba026fff83fdd8565fe254"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74dfde49ebba026fff83fdd8565fe254">&#9670;&#160;</a></span>formatDescription()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static const char * formatDescription </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="MagicEnums_8h.html#a3897ef62e96b7b8629563ff9fa6daf47">MagicFileFormat</a>&#160;</td>
+          <td class="paramname"><em>format</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a3c04138a5bfe5d72780bb7e82a18e627" name="a3c04138a5bfe5d72780bb7e82a18e627"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3c04138a5bfe5d72780bb7e82a18e627">&#9670;&#160;</a></span>main()</h2>
 
@@ -182,20 +212,28 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="af49d35ce5362a8673e534fd3e0d86485" name="af49d35ce5362a8673e534fd3e0d86485"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af49d35ce5362a8673e534fd3e0d86485">&#9670;&#160;</a></span>renderFont()</h2>
+<a id="a36f82a80e3d398caa973d0f6fe6be234" name="a36f82a80e3d398caa973d0f6fe6be234"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36f82a80e3d398caa973d0f6fe6be234">&#9670;&#160;</a></span>renderFont()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="Library_2Image_2Image_8h.html#ada8411436fef9ac499121bebb98f43cd">RgbaImage</a> renderFont </td>
+          <td class="memname">static <a class="el" href="Library_2Image_2Image_8h.html#ada8411436fef9ac499121bebb98f43cd">RgbaImage</a> renderFont </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classLodFont.html">LodFont</a> &amp;&#160;</td>
           <td class="paramname"><em>font</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

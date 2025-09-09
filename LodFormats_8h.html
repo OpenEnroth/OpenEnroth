@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;ae03517</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;0a02e3b</span>
    </div>
   </td>
  </tr>
@@ -79,12 +79,9 @@ $(function() {
   <div class="headertitle"><div class="title">LodFormats.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;string&gt;</code><br />
-<code>#include &quot;<a class="el" href="LodFont_8h.html">LodFont.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Library_2Image_2Image_8h.html">Library/Image/Image.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="LodFont_8h.html">LodFont.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Palette_8h.html">Library/Image/Palette.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Size_8h.html">Library/Geometry/Size.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="LodFormatEnums_8h.html">LodFormatEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LodImage_8h.html">LodImage.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="LodSprite_8h.html">LodSprite.h</a>&quot;</code><br />
 </div><table class="memberdecls">
@@ -95,10 +92,22 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ac0c29cc2b3c1b68ffb44a3b51fce2e30"><td class="memItemLeft" align="right" valign="top"><a class="el" href="LodFormatEnums_8h.html#ab23e5f0e74d06865211ebb5098f88a55">LodFileFormat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#ac0c29cc2b3c1b68ffb44a3b51fce2e30">lod::magic</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob, std::string_view fileName)</td></tr>
-<tr class="separator:ac0c29cc2b3c1b68ffb44a3b51fce2e30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64c6b251941664cf467e47739298fad6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#a64c6b251941664cf467e47739298fad6">lod::decodeCompressed</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
-<tr class="separator:a64c6b251941664cf467e47739298fad6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4d09e6cbb4c6ff35a86b8e710f7b685"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#af4d09e6cbb4c6ff35a86b8e710f7b685">lod::detectCompressedData</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
+<tr class="separator:af4d09e6cbb4c6ff35a86b8e710f7b685"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48b0b781cd35c0d2f0323473c29f558a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#a48b0b781cd35c0d2f0323473c29f558a">lod::detectCompressedPseudoImage</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
+<tr class="separator:a48b0b781cd35c0d2f0323473c29f558a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d8fc45eb8f758d74c471a80b9386c8c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#a6d8fc45eb8f758d74c471a80b9386c8c">lod::detectImage</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob, bool *isPalette=nullptr)</td></tr>
+<tr class="separator:a6d8fc45eb8f758d74c471a80b9386c8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c9e901c1eba978a72246e7105ac36e2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#a1c9e901c1eba978a72246e7105ac36e2">lod::detectSprite</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
+<tr class="separator:a1c9e901c1eba978a72246e7105ac36e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96442faaaadee0bbdad171c7a96da54f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#a96442faaaadee0bbdad171c7a96da54f">lod::detectFont</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
+<tr class="separator:a96442faaaadee0bbdad171c7a96da54f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09319cc6220e80201e55c6a7d35ecc78"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#a09319cc6220e80201e55c6a7d35ecc78">lod::decodeCompressedData</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
+<tr class="separator:a09319cc6220e80201e55c6a7d35ecc78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa30468b1f6001b1988602dadb55e812"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#aaa30468b1f6001b1988602dadb55e812">lod::decodeCompressedPseudoImage</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
+<tr class="separator:aaa30468b1f6001b1988602dadb55e812"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae47e4c368a033d3381cd7977fd6e98b0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#ae47e4c368a033d3381cd7977fd6e98b0">lod::decodeMaybeCompressed</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
+<tr class="separator:ae47e4c368a033d3381cd7977fd6e98b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf900509fad16a375d9982891bd70b05"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#adf900509fad16a375d9982891bd70b05">lod::encodeCompressed</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
 <tr class="separator:adf900509fad16a375d9982891bd70b05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a342ac670a32a165de714ddf4eb120f1b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structPalette.html">Palette</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacelod.html#a342ac670a32a165de714ddf4eb120f1b">lod::decodePalette</a> (const <a class="el" href="classBlob.html">Blob</a> &amp;blob)</td></tr>
