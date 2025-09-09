@@ -31,6 +31,9 @@ on:
     types:
       - published
 
+env:
+  CCACHE_COMPILERCHECK: content
+
 jobs:
   build_windows:
     timeout-minutes: 60
@@ -68,26 +71,16 @@ jobs:
         with:
           arch: '${{matrix.architecture}}'
 
-      # GH action for ccache, only save cache if its on master branch or has a release build tag
       - name: Run ccache
         uses: hendrikmuhs/ccache-action@v1.2.18
         with:
           key: 'windows-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
-          max-size: 200M
-        if: github.event_name != 'pull_request'
-        
-      - name: Run ccache pr
-        uses: hendrikmuhs/ccache-action@v1.2.18
-        with:
-          key: 'windows-${{matrix.configuration}}-${{matrix.architecture}}'
-          verbose: 2
-          max-size: 200M
-          save: false
-        if: github.event_name == 'pull_request'
-          
+          max-size: 400M
+          save: ${{github.event_name != 'pull_request'}}
+
       # MSVC hit rate is higher with ignoring the hash_dir and is safe
-      - name: Set ccache config values
+      - name: Configure ccache
         run: |
           ccache --set-config=hash_dir=false
 

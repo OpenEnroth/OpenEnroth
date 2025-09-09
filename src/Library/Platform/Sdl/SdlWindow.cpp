@@ -4,11 +4,6 @@
 #include <string>
 #include <memory>
 
-#include <SDL_syswm.h>
-#ifdef None
-#undef None
-#endif
-
 #include "Library/Platform/Interface/PlatformEventHandler.h"
 
 #include "SdlPlatformSharedState.h"
@@ -27,7 +22,8 @@ SdlWindow::~SdlWindow() {
 }
 
 void SdlWindow::setTitle(const std::string &title) {
-    SDL_SetWindowTitle(_window, title.c_str());
+    if (!SDL_SetWindowTitle(_window, title.c_str()))
+        _state->logSdlError("SDL_SetWindowTitle");
 }
 
 std::string SdlWindow::title() const {
@@ -36,105 +32,87 @@ std::string SdlWindow::title() const {
 
 void SdlWindow::setIcon(RgbaImageView image) {
     // Note that this doesn't copy the pixel data.
-    SDL_Surface *icon = SDL_CreateRGBSurfaceFrom(
-        const_cast<Color *>(image.pixels().data()),
+    SDL_Surface *icon = SDL_CreateSurfaceFrom(
         image.width(),
         image.height(),
-        32,                 // Bits per pixel
-        image.width() * 4,  // Pitch (bytes per row)
-        0x000000FF,         // Rmask
-        0x0000FF00,         // Gmask
-        0x00FF0000,         // Bmask
-        0xFF000000          // Amask
+        SDL_PIXELFORMAT_RGBA8888,
+        const_cast<Color *>(image.pixels().data()),
+        image.width() * 4
     );
-
-    if (icon == NULL) {
-        _state->logSdlError("SDL_CreateRGBSurfaceFrom");
+    if (!icon) {
+        _state->logSdlError("SDL_CreateSurfaceFrom");
         return;
     }
 
-    SDL_SetWindowIcon(_window, icon);
-    SDL_FreeSurface(icon);
+    if (!SDL_SetWindowIcon(_window, icon))
+        _state->logSdlError("SDL_SetWindowIcon");
+    SDL_DestroySurface(icon);
 }
 
 void SdlWindow::resize(const Sizei &size) {
-    SDL_SetWindowSize(_window, size.w, size.h);
+    if (!SDL_SetWindowSize(_window, size.w, size.h))
+        _state->logSdlError("SDL_SetWindowSize");
 }
 
 Sizei SdlWindow::size() const {
     Sizei result;
-    SDL_GetWindowSize(_window, &result.w, &result.h);
+    if (!SDL_GetWindowSize(_window, &result.w, &result.h)) {
+        _state->logSdlError("SDL_GetWindowSize");
+        return {};
+    }
     return result;
 }
 
 void SdlWindow::setPosition(const Pointi &pos) {
-    SDL_SetWindowPosition(_window, pos.x, pos.y);
+    if (!SDL_SetWindowPosition(_window, pos.x, pos.y))
+        _state->logSdlError("SDL_SetWindowPosition");
 }
 
 Pointi SdlWindow::position() const {
     Pointi result;
-    SDL_GetWindowPosition(_window, &result.x, &result.y);
+    if (!SDL_GetWindowPosition(_window, &result.x, &result.y)) {
+        _state->logSdlError("SDL_GetWindowPosition");
+        return {};
+    }
     return result;
 }
 
 void SdlWindow::setVisible(bool visible) {
     if (visible) {
-        SDL_ShowWindow(_window);
+        if (!SDL_ShowWindow(_window))
+            _state->logSdlError("SDL_ShowWindow");
     } else {
-        SDL_HideWindow(_window);
+        if (!SDL_HideWindow(_window))
+            _state->logSdlError("SDL_HideWindow");
     }
 }
 
 bool SdlWindow::isVisible() const {
-    uint32_t flags = SDL_GetWindowFlags(_window);
-    if (flags & SDL_WINDOW_SHOWN)
-        return true;
-    if (flags & SDL_WINDOW_HIDDEN)
-        return false;
-
-    assert(false); // shouldn't get here.
-    return false;
+    return !(SDL_GetWindowFlags(_window) & SDL_WINDOW_HIDDEN);
 }
 
 void SdlWindow::setResizable(bool resizable) {
-    SDL_SetWindowResizable(_window, resizable ? SDL_TRUE : SDL_FALSE);
+    if (!SDL_SetWindowResizable(_window, resizable))
+        _state->logSdlError("SDL_SetWindowResizable");
 }
 
 bool SdlWindow::isResizable() const {
-    uint32_t flags = SDL_GetWindowFlags(_window);
-    if (flags & SDL_WINDOW_RESIZABLE)
-        return true;
-
-    return false;
+    return SDL_GetWindowFlags(_window) & SDL_WINDOW_RESIZABLE;
 }
 
 void SdlWindow::setWindowMode(PlatformWindowMode mode) {
-    uint32_t flags = 0;
-
-    if (mode == WINDOW_MODE_FULLSCREEN_BORDERLESS)
-        flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-    else if (mode == WINDOW_MODE_FULLSCREEN)
-        flags |= SDL_WINDOW_FULLSCREEN;
-
-    if (SDL_SetWindowFullscreen(_window, flags) != 0)
+    if (!SDL_SetWindowBordered(_window, mode == WINDOW_MODE_WINDOWED))
+        _state->logSdlError("SDL_SetWindowBordered");
+    if (!SDL_SetWindowFullscreen(_window, mode == WINDOW_MODE_FULLSCREEN_BORDERLESS))
         _state->logSdlError("SDL_SetWindowFullscreen");
-
-    if (mode == WINDOW_MODE_WINDOWED)
-        SDL_SetWindowBordered(_window, SDL_TRUE);
-    else if (mode == WINDOW_MODE_BORDERLESS)
-        SDL_SetWindowBordered(_window, SDL_FALSE);
 }
 
 PlatformWindowMode SdlWindow::windowMode() {
     uint32_t flags = SDL_GetWindowFlags(_window);
-
-    if ((flags & SDL_WINDOW_FULLSCREEN_DESKTOP) == SDL_WINDOW_FULLSCREEN_DESKTOP)
+    if ((flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN)
         return WINDOW_MODE_FULLSCREEN_BORDERLESS;
-    else if ((flags & SDL_WINDOW_FULLSCREEN) == SDL_WINDOW_FULLSCREEN)
-        return WINDOW_MODE_FULLSCREEN;
-    else if ((flags & SDL_WINDOW_BORDERLESS) > 0)
+    if ((flags & SDL_WINDOW_BORDERLESS) == SDL_WINDOW_BORDERLESS)
         return WINDOW_MODE_BORDERLESS;
-
     return WINDOW_MODE_WINDOWED;
 }
 
@@ -150,7 +128,8 @@ void SdlWindow::setOrientations(PlatformWindowOrientations orientations) {
     if (orientations & PORTRAIT_DOWN)
         hints += "PortraitUpsideDown ";
 
-    SDL_SetHintWithPriority(SDL_HINT_ORIENTATIONS, hints.c_str(), SDL_HINT_OVERRIDE);
+    if (!SDL_SetHintWithPriority(SDL_HINT_ORIENTATIONS, hints.c_str(), SDL_HINT_OVERRIDE))
+        _state->logSdlError("SDL_SetHintWithPriority");
 }
 
 PlatformWindowOrientations SdlWindow::orientations() {
@@ -169,16 +148,17 @@ PlatformWindowOrientations SdlWindow::orientations() {
 }
 
 void SdlWindow::setGrabsMouse(bool grabsMouse) {
-    SDL_SetWindowGrab(_window, grabsMouse ? SDL_TRUE : SDL_FALSE);
+    if (!SDL_SetWindowMouseGrab(_window, grabsMouse))
+        _state->logSdlError("SDL_SetWindowMouseGrab");
 }
 
 bool SdlWindow::grabsMouse() const {
-    return SDL_GetWindowGrab(_window) == SDL_TRUE;
+    return SDL_GetWindowMouseGrab(_window);
 }
 
 Marginsi SdlWindow::frameMargins() const {
     Marginsi result;
-    if(SDL_GetWindowBordersSize(_window, &result.top, &result.left, &result.bottom, &result.right) != 0) {
+    if(!SDL_GetWindowBordersSize(_window, &result.top, &result.left, &result.bottom, &result.right)) {
         _state->logSdlError("SDL_GetWindowBordersSize");
         return Marginsi();
     }
@@ -190,7 +170,8 @@ void *SdlWindow::nativeHandle() const {
 }
 
 void SdlWindow::activate() {
-    SDL_RaiseWindow(_window);
+    if (!SDL_RaiseWindow(_window))
+        _state->logSdlError("SDL_RaiseWindow");
 }
 
 void SdlWindow::warpMouse(Pointi position) {
@@ -198,8 +179,6 @@ void SdlWindow::warpMouse(Pointi position) {
 }
 
 std::unique_ptr<PlatformOpenGLContext> SdlWindow::createOpenGLContext(const PlatformOpenGLOptions &options) {
-    int version;
-
     if (options.versionMajor != -1)
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, options.versionMajor);
 
@@ -223,11 +202,11 @@ std::unique_ptr<PlatformOpenGLContext> SdlWindow::createOpenGLContext(const Plat
 
     int vsyncValue = translatePlatformVSyncMode(options.vsyncMode);
 
-    int status = SDL_GL_SetSwapInterval(vsyncValue);
-    if (status < 0 && options.vsyncMode == GL_VSYNC_ADAPTIVE)
-        status = SDL_GL_SetSwapInterval(translatePlatformVSyncMode(GL_VSYNC_NORMAL)); // Retry with normal vsync.
+    bool success = SDL_GL_SetSwapInterval(vsyncValue);
+    if (!success && options.vsyncMode == GL_VSYNC_ADAPTIVE)
+        success = SDL_GL_SetSwapInterval(translatePlatformVSyncMode(GL_VSYNC_NORMAL)); // Retry with normal vsync.
 
-    if (status < 0)
+    if (!success)
         _state->logSdlError("SDL_GL_SetSwapInterval"); // Not a critical error, we still return context in this case.
 
     return std::make_unique<SdlOpenGLContext>(_state, _window, ctx);
