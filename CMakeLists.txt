@@ -87,6 +87,7 @@ if(OE_USE_CCACHE)
     else()
         message(STATUS "ccache is not found.")
     endif()
+else()
     message(STATUS "Not configured to use ccache.")
 endif()
 
