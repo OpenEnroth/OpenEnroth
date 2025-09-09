@@ -31,6 +31,9 @@ on:
     types:
       - published
 
+env:
+  CCACHE_COMPILERCHECK: content
+
 # cancels currently running workflow from the same PR, branch or tag
 #concurrency:
 #  group: ${{github.workflow}}-${{github.ref}}
@@ -102,7 +105,7 @@ jobs:
         with:
           key: 'linux-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
-          max-size: 200M
+          max-size: 400M
           save: ${{github.event_name != 'pull_request'}}
 
       - name: Configure

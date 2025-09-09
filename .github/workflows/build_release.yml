@@ -1,6 +1,8 @@
 name: Build Release
 
 on:
+  schedule:
+    - cron: 6 11 * * *
   workflow_dispatch:
     inputs:
       myCommit:
