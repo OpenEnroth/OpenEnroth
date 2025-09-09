@@ -21,9 +21,9 @@
 #else
   #define ConfigRenderer RENDERER_OPENGL
   #ifdef NIGHTLY
-    #define ConfigWindowMode WINDOW_MODE_WINDOWED
-  #else
     #define ConfigWindowMode WINDOW_MODE_FULLSCREEN_BORDERLESS
+  #else
+    #define ConfigWindowMode WINDOW_MODE_WINDOWED
   #endif
 #endif
 
