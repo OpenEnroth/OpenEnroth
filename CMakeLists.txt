@@ -40,7 +40,6 @@ set(OE_USE_CCACHE ON CACHE BOOL "Use ccache if available.")
 set(OE_USE_SCCACHE ON CACHE BOOL "Use sccache if available, note that ccache takes precedence.")
 set(OE_USE_LD_MOLD ON CACHE BOOL "Use mold linker if available.")
 set(OE_USE_LD_LLD ON CACHE BOOL "Use lld linker if available, note that mold takes precedence.")
-# Define a boolean constant
 set(NIGHTLY OFF CACHE BOOL "Specify that this is a nightly build.")
 
 if(NIGHTLY)
