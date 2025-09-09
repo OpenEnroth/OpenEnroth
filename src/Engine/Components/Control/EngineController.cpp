@@ -28,6 +28,7 @@
 
 #include "Utility/Exception.h"
 #include "Utility/ScopedRollback.h"
+#include <Engine/Graphics/Renderer/Renderer.h>
 
 namespace {
 class ThrowingTicker {
@@ -104,7 +105,7 @@ void EngineController::pressButton(PlatformMouseButton button, int x, int y) {
     event->type = EVENT_MOUSE_BUTTON_PRESS;
     event->window = ::application->window();
     event->button = BUTTON_LEFT;
-    event->pos = Pointi(x, y);
+    event->pos = render->MapToPresent(Pointi(x, y));
     event->isDoubleClick = false;
     postEvent(std::move(event));
 }
@@ -115,7 +116,7 @@ void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
     event->window = ::application->window();
     event->button = BUTTON_LEFT;
     event->buttons = BUTTON_LEFT;
-    event->pos = Pointi(x, y);
+    event->pos = render->MapToPresent(Pointi(x, y));;
     event->isDoubleClick = false;
     postEvent(std::move(event));
 }
