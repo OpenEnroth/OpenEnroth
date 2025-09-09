@@ -7,7 +7,7 @@
 
 #include "Library/Logger/LogEnums.h"
 
-PlatformKey translateSdlKey(SDL_Scancode key);
+PlatformKey translateSdlKey(SDL_Keycode key);
 PlatformKey translateSdlGamepadButton(SDL_GamepadButton button);
 PlatformKey translateSdlGamepadAxis(SDL_GamepadAxis axis);
 PlatformModifiers translateSdlMods(uint16_t mods);
