@@ -14,7 +14,7 @@
 #include "Engine/Random/RandomEnums.h"
 #include "Library/Logger/LogEnums.h"
 
-// Set fullscreen on android, borderless window if not debug, window in debug build
+// Set fullscreen on android, borderless window if nightly, window by default
 #ifdef __ANDROID__
   #define ConfigRenderer RENDERER_OPENGL_ES
   #define ConfigWindowMode WINDOW_MODE_FULLSCREEN_BORDERLESS
