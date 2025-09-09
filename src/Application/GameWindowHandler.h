@@ -39,8 +39,6 @@ class GameWindowHandler : public PlatformEventFilter, private PlatformApplicatio
     void OnMouseRightDoubleClick(Pointi position);
     void OnMouseMove(Pointi position, bool left_button, bool right_button);
     void OnScreenshot();
-    void OnToggleBorderless();
-    void OnToggleFullscreen();
     void OnToggleResizable();
     void OnCycleFilter();
     void OnMouseGrabToggle();
@@ -51,6 +49,7 @@ class GameWindowHandler : public PlatformEventFilter, private PlatformApplicatio
     void OnPaint();
     void OnActivated();
     void OnDeactivated();
+    void OnToggleWindowMode();
 
     void handleKeyPress(PlatformKey key, PlatformModifiers mods, bool isAutoRepeat);
     void handleKeyRelease(PlatformKey key);

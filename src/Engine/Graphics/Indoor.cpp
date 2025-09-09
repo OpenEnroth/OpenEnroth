@@ -1160,8 +1160,9 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
         FacesFound++;
     }
 
+    // TODO(pskelton): not sure why we'd ever want this - caused #2186
     // as above but for sector portal faces
-    if (pSector->field_0 & 8) {
+    /*if (pSector->field_0 & 8) {
         for (unsigned i = 0; i < pSector->uNumPortals; ++i) {
             if (FacesFound >= 5) break;
 
@@ -1172,19 +1173,16 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
             if(!portal->Contains(pos, MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
                 continue;
 
-            blv_floor_z[FacesFound] = -29000;
+            blv_floor_z[FacesFound] = -29000; // was obviosuly meant to mean something
             blv_floor_id[FacesFound] = pSector->pPortals[i];
             FacesFound++;
         }
-    }
+    }*/
 
     // one face found
     if (FacesFound == 1) {
         if (pFaceID)
             *pFaceID = blv_floor_id[0];
-        if (blv_floor_z[0] <= -29000) {
-            /*assert(false);*/
-        }
         return blv_floor_z[0];
     }
 
@@ -1205,12 +1203,9 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
 
         if (std::abs(pos.z - v38) <= std::abs(pos.z - result)) {
             result = blv_floor_z[i];
-            if (blv_floor_z[i] <= -29000) assert(false);
             faceId = blv_floor_id[i];
         }
     }
-
-    if (result <= -29000) assert(false);
 
     if (pFaceID)
         *pFaceID = faceId;

@@ -13,7 +13,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <imgui/backends/imgui_impl_opengl3.h> // NOLINT: not a C system header.
-#include <imgui/backends/imgui_impl_sdl2.h> // NOLINT: not a C system header.
+#include <imgui/backends/imgui_impl_sdl3.h> // NOLINT: not a C system header.
 
 #include "Engine/Engine.h"
 #include "Engine/EngineFileSystem.h"
@@ -4520,9 +4520,10 @@ void OpenGLRenderer::_initImGui() {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+    io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;   // Dont allow ImGui to modify mouse cursor
 
     SDL_Window *sdlWindow = static_cast<SDL_Window *>(window->nativeHandle());
-    ImGui_ImplSDL2_InitForOpenGL(sdlWindow, openGLContext->nativeHandle());
+    ImGui_ImplSDL3_InitForOpenGL(sdlWindow, openGLContext->nativeHandle());
     ImGui_ImplOpenGL3_Init();
 
     // Set ImGui Style
@@ -4573,7 +4574,7 @@ void OpenGLRenderer::_initImGui() {
 
 void OpenGLRenderer::_shutdownImGui() {
     ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplSDL2_Shutdown();
+    ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
 }
 
@@ -4852,7 +4853,7 @@ bool OpenGLRenderer::ReloadShaders() {
 void OpenGLRenderer::beginOverlays() {
     ImGui_ImplOpenGL3_NewFrame();
     // we assume we're always running with SDL
-    ImGui_ImplSDL2_NewFrame();
+    ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
 }
 

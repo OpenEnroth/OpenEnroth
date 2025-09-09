@@ -1292,14 +1292,21 @@ void CharacterUI_InventoryTab_Draw(Character *player, bool Cover_Strip) {
     }
 }
 
-void CharacterUI_DrawPickedItemUnderlay(Vec2i offset) {
+void CharacterUI_DrawPickedItemUnderlay(Vec2i gridOffset) {
     if (pParty->pPickedItem.itemId != ITEM_NULL) {
         // draw shadow of position
         Pointi mousePos = mouse->position();
-        Pointi inventoryPos = mapToInventoryGrid(mousePos + mouse->pickedItemOffset, offset);
+        Pointi mouseOffset = mouse->pickedItemOffset;
+
+        // this is a correction so that the shadow is drawn in the same place as the item
+        // in the inventory grid, and that it is not drawn centered on the mouse cursor
+        Pointi inventoryPos = mapToInventoryGrid(
+            Pointi(mousePos.x + mouseOffset.x, mousePos.y + mouseOffset.y),
+            gridOffset, &pParty->pPickedItem
+        );
         Sizei itemSize = pParty->pPickedItem.inventorySize();
 
-        render->FillRectFast(inventoryPos.x * 32 + offset.x, inventoryPos.y * 32 + offset.y, itemSize.w * 32, itemSize.h * 32, Color(96, 96, 96, 128));
+        render->FillRectFast(inventoryPos.x * 32 + gridOffset.x, inventoryPos.y * 32 + gridOffset.y, itemSize.w * 32, itemSize.h * 32, Color(96, 96, 96, 128));
     }
 }
 

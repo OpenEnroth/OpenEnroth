@@ -31,6 +31,9 @@ on:
     types:
       - published
 
+env:
+  CCACHE_COMPILERCHECK: content
+    
 jobs:
   build-flatpak-bundle:
     timeout-minutes: 60
@@ -55,7 +58,7 @@ jobs:
         echo "CCACHE_DIR=$PWD" >> $GITHUB_ENV
         
     - name: Checkout
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v5.0.0
       with:
         submodules: recursive
         ref: '${{inputs.myCommit}}'
@@ -65,7 +68,8 @@ jobs:
       with:
         key: 'linux-flatpak-${{matrix.configuration}}-${{matrix.architecture}}'
         verbose: 2
-        max-size: 200M
+        max-size: 400M
+        save: ${{github.event_name != 'pull_request'}}
         
     - name: Run Flatpak build
       uses: flatpak/flatpak-github-actions/flatpak-builder@dcbd3a30d991a38708c318d17f5352cc1268c215
@@ -86,3 +90,7 @@ jobs:
         prerelease: true
         tag_name: '${{inputs.releaseTag}}'
         files: io.github.openenroth.openenroth_${{inputs.releaseTag}}_${{matrix.configuration}}_${{matrix.architecture}}.flatpak
+
+    - name: Cleanup ccache
+      run: |
+        ccache -c

@@ -477,3 +477,34 @@ GAME_TEST(Prs, Pr2157b) {
     EXPECT_EQ(soundsTape.flatten().count(SOUND_error), 1);
     EXPECT_EQ(inventory.size(), 126);
 }
+
+GAME_TEST(Issues, Issue2186) {
+    // Consistent crashing in Grand Temple of the Sun Upper Level
+    auto maps = tapes.map();
+    test.playTraceFromTestData("issue_2186.mm7", "issue_2186.json");
+
+    EXPECT_CONTAINS(maps, MAP_EVENMORN_ISLAND); // we made it outside
+    EXPECT_EQ(maps.back(), MAP_GRAND_TEMPLE_OF_THE_SUN); // and back in
+    // and no actors are still underground
+    for (const auto &act : pActors) {
+        EXPECT_GT(act.pos.z, -1000);
+    }
+}
+
+GAME_TEST(Issues, Issue2188) {
+    // assert(false) when pressing Z when the character is unconscious.
+    // Assertion was triggering b/c the text "Unconscious" doesn't fit into the status field.
+    auto screenTape = tapes.screen();
+
+    game.startNewGame();
+    test.startTaping();
+    pParty->pCharacters[0].health = 0;
+    pParty->pCharacters[0].SetCondition(CONDITION_UNCONSCIOUS, false);
+
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_Z); // Open status menu.
+    game.tick(); // Shouldn't assert.
+
+    EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_UNCONSCIOUS);
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_QUICK_REFERENCE));
+}

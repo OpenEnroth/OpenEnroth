@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include <string>
 
@@ -10,7 +10,7 @@ class SdlPlatformSharedState;
 
 class SdlGamepad: public PlatformGamepad {
  public:
-    SdlGamepad(SdlPlatformSharedState *state, SDL_GameController *gamepad, SDL_JoystickID id);
+    SdlGamepad(SdlPlatformSharedState *state, SDL_Gamepad *gamepad, SDL_JoystickID id);
     virtual ~SdlGamepad();
 
     virtual std::string model() const override;
@@ -22,6 +22,6 @@ class SdlGamepad: public PlatformGamepad {
 
  private:
     SdlPlatformSharedState *_state = nullptr;
-    SDL_GameController *_gamepad = nullptr;
+    SDL_Gamepad *_gamepad = nullptr;
     SDL_JoystickID _id = 0;
 };

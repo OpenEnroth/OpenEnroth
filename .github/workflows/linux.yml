@@ -31,6 +31,9 @@ on:
     types:
       - published
 
+env:
+  CCACHE_COMPILERCHECK: content
+
 # cancels currently running workflow from the same PR, branch or tag
 #concurrency:
 #  group: ${{github.workflow}}-${{github.ref}}
@@ -60,14 +63,14 @@ jobs:
           sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish
 
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
         with:
           submodules: recursive
           ref: '${{inputs.myCommit}}'
 
       - name: Restore data cache
         id: restore-data-cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4.2.4
         with:
           path: |
             OpenEnroth_GameData
@@ -87,13 +90,11 @@ jobs:
               sudo apt-get install -y gcc-14-multilib g++-14-multilib lld
               sudo apt-get install -y libglu1-mesa-dev:i386
               sudo apt-get install -y aptitude
-              sudo aptitude install -y libsdl2-dev:i386
               sudo apt-get install -y libdwarf-dev:i386 libelf-dev:i386
             fi
             if [ "${{matrix.architecture}}" = "x86_64" ]; then
               sudo apt-get install -y gcc-14 g++-14 lld
               sudo apt-get install -y libglu1-mesa-dev
-              sudo apt-get install -y libsdl2-dev
               sudo apt-get install -y libdwarf-dev libelf-dev
             fi
 
@@ -102,7 +103,8 @@ jobs:
         with:
           key: 'linux-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
-          max-size: 200M
+          max-size: 400M
+          save: ${{github.event_name != 'pull_request'}}
 
       - name: Configure
         run: |
