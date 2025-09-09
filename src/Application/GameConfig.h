@@ -20,7 +20,7 @@
   #define ConfigWindowMode WINDOW_MODE_FULLSCREEN_BORDERLESS
 #else
   #define ConfigRenderer RENDERER_OPENGL
-  #ifdef NIGHTLY
+  #if NIGHTLY
     #define ConfigWindowMode WINDOW_MODE_FULLSCREEN_BORDERLESS
   #else
     #define ConfigWindowMode WINDOW_MODE_WINDOWED
