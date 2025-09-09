@@ -107,11 +107,13 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clan
     add_compile_options(-Werror=return-type) # Control reaches the end of non-void function. This is an error on MSVC.
     add_compile_options(-Werror=unused-result) # Ignoring return value of function declared with 'nodiscard' attribute.
     add_compile_options(-Werror=unused-value) # Expression result unused.
+    add_compile_options(-Werror=shift-count-overflow) # shift count >= width of type.
     add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=mismatched-tags>) # Class 'X' was previously declared as a struct.
     add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=suggest-override>) # 'func' overrides a member function but is not marked 'override'.
 endif ()
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_options(-Werror=return-local-addr) # Returning reference to temporary.
+    add_compile_options(-Werror=overflow) # conversion from ‘X’ to ‘Y’ changes value.
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
     add_compile_options(-Werror=return-stack-address) # Returning reference to temporary.
     add_compile_options(-Werror=unused-comparison) # Comparison result unused.
