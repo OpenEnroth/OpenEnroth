@@ -97,7 +97,7 @@ var searchData=
   ['initializedaynames_94',['InitializeDayNames',['../classLocalization.html#aa541c7b986115e234d73806d1db9c357',1,'Localization']]],
   ['initializedecorationsprite_95',['InitializeDecorationSprite',['../classDecorationList.html#ab2ed1a137d297ab3231b1b33e3308817',1,'DecorationList']]],
   ['initializefonts_96',['initializeFonts',['../classGUIWindow__Book.html#ab900d0cdd0c31104253cf9994e348646',1,'GUIWindow_Book']]],
-  ['initializegamepad_97',['initializeGamepad',['../classSdlPlatformSharedState.html#a7a2d920819bea31687ca2c97a4ff2bd4',1,'SdlPlatformSharedState']]],
+  ['initializegamepad_97',['initializeGamepad',['../classSdlPlatformSharedState.html#aca4be4b4e504bbc0dce558d85fb24d42',1,'SdlPlatformSharedState']]],
   ['initializegamepads_98',['initializeGamepads',['../classSdlPlatformSharedState.html#a96e0865302658f0db75df2590ee43680',1,'SdlPlatformSharedState']]],
   ['initializegui_99',['InitializeGUI',['../classGUIWindow.html#a5c1f1a3ef130e92819f280b3824cecb9',1,'GUIWindow']]],
   ['initializehouses_100',['initializeHouses',['../HouseTable_8cpp.html#afcd853b5bcfdf0b18debbbeac6ffb306',1,'initializeHouses(const Blob &amp;houses):&#160;HouseTable.cpp'],['../HouseTable_8h.html#afcd853b5bcfdf0b18debbbeac6ffb306',1,'initializeHouses(const Blob &amp;houses):&#160;HouseTable.cpp']]],

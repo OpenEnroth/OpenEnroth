@@ -19,7 +19,7 @@ var searchData=
   ['scroll_16',['scroll',['../classGUIWindow__Load.html#a21d5f2fcfedd616ce6b7b4b896dcc200',1,'GUIWindow_Load']]],
   ['scroll_5for_5fnpc_5fspell_5fskill_5fvalue_17',['SCROLL_OR_NPC_SPELL_SKILL_VALUE',['../CastSpellInfo_8h.html#aaca61189bfd7ed1f0d2241371a7d7893',1,'CastSpellInfo.h']]],
   ['sdleventloop_18',['SdlEventLoop',['../classSdlEventLoop.html#adfe4e0ec7eaf5f93b52cc273243f1d64',1,'SdlEventLoop']]],
-  ['sdlgamepad_19',['SdlGamepad',['../classSdlGamepad.html#a967bfee8abdd7ab1b07642aec8bfb357',1,'SdlGamepad']]],
+  ['sdlgamepad_19',['SdlGamepad',['../classSdlGamepad.html#a50704c42223af76de2016205fdca7f3a',1,'SdlGamepad']]],
   ['sdllogcallback_20',['sdlLogCallback',['../SdlPlatform_8cpp.html#af9dcdef501900f80a4fe059a94b07186',1,'SdlPlatform.cpp']]],
   ['sdlopenglcontext_21',['SdlOpenGLContext',['../classSdlOpenGLContext.html#a5aa52844cdf3246b2c0eab2cc6ecce8f',1,'SdlOpenGLContext']]],
   ['sdlplatform_22',['SdlPlatform',['../classSdlPlatform.html#aa6ca6d2afbc5290b7ede7daddcad496f',1,'SdlPlatform']]],
