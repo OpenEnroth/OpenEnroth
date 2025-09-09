@@ -40,6 +40,11 @@ set(OE_USE_CCACHE ON CACHE BOOL "Use ccache if available.")
 set(OE_USE_SCCACHE ON CACHE BOOL "Use sccache if available, note that ccache takes precedence.")
 set(OE_USE_LD_MOLD ON CACHE BOOL "Use mold linker if available.")
 set(OE_USE_LD_LLD ON CACHE BOOL "Use lld linker if available, note that mold takes precedence.")
+# Define a boolean constant
+set(NIGHTLY ON CACHE BOOL "Specify that this is a nightly build." OFF)
+if(NIGHTLY)
+    add_compile_definitions(NIGHTLY)
+endif()
 
 if(OE_USE_PREBUILT_DEPENDENCIES AND OE_USE_DUMMY_DEPENDENCIES)
     message(FATAL_ERROR "Only one of OE_USE_PREBUILT_DEPENDENCIES and OE_USE_DUMMY_DEPENDENCIES must be set.")
