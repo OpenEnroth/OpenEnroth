@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include "Library/Platform/Interface/PlatformEventLoop.h"
 #include "Library/Platform/Interface/PlatformEvents.h"
@@ -31,10 +31,10 @@ class SdlEventLoop: public PlatformEventLoop {
     void dispatchWindowEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event);
     void dispatchWindowMoveEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event);
     void dispatchWindowResizeEvent(PlatformEventHandler *eventHandler, const SDL_WindowEvent *event);
-    void dispatchGamepadConnectedEvent(PlatformEventHandler *eventHandler, const SDL_ControllerDeviceEvent *event);
-    void dispatchGamepadDisconnectedEvent(PlatformEventHandler *eventHandler, const SDL_ControllerDeviceEvent *event);
-    void dispatchGamepadButtonEvent(PlatformEventHandler *eventHandler, const SDL_ControllerButtonEvent *event);
-    void dispatchGamepadAxisEvent(PlatformEventHandler *eventHandler, const SDL_ControllerAxisEvent *event);
+    void dispatchGamepadConnectedEvent(PlatformEventHandler *eventHandler, const SDL_GamepadDeviceEvent *event);
+    void dispatchGamepadDisconnectedEvent(PlatformEventHandler *eventHandler, const SDL_GamepadDeviceEvent *event);
+    void dispatchGamepadButtonEvent(PlatformEventHandler *eventHandler, const SDL_GamepadButtonEvent *event);
+    void dispatchGamepadAxisEvent(PlatformEventHandler *eventHandler, const SDL_GamepadAxisEvent *event);
     void dispatchTextInputEvent(PlatformEventHandler *eventHandler, const SDL_TextInputEvent *event);
 
  private:

@@ -11,6 +11,7 @@
 #include "SdlWindow.h"
 #include "SdlLogSource.h"
 #include "SdlGamepad.h"
+#include "SdlFreeDeleter.h"
 
 // Log category should be a global so that it's registered at program startup.
 static constinit SdlLogSource globalSdlLogSource;
@@ -65,31 +66,38 @@ void SdlPlatformSharedState::unregisterEventLoop(SdlEventLoop *) {
 }
 
 void SdlPlatformSharedState::initializeGamepads() {
-    for (int i = 0; i < SDL_NumJoysticks(); i++) {
-        if (!SDL_IsGameController(i))
+    int count = 0;
+    std::unique_ptr<SDL_JoystickID[], SdlFreeDeleter> joysticks(SDL_GetJoysticks(&count));
+    if (!joysticks) {
+        logSdlError("SDL_GetJoysticks");
+        return;
+    }
+
+    for (int i = 0; i < count; i++) {
+        if (!SDL_IsGamepad(joysticks[i]))
             continue;
 
-        initializeGamepad(i);
+        initializeGamepad(joysticks[i]);
     }
 }
 
-SdlGamepad *SdlPlatformSharedState::initializeGamepad(int gamepadId) {
-    assert(SDL_IsGameController(gamepadId));
+SdlGamepad *SdlPlatformSharedState::initializeGamepad(SDL_JoystickID gamepadId) {
+    assert(SDL_IsGamepad(gamepadId));
 
-    std::unique_ptr<SDL_GameController, void(*)(SDL_GameController *)> gamepad(SDL_GameControllerOpen(gamepadId), &SDL_GameControllerClose);
+    std::unique_ptr<SDL_Gamepad, void(*)(SDL_Gamepad *)> gamepad(SDL_OpenGamepad(gamepadId), &SDL_CloseGamepad);
     if (!gamepad) {
         logSdlError("SDL_GameControllerOpen");
         return nullptr;
     }
 
-    SDL_Joystick *joystick = SDL_GameControllerGetJoystick(gamepad.get());
+    SDL_Joystick *joystick = SDL_GetGamepadJoystick(gamepad.get());
     if (!joystick) {
         logSdlError("SDL_GameControllerGetJoystick");
         return nullptr;
     }
 
-    SDL_JoystickID id = SDL_JoystickInstanceID(joystick);
-    if (id < 0) {
+    SDL_JoystickID id = SDL_GetJoystickID(joystick);
+    if (!id) {
         logSdlError("SDL_JoystickInstanceID");
         return nullptr;
     }

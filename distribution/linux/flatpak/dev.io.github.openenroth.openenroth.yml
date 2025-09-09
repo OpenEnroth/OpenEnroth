@@ -34,14 +34,23 @@ add-extensions:
 modules:
   - name: libdwarf
     buildsystem: cmake-ninja
+    builddir: true
     sources:
       - type: git
         url: https://github.com/davea42/libdwarf-code/
         tag: v0.11.0
         commit: 285d9d34f3e9f56cc1c487d0055f6dc54a9c54a1
-        x-checker-data:
-          type: git
-          tag-pattern: ^v\d+(\.\d+)+.*$
+
+  - name: sdl3
+    buildsystem: cmake-ninja
+    builddir: true
+    config-opts:
+      - -DSDL_TESTS=OFF
+      - -DSDL_EXAMPLES=OFF
+    sources:
+      - type: archive
+        url: https://libsdl.org/release/SDL3-3.2.22.tar.gz
+        sha256: f29d00cbcee273c0a54f3f32f86bf5c595e8823a96b1d92a145aac40571ebfcc
 
   - name: openenroth
     buildsystem: cmake-ninja

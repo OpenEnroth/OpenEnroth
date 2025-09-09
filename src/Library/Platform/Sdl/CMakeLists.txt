@@ -18,7 +18,8 @@ set(PLATFORM_SDL_HEADERS
         SdlOpenGLContext.h
         SdlPlatform.h
         SdlPlatformSharedState.h
-        SdlWindow.h)
+        SdlWindow.h
+        SdlFreeDeleter.h)
 
 set(PLATFORM_SDL_MAIN_SOURCES
         SdlMain.cpp)
@@ -28,11 +29,11 @@ set(PLATFORM_SDL_MAIN_HEADERS)
 # Need to have main in an OBJECT lib so that it's properly exported from Android .so.
 add_library(library_platform_main OBJECT ${PLATFORM_SDL_MAIN_SOURCES} ${PLATFORM_SDL_MAIN_HEADERS})
 target_check_style(library_platform_main)
-target_link_libraries(library_platform_main PRIVATE SDL2::SDL2OE)
+target_link_libraries(library_platform_main PRIVATE SDL3::SDL3OE)
 
 add_library(library_platform_sdl STATIC ${PLATFORM_SDL_SOURCES} ${PLATFORM_SDL_HEADERS})
 target_check_style(library_platform_sdl)
-target_link_libraries(library_platform_sdl PUBLIC utility library_logger PRIVATE SDL2::SDL2OE)
+target_link_libraries(library_platform_sdl PUBLIC utility library_logger PRIVATE SDL3::SDL3OE)
 
 # Currently we have only one implementation library defining Platform::createStandardPlatform function, but we used
 # to have two. So we're keeping the old mechanism with an additional library_platform_implementation library.
