@@ -36,29 +36,65 @@ local function setCondition(conditionName, characterIndex)
 end
 
 local function clearCondition(conditionName, characterIndex)
-    if conditionName == nil then
-        local count = Game.party.getPartySize()
-        for i = 1, count do
-            Game.party.clearCondition(i)
-        end
-        return "All conditions cleared", true
-    else
-        characterIndex = CommandUtilities.characterOrCurrent(characterIndex)
-        Game.party.clearCondition(characterIndex, stringToEnum(Game.CharacterCondition, conditionName))
-        return "Condition " .. conditionName .. " cleared", true
+    characterIndex = CommandUtilities.characterOrCurrent(characterIndex)
+    Game.party.clearCondition(characterIndex, stringToEnum(Game.CharacterCondition, conditionName))
+    return "Condition " .. conditionName .. " cleared", true
+end
+
+local function clearAllConditions()
+    local count = Game.party.getPartySize()
+    for i = 1, count do
+        Game.party.clearCondition(i)
     end
+    return "All conditions cleared", true
 end
 
 local subCommands = {
-    get = showPartyConditions,
-    set = setCondition,
-    clear = clearCondition,
-    default = showPartyConditions
+    {
+        name = "get",
+        callback = showPartyConditions,
+        description = "Shows the current conditions of all characters in the party."
+    },
+    {
+        name = "set",
+        callback = setCondition,
+        params = {
+            {
+                name = "condition",
+                type = "enum",
+                enumValues = Game.CharacterCondition,
+                optional = false,
+                description = "Condition to set."
+            },
+            { name = "char", type = "characterIndex", optional = false, description = "Character index to set condition to." }
+        },
+        description = "Sets the specified condition for the character."
+    },
+    {
+        name = "clear",
+        callback = clearCondition,
+        params = {
+            {
+                name = "condition",
+                type = "enum",
+                enumValues = Game.CharacterCondition,
+                optional = false,
+                description = "Condition to clear. If not specified, clears all conditions."
+            },
+            { name = "char", type = "characterIndex", optional = false, description = "Character index to clear condition from." }
+        },
+        description = "Clears the specified condition for the specified character."
+    },
+    {
+        name = "clearAll",
+        callback = clearAllConditions,
+        description = "Clears all conditions on all characters."
+    }
 }
 
 return {
     name = "condition",
     description = "Change the conditions of the party members.",
     details = "",
-    callback = subCommands
+    subCommands = subCommands
 }

@@ -34,6 +34,9 @@ void AnyConfigEntry::setValue(std::any value) {
         return;
 
     _value = std::move(value);
+
+    for (const auto &[_, listener] : _listeners)
+        listener();
 }
 
 std::string AnyConfigEntry::defaultString() const {

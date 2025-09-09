@@ -18,7 +18,7 @@ class CodeGenMap {
  public:
     template<class Enum>
     void insert(Enum enumValue, std::string_view name, std::string_view comment) {
-        int value = std::to_underlying(enumValue);
+        int value = static_cast<int>(enumValue);
         assert(!_nameByValue.contains(value));
 
         if (name.empty()) {

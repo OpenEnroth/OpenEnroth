@@ -71,12 +71,13 @@ std::string MergingFileSystem::_displayPath(FileSystemPathView path) const {
     if (_bases.empty())
         return NullFileSystem().displayPath(path); // Empty merging FS is basically a NullFileSystem.
 
-    const FileSystem *base = locateForReadingOrNull(path);
     // TODO(captainurist): This is not ideal, we might want to know ALL merged paths, e.g. see
     //                     ScriptingSystem::_initPackageTable. But the API that we have here doesn't allow that.
-    if (!base)
-        base = _bases[0];
-    return base->displayPath(path);
+    for (const FileSystem *base : _bases)
+        if (base->stat(path).type != FILE_INVALID)
+            return base->displayPath(path);
+
+    return _bases[0]->displayPath(path);
 }
 
 const FileSystem *MergingFileSystem::locateForReading(FileSystemPathView path) const {

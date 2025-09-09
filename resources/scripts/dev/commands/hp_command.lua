@@ -24,17 +24,51 @@ local function fullHeal(charIndex)
 end
 
 local subCommands = {
-    get = showCharsHp,
-    rem = Utilities.changeCharProperty("hp", Utilities.opType.rem, false, tonumber),
-    add = Utilities.changeCharProperty("hp", Utilities.opType.add, false, tonumber),
-    set = Utilities.changeCharProperty("hp", Utilities.opType.set, false, tonumber),
-    full_heal = fullHeal,
-    default = showCharsHp
+    {
+        name = "get",
+        callback = showCharsHp,
+        description = "Shows the current hp of all characters in the party."
+    },
+    {
+        name = "add",
+        callback = Utilities.changeCharProperty("hp", Utilities.opType.add, false, tonumber),
+        params = {
+            { name = "hp",   type = "number",         optional = false, description = "Amount of hp to add." },
+            { name = "char", type = "characterIndex", optional = false, description = "Character index to add hp to." }
+        },
+        description = "Adds the specified amount of hp to the character."
+    },
+    {
+        name = "rem",
+        callback = Utilities.changeCharProperty("hp", Utilities.opType.rem, false, tonumber),
+        params = {
+            { name = "hp",   type = "number",         optional = false, description = "Amount of hp to remove." },
+            { name = "char", type = "characterIndex", optional = false, description = "Character index to remove hp from." }
+        },
+        description = "Removes the specified amount of hp from the character."
+    },
+    {
+        name = "set",
+        callback = Utilities.changeCharProperty("hp", Utilities.opType.set, false, tonumber),
+        params = {
+            { name = "hp",   type = "number",         optional = false, description = "Amount of hp to set." },
+            { name = "char", type = "characterIndex", optional = false, description = "Character index to set hp to." }
+        },
+        description = "Sets the character's hp to the specified value."
+    },
+    {
+        name = "full_heal",
+        callback = fullHeal,
+        params = {
+            { name = "char", type = "characterIndex", optional = false, description = "Character index to fully heal." }
+        },
+        description = "Fully heals the character, restoring hp and mana."
+    },
 }
 
 return {
     name = "hp",
     description = "Show and manipulate characters hp.",
     details = "",
-    callback = subCommands
+    subCommands = subCommands
 }

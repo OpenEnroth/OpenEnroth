@@ -6,12 +6,16 @@
 #include <string>
 #include <algorithm>
 
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Tables/NPCTable.h"
 #include "Engine/Objects/Character.h"
 #include "Engine/Time/Time.h"
 #include "Engine/Time/Timer.h"
+
 #include "Media/Audio/SoundEnums.h"
+
+#include "Library/Geometry/Point.h"
+
 #include "Utility/IndexedBitset.h"
 
 #include "ArenaEnums.h"
@@ -67,7 +71,7 @@ struct Party {
     /**
      * @offset 0x49137D
      */
-    void createDefaultParty(bool bDebugGiveItems = false);
+    void createDefaultParty();
     void Reset();
     void ResetPosMiscAndSpellBuffs();
 
@@ -77,9 +81,13 @@ struct Party {
     bool hasItem(ItemId uItemID);
 
     /**
+     * @param item                      Item to hold in mouse.
+     * @param offset                    Item's bitmap offset relative to cursor position. Always non-positive.
      * @offset 0x4936E1
      */
-    void setHoldingItem(ItemGen *pItem);
+    void setHoldingItem(const Item &item, Pointi offset = {});
+
+    Item takeHoldingItem();
 
     /**
     * Sets _activeCharacter to the first character that can act
@@ -104,7 +112,7 @@ struct Party {
     /**
      * @offset 0x48C6F6
      */
-    bool addItemToParty(ItemGen *pItem, bool isSilent = false);
+    bool addItemToParty(Item *pItem, bool isSilent = false);
 
     /**
      * @offset 0x43AD34
@@ -160,7 +168,7 @@ struct Party {
     inline bool wizardEyeActive() const {
         return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].Active();
     }
-    inline CharacterSkillMastery wizardEyeSkillLevel() const {
+    inline Mastery wizardEyeSkillLevel() const {
         return pPartyBuffs[PARTY_BUFF_WIZARD_EYE].skillMastery;
     }
     inline bool TorchlightActive() const {
@@ -175,7 +183,7 @@ struct Party {
     inline bool ImmolationActive() const {
         return pPartyBuffs[PARTY_BUFF_IMMOLATION].Active();
     }
-    inline CharacterSkillMastery ImmolationSkillLevel() const {
+    inline Mastery ImmolationSkillLevel() const {
         return pPartyBuffs[PARTY_BUFF_IMMOLATION].skillMastery;
     }
     inline bool FeatherFallActive() const {
@@ -211,15 +219,13 @@ struct Party {
     }
 
     /**
-     * @param item_id                   Item type to check, e.g. `ITEM_ARTIFACT_LADYS_ESCORT`.
+     * @param itemId                    Item type to check, e.g. `ITEM_ARTIFACT_LADYS_ESCORT`.
      * @return                          Whether the provided item is worn by at least one member of the party.
      */
-    bool wearsItemAnywhere(ItemId item_id) const {
-        for (const Character &character : pCharacters) {
-            if (character.wearsItemAnywhere(item_id)) {
+    bool wearsItem(ItemId itemId) const {
+        for (const Character &character : pCharacters)
+            if (character.wearsItem(itemId))
                 return true;
-            }
-        }
         return false;
     }
 
@@ -252,7 +258,7 @@ struct Party {
      */
     size_t immolationAffectedActors(int *affected, size_t affectedArrSize, size_t effectRange);
 
-    void setDelayedReaction(CharacterSpeech speech, int id) {
+    void setDelayedReaction(SpeechId speech, int id) {
         if (!_delayedReactionTimer) {
             _delayedReactionTimer = Duration::fromRealtimeSeconds(2);
             _delayedReactionSpeech = speech;
@@ -331,11 +337,11 @@ struct Party {
     std::array<Character, 4> pCharacters;
     std::array<NPCData, 2> pHirelings;
     std::array<NPCSacrificeStatus, 2> pHirelingsSacrifice;
-    ItemGen pPickedItem;
+    Item pPickedItem;
     PartyFlags uFlags;
-    IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> standartItemsInShops;
-    IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> specialItemsInShops;
-    IndexedArray<std::array<ItemGen, 12>, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> spellBooksInGuilds;
+    IndexedArray<std::array<Item, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> standartItemsInShops;
+    IndexedArray<std::array<Item, 12>, HOUSE_FIRST_SHOP, HOUSE_LAST_SHOP> specialItemsInShops;
+    IndexedArray<std::array<Item, 12>, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> spellBooksInGuilds;
     std::string pHireling1Name;
     std::string pHireling2Name;
     Duration armageddon_timer;
@@ -351,7 +357,7 @@ struct Party {
     Duration _roundingDt;  // keeps track of rounding remainder for recovery
 
     Duration _delayedReactionTimer;
-    CharacterSpeech _delayedReactionSpeech = SPEECH_NONE;
+    SpeechId _delayedReactionSpeech = SPEECH_NONE;
     int _delayedReactionCharacterId = -1;
 
     std::array<bool, 4> playerAlreadyPicked = {{}};  // Was at offset 0xAE3368 in vanilla, we moved it into Party in OE.

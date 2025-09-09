@@ -50,9 +50,10 @@ endfunction()
 
 macro(resolve_dependencies) # Intentionally a macro - we want set() to work in parent scope.
     if(OE_USE_PREBUILT_DEPENDENCIES)
-        # "r4" is version as set in yml files in OpenEnroth_Dependencies, "master" is a branch name. This way it's
+        # "r6" is version as set in yml files in OpenEnroth_Dependencies, "master" is a branch name. This way it's
         # possible to test with dependencies built from different branches of the OpenEnroth_Dependencies repo.
-        set(PREBUILT_DEPS_TAG "deps_r4_master")
+        set(PREBUILT_DEPS_TAG "deps_r7_master")
+
         message(STATUS "Using prebuilt dependencies with PREBUILT_DEPS_TAG=${PREBUILT_DEPS_TAG}")
 
         set(PREBUILT_DEPS_BUILD_TYPE "${CMAKE_BUILD_TYPE}")
@@ -61,7 +62,7 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         endif()
 
         set(PREBUILT_DEPS_FILENAME "${OE_BUILD_PLATFORM}_${PREBUILT_DEPS_BUILD_TYPE}_${OE_BUILD_ARCHITECTURE}.zip")
-        set(PREBUILT_DEPS_DIR "${CMAKE_CURRENT_BINARY_DIR}/dependencies")
+        set(PREBUILT_DEPS_DIR "${CMAKE_CURRENT_BINARY_DIR}/dependencies/${PREBUILT_DEPS_TAG}")
         if (NOT EXISTS "${PREBUILT_DEPS_DIR}/${PREBUILT_DEPS_FILENAME}")
             download_prebuilt_dependencies("${PREBUILT_DEPS_TAG}" "${PREBUILT_DEPS_FILENAME}" "${PREBUILT_DEPS_DIR}" DOWNLOAD_STATUS)
             if(NOT DOWNLOAD_STATUS EQUAL 0)
@@ -96,9 +97,9 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         add_library(ZLIB::ZLIB ALIAS ZLIB)
         add_library(OpenAL INTERFACE)
         add_library(OpenAL::OpenAL ALIAS OpenAL)
-        add_library(SDL2OE INTERFACE)
-        add_library(SDL2::SDL2 ALIAS SDL2OE)
-        add_library(SDL2::SDL2OE ALIAS SDL2OE)
+        add_library(SDL3OE INTERFACE)
+        add_library(SDL3::SDL3 ALIAS SDL3OE)
+        add_library(SDL3::SDL3OE ALIAS SDL3OE)
         add_library(PNG INTERFACE)
         add_library(PNG::PNG ALIAS PNG)
     else()
@@ -106,13 +107,13 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
         find_package(ZLIB REQUIRED)
         find_package(FFmpeg REQUIRED)
 
-        find_package(SDL2 CONFIG REQUIRED)
-        add_library(SDL2OE INTERFACE)
-        target_link_libraries(SDL2OE INTERFACE SDL2::SDL2)
-        if(TARGET SDL2::SDL2main) # Not all platforms have SDL2main.
-            target_link_libraries(SDL2OE INTERFACE SDL2::SDL2main)
+        find_package(SDL3 CONFIG REQUIRED)
+        add_library(SDL3OE INTERFACE)
+        target_link_libraries(SDL3OE INTERFACE SDL3::SDL3)
+        if(TARGET SDL3::SDL3main) # Not all platforms have SDL3main.
+            target_link_libraries(SDL3OE INTERFACE SDL3::SDL3main)
         endif()
-        add_library(SDL2::SDL2OE ALIAS SDL2OE)
+        add_library(SDL3::SDL3OE ALIAS SDL3OE)
 
         # This should find OpenALConfig.cmake that comes with OpenAL Soft.
         #
@@ -140,6 +141,6 @@ macro(resolve_dependencies) # Intentionally a macro - we want set() to work in p
     print_library_found_message(OpenAL OpenAL::OpenAL "")
     print_library_found_message(ZLIB ZLIB::ZLIB "")
     print_library_found_message(FFmpeg "" "${AVCODEC_INCLUDE_DIRS}")
-    print_library_found_message(SDL2 SDL2::SDL2 "")
+    print_library_found_message(SDL3 SDL3::SDL3 "")
     print_library_found_message(OpenGL OpenGL::GL "")
 endmacro()

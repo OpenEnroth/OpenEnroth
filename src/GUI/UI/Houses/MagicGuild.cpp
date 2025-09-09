@@ -9,7 +9,7 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Tables/MerchantTable.h"
 #include "Engine/Party.h"
@@ -64,39 +64,39 @@ static constexpr IndexedArray<DialogueId, HOUSE_TYPE_FIRE_GUILD, HOUSE_TYPE_DARK
     {HOUSE_TYPE_DARK_GUILD,   DIALOGUE_NULL}
 };
 
-static constexpr IndexedArray<CharacterSkillMastery, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildSpellsMastery = {
-    {HOUSE_FIRE_GUILD_EMERALD_ISLAND,   CHARACTER_SKILL_MASTERY_NOVICE},
-    {HOUSE_FIRE_GUILD_HARMONDALE,       CHARACTER_SKILL_MASTERY_EXPERT},
-    {HOUSE_FIRE_GUILD_TULAREAN_FOREST,  CHARACTER_SKILL_MASTERY_MASTER},
-    {HOUSE_FIRE_GUILD_MOUNT_NIGHON,     CHARACTER_SKILL_MASTERY_GRANDMASTER},
-    {HOUSE_AIR_GUILD_EMERALD_ISLAND,    CHARACTER_SKILL_MASTERY_NOVICE},
-    {HOUSE_AIR_GUILD_HARMONDALE,        CHARACTER_SKILL_MASTERY_EXPERT},
-    {HOUSE_AIR_GUILD_TULAREAN_FOREST,   CHARACTER_SKILL_MASTERY_MASTER},
-    {HOUSE_AIR_GUILD_CELESTE,           CHARACTER_SKILL_MASTERY_GRANDMASTER},
-    {HOUSE_WATER_GUILD_HARMONDALE,      CHARACTER_SKILL_MASTERY_NOVICE},
-    {HOUSE_WATER_GUILD_TULAREAN_FOREST, CHARACTER_SKILL_MASTERY_EXPERT},
-    {HOUSE_WATER_GUILD_BRACADA_DESERT,  CHARACTER_SKILL_MASTERY_MASTER},
-    {HOUSE_WATER_GUILD_EVENMORN_ISLAND, CHARACTER_SKILL_MASTERY_GRANDMASTER},
-    {HOUSE_EARTH_GUILD_HARMONDALE,      CHARACTER_SKILL_MASTERY_NOVICE},
-    {HOUSE_EARTH_GUILD_TULAREAN_FOREST, CHARACTER_SKILL_MASTERY_EXPERT},
-    {HOUSE_EARTH_GUILD_STONE_CITY,      CHARACTER_SKILL_MASTERY_MASTER},
-    {HOUSE_EARTH_GUILD_PIT,             CHARACTER_SKILL_MASTERY_GRANDMASTER},
-    {HOUSE_SPIRIT_GUILD_EMERALD_ISLAND, CHARACTER_SKILL_MASTERY_NOVICE},
-    {HOUSE_SPIRIT_GUILD_HARMONDALE,     CHARACTER_SKILL_MASTERY_EXPERT},
-    {HOUSE_SPIRIT_GUILD_DEYJA,          CHARACTER_SKILL_MASTERY_MASTER},
-    {HOUSE_SPIRIT_GUILD_ERATHIA,        CHARACTER_SKILL_MASTERY_GRANDMASTER},
-    {HOUSE_MIND_GUILD_HARMONDALE,       CHARACTER_SKILL_MASTERY_NOVICE},
-    {HOUSE_MIND_GUILD_ERATHIA,          CHARACTER_SKILL_MASTERY_EXPERT},
-    {HOUSE_MIND_GUILD_TATALIA,          CHARACTER_SKILL_MASTERY_MASTER},
-    {HOUSE_MIND_GUILD_AVLEE,            CHARACTER_SKILL_MASTERY_GRANDMASTER},
-    {HOUSE_BODY_GUILD_EMERALD_ISLAND,   CHARACTER_SKILL_MASTERY_NOVICE},
-    {HOUSE_BODY_GUILD_HARMONDALE,       CHARACTER_SKILL_MASTERY_EXPERT},
-    {HOUSE_BODY_GUILD_ERATHIA,          CHARACTER_SKILL_MASTERY_MASTER},
-    {HOUSE_BODY_GUILD_AVLEE,            CHARACTER_SKILL_MASTERY_GRANDMASTER},
-    {HOUSE_LIGHT_GUILD_BRACADA_DESERT,  CHARACTER_SKILL_MASTERY_EXPERT},
-    {HOUSE_LIGHT_GUILD_CELESTE,         CHARACTER_SKILL_MASTERY_GRANDMASTER},
-    {HOUSE_DARK_GUILD_DEYJA,            CHARACTER_SKILL_MASTERY_EXPERT},
-    {HOUSE_DARK_GUILD_PIT,              CHARACTER_SKILL_MASTERY_GRANDMASTER}
+static constexpr IndexedArray<Mastery, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildSpellsMastery = {
+    {HOUSE_FIRE_GUILD_EMERALD_ISLAND,   MASTERY_NOVICE},
+    {HOUSE_FIRE_GUILD_HARMONDALE,       MASTERY_EXPERT},
+    {HOUSE_FIRE_GUILD_TULAREAN_FOREST,  MASTERY_MASTER},
+    {HOUSE_FIRE_GUILD_MOUNT_NIGHON,     MASTERY_GRANDMASTER},
+    {HOUSE_AIR_GUILD_EMERALD_ISLAND,    MASTERY_NOVICE},
+    {HOUSE_AIR_GUILD_HARMONDALE,        MASTERY_EXPERT},
+    {HOUSE_AIR_GUILD_TULAREAN_FOREST,   MASTERY_MASTER},
+    {HOUSE_AIR_GUILD_CELESTE,           MASTERY_GRANDMASTER},
+    {HOUSE_WATER_GUILD_HARMONDALE,      MASTERY_NOVICE},
+    {HOUSE_WATER_GUILD_TULAREAN_FOREST, MASTERY_EXPERT},
+    {HOUSE_WATER_GUILD_BRACADA_DESERT,  MASTERY_MASTER},
+    {HOUSE_WATER_GUILD_EVENMORN_ISLAND, MASTERY_GRANDMASTER},
+    {HOUSE_EARTH_GUILD_HARMONDALE,      MASTERY_NOVICE},
+    {HOUSE_EARTH_GUILD_TULAREAN_FOREST, MASTERY_EXPERT},
+    {HOUSE_EARTH_GUILD_STONE_CITY,      MASTERY_MASTER},
+    {HOUSE_EARTH_GUILD_PIT,             MASTERY_GRANDMASTER},
+    {HOUSE_SPIRIT_GUILD_EMERALD_ISLAND, MASTERY_NOVICE},
+    {HOUSE_SPIRIT_GUILD_HARMONDALE,     MASTERY_EXPERT},
+    {HOUSE_SPIRIT_GUILD_DEYJA,          MASTERY_MASTER},
+    {HOUSE_SPIRIT_GUILD_ERATHIA,        MASTERY_GRANDMASTER},
+    {HOUSE_MIND_GUILD_HARMONDALE,       MASTERY_NOVICE},
+    {HOUSE_MIND_GUILD_ERATHIA,          MASTERY_EXPERT},
+    {HOUSE_MIND_GUILD_TATALIA,          MASTERY_MASTER},
+    {HOUSE_MIND_GUILD_AVLEE,            MASTERY_GRANDMASTER},
+    {HOUSE_BODY_GUILD_EMERALD_ISLAND,   MASTERY_NOVICE},
+    {HOUSE_BODY_GUILD_HARMONDALE,       MASTERY_EXPERT},
+    {HOUSE_BODY_GUILD_ERATHIA,          MASTERY_MASTER},
+    {HOUSE_BODY_GUILD_AVLEE,            MASTERY_GRANDMASTER},
+    {HOUSE_LIGHT_GUILD_BRACADA_DESERT,  MASTERY_EXPERT},
+    {HOUSE_LIGHT_GUILD_CELESTE,         MASTERY_GRANDMASTER},
+    {HOUSE_DARK_GUILD_DEYJA,            MASTERY_EXPERT},
+    {HOUSE_DARK_GUILD_PIT,              MASTERY_GRANDMASTER}
 };
 
 // Values are in fact indexes for Character::_achievedAwardsBits
@@ -161,8 +161,8 @@ void GUIWindow_MagicGuild::mainDialogue() {
         if (pDialogueWindow->GetControl(i)->msg_param == std::to_underlying(DIALOGUE_GUILD_BUY_BOOKS)) {
             optionsText.push_back(localization->GetString(LSTR_BUY_SPELLS));
         } else {
-            CharacterSkillType skill = GetLearningDialogueSkill((DialogueId)pDialogueWindow->GetControl(i)->msg_param);
-            if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != CHARACTER_SKILL_MASTERY_NONE &&
+            Skill skill = GetLearningDialogueSkill((DialogueId)pDialogueWindow->GetControl(i)->msg_param);
+            if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != MASTERY_NONE &&
                 !pParty->activeCharacter().pActiveSkills[skill]) {
                 optionsText.push_back(localization->GetSkillName(skill));
                 haveLearnableSkills = true;
@@ -175,7 +175,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
     int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
 
     if (haveLearnableSkills) {
-        std::string skill_price_label = localization->FormatString(LSTR_FMT_SKILL_COST_D, pPrice);
+        std::string skill_price_label = localization->FormatString(LSTR_SKILL_COST_LU, pPrice);
         working_window.DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.White, skill_price_label, 3);
     }
 
@@ -193,10 +193,10 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
     int itemxind = 0;
 
     for (int pX = 32; pX < 452; pX += 70) {  // top row
-        if (pParty->spellBooksInGuilds[houseId()][itemxind].uItemID != ITEM_NULL) {
+        if (pParty->spellBooksInGuilds[houseId()][itemxind].itemId != ITEM_NULL) {
             render->DrawTextureNew(pX / 640.0f, 90 / 480.0f, shop_ui_items_in_store[itemxind]);
         }
-        if (pParty->spellBooksInGuilds[houseId()][itemxind + 6].uItemID != ITEM_NULL) {
+        if (pParty->spellBooksInGuilds[houseId()][itemxind + 6].itemId != ITEM_NULL) {
             render->DrawTextureNew(pX / 640.0f, 250 / 480.0f, shop_ui_items_in_store[itemxind + 6]);
         }
 
@@ -206,11 +206,11 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
     if (checkIfPlayerCanInteract()) {
         int itemcount = 0;
         for (int i = 0; i < itemAmountInShop[buildingType()]; ++i) {
-            if (pParty->spellBooksInGuilds[houseId()][i].uItemID != ITEM_NULL)
+            if (pParty->spellBooksInGuilds[houseId()][i].itemId != ITEM_NULL)
                 ++itemcount;
         }
 
-        engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_ITEM_TO_BUY), colorTable.White);
+        engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_THE_ITEM_TO_BUY), colorTable.White);
 
         if (!itemcount) {  // shop empty
             Time nextGenTime = pParty->PartyTimes.guildNextRefreshTime[houseId()];
@@ -218,16 +218,16 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
             return;
         }
 
-        Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+        Pointi pt = EngineIocContainer::ResolveMouse()->position();
         int testx = (pt.x - 32) / 70;
         if (testx >= 0 && testx < 6) {
             if (pt.y >= 250) {
                 testx += 6;
             }
 
-            ItemGen *item = &pParty->spellBooksInGuilds[houseId()][testx];
+            Item *item = &pParty->spellBooksInGuilds[houseId()][testx];
 
-            if (item->uItemID != ITEM_NULL) {
+            if (item->itemId != ITEM_NULL) {
                 int testpos;
                 if (pt.y >= 250) {
                     testpos = 32 + 70 * testx - 420;
@@ -254,7 +254,7 @@ void GUIWindow_MagicGuild::houseDialogueOptionSelected(DialogueId option) {
     if (option == DIALOGUE_GUILD_BUY_BOOKS) {
         if (pParty->PartyTimes.guildNextRefreshTime[houseId()] >= pParty->GetPlayingTime()) {
             for (int i = 0; i < itemAmountInShop[buildingType()]; ++i) {
-                if (pParty->spellBooksInGuilds[houseId()][i].uItemID != ITEM_NULL)
+                if (pParty->spellBooksInGuilds[houseId()][i].itemId != ITEM_NULL)
                     shop_ui_items_in_store[i] = assets->getImage_ColorKey(pParty->spellBooksInGuilds[houseId()][i].GetIconName());
             }
         } else {
@@ -302,7 +302,7 @@ void GUIWindow_MagicGuild::houseScreenClick() {
         return;
     }
 
-    Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+    Pointi pt = EngineIocContainer::ResolveMouse()->position();
 
     int testx = (pt.x - 32) / 70;
     if (testx >= 0 && testx < 6) {
@@ -310,8 +310,8 @@ void GUIWindow_MagicGuild::houseScreenClick() {
             testx += 6;
         }
 
-        ItemGen &boughtItem = pParty->spellBooksInGuilds[houseId()][testx];
-        if (boughtItem.uItemID != ITEM_NULL) {
+        Item &boughtItem = pParty->spellBooksInGuilds[houseId()][testx];
+        if (boughtItem.itemId != ITEM_NULL) {
             int testpos;
             if (pt.y >= 250) {
                 testpos = 32 + 70 * testx - 420;
@@ -327,24 +327,23 @@ void GUIWindow_MagicGuild::houseScreenClick() {
 
                     if (pParty->GetGold() < uPriceItemService) {
                         playHouseSound(houseId(), HOUSE_SOUND_GENERAL_NOT_ENOUGH_GOLD);
-                        engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+                        engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
                         return;
                     }
 
-                    int itemSlot = pParty->activeCharacter().AddItem(-1, boughtItem. uItemID);
-                    if (itemSlot) {
+                    std::optional<Pointi> pos = pParty->activeCharacter().inventory.findSpace(boughtItem);
+                    if (pos) {
                         boughtItem.SetIdentified();
-                        pParty->activeCharacter().pInventoryItemList[itemSlot - 1] = boughtItem;
+                        pParty->activeCharacter().inventory.add(*pos, boughtItem);
                         _transactionPerformed = true;
                         pParty->TakeGold(uPriceItemService);
                         boughtItem.Reset();
-                        render->ClearZBuffer();
                         pParty->activeCharacter().playReaction(SPEECH_ITEM_BUY);
                         return;
                     }
 
                     pParty->activeCharacter().playReaction(SPEECH_NO_ROOM);
-                    engine->_statusBar->setEvent(LSTR_INVENTORY_IS_FULL);
+                    engine->_statusBar->setEvent(LSTR_PACK_IS_FULL);
                 }
             }
         }
@@ -358,7 +357,7 @@ void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
     assert(guildType >= HOUSE_TYPE_FIRE_GUILD && guildType <= HOUSE_TYPE_DARK_GUILD);
 
     MagicSchool schoolType = guildSpellsSchool[guildType];
-    CharacterSkillMastery maxMastery = guildSpellsMastery[houseId()];
+    Mastery maxMastery = guildSpellsMastery[houseId()];
     Segment<ItemId> spellbooksForGuild = spellbooksForSchool(schoolType, maxMastery);
 
     for (int i = 0; i < itemAmountInShop[guildType]; ++i) {
@@ -370,11 +369,11 @@ void GUIWindow_MagicGuild::generateSpellBooksForGuild() {
             }
         }
 
-        ItemGen *itemSpellbook = &pParty->spellBooksInGuilds[houseId()][i];
+        Item *itemSpellbook = &pParty->spellBooksInGuilds[houseId()][i];
         itemSpellbook->Reset();
-        itemSpellbook->uItemID = pItemNum;
+        itemSpellbook->itemId = pItemNum;
         itemSpellbook->SetIdentified();
 
-        shop_ui_items_in_store[i] = assets->getImage_ColorKey(pItemTable->pItems[pItemNum].iconName);
+        shop_ui_items_in_store[i] = assets->getImage_ColorKey(pItemTable->items[pItemNum].iconName);
     }
 }

@@ -31,6 +31,9 @@ on:
     types:
       - published
 
+env:
+  CCACHE_COMPILERCHECK: content
+
 jobs:
   build_windows:
     timeout-minutes: 60
@@ -47,7 +50,7 @@ jobs:
     steps:
       # Checkout Code
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
         with:
           submodules: recursive
           ref: '${{ inputs.myCommit }}'
@@ -55,7 +58,7 @@ jobs:
       # Data cache is created by Populate Data Cache build.
       - name: Restore data cache
         id: restore-data-cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4.2.4
         with:
           path: |
             OpenEnroth_GameData
@@ -68,46 +71,16 @@ jobs:
         with:
           arch: '${{matrix.architecture}}'
 
-      # Restore ccache file from cache if possible so we don't have to download it.
-      - name: Restore cached ccache
-        id: ccache-cache
-        uses: actions/cache/restore@v4.1.2
-        with:
-          path: 'C:\ProgramData\chocolatey\lib\ccache\'
-          key: windows-ccache
-
-      # Chocolatey uses shims so create the shim if we used the cached ccache exe
-      - name: Add ccache shim
-        if: steps.ccache-cache.outputs.cache-hit == 'true'
-        run: |
-          C:\ProgramData\chocolatey\tools\shimgen.exe -o=C:\ProgramData\chocolatey\bin\ccache.exe -p=C:\ProgramData\chocolatey\lib\ccache\tools\ccache-4.8.2-windows-x86_64\ccache.exe
-
-      # If ccache can't be restored from cache upgrade it
-      - name: Update ccache
-        if: steps.ccache-cache.outputs.cache-hit != 'true'
-        run: |
-          choco upgrade ccache --version=4.8.2
-
-      # If ccache can't be restored from cache after upgrade cache it
-      - name: Save ccache to cache
-        if: steps.ccache-cache.outputs.cache-hit != 'true'
-        id: check-for-ccache-save
-        uses: actions/cache/save@v3
-        with:
-          path: 'C:\ProgramData\chocolatey\lib\ccache\'
-          key: windows-ccache
-
-      # GH action for ccache, only save cache if its on master branch or has a release build tag
       - name: Run ccache
-        uses: hendrikmuhs/ccache-action@v1.2.14
+        uses: hendrikmuhs/ccache-action@v1.2.18
         with:
           key: 'windows-${{matrix.configuration}}-${{matrix.architecture}}'
-          save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
           verbose: 2
-          max-size: 200M
-          
+          max-size: 400M
+          save: ${{github.event_name != 'pull_request'}}
+
       # MSVC hit rate is higher with ignoring the hash_dir and is safe
-      - name: Set ccache config values
+      - name: Configure ccache
         run: |
           ccache --set-config=hash_dir=false
 
@@ -128,7 +101,6 @@ jobs:
 
       # Only run gametest if we restored game data.
       - name: Run game tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true'
         working-directory: build
         run: |
           ninja Run_GameTest_Headless_Parallel
@@ -136,7 +108,7 @@ jobs:
           OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
 
       - name: Run retrace tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration != 'Debug'
+        if: matrix.configuration != 'Debug'
         working-directory: build
         run: |
           ninja Run_RetraceTest_Headless_Parallel

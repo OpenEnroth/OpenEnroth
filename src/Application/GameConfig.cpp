@@ -11,15 +11,8 @@
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(PlatformWindowMode, CASE_INSENSITIVE, {
     {WINDOW_MODE_WINDOWED, "windowed"},
     {WINDOW_MODE_BORDERLESS, "borderless"},
-    {WINDOW_MODE_FULLSCREEN, "fullscreen"},
     {WINDOW_MODE_FULLSCREEN_BORDERLESS, "fullscreen_borderless"},
     {WINDOW_MODE_FULLSCREEN_BORDERLESS, "borderless_fullscreen"}, // Alias for convenience
-
-    // Compatibility with old serialization:
-    {WINDOW_MODE_WINDOWED, "0"},
-    {WINDOW_MODE_BORDERLESS, "1"},
-    {WINDOW_MODE_FULLSCREEN, "2"},
-    {WINDOW_MODE_FULLSCREEN_BORDERLESS, "3"}
 });
 
 GameConfig::GameConfig() = default;
@@ -72,7 +65,6 @@ GameConfig::CheatCommands::CheatCommands(GameConfig *config) : ConfigSection(con
 
 void GameConfig::CheatCommands::_addCommand(int commandIndex, const std::string& defaultValue) {
     std::string name = fmt::format("command{:02}", commandIndex + 1);
-    auto item = std::make_unique<String>(this, name, defaultValue,
-        "Cheat Command. Example: 'xp add 1000|Give 1000 xp to current Character'");
-    CommandList.push_back(std::move(item));
+    auto item = std::make_unique<String>(this, name, defaultValue, fmt::format("Cheat command #{}.", commandIndex + 1));
+    _commandList.push_back(std::move(item));
 }

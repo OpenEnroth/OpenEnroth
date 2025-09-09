@@ -1,5 +1,6 @@
 #include "BaseRenderer.h"
 
+#include <algorithm>
 #include <cassert>
 #include <utility>
 #include <vector>
@@ -34,7 +35,6 @@
 
 bool BaseRenderer::Initialize() {
     updateRenderDimensions();
-    CreateZBuffer();
     return true;
 }
 
@@ -127,7 +127,7 @@ void BaseRenderer::DrawSpriteObjects() {
         // render as sprte 500 - 9081
         if (spell_fx_renderer->RenderAsSprite(object) ||
             ((object->uType < SPRITE_SPELL_FIRE_TORCH_LIGHT || object->uType >= SPRITE_10000) && // Not a spell sprite.
-             (object->uType < SPRITE_PROJECTILE_AIRBOLT || object->uType >= SPRITE_OBJECT_EXPLODE) && // Not a projectile.
+             (object->uType < SPRITE_PROJECTILE_AIR_BOLT || object->uType >= SPRITE_OBJECT_EXPLODE) && // Not a projectile.
              (object->uType < SPRITE_TRAP_FIRE || object->uType > SPRITE_TRAP_BODY))) { // Not a trap.
             SpriteFrame *frame = object->getSpriteFrame();
             if (frame->icon_name == "null" || frame->texture_name == "null") {
@@ -185,9 +185,9 @@ void BaseRenderer::DrawSpriteObjects() {
                     int screen_space_half_width = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uWidth / 2.0f);
                     int screen_space_height = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uHeight);
 
-                    if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
-                        projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
-                        if (projected_y >= pViewport->uViewportTL_Y && (projected_y - screen_space_height) <= pViewport->uViewportBR_Y) {
+                    if (projected_x + screen_space_half_width >= (signed int)pViewport->viewportTL_X &&
+                        projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
+                        if (projected_y >= pViewport->viewportTL_Y && (projected_y - screen_space_height) <= pViewport->viewportBR_Y) {
                             object->uAttributes |= SPRITE_VISIBLE;
                             pBillboardRenderList[::uNumBillboardsToDraw].uPaletteIndex = frame->GetPaletteIndex();
                             pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
@@ -205,7 +205,7 @@ void BaseRenderer::DrawSpriteObjects() {
                             pBillboardRenderList[::uNumBillboardsToDraw].screen_space_y = projected_y;
                             pBillboardRenderList[::uNumBillboardsToDraw].screen_space_z = view_x;
 
-                            pBillboardRenderList[::uNumBillboardsToDraw].object_pid = Pid(OBJECT_Item, i);
+                            pBillboardRenderList[::uNumBillboardsToDraw].object_pid = Pid(OBJECT_Sprite, i);
                             pBillboardRenderList[::uNumBillboardsToDraw].dimming_level = 0;
                             pBillboardRenderList[::uNumBillboardsToDraw].sTintColor = Color();
 
@@ -253,7 +253,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                     frame = pSpriteFrameTable->GetFrame(decor_desc->uSpriteID,
                         v6 + Duration::fromTicks(v7));
 
-                    if (engine->config->graphics.SeasonsChange.value()) {
+                    if (config->graphics.SeasonsChange.value()) {
                         frame = LevelDecorationChangeSeason(decor_desc, v6 + Duration::fromTicks(v7), pParty->uCurrentMonth);
                     }
 
@@ -323,9 +323,9 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                             int screen_space_half_width = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uWidth / 2.0f);
                             int screen_space_height = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uHeight);
 
-                            if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
-                                projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
-                                if (projected_y >= pViewport->uViewportTL_Y && (projected_y - screen_space_height) <= pViewport->uViewportBR_Y) {
+                            if (projected_x + screen_space_half_width >= (signed int)pViewport->viewportTL_X &&
+                                projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
+                                if (projected_y >= pViewport->viewportTL_Y && (projected_y - screen_space_height) <= pViewport->viewportBR_Y) {
                                     ::uNumBillboardsToDraw++;
                                     ++uNumDecorationsDrawnThisFrame;
 
@@ -374,12 +374,11 @@ void BaseRenderer::TransformBillboardsAndSetPalettesODM() {
     SoftwareBillboard billboard = {0};
     billboard.sParentBillboardID = -1;
     //  billboard.pTarget = render->pTargetSurface;
-    billboard.pTargetZ = render->pActiveZBuffer;
     //  billboard.uTargetPitch = render->uTargetSurfacePitch;
-    billboard.uViewportX = pViewport->uViewportTL_X;
-    billboard.uViewportY = pViewport->uViewportTL_Y;
-    billboard.uViewportZ = pViewport->uViewportBR_X - 1;
-    billboard.uViewportW = pViewport->uViewportBR_Y;
+    billboard.uViewportX = pViewport->viewportTL_X;
+    billboard.uViewportY = pViewport->viewportTL_Y;
+    billboard.uViewportZ = pViewport->viewportBR_X - 1;
+    billboard.uViewportW = pViewport->viewportBR_Y;
     pODMRenderParams->uNumBillboards = ::uNumBillboardsToDraw;
 
     for (unsigned int i = 0; i < ::uNumBillboardsToDraw; ++i) {
@@ -585,7 +584,7 @@ void BaseRenderer::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
 float BaseRenderer::GetGamma() {
     const float base = 0.60f;
     const float mult = 0.1f;
-    int level = engine->config->graphics.Gamma.value();
+    int level = config->graphics.Gamma.value();
     return base + mult * level;
 }
 
@@ -611,7 +610,7 @@ void BaseRenderer::DrawMasked(float u, float v, GraphicsImage *pTexture, int col
 }
 
 void BaseRenderer::ClearBlack() {  // used only at start and in game over win
-    ClearZBuffer();
+    ClearHitMap();
     ClearTarget(Color());
 }
 
@@ -669,7 +668,7 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
     }
 }
 
-void BaseRenderer::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Offset) {
+void BaseRenderer::DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait, int Y_Offset) {
     Recti rct;
     rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uWidth / 2;
     rct.y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
@@ -683,10 +682,10 @@ void BaseRenderer::DrawMonsterPortrait(Recti rc, SpriteFrame *Portrait, int Y_Of
 
 void BaseRenderer::DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) {
     Recti targetrect{};
-    targetrect.x = pViewport->uViewportTL_X;
-    targetrect.y = pViewport->uViewportTL_Y;
-    targetrect.w = pViewport->uViewportBR_X - pViewport->uViewportTL_X;
-    targetrect.h = pViewport->uViewportBR_Y - pViewport->uViewportTL_Y;
+    targetrect.x = pViewport->viewportTL_X;
+    targetrect.y = pViewport->viewportTL_Y;
+    targetrect.w = pViewport->viewportBR_X - pViewport->viewportTL_X;
+    targetrect.h = pViewport->viewportBR_Y - pViewport->viewportTL_Y;
 
     DrawImage(texture, targetrect, palette, colorTable.MediumGrey);
 }
@@ -695,12 +694,6 @@ void BaseRenderer::DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() {
     engine->draw_debug_outlines();
     render->DoRenderBillboards_D3D();
     spell_fx_renderer->RenderSpecialEffects();
-}
-
-void BaseRenderer::PresentBlackScreen() {
-    BeginScene2D();
-    ClearBlack();
-    Present();
 }
 
 // TODO: should this be combined / moved out of render
@@ -733,49 +726,22 @@ std::vector<Actor*> BaseRenderer::getActorsInViewport(int pDepth) {
     return foundActors;
 }
 
-// TODO(pskelton): z buffer must go
-void BaseRenderer::CreateZBuffer() {
-    if (pActiveZBuffer)
-        free(pActiveZBuffer);
-
-    pActiveZBuffer = (int*)malloc(outputRender.w * outputRender.h * sizeof(int));
-    if (!pActiveZBuffer)
-        logger->error("Failed to create zbuffer");
-
-    ClearZBuffer();
+void BaseRenderer::ClearHitMap() {
+    _equipmentHitMap.clear();
 }
 
-// TODO(pskelton): z buffer must go
-void BaseRenderer::ClearZBuffer() {
-    memset32(this->pActiveZBuffer, 0xFFFF0000, outputRender.w * outputRender.h);
-}
-
-// TODO(pskelton): zbuffer must go
-void BaseRenderer::ZDrawTextureAlpha(float u, float v, GraphicsImage *img, int zVal) {
+void BaseRenderer::DrawToHitMap(float u, float v, GraphicsImage *img, int zVal) {
     if (!img) return;
 
-    int uOutX = static_cast<int>(u * outputRender.w);
-    int uOutY = static_cast<int>(v * outputRender.h);
-    const RgbaImage &image = img->rgba();
+    // Convert normalized coordinates to screen pixel coordinates
+    int screenX = static_cast<int>(u * outputRender.w);
+    int screenY = static_cast<int>(v * outputRender.h);
 
-    if (uOutX < 0)
-        uOutX = 0;
-    if (uOutY < 0)
-        uOutY = 0;
-
-    for (int ys = 0; ys < image.height(); ys++) {
-        auto imageLine = image[ys];
-        for (int xs = 0; xs < image.width(); xs++) {
-            if (imageLine[xs].a != 0) {
-                this->pActiveZBuffer[uOutX + xs + outputRender.w * (uOutY + ys)] = zVal;
-            }
-        }
-    }
+    _equipmentHitMap.add(Pointi(screenX, screenY), img, zVal);
 }
 
 bool BaseRenderer::Reinitialize(bool firstInit) {
     updateRenderDimensions();
-    CreateZBuffer();
     return true;
 }
 
@@ -793,4 +759,13 @@ void BaseRenderer::updateRenderDimensions() {
         outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
     else
         outputRender = outputPresent;
+
+    pViewport->SetViewport(config->graphics.ViewPortX1.value(), // 8 in vanilla
+                           config->graphics.ViewPortY1.value(), // 8 in vanilla
+                           outputRender.w - config->graphics.ViewPortX2.value(),  // 468 in vanilla
+                           outputRender.h - config->graphics.ViewPortY2.value()); // 352 in vanilla
+}
+
+int BaseRenderer::QueryHitMap(Pointi screenPos, int defaultValue) {
+    return _equipmentHitMap.query(screenPos, defaultValue);
 }

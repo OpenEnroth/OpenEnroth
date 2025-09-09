@@ -1,7 +1,9 @@
 #include "OverlayEventHandler.h"
 
-#include <imgui/backends/imgui_impl_sdl2.h>
+#include <imgui/backends/imgui_impl_sdl3.h>
 #include <imgui/imgui.h>
+
+#include "Engine/Engine.h"
 
 OverlayEventHandler::OverlayEventHandler() : PlatformEventFilter(EVENTS_ALL) {
 }
@@ -15,6 +17,9 @@ bool OverlayEventHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
 }
 
 bool OverlayEventHandler::keyEvent(PlatformKey key, PlatformModifiers mods, bool keyPressed) {
+    if (key == engine->config->keybindings.Console.value() || key == engine->config->gamepad.Console.value())
+        return false; // Pass close console keys to the game to handle.
+
     return ImGui::GetCurrentContext() && ImGui::GetIO().WantCaptureKeyboard;
 }
 
@@ -37,6 +42,6 @@ bool OverlayEventHandler::wheelEvent(const PlatformWheelEvent *event) {
 bool OverlayEventHandler::nativeEvent(const PlatformNativeEvent *event) {
     // Here we're assuming the native event is coming from SDL
     const SDL_Event *sdlEvent = static_cast<const SDL_Event *>(event->nativeEvent);
-    ImGui_ImplSDL2_ProcessEvent(sdlEvent);
+    ImGui_ImplSDL3_ProcessEvent(sdlEvent);
     return false;
 }

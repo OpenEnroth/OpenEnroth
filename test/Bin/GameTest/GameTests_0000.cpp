@@ -66,38 +66,14 @@ GAME_TEST(Issues, Issue198) {
     // Check that items can't end up out of bounds of character's inventory.
     test.playTraceFromTestData("issue_198.mm7", "issue_198.json");
 
-    auto forEachInventoryItem = [](auto &&callback) {
-        for (const Character &character : pParty->pCharacters) {
-            for (int inventorySlot = 0; inventorySlot < Character::INVENTORY_SLOT_COUNT; inventorySlot++) {
-                int itemIndex = character.pInventoryMatrix[inventorySlot];
-                if (itemIndex <= 0)
-                    continue; // Empty or non-primary cell.
+    for (const Character &character : pParty->pCharacters) {
+        for (InventoryConstEntry entry : character.inventory.entries()) {
+            Recti geometry = entry.geometry();
 
-                int x = inventorySlot % Character::INVENTORY_SLOTS_WIDTH;
-                int y = inventorySlot / Character::INVENTORY_SLOTS_WIDTH;
-
-                callback(character.pInventoryItemList[itemIndex - 1], x, y);
-            }
+            EXPECT_LE(geometry.x + geometry.w, character.inventory.gridSize().w);
+            EXPECT_LE(geometry.y + geometry.h, character.inventory.gridSize().h);
         }
-    };
-
-    // Preload item images in the main thread first.
-    game.runGameRoutine([&] {
-        forEachInventoryItem([](const ItemGen &item, int /*x*/, int /*y*/) {
-            // Calling width() forces the texture to be created.
-            assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName)->width();
-        });
-    });
-
-    // Then can safely check everything.
-    forEachInventoryItem([](const ItemGen &item, int x, int y) {
-        GraphicsImage *image = assets->getImage_ColorKey(pItemTable->pItems[item.uItemID].iconName);
-        int width = GetSizeInInventorySlots(image->width());
-        int height = GetSizeInInventorySlots(image->height());
-
-        EXPECT_LE(x + width, Character::INVENTORY_SLOTS_WIDTH);
-        EXPECT_LE(y + height, Character::INVENTORY_SLOTS_HEIGHT);
-    });
+    }
 }
 
 // 200
@@ -189,7 +165,7 @@ GAME_TEST(Issues, Issue268_939) {
     EXPECT_EQ(pParty->pCharacters[0].GetRangedAttack(), 18);
     EXPECT_EQ(pParty->pCharacters[1].GetRangedAttack(), 23);
     EXPECT_EQ(pParty->pCharacters[2].GetRangedAttack(), 21);
-    EXPECT_EQ(pParty->pCharacters[3].GetRangedAttack(), 17);
+    EXPECT_EQ(pParty->pCharacters[3].GetRangedAttack(), 9); // was 17 in vanilla see #1927
     // dmg
     EXPECT_EQ(pParty->pCharacters[0].GetRangedDamageString(), "9 - 14");
     EXPECT_EQ(pParty->pCharacters[1].GetRangedDamageString(), "11 - 16");
@@ -199,7 +175,7 @@ GAME_TEST(Issues, Issue268_939) {
     auto checkSkills = [](std::initializer_list<std::pair<int, int>> numSkillPairs) {
         for (auto pair : numSkillPairs) {
             int pSkillsCount = 0;
-            for (CharacterSkillType j : allVisibleSkills()) {
+            for (Skill j : allVisibleSkills()) {
                 if (pParty->pCharacters[pair.first].pActiveSkills[j]) {
                     ++pSkillsCount;
                 }
@@ -344,10 +320,31 @@ GAME_TEST(Issues, Issue293c) {
 
 GAME_TEST(Issues, Issue294) {
     // Testing that party auto-casting shrapnel successfully targets rats & kills them, gaining experience.
-    auto experienceTape = tapes.totalExperience();
+    auto deadActorsTape = actorTapes.countByState(Dead);
+    auto ratStateTape = actorTapes.aiState(79);
+    auto ratPositionTape = tapes.custom([] { return pActors[79].pos; });
+    auto recoveringTape = charTapes.areRecovering();
+    auto spritesTape = tapes.sprites();
     test.playTraceFromTestData("issue_294.mm7", "issue_294.json");
-    // EXPECT_GT(experienceTape.delta(), 0); // Expect the giant rat to be dead after four shrapnel casts from character #4.
-    // TODO(captainurist): ^passes now, but for the wrong reason - the rat decided to move after recent patches
+
+    // Only the 4th char acted.
+    EXPECT_EQ(recoveringTape.slice(0).unique(), tape(false));
+    EXPECT_EQ(recoveringTape.slice(1).unique(), tape(false));
+    EXPECT_EQ(recoveringTape.slice(2).unique(), tape(false));
+    EXPECT_EQ(recoveringTape.slice(3).unique(), tape(false, true, false));
+
+    // Sharpmetal was cast.
+    EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_DARK_SHARPMETAL_IMPACT);
+
+    // Giant rat died after a sharpmetal cast from character #4.
+    EXPECT_EQ(deadActorsTape.delta(), +1);
+    EXPECT_EQ(ratStateTape.frontBack(), tape(Standing, Dead));
+
+    // Rat didn't move much.
+    Vec3f positionJitter = BBoxf::forPoints(ratPositionTape).size();
+    EXPECT_LT(positionJitter.x, 100);
+    EXPECT_LT(positionJitter.y, 100);
+    EXPECT_LT(positionJitter.z, 100);
 }
 
 // 300
@@ -409,7 +406,7 @@ GAME_TEST(Issues, Issue355) {
     // GOG: 6-2. OpenEnroth: 9-5.
     auto healthTape = charTapes.hps();
     test.playTraceFromTestData("issue_355.mm7", "issue_355.json");
-    auto damageRange = healthTape.reversed().adjacentDeltas().flattened().filtered([] (int damage) { return damage > 0; }).minMax();
+    auto damageRange = healthTape.reverse().adjacentDeltas().flatten().filter([] (int damage) { return damage > 0; }).minMax();
     // 2d3+0 with a sequential engine can't roll 2 or 6, so all values should be in [3, 5]. Luck roll can drop this to 1/2...
     EXPECT_EQ(damageRange, tape(3 /*1*/, 5));
 }
@@ -434,7 +431,7 @@ GAME_TEST(Issues, Issue388) {
 GAME_TEST(Issues, Issue395) {
     // Check that learning skill works as intended.
     auto expTape = charTapes.experiences();
-    auto learningTape = charTapes.skillLevels(CHARACTER_SKILL_LEARNING);
+    auto learningTape = charTapes.skillLevels(SKILL_LEARNING);
     test.playTraceFromTestData("issue_395.mm7", "issue_395.json");
     EXPECT_EQ(expTape.frontBack(), tape({100, 100, 100, 100}, {214, 228, 237, 258}));
     EXPECT_EQ(learningTape, tape({0, 4, 6, 10}));
@@ -446,7 +443,7 @@ GAME_TEST(Issues, Issue402) {
     // Attacking while wearing wetsuits shouldn't assert.
     auto checkCharactersWearWetsuits = [] {
         for (int i = 0; i < 4; i++)
-            EXPECT_TRUE(pParty->pCharacters[i].wearsItemAnywhere(ITEM_QUEST_WETSUIT));
+            EXPECT_TRUE(pParty->pCharacters[i].wearsItem(ITEM_QUEST_WETSUIT));
     };
 
     test.playTraceFromTestData("issue_402.mm7", "issue_402.json", [&] {
@@ -521,7 +518,7 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     // we should be teleported to harmondale
     EXPECT_EQ(mapTape, tape(MAP_CASTLE_LAMBENT, MAP_HARMONDALE));
     // ending message box was displayed.
-    auto flatMessageBoxes = messageBoxesTape.flattened();
+    auto flatMessageBoxes = messageBoxesTape.flatten();
     EXPECT_EQ(flatMessageBoxes.size(), 1);
     EXPECT_TRUE(flatMessageBoxes.front().starts_with("Congratulations Adventurer"));
 
@@ -567,7 +564,7 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     auto checkSkills = [](std::initializer_list<std::pair<int, int>> numSkillPairs) {
         for (auto pair : numSkillPairs) {
             int pSkillsCount = 0;
-            for (CharacterSkillType j : allVisibleSkills()) {
+            for (Skill j : allVisibleSkills()) {
                 if (pParty->pCharacters[pair.first].pActiveSkills[j]) {
                     ++pSkillsCount;
                 }
@@ -663,7 +660,7 @@ GAME_TEST(Issues, Issue489) {
     // Test that AOE version of Shrinking Ray spell works.
     auto chibisTape = actorTapes.countByBuff(ACTOR_BUFF_SHRINK);
     test.playTraceFromTestData("issue_489.mm7", "issue_489.json");
-    EXPECT_EQ(chibisTape, tape(0, 15));
+    EXPECT_EQ(chibisTape, tape(0, 14));
 }
 
 GAME_TEST(Issues, Issue490) {

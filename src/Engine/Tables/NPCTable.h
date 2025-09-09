@@ -53,7 +53,7 @@ struct NPCData {  // 4Ch
     unsigned int dialogue_4_evt_id = 0;  // and absolutely crazy stuff when it's in party hierlings (npc2)
     unsigned int dialogue_5_evt_id = 0;
     unsigned int dialogue_6_evt_id = 0;
-    CharacterSex uSex = SEX_MALE;       // 40
+    Sex uSex = SEX_MALE;       // 40
     int bHasUsedTheAbility = 0;  // 44
     int news_topic = 0;          // 48
 };
@@ -103,7 +103,7 @@ struct NPCStats {
      * @offset 0x476C60
      */
     void setNPCNamesOnLoad();
-    const std::string &sub_495366_MispronounceName(uint8_t firstLetter, CharacterSex genderId);
+    const std::string &sub_495366_MispronounceName(uint8_t firstLetter, Sex genderId);
 
     std::array<NPCData, 501> pOriginalNPCData; // NPC data as read from npcdata.txt.
     std::array<NPCData, 501> pNPCData; // NPC data used during the game.

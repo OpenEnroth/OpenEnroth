@@ -6,9 +6,9 @@
 
 #include "Engine/Time/Duration.h"
 
-struct LODSprite;
 struct DecorationDesc;
 class GraphicsImage;
+struct LodSprite;
 
 class Sprite {
  public:
@@ -20,7 +20,7 @@ class Sprite {
     int uAreaY = 0; // TODO(captainurist): was intended to support sprite maps?
     int uWidth = 0; // Same as texture->width().
     int uHeight = 0;
-    LODSprite *sprite_header = nullptr;
+    LodSprite *sprite_header = nullptr;
 };
 
 class SpriteFrame {

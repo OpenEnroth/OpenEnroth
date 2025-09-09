@@ -5,12 +5,11 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Engine/Graphics/Texture_MM7.h"
-
 #include "Library/Lod/LodReader.h"
 
 #include "Utility/Memory/Blob.h"
 
+struct LodImage;
 class LodReader;
 
 class LodTextureCache {
@@ -23,17 +22,18 @@ class LodTextureCache {
     void reserveLoadedTextures();
     void releaseUnreserved();
 
-    Texture_MM7 *loadTexture(std::string_view pContainer, bool useDummyOnError = true);
+    LodImage *loadTexture(std::string_view pContainer, bool useDummyOnError = true);
 
     Blob LoadCompressedTexture(std::string_view pContainer); // TODO(captainurist): doesn't belong here.
+    Blob read(std::string_view pContainer); // TODO(captainurist): doesn't belong here.
 
  private:
-    bool LoadTextureFromLOD(Texture_MM7 *pOutTex, std::string_view pContainer);
+    bool LoadTextureFromLOD(LodImage *pOutTex, std::string_view pContainer);
 
  private:
     LodReader _reader;
     int _reservedCount = 0;
-    std::unordered_map<std::string, Texture_MM7> _textureByName;
+    std::unordered_map<std::string, LodImage> _textureByName;
     std::vector<std::string> _texturesInOrder;
 };
 

@@ -15,7 +15,7 @@ std::tuple<bool, bool> imGuiBeginEx(const std::string &name, bool isOpened, ImGu
 void imGuiEnd() { ImGui::End(); }
 
 // Child Windows
-bool imGuiBeginChild(const std::string &name, float sizeX, float sizeY, bool border) { return ImGui::BeginChild(name.c_str(), { sizeX, sizeY }, border); }
+bool imGuiBeginChild(const std::string &name, float sizeX, float sizeY, bool border, ImGuiWindowFlags_ flags) { return ImGui::BeginChild(name.c_str(), { sizeX, sizeY }, border, flags); }
 void imGuiEndChild() { ImGui::EndChild(); }
 
 // Windows Utilities
@@ -54,6 +54,22 @@ void imGuiTableNextRow() { ImGui::TableNextRow(); }
 void imGuiTableSetColumnIndex(int index) { ImGui::TableSetColumnIndex(index); }
 int imGuiTableGetColumnCount() { return ImGui::TableGetColumnCount(); }
 
+// Combo
+std::tuple<bool, int> imGuiCombo(const std::string &label, int currentItem, const std::string &items) {
+    currentItem -= 1;
+    bool selected = ImGui::Combo(label.c_str(), &currentItem, items.c_str());
+    return { selected, currentItem + 1 };
+}
+
+// MenuBar
+bool imGuiBeginMenuBar() { return ImGui::BeginMenuBar(); }
+bool imGuiBeginMenu(const std::string &label) { return ImGui::BeginMenu(label.c_str()); }
+bool imGuiBeginMenuEx(const std::string &label, bool enabled) { return ImGui::BeginMenu(label.c_str(), enabled); }
+bool imGuiMenuItem(const std::string &label) { return ImGui::MenuItem(label.c_str()); }
+bool imGuiMenuItemEx(const std::string &label, bool enabled) { return ImGui::MenuItem(label.c_str(), nullptr, nullptr, enabled); }
+void imGuiEndMenu() { ImGui::EndMenu(); }
+void imGuiEndMenuBar() { ImGui::EndMenuBar(); }
+
 // Item/Widgets Utilities
 bool imGuiIsItemFocused() { return ImGui::IsItemFocused(); }
 
@@ -63,6 +79,8 @@ bool imGuiIsMouseHoveringRect(float minX, float minY, float maxX, float maxY) { 
 // Layout
 void imGuiSameLine() { ImGui::SameLine(); }
 float imGuiGetFrameHeightWithSpacing() { return ImGui::GetFrameHeightWithSpacing(); }
+void imGuiAlignTextToFramePadding() { ImGui::AlignTextToFramePadding(); }
+void imGuiDummy(float width, float height) { ImGui::Dummy({ width, height }); }
 
 // Inputs Utilities: Keyboard
 void imGuiSetKeyboardFocusHere(int offset) { ImGui::SetKeyboardFocusHere(offset); }
@@ -83,6 +101,8 @@ struct ImGuiInputTextUserData {
             break;
         case ImGuiKey_DownArrow:
             step = 1;
+            break;
+        default:
             break;
         }
 
@@ -112,11 +132,19 @@ int inputTextCallback(ImGuiInputTextCallbackData *data) {
     return 0;
 }
 
-std::tuple<std::string, bool> imGuiInputTextWithHint(const std::string &label, const std::string &hint, std::string text, ImGuiInputTextFlags flags, sol::function callback) {
+std::tuple<std::string, bool> imGuiInputTextWithHint(const std::string &label, const std::string &hint, std::string text, ImGuiInputTextFlags flags) {
+    ImGuiInputTextUserData userData{ &text, nullptr };
+    bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), text.data(), text.capacity() + 1, flags | ImGuiInputTextFlags_CallbackResize, inputTextCallback, &userData);
+    return { text, selected };
+}
+
+std::tuple<std::string, bool> imGuiInputTextWithHintEx(const std::string &label, const std::string &hint, std::string text, ImGuiInputTextFlags flags, sol::function callback) {
     ImGuiInputTextUserData userData{ &text, callback.valid() ? &callback : nullptr };
     bool selected = ImGui::InputTextWithHint(label.c_str(), hint.c_str(), text.data(), text.capacity() + 1, flags | ImGuiInputTextFlags_CallbackResize, inputTextCallback, &userData);
     return { text, selected };
 }
+
+void imGuiSeparator() { ImGui::Separator(); }
 
 void InitEnums(sol::table &table) {
     table.new_enum("ImGuiWindowFlags",
@@ -496,7 +524,7 @@ void ImGuiBindings::Init(sol::state_view &solState, sol::table &table) {
     ImGui.set_function("button", sol::overload(imGuiButton, imGuiButtonEx));
     ImGui.set_function("checkbox", imGuiCheckbox);
 
-    ImGui.set_function("inputTextWithHint", imGuiInputTextWithHint);
+    ImGui.set_function("inputTextWithHint", sol::overload(imGuiInputTextWithHint, imGuiInputTextWithHintEx));
 
     ImGui.set_function("beginTable", imGuiBeginTable);
     ImGui.set_function("endTable", imGuiEndTable);
@@ -504,12 +532,24 @@ void ImGuiBindings::Init(sol::state_view &solState, sol::table &table) {
     ImGui.set_function("tableSetColumnIndex", imGuiTableSetColumnIndex);
     ImGui.set_function("tableGetColumnCount", imGuiTableGetColumnCount);
 
+    ImGui.set_function("combo", imGuiCombo);
+
+    ImGui.set_function("beginMenuBar", imGuiBeginMenuBar);
+    ImGui.set_function("beginMenu", sol::overload(imGuiBeginMenu, imGuiBeginMenuEx));
+    ImGui.set_function("menuItem", sol::overload(imGuiMenuItem, imGuiMenuItemEx));
+    ImGui.set_function("endMenu", imGuiEndMenu);
+    ImGui.set_function("endMenuBar", imGuiEndMenuBar);
+
     ImGui.set_function("isItemFocused", imGuiIsItemFocused);
 
     ImGui.set_function("setKeyboardFocusHere", imGuiSetKeyboardFocusHere);
 
     ImGui.set_function("sameLine", imGuiSameLine);
     ImGui.set_function("getFrameHeightWithSpacing", imGuiGetFrameHeightWithSpacing);
+    ImGui.set_function("alignTextToFramePadding", imGuiAlignTextToFramePadding);
+    ImGui.set_function("dummy", imGuiDummy);
 
     ImGui.set_function("isMouseHoveringRect", imGuiIsMouseHoveringRect);
+
+    ImGui.set_function("separator", imGuiSeparator);
 }

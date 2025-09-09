@@ -4,7 +4,7 @@
 #include <string>
 
 #include "Engine/Spells/SpellBuff.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/CombinedSkillValue.h"
 #include "Engine/Pid.h"
@@ -137,7 +137,7 @@ class Actor {
                                  AIDirection *pOut, int PreferedZ);
     static void Explode(unsigned int uActorID);
     static void AI_RangedAttack(unsigned int uActorID, AIDirection *a2,
-                                int type, ActorAbility a4);
+                                MonsterProjectile type, ActorAbility a4);
     static void AI_SpellAttack(unsigned int uActorID, AIDirection *pDir,
                                SpellId uSpellID, ActorAbility a4, CombinedSkillValue uSkill);
     static void ActorDamageFromMonster(Pid attacker_id, unsigned int actor_id,
@@ -234,7 +234,7 @@ class Actor {
     IndexedArray<uint16_t, ANIM_First, ANIM_Last> spriteIds = {{}};
     IndexedArray<SoundId, ACTOR_SOUND_FIRST, ACTOR_SOUND_LAST> soundSampleIds = {{}};
     IndexedArray<SpellBuff, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> buffs;
-    std::array<ItemGen, 4> items;
+    std::array<Item, 4> items;
     unsigned int group = 0;
     MonsterType ally = MONSTER_TYPE_INVALID; // TODO(captainurist): document properly, and maybe rename.
     std::array<ActorJob, 8> scheduledJobs;
@@ -261,8 +261,8 @@ void npcSetItem(int npc, ItemId item, int a3);
  */
 void toggleActorGroupFlag(unsigned int uGroupID, ActorAttribute uFlag, bool bValue);
 bool Detect_Between_Objects(Pid uObjID, Pid uObj2ID);
-void Spawn_Light_Elemental(int spell_power, CharacterSkillMastery caster_skill_mastery, Duration duration);
-void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int a3, int a4, int a5);
+void Spawn_Light_Elemental(int spell_power, Mastery caster_skill_mastery, Duration duration);
+void SpawnEncounter(MapInfo *pMapInfo, SpawnPoint *spawn, int monsterCatMod, int countOverride, int aggro);
 /**
  * @offset 0x438F8F
  */

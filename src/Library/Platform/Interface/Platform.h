@@ -15,7 +15,6 @@ class PlatformWindow;
 class PlatformEventLoop;
 class PlatformEventHandler;
 class PlatformGamepad;
-class Logger;
 
 /**
  * Platform abstraction layer.

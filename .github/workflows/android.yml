@@ -33,15 +33,15 @@ on:
 
 env:
   # This version is referenced in android/openenroth/build.gradle.
-  # See https://developer.android.com/ndk/downloads for revision-to-version mapping.
   # When updating the version here you should also update it in the Dependencies repo!
-  NDK_REVISION: r26d
+  NDK_VERSION: 28.1.13356709
+  CCACHE_COMPILERCHECK: content
 
 jobs:
   build_android:
     timeout-minutes: 60
     name: Build Android Client
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -61,7 +61,7 @@ jobs:
           sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish
 
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
         with:
           submodules: recursive
           ref: '${{inputs.myCommit}}'
@@ -78,51 +78,57 @@ jobs:
           # Secrets cannot be referenced in if: blocks, so we have to work it around.
           SECRETS_KEYSTORE: '${{secrets.KEYSTORE}}'
 
-      - name: Get NDK
-        id: get-ndk
-        uses: nttld/setup-ndk@v1.5.0
-        with:
-          ndk-version: '${{env.NDK_REVISION}}'
-          add-to-path: false
-          local-cache: true
-          link-to-sdk: true
-
-      - name: Install dependencies
+      - name: Install NDK
         run: |
-          sudo apt-get install -y yasm
-          if [[ "${{matrix.architecture}}" = "universal" || "${{matrix.architecture}}" = "x86" ]]; then
-            sudo dpkg --add-architecture i386
-          fi
-          if [[ "${{matrix.architecture}}" = "universal" || "${{matrix.architecture}}" = "x86" || "${{matrix.architecture}}" = "armeabi-v7a" ]]; then
-            sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-            sudo apt-get update
-            sudo apt-get install -y gcc-13-multilib g++-13-multilib
-          fi
+          /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "ndk;$NDK_VERSION"
 
-      - uses: actions/setup-java@v4.4.0
+      # We need gcc-multilib for host-side tools (luajit's buildvm) when building for armeabi-v7a. Why? No idea.
+      - name: Install dependencies
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            if [[ "${{matrix.architecture}}" = "universal" || "${{matrix.architecture}}" = "armeabi-v7a" ]]; then
+              sudo apt-get update
+              sudo apt-get install -y gcc-13-multilib g++-13-multilib
+            fi
+
+      - uses: actions/setup-java@v5.0.0
         with:
           distribution: temurin
           java-version: 17.0.6
-          cache: gradle
 
       - name: Run ccache
-        uses: hendrikmuhs/ccache-action@v1.2.14
+        uses: hendrikmuhs/ccache-action@v1.2.18
         with:
-          key: 'android-${{matrix.configuration}}-${{matrix.architecture}}'
-          save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
+          key: 'android-${{matrix.configuration}}-universal'
           verbose: 2
-          max-size: ${{ fromJson('["200M", "600M"]')[matrix.architecture == 'universal'] }}
+          max-size: 800M
+        if: github.event_name != 'pull_request'
+        
+      - name: Run ccache pr 
+        uses: hendrikmuhs/ccache-action@v1.2.18
+        with:
+          key: 'android-${{matrix.configuration}}-universal'
+          verbose: 2
+          max-size: 800M
+          save: false
+        if: github.event_name == 'pull_request'
 
-      - name: Build the app
-        working-directory: android
-        run: |
-          ./gradlew "assemble${{matrix.configuration}}" -Pandroid.native.buildOutput=verbose
+      - uses: burrunan/gradle-cache-action@v3.0.1
+        name: Build 
+        with:
+          build-root-directory: android
+          job-id: android-${{matrix.configuration}}
+          arguments: assemble${{matrix.configuration}} --info -Pandroid.native.buildOutput=verbose 
+          read-only: ${{ github.event_name == 'pull_request' }}
         env:
           SIGNING_KEYSTORE: '${{steps.decode_keystore.outputs.filePath}}'
           SIGNING_KEY_ALIAS: '${{secrets.SIGNING_KEY_ALIAS}}'
           SIGNING_KEY_PASSWORD: '${{secrets.SIGNING_KEY_PASSWORD}}'
           SIGNING_STORE_PASSWORD: '${{secrets.SIGNING_STORE_PASSWORD}}'
-          CMAKE_BUILD_PARALLEL_LEVEL: 3
+          CMAKE_BUILD_PARALLEL_LEVEL: 4
           GITHUBARCH: '${{matrix.architecture}}'
 
       - name: List artifacts

@@ -43,12 +43,12 @@ class GameStarter {
     void runInstrumented(std::function<void(EngineController *)> controlRoutine);
 
  private:
-    void initWithLogger();
+    void initialize();
 
     static void resolveUserPath(Environment *environment, GameStarterOptions *options);
     static void resolveDataPath(Environment *environment, GameStarterOptions *options);
     static void failOnInvalidPath(std::string_view dataPath, Platform *platform);
-    static void migrateUserData();
+    static void migrateSaves();
 
  private:
     GameStarterOptions _options;

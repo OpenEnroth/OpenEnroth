@@ -8,7 +8,7 @@
 #include "Engine/Engine.h"
 #include "Engine/SpellFxRenderer.h"
 #include "Engine/Time/Timer.h"
-#include "Engine/Events/Processor.h"
+#include "Engine/Evt/Processor.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/TurnEngine/TurnEngine.h"
@@ -144,10 +144,10 @@ static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
 
 void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
     ObjectDesc *object = &pObjectList->pObjects[pSpriteObjects[uLayingItemID].uObjectDescID];
-    bool isHighSlope = IsTerrainSlopeTooHigh(pSpriteObjects[uLayingItemID].vPosition);
+    bool isHighSlope = pOutdoor->pTerrain.isSlopeTooHighByPos(pSpriteObjects[uLayingItemID].vPosition);
     int bmodelPid = 0;
     bool onWater = false;
-    float level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition, object->uHeight, &onWater, &bmodelPid, 0);
+    float level = ODM_GetFloorLevel(pSpriteObjects[uLayingItemID].vPosition, &onWater, &bmodelPid);
     bool isAboveGround = pSpriteObjects[uLayingItemID].vPosition.z > level + 1;
     if (!isAboveGround && onWater) {
         int splashZ = level + 60;
@@ -162,8 +162,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         if (isAboveGround) {
             pSpriteObjects[uLayingItemID].vVelocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
         } else if (isHighSlope) {
-            Vec3f normf;
-            ODM_GetTerrainNormalAt(pSpriteObjects[uLayingItemID].vPosition, &normf);
+            Vec3f normf = pOutdoor->pTerrain.normalByPos(pSpriteObjects[uLayingItemID].vPosition);
             pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
             pSpriteObjects[uLayingItemID].vVelocity.z -= (pEventTimer->dt().ticks() * GetGravityStrength());
 
@@ -180,13 +179,13 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
             }
             pSpriteObjects[uLayingItemID].vPosition.z = level + 1;
             if (object->uFlags & OBJECT_DESC_BOUNCE) {
-                int bounceZVel = -(pSpriteObjects[uLayingItemID].vVelocity.z / 2);
+                float bounceZVel = -(pSpriteObjects[uLayingItemID].vVelocity.z / 2.0f);
                 pSpriteObjects[uLayingItemID].vVelocity.z = bounceZVel;
-                if (bounceZVel < 10) {
-                    pSpriteObjects[uLayingItemID].vVelocity.z = 0;
+                if (bounceZVel < 10.0f) {
+                    pSpriteObjects[uLayingItemID].vVelocity.z = 0.0f;
                 }
             } else {
-                pSpriteObjects[uLayingItemID].vVelocity.z = 0;
+                pSpriteObjects[uLayingItemID].vVelocity.z = 0.0f;
             }
 
             pSpriteObjects[uLayingItemID].vVelocity *= 0.89263916f; // was 58500 fp
@@ -227,7 +226,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         }
 
         CollideOutdoorWithModels(false);
-        CollideOutdoorWithDecorations(WorldPosToGrid(pSpriteObjects[uLayingItemID].vPosition));
+        CollideOutdoorWithDecorations(worldToGrid(pSpriteObjects[uLayingItemID].vPosition));
         ObjectType casterType = pSpriteObjects[uLayingItemID].spell_caster_pid.type();
         if (casterType != OBJECT_Character) {
             CollideWithParty(false);
@@ -251,7 +250,7 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
         bool collisionOnWater = false;
         int collisionBmodelPid = 0;
         Vec3f collisionPos = collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1);
-        float collisionLevel = ODM_GetFloorLevel(collisionPos, object->uHeight, &collisionOnWater, &collisionBmodelPid, 0);
+        float collisionLevel = ODM_GetFloorLevel(collisionPos, &collisionOnWater, &collisionBmodelPid);
         // TOOD(Nik-RE-dev): why initail "onWater" is used?
         if (onWater && collisionZ < (collisionLevel + 60)) {
             int splashZ = level + 60;
@@ -286,9 +285,15 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 return;
             }
         }
+
         if (collision_state.pid.type() == OBJECT_Decoration) {
-            break;
+            Vec2f deltaXY = pSpriteObjects[uLayingItemID].vPosition.xy() - pLevelDecorations[collision_state.pid.id()].vPosition.xy();
+            float velLenXY = pSpriteObjects[uLayingItemID].vVelocity.xy().length();
+            float velRotXY = atan2(deltaXY.x, deltaXY.y);
+            pSpriteObjects[uLayingItemID].vVelocity.x = cos(velRotXY) * velLenXY;
+            pSpriteObjects[uLayingItemID].vVelocity.y = sin(velRotXY) * velLenXY;
         }
+
         if (collision_state.pid.type() == OBJECT_Face) {
             const BSPModel *bmodel = &pOutdoor->model(collision_state.pid);
             const ODMFace *face = &pOutdoor->face(collision_state.pid);
@@ -319,16 +324,8 @@ void SpriteObject::updateObjectODM(unsigned int uLayingItemID) {
                 }
             }
         }
-        //LABEL_74:
         pSpriteObjects[uLayingItemID].vVelocity *= 0.89263916f; // was 58500 fp
     }
-    Vec2f deltaXY = pSpriteObjects[uLayingItemID].vPosition.xy() - pLevelDecorations[collision_state.pid.id()].vPosition.xy();
-    float velLenXY = pSpriteObjects[uLayingItemID].vVelocity.xy().length();
-    float velRotXY = atan2(deltaXY.x, deltaXY.y);
-
-    pSpriteObjects[uLayingItemID].vVelocity.x = cos(velRotXY) * velLenXY;
-    pSpriteObjects[uLayingItemID].vVelocity.y = sin(velRotXY - pi / 2) * velLenXY;
-    //goto LABEL_74; // This goto results in an infinite loop, commented out.
 }
 
 //----- (0047136C) --------------------------------------------------------
@@ -645,7 +642,7 @@ bool SpriteObject::applyShrinkRayAoe() {
 }
 
 bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
-                              bool randomRotate, SpriteAttributes attributes, ItemGen *item) {
+                              bool randomRotate, SpriteAttributes attributes, Item *item) {
     SpriteObject pSpellObject;
 
     pSpellObject.uType = sprite;
@@ -659,9 +656,9 @@ bool SpriteObject::dropItemAt(SpriteId sprite, Vec3f pos, int speed, int count,
     }
 
     if (!(pSpellObject.uAttributes & SPRITE_IGNORE_RANGE)) {
-        for (ItemId i : pItemTable->pItems.indices()) {
-            if (pItemTable->pItems[i].uSpriteID == sprite) {
-                pSpellObject.containing_item.uItemID = i;
+        for (ItemId i : pItemTable->items.indices()) {
+            if (pItemTable->items[i].spriteId == sprite) {
+                pSpellObject.containing_item.itemId = i;
             }
         }
     }
@@ -692,7 +689,7 @@ void SpriteObject::createSplashObject(Vec3f pos) {
     sprite.uSectorID = pIndoor->GetSector(pos);
     int objID = sprite.Create(0, 0, 0, 0);
     if (objID != -1) {
-        pAudioPlayer->playSound(SOUND_splash, SOUND_MODE_PID, Pid(OBJECT_Item, objID));
+        pAudioPlayer->playSound(SOUND_splash, SOUND_MODE_PID, Pid(OBJECT_Sprite, objID));
     }
 }
 
@@ -736,7 +733,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 || pid.type() == OBJECT_None) {
                 return 1;
             }
-            if (pid.type() != OBJECT_Item) {
+            if (pid.type() != OBJECT_Sprite) {
                 applySpellSpriteDamage(uLayingItemID, pid);
                 updateSpriteOnImpact(object);
                 if (object->uObjectDescID == 0) {
@@ -751,7 +748,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 //            word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
                 //            - 1] + 1; pAudioPlayer->playSound(v125,
                 //            v124, 0, -1, 0, v97, 0, 0);
-                pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+                pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
                 return 0;
             }
             updateSpriteOnImpact(object);
@@ -759,38 +756,38 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+            pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
 
-        case SPRITE_PROJECTILE_AIRBOLT:
-        case SPRITE_PROJECTILE_EARTHBOLT:
-        case SPRITE_PROJECTILE_FIREBOLT:
-        case SPRITE_PROJECTILE_WATERBOLT:
-        case SPRITE_PROJECTILE_520:
-        case SPRITE_PROJECTILE_525:
-        case SPRITE_PROJECTILE_530:
-        case SPRITE_PROJECTILE_LIGHTBOLT:
-        case SPRITE_PROJECTILE_DARKBOLT: {
+        case SPRITE_PROJECTILE_AIR_BOLT:
+        case SPRITE_PROJECTILE_EARTH_BOLT:
+        case SPRITE_PROJECTILE_FIRE_BOLT:
+        case SPRITE_PROJECTILE_WATER_BOLT:
+        case SPRITE_PROJECTILE_BODY_BOLT:
+        case SPRITE_PROJECTILE_MIND_BOLT:
+        case SPRITE_PROJECTILE_SPIRIT_BOLT:
+        case SPRITE_PROJECTILE_LIGHT_BOLT:
+        case SPRITE_PROJECTILE_DARK_BOLT: {
             applySpellSpriteDamage(uLayingItemID, pid);
             updateSpriteOnImpact(object);
             if (object->uObjectDescID == 0) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            if (object->uType == SPRITE_BLASTER_PROJECTILE) {
+            if (object->uType == SPRITE_PROJECTILE_BLASTER) {
                 // TODO(Nik-RE-dev): unreachable, these cases does not process this sprite type
-                pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+                pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             }
             return 0;
         }
 
-        case SPRITE_ARROW_PROJECTILE:
-        case SPRITE_PROJECTILE_EXPLOSIVE: {
+        case SPRITE_PROJECTILE_ARROW:
+        case SPRITE_PROJECTILE_FLAMING_ARROW: {
             // Note that ITEM_SPELLBOOK_FIREBALL is an MM6 remnant here,
             // in MM6 it was Percival artifact (id 405) which has swiftness and carnage enchantments
-            if (object->containing_item.uItemID != ITEM_SPELLBOOK_FIREBALL &&
-                object->containing_item.special_enchantment != ITEM_ENCHANTMENT_OF_CARNAGE) {
+            if (object->containing_item.itemId != ITEM_SPELLBOOK_FIREBALL &&
+                object->containing_item.specialEnchantment != ITEM_ENCHANTMENT_OF_CARNAGE) {
                 object->spellSpriteStop();
                 applySpellSpriteDamage(uLayingItemID, pid);
                 SpriteObject::OnInteraction(uLayingItemID);
@@ -804,7 +801,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 //            word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id]
                 //            + 1; pAudioPlayer->playSound(v125, v124,
                 //            0, -1, 0, v16, 0, 0);
-                pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+                pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
                 return 0;
             }
             object->uType = SPRITE_OBJECT_EXPLODE;
@@ -818,8 +815,8 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            if (object->uType != SPRITE_BLASTER_PROJECTILE) {
-                pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+            if (object->uType != SPRITE_PROJECTILE_BLASTER) {
+                pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
                 return 0;
             }
             return 0;
@@ -832,13 +829,13 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            pushAoeAttack(Pid(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
+            pushAoeAttack(Pid(OBJECT_Sprite, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
                     pSpriteObjects[uLayingItemID].vPosition, ABILITY_ATTACK1);
             if (objectDesc->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(object->vPosition.x, object->vPosition.y, object->vPosition.z,
                                                                 objectDesc->uParticleTrailColor);
             }
-            pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+            pAudioPlayer->playSound(SOUND_fireBall, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
 
@@ -875,11 +872,11 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
             //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
             //        -1, 0, v97, 0, 0);
-            pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+            pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
 
-        case SPRITE_BLASTER_PROJECTILE: {
+        case SPRITE_PROJECTILE_BLASTER: {
             applySpellSpriteDamage(uLayingItemID, pid);
             updateSpriteOnImpact(object);
             if (object->uObjectDescID == 0) {
@@ -896,7 +893,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->vVelocity = Vec3f(0, 0, 0);
-            int iceParticles = (object->spell_skill == CHARACTER_SKILL_MASTERY_GRANDMASTER) ? 9 : 7;
+            int iceParticles = (object->spell_skill == MASTERY_GRANDMASTER) ? 9 : 7;
             int yaw = object->uFacing - TrigLUT.uIntegerDoublePi;
             SpriteObject temp = *object;
             for (int i = 0; i < iceParticles; i++) {
@@ -914,7 +911,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
             //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
             //        -1, 0, v16, 0, 0);
-            pAudioPlayer->playSpellSound(temp.uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+            pAudioPlayer->playSpellSound(temp.uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
 
@@ -936,7 +933,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
             //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
             //        -1, 0, v16, 0, 0);
-            pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+            pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
 
@@ -949,7 +946,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            pushAoeAttack(Pid(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
+            pushAoeAttack(Pid(OBJECT_Sprite, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
                     pSpriteObjects[uLayingItemID].vPosition, ABILITY_ATTACK1);
             // int v78 = 0;
             // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
@@ -960,7 +957,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //        - 1] + 1; pAudioPlayer->playSound(v125,
             //        pSpriteObjects[uLayingItemID].vPosition.x, 0, -1, 0, v78,
             //        0, 0);
-            pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+            pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
 
@@ -990,7 +987,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
             //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
             //        -1, 0, v16, 0, 0);
-            pAudioPlayer->playSpellSound(temp.uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+            pAudioPlayer->playSpellSound(temp.uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
 
@@ -1001,7 +998,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            pushAoeAttack(Pid(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
+            pushAoeAttack(Pid(OBJECT_Sprite, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
                     pSpriteObjects[uLayingItemID].vPosition, object->spellCasterAbility);
             // int v78 = 0;
             // if (pSpriteObjects[uLayingItemID].uSoundID != 0) {
@@ -1012,7 +1009,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //        - 1] + 1; pAudioPlayer->playSound(v125,
             //        pSpriteObjects[uLayingItemID].vPosition.x, 0, -1, 0, v78,
             //        0, 0);
-            pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+            pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
 
@@ -1037,7 +1034,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
             //        - 1] + 1; pAudioPlayer->playSound(v125, v124, 0,
             //        -1, 0, v97, 0, 0);
-            pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+            pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
 
@@ -1059,7 +1056,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //         break;
             // }
             bool isDamaged = false;
-            bool isShrinkingRayAoe = (object->uType == SPRITE_SPELL_DARK_SHRINKING_RAY) && (object->spell_skill == CHARACTER_SKILL_MASTERY_GRANDMASTER);
+            bool isShrinkingRayAoe = (object->uType == SPRITE_SPELL_DARK_SHRINKING_RAY) && (object->spell_skill == MASTERY_GRANDMASTER);
             if (pid.type() != OBJECT_Actor) {
                 if (!isShrinkingRayAoe) {
                     SpriteObject::OnInteraction(uLayingItemID);
@@ -1077,11 +1074,11 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                     //     v114 = pSpriteObjects[uLayingItemID].uSoundID + 4;
                     // }
                     //                v115 = 8 * uLayingItemID;
-                    //                v115 |= Pid(OBJECT_Item, uLayingItemID);
+                    //                v115 |= Pid(OBJECT_Sprite, uLayingItemID);
                     //                v125 = v143 + 1;
                     //                pAudioPlayer->playSound(v125,
                     //                v115, 0, -1, 0, v114, 0, 0);
-                    pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+                    pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
                 } else {
                     SpriteObject::OnInteraction(uLayingItemID);
                 }
@@ -1090,7 +1087,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             int shrinkPower = 0;
             // Calculation was moved from initial sprite creation processing
             Duration duration = Duration::fromMinutes(object->spell_level * 5);
-            CharacterSkillMastery skillMastery = object->spell_skill;
+            Mastery skillMastery = object->spell_skill;
             DamageType dmgType;
             ActorBuff buffIdx;
             switch (object->uType) {
@@ -1112,14 +1109,14 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             }
             if (object->uType == SPRITE_SPELL_DARK_SHRINKING_RAY) {
                 switch (skillMastery) {
-                    case CHARACTER_SKILL_MASTERY_NOVICE:
+                    case MASTERY_NOVICE:
                         shrinkPower = 2;
                         break;
-                    case CHARACTER_SKILL_MASTERY_EXPERT:
+                    case MASTERY_EXPERT:
                         shrinkPower = 3;
                         break;
-                    case CHARACTER_SKILL_MASTERY_MASTER:
-                    case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+                    case MASTERY_MASTER:
+                    case MASTERY_GRANDMASTER:
                         shrinkPower = 4;
                         break;
                     default:
@@ -1143,7 +1140,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 isDamaged = object->applyShrinkRayAoe();
             }
             object->spell_level = 0;
-            object->spell_skill = CHARACTER_SKILL_MASTERY_NONE;
+            object->spell_skill = MASTERY_NONE;
             object->uSpellID = SPELL_NONE;
             if (isDamaged) {
                 updateSpriteOnImpact(object);
@@ -1156,11 +1153,11 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 //     v114 = pSpriteObjects[uLayingItemID].uSoundID + 4;
                 // }
                 //            v115 = 8 * uLayingItemID;
-                //            v115 |= Pid(OBJECT_Item, uLayingItemID);
+                //            v115 |= Pid(OBJECT_Sprite, uLayingItemID);
                 //            v125 = v143 + 1;
                 //            pAudioPlayer->playSound(v125, v115, 0,
                 //            -1, 0, v114, 0, 0);
-                pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+                pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             } else {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
@@ -1187,7 +1184,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             v100 = pSpriteObjects[uLayingItemID].field_61;
             pSpriteObjects[uLayingItemID].uSpriteFrameID = 0;
             v102 = 8 * uLayingItemID;
-            LOBYTE(v102) = Pid(OBJECT_Item, uLayingItemID);
+            LOBYTE(v102) = Pid(OBJECT_Sprite, uLayingItemID);
             pSpriteObjects[uLayingItemID].vVelocity.x = 0;
             pSpriteObjects[uLayingItemID].vVelocity.y = 0;
             pSpriteObjects[uLayingItemID].vVelocity.z = 0;
@@ -1224,7 +1221,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
                 SpriteObject::OnInteraction(uLayingItemID);
             }
             object->spellSpriteStop();
-            pushAoeAttack(Pid(OBJECT_Item, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
+            pushAoeAttack(Pid(OBJECT_Sprite, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
                     pSpriteObjects[uLayingItemID].vPosition, object->spellCasterAbility);
             if (objectDesc->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(
@@ -1239,7 +1236,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             //        word_4EE088_sound_ids[pSpriteObjects[uLayingItemID].spell_id
             //        - 1] + 1; pAudioPlayer->playSound(v125, v102, 0,
             //        -1, 0, v47, 0, 0);
-            pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Item, uLayingItemID));
+            pAudioPlayer->playSpellSound(object->uSpellID, true, SOUND_MODE_PID, Pid(OBJECT_Sprite, uLayingItemID));
             return 0;
         }
 
@@ -1250,19 +1247,19 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
 
 void applySpellSpriteDamage(unsigned int uLayingItemID, Pid pid) {
     if (pid.type() == OBJECT_Character) {
-        DamageCharacterFromMonster(Pid(OBJECT_Item, uLayingItemID), pSpriteObjects[uLayingItemID].spellCasterAbility, -1);
+        DamageCharacterFromMonster(Pid(OBJECT_Sprite, uLayingItemID), pSpriteObjects[uLayingItemID].spellCasterAbility, -1);
     } else if (pid.type() == OBJECT_Actor) {
         Vec3f velF = pSpriteObjects[uLayingItemID].vVelocity;
         velF.normalize();
         switch (pSpriteObjects[uLayingItemID].spell_caster_pid.type()) {
             case OBJECT_Actor:
-                Actor::ActorDamageFromMonster(Pid(OBJECT_Item, uLayingItemID), pid.id(), velF, pSpriteObjects[uLayingItemID].spellCasterAbility);
+                Actor::ActorDamageFromMonster(Pid(OBJECT_Sprite, uLayingItemID), pid.id(), velF, pSpriteObjects[uLayingItemID].spellCasterAbility);
                 break;
             case OBJECT_Character:
-                Actor::DamageMonsterFromParty(Pid(OBJECT_Item, uLayingItemID), pid.id(), velF);
+                Actor::DamageMonsterFromParty(Pid(OBJECT_Sprite, uLayingItemID), pid.id(), velF);
                 break;
-            case OBJECT_Item:
-                ItemDamageFromActor(Pid(OBJECT_Item, uLayingItemID), pid.id(), velF);
+            case OBJECT_Sprite:
+                ItemDamageFromActor(Pid(OBJECT_Sprite, uLayingItemID), pid.id(), velF);
                 break;
             default:
                 break;
@@ -1336,7 +1333,7 @@ void UpdateObjects() {
                     SpriteObject::OnInteraction(i);
                     continue;
                 }
-                processSpellImpact(i, Pid(OBJECT_Item, i));
+                processSpellImpact(i, Pid(OBJECT_Sprite, i));
             }
         }
     }

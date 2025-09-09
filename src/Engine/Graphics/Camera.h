@@ -27,27 +27,6 @@ struct Camera3D {
         RenderVertexSoft *pVertices,
         signed int NumFrustumPlanes);
 
-    float GetPolygonMaxZ(RenderVertexSoft *pVertex,
-                          unsigned int uStripType);
-    float GetPolygonMinZ(RenderVertexSoft *pVertices,
-                          unsigned int uStripType);
-
-    void LightmapNeerClip(RenderVertexSoft *pInVertices,
-                          int uNumInVertices,
-                          RenderVertexSoft *pOutVertices,
-                          unsigned int *pOutNumVertices);
-    void LightmapFarClip(RenderVertexSoft *pInVertices,
-                         int uNumInVertices,
-                         RenderVertexSoft *pOutVertices,
-                         unsigned int *pOutNumVertices);
-    void LightmapProject(unsigned int uNumInVertices,
-                 RenderVertexSoft *pOutVertices,
-                 RenderVertexSoft *pInVertices,
-                 signed int *pOutNumVertices);
-    bool CullFaceToFrustum(RenderVertexSoft *a1,
-                         unsigned int *pOutNumVertices,
-                         RenderVertexSoft *pVertices, signed int uNumVertices);
-
     bool CullFaceToFrustum(RenderVertexSoft *inVerts,
         unsigned int *pOutNumVertices,
         RenderVertexSoft *pOutVertices, Planef *frustum, signed int uNumPlanes);
@@ -55,9 +34,7 @@ struct Camera3D {
     bool ClipFaceToFrustum(RenderVertexSoft *pInVertices,
                            unsigned int *pOutNumVertices,
                            RenderVertexSoft *pVertices,
-                           Planef *CameraFrustrum,
-                           int NumFrustumPlanes, char DebugLines,
-                           int _unused);
+                           const Planef *CameraFrustrum);
 
     void BuildViewFrustum();
     void CreateViewMatrixAndProjectionScale();

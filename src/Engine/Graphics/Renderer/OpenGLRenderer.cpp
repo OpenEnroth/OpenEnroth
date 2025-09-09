@@ -13,7 +13,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <imgui/backends/imgui_impl_opengl3.h> // NOLINT: not a C system header.
-#include <imgui/backends/imgui_impl_sdl2.h> // NOLINT: not a C system header.
+#include <imgui/backends/imgui_impl_sdl3.h> // NOLINT: not a C system header.
 
 #include "Engine/Engine.h"
 #include "Engine/EngineFileSystem.h"
@@ -68,7 +68,6 @@ int uNumSpritesDrawnThisFrame;
 RenderVertexSoft array_73D150[20];
 RenderVertexSoft VertexRenderList[50];
 RenderVertexD3D3 d3d_vertex_buffer[50];
-RenderVertexSoft array_507D30[50];
 
 static GLuint framebuffer = 0;
 static GLuint framebufferTextures[2] = {0, 0};
@@ -208,22 +207,6 @@ RgbaImage OpenGLRenderer::ReadScreenPixels() {
         glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
     }
     return result;
-}
-
-bool OpenGLRenderer::InitializeFullscreen() {
-    // pViewport->ResetScreen();
-    // CreateZBuffer();
-
-    return true;
-}
-
-// when losing and regaining window focus - not required for OGL??
-void OpenGLRenderer::RestoreFrontBuffer() { logger->info("RenderGl - RestoreFrontBuffer"); }
-void OpenGLRenderer::RestoreBackBuffer() { logger->info("RenderGl - RestoreBackBuffer"); }
-
-void OpenGLRenderer::BltBackToFontFast(int a2, int a3, Recti *a4) {
-    logger->info("RenderGl - BltBackToFontFast");
-    // never called anywhere
 }
 
 void OpenGLRenderer::ClearTarget(Color uColor) {
@@ -532,10 +515,10 @@ void OpenGLRenderer::ScreenFade(Color color, float t) {
     Colorf cf = color.toColorf();
     cf.a = std::clamp(t, 0.0f, 1.0f);
 
-    float drawx = static_cast<float>(pViewport->uViewportTL_X);
-    float drawy = static_cast<float>(pViewport->uViewportTL_Y);
-    float drawz = static_cast<float>(pViewport->uViewportBR_X);
-    float draww = static_cast<float>(pViewport->uViewportBR_Y);
+    float drawx = static_cast<float>(pViewport->viewportTL_X);
+    float drawy = static_cast<float>(pViewport->viewportTL_Y);
+    float drawz = static_cast<float>(pViewport->viewportBR_X);
+    float draww = static_cast<float>(pViewport->viewportBR_Y);
 
     static GraphicsImage *effpar03 = assets->getBitmap("effpar03");
     float gltexid = static_cast<float>(effpar03->renderId().value());
@@ -842,6 +825,7 @@ void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     if (pFace->uNumVertices <= 0) return;
 
+    // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
     if (!pFace->GetTexture()) return;
 
     int dimming_level = 0;
@@ -873,17 +857,19 @@ void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
 
     float inv_viewplanedist = 1.0f / pCamera3D->ViewPlaneDistPixels;
 
+    RenderVertexSoft originalVertices[50];
+
     // copy to buff in
     for (unsigned i = 0; i < pFace->uNumVertices; ++i) {
-        array_507D30[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
-        array_507D30[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
-        array_507D30[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
-        array_507D30[i].u = (signed short)pFace->pVertexUIDs[i];
-        array_507D30[i].v = (signed short)pFace->pVertexVIDs[i];
+        originalVertices[i].vWorldPosition.x = pIndoor->pVertices[pFace->pVertexIDs[i]].x;
+        originalVertices[i].vWorldPosition.y = pIndoor->pVertices[pFace->pVertexIDs[i]].y;
+        originalVertices[i].vWorldPosition.z = pIndoor->pVertices[pFace->pVertexIDs[i]].z;
+        originalVertices[i].u = (signed short)pFace->pVertexUIDs[i];
+        originalVertices[i].v = (signed short)pFace->pVertexVIDs[i];
     }
 
     // clip accurately to camera
-    pCamera3D->ClipFaceToFrustum(array_507D30, &uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum.data(), 4, 0, 0);
+    pCamera3D->ClipFaceToFrustum(originalVertices, &uNumVertices, VertexRenderList, pBspRenderer->nodes[0].ViewportNodeFrustum.data());
     if (!uNumVertices) return;
 
     pCamera3D->ViewTransform(VertexRenderList, uNumVertices);
@@ -972,11 +958,6 @@ void OpenGLRenderer::DrawIndoorSkyPolygon(int uNumVertices, GraphicsImage *textu
     }
 }
 
-bool OpenGLRenderer::AreRenderSurfacesOk() {
-    logger->info("RenderGl - AreRenderSurfacesOk");
-    return true;
-}
-
 RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int height) {
     // TODO(pskelton): should this call drawworld instead??
 
@@ -1000,15 +981,15 @@ RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int heig
 
     // TODO(captainurist): subImage().scale()
     RgbaImage sPixels = ReadScreenPixels();
-    float interval_x = static_cast<float>(game_viewport_width) / width;
-    float interval_y = static_cast<float>(game_viewport_height) / height;
+    float interval_x = static_cast<float>(pViewport->viewportWidth) / width;
+    float interval_y = static_cast<float>(pViewport->viewportHeight) / height;
 
     RgbaImage pPixels = RgbaImage::solid(width, height, Color());
 
     if (uCurrentlyLoadedLevelType != LEVEL_NULL) {
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
-                pPixels[y][x] = sPixels[outputRender.h - (y + 1) * interval_y - pViewport->uViewportTL_Y][x * interval_x + pViewport->uViewportTL_X];
+                pPixels[y][x] = sPixels[outputRender.h - (y + 1) * interval_y - pViewport->viewportTL_Y][x * interval_x + pViewport->viewportTL_X];
             }
         }
     }
@@ -1018,15 +999,6 @@ RgbaImage OpenGLRenderer::MakeViewportScreenshot(const int width, const int heig
 
 RgbaImage OpenGLRenderer::MakeFullScreenshot() {
     return flipVertically(ReadScreenPixels());
-}
-
-// TODO(pskelton): drop - not required in gl renderer now
-void OpenGLRenderer::BeginLightmaps() { return; }
-void OpenGLRenderer::EndLightmaps() { return; }
-void OpenGLRenderer::BeginLightmaps2() { return; }
-void OpenGLRenderer::EndLightmaps2() { return; }
-bool OpenGLRenderer::DrawLightmap(Lightmap *pLightmap, Vec3f *pColorMult, float z_bias) {
-    return true;
 }
 
 struct GLdecalverts {
@@ -1400,8 +1372,8 @@ void OpenGLRenderer::_set_ortho_projection(bool gameviewport) {
         glViewport(0, 0, outputRender.w, outputRender.h);
         projmat = glm::ortho(float(0), float(outputRender.w), float(outputRender.h), float(0), float(-1), float(1));
     } else {  // project to game viewport
-        glViewport(game_viewport_x, outputRender.h-game_viewport_w-1, game_viewport_width, game_viewport_height);
-        projmat = glm::ortho(float(game_viewport_x), float(game_viewport_z), float(game_viewport_w), float(game_viewport_y), float(1), float(-1));
+        glViewport(pViewport->viewportTL_X, outputRender.h- pViewport->viewportBR_Y -1, pViewport->viewportWidth, pViewport->viewportHeight);
+        projmat = glm::ortho(float(pViewport->viewportTL_X), float(pViewport->viewportBR_X), float(pViewport->viewportBR_Y), float(pViewport->viewportTL_Y), float(1), float(-1));
     }
 }
 
@@ -1453,17 +1425,11 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     // generate array and populate data
     if (terrainVAO == 0) {
         static RenderVertexSoft pTerrainVertices[128 * 128];
-        int blockScale = 512;
-        int heightScale = 32;
 
         // generate vertex locations
-        for (unsigned int y = 0; y < 128; ++y) {
-            for (unsigned int x = 0; x < 128; ++x) {
-                pTerrainVertices[y * 128 + x].vWorldPosition.x = (-64.0f + x) * blockScale;
-                pTerrainVertices[y * 128 + x].vWorldPosition.y = (64.0f - y) * blockScale;
-                pTerrainVertices[y * 128 + x].vWorldPosition.z = heightScale * pOutdoor->pTerrain.pHeightmap[y * 128 + x];
-            }
-        }
+        for (int y = 0; y < 128; ++y)
+            for (int x = 0; x < 128; ++x)
+                pTerrainVertices[y * 128 + x].vWorldPosition = pOutdoor->pTerrain.vertexByGridUnsafe({x, y}).toFloat();
 
         // reserve first 7 layers for water tiles in unit 0
         auto wtrtexture = this->hd_water_tile_anim[0];
@@ -1480,24 +1446,24 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 // map is 127 x 127 squares - each square has two triangles - each tri has 3 verts
 
                 // first find all required textures for terrain and add to map
-                auto tile = pOutdoor->getTileDescByGrid(x, y);
+                const auto &tile = pOutdoor->pTerrain.tileDataByGrid({x, y});
                 int tileunit = 0;
                 int tilelayer = 0;
 
                 // check if tile->name is already in list
-                auto mapiter = terraintexmap.find(tile->name);
+                auto mapiter = terraintexmap.find(tile.name);
                 if (mapiter != terraintexmap.end()) {
                     // if so, extract unit and layer
                     int unitlayer = mapiter->second;
                     tilelayer = unitlayer & 0xFF;
                     tileunit = (unitlayer & 0xFF00) >> 8;
-                } else if (tile->name == "wtrtyl") {
+                } else if (tile.name == "wtrtyl") {
                     // water tile
                     tileunit = 0;
                     tilelayer = 0;
                 } else {
                     // else need to add it
-                    auto thistexture = assets->getBitmap(tile->name);
+                    auto thistexture = assets->getBitmap(tile.name, tile.flags & TILE_GENERATED_TRANSITION);
                     int width = thistexture->width();
                     // check size to see what unit it needs
                     int i;
@@ -1519,7 +1485,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                         if (numterraintexloaded[i] < 256) {
                             // intsert into tex map
-                            terraintexmap.insert(std::make_pair(tile->name, encode));
+                            terraintexmap.insert(std::make_pair(tile.name, encode));
                             numterraintexloaded[i]++;
                         } else {
                             logger->warning("Texture layer full - draw terrain!");
@@ -1530,12 +1496,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 }
 
                 // next calculate all vertices vertices
-                unsigned norm_idx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 2 /*+ 1*/];  // 2 is top tri // 3 is bottom
-                unsigned bottnormidx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * x * 128) + (2 * y) + 3];
-                assert(norm_idx < pOutdoor->pTerrain.pTerrainNormals.size());
-                assert(bottnormidx < pOutdoor->pTerrain.pTerrainNormals.size());
-                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[norm_idx];
-                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[bottnormidx];
+                const auto &[norm, norm2] = pOutdoor->pTerrain.normalsByGridUnsafe({x, y});
 
                 // calc each vertex
                 // [0] - x,y        n1
@@ -1546,9 +1507,9 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 terrshaderstore[6 * (x + (127 * y))].v = 0;
                 terrshaderstore[6 * (x + (127 * y))].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y))].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y))].normx = norm->x;
-                terrshaderstore[6 * (x + (127 * y))].normy = norm->y;
-                terrshaderstore[6 * (x + (127 * y))].normz = norm->z;
+                terrshaderstore[6 * (x + (127 * y))].normx = norm.x;
+                terrshaderstore[6 * (x + (127 * y))].normy = norm.y;
+                terrshaderstore[6 * (x + (127 * y))].normz = norm.z;
                 terrshaderstore[6 * (x + (127 * y))].attribs = 0;
 
                 // [1] - x+1,y+1    n1
@@ -1559,9 +1520,9 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 terrshaderstore[6 * (x + (127 * y)) + 1].v = 1;
                 terrshaderstore[6 * (x + (127 * y)) + 1].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 1].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 1].normx = norm->x;
-                terrshaderstore[6 * (x + (127 * y)) + 1].normy = norm->y;
-                terrshaderstore[6 * (x + (127 * y)) + 1].normz = norm->z;
+                terrshaderstore[6 * (x + (127 * y)) + 1].normx = norm.x;
+                terrshaderstore[6 * (x + (127 * y)) + 1].normy = norm.y;
+                terrshaderstore[6 * (x + (127 * y)) + 1].normz = norm.z;
                 terrshaderstore[6 * (x + (127 * y)) + 1].attribs = 0;
 
                 // [2] - x+1,y      n1
@@ -1572,9 +1533,9 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 terrshaderstore[6 * (x + (127 * y)) + 2].v = 0;
                 terrshaderstore[6 * (x + (127 * y)) + 2].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 2].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 2].normx = norm->x;
-                terrshaderstore[6 * (x + (127 * y)) + 2].normy = norm->y;
-                terrshaderstore[6 * (x + (127 * y)) + 2].normz = norm->z;
+                terrshaderstore[6 * (x + (127 * y)) + 2].normx = norm.x;
+                terrshaderstore[6 * (x + (127 * y)) + 2].normy = norm.y;
+                terrshaderstore[6 * (x + (127 * y)) + 2].normz = norm.z;
                 terrshaderstore[6 * (x + (127 * y)) + 2].attribs = 0;
 
                 // [3] - x,y        n2
@@ -1585,9 +1546,9 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 terrshaderstore[6 * (x + (127 * y)) + 3].v = 0;
                 terrshaderstore[6 * (x + (127 * y)) + 3].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 3].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 3].normx = norm2->x;
-                terrshaderstore[6 * (x + (127 * y)) + 3].normy = norm2->y;
-                terrshaderstore[6 * (x + (127 * y)) + 3].normz = norm2->z;
+                terrshaderstore[6 * (x + (127 * y)) + 3].normx = norm2.x;
+                terrshaderstore[6 * (x + (127 * y)) + 3].normy = norm2.y;
+                terrshaderstore[6 * (x + (127 * y)) + 3].normz = norm2.z;
                 terrshaderstore[6 * (x + (127 * y)) + 3].attribs = 0;
 
                 // [4] - x,y+1      n2
@@ -1598,9 +1559,9 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 terrshaderstore[6 * (x + (127 * y)) + 4].v = 1;
                 terrshaderstore[6 * (x + (127 * y)) + 4].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 4].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 4].normx = norm2->x;
-                terrshaderstore[6 * (x + (127 * y)) + 4].normy = norm2->y;
-                terrshaderstore[6 * (x + (127 * y)) + 4].normz = norm2->z;
+                terrshaderstore[6 * (x + (127 * y)) + 4].normx = norm2.x;
+                terrshaderstore[6 * (x + (127 * y)) + 4].normy = norm2.y;
+                terrshaderstore[6 * (x + (127 * y)) + 4].normz = norm2.z;
                 terrshaderstore[6 * (x + (127 * y)) + 4].attribs = 0;
 
                 // [5] - x+1,y+1    n2
@@ -1611,9 +1572,9 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                 terrshaderstore[6 * (x + (127 * y)) + 5].v = 1;
                 terrshaderstore[6 * (x + (127 * y)) + 5].texunit = tileunit;
                 terrshaderstore[6 * (x + (127 * y)) + 5].texturelayer = tilelayer;
-                terrshaderstore[6 * (x + (127 * y)) + 5].normx = norm2->x;
-                terrshaderstore[6 * (x + (127 * y)) + 5].normy = norm2->y;
-                terrshaderstore[6 * (x + (127 * y)) + 5].normz = norm2->z;
+                terrshaderstore[6 * (x + (127 * y)) + 5].normx = norm2.x;
+                terrshaderstore[6 * (x + (127 * y)) + 5].normy = norm2.y;
+                terrshaderstore[6 * (x + (127 * y)) + 5].normz = norm2.z;
                 terrshaderstore[6 * (x + (127 * y)) + 5].attribs = 0;
             }
         }
@@ -1667,7 +1628,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
 
                 if (tunit == unit) {
                     // get texture
-                    auto texture = assets->getBitmap(it->first);
+                    auto texture = assets->getBitmap(it->first, it->first.starts_with("generated")); // TODO(captainurist): terrible, terrible hack, redo this.
                     // send texture data to gpu
                     glTexSubImage3D(GL_TEXTURE_2D_ARRAY,
                         0,
@@ -1694,7 +1655,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     // actual drawing
 
     // terrain debug
-    if (engine->config->debug.Terrain.value())
+    if (config->debug.Terrain.value())
         // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
         if (!OpenGLES)
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -1873,7 +1834,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     //end terrain debug
-    if (engine->config->debug.Terrain.value())
+    if (config->debug.Terrain.value())
         // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
         if (!OpenGLES)
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -1886,7 +1847,7 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
     // loop over blood to lay
     for (unsigned i = 0; i < NumBloodsplats; ++i) {
         // approx location of bloodsplat
-        Vec2i gridPos = WorldPosToGrid(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos);
+        Vec2i gridPos = worldToGrid(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].pos);
         // use terrain squares in block surrounding to try and stack faces
 
         int scope = std::ceil(decal_builder->bloodsplat_container->pBloodsplats_to_apply[i].radius / 512);
@@ -1944,34 +1905,29 @@ void OpenGLRenderer::DrawOutdoorTerrain() {
                     continue;
 
                 // splat hits this square of terrain
-                TileFlags terrainFlags = pOutdoor->getTileAttribByGrid(loopx, loopy);
+                bool fading = pOutdoor->pTerrain.isWaterOrShoreByGrid({loopx, loopy});
 
-                unsigned norm_idx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 2];  // 2 is top tri // 3 is bottom
-                unsigned bottnormidx = pOutdoor->pTerrain.pTerrainNormalIndices[(2 * loopx * 128) + (2 * loopy) + 3];
-                assert(norm_idx < pOutdoor->pTerrain.pTerrainNormals.size());
-                assert(bottnormidx < pOutdoor->pTerrain.pTerrainNormals.size());
-                Vec3f *norm = &pOutdoor->pTerrain.pTerrainNormals[norm_idx];
-                Vec3f *norm2 = &pOutdoor->pTerrain.pTerrainNormals[bottnormidx];
+                const auto &[norm, norm2] = pOutdoor->pTerrain.normalsByGridUnsafe({loopx, loopy});
 
                 float Light_tile_dist = 0.0;
 
                 // top tri
-                float _f1 = norm->x * pOutdoor->vSunlight.x + norm->y * pOutdoor->vSunlight.y + norm->z * pOutdoor->vSunlight.z;
+                float _f1 = norm.x * pOutdoor->vSunlight.x + norm.y * pOutdoor->vSunlight.y + norm.z * pOutdoor->vSunlight.z;
                 int dimming_level = std::clamp(static_cast<int>(20.0f - floorf(20.0f * _f1 + 0.5f)), 0, 31);
 
-                decal_builder->ApplyBloodSplatToTerrain(terrainFlags, norm, &Light_tile_dist, VertexRenderList, i);
+                decal_builder->ApplyBloodSplatToTerrain(fading, norm, &Light_tile_dist, VertexRenderList, i);
                 Planef plane;
-                plane.normal = *norm;
+                plane.normal = norm;
                 plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)
                     decal_builder->BuildAndApplyDecals(31 - dimming_level, LocationTerrain, plane, 3, VertexRenderList, 0, -1);
 
                 //bottom tri
-                float _f = norm2->x * pOutdoor->vSunlight.x + norm2->y * pOutdoor->vSunlight.y + norm2->z * pOutdoor->vSunlight.z;
+                float _f = norm2.x * pOutdoor->vSunlight.x + norm2.y * pOutdoor->vSunlight.y + norm2.z * pOutdoor->vSunlight.z;
                 dimming_level = std::clamp(static_cast<int>(20.0 - floorf(20.0 * _f + 0.5f)), 0, 31);
 
-                decal_builder->ApplyBloodSplatToTerrain(terrainFlags, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
-                plane.normal = *norm2;
+                decal_builder->ApplyBloodSplatToTerrain(fading, norm2, &Light_tile_dist, (VertexRenderList + 3), i);
+                plane.normal = norm2;
                 plane.dist = Light_tile_dist;
                 if (decal_builder->uNumSplatsThisFace > 0)
                     decal_builder->BuildAndApplyDecals(31 - dimming_level, LocationTerrain, plane, 3, (VertexRenderList + 3), 0, -1);
@@ -1992,12 +1948,12 @@ void OpenGLRenderer::DrawOutdoorSky() {
     // lowers clouds as party goes up
     float  horizon_height_offset = ((double)(pCamera3D->ViewPlaneDistPixels * pCamera3D->vCameraPos.z)
         / ((double)pCamera3D->ViewPlaneDistPixels + pCamera3D->GetFarClip())
-        + (double)(pViewport->uScreenCenterY));
+        + (double)(pViewport->viewportCenterY));
 
     float depth_to_far_clip = std::cos((double)pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
     float height_to_far_clip = std::sin((double)pCamera3D->_viewPitch * rot_to_rads) * pCamera3D->GetFarClip();
 
-    float bot_y_proj = ((double)(pViewport->uScreenCenterY) -
+    float bot_y_proj = ((double)(pViewport->viewportCenterY) -
         (double)pCamera3D->ViewPlaneDistPixels /
         (depth_to_far_clip + 0.0000001) *
         (height_to_far_clip - (double)pCamera3D->vCameraPos.z));
@@ -2034,23 +1990,23 @@ void OpenGLRenderer::DrawOutdoorSky() {
         //  |8,351                468,351 |
         // 1._____________________________.2
         //
-        VertexRenderList[0].vWorldViewProjX = (double)(signed int)pViewport->uViewportTL_X;  // 8
-        VertexRenderList[0].vWorldViewProjY = (double)(signed int)pViewport->uViewportTL_Y;  // 8
+        VertexRenderList[0].vWorldViewProjX = (double)(signed int)pViewport->viewportTL_X;  // 8
+        VertexRenderList[0].vWorldViewProjY = (double)(signed int)pViewport->viewportTL_Y;  // 8
 
-        VertexRenderList[1].vWorldViewProjX = (double)(signed int)pViewport->uViewportTL_X;   // 8
+        VertexRenderList[1].vWorldViewProjX = (double)(signed int)pViewport->viewportTL_X;   // 8
         VertexRenderList[1].vWorldViewProjY = (double)bot_y_proj + 1;  // 247
 
-        VertexRenderList[2].vWorldViewProjX = (double)(signed int)pViewport->uViewportBR_X;   // 468
+        VertexRenderList[2].vWorldViewProjX = (double)(signed int)pViewport->viewportBR_X;   // 468
         VertexRenderList[2].vWorldViewProjY = (double)bot_y_proj + 1;  // 247
 
-        VertexRenderList[3].vWorldViewProjX = (double)(signed int)pViewport->uViewportBR_X;  // 468
-        VertexRenderList[3].vWorldViewProjY = (double)(signed int)pViewport->uViewportTL_Y;  // 8
+        VertexRenderList[3].vWorldViewProjX = (double)(signed int)pViewport->viewportBR_X;  // 468
+        VertexRenderList[3].vWorldViewProjY = (double)(signed int)pViewport->viewportTL_Y;  // 8
 
         float widthperpixel = 1 / pCamera3D->ViewPlaneDistPixels;
 
         for (unsigned i = 0; i < uNumVertices; ++i) {
             // outbound screen X dist
-            float x_dist = widthperpixel * (pViewport->uScreenCenterX - VertexRenderList[i].vWorldViewProjX);
+            float x_dist = widthperpixel * (pViewport->viewportCenterX - VertexRenderList[i].vWorldViewProjX);
             // outbound screen y dist
             float y_dist = widthperpixel * (horizon_height_offset - VertexRenderList[i].vWorldViewProjY);
 
@@ -2077,26 +2033,26 @@ void OpenGLRenderer::DrawOutdoorSky() {
             VertexRenderList[i]._rhw = (double)(worldviewdepth);
         }
 
-        if (engine->config->graphics.Fog.value()) {
+        if (config->graphics.Fog.value()) {
             // fade sky
-            VertexRenderList[4].vWorldViewProjX = (double)pViewport->uViewportTL_X;
-            VertexRenderList[4].vWorldViewProjY = (double)pViewport->uViewportTL_Y;
-            VertexRenderList[5].vWorldViewProjX = (double)pViewport->uViewportTL_X;
-            VertexRenderList[5].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.value();
-            VertexRenderList[6].vWorldViewProjX = (double)pViewport->uViewportBR_X;
-            VertexRenderList[6].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.value();
-            VertexRenderList[7].vWorldViewProjX = (double)pViewport->uViewportBR_X;
-            VertexRenderList[7].vWorldViewProjY = (double)pViewport->uViewportTL_Y;
+            VertexRenderList[4].vWorldViewProjX = (double)pViewport->viewportTL_X;
+            VertexRenderList[4].vWorldViewProjY = (double)pViewport->viewportTL_Y;
+            VertexRenderList[5].vWorldViewProjX = (double)pViewport->viewportTL_X;
+            VertexRenderList[5].vWorldViewProjY = (double)bot_y_proj - config->graphics.FogHorizon.value();
+            VertexRenderList[6].vWorldViewProjX = (double)pViewport->viewportBR_X;
+            VertexRenderList[6].vWorldViewProjY = (double)bot_y_proj - config->graphics.FogHorizon.value();
+            VertexRenderList[7].vWorldViewProjX = (double)pViewport->viewportBR_X;
+            VertexRenderList[7].vWorldViewProjY = (double)pViewport->viewportTL_Y;
 
             // sub sky
-            VertexRenderList[8].vWorldViewProjX = (double)pViewport->uViewportTL_X;
-            VertexRenderList[8].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.value();
-            VertexRenderList[9].vWorldViewProjX = (double)pViewport->uViewportTL_X;
-            VertexRenderList[9].vWorldViewProjY = (double)pViewport->uViewportBR_Y + 1;
-            VertexRenderList[10].vWorldViewProjX = (double)pViewport->uViewportBR_X;
-            VertexRenderList[10].vWorldViewProjY = (double)pViewport->uViewportBR_Y + 1;
-            VertexRenderList[11].vWorldViewProjX = (double)pViewport->uViewportBR_X;
-            VertexRenderList[11].vWorldViewProjY = (double)bot_y_proj - engine->config->graphics.FogHorizon.value();
+            VertexRenderList[8].vWorldViewProjX = (double)pViewport->viewportTL_X;
+            VertexRenderList[8].vWorldViewProjY = (double)bot_y_proj - config->graphics.FogHorizon.value();
+            VertexRenderList[9].vWorldViewProjX = (double)pViewport->viewportTL_X;
+            VertexRenderList[9].vWorldViewProjY = (double)pViewport->viewportBR_Y + 1;
+            VertexRenderList[10].vWorldViewProjX = (double)pViewport->viewportBR_X;
+            VertexRenderList[10].vWorldViewProjY = (double)pViewport->viewportBR_Y + 1;
+            VertexRenderList[11].vWorldViewProjX = (double)pViewport->viewportBR_X;
+            VertexRenderList[11].vWorldViewProjY = (double)bot_y_proj - config->graphics.FogHorizon.value();
         }
 
         _set_ortho_projection(1);
@@ -2160,7 +2116,7 @@ void OpenGLRenderer::DrawOutdoorSkyPolygon(int numVertices, GraphicsImage *textu
         assert(forceperstorecnt <= MAX_FORCEPERSTORECNT);
     }
 
-    if (engine->config->graphics.Fog.value()) {
+    if (config->graphics.Fog.value()) {
         // draw blend sky
         // load up poly
         for (int z = 4; z < 6; z++) {
@@ -2300,7 +2256,7 @@ void OpenGLRenderer::DrawForcePerVerts() {
     int fpfogmiddle{};
     Color fpfogcol = GetLevelFogColor();
 
-    if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+    if (config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         if (fpfogcol != Color()) {
             fpfogstart = day_fogrange_1;
             fpfogmiddle = day_fogrange_2;
@@ -2365,7 +2321,7 @@ void OpenGLRenderer::DrawForcePerVerts() {
 void OpenGLRenderer::SetFogParametersGL() {
     Color fogcol = GetLevelFogColor();
 
-    if (engine->config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
+    if (config->graphics.Fog.value() && uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
         if (fogcol != Color()) {
             fogstart = day_fogrange_1;
             fogmiddle = day_fogrange_2;
@@ -2376,7 +2332,7 @@ void OpenGLRenderer::SetFogParametersGL() {
         } else {
             fogend = pCamera3D->GetFarClip();
             fogmiddle = 0.0f;
-            fogstart = fogend * engine->config->graphics.FogDepthRatio.value();
+            fogstart = fogend * config->graphics.FogDepthRatio.value();
 
             // grabs sky back fog colour
             Color uTint = GetActorTintColor(31, 0, fogend, 1, 0);
@@ -2582,17 +2538,16 @@ void OpenGLRenderer::DrawBillboards() {
         glEnableVertexAttribArray(5);
     }
 
-    if (palbuf == 0) {
-        // generate palette buffer texture
+    constexpr GLint paltex2D_id = 1;
+    if (paltex2D == 0) {
         std::span<Color> palettes = pPaletteManager->paletteData();
-        glGenBuffers(1, &palbuf);
-        glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
-        glBufferData(GL_TEXTURE_BUFFER, palettes.size_bytes(), palettes.data(), GL_STATIC_DRAW);
-
-        glGenTextures(1, &paltex);
-        glBindTexture(GL_TEXTURE_BUFFER, paltex);
-        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
-        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+        glActiveTexture(GL_TEXTURE0 + paltex2D_id);
+        glGenTextures(1, &paltex2D);
+        glBindTexture(GL_TEXTURE_2D, paltex2D);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, palettes.size() / 256, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, palettes.data());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
     // update buffer
@@ -2611,10 +2566,10 @@ void OpenGLRenderer::DrawBillboards() {
     billbshader.use();
 
     // set sampler to palette
-    glUniform1i(billbshader.uniformLocation("palbuf"), GLint(1));
-    glActiveTexture(GL_TEXTURE0 + 1);
-    glBindTexture(GL_TEXTURE_BUFFER, paltex);
-    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
+    glActiveTexture(GL_TEXTURE0 + paltex2D_id);
+    glBindTexture(GL_TEXTURE_2D, paltex2D);
+    glUniform1i(billbshader.uniformLocation("paltex2D"), paltex2D_id);
+
     glActiveTexture(GL_TEXTURE0);
 
 
@@ -3185,8 +3140,8 @@ void OpenGLRenderer::swapBuffers() {
 
     openGLContext->swapBuffers();
 
-    if (engine->config->graphics.FPSLimit.value() > 0)
-        _frameLimiter.tick(engine->config->graphics.FPSLimit.value());
+    if (config->graphics.FPSLimit.value() > 0)
+        _frameLimiter.tick(config->graphics.FPSLimit.value());
 }
 
 void OpenGLRenderer::Present() {
@@ -3264,6 +3219,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                     if (!face.Invisible()) {
                         // TODO(pskelton): Same as indoors. When ODM and BLV face is combined - seperate out function
 
+                        // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
                         if (!face.GetTexture()) continue;
                         GraphicsImage *tex = face.GetTexture();
 
@@ -3583,7 +3539,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // terrain debug
-    if (engine->config->debug.Terrain.value())
+    if (config->debug.Terrain.value())
         // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
         if (!OpenGLES)
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -3627,9 +3583,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     glUniform3f(outbuildshader.uniformLocation("sun.specular"), diffuseon * 0.35f * ambient, diffuseon * 0.28f * ambient, 0.0f);
 
     if (pParty->armageddon_timer) {
-        glUniform3f(terrainshader.uniformLocation("sun.ambient"), 1.0f, 0.0f, 0.0f);
-        glUniform3f(terrainshader.uniformLocation("sun.diffuse"), 1.0f, 0.0f, 0.0f);
-        glUniform3f(terrainshader.uniformLocation("sun.specular"), 0.0f, 0.0f, 0.0f);
+        glUniform3f(outbuildshader.uniformLocation("sun.ambient"), 1.0f, 0.0f, 0.0f);
+        glUniform3f(outbuildshader.uniformLocation("sun.diffuse"), 1.0f, 0.0f, 0.0f);
+        glUniform3f(outbuildshader.uniformLocation("sun.specular"), 0.0f, 0.0f, 0.0f);
     }
 
 
@@ -3753,7 +3709,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     //end terrain debug
-    if (engine->config->debug.Terrain.value())
+    if (config->debug.Terrain.value())
         // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
         if (!OpenGLES)
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -3879,9 +3835,11 @@ void OpenGLRenderer::DrawIndoorFaces() {
             for (int test = 0; test < pIndoor->pFaces.size(); test++) {
                 BLVFace *face = &pIndoor->pFaces[test];
 
-                if (face->isPortal()) continue;
-                if (!face->GetTexture()) continue;
-                //if (face->uAttributes & FACE_IS_DOOR) continue;
+                if (face->isPortal())
+                    continue;
+                // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
+                if (!face->GetTexture())
+                    continue;
 
                 // TODO(pskelton): Same as outdoors. When ODM and BLV face is combined - seperate out function
                 GraphicsImage *tex = face->GetTexture();
@@ -3897,28 +3855,6 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                 int texunit = 0;
                 int texlayer = 0;
-                int attribflags = 0;
-
-                if (face->uAttributes & FACE_IsFluid)
-                    attribflags |= 2;
-                if (face->uAttributes & FACE_INDOOR_SKY)
-                    attribflags |= 0x400;
-
-                if (face->uAttributes & FACE_FlowDown)
-                    attribflags |= 0x400;
-                else if (face->uAttributes & FACE_FlowUp)
-                    attribflags |= 0x800;
-
-                if (face->uAttributes & FACE_FlowRight)
-                    attribflags |= 0x2000;
-                else if (face->uAttributes & FACE_FlowLeft)
-                    attribflags |= 0x1000;
-
-                if (face->uAttributes & FACE_IsLava)
-                    attribflags |= 0x4000;
-
-                if (face->uAttributes & (FACE_OUTLINED | FACE_IsSecret))
-                    attribflags |= 0x00010000;
 
                 // loop while running down animlength with frame animtimes
                 do {
@@ -4076,167 +4012,119 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
             for (unsigned i = 0; i < pBspRenderer->num_faces; ++i) {
                 int uFaceID = pBspRenderer->faces[i].uFaceID;
-                if (uFaceID >= pIndoor->pFaces.size())
-                    continue;
                 BLVFace *face = &pIndoor->pFaces[uFaceID];
-                face->uAttributes |= FACE_SeenByParty;
 
-                if (face->isPortal()) {
-                    continue;
-                }
-
-                if (face->uNumVertices < 3) continue;
-
-                if (face->Invisible()) {
-                    continue;
-                }
-
-                if (!face->GetTexture()) {
-                    continue;
-                }
-
-                Planef *portalfrustumnorm = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].ViewportNodeFrustum.data();
-                unsigned int uNumFrustums = 4;
-                RenderVertexSoft *pPortalBounding = pBspRenderer->nodes[pBspRenderer->faces[i].uNodeID].pPortalBounding.data();
-
-                // unsigned ColourMask;  // ebx@25
-                unsigned int uNumVerticesa;  // [sp+24h] [bp-4h]@17
-                // int LightLevel;                     // [sp+34h] [bp+Ch]@25
-
-                static RenderVertexSoft static_vertices_buff_in[64];  // buff in
-                static RenderVertexSoft static_vertices_calc_out[64];  // buff out - calc portal shape
-
-                // check face is towards camera
-                if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
-                    uNumVerticesa = face->uNumVertices;
-
-                    // copy to buff in
-                    for (unsigned i = 0; i < face->uNumVertices; ++i) {
-                        static_vertices_buff_in[i].vWorldPosition.x = pIndoor->pVertices[face->pVertexIDs[i]].x;
-                        static_vertices_buff_in[i].vWorldPosition.y = pIndoor->pVertices[face->pVertexIDs[i]].y;
-                        static_vertices_buff_in[i].vWorldPosition.z = pIndoor->pVertices[face->pVertexIDs[i]].z;
-                        static_vertices_buff_in[i].u = (signed short)face->pVertexUIDs[i];
-                        static_vertices_buff_in[i].v = (signed short)face->pVertexVIDs[i];
+                float skymodtimex{};
+                float skymodtimey{};
+                if (face->Indoor_sky()) {
+                    if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
+                        // draw forced perspective sky
+                        DrawIndoorSky(face->uNumVertices, uFaceID);
+                        continue;
+                    } else {
+                        // TODO(pskelton): check tickcount usage here
+                        skymodtimex = (platform->tickCount() / 32.0f) - pCamera3D->vCameraPos.x;
+                        skymodtimey = (platform->tickCount() / 32.0f) + pCamera3D->vCameraPos.y;
                     }
+                }
 
-                    // ceiling sky faces are not frustum culled
-                    float skymodtimex{};
-                    float skymodtimey{};
+                ++pBLVRenderParams->uNumFacesRenderedThisFrame;
+                // load up verts here
+                int texlayer = 0;
+                int texunit = 0;
+                int attribflags = 0;
+
+                if (face->uAttributes & FACE_IsFluid)
+                    attribflags |= 2;
+
+                if (face->uAttributes & FACE_FlowDown)
+                    attribflags |= 0x400;
+                else if (face->uAttributes & FACE_FlowUp)
+                    attribflags |= 0x800;
+
+                if (face->uAttributes & FACE_FlowRight)
+                    attribflags |= 0x2000;
+                else if (face->uAttributes & FACE_FlowLeft)
+                    attribflags |= 0x1000;
+
+                if (face->uAttributes & FACE_IsLava)
+                    attribflags |= 0x4000;
+
+                if (face->uAttributes & FACE_OUTLINED || (face->uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
+                    attribflags |= 0x00010000;
+
+                if (face->IsTextureFrameTable()) {
+                    texlayer = -1;
+                    texunit = -1;
+                } else {
+                    texlayer = face->texlayer;
+                    texunit = face->texunit;
+                }
+
+                if (texlayer == -1) { // texture has been reset - see if its in the map
+                    GraphicsImage *tex = face->GetTexture();
+                    std::string texname = tex->GetName();
+                    auto mapiter = bsptexmap.find(texname);
+                    if (mapiter != bsptexmap.end()) {
+                        // if so, extract unit and layer
+                        int unitlayer = mapiter->second;
+                        face->texlayer = texlayer = unitlayer & 0xFF;
+                        face->texunit = texunit = (unitlayer & 0xFF00) >> 8;
+                    } else {
+                        logger->warning("Texture not found in map!");
+                        // TODO(pskelton): set to water for now - fountains in walls of mist
+                        texlayer = face->texlayer = 0;
+                        texunit = face->texunit = 0;
+                    }
+                }
+
+
+                for (int z = 0; z < (face->uNumVertices - 2); z++) {
+                    // 123, 134, 145, 156..
+                    GLshaderverts *thisvert = &BSPshaderstore[texunit][numBSPverts[texunit]];
+
+                    // copy first
+                    thisvert->x = pIndoor->pVertices[face->pVertexIDs[0]].x;
+                    thisvert->y = pIndoor->pVertices[face->pVertexIDs[0]].y;
+                    thisvert->z = pIndoor->pVertices[face->pVertexIDs[0]].z;
+                    thisvert->u = face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
+                    thisvert->v = face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
                     if (face->Indoor_sky()) {
-                        if (face->uPolygonType != POLYGON_InBetweenFloorAndWall && face->uPolygonType != POLYGON_Floor) {
-                            // draw forced perspective sky
-                            DrawIndoorSky(face->uNumVertices, uFaceID);
-                            continue;
-                        } else {
-                            // TODO(pskelton): check tickcount usage here
-                            skymodtimex = (platform->tickCount() / 32.0f) - pCamera3D->vCameraPos.x;
-                            skymodtimey = (platform->tickCount() / 32.0f) + pCamera3D->vCameraPos.y;
+                        thisvert->u = (skymodtimex + thisvert->u) * 0.25f;
+                        thisvert->v = (skymodtimey + thisvert->v) * 0.25f;
+                    }
+                    thisvert->texunit = texunit;
+                    thisvert->texturelayer = texlayer;
+                    thisvert->normx = face->facePlane.normal.x;
+                    thisvert->normy = face->facePlane.normal.y;
+                    thisvert->normz = face->facePlane.normal.z;
+                    thisvert->attribs = attribflags;
+                    thisvert->sector = face->uSectorID;
+                    thisvert++;
+
+                    // copy other two (z+1)(z+2)
+                    for (unsigned i = 1; i < 3; ++i) {
+                        thisvert->x = pIndoor->pVertices[face->pVertexIDs[z + i]].x;
+                        thisvert->y = pIndoor->pVertices[face->pVertexIDs[z + i]].y;
+                        thisvert->z = pIndoor->pVertices[face->pVertexIDs[z + i]].z;
+                        thisvert->u = face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
+                        thisvert->v = face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
+                        if (face->Indoor_sky()) {
+                            thisvert->u = (skymodtimex + thisvert->u) * 0.25f;
+                            thisvert->v = (skymodtimey + thisvert->v) * 0.25f;
                         }
+                        thisvert->texunit = texunit;
+                        thisvert->texturelayer = texlayer;
+                        thisvert->normx = face->facePlane.normal.x;
+                        thisvert->normy = face->facePlane.normal.y;
+                        thisvert->normz = face->facePlane.normal.z;
+                        thisvert->attribs = attribflags;
+                        thisvert->sector = face->uSectorID;
+                        thisvert++;
                     }
 
-                    // check if this face is visible through current portal node
-                    if (pCamera3D->CullFaceToFrustum(static_vertices_buff_in, &uNumVerticesa, static_vertices_calc_out, portalfrustumnorm, 4)) {
-                        if (true) {
-                            ++pBLVRenderParams->uNumFacesRenderedThisFrame;
-                            // load up verts here
-                            int texlayer = 0;
-                            int texunit = 0;
-                            int attribflags = 0;
-
-                            if (face->uAttributes & FACE_IsFluid)
-                                attribflags |= 2;
-
-                            if (face->uAttributes & FACE_FlowDown)
-                                attribflags |= 0x400;
-                            else if (face->uAttributes & FACE_FlowUp)
-                                attribflags |= 0x800;
-
-                            if (face->uAttributes & FACE_FlowRight)
-                                attribflags |= 0x2000;
-                            else if (face->uAttributes & FACE_FlowLeft)
-                                attribflags |= 0x1000;
-
-                            if (face->uAttributes & FACE_IsLava)
-                                attribflags |= 0x4000;
-
-                            if (face->uAttributes & FACE_OUTLINED || (face->uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
-                                attribflags |= 0x00010000;
-
-                            if (face->IsTextureFrameTable()) {
-                                texlayer = -1;
-                                texunit = -1;
-                            } else {
-                                texlayer = face->texlayer;
-                                texunit = face->texunit;
-                            }
-
-                            if (texlayer == -1) { // texture has been reset - see if its in the map
-                                GraphicsImage *tex = face->GetTexture();
-                                std::string texname = tex->GetName();
-                                auto mapiter = bsptexmap.find(texname);
-                                if (mapiter != bsptexmap.end()) {
-                                    // if so, extract unit and layer
-                                    int unitlayer = mapiter->second;
-                                    face->texlayer = texlayer = unitlayer & 0xFF;
-                                    face->texunit = texunit = (unitlayer & 0xFF00) >> 8;
-                                } else {
-                                    logger->warning("Texture not found in map!");
-                                    // TODO(pskelton): set to water for now - fountains in walls of mist
-                                    texlayer = face->texlayer = 0;
-                                    texunit = face->texunit = 0;
-                                }
-                            }
-
-
-                            for (int z = 0; z < (face->uNumVertices - 2); z++) {
-                                // 123, 134, 145, 156..
-                                GLshaderverts *thisvert = &BSPshaderstore[texunit][numBSPverts[texunit]];
-
-                                // copy first
-                                thisvert->x = pIndoor->pVertices[face->pVertexIDs[0]].x;
-                                thisvert->y = pIndoor->pVertices[face->pVertexIDs[0]].y;
-                                thisvert->z = pIndoor->pVertices[face->pVertexIDs[0]].z;
-                                thisvert->u = face->pVertexUIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
-                                thisvert->v = face->pVertexVIDs[0] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
-                                if (face->Indoor_sky()) {
-                                    thisvert->u = (skymodtimex + thisvert->u) * 0.25f;
-                                    thisvert->v = (skymodtimey + thisvert->v) * 0.25f;
-                                }
-                                thisvert->texunit = texunit;
-                                thisvert->texturelayer = texlayer;
-                                thisvert->normx = face->facePlane.normal.x;
-                                thisvert->normy = face->facePlane.normal.y;
-                                thisvert->normz = face->facePlane.normal.z;
-                                thisvert->attribs = attribflags;
-                                thisvert->sector = face->uSectorID;
-                                thisvert++;
-
-                                // copy other two (z+1)(z+2)
-                                for (unsigned i = 1; i < 3; ++i) {
-                                    thisvert->x = pIndoor->pVertices[face->pVertexIDs[z + i]].x;
-                                    thisvert->y = pIndoor->pVertices[face->pVertexIDs[z + i]].y;
-                                    thisvert->z = pIndoor->pVertices[face->pVertexIDs[z + i]].z;
-                                    thisvert->u = face->pVertexUIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaU  /*+ face->sTextureDeltaU*/;
-                                    thisvert->v = face->pVertexVIDs[z + i] + pIndoor->pFaceExtras[face->uFaceExtraID].sTextureDeltaV  /*+ face->sTextureDeltaV*/;
-                                    if (face->Indoor_sky()) {
-                                        thisvert->u = (skymodtimex + thisvert->u) * 0.25f;
-                                        thisvert->v = (skymodtimey + thisvert->v) * 0.25f;
-                                    }
-                                    thisvert->texunit = texunit;
-                                    thisvert->texturelayer = texlayer;
-                                    thisvert->normx = face->facePlane.normal.x;
-                                    thisvert->normy = face->facePlane.normal.y;
-                                    thisvert->normz = face->facePlane.normal.z;
-                                    thisvert->attribs = attribflags;
-                                    thisvert->sector = face->uSectorID;
-                                    thisvert++;
-                                }
-
-                                numBSPverts[texunit] += 3;
-                                assert(numBSPverts[texunit] <= 19999);
-                            }
-                        }
-                    }
+                    numBSPverts[texunit] += 3;
+                    assert(numBSPverts[texunit] <= 19999);
                 }
             }
 
@@ -4253,7 +4141,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
             glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         // terrain debug
-        if (engine->config->debug.Terrain.value())
+        if (config->debug.Terrain.value())
             // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
             if (!OpenGLES)
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -4498,7 +4386,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
 
         //end terrain debug
-        if (engine->config->debug.Terrain.value())
+        if (config->debug.Terrain.value())
             // TODO: OpenGL ES doesn't provide wireframe functionality so enable it only for classic OpenGL for now
             if (!OpenGLES)
                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -4513,6 +4401,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
             BLVFace *pface = &pIndoor->pFaces[test];
 
             if (pface->isPortal()) continue;
+            // TODO(yoctozepto, pskelton): we should probably try to handle these faces as they are otherwise marked as visible (see also BSPRenderer)
             if (!pface->GetTexture()) continue;
 
             // check if faces is visible
@@ -4556,73 +4445,71 @@ void OpenGLRenderer::DrawIndoorFaces() {
         return;
 }
 
-bool OpenGLRenderer::SwitchToWindow() {
-    // pViewport->ResetScreen();
-    // CreateZBuffer();
-
-    return true;
-}
-
-
 bool OpenGLRenderer::Initialize() {
-    if (!BaseRenderer::Initialize()) {
+    if (!BaseRenderer::Initialize())
         return false;
+
+    if (!window)
+        return false;
+
+    PlatformOpenGLOptions opts;
+
+    // Set it only on startup as currently we don't support multiple contexts to be able to switch OpenGL<->OpenGLES in the middle of runtime.
+    OpenGLES = config->graphics.Renderer.value() == RENDERER_OPENGL_ES;
+
+    if (!OpenGLES) {
+        //  Use OpenGL 4.1 core
+        opts.versionMajor = 4;
+        opts.versionMinor = 1;
+        opts.profile = GL_PROFILE_CORE;
+    } else {
+        //  Use OpenGL ES 3.2
+        opts.versionMajor = 3;
+        opts.versionMinor = 2;
+        opts.profile = GL_PROFILE_ES;
     }
 
-    if (window != nullptr) {
-        PlatformOpenGLOptions opts;
+    //  Turn on 24bit Z buffer.
+    //  You may need to change this to 16 or 32 for your system
+    opts.depthBits = 24;
+    opts.stencilBits = 8;
 
-        // Set it only on startup as currently we don't support multiple contexts to be able to switch OpenGL<->OpenGLES in the middle of runtime.
-        OpenGLES = config->graphics.Renderer.value() == RENDERER_OPENGL_ES;
+    opts.vsyncMode = config->graphics.VSync.value() ? GL_VSYNC_ADAPTIVE : GL_VSYNC_NONE;
 
-        if (!OpenGLES) {
-            //  Use OpenGL 4.1 core
-            opts.versionMajor = 4;
-            opts.versionMinor = 1;
-            opts.profile = GL_PROFILE_CORE;
-        } else {
-            //  Use OpenGL ES 3.2
-            opts.versionMajor = 3;
-            opts.versionMinor = 2;
-            opts.profile = GL_PROFILE_ES;
-        }
+    application->initializeOpenGLContext(opts);
 
-        //  Turn on 24bit Z buffer.
-        //  You may need to change this to 16 or 32 for your system
-        opts.depthBits = 24;
-        opts.stencilBits = 8;
+    auto gladLoadFunc = [](void *ptr, const char *name) {
+        return reinterpret_cast<GLADapiproc>(static_cast<PlatformOpenGLContext *>(ptr)->getProcAddress(name));
+    };
 
-        opts.vsyncMode = config->graphics.VSync.value() ? GL_VSYNC_ADAPTIVE : GL_VSYNC_NONE;
+    int version;
+    if (OpenGLES)
+        version = gladLoadGLES2UserPtr(gladLoadFunc, openGLContext);
+    else
+        version = gladLoadGLUserPtr(gladLoadFunc, openGLContext);
 
-        application->initializeOpenGLContext(opts);
+    auto glGetStringSafe = [] (int id) {
+        // Need this wrapper b/c glGetString can return nullptr, actually happens under OpenGL 1.1 when called for
+        // GL_SHADING_LANGUAGE_VERSION.
+        const char *result = reinterpret_cast<const char *>(glGetString(id));
+        return result ? result : "???";
+    };
 
-        auto gladLoadFunc = [](void *ptr, const char *name) {
-            return reinterpret_cast<GLADapiproc>(static_cast<PlatformOpenGLContext *>(ptr)->getProcAddress(name));
-        };
-
-        int version;
-        if (OpenGLES)
-            version = gladLoadGLES2UserPtr(gladLoadFunc, openGLContext);
-        else
-            version = gladLoadGLUserPtr(gladLoadFunc, openGLContext);
-
-        if (!version)
-            logger->warning("GLAD: Failed to initialize the OpenGL loader");
-
-        if (version) {
-            logger->info("SDL2: supported OpenGL: {}", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
-            logger->info("SDL2: supported GLSL: {}", reinterpret_cast<const char *>(glGetString(GL_SHADING_LANGUAGE_VERSION)));
-            logger->info("SDL2: OpenGL version: {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
-        }
-
-        gladSetGLPostCallback(GL_Check_Errors);
-
-        _initImGui();
-
-        return Reinitialize(true);
+    if (!version) {
+        logger->error("GLAD: Failed to initialize the OpenGL loader");
+    } else {
+        logger->info("OpenGL version: {}.{}", GLAD_VERSION_MAJOR(version), GLAD_VERSION_MINOR(version));
+        logger->info("OpenGL version string: {}", glGetStringSafe(GL_VERSION));
+        logger->info("GLSL version: {}", glGetStringSafe(GL_SHADING_LANGUAGE_VERSION));
+        // TODO(captainurist): this is probably the place to check OpenGL version & exit.
+        //                     openenroth requires opengl core 4.1 or opengles 3.2 capable gpu to run.
     }
 
-    return false;
+    gladSetGLPostCallback(GL_Check_Errors);
+
+    _initImGui();
+
+    return Reinitialize(true);
 }
 
 void OpenGLRenderer::_initImGui() {
@@ -4633,9 +4520,10 @@ void OpenGLRenderer::_initImGui() {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
+    io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;   // Dont allow ImGui to modify mouse cursor
 
     SDL_Window *sdlWindow = static_cast<SDL_Window *>(window->nativeHandle());
-    ImGui_ImplSDL2_InitForOpenGL(sdlWindow, openGLContext->nativeHandle());
+    ImGui_ImplSDL3_InitForOpenGL(sdlWindow, openGLContext->nativeHandle());
     ImGui_ImplOpenGL3_Init();
 
     // Set ImGui Style
@@ -4686,7 +4574,7 @@ void OpenGLRenderer::_initImGui() {
 
 void OpenGLRenderer::_shutdownImGui() {
     ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplSDL2_Shutdown();
+    ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
 }
 
@@ -4785,25 +4673,6 @@ void OpenGLRenderer::FillRectFast(int x, int y, int width, int height, Color col
 
 bool OpenGLRenderer::Reinitialize(bool firstInit) {
     BaseRenderer::Reinitialize(firstInit);
-
-    if (!firstInit) {
-        game_viewport_x = viewparams->uScreen_topL_X = engine->config->graphics.ViewPortX1.value(); //8
-        game_viewport_y = viewparams->uScreen_topL_Y = engine->config->graphics.ViewPortY1.value(); //8
-        game_viewport_z = viewparams->uScreen_BttmR_X = outputRender.w - engine->config->graphics.ViewPortX2.value(); //468;
-        game_viewport_w = viewparams->uScreen_BttmR_Y = outputRender.h - engine->config->graphics.ViewPortY2.value(); //352;
-
-        game_viewport_width = game_viewport_z - game_viewport_x;
-        game_viewport_height = game_viewport_w - game_viewport_y;
-
-        viewparams->uSomeY = viewparams->uScreen_topL_Y;
-        viewparams->uSomeX = viewparams->uScreen_topL_X;
-        viewparams->uSomeZ = viewparams->uScreen_BttmR_X;
-        viewparams->uSomeW = viewparams->uScreen_BttmR_Y;
-
-        pViewport->SetScreen(viewparams->uScreen_topL_X, viewparams->uScreen_topL_Y,
-                            viewparams->uScreen_BttmR_X,
-                            viewparams->uScreen_BttmR_Y);
-    }
 
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);       // Black Background
     glClearDepthf(1.0f);
@@ -4929,14 +4798,11 @@ bool OpenGLRenderer::ReloadShaders() {
         glDeleteBuffers(1, &billbVBO);
         billbVBO = 0;
     }
-    if (paltex) {
-        glDeleteTextures(1, &paltex);
-        paltex = 0;
+    if (paltex2D) {
+        glDeleteTextures(1, &paltex2D);
+        paltex2D = 0;
     }
-    if (palbuf) {
-        glDeleteBuffers(1, &palbuf);
-        palbuf = 0;
-    }
+
     billbstorecnt = 0;
 
     if (decalVAO) {
@@ -4987,7 +4853,7 @@ bool OpenGLRenderer::ReloadShaders() {
 void OpenGLRenderer::beginOverlays() {
     ImGui_ImplOpenGL3_NewFrame();
     // we assume we're always running with SDL
-    ImGui_ImplSDL2_NewFrame();
+    ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
 }
 
@@ -5104,17 +4970,16 @@ void OpenGLRenderer::DrawTwodVerts() {
         glEnableVertexAttribArray(4);
     }
 
-    if (palbuf == 0) {
-        // generate palette buffer texture
+    constexpr GLint paltex2D_id = 1;
+    if (paltex2D == 0) {
         std::span<Color> palettes = pPaletteManager->paletteData();
-        glGenBuffers(1, &palbuf);
-        glBindBuffer(GL_TEXTURE_BUFFER, palbuf);
-        glBufferData(GL_TEXTURE_BUFFER, palettes.size_bytes(), palettes.data(), GL_STATIC_DRAW);
-
-        glGenTextures(1, &paltex);
-        glBindTexture(GL_TEXTURE_BUFFER, paltex);
-        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
-        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+        glActiveTexture(GL_TEXTURE0 + paltex2D_id);
+        glGenTextures(1, &paltex2D);
+        glBindTexture(GL_TEXTURE_2D, paltex2D);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 256, palettes.size() / 256, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, palettes.data());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
     // update buffer
@@ -5132,10 +4997,10 @@ void OpenGLRenderer::DrawTwodVerts() {
     twodshader.use();
 
     // set sampler to palette
-    glUniform1i(twodshader.uniformLocation("palbuf"), GLint(1));
-    glActiveTexture(GL_TEXTURE0 + 1);
-    glBindTexture(GL_TEXTURE_BUFFER, paltex);
-    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA8UI, palbuf);
+    glActiveTexture(GL_TEXTURE0 + paltex2D_id);
+    glBindTexture(GL_TEXTURE_2D, paltex2D);
+    glUniform1i(twodshader.uniformLocation("paltex2D"), paltex2D_id);
+
     glActiveTexture(GL_TEXTURE0);
 
     // glEnable(GL_TEXTURE_2D);

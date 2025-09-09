@@ -4,16 +4,16 @@
 
 #include "SoundInfo.h"
 
-#include "Library/Snapshots/RawSnapshots.h"
+struct TriBlob;
 
-struct RawSoundList {
-    std::unordered_map<SoundId, SoundInfo> _mapSounds;
-};
-
-class SoundList : private RawSoundList {
-    MM_DECLARE_RAW_PRIVATE_BASE(RawSoundList)
+class SoundList {
  public:
     SoundInfo *soundInfo(SoundId soundId); // TODO(captainurist): should be const
+
+    friend void deserialize(const TriBlob &src, SoundList *dst); // In TableSerialization.cpp.
+
+ private:
+    std::unordered_map<SoundId, SoundInfo> _mapSounds;
 };
 
 extern SoundList *pSoundList;

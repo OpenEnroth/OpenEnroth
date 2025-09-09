@@ -4,11 +4,11 @@
 #include <cassert>
 #include <utility>
 
-
+// TODO(captainurist): rename according to codestyle
 enum class ObjectType {
     OBJECT_None = 0x0,
     OBJECT_Door = 0x1,          // Pid id is index in pIndoor->pDoors.
-    OBJECT_Item = 0x2,          // Pid id is index in pSpriteObjects array. Note that not all sprite objects are items.
+    OBJECT_Sprite = 0x2,        // Pid id is index in pSpriteObjects array.
     OBJECT_Actor = 0x3,         // Pid id is index in pActors array.
     OBJECT_Character = 0x4,     // Pid id is character index in [0..3].
     OBJECT_Decoration = 0x5,    // Pid id is index in pLevelDecorations array.
@@ -36,8 +36,8 @@ class Pid {
         return Pid(OBJECT_Door, id);
     }
 
-    static constexpr Pid item(int id) {
-        return Pid(OBJECT_Item, id);
+    static constexpr Pid sprite(int id) {
+        return Pid(OBJECT_Sprite, id);
     }
 
     static constexpr Pid actor(int id) {

@@ -35,6 +35,7 @@
 #include "Library/Logger/Logger.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/Lod/LodWriter.h"
+#include "TurnEngine/TurnEngine.h"
 
 SavegameList *pSavegameList = new SavegameList;
 
@@ -57,6 +58,10 @@ void LoadGame(int uSlot) {
 
     // TODO(captainurist): remained from Party::Reset, doesn't really belong here (or in Party::Reset).
     current_character_screen_window = WINDOW_CharacterWindow_Stats;
+    if (pParty->bTurnBasedModeOn) {
+        pTurnEngine->End(false);
+        pParty->bTurnBasedModeOn = false;
+    }
 
     std::string filename = fmt::format("saves/{}", pSavegameList->pFileList[uSlot]);
 
@@ -67,15 +72,19 @@ void LoadGame(int uSlot) {
     SaveGameHeader header;
     deserialize(*pSave_LOD, &header, tags::via<SaveGame_MM7>);
 
+    // Patch up event timer, which was updated by the deserialize call above.
+    pEventTimer->setPaused(true); // We're loading the game now => event timer is paused.
+    pEventTimer->setTurnBased(false);
+
     // TODO(captainurist): incapsulate this too
     pParty->bTurnBasedModeOn = false; // We always start in realtime after loading a game.
     for (size_t i = 0; i < 4; i++) {
         Character *player = &pParty->pCharacters[i];
         for (size_t j = 0; j < 5; j++) {
-            if (j >= player->vBeacons.size()) {
+            if (!player->vBeacons[j]) {
                 continue;
             }
-            LloydBeacon &beacon = player->vBeacons[j];
+            LloydBeacon &beacon = *player->vBeacons[j];
             std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
             //beacon.image = Image::Create(new PCX_LOD_Raw_Loader(pNew_LOD, str));
             beacon.image = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(pSave_LOD.get(), str));
@@ -113,9 +122,6 @@ void LoadGame(int uSlot) {
     current_screen_type = SCREEN_GAME;
 
     SetUserInterface(pParty->alignment);
-
-    pEventTimer->setPaused(false);
-    pEventTimer->setTurnBased(false);
 
     if (!pGames_LOD->exists(header.locationName)) {
         logger->error("Unable to find: {}!", header.locationName);
@@ -189,12 +195,12 @@ std::pair<SaveGameHeader, Blob> CreateSaveData(bool resetWorld, std::string_view
     for (size_t i = 0; i < 4; ++i) {  // 4 - players
         Character *player = &pParty->pCharacters[i];
         for (size_t j = 0; j < 5; ++j) {  // 5 - images
-            if (j >= player->vBeacons.size()) {
+            if (!player->vBeacons[j]) {
                 continue;
             }
-            LloydBeacon *beacon = &player->vBeacons[j];
-            GraphicsImage *image = beacon->image;
-            if ((beacon->uBeaconTime.isValid()) && (image != nullptr)) {
+            LloydBeacon &beacon = *player->vBeacons[j];
+            GraphicsImage *image = beacon.image;
+            if (beacon.uBeaconTime.isValid() && image != nullptr) {
                 assert(image->rgba());
                 std::string str = fmt::format("lloyd{}{}.pcx", i + 1, j + 1);
                 lodWriter.write(str, pcx::encode(image->rgba()));

@@ -76,7 +76,7 @@ std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowConfigPosition(const 
         displayRect = displays[0];
     }
 
-    if (mode == WINDOW_MODE_FULLSCREEN || mode == WINDOW_MODE_FULLSCREEN_BORDERLESS) {
+    if (mode == WINDOW_MODE_FULLSCREEN_BORDERLESS) {
         pos = displayRect.topLeft();
     } else if (Recti(Pointi(), displayRect.size()).contains(pos)) {
         pos += displayRect.topLeft();
@@ -176,7 +176,7 @@ bool GameWindowHandler::OnChar(PlatformKey key, int c) {
         textInputHandled |= keyboardInputHandler->ProcessTextInput(PlatformKey::KEY_CHAR, c);
     }
 
-    if (!textInputHandled && !viewparams->field_4C) {
+    if (!textInputHandled) {
         return GUI_HandleHotkey(key);  // try other hotkeys
     }
     return false;
@@ -207,7 +207,7 @@ void GameWindowHandler::OnMouseLeftClick(Pointi position) {
     } else {
         pMediaPlayer->StopMovie();
 
-        mouse->SetMouseClick(position.x, position.y);
+        mouse->setPosition(position);
 
         if (GetCurrentMenuID() == MENU_CREATEPARTY) {
             UI_OnKeyDown(PlatformKey::KEY_SELECT);
@@ -228,13 +228,13 @@ void GameWindowHandler::OnMouseRightClick(Pointi position) {
     } else {
         pMediaPlayer->StopMovie();
 
-        mouse->SetMouseClick(position.x, position.y);
+        mouse->setPosition(position);
 
         if (engine) {
             engine->PickMouse(pCamera3D->GetMouseInfoDepth(), position.x, position.y, &vis_allsprites_filter, &vis_door_filter);
         }
 
-        UI_OnMouseRightClick(position.x, position.y);
+        UI_OnMouseRightClick(position);
     }
 }
 
@@ -277,7 +277,7 @@ void GameWindowHandler::OnMouseMove(Pointi position, bool left_button, bool righ
         ArcomageGame::OnMouseClick(1, right_button);
     } else {
         if (mouse) {
-            mouse->SetMouseClick(position.x, position.y);
+            mouse->setPosition(position);
         }
     }
 }
@@ -296,14 +296,18 @@ void GameWindowHandler::OnKey(PlatformKey key) {
     }  else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Screenshot, key)) {
         OnScreenshot();
         return;
-    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleBorderless, key)) {
-        OnToggleBorderless();
+    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleWindowMode, key)) {
+        OnToggleWindowMode();
         return;
     } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleResizable, key)) {
         OnToggleResizable();
         return;
     } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::CycleFilter, key)) {
         OnCycleFilter();
+        return;
+    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleMouseLook, key)) {
+        if (current_screen_type == SCREEN_GAME)
+            mouse->ToggleMouseLook();
         return;
     }
 
@@ -312,19 +316,18 @@ void GameWindowHandler::OnKey(PlatformKey key) {
         keyboardInputHandler->ProcessTextInput(key, -1);
     } else if (pArcomageGame->bGameInProgress) {
         // TODO(pskelton): how should this be handled?
-        if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
-            OnToggleFullscreen();
+        if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleWindowMode, key) && !pMovie_Track) {
+            OnToggleWindowMode();
         }
         pArcomageGame->onKeyPress(key);
     } else {
         pMediaPlayer->StopMovie();
         if (keyboardActionMapping->IsKeyMatchAction(InputAction::Return, key)) {
-            if (!viewparams->field_4C)
-                UI_OnKeyDown(key);
+            UI_OnKeyDown(key);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, key)) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, window_SpeakInHouse != 0, 0);
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
-            OnToggleFullscreen();
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleWindowMode, key) && !pMovie_Track) {
+            OnToggleWindowMode();
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Console, key)) {
             engine->toggleOverlays();
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ReloadShaders, key) && current_screen_type == SCREEN_GAME) {
@@ -338,9 +341,7 @@ void GameWindowHandler::OnKey(PlatformKey key) {
             || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogSelect, key)) {
             if (current_screen_type != SCREEN_GAME &&
                 current_screen_type != SCREEN_GAMEOVER_WINDOW) {
-                if (!viewparams->field_4C) {
-                    UI_OnKeyDown(key);
-                }
+                UI_OnKeyDown(key);
             }
         }
     }
@@ -355,7 +356,7 @@ void GameWindowHandler::OnFocusLost() {
 }
 
 void GameWindowHandler::OnPaint() {
-    if (render && render->AreRenderSurfacesOk()) {
+    if (render) {
         render->Present();
     }
 }
@@ -381,12 +382,6 @@ void GameWindowHandler::OnActivated() {
                 dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0400_MISC_TIMER;
             else
                 pMiscTimer->setPaused(false);
-
-            if (pMovie_Track) {  // pVideoPlayer->pSmackerMovie )
-                render->RestoreFrontBuffer();
-                render->RestoreBackBuffer();
-                // BackToHouseMenu();
-            }
         }
 
         pAudioPlayer->resumeSounds();
@@ -422,43 +417,17 @@ void GameWindowHandler::OnDeactivated() {
     }
 }
 
-void GameWindowHandler::OnToggleBorderless() {
+void GameWindowHandler::OnToggleWindowMode() {
     PlatformWindowMode mode = window->windowMode();
     switch (mode) {
-        case WINDOW_MODE_FULLSCREEN:
-            mode = WINDOW_MODE_FULLSCREEN_BORDERLESS;
-            break;
-        case WINDOW_MODE_FULLSCREEN_BORDERLESS:
-            mode = WINDOW_MODE_FULLSCREEN;
-            break;
         case WINDOW_MODE_WINDOWED:
             mode = WINDOW_MODE_BORDERLESS;
             break;
         case WINDOW_MODE_BORDERLESS:
-            mode = WINDOW_MODE_WINDOWED;
-            break;
-        default:
-            assert(false); //should never get there.
-            break;
-    }
-
-    window->setWindowMode(mode);
-}
-
-void GameWindowHandler::OnToggleFullscreen() {
-    PlatformWindowMode mode = window->windowMode();
-    switch (mode) {
-        case WINDOW_MODE_FULLSCREEN:
-            mode = WINDOW_MODE_WINDOWED;
+            mode = WINDOW_MODE_FULLSCREEN_BORDERLESS;
             break;
         case WINDOW_MODE_FULLSCREEN_BORDERLESS:
-            mode = WINDOW_MODE_BORDERLESS;
-            break;
-        case WINDOW_MODE_WINDOWED:
-            mode = WINDOW_MODE_FULLSCREEN;
-            break;
-        case WINDOW_MODE_BORDERLESS:
-            mode = WINDOW_MODE_FULLSCREEN_BORDERLESS;
+            mode = WINDOW_MODE_WINDOWED;
             break;
         default:
             assert(false); //should never get there.

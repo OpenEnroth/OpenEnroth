@@ -44,9 +44,30 @@ TestTape<int> CommonTapeRecorder::totalItemCount() {
     return custom([] {
         int result = 0;
         for (const Character &character : pParty->pCharacters)
-            for (const ItemGen &item : character.pInventoryItemList)
-                result += item.uItemID != ITEM_NULL;
-        result += pParty->pPickedItem.uItemID != ITEM_NULL;
+            result += character.inventory.size();
+        if (pParty->pPickedItem.itemId != ITEM_NULL)
+            result++;
+        return result;
+    });
+}
+
+TestTape<int> CommonTapeRecorder::totalItemCount(ItemId itemId) {
+    return custom([itemId] {
+        int result = 0;
+        for (const Character &character : pParty->pCharacters)
+            result += std::ranges::distance(character.inventory.entries(itemId));
+        result += pParty->pPickedItem.itemId == itemId;
+        return result;
+    });
+}
+
+TestTape<int> CommonTapeRecorder::totalItemCount(ItemType itemType) {
+    return custom([itemType] {
+        int result = 0;
+        for (const Character &character : pParty->pCharacters)
+            for (InventoryConstEntry item : character.inventory.entries())
+                result += item->type() == itemType;
+        result += pParty->pPickedItem.type() == itemType;
         return result;
     });
 }
@@ -110,7 +131,7 @@ TestTape<bool> CommonTapeRecorder::turnBasedMode() {
 TestTape<int> CommonTapeRecorder::mapItemCount() {
     return custom([] {
         return static_cast<int>(std::ranges::count_if(pSpriteObjects, [] (const SpriteObject &object) {
-            return object.uObjectDescID != 0 && object.containing_item.uItemID != ITEM_NULL;
+            return object.uObjectDescID != 0 && object.containing_item.itemId != ITEM_NULL;
         }));
     });
 }
@@ -118,7 +139,7 @@ TestTape<int> CommonTapeRecorder::mapItemCount() {
 TestTape<int> CommonTapeRecorder::mapItemCount(ItemId itemId) {
     return custom([itemId] {
         return static_cast<int>(std::ranges::count_if(pSpriteObjects, [itemId] (const SpriteObject &object) {
-            return object.uObjectDescID != 0 && object.containing_item.uItemID == itemId;
+            return object.uObjectDescID != 0 && object.containing_item.itemId == itemId;
         }));
     });
 }
@@ -133,7 +154,8 @@ TestMultiTape<SpriteId> CommonTapeRecorder::sprites() {
     return custom([] {
         AccessibleVector<SpriteId> result;
         for (const SpriteObject &sprite : pSpriteObjects)
-            result.push_back(sprite.uType);
+            if (sprite.uObjectDescID != 0)
+                result.push_back(sprite.uType);
         return result;
     });
 }
@@ -162,6 +184,6 @@ TestMultiTape<std::string> CommonTapeRecorder::allGUIWindowsText() {
     return _controller->recordFunctionTape<std::string>(CALL_GUIWINDOW_DRAWTEXT);
 }
 
-TestMultiTape<SpecialAttackType> CommonTapeRecorder::specialAttacks() {
-    return _controller->recordFunctionTape<SpecialAttackType>(CALL_SPECIAL_ATTACK);
+TestMultiTape<MonsterSpecialAttack> CommonTapeRecorder::specialAttacks() {
+    return _controller->recordFunctionTape<MonsterSpecialAttack>(CALL_SPECIAL_ATTACK);
 }

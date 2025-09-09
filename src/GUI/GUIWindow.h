@@ -43,7 +43,7 @@ class Character;
 struct NPCData;
 class GraphicsImage;
 class TargetedSpellUI;
-struct ItemGen;
+struct Item;
 
 class GUIWindow {
  public:
@@ -64,7 +64,7 @@ class GUIWindow {
 
     int DrawTextInRect(GUIFont *font, Pointi position, Color color, std::string_view text, int rect_width, int reverse_text);
 
-    void DrawText(GUIFont *font, Pointi position, Color color, std::string_view text, int maxHeight = 0, Color shadowColor = colorTable.Black);
+    void DrawText(GUIFont *font, Pointi position, Color color, std::string_view text, int maxY = 0, Color shadowColor = colorTable.Black);
 
     void DrawTitleText(GUIFont *font, int horizontalMargin, int verticalMargin, Color color, std::string_view text, int lineSpacing);
 
@@ -83,10 +83,14 @@ class GUIWindow {
 
     static void InitializeGUI();
 
-    int uFrameX = 0;
-    int uFrameY = 0;
+    [[nodiscard]] Recti frameRect() const {
+        return {uFrameX, uFrameY, uFrameWidth, uFrameHeight};
+    }
+
     int uFrameWidth = 0;
     int uFrameHeight = 0; // TODO(captainurist): frameRect
+    int uFrameX = 0;
+    int uFrameY = 0;
     int uFrameZ = 0;
     int uFrameW = 0;
     WindowType eWindowType = WINDOW_null;
@@ -260,13 +264,14 @@ void CharacterUI_InventoryTab_Draw(Character *player, bool a2);
 void CharacterUI_DrawPaperdoll(Character *player);
 void CharacterUI_DrawPaperdollWithRingOverlay(Character *player);
 void CharacterUI_ReleaseButtons();
+void CharacterUI_DrawPickedItemUnderlay(Vec2i offset);
 
 /**
  * @offset 0x417AD4
  */
-Color GetSkillColor(CharacterClass uPlayerClass, CharacterSkillType uPlayerSkillType, CharacterSkillMastery skill_mastery);
+Color GetSkillColor(Class uPlayerClass, Skill uPlayerSkillType, Mastery skill_mastery);
 
-void UI_OnMouseRightClick(int mouse_x, int mouse_y);
+void UI_OnMouseRightClick(Pointi mousePos);
 
 void GUI_UpdateWindows();
 Color GetConditionDrawColor(Condition uConditionIdx);  // idb
@@ -291,12 +296,12 @@ bool isHoldingMouseRightButton();
  * @offset 0x495461
  */
 std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *npc,
-                                ItemGen *item = nullptr, HouseId houseId = HOUSE_INVALID, ShopScreen shop_screen = SHOP_SCREEN_INVALID,
+                                Item *item = nullptr, HouseId houseId = HOUSE_INVALID, ShopScreen shop_screen = SHOP_SCREEN_INVALID,
                                 Time *a6 = nullptr);
 
 
 std::string NameAndTitle(std::string_view name, std::string_view title);
-std::string NameAndTitle(std::string_view name, CharacterClass class_type);
+std::string NameAndTitle(std::string_view name, Class class_type);
 std::string NameAndTitle(std::string_view name, NpcProfession profession);
 std::string NameAndTitle(NPCData *npc);
 

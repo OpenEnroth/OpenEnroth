@@ -26,7 +26,7 @@ using enum DamageType;
 enum class ItemFlag : uint32_t {
     ITEM_IDENTIFIED = 0x1,
     ITEM_BROKEN = 0x2,
-    ITEM_TEMP_BONUS = 0x8,
+    ITEM_TEMP_BONUS = 0x8, // Has a temporary enchantment.
     ITEM_AURA_EFFECT_RED = 0x10,
     ITEM_AURA_EFFECT_BLUE = 0x20,
     ITEM_AURA_EFFECT_GREEN = 0x40,
@@ -1013,8 +1013,9 @@ enum class ItemId : int32_t {
 };
 using enum ItemId;
 
-enum class ItemType : uint8_t {
-    ITEM_TYPE_SINGLE_HANDED = 0,
+enum class ItemType {
+    ITEM_TYPE_INVALID = -1, // No items in the game have this type.
+    ITEM_TYPE_SINGLE_HANDED = 0, // Also blasters.
     ITEM_TYPE_TWO_HANDED = 1,
     ITEM_TYPE_BOW = 2,
     ITEM_TYPE_ARMOUR = 3,
@@ -1034,7 +1035,7 @@ enum class ItemType : uint8_t {
     ITEM_TYPE_MESSAGE_SCROLL = 17,
     ITEM_TYPE_GOLD = 18,
     ITEM_TYPE_GEM = 19,
-    ITEM_TYPE_NONE = 20, // Ores, quest items.
+    ITEM_TYPE_NONE = 20, // Ores, quest items. // TODO(captainurist): come up with a better name for this value.
 
     ITEM_TYPE_FIRST = ITEM_TYPE_SINGLE_HANDED,
     ITEM_TYPE_LAST = ITEM_TYPE_NONE,
@@ -1070,8 +1071,6 @@ enum class ItemSlot : uint8_t {
     ITEM_SLOT_RING5 = 15,
     ITEM_SLOT_RING6 = 16,
 
-    ITEM_SLOT_ANY = 17,
-
     ITEM_SLOT_FIRST_VALID = ITEM_SLOT_OFF_HAND,
     ITEM_SLOT_LAST_VALID = ITEM_SLOT_RING6,
 };
@@ -1083,10 +1082,10 @@ using enum ItemSlot;
  * @see https://github.com/GrayFace/MMExtension/blob/4d6600f164315f38157591d7f0307a86594c22ef/Scripts/Core/ConstAndBits.lua#L592
  */
 enum class RandomItemType {
-    RANDOM_ITEM_ANY = 0,
+    RANDOM_ITEM_ANY = 0, // This can also spawn artifacts at ITEM_TREASURE_LEVEL_6, unlike all other values here.
 
-    // TODO(captainurist): Values in 1-19 are ITEM_EQUIP_TYPE + 1, but those are not used in MM7?
-    //                     See code in ItemTable::generateItem.
+    // Values in 1-19 are ItemType + 1, but those are not used in MM7?
+    // See code in itemTypeOrSkillForRandomItemType().
 
     RANDOM_ITEM_WEAPON = 20, // A single-handed weapon.
     RANDOM_ITEM_ARMOR = 21,
@@ -1122,3 +1121,11 @@ enum class RandomItemType {
     RANDOM_ITEM_LAST_SPAWNABLE = RANDOM_ITEM_GEM
 };
 using enum RandomItemType;
+
+enum class ItemSource {
+    ITEM_SOURCE_MAP,
+    ITEM_SOURCE_MONSTER,
+    ITEM_SOURCE_CHEST,
+    ITEM_SOURCE_SCRIPT,
+};
+using enum ItemSource;

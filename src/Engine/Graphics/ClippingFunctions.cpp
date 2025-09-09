@@ -171,8 +171,7 @@ bool ClippingFunctions::ClipVertsToPortal(RenderVertexSoft *pPortalBounding,  //
 bool ClippingFunctions::ClipVertsToFrustumPlane(RenderVertexSoft *pInVertices, signed int pInNumVertices,
                                                 RenderVertexSoft *pOutVertices,
                                                 unsigned int *pOutNumVertices,
-                                                Vec3f *CamFrustumNormal, float CamDotDistance, char *VertsAdjusted,
-                                                int unused) {
+                                                const Vec3f *CamFrustumNormal, float CamDotDistance, bool *VertsAdjusted) {
     // this cycles through adjust vertice posisiton to supplied frustum plane
     // points are inside frstum plane when point dot product is greater than camera dot distance
 

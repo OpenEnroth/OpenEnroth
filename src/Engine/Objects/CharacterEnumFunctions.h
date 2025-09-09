@@ -13,7 +13,7 @@
 // Condition
 //
 
-CharacterPortrait portraitForCondition(Condition condition);
+PortraitId portraitForCondition(Condition condition);
 
 /**
  * @return                              List of conditions that can be applied to the character.
@@ -26,19 +26,19 @@ inline Segment<Condition> allConditions() {
 // CharacterSkillMastery
 //
 
-inline Segment<CharacterSkillMastery> allSkillMasteries() {
-    return {CHARACTER_SKILL_MASTERY_FIRST, CHARACTER_SKILL_MASTERY_LAST};
+inline Segment<Mastery> allSkillMasteries() {
+    return {MASTERY_FIRST, MASTERY_LAST};
 }
 
-inline int spellCountForMastery(CharacterSkillMastery maxMastery) {
+inline int spellCountForMastery(Mastery maxMastery) {
     switch(maxMastery) {
-    case CHARACTER_SKILL_MASTERY_NOVICE:
+    case MASTERY_NOVICE:
         return 4;
-    case CHARACTER_SKILL_MASTERY_EXPERT:
+    case MASTERY_EXPERT:
         return 7;
-    case CHARACTER_SKILL_MASTERY_MASTER:
+    case MASTERY_MASTER:
         return 10;
-    case CHARACTER_SKILL_MASTERY_GRANDMASTER:
+    case MASTERY_GRANDMASTER:
         return 11;
     default:
         assert(false);
@@ -51,25 +51,25 @@ inline int spellCountForMastery(CharacterSkillMastery maxMastery) {
 // CharacterSkillType
 //
 
-inline Segment<CharacterSkillType> allSkills() {
-    return {CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST};
+inline Segment<Skill> allSkills() {
+    return {SKILL_FIRST, SKILL_LAST};
 }
 
 /**
  * @return                              List of skills that are visible to the player and that are stored in a savegame.
  */
-inline Segment<CharacterSkillType> allVisibleSkills() {
-    return {CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE};
+inline Segment<Skill> allVisibleSkills() {
+    return {SKILL_FIRST_VISIBLE, SKILL_LAST_VISIBLE};
 }
 
 /**
  * @return                              List of skills that are drawn in the "Armor" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<CharacterSkillType> allArmorSkills() {
-    static constexpr std::initializer_list<CharacterSkillType> result = {
-        CHARACTER_SKILL_LEATHER, CHARACTER_SKILL_CHAIN, CHARACTER_SKILL_PLATE,
-        CHARACTER_SKILL_SHIELD,  CHARACTER_SKILL_DODGE
+inline std::initializer_list<Skill> allArmorSkills() {
+    static constexpr std::initializer_list<Skill> result = {
+        SKILL_LEATHER, SKILL_CHAIN, SKILL_PLATE,
+        SKILL_SHIELD,  SKILL_DODGE
     };
 
     return result;
@@ -79,11 +79,11 @@ inline std::initializer_list<CharacterSkillType> allArmorSkills() {
  * @return                              List of skills that are drawn in the "Weapons" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<CharacterSkillType> allWeaponSkills() {
-    static constexpr std::initializer_list<CharacterSkillType> result = {
-        CHARACTER_SKILL_AXE,   CHARACTER_SKILL_BOW,     CHARACTER_SKILL_DAGGER,
-        CHARACTER_SKILL_MACE,  CHARACTER_SKILL_SPEAR,   CHARACTER_SKILL_STAFF,
-        CHARACTER_SKILL_SWORD, CHARACTER_SKILL_UNARMED, CHARACTER_SKILL_BLASTER
+inline std::initializer_list<Skill> allWeaponSkills() {
+    static constexpr std::initializer_list<Skill> result = {
+        SKILL_AXE,   SKILL_BOW,     SKILL_DAGGER,
+        SKILL_MACE,  SKILL_SPEAR,   SKILL_STAFF,
+        SKILL_SWORD, SKILL_UNARMED, SKILL_BLASTER
         // CHARACTER_SKILL_CLUB is not displayed in skills.
     };
 
@@ -94,14 +94,14 @@ inline std::initializer_list<CharacterSkillType> allWeaponSkills() {
  * @return                              List of skills that are drawn in the "Misc" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<CharacterSkillType> allMiscSkills() {
-    static constexpr std::initializer_list<CharacterSkillType> result = {
-        CHARACTER_SKILL_ALCHEMY,      CHARACTER_SKILL_ARMSMASTER,
-        CHARACTER_SKILL_BODYBUILDING, CHARACTER_SKILL_ITEM_ID,
-        CHARACTER_SKILL_MONSTER_ID,   CHARACTER_SKILL_LEARNING,
-        CHARACTER_SKILL_TRAP_DISARM,  CHARACTER_SKILL_MEDITATION,
-        CHARACTER_SKILL_MERCHANT,     CHARACTER_SKILL_PERCEPTION,
-        CHARACTER_SKILL_REPAIR,       CHARACTER_SKILL_STEALING
+inline std::initializer_list<Skill> allMiscSkills() {
+    static constexpr std::initializer_list<Skill> result = {
+        SKILL_ALCHEMY,      SKILL_ARMSMASTER,
+        SKILL_BODYBUILDING, SKILL_ITEM_ID,
+        SKILL_MONSTER_ID,   SKILL_LEARNING,
+        SKILL_TRAP_DISARM,  SKILL_MEDITATION,
+        SKILL_MERCHANT,     SKILL_PERCEPTION,
+        SKILL_REPAIR,       SKILL_STEALING
     };
 
     return result;
@@ -111,42 +111,42 @@ inline std::initializer_list<CharacterSkillType> allMiscSkills() {
  * @return                              List of skills that are drawn in the "Magic" section of the character
  *                                      screen's skills tab.
  */
-inline std::initializer_list<CharacterSkillType> allMagicSkills() {
-    static constexpr std::initializer_list<CharacterSkillType> result = {
-        CHARACTER_SKILL_FIRE,  CHARACTER_SKILL_AIR,    CHARACTER_SKILL_WATER,
-        CHARACTER_SKILL_EARTH, CHARACTER_SKILL_SPIRIT, CHARACTER_SKILL_MIND,
-        CHARACTER_SKILL_BODY,  CHARACTER_SKILL_LIGHT,  CHARACTER_SKILL_DARK
+inline std::initializer_list<Skill> allMagicSkills() {
+    static constexpr std::initializer_list<Skill> result = {
+        SKILL_FIRE,  SKILL_AIR,    SKILL_WATER,
+        SKILL_EARTH, SKILL_SPIRIT, SKILL_MIND,
+        SKILL_BODY,  SKILL_LIGHT,  SKILL_DARK
     };
 
     return result;
 }
 
-CharacterSkillType skillForMagicSchool(MagicSchool school);
+Skill skillForMagicSchool(MagicSchool school);
 
-CharacterSkillType skillForSpell(SpellId spell);
+Skill skillForSpell(SpellId spell);
 
 
 //
 // CharacterClass
 //
 
-inline CharacterClass getTier1Class(CharacterClass classType) {
-    return static_cast<CharacterClass>(std::to_underlying(classType) & ~3);
+inline Class getTier1Class(Class classType) {
+    return static_cast<Class>(std::to_underlying(classType) & ~3);
 }
 
-inline CharacterClass getTier2Class(CharacterClass classType) {
-    return static_cast<CharacterClass>((std::to_underlying(classType) & ~3) + 1);
+inline Class getTier2Class(Class classType) {
+    return static_cast<Class>((std::to_underlying(classType) & ~3) + 1);
 }
 
-inline CharacterClass getTier3LightClass(CharacterClass classType) {
-    return static_cast<CharacterClass>((std::to_underlying(classType) & ~3) + 2);
+inline Class getTier3LightClass(Class classType) {
+    return static_cast<Class>((std::to_underlying(classType) & ~3) + 2);
 }
 
-inline CharacterClass getTier3DarkClass(CharacterClass classType) {
-    return static_cast<CharacterClass>((std::to_underlying(classType) & ~3) + 3);
+inline Class getTier3DarkClass(Class classType) {
+    return static_cast<Class>((std::to_underlying(classType) & ~3) + 3);
 }
 
-inline int getClassTier(CharacterClass classType) {
+inline int getClassTier(Class classType) {
     int index = (std::to_underlying(classType) & 3);
     return index == 3 ? 3 : index + 1;
 }
@@ -161,7 +161,7 @@ inline int getClassTier(CharacterClass classType) {
  * @param classType                     Character class.
  * @return                              All classes that the given class can be promoted to.
  */
-inline Segment<CharacterClass> promotionsForClass(CharacterClass classType) {
+inline Segment<Class> promotionsForClass(Class classType) {
     int tier = getClassTier(classType);
 
     if (tier == 1) {
@@ -182,7 +182,7 @@ inline Segment<CharacterClass> promotionsForClass(CharacterClass classType) {
  * @return                              All attributes that can be improved though attribute item enchantments, like
  *                                      "of Might".
  */
-inline Segment<CharacterAttribute> allEnchantableAttributes() {
+inline Segment<Attribute> allEnchantableAttributes() {
     return {ATTRIBUTE_FIRST_ENCHANTABLE, ATTRIBUTE_LAST_ENCHANTABLE};
 }
 
@@ -190,6 +190,6 @@ inline Segment<CharacterAttribute> allEnchantableAttributes() {
  * @return                              Segment containing the 7 basic character stats (starting with might & ending
  *                                      with luck).
  */
-inline Segment<CharacterAttribute> allStatAttributes() {
+inline Segment<Attribute> allStatAttributes() {
     return {ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT};
 }

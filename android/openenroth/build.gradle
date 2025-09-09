@@ -6,6 +6,27 @@ if (buildAsApplication) {
     apply plugin: 'com.android.library'
 }
 
+def wireSdlJarForVariant = { variant ->
+    def vName = variant.name                      // "debug", "release", etc.
+    def Cap = vName.capitalize()                  // "Debug", "Release"
+
+    // Look anywhere under .cxx, regardless of build-type folder name (Debug, RelWithDebInfo, etc.).
+    // This will probably blow up if someone's building both? We are not doing that in CI, so should be OK for now.
+    def jarFiles = files(fileTree(
+        dir: "$projectDir/.cxx",
+        include: ["**/SDL3-*.jar"],
+        exclude: ["**/*-sources.jar"]
+    ))
+
+    // Add to the correct configuration (e.g. debugImplementation, releaseImplementation)
+    dependencies.add("${vName}Implementation", jarFiles)
+
+    // Ensure the jar exists before Java compiles
+    tasks.named("compile${Cap}JavaWithJavac").configure {
+        dependsOn "externalNativeBuild${Cap}"
+    }
+}
+
 android {
     def keyStorePath = System.getenv("SIGNING_KEYSTORE") ?: "keystore.jks"
     def keyStoreFile = file(keyStorePath)
@@ -29,7 +50,7 @@ android {
         logger.error("Keystore '$keyStorePath' not found")
     }
     compileSdkVersion 31
-    ndkVersion "26.3.11579264"
+    ndkVersion "28.1.13356709"
     defaultConfig {
         if (buildAsApplication) {
             applicationId "org.openenroth.game"
@@ -92,6 +113,13 @@ android {
                 }
             }
         }
+    }
+
+    if (buildAsApplication) {
+        applicationVariants.all { v -> wireSdlJarForVariant(v) }
+    }
+    if (buildAsLibrary) {
+        libraryVariants.all { v -> wireSdlJarForVariant(v) }
     }
 }
 

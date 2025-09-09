@@ -63,8 +63,6 @@ namespace Io {
         Screenshot,
         Console,
         ToggleMouseGrab,
-        ToggleBorderless,
-        ToggleFullscreen,
         ToggleResizable,
         CycleFilter,
         ReloadShaders,
@@ -80,6 +78,8 @@ namespace Io {
         DialogRight,
         DialogSelect,
         Escape,
+        ToggleMouseLook,
+        ToggleWindowMode,
 
         Count,
         Invalid = Count,

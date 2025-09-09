@@ -31,6 +31,9 @@ on:
     types:
       - published
 
+env:
+  CCACHE_COMPILERCHECK: content
+
 # cancels currently running workflow from the same PR, branch or tag
 #concurrency:
 #  group: ${{github.workflow}}-${{github.ref}}
@@ -39,7 +42,7 @@ on:
 jobs:
   build_linux:
     timeout-minutes: 60
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -60,53 +63,55 @@ jobs:
           sample-time:    3 # Maximum number of seconds within the sample download from a mirror must finish
 
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
         with:
           submodules: recursive
           ref: '${{inputs.myCommit}}'
 
       - name: Restore data cache
         id: restore-data-cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4.2.4
         with:
           path: |
             OpenEnroth_GameData
           key: data-cache
 
       - name: Install dependencies
-        run: |
-          if [ "${{matrix.architecture}}" = "x86" ]; then
-            sudo dpkg --add-architecture i386
-          fi
-          sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-          sudo apt-get update
-          if [ "${{matrix.architecture}}" = "x86" ]; then
-            sudo apt-get install -y gcc-13-multilib g++-13-multilib lld
-            sudo apt-get install -y libglu1-mesa-dev:i386
-            sudo apt-get install -y libsdl2-dev:i386
-            sudo apt-get install -y libdwarf-dev:i386 libelf-dev:i386
-          fi
-          if [ "${{matrix.architecture}}" = "x86_64" ]; then
-            sudo apt-get install -y gcc-13 g++-13 lld
-            sudo apt-get install -y libglu1-mesa-dev
-            sudo apt-get install -y libsdl2-dev
-            sudo apt-get install -y libdwarf-dev libelf-dev
-          fi
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            if [ "${{matrix.architecture}}" = "x86" ]; then
+              sudo dpkg --add-architecture i386
+            fi
+            sudo apt-get update
+            if [ "${{matrix.architecture}}" = "x86" ]; then
+              sudo apt-get install -y gcc-14-multilib g++-14-multilib lld
+              sudo apt-get install -y libglu1-mesa-dev:i386
+              sudo apt-get install -y aptitude
+              sudo apt-get install -y libdwarf-dev:i386 libelf-dev:i386
+            fi
+            if [ "${{matrix.architecture}}" = "x86_64" ]; then
+              sudo apt-get install -y gcc-14 g++-14 lld
+              sudo apt-get install -y libglu1-mesa-dev
+              sudo apt-get install -y libdwarf-dev libelf-dev
+            fi
 
       - name: Run ccache
-        uses: hendrikmuhs/ccache-action@v1.2.14
+        uses: hendrikmuhs/ccache-action@v1.2.18
         with:
           key: 'linux-${{matrix.configuration}}-${{matrix.architecture}}'
-          save: ${{ github.ref == 'refs/heads/master' || inputs.releaseTag != '' }}
           verbose: 2
-          max-size: 200M
+          max-size: 400M
+          save: ${{github.event_name != 'pull_request'}}
 
       - name: Configure
         run: |
           if [ "${{matrix.architecture}}" = "x86" ]; then
             export CFLAGS="-m32" CXXFLAGS="-m32" 
           fi
-          export CC=gcc-13 && export CXX=g++-13
+          export CC=gcc-14 && export CXX=g++-14
           cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
 
       - name: Build
@@ -120,7 +125,6 @@ jobs:
           make Run_UnitTest
 
       - name: Run game tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true'
         working-directory: build
         run: |
           make Run_GameTest_Headless_Parallel
@@ -128,7 +132,7 @@ jobs:
           OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
       - name: Run retrace tests
-        if: steps.restore-data-cache.outputs.cache-hit == 'true' && matrix.configuration != 'Debug'
+        if: matrix.configuration != 'Debug'
         working-directory: build
         run: |
           make Run_RetraceTest_Headless_Parallel

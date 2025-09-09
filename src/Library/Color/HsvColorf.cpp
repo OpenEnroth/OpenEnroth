@@ -1,10 +1,13 @@
 #include "HsvColorf.h"
 
+#include <algorithm>
 #include <cassert>
+#include <cmath>
 
+#include "Color.h"
 #include "Colorf.h"
 
-Colorf HsvColorf::toRgb() const {
+Colorf HsvColorf::toColorf() const {
     assert(h >= 0.0f && h <= 360.0f);
     assert(s >= 0.0f && s <= 1.0f);
     assert(v >= 0.0f && v <= 1.0f);
@@ -35,3 +38,19 @@ Colorf HsvColorf::toRgb() const {
     }
 }
 
+[[nodiscard]] Color HsvColorf::toColor() const {
+    return toColorf().toColor();
+}
+
+[[nodiscard]] HsvColorf HsvColorf::adjusted(float dh, float xs, float xv) const {
+    assert(dh >= -180.0f && dh <= 180.0f);
+    assert(xs >= 0.0f);
+    assert(xv >= 0.0f);
+
+    HsvColorf result;
+    result.h = std::fmod(h + dh + 360.0f, 360.0f);
+    result.s = std::clamp(s * xs, 0.0f, 1.0f);
+    result.v = std::clamp(v * xv, 0.0f, 1.0f);
+    result.a = a;
+    return result;
+}

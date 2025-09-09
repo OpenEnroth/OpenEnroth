@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Utility/Flags.h"
-#include "Utility/Segment.h"
+
+#include "Library/Serialization/SerializationFwd.h"
 
 enum class TileFlag {
     TILE_BURN = 0x1,
@@ -16,7 +17,9 @@ enum class TileFlag {
     TILE_SCROLL_DOWN = 0x400,
     TILE_SCROLL_UP = 0x800,
     TILE_SCROLL_LEFT = 0x1000,
-    TILE_SCROLL_RIGHT = 0x2000
+    TILE_SCROLL_RIGHT = 0x2000,
+    TILE_GENERATED_TRANSITION = 0x4000, // OE-specific, transition tile that was auto-generated, tile id might not be
+                                        // stable between runs.
 };
 using enum TileFlag;
 MM_DECLARE_FLAGS(TileFlags, TileFlag)
@@ -24,79 +27,207 @@ MM_DECLARE_OPERATORS_FOR_FLAGS(TileFlags)
 
 /**
  * Tile variants inside a single tile set.
- *
- * There are two different tile set types in mm7:
- * 1. Normal tile sets.
- * 2. Road tile sets.
- *
- * The only road tile set we have in mm7 is cobble road over dirt.
  */
 enum class TileVariant {
-    TILE_VARIANT_INVALID = 255, // Tile with id 0 has variant = 255.
-    TILE_VARIANT_BASE1 = 0, // Base tile. For roads - crossing.
-    TILE_VARIANT_BASE2_NS = 1, // Base variation (swamp has one). For roads - NS.
-    TILE_VARIANT_BASE3_EW = 2, // Base variation (swamp has one). For roads - EW.
-    TILE_VARIANT_BASE4_NE = 3, // Base variation (not sure if this is used). For roads - NE turn.
-    TILE_VARIANT_SPECIAL1_NW = 4, // For roads - NW turn.
-    TILE_VARIANT_SPECIAL2_SE = 5, // For roads - SE turn.
-    TILE_VARIANT_SPECIAL3_SW = 6, // For roads - SW turn.
-    TILE_VARIANT_SPECIAL4_NS_E = 7, // For roads - T intersection, NS/E.
-    TILE_VARIANT_SPECIAL5_NS_W = 8, // For roads - T intersection, NS/W.
-    TILE_VARIANT_SPECIAL6_EW_N = 9, // For roads - T intersection, EW/N.
-    TILE_VARIANT_SPECIAL7_EW_S = 0xA, // For roads - T intersection, EW/S.
-    TILE_VARIANT_SPECIAL8_NCAP = 0xB, // For roads - N road end.
-    TILE_VARIANT_NE1_SE1_ECAP = 0xC, // NE/SE transition to 3 x dirt. For roads - E road end.
-    TILE_VARIANT_SCAP = 0xD, // For roads - S road end.
-    TILE_VARIANT_NW1_SW1_WCAP = 0xE, // NW/SW transition to 3 x dirt. For roads - W road end.
-    TILE_VARIANT_DN = 0xF, // For roads - Y intersection, N.
-    TILE_VARIANT_E1_DS = 0x10, // E transition to dirt. For roads - Y intersection, S.
-    TILE_VARIANT_W1_DW = 0x11, // W transition to dirt. For roads - Y intersection, W.
-    TILE_VARIANT_N1_DE = 0x12, // N transition to dirt. For roads - Y intersection, E.
-    TILE_VARIANT_S1_DSW = 0x13, // S transition to dirt. For roads - diagonal road, SW.
-    TILE_VARIANT_XNE1_XSE1_DNE = 0x14, // NE/SE transition to 1 x dirt. For roads - diagonal road, NE.
-    TILE_VARIANT_DSE = 0x15, // For roads - diagonal road, SE.
-    TILE_VARIANT_XNW1_XSW1_DNW = 0x16, // NW/SW transition to 1 x dirt. For roads - diagonal road, NW.
+    TILE_VARIANT_INVALID = -1,
 
-    TILE_VARIANT_FIRST_SPECIAL = TILE_VARIANT_SPECIAL1_NW,
-    TILE_VARIANT_LAST_SPECIAL = TILE_VARIANT_SPECIAL8_NCAP,
+    // Base tile variants. Only swamp has variants in MM7.
+    TILE_VARIANT_BASE1 = 0,
+    TILE_VARIANT_BASE2,
+    TILE_VARIANT_BASE3,
+    TILE_VARIANT_BASE4,
+
+    // Special tile variants. Don't exist in MM7.
+    TILE_VARIANT_SPECIAL1,
+    TILE_VARIANT_SPECIAL2,
+    TILE_VARIANT_SPECIAL3,
+    TILE_VARIANT_SPECIAL4,
+    TILE_VARIANT_SPECIAL5,
+    TILE_VARIANT_SPECIAL6,
+    TILE_VARIANT_SPECIAL7,
+    TILE_VARIANT_SPECIAL8,
+
+    // Road tile variants.
+    TILE_VARIANT_ROAD_N_S_E_W, // Intersection.
+    TILE_VARIANT_ROAD_N_S, // Straight road.
+    TILE_VARIANT_ROAD_E_W,
+    TILE_VARIANT_ROAD_N_E, // 90 deg turns.
+    TILE_VARIANT_ROAD_N_W,
+    TILE_VARIANT_ROAD_S_E,
+    TILE_VARIANT_ROAD_S_W,
+    TILE_VARIANT_ROAD_N_S_E, // T intersections.
+    TILE_VARIANT_ROAD_N_S_W,
+    TILE_VARIANT_ROAD_N_E_W,
+    TILE_VARIANT_ROAD_S_E_W,
+    TILE_VARIANT_ROAD_N, // Road ends.
+    TILE_VARIANT_ROAD_S,
+    TILE_VARIANT_ROAD_E,
+    TILE_VARIANT_ROAD_W,
+    TILE_VARIANT_ROAD_Y_N_S_E, // Y intersections with 135 deg turns.
+    TILE_VARIANT_ROAD_Y_N_S_W,
+    TILE_VARIANT_ROAD_Y_N_E_W,
+    TILE_VARIANT_ROAD_Y_S_E_W,
+    TILE_VARIANT_ROAD_D_N_E, // Diagonal roads.
+    TILE_VARIANT_ROAD_D_N_W,
+    TILE_VARIANT_ROAD_D_S_E,
+    TILE_VARIANT_ROAD_D_S_W,
+
+    // Transition tile variants follow, 46 total.
+
+    // ?X?
+    // ...
+    // ...
+    TILE_VARIANT_TRANSITION_N,
+    TILE_VARIANT_TRANSITION_S,
+    TILE_VARIANT_TRANSITION_E,
+    TILE_VARIANT_TRANSITION_W,
+
+    // ..X
+    // ...
+    // ...
+    TILE_VARIANT_TRANSITION_NE,
+    TILE_VARIANT_TRANSITION_NW,
+    TILE_VARIANT_TRANSITION_SE,
+    TILE_VARIANT_TRANSITION_SW,
+
+    // ?X?
+    // ..X
+    // ..?
+    TILE_VARIANT_TRANSITION_N_E,
+    TILE_VARIANT_TRANSITION_N_W,
+    TILE_VARIANT_TRANSITION_S_E,
+    TILE_VARIANT_TRANSITION_S_W,
+
+    // Doesn't exist in MM7 data:
+    // ?X?
+    // ...
+    // ?X?
+    TILE_VARIANT_TRANSITION_N_S,
+    TILE_VARIANT_TRANSITION_E_W,
+
+    // Doesn't exist in MM7 data:
+    // ?X?
+    // ..X
+    // ?X?
+    TILE_VARIANT_TRANSITION_N_S_E,
+    TILE_VARIANT_TRANSITION_N_S_W,
+    TILE_VARIANT_TRANSITION_N_E_W,
+    TILE_VARIANT_TRANSITION_S_E_W,
+
+    // Doesn't exist in MM7 data:
+    // ?X?
+    // X.X
+    // ?X?
+    TILE_VARIANT_TRANSITION_N_S_E_W,
+
+    // Doesn't exist in MM7 data:
+    // X.X
+    // ...
+    // ...
+    TILE_VARIANT_TRANSITION_NE_NW,
+    TILE_VARIANT_TRANSITION_NE_SE,
+    TILE_VARIANT_TRANSITION_NW_SW,
+    TILE_VARIANT_TRANSITION_SE_SW,
+
+    // Doesn't exist in MM7 data:
+    // ..X
+    // ...
+    // X..
+    TILE_VARIANT_TRANSITION_NE_SW,
+    TILE_VARIANT_TRANSITION_NW_SE,
+
+    // Doesn't exist in MM7 data:
+    // X.X
+    // ...
+    // ..X
+    TILE_VARIANT_TRANSITION_NE_NW_SE,
+    TILE_VARIANT_TRANSITION_NE_NW_SW,
+    TILE_VARIANT_TRANSITION_NE_SE_SW,
+    TILE_VARIANT_TRANSITION_NW_SE_SW,
+
+    // Doesn't exist in MM7 data:
+    // X.X
+    // ...
+    // X.X
+    TILE_VARIANT_TRANSITION_NE_NW_SE_SW,
+
+    // Doesn't exist in MM7 data:
+    // ?X?
+    // ...
+    // X.X
+    TILE_VARIANT_TRANSITION_N_SE_SW,
+    TILE_VARIANT_TRANSITION_S_NE_NW,
+    TILE_VARIANT_TRANSITION_E_NW_SW,
+    TILE_VARIANT_TRANSITION_W_NE_SE,
+
+    // Doesn't exist in MM7 data:
+    // ?X?
+    // ...
+    // ..X
+    TILE_VARIANT_TRANSITION_N_SE,
+    TILE_VARIANT_TRANSITION_N_SW,
+    TILE_VARIANT_TRANSITION_S_NE,
+    TILE_VARIANT_TRANSITION_S_NW,
+    TILE_VARIANT_TRANSITION_E_NW,
+    TILE_VARIANT_TRANSITION_E_SW,
+    TILE_VARIANT_TRANSITION_W_NE,
+    TILE_VARIANT_TRANSITION_W_SE,
+
+    // Doesn't exist in MM7 data:
+    // ?X?
+    // ..X
+    // X.?
+    TILE_VARIANT_TRANSITION_N_E_SW,
+    TILE_VARIANT_TRANSITION_N_W_SE,
+    TILE_VARIANT_TRANSITION_S_E_NW,
+    TILE_VARIANT_TRANSITION_S_W_NE,
+
+    TILE_VARIANT_FIRST_SPECIAL = TILE_VARIANT_SPECIAL1,
+    TILE_VARIANT_LAST_SPECIAL = TILE_VARIANT_SPECIAL8,
+    TILE_VARIANT_FIRST_TRANSITION = TILE_VARIANT_TRANSITION_N,
+    TILE_VARIANT_LAST_TRANSITION = TILE_VARIANT_TRANSITION_S_W_NE,
+    TILE_VARIANT_FIRST_GENERATED = TILE_VARIANT_TRANSITION_N_S,
+    TILE_VARIANT_LAST_GENERATED = TILE_VARIANT_TRANSITION_S_W_NE,
 };
 using enum TileVariant;
-
-inline Segment<TileVariant> allSpecialTileSects() {
-    return {TILE_VARIANT_FIRST_SPECIAL, TILE_VARIANT_LAST_SPECIAL};
-}
+MM_DECLARE_SERIALIZATION_FUNCTIONS(TileVariant)
 
 /**
  * Tile set id.
  *
  * Most of these tile sets don't exist in mm7 data, see comments.
  */
-enum class TileSet {
-    TILE_SET_INVALID = 255, // Tile with id 0 has tile set = 255.
-    TILE_SET_GRASS = 0,
-    TILE_SET_SNOW = 1,
-    TILE_SET_DESERT = 2, // Sand.
-    TILE_SET_COOLED_LAVA = 3, // Somehow this tileset is all dirt in the data files.
-    TILE_SET_DIRT = 4, // This one has only 3 tiles.
-    TILE_SET_WATER = 5, // Water tile & shoreline tiles.
-    TILE_SET_BADLANDS = 6, // Looks like Deyja.
-    TILE_SET_SWAMP = 7,
-    TILE_SET_TROPICAL = 8, // This is all dirt.
-    TILE_SET_CITY = 9, // This is sand too, lol.
-    TILE_SET_ROAD_GRASS_COBBLE = 10, // Cobble road on dirt actually.
-    TILE_SET_ROAD_GRASS_DIRT = 11, // This is all dirt.
-    TILE_SET_ROAD_SNOW_COBBLE = 12, // This is all dirt.
-    TILE_SET_ROAD_SNOW_DIRT = 13, // This is all dirt.
-    TILE_SET_ROAD_SAND_COBBLE = 14, // This doesn't exist in mm7 tiles at all.
-    TILE_SET_ROAD_SAND_DIRT = 15, // This doesn't exist in mm7 tiles at all.
-    TILE_SET_ROAD_VOLCANO_COBBLE = 16, // This is all dirt.
-    TILE_SET_ROAD_VOLCANO_DIRT = 17, // This is all dirt.
-    TILE_SET_ROAD_CRACKED_COBBLE = 22, // This is all dirt.
-    TILE_SET_ROAD_CRACKED_DIRT = 23, // This is all dirt.
-    TILE_SET_ROAD_SWAMP_COBBLE = 24, // This is all dirt.
-    TILE_SET_ROAD_SWAMP_DIRT = 25, // This is all dirt.
-    TILE_SET_ROAD_TROPICAL_COBBLE = 26, // This is all dirt.
-    TILE_SET_ROAD_TROPICAL_DIRT = 27, // This is all dirt.
-    TILE_SET_ROAD_CITY_STONE = 28, // This is all dirt.
+enum class Tileset {
+    TILESET_INVALID,
+    TILESET_GRASS,
+    TILESET_SNOW,
+    TILESET_DESERT,
+    TILESET_DIRT, // This one has only 3 tiles.
+    TILESET_WATER, // Water tile & shoreline tiles.
+    TILESET_BADLANDS, // Looks like Deyja.
+    TILESET_SWAMP,
+    TILESET_COBBLE_ROAD, // Cobble road on dirt.
+
+    TILESET_FIRST_TERRAIN = TILESET_GRASS,
+    TILESET_LAST_TERRAIN = TILESET_SWAMP,
+    TILESET_FIRST_ROAD = TILESET_COBBLE_ROAD,
+    TILESET_LAST_ROAD = TILESET_COBBLE_ROAD,
 };
-using enum TileSet;
+using enum Tileset;
+MM_DECLARE_SERIALIZATION_FUNCTIONS(Tileset)
+
+enum class Direction {
+    DIRECTION_NONE = 0,
+    DIRECTION_N = 0x1,
+    DIRECTION_S = 0x2,
+    DIRECTION_E = 0x4,
+    DIRECTION_W = 0x8,
+    DIRECTION_NE = 0x10,
+    DIRECTION_NW = 0x20,
+    DIRECTION_SE = 0x40,
+    DIRECTION_SW = 0x80,
+};
+using enum Direction;
+MM_DECLARE_FLAGS(Directions, Direction)
+MM_DECLARE_OPERATORS_FOR_FLAGS(Directions)
+

@@ -12,47 +12,51 @@ struct Rect {
     T w = 0;
     T h = 0;
 
-    Rect() = default;
-    Rect(T x, T y, T w, T h): x(x), y(y), w(w), h(h) {}
-    Rect(Point<T> topLeft, Size<T> size): x(topLeft.x), y(topLeft.y), w(size.w), h(size.h) {}
-    Rect(Point<T> topLeft, Point<T> bottomRight) : x(topLeft.x), y(topLeft.y), w(bottomRight.x - topLeft.x), h(bottomRight.y - topLeft.y) {}
+    constexpr Rect() = default;
+    constexpr Rect(T x, T y, T w, T h): x(x), y(y), w(w), h(h) {}
+    constexpr Rect(Point<T> topLeft, Size<T> size): x(topLeft.x), y(topLeft.y), w(size.w), h(size.h) {}
+    constexpr Rect(Point<T> topLeft, Point<T> bottomRight) : x(topLeft.x), y(topLeft.y), w(bottomRight.x - topLeft.x), h(bottomRight.y - topLeft.y) {}
 
-    bool contains(const Point<T> &point) {
+    [[nodiscard]] bool contains(const Point<T> &point) const {
         return x <= point.x && point.x < x + w && y <= point.y && point.y < y + h;
     }
 
-    Point<T> topLeft() const {
+    [[nodiscard]] bool contains(const Rect<T> &rect) const {
+        return x <= rect.x && rect.x + rect.w <= x + w && y <= rect.y && rect.y + rect.h <= y + h;
+    }
+
+    [[nodiscard]] Point<T> topLeft() const {
         return {x, y};
     }
 
-    Point<T> bottomRight() const {
+    [[nodiscard]] Point<T> bottomRight() const {
         return {x + w, y + h};
     }
 
-    Point<T> topRight() const {
+    [[nodiscard]] Point<T> topRight() const {
         return {x + w, y};
     }
 
-    Point<T> bottomLeft() const {
+    [[nodiscard]] Point<T> bottomLeft() const {
         return {x, y + h};
     }
 
-    Point<T> center() const {
+    [[nodiscard]] Point<T> center() const {
         return {x + w / 2, y + h / 2};
     }
 
-    Size<T> size() const {
+    [[nodiscard]] Size<T> size() const {
         return {w, h};
     }
 
-    bool intersects(const Rect<T> &other) const {
+    [[nodiscard]] bool intersects(const Rect<T> &other) const {
         // Rect, unlike BBox, doesn't include its bottom/right border. So an empty rect (w=0, h=0) intersects nothing.
         return
             x < other.x + other.w && x + w > other.x &&
             y < other.y + other.h && y + h > other.y;
     }
 
-    Rect<T> intersection(const Rect<T> &other) const {
+    [[nodiscard]] Rect<T> intersection(const Rect<T> &other) const {
         T x1 = std::max(x, other.x);
         T y1 = std::max(y, other.y);
         T x2 = std::min(x + w, other.x + other.w);
@@ -61,11 +65,23 @@ struct Rect {
         return Rect<T>{x1, y1, x2 - x1, y2 - y1}; // Can return an empty rect with negative size.
     }
 
-    bool isEmpty() const {
+    [[nodiscard]] friend Rect<T> operator|(const Rect<T> &l, const Rect<T> &r) {
+        T x1 = std::min(l.x, r.x);
+        T y1 = std::min(l.y, r.y);
+        T x2 = std::max(l.x + l.w, r.x + r.w);
+        T y2 = std::max(l.y + l.h, r.y + r.h);
+        return Rect<T>{x1, y1, x2 - x1, y2 - y1};
+    }
+
+    Rect<T>& operator|=(const Rect<T> &other) {
+        return *this = *this | other;
+    }
+
+    [[nodiscard]] bool isEmpty() const {
         return w <= 0 || h <= 0;
     }
 
-    friend bool operator==(const Rect &l, const Rect &r) = default;
+    [[nodiscard]] friend bool operator==(const Rect &l, const Rect &r) = default;
 };
 
 using Recti = Rect<int>;

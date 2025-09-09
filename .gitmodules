@@ -60,3 +60,6 @@
 [submodule "thirdparty/luajit-cmake"]
 	path = thirdparty/luajit-cmake
 	url = https://github.com/zhaozg/luajit-cmake.git
+[submodule "thirdparty/lambda2"]
+	path = thirdparty/lambda2
+	url = https://github.com/boostorg/lambda2.git

@@ -4,6 +4,7 @@ set(UTILITY_SOURCES
         Exception.cpp
         Math/TrigLut.cpp
         Memory/Blob.cpp
+        SequentialBlobReader.cpp
         Streams/BlobInputStream.cpp
         Streams/BlobOutputStream.cpp
         Streams/FileInputStream.cpp
@@ -14,15 +15,19 @@ set(UTILITY_SOURCES
         String/Ascii.cpp
         String/Split.cpp
         String/Transformations.cpp
-        UnicodeCrt.cpp)
+        UnicodeCrt.cpp
+        String/Wrap.cpp)
 
 set(UTILITY_HEADERS
         Embedded.h
         Exception.h
         Flags.h
+        Hash.h
         String/Format.h
         Types.h
         IndexedArray.h
+        IndexedBitset.h
+        Lambda.h
         Math/Float.h
         Math/TrigLut.h
         Memory/Blob.h
@@ -30,6 +35,7 @@ set(UTILITY_HEADERS
         Memory/MemSet.h
         ScopeGuard.h
         Segment.h
+        SequentialBlobReader.h
         Streams/BlobInputStream.h
         Streams/BlobOutputStream.h
         Streams/FileInputStream.h
@@ -46,7 +52,8 @@ set(UTILITY_HEADERS
         Unaligned.h
         UnicodeCrt.h
         SmallVector.h
-        ScopedRollback.h)
+        ScopedRollback.h
+        String/Wrap.h)
 
 if(OE_BUILD_PLATFORM STREQUAL "windows")
     list(APPEND UTILITY_HEADERS Win/Unicode.h)
@@ -59,6 +66,7 @@ target_link_libraries(utility
         PUBLIC
         fmt::fmt
         gch::small_vector
+        Boost::lambda2
         PRIVATE
         mio::mio)
 
@@ -78,7 +86,8 @@ if(OE_BUILD_TESTS)
             String/Tests/TransparentFunctors_ut.cpp
             String/Tests/Ascii_ut.cpp
             String/Tests/Split_ut.cpp
-            String/Tests/Join_ut.cpp)
+            String/Tests/Join_ut.cpp
+            String/Tests/Wrap_ut.cpp)
 
     if(OE_BUILD_PLATFORM STREQUAL "windows")
         list(APPEND TEST_UTILITY_SOURCES Win/Tests/Unicode_ut.cpp)

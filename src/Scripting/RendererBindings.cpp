@@ -4,7 +4,7 @@
 
 sol::table RendererBindings::createBindingTable(sol::state_view &solState) const {
     return solState.create_table_with(
-        "reloadShaders", sol::as_function([](std::string_view alignment) {
+        "reloadShaders", sol::as_function([] {
             render->ReloadShaders();
         })
     );

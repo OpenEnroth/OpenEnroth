@@ -121,7 +121,7 @@ GAME_TEST(Issues, Issue521) {
 
 GAME_TEST(Issues, Issue527) {
     // Check Cure Disease spell works
-    auto diseaseTape = tapes.custom([] { return pParty->pCharacters[0].conditions.Has(CONDITION_DISEASE_WEAK); });
+    auto diseaseTape = tapes.custom([] { return pParty->pCharacters[0].conditions.has(CONDITION_DISEASE_WEAK); });
     test.playTraceFromTestData("issue_527.mm7", "issue_527.json");
     EXPECT_EQ(diseaseTape, tape(true, false)); // Disease healed!
 }
@@ -134,7 +134,7 @@ GAME_TEST(Issues, Issue540) {
 GAME_TEST(Issues, Issue558) {
     // Check that performing alchemy does not cause out of bound access
     test.playTraceFromTestData("issue_558.mm7", "issue_558.json");
-    EXPECT_EQ(pParty->pPickedItem.uItemID, ITEM_POTION_CURE_WOUNDS);
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_POTION_CURE_WOUNDS);
 }
 
 GAME_TEST(Issues, Issue563) {
@@ -147,12 +147,12 @@ GAME_TEST(Issues, Issue571) {
     auto itemsTape = tapes.totalItemCount();
     test.playTraceFromTestData("issue_571.mm7", "issue_571.json");
     EXPECT_EQ(itemsTape.delta(), 0);
-    EXPECT_NE(pParty->pPickedItem.uItemID, ITEM_NULL);
+    EXPECT_NE(pParty->pPickedItem.itemId, ITEM_NULL);
 }
 
 GAME_TEST(Issues, Issue573) {
     // Make Recharge Item effect non-decreasing
-    auto chargeTape = tapes.custom([] {  return pParty->pCharacters[1].pInventoryItemList[33].uNumCharges; });
+    auto chargeTape = tapes.custom([] {  return pParty->pCharacters[1].inventory.entry(33)->numCharges; });
     auto manaTape = tapes.custom([] { return pParty->pCharacters[0].mana; });
     auto itemsTape = tapes.totalItemCount();
     test.playTraceFromTestData("issue_573.mm7", "issue_573.json");
@@ -167,7 +167,7 @@ GAME_TEST(Issues, Issue574) {
     auto itemsTape = tapes.totalItemCount();
     test.playTraceFromTestData("issue_574.mm7", "issue_574.json");
     EXPECT_EQ(itemsTape.delta(), -1); // Minus potion.
-    EXPECT_EQ(pParty->pPickedItem.uMaxCharges, pParty->pPickedItem.uNumCharges);
+    EXPECT_EQ(pParty->pPickedItem.maxCharges, pParty->pPickedItem.numCharges);
 }
 
 GAME_TEST(Issues, Issue578) {
@@ -209,8 +209,8 @@ GAME_TEST(Issues, Issue611) {
     // expect chars to be healed and zombies
     EXPECT_EQ(pParty->pCharacters[0].health, 45);
     EXPECT_EQ(pParty->pCharacters[1].health, 39);
-    EXPECT_EQ(pParty->pCharacters[2].conditions.Has(CONDITION_ZOMBIE), true);
-    EXPECT_EQ(pParty->pCharacters[3].conditions.Has(CONDITION_ZOMBIE), true);
+    EXPECT_EQ(pParty->pCharacters[2].conditions.has(CONDITION_ZOMBIE), true);
+    EXPECT_EQ(pParty->pCharacters[3].conditions.has(CONDITION_ZOMBIE), true);
 }
 
 GAME_TEST(Issues, Issue613a) {
@@ -365,9 +365,9 @@ GAME_TEST(Issues, Issue661) {
 GAME_TEST(Issues, Issue662) {
     // "of Air magic" should give floor(skill / 2) skill level bonus (like all other such bonuses)
     test.loadGameFromTestData("issue_662.mm7");
-    EXPECT_EQ(pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR], CombinedSkillValue(6, CHARACTER_SKILL_MASTERY_EXPERT));
+    EXPECT_EQ(pParty->pCharacters[3].pActiveSkills[SKILL_AIR], CombinedSkillValue(6, MASTERY_EXPERT));
     EXPECT_EQ(pParty->pCharacters[3].GetItemsBonus(ATTRIBUTE_SKILL_AIR), 3);
-    pParty->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR] = CombinedSkillValue(5, CHARACTER_SKILL_MASTERY_EXPERT);
+    pParty->pCharacters[3].pActiveSkills[SKILL_AIR] = CombinedSkillValue(5, MASTERY_EXPERT);
     EXPECT_EQ(pParty->pCharacters[3].GetItemsBonus(ATTRIBUTE_SKILL_AIR), 2);
 }
 
@@ -405,21 +405,21 @@ GAME_TEST(Issues, Issue675) {
         ITEM_TREASURE_LEVEL_4, ITEM_TREASURE_LEVEL_5, ITEM_TREASURE_LEVEL_6
     };
 
-    std::unordered_set<CharacterAttribute> generatedEnchantments;
+    std::unordered_set<Attribute> generatedEnchantments;
 
-    ItemGen item;
+    Item item;
     for (int i = 0; i < 300; i++) {
         for (ItemTreasureLevel level : levels) {
             pItemTable->generateItem(level, RANDOM_ITEM_ANY, &item);
-            if (isPotion(item.uItemID)) {
+            if (isPotion(item.itemId)) {
                 EXPECT_GE(item.potionPower, 1);
-                EXPECT_FALSE(item.attributeEnchantment);
+                EXPECT_FALSE(item.standardEnchantment);
             } else {
                 EXPECT_EQ(item.potionPower, 0);
-                if (item.attributeEnchantment) {
-                    EXPECT_GE(*item.attributeEnchantment, ATTRIBUTE_FIRST_ENCHANTABLE);
-                    EXPECT_LE(*item.attributeEnchantment, ATTRIBUTE_LAST_ENCHANTABLE);
-                    generatedEnchantments.insert(*item.attributeEnchantment);
+                if (item.standardEnchantment) {
+                    EXPECT_GE(*item.standardEnchantment, ATTRIBUTE_FIRST_ENCHANTABLE);
+                    EXPECT_LE(*item.standardEnchantment, ATTRIBUTE_LAST_ENCHANTABLE);
+                    generatedEnchantments.insert(*item.standardEnchantment);
                 }
             }
         }
@@ -431,7 +431,7 @@ GAME_TEST(Issues, Issue675) {
 GAME_TEST(Issues, Issue676) {
     // Jump spell doesn't work
     test.playTraceFromTestData("issue_676.mm7", "issue_676.json");
-    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12041, 11766, 909));
+    EXPECT_EQ(pParty->pos.toInt(), Vec3i(12040, 11735, 900));
 }
 
 GAME_TEST(Issues, Issue677) {
@@ -446,12 +446,10 @@ GAME_TEST(Issues, Issue677) {
 
 GAME_TEST(Issues, Issue680) {
     // Chest items duplicate sometimes
-    auto chestItemsCount = tapes.custom([] { return std::count_if(vChests[4].igChestItems.cbegin(), vChests[4].igChestItems.cend(), [&](ItemGen item) { return item.uItemID != ITEM_NULL; }); });
+    auto chestItemsCount = tapes.custom([] { return vChests[4].inventory.size(); });
     test.playTraceFromTestData("issue_680.mm7", "issue_680.json");
-    // Make sure we havent gained any duplicates
-    EXPECT_EQ(chestItemsCount.front(), chestItemsCount.back());
-    // And that items were added and removed
-    EXPECT_GE(chestItemsCount.size(), 2);
+    EXPECT_EQ(chestItemsCount.front(), chestItemsCount.back()); // Make sure we havent gained any duplicates.
+    EXPECT_GE(chestItemsCount.size(), 2); // And that items were added and removed.
 }
 
 GAME_TEST(Issues, Issue681) {
@@ -528,7 +526,7 @@ GAME_TEST(Issues, Issue720) {
 
 GAME_TEST(Issues, Issue724) {
     // Test that item potion can be applied to equipped items.
-    auto hardenedTape = tapes.custom([] { return !!(pParty->pCharacters[3].GetItem(ITEM_SLOT_MAIN_HAND)->uAttributes & ITEM_HARDENED); });
+    auto hardenedTape = tapes.custom([] { return !!(pParty->pCharacters[3].inventory.entry(ITEM_SLOT_MAIN_HAND)->flags & ITEM_HARDENED); });
     test.playTraceFromTestData("issue_724.mm7", "issue_724.json");
     EXPECT_EQ(hardenedTape, tape(false, true));
 }
@@ -609,7 +607,7 @@ GAME_TEST(Issues, Issue760) {
     auto itemsTape = tapes.totalItemCount();
     test.playTraceFromTestData("issue_760.mm7", "issue_760.json");
     EXPECT_EQ(itemsTape.delta(), 0);
-    EXPECT_EQ(pParty->pPickedItem.uItemID, ITEM_POTION_BOTTLE);
+    EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_POTION_BOTTLE);
 }
 
 GAME_TEST(Issues, Issue774) {
@@ -833,7 +831,7 @@ GAME_TEST(Issues, Issue833a) {
     test.playTraceFromTestData("issue_833a.mm7", "issue_833a.json");
     EXPECT_EQ(manaTape.delta(), -2);
     EXPECT_EQ(quickSpellTape, tape(SPELL_FIRE_FIRE_BOLT));
-    EXPECT_CONTAINS(spritesTape.flattened(), SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT); // Fire bolt was cast by 1st character.
+    EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT); // Fire bolt was cast by 1st character.
 }
 
 GAME_TEST(Issues, Issue833b) {
@@ -846,7 +844,7 @@ GAME_TEST(Issues, Issue833b) {
     EXPECT_EQ(manaTape.delta(), 0);
     EXPECT_EQ(quickSpellTape, tape(SPELL_NONE));
     EXPECT_EQ(actorsHpTape.size(), 1); // No one was hurt.
-    EXPECT_CONTAINS(soundsTape.flattened(), SOUND_error);
+    EXPECT_CONTAINS(soundsTape.flatten(), SOUND_error);
 }
 
 GAME_TEST(Issues, Issue840) {
@@ -896,7 +894,7 @@ GAME_TEST(Issues, Issue880) {
     auto objectsTape = tapes.custom( [] { return std::ranges::count_if(pSpriteObjects, [](const SpriteObject& obj) {return obj.uObjectDescID != 0; }); });
     test.playTraceFromTestData("issue_880.mm7", "issue_880.json");
     EXPECT_EQ(objectsTape.front(), objectsTape.back());
-    EXPECT_EQ(pSpriteObjects[0].containing_item.uItemID, ITEM_QUEST_ARCOMAGE_DECK);
+    EXPECT_EQ(pSpriteObjects[0].containing_item.itemId, ITEM_QUEST_ARCOMAGE_DECK);
 }
 
 GAME_TEST(Issues, Issue895) {

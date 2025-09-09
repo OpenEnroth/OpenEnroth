@@ -5,7 +5,6 @@
 #include <queue>
 #include <functional>
 #include <memory>
-#include <exception>
 
 #include "Utility/IndexedArray.h"
 

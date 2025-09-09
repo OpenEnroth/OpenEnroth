@@ -9,11 +9,15 @@
 #include "Application/Startup/PathResolver.h"
 
 #include "Library/Cli/CliApp.h"
+#include "Library/Environment/Interface/Environment.h"
 
 #include "Utility/Exception.h"
 #include "Utility/String/Format.h"
 
 OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
+    // Note that it's OK to create a temporary `Environment` here.
+    std::unique_ptr<Environment> env = Environment::createStandardEnvironment();
+
     OpenEnrothOptions result;
     std::unique_ptr<CliApp> app = std::make_unique<CliApp>();
 
@@ -25,14 +29,17 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
                     "then OpenEnroth will try to look for game data in the current folder, "
                     "then on Windows it will also try to read the path from registry, "
                     "and on MacOS it will also try to look in '~/Library/Application Support/OpenEnroth'.", mm7PathOverrideKey))->check(CLI::ExistingDirectory)->option_text("PATH");
-    // TODO(captainurist): to print default value here we'll need to pass in Environment.
     app->add_option(
         "--user-path", result.userPath,
-        "Path to OpenEnroth user data folder.")->check(CLI::ExistingDirectory)->option_text("PATH");
+        fmt::format("Path to OpenEnroth user data folder. Default is '{}'.",
+                    resolveMm7UserPath(env.get())))->check(CLI::ExistingDirectory)->option_text("PATH");
     app->add_flag(
         "--portable", portable,
         "Run in portable mode, game & user data paths will default to current folder. "
         "If '.portable' file exists in the current folder, then this parameter defaults to 'true'.");
+    app->add_flag(
+        "--tracing-rng", result.tracingRng,
+        "Use random number generators that print stack trace on each call.");
     app->add_option(
         "--log-level", result.logLevel,
         "Log level, one of 'none', 'trace', 'debug', 'info', 'warning', 'error', 'critical'.")->option_text("LOG_LEVEL");
@@ -55,9 +62,6 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     app->add_flag(
         "--headless", result.headless,
         "Run in headless mode.");
-    retrace->add_flag(
-        "--tracing-rng", result.tracingRng,
-        "Use random number generators that print stack trace on each call.");
     retrace->add_flag(
         "--check-canonical", result.retrace.checkCanonical,
         "Check whether all passed traces are stored in canonical representation and return an error if not. Don't overwrite the actual trace files.");
@@ -82,6 +86,7 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
 
     if (result.subcommand == SUBCOMMAND_RETRACE) {
         result.ramFsUserData = true; // No config & no user data if retracing.
+        result.quickStart = true;
 
         if (!traceDir.empty()) {
             for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(traceDir))
@@ -92,10 +97,15 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
 
         if (result.retrace.traces.empty())
             throw Exception("No trace files to retrace.");
+
+        if (!result.logLevel)
+            result.logLevel = LOG_ERROR; // Default log level for retracing is LOG_ERROR.
     }
 
-    if (result.subcommand == SUBCOMMAND_PLAY)
+    if (result.subcommand == SUBCOMMAND_PLAY) {
         result.ramFsUserData = true; // No config & no user data if playing a trace.
+        result.quickStart = true;
+    }
 
     return result;
 }

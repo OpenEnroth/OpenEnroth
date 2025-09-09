@@ -3,7 +3,7 @@
 #include "Engine/PriceCalculator.h"
 
 #include "Engine/Data/HouseData.h"
-#include "Engine/Objects/Items.h"
+#include "Engine/Objects/Item.h"
 #include "Engine/Objects/Character.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Party.h"
@@ -80,7 +80,7 @@ int PriceCalculator::itemBuyingPriceForPlayer(const Character *player, int realV
     return price;
 }
 
-int PriceCalculator::itemSellingPriceForPlayer(const Character *player, const ItemGen &item, float priceMultiplier) {
+int PriceCalculator::itemSellingPriceForPlayer(const Character *player, const Item &item, float priceMultiplier) {
     int realValue = item.GetValue();
     int result = static_cast<int>((realValue / (priceMultiplier + 2.0)) + realValue * playerMerchant(player) / 100.0);
 
@@ -133,10 +133,10 @@ int PriceCalculator::templeHealingCostForPlayer(const Character *player, float p
 }
 
 int PriceCalculator::playerMerchant(const Character *player) {
-    CombinedSkillValue merchantSkill = player->getActualSkillValue(CHARACTER_SKILL_MERCHANT);
-    int multiplier = player->GetMultiplierForSkillLevel(CHARACTER_SKILL_MERCHANT, 1, 2, 3, 5);
+    CombinedSkillValue merchantSkill = player->getActualSkillValue(SKILL_MERCHANT);
+    int multiplier = player->GetMultiplierForSkillLevel(SKILL_MERCHANT, 1, 2, 3, 5);
 
-    if (merchantSkill.mastery() == CHARACTER_SKILL_MASTERY_GRANDMASTER) {  // gm merchant
+    if (merchantSkill.mastery() == MASTERY_GRANDMASTER) {  // gm merchant
         return 100;
     }
 

@@ -124,6 +124,15 @@ class Bitmaps_LOD_Loader : public ImageLoader {
     LodTextureCache *lod;
 };
 
+class Bitmaps_GEN_Loader : public ImageLoader {
+ public:
+    explicit inline Bitmaps_GEN_Loader(std::string_view filename) {
+        this->resource_name = filename;
+    }
+
+    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
+};
+
 class Sprites_LOD_Loader : public ImageLoader {
  public:
     inline Sprites_LOD_Loader(LodSpriteCache *lod, std::string_view filename) {

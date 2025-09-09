@@ -1,5 +1,6 @@
 #pragma once
 
+struct Color;
 struct Colorf;
 
 struct HsvColorf {
@@ -13,8 +14,23 @@ struct HsvColorf {
     /**
      * @offset 0x0048A643
      *
-     * @return                          This color, converted to RGB.
+     * @return                          This color, converted to `Colorf`.
      */
-    [[nodiscard]] Colorf toRgb() const;
+    [[nodiscard]] Colorf toColorf() const;
+
+    /**
+     * @return                          This color, converted to `Color`.
+     */
+    [[nodiscard]] Color toColor() const;
+
+    /**
+     * Performs a hue-saturation-value adjustment.
+     *
+     * @param dh                        Hue delta, must be in [-180, 180].
+     * @param xs                        Saturation multiplier, must be non-negative.
+     * @param xv                        Value multiplier, must be non-negative
+     * @return                          Adjusted `HsvColorf`.
+     */
+    [[nodiscard]] HsvColorf adjusted(float dh, float xs, float xv) const;
 };
 

@@ -16,6 +16,13 @@ local criticalColor = Utilities.color(1.00, 0.50, 0.00, 1.00)
 ---@field col table Color to use for the text
 ---@field source string Tell from where the message has been sent
 
+---@class DataParameters
+---@field path string Path of the command
+---@field params table<string, DataParameter> List of parameters for the command
+
+---@class DataParameter
+---@field value string|nil Value of the parameter
+
 ---@class Console The console table contains the state of the console. From position to the number of messages
 ---@field messages table<integer, ConsoleMessage> List of all the messages displayed in the console
 ---@field maxMessagesCount integer Maximum number of messages the console can show. After that the oldest messages are removed
@@ -24,16 +31,20 @@ local criticalColor = Utilities.color(1.00, 0.50, 0.00, 1.00)
 ---@field logEnabled boolean
 ---@field autoMinimize boolean
 ---@field text string
+---@field isMenuBarShown boolean
+---@field dataParameters DataParameters
 local Console = {
     rect = {},
-    text = "",              -- current command being typed
-    messages = {},          -- each message being sent to the console is stored in this table
-    history = {},           -- the history of commands being executed. Useful to navigate back to previously written commands
-    historyIndex = 1,       -- utility index which tells us the command we're navigating back to
-    logEnabled = false,     -- flag that tells if the log messages should be displayed in the console
-    autoMinimize = true,    -- Minimize console when the mouse is not hover it
-    maxMessagesCount = 400, -- to avoid storing all the messages we can set a limit
-    maxHistoryCount = 40,   -- to avoid storing all the commands history we can set a limit
+    text = "",                                   -- current command being typed
+    messages = {},                               -- each message being sent to the console is stored in this table
+    history = {},                                -- the history of commands being executed. Useful to navigate back to previously written commands
+    historyIndex = 1,                            -- utility index which tells us the command we're navigating back to
+    logEnabled = false,                          -- flag that tells if the log messages should be displayed in the console
+    autoMinimize = true,                         -- Minimize console when the mouse is not hover it
+    maxMessagesCount = 400,                      -- to avoid storing all the messages we can set a limit
+    maxHistoryCount = 40,                        -- to avoid storing all the commands history we can set a limit
+    isMenuBarShown = false,                      -- Flag that tells if the menuBar for commands is shown or not
+    dataParameters = { path = "", params = {} }, -- Parameters for the commands stored while editing them through the menuBar
 }
 
 local function getColorSuccess(isSuccess)

@@ -40,7 +40,6 @@ set(OE_USE_CCACHE ON CACHE BOOL "Use ccache if available.")
 set(OE_USE_SCCACHE ON CACHE BOOL "Use sccache if available, note that ccache takes precedence.")
 set(OE_USE_LD_MOLD ON CACHE BOOL "Use mold linker if available.")
 set(OE_USE_LD_LLD ON CACHE BOOL "Use lld linker if available, note that mold takes precedence.")
-set(OE_USE_LD_GOLD ON CACHE BOOL "Use GNU gold linker if available, note that lld takes precedence.")
 
 if(OE_USE_PREBUILT_DEPENDENCIES AND OE_USE_DUMMY_DEPENDENCIES)
     message(FATAL_ERROR "Only one of OE_USE_PREBUILT_DEPENDENCIES and OE_USE_DUMMY_DEPENDENCIES must be set.")
@@ -48,14 +47,47 @@ endif()
 
 # Find ccache / sccache.
 if(OE_USE_CCACHE)
+    message(STATUS "Find ccache.")
     find_program(CCACHE_FOUND ccache)
     if(CCACHE_FOUND)
-        message(STATUS "Using ccache at ${CCACHE_FOUND}.")
-        set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_FOUND})
-        set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_FOUND})
+        # Check for if we detected a shim
+        file(SIZE ${CCACHE_FOUND} FILE_SIZE_IN_BYTES)
+        if(FILE_SIZE_IN_BYTES GREATER 500000)
+            # MSVC requires ccache to be setup this way https://github.com/ccache/ccache/wiki/MS-Visual-Studio
+            if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+
+                message(STATUS "Using ccache at ${CCACHE_FOUND}.")
+                set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_FOUND})
+                set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_FOUND})
+
+                file(COPY_FILE
+                    ${CCACHE_FOUND} ${CMAKE_BINARY_DIR}/cl.exe
+                    ONLY_IF_DIFFERENT)
+
+                # By default Visual Studio generators will use /Zi which is not compatible
+                # with ccache, so tell Visual Studio to use /Z7 instead.
+                message(STATUS "Setting MSVC debug information format to 'Embedded'")
+                set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
+
+                set(CMAKE_VS_GLOBALS
+                    "CLToolExe=cl.exe"
+                    "CLToolPath=${CMAKE_BINARY_DIR}"
+                    "UseMultiToolTask=true"
+                    "DebugInformationFormat=OldStyle"
+                )
+
+            else()
+                message(STATUS "Using ccache at ${CCACHE_FOUND}.")
+                set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_FOUND})
+                set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_FOUND})
+            endif()
+        else()
+            message(WARNING "ccache shim detected if you are using chocolatey you need to copy the exe from 'C:\\ProgramData\\chocolatey\\lib\\ccache\\tools' to 'C:\\ProgramData\\chocolatey\\bin'.")
+        endif()
     else()
         message(STATUS "ccache is not found.")
     endif()
+    message(STATUS "Not configured to use ccache.")
 endif()
 
 if(OE_USE_SCCACHE AND NOT CCACHE_FOUND)
@@ -69,41 +101,41 @@ if(OE_USE_SCCACHE AND NOT CCACHE_FOUND)
     endif()
 endif()
 
-# Detect available linkers.
-check_linker_flag(CXX "-fuse-ld=mold" COMPILER_RT_HAS_FUSE_LD_MOLD_FLAG)
-check_linker_flag(CXX "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
-check_linker_flag(CXX "-fuse-ld=gold" COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
-
 # Set up warnings-as-errors for all compilers.
-if (OE_BUILD_COMPILER STREQUAL "gcc" OR OE_BUILD_COMPILER STREQUAL "clang")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
     add_compile_options(-Werror=return-type) # Control reaches the end of non-void function. This is an error on MSVC.
     add_compile_options(-Werror=unused-result) # Ignoring return value of function declared with 'nodiscard' attribute.
     add_compile_options(-Werror=unused-value) # Expression result unused.
     add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=mismatched-tags>) # Class 'X' was previously declared as a struct.
     add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Werror=suggest-override>) # 'func' overrides a member function but is not marked 'override'.
 endif ()
-if(OE_BUILD_COMPILER STREQUAL "gcc")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_options(-Werror=return-local-addr) # Returning reference to temporary.
-elseif(OE_BUILD_COMPILER STREQUAL "clang")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
     add_compile_options(-Werror=return-stack-address) # Returning reference to temporary.
     add_compile_options(-Werror=unused-comparison) # Comparison result unused.
     add_compile_options(-Werror=inconsistent-missing-override) # 'override' only used on some of the overridden functions.
     add_compile_options(-Werror=invalid-noreturn) # function declared 'noreturn' should not return.
     add_compile_options(-Werror=uninitialized) # variable 'x' is used uninitialized.
     add_compile_options(-Werror=delete-abstract-non-virtual-dtor) # delete called on 'x' that is abstract but has non-virtual destructor.
-elseif(OE_BUILD_COMPILER STREQUAL "msvc")
+    add_compile_options(-Werror=switch) # enumeration value not handled in switch.
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     add_compile_options(/we4834) # Discarding return value of function with 'nodiscard' attribute.
     add_compile_options(/we4172) # Returning address of local variable or temporary.
     add_compile_options(/we26433) # Function should be marked with 'override'.
 endif()
 
 # Set compiler options. We do a lot of tweaks here.
-if(OE_BUILD_COMPILER STREQUAL "gcc" OR OE_BUILD_COMPILER STREQUAL "clang")
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC") OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
     # -Og is a better choice than -O0 for producing debuggable code because some compiler passes that collect debug information are disabled at -O0.
     string(REPLACE " -O0 " "" CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
     string(REPLACE " -O0 " "" CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
     string(REPLACE " -g " " -g -Og " CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}")
     string(REPLACE " -g " " -g -Og " CMAKE_C_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+
+    # Detect available linkers.
+    check_linker_flag(CXX "-fuse-ld=mold" COMPILER_RT_HAS_FUSE_LD_MOLD_FLAG)
+    check_linker_flag(CXX "-fuse-ld=lld" COMPILER_RT_HAS_FUSE_LD_LLD_FLAG)
 
     if(OE_USE_LD_MOLD AND COMPILER_RT_HAS_FUSE_LD_MOLD_FLAG)
         message(STATUS "Using mold linker.")
@@ -119,11 +151,10 @@ if(OE_BUILD_COMPILER STREQUAL "gcc" OR OE_BUILD_COMPILER STREQUAL "clang")
         if (OE_BUILD_PLATFORM STREQUAL "linux")
             set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=lld -Wl,-z,notext")
         endif ()
-    elseif(OE_USE_LD_GOLD AND COMPILER_RT_HAS_FUSE_LD_GOLD_FLAG)
-        message(STATUS "Using gold linker.")
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=gold")
+    elseif(OE_BUILD_PLATFORM STREQUAL "linux")
+        message(FATAL_ERROR "Supported linkers are lld and mold, other linkers won't work so we won't even try.")
     else()
-        message(STATUS "Fallback to default linker.")
+        message(STATUS "Using default linker.")
     endif()
 
     if(OE_BUILD_ARCHITECTURE STREQUAL "x86")
@@ -139,17 +170,16 @@ if(OE_BUILD_COMPILER STREQUAL "gcc" OR OE_BUILD_COMPILER STREQUAL "clang")
     # Clang & gcc implementations of fp-contract differ, and we are getting diffs in tests. Better to disable it.
     add_compile_options(-ffp-contract=off)
 endif()
-if(OE_BUILD_COMPILER STREQUAL "gcc")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_compile_definitions($<$<CONFIG:Debug>:_GLIBCXX_ASSERTIONS>) # Enable assertions in libstdc++.
-elseif(OE_BUILD_COMPILER STREQUAL "clang")
-    add_compile_definitions($<$<CONFIG:Debug>:_LIBCPP_ENABLE_ASSERTIONS=1>) # Enable assertions in libcxx.
-elseif(OE_BUILD_COMPILER STREQUAL "msvc")
+elseif((CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC") OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    add_compile_definitions($<$<CONFIG:Debug>:_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG>) # Enable assertions in libcxx.
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC" OR (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC"))
     add_compile_definitions(NOMINMAX) # Please don't pull in these macros from <Windows.h>
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS) # STL security warnings are just noise
     add_compile_definitions(_CRT_NONSTDC_NO_DEPRECATE) # POSIX deprecation warnings are also just noise
     add_compile_definitions(_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS) # These are also useless
     add_compile_definitions(_USE_MATH_DEFINES) # Pull in M_PI and other <cmath> defines
-    add_compile_definitions(FMT_CONSTEVAL=) # MSVC chokes on fmt consteval formatting, so we define FMT_CONSTEVAL=<empty>
     add_compile_options(/MP) # Multi-threaded build
     add_compile_options(/Zc:preprocessor) # Use standard compliant preprocessor
     add_link_options(/OPT:REF) # Eliminate unreferenced data & functions.

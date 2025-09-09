@@ -288,7 +288,7 @@ void AudioPlayer::playSound(SoundId eSoundID, SoundPlaybackMode mode, Pid pid) {
                 break;
             }
 
-            case OBJECT_Item: {
+            case OBJECT_Sprite: {
                 assert(object_id < pSpriteObjects.size());
 
                 sample->SetPosition(pSpriteObjects[object_id].vPosition.x,

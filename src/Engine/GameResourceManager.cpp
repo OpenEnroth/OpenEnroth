@@ -12,7 +12,7 @@ void GameResourceManager::openGameResources() {
     _eventsLodReader.open(dfs->read("data/events.lod"));
     // TODO(captainurist):
     //  on exception:
-    //      Error(localization->GetString(LSTR_PLEASE_REINSTALL), localization->GetString(LSTR_REINSTALL_NECESSARY));
+    //      Error(localization->GetString(LSTR_MIGHT_AND_MAGIC_VII_IS_HAVING_TROUBLE), localization->GetString(LSTR_REINSTALL_NECESSARY));
     // but we can't use localization object here cause it's not yet initialized.
 }
 

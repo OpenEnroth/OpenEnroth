@@ -37,7 +37,7 @@ Vis_SelectionFilter vis_door_filter = {
 Vis_SelectionFilter vis_decoration_noevent_filter = {
     VisObjectType_Sprite, OBJECT_Decoration, -1, 0, ExclusionIfNoEvent};  // 00F93E6C
 Vis_SelectionFilter vis_items_filter = {
-    VisObjectType_Any, OBJECT_Item, -1, 0, None };  // static to sub_44EEA7
+    VisObjectType_Any, OBJECT_Sprite, -1, 0, None };  // static to sub_44EEA7
 
 //----- (004C1026) --------------------------------------------------------
 Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pick_depth) {
@@ -233,7 +233,7 @@ void Vis::PickBillboards_Mouse(float fPickDepth, float fX, float fY,
                 RenderBillboard *billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
 
                 Pid pid = billboard->object_pid;
-                if (pid.type() == OBJECT_Item && pSpriteObjects[pid.id()].uObjectDescID == 0)
+                if (pid.type() == OBJECT_Sprite && pSpriteObjects[pid.id()].uObjectDescID == 0)
                     continue; // Sprite object already removed.
 
                 list->AddObject(VisObjectType_Sprite, billboard->screen_space_z, billboard->object_pid);
@@ -285,18 +285,21 @@ void Vis::PickIndoorFaces_Mouse(float fDepth, const Vec3f &rayOrigin, const Vec3
                                 Vis_SelectionFilter *filter) {
     RenderVertexSoft a1;
 
-    for (int faceindex = 0; faceindex < (int)pIndoor->pFaces.size(); ++faceindex) {
-        BLVFace *face = &pIndoor->pFaces[faceindex];
-        face->uAttributes &= ~FACE_OUTLINED;
+    // clear the debug attribute
+    for (auto &face : pIndoor->pFaces) {
+        face.uAttributes &= ~FACE_OUTLINED;
+    }
+
+    for (int i = 0; i < pBspRenderer->num_faces; ++i) {
+        int faceId = pBspRenderer->faces[i].uFaceID;
+        BLVFace *face = &pIndoor->pFaces[faceId];
 
         if (isFacePartOfSelection(nullptr, face, filter)) {
-            if (pCamera3D->is_face_faced_to_cameraBLV(face)) {
-                if (Intersect_Ray_Face(rayOrigin, rayStep, &a1, face, 0xFFFFFFFFu)) {
-                    pCamera3D->ViewTransform(&a1, 1);
-                    list->AddObject(VisObjectType_Face, a1.vWorldViewPosition.x, Pid(OBJECT_Face, faceindex));
-                    if (engine->config->debug.ShowPickedFace.value())
-                        face->uAttributes |= FACE_OUTLINED;
-                }
+            if (Intersect_Ray_Face(rayOrigin, rayStep, &a1, face, 0xFFFFFFFFu)) {
+                pCamera3D->ViewTransform(&a1, 1);
+                list->AddObject(VisObjectType_Face, a1.vWorldViewPosition.x, Pid(OBJECT_Face, faceId));
+                if (engine->config->debug.ShowPickedFace.value())
+                    face->uAttributes |= FACE_OUTLINED;
             }
         }
     }
@@ -555,12 +558,12 @@ bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3f IntersectPoint, signed int sM
 
 //----- (0046A0A1) --------------------------------------------------------
 int UnprojectX(int x) {
-    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->uScreenCenterX - x);
+    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->viewportCenterX - x);
 }
 
 //----- (0046A0F6) --------------------------------------------------------
 int UnprojectY(int y) {
-    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->uScreenCenterY - y);
+    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->viewportCenterY - y);
 }
 
 //----- (004C248E) --------------------------------------------------------
@@ -837,10 +840,10 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
 
     // billboard will be visible somewhere on screen - clamp billboard corners to screen viewport
     auto& billboard = render->pBillboardRenderListD3D[uD3DBillboardIdx];
-    float bbVisibleLeft = std::clamp(billboard.pQuads[0].pos.x, (float)pViewport->uScreen_TL_X, (float)pViewport->uScreen_BR_X);
-    float bbVisibleRight = std::clamp(billboard.pQuads[3].pos.x, (float)pViewport->uScreen_TL_X, (float)pViewport->uScreen_BR_X);
-    float bbVisibleTop = std::clamp(billboard.pQuads[0].pos.y, (float)pViewport->uScreen_TL_Y, (float)pViewport->uScreen_BR_Y);
-    float bbVisibleBottom = std::clamp(billboard.pQuads[1].pos.y, (float)pViewport->uScreen_TL_Y, (float)pViewport->uScreen_BR_Y);
+    float bbVisibleLeft = std::clamp(billboard.pQuads[0].pos.x, (float)pViewport->viewportTL_X, (float)pViewport->viewportBR_X);
+    float bbVisibleRight = std::clamp(billboard.pQuads[3].pos.x, (float)pViewport->viewportTL_X, (float)pViewport->viewportBR_X);
+    float bbVisibleTop = std::clamp(billboard.pQuads[0].pos.y, (float)pViewport->viewportTL_Y, (float)pViewport->viewportBR_Y);
+    float bbVisibleBottom = std::clamp(billboard.pQuads[1].pos.y, (float)pViewport->viewportTL_Y, (float)pViewport->viewportBR_Y);
 
     // test visible polygon center first
     float test_x = (bbVisibleLeft + bbVisibleRight) * 0.5f;
@@ -894,12 +897,10 @@ void Vis::PickIndoorFaces_Keyboard(float pick_depth, Vis_SelectionList *list, Vi
     for (int i = 0; i < pBspRenderer->num_faces; ++i) {
         int pFaceID = pBspRenderer->faces[i].uFaceID;
         BLVFace *pFace = &pIndoor->pFaces[pFaceID];
-        if (pCamera3D->is_face_faced_to_cameraBLV(pFace)) {
-            if (isFacePartOfSelection(nullptr, pFace, filter)) {
-                Vis_ObjectInfo *v8 = DetermineFacetIntersection(pFace, Pid(OBJECT_Face, pFaceID), pick_depth);
-                if (v8)
-                    list->AddObject(v8->object_type, v8->depth, v8->object_pid);
-            }
+        if (isFacePartOfSelection(nullptr, pFace, filter)) {
+            Vis_ObjectInfo *v8 = DetermineFacetIntersection(pFace, Pid(OBJECT_Face, pFaceID), pick_depth);
+            if (v8)
+                list->AddObject(v8->object_type, v8->depth, v8->object_pid);
         }
     }
 }

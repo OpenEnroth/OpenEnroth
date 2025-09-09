@@ -14,7 +14,7 @@ template<class T>
 using AccessibleVector = Accessible<std::vector<T>>;
 
 /**
- * Extension point for `delta` and `pairwiseDelta` methods of the `Accessible` classes. Effectively computes a delta
+ * Extension point for `delta` and `adjacentDeltas` methods of the `Accessible` classes. Effectively computes a delta
  * between `l` and 'r', i.e. `r - l`.
  *
  * This function is overloaded for `Accessible` classes, and it can also be overloaded for `std::tuple` / `std::pair`
@@ -120,7 +120,7 @@ class Accessible : public Base {
         return {*pair.first, *pair.second};
     }
 
-    auto flattened() const {
+    auto flatten() const {
         using element_type = std::iter_value_t<decltype(std::declval<const value_type *>()->begin())>;
         AccessibleVector<element_type> result;
         for (const auto &chunk : *this)
@@ -129,14 +129,35 @@ class Accessible : public Base {
         return result;
     }
 
+    auto slice(size_t subIndex) const {
+        using element_type = std::iter_value_t<decltype(std::declval<const value_type *>()->begin())>;
+        AccessibleVector<element_type> result;
+        for (const auto &chunk : *this)
+            result.push_back(chunk[subIndex]);
+        return result;
+    }
+
+    AccessibleVector<value_type> unique() const {
+        AccessibleVector<value_type> result;
+        std::unique_copy(begin(), end(), std::back_inserter(result));
+        return result;
+    }
+
     template<class Filter>
-    AccessibleVector<value_type> filtered(Filter filter) const {
+    AccessibleVector<value_type> filter(Filter filter) const {
         AccessibleVector<value_type> result;
         std::copy_if(begin(), end(), std::back_inserter(result), std::move(filter));
         return result;
     }
 
-    AccessibleVector<value_type> reversed() const {
+    template<class Mapper, class Result = std::invoke_result_t<Mapper, value_type>>
+    AccessibleVector<Result> map(Mapper mapper) const {
+        AccessibleVector<Result> result;
+        std::transform(begin(), end(), std::back_inserter(result), std::move(mapper));
+        return result;
+    }
+
+    AccessibleVector<value_type> reverse() const {
         AccessibleVector<value_type> result;
         std::reverse_copy(begin(), end(), std::back_inserter(result));
         return result;
@@ -144,6 +165,11 @@ class Accessible : public Base {
 
     bool contains(const value_type &value) const {
         return std::find(begin(), end(), value) != end();
+    }
+
+    template<class Predicate> requires std::is_invocable_v<Predicate, value_type>
+    bool contains(Predicate predicate) const {
+        return std::find_if(begin(), end(), std::move(predicate)) != end();
     }
 
     template<class... Args>
@@ -156,9 +182,13 @@ class Accessible : public Base {
         return (contains(static_cast<value_type>(args)) || ...);
     }
 
+    size_t count(const value_type &value) const {
+        return std::count(begin(), end(), value);
+    }
+
     template<class Predicate> requires std::is_invocable_v<Predicate, value_type>
-    bool contains(Predicate predicate) const {
-        return std::find_if(begin(), end(), std::move(predicate)) != end();
+    size_t count(Predicate predicate) const {
+        return std::count_if(begin(), end(), std::move(predicate));
     }
 };
 

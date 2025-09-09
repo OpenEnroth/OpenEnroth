@@ -24,13 +24,14 @@
 #include "Engine/Data/IconFrameData.h"
 #include "Engine/Data/PortraitFrameData.h"
 #include "Engine/Data/TileData.h"
+#include "Engine/Data/TileEnumFunctions.h"
+#include "Engine/Tables/ChestTable.h"
 #include "Engine/Time/Time.h"
 
 #include "Media/Audio/SoundInfo.h"
 
-#include "GUI/GUIFont.h"
-
 #include "Library/Color/ColorTable.h"
+#include "Library/Logger/Logger.h"
 #include "Library/Snapshots/CommonSnapshots.h"
 
 #include "Utility/Memory/MemSet.h"
@@ -294,12 +295,13 @@ void reconstruct(const TileData_MM7 &src, TileData *dst) {
     dst->name = ascii::toLower(dst->name);
 
     if (ascii::noCaseStartsWith(dst->name, "wtrdr"))
-        dst->name.insert(0, "h"); // mm7 uses hd water tiles with legacy names
+        dst->name.insert(0, "h"); // animated water only works with hwtrdr* tiles.
 
-    dst->uTileID = src.tileId;
-    dst->tileset = static_cast<TileSet>(src.tileSet);
-    dst->uSection = static_cast<TileVariant>(src.section);
-    dst->uAttributes = static_cast<TileFlags>(src.attributes);
+    // We just ignore src.tileId & src.bitmapId.
+
+    reconstruct(src.tileset, &dst->tileset);
+    reconstruct(src.variant, &dst->variant, tags::context(isRoad(dst->tileset)), tags::context(dst->name));
+    dst->flags = static_cast<TileFlags>(src.flags);
 }
 
 void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
@@ -318,7 +320,7 @@ void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
         dst->flags |= FRAME_FIRST;
 }
 
-void snapshot(const RawTimer &src, Timer_MM7 *dst) {
+void snapshot(const Timer &src, Timer_MM7 *dst) {
     memzero(dst);
 
     dst->ready = true;
@@ -332,7 +334,7 @@ void snapshot(const RawTimer &src, Timer_MM7 *dst) {
     dst->totalGameTimeElapsed = src._time.ticks();
 }
 
-void reconstruct(const Timer_MM7 &src, RawTimer *dst) {
+void reconstruct(const Timer_MM7 &src, Timer *dst) {
     dst->_paused = src.paused;
     dst->_turnBased = src.turnBased;
     dst->_lastFrameTime = Duration::fromTicks(src.lastFrameTime);
@@ -381,7 +383,7 @@ void reconstruct(const NPCData_MM7 &src, NPCData *dst) {
     dst->dialogue_4_evt_id = src.evt_D;
     dst->dialogue_5_evt_id = src.evt_E;
     dst->dialogue_6_evt_id = src.evt_F;
-    dst->uSex = static_cast<CharacterSex>(src.sex);
+    dst->uSex = static_cast<Sex>(src.sex);
     dst->bHasUsedTheAbility = src.hasUsedAbility;
     dst->news_topic = src.newsTopic;
 }
@@ -437,65 +439,67 @@ void snapshot(const SpellBuff &src, SpellBuff_MM7 *dst) {
 void reconstruct(const SpellBuff_MM7 &src, SpellBuff *dst) {
     reconstruct(src.expireTime, &dst->expireTime);
     dst->power = src.power;
-    dst->skillMastery = static_cast<CharacterSkillMastery>(src.skillMastery);
+    dst->skillMastery = static_cast<Mastery>(src.skillMastery);
     dst->overlayID = src.overlayId;
     dst->caster = src.caster;
     dst->isGMBuff = src.flags;
 }
 
-void snapshot(const ItemGen &src, ItemGen_MM7 *dst) {
+void snapshot(const Item &src, Item_MM7 *dst, ContextTag<ItemSlot> slot) {
     memzero(dst);
 
-    dst->itemID = std::to_underlying(src.uItemID);
-    if (isPotion(src.uItemID)) {
-        dst->attributeEnchantmentOrPotionPower = src.potionPower;
-    } else if (src.attributeEnchantment) {
-        dst->attributeEnchantmentOrPotionPower = std::to_underlying(*src.attributeEnchantment) + 1;
+    dst->itemId = std::to_underlying(src.itemId);
+    if (isPotion(src.itemId)) {
+        dst->standardEnchantmentOrPotionPower = src.potionPower;
+    } else if (src.standardEnchantment) {
+        dst->standardEnchantmentOrPotionPower = std::to_underlying(*src.standardEnchantment) + 1;
     } else {
-        dst->attributeEnchantmentOrPotionPower = 0;
+        dst->standardEnchantmentOrPotionPower = 0;
     }
-    dst->enchantmentStrength = src.m_enchantmentStrength;
-    if (isGold(src.uItemID)) {
+    dst->standardEnchantmentStrength = src.standardEnchantmentStrength;
+    if (isGold(src.itemId)) {
         dst->specialEnchantmentOrGoldAmount = src.goldAmount;
     } else {
-        dst->specialEnchantmentOrGoldAmount = std::to_underlying(src.special_enchantment);
+        dst->specialEnchantmentOrGoldAmount = std::to_underlying(src.specialEnchantment);
     }
-    dst->numCharges = src.uNumCharges;
-    dst->attributes = std::to_underlying(src.uAttributes);
-    dst->bodyAnchor = std::to_underlying(src.uBodyAnchor);
-    dst->maxCharges = src.uMaxCharges;
-    dst->holderPlayer = src.uHolderPlayer + 1;
-    dst->placedInChest = src.placedInChest;
-    snapshot(src.uExpireTime, &dst->expireTime);
+    dst->numCharges = src.numCharges;
+    dst->flags = std::to_underlying(src.flags);
+    dst->equippedSlot = std::to_underlying(*slot);
+    dst->maxCharges = src.maxCharges;
+    dst->lichJarCharacterIndex = src.lichJarCharacterIndex + 1;
+    snapshot(src.enchantmentExpirationTime, &dst->enchantmentExpirationTime);
 }
 
-void reconstruct(const ItemGen_MM7 &src, ItemGen *dst) {
-    dst->uItemID = static_cast<ItemId>(src.itemID);
-    if (isPotion(dst->uItemID)) {
-        dst->potionPower = src.attributeEnchantmentOrPotionPower;
-        dst->attributeEnchantment = {};
-    } else if (src.attributeEnchantmentOrPotionPower) {
+void reconstruct(const Item_MM7 &src, Item *dst) {
+    dst->itemId = static_cast<ItemId>(src.itemId);
+    if (isPotion(dst->itemId)) {
+        dst->potionPower = src.standardEnchantmentOrPotionPower;
+        dst->standardEnchantment = {};
+    } else if (src.standardEnchantmentOrPotionPower) {
         dst->potionPower = 0;
-        dst->attributeEnchantment = static_cast<CharacterAttribute>(src.attributeEnchantmentOrPotionPower - 1);
+        dst->standardEnchantment = static_cast<Attribute>(src.standardEnchantmentOrPotionPower - 1);
+
+        // TODO(captainurist): Do this properly for every single enum in this file.
+        if (!allEnchantableAttributes().contains(*dst->standardEnchantment))
+            dst->standardEnchantment = {};
     } else {
         dst->potionPower = 0;
-        dst->attributeEnchantment = {};
+        dst->standardEnchantment = {};
     }
-    dst->m_enchantmentStrength = src.enchantmentStrength;
-    if (isGold(dst->uItemID)) {
+    dst->standardEnchantmentStrength = src.standardEnchantmentStrength;
+    if (isGold(dst->itemId)) {
         dst->goldAmount = src.specialEnchantmentOrGoldAmount;
-        dst->special_enchantment = ITEM_ENCHANTMENT_NULL;
+        dst->specialEnchantment = ITEM_ENCHANTMENT_NULL;
     } else {
         dst->goldAmount = 0;
-        dst->special_enchantment = static_cast<ItemEnchantment>(src.specialEnchantmentOrGoldAmount);
+        dst->specialEnchantment = static_cast<ItemEnchantment>(src.specialEnchantmentOrGoldAmount);
     }
-    dst->uNumCharges = src.numCharges;
-    dst->uAttributes = ItemFlags(src.attributes);
-    dst->uBodyAnchor = static_cast<ItemSlot>(src.bodyAnchor);
-    dst->uMaxCharges = src.maxCharges;
-    dst->uHolderPlayer = src.holderPlayer - 1;
-    dst->placedInChest = src.placedInChest;
-    reconstruct(src.expireTime, &dst->uExpireTime);
+    dst->numCharges = src.numCharges;
+    dst->flags = ItemFlags(src.flags);
+    // src.equippedSlot is ignored - we handle it externally.
+    dst->maxCharges = src.maxCharges;
+    dst->lichJarCharacterIndex = src.lichJarCharacterIndex - 1;
+    reconstruct(src.enchantmentExpirationTime, &dst->enchantmentExpirationTime);
 }
 
 void snapshot(const Party &src, Party_MM7 *dst) {
@@ -603,15 +607,15 @@ void snapshot(const Party &src, Party_MM7 *dst) {
         }
     }
 
-    snapshot(src.pPickedItem, &dst->pickedItem);
+    snapshot(src.pPickedItem, &dst->pickedItem, tags::context(ITEM_SLOT_INVALID));
 
     dst->flags = std::to_underlying(src.uFlags);
 
     dst->standartItemsInShop0.fill({});
-    snapshot(src.standartItemsInShops, &dst->standartItemsInShops);
+    snapshot(src.standartItemsInShops, &dst->standartItemsInShops, tags::context(ITEM_SLOT_INVALID));
     dst->specialItemsInShop0.fill({});
-    snapshot(src.specialItemsInShops, &dst->specialItemsInShops);
-    snapshot(src.spellBooksInGuilds, &dst->spellBooksInGuilds);
+    snapshot(src.specialItemsInShops, &dst->specialItemsInShops, tags::context(ITEM_SLOT_INVALID));
+    snapshot(src.spellBooksInGuilds, &dst->spellBooksInGuilds, tags::context(ITEM_SLOT_INVALID));
 
     snapshot(src.pHireling1Name, &dst->hireling1Name);
     snapshot(src.pHireling2Name, &dst->hireling2Name);
@@ -719,7 +723,8 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     }
 
     reconstruct(src.partyBuffs, &dst->pPartyBuffs);
-    reconstruct(src.players, &dst->pCharacters);
+    for (int i = 0; i < 4; i++)
+        reconstruct(src.players[i], &dst->pCharacters[i], tags::context(i));
     reconstruct(src.hirelings, &dst->pHirelings);
 
     // Vanilla stored NPC sacrifice status in NPC evt values.
@@ -754,17 +759,17 @@ void reconstruct(const Party_MM7 &src, Party *dst) {
     dst->uFine = src.fine;
 }
 
-void snapshot(const RawCharacterConditions &src, CharacterConditions_MM7 *dst) {
+void snapshot(const CharacterConditions &src, CharacterConditions_MM7 *dst) {
     memzero(dst);
 
     snapshot(src._times, &dst->times);
 }
 
-void reconstruct(const CharacterConditions_MM7 &src, RawCharacterConditions *dst) {
+void reconstruct(const CharacterConditions_MM7 &src, CharacterConditions *dst) {
     reconstruct(src.times, &dst->_times);
 }
 
-void snapshot(const Character &src, Player_MM7 *dst) {
+void snapshot(const Character &src, Character_MM7 *dst) {
     memzero(dst);
 
     snapshot(src.conditions, &dst->conditions);
@@ -795,7 +800,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->levelModifier = src.sLevelModifier;
     dst->ageModifier = src.sAgeModifier;
 
-    snapshot(src.pActiveSkills, &dst->activeSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
+    snapshot(src.pActiveSkills, &dst->activeSkills, tags::segment<SKILL_FIRST_VISIBLE, SKILL_LAST_VISIBLE>);
     snapshot(src._achievedAwardsBits, &dst->achievedAwardsBits, tags::reverseBits);
     snapshot(src.bHaveSpell, &dst->haveSpell);
 
@@ -807,8 +812,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->pureAccuracyUsed = src._pureStatPotionUsed[ATTRIBUTE_ACCURACY];
     dst->pureMightUsed = src._pureStatPotionUsed[ATTRIBUTE_MIGHT];
 
-    snapshot(src.pInventoryItemList, &dst->inventoryItems);
-    snapshot(src.pInventoryMatrix, &dst->inventoryMatrix);
+    snapshot(src.inventory, dst);
 
     dst->resFireBase = src.sResFireBase;
     dst->resAirBase = src.sResAirBase;
@@ -844,8 +848,6 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->mana = src.mana;
     dst->birthYear = src.uBirthYear;
 
-    snapshot(src.pEquipment, &dst->equipment);
-
     dst->lastOpenedSpellbookPage = std::to_underlying(src.lastOpenedSpellbookPage);
     dst->quickSpell = std::to_underlying(src.uQuickSpell);
 
@@ -867,16 +869,16 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->talkFrameSet = 0;
 
     for (unsigned int i = 0; i < 5; ++i) {
-        if (i >= src.vBeacons.size()) {
+        if (!src.vBeacons[i]) {
             continue;
         }
-        snapshot(src.vBeacons[i].uBeaconTime, &dst->installedBeacons[i].beaconTime);
-        dst->installedBeacons[i].partyPosX = src.vBeacons[i]._partyPos.x;
-        dst->installedBeacons[i].partyPosY = src.vBeacons[i]._partyPos.y;
-        dst->installedBeacons[i].partyPosZ = src.vBeacons[i]._partyPos.z;
-        dst->installedBeacons[i].partyViewYaw = src.vBeacons[i]._partyViewYaw;
-        dst->installedBeacons[i].partyViewPitch = src.vBeacons[i]._partyViewPitch;
-        dst->installedBeacons[i].mapIndexInGamesLod = valueOr(gamesLodIndexByMapId, src.vBeacons[i].mapId, -1);
+        snapshot(src.vBeacons[i]->uBeaconTime, &dst->installedBeacons[i].beaconTime);
+        dst->installedBeacons[i].partyPosX = src.vBeacons[i]->_partyPos.x;
+        dst->installedBeacons[i].partyPosY = src.vBeacons[i]->_partyPos.y;
+        dst->installedBeacons[i].partyPosZ = src.vBeacons[i]->_partyPos.z;
+        dst->installedBeacons[i].partyViewYaw = src.vBeacons[i]->_partyViewYaw;
+        dst->installedBeacons[i].partyViewPitch = src.vBeacons[i]->_partyViewPitch;
+        dst->installedBeacons[i].mapIndexInGamesLod = valueOr(gamesLodIndexByMapId, src.vBeacons[i]->mapId, -1);
     }
 
     dst->numDivineInterventionCasts = src.uNumDivineInterventionCastsThisDay;
@@ -884,7 +886,7 @@ void snapshot(const Character &src, Player_MM7 *dst) {
     dst->numFireSpikeCasts = src.uNumFireSpikeCasts;
 }
 
-void reconstruct(const Player_MM7 &src, Character *dst) {
+void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> characterIndex) {
     dst->Zero();
     reconstruct(src.conditions, &dst->conditions);
 
@@ -1036,7 +1038,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->sLevelModifier = src.levelModifier;
     dst->sAgeModifier = src.ageModifier;
 
-    reconstruct(src.activeSkills, &dst->pActiveSkills, tags::segment<CHARACTER_SKILL_FIRST_VISIBLE, CHARACTER_SKILL_LAST_VISIBLE>);
+    reconstruct(src.activeSkills, &dst->pActiveSkills, tags::segment<SKILL_FIRST_VISIBLE, SKILL_LAST_VISIBLE>);
     reconstruct(src.achievedAwardsBits, &dst->_achievedAwardsBits, tags::reverseBits);
     reconstruct(src.haveSpell, &dst->bHaveSpell);
 
@@ -1048,8 +1050,7 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->_pureStatPotionUsed[ATTRIBUTE_ACCURACY] = src.pureAccuracyUsed;
     dst->_pureStatPotionUsed[ATTRIBUTE_MIGHT] = src.pureMightUsed;
 
-    reconstruct(src.inventoryItems, &dst->pInventoryItemList);
-    reconstruct(src.inventoryMatrix, &dst->pInventoryMatrix);
+    reconstruct(src, &dst->inventory, characterIndex);
 
     dst->sResFireBase = src.resFireBase;
     dst->sResAirBase = src.resAirBase;
@@ -1085,8 +1086,6 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->mana = src.mana;
     dst->uBirthYear = src.birthYear;
 
-    reconstruct(src.equipment, &dst->pEquipment);
-
     dst->lastOpenedSpellbookPage = static_cast<MagicSchool>(src.lastOpenedSpellbookPage);
     dst->uQuickSpell = static_cast<SpellId>(src.quickSpell);
 
@@ -1100,15 +1099,17 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
     dst->_health_related = src.healthRelated;
     dst->uFullManaBonus = src.fullManaBonus;
     dst->_mana_related = src.manaRelated;
-    dst->portrait = static_cast<CharacterPortrait>(src.portrait);
+    dst->portrait = static_cast<PortraitId>(src.portrait);
     dst->portraitTimePassed = Duration::fromTicks(src.portraitTimePassed);
     dst->portraitTimeLength = Duration::fromTicks(src.portraitTimeLength);
     dst->portraitImageIndex = src.portraitImageIndex;
     dst->talkAnimation = TalkAnimation();
 
-    for (int z = 0; z < dst->vBeacons.size(); z++)
-        dst->vBeacons[z].image->Release();
-    dst->vBeacons.clear();
+    for (int z = 0; z < 5; z++) {
+        if (dst->vBeacons[z])
+            dst->vBeacons[z]->image->Release();
+        dst->vBeacons[z].reset();
+    }
 
     for (unsigned int i = 0; i < 5; ++i) {
         if (src.installedBeacons[i].beaconTime != 0) {
@@ -1120,13 +1121,124 @@ void reconstruct(const Player_MM7 &src, Character *dst) {
             beacon._partyViewYaw = src.installedBeacons[i].partyViewYaw;
             beacon._partyViewPitch = src.installedBeacons[i].partyViewPitch;
             beacon.mapId = valueOr(mapIdByGamesLodIndex, src.installedBeacons[i].mapIndexInGamesLod, MAP_INVALID);
-            dst->vBeacons.push_back(beacon);
+            dst->vBeacons[i] = beacon;
         }
     }
 
     dst->uNumDivineInterventionCastsThisDay = src.numDivineInterventionCasts;
     dst->uNumArmageddonCasts = src.numArmageddonCasts;
     dst->uNumFireSpikeCasts = src.numFireSpikeCasts;
+}
+
+void snapshot(const CharacterInventory &src, Character_MM7 *dst) {
+    for (size_t i = 0; i < 126; i++)
+        snapshot(src._records[i].item, &dst->inventoryItems[i], tags::context(src._records[i].slot));
+    for (size_t i = 0; i < 126; i++)
+        dst->inventoryMatrix[i] = src._grid[i];
+
+    snapshot(src._equipment, &dst->equipment, tags::cast<int, uint32_t>);
+    for (ItemSlot slot : allItemSlots())
+        if (InventoryConstEntry entry = src.entry(slot))
+            dst->inventoryItems[entry.index()].equippedSlot = std::to_underlying(slot);
+}
+
+void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<int> characterIndex) {
+    *dst = CharacterInventory();
+
+    std::array<bool, 126> processed = {{}};
+    std::array<bool, 126> pending = {{}};
+    std::array<Item, 126> items;
+    reconstruct(src.inventoryItems, &items);
+
+    // Serialized character inventory can be quite broken, so we just check pretty much everything there is to check,
+    // and just log errors.
+
+    Sizei size = dst->gridSize();
+    int maxIndex = size.w * size.h;
+    for (int x = 0; x < size.w; x++) {
+        for (int y = 0; y < size.h; y++) {
+            int index = src.inventoryMatrix[x + y * size.w];
+            if (index <= 0)
+                continue;
+            index--;
+
+            if (index > maxIndex) {
+                logger->error("Invalid item reference in backpack for character #{}, itemId={}, index={}, pos=({},{})",
+                              *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
+                continue;
+            }
+
+            if (items[index].itemId == ITEM_NULL) {
+                logger->error("Null item in backpack for character #{}, itemId={}, index={}, pos=({},{})",
+                              *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
+                continue;
+            }
+
+            if (processed[index]) {
+                logger->error("Duplicate item in backpack for character #{}, itemId={}, index={}, pos=({},{})",
+                              *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
+                continue;
+            }
+
+            if (dst->canAdd({x, y}, items[index])) {
+                processed[index] = true;
+                dst->addAt({x, y}, items[index], index); // We need to preserve item indices.
+            } else {
+                pending[index] = true;
+                logger->error("Overlapping item in backpack for character #{}, itemId={}, index={}, pos=({},{})",
+                              *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
+            }
+        }
+    }
+
+    for (ItemSlot slot : allItemSlots()) {
+        int index = src.equipment[std::to_underlying(slot) - std::to_underlying(ITEM_SLOT_FIRST_VALID)];
+        if (index <= 0)
+            continue;
+        index--;
+
+        if (index > maxIndex) {
+            logger->error("Invalid item reference in equipment for character #{}, itemId={}, index={}, slot={}",
+                          *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
+            continue;
+        }
+
+        if (items[index].itemId == ITEM_NULL) {
+            logger->error("Null item in equipment for character #{}, itemId={}, index={}, slot={}",
+                          *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
+            continue;
+        }
+
+        if (processed[index]) {
+            logger->error("Duplicate item in equipment for character #{}, itemId={}, index={}, slot={}",
+                          *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
+            continue;
+        }
+
+        if (dst->canEquip(slot)) {
+            processed[index] = true;
+            dst->equipAt(slot, items[index], index); // We need to preserve item indices.
+        } else {
+            pending[index] = true;
+            logger->error("Overlapping items in equipment for character #{}, itemId={}, index={}, slot={}",
+                          *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
+        }
+    }
+
+    for (size_t index = 0; index < items.size(); index++) {
+        if (processed[index] || items[index].itemId == ITEM_NULL)
+            continue;
+
+        if (!pending[index]) {
+            logger->error("Invisible item was dropped from inventory for character #{}, itemId={}, index={}",
+                          *characterIndex, std::to_underlying(items[index].itemId), index);
+        } else if (std::optional<Pointi> pos = dst->findSpace(items[index])) {
+            dst->addAt(*pos, items[index], index);
+        } else {
+            logger->error("Overlapping item was dropped from inventory for character #{}, itemId={}, index={}",
+                          *characterIndex, std::to_underlying(items[index].itemId), index);
+        }
+    }
 }
 
 void snapshot(const IconFrameData &src, IconFrameData_MM7 *dst) {
@@ -1229,13 +1341,13 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     dst->pMonsterInfo.attack1DamageDiceRolls = src.monsterInfo.attack1DamageDiceRolls;
     dst->pMonsterInfo.attack1DamageDiceSides = src.monsterInfo.attack1DamageDiceSides;
     dst->pMonsterInfo.attack1DamageBonus = src.monsterInfo.attack1DamageBonus;
-    dst->pMonsterInfo.attack1MissileType = src.monsterInfo.attack1MissileType;
+    dst->pMonsterInfo.attack1MissileType = std::to_underlying(src.monsterInfo.attack1MissileType);
     dst->pMonsterInfo.attack2Chance = src.monsterInfo.attack2Chance;
     dst->pMonsterInfo.attack2Type = std::to_underlying(src.monsterInfo.attack2Type);
     dst->pMonsterInfo.attack2DamageDiceRolls = src.monsterInfo.attack2DamageDiceRolls;
     dst->pMonsterInfo.attack2DamageDiceSides = src.monsterInfo.attack2DamageDiceSides;
     dst->pMonsterInfo.attack2DamageBonus = src.monsterInfo.attack2DamageBonus;
-    dst->pMonsterInfo.attack2MissileType = src.monsterInfo.attack2MissileType;
+    dst->pMonsterInfo.attack2MissileType = std::to_underlying(src.monsterInfo.attack2MissileType);
     dst->pMonsterInfo.spell1UseChance = src.monsterInfo.spell1UseChance;
     dst->pMonsterInfo.spell1Id = std::to_underlying(src.monsterInfo.spell1Id);
     dst->pMonsterInfo.spell2UseChance = src.monsterInfo.spell2UseChance;
@@ -1289,7 +1401,7 @@ void snapshot(const Actor &src, Actor_MM7 *dst) {
     snapshot(src.spriteIds, &dst->pSpriteIDs);
     snapshot(src.soundSampleIds, &dst->pSoundSampleIDs, tags::cast<SoundId, uint16_t>);
     snapshot(src.buffs, &dst->pActorBuffs);
-    snapshot(src.items, &dst->ActorHasItems);
+    snapshot(src.items, &dst->ActorHasItems, tags::context(ITEM_SLOT_INVALID));
 
     dst->uGroup = src.group;
     dst->uAlly = std::to_underlying(src.ally);
@@ -1317,19 +1429,19 @@ void reconstruct(const Actor_MM7 &src, Actor *dst) {
     dst->monsterInfo.movementType = static_cast<MonsterMovementType>(src.pMonsterInfo.movementType);
     dst->monsterInfo.aiType = static_cast<MonsterAiType>(src.pMonsterInfo.aiType);
     dst->monsterInfo.hostilityType = static_cast<MonsterHostility>(src.pMonsterInfo.hostilityType);
-    dst->monsterInfo.specialAttackType = static_cast<SpecialAttackType>(src.pMonsterInfo.specialAttackType);
+    dst->monsterInfo.specialAttackType = static_cast<MonsterSpecialAttack>(src.pMonsterInfo.specialAttackType);
     dst->monsterInfo.specialAttackLevel = src.pMonsterInfo.specialAttackLevel;
     dst->monsterInfo.attack1Type = static_cast<DamageType>(src.pMonsterInfo.attack1Type);
     dst->monsterInfo.attack1DamageDiceRolls = src.pMonsterInfo.attack1DamageDiceRolls;
     dst->monsterInfo.attack1DamageDiceSides = src.pMonsterInfo.attack1DamageDiceSides;
     dst->monsterInfo.attack1DamageBonus = src.pMonsterInfo.attack1DamageBonus;
-    dst->monsterInfo.attack1MissileType = src.pMonsterInfo.attack1MissileType;
+    dst->monsterInfo.attack1MissileType = static_cast<MonsterProjectile>(src.pMonsterInfo.attack1MissileType);
     dst->monsterInfo.attack2Chance = src.pMonsterInfo.attack2Chance;
     dst->monsterInfo.attack2Type = static_cast<DamageType>(src.pMonsterInfo.attack2Type);
     dst->monsterInfo.attack2DamageDiceRolls = src.pMonsterInfo.attack2DamageDiceRolls;
     dst->monsterInfo.attack2DamageDiceSides = src.pMonsterInfo.attack2DamageDiceSides;
     dst->monsterInfo.attack2DamageBonus = src.pMonsterInfo.attack2DamageBonus;
-    dst->monsterInfo.attack2MissileType = src.pMonsterInfo.attack2MissileType;
+    dst->monsterInfo.attack2MissileType = static_cast<MonsterProjectile>(src.pMonsterInfo.attack2MissileType);
     dst->monsterInfo.spell1UseChance = src.pMonsterInfo.spell1UseChance;
     dst->monsterInfo.spell1Id = static_cast<SpellId>(src.pMonsterInfo.spell1Id);
     dst->monsterInfo.spell2UseChance = src.pMonsterInfo.spell2UseChance;
@@ -1403,8 +1515,8 @@ void snapshot(const BLVDoor &src, BLVDoor_MM7 *dst) {
     dst->uTimeSinceTriggered = src.uTimeSinceTriggered.ticks();
     dst->vDirection = src.vDirection.toFixpoint();
     dst->uMoveLength = src.uMoveLength;
-    dst->uCloseSpeed = src.uCloseSpeed;
     dst->uOpenSpeed = src.uOpenSpeed;
+    dst->uCloseSpeed = src.uCloseSpeed;
     dst->uNumVertices = src.uNumVertices;
     dst->uNumFaces = src.uNumFaces;
     dst->uNumSectors = src.uNumSectors;
@@ -1418,8 +1530,8 @@ void reconstruct(const BLVDoor_MM7 &src, BLVDoor *dst) {
     dst->uTimeSinceTriggered = Duration::fromTicks(src.uTimeSinceTriggered);
     dst->vDirection = src.vDirection.toFloatFromFixpoint();
     dst->uMoveLength = src.uMoveLength;
-    dst->uCloseSpeed = src.uCloseSpeed;
     dst->uOpenSpeed = src.uOpenSpeed;
+    dst->uCloseSpeed = src.uCloseSpeed;
     dst->uNumVertices = src.uNumVertices;
     dst->uNumFaces = src.uNumFaces;
     dst->uNumSectors = src.uNumSectors;
@@ -1477,29 +1589,6 @@ void reconstruct(const BLVSector_MM7 &src, BLVSector *dst) {
     reconstruct(src.pBounding, &dst->pBounding);
 }
 
-void snapshot(const GUICharMetric &src, GUICharMetric_MM7 *dst) {
-    memzero(dst);
-
-    dst->uLeftSpacing = src.uLeftSpacing;
-    dst->uWidth = src.uWidth;
-    dst->uRightSpacing = src.uRightSpacing;
-}
-
-void reconstruct(const GUICharMetric_MM7 &src, GUICharMetric *dst) {
-    dst->uLeftSpacing = src.uLeftSpacing;
-    dst->uWidth = src.uWidth;
-    dst->uRightSpacing = src.uRightSpacing;
-}
-
-void reconstruct(const FontHeader_MM7 &src, FontHeader *dst) {
-    dst->cFirstChar = src.cFirstChar;
-    dst->cLastChar = src.cLastChar;
-    dst->uFontHeight = src.uFontHeight;
-
-    reconstruct(src.pMetrics, &dst->pMetrics);
-    reconstruct(src.font_pixels_offset, &dst->font_pixels_offset);
-}
-
 void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
     reconstruct(src.facePlane, &dst->facePlane);
     dst->zCalc.init(dst->facePlane);
@@ -1528,7 +1617,7 @@ void reconstruct(const SpawnPoint_MM7 &src, SpawnPoint *dst) {
         dst->uItemIndex = ITEM_TREASURE_LEVEL_INVALID;
         dst->uMonsterIndex = src.uIndex;
     } else {
-        assert(dst->uKind == OBJECT_Item);
+        assert(dst->uKind == OBJECT_Sprite);
         dst->uItemIndex = static_cast<ItemTreasureLevel>(src.uIndex);
         dst->uMonsterIndex = 0;
     }
@@ -1550,7 +1639,7 @@ void snapshot(const SpriteObject &src, SpriteObject_MM7 *dst) {
     dst->uTimeSinceCreated = src.timeSinceCreated.ticks();
     dst->tempLifetime = src.tempLifetime.ticks();
     dst->field_22_glow_radius_multiplier = src.field_22_glow_radius_multiplier;
-    snapshot(src.containing_item, &dst->containing_item);
+    snapshot(src.containing_item, &dst->containing_item, tags::context(ITEM_SLOT_INVALID));
     dst->uSpellID = std::to_underlying(src.uSpellID);
     dst->spell_level = src.spell_level;
     dst->spell_skill = std::to_underlying(src.spell_skill);
@@ -1577,20 +1666,13 @@ void reconstruct(const SpriteObject_MM7 &src, SpriteObject *dst) {
     reconstruct(src.containing_item, &dst->containing_item);
     dst->uSpellID = static_cast<SpellId>(src.uSpellID);
     dst->spell_level = src.spell_level;
-    dst->spell_skill = static_cast<CharacterSkillMastery>(src.spell_skill);
+    dst->spell_skill = static_cast<Mastery>(src.spell_skill);
     dst->field_54 = src.field_54;
     dst->spell_caster_pid = Pid::fromPacked(src.spell_caster_pid);
     dst->spell_target_pid = Pid::fromPacked(src.spell_target_pid);
     dst->field_60_distance_related_prolly_lod = src.field_60_distance_related_prolly_lod;
     dst->spellCasterAbility = static_cast<ActorAbility>(src.spellCasterAbility);
     dst->initialPosition = src.initialPosition.toFloat();
-}
-
-void reconstruct(const ChestDesc_MM7 &src, ChestDesc *dst) {
-    reconstruct(src.pName, &dst->sName);
-    dst->uWidth = src.uWidth;
-    dst->uHeight = src.uHeight;
-    dst->uTextureID = src.uTextureID;
 }
 
 void reconstruct(const DecorationDesc_MM6 &src, DecorationDesc *dst) {
@@ -1622,31 +1704,72 @@ void reconstruct(const DecorationDesc_MM7 &src, DecorationDesc *dst) {
 void snapshot(const Chest &src, Chest_MM7 *dst) {
     memzero(dst);
 
-    dst->uChestBitmapID = src.uChestBitmapID;
-    dst->uFlags = std::to_underlying(src.uFlags);
-    snapshot(src.igChestItems, &dst->igChestItems);
-    snapshot(src.pInventoryIndices, &dst->pInventoryIndices);
+    dst->chestTypeId = src.chestTypeId;
+    dst->flags = std::to_underlying(src.flags);
+    snapshot(src.inventory, dst);
 }
 
-void reconstruct(const Chest_MM7 &src, Chest *dst) {
-    dst->uChestBitmapID = src.uChestBitmapID;
-    dst->uFlags = ChestFlags(src.uFlags);
-    reconstruct(src.igChestItems, &dst->igChestItems);
-    reconstruct(src.pInventoryIndices, &dst->pInventoryIndices);
+void reconstruct(const Chest_MM7 &src, Chest *dst, ContextTag<int> chestId) {
+    dst->chestTypeId = src.chestTypeId;
+    dst->flags = ChestFlags(src.flags);
+    reconstruct(src, &dst->inventory, chestId);
+}
 
-    // fix placedInChest field for old saves
-    int chestArea = dst->pInventoryIndices.size();
-    for (int item = 0; item < chestArea; item++) {
-        if (dst->igChestItems[item].uItemID == ITEM_NULL) {
-            continue;
-        }
-        for (int position = 0; position < chestArea; position++) {
-            if (dst->pInventoryIndices[position] == item + 1) {
-                dst->igChestItems[item].placedInChest = true;
-                break;
+void snapshot(const ChestInventory &src, Chest_MM7 *dst) {
+    for (size_t i = 0; i < 140; i++)
+        snapshot(src._records[i].item, &dst->items[i], tags::context(ITEM_SLOT_INVALID));
+    for (size_t i = 0; i < 140; i++)
+        dst->inventoryMatrix[i] = src._grid[i];
+}
+
+void reconstruct(const Chest_MM7 &src, ChestInventory *dst, ContextTag<int> chestId) {
+    Sizei size = chestTable[src.chestTypeId].size;
+
+    *dst = ChestInventory(size);
+
+    std::array<bool, 140> processed = {{}};
+    std::array<Item, 140> items;
+    reconstruct(src.items, &items);
+
+    // Serialized chest inventory can be terribly broken, so we just check pretty much everything there is to check,
+    // and just log errors.
+
+    int maxIndex = size.w * size.h - 1;
+    for (int x = 0; x < size.w; x++) {
+        for (int y = 0; y < size.h; y++) {
+            int index = src.inventoryMatrix[x + y * size.w];
+            if (index <= 0)
+                continue;
+            index--;
+
+            if (index > maxIndex) {
+                logger->error("Invalid item reference in chest #{} item grid, itemId={}, index={}, pos=({},{})",
+                              *chestId, std::to_underlying(items[index].itemId), index, x, y);
+                continue;
+            }
+
+            if (items[index].itemId == ITEM_NULL) {
+                logger->error("Null item in chest #{}, itemId={}, index={}, pos=({},{})",
+                              *chestId, std::to_underlying(items[index].itemId), index, x, y);
+                continue;
+            }
+
+            if (processed[index]) {
+                logger->error("Duplicate item in chest #{}, itemId={}, index={}, pos=({},{})",
+                              *chestId, std::to_underlying(items[index].itemId), index, x, y);
+                continue;
+            }
+
+            if (dst->canAdd({x, y}, items[index])) {
+                processed[index] = true;
+                dst->addAt({x, y}, items[index], index); // We need to preserve item indices.
             }
         }
     }
+
+    for (size_t index = 0; index < items.size(); index++)
+        if (!processed[index] && items[index].itemId != ITEM_NULL)
+            dst->stashAt(items[index], index); // We need to preserve item indices.
 }
 
 void reconstruct(const BLVLight_MM7 &src, BLVLight *dst) {
@@ -1668,7 +1791,7 @@ void reconstruct(const OverlayDesc_MM7 &src, OverlayDesc *dst) {
 }
 
 void reconstruct(const PortraitFrameData_MM7 &src, PortraitFrameData *dst) {
-    dst->portrait = static_cast<CharacterPortrait>(src.portrait);
+    dst->portrait = static_cast<PortraitId>(src.portrait);
     dst->textureIndex = src.textureIndex;
     dst->frameLength = Duration::fromTicks(src.frameLength * 8);
     dst->animationLength = Duration::fromTicks(src.animationLength * 8);
@@ -1795,11 +1918,6 @@ void snapshot(const PersistentVariables &src, PersistentVariables_MM7 *dst) {
 void reconstruct(const PersistentVariables_MM7 &src, PersistentVariables *dst) {
     dst->mapVars = src.mapVars;
     dst->decorVars = src.decorVars;
-}
-
-void reconstruct(const OutdoorLocationTileType_MM7 &src, OutdoorLocationTileType *dst) {
-    dst->tileset = static_cast<TileSet>(src.tileset);
-    dst->uTileID = src.tileId;
 }
 
 void snapshot(const SaveGameHeader &src, SaveGameHeader_MM7 *dst) {

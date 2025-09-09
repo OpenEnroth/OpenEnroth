@@ -17,7 +17,6 @@ Renderer::Renderer(
     this->particle_engine = particle_engine;
     this->vis = vis;
 
-    pActiveZBuffer = 0;
     uFogColor = Color();
     hd_water_current_frame = 0;
     memset(pBillboardRenderListD3D, 0, sizeof(pBillboardRenderListD3D));

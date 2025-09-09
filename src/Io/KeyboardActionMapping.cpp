@@ -89,8 +89,6 @@ std::array<CKeyListElement, std::to_underlying(InputAction::Count)> keyMappingPa
     CKeyListElement("KEY_SCREENSHOT", PlatformKey::KEY_F2, Io::InputAction::Screenshot, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_CONSOLE", PlatformKey::KEY_TILDE, Io::InputAction::Console, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_TOGGLEMOUSEGRAB", PlatformKey::KEY_F1, Io::InputAction::ToggleMouseGrab, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_TOGGLEBORDERLESS", PlatformKey::KEY_F3, Io::InputAction::ToggleBorderless, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_TOGGLEFULLSCREEN", PlatformKey::KEY_F4, Io::InputAction::ToggleFullscreen, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_TOGGLERESIZABLE", PlatformKey::KEY_F6, Io::InputAction::ToggleResizable, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_CYCLEFILTER", PlatformKey::KEY_F7, Io::InputAction::CycleFilter, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_RELOADSHADERS", PlatformKey::KEY_BACKSPACE, Io::InputAction::ReloadShaders, KeyToggleType::TOGGLE_OneTimePress),
@@ -105,7 +103,10 @@ std::array<CKeyListElement, std::to_underlying(InputAction::Count)> keyMappingPa
     CKeyListElement("KEY_DIALOGLEFT", PlatformKey::KEY_LEFT, Io::InputAction::DialogLeft, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_DIALOGRIGHT", PlatformKey::KEY_RIGHT, Io::InputAction::DialogRight, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_DIALOGSELECT", PlatformKey::KEY_PAGEDOWN, Io::InputAction::DialogSelect, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_ESCAPE", PlatformKey::KEY_ESCAPE, Io::InputAction::Escape, KeyToggleType::TOGGLE_OneTimePress)};
+    CKeyListElement("KEY_ESCAPE", PlatformKey::KEY_ESCAPE, Io::InputAction::Escape, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_TOGGLEMOUSELOOK", PlatformKey::KEY_F10, Io::InputAction::ToggleMouseLook, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_TOGGLEWINDOWMODE", PlatformKey::KEY_F11, Io::InputAction::ToggleWindowMode, KeyToggleType::TOGGLE_Continuously),
+};
 
 
 void Io::KeyboardActionMapping::MapKey(InputAction action, PlatformKey key) {
@@ -285,8 +286,6 @@ GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigKey(InputAction a
         case(InputAction::Screenshot): return &config->keybindings.Screenshot;
         case(InputAction::Console): return &config->keybindings.Console;
         case(InputAction::ToggleMouseGrab): return &config->keybindings.ToggleMouseGrab;
-        case(InputAction::ToggleBorderless): return &config->keybindings.ToggleBorderless;
-        case(InputAction::ToggleFullscreen): return &config->keybindings.ToggleFullscreen;
         case(InputAction::ToggleResizable): return &config->keybindings.ToggleResizable;
         case(InputAction::CycleFilter): return &config->keybindings.CycleFilter;
         case(InputAction::ReloadShaders): return &config->keybindings.ReloadShaders;
@@ -302,6 +301,8 @@ GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigKey(InputAction a
         case(InputAction::DialogRight): return &config->keybindings.DialogRight;
         case(InputAction::DialogSelect): return &config->keybindings.DialogSelect;
         case(InputAction::Escape): return &config->keybindings.Escape;
+        case(InputAction::ToggleMouseLook): return &config->keybindings.ToggleMouseLook;
+        case(InputAction::ToggleWindowMode): return &config->keybindings.ToggleWindowMode;
         default: break;
     }
 
@@ -388,8 +389,6 @@ GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigGamepadKey(InputA
         case(InputAction::Screenshot): return &config->gamepad.Screenshot;
         case(InputAction::Console): return &config->gamepad.Console;
         case(InputAction::ToggleMouseGrab): return &config->gamepad.ToggleMouseGrab;
-        case(InputAction::ToggleBorderless): return &config->gamepad.ToggleBorderless;
-        case(InputAction::ToggleFullscreen): return &config->gamepad.ToggleFullscreen;
         case(InputAction::ToggleResizable): return &config->gamepad.ToggleResizable;
         case(InputAction::CycleFilter): return &config->gamepad.CycleFilter;
         case(InputAction::ReloadShaders): return &config->gamepad.ReloadShaders;
@@ -405,6 +404,7 @@ GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigGamepadKey(InputA
         case(InputAction::DialogRight): return &config->gamepad.DialogRight;
         case(InputAction::DialogSelect): return &config->gamepad.DialogSelect;
         case(InputAction::Escape): return &config->gamepad.Escape;
+        case(InputAction::ToggleWindowMode): return &config->gamepad.ToggleWindowMode;
         default: break;
     }
 
