@@ -42,11 +42,12 @@ set(OE_USE_LD_MOLD ON CACHE BOOL "Use mold linker if available.")
 set(OE_USE_LD_LLD ON CACHE BOOL "Use lld linker if available, note that mold takes precedence.")
 # Define a boolean constant
 set(NIGHTLY OFF CACHE BOOL "Specify that this is a nightly build.")
-add_compile_definitions(NIGHTLY)
 
 if(NIGHTLY)
+    add_compile_definitions(NIGHTLY=1)
     message(STATUS "Using NIGHTLY build options.")
 else()
+    add_compile_definitions(NIGHTLY=0)
     message(STATUS "Using DEV build options.")
 endif()
 
