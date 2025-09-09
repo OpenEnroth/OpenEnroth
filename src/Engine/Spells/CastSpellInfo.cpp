@@ -833,7 +833,7 @@ void CastSpellInfoHelpers::castSpell() {
                         // If any chanracter is in weak state, spell has no effect but mana is spent
                         pPlayer->SpendMana(uRequiredMana);
                         setSpellRecovery(pCastSpell, recoveryTime);
-						// Setting spellID to SPELL_NONE is important, otherwise the spell will be casted 
+					    // Setting spellID to SPELL_NONE is important, otherwise the spell will be casted
                         // indefinitely until mana is empty
                         // Calling spellFailed also works and is better feedback but is not vanilla behaviour
                         pCastSpell->uSpellID = SPELL_NONE;
