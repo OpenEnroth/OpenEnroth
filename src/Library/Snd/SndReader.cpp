@@ -44,6 +44,8 @@ void SndReader::open(Blob blob) {
         if (files.contains(name))
             throw Exception("File '{}' is not a valid SND: contains duplicate entries for '{}'", blob.displayPath(), name);
 
+        assert(entry.decompressedSize >= entry.size);
+
         if (entry.offset + entry.size > blob.size())
             throw Exception("File '{}' is not a valid SND: entry '{}' points outside the SND file", blob.displayPath(), entry.name);
 
@@ -89,4 +91,38 @@ std::vector<std::string> SndReader::ls() const {
         result.push_back(name);
     std::sort(result.begin(), result.end());
     return result;
+}
+
+bool snd::detect(const Blob &data) {
+    if (data.size() < 4)
+        return false;
+
+    BlobInputStream stream(data);
+
+    uint32_t entryCount;
+    deserialize(stream, &entryCount);
+    if (entryCount == 0)
+        return false; // Empty snd file is not valid.
+    if (data.size() < 4 + entryCount * sizeof(SndEntry_MM7))
+        return false;
+
+    auto checkEntry = [&](size_t offset) {
+        stream.seek(offset);
+        SndEntry_MM7 entry;
+        deserialize(stream, &entry);
+        return static_cast<size_t>(entry.offset) + static_cast<size_t>(entry.size) <= data.size();
+    };
+
+    // Just check 16 entries and we're good.
+    size_t head = entryCount >= 8 ? 8 : entryCount;
+    size_t tail = entryCount >= 8 ? entryCount - 8 : 0;
+
+    for (size_t i = 0; i < head; i++)
+        if (!checkEntry(4 + i * sizeof(SndEntry_MM7)))
+            return false;
+    for (size_t i = tail; i < entryCount; i++)
+        if (!checkEntry(4 + i * sizeof(SndEntry_MM7)))
+            return false;
+
+    return true;
 }

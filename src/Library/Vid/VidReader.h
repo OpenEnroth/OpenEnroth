@@ -67,3 +67,7 @@ class VidReader {
     Blob _vid;
     std::unordered_map<std::string, VidRegion> _files;
 };
+
+namespace vid {
+bool detect(const Blob &data);
+} // namespace vid

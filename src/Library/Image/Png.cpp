@@ -51,3 +51,12 @@ Blob png::encode(RgbaImageView image) {
 Blob png::encode(GrayscaleImageView image) {
     return encodeWithFormat(image, PNG_FORMAT_GRAY);
 }
+
+bool png::detect(const Blob &data) {
+    // PNG files start with an 8-byte signature.
+    if (data.size() < 8)
+        return false;
+
+    // Forward to libpng’s signature checker.
+    return png_sig_cmp(static_cast<png_const_bytep>(data.data()), 0, 8) == 0;
+}
