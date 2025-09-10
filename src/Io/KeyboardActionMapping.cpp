@@ -35,7 +35,7 @@ std::array<CKeyListElement, std::to_underlying(InputAction::Count)> keyMappingPa
     CKeyListElement("KEY_LEFT", PlatformKey::KEY_LEFT, Io::InputAction::TurnLeft, KeyToggleType::TOGGLE_Continuously),
     CKeyListElement("KEY_RIGHT", PlatformKey::KEY_RIGHT, Io::InputAction::TurnRight, KeyToggleType::TOGGLE_Continuously),
     CKeyListElement("KEY_ATTACK", PlatformKey::KEY_A, Io::InputAction::Attack, KeyToggleType::TOGGLE_DelayContinuous),
-    CKeyListElement("KEY_CASTREADY", PlatformKey::KEY_S, Io::InputAction::CastReady, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_CASTREADY", PlatformKey::KEY_S, Io::InputAction::CastReady, KeyToggleType::TOGGLE_DelayContinuous),
     CKeyListElement("KEY_YELL", PlatformKey::KEY_Y, Io::InputAction::Yell, KeyToggleType::TOGGLE_DelayContinuous),
     CKeyListElement("KEY_JUMP", PlatformKey::KEY_X, Io::InputAction::Jump, KeyToggleType::TOGGLE_Continuously),
     CKeyListElement("KEY_COMBAT", PlatformKey::KEY_RETURN, Io::InputAction::Combat, KeyToggleType::TOGGLE_OneTimePress),
