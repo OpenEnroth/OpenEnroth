@@ -20,7 +20,7 @@ struct LodToolOptions {
     };
 
     Subcommand subcommand = SUBCOMMAND_DUMP;
-    std::string lodPath;
+    std::string path;
     bool helpPrinted = false; // True means that help message was already printed.
     CatOptions cat;
     ExtractOptions extract;

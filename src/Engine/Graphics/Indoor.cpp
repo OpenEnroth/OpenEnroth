@@ -297,7 +297,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
     bLoaded = true;
 
     IndoorLocation_MM7 location;
-    deserialize(lod::decodeCompressed(pGames_LOD->read(blv_filename)), &location); // read throws if file doesn't exist.
+    deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(blv_filename)), &location); // read throws if file doesn't exist.
     reconstruct(location, this);
 
     std::string dlv_filename = fmt::format("{}.dlv", filename.substr(0, filename.size() - 4));
@@ -305,7 +305,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
     bool respawnInitial = false; // Perform initial location respawn?
     bool respawnTimed = false; // Perform timed location respawn?
     IndoorDelta_MM7 delta;
-    if (Blob blob = lod::decodeCompressed(pSave_LOD->read(dlv_filename))) {
+    if (Blob blob = lod::decodeMaybeCompressed(pSave_LOD->read(dlv_filename))) {
         try {
             deserialize(blob, &delta, tags::context(location));
 
@@ -332,12 +332,12 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
     assert(respawnInitial + respawnTimed <= 1);
 
     if (respawnInitial) {
-        deserialize(lod::decodeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
+        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
         *indoor_was_respawned = true;
     } else if (respawnTimed) {
         auto header = delta.header;
         auto visibleOutlines = delta.visibleOutlines;
-        deserialize(lod::decodeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
+        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
         delta.header = header;
         delta.visibleOutlines = visibleOutlines;
         *indoor_was_respawned = true;

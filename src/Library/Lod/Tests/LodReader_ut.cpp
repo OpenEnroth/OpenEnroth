@@ -62,3 +62,7 @@ UNIT_TEST(LodReader, DisplayPath) {
     EXPECT_EQ(reader.read("lolkek").displayPath(), "russian.lod/lolkek");
     EXPECT_EQ(reader.read("LOLKEK").displayPath(), "russian.lod/LOLKEK");
 }
+
+UNIT_TEST(LodReader, Detect) {
+    EXPECT_TRUE(lod::detect(Blob::view(brokenLod, sizeof(brokenLod))));
+}
