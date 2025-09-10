@@ -470,7 +470,7 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
 
     OutdoorLocation_MM7 location;
-    deserialize(lod::decodeCompressed(pGames_LOD->read(odm_filename)), &location); // read throws.
+    deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(odm_filename)), &location); // read throws.
     reconstruct(location, this);
 
     // ****************.ddm file*********************//
@@ -480,7 +480,7 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     bool respawnInitial = false; // Perform initial location respawn?
     bool respawnTimed = false; // Perform timed location respawn?
     OutdoorDelta_MM7 delta;
-    if (Blob blob = lod::decodeCompressed(pSave_LOD->read(ddm_filename))) {
+    if (Blob blob = lod::decodeMaybeCompressed(pSave_LOD->read(ddm_filename))) {
         try {
             deserialize(blob, &delta, tags::context(location));
 
@@ -511,13 +511,13 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     assert(respawnInitial + respawnTimed <= 1);
 
     if (respawnInitial) {
-        deserialize(lod::decodeCompressed(pGames_LOD->read(ddm_filename)), &delta, tags::context(location));
+        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddm_filename)), &delta, tags::context(location));
         *outdoors_was_respawned = true;
     } else if (respawnTimed) {
         auto header = delta.header;
         auto fullyRevealedCells = delta.fullyRevealedCells;
         auto partiallyRevealedCells = delta.partiallyRevealedCells;
-        deserialize(lod::decodeCompressed(pGames_LOD->read(ddm_filename)), &delta, tags::context(location));
+        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddm_filename)), &delta, tags::context(location));
         delta.header = header;
         delta.fullyRevealedCells = fullyRevealedCells;
         delta.partiallyRevealedCells = partiallyRevealedCells;

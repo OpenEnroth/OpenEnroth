@@ -122,12 +122,12 @@ an "atomic"/"immutable" Linux distribution such as Bazzite or SteamOS.
 The loose executable bundle is the easier option if:
 * You want easy access to the OpenEnroth executable for development or debugging
 * You absolutely need specific control over the installation location for OpenEnroth and the game data
-* You can install system packages (specifically, SDL2, `libdwarf`, `libelf` and `libgl1`)
+* You can install system packages (specifically, `libdwarf`, `libelf` and `libgl1`)
 * You're using Ubuntu 24.04 - other distributions may not have the required libraries available
   or not in compatible versions
 
-1. Install the required libraries (SDL2, `libdwarf` and `libelf`):
-   * `sudo apt-get install libsdl2-2* libdwarf1 libelf++* libgl1` (Ubuntu 24.04)
+1. Install the required libraries (`libdwarf`, `libelf` and `libgl1`):
+   * `sudo apt-get install libdwarf1 libelf++* libgl1` (Ubuntu 24.04)
    * For other distributions, check your distribution's user guides and package management tools to find
      the correct package names for these libraries.
 2. Install OpenEnroth:

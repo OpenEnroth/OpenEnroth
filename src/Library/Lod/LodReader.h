@@ -84,3 +84,7 @@ class LodReader final {
     LodInfo _info;
     std::unordered_map<std::string, LodRegion> _files;
 };
+
+namespace lod {
+bool detect(const Blob &data);
+} // namespace lod

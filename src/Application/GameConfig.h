@@ -16,7 +16,7 @@
 
 #ifdef __ANDROID__
 #define ConfigRenderer RENDERER_OPENGL_ES
-#define ConfigWindowMode WINDOW_MODE_FULLSCREEN
+#define ConfigWindowMode WINDOW_MODE_FULLSCREEN_BORDERLESS
 #else
 #define ConfigRenderer RENDERER_OPENGL
 #define ConfigWindowMode WINDOW_MODE_WINDOWED

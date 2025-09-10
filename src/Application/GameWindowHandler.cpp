@@ -76,7 +76,7 @@ std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowConfigPosition(const 
         displayRect = displays[0];
     }
 
-    if (mode == WINDOW_MODE_FULLSCREEN || mode == WINDOW_MODE_FULLSCREEN_BORDERLESS) {
+    if (mode == WINDOW_MODE_FULLSCREEN_BORDERLESS) {
         pos = displayRect.topLeft();
     } else if (Recti(Pointi(), displayRect.size()).contains(pos)) {
         pos += displayRect.topLeft();
@@ -427,9 +427,6 @@ void GameWindowHandler::OnToggleWindowMode() {
             mode = WINDOW_MODE_FULLSCREEN_BORDERLESS;
             break;
         case WINDOW_MODE_FULLSCREEN_BORDERLESS:
-            mode = WINDOW_MODE_FULLSCREEN;
-            break;
-        case WINDOW_MODE_FULLSCREEN:
             mode = WINDOW_MODE_WINDOWED;
             break;
         default:

@@ -1,0 +1,18 @@
+#pragma once
+
+enum class MagicFileFormat {
+    MAGIC_UNRECOGNIZED,
+    MAGIC_LOD,
+    MAGIC_LOD_COMPRESSED_DATA,
+    MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE,
+    MAGIC_LOD_IMAGE,
+    MAGIC_LOD_PALETTE,
+    MAGIC_LOD_SPRITE,
+    MAGIC_LOD_FONT,
+    MAGIC_VID,
+    MAGIC_SND,
+    MAGIC_PNG,
+    MAGIC_PCX,
+    MAGIC_WAV,
+};
+using enum MagicFileFormat;
