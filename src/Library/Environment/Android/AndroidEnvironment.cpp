@@ -1,6 +1,6 @@
 #include "AndroidEnvironment.h"
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 std::string AndroidEnvironment::queryRegistry(const std::string &path) const {
     return {};
@@ -9,9 +9,9 @@ std::string AndroidEnvironment::queryRegistry(const std::string &path) const {
 std::string AndroidEnvironment::path(EnvironmentPath path) const {
     const char *result = nullptr;
     if (path == PATH_ANDROID_STORAGE_INTERNAL) {
-        result = SDL_AndroidGetInternalStoragePath();
+        result = SDL_GetAndroidInternalStoragePath();
     } else if (path == PATH_ANDROID_STORAGE_EXTERNAL) {
-        result = SDL_AndroidGetExternalStoragePath();
+        result = SDL_GetAndroidExternalStoragePath();
     }
 
     // Each application on Android is executed under dedicated user so PATH_HOME is useless.
@@ -29,7 +29,7 @@ std::string AndroidEnvironment::getenv(const std::string &key) const {
 }
 
 void AndroidEnvironment::setenv(const std::string &key, const std::string &value) const {
-    SDL_setenv(key.c_str(), value.c_str(), 1); // Errors are ignored.
+    SDL_setenv_unsafe(key.c_str(), value.c_str(), 1); // Errors are ignored.
 }
 
 std::unique_ptr<Environment> Environment::createStandardEnvironment() {

@@ -85,7 +85,7 @@ PlatformWindowOrientations NullWindow::orientations() {
 }
 
 Marginsi NullWindow::frameMargins() const {
-    if (_mode == WINDOW_MODE_WINDOWED || _mode == WINDOW_MODE_FULLSCREEN) {
+    if (_mode == WINDOW_MODE_WINDOWED) {
         return _state->options.defaultFrameMargins;
     } else {
         return Marginsi(0, 0, 0, 0);

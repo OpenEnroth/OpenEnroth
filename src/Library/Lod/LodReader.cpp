@@ -166,3 +166,25 @@ std::vector<std::string> LodReader::ls() const {
     return _info;
 }
 
+bool lod::detect(const Blob &data) {
+    if (data.size() < sizeof(LodHeader_MM6) + sizeof(LodEntry_MM6)) // Header + directory entry.
+        return false;
+
+    BlobInputStream stream(data);
+    LodHeader header;
+    deserialize(stream, &header, tags::via<LodHeader_MM6>);
+
+    if (header.signature != "LOD")
+        return false;
+
+    LodVersion version;
+    if (!tryDeserialize(header.version, &version))
+        return false;
+
+    // While LOD structure itself support multiple directories, all LOD files associated with
+    // vanilla MM6/7/8 games use a single directory.
+    if (header.numDirectories != 1)
+        return false;
+
+    return true;
+}

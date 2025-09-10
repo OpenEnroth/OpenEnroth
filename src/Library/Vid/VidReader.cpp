@@ -97,3 +97,34 @@ std::vector<std::string> VidReader::ls() const {
     std::sort(result.begin(), result.end());
     return result;
 }
+
+bool vid::detect(const Blob &data) {
+    if (data.size() < 4)
+        return false;
+
+    BlobInputStream stream(data);
+
+    uint32_t entryCount;
+    deserialize(stream, &entryCount);
+    if (entryCount == 0)
+        return false; // Empty vid file is not valid.
+    if (data.size() < 4 + entryCount * sizeof(VidEntry_MM7))
+        return false;
+
+    // Just check up to 16 entries and we're good.
+    size_t lastOffset = 0;
+    for (size_t i = 0, size = std::min<size_t>(entryCount, 16); i < size; i++) {
+        VidEntry_MM7 entry;
+        deserialize(stream, &entry);
+
+        if (entry.offset > data.size())
+            return false;
+
+        if (entry.offset < lastOffset)
+            return false;
+
+        lastOffset = entry.offset;
+    }
+
+    return true;
+}

@@ -13,7 +13,7 @@ SdlOpenGLContext::SdlOpenGLContext(SdlPlatformSharedState *state, SDL_Window *wi
 SdlOpenGLContext::~SdlOpenGLContext() {}
 
 bool SdlOpenGLContext::bind() {
-    bool succeeded = SDL_GL_MakeCurrent(_window, _context) == 0;
+    bool succeeded = SDL_GL_MakeCurrent(_window, _context);
 
     if (!succeeded)
         _state->logSdlError("SDL_GL_MakeCurrent");
@@ -22,7 +22,7 @@ bool SdlOpenGLContext::bind() {
 }
 
 bool SdlOpenGLContext::unbind() {
-    bool succeeded = SDL_GL_MakeCurrent(_window, nullptr) == 0;
+    bool succeeded = SDL_GL_MakeCurrent(_window, nullptr);
 
     if (!succeeded)
         _state->logSdlError("SDL_GL_MakeCurrent");
@@ -31,7 +31,8 @@ bool SdlOpenGLContext::unbind() {
 }
 
 void SdlOpenGLContext::swapBuffers() {
-    SDL_GL_SwapWindow(_window);
+    if (!SDL_GL_SwapWindow(_window))
+        _state->logSdlError("SDL_GL_SwapWindow");
 }
 
 void *SdlOpenGLContext::nativeHandle() {
@@ -43,5 +44,5 @@ void *SdlOpenGLContext::getProcAddress(const char *name) {
         if (!bind())
             return nullptr;
 
-    return SDL_GL_GetProcAddress(name);
+    return reinterpret_cast<void *>(SDL_GL_GetProcAddress(name));
 }

@@ -13,5 +13,3 @@ target_link_libraries(library_compression
         utility
         PRIVATE
         ZLIB::ZLIB)
-
-message(VERBOSE "ZLIB_LIBRARIES: ${ZLIB_LIBRARIES}")

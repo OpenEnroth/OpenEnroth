@@ -2,13 +2,11 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(LIBRARY_LOD_FORMATS_SOURCES
         LodFormats.cpp
-        LodFormatEnums.cpp
         LodFormatSnapshots.cpp)
 
 set(LIBRARY_LOD_FORMATS_HEADERS
         LodFont.h
         LodFormats.h
-        LodFormatEnums.h
         LodFormatSnapshots.h
         LodImage.h
         LodSprite.h)
