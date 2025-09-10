@@ -153,8 +153,11 @@ void SdlEventLoop::dispatchKeyEvent(PlatformEventHandler *eventHandler, const SD
     e.window = _state->window(event->windowID);
     e.type = event->type == SDL_EVENT_KEY_UP ? EVENT_KEY_RELEASE : EVENT_KEY_PRESS;
     e.isAutoRepeat = event->repeat;
-    e.key = translateSdlKey(event->scancode);
     e.mods = translateSdlMods(event->mod);
+
+    // Note: translating event->key works for a Russian keyboard layout b/c KEYCODE_OPTION_LATIN_LETTERS is enabled
+    // by default.
+    e.key = translateSdlKey(event->key);
 
     if (e.key != PlatformKey::KEY_NONE)
         dispatchEvent(eventHandler, &e);
