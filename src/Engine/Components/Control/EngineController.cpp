@@ -13,6 +13,7 @@
 #include "GUI/GUIButton.h"
 
 #include "Engine/Engine.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/SaveLoad.h"
 #include "Engine/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
@@ -104,7 +105,7 @@ void EngineController::pressButton(PlatformMouseButton button, int x, int y) {
     event->type = EVENT_MOUSE_BUTTON_PRESS;
     event->window = ::application->window();
     event->button = BUTTON_LEFT;
-    event->pos = Pointi(x, y);
+    event->pos = render->MapToPresent({ x, y });
     event->isDoubleClick = false;
     postEvent(std::move(event));
 }
@@ -115,7 +116,7 @@ void EngineController::releaseButton(PlatformMouseButton button, int x, int y) {
     event->window = ::application->window();
     event->button = BUTTON_LEFT;
     event->buttons = BUTTON_LEFT;
-    event->pos = Pointi(x, y);
+    event->pos = render->MapToPresent({ x, y });
     event->isDoubleClick = false;
     postEvent(std::move(event));
 }
@@ -126,7 +127,7 @@ void EngineController::moveMouse(int x, int y) {
     event->window = ::application->window();
     event->button = BUTTON_NONE;
     event->buttons = BUTTON_NONE;
-    event->pos = Pointi(x, y);
+    event->pos = render->MapToPresent({ x, y });
     event->isDoubleClick = false;
     postEvent(std::move(event));
 }
@@ -143,8 +144,6 @@ void EngineController::pressAndReleaseButton(PlatformMouseButton button, int x, 
 
 void EngineController::pressGuiButton(std::string_view buttonId) {
     GUIButton *button = existingButton(buttonId);
-
-    // TODO(pskelton): this needs to be responsive to window scale?
     pressAndReleaseButton(BUTTON_LEFT, button->uX + button->uWidth / 2, button->uY + button->uHeight / 2);
 }
 
