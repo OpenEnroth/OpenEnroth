@@ -251,7 +251,7 @@ void GameWindowHandler::OnMouseRightDoubleClick(Pointi position) {
     }
 }
 
-void GameWindowHandler::OnMouseMove(Pointi position, bool left_button, bool right_button) {
+void GameWindowHandler::OnMouseMove(Pointi position, Pointi relative, bool left_button, bool right_button) {
     if (pArcomageGame->bGameInProgress) {
         ArcomageGame::OnMouseMove(position.x, position.y);
         ArcomageGame::OnMouseClick(0, left_button);
@@ -259,6 +259,7 @@ void GameWindowHandler::OnMouseMove(Pointi position, bool left_button, bool righ
     } else {
         if (mouse) {
             mouse->setPosition(position);
+            mouse->DoMouseLook(relative);
         }
     }
 }
@@ -468,7 +469,7 @@ bool GameWindowHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
 }
 
 bool GameWindowHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
-    OnMouseMove(render->MapToRender(event->pos), event->buttons & BUTTON_LEFT, event->buttons & BUTTON_RIGHT);
+    OnMouseMove(render->MapToRender(event->pos), event->rel, event->buttons & BUTTON_LEFT, event->buttons & BUTTON_RIGHT);
     return false;
 }
 

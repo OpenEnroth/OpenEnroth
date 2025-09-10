@@ -91,6 +91,10 @@ void ProxyWindow::warpMouse(Pointi position) {
     nonNullBase()->warpMouse(position);
 }
 
+void ProxyWindow::setMouseRelative(bool enable) {
+    nonNullBase()->setMouseRelative(enable);
+}
+
 std::unique_ptr<PlatformOpenGLContext> ProxyWindow::createOpenGLContext(const PlatformOpenGLOptions &options) {
     return nonNullBase()->createOpenGLContext(options);
 }

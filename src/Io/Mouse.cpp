@@ -35,15 +35,7 @@ Pointi Io::Mouse::position() const {
 }
 
 void Io::Mouse::setPosition(Pointi position) {
-    if (_mouseLook) {
-        _mouseLookChange = position - _position;
-        if (_mouseLookChange.x != 0 || _mouseLookChange.y != 0) {
-            pPartyActionQueue->Add(PARTY_MouseLook);
-            warpMouse(_position); // TODO(pskelton): this causes another mouse move event - might be better to poll mouse position once per frame rather than on event
-        }
-    } else {
         _position = position;
-    }
 }
 
 void Io::Mouse::SetCursorBitmapFromItemID(ItemId uItemID) {
@@ -294,27 +286,26 @@ void Io::Mouse::UI_OnMouseLeftClick() {
 }
 
 void Io::Mouse::SetMouseLook(bool enable) {
-    _mouseLook = enable;
-    if (enable) {
+    if (_mouseLook != enable) {
         _position = { pViewport->viewportCenterX, pViewport->viewportCenterY };
         warpMouse(_position);
+        window->setMouseRelative(enable);
     }
+    _mouseLook = enable;
 }
 
 void Io::Mouse::ToggleMouseLook() {
     SetMouseLook(!_mouseLook);
 }
 
-void Io::Mouse::DoMouseLook() {
+void Io::Mouse::DoMouseLook(Pointi relChange) {
     if (!_mouseLook) {
         return;
     }
 
-    const float sensitivity = 5.0f; // TODO(pskelton): move to config value
-    float modX = _mouseLookChange.x * sensitivity;
-    float modY = _mouseLookChange.y * sensitivity;
-    _mouseLookChange.x = 0;
-    _mouseLookChange.y = 0;
+    const float sensitivity = 2.5f; // TODO(pskelton): move to config value
+    float modX = relChange.x * sensitivity;
+    float modY = relChange.y * sensitivity;
     pParty->_viewPitch -= modY;
     pParty->_viewPitch = std::clamp(pParty->_viewPitch, -320, 320);
     pParty->_viewYaw -= modX;
@@ -435,6 +426,6 @@ bool UI_OnKeyDown(PlatformKey key) {
 
 void Io::Mouse::warpMouse(Pointi position) {
     // Map position to output window coords
-    position = render->MapToPresent(position);
-    window->warpMouse(position);
+    Pointi pos = render->MapToPresent(position);
+    window->warpMouse(pos);
 }

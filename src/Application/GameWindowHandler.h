@@ -36,7 +36,7 @@ class GameWindowHandler : public PlatformEventFilter, private PlatformApplicatio
     void OnMouseRightUp();
     void OnMouseLeftDoubleClick(Pointi position);
     void OnMouseRightDoubleClick(Pointi position);
-    void OnMouseMove(Pointi position, bool left_button, bool right_button);
+    void OnMouseMove(Pointi position, Pointi relative, bool left_button, bool right_button);
     void OnScreenshot();
     void OnToggleResizable();
     void OnCycleFilter();

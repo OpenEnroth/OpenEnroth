@@ -1903,7 +1903,6 @@ void UI_OnMouseRightClick(Pointi mousePos) {
                            // главном меню показывает всплывающее окно)
         {
             if (GetCurrentMenuID() > MENU_MAIN) break;
-            mouse->DoMouseLook();
 
             if ((signed int)pY > (signed int)pViewport->viewportBR_Y) {
                 int characterIndex = pX / 118;

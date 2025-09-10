@@ -40,7 +40,7 @@ class Mouse {
 
     void SetMouseLook(bool look);
     void ToggleMouseLook();
-    void DoMouseLook();
+    void DoMouseLook(Pointi relChange);
 
     Pid uPointingObjectID;
     int field_8 = 0;
@@ -55,7 +55,6 @@ class Mouse {
     Pointi _position;
 
     bool _mouseLook = false;
-    Pointi _mouseLookChange;
 };
 }  // namespace Io
 
