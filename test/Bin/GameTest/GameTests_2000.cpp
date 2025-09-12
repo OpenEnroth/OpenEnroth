@@ -508,3 +508,29 @@ GAME_TEST(Issues, Issue2188) {
     EXPECT_EQ(pParty->pCharacters[0].GetMajorConditionIdx(), CONDITION_UNCONSCIOUS);
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_QUICK_REFERENCE));
 }
+
+GAME_TEST(Issues, Issue2201) {
+    // Haste depletes all spell points when any party member is weak.
+    auto mp3Tape = charTapes.mp(3);
+    auto statusTape = tapes.statusBar();
+
+    game.startNewGame();
+    test.startTaping();
+
+    pParty->pCharacters[3].bHaveSpell[SPELL_FIRE_HASTE] = true;
+    pParty->pCharacters[0].SetCondition(CONDITION_WEAK, false);
+
+    pParty->setActiveCharacterIndex(4);
+    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_C);
+    game.tick();
+    game.pressGuiButton("SpellBook_School0"); // Fire magic.
+    game.tick();
+    game.pressGuiButton("SpellBook_Spell4"); // Haste.
+    game.tick();
+    game.pressGuiButton("SpellBook_Spell4"); // Confirm.
+    game.tick(10); // All mana from 4th character was drained in 10 ticks.
+
+    EXPECT_CONTAINS(statusTape, "Spell failed");
+    EXPECT_EQ(mp3Tape.delta(), -5);
+}
