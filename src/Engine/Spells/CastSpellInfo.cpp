@@ -834,7 +834,7 @@ void CastSpellInfoHelpers::castSpell() {
                         pPlayer->SpendMana(uRequiredMana);
                         setSpellRecovery(pCastSpell, recoveryTime);
                         //call spellFailed to "consume" this spell and remove it from the spell queue
-					    spellFailed(pCastSpell, LSTR_SPELL_FAILED);
+                        spellFailed(pCastSpell, LSTR_SPELL_FAILED);
                         continue;
                     }
                     pParty->pPartyBuffs[PARTY_BUFF_HASTE].Apply(pParty->GetPlayingTime() + spell_duration, spell_mastery, 0, 0, 0);
