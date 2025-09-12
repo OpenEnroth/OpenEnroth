@@ -78,5 +78,7 @@ class PlatformWindow {
      */
     virtual void warpMouse(Pointi position) = 0;
 
+    virtual void setMouseRelative(bool enable) = 0;
+
     virtual std::unique_ptr<PlatformOpenGLContext> createOpenGLContext(const PlatformOpenGLOptions &options) = 0;
 };

@@ -20,6 +20,11 @@ class Mouse {
 
     Pointi position() const;
     void setPosition(Pointi position);
+    /**
+     * Moves the mouse pointer.
+     * @param position                  Position in render coordinates to move mouse pointer to.
+     */
+    void warpMouse(Pointi position);
 
     void SetCursorBitmapFromItemID(ItemId uItemID);
     void SetCurrentCursorBitmap();
@@ -35,7 +40,7 @@ class Mouse {
 
     void SetMouseLook(bool look);
     void ToggleMouseLook();
-    void DoMouseLook();
+    void DoMouseLook(Pointi relChange);
 
     Pid uPointingObjectID;
     int field_8 = 0;
@@ -50,7 +55,6 @@ class Mouse {
     Pointi _position;
 
     bool _mouseLook = false;
-    Pointi _mouseLookChange;
 };
 }  // namespace Io
 
