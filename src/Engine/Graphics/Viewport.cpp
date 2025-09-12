@@ -104,13 +104,27 @@ void ViewingParams::CenterOnPartyZoomIn() {
 
 //----- (004432E7) --------------------------------------------------------
 void ViewingParams::ClampMapViewPosition() {
-	// uMapBookMapZoom is 384 to 1536 (outdoor) or 3072 (indoor)
+	auto xLimits = GetMapViewMinMaxX();
+	auto yLimits = GetMapViewMinMaxY();
+    this->sViewCenterX = std::clamp(this->sViewCenterX, xLimits.w, xLimits.h);
+	this->sViewCenterY = std::clamp(this->sViewCenterY, yLimits.w, yLimits.w);
+}
+
+Sizei ViewingParams::GetMapViewMinMaxOffset() {
     int mapScale = 88 >> (this->uMapBookMapZoom / 384);
     int minOffset = (mapScale - 44) * 512;
     int maxOffset = (44 - mapScale) * 512;
-    
-    this->sViewCenterX = std::clamp(this->sViewCenterX, this->indoor_center_x + minOffset, this->indoor_center_x + maxOffset);
-	this->sViewCenterY = std::clamp(this->sViewCenterY, this->indoor_center_y + minOffset, this->indoor_center_y + maxOffset);
+    return { minOffset, maxOffset };
+}
+
+Sizei ViewingParams::GetMapViewMinMaxX() {
+	auto [minOffset, maxOffset] = GetMapViewMinMaxOffset();
+    return { this->indoor_center_x + minOffset, this->indoor_center_x + maxOffset };
+}
+
+Sizei ViewingParams::GetMapViewMinMaxY() {
+	auto [minOffset, maxOffset] = GetMapViewMinMaxOffset();
+    return { this->indoor_center_y + minOffset, this->indoor_center_y + maxOffset };
 }
 
 //----- (00443343) --------------------------------------------------------
