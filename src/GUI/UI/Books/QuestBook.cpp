@@ -80,20 +80,22 @@ void GUIWindow_QuestBook::Update() {
     questbook_window.uFrameZ = 407;
     questbook_window.uFrameW = 333;
 
-    if (_bookButtonClicked && _bookButtonAction == BOOK_NEXT_PAGE && (_startingQuestIdx + _currentPageQuests) < _activeQuestsIdx.size()) {
+    if (_bookButtonClicked == 10 && _bookButtonAction == BOOK_NEXT_PAGE && (_startingQuestIdx + _currentPageQuests) < _activeQuestsIdx.size()) {
         pAudioPlayer->playUISound(SOUND_openbook);
         _startingQuestIdx += _currentPageQuests;
         _questsPerPage[_currentPage] = _currentPageQuests;
         _currentPage++;
     }
 
-    if (_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE && _startingQuestIdx) {
+    if (_bookButtonClicked == 10 && _bookButtonAction == BOOK_PREV_PAGE && _startingQuestIdx) {
         pAudioPlayer->playUISound(SOUND_openbook);
         _currentPage--;
         _startingQuestIdx -= _questsPerPage[_currentPage];
     }
 
-    _bookButtonClicked = false;
+    if (_bookButtonClicked)
+        _bookButtonClicked--;
+
     _currentPageQuests = 0;
 
     for (int i = _startingQuestIdx; i < _activeQuestsIdx.size(); ++i) {

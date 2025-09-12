@@ -101,16 +101,17 @@ void GUIWindow_JournalBook::Update() {
     journal_window.uFrameZ = 407;
     journal_window.uFrameW = journal_window.uFrameHeight + 69;
 
-    if (_bookButtonClicked && _bookButtonAction == BOOK_NEXT_PAGE && (_currentIdx + 1) < _journalIdx.size()) {
+    if (_bookButtonClicked == 10 && _bookButtonAction == BOOK_NEXT_PAGE && (_currentIdx + 1) < _journalIdx.size()) {
         pAudioPlayer->playUISound(SOUND_openbook);
         _currentIdx++;
     }
-    if (_bookButtonClicked && _bookButtonAction == BOOK_PREV_PAGE && _currentIdx) {
+    if (_bookButtonClicked == 10 && _bookButtonAction == BOOK_PREV_PAGE && _currentIdx) {
         pAudioPlayer->playUISound(SOUND_openbook);
         _currentIdx--;
     }
 
-    _bookButtonClicked = false;
+    if (_bookButtonClicked)
+        _bookButtonClicked--;
 
     if (_journalIdx.size()) {
         NPCData dummyNpc;

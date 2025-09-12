@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "Library/Color/Color.h"
+#include "Library/Geometry/Size.h"
 
 class GraphicsImage;
 

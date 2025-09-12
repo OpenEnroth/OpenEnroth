@@ -1447,7 +1447,6 @@ void Game::processQueuedMessages() {
                     default:
                         continue;
                 }
-                new OnButtonClick({pButton->uX, pButton->uY}, {0, 0}, pButton, std::string(), false);
                 ((GUIWindow_Book *)pGUIWindow_CurrentMenu)->bookButtonClicked(BookButtonAction(uMessageParam));
                 continue;
             case UIMSG_SelectCharacter:
