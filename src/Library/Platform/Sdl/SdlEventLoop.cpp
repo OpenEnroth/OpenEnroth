@@ -173,7 +173,9 @@ void SdlEventLoop::dispatchMouseMoveEvent(PlatformEventHandler *eventHandler, co
     e.button = BUTTON_NONE;
     e.buttons = translateSdlMouseButtons(event->state);
     e.isDoubleClick = false;
+    // TODO(pskelton): mouse events are floats in SDL3
     e.pos = Pointi(event->x, event->y);
+    e.rel = Pointi(event->xrel, event->yrel);
     dispatchEvent(eventHandler, &e);
 }
 

@@ -112,7 +112,7 @@ jobs:
             export CFLAGS="-m32" CXXFLAGS="-m32" 
           fi
           export CC=gcc-14 && export CXX=g++-14
-          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}}
+          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DNIGHTLY=ON
 
       - name: Build
         working-directory: build

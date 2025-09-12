@@ -182,25 +182,6 @@ bool GameWindowHandler::OnChar(PlatformKey key, int c) {
     return false;
 }
 
-Pointi GameWindowHandler::MapToRender(Pointi position) {
-    Sizef renDims = {(float)render->GetRenderDimensions().w, (float)render->GetRenderDimensions().h};
-    Sizef prDims = {(float)render->GetPresentDimensions().w, (float)render->GetPresentDimensions().h};
-    Pointi result = position;
-
-    if (renDims != prDims) {
-        Sizef ratioCorections = {prDims.w / renDims.w, prDims.h / renDims.h};
-        float ratioCorrection = std::min(ratioCorections.w, ratioCorections.h);
-
-        float w = renDims.w * ratioCorrection;
-        float h = renDims.h * ratioCorrection;
-
-        result.x = (float)position.x / ratioCorrection - ((float)prDims.w / 2 - w / 2) / ratioCorrection;
-        result.y = (float)position.y / ratioCorrection - ((float)prDims.h / 2 - h / 2) / ratioCorrection;
-    }
-
-    return result;
-}
-
 void GameWindowHandler::OnMouseLeftClick(Pointi position) {
     if (pArcomageGame->bGameInProgress) {
         ArcomageGame::OnMouseClick(0, true);
@@ -270,7 +251,7 @@ void GameWindowHandler::OnMouseRightDoubleClick(Pointi position) {
     }
 }
 
-void GameWindowHandler::OnMouseMove(Pointi position, bool left_button, bool right_button) {
+void GameWindowHandler::OnMouseMove(Pointi position, Pointi relative, bool left_button, bool right_button) {
     if (pArcomageGame->bGameInProgress) {
         ArcomageGame::OnMouseMove(position.x, position.y);
         ArcomageGame::OnMouseClick(0, left_button);
@@ -278,6 +259,7 @@ void GameWindowHandler::OnMouseMove(Pointi position, bool left_button, bool righ
     } else {
         if (mouse) {
             mouse->setPosition(position);
+            mouse->DoMouseLook(relative);
         }
     }
 }
@@ -487,12 +469,12 @@ bool GameWindowHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
 }
 
 bool GameWindowHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
-    OnMouseMove(MapToRender(event->pos), event->buttons & BUTTON_LEFT, event->buttons & BUTTON_RIGHT);
+    OnMouseMove(render->MapToRender(event->pos), event->rel, event->buttons & BUTTON_LEFT, event->buttons & BUTTON_RIGHT);
     return false;
 }
 
 bool GameWindowHandler::mousePressEvent(const PlatformMouseEvent *event) {
-    Pointi position = MapToRender(event->pos);
+    Pointi position = render->MapToRender(event->pos);
     if (event->button == BUTTON_LEFT) {
         if (event->isDoubleClick) {
             OnMouseLeftDoubleClick(position);

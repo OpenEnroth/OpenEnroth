@@ -247,7 +247,7 @@ void Menu::EventLoop() {
 
                     curr_key_map[action] = newKey;
                     key_map_conflicted[action] = false;
-                    keyboardActionMapping->MapKey(action, newKey, GetToggleType(action));
+                    keyboardActionMapping->MapKey(action, newKey, keyboardActionMapping->GetToggleType(action));
                 }
                 keyboardActionMapping->StoreMappings();
                 pAudioPlayer->playUISound(SOUND_chimes);
@@ -441,7 +441,7 @@ void Menu::EventLoop() {
                         }
 
                         for (auto action : VanillaInputActions()) {
-                            keyboardActionMapping->MapKey(action, curr_key_map[action], GetToggleType(action));
+                            keyboardActionMapping->MapKey(action, curr_key_map[action], keyboardActionMapping->GetToggleType(action));
                         }
                         keyboardActionMapping->StoreMappings();
                     }

@@ -178,6 +178,10 @@ void SdlWindow::warpMouse(Pointi position) {
     SDL_WarpMouseInWindow(_window, position.x, position.y);
 }
 
+void SdlWindow::setMouseRelative(bool enable) {
+    SDL_SetWindowRelativeMouseMode(_window, enable);
+}
+
 std::unique_ptr<PlatformOpenGLContext> SdlWindow::createOpenGLContext(const PlatformOpenGLOptions &options) {
     if (options.versionMajor != -1)
         SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, options.versionMajor);

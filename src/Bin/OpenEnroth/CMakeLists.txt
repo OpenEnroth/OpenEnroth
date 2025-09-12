@@ -37,7 +37,7 @@ else()
         add_executable(OpenEnroth ${BIN_OPENENROTH_HEADERS} ${BIN_OPENENROTH_SOURCES})
 
         install(TARGETS OpenEnroth)
-    endif() 
+    endif()
 
     target_check_style(OpenEnroth)
     target_link_libraries(OpenEnroth PUBLIC application library_cli library_platform_main library_stack_trace)
