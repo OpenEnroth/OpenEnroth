@@ -37,9 +37,9 @@ std::array<CKeyListElement, std::to_underlying(InputAction::Count)> keyMappingPa
     CKeyListElement("KEY_ATTACK", PlatformKey::KEY_A, Io::InputAction::Attack, KeyToggleType::TOGGLE_DelayContinuous),
     CKeyListElement("KEY_CASTREADY", PlatformKey::KEY_S, Io::InputAction::CastReady, KeyToggleType::TOGGLE_DelayContinuous),
     CKeyListElement("KEY_YELL", PlatformKey::KEY_Y, Io::InputAction::Yell, KeyToggleType::TOGGLE_DelayContinuous),
-    CKeyListElement("KEY_JUMP", PlatformKey::KEY_X, Io::InputAction::Jump, KeyToggleType::TOGGLE_Continuously),
+    CKeyListElement("KEY_JUMP", PlatformKey::KEY_X, Io::InputAction::Jump, KeyToggleType::TOGGLE_OneTimePress), // TODO: TOGGLE_Continuously
     CKeyListElement("KEY_COMBAT", PlatformKey::KEY_RETURN, Io::InputAction::Combat, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_EVENTTRIGGER", PlatformKey::KEY_SPACE, Io::InputAction::EventTrigger, KeyToggleType::TOGGLE_DelayContinuous),
+    CKeyListElement("KEY_EVENTTRIGGER", PlatformKey::KEY_SPACE, Io::InputAction::EventTrigger, KeyToggleType::TOGGLE_OneTimePress), // TODO: TOGGLE_DelayContinuous
     CKeyListElement("KEY_CAST", PlatformKey::KEY_C, Io::InputAction::Cast, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_PASS", PlatformKey::KEY_B, Io::InputAction::Pass, KeyToggleType::TOGGLE_DelayContinuous),
     CKeyListElement("KEY_CHARCYCLE", PlatformKey::KEY_TAB, Io::InputAction::CharCycle, KeyToggleType::TOGGLE_DelayContinuous),
@@ -49,8 +49,8 @@ std::array<CKeyListElement, std::to_underlying(InputAction::Count)> keyMappingPa
     CKeyListElement("KEY_TIMECAL", PlatformKey::KEY_T, Io::InputAction::TimeCal, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_AUTONOTES", PlatformKey::KEY_N, Io::InputAction::Autonotes, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_MAPBOOK", PlatformKey::KEY_M, Io::InputAction::Mapbook, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_LOOKUP", PlatformKey::KEY_PAGEDOWN, Io::InputAction::LookUp, KeyToggleType::TOGGLE_DelayContinuous),
-    CKeyListElement("KEY_LOOKDOWN", PlatformKey::KEY_DELETE, Io::InputAction::LookDown, KeyToggleType::TOGGLE_DelayContinuous),
+    CKeyListElement("KEY_LOOKUP", PlatformKey::KEY_PAGEDOWN, Io::InputAction::LookUp, KeyToggleType::TOGGLE_OneTimePress), // TODO: TOGGLE_DelayContinuous
+    CKeyListElement("KEY_LOOKDOWN", PlatformKey::KEY_DELETE, Io::InputAction::LookDown, KeyToggleType::TOGGLE_OneTimePress), // TODO: TOGGLE_DelayContinuous
     CKeyListElement("KEY_CENTERVIEWPT", PlatformKey::KEY_END, Io::InputAction::CenterView, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_ZOOMIN", PlatformKey::KEY_ADD, Io::InputAction::ZoomIn, KeyToggleType::TOGGLE_DelayContinuous),
     CKeyListElement("KEY_ZOOMOUT", PlatformKey::KEY_SUBTRACT, Io::InputAction::ZoomOut, KeyToggleType::TOGGLE_DelayContinuous),
