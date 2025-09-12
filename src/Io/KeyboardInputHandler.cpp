@@ -60,7 +60,7 @@ void Io::KeyboardInputHandler::GeneratePausedActions() {
     for (auto action : AllInputActions()) {
         bool isTriggered = false;
         PlatformKey key = actionMapping->GetKey(action);
-        if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress)
+        if (actionMapping->GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress)
             isTriggered = controller->ConsumeKeyPress(key);
         else
             isTriggered = controller->IsKeyDown(key);
@@ -89,7 +89,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
         PlatformKey key = actionMapping->GetKey(action);
         PlatformKey gamepadkey = actionMapping->GetGamepadKey(action);
 
-        switch (GetToggleType(action)) {
+        switch (actionMapping->GetToggleType(action)) {
         default: assert(false); [[fallthrough]];
         case KeyToggleType::TOGGLE_OneTimePress:
             isTriggered = controller->ConsumeKeyPress(key) || controller->ConsumeKeyPress(gamepadkey);
