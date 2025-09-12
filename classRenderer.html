@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;08dc050</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;990deac</span>
    </div>
   </td>
  </tr>
@@ -222,6 +222,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a19e52d4179e4f0dd31076f8464263ede"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7becfa7105e3cc7225b3fe743a1837ef"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a7becfa7105e3cc7225b3fe743a1837ef">GetPresentDimensions</a> ()=0</td></tr>
 <tr class="separator:a7becfa7105e3cc7225b3fe743a1837ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad89a2662cfb0f6321e8b0462bd1729ab"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#ad89a2662cfb0f6321e8b0462bd1729ab">MapToRender</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> position)=0</td></tr>
+<tr class="separator:ad89a2662cfb0f6321e8b0462bd1729ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf537e6e7d8885ef56bf90789e22e52e"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#aaf537e6e7d8885ef56bf90789e22e52e">MapToPresent</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> position)=0</td></tr>
+<tr class="separator:aaf537e6e7d8885ef56bf90789e22e52e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8836df30add6677153892ecdf8530e2a"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a8836df30add6677153892ecdf8530e2a">Reinitialize</a> (bool firstInit=false)=0</td></tr>
 <tr class="separator:a8836df30add6677153892ecdf8530e2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a363f712595a55f69f970957f6d0fccf4"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRenderer.html#a363f712595a55f69f970957f6d0fccf4">ReloadShaders</a> ()=0</td></tr>
@@ -2274,6 +2278,62 @@ Public Attributes</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Taken screenshot image. </dd></dl>
 
 <p>Implemented in <a class="el" href="classNullRenderer.html#a70ef7b419a6b4f0d18dc57ec10bca4cb">NullRenderer</a>, and <a class="el" href="classOpenGLRenderer.html#a180e0ea046ed6751f942cc7ea19fd238">OpenGLRenderer</a>.</p>
+
+</div>
+</div>
+<a id="aaf537e6e7d8885ef56bf90789e22e52e" name="aaf537e6e7d8885ef56bf90789e22e52e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf537e6e7d8885ef56bf90789e22e52e">&#9670;&#160;</a></span>MapToPresent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> Renderer::MapToPresent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classBaseRenderer.html#ad05c83eba1ad172e2cc5d6085f96911c">BaseRenderer</a>.</p>
+
+</div>
+</div>
+<a id="ad89a2662cfb0f6321e8b0462bd1729ab" name="ad89a2662cfb0f6321e8b0462bd1729ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad89a2662cfb0f6321e8b0462bd1729ab">&#9670;&#160;</a></span>MapToRender()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> Renderer::MapToRender </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a>&#160;</td>
+          <td class="paramname"><em>position</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="classBaseRenderer.html#a050d208cf669b3df1654504079a50213">BaseRenderer</a>.</p>
 
 </div>
 </div>

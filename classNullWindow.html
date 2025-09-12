@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;08dc050</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;990deac</span>
    </div>
   </td>
  </tr>
@@ -136,6 +136,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a24e33b7e8f1c46fc378f0fbf614a44ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51ff21605a57b4c434d32b6d1ecf085d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNullWindow.html#a51ff21605a57b4c434d32b6d1ecf085d">warpMouse</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> <a class="el" href="classNullWindow.html#aa495e62fa9f7fe7cb97829aabe3c86e4">position</a>) override</td></tr>
 <tr class="separator:a51ff21605a57b4c434d32b6d1ecf085d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab793ab8dbaab9bd9134b4ba566a7c7b0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNullWindow.html#ab793ab8dbaab9bd9134b4ba566a7c7b0">setMouseRelative</a> (bool enable) override</td></tr>
+<tr class="separator:ab793ab8dbaab9bd9134b4ba566a7c7b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed5e004103598c0dd17272d3ebf0520c"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classPlatformOpenGLContext.html">PlatformOpenGLContext</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNullWindow.html#aed5e004103598c0dd17272d3ebf0520c">createOpenGLContext</a> (const <a class="el" href="structPlatformOpenGLOptions.html">PlatformOpenGLOptions</a> &amp;options) override</td></tr>
 <tr class="separator:aed5e004103598c0dd17272d3ebf0520c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPlatformWindow"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPlatformWindow')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPlatformWindow.html">PlatformWindow</a></td></tr>
@@ -183,6 +185,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a78f32f6b20a72efdc7fabfc863ce4cfb inherit pub_methods_classPlatformWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe436c73ff580ea4ae6743c2392fef92 inherit pub_methods_classPlatformWindow"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#abe436c73ff580ea4ae6743c2392fef92">warpMouse</a> (<a class="el" href="Point_8h.html#a8b0ce454185fa95a760b07d84d3decb4">Pointi</a> <a class="el" href="classPlatformWindow.html#afdfed30e9a46dbc72ae02811f45b1553">position</a>)=0</td></tr>
 <tr class="separator:abe436c73ff580ea4ae6743c2392fef92 inherit pub_methods_classPlatformWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a5dcee86658b017bd6ec9a8440204b4 inherit pub_methods_classPlatformWindow"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#a7a5dcee86658b017bd6ec9a8440204b4">setMouseRelative</a> (bool enable)=0</td></tr>
+<tr class="separator:a7a5dcee86658b017bd6ec9a8440204b4 inherit pub_methods_classPlatformWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb80e3c3ab551dbcbee917633423090f inherit pub_methods_classPlatformWindow"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classPlatformOpenGLContext.html">PlatformOpenGLContext</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformWindow.html#aeb80e3c3ab551dbcbee917633423090f">createOpenGLContext</a> (const <a class="el" href="structPlatformOpenGLOptions.html">PlatformOpenGLOptions</a> &amp;options)=0</td></tr>
 <tr class="separator:aeb80e3c3ab551dbcbee917633423090f inherit pub_methods_classPlatformWindow"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -586,6 +590,34 @@ Private Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="classPlatformWindow.html#aa0a5b323b27f0c20c43a5bb4c69897f1">PlatformWindow</a>.</p>
+
+</div>
+</div>
+<a id="ab793ab8dbaab9bd9134b4ba566a7c7b0" name="ab793ab8dbaab9bd9134b4ba566a7c7b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab793ab8dbaab9bd9134b4ba566a7c7b0">&#9670;&#160;</a></span>setMouseRelative()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NullWindow::setMouseRelative </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>enable</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classPlatformWindow.html#a7a5dcee86658b017bd6ec9a8440204b4">PlatformWindow</a>.</p>
 
 </div>
 </div>
