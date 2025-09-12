@@ -36,7 +36,7 @@ struct ViewingParams {
     void MapViewDown();
     void MapViewRight();
     void CenterOnPartyZoomOut();
-    void AdjustPosition();
+    void ClampMapViewPosition();
     void _443365(); // Sets indoor_center and minimap zoom based on level type.
 
     unsigned int uMinimapZoom = 0;

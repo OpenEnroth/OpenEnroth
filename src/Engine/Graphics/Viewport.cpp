@@ -52,25 +52,25 @@ bool Viewport::Contains(unsigned int x, unsigned int y) {
 //----- (00443219) --------------------------------------------------------
 void ViewingParams::MapViewUp() {
     this->sViewCenterY += 512;
-    AdjustPosition();
+    ClampMapViewPosition();
 }
 
 //----- (00443225) --------------------------------------------------------
 void ViewingParams::MapViewLeft() {
     this->sViewCenterX -= 512;
-    AdjustPosition();
+    ClampMapViewPosition();
 }
 
 //----- (00443231) --------------------------------------------------------
 void ViewingParams::MapViewDown() {
     this->sViewCenterY -= 512;
-    AdjustPosition();
+    ClampMapViewPosition();
 }
 
 //----- (0044323D) --------------------------------------------------------
 void ViewingParams::MapViewRight() {
     this->sViewCenterX += 512;
-    AdjustPosition();
+    ClampMapViewPosition();
 }
 
 //----- (00443249) --------------------------------------------------------
@@ -80,7 +80,7 @@ void ViewingParams::CenterOnPartyZoomOut() {
 
     this->sViewCenterX = pParty->pos.x;
     this->sViewCenterY = pParty->pos.y;
-    AdjustPosition();
+    ClampMapViewPosition();
 }
 
 //----- (00443291) --------------------------------------------------------
@@ -99,33 +99,18 @@ void ViewingParams::CenterOnPartyZoomIn() {
 
     this->sViewCenterX = pParty->pos.x;
     this->sViewCenterY = pParty->pos.y;
-    AdjustPosition();
+    ClampMapViewPosition();
 }
 
 //----- (004432E7) --------------------------------------------------------
-void ViewingParams::AdjustPosition() {
-    ViewingParams *v1;  // esi@1
-    int v2;             // ebx@1
-    signed int v3;      // edx@1
-    int v4;             // ecx@1
-    int v5;             // edi@3
-    int v6;             // eax@3
-    int v7;             // eax@5
-
-    v1 = this;
-    v2 = this->indoor_center_y;
-    v3 = 88 >> (this->uMapBookMapZoom / 384);
-    v4 = (44 - v3) << 9;
-    if (v1->sViewCenterY > v2 + v4) v1->sViewCenterY = v2 + v4;
-
-    v5 = v1->indoor_center_x;
-    v6 = (v3 - 44) << 9;
-    if (v1->sViewCenterX < v5 + v6) v1->sViewCenterX = v5 + v6;
-
-    v7 = v2 + v6;
-    if (v1->sViewCenterY < v7) v1->sViewCenterY = v7;
-
-    if (v1->sViewCenterX > v5 + v4) v1->sViewCenterX = v5 + v4;
+void ViewingParams::ClampMapViewPosition() {
+	// uMapBookMapZoom is 384 to 1536 (outdoor) or 3072 (indoor)
+    int mapScale = 88 >> (this->uMapBookMapZoom / 384);
+    int minOffset = (mapScale - 44) * 512;
+    int maxOffset = (44 - mapScale) * 512;
+    
+    this->sViewCenterX = std::clamp(this->sViewCenterX, this->indoor_center_x + minOffset, this->indoor_center_x + maxOffset);
+	this->sViewCenterY = std::clamp(this->sViewCenterY, this->indoor_center_y + minOffset, this->indoor_center_y + maxOffset);
 }
 
 //----- (00443343) --------------------------------------------------------
