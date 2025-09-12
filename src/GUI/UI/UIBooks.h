@@ -59,7 +59,7 @@ class GUIWindow_Book : public GUIWindow {
     GraphicsImage *ui_book_map_frame{ nullptr };
     GraphicsImage *ui_book_quest_div_bar{ nullptr };
 
-    bool _bookButtonClicked{ false };
+    int _bookButtonClicked{ 0 };
     BookButtonAction _bookButtonAction;
 
  private:
