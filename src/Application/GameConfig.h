@@ -382,10 +382,6 @@ class GameConfig : public Config {
         Key Wait5Minutes = {this, "wait_5_minutes", PlatformKey::KEY_GAMEPAD_A, "Wait 5 minutes key in Rest menu."};
         Key Screenshot = {this, "screenshot", PlatformKey::KEY_NONE, "Make screenshot key."};
         Key Console = {this, "console", PlatformKey::KEY_NONE, "Show/Hide overlays key."};
-        Key ToggleMouseGrab = {this, "toggle_mouse_grab", PlatformKey::KEY_NONE, "Toggle mouse grab key."};
-        Key ToggleResizable = {this, "toggle_resizable", PlatformKey::KEY_NONE, "Toggle window resizable key."};
-        Key CycleFilter = {this, "cycle_filter", PlatformKey::KEY_NONE, "Cycle rescale filter modes key."};
-        Key ReloadShaders = {this, "reload_shaders", PlatformKey::KEY_NONE, "Reload shaders key."};
         Key SelectChar1 = {this, "select_char_1", PlatformKey::KEY_NONE, "Select 1 character key."};
         Key SelectChar2 = {this, "select_char_2", PlatformKey::KEY_NONE, "Select 2 character key."};
         Key SelectChar3 = {this, "select_char_3", PlatformKey::KEY_NONE, "Select 3 character key."};
@@ -572,10 +568,6 @@ class GameConfig : public Config {
         Key Wait5Minutes = {this, "wait_5_minutes", PlatformKey::KEY_M, "Wait 5 minutes key in Rest menu."};
         Key Screenshot = {this, "screenshot", PlatformKey::KEY_F2, "Make screenshot key."};
         Key Console = {this, "console", PlatformKey::KEY_TILDE, "Show/Hide overlays key."};
-        Key ToggleMouseGrab = {this, "toggle_mouse_grab", PlatformKey::KEY_F1, "Toggle mouse grab key."};
-        Key ToggleResizable = {this, "toggle_resizable", PlatformKey::KEY_F6, "Toggle window resizable key."};
-        Key CycleFilter = {this, "cycle_filter", PlatformKey::KEY_F7, "Cycle rescale filter modes key."};
-        Key ReloadShaders = {this, "reload_shaders", PlatformKey::KEY_BACKSPACE, "Reload shaders key."};
         Key SelectChar1 = {this, "select_char_1", PlatformKey::KEY_DIGIT_1, "Select 1 character key."};
         Key SelectChar2 = {this, "select_char_2", PlatformKey::KEY_DIGIT_2, "Select 2 character key."};
         Key SelectChar3 = {this, "select_char_3", PlatformKey::KEY_DIGIT_3, "Select 3 character key."};

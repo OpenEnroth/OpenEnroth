@@ -270,20 +270,11 @@ void GameWindowHandler::OnKey(PlatformKey key) {
         return;
 
     // TODO: many of hardcoded keys below should be moved out of there and made configurable
-    if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_TOGGLE_MOUSE_GRAB, key)) {
-        OnMouseGrabToggle();
-        return;
-    }  else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_TAKE_SCREENSHOT, key)) {
+    if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_TAKE_SCREENSHOT, key)) {
         OnScreenshot();
         return;
     } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_TOGGLE_WINDOW_MODE, key)) {
         OnToggleWindowMode();
-        return;
-    } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_TOGGLE_RESIZABLE, key)) {
-        OnToggleResizable();
-        return;
-    } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_CYCLE_SCALE_FILTER, key)) {
-        OnCycleFilter();
         return;
     } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_TOGGLE_MOUSE_LOOK, key)) {
         if (current_screen_type == SCREEN_GAME)
@@ -310,8 +301,6 @@ void GameWindowHandler::OnKey(PlatformKey key) {
             OnToggleWindowMode();
         } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_OPEN_CONSOLE, key)) {
             engine->toggleOverlays();
-        } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_RELOAD_SHADERS, key) && current_screen_type == SCREEN_GAME) {
-            engine->_messageQueue->addMessageCurrentFrame(UIMSG_DebugReloadShader, window_SpeakInHouse != 0, 0);
         } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_QUICK_SAVE, key) && current_screen_type == SCREEN_GAME) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_QuickSave, window_SpeakInHouse != 0, 0);
         } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_QUICK_LOAD, key)) {
@@ -421,21 +410,6 @@ void GameWindowHandler::OnToggleWindowMode() {
         window->setPosition(std::get<1>(GetWindowConfigPosition(engine->config.get())));
     }
     render->Reinitialize();
-}
-
-void GameWindowHandler::OnToggleResizable() {
-    engine->config->window.Resizable.toggle();
-    window->setResizable(engine->config->window.Resizable.value());
-}
-
-void GameWindowHandler::OnCycleFilter() {
-    engine->config->graphics.RenderFilter.cycleIncrement();
-    render->Reinitialize();
-}
-
-void GameWindowHandler::OnMouseGrabToggle() {
-    engine->config->window.MouseGrab.toggle();
-    window->setGrabsMouse(engine->config->window.MouseGrab.value());
 }
 
 void GameWindowHandler::handleKeyPress(PlatformKey key, PlatformModifiers mods, bool isAutoRepeat) {

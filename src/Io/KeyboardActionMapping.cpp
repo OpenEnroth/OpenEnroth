@@ -85,10 +85,6 @@ std::array<CKeyListElement, std::to_underlying(INPUT_ACTION_LAST_VALID) + 1> key
     CKeyListElement("KEY_WAIT5MINUTES", PlatformKey::KEY_M, INPUT_ACTION_REST_WAIT_5_MINUTES, TOGGLE_ONCE),
     CKeyListElement("KEY_SCREENSHOT", PlatformKey::KEY_F2, INPUT_ACTION_TAKE_SCREENSHOT, TOGGLE_ONCE),
     CKeyListElement("KEY_CONSOLE", PlatformKey::KEY_TILDE, INPUT_ACTION_OPEN_CONSOLE, TOGGLE_ONCE),
-    CKeyListElement("KEY_TOGGLEMOUSEGRAB", PlatformKey::KEY_F1, INPUT_ACTION_TOGGLE_MOUSE_GRAB, TOGGLE_ONCE),
-    CKeyListElement("KEY_TOGGLERESIZABLE", PlatformKey::KEY_F6, INPUT_ACTION_TOGGLE_RESIZABLE, TOGGLE_ONCE),
-    CKeyListElement("KEY_CYCLEFILTER", PlatformKey::KEY_F7, INPUT_ACTION_CYCLE_SCALE_FILTER, TOGGLE_ONCE),
-    CKeyListElement("KEY_RELOADSHADERS", PlatformKey::KEY_BACKSPACE, INPUT_ACTION_RELOAD_SHADERS, TOGGLE_ONCE),
     CKeyListElement("KEY_SELECTCHAR1", PlatformKey::KEY_DIGIT_1, INPUT_ACTION_SELECT_CHAR_1, TOGGLE_ONCE),
     CKeyListElement("KEY_SELECTCHAR2", PlatformKey::KEY_DIGIT_2, INPUT_ACTION_SELECT_CHAR_2, TOGGLE_ONCE),
     CKeyListElement("KEY_SELECTCHAR3", PlatformKey::KEY_DIGIT_3, INPUT_ACTION_SELECT_CHAR_3, TOGGLE_ONCE),
@@ -265,10 +261,6 @@ GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigKey(InputAction a
         case(INPUT_ACTION_REST_WAIT_5_MINUTES): return &config->keybindings.Wait5Minutes;
         case(INPUT_ACTION_TAKE_SCREENSHOT): return &config->keybindings.Screenshot;
         case(INPUT_ACTION_OPEN_CONSOLE): return &config->keybindings.Console;
-        case(INPUT_ACTION_TOGGLE_MOUSE_GRAB): return &config->keybindings.ToggleMouseGrab;
-        case(INPUT_ACTION_TOGGLE_RESIZABLE): return &config->keybindings.ToggleResizable;
-        case(INPUT_ACTION_CYCLE_SCALE_FILTER): return &config->keybindings.CycleFilter;
-        case(INPUT_ACTION_RELOAD_SHADERS): return &config->keybindings.ReloadShaders;
         case(INPUT_ACTION_SELECT_CHAR_1): return &config->keybindings.SelectChar1;
         case(INPUT_ACTION_SELECT_CHAR_2): return &config->keybindings.SelectChar2;
         case(INPUT_ACTION_SELECT_CHAR_3): return &config->keybindings.SelectChar3;
@@ -368,10 +360,6 @@ GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigGamepadKey(InputA
         case(INPUT_ACTION_REST_WAIT_5_MINUTES): return &config->gamepad.Wait5Minutes;
         case(INPUT_ACTION_TAKE_SCREENSHOT): return &config->gamepad.Screenshot;
         case(INPUT_ACTION_OPEN_CONSOLE): return &config->gamepad.Console;
-        case(INPUT_ACTION_TOGGLE_MOUSE_GRAB): return &config->gamepad.ToggleMouseGrab;
-        case(INPUT_ACTION_TOGGLE_RESIZABLE): return &config->gamepad.ToggleResizable;
-        case(INPUT_ACTION_CYCLE_SCALE_FILTER): return &config->gamepad.CycleFilter;
-        case(INPUT_ACTION_RELOAD_SHADERS): return &config->gamepad.ReloadShaders;
         case(INPUT_ACTION_SELECT_CHAR_1): return &config->gamepad.SelectChar1;
         case(INPUT_ACTION_SELECT_CHAR_2): return &config->gamepad.SelectChar2;
         case(INPUT_ACTION_SELECT_CHAR_3): return &config->gamepad.SelectChar3;
