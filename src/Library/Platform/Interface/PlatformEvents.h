@@ -35,7 +35,7 @@ class PlatformMouseEvent: public PlatformWindowEvent {
     PlatformMouseButton button; // Button that caused this event, or BUTTON_NONE for move events.
     PlatformMouseButtons buttons; // Currently pressed mouse buttons.
     Pointi pos; // Window-relative cursor position.
-    Pointi rel; // Window-relative mouse motion.
+    Pointi rel; // Mouse motion since the last mouse event.
     bool isDoubleClick = false;
 };
 

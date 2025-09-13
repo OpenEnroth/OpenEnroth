@@ -29,10 +29,11 @@ class ProxyWindow : public ProxyBase<PlatformWindow> {
     virtual bool grabsMouse() const override;
     virtual void setOrientations(PlatformWindowOrientations orientations) override;
     virtual PlatformWindowOrientations orientations() override;
+    virtual void setMouseRelative(bool mouseRelative) override;
+    virtual bool isMouseRelative() const override;
     virtual Marginsi frameMargins() const override;
     virtual void *nativeHandle() const override;
     virtual void activate() override;
     virtual void warpMouse(Pointi position) override;
-    virtual void setMouseRelative(bool enable) override;
     virtual std::unique_ptr<PlatformOpenGLContext> createOpenGLContext(const PlatformOpenGLOptions &options) override;
 };
