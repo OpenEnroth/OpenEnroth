@@ -57,10 +57,10 @@ static bool PartyMove(PartyAction direction) {
 
 
 void Io::KeyboardInputHandler::GeneratePausedActions() {
-    for (auto action : AllInputActions()) {
+    for (auto action : allInputActions()) {
         bool isTriggered = false;
-        PlatformKey key = actionMapping->GetKey(action);
-        if (actionMapping->GetToggleType(action) == TOGGLE_ONCE)
+        PlatformKey key = actionMapping->keyFor(action);
+        if (actionMapping->toggleTypeFor(action) == TOGGLE_ONCE)
             isTriggered = controller->ConsumeKeyPress(key);
         else
             isTriggered = controller->IsKeyDown(key);
@@ -69,7 +69,7 @@ void Io::KeyboardInputHandler::GeneratePausedActions() {
             continue;
         }
 
-        if (action == INPUT_ACTION_TRIGGER) {
+        if (action == INPUT_ACTION_INTERACT) {
             if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_CHEST) {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Game_Action, 0, 0);
                 continue;
@@ -84,12 +84,12 @@ void Io::KeyboardInputHandler::GeneratePausedActions() {
 void Io::KeyboardInputHandler::GenerateGameplayActions() {
     // delay press timer
     bool resettimer = true;
-    for (InputAction action : AllInputActions()) {
+    for (InputAction action : allInputActions()) {
         bool isTriggered = false;
-        PlatformKey key = actionMapping->GetKey(action);
-        PlatformKey gamepadkey = actionMapping->GetGamepadKey(action);
+        PlatformKey key = actionMapping->keyFor(action);
+        PlatformKey gamepadkey = actionMapping->gamepadKeyFor(action);
 
-        switch (actionMapping->GetToggleType(action)) {
+        switch (actionMapping->toggleTypeFor(action)) {
         default: assert(false); [[fallthrough]];
         case TOGGLE_ONCE:
             isTriggered = controller->ConsumeKeyPress(key) || controller->ConsumeKeyPress(gamepadkey);
@@ -273,7 +273,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
 
             break;
 
-        case INPUT_ACTION_TRIGGER:
+        case INPUT_ACTION_INTERACT:
             if (current_screen_type == SCREEN_GAME) {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Game_Action, 0, 0);
                 break;
@@ -330,7 +330,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             // engine->_messageQueue->addMessageNextFrame(UIMSG_ClickZoomOutBtn, 0, 0);
             break;
 
-        case INPUT_ACTION_TOGGLE_AUTO_RUN:
+        case INPUT_ACTION_TOGGLE_ALWAYS_RUN:
             engine->config->settings.AlwaysRun.toggle();
             break;
 
@@ -456,9 +456,9 @@ void Io::KeyboardInputHandler::SetTextInput(std::string_view text) {
 
 //----- (00459E3F) --------------------------------------------------------
 void Io::KeyboardInputHandler::ResetKeys() {
-    for (auto action : AllInputActions()) {
+    for (auto action : allInputActions()) {
         // requesting KeyPressed will consume all the events due to how logic is designed in GetAsyncKeyState
-        controller->ConsumeKeyPress(actionMapping->GetKey(action));
+        controller->ConsumeKeyPress(actionMapping->keyFor(action));
     }
 }
 

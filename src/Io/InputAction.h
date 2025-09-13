@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "Utility/Segment.h"
+
 enum class InputAction {
     INPUT_ACTION_MOVE_FORWARD = 0,
     INPUT_ACTION_MOVE_BACKWARDS,
@@ -13,8 +15,8 @@ enum class InputAction {
     INPUT_ACTION_TOGGLE_TURN_BASED,
     INPUT_ACTION_QUICK_CAST,
     INPUT_ACTION_ATTACK,
-    INPUT_ACTION_TRIGGER,
-    INPUT_ACTION_SPELLBOOK,
+    INPUT_ACTION_INTERACT,
+    INPUT_ACTION_OPEN_SPELLBOOK,
     INPUT_ACTION_PASS,
     INPUT_ACTION_NEXT_CHAR,
     INPUT_ACTION_OPEN_QUESTS,
@@ -23,7 +25,7 @@ enum class InputAction {
     INPUT_ACTION_OPEN_CALENDAR,
     INPUT_ACTION_OPEN_AUTONOTES,
     INPUT_ACTION_OPEN_MAP,
-    INPUT_ACTION_TOGGLE_AUTO_RUN,
+    INPUT_ACTION_TOGGLE_ALWAYS_RUN,
     INPUT_ACTION_LOOK_UP,
     INPUT_ACTION_LOOK_DOWN,
     INPUT_ACTION_CENTER_VIEW,
@@ -82,11 +84,17 @@ enum class InputAction {
     INPUT_ACTION_FIRST_VALID = INPUT_ACTION_MOVE_FORWARD,
     INPUT_ACTION_LAST_VALID = INPUT_ACTION_TOGGLE_WINDOW_MODE,
 
-    INPUT_ACTION_FIRST_VANILLA = INPUT_ACTION_MOVE_FORWARD,
-    INPUT_ACTION_LAST_VANILLA = INPUT_ACTION_FLY_LAND,
+    INPUT_ACTION_FIRST_CONFIGURABLE = INPUT_ACTION_MOVE_FORWARD, // Configurable from the game options menu.
+    INPUT_ACTION_LAST_CONFIGURABLE = INPUT_ACTION_FLY_LAND,
 };
 using enum InputAction;
 
-std::vector<InputAction> AllInputActions();
-std::vector<InputAction> VanillaInputActions();
+inline Segment<InputAction> allInputActions() {
+    return {INPUT_ACTION_FIRST_VALID, INPUT_ACTION_LAST_VALID};
+}
+
+inline Segment<InputAction> allConfigurableInputActions() {
+    return {INPUT_ACTION_FIRST_CONFIGURABLE, INPUT_ACTION_LAST_CONFIGURABLE};
+}
+
 std::string GetDisplayName(InputAction action);

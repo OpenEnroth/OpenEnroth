@@ -145,7 +145,7 @@ bool PauseGameDrawing() {
 GUIButton *GUI_HandleHotkey(PlatformKey hotkey) {
     for (GUIWindow *pWindow : lWindowList) {
         for (GUIButton *result : pWindow->vButtons) {
-            if (result->action != INPUT_ACTION_INVALID && keyboardActionMapping->IsKeyMatchAction(result->action, hotkey)) {
+            if (result->action != INPUT_ACTION_INVALID && keyboardActionMapping->isBound(result->action, hotkey)) {
                 engine->_messageQueue->addMessageCurrentFrame(result->msg, result->msg_param, 0);
                 return result;
             }
@@ -1180,7 +1180,7 @@ void UI_Create() {
     pPrimaryWindow->CreateButton({555, 322}, {77, 17}, 1, UIMSG_ShowStatus_Funds, UIMSG_0, 0);
 
     pBtn_CastSpell = pPrimaryWindow->CreateButton("Game_CastSpell", {476, 450}, game_ui_btn_cast->size(), 1, 0,
-                                                  UIMSG_SpellBookWindow, 0, INPUT_ACTION_SPELLBOOK,
+                                                  UIMSG_SpellBookWindow, 0, INPUT_ACTION_OPEN_SPELLBOOK,
                                                   localization->GetString(LSTR_CAST_SPELL), { game_ui_btn_cast });
     pBtn_Rest = pPrimaryWindow->CreateButton("Game_Rest", {518, 450}, game_ui_btn_rest->size(), 1, 0,
                                              UIMSG_RestWindow, 0, INPUT_ACTION_REST,

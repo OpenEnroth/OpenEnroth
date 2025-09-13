@@ -1,4 +1,5 @@
-#include <map>
+#include <unordered_map>
+#include <unordered_set>
 #include <algorithm>
 #include <string>
 
@@ -169,8 +170,9 @@ static bool bookFlashState = false;
 static Time bookFlashTimer;
 
 extern InputAction currently_selected_action_for_binding;  // 506E68
-extern std::map<InputAction, bool> key_map_conflicted;  // 506E6C
-extern std::map<InputAction, PlatformKey> curr_key_map;
+extern std::unordered_set<InputAction> key_map_conflicted;  // 506E6C
+extern std::unordered_map<InputAction, PlatformKey> curr_key_map;
+
 
 GUIWindow_GameMenu::GUIWindow_GameMenu()
     : GUIWindow(WINDOW_GameMenu, {0, 0}, render->GetRenderDimensions()) {
@@ -249,7 +251,7 @@ static Color GameMenuUI_GetKeyBindingColor(InputAction action) {
             return ui_gamemenu_keys_key_selection_blink_color_1;
         else
             return ui_gamemenu_keys_key_selection_blink_color_2;
-    } else if (key_map_conflicted[action]) {
+    } else if (key_map_conflicted.contains(action)) {
         int intensity;
 
         int time = platform->tickCount() % 800;
@@ -297,10 +299,9 @@ GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings()
 
     currently_selected_action_for_binding = INPUT_ACTION_INVALID;
     KeyboardPageNum = 1;
-    for (auto action : VanillaInputActions()) {
-        key_map_conflicted[action] = false;
-        curr_key_map[action] = keyboardActionMapping->GetKey(action);
-    }
+
+    key_map_conflicted.clear();
+    curr_key_map = keyboardActionMapping->keybindings(KEYBINDINGS_CONFIGURABLE);
 }
 
 //----- (004142D3) --------------------------------------------------------
@@ -315,16 +316,14 @@ void GUIWindow_GameKeyBindings::Update() {
 
         engine->_statusBar->clearAll();
 
-        for (auto action : VanillaInputActions()) {
-            key_map_conflicted[action] = false;
-        }
+        key_map_conflicted.clear();
 
         bool anyConflicts = false;
         for (auto x : curr_key_map) {
             for (auto y : curr_key_map) {
                 if (x.first != y.first && x.second == y.second) {
-                    key_map_conflicted[x.first] = true;
-                    key_map_conflicted[y.first] = true;
+                    key_map_conflicted.insert(x.first);
+                    key_map_conflicted.insert(y.first);
                     anyConflicts = true;
                 }
             }
@@ -546,7 +545,7 @@ GUIWindow_GameOptions::GUIWindow_GameOptions()
     CreateButton({263, 270}, {172, 17}, 1, 0, UIMSG_ChangeVoiceVolume, 0);
 
     CreateButton({241, 302}, {214, 40}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->GetString(LSTR_RETURN_TO_GAME));
-    CreateButton({19, 140}, {214, 40}, 1, 0, UIMSG_OpenKeyMappingOptions, 0, INPUT_ACTION_OPEN_CONTROLS);
+    CreateButton({19, 140}, {214, 40}, 1, 0, UIMSG_OpenKeyMappingOptions, 0, INPUT_ACTION_PASS);
     CreateButton({19, 194}, {214, 40}, 1, 0, UIMSG_OpenVideoOptions, 0, INPUT_ACTION_OPEN_OPTIONS);
 }
 

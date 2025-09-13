@@ -270,13 +270,13 @@ void GameWindowHandler::OnKey(PlatformKey key) {
         return;
 
     // TODO: many of hardcoded keys below should be moved out of there and made configurable
-    if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_TAKE_SCREENSHOT, key)) {
+    if (keyboardActionMapping->isBound(INPUT_ACTION_TAKE_SCREENSHOT, key)) {
         OnScreenshot();
         return;
-    } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_TOGGLE_WINDOW_MODE, key)) {
+    } else if (keyboardActionMapping->isBound(INPUT_ACTION_TOGGLE_WINDOW_MODE, key)) {
         OnToggleWindowMode();
         return;
-    } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_TOGGLE_MOUSE_LOOK, key)) {
+    } else if (keyboardActionMapping->isBound(INPUT_ACTION_TOGGLE_MOUSE_LOOK, key)) {
         if (current_screen_type == SCREEN_GAME)
             mouse->ToggleMouseLook();
         return;
@@ -287,27 +287,27 @@ void GameWindowHandler::OnKey(PlatformKey key) {
         keyboardInputHandler->ProcessTextInput(key, -1);
     } else if (pArcomageGame->bGameInProgress) {
         // TODO(pskelton): how should this be handled?
-        if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_TOGGLE_WINDOW_MODE, key) && !pMovie_Track) {
+        if (keyboardActionMapping->isBound(INPUT_ACTION_TOGGLE_WINDOW_MODE, key) && !pMovie_Track) {
             OnToggleWindowMode();
         }
         pArcomageGame->onKeyPress(key);
     } else {
         pMediaPlayer->StopMovie();
-        if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_PARTY_CREATION_DONE, key)) {
+        if (keyboardActionMapping->isBound(INPUT_ACTION_PARTY_CREATION_DONE, key)) {
             UI_OnKeyDown(key);
-        } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_ESCAPE, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_ESCAPE, key)) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, window_SpeakInHouse != 0, 0);
-        } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_TOGGLE_WINDOW_MODE, key) && !pMovie_Track) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_TOGGLE_WINDOW_MODE, key) && !pMovie_Track) {
             OnToggleWindowMode();
-        } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_OPEN_CONSOLE, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_OPEN_CONSOLE, key)) {
             engine->toggleOverlays();
-        } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_QUICK_SAVE, key) && current_screen_type == SCREEN_GAME) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_QUICK_SAVE, key) && current_screen_type == SCREEN_GAME) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_QuickSave, window_SpeakInHouse != 0, 0);
-        } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_QUICK_LOAD, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_QUICK_LOAD, key)) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_QuickLoad, window_SpeakInHouse != 0, 0);
-        } else if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_DIALOG_LEFT, key) || keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_DIALOG_RIGHT, key)
-            || keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_DIALOG_UP, key) || keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_DIALOG_DOWN, key)
-            || keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_DIALOG_PRESS, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_LEFT, key) || keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_RIGHT, key)
+            || keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_UP, key) || keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_DOWN, key)
+            || keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_PRESS, key)) {
             if (current_screen_type != SCREEN_GAME &&
                 current_screen_type != SCREEN_GAMEOVER_WINDOW) {
                 UI_OnKeyDown(key);

@@ -526,7 +526,7 @@ void updateHouseNPCTopics(int npc) {
         pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_TRANSITION_NO, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
         pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, INPUT_ACTION_TRANSITION_YES, houseNpcs[npc].label, {ui_buttyes2});
         pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, UIMSG_HouseTransitionConfirmation, 1,
-                                      INPUT_ACTION_TRIGGER, houseNpcs[npc].label);
+                                      INPUT_ACTION_INTERACT, houseNpcs[npc].label);
         pDialogueWindow->CreateButton({8, 8}, {460, 344}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, INPUT_ACTION_TRANSITION_YES, houseNpcs[npc].label);
     } else {
         if (window_SpeakInHouse->getCurrentDialogue() != DIALOGUE_OTHER) {

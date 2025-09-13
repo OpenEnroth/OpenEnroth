@@ -17,8 +17,8 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(InputAction, CASE_INSENSITIVE, {
     {INPUT_ACTION_TOGGLE_TURN_BASED, "COMBAT"},
     {INPUT_ACTION_QUICK_CAST, "CAST READY"},
     {INPUT_ACTION_ATTACK, "ATTACK"},
-    {INPUT_ACTION_TRIGGER, "TRIGGER"},
-    {INPUT_ACTION_SPELLBOOK, "CAST"},
+    {INPUT_ACTION_INTERACT, "TRIGGER"},
+    {INPUT_ACTION_OPEN_SPELLBOOK, "CAST"},
     {INPUT_ACTION_PASS, "PASS"},
     {INPUT_ACTION_NEXT_CHAR, "CHAR CYCLE"},
     {INPUT_ACTION_OPEN_QUESTS, "QUEST"},
@@ -27,7 +27,7 @@ MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(InputAction, CASE_INSENSITIVE, {
     {INPUT_ACTION_OPEN_CALENDAR, "TIME/CAL"},
     {INPUT_ACTION_OPEN_AUTONOTES, "AUTONOTES"},
     {INPUT_ACTION_OPEN_MAP, "MAP BOOK"},
-    {INPUT_ACTION_TOGGLE_AUTO_RUN, "ALWAYS RUN"},
+    {INPUT_ACTION_TOGGLE_ALWAYS_RUN, "ALWAYS RUN"},
     {INPUT_ACTION_LOOK_UP, "LOOK UP"},
     {INPUT_ACTION_LOOK_DOWN, "LOOK DOWN"},
     {INPUT_ACTION_CENTER_VIEW, "CTR VIEW"},
@@ -86,17 +86,4 @@ std::string GetDisplayName(InputAction action) {
     if (trySerialize(action, &result))
         return result;
     return "-INVALID-ACTION-";
-}
-
-std::vector<InputAction> AllInputActions() {
-    // TODO(captainurist): use std::ranges::to
-    std::vector<InputAction> result;
-    std::ranges::copy(Segment(INPUT_ACTION_FIRST_VALID, INPUT_ACTION_LAST_VALID), std::back_inserter(result));
-    return result;
-}
-
-std::vector<InputAction> VanillaInputActions() {
-    std::vector<InputAction> result;
-    std::ranges::copy(Segment(INPUT_ACTION_FIRST_VANILLA, INPUT_ACTION_LAST_VANILLA), std::back_inserter(result));
-    return result;
 }
