@@ -29,7 +29,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 using Io::TextInputType;
-using Io::InputAction;
 
 enum class CurrentConfirmationState {
     CONFIRM_NONE,
@@ -43,7 +42,7 @@ static bool isLoadSlotClicked = false;
 
 CurrentConfirmationState confirmationState = CONFIRM_NONE;
 
-InputAction currently_selected_action_for_binding = Io::InputAction::Invalid;  // 506E68
+InputAction currently_selected_action_for_binding = INPUT_ACTION_INVALID;  // 506E68
 std::map<InputAction, bool> key_map_conflicted;  // 506E6C
 std::map<InputAction, PlatformKey> curr_key_map;
 
@@ -229,7 +228,7 @@ void Menu::EventLoop() {
             }
 
             case UIMSG_ChangeKeyButton: {
-                if (currently_selected_action_for_binding != Io::InputAction::Invalid) {
+                if (currently_selected_action_for_binding != INPUT_ACTION_INVALID) {
                     pAudioPlayer->playUISound(SOUND_error);
                 } else {
                     currently_selected_action_for_binding = (InputAction)param;

@@ -145,7 +145,7 @@ bool PauseGameDrawing() {
 GUIButton *GUI_HandleHotkey(PlatformKey hotkey) {
     for (GUIWindow *pWindow : lWindowList) {
         for (GUIButton *result : pWindow->vButtons) {
-            if (result->action != Io::InputAction::Invalid && keyboardActionMapping->IsKeyMatchAction(result->action, hotkey)) {
+            if (result->action != INPUT_ACTION_INVALID && keyboardActionMapping->IsKeyMatchAction(result->action, hotkey)) {
                 engine->_messageQueue->addMessageCurrentFrame(result->msg, result->msg_param, 0);
                 return result;
             }
@@ -363,7 +363,7 @@ int GUIWindow::DrawTextInRect(GUIFont *pFont, Pointi position,
 
 GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
                                    int uButtonType, int uData, UIMessageType msg,
-                                   unsigned int msg_param, Io::InputAction action,
+                                   unsigned int msg_param, InputAction action,
                                    std::string_view label,
                                    const std::vector<GraphicsImage *> &textures) {
     GUIButton *pButton = new GUIButton();
@@ -395,7 +395,7 @@ GUIButton *GUIWindow::CreateButton(Pointi position, Sizei dimensions,
 }
 
 GUIButton *GUIWindow::CreateButton(std::string id, Pointi position, Sizei dimensions, int uButtonType, int uData,
-                        UIMessageType msg, unsigned int msg_param, Io::InputAction action, std::string_view label,
+                        UIMessageType msg, unsigned int msg_param, InputAction action, std::string_view label,
                         const std::vector<GraphicsImage *> &textures) {
     GUIButton *result = CreateButton(position, dimensions, uButtonType, uData, msg, msg_param, action, label, textures);
     result->id = std::move(id);
@@ -1119,10 +1119,10 @@ void UI_Create() {
     pPrimaryWindow = new GUIWindow(WINDOW_GameUI, {0, 0}, render->GetRenderDimensions());
     pPrimaryWindow->CreateButton({7, 8}, {460, 343}, 1, 0, UIMSG_MouseLeftClickInGame, 0);
 
-    pPrimaryWindow->CreateButton("Game_Character1", {61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, Io::InputAction::SelectChar1);  // buttons for portraits
-    pPrimaryWindow->CreateButton("Game_Character2", {177, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 2, Io::InputAction::SelectChar2);
-    pPrimaryWindow->CreateButton("Game_Character3", {292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, Io::InputAction::SelectChar3);
-    pPrimaryWindow->CreateButton("Game_Character4", {407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, Io::InputAction::SelectChar4);
+    pPrimaryWindow->CreateButton("Game_Character1", {61, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);  // buttons for portraits
+    pPrimaryWindow->CreateButton("Game_Character2", {177, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 2, INPUT_ACTION_SELECT_CHAR_2);
+    pPrimaryWindow->CreateButton("Game_Character3", {292, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 3, INPUT_ACTION_SELECT_CHAR_3);
+    pPrimaryWindow->CreateButton("Game_Character4", {407, 424}, {31, 40}, 2, 94, UIMSG_SelectCharacter, 4, INPUT_ACTION_SELECT_CHAR_4);
 
     pPrimaryWindow->CreateButton({ pHealthBarPos[0], pHealthManaBarYPos }, {5, 49}, 1, UIMSG_ShowStatus_ManaHP, UIMSG_0, 1);  // buttons for HP
     pPrimaryWindow->CreateButton({ pHealthBarPos[1], pHealthManaBarYPos }, {5, 49}, 1, UIMSG_ShowStatus_ManaHP, UIMSG_0, 2);
@@ -1136,27 +1136,27 @@ void UI_Create() {
 
     game_ui_tome_quests = assets->getImage_ColorKey("ib-td1-A");
     pBtn_Quests = pPrimaryWindow->CreateButton({491, 353}, game_ui_tome_quests->size(), 1, 0,
-                                               UIMSG_OpenQuestBook, 0, Io::InputAction::Quest,
+                                               UIMSG_OpenQuestBook, 0, INPUT_ACTION_OPEN_QUESTS,
                                                localization->GetString(LSTR_CURRENT_QUESTS), { game_ui_tome_quests });
 
     game_ui_tome_autonotes = assets->getImage_ColorKey("ib-td2-A");
     pBtn_Autonotes = pPrimaryWindow->CreateButton({527, 353}, game_ui_tome_autonotes->size(), 1, 0,
-                                                  UIMSG_OpenAutonotes, 0, Io::InputAction::Autonotes,
+                                                  UIMSG_OpenAutonotes, 0, INPUT_ACTION_OPEN_AUTONOTES,
                                                   localization->GetString(LSTR_AUTO_NOTES), { game_ui_tome_autonotes });
 
     game_ui_tome_maps = assets->getImage_ColorKey("ib-td3-A");
     pBtn_Maps = pPrimaryWindow->CreateButton({546, 353}, game_ui_tome_maps->size(), 1, 0,
-                                             UIMSG_OpenMapBook, 0, Io::InputAction::Mapbook,
+                                             UIMSG_OpenMapBook, 0, INPUT_ACTION_OPEN_MAP,
                                              localization->GetString(LSTR_MAPS), { game_ui_tome_maps });
 
     game_ui_tome_calendar = assets->getImage_ColorKey("ib-td4-A");
     pBtn_Calendar = pPrimaryWindow->CreateButton({570, 353}, game_ui_tome_calendar->size(), 1, 0,
-                                                 UIMSG_OpenCalendar, 0, Io::InputAction::TimeCal,
+                                                 UIMSG_OpenCalendar, 0, INPUT_ACTION_OPEN_CALENDAR,
                                                  localization->GetString(LSTR_CALENDAR), { game_ui_tome_calendar });
 
     game_ui_tome_storyline = assets->getImage_ColorKey("ib-td5-A");
     pBtn_History = pPrimaryWindow->CreateButton({600, 361}, game_ui_tome_storyline->size(), 1, 0,
-                                                UIMSG_OpenHistoryBook, 0, Io::InputAction::History,
+                                                UIMSG_OpenHistoryBook, 0, INPUT_ACTION_OPEN_HISTORY,
                                                 localization->GetString(LSTR_HISTORY), { game_ui_tome_storyline }
     );
 
@@ -1165,36 +1165,36 @@ void UI_Create() {
     bFlashHistoryBook = false;
 
     pBtn_ZoomIn = pPrimaryWindow->CreateButton({519, 136}, game_ui_btn_zoomin->size(), 2, 0,
-                                               UIMSG_ClickZoomInBtn, 0, Io::InputAction::ZoomIn,
+                                               UIMSG_ClickZoomInBtn, 0, INPUT_ACTION_ZOOM_IN,
                                                localization->GetString(LSTR_ZOOM_IN), { game_ui_btn_zoomin }
     );
 
     pBtn_ZoomOut = pPrimaryWindow->CreateButton({574, 136}, game_ui_btn_zoomout->size(), 2, 0,
-                                                UIMSG_ClickZoomOutBtn, 0, Io::InputAction::ZoomOut,
+                                                UIMSG_ClickZoomOutBtn, 0, INPUT_ACTION_ZOOM_OUT,
                                                 localization->GetString(LSTR_ZOOM_OUT), { game_ui_btn_zoomout });
 
     pPrimaryWindow->CreateButton({484, 15}, {138, 116}, 1, UIMSG_ShowStatus_DateTime, UIMSG_0, 0);
-    pPrimaryWindow->CreateButton({491, 149}, {64, 74}, 1, 0, UIMSG_StartHireling1Dialogue, 0, Io::InputAction::SelectNPC1);
-    pPrimaryWindow->CreateButton({561, 149}, {64, 74}, 1, 0, UIMSG_StartHireling2Dialogue, 0, Io::InputAction::SelectNPC2);
+    pPrimaryWindow->CreateButton({491, 149}, {64, 74}, 1, 0, UIMSG_StartHireling1Dialogue, 0, INPUT_ACTION_SELECT_NPC_1);
+    pPrimaryWindow->CreateButton({561, 149}, {64, 74}, 1, 0, UIMSG_StartHireling2Dialogue, 0, INPUT_ACTION_SELECT_NPC_2);
     pPrimaryWindow->CreateButton({476, 322}, {77, 17}, 1, UIMSG_ShowStatus_Food, UIMSG_0, 0);
     pPrimaryWindow->CreateButton({555, 322}, {77, 17}, 1, UIMSG_ShowStatus_Funds, UIMSG_0, 0);
 
     pBtn_CastSpell = pPrimaryWindow->CreateButton("Game_CastSpell", {476, 450}, game_ui_btn_cast->size(), 1, 0,
-                                                  UIMSG_SpellBookWindow, 0, Io::InputAction::Cast,
+                                                  UIMSG_SpellBookWindow, 0, INPUT_ACTION_SPELLBOOK,
                                                   localization->GetString(LSTR_CAST_SPELL), { game_ui_btn_cast });
     pBtn_Rest = pPrimaryWindow->CreateButton("Game_Rest", {518, 450}, game_ui_btn_rest->size(), 1, 0,
-                                             UIMSG_RestWindow, 0, Io::InputAction::Rest,
+                                             UIMSG_RestWindow, 0, INPUT_ACTION_REST,
                                              localization->GetString(LSTR_REST), { game_ui_btn_rest });
     pBtn_QuickReference = pPrimaryWindow->CreateButton({560, 450}, game_ui_btn_quickref->size(), 1, 0,
-                                                       UIMSG_QuickReference, 0, Io::InputAction::QuickRef,
+                                                       UIMSG_QuickReference, 0, INPUT_ACTION_OPEN_QUICK_REFERENCE,
                                                        localization->GetString(LSTR_QUICK_REFERENCE), { game_ui_btn_quickref });
     pBtn_GameSettings = pPrimaryWindow->CreateButton({602, 450}, game_ui_btn_settings->size(), 1, 0,
-                                                     UIMSG_GameMenuButton, 0, Io::InputAction::Invalid,
+                                                     UIMSG_GameMenuButton, 0, INPUT_ACTION_INVALID,
                                                      localization->GetString(LSTR_GAME_OPTIONS), { game_ui_btn_settings });
     pBtn_NPCLeft = pPrimaryWindow->CreateButton({469, 178}, ui_btn_npc_left->size(), 1, 0,
-                                                UIMSG_ScrollNPCPanel, 0, Io::InputAction::Invalid, "", {ui_btn_npc_left });
+                                                UIMSG_ScrollNPCPanel, 0, INPUT_ACTION_INVALID, "", {ui_btn_npc_left });
     pBtn_NPCRight = pPrimaryWindow->CreateButton({626, 178}, ui_btn_npc_right->size(), 1, 0,
-                                                 UIMSG_ScrollNPCPanel, 1, Io::InputAction::Invalid, "", {ui_btn_npc_right });
+                                                 UIMSG_ScrollNPCPanel, 1, INPUT_ACTION_INVALID, "", {ui_btn_npc_right });
 
     LoadPartyBuffIcons();
 }

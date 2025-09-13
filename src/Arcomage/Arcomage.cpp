@@ -226,13 +226,13 @@ void ArcomageGame::onKeyPress(PlatformKey key) {
         pArcomageGame->stru1.am_input_type = ARCO_MSG_KEYDOWN;
 
         set_stru1_field_8_InArcomage(0);
-        if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::Escape, key)) {
+        if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_ESCAPE, key)) {
             pArcomageGame->stru1.am_input_type = ARCO_MSG_ESCAPE;
         } else if (pArcomageGame->check_exit) {
             pArcomageGame->check_exit = 0;
         }
 
-        if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::ToggleWindowMode, key) && !pMovie_Track) {
+        if (keyboardActionMapping->IsKeyMatchAction(INPUT_ACTION_TOGGLE_WINDOW_MODE, key) && !pMovie_Track) {
             pArcomageGame->stru1.am_input_type = ARCO_MSG_SWITCH_FULLSCREEN;
         }
     }

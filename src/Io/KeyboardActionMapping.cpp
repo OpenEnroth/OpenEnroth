@@ -6,8 +6,7 @@
 
 #include "Engine/Graphics/Weather.h"
 #include "Engine/Spells/CastSpellInfo.h"
-
-using Io::InputAction;
+#include "Utility/IndexedArray.h"
 
 std::shared_ptr<Io::KeyboardActionMapping> keyboardActionMapping = nullptr;
 
@@ -27,83 +26,83 @@ class CKeyListElement {
           m_toggType(toggType) {}
 };
 
-std::array<CKeyListElement, std::to_underlying(InputAction::Count)> keyMappingParams = {
-    CKeyListElement("KEY_FORWARD", PlatformKey::KEY_UP, Io::InputAction::MoveForward, TOGGLE_CONTINUOUSLY),
-    CKeyListElement("KEY_BACKWARD", PlatformKey::KEY_DOWN, Io::InputAction::MoveBackwards, TOGGLE_CONTINUOUSLY),
-    CKeyListElement("KEY_LEFT", PlatformKey::KEY_LEFT, Io::InputAction::TurnLeft, TOGGLE_CONTINUOUSLY),
-    CKeyListElement("KEY_RIGHT", PlatformKey::KEY_RIGHT, Io::InputAction::TurnRight, TOGGLE_CONTINUOUSLY),
-    CKeyListElement("KEY_ATTACK", PlatformKey::KEY_A, Io::InputAction::Attack, TOGGLE_CONTINUOUSLY_WITH_DELAY),
-    CKeyListElement("KEY_CASTREADY", PlatformKey::KEY_S, Io::InputAction::CastReady, TOGGLE_CONTINUOUSLY_WITH_DELAY),
-    CKeyListElement("KEY_YELL", PlatformKey::KEY_Y, Io::InputAction::Yell, TOGGLE_CONTINUOUSLY_WITH_DELAY),
-    CKeyListElement("KEY_JUMP", PlatformKey::KEY_X, Io::InputAction::Jump, TOGGLE_ONCE), // TODO: TOGGLE_Continuously
-    CKeyListElement("KEY_COMBAT", PlatformKey::KEY_RETURN, Io::InputAction::Combat, TOGGLE_ONCE),
-    CKeyListElement("KEY_EVENTTRIGGER", PlatformKey::KEY_SPACE, Io::InputAction::EventTrigger, TOGGLE_ONCE), // TODO: TOGGLE_DelayContinuous
-    CKeyListElement("KEY_CAST", PlatformKey::KEY_C, Io::InputAction::Cast, TOGGLE_ONCE),
-    CKeyListElement("KEY_PASS", PlatformKey::KEY_B, Io::InputAction::Pass, TOGGLE_CONTINUOUSLY_WITH_DELAY),
-    CKeyListElement("KEY_CHARCYCLE", PlatformKey::KEY_TAB, Io::InputAction::CharCycle, TOGGLE_CONTINUOUSLY_WITH_DELAY),
-    CKeyListElement("KEY_QUEST", PlatformKey::KEY_Q, Io::InputAction::Quest, TOGGLE_ONCE),
-    CKeyListElement("KEY_QUICKREF", PlatformKey::KEY_Z, Io::InputAction::QuickRef, TOGGLE_ONCE),
-    CKeyListElement("KEY_REST", PlatformKey::KEY_R, Io::InputAction::Rest, TOGGLE_ONCE),
-    CKeyListElement("KEY_TIMECAL", PlatformKey::KEY_T, Io::InputAction::TimeCal, TOGGLE_ONCE),
-    CKeyListElement("KEY_AUTONOTES", PlatformKey::KEY_N, Io::InputAction::Autonotes, TOGGLE_ONCE),
-    CKeyListElement("KEY_MAPBOOK", PlatformKey::KEY_M, Io::InputAction::Mapbook, TOGGLE_ONCE),
-    CKeyListElement("KEY_LOOKUP", PlatformKey::KEY_PAGEDOWN, Io::InputAction::LookUp, TOGGLE_ONCE), // TODO: TOGGLE_DelayContinuous
-    CKeyListElement("KEY_LOOKDOWN", PlatformKey::KEY_DELETE, Io::InputAction::LookDown, TOGGLE_ONCE), // TODO: TOGGLE_DelayContinuous
-    CKeyListElement("KEY_CENTERVIEWPT", PlatformKey::KEY_END, Io::InputAction::CenterView, TOGGLE_ONCE),
-    CKeyListElement("KEY_ZOOMIN", PlatformKey::KEY_ADD, Io::InputAction::ZoomIn, TOGGLE_CONTINUOUSLY_WITH_DELAY),
-    CKeyListElement("KEY_ZOOMOUT", PlatformKey::KEY_SUBTRACT, Io::InputAction::ZoomOut, TOGGLE_CONTINUOUSLY_WITH_DELAY),
-    CKeyListElement("KEY_FLYUP", PlatformKey::KEY_PAGEUP, Io::InputAction::FlyUp, TOGGLE_CONTINUOUSLY),
-    CKeyListElement("KEY_FLYDOWN", PlatformKey::KEY_INSERT, Io::InputAction::FlyDown, TOGGLE_CONTINUOUSLY),
-    CKeyListElement("KEY_LAND", PlatformKey::KEY_HOME, Io::InputAction::Land, TOGGLE_ONCE),
-    CKeyListElement("KEY_ALWAYSRUN", PlatformKey::KEY_U, Io::InputAction::AlwaysRun, TOGGLE_ONCE),
-    CKeyListElement("KEY_STEPLEFT", PlatformKey::KEY_LEFTBRACKET, Io::InputAction::StrafeLeft, TOGGLE_CONTINUOUSLY),
-    CKeyListElement("KEY_STEPRIGHT", PlatformKey::KEY_RIGHTBRACKET, Io::InputAction::StrafeRight, TOGGLE_CONTINUOUSLY),
+std::array<CKeyListElement, std::to_underlying(INPUT_ACTION_LAST_VALID) + 1> keyMappingParams = {
+    CKeyListElement("KEY_FORWARD", PlatformKey::KEY_UP, INPUT_ACTION_MOVE_FORWARD, TOGGLE_CONTINUOUSLY),
+    CKeyListElement("KEY_BACKWARD", PlatformKey::KEY_DOWN, INPUT_ACTION_MOVE_BACKWARDS, TOGGLE_CONTINUOUSLY),
+    CKeyListElement("KEY_LEFT", PlatformKey::KEY_LEFT, INPUT_ACTION_TURN_LEFT, TOGGLE_CONTINUOUSLY),
+    CKeyListElement("KEY_RIGHT", PlatformKey::KEY_RIGHT, INPUT_ACTION_TURN_RIGHT, TOGGLE_CONTINUOUSLY),
+    CKeyListElement("KEY_ATTACK", PlatformKey::KEY_A, INPUT_ACTION_ATTACK, TOGGLE_CONTINUOUSLY_WITH_DELAY),
+    CKeyListElement("KEY_CASTREADY", PlatformKey::KEY_S, INPUT_ACTION_QUICK_CAST, TOGGLE_CONTINUOUSLY_WITH_DELAY),
+    CKeyListElement("KEY_YELL", PlatformKey::KEY_Y, INPUT_ACTION_YELL, TOGGLE_CONTINUOUSLY_WITH_DELAY),
+    CKeyListElement("KEY_JUMP", PlatformKey::KEY_X, INPUT_ACTION_JUMP, TOGGLE_ONCE), // TODO: TOGGLE_Continuously
+    CKeyListElement("KEY_COMBAT", PlatformKey::KEY_RETURN, INPUT_ACTION_TOGGLE_TURN_BASED, TOGGLE_ONCE),
+    CKeyListElement("KEY_EVENTTRIGGER", PlatformKey::KEY_SPACE, INPUT_ACTION_TRIGGER, TOGGLE_ONCE), // TODO: TOGGLE_DelayContinuous
+    CKeyListElement("KEY_CAST", PlatformKey::KEY_C, INPUT_ACTION_SPELLBOOK, TOGGLE_ONCE),
+    CKeyListElement("KEY_PASS", PlatformKey::KEY_B, INPUT_ACTION_PASS, TOGGLE_CONTINUOUSLY_WITH_DELAY),
+    CKeyListElement("KEY_CHARCYCLE", PlatformKey::KEY_TAB, INPUT_ACTION_NEXT_CHAR, TOGGLE_CONTINUOUSLY_WITH_DELAY),
+    CKeyListElement("KEY_QUEST", PlatformKey::KEY_Q, INPUT_ACTION_OPEN_QUESTS, TOGGLE_ONCE),
+    CKeyListElement("KEY_QUICKREF", PlatformKey::KEY_Z, INPUT_ACTION_OPEN_QUICK_REFERENCE, TOGGLE_ONCE),
+    CKeyListElement("KEY_REST", PlatformKey::KEY_R, INPUT_ACTION_REST, TOGGLE_ONCE),
+    CKeyListElement("KEY_TIMECAL", PlatformKey::KEY_T, INPUT_ACTION_OPEN_CALENDAR, TOGGLE_ONCE),
+    CKeyListElement("KEY_AUTONOTES", PlatformKey::KEY_N, INPUT_ACTION_OPEN_AUTONOTES, TOGGLE_ONCE),
+    CKeyListElement("KEY_MAPBOOK", PlatformKey::KEY_M, INPUT_ACTION_OPEN_MAP, TOGGLE_ONCE),
+    CKeyListElement("KEY_LOOKUP", PlatformKey::KEY_PAGEDOWN, INPUT_ACTION_LOOK_UP, TOGGLE_ONCE), // TODO: TOGGLE_DelayContinuous
+    CKeyListElement("KEY_LOOKDOWN", PlatformKey::KEY_DELETE, INPUT_ACTION_LOOK_DOWN, TOGGLE_ONCE), // TODO: TOGGLE_DelayContinuous
+    CKeyListElement("KEY_CENTERVIEWPT", PlatformKey::KEY_END, INPUT_ACTION_CENTER_VIEW, TOGGLE_ONCE),
+    CKeyListElement("KEY_ZOOMIN", PlatformKey::KEY_ADD, INPUT_ACTION_ZOOM_IN, TOGGLE_CONTINUOUSLY_WITH_DELAY),
+    CKeyListElement("KEY_ZOOMOUT", PlatformKey::KEY_SUBTRACT, INPUT_ACTION_ZOOM_OUT, TOGGLE_CONTINUOUSLY_WITH_DELAY),
+    CKeyListElement("KEY_FLYUP", PlatformKey::KEY_PAGEUP, INPUT_ACTION_FLY_UP, TOGGLE_CONTINUOUSLY),
+    CKeyListElement("KEY_FLYDOWN", PlatformKey::KEY_INSERT, INPUT_ACTION_FLY_DOWN, TOGGLE_CONTINUOUSLY),
+    CKeyListElement("KEY_LAND", PlatformKey::KEY_HOME, INPUT_ACTION_FLY_LAND, TOGGLE_ONCE),
+    CKeyListElement("KEY_ALWAYSRUN", PlatformKey::KEY_U, INPUT_ACTION_TOGGLE_AUTO_RUN, TOGGLE_ONCE),
+    CKeyListElement("KEY_STEPLEFT", PlatformKey::KEY_LEFTBRACKET, INPUT_ACTION_STRAFE_LEFT, TOGGLE_CONTINUOUSLY),
+    CKeyListElement("KEY_STEPRIGHT", PlatformKey::KEY_RIGHTBRACKET, INPUT_ACTION_STRAFE_RIGHT, TOGGLE_CONTINUOUSLY),
 
-    CKeyListElement("KEY_QUICKSAVE", PlatformKey::KEY_F5, Io::InputAction::QuickSave, TOGGLE_ONCE),
-    CKeyListElement("KEY_QUICKLOAD", PlatformKey::KEY_F9, Io::InputAction::QuickLoad, TOGGLE_ONCE),
-    CKeyListElement("KEY_HISTORY", PlatformKey::KEY_H, Io::InputAction::History, TOGGLE_ONCE),
-    CKeyListElement("KEY_STATS", PlatformKey::KEY_C, Io::InputAction::Stats, TOGGLE_ONCE),
-    CKeyListElement("KEY_SKILLS", PlatformKey::KEY_S, Io::InputAction::Skills, TOGGLE_ONCE),
-    CKeyListElement("KEY_INVENTORY", PlatformKey::KEY_I, Io::InputAction::Inventory, TOGGLE_ONCE),
-    CKeyListElement("KEY_AWARDS", PlatformKey::KEY_A, Io::InputAction::Awards, TOGGLE_ONCE),
-    CKeyListElement("KEY_NEWGAME", PlatformKey::KEY_N, Io::InputAction::NewGame, TOGGLE_ONCE),
-    CKeyListElement("KEY_SAVEGAME", PlatformKey::KEY_S, Io::InputAction::SaveGame, TOGGLE_ONCE),
-    CKeyListElement("KEY_LOADGAME", PlatformKey::KEY_L, Io::InputAction::LoadGame, TOGGLE_ONCE),
-    CKeyListElement("KEY_EXITGAME", PlatformKey::KEY_Q, Io::InputAction::ExitGame, TOGGLE_ONCE),
-    CKeyListElement("KEY_RETURNTOGAME", PlatformKey::KEY_R, Io::InputAction::ReturnToGame, TOGGLE_ONCE),
-    CKeyListElement("KEY_CONTROLS", PlatformKey::KEY_C, Io::InputAction::Controls, TOGGLE_ONCE),
-    CKeyListElement("KEY_OPTIONS", PlatformKey::KEY_O, Io::InputAction::Options, TOGGLE_ONCE),
-    CKeyListElement("KEY_CREDITS", PlatformKey::KEY_C, Io::InputAction::Credits, TOGGLE_ONCE),
-    CKeyListElement("KEY_CLEAR", PlatformKey::KEY_C, Io::InputAction::Clear, TOGGLE_ONCE),
-    CKeyListElement("KEY_RETURN", PlatformKey::KEY_RETURN, Io::InputAction::Return, TOGGLE_ONCE),
-    CKeyListElement("KEY_SUBTRACT", PlatformKey::KEY_SUBTRACT, Io::InputAction::Minus, TOGGLE_ONCE),
-    CKeyListElement("KEY_ADD", PlatformKey::KEY_ADD, Io::InputAction::Plus, TOGGLE_ONCE),
-    CKeyListElement("KEY_YES", PlatformKey::KEY_Y, Io::InputAction::Yes, TOGGLE_ONCE),
-    CKeyListElement("KEY_NO", PlatformKey::KEY_N, Io::InputAction::No, TOGGLE_ONCE),
-    CKeyListElement("KEY_REST8HOURS", PlatformKey::KEY_R, Io::InputAction::Rest8Hours, TOGGLE_ONCE),
-    CKeyListElement("KEY_WAITTILLDAWN", PlatformKey::KEY_D, Io::InputAction::WaitTillDawn, TOGGLE_ONCE),
-    CKeyListElement("KEY_WAITHOUR", PlatformKey::KEY_H, Io::InputAction::WaitHour, TOGGLE_ONCE),
-    CKeyListElement("KEY_WAIT5MINUTES", PlatformKey::KEY_M, Io::InputAction::Wait5Minutes, TOGGLE_ONCE),
-    CKeyListElement("KEY_SCREENSHOT", PlatformKey::KEY_F2, Io::InputAction::Screenshot, TOGGLE_ONCE),
-    CKeyListElement("KEY_CONSOLE", PlatformKey::KEY_TILDE, Io::InputAction::Console, TOGGLE_ONCE),
-    CKeyListElement("KEY_TOGGLEMOUSEGRAB", PlatformKey::KEY_F1, Io::InputAction::ToggleMouseGrab, TOGGLE_ONCE),
-    CKeyListElement("KEY_TOGGLERESIZABLE", PlatformKey::KEY_F6, Io::InputAction::ToggleResizable, TOGGLE_ONCE),
-    CKeyListElement("KEY_CYCLEFILTER", PlatformKey::KEY_F7, Io::InputAction::CycleFilter, TOGGLE_ONCE),
-    CKeyListElement("KEY_RELOADSHADERS", PlatformKey::KEY_BACKSPACE, Io::InputAction::ReloadShaders, TOGGLE_ONCE),
-    CKeyListElement("KEY_SELECTCHAR1", PlatformKey::KEY_DIGIT_1, Io::InputAction::SelectChar1, TOGGLE_ONCE),
-    CKeyListElement("KEY_SELECTCHAR2", PlatformKey::KEY_DIGIT_2, Io::InputAction::SelectChar2, TOGGLE_ONCE),
-    CKeyListElement("KEY_SELECTCHAR3", PlatformKey::KEY_DIGIT_3, Io::InputAction::SelectChar3, TOGGLE_ONCE),
-    CKeyListElement("KEY_SELECTCHAR4", PlatformKey::KEY_DIGIT_4, Io::InputAction::SelectChar4, TOGGLE_ONCE),
-    CKeyListElement("KEY_SELECTNPC1", PlatformKey::KEY_DIGIT_5, Io::InputAction::SelectNPC1, TOGGLE_ONCE),
-    CKeyListElement("KEY_SELECTNPC2", PlatformKey::KEY_DIGIT_6, Io::InputAction::SelectNPC2, TOGGLE_ONCE),
-    CKeyListElement("KEY_DIALOGUP", PlatformKey::KEY_UP, Io::InputAction::DialogUp, TOGGLE_ONCE),
-    CKeyListElement("KEY_DIALOGDOWN", PlatformKey::KEY_DOWN, Io::InputAction::DialogDown, TOGGLE_ONCE),
-    CKeyListElement("KEY_DIALOGLEFT", PlatformKey::KEY_LEFT, Io::InputAction::DialogLeft, TOGGLE_ONCE),
-    CKeyListElement("KEY_DIALOGRIGHT", PlatformKey::KEY_RIGHT, Io::InputAction::DialogRight, TOGGLE_ONCE),
-    CKeyListElement("KEY_DIALOGSELECT", PlatformKey::KEY_PAGEDOWN, Io::InputAction::DialogSelect, TOGGLE_ONCE),
-    CKeyListElement("KEY_ESCAPE", PlatformKey::KEY_ESCAPE, Io::InputAction::Escape, TOGGLE_ONCE),
-    CKeyListElement("KEY_TOGGLEMOUSELOOK", PlatformKey::KEY_F10, Io::InputAction::ToggleMouseLook, TOGGLE_ONCE),
-    CKeyListElement("KEY_TOGGLEWINDOWMODE", PlatformKey::KEY_F11, Io::InputAction::ToggleWindowMode, TOGGLE_CONTINUOUSLY),
+    CKeyListElement("KEY_QUICKSAVE", PlatformKey::KEY_F5, INPUT_ACTION_QUICK_SAVE, TOGGLE_ONCE),
+    CKeyListElement("KEY_QUICKLOAD", PlatformKey::KEY_F9, INPUT_ACTION_QUICK_LOAD, TOGGLE_ONCE),
+    CKeyListElement("KEY_HISTORY", PlatformKey::KEY_H, INPUT_ACTION_OPEN_HISTORY, TOGGLE_ONCE),
+    CKeyListElement("KEY_STATS", PlatformKey::KEY_C, INPUT_ACTION_OPEN_STATS, TOGGLE_ONCE),
+    CKeyListElement("KEY_SKILLS", PlatformKey::KEY_S, INPUT_ACTION_OPEN_SKILLS, TOGGLE_ONCE),
+    CKeyListElement("KEY_INVENTORY", PlatformKey::KEY_I, INPUT_ACTION_OPEN_INVENTORY, TOGGLE_ONCE),
+    CKeyListElement("KEY_AWARDS", PlatformKey::KEY_A, INPUT_ACTION_OPEN_AWARDS, TOGGLE_ONCE),
+    CKeyListElement("KEY_NEWGAME", PlatformKey::KEY_N, INPUT_ACTION_NEW_GAME, TOGGLE_ONCE),
+    CKeyListElement("KEY_SAVEGAME", PlatformKey::KEY_S, INPUT_ACTION_SAVE_GAME, TOGGLE_ONCE),
+    CKeyListElement("KEY_LOADGAME", PlatformKey::KEY_L, INPUT_ACTION_LOAD_GAME, TOGGLE_ONCE),
+    CKeyListElement("KEY_EXITGAME", PlatformKey::KEY_Q, INPUT_ACTION_EXIT_GAME, TOGGLE_ONCE),
+    CKeyListElement("KEY_RETURNTOGAME", PlatformKey::KEY_R, INPUT_ACTION_BACK_TO_GAME, TOGGLE_ONCE),
+    CKeyListElement("KEY_CONTROLS", PlatformKey::KEY_C, INPUT_ACTION_OPEN_CONTROLS, TOGGLE_ONCE),
+    CKeyListElement("KEY_OPTIONS", PlatformKey::KEY_O, INPUT_ACTION_OPEN_OPTIONS, TOGGLE_ONCE),
+    CKeyListElement("KEY_CREDITS", PlatformKey::KEY_C, INPUT_ACTION_SHOW_CREDITS, TOGGLE_ONCE),
+    CKeyListElement("KEY_CLEAR", PlatformKey::KEY_C, INPUT_ACTION_PARTY_CREATION_CLEAR, TOGGLE_ONCE),
+    CKeyListElement("KEY_RETURN", PlatformKey::KEY_RETURN, INPUT_ACTION_PARTY_CREATION_DONE, TOGGLE_ONCE),
+    CKeyListElement("KEY_SUBTRACT", PlatformKey::KEY_SUBTRACT, INPUT_ACTION_PARTY_CREATION_DEC, TOGGLE_ONCE),
+    CKeyListElement("KEY_ADD", PlatformKey::KEY_ADD, INPUT_ACTION_PARTY_CREATION_INC, TOGGLE_ONCE),
+    CKeyListElement("KEY_YES", PlatformKey::KEY_Y, INPUT_ACTION_TRANSITION_YES, TOGGLE_ONCE),
+    CKeyListElement("KEY_NO", PlatformKey::KEY_N, INPUT_ACTION_TRANSITION_NO, TOGGLE_ONCE),
+    CKeyListElement("KEY_REST8HOURS", PlatformKey::KEY_R, INPUT_ACTION_REST_HEAL, TOGGLE_ONCE),
+    CKeyListElement("KEY_WAITTILLDAWN", PlatformKey::KEY_D, INPUT_ACTION_REST_WAIT_TILL_DAWN, TOGGLE_ONCE),
+    CKeyListElement("KEY_WAITHOUR", PlatformKey::KEY_H, INPUT_ACTION_REST_WAIT_1_HOUR, TOGGLE_ONCE),
+    CKeyListElement("KEY_WAIT5MINUTES", PlatformKey::KEY_M, INPUT_ACTION_REST_WAIT_5_MINUTES, TOGGLE_ONCE),
+    CKeyListElement("KEY_SCREENSHOT", PlatformKey::KEY_F2, INPUT_ACTION_TAKE_SCREENSHOT, TOGGLE_ONCE),
+    CKeyListElement("KEY_CONSOLE", PlatformKey::KEY_TILDE, INPUT_ACTION_OPEN_CONSOLE, TOGGLE_ONCE),
+    CKeyListElement("KEY_TOGGLEMOUSEGRAB", PlatformKey::KEY_F1, INPUT_ACTION_TOGGLE_MOUSE_GRAB, TOGGLE_ONCE),
+    CKeyListElement("KEY_TOGGLERESIZABLE", PlatformKey::KEY_F6, INPUT_ACTION_TOGGLE_RESIZABLE, TOGGLE_ONCE),
+    CKeyListElement("KEY_CYCLEFILTER", PlatformKey::KEY_F7, INPUT_ACTION_CYCLE_SCALE_FILTER, TOGGLE_ONCE),
+    CKeyListElement("KEY_RELOADSHADERS", PlatformKey::KEY_BACKSPACE, INPUT_ACTION_RELOAD_SHADERS, TOGGLE_ONCE),
+    CKeyListElement("KEY_SELECTCHAR1", PlatformKey::KEY_DIGIT_1, INPUT_ACTION_SELECT_CHAR_1, TOGGLE_ONCE),
+    CKeyListElement("KEY_SELECTCHAR2", PlatformKey::KEY_DIGIT_2, INPUT_ACTION_SELECT_CHAR_2, TOGGLE_ONCE),
+    CKeyListElement("KEY_SELECTCHAR3", PlatformKey::KEY_DIGIT_3, INPUT_ACTION_SELECT_CHAR_3, TOGGLE_ONCE),
+    CKeyListElement("KEY_SELECTCHAR4", PlatformKey::KEY_DIGIT_4, INPUT_ACTION_SELECT_CHAR_4, TOGGLE_ONCE),
+    CKeyListElement("KEY_SELECTNPC1", PlatformKey::KEY_DIGIT_5, INPUT_ACTION_SELECT_NPC_1, TOGGLE_ONCE),
+    CKeyListElement("KEY_SELECTNPC2", PlatformKey::KEY_DIGIT_6, INPUT_ACTION_SELECT_NPC_2, TOGGLE_ONCE),
+    CKeyListElement("KEY_DIALOGUP", PlatformKey::KEY_UP, INPUT_ACTION_DIALOG_UP, TOGGLE_ONCE),
+    CKeyListElement("KEY_DIALOGDOWN", PlatformKey::KEY_DOWN, INPUT_ACTION_DIALOG_DOWN, TOGGLE_ONCE),
+    CKeyListElement("KEY_DIALOGLEFT", PlatformKey::KEY_LEFT, INPUT_ACTION_DIALOG_LEFT, TOGGLE_ONCE),
+    CKeyListElement("KEY_DIALOGRIGHT", PlatformKey::KEY_RIGHT, INPUT_ACTION_DIALOG_RIGHT, TOGGLE_ONCE),
+    CKeyListElement("KEY_DIALOGSELECT", PlatformKey::KEY_PAGEDOWN, INPUT_ACTION_DIALOG_PRESS, TOGGLE_ONCE),
+    CKeyListElement("KEY_ESCAPE", PlatformKey::KEY_ESCAPE, INPUT_ACTION_ESCAPE, TOGGLE_ONCE),
+    CKeyListElement("KEY_TOGGLEMOUSELOOK", PlatformKey::KEY_F10, INPUT_ACTION_TOGGLE_MOUSE_LOOK, TOGGLE_ONCE),
+    CKeyListElement("KEY_TOGGLEWINDOWMODE", PlatformKey::KEY_F11, INPUT_ACTION_TOGGLE_WINDOW_MODE, TOGGLE_CONTINUOUSLY),
 };
 
 
@@ -139,7 +138,7 @@ KeyToggleType Io::KeyboardActionMapping::GetToggleType(InputAction action) const
 
 // TODO(captainurist): maybe we need to split InputActions to sets by WindowType so guarantee of only one InputAction per key is restored.
 bool Io::KeyboardActionMapping::IsKeyMatchAction(InputAction action, PlatformKey key) const {
-    if (action == Io::InputAction::Invalid)
+    if (action == INPUT_ACTION_INVALID)
         return false;
 
     if (actionKeyMap.find(action)->second == key)
@@ -209,81 +208,81 @@ void Io::KeyboardActionMapping::StoreMappings() {
 
 GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigKey(InputAction action) {
     switch (action) {
-        case(InputAction::MoveForward): return &config->keybindings.Forward;
-        case(InputAction::MoveBackwards): return &config->keybindings.Backward;
-        case(InputAction::TurnLeft): return &config->keybindings.Left;
-        case(InputAction::TurnRight): return &config->keybindings.Right;
-        case(InputAction::Attack): return &config->keybindings.Attack;
-        case(InputAction::CastReady): return &config->keybindings.CastReady;
-        case(InputAction::Yell): return &config->keybindings.Yell;
-        case(InputAction::Jump): return &config->keybindings.Jump;
-        case(InputAction::Combat): return &config->keybindings.Combat;
-        case(InputAction::EventTrigger): return &config->keybindings.EventTrigger;
-        case(InputAction::Cast): return &config->keybindings.Cast;
-        case(InputAction::Pass): return &config->keybindings.Pass;
-        case(InputAction::CharCycle): return &config->keybindings.CharCycle;
-        case(InputAction::Quest): return &config->keybindings.Quest;
-        case(InputAction::QuickRef): return &config->keybindings.QuickReference;
-        case(InputAction::Rest): return &config->keybindings.Rest;
-        case(InputAction::TimeCal): return &config->keybindings.TimeCalendar;
-        case(InputAction::Autonotes): return &config->keybindings.AutoNotes;
-        case(InputAction::Mapbook): return &config->keybindings.MapBook;
-        case(InputAction::LookUp): return &config->keybindings.LookUp;
-        case(InputAction::LookDown): return &config->keybindings.LookDown;
-        case(InputAction::CenterView): return &config->keybindings.CenterView;
-        case(InputAction::ZoomIn): return &config->keybindings.ZoomIn;
-        case(InputAction::ZoomOut): return &config->keybindings.ZoomOut;
-        case(InputAction::FlyUp): return &config->keybindings.FlyUp;
-        case(InputAction::FlyDown): return &config->keybindings.FlyDown;
-        case(InputAction::Land): return &config->keybindings.Land;
-        case(InputAction::AlwaysRun): return &config->keybindings.AlwaysRun;
-        case(InputAction::StrafeLeft): return &config->keybindings.StepLeft;
-        case(InputAction::StrafeRight): return &config->keybindings.StepRight;
-        case(InputAction::QuickSave): return &config->keybindings.QuickSave;
-        case(InputAction::QuickLoad): return &config->keybindings.QuickLoad;
-        case(InputAction::History): return &config->keybindings.History;
-        case(InputAction::Stats): return &config->keybindings.Stats;
-        case(InputAction::Skills): return &config->keybindings.Skills;
-        case(InputAction::Inventory): return &config->keybindings.Inventory;
-        case(InputAction::Awards): return &config->keybindings.Awards;
-        case(InputAction::NewGame): return &config->keybindings.NewGame;
-        case(InputAction::SaveGame): return &config->keybindings.SaveGame;
-        case(InputAction::LoadGame): return &config->keybindings.LoadGame;
-        case(InputAction::ExitGame): return &config->keybindings.ExitGame;
-        case(InputAction::ReturnToGame): return &config->keybindings.ReturnToGame;
-        case(InputAction::Controls): return &config->keybindings.Controls;
-        case(InputAction::Options): return &config->keybindings.Options;
-        case(InputAction::Credits): return &config->keybindings.Credits;
-        case(InputAction::Clear): return &config->keybindings.Clear;
-        case(InputAction::Return): return &config->keybindings.Return;
-        case(InputAction::Minus): return &config->keybindings.Minus;
-        case(InputAction::Plus): return &config->keybindings.Plus;
-        case(InputAction::Yes): return &config->keybindings.Yes;
-        case(InputAction::No): return &config->keybindings.No;
-        case(InputAction::Rest8Hours): return &config->keybindings.Rest8Hours;
-        case(InputAction::WaitTillDawn): return &config->keybindings.WaitTillDawn;
-        case(InputAction::WaitHour): return &config->keybindings.WaitHour;
-        case(InputAction::Wait5Minutes): return &config->keybindings.Wait5Minutes;
-        case(InputAction::Screenshot): return &config->keybindings.Screenshot;
-        case(InputAction::Console): return &config->keybindings.Console;
-        case(InputAction::ToggleMouseGrab): return &config->keybindings.ToggleMouseGrab;
-        case(InputAction::ToggleResizable): return &config->keybindings.ToggleResizable;
-        case(InputAction::CycleFilter): return &config->keybindings.CycleFilter;
-        case(InputAction::ReloadShaders): return &config->keybindings.ReloadShaders;
-        case(InputAction::SelectChar1): return &config->keybindings.SelectChar1;
-        case(InputAction::SelectChar2): return &config->keybindings.SelectChar2;
-        case(InputAction::SelectChar3): return &config->keybindings.SelectChar3;
-        case(InputAction::SelectChar4): return &config->keybindings.SelectChar4;
-        case(InputAction::SelectNPC1): return &config->keybindings.SelectNPC1;
-        case(InputAction::SelectNPC2): return &config->keybindings.SelectNPC2;
-        case(InputAction::DialogUp): return &config->keybindings.DialogUp;
-        case(InputAction::DialogDown): return &config->keybindings.DialogDown;
-        case(InputAction::DialogLeft): return &config->keybindings.DialogLeft;
-        case(InputAction::DialogRight): return &config->keybindings.DialogRight;
-        case(InputAction::DialogSelect): return &config->keybindings.DialogSelect;
-        case(InputAction::Escape): return &config->keybindings.Escape;
-        case(InputAction::ToggleMouseLook): return &config->keybindings.ToggleMouseLook;
-        case(InputAction::ToggleWindowMode): return &config->keybindings.ToggleWindowMode;
+        case(INPUT_ACTION_MOVE_FORWARD): return &config->keybindings.Forward;
+        case(INPUT_ACTION_MOVE_BACKWARDS): return &config->keybindings.Backward;
+        case(INPUT_ACTION_TURN_LEFT): return &config->keybindings.Left;
+        case(INPUT_ACTION_TURN_RIGHT): return &config->keybindings.Right;
+        case(INPUT_ACTION_ATTACK): return &config->keybindings.Attack;
+        case(INPUT_ACTION_QUICK_CAST): return &config->keybindings.CastReady;
+        case(INPUT_ACTION_YELL): return &config->keybindings.Yell;
+        case(INPUT_ACTION_JUMP): return &config->keybindings.Jump;
+        case(INPUT_ACTION_TOGGLE_TURN_BASED): return &config->keybindings.Combat;
+        case(INPUT_ACTION_TRIGGER): return &config->keybindings.EventTrigger;
+        case(INPUT_ACTION_SPELLBOOK): return &config->keybindings.Cast;
+        case(INPUT_ACTION_PASS): return &config->keybindings.Pass;
+        case(INPUT_ACTION_NEXT_CHAR): return &config->keybindings.CharCycle;
+        case(INPUT_ACTION_OPEN_QUESTS): return &config->keybindings.Quest;
+        case(INPUT_ACTION_OPEN_QUICK_REFERENCE): return &config->keybindings.QuickReference;
+        case(INPUT_ACTION_REST): return &config->keybindings.Rest;
+        case(INPUT_ACTION_OPEN_CALENDAR): return &config->keybindings.TimeCalendar;
+        case(INPUT_ACTION_OPEN_AUTONOTES): return &config->keybindings.AutoNotes;
+        case(INPUT_ACTION_OPEN_MAP): return &config->keybindings.MapBook;
+        case(INPUT_ACTION_LOOK_UP): return &config->keybindings.LookUp;
+        case(INPUT_ACTION_LOOK_DOWN): return &config->keybindings.LookDown;
+        case(INPUT_ACTION_CENTER_VIEW): return &config->keybindings.CenterView;
+        case(INPUT_ACTION_ZOOM_IN): return &config->keybindings.ZoomIn;
+        case(INPUT_ACTION_ZOOM_OUT): return &config->keybindings.ZoomOut;
+        case(INPUT_ACTION_FLY_UP): return &config->keybindings.FlyUp;
+        case(INPUT_ACTION_FLY_DOWN): return &config->keybindings.FlyDown;
+        case(INPUT_ACTION_FLY_LAND): return &config->keybindings.Land;
+        case(INPUT_ACTION_TOGGLE_AUTO_RUN): return &config->keybindings.AlwaysRun;
+        case(INPUT_ACTION_STRAFE_LEFT): return &config->keybindings.StepLeft;
+        case(INPUT_ACTION_STRAFE_RIGHT): return &config->keybindings.StepRight;
+        case(INPUT_ACTION_QUICK_SAVE): return &config->keybindings.QuickSave;
+        case(INPUT_ACTION_QUICK_LOAD): return &config->keybindings.QuickLoad;
+        case(INPUT_ACTION_OPEN_HISTORY): return &config->keybindings.History;
+        case(INPUT_ACTION_OPEN_STATS): return &config->keybindings.Stats;
+        case(INPUT_ACTION_OPEN_SKILLS): return &config->keybindings.Skills;
+        case(INPUT_ACTION_OPEN_INVENTORY): return &config->keybindings.Inventory;
+        case(INPUT_ACTION_OPEN_AWARDS): return &config->keybindings.Awards;
+        case(INPUT_ACTION_NEW_GAME): return &config->keybindings.NewGame;
+        case(INPUT_ACTION_SAVE_GAME): return &config->keybindings.SaveGame;
+        case(INPUT_ACTION_LOAD_GAME): return &config->keybindings.LoadGame;
+        case(INPUT_ACTION_EXIT_GAME): return &config->keybindings.ExitGame;
+        case(INPUT_ACTION_BACK_TO_GAME): return &config->keybindings.ReturnToGame;
+        case(INPUT_ACTION_OPEN_CONTROLS): return &config->keybindings.Controls;
+        case(INPUT_ACTION_OPEN_OPTIONS): return &config->keybindings.Options;
+        case(INPUT_ACTION_SHOW_CREDITS): return &config->keybindings.Credits;
+        case(INPUT_ACTION_PARTY_CREATION_CLEAR): return &config->keybindings.Clear;
+        case(INPUT_ACTION_PARTY_CREATION_DONE): return &config->keybindings.Return;
+        case(INPUT_ACTION_PARTY_CREATION_DEC): return &config->keybindings.Minus;
+        case(INPUT_ACTION_PARTY_CREATION_INC): return &config->keybindings.Plus;
+        case(INPUT_ACTION_TRANSITION_YES): return &config->keybindings.Yes;
+        case(INPUT_ACTION_TRANSITION_NO): return &config->keybindings.No;
+        case(INPUT_ACTION_REST_HEAL): return &config->keybindings.Rest8Hours;
+        case(INPUT_ACTION_REST_WAIT_TILL_DAWN): return &config->keybindings.WaitTillDawn;
+        case(INPUT_ACTION_REST_WAIT_1_HOUR): return &config->keybindings.WaitHour;
+        case(INPUT_ACTION_REST_WAIT_5_MINUTES): return &config->keybindings.Wait5Minutes;
+        case(INPUT_ACTION_TAKE_SCREENSHOT): return &config->keybindings.Screenshot;
+        case(INPUT_ACTION_OPEN_CONSOLE): return &config->keybindings.Console;
+        case(INPUT_ACTION_TOGGLE_MOUSE_GRAB): return &config->keybindings.ToggleMouseGrab;
+        case(INPUT_ACTION_TOGGLE_RESIZABLE): return &config->keybindings.ToggleResizable;
+        case(INPUT_ACTION_CYCLE_SCALE_FILTER): return &config->keybindings.CycleFilter;
+        case(INPUT_ACTION_RELOAD_SHADERS): return &config->keybindings.ReloadShaders;
+        case(INPUT_ACTION_SELECT_CHAR_1): return &config->keybindings.SelectChar1;
+        case(INPUT_ACTION_SELECT_CHAR_2): return &config->keybindings.SelectChar2;
+        case(INPUT_ACTION_SELECT_CHAR_3): return &config->keybindings.SelectChar3;
+        case(INPUT_ACTION_SELECT_CHAR_4): return &config->keybindings.SelectChar4;
+        case(INPUT_ACTION_SELECT_NPC_1): return &config->keybindings.SelectNPC1;
+        case(INPUT_ACTION_SELECT_NPC_2): return &config->keybindings.SelectNPC2;
+        case(INPUT_ACTION_DIALOG_UP): return &config->keybindings.DialogUp;
+        case(INPUT_ACTION_DIALOG_DOWN): return &config->keybindings.DialogDown;
+        case(INPUT_ACTION_DIALOG_LEFT): return &config->keybindings.DialogLeft;
+        case(INPUT_ACTION_DIALOG_RIGHT): return &config->keybindings.DialogRight;
+        case(INPUT_ACTION_DIALOG_PRESS): return &config->keybindings.DialogSelect;
+        case(INPUT_ACTION_ESCAPE): return &config->keybindings.Escape;
+        case(INPUT_ACTION_TOGGLE_MOUSE_LOOK): return &config->keybindings.ToggleMouseLook;
+        case(INPUT_ACTION_TOGGLE_WINDOW_MODE): return &config->keybindings.ToggleWindowMode;
         default: break;
     }
 
@@ -312,80 +311,80 @@ PlatformKey Io::KeyboardActionMapping::ConfigDefaultGamepadKey(InputAction actio
 
 GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigGamepadKey(InputAction action) {
     switch (action) {
-        case(InputAction::MoveForward): return &config->gamepad.Forward;
-        case(InputAction::MoveBackwards): return &config->gamepad.Backward;
-        case(InputAction::TurnLeft): return &config->gamepad.Left;
-        case(InputAction::TurnRight): return &config->gamepad.Right;
-        case(InputAction::Attack): return &config->gamepad.Attack;
-        case(InputAction::CastReady): return &config->gamepad.CastReady;
-        case(InputAction::Yell): return &config->gamepad.Yell;
-        case(InputAction::Jump): return &config->gamepad.Jump;
-        case(InputAction::Combat): return &config->gamepad.Combat;
-        case(InputAction::EventTrigger): return &config->gamepad.EventTrigger;
-        case(InputAction::Cast): return &config->gamepad.Cast;
-        case(InputAction::Pass): return &config->gamepad.Pass;
-        case(InputAction::CharCycle): return &config->gamepad.CharCycle;
-        case(InputAction::Quest): return &config->gamepad.Quest;
-        case(InputAction::QuickRef): return &config->gamepad.QuickReference;
-        case(InputAction::Rest): return &config->gamepad.Rest;
-        case(InputAction::TimeCal): return &config->gamepad.TimeCalendar;
-        case(InputAction::Autonotes): return &config->gamepad.AutoNotes;
-        case(InputAction::Mapbook): return &config->gamepad.MapBook;
-        case(InputAction::LookUp): return &config->gamepad.LookUp;
-        case(InputAction::LookDown): return &config->gamepad.LookDown;
-        case(InputAction::CenterView): return &config->gamepad.CenterView;
-        case(InputAction::ZoomIn): return &config->gamepad.ZoomIn;
-        case(InputAction::ZoomOut): return &config->gamepad.ZoomOut;
-        case(InputAction::FlyUp): return &config->gamepad.FlyUp;
-        case(InputAction::FlyDown): return &config->gamepad.FlyDown;
-        case(InputAction::Land): return &config->gamepad.Land;
-        case(InputAction::AlwaysRun): return &config->gamepad.AlwaysRun;
-        case(InputAction::StrafeLeft): return &config->gamepad.StepLeft;
-        case(InputAction::StrafeRight): return &config->gamepad.StepRight;
-        case(InputAction::QuickSave): return &config->gamepad.QuickSave;
-        case(InputAction::QuickLoad): return &config->gamepad.QuickLoad;
-        case(InputAction::History): return &config->gamepad.History;
-        case(InputAction::Stats): return &config->gamepad.Stats;
-        case(InputAction::Skills): return &config->gamepad.Skills;
-        case(InputAction::Inventory): return &config->gamepad.Inventory;
-        case(InputAction::Awards): return &config->gamepad.Awards;
-        case(InputAction::NewGame): return &config->gamepad.NewGame;
-        case(InputAction::SaveGame): return &config->gamepad.SaveGame;
-        case(InputAction::LoadGame): return &config->gamepad.LoadGame;
-        case(InputAction::ExitGame): return &config->gamepad.ExitGame;
-        case(InputAction::ReturnToGame): return &config->gamepad.ReturnToGame;
-        case(InputAction::Controls): return &config->gamepad.Controls;
-        case(InputAction::Options): return &config->gamepad.Options;
-        case(InputAction::Credits): return &config->gamepad.Credits;
-        case(InputAction::Clear): return &config->gamepad.Clear;
-        case(InputAction::Return): return &config->gamepad.Return;
-        case(InputAction::Minus): return &config->gamepad.Minus;
-        case(InputAction::Plus): return &config->gamepad.Plus;
-        case(InputAction::Yes): return &config->gamepad.Yes;
-        case(InputAction::No): return &config->gamepad.No;
-        case(InputAction::Rest8Hours): return &config->gamepad.Rest8Hours;
-        case(InputAction::WaitTillDawn): return &config->gamepad.WaitTillDawn;
-        case(InputAction::WaitHour): return &config->gamepad.WaitHour;
-        case(InputAction::Wait5Minutes): return &config->gamepad.Wait5Minutes;
-        case(InputAction::Screenshot): return &config->gamepad.Screenshot;
-        case(InputAction::Console): return &config->gamepad.Console;
-        case(InputAction::ToggleMouseGrab): return &config->gamepad.ToggleMouseGrab;
-        case(InputAction::ToggleResizable): return &config->gamepad.ToggleResizable;
-        case(InputAction::CycleFilter): return &config->gamepad.CycleFilter;
-        case(InputAction::ReloadShaders): return &config->gamepad.ReloadShaders;
-        case(InputAction::SelectChar1): return &config->gamepad.SelectChar1;
-        case(InputAction::SelectChar2): return &config->gamepad.SelectChar2;
-        case(InputAction::SelectChar3): return &config->gamepad.SelectChar3;
-        case(InputAction::SelectChar4): return &config->gamepad.SelectChar4;
-        case(InputAction::SelectNPC1): return &config->gamepad.SelectNPC1;
-        case(InputAction::SelectNPC2): return &config->gamepad.SelectNPC2;
-        case(InputAction::DialogUp): return &config->gamepad.DialogUp;
-        case(InputAction::DialogDown): return &config->gamepad.DialogDown;
-        case(InputAction::DialogLeft): return &config->gamepad.DialogLeft;
-        case(InputAction::DialogRight): return &config->gamepad.DialogRight;
-        case(InputAction::DialogSelect): return &config->gamepad.DialogSelect;
-        case(InputAction::Escape): return &config->gamepad.Escape;
-        case(InputAction::ToggleWindowMode): return &config->gamepad.ToggleWindowMode;
+        case(INPUT_ACTION_MOVE_FORWARD): return &config->gamepad.Forward;
+        case(INPUT_ACTION_MOVE_BACKWARDS): return &config->gamepad.Backward;
+        case(INPUT_ACTION_TURN_LEFT): return &config->gamepad.Left;
+        case(INPUT_ACTION_TURN_RIGHT): return &config->gamepad.Right;
+        case(INPUT_ACTION_ATTACK): return &config->gamepad.Attack;
+        case(INPUT_ACTION_QUICK_CAST): return &config->gamepad.CastReady;
+        case(INPUT_ACTION_YELL): return &config->gamepad.Yell;
+        case(INPUT_ACTION_JUMP): return &config->gamepad.Jump;
+        case(INPUT_ACTION_TOGGLE_TURN_BASED): return &config->gamepad.Combat;
+        case(INPUT_ACTION_TRIGGER): return &config->gamepad.EventTrigger;
+        case(INPUT_ACTION_SPELLBOOK): return &config->gamepad.Cast;
+        case(INPUT_ACTION_PASS): return &config->gamepad.Pass;
+        case(INPUT_ACTION_NEXT_CHAR): return &config->gamepad.CharCycle;
+        case(INPUT_ACTION_OPEN_QUESTS): return &config->gamepad.Quest;
+        case(INPUT_ACTION_OPEN_QUICK_REFERENCE): return &config->gamepad.QuickReference;
+        case(INPUT_ACTION_REST): return &config->gamepad.Rest;
+        case(INPUT_ACTION_OPEN_CALENDAR): return &config->gamepad.TimeCalendar;
+        case(INPUT_ACTION_OPEN_AUTONOTES): return &config->gamepad.AutoNotes;
+        case(INPUT_ACTION_OPEN_MAP): return &config->gamepad.MapBook;
+        case(INPUT_ACTION_LOOK_UP): return &config->gamepad.LookUp;
+        case(INPUT_ACTION_LOOK_DOWN): return &config->gamepad.LookDown;
+        case(INPUT_ACTION_CENTER_VIEW): return &config->gamepad.CenterView;
+        case(INPUT_ACTION_ZOOM_IN): return &config->gamepad.ZoomIn;
+        case(INPUT_ACTION_ZOOM_OUT): return &config->gamepad.ZoomOut;
+        case(INPUT_ACTION_FLY_UP): return &config->gamepad.FlyUp;
+        case(INPUT_ACTION_FLY_DOWN): return &config->gamepad.FlyDown;
+        case(INPUT_ACTION_FLY_LAND): return &config->gamepad.Land;
+        case(INPUT_ACTION_TOGGLE_AUTO_RUN): return &config->gamepad.AlwaysRun;
+        case(INPUT_ACTION_STRAFE_LEFT): return &config->gamepad.StepLeft;
+        case(INPUT_ACTION_STRAFE_RIGHT): return &config->gamepad.StepRight;
+        case(INPUT_ACTION_QUICK_SAVE): return &config->gamepad.QuickSave;
+        case(INPUT_ACTION_QUICK_LOAD): return &config->gamepad.QuickLoad;
+        case(INPUT_ACTION_OPEN_HISTORY): return &config->gamepad.History;
+        case(INPUT_ACTION_OPEN_STATS): return &config->gamepad.Stats;
+        case(INPUT_ACTION_OPEN_SKILLS): return &config->gamepad.Skills;
+        case(INPUT_ACTION_OPEN_INVENTORY): return &config->gamepad.Inventory;
+        case(INPUT_ACTION_OPEN_AWARDS): return &config->gamepad.Awards;
+        case(INPUT_ACTION_NEW_GAME): return &config->gamepad.NewGame;
+        case(INPUT_ACTION_SAVE_GAME): return &config->gamepad.SaveGame;
+        case(INPUT_ACTION_LOAD_GAME): return &config->gamepad.LoadGame;
+        case(INPUT_ACTION_EXIT_GAME): return &config->gamepad.ExitGame;
+        case(INPUT_ACTION_BACK_TO_GAME): return &config->gamepad.ReturnToGame;
+        case(INPUT_ACTION_OPEN_CONTROLS): return &config->gamepad.Controls;
+        case(INPUT_ACTION_OPEN_OPTIONS): return &config->gamepad.Options;
+        case(INPUT_ACTION_SHOW_CREDITS): return &config->gamepad.Credits;
+        case(INPUT_ACTION_PARTY_CREATION_CLEAR): return &config->gamepad.Clear;
+        case(INPUT_ACTION_PARTY_CREATION_DONE): return &config->gamepad.Return;
+        case(INPUT_ACTION_PARTY_CREATION_DEC): return &config->gamepad.Minus;
+        case(INPUT_ACTION_PARTY_CREATION_INC): return &config->gamepad.Plus;
+        case(INPUT_ACTION_TRANSITION_YES): return &config->gamepad.Yes;
+        case(INPUT_ACTION_TRANSITION_NO): return &config->gamepad.No;
+        case(INPUT_ACTION_REST_HEAL): return &config->gamepad.Rest8Hours;
+        case(INPUT_ACTION_REST_WAIT_TILL_DAWN): return &config->gamepad.WaitTillDawn;
+        case(INPUT_ACTION_REST_WAIT_1_HOUR): return &config->gamepad.WaitHour;
+        case(INPUT_ACTION_REST_WAIT_5_MINUTES): return &config->gamepad.Wait5Minutes;
+        case(INPUT_ACTION_TAKE_SCREENSHOT): return &config->gamepad.Screenshot;
+        case(INPUT_ACTION_OPEN_CONSOLE): return &config->gamepad.Console;
+        case(INPUT_ACTION_TOGGLE_MOUSE_GRAB): return &config->gamepad.ToggleMouseGrab;
+        case(INPUT_ACTION_TOGGLE_RESIZABLE): return &config->gamepad.ToggleResizable;
+        case(INPUT_ACTION_CYCLE_SCALE_FILTER): return &config->gamepad.CycleFilter;
+        case(INPUT_ACTION_RELOAD_SHADERS): return &config->gamepad.ReloadShaders;
+        case(INPUT_ACTION_SELECT_CHAR_1): return &config->gamepad.SelectChar1;
+        case(INPUT_ACTION_SELECT_CHAR_2): return &config->gamepad.SelectChar2;
+        case(INPUT_ACTION_SELECT_CHAR_3): return &config->gamepad.SelectChar3;
+        case(INPUT_ACTION_SELECT_CHAR_4): return &config->gamepad.SelectChar4;
+        case(INPUT_ACTION_SELECT_NPC_1): return &config->gamepad.SelectNPC1;
+        case(INPUT_ACTION_SELECT_NPC_2): return &config->gamepad.SelectNPC2;
+        case(INPUT_ACTION_DIALOG_UP): return &config->gamepad.DialogUp;
+        case(INPUT_ACTION_DIALOG_DOWN): return &config->gamepad.DialogDown;
+        case(INPUT_ACTION_DIALOG_LEFT): return &config->gamepad.DialogLeft;
+        case(INPUT_ACTION_DIALOG_RIGHT): return &config->gamepad.DialogRight;
+        case(INPUT_ACTION_DIALOG_PRESS): return &config->gamepad.DialogSelect;
+        case(INPUT_ACTION_ESCAPE): return &config->gamepad.Escape;
+        case(INPUT_ACTION_TOGGLE_WINDOW_MODE): return &config->gamepad.ToggleWindowMode;
         default: break;
     }
 

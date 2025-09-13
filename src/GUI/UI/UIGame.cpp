@@ -53,8 +53,6 @@
 
 #include "Library/Logger/Logger.h"
 
-using Io::InputAction;
-
 std::array<int, 4> pHealthBarPos = {{23, 138, 251, 366}}; // was 22, 137
 std::array<int, 4> pManaBarPos = {{102, 217, 331, 447}};
 extern const int pHealthManaBarYPos = 402;
@@ -185,17 +183,17 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
     game_ui_menu_quit = assets->getImage_ColorKey("quit1");
 
     pBtn_NewGame = CreateButton({0x13u, 0x9Bu}, {0xD6u, 0x28u}, 1, 0,
-        UIMSG_StartNewGame, 0, Io::InputAction::NewGame, localization->GetString(LSTR_NEW_GAME), {game_ui_menu_new});
+        UIMSG_StartNewGame, 0, INPUT_ACTION_NEW_GAME, localization->GetString(LSTR_NEW_GAME), {game_ui_menu_new});
     pBtn_SaveGame = CreateButton("GameMenu_SaveGame", {0x13u, 0xD1u}, {0xD6u, 0x28u}, 1, 0,
-        UIMSG_Game_OpenSaveGameDialog, 0, Io::InputAction::SaveGame, localization->GetString(LSTR_SAVE_GAME), {game_ui_menu_save});
+        UIMSG_Game_OpenSaveGameDialog, 0, INPUT_ACTION_SAVE_GAME, localization->GetString(LSTR_SAVE_GAME), {game_ui_menu_save});
     pBtn_LoadGame = CreateButton("GameMenu_LoadGame", {19, 263}, {0xD6u, 0x28u}, 1, 0,
-        UIMSG_Game_OpenLoadGameDialog, 0, Io::InputAction::LoadGame, localization->GetString(LSTR_LOAD_GAME), {game_ui_menu_load});
+        UIMSG_Game_OpenLoadGameDialog, 0, INPUT_ACTION_LOAD_GAME, localization->GetString(LSTR_LOAD_GAME), {game_ui_menu_load});
     pBtn_GameControls = CreateButton({241, 155}, {214, 40}, 1, 0,
-        UIMSG_Game_OpenOptionsDialog, 0, Io::InputAction::Options, localization->GetString(LSTR_SOUND_KEYBOARD_GAME_OPTIONS), {game_ui_menu_controls});
+        UIMSG_Game_OpenOptionsDialog, 0, INPUT_ACTION_OPEN_OPTIONS, localization->GetString(LSTR_SOUND_KEYBOARD_GAME_OPTIONS), {game_ui_menu_controls});
     pBtn_QuitGame = CreateButton("GameMenu_Quit", {241, 209}, {214, 40}, 1, 0,
-        UIMSG_Quit, 0, Io::InputAction::ExitGame, localization->GetString(LSTR_QUIT), {game_ui_menu_quit});
+        UIMSG_Quit, 0, INPUT_ACTION_EXIT_GAME, localization->GetString(LSTR_QUIT), {game_ui_menu_quit});
     pBtn_Resume = CreateButton({241, 263}, {214, 40}, 1, 0,
-        UIMSG_GameMenu_ReturnToGame, 0, Io::InputAction::ReturnToGame, localization->GetString(LSTR_RETURN_TO_GAME), {game_ui_menu_resume});
+        UIMSG_GameMenu_ReturnToGame, 0, INPUT_ACTION_BACK_TO_GAME, localization->GetString(LSTR_RETURN_TO_GAME), {game_ui_menu_resume});
 
     setKeyboardControlGroup(6, false, 0, 0);
 }
@@ -297,7 +295,7 @@ GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings()
     CreateButton({350, 243}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 12);
     CreateButton({350, 262}, {70, 19}, 1, 0, UIMSG_ChangeKeyButton, 13);
 
-    currently_selected_action_for_binding = Io::InputAction::Invalid;
+    currently_selected_action_for_binding = INPUT_ACTION_INVALID;
     KeyboardPageNum = 1;
     for (auto action : VanillaInputActions()) {
         key_map_conflicted[action] = false;
@@ -338,7 +336,7 @@ void GUIWindow_GameKeyBindings::Update() {
             engine->_statusBar->clearAll();
 
         keyboardInputHandler->EndTextInput();
-        currently_selected_action_for_binding = Io::InputAction::Invalid;
+        currently_selected_action_for_binding = INPUT_ACTION_INVALID;
     }
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, game_ui_options_controls[0]);  // draw base texture
 
@@ -391,9 +389,9 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
     CreateButton({0xF1u, 0x12Eu}, {0xD6u, 0x28u}, 1, 0, UIMSG_Escape, 0);
 
     // gamma buttons
-    pBtn_SliderLeft = CreateButton({21, 161}, {17, 17}, 1, 0, UIMSG_ChangeGammaLevel, 4, Io::InputAction::Invalid, "", { options_menu_skin.uTextureID_ArrowLeft }); // -
+    pBtn_SliderLeft = CreateButton({21, 161}, {17, 17}, 1, 0, UIMSG_ChangeGammaLevel, 4, INPUT_ACTION_INVALID, "", { options_menu_skin.uTextureID_ArrowLeft }); // -
     CreateButton({42, 160}, {170, 17}, 1, 0, UIMSG_ChangeGammaLevel, 0);
-    pBtn_SliderRight = CreateButton({213, 161}, {17, 17}, 1, 0, UIMSG_ChangeGammaLevel, 5, Io::InputAction::Invalid, "", { options_menu_skin.uTextureID_ArrowRight }); // +
+    pBtn_SliderRight = CreateButton({213, 161}, {17, 17}, 1, 0, UIMSG_ChangeGammaLevel, 5, INPUT_ACTION_INVALID, "", { options_menu_skin.uTextureID_ArrowRight }); // +
 
     // if ( render->pRenderD3D )
     {
@@ -529,27 +527,27 @@ GUIWindow_GameOptions::GUIWindow_GameOptions()
     CreateButton({128, 325}, options_menu_skin.uTextureID_FlipOnExit->size(), 1, 0,
                  UIMSG_ToggleFlipOnExit, 0);
 
-    pBtn_SliderLeft = CreateButton({243, 162}, {16, 16}, 1, 0, UIMSG_ChangeSoundVolume, 4, Io::InputAction::Invalid, "",
+    pBtn_SliderLeft = CreateButton({243, 162}, {16, 16}, 1, 0, UIMSG_ChangeSoundVolume, 4, INPUT_ACTION_INVALID, "",
         {options_menu_skin.uTextureID_ArrowLeft});
-    pBtn_SliderRight = CreateButton({435, 162}, {16, 16}, 1, 0, UIMSG_ChangeSoundVolume, 5, Io::InputAction::Invalid, "",
+    pBtn_SliderRight = CreateButton({435, 162}, {16, 16}, 1, 0, UIMSG_ChangeSoundVolume, 5, INPUT_ACTION_INVALID, "",
         {options_menu_skin.uTextureID_ArrowRight});
     CreateButton({263, 162}, {172, 17}, 1, 0, UIMSG_ChangeSoundVolume, 0);
 
-    pBtn_SliderLeft = CreateButton({243, 216}, {16, 16}, 1, 0, UIMSG_ChangeMusicVolume, 4, Io::InputAction::Invalid, "",
+    pBtn_SliderLeft = CreateButton({243, 216}, {16, 16}, 1, 0, UIMSG_ChangeMusicVolume, 4, INPUT_ACTION_INVALID, "",
         {options_menu_skin.uTextureID_ArrowLeft});
-    pBtn_SliderRight = CreateButton({435, 216}, {16, 16}, 1, 0, UIMSG_ChangeMusicVolume, 5, Io::InputAction::Invalid, "",
+    pBtn_SliderRight = CreateButton({435, 216}, {16, 16}, 1, 0, UIMSG_ChangeMusicVolume, 5, INPUT_ACTION_INVALID, "",
         {options_menu_skin.uTextureID_ArrowRight});
     CreateButton({263, 216}, {172, 17}, 1, 0, UIMSG_ChangeMusicVolume, 0);
 
-    pBtn_SliderLeft = CreateButton({243, 270}, {16, 16}, 1, 0, UIMSG_ChangeVoiceVolume, 4, Io::InputAction::Invalid, "",
+    pBtn_SliderLeft = CreateButton({243, 270}, {16, 16}, 1, 0, UIMSG_ChangeVoiceVolume, 4, INPUT_ACTION_INVALID, "",
         {options_menu_skin.uTextureID_ArrowLeft});
-    pBtn_SliderRight = CreateButton({435, 270}, {16, 16}, 1, 0, UIMSG_ChangeVoiceVolume, 5, Io::InputAction::Invalid, "",
+    pBtn_SliderRight = CreateButton({435, 270}, {16, 16}, 1, 0, UIMSG_ChangeVoiceVolume, 5, INPUT_ACTION_INVALID, "",
         {options_menu_skin.uTextureID_ArrowRight});
     CreateButton({263, 270}, {172, 17}, 1, 0, UIMSG_ChangeVoiceVolume, 0);
 
-    CreateButton({241, 302}, {214, 40}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_RETURN_TO_GAME));
-    CreateButton({19, 140}, {214, 40}, 1, 0, UIMSG_OpenKeyMappingOptions, 0, Io::InputAction::Controls);
-    CreateButton({19, 194}, {214, 40}, 1, 0, UIMSG_OpenVideoOptions, 0, Io::InputAction::Options);
+    CreateButton({241, 302}, {214, 40}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->GetString(LSTR_RETURN_TO_GAME));
+    CreateButton({19, 140}, {214, 40}, 1, 0, UIMSG_OpenKeyMappingOptions, 0, INPUT_ACTION_OPEN_CONTROLS);
+    CreateButton({19, 194}, {214, 40}, 1, 0, UIMSG_OpenVideoOptions, 0, INPUT_ACTION_OPEN_OPTIONS);
 }
 
 void GUIWindow_GameOptions::Update() {
