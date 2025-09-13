@@ -75,6 +75,14 @@ bool ProxyWindow::grabsMouse() const {
     return nonNullBase()->grabsMouse();
 }
 
+void ProxyWindow::setMouseRelative(bool mouseRelative) {
+    nonNullBase()->setMouseRelative(mouseRelative);
+}
+
+bool ProxyWindow::isMouseRelative() const {
+    return nonNullBase()->isMouseRelative();
+}
+
 Marginsi ProxyWindow::frameMargins() const {
     return nonNullBase()->frameMargins();
 }
@@ -89,10 +97,6 @@ void ProxyWindow::activate() {
 
 void ProxyWindow::warpMouse(Pointi position) {
     nonNullBase()->warpMouse(position);
-}
-
-void ProxyWindow::setMouseRelative(bool enable) {
-    nonNullBase()->setMouseRelative(enable);
 }
 
 std::unique_ptr<PlatformOpenGLContext> ProxyWindow::createOpenGLContext(const PlatformOpenGLOptions &options) {

@@ -57,6 +57,15 @@ class PlatformWindow {
     virtual void setOrientations(PlatformWindowOrientations orientations) = 0;
     virtual PlatformWindowOrientations orientations() = 0;
 
+    /**
+     * Setter for the relative mouse motion mode. When enabled for a given window, the cursor is hidden for that window
+     * while it has focus, and relative mouse motion is properly handled (w/o window edge clamping).
+     *
+     * @param mouseRelative             Whether relative mouse motion mode should be enabled for this window.
+     */
+    virtual void setMouseRelative(bool mouseRelative) = 0;
+    virtual bool isMouseRelative() const = 0;
+
     virtual Marginsi frameMargins() const = 0;
 
     /**
@@ -77,8 +86,6 @@ class PlatformWindow {
      * @param position                  Position in window coordinates to move mouse pointer to.
      */
     virtual void warpMouse(Pointi position) = 0;
-
-    virtual void setMouseRelative(bool enable) = 0;
 
     virtual std::unique_ptr<PlatformOpenGLContext> createOpenGLContext(const PlatformOpenGLOptions &options) = 0;
 };

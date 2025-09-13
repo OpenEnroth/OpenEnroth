@@ -84,6 +84,14 @@ PlatformWindowOrientations NullWindow::orientations() {
     return _orientations;
 }
 
+void NullWindow::setMouseRelative(bool mouseRelative) {
+    _mouseRelative = mouseRelative;
+}
+
+bool NullWindow::isMouseRelative() const {
+    return _mouseRelative;
+}
+
 Marginsi NullWindow::frameMargins() const {
     if (_mode == WINDOW_MODE_WINDOWED) {
         return _state->options.defaultFrameMargins;
@@ -101,10 +109,6 @@ void NullWindow::activate() {
 }
 
 void NullWindow::warpMouse(Pointi) {
-    // Do nothing.
-}
-
-void NullWindow::setMouseRelative(bool) {
     // Do nothing.
 }
 

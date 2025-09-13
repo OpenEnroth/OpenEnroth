@@ -156,6 +156,14 @@ bool SdlWindow::grabsMouse() const {
     return SDL_GetWindowMouseGrab(_window);
 }
 
+void SdlWindow::setMouseRelative(bool mouseRelative) {
+    SDL_SetWindowRelativeMouseMode(_window, mouseRelative);
+}
+
+bool SdlWindow::isMouseRelative() const {
+    return SDL_GetWindowRelativeMouseMode(_window);
+}
+
 Marginsi SdlWindow::frameMargins() const {
     Marginsi result;
     if(!SDL_GetWindowBordersSize(_window, &result.top, &result.left, &result.bottom, &result.right)) {
@@ -176,10 +184,6 @@ void SdlWindow::activate() {
 
 void SdlWindow::warpMouse(Pointi position) {
     SDL_WarpMouseInWindow(_window, position.x, position.y);
-}
-
-void SdlWindow::setMouseRelative(bool enable) {
-    SDL_SetWindowRelativeMouseMode(_window, enable);
 }
 
 std::unique_ptr<PlatformOpenGLContext> SdlWindow::createOpenGLContext(const PlatformOpenGLOptions &options) {
