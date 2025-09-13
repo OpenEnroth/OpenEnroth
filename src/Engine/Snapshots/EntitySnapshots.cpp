@@ -1163,20 +1163,20 @@ void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<i
             index--;
 
             if (index > maxIndex) {
-                logger->error("Invalid item reference in backpack for character #{}, itemId={}, index={}, pos=({},{})",
-                              *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
+                logger->warning("Invalid item reference in backpack for character #{}, itemId={}, index={}, pos=({},{})",
+                                *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
                 continue;
             }
 
             if (items[index].itemId == ITEM_NULL) {
-                logger->error("Null item in backpack for character #{}, itemId={}, index={}, pos=({},{})",
-                              *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
+                logger->warning("Null item in backpack for character #{}, itemId={}, index={}, pos=({},{})",
+                                *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
                 continue;
             }
 
             if (processed[index]) {
-                logger->error("Duplicate item in backpack for character #{}, itemId={}, index={}, pos=({},{})",
-                              *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
+                logger->warning("Duplicate item in backpack for character #{}, itemId={}, index={}, pos=({},{})",
+                                *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
                 continue;
             }
 
@@ -1185,8 +1185,8 @@ void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<i
                 dst->addAt({x, y}, items[index], index); // We need to preserve item indices.
             } else {
                 pending[index] = true;
-                logger->error("Overlapping item in backpack for character #{}, itemId={}, index={}, pos=({},{})",
-                              *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
+                logger->warning("Overlapping item in backpack for character #{}, itemId={}, index={}, pos=({},{})",
+                                *characterIndex, std::to_underlying(items[index].itemId), index, x, y);
             }
         }
     }
@@ -1198,20 +1198,20 @@ void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<i
         index--;
 
         if (index > maxIndex) {
-            logger->error("Invalid item reference in equipment for character #{}, itemId={}, index={}, slot={}",
-                          *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
+            logger->warning("Invalid item reference in equipment for character #{}, itemId={}, index={}, slot={}",
+                            *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
             continue;
         }
 
         if (items[index].itemId == ITEM_NULL) {
-            logger->error("Null item in equipment for character #{}, itemId={}, index={}, slot={}",
-                          *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
+            logger->warning("Null item in equipment for character #{}, itemId={}, index={}, slot={}",
+                            *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
             continue;
         }
 
         if (processed[index]) {
-            logger->error("Duplicate item in equipment for character #{}, itemId={}, index={}, slot={}",
-                          *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
+            logger->warning("Duplicate item in equipment for character #{}, itemId={}, index={}, slot={}",
+                            *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
             continue;
         }
 
@@ -1220,8 +1220,8 @@ void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<i
             dst->equipAt(slot, items[index], index); // We need to preserve item indices.
         } else {
             pending[index] = true;
-            logger->error("Overlapping items in equipment for character #{}, itemId={}, index={}, slot={}",
-                          *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
+            logger->warning("Overlapping items in equipment for character #{}, itemId={}, index={}, slot={}",
+                            *characterIndex, std::to_underlying(items[index].itemId), index, std::to_underlying(slot));
         }
     }
 
@@ -1230,13 +1230,13 @@ void reconstruct(const Character_MM7 &src, CharacterInventory *dst, ContextTag<i
             continue;
 
         if (!pending[index]) {
-            logger->error("Invisible item was dropped from inventory for character #{}, itemId={}, index={}",
-                          *characterIndex, std::to_underlying(items[index].itemId), index);
+            logger->warning("Invisible item was dropped from inventory for character #{}, itemId={}, index={}",
+                            *characterIndex, std::to_underlying(items[index].itemId), index);
         } else if (std::optional<Pointi> pos = dst->findSpace(items[index])) {
             dst->addAt(*pos, items[index], index);
         } else {
-            logger->error("Overlapping item was dropped from inventory for character #{}, itemId={}, index={}",
-                          *characterIndex, std::to_underlying(items[index].itemId), index);
+            logger->warning("Overlapping item was dropped from inventory for character #{}, itemId={}, index={}",
+                            *characterIndex, std::to_underlying(items[index].itemId), index);
         }
     }
 }
@@ -1743,20 +1743,20 @@ void reconstruct(const Chest_MM7 &src, ChestInventory *dst, ContextTag<int> ches
             index--;
 
             if (index > maxIndex) {
-                logger->error("Invalid item reference in chest #{} item grid, itemId={}, index={}, pos=({},{})",
-                              *chestId, std::to_underlying(items[index].itemId), index, x, y);
+                logger->warning("Invalid item reference in chest #{} item grid, itemId={}, index={}, pos=({},{})",
+                                *chestId, std::to_underlying(items[index].itemId), index, x, y);
                 continue;
             }
 
             if (items[index].itemId == ITEM_NULL) {
-                logger->error("Null item in chest #{}, itemId={}, index={}, pos=({},{})",
-                              *chestId, std::to_underlying(items[index].itemId), index, x, y);
+                logger->warning("Null item in chest #{}, itemId={}, index={}, pos=({},{})",
+                                *chestId, std::to_underlying(items[index].itemId), index, x, y);
                 continue;
             }
 
             if (processed[index]) {
-                logger->error("Duplicate item in chest #{}, itemId={}, index={}, pos=({},{})",
-                              *chestId, std::to_underlying(items[index].itemId), index, x, y);
+                logger->warning("Duplicate item in chest #{}, itemId={}, index={}, pos=({},{})",
+                                *chestId, std::to_underlying(items[index].itemId), index, x, y);
                 continue;
             }
 

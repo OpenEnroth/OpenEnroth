@@ -2,11 +2,6 @@
 
 #include <cassert>
 
-#include "Engine/Snapshots/EntitySnapshots.h"
-#include "Library/Snapshots/CommonSnapshots.h"
-#include "Engine/Tables/ChestTable.h"
-#include "Library/Logger/Logger.h"
-
 Inventory::Inventory(Sizei gridSize, int capacity) : _gridSize(gridSize), _capacity(capacity) {
     assert(gridSize.w > 0 && gridSize.h > 0);
     assert(gridSize.w * gridSize.h <= MAX_ITEMS);
