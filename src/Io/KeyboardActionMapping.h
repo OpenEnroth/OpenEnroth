@@ -2,7 +2,6 @@
 
 #include <unordered_map>
 #include <memory>
-#include <string>
 
 #include "Library/Platform/Interface/PlatformEnums.h"
 #include "Io/InputAction.h"

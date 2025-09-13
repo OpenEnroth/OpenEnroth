@@ -7,6 +7,7 @@
 
 #include "Utility/Segment.h"
 
+// TODO(captainurist): these should be localizable.
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(InputAction, CASE_INSENSITIVE, {
     {INPUT_ACTION_MOVE_FORWARD, "FORWARD"},
     {INPUT_ACTION_MOVE_BACKWARDS, "BACKWARD"},

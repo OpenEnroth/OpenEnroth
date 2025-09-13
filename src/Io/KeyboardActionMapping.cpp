@@ -1,6 +1,5 @@
 #include "KeyboardActionMapping.h"
 
-#include <string>
 #include <unordered_set>
 #include <memory>
 
