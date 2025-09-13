@@ -10,9 +10,9 @@ on:
         required: false
         default: ''
         type: string
-  push:
-    branches:
-      - 'master'
+#  push:
+#    branches:
+#      - 'master'
 
 env:
   TAG_NAME: nightly
