@@ -29,7 +29,6 @@
 #include "Media/Audio/AudioPlayer.h"
 
 using Io::TextInputType;
-using Io::KeyToggleType;
 using Io::InputAction;
 
 enum class CurrentConfirmationState {

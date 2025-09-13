@@ -60,7 +60,7 @@ void Io::KeyboardInputHandler::GeneratePausedActions() {
     for (auto action : AllInputActions()) {
         bool isTriggered = false;
         PlatformKey key = actionMapping->GetKey(action);
-        if (actionMapping->GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress)
+        if (actionMapping->GetToggleType(action) == TOGGLE_ONCE)
             isTriggered = controller->ConsumeKeyPress(key);
         else
             isTriggered = controller->IsKeyDown(key);
@@ -91,13 +91,13 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
 
         switch (actionMapping->GetToggleType(action)) {
         default: assert(false); [[fallthrough]];
-        case KeyToggleType::TOGGLE_OneTimePress:
+        case TOGGLE_ONCE:
             isTriggered = controller->ConsumeKeyPress(key) || controller->ConsumeKeyPress(gamepadkey);
             break;
-        case KeyToggleType::TOGGLE_Continuously:
+        case TOGGLE_CONTINUOUSLY:
             isTriggered = controller->IsKeyDown(key) || controller->IsKeyDown(gamepadkey);
             break;
-        case KeyToggleType::TOGGLE_DelayContinuous:
+        case TOGGLE_CONTINUOUSLY_WITH_DELAY:
             // TODO(captainurist): This logic breaks down if we press & release a key every frame.
             //                     Better way to implement this would be to generate the input actions from inside
             //                     the event handler.

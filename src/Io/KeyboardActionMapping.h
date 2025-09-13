@@ -9,13 +9,14 @@
 
 #include "Application/GameConfig.h"
 
-namespace Io {
 enum class KeyToggleType {
-    TOGGLE_Continuously = 0,
-    TOGGLE_OneTimePress = 1,
-    TOGGLE_DelayContinuous = 2,
+    TOGGLE_CONTINUOUSLY = 0, // Toggle every frame as long as the key as pressed.
+    TOGGLE_ONCE = 1, // Toggle once per keypress (but not more than once per frame).
+    TOGGLE_CONTINUOUSLY_WITH_DELAY = 2, // Toggle once, then toggle continuously after a 500ms delay.
 };
+using enum KeyToggleType;
 
+namespace Io {
 enum class TextInputType {
     None = 0,
     Text = 1,
