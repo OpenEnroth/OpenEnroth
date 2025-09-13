@@ -1,12 +1,13 @@
 #include "LoadSlotState.h"
 
-#include <Engine/Engine.h>
-#include <Engine/SaveLoad.h>
-#include <GUI/GUIMessageQueue.h>
-#include <GUI/GUIWindow.h>
-#include <GUI/UI/UISaveLoad.h>
-
 #include <memory>
+
+#include "Engine/Engine.h"
+#include "Engine/SaveLoad.h"
+#include "Engine/Time/Timer.h"
+#include "GUI/GUIMessageQueue.h"
+#include "GUI/GUIWindow.h"
+#include "GUI/UI/UISaveLoad.h"
 
 LoadSlotState::LoadSlotState() = default;
 LoadSlotState::~LoadSlotState() = default;

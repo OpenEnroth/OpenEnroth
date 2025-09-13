@@ -28,6 +28,7 @@ extern "C" {
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/Time/Timer.h"
 
 #include "GUI/GUIMessageQueue.h"
 
