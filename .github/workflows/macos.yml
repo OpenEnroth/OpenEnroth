@@ -102,7 +102,7 @@ jobs:
         run: |
           ninja Run_GameTest_Headless_Parallel
         env:
-          OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+          OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
 
       - name: Run retrace tests
         if: matrix.configuration != 'Debug'
@@ -110,7 +110,7 @@ jobs:
         run: |
           ninja Run_RetraceTest_Headless_Parallel
         env:
-          OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+          OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
 
       - name: Prepare files for release
         uses: Wandalen/wretry.action@master
