@@ -85,22 +85,22 @@ jobs:
           if [ "${{matrix.architecture}}" = "arm64" ]; then
             export MACOSX_DEPLOYMENT_TARGET="11"
           fi
-          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DCMAKE_OSX_ARCHITECTURES=${{matrix.architecture}} -DNIGHTLY=ON
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DCMAKE_OSX_ARCHITECTURES=${{matrix.architecture}} -DNIGHTLY=ON
 
       - name: Build
         working-directory: build
         run: |
-          make -j4
+          ninja -v
 
       - name: Run unit tests
         working-directory: build
         run: |
-          make Run_UnitTest
+          ninja Run_UnitTest
 
       - name: Run game tests
         working-directory: build
         run: |
-          make Run_GameTest_Headless_Parallel
+          ninja Run_GameTest_Headless_Parallel
         env:
           OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
@@ -108,7 +108,7 @@ jobs:
         if: matrix.configuration != 'Debug'
         working-directory: build
         run: |
-          make Run_RetraceTest_Headless_Parallel
+          ninja Run_RetraceTest_Headless_Parallel
         env:
           OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
