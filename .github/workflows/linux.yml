@@ -112,32 +112,32 @@ jobs:
             export CFLAGS="-m32" CXXFLAGS="-m32" 
           fi
           export CC=gcc-14 && export CXX=g++-14
-          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DNIGHTLY=ON
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DNIGHTLY=ON
 
       - name: Build
         working-directory: build
         run: |
-          make -j3
+          ninja -v
 
       - name: Run unit tests
         working-directory: build
         run: |
-          make Run_UnitTest
+          ninja Run_UnitTest
 
       - name: Run game tests
         working-directory: build
         run: |
-          make Run_GameTest_Headless_Parallel
+          ninja Run_GameTest_Headless_Parallel
         env:
-          OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+          OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
 
       - name: Run retrace tests
         if: matrix.configuration != 'Debug'
         working-directory: build
         run: |
-          make Run_RetraceTest_Headless_Parallel
+          ninja Run_RetraceTest_Headless_Parallel
         env:
-          OPENENROTH_MM7_PATH: /home/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
+          OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
 
       - name: Prepare artifact
         run: |

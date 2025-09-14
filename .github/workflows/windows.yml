@@ -38,6 +38,9 @@ jobs:
   build_windows:
     timeout-minutes: 60
     runs-on: windows-2022
+    defaults:
+      run:
+        shell: bash
     strategy:
       fail-fast: false
       matrix:
@@ -90,7 +93,6 @@ jobs:
 
       - name: Build
         working-directory: build
-        shell: cmd
         run: |
           ninja -v
 
@@ -105,7 +107,7 @@ jobs:
         run: |
           ninja Run_GameTest_Headless_Parallel
         env:
-          OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
+          OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
 
       - name: Run retrace tests
         if: matrix.configuration != 'Debug'
@@ -113,13 +115,13 @@ jobs:
         run: |
           ninja Run_RetraceTest_Headless_Parallel
         env:
-          OPENENROTH_MM7_PATH: 'D:\a\OpenEnroth\OpenEnroth\OpenEnroth_GameData\mm7'
+          OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
 
       - name: Prepare files for release
         run: |
-          mkdir dist
-          copy build\src\Bin\OpenEnroth\OpenEnroth.exe dist\ 
-          copy build\src\Bin\OpenEnroth\OpenEnroth.pdb dist\ 
+          mkdir -p dist
+          cp build/src/Bin/OpenEnroth/OpenEnroth.exe dist/
+          cp build/src/Bin/OpenEnroth/OpenEnroth.pdb dist/ 
 
       - name: Zip folder for release
         if: inputs.releaseTag != ''
@@ -140,7 +142,7 @@ jobs:
 
       - name: Check dependencies
         run: |
-          dumpbin /imports build\src\Bin\OpenEnroth\OpenEnroth.exe
+          dumpbin -imports build/src/Bin/OpenEnroth/OpenEnroth.exe
 
       - name: Cleanup ccache
         run: |
