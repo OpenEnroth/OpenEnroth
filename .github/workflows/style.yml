@@ -9,7 +9,6 @@ on:
         required: false
         default: ''
         type: string
-  push: null
   release:
     types:
       - published
