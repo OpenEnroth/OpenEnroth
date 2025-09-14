@@ -71,16 +71,16 @@ jobs:
           
           target="${{matrix.target}}"
           case "$target" in
-            windows_x86)        platform=windows; architecture=x86;         ccache_architecture=x86;       ccache_size=400M;;
-            windows_x86_64)     platform=windows; architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;;
-            darwin_arm64)       platform=darwin;  architecture=arm64;       ccache_architecture=arm64;     ccache_size=400M;;
-            darwin_x86_64)      platform=darwin;  architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;;
-            linux_x86)          platform=linux;   architecture=x86;         ccache_architecture=x86;       ccache_size=400M;;
-            linux_x86_64)       platform=linux;   architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;;
-            android_universal)  platform=android; architecture=universal;   ccache_architecture=universal; ccache_size=800M;;
-            android_arm64_v8a)  platform=android; architecture=arm64-v8a;   ccache_architecture=universal; ccache_size=800M;;
-            android_arm32_v7a)  platform=android; architecture=armeabi-v7a; ccache_architecture=universal; ccache_size=800M;;
-            android_x86_64)     platform=android; architecture=x86_64;      ccache_architecture=universal; ccache_size=800M;;
+            windows_x86)        platform=windows; architecture=x86;         ccache_architecture=x86;       ccache_size=400M;  cmake_args="";;
+            windows_x86_64)     platform=windows; architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;  cmake_args="";;
+            darwin_arm64)       platform=darwin;  architecture=arm64;       ccache_architecture=arm64;     ccache_size=400M;  cmake_args="-DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_DEPLOYMENT_TARGET=11";;
+            darwin_x86_64)      platform=darwin;  architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;  cmake_args="-DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15";;
+            linux_x86)          platform=linux;   architecture=x86;         ccache_architecture=x86;       ccache_size=400M;  cmake_args="-DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32";;
+            linux_x86_64)       platform=linux;   architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;  cmake_args="-DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14";;
+            android_universal)  platform=android; architecture=universal;   ccache_architecture=universal; ccache_size=800M;  cmake_args="";;
+            android_arm64_v8a)  platform=android; architecture=arm64-v8a;   ccache_architecture=universal; ccache_size=800M;  cmake_args="";;
+            android_arm32_v7a)  platform=android; architecture=armeabi-v7a; ccache_architecture=universal; ccache_size=800M;  cmake_args="";;
+            android_x86_64)     platform=android; architecture=x86_64;      ccache_architecture=universal; ccache_size=800M;  cmake_args="";;
             *) echo "Unknown target: $target" >&2; exit 1;;
           esac
           
@@ -88,6 +88,7 @@ jobs:
           echo "MATRIX_ARCHITECTURE=$architecture" >> "$GITHUB_ENV"
           echo "MATRIX_CCACHE_ARCHITECTURE=$ccache_architecture" >> "$GITHUB_ENV"
           echo "MATRIX_CCACHE_SIZE=$ccache_size" >> "$GITHUB_ENV"
+          echo "MATRIX_CMAKE_ARGS=$cmake_args" >> "$GITHUB_ENV"
 
       - name: '[linux/android] Configure fast APT mirror'
         if: env.MATRIX_PLATFORM == 'linux' || env.MATRIX_PLATFORM == 'android'
@@ -198,30 +199,10 @@ jobs:
         run: |
           ccache --set-config=hash_dir=false
 
-      - name: '[darwin] Configure'
-        if: env.MATRIX_PLATFORM == 'darwin'
+      - name: '[darwin/windows/linux] Configure'
+        if: env.MATRIX_PLATFORM != 'android'
         run: |
-          if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86_64" ]; then
-            export MACOSX_DEPLOYMENT_TARGET="10.15"
-          fi
-          if [ "${{env.MATRIX_ARCHITECTURE}}" = "arm64" ]; then
-            export MACOSX_DEPLOYMENT_TARGET="11"
-          fi
-          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{env.MATRIX_CONFIGURATION}} -DCMAKE_OSX_ARCHITECTURES=${{env.MATRIX_ARCHITECTURE}} -DNIGHTLY=ON
-
-      - name: '[windows] Configure'
-        if: env.MATRIX_PLATFORM == 'windows'
-        run: |
-          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{env.MATRIX_CONFIGURATION}} -DNIGHTLY=ON
-
-      - name: '[linux] Configure'
-        if: env.MATRIX_PLATFORM == 'linux'
-        run: |
-          if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86" ]; then
-            export CFLAGS="-m32" CXXFLAGS="-m32" 
-          fi
-          export CC=gcc-14 && export CXX=g++-14
-          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{env.MATRIX_CONFIGURATION}} -DNIGHTLY=ON
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{env.MATRIX_CONFIGURATION}} -DNIGHTLY=ON ${{env.MATRIX_CMAKE_ARGS}}
 
       - name: '[darwin/windows/linux] Build'
         if: env.MATRIX_PLATFORM != 'android'
