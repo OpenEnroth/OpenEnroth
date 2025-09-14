@@ -57,13 +57,24 @@ bool OpenALSoundProvider::Initialize() {
         return false;
     }
 
-    ALCint attrs[3] = {};
+    ALCint attrs[7] = {};
 
     if (engine->config->audio.DisableHRTF.value()) {
         // Disable HRTF so headphones don't sound bad.
         attrs[0] = ALC_HRTF_SOFT;
         attrs[1] = ALC_FALSE;
-        attrs[2] = 0; // end of list
+        attrs[2] = ALC_MONO_SOURCES;
+        attrs[3] = 512;
+        attrs[4] = ALC_STEREO_SOURCES;
+        attrs[5] = 512;
+        attrs[6] = 0; // end of list
+    } else {
+        ALCint attrs[5] = {};
+        attrs[0] = ALC_MONO_SOURCES;
+        attrs[1] = 512;
+        attrs[2] = ALC_STEREO_SOURCES;
+        attrs[3] = 512;
+        attrs[4] = 0; // end of list
     }
 
     context = alcCreateContext(device, attrs);
