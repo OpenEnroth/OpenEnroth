@@ -33,7 +33,7 @@ class GUIButton {
     bool field_2C_is_pushed = false;
     GUIWindow *pParent = nullptr;
     std::vector<GraphicsImage*> vTextures;
-    Io::InputAction action = Io::InputAction::Invalid;
+    InputAction action = INPUT_ACTION_INVALID;
     std::string sLabel = ""; // TODO(Nik-RE-dev): rename properly. In most cases it is a hover hint for status bar.
     std::string field_75 = "";
 };

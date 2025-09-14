@@ -36,8 +36,6 @@
 
 #include "Utility/Streams/FileOutputStream.h"
 
-using Io::InputAction;
-
 static char PlatformKeyToChar(PlatformKey key, PlatformModifiers mods) {
     if (key >= PlatformKey::KEY_DIGIT_0 && key <= PlatformKey::KEY_DIGIT_9) {
         return std::to_underlying(key) - std::to_underlying(PlatformKey::KEY_DIGIT_0) + '0';
@@ -272,55 +270,44 @@ void GameWindowHandler::OnKey(PlatformKey key) {
         return;
 
     // TODO: many of hardcoded keys below should be moved out of there and made configurable
-    if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleMouseGrab, key)) {
-        OnMouseGrabToggle();
-        return;
-    }  else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Screenshot, key)) {
+    if (keyboardActionMapping->isBound(INPUT_ACTION_TAKE_SCREENSHOT, key)) {
         OnScreenshot();
         return;
-    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleWindowMode, key)) {
+    } else if (keyboardActionMapping->isBound(INPUT_ACTION_TOGGLE_WINDOW_MODE, key)) {
         OnToggleWindowMode();
         return;
-    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleResizable, key)) {
-        OnToggleResizable();
-        return;
-    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::CycleFilter, key)) {
-        OnCycleFilter();
-        return;
-    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleMouseLook, key)) {
+    } else if (keyboardActionMapping->isBound(INPUT_ACTION_TOGGLE_MOUSE_LOOK, key)) {
         if (current_screen_type == SCREEN_GAME)
             mouse->ToggleMouseLook();
         return;
     }
 
-    if (currently_selected_action_for_binding != Io::InputAction::Invalid) {
+    if (currently_selected_action_for_binding != INPUT_ACTION_INVALID) {
         // we're setting a key binding in options
         keyboardInputHandler->ProcessTextInput(key, -1);
     } else if (pArcomageGame->bGameInProgress) {
         // TODO(pskelton): how should this be handled?
-        if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleWindowMode, key) && !pMovie_Track) {
+        if (keyboardActionMapping->isBound(INPUT_ACTION_TOGGLE_WINDOW_MODE, key) && !pMovie_Track) {
             OnToggleWindowMode();
         }
         pArcomageGame->onKeyPress(key);
     } else {
         pMediaPlayer->StopMovie();
-        if (keyboardActionMapping->IsKeyMatchAction(InputAction::Return, key)) {
+        if (keyboardActionMapping->isBound(INPUT_ACTION_PARTY_CREATION_DONE, key)) {
             UI_OnKeyDown(key);
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_ESCAPE, key)) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, window_SpeakInHouse != 0, 0);
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleWindowMode, key) && !pMovie_Track) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_TOGGLE_WINDOW_MODE, key) && !pMovie_Track) {
             OnToggleWindowMode();
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Console, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_OPEN_CONSOLE, key)) {
             engine->toggleOverlays();
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ReloadShaders, key) && current_screen_type == SCREEN_GAME) {
-            engine->_messageQueue->addMessageCurrentFrame(UIMSG_DebugReloadShader, window_SpeakInHouse != 0, 0);
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::QuickSave, key) && current_screen_type == SCREEN_GAME) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_QUICK_SAVE, key) && current_screen_type == SCREEN_GAME) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_QuickSave, window_SpeakInHouse != 0, 0);
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::QuickLoad, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_QUICK_LOAD, key)) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_QuickLoad, window_SpeakInHouse != 0, 0);
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::DialogLeft, key) || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogRight, key)
-            || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogUp, key) || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogDown, key)
-            || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogSelect, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_LEFT, key) || keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_RIGHT, key)
+            || keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_UP, key) || keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_DOWN, key)
+            || keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_PRESS, key)) {
             if (current_screen_type != SCREEN_GAME &&
                 current_screen_type != SCREEN_GAMEOVER_WINDOW) {
                 UI_OnKeyDown(key);
@@ -423,21 +410,6 @@ void GameWindowHandler::OnToggleWindowMode() {
         window->setPosition(std::get<1>(GetWindowConfigPosition(engine->config.get())));
     }
     render->Reinitialize();
-}
-
-void GameWindowHandler::OnToggleResizable() {
-    engine->config->window.Resizable.toggle();
-    window->setResizable(engine->config->window.Resizable.value());
-}
-
-void GameWindowHandler::OnCycleFilter() {
-    engine->config->graphics.RenderFilter.cycleIncrement();
-    render->Reinitialize();
-}
-
-void GameWindowHandler::OnMouseGrabToggle() {
-    engine->config->window.MouseGrab.toggle();
-    window->setGrabsMouse(engine->config->window.MouseGrab.value());
 }
 
 void GameWindowHandler::handleKeyPress(PlatformKey key, PlatformModifiers mods, bool isAutoRepeat) {

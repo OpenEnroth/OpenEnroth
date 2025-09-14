@@ -24,7 +24,7 @@ static constexpr Duration DELAY_TOGGLE_TIME_PERIOD = Duration::fromRealtimeMilli
 
 std::shared_ptr<Io::KeyboardInputHandler> keyboardInputHandler = nullptr;
 
-extern Io::InputAction currently_selected_action_for_binding;  // 506E68
+extern InputAction currently_selected_action_for_binding;  // 506E68
 
 static bool PartyDoTurnBasedAwareAction(PartyAction action) {
     if (pParty->bTurnBasedModeOn) {
@@ -57,10 +57,10 @@ static bool PartyMove(PartyAction direction) {
 
 
 void Io::KeyboardInputHandler::GeneratePausedActions() {
-    for (auto action : AllInputActions()) {
+    for (auto action : allInputActions()) {
         bool isTriggered = false;
-        PlatformKey key = actionMapping->GetKey(action);
-        if (actionMapping->GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress)
+        PlatformKey key = actionMapping->keyFor(action);
+        if (actionMapping->toggleTypeFor(action) == TOGGLE_ONCE)
             isTriggered = controller->ConsumeKeyPress(key);
         else
             isTriggered = controller->IsKeyDown(key);
@@ -69,7 +69,7 @@ void Io::KeyboardInputHandler::GeneratePausedActions() {
             continue;
         }
 
-        if (action == Io::InputAction::EventTrigger) {
+        if (action == INPUT_ACTION_INTERACT) {
             if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_CHEST) {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Game_Action, 0, 0);
                 continue;
@@ -84,20 +84,20 @@ void Io::KeyboardInputHandler::GeneratePausedActions() {
 void Io::KeyboardInputHandler::GenerateGameplayActions() {
     // delay press timer
     bool resettimer = true;
-    for (InputAction action : AllInputActions()) {
+    for (InputAction action : allInputActions()) {
         bool isTriggered = false;
-        PlatformKey key = actionMapping->GetKey(action);
-        PlatformKey gamepadkey = actionMapping->GetGamepadKey(action);
+        PlatformKey key = actionMapping->keyFor(action);
+        PlatformKey gamepadkey = actionMapping->gamepadKeyFor(action);
 
-        switch (actionMapping->GetToggleType(action)) {
+        switch (actionMapping->toggleTypeFor(action)) {
         default: assert(false); [[fallthrough]];
-        case KeyToggleType::TOGGLE_OneTimePress:
+        case TOGGLE_ONCE:
             isTriggered = controller->ConsumeKeyPress(key) || controller->ConsumeKeyPress(gamepadkey);
             break;
-        case KeyToggleType::TOGGLE_Continuously:
+        case TOGGLE_CONTINUOUSLY:
             isTriggered = controller->IsKeyDown(key) || controller->IsKeyDown(gamepadkey);
             break;
-        case KeyToggleType::TOGGLE_DelayContinuous:
+        case TOGGLE_CONTINUOUSLY_WITH_DELAY:
             // TODO(captainurist): This logic breaks down if we press & release a key every frame.
             //                     Better way to implement this would be to generate the input actions from inside
             //                     the event handler.
@@ -120,31 +120,31 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
         }
 
         switch (action) {
-        case Io::InputAction::MoveForward:
+        case INPUT_ACTION_MOVE_FORWARD:
             if (current_screen_type == SCREEN_GAME) {
                 PartyMove(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_RunForward : PARTY_WalkForward);
             }
             break;
 
-        case Io::InputAction::MoveBackwards:
+        case INPUT_ACTION_MOVE_BACKWARDS:
             if (current_screen_type == SCREEN_GAME) {
                 PartyMove(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_RunBackward : PARTY_WalkBackward);
             }
             break;
 
-        case Io::InputAction::StrafeLeft:
+        case INPUT_ACTION_STRAFE_LEFT:
             if (current_screen_type == SCREEN_GAME) {
                 PartyStrafe(PARTY_StrafeLeft);
             }
             break;
 
-        case Io::InputAction::StrafeRight:
+        case INPUT_ACTION_STRAFE_RIGHT:
             if (current_screen_type == SCREEN_GAME) {
                 PartyStrafe(PARTY_StrafeRight);
             }
             break;
 
-        case Io::InputAction::TurnLeft:
+        case INPUT_ACTION_TURN_LEFT:
             if (current_screen_type == SCREEN_GAME) {
                 if (IsTurnStrafingToggled()) {
                     if (!PartyStrafe(PARTY_StrafeLeft)) {
@@ -158,7 +158,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
                     pWeather->OnPlayerTurn(10);
             }
             break;
-        case Io::InputAction::TurnRight:
+        case INPUT_ACTION_TURN_RIGHT:
             if (current_screen_type == SCREEN_GAME) {
                 if (IsTurnStrafingToggled()) {
                     if (!PartyStrafe(PARTY_StrafeRight)) {
@@ -173,20 +173,20 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             }
             break;
 
-        case Io::InputAction::Jump:
+        case INPUT_ACTION_JUMP:
             if (current_screen_type == SCREEN_GAME && !pParty->bTurnBasedModeOn) {
                 pPartyActionQueue->Add(PARTY_Jump);
             }
             break;
 
-        case Io::InputAction::Yell:
+        case INPUT_ACTION_YELL:
             if (current_screen_type == SCREEN_GAME && pParty->hasActiveCharacter()) {
                 pParty->yell();
                 pParty->activeCharacter().playReaction(SPEECH_YELL);
             }
             break;
 
-        case Io::InputAction::Pass:
+        case INPUT_ACTION_PASS:
             if (current_screen_type != SCREEN_GAME) break;
 
             if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
@@ -206,7 +206,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             }
             break;
 
-        case Io::InputAction::Combat:
+        case INPUT_ACTION_TOGGLE_TURN_BASED:
             if (current_screen_type == SCREEN_GAME) {
                 if (pParty->bTurnBasedModeOn) {
                     if (pTurnEngine->turn_stage == TE_MOVEMENT ||
@@ -221,7 +221,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             }
             break;
 
-        case Io::InputAction::CastReady: {
+        case INPUT_ACTION_QUICK_CAST: {
             if (current_screen_type != SCREEN_GAME) {
                 break;
             }
@@ -260,7 +260,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             break;
         }
 
-        case Io::InputAction::Attack:
+        case INPUT_ACTION_ATTACK:
             if (current_screen_type != SCREEN_GAME) {
                 break;
             }
@@ -273,7 +273,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
 
             break;
 
-        case Io::InputAction::EventTrigger:
+        case INPUT_ACTION_INTERACT:
             if (current_screen_type == SCREEN_GAME) {
                 engine->_messageQueue->addMessageCurrentFrame(UIMSG_Game_Action, 0, 0);
                 break;
@@ -285,60 +285,60 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             }
             break;
 
-        case Io::InputAction::CharCycle:
+        case INPUT_ACTION_NEXT_CHAR:
             if (current_screen_type != SCREEN_SPELL_BOOK) {
                 // TODO(Nik-RE-dev): why next frame?
                 engine->_messageQueue->addMessageNextFrame(UIMSG_CycleCharacters, 0, 0);
             }
             break;
 
-        case Io::InputAction::LookUp:
+        case INPUT_ACTION_LOOK_UP:
             pPartyActionQueue->Add(PARTY_LookUp);
             break;
 
-        case Io::InputAction::CenterView:
+        case INPUT_ACTION_CENTER_VIEW:
             pPartyActionQueue->Add(PARTY_CenterView);
             break;
 
-        case Io::InputAction::LookDown:
+        case INPUT_ACTION_LOOK_DOWN:
             pPartyActionQueue->Add(PARTY_LookDown);
             break;
 
-        case Io::InputAction::FlyUp:
+        case INPUT_ACTION_FLY_UP:
             if (current_screen_type == SCREEN_GAME) {
                 pPartyActionQueue->Add(PARTY_FlyUp);
             }
             break;
 
-        case Io::InputAction::Land:
+        case INPUT_ACTION_FLY_LAND:
             if (current_screen_type == SCREEN_GAME) {
                 pPartyActionQueue->Add(PARTY_Land);
             }
             break;
 
-        case Io::InputAction::FlyDown:
+        case INPUT_ACTION_FLY_DOWN:
             if (current_screen_type == SCREEN_GAME) {
                 pPartyActionQueue->Add(PARTY_FlyDown);
             }
             break;
 
-        case Io::InputAction::ZoomIn:
+        case INPUT_ACTION_ZOOM_IN:
             // engine->_messageQueue->addMessageNextFrame(UIMSG_ClickZoomInBtn, 0, 0);
             break;
 
-        case Io::InputAction::ZoomOut:
+        case INPUT_ACTION_ZOOM_OUT:
             // engine->_messageQueue->addMessageNextFrame(UIMSG_ClickZoomOutBtn, 0, 0);
             break;
 
-        case Io::InputAction::AlwaysRun:
+        case INPUT_ACTION_TOGGLE_ALWAYS_RUN:
             engine->config->settings.AlwaysRun.toggle();
             break;
 
-        case Io::InputAction::Escape:
+        case INPUT_ACTION_ESCAPE:
             // engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, window_SpeakInHouse != 0, 0);
             break;
 
-        case Io::InputAction::Inventory:
+        case INPUT_ACTION_OPEN_INVENTORY:
             if (current_screen_type == SCREEN_GAME) {
                 engine->_messageQueue->addMessageNextFrame(UIMSG_OpenInventory, 0, 0);
             }
@@ -409,7 +409,7 @@ void Io::KeyboardInputHandler::SetWindowInputStatus(WindowInputStatus status) {
 
 //----- (00459F10) --------------------------------------------------------
 bool Io::KeyboardInputHandler::ProcessTextInput(PlatformKey key, int c) {
-    if (currently_selected_action_for_binding == Io::InputAction::Invalid) {
+    if (currently_selected_action_for_binding == INPUT_ACTION_INVALID) {
         if (inputType != TextInputType::Text && inputType != TextInputType::Number) {
             return false;
         }
@@ -456,9 +456,9 @@ void Io::KeyboardInputHandler::SetTextInput(std::string_view text) {
 
 //----- (00459E3F) --------------------------------------------------------
 void Io::KeyboardInputHandler::ResetKeys() {
-    for (auto action : AllInputActions()) {
+    for (auto action : allInputActions()) {
         // requesting KeyPressed will consume all the events due to how logic is designed in GetAsyncKeyState
-        controller->ConsumeKeyPress(actionMapping->GetKey(action));
+        controller->ConsumeKeyPress(actionMapping->keyFor(action));
     }
 }
 

@@ -1,60 +1,53 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <memory>
-#include <string>
 
 #include "Library/Platform/Interface/PlatformEnums.h"
 #include "Io/InputAction.h"
 
 #include "Application/GameConfig.h"
 
-namespace Io {
 enum class KeyToggleType {
-    TOGGLE_Continuously = 0,
-    TOGGLE_OneTimePress = 1,
-    TOGGLE_DelayContinuous = 2,
+    TOGGLE_CONTINUOUSLY = 0, // Toggle every frame as long as the key as pressed.
+    TOGGLE_ONCE = 1, // Toggle once per keypress (but not more than once per frame).
+    TOGGLE_CONTINUOUSLY_WITH_DELAY = 2, // Toggle once, then toggle continuously after a 500ms delay.
 };
+using enum KeyToggleType;
 
+enum class KeybindingsQuery {
+    KEYBINDINGS_ALL = 0,
+    KEYBINDINGS_CONFIGURABLE = 1
+};
+using enum KeybindingsQuery;
+
+namespace Io {
 enum class TextInputType {
     None = 0,
     Text = 1,
     Number = 2,
 };
 
+using Keybindings = std::unordered_map<InputAction, PlatformKey>;
+
 class KeyboardActionMapping {
  public:
     explicit KeyboardActionMapping(std::shared_ptr<GameConfig> config);
 
-    void MapKey(InputAction action, PlatformKey key);
-    void MapKey(InputAction action, PlatformKey key, KeyToggleType type);
-    void MapGamepadKey(InputAction action, PlatformKey key);
-    PlatformKey MapDefaultKey(InputAction action);
+    PlatformKey keyFor(InputAction action) const;
+    PlatformKey gamepadKeyFor(InputAction action) const;
+    KeyToggleType toggleTypeFor(InputAction action) const;
 
-    PlatformKey GetKey(InputAction action) const;
-    PlatformKey GetGamepadKey(InputAction action) const;
-    KeyToggleType GetToggleType(InputAction action) const;
-    bool IsKeyMatchAction(InputAction action, PlatformKey key) const;
+    bool isBound(InputAction action, PlatformKey key) const;
 
-    GameConfig::Key *InputActionToConfigKey(InputAction action);
-    PlatformKey ConfigDefaultKey(InputAction action);
-    PlatformKey ConfigGetKey(InputAction action);
-    void ConfigSetKey(InputAction action, PlatformKey key);
-
-    GameConfig::Key *InputActionToConfigGamepadKey(InputAction action);
-    PlatformKey ConfigDefaultGamepadKey(InputAction action);
-    PlatformKey ConfigGetGamepadKey(InputAction action);
-    void ConfigSetGamepadKey(InputAction action, PlatformKey key);
-
-    void ReadMappings();
-    void StoreMappings();
-    void SetDefaultMapping();
+    Keybindings keybindings(KeybindingsQuery query) const;
+    Keybindings defaultKeybindings(KeybindingsQuery query) const;
+    void applyKeybindings(const Keybindings &keybindings);
 
  private:
-    std::map<InputAction, PlatformKey> actionKeyMap;
-    std::map<InputAction, PlatformKey> gamepadKeyMap;
-    std::map<InputAction, KeyToggleType> keyToggleMap;
-    std::shared_ptr<GameConfig> config = nullptr;
+    std::shared_ptr<GameConfig> _config;
+    std::unordered_map<InputAction, KeyConfigEntry *> _keyboardEntryByInputAction;
+    std::unordered_map<InputAction, KeyConfigEntry *> _gamepadEntryByInputAction;
 };
 }  // namespace Io
 

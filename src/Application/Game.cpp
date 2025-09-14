@@ -1537,10 +1537,6 @@ void Game::processQueuedMessages() {
                 }
                 break;
             }
-            case UIMSG_DebugReloadShader:
-                render->ReloadShaders();
-                pAudioPlayer->playUISound(SOUND_StartMainChoice02);
-                continue;
             case UIMSG_QuickSave:
                 if (engine->_currentLoadedMapId == MAP_ARENA) {
                     engine->_statusBar->setEvent(LSTR_NO_SAVING_IN_THE_ARENA);

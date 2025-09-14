@@ -52,11 +52,11 @@ class GUIWindow {
     virtual ~GUIWindow() = default;
 
     GUIButton *CreateButton(Pointi position, Sizei dimensions, int uButtonType, int uData,
-                            UIMessageType msg, unsigned int msg_param, Io::InputAction action = Io::InputAction::Invalid, std::string_view label = {},
+                            UIMessageType msg, unsigned int msg_param, InputAction action = INPUT_ACTION_INVALID, std::string_view label = {},
                             const std::vector<GraphicsImage *> &textures = {});
 
     GUIButton *CreateButton(std::string id, Pointi position, Sizei dimensions, int uButtonType, int uData,
-                            UIMessageType msg, unsigned int msg_param, Io::InputAction action = Io::InputAction::Invalid, std::string_view label = {},
+                            UIMessageType msg, unsigned int msg_param, InputAction action = INPUT_ACTION_INVALID, std::string_view label = {},
                             const std::vector<GraphicsImage *> &textures = {});
 
     bool Contains(unsigned int x, unsigned int y);

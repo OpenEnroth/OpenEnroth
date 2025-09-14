@@ -67,10 +67,10 @@ GUIWindow_Transition::GUIWindow_Transition(WindowType windowType, ScreenType scr
 void GUIWindow_Transition::createButtons(const std::string &okHint, const std::string &cancelHint, UIMessageType confirmMsg, UIMessageType cancelMsg) {
     this->sHint = okHint;
 
-    pBtn_ExitCancel = CreateButton({556, 445}, {75, 33}, 1, 0, cancelMsg, 0, Io::InputAction::No, cancelHint, {ui_buttdesc2});
-    pBtn_YES = CreateButton({476, 445}, {75, 33}, 1, 0, confirmMsg, 0, Io::InputAction::Yes, okHint, {ui_buttyes2});
-    CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, confirmMsg, 1, Io::InputAction::EventTrigger, okHint);
-    CreateButton({8, 8}, {460, 344}, 1, 0, confirmMsg, 1, Io::InputAction::Invalid, okHint);
+    pBtn_ExitCancel = CreateButton({556, 445}, {75, 33}, 1, 0, cancelMsg, 0, INPUT_ACTION_TRANSITION_NO, cancelHint, {ui_buttdesc2});
+    pBtn_YES = CreateButton({476, 445}, {75, 33}, 1, 0, confirmMsg, 0, INPUT_ACTION_TRANSITION_YES, okHint, {ui_buttyes2});
+    CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, confirmMsg, 1, INPUT_ACTION_INTERACT, okHint);
+    CreateButton({8, 8}, {460, 344}, 1, 0, confirmMsg, 1, INPUT_ACTION_INVALID, okHint);
 }
 
 void GUIWindow_Transition::Release() {

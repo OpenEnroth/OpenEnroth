@@ -5,84 +5,81 @@
 
 #include "Library/Serialization/EnumSerialization.h"
 
-using Io::InputAction;
+#include "Utility/Segment.h"
 
+// TODO(captainurist): these should be localizable.
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(InputAction, CASE_INSENSITIVE, {
-    {InputAction::MoveForward, "FORWARD"},
-    {InputAction::MoveBackwards, "BACKWARD"},
-    {InputAction::TurnLeft, "LEFT"},
-    {InputAction::TurnRight, "RIGHT"},
-    {InputAction::Yell, "YELL"},
-    {InputAction::Jump, "JUMP"},
-    {InputAction::Combat, "COMBAT"},
-    {InputAction::CastReady, "CAST READY"},
-    {InputAction::Attack, "ATTACK"},
-    {InputAction::EventTrigger, "TRIGGER"},
-    {InputAction::Cast, "CAST"},
-    {InputAction::Pass, "PASS"},
-    {InputAction::CharCycle, "CHAR CYCLE"},
-    {InputAction::Quest, "QUEST"},
-    {InputAction::QuickRef, "QUICK REF"},
-    {InputAction::Rest, "REST"},
-    {InputAction::TimeCal, "TIME/CAL"},
-    {InputAction::Autonotes, "AUTONOTES"},
-    {InputAction::Mapbook, "MAP BOOK"},
-    {InputAction::AlwaysRun, "ALWAYS RUN"},
-    {InputAction::LookUp, "LOOK UP"},
-    {InputAction::LookDown, "LOOK DOWN"},
-    {InputAction::CenterView, "CTR VIEW"},
-    {InputAction::ZoomIn, "ZOOM IN"},
-    {InputAction::ZoomOut, "ZOOM OUT"},
-    {InputAction::FlyUp, "FLY UP"},
-    {InputAction::FlyDown, "FLY DOWN"},
-    {InputAction::Land, "LAND"},
-    {InputAction::StrafeLeft, "STRAFE LEFT"},
-    {InputAction::StrafeRight, "STRAFE RIGHT"},
-    {InputAction::QuickSave, "QUICK SAVE"},
-    {InputAction::QuickLoad, "QUICK LOAD"},
-    {InputAction::History, "HISTORY"},
-    {InputAction::Stats, "STATS"},
-    {InputAction::Skills, "SKILLS"},
-    {InputAction::Awards, "INVENTORY"},
-    {InputAction::Inventory, "AWARDS"},
-    {InputAction::NewGame, "NEW GAME"},
-    {InputAction::SaveGame, "SAVE GAME"},
-    {InputAction::LoadGame, "Load GAME"},
-    {InputAction::ExitGame, "EXIT GAME"},
-    {InputAction::ReturnToGame, "RETURN TO GAME"},
-    {InputAction::Controls, "CONTROLS"},
-    {InputAction::Options, "OPTIONS"},
-    {InputAction::Credits, "CREDITS"},
-    {InputAction::Clear, "CLEAR"},
-    {InputAction::Return, "RETURN"},
-    {InputAction::Minus, "MINUS"},
-    {InputAction::Plus, "PLUS"},
-    {InputAction::Yes, "YES"},
-    {InputAction::No, "NO"},
-    {InputAction::Rest8Hours, "REST 8 HOURS"},
-    {InputAction::WaitTillDawn, "WAIT TILL DAWN"},
-    {InputAction::WaitHour, "WAIT 1 HOUR"},
-    {InputAction::Wait5Minutes, "WAIT 5 MINUTES"},
-    {InputAction::Screenshot, "SCREENSHOT"},
-    {InputAction::Console, "CONSOLE"},
-    {InputAction::ToggleMouseGrab, "TOGGLE MOUSE GRAB"},
-    {InputAction::ToggleResizable, "TOGGLE RESIZABLE"},
-    {InputAction::CycleFilter, "CYCLE FILTER"},
-    {InputAction::ReloadShaders, "RELOAD SHADERS"},
-    {InputAction::SelectChar1, "CHAR 1"},
-    {InputAction::SelectChar2, "CHAR 2"},
-    {InputAction::SelectChar3, "CHAR 3"},
-    {InputAction::SelectChar4, "CHAR 4"},
-    {InputAction::SelectNPC1, "NPC 1"},
-    {InputAction::SelectNPC2, "NPC 2"},
-    {InputAction::DialogUp, "DIALOG UP"},
-    {InputAction::DialogDown, "DIALOG DOWN"},
-    {InputAction::DialogLeft, "DIALOG LEFT"},
-    {InputAction::DialogRight, "DIALOG RIGHT"},
-    {InputAction::DialogSelect, "DIALOG SELECT"},
-    {InputAction::Escape, "ESCAPE"},
-    {InputAction::ToggleMouseLook, "TOGGLE MOUSE LOOK"},
-    {InputAction::ToggleWindowMode, "TOGGLE WINDOW MODE"}
+    {INPUT_ACTION_MOVE_FORWARD, "FORWARD"},
+    {INPUT_ACTION_MOVE_BACKWARDS, "BACKWARD"},
+    {INPUT_ACTION_TURN_LEFT, "LEFT"},
+    {INPUT_ACTION_TURN_RIGHT, "RIGHT"},
+    {INPUT_ACTION_YELL, "YELL"},
+    {INPUT_ACTION_JUMP, "JUMP"},
+    {INPUT_ACTION_TOGGLE_TURN_BASED, "COMBAT"},
+    {INPUT_ACTION_QUICK_CAST, "CAST READY"},
+    {INPUT_ACTION_ATTACK, "ATTACK"},
+    {INPUT_ACTION_INTERACT, "TRIGGER"},
+    {INPUT_ACTION_OPEN_SPELLBOOK, "CAST"},
+    {INPUT_ACTION_PASS, "PASS"},
+    {INPUT_ACTION_NEXT_CHAR, "CHAR CYCLE"},
+    {INPUT_ACTION_OPEN_QUESTS, "QUEST"},
+    {INPUT_ACTION_OPEN_QUICK_REFERENCE, "QUICK REF"},
+    {INPUT_ACTION_REST, "REST"},
+    {INPUT_ACTION_OPEN_CALENDAR, "TIME/CAL"},
+    {INPUT_ACTION_OPEN_AUTONOTES, "AUTONOTES"},
+    {INPUT_ACTION_OPEN_MAP, "MAP BOOK"},
+    {INPUT_ACTION_TOGGLE_ALWAYS_RUN, "ALWAYS RUN"},
+    {INPUT_ACTION_LOOK_UP, "LOOK UP"},
+    {INPUT_ACTION_LOOK_DOWN, "LOOK DOWN"},
+    {INPUT_ACTION_CENTER_VIEW, "CTR VIEW"},
+    {INPUT_ACTION_ZOOM_IN, "ZOOM IN"},
+    {INPUT_ACTION_ZOOM_OUT, "ZOOM OUT"},
+    {INPUT_ACTION_FLY_UP, "FLY UP"},
+    {INPUT_ACTION_FLY_DOWN, "FLY DOWN"},
+    {INPUT_ACTION_FLY_LAND, "LAND"},
+    {INPUT_ACTION_STRAFE_LEFT, "STRAFE LEFT"},
+    {INPUT_ACTION_STRAFE_RIGHT, "STRAFE RIGHT"},
+    {INPUT_ACTION_QUICK_SAVE, "QUICK SAVE"},
+    {INPUT_ACTION_QUICK_LOAD, "QUICK LOAD"},
+    {INPUT_ACTION_OPEN_HISTORY, "HISTORY"},
+    {INPUT_ACTION_OPEN_STATS, "STATS"},
+    {INPUT_ACTION_OPEN_SKILLS, "SKILLS"},
+    {INPUT_ACTION_OPEN_AWARDS, "INVENTORY"},
+    {INPUT_ACTION_OPEN_INVENTORY, "AWARDS"},
+    {INPUT_ACTION_NEW_GAME, "NEW GAME"},
+    {INPUT_ACTION_SAVE_GAME, "SAVE GAME"},
+    {INPUT_ACTION_LOAD_GAME, "Load GAME"},
+    {INPUT_ACTION_EXIT_GAME, "EXIT GAME"},
+    {INPUT_ACTION_BACK_TO_GAME, "RETURN TO GAME"},
+    {INPUT_ACTION_OPEN_CONTROLS, "CONTROLS"},
+    {INPUT_ACTION_OPEN_OPTIONS, "OPTIONS"},
+    {INPUT_ACTION_SHOW_CREDITS, "CREDITS"},
+    {INPUT_ACTION_PARTY_CREATION_CLEAR, "CLEAR"},
+    {INPUT_ACTION_PARTY_CREATION_DONE, "RETURN"},
+    {INPUT_ACTION_PARTY_CREATION_DEC, "MINUS"},
+    {INPUT_ACTION_PARTY_CREATION_INC, "PLUS"},
+    {INPUT_ACTION_TRANSITION_YES, "YES"},
+    {INPUT_ACTION_TRANSITION_NO, "NO"},
+    {INPUT_ACTION_REST_HEAL, "REST 8 HOURS"},
+    {INPUT_ACTION_REST_WAIT_TILL_DAWN, "WAIT TILL DAWN"},
+    {INPUT_ACTION_REST_WAIT_1_HOUR, "WAIT 1 HOUR"},
+    {INPUT_ACTION_REST_WAIT_5_MINUTES, "WAIT 5 MINUTES"},
+    {INPUT_ACTION_TAKE_SCREENSHOT, "SCREENSHOT"},
+    {INPUT_ACTION_OPEN_CONSOLE, "CONSOLE"},
+    {INPUT_ACTION_SELECT_CHAR_1, "CHAR 1"},
+    {INPUT_ACTION_SELECT_CHAR_2, "CHAR 2"},
+    {INPUT_ACTION_SELECT_CHAR_3, "CHAR 3"},
+    {INPUT_ACTION_SELECT_CHAR_4, "CHAR 4"},
+    {INPUT_ACTION_SELECT_NPC_1, "NPC 1"},
+    {INPUT_ACTION_SELECT_NPC_2, "NPC 2"},
+    {INPUT_ACTION_DIALOG_UP, "DIALOG UP"},
+    {INPUT_ACTION_DIALOG_DOWN, "DIALOG DOWN"},
+    {INPUT_ACTION_DIALOG_LEFT, "DIALOG LEFT"},
+    {INPUT_ACTION_DIALOG_RIGHT, "DIALOG RIGHT"},
+    {INPUT_ACTION_DIALOG_PRESS, "DIALOG SELECT"},
+    {INPUT_ACTION_ESCAPE, "ESCAPE"},
+    {INPUT_ACTION_TOGGLE_MOUSE_LOOK, "TOGGLE MOUSE LOOK"},
+    {INPUT_ACTION_TOGGLE_WINDOW_MODE, "TOGGLE WINDOW MODE"}
 });
 
 std::string GetDisplayName(InputAction action) {
@@ -90,20 +87,4 @@ std::string GetDisplayName(InputAction action) {
     if (trySerialize(action, &result))
         return result;
     return "-INVALID-ACTION-";
-}
-
-const std::vector<InputAction> AllInputActions() {
-    std::vector<InputAction> v;
-    for (int i = 0; i <= (int)InputAction::Escape; ++i) {
-        v.push_back((InputAction)i);
-    }
-    return v;
-}
-
-const std::vector<InputAction> VanillaInputActions() {
-    std::vector<InputAction> v;
-    for (int i = 0; i <= (int)InputAction::Land; ++i) {
-        v.push_back((InputAction)i);
-    }
-    return v;
 }

@@ -54,8 +54,8 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
     ui_book_button1_on = assets->getImage_Alpha("tab-an-6b");
     ui_book_button1_off = assets->getImage_Alpha("tab-an-6a");
 
-    pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, 1, 0, UIMSG_LloydBookFlipButton, 0, Io::InputAction::Invalid, localization->GetString(LSTR_SET_BEACON));
-    pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, 1, 0, UIMSG_LloydBookFlipButton, 1, Io::InputAction::Invalid, localization->GetString(LSTR_RECALL_BEACON));
+    pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, 1, 0, UIMSG_LloydBookFlipButton, 0, INPUT_ACTION_INVALID, localization->GetString(LSTR_SET_BEACON));
+    pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, 1, 0, UIMSG_LloydBookFlipButton, 1, INPUT_ACTION_INVALID, localization->GetString(LSTR_RECALL_BEACON));
 
     int casterId = casterPid.id();
     assert(casterId < pParty->pCharacters.size());

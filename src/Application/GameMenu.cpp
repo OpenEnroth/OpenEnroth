@@ -1,4 +1,5 @@
-#include <map>
+#include <unordered_set>
+#include <unordered_map>
 #include <string>
 
 #include "GameMenu.h"
@@ -27,10 +28,9 @@
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
+#include "Utility/MapAccess.h"
 
 using Io::TextInputType;
-using Io::KeyToggleType;
-using Io::InputAction;
 
 enum class CurrentConfirmationState {
     CONFIRM_NONE,
@@ -44,9 +44,9 @@ static bool isLoadSlotClicked = false;
 
 CurrentConfirmationState confirmationState = CONFIRM_NONE;
 
-InputAction currently_selected_action_for_binding = Io::InputAction::Invalid;  // 506E68
-std::map<InputAction, bool> key_map_conflicted;  // 506E6C
-std::map<InputAction, PlatformKey> curr_key_map;
+InputAction currently_selected_action_for_binding = INPUT_ACTION_INVALID;  // 506E68
+std::unordered_set<InputAction> key_map_conflicted;  // 506E6C
+std::unordered_map<InputAction, PlatformKey> curr_key_map;
 
 void Game_StartNewGameWhilePlaying(bool force_start) {
     if (confirmationState == CONFIRM_NEW_GAME || force_start) {
@@ -230,7 +230,7 @@ void Menu::EventLoop() {
             }
 
             case UIMSG_ChangeKeyButton: {
-                if (currently_selected_action_for_binding != Io::InputAction::Invalid) {
+                if (currently_selected_action_for_binding != INPUT_ACTION_INVALID) {
                     pAudioPlayer->playUISound(SOUND_error);
                 } else {
                     currently_selected_action_for_binding = (InputAction)param;
@@ -242,14 +242,9 @@ void Menu::EventLoop() {
             }
 
             case UIMSG_ResetKeyMapping: {
-                for (InputAction action : VanillaInputActions()) {
-                    PlatformKey newKey = keyboardActionMapping->MapDefaultKey(action);
-
-                    curr_key_map[action] = newKey;
-                    key_map_conflicted[action] = false;
-                    keyboardActionMapping->MapKey(action, newKey, keyboardActionMapping->GetToggleType(action));
-                }
-                keyboardActionMapping->StoreMappings();
+                curr_key_map = keyboardActionMapping->defaultKeybindings(KEYBINDINGS_CONFIGURABLE);
+                keyboardActionMapping->applyKeybindings(curr_key_map);
+                key_map_conflicted.clear();
                 pAudioPlayer->playUISound(SOUND_chimes);
                 continue;
             }
@@ -419,17 +414,9 @@ void Menu::EventLoop() {
                     current_screen_type = SCREEN_MENU;
                     pGUIWindow_CurrentMenu = new GUIWindow_GameMenu();
                 } else if (current_screen_type == SCREEN_KEYBOARD_OPTIONS) {
-                    // KeyToggleType pKeyToggleType;  // [sp+0h] [bp-5FCh]@287
-                    int v197 = 1;
-                    bool anyBindingErrors = false;
+                    bool hasConflicts = !key_map_conflicted.empty();
 
-                    for (auto action : VanillaInputActions()) {
-                        if (key_map_conflicted[action]) {
-                            anyBindingErrors = true;
-                            continue;
-                        }
-                    }
-                    if (anyBindingErrors) {
+                    if (hasConflicts) {
                         pAudioPlayer->playUISound(SOUND_error);
                         break; // deny to exit options until all key conflicts are solved
                     } else {
@@ -440,10 +427,7 @@ void Menu::EventLoop() {
                             }
                         }
 
-                        for (auto action : VanillaInputActions()) {
-                            keyboardActionMapping->MapKey(action, curr_key_map[action], keyboardActionMapping->GetToggleType(action));
-                        }
-                        keyboardActionMapping->StoreMappings();
+                        keyboardActionMapping->applyKeybindings(curr_key_map);
                     }
 
                     pGUIWindow_CurrentMenu->Release();

@@ -319,7 +319,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             continue;
         }
 
-        if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogLeft, key)) {
+        if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_LEFT, key)) {
             if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - win->_selectStep >= 0) {
                 win->pCurrentPosActiveItem -= win->_selectStep;
                 if (current_screen_type == SCREEN_PARTY_CREATION) {
@@ -331,7 +331,7 @@ bool UI_OnKeyDown(PlatformKey key) {
                 engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
             }
             break;
-        } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogRight, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_RIGHT, key)) {
             int newPos = win->pCurrentPosActiveItem + win->_selectStep;
             if (newPos < win->pNumPresenceButton + win->pStartingPosActiveItem) {
                 win->pCurrentPosActiveItem = newPos;
@@ -344,7 +344,7 @@ bool UI_OnKeyDown(PlatformKey key) {
                 engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
             }
             break;
-        } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogDown, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_DOWN, key)) {
             int v17 = win->pStartingPosActiveItem;
             int v18 = win->pCurrentPosActiveItem;
             if (v18 >= win->pNumPresenceButton + v17 - 1)
@@ -384,7 +384,7 @@ bool UI_OnKeyDown(PlatformKey key) {
                 return true;
             }
             break;
-        } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogUp, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_UP, key)) {
             int v22 = win->pCurrentPosActiveItem;
             int v23 = win->pStartingPosActiveItem;
             if (v22 <= v23)
@@ -397,7 +397,7 @@ bool UI_OnKeyDown(PlatformKey key) {
                 engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
             }
             return true;
-        } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogSelect, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_PRESS, key)) {
             GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
             engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
         } else if (key == PlatformKey::KEY_PAGEDOWN) { // not button event from user, but a call from GUI_UpdateWindows to track mouse
