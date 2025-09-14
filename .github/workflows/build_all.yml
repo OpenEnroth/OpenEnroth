@@ -188,6 +188,10 @@ jobs:
           max-size: ${{env.MATRIX_CCACHE_SIZE}}
           save: ${{github.event_name != 'pull_request'}}
 
+      - name: 'Record build start time'
+        run: |
+          echo "BUILD_START_TIME=$(date +%s)" >> $GITHUB_ENV
+
       - name: '[windows] Configure ccache'
         if: env.MATRIX_PLATFORM == 'windows'
         run: |
@@ -333,6 +337,9 @@ jobs:
         run: |
           objdump -p build/src/Bin/OpenEnroth/OpenEnroth | grep 'NEEDED'
 
-      - name: Cleanup ccache
+      - name: 'Cleanup ccache'
         run: |
-          ccache -c
+          BUILD_END_TIME=$(date +%s)
+          BUILD_DURATION=$((BUILD_END_TIME - BUILD_START_TIME))
+          # Keep only entries accessed during the build window. Remove entries from previous builds that weren't touched.
+          ccache --evict-older-than ${BUILD_DURATION}s
