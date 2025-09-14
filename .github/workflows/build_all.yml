@@ -297,7 +297,7 @@ jobs:
           cp build/src/Bin/OpenEnroth/OpenEnroth dist/
 
       - name: '[darwin/windows/linux] Zip folder for release'
-        if: env.MATRIX_PLATFORM != 'android' && inputs.releaseTag != ''
+        if: env.MATRIX_PLATFORM != 'android'
         uses: thedoctor0/zip-release@0.7.6
         with:
           type: zip
