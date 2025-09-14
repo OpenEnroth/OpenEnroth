@@ -70,17 +70,9 @@ jobs:
           echo "tagName=${{env.TAG_NAME}}" >> "$GITHUB_OUTPUT"
 
 
-  build_android:
+  build_all:
     needs: advanceNightlyTag
-    uses: ./.github/workflows/android.yml
-    secrets: inherit
-    with:
-      releaseTag: '${{needs.advanceNightlyTag.outputs.tagName}}'
-      myCommit: '${{inputs.myCommit}}'
-
-  build_linux:
-    needs: advanceNightlyTag
-    uses: ./.github/workflows/linux.yml
+    uses: ./.github/workflows/build_all.yml
     secrets: inherit
     with:
       releaseTag: '${{needs.advanceNightlyTag.outputs.tagName}}'
@@ -88,23 +80,7 @@ jobs:
 
   build_linux_flatpak:
     needs: advanceNightlyTag
-    uses: ./.github/workflows/linux-flatpak.yml
-    secrets: inherit
-    with:
-      releaseTag: '${{needs.advanceNightlyTag.outputs.tagName}}'
-      myCommit: '${{inputs.myCommit}}'
-
-  build_macos:
-    needs: advanceNightlyTag
-    uses: ./.github/workflows/macos.yml
-    secrets: inherit
-    with:
-      releaseTag: '${{needs.advanceNightlyTag.outputs.tagName}}'
-      myCommit: '${{inputs.myCommit}}'
-
-  build_windows:
-    needs: advanceNightlyTag
-    uses: ./.github/workflows/windows.yml
+    uses: ./.github/workflows/linux_flatpak.yml
     secrets: inherit
     with:
       releaseTag: '${{needs.advanceNightlyTag.outputs.tagName}}'
