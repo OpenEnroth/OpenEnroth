@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9d3769e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;efd3b88</span>
    </div>
   </td>
  </tr>
@@ -74,152 +74,278 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#namespaces">Namespaces</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">InputAction.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;string&gt;</code><br />
-<code>#include &lt;vector&gt;</code><br />
+<code>#include &quot;<a class="el" href="Segment_8h.html">Utility/Segment.h</a>&quot;</code><br />
 </div><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
-Namespaces</h2></td></tr>
-<tr class="memitem:namespaceIo"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceIo.html">Io</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a547e2ba6c6a5bb3a0b5987131e62a90c"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90c">Io::InputAction</a> : int { <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca122077e11a3cc3a56a2d82f1d15dbd32">Io::MoveForward</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caebd4ca6cacc8ae4fad939d0c1c9c2dcf">Io::MoveBackwards</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca8240c76a9676d55f5d5bfeb9a6fc7028">Io::TurnLeft</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca40dfa38b645f971c52766aa367a474fd">Io::TurnRight</a>
+<tr class="memitem:a9c56096a2c51a4a98f907f8f87fd1671"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a> { <br />
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a0598235e406b7af24d6ed5026bd868d1">INPUT_ACTION_MOVE_FORWARD</a> = 0
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671acbce5d169bb24d94efb9f00b935c2f21">INPUT_ACTION_MOVE_BACKWARDS</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671abe0871289dc227872064ce3017a8fdd8">INPUT_ACTION_TURN_LEFT</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671abdc1266289798f104dd0366a98908225">INPUT_ACTION_TURN_RIGHT</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca13a7a219f971512ebec62e4b689ab603">Io::Yell</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca101f693f72287a2819a364f64ca1c0ed">Io::Jump</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca30ad1054cf7ad7636a26844a6f782e1f">Io::Combat</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caf117632507488216671d80135b4df3d1">Io::CastReady</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a51757de378a6e3d347b080d339497f0c">INPUT_ACTION_YELL</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a041a43f1d17ee8f017415b3887f7f7fb">INPUT_ACTION_JUMP</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a58a25557e72db8c746de1c395e48802c">INPUT_ACTION_TOGGLE_TURN_BASED</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671ac2a598a84dd273e966c67eb7c0fa84ee">INPUT_ACTION_QUICK_CAST</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cadcfafcb4323b102c7e204555d313ba0a">Io::Attack</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caced2d4c94b2172cfb0175b4a0de5afec">Io::EventTrigger</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca4cd9f3996d60790cd11c04f842ebc43c">Io::Cast</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cab9b57aae83585e17ede4570dcede353c">Io::Pass</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671add115bc96ca1a8c0efc5d53eac5bab1d">INPUT_ACTION_ATTACK</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671ad9d81e46e14fadf50ce26a64f5c04cb1">INPUT_ACTION_INTERACT</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a8f60db2f225baa68deaba4c4e423b734">INPUT_ACTION_OPEN_SPELLBOOK</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a7ab8ec9fcbb8a66db1057f5e0cf0ed6d">INPUT_ACTION_PASS</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cacaa9546e7235ebf7657170f8f0049396">Io::CharCycle</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca07bf513a88c3df282a30cb374f8a933d">Io::Quest</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caaac7cd14cb9bedf69f4ed5dc53360cd5">Io::QuickRef</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca55276c10d84e1df7713b441e76e141f9">Io::Rest</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a1c73d43bca12fc808c93c0c0dac3436f">INPUT_ACTION_NEXT_CHAR</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a2e4ff0ae2366b5d3dbf6d64d8a525257">INPUT_ACTION_OPEN_QUESTS</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671ad83d7cbeb7da6896987311149372b96b">INPUT_ACTION_OPEN_QUICK_REFERENCE</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a2c17ae13f0297657c9f9a993a1acf7fd">INPUT_ACTION_REST</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca7b9abc8fc9a7ef309a1ccb87ed752499">Io::TimeCal</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca8dd0b88087564d3791979998cbb1b14d">Io::Autonotes</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cabda038c3b4d6afd43dba41369916eac5">Io::Mapbook</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca6eb62f1766deb6206aff4629e4059052">Io::AlwaysRun</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a4538abef0e033037ec5d72395f3ba2b7">INPUT_ACTION_OPEN_CALENDAR</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a7f1da319e4385c5f46abe96ae9ae0698">INPUT_ACTION_OPEN_AUTONOTES</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671aacd6ac58110127ecf5fb6dc3375ae4b8">INPUT_ACTION_OPEN_MAP</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671acf753161534f84b767366f9a4954feef">INPUT_ACTION_TOGGLE_ALWAYS_RUN</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca5ca771078723e6444d6e62fee8d308e1">Io::LookUp</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca4b85ded56391316230738e585b8e9928">Io::LookDown</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca0d1dabb47110df81f77698f4d4fec283">Io::CenterView</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca5a0f3c981ba9ec235133016ef47d447f">Io::ZoomIn</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671af5be9f7c295de9e01ea1b86ca431a769">INPUT_ACTION_LOOK_UP</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a660400a904b75c33bc5a168f7844f483">INPUT_ACTION_LOOK_DOWN</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a32144391c465ca8b70545a34737a1c20">INPUT_ACTION_CENTER_VIEW</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671aa0efe13ffbf117e35e0ac7b441439907">INPUT_ACTION_ZOOM_IN</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca2f0d8494b24b27f03ae198ee780b8b03">Io::ZoomOut</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caa25701e88a7d83d5bed5f1c3e5c1c79c">Io::FlyUp</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca516e4fbe4236a3d6a4c5ae0991367ad0">Io::FlyDown</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca512ef7c688a2c8572d5e16f44e17e869">Io::Land</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a24020a279589ff0efd62e5538af7810b">INPUT_ACTION_ZOOM_OUT</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a56670eb4f13ccd2696199dc1fdf548ef">INPUT_ACTION_FLY_UP</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a9e7396c6438d450d252e11e57e62317d">INPUT_ACTION_FLY_DOWN</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671aab9f10eb9277625b1c2f003cda0e2c33">INPUT_ACTION_FLY_LAND</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca619850cebb4607f51de326bd78c27429">Io::StrafeLeft</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca9b4d85f3d87b8e67d74e087541ed3743">Io::StrafeRight</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caf5f9b456cc2e69d7379ce59a85e254b2">Io::QuickSave</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca9a2691007df3673842172269e98d6ed5">Io::QuickLoad</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a132124407f52933cb5d6b46ecf220e6d">INPUT_ACTION_STRAFE_LEFT</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a0c15ecb24d0695bc22f1a09decf8aa5c">INPUT_ACTION_STRAFE_RIGHT</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a8750d1f555ea641a5163ee28393b3617">INPUT_ACTION_QUICK_SAVE</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a88b0e7e1c8bcf18ffeaa8bc7aad39010">INPUT_ACTION_QUICK_LOAD</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca16d2b386b2034b9488996466aaae0b57">Io::History</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca452a7601dbc6f2c38aa89e68bda8b603">Io::Stats</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caaa79c5d1cbe3d96218a92481bcfaa39c">Io::Skills</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca4d604dd8f008145471dc845683399189">Io::Inventory</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a8229ca82f296a6453c556048f8cd4334">INPUT_ACTION_OPEN_HISTORY</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a92c25dcb649efaf2cd09a489d488ce79">INPUT_ACTION_OPEN_STATS</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a62063ce48cff501fef9f48feb7eefef6">INPUT_ACTION_OPEN_SKILLS</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a4efbf450becd993a34941108ffa2d7c5">INPUT_ACTION_OPEN_INVENTORY</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caf66cdb8a3ef49c79c633e1bffcfd1e74">Io::Awards</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca31947c4eece1b08b70e9ba88dae24416">Io::NewGame</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca8320510226e1bdbe1b1e2bef443235f5">Io::SaveGame</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca1613dbfa6c7c385e7aea951a03f93f58">Io::LoadGame</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671aae6a95a38ed5da833e977bddc050ad3d">INPUT_ACTION_OPEN_AWARDS</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671ae95b7bbd4e924de7302800f9dd623599">INPUT_ACTION_NEW_GAME</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a87e4f2f2b284003bb0a22c447946c631">INPUT_ACTION_SAVE_GAME</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671ab0659ae4bb18f96d13f1db9c6e8bfe38">INPUT_ACTION_LOAD_GAME</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca4166c4566d4ee3c335e2f09f7f0d5d0b">Io::ExitGame</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caef9b613c6628881c7fec25b190eda077">Io::ReturnToGame</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca24b6472fcfa59cddd3f7bbc326582b5f">Io::Controls</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cadae8ace18bdcbcc6ae5aece263e14fe8">Io::Options</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671aa3fad666300c43eb823f53b44c256c35">INPUT_ACTION_EXIT_GAME</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671addd35845f3377b6906c335ffc2f5f40e">INPUT_ACTION_BACK_TO_GAME</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671aa238c516f78c507cda1f338bcb0d6d0d">INPUT_ACTION_OPEN_CONTROLS</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671abcec459e82e90f7650c4a3a58bc17cf4">INPUT_ACTION_OPEN_OPTIONS</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca948a2e3548aaf7f9941a3192fa607d51">Io::Credits</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cadc30bc0c7914db5918da4263fce93ad2">Io::Clear</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca988fd738de9c6d177440c5dcf69e73ce">Io::Return</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca453fb623e752c5993f65bc410fd74fe5">Io::Minus</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a3abe99f05071e68008c93c10f2179154">INPUT_ACTION_SHOW_CREDITS</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671adee602692395fab5347185096fcdf281">INPUT_ACTION_PARTY_CREATION_CLEAR</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a2e8949a88e924b7bede03343cd63562d">INPUT_ACTION_PARTY_CREATION_DONE</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a686ca3c5b7b7a072ba10fe19d832275e">INPUT_ACTION_PARTY_CREATION_DEC</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca32ba78fe43257d3e7f88e3935a8ea0d4">Io::Plus</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca93cba07454f06a4a960172bbd6e2a435">Io::Yes</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cabafd7322c6e97d25b6299b5d6fe8920b">Io::No</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca7dc4442147c64d696498b3ed072677f6">Io::Rest8Hours</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a00fa56aeb42d9280a90d779209eb9367">INPUT_ACTION_PARTY_CREATION_INC</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a30a733a50ca9ddd35f2b58810e6e982e">INPUT_ACTION_TRANSITION_YES</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671aa0ee05a0b9cfb245ea5f3118ec00b198">INPUT_ACTION_TRANSITION_NO</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671aa7a3f16cf826f86c93c651f1d2fe3d8f">INPUT_ACTION_REST_HEAL</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cadb814e65b5ad520dd38f8b627421c1d7">Io::WaitTillDawn</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caded58054859c7fb38978fe626ad480ab">Io::WaitHour</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca511d58b460329a422e530a2612174952">Io::Wait5Minutes</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca3afbd9828e011526955ca93b48b57524">Io::Screenshot</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a9bff40184e044aca923329e65eb4939c">INPUT_ACTION_REST_WAIT_TILL_DAWN</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a000f4f18a9f77ec0adb4bcdee9dc1ac3">INPUT_ACTION_REST_WAIT_1_HOUR</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a0e880d2da8fa5d434147cf6d6553a3b3">INPUT_ACTION_REST_WAIT_5_MINUTES</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a3f7f13e43e65b4367e0707a615e39efe">INPUT_ACTION_TAKE_SCREENSHOT</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cabccaa4aa80831b76c11240a16447975f">Io::Console</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90caec6c684332c0d476312cf9843ba0cf24">Io::ToggleMouseGrab</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca462ff95275555ac472e7c77ee24eb8f5">Io::ToggleResizable</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cafb76dc41ca56f4e090cf65021285c8a9">Io::CycleFilter</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671aa74c1b7a55f3b4e0fb53aea49434824c">INPUT_ACTION_OPEN_CONSOLE</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671adcab29db18067287b057ce7107b349e1">INPUT_ACTION_SELECT_CHAR_1</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a0f6ae7f356d201662319271848ef94b9">INPUT_ACTION_SELECT_CHAR_2</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671abc58fdad753e4aec9aa6b643c4e2bae7">INPUT_ACTION_SELECT_CHAR_3</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cabb0c83712eee939897ad589bbc71f3ef">Io::ReloadShaders</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca0c5cfec5e2cce851208d0ac98c1836dc">Io::SelectChar1</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca24d85847204a126752a10d76a4d631da">Io::SelectChar2</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca6b65dc34505e51fed2df27a4d3f053bc">Io::SelectChar3</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a76acef7fba1431d253039f90e9695977">INPUT_ACTION_SELECT_CHAR_4</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a10c866ade58d55d43bd8e1f9ebebd9a2">INPUT_ACTION_SELECT_NPC_1</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671af82a56dc2e3889674041c27bac82f06e">INPUT_ACTION_SELECT_NPC_2</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671aaadca9b5d2f04d3eb0cbea1b0f94d3c9">INPUT_ACTION_DIALOG_UP</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca1f83123725098482bb485f7745af2c1e">Io::SelectChar4</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca5d168f307fcb338820a8464146aa8a82">Io::SelectNPC1</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cacd467ff778438aa8002cb37e578bf25a">Io::SelectNPC2</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cab0bf104a01d2387f56ae13d1a391cca9">Io::DialogUp</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a7116c1cf9416380b9d91151d438c2bd9">INPUT_ACTION_DIALOG_DOWN</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671ac2cbab50718db484336d12e43669babc">INPUT_ACTION_DIALOG_LEFT</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a09d01fd38936844295ecb447b02067b9">INPUT_ACTION_DIALOG_RIGHT</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671acb5f5f6546e4ae9a6ec8ecce1bd37fff">INPUT_ACTION_DIALOG_PRESS</a>
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca9410fdad52dab043214d4ab2468e79f3">Io::DialogDown</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca81519bd6c91553e76e3b8046210f578c">Io::DialogLeft</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cad1991d3bfc7505cfdb5897d4b3f834bb">Io::DialogRight</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cab9eb661a1d8375b169d55d31e2ace4af">Io::DialogSelect</a>
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a1d9dc027b3198db884654b0fd4bda241">INPUT_ACTION_ESCAPE</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a3ded18b39ba1c86355f96b09a3153936">INPUT_ACTION_TOGGLE_MOUSE_LOOK</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a8acac623985f9cb321ddeab0580d77f7">INPUT_ACTION_TOGGLE_WINDOW_MODE</a>
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a881c891d4d29e40e0ad822d9339ba5b5">INPUT_ACTION_INVALID</a> = -1
 , <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca013ec032d3460d4be4431c6ab1f8f224">Io::Escape</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca73ba221c055ef0b7df649b4372bfab50">Io::ToggleMouseLook</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca16aeb82c8e07772d2bbcf2dc5fc82611">Io::ToggleWindowMode</a>
-, <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90cae93f994f01c537c4e2f7d8528c3eb5e9">Io::Count</a>
-, <br />
-&#160;&#160;<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca4bbb8f967da6d1a610596d7257179c2b">Io::Invalid</a> = Count
+&#160;&#160;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a35519e228339378838bc8f53420777db">INPUT_ACTION_FIRST_VALID</a> = INPUT_ACTION_MOVE_FORWARD
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a55dfa1a253b6f59f993bcba6e2a59d0e">INPUT_ACTION_LAST_VALID</a> = INPUT_ACTION_TOGGLE_WINDOW_MODE
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671aa8ac2fe77dc1048f003cae8e9d127dac">INPUT_ACTION_FIRST_CONFIGURABLE</a> = INPUT_ACTION_MOVE_FORWARD
+, <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a419f08b2e0df6852f629459c5c0f35ab">INPUT_ACTION_LAST_CONFIGURABLE</a> = INPUT_ACTION_FLY_LAND
 <br />
  }</td></tr>
-<tr class="separator:a547e2ba6c6a5bb3a0b5987131e62a90c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a9c56096a2c51a4a98f907f8f87fd1671"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a40d04831efd5eeee8c909e2aa387a9b4"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90c">Io::InputAction</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="InputAction_8h.html#a40d04831efd5eeee8c909e2aa387a9b4">AllInputActions</a> ()</td></tr>
-<tr class="separator:a40d04831efd5eeee8c909e2aa387a9b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae87029f48ff9fa584a45d409757f9393"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90c">Io::InputAction</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="InputAction_8h.html#ae87029f48ff9fa584a45d409757f9393">VanillaInputActions</a> ()</td></tr>
-<tr class="separator:ae87029f48ff9fa584a45d409757f9393"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75b1ad2db234cf31102bd1f0c32c6aeb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="InputAction_8h.html#a75b1ad2db234cf31102bd1f0c32c6aeb">GetDisplayName</a> (<a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90c">Io::InputAction</a> action)</td></tr>
-<tr class="separator:a75b1ad2db234cf31102bd1f0c32c6aeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2008afcfaf5ab50788b4994b7f69057e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="InputAction_8h.html#a2008afcfaf5ab50788b4994b7f69057e">allInputActions</a> ()</td></tr>
+<tr class="separator:a2008afcfaf5ab50788b4994b7f69057e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad34c171178c9501f44dea35df83af975"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="InputAction_8h.html#ad34c171178c9501f44dea35df83af975">allConfigurableInputActions</a> ()</td></tr>
+<tr class="separator:ad34c171178c9501f44dea35df83af975"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50cb04b96d227e140e39be963ed14017"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="InputAction_8h.html#a50cb04b96d227e140e39be963ed14017">GetDisplayName</a> (<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a> action)</td></tr>
+<tr class="separator:a50cb04b96d227e140e39be963ed14017"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="a40d04831efd5eeee8c909e2aa387a9b4" name="a40d04831efd5eeee8c909e2aa387a9b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a40d04831efd5eeee8c909e2aa387a9b4">&#9670;&#160;</a></span>AllInputActions()</h2>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a9c56096a2c51a4a98f907f8f87fd1671" name="a9c56096a2c51a4a98f907f8f87fd1671"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c56096a2c51a4a98f907f8f87fd1671">&#9670;&#160;</a></span>InputAction</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const std::vector&lt; <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90c">Io::InputAction</a> &gt; AllInputActions </td>
+          <td class="memname">enum class <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a0598235e406b7af24d6ed5026bd868d1" name="a9c56096a2c51a4a98f907f8f87fd1671a0598235e406b7af24d6ed5026bd868d1"></a>INPUT_ACTION_MOVE_FORWARD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671acbce5d169bb24d94efb9f00b935c2f21" name="a9c56096a2c51a4a98f907f8f87fd1671acbce5d169bb24d94efb9f00b935c2f21"></a>INPUT_ACTION_MOVE_BACKWARDS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671abe0871289dc227872064ce3017a8fdd8" name="a9c56096a2c51a4a98f907f8f87fd1671abe0871289dc227872064ce3017a8fdd8"></a>INPUT_ACTION_TURN_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671abdc1266289798f104dd0366a98908225" name="a9c56096a2c51a4a98f907f8f87fd1671abdc1266289798f104dd0366a98908225"></a>INPUT_ACTION_TURN_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a51757de378a6e3d347b080d339497f0c" name="a9c56096a2c51a4a98f907f8f87fd1671a51757de378a6e3d347b080d339497f0c"></a>INPUT_ACTION_YELL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a041a43f1d17ee8f017415b3887f7f7fb" name="a9c56096a2c51a4a98f907f8f87fd1671a041a43f1d17ee8f017415b3887f7f7fb"></a>INPUT_ACTION_JUMP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a58a25557e72db8c746de1c395e48802c" name="a9c56096a2c51a4a98f907f8f87fd1671a58a25557e72db8c746de1c395e48802c"></a>INPUT_ACTION_TOGGLE_TURN_BASED&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671ac2a598a84dd273e966c67eb7c0fa84ee" name="a9c56096a2c51a4a98f907f8f87fd1671ac2a598a84dd273e966c67eb7c0fa84ee"></a>INPUT_ACTION_QUICK_CAST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671add115bc96ca1a8c0efc5d53eac5bab1d" name="a9c56096a2c51a4a98f907f8f87fd1671add115bc96ca1a8c0efc5d53eac5bab1d"></a>INPUT_ACTION_ATTACK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671ad9d81e46e14fadf50ce26a64f5c04cb1" name="a9c56096a2c51a4a98f907f8f87fd1671ad9d81e46e14fadf50ce26a64f5c04cb1"></a>INPUT_ACTION_INTERACT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a8f60db2f225baa68deaba4c4e423b734" name="a9c56096a2c51a4a98f907f8f87fd1671a8f60db2f225baa68deaba4c4e423b734"></a>INPUT_ACTION_OPEN_SPELLBOOK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a7ab8ec9fcbb8a66db1057f5e0cf0ed6d" name="a9c56096a2c51a4a98f907f8f87fd1671a7ab8ec9fcbb8a66db1057f5e0cf0ed6d"></a>INPUT_ACTION_PASS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a1c73d43bca12fc808c93c0c0dac3436f" name="a9c56096a2c51a4a98f907f8f87fd1671a1c73d43bca12fc808c93c0c0dac3436f"></a>INPUT_ACTION_NEXT_CHAR&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a2e4ff0ae2366b5d3dbf6d64d8a525257" name="a9c56096a2c51a4a98f907f8f87fd1671a2e4ff0ae2366b5d3dbf6d64d8a525257"></a>INPUT_ACTION_OPEN_QUESTS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671ad83d7cbeb7da6896987311149372b96b" name="a9c56096a2c51a4a98f907f8f87fd1671ad83d7cbeb7da6896987311149372b96b"></a>INPUT_ACTION_OPEN_QUICK_REFERENCE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a2c17ae13f0297657c9f9a993a1acf7fd" name="a9c56096a2c51a4a98f907f8f87fd1671a2c17ae13f0297657c9f9a993a1acf7fd"></a>INPUT_ACTION_REST&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a4538abef0e033037ec5d72395f3ba2b7" name="a9c56096a2c51a4a98f907f8f87fd1671a4538abef0e033037ec5d72395f3ba2b7"></a>INPUT_ACTION_OPEN_CALENDAR&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a7f1da319e4385c5f46abe96ae9ae0698" name="a9c56096a2c51a4a98f907f8f87fd1671a7f1da319e4385c5f46abe96ae9ae0698"></a>INPUT_ACTION_OPEN_AUTONOTES&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671aacd6ac58110127ecf5fb6dc3375ae4b8" name="a9c56096a2c51a4a98f907f8f87fd1671aacd6ac58110127ecf5fb6dc3375ae4b8"></a>INPUT_ACTION_OPEN_MAP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671acf753161534f84b767366f9a4954feef" name="a9c56096a2c51a4a98f907f8f87fd1671acf753161534f84b767366f9a4954feef"></a>INPUT_ACTION_TOGGLE_ALWAYS_RUN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671af5be9f7c295de9e01ea1b86ca431a769" name="a9c56096a2c51a4a98f907f8f87fd1671af5be9f7c295de9e01ea1b86ca431a769"></a>INPUT_ACTION_LOOK_UP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a660400a904b75c33bc5a168f7844f483" name="a9c56096a2c51a4a98f907f8f87fd1671a660400a904b75c33bc5a168f7844f483"></a>INPUT_ACTION_LOOK_DOWN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a32144391c465ca8b70545a34737a1c20" name="a9c56096a2c51a4a98f907f8f87fd1671a32144391c465ca8b70545a34737a1c20"></a>INPUT_ACTION_CENTER_VIEW&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671aa0efe13ffbf117e35e0ac7b441439907" name="a9c56096a2c51a4a98f907f8f87fd1671aa0efe13ffbf117e35e0ac7b441439907"></a>INPUT_ACTION_ZOOM_IN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a24020a279589ff0efd62e5538af7810b" name="a9c56096a2c51a4a98f907f8f87fd1671a24020a279589ff0efd62e5538af7810b"></a>INPUT_ACTION_ZOOM_OUT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a56670eb4f13ccd2696199dc1fdf548ef" name="a9c56096a2c51a4a98f907f8f87fd1671a56670eb4f13ccd2696199dc1fdf548ef"></a>INPUT_ACTION_FLY_UP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a9e7396c6438d450d252e11e57e62317d" name="a9c56096a2c51a4a98f907f8f87fd1671a9e7396c6438d450d252e11e57e62317d"></a>INPUT_ACTION_FLY_DOWN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671aab9f10eb9277625b1c2f003cda0e2c33" name="a9c56096a2c51a4a98f907f8f87fd1671aab9f10eb9277625b1c2f003cda0e2c33"></a>INPUT_ACTION_FLY_LAND&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a132124407f52933cb5d6b46ecf220e6d" name="a9c56096a2c51a4a98f907f8f87fd1671a132124407f52933cb5d6b46ecf220e6d"></a>INPUT_ACTION_STRAFE_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a0c15ecb24d0695bc22f1a09decf8aa5c" name="a9c56096a2c51a4a98f907f8f87fd1671a0c15ecb24d0695bc22f1a09decf8aa5c"></a>INPUT_ACTION_STRAFE_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a8750d1f555ea641a5163ee28393b3617" name="a9c56096a2c51a4a98f907f8f87fd1671a8750d1f555ea641a5163ee28393b3617"></a>INPUT_ACTION_QUICK_SAVE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a88b0e7e1c8bcf18ffeaa8bc7aad39010" name="a9c56096a2c51a4a98f907f8f87fd1671a88b0e7e1c8bcf18ffeaa8bc7aad39010"></a>INPUT_ACTION_QUICK_LOAD&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a8229ca82f296a6453c556048f8cd4334" name="a9c56096a2c51a4a98f907f8f87fd1671a8229ca82f296a6453c556048f8cd4334"></a>INPUT_ACTION_OPEN_HISTORY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a92c25dcb649efaf2cd09a489d488ce79" name="a9c56096a2c51a4a98f907f8f87fd1671a92c25dcb649efaf2cd09a489d488ce79"></a>INPUT_ACTION_OPEN_STATS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a62063ce48cff501fef9f48feb7eefef6" name="a9c56096a2c51a4a98f907f8f87fd1671a62063ce48cff501fef9f48feb7eefef6"></a>INPUT_ACTION_OPEN_SKILLS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a4efbf450becd993a34941108ffa2d7c5" name="a9c56096a2c51a4a98f907f8f87fd1671a4efbf450becd993a34941108ffa2d7c5"></a>INPUT_ACTION_OPEN_INVENTORY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671aae6a95a38ed5da833e977bddc050ad3d" name="a9c56096a2c51a4a98f907f8f87fd1671aae6a95a38ed5da833e977bddc050ad3d"></a>INPUT_ACTION_OPEN_AWARDS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671ae95b7bbd4e924de7302800f9dd623599" name="a9c56096a2c51a4a98f907f8f87fd1671ae95b7bbd4e924de7302800f9dd623599"></a>INPUT_ACTION_NEW_GAME&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a87e4f2f2b284003bb0a22c447946c631" name="a9c56096a2c51a4a98f907f8f87fd1671a87e4f2f2b284003bb0a22c447946c631"></a>INPUT_ACTION_SAVE_GAME&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671ab0659ae4bb18f96d13f1db9c6e8bfe38" name="a9c56096a2c51a4a98f907f8f87fd1671ab0659ae4bb18f96d13f1db9c6e8bfe38"></a>INPUT_ACTION_LOAD_GAME&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671aa3fad666300c43eb823f53b44c256c35" name="a9c56096a2c51a4a98f907f8f87fd1671aa3fad666300c43eb823f53b44c256c35"></a>INPUT_ACTION_EXIT_GAME&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671addd35845f3377b6906c335ffc2f5f40e" name="a9c56096a2c51a4a98f907f8f87fd1671addd35845f3377b6906c335ffc2f5f40e"></a>INPUT_ACTION_BACK_TO_GAME&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671aa238c516f78c507cda1f338bcb0d6d0d" name="a9c56096a2c51a4a98f907f8f87fd1671aa238c516f78c507cda1f338bcb0d6d0d"></a>INPUT_ACTION_OPEN_CONTROLS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671abcec459e82e90f7650c4a3a58bc17cf4" name="a9c56096a2c51a4a98f907f8f87fd1671abcec459e82e90f7650c4a3a58bc17cf4"></a>INPUT_ACTION_OPEN_OPTIONS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a3abe99f05071e68008c93c10f2179154" name="a9c56096a2c51a4a98f907f8f87fd1671a3abe99f05071e68008c93c10f2179154"></a>INPUT_ACTION_SHOW_CREDITS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671adee602692395fab5347185096fcdf281" name="a9c56096a2c51a4a98f907f8f87fd1671adee602692395fab5347185096fcdf281"></a>INPUT_ACTION_PARTY_CREATION_CLEAR&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a2e8949a88e924b7bede03343cd63562d" name="a9c56096a2c51a4a98f907f8f87fd1671a2e8949a88e924b7bede03343cd63562d"></a>INPUT_ACTION_PARTY_CREATION_DONE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a686ca3c5b7b7a072ba10fe19d832275e" name="a9c56096a2c51a4a98f907f8f87fd1671a686ca3c5b7b7a072ba10fe19d832275e"></a>INPUT_ACTION_PARTY_CREATION_DEC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a00fa56aeb42d9280a90d779209eb9367" name="a9c56096a2c51a4a98f907f8f87fd1671a00fa56aeb42d9280a90d779209eb9367"></a>INPUT_ACTION_PARTY_CREATION_INC&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a30a733a50ca9ddd35f2b58810e6e982e" name="a9c56096a2c51a4a98f907f8f87fd1671a30a733a50ca9ddd35f2b58810e6e982e"></a>INPUT_ACTION_TRANSITION_YES&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671aa0ee05a0b9cfb245ea5f3118ec00b198" name="a9c56096a2c51a4a98f907f8f87fd1671aa0ee05a0b9cfb245ea5f3118ec00b198"></a>INPUT_ACTION_TRANSITION_NO&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671aa7a3f16cf826f86c93c651f1d2fe3d8f" name="a9c56096a2c51a4a98f907f8f87fd1671aa7a3f16cf826f86c93c651f1d2fe3d8f"></a>INPUT_ACTION_REST_HEAL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a9bff40184e044aca923329e65eb4939c" name="a9c56096a2c51a4a98f907f8f87fd1671a9bff40184e044aca923329e65eb4939c"></a>INPUT_ACTION_REST_WAIT_TILL_DAWN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a000f4f18a9f77ec0adb4bcdee9dc1ac3" name="a9c56096a2c51a4a98f907f8f87fd1671a000f4f18a9f77ec0adb4bcdee9dc1ac3"></a>INPUT_ACTION_REST_WAIT_1_HOUR&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a0e880d2da8fa5d434147cf6d6553a3b3" name="a9c56096a2c51a4a98f907f8f87fd1671a0e880d2da8fa5d434147cf6d6553a3b3"></a>INPUT_ACTION_REST_WAIT_5_MINUTES&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a3f7f13e43e65b4367e0707a615e39efe" name="a9c56096a2c51a4a98f907f8f87fd1671a3f7f13e43e65b4367e0707a615e39efe"></a>INPUT_ACTION_TAKE_SCREENSHOT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671aa74c1b7a55f3b4e0fb53aea49434824c" name="a9c56096a2c51a4a98f907f8f87fd1671aa74c1b7a55f3b4e0fb53aea49434824c"></a>INPUT_ACTION_OPEN_CONSOLE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671adcab29db18067287b057ce7107b349e1" name="a9c56096a2c51a4a98f907f8f87fd1671adcab29db18067287b057ce7107b349e1"></a>INPUT_ACTION_SELECT_CHAR_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a0f6ae7f356d201662319271848ef94b9" name="a9c56096a2c51a4a98f907f8f87fd1671a0f6ae7f356d201662319271848ef94b9"></a>INPUT_ACTION_SELECT_CHAR_2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671abc58fdad753e4aec9aa6b643c4e2bae7" name="a9c56096a2c51a4a98f907f8f87fd1671abc58fdad753e4aec9aa6b643c4e2bae7"></a>INPUT_ACTION_SELECT_CHAR_3&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a76acef7fba1431d253039f90e9695977" name="a9c56096a2c51a4a98f907f8f87fd1671a76acef7fba1431d253039f90e9695977"></a>INPUT_ACTION_SELECT_CHAR_4&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a10c866ade58d55d43bd8e1f9ebebd9a2" name="a9c56096a2c51a4a98f907f8f87fd1671a10c866ade58d55d43bd8e1f9ebebd9a2"></a>INPUT_ACTION_SELECT_NPC_1&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671af82a56dc2e3889674041c27bac82f06e" name="a9c56096a2c51a4a98f907f8f87fd1671af82a56dc2e3889674041c27bac82f06e"></a>INPUT_ACTION_SELECT_NPC_2&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671aaadca9b5d2f04d3eb0cbea1b0f94d3c9" name="a9c56096a2c51a4a98f907f8f87fd1671aaadca9b5d2f04d3eb0cbea1b0f94d3c9"></a>INPUT_ACTION_DIALOG_UP&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a7116c1cf9416380b9d91151d438c2bd9" name="a9c56096a2c51a4a98f907f8f87fd1671a7116c1cf9416380b9d91151d438c2bd9"></a>INPUT_ACTION_DIALOG_DOWN&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671ac2cbab50718db484336d12e43669babc" name="a9c56096a2c51a4a98f907f8f87fd1671ac2cbab50718db484336d12e43669babc"></a>INPUT_ACTION_DIALOG_LEFT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a09d01fd38936844295ecb447b02067b9" name="a9c56096a2c51a4a98f907f8f87fd1671a09d01fd38936844295ecb447b02067b9"></a>INPUT_ACTION_DIALOG_RIGHT&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671acb5f5f6546e4ae9a6ec8ecce1bd37fff" name="a9c56096a2c51a4a98f907f8f87fd1671acb5f5f6546e4ae9a6ec8ecce1bd37fff"></a>INPUT_ACTION_DIALOG_PRESS&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a1d9dc027b3198db884654b0fd4bda241" name="a9c56096a2c51a4a98f907f8f87fd1671a1d9dc027b3198db884654b0fd4bda241"></a>INPUT_ACTION_ESCAPE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a3ded18b39ba1c86355f96b09a3153936" name="a9c56096a2c51a4a98f907f8f87fd1671a3ded18b39ba1c86355f96b09a3153936"></a>INPUT_ACTION_TOGGLE_MOUSE_LOOK&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a8acac623985f9cb321ddeab0580d77f7" name="a9c56096a2c51a4a98f907f8f87fd1671a8acac623985f9cb321ddeab0580d77f7"></a>INPUT_ACTION_TOGGLE_WINDOW_MODE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a881c891d4d29e40e0ad822d9339ba5b5" name="a9c56096a2c51a4a98f907f8f87fd1671a881c891d4d29e40e0ad822d9339ba5b5"></a>INPUT_ACTION_INVALID&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a35519e228339378838bc8f53420777db" name="a9c56096a2c51a4a98f907f8f87fd1671a35519e228339378838bc8f53420777db"></a>INPUT_ACTION_FIRST_VALID&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a55dfa1a253b6f59f993bcba6e2a59d0e" name="a9c56096a2c51a4a98f907f8f87fd1671a55dfa1a253b6f59f993bcba6e2a59d0e"></a>INPUT_ACTION_LAST_VALID&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671aa8ac2fe77dc1048f003cae8e9d127dac" name="a9c56096a2c51a4a98f907f8f87fd1671aa8ac2fe77dc1048f003cae8e9d127dac"></a>INPUT_ACTION_FIRST_CONFIGURABLE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a9c56096a2c51a4a98f907f8f87fd1671a419f08b2e0df6852f629459c5c0f35ab" name="a9c56096a2c51a4a98f907f8f87fd1671a419f08b2e0df6852f629459c5c0f35ab"></a>INPUT_ACTION_LAST_CONFIGURABLE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="ad34c171178c9501f44dea35df83af975" name="ad34c171178c9501f44dea35df83af975"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad34c171178c9501f44dea35df83af975">&#9670;&#160;</a></span>allConfigurableInputActions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a> &gt; allConfigurableInputActions </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a75b1ad2db234cf31102bd1f0c32c6aeb" name="a75b1ad2db234cf31102bd1f0c32c6aeb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a75b1ad2db234cf31102bd1f0c32c6aeb">&#9670;&#160;</a></span>GetDisplayName()</h2>
+<a id="a2008afcfaf5ab50788b4994b7f69057e" name="a2008afcfaf5ab50788b4994b7f69057e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2008afcfaf5ab50788b4994b7f69057e">&#9670;&#160;</a></span>allInputActions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classSegment.html">Segment</a>&lt; <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a> &gt; allInputActions </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a50cb04b96d227e140e39be963ed14017" name="a50cb04b96d227e140e39be963ed14017"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50cb04b96d227e140e39be963ed14017">&#9670;&#160;</a></span>GetDisplayName()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -227,25 +353,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">std::string GetDisplayName </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90c">Io::InputAction</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a>&#160;</td>
           <td class="paramname"><em>action</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae87029f48ff9fa584a45d409757f9393" name="ae87029f48ff9fa584a45d409757f9393"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae87029f48ff9fa584a45d409757f9393">&#9670;&#160;</a></span>VanillaInputActions()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">const std::vector&lt; <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90c">Io::InputAction</a> &gt; VanillaInputActions </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>

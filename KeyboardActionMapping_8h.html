@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9d3769e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;efd3b88</span>
    </div>
   </td>
  </tr>
@@ -76,14 +76,14 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">KeyboardActionMapping.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;map&gt;</code><br />
+<div class="textblock"><code>#include &lt;unordered_map&gt;</code><br />
 <code>#include &lt;memory&gt;</code><br />
-<code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="PlatformEnums_8h.html">Library/Platform/Interface/PlatformEnums.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="InputAction_8h.html">Io/InputAction.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="GameConfig_8h.html">Application/GameConfig.h</a>&quot;</code><br />
@@ -98,13 +98,22 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespaceIo"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceIo.html">Io</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:ae98eaa08492ad29d9f4cb3565a3490bf"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceIo.html#ae98eaa08492ad29d9f4cb3565a3490bf">Io::Keybindings</a> = std::unordered_map&lt; <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a>, <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> &gt;</td></tr>
+<tr class="separator:ae98eaa08492ad29d9f4cb3565a3490bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a2c93bc6b898f8766fc71035a886995fd"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceIo.html#a2c93bc6b898f8766fc71035a886995fd">Io::KeyToggleType</a> { <a class="el" href="namespaceIo.html#a2c93bc6b898f8766fc71035a886995fda57bf13d5440458f95821124ffc91a851">Io::TOGGLE_Continuously</a> = 0
-, <a class="el" href="namespaceIo.html#a2c93bc6b898f8766fc71035a886995fda07685425dab47f5587bda9aceca924ed">Io::TOGGLE_OneTimePress</a> = 1
-, <a class="el" href="namespaceIo.html#a2c93bc6b898f8766fc71035a886995fda527fc99c280977ddbbefbb257699967e">Io::TOGGLE_DelayContinuous</a> = 2
+<tr class="memitem:a5c49e7fa19c1d05df73bd020a3ad4841"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="KeyboardActionMapping_8h.html#a5c49e7fa19c1d05df73bd020a3ad4841">KeyToggleType</a> { <a class="el" href="KeyboardActionMapping_8h.html#a5c49e7fa19c1d05df73bd020a3ad4841a7d788839e05b1e8daf87bb0e02e3d9d7">TOGGLE_CONTINUOUSLY</a> = 0
+, <a class="el" href="KeyboardActionMapping_8h.html#a5c49e7fa19c1d05df73bd020a3ad4841a176bb1792a9a554ff445f0ec75919760">TOGGLE_ONCE</a> = 1
+, <a class="el" href="KeyboardActionMapping_8h.html#a5c49e7fa19c1d05df73bd020a3ad4841acced0e3d4bc8b75f79b7e31dbbfd80c0">TOGGLE_CONTINUOUSLY_WITH_DELAY</a> = 2
  }</td></tr>
-<tr class="separator:a2c93bc6b898f8766fc71035a886995fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a5c49e7fa19c1d05df73bd020a3ad4841"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a196d4179edf0e890f550a8712e0dce3a"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="KeyboardActionMapping_8h.html#a196d4179edf0e890f550a8712e0dce3a">KeybindingsQuery</a> { <a class="el" href="KeyboardActionMapping_8h.html#a196d4179edf0e890f550a8712e0dce3aa4b6a1b362e6b69336dd570a5934804a1">KEYBINDINGS_ALL</a> = 0
+, <a class="el" href="KeyboardActionMapping_8h.html#a196d4179edf0e890f550a8712e0dce3aa926ff81e583104fcbed31baf8725fc92">KEYBINDINGS_CONFIGURABLE</a> = 1
+ }</td></tr>
+<tr class="separator:a196d4179edf0e890f550a8712e0dce3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abcac8783c22713c3acb7361b3006e7e1"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceIo.html#abcac8783c22713c3acb7361b3006e7e1">Io::TextInputType</a> { <a class="el" href="namespaceIo.html#abcac8783c22713c3acb7361b3006e7e1a6adf97f83acf6453d4a6a4b1070f3754">Io::None</a> = 0
 , <a class="el" href="namespaceIo.html#abcac8783c22713c3acb7361b3006e7e1a9dffbf69ffba8bc38bc4e01abf4b1675">Io::Text</a> = 1
 , <a class="el" href="namespaceIo.html#abcac8783c22713c3acb7361b3006e7e1ab2ee912b91d69b435159c7c3f6df7f5f">Io::Number</a> = 2
@@ -116,6 +125,60 @@ Variables</h2></td></tr>
 <tr class="memitem:adc5f3d87c27c73e2a58d4da1d1848301"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classIo_1_1KeyboardActionMapping.html">Io::KeyboardActionMapping</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="KeyboardActionMapping_8h.html#adc5f3d87c27c73e2a58d4da1d1848301">keyboardActionMapping</a></td></tr>
 <tr class="separator:adc5f3d87c27c73e2a58d4da1d1848301"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a196d4179edf0e890f550a8712e0dce3a" name="a196d4179edf0e890f550a8712e0dce3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a196d4179edf0e890f550a8712e0dce3a">&#9670;&#160;</a></span>KeybindingsQuery</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="KeyboardActionMapping_8h.html#a196d4179edf0e890f550a8712e0dce3a">KeybindingsQuery</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a196d4179edf0e890f550a8712e0dce3aa4b6a1b362e6b69336dd570a5934804a1" name="a196d4179edf0e890f550a8712e0dce3aa4b6a1b362e6b69336dd570a5934804a1"></a>KEYBINDINGS_ALL&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a196d4179edf0e890f550a8712e0dce3aa926ff81e583104fcbed31baf8725fc92" name="a196d4179edf0e890f550a8712e0dce3aa926ff81e583104fcbed31baf8725fc92"></a>KEYBINDINGS_CONFIGURABLE&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
+<a id="a5c49e7fa19c1d05df73bd020a3ad4841" name="a5c49e7fa19c1d05df73bd020a3ad4841"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c49e7fa19c1d05df73bd020a3ad4841">&#9670;&#160;</a></span>KeyToggleType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="KeyboardActionMapping_8h.html#a5c49e7fa19c1d05df73bd020a3ad4841">KeyToggleType</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a5c49e7fa19c1d05df73bd020a3ad4841a7d788839e05b1e8daf87bb0e02e3d9d7" name="a5c49e7fa19c1d05df73bd020a3ad4841a7d788839e05b1e8daf87bb0e02e3d9d7"></a>TOGGLE_CONTINUOUSLY&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a5c49e7fa19c1d05df73bd020a3ad4841a176bb1792a9a554ff445f0ec75919760" name="a5c49e7fa19c1d05df73bd020a3ad4841a176bb1792a9a554ff445f0ec75919760"></a>TOGGLE_ONCE&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a5c49e7fa19c1d05df73bd020a3ad4841acced0e3d4bc8b75f79b7e31dbbfd80c0" name="a5c49e7fa19c1d05df73bd020a3ad4841acced0e3d4bc8b75f79b7e31dbbfd80c0"></a>TOGGLE_CONTINUOUSLY_WITH_DELAY&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+</div>
+</div>
 <h2 class="groupheader">Variable Documentation</h2>
 <a id="adc5f3d87c27c73e2a58d4da1d1848301" name="adc5f3d87c27c73e2a58d4da1d1848301"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adc5f3d87c27c73e2a58d4da1d1848301">&#9670;&#160;</a></span>keyboardActionMapping</h2>

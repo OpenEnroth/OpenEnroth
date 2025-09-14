@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9d3769e</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;efd3b88</span>
    </div>
   </td>
  </tr>
@@ -80,7 +80,8 @@ $(function() {
   <div class="headertitle"><div class="title">GameMenu.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;map&gt;</code><br />
+<div class="textblock"><code>#include &lt;unordered_set&gt;</code><br />
+<code>#include &lt;unordered_map&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &quot;<a class="el" href="GameMenu_8h.html">GameMenu.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Game_8h.html">Game.h</a>&quot;</code><br />
@@ -103,6 +104,7 @@ $(function() {
 <code>#include &quot;<a class="el" href="UISaveLoad_8h.html">GUI/UI/UISaveLoad.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UIStatusBar_8h.html">GUI/UI/UIStatusBar.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="AudioPlayer_8h.html">Media/Audio/AudioPlayer.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MapAccess_8h.html">Utility/MapAccess.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -127,12 +129,12 @@ Variables</h2></td></tr>
 <tr class="separator:a66f26ef6c2a72f5f4990c7c68f9473cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af56bc5face77a730e4c4426053b1ed39"><td class="memItemLeft" align="right" valign="top"><a class="el" href="GameMenu_8cpp.html#a022ecaa914df30a139424afef28c4928">CurrentConfirmationState</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameMenu_8cpp.html#af56bc5face77a730e4c4426053b1ed39">confirmationState</a> = <a class="el" href="GameMenu_8cpp.html#a022ecaa914df30a139424afef28c4928ae26e2ad9e8cd8de2bc57f6f37f45195f">CONFIRM_NONE</a></td></tr>
 <tr class="separator:af56bc5face77a730e4c4426053b1ed39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6f70373e8d65f7f76d15ae2ff1511076"><td class="memItemLeft" align="right" valign="top">InputAction&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameMenu_8cpp.html#a6f70373e8d65f7f76d15ae2ff1511076">currently_selected_action_for_binding</a> = <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca4bbb8f967da6d1a610596d7257179c2b">Io::InputAction::Invalid</a></td></tr>
+<tr class="memitem:a6f70373e8d65f7f76d15ae2ff1511076"><td class="memItemLeft" align="right" valign="top"><a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameMenu_8cpp.html#a6f70373e8d65f7f76d15ae2ff1511076">currently_selected_action_for_binding</a> = <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a881c891d4d29e40e0ad822d9339ba5b5">INPUT_ACTION_INVALID</a></td></tr>
 <tr class="separator:a6f70373e8d65f7f76d15ae2ff1511076"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac779193a7bd296fbdcabc8799a780aa0"><td class="memItemLeft" align="right" valign="top">std::map&lt; InputAction, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameMenu_8cpp.html#ac779193a7bd296fbdcabc8799a780aa0">key_map_conflicted</a></td></tr>
-<tr class="separator:ac779193a7bd296fbdcabc8799a780aa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44d0397eb7fe3186fd2fd91f5adeadff"><td class="memItemLeft" align="right" valign="top">std::map&lt; InputAction, <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameMenu_8cpp.html#a44d0397eb7fe3186fd2fd91f5adeadff">curr_key_map</a></td></tr>
-<tr class="separator:a44d0397eb7fe3186fd2fd91f5adeadff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46254493f89c26d1ef18e689eba154b0"><td class="memItemLeft" align="right" valign="top">std::unordered_set&lt; <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameMenu_8cpp.html#a46254493f89c26d1ef18e689eba154b0">key_map_conflicted</a></td></tr>
+<tr class="separator:a46254493f89c26d1ef18e689eba154b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a44a02695d70dea9a31f184ac0da657e5"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a>, <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="GameMenu_8cpp.html#a44a02695d70dea9a31f184ac0da657e5">curr_key_map</a></td></tr>
+<tr class="separator:a44a02695d70dea9a31f184ac0da657e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
 <a id="a022ecaa914df30a139424afef28c4928" name="a022ecaa914df30a139424afef28c4928"></a>
@@ -231,14 +233,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a44d0397eb7fe3186fd2fd91f5adeadff" name="a44d0397eb7fe3186fd2fd91f5adeadff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a44d0397eb7fe3186fd2fd91f5adeadff">&#9670;&#160;</a></span>curr_key_map</h2>
+<a id="a44a02695d70dea9a31f184ac0da657e5" name="a44a02695d70dea9a31f184ac0da657e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44a02695d70dea9a31f184ac0da657e5">&#9670;&#160;</a></span>curr_key_map</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::map&lt;InputAction, <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>&gt; curr_key_map</td>
+          <td class="memname">std::unordered_map&lt;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a>, <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a>&gt; curr_key_map</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -252,7 +254,7 @@ Variables</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">InputAction currently_selected_action_for_binding = <a class="el" href="namespaceIo.html#a547e2ba6c6a5bb3a0b5987131e62a90ca4bbb8f967da6d1a610596d7257179c2b">Io::InputAction::Invalid</a></td>
+          <td class="memname"><a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a> currently_selected_action_for_binding = <a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671a881c891d4d29e40e0ad822d9339ba5b5">INPUT_ACTION_INVALID</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -281,14 +283,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ac779193a7bd296fbdcabc8799a780aa0" name="ac779193a7bd296fbdcabc8799a780aa0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac779193a7bd296fbdcabc8799a780aa0">&#9670;&#160;</a></span>key_map_conflicted</h2>
+<a id="a46254493f89c26d1ef18e689eba154b0" name="a46254493f89c26d1ef18e689eba154b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46254493f89c26d1ef18e689eba154b0">&#9670;&#160;</a></span>key_map_conflicted</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::map&lt;InputAction, bool&gt; key_map_conflicted</td>
+          <td class="memname">std::unordered_set&lt;<a class="el" href="InputAction_8h.html#a9c56096a2c51a4a98f907f8f87fd1671">InputAction</a>&gt; key_map_conflicted</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -64,6 +64,7 @@ var menudata={children:[
 {text:"u",url:"namespacemembers_func.html#index_u"},
 {text:"w",url:"namespacemembers_func.html#index_w"}]},
 {text:"Variables",url:"namespacemembers_vars.html"},
+{text:"Typedefs",url:"namespacemembers_type.html"},
 {text:"Enumerations",url:"namespacemembers_enum.html"}]}]},
 {text:"Concepts",url:"concepts.html"},
 {text:"Classes",url:"annotated.html",children:[
@@ -292,6 +293,7 @@ var menudata={children:[
 {text:"g",url:"globals_enum.html#index_g"},
 {text:"h",url:"globals_enum.html#index_h"},
 {text:"i",url:"globals_enum.html#index_i"},
+{text:"k",url:"globals_enum.html#index_k"},
 {text:"l",url:"globals_enum.html#index_l"},
 {text:"m",url:"globals_enum.html#index_m"},
 {text:"n",url:"globals_enum.html#index_n"},
