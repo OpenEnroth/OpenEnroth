@@ -25,9 +25,13 @@ jobs:
           ref: '${{ inputs.myCommit }}'
 
       - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y glslang-tools 
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y glslang-tools 
 
       - name: Check OpenGL 4.1 (Core) shaders
         working-directory: resources/shaders

@@ -70,15 +70,15 @@ void GUIWindow_CalendarBook::Update() {
 
     GUIWindow calendar_window;
 
-    render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f, pViewport->uViewportTL_Y / 480.0f, ui_book_calendar_background);
+    render->DrawTextureNew(pViewport->viewportTL_X / 640.0f, pViewport->viewportTL_Y / 480.0f, ui_book_calendar_background);
     CivilTime time = pParty->GetPlayingTime().toCivilTime();
 
-    calendar_window.uFrameX = game_viewport_x;
-    calendar_window.uFrameY = game_viewport_y;
-    calendar_window.uFrameWidth = game_viewport_width;
-    calendar_window.uFrameHeight = game_viewport_height;
-    calendar_window.uFrameZ = game_viewport_z;
-    calendar_window.uFrameW = game_viewport_w;
+    calendar_window.uFrameWidth = pViewport->viewportWidth;
+    calendar_window.uFrameHeight = pViewport->viewportHeight;
+    calendar_window.uFrameX = pViewport->viewportTL_X;
+    calendar_window.uFrameY = pViewport->viewportTL_Y;
+    calendar_window.uFrameZ = pViewport->viewportBR_X;
+    calendar_window.uFrameW = pViewport->viewportBR_Y;
     calendar_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_calendar_title_color, localization->GetString(LSTR_TIME_IN_ERATHIA), 3);
 
     std::string str = fmt::format("{}\t100:\t110{}:{:02} {} - {}", localization->GetString(LSTR_TIME), time.hourAmPm,

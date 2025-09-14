@@ -37,7 +37,7 @@ Vis_SelectionFilter vis_door_filter = {
 Vis_SelectionFilter vis_decoration_noevent_filter = {
     VisObjectType_Sprite, OBJECT_Decoration, -1, 0, ExclusionIfNoEvent};  // 00F93E6C
 Vis_SelectionFilter vis_items_filter = {
-    VisObjectType_Any, OBJECT_Item, -1, 0, None };  // static to sub_44EEA7
+    VisObjectType_Any, OBJECT_Sprite, -1, 0, None };  // static to sub_44EEA7
 
 //----- (004C1026) --------------------------------------------------------
 Vis_ObjectInfo *Vis::DetermineFacetIntersection(BLVFace *face, Pid pid, float pick_depth) {
@@ -233,7 +233,7 @@ void Vis::PickBillboards_Mouse(float fPickDepth, float fX, float fY,
                 RenderBillboard *billboard = &pBillboardRenderList[d3d_billboard->sParentBillboardID];
 
                 Pid pid = billboard->object_pid;
-                if (pid.type() == OBJECT_Item && pSpriteObjects[pid.id()].uObjectDescID == 0)
+                if (pid.type() == OBJECT_Sprite && pSpriteObjects[pid.id()].uObjectDescID == 0)
                     continue; // Sprite object already removed.
 
                 list->AddObject(VisObjectType_Sprite, billboard->screen_space_z, billboard->object_pid);
@@ -558,12 +558,12 @@ bool Vis::CheckIntersectFace(BLVFace *pFace, Vec3f IntersectPoint, signed int sM
 
 //----- (0046A0A1) --------------------------------------------------------
 int UnprojectX(int x) {
-    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->uScreenCenterX - x);
+    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->viewportCenterX - x);
 }
 
 //----- (0046A0F6) --------------------------------------------------------
 int UnprojectY(int y) {
-    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->uScreenCenterY - y);
+    return TrigLUT.atan2(pCamera3D->ViewPlaneDistPixels, pViewport->viewportCenterY - y);
 }
 
 //----- (004C248E) --------------------------------------------------------
@@ -840,10 +840,10 @@ bool Vis::DoesRayIntersectBillboard(float fDepth, unsigned int uD3DBillboardIdx)
 
     // billboard will be visible somewhere on screen - clamp billboard corners to screen viewport
     auto& billboard = render->pBillboardRenderListD3D[uD3DBillboardIdx];
-    float bbVisibleLeft = std::clamp(billboard.pQuads[0].pos.x, (float)pViewport->uScreen_TL_X, (float)pViewport->uScreen_BR_X);
-    float bbVisibleRight = std::clamp(billboard.pQuads[3].pos.x, (float)pViewport->uScreen_TL_X, (float)pViewport->uScreen_BR_X);
-    float bbVisibleTop = std::clamp(billboard.pQuads[0].pos.y, (float)pViewport->uScreen_TL_Y, (float)pViewport->uScreen_BR_Y);
-    float bbVisibleBottom = std::clamp(billboard.pQuads[1].pos.y, (float)pViewport->uScreen_TL_Y, (float)pViewport->uScreen_BR_Y);
+    float bbVisibleLeft = std::clamp(billboard.pQuads[0].pos.x, (float)pViewport->viewportTL_X, (float)pViewport->viewportBR_X);
+    float bbVisibleRight = std::clamp(billboard.pQuads[3].pos.x, (float)pViewport->viewportTL_X, (float)pViewport->viewportBR_X);
+    float bbVisibleTop = std::clamp(billboard.pQuads[0].pos.y, (float)pViewport->viewportTL_Y, (float)pViewport->viewportBR_Y);
+    float bbVisibleBottom = std::clamp(billboard.pQuads[1].pos.y, (float)pViewport->viewportTL_Y, (float)pViewport->viewportBR_Y);
 
     // test visible polygon center first
     float test_x = (bbVisibleLeft + bbVisibleRight) * 0.5f;

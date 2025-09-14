@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include <memory>
 #include <string>
@@ -17,6 +17,8 @@ class SdlWindow : public PlatformWindow {
 
     virtual void setTitle(const std::string &title) override;
     virtual std::string title() const override;
+
+    virtual void setIcon(RgbaImageView image) override;
 
     virtual void resize(const Sizei &size) override;
     virtual Sizei size() const override;
@@ -38,6 +40,9 @@ class SdlWindow : public PlatformWindow {
 
     virtual void setGrabsMouse(bool grabsMouse) override;
     virtual bool grabsMouse() const override;
+
+    virtual void setMouseRelative(bool mouseRelative) override;
+    virtual bool isMouseRelative() const override;
 
     virtual Marginsi frameMargins() const override;
 

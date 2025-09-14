@@ -9,6 +9,7 @@
 
 #include "Library/Color/Color.h"
 #include "Library/Geometry/Point.h"
+#include "Library/Geometry/Rect.h"
 #include "Library/Geometry/Size.h"
 
 #include "Utility/Memory/FreeDeleter.h"
@@ -53,6 +54,10 @@ class ImageBase {
 
     [[nodiscard]] Sizei size() const {
         return Sizei(_width, _height); // Narrowing ssize_t -> int, but we're not expecting images 2B pixels wide.
+    }
+
+    [[nodiscard]] Recti rect() const {
+        return Recti(Pointi(0, 0), size());
     }
 
     [[nodiscard]] std::span<T> operator[](ssize_t y) {
@@ -189,12 +194,15 @@ class ImageView : public detail::ImageBase<const T, detail::ViewPointer<const T>
     // Default copy & move are OK.
 
     ImageView(const T *pixels, ssize_t width, ssize_t height) {
+        if (width == 0 || height == 0)
+            return; // Default-constructed values are OK.
+
         this->_width = width;
         this->_height = height;
         this->_pixels.reset(pixels);
     }
 
-    ImageView(const Image<T> &image) { // NOLINT: intentionally implicit
+    ImageView(const Image<T> &image) { // NOLINT: intentionally implicit.
         this->_width = image.width();
         this->_height = image.height();
         this->_pixels.reset(image.pixels().data());

@@ -24,6 +24,10 @@ std::string NullWindow::title() const {
     return _title;
 }
 
+void NullWindow::setIcon(RgbaImageView image) {
+    // Do nothing.
+}
+
 void NullWindow::resize(const Sizei &size) {
     _size = size;
 }
@@ -80,8 +84,16 @@ PlatformWindowOrientations NullWindow::orientations() {
     return _orientations;
 }
 
+void NullWindow::setMouseRelative(bool mouseRelative) {
+    _mouseRelative = mouseRelative;
+}
+
+bool NullWindow::isMouseRelative() const {
+    return _mouseRelative;
+}
+
 Marginsi NullWindow::frameMargins() const {
-    if (_mode == WINDOW_MODE_WINDOWED || _mode == WINDOW_MODE_FULLSCREEN) {
+    if (_mode == WINDOW_MODE_WINDOWED) {
         return _state->options.defaultFrameMargins;
     } else {
         return Marginsi(0, 0, 0, 0);

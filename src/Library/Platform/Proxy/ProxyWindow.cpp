@@ -15,6 +15,10 @@ std::string ProxyWindow::title() const {
     return nonNullBase()->title();
 }
 
+void ProxyWindow::setIcon(RgbaImageView image) {
+    nonNullBase()->setIcon(image);
+}
+
 void ProxyWindow::resize(const Sizei &size) {
     nonNullBase()->resize(size);
 }
@@ -69,6 +73,14 @@ void ProxyWindow::setGrabsMouse(bool grabsMouse) {
 
 bool ProxyWindow::grabsMouse() const {
     return nonNullBase()->grabsMouse();
+}
+
+void ProxyWindow::setMouseRelative(bool mouseRelative) {
+    nonNullBase()->setMouseRelative(mouseRelative);
+}
+
+bool ProxyWindow::isMouseRelative() const {
+    return nonNullBase()->isMouseRelative();
 }
 
 Marginsi ProxyWindow::frameMargins() const {

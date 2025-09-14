@@ -5,17 +5,17 @@
 
 #include "SdlPlatformSharedState.h"
 
-SdlGamepad::SdlGamepad(SdlPlatformSharedState *state, SDL_GameController *gamepad, SDL_JoystickID id): _state(state), _gamepad(gamepad), _id(id) {
+SdlGamepad::SdlGamepad(SdlPlatformSharedState *state, SDL_Gamepad *gamepad, SDL_JoystickID id): _state(state), _gamepad(gamepad), _id(id) {
     assert(state);
     assert(gamepad);
 }
 
 SdlGamepad::~SdlGamepad() {
-    SDL_GameControllerClose(_gamepad);
+    SDL_CloseGamepad(_gamepad);
 }
 
 std::string SdlGamepad::model() const {
-    const char *model = SDL_GameControllerName(_gamepad);
+    const char *model = SDL_GetGamepadName(_gamepad);
     if (model != NULL)
         return model;
 
@@ -23,7 +23,7 @@ std::string SdlGamepad::model() const {
 }
 
 std::string SdlGamepad::serial() const {
-    const char *serial = SDL_GameControllerGetSerial(_gamepad);
+    const char *serial = SDL_GetGamepadSerial(_gamepad);
     if (serial != NULL)
         return serial;
     return {};

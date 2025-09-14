@@ -27,7 +27,7 @@ class AssetsManager {
 
     GraphicsImage *getImage_PCXFromIconsLOD(std::string_view name);
 
-    GraphicsImage *getBitmap(std::string_view name);
+    GraphicsImage *getBitmap(std::string_view name, bool generated = false);
     GraphicsImage *getSprite(std::string_view name);
 
     // TODO(pskelton): Contain better

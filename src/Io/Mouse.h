@@ -16,29 +16,31 @@ class Mouse {
     inline Mouse() : cursor_img(nullptr) {
         pCursorBitmap_sysmem = nullptr;
         pCursorBitmap2_sysmem = nullptr;
-        uMouseX = 0;
-        uMouseY = 0;
     }
 
-    void GetClickPos(int *pX, int *pY);
-    void RemoveHoldingItem();
+    Pointi position() const;
+    void setPosition(Pointi position);
+    /**
+     * Moves the mouse pointer.
+     * @param position                  Position in render coordinates to move mouse pointer to.
+     */
+    void warpMouse(Pointi position);
+
     void SetCursorBitmapFromItemID(ItemId uItemID);
     void SetCurrentCursorBitmap();
     void SetCursorImage(std::string_view name);
     void ClearCursor();
     void AllocCursorSystemMem();
     void *DoAllocCursorMem();
-    Pointi GetCursorPos();
     void Initialize();
     void DrawCursor();
     void DrawPickedItem();
-    void SetMousePosition(int x, int y);
 
     void UI_OnMouseLeftClick();
 
     void SetMouseLook(bool look);
     void ToggleMouseLook();
-    void DoMouseLook();
+    void DoMouseLook(Pointi relChange);
 
     Pid uPointingObjectID;
     int field_8 = 0;
@@ -47,15 +49,12 @@ class Mouse {
     GraphicsImage *cursor_img = nullptr;
     uint16_t *pCursorBitmap_sysmem = nullptr;
     uint8_t *pCursorBitmap2_sysmem = nullptr;
-    int pickedItemOffsetX = 0;
-    int pickedItemOffsetY = 0;
+    Pointi pickedItemOffset = {}; // Offset of the item's bitmap relative to cursor position, always non-positive.
     Pointi pCursorBitmapPos{};
     std::string cursor_name;
-    int uMouseX = 0;
-    int uMouseY = 0;
+    Pointi _position;
 
     bool _mouseLook = false;
-    Pointi _mouseLookChange;
 };
 }  // namespace Io
 

@@ -4,38 +4,10 @@
 #include <algorithm>
 
 #include "Engine/Tables/TileTable.h"
-#include "Engine/Snapshots/CompositeSnapshots.h"
-#include "Engine/Snapshots/EntitySnapshots.h"
 #include "Engine/Seasons.h"
 
-#include "Library/Snapshots/CommonSnapshots.h"
-
 #include "Outdoor.h"
-
-static int mapToGlobalTileId(const std::array<int, 4> &baseIds, int localTileId) {
-    // Tiles in tilemap:
-    // [0..90) are mapped as-is, but seem to be mostly invalid. Only global tile ids [1..12] are valid (all are dirt),
-    //         the rest are "pending", effectively invalid.
-    // [90..126) map to tileset #1.
-    // [126..162) map to tileset #2.
-    // [162..198) map to tileset #3.
-    // [198..234) map to tileset #4 (road).
-    // [234..255) are invalid.
-    if (localTileId < 90)
-        return localTileId;
-
-    if (localTileId >= 234)
-        return 0;
-
-    int tilesetIndex = (localTileId - 90) / 36;
-    int tilesetOffset = (localTileId - 90) % 36;
-    return baseIds[tilesetIndex] + tilesetOffset;
-}
-
-template<class Image>
-static bool contains(const Image &image, Pointi point) {
-    return point.x >= 0 && point.x < image.width() && point.y >= 0 && point.y < image.height();
-}
+#include "Engine/Data/TileEnumFunctions.h"
 
 OutdoorTerrain::OutdoorTerrain() {
     // Map is 127x127 squares.
@@ -55,43 +27,44 @@ void OutdoorTerrain::createDebugTerrain() {
     _tilesets[0] = TILESET_GRASS;
     _tilesets[1] = TILESET_WATER;
     _tilesets[2] = TILESET_BADLANDS;
-    _tilesets[3] = TILESET_ROAD_GRASS_COBBLE;
+    _tilesets[3] = TILESET_COBBLE_ROAD;
 }
 
 void OutdoorTerrain::changeSeason(int month) {
     assert(month >= 0 && month <= 11);
     std::ranges::transform(_originalTileMap.pixels(), _tileMap.pixels().begin(), [&] (int tileId) {
-        return tileIdForSeason(tileId, month);
+        const TileData &tileData = pTileTable->tile(tileId);
+        Tileset tileset = tilesetForSeason(tileData.tileset, month);
+        TileVariant variant = tileset == TILESET_DIRT ? TILE_VARIANT_BASE1 : tileData.variant;
+        return pTileTable->tileId(tileset, variant);
     });
+
+    // The call below is needed b/c in winter some snow->dirt->grass transitions turn into just snow.
+    recalculateTransitions(&_tileMap);
 }
 
-int OutdoorTerrain::heightByGrid(Pointi gridPos) const {
-    if (!contains(_heightMap, gridPos))
+float OutdoorTerrain::heightByGrid(Pointi gridPos) const {
+    if (!_heightMap.rect().contains(gridPos))
         return 0;
 
     return 32 * _heightMap[gridPos];
 }
 
-int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
-    // TODO(captainurist): This should return float. But we'll need to retrace.
-    int originz;          // ebx@11
-    int lz;          // eax@11
-    int rz;         // ecx@11
-    int rpos;         // [sp+10h] [bp-8h]@11
-    int lpos;         // [sp+24h] [bp+Ch]@11
-
+float OutdoorTerrain::heightByPos(const Vec3f &pos) const {
     // TODO(captainurist): this function had some code that would push the party -60 units down when on a water tile AND
     //                     not water-walking, but this isn't enabled in the game. I tried it, and it actually looks
     //                     good, as if the party is actually a bit submerged and swimming. The only problem is that
     //                     party would be jerked up upon coming ashore, and this just looks ugly. Find a way to
     //                     reimplement this properly.
-
     Pointi gridPos = worldToGrid(pos);
-
     TileGeometry tile = tileGeometryByGrid(gridPos);
-
     if (tile.z00 != tile.z10 || tile.z10 != tile.z11 || tile.z11 != tile.z01) {
         // On a slope.
+        int originz;
+        int lz;
+        int rz;
+        float rpos;
+        float lpos;
         if (std::abs(tile.v0.y - pos.y) >= std::abs(pos.x - tile.v0.x)) {
             originz = tile.z01;
             lz = tile.z11;
@@ -106,11 +79,10 @@ int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
             rpos = tile.v0.y - pos.y;
         }
 
-        //assert(lpos >= 0 && lpos < 512); // TODO(captainurist): fails in rare cases b/c not all of our code is in floats
-        //assert(rpos >= 0 && rpos < 512);
+        assert(lpos >= 0 && lpos < 512);
+        assert(rpos >= 0 && rpos < 512);
 
-        // (x >> 9) is basically (x / 512) but with consistent rounding towards -inf.
-        return originz + ((rpos * (rz - originz)) >> 9) + ((lpos * (lz - originz)) >> 9);
+        return originz + rpos * (rz - originz) / 512 + lpos * (lz - originz) / 512;
     } else {
         // On flat terrain.
         return tile.z00;
@@ -118,21 +90,21 @@ int OutdoorTerrain::heightByPos(const Vec3f &pos) const {
 }
 
 int OutdoorTerrain::tileIdByGrid(Pointi gridPos) const {
-    if (!contains(_tileMap, gridPos))
+    if (!_tileMap.rect().contains(gridPos))
         return 0;
 
     return _tileMap[gridPos];
 }
 
 const TileData &OutdoorTerrain::tileDataByGrid(Pointi gridPos) const {
-    return pTileTable->tiles[tileIdByGrid(gridPos)];
+    return pTileTable->tile(tileIdByGrid(gridPos));
 }
 
 Tileset OutdoorTerrain::tilesetByGrid(Pointi gridPos) const {
-    if (!contains(_tileMap, gridPos))
+    if (!_tileMap.rect().contains(gridPos))
         return TILESET_INVALID;
 
-    return pTileTable->tiles[_tileMap[gridPos]].tileset;
+    return pTileTable->tile(_tileMap[gridPos]).tileset;
 }
 
 Tileset OutdoorTerrain::tilesetByPos(const Vec3f &pos) const {
@@ -140,7 +112,7 @@ Tileset OutdoorTerrain::tilesetByPos(const Vec3f &pos) const {
 }
 
 bool OutdoorTerrain::isWaterByGrid(Pointi gridPos) const {
-    return pTileTable->tiles[tileIdByGrid(gridPos)].uAttributes & TILE_WATER;
+    return pTileTable->tile(tileIdByGrid(gridPos)).flags & TILE_WATER;
 }
 
 bool OutdoorTerrain::isWaterByPos(const Vec3f &pos) const {
@@ -148,12 +120,12 @@ bool OutdoorTerrain::isWaterByPos(const Vec3f &pos) const {
 }
 
 bool OutdoorTerrain::isWaterOrShoreByGrid(Pointi gridPos) const {
-    return pTileTable->tiles[tileIdByGrid(gridPos)].uAttributes & (TILE_WATER | TILE_SHORE);
+    return pTileTable->tile(tileIdByGrid(gridPos)).flags & (TILE_WATER | TILE_SHORE);
 }
 
 Vec3f OutdoorTerrain::normalByPos(const Vec3f &pos) const {
     Pointi gridPos = worldToGrid(pos);
-    if (!contains(_normalMap, gridPos))
+    if (!_normalMap.rect().contains(gridPos))
         return Vec3f(0, 0, 1);
 
     Vec2i o = gridToWorld(gridPos);
@@ -209,25 +181,6 @@ bool OutdoorTerrain::isSlopeTooHighByPos(const Vec3f &pos) const {
     return yMax - yMin > 512;
 }
 
-void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
-    std::array<int, 4> baseTileIds;
-    for (int i = 0; i < 4; i++) {
-        dst->_tilesets[i] = static_cast<Tileset>(src.tileTypes[i].tileset);
-        baseTileIds[i] = pTileTable->tileId(dst->_tilesets[i], TILE_VARIANT_BASE1);
-    }
-
-    for (int y = 0; y < 128; y++)
-        for (int x = 0; x < 128; x++)
-            dst->_heightMap[y][x] = src.heightMap[y * 128 + x];
-
-    for (int y = 0; y < 127; y++)
-        for (int x = 0; x < 127; x++)
-            dst->_originalTileMap[y][x] = mapToGlobalTileId(baseTileIds, src.tileMap[y * 128 + x]);
-    dst->_tileMap = Image<int16_t>::copy(dst->_originalTileMap);
-
-    dst->recalculateNormals();
-}
-
 void OutdoorTerrain::recalculateNormals() {
     for (int y = 0; y < _normalMap.height(); y++) {
         for (int x = 0; x < _normalMap.width(); x++) {
@@ -249,6 +202,34 @@ void OutdoorTerrain::recalculateNormals() {
 
             _normalMap[y][x][0] = bn;
             _normalMap[y][x][1] = an;
+        }
+    }
+}
+
+void OutdoorTerrain::recalculateTransitions(Image<int16_t> *tileMap) {
+    Image<int16_t> &map = *tileMap;
+
+    auto snappedTilesetByGrid = [&map](Pointi pos) {
+        pos.x = std::clamp(pos.x, 0, static_cast<int>(map.width() - 1));
+        pos.y = std::clamp(pos.y, 0, static_cast<int>(map.height() - 1));
+        return pTileTable->tile(map[pos]).tileset;
+    };
+
+    for (int y = 0; y < map.height(); y++) {
+        for (int x = 0; x < map.width(); x++) {
+            const TileData &tileData = pTileTable->tile(map[y][x]);
+            if (isRoad(tileData.tileset) || tileData.tileset == TILESET_DIRT) // No transitions for roads & dirt.
+                continue;
+
+            Pointi pos(x, y);
+            Directions transitions = 0;
+            for (Direction dir : allDirections())
+                if (snappedTilesetByGrid(pos + offsetForDirection(dir)) != tileData.tileset)
+                    transitions |= dir;
+
+            int tileId = pTileTable->tileId(tileData.tileset, tileVariantForTransitionDirections(transitions));
+            if (tileId)
+                map[y][x] = tileId;
         }
     }
 }

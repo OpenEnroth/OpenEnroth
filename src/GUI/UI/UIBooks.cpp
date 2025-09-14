@@ -79,7 +79,7 @@ void GUIWindow_Book::Release() {
 
 GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions()) {
     initializeFonts();
-    CreateButton({475, 445}, {158, 34}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_DIALOGUE_EXIT));
+    CreateButton({475, 445}, {158, 34}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid, localization->GetString(LSTR_EXIT_DIALOGUE));
     current_screen_type = SCREEN_BOOKS;
     pEventTimer->setPaused(true);
 }
@@ -90,13 +90,13 @@ void GUIWindow_Book::initializeFonts() {
     ui_book_map_frame = assets->getImage_Alpha("mapbordr");
 
     if (!assets->pFontBookCalendar)
-        assets->pFontBookCalendar = GUIFont::LoadFont("book.fnt", "FONTPAL");
+        assets->pFontBookCalendar = GUIFont::LoadFont("book.fnt");
     if (!assets->pFontBookTitle)
-        assets->pFontBookTitle = GUIFont::LoadFont("book2.fnt", "FONTPAL");
+        assets->pFontBookTitle = GUIFont::LoadFont("book2.fnt");
     if (!assets->pFontBookOnlyShadow)
-        assets->pFontBookOnlyShadow = GUIFont::LoadFont("autonote.fnt", "FONTPAL");
+        assets->pFontBookOnlyShadow = GUIFont::LoadFont("autonote.fnt");
     if (!assets->pFontBookLloyds)
-        assets->pFontBookLloyds = GUIFont::LoadFont("spell.fnt", "FONTPAL");
+        assets->pFontBookLloyds = GUIFont::LoadFont("spell.fnt");
 }
 
 void GUIWindow_Book::bookButtonClicked(BookButtonAction action) {

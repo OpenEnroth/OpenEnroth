@@ -30,9 +30,12 @@ on:
     types:
       - published
 
+env:
+  CCACHE_COMPILERCHECK: content
+
 jobs:
   build_macos:
-    runs-on: macos-14
+    runs-on: macos-15
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -47,28 +50,29 @@ jobs:
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: 15.4
+          xcode-version: 16.3
 
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v5.0.0
         with:
           submodules: recursive
           ref: '${{inputs.myCommit}}'
 
       - name: Restore data cache
         id: restore-data-cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4.2.4
         with:
           path: |
             OpenEnroth_GameData
           key: data-cache
 
       - name: Run ccache
-        uses: hendrikmuhs/ccache-action@v1.2.14
+        uses: hendrikmuhs/ccache-action@v1.2.18
         with:
           key: 'macos-${{matrix.configuration}}-${{matrix.architecture}}'
           verbose: 2
-          max-size: 200M
+          max-size: 400M
+          save: ${{github.event_name != 'pull_request'}}
 
       # MacOS deployment target here should be kept in sync with what's set in OpenEnroth_Dependencies:
       # https://github.com/OpenEnroth/OpenEnroth_Dependencies/blob/master/scripts/build_all.sh
@@ -80,7 +84,7 @@ jobs:
           if [ "${{matrix.architecture}}" = "arm64" ]; then
             export MACOSX_DEPLOYMENT_TARGET="11"
           fi
-          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DCMAKE_OSX_ARCHITECTURES=${{matrix.architecture}}
+          cmake -B build -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=${{matrix.configuration}} -DCMAKE_OSX_ARCHITECTURES=${{matrix.architecture}} -DNIGHTLY=ON
 
       - name: Build
         working-directory: build
@@ -108,10 +112,14 @@ jobs:
           OPENENROTH_MM7_PATH: /Users/runner/work/OpenEnroth/OpenEnroth/OpenEnroth_GameData/mm7
 
       - name: Prepare files for release
-        run: |
-          mkdir dist
-          cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
-          hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            mkdir -p dist
+            cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
+            hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
 
       - name: Zip folder for release
         if: inputs.releaseTag != ''

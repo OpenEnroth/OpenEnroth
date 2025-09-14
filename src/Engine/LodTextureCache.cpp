@@ -17,11 +17,7 @@ LodTextureCache *pBitmaps_LOD_mm6 = nullptr;
 LodTextureCache *pBitmaps_LOD_mm8 = nullptr;
 
 LodTextureCache::LodTextureCache() = default;
-
-LodTextureCache::~LodTextureCache() {
-    for (auto &[_, texture] : _textureByName)
-        texture.Release();
-}
+LodTextureCache::~LodTextureCache() = default;
 
 void LodTextureCache::open(Blob blob) {
     _reader.open(std::move(blob));
@@ -34,16 +30,15 @@ void LodTextureCache::reserveLoadedTextures() {
 void LodTextureCache::releaseUnreserved() {
     while (_texturesInOrder.size() > _reservedCount) {
         const std::string &name = _texturesInOrder.back();
-        _textureByName[name].Release();
         _textureByName.erase(name);
         _texturesInOrder.pop_back();
     }
 }
 
-Texture_MM7 *LodTextureCache::loadTexture(std::string_view pContainer, bool useDummyOnError) {
+LodImage *LodTextureCache::loadTexture(std::string_view pContainer, bool useDummyOnError) {
     std::string name = ascii::toLower(pContainer);
 
-    Texture_MM7 *result = valuePtr(_textureByName, name);
+    LodImage *result = valuePtr(_textureByName, name);
     if (result)
         return result;
 
@@ -62,18 +57,17 @@ Texture_MM7 *LodTextureCache::loadTexture(std::string_view pContainer, bool useD
 }
 
 Blob LodTextureCache::LoadCompressedTexture(std::string_view pContainer) {
-    return lod::decodeCompressed(_reader.read(pContainer));
+    return lod::decodeMaybeCompressed(_reader.read(pContainer));
 }
 
-bool LodTextureCache::LoadTextureFromLOD(Texture_MM7 *pOutTex, std::string_view pContainer) {
+Blob LodTextureCache::read(std::string_view pContainer) {
+    return _reader.read(pContainer);
+}
+
+bool LodTextureCache::LoadTextureFromLOD(LodImage *pOutTex, std::string_view pContainer) {
     if (!_reader.exists(pContainer))
         return false;
 
-    LodImage image = lod::decodeImage(_reader.read(pContainer));
-
-    pOutTex->name = pContainer;
-    pOutTex->indexed = std::move(image.image);
-    pOutTex->palette = image.palette;
-    pOutTex->zeroIsTransparent = image.zeroIsTransparent;
+    *pOutTex = lod::decodeImage(_reader.read(pContainer));
     return true;
 }

@@ -481,12 +481,12 @@ int runDecorationsCodegen(const CodeGenOptions &options, GameResourceManager *re
 
 int runSpeechPortraitsCodegen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
     std::vector<std::array<std::string, 7>> table;
-    for (CharacterSpeech speech : portraitVariants.indices()) {
+    for (SpeechId speech : portraitVariants.indices()) {
         auto &line = table.emplace_back();
         line[0] = fmt::format("{{{}, ", toString(speech));
         line[1] = "{";
         for (int i = 2; auto portrait : portraitVariants[speech])
-            line[i++] = toString(static_cast<CharacterPortrait>(portrait)) + ", ";
+            line[i++] = toString(portrait) + ", ";
         line[6].pop_back();
         line[6].pop_back(); // Drop the last ", ".
         line[6] += "}},";
@@ -494,6 +494,74 @@ int runSpeechPortraitsCodegen(const CodeGenOptions &options, GameResourceManager
 
     // Dump!
     dumpAligned(stdout, "    ", table);
+    return 0;
+}
+
+int runLstrCodegen(const CodeGenOptions &options, GameResourceManager *resourceManager) {
+    CodeGenMap map;
+
+    std::string txt = std::string(resourceManager->getEventsFile("global.txt").string_view());
+
+    std::vector<std::string_view> lines = split(txt, '\n');
+    for (std::string_view &line : lines)
+        if (line.ends_with('\r'))
+            line = line.substr(0, line.size() - 1);
+
+    std::vector<std::string_view> chunks;
+    for (std::string_view line : std::views::drop(lines, 1)) {
+        if (line.empty())
+            continue;
+
+        split(line, '\t', &chunks);
+        if (chunks.size() != 2)
+            throw Exception("Invalid localization file");
+
+        int id = fromString<int>(chunks[0]);
+        std::string text = trimRemoveQuotes(chunks[1]);
+
+        std::string enumName = toUpperCaseEnum(text);
+        if (enumName.size() > 40) {
+            auto pos = enumName.rfind('_', 40);
+            if (pos != std::string_view::npos)
+                enumName = enumName.substr(0, pos);
+        }
+
+        if (id == 72) {
+            enumName = "EMPTY_SAVE";
+        } else if (id == 79) {
+            enumName = "EXIT_DIALOGUE";
+        } else if (id == 99 || id == 101 || id == 103 || id == 106) {
+            enumName = "RACE_" + enumName;
+        } else if (id == 379 || id == 392 || id == 399 || id == 402 || id == 434) {
+            enumName = "REPUTATION_" + enumName;
+        } else if (id >= 506 && id <= 509) {
+            enumName = "NAME_" + enumName;
+        } else if (id >= 578 && id <= 581) {
+            enumName = "ARENA_DIFFICULTY_" + enumName;
+        } else if (id == 630) {
+            enumName = "UNKNOWN_VALUE";
+        } else if (id == 675) {
+            enumName = "GOOD_ENDING";
+        } else if (id == 676) {
+            enumName = "EVIL_ENDING";
+        } else if (enumName == "DAY" || enumName == "SIR" || enumName == "LADY") {
+            enumName += std::isupper(text[0]) ? "_CAPITALIZED" : "_LOWERCASE";
+        }
+
+        if (text.size() > 80) {
+            auto pos = text.find_last_of(",. ", 80);
+            if (pos != std::string_view::npos)
+                text = text.substr(0, pos) + "...";
+        }
+
+        for (char &c : text)
+            if (c < '\0' || c > '\x7f')
+                c = ' ';
+
+        map.insert(id, enumName, "\"" + text + "\"");
+    }
+
+    map.dump(stdout, "LSTR_");
     return 0;
 }
 
@@ -520,6 +588,7 @@ int platformMain(int argc, char **argv) {
         case CodeGenOptions::SUBCOMMAND_MUSIC: return runMusicCodeGen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_DECORATIONS: return runDecorationsCodegen(options, &resourceManager);
         case CodeGenOptions::SUBCOMMAND_SPEECH_PORTRAITS: return runSpeechPortraitsCodegen(options, &resourceManager);
+        case CodeGenOptions::SUBCOMMAND_LSTR_ID: return runLstrCodegen(options, &resourceManager);
         default:
             assert(false);
             return 1;

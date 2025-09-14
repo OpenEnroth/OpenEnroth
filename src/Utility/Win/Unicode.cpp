@@ -4,6 +4,7 @@
 #include <Windows.h>
 
 #include <string>
+#include <limits>
 
 std::string win::toUtf8(std::wstring_view wstr) {
     if (wstr.size() >= static_cast<size_t>(std::numeric_limits<int>::max()))

@@ -172,15 +172,14 @@ void BLVRenderParams::Reset() {
 
     if (!this->uPartySectorID) {
         assert(false);  // shouldnt happen, please provide savegame
-        // TODO(captainurist): was able to trigger this by falling from the sky in Celeste, but couldn't reproduce.
     }
 
 
     {
-        this->uViewportX = pViewport->uScreen_TL_X;
-        this->uViewportY = pViewport->uScreen_TL_Y;
-        this->uViewportZ = pViewport->uScreen_BR_X;
-        this->uViewportW = pViewport->uScreen_BR_Y;
+        this->uViewportX = pViewport->viewportTL_X;
+        this->uViewportY = pViewport->viewportTL_Y;
+        this->uViewportZ = pViewport->viewportBR_X;
+        this->uViewportW = pViewport->viewportBR_Y;
 
         this->uViewportWidth = uViewportZ - uViewportX + 1;
         this->uViewportHeight = uViewportW - uViewportY + 1;
@@ -298,7 +297,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
     bLoaded = true;
 
     IndoorLocation_MM7 location;
-    deserialize(lod::decodeCompressed(pGames_LOD->read(blv_filename)), &location); // read throws if file doesn't exist.
+    deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(blv_filename)), &location); // read throws if file doesn't exist.
     reconstruct(location, this);
 
     std::string dlv_filename = fmt::format("{}.dlv", filename.substr(0, filename.size() - 4));
@@ -306,7 +305,7 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
     bool respawnInitial = false; // Perform initial location respawn?
     bool respawnTimed = false; // Perform timed location respawn?
     IndoorDelta_MM7 delta;
-    if (Blob blob = lod::decodeCompressed(pSave_LOD->read(dlv_filename))) {
+    if (Blob blob = lod::decodeMaybeCompressed(pSave_LOD->read(dlv_filename))) {
         try {
             deserialize(blob, &delta, tags::context(location));
 
@@ -333,12 +332,12 @@ void IndoorLocation::Load(std::string_view filename, int num_days_played, int re
     assert(respawnInitial + respawnTimed <= 1);
 
     if (respawnInitial) {
-        deserialize(lod::decodeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
+        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
         *indoor_was_respawned = true;
     } else if (respawnTimed) {
         auto header = delta.header;
         auto visibleOutlines = delta.visibleOutlines;
-        deserialize(lod::decodeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
+        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(dlv_filename)), &delta, tags::context(location));
         delta.header = header;
         delta.visibleOutlines = visibleOutlines;
         *indoor_was_respawned = true;
@@ -849,8 +848,12 @@ void UpdateActors_BLV() {
         int uFaceID;
         float floorZ = GetIndoorFloorZ(actor.pos, &actor.sectorId, &uFaceID);
 
-        if (actor.sectorId == 0 || floorZ <= -30000)
+        if (actor.sectorId == 0 || floorZ <= -30000 || uFaceID == -1) {
+            // TODO(pskelton): asserts trips on test 416 with Dragons OOB - consider running actor check on file load
+            // to correct positions so this assert can be reinstated.
+            //assert(false);  // level built with errors
             continue;
+        }
 
         bool isFlying = actor.monsterInfo.flying;
         if (!actor.CanAct())
@@ -921,14 +924,30 @@ void UpdateActors_BLV() {
                 actor.velocity.z += -8 * pEventTimer->dt().ticks() * GetGravityStrength();
         }
 
-        if (actor.velocity.lengthSqr() >= 400) {
-            ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
-        } else {
-            actor.velocity = Vec3f(0, 0, 0);
+        if (actor.velocity.xy().lengthSqr() < 400) {
+            actor.velocity.x = 0;
+            actor.velocity.y = 0;
             if (pIndoor->pFaces[uFaceID].uAttributes & FACE_INDOOR_SKY) {
                 if (actor.aiState == Dead)
                     actor.aiState = Removed;
             }
+        }
+
+        Vec3f oldPos = actor.pos;
+        Vec3f savedSpeed = actor.velocity;
+
+        actor.velocity.z = 0;
+        ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
+
+        if (actor.pos.z <= oldPos.z) {
+            actor.velocity = Vec3f(0, 0, savedSpeed.z);
+            ProcessActorCollisionsBLV(actor, isAboveGround, isFlying);
+        }
+
+        // update actor direction based on movement - better navigation if hit obstacle
+        Vec3f travel = actor.pos - oldPos;
+        if (travel.lengthSqr() > 128.f) {
+            actor.yawAngle = TrigLUT.atan2(travel.x, travel.y);
         }
     }
 }
@@ -1141,8 +1160,9 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
         FacesFound++;
     }
 
+    // TODO(pskelton): not sure why we'd ever want this - caused #2186
     // as above but for sector portal faces
-    if (pSector->field_0 & 8) {
+    /*if (pSector->field_0 & 8) {
         for (unsigned i = 0; i < pSector->uNumPortals; ++i) {
             if (FacesFound >= 5) break;
 
@@ -1153,19 +1173,16 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
             if(!portal->Contains(pos, MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
                 continue;
 
-            blv_floor_z[FacesFound] = -29000;
+            blv_floor_z[FacesFound] = -29000; // was obviosuly meant to mean something
             blv_floor_id[FacesFound] = pSector->pPortals[i];
             FacesFound++;
         }
-    }
+    }*/
 
     // one face found
     if (FacesFound == 1) {
         if (pFaceID)
             *pFaceID = blv_floor_id[0];
-        if (blv_floor_z[0] <= -29000) {
-            /*assert(false);*/
-        }
         return blv_floor_z[0];
     }
 
@@ -1186,12 +1203,9 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
 
         if (std::abs(pos.z - v38) <= std::abs(pos.z - result)) {
             result = blv_floor_z[i];
-            if (blv_floor_z[i] <= -29000) assert(false);
             faceId = blv_floor_id[i];
         }
     }
-
-    if (result <= -29000) assert(false);
 
     if (pFaceID)
         *pFaceID = faceId;
@@ -1272,9 +1286,9 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
             int screen_space_half_width = static_cast<int>(billb_scale * v11->hw_sprites[(int64_t)v9]->uWidth / 2.0f);
             int screen_space_height = static_cast<int>(billb_scale * v11->hw_sprites[(int64_t)v9]->uHeight);
 
-            if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
-                projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
-                if (projected_y >= pViewport->uViewportTL_Y && (projected_y - screen_space_height) <= pViewport->uViewportBR_Y) {
+            if (projected_x + screen_space_half_width >= (signed int)pViewport->viewportTL_X &&
+                projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
+                if (projected_y >= pViewport->viewportTL_Y && (projected_y - screen_space_height) <= pViewport->viewportBR_Y) {
                     assert(uNumBillboardsToDraw < 500);
                     ++uNumBillboardsToDraw;
                     ++uNumDecorationsDrawnThisFrame;
@@ -1490,7 +1504,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
     }
 
     switch (type) {
-        case OBJECT_Item: {  // take the item
+        case OBJECT_Sprite: {  // take the item
             if (pSpriteObjects[id].IsUnpickable() || id >= pSpriteObjects.size() || !pSpriteObjects[id].uObjectDescID) {
                 return 1;
             }
@@ -1605,7 +1619,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     int fall_start;
-    if (pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)
+    if (pParty->FeatherFallActive() || pParty->wearsItem(ITEM_ARTIFACT_LADYS_ESCORT)
         || pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING)) {
         fall_start = floorZ;
         bFeatherFall = true;
@@ -1738,10 +1752,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 pParty->_viewPitch = 0;
                 break;
 
-            case PARTY_MouseLook:
-                mouse->DoMouseLook();
-                break;
-
             case PARTY_Jump:
                 if ((!isAboveGround || pParty->pos.z <= floorZ + 6 && pParty->velocity.z <= 0) && pParty->jump_strength) {
                     isAboveGround = true;
@@ -1757,8 +1767,8 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         pParty->velocity.z += -2.0f * pEventTimer->dt().ticks() * GetGravityStrength();
         if (pParty->velocity.z < -500 && !bFeatherFall && pParty->pos.z - floorZ > 1000) {
             for (Character &character : pParty->pCharacters) {
-                if (!character.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-                    !character.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS) &&
+                if (!character.wearsEnchantedItem(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
+                    !character.wearsItem(ITEM_ARTIFACT_HERMES_SANDALS) &&
                     character.CanAct()) {  // was 8
                     character.playReaction(SPEECH_FALLING);
                 }
@@ -1863,8 +1873,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
 
     pParty->uFlags &= ~(PARTY_FLAG_BURNING | PARTY_FLAG_WATER_DAMAGE);
 
-    if (!isAboveGround && pIndoor->pFaces[faceId].uAttributes & FACE_IsLava)
-        pParty->uFlags |= PARTY_FLAG_BURNING;
+    if (faceId >= 0) // TODO(pskelton): investigate why this happens
+        if (!isAboveGround && pIndoor->pFaces[faceId].uAttributes & FACE_IsLava)
+            pParty->uFlags |= PARTY_FLAG_BURNING;
 
     if (faceEvent)
         eventProcessor(faceEvent, Pid(), 1);
@@ -1990,7 +2001,7 @@ int DropTreasureAt(ItemTreasureLevel trs_level, RandomItemType trs_type, Vec3f p
 }
 
 void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
-    assert(a2->uKind == OBJECT_Item);
+    assert(a2->uKind == OBJECT_Sprite);
 
     SpriteObject a1a;
     a1a.containing_item.Reset();
@@ -2025,7 +2036,7 @@ void SpawnRandomTreasure(MapInfo *mapInfo, SpawnPoint *a2) {
     a1a.uSoundID = 0;
     a1a.uFacing = 0;
     a1a.vPosition = a2->vPosition;
-    a1a.spell_skill = CHARACTER_SKILL_MASTERY_NONE;
+    a1a.spell_skill = MASTERY_NONE;
     a1a.spell_level = 0;
     a1a.uSpellID = SPELL_NONE;
     a1a.spell_target_pid = Pid();

@@ -5,7 +5,7 @@
 
 #include "HsvColorf.h"
 
-[[nodiscard]] HsvColorf Colorf::toHsv() const {
+[[nodiscard]] HsvColorf Colorf::toHsvColorf() const {
     assert(r >= 0.0f && r <= 1.0f);
     assert(g >= 0.0f && g <= 1.0f);
     assert(b >= 0.0f && b <= 1.0f);

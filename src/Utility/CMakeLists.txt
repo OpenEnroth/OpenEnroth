@@ -22,9 +22,12 @@ set(UTILITY_HEADERS
         Embedded.h
         Exception.h
         Flags.h
+        Hash.h
         String/Format.h
         Types.h
         IndexedArray.h
+        IndexedBitset.h
+        Lambda.h
         Math/Float.h
         Math/TrigLut.h
         Memory/Blob.h
@@ -63,6 +66,7 @@ target_link_libraries(utility
         PUBLIC
         fmt::fmt
         gch::small_vector
+        Boost::lambda2
         PRIVATE
         mio::mio)
 

@@ -37,6 +37,9 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         "--portable", portable,
         "Run in portable mode, game & user data paths will default to current folder. "
         "If '.portable' file exists in the current folder, then this parameter defaults to 'true'.");
+    app->add_flag(
+        "--tracing-rng", result.tracingRng,
+        "Use random number generators that print stack trace on each call.");
     app->add_option(
         "--log-level", result.logLevel,
         "Log level, one of 'none', 'trace', 'debug', 'info', 'warning', 'error', 'critical'.")->option_text("LOG_LEVEL");
@@ -59,9 +62,6 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     app->add_flag(
         "--headless", result.headless,
         "Run in headless mode.");
-    retrace->add_flag(
-        "--tracing-rng", result.tracingRng,
-        "Use random number generators that print stack trace on each call.");
     retrace->add_flag(
         "--check-canonical", result.retrace.checkCanonical,
         "Check whether all passed traces are stored in canonical representation and return an error if not. Don't overwrite the actual trace files.");
@@ -86,6 +86,7 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
 
     if (result.subcommand == SUBCOMMAND_RETRACE) {
         result.ramFsUserData = true; // No config & no user data if retracing.
+        result.quickStart = true;
 
         if (!traceDir.empty()) {
             for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(traceDir))
@@ -101,8 +102,10 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
             result.logLevel = LOG_ERROR; // Default log level for retracing is LOG_ERROR.
     }
 
-    if (result.subcommand == SUBCOMMAND_PLAY)
+    if (result.subcommand == SUBCOMMAND_PLAY) {
         result.ramFsUserData = true; // No config & no user data if playing a trace.
+        result.quickStart = true;
+    }
 
     return result;
 }

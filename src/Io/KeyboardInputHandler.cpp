@@ -60,7 +60,7 @@ void Io::KeyboardInputHandler::GeneratePausedActions() {
     for (auto action : AllInputActions()) {
         bool isTriggered = false;
         PlatformKey key = actionMapping->GetKey(action);
-        if (GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress)
+        if (actionMapping->GetToggleType(action) == KeyToggleType::TOGGLE_OneTimePress)
             isTriggered = controller->ConsumeKeyPress(key);
         else
             isTriggered = controller->IsKeyDown(key);
@@ -89,7 +89,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
         PlatformKey key = actionMapping->GetKey(action);
         PlatformKey gamepadkey = actionMapping->GetGamepadKey(action);
 
-        switch (GetToggleType(action)) {
+        switch (actionMapping->GetToggleType(action)) {
         default: assert(false); [[fallthrough]];
         case KeyToggleType::TOGGLE_OneTimePress:
             isTriggered = controller->ConsumeKeyPress(key) || controller->ConsumeKeyPress(gamepadkey);
@@ -243,7 +243,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
                     quickSpellNumber = SPELL_NONE; // Can end up here after setting the quick spell in all magic mode.
 
                 if (quickSpellNumber != SPELL_NONE) {
-                    CharacterSkillMastery skill_mastery = pParty->activeCharacter().getActualSkillValue(skillForSpell(quickSpellNumber)).mastery();
+                    Mastery skill_mastery = pParty->activeCharacter().getActualSkillValue(skillForSpell(quickSpellNumber)).mastery();
                     uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[skill_mastery];
                 }
             }

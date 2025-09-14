@@ -1,6 +1,7 @@
 #include "FrameLimiter.h"
 
 #include <chrono>
+#include <thread>
 
 static int64_t nowNs() {
     // We're going through std::chrono here and not through Platform because we need actual clock time, not
@@ -17,12 +18,22 @@ void FrameLimiter::reset() {
 }
 
 void FrameLimiter::tick(int targetFps) {
-    int64_t targetDeltaNs = 1'000'000'000 / targetFps;
+    // This code is somewhat inspired by https://blog.bearcats.nl/perfect-sleep-function/, read the article for
+    // details on what we're doing here.
+    constexpr int64_t spinTimeNs =  1'500'000; // 1.5ms.
+    int64_t targetTimeNs = _lastFrameTimeNs + 1'000'000'000 / targetFps;
+    int64_t currentTimeNs = nowNs();
+    int64_t waitTimeNs = targetTimeNs - currentTimeNs;
 
-    int64_t currentTimeNs;
-    do {
+    // Try to sleep first.
+    if (waitTimeNs > spinTimeNs) {
+        std::this_thread::sleep_for(std::chrono::nanoseconds(waitTimeNs - spinTimeNs));
         currentTimeNs = nowNs();
-    } while (currentTimeNs - _lastFrameTimeNs < targetDeltaNs);
+    }
+
+    // Then spin.
+    while (currentTimeNs < targetTimeNs)
+        currentTimeNs = nowNs();
 
     _lastFrameTimeNs = currentTimeNs;
 }

@@ -76,7 +76,7 @@ std::tuple<int, Pointi, Sizei> GameWindowHandler::GetWindowConfigPosition(const 
         displayRect = displays[0];
     }
 
-    if (mode == WINDOW_MODE_FULLSCREEN || mode == WINDOW_MODE_FULLSCREEN_BORDERLESS) {
+    if (mode == WINDOW_MODE_FULLSCREEN_BORDERLESS) {
         pos = displayRect.topLeft();
     } else if (Recti(Pointi(), displayRect.size()).contains(pos)) {
         pos += displayRect.topLeft();
@@ -176,29 +176,10 @@ bool GameWindowHandler::OnChar(PlatformKey key, int c) {
         textInputHandled |= keyboardInputHandler->ProcessTextInput(PlatformKey::KEY_CHAR, c);
     }
 
-    if (!textInputHandled && !viewparams->field_4C) {
+    if (!textInputHandled) {
         return GUI_HandleHotkey(key);  // try other hotkeys
     }
     return false;
-}
-
-Pointi GameWindowHandler::MapToRender(Pointi position) {
-    Sizef renDims = {(float)render->GetRenderDimensions().w, (float)render->GetRenderDimensions().h};
-    Sizef prDims = {(float)render->GetPresentDimensions().w, (float)render->GetPresentDimensions().h};
-    Pointi result = position;
-
-    if (renDims != prDims) {
-        Sizef ratioCorections = {prDims.w / renDims.w, prDims.h / renDims.h};
-        float ratioCorrection = std::min(ratioCorections.w, ratioCorections.h);
-
-        float w = renDims.w * ratioCorrection;
-        float h = renDims.h * ratioCorrection;
-
-        result.x = (float)position.x / ratioCorrection - ((float)prDims.w / 2 - w / 2) / ratioCorrection;
-        result.y = (float)position.y / ratioCorrection - ((float)prDims.h / 2 - h / 2) / ratioCorrection;
-    }
-
-    return result;
 }
 
 void GameWindowHandler::OnMouseLeftClick(Pointi position) {
@@ -207,7 +188,7 @@ void GameWindowHandler::OnMouseLeftClick(Pointi position) {
     } else {
         pMediaPlayer->StopMovie();
 
-        mouse->SetMousePosition(position.x, position.y);
+        mouse->setPosition(position);
 
         if (GetCurrentMenuID() == MENU_CREATEPARTY) {
             UI_OnKeyDown(PlatformKey::KEY_SELECT);
@@ -228,13 +209,13 @@ void GameWindowHandler::OnMouseRightClick(Pointi position) {
     } else {
         pMediaPlayer->StopMovie();
 
-        mouse->SetMousePosition(position.x, position.y);
+        mouse->setPosition(position);
 
         if (engine) {
             engine->PickMouse(pCamera3D->GetMouseInfoDepth(), position.x, position.y, &vis_allsprites_filter, &vis_door_filter);
         }
 
-        UI_OnMouseRightClick(position.x, position.y);
+        UI_OnMouseRightClick(position);
     }
 }
 
@@ -270,14 +251,15 @@ void GameWindowHandler::OnMouseRightDoubleClick(Pointi position) {
     }
 }
 
-void GameWindowHandler::OnMouseMove(Pointi position, bool left_button, bool right_button) {
+void GameWindowHandler::OnMouseMove(Pointi position, Pointi relative, bool left_button, bool right_button) {
     if (pArcomageGame->bGameInProgress) {
         ArcomageGame::OnMouseMove(position.x, position.y);
         ArcomageGame::OnMouseClick(0, left_button);
         ArcomageGame::OnMouseClick(1, right_button);
     } else {
         if (mouse) {
-            mouse->SetMousePosition(position.x, position.y);
+            mouse->setPosition(position);
+            mouse->DoMouseLook(relative);
         }
     }
 }
@@ -296,8 +278,8 @@ void GameWindowHandler::OnKey(PlatformKey key) {
     }  else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Screenshot, key)) {
         OnScreenshot();
         return;
-    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleBorderless, key)) {
-        OnToggleBorderless();
+    } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleWindowMode, key)) {
+        OnToggleWindowMode();
         return;
     } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleResizable, key)) {
         OnToggleResizable();
@@ -316,19 +298,18 @@ void GameWindowHandler::OnKey(PlatformKey key) {
         keyboardInputHandler->ProcessTextInput(key, -1);
     } else if (pArcomageGame->bGameInProgress) {
         // TODO(pskelton): how should this be handled?
-        if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
-            OnToggleFullscreen();
+        if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleWindowMode, key) && !pMovie_Track) {
+            OnToggleWindowMode();
         }
         pArcomageGame->onKeyPress(key);
     } else {
         pMediaPlayer->StopMovie();
         if (keyboardActionMapping->IsKeyMatchAction(InputAction::Return, key)) {
-            if (!viewparams->field_4C)
-                UI_OnKeyDown(key);
+            UI_OnKeyDown(key);
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Escape, key)) {
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, window_SpeakInHouse != 0, 0);
-        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleFullscreen, key) && !pMovie_Track) {
-            OnToggleFullscreen();
+        } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ToggleWindowMode, key) && !pMovie_Track) {
+            OnToggleWindowMode();
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::Console, key)) {
             engine->toggleOverlays();
         } else if (keyboardActionMapping->IsKeyMatchAction(InputAction::ReloadShaders, key) && current_screen_type == SCREEN_GAME) {
@@ -342,9 +323,7 @@ void GameWindowHandler::OnKey(PlatformKey key) {
             || keyboardActionMapping->IsKeyMatchAction(InputAction::DialogSelect, key)) {
             if (current_screen_type != SCREEN_GAME &&
                 current_screen_type != SCREEN_GAMEOVER_WINDOW) {
-                if (!viewparams->field_4C) {
-                    UI_OnKeyDown(key);
-                }
+                UI_OnKeyDown(key);
             }
         }
     }
@@ -359,7 +338,7 @@ void GameWindowHandler::OnFocusLost() {
 }
 
 void GameWindowHandler::OnPaint() {
-    if (render && render->AreRenderSurfacesOk()) {
+    if (render) {
         render->Present();
     }
 }
@@ -385,12 +364,6 @@ void GameWindowHandler::OnActivated() {
                 dword_6BE364_game_settings_1 &= ~GAME_SETTINGS_0400_MISC_TIMER;
             else
                 pMiscTimer->setPaused(false);
-
-            if (pMovie_Track) {  // pVideoPlayer->pSmackerMovie )
-                render->RestoreFrontBuffer();
-                render->RestoreBackBuffer();
-                // BackToHouseMenu();
-            }
         }
 
         pAudioPlayer->resumeSounds();
@@ -426,43 +399,17 @@ void GameWindowHandler::OnDeactivated() {
     }
 }
 
-void GameWindowHandler::OnToggleBorderless() {
+void GameWindowHandler::OnToggleWindowMode() {
     PlatformWindowMode mode = window->windowMode();
     switch (mode) {
-        case WINDOW_MODE_FULLSCREEN:
-            mode = WINDOW_MODE_FULLSCREEN_BORDERLESS;
-            break;
-        case WINDOW_MODE_FULLSCREEN_BORDERLESS:
-            mode = WINDOW_MODE_FULLSCREEN;
-            break;
         case WINDOW_MODE_WINDOWED:
             mode = WINDOW_MODE_BORDERLESS;
             break;
         case WINDOW_MODE_BORDERLESS:
-            mode = WINDOW_MODE_WINDOWED;
-            break;
-        default:
-            assert(false); //should never get there.
-            break;
-    }
-
-    window->setWindowMode(mode);
-}
-
-void GameWindowHandler::OnToggleFullscreen() {
-    PlatformWindowMode mode = window->windowMode();
-    switch (mode) {
-        case WINDOW_MODE_FULLSCREEN:
-            mode = WINDOW_MODE_WINDOWED;
+            mode = WINDOW_MODE_FULLSCREEN_BORDERLESS;
             break;
         case WINDOW_MODE_FULLSCREEN_BORDERLESS:
-            mode = WINDOW_MODE_BORDERLESS;
-            break;
-        case WINDOW_MODE_WINDOWED:
-            mode = WINDOW_MODE_FULLSCREEN;
-            break;
-        case WINDOW_MODE_BORDERLESS:
-            mode = WINDOW_MODE_FULLSCREEN_BORDERLESS;
+            mode = WINDOW_MODE_WINDOWED;
             break;
         default:
             assert(false); //should never get there.
@@ -522,12 +469,12 @@ bool GameWindowHandler::keyReleaseEvent(const PlatformKeyEvent *event) {
 }
 
 bool GameWindowHandler::mouseMoveEvent(const PlatformMouseEvent *event) {
-    OnMouseMove(MapToRender(event->pos), event->buttons & BUTTON_LEFT, event->buttons & BUTTON_RIGHT);
+    OnMouseMove(render->MapToRender(event->pos), event->rel, event->buttons & BUTTON_LEFT, event->buttons & BUTTON_RIGHT);
     return false;
 }
 
 bool GameWindowHandler::mousePressEvent(const PlatformMouseEvent *event) {
-    Pointi position = MapToRender(event->pos);
+    Pointi position = render->MapToRender(event->pos);
     if (event->button == BUTTON_LEFT) {
         if (event->isDoubleClick) {
             OnMouseLeftDoubleClick(position);
@@ -574,6 +521,16 @@ bool GameWindowHandler::moveEvent(const PlatformMoveEvent *event) {
 
 bool GameWindowHandler::resizeEvent(const PlatformResizeEvent *event) {
     render->Reinitialize();
+    PlatformWindowMode mode = window->windowMode();
+    if (mode == WINDOW_MODE_WINDOWED || mode == WINDOW_MODE_BORDERLESS) {
+        auto [display, relativePos, wsize] = GetWindowRelativePosition();
+
+        engine->config->window.PositionX.setValue(relativePos.x);
+        engine->config->window.PositionY.setValue(relativePos.y);
+
+        engine->config->window.Width.setValue(wsize.w);
+        engine->config->window.Height.setValue(wsize.h);
+    }
     return false;
 }
 

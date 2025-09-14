@@ -3,6 +3,8 @@
 #include <cassert>
 #include <utility>
 #include <memory>
+#include <string>
+#include <vector>
 
 #include "Application/GameKeyboardController.h" // TODO(captainurist): Engine -> Application dependency
 
@@ -98,6 +100,9 @@ void EngineTracePlayer::checkState(const EngineTraceRecording &recording, const 
     std::string_view where = isStart ? "start" : "end";
 
     EventTraceGameState state = EngineTraceStateAccessor::makeGameState();
+
+    // TODO(captainurist): this really should be just a JSON diff.
+
     if (state.locationName != expectedState.locationName) {
         throw Exception("Unexpected location name at the {} of trace '{}': expected '{}', got '{}'",
                         where, recording.trace.displayPath(), expectedState.locationName, state.locationName);
@@ -131,6 +136,24 @@ void EngineTracePlayer::checkState(const EngineTraceRecording &recording, const 
             if (expected != actual) {
                 throw Exception("Unexpected {} of character #{} at the {} of trace '{}': expected {}, got {}",
                                 attributeName, i, where, recording.trace.displayPath(), expected, actual);
+            }
+        }
+
+        static constexpr std::initializer_list<std::pair<std::vector<std::string> EventTraceCharacterState::*, const char *>> zones = {
+            {&EventTraceCharacterState::equipment, "equipment"},
+            {&EventTraceCharacterState::backpack, "backpack"}
+        };
+
+        for (const auto &[zone, zoneName] : zones) {
+            const std::vector<std::string> &expected = expectedState.characters[i].*zone;
+            const std::vector<std::string> &actual = state.characters[i].*zone;
+            if (expected.size() != actual.size()) {
+                throw Exception("Unexpected number of items in {} of character #{} at the {} of trace '{}': expected '{}', got '{}'",
+                                zoneName, i, where, recording.trace.displayPath(), expected.size(), actual.size());
+            } else if (expected != actual) {
+                size_t pos = std::ranges::mismatch(expected, actual).in1 - expected.begin();
+                throw Exception("Unexpected item in position {} in {} of character #{} at the {} of trace '{}': expected '{}', got '{}'",
+                                pos, zoneName, i, where, recording.trace.displayPath(), expected[pos], actual[pos]);
             }
         }
     }

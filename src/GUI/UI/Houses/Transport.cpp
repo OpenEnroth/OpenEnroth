@@ -110,7 +110,7 @@ void GUIWindow_Transport::mainDialogue() {
 
     std::vector<std::string> optionsText;
     int price = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
-    std::string travelCost = localization->FormatString(LSTR_FMT_TRAVEL_COST_D_GOLD, price);
+    std::string travelCost = localization->FormatString(LSTR_TRAVEL_COST_D_GOLD, price);
     int startingOffset = assets->pFontArrus->CalcTextHeight(travelCost, travel_window.uFrameWidth, 0) + (assets->pFontArrus->GetHeight() - 3) + 146;
     int lastsched = 255;
     bool hasActiveRoute = false;
@@ -127,7 +127,7 @@ void GUIWindow_Transport::mainDialogue() {
 
         if (routeActive && (transportSchedule[schedule_id].uQuestBit == QBIT_INVALID || pParty->_questBits[transportSchedule[schedule_id].uQuestBit])) {
             int travel_time = getTravelTimeTransportDays(schedule_id);
-            optionsText.push_back(localization->FormatString(LSTR_FMT_D_DAYS_TO_S, travel_time, pMapStats->pInfos[transportSchedule[schedule_id].uMapInfoID].name));
+            optionsText.push_back(localization->FormatString(LSTR_D_DAYS_TO_S, travel_time, pMapStats->pInfos[transportSchedule[schedule_id].uMapInfoID].name));
             hasActiveRoute = true;
         } else {
             optionsText.push_back("");
@@ -138,9 +138,9 @@ void GUIWindow_Transport::mainDialogue() {
         travel_window.DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.White, travelCost, 3);
         drawOptions(optionsText, colorTable.PaleCanary, startingOffset, true);
     } else {
-        int textHeight = assets->pFontArrus->CalcTextHeight(localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0);
+        int textHeight = assets->pFontArrus->CalcTextHeight(localization->GetString(LSTR_SORRY_COME_BACK_ANOTHER_DAY), travel_window.uFrameWidth, 0);
         int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - textHeight) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
-        travel_window.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, localization->GetString(LSTR_COME_BACK_ANOTHER_DAY), 3);
+        travel_window.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.White, localization->GetString(LSTR_SORRY_COME_BACK_ANOTHER_DAY), 3);
     }
 }
 
@@ -148,7 +148,7 @@ void GUIWindow_Transport::transportDialogue() {
     int pPrice = PriceCalculator::transportCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
 
     if (pParty->GetGold() < pPrice) {
-        engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+        engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
         playHouseSound(houseId(), HOUSE_SOUND_TRANSPORT_NOT_ENOUGH_GOLD);
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         return;
@@ -177,7 +177,7 @@ void GUIWindow_Transport::transportDialogue() {
         pParty->TakeGold(pPrice);
         playHouseSound(houseId(), HOUSE_SOUND_TRANSPORT_TRAVEL);
 
-        CharacterSpeech pSpeech;
+        SpeechId pSpeech;
         if (isBoat(houseId())) {
             pSpeech = SPEECH_TRAVEL_BOAT;
         } else {

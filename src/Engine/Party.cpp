@@ -116,10 +116,10 @@ void Party::Zero() {
     uNumArcomageLoses = 0;
     bTurnBasedModeOn = false;
     uFlags2 = 0;
-    alignment = PartyAlignment::PartyAlignment_Neutral;
+    alignment = PartyAlignment_Neutral;
     for (SpellBuff &buff : pPartyBuffs)
         buff.Reset();
-    pPickedItem.Reset();
+    takeHoldingItem();
     uFlags = 0;
 
     for (HouseId i : standartItemsInShops.indices())
@@ -189,12 +189,24 @@ int Party::canActCount() const {
     return result;
 }
 
-void Party::setHoldingItem(Item *pItem, int offsetX, int offsetY) {
+void Party::setHoldingItem(const Item &item, Pointi offset) {
+    assert(offset.x <= 9 && offset.y <= 9); // max item size grid offset is 9 see itemOffset in ItemGrid.cpp
+
     placeHeldItemInInventoryOrDrop();
-    pPickedItem = *pItem;
+    pPickedItem = item;
     mouse->SetCursorBitmapFromItemID(pPickedItem.itemId);
-    mouse->pickedItemOffsetX = offsetX;
-    mouse->pickedItemOffsetY = offsetY;
+    mouse->pickedItemOffset = offset;
+}
+
+Item Party::takeHoldingItem() {
+    Item result = pPickedItem;
+    if (result.itemId == ITEM_NULL)
+        return result;
+
+    pPickedItem.Reset();
+    mouse->SetCursorImage("MICON1");
+    mouse->pickedItemOffset = {};
+    return result;
 }
 
 void Party::setActiveToFirstCanAct() {  // added to fix some nzi problems entering shops
@@ -259,12 +271,9 @@ void Party::switchToNextActiveCharacter() {
 }
 
 bool Party::hasItem(ItemId uItemID) {
-    for (Character &player : this->pCharacters) {
-        for (Item &item : player.pInventoryItemList) {
-            if (item.itemId == uItemID)
-                return true;
-        }
-    }
+    for (Character &player : this->pCharacters)
+        if (player.inventory.find(uItemID))
+            return true;
     return false;
 }
 
@@ -375,17 +384,14 @@ unsigned int Party::getPartyFame() {
         UINT_MAX);  // min wasn't present, but could be incorrect without it
 }
 
-void Party::createDefaultParty(bool bDebugGiveItems) {
-    signed int uNumPlayers;  // [sp+18h] [bp-28h]@1
-    Item Dst;             // [sp+1Ch] [bp-24h]@10
-
+void Party::createDefaultParty() {
     pHireling1Name[0] = 0;
     pHireling2Name[0] = 0;
     this->hirelingScrollPosition = 0;
     pHirelings.fill(NPCData());
     pHirelingsSacrifice.fill(NPCSacrificeStatus());
 
-    this->pCharacters[0].name = localization->GetString(LSTR_PC_NAME_ZOLTAN);
+    this->pCharacters[0].name = localization->GetString(LSTR_NAME_ZOLTAN);
     this->pCharacters[0].uPrevFace = 17;
     this->pCharacters[0].uCurrentFace = 17;
     this->pCharacters[0].uPrevVoiceID = 17;
@@ -397,12 +403,12 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[0]._stats[ATTRIBUTE_ACCURACY] = 13;
     this->pCharacters[0]._stats[ATTRIBUTE_SPEED] = 14;
     this->pCharacters[0]._stats[ATTRIBUTE_LUCK] = 7;
-    this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_ARMSMASTER] = CombinedSkillValue::novice();
-    this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_BOW] = CombinedSkillValue::novice();
-    this->pCharacters[0].pActiveSkills[CHARACTER_SKILL_SWORD] = CombinedSkillValue::novice();
+    this->pCharacters[0].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pCharacters[0].pActiveSkills[SKILL_ARMSMASTER] = CombinedSkillValue::novice();
+    this->pCharacters[0].pActiveSkills[SKILL_BOW] = CombinedSkillValue::novice();
+    this->pCharacters[0].pActiveSkills[SKILL_SWORD] = CombinedSkillValue::novice();
 
-    this->pCharacters[1].name = localization->GetString(LSTR_PC_NAME_RODERIC);
+    this->pCharacters[1].name = localization->GetString(LSTR_NAME_RODERICK);
     this->pCharacters[1].uPrevFace = 3;
     this->pCharacters[1].uCurrentFace = 3;
     this->pCharacters[1].uPrevVoiceID = 3;
@@ -414,12 +420,12 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[1]._stats[ATTRIBUTE_ACCURACY] = 13;
     this->pCharacters[1]._stats[ATTRIBUTE_SPEED] = 13;
     this->pCharacters[1]._stats[ATTRIBUTE_LUCK] = 13;
-    this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_STEALING] = CombinedSkillValue::novice();
-    this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_DAGGER] = CombinedSkillValue::novice();
-    this->pCharacters[1].pActiveSkills[CHARACTER_SKILL_TRAP_DISARM] = CombinedSkillValue::novice();
+    this->pCharacters[1].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pCharacters[1].pActiveSkills[SKILL_STEALING] = CombinedSkillValue::novice();
+    this->pCharacters[1].pActiveSkills[SKILL_DAGGER] = CombinedSkillValue::novice();
+    this->pCharacters[1].pActiveSkills[SKILL_TRAP_DISARM] = CombinedSkillValue::novice();
 
-    this->pCharacters[2].name = localization->GetString(LSTR_PC_NAME_SERENA);
+    this->pCharacters[2].name = localization->GetString(LSTR_NAME_SERENA);
     this->pCharacters[2].uPrevFace = 14;
     this->pCharacters[2].uCurrentFace = 14;
     this->pCharacters[2].uPrevVoiceID = 14;
@@ -431,12 +437,12 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[2]._stats[ATTRIBUTE_ACCURACY] = 7;
     this->pCharacters[2]._stats[ATTRIBUTE_SPEED] = 13;
     this->pCharacters[2]._stats[ATTRIBUTE_LUCK] = 7;
-    this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_ALCHEMY] = CombinedSkillValue::novice();
-    this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_BODY] = CombinedSkillValue::novice();
-    this->pCharacters[2].pActiveSkills[CHARACTER_SKILL_MACE] = CombinedSkillValue::novice();
+    this->pCharacters[2].pActiveSkills[SKILL_ALCHEMY] = CombinedSkillValue::novice();
+    this->pCharacters[2].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pCharacters[2].pActiveSkills[SKILL_BODY] = CombinedSkillValue::novice();
+    this->pCharacters[2].pActiveSkills[SKILL_MACE] = CombinedSkillValue::novice();
 
-    this->pCharacters[3].name = localization->GetString(LSTR_PC_NAME_ALEXIS);
+    this->pCharacters[3].name = localization->GetString(LSTR_NAME_ALEXIS);
     this->pCharacters[3].uPrevFace = 10;
     this->pCharacters[3].uCurrentFace = 10;
     this->pCharacters[3].uPrevVoiceID = 10;
@@ -448,10 +454,10 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
     this->pCharacters[3]._stats[ATTRIBUTE_ACCURACY] = 13;
     this->pCharacters[3]._stats[ATTRIBUTE_SPEED] = 13;
     this->pCharacters[3]._stats[ATTRIBUTE_LUCK] = 7;
-    this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_LEATHER] = CombinedSkillValue::novice();
-    this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_AIR] = CombinedSkillValue::novice();
-    this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_FIRE] = CombinedSkillValue::novice();
-    this->pCharacters[3].pActiveSkills[CHARACTER_SKILL_STAFF] = CombinedSkillValue::novice();
+    this->pCharacters[3].pActiveSkills[SKILL_LEATHER] = CombinedSkillValue::novice();
+    this->pCharacters[3].pActiveSkills[SKILL_AIR] = CombinedSkillValue::novice();
+    this->pCharacters[3].pActiveSkills[SKILL_FIRE] = CombinedSkillValue::novice();
+    this->pCharacters[3].pActiveSkills[SKILL_STAFF] = CombinedSkillValue::novice();
 
     for (Character &pCharacter : pCharacters) {
         if (pCharacter.classType == CLASS_KNIGHT)
@@ -466,96 +472,6 @@ void Party::createDefaultParty(bool bDebugGiveItems) {
         }
 
         pCharacter.portraitTimePassed = 0_ticks;
-
-        if (bDebugGiveItems) {
-            Dst.Reset();
-            pItemTable->generateItem(ITEM_TREASURE_LEVEL_2, RANDOM_ITEM_RING, &Dst);
-            pCharacter.AddItem2(-1, &Dst);
-            for (CharacterSkillType skill : allVisibleSkills()) {
-                if (pCharacter.pActiveSkills[skill]) {
-                    switch (skill) {
-                        case CHARACTER_SKILL_STAFF:
-                            pCharacter.WearItem(ITEM_STAFF);
-                            break;
-                        case CHARACTER_SKILL_SWORD:
-                            pCharacter.WearItem(ITEM_CRUDE_LONGSWORD);
-                            break;
-                        case CHARACTER_SKILL_DAGGER:
-                            pCharacter.WearItem(ITEM_DAGGER);
-                            break;
-                        case CHARACTER_SKILL_AXE:
-                            pCharacter.WearItem(ITEM_CRUDE_AXE);
-                            break;
-                        case CHARACTER_SKILL_SPEAR:
-                            pCharacter.WearItem(ITEM_CRUDE_SPEAR);
-                            break;
-                        case CHARACTER_SKILL_BOW:
-                            pCharacter.WearItem(ITEM_CROSSBOW);
-                            break;
-                        case CHARACTER_SKILL_MACE:
-                            pCharacter.WearItem(ITEM_MACE);
-                            break;
-                        case CHARACTER_SKILL_SHIELD:
-                            pCharacter.WearItem(ITEM_WOODEN_BUCKLER);
-                            break;
-                        case CHARACTER_SKILL_LEATHER:
-                            pCharacter.WearItem(ITEM_LEATHER_ARMOR);
-                            break;
-                        case CHARACTER_SKILL_CHAIN:
-                            pCharacter.WearItem(ITEM_CHAIN_MAIL);
-                            break;
-                        case CHARACTER_SKILL_PLATE:
-                            pCharacter.WearItem(ITEM_PLATE_ARMOR);
-                            break;
-                        case CHARACTER_SKILL_FIRE:
-                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_FIRE_BOLT);
-                            break;
-                        case CHARACTER_SKILL_AIR:
-                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_FEATHER_FALL);
-                            break;
-                        case CHARACTER_SKILL_WATER:
-                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_POISON_SPRAY);
-                            break;
-                        case CHARACTER_SKILL_EARTH:
-                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_SLOW);
-                            break;
-                        case CHARACTER_SKILL_SPIRIT:
-                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_BLESS);
-                            break;
-                        case CHARACTER_SKILL_MIND:
-                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_MIND_BLAST);
-                            break;
-                        case CHARACTER_SKILL_BODY:
-                            pCharacter.AddItem(-1, ITEM_SPELLBOOK_HEAL);
-                            break;
-                        case CHARACTER_SKILL_ITEM_ID:
-                        case CHARACTER_SKILL_REPAIR:
-                        case CHARACTER_SKILL_MEDITATION:
-                        case CHARACTER_SKILL_PERCEPTION:
-                        case CHARACTER_SKILL_DIPLOMACY:
-                        case CHARACTER_SKILL_TRAP_DISARM:
-                        case CHARACTER_SKILL_LEARNING:
-                            pCharacter.AddItem(-1, ITEM_POTION_BOTTLE);
-                            pCharacter.AddItem(-1, grng->randomSample(allLevel1Reagents())); // Add simple reagent.
-                            break;
-                        case CHARACTER_SKILL_DODGE:
-                            pCharacter.AddItem(-1, ITEM_LEATHER_BOOTS);
-                            break;
-                        case CHARACTER_SKILL_UNARMED:
-                            pCharacter.AddItem(-1, ITEM_GAUNTLETS);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-            for (int i = 0; i < Character::INVENTORY_SLOT_COUNT; i++) {
-                if (pCharacter.pInventoryItemList[i].itemId != ITEM_NULL) {
-                    pCharacter.pInventoryItemList[i].SetIdentified();
-                }
-            }
-        }
-
         pCharacter.health = pCharacter.GetMaxHealth();
         pCharacter.mana = pCharacter.GetMaxMana();
     }
@@ -587,7 +503,7 @@ void Party::Reset() {
     pCharacters[0].uVoiceID = 17;
     pCharacters[0].SetInitialStats();
     pCharacters[0].uSex = pCharacters[0].GetSexByVoice();
-    pCharacters[0].name = localization->GetString(LSTR_PC_NAME_ZOLTAN);
+    pCharacters[0].name = localization->GetString(LSTR_NAME_ZOLTAN);
 
     pCharacters[1].ChangeClass(CLASS_THIEF);
     pCharacters[1].uCurrentFace = 3;
@@ -595,7 +511,7 @@ void Party::Reset() {
     pCharacters[1].uVoiceID = 3;
     pCharacters[1].SetInitialStats();
     pCharacters[1].uSex = pCharacters[1].GetSexByVoice();
-    pCharacters[1].name = localization->GetString(LSTR_PC_NAME_RODERIC);
+    pCharacters[1].name = localization->GetString(LSTR_NAME_RODERICK);
 
     pCharacters[2].ChangeClass(CLASS_CLERIC);
     pCharacters[2].uCurrentFace = 14;
@@ -603,7 +519,7 @@ void Party::Reset() {
     pCharacters[2].uVoiceID = 14;
     pCharacters[2].SetInitialStats();
     pCharacters[2].uSex = pCharacters[3].GetSexByVoice();
-    pCharacters[2].name = localization->GetString(LSTR_PC_NAME_SERENA);
+    pCharacters[2].name = localization->GetString(LSTR_NAME_SERENA);
 
     pCharacters[3].ChangeClass(CLASS_SORCERER);
     pCharacters[3].uCurrentFace = 10;
@@ -611,11 +527,11 @@ void Party::Reset() {
     pCharacters[3].uVoiceID = 10;
     pCharacters[3].SetInitialStats();
     pCharacters[3].uSex = pCharacters[3].GetSexByVoice();
-    pCharacters[3].name = localization->GetString(LSTR_PC_NAME_ALEXIS);
+    pCharacters[3].name = localization->GetString(LSTR_NAME_ALEXIS);
 
     for (Character &player : this->pCharacters) {
         player.timeToRecovery = 0_ticks;
-        player.conditions.ResetAll();
+        player.conditions.resetAll();
 
         for (SpellBuff &buff : player.pCharacterBuffs) {
             buff.Reset();
@@ -801,45 +717,44 @@ void Party::restAndHeal() {
             buff.Reset();
 
         pPlayer->resetTempBonuses();
-        if (pPlayer->conditions.HasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+        if (pPlayer->conditions.hasAny({CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
             continue;
         }
 
-        pPlayer->conditions.Reset(CONDITION_UNCONSCIOUS);
-        pPlayer->conditions.Reset(CONDITION_DRUNK);
-        pPlayer->conditions.Reset(CONDITION_FEAR);
-        pPlayer->conditions.Reset(CONDITION_SLEEP);
-        pPlayer->conditions.Reset(CONDITION_WEAK);
+        pPlayer->conditions.reset(CONDITION_UNCONSCIOUS);
+        pPlayer->conditions.reset(CONDITION_DRUNK);
+        pPlayer->conditions.reset(CONDITION_FEAR);
+        pPlayer->conditions.reset(CONDITION_SLEEP);
+        pPlayer->conditions.reset(CONDITION_WEAK);
 
         pPlayer->timeToRecovery = 0_ticks;
         pPlayer->health = pPlayer->GetMaxHealth();
         pPlayer->mana = pPlayer->GetMaxMana();
         if (pPlayer->classType == CLASS_LICH) {
             have_vessels_soul = false;
-            for (unsigned i = 0; i < Character::INVENTORY_SLOT_COUNT; i++) {
-                if (pPlayer->pInventoryItemList[i].itemId == ITEM_QUEST_LICH_JAR_FULL && pPlayer->pInventoryItemList[i].lichJarCharacterIndex == pPlayerID)
+            for (InventoryEntry jar : pPlayer->inventory.entries(ITEM_QUEST_LICH_JAR_FULL))
+                if (jar->lichJarCharacterIndex == pPlayerID)
                     have_vessels_soul = true;
-            }
             if (!have_vessels_soul) {
                 pPlayer->health = pPlayer->GetMaxHealth() / 2;
                 pPlayer->mana = pPlayer->GetMaxMana() / 2;
             }
         }
 
-        if (pPlayer->conditions.Has(CONDITION_ZOMBIE)) {
+        if (pPlayer->conditions.has(CONDITION_ZOMBIE)) {
             pPlayer->mana = 0;
             pPlayer->health /= 2;
-        } else if (pPlayer->conditions.HasAny({CONDITION_POISON_SEVERE, CONDITION_DISEASE_SEVERE})) {
+        } else if (pPlayer->conditions.hasAny({CONDITION_POISON_SEVERE, CONDITION_DISEASE_SEVERE})) {
             pPlayer->health /= 4;
             pPlayer->mana /= 4;
-        } else if (pPlayer->conditions.HasAny({CONDITION_POISON_MEDIUM, CONDITION_DISEASE_MEDIUM})) {
+        } else if (pPlayer->conditions.hasAny({CONDITION_POISON_MEDIUM, CONDITION_DISEASE_MEDIUM})) {
             pPlayer->health /= 3;
             pPlayer->mana /= 3;
-        } else if (pPlayer->conditions.HasAny({CONDITION_POISON_WEAK, CONDITION_DISEASE_WEAK})) {
+        } else if (pPlayer->conditions.hasAny({CONDITION_POISON_WEAK, CONDITION_DISEASE_WEAK})) {
             pPlayer->health /= 2;
             pPlayer->mana /= 2;
         }
-        if (pPlayer->conditions.Has(CONDITION_INSANE))
+        if (pPlayer->conditions.has(CONDITION_INSANE))
             pPlayer->mana = 0;
         updateCharactersAndHirelingsEmotions();
     }
@@ -929,25 +844,23 @@ int Party::GetPartyReputation() {
     return npcRep + ddm_dlv->reputation;
 }
 
+// TODO(pskelton): drop unsigned
 //----- (004269A2) --------------------------------------------------------
 void Party::GivePartyExp(unsigned int pEXPNum) {
-    signed int pActivePlayerCount;  // ecx@1
-    int pLearningPercent;           // eax@13
-    int playermodexp;
-
     if (pEXPNum > 0) {
-        pActivePlayerCount = 0;
+        // Count active characters
+        int pActivePlayerCount = 0;
         for (Character &player : this->pCharacters) {
-            if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+            if (player.conditions.hasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
                 pActivePlayerCount++;
             }
         }
+        // Split gained xp between active characters
         if (pActivePlayerCount) {
-            pEXPNum = pEXPNum / pActivePlayerCount;
+            int perCharXP = static_cast<int>(pEXPNum) / pActivePlayerCount;
             for (Character &player : this->pCharacters) {
-                if (player.conditions.HasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
-                    pLearningPercent = player.getLearningPercent();
-                    playermodexp = pEXPNum + pEXPNum * pLearningPercent / 100;
+                if (player.conditions.hasNone({CONDITION_UNCONSCIOUS, CONDITION_DEAD, CONDITION_PETRIFIED, CONDITION_ERADICATED})) {
+                    int playermodexp = perCharXP + perCharXP * player.getLearningPercent() / 100;
                     player.setXP(player.experience + playermodexp);
                 }
             }
@@ -962,7 +875,7 @@ void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {
     std::string status;
     if (policy == GOLD_RECEIVE_NOSHARE_SILENT) {
     } else if (policy == GOLD_RECEIVE_NOSHARE_MSG) {
-        status = localization->FormatString(LSTR_FMT_YOU_FOUND_D_GOLD, amount);
+        status = localization->FormatString(LSTR_YOU_FOUND_LU_GOLD, amount);
     } else {
         FlatHirelings buf;
         buf.Prepare();
@@ -987,9 +900,9 @@ void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {
             if (hirelingSalaries < 1) {
                 hirelingSalaries = 1;
             }
-            status = localization->FormatString(LSTR_FMT_YOU_FOUND_D_GOLD_FOLLOWERS, goldToGain, hirelingSalaries);
+            status = localization->FormatString(LSTR_YOU_FOUND_LU_GOLD_FOLLOWERS_TAKE_LU, goldToGain, hirelingSalaries);
         } else {
-            status = localization->FormatString(LSTR_FMT_YOU_FOUND_D_GOLD, amount);
+            status = localization->FormatString(LSTR_YOU_FOUND_LU_GOLD, amount);
         }
     }
     AddGold(goldToGain - hirelingSalaries);
@@ -1019,7 +932,7 @@ void Party::dropHeldItem() {
     // v9 = UnprojectX(v1->x);
     sprite.Create(_viewYaw, 184, 200, 0);  //+ UnprojectX(v1->x), 184, 200, 0);
 
-    mouse->RemoveHoldingItem();
+    pParty->takeHoldingItem();
 }
 
 void Party::placeHeldItemInInventoryOrDrop() {
@@ -1029,26 +942,24 @@ void Party::placeHeldItemInInventoryOrDrop() {
     }
 
     if (addItemToParty(&pPickedItem, true)) {
-        mouse->RemoveHoldingItem();
+        pParty->takeHoldingItem();
     } else {
         dropHeldItem();
     }
 }
 
 bool Party::addItemToParty(Item *pItem, bool isSilent) {
-    if (!pItemTable->items[pItem->itemId].identifyDifficulty) {
+    if (!pItemTable->items[pItem->itemId].identifyAndRepairDifficulty) {
         pItem->SetIdentified();
     }
 
     if (!pItemTable->items[pItem->itemId].iconName.empty()) {
-        int playerId = hasActiveCharacter() ? (pParty->_activeCharacter - 1) : 0;
+        int playerId = hasActiveCharacter() ? pParty->_activeCharacter - 1 : 0;
         for (int i = 0; i < pCharacters.size(); i++, playerId++) {
             if (playerId >= pCharacters.size()) {
                 playerId = 0;
             }
-            int itemIndex = pCharacters[playerId].AddItem(-1, pItem->itemId);
-            if (itemIndex) {
-                pCharacters[playerId].pInventoryItemList[itemIndex - 1] = *pItem;
+            if (pCharacters[playerId].inventory.tryAdd(*pItem)) {
                 pItem->Reset();
                 if (!isSilent) {
                     pAudioPlayer->playUISound(SOUND_gold01);
@@ -1133,8 +1044,8 @@ PartyAction ActionQueue::Next() {
 
 void Party::giveFallDamage(int distance) {
     for (Character &player : pParty->pCharacters) {  // receive falling damage
-        if (!player.HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-            !player.WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS)) {
+        if (!player.wearsEnchantedItem(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
+            !player.wearsItem(ITEM_ARTIFACT_HERMES_SANDALS)) {
             player.receiveDamage((int)((distance) * (uint64_t)(player.GetMaxHealth() / 10)) / 256, DAMAGE_PHYSICAL);
             Duration bonus = Duration::fromTicks(20 - player.GetParameterBonus(player.GetActualEndurance()));
             player.SetRecoveryTime(bonus * debug_non_combat_recovery_mul * flt_debugrecmod3);

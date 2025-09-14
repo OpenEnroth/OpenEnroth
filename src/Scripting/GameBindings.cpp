@@ -18,6 +18,8 @@
 
 #include "GUI/GUIWindow.h"
 
+#include "Utility/Exception.h"
+
 Character *getCharacterByIndex(int characterIndex);
 sol::table createCharacterConditionTable(sol::state_view &luaState, const Character &character);
 sol::table createCharacterSkillsTable(sol::state_view &luaState, const Character &character);
@@ -53,6 +55,7 @@ sol::table GameBindings::createBindingTable(sol::state_view &solState) const {
     _registerPartyBindings(solState, table);
     _registerItemBindings(solState, table);
     _registerEnums(solState, table);
+    _registerFunctions(solState, table);
     return table;
 }
 
@@ -62,8 +65,8 @@ void GameBindings::_registerMiscBindings(sol::state_view &solState, sol::table &
         "goToScreen", sol::as_function([](int screenIndex) {
         SetCurrentMenuID(MenuType(screenIndex));
     }),
-        "canClassLearn", sol::as_function([](CharacterClass classType, CharacterSkillType skillType) {
-        return skillMaxMasteryPerClass[classType][skillType] > CHARACTER_SKILL_MASTERY_NONE;
+        "canClassLearn", sol::as_function([](Class classType, Skill skillType) {
+        return skillMaxMasteryPerClass[classType][skillType] > MASTERY_NONE;
     })
     );
 }
@@ -105,13 +108,13 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
             }
         }),
         "getCharacterInfo", sol::as_function([this, &solState](int characterIndex, QueryTable queryTable) {
-            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1)) {
                 return _characterInfoQueryTable->createTable(*character, queryTable);
             }
             return sol::make_object(solState, sol::lua_nil);
         }),
         "setCharacterInfo", sol::as_function([](int characterIndex, const sol::object &info) {
-            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1)) {
                 const sol::table &table = info.as<sol::table>();
                 for (auto &&val : table) {
                     std::string_view key = val.first.as<std::string_view>();
@@ -124,33 +127,38 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
                     } else if (key == "mana") {
                         character->mana = val.second.as<int>();
                     } else if (key == "class") {
-                        character->classType = val.second.as<CharacterClass>();
+                        character->classType = val.second.as<Class>();
                     } else if (key == "condition") {
                         character->SetCondition(val.second.as<Condition>(), false);
                     } else if (key == "skill") {
                         sol::table skillValueTable = val.second.as<sol::table>();
                         CombinedSkillValue current = character->getActualSkillValue(skillValueTable["id"]);
+
                         auto level = skillValueTable.get<std::optional<int>>("level");
-                        auto mastery = skillValueTable.get<std::optional<CharacterSkillMastery>>("mastery");
-                        CombinedSkillValue skillValue(
-                            level ? *level : current.level(),
-                            mastery ? *mastery : current.mastery()
-                        );
-                        character->setSkillValue(skillValueTable["id"], skillValue);
+                        if (!level)
+                            level = current.level();
+
+                        auto mastery = skillValueTable.get<std::optional<Mastery>>("mastery");
+                        if (!mastery)
+                            mastery = current.mastery();
+
+                        if (!CombinedSkillValue::isValid(*level, *mastery))
+                            throw Exception("Invalid skill-mastery pair '{} {}'", *level, static_cast<int>(*mastery)); // TODO(captainurist): #enum need proper toDisplayString.
+
+                        character->setSkillValue(skillValueTable["id"], CombinedSkillValue(*level, *mastery));
                     } else {
-                        logger->warning("Invalid key for set_character_info. Used key: {}", key);
+                        throw Exception("Invalid key for set_character_info. Used key: {}", key);
                     }
                 }
             }
         }),
         "addItemToInventory", sol::as_function([](int characterIndex, ItemId itemId) {
-            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
-                return character->AddItem(-1, itemId) != 0;
-            }
+            if (Character *character = getCharacterByIndex(characterIndex - 1))
+                return !!character->inventory.tryAdd(Item(itemId));
             return false;
         }),
         "addCustomItemToInventory", sol::as_function([](int characterIndex, sol::table itemTable) {
-            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1)) {
                 Item item;
                 for (auto &&pair : itemTable) {
                     std::string_view key = pair.first.as<std::string_view>();
@@ -160,7 +168,7 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
                         item.lichJarCharacterIndex = pair.second.as<int>() - 1; // character index in lua is 1-based
                     }
                 }
-                return character->AddItem2(-1, &item) != 0;
+                return !!character->inventory.tryAdd(item);
             }
             return false;
         }),
@@ -170,16 +178,16 @@ void GameBindings::_registerPartyBindings(sol::state_view &solState, sol::table 
             }
         }),
         "playCharacterAwardSound", sol::as_function([](int characterIndex) {
-            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1)) {
                 character->PlayAwardSound_Anim();
             }
         }),
         "clearCondition", sol::as_function([](int characterIndex, std::optional<Condition> conditionToClear) {
-            if (Character *character = getCharacterByIndex(characterIndex - 1); character != nullptr) {
+            if (Character *character = getCharacterByIndex(characterIndex - 1)) {
                 if (conditionToClear) {
-                    character->conditions.Reset(*conditionToClear);
+                    character->conditions.reset(*conditionToClear);
                 } else {
-                    character->conditions.ResetAll();
+                    character->conditions.resetAll();
                 }
             }
         }),
@@ -198,7 +206,7 @@ void GameBindings::_registerItemBindings(sol::state_view &solState, sol::table &
     auto createItemTable = [&solState](const ItemData &itemDesc) {
         return solState.create_table_with(
             "name", itemDesc.name,
-            "level", itemDesc.identifyDifficulty
+            "level", itemDesc.identifyAndRepairDifficulty
         );
     };
 
@@ -256,53 +264,53 @@ void GameBindings::_registerEnums(sol::state_view &solState, sol::table &table) 
     );
 
     table.new_enum<false>("SkillType",
-        "Staff", CHARACTER_SKILL_STAFF,
-        "Sword", CHARACTER_SKILL_SWORD,
-        "Dagger", CHARACTER_SKILL_DAGGER,
-        "Axe", CHARACTER_SKILL_AXE,
-        "Spear", CHARACTER_SKILL_SPEAR,
-        "Bow", CHARACTER_SKILL_BOW,
-        "Mace", CHARACTER_SKILL_MACE,
-        "Blaster", CHARACTER_SKILL_BLASTER,
-        "Shield", CHARACTER_SKILL_SHIELD,
-        "Leather", CHARACTER_SKILL_LEATHER,
-        "Chain", CHARACTER_SKILL_CHAIN,
-        "Plate", CHARACTER_SKILL_PLATE,
-        "Fire", CHARACTER_SKILL_FIRE,
-        "Air", CHARACTER_SKILL_AIR,
-        "Water", CHARACTER_SKILL_WATER,
-        "Earth", CHARACTER_SKILL_EARTH,
-        "Spirit", CHARACTER_SKILL_SPIRIT,
-        "Mind", CHARACTER_SKILL_MIND,
-        "Body", CHARACTER_SKILL_BODY,
-        "Light", CHARACTER_SKILL_LIGHT,
-        "Dark", CHARACTER_SKILL_DARK,
-        "Item_ID", CHARACTER_SKILL_ITEM_ID,
-        "Merchant", CHARACTER_SKILL_MERCHANT,
-        "Repair", CHARACTER_SKILL_REPAIR,
-        "Bodybuilding", CHARACTER_SKILL_BODYBUILDING,
-        "Meditation", CHARACTER_SKILL_MEDITATION,
-        "Perception", CHARACTER_SKILL_PERCEPTION,
-        "Diplomacy", CHARACTER_SKILL_DIPLOMACY,
-        "Thievery", CHARACTER_SKILL_THIEVERY,
-        "Trap_Disarm", CHARACTER_SKILL_TRAP_DISARM,
-        "Dodge", CHARACTER_SKILL_DODGE,
-        "Unarmed", CHARACTER_SKILL_UNARMED,
-        "Monster_ID", CHARACTER_SKILL_MONSTER_ID,
-        "Armsmaster", CHARACTER_SKILL_ARMSMASTER,
-        "Stealing", CHARACTER_SKILL_STEALING,
-        "Alchemy", CHARACTER_SKILL_ALCHEMY,
-        "Learning", CHARACTER_SKILL_LEARNING,
-        "Club", CHARACTER_SKILL_CLUB,
-        "Misc", CHARACTER_SKILL_MISC
+        "Staff", SKILL_STAFF,
+        "Sword", SKILL_SWORD,
+        "Dagger", SKILL_DAGGER,
+        "Axe", SKILL_AXE,
+        "Spear", SKILL_SPEAR,
+        "Bow", SKILL_BOW,
+        "Mace", SKILL_MACE,
+        "Blaster", SKILL_BLASTER,
+        "Shield", SKILL_SHIELD,
+        "Leather", SKILL_LEATHER,
+        "Chain", SKILL_CHAIN,
+        "Plate", SKILL_PLATE,
+        "Fire", SKILL_FIRE,
+        "Air", SKILL_AIR,
+        "Water", SKILL_WATER,
+        "Earth", SKILL_EARTH,
+        "Spirit", SKILL_SPIRIT,
+        "Mind", SKILL_MIND,
+        "Body", SKILL_BODY,
+        "Light", SKILL_LIGHT,
+        "Dark", SKILL_DARK,
+        "Item_ID", SKILL_ITEM_ID,
+        "Merchant", SKILL_MERCHANT,
+        "Repair", SKILL_REPAIR,
+        "Bodybuilding", SKILL_BODYBUILDING,
+        "Meditation", SKILL_MEDITATION,
+        "Perception", SKILL_PERCEPTION,
+        "Diplomacy", SKILL_DIPLOMACY,
+        "Thievery", SKILL_THIEVERY,
+        "Trap_Disarm", SKILL_TRAP_DISARM,
+        "Dodge", SKILL_DODGE,
+        "Unarmed", SKILL_UNARMED,
+        "Monster_ID", SKILL_MONSTER_ID,
+        "Armsmaster", SKILL_ARMSMASTER,
+        "Stealing", SKILL_STEALING,
+        "Alchemy", SKILL_ALCHEMY,
+        "Learning", SKILL_LEARNING,
+        "Club", SKILL_CLUB,
+        "Misc", SKILL_MISC
     );
 
     table.new_enum<false>("SkillMastery",
-        "None", CHARACTER_SKILL_MASTERY_NONE,
-        "Novice", CHARACTER_SKILL_MASTERY_NOVICE,
-        "Expert", CHARACTER_SKILL_MASTERY_EXPERT,
-        "Master", CHARACTER_SKILL_MASTERY_MASTER,
-        "Grandmaster", CHARACTER_SKILL_MASTERY_GRANDMASTER
+        "None", MASTERY_NONE,
+        "Novice", MASTERY_NOVICE,
+        "Expert", MASTERY_EXPERT,
+        "Master", MASTERY_MASTER,
+        "Grandmaster", MASTERY_GRANDMASTER
     );
 
     table.new_enum<false>("ClassType",
@@ -355,6 +363,12 @@ void GameBindings::_registerEnums(sol::state_view &solState, sol::table &table) 
     );
 }
 
+void GameBindings::_registerFunctions(sol::state_view &solState, sol::table &table) const {
+    table["debugCallback"] = sol::as_function([] {
+        // Do nothing. You can write your code here.
+    });
+}
+
 Character *getCharacterByIndex(int characterIndex) {
     if (characterIndex >= 0 && characterIndex < pParty->pCharacters.size()) {
         return &pParty->pCharacters[characterIndex];
@@ -368,7 +382,7 @@ sol::table createCharacterConditionTable(sol::state_view &luaState, const Charac
     sol::table result = luaState.create_table();
 
     for (auto &&condition : allConditions()) {
-        if (character.conditions.Has(condition)) {
+        if (character.conditions.has(condition)) {
             result[condition] = true;
         }
     }
@@ -377,7 +391,7 @@ sol::table createCharacterConditionTable(sol::state_view &luaState, const Charac
 
 sol::table createCharacterSkillsTable(sol::state_view &luaState, const Character &character) {
     sol::table result = luaState.create_table();
-    for (CharacterSkillType skillType : character.pActiveSkills.indices()) {
+    for (Skill skillType : character.pActiveSkills.indices()) {
         if (character.HasSkill(skillType)) {
             CombinedSkillValue skillValue = character.getActualSkillValue(skillType);
             result[skillType] = luaState.create_table_with(

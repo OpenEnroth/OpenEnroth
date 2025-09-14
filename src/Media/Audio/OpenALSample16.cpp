@@ -42,8 +42,10 @@ bool AudioSample16::Open(PAudioDataSource data_source) {
         return false;
     }
 
-    alGenSources((ALuint)1, &al_source);
-    if (checkOpenALError()) {
+    alGenSources(1, &al_source);
+
+    // For some obscure reason we sometimes get al_source == -1 even though checkOpenALError() returns false. So we check it too.
+    if (checkOpenALError() || al_source == -1) {
         return false;
     }
 

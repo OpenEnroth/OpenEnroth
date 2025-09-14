@@ -14,6 +14,7 @@ class ProxyWindow : public ProxyBase<PlatformWindow> {
 
     virtual void setTitle(const std::string &title) override;
     virtual std::string title() const override;
+    virtual void setIcon(RgbaImageView image) override;
     virtual void resize(const Sizei &size) override;
     virtual Sizei size() const override;
     virtual void setPosition(const Pointi &pos) override;
@@ -28,6 +29,8 @@ class ProxyWindow : public ProxyBase<PlatformWindow> {
     virtual bool grabsMouse() const override;
     virtual void setOrientations(PlatformWindowOrientations orientations) override;
     virtual PlatformWindowOrientations orientations() override;
+    virtual void setMouseRelative(bool mouseRelative) override;
+    virtual bool isMouseRelative() const override;
     virtual Marginsi frameMargins() const override;
     virtual void *nativeHandle() const override;
     virtual void activate() override;

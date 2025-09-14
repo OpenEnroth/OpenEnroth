@@ -17,15 +17,12 @@ inline std::string_view removeQuotes(std::string_view str) {
     return result;
 }
 
-inline std::string trimRemoveQuotes(std::string str) {
-    while (str.length() > 0 && (str.at(0) == ' ' || str.at(0) == '"')) {
-        str.erase(0, 1);
-    }
-    while (str.length() > 0 && (str.at(str.length() - 1) == ' ' || str.at(str.length() - 1) == '"')) {
-        str.pop_back();
-    }
-
-    return str;
+inline std::string trimRemoveQuotes(std::string_view str) {
+    while (str.starts_with(' ') || str.starts_with('"'))
+        str = str.substr(1);
+    while (str.ends_with(' ') || str.ends_with('"'))
+        str = str.substr(0, str.size() - 1);
+    return std::string(str);
 }
 
 inline std::string_view trim(std::string_view s) {

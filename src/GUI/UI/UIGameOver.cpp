@@ -19,8 +19,8 @@ GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType releaseEvent) : GUIWindow(W
     this->sHint = fmt::format(
         "{}\n \n{}\n \n{}",
         localization->GetString(LSTR_CONGRATULATIONS_ADVENTURER),
-        localization->GetString(LSTR_WE_HOPE_YOU_ENJOYED_MM7),
-        localization->GetString(LSTR_THE_MM7_DEV_TEAM));
+        localization->GetString(LSTR_WE_HOPE_THAT_YOUVE_ENJOYED_PLAYING_MIGHT),
+        localization->GetString(LSTR_THE_MIGHT_AND_MAGIC_VII_DEVELOPMENT_TEAM));
 }
 
 void GUIWindow_GameOver::Update() {

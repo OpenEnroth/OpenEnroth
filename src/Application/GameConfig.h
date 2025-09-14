@@ -14,12 +14,17 @@
 #include "Engine/Random/RandomEnums.h"
 #include "Library/Logger/LogEnums.h"
 
+// Set fullscreen on android, borderless window if nightly, window by default
 #ifdef __ANDROID__
-#define ConfigRenderer RENDERER_OPENGL_ES
-#define ConfigWindowMode WINDOW_MODE_FULLSCREEN
+  #define ConfigRenderer RENDERER_OPENGL_ES
+  #define ConfigWindowMode WINDOW_MODE_FULLSCREEN_BORDERLESS
 #else
-#define ConfigRenderer RENDERER_OPENGL
-#define ConfigWindowMode WINDOW_MODE_WINDOWED
+  #define ConfigRenderer RENDERER_OPENGL
+  #if NIGHTLY
+    #define ConfigWindowMode WINDOW_MODE_FULLSCREEN_BORDERLESS
+  #else
+    #define ConfigWindowMode WINDOW_MODE_WINDOWED
+  #endif
 #endif
 
 MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformWindowMode)
@@ -267,6 +272,8 @@ class GameConfig : public Config {
         Bool DestroyDischargedWands = { this, "destroy_discharged_wands", false,
             "Destroy wands when they reach 0 charges." };
 
+        Bool ShowProtectionMagicPower = {this, "show_prot_magic_power", true, "Display the remaining power of Protection from Magic in the Party Buffs popup."};
+
      private:
         static int ValidateMaxFlightHeight(int max_flight_height) {
             if (max_flight_height <= 0 || max_flight_height > 16192)
@@ -376,8 +383,6 @@ class GameConfig : public Config {
         Key Screenshot = {this, "screenshot", PlatformKey::KEY_NONE, "Make screenshot key."};
         Key Console = {this, "console", PlatformKey::KEY_NONE, "Show/Hide overlays key."};
         Key ToggleMouseGrab = {this, "toggle_mouse_grab", PlatformKey::KEY_NONE, "Toggle mouse grab key."};
-        Key ToggleBorderless = {this, "toggle_borderless", PlatformKey::KEY_NONE, "Toggle window borderless key."};
-        Key ToggleFullscreen = {this, "toggle_fullscreen", PlatformKey::KEY_NONE, "Toggle window fullscreen key."};
         Key ToggleResizable = {this, "toggle_resizable", PlatformKey::KEY_NONE, "Toggle window resizable key."};
         Key CycleFilter = {this, "cycle_filter", PlatformKey::KEY_NONE, "Cycle rescale filter modes key."};
         Key ReloadShaders = {this, "reload_shaders", PlatformKey::KEY_NONE, "Reload shaders key."};
@@ -393,6 +398,7 @@ class GameConfig : public Config {
         Key DialogRight = {this, "dialog_right", PlatformKey::KEY_GAMEPAD_RIGHT, "Dialog right key."};
         Key DialogSelect = {this, "dialog_select", PlatformKey::KEY_GAMEPAD_A, "Dialog select key."};
         Key Escape = {this, "escape", PlatformKey::KEY_GAMEPAD_B, "Escape key."};
+        Key ToggleWindowMode = { this, "toggle_window_mode", PlatformKey::KEY_NONE, "Toggle window mode key." };
     };
 
     Gamepad gamepad{this};
@@ -466,6 +472,12 @@ class GameConfig : public Config {
 
         Float Saturation = {this, "saturation", 0.65f, "Colour saturation multiplier for textures and palettes"};
         Float Lightness = {this, "lightness", 1.1f, "Colour lightness multiplier for textures and palettes"};
+
+        Bool AlwaysCustomCursor = {this, "always_custom_cursor", false,
+            "Always draw a custom cursor using the graphics API and hide the system cursor, even if it's the default mouse arrow cursor."};
+
+        Bool GenerateTiles = {this, "generate_tiles", true,
+            "Auto-generate missing tiles on startup and use them where appropriate. MM7 missed some tile transitions, this option fixes this issue."};
 
      private:
         static int ValidateGamma(int level) {
@@ -561,8 +573,6 @@ class GameConfig : public Config {
         Key Screenshot = {this, "screenshot", PlatformKey::KEY_F2, "Make screenshot key."};
         Key Console = {this, "console", PlatformKey::KEY_TILDE, "Show/Hide overlays key."};
         Key ToggleMouseGrab = {this, "toggle_mouse_grab", PlatformKey::KEY_F1, "Toggle mouse grab key."};
-        Key ToggleBorderless = {this, "toggle_borderless", PlatformKey::KEY_F3, "Toggle window borderless key."};
-        Key ToggleFullscreen = {this, "toggle_fullscreen", PlatformKey::KEY_F4, "Toggle window fullscreen key."};
         Key ToggleResizable = {this, "toggle_resizable", PlatformKey::KEY_F6, "Toggle window resizable key."};
         Key CycleFilter = {this, "cycle_filter", PlatformKey::KEY_F7, "Cycle rescale filter modes key."};
         Key ReloadShaders = {this, "reload_shaders", PlatformKey::KEY_BACKSPACE, "Reload shaders key."};
@@ -579,6 +589,7 @@ class GameConfig : public Config {
         Key DialogSelect = {this, "dialog_select", PlatformKey::KEY_RETURN, "Dialog select key."};
         Key Escape = {this, "escape", PlatformKey::KEY_ESCAPE, "Escape key."};
         Key ToggleMouseLook = { this, "toggle_mouse_look", PlatformKey::KEY_F10, "Toggle mouse look key." };
+        Key ToggleWindowMode = { this, "toggle_window_mode", PlatformKey::KEY_F11, "Toggle window mode key." };
     };
 
     Keybindings keybindings{this};
@@ -610,6 +621,8 @@ class GameConfig : public Config {
 
         // TODO(captainurist): move to [audio]?
         Bool WalkSound = {this, "walk_sound", true, "Enable footsteps sound when walking."};
+
+        Bool ExtendedMonsterInfo = {this, "extended_monster_info", true, "Display second and special attack in the Monster Info popup."};
 
      private:
         static int ValidateLevel(int level) {

@@ -58,7 +58,7 @@ bool PartyCreationUI_LoopInternal();
 bool PlayerCreation_Choose4Skills() {
     for (const auto& character : pParty->pCharacters) {
         int skills_count = 0;
-        for (CharacterSkillType i : allVisibleSkills()) {
+        for (Skill i : allVisibleSkills()) {
             if (character.pActiveSkills[i])
                 ++skills_count;
         }
@@ -90,7 +90,7 @@ void CreateParty_EventLoop() {
         }
         case UIMSG_PlayerCreation_VoicePrev:
         {
-            CharacterSex sex = pParty->pCharacters[param].GetSexByVoice();
+            Sex sex = pParty->pCharacters[param].GetSexByVoice();
             do {
                 if (pParty->pCharacters[param].uVoiceID == 0)
                     pParty->pCharacters[param].uVoiceID = 19;
@@ -107,7 +107,7 @@ void CreateParty_EventLoop() {
         }
         case UIMSG_PlayerCreation_VoiceNext:
         {
-            CharacterSex sex = pParty->pCharacters[param].GetSexByVoice();
+            Sex sex = pParty->pCharacters[param].GetSexByVoice();
             do {
                 pParty->pCharacters[param].uVoiceID =
                     (pParty->pCharacters[param].uVoiceID + 1) % 20;
@@ -167,23 +167,23 @@ void CreateParty_EventLoop() {
         case UIMSG_PlayerCreationClickPlus:
             new OnButtonClick2({613, 393}, {0, 0}, pPlayerCreationUI_BtnPlus, std::string(), false);
             pPlayer[uPlayerCreationUI_SelectedCharacter].IncreaseAttribute(
-                static_cast<CharacterAttribute>((pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) % 7));
+                static_cast<Attribute>((pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) % 7));
             pAudioPlayer->playUISound(SOUND_ClickMinus);
             break;
         case UIMSG_PlayerCreationClickMinus:
             new OnButtonClick2({523, 393}, {0, 0}, pPlayerCreationUI_BtnMinus, std::string(), false);
             pPlayer[uPlayerCreationUI_SelectedCharacter].DecreaseAttribute(
-                static_cast<CharacterAttribute>((pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) % 7));
+                static_cast<Attribute>((pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem) % 7));
             pAudioPlayer->playUISound(SOUND_ClickPlus);
             break;
         case UIMSG_PlayerCreationSelectActiveSkill:
-            if (pPlayer[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(3) == CHARACTER_SKILL_INVALID)
+            if (pPlayer[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(3) == SKILL_INVALID)
                 pParty->pCharacters[uPlayerCreationUI_SelectedCharacter].pActiveSkills[pPlayer[uPlayerCreationUI_SelectedCharacter]
                     .GetSkillIdxByOrder(param + 4)] = CombinedSkillValue::novice();
             pAudioPlayer->playUISound(SOUND_ClickSkill);
             break;
         case UIMSG_PlayerCreationSelectClass:
-            pPlayer[uPlayerCreationUI_SelectedCharacter].ChangeClass((CharacterClass)param);
+            pPlayer[uPlayerCreationUI_SelectedCharacter].ChangeClass((Class)param);
             pAudioPlayer->playUISound(SOUND_SelectingANewCharacter);
             break;
         case UIMSG_PlayerCreationClickOK:
@@ -203,7 +203,7 @@ void CreateParty_EventLoop() {
             int v4;
             v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
             pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
-            if (pPlayer[param].GetSkillIdxByOrder(2) != CHARACTER_SKILL_INVALID) {
+            if (pPlayer[param].GetSkillIdxByOrder(2) != SKILL_INVALID) {
                 pParty->pCharacters[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(2)] = CombinedSkillValue::none();
             }
             break;
@@ -213,7 +213,7 @@ void CreateParty_EventLoop() {
             int v4;
             v4 = pGUIWindow_CurrentMenu->pCurrentPosActiveItem - pGUIWindow_CurrentMenu->pStartingPosActiveItem;
             pGUIWindow_CurrentMenu->pCurrentPosActiveItem = v4 % 7 + pGUIWindow_CurrentMenu->pStartingPosActiveItem + 7 * param;
-            if (pPlayer[param].GetSkillIdxByOrder(3) != CHARACTER_SKILL_INVALID)
+            if (pPlayer[param].GetSkillIdxByOrder(3) != SKILL_INVALID)
                 pParty->pCharacters[param].pActiveSkills[pPlayer[param].GetSkillIdxByOrder(3)] = CombinedSkillValue::none();
         } break;
         case UIMSG_PlayerCreationChangeName:
@@ -269,10 +269,10 @@ void GUIWindow_PartyCreation::Update() {
     GUIButton *uPosActiveItem;      // edi@12
     int v17;                        // eax@33
     Color pStatColor;        // eax@44
-    CharacterSkillType pSkillsType;  // eax@44
-    CharacterClass uClassType;   // edi@53
+    Skill pSkillsType;  // eax@44
+    Class uClassType;   // edi@53
     Color pColorText;                 // eax@53
-    CharacterSkillType pSkillId;     // edi@72
+    Skill pSkillId;     // edi@72
     size_t pLenText;                // eax@72
     signed int v104;                // ecx@72
     signed int pBonusNum;           // edi@82
@@ -315,9 +315,9 @@ void GUIWindow_PartyCreation::Update() {
     }
 
     pTextCenter = ui_partycreation_font->AlignText_Center(
-        640, localization->GetString(LSTR_CREATE_PARTY_FANCY));
+        640, localization->GetString(LSTR_C_R_E_A_T_E_P_A_R_T_Y));
     pGUIWindow_CurrentMenu->DrawText(ui_partycreation_font.get(), {pTextCenter + 1, 0}, colorTable.White,
-        localization->GetString(LSTR_CREATE_PARTY_FANCY));
+        localization->GetString(LSTR_C_R_E_A_T_E_P_A_R_T_Y));
 
     render->DrawTextureNew(17 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pCharacters[0].uCurrentFace]);
     render->DrawTextureNew(176 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pCharacters[1].uCurrentFace]);
@@ -428,7 +428,7 @@ void GUIWindow_PartyCreation::Update() {
         pTextCenter = assets->pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
         auto str10 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
         pColorText = colorTable.Green;
-        if (pSkillsType == CHARACTER_SKILL_INVALID)
+        if (pSkillsType == SKILL_INVALID)
             pColorText = colorTable.Aqua;
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX - 24, 2 * pIntervalY + posY}, pColorText, str10);
 
@@ -436,7 +436,7 @@ void GUIWindow_PartyCreation::Update() {
         pTextCenter = assets->pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
         auto str11 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
         pColorText = colorTable.Green;
-        if (pSkillsType == CHARACTER_SKILL_INVALID)
+        if (pSkillsType == SKILL_INVALID)
             pColorText = colorTable.Aqua;
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX - 24, 3 * pIntervalY + posY}, pColorText, str11);
 
@@ -540,8 +540,8 @@ void GUIWindow_PartyCreation::Update() {
     }
 
     pTextCenter = assets->pFontCreate->AlignText_Center(
-        0x5C, localization->GetString(LSTR_BONUS));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 533, 394}, colorTable.Tacha, localization->GetString(LSTR_BONUS));
+                0x5C, localization->GetString(LSTR_BONUS_1));
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 533, 394}, colorTable.Tacha, localization->GetString(LSTR_BONUS_1));
 
     // force draw so overlays dont get muddled
     render->DrawTwodVerts();
@@ -555,9 +555,9 @@ void GUIWindow_PartyCreation::Update() {
 
     if (errorMessageExpireTime > pMiscTimer->time()) {
         GUIWindow message_window;
-        message_window.sHint = localization->GetString(LSTR_PARTY_UNASSIGNED_POINTS);
+        message_window.sHint = localization->GetString(LSTR_CREATE_PARTY_CANNOT_BE_COMPLETED_UNLESS);
         if (pBonusNum < 0)
-            message_window.sHint = localization->GetString(LSTR_PARTY_TOO_MUCH_POINTS);
+            message_window.sHint = localization->GetString(LSTR_YOU_CANT_SPEND_MORE_THAN_50_POINTS);
         message_window.uFrameWidth = 300;
         message_window.uFrameHeight = 100;
         message_window.uFrameX = 170;
@@ -700,7 +700,7 @@ GUIWindow_PartyCreation::GUIWindow_PartyCreation() :
     pPlayerCreationUI_BtnMinus = CreateButton({523, 393}, {20, 35}, 1, 0, UIMSG_PlayerCreationClickMinus, 0, Io::InputAction::Minus, "", {ui_partycreation_minus});
     pPlayerCreationUI_BtnPlus = CreateButton({613, 393}, {20, 35}, 1, 0, UIMSG_PlayerCreationClickPlus, 1, Io::InputAction::Plus, "", {ui_partycreation_plus});
 
-    ui_partycreation_font = GUIFont::LoadFont("cchar.fnt", "FONTPAL");
+    ui_partycreation_font = GUIFont::LoadFont("cchar.fnt");
 }
 
 GUIWindow_PartyCreation::~GUIWindow_PartyCreation() {
@@ -760,111 +760,109 @@ bool PartyCreationUI_LoopInternal() {
             }
         }
         pItemTable->generateItem(ITEM_TREASURE_LEVEL_2, RANDOM_ITEM_RING, &item);
-        pParty->pCharacters[i].AddItem2(-1, &item);
+        pParty->pCharacters[i].inventory.add(item);
 
         pParty->pCharacters[i].health = pParty->pCharacters[i].GetMaxHealth();
         pParty->pCharacters[i].mana = pParty->pCharacters[i].GetMaxMana();
-        for (CharacterSkillType j : allSkills()) {
+        for (Skill j : allSkills()) {
             if (!pParty->pCharacters[i].pActiveSkills[j]) continue;
 
             switch (j) {
-            case CHARACTER_SKILL_STAFF:
-                pParty->pCharacters[i].AddItem(-1, ITEM_STAFF);
+            case SKILL_STAFF:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_STAFF));
                 break;
-            case CHARACTER_SKILL_SWORD:
-                pParty->pCharacters[i].AddItem(-1, ITEM_CRUDE_LONGSWORD);
+            case SKILL_SWORD:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_CRUDE_LONGSWORD));
                 break;
-            case CHARACTER_SKILL_DAGGER:
-                pParty->pCharacters[i].AddItem(-1, ITEM_DAGGER);
+            case SKILL_DAGGER:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_DAGGER));
                 break;
-            case CHARACTER_SKILL_AXE:
-                pParty->pCharacters[i].AddItem(-1, ITEM_CRUDE_AXE);
+            case SKILL_AXE:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_CRUDE_AXE));
                 break;
-            case CHARACTER_SKILL_SPEAR:
-                pParty->pCharacters[i].AddItem(-1, ITEM_CRUDE_SPEAR);
+            case SKILL_SPEAR:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_CRUDE_SPEAR));
                 break;
-            case CHARACTER_SKILL_BOW:
-                pParty->pCharacters[i].AddItem(-1, ITEM_CROSSBOW);
+            case SKILL_BOW:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_CROSSBOW));
                 break;
-            case CHARACTER_SKILL_MACE:
-                pParty->pCharacters[i].AddItem(-1, ITEM_MACE);
+            case SKILL_MACE:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_MACE));
                 break;
-            case CHARACTER_SKILL_BLASTER:
+            case SKILL_BLASTER:
                 logger->error("No blasters at startup :p");
                 break;
-            case CHARACTER_SKILL_SHIELD:
-                pParty->pCharacters[i].AddItem(-1, ITEM_WOODEN_BUCKLER);
+            case SKILL_SHIELD:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_WOODEN_BUCKLER));
                 break;
-            case CHARACTER_SKILL_LEATHER:
-                pParty->pCharacters[i].AddItem(-1, ITEM_LEATHER_ARMOR);
+            case SKILL_LEATHER:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_LEATHER_ARMOR));
                 break;
-            case CHARACTER_SKILL_CHAIN:
-                pParty->pCharacters[i].AddItem(-1, ITEM_CHAIN_MAIL);
+            case SKILL_CHAIN:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_CHAIN_MAIL));
                 break;
-            case CHARACTER_SKILL_PLATE:
-                pParty->pCharacters[i].AddItem(-1, ITEM_PLATE_ARMOR);
+            case SKILL_PLATE:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_PLATE_ARMOR));
                 break;
-            case CHARACTER_SKILL_FIRE:
-                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_FIRE_BOLT);
+            case SKILL_FIRE:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_SPELLBOOK_FIRE_BOLT));
                 pParty->pCharacters[i].bHaveSpell[SPELL_FIRE_TORCH_LIGHT] = true;
                 break;
-            case CHARACTER_SKILL_AIR:
-                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_FEATHER_FALL);
+            case SKILL_AIR:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_SPELLBOOK_FEATHER_FALL));
                 pParty->pCharacters[i].bHaveSpell[SPELL_AIR_WIZARD_EYE] = true;
                 break;
-            case CHARACTER_SKILL_WATER:
-                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_POISON_SPRAY);
+            case SKILL_WATER:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_SPELLBOOK_POISON_SPRAY));
                 pParty->pCharacters[i].bHaveSpell[SPELL_WATER_AWAKEN] = true;
                 break;
-            case CHARACTER_SKILL_EARTH:
-                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_SLOW);
+            case SKILL_EARTH:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_SPELLBOOK_SLOW));
                 pParty->pCharacters[i].bHaveSpell[SPELL_EARTH_STUN] = true;
                 break;
-            case CHARACTER_SKILL_SPIRIT:
-                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_BLESS);
+            case SKILL_SPIRIT:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_SPELLBOOK_BLESS));
                 pParty->pCharacters[i].bHaveSpell[SPELL_SPIRIT_DETECT_LIFE] = true;
                 break;
-            case CHARACTER_SKILL_MIND:
-                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_MIND_BLAST);
+            case SKILL_MIND:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_SPELLBOOK_MIND_BLAST));
                 pParty->pCharacters[i].bHaveSpell[SPELL_MIND_REMOVE_FEAR] = true;
                 break;
-            case CHARACTER_SKILL_BODY:
-                pParty->pCharacters[i].AddItem(-1, ITEM_SPELLBOOK_HEAL);
+            case SKILL_BODY:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_SPELLBOOK_HEAL));
                 pParty->pCharacters[i].bHaveSpell[SPELL_BODY_CURE_WEAKNESS] = true;
                 break;
-            case CHARACTER_SKILL_LIGHT:
-            case CHARACTER_SKILL_DARK:
+            case SKILL_LIGHT:
+            case SKILL_DARK:
                 logger->error("No light/dark magic at startup");
                 break;
-            case CHARACTER_SKILL_DIPLOMACY:
+            case SKILL_DIPLOMACY:
                 logger->error("No diplomacy in mm7 (yet)");
                 break;
-            case CHARACTER_SKILL_ITEM_ID:
-            case CHARACTER_SKILL_REPAIR:
-            case CHARACTER_SKILL_MEDITATION:
-            case CHARACTER_SKILL_PERCEPTION:
-            case CHARACTER_SKILL_TRAP_DISARM:
-            case CHARACTER_SKILL_LEARNING:
-                pParty->pCharacters[i].AddItem(-1, ITEM_POTION_BOTTLE);
-                pParty->pCharacters[i].AddItem(-1, grng->randomSample(allLevel1Reagents()));
+            case SKILL_ITEM_ID:
+            case SKILL_REPAIR:
+            case SKILL_MEDITATION:
+            case SKILL_PERCEPTION:
+            case SKILL_TRAP_DISARM:
+            case SKILL_LEARNING:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_POTION_BOTTLE));
+                pParty->pCharacters[i].inventory.add(Item(grng->randomSample(allLevel1Reagents())));
                 break;
-            case CHARACTER_SKILL_DODGE:
-                pParty->pCharacters[i].AddItem(-1, ITEM_LEATHER_BOOTS);
+            case SKILL_DODGE:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_LEATHER_BOOTS));
                 break;
-            case CHARACTER_SKILL_UNARMED:
-                pParty->pCharacters[i].AddItem(-1, ITEM_GAUNTLETS);
+            case SKILL_UNARMED:
+                pParty->pCharacters[i].inventory.add(Item(ITEM_GAUNTLETS));
                 break;
-            case CHARACTER_SKILL_CLUB:
-                // pParty->pCharacters[i].AddItem(-1, ITEM_CLUB);
+            case SKILL_CLUB:
+                // pParty->pCharacters[i].inventory.add(Item(ITEM_CLUB));
                 break;
             default:
                 break;
             }
 
-            for (Item &inventoryItem : pParty->pCharacters[i].pInventoryItemList) {
-                if (inventoryItem.itemId != ITEM_NULL)
-                    inventoryItem.SetIdentified();
-            }
+            for (InventoryEntry entry : pParty->pCharacters[i].inventory.entries())
+                entry->SetIdentified();
         }
     }
 

@@ -33,9 +33,7 @@
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Logger/Logger.h"
-#include "Library/Logger/LogSink.h"
-#include "Library/Logger/DistLogSink.h"
-#include "Library/Logger/BufferLogSink.h"
+#include "Library/Image/Png.h"
 #include "Library/Platform/Interface/Platform.h"
 #include "Library/Platform/Null/NullPlatform.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
@@ -58,18 +56,18 @@
 constexpr std::string_view configName = "openenroth.ini";
 
 GameStarter::GameStarter(GameStarterOptions options): _options(std::move(options)) {
-    // Init logging.
+    // Note: basic logging is initialized in LogStarter constructor, so it's safe to log here.
     Engine::LogEngineBuildInfo();
 
     try {
-        initWithLogger();
+        initialize();
     } catch (const std::exception &e) {
         logger->critical("Terminated with exception: {}", e.what());
         throw;
     }
 }
 
-void GameStarter::initWithLogger() {
+void GameStarter::initialize() {
     // Init environment.
     _environment = Environment::createStandardEnvironment();
 
@@ -88,6 +86,10 @@ void GameStarter::initWithLogger() {
         logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", ufs->displayPath(configName));
     }
     logger->info("Built in resource override is {}.", _config->debug.OverrideBuiltInResources.value() ? "enabled" : "disabled");
+
+    // Patch config.
+    if (_options.quickStart)
+        _config->graphics.GenerateTiles.setValue(false);
 
     // Finish logger init now that we have user fs and know the desired log level.
     _logStarter.initialize(ufs, _options.logLevel ? *_options.logLevel : _config->debug.LogLevel.value());
@@ -125,6 +127,12 @@ void GameStarter::initWithLogger() {
     ::window = _application->window();
     ::eventHandler = _application->eventHandler();
     ::openGLContext = _application->openGLContext(); // OK to store into a global even if not yet initialized
+
+    // On linux the only way to set window icon is through an API call. On other OSes this is handled by external
+    // mechanisms.
+#if defined(__linux__) && !defined(__ANDROID__)
+    window->setIcon(png::decode(dfs->read("images/OpenEnroth.png")));
+#endif
 
     // Install & set up components.
     // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.

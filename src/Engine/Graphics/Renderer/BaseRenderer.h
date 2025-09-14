@@ -38,18 +38,20 @@ class BaseRenderer : public Renderer {
     virtual void DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait_Sprite, int Y_Offset) override;
     virtual void DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) override;
     virtual void DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene() override;
-    virtual void PresentBlackScreen() override;
 
     virtual std::vector<Actor*> getActorsInViewport(int pDepth) override;
 
-    virtual void CreateZBuffer() override;
-    virtual void ClearZBuffer() override;
-    virtual void ZDrawTextureAlpha(float u, float v, GraphicsImage *pTexture, int zVal) override;
+    virtual void ClearHitMap() override;
+    virtual void DrawToHitMap(float u, float v, GraphicsImage *pTexture, int zVal) override;
+
+    virtual int QueryHitMap(Pointi screenPos, int defaultValue) override;
 
     bool Reinitialize(bool firstInit) override;
 
     virtual Sizei GetRenderDimensions() override;
     virtual Sizei GetPresentDimensions() override;
+    virtual Pointi MapToRender(Pointi position) override;
+    virtual Pointi MapToPresent(Pointi position) override;
 
  protected:
     unsigned int Billboard_ProbablyAddToListAndSortByZOrder(float z);

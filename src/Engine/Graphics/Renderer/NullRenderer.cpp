@@ -27,24 +27,13 @@ void NullRenderer::Present() {
     swapBuffers();
 }
 
-bool NullRenderer::InitializeFullscreen() {
-    return true;
-}
-
 void NullRenderer::Release() {}
-
-bool NullRenderer::SwitchToWindow() {
-    return true;
-}
 
 void NullRenderer::BeginLines2D() {}
 void NullRenderer::EndLines2D() {}
 void NullRenderer::RasterLine2D(Pointi a, Pointi b, Color uColor32) {}
 void NullRenderer::DrawLines(const RenderVertexD3D3 *vertices, int num_vertices) {}
 
-void NullRenderer::RestoreFrontBuffer() {}
-void NullRenderer::RestoreBackBuffer() {}
-void NullRenderer::BltBackToFontFast(int a2, int a3, Recti *pSrcRect) {}
 void NullRenderer::BeginScene3D() {
     // TODO(captainurist): doesn't belong here.
     uNumBillboardsToDraw = 0;
@@ -99,24 +88,12 @@ void NullRenderer::DrawIndoorSky(int uNumVertices, int uFaceID) {}
 void NullRenderer::DrawOutdoorSky() {}
 void NullRenderer::DrawOutdoorTerrain() {}
 
-bool NullRenderer::AreRenderSurfacesOk() {
-    return true;
-}
-
 RgbaImage NullRenderer::MakeViewportScreenshot(const int width, const int height) {
     return RgbaImage::solid(width, height, Color());
 }
 
 RgbaImage NullRenderer::MakeFullScreenshot() {
     return RgbaImage::solid(640, 480, Color());
-}
-
-void NullRenderer::BeginLightmaps() {}
-void NullRenderer::EndLightmaps() {}
-void NullRenderer::BeginLightmaps2() {}
-void NullRenderer::EndLightmaps2() {}
-bool NullRenderer::DrawLightmap(Lightmap *pLightmap, Vec3f *pColorMult, float z_bias) {
-    return true;
 }
 
 void NullRenderer::BeginDecals() {}

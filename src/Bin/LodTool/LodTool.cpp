@@ -3,99 +3,169 @@
 #include <cstdio>
 #include <string>
 #include <utility>
+#include <algorithm>
+#include <vector>
+#include <memory>
 
 #include "Library/Image/ImageFunctions.h"
 #include "Library/Image/Pcx.h"
 #include "Library/Image/Png.h"
-#include "Library/Lod/LodReader.h"
 #include "Library/LodFormats/LodFormats.h"
 #include "Library/FileSystem/Directory/DirectoryFileSystem.h"
 #include "Library/Serialization/Serialization.h"
+#include "Library/Magic/Magic.h"
 
 #include "Utility/String/Format.h"
 #include "Utility/String/Ascii.h"
 #include "Utility/String/Transformations.h"
 #include "Utility/UnicodeCrt.h"
 
-bool isPcx(const Blob &blob) {
-    if (blob.size() < 4)
-        return false;
+#include "ArchiveReader.h"
 
-    // Check for PCX signature:
-    // - s[0] should be 0x0A (PCX identifier).
-    // - s[1] should be one of the valid version numbers (0x00, 0x02, 0x03, 0x04, 0x05)
-    // - s[2] should be 0x01 (indicating RLE encoding)
-    // - s[3] should be one of the common bits per pixel values (0x01, 0x02, 0x04, 0x08)
-    std::string_view s = blob.string_view();
-    if (s[0] != '\x0A')
-        return false;
-    if (s[1] != '\x00' && s[1] != '\x02' && s[1] != '\x03' && s[1] != '\x04' && s[1] != '\x05')
-        return false;
-    if (s[2] != '\x01')
-        return false;
-    if (s[3] != '\x01' && s[3] != '\x02' && s[3] != '\x04' && s[3] != '\x08')
-        return false;
-    return true;
+static const char *formatDescription(MagicFileFormat format) {
+    switch (format) {
+    default:
+        assert(false);
+        [[fallthrough]];
+    case MAGIC_UNRECOGNIZED:
+        return "Raw data";
+    case MAGIC_LOD:
+        return "LOD archive";
+    case MAGIC_LOD_COMPRESSED_DATA:
+        return "LOD compressed file";
+    case MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE:
+        return "LOD compressed pseudo image";
+    case MAGIC_LOD_IMAGE:
+        return "LOD image";
+    case MAGIC_LOD_PALETTE:
+        return "LOD palette";
+    case MAGIC_LOD_SPRITE:
+        return "LOD sprite";
+    case MAGIC_LOD_FONT:
+        return "LOD font";
+    case MAGIC_VID:
+        return "VID archive";
+    case MAGIC_SND:
+        return "SND archive";
+    case MAGIC_PNG:
+        return "PNG image";
+    case MAGIC_PCX:
+        return "PCX image";
+    case MAGIC_WAV:
+        return "WAV file";
+    }
 }
 
-std::pair<Blob, std::string> decodeLodEntry(Blob entry, std::string name, bool raw) {
-    if (raw)
-        return {std::move(entry), std::move(name)};
+static RgbaImage renderFont(const LodFont &font) {
+    int charHeight = font.height();
+    int charWidth = 0;
+    for (int c = 0; c < 255; c++)
+        charWidth = std::max(charWidth, font.metrics(c).width);
 
-    if (isPcx(entry))
-        return {png::encode(pcx::decode(entry)),
-                (name.ends_with(".pcx") ? name.substr(0, name.size() - 4) : name) + ".png"};
+    RgbaImage image = RgbaImage::solid(charWidth * 16, charHeight * 16, Color(0, 0, 0, 255));
 
-    LodFileFormat format = lod::magic(entry, name);
+    for (int c = 0; c < 255; c++) {
+        int x0 = (c % 16) * charWidth;
+        int y0 = (c / 16) * charHeight;
 
-    if (format == LOD_FILE_IMAGE) {
-        LodImage lodImage = lod::decodeImage(entry);
-        return {png::encode(makeRgbaImage(lodImage.image, lodImage.palette)), name + ".png"};
+        GrayscaleImageView glyph = font.image(c);
+        for (int y = 0; y < glyph.height(); y++) {
+            for (int x = 0; x < glyph.width(); x++) {
+                int gray = glyph[y][x];
+                if (gray == 1)
+                    gray = 128; // Make the shadow gray.
+                image[y0 + y][x0 + x] = Color(gray, gray, gray, 255);
+            }
+        }
     }
 
-    if (format == LOD_FILE_PALETTE) {
+    return image;
+}
+
+class DecodedEntries : public std::vector<std::pair<Blob, std::string>> {
+ public:
+    DecodedEntries &&operator()(Blob entry, std::string name) {
+        // Need this helper b/c std::vector cannot be constructed from an initializer list with move-only elements.
+        emplace_back(std::move(entry), std::move(name));
+        return std::move(*this);
+    }
+};
+
+DecodedEntries decodeLodEntry(Blob entry, std::string name, bool raw) {
+    DecodedEntries result;
+
+    if (raw)
+        return result(std::move(entry), std::move(name));
+
+    MagicFileFormat format = magic(entry);
+
+    if (format == MAGIC_PCX)
+        return result(png::encode(pcx::decode(entry)), name + ".png");
+
+    if (format == MAGIC_WAV)
+        return result(std::move(entry), name.ends_with(".wav") ? name : name + ".wav");
+
+    if (format == MAGIC_PNG)
+        return result(std::move(entry), name.ends_with(".png") ? name : name + ".png");
+
+    if (format == MAGIC_LOD_IMAGE) {
+        LodImage lodImage = lod::decodeImage(entry);
+        return result(png::encode(makeRgbaImage(lodImage.image, lodImage.palette)), name + ".png");
+    }
+
+    if (format == MAGIC_LOD_PALETTE) {
         LodImage lodImage = lod::decodeImage(entry);
         RgbaImage palImage = RgbaImage::uninitialized(256, 1);
         for (size_t i = 0; i < 256; i++)
             palImage[0][i] = lodImage.palette.colors[i];
-        return {png::encode(palImage), name + ".png"};
+        return result(png::encode(palImage), name + ".png");
     }
 
-    if (format == LOD_FILE_SPRITE) {
-        LodSprite sprite = lod::decodeSprite(entry);
-        return {png::encode(sprite.image), name + ".png"};
+    if (format == MAGIC_LOD_SPRITE) {
+        LodSprite lodSprite = lod::decodeSprite(entry);
+        return result(png::encode(lodSprite.image), name + ".png");
     }
 
-    if (format == LOD_FILE_COMPRESSED || format == LOD_FILE_PSEUDO_IMAGE)
-        return {lod::decodeCompressed(entry), name};
+    if (format == MAGIC_LOD_FONT) {
+        LodFont lodFont = lod::decodeFont(entry);
+        return result(std::move(entry), name)
+                     (png::encode(renderFont(lodFont)), name + ".png");
+    }
 
-    return {std::move(entry), std::move(name)};
+    // We have pcx images inside compressed entries, so to support this we just re-run the function.
+    if (format == MAGIC_LOD_COMPRESSED_DATA || format == MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE)
+        return decodeLodEntry(lod::decodeMaybeCompressed(entry), std::move(name), raw);
+
+    return result(std::move(entry), std::move(name));
 }
 
 int runLs(const LodToolOptions &options) {
-    LodReader reader(options.lodPath, LOD_ALLOW_DUPLICATES);
-    fmt::println("{}", fmt::join(reader.ls(), "\n"));
+    std::unique_ptr<ArchiveReader> reader = ArchiveReader::createArchiveReader(options.path);
+    fmt::println("{}", fmt::join(reader->ls(), "\n"));
     return 0;
 }
 
 int runDump(const LodToolOptions &options) {
-    LodReader reader(options.lodPath, LOD_ALLOW_DUPLICATES);
+    std::unique_ptr<ArchiveReader> reader = ArchiveReader::createArchiveReader(options.path);
 
-    fmt::println("Lod file: {}", options.lodPath);
-    fmt::println("Version: {}", toString(reader.info().version));
-    fmt::println("Description: {}", reader.info().description);
-    fmt::println("Root folder: {}", reader.info().rootName);
+    fmt::println("Archive file: {}", options.path);
+    fmt::println("Archive format: {}", formatDescription(reader->format()));
+    if (auto info = reader->info()) {
+        fmt::println("LOD version: {}", toString(info->version));
+        fmt::println("LOD description: {}", info->description);
+        fmt::println("LOD root folder: {}", info->rootName);
+    }
 
-    for (const std::string &name : reader.ls()) {
-        Blob data = reader.read(name);
-        LodFileFormat format = lod::magic(data, name);
-        bool isCompressed = format == LOD_FILE_COMPRESSED || format == LOD_FILE_PSEUDO_IMAGE;
+    for (const std::string &name : reader->ls()) {
+        Blob data = reader->read(name);
+        MagicFileFormat format = magic(data);
+        bool isCompressed = format == MAGIC_LOD_COMPRESSED_DATA || format == MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE;
         if (isCompressed)
-            data = lod::decodeCompressed(data);
+            data = lod::decodeMaybeCompressed(data);
 
         fmt::println("");
         fmt::println("Entry: {}", name);
-        fmt::println("Format: {}", toString(lod::magic(data, name)));
+        fmt::println("Format: {}", formatDescription(magic(data)));
         fmt::println("Size{}: {}", isCompressed ? " (uncompressed)" : "", data.size());
         fmt::println("Data{}:", isCompressed ? " (uncompressed)" : "");
 
@@ -111,19 +181,18 @@ int runDump(const LodToolOptions &options) {
 }
 
 int runCat(const LodToolOptions &options) {
-    LodReader reader(options.lodPath, LOD_ALLOW_DUPLICATES);
-    auto [data, _] = decodeLodEntry(reader.read(options.cat.entry), options.cat.entry, options.raw);
+    std::unique_ptr<ArchiveReader> reader = ArchiveReader::createArchiveReader(options.path);
+    auto [data, _] = std::move(decodeLodEntry(reader->read(options.cat.entry), options.cat.entry, options.raw)[0]);
     return fwrite(data.data(), data.size(), 1, stdout) != 1 ? 1 : 0;
 }
 
 int runExtract(const LodToolOptions &options) {
-    LodReader reader(options.lodPath, LOD_ALLOW_DUPLICATES);
+    std::unique_ptr<ArchiveReader> reader = ArchiveReader::createArchiveReader(options.path);
     DirectoryFileSystem output(options.extract.output);
 
-    for (const std::string &entryName : reader.ls()) {
-        auto [data, name] = decodeLodEntry(reader.read(entryName), entryName, options.raw);
-        output.write(name, data);
-    }
+    for (const std::string &entryName : reader->ls())
+        for (const auto &[data, name] : decodeLodEntry(reader->read(entryName), entryName, options.raw))
+            output.write(name, data);
 
     return 0;
 }

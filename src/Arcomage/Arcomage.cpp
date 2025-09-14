@@ -232,7 +232,7 @@ void ArcomageGame::onKeyPress(PlatformKey key) {
             pArcomageGame->check_exit = 0;
         }
 
-        if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::ToggleFullscreen, key) && !pMovie_Track) {
+        if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::ToggleWindowMode, key) && !pMovie_Track) {
             pArcomageGame->stru1.am_input_type = ARCO_MSG_SWITCH_FULLSCREEN;
         }
     }
@@ -1427,7 +1427,7 @@ void DrawPlayersText() {
     Pointi text_position;
 
     if (need_to_discard_card) {
-        text_buff = localization->GetString(LSTR_ARCOMAGE_CARD_DISCARD);
+        text_buff = localization->GetString(LSTR_DISCARD_A_CARD);
         text_position.x = 320 - pArcomageGame->pfntArrus->GetLineWidth(text_buff) / 2;
         text_position.y = 306;
         am_DrawText(text_buff, &text_position);

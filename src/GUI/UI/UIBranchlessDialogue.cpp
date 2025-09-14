@@ -6,6 +6,7 @@
 #include "Engine/Objects/Decoration.h"
 #include "Engine/Party.h"
 #include "Engine/mm7_data.h"
+#include "Engine/Graphics/Viewport.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/UI/UIHouses.h"
@@ -39,7 +40,7 @@ void GUIWindow_BranchlessDialogue::Update() {
         branchless_dialogue_str = current_npc_text;
 
     GUIWindow BranchlessDlg_window;
-    BranchlessDlg_window.uFrameWidth = game_viewport_width;
+    BranchlessDlg_window.uFrameWidth = pViewport->viewportWidth;
     BranchlessDlg_window.uFrameZ = 452;
     int pTextHeight = assets->pFontArrus->CalcTextHeight(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12) + 7;
     if (352 - pTextHeight < 8) {
@@ -50,7 +51,7 @@ void GUIWindow_BranchlessDialogue::Update() {
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - pTextHeight) / 480.0f, ui_leather_mm7, pTextHeight);
     render->DrawTextureNew(8 / 640.0f, (347 - pTextHeight) / 480.0f, _591428_endcap);
     pGUIWindow_BranchlessDialogue->DrawText(pFont, {12, 354 - pTextHeight}, colorTable.White,
-                                            pFont->FitTextInAWindow(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12));
+                                            pFont->WrapText(branchless_dialogue_str, BranchlessDlg_window.uFrameWidth, 12));
     render->DrawTextureNew(0, 352 / 480.0f, game_ui_statusbar);
 
     // TODO(Nik-RE-dev): this code related to text input in MM6/MM8, revisit

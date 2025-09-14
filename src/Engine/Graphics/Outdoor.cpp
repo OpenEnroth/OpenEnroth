@@ -289,13 +289,13 @@ MapId OutdoorLocation::getTravelDestination(int partyX, int partyY) {
         return MAP_INVALID;
 
     // Check which side of the map
-    if (partyX < -22528)
+    if (partyX < -maxPartyAxisDistance)
         direction = 3; // west
-    else if (partyX > 22528)
+    else if (partyX > maxPartyAxisDistance)
         direction = 2; // east
-    else if (partyY < -22528)
+    else if (partyY < -maxPartyAxisDistance)
         direction = 1; // south
-    else if (partyY > 22528)
+    else if (partyY > maxPartyAxisDistance)
         direction = 0; // north
     else
         return MAP_INVALID;
@@ -470,7 +470,7 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     odm_filename.replace(odm_filename.length() - 4, 4, ".odm");
 
     OutdoorLocation_MM7 location;
-    deserialize(lod::decodeCompressed(pGames_LOD->read(odm_filename)), &location); // read throws.
+    deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(odm_filename)), &location); // read throws.
     reconstruct(location, this);
 
     // ****************.ddm file*********************//
@@ -480,7 +480,7 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     bool respawnInitial = false; // Perform initial location respawn?
     bool respawnTimed = false; // Perform timed location respawn?
     OutdoorDelta_MM7 delta;
-    if (Blob blob = lod::decodeCompressed(pSave_LOD->read(ddm_filename))) {
+    if (Blob blob = lod::decodeMaybeCompressed(pSave_LOD->read(ddm_filename))) {
         try {
             deserialize(blob, &delta, tags::context(location));
 
@@ -511,13 +511,13 @@ void OutdoorLocation::Load(std::string_view filename, int days_played, int respa
     assert(respawnInitial + respawnTimed <= 1);
 
     if (respawnInitial) {
-        deserialize(lod::decodeCompressed(pGames_LOD->read(ddm_filename)), &delta, tags::context(location));
+        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddm_filename)), &delta, tags::context(location));
         *outdoors_was_respawned = true;
     } else if (respawnTimed) {
         auto header = delta.header;
         auto fullyRevealedCells = delta.fullyRevealedCells;
         auto partiallyRevealedCells = delta.partiallyRevealedCells;
-        deserialize(lod::decodeCompressed(pGames_LOD->read(ddm_filename)), &delta, tags::context(location));
+        deserialize(lod::decodeMaybeCompressed(pGames_LOD->read(ddm_filename)), &delta, tags::context(location));
         delta.header = header;
         delta.fullyRevealedCells = fullyRevealedCells;
         delta.partiallyRevealedCells = partiallyRevealedCells;
@@ -809,9 +809,9 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 int screen_space_half_width = static_cast<int>(proj_scale * frame->hw_sprites[Sprite_Octant]->uWidth / 2.0f);
                 int screen_space_height = static_cast<int>(proj_scale * frame->hw_sprites[Sprite_Octant]->uHeight);
 
-                if (projected_x + screen_space_half_width >= (signed int)pViewport->uViewportTL_X &&
-                    projected_x - screen_space_half_width <= (signed int)pViewport->uViewportBR_X) {
-                    if (projected_y >= pViewport->uViewportTL_Y && (projected_y - screen_space_height) <= pViewport->uViewportBR_Y) { // test
+                if (projected_x + screen_space_half_width >= (signed int)pViewport->viewportTL_X &&
+                    projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
+                    if (projected_y >= pViewport->viewportTL_Y && (projected_y - screen_space_height) <= pViewport->viewportBR_Y) { // test
                         ++uNumBillboardsToDraw;
                         ++uNumSpritesDrawnThisFrame;
 
@@ -944,15 +944,13 @@ float ODM_GetFloorLevel(const Vec3f &pos, bool *pIsOnWater, int *faceId) {
 void ODM_UpdateUserInputAndOther() {
     ODM_ProcessPartyActions();
 
-    if (pParty->pos.x < -22528 || pParty->pos.x > 22528 ||
-        pParty->pos.y < -22528 || pParty->pos.y > 22528) {
+    if (pParty->pos.x < -maxPartyAxisDistance || pParty->pos.x > maxPartyAxisDistance ||
+        pParty->pos.y < -maxPartyAxisDistance || pParty->pos.y > maxPartyAxisDistance) {
         MapId mapid = pOutdoor->getTravelDestination(pParty->pos.x, pParty->pos.y);
         if (!engine->IsUnderwater() && (pParty->isAirborne() || (pParty->uFlags & (PARTY_FLAG_STANDING_ON_WATER | PARTY_FLAG_WATER_DAMAGE)) ||
                              pParty->uFlags & PARTY_FLAG_BURNING || pParty->bFlying) || mapid == MAP_INVALID) {
-            if (pParty->pos.x < -22528) pParty->pos.x = -22528;
-            if (pParty->pos.x > 22528) pParty->pos.x = 22528;
-            if (pParty->pos.y < -22528) pParty->pos.y = -22528;
-            if (pParty->pos.y > 22528) pParty->pos.y = 22528;
+            pParty->pos.x = std::clamp(pParty->pos.x, -maxPartyAxisDistance, maxPartyAxisDistance);
+            pParty->pos.y = std::clamp(pParty->pos.y, -maxPartyAxisDistance, maxPartyAxisDistance);
         } else {
             pDialogueWindow = new GUIWindow_Travel();  // TravelUI_Load();
         }
@@ -1016,7 +1014,7 @@ void ODM_ProcessPartyActions() {
     bool partyNotOnModel = floorFaceId == 0;
     int currentGroundLevel = floorZ + 1;
 
-    bool partyHasFeatherFall = pParty->FeatherFallActive() || pParty->wearsItemAnywhere(ITEM_ARTIFACT_LADYS_ESCORT)
+    bool partyHasFeatherFall = pParty->FeatherFallActive() || pParty->wearsItem(ITEM_ARTIFACT_LADYS_ESCORT)
                                     || pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING);
     if (partyHasFeatherFall)
         pParty->uFallStartZ = floorZ;
@@ -1272,10 +1270,6 @@ void ODM_ProcessPartyActions() {
                 }
                 break;
 
-            case PARTY_MouseLook:
-                mouse->DoMouseLook();
-                break;
-
             case PARTY_Jump:
                 if ((!partyAtHighSlope || floorFaceId) &&
                     // to avoid jump hesitancy when moving downhill
@@ -1377,8 +1371,8 @@ void ODM_ProcessPartyActions() {
                 !pParty->FeatherFallActive() &&
                 !(pParty->uFlags & (PARTY_FLAG_LANDING | PARTY_FLAG_JUMPING))) {  // falling scream
                 for (int i = 0; i < 4; ++i) {
-                    if (!pParty->pCharacters[i].HasEnchantedItemEquipped(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
-                        !pParty->pCharacters[i].WearsItem(ITEM_ARTIFACT_HERMES_SANDALS, ITEM_SLOT_BOOTS) &&
+                    if (!pParty->pCharacters[i].wearsEnchantedItem(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
+                        !pParty->pCharacters[i].wearsItem(ITEM_ARTIFACT_HERMES_SANDALS) &&
                         pParty->pCharacters[i].CanAct())
                         pParty->pCharacters[i].playReaction(SPEECH_FALLING);
                 }
@@ -1837,7 +1831,7 @@ static void loadAndPrepareODMInternal(MapId mapid) {
 
     // thisa->AllocSoftwareDrawBuffers();
     pWeather->bRenderSnow = false;
-    render->ClearZBuffer();
+    render->ClearHitMap();
     // thisa = (ODMRenderParams *)1;
     GetAlertStatus(); // Result unused.
     pParty->_delayedReactionTimer = 0_ticks;

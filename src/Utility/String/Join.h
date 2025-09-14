@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <ranges>
 
 namespace detail {
 template<class T>
@@ -28,8 +29,7 @@ std::string join(Joinables &&... joinables) {
 }
 
 template<class Strings>
-    requires JoinableToString<decltype(*std::declval<Strings>().begin())> && // We can use std::ranges::range_value_t, but I'd rather not bring in <ranges>
-             (!JoinableToString<Strings>)
+    requires JoinableToString<std::ranges::range_value_t<Strings>> && (!JoinableToString<Strings>)
 std::string join(Strings &&strings, char sep) {
     std::string result;
 

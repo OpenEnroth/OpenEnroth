@@ -11,13 +11,7 @@
 #include "Library/Lod/LodReader.h"
 
 class LodReader;
-
-struct LODSprite {
-    void Release();
-
-    std::string name;
-    GrayscaleImage bitmap;
-};
+struct LodSprite;
 
 class LodSpriteCache {
  public:
@@ -32,7 +26,7 @@ class LodSpriteCache {
     Sprite *loadSprite(std::string_view pContainerName);
 
  private:
-    bool LoadSpriteFromFile(LODSprite *pSpriteHeader, std::string_view pContainer);
+    bool LoadSpriteFromFile(LodSprite *pSprite, std::string_view pContainer);
 
  private:
     LodReader _reader;

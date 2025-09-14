@@ -8,6 +8,7 @@
 GameTestOptions GameTestOptions::parse(int argc, char **argv) {
     GameTestOptions result;
     result.ramFsUserData = true; // We want reproducible tests, so shouldn't depend on external user data.
+    result.quickStart = true;
     std::optional<std::string> testPath;
 
     std::unique_ptr<CliApp> app = std::make_unique<CliApp>();

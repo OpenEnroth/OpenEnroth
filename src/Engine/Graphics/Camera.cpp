@@ -24,6 +24,10 @@ float Camera3D::GetNearClip() const {
 }
 
 float Camera3D::GetFarClip() const {
+    // The cave is one large area so we need to increase the clip distance so that the back of the cave is visible
+    // TODO(pskelton): do we want to be overriding the config value here?
+    if (engine->_currentLoadedMapId == MAP_WROMTHRAXS_CAVE)
+        return 25000.0f;
     return engine->config->graphics.ClipFarDistance.value();
 }
 
@@ -253,21 +257,21 @@ void Camera3D::CreateViewMatrixAndProjectionScale() {
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR)
         halfFovTan = std::tan(blv_fov_rad / 2.0);
 
-    ViewPlaneDistPixels = (double)pViewport->uScreenWidth * 0.5 / halfFovTan;
+    ViewPlaneDistPixels = (double)pViewport->viewportWidth * 0.5 / halfFovTan;
 
     // calculate vertical FOV in degrees for GL rendering
-    fov_y_deg = (180.0 / pi) * 2.0 * std::atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDistPixels);
+    fov_y_deg = (180.0 / pi) * 2.0 * std::atan((pViewport->viewportHeight / 2.0) / pCamera3D->ViewPlaneDistPixels);
 
-    screenCenterX = (double)pViewport->uScreenCenterX;
-    screenCenterY = (double)pViewport->uScreenCenterY - pViewport->uScreen_TL_Y;
+    screenCenterX = (double)pViewport->viewportCenterX;
+    screenCenterY = (double)pViewport->viewportCenterY - pViewport->viewportTL_Y;
 
-    aspect = float(game_viewport_width / float(game_viewport_height));
+    aspect = float(pViewport->viewportWidth / float(pViewport->viewportHeight));
 }
 
 //----- (004374E8) --------------------------------------------------------
 void Camera3D::BuildViewFrustum() {
     float HalfAngleX = (pi / 2.0) - (odm_fov_rad / 2.0);
-    float HalfAngleY = (pi / 2.0) - (std::atan((game_viewport_height / 2.0) / pCamera3D->ViewPlaneDistPixels));
+    float HalfAngleY = (pi / 2.0) - (std::atan((pViewport->viewportHeight / 2.0) / pCamera3D->ViewPlaneDistPixels));
 
     if (uCurrentlyLoadedLevelType == LEVEL_INDOOR) {
         HalfAngleX = (pi / 2.0) - (blv_fov_rad / 2.0);
@@ -452,18 +456,18 @@ void Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, b
         v->_rhw = RHW;
         viewscalefactor = RHW * ViewPlaneDistPixels;
 
-        v->vWorldViewProjX = (double)pViewport->uScreenCenterX -
+        v->vWorldViewProjX = (double)pViewport->viewportCenterX -
                              viewscalefactor * (double)v->vWorldViewPosition.y;
-        v->vWorldViewProjY = (double)pViewport->uScreenCenterY -
+        v->vWorldViewProjY = (double)pViewport->viewportCenterY -
                              viewscalefactor * (double)v->vWorldViewPosition.z;
 
         if (fit_into_viewport) {
-            fitted_x = (double)(signed int)pViewport->uViewportBR_X;
+            fitted_x = (double)(signed int)pViewport->viewportBR_X;
             if (fitted_x >= pVertices[i].vWorldViewProjX)
                 temp_r = pVertices[i].vWorldViewProjX;
             else
                 temp_r = fitted_x;
-            temp_l = (double)(signed int)pViewport->uViewportTL_X;
+            temp_l = (double)(signed int)pViewport->viewportTL_X;
             if (temp_l <= temp_r) {
                 if (fitted_x >= pVertices[i].vWorldViewProjX)
                     fitted_x = pVertices[i].vWorldViewProjX;
@@ -472,12 +476,12 @@ void Camera3D::Project(RenderVertexSoft *pVertices, unsigned int uNumVertices, b
             }
             pVertices[i].vWorldViewProjX = fitted_x;
 
-            fitted_y = (double)(signed int)pViewport->uViewportBR_Y;
+            fitted_y = (double)(signed int)pViewport->viewportBR_Y;
             if (fitted_y >= pVertices[i].vWorldViewProjY)
                 temp_b = pVertices[i].vWorldViewProjY;
             else
                 temp_b = fitted_y;
-            temp_t = (double)(signed int)pViewport->uViewportTL_Y;
+            temp_t = (double)(signed int)pViewport->viewportTL_Y;
             if (temp_t <= temp_b) {
                 if (fitted_y >= pVertices[i].vWorldViewProjY)
                     fitted_y = pVertices[i].vWorldViewProjY;

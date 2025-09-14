@@ -114,8 +114,8 @@ void GUIWindow_Spellbook::openSpellbook() {
 
         int index = spellIndexInMagicSchool(spell);
         CreateButton(fmt::format("SpellBook_Spell{}", index),
-                     {pViewport->uViewportTL_X + pIconPos[chapter][pSpellbookSpellIndices[chapter][index + 1]].Xpos,
-                     pViewport->uViewportTL_Y + pIconPos[chapter][pSpellbookSpellIndices[chapter][index + 1]].Ypos},
+                     {pViewport->viewportTL_X + pIconPos[chapter][pSpellbookSpellIndices[chapter][index + 1]].Xpos,
+                     pViewport->viewportTL_Y + pIconPos[chapter][pSpellbookSpellIndices[chapter][index + 1]].Ypos},
                      SBPageSSpellsTextureList[index + 1]->size(), 1, UIMSG_Spellbook_ShowHightlightedSpellInfo,
                      UIMSG_SelectSpell, std::to_underlying(spell));
         pageSpells++;
@@ -147,7 +147,7 @@ void GUIWindow_Spellbook::openSpellbook() {
     pBtn_InstallRemoveSpell = CreateButton({476, 450}, ui_spellbook_btn_quckspell->size(), 1, UIMSG_HintSelectRemoveQuickSpellBtn,
                                            UIMSG_ClickInstallRemoveQuickSpellBtn, 0, Io::InputAction::Invalid, "", {ui_spellbook_btn_quckspell_click});
     pBtn_CloseBook = CreateButton({561, 450}, ui_spellbook_btn_close->size(), 1, 0, UIMSG_Escape, 0, Io::InputAction::Invalid,
-                                  localization->GetString(LSTR_DIALOGUE_EXIT), {ui_spellbook_btn_close_click});
+                                  localization->GetString(LSTR_EXIT_DIALOGUE), {ui_spellbook_btn_close_click});
 }
 
 void GUIWindow_Spellbook::Update() {
@@ -157,7 +157,7 @@ void GUIWindow_Spellbook::Update() {
     drawCurrentSchoolBackground();
 
     for (MagicSchool page : allMagicSchools()) {
-        CharacterSkillType skill = skillForMagicSchool(page);
+        Skill skill = skillForMagicSchool(page);
 
         if (player.pActiveSkills[skill] || engine->config->debug.AllMagic.value()) {
             auto pPageTexture = ui_spellbook_school_tabs[page][0];
@@ -172,7 +172,7 @@ void GUIWindow_Spellbook::Update() {
             }
             render->DrawTextureNew(pX_coord / 640.0f, pY_coord / 480.0f, pPageTexture);
 
-            Pointi mousePos = mouse->GetCursorPos();
+            Pointi mousePos = mouse->position();
 
             for (SpellId spell : spellsForMagicSchool(player.lastOpenedSpellbookPage)) {
                 int index = spellIndexInMagicSchool(spell);
@@ -183,8 +183,8 @@ void GUIWindow_Spellbook::Update() {
                         if (pTexture) {
                             SpellBookIconPos &iconPos = pIconPos[player.lastOpenedSpellbookPage][pSpellbookSpellIndices[player.lastOpenedSpellbookPage][index + 1]];
 
-                            pX_coord = pViewport->uViewportTL_X + iconPos.Xpos;
-                            pY_coord = pViewport->uViewportTL_Y + iconPos.Ypos;
+                            pX_coord = pViewport->viewportTL_X + iconPos.Xpos;
+                            pY_coord = pViewport->viewportTL_Y + iconPos.Ypos;
 
                             Recti iconRect = Recti(pX_coord, pY_coord, pTexture->width(), pTexture->height());
                             if (iconRect.contains(mousePos)) { // mouseover highlight

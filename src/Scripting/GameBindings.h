@@ -19,6 +19,7 @@ class GameBindings : public IBindings {
     void _registerPartyBindings(sol::state_view &solState, sol::table &table) const;
     void _registerItemBindings(sol::state_view &solState, sol::table &table) const;
     void _registerEnums(sol::state_view &solState, sol::table &table) const;
+    void _registerFunctions(sol::state_view &solState, sol::table &table) const;
 
     /* TODO(Gerark) This variable becoming a static is just a temporary hack
      * Needs to be moved to another place where the ScriptingSystem is providing binding helpers instead */

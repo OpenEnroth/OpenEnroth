@@ -26,13 +26,6 @@ class GraphicsImage;
 //-------------------------------------------------------------------------
 // Data declarations
 
-extern int game_viewport_width;
-extern int game_viewport_height;
-extern int game_viewport_x;
-extern int game_viewport_y;
-extern int game_viewport_z;
-extern int game_viewport_w;
-
 extern float flt_4D84E8;
 
 extern unsigned int uGammaPos;
@@ -54,12 +47,12 @@ extern std::array<const char *, 25> pPlayerPortraitsNames;
 
 extern std::array<std::array<unsigned char, 25>, 48> byte_4ECF08;
 extern IndexedArray<std::array<unsigned char, 3>, SPEECH_FIRST, SPEECH_LAST> speechVariants;
-extern IndexedArray<std::array<CharacterPortrait, 5>, SPEECH_FIRST, SPEECH_LAST> portraitVariants;
+extern IndexedArray<std::array<PortraitId, 5>, SPEECH_FIRST, SPEECH_LAST> portraitVariants;
 extern std::array<int16_t, 4> pPlayerPortraitsXCoords_For_PlayerBuffAnimsDrawing;
-extern IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> skills_max_level;
-extern IndexedArray<Duration, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> base_recovery_times_per_weapon_type;
-extern std::array<IndexedArray<ClassSkillAffinity, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST>, 9> pSkillAvailabilityPerClass;
-extern IndexedArray<IndexedArray<CharacterSkillMastery, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST>, CLASS_FIRST, CLASS_LAST> skillMaxMasteryPerClass;
+extern IndexedArray<int, SKILL_FIRST, SKILL_LAST> skills_max_level;
+extern IndexedArray<Duration, SKILL_FIRST, SKILL_LAST> base_recovery_times_per_weapon_type;
+extern std::array<IndexedArray<SkillAffinity, SKILL_FIRST, SKILL_LAST>, 9> pSkillAvailabilityPerClass;
+extern IndexedArray<IndexedArray<Mastery, SKILL_FIRST, SKILL_LAST>, CLASS_FIRST, CLASS_LAST> skillMaxMasteryPerClass;
 
 extern std::vector<Pid> ai_near_actors_targets_pid;
 extern std::vector<unsigned int> ai_near_actors_ids;
@@ -138,6 +131,9 @@ constexpr float debug_turn_based_monster_movespeed_mul = 1.666666666666667f;
 constexpr float flt_debugrecmod3 = 2.133333333333333f;
 
 constexpr float meleeRange = 307.2f;
+
+// maximum +/- XY distance party can reach outdoors
+constexpr float maxPartyAxisDistance = 22528.0f;
 
 extern int uPlayerCreationUI_SelectedCharacter;
 extern int uPlayerCreationUI_NameEditCharacter;

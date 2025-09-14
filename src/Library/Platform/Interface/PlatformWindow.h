@@ -6,6 +6,7 @@
 #include "Library/Geometry/Size.h"
 #include "Library/Geometry/Point.h"
 #include "Library/Geometry/Margins.h"
+#include "Library/Image/Image.h"
 
 #include "Utility/Flags.h"
 
@@ -32,6 +33,9 @@ class PlatformWindow {
     virtual void setTitle(const std::string &title) = 0;
     virtual std::string title() const = 0;
 
+    virtual void setIcon(RgbaImageView image) = 0;
+    // No getter, sorry.
+
     virtual void resize(const Sizei &size) = 0;
     virtual Sizei size() const = 0;
 
@@ -52,6 +56,15 @@ class PlatformWindow {
 
     virtual void setOrientations(PlatformWindowOrientations orientations) = 0;
     virtual PlatformWindowOrientations orientations() = 0;
+
+    /**
+     * Setter for the relative mouse motion mode. When enabled for a given window, the cursor is hidden for that window
+     * while it has focus, and relative mouse motion is properly handled (w/o window edge clamping).
+     *
+     * @param mouseRelative             Whether relative mouse motion mode should be enabled for this window.
+     */
+    virtual void setMouseRelative(bool mouseRelative) = 0;
+    virtual bool isMouseRelative() const = 0;
 
     virtual Marginsi frameMargins() const = 0;
 

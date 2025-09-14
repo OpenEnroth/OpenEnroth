@@ -5,12 +5,10 @@
 #include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Tables/IconFrameTable.h"
 #include "Engine/Tables/TileTable.h"
-#include "Engine/Objects/Chest.h"
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Overlays.h"
-#include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/TextureFrameTable.h"
 
 #include "Media/Audio/SoundList.h"
@@ -21,6 +19,9 @@
 
 #include "EntitySnapshots.h"
 #include "CompositeSnapshots.h"
+#include "Engine/Data/TileEnumFunctions.h"
+#include "Library/Logger/Logger.h"
+#include "Library/Serialization/Serialization.h"
 
 void deserialize(const TriBlob &src, PortraitFrameTable *dst) {
     dst->pFrames.clear();
@@ -33,19 +34,6 @@ void deserialize(const TriBlob &src, PortraitFrameTable *dst) {
         deserialize(src.mm8, &dst->pFrames, tags::append, tags::via<PortraitFrameData_MM7>);
 
     assert(!dst->pFrames.empty());
-}
-
-void deserialize(const TriBlob &src, ChestDescList *dst) {
-    dst->vChests.clear();
-
-    if (src.mm6)
-        deserialize(src.mm6, &dst->vChests, tags::append, tags::via<ChestDesc_MM7>);
-    if (src.mm7)
-        deserialize(src.mm7, &dst->vChests, tags::append, tags::via<ChestDesc_MM7>);
-    if (src.mm8)
-        deserialize(src.mm8, &dst->vChests, tags::append, tags::via<ChestDesc_MM7>);
-
-    assert(!dst->vChests.empty());
 }
 
 void deserialize(const TriBlob &src, DecorationList *dst) {
@@ -62,13 +50,11 @@ void deserialize(const TriBlob &src, DecorationList *dst) {
 }
 
 void deserialize(const TriBlob &src, IconFrameTable *dst) {
-    RawIconFrameTable *rawDst = &raw(*dst);
+    dst->_frames.clear();
+    deserialize(src.mm7, &dst->_frames, tags::append, tags::via<IconFrameData_MM7>);
+    dst->_textures.resize(dst->_frames.size());
 
-    rawDst->frames.clear();
-    deserialize(src.mm7, &rawDst->frames, tags::append, tags::via<IconFrameData_MM7>);
-    rawDst->textures.resize(rawDst->frames.size());
-
-    assert(!rawDst->frames.empty());
+    assert(!dst->_frames.empty());
 }
 
 void deserialize(const TriBlob &src, MonsterList *dst) {
@@ -123,12 +109,6 @@ void deserialize(const TriBlob &src, TextureFrameTable *dst) {
     assert(!dst->textures.empty());
 }
 
-void deserialize(const TriBlob &src, TileTable *dst) {
-    deserialize(src.mm7, &dst->tiles, tags::append, tags::via<TileData_MM7>);
-
-    assert(!dst->tiles.empty());
-}
-
 void deserialize(const TriBlob &src, SoundList *dst) {
     std::vector<SoundInfo> sounds;
 
@@ -143,5 +123,25 @@ void deserialize(const TriBlob &src, SoundList *dst) {
 
     // TODO(captainurist): there are duplicate ids in the sounds array, look into it.
     for (const SoundInfo &sound : sounds)
-        raw(*dst)._mapSounds[sound.uSoundID] = sound;
+        dst->_mapSounds[sound.uSoundID] = sound;
+}
+
+void deserialize(const TriBlob &src, TileTable *dst) {
+    deserialize(src.mm7, &dst->_tiles, tags::append, tags::via<TileData_MM7>);
+
+    // Fill in the tileId map.
+    for (size_t i = 0; i < dst->_tiles.size(); i++) {
+        const TileData &tileData = dst->_tiles[i];
+        if (tileData.tileset == TILESET_INVALID || tileData.variant == TILE_VARIANT_INVALID || tileData.name.empty())
+            continue;
+
+        std::pair key(tileData.tileset, tileData.variant);
+
+        if (dst->_idByTilesetVariant.contains(key))
+            continue; // Just skip duplicates. Yes, MM7 data contains duplicates.
+
+        dst->_idByTilesetVariant[key] = i;
+    }
+
+    assert(!dst->_tiles.empty());
 }

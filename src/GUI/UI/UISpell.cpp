@@ -8,6 +8,7 @@
 #include "Io/Mouse.h"
 
 #include "UIStatusBar.h"
+#include "Engine/Graphics/Viewport.h"
 
 TargetedSpellUI::TargetedSpellUI(WindowType windowType, Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
     : GUIWindow(windowType, position, dimensions, hint), _spellInfo(spellInfo) {
@@ -15,7 +16,7 @@ TargetedSpellUI::TargetedSpellUI(WindowType windowType, Pointi position, Sizei d
 
     pEventTimer->setPaused(true);
     mouse->SetCursorImage("MICON2");
-    engine->_statusBar->setEvent(LSTR_CHOOSE_TARGET);
+    engine->_statusBar->setEvent(LSTR_SELECT_TARGET);
 }
 
 TargetedSpellUI_Hirelings::TargetedSpellUI_Hirelings(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
@@ -36,7 +37,7 @@ TargetedSpellUI_Character::TargetedSpellUI_Character(Pointi position, Sizei dime
 
 TargetedSpellUI_Actor::TargetedSpellUI_Actor(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
     : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
-    CreateButton({game_viewport_x, game_viewport_y}, {game_viewport_width, game_viewport_height}, 1, 0, UIMSG_CastSpell_TargetActor, 0);
+    CreateButton({pViewport->viewportTL_X, pViewport->viewportTL_Y}, {pViewport->viewportWidth, pViewport->viewportHeight}, 1, 0, UIMSG_CastSpell_TargetActor, 0);
 }
 
 TargetedSpellUI_ActorOrCharacter::TargetedSpellUI_ActorOrCharacter(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
@@ -45,10 +46,10 @@ TargetedSpellUI_ActorOrCharacter::TargetedSpellUI_ActorOrCharacter(Pointi positi
     CreateButton({165, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 1, Io::InputAction::SelectChar2);
     CreateButton({280, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 2, Io::InputAction::SelectChar3);
     CreateButton({390, 422}, {35, 0}, 2, 0, UIMSG_CastSpell_TargetCharacter, 3, Io::InputAction::SelectChar4);
-    CreateButton({8, 8}, {game_viewport_width, game_viewport_height}, 1, 0, UIMSG_CastSpell_TargetActorBuff, 0);
+    CreateButton({pViewport->viewportTL_X, pViewport->viewportTL_Y}, {pViewport->viewportWidth, pViewport->viewportHeight}, 1, 0, UIMSG_CastSpell_TargetActorBuff, 0);
 }
 
 TargetedSpellUI_Telekinesis::TargetedSpellUI_Telekinesis(Pointi position, Sizei dimensions, CastSpellInfo *spellInfo, std::string_view hint)
     : TargetedSpellUI(WINDOW_CastSpell, position, dimensions, spellInfo, hint) {
-    CreateButton({game_viewport_x, game_viewport_y}, {game_viewport_width, game_viewport_height}, 1, 0, UIMSG_CastSpell_Telekinesis, 0);
+    CreateButton({pViewport->viewportTL_X, pViewport->viewportTL_Y}, {pViewport->viewportWidth, pViewport->viewportHeight}, 1, 0, UIMSG_CastSpell_Telekinesis, 0);
 }

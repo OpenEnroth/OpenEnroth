@@ -4,6 +4,7 @@
 
 #include "GUI/UI/UIGame.h"
 
+#include "ItemGrid.h"
 #include "Application/Game.h"
 
 #include "Engine/AssetsManager.h"
@@ -190,7 +191,7 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
     pBtn_LoadGame = CreateButton("GameMenu_LoadGame", {19, 263}, {0xD6u, 0x28u}, 1, 0,
         UIMSG_Game_OpenLoadGameDialog, 0, Io::InputAction::LoadGame, localization->GetString(LSTR_LOAD_GAME), {game_ui_menu_load});
     pBtn_GameControls = CreateButton({241, 155}, {214, 40}, 1, 0,
-        UIMSG_Game_OpenOptionsDialog, 0, Io::InputAction::Options, localization->GetString(LSTR_OPTIONS), {game_ui_menu_controls});
+        UIMSG_Game_OpenOptionsDialog, 0, Io::InputAction::Options, localization->GetString(LSTR_SOUND_KEYBOARD_GAME_OPTIONS), {game_ui_menu_controls});
     pBtn_QuitGame = CreateButton("GameMenu_Quit", {241, 209}, {214, 40}, 1, 0,
         UIMSG_Quit, 0, Io::InputAction::ExitGame, localization->GetString(LSTR_QUIT), {game_ui_menu_quit});
     pBtn_Resume = CreateButton({241, 263}, {214, 40}, 1, 0,
@@ -202,8 +203,8 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
 void GUIWindow_GameMenu::Update() {
     // -----------------------------------
     // 004156F0 GUI_UpdateWindows --- part
-    render->DrawTextureNew(pViewport->uViewportTL_X / 640.0f,
-                                pViewport->uViewportTL_Y / 480.0f,
+    render->DrawTextureNew(pViewport->viewportTL_X / 640.0f,
+                                pViewport->viewportTL_Y / 480.0f,
                                 game_ui_menu_options);
 }
 
@@ -437,7 +438,7 @@ void GUIWindow_GameVideoOptions::Update() {
         msg_window.uFrameW = 268;
         msg_window.DrawTitleText(
             assets->pFontSmallnum.get(), 0, 0, ui_gamemenu_video_gamma_title_color,
-            localization->GetString(LSTR_GAMMA_DESCRIPTION), 3
+            localization->GetString(LSTR_GAMMA_CONTROLS_THE_RELATIVE_BRIGHTNESS), 3
         );
     }
 
@@ -609,9 +610,8 @@ void GUIWindow_GameOptions::Update() {
 void GameUI_OnPlayerPortraitLeftClick(int uPlayerID) {
     Character *player = &pParty->pCharacters[uPlayerID - 1];
     if (pParty->pPickedItem.itemId != ITEM_NULL) {
-        if (int slot = player->AddItem(-1, pParty->pPickedItem.itemId)) {
-            player->pInventoryItemList[slot - 1] = pParty->pPickedItem;
-            mouse->RemoveHoldingItem();
+        if (std::optional<Pointi> pos = player->inventory.findSpace(pParty->pPickedItem)) {
+            player->inventory.add(*pos, pParty->takeHoldingItem());
             return;
         }
 
@@ -702,7 +702,9 @@ std::string GameUI_GetMinimapHintText() {
     int pX;      // [sp+28h] [bp-4h]@1
 
     std::string result;
-    mouse->GetClickPos(&pX, &pY);
+    Pointi mousePos = mouse->position();
+    pX = mousePos.x;
+    pY = mousePos.y;
     v3 = 1.0 / (float)((signed int)viewparams->uMinimapZoom * 0.000015258789);
     global_coord_X =
         (int64_t)((double)(pX - 557) * v3 + (double)pParty->pos.x);
@@ -784,6 +786,12 @@ void GameUI_DrawRightPanelItems() {
     }
 }
 
+static std::string toCompactString(int value) {
+    std::string result = value < 1000000 ? fmt::format("{}", value) : fmt::format("{:.4g}M", value * 1e-6);
+    assert(result.size() <= 6);
+    return result;
+}
+
 //----- (0041AEBB) --------------------------------------------------------
 void GameUI_DrawFoodAndGold() {
     int text_y;  // esi@2
@@ -791,8 +799,8 @@ void GameUI_DrawFoodAndGold() {
     if (uGameState != GAME_STATE_FINAL_WINDOW) {
         text_y = _44100D_should_alter_right_panel() != 0 ? 381 : 322;
 
-        pPrimaryWindow->DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain, fmt::format("\r087{}", pParty->GetFood()), 0, uGameUIFontShadow);
-        pPrimaryWindow->DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain, fmt::format("\r028{}", pParty->GetGold()), 0, uGameUIFontShadow);
+        pPrimaryWindow->DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain, fmt::format("\r087{}", toCompactString(pParty->GetFood())), 0, uGameUIFontShadow);
+        pPrimaryWindow->DrawText(assets->pFontSmallnum.get(), {0, text_y}, uGameUIFontMain, fmt::format("\r028{}", toCompactString(pParty->GetGold())), 0, uGameUIFontShadow);
         // force to render all queued text now so it wont be delayed and drawn over things it isn't supposed to, like item in hand or nuklear
         render->EndTextNew();
     }
@@ -847,7 +855,7 @@ void GameUI_DrawLifeManaBars() {
 
 //----- (0041B3B6) --------------------------------------------------------
 void GameUI_DrawRightPanel() {
-    render->DrawTextureNew(pViewport->uViewportBR_X / 640.0f, 0,
+    render->DrawTextureNew(pViewport->viewportBR_X / 640.0f, 0,
                                 game_ui_right_panel_frame);
 }
 
@@ -869,7 +877,6 @@ void GameUI_WritePointedObjectStatusString() {
     int requiredSkillpoints;           // ecx@19
     UIMessageType pMessageType1;  // esi@24
     int invmatrixindex;                // eax@41
-    Item *pItemGen;                 // ecx@44
     // int v16;                           // ecx@46
     Vis_PIDAndDepth pickedObject;        // eax@55
     signed int v18b;
@@ -883,7 +890,9 @@ void GameUI_WritePointedObjectStatusString() {
     // int testing;
 
     mouse->uPointingObjectID = Pid();
-    mouse->GetClickPos(&pX, &pY);
+    Pointi mousePos = mouse->position();
+    pX = mousePos.x;
+    pY = mousePos.y;
     Sizei renDims = render->GetRenderDimensions();
     if (pX < 0 || pX > renDims.w - 1 || pY < 0 || pY > renDims.h - 1)
         return;
@@ -905,7 +914,7 @@ void GameUI_WritePointedObjectStatusString() {
             Vis_PIDAndDepth pickedObject = engine->PickMouseNormal();
             mouse->uPointingObjectID = pickedObject.pid;
             pickedObjectID = (signed)pickedObject.pid.id();
-            if (pickedObject.pid.type() == OBJECT_Item) {
+            if (pickedObject.pid.type() == OBJECT_Sprite) {
                 if (pObjectList->pObjects[pSpriteObjects[pickedObjectID].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE) {
                     mouse->uPointingObjectID = Pid();
                     engine->_statusBar->clearPermanent();
@@ -915,7 +924,7 @@ void GameUI_WritePointedObjectStatusString() {
                 if (pickedObject.depth >= 0x200u || pParty->pPickedItem.itemId != ITEM_NULL) {
                     engine->_statusBar->setPermanent(pSpriteObjects[pickedObjectID].containing_item.GetDisplayName());
                 } else {
-                    engine->_statusBar->setPermanent(LSTR_FMT_GET_S, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName());
+                    engine->_statusBar->setPermanent(LSTR_GET_S, pSpriteObjects[pickedObjectID].containing_item.GetDisplayName());
                 }  // intentional fallthrough
             } else if (pickedObject.pid.type() == OBJECT_Decoration) {
                 if (!pLevelDecorations[pickedObjectID].uEventID) {
@@ -1005,19 +1014,17 @@ void GameUI_WritePointedObjectStatusString() {
                     // inventoryXCoord = (pX - 14) / 32;
                     // invMatrixIndex = inventoryXCoord + (INVETORYSLOTSWIDTH *
                     // inventoryYCoord);
-                    invmatrixindex = ((pX - 14) / 32) + 14 * ((pY - 17) / 32);
+                    Pointi gridPos = mapToInventoryGrid(Pointi(pX, pY), Pointi(14, 17));
+
                     // if (mouse.x <= 13 || mouse.x >= 462)
                     // return;
                     // testing =
                     // pParty->activeCharacter().GetItemIDAtInventoryIndex(invmatrixindex);
-                    pItemGen =
-                        pParty->activeCharacter().GetItemAtInventoryIndex(
-                            invmatrixindex);  // (ItemGen
-                                              // *)&pParty->activeCharacter().pInventoryItemList[testing
-                                              // - 1];
+                    InventoryEntry pItemGen =
+                        pParty->activeCharacter().inventory.entry(gridPos);
 
                     // TODO(captainurist): get rid of this std::to_underlying cast.
-                    if (pItemGen != NULL) pickedObjectID = std::to_underlying(pItemGen->itemId);
+                    if (pItemGen) pickedObjectID = std::to_underlying(pItemGen->itemId);
                     // if (!pItemID)
                     // return;
                     // item =
@@ -1086,16 +1093,16 @@ void GameUI_WritePointedObjectStatusString() {
                             break;
                         case 3:  // hovering over buttons
                             if (pButton->Contains(pX, pY)) {
-                                CharacterSkillType skill = static_cast<CharacterSkillType>(pButton->msg_param);
+                                Skill skill = static_cast<Skill>(pButton->msg_param);
                                 int skillLevel = pParty->activeCharacter().getSkillValue(skill).level();
                                 requiredSkillpoints = skillLevel + 1;
 
                                 if (skills_max_level[skill] <= skillLevel)
-                                    engine->_statusBar->setPermanent(LSTR_SKILL_ALREADY_MASTERED);
+                                    engine->_statusBar->setPermanent(LSTR_YOU_HAVE_ALREADY_MASTERED_THIS_SKILL);
                                 else if (pParty->activeCharacter().uSkillPoints < requiredSkillpoints)
-                                    engine->_statusBar->setPermanent(LSTR_FMT_NEED_MORE_SKILL_POINTS, requiredSkillpoints - pParty->activeCharacter().uSkillPoints);
+                                    engine->_statusBar->setPermanent(LSTR_YOU_NEED_D_MORE_SKILL_POINTS_TO_ADVANCE, requiredSkillpoints - pParty->activeCharacter().uSkillPoints);
                                 else
-                                    engine->_statusBar->setPermanent(LSTR_FMT_CLICKING_WILL_SPEND_POINTS, requiredSkillpoints);
+                                    engine->_statusBar->setPermanent(LSTR_CLICKING_HERE_WILL_SPEND_D_SKILL_POINTS, requiredSkillpoints);
 
                                 uLastPointedObjectID = Pid::dummy();
                                 return;
@@ -1207,11 +1214,11 @@ void GameUI_WritePointedObjectStatusString() {
                              if (pParty->activeCharacter().uSkillPoints <
                              requiredSkillpoints)      str =
                              localization->FormatString(
-                             LSTR_FMT_NEED_MORE_SKILL_POINTS, requiredSkillpoints -
+                             LSTR_YOU_NEED_D_MORE_SKILL_POINTS_TO_ADVANCE, requiredSkillpoints -
                              pParty->activeCharacter().uSkillPoints);
                              else      str =
                              localization->FormatString(
-                             LSTR_FMT_CLICKING_WILL_SPEND_POINTS, requiredSkillpoints);
+                             LSTR_CLICKING_HERE_WILL_SPEND_D_SKILL_POINTS, requiredSkillpoints);
                              engine->_statusBar->setPermanent(str);
                              uLastPointedObjectID = 1;
                              return;
@@ -1395,15 +1402,15 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
     render->SetUIClipRect(rect);
 
     bool bWizardEyeActive = pParty->wizardEyeActive();
-    CharacterSkillMastery uWizardEyeSkillLevel = pParty->wizardEyeSkillLevel();
+    Mastery uWizardEyeSkillLevel = pParty->wizardEyeSkillLevel();
     if (CheckHiredNPCSpeciality(Cartographer)) {
         bWizardEyeActive = true;
-        uWizardEyeSkillLevel = uWizardEyeSkillLevel > CHARACTER_SKILL_MASTERY_EXPERT ? uWizardEyeSkillLevel : CHARACTER_SKILL_MASTERY_EXPERT;
+        uWizardEyeSkillLevel = uWizardEyeSkillLevel > MASTERY_EXPERT ? uWizardEyeSkillLevel : MASTERY_EXPERT;
     }
 
     if (engine->config->debug.WizardEye.value()) {
         bWizardEyeActive = true;
-        uWizardEyeSkillLevel = CHARACTER_SKILL_MASTERY_MASTER;
+        uWizardEyeSkillLevel = MASTERY_MASTER;
     }
 
     if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR) {
@@ -1472,7 +1479,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
                     Vec2i linea = center + (zoom * Vert1).toInt();
                     Vec2i lineb = center + (zoom * Vert2).toInt();
 
-                    if (bWizardEyeActive && uWizardEyeSkillLevel >= CHARACTER_SKILL_MASTERY_MASTER &&
+                    if (bWizardEyeActive && uWizardEyeSkillLevel >= MASTERY_MASTER &&
                         (pIndoor->pFaces[pOutline->uFace1ID].Clickable() ||
                             pIndoor->pFaces[pOutline->uFace2ID].Clickable()) &&
                         (pIndoor->pFaceExtras[pIndoor->pFaces[pOutline->uFace1ID].uFaceExtraID].uEventID ||
@@ -1505,7 +1512,7 @@ void GameUI_DrawMinimap(const Recti &rect, int zoom) {
 
     // draw objects on the minimap
     if (bWizardEyeActive) {
-        if (uWizardEyeSkillLevel >= CHARACTER_SKILL_MASTERY_EXPERT) {
+        if (uWizardEyeSkillLevel >= MASTERY_EXPERT) {
             for (unsigned i = 0; i < pSpriteObjects.size(); ++i) {
                 if (pSpriteObjects[i].uType == SPRITE_NULL || !pSpriteObjects[i].uObjectDescID)
                     continue;
@@ -1741,19 +1748,19 @@ std::string GetReputationString(int reputation) {
     else if (reputation >= -24)
         return localization->GetString(LSTR_REPUTATION_FRIENDLY);
     else
-        return localization->GetString(LSTR_REPUTATION_RESPECTED);
+        return localization->GetString(LSTR_REPUTATION_LIKED);
 }
 
 void GameUI_handleHintMessage(UIMessageType type, int param) {
     switch (type) {
         case UIMSG_HintSelectRemoveQuickSpellBtn: {
             if (spellbookSelectedSpell != SPELL_NONE && spellbookSelectedSpell != pParty->activeCharacter().uQuickSpell) {
-                engine->_statusBar->setPermanent(LSTR_FMT_SET_S_AS_READY_SPELL, pSpellStats->pInfos[spellbookSelectedSpell].name);
+                engine->_statusBar->setPermanent(LSTR_SET_S_AS_THE_READY_SPELL, pSpellStats->pInfos[spellbookSelectedSpell].name);
             } else {
                 if (pParty->activeCharacter().uQuickSpell != SPELL_NONE)
-                    engine->_statusBar->setPermanent(LSTR_CLICK_TO_REMOVE_QUICKSPELL);
+                    engine->_statusBar->setPermanent(LSTR_CLICK_HERE_TO_REMOVE_YOUR_QUICK_SPELL);
                 else
-                    engine->_statusBar->setPermanent(LSTR_CLICK_TO_SET_QUICKSPELL);
+                    engine->_statusBar->setPermanent(LSTR_SELECT_A_SPELL_THEN_CLICK_HERE_TO_SET_A);
             }
             break;
         }
@@ -1806,12 +1813,12 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
         }
 
         case UIMSG_ShowStatus_Food: {
-            engine->_statusBar->setPermanent(LSTR_FMT_YOU_HAVE_D_FOOD, pParty->GetFood());
+            engine->_statusBar->setPermanent(LSTR_YOU_HAVE_LU_FOOD, pParty->GetFood());
             break;
         }
 
         case UIMSG_ShowStatus_Funds: {
-            engine->_statusBar->setPermanent(LSTR_FMT_D_TOTAL_GOLD_D_IN_BANK, pParty->GetGold() + pParty->uNumGoldInBank, pParty->uNumGoldInBank);
+            engine->_statusBar->setPermanent(LSTR_YOU_HAVE_D_TOTAL_GOLD_D_IN_THE_BANK, pParty->GetGold() + pParty->uNumGoldInBank, pParty->uNumGoldInBank);
             break;
         }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL.h>
+#include <SDL3/SDL.h>
 
 #include <cstdint>
 #include <vector>
@@ -35,7 +35,7 @@ class SdlPlatformSharedState {
     void unregisterEventLoop(SdlEventLoop *eventLoop);
 
     void initializeGamepads();
-    SdlGamepad *initializeGamepad(int gamepadId); // Note: it's gamepad id, not joystick id.
+    SdlGamepad *initializeGamepad(SDL_JoystickID gamepadId); // Note: it's gamepad id, not joystick id.
     void deinitializeGamepad(SDL_JoystickID id); // And here it's joystick id, which is a different from a gamepad id!
     std::vector<PlatformGamepad *> allGamepads() const;
     SdlGamepad *gamepad(SDL_JoystickID id) const;

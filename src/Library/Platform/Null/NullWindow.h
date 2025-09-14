@@ -14,6 +14,7 @@ class NullWindow : public PlatformWindow {
 
     virtual void setTitle(const std::string &title) override;
     virtual std::string title() const override;
+    virtual void setIcon(RgbaImageView image) override;
     virtual void resize(const Sizei &size) override;
     virtual Sizei size() const override;
     virtual void setPosition(const Pointi &pos) override;
@@ -28,6 +29,8 @@ class NullWindow : public PlatformWindow {
     virtual bool grabsMouse() const override;
     virtual void setOrientations(PlatformWindowOrientations orientations) override;
     virtual PlatformWindowOrientations orientations() override;
+    virtual void setMouseRelative(bool mouseRelative) override;
+    virtual bool isMouseRelative() const override;
     virtual Marginsi frameMargins() const override;
     virtual void *nativeHandle() const override;
     virtual void activate() override;
@@ -37,11 +40,12 @@ class NullWindow : public PlatformWindow {
  private:
     NullPlatformSharedState *_state = nullptr;
     std::string _title;
-    Pointi  _position;
+    Pointi _position;
     Sizei _size;
     bool _visible = true;
     bool _resizable = true;
     PlatformWindowMode _mode = WINDOW_MODE_WINDOWED;
     bool _grabsMouse = false;
+    bool _mouseRelative = false;
     PlatformWindowOrientations _orientations = LANDSCAPE_LEFT | LANDSCAPE_RIGHT | PORTRAIT_UP | PORTRAIT_DOWN;
 };

@@ -17,6 +17,8 @@
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Engine.h"
 #include "Engine/Party.h"
+#include "Engine/Data/TileEnumFunctions.h"
+#include "Engine/Tables/TileTable.h"
 
 #include "GUI/GUIFont.h"
 
@@ -27,6 +29,7 @@
 void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     reconstruct(src.vertices, &dst->pVertices);
     reconstruct(src.faces, &dst->pFaces);
+
     reconstruct(src.faceData, &dst->pLFaces);
 
     for (size_t i = 0, j = 0; i < dst->pFaces.size(); ++i) {
@@ -51,6 +54,30 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
         j += pFace->uNumVertices + 1;
 
         assert(j <= dst->pLFaces.size());
+    }
+
+    // Face plane normals have come from fixed point values - recalculate them.
+    for (auto& face : dst->pFaces) {
+        if (face.uNumVertices < 3) continue;
+        Vec3f dir1 = (dst->pVertices[face.pVertexIDs[1]] - dst->pVertices[face.pVertexIDs[0]]);
+        Vec3f dir2, norm;
+        int i = 2;
+        for (; i < face.uNumVertices; i++) {
+            dir2 = (dst->pVertices[face.pVertexIDs[i]] - dst->pVertices[face.pVertexIDs[0]]);
+            if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
+                break; // Found a non-parallel edge.
+            }
+        }
+
+        if (i == face.uNumVertices) {
+            // If we didn't find a non-parallel edge, lets just round what were given.
+            // TODO(pskelton):  This shouldnt ever happen - test and drop
+            face.facePlane.normal /= face.facePlane.normal.length();
+        } else {
+            face.facePlane.normal = norm / norm.length();
+        }
+        face.facePlane.dist = -dot(face.facePlane.normal, dst->pVertices[face.pVertexIDs[0]]);
+        face.zCalc.init(face.facePlane);
     }
 
     for (size_t i = 0; i < dst->pFaces.size(); ++i) {
@@ -225,7 +252,10 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
         }
     }
 
-    reconstruct(src.chests, &vChests);
+    vChests.resize(src.chests.size());
+    for (size_t i = 0; i < src.chests.size(); ++i)
+        reconstruct(src.chests[i], &vChests[i], tags::context<int>(i));
+
     reconstruct(src.doors, &dst->pDoors);
     reconstruct(src.doorsData, &dst->ptr_0002B4_doors_ddata);
 
@@ -331,6 +361,31 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
     reconstruct(srcExtras.vertices, &dst->pVertices);
     reconstruct(srcExtras.faces, &dst->pFaces);
 
+    // TODO(pskelton): This code is common to ODM/BLV faces
+    // Face plane normals have come from fixed point values - recalculate them.
+    for (auto& face : dst->pFaces) {
+        if (face.uNumVertices < 3) continue;
+        Vec3f dir1 = (dst->pVertices[face.pVertexIDs[1]] - dst->pVertices[face.pVertexIDs[0]]);
+        Vec3f dir2, norm;
+        int i = 2;
+        for (; i < face.uNumVertices; i++) {
+            dir2 = (dst->pVertices[face.pVertexIDs[i]] - dst->pVertices[face.pVertexIDs[0]]);
+            if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
+                break; // Found a non-parallel edge.
+            }
+        }
+
+        if (i == face.uNumVertices) {
+            // If we didn't find a non-parallel edge, lets just round what were given.
+            // TODO(pskelton):  This shouldnt ever happen - test and drop
+            face.facePlane.normal /= face.facePlane.normal.length();
+        } else {
+            face.facePlane.normal = norm / norm.length();
+        }
+        face.facePlane.dist = -dot(face.facePlane.normal, dst->pVertices[face.pVertexIDs[0]]);
+        face.zCalc.init(face.facePlane);
+    }
+
     for (size_t i = 0; i < dst->pFaces.size(); i++)
         dst->pFaces[i].index = i;
 
@@ -350,6 +405,47 @@ void reconstruct(std::tuple<const BSPModelData_MM7 &, const BSPModelExtras_MM7 &
                 dst->pFaces[i].uAttributes &= ~FACE_HAS_EVENT;
         }
     }
+}
+
+static int mapToGlobalTileId(const std::array<int, 4> &baseIds, int localTileId) {
+    // Tiles in tilemap:
+    // [0..90) are mapped as-is, but seem to be mostly invalid. Only global tile ids [1..12] are valid (all are dirt),
+    //         the rest are "pending", effectively invalid.
+    // [90..126) map to tileset #1.
+    // [126..162) map to tileset #2.
+    // [162..198) map to tileset #3.
+    // [198..234) map to tileset #4 (road).
+    // [234..255) are invalid.
+    if (localTileId < 90)
+        return localTileId;
+
+    if (localTileId >= 234)
+        return 0;
+
+    int tilesetIndex = (localTileId - 90) / 36;
+    int tilesetOffset = (localTileId - 90) % 36;
+    return baseIds[tilesetIndex] + tilesetOffset;
+}
+
+void reconstruct(const OutdoorLocation_MM7 &src, OutdoorTerrain *dst) {
+    std::array<int, 4> baseTileIds;
+    for (int i = 0; i < 4; i++) {
+        reconstruct(src.tileTypes[i].tileset, &dst->_tilesets[i]);
+        baseTileIds[i] = pTileTable->tileId(dst->_tilesets[i], isRoad(dst->_tilesets[i]) ? TILE_VARIANT_ROAD_N_S_E_W : TILE_VARIANT_BASE1);
+    }
+
+    for (int y = 0; y < 128; y++)
+        for (int x = 0; x < 128; x++)
+            dst->_heightMap[y][x] = src.heightMap[y * 128 + x];
+
+    for (int y = 0; y < 127; y++)
+        for (int x = 0; x < 127; x++)
+            dst->_originalTileMap[y][x] = mapToGlobalTileId(baseTileIds, src.tileMap[y * 128 + x]);
+
+    dst->recalculateNormals();
+    dst->recalculateTransitions(&dst->_tileMap);
+
+    dst->_tileMap = Image<int16_t>::copy(dst->_originalTileMap);
 }
 
 void reconstruct(const OutdoorLocation_MM7 &src, OutdoorLocation *dst) {
@@ -466,7 +562,11 @@ void reconstruct(const OutdoorDelta_MM7 &src, OutdoorLocation *dst) {
         pActors[i].id = i;
 
     reconstruct(src.spriteObjects, &pSpriteObjects);
-    reconstruct(src.chests, &vChests);
+
+    vChests.resize(src.chests.size());
+    for (size_t i = 0; i < src.chests.size(); ++i)
+        reconstruct(src.chests[i], &vChests[i], tags::context<int>(i));
+
     reconstruct(src.eventVariables, &engine->_persistentVariables);
     reconstruct(src.locationTime, &dst->loc_time);
 }
@@ -547,23 +647,4 @@ void deserialize(InputStream &src, SpriteFrameTable_MM7 *dst) {
     deserialize(src, &dst->eframeCount);
     deserialize(src, &dst->frames, tags::presized(dst->frameCount));
     deserialize(src, &dst->eframes, tags::presized(dst->eframeCount));
-}
-
-void reconstruct(const FontData_MM7 &src, FontData *dst) {
-    reconstruct(src.header, &dst->header);
-    reconstruct(src.pixels, &dst->pixels);
-}
-
-void deserialize(InputStream &src, FontData_MM7 *dst) {
-    deserialize(src, &dst->header);
-
-    size_t dataSize = 0;
-    for (size_t i = 0; i < 256; i++) {
-        size_t charOffset = dst->header.font_pixels_offset[i];
-        size_t charSize = dst->header.uFontHeight * dst->header.pMetrics[i].uWidth;
-
-        dataSize = std::max(dataSize, charOffset + charSize);
-    }
-
-    deserialize(src, &dst->pixels, tags::presized(dataSize));
 }

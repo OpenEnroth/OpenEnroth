@@ -64,130 +64,130 @@ static constexpr IndexedArray<int, GUILD_FIRST, GUILD_LAST> priceForMembership =
     {GUILD_OF_DARK,     1000}
 }};
 
-static constexpr IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> expertSkillMasteryCost = {{
-    {CHARACTER_SKILL_STAFF,        2000},
-    {CHARACTER_SKILL_SWORD,        2000},
-    {CHARACTER_SKILL_DAGGER,       2000},
-    {CHARACTER_SKILL_AXE,          2000},
-    {CHARACTER_SKILL_SPEAR,        2000},
-    {CHARACTER_SKILL_BOW,          2000},
-    {CHARACTER_SKILL_MACE,         2000},
-    {CHARACTER_SKILL_BLASTER,      0},
-    {CHARACTER_SKILL_SHIELD,       1000},
-    {CHARACTER_SKILL_LEATHER,      1000},
-    {CHARACTER_SKILL_CHAIN,        1000},
-    {CHARACTER_SKILL_PLATE,        1000},
-    {CHARACTER_SKILL_FIRE,         1000},
-    {CHARACTER_SKILL_AIR,          1000},
-    {CHARACTER_SKILL_WATER,        1000},
-    {CHARACTER_SKILL_EARTH,        1000},
-    {CHARACTER_SKILL_SPIRIT,       1000},
-    {CHARACTER_SKILL_MIND,         1000},
-    {CHARACTER_SKILL_BODY,         1000},
-    {CHARACTER_SKILL_LIGHT,        2000},
-    {CHARACTER_SKILL_DARK,         2000},
-    {CHARACTER_SKILL_ITEM_ID,      500},
-    {CHARACTER_SKILL_MERCHANT,     2000},
-    {CHARACTER_SKILL_REPAIR,       500},
-    {CHARACTER_SKILL_BODYBUILDING, 500},
-    {CHARACTER_SKILL_MEDITATION,   500},
-    {CHARACTER_SKILL_PERCEPTION,   500},
-    {CHARACTER_SKILL_DIPLOMACY,    0}, // not used
-    {CHARACTER_SKILL_THIEVERY,     0}, // not used
-    {CHARACTER_SKILL_TRAP_DISARM,  500},
-    {CHARACTER_SKILL_DODGE,        2000},
-    {CHARACTER_SKILL_UNARMED,      2000},
-    {CHARACTER_SKILL_MONSTER_ID,   500},
-    {CHARACTER_SKILL_ARMSMASTER,   2000},
-    {CHARACTER_SKILL_STEALING,     500},
-    {CHARACTER_SKILL_ALCHEMY,      500},
-    {CHARACTER_SKILL_LEARNING,     2000},
-    {CHARACTER_SKILL_CLUB,         500},
-    {CHARACTER_SKILL_MISC,         0} // hidden, not used
+static constexpr IndexedArray<int, SKILL_FIRST, SKILL_LAST> expertSkillMasteryCost = {{
+    {SKILL_STAFF,        2000},
+    {SKILL_SWORD,        2000},
+    {SKILL_DAGGER,       2000},
+    {SKILL_AXE,          2000},
+    {SKILL_SPEAR,        2000},
+    {SKILL_BOW,          2000},
+    {SKILL_MACE,         2000},
+    {SKILL_BLASTER,      0},
+    {SKILL_SHIELD,       1000},
+    {SKILL_LEATHER,      1000},
+    {SKILL_CHAIN,        1000},
+    {SKILL_PLATE,        1000},
+    {SKILL_FIRE,         1000},
+    {SKILL_AIR,          1000},
+    {SKILL_WATER,        1000},
+    {SKILL_EARTH,        1000},
+    {SKILL_SPIRIT,       1000},
+    {SKILL_MIND,         1000},
+    {SKILL_BODY,         1000},
+    {SKILL_LIGHT,        2000},
+    {SKILL_DARK,         2000},
+    {SKILL_ITEM_ID,      500},
+    {SKILL_MERCHANT,     2000},
+    {SKILL_REPAIR,       500},
+    {SKILL_BODYBUILDING, 500},
+    {SKILL_MEDITATION,   500},
+    {SKILL_PERCEPTION,   500},
+    {SKILL_DIPLOMACY,    0}, // not used
+    {SKILL_THIEVERY,     0}, // not used
+    {SKILL_TRAP_DISARM,  500},
+    {SKILL_DODGE,        2000},
+    {SKILL_UNARMED,      2000},
+    {SKILL_MONSTER_ID,   500},
+    {SKILL_ARMSMASTER,   2000},
+    {SKILL_STEALING,     500},
+    {SKILL_ALCHEMY,      500},
+    {SKILL_LEARNING,     2000},
+    {SKILL_CLUB,         500},
+    {SKILL_MISC,         0} // hidden, not used
 }};
 
-static constexpr IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> masterSkillMasteryCost = {{
-    {CHARACTER_SKILL_STAFF,        5000},
-    {CHARACTER_SKILL_SWORD,        5000},
-    {CHARACTER_SKILL_DAGGER,       5000},
-    {CHARACTER_SKILL_AXE,          5000},
-    {CHARACTER_SKILL_SPEAR,        5000},
-    {CHARACTER_SKILL_BOW,          5000},
-    {CHARACTER_SKILL_MACE,         5000},
-    {CHARACTER_SKILL_BLASTER,      0},
-    {CHARACTER_SKILL_SHIELD,       3000},
-    {CHARACTER_SKILL_LEATHER,      3000},
-    {CHARACTER_SKILL_CHAIN,        3000},
-    {CHARACTER_SKILL_PLATE,        3000},
-    {CHARACTER_SKILL_FIRE,         4000},
-    {CHARACTER_SKILL_AIR,          4000},
-    {CHARACTER_SKILL_WATER,        4000},
-    {CHARACTER_SKILL_EARTH,        4000},
-    {CHARACTER_SKILL_SPIRIT,       4000},
-    {CHARACTER_SKILL_MIND,         4000},
-    {CHARACTER_SKILL_BODY,         4000},
-    {CHARACTER_SKILL_LIGHT,        5000},
-    {CHARACTER_SKILL_DARK,         5000},
-    {CHARACTER_SKILL_ITEM_ID,      2500},
-    {CHARACTER_SKILL_MERCHANT,     5000},
-    {CHARACTER_SKILL_REPAIR,       2500},
-    {CHARACTER_SKILL_BODYBUILDING, 2500},
-    {CHARACTER_SKILL_MEDITATION,   2500},
-    {CHARACTER_SKILL_PERCEPTION,   2500},
-    {CHARACTER_SKILL_DIPLOMACY,    0}, // not used
-    {CHARACTER_SKILL_THIEVERY,     0}, // not used
-    {CHARACTER_SKILL_TRAP_DISARM,  2500},
-    {CHARACTER_SKILL_DODGE,        5000},
-    {CHARACTER_SKILL_UNARMED,      5000},
-    {CHARACTER_SKILL_MONSTER_ID,   2500},
-    {CHARACTER_SKILL_ARMSMASTER,   5000},
-    {CHARACTER_SKILL_STEALING,     2500},
-    {CHARACTER_SKILL_ALCHEMY,      2500},
-    {CHARACTER_SKILL_LEARNING,     5000},
-    {CHARACTER_SKILL_CLUB,         2500},
-    {CHARACTER_SKILL_MISC,         0} // hidden, not used
+static constexpr IndexedArray<int, SKILL_FIRST, SKILL_LAST> masterSkillMasteryCost = {{
+    {SKILL_STAFF,        5000},
+    {SKILL_SWORD,        5000},
+    {SKILL_DAGGER,       5000},
+    {SKILL_AXE,          5000},
+    {SKILL_SPEAR,        5000},
+    {SKILL_BOW,          5000},
+    {SKILL_MACE,         5000},
+    {SKILL_BLASTER,      0},
+    {SKILL_SHIELD,       3000},
+    {SKILL_LEATHER,      3000},
+    {SKILL_CHAIN,        3000},
+    {SKILL_PLATE,        3000},
+    {SKILL_FIRE,         4000},
+    {SKILL_AIR,          4000},
+    {SKILL_WATER,        4000},
+    {SKILL_EARTH,        4000},
+    {SKILL_SPIRIT,       4000},
+    {SKILL_MIND,         4000},
+    {SKILL_BODY,         4000},
+    {SKILL_LIGHT,        5000},
+    {SKILL_DARK,         5000},
+    {SKILL_ITEM_ID,      2500},
+    {SKILL_MERCHANT,     5000},
+    {SKILL_REPAIR,       2500},
+    {SKILL_BODYBUILDING, 2500},
+    {SKILL_MEDITATION,   2500},
+    {SKILL_PERCEPTION,   2500},
+    {SKILL_DIPLOMACY,    0}, // not used
+    {SKILL_THIEVERY,     0}, // not used
+    {SKILL_TRAP_DISARM,  2500},
+    {SKILL_DODGE,        5000},
+    {SKILL_UNARMED,      5000},
+    {SKILL_MONSTER_ID,   2500},
+    {SKILL_ARMSMASTER,   5000},
+    {SKILL_STEALING,     2500},
+    {SKILL_ALCHEMY,      2500},
+    {SKILL_LEARNING,     5000},
+    {SKILL_CLUB,         2500},
+    {SKILL_MISC,         0} // hidden, not used
 }};
 
-static constexpr IndexedArray<int, CHARACTER_SKILL_FIRST, CHARACTER_SKILL_LAST> grandmasterSkillMasteryCost = {{
-    {CHARACTER_SKILL_STAFF,        8000},
-    {CHARACTER_SKILL_SWORD,        8000},
-    {CHARACTER_SKILL_DAGGER,       8000},
-    {CHARACTER_SKILL_AXE,          8000},
-    {CHARACTER_SKILL_SPEAR,        8000},
-    {CHARACTER_SKILL_BOW,          8000},
-    {CHARACTER_SKILL_MACE,         8000},
-    {CHARACTER_SKILL_BLASTER,      0},
-    {CHARACTER_SKILL_SHIELD,       7000},
-    {CHARACTER_SKILL_LEATHER,      7000},
-    {CHARACTER_SKILL_CHAIN,        7000},
-    {CHARACTER_SKILL_PLATE,        7000},
-    {CHARACTER_SKILL_FIRE,         8000},
-    {CHARACTER_SKILL_AIR,          8000},
-    {CHARACTER_SKILL_WATER,        8000},
-    {CHARACTER_SKILL_EARTH,        8000},
-    {CHARACTER_SKILL_SPIRIT,       8000},
-    {CHARACTER_SKILL_MIND,         8000},
-    {CHARACTER_SKILL_BODY,         8000},
-    {CHARACTER_SKILL_LIGHT,        8000},
-    {CHARACTER_SKILL_DARK,         8000},
-    {CHARACTER_SKILL_ITEM_ID,      6000},
-    {CHARACTER_SKILL_MERCHANT,     8000},
-    {CHARACTER_SKILL_REPAIR,       6000},
-    {CHARACTER_SKILL_BODYBUILDING, 6000},
-    {CHARACTER_SKILL_MEDITATION,   6000},
-    {CHARACTER_SKILL_PERCEPTION,   6000},
-    {CHARACTER_SKILL_DIPLOMACY,    0}, // not used
-    {CHARACTER_SKILL_THIEVERY,     0}, // not used
-    {CHARACTER_SKILL_TRAP_DISARM,  6000},
-    {CHARACTER_SKILL_DODGE,        8000},
-    {CHARACTER_SKILL_UNARMED,      8000},
-    {CHARACTER_SKILL_MONSTER_ID,   6000},
-    {CHARACTER_SKILL_ARMSMASTER,   8000},
-    {CHARACTER_SKILL_STEALING,     6000},
-    {CHARACTER_SKILL_ALCHEMY,      6000},
-    {CHARACTER_SKILL_LEARNING,     8000},
-    {CHARACTER_SKILL_CLUB,         6000},
-    {CHARACTER_SKILL_MISC,         0} // hidden, not used
+static constexpr IndexedArray<int, SKILL_FIRST, SKILL_LAST> grandmasterSkillMasteryCost = {{
+    {SKILL_STAFF,        8000},
+    {SKILL_SWORD,        8000},
+    {SKILL_DAGGER,       8000},
+    {SKILL_AXE,          8000},
+    {SKILL_SPEAR,        8000},
+    {SKILL_BOW,          8000},
+    {SKILL_MACE,         8000},
+    {SKILL_BLASTER,      0},
+    {SKILL_SHIELD,       7000},
+    {SKILL_LEATHER,      7000},
+    {SKILL_CHAIN,        7000},
+    {SKILL_PLATE,        7000},
+    {SKILL_FIRE,         8000},
+    {SKILL_AIR,          8000},
+    {SKILL_WATER,        8000},
+    {SKILL_EARTH,        8000},
+    {SKILL_SPIRIT,       8000},
+    {SKILL_MIND,         8000},
+    {SKILL_BODY,         8000},
+    {SKILL_LIGHT,        8000},
+    {SKILL_DARK,         8000},
+    {SKILL_ITEM_ID,      6000},
+    {SKILL_MERCHANT,     8000},
+    {SKILL_REPAIR,       6000},
+    {SKILL_BODYBUILDING, 6000},
+    {SKILL_MEDITATION,   6000},
+    {SKILL_PERCEPTION,   6000},
+    {SKILL_DIPLOMACY,    0}, // not used
+    {SKILL_THIEVERY,     0}, // not used
+    {SKILL_TRAP_DISARM,  6000},
+    {SKILL_DODGE,        8000},
+    {SKILL_UNARMED,      8000},
+    {SKILL_MONSTER_ID,   6000},
+    {SKILL_ARMSMASTER,   8000},
+    {SKILL_STEALING,     6000},
+    {SKILL_ALCHEMY,      6000},
+    {SKILL_LEARNING,     8000},
+    {SKILL_CLUB,         6000},
+    {SKILL_MISC,         0} // hidden, not used
 }};
 
 static constexpr std::array<std::pair<QuestBit, ItemId>, 27> _4F0882_evt_VAR_PlayerItemInHands_vals = {{
@@ -269,9 +269,9 @@ void prepareArenaFight(ArenaLevel level) {
     pParty->arenaLevel = level;
 
     GUIWindow window = *pDialogueWindow;
-    window.uFrameWidth = game_viewport_width;
+    window.uFrameWidth = pViewport->viewportWidth;
     window.uFrameZ = 452;
-    int textHeight = assets->pFontArrus->CalcTextHeight(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth, 13) + 7;
+    int textHeight = assets->pFontArrus->CalcTextHeight(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON_THE_MONSTERS), window.uFrameWidth, 13) + 7;
 
     // TODO(pskelton): This doesnt work properly and we dont want draw calls here
     render->BeginScene3D();
@@ -284,7 +284,7 @@ void prepareArenaFight(ArenaLevel level) {
      render->BeginScene2D();
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - textHeight) / 480.0f, ui_leather_mm7, textHeight);
     render->DrawTextureNew(8 / 640.0f, (347 - textHeight) / 480.0f, _591428_endcap);
-    std::string text = assets->pFontArrus->FitTextInAWindow(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON), window.uFrameWidth, 13);
+    std::string text = assets->pFontArrus->WrapText(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON_THE_MONSTERS), window.uFrameWidth, 13);
     pDialogueWindow->DrawText(assets->pFontArrus.get(), {13, 354 - textHeight}, colorTable.White, text);
     render->Present();
 
@@ -379,7 +379,6 @@ void prepareArenaFight(ArenaLevel level) {
  * @brief Oracle's 'I lost it!' dialog option
  */
 void oracleDialogue() {
-    Item *item = nullptr;
     ItemId item_id = ITEM_NULL;
 
     // display "You never had it" if nothing missing will be found
@@ -413,21 +412,18 @@ void oracleDialogue() {
         for (int i = 0; i < pParty->pCharacters.size(); i++) {
             if (pParty->pCharacters[i].classType == CLASS_LICH) {
                 bool have_vessels_soul = false;
+                InventoryEntry jar;
                 for (Character &player : pParty->pCharacters) {
-                    for (int idx = 0; idx < Character::INVENTORY_SLOT_COUNT; idx++) {
-                        if (player.pInventoryItemList[idx].itemId == ITEM_QUEST_LICH_JAR_FULL) {
-                            if (player.pInventoryItemList[idx].lichJarCharacterIndex == -1) {
-                                item = &player.pInventoryItemList[idx];
-                            }
-                            if (player.pInventoryItemList[idx].lichJarCharacterIndex == i) {
-                                have_vessels_soul = true;
-                            }
-                        }
+                    for (InventoryEntry entry : player.inventory.entries(ITEM_QUEST_LICH_JAR_FULL)) {
+                        if (entry->lichJarCharacterIndex == -1)
+                            jar = entry;
+                        if (entry->lichJarCharacterIndex == i)
+                            have_vessels_soul = true;
                     }
                 }
 
-                if (item && !have_vessels_soul) {
-                    item->lichJarCharacterIndex = i;
+                if (jar && !have_vessels_soul) {
+                    jar->lichJarCharacterIndex = i;
                     break;
                 }
             }
@@ -471,28 +467,28 @@ const std::string &joinGuildOptionString() {
  */
 std::string masteryTeacherOptionString() {
     int teacherLevel = (topicEventId - 200) % 3;
-    CharacterSkillType skillBeingTaught = static_cast<CharacterSkillType>((topicEventId - 200) / 3);
+    Skill skillBeingTaught = static_cast<Skill>((topicEventId - 200) / 3);
     Character *activePlayer = &pParty->activeCharacter();
-    CharacterClass pClassType = activePlayer->classType;
-    CharacterSkillMastery currClassMaxMastery = skillMaxMasteryPerClass[pClassType][skillBeingTaught];
-    CharacterSkillMastery masteryLevelBeingTaught = static_cast<CharacterSkillMastery>(teacherLevel + 2);
+    Class pClassType = activePlayer->classType;
+    Mastery currClassMaxMastery = skillMaxMasteryPerClass[pClassType][skillBeingTaught];
+    Mastery masteryLevelBeingTaught = static_cast<Mastery>(teacherLevel + 2);
 
     membershipOrTrainingApproved = false;
 
     if (currClassMaxMastery < masteryLevelBeingTaught) {
         if (skillMaxMasteryPerClass[getTier2Class(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(getTier2Class(pClassType)));
+            return localization->FormatString(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->GetClassName(getTier2Class(pClassType)));
         } else if (skillMaxMasteryPerClass[getTier3LightClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught &&
                 skillMaxMasteryPerClass[getTier3DarkClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED_2,
+            return localization->FormatString(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_OR_S_TO,
                     localization->GetClassName(getTier3LightClass(pClassType)),
                     localization->GetClassName(getTier3DarkClass(pClassType)));
         } else if (skillMaxMasteryPerClass[getTier3LightClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(getTier3LightClass(pClassType)));
+            return localization->FormatString(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->GetClassName(getTier3LightClass(pClassType)));
         } else if (skillMaxMasteryPerClass[getTier3DarkClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_FMT_HAVE_TO_BE_PROMOTED, localization->GetClassName(getTier3DarkClass(pClassType)));
+            return localization->FormatString(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->GetClassName(getTier3DarkClass(pClassType)));
         } else {
-            return localization->FormatString(LSTR_FMT_SKILL_CANT_BE_LEARNED, localization->GetClassName(pClassType));
+            return localization->FormatString(LSTR_THIS_SKILL_LEVEL_CAN_NOT_BE_LEARNED_BY, localization->GetClassName(pClassType));
         }
     }
 
@@ -508,60 +504,60 @@ std::string masteryTeacherOptionString() {
     }
 
     // You are already have this mastery in this skill.
-    CharacterSkillMastery skillMastery = activePlayer->getSkillValue(skillBeingTaught).mastery();
+    Mastery skillMastery = activePlayer->getSkillValue(skillBeingTaught).mastery();
     if (std::to_underlying(skillMastery) > teacherLevel + 1) {
         return std::string(pNPCTopics[teacherLevel + 128].pText);
     }
 
     bool canLearn = true;
 
-    if (masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_EXPERT) {
+    if (masteryLevelBeingTaught == MASTERY_EXPERT) {
         canLearn = skillLevel >= 4;
         gold_transaction_amount = expertSkillMasteryCost[skillBeingTaught];
     }
 
-    if (masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_MASTER) {
+    if (masteryLevelBeingTaught == MASTERY_MASTER) {
         switch (skillBeingTaught) {
-          case CHARACTER_SKILL_LIGHT:
+          case SKILL_LIGHT:
             canLearn = pParty->_questBits[QBIT_114];
             break;
-          case CHARACTER_SKILL_DARK:
+          case SKILL_DARK:
             canLearn = pParty->_questBits[QBIT_110];
             break;
-          case CHARACTER_SKILL_MERCHANT:
+          case SKILL_MERCHANT:
             canLearn = activePlayer->GetBasePersonality() >= 50;
             break;
-          case CHARACTER_SKILL_BODYBUILDING:
+          case SKILL_BODYBUILDING:
             canLearn = activePlayer->GetBaseEndurance() >= 50;
             break;
-          case CHARACTER_SKILL_LEARNING:
+          case SKILL_LEARNING:
             canLearn = activePlayer->GetBaseIntelligence() >= 50;
             break;
           default:
             break;
         }
-        canLearn = canLearn && (skillLevel >= 7) && (skillMastery == CHARACTER_SKILL_MASTERY_EXPERT);
+        canLearn = canLearn && (skillLevel >= 7) && (skillMastery == MASTERY_EXPERT);
         gold_transaction_amount = masterSkillMasteryCost[skillBeingTaught];
     }
 
-    if (masteryLevelBeingTaught == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+    if (masteryLevelBeingTaught == MASTERY_GRANDMASTER) {
         switch (skillBeingTaught) {
-          case CHARACTER_SKILL_LIGHT:
+          case SKILL_LIGHT:
             canLearn = activePlayer->isClass(CLASS_ARCHAMGE) || activePlayer->isClass(CLASS_PRIEST_OF_SUN);
             break;
-          case CHARACTER_SKILL_DARK:
+          case SKILL_DARK:
             canLearn = activePlayer->isClass(CLASS_LICH) || activePlayer->isClass(CLASS_PRIEST_OF_MOON);
             break;
-          case CHARACTER_SKILL_DODGE:
-            canLearn = activePlayer->pActiveSkills[CHARACTER_SKILL_UNARMED].level() >= 10;
+          case SKILL_DODGE:
+            canLearn = activePlayer->pActiveSkills[SKILL_UNARMED].level() >= 10;
             break;
-          case CHARACTER_SKILL_UNARMED:
-            canLearn = activePlayer->pActiveSkills[CHARACTER_SKILL_DODGE].level() >= 10;
+          case SKILL_UNARMED:
+            canLearn = activePlayer->pActiveSkills[SKILL_DODGE].level() >= 10;
             break;
           default:
             break;
         }
-        canLearn = canLearn && (skillLevel >= 10) && (skillMastery == CHARACTER_SKILL_MASTERY_MASTER);
+        canLearn = canLearn && (skillLevel >= 10) && (skillMastery == MASTERY_MASTER);
         gold_transaction_amount = grandmasterSkillMasteryCost[skillBeingTaught];
     }
 
@@ -577,7 +573,7 @@ std::string masteryTeacherOptionString() {
 
     membershipOrTrainingApproved = true;
 
-    return localization->FormatString(LSTR_FMT_BECOME_S_IN_S_FOR_D_GOLD, localization->MasteryNameLong(masteryLevelBeingTaught),
+    return localization->FormatString(LSTR_BECOME_S_IN_S_FOR_LU_GOLD, localization->MasteryNameLong(masteryLevelBeingTaught),
                                       localization->GetSkillName(skillBeingTaught), gold_transaction_amount);
 }
 
@@ -597,13 +593,13 @@ std::string npcDialogueOptionString(DialogueId topic, NPCData *npcData) {
         return pNPCTopics[npcData->dialogue_6_evt_id].pTopic;
       case DIALOGUE_HIRE_FIRE:
         if (npcData->Hired()) {
-            return localization->FormatString(LSTR_HIRE_RELEASE, npcData->name);
+            return localization->FormatString(LSTR_DISMISS_S, npcData->name);
         } else {
             return localization->GetString(LSTR_HIRE);
         }
       case DIALOGUE_13_hiring_related:
         if (npcData->Hired()) {
-            return localization->FormatString(LSTR_HIRE_RELEASE, npcData->name);
+            return localization->FormatString(LSTR_DISMISS_S, npcData->name);
         } else {
             return localization->GetString(LSTR_JOIN);
         }
@@ -726,8 +722,8 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
         if (membershipOrTrainingApproved) {
             if (pParty->hasActiveCharacter()) {
                 uint8_t teacherLevel = (topicEventId - 200) % 3;
-                CharacterSkillType skillBeingTaught = static_cast<CharacterSkillType>((topicEventId - 200) / 3);
-                CharacterSkillMastery newMastery = static_cast<CharacterSkillMastery>(teacherLevel + 2);
+                Skill skillBeingTaught = static_cast<Skill>((topicEventId - 200) / 3);
+                Mastery newMastery = static_cast<Mastery>(teacherLevel + 2);
                 CombinedSkillValue skillValue = CombinedSkillValue::increaseMastery(pParty->activeCharacter().getSkillValue(skillBeingTaught), newMastery);
                 pParty->activeCharacter().setSkillValue(skillBeingTaught, skillValue);
                 pParty->activeCharacter().playReaction(SPEECH_SKILL_MASTERY_INC);
@@ -795,7 +791,7 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
             }
             engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 1, 0);
         } else {
-            engine->_statusBar->setEvent(LSTR_RATIONS_FULL);
+            engine->_statusBar->setEvent(LSTR_YOUR_PACKS_ARE_ALREADY_FULL);
         }
     } else if (topic == DIALOGUE_HIRE_FIRE) {
         if (npcData->Hired()) {
@@ -817,12 +813,12 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
             return;
         }
         if (!pParty->pHirelings[0].name.empty() && !pParty->pHirelings[1].name.empty()) {
-            engine->_statusBar->setEvent(LSTR_HIRE_NO_ROOM);
+            engine->_statusBar->setEvent(LSTR_I_CANNOT_JOIN_YOU_YOURE_PARTY_IS_FULL);
         } else {
             if (npcData->profession != Burglar) {
                 // burglars have no hiring price
                 if (pParty->GetGold() < pNPCStats->pProfessions[npcData->profession].uHirePrice) {
-                    engine->_statusBar->setEvent(LSTR_NOT_ENOUGH_GOLD);
+                    engine->_statusBar->setEvent(LSTR_YOU_DONT_HAVE_ENOUGH_GOLD);
                     dialogue_show_profession_details = false;
                     //uDialogueType = DIALOGUE_13_hiring_related;
                     if (pParty->hasActiveCharacter()) {

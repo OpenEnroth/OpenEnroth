@@ -1,6 +1,7 @@
 #include <array>
 #include <algorithm>
 #include <string>
+#include <utility>
 
 #include "Engine/Engine.h"
 #include "Engine/AssetsManager.h"
@@ -26,6 +27,8 @@
 #include "Engine/MapEnumFunctions.h"
 #include "Engine/Time/Timer.h"
 #include "Engine/Conditions.h"
+#include "Engine/Objects/ActorEnumFunctions.h"
+#include "Engine/Spells/SpellEnumFunctions.h"
 
 #include "Io/Mouse.h"
 
@@ -34,6 +37,8 @@
 #include "GUI/UI/Books/MapBook.h"
 #include "GUI/UI/UICharacter.h"
 #include "GUI/UI/UIPopup.h"
+
+#include "ItemGrid.h"
 #include "GUI/UI/UIGame.h"
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIChest.h"
@@ -181,15 +186,49 @@ IndexedArray<int, MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST> monster_popup_y_offsets
     {MONSTER_TYPE_UNUSED_RAT,               0},
 };
 
+// OE addition - colors for monster special attack text.
+static constexpr IndexedArray<Color, SPECIAL_ATTACK_FIRST, SPECIAL_ATTACK_LAST> monsterSpecialAttackColors = {
+    {SPECIAL_ATTACK_CURSE,          colorTable.Cioccolato},
+    {SPECIAL_ATTACK_WEAK,           colorTable.Mimosa},
+    {SPECIAL_ATTACK_SLEEP,          colorTable.ScienceBlue},
+    {SPECIAL_ATTACK_DRUNK,          colorTable.NavyBlue},
+    {SPECIAL_ATTACK_INSANE,         colorTable.JazzberryJam},
+    {SPECIAL_ATTACK_POISON_WEAK,    colorTable.Eucalyptus},
+    {SPECIAL_ATTACK_POISON_MEDIUM,  colorTable.GreenTeal},
+    {SPECIAL_ATTACK_POISON_SEVERE,  colorTable.VibrantGreen},
+    {SPECIAL_ATTACK_DISEASE_WEAK,   colorTable.FlushOrange},
+    {SPECIAL_ATTACK_DISEASE_MEDIUM, colorTable.DarkOrange},
+    {SPECIAL_ATTACK_DISEASE_SEVERE, colorTable.OrangeyRed},
+    {SPECIAL_ATTACK_PARALYZED,      colorTable.Primrose},
+    {SPECIAL_ATTACK_UNCONSCIOUS,    colorTable.StarkWhite},
+    {SPECIAL_ATTACK_DEAD,           colorTable.BloodRed},
+    {SPECIAL_ATTACK_PETRIFIED,      colorTable.MediumGrey},
+    {SPECIAL_ATTACK_ERADICATED,     colorTable.MoonRaker},
+    {SPECIAL_ATTACK_BREAK_ANY,      colorTable.LaserLemon},
+    {SPECIAL_ATTACK_BREAK_ARMOR,    colorTable.LaserLemon},
+    {SPECIAL_ATTACK_BREAK_WEAPON,   colorTable.LaserLemon},
+    {SPECIAL_ATTACK_STEAL,          colorTable.DirtyYellow},
+    {SPECIAL_ATTACK_AGING,          colorTable.White},
+    {SPECIAL_ATTACK_MANA_DRAIN,     colorTable.BoltBlue},
+    {SPECIAL_ATTACK_FEAR,           colorTable.CornFlowerBlue}
+};
+
+// OE addition - colors for monster special ability text.
+static constexpr IndexedArray<Color, MONSTER_SPECIAL_ABILITY_FIRST, MONSTER_SPECIAL_ABILITY_LAST> monsterSpecialAbilityColors = {
+    {MONSTER_SPECIAL_ABILITY_MULTI_SHOT, colorTable.Mercury},
+    {MONSTER_SPECIAL_ABILITY_SUMMON, colorTable.EasternBlue},
+    {MONSTER_SPECIAL_ABILITY_EXPLODE, colorTable.Sunflower}
+};
+
 void Inventory_ItemPopupAndAlchemy();
-Color GetSpellColor(signed int a1);
+Color GetSpellColor(SpellId spellId);
 uint64_t GetExperienceRequiredForLevel(int level);
 
 /**
  * @offset 0x4179BC
  */
 static void CharacterUI_DrawTooltip(std::string_view title, std::string_view content) {
-    Pointi pt = mouse->GetCursorPos();
+    Pointi pt = mouse->position();
 
     GUIWindow popup_window;
     popup_window.uFrameWidth = 384;
@@ -312,7 +351,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     iteminfo_window.uFrameHeight = 180;
     iteminfo_window.uFrameY = 40;
 
-    Pointi pt = mouse->GetCursorPos();
+    Pointi pt = mouse->position();
     if (pt.x <= 320)
         frameXpos = pt.x + 30;
     else
@@ -330,7 +369,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     // added so window is correct size with broken items
     iteminfo_window.uFrameHeight = inspect_item_image->height() + itemYspacing + 54;
 
-    if (!pItemTable->items[inspect_item->itemId].identifyDifficulty)
+    if (!pItemTable->items[inspect_item->itemId].identifyAndRepairDifficulty)
         inspect_item->SetIdentified();
 
     int GoldAmount = 0;
@@ -341,9 +380,9 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     if (pParty->hasActiveCharacter()) {
         // try to identify
         if (!inspect_item->IsIdentified()) {
-            if (pParty->activeCharacter().CanIdentify(inspect_item) == 1)
+            if (pParty->activeCharacter().CanIdentify(*inspect_item) == 1)
                 inspect_item->SetIdentified();
-            CharacterSpeech speech = SPEECH_ID_ITEM_FAIL;
+            SpeechId speech = SPEECH_ID_ITEM_FAIL;
             if (!inspect_item->IsIdentified()) {
                 engine->_statusBar->setEvent(LSTR_IDENTIFY_FAILED);
             } else {
@@ -359,9 +398,9 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
         }
         inspect_item->UpdateTempBonus(pParty->GetPlayingTime());
         if (inspect_item->IsBroken()) {
-            if (pParty->activeCharacter().CanRepair(inspect_item) == 1)
+            if (pParty->activeCharacter().CanRepair(*inspect_item) == 1)
                 inspect_item->flags = inspect_item->flags & ~ITEM_BROKEN | ITEM_IDENTIFIED;
-            CharacterSpeech speech = SPEECH_REPAIR_FAIL;
+            SpeechId speech = SPEECH_REPAIR_FAIL;
             if (!inspect_item->IsBroken())
                 speech = SPEECH_REPAIR_SUCCESS;
             else
@@ -437,7 +476,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     std::array<std::string, 3> text;
 
     text[0] = localization->FormatString(
-        LSTR_FMT_TYPE_S,
+        LSTR_TYPE_S,
         pItemTable->items[inspect_item->itemId].unidentifiedName);
 
     switch (inspect_item->type()) {
@@ -490,15 +529,15 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
             if (inspect_item->potionPower)
                 text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->potionPower);
         } else if (inspect_item->isReagent()) {
-            text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->GetDamageDice());
+            text[2] = fmt::format("{}: {}", localization->GetString(LSTR_POWER), inspect_item->GetReagentPower());
         } else if (inspect_item->standardEnchantment) {
             text[2] = fmt::format("{}: {} +{}",
-                                  localization->GetString(LSTR_SPECIAL_2),
+                                  localization->GetString(LSTR_SPECIAL),
                                   pItemTable->standardEnchantments[*inspect_item->standardEnchantment].attributeName,
                                   inspect_item->standardEnchantmentStrength);
         } else if (inspect_item->specialEnchantment != ITEM_ENCHANTMENT_NULL) {
             text[2] = fmt::format("{}: {}",
-                                  localization->GetString(LSTR_SPECIAL_2),
+                                  localization->GetString(LSTR_SPECIAL),
                                   pItemTable->specialEnchantments[inspect_item->specialEnchantment].description);
         } else if (inspect_item->isWand()) {
             text[2] = fmt::sprintf(localization->GetString(LSTR_FMT_S_U_OUT_OF_U),
@@ -562,7 +601,7 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     for (const std::string &s : text) {
         if (!s.empty()) {
             iteminfo_window.DrawText(assets->pFontComic.get(), {100, v34}, colorTable.White, s);
-            v34 += assets->pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100, 0) + 3;
+            v34 += assets->pFontComic->CalcTextHeight(s, iteminfo_window.uFrameWidth, 100) + 3;
         }
     }
     if (!pItemTable->items[inspect_item->itemId].description.empty())
@@ -635,108 +674,134 @@ void GameUI_DrawItemInfo(Item *inspect_item) {
     }
 }
 
-void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
+/**
+ * Render the monster info popup
+ * @param uActorID ID of the actor to show info for
+ * @param pWindow The window to render into, or `null` to measure content only
+ * @return Actual width/height needed to render
+ */
+std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
+    /// Geometry hardcoded constants
+    const int X_LEFT_COLUMN = 12                            // "Effects" label
+        , X_EFFECT_LIST = X_LEFT_COLUMN + 16                // Effects list
+        , X_RIGHT_COLUMN = 150                              // Most right-side labels
+        , X_RIGHT_INDENTED = X_RIGHT_COLUMN + 20            // Resistance labels & extended spells/specials
+        , X_RIGHT_DEFAULT_SPELLS = X_RIGHT_COLUMN + 70      // Spells when "extended" is off
+        , X_RIGHT_DATA = X_RIGHT_COLUMN + 91                // Numbers
+        , X_POS_DOLL = X_LEFT_COLUMN + 1                    // 1px frame
+        , Y_POS_DOLL = 52
+        , SIZE_DOLL = 128
+        , Y_EFFECT_LIST = Y_POS_DOLL + SIZE_DOLL            // Lower edge doll frame - add an empty line!
+        , RIGHT_BOTTOM_MARGIN = 16;                         // Added to measured bottom and right edge of rendered text
+
     static Actor pMonsterInfoUI_Doll;
+    MonsterInfo &monsterInfo = pActors[uActorID].monsterInfo;
 
-    int Popup_Y_Offset = monster_popup_y_offsets[monsterTypeForMonsterId(pActors[uActorID].monsterInfo.id)] - 40;
-
-    Duration actionLen;
-    if (pActors[uActorID].monsterInfo.id == pMonsterInfoUI_Doll.monsterInfo.id) {
-        actionLen = pMonsterInfoUI_Doll.currentActionLength;
-    } else {
-        // copy actor info if different
-        pMonsterInfoUI_Doll = pActors[uActorID];
-        pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
-        pMonsterInfoUI_Doll.currentActionTime = 0_ticks;
-        actionLen = Duration::randomRealtimeSeconds(vrng, 1, 3);
-        pMonsterInfoUI_Doll.currentActionLength = actionLen;
-    }
-
-    if (pMonsterInfoUI_Doll.currentActionTime > actionLen) {
-        pMonsterInfoUI_Doll.currentActionTime = 0_ticks;
-        if (pMonsterInfoUI_Doll.currentActionAnimation == ANIM_Bored ||
-            pMonsterInfoUI_Doll.currentActionAnimation == ANIM_AtkMelee) {
-            pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Standing;
-            pMonsterInfoUI_Doll.currentActionLength = Duration::randomRealtimeSeconds(vrng, 1, 2);
+    /*------------------------------- Top and Doll -------------------------------*/
+    if (pWindow) {
+        Duration actionLen;
+        if (monsterInfo.id == pMonsterInfoUI_Doll.monsterInfo.id) {
+            actionLen = pMonsterInfoUI_Doll.currentActionLength;
         } else {
-            // rand();
+            // copy actor info if different
+            pMonsterInfoUI_Doll = pActors[uActorID];
             pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
-            if (!isPeasant(pMonsterInfoUI_Doll.monsterInfo.id) && vrng->random(30) < 100)
-                pMonsterInfoUI_Doll.currentActionAnimation = ANIM_AtkMelee;
-            pMonsterInfoUI_Doll.currentActionLength =
-                pSpriteFrameTable
-                    ->pSpriteSFrames[pActors[uActorID].spriteIds[pMonsterInfoUI_Doll.currentActionAnimation]]
-                    .uAnimLength;
+            pMonsterInfoUI_Doll.currentActionTime = 0_ticks;
+            actionLen = Duration::randomRealtimeSeconds(vrng, 1, 3);
+            pMonsterInfoUI_Doll.currentActionLength = actionLen;
         }
+
+        if (pMonsterInfoUI_Doll.currentActionTime > actionLen) {
+            pMonsterInfoUI_Doll.currentActionTime = 0_ticks;
+            if (pMonsterInfoUI_Doll.currentActionAnimation == ANIM_Bored ||
+                pMonsterInfoUI_Doll.currentActionAnimation == ANIM_AtkMelee) {
+                pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Standing;
+                pMonsterInfoUI_Doll.currentActionLength = Duration::randomRealtimeSeconds(vrng, 1, 2);
+            } else {
+                // rand();
+                pMonsterInfoUI_Doll.currentActionAnimation = ANIM_Bored;
+                if (!isPeasant(pMonsterInfoUI_Doll.monsterInfo.id) && vrng->random(30) < 100)
+                    pMonsterInfoUI_Doll.currentActionAnimation = ANIM_AtkMelee;
+                pMonsterInfoUI_Doll.currentActionLength =
+                        pSpriteFrameTable
+                                ->pSpriteSFrames[pActors[uActorID].spriteIds[pMonsterInfoUI_Doll.currentActionAnimation]]
+                                .uAnimLength;
+            }
+        }
+
+        Recti doll_rect(pWindow->uFrameX + X_POS_DOLL, pWindow->uFrameY + Y_POS_DOLL, SIZE_DOLL, SIZE_DOLL);
+
+        {
+            SpriteFrame *Portrait_Sprite = pSpriteFrameTable->GetFrame(
+                    pActors[uActorID]
+                            .spriteIds[pMonsterInfoUI_Doll.currentActionAnimation],
+                    pMonsterInfoUI_Doll.currentActionTime);
+
+            // Draw portrait border
+            render->ResetUIClipRect();
+            render->FillRectFast(doll_rect.x, doll_rect.y, SIZE_DOLL, SIZE_DOLL, colorTable.Black);
+
+            Recti frameRect(doll_rect.topLeft() - Pointi(1, 1), doll_rect.bottomRight() + Pointi(1, 1));
+            render->BeginLines2D();
+            render->RasterLine2D(frameRect.topLeft(), frameRect.topRight(), colorTable.Jonquil);
+            render->RasterLine2D(frameRect.topRight(), frameRect.bottomRight(), colorTable.Jonquil);
+            render->RasterLine2D(frameRect.bottomRight(), frameRect.bottomLeft(), colorTable.Jonquil);
+            render->RasterLine2D(frameRect.bottomLeft(), frameRect.topLeft(), colorTable.Jonquil);
+            render->EndLines2D();
+
+            // Draw portrait
+            int Popup_Y_Offset = monster_popup_y_offsets[monsterTypeForMonsterId(monsterInfo.id)] - 40;
+            render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);
+        }
+        pMonsterInfoUI_Doll.currentActionTime += pMiscTimer->dt();
+
+        // Draw name and profession
+        std::string str;
+        if (pActors[uActorID].npcId) {
+            str = NameAndTitle(getNPCData(pActors[uActorID].npcId));
+        } else {
+            str = GetDisplayName(&pActors[uActorID]);
+        }
+        pWindow->DrawTitleText(assets->pFontComic.get(), 0, 12, colorTable.PaleCanary, str, 3);
+
+        // health bar
+        Actor::DrawHealthBar(&pActors[uActorID], pWindow);
     }
 
-    Recti doll_rect(pWindow->uFrameX + 13, pWindow->uFrameY + 52, 128, 128);
-
-    {
-        SpriteFrame *Portrait_Sprite = pSpriteFrameTable->GetFrame(
-            pActors[uActorID]
-                .spriteIds[pMonsterInfoUI_Doll.currentActionAnimation],
-            pMonsterInfoUI_Doll.currentActionTime);
-
-        // Draw portrait border
-        render->ResetUIClipRect();
-        render->FillRectFast(doll_rect.x, doll_rect.y, 128, 128, colorTable.Black);
-
-        Recti frameRect(doll_rect.topLeft() - Pointi(1, 1), doll_rect.bottomRight() + Pointi(1, 1));
-        render->BeginLines2D();
-        render->RasterLine2D(frameRect.topLeft(), frameRect.topRight(), colorTable.Jonquil);
-        render->RasterLine2D(frameRect.topRight(), frameRect.bottomRight(), colorTable.Jonquil);
-        render->RasterLine2D(frameRect.bottomRight(), frameRect.bottomLeft(), colorTable.Jonquil);
-        render->RasterLine2D(frameRect.bottomLeft(), frameRect.topLeft(), colorTable.Jonquil);
-        render->EndLines2D();
-
-        // Draw portrait
-        render->DrawMonsterPortrait(doll_rect, Portrait_Sprite, Popup_Y_Offset);
-    }
-    pMonsterInfoUI_Doll.currentActionTime += pMiscTimer->dt();
-
-    // Draw name and profession
-    std::string str;
-    if (pActors[uActorID].npcId) {
-        str = NameAndTitle(getNPCData(pActors[uActorID].npcId));
-    } else {
-        str = GetDisplayName(&pActors[uActorID]);
-    }
-    pWindow->DrawTitleText(assets->pFontComic.get(), 0, 0xCu, colorTable.PaleCanary, str, 3);
-
-    // health bar
-    Actor::DrawHealthBar(&pActors[uActorID], pWindow);
-
-    bool normal_level = false;
-    bool expert_level = false;
-    bool master_level = false;
-    bool grandmaster_level = false;
-    bool for_effects = false;
+    /*------------------------------- Determine Detail Level -------------------------------*/
+    // Debug option for full info
+    bool monster_full_informations = engine->config->debug.FullMonsterID.value();
+    bool normal_level = monster_full_informations;
+    bool expert_level = monster_full_informations;
+    bool master_level = monster_full_informations;
+    bool grandmaster_level = monster_full_informations;
+    bool for_effects = monster_full_informations;
+    bool showCurrentHp = monster_full_informations || pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Active();
 
     if (pParty->hasActiveCharacter()) {
         int skill_points = 0;
-        CharacterSkillMastery skill_mastery = CHARACTER_SKILL_MASTERY_NONE;
-        CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_MONSTER_ID);
+        Mastery skill_mastery = MASTERY_NONE;
+        CombinedSkillValue idMonsterSkill = pParty->activeCharacter().getActualSkillValue(SKILL_MONSTER_ID);
 
         if ((skill_points = idMonsterSkill.level()) > 0) {
             skill_mastery = idMonsterSkill.mastery();
-            if (skill_mastery == CHARACTER_SKILL_MASTERY_NOVICE) {
-                if (skill_points + 10 >= pActors[uActorID].monsterInfo.level) {
+            if (skill_mastery == MASTERY_NOVICE) {
+                if (skill_points + 10 >= monsterInfo.level) {
                     normal_level = true;
                 }
-            } else if (skill_mastery == CHARACTER_SKILL_MASTERY_EXPERT) {
-                if (2 * skill_points + 10 >= pActors[uActorID].monsterInfo.level) {
+            } else if (skill_mastery == MASTERY_EXPERT) {
+                if (2 * skill_points + 10 >= monsterInfo.level) {
                     normal_level = true;
                     expert_level = true;
                 }
-            } else if (skill_mastery == CHARACTER_SKILL_MASTERY_MASTER) {
-                if (3 * skill_points + 10 >= pActors[uActorID].monsterInfo.level) {
+            } else if (skill_mastery == MASTERY_MASTER) {
+                if (3 * skill_points + 10 >= monsterInfo.level) {
                     normal_level = true;
                     expert_level = true;
                     master_level = true;
                     for_effects = true;
                 }
-            } else if (skill_mastery == CHARACTER_SKILL_MASTERY_GRANDMASTER) {
+            } else if (skill_mastery == MASTERY_GRANDMASTER) {
                 normal_level = true;
                 expert_level = true;
                 master_level = true;
@@ -747,10 +812,10 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
 
         // Only play reaction when right click on actor initially
         if (pActors[uActorID].aiState != Dead && pActors[uActorID].aiState != Dying &&
-            !holdingMouseRightButton && skill_mastery != CHARACTER_SKILL_MASTERY_NONE) {
-            CharacterSpeech speech;
+            !holdingMouseRightButton && skill_mastery != MASTERY_NONE) {
+            SpeechId speech;
             if (normal_level || expert_level || master_level || grandmaster_level) {
-                if (pActors[uActorID].monsterInfo.level >= pParty->activeCharacter().uLevel - 5)
+                if (monsterInfo.level >= pParty->activeCharacter().uLevel - 5)
                     speech = SPEECH_ID_MONSTER_STRONG;
                 else
                     speech = SPEECH_ID_MONSTER_WEAK;
@@ -761,184 +826,180 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
         }
     }
 
-    // Debug option for full info
-    bool monster_full_informations = engine->config->debug.FullMonsterID.value();
-    if (monster_full_informations == true) {
-        normal_level = true;       //
-        expert_level = true;       //
-        master_level = true;       //
-        grandmaster_level = true;  //
-        for_effects = true;
-    }
+    // Additionally show Attack2 if Attack1 is visible, and Special Attack (Break, Insanity...) if Spells are visible:
+    bool extended = engine->config->settings.ExtendedMonsterInfo.value();
 
-    int pTextHeight = 0;
-    int pTextColorID = 0;
-    pWindow->DrawText(assets->pFontSmallnum.get(), {12, 196}, colorTable.Jonquil, localization->GetString(LSTR_EFFECTS));
+    /*------------------------------- Left side -------------------------------*/
+    GUIFont *font = assets->pFontSmallnum.get();
+    int lineAdvance = assets->pFontSmallnum->GetHeight() - 3;
+    int pTextHeight = Y_EFFECT_LIST + lineAdvance;  // Start effects below portrait
+    if (pWindow) pWindow->DrawText(font, {X_LEFT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_EFFECTS));
+    pTextHeight += lineAdvance;
     if (!for_effects) {
-        pWindow->DrawText(assets->pFontSmallnum.get(), {28, assets->pFontSmallnum->GetHeight() + 193}, colorTable.White, localization->GetString(LSTR_UNKNOWN_VALUE));
+        if (pWindow) pWindow->DrawText(font, {X_EFFECT_LIST, pTextHeight}, colorTable.White, localization->GetString(LSTR_UNKNOWN_VALUE));
+        pTextHeight += lineAdvance;
     } else {
-        std::string pText;
-        pTextHeight = assets->pFontSmallnum->GetHeight() + 193;
+        bool hasBuffs = false;
         for (ActorBuff buff : pActors[uActorID].buffs.indices()) {
             if (pActors[uActorID].buffs[buff].Active()) {
-                switch (buff) {
-                    case ACTOR_BUFF_CHARM:
-                        pTextColorID = 60;
-                        pText = localization->GetString(LSTR_CHARMED);
-                        break;
-                    case ACTOR_BUFF_SUMMONED:
-                        pTextColorID = 82;
-                        pText = localization->GetString(LSTR_SUMMONED);
-                        break;
-                    case ACTOR_BUFF_SHRINK:
-                        pTextColorID = 92;
-                        pText = localization->GetString(LSTR_SHRUNK);
-                        break;
-                    case ACTOR_BUFF_AFRAID:
-                        pTextColorID = 63;
-                        pText = localization->GetString(LSTR_AFRAID);
-                        break;
-                    case ACTOR_BUFF_STONED:
-                        pText = localization->GetString(LSTR_STONED);
-                        pTextColorID = 81;
-                        break;
-                    case ACTOR_BUFF_PARALYZED:
-                        pText = localization->GetString(LSTR_PARALYZED);
-                        pTextColorID = 81;
-                        break;
-                    case ACTOR_BUFF_SLOWED:
-                        pText = localization->GetString(LSTR_SLOWED);
-                        pTextColorID = 35;
-                        break;
-                    case ACTOR_BUFF_BERSERK:
-                        pText = localization->GetString(LSTR_BERSERK);
-                        pTextColorID = 62;
-                        break;
-                    case ACTOR_BUFF_SOMETHING_THAT_HALVES_AC:
-                    case ACTOR_BUFF_MASS_DISTORTION:
-                        pTextColorID = 0;
-                        continue;
-                    case ACTOR_BUFF_FATE:
-                        pTextColorID = 47;
-                        pText = localization->GetString(LSTR_FATE);
-                        break;
-                    case ACTOR_BUFF_ENSLAVED:
-                        pTextColorID = 66;
-                        pText = localization->GetString(LSTR_ENSLAVED);
-                        break;
-                    case ACTOR_BUFF_DAY_OF_PROTECTION:
-                        pTextColorID = 85;
-                        pText =
-                            localization->GetString(LSTR_DAY_OF_PROTECTION);
-                        break;
-                    case ACTOR_BUFF_HOUR_OF_POWER:
-                        pTextColorID = 86;
-                        pText = localization->GetString(LSTR_HOUR_OF_POWER);
-                        break;
-                    case ACTOR_BUFF_SHIELD:
-                        pTextColorID = 17;
-                        pText = localization->GetString(LSTR_SHIELD);
-                        break;
-                    case ACTOR_BUFF_STONESKIN:
-                        pTextColorID = 38;
-                        pText = localization->GetString(LSTR_STONESKIN);
-                        break;
-                    case ACTOR_BUFF_BLESS:
-                        pTextColorID = 46;
-                        pText = localization->GetString(LSTR_BLESS);
-                        break;
-                    case ACTOR_BUFF_HEROISM:
-                        pTextColorID = 51;
-                        pText = localization->GetString(LSTR_HEROISM);
-                        break;
-                    case ACTOR_BUFF_HASTE:
-                        pTextColorID = 5;
-                        pText = localization->GetString(LSTR_HASTE);
-                        break;
-                    case ACTOR_BUFF_PAIN_REFLECTION:
-                        pTextColorID = 95;
-                        pText =
-                            localization->GetString(LSTR_PAIN_REFLECTION);
-                        break;
-                    case ACTOR_BUFF_HAMMERHANDS:
-                        pTextColorID = 73;
-                        pText = localization->GetString(LSTR_HAMMERHANDS);
-                        break;
-                    default:
-                        break;
-                }
-                if (!pText.empty()) {
-                    pWindow->DrawText(assets->pFontSmallnum.get(), {28, pTextHeight}, GetSpellColor(pTextColorID), pText);
-                    pTextHeight = pTextHeight + assets->pFontSmallnum->GetHeight() - 3;
+                hasBuffs = true;
+                std::string text = localization->GetActorBuffName(buff);
+                if (!text.empty()) {
+                    if (pWindow)
+                        pWindow->DrawText(font, {X_EFFECT_LIST, pTextHeight}, GetSpellColor(spellForActorBuff(buff)), text);
+                    pTextHeight += lineAdvance;
                 }
             }
         }
-        if (pText.empty()) {
-            pWindow->DrawText(assets->pFontSmallnum.get(), {28, pTextHeight}, colorTable.White, localization->GetString(LSTR_NONE));
+        if (!hasBuffs) {
+            if (pWindow)
+                pWindow->DrawText(font, {X_EFFECT_LIST, pTextHeight}, colorTable.White, localization->GetString(LSTR_NONE));
+            pTextHeight += lineAdvance;
         }
     }
 
-    pTextHeight = doll_rect.y;
+    /*------------------------------- Right side -------------------------------*/
+    int leftTextHeight = pTextHeight;
+    pTextHeight = Y_POS_DOLL;
+    int maxWidth = 0; // The max width of the info at X_RIGHT_DATA
+    auto measureWidth = [font, &maxWidth](std::string_view s) {
+        int w = font->GetLineWidth(s);
+        if (w > maxWidth) maxWidth = w;
+    };
 
     std::string hpStr, acStr;
     if (normal_level) {
-        hpStr = fmt::format("{}", pActors[uActorID].monsterInfo.hp);
-        acStr = fmt::format("{}", pActors[uActorID].monsterInfo.ac);
+        hpStr = fmt::format("{}", monsterInfo.hp);
+        acStr = fmt::format("{}", monsterInfo.ac);
     } else {
         hpStr = acStr = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
-    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_HIT_POINTS));
-    pWindow->DrawText(assets->pFontSmallnum.get(), {252, pTextHeight}, colorTable.White, hpStr);
-    pTextHeight = doll_rect.y + assets->pFontSmallnum->GetHeight() - 3;
-    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ARMOR_CLASS));
-    pWindow->DrawText(assets->pFontSmallnum.get(), {252, pTextHeight}, colorTable.White, acStr);
-    pTextHeight = pTextHeight + assets->pFontSmallnum->GetHeight() - 6 + assets->pFontSmallnum->GetHeight();
+    if (showCurrentHp && extended)
+        hpStr = fmt::format("{} / {}", pActors[uActorID].currentHP, hpStr);
+    if (pWindow) {
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_HIT_POINTS));
+        pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, hpStr);
+    } else {
+        measureWidth(hpStr);
+    }
+    pTextHeight += lineAdvance;
+    if (pWindow) {
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ARMOR_CLASS));
+        pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, acStr);
+    } else {
+        measureWidth(acStr);
+    }
+    pTextHeight += 2 * lineAdvance;
+
+
+    // TODO(captainurist): Display ranged attack as "Ranged attack". This currently doesn't fit in the table, we used to
+    //                     just do attackStr + " R" but that's cryptic. Redo properly with dynamic alignment.
 
     std::string attackStr, damageStr;
     if (expert_level) {
-        attackStr = displayNameForDamageType(pActors[uActorID].monsterInfo.attack1Type, localization);
-        if (pActors[uActorID].monsterInfo.attack1DamageBonus) {
-            damageStr = fmt::format("{}d{}+{}", pActors[uActorID].monsterInfo.attack1DamageDiceRolls, pActors[uActorID].monsterInfo.attack1DamageDiceSides,
-                                    pActors[uActorID].monsterInfo.attack1DamageBonus);
+        attackStr = displayNameForDamageType(monsterInfo.attack1Type, localization);
+        if (monsterInfo.attack1DamageBonus) {
+            damageStr = fmt::format("{}d{}+{}", monsterInfo.attack1DamageDiceRolls, monsterInfo.attack1DamageDiceSides, monsterInfo.attack1DamageBonus);
         } else {
-            damageStr = fmt::format("{}d{}", pActors[uActorID].monsterInfo.attack1DamageDiceRolls, pActors[uActorID].monsterInfo.attack1DamageDiceSides);
+            damageStr = fmt::format("{}d{}", monsterInfo.attack1DamageDiceRolls, monsterInfo.attack1DamageDiceSides);
         }
     } else {
         attackStr = damageStr = localization->GetString(LSTR_UNKNOWN_VALUE);
     }
-    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
-    pWindow->DrawText(assets->pFontSmallnum.get(), {231, pTextHeight}, colorTable.White, attackStr);
-    pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
-    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
-    pWindow->DrawText(assets->pFontSmallnum.get(), {231, pTextHeight}, colorTable.White, damageStr);
-    pTextHeight += assets->pFontSmallnum->GetHeight() - 6 + assets->pFontSmallnum->GetHeight();
+    if (pWindow) {
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
+        pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, attackStr);
+    } else {
+        measureWidth(attackStr);
+    }
+    pTextHeight += lineAdvance;
+    if (pWindow) {
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
+        pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, damageStr);
+    } else {
+        measureWidth(damageStr);
+    }
+    if (expert_level && extended && monsterInfo.attack2Chance > 0 && (monsterInfo.attack2DamageDiceRolls > 0 || monsterInfo.attack2DamageBonus > 0)) {
+        attackStr = displayNameForDamageType(monsterInfo.attack2Type, localization);
+        if (monsterInfo.attack2DamageBonus) {
+            damageStr = fmt::format("{}d{}+{}", monsterInfo.attack2DamageDiceRolls, monsterInfo.attack2DamageDiceSides, monsterInfo.attack2DamageBonus);
+        } else {
+            damageStr = fmt::format("{}d{}", monsterInfo.attack2DamageDiceRolls, monsterInfo.attack2DamageDiceSides);
+        }
+        pTextHeight += lineAdvance;
+        if (pWindow) {
+            pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_ATTACK));
+            pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, attackStr);
+        } else {
+            measureWidth(attackStr);
+        }
+        pTextHeight += lineAdvance;
+        if (pWindow) {
+            pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_DAMAGE));
+            pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, damageStr);
+        } else {
+            measureWidth(damageStr);
+        }
+    }
+    if (master_level && extended && monsterInfo.specialAttackType != SPECIAL_ATTACK_NONE) {
+        pTextHeight += lineAdvance;
+        if (pWindow) {
+            pWindow->DrawText(font, {X_RIGHT_INDENTED, pTextHeight},
+                              monsterSpecialAttackColors[monsterInfo.specialAttackType],
+                              localization->GetSpecialAttackName(monsterInfo.specialAttackType));
+        }
+    }
+    if (master_level && extended && monsterInfo.specialAbilityType != MONSTER_SPECIAL_ABILITY_NONE) {
+        pTextHeight += lineAdvance;
+        if (pWindow) {
+            pWindow->DrawText(font, {X_RIGHT_INDENTED, pTextHeight},
+                              monsterSpecialAbilityColors[monsterInfo.specialAbilityType],
+                              localization->GetMonsterSpecialAbilityName(monsterInfo.specialAbilityType));
+        }
+    }
+    pTextHeight += 2 * lineAdvance;
 
     std::string spellTitleStr = localization->GetString(LSTR_SPELL);
-    std::string spell1Str, spell2Str;
+    std::string spell1Str, spell2Str, spell3Str; // 1 is in-line with spellTitleStr (only non-extended), 2 and 3 own lines
+    int spellX = extended ? X_RIGHT_INDENTED : X_RIGHT_DEFAULT_SPELLS;
     if (master_level) {
-        if (pActors[uActorID].monsterInfo.spell1Id == SPELL_NONE && pActors[uActorID].monsterInfo.spell2Id == SPELL_NONE) {
+        if (monsterInfo.spell1Id == SPELL_NONE && monsterInfo.spell2Id == SPELL_NONE) {
             spell1Str = localization->GetString(LSTR_NONE);
+            spellX = X_RIGHT_DATA;
         }
-        if (pActors[uActorID].monsterInfo.spell1Id != SPELL_NONE && pActors[uActorID].monsterInfo.spell2Id != SPELL_NONE) {
+        if (monsterInfo.spell1Id != SPELL_NONE && monsterInfo.spell2Id != SPELL_NONE) {
             spellTitleStr = localization->GetString(LSTR_SPELLS);
         }
-        if (pActors[uActorID].monsterInfo.spell1Id != SPELL_NONE) {
-            spell1Str = pSpellStats->pInfos[pActors[uActorID].monsterInfo.spell1Id].pShortName;
+        if (monsterInfo.spell1Id != SPELL_NONE) {
+            if (extended)
+                spell2Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell1Id].pShortName, localization->SkillValueShortString(monsterInfo.spell1SkillMastery));
+            else
+                spell1Str = pSpellStats->pInfos[monsterInfo.spell1Id].pShortName;
         }
-        if (pActors[uActorID].monsterInfo.spell2Id != SPELL_NONE) {
-            spell2Str = pSpellStats->pInfos[pActors[uActorID].monsterInfo.spell2Id].pShortName;
+        if (monsterInfo.spell2Id != SPELL_NONE) {
+            if (extended)
+                spell3Str = fmt::format("{} {}", pSpellStats->pInfos[monsterInfo.spell2Id].pShortName, localization->SkillValueShortString(monsterInfo.spell2SkillMastery));
+            else
+                spell2Str = pSpellStats->pInfos[monsterInfo.spell2Id].pShortName;
         }
     } else {
         spell1Str = localization->GetString(LSTR_UNKNOWN_VALUE);
+        spellX = X_RIGHT_DATA;
     }
-    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, spellTitleStr);
-    pWindow->DrawText(assets->pFontSmallnum.get(), {220, pTextHeight}, colorTable.White, spell1Str);
-    pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
+    if (pWindow) {
+        pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, spellTitleStr);
+        if (!spell1Str.empty())
+            pWindow->DrawText(font, {spellX, pTextHeight}, colorTable.White, spell1Str);
+    }
     if (!spell2Str.empty()) {
-        pWindow->DrawText(assets->pFontSmallnum.get(), {220, pTextHeight}, colorTable.White, spell2Str);
-        pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
+        pTextHeight += lineAdvance;
+        if (pWindow) pWindow->DrawText(font, {spellX, pTextHeight}, colorTable.White, spell2Str);
     }
-    pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
+    if (!spell3Str.empty()) {
+        pTextHeight += lineAdvance;
+        if (pWindow) pWindow->DrawText(font, {spellX, pTextHeight}, colorTable.White, spell3Str);
+    }
+    pTextHeight += 2 * lineAdvance;
 
     std::array<std::string, 10> resTypes = {
         localization->GetSpellSchoolName(MAGIC_SCHOOL_FIRE),
@@ -954,59 +1015,70 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
     };
 
     std::array<int, 10> resValues = {
-        pActors[uActorID].monsterInfo.resFire,
-        pActors[uActorID].monsterInfo.resAir,
-        pActors[uActorID].monsterInfo.resWater,
-        pActors[uActorID].monsterInfo.resEarth,
-        pActors[uActorID].monsterInfo.resSpirit,
-        pActors[uActorID].monsterInfo.resMind,
-        pActors[uActorID].monsterInfo.resBody,
-        pActors[uActorID].monsterInfo.resLight,
-        pActors[uActorID].monsterInfo.resDark,
-        pActors[uActorID].monsterInfo.resPhysical, // Physical & Dark were switched, was a bug?
+        monsterInfo.resFire,
+        monsterInfo.resAir,
+        monsterInfo.resWater,
+        monsterInfo.resEarth,
+        monsterInfo.resSpirit,
+        monsterInfo.resMind,
+        monsterInfo.resBody,
+        monsterInfo.resLight,
+        monsterInfo.resDark,
+        monsterInfo.resPhysical, // Physical & Dark were switched, was a bug?
     };
 
-    pWindow->DrawText(assets->pFontSmallnum.get(), {150, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_RESISTANCES));
-    pTextHeight = pTextHeight + assets->pFontSmallnum->GetHeight() - 3;
+    if (pWindow) pWindow->DrawText(font, {X_RIGHT_COLUMN, pTextHeight}, colorTable.Jonquil, localization->GetString(LSTR_RESISTANCES));
+    pTextHeight += lineAdvance;
 
-    if (grandmaster_level) {
-        std::string resStr;
-        for (int i = 0; i < 10; i++) {
-            if (resValues[i] == 200) {
-                resStr = localization->GetString(LSTR_IMMUNE);
-            } else {
-                if (resValues[i]) {
+    std::string resStr;
+    for (int i = 0; i < 10; i++) {
+        if (!grandmaster_level) {
+            resStr = localization->GetString(LSTR_UNKNOWN_VALUE);
+        } else if (resValues[i] == 200) {
+            resStr = localization->GetString(LSTR_IMMUNE);
+        } else {
+            if (resValues[i]) {
+                if (extended)
+                    resStr = fmt::format("{}", resValues[i]);
+                else
                     resStr = localization->GetString(LSTR_RESISTANT);
-                } else {
-                    resStr = localization->GetString(LSTR_NONE);
-                }
+            } else {
+                resStr = localization->GetString(LSTR_NONE);
             }
+        }
 
-            pWindow->DrawText(assets->pFontSmallnum.get(), {170, pTextHeight}, colorTable.Jonquil, resTypes[i]);
-            pWindow->DrawText(assets->pFontSmallnum.get(), {241, pTextHeight}, colorTable.White, resStr);
-            pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
+        if (pWindow) {
+            pWindow->DrawText(font, {X_RIGHT_INDENTED, pTextHeight}, colorTable.Jonquil, resTypes[i]);
+            pWindow->DrawText(font, {X_RIGHT_DATA, pTextHeight}, colorTable.White, resStr);
+        } else {
+            measureWidth(resStr);
         }
-    } else {
-        for (int i = 0; i < 10; ++i) {
-            pWindow->DrawText(assets->pFontSmallnum.get(), {170, pTextHeight}, colorTable.Jonquil, resTypes[i]);
-            pWindow->DrawText(assets->pFontSmallnum.get(), {241, pTextHeight}, colorTable.White, localization->GetString(LSTR_UNKNOWN_VALUE));
-            pTextHeight += assets->pFontSmallnum->GetHeight() - 3;
-        }
+        pTextHeight += lineAdvance;
     }
 
+    /*------------------------------- Bottom -------------------------------*/
+    if (leftTextHeight > pTextHeight) pTextHeight = leftTextHeight;
+    pTextHeight += lineAdvance;
+
     // cast spell: Detect life
-    if (pParty->pPartyBuffs[PARTY_BUFF_DETECT_LIFE].Active()) {
-        std::string str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_HIT_POINTS), pActors[uActorID].currentHP);
-        assets->pFontSmallnum->GetLineWidth(str);
-        pWindow->DrawTitleText(assets->pFontSmallnum.get(), 0, pWindow->uFrameHeight - assets->pFontSmallnum->GetHeight() - 12, colorTable.White, str, 3);
+    if (showCurrentHp && !extended) {
+        if (pWindow) {
+            std::string str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_HIT_POINTS), pActors[uActorID].currentHP);
+            pWindow->DrawTitleText(font, 0, pTextHeight, colorTable.White, str, 3);
+        }
+        pTextHeight += lineAdvance;
     }
 
     // Debug - show actor AI state with full information
     if (monster_full_informations) {
-        std::string str = fmt::format("AI State: {}", std::to_underlying(pActors[uActorID].aiState));
-        assets->pFontSmallnum->GetLineWidth(str);
-        pWindow->DrawTitleText(assets->pFontSmallnum.get(), 0, pWindow->uFrameHeight - assets->pFontSmallnum->GetHeight() - 12, colorTable.White, str, 3);
+        if (pWindow) {
+            std::string str = fmt::format("ActorId: {}   AI State: {}", uActorID, std::to_underlying(pActors[uActorID].aiState));
+            pWindow->DrawTitleText(font, 0, pTextHeight, colorTable.White, str, 3);
+        }
+        pTextHeight += lineAdvance;
     }
+
+    return std::make_pair(X_RIGHT_DATA + maxWidth + RIGHT_BOTTOM_MARGIN, pTextHeight + RIGHT_BOTTOM_MARGIN);
 }
 
 /**
@@ -1017,12 +1089,12 @@ void MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow) {
   * @param uPlayerID                     Character identifier.
   * @param uPlayerSkillType              Skill type identifier.
   */
-std::string CharacterUI_GetSkillDescText(int uPlayerID, CharacterSkillType uPlayerSkillType) {
+std::string CharacterUI_GetSkillDescText(int uPlayerID, Skill uPlayerSkillType) {
     size_t line_width = std::max({
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)),
-        assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND)),
+        assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND_1)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_BONUS_2))
     });
 
@@ -1033,7 +1105,7 @@ std::string CharacterUI_GetSkillDescText(int uPlayerID, CharacterSkillType uPlay
     if (!localization->GetSkillDescriptionNormal(uPlayerSkillType).empty()) {
         Description = fmt::format("{}\n\n", Description);
 
-        for (CharacterSkillMastery mastery : allSkillMasteries()) {
+        for (Mastery mastery : allSkillMasteries()) {
             Description += fmt::format(
                 "{::}{}\t{:03}:\t{:03}{}\t000\n",
                 GetSkillColor(pParty->pCharacters[uPlayerID].classType, uPlayerSkillType, mastery).tag(),
@@ -1052,15 +1124,15 @@ std::string CharacterUI_GetSkillDescText(int uPlayerID, CharacterSkillType uPlay
 }
 
 void CharacterUI_SkillsTab_ShowHint() {
-    int pX = 0;
-    int pY = 0;
-    mouse->GetClickPos(&pX, &pY);
+    Pointi mousePos = mouse->position();
+    int pX = mousePos.x;
+    int pY = mousePos.y;
 
     if (pX < 24 || pX > 455 || pY < 18 || pY > 36) {
         for (GUIButton *pButton : pGUIWindow_CurrentMenu->vButtons) {
             if (pButton->msg == UIMSG_SkillUp && pX >= pButton->uX &&
                 pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
-                CharacterSkillType skill = static_cast<CharacterSkillType>(pButton->msg_param);
+                Skill skill = static_cast<Skill>(pButton->msg_param);
                 std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill);
                 CharacterUI_DrawTooltip(localization->GetSkillName(skill), pSkillDescText);
             }
@@ -1077,7 +1149,7 @@ void CharacterUI_StatsTab_ShowHint() {
     std::string pHourWord;  // ecx@17
     std::string pDayWord;   // eax@20
 
-    Pointi pt = mouse->GetCursorPos();
+    Pointi pt = mouse->position();
     for (pStringNum = 0; pStringNum < stat_string_coord.size(); ++pStringNum) {
         if (pt.x >= stat_string_coord[pStringNum].x &&
             pt.x <= stat_string_coord[pStringNum].x +
@@ -1098,8 +1170,8 @@ void CharacterUI_StatsTab_ShowHint() {
         case 5:
         case 6:
             CharacterUI_DrawTooltip(
-                localization->GetAttirubteName(static_cast<CharacterAttribute>(pStringNum)),
-                localization->GetAttributeDescription(static_cast<CharacterAttribute>(pStringNum)));
+                localization->GetAttirubteName(static_cast<Attribute>(pStringNum)),
+                localization->GetAttributeDescription(static_cast<Attribute>(pStringNum)));
             break;
         case 7:  // Health Points
             CharacterUI_DrawTooltip(localization->GetString(LSTR_HIT_POINTS), localization->getHPDescription());
@@ -1115,9 +1187,9 @@ void CharacterUI_StatsTab_ShowHint() {
             std::string str = std::string(localization->getCharacterConditionDescription()) + "\n";
 
             for (Condition condition : conditionImportancyTable()) {
-                if (pParty->activeCharacter().conditions.Has(condition)) {
+                if (pParty->activeCharacter().conditions.has(condition)) {
                     str += " \n";
-                    Duration condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.Get(condition);
+                    Duration condition_time = pParty->GetPlayingTime() - pParty->activeCharacter().conditions.get(condition);
                     CivilDuration d = condition_time.toCivilDuration();
                     pTextColor = GetConditionDrawColor(condition);
                     str += fmt::format("{::}{}\f00000 - ", pTextColor.tag(), localization->GetCharacterConditionName(condition));
@@ -1160,10 +1232,10 @@ void CharacterUI_StatsTab_ShowHint() {
 
             std::string str;
             if (eligbleLevel > pParty->activeCharacter().uLevel) {
-                str = localization->FormatString(LSTR_ELIGIBLE_TO_LEVELUP, eligbleLevel);
+                str = localization->FormatString(LSTR_YOU_ARE_ELIGIBLE_TO_TRAIN_TO_U, eligbleLevel);
             }
             int nextLevelExp = GetExperienceRequiredForLevel(eligbleLevel) - pParty->activeCharacter().experience;
-            str += "\n" + localization->FormatString(LSTR_XP_UNTIL_NEXT_LEVEL, nextLevelExp, eligbleLevel + 1);
+            str += "\n" + localization->FormatString(LSTR_YOU_NEED_D_MORE_EXPERIENCE_TO_TRAIN_TO, nextLevelExp, eligbleLevel + 1);
             str = std::string(localization->getExpDescription()) + "\n \n" + str;
 
             CharacterUI_DrawTooltip(localization->GetString(LSTR_EXPERIENCE), str);
@@ -1186,9 +1258,9 @@ void CharacterUI_StatsTab_ShowHint() {
 
         case 17:  // Missle Bonus
         {
-            bool hasBow = pParty->activeCharacter().GetBowItem() != nullptr;
-            auto weapon = pParty->activeCharacter().GetMainHandItem();
-            bool hasBlaster = weapon && weapon->GetPlayerSkillType() == CHARACTER_SKILL_BLASTER;
+            bool hasBow = !!pParty->activeCharacter().inventory.entry(ITEM_SLOT_BOW);
+            InventoryConstEntry weapon = pParty->activeCharacter().inventory.entry(ITEM_SLOT_MAIN_HAND);
+            bool hasBlaster = weapon && weapon->skill() == SKILL_BLASTER;
             // TODO(captainurist): fmt can throw
             std::string description;
             if (hasBow || hasBlaster) {
@@ -1250,7 +1322,7 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
     unsigned int v3;              // eax@2
     GUIWindow spell_info_window;  // [sp+Ch] [bp-68h]@4
 
-    Pointi pt = mouse->GetCursorPos();
+    Pointi pt = mouse->position();
 
     spell = &pSpellStats->pInfos[spell_id];
     if (pt.y <= 250)
@@ -1269,7 +1341,7 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)),
-        assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND))
+        assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND_1))
     });
 
     std::string str = fmt::format(
@@ -1278,15 +1350,15 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
         localization->GetString(LSTR_NORMAL), v5 + 3, v5 + 10, spell->pBasicSkillDesc,
         localization->GetString(LSTR_EXPERT), v5 + 3, v5 + 10, spell->pExpertSkillDesc,
         localization->GetString(LSTR_MASTER), v5 + 3, v5 + 10, spell->pMasterSkillDesc,
-        localization->GetString(LSTR_GRAND), v5 + 3, v5 + 10, spell->pGrandmasterSkillDesc
+        localization->GetString(LSTR_GRAND_1), v5 + 3, v5 + 10, spell->pGrandmasterSkillDesc
     );
     spell_info_window.uFrameHeight += assets->pFontSmallnum->CalcTextHeight(
         str, spell_info_window.uFrameWidth, 0
     );
     if ((signed int)spell_info_window.uFrameHeight < 150)
         spell_info_window.uFrameHeight = 150;
-    spell_info_window.uFrameWidth = game_viewport_width;
-    spell_info_window.DrawMessageBox(0);
+    spell_info_window.uFrameWidth = pViewport->viewportWidth;
+    spell_info_window.DrawMessageBox(false);
     spell_info_window.uFrameWidth -= 12;
     spell_info_window.uFrameHeight -= 12;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + spell_info_window.uFrameWidth - 1;
@@ -1296,13 +1368,13 @@ void DrawSpellDescriptionPopup(SpellId spell_id) {
     spell_info_window.DrawText(assets->pFontSmallnum.get(), {120, 44}, colorTable.White, str);
     spell_info_window.uFrameWidth = 108;
     spell_info_window.uFrameZ = spell_info_window.uFrameX + 107;
-    CharacterSkillType skill = skillForMagicSchool(pParty->activeCharacter().lastOpenedSpellbookPage);
-    CharacterSkillMastery skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
+    Skill skill = skillForMagicSchool(pParty->activeCharacter().lastOpenedSpellbookPage);
+    Mastery skill_mastery = pParty->activeCharacter().getSkillValue(skill).mastery();
     spell_info_window.DrawTitleText(assets->pFontComic.get(), 12, 75, colorTable.White, localization->GetSkillName(skill), 3);
 
-    if (skill_mastery == CharacterSkillMastery::CHARACTER_SKILL_MASTERY_NONE) {
+    if (skill_mastery == Mastery::MASTERY_NONE) {
         if (engine->config->debug.AllMagic.value()) {
-            skill_mastery = CharacterSkillMastery::CHARACTER_SKILL_MASTERY_GRANDMASTER;
+            skill_mastery = Mastery::MASTERY_GRANDMASTER;
         } else {
             assert(false && "Character doesnt have this magic skill!");
         }
@@ -1376,6 +1448,11 @@ static void drawBuffPopupWindow() {
             popupWindow.DrawText(assets->pFontComic.get(), {52, yPos}, spellTooltipColors[i], localization->GetPartyBuffName(i));
             DrawBuff_remaining_time_string(yPos, &popupWindow, remaingTime, assets->pFontComic.get());
             stringCount++;
+            if (i == PARTY_BUFF_PROTECTION_FROM_MAGIC && engine->config->gameplay.ShowProtectionMagicPower.value()) {
+                yPos = stringCount * assets->pFontComic->GetHeight() + 40;
+                popupWindow.DrawText(assets->pFontComic.get(), {32, yPos}, colorTable.White, "\r020" + localization->FormatString(LSTR_REMAINING_POWER, pParty->pPartyBuffs[i].power));
+                stringCount++;
+            }
         }
     }
 }
@@ -1387,7 +1464,7 @@ void showSpellbookInfo(ItemId spellbook) {
     assert(isSpellbook(spellbook));
     SpellId spell = spellForSpellbook(spellbook);
 
-    Pointi cursorPos = EngineIocContainer::ResolveMouse()->GetCursorPos();
+    Pointi cursorPos = EngineIocContainer::ResolveMouse()->position();
     int popupVertPos = 30;
     if (cursorPos.y <= 320) {
         popupVertPos = cursorPos.y + 30;
@@ -1405,21 +1482,21 @@ void showSpellbookInfo(ItemId spellbook) {
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_NORMAL)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_EXPERT)),
         assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_MASTER)),
-        assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND))});
+        assets->pFontSmallnum->GetLineWidth(localization->GetString(LSTR_GRAND_1))});
 
     std::string str = fmt::format("{}\n\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}\t000\n{}\t{:03}:\t{:03}{}",
                                   pSpellStats->pInfos[spell].pDescription,
                                   localization->GetString(LSTR_NORMAL), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pBasicSkillDesc,
                                   localization->GetString(LSTR_EXPERT), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pExpertSkillDesc,
                                   localization->GetString(LSTR_MASTER), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pMasterSkillDesc,
-                                  localization->GetString(LSTR_GRAND), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pGrandmasterSkillDesc);
+                                  localization->GetString(LSTR_GRAND_1), maxLineWidth + 3, maxLineWidth + 10, pSpellStats->pInfos[spell].pGrandmasterSkillDesc);
 
     popup.uFrameHeight += assets->pFontSmallnum->CalcTextHeight(str, popup.uFrameWidth, 0);
     if (popup.uFrameHeight < 150) {
         popup.uFrameHeight = 150;
     }
-    popup.uFrameWidth = game_viewport_width;
-    popup.DrawMessageBox(0);
+    popup.uFrameWidth = pViewport->viewportWidth;
+    popup.DrawMessageBox(false);
     popup.uFrameWidth -= 12;
     popup.uFrameHeight -= 12;
     popup.uFrameZ = popup.uFrameX + popup.uFrameWidth - 1;
@@ -1430,22 +1507,22 @@ void showSpellbookInfo(ItemId spellbook) {
     popup.uFrameWidth = 108;
     popup.DrawTitleText(assets->pFontComic.get(), 0xCu, 0x4Bu, colorTable.White, localization->GetSkillName(skillForSpell(spell)), 3u);
 
-    str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spell].mana_per_skill[CHARACTER_SKILL_MASTERY_NOVICE]);
+    str = fmt::format("{}\n{}", localization->GetString(LSTR_SP_COST), pSpellDatas[spell].mana_per_skill[MASTERY_NOVICE]);
     popup.DrawTitleText(assets->pFontComic.get(), 0xCu, popup.uFrameHeight - assets->pFontComic->GetHeight() - 16, colorTable.White, str, 3);
 }
 
 //----- new function
 void ShowPopupShopSkills() {
-    int pX = 0;
-    int pY = 0;
-    mouse->GetClickPos(&pX, &pY);
+    Pointi mousePos = mouse->position();
+    int pX = mousePos.x;
+    int pY = mousePos.y;
 
     if (pDialogueWindow && pDialogueWindow->pNumPresenceButton != 0) {
         for (GUIButton *pButton : pDialogueWindow->vButtons) {
             if (pX >= pButton->uX && pX < pButton->uZ && pY >= pButton->uY && pY < pButton->uW) {
                 if (IsSkillLearningDialogue((DialogueId)pButton->msg_param)) {
                     auto skill_id = GetLearningDialogueSkill((DialogueId)pButton->msg_param);
-                    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] != CHARACTER_SKILL_MASTERY_NONE &&
+                    if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill_id] != MASTERY_NONE &&
                         !pParty->activeCharacter().pActiveSkills[skill_id]) {
                         // is this skill visible
                         std::string pSkillDescText = CharacterUI_GetSkillDescText(pParty->activeCharacterIndex() - 1, skill_id);
@@ -1473,7 +1550,7 @@ void ShowPopupShopItem() {
     if (dialogue < DIALOGUE_SHOP_BUY_STANDARD)
         return;
 
-    Pointi pt = EngineIocContainer::ResolveMouse()->GetCursorPos();
+    Pointi pt = EngineIocContainer::ResolveMouse()->position();
     int testx;
 
     if (houseType <= HOUSE_TYPE_ALCHEMY_SHOP) {
@@ -1588,11 +1665,11 @@ void ShowPopupShopItem() {
         }
 
         if (dialogue >= DIALOGUE_SHOP_SELL && dialogue <= DIALOGUE_SHOP_REPAIR || dialogue == DIALOGUE_SHOP_DISPLAY_EQUIPMENT) {
-            invindex = ((pt.x - 14) >> 5) + 14 * ((pt.y - 17) >> 5);
-            if (pt.x <= 13 || pt.x >= 462 || !pParty->activeCharacter().GetItemListAtInventoryIndex(invindex))
+            Pointi pos = mapToInventoryGrid(pt, Pointi(14, 17));
+            if (pt.x <= 13 || pt.x >= 462 || !pParty->activeCharacter().inventory.entry(pos))
                 return;
 
-            GameUI_DrawItemInfo(pParty->activeCharacter().GetItemAtInventoryIndex(invindex));
+            GameUI_DrawItemInfo(pParty->activeCharacter().inventory.entry(pos).get());
             return;
         }
     }
@@ -1699,7 +1776,7 @@ void GameUI_CharacterQuickRecord_Draw(GUIWindow *window, int characterIndex) {
     }
 
     auto active_spells = localization->FormatString(
-        LSTR_FMT_ACTIVE_SPELLS_S,
+        LSTR_ACTIVE_SPELLS_S,
         uFramesetIDa == 0 ? localization->GetString(LSTR_NONE) : "");
     window->DrawText(assets->pFontArrus.get(), {14, 114}, colorTable.White, active_spells);
 }
@@ -1751,7 +1828,7 @@ void GameUI_DrawNPCPopup(int _this) {  // PopupWindowForBenefitAndJoinText
 }
 
 //----- (00416D62) --------------------------------------------------------
-void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
+void UI_OnMouseRightClick(Pointi mousePos) {
     std::string pStr;        // edi@85
     GUIWindow popup_window;  // [sp+4h] [bp-74h]@32
 
@@ -1759,8 +1836,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         return;
 
 
-    unsigned int pX = mouse_x;
-    unsigned int pY = mouse_y;
+    unsigned int pX = mousePos.x;
+    unsigned int pY = mousePos.y;
 
     // if ( render->bWindowMode )
     {
@@ -1795,7 +1872,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             if (!pParty->activeCharacter().CanAct()) {
                 static std::string hint_reference;
                 hint_reference = localization->FormatString(
-                    LSTR_FMT_S_IS_IN_NO_CODITION_TO_S,
+                    LSTR_S_IS_IN_NO_CONDITION_TO_S,
                     pParty->activeCharacter().name,
                     localization->GetString(LSTR_IDENTIFY_ITEMS)
                 );
@@ -1812,28 +1889,12 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
             } else {
                 // this could be put into a chest function
 
-                int chestheight =
-                    9;  // pChestHeightsByType[pChests[(int)pGUIWindow_CurrentMenu->par1C].uChestBitmapID];
-                int chestwidth = 9;
-                int inventoryYCoord = (pY - 34) / 32;  // use pchestoffsets??
+                int inventoryYCoord = (pY - 34) / 32;  // TODO(captainurist): use pchestoffsets
                 int inventoryXCoord = (pX - 42) / 32;
-                int invMatrixIndex =
-                    inventoryXCoord + (chestheight * inventoryYCoord);
 
-                if (inventoryYCoord >= 0 && inventoryYCoord < chestheight &&
-                    inventoryXCoord >= 0 && inventoryXCoord < chestwidth) {
-                    int chestindex = vChests[pGUIWindow_CurrentChest->chestId()].pInventoryIndices[invMatrixIndex];
-                    if (chestindex < 0) {
-                        invMatrixIndex = (-(chestindex + 1));
-                        chestindex = vChests[pGUIWindow_CurrentChest->chestId()].pInventoryIndices[invMatrixIndex];
-                    }
-
-                    if (chestindex) {
-                        int itemindex = chestindex - 1;
-
-                        GameUI_DrawItemInfo(&vChests[pGUIWindow_CurrentChest->chestId()].igChestItems[itemindex]);
-                    }
-                }
+                InventoryEntry entry = vChests[pGUIWindow_CurrentChest->chestId()].inventory.entry({inventoryXCoord, inventoryYCoord});
+                if (entry)
+                    GameUI_DrawItemInfo(entry.get());
             }
             break;
         }
@@ -1842,9 +1903,8 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                            // главном меню показывает всплывающее окно)
         {
             if (GetCurrentMenuID() > MENU_MAIN) break;
-            mouse->DoMouseLook();
 
-            if ((signed int)pY > (signed int)pViewport->uViewportBR_Y) {
+            if ((signed int)pY > (signed int)pViewport->viewportBR_Y) {
                 int characterIndex = pX / 118;
                 if (characterIndex < 4) { // portaits zone
                     popup_window.sHint.clear();
@@ -1854,7 +1914,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     popup_window.uFrameY = 60;
                     GameUI_CharacterQuickRecord_Draw(&popup_window, characterIndex);
                 }
-            } else if ((int)pX > pViewport->uViewportBR_X) {
+            } else if ((int)pX > pViewport->viewportBR_X) {
                 if (pY >= 130) {
                     if (pX >= 476 && pX <= 636 && pY >= 240 && pY <= 300) {  // buff_tooltip zone
                         drawBuffPopupWindow();
@@ -1884,17 +1944,20 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                 popup_window.uFrameY = 40;
                 // if ( render->pRenderD3D )
 
-                Pid v5 = engine->PickMouseInfoPopup().pid;
+                Pid pointedObject = engine->PickMouseInfoPopup().pid;
                 /*else
-                v5 = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
-                if (v5.type() == OBJECT_Actor) {
+                pointedObject = render->pActiveZBuffer[pX + pSRZBufferLineOffsets[pY]];*/
+                if (pointedObject.type() == OBJECT_Actor) {
                     render->BeginScene2D();
-                    popup_window.DrawMessageBox(1);
-                    MonsterPopup_Draw(v5.id(), &popup_window);
+                    auto [w, h] = MonsterPopup_Draw(pointedObject.id(), nullptr);
+                    popup_window.uFrameWidth = w;
+                    popup_window.uFrameHeight = h;
+                    popup_window.DrawMessageBox(true);
+                    MonsterPopup_Draw(pointedObject.id(), &popup_window);
                 }
-                if (v5.type() == OBJECT_Item) {
-                    if (!(pObjectList->pObjects[pSpriteObjects[v5.id()].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
-                        GameUI_DrawItemInfo(&pSpriteObjects[v5.id()].containing_item);
+                if (pointedObject.type() == OBJECT_Sprite) {
+                    if (!(pObjectList->pObjects[pSpriteObjects[pointedObject.id()].uObjectDescID].uFlags & OBJECT_DESC_UNPICKABLE)) {
+                        GameUI_DrawItemInfo(&pSpriteObjects[pointedObject.id()].containing_item);
                     }
                 }
             }
@@ -1902,11 +1965,11 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
         }
         case SCREEN_BOOKS: {
             if (pGUIWindow_CurrentMenu->eWindowType != WINDOW_MapsBook ||
-                (signed int)pX < (signed int)pViewport->uViewportTL_X ||
-                (signed int)pX > (signed int)pViewport->uViewportBR_X ||
-                (signed int)pY < (signed int)pViewport->uViewportTL_Y ||
-                (signed int)pY > (signed int)pViewport->uViewportBR_Y ||
-                ((popup_window.sHint = GetMapBookHintText(mouse_x, mouse_y)).empty())) {
+                (signed int)pX < (signed int)pViewport->viewportTL_X ||
+                (signed int)pX > (signed int)pViewport->viewportBR_X ||
+                (signed int)pY < (signed int)pViewport->viewportTL_Y ||
+                (signed int)pY > (signed int)pViewport->viewportBR_Y ||
+                ((popup_window.sHint = GetMapBookHintText(mousePos.x, mousePos.y)).empty())) {
                 break;
             }
             popup_window.uFrameWidth = (assets->pFontArrus->GetLineWidth(popup_window.sHint) + 32) + 0.5f;
@@ -1961,17 +2024,17 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                     (signed int)pY < (signed int)pButton->uW) {
                     switch (pButton->msg) {
                         case UIMSG_0:  // stats info
-                            popup_window.sHint = localization->GetAttributeDescription(static_cast<CharacterAttribute>(pButton->msg_param % 7));
-                            pStr = localization->GetAttirubteName(static_cast<CharacterAttribute>(pButton->msg_param % 7));
+                            popup_window.sHint = localization->GetAttributeDescription(static_cast<Attribute>(pButton->msg_param % 7));
+                            pStr = localization->GetAttirubteName(static_cast<Attribute>(pButton->msg_param % 7));
                             break;
                         case UIMSG_PlayerCreationClickPlus:  // Plus button info
                             pStr = localization->GetString(LSTR_ADD);
-                            popup_window.sHint = localization->GetString(LSTR_SKILL_INCREASE_HINT);
+                            popup_window.sHint = localization->GetString(LSTR_ADDS_A_POINT_FROM_THE_HIGHLIGHTED_SKILL);
                             break;
                         case UIMSG_PlayerCreationClickMinus:  // Minus button
                                                               // info
                             pStr = localization->GetString(LSTR_SUBTRACT);
-                            popup_window.sHint = localization->GetString(LSTR_SKILL_DECREASE_HINT);
+                            popup_window.sHint = localization->GetString(LSTR_SUBTRACTS_A_POINT_FROM_THE_HIGHLIGHTED);
                             break;
                         case UIMSG_PlayerCreationSelectActiveSkill:  // Available
                                                                      // skill
@@ -1991,17 +2054,17 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             break;
                         case UIMSG_PlayerCreationSelectClass:  // Available
                                                                // Class Info
-                            popup_window.sHint = localization->GetClassDescription(static_cast<CharacterClass>(pButton->msg_param));
-                            pStr = localization->GetClassName(static_cast<CharacterClass>(pButton->msg_param));
+                            popup_window.sHint = localization->GetClassDescription(static_cast<Class>(pButton->msg_param));
+                            pStr = localization->GetClassName(static_cast<Class>(pButton->msg_param));
                             break;
                         case UIMSG_PlayerCreationClickOK:  // OK Info
                             popup_window.sHint = localization->GetString(
-                                LSTR_ACCEPT_PARTY_HINT);
+                                LSTR_CLICK_HERE_TO_ACCEPT_THIS_PARTY_AND);
                             pStr = localization->GetString(LSTR_OK_BUTTON);
                             break;
                         case UIMSG_PlayerCreationClickReset:  // Clear info
                             popup_window.sHint = localization->GetString(
-                                LSTR_RESET_HINT);
+                                LSTR_CLEARS_ALL_PARTY_STATS_AND_SKILLS);
                             pStr = localization->GetString(LSTR_CLEAR_BUTTON);
                             break;
                         case UIMSG_PlayerCreation_SelectAttribute:  // Character
@@ -2019,7 +2082,7 @@ void UI_OnMouseRightClick(int mouse_x, int mouse_y) {
                             UIMSG_PlayerCreationRemoveDownSkill) {  // Sellected
                                                                     // skills info
                         pY = 0;
-                        if (pParty->pCharacters[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48) != CHARACTER_SKILL_INVALID) {
+                        if (pParty->pCharacters[pButton->msg_param].GetSkillIdxByOrder(pButton->msg - UIMSG_48) != SKILL_INVALID) {
                             static std::string hint_reference;
                             hint_reference = CharacterUI_GetSkillDescText(
                                 pButton->msg_param,
@@ -2080,17 +2143,16 @@ void Inventory_ItemPopupAndAlchemy() {
         return;
     }
 
-    Item *item = nullptr;
+    InventoryEntry entry;
 
     static const std::array<int, 6> ringsX = {0x1EA, 0x21A, 0x248, 0x1EA, 0x21A, 0x248};
     static const std::array<int, 6> ringsY = {0x0CA, 0x0CA, 0x0CA, 0x0FA, 0x0FA, 0x0FA};
 
-    int pX, pY;
-    mouse->GetClickPos(&pX, &pY);
+    Pointi mousePos = mouse->position();
+    int pX = mousePos.x;
+    int pY = mousePos.y;
 
-    int inventoryYCoord = (pY - 17) / 32;
-    int inventoryXCoord = (pX - 14) / 32;
-    int invMatrixIndex = inventoryXCoord + (14 * inventoryYCoord);  // INVETORYSLOTSWIDTH
+    Pointi gridPos = mapToInventoryGrid(mousePos, Pointi(14, 17));
 
     if (pX <= 13 || pX >= 462) {   // items on the player ragdoll
         static const int glovex = 586;
@@ -2102,59 +2164,52 @@ void Inventory_ItemPopupAndAlchemy() {
         static const int slotSize = 32;
 
         if (!ringscreenactive()) { // rings not displayed
-            int item_pid = -1;
-            if (render->_zBufferRect.contains({ pX, pY })) {
-                item_pid += render->pActiveZBuffer[(pX - render->_zBufferRect.x) + (pY - render->_zBufferRect.y) * render->_zBufferRect.w] & 0xFFFF;
-            }
-            // zbuffer still used for paperdolls
-
-            if (item_pid != -1) {
-                item = &pParty->activeCharacter().pInventoryItemList[item_pid];
-            }
+            int item_pid = render->QueryHitMap({pX, pY}, -1);
+            entry = pParty->activeCharacter().inventory.entry(item_pid);
         } else {  // rings displayed
             ItemSlot pos = ITEM_SLOT_INVALID;
 
-            if (mouse->uMouseX < 490 || mouse->uMouseX > 618) {
+            if (mouse->position().x < 490 || mouse->position().x > 618) {
                 return;
             }
 
-            if (mouse->uMouseY < 88 || mouse->uMouseY > 282) {
+            if (mouse->position().y < 88 || mouse->position().y > 282) {
                 return;
             }
 
-            if (mouse->uMouseX >= amuletx && mouse->uMouseX <= (amuletx + slotSize) &&
-                mouse->uMouseY >= amulety && mouse->uMouseY <= (amulety + 2 * slotSize)) {
+            if (mouse->position().x >= amuletx && mouse->position().x <= (amuletx + slotSize) &&
+                mouse->position().y >= amulety && mouse->position().y <= (amulety + 2 * slotSize)) {
                 pos = ITEM_SLOT_AMULET;
             }
 
-            if (mouse->uMouseX >= glovex && mouse->uMouseX <= (glovex + slotSize) &&
-                mouse->uMouseY >= glovey && mouse->uMouseY <= (glovey + 2 * slotSize)) {
+            if (mouse->position().x >= glovex && mouse->position().x <= (glovex + slotSize) &&
+                mouse->position().y >= glovey && mouse->position().y <= (glovey + 2 * slotSize)) {
                 pos = ITEM_SLOT_GAUNTLETS;
             }
 
             for (int i = 0; i < 6; ++i) {
-                if (mouse->uMouseX >= ringsX[i] && mouse->uMouseX <= (ringsX[i] + slotSize) &&
-                    mouse->uMouseY >= ringsY[i] && mouse->uMouseY <= (ringsY[i] + slotSize)) {
+                if (mouse->position().x >= ringsX[i] && mouse->position().x <= (ringsX[i] + slotSize) &&
+                    mouse->position().y >= ringsY[i] && mouse->position().y <= (ringsY[i] + slotSize)) {
                     pos = ringSlot(i);
                 }
             }
 
             if (pos != ITEM_SLOT_INVALID) {
-                item = pParty->activeCharacter().GetItem(pos);
+                entry = pParty->activeCharacter().inventory.entry(pos);
             }
         }
     } else {
-        item = pParty->activeCharacter().GetItemAtInventoryIndex(invMatrixIndex);
+        entry = pParty->activeCharacter().inventory.entry(gridPos);
     }
 
-    if (!item) {  // no item
+    if (!entry) {  // no item
         return;
     }
 
     // check character condition
     if (!pParty->activeCharacter().CanAct()) {
         static std::string hint_reference;
-        hint_reference = localization->FormatString(LSTR_FMT_S_IS_IN_NO_CODITION_TO_S, pParty->activeCharacter().name,
+        hint_reference = localization->FormatString(LSTR_S_IS_IN_NO_CONDITION_TO_S, pParty->activeCharacter().name,
                                                     localization->GetString(LSTR_IDENTIFY_ITEMS));
 
         GUIWindow message_window;
@@ -2171,19 +2226,19 @@ void Inventory_ItemPopupAndAlchemy() {
         return;
     }
 
-    CombinedSkillValue alchemySkill = pParty->activeCharacter().getActualSkillValue(CHARACTER_SKILL_ALCHEMY);
+    CombinedSkillValue alchemySkill = pParty->activeCharacter().getActualSkillValue(SKILL_ALCHEMY);
 
     if (pParty->pPickedItem.itemId == ITEM_POTION_BOTTLE) {
-        GameUI_DrawItemInfo(item);
+        GameUI_DrawItemInfo(entry.get());
         return;
     }
 
-    if (isPotion(pParty->pPickedItem.itemId) && isPotion(item->itemId)) { // potion mixing
-        ItemId potionSrc1 = item->itemId;
+    if (isPotion(pParty->pPickedItem.itemId) && isPotion(entry->itemId)) { // potion mixing
+        ItemId potionSrc1 = entry->itemId;
         ItemId potionSrc2 = pParty->pPickedItem.itemId;
 
         ItemId potionID;
-        if (pParty->pPickedItem.itemId == ITEM_POTION_CATALYST || item->itemId == ITEM_POTION_CATALYST) {
+        if (pParty->pPickedItem.itemId == ITEM_POTION_CATALYST || entry->itemId == ITEM_POTION_CATALYST) {
             potionID = ITEM_POTION_CATALYST;
         } else {
             potionID = pItemTable->potionCombination[potionSrc2][potionSrc1];
@@ -2191,7 +2246,7 @@ void Inventory_ItemPopupAndAlchemy() {
 
         if (potionID == ITEM_NULL) {
             // Combining same potions
-            GameUI_DrawItemInfo(item);
+            GameUI_DrawItemInfo(entry.get());
             return;
         }
 
@@ -2203,27 +2258,27 @@ void Inventory_ItemPopupAndAlchemy() {
             // potionID >= ITEM_POTION_CURE_WOUNDS && potionID <= ITEM_POTION_CURE_WEAKNESS does not require skill
             if (potionID >= ITEM_POTION_CURE_DISEASE &&
                     potionID <= ITEM_POTION_AWAKEN &&
-                    alchemySkill.mastery() == CHARACTER_SKILL_MASTERY_NONE) {
+                    alchemySkill.mastery() == MASTERY_NONE) {
                 damage_level = 1;
             }
             if (potionID >= ITEM_POTION_HASTE &&
                     potionID <= ITEM_POTION_CURE_INSANITY &&
-                    alchemySkill.mastery() <= CHARACTER_SKILL_MASTERY_NOVICE) {
+                    alchemySkill.mastery() <= MASTERY_NOVICE) {
                 damage_level = 2;
             }
             if (potionID >= ITEM_POTION_MIGHT_BOOST &&
                     potionID <= ITEM_POTION_BODY_RESISTANCE &&
-                    alchemySkill.mastery() <= CHARACTER_SKILL_MASTERY_EXPERT) {
+                    alchemySkill.mastery() <= MASTERY_EXPERT) {
                 damage_level = 3;
             }
             if (potionID >= ITEM_POTION_STONE_TO_FLESH &&
-                    alchemySkill.mastery() <= CHARACTER_SKILL_MASTERY_MASTER) {
+                    alchemySkill.mastery() <= MASTERY_MASTER) {
                 damage_level = 4;
             }
         }
 
         if (damage_level > 0) {
-            pParty->activeCharacter().RemoveItemAtInventoryIndex(invMatrixIndex);
+            pParty->activeCharacter().inventory.take(entry);
 
             if (damage_level == 1) {
                 pParty->activeCharacter().receiveDamage(grng->random(11) + 10, DAMAGE_FIRE);
@@ -2246,111 +2301,111 @@ void Inventory_ItemPopupAndAlchemy() {
             if (pParty->activeCharacter().CanAct()) {
                 pParty->activeCharacter().playReaction(SPEECH_POTION_EXPLODE);
             }
-            engine->_statusBar->setEvent(LSTR_OOPS);
-            mouse->RemoveHoldingItem();
+            engine->_statusBar->setEvent(LSTR_OOOPS);
+            pParty->takeHoldingItem();
             rightClickItemActionPerformed = true;
             return;
         } else {  // if ( damage_level == 0 )
-            if (item->itemId == ITEM_POTION_CATALYST && pParty->pPickedItem.itemId == ITEM_POTION_CATALYST) {
+            if (entry->itemId == ITEM_POTION_CATALYST && pParty->pPickedItem.itemId == ITEM_POTION_CATALYST) {
                 // Both potions are catalyst: power is maximum of two
-                item->potionPower = std::max(item->potionPower, pParty->pPickedItem.potionPower);
-            } else if (item->itemId == ITEM_POTION_CATALYST || pParty->pPickedItem.itemId == ITEM_POTION_CATALYST) {
+                entry->potionPower = std::max(entry->potionPower, pParty->pPickedItem.potionPower);
+            } else if (entry->itemId == ITEM_POTION_CATALYST || pParty->pPickedItem.itemId == ITEM_POTION_CATALYST) {
                 // One of the potion is catalyst: power of potion is replaced by power of catalyst
-                if (item->itemId == ITEM_POTION_CATALYST) {
-                    item->itemId = pParty->pPickedItem.itemId;
+                if (entry->itemId == ITEM_POTION_CATALYST) {
+                    entry->itemId = pParty->pPickedItem.itemId;
                 } else {
-                    item->potionPower = pParty->pPickedItem.potionPower;
+                    entry->potionPower = pParty->pPickedItem.potionPower;
                 }
             } else {
-                item->itemId = potionID;
-                item->potionPower = (pParty->pPickedItem.potionPower + item->potionPower) / 2;
+                entry->itemId = potionID;
+                entry->potionPower = (pParty->pPickedItem.potionPower + entry->potionPower) / 2;
                 // Can be zero even for valid potion combination when resulting potion is of lower grade than it's components
                 // Example: "Cure Paralysis(white) + Cure Wounds(red) = Cure Wounds(red)"
                 if (pItemTable->potionNotes[potionSrc1][potionSrc2] != 0) {
                     pParty->activeCharacter().SetVariable(VAR_AutoNotes, pItemTable->potionNotes[potionSrc1][potionSrc2]);
                 }
             }
-            if (!(pItemTable->items[item->itemId].identifyDifficulty)) {
-                item->flags |= ITEM_IDENTIFIED;
+            if (!(pItemTable->items[entry->itemId].identifyAndRepairDifficulty)) {
+                entry->flags |= ITEM_IDENTIFIED;
             }
             pParty->activeCharacter().playReaction(SPEECH_POTION_SUCCESS);
-            mouse->RemoveHoldingItem();
+            pParty->takeHoldingItem();
             rightClickItemActionPerformed = true;
-            int bottleId = pParty->activeCharacter().AddItem(-1, ITEM_POTION_BOTTLE);
-            if (bottleId) {
-                pParty->activeCharacter().pInventoryItemList[bottleId - 1].flags = ITEM_IDENTIFIED;
+            InventoryEntry bottle = pParty->activeCharacter().inventory.tryAdd(Item(ITEM_POTION_BOTTLE));
+            if (bottle) {
+                bottle->flags = ITEM_IDENTIFIED;
             } else {
                 // Can't fit bottle in inventory - place it in hand
                 Item bottle;
                 bottle.itemId = ITEM_POTION_BOTTLE;
                 bottle.flags = ITEM_IDENTIFIED;
-                pParty->setHoldingItem(&bottle);
+                pParty->setHoldingItem(bottle);
             }
             return;
         }
     }
 
     if (pParty->pPickedItem.itemId == ITEM_POTION_RECHARGE_ITEM) {
-        if (item->isWand()) { // can recharge only wands
+        if (entry->isWand()) { // can recharge only wands
             int maxChargesDecreasePercent = 70 - pParty->pPickedItem.potionPower;
             if (maxChargesDecreasePercent < 0) {
                 maxChargesDecreasePercent = 0;
             }
 
             float invMaxChargesDecrease = (100 - maxChargesDecreasePercent) * 0.01;
-            int newCharges = item->maxCharges * invMaxChargesDecrease;
+            int newCharges = entry->maxCharges * invMaxChargesDecrease;
 
             // Disallow if wand will lose charges
-            if (newCharges <= item->numCharges) {
+            if (newCharges <= entry->numCharges) {
                 engine->_statusBar->setEvent(LSTR_WAND_ALREADY_CHARGED);
                 pAudioPlayer->playUISound(SOUND_spellfail0201);
             } else {
-                item->maxCharges = item->numCharges = newCharges;
+                entry->maxCharges = entry->numCharges = newCharges;
                 // Effect and sound was not present previously
-                item->flags |= ITEM_AURA_EFFECT_GREEN;
+                entry->flags |= ITEM_AURA_EFFECT_GREEN;
                 ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
                 pAudioPlayer->playSpellSound(SPELL_WATER_RECHARGE_ITEM, false, SOUND_MODE_UI);
             }
 
-            mouse->RemoveHoldingItem();
+            pParty->takeHoldingItem();
             rightClickItemActionPerformed = true;
             return;
         }
-        GameUI_DrawItemInfo(item);
+        GameUI_DrawItemInfo(entry.get());
         return;
     }
 
     if (pParty->pPickedItem.itemId == ITEM_POTION_HARDEN_ITEM) {
-        if (item->IsBroken() || isArtifact(item->itemId)) {
+        if (entry->IsBroken() || isArtifact(entry->itemId)) {
             // Sound error and stop right click item actions until button is released
             pAudioPlayer->playUISound(SOUND_error);
             rightClickItemActionPerformed = true;
             return;
         }
-        if (item->isWeapon() || item->isPassiveEquipment() || item->isWand()) {
-            item->flags |= ITEM_AURA_EFFECT_RED | ITEM_HARDENED;
+        if (entry->isWeapon() || entry->isPassiveEquipment() || entry->isWand()) {
+            entry->flags |= ITEM_AURA_EFFECT_RED | ITEM_HARDENED;
 
             // Sound was missing previously
             pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, false, SOUND_MODE_UI);
 
             ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
-            mouse->RemoveHoldingItem();
+            pParty->takeHoldingItem();
             rightClickItemActionPerformed = true;
             return;
         }
-        GameUI_DrawItemInfo(item);
+        GameUI_DrawItemInfo(entry.get());
         return;
     }
 
     if (isEnchantingPotion(pParty->pPickedItem.itemId)) {
-        if (item->IsBroken() || isArtifact(item->itemId) || item->isPassiveEquipment() || item->isWand() || isAncientWeapon(item->itemId)) {
+        if (entry->IsBroken() || isArtifact(entry->itemId) || entry->isPassiveEquipment() || entry->isWand() || isAncientWeapon(entry->itemId)) {
             // Sound error and stop right click item actions until button is released
             pAudioPlayer->playUISound(SOUND_error);
             rightClickItemActionPerformed = true;
             return;
         }
-        if (item->isWeapon()) {
-            if (item->specialEnchantment != ITEM_ENCHANTMENT_NULL || item->standardEnchantment) {
+        if (entry->isWeapon()) {
+            if (entry->specialEnchantment != ITEM_ENCHANTMENT_NULL || entry->standardEnchantment) {
                 // Sound error and stop right click item actions until button is released
                 pAudioPlayer->playUISound(SOUND_error);
                 rightClickItemActionPerformed = true;
@@ -2358,31 +2413,31 @@ void Inventory_ItemPopupAndAlchemy() {
             }
 
             Duration effectTime = Duration::fromMinutes(30 * pParty->pPickedItem.potionPower);
-            item->UpdateTempBonus(pParty->GetPlayingTime());
-            item->specialEnchantment = potionEnchantment(pParty->pPickedItem.itemId);
-            item->enchantmentExpirationTime = pParty->GetPlayingTime() + effectTime;
+            entry->UpdateTempBonus(pParty->GetPlayingTime());
+            entry->specialEnchantment = potionEnchantment(pParty->pPickedItem.itemId);
+            entry->enchantmentExpirationTime = pParty->GetPlayingTime() + effectTime;
             // Sound was missing previously
-            item->flags |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
+            entry->flags |= ITEM_TEMP_BONUS | ITEM_AURA_EFFECT_RED;
             pAudioPlayer->playSpellSound(SPELL_WATER_ENCHANT_ITEM, false, SOUND_MODE_UI);
 
             ItemEnchantmentTimer = Duration::fromRealtimeSeconds(2);
-            mouse->RemoveHoldingItem();
+            pParty->takeHoldingItem();
             rightClickItemActionPerformed = true;
             return;
         }
-        GameUI_DrawItemInfo(item);
+        GameUI_DrawItemInfo(entry.get());
         return;
     }
 
-    if (isReagent(pParty->pPickedItem.itemId) && item->itemId == ITEM_POTION_BOTTLE) {
-        item->potionPower = alchemySkill.level() + pParty->pPickedItem.GetDamageDice();
+    if (isReagent(pParty->pPickedItem.itemId) && entry->itemId == ITEM_POTION_BOTTLE) {
+        entry->potionPower = alchemySkill.level() + pParty->pPickedItem.GetReagentPower();
         switch (pParty->pPickedItem.itemId) {
             case ITEM_REAGENT_WIDOWSWEEP_BERRIES:
             case ITEM_REAGENT_CRUSHED_ROSE_PETALS:
             case ITEM_REAGENT_VIAL_OF_TROLL_BLOOD:
             case ITEM_REAGENT_RUBY:
             case ITEM_REAGENT_DRAGONS_EYE:
-                item->itemId = ITEM_POTION_CURE_WOUNDS;
+                entry->itemId = ITEM_POTION_CURE_WOUNDS;
                 break;
 
             case ITEM_REAGENT_PHIRNA_ROOT:
@@ -2390,7 +2445,7 @@ void Inventory_ItemPopupAndAlchemy() {
             case ITEM_REAGENT_HARPY_FEATHER:
             case ITEM_REAGENT_MOONSTONE:
             case ITEM_REAGENT_ELVISH_TOADSTOOL:
-                item->itemId = ITEM_POTION_MAGIC;
+                entry->itemId = ITEM_POTION_MAGIC;
                 break;
 
             case ITEM_REAGENT_POPPYSNAPS:
@@ -2398,7 +2453,7 @@ void Inventory_ItemPopupAndAlchemy() {
             case ITEM_REAGENT_SULFUR:
             case ITEM_REAGENT_GARNET:
             case ITEM_REAGENT_VIAL_OF_DEVIL_ICHOR:
-                item->itemId = ITEM_POTION_CURE_WEAKNESS;
+                entry->itemId = ITEM_POTION_CURE_WEAKNESS;
                 break;
 
             case ITEM_REAGENT_MUSHROOM:
@@ -2406,39 +2461,40 @@ void Inventory_ItemPopupAndAlchemy() {
             case ITEM_REAGENT_VIAL_OF_OOZE_ENDOPLASM:
             case ITEM_REAGENT_MERCURY:
             case ITEM_REAGENT_PHILOSOPHERS_STONE:
-                item->itemId = ITEM_POTION_CATALYST;
+                entry->itemId = ITEM_POTION_CATALYST;
                 break;
             default:
                 break;
         }
 
         pParty->activeCharacter().playReaction(SPEECH_POTION_SUCCESS);
-        mouse->RemoveHoldingItem();
+        pParty->takeHoldingItem();
         rightClickItemActionPerformed = true;
         return;
     }
 
-    GameUI_DrawItemInfo(item);
+    GameUI_DrawItemInfo(entry.get());
 }
 
 //----- (0045828B) --------------------------------------------------------
-Color GetSpellColor(signed int a1) {
-    if (a1 == 0) return colorTable.White;
-    if (a1 < 12) return colorTable.DarkOrange;
-    if (a1 < 23) return colorTable.Anakiwa;
-    if (a1 < 34) return colorTable.AzureRadiance;
-    if (a1 < 45) return colorTable.Gray;
-    if (a1 < 56) return colorTable.Mercury;
-    if (a1 < 67) return colorTable.PurplePink;
-    if (a1 < 78) return colorTable.FlushOrange;
-    if (a1 < 89) return colorTable.PaleCanary;
-    if (a1 < 100)
-        return colorTable.MoonRaker;
-    else
-        assert(false);
+Color GetSpellColor(SpellId spellId) {
+    if (spellId == SPELL_NONE)
+        return colorTable.White;
 
-    logger->warning("No color returned - GetSpellColor!");
-    return colorTable.White;
+    switch (magicSchoolForSpell(spellId)) {
+    case MAGIC_SCHOOL_FIRE: return colorTable.DarkOrange;
+    case MAGIC_SCHOOL_AIR: return colorTable.Anakiwa;
+    case MAGIC_SCHOOL_WATER: return colorTable.AzureRadiance;
+    case MAGIC_SCHOOL_EARTH: return colorTable.Gray;
+    case MAGIC_SCHOOL_SPIRIT: return colorTable.Mercury;
+    case MAGIC_SCHOOL_MIND: return colorTable.PurplePink;
+    case MAGIC_SCHOOL_BODY: return colorTable.FlushOrange;
+    case MAGIC_SCHOOL_LIGHT: return colorTable.PaleCanary;
+    case MAGIC_SCHOOL_DARK: return colorTable.MoonRaker;
+    default:
+        assert(false);
+        return colorTable.White;
+    }
 }
 
 //----- (004B46F8) --------------------------------------------------------

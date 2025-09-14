@@ -5,7 +5,7 @@
 
 #include "Engine/Party.h"
 
-using namespace std::placeholders; // NOLINT
+#include "Utility/Lambda.h"
 
 CharacterTapeRecorder::CharacterTapeRecorder(TestController *controller) : _controller(controller) {
     assert(controller);
@@ -23,11 +23,11 @@ TestMultiTape<int64_t> CharacterTapeRecorder::experiences() {
     return custom(std::bind<int64_t>(&Character::experience, _1));
 }
 
-TestTape<CharacterPortrait> CharacterTapeRecorder::portrait(int characterIndex) {
+TestTape<PortraitId> CharacterTapeRecorder::portrait(int characterIndex) {
     return custom(characterIndex, std::bind(&Character::portrait, _1));
 }
 
-TestMultiTape<CharacterPortrait> CharacterTapeRecorder::portraits() {
+TestMultiTape<PortraitId> CharacterTapeRecorder::portraits() {
     return custom(std::bind(&Character::portrait, _1));
 }
 
@@ -63,19 +63,19 @@ TestMultiTape<int> CharacterTapeRecorder::levels() {
     return custom(std::bind(&Character::GetActualLevel, _1));
 }
 
-TestTape<int> CharacterTapeRecorder::skillLevel(int characterIndex, CharacterSkillType skill) {
+TestTape<int> CharacterTapeRecorder::skillLevel(int characterIndex, Skill skill) {
     return custom(characterIndex, std::bind(&Character::actualSkillLevel, _1, skill));
 }
 
-TestMultiTape<int> CharacterTapeRecorder::skillLevels(CharacterSkillType skill) {
+TestMultiTape<int> CharacterTapeRecorder::skillLevels(Skill skill) {
     return custom(std::bind(&Character::actualSkillLevel, _1, skill));
 }
 
-TestTape<bool> CharacterTapeRecorder::hasSkill(int characterIndex, CharacterSkillType skill) {
+TestTape<bool> CharacterTapeRecorder::hasSkill(int characterIndex, Skill skill) {
     return custom(characterIndex, std::bind(&Character::HasSkill, _1, skill));
 }
 
-TestMultiTape<bool> CharacterTapeRecorder::haveSkills(CharacterSkillType skill) {
+TestMultiTape<bool> CharacterTapeRecorder::haveSkills(Skill skill) {
     return custom(std::bind(&Character::HasSkill, _1, skill));
 }
 
@@ -87,19 +87,19 @@ TestMultiTape<Condition> CharacterTapeRecorder::conditions() {
     return custom(std::bind(&Character::GetMajorConditionIdx, _1));
 }
 
-TestTape<int> CharacterTapeRecorder::resistance(int characterIndex, CharacterAttribute resistance) {
+TestTape<int> CharacterTapeRecorder::resistance(int characterIndex, Attribute resistance) {
     return custom(characterIndex, std::bind(&Character::GetActualResistance, _1, resistance));
 }
 
-TestMultiTape<int> CharacterTapeRecorder::resistances(CharacterAttribute resistance) {
+TestMultiTape<int> CharacterTapeRecorder::resistances(Attribute resistance) {
     return custom(std::bind(&Character::GetActualResistance, _1, resistance));
 }
 
-TestTape<int> CharacterTapeRecorder::stat(int characterIndex, CharacterAttribute stat) {
+TestTape<int> CharacterTapeRecorder::stat(int characterIndex, Attribute stat) {
     return custom(characterIndex, std::bind(&Character::GetActualStat, _1, stat));
 }
 
-TestMultiTape<int> CharacterTapeRecorder::stats(CharacterAttribute stat) {
+TestMultiTape<int> CharacterTapeRecorder::stats(Attribute stat) {
     return custom(std::bind(&Character::GetActualStat, _1, stat));
 }
 
@@ -120,9 +120,25 @@ TestMultiTape<SpellId> CharacterTapeRecorder::quickSpells() {
 }
 
 TestTape<bool> CharacterTapeRecorder::hasItem(int characterIndex, ItemId itemId) {
-    return custom(characterIndex, std::bind(&Character::hasItem, _1, itemId, false));
+    return custom(characterIndex, [=](const Character &character) { return !!character.inventory.find(itemId); });
 }
 
-TestMultiTape<bool> CharacterTapeRecorder::hasItem(ItemId itemId) {
-    return custom(std::bind(&Character::hasItem, _1, itemId, false));
+TestMultiTape<bool> CharacterTapeRecorder::haveItem(ItemId itemId) {
+    return custom([=](const Character &character) { return !!character.inventory.find(itemId); });
+}
+
+TestTape<Class> CharacterTapeRecorder::clazz(int characterIndex) {
+    return custom(characterIndex, std::bind(&Character::classType, _1));
+}
+
+TestMultiTape<Class> CharacterTapeRecorder::classes() {
+    return custom(std::bind(&Character::classType, _1));
+}
+
+TestTape<bool> CharacterTapeRecorder::isRecovering(int characterIndex) {
+    return custom(characterIndex, [] (const Character &character) { return character.timeToRecovery > 0_ticks; });
+}
+
+TestMultiTape<bool> CharacterTapeRecorder::areRecovering() {
+    return custom([] (const Character &character) { return character.timeToRecovery > 0_ticks; });
 }

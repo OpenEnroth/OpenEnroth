@@ -36,7 +36,7 @@ target_link_libraries(scripting
         PUBLIC
         engine
         library_logger
+        gui_overlay
         PRIVATE
         libluajit
-        sol2
-        gui_overlay)
+        sol2::sol2)

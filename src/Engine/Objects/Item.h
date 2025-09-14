@@ -17,12 +17,10 @@ class Character;
 
 struct Item {
     static void PopulateSpecialBonusMap();
-    static void PopulateRegularBonusMap();
     static void PopulateArtifactBonusMap();
-    static void ClearItemBonusMaps();
 
-    void GetItemBonusArtifact(const Character *owner, CharacterAttribute attrToGet, int *bonusSum) const;
-    void GetItemBonusSpecialEnchantment(const Character *owner, CharacterAttribute attrToGet, int *additiveBonus, int *halfSkillBonus) const;
+    void GetItemBonusArtifact(const Character *owner, Attribute attrToGet, int *bonusSum) const;
+    void GetItemBonusSpecialEnchantment(const Character *owner, Attribute attrToGet, int *additiveBonus, int *halfSkillBonus) const;
 
     inline void ResetEnchantAnimation() { flags &= ~ITEM_ENCHANT_ANIMATION_MASK; }
     inline bool ItemEnchanted() const {
@@ -41,7 +39,7 @@ struct Item {
         return (flags & ITEM_ENCHANT_ANIMATION_MASK) == ITEM_AURA_EFFECT_PURPLE;
     }
 
-    bool IsRegularEnchanmentForAttribute(CharacterAttribute attrToGet);
+    bool IsRegularEnchanmentForAttribute(Attribute attrToGet);
 
     inline bool IsBroken() const { return flags & ITEM_BROKEN; }
     inline void SetBroken() { flags |= ITEM_BROKEN; }
@@ -50,7 +48,7 @@ struct Item {
     inline bool IsStolen() const { return flags & ITEM_STOLEN; }
     inline void SetStolen() { flags |= ITEM_STOLEN; }
 
-    bool GenerateArtifact();
+    [[nodiscard]] bool GenerateArtifact();
     void generateGold(ItemTreasureLevel treasureLevel);
     int GetValue() const;
     std::string GetDisplayName() const;
@@ -59,11 +57,17 @@ struct Item {
     void Reset();
     int _439DF3_get_additional_damage(DamageType *a2, bool *vampiyr);
 
-    CharacterSkillType GetPlayerSkillType() const;
+    /**
+     * @return                          Character skill needed to wear this item. Will return `CHARACTER_SKILL_MISC`
+     *                                  for items that are not worn or don't have an associated skill (scrolls, gems,
+     *                                  boots, potions, reagents, etc).
+     */
+    Skill skill() const;
     const std::string& GetIconName() const;
     uint8_t GetDamageDice() const;
     uint8_t GetDamageRoll() const;
     uint8_t GetDamageMod() const;
+    int GetReagentPower() const;
     bool canSellRepairIdentifyAt(HouseId houseId);
 
     bool isGold() const {
@@ -122,22 +126,25 @@ struct Item {
      */
     void postGenerate(ItemSource source);
 
+    /**
+     * @return                          Whether the item will work if equipped. Must not be broken, and must have
+     *                                  charges if it's a wand.
+     */
+    bool isFunctional() const;
+
     ItemId itemId = ITEM_NULL;
     int potionPower = 0; // Only for potions.
     int goldAmount = 0; // Only for gold.
 
     // TODO(captainurist): introduce ATTRIBUTE_NULL?
-    std::optional<CharacterAttribute> standardEnchantment; // Standard (attribute) enchantment, if any.
+    std::optional<Attribute> standardEnchantment; // Standard (attribute) enchantment, if any.
     int standardEnchantmentStrength = 0; // Attribute enchantment strength - bonus value for the attribute.
     ItemEnchantment specialEnchantment = ITEM_ENCHANTMENT_NULL; // Special named enchantment, if any.
     int numCharges = 0; // Number of wand charges, wand disappears when this gets down to 0.
     int maxCharges = 0; // Max charges in a wand. This is used when recharging.
     ItemFlags flags = 0; // Item flags.
-    ItemSlot equippedSlot = ITEM_SLOT_INVALID; // For equipped items - where is it equipped.
     int lichJarCharacterIndex = -1; // Only for full lich jars. 0-based index of the character whose earthly remains are stored in it.
                                     // Or whatever it is that's in the lich jar.
-    bool placedInChest = false; // OE addition, whether the item was placed in the chest inventory area. Some chests
-                                // are generated with more items than chest space, and this flag is used to track it.
     Time enchantmentExpirationTime; // Enchantment expiration time, if this item is temporarily enchanted. Note that
                                     // both special and attribute enchantments can be temporary, but in MM7 we only have
                                     // special temporary enchantments.

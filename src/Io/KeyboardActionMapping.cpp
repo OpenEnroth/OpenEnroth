@@ -34,26 +34,26 @@ std::array<CKeyListElement, std::to_underlying(InputAction::Count)> keyMappingPa
     CKeyListElement("KEY_BACKWARD", PlatformKey::KEY_DOWN, Io::InputAction::MoveBackwards, KeyToggleType::TOGGLE_Continuously),
     CKeyListElement("KEY_LEFT", PlatformKey::KEY_LEFT, Io::InputAction::TurnLeft, KeyToggleType::TOGGLE_Continuously),
     CKeyListElement("KEY_RIGHT", PlatformKey::KEY_RIGHT, Io::InputAction::TurnRight, KeyToggleType::TOGGLE_Continuously),
-    CKeyListElement("KEY_ATTACK", PlatformKey::KEY_A, Io::InputAction::Attack, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CASTREADY", PlatformKey::KEY_S, Io::InputAction::CastReady, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_YELL", PlatformKey::KEY_Y, Io::InputAction::Yell, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_JUMP", PlatformKey::KEY_X, Io::InputAction::Jump, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_ATTACK", PlatformKey::KEY_A, Io::InputAction::Attack, KeyToggleType::TOGGLE_DelayContinuous),
+    CKeyListElement("KEY_CASTREADY", PlatformKey::KEY_S, Io::InputAction::CastReady, KeyToggleType::TOGGLE_DelayContinuous),
+    CKeyListElement("KEY_YELL", PlatformKey::KEY_Y, Io::InputAction::Yell, KeyToggleType::TOGGLE_DelayContinuous),
+    CKeyListElement("KEY_JUMP", PlatformKey::KEY_X, Io::InputAction::Jump, KeyToggleType::TOGGLE_OneTimePress), // TODO: TOGGLE_Continuously
     CKeyListElement("KEY_COMBAT", PlatformKey::KEY_RETURN, Io::InputAction::Combat, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_EVENTTRIGGER", PlatformKey::KEY_SPACE, Io::InputAction::EventTrigger, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_EVENTTRIGGER", PlatformKey::KEY_SPACE, Io::InputAction::EventTrigger, KeyToggleType::TOGGLE_OneTimePress), // TODO: TOGGLE_DelayContinuous
     CKeyListElement("KEY_CAST", PlatformKey::KEY_C, Io::InputAction::Cast, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_PASS", PlatformKey::KEY_B, Io::InputAction::Pass, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_CHARCYCLE", PlatformKey::KEY_TAB, Io::InputAction::CharCycle, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_PASS", PlatformKey::KEY_B, Io::InputAction::Pass, KeyToggleType::TOGGLE_DelayContinuous),
+    CKeyListElement("KEY_CHARCYCLE", PlatformKey::KEY_TAB, Io::InputAction::CharCycle, KeyToggleType::TOGGLE_DelayContinuous),
     CKeyListElement("KEY_QUEST", PlatformKey::KEY_Q, Io::InputAction::Quest, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_QUICKREF", PlatformKey::KEY_Z, Io::InputAction::QuickRef, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_REST", PlatformKey::KEY_R, Io::InputAction::Rest, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_TIMECAL", PlatformKey::KEY_T, Io::InputAction::TimeCal, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_AUTONOTES", PlatformKey::KEY_N, Io::InputAction::Autonotes, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_MAPBOOK", PlatformKey::KEY_M, Io::InputAction::Mapbook, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_LOOKUP", PlatformKey::KEY_PAGEDOWN, Io::InputAction::LookUp, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_LOOKDOWN", PlatformKey::KEY_DELETE, Io::InputAction::LookDown, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_LOOKUP", PlatformKey::KEY_PAGEDOWN, Io::InputAction::LookUp, KeyToggleType::TOGGLE_OneTimePress), // TODO: TOGGLE_DelayContinuous
+    CKeyListElement("KEY_LOOKDOWN", PlatformKey::KEY_DELETE, Io::InputAction::LookDown, KeyToggleType::TOGGLE_OneTimePress), // TODO: TOGGLE_DelayContinuous
     CKeyListElement("KEY_CENTERVIEWPT", PlatformKey::KEY_END, Io::InputAction::CenterView, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_ZOOMIN", PlatformKey::KEY_ADD, Io::InputAction::ZoomIn, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_ZOOMOUT", PlatformKey::KEY_SUBTRACT, Io::InputAction::ZoomOut, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_ZOOMIN", PlatformKey::KEY_ADD, Io::InputAction::ZoomIn, KeyToggleType::TOGGLE_DelayContinuous),
+    CKeyListElement("KEY_ZOOMOUT", PlatformKey::KEY_SUBTRACT, Io::InputAction::ZoomOut, KeyToggleType::TOGGLE_DelayContinuous),
     CKeyListElement("KEY_FLYUP", PlatformKey::KEY_PAGEUP, Io::InputAction::FlyUp, KeyToggleType::TOGGLE_Continuously),
     CKeyListElement("KEY_FLYDOWN", PlatformKey::KEY_INSERT, Io::InputAction::FlyDown, KeyToggleType::TOGGLE_Continuously),
     CKeyListElement("KEY_LAND", PlatformKey::KEY_HOME, Io::InputAction::Land, KeyToggleType::TOGGLE_OneTimePress),
@@ -89,8 +89,6 @@ std::array<CKeyListElement, std::to_underlying(InputAction::Count)> keyMappingPa
     CKeyListElement("KEY_SCREENSHOT", PlatformKey::KEY_F2, Io::InputAction::Screenshot, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_CONSOLE", PlatformKey::KEY_TILDE, Io::InputAction::Console, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_TOGGLEMOUSEGRAB", PlatformKey::KEY_F1, Io::InputAction::ToggleMouseGrab, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_TOGGLEBORDERLESS", PlatformKey::KEY_F3, Io::InputAction::ToggleBorderless, KeyToggleType::TOGGLE_OneTimePress),
-    CKeyListElement("KEY_TOGGLEFULLSCREEN", PlatformKey::KEY_F4, Io::InputAction::ToggleFullscreen, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_TOGGLERESIZABLE", PlatformKey::KEY_F6, Io::InputAction::ToggleResizable, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_CYCLEFILTER", PlatformKey::KEY_F7, Io::InputAction::CycleFilter, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_RELOADSHADERS", PlatformKey::KEY_BACKSPACE, Io::InputAction::ReloadShaders, KeyToggleType::TOGGLE_OneTimePress),
@@ -107,6 +105,7 @@ std::array<CKeyListElement, std::to_underlying(InputAction::Count)> keyMappingPa
     CKeyListElement("KEY_DIALOGSELECT", PlatformKey::KEY_PAGEDOWN, Io::InputAction::DialogSelect, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_ESCAPE", PlatformKey::KEY_ESCAPE, Io::InputAction::Escape, KeyToggleType::TOGGLE_OneTimePress),
     CKeyListElement("KEY_TOGGLEMOUSELOOK", PlatformKey::KEY_F10, Io::InputAction::ToggleMouseLook, KeyToggleType::TOGGLE_OneTimePress),
+    CKeyListElement("KEY_TOGGLEWINDOWMODE", PlatformKey::KEY_F11, Io::InputAction::ToggleWindowMode, KeyToggleType::TOGGLE_Continuously),
 };
 
 
@@ -210,23 +209,6 @@ void Io::KeyboardActionMapping::StoreMappings() {
     }
 }
 
-KeyToggleType GetToggleType(InputAction action) {
-    // TODO(captainurist): TOGGLE_* values in the table above are not respected, instead toggle values from this function are used.
-
-    if (action == Io::InputAction::StrafeLeft || action == Io::InputAction::StrafeRight
-        || action == Io::InputAction::FlyUp || action == Io::InputAction::FlyDown) {
-        return KeyToggleType::TOGGLE_Continuously;
-    }
-
-    if (action == Io::InputAction::Attack || action == Io::InputAction::CastReady)
-        return KeyToggleType::TOGGLE_DelayContinuous;
-
-    if (action > Io::InputAction::TurnRight)
-        return KeyToggleType::TOGGLE_OneTimePress;
-    else
-        return KeyToggleType::TOGGLE_Continuously;
-}
-
 GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigKey(InputAction action) {
     switch (action) {
         case(InputAction::MoveForward): return &config->keybindings.Forward;
@@ -287,8 +269,6 @@ GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigKey(InputAction a
         case(InputAction::Screenshot): return &config->keybindings.Screenshot;
         case(InputAction::Console): return &config->keybindings.Console;
         case(InputAction::ToggleMouseGrab): return &config->keybindings.ToggleMouseGrab;
-        case(InputAction::ToggleBorderless): return &config->keybindings.ToggleBorderless;
-        case(InputAction::ToggleFullscreen): return &config->keybindings.ToggleFullscreen;
         case(InputAction::ToggleResizable): return &config->keybindings.ToggleResizable;
         case(InputAction::CycleFilter): return &config->keybindings.CycleFilter;
         case(InputAction::ReloadShaders): return &config->keybindings.ReloadShaders;
@@ -305,6 +285,7 @@ GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigKey(InputAction a
         case(InputAction::DialogSelect): return &config->keybindings.DialogSelect;
         case(InputAction::Escape): return &config->keybindings.Escape;
         case(InputAction::ToggleMouseLook): return &config->keybindings.ToggleMouseLook;
+        case(InputAction::ToggleWindowMode): return &config->keybindings.ToggleWindowMode;
         default: break;
     }
 
@@ -391,8 +372,6 @@ GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigGamepadKey(InputA
         case(InputAction::Screenshot): return &config->gamepad.Screenshot;
         case(InputAction::Console): return &config->gamepad.Console;
         case(InputAction::ToggleMouseGrab): return &config->gamepad.ToggleMouseGrab;
-        case(InputAction::ToggleBorderless): return &config->gamepad.ToggleBorderless;
-        case(InputAction::ToggleFullscreen): return &config->gamepad.ToggleFullscreen;
         case(InputAction::ToggleResizable): return &config->gamepad.ToggleResizable;
         case(InputAction::CycleFilter): return &config->gamepad.CycleFilter;
         case(InputAction::ReloadShaders): return &config->gamepad.ReloadShaders;
@@ -408,6 +387,7 @@ GameConfig::Key *Io::KeyboardActionMapping::InputActionToConfigGamepadKey(InputA
         case(InputAction::DialogRight): return &config->gamepad.DialogRight;
         case(InputAction::DialogSelect): return &config->gamepad.DialogSelect;
         case(InputAction::Escape): return &config->gamepad.Escape;
+        case(InputAction::ToggleWindowMode): return &config->gamepad.ToggleWindowMode;
         default: break;
     }
 
