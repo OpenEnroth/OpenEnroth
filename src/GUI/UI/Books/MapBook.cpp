@@ -49,17 +49,17 @@ GUIWindow_MapBook::GUIWindow_MapBook() {
     ui_book_button6_off = assets->getImage_Alpha("tabWoff");
 
     pBtn_Book_1 = CreateButton({pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 1}, {50, 34}, 1, 0, UIMSG_ClickBooksBtn,
-         std::to_underlying(BOOK_ZOOM_IN), Io::InputAction::ZoomIn, localization->GetString(LSTR_ZOOM_IN), {ui_book_button1_on});
+         std::to_underlying(BOOK_ZOOM_IN), INPUT_ACTION_ZOOM_IN, localization->GetString(LSTR_ZOOM_IN), {ui_book_button1_on});
     pBtn_Book_2 = CreateButton({pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 38}, {50, 34}, 1, 0, UIMSG_ClickBooksBtn,
-         std::to_underlying(BOOK_ZOOM_OUT), Io::InputAction::ZoomOut, localization->GetString(LSTR_ZOOM_OUT), {ui_book_button2_on});
+         std::to_underlying(BOOK_ZOOM_OUT), INPUT_ACTION_ZOOM_OUT, localization->GetString(LSTR_ZOOM_OUT), {ui_book_button2_on});
     pBtn_Book_3 = CreateButton({pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 113}, {50, 34}, 1, 0, UIMSG_ClickBooksBtn,
-         std::to_underlying(BOOK_SCROLL_UP), Io::InputAction::DialogUp, localization->GetString(LSTR_SCROLL_UP), {ui_book_button3_on});
+         std::to_underlying(BOOK_SCROLL_UP), INPUT_ACTION_DIALOG_UP, localization->GetString(LSTR_SCROLL_UP), {ui_book_button3_on});
     pBtn_Book_4 = CreateButton({pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 150}, {50, 34}, 1, 0, UIMSG_ClickBooksBtn,
-         std::to_underlying(BOOK_SCROLL_DOWN), Io::InputAction::DialogDown, localization->GetString(LSTR_SCROLL_DOWN), {ui_book_button4_on});
+         std::to_underlying(BOOK_SCROLL_DOWN), INPUT_ACTION_DIALOG_DOWN, localization->GetString(LSTR_SCROLL_DOWN), {ui_book_button4_on});
     pBtn_Book_5 = CreateButton({pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 188}, {50, 34}, 1, 0, UIMSG_ClickBooksBtn,
-         std::to_underlying(BOOK_SCROLL_RIGHT), Io::InputAction::DialogRight, localization->GetString(LSTR_SCROLL_RIGHT), {ui_book_button5_on});
+         std::to_underlying(BOOK_SCROLL_RIGHT), INPUT_ACTION_DIALOG_RIGHT, localization->GetString(LSTR_SCROLL_RIGHT), {ui_book_button5_on});
     pBtn_Book_6 = CreateButton({pViewport->viewportTL_X + 397, pViewport->viewportTL_Y + 226}, {50, 34}, 1, 0, UIMSG_ClickBooksBtn,
-         std::to_underlying(BOOK_SCROLL_LEFT), Io::InputAction::DialogLeft, localization->GetString(LSTR_SCROLL_LEFT), {ui_book_button6_on});
+         std::to_underlying(BOOK_SCROLL_LEFT), INPUT_ACTION_DIALOG_LEFT, localization->GetString(LSTR_SCROLL_LEFT), {ui_book_button6_on});
 }
 
 void GUIWindow_MapBook::Update() {

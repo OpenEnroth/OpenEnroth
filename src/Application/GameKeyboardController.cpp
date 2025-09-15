@@ -20,6 +20,9 @@ bool GameKeyboardController::ConsumeKeyPress(PlatformKey key) {
 }
 
 bool GameKeyboardController::IsKeyDown(PlatformKey key) const {
+    if (key == PlatformKey::KEY_NONE)
+        return false;
+
     return isKeyDown_[key];
 }
 

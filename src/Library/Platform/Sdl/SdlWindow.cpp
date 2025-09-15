@@ -156,6 +156,14 @@ bool SdlWindow::grabsMouse() const {
     return SDL_GetWindowMouseGrab(_window);
 }
 
+void SdlWindow::setMouseRelative(bool mouseRelative) {
+    SDL_SetWindowRelativeMouseMode(_window, mouseRelative);
+}
+
+bool SdlWindow::isMouseRelative() const {
+    return SDL_GetWindowRelativeMouseMode(_window);
+}
+
 Marginsi SdlWindow::frameMargins() const {
     Marginsi result;
     if(!SDL_GetWindowBordersSize(_window, &result.top, &result.left, &result.bottom, &result.right)) {

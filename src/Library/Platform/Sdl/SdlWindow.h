@@ -41,6 +41,9 @@ class SdlWindow : public PlatformWindow {
     virtual void setGrabsMouse(bool grabsMouse) override;
     virtual bool grabsMouse() const override;
 
+    virtual void setMouseRelative(bool mouseRelative) override;
+    virtual bool isMouseRelative() const override;
+
     virtual Marginsi frameMargins() const override;
 
     virtual void *nativeHandle() const override;

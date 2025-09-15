@@ -1752,10 +1752,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                 pParty->_viewPitch = 0;
                 break;
 
-            case PARTY_MouseLook:
-                mouse->DoMouseLook();
-                break;
-
             case PARTY_Jump:
                 if ((!isAboveGround || pParty->pos.z <= floorZ + 6 && pParty->velocity.z <= 0) && pParty->jump_strength) {
                     isAboveGround = true;

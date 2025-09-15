@@ -28,7 +28,7 @@ GUICredits::GUICredits() : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDi
 
     render->Update_Texture(_creditsTexture);
 
-    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_Escape, 0, Io::InputAction::Escape);
+    CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_ESCAPE);
 }
 
 GUICredits::~GUICredits() {

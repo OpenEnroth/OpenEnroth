@@ -75,6 +75,14 @@ bool ProxyWindow::grabsMouse() const {
     return nonNullBase()->grabsMouse();
 }
 
+void ProxyWindow::setMouseRelative(bool mouseRelative) {
+    nonNullBase()->setMouseRelative(mouseRelative);
+}
+
+bool ProxyWindow::isMouseRelative() const {
+    return nonNullBase()->isMouseRelative();
+}
+
 Marginsi ProxyWindow::frameMargins() const {
     return nonNullBase()->frameMargins();
 }

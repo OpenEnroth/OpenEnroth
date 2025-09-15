@@ -35,15 +35,7 @@ Pointi Io::Mouse::position() const {
 }
 
 void Io::Mouse::setPosition(Pointi position) {
-    if (_mouseLook) {
-        _mouseLookChange = position - _position;
-        if (_mouseLookChange.x != 0 || _mouseLookChange.y != 0) {
-            pPartyActionQueue->Add(PARTY_MouseLook);
-            window->warpMouse(_position); // TODO(pskelton): this causes another mouse move event - might be better to poll mouse position once per frame rather than on event
-        }
-    } else {
         _position = position;
-    }
 }
 
 void Io::Mouse::SetCursorBitmapFromItemID(ItemId uItemID) {
@@ -294,27 +286,26 @@ void Io::Mouse::UI_OnMouseLeftClick() {
 }
 
 void Io::Mouse::SetMouseLook(bool enable) {
-    _mouseLook = enable;
-    if (enable) {
+    if (_mouseLook != enable) {
         _position = { pViewport->viewportCenterX, pViewport->viewportCenterY };
-        window->warpMouse(_position);
+        warpMouse(_position);
+        window->setMouseRelative(enable);
     }
+    _mouseLook = enable;
 }
 
 void Io::Mouse::ToggleMouseLook() {
     SetMouseLook(!_mouseLook);
 }
 
-void Io::Mouse::DoMouseLook() {
+void Io::Mouse::DoMouseLook(Pointi relChange) {
     if (!_mouseLook) {
         return;
     }
 
-    const float sensitivity = 5.0f; // TODO(pskelton): move to config value
-    float modX = _mouseLookChange.x * sensitivity;
-    float modY = _mouseLookChange.y * sensitivity;
-    _mouseLookChange.x = 0;
-    _mouseLookChange.y = 0;
+    const float sensitivity = 2.5f; // TODO(pskelton): move to config value
+    float modX = relChange.x * sensitivity;
+    float modY = relChange.y * sensitivity;
     pParty->_viewPitch -= modY;
     pParty->_viewPitch = std::clamp(pParty->_viewPitch, -320, 320);
     pParty->_viewYaw -= modX;
@@ -328,7 +319,7 @@ bool UI_OnKeyDown(PlatformKey key) {
             continue;
         }
 
-        if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogLeft, key)) {
+        if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_LEFT, key)) {
             if (win->pCurrentPosActiveItem - win->pStartingPosActiveItem - win->_selectStep >= 0) {
                 win->pCurrentPosActiveItem -= win->_selectStep;
                 if (current_screen_type == SCREEN_PARTY_CREATION) {
@@ -340,7 +331,7 @@ bool UI_OnKeyDown(PlatformKey key) {
                 engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
             }
             break;
-        } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogRight, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_RIGHT, key)) {
             int newPos = win->pCurrentPosActiveItem + win->_selectStep;
             if (newPos < win->pNumPresenceButton + win->pStartingPosActiveItem) {
                 win->pCurrentPosActiveItem = newPos;
@@ -353,7 +344,7 @@ bool UI_OnKeyDown(PlatformKey key) {
                 engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
             }
             break;
-        } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogDown, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_DOWN, key)) {
             int v17 = win->pStartingPosActiveItem;
             int v18 = win->pCurrentPosActiveItem;
             if (v18 >= win->pNumPresenceButton + v17 - 1)
@@ -393,7 +384,7 @@ bool UI_OnKeyDown(PlatformKey key) {
                 return true;
             }
             break;
-        } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogUp, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_UP, key)) {
             int v22 = win->pCurrentPosActiveItem;
             int v23 = win->pStartingPosActiveItem;
             if (v22 <= v23)
@@ -406,7 +397,7 @@ bool UI_OnKeyDown(PlatformKey key) {
                 engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
             }
             return true;
-        } else if (keyboardActionMapping->IsKeyMatchAction(Io::InputAction::DialogSelect, key)) {
+        } else if (keyboardActionMapping->isBound(INPUT_ACTION_DIALOG_PRESS, key)) {
             GUIButton *pButton = win->GetControl(win->pCurrentPosActiveItem);
             engine->_messageQueue->addMessageCurrentFrame(pButton->msg, pButton->msg_param, 0);
         } else if (key == PlatformKey::KEY_PAGEDOWN) { // not button event from user, but a call from GUI_UpdateWindows to track mouse
@@ -431,4 +422,10 @@ bool UI_OnKeyDown(PlatformKey key) {
     }
 
     return 0;
+}
+
+void Io::Mouse::warpMouse(Pointi position) {
+    // Map position to output window coords
+    Pointi pos = render->MapToPresent(position);
+    window->warpMouse(pos);
 }

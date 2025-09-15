@@ -5,9 +5,7 @@
 #include <ranges>
 #include <optional>
 #include <span>
-#include <type_traits>
 
-#include "Inventory.h"
 #include "Library/Geometry/Size.h"
 #include "Library/Geometry/Point.h"
 #include "Library/Geometry/Rect.h"

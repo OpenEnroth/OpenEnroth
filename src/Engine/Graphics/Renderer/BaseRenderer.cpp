@@ -755,6 +755,7 @@ Sizei BaseRenderer::GetPresentDimensions() {
 
 void BaseRenderer::updateRenderDimensions() {
     outputPresent = window->size();
+
     if (config->graphics.RenderFilter.value() != 0)
         outputRender = {config->graphics.RenderWidth.value(), config->graphics.RenderHeight.value()};
     else
@@ -768,4 +769,42 @@ void BaseRenderer::updateRenderDimensions() {
 
 int BaseRenderer::QueryHitMap(Pointi screenPos, int defaultValue) {
     return _equipmentHitMap.query(screenPos, defaultValue);
+}
+
+Pointi BaseRenderer::MapToRender(Pointi position) {
+    Sizef renDims = { (float)GetRenderDimensions().w, (float)GetRenderDimensions().h };
+    Sizef prDims = { (float)GetPresentDimensions().w, (float)GetPresentDimensions().h };
+    Pointi result = position;
+
+    if (renDims != prDims) {
+        Sizef ratioCorections = { prDims.w / renDims.w, prDims.h / renDims.h };
+        float ratioCorrection = std::min(ratioCorections.w, ratioCorections.h);
+
+        float w = renDims.w * ratioCorrection;
+        float h = renDims.h * ratioCorrection;
+
+        result.x = std::round((position.x - (prDims.w / 2 - w / 2)) / ratioCorrection);
+        result.y = std::round((position.y - (prDims.h / 2 - h / 2)) / ratioCorrection);
+    }
+
+    return result;
+}
+
+Pointi BaseRenderer::MapToPresent(Pointi position) {
+    Sizef renDims = { (float)GetRenderDimensions().w, (float)GetRenderDimensions().h };
+    Sizef prDims = { (float)GetPresentDimensions().w, (float)GetPresentDimensions().h };
+    Pointi result = position;
+
+    if (renDims != prDims) {
+        Sizef ratioCorections = { prDims.w / renDims.w, prDims.h / renDims.h };
+        float ratioCorrection = std::min(ratioCorections.w, ratioCorections.h);
+
+        float w = renDims.w * ratioCorrection;
+        float h = renDims.h * ratioCorrection;
+
+        result.x = std::round(position.x * ratioCorrection + (prDims.w / 2 - w / 2));
+        result.y = std::round(position.y * ratioCorrection + (prDims.h / 2 - h / 2));
+    }
+
+    return result;
 }
