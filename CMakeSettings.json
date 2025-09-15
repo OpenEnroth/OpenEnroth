@@ -20,6 +20,25 @@
       ]
     },
     {
+      "name": "x32-Release",
+      "generator": "Visual Studio 17 2022",
+      "configurationType": "Release",
+      "inheritEnvironments": [ "msvc_x86" ],
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "cmakeExecutable": "cmake",
+      "variables": [
+        {
+          "name": "CMAKE_BUILD_TYPE",
+          "value": "Release",
+          "type": "STRING"
+        }
+      ]
+    },
+    {
       "name": "x32-RelWithDebInfo",
       "generator": "Visual Studio 17 2022",
       "configurationType": "RelWithDebInfo",
@@ -57,6 +76,25 @@
         }
       ]
     },
+    {
+      "name": "x64-Release",
+      "generator": "Visual Studio 17 2022 Win64",
+      "configurationType": "Release",
+      "inheritEnvironments": [ "msvc_x64_x64" ],
+      "buildRoot": "${projectDir}\\out\\build\\${name}",
+      "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
+      "buildCommandArgs": "",
+      "ctestCommandArgs": "",
+      "cmakeExecutable": "cmake",
+      "variables": [
+        {
+          "name": "CMAKE_BUILD_TYPE",
+          "value": "Release",
+          "type": "STRING"
+        }
+      ]
+    }
     {
       "name": "x64-RelWithDebInfo",
       "generator": "Visual Studio 17 2022 Win64",
