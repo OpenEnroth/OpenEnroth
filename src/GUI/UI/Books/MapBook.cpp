@@ -31,7 +31,7 @@ GUIWindow_MapBook::GUIWindow_MapBook() {
     this->eWindowType = WindowType::WINDOW_MapsBook;
     viewparams->sViewCenterX = pParty->pos.x;
     viewparams->sViewCenterY = pParty->pos.y;
-	viewparams->ClampMapViewPosition();
+    viewparams->ClampMapViewPosition();
     pChildBooksOverlay = new GUIWindow_BooksButtonOverlay({546, 353}, {0, 0}, pBtn_Maps);
 
     ui_book_map_background = assets->getImage_ColorKey("sbmap");
@@ -66,8 +66,8 @@ void GUIWindow_MapBook::Update() {
     render->DrawTextureNew(471 /  640.0f, 445 / 480.0f, ui_exit_cancel_button_background);
     render->DrawTextureNew(pViewport->viewportTL_X / 640.0f, pViewport->viewportTL_Y / 480.0f, ui_book_map_background);
 
-	auto [minX, maxX] = viewparams->GetMapViewMinMaxX();
-	auto [minY, maxY] = viewparams->GetMapViewMinMaxY();
+    auto [minX, maxX] = viewparams->GetMapViewMinMaxX();
+    auto [minY, maxY] = viewparams->GetMapViewMinMaxY();
 
     if ((_bookButtonClicked && _bookButtonAction == BOOK_ZOOM_IN) || viewparams->uMapBookMapZoom / 128 >= 12) {
         render->DrawTextureNew((pViewport->viewportTL_X + 408) / 640.0f, (pViewport->viewportTL_Y + 2) / 480.0f, ui_book_button1_off);
@@ -87,42 +87,42 @@ void GUIWindow_MapBook::Update() {
         render->DrawTextureNew((pViewport->viewportTL_X + 398) / 640.0f, (pViewport->viewportTL_Y + 113) / 480.0f, ui_book_button3_on);
     }
 
-	if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_DOWN || viewparams->sViewCenterY <= minY) {
+    if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_DOWN || viewparams->sViewCenterY <= minY) {
         render->DrawTextureNew((pViewport->viewportTL_X + 408) / 640.0f, (pViewport->viewportTL_Y + 150) / 480.0f, ui_book_button4_off);
     } else {
         render->DrawTextureNew((pViewport->viewportTL_X + 399) / 640.0f, (pViewport->viewportTL_Y + 150) / 480.0f, ui_book_button4_on);
     }
 
-	if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_RIGHT || viewparams->sViewCenterX >= maxX) {
+    if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_RIGHT || viewparams->sViewCenterX >= maxX) {
         render->DrawTextureNew((pViewport->viewportTL_X + 408) / 640.0f, (pViewport->viewportTL_Y + 188) / 480.0f, ui_book_button5_off);
     } else {
         render->DrawTextureNew((pViewport->viewportTL_X + 397) / 640.0f, (pViewport->viewportTL_Y + 188) / 480.0f, ui_book_button5_on);
     }
 
-	if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_LEFT || viewparams->sViewCenterX <= minX) {
+    if (_bookButtonClicked && _bookButtonAction == BOOK_SCROLL_LEFT || viewparams->sViewCenterX <= minX) {
         render->DrawTextureNew((pViewport->viewportTL_X + 408) / 640.0f, (pViewport->viewportTL_Y + 226) / 480.0f, ui_book_button6_off);
     } else {
         render->DrawTextureNew((pViewport->viewportTL_X + 397) / 640.0f, (pViewport->viewportTL_Y + 226) / 480.0f, ui_book_button6_on);
     }
 
-    if (_bookButtonClicked==10) {
+    if (_bookButtonClicked == 10) {
         if (_bookButtonAction == BOOK_ZOOM_IN && viewparams->uMapBookMapZoom / 128 < 12) {
             pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             viewparams->CenterOnPartyZoomIn();
         } else if (_bookButtonAction == BOOK_ZOOM_OUT && viewparams->uMapBookMapZoom / 128 > 3) {
-			pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+            pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             viewparams->CenterOnPartyZoomOut();
         } else if (_bookButtonAction == BOOK_SCROLL_UP && viewparams->sViewCenterY < maxY) {
-			pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+            pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             viewparams->MapViewUp();
         } else if (_bookButtonAction == BOOK_SCROLL_DOWN && viewparams->sViewCenterY > minY) {
-			pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+            pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             viewparams->MapViewDown();
         } else if (_bookButtonAction == BOOK_SCROLL_RIGHT && viewparams->sViewCenterX < maxX) {
-			pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+            pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             viewparams->MapViewRight();
         } else if (_bookButtonAction == BOOK_SCROLL_LEFT && viewparams->sViewCenterX > minX) {
-			pAudioPlayer->playUISound(SOUND_StartMainChoice02);
+            pAudioPlayer->playUISound(SOUND_StartMainChoice02);
             viewparams->MapViewLeft();
         }
     }

@@ -105,9 +105,9 @@ void ViewingParams::CenterOnPartyZoomIn() {
 //----- (004432E7) --------------------------------------------------------
 void ViewingParams::ClampMapViewPosition() {
     auto [xMin, xMax] = GetMapViewMinMaxX();
-	auto [yMin, yMax] = GetMapViewMinMaxY();
+    auto [yMin, yMax] = GetMapViewMinMaxY();
     this->sViewCenterX = std::clamp(this->sViewCenterX, xMin, xMax);
-	this->sViewCenterY = std::clamp(this->sViewCenterY, yMin, yMax);
+    this->sViewCenterY = std::clamp(this->sViewCenterY, yMin, yMax);
 }
 
 Sizei ViewingParams::GetMapViewMinMaxOffset() {
@@ -118,12 +118,12 @@ Sizei ViewingParams::GetMapViewMinMaxOffset() {
 }
 
 Sizei ViewingParams::GetMapViewMinMaxX() {
-	auto [minOffset, maxOffset] = GetMapViewMinMaxOffset();
+    auto [minOffset, maxOffset] = GetMapViewMinMaxOffset();
     return { this->indoor_center_x + minOffset, this->indoor_center_x + maxOffset };
 }
 
 Sizei ViewingParams::GetMapViewMinMaxY() {
-	auto [minOffset, maxOffset] = GetMapViewMinMaxOffset();
+    auto [minOffset, maxOffset] = GetMapViewMinMaxOffset();
     return { this->indoor_center_y + minOffset, this->indoor_center_y + maxOffset };
 }
 

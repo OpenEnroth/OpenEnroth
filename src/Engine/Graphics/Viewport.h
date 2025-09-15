@@ -40,7 +40,7 @@ struct ViewingParams {
     void ClampMapViewPosition();
     Sizei GetMapViewMinMaxOffset();
     Sizei GetMapViewMinMaxX();
-	Sizei GetMapViewMinMaxY();
+    Sizei GetMapViewMinMaxY();
     void _443365(); // Sets indoor_center and minimap zoom based on level type.
 
     unsigned int uMinimapZoom = 0;

@@ -368,6 +368,20 @@ GAME_TEST(Issues, Issue2123) {
     EXPECT_GT(distTape.back(), distTape.front()); // should be further out than spawn point
 }
 
+GAME_TEST(Issues, Issue2124_1283) {
+    // Rare crash when viewing the map
+    auto screenTape = tapes.screen();
+    game.startNewGame();
+    test.startTaping();
+    game.pressAndReleaseKey(PlatformKey::KEY_M); // Open map
+    game.tick(2);
+    game.pressAndReleaseKey(PlatformKey::KEY_RIGHT); // trigger what was an onbutton event
+    game.pressAndReleaseKey(PlatformKey::KEY_M); // and immediately close the map
+    game.tick(1);
+    EXPECT_EQ(screenTape.back(), SCREEN_GAME);
+    EXPECT_CONTAINS(screenTape, SCREEN_BOOKS); // we did open the map
+}
+
 GAME_TEST(Issues, Issue2142) {
     // Monsters can't cause poisoned / deseased status
     const std::vector<std::tuple<MonsterId, MonsterSpecialAttack, Condition>> monsterConditions = {
