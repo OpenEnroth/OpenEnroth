@@ -20,9 +20,9 @@
       ]
     },
     {
-      "name": "x32-Release",
+      "name": "x32-RelWithDebInfo",
       "generator": "Visual Studio 17 2022",
-      "configurationType": "Release",
+      "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [ "msvc_x86" ],
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
@@ -33,7 +33,7 @@
       "variables": [
         {
           "name": "CMAKE_BUILD_TYPE",
-          "value": "Release",
+          "value": "RelWithDebInfo",
           "type": "STRING"
         }
       ]
@@ -58,9 +58,9 @@
       ]
     },
     {
-      "name": "x64-Release",
+      "name": "x64-RelWithDebInfo",
       "generator": "Visual Studio 17 2022 Win64",
-      "configurationType": "Release",
+      "configurationType": "RelWithDebInfo",
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
@@ -71,7 +71,7 @@
       "variables": [
         {
           "name": "CMAKE_BUILD_TYPE",
-          "value": "Release",
+          "value": "RelWithDebInfo",
           "type": "STRING"
         }
       ]
