@@ -34,9 +34,8 @@ env:
   CCACHE_COMPILERCHECK: content
     
 jobs:
-  build-flatpak-bundle:
+  build_flatpak_bundle:
     timeout-minutes: 60
-    name: "Build flatpak bundle"
     runs-on: ubuntu-latest
     container:
       image: bilelmoussaoui/flatpak-github-actions:freedesktop-24.08

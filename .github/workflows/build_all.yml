@@ -1,0 +1,327 @@
+name: Build
+
+on:
+  pull_request: null
+  workflow_dispatch:
+    inputs:
+      myCommit:
+        description: Commit SHA1
+        required: false
+        default: ''
+        type: string
+      releaseTag:
+        description: Release tag
+        required: false
+        default: ''
+        type: string
+  workflow_call:
+    inputs:
+      myCommit:
+        description: Commit SHA1
+        required: false
+        default: ''
+        type: string
+      releaseTag:
+        description: Release tag
+        required: false
+        default: ''
+        type: string
+  release:
+    types:
+      - published
+
+env:
+  # This version is referenced in android/openenroth/build.gradle.
+  # When updating the version here you should also update it in the Dependencies repo!
+  NDK_VERSION: 28.1.13356709
+  # This is required for ccache to work for android build, otherwise we get 100% cache misses.
+  CCACHE_COMPILERCHECK: content
+
+jobs:
+  build_all:
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration:
+          - Debug
+          - RelWithDebInfo
+        # Build android_universal on releases, per-ABI on PR
+        target: >- 
+          ${{fromJSON(
+            inputs.releaseTag != ''
+              && '["windows_x86","windows_x86_64","darwin_arm64","darwin_x86_64","linux_x86","linux_x86_64","android_universal"]'
+              || '["windows_x86","windows_x86_64","darwin_arm64","darwin_x86_64","linux_x86","linux_x86_64","android_arm64_v8a","android_arm32_v7a","android_x86_64"]'
+          )}}
+    runs-on: >-
+      ${{
+        startsWith(matrix.target, 'windows_') && 'windows-2022' ||
+        startsWith(matrix.target, 'darwin_')  && 'macos-15'     ||
+        'ubuntu-24.04'
+      }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: 'Initialize matrix vars'
+        run: |
+          set -euo pipefail
+          echo "MATRIX_CONFIGURATION=${{matrix.configuration}}" >> "$GITHUB_ENV"
+          echo "MATRIX_TARGET=${{matrix.target}}" >> "$GITHUB_ENV"
+          
+          target="${{matrix.target}}"
+          case "$target" in
+            windows_x86)        platform=windows; architecture=x86;         ccache_architecture=x86;       ccache_size=400M;  cmake_args="";;
+            windows_x86_64)     platform=windows; architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;  cmake_args="";;
+            darwin_arm64)       platform=darwin;  architecture=arm64;       ccache_architecture=arm64;     ccache_size=400M;  cmake_args="-DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_DEPLOYMENT_TARGET=11";;
+            darwin_x86_64)      platform=darwin;  architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;  cmake_args="-DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15";;
+            linux_x86)          platform=linux;   architecture=x86;         ccache_architecture=x86;       ccache_size=400M;  cmake_args="-DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14 -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32";;
+            linux_x86_64)       platform=linux;   architecture=x86_64;      ccache_architecture=x86_64;    ccache_size=400M;  cmake_args="-DCMAKE_C_COMPILER=gcc-14 -DCMAKE_CXX_COMPILER=g++-14";;
+            android_universal)  platform=android; architecture=universal;   ccache_architecture=universal; ccache_size=800M;  cmake_args="";;
+            android_arm64_v8a)  platform=android; architecture=arm64-v8a;   ccache_architecture=universal; ccache_size=800M;  cmake_args="";;
+            android_arm32_v7a)  platform=android; architecture=armeabi-v7a; ccache_architecture=universal; ccache_size=800M;  cmake_args="";;
+            android_x86_64)     platform=android; architecture=x86_64;      ccache_architecture=universal; ccache_size=800M;  cmake_args="";;
+            *) echo "Unknown target: $target" >&2; exit 1;;
+          esac
+          
+          echo "MATRIX_PLATFORM=$platform" >> "$GITHUB_ENV"
+          echo "MATRIX_ARCHITECTURE=$architecture" >> "$GITHUB_ENV"
+          echo "MATRIX_CCACHE_ARCHITECTURE=$ccache_architecture" >> "$GITHUB_ENV"
+          echo "MATRIX_CCACHE_SIZE=$ccache_size" >> "$GITHUB_ENV"
+          echo "MATRIX_CMAKE_ARGS=$cmake_args" >> "$GITHUB_ENV"
+
+      - name: '[linux/android] Configure fast APT mirror'
+        if: env.MATRIX_PLATFORM == 'linux' || env.MATRIX_PLATFORM == 'android'
+        uses: vegardit/fast-apt-mirror.sh@v1
+
+      - name: '[darwin] Set up Xcode'
+        if: env.MATRIX_PLATFORM == 'darwin'
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: 16.3
+
+      - name: 'Checkout'
+        uses: actions/checkout@v5.0.0
+        with:
+          submodules: recursive
+          ref: '${{inputs.myCommit}}'
+
+      # Note that secrets are not passed to actions triggered by PRs, so this step will be skipped for PRs.
+      - name: '[android] Decode keystore'
+        if: env.MATRIX_PLATFORM == 'android' && env.SECRETS_KEYSTORE != ''
+        id: decode_keystore
+        uses: timheuer/base64-to-file@v1.2.4
+        with:
+          fileName: android_keystore.jks
+          encodedString: '${{env.SECRETS_KEYSTORE}}'
+        env:
+          # Secrets cannot be referenced in if: blocks, so we have to work it around.
+          SECRETS_KEYSTORE: '${{secrets.KEYSTORE}}'
+
+      - name: '[android] Install NDK'
+        if: env.MATRIX_PLATFORM == 'android'
+        run: |
+          /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "ndk;$NDK_VERSION"
+
+      # We need gcc-multilib for host-side tools (luajit's buildvm) when building for armeabi-v7a. Why? No idea.
+      - name: '[android] Install dependencies'
+        if: env.MATRIX_PLATFORM == 'android'
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            if [[ "${{env.MATRIX_ARCHITECTURE}}" = "universal" || "${{env.MATRIX_ARCHITECTURE}}" = "armeabi-v7a" ]]; then
+              sudo apt-get update
+              sudo apt-get install -y gcc-13-multilib g++-13-multilib
+            fi
+
+      - name: '[android] Setup Java'
+        if: env.MATRIX_PLATFORM == 'android'
+        uses: actions/setup-java@v5.0.0
+        with:
+          distribution: temurin
+          java-version: 17.0.6
+
+      - name: '[linux] Install dependencies'
+        if: env.MATRIX_PLATFORM == 'linux'
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86" ]; then
+              sudo dpkg --add-architecture i386
+            fi
+            sudo apt-get update
+            if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86" ]; then
+              sudo apt-get install -y gcc-14-multilib g++-14-multilib lld
+              sudo apt-get install -y libglu1-mesa-dev:i386
+              sudo apt-get install -y aptitude
+              sudo apt-get install -y libdwarf-dev:i386 libelf-dev:i386
+            fi
+            if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86_64" ]; then
+              sudo apt-get install -y gcc-14 g++-14 lld
+              sudo apt-get install -y libglu1-mesa-dev
+              sudo apt-get install -y libdwarf-dev libelf-dev
+            fi
+
+      - name: '[windows] Setup MSVC environment'
+        if: env.MATRIX_PLATFORM == 'windows'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: '${{env.MATRIX_ARCHITECTURE}}'
+
+      - name: '[darwin/windows/linux] Restore data cache'
+        if: env.MATRIX_PLATFORM != 'android'
+        id: restore_data_cache
+        uses: actions/cache/restore@v4.2.4
+        with:
+          path: |
+            OpenEnroth_GameData
+          key: data-cache
+          enableCrossOsArchive: ${{env.MATRIX_PLATFORM == 'windows'}}
+
+      - name: 'Run ccache'
+        uses: hendrikmuhs/ccache-action@v1.2.18
+        with:
+          key: '${{env.MATRIX_PLATFORM}}-${{env.MATRIX_CONFIGURATION}}-${{env.MATRIX_CCACHE_ARCHITECTURE}}'
+          verbose: 2
+          max-size: ${{env.MATRIX_CCACHE_SIZE}}
+          save: ${{github.event_name != 'pull_request'}}
+
+      - name: 'Record build start time'
+        run: |
+          echo "BUILD_START_TIME=$(date +%s)" >> $GITHUB_ENV
+
+      - name: '[windows] Configure ccache'
+        if: env.MATRIX_PLATFORM == 'windows'
+        run: |
+          ccache --set-config=hash_dir=false
+
+      - name: '[darwin/windows/linux] Configure'
+        if: env.MATRIX_PLATFORM != 'android'
+        run: |
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{env.MATRIX_CONFIGURATION}} -DNIGHTLY=ON ${{env.MATRIX_CMAKE_ARGS}}
+
+      - name: '[darwin/windows/linux] Build'
+        if: env.MATRIX_PLATFORM != 'android'
+        working-directory: build
+        run: |
+          ninja -v
+
+      - name: '[android] Build'
+        if: env.MATRIX_PLATFORM == 'android'
+        uses: burrunan/gradle-cache-action@v3.0.1
+        with:
+          build-root-directory: android
+          job-id: android-${{env.MATRIX_CONFIGURATION == 'RelWithDebInfo' && 'Release' || env.MATRIX_CONFIGURATION}}
+          arguments: assemble${{env.MATRIX_CONFIGURATION == 'RelWithDebInfo' && 'Release' || env.MATRIX_CONFIGURATION}} --info -Pandroid.native.buildOutput=verbose
+          read-only: ${{github.event_name == 'pull_request'}}
+        env:
+          SIGNING_KEYSTORE: '${{steps.decode_keystore.outputs.filePath}}'
+          SIGNING_KEY_ALIAS: '${{secrets.SIGNING_KEY_ALIAS}}'
+          SIGNING_KEY_PASSWORD: '${{secrets.SIGNING_KEY_PASSWORD}}'
+          SIGNING_STORE_PASSWORD: '${{secrets.SIGNING_STORE_PASSWORD}}'
+          CMAKE_BUILD_PARALLEL_LEVEL: 4
+          GITHUBARCH: '${{env.MATRIX_ARCHITECTURE}}'
+
+      - name: '[darwin/windows/linux] Run unit tests'
+        if: env.MATRIX_PLATFORM != 'android'
+        working-directory: build
+        run: |
+          ninja Run_UnitTest
+
+      - name: '[darwin/windows/linux] Run game tests'
+        if: env.MATRIX_PLATFORM != 'android'
+        working-directory: build
+        run: |
+          ninja Run_GameTest_Headless_Parallel
+        env:
+          OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
+
+      - name: '[darwin/windows/linux] Run retrace tests'
+        if: env.MATRIX_PLATFORM != 'android' && env.MATRIX_CONFIGURATION != 'Debug'
+        working-directory: build
+        run: |
+          ninja Run_RetraceTest_Headless_Parallel
+        env:
+          OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
+
+      - name: '[android] List artifacts'
+        if: env.MATRIX_PLATFORM == 'android'
+        run: |
+          find android/openenroth/build/outputs/apk
+
+      - name: '[darwin] Prepare files for release'
+        if: env.MATRIX_PLATFORM == 'darwin'
+        uses: Wandalen/wretry.action@master
+        with:
+          attempt_limit: 3
+          attempt_delay: 5000
+          command: |
+            mkdir -p dist
+            cp -r build/src/Bin/OpenEnroth/OpenEnroth.app dist/
+            hdiutil create OpenEnroth.dmg -ov -volname "OpenEnroth" -fs HFS+ -srcfolder dist
+
+      - name: '[windows] Prepare files for release'
+        if: env.MATRIX_PLATFORM == 'windows'
+        run: |
+          mkdir -p dist
+          cp build/src/Bin/OpenEnroth/OpenEnroth.exe dist/
+          cp build/src/Bin/OpenEnroth/OpenEnroth.pdb dist/
+
+      - name: '[linux] Prepare files for release'
+        if: env.MATRIX_PLATFORM == 'linux'
+        run: |
+          mkdir dist
+          cp build/src/Bin/OpenEnroth/OpenEnroth dist/
+
+      - name: '[darwin/windows/linux] Zip folder for release'
+        if: env.MATRIX_PLATFORM != 'android'
+        uses: thedoctor0/zip-release@0.7.6
+        with:
+          type: zip
+          filename: ${{runner.os}}_${{inputs.releaseTag}}_${{env.MATRIX_CONFIGURATION}}_${{env.MATRIX_ARCHITECTURE}}.zip
+          path: dist
+
+      - name: '[darwin/windows/linux] Publish release'
+        if: env.MATRIX_PLATFORM != 'android' && inputs.releaseTag != ''
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          tag_name: '${{inputs.releaseTag}}'
+          files: |
+            ${{runner.os}}_${{inputs.releaseTag}}_${{env.MATRIX_CONFIGURATION}}_${{env.MATRIX_ARCHITECTURE}}.zip
+
+      - name: '[android] Publish release'
+        if: env.MATRIX_PLATFORM == 'android' && inputs.releaseTag != ''
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          tag_name: '${{inputs.releaseTag}}'
+          files: |
+            android/openenroth/build/outputs/apk/debug/openenroth-debug.apk
+            android/openenroth/build/outputs/apk/release/openenroth-release.apk
+
+      - name: '[darwin] Check dependencies'
+        if: env.MATRIX_PLATFORM == 'darwin'
+        run: |
+          otool -L build/src/Bin/OpenEnroth/OpenEnroth.app/Contents/MacOS/OpenEnroth
+
+      - name: '[windows] Check dependencies'
+        if: env.MATRIX_PLATFORM == 'windows'
+        run: |
+          dumpbin -imports build/src/Bin/OpenEnroth/OpenEnroth.exe
+
+      - name: '[linux] Check dependencies'
+        if: env.MATRIX_PLATFORM == 'linux'
+        run: |
+          objdump -p build/src/Bin/OpenEnroth/OpenEnroth | grep 'NEEDED'
+
+      - name: 'Cleanup ccache'
+        run: |
+          BUILD_END_TIME=$(date +%s)
+          BUILD_DURATION=$((BUILD_END_TIME - BUILD_START_TIME))
+          # Keep only entries accessed during the build window. Remove entries from previous builds that weren't touched.
+          ccache --evict-older-than ${BUILD_DURATION}s

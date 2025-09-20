@@ -2,6 +2,7 @@ name: Style
 
 on:
   pull_request: null
+  push: null
   workflow_dispatch:
     inputs:
       myCommit:
