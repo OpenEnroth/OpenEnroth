@@ -217,7 +217,7 @@ void GUIWindow_AutonotesBook::Update() {
     autonotes_window.uFrameZ = 407;
     autonotes_window.uFrameW = 333;
 
-    if (_bookButtonClicked) {
+    if (_bookButtonClicked == 10) {
         if (_bookButtonAction >= BOOK_NOTES_POTION && _bookButtonAction <= BOOK_NOTES_INSTRUCTORS) {
             if (noteTypeChanged) {
                 recalculateCurrentNotesTypePages();
@@ -237,7 +237,9 @@ void GUIWindow_AutonotesBook::Update() {
         }
     }
 
-    _bookButtonClicked = false;
+    if (_bookButtonClicked)
+        _bookButtonClicked--;
+
     _currentPageNotes = 0;
 
     for (int i = _startingNotesIdx; i < _activeNotesIdx.size(); ++i) {

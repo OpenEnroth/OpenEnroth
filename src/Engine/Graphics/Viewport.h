@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "Library/Color/Color.h"
+#include "Library/Geometry/Size.h"
 
 class GraphicsImage;
 
@@ -36,7 +37,10 @@ struct ViewingParams {
     void MapViewDown();
     void MapViewRight();
     void CenterOnPartyZoomOut();
-    void AdjustPosition();
+    void ClampMapViewPosition();
+    Sizei GetMapViewMinMaxOffset();
+    Sizei GetMapViewMinMaxX();
+    Sizei GetMapViewMinMaxY();
     void _443365(); // Sets indoor_center and minimap zoom based on level type.
 
     unsigned int uMinimapZoom = 0;
