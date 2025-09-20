@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;60622b0</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9561831</span>
    </div>
   </td>
  </tr>
@@ -97,8 +97,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a14f040fb91d5bc069790128175594747"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a495412ae93d005ebb03c6dfd77b88c05"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structViewingParams.html#a495412ae93d005ebb03c6dfd77b88c05">CenterOnPartyZoomOut</a> ()</td></tr>
 <tr class="separator:a495412ae93d005ebb03c6dfd77b88c05"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad76678f54521bcc134c579a9de29408d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structViewingParams.html#ad76678f54521bcc134c579a9de29408d">AdjustPosition</a> ()</td></tr>
-<tr class="separator:ad76678f54521bcc134c579a9de29408d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af65ffdc8284cca993d74333a10c233d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structViewingParams.html#af65ffdc8284cca993d74333a10c233d9">ClampMapViewPosition</a> ()</td></tr>
+<tr class="separator:af65ffdc8284cca993d74333a10c233d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4584bb5283d28af8d3a7d1632bcd53c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structViewingParams.html#af4584bb5283d28af8d3a7d1632bcd53c">GetMapViewMinMaxOffset</a> ()</td></tr>
+<tr class="separator:af4584bb5283d28af8d3a7d1632bcd53c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af28cdda9baa03bbf7b23f4951cd8bb7f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structViewingParams.html#af28cdda9baa03bbf7b23f4951cd8bb7f">GetMapViewMinMaxX</a> ()</td></tr>
+<tr class="separator:af28cdda9baa03bbf7b23f4951cd8bb7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8254dfe1f8411c4d62eeb865c09fff2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structViewingParams.html#af8254dfe1f8411c4d62eeb865c09fff2">GetMapViewMinMaxY</a> ()</td></tr>
+<tr class="separator:af8254dfe1f8411c4d62eeb865c09fff2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac90a0eafa68a9a3960d5cb134cf724c1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structViewingParams.html#ac90a0eafa68a9a3960d5cb134cf724c1">_443365</a> ()</td></tr>
 <tr class="separator:ac90a0eafa68a9a3960d5cb134cf724c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -169,23 +175,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ad76678f54521bcc134c579a9de29408d" name="ad76678f54521bcc134c579a9de29408d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad76678f54521bcc134c579a9de29408d">&#9670;&#160;</a></span>AdjustPosition()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void ViewingParams::AdjustPosition </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a0c86f1e8dce1fc0ff1aedd8c9b3dad3d" name="a0c86f1e8dce1fc0ff1aedd8c9b3dad3d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0c86f1e8dce1fc0ff1aedd8c9b3dad3d">&#9670;&#160;</a></span>CenterOnPartyZoomIn()</h2>
 
@@ -211,6 +200,74 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">void ViewingParams::CenterOnPartyZoomOut </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af65ffdc8284cca993d74333a10c233d9" name="af65ffdc8284cca993d74333a10c233d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af65ffdc8284cca993d74333a10c233d9">&#9670;&#160;</a></span>ClampMapViewPosition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ViewingParams::ClampMapViewPosition </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af4584bb5283d28af8d3a7d1632bcd53c" name="af4584bb5283d28af8d3a7d1632bcd53c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4584bb5283d28af8d3a7d1632bcd53c">&#9670;&#160;</a></span>GetMapViewMinMaxOffset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a> ViewingParams::GetMapViewMinMaxOffset </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af28cdda9baa03bbf7b23f4951cd8bb7f" name="af28cdda9baa03bbf7b23f4951cd8bb7f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af28cdda9baa03bbf7b23f4951cd8bb7f">&#9670;&#160;</a></span>GetMapViewMinMaxX()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a> ViewingParams::GetMapViewMinMaxX </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af8254dfe1f8411c4d62eeb865c09fff2" name="af8254dfe1f8411c4d62eeb865c09fff2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8254dfe1f8411c4d62eeb865c09fff2">&#9670;&#160;</a></span>GetMapViewMinMaxY()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="Size_8h.html#a075755610ebd937662bd46b0703fbabf">Sizei</a> ViewingParams::GetMapViewMinMaxY </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
