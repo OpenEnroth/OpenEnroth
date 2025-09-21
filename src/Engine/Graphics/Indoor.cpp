@@ -1798,13 +1798,14 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     Vec3f oldPos = pParty->pos;
     Vec3f savedspeed = pParty->velocity;
 
+	int faceEvent2 = 0; // dont overwrite faceEvent
     // horizontal
     pParty->velocity.z = 0;
-    ProcessPartyCollisionsBLV(sectorId, min_party_move_delta_sqr, &faceId, &faceEvent);
+    ProcessPartyCollisionsBLV(sectorId, min_party_move_delta_sqr, &faceId, &faceEvent2);
     // vertical -  only when horizonal motion hasnt caused height gain
     if (pParty->pos.z <= oldPos.z) {
         pParty->velocity = Vec3f(0, 0, savedspeed.z);
-        ProcessPartyCollisionsBLV(sectorId, min_party_move_delta_sqr, &faceId, &faceEvent);
+        ProcessPartyCollisionsBLV(sectorId, min_party_move_delta_sqr, &faceId, &faceEvent2);
     }
 
     // walking / running sounds ------------------------
