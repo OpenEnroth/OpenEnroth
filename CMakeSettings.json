@@ -94,7 +94,7 @@
           "type": "STRING"
         }
       ]
-    }
+    },
     {
       "name": "x64-RelWithDebInfo",
       "generator": "Visual Studio 17 2022 Win64",
