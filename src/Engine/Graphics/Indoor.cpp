@@ -1798,7 +1798,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     Vec3f oldPos = pParty->pos;
     Vec3f savedspeed = pParty->velocity;
 
-	int faceEvent2 = 0; // dont overwrite faceEvent
+    int faceEvent2 = 0; // dont overwrite faceEvent
     // horizontal
     pParty->velocity.z = 0;
     ProcessPartyCollisionsBLV(sectorId, min_party_move_delta_sqr, &faceId, &faceEvent2);
