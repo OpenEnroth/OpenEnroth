@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <chrono>
+#include <unordered_set>
 
 #include "Application/Startup/GameStarter.h"
 
@@ -15,6 +16,8 @@
 #include "Engine/Components/Trace/EngineTraceStateAccessor.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Engine.h"
+
+#include "Io/KeyboardActionMapping.h"
 
 #include "Library/StackTrace/StackTraceOnCrash.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -59,6 +62,21 @@ static void printTraceDiff(std::string_view current, std::string_view canonical)
     printLines(currentLines, line, 2);
 }
 
+void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
+    switch (migration) {
+    default: assert(false); [[fallthrough]];
+    case OpenEnrothOptions::MIGRATION_NONE: return;
+    case OpenEnrothOptions::MIGRATION_DROP_AUTOREPEAT: return EventTrace::migrateDropAutorepeat(trace);
+    case OpenEnrothOptions::MIGRATION_DROP_ORPHANED_KEY_RELEASES: return EventTrace::migrateDropOrphanedKeyReleases(trace);
+    case OpenEnrothOptions::MIGRATION_COLLAPSE_KEY_EVENTS:
+        std::unordered_set<PlatformKey> keys;
+        for (InputAction inputAction : allInputActions())
+            if (keyboardActionMapping->toggleTypeFor(inputAction) != TOGGLE_ONCE)
+                keys.insert(keyboardActionMapping->keyFor(inputAction));
+        return EventTrace::migrateCollapseKeyEvents(keys, trace);
+    }
+}
+
 int runRetrace(const OpenEnrothOptions &options) {
     GameStarter starter(options);
 
@@ -77,6 +95,7 @@ int runRetrace(const OpenEnrothOptions &options) {
             Blob oldSaveBlob = Blob::fromFile(savePath);
 
             EventTrace oldTrace = EventTrace::fromJsonBlob(oldTraceBlob, application->window());
+            migrateTrace(options.retrace.migration, &oldTrace);
 
             EngineTraceStateAccessor::prepareForPlayback(engine->config.get(), oldTrace.header.config);
             recorder->startRecording(game, oldSaveBlob);

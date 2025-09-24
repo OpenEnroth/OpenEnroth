@@ -4,6 +4,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <unordered_set>
+#include <unordered_map>
 
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Json/Json.h"
@@ -259,4 +261,85 @@ std::unique_ptr<PlatformEvent> EventTrace::cloneEvent(const PlatformEvent *event
     });
 
     return result;
+}
+
+void EventTrace::migrateDropAutorepeat(EventTrace *trace) {
+    std::vector<std::unique_ptr<PlatformEvent>> events;
+    for (std::unique_ptr<PlatformEvent> &event : trace->events)
+        if (event->type != EVENT_KEY_PRESS || !static_cast<PlatformKeyEvent *>(event.get())->isAutoRepeat)
+            events.push_back(std::move(event));
+    trace->events = std::move(events);
+}
+
+void EventTrace::migrateDropOrphanedKeyReleases(EventTrace *trace) {
+    std::vector<std::unique_ptr<PlatformEvent>> events;
+    std::unordered_set<PlatformKey> pressedKeys;
+    for (std::unique_ptr<PlatformEvent> &event : trace->events) {
+        if (event->type == EVENT_KEY_PRESS || event->type == EVENT_KEY_RELEASE) {
+            PlatformKey key = static_cast<PlatformKeyEvent &>(*event).key;
+            if (event->type == EVENT_KEY_PRESS) {
+                pressedKeys.insert(key);
+            } else if (!pressedKeys.contains(key)) {
+                continue; // Skip orphaned key release events.
+            } else {
+                pressedKeys.erase(key);
+            }
+        }
+        events.emplace_back(std::move(event));
+    }
+    trace->events = std::move(events);
+}
+
+void EventTrace::migrateCollapseKeyEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace) {
+    std::unordered_map<PlatformKey, int> pressIndexByKey; // Non-negative value => in-frame index, negative value => pressed in another frame.
+    std::vector<std::unique_ptr<PlatformEvent>> newEvents;
+    std::vector<std::unique_ptr<PlatformEvent>> frameEvents;
+
+    auto flush = [&] {
+        for (size_t i = 0; i < frameEvents.size(); i++) {
+            std::unique_ptr<PlatformEvent> &event = frameEvents[i];
+            if (event->type != EVENT_KEY_PRESS && event->type != EVENT_KEY_RELEASE)
+                continue;
+
+            PlatformKeyEvent *keyEvent = static_cast<PlatformKeyEvent *>(event.get());
+            if (!keys.contains(keyEvent->key))
+                continue;
+
+            if (event->type == EVENT_KEY_PRESS) {
+                if (!pressIndexByKey.contains(keyEvent->key))
+                    pressIndexByKey[keyEvent->key] = i;
+            } else {
+                if (pressIndexByKey.contains(keyEvent->key)) {
+                    int index = pressIndexByKey[keyEvent->key];
+                    pressIndexByKey.erase(keyEvent->key);
+
+                    if (index >= 0) {
+                        // Press & release inside a single frame, should drop.
+                        frameEvents[index].reset();
+                        event.reset();
+                    }
+                }
+            }
+        }
+
+        for (std::unique_ptr<PlatformEvent> &event : frameEvents)
+            if (event)
+                newEvents.emplace_back(std::move(event));
+        frameEvents.clear();
+
+        for (auto &[_, index] : pressIndexByKey)
+            index = -1; // Pressed in another frame.
+    };
+
+    for (std::unique_ptr<PlatformEvent> &event : trace->events) {
+        if (event->type == EVENT_PAINT) {
+            flush();
+            newEvents.push_back(std::move(event));
+        } else {
+            frameEvents.push_back(std::move(event));
+        }
+    }
+    flush();
+
+    trace->events = std::move(newEvents);
 }

@@ -10,9 +10,17 @@
 
 #include "Library/Cli/CliApp.h"
 #include "Library/Environment/Interface/Environment.h"
+#include "Library/Serialization/EnumSerialization.h"
 
 #include "Utility/Exception.h"
 #include "Utility/String/Format.h"
+
+MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(OpenEnrothOptions::Migration, CASE_INSENSITIVE, {
+    {OpenEnrothOptions::MIGRATION_NONE, "none"},
+    {OpenEnrothOptions::MIGRATION_DROP_AUTOREPEAT, "drop_autorepeat"},
+    {OpenEnrothOptions::MIGRATION_DROP_ORPHANED_KEY_RELEASES, "drop_orphaned_key_releases"},
+    {OpenEnrothOptions::MIGRATION_COLLAPSE_KEY_EVENTS, "collapse_keyboard_events"}
+})
 
 OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
     // Note that it's OK to create a temporary `Environment` here.
@@ -66,8 +74,11 @@ OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {
         "--check-canonical", result.retrace.checkCanonical,
         "Check whether all passed traces are stored in canonical representation and return an error if not. Don't overwrite the actual trace files.");
     retrace->add_option(
+        "--migration", result.retrace.migration,
+        "Migration to apply before retracing.")->option_text("MIGRATION");
+    retrace->add_option(
         "--ls", traceDir,
-        "Directory to look for traces to retrace."); // This is here so that we don't have to jump through hoops in cmake.
+        "Directory to look for traces to retrace.")->group(""); // This is here so that we don't have to jump through hoops in cmake, group("") hides the option.
     retrace->add_option(
         "TRACE", result.retrace.traces,
         "Path to trace file(s) to retrace.")->option_text("...");

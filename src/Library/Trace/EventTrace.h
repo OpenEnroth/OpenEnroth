@@ -4,6 +4,7 @@
 #include <string_view>
 #include <memory>
 #include <string>
+#include <unordered_set>
 
 #include "Library/Platform/Interface/PlatformEvents.h"
 #include "Library/Config/ConfigPatch.h"
@@ -58,6 +59,10 @@ struct EventTrace {
 
     static bool isTraceable(const PlatformEvent *event);
     static std::unique_ptr<PlatformEvent> cloneEvent(const PlatformEvent *event);
+
+    static void migrateDropAutorepeat(EventTrace *trace);
+    static void migrateDropOrphanedKeyReleases(EventTrace *trace);
+    static void migrateCollapseKeyEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace);
 
     EventTraceHeader header;
     std::vector<std::unique_ptr<PlatformEvent>> events;
