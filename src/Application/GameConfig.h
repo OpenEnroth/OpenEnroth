@@ -16,17 +16,12 @@
 
 #include "KeyConfigEntry.h"
 
-// Set fullscreen on android, borderless window if nightly, window by default
 #ifdef __ANDROID__
-  #define ConfigRenderer RENDERER_OPENGL_ES
-  #define ConfigWindowMode WINDOW_MODE_FULLSCREEN_BORDERLESS
+#   define ConfigRenderer RENDERER_OPENGL_ES
+#   define ConfigWindowMode WINDOW_MODE_FULLSCREEN_BORDERLESS
 #else
-  #define ConfigRenderer RENDERER_OPENGL
-  #if NIGHTLY
-    #define ConfigWindowMode WINDOW_MODE_FULLSCREEN_BORDERLESS
-  #else
-    #define ConfigWindowMode WINDOW_MODE_WINDOWED
-  #endif
+#   define ConfigRenderer RENDERER_OPENGL
+#   define ConfigWindowMode WINDOW_MODE_WINDOWED
 #endif
 
 MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformWindowMode)
