@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;e3be2a9</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;56963ba</span>
    </div>
   </td>
  </tr>
@@ -138,6 +138,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a04e069f84c89837dcf6f2d848a80e25c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa96a87afa511616d0b35e8d0dd117539"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineController.html#aa96a87afa511616d0b35e8d0dd117539">teleportTo</a> (<a class="el" href="MapEnums_8h.html#a270ed629fcd100c7ea16f8c87ebb86a0">MapId</a> map, <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> position, int viewYaw)</td></tr>
 <tr class="separator:aa96a87afa511616d0b35e8d0dd117539"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01be3106e7029c2059cd8c0430f44e57"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classEngineController.html#a01be3106e7029c2059cd8c0430f44e57">castSpell</a> (int characterIndex, <a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a> spell)</td></tr>
+<tr class="separator:a01be3106e7029c2059cd8c0430f44e57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-methods" name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
@@ -220,6 +222,34 @@ Private Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a01be3106e7029c2059cd8c0430f44e57" name="a01be3106e7029c2059cd8c0430f44e57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01be3106e7029c2059cd8c0430f44e57">&#9670;&#160;</a></span>castSpell()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void EngineController::castSpell </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>characterIndex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="SpellEnums_8h.html#a44a2b004ec19c525f902f08cd7b7ef90">SpellId</a>&#160;</td>
+          <td class="paramname"><em>spell</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ab882d89e2136f24c622b3211870b6e66" name="ab882d89e2136f24c622b3211870b6e66"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab882d89e2136f24c622b3211870b6e66">&#9670;&#160;</a></span>existingButton()</h2>
 
@@ -617,6 +647,7 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p >Opens up the rest menu, presses the "rest and heal for 8 hours" button, and waits out the rest period. </p>
 
 </div>
 </div>
@@ -713,6 +744,14 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">position</td><td>Position to spawn a monster at. </td></tr>
+    <tr><td class="paramname">id</td><td>Id of the monster to spawn. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Spawned monster, so you can tweak it after spawning. </dd></dl>
 
 </div>
 </div>
