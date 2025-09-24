@@ -494,8 +494,14 @@ bool GameWindowHandler::moveEvent(const PlatformMoveEvent *event) {
 bool GameWindowHandler::resizeEvent(const PlatformResizeEvent *event) {
     render->Reinitialize();
     PlatformWindowMode mode = window->windowMode();
+
+    fmt::println(stderr, "GameWindowHandler::resizeEvent {}", std::to_underlying(mode));
+
     if (mode == WINDOW_MODE_WINDOWED || mode == WINDOW_MODE_BORDERLESS) {
         auto [display, relativePos, wsize] = GetWindowRelativePosition();
+
+        fmt::println(stderr, "GameWindowHandler::resizeEvent IN w={} h={}", wsize.w, wsize.h);
+        fmt::println(stderr, "GameWindowHandler::resizeEvent IN prevw={} prevh={}", engine->config->window.Width.value(), engine->config->window.Height.value());
 
         engine->config->window.PositionX.setValue(relativePos.x);
         engine->config->window.PositionY.setValue(relativePos.y);

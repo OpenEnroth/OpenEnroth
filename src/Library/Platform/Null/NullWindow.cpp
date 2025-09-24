@@ -6,6 +6,7 @@
 
 #include "NullPlatformSharedState.h"
 #include "NullOpenGLContext.h"
+#include "Library/StackTrace/StackTrace.h"
 
 NullWindow::NullWindow(NullPlatformSharedState *state): _state(state) {
     assert(state);
@@ -62,6 +63,9 @@ bool NullWindow::isResizable() const {
 
 void NullWindow::setWindowMode(PlatformWindowMode mode) {
     _mode = mode;
+
+    fmt::println(stderr, "NullWindow::setWindowMode {}", std::to_underlying(mode));
+    printStackTrace(stderr);
 }
 
 PlatformWindowMode NullWindow::windowMode() {

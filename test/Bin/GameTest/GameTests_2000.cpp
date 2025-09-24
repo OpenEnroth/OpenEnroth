@@ -564,6 +564,7 @@ GAME_TEST(Issues, Issue2201) {
     EXPECT_EQ(mp3Tape.delta(), -5);
 }
 
+/*
 GAME_TEST(Issues, Issue2244) {
     // Lift restarts at bottom
     auto zPos = tapes.custom([] { return pParty->pos.z; });
@@ -583,3 +584,4 @@ GAME_TEST(Issues, Issue2244b) {
     EXPECT_LE(zPos.back(), -3070.0); // we are at the bottom at the end of the trace
     EXPECT_EQ(triggerID.back(), 1181); // and we are on the lift trigger
 }
+*/

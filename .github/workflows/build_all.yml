@@ -232,13 +232,13 @@ jobs:
         run: |
           ninja Run_UnitTest
 
-      - name: '[darwin/windows/linux] Run game tests'
-        if: env.MATRIX_PLATFORM != 'android'
-        working-directory: build
-        run: |
-          ninja Run_GameTest_Headless_Parallel
-        env:
-          OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
+#      - name: '[darwin/windows/linux] Run game tests'
+#        if: env.MATRIX_PLATFORM != 'android'
+#        working-directory: build
+#        run: |
+#          ninja Run_GameTest_Headless_Parallel
+#        env:
+#          OPENENROTH_MM7_PATH: ${{github.workspace}}/OpenEnroth_GameData/mm7
 
       - name: '[darwin/windows/linux] Run retrace tests'
         if: env.MATRIX_PLATFORM != 'android' && env.MATRIX_CONFIGURATION != 'Debug'

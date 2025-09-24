@@ -91,12 +91,21 @@ int runRetrace(const OpenEnrothOptions &options) {
                 oldTraceBlob = Blob(); // Close old trace file
                 FileOutputStream(tracePath).write(recording.trace);
             } else {
+                if (tracePath.contains("issue_1569"))
+                    fmt::println(stderr, "AAAAAAA");
                 std::string oldTraceJson = normalizeText(oldTraceBlob.string_view());
                 std::string newTraceJson = normalizeText(recording.trace.string_view());
                 if (oldTraceJson != newTraceJson) {
                     fmt::println(stderr, "Trace '{}' is not in canonical representation.", tracePath);
                     printTraceDiff(oldTraceJson, newTraceJson);
                     status = 1;
+                } else {
+                    if (tracePath.contains("issue_1569")) {
+                        fmt::println(stderr, "OLD");
+                        fmt::println(stderr, "{}", oldTraceJson);
+                        fmt::println(stderr, "NEW");
+                        fmt::println(stderr, "{}", newTraceJson);
+                    }
                 }
             }
         }
