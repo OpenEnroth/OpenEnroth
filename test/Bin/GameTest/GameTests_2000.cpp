@@ -257,14 +257,7 @@ GAME_TEST(Issues, Issue2108a) {
     prepareForBattleTest();
 
     // Cast shield.
-    game.pressGuiButton("Game_CastSpell");
-    game.tick(1);
-    game.pressGuiButton("SpellBook_School1"); // Air magic.
-    game.tick(1);
-    game.pressGuiButton("SpellBook_Spell5"); // 5 is Shield.
-    game.tick(1);
-    game.pressGuiButton("SpellBook_Spell5"); // Confirm.
-    game.tick(1);
+    game.castSpell(1, SPELL_AIR_SHIELD);
 
     // Spawn archers & wait.
     engine->config->debug.NoActors.setValue(false);
@@ -549,15 +542,7 @@ GAME_TEST(Issues, Issue2201) {
     pParty->pCharacters[3].bHaveSpell[SPELL_FIRE_HASTE] = true;
     pParty->pCharacters[0].SetCondition(CONDITION_WEAK, false);
 
-    pParty->setActiveCharacterIndex(4);
-    game.tick();
-    game.pressAndReleaseKey(PlatformKey::KEY_C);
-    game.tick();
-    game.pressGuiButton("SpellBook_School0"); // Fire magic.
-    game.tick();
-    game.pressGuiButton("SpellBook_Spell4"); // Haste.
-    game.tick();
-    game.pressGuiButton("SpellBook_Spell4"); // Confirm.
+    game.castSpell(4, SPELL_FIRE_HASTE);
     game.tick(10); // All mana from 4th character was drained in 10 ticks.
 
     EXPECT_CONTAINS(statusTape, "Spell failed");

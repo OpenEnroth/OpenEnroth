@@ -128,12 +128,7 @@ GAME_TEST(Issues, Issue1535) {
     game.startNewGame();
     engine->config->debug.AllMagic.setValue(true);
 
-    game.pressGuiButton("Game_CastSpell");
-    game.tick(1);
-    game.pressGuiButton("SpellBook_Spell8"); // 8 is meteor shower.
-    game.tick(1);
-    game.pressGuiButton("SpellBook_Spell8"); // Confirm.
-    game.tick(1);
+    game.castSpell(1, SPELL_FIRE_METEOR_SHOWER);
 
     // Should have put the spell cast message to queue.
     UIMessageType message = UIMSG_Invalid;
@@ -693,14 +688,8 @@ GAME_TEST(Issues, Issue1947) {
     engine->config->debug.TownPortal.setValue(true);
     engine->config->debug.AllMagic.setValue(true);
 
-    game.pressAndReleaseKey(PlatformKey::KEY_C);
-    game.tick();
-    game.pressGuiButton("SpellBook_School2"); // Water magic.
-    game.tick();
-    game.pressGuiButton("SpellBook_Spell8"); // Town portal.
-    game.tick();
-    game.pressGuiButton("SpellBook_Spell8"); // Confirm.
-    game.tick(3);
+    game.castSpell(1, SPELL_WATER_TOWN_PORTAL);
+    game.tick(2);
     game.pressGuiButton("TownPortalBook_Marker10"); // Tatalia.
     game.tick();
     game.skipLoadingScreen();
@@ -767,14 +756,7 @@ GAME_TEST(Issues, Issue1959) {
     game.tick();
 
     for (int i = 0; i < 4; i++) {
-        pParty->setActiveCharacterIndex(i + 1);
-        game.pressGuiButton("Game_CastSpell");
-        game.tick();
-        game.pressGuiButton("SpellBook_School1"); // Air magic.
-        game.tick();
-        game.pressGuiButton("SpellBook_Spell3"); // Sparks.
-        game.tick();
-        game.pressGuiButton("SpellBook_Spell3"); // Confirm.
+        game.castSpell(i + 1, SPELL_AIR_SPARKS);
         game.tick(30); // Wait for the sparks to settle.
 
         std::vector<float> angles;
@@ -813,16 +795,8 @@ GAME_TEST(Issues, Issue1961) {
     pParty->pCharacters[3].pActiveSkills[SKILL_WATER] = CombinedSkillValue(10, MASTERY_GRANDMASTER);
     pParty->pCharacters[3].bHaveSpell[SPELL_WATER_ENCHANT_ITEM] = true;
 
-    game.pressAndReleaseKey(PlatformKey::KEY_DIGIT_4); // Select 4th char.
+    game.castSpell(4, SPELL_WATER_ENCHANT_ITEM);
     game.tick(1);
-    game.pressGuiButton("Game_CastSpell");
-    game.tick(1);
-    game.pressGuiButton("SpellBook_School2"); // Water magic.
-    game.tick(1);
-    game.pressGuiButton("SpellBook_Spell7"); // Enchant item.
-    game.tick(1);
-    game.pressGuiButton("SpellBook_Spell7"); // Confirm.
-    game.tick(2);
     game.pressAndReleaseButton(BUTTON_LEFT, 30, 30);
     game.tick(1); // Don't wait out the animation.
 

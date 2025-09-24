@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 
+#include "Engine/Spells/SpellEnums.h"
 #include "Engine/Objects/MonsterEnums.h"
 #include "Engine/MapEnums.h"
 
@@ -102,11 +103,21 @@ class EngineController {
 
     void resizeWindow(int w, int h);
 
+    /**
+     * Opens up the rest menu, presses the "rest and heal for 8 hours" button, and waits out the rest period.
+     */
     void restAndHeal();
 
+    /**
+     * @param position                  Position to spawn a monster at.
+     * @param id                        Id of the monster to spawn.
+     * @return                          Spawned monster, so you can tweak it after spawning.
+     */
     Actor *spawnMonster(Vec3f position, MonsterId id);
 
     void teleportTo(MapId map, Vec3f position, int viewYaw);
+
+    void castSpell(int characterIndex, SpellId spell);
 
  private:
     GUIButton *existingButton(std::string_view buttonId);

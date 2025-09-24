@@ -22,6 +22,7 @@
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Objects/Actor.h"
+#include "Engine/Spells/SpellEnumFunctions.h"
 
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -339,6 +340,26 @@ void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw) {
         pParty->_viewYaw = viewYaw * 512 / 90;
         tick();
     }
+}
+
+void EngineController::castSpell(int characterIndex, SpellId spell) {
+    goToGame();
+
+    if (GetCurrentMenuID() != MENU_NONE)
+        throw Exception("Can't cast a spell from the main menu");
+
+    MagicSchool school = magicSchoolForSpell(spell);
+    int index = spellIndexInMagicSchool(spell);
+
+    pParty->setActiveCharacterIndex(characterIndex);
+    pressGuiButton("Game_CastSpell");
+    tick(1);
+    pressGuiButton(fmt::format("SpellBook_School{}", std::to_underlying(school)));
+    tick(1);
+    pressGuiButton(fmt::format("SpellBook_Spell{}", index));
+    tick(1);
+    pressGuiButton(fmt::format("SpellBook_Spell{}", index)); // Confirm.
+    tick(1);
 }
 
 GUIButton *EngineController::existingButton(std::string_view buttonId) {
