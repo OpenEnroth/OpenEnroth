@@ -536,6 +536,8 @@ GAME_TEST(Issues, Issue2188) {
     EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_QUICK_REFERENCE));
 }
 
+// 2200
+
 GAME_TEST(Issues, Issue2201) {
     // Haste depletes all spell points when any party member is weak.
     auto mp3Tape = charTapes.mp(3);
@@ -560,4 +562,24 @@ GAME_TEST(Issues, Issue2201) {
 
     EXPECT_CONTAINS(statusTape, "Spell failed");
     EXPECT_EQ(mp3Tape.delta(), -5);
+}
+
+GAME_TEST(Issues, Issue2244) {
+    // Lift restarts at bottom
+    auto zPos = tapes.custom([] { return pParty->pos.z; });
+    auto triggerID = tapes.custom([] {return pParty->floor_face_id; });
+    test.playTraceFromTestData("issue_2244.mm7", "issue_2244.json");
+    EXPECT_GE(zPos.front(), 0.0); // start at the top of the lift
+    EXPECT_LE(zPos.back(), -3070.0); // we are at the bottom at the end of the trace
+    EXPECT_NE(triggerID.front(), 1181); // start off the lift trigger
+    EXPECT_EQ(triggerID.back(), 1181); // and we are on the lift trigger
+}
+
+GAME_TEST(Issues, Issue2244b) {
+    // Make sure events dont trigger on game load
+    auto zPos = tapes.custom([] { return pParty->pos.z; });
+    auto triggerID = tapes.custom([] {return pParty->floor_face_id; });
+    test.playTraceFromTestData("issue_2244b.mm7", "issue_2244b.json");
+    EXPECT_LE(zPos.back(), -3070.0); // we are at the bottom at the end of the trace
+    EXPECT_EQ(triggerID.back(), 1181); // and we are on the lift trigger
 }
