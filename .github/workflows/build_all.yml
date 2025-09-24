@@ -202,7 +202,7 @@ jobs:
       - name: '[darwin/windows/linux] Configure'
         if: env.MATRIX_PLATFORM != 'android'
         run: |
-          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{env.MATRIX_CONFIGURATION}} -DNIGHTLY=ON ${{env.MATRIX_CMAKE_ARGS}}
+          cmake -B build -G "Ninja" -DCMAKE_BUILD_TYPE=${{env.MATRIX_CONFIGURATION}} -DOE_DISTRIBUTION_BUILD=ON ${{env.MATRIX_CMAKE_ARGS}}
 
       - name: '[darwin/windows/linux] Build'
         if: env.MATRIX_PLATFORM != 'android'

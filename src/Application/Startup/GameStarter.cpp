@@ -83,6 +83,9 @@ void GameStarter::initialize() {
         logger->info("Configuration file '{}' loaded!", ufs->displayPath(configName));
     } else {
         _config->reset();
+#ifdef OE_DISTRIBUTION_BUILD
+        _config->window.Mode.setValue(WINDOW_MODE_FULLSCREEN_BORDERLESS);
+#endif
         logger->info("Could not read configuration file '{}'! Loaded default configuration instead!", ufs->displayPath(configName));
     }
     logger->info("Built in resource override is {}.", _config->debug.OverrideBuiltInResources.value() ? "enabled" : "disabled");
