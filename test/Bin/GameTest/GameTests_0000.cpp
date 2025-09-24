@@ -470,18 +470,7 @@ GAME_TEST(Issues, Issue405) {
     auto runTrace = [&] {
         engine->config->debug.AllMagic.setValue(true);
         test.loadGameFromTestData("issue_405.mm7");
-        // TODO(captainurist): Drop this if once we fix #1174. Right now the 1st char is selected on load, and pressing
-        //                     the portrait again opens up character screen.
-        if (pParty->activeCharacterIndex() != 1) {
-            game.pressGuiButton("Game_Character1");
-            game.tick(1);
-        }
-        game.pressGuiButton("Game_CastSpell");
-        game.tick(1);
-        game.pressGuiButton("SpellBook_Spell7"); // 7 is immolation.
-        game.tick(1);
-        game.pressGuiButton("SpellBook_Spell7"); // Confirm.
-        game.tick(1);
+        game.castSpell(1, SPELL_FIRE_IMMOLATION);
     };
 
     // 100ms/frame
