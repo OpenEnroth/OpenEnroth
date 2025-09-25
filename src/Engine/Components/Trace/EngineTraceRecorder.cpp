@@ -84,7 +84,6 @@ EngineTraceRecording EngineTraceRecorder::finishRecording(EngineController *game
 
     _trace->events = component<EngineTraceSimpleRecorder>()->finishRecording();
     _trace->header.endState = EngineTraceStateAccessor::makeGameState();
-    EventTrace::migrateDropRedundantKeyEvents(_trace.get());
 
     EngineTraceRecording result;
     result.save = std::move(_savedGame);
