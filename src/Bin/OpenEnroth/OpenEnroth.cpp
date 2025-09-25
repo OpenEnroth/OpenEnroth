@@ -65,9 +65,10 @@ static void printTraceDiff(std::string_view current, std::string_view canonical)
 void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
     switch (migration) {
     default: assert(false); [[fallthrough]];
-    case OpenEnrothOptions::MIGRATION_NONE: return;
-    case OpenEnrothOptions::MIGRATION_DROP_AUTOREPEAT: return EventTrace::migrateDropAutorepeat(trace);
-    case OpenEnrothOptions::MIGRATION_DROP_ORPHANED_KEY_RELEASES: return EventTrace::migrateDropOrphanedKeyReleases(trace);
+    case OpenEnrothOptions::MIGRATION_NONE:
+        return;
+    case OpenEnrothOptions::MIGRATION_DROP_REDUNDANT_KEY_EVENTS:
+        return EventTrace::migrateDropRedundantKeyEvents(trace);
     case OpenEnrothOptions::MIGRATION_COLLAPSE_KEY_EVENTS:
         std::unordered_set<PlatformKey> keys;
         for (InputAction inputAction : allInputActions())

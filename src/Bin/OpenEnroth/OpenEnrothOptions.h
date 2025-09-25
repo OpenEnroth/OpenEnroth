@@ -18,10 +18,8 @@ struct OpenEnrothOptions : public GameStarterOptions {
 
     enum class Migration {
         MIGRATION_NONE,
-        MIGRATION_DROP_AUTOREPEAT, // Drops all autorepeat events - they are ignored by the engine anyway.
-        MIGRATION_DROP_ORPHANED_KEY_RELEASES, // Drops key release events w/o a corresponding key press.
-        MIGRATION_COLLAPSE_KEY_EVENTS, // Collapses key press & release events inside a single frame for continuously
-                                       // toggleable input actions.
+        MIGRATION_DROP_REDUNDANT_KEY_EVENTS,
+        MIGRATION_COLLAPSE_KEY_EVENTS,
     };
     using enum Migration;
 
