@@ -74,7 +74,7 @@ class PlatformApplication {
         return _components.require<T>();
     }
 
-    void processMessages(int count = -1);
+    void processMessages();
     void waitForMessages();
 
  private:

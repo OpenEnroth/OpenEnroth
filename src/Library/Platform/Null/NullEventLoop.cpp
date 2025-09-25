@@ -18,7 +18,7 @@ void NullEventLoop::quit() {
     // Nothing to quit from.
 }
 
-void NullEventLoop::processMessages(PlatformEventHandler *eventHandler, int count) {
+void NullEventLoop::processMessages(PlatformEventHandler *eventHandler) {
     // No messages in event queue => return immediately.
 }
 
