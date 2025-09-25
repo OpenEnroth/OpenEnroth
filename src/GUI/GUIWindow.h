@@ -16,7 +16,7 @@
 #include "GUI/GUIEnums.h"
 #include "GUI/GUIDialogues.h"
 
-#include "Io/InputAction.h"
+#include "Io/InputEnums.h"
 #include "Io/KeyboardInputHandler.h"
 
 #include "Library/Platform/Interface/PlatformEnums.h"

@@ -22,7 +22,7 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
 
-#include "Io/InputAction.h"
+#include "Io/InputEnums.h"
 #include "Io/KeyboardInputHandler.h"
 #include "Io/Mouse.h"
 

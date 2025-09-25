@@ -8,7 +8,7 @@
 
 #include "Engine/Graphics/Renderer/RendererEnums.h"
 
-#include "Io/Key.h"
+#include "Io/InputEnumFunctions.h"
 
 #include "Library/Config/Config.h"
 #include "Engine/Random/RandomEnums.h"

@@ -40,7 +40,6 @@ class KeyboardInputHandler {
     bool IsAdventurerBackcycleToggled() const;
     bool IsSpellBackcycleToggled() const;
     bool IsCastOnClickToggled() const;
-    bool IsKeyHeld(PlatformKey key) const;
 
     void GenerateInputActions();
 

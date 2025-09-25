@@ -11,7 +11,7 @@
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Json/Json.h"
 
-#include "Io/Key.h" // TODO(captainurist): doesn't belong here
+#include "Io/InputEnumFunctions.h" // TODO(captainurist): doesn't belong here
 
 #include "PaintEvent.h"
 

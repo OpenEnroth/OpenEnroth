@@ -4,16 +4,9 @@
 #include <memory>
 
 #include "Library/Platform/Interface/PlatformEnums.h"
-#include "Io/InputAction.h"
+#include "Io/InputEnums.h"
 
 #include "Application/GameConfig.h"
-
-enum class KeyToggleType {
-    TOGGLE_CONTINUOUSLY = 0, // Toggle every frame as long as the key as pressed.
-    TOGGLE_ONCE = 1, // Toggle once per keypress (but not more than once per frame).
-    TOGGLE_CONTINUOUSLY_WITH_DELAY = 2, // Toggle once, then toggle continuously after a 500ms delay.
-};
-using enum KeyToggleType;
 
 enum class KeybindingsQuery {
     KEYBINDINGS_ALL = 0,
@@ -22,6 +15,7 @@ enum class KeybindingsQuery {
 using enum KeybindingsQuery;
 
 namespace Io {
+// TODO(captainurist): #enum
 enum class TextInputType {
     None = 0,
     Text = 1,
@@ -34,14 +28,13 @@ class KeyboardActionMapping {
  public:
     explicit KeyboardActionMapping(std::shared_ptr<GameConfig> config);
 
-    PlatformKey keyFor(InputAction action) const;
-    PlatformKey gamepadKeyFor(InputAction action) const;
-    KeyToggleType toggleTypeFor(InputAction action) const;
+    [[nodiscard]] PlatformKey keyFor(InputAction action) const;
+    [[nodiscard]] PlatformKey gamepadKeyFor(InputAction action) const;
 
-    bool isBound(InputAction action, PlatformKey key) const;
+    [[nodiscard]] bool isBound(InputAction action, PlatformKey key) const;
 
-    Keybindings keybindings(KeybindingsQuery query) const;
-    Keybindings defaultKeybindings(KeybindingsQuery query) const;
+    [[nodiscard]] Keybindings currentKeybindings(KeybindingsQuery query) const;
+    [[nodiscard]] Keybindings defaultKeybindings(KeybindingsQuery query) const;
     void applyKeybindings(const Keybindings &keybindings);
 
  private:
