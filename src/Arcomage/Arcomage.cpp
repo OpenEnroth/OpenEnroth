@@ -548,7 +548,7 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
     // blank message input
     pArcomageGame->stru1.am_input_type = ARCO_MSG_NULL;
 
-    eventLoop->processMessages(eventHandler, -1);
+    eventLoop->processMessages(eventHandler);
 
     *a2 = pArcomageGame->stru1;
     return pArcomageGame->stru1.am_input_type != ARCO_MSG_NULL;

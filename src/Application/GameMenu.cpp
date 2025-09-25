@@ -18,7 +18,7 @@
 #include "Engine/EngineIocContainer.h"
 
 #include "Library/Platform/Interface/PlatformEnums.h"
-#include "Io/InputAction.h"
+#include "Io/InputEnums.h"
 #include "Io/KeyboardInputHandler.h"
 
 #include "GUI/GUIButton.h"

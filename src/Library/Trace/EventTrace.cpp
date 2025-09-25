@@ -4,11 +4,14 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <unordered_set>
+#include <unordered_map>
+#include <span>
 
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Json/Json.h"
 
-#include "Io/Key.h" // TODO(captainurist): doesn't belong here
+#include "Io/InputEnumFunctions.h" // TODO(captainurist): doesn't belong here
 
 #include "PaintEvent.h"
 
@@ -259,4 +262,74 @@ std::unique_ptr<PlatformEvent> EventTrace::cloneEvent(const PlatformEvent *event
     });
 
     return result;
+}
+
+void EventTrace::migrateDropRedundantKeyEvents(EventTrace *trace) {
+    std::unordered_set<PlatformKey> pressedKeys;
+    for (std::unique_ptr<PlatformEvent> &event : trace->events) {
+        if (event->type != EVENT_KEY_PRESS && event->type != EVENT_KEY_RELEASE)
+            continue;
+
+        PlatformKey key = static_cast<PlatformKeyEvent *>(event.get())->key;
+        if (event->type == EVENT_KEY_PRESS) {
+            if (pressedKeys.contains(key)) {
+                event.reset(); // Drop redundant key press events.
+            } else {
+                pressedKeys.insert(key);
+            }
+        } else {
+            if (!pressedKeys.contains(key)) {
+                event.reset(); // Drop redundant key release events.
+            } else {
+                pressedKeys.erase(key);
+            }
+        }
+    }
+
+    std::erase_if(trace->events, [](const auto &event) { return !event; });
+}
+
+void EventTrace::migrateCollapseKeyEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace) {
+    // Non-negative value => in-frame index, negative value => pressed in another frame.
+    std::unordered_map<PlatformKey, int> pressIndexByKey;
+
+    auto pos = trace->events.begin();
+    while (true) {
+        auto next = std::find_if(pos, trace->events.end(), [](const auto &event) { return event->type == EVENT_PAINT; });
+
+        std::span frame(pos, next);
+        for (int i = 0; i < frame.size(); i++) {
+            if (frame[i]->type != EVENT_KEY_PRESS && frame[i]->type != EVENT_KEY_RELEASE)
+                continue;
+
+            PlatformKey key = static_cast<PlatformKeyEvent *>(frame[i].get())->key;
+            if (!keys.contains(key))
+                continue;
+
+            if (frame[i]->type == EVENT_KEY_PRESS) {
+                assert(!pressIndexByKey.contains(key));
+                pressIndexByKey[key] = i;
+            } else {
+                assert(pressIndexByKey.contains(key));
+                int index = pressIndexByKey[key];
+                pressIndexByKey.erase(key);
+
+                if (index >= 0) {
+                    // Press & release inside a single frame, should drop.
+                    frame[index].reset();
+                    frame[i].reset();
+                }
+            }
+        }
+
+        for (auto &[_, index] : pressIndexByKey)
+            index = -1;
+
+        pos = next;
+        if (pos == trace->events.end())
+            break;
+        pos++; // Skip EVENT_PAINT.
+    }
+
+    std::erase_if(trace->events, [](const auto &event) { return !event; });
 }

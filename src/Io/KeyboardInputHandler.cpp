@@ -16,6 +16,8 @@
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIMessageQueue.h"
 
+#include "InputEnumFunctions.h"
+
 // Delayed keyrepeat registers after 500ms.
 static constexpr Duration DELAY_TOGGLE_TIME_FIRST = Duration::fromRealtimeMilliseconds(500);
 
@@ -60,7 +62,7 @@ void Io::KeyboardInputHandler::GeneratePausedActions() {
     for (auto action : allInputActions()) {
         bool isTriggered = false;
         PlatformKey key = actionMapping->keyFor(action);
-        if (actionMapping->toggleTypeFor(action) == TOGGLE_ONCE)
+        if (toggleTypeForInputAction(action) == TOGGLE_ONCE)
             isTriggered = controller->ConsumeKeyPress(key);
         else
             isTriggered = controller->IsKeyDown(key);
@@ -89,7 +91,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
         PlatformKey key = actionMapping->keyFor(action);
         PlatformKey gamepadkey = actionMapping->gamepadKeyFor(action);
 
-        switch (actionMapping->toggleTypeFor(action)) {
+        switch (toggleTypeForInputAction(action)) {
         default: assert(false); [[fallthrough]];
         case TOGGLE_ONCE:
             isTriggered = controller->ConsumeKeyPress(key) || controller->ConsumeKeyPress(gamepadkey);
@@ -488,8 +490,4 @@ bool Io::KeyboardInputHandler::IsSpellBackcycleToggled() const {
 
 bool Io::KeyboardInputHandler::IsCastOnClickToggled() const {
     return controller->IsKeyDown(PlatformKey::KEY_SHIFT);
-}
-
-bool Io::KeyboardInputHandler::IsKeyHeld(PlatformKey key) const {
-    return controller->IsKeyDown(key);
 }

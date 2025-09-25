@@ -114,8 +114,8 @@ PlatformEventHandler *PlatformApplication::eventHandler() {
     return _eventHandler.get();
 }
 
-void PlatformApplication::processMessages(int count) {
-    eventLoop()->processMessages(eventHandler(), count);
+void PlatformApplication::processMessages() {
+    eventLoop()->processMessages(eventHandler());
 }
 
 void PlatformApplication::waitForMessages() {

@@ -1,9 +1,5 @@
 #pragma once
 
-#include <string>
-
-#include "Utility/Segment.h"
-
 enum class InputAction {
     INPUT_ACTION_MOVE_FORWARD = 0,
     INPUT_ACTION_MOVE_BACKWARDS,
@@ -88,12 +84,9 @@ enum class InputAction {
 };
 using enum InputAction;
 
-inline Segment<InputAction> allInputActions() {
-    return {INPUT_ACTION_FIRST_VALID, INPUT_ACTION_LAST_VALID};
-}
-
-inline Segment<InputAction> allConfigurableInputActions() {
-    return {INPUT_ACTION_FIRST_CONFIGURABLE, INPUT_ACTION_LAST_CONFIGURABLE};
-}
-
-std::string GetDisplayName(InputAction action);
+enum class KeyToggleType {
+    TOGGLE_CONTINUOUSLY = 0, // Toggle every frame as long as the key as pressed.
+    TOGGLE_ONCE = 1, // Toggle once per keypress (but not more than once per frame).
+    TOGGLE_CONTINUOUSLY_WITH_DELAY = 2, // Toggle once, then toggle continuously after a 500ms delay.
+};
+using enum KeyToggleType;

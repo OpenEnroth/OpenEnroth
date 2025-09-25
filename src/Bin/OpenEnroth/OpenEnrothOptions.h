@@ -16,8 +16,16 @@ struct OpenEnrothOptions : public GameStarterOptions {
     };
     using enum Subcommand;
 
+    enum class Migration {
+        MIGRATION_NONE,
+        MIGRATION_DROP_REDUNDANT_KEY_EVENTS,
+        MIGRATION_COLLAPSE_KEY_EVENTS,
+    };
+    using enum Migration;
+
     struct RetraceOptions {
         std::vector<std::string> traces;
+        Migration migration = MIGRATION_NONE;
         bool checkCanonical = false;
     };
 
@@ -40,3 +48,5 @@ struct OpenEnrothOptions : public GameStarterOptions {
      */
     static OpenEnrothOptions parse(int argc, char **argv);
 };
+
+MM_DECLARE_SERIALIZATION_FUNCTIONS(OpenEnrothOptions::Migration)

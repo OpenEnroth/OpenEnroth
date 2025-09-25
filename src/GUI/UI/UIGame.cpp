@@ -47,7 +47,7 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UISpellbook.h"
 
-#include "Io/InputAction.h"
+#include "Io/InputEnumFunctions.h"
 #include "Io/Mouse.h"
 
 #include "Utility/Math/TrigLut.h"
@@ -301,7 +301,7 @@ GUIWindow_GameKeyBindings::GUIWindow_GameKeyBindings()
     KeyboardPageNum = 1;
 
     key_map_conflicted.clear();
-    curr_key_map = keyboardActionMapping->keybindings(KEYBINDINGS_CONFIGURABLE);
+    curr_key_map = keyboardActionMapping->currentKeybindings(KEYBINDINGS_CONFIGURABLE);
 }
 
 //----- (004142D3) --------------------------------------------------------

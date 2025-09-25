@@ -59,10 +59,10 @@ class EngineControlComponent : private ProxyOpenGLContext, private ProxyEventLoo
  private:
     friend class PlatformIntrospection; // Give access to private bases.
 
-    void processSyntheticEvents(PlatformEventHandler *eventHandler, int count = -1);
+    void processSyntheticEvents(PlatformEventHandler *eventHandler);
 
     virtual void exec(PlatformEventHandler *eventHandler) override;
-    virtual void processMessages(PlatformEventHandler *eventHandler, int count) override;
+    virtual void processMessages(PlatformEventHandler *eventHandler) override;
     virtual void waitForMessages() override;
     virtual void swapBuffers() override;
     virtual void removeNotify() override;

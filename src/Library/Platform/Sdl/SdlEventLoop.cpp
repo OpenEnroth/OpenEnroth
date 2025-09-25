@@ -44,17 +44,12 @@ void SdlEventLoop::quit() {
     _quitRequested = true;
 }
 
-void SdlEventLoop::processMessages(PlatformEventHandler *eventHandler, int count) {
+void SdlEventLoop::processMessages(PlatformEventHandler *eventHandler) {
     assert(eventHandler);
-    assert(count != 0);
 
     SDL_Event e;
-    while (SDL_PollEvent(&e)) {
+    while (SDL_PollEvent(&e))
         dispatchEvent(eventHandler, &e);
-        count--;
-        if (count == 0)
-            break; // Note: count == -1 will never get here, as intended.
-    }
 }
 
 void SdlEventLoop::waitForMessages() {

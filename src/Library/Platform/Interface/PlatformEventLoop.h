@@ -30,9 +30,8 @@ class PlatformEventLoop {
      * no messages in the message queue.
      *
      * @param eventHandler              Callback for event processing.
-     * @param count                     Maximum number of messages to process, `-1` means unlimited.
      */
-    virtual void processMessages(PlatformEventHandler *eventHandler, int count = -1) = 0;
+    virtual void processMessages(PlatformEventHandler *eventHandler) = 0;
 
     // TODO(captainurist): this should be dropped.
     /**

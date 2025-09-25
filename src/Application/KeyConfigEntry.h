@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Io/InputAction.h"
+#include "Io/InputEnums.h"
 
 #include "Library/Config/ConfigEntry.h"
 #include "Library/Platform/Interface/PlatformEnums.h"

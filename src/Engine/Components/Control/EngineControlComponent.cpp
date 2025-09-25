@@ -62,12 +62,11 @@ bool EngineControlComponent::hasControlRoutine() const {
     return !_state->controlRoutineQueue.empty();
 }
 
-void EngineControlComponent::processSyntheticEvents(PlatformEventHandler *eventHandler, int count) {
-    while (!_state->postedEvents.empty() && count != 0) {
+void EngineControlComponent::processSyntheticEvents(PlatformEventHandler *eventHandler) {
+    while (!_state->postedEvents.empty()) {
         std::unique_ptr<PlatformEvent> event = std::move(_state->postedEvents.front());
         _state->postedEvents.pop();
         eventHandler->event(event.get());
-        count--; // Negative count will never get to zero, as intended.
     }
 }
 
@@ -81,12 +80,12 @@ void EngineControlComponent::exec(PlatformEventHandler *eventHandler) {
     }
 }
 
-void EngineControlComponent::processMessages(PlatformEventHandler *eventHandler, int count) {
+void EngineControlComponent::processMessages(PlatformEventHandler *eventHandler) {
     if (!hasControlRoutine()) {
         assert(_state->postedEvents.empty());
-        ProxyEventLoop::processMessages(eventHandler, count);
+        ProxyEventLoop::processMessages(eventHandler);
     } else {
-        processSyntheticEvents(eventHandler, count);
+        processSyntheticEvents(eventHandler);
         ProxyEventLoop::processMessages(_emptyHandler.get());
     }
 }
