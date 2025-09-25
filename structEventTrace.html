@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;56963ba</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bc51f8e</span>
    </div>
   </td>
  </tr>
@@ -89,6 +89,10 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a62973ef03b19f274e72363a49c58c4f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62821d2dc12bf09948acc90757a67565"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classPlatformEvent.html">PlatformEvent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEventTrace.html#a62821d2dc12bf09948acc90757a67565">cloneEvent</a> (const <a class="el" href="classPlatformEvent.html">PlatformEvent</a> *event)</td></tr>
 <tr class="separator:a62821d2dc12bf09948acc90757a67565"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b909a38b329b7a82dbae6beb15e9bf2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEventTrace.html#a9b909a38b329b7a82dbae6beb15e9bf2">migrateDropRedundantKeyEvents</a> (<a class="el" href="structEventTrace.html">EventTrace</a> *trace)</td></tr>
+<tr class="separator:a9b909a38b329b7a82dbae6beb15e9bf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a199573dad834424b85e596acbc268a92"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structEventTrace.html#a199573dad834424b85e596acbc268a92">migrateCollapseKeyEvents</a> (const std::unordered_set&lt; <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> &gt; &amp;keys, <a class="el" href="structEventTrace.html">EventTrace</a> *trace)</td></tr>
+<tr class="separator:a199573dad834424b85e596acbc268a92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -183,6 +187,84 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a199573dad834424b85e596acbc268a92" name="a199573dad834424b85e596acbc268a92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a199573dad834424b85e596acbc268a92">&#9670;&#160;</a></span>migrateCollapseKeyEvents()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void EventTrace::migrateCollapseKeyEvents </td>
+          <td>(</td>
+          <td class="paramtype">const std::unordered_set&lt; <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>keys</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structEventTrace.html">EventTrace</a> *&#160;</td>
+          <td class="paramname"><em>trace</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >This migration has to do with how OE handles key presses for input actions that trigger continuously. Originally, if a key was pressed and released inside a single frame, the continuous action would not trigger, so this key press was effectively ignored. We are changing that, but we already have a bunch of traces with keypresses that were ignored, so we need to drop them first.</p>
+<p >Note that we pass in <code>keys</code> and don't resolve them dynamically. This is not 100% correct but work.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir"></td><td class="paramname">keys</td><td>Set of keys for input actions that trigger continuously. </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">trace</td><td>Trace to update. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9b909a38b329b7a82dbae6beb15e9bf2" name="a9b909a38b329b7a82dbae6beb15e9bf2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b909a38b329b7a82dbae6beb15e9bf2">&#9670;&#160;</a></span>migrateDropRedundantKeyEvents()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void EventTrace::migrateDropRedundantKeyEvents </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structEventTrace.html">EventTrace</a> *&#160;</td>
+          <td class="paramname"><em>trace</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Removes all keyboard events that have no effect from a trace. This includes autorepeat events (OE handles autorepeat internally), and key releases w/o a corresponding key press.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">trace</td><td>Trace to update. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;56963ba</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;bc51f8e</span>
    </div>
   </td>
  </tr>
@@ -86,6 +86,7 @@ $(function() {
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;chrono&gt;</code><br />
+<code>#include &lt;unordered_set&gt;</code><br />
 <code>#include &quot;<a class="el" href="GameStarter_8h.html">Application/Startup/GameStarter.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineController_8h.html">Engine/Components/Control/EngineController.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineTraceSimplePlayer_8h.html">Engine/Components/Trace/EngineTraceSimplePlayer.h</a>&quot;</code><br />
@@ -93,6 +94,8 @@ $(function() {
 <code>#include &quot;<a class="el" href="EngineTraceStateAccessor_8h.html">Engine/Components/Trace/EngineTraceStateAccessor.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EngineTracePlayer_8h.html">Engine/Components/Trace/EngineTracePlayer.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Engine_8h.html">Engine/Engine.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="KeyboardActionMapping_8h.html">Io/KeyboardActionMapping.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="InputEnumFunctions_8h.html">Io/InputEnumFunctions.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="StackTraceOnCrash_8h.html">Library/StackTrace/StackTraceOnCrash.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="PlatformApplication_8h.html">Library/Platform/Application/PlatformApplication.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="EventTrace_8h.html">Library/Trace/EventTrace.h</a>&quot;</code><br />
@@ -112,6 +115,8 @@ Functions</h2></td></tr>
 <tr class="separator:a07aec9820e428e19c1ba4fb9a3524e9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a62f3198bd8683c9b1994da8344f6f4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a9a62f3198bd8683c9b1994da8344f6f4">printTraceDiff</a> (std::string_view current, std::string_view canonical)</td></tr>
 <tr class="separator:a9a62f3198bd8683c9b1994da8344f6f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a459777cebcfa1d2254d841fcb80274ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a459777cebcfa1d2254d841fcb80274ec">migrateTrace</a> (<a class="el" href="structOpenEnrothOptions.html#acf5c187a7f1935df0f59fdc5d7a2bc39">OpenEnrothOptions::Migration</a> migration, <a class="el" href="structEventTrace.html">EventTrace</a> *trace)</td></tr>
+<tr class="separator:a459777cebcfa1d2254d841fcb80274ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87e03b34539cd80852738d4372992e70"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a87e03b34539cd80852738d4372992e70">runRetrace</a> (const <a class="el" href="structOpenEnrothOptions.html">OpenEnrothOptions</a> &amp;options)</td></tr>
 <tr class="separator:a87e03b34539cd80852738d4372992e70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21a7ae22ec88e30ef5745c36b4653222"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="OpenEnroth_8cpp.html#a21a7ae22ec88e30ef5745c36b4653222">runPlay</a> (const <a class="el" href="structOpenEnrothOptions.html">OpenEnrothOptions</a> &amp;options)</td></tr>
@@ -124,6 +129,34 @@ Functions</h2></td></tr>
 <tr class="separator:ac514b18d4266e4a2f5a39f9d19a88f77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a459777cebcfa1d2254d841fcb80274ec" name="a459777cebcfa1d2254d841fcb80274ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a459777cebcfa1d2254d841fcb80274ec">&#9670;&#160;</a></span>migrateTrace()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void migrateTrace </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structOpenEnrothOptions.html#acf5c187a7f1935df0f59fdc5d7a2bc39">OpenEnrothOptions::Migration</a>&#160;</td>
+          <td class="paramname"><em>migration</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structEventTrace.html">EventTrace</a> *&#160;</td>
+          <td class="paramname"><em>trace</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a8f83dd125cf40cfa51935bced7fbf5fb" name="a8f83dd125cf40cfa51935bced7fbf5fb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8f83dd125cf40cfa51935bced7fbf5fb">&#9670;&#160;</a></span>normalizeText()</h2>
 
