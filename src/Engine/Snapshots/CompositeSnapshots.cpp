@@ -60,12 +60,22 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
     for (auto& face : dst->pFaces) {
         if (face.uNumVertices < 3) continue;
         Vec3f dir1 = (dst->pVertices[face.pVertexIDs[1]] - dst->pVertices[face.pVertexIDs[0]]);
-        Vec3f dir2, norm;
         int i = 2;
+        // dir1 can be a 0 vec when first edge is degenerate - skip forwards
+        while (dir1.length() < 1e-6f && i < face.uNumVertices) {
+            dir1 = (dst->pVertices[face.pVertexIDs[i]] - dst->pVertices[face.pVertexIDs[i-1]]);
+            i++;
+        }
+
+        Vec3f dir2, recalcNorm;
         for (; i < face.uNumVertices; i++) {
             dir2 = (dst->pVertices[face.pVertexIDs[i]] - dst->pVertices[face.pVertexIDs[0]]);
-            if (norm = cross(dir1, dir2); norm.length() > 1e-6f) {
-                break; // Found a non-parallel edge.
+            if (recalcNorm = cross(dir1, dir2); recalcNorm.length() > 1e-6f) {
+                recalcNorm /= recalcNorm.length();
+                // Check that our new normal is pointing in the same direction as the original
+                constexpr float tolerance = 0.95f; // TODO(pskelton): may need tuning
+                if (dot(recalcNorm, face.facePlane.normal) > tolerance)
+                    break;
             }
         }
 
@@ -74,7 +84,7 @@ void reconstruct(const IndoorLocation_MM7 &src, IndoorLocation *dst) {
             // TODO(pskelton):  This shouldnt ever happen - test and drop
             face.facePlane.normal /= face.facePlane.normal.length();
         } else {
-            face.facePlane.normal = norm / norm.length();
+            face.facePlane.normal = recalcNorm;
         }
         face.facePlane.dist = -dot(face.facePlane.normal, dst->pVertices[face.pVertexIDs[0]]);
         face.zCalc.init(face.facePlane);
