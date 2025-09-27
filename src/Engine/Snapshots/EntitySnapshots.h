@@ -128,8 +128,8 @@ struct SpriteFrame_MM6 {
     int32_t scale;            // 28h
     int32_t flags;               // 2c
     int16_t glowRadius;      // 30
-    int16_t paletteId;       // 32
-    int16_t paletteIndex;
+    int16_t paletteId; // Palette id, a number in [0, 999] referencing palXXX in bitmaps.lod.
+    int16_t paletteIndex; // Not used in OE, this was an index in a palette array that had non-existing palettes removed.
     int16_t animTime;
 };
 static_assert(sizeof(SpriteFrame_MM6) == 56);

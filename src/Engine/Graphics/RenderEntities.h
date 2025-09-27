@@ -19,7 +19,7 @@ struct RenderBillboard {
     float fov_y;
     int field_14_actor_id;
     Sprite *hwsprite;  // int16_t HwSpriteID;
-    int16_t uPaletteIndex;
+    int16_t uPaletteId;
     int uIndoorSectorID;
     int16_t field_1E;  // flags
     int16_t world_x;
@@ -96,7 +96,7 @@ struct RenderBillboardD3D {
           field_90(-1),
           screen_space_z(0),
           sParentBillboardID(-1),
-          PaletteIndex(0) {}
+          paletteId(0) {}
 
     enum class OpacityType : uint32_t {
         Transparent = 0,
@@ -119,7 +119,7 @@ struct RenderBillboardD3D {
     int sParentBillboardID;
 
     //int PaletteID;
-    int PaletteIndex;
+    int paletteId;
 };
 
 // TODO(pskelton): Simplify/remove/combine different billboard structs

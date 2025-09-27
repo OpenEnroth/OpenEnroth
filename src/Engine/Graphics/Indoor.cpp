@@ -1299,7 +1299,7 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
                     if (v11->hw_sprites[v9]->texture->height() == 0 || v11->hw_sprites[v9]->texture->width() == 0)
                         assert(false);
 
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteIndex = v11->GetPaletteIndex();
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = v11->uPaletteId;
                     pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID =
                         uSectorID;
 

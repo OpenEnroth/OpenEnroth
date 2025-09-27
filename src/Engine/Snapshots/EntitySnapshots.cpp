@@ -268,8 +268,7 @@ void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
     dst->uFlags = src.flags;
 
     dst->uGlowRadius = src.glowRadius;
-    dst->uPaletteID = src.paletteId;
-    dst->ResetPaletteIndex(src.paletteIndex);
+    dst->uPaletteId = src.paletteId;
     dst->uAnimTime = Duration::fromTicks(src.animTime * 8);
     dst->uAnimLength = Duration::fromTicks(src.animLength * 8);
 }

@@ -189,7 +189,7 @@ void BaseRenderer::DrawSpriteObjects() {
                         projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
                         if (projected_y >= pViewport->viewportTL_Y && (projected_y - screen_space_height) <= pViewport->viewportBR_Y) {
                             object->uAttributes |= SPRITE_VISIBLE;
-                            pBillboardRenderList[::uNumBillboardsToDraw].uPaletteIndex = frame->GetPaletteIndex();
+                            pBillboardRenderList[::uNumBillboardsToDraw].uPaletteId = frame->uPaletteId;
                             pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
                             pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
 
@@ -338,7 +338,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_z = view_x;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_x = _v41;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v41;
-                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].uPaletteIndex = frame->GetPaletteIndex();
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].uPaletteId = frame->uPaletteId;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].field_1E = v38 | 0x200;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Decoration, i);
@@ -500,7 +500,7 @@ void BaseRenderer::TransformBillboard(const SoftwareBillboard *pSoftBillboard, c
     billboard->screen_space_z = pSoftBillboard->screen_space_z;
     billboard->object_pid = pSoftBillboard->object_pid;
     billboard->sParentBillboardID = pSoftBillboard->sParentBillboardID;
-    billboard->PaletteIndex = pBillboard->uPaletteIndex;
+    billboard->paletteId = pBillboard->uPaletteId;
 }
 
 void BaseRenderer::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
@@ -518,7 +518,7 @@ void BaseRenderer::MakeParticleBillboardAndPush(SoftwareBillboard *a2,
     billboard->texture = texture;
     billboard->z_order = a2->screen_space_z;
     billboard->uNumVertices = 4;
-    billboard->PaletteIndex = pPaletteManager->paletteIndex(a2->paletteID);
+    billboard->paletteId = a2->paletteID;
 
     float screenspace_projection_factor = a2->screenspace_projection_factor_x;
 
@@ -637,7 +637,7 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
     pBillboardRenderListD3D[v5].texture = 0;
     pBillboardRenderListD3D[v5].uNumVertices = a1->uNumVertices;
     pBillboardRenderListD3D[v5].z_order = depth;
-    pBillboardRenderListD3D[v5].PaletteIndex = 0;
+    pBillboardRenderListD3D[v5].paletteId = 0;
 
     pBillboardRenderListD3D[v5].pQuads[3].pos.x = 0.0f;
     pBillboardRenderListD3D[v5].pQuads[3].pos.y = 0.0f;
@@ -676,7 +676,7 @@ void BaseRenderer::DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait, i
     rct.h = Portrait->hw_sprites[0]->uHeight;
 
     render->SetUIClipRect(rc);
-    render->DrawImage(Portrait->hw_sprites[0]->texture, rct, Portrait->GetPaletteIndex());
+    render->DrawImage(Portrait->hw_sprites[0]->texture, rct, Portrait->uPaletteId);
     render->ResetUIClipRect();
 }
 
