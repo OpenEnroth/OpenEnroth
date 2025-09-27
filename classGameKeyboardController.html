@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;1ebbd75</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;6c2f8f1</span>
    </div>
   </td>
  </tr>
@@ -98,12 +98,16 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af6923f7d9c4f6bc21ae40d72c9ef56da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5023e0a2082d84971da2a1b945814c5d"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameKeyboardController.html#a5023e0a2082d84971da2a1b945814c5d">IsKeyDown</a> (<a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> key) const override</td></tr>
 <tr class="separator:a5023e0a2082d84971da2a1b945814c5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2700352336c6f2ea51b2b0afb33d47fb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameKeyboardController.html#a2700352336c6f2ea51b2b0afb33d47fb">NextFrame</a> () override</td></tr>
+<tr class="separator:a2700352336c6f2ea51b2b0afb33d47fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fab61e9a220a526f402e4d2423f9241"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameKeyboardController.html#a1fab61e9a220a526f402e4d2423f9241">reset</a> ()</td></tr>
 <tr class="separator:a1fab61e9a220a526f402e4d2423f9241"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad71286a5193f228107cbd7cdda070032"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIo_1_1IKeyboardController.html#ad71286a5193f228107cbd7cdda070032">ConsumeKeyPress</a> (<a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> key)=0</td></tr>
 <tr class="separator:ad71286a5193f228107cbd7cdda070032"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34453ff37ad888cbe4f6745889cae1be"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIo_1_1IKeyboardController.html#a34453ff37ad888cbe4f6745889cae1be">IsKeyDown</a> (<a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> key) const =0</td></tr>
 <tr class="separator:a34453ff37ad888cbe4f6745889cae1be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a90d8f549436c9728fd2784c1ced959"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classIo_1_1IKeyboardController.html#a1a90d8f549436c9728fd2784c1ced959">NextFrame</a> ()=0</td></tr>
+<tr class="separator:a1a90d8f549436c9728fd2784c1ced959"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classPlatformEventFilter"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classPlatformEventFilter')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classPlatformEventFilter.html">PlatformEventFilter</a></td></tr>
 <tr class="memitem:a7107324d3cf82670604d2d8b984a4dfa inherit pub_methods_classPlatformEventFilter"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPlatformEventFilter.html#a7107324d3cf82670604d2d8b984a4dfa">PlatformEventFilter</a> (std::initializer_list&lt; <a class="el" href="PlatformEnums_8h.html#a6a1d0a28a0e3e29d51315d4192d852f4">PlatformEventType</a> &gt; <a class="el" href="classPlatformEventFilter.html#ad77f244ba003bacccfe8fa8910ccb3db">eventTypes</a>)</td></tr>
 <tr class="separator:a7107324d3cf82670604d2d8b984a4dfa inherit pub_methods_classPlatformEventFilter"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,6 +129,8 @@ Private Member Functions</h2></td></tr>
 Private Attributes</h2></td></tr>
 <tr class="memitem:ae3930e3ee9a19cfe9218deeb073ee794"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; bool, PlatformKey::KEY_FIRST, PlatformKey::KEY_LAST &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameKeyboardController.html#ae3930e3ee9a19cfe9218deeb073ee794">isKeyDown_</a> = {{}}</td></tr>
 <tr class="separator:ae3930e3ee9a19cfe9218deeb073ee794"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7efd4d5f92162b612cf04add02eb20eb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; bool, PlatformKey::KEY_FIRST, PlatformKey::KEY_LAST &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameKeyboardController.html#a7efd4d5f92162b612cf04add02eb20eb">isKeyDownThisFrame_</a> = {{}}</td></tr>
+<tr class="separator:a7efd4d5f92162b612cf04add02eb20eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab8a4f95210c70e4b5603fc5f9c83b77d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; bool, PlatformKey::KEY_FIRST, PlatformKey::KEY_LAST &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classGameKeyboardController.html#ab8a4f95210c70e4b5603fc5f9c83b77d">isKeyDownReportPending_</a> = {{}}</td></tr>
 <tr class="separator:ab8a4f95210c70e4b5603fc5f9c83b77d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -295,6 +301,33 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a2700352336c6f2ea51b2b0afb33d47fb" name="a2700352336c6f2ea51b2b0afb33d47fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2700352336c6f2ea51b2b0afb33d47fb">&#9670;&#160;</a></span>NextFrame()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void GameKeyboardController::NextFrame </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="classIo_1_1IKeyboardController.html#a1a90d8f549436c9728fd2784c1ced959">Io::IKeyboardController</a>.</p>
+
+</div>
+</div>
 <a id="a1fab61e9a220a526f402e4d2423f9241" name="a1fab61e9a220a526f402e4d2423f9241"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1fab61e9a220a526f402e4d2423f9241">&#9670;&#160;</a></span>reset()</h2>
 
@@ -356,6 +389,28 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p >Whether there was a key down event that hasn't yet been consumed with a call to <code>ConsumeKeyPress</code>. Note that the key might already be released at this point, e.g. if press &amp; release events were received one after another. </p>
+
+</div>
+</div>
+<a id="a7efd4d5f92162b612cf04add02eb20eb" name="a7efd4d5f92162b612cf04add02eb20eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7efd4d5f92162b612cf04add02eb20eb">&#9670;&#160;</a></span>isKeyDownThisFrame_</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classIndexedArray.html">IndexedArray</a>&lt;bool, PlatformKey::KEY_FIRST, PlatformKey::KEY_LAST&gt; GameKeyboardController::isKeyDownThisFrame_ = {{}}</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
