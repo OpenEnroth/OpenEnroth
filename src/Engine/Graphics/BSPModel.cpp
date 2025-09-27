@@ -9,26 +9,25 @@
 // ODMFace
 
 GraphicsImage *ODMFace::GetTexture() {
-    if (this->IsTextureFrameTable()) {
+    if (this->IsAnimated()) {
         // TODO(captainurist): probably should be pMiscTimer, not pEventTimer.
-        return pTextureFrameTable->GetFrameTexture(
-            (int64_t)this->resource, pEventTimer->time());
+        return pTextureFrameTable->GetFrameTexture(this->animationId, pEventTimer->time());
     } else {
-        return static_cast<GraphicsImage *>(this->resource);
+        return this->texture;
     }
 }
 
 void ODMFace::SetTexture(std::string_view filename) {
-    if (this->IsTextureFrameTable()) {
-        this->resource = (void *)pTextureFrameTable->FindTextureByName(filename);
-        if (this->resource != (void *)-1) {
+    if (this->IsAnimated()) {
+        this->animationId = pTextureFrameTable->FindTextureByName(filename);
+        if (this->animationId != -1) {
             return;
         }
 
-        this->ToggleIsTextureFrameTable();
+        this->ToggleIsAnimated();
     }
 
-    this->resource = assets->getBitmap(filename);
+    this->texture = assets->getBitmap(filename);
     this->texlayer = -1;
     this->texunit = -1;
 }

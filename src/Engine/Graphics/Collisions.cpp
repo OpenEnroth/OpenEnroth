@@ -467,14 +467,7 @@ void CollideOutdoorWithModels(bool ignore_ethereal) {
 
             // TODO: we should really either merge two face classes, or template the functions down the chain call here.
             BLVFace face;
-            face.facePlane = mface.facePlane;
-            face.uAttributes = mface.uAttributes;
-            face.pBounding = mface.pBoundingBox;
-            face.zCalc = mface.zCalc;
-            face.uPolygonType = mface.uPolygonType;
-            face.uNumVertices = mface.uNumVertices;
-            face.resource = mface.resource;
-            face.pVertexIDs = mface.pVertexIDs.data();
+            face.FromODM(&mface);
 
             if (face.Ethereal() || face.isPortal()) // TODO: this doesn't respect ignore_ethereal parameter
                 continue;

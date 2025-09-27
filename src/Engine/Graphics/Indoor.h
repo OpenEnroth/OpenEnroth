@@ -92,13 +92,13 @@ struct BLVFace {  // 60h
     }
     inline bool Ethereal() const { return uAttributes & FACE_ETHEREAL; }
 
-    inline bool IsTextureFrameTable() const {
-        return this->uAttributes & FACE_TEXTURE_FRAME;
+    inline bool IsAnimated() const {
+        return this->uAttributes & FACE_ANIMATED;
     }
-    inline void ToggleIsTextureFrameTable() {
-        this->uAttributes = this->uAttributes & FACE_TEXTURE_FRAME
-                                ? this->uAttributes & ~FACE_TEXTURE_FRAME
-                                : this->uAttributes | FACE_TEXTURE_FRAME;
+    inline void ToggleIsAnimated() {
+        this->uAttributes = this->uAttributes & FACE_ANIMATED
+                                ? this->uAttributes & ~FACE_ANIMATED
+                                : this->uAttributes | FACE_ANIMATED;
     }
 
     /**
@@ -132,7 +132,8 @@ struct BLVFace {  // 60h
     int16_t *pVertexUIDs = nullptr;
     int16_t *pVertexVIDs = nullptr;
     uint16_t uFaceExtraID = 0;
-    void *resource = nullptr;  // int64_t or GraphicsImage
+    GraphicsImage *texture = nullptr; // Face texture, or nullptr if this face is animated.
+    int animationId = 0; // Index into pTextureFrameTable for animated faces.
     int texunit = -1;
     int texlayer = -1;
 

@@ -204,7 +204,7 @@ void snapshot(const IndoorLocation &src, IndoorDelta_MM7 *dst) {
     // Symmetric to what's happening in reconstruct - not all of the attributes need to be saved in a delta.
     dst->faceAttributes.clear();
     for (const BLVFace &pFace : pIndoor->pFaces)
-        dst->faceAttributes.push_back(std::to_underlying(pFace.uAttributes & ~(FACE_HAS_EVENT | FACE_TEXTURE_FRAME)));
+        dst->faceAttributes.push_back(std::to_underlying(pFace.uAttributes & ~(FACE_HAS_EVENT | FACE_ANIMATED)));
 
     dst->decorationFlags.clear();
     for (const LevelDecoration &decoration : pLevelDecorations)
@@ -232,8 +232,8 @@ void reconstruct(const IndoorDelta_MM7 &src, IndoorLocation *dst) {
     // Not all of the attributes need to be restored.
     size_t attributeIndex = 0;
     for (BLVFace &face : dst->pFaces) {
-        face.uAttributes &= FACE_TEXTURE_FRAME | FACE_HAS_EVENT;
-        face.uAttributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_EVENT | FACE_TEXTURE_FRAME);
+        face.uAttributes &= FACE_ANIMATED | FACE_HAS_EVENT;
+        face.uAttributes |= FaceAttributes(src.faceAttributes[attributeIndex++]) & ~(FACE_HAS_EVENT | FACE_ANIMATED);
     }
 
     for (size_t i = 0; i < pLevelDecorations.size(); ++i)

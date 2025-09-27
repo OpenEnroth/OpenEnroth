@@ -282,7 +282,8 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->pVertexUIDs = nullptr;
     dst->pVertexVIDs = nullptr;
     dst->uFaceExtraID = src.faceExtraId;
-    dst->resource = nullptr;
+    dst->texture = nullptr;
+    dst->animationId = 0;
     dst->uSectorID = src.sectorId;
     dst->uBackSectorID = src.backSectorId;
     reconstruct(src.bounding, &dst->pBounding);
@@ -1596,7 +1597,8 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
     dst->pVertexIDs = src.pVertexIDs;
     dst->pTextureUIDs = src.pTextureUIDs;
     dst->pTextureVIDs = src.pTextureVIDs;
-    dst->resource = nullptr;
+    dst->texture = nullptr;
+    dst->animationId = 0;
     dst->sTextureDeltaU = src.sTextureDeltaU;
     dst->sTextureDeltaV = src.sTextureDeltaV;
     reconstruct(src.pBoundingBox, &dst->pBoundingBox);
