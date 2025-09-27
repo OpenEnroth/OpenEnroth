@@ -248,7 +248,6 @@ GAME_TEST(Issues, Issue2108a) {
     // Shield spell does not work.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto hpTape = charTapes.hp(0);
-    auto spritesTape = tapes.sprites();
 
     engine->config->debug.NoActors.setValue(true);
     engine->config->debug.AllMagic.setValue(true);
@@ -567,4 +566,31 @@ GAME_TEST(Issues, Issue2244b) {
     test.playTraceFromTestData("issue_2244b.mm7", "issue_2244b.json");
     EXPECT_LE(zPos.back(), -3070.0); // we are at the bottom at the end of the trace
     EXPECT_EQ(triggerID.back(), 1181); // and we are on the lift trigger
+}
+
+GAME_TEST(Issues, Issue2255) {
+    // Monster damage for 1st spell was calculated using 2nd spell mastery.
+    auto hpTape = charTapes.hp(0);
+    auto spritesTape = tapes.sprites();
+
+    engine->config->debug.NoActors.setValue(true);
+    game.startNewGame();
+    test.startTaping();
+    prepareForBattleTest();
+
+    engine->config->debug.NoActors.setValue(false);
+    Actor *archer = game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_ELF_ARCHER_A);
+    archer->monsterInfo.spell1Id = SPELL_FIRE_FIRE_BOLT;
+    archer->monsterInfo.spell1SkillMastery = CombinedSkillValue(10, MASTERY_GRANDMASTER);
+    archer->monsterInfo.spell1UseChance = 100;
+    archer->monsterInfo.spell2Id = SPELL_NONE;
+    archer->monsterInfo.spell2SkillMastery = CombinedSkillValue::none();
+    archer->monsterInfo.spell2UseChance = 0;
+    archer->moveSpeed = 1;
+    game.tick(100);
+
+    EXPECT_GE(hpTape.size(), 2); // Should have received some damage. Was zero before we fixed the bug.
+    EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT);
+    EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT);
+    EXPECT_MISSES(spritesTape.flatten(), SPRITE_PROJECTILE_ARROW); // No arrows were fired, only fire bolts.
 }

@@ -1206,7 +1206,7 @@ int Actor::_43B3E0_CalcDamage(ActorAbility dmgSource) {
             break;
         case ABILITY_SPELL1:
             spellID = this->monsterInfo.spell1Id;
-            skill = this->monsterInfo.spell2SkillMastery;
+            skill = this->monsterInfo.spell1SkillMastery;
             skillLevel = skill.level();
             skillMastery = skill.mastery();
             return CalcSpellDamage(spellID, skillLevel, skillMastery, 0);
