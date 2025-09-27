@@ -11,7 +11,7 @@
 GraphicsImage *ODMFace::GetTexture() {
     if (this->IsAnimated()) {
         // TODO(captainurist): probably should be pMiscTimer, not pEventTimer.
-        return pTextureFrameTable->GetFrameTexture(this->animationId, pEventTimer->time());
+        return pTextureFrameTable->animationFrame(this->animationId, pEventTimer->time());
     } else {
         return this->texture;
     }
@@ -19,11 +19,12 @@ GraphicsImage *ODMFace::GetTexture() {
 
 void ODMFace::SetTexture(std::string_view filename) {
     if (this->IsAnimated()) {
-        this->animationId = pTextureFrameTable->FindTextureByName(filename);
+        this->animationId = pTextureFrameTable->animationId(filename);
         if (this->animationId != -1) {
             return;
         }
 
+        // Failed to find animated texture so disable
         this->ToggleIsAnimated();
     }
 

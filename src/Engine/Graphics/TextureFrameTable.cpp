@@ -1,6 +1,9 @@
 #include "TextureFrameTable.h"
 
+#include <cassert>
 #include <string>
+#include <utility>
+#include <vector>
 
 #include "Engine/AssetsManager.h"
 
@@ -9,56 +12,47 @@
 
 TextureFrameTable *pTextureFrameTable;
 
-GraphicsImage *TextureFrame::GetTexture() {
-    if (!this->tex) {
-        this->tex = assets->getBitmap(this->name);
-    }
-    return this->tex;
+TextureFrameTable::TextureFrameTable(std::vector<TextureFrameData> frames) : _frames(std::move(frames)) {
+    _textures.resize(_frames.size());
 }
 
-int64_t TextureFrameTable::FindTextureByName(std::string_view Str2) {
-    std::string name = ascii::toLower(Str2);
-
-    for (size_t i = 0; i < textures.size(); ++i)
-        if (textures[i].name == name)
+int TextureFrameTable::animationId(std::string_view textureName) {
+    for (size_t i = 0; i < _frames.size(); i++)
+        if (ascii::noCaseEquals(textureName, this->_frames[i].textureName))
             return i;
     return -1;
 }
 
-GraphicsImage *TextureFrameTable::GetFrameTexture(int64_t frameId, Duration offset) {
-    if (frameId < 0 || frameId >= textures.size()) {
-        logger->error("Failed to retreive OOB frameID '{}' from TextureFrameTable::GetFrameTexture", frameId);
-        return nullptr;
-    }
-
-    Duration animationDuration = textures[frameId].animationDuration;
-    if ((textures[frameId].flags & FRAME_HAS_MORE) && animationDuration) {
-        offset = offset % animationDuration;
-        while (offset >= textures[frameId].frameDuration) {
-            offset -= textures[frameId].frameDuration;
-            ++frameId;
-        }
-    }
-
-    assert(frameId < textures.size() && "TextureFrameTable::GetFrameTexture animated frame OOB");
-    return textures[frameId].GetTexture();
+Duration TextureFrameTable::animationLength(int animationId) {
+    const TextureFrameData &data = _frames[animationId];
+    assert(data.flags & FRAME_FIRST);
+    return data.animationLength;
 }
 
-Duration TextureFrameTable::textureFrameAnimLength(int64_t frameID) {
-    if (frameID < 0 || frameID >= textures.size()) {
-        logger->error("Failed to retreive OOB frameID '{}' from TextureFrameTable::textureFrameAnimLength", frameID);
-        return 1_ticks;
-    }
-    Duration result = textures[frameID].animationDuration;
-    if ((textures[frameID].flags & FRAME_HAS_MORE) && result)
-        return result;
-    return 1_ticks;
+Duration TextureFrameTable::animationFrameLength(int frameId) {
+    return _frames[frameId].frameLength;
 }
 
-Duration TextureFrameTable::textureFrameAnimTime(int64_t frameID) {
-    if (frameID < 0 || frameID >= textures.size()) {
-        logger->error("Failed to retreive OOB frameID '{}' from TextureFrameTable::textureFrameAnimTime", frameID);
-        return 1_ticks;
-    }
-    return textures[frameID].frameDuration;
+GraphicsImage *TextureFrameTable::animationFrame(int animationId, Duration frameTime) {
+    TextureFrameData &data = _frames[animationId];
+    assert(data.flags & FRAME_FIRST);
+
+    if (!(data.flags & FRAME_HAS_MORE))
+        return loadTexture(animationId);
+
+    assert(data.animationLength);
+    Duration t = frameTime % data.animationLength;
+
+    int i;
+    for (i = animationId; t >= _frames[i].frameLength; i++)
+        t -= _frames[i].frameLength;
+    return loadTexture(i);
+}
+
+GraphicsImage *TextureFrameTable::loadTexture(int frameId) {
+    assert(_textures.size() == _frames.size());
+
+    if (!_textures[frameId])
+        _textures[frameId] = assets->getBitmap(_frames[frameId].textureName);
+    return _textures[frameId];
 }

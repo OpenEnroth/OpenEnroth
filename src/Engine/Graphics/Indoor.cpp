@@ -228,20 +228,19 @@ GraphicsImage *BLVFace::GetTexture() const {
     if (this->IsAnimated())
         // TODO(captainurist): using pEventTimer here is weird. This means that e.g. cleric in the haunted mansion is
         //                     not animated in turn-based mode. Use misc timer? Also see ODMFace::GetTexture.
-        return pTextureFrameTable->GetFrameTexture(this->animationId, pEventTimer->time());
+        return pTextureFrameTable->animationFrame(this->animationId, pEventTimer->time());
     else
         return this->texture;
 }
 
 void BLVFace::SetTexture(std::string_view filename) {
     if (this->IsAnimated()) {
-        this->animationId = pTextureFrameTable->FindTextureByName(filename);
+        this->animationId = pTextureFrameTable->animationId(filename);
         if (this->animationId != -1) {
             return;
         }
 
         // Failed to find animated texture so disable
-        this->animationId = 0;
         this->ToggleIsAnimated();
     }
 
