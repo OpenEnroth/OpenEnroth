@@ -19,11 +19,13 @@ LodToolOptions LodToolOptions::parse(int argc, char **argv) {
 
     CLI::App *cat = app->add_subcommand("cat", "Write contents of a single archive entry to stdout.", result.subcommand, SUBCOMMAND_CAT)->fallthrough();
     cat->add_flag("--raw", result.raw, "Don't decompress compressed entries & don't convert images to png.");
+    cat->add_option("--palettes-lod-path", result.palettesLodPath, "Path to bitmaps.lod to use for sprite palettes.")->check(CLI::ExistingFile)->option_text("PATH");
     cat->add_option("ARCHIVE", result.path, "Path to archive file.")->check(CLI::ExistingFile)->required()->option_text(" ");
     cat->add_option("ENTRY", result.cat.entry, "Name of the entry to print.")->required()->option_text(" ");
 
     CLI::App *extract = app->add_subcommand("extract", "Extract everything from an archive file.", result.subcommand, SUBCOMMAND_EXTRACT)->fallthrough();
     extract->add_flag("--raw", result.raw, "Don't decompress compressed entries & don't convert images to png.");
+    extract->add_option("--palettes-lod-path", result.palettesLodPath, "Path to bitmaps.lod to use for sprite palettes.")->check(CLI::ExistingFile)->option_text("PATH");
     extract->add_option("ARCHIVE", result.path, "Path to archive file.")->check(CLI::ExistingFile)->required()->option_text(" ");
     extract->add_option("OUTPUT", result.extract.output, "Directory to extract the entries to.")->required()->option_text(" ");
 
