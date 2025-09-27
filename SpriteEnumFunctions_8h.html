@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fd3706f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;65ca345</span>
    </div>
   </td>
  </tr>
@@ -85,6 +85,8 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:a49da35ae660226a65ce9c7dc90136083"><td class="memItemLeft" align="right" valign="top"><a class="el" href="SpriteEnums_8h.html#ae4d6ddfadb3940c82f97cb293b7397f4">SpriteId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpriteEnumFunctions_8h.html#a49da35ae660226a65ce9c7dc90136083">impactSprite</a> (<a class="el" href="SpriteEnums_8h.html#ae4d6ddfadb3940c82f97cb293b7397f4">SpriteId</a> projectile)</td></tr>
 <tr class="separator:a49da35ae660226a65ce9c7dc90136083"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8fbfae1ad8f6eff0b8fe5bf40539862"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="SpriteEnumFunctions_8h.html#af8fbfae1ad8f6eff0b8fe5bf40539862">isMonsterProjectileSprite</a> (<a class="el" href="SpriteEnums_8h.html#ae4d6ddfadb3940c82f97cb293b7397f4">SpriteId</a> sprite)</td></tr>
+<tr class="separator:af8fbfae1ad8f6eff0b8fe5bf40539862"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a49da35ae660226a65ce9c7dc90136083" name="a49da35ae660226a65ce9c7dc90136083"></a>
@@ -110,6 +112,40 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="af8fbfae1ad8f6eff0b8fe5bf40539862" name="af8fbfae1ad8f6eff0b8fe5bf40539862"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8fbfae1ad8f6eff0b8fe5bf40539862">&#9670;&#160;</a></span>isMonsterProjectileSprite()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool isMonsterProjectileSprite </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="SpriteEnums_8h.html#ae4d6ddfadb3940c82f97cb293b7397f4">SpriteId</a>&#160;</td>
+          <td class="paramname"><em>sprite</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sprite</td><td><a class="el" href="classSprite.html">Sprite</a> id to check. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Whether <code>sprite</code> is a sprite for a monster projectile attack. Note that monsters can also attack with spells, and this function only checks for non-spell projectile attacks. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="MonsterEnumFunctions_8cpp.html#ab618082a7c91167c6b6abdb405a25d61">spriteForMonsterProjectile</a> </dd></dl>
 
 </div>
 </div>

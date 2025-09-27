@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;fd3706f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;65ca345</span>
    </div>
   </td>
  </tr>
@@ -85,6 +85,7 @@ $(function() {
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;utility&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
+<code>#include &quot;<a class="el" href="IndexedArray_8h.html">Utility/IndexedArray.h</a>&quot;</code><br />
 </div><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
@@ -254,6 +255,14 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">projectile</td><td>Monster projectile to get a sprite id for. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classSprite.html">Sprite</a> id to use for the given monster projectile. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="SpriteEnumFunctions_8h.html#af8fbfae1ad8f6eff0b8fe5bf40539862">isMonsterProjectileSprite</a> </dd></dl>
 
 </div>
 </div>
@@ -318,8 +327,8 @@ Variables</h2></td></tr>
 <div class="line">                result.push_back(monsterId);</div>
 <div class="line">    <span class="keywordflow">return</span> result;</div>
 <div class="line">}()</div>
-<div class="ttc" id="aMonsterEnumFunctions_8cpp_html_a23872774032f1f07e5418106a1ebf9fc"><div class="ttname"><a href="MonsterEnumFunctions_8cpp.html#a23872774032f1f07e5418106a1ebf9fc">dataByMonsterType</a></div><div class="ttdeci">static constexpr IndexedArray&lt; MonsterData, MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST &gt; dataByMonsterType</div><div class="ttdef"><b>Definition:</b> MonsterEnumFunctions.cpp:18</div></div>
-<div class="ttc" id="aMonsterEnumFunctions_8h_html_a01ea0bd2c0c21dcc7e8fb0942dea1a18"><div class="ttname"><a href="MonsterEnumFunctions_8h.html#a01ea0bd2c0c21dcc7e8fb0942dea1a18">monsterIdsForMonsterType</a></div><div class="ttdeci">Segment&lt; MonsterId &gt; monsterIdsForMonsterType(MonsterType monsterType)</div><div class="ttdef"><b>Definition:</b> MonsterEnumFunctions.h:44</div></div>
+<div class="ttc" id="aMonsterEnumFunctions_8cpp_html_a23872774032f1f07e5418106a1ebf9fc"><div class="ttname"><a href="MonsterEnumFunctions_8cpp.html#a23872774032f1f07e5418106a1ebf9fc">dataByMonsterType</a></div><div class="ttdeci">static constexpr IndexedArray&lt; MonsterData, MONSTER_TYPE_FIRST, MONSTER_TYPE_LAST &gt; dataByMonsterType</div><div class="ttdef"><b>Definition:</b> MonsterEnumFunctions.cpp:20</div></div>
+<div class="ttc" id="aMonsterEnumFunctions_8h_html_a01ea0bd2c0c21dcc7e8fb0942dea1a18"><div class="ttname"><a href="MonsterEnumFunctions_8h.html#a01ea0bd2c0c21dcc7e8fb0942dea1a18">monsterIdsForMonsterType</a></div><div class="ttdeci">Segment&lt; MonsterId &gt; monsterIdsForMonsterType(MonsterType monsterType)</div><div class="ttdef"><b>Definition:</b> MonsterEnumFunctions.h:42</div></div>
 <div class="ttc" id="aMonsterEnums_8h_html_a9c8dbe33f930c23cbaddd4e0afad01ba"><div class="ttname"><a href="MonsterEnums_8h.html#a9c8dbe33f930c23cbaddd4e0afad01ba">MonsterId</a></div><div class="ttdeci">MonsterId</div><div class="ttdef"><b>Definition:</b> MonsterEnums.h:14</div></div>
 <div class="ttc" id="aMonsterEnums_8h_html_abd758b4216b3fc46a32b2f1a359b3492"><div class="ttname"><a href="MonsterEnums_8h.html#abd758b4216b3fc46a32b2f1a359b3492">MonsterType</a></div><div class="ttdeci">MonsterType</div><div class="ttdef"><b>Definition:</b> MonsterEnums.h:306</div></div>
 </div><!-- fragment -->
