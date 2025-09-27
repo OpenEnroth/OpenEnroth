@@ -818,7 +818,7 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         pActors[i].attributes |= ACTOR_VISIBLE;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = frame->hw_sprites[Sprite_Octant];
                         pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].sectorId;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteIndex = frame->GetPaletteIndex();
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = frame->uPaletteId;
 
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = proj_scale;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = proj_scale;

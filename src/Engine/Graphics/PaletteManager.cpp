@@ -16,32 +16,23 @@
 PaletteManager *pPaletteManager = new PaletteManager;
 
 void PaletteManager::load(LodTextureCache *lod) {
+    _palettes.clear();
+    _palettes.reserve(1000);
+
     // Palette #0 is grayscale.
-    _paletteIds.push_back(0);
-    _palettes.push_back(createGrayscalePalette());
+    _palettes.emplace_back(createGrayscalePalette());
 
     // Load all other palettes.
     for (int paletteId = 1; paletteId <= 999; paletteId++) {
         std::string paletteName = fmt::format("pal{:03}", paletteId);
 
         LodImage *texture = lod->loadTexture(paletteName, false);
-        if (!texture)
-            continue;
-
-        _paletteIds.push_back(paletteId);
-        _palettes.push_back(createLoadedPalette(texture->palette));
+        if (texture) {
+            _palettes.emplace_back(createLoadedPalette(texture->palette));
+        } else {
+            _palettes.emplace_back(createGrayscalePalette());
+        }
     }
-}
-
-int PaletteManager::paletteIndex(int paletteId) {
-    auto pos = std::lower_bound(_paletteIds.begin(), _paletteIds.end(), paletteId);
-
-    if (pos == _paletteIds.end() || *pos != paletteId) {
-        logger->warning("Palette {} doesn't exist. Returning index to grayscale!", paletteId);
-        return 0;
-    }
-
-    return pos - _paletteIds.begin();
 }
 
 std::span<Color> PaletteManager::paletteData() {

@@ -13,14 +13,7 @@ class PaletteManager {
     void load(LodTextureCache *lod);
 
     /**
-     * @param paletteId                 Palette identifier, a number in [0, 999].
-     * @return                          Index for the provided palette identifier. Returned index can then be used
-     *                                  for getting palette data from the return value of `paletteData` function.
-     */
-    int paletteIndex(int paletteId);
-
-    /**
-     * @return                          Span containing contiguous data for all loaded palettes.
+     * @return                          Span containing contiguous data for all 1000 loaded palettes.
      */
     std::span<Color> paletteData();
 
@@ -28,7 +21,6 @@ class PaletteManager {
     static Palette createLoadedPalette(const Palette &palette);
 
  private:
-    std::vector<int> _paletteIds;
     std::vector<Palette> _palettes;
 };
 

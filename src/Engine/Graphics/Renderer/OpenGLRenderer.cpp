@@ -2356,7 +2356,7 @@ struct billbverts {
     GLfloat screenspace;
     GLfloat texid;
     GLfloat blend;
-    GLfloat paletteindex;
+    GLfloat paletteId;
 };
 
 billbverts billbstore[1000] {};
@@ -2391,7 +2391,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         //}
 
         //int palette{ pBillboardRenderListD3D[i].PaletteID};
-        int paletteindex{ pBillboardRenderListD3D[i].PaletteIndex };
+        int paletteId = pBillboardRenderListD3D[i].paletteId;
 
         if (pBillboardRenderListD3D[i].texture) {
             auto texture = pBillboardRenderListD3D[i].texture;
@@ -2425,7 +2425,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
-        billbstore[billbstorecnt].paletteindex = paletteindex;
+        billbstore[billbstorecnt].paletteId = paletteId;
         billbstorecnt++;
 
         billbstore[billbstorecnt].x = billboard->pQuads[1].pos.x;
@@ -2437,7 +2437,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
-        billbstore[billbstorecnt].paletteindex = paletteindex;
+        billbstore[billbstorecnt].paletteId = paletteId;
         billbstorecnt++;
 
         billbstore[billbstorecnt].x = billboard->pQuads[2].pos.x;
@@ -2449,7 +2449,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
         billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
         billbstore[billbstorecnt].texid = gltexid;
         billbstore[billbstorecnt].blend = thisblend;
-        billbstore[billbstorecnt].paletteindex = paletteindex;
+        billbstore[billbstorecnt].paletteId = paletteId;
         billbstorecnt++;
 
         ////////////////////////////////
@@ -2464,7 +2464,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
             billbstore[billbstorecnt].blend = thisblend;
-            billbstore[billbstorecnt].paletteindex = paletteindex;
+            billbstore[billbstorecnt].paletteId = paletteId;
             billbstorecnt++;
 
             billbstore[billbstorecnt].x = billboard->pQuads[2].pos.x;
@@ -2476,7 +2476,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
             billbstore[billbstorecnt].blend = thisblend;
-            billbstore[billbstorecnt].paletteindex = paletteindex;
+            billbstore[billbstorecnt].paletteId = paletteId;
             billbstorecnt++;
 
             billbstore[billbstorecnt].x = billboard->pQuads[3].pos.x;
@@ -2488,7 +2488,7 @@ void OpenGLRenderer::DoRenderBillboards_D3D() {
             billbstore[billbstorecnt].screenspace = billboard->screen_space_z;
             billbstore[billbstorecnt].texid = gltexid;
             billbstore[billbstorecnt].blend = thisblend;
-            billbstore[billbstorecnt].paletteindex = paletteindex;
+            billbstore[billbstorecnt].paletteId = paletteId;
             billbstorecnt++;
         }
 
@@ -2534,7 +2534,7 @@ void OpenGLRenderer::DrawBillboards() {
         glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, texid));
         glEnableVertexAttribArray(4);
         // palette index
-        glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, paletteindex));
+        glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(billbverts), (void *)offsetof(billbverts, paletteId));
         glEnableVertexAttribArray(5);
     }
 
@@ -2594,7 +2594,7 @@ void OpenGLRenderer::DrawBillboards() {
         // set texture
         GLfloat thistex = billbstore[offset].texid;
         glBindTexture(GL_TEXTURE_2D, billbstore[offset].texid);
-        if (billbstore[offset].paletteindex) {
+        if (billbstore[offset].paletteId) {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         } else {

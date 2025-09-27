@@ -48,8 +48,6 @@ void SpriteFrameTable::InitializeSprite(signed int uSpriteID) {
                 pSpriteSFrames[iter_uSpriteID].uFlags |= 0x80;  // set loaded
 
                 while (1) {
-                    pSpriteSFrames[iter_uSpriteID].ResetPaletteIndex(pPaletteManager->paletteIndex(pSpriteSFrames[iter_uSpriteID].uPaletteID));
-
                     if (uFlags & 0x10) {  // single frame per frame sequence
                         Sprite *sprite = pSprites_LOD->loadSprite(pSpriteSFrames[iter_uSpriteID].texture_name);
                         if (sprite == nullptr)
@@ -209,25 +207,9 @@ SpriteFrame *SpriteFrameTable::GetFrameReversed(int uSpriteID, Duration time) {
     return sprite;
 }
 
-// new
-void SpriteFrameTable::ResetPaletteIndexes() {
-    for (SpriteFrame &spriteFrame : pSpriteSFrames)
-        spriteFrame.ResetPaletteIndex();
-}
-
 SpriteFrame *LevelDecorationChangeSeason(const DecorationDesc *desc, Duration t, int month) {
     int spriteId = spriteIdForSeason(desc->uSpriteID, month);
     if (spriteId != desc->uSpriteID)
         pSpriteFrameTable->InitializeSprite(spriteId);
     return pSpriteFrameTable->GetFrame(spriteId, t);
-}
-
-int SpriteFrame::GetPaletteIndex() {
-    if (this->uPaletteIndex == 0)
-        this->uPaletteIndex = pPaletteManager->paletteIndex(this->uPaletteID);
-    return this->uPaletteIndex;
-}
-
-void SpriteFrame::ResetPaletteIndex(int index) {
-    this->uPaletteIndex = index;
 }
