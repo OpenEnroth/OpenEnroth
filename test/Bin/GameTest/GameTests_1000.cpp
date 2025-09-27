@@ -767,10 +767,8 @@ GAME_TEST(Issues, Issue1449) {
     game.releaseKey(PlatformKey::KEY_RETURN);
     game.tick(1000 / 20); // Wait 1s.
     for (int i = 0; i < 4; i++) {
-        game.pressKey(PlatformKey::KEY_A); // Attack with each char.
-        game.tick();
-        game.releaseKey(PlatformKey::KEY_A);
-        game.tick();
+        game.pressAndReleaseKey(PlatformKey::KEY_A); // Attack with each char.
+        game.tick(2);
     }
     game.pressKey(PlatformKey::KEY_DOWN); // Walk.
     game.tick(500 / 20);
