@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['key_0',['Key',['../classGameConfig.html#a70d4a31898b18dff42d74a9a4e1e1677',1,'GameConfig']]],
-  ['key_1',['key',['../classPlatformGamepadKeyEvent.html#a58f0340dfaa5b641a40cedd625b2eb20',1,'PlatformGamepadKeyEvent::key()'],['../classPlatformKeyEvent.html#a47843d2ef4759e9938f79913f8999f54',1,'PlatformKeyEvent::key()'],['../structConfigPatchEntry.html#a592bb0e202f7e96833e2060c86dd5cb7',1,'ConfigPatchEntry::key()']]],
+  ['key_0',['key',['../classPlatformGamepadKeyEvent.html#a58f0340dfaa5b641a40cedd625b2eb20',1,'PlatformGamepadKeyEvent::key()'],['../classPlatformKeyEvent.html#a47843d2ef4759e9938f79913f8999f54',1,'PlatformKeyEvent::key()'],['../structConfigPatchEntry.html#a592bb0e202f7e96833e2060c86dd5cb7',1,'ConfigPatchEntry::key()']]],
+  ['key_1',['Key',['../classGameConfig.html#a70d4a31898b18dff42d74a9a4e1e1677',1,'GameConfig']]],
   ['key_5fa_2',['KEY_A',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca5df3f2093c573770f204c77c0dd75a31',1,'PlatformEnums.h']]],
   ['key_5fadd_3',['KEY_ADD',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca72092fd6125b9ecdd096e08f13b41237',1,'PlatformEnums.h']]],
   ['key_5falt_4',['KEY_ALT',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca5d7c5526a3f71ac11cae0da58e0d59d2',1,'PlatformEnums.h']]],
@@ -136,9 +136,9 @@ var searchData=
   ['key_5fx_133',['KEY_X',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eeccadf3153982c2e083bc603f505d69e7956',1,'PlatformEnums.h']]],
   ['key_5fy_134',['KEY_Y',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca045fb70fafbcaf257eff3209601153ff',1,'PlatformEnums.h']]],
   ['key_5fz_135',['KEY_Z',['../PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecca40a30d27cd7724dbd18532078cb6d22a',1,'PlatformEnums.h']]],
-  ['keybindings_136',['Keybindings',['../classGameConfig_1_1Keybindings.html',1,'GameConfig::Keybindings'],['../classGameConfig_1_1Keybindings.html#a6a50497b7b8c2e09e837d79e9a91084f',1,'GameConfig::Keybindings::Keybindings()']]],
+  ['keybindings_136',['Keybindings',['../classGameConfig_1_1Keybindings.html',1,'GameConfig']]],
   ['keybindings_137',['keybindings',['../classGameConfig.html#ade821648220780a0c33bf1daef3fb7d9',1,'GameConfig']]],
-  ['keybindings_138',['Keybindings',['../namespaceIo.html#ae98eaa08492ad29d9f4cb3565a3490bf',1,'Io']]],
+  ['keybindings_138',['Keybindings',['../classGameConfig_1_1Keybindings.html#a6a50497b7b8c2e09e837d79e9a91084f',1,'GameConfig::Keybindings::Keybindings()'],['../namespaceIo.html#ae98eaa08492ad29d9f4cb3565a3490bf',1,'Io::Keybindings()']]],
   ['keybindings_5fall_139',['KEYBINDINGS_ALL',['../KeyboardActionMapping_8h.html#a196d4179edf0e890f550a8712e0dce3aa4b6a1b362e6b69336dd570a5934804a1',1,'KeyboardActionMapping.h']]],
   ['keybindings_5fconfigurable_140',['KEYBINDINGS_CONFIGURABLE',['../KeyboardActionMapping_8h.html#a196d4179edf0e890f550a8712e0dce3aa926ff81e583104fcbed31baf8725fc92',1,'KeyboardActionMapping.h']]],
   ['keybindingsquery_141',['KeybindingsQuery',['../KeyboardActionMapping_8h.html#a196d4179edf0e890f550a8712e0dce3a',1,'KeyboardActionMapping.h']]],
