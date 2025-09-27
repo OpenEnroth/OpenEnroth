@@ -158,10 +158,8 @@ GAME_TEST(Issues, Issue1547) {
     test.startTaping();
     game.tick();
     for (int i = 0; i < 4; i++) {
-        game.pressKey(PlatformKey::KEY_A); // Attack with each char - this shouldn't crash.
-        game.tick();
-        game.releaseKey(PlatformKey::KEY_A);
-        game.tick();
+        game.pressAndReleaseKey(PlatformKey::KEY_A); // Attack with each char - this shouldn't crash.
+        game.tick(2);
     }
     test.stopTaping();
 
@@ -430,10 +428,8 @@ GAME_TEST(Issues, Issue1786) {
     game.tick();
     EXPECT_EQ(pParty->activeCharacterIndex(), 4);
 
-    game.pressKey(PlatformKey::KEY_S); // Quick cast fire bolt.
-    game.tick();
-    game.releaseKey(PlatformKey::KEY_S);
-    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_S); // Quick cast fire bolt.
+    game.tick(2);
     EXPECT_CONTAINS(sprites.back(), SPRITE_SPELL_FIRE_FIRE_BOLT);
 
     while (pParty->activeCharacterIndex() != 4) {
@@ -442,10 +438,8 @@ GAME_TEST(Issues, Issue1786) {
     }
 
     engine->config->debug.AllMagic.setValue(false);
-    game.pressKey(PlatformKey::KEY_S); // Try to quick cast fire bolt.
-    game.tick();
-    game.releaseKey(PlatformKey::KEY_S);
-    game.tick();
+    game.pressAndReleaseKey(PlatformKey::KEY_S); // Try to quick cast fire bolt.
+    game.tick(2);
     EXPECT_MISSES(sprites.back(), SPRITE_SPELL_FIRE_FIRE_BOLT);
 }
 
@@ -624,10 +618,8 @@ GAME_TEST(Issues, Issue1925) {
         game.tick();
 
         // Attack.
-        game.pressKey(PlatformKey::KEY_A);
-        game.tick();
-        game.releaseKey(PlatformKey::KEY_A);
-        game.tick();
+        game.pressAndReleaseKey(PlatformKey::KEY_A);
+        game.tick(2);
 
         EXPECT_EQ(wandTape, wandsDisappear ? tape(false, true, false) : tape(false, true));
         if (!wandsDisappear) {
