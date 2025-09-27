@@ -5,6 +5,8 @@
 #include <utility>
 #include <vector>
 
+#include "Utility/IndexedArray.h"
+
 struct MonsterData {
     Sex sex = SEX_MALE;
     Race race = RACE_HUMAN;

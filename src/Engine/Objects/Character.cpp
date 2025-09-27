@@ -24,6 +24,7 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
+#include "Engine/Objects/SpriteEnumFunctions.h"
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
@@ -56,7 +57,6 @@
 
 #include "Library/Logger/Logger.h"
 
-#include "Utility/Memory/MemSet.h"
 #include "Utility/IndexedArray.h"
 
 static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRenderer();
@@ -5956,6 +5956,8 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
             int dmgToReceive = actorPtr->_43B3E0_CalcDamage(dmgSource);
             SpriteId spriteType = spritefrom->uType;
 
+            // TODO(captainurist): should this include other projectile attacks? Vanilla only checks arrows.
+            // TODO(captainurist): should we check that the character is actually unarmed? Vanilla doesn't check, apparently.
             if (spriteType == SPRITE_PROJECTILE_ARROW) {  // arrows
                 // GM unarmed 1% chance to evade attack per skill point
                 if (playerPtr->getActualSkillValue(SKILL_UNARMED).mastery() >= MASTERY_GRANDMASTER &&
@@ -5966,18 +5968,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
                 }
             }
 
-            // TODO(captainurist): I don't think magic projectiles should be in this list.
-            if (spriteType == SPRITE_PROJECTILE_ARROW ||
-                       spriteType == SPRITE_PROJECTILE_BLASTER ||
-                       spriteType == SPRITE_PROJECTILE_AIR_BOLT ||  // dragonflies firebolt
-                       spriteType == SPRITE_PROJECTILE_EARTH_BOLT ||
-                       spriteType == SPRITE_PROJECTILE_FIRE_BOLT ||
-                       spriteType == SPRITE_PROJECTILE_WATER_BOLT ||
-                       spriteType == SPRITE_PROJECTILE_BODY_BOLT ||
-                       spriteType == SPRITE_PROJECTILE_MIND_BOLT ||
-                       spriteType == SPRITE_PROJECTILE_SPIRIT_BOLT ||
-                       spriteType == SPRITE_PROJECTILE_LIGHT_BOLT ||
-                       spriteType == SPRITE_PROJECTILE_DARK_BOLT) {
+            if (isMonsterProjectileSprite(spriteType)) {
                 if (!actorPtr->ActorHitOrMiss(playerPtr))
                     return;
 

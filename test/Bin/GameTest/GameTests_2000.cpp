@@ -242,7 +242,7 @@ GAME_TEST(Issues, Issue2104) {
     EXPECT_EQ(projectiles, tape(MONSTER_PROJECTILE_ARROW, MONSTER_PROJECTILE_AIR_BOLT, MONSTER_PROJECTILE_WATER_BOLT, MONSTER_PROJECTILE_FIRE_BOLT));
 }
 
-GAME_TEST(Issues, Issue2108a) {
+GAME_TEST(Issues, Issue2108) {
     // Shield spell does not work.
     test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
     auto hpTape = charTapes.hp(0);
