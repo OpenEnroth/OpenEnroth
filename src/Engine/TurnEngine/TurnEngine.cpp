@@ -320,7 +320,7 @@ void stru262_TurnBased::StartTurn() {
     for (player_num = 0; player_num < 4; ++player_num) {
         for (j = 0; j < this->pQueue.size(); ++j) {
             if (pQueue[j].uPackedID.type() == OBJECT_Character) {
-                if (pParty->pCharacters[pQueue[j].uPackedID.id()].CanAct() && (player_num != pQueue[j].uPackedID.id()))
+                if (pParty->pCharacters[pQueue[j].uPackedID.id()].CanAct() && (player_num == pQueue[j].uPackedID.id()))
                     break;
             }
         }
