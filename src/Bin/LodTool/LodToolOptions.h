@@ -25,6 +25,7 @@ struct LodToolOptions {
     CatOptions cat;
     ExtractOptions extract;
     bool raw = false; // Raw flag, shared by cat & extract.
+    std::string palettesLodPath; // Path to bitmaps.lod for sprite palettes.
 
     static LodToolOptions parse(int argc, char **argv);
 };

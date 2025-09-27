@@ -91,7 +91,7 @@ class DecodedEntries : public std::vector<std::pair<Blob, std::string>> {
     }
 };
 
-DecodedEntries decodeLodEntry(Blob entry, std::string name, bool raw) {
+DecodedEntries decodeLodEntry(Blob entry, std::string name, bool raw, ArchiveReader *paletteReader) {
     DecodedEntries result;
 
     if (raw)
@@ -123,7 +123,13 @@ DecodedEntries decodeLodEntry(Blob entry, std::string name, bool raw) {
 
     if (format == MAGIC_LOD_SPRITE) {
         LodSprite lodSprite = lod::decodeSprite(entry);
-        return result(png::encode(lodSprite.image), name + ".png");
+
+        if (!paletteReader) {
+            return result(png::encode(lodSprite.image), name + ".png");
+        } else {
+            Palette palette = lod::decodePalette(paletteReader->read(fmt::format("pal{:03}", lodSprite.paletteId)));
+            return result(png::encode(makeRgbaImage(lodSprite.image, palette)), name + ".png");
+        }
     }
 
     if (format == MAGIC_LOD_FONT) {
@@ -134,7 +140,7 @@ DecodedEntries decodeLodEntry(Blob entry, std::string name, bool raw) {
 
     // We have pcx images inside compressed entries, so to support this we just re-run the function.
     if (format == MAGIC_LOD_COMPRESSED_DATA || format == MAGIC_LOD_COMPRESSED_PSEUDO_IMAGE)
-        return decodeLodEntry(lod::decodeMaybeCompressed(entry), std::move(name), raw);
+        return decodeLodEntry(lod::decodeMaybeCompressed(entry), std::move(name), raw, paletteReader);
 
     return result(std::move(entry), std::move(name));
 }
@@ -182,16 +188,18 @@ int runDump(const LodToolOptions &options) {
 
 int runCat(const LodToolOptions &options) {
     std::unique_ptr<ArchiveReader> reader = ArchiveReader::createArchiveReader(options.path);
-    auto [data, _] = std::move(decodeLodEntry(reader->read(options.cat.entry), options.cat.entry, options.raw)[0]);
+    std::unique_ptr<ArchiveReader> paletteReader = options.palettesLodPath.empty() ? nullptr : ArchiveReader::createArchiveReader(options.palettesLodPath);
+    auto [data, _] = std::move(decodeLodEntry(reader->read(options.cat.entry), options.cat.entry, options.raw, paletteReader.get())[0]);
     return fwrite(data.data(), data.size(), 1, stdout) != 1 ? 1 : 0;
 }
 
 int runExtract(const LodToolOptions &options) {
     std::unique_ptr<ArchiveReader> reader = ArchiveReader::createArchiveReader(options.path);
+    std::unique_ptr<ArchiveReader> paletteReader = options.palettesLodPath.empty() ? nullptr : ArchiveReader::createArchiveReader(options.palettesLodPath);
     DirectoryFileSystem output(options.extract.output);
 
     for (const std::string &entryName : reader->ls())
-        for (const auto &[data, name] : decodeLodEntry(reader->read(entryName), entryName, options.raw))
+        for (const auto &[data, name] : decodeLodEntry(reader->read(entryName), entryName, options.raw, paletteReader.get()))
             output.write(name, data);
 
     return 0;
