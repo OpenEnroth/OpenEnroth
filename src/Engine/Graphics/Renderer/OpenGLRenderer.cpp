@@ -3228,8 +3228,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                         Duration animLength;
                         Duration frame;
                         if (face.IsAnimated()) {
-                            tex = pTextureFrameTable->GetFrameTexture(face.animationId, frame);
-                            animLength = pTextureFrameTable->textureFrameAnimLength(face.animationId);
+                            tex = pTextureFrameTable->animationFrame(face.animationId, frame);
+                            animLength = pTextureFrameTable->animationLength(face.animationId);
                             texname = tex->GetName();
                         }
                         // gather up all texture and shaderverts data
@@ -3312,8 +3312,8 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                             if (face.IsAnimated()) {
                                 // TODO(pskelton): any instances where animTime is not consistent would need checking
-                                frame += pTextureFrameTable->textureFrameAnimTime(face.animationId);
-                                tex = pTextureFrameTable->GetFrameTexture(face.animationId, frame);
+                                frame += pTextureFrameTable->animationFrameLength(face.animationId);
+                                tex = pTextureFrameTable->animationFrame(face.animationId, frame);
                                 if (!tex) break;
                                 texname = tex->GetName();
                             }
@@ -3848,8 +3848,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 Duration animLength;
                 Duration frame;
                 if (face->IsAnimated()) {
-                    tex = pTextureFrameTable->GetFrameTexture(face->animationId, frame);
-                    animLength = pTextureFrameTable->textureFrameAnimLength(face->animationId);
+                    tex = pTextureFrameTable->animationFrame(face->animationId, frame);
+                    animLength = pTextureFrameTable->animationLength(face->animationId);
                     texname = tex->GetName();
                 }
 
@@ -3911,8 +3911,8 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                     if (face->IsAnimated()) {
                         // TODO(pskelton): any instances where animTime is not consistent would need checking
-                        frame += pTextureFrameTable->textureFrameAnimTime(face->animationId);
-                        tex = pTextureFrameTable->GetFrameTexture(face->animationId, frame);
+                        frame += pTextureFrameTable->animationFrameLength(face->animationId);
+                        tex = pTextureFrameTable->animationFrame(face->animationId, frame);
                         if (!tex) break;
                         texname = tex->GetName();
                     }

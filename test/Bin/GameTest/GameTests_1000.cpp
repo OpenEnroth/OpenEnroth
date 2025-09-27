@@ -1,4 +1,6 @@
 #include <unordered_set>
+#include <vector>
+#include <utility>
 
 #include "Testing/Game/GameTest.h"
 
@@ -12,6 +14,7 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Image.h"
+#include "Engine/AssetsManager.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 #include "Engine/LOD.h"
@@ -697,33 +700,32 @@ GAME_TEST(Issues, Issue1430) {
 
 GAME_TEST(Prs, Pr1440) {
     // Frame table search is off by 1 tick.
-    TextureFrameTable table;
+    std::vector<TextureFrameData> frames;
 
-    TextureFrame frame0;
-    frame0.name = "dec33b";
-    frame0.animationDuration = 16_ticks;
-    frame0.frameDuration = 8_ticks;
-    frame0.flags = FRAME_HAS_MORE;
-    GraphicsImage *tex0 = frame0.GetTexture();
+    TextureFrameData &frame0 = frames.emplace_back();
+    frame0.textureName = "dec33b";
+    frame0.animationLength = 16_ticks;
+    frame0.frameLength = 8_ticks;
+    frame0.flags = FRAME_HAS_MORE | FRAME_FIRST;
+    GraphicsImage *tex0 = assets->getBitmap(frame0.textureName);
 
-    TextureFrame frame1;
-    frame1.name = "dec33d";
-    frame1.animationDuration = 0_ticks;
-    frame1.frameDuration = 8_ticks;
+    TextureFrameData &frame1 = frames.emplace_back();
+    frame1.textureName = "dec33d";
+    frame1.animationLength = 0_ticks;
+    frame1.frameLength = 8_ticks;
     frame1.flags = 0;
-    GraphicsImage *tex1 = frame1.GetTexture();
+    GraphicsImage *tex1 = assets->getBitmap(frame1.textureName);
 
-    table.textures.push_back(frame0);
-    table.textures.push_back(frame1);
+    TextureFrameTable table(std::move(frames));
 
     for (int i = 0; i < 8; i++)
-        EXPECT_EQ(table.GetFrameTexture(0, Duration::fromTicks(i)), tex0) << i;
+        EXPECT_EQ(table.animationFrame(0, Duration::fromTicks(i)), tex0) << i;
     for (int i = 8; i < 16; i++)
-        EXPECT_EQ(table.GetFrameTexture(0, Duration::fromTicks(i)), tex1) << i;
+        EXPECT_EQ(table.animationFrame(0, Duration::fromTicks(i)), tex1) << i;
     for (int i = 16; i < 24; i++)
-        EXPECT_EQ(table.GetFrameTexture(0, Duration::fromTicks(i)), tex0) << i;
+        EXPECT_EQ(table.animationFrame(0, Duration::fromTicks(i)), tex0) << i;
     for (int i = 24; i < 32; i++)
-        EXPECT_EQ(table.GetFrameTexture(0, Duration::fromTicks(i)), tex1) << i;
+        EXPECT_EQ(table.animationFrame(0, Duration::fromTicks(i)), tex1) << i;
 }
 
 GAME_TEST(Issues, Issue1447a) {

@@ -10,7 +10,7 @@ struct MonsterList;
 struct OverlayList;
 struct PortraitFrameTable;
 struct SpriteFrameTable;
-struct TextureFrameTable;
+class TextureFrameTable;
 class TileTable;
 
 struct TriBlob {

@@ -305,12 +305,11 @@ void reconstruct(const TileData_MM7 &src, TileData *dst) {
     dst->flags = static_cast<TileFlags>(src.flags);
 }
 
-void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
-    reconstruct(src.textureName, &dst->name);
-    dst->name = ascii::toLower(dst->name);
+void reconstruct(const TextureFrameData_MM7 &src, TextureFrameData *dst) {
+    reconstruct(src.textureName, &dst->textureName);
 
-    dst->animationDuration = Duration::fromTicks(src.animLength * 8);
-    dst->frameDuration = Duration::fromTicks(src.animTime * 8);
+    dst->animationLength = Duration::fromTicks(src.animationLength * 8);
+    dst->frameLength = Duration::fromTicks(src.frameLength * 8);
 
     // MM7 uses different enum values for texture frames and portrait frames. We have unified them, so need to properly
     // convert the values here.
