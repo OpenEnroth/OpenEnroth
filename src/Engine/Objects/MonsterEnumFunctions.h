@@ -1,13 +1,11 @@
 #pragma once
 
 #include <span>
-#include <string>
 #include <utility>
 
 #include "Engine/Data/HouseEnums.h"
 
 #include "Utility/Segment.h"
-#include "Utility/IndexedArray.h"
 #include "Library/Color/ColorTable.h"
 
 #include "ItemEnums.h"
@@ -106,4 +104,9 @@ std::span<const MonsterAttackPreference> allMonsterAttackPreferences();
 // MonsterProjectile
 //
 
+/**
+ * @param projectile                    Monster projectile to get a sprite id for.
+ * @return                              Sprite id to use for the given monster projectile.
+ * @see isMonsterProjectileSprite
+ */
 SpriteId spriteForMonsterProjectile(MonsterProjectile projectile);

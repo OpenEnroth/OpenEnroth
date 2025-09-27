@@ -14,7 +14,7 @@ enum class SpriteId : uint16_t {
 
     SPRITE_SPELL_0 = 10,
 
-    // basic bolt attacks
+    // Monster bolt attacks. Note that these are different from bolt spells, which have separate sprite ids assigned.
     SPRITE_PROJECTILE_AIR_BOLT = 500,  // blue bolt projectile + smoke   e.g. blue dragon attack
     SPRITE_PROJECTILE_AIR_BOLT_IMPACT = 501,
     SPRITE_PROJECTILE_EARTH_BOLT = 505,  // dark-brown bolt
@@ -36,7 +36,7 @@ enum class SpriteId : uint16_t {
 
     SPRITE_PROJECTILE_ARROW = 545,
     SPRITE_PROJECTILE_FLAMING_ARROW = 550, // Also explosive arrows.
-    SPRITE_PROJECTILE_BLASTER = 555,
+    SPRITE_PROJECTILE_BLASTER = 555, // Also energy projectiles from Hydras.
     SPRITE_PROJECTILE_BLASTER_IMPACT = 556,
 
     SPRITE_546 = 546,
