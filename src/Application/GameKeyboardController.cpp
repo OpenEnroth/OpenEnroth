@@ -23,7 +23,11 @@ bool GameKeyboardController::IsKeyDown(PlatformKey key) const {
     if (key == PlatformKey::KEY_NONE)
         return false;
 
-    return isKeyDown_[key];
+    return isKeyDown_[key] || isKeyDownThisFrame_[key];
+}
+
+void GameKeyboardController::NextFrame() {
+    isKeyDownThisFrame_.fill(false);
 }
 
 bool GameKeyboardController::keyPressEvent(const PlatformKeyEvent *event) {
@@ -31,6 +35,7 @@ bool GameKeyboardController::keyPressEvent(const PlatformKeyEvent *event) {
         return false; // Auto repeat
 
     isKeyDown_[event->key] = true;
+    isKeyDownThisFrame_[event->key] = true;
     isKeyDownReportPending_[event->key] = true;
     return false;
 }

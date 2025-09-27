@@ -40,10 +40,8 @@ GAME_TEST(Issues, Issue2002) {
     game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
     game.tick(15);
     for (int i = 0; i < 3; ++i) {
-        game.pressKey(PlatformKey::KEY_A); // Attack with 3 chars
-        game.tick();
-        game.releaseKey(PlatformKey::KEY_A);
-        game.tick();
+        game.pressAndReleaseKey(PlatformKey::KEY_A); // Attack with 3 chars
+        game.tick(2);
     }
 
     // check recovery
