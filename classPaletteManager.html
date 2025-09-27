@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;65ca345</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9fbeeae</span>
    </div>
   </td>
  </tr>
@@ -84,8 +84,6 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af7964a4ce082229c108d96c836544ee5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPaletteManager.html#af7964a4ce082229c108d96c836544ee5">load</a> (<a class="el" href="classLodTextureCache.html">LodTextureCache</a> *lod)</td></tr>
 <tr class="separator:af7964a4ce082229c108d96c836544ee5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc4059519cd910fb380a862c84bed79c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPaletteManager.html#afc4059519cd910fb380a862c84bed79c">paletteIndex</a> (int paletteId)</td></tr>
-<tr class="separator:afc4059519cd910fb380a862c84bed79c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac8cac2894d52c2324c5fbb6c7bddb23f"><td class="memItemLeft" align="right" valign="top">std::span&lt; <a class="el" href="structColor.html">Color</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPaletteManager.html#ac8cac2894d52c2324c5fbb6c7bddb23f">paletteData</a> ()</td></tr>
 <tr class="separator:ac8cac2894d52c2324c5fbb6c7bddb23f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -98,8 +96,6 @@ Static Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pri-attribs" name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
-<tr class="memitem:a31679fca4d9c90cbbe41f60b9dc58546"><td class="memItemLeft" align="right" valign="top">std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPaletteManager.html#a31679fca4d9c90cbbe41f60b9dc58546">_paletteIds</a></td></tr>
-<tr class="separator:a31679fca4d9c90cbbe41f60b9dc58546"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66d8487e5695fd0e503073f02127a69d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structPalette.html">Palette</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classPaletteManager.html#a66d8487e5695fd0e503073f02127a69d">_palettes</a></td></tr>
 <tr class="separator:a66d8487e5695fd0e503073f02127a69d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -187,58 +183,11 @@ Private Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="section return"><dt>Returns</dt><dd>Span containing contiguous data for all loaded palettes. </dd></dl>
-
-</div>
-</div>
-<a id="afc4059519cd910fb380a862c84bed79c" name="afc4059519cd910fb380a862c84bed79c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc4059519cd910fb380a862c84bed79c">&#9670;&#160;</a></span>paletteIndex()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int PaletteManager::paletteIndex </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>paletteId</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">paletteId</td><td><a class="el" href="structPalette.html">Palette</a> identifier, a number in [0, 999]. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Index for the provided palette identifier. Returned index can then be used for getting palette data from the return value of <code>paletteData</code> function. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Span containing contiguous data for all 1000 loaded palettes. </dd></dl>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a31679fca4d9c90cbbe41f60b9dc58546" name="a31679fca4d9c90cbbe41f60b9dc58546"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a31679fca4d9c90cbbe41f60b9dc58546">&#9670;&#160;</a></span>_paletteIds</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::vector&lt;int&gt; PaletteManager::_paletteIds</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a66d8487e5695fd0e503073f02127a69d" name="a66d8487e5695fd0e503073f02127a69d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a66d8487e5695fd0e503073f02127a69d">&#9670;&#160;</a></span>_palettes</h2>
 
