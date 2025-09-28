@@ -26,6 +26,7 @@
 
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 #include "Library/Platform/Application/PlatformApplication.h"
+#include "Library/Platform/Interface/PlatformEnumFunctions.h"
 #include "Library/Platform/Interface/PlatformEvents.h"
 
 #include "Utility/Exception.h"
@@ -149,38 +150,23 @@ void EngineController::pressGuiButton(std::string_view buttonId) {
 }
 
 void EngineController::goToGame() {
-    ThrowingTicker ticker(this, "Couldn't return to game");
-
-    // Skip movies.
-    while (current_screen_type == SCREEN_VIDEO) {
-        pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-        ticker.tick();
-    }
-
-    // Can't always leave key settings menu by pressing ESC, so need custom handling.
-    if (current_screen_type == SCREEN_KEYBOARD_OPTIONS) {
-        pressGuiButton("KeyBinding_Default");
-        ticker.tick();
-    }
-
-    // Leave to game screen if we're in the game, or to main menu if we're in menus.
-    while (current_screen_type != SCREEN_GAME && GetCurrentMenuID() != MENU_MAIN) {
-        pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
-        ticker.tick(2); // Somehow tick(1) is not enough when we're trying to leave the game loading menu.
-    }
-
-    // If game is starting up - wait for main menu to appear.
-    while (GetCurrentMenuID() == MENU_MAIN && lWindowList.empty())
-        ticker.tick();
+    goToGameOrMainMenu();
+    if (GetCurrentMenuID() == MENU_MAIN)
+        throw Exception("Can't go to game from the main menu");
 }
 
 void EngineController::goToInventory(int characterIndex) {
+    assert(characterIndex >= 1 && characterIndex <= 4);
+
     goToGame();
 
-    if (GetCurrentMenuID() != MENU_NONE)
-        throw Exception("Can't go to inventory from the main menu");
+    if (pParty->activeCharacterIndex() != characterIndex) {
+        pressAndReleaseKey(platformKeyForDigit(characterIndex));
+        tick(1);
+        if (pParty->activeCharacterIndex() != characterIndex)
+            throw Exception("Couldn't activate character #{}", characterIndex);
+    }
 
-    pParty->setActiveCharacterIndex(characterIndex);
     pressAndReleaseKey(PlatformKey::KEY_I);
     tick(2); // Need two ticks for inventory to be shown.
 
@@ -189,13 +175,12 @@ void EngineController::goToInventory(int characterIndex) {
 }
 
 void EngineController::goToMainMenu() {
-    ThrowingTicker ticker(this, "Couldn't return to main menu");
-
-    goToGame();
-
+    goToGameOrMainMenu();
     if (GetCurrentMenuID() == MENU_MAIN)
         return;
     assert(GetCurrentMenuID() == MENU_NONE);
+
+    ThrowingTicker ticker(this, "Couldn't return to main menu");
 
     // Go to in-game menu.
     while (current_screen_type != SCREEN_MENU) {
@@ -343,15 +328,22 @@ void EngineController::teleportTo(MapId map, Vec3f position, int viewYaw) {
 }
 
 void EngineController::castSpell(int characterIndex, SpellId spell) {
-    goToGame();
+    assert(characterIndex >= 1 && characterIndex <= 4);
 
+    goToGame();
     if (GetCurrentMenuID() != MENU_NONE)
         throw Exception("Can't cast a spell from the main menu");
+
+    if (pParty->activeCharacterIndex() != characterIndex) {
+        pressAndReleaseKey(platformKeyForDigit(characterIndex));
+        tick(1);
+        if (pParty->activeCharacterIndex() != characterIndex)
+            throw Exception("Couldn't activate character #{}", characterIndex);
+    }
 
     MagicSchool school = magicSchoolForSpell(spell);
     int index = spellIndexInMagicSchool(spell);
 
-    pParty->setActiveCharacterIndex(characterIndex);
     pressGuiButton("Game_CastSpell");
     tick(1);
     pressGuiButton(fmt::format("SpellBook_School{}", std::to_underlying(school)));
@@ -360,6 +352,32 @@ void EngineController::castSpell(int characterIndex, SpellId spell) {
     tick(1);
     pressGuiButton(fmt::format("SpellBook_Spell{}", index)); // Confirm.
     tick(1);
+}
+
+void EngineController::goToGameOrMainMenu() {
+    ThrowingTicker ticker(this, "Couldn't return to game");
+
+    // Skip movies.
+    while (current_screen_type == SCREEN_VIDEO) {
+        pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        ticker.tick();
+    }
+
+    // Can't always leave key settings menu by pressing ESC, so need custom handling.
+    if (current_screen_type == SCREEN_KEYBOARD_OPTIONS) {
+        pressGuiButton("KeyBinding_Default");
+        ticker.tick();
+    }
+
+    // Leave to game screen if we're in the game, or to main menu if we're in menus.
+    while (current_screen_type != SCREEN_GAME && GetCurrentMenuID() != MENU_MAIN) {
+        pressAndReleaseKey(PlatformKey::KEY_ESCAPE);
+        ticker.tick(2); // Somehow tick(1) is not enough when we're trying to leave the game loading menu.
+    }
+
+    // If game is starting up - wait for main menu to appear.
+    while (GetCurrentMenuID() == MENU_MAIN && lWindowList.empty())
+        ticker.tick();
 }
 
 GUIButton *EngineController::existingButton(std::string_view buttonId) {
