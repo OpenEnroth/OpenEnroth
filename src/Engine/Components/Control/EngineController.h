@@ -58,6 +58,9 @@ class EngineController {
      */
     void pressGuiButton(std::string_view buttonId);
 
+    /**
+     * Closes all menus and goes to the game screen. Will fail if main menu is currently open.
+     */
     void goToGame();
 
     void goToInventory(int characterIndex);
@@ -120,6 +123,8 @@ class EngineController {
     void castSpell(int characterIndex, SpellId spell);
 
  private:
+    void goToGameOrMainMenu();
+
     GUIButton *existingButton(std::string_view buttonId);
 
  private:

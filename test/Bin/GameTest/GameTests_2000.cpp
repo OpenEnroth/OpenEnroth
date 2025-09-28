@@ -318,6 +318,45 @@ GAME_TEST(Issues, Issue2109) {
     EXPECT_LE(damageRange[1], 5);
 }
 
+GAME_TEST(Issues, Issue2116) {
+    // Resuscitating a character in turn based mode does not give them a turn.
+    auto activeCharacterTape = tapes.activeCharacterIndex();
+
+    game.startNewGame();
+    test.startTaping();
+
+    game.pressAndReleaseKey(PlatformKey::KEY_RETURN);
+    game.tick();
+    EXPECT_TRUE(pParty->bTurnBasedModeOn);
+
+    pParty->pCharacters[3].SetCondDeadWithBlockCheck(false);
+    game.tick();
+
+    for (int i = 0; i < 10; i++) {
+        game.pressAndReleaseKey(PlatformKey::KEY_B); // Pass.
+        do {
+            game.tick(2);
+        } while (!pParty->hasActiveCharacter());
+    }
+    EXPECT_CONTAINS(activeCharacterTape, 1);
+    EXPECT_CONTAINS(activeCharacterTape, 2);
+    EXPECT_CONTAINS(activeCharacterTape, 3);
+    EXPECT_MISSES(activeCharacterTape, 4);
+
+    pParty->pCharacters[3].conditions.reset(CONDITION_DEAD);
+    pParty->pCharacters[3].conditions.reset(CONDITION_UNCONSCIOUS);
+    pParty->pCharacters[3].health = 1;
+    game.tick();
+
+    for (int i = 0; i < 10; i++) {
+        game.pressAndReleaseKey(PlatformKey::KEY_B); // Pass.
+        do {
+            game.tick(2);
+        } while (!pParty->hasActiveCharacter());
+    }
+    EXPECT_CONTAINS(activeCharacterTape, 4);
+}
+
 GAME_TEST(Issues, Issue2117) {
     // Jumping down from Celeste crashes the game
     auto mapTape = tapes.map();

@@ -5,6 +5,7 @@ set(LIBRARY_PLATFORM_INTERFACE_SOURCES
 
 set(LIBRARY_PLATFORM_INTERFACE_HEADERS
         Platform.h
+        PlatformEnumFunctions.h
         PlatformEnums.h
         PlatformEventHandler.h
         PlatformEventLoop.h
