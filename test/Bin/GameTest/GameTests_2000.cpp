@@ -6,6 +6,7 @@
 #include "Engine/Engine.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
+#include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
@@ -544,6 +545,19 @@ GAME_TEST(Issues, Issue2201) {
 
     EXPECT_CONTAINS(statusTape, "Spell failed");
     EXPECT_EQ(mp3Tape.delta(), -5);
+}
+
+GAME_TEST(Issues, Issue2233) {
+    // transparent walls - bad normals
+    auto posTape = tapes.custom([] { return pParty->pos; });
+    test.playTraceFromTestData("issue_2233.mm7", "issue_2233.json");
+    // this was previosuly impassable due to bad wall normals heading NE
+    EXPECT_LT(posTape.front().y, 6200);
+    EXPECT_LT(posTape.front().x, -10000);
+    EXPECT_GT(posTape.back().y, 7400);
+    EXPECT_GT(posTape.back().x, -9200);
+    // and spot check a known problem face
+    EXPECT_GT(dot(pIndoor->pFaces[6301].facePlane.normal, Vec3f(0.659, -0.742, 0.123)), 0.99f);
 }
 
 GAME_TEST(Issues, Issue2244) {
