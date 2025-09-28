@@ -17,7 +17,7 @@ var searchData=
   ['teststruct_14',['TestStruct',['../structTestStruct.html',1,'']]],
   ['testtapebase_15',['TestTapeBase',['../classdetail_1_1TestTapeBase.html',1,'detail']]],
   ['testtapestate_16',['TestTapeState',['../classdetail_1_1TestTapeState.html',1,'detail']]],
-  ['textureframedata_17',['TextureFrameData',['../classTextureFrameData.html',1,'']]],
+  ['textureframedata_17',['TextureFrameData',['../structTextureFrameData.html',1,'']]],
   ['textureframedata_5fmm7_18',['TextureFrameData_MM7',['../structTextureFrameData__MM7.html',1,'']]],
   ['textureframetable_19',['TextureFrameTable',['../classTextureFrameTable.html',1,'']]],
   ['texturerenderid_20',['TextureRenderId',['../classTextureRenderId.html',1,'']]],

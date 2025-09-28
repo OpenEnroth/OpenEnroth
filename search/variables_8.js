@@ -29,8 +29,8 @@ var searchData=
   ['hirelings_26',['hirelings',['../structParty__MM7.html#a09c83f1c4da2bd6b4b785b66ab56c897',1,'Party_MM7']]],
   ['hirelingscrollposition_27',['hirelingScrollPosition',['../structParty__MM7.html#a1483a976f8306f33339dc3d5d416c29f',1,'Party_MM7::hirelingScrollPosition()'],['../structParty.html#a9b4e759e196a4a3466d568cabf6b34d8',1,'Party::hirelingScrollPosition()']]],
   ['history_28',['History',['../classGameConfig_1_1Keybindings.html#a12abf38fbd23e9bac01aa623b2779ba1',1,'GameConfig::Keybindings::History()'],['../classGameConfig_1_1Gamepad.html#ab3725727f0e56fef65505bea54dbcaa9',1,'GameConfig::Gamepad::History()']]],
-  ['historyeventtimes_29',['historyEventTimes',['../structPartyTimeStruct__MM7.html#a11c859425e939c784bc99fdbcae43d30',1,'PartyTimeStruct_MM7']]],
-  ['historyeventtimes_30',['HistoryEventTimes',['../structPartyTimeStruct.html#a474dec9ca4348488085a1c9a7057459e',1,'PartyTimeStruct']]],
+  ['historyeventtimes_29',['HistoryEventTimes',['../structPartyTimeStruct.html#a474dec9ca4348488085a1c9a7057459e',1,'PartyTimeStruct']]],
+  ['historyeventtimes_30',['historyEventTimes',['../structPartyTimeStruct__MM7.html#a11c859425e939c784bc99fdbcae43d30',1,'PartyTimeStruct_MM7']]],
   ['historylines_31',['historyLines',['../structHistoryTable.html#a172a788c38da9d85ba44051b17d20fd4',1,'HistoryTable']]],
   ['holdingmouserightbutton_32',['holdingMouseRightButton',['../UIPopup_8cpp.html#aa9e2cd4827b8b05aef41d4391042d6f5',1,'holdingMouseRightButton():&#160;UIPopup.cpp'],['../UIPopup_8h.html#aa9e2cd4827b8b05aef41d4391042d6f5',1,'holdingMouseRightButton():&#160;UIPopup.cpp']]],
   ['hostilitytype_33',['hostilityType',['../structMonsterInfo__MM7.html#a68f3b5f4db95f81c32b1992027c254f4',1,'MonsterInfo_MM7::hostilityType()'],['../structMonsterInfo.html#a1fc1e0147290b5c84e5ed231f039496c',1,'MonsterInfo::hostilityType()']]],
@@ -51,7 +51,6 @@ var searchData=
   ['hpregen_48',['hpRegen',['../structRegenData.html#a38c35ea93500d9a96c9efe26b50c74cd',1,'RegenData']]],
   ['hpspellregen_49',['hpSpellRegen',['../structRegenData.html#a2f133dac995a8bb4c11b4b9d4549cb1b',1,'RegenData']]],
   ['hres_50',['hres',['../structPCXHeader.html#a182817b2b03ff8e33f15b0122c859a19',1,'PCXHeader']]],
-  ['hw_5fsprites_51',['hw_sprites',['../classSpriteFrame.html#a97ed373b263df04fcad7c933c104dfeb',1,'SpriteFrame']]],
-  ['hwsprite_52',['hwsprite',['../structRenderBillboard.html#a0a19983757101fd9c21b5859f972b901',1,'RenderBillboard']]],
-  ['hwspriteids_53',['hwSpriteIds',['../structSpriteFrame__MM6.html#ae7dd515fd0dc0b6d61ecc92b28698a47',1,'SpriteFrame_MM6']]]
+  ['hwsprite_51',['hwsprite',['../structRenderBillboard.html#a0a19983757101fd9c21b5859f972b901',1,'RenderBillboard']]],
+  ['hwspriteids_52',['hwSpriteIds',['../structSpriteFrame__MM6.html#ae7dd515fd0dc0b6d61ecc92b28698a47',1,'SpriteFrame_MM6']]]
 ];
