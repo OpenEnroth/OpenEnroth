@@ -23,17 +23,19 @@ class Sprite {
     LodSprite *sprite_header = nullptr;
 };
 
+// TODO(captainurist) : move to Engine/Data and Engine/Tables
+
 class SpriteFrame {
  public:
-    std::string icon_name;
-    std::string texture_name;
-    std::array<Sprite *, 8> hw_sprites = {{}};
+    std::string animationName;
+    std::string textureName;
+    std::array<Sprite *, 8> sprites = {{}};
     float scale = 1.0;
-    int uFlags = 0;  // 128 for loaded - 1 for anim
-    int uGlowRadius = 0;
-    int uPaletteId = 0;
-    Duration uAnimTime;
-    Duration uAnimLength;
+    int flags = 0;  // 128 for loaded - 1 for anim
+    int glowRadius = 0;
+    int paletteId = 0;
+    Duration frameLength;
+    Duration animationLength;
 };
 
 struct SpriteFrameTable {

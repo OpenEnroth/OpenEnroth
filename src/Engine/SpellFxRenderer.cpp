@@ -337,7 +337,7 @@ void SpellFxRenderer::_4A7948_mind_blast_after_effect(SpriteObject *a1) {
     Dst.x = (float)a1->vPosition.x;
     Dst.y = (float)a1->vPosition.y;
     Dst.z = (float)a1->vPosition.z;
-    Dst.texture = a1->getSpriteFrame()->hw_sprites[0]->texture;
+    Dst.texture = a1->getSpriteFrame()->sprites[0]->texture;
     Dst.particle_size = 1.0;
     Dst.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2);
     for (int i = 0; i < 10; i++) {
@@ -438,8 +438,8 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
 
         local_0.particle_size = 3.0;
         local_0.timeToLive = Duration::randomRealtimeMilliseconds(vrng, 500, 1000);
-        local_0.texture = a2->getSpriteFrame()->hw_sprites[0]->texture;
-        local_0.paletteID = a2->getSpriteFrame()->uPaletteId;
+        local_0.texture = a2->getSpriteFrame()->sprites[0]->texture;
+        local_0.paletteID = a2->getSpriteFrame()->paletteId;
         particle_engine->AddParticle(&local_0);
         local_0.particle_size = 2.0;  // was 4.0 - reduce size of stun ring;
         local_0.x = (float)a2->vPosition.x;
@@ -465,8 +465,8 @@ void SpellFxRenderer::_4A7C07_stun_spell_fx(SpriteObject *a2) {
         local_0.g = 0.0f;
         local_0.b = 0.0f;
         local_0.timeToLive = Duration::randomRealtimeMilliseconds(vrng, 500, 1000);
-        local_0.texture = a2->getSpriteFrame()->hw_sprites[0]->texture;
-        local_0.paletteID = a2->getSpriteFrame()->uPaletteId;
+        local_0.texture = a2->getSpriteFrame()->sprites[0]->texture;
+        local_0.paletteID = a2->getSpriteFrame()->paletteId;
         particle_engine->AddParticle(&local_0);
     }
 }
@@ -1120,7 +1120,7 @@ void SpellFxRenderer::_4A8BFC_prismatic_light() {  // for SPELL_LIGHT_PRISMATIC_
     uAnimLength =
         pSpriteFrameTable
                 ->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")]
-                .uAnimLength;
+                .animationLength;
 }
 
 //----- (004A8C27) --------------------------------------------------------
@@ -1149,11 +1149,11 @@ void SpellFxRenderer::RenderSpecialEffects() {
 
     if (uAnimLength > 0_ticks) {
         // prismatic light
-        animElapsed = pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].uAnimLength - uAnimLength;
+        animElapsed = pSpriteFrameTable->pSpriteSFrames[pSpriteFrameTable->FastFindSprite("spell84")].animationLength - uAnimLength;
         prismaticFrame = pSpriteFrameTable->GetFrame(pSpriteFrameTable->FastFindSprite("spell84"), animElapsed);
         uAnimLength -= pEventTimer->dt();
 
-        render->DrawSpecialEffectsQuad(prismaticFrame->hw_sprites[0]->texture, prismaticFrame->uPaletteId);
+        render->DrawSpecialEffectsQuad(prismaticFrame->sprites[0]->texture, prismaticFrame->paletteId);
     }
 }
 

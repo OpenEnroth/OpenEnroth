@@ -725,7 +725,7 @@ std::pair<int, int> MonsterPopup_Draw(unsigned int uActorID, GUIWindow *pWindow)
                 pMonsterInfoUI_Doll.currentActionLength =
                         pSpriteFrameTable
                                 ->pSpriteSFrames[pActors[uActorID].spriteIds[pMonsterInfoUI_Doll.currentActionAnimation]]
-                                .uAnimLength;
+                                .animationLength;
             }
         }
 

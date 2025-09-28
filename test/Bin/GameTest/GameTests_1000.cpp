@@ -9,7 +9,7 @@
 #include "GUI/UI/UIStatusBar.h"
 #include "GUI/UI/UIHouses.h"
 
-#include "Engine/Graphics/TextureFrameTable.h"
+#include "Engine/Tables/TextureFrameTable.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"
 #include "Engine/Graphics/Indoor.h"

@@ -28,7 +28,7 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
-#include "Engine/Graphics/TextureFrameTable.h"
+#include "Engine/Tables/TextureFrameTable.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/Weather.h"

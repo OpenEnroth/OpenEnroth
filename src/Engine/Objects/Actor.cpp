@@ -1076,7 +1076,7 @@ void Actor::AI_MeleeAttack(unsigned int uActorID, Pid sTargetPid,
         pActors[uActorID].currentActionLength =
             pSpriteFrameTable
                 ->pSpriteSFrames[pActors[uActorID].spriteIds[ANIM_AtkMelee]]
-                .uAnimLength;
+                .animationLength;
         pActors[uActorID].currentActionTime = 0_ticks;
         pActors[uActorID].aiState = AttackingMelee;
         Actor::playSound(uActorID, ACTOR_ATTACK_SOUND);
@@ -1308,7 +1308,7 @@ void Actor::AI_SpellAttack2(unsigned int uActorID, Pid edx0,
         }
         v3->yawAngle = (short)v9->uYawAngle;
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
-                  .uAnimLength;
+                  .animationLength;
         v3->currentActionLength = v13;
         v3->currentActionTime = 0_ticks;
         v3->aiState = AttackingRanged4;
@@ -1382,7 +1382,7 @@ void Actor::AI_SpellAttack1(unsigned int uActorID, Pid sTargetPid,
         }
         v3->yawAngle = (short)v9->uYawAngle;
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
-                  .uAnimLength;
+                  .animationLength;
         v3->currentActionLength = v13;
         v3->currentActionTime = 0_ticks;
         v3->aiState = AttackingRanged3;
@@ -1457,7 +1457,7 @@ void Actor::AI_MissileAttack2(unsigned int uActorID, Pid sTargetPid,
         }
         v3->yawAngle = (short)v9->uYawAngle;
         v13 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
-                  .uAnimLength;
+                  .animationLength;
         v3->currentActionLength = v13;
         v3->currentActionTime = 0_ticks;
         v3->aiState = AttackingRanged2;
@@ -1528,7 +1528,7 @@ void Actor::AI_MissileAttack1(unsigned int uActorID, Pid sTargetPid,
         }
         v3->yawAngle = (short)v10->uYawAngle;
         v14 = pSpriteFrameTable->pSpriteSFrames[v3->spriteIds[ANIM_AtkRanged]]
-                  .uAnimLength;
+                  .animationLength;
         v3->currentActionLength = v14;
         v3->currentActionTime = 0_ticks;
         v3->aiState = AttackingRanged1;
@@ -1698,7 +1698,7 @@ void Actor::AI_Stun(unsigned int uActorID, Pid edx0,
         pActors[uActorID].yawAngle = (short)a3.uYawAngle;
         v7 = pSpriteFrameTable
                  ->pSpriteSFrames[pActors[uActorID].spriteIds[ANIM_GotHit]]
-                 .uAnimLength;
+                 .animationLength;
         pActors[uActorID].currentActionTime = 0_ticks;
         pActors[uActorID].aiState = Stunned;
         pActors[uActorID].currentActionLength = v7;
@@ -1723,7 +1723,7 @@ void Actor::AI_Bored(unsigned int uActorID, Pid uObjID,
 
     actor->currentActionLength =
         pSpriteFrameTable->pSpriteSFrames[actor->spriteIds[ANIM_Bored]]
-                .uAnimLength;
+                .animationLength;
 
     v7 = TrigLUT.atan2(actor->pos.x - pCamera3D->vCameraPos.x, actor->pos.y - pCamera3D->vCameraPos.y);
     v9 = TrigLUT.uIntegerPi + actor->yawAngle +
@@ -1754,7 +1754,7 @@ void Actor::resurrect(unsigned int uActorID) {
     pActor->currentActionAnimation = ANIM_Dying;
     pActor->currentActionLength =
         pSpriteFrameTable->pSpriteSFrames[pActor->spriteIds[ANIM_Dying]]
-                .uAnimLength;
+                .animationLength;
     pActor->currentHP = (short)pActor->monsterInfo.hp;
     Actor::playSound(uActorID, ACTOR_DEATH_SOUND);
     pActor->UpdateAnimation();
@@ -1784,7 +1784,7 @@ void Actor::Die(unsigned int uActorID) {
     actor->currentHP = 0;
     actor->currentActionLength =
         pSpriteFrameTable->pSpriteSFrames[actor->spriteIds[ANIM_Dying]]
-                .uAnimLength;
+                .animationLength;
     actor->buffs[ACTOR_BUFF_PARALYZED].Reset();
     actor->buffs[ACTOR_BUFF_STONED].Reset();
     Actor::playSound(uActorID, ACTOR_DEATH_SOUND);
@@ -2244,7 +2244,7 @@ void Actor::UpdateAnimation() {
             break;
 
         case Dead:
-            if (pSpriteFrameTable->pSpriteSFrames[spriteIds[ANIM_Dead]].hw_sprites[0] == nullptr)
+            if (pSpriteFrameTable->pSpriteSFrames[spriteIds[ANIM_Dead]].sprites[0] == nullptr)
                 aiState = Removed;
             else
                 currentActionAnimation = ANIM_Dead;

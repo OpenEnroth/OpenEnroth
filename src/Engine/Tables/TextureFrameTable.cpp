@@ -1,13 +1,11 @@
 #include "TextureFrameTable.h"
 
 #include <cassert>
-#include <string>
 #include <utility>
 #include <vector>
 
 #include "Engine/AssetsManager.h"
 
-#include "Library/Logger/Logger.h"
 #include "Utility/String/Ascii.h"
 
 TextureFrameTable *pTextureFrameTable;

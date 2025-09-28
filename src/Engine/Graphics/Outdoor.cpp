@@ -781,18 +781,18 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 pActors[i].spriteIds[pActors[i].currentActionAnimation], Cur_Action_Time);
 
         // no sprite frame to draw
-        if (frame->icon_name == "null") continue;
-        if (frame->hw_sprites[Sprite_Octant]->texture->height() == 0 || frame->hw_sprites[Sprite_Octant]->texture->width() == 0)
+        if (frame->animationName == "null") continue;
+        if (frame->sprites[Sprite_Octant]->texture->height() == 0 || frame->sprites[Sprite_Octant]->texture->width() == 0)
             assert(false);
 
         int flags = 0;
         // v16 = (int *)frame->uFlags;
-        if (frame->uFlags & 2) flags = 2;
-        if (frame->uFlags & 0x40000) flags |= 0x40;
-        if (frame->uFlags & 0x20000) flags |= 0x80;
-        if ((256 << Sprite_Octant) & frame->uFlags) flags |= 4;
-        if (frame->uGlowRadius) {
-            pMobileLightsStack->AddLight(Vec3f(x, y, z), pActors[i].sectorId, frame->uGlowRadius, colorTable.White,
+        if (frame->flags & 2) flags = 2;
+        if (frame->flags & 0x40000) flags |= 0x40;
+        if (frame->flags & 0x20000) flags |= 0x80;
+        if ((256 << Sprite_Octant) & frame->flags) flags |= 4;
+        if (frame->glowRadius) {
+            pMobileLightsStack->AddLight(Vec3f(x, y, z), pActors[i].sectorId, frame->glowRadius, colorTable.White,
                                          _4E94D3_light_type);
         }
 
@@ -806,8 +806,8 @@ void OutdoorLocation::PrepareActorsDrawList() {
                 pCamera3D->Project(view_x, view_y, view_z, &projected_x, &projected_y);
 
                 float proj_scale = frame->scale * (pCamera3D->ViewPlaneDistPixels) / (view_x);
-                int screen_space_half_width = static_cast<int>(proj_scale * frame->hw_sprites[Sprite_Octant]->uWidth / 2.0f);
-                int screen_space_height = static_cast<int>(proj_scale * frame->hw_sprites[Sprite_Octant]->uHeight);
+                int screen_space_half_width = static_cast<int>(proj_scale * frame->sprites[Sprite_Octant]->uWidth / 2.0f);
+                int screen_space_height = static_cast<int>(proj_scale * frame->sprites[Sprite_Octant]->uHeight);
 
                 if (projected_x + screen_space_half_width >= (signed int)pViewport->viewportTL_X &&
                     projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
@@ -816,9 +816,9 @@ void OutdoorLocation::PrepareActorsDrawList() {
                         ++uNumSpritesDrawnThisFrame;
 
                         pActors[i].attributes |= ACTOR_VISIBLE;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = frame->hw_sprites[Sprite_Octant];
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite = frame->sprites[Sprite_Octant];
                         pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID = pActors[i].sectorId;
-                        pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = frame->uPaletteId;
+                        pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = frame->paletteId;
 
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_x = proj_scale;
                         pBillboardRenderList[uNumBillboardsToDraw - 1].screenspace_projection_factor_y = proj_scale;

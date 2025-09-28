@@ -22,7 +22,6 @@ set(ENGINE_GRAPHICS_SOURCES
         ParticleEngine.cpp
         PortalFunctions.cpp
         Sprites.cpp
-        TextureFrameTable.cpp
         TileGenerator.cpp
         TurnBasedOverlay.cpp
         Viewport.cpp
@@ -53,7 +52,6 @@ set(ENGINE_GRAPHICS_HEADERS
         PortalFunctions.h
         RenderEntities.h
         Sprites.h
-        TextureFrameTable.h
         TileGenerator.h
         TurnBasedOverlay.h
         Viewport.h
