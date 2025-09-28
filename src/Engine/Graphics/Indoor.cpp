@@ -6,7 +6,6 @@
 #include <string>
 
 #include "Engine/Engine.h"
-#include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Graphics/BspRenderer.h"
@@ -18,9 +17,8 @@
 #include "Engine/Graphics/LightsStack.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ParticleEngine.h"
-#include "Engine/Graphics/TextureFrameTable.h"
+#include "Engine/Tables/TextureFrameTable.h"
 #include "Engine/Graphics/Sprites.h"
-#include "Engine/Graphics/PortalFunctions.h"
 #include "Engine/Graphics/Viewport.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Renderer/Renderer.h"

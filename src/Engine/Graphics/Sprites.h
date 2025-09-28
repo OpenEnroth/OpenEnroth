@@ -23,6 +23,8 @@ class Sprite {
     LodSprite *sprite_header = nullptr;
 };
 
+// TODO(captainurist) : move to Engine/Data and Engine/Tables
+
 class SpriteFrame {
  public:
     std::string animationName;

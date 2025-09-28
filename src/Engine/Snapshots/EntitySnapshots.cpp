@@ -12,7 +12,7 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/Overlays.h"
 #include "Engine/Graphics/Sprites.h"
-#include "Engine/Graphics/TextureFrameTable.h"
+#include "Engine/Tables/TextureFrameTable.h"
 #include "Engine/Graphics/Image.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/NPC.h"

@@ -26,7 +26,7 @@ struct IconFrameData;
 class Pid;
 class SoundInfo;
 class SpriteFrame;
-class TextureFrameData;
+struct TextureFrameData;
 struct TileData;
 struct ActiveOverlay;
 struct ActiveOverlayList;

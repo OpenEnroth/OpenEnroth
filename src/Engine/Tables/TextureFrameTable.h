@@ -1,26 +1,12 @@
 #pragma once
 
-#include <cstdint>
-#include <string>
+#include <string_view>
 #include <vector>
 
-#include "Engine/Data/FrameEnums.h"
-#include "Engine/Time/Duration.h"
-
-#include "Utility/Memory/Blob.h"
+#include "Engine/Data/TextureFrameData.h"
 
 struct TriBlob;
 class GraphicsImage;
-
-// TODO(captainurist): move to Engine/Data and Engine/Tables
-
-class TextureFrameData {
- public:
-    std::string textureName = "null"; // Texture name, to be looked up in bitmaps.lod.
-    Duration frameLength; // Duration of this frame.
-    Duration animationLength; // Total animation duration. Set only for the first frame in a sequence.
-    FrameFlags flags;
-};
 
 class TextureFrameTable {
  public:

@@ -9,24 +9,25 @@ set(ENGINE_DATA_SOURCES
         TileEnumFunctions.cpp)
 
 set(ENGINE_DATA_HEADERS
-        AutonoteEnums.h
         AutonoteData.h
+        AutonoteEnums.h
         AwardData.h
         AwardEnums.h
         ChestData.h
-        HouseData.h
-        HouseEnums.h
-        HouseEnumFunctions.h
-        HistoryData.h
         FrameEnums.h
+        HistoryData.h
+        HouseData.h
+        HouseEnumFunctions.h
+        HouseEnums.h
         IconFrameData.h
         ItemData.h
         PortraitFrameData.h
-        TileData.h
-        TileEnums.h
-        TileEnumFunctions.h
+        SpecialEnchantmentData.h
         StandardEnchantmentData.h
-        SpecialEnchantmentData.h)
+        TextureFrameData.h
+        TileData.h
+        TileEnumFunctions.h
+        TileEnums.h)
 
 add_library(engine_data STATIC ${ENGINE_DATA_SOURCES} ${ENGINE_DATA_HEADERS})
 target_link_libraries(engine_data PUBLIC library_serialization utility)

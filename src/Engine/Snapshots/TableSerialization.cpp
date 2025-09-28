@@ -4,12 +4,12 @@
 
 #include "Engine/Tables/PortraitFrameTable.h"
 #include "Engine/Tables/IconFrameTable.h"
+#include "Engine/Tables/TextureFrameTable.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/ObjectList.h"
 #include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/Overlays.h"
-#include "Engine/Graphics/TextureFrameTable.h"
 
 #include "Media/Audio/SoundList.h"
 
