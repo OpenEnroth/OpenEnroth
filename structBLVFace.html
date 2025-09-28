@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9fbeeae</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;88af9e1</span>
    </div>
   </td>
  </tr>
@@ -105,10 +105,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2da59a7061c84e9964ccc0ac219c98b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa265acfdce5d21ef5d46c0a8b83fc719"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#aa265acfdce5d21ef5d46c0a8b83fc719">Ethereal</a> () const</td></tr>
 <tr class="separator:aa265acfdce5d21ef5d46c0a8b83fc719"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f592ccc759d53ca44c5374dc8c65a72"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#a8f592ccc759d53ca44c5374dc8c65a72">IsTextureFrameTable</a> () const</td></tr>
-<tr class="separator:a8f592ccc759d53ca44c5374dc8c65a72"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab08aa300699edc541cf52972c8676418"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#ab08aa300699edc541cf52972c8676418">ToggleIsTextureFrameTable</a> ()</td></tr>
-<tr class="separator:ab08aa300699edc541cf52972c8676418"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79f3cf4a0bb215b88dd1cd421e4c16a1"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#a79f3cf4a0bb215b88dd1cd421e4c16a1">IsAnimated</a> () const</td></tr>
+<tr class="separator:a79f3cf4a0bb215b88dd1cd421e4c16a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7eedb7d7b52d1960701cc0a4cd6673a7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#a7eedb7d7b52d1960701cc0a4cd6673a7">ToggleIsAnimated</a> ()</td></tr>
+<tr class="separator:a7eedb7d7b52d1960701cc0a4cd6673a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5362f7f5e8eea80ff99746508cd4fef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#ab5362f7f5e8eea80ff99746508cd4fef">Flatten</a> (<a class="el" href="structFlatFace.html">FlatFace</a> *points, int model_idx, FaceAttributes override_plane=0) const</td></tr>
 <tr class="separator:ab5362f7f5e8eea80ff99746508cd4fef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2fda2ebe402fff81f7040f84eaec3b6a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#a2fda2ebe402fff81f7040f84eaec3b6a">Contains</a> (const <a class="el" href="Vec_8h.html#a40b8356e33151c22cb4d1adaf2b762a8">Vec3f</a> &amp;pos, int model_idx, int slack=0, FaceAttributes override_plane=0) const</td></tr>
@@ -130,8 +130,10 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a628539caca064812d94435087ed52e6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2e1207585b39e211d18feeae872159a"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#ab2e1207585b39e211d18feeae872159a">uFaceExtraID</a> = 0</td></tr>
 <tr class="separator:ab2e1207585b39e211d18feeae872159a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c1c89a245c1562d5421f95a690ffdd8"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#a2c1c89a245c1562d5421f95a690ffdd8">resource</a> = nullptr</td></tr>
-<tr class="separator:a2c1c89a245c1562d5421f95a690ffdd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4216ad3221a22adf0cee645558a99dea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#a4216ad3221a22adf0cee645558a99dea">texture</a> = nullptr</td></tr>
+<tr class="separator:a4216ad3221a22adf0cee645558a99dea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ea21da8993edb36565fc80bd0b896e7"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#a3ea21da8993edb36565fc80bd0b896e7">animationId</a> = 0</td></tr>
+<tr class="separator:a3ea21da8993edb36565fc80bd0b896e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab60cfc0dc33b03fd24a9c7129fe977ee"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#ab60cfc0dc33b03fd24a9c7129fe977ee">texunit</a> = -1</td></tr>
 <tr class="separator:ab60cfc0dc33b03fd24a9c7129fe977ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02423797ae6100107f3fc37b794f8a7d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structBLVFace.html#a02423797ae6100107f3fc37b794f8a7d">texlayer</a> = -1</td></tr>
@@ -404,6 +406,31 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a79f3cf4a0bb215b88dd1cd421e4c16a1" name="a79f3cf4a0bb215b88dd1cd421e4c16a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a79f3cf4a0bb215b88dd1cd421e4c16a1">&#9670;&#160;</a></span>IsAnimated()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool BLVFace::IsAnimated </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a81af3ad468a1d3d756c0a5aedce54c39" name="a81af3ad468a1d3d756c0a5aedce54c39"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a81af3ad468a1d3d756c0a5aedce54c39">&#9670;&#160;</a></span>isFluid()</h2>
 
@@ -440,31 +467,6 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">bool BLVFace::isPortal </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a8f592ccc759d53ca44c5374dc8c65a72" name="a8f592ccc759d53ca44c5374dc8c65a72"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f592ccc759d53ca44c5374dc8c65a72">&#9670;&#160;</a></span>IsTextureFrameTable()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool BLVFace::IsTextureFrameTable </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -522,8 +524,8 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ab08aa300699edc541cf52972c8676418" name="ab08aa300699edc541cf52972c8676418"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab08aa300699edc541cf52972c8676418">&#9670;&#160;</a></span>ToggleIsTextureFrameTable()</h2>
+<a id="a7eedb7d7b52d1960701cc0a4cd6673a7" name="a7eedb7d7b52d1960701cc0a4cd6673a7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7eedb7d7b52d1960701cc0a4cd6673a7">&#9670;&#160;</a></span>ToggleIsAnimated()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -532,7 +534,7 @@ Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void BLVFace::ToggleIsTextureFrameTable </td>
+          <td class="memname">void BLVFace::ToggleIsAnimated </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -573,6 +575,20 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a3ea21da8993edb36565fc80bd0b896e7" name="a3ea21da8993edb36565fc80bd0b896e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ea21da8993edb36565fc80bd0b896e7">&#9670;&#160;</a></span>animationId</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int BLVFace::animationId = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="ab1063adbde3fb66378066da917ca48e9" name="ab1063adbde3fb66378066da917ca48e9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab1063adbde3fb66378066da917ca48e9">&#9670;&#160;</a></span>facePlane</h2>
 
@@ -643,20 +659,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a2c1c89a245c1562d5421f95a690ffdd8" name="a2c1c89a245c1562d5421f95a690ffdd8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2c1c89a245c1562d5421f95a690ffdd8">&#9670;&#160;</a></span>resource</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void* BLVFace::resource = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="a02423797ae6100107f3fc37b794f8a7d" name="a02423797ae6100107f3fc37b794f8a7d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a02423797ae6100107f3fc37b794f8a7d">&#9670;&#160;</a></span>texlayer</h2>
 
@@ -665,6 +667,20 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">int BLVFace::texlayer = -1</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4216ad3221a22adf0cee645558a99dea" name="a4216ad3221a22adf0cee645558a99dea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4216ad3221a22adf0cee645558a99dea">&#9670;&#160;</a></span>texture</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classGraphicsImage.html">GraphicsImage</a>* BLVFace::texture = nullptr</td>
         </tr>
       </table>
 </div><div class="memdoc">
