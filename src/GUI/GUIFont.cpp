@@ -106,7 +106,7 @@ int GUIFont::GetTextLenLimitedByWidth(std::string_view str, int maxWidth, int& r
     int len = str.length();
     resultWidth = 0;
     for (int i = 0; i < len; ++i) {
-        unsigned char c = str[i];
+        char c = str[i];
         switch (c) {
         case '\n': // New line.
         case '\t': // Move to next cell, offset from the left border.
@@ -199,7 +199,7 @@ Color GUIFont::DrawTextLine(std::string_view text, Color startColor, Color defau
     Color color = startColor;
     int x = position.x;
     for (int i = 0, len = text.size(); i < len; ++i) {
-        unsigned char c = text[i];
+        char c = text[i];
         switch (c) {
         case '\n': // New line.
             return color;
@@ -309,7 +309,7 @@ std::string GUIFont::WrapText(std::string_view inString, int width, int uX, bool
     std::string out;
 
     for (int i = 0; i < inString.length(); i++) {
-        unsigned char c = inString[i];
+        char c = inString[i];
 
         switch (c) {
         case '\t': // Move to next cell, offset from the left border.
@@ -555,7 +555,7 @@ std::string GUIFont::FitTwoFontStringInWindow(std::string_view inString, GUIFont
     std::string out;
 
     for (int i = 0; i < inString.length(); i++) {
-        unsigned char c = inString[i];
+        char c = inString[i];
         switch (c) {
         case '\t': // Move to next cell, offset from the left border.
             {
@@ -634,7 +634,7 @@ int GUIFont::GetStringHeightWithSecondFont(GUIFont *secondFont, std::string_view
     std::string test_string = FitTwoFontStringInWindow(text_str, secondFont, width, x);
     size_t uStringLen = test_string.length();
     for (size_t i = 0; i < uStringLen; ++i) {
-        unsigned char c = test_string[i];
+        char c = test_string[i];
         switch (c) {
         case '\n': // New line.
             uAllHeght += GetHeight() - 3;

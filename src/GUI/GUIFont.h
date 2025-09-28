@@ -47,6 +47,7 @@ class GUIFont {
      *                                  break as it essentially starts a new table column.
      */
     int GetLineWidth(std::string_view str);
+
     /**
      * @param str                       Text to check. Should be a single line without tabs or right-justify.
      * @param maxWidth                  Width of the window that the text should fit into.
@@ -54,6 +55,7 @@ class GUIFont {
      * @return                          Length of substring that fits into maxWidth.
      */
     int GetTextLenLimitedByWidth(std::string_view str, int maxWidth, int &resultWidth);
+
     /**
      * @param str                       Text to check.
      * @param width                     Width of the window that the text should fit into.
