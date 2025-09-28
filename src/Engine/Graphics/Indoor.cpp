@@ -218,34 +218,33 @@ void BLVFace::FromODM(ODMFace *face) {
     this->zCalc = face->zCalc;
     this->uPolygonType = face->uPolygonType;
     this->uNumVertices = face->uNumVertices;
-    this->resource = face->resource;
+    this->texture = face->texture;
+    this->animationId = face->animationId;
     this->pVertexIDs = face->pVertexIDs.data();
 }
 
 //----- (004AE5BA) --------------------------------------------------------
 GraphicsImage *BLVFace::GetTexture() const {
-    if (this->IsTextureFrameTable())
+    if (this->IsAnimated())
         // TODO(captainurist): using pEventTimer here is weird. This means that e.g. cleric in the haunted mansion is
         //                     not animated in turn-based mode. Use misc timer? Also see ODMFace::GetTexture.
-        return pTextureFrameTable->GetFrameTexture(
-            (int64_t)this->resource, pEventTimer->time());
+        return pTextureFrameTable->animationFrame(this->animationId, pEventTimer->time());
     else
-        return static_cast<GraphicsImage *>(this->resource);
+        return this->texture;
 }
 
 void BLVFace::SetTexture(std::string_view filename) {
-    if (this->IsTextureFrameTable()) {
-        this->resource = (void *)pTextureFrameTable->FindTextureByName(filename);
-        if (this->resource != (void *)-1) {
+    if (this->IsAnimated()) {
+        this->animationId = pTextureFrameTable->animationId(filename);
+        if (this->animationId != -1) {
             return;
         }
 
         // Failed to find animated texture so disable
-        this->resource = nullptr;
-        this->ToggleIsTextureFrameTable();
+        this->ToggleIsAnimated();
     }
 
-    this->resource = assets->getBitmap(filename);
+    this->texture = assets->getBitmap(filename);
     this->texlayer = -1;
     this->texunit = -1;
 }
@@ -767,13 +766,13 @@ void BLV_UpdateDoorGeometry(BLVDoor* door, int distance) {
 
         if (face->uAttributes & FACE_TexAlignLeft) {
             extras->sTextureDeltaU -= minU;
-        } else if (face->uAttributes & FACE_TexAlignRight && face->resource) {
+        } else if (face->uAttributes & FACE_TexAlignRight) {
             extras->sTextureDeltaU -= maxU + face->GetTexture()->width();
         }
 
         if (face->uAttributes & FACE_TexAlignDown) {
             extras->sTextureDeltaV -= minV;
-        } else if (face->uAttributes & FACE_TexAlignBottom && face->resource) {
+        } else if (face->uAttributes & FACE_TexAlignBottom) {
             extras->sTextureDeltaV -= maxV + face->GetTexture()->height();
         }
 

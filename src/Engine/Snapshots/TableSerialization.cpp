@@ -104,9 +104,10 @@ void deserialize(const TriBlob &src, SpriteFrameTable *dst) {
 }
 
 void deserialize(const TriBlob &src, TextureFrameTable *dst) {
-    deserialize(src.mm7, &dst->textures, tags::append, tags::via<TextureFrame_MM7>);
+    deserialize(src.mm7, &dst->_frames, tags::append, tags::via<TextureFrameData_MM7>);
+    dst->_textures.resize(dst->_frames.size());
 
-    assert(!dst->textures.empty());
+    assert(!dst->_frames.empty());
 }
 
 void deserialize(const TriBlob &src, SoundList *dst) {

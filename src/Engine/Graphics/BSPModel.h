@@ -39,13 +39,13 @@ struct ODMFace {
     }
     inline bool Ethereal() const { return uAttributes & FACE_ETHEREAL; }
 
-    inline bool IsTextureFrameTable() {
-        return this->uAttributes & FACE_TEXTURE_FRAME;
+    inline bool IsAnimated() {
+        return this->uAttributes & FACE_ANIMATED;
     }
-    inline void ToggleIsTextureFrameTable() {
-        this->uAttributes = this->uAttributes & FACE_TEXTURE_FRAME
-                                ? this->uAttributes & ~FACE_TEXTURE_FRAME
-                                : this->uAttributes | FACE_TEXTURE_FRAME;
+    inline void ToggleIsAnimated() {
+        this->uAttributes = this->uAttributes & FACE_ANIMATED
+                                ? this->uAttributes & ~FACE_ANIMATED
+                                : this->uAttributes | FACE_ANIMATED;
     }
 
     void SetTexture(std::string_view filename);
@@ -66,7 +66,8 @@ struct ODMFace {
     std::array<int16_t, 20> pTextureVIDs = {{}};
 
     // details store for array texture
-    void *resource = nullptr;  // TODO(captainurist): this can be an int64, deal away with weird casts.
+    GraphicsImage *texture = nullptr; // Face texture, or nullptr if this face is animated.
+    int animationId = 0; // Index into pTextureFrameTable for animated faces.
     int texunit = -1;
     int texlayer = -1;
 

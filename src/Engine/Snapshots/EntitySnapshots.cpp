@@ -281,7 +281,8 @@ void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
     dst->pVertexUIDs = nullptr;
     dst->pVertexVIDs = nullptr;
     dst->uFaceExtraID = src.faceExtraId;
-    dst->resource = nullptr;
+    dst->texture = nullptr;
+    dst->animationId = 0;
     dst->uSectorID = src.sectorId;
     dst->uBackSectorID = src.backSectorId;
     reconstruct(src.bounding, &dst->pBounding);
@@ -303,12 +304,11 @@ void reconstruct(const TileData_MM7 &src, TileData *dst) {
     dst->flags = static_cast<TileFlags>(src.flags);
 }
 
-void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst) {
-    reconstruct(src.textureName, &dst->name);
-    dst->name = ascii::toLower(dst->name);
+void reconstruct(const TextureFrameData_MM7 &src, TextureFrameData *dst) {
+    reconstruct(src.textureName, &dst->textureName);
 
-    dst->animationDuration = Duration::fromTicks(src.animLength * 8);
-    dst->frameDuration = Duration::fromTicks(src.animTime * 8);
+    dst->animationLength = Duration::fromTicks(src.animationLength * 8);
+    dst->frameLength = Duration::fromTicks(src.frameLength * 8);
 
     // MM7 uses different enum values for texture frames and portrait frames. We have unified them, so need to properly
     // convert the values here.
@@ -1595,7 +1595,8 @@ void reconstruct(const ODMFace_MM7 &src, ODMFace *dst) {
     dst->pVertexIDs = src.pVertexIDs;
     dst->pTextureUIDs = src.pTextureUIDs;
     dst->pTextureVIDs = src.pTextureVIDs;
-    dst->resource = nullptr;
+    dst->texture = nullptr;
+    dst->animationId = 0;
     dst->sTextureDeltaU = src.sTextureDeltaU;
     dst->sTextureDeltaV = src.sTextureDeltaV;
     reconstruct(src.pBoundingBox, &dst->pBoundingBox);

@@ -26,7 +26,7 @@ struct IconFrameData;
 class Pid;
 class SoundInfo;
 class SpriteFrame;
-class TextureFrame;
+class TextureFrameData;
 struct TileData;
 struct ActiveOverlay;
 struct ActiveOverlayList;
@@ -188,17 +188,17 @@ MM_DECLARE_MEMCOPY_SERIALIZABLE(TileData_MM7)
 void reconstruct(const TileData_MM7 &src, TileData *dst);
 
 
-struct TextureFrame_MM7 {
+struct TextureFrameData_MM7 {
     std::array<char, 12> textureName;
-    int16_t textureID;
-    int16_t animTime; // Total animation time, set only on the 1st frame, in 1/16th of a real-time second.
-    int16_t animLength; // Frame duration, in 1/16th of a real-time second.
+    int16_t textureId;
+    int16_t frameLength; // Frame duration, in 1/16th of a real-time second.
+    int16_t animationLength; // Total animation time, set only on the 1st frame, in 1/16th of a real-time second.
     int16_t flags;
 };
-static_assert(sizeof(TextureFrame_MM7) == 20);
-MM_DECLARE_MEMCOPY_SERIALIZABLE(TextureFrame_MM7)
+static_assert(sizeof(TextureFrameData_MM7) == 20);
+MM_DECLARE_MEMCOPY_SERIALIZABLE(TextureFrameData_MM7)
 
-void reconstruct(const TextureFrame_MM7 &src, TextureFrame *dst);
+void reconstruct(const TextureFrameData_MM7 &src, TextureFrameData *dst);
 
 
 struct NPCData_MM7 {

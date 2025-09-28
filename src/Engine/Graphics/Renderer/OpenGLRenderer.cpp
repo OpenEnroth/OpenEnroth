@@ -3227,9 +3227,9 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                         Duration animLength;
                         Duration frame;
-                        if (face.IsTextureFrameTable()) {
-                            tex = pTextureFrameTable->GetFrameTexture((int64_t)face.resource, frame);
-                            animLength = pTextureFrameTable->textureFrameAnimLength((int64_t)face.resource);
+                        if (face.IsAnimated()) {
+                            tex = pTextureFrameTable->animationFrame(face.animationId, frame);
+                            animLength = pTextureFrameTable->animationLength(face.animationId);
                             texname = tex->GetName();
                         }
                         // gather up all texture and shaderverts data
@@ -3310,10 +3310,10 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                 }
                             }
 
-                            if (face.IsTextureFrameTable()) {
+                            if (face.IsAnimated()) {
                                 // TODO(pskelton): any instances where animTime is not consistent would need checking
-                                frame += pTextureFrameTable->textureFrameAnimTime((int64_t)face.resource);
-                                tex = pTextureFrameTable->GetFrameTexture((int64_t)face.resource, frame);
+                                frame += pTextureFrameTable->animationFrameLength(face.animationId);
+                                tex = pTextureFrameTable->animationFrame(face.animationId, frame);
                                 if (!tex) break;
                                 texname = tex->GetName();
                             }
@@ -3433,7 +3433,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                 int texunit = 0;
                                 int texlayer = 0;
 
-                                if (face.IsTextureFrameTable()) {
+                                if (face.IsAnimated()) {
                                     texlayer = -1;
                                     texunit = -1;
                                 } else {
@@ -3847,9 +3847,9 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                 Duration animLength;
                 Duration frame;
-                if (face->IsTextureFrameTable()) {
-                    tex = pTextureFrameTable->GetFrameTexture((int64_t)face->resource, frame);
-                    animLength = pTextureFrameTable->textureFrameAnimLength((int64_t)face->resource);
+                if (face->IsAnimated()) {
+                    tex = pTextureFrameTable->animationFrame(face->animationId, frame);
+                    animLength = pTextureFrameTable->animationLength(face->animationId);
                     texname = tex->GetName();
                 }
 
@@ -3909,10 +3909,10 @@ void OpenGLRenderer::DrawIndoorFaces() {
                         }
                     }
 
-                    if (face->IsTextureFrameTable()) {
+                    if (face->IsAnimated()) {
                         // TODO(pskelton): any instances where animTime is not consistent would need checking
-                        frame += pTextureFrameTable->textureFrameAnimTime((int64_t)face->resource);
-                        tex = pTextureFrameTable->GetFrameTexture((int64_t)face->resource, frame);
+                        frame += pTextureFrameTable->animationFrameLength(face->animationId);
+                        tex = pTextureFrameTable->animationFrame(face->animationId, frame);
                         if (!tex) break;
                         texname = tex->GetName();
                     }
@@ -4053,7 +4053,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                 if (face->uAttributes & FACE_OUTLINED || (face->uAttributes & FACE_IsSecret) && engine->is_saturate_faces)
                     attribflags |= 0x00010000;
 
-                if (face->IsTextureFrameTable()) {
+                if (face->IsAnimated()) {
                     texlayer = -1;
                     texunit = -1;
                 } else {

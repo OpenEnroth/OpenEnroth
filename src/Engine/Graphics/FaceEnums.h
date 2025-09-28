@@ -19,7 +19,7 @@ enum class FaceAttribute : uint32_t {
     FACE_FlowRight         = 0x00000800,
     FACE_TexAlignLeft      = 0x00001000,
     FACE_IsInvisible       = 0x00002000,
-    FACE_TEXTURE_FRAME     = 0x00004000,  // Texture ID is a frameset from TextureFrameTable, otherwise BitmapID
+    FACE_ANIMATED          = 0x00004000,
     FACE_TexAlignRight     = 0x00008000,
     FACE_OUTLINED          = 0x00010000,  // outline face debug
     FACE_TexAlignBottom    = 0x00020000,
