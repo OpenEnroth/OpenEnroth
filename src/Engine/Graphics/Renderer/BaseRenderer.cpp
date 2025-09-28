@@ -130,7 +130,7 @@ void BaseRenderer::DrawSpriteObjects() {
              (object->uType < SPRITE_PROJECTILE_AIR_BOLT || object->uType >= SPRITE_OBJECT_EXPLODE) && // Not a projectile.
              (object->uType < SPRITE_TRAP_FIRE || object->uType > SPRITE_TRAP_BODY))) { // Not a trap.
             SpriteFrame *frame = object->getSpriteFrame();
-            if (frame->icon_name == "null" || frame->texture_name == "null") {
+            if (frame->animationName == "null" || frame->textureName == "null") {
                 logger->trace("Trying to draw sprite with null frame");
                 continue;
             }
@@ -139,26 +139,26 @@ void BaseRenderer::DrawSpriteObjects() {
             unsigned int angle = TrigLUT.atan2(x - pCamera3D->vCameraPos.x, y - pCamera3D->vCameraPos.y);
             int octant = ((TrigLUT.uIntegerPi + (TrigLUT.uIntegerPi >> 3) + object->uFacing - angle) >> 8) & 7;
 
-            pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->hw_sprites[octant];
+            pBillboardRenderList[::uNumBillboardsToDraw].hwsprite = frame->sprites[octant];
             // error catching
-            if (frame->hw_sprites[octant]->texture->height() == 0 || frame->hw_sprites[octant]->texture->width() == 0) {
+            if (frame->sprites[octant]->texture->height() == 0 || frame->sprites[octant]->texture->width() == 0) {
                 logger->trace("Trying to draw sprite with empty octant texture");
                 continue;
             }
 
             // centre sprite
-            if (frame->uFlags & 0x20) {
-                z -= (frame->scale * frame->hw_sprites[octant]->uHeight) / 2;
+            if (frame->flags & 0x20) {
+                z -= (frame->scale * frame->sprites[octant]->uHeight) / 2;
             }
 
             int16_t setflags = 0;
-            if (frame->uFlags & 2) setflags = 2;
-            if ((256 << octant) & frame->uFlags) setflags |= 4;
-            if (frame->uFlags & 0x40000) setflags |= 0x40;
-            if (frame->uFlags & 0x20000) setflags |= 0x80;
+            if (frame->flags & 2) setflags = 2;
+            if ((256 << octant) & frame->flags) setflags |= 4;
+            if (frame->flags & 0x40000) setflags |= 0x40;
+            if (frame->flags & 0x20000) setflags |= 0x80;
 
             // lighting
-            int lightradius = frame->uGlowRadius * object->field_22_glow_radius_multiplier;
+            int lightradius = frame->glowRadius * object->field_22_glow_radius_multiplier;
 
             Color color = pSpriteObjects[i].GetParticleTrailColor();
             if (color.r == 0) color.r = 0xFF;
@@ -182,14 +182,14 @@ void BaseRenderer::DrawSpriteObjects() {
 
                     float billb_scale = frame->scale * pCamera3D->ViewPlaneDistPixels / view_x;
 
-                    int screen_space_half_width = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uWidth / 2.0f);
-                    int screen_space_height = static_cast<int>(billb_scale * frame->hw_sprites[octant]->uHeight);
+                    int screen_space_half_width = static_cast<int>(billb_scale * frame->sprites[octant]->uWidth / 2.0f);
+                    int screen_space_height = static_cast<int>(billb_scale * frame->sprites[octant]->uHeight);
 
                     if (projected_x + screen_space_half_width >= (signed int)pViewport->viewportTL_X &&
                         projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
                         if (projected_y >= pViewport->viewportTL_Y && (projected_y - screen_space_height) <= pViewport->viewportBR_Y) {
                             object->uAttributes |= SPRITE_VISIBLE;
-                            pBillboardRenderList[::uNumBillboardsToDraw].uPaletteId = frame->uPaletteId;
+                            pBillboardRenderList[::uNumBillboardsToDraw].uPaletteId = frame->paletteId;
                             pBillboardRenderList[::uNumBillboardsToDraw].uIndoorSectorID = object->uSectorID;
                             pBillboardRenderList[::uNumBillboardsToDraw].pSpriteFrame = frame;
 
@@ -257,7 +257,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                         frame = LevelDecorationChangeSeason(decor_desc, v6 + Duration::fromTicks(v7), pParty->uCurrentMonth);
                     }
 
-                    if (!frame || frame->texture_name == "null" || frame->hw_sprites[0] == NULL) {
+                    if (!frame || frame->textureName == "null" || frame->sprites[0] == NULL) {
                         continue;
                     }
 
@@ -275,13 +275,13 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                         8) &
                         7;
                     int v37 = v13;
-                    if (frame->uFlags & 2) v38 = 2;
-                    if ((256 << v13) & frame->uFlags) v38 |= 4;
-                    if (frame->uFlags & 0x40000) v38 |= 0x40;
-                    if (frame->uFlags & 0x20000) v38 |= 0x80;
+                    if (frame->flags & 2) v38 = 2;
+                    if ((256 << v13) & frame->flags) v38 |= 4;
+                    if (frame->flags & 0x40000) v38 |= 0x40;
+                    if (frame->flags & 0x20000) v38 |= 0x80;
 
                     // for light
-                    if (frame->uGlowRadius) {
+                    if (frame->glowRadius) {
                         color = colorTable.White;
                         if (render->config->graphics.ColoredLights.value()) {
                             color = decor_desc->uColoredLight;
@@ -292,7 +292,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                         }
                         pStationaryLightsStack->AddLight(pLevelDecorations[i].vPosition +
                             Vec3f(0, 0, decor_desc->uDecorationHeight / 2),
-                            frame->uGlowRadius, color, _4E94D0_light_type);
+                            frame->glowRadius, color, _4E94D0_light_type);
                     }  // for light
 
                        // v17 = (pLevelDecorations[i].vPosition.x -
@@ -320,8 +320,8 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
 
                             float _v41 = frame->scale * (pCamera3D->ViewPlaneDistPixels) / (view_x);
 
-                            int screen_space_half_width = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uWidth / 2.0f);
-                            int screen_space_height = static_cast<int>(_v41 * frame->hw_sprites[(int64_t)v37]->uHeight);
+                            int screen_space_half_width = static_cast<int>(_v41 * frame->sprites[(int64_t)v37]->uWidth / 2.0f);
+                            int screen_space_height = static_cast<int>(_v41 * frame->sprites[(int64_t)v37]->uHeight);
 
                             if (projected_x + screen_space_half_width >= (signed int)pViewport->viewportTL_X &&
                                 projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
@@ -329,7 +329,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                                     ::uNumBillboardsToDraw++;
                                     ++uNumDecorationsDrawnThisFrame;
 
-                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].hwsprite = frame->hw_sprites[(int64_t)v37];
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].hwsprite = frame->sprites[(int64_t)v37];
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].world_x = pLevelDecorations[i].vPosition.x;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].world_y = pLevelDecorations[i].vPosition.y;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].world_z = pLevelDecorations[i].vPosition.z;
@@ -338,7 +338,7 @@ void BaseRenderer::PrepareDecorationsRenderList_ODM() {
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screen_space_z = view_x;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_x = _v41;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].screenspace_projection_factor_y = _v41;
-                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].uPaletteId = frame->uPaletteId;
+                                    pBillboardRenderList[::uNumBillboardsToDraw - 1].uPaletteId = frame->paletteId;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].field_1E = v38 | 0x200;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].uIndoorSectorID = 0;
                                     pBillboardRenderList[::uNumBillboardsToDraw - 1].object_pid = Pid(OBJECT_Decoration, i);
@@ -670,13 +670,13 @@ void BaseRenderer::BillboardSphereSpellFX(SpellFX_Billboard *a1, Color diffuse) 
 
 void BaseRenderer::DrawMonsterPortrait(const Recti &rc, SpriteFrame *Portrait, int Y_Offset) {
     Recti rct;
-    rct.x = rc.x + 64 + Portrait->hw_sprites[0]->uAreaX - Portrait->hw_sprites[0]->uWidth / 2;
-    rct.y = rc.y + Y_Offset + Portrait->hw_sprites[0]->uAreaY;
-    rct.w = Portrait->hw_sprites[0]->uWidth;
-    rct.h = Portrait->hw_sprites[0]->uHeight;
+    rct.x = rc.x + 64 + Portrait->sprites[0]->uAreaX - Portrait->sprites[0]->uWidth / 2;
+    rct.y = rc.y + Y_Offset + Portrait->sprites[0]->uAreaY;
+    rct.w = Portrait->sprites[0]->uWidth;
+    rct.h = Portrait->sprites[0]->uHeight;
 
     render->SetUIClipRect(rc);
-    render->DrawImage(Portrait->hw_sprites[0]->texture, rct, Portrait->uPaletteId);
+    render->DrawImage(Portrait->sprites[0]->texture, rct, Portrait->paletteId);
     render->ResetUIClipRect();
 }
 

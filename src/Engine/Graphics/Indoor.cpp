@@ -1257,13 +1257,13 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
     v11 = pSpriteFrameTable->GetFrame(decoration->uSpriteID, v37 + Duration::fromTicks(v10));
 
     // error catching
-    if (v11->icon_name == "null") assert(false);
+    if (v11->animationName == "null") assert(false);
 
     v30 = 0;
-    if (v11->uFlags & 2) v30 = 2;
-    if (v11->uFlags & 0x40000) v30 |= 0x40;
-    if (v11->uFlags & 0x20000) v30 |= 0x80;
-    if ((256 << v9) & v11->uFlags) v30 |= 4;
+    if (v11->flags & 2) v30 = 2;
+    if (v11->flags & 0x40000) v30 |= 0x40;
+    if (v11->flags & 0x20000) v30 |= 0x80;
+    if ((256 << v9) & v11->flags) v30 |= 4;
 
     int view_x = 0;
     int view_y = 0;
@@ -1282,8 +1282,8 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
 
             float billb_scale = v11->scale * pCamera3D->ViewPlaneDistPixels / view_x;
 
-            int screen_space_half_width = static_cast<int>(billb_scale * v11->hw_sprites[(int64_t)v9]->uWidth / 2.0f);
-            int screen_space_height = static_cast<int>(billb_scale * v11->hw_sprites[(int64_t)v9]->uHeight);
+            int screen_space_half_width = static_cast<int>(billb_scale * v11->sprites[(int64_t)v9]->uWidth / 2.0f);
+            int screen_space_height = static_cast<int>(billb_scale * v11->sprites[(int64_t)v9]->uHeight);
 
             if (projected_x + screen_space_half_width >= (signed int)pViewport->viewportTL_X &&
                 projected_x - screen_space_half_width <= (signed int)pViewport->viewportBR_X) {
@@ -1293,12 +1293,12 @@ void IndoorLocation::PrepareDecorationsRenderList_BLV(unsigned int uDecorationID
                     ++uNumDecorationsDrawnThisFrame;
 
                     pBillboardRenderList[uNumBillboardsToDraw - 1].hwsprite =
-                        v11->hw_sprites[v9];
+                        v11->sprites[v9];
 
-                    if (v11->hw_sprites[v9]->texture->height() == 0 || v11->hw_sprites[v9]->texture->width() == 0)
+                    if (v11->sprites[v9]->texture->height() == 0 || v11->sprites[v9]->texture->width() == 0)
                         assert(false);
 
-                    pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = v11->uPaletteId;
+                    pBillboardRenderList[uNumBillboardsToDraw - 1].uPaletteId = v11->paletteId;
                     pBillboardRenderList[uNumBillboardsToDraw - 1].uIndoorSectorID =
                         uSectorID;
 

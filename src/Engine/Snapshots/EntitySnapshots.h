@@ -122,22 +122,22 @@ void reconstruct(const Planei_MM7 &src, Planef *dst);
 
 
 struct SpriteFrame_MM6 {
-    std::array<char, 12> iconName;
-    std::array<char, 12> textureName;    // c
-    std::array<int16_t, 8> hwSpriteIds;  // 18h
-    int32_t scale;            // 28h
-    int32_t flags;               // 2c
-    int16_t glowRadius;      // 30
+    std::array<char, 12> animationName; // Only set for the 1st frame in an animated sequence.
+    std::array<char, 12> textureName; // Texture name in sprites.lod w/o rotational suffixes.
+    std::array<int16_t, 8> hwSpriteIds;
+    int32_t scale;
+    int32_t flags;
+    int16_t glowRadius;
     int16_t paletteId; // Palette id, a number in [0, 999] referencing palXXX in bitmaps.lod.
     int16_t paletteIndex; // Not used in OE, this was an index in a palette array that had non-existing palettes removed.
-    int16_t animTime;
+    int16_t frameLength;
 };
 static_assert(sizeof(SpriteFrame_MM6) == 56);
 MM_DECLARE_MEMCOPY_SERIALIZABLE(SpriteFrame_MM6)
 
 
 struct SpriteFrame_MM7 : public SpriteFrame_MM6 {
-    int16_t animLength;
+    int16_t animationLength;
     int16_t _pad;
 };
 static_assert(sizeof(SpriteFrame_MM7) == 60);

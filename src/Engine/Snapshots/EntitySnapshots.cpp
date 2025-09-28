@@ -255,22 +255,21 @@ void reconstruct(const Planei_MM7 &src, Planef *dst) {
 }
 
 void reconstruct(const SpriteFrame_MM7 &src, SpriteFrame *dst) {
-    reconstruct(src.iconName, &dst->icon_name);
-    dst->icon_name = ascii::toLower(dst->icon_name);
+    reconstruct(src.animationName, &dst->animationName);
+    dst->animationName = ascii::toLower(dst->animationName);
 
-    reconstruct(src.textureName, &dst->texture_name);
-    dst->texture_name = ascii::toLower(dst->texture_name);
+    reconstruct(src.textureName, &dst->textureName);
+    dst->textureName = ascii::toLower(dst->textureName);
 
-    for (unsigned int i = 0; i < 8; ++i)
-        dst->hw_sprites[i] = nullptr;
+    dst->sprites.fill(nullptr);
 
     dst->scale = src.scale / 65536.0f;
-    dst->uFlags = src.flags;
+    dst->flags = src.flags;
 
-    dst->uGlowRadius = src.glowRadius;
-    dst->uPaletteId = src.paletteId;
-    dst->uAnimTime = Duration::fromTicks(src.animTime * 8);
-    dst->uAnimLength = Duration::fromTicks(src.animLength * 8);
+    dst->glowRadius = src.glowRadius;
+    dst->paletteId = src.paletteId;
+    dst->frameLength = Duration::fromTicks(src.frameLength * 8);
+    dst->animationLength = Duration::fromTicks(src.animationLength * 8);
 }
 
 void reconstruct(const BLVFace_MM7 &src, BLVFace *dst) {
