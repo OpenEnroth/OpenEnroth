@@ -59,6 +59,8 @@ class KeyboardInputHandler {
  private:
     void GeneratePausedActions();
     void GenerateGameplayActions();
+    void ProcessPausedAction(InputAction action);
+    void ProcessGameplayAction(InputAction action);
 
     IKeyboardController *controller;
     std::shared_ptr<KeyboardActionMapping> actionMapping;

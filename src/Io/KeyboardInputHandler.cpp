@@ -61,25 +61,19 @@ static bool PartyMove(PartyAction direction) {
 void Io::KeyboardInputHandler::GeneratePausedActions() {
     for (auto action : allInputActions()) {
         bool isTriggered = false;
-        PlatformKey key = actionMapping->keyFor(action);
-        if (toggleTypeForInputAction(action) == TOGGLE_ONCE)
-            isTriggered = controller->ConsumeKeyPress(key);
-        else
-            isTriggered = controller->IsKeyDown(key);
+        for (PlatformKey key : {actionMapping->keyFor(action), actionMapping->gamepadKeyFor(action)}) {
+            if (toggleTypeForInputAction(action) == TOGGLE_ONCE)
+                isTriggered = controller->ConsumeKeyPress(key);
+            else
+                isTriggered = controller->IsKeyDown(key);
 
-        if (!isTriggered) {
-            continue;
-        }
-
-        if (action == INPUT_ACTION_INTERACT) {
-            if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_CHEST) {
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Game_Action, 0, 0);
-                continue;
-            }
-            if (current_screen_type == SCREEN_NPC_DIALOGUE || current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) {
-                // engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+            if (isTriggered) {
+                break;
             }
         }
+
+        if (isTriggered)
+            ProcessPausedAction(action);
     }
 }
 
@@ -88,267 +82,40 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
     bool resettimer = true;
     for (InputAction action : allInputActions()) {
         bool isTriggered = false;
-        PlatformKey key = actionMapping->keyFor(action);
-        PlatformKey gamepadkey = actionMapping->gamepadKeyFor(action);
-
-        switch (toggleTypeForInputAction(action)) {
-        default: assert(false); [[fallthrough]];
-        case TOGGLE_ONCE:
-            isTriggered = controller->ConsumeKeyPress(key) || controller->ConsumeKeyPress(gamepadkey);
-            break;
-        case TOGGLE_CONTINUOUSLY:
-            isTriggered = controller->IsKeyDown(key) || controller->IsKeyDown(gamepadkey);
-            break;
-        case TOGGLE_CONTINUOUSLY_WITH_DELAY:
-            // TODO(captainurist): This logic breaks down if we press & release a key every frame.
-            //                     Better way to implement this would be to generate the input actions from inside
-            //                     the event handler.
-            if (controller->IsKeyDown(key) || controller->IsKeyDown(gamepadkey)) {
-                resettimer = false;
-                if (!this->keydelaytimer) {
-                    isTriggered = true;
+        for (PlatformKey key : {actionMapping->keyFor(action), actionMapping->gamepadKeyFor(action)}) {
+            switch (toggleTypeForInputAction(action)) {
+            default: assert(false); [[fallthrough]];
+            case TOGGLE_ONCE:
+                isTriggered = controller->ConsumeKeyPress(key);
+                break;
+            case TOGGLE_CONTINUOUSLY:
+                isTriggered = controller->IsKeyDown(key);
+                break;
+            case TOGGLE_CONTINUOUSLY_WITH_DELAY:
+                // TODO(captainurist): This logic breaks down if we press & release a key every frame.
+                //                     Better way to implement this would be to generate the input actions from inside
+                //                     the event handler.
+                if (controller->IsKeyDown(key)) {
+                    resettimer = false;
+                    if (!this->keydelaytimer) {
+                        isTriggered = true;
+                    }
+                    // big delay after first press then small delay
+                    if (this->keydelaytimer >= DELAY_TOGGLE_TIME_FIRST) {
+                        isTriggered = true;
+                        this->keydelaytimer -= DELAY_TOGGLE_TIME_PERIOD;
+                    }
                 }
-                // big delay after first press then small delay
-                if (this->keydelaytimer >= DELAY_TOGGLE_TIME_FIRST) {
-                    isTriggered = true;
-                    this->keydelaytimer -= DELAY_TOGGLE_TIME_PERIOD;
-                }
+                break;
             }
-            break;
+
+            if (isTriggered) {
+                break;
+            }
         }
 
-        if (!isTriggered) {
-            continue;
-        }
-
-        switch (action) {
-        case INPUT_ACTION_MOVE_FORWARD:
-            if (current_screen_type == SCREEN_GAME) {
-                PartyMove(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_RunForward : PARTY_WalkForward);
-            }
-            break;
-
-        case INPUT_ACTION_MOVE_BACKWARDS:
-            if (current_screen_type == SCREEN_GAME) {
-                PartyMove(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_RunBackward : PARTY_WalkBackward);
-            }
-            break;
-
-        case INPUT_ACTION_STRAFE_LEFT:
-            if (current_screen_type == SCREEN_GAME) {
-                PartyStrafe(PARTY_StrafeLeft);
-            }
-            break;
-
-        case INPUT_ACTION_STRAFE_RIGHT:
-            if (current_screen_type == SCREEN_GAME) {
-                PartyStrafe(PARTY_StrafeRight);
-            }
-            break;
-
-        case INPUT_ACTION_TURN_LEFT:
-            if (current_screen_type == SCREEN_GAME) {
-                if (IsTurnStrafingToggled()) {
-                    if (!PartyStrafe(PARTY_StrafeLeft)) {
-                        break;
-                    }
-                } else {
-                    pPartyActionQueue->Add(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_FastTurnLeft : PARTY_TurnLeft);
-                }
-
-                if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && pWeather->bRenderSnow)
-                    pWeather->OnPlayerTurn(10);
-            }
-            break;
-        case INPUT_ACTION_TURN_RIGHT:
-            if (current_screen_type == SCREEN_GAME) {
-                if (IsTurnStrafingToggled()) {
-                    if (!PartyStrafe(PARTY_StrafeRight)) {
-                        break;
-                    }
-                } else {
-                    pPartyActionQueue->Add(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_FastTurnRight : PARTY_TurnRight);
-                }
-
-                if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && pWeather->bRenderSnow)
-                    pWeather->OnPlayerTurn(-10);
-            }
-            break;
-
-        case INPUT_ACTION_JUMP:
-            if (current_screen_type == SCREEN_GAME && !pParty->bTurnBasedModeOn) {
-                pPartyActionQueue->Add(PARTY_Jump);
-            }
-            break;
-
-        case INPUT_ACTION_YELL:
-            if (current_screen_type == SCREEN_GAME && pParty->hasActiveCharacter()) {
-                pParty->yell();
-                pParty->activeCharacter().playReaction(SPEECH_YELL);
-            }
-            break;
-
-        case INPUT_ACTION_PASS:
-            if (current_screen_type != SCREEN_GAME) break;
-
-            if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
-                pTurnEngine->flags |= TE_FLAG_8_finished;
-                break;
-            }
-            if (pParty->hasActiveCharacter()) {
-                if (!pParty->activeCharacter().timeToRecovery) {
-                    if (!pParty->bTurnBasedModeOn) {
-                        pParty->activeCharacter().SetRecoveryTime(
-                            debug_non_combat_recovery_mul * flt_debugrecmod3 * pParty->activeCharacter().GetAttackRecoveryTime(false)
-                        );
-                    }
-                    CastSpellInfoHelpers::cancelSpellCastInProgress();
-                    pTurnEngine->ApplyPlayerAction();
-                }
-            }
-            break;
-
-        case INPUT_ACTION_TOGGLE_TURN_BASED:
-            if (current_screen_type == SCREEN_GAME) {
-                if (pParty->bTurnBasedModeOn) {
-                    if (pTurnEngine->turn_stage == TE_MOVEMENT ||
-                        pTurnEngine->pQueue[0].uPackedID.type() == OBJECT_Character) {
-                        pParty->bTurnBasedModeOn = false;
-                        pTurnEngine->End(true);
-                    }
-                } else {
-                    pTurnEngine->Start();
-                    pParty->bTurnBasedModeOn = true;
-                }
-            }
-            break;
-
-        case INPUT_ACTION_QUICK_CAST: {
-            if (current_screen_type != SCREEN_GAME) {
-                break;
-            }
-
-            if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
-                pTurnEngine->flags |= TE_FLAG_8_finished;
-                break;
-            }
-
-            if (!pParty->hasActiveCharacter()) {
-                break;
-            }
-
-            SpellId quickSpellNumber = pParty->activeCharacter().uQuickSpell;
-            int uRequiredMana = 0;
-
-            if (!engine->config->debug.AllMagic.value()) {
-                if (quickSpellNumber != SPELL_NONE && !pParty->activeCharacter().bHaveSpell[quickSpellNumber])
-                    quickSpellNumber = SPELL_NONE; // Can end up here after setting the quick spell in all magic mode.
-
-                if (quickSpellNumber != SPELL_NONE) {
-                    Mastery skill_mastery = pParty->activeCharacter().getActualSkillValue(skillForSpell(quickSpellNumber)).mastery();
-                    uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[skill_mastery];
-                }
-            }
-
-            bool enoughMana = pParty->activeCharacter().mana >= uRequiredMana;
-
-            if (quickSpellNumber == SPELL_NONE || engine->IsUnderwater() || !enoughMana) {
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Attack, 0, 0);
-            } else {
-                // TODO(Nik-RE-dev): why next frame?
-                engine->_messageQueue->addMessageNextFrame(UIMSG_CastQuickSpell, 0, 0);
-            }
-
-            break;
-        }
-
-        case INPUT_ACTION_ATTACK:
-            if (current_screen_type != SCREEN_GAME) {
-                break;
-            }
-
-            if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
-                pTurnEngine->flags |= TE_FLAG_8_finished;
-            } else {
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Attack, 0, 0);
-            }
-
-            break;
-
-        case INPUT_ACTION_INTERACT:
-            if (current_screen_type == SCREEN_GAME) {
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Game_Action, 0, 0);
-                break;
-            }
-
-            if (current_screen_type == SCREEN_NPC_DIALOGUE) {
-                engine->_messageQueue->clear();
-                engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
-            }
-            break;
-
-        case INPUT_ACTION_NEXT_CHAR:
-            if (current_screen_type != SCREEN_SPELL_BOOK) {
-                // TODO(Nik-RE-dev): why next frame?
-                engine->_messageQueue->addMessageNextFrame(UIMSG_CycleCharacters, 0, 0);
-            }
-            break;
-
-        case INPUT_ACTION_LOOK_UP:
-            pPartyActionQueue->Add(PARTY_LookUp);
-            break;
-
-        case INPUT_ACTION_CENTER_VIEW:
-            pPartyActionQueue->Add(PARTY_CenterView);
-            break;
-
-        case INPUT_ACTION_LOOK_DOWN:
-            pPartyActionQueue->Add(PARTY_LookDown);
-            break;
-
-        case INPUT_ACTION_FLY_UP:
-            if (current_screen_type == SCREEN_GAME) {
-                pPartyActionQueue->Add(PARTY_FlyUp);
-            }
-            break;
-
-        case INPUT_ACTION_FLY_LAND:
-            if (current_screen_type == SCREEN_GAME) {
-                pPartyActionQueue->Add(PARTY_Land);
-            }
-            break;
-
-        case INPUT_ACTION_FLY_DOWN:
-            if (current_screen_type == SCREEN_GAME) {
-                pPartyActionQueue->Add(PARTY_FlyDown);
-            }
-            break;
-
-        case INPUT_ACTION_ZOOM_IN:
-            // engine->_messageQueue->addMessageNextFrame(UIMSG_ClickZoomInBtn, 0, 0);
-            break;
-
-        case INPUT_ACTION_ZOOM_OUT:
-            // engine->_messageQueue->addMessageNextFrame(UIMSG_ClickZoomOutBtn, 0, 0);
-            break;
-
-        case INPUT_ACTION_TOGGLE_ALWAYS_RUN:
-            engine->config->settings.AlwaysRun.toggle();
-            break;
-
-        case INPUT_ACTION_ESCAPE:
-            // engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, window_SpeakInHouse != 0, 0);
-            break;
-
-        case INPUT_ACTION_OPEN_INVENTORY:
-            if (current_screen_type == SCREEN_GAME) {
-                engine->_messageQueue->addMessageNextFrame(UIMSG_OpenInventory, 0, 0);
-            }
-            break;
-
-        default:
-            break;
-        }
+        if (isTriggered)
+            ProcessGameplayAction(action);
     }
 
     if (resettimer == true) {
@@ -356,6 +123,249 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
     } else {
         // use timer so pacing is consistent across framerates
         if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST) this->keydelaytimer += pEventTimer->dt();
+    }
+}
+
+void Io::KeyboardInputHandler::ProcessPausedAction(InputAction action) {
+    if (action != INPUT_ACTION_INTERACT)
+        return;
+
+    if (current_screen_type == SCREEN_GAME || current_screen_type == SCREEN_CHEST) {
+        engine->_messageQueue->addMessageCurrentFrame(UIMSG_Game_Action, 0, 0);
+    }
+    if (current_screen_type == SCREEN_NPC_DIALOGUE || current_screen_type == SCREEN_BRANCHLESS_NPC_DIALOG) {
+        // engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+    }
+}
+
+void Io::KeyboardInputHandler::ProcessGameplayAction(InputAction action) {
+    switch (action) {
+    case INPUT_ACTION_MOVE_FORWARD:
+        if (current_screen_type == SCREEN_GAME) {
+            PartyMove(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_RunForward : PARTY_WalkForward);
+        }
+        break;
+
+    case INPUT_ACTION_MOVE_BACKWARDS:
+        if (current_screen_type == SCREEN_GAME) {
+            PartyMove(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_RunBackward : PARTY_WalkBackward);
+        }
+        break;
+
+    case INPUT_ACTION_STRAFE_LEFT:
+        if (current_screen_type == SCREEN_GAME) {
+            PartyStrafe(PARTY_StrafeLeft);
+        }
+        break;
+
+    case INPUT_ACTION_STRAFE_RIGHT:
+        if (current_screen_type == SCREEN_GAME) {
+            PartyStrafe(PARTY_StrafeRight);
+        }
+        break;
+
+    case INPUT_ACTION_TURN_LEFT:
+        if (current_screen_type == SCREEN_GAME) {
+            if (IsTurnStrafingToggled()) {
+                if (!PartyStrafe(PARTY_StrafeLeft)) {
+                    break;
+                }
+            } else {
+                pPartyActionQueue->Add(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_FastTurnLeft : PARTY_TurnLeft);
+            }
+
+            if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && pWeather->bRenderSnow)
+                pWeather->OnPlayerTurn(10);
+        }
+        break;
+
+    case INPUT_ACTION_TURN_RIGHT:
+        if (current_screen_type == SCREEN_GAME) {
+            if (IsTurnStrafingToggled()) {
+                if (!PartyStrafe(PARTY_StrafeRight)) {
+                    break;
+                }
+            } else {
+                pPartyActionQueue->Add(pParty->uFlags2 & PARTY_FLAGS_2_RUNNING ? PARTY_FastTurnRight : PARTY_TurnRight);
+            }
+
+            if (uCurrentlyLoadedLevelType == LEVEL_OUTDOOR && pWeather->bRenderSnow)
+                pWeather->OnPlayerTurn(-10);
+        }
+        break;
+
+    case INPUT_ACTION_JUMP:
+        if (current_screen_type == SCREEN_GAME && !pParty->bTurnBasedModeOn) {
+            pPartyActionQueue->Add(PARTY_Jump);
+        }
+        break;
+
+    case INPUT_ACTION_YELL:
+        if (current_screen_type == SCREEN_GAME && pParty->hasActiveCharacter()) {
+            pParty->yell();
+            pParty->activeCharacter().playReaction(SPEECH_YELL);
+        }
+        break;
+
+    case INPUT_ACTION_PASS:
+        if (current_screen_type != SCREEN_GAME)
+            break;
+        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
+            pTurnEngine->flags |= TE_FLAG_8_finished;
+            break;
+        }
+        if (pParty->hasActiveCharacter()) {
+            if (!pParty->activeCharacter().timeToRecovery) {
+                if (!pParty->bTurnBasedModeOn) {
+                    pParty->activeCharacter().SetRecoveryTime(
+                        debug_non_combat_recovery_mul * flt_debugrecmod3 * pParty->activeCharacter().GetAttackRecoveryTime(false)
+                    );
+                }
+                CastSpellInfoHelpers::cancelSpellCastInProgress();
+                pTurnEngine->ApplyPlayerAction();
+            }
+        }
+        break;
+
+    case INPUT_ACTION_TOGGLE_TURN_BASED:
+        if (current_screen_type == SCREEN_GAME) {
+            if (pParty->bTurnBasedModeOn) {
+                if (pTurnEngine->turn_stage == TE_MOVEMENT ||
+                    pTurnEngine->pQueue[0].uPackedID.type() == OBJECT_Character) {
+                    pParty->bTurnBasedModeOn = false;
+                    pTurnEngine->End(true);
+                }
+            } else {
+                pTurnEngine->Start();
+                pParty->bTurnBasedModeOn = true;
+            }
+        }
+        break;
+
+    case INPUT_ACTION_QUICK_CAST: {
+        if (current_screen_type != SCREEN_GAME) {
+            break;
+        }
+
+        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
+            pTurnEngine->flags |= TE_FLAG_8_finished;
+            break;
+        }
+
+        if (!pParty->hasActiveCharacter()) {
+            break;
+        }
+
+        SpellId quickSpellNumber = pParty->activeCharacter().uQuickSpell;
+        int uRequiredMana = 0;
+
+        if (!engine->config->debug.AllMagic.value()) {
+            if (quickSpellNumber != SPELL_NONE && !pParty->activeCharacter().bHaveSpell[quickSpellNumber])
+                quickSpellNumber = SPELL_NONE; // Can end up here after setting the quick spell in all magic mode.
+
+            if (quickSpellNumber != SPELL_NONE) {
+                Mastery skill_mastery = pParty->activeCharacter().getActualSkillValue(skillForSpell(quickSpellNumber)).mastery();
+                uRequiredMana = pSpellDatas[quickSpellNumber].mana_per_skill[skill_mastery];
+            }
+        }
+
+        bool enoughMana = pParty->activeCharacter().mana >= uRequiredMana;
+
+        if (quickSpellNumber == SPELL_NONE || engine->IsUnderwater() || !enoughMana) {
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Attack, 0, 0);
+        } else {
+            // TODO(Nik-RE-dev): why next frame?
+            engine->_messageQueue->addMessageNextFrame(UIMSG_CastQuickSpell, 0, 0);
+        }
+
+        break;
+    }
+
+    case INPUT_ACTION_ATTACK:
+        if (current_screen_type != SCREEN_GAME) {
+            break;
+        }
+
+        if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT) {
+            pTurnEngine->flags |= TE_FLAG_8_finished;
+        } else {
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Attack, 0, 0);
+        }
+        break;
+
+    case INPUT_ACTION_INTERACT:
+        if (current_screen_type == SCREEN_GAME) {
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Game_Action, 0, 0);
+            break;
+        }
+
+        if (current_screen_type == SCREEN_NPC_DIALOGUE) {
+            engine->_messageQueue->clear();
+            engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, 0, 0);
+        }
+        break;
+
+    case INPUT_ACTION_NEXT_CHAR:
+        if (current_screen_type != SCREEN_SPELL_BOOK) {
+            // TODO(Nik-RE-dev): why next frame?
+            engine->_messageQueue->addMessageNextFrame(UIMSG_CycleCharacters, 0, 0);
+        }
+        break;
+
+    case INPUT_ACTION_LOOK_UP:
+        pPartyActionQueue->Add(PARTY_LookUp);
+        break;
+
+    case INPUT_ACTION_CENTER_VIEW:
+        pPartyActionQueue->Add(PARTY_CenterView);
+        break;
+
+    case INPUT_ACTION_LOOK_DOWN:
+        pPartyActionQueue->Add(PARTY_LookDown);
+        break;
+
+    case INPUT_ACTION_FLY_UP:
+        if (current_screen_type == SCREEN_GAME) {
+            pPartyActionQueue->Add(PARTY_FlyUp);
+        }
+        break;
+
+    case INPUT_ACTION_FLY_LAND:
+        if (current_screen_type == SCREEN_GAME) {
+            pPartyActionQueue->Add(PARTY_Land);
+        }
+        break;
+
+    case INPUT_ACTION_FLY_DOWN:
+        if (current_screen_type == SCREEN_GAME) {
+            pPartyActionQueue->Add(PARTY_FlyDown);
+        }
+        break;
+
+    case INPUT_ACTION_ZOOM_IN:
+        // engine->_messageQueue->addMessageNextFrame(UIMSG_ClickZoomInBtn, 0, 0);
+        break;
+
+    case INPUT_ACTION_ZOOM_OUT:
+        // engine->_messageQueue->addMessageNextFrame(UIMSG_ClickZoomOutBtn, 0, 0);
+        break;
+
+    case INPUT_ACTION_TOGGLE_ALWAYS_RUN:
+        engine->config->settings.AlwaysRun.toggle();
+        break;
+
+    case INPUT_ACTION_ESCAPE:
+        // engine->_messageQueue->addMessageCurrentFrame(UIMSG_Escape, window_SpeakInHouse != 0, 0);
+        break;
+
+    case INPUT_ACTION_OPEN_INVENTORY:
+        if (current_screen_type == SCREEN_GAME) {
+            engine->_messageQueue->addMessageNextFrame(UIMSG_OpenInventory, 0, 0);
+        }
+        break;
+
+    default:
+        break;
     }
 }
 
