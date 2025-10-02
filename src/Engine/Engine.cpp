@@ -706,6 +706,9 @@ void Engine::MM7_Initialize() {
     pMediaPlayer = new MPlayer();
     pMediaPlayer->Initialize();
 
+    pItemTable = new ItemTable();
+    pItemTable->Initialize(engine->_gameResourceManager.get());
+
     pTileGenerator = new TileGenerator();
     if (engine->config->graphics.GenerateTiles.value())
         pTileGenerator->fillTable();
@@ -732,9 +735,6 @@ void Engine::SecondaryInitialization() {
 
     pHistoryTable = new HistoryTable();
     pHistoryTable->Initialize(engine->_gameResourceManager->getEventsFile("history.txt"));
-
-    pItemTable = new ItemTable();
-    pItemTable->Initialize(engine->_gameResourceManager.get());
 
     initializeHouses(engine->_gameResourceManager->getEventsFile("2dEvents.txt"));
 
