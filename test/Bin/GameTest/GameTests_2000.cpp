@@ -548,6 +548,24 @@ GAME_TEST(Issues, Issue2186) {
     }
 }
 
+GAME_TEST(Issues, Issue2186b) {
+    // Load in the save and drop actors through the transition
+    test.loadGameFromTestData("issue_2186.mm7");
+
+    pActors.clear(); // clear all old actors
+    // add new actors above the transition and tick
+    for (int i = -500; i <= 500; i+=250) {
+        for (int j = 300; j <= 1300; j+=250)
+            game.spawnMonster(Vec3f(i, j, 800), MONSTER_CLERIC_SUN_C);
+    }
+    game.tick(200);
+
+    for (auto &act : pActors)
+        EXPECT_LT(act.pos.z, 400); // they have fallen through the transition
+    for (const auto &act : pActors)
+        EXPECT_GT(act.pos.z, -1000); // and no actors are underground
+}
+
 GAME_TEST(Issues, Issue2188) {
     // assert(false) when pressing Z when the character is unconscious.
     // Assertion was triggering b/c the text "Unconscious" doesn't fit into the status field.
@@ -584,6 +602,16 @@ GAME_TEST(Issues, Issue2201) {
 
     EXPECT_CONTAINS(statusTape, "Spell failed");
     EXPECT_EQ(mp3Tape.delta(), -5);
+}
+
+GAME_TEST(Issues, Issue2229) {
+    // cant drop into hole
+    auto zPos = tapes.custom([] { return pParty->pos.z; });
+    auto sectorTape = tapes.custom([] { return pBLVRenderParams->uPartySectorID; });
+    test.playTraceFromTestData("issue_2229.mm7", "issue_2229.json");
+    EXPECT_GE(zPos.front(), 0.0);
+    EXPECT_LE(zPos.back(), -400.0); // dropped down the hole
+    EXPECT_NE(sectorTape.front(), sectorTape.back()); // changed sectors
 }
 
 GAME_TEST(Issues, Issue2233) {

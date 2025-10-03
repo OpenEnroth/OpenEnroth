@@ -1157,9 +1157,8 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
         FacesFound++;
     }
 
-    // TODO(pskelton): not sure why we'd ever want this - caused #2186
     // as above but for sector portal faces
-    /*if (pSector->field_0 & 8) {
+    if (pSector->field_0 & 8) { // sector has vertical transitions
         for (unsigned i = 0; i < pSector->uNumPortals; ++i) {
             if (FacesFound >= 5) break;
 
@@ -1170,11 +1169,11 @@ float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID) {
             if(!portal->Contains(pos, MODEL_INDOOR, engine->config->gameplay.FloorChecksEps.value(), FACE_XY_PLANE))
                 continue;
 
-            blv_floor_z[FacesFound] = -29000; // was obviosuly meant to mean something
+            blv_floor_z[FacesFound] = -29000; // moving vertically through portal
             blv_floor_id[FacesFound] = pSector->pPortals[i];
             FacesFound++;
         }
-    }*/
+    }
 
     // one face found
     if (FacesFound == 1) {
@@ -2060,7 +2059,7 @@ void FindBillboardsLightLevels_BLV() {
 float GetIndoorFloorZ(const Vec3f &pos, int *pSectorID, int *pFaceID) {
     if (*pSectorID != 0) {
         int result = BLV_GetFloorLevel(pos, *pSectorID, pFaceID);
-        if (result != -30000 && result <= pos.z + 50)
+        if (result != -30000 && result != -29000 && result <= pos.z + 50)
             return result;
     }
 
