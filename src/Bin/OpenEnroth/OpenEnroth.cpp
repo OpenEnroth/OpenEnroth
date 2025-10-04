@@ -64,6 +64,7 @@ static void printTraceDiff(std::string_view current, std::string_view canonical)
 }
 
 void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
+    std::unordered_set<PlatformKey> keys;
     switch (migration) {
     default: assert(false); [[fallthrough]];
     case OpenEnrothOptions::MIGRATION_NONE:
@@ -71,11 +72,12 @@ void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
     case OpenEnrothOptions::MIGRATION_DROP_REDUNDANT_KEY_EVENTS:
         return EventTrace::migrateDropRedundantKeyEvents(trace);
     case OpenEnrothOptions::MIGRATION_COLLAPSE_KEY_EVENTS:
-        std::unordered_set<PlatformKey> keys;
         for (InputAction inputAction : allInputActions())
             if (toggleTypeForInputAction(inputAction) != TOGGLE_ONCE)
                 keys.insert(keyboardActionMapping->keyFor(inputAction));
         return EventTrace::migrateCollapseKeyEvents(keys, trace);
+    case OpenEnrothOptions::MIGRATION_DROP_PAINT_AFTER_ACTIVATE:
+        return EventTrace::migrateDropPaintAfterActivate(trace);
     }
 }
 

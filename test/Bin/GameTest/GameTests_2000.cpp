@@ -358,13 +358,13 @@ GAME_TEST(Issues, Issue2116) {
 }
 
 GAME_TEST(Issues, Issue2117) {
-    // Jumping down from Celeste crashes the game
+    // Jumping down from Celeste crashes the game.
     auto mapTape = tapes.map();
     auto posTape = tapes.custom([] { return pParty->pos; });
     test.playTraceFromTestData("issue_2117.mm7", "issue_2117.json");
     EXPECT_EQ(mapTape.front(), MAP_CELESTE);
     EXPECT_EQ(mapTape.back(), MAP_BRACADA_DESERT); // Jumped down to the desert.
-    EXPECT_TRUE(posTape.contains(Vec3f(8146, 4379, 3700))); // Via the dodgy teleport step
+    EXPECT_TRUE(posTape.contains(Vec3f(8146, 4379, 3700))); // Via the dodgy teleport step.
 }
 
 GAME_TEST(Issues, Issue2118) {

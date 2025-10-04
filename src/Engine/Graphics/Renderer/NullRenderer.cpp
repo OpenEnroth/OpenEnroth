@@ -13,7 +13,6 @@ bool NullRenderer::Initialize() {
 }
 
 bool NullRenderer::Reinitialize(bool firstInit) {
-    openGLContext->swapBuffers();
     return BaseRenderer::Reinitialize(firstInit);
 }
 

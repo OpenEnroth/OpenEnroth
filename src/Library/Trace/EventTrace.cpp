@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <span>
+#include <queue>
 
 #include "Library/Serialization/EnumSerialization.h"
 #include "Library/Json/Json.h"
@@ -329,6 +330,30 @@ void EventTrace::migrateCollapseKeyEvents(const std::unordered_set<PlatformKey> 
         if (pos == trace->events.end())
             break;
         pos++; // Skip EVENT_PAINT.
+    }
+
+    std::erase_if(trace->events, [](const auto &event) { return !event; });
+}
+
+void EventTrace::migrateDropPaintAfterActivate(EventTrace *trace) {
+    std::queue<int64_t> paintTicks;
+    bool dropNextPaintEvent = false;
+
+    for (std::unique_ptr<PlatformEvent> &event : trace->events) {
+        if (event->type == EVENT_PAINT) {
+            PaintEvent *paintEvent = static_cast<PaintEvent *>(event.get());
+            paintTicks.push(paintEvent->tickCount);
+
+            if (dropNextPaintEvent) {
+                dropNextPaintEvent = false;
+                event.reset();
+            } else {
+                paintEvent->tickCount = paintTicks.front();
+                paintTicks.pop();
+            }
+        } else if (event->type == EVENT_WINDOW_ACTIVATE) {
+            dropNextPaintEvent = true;
+        }
     }
 
     std::erase_if(trace->events, [](const auto &event) { return !event; });
