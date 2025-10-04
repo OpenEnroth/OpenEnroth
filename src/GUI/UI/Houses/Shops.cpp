@@ -1152,8 +1152,8 @@ void GUIWindow_Shop::processStealingResult(int stealingResult, int fineToAdd) { 
         pParty->uFine = std::clamp(pParty->uFine + fineToAdd, 0, 4000000);
         if (pParty->uFine) {
             for (Character &player : pParty->pCharacters) {
-                if (!player._achievedAwardsBits[Award_Fine]) {
-                    player._achievedAwardsBits.set(Award_Fine);
+                if (!player._achievedAwardsBits[AWARD_FINE]) {
+                    player._achievedAwardsBits.set(AWARD_FINE);
                 }
             }
         }

@@ -1121,8 +1121,8 @@ void Actor::ApplyFineForKillingPeasant(unsigned int uActorID) {
 
     if (pParty->uFine) {
         for (Character &character : pParty->pCharacters) {
-            if (!character._achievedAwardsBits[Award_Fine]) {
-                character._achievedAwardsBits.set(Award_Fine);
+            if (!character._achievedAwardsBits[AWARD_FINE]) {
+                character._achievedAwardsBits.set(AWARD_FINE);
             }
         }
     }

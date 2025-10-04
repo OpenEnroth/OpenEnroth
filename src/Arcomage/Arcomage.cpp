@@ -2860,8 +2860,8 @@ void GameResultsApply() {
         }
 
         for (int i = 0; i < 4; ++i) {
-            if (!pParty->pCharacters[i]._achievedAwardsBits[Award_Fine]) {
-                pParty->pCharacters[i]._achievedAwardsBits.set(Award_ArcomageWins);
+            if (!pParty->pCharacters[i]._achievedAwardsBits[AWARD_FINE]) {
+                pParty->pCharacters[i]._achievedAwardsBits.set(AWARD_ARCOMAGE_WINS);
             }
         }
         ++pParty->uNumArcomageWins;
@@ -2869,8 +2869,8 @@ void GameResultsApply() {
             pParty->uNumArcomageWins = 1000000;
     } else {  //проигрыш
         for (int i = 0; i < 4; ++i) {
-            if (!pParty->pCharacters[i]._achievedAwardsBits[Award_Fine]) {
-                pParty->pCharacters[i]._achievedAwardsBits.set(Award_ArcomageLoses);
+            if (!pParty->pCharacters[i]._achievedAwardsBits[AWARD_FINE]) {
+                pParty->pCharacters[i]._achievedAwardsBits.set(AWARD_ARCOMAGE_LOSES);
             }
         }
         ++pParty->uNumArcomageLoses;
