@@ -18,7 +18,8 @@
 MM_DEFINE_ENUM_SERIALIZATION_FUNCTIONS(OpenEnrothOptions::Migration, CASE_INSENSITIVE, {
     {OpenEnrothOptions::MIGRATION_NONE, "none"},
     {OpenEnrothOptions::MIGRATION_DROP_REDUNDANT_KEY_EVENTS, "drop_redundant_key_events"},
-    {OpenEnrothOptions::MIGRATION_COLLAPSE_KEY_EVENTS, "collapse_key_events"}
+    {OpenEnrothOptions::MIGRATION_COLLAPSE_KEY_EVENTS, "collapse_key_events"},
+    {OpenEnrothOptions::MIGRATION_DROP_PAINT_AFTER_ACTIVATE, "drop_paint_after_activate"}
 })
 
 OpenEnrothOptions OpenEnrothOptions::parse(int argc, char **argv) {

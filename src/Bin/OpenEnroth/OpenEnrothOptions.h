@@ -20,6 +20,7 @@ struct OpenEnrothOptions : public GameStarterOptions {
         MIGRATION_NONE,
         MIGRATION_DROP_REDUNDANT_KEY_EVENTS,
         MIGRATION_COLLAPSE_KEY_EVENTS,
+        MIGRATION_DROP_PAINT_AFTER_ACTIVATE,
     };
     using enum Migration;
 

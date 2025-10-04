@@ -4711,9 +4711,6 @@ bool OpenGLRenderer::Reinitialize(bool firstInit) {
     glScissor(0, 0, outputRender.w, outputRender.h);
     glEnable(GL_SCISSOR_TEST);
 
-    // Swap Buffers (Double Buffering)
-    openGLContext->swapBuffers();
-
     this->clipRect = Recti(Pointi(0, 0), outputRender);
 
     // PostInitialization();

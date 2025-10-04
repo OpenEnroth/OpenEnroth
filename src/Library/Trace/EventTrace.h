@@ -81,6 +81,8 @@ struct EventTrace {
      */
     static void migrateCollapseKeyEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace);
 
+    static void migrateDropPaintAfterActivate(EventTrace *trace);
+
     EventTraceHeader header;
     std::vector<std::unique_ptr<PlatformEvent>> events;
 };
