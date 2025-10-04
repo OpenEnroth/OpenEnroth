@@ -30,9 +30,9 @@ inline DialogueId dialogueForArenaLevel(ArenaLevel level) {
 inline AwardType awardTypeForArenaLevel(ArenaLevel level) {
     switch (level) {
     default:                    assert(false); [[fallthrough]];
-    case ARENA_LEVEL_PAGE:      return Award_Arena_PageWins;
-    case ARENA_LEVEL_SQUIRE:    return Award_Arena_SquireWins;
-    case ARENA_LEVEL_KNIGHT:    return Award_Arena_KnightWins;
-    case ARENA_LEVEL_LORD:      return Award_Arena_LordWins;
+    case ARENA_LEVEL_PAGE:      return AWARD_ARENA_PAGE_WINS;
+    case ARENA_LEVEL_SQUIRE:    return AWARD_ARENA_SQUIRE_WINS;
+    case ARENA_LEVEL_KNIGHT:    return AWARD_ARENA_KNIGHT_WINS;
+    case ARENA_LEVEL_LORD:      return AWARD_ARENA_LORD_WINS;
     }
 }

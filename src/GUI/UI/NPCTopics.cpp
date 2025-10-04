@@ -437,7 +437,7 @@ void oracleDialogue() {
 const std::string &joinGuildOptionString() {
     GuildId guild_id = static_cast<GuildId>(topicEventId - 400);
     static const int dialogue_base = 110;
-    AwardType guildMembershipAwardBit = static_cast<AwardType>(Award_Membership_ElementalGuilds + std::to_underlying(guild_id));
+    AwardType guildMembershipAwardBit = static_cast<AwardType>(AWARD_MEMBERSHIP_ELEMENTAL_GUILDS + std::to_underlying(guild_id));
 
     membershipOrTrainingApproved = false;
     gold_transaction_amount = priceForMembership[guild_id];
@@ -733,7 +733,7 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
         }
     } else if (topic == DIALOGUE_MAGIC_GUILD_JOIN) {
         if (membershipOrTrainingApproved) {
-            AwardType guildMembershipAwardBit = static_cast<AwardType>(Award_Membership_ElementalGuilds + topicEventId - 400);
+            AwardType guildMembershipAwardBit = static_cast<AwardType>(AWARD_MEMBERSHIP_ELEMENTAL_GUILDS + topicEventId - 400);
             pParty->TakeGold(gold_transaction_amount, true);
             for (Character &player : pParty->pCharacters) {
                 player.SetVariable(VAR_Award, guildMembershipAwardBit);
