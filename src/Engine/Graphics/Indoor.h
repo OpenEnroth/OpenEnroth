@@ -291,7 +291,7 @@ void BLV_UpdateUserInputAndOther();
  *                                      if wrong sector is supplied or actor is out of bounds. Pass `nullptr` to ignore.
  * @return                              Float Z coordinate of the floor/ceiling face for the given position.
  *                                      If wrong sector is supplied or actor is out of bounds, `-30000` is
- *                                      returned.
+ *                                      returned. If vertically transitioning between sectors '-29000' is returned.
  */
 float BLV_GetFloorLevel(const Vec3f &pos, int uSectorID, int *pFaceID = nullptr);
 
