@@ -390,8 +390,6 @@ void Io::KeyboardInputHandler::GenerateInputActions() {
     } else {
         GenerateGameplayActions();
     }
-
-    controller->NextFrame();
 }
 
 //----- (00459E5A) --------------------------------------------------------
