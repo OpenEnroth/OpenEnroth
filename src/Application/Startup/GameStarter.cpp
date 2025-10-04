@@ -138,19 +138,26 @@ void GameStarter::initialize() {
 #endif
 
     // Install & set up components.
-    // It doesn't matter where to put control component as it's running the control routine after a call to `SwapBuffers`.
-    // But the trace component should go after the deterministic component - deterministic component updates tick count,
-    // and then trace component stores the updated value in a recorded `PaintEvent`.
-    _application->installComponent(std::make_unique<GameKeyboardController>()); // This one should go before the window handler.
-    _application->installComponent(std::make_unique<GameWindowHandler>());
+    //
+    // Notes:
+    // 1. Component installed last will be the 1st in the processing chain.
+    // 2. `EngineControlComponent` should be the last in the chain b/c it's generating events from inside the
+    //    `processMessages()` handler.
+    // 3. `EngineTraceSimpleRecorder` should be placed in the chain after `EngineDeterministicComponent`. Deterministic
+    //    component updates tick count in `swapBuffers()`, and then trace component stores the updated value in a
+    //    recorded `PaintEvent`.
+    // 4. `GameKeyboardController` should be placed after GameWindowHandler.
+    // 5. `GameTraceHandler` should come before other input handlers, otherwise Ctrl+Shift+R will open up the rest menu.
     _application->installComponent(std::make_unique<EngineControlComponent>());
     _application->installComponent(std::make_unique<EngineTraceSimpleRecorder>());
     _application->installComponent(std::make_unique<EngineTraceSimplePlayer>());
     _application->installComponent(std::make_unique<EngineDeterministicComponent>());
     _application->installComponent(std::make_unique<EngineTraceRecorder>());
     _application->installComponent(std::make_unique<EngineTracePlayer>());
-    _application->installComponent(std::make_unique<GameTraceHandler>());
     _application->installComponent(std::make_unique<EngineRandomComponent>());
+    _application->installComponent(std::make_unique<GameKeyboardController>());
+    _application->installComponent(std::make_unique<GameWindowHandler>());
+    _application->installComponent(std::make_unique<GameTraceHandler>());
     _application->component<EngineRandomComponent>()->setTracing(_options.tracingRng);
 
     // Init main window. Should happen before the renderer init, which depends on window dimensions & mode.

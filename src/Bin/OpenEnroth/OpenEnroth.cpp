@@ -73,7 +73,7 @@ void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
     case OpenEnrothOptions::MIGRATION_COLLAPSE_KEY_EVENTS:
         std::unordered_set<PlatformKey> keys;
         for (InputAction inputAction : allInputActions())
-            if (toggleTypeForInputAction(inputAction) != TOGGLE_ONCE)
+            if (triggerModeForInputAction(inputAction) != TRIGGER_ONCE)
                 keys.insert(keyboardActionMapping->keyFor(inputAction));
         return EventTrace::migrateCollapseKeyEvents(keys, trace);
     }
