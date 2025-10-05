@@ -304,20 +304,20 @@ struct Party {
     char cNonHireFollowers;  // number of non hireling party guests
 
     // TODO(captainurist): #time replace with GetCurrentCivilTime().
-    unsigned int uCurrentYear;
-    unsigned int uCurrentMonth;
-    unsigned int uCurrentMonthWeek;
-    unsigned int uCurrentDayOfMonth;  // unsigned int uDaysPlayed;
-    unsigned int uCurrentHour;
-    unsigned int uCurrentMinute;
-    unsigned int uCurrentTimeSecond;
+    int uCurrentYear;
+    int uCurrentMonth;
+    int uCurrentMonthWeek;
+    int uCurrentDayOfMonth;  // unsigned int uDaysPlayed;
+    int uCurrentHour;
+    int uCurrentMinute;
+    int uCurrentTimeSecond;
 
-    unsigned int uNumFoodRations;
-    unsigned int uNumGold;
-    unsigned int uNumGoldInBank;
+    int uNumFoodRations;
+    int uNumGold;
+    int uNumGoldInBank;
     int uNumDeaths;
     int uNumPrisonTerms;
-    unsigned int uNumBountiesCollected;
+    int uNumBountiesCollected;
     IndexedArray<MonsterId, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monster_id_for_hunting;
     IndexedArray<bool, HOUSE_FIRST_TOWN_HALL, HOUSE_LAST_TOWN_HALL> monster_for_hunting_killed;
     unsigned char days_played_without_rest;

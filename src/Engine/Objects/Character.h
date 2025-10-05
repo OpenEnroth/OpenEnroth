@@ -128,7 +128,7 @@ class Character {
     bool wearsItem(ItemId itemId) const;
     int StealFromShop(Item *itemToSteal, int extraStealDifficulty,
                       int reputation, int extraStealFine, int *fineIfFailed);
-    StealResult StealFromActor(unsigned int uActorID, int _steal_perm, int reputation);
+    StealResult StealFromActor(int uActorID, int _steal_perm, int reputation);
     void Heal(int amount);
 
     /**
@@ -146,8 +146,8 @@ class Character {
 
     int GetBaseAC() const;
     int GetActualAC() const;
-    unsigned int GetBaseAge() const;
-    unsigned int GetActualAge() const;
+    int GetBaseAge() const;
+    int GetActualAge() const;
     int GetBaseResistance(Attribute a2) const;
     int GetActualResistance(Attribute resistance) const;
     void SetRecoveryTime(Duration sRecoveryTime);
@@ -212,8 +212,8 @@ class Character {
     bool NothingOrJustBlastersEquipped() const;
     void SalesProcess(InventoryEntry entry, HouseId houseId);  // 0x4BE2DD
     bool Recover(Duration dt);
-    bool CanCastSpell(unsigned int uRequiredMana);
-    void SpendMana(unsigned int uRequiredMana);
+    bool CanCastSpell(int uRequiredMana);
+    void SpendMana(int uRequiredMana);
     void PlayAwardSound();
 
     /**
@@ -225,7 +225,7 @@ class Character {
 
     bool characterHitOrMiss(Actor *pActor, int distancemod, int skillmod);
 
-    unsigned int GetMultiplierForSkillLevel(Skill uSkillType, int mult1, int mult2, int mult3, int mult4) const;
+    int GetMultiplierForSkillLevel(Skill uSkillType, int mult1, int mult2, int mult3, int mult4) const;
     int CalculateMeleeDmgToEnemyWithWeapon(Item *weapon,
                                            MonsterId uTargetActorID,
                                            bool addOneDice);
@@ -323,14 +323,14 @@ class Character {
     int16_t sResLightBonus;
     int16_t sResDarkBonus;
     IndexedArray<SpellBuff, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> pCharacterBuffs;
-    unsigned int uVoiceID;
+    int uVoiceID;
     int uPrevVoiceID;
     int uPrevFace;
     Duration timeToRecovery;
-    unsigned int uSkillPoints;
+    int uSkillPoints;
     int health;
     int mana;
-    unsigned int uBirthYear;
+    int uBirthYear;
     MagicSchool lastOpenedSpellbookPage;
     SpellId uQuickSpell;
     IndexedBitset<1, 512> _characterEventBits;
@@ -355,7 +355,7 @@ class Character {
 
 void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int a4);
 bool IsDwarfPresentInParty(bool b);
-bool ShouldLoadTexturesForRaceAndGender(unsigned int _this);
+bool ShouldLoadTexturesForRaceAndGender(int bodyType); // TODO(captainurist): #enum
 int CharacterCreation_GetUnspentAttributePointCount();
 
 /**
