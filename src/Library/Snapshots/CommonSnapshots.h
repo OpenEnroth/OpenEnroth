@@ -89,6 +89,7 @@ void snapshot(const Src &src, Dst *dst, const Tags &... tags) {
 
 template<ResizableContiguousContainer Src, ResizableContiguousContainer Dst, class... Tags> requires DifferentElementTypes<Src, Dst>
 void reconstruct(const Src &src, Dst *dst, const Tags &... tags) {
+	dst->clear();
     dst->resize(src.size());
 
     std::span srcSpan(src.data(), src.size());
@@ -111,6 +112,7 @@ void snapshot(const std::deque<T1> &src, std::vector<T2> *dst, const Tags &... t
 
 template<class T1, class T2, class... Tags>
 void reconstruct(const std::vector<T1> &src, std::deque<T2> *dst, const Tags &... tags) {
+	dst->clear();
     dst->resize(src.size());
 
     for (size_t i = 0; i < src.size(); i++)
