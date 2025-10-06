@@ -20,7 +20,7 @@ inline Segment<InputAction> allConfigurableInputActions() {
 
 std::string GetDisplayName(InputAction action);
 
-KeyToggleType toggleTypeForInputAction(InputAction action);
+InputActionTriggerMode triggerModeForInputAction(InputAction action);
 
 // TODO(captainurist): find a better place for this code
 MM_DECLARE_SERIALIZATION_FUNCTIONS(PlatformKey)

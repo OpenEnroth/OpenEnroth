@@ -84,9 +84,9 @@ enum class InputAction {
 };
 using enum InputAction;
 
-enum class KeyToggleType {
-    TOGGLE_CONTINUOUSLY = 0, // Toggle every frame as long as the key as pressed.
-    TOGGLE_ONCE = 1, // Toggle once per keypress (but not more than once per frame).
-    TOGGLE_CONTINUOUSLY_WITH_DELAY = 2, // Toggle once, then toggle continuously after a 500ms delay.
+enum class InputActionTriggerMode {
+    TRIGGER_CONTINUOUSLY = 0, // Trigger every frame as long as the key as pressed.
+    TRIGGER_ONCE = 1, // Trigger once per keypress (but not more than once per frame).
+    TRIGGER_WITH_KEYREPEAT = 2, // Trigger once, then trigger once every 66ms after a 500ms delay.
 };
-using enum KeyToggleType;
+using enum InputActionTriggerMode;

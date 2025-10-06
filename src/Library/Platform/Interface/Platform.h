@@ -6,10 +6,6 @@
 
 #include "Library/Geometry/Rect.h"
 
-#include "Utility/Flags.h"
-
-#include "PlatformEnums.h"
-
 class PlatformEvent;
 class PlatformWindow;
 class PlatformEventLoop;

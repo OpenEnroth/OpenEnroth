@@ -3,22 +3,23 @@
 #include "Utility/IndexedArray.h"
 
 #include "Library/Platform/Filters/PlatformEventFilter.h"
+#include "Library/Platform/Proxy/ProxyEventLoop.h"
 
 #include "Io/IKeyboardController.h"
 
-class GameKeyboardController: public Io::IKeyboardController, public PlatformEventFilter {
+class GameKeyboardController: public Io::IKeyboardController, public PlatformEventFilter, public ProxyEventLoop {
  public:
     GameKeyboardController();
 
     virtual bool ConsumeKeyPress(PlatformKey key) override;
     virtual bool IsKeyDown(PlatformKey key) const override;
-    virtual void NextFrame() override;
 
     void reset();
 
  private:
     virtual bool keyPressEvent(const PlatformKeyEvent *event) override;
     virtual bool keyReleaseEvent(const PlatformKeyEvent *event) override;
+    virtual void processMessages(PlatformEventHandler *eventHandler) override;
 
  private:
     /** Whether the key is currently held down. */
