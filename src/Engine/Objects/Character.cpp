@@ -6595,13 +6595,13 @@ bool Character::isClass(Class class_type, bool check_honorary) const {
 
     switch (class_type) {
     case CLASS_PRIEST_OF_SUN:
-        return _achievedAwardsBits[Award_Promotion_PriestOfLight_Honorary];
+        return _achievedAwardsBits[AWARD_PROMOTION_PRIEST_OF_LIGHT_HONORARY];
     case CLASS_PRIEST_OF_MOON:
-        return _achievedAwardsBits[Award_Promotion_PriestOfDark_Honorary];
+        return _achievedAwardsBits[AWARD_PROMOTION_PRIEST_OF_DARK_HONORARY];
     case CLASS_ARCHAMGE:
-        return _achievedAwardsBits[Award_Promotion_Archmage_Honorary];
+        return _achievedAwardsBits[AWARD_PROMOTION_ARCHMAGE_HONORARY];
     case CLASS_LICH:
-        return _achievedAwardsBits[Award_Promotion_Lich_Honorary];
+        return _achievedAwardsBits[AWARD_PROMOTION_LICH_HONORARY];
     default:
         assert(false); // TODO(captainurist): just implement properly?
         return false;

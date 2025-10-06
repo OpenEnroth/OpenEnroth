@@ -354,7 +354,7 @@ bool enterHouse(HouseId uHouseID) {
         for (Character &player : pParty->pCharacters) {
             player.timeToRecovery = 0_ticks;
             player.uNumDivineInterventionCastsThisDay = 0;
-            player.SetVariable(VAR_Award, Award_PrisonTerms);
+            player.SetVariable(VAR_Award, AWARD_PRISON_TERMS);
         }
     }
 

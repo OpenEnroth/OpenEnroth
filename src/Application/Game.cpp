@@ -1704,7 +1704,7 @@ void Game::gameLoop() {
                     pMediaPlayer->Unload();
                 ++pParty->uNumDeaths;
                 for (Character &character : pParty->pCharacters) {
-                    character.SetVariable(VAR_Award, Award_Deaths);
+                    character.SetVariable(VAR_Award, AWARD_DEATHS);
                 }
                 pParty->days_played_without_rest = 0;
                 pParty->GetPlayingTime() += Duration::fromDays(7);  // += 2580480
