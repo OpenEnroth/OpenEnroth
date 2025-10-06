@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;9b57717</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3879ee8</span>
    </div>
   </td>
  </tr>
@@ -147,8 +147,8 @@ Functions</h2></td></tr>
 <tr class="separator:a8dabf09972097dfa89983f75e35601e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1f5ad27e0dd8e297ddd9b87f90aa9a8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#aa1f5ad27e0dd8e297ddd9b87f90aa9a8">cycleCharacter</a> (bool backwards)</td></tr>
 <tr class="separator:aa1f5ad27e0dd8e297ddd9b87f90aa9a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb181cd130e631d1c79d1d3507bcfe6f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#abb181cd130e631d1c79d1d3507bcfe6f">ShouldLoadTexturesForRaceAndGender</a> (unsigned int _this)</td></tr>
-<tr class="separator:abb181cd130e631d1c79d1d3507bcfe6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0bc489247cc2d631e92e43a42650b43"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#aa0bc489247cc2d631e92e43a42650b43">ShouldLoadTexturesForRaceAndGender</a> (int bodyType)</td></tr>
+<tr class="separator:aa0bc489247cc2d631e92e43a42650b43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b5a311f8164e95ad03d064553db1223"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a7b5a311f8164e95ad03d064553db1223">IsDwarfPresentInParty</a> (bool a1)</td></tr>
 <tr class="separator:a7b5a311f8164e95ad03d064553db1223"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9fd0044b1f46415c28cf559e771bd8d8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a9fd0044b1f46415c28cf559e771bd8d8">DamageCharacterFromMonster</a> (<a class="el" href="classPid.html">Pid</a> uObjID, <a class="el" href="ActorEnums_8h.html#adf8438223a48250b5b8f0f6dfa470a10">ActorAbility</a> dmgSource, signed int targetchar)</td></tr>
@@ -166,10 +166,10 @@ Variables</h2></td></tr>
 <tr class="separator:ab84023d309111ef158a1b29bf646ccb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af869983a1f32acb75fc46035ec9f0442"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; int, <a class="el" href="CharacterEnums_8h.html#ab6968d695763bf76b60188a58d79c579a17fe74b5a740e062533691d08370b704">MASTERY_FIRST</a>, <a class="el" href="CharacterEnums_8h.html#ab6968d695763bf76b60188a58d79c579ab1f6cc384901aa046da8f73050bb7b21">MASTERY_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#af869983a1f32acb75fc46035ec9f0442">goldStealingDieSidesByMastery</a></td></tr>
 <tr class="separator:af869983a1f32acb75fc46035ec9f0442"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ea6759285bbfb47c054eefb7b273b3e"><td class="memItemLeft" align="right" valign="top">static constexpr unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a5ea6759285bbfb47c054eefb7b273b3e">pBaseHealthByClass</a> [12]</td></tr>
-<tr class="separator:a5ea6759285bbfb47c054eefb7b273b3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d11f5a6dc840afc8075f11f610c6ee8"><td class="memItemLeft" align="right" valign="top">static constexpr unsigned char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a7d11f5a6dc840afc8075f11f610c6ee8">pBaseManaByClass</a> [12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0}</td></tr>
-<tr class="separator:a7d11f5a6dc840afc8075f11f610c6ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a453890b9f81a8df0847170e0ef764b6a"><td class="memItemLeft" align="right" valign="top">static constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a453890b9f81a8df0847170e0ef764b6a">pBaseHealthByClass</a> [12] = {40, 35, 35, 30, 30, 30, 25, 20, 20, 0, 0, 0}</td></tr>
+<tr class="separator:a453890b9f81a8df0847170e0ef764b6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad564709f263307a1e27f6d1275094367"><td class="memItemLeft" align="right" valign="top">static constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#ad564709f263307a1e27f6d1275094367">pBaseManaByClass</a> [12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0}</td></tr>
+<tr class="separator:ad564709f263307a1e27f6d1275094367"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a392d5f431700caab64b3532da2e4f1cc"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; int, <a class="el" href="CharacterEnums_8h.html#a6574f09c19d7a003d729340773d102edaaefeae3328d082b3cfdfd7e1bb261821">CLASS_FIRST</a>, <a class="el" href="CharacterEnums_8h.html#a6574f09c19d7a003d729340773d102edaa1e1c57e3d4c3896e34783916af2f058">CLASS_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a392d5f431700caab64b3532da2e4f1cc">pBaseHealthPerLevelByClass</a></td></tr>
 <tr class="separator:a392d5f431700caab64b3532da2e4f1cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac2ce3c33049ce1d072e44248b8acbc5c"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; int, <a class="el" href="CharacterEnums_8h.html#a6574f09c19d7a003d729340773d102edaaefeae3328d082b3cfdfd7e1bb261821">CLASS_FIRST</a>, <a class="el" href="CharacterEnums_8h.html#a6574f09c19d7a003d729340773d102edaa1e1c57e3d4c3896e34783916af2f058">CLASS_LAST</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#ac2ce3c33049ce1d072e44248b8acbc5c">pBaseManaPerLevelByClass</a></td></tr>
@@ -178,12 +178,12 @@ Variables</h2></td></tr>
 <tr class="separator:ae32234795fabb203ad9e1e852aaf3507"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a307c9968a91853662588d2bdbf7f47f9"><td class="memItemLeft" align="right" valign="top">static constexpr <a class="el" href="classIndexedArray.html">IndexedArray</a>&lt; std::array&lt; int, 4 &gt;, <a class="el" href="CharacterEnums_8h.html#a15b1b83081915ae5239f81050ae0f550a352582c7f9a69de96221da2bcdd40522">ATTRIBUTE_FIRST_STAT</a>, <a class="el" href="CharacterEnums_8h.html#a15b1b83081915ae5239f81050ae0f550acf742445fd52d80d60f7344b31eaa223">ATTRIBUTE_LAST_STAT</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a307c9968a91853662588d2bdbf7f47f9">pAgingAttributeModifier</a></td></tr>
 <tr class="separator:a307c9968a91853662588d2bdbf7f47f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ef2c7b9f0a890c671bdcb9127e8d29f"><td class="memItemLeft" align="right" valign="top">static constexpr unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a6ef2c7b9f0a890c671bdcb9127e8d29f">pAgeingTable</a> [4] = {50, 100, 150, 0xFFFF}</td></tr>
-<tr class="separator:a6ef2c7b9f0a890c671bdcb9127e8d29f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a114d288de13109ef1cfa76883502a7af"><td class="memItemLeft" align="right" valign="top">static constexpr short&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a114d288de13109ef1cfa76883502a7af">param_to_bonus_table</a> [29]</td></tr>
-<tr class="separator:a114d288de13109ef1cfa76883502a7af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab5306fda400b8749c99e6f87d61ec688"><td class="memItemLeft" align="right" valign="top">static constexpr signed int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#ab5306fda400b8749c99e6f87d61ec688">parameter_to_bonus_value</a> [29]</td></tr>
-<tr class="separator:ab5306fda400b8749c99e6f87d61ec688"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad66f1385b2abe2603ed597f23780ea3f"><td class="memItemLeft" align="right" valign="top">static constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#ad66f1385b2abe2603ed597f23780ea3f">pAgeingTable</a> [4] = {50, 100, 150, 0xFFFF}</td></tr>
+<tr class="separator:ad66f1385b2abe2603ed597f23780ea3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b809bc1bfd110187b75381780b3c04f"><td class="memItemLeft" align="right" valign="top">static constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#a5b809bc1bfd110187b75381780b3c04f">param_to_bonus_table</a> [29]</td></tr>
+<tr class="separator:a5b809bc1bfd110187b75381780b3c04f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae9f77e094acfcfd14185077bc38b941"><td class="memItemLeft" align="right" valign="top">static constexpr int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Character_8cpp.html#aae9f77e094acfcfd14185077bc38b941">parameter_to_bonus_value</a> [29]</td></tr>
+<tr class="separator:aae9f77e094acfcfd14185077bc38b941"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a87414b091382b3418671520242c919bc" name="a87414b091382b3418671520242c919bc"></a>
@@ -302,8 +302,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="abb181cd130e631d1c79d1d3507bcfe6f" name="abb181cd130e631d1c79d1d3507bcfe6f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abb181cd130e631d1c79d1d3507bcfe6f">&#9670;&#160;</a></span>ShouldLoadTexturesForRaceAndGender()</h2>
+<a id="aa0bc489247cc2d631e92e43a42650b43" name="aa0bc489247cc2d631e92e43a42650b43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0bc489247cc2d631e92e43a42650b43">&#9670;&#160;</a></span>ShouldLoadTexturesForRaceAndGender()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -311,8 +311,8 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">bool ShouldLoadTexturesForRaceAndGender </td>
           <td>(</td>
-          <td class="paramtype">unsigned int&#160;</td>
-          <td class="paramname"><em>_this</em></td><td>)</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>bodyType</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -354,8 +354,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a6ef2c7b9f0a890c671bdcb9127e8d29f" name="a6ef2c7b9f0a890c671bdcb9127e8d29f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ef2c7b9f0a890c671bdcb9127e8d29f">&#9670;&#160;</a></span>pAgeingTable</h2>
+<a id="ad66f1385b2abe2603ed597f23780ea3f" name="ad66f1385b2abe2603ed597f23780ea3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad66f1385b2abe2603ed597f23780ea3f">&#9670;&#160;</a></span>pAgeingTable</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -364,7 +364,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr unsigned int pAgeingTable[4] = {50, 100, 150, 0xFFFF}</td>
+          <td class="memname">constexpr int pAgeingTable[4] = {50, 100, 150, 0xFFFF}</td>
         </tr>
       </table>
   </td>
@@ -414,8 +414,8 @@ Variables</h2></td></tr>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="a114d288de13109ef1cfa76883502a7af" name="a114d288de13109ef1cfa76883502a7af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a114d288de13109ef1cfa76883502a7af">&#9670;&#160;</a></span>param_to_bonus_table</h2>
+<a id="a5b809bc1bfd110187b75381780b3c04f" name="a5b809bc1bfd110187b75381780b3c04f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b809bc1bfd110187b75381780b3c04f">&#9670;&#160;</a></span>param_to_bonus_table</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -424,7 +424,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr short param_to_bonus_table[29]</td>
+          <td class="memname">constexpr int param_to_bonus_table[29]</td>
         </tr>
       </table>
   </td>
@@ -439,8 +439,8 @@ Variables</h2></td></tr>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="ab5306fda400b8749c99e6f87d61ec688" name="ab5306fda400b8749c99e6f87d61ec688"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab5306fda400b8749c99e6f87d61ec688">&#9670;&#160;</a></span>parameter_to_bonus_value</h2>
+<a id="aae9f77e094acfcfd14185077bc38b941" name="aae9f77e094acfcfd14185077bc38b941"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae9f77e094acfcfd14185077bc38b941">&#9670;&#160;</a></span>parameter_to_bonus_value</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -449,7 +449,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr signed int parameter_to_bonus_value[29]</td>
+          <td class="memname">constexpr int parameter_to_bonus_value[29]</td>
         </tr>
       </table>
   </td>
@@ -464,8 +464,8 @@ Variables</h2></td></tr>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="a5ea6759285bbfb47c054eefb7b273b3e" name="a5ea6759285bbfb47c054eefb7b273b3e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5ea6759285bbfb47c054eefb7b273b3e">&#9670;&#160;</a></span>pBaseHealthByClass</h2>
+<a id="a453890b9f81a8df0847170e0ef764b6a" name="a453890b9f81a8df0847170e0ef764b6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a453890b9f81a8df0847170e0ef764b6a">&#9670;&#160;</a></span>pBaseHealthByClass</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -474,7 +474,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr unsigned char pBaseHealthByClass[12]</td>
+          <td class="memname">constexpr int pBaseHealthByClass[12] = {40, 35, 35, 30, 30, 30, 25, 20, 20, 0, 0, 0}</td>
         </tr>
       </table>
   </td>
@@ -483,9 +483,7 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line">= {40, 35, 35, 30, 30, 30,</div>
-<div class="line">                                        25, 20, 20, 0,  0,  0}</div>
-</div><!-- fragment -->
+
 </div>
 </div>
 <a id="a392d5f431700caab64b3532da2e4f1cc" name="a392d5f431700caab64b3532da2e4f1cc"></a>
@@ -510,8 +508,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="a7d11f5a6dc840afc8075f11f610c6ee8" name="a7d11f5a6dc840afc8075f11f610c6ee8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7d11f5a6dc840afc8075f11f610c6ee8">&#9670;&#160;</a></span>pBaseManaByClass</h2>
+<a id="ad564709f263307a1e27f6d1275094367" name="ad564709f263307a1e27f6d1275094367"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad564709f263307a1e27f6d1275094367">&#9670;&#160;</a></span>pBaseManaByClass</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -520,7 +518,7 @@ Variables</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">constexpr unsigned char pBaseManaByClass[12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0}</td>
+          <td class="memname">constexpr int pBaseManaByClass[12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0}</td>
         </tr>
       </table>
   </td>
