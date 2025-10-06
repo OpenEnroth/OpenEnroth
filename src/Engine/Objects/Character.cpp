@@ -63,10 +63,10 @@ static SpellFxRenderer *spell_fx_renderer = EngineIocContainer::ResolveSpellFxRe
 
 // Race Stat Points Bonus/ Penalty
 struct CharacterCreationAttributeProps {
-    unsigned char uBaseValue;
-    unsigned char uMaxValue;
-    unsigned char uDroppedStep;
-    unsigned char uBaseStep;
+    int uBaseValue;
+    int uMaxValue;
+    int uDroppedStep;
+    int uBaseStep;
 };
 
 static constexpr IndexedArray<IndexedArray<CharacterCreationAttributeProps, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT>, RACE_FIRST, RACE_LAST> StatTable = {
@@ -129,9 +129,9 @@ static constexpr IndexedArray<int, MASTERY_FIRST, MASTERY_LAST> goldStealingDieS
     {MASTERY_GRANDMASTER, 10}
 };
 
-static constexpr unsigned char pBaseHealthByClass[12] = {40, 35, 35, 30, 30, 30,
-                                        25, 20, 20, 0,  0,  0};
-static constexpr unsigned char pBaseManaByClass[12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0};
+// TODO(captainurist): #enum
+static constexpr int pBaseHealthByClass[12] = {40, 35, 35, 30, 30, 30, 25, 20, 20, 0,  0,  0};
+static constexpr int pBaseManaByClass[12] = {0, 0, 0, 5, 5, 0, 10, 10, 15, 0, 0, 0};
 
 static constexpr IndexedArray<int, CLASS_FIRST, CLASS_LAST> pBaseHealthPerLevelByClass = {
     {CLASS_KNIGHT,            5},
@@ -230,12 +230,12 @@ static constexpr IndexedArray<std::array<int, 4>, ATTRIBUTE_FIRST_STAT, ATTRIBUT
     {ATTRIBUTE_LUCK,          {100, 100, 100, 100}}
 };
 
-static constexpr unsigned int pAgeingTable[4] = {50, 100, 150, 0xFFFF};
+static constexpr int pAgeingTable[4] = {50, 100, 150, 0xFFFF};
 
-static constexpr short param_to_bonus_table[29] = {
+static constexpr int param_to_bonus_table[29] = {
     500, 400, 350, 300, 275, 250, 225, 200, 175, 150, 125, 100, 75, 50, 40,
     35,  30,  25,  21,  19,  17,  15,  13,  11,  9,   7,   5,   3,  0};
-static constexpr signed int parameter_to_bonus_value[29] = {
+static constexpr int parameter_to_bonus_value[29] = {
     30, 25, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8,
     7,  6,  5,  4,  3,  2,  1,  0,  -1, -2, -3, -4, -5, -6};
 
@@ -271,7 +271,7 @@ int CharacterCreation_GetUnspentAttributePointCount() {
 }
 
 //----- (00427730) --------------------------------------------------------
-bool Character::CanCastSpell(unsigned int uRequiredMana) {
+bool Character::CanCastSpell(int uRequiredMana) {
     if (engine->config->debug.AllMagic.value()) {
         return true;
     }
@@ -283,7 +283,7 @@ bool Character::CanCastSpell(unsigned int uRequiredMana) {
     return false;
 }
 
-void Character::SpendMana(unsigned int uRequiredMana) {
+void Character::SpendMana(int uRequiredMana) {
     if (engine->config->debug.AllMagic.value()) {
         return;
     }
@@ -731,10 +731,10 @@ int Character::GetActualStat(Attribute stat) const {
     int attrValue = _stats[stat];
     int attrBonus = _statBonuses[stat];
 
-    unsigned uActualAge = this->sAgeModifier + GetBaseAge();
-    unsigned uAgeingMultiplier = 100;
+    int uActualAge = this->sAgeModifier + GetBaseAge();
+    int uAgeingMultiplier = 100;
 
-    for (unsigned i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i) {
         if (uActualAge >=
             pAgeingTable[i])  // is the character old enough to need attrib adjust
             uAgeingMultiplier = pAgingAttributeModifier[stat][i];
@@ -1192,7 +1192,7 @@ int Character::StealFromShop(
 }
 
 //----- (0048D88B) --------------------------------------------------------
-StealResult Character::StealFromActor(unsigned int uActorID, int _steal_perm, int reputation) {
+StealResult Character::StealFromActor(int uActorID, int _steal_perm, int reputation) {
     // TODO(captainurist): returns not used - should luck attribute affect?
 
     Actor *actroPtr;
@@ -1882,12 +1882,12 @@ int Character::GetActualAC() const {
 }
 
 //----- (0048E6DC) --------------------------------------------------------
-unsigned int Character::GetBaseAge() const {
+int Character::GetBaseAge() const {
     return pParty->GetPlayingTime().toYears() - this->uBirthYear + game_starting_year;
 }
 
 //----- (0048E72C) --------------------------------------------------------
-unsigned int Character::GetActualAge() const {
+int Character::GetActualAge() const {
     return this->sAgeModifier + GetBaseAge();
 }
 
@@ -2591,7 +2591,7 @@ int Character::GetSkillBonus(Attribute inSkill) const {
         case ATTRIBUTE_AC_BONUS: {
             bool wearingArmor = false;
             bool wearingLeather = false;
-            unsigned int ACSum = 0;
+            int ACSum = 0;
 
             for (InventoryConstEntry item : inventory.functionalEquipment()) {
                 Skill itemSkillType = item->skill();
@@ -2740,9 +2740,8 @@ int Character::GetSkillBonus(Attribute inSkill) const {
     }
 }
 
-unsigned int Character::GetMultiplierForSkillLevel(
-    Skill uSkillType, int mult1, int mult2, int mult3,
-    int mult4) const {  // TODO(pskelton): ?? needs changing - check behavious
+int Character::GetMultiplierForSkillLevel(Skill uSkillType, int mult1, int mult2, int mult3, int mult4) const {
+    // TODO(pskelton): ?? needs changing - check behavious
     Mastery masteryLvl = getActualSkillValue(uSkillType).mastery();
     switch (masteryLvl) {
         case MASTERY_NOVICE:
@@ -3606,7 +3605,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
         case VAR_LevelModifier:
             return this->sLevelModifier >= pValue;
         case VAR_Age:
-            return GetActualAge() >= (unsigned int)pValue;
+            return GetActualAge() >= pValue;
         case VAR_Award:
             return _achievedAwardsBits[pValue];
         case VAR_Experience:
@@ -3898,9 +3897,9 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
             }
             return v4 >= pValue;
         case VAR_NumSkillPoints:
-            return this->uSkillPoints >= (unsigned int)pValue;
+            return this->uSkillPoints >= pValue;
         case VAR_MonthIs:
-            return (pParty->uCurrentMonth == (unsigned int)pValue);
+            return pParty->uCurrentMonth == pValue;
         case VAR_Counter1:
         case VAR_Counter2:
         case VAR_Counter3:
@@ -3925,16 +3924,16 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
 
         case VAR_Unknown1:
             v21 = &currentLocationInfo();
-            return (v21->alertStatus == pValue);  // yes, equality, not >=
+            return v21->alertStatus == pValue;  // yes, equality, not >=
 
         case VAR_GoldInBank:
-            return pParty->uNumGoldInBank >= (unsigned int)pValue;
+            return pParty->uNumGoldInBank >= pValue;
 
         case VAR_NumDeaths:
-            return pParty->uNumDeaths >= (unsigned int)pValue;
+            return pParty->uNumDeaths >= pValue;
 
         case VAR_NumBounties:
-            return pParty->uNumBountiesCollected >= (unsigned int)pValue;
+            return pParty->uNumBountiesCollected >= pValue;
 
         case VAR_PrisonTerms:
             return pParty->uNumPrisonTerms >= pValue;
@@ -3956,7 +3955,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
 }
 
 //----- (0044A5CB) --------------------------------------------------------
-void Character::SetVariable(EvtVariable var_type, signed int var_value) {
+void Character::SetVariable(EvtVariable var_type, int var_value) {
     int gold{}, food{};
     LocationInfo *ddm;
     Item item;
@@ -3973,13 +3972,13 @@ void Character::SetVariable(EvtVariable var_type, signed int var_value) {
     }
 
     if (var_type >= VAR_MapPersistentVariable_0 && var_type <= VAR_MapPersistentVariable_74) {
-        engine->_persistentVariables.mapVars[std::to_underlying(var_type) - std::to_underlying(VAR_MapPersistentVariable_0)] = (char)var_value;
+        engine->_persistentVariables.mapVars[std::to_underlying(var_type) - std::to_underlying(VAR_MapPersistentVariable_0)] = var_value;
         return;
     }
 
     // not really sure whether the number gets up to 99, but can't ignore the possibility
     if (var_type >= VAR_MapPersistentDecorVariable_0 && var_type <= VAR_MapPersistentDecorVariable_24) {
-        engine->_persistentVariables.decorVars[std::to_underlying(var_type) - std::to_underlying(VAR_MapPersistentDecorVariable_0)] = (unsigned char)var_value;
+        engine->_persistentVariables.decorVars[std::to_underlying(var_type) - std::to_underlying(VAR_MapPersistentDecorVariable_0)] = var_value;
         return;
     }
 
@@ -5612,7 +5611,7 @@ void Character::SubtractVariable(EvtVariable VarNum, signed int pValue) {
             }
             return;
         case VAR_HiredNPCHasSpeciality:
-            for (unsigned int i = 0; i < pNPCStats->uNumNewNPCs; i++) {
+            for (int i = 0; i < pNPCStats->uNumNewNPCs; i++) {
                 if (pNPCStats->pNPCData[i].profession == (NpcProfession)pValue) {
                     pNPCStats->pNPCData[(int)pValue].uFlags &= ~NPC_HIRED;
                 }
@@ -5627,7 +5626,7 @@ void Character::SubtractVariable(EvtVariable VarNum, signed int pValue) {
             pParty->CountHirelings();
             return;
         case VAR_NumSkillPoints:
-            if ((unsigned int)pValue <= this->uSkillPoints) {
+            if (pValue <= this->uSkillPoints) {
                 this->uSkillPoints -= pValue;
             } else {
                 this->uSkillPoints = 0;
@@ -5640,32 +5639,32 @@ void Character::SubtractVariable(EvtVariable VarNum, signed int pValue) {
                 locationHeader->reputation = -10000;
             return;
         case VAR_GoldInBank:
-            if ((unsigned int)pValue <= pParty->uNumGoldInBank) {
-                pParty->uNumGoldInBank -= (unsigned int)pValue;
+            if (pValue <= pParty->uNumGoldInBank) {
+                pParty->uNumGoldInBank -= pValue;
             } else {
                 dword_5B65C4_cancelEventProcessing = 1;
             }
             return;
         case VAR_NumDeaths:
-            pParty->uNumDeaths -= (unsigned int)pValue;
+            pParty->uNumDeaths -= pValue;
             return;
         case VAR_NumBounties:
-            pParty->uNumBountiesCollected -= (unsigned int)pValue;
+            pParty->uNumBountiesCollected -= pValue;
             return;
         case VAR_PrisonTerms:
-            pParty->uNumPrisonTerms -= (int)pValue;
+            pParty->uNumPrisonTerms -= pValue;
             return;
         case VAR_ArenaWinsPage:
-            pParty->uNumArenaWins[ARENA_LEVEL_PAGE] -= (char)pValue;
+            pParty->uNumArenaWins[ARENA_LEVEL_PAGE] -= pValue;
             return;
         case VAR_ArenaWinsSquire:
-            pParty->uNumArenaWins[ARENA_LEVEL_SQUIRE] -= (char)pValue;
+            pParty->uNumArenaWins[ARENA_LEVEL_SQUIRE] -= pValue;
             return;
         case VAR_ArenaWinsKnight:
-            pParty->uNumArenaWins[ARENA_LEVEL_KNIGHT] -= (char)pValue;
+            pParty->uNumArenaWins[ARENA_LEVEL_KNIGHT] -= pValue;
             return;
         case VAR_ArenaWinsLord:
-            pParty->uNumArenaWins[ARENA_LEVEL_LORD] -= (char)pValue;
+            pParty->uNumArenaWins[ARENA_LEVEL_LORD] -= pValue;
             return;
         default:
             return;
@@ -5723,14 +5722,14 @@ bool Character::hasUnderwaterSuitEquipped() const {
 }
 
 //----- (0043EDB9) --------------------------------------------------------
-bool ShouldLoadTexturesForRaceAndGender(unsigned int _this) {
+bool ShouldLoadTexturesForRaceAndGender(int bodyType) {
     Race race;  // edi@2
     Sex sex;       // eax@2
 
     for (Character &character : pParty->pCharacters) {
         race = character.GetRace();
         sex = character.GetSexByVoice();
-        switch (_this) {
+        switch (bodyType) {
             case 0:
                 if ((race == RACE_HUMAN ||
                      race == RACE_ELF ||
@@ -5795,7 +5794,7 @@ void DamageCharacterFromMonster(Pid uObjID, ActorAbility dmgSource, signed int t
 
         if (targetchar == -1) assert(false);
 
-        unsigned int uActorID = uObjID.id();
+        int uActorID = uObjID.id();
 
         Character *playerPtr = &pParty->pCharacters[targetchar];
         Actor *actorPtr = &pActors[uActorID];

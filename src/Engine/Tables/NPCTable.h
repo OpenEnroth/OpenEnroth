@@ -118,10 +118,10 @@ struct NPCStats {
     NPCGreeting pNPCGreetings[206];
     std::array<uint16_t, 51> pOriginalGroups = {{}}; // NPC groups as read from npcgroup.txt.
     std::array<uint16_t, 51> pGroups = {{}}; // NPC groups used during the game.
-    unsigned int uNewlNPCBufPos{};
-    unsigned int uNumNewNPCs{};
+    int uNewlNPCBufPos = 0;
+    int uNumNewNPCs = 0;
     int field_17FC8 = 0;
-    unsigned int uNumNPCProfessions{};
+    int uNumNPCProfessions = 0;
     IndexedArray<int, SEX_FIRST, SEX_LAST> uNumNPCNames = {};
 
     static int dword_AE336C_LastMispronouncedNameFirstLetter;
