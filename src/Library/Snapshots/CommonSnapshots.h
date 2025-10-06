@@ -214,7 +214,7 @@ static void reconstruct(const std::array<uint8_t, N> &src, IndexedBitset<L, H> *
     static_assert(N * 8 == IndexedBitset<L, H>().size());
 
     for (size_t i = 0; auto index : dst->indices()) {
-        dst->set(index, (src[i / 8] >> (7 - i % 8)) & 1);
+        (*dst)[index] = (src[i / 8] >> (7 - i % 8)) & 1;
         i++;
     }
 }
