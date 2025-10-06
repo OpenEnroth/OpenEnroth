@@ -19,11 +19,11 @@ class IndexedBitset {
         return Segment(FirstIndex, LastIndex);
     }
 
-    size_t size() const {
+    [[nodiscard]] constexpr size_t size() const {
         return _bitset.size();
     }
 
-    void fill(bool value) {
+    constexpr void fill(bool value) {
         if (value) {
             set();
         } else {
@@ -31,39 +31,37 @@ class IndexedBitset {
         }
     }
 
-    void set() {
+    constexpr void set() {
         _bitset.set();
     }
 
-    void reset() {
+    constexpr void reset() {
         _bitset.reset();
     }
 
-    void reset(key_type index) {
+    constexpr void reset(key_type index) {
         set(index, false);
     }
 
-    void set(key_type index, bool value = true) {
+    constexpr void set(key_type index, bool value = true) {
         _bitset.set(static_cast<ptrdiff_t>(index) - static_cast<ptrdiff_t>(FirstIndex), value); // Throws on out of range access.
     }
 
-    bool test(key_type index) {
+    [[nodiscard]] constexpr bool test(key_type index) const {
         return _bitset.test(static_cast<ptrdiff_t>(index) - static_cast<ptrdiff_t>(FirstIndex)); // Throws on out of range access.
     }
 
-    auto operator[](key_type index) {
+    [[nodiscard]] constexpr auto operator[](key_type index) {
         checkIndex(index);
         return _bitset[static_cast<ptrdiff_t>(index) - static_cast<ptrdiff_t>(FirstIndex)];
     }
 
-    auto operator[](key_type index) const {
+    [[nodiscard]] constexpr auto operator[](key_type index) const {
         checkIndex(index);
         return _bitset[static_cast<ptrdiff_t>(index) - static_cast<ptrdiff_t>(FirstIndex)];
     }
 
-    friend bool operator==(const IndexedBitset &l, const IndexedBitset &r) {
-        return l._bitset == r._bitset;
-    }
+    friend constexpr bool operator==(const IndexedBitset &l, const IndexedBitset &r) = default;
 
  private:
     void checkIndex(key_type index) const {
