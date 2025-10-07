@@ -18,12 +18,12 @@ UNIT_TEST(IndexedBitset, All) {
     EXPECT_FALSE(a[A]);
 
     IndexedBitset<B, B> b;
-    EXPECT_ANY_THROW(b.test(A));
+    EXPECT_ANY_THROW((void) b.test(A));
     EXPECT_ANY_THROW(b.set(A, true));
-    EXPECT_ANY_THROW(b.test(C));
+    EXPECT_ANY_THROW((void) b.test(C));
     EXPECT_ANY_THROW(b.set(C, true));
 
     IndexedBitset<1, 2> c;
     EXPECT_FALSE(c[1]);
-    EXPECT_ANY_THROW(c.test(0));
+    EXPECT_ANY_THROW((void) c.test(0));
 }
