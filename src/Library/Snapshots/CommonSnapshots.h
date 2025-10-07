@@ -204,7 +204,7 @@ constexpr ReverseBitOrderTag reverseBits;
 
 template<size_t N, auto L, auto H>
 static void snapshot(const IndexedBitset<L, H> &src, std::array<uint8_t, N> *dst, ReverseBitOrderTag) {
-    assert(dst->size() * 8 == src.size());
+    static_assert(N * 8 == IndexedBitset<L, H>().size());
 
     dst->fill(0);
     for (size_t i = 0; auto index : src.indices()) {
@@ -215,10 +215,10 @@ static void snapshot(const IndexedBitset<L, H> &src, std::array<uint8_t, N> *dst
 
 template<size_t N, auto L, auto H>
 static void reconstruct(const std::array<uint8_t, N> &src, IndexedBitset<L, H> *dst, ReverseBitOrderTag) {
-    assert(dst->size() == src.size() * 8);
+    static_assert(N * 8 == IndexedBitset<L, H>().size());
 
     for (size_t i = 0; auto index : dst->indices()) {
-        dst->set(index, (src[i / 8] >> (7 - i % 8)) & 1);
+        (*dst)[index] = (src[i / 8] >> (7 - i % 8)) & 1;
         i++;
     }
 }
