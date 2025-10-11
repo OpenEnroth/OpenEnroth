@@ -123,19 +123,6 @@ jobs:
         run: |
           /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "ndk;$NDK_VERSION"
 
-      # We need gcc-multilib for host-side tools (luajit's buildvm) when building for armeabi-v7a. Why? No idea.
-      - name: '[android] Install dependencies'
-        if: env.MATRIX_PLATFORM == 'android'
-        uses: Wandalen/wretry.action@master
-        with:
-          attempt_limit: 3
-          attempt_delay: 5000
-          command: |
-            if [[ "${{env.MATRIX_ARCHITECTURE}}" = "universal" || "${{env.MATRIX_ARCHITECTURE}}" = "armeabi-v7a" ]]; then
-              sudo apt-get update
-              sudo apt-get install -y gcc-13-multilib g++-13-multilib
-            fi
-
       - name: '[android] Setup Java'
         if: env.MATRIX_PLATFORM == 'android'
         uses: actions/setup-java@v5.0.0
