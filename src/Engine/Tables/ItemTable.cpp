@@ -101,7 +101,7 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
     standardEnchantmentChanceSumByItemType.fill(0);
     for (Attribute i : allEnchantableAttributes()) {
         lineContent = strtok(nullptr, "\r") + 1;
-        std::vector<std::string_view> tokens = split(lineContent, '\t');
+        std::vector<std::string_view> tokens = split(lineContent).by('\t');
         standardEnchantments[i].attributeName = removeQuotes(tokens[0]);
         standardEnchantments[i].itemSuffix = removeQuotes(tokens[1]);
 
@@ -116,7 +116,7 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
     strtokSkipLines(5);
     for (ItemTreasureLevel i : standardEnchantmentRangeByTreasureLevel.indices()) {  // counted from 1
         lineContent = strtok(nullptr, "\r") + 1;
-        std::vector<std::string_view> tokens = split(lineContent, '\t');
+        std::vector<std::string_view> tokens = split(lineContent).by('\t');
         assert(tokens.size() == 4 && "Invalid number of tokens");
         standardEnchantmentRangeByTreasureLevel[i] = Segment(svtoi(tokens[2]), svtoi(tokens[3]));
     }
@@ -126,7 +126,7 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
     strtokSkipLines(3);
     for (ItemEnchantment i : specialEnchantments.indices()) {
         lineContent = strtok(nullptr, "\r") + 1;
-        std::vector<std::string_view> tokens = split(lineContent, '\t');
+        std::vector<std::string_view> tokens = split(lineContent).by('\t');
         assert(tokens.size() >= 17 && "Invalid number of tokens");
         specialEnchantments[i].description = removeQuotes(tokens[0]);
         specialEnchantments[i].itemSuffixOrPrefix = removeQuotes(tokens[1]);
@@ -154,7 +154,7 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
     strtokSkipLines(1);
     for (size_t line = 0; line < 799; line++) {
         lineContent = strtok(nullptr, "\r") + 1;
-        std::vector<std::string_view> tokens = split(lineContent, '\t');
+        std::vector<std::string_view> tokens = split(lineContent).by('\t');
 
         ItemId item_counter = ItemId(svtoi(tokens[0]));
         items[item_counter].iconName = removeQuotes(tokens[1]);
@@ -162,7 +162,7 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
         items[item_counter].baseValue = svtoi(tokens[3]);
         items[item_counter].type = valueOr(equipStatMap, tokens[4], ITEM_TYPE_NONE);
         items[item_counter].skill = valueOr(equipSkillMap, tokens[5], SKILL_MISC);
-        std::vector<std::string_view> diceRollTokens = split(tokens[6], 'd');
+        std::vector<std::string_view> diceRollTokens = split(tokens[6]).by('d');
         if (diceRollTokens.size() == 2) {
             items[item_counter].damageDice = svtoi(diceRollTokens[0]);
             items[item_counter].damageRoll = svtoi(diceRollTokens[1]);
@@ -222,7 +222,7 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
     strtokSkipLines(3);
     for(size_t line = 0; line < 618; line++) {
         lineContent = strtok(nullptr, "\r") + 1;
-        std::vector<std::string_view> tokens = split(lineContent, '\t');
+        std::vector<std::string_view> tokens = split(lineContent).by('\t');
         assert(tokens.size() > 7 && "Invalid number of tokens");
 
         ItemId item_counter = ItemId(svtoi(tokens[0]));
@@ -243,7 +243,7 @@ void ItemTable::Initialize(ResourceManager *resourceManager) {
     strtokSkipLines(5);
     for (int i = 0; i < 3; ++i) {
         lineContent = strtok(nullptr, "\r") + 1;
-        std::vector<std::string_view> tokens = split(lineContent, '\t');
+        std::vector<std::string_view> tokens = split(lineContent).by('\t');
         assert(tokens.size() > 7 && "Invalid number of tokens");
         switch (i) {
             case 0:
@@ -290,7 +290,7 @@ void ItemTable::LoadPotions(const Blob &potions) {
     std::string txtRaw(potions.str());
     test_string = strtok(txtRaw.data(), "\r") + 1;
     while (test_string) {
-        tokens = split(test_string, '\t');
+        tokens = split(test_string).by('\t');
         if (tokens[0] == "222") break;
         test_string = strtok(nullptr, "\r") + 1;
     }
@@ -321,7 +321,7 @@ void ItemTable::LoadPotions(const Blob &potions) {
             logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row), 0);
             return;
         }
-        tokens = split(test_string, '\t');
+        tokens = split(test_string).by('\t');
     }
 }
 
@@ -333,7 +333,7 @@ void ItemTable::LoadPotionNotes(const Blob &potionNotes) {
     std::string txtRaw(potionNotes.str());
     test_string = strtok(txtRaw.data(), "\r") + 1;
     while (test_string) {
-        tokens = split(test_string, '\t');
+        tokens = split(test_string).by('\t');
         if (tokens[0] == "222") break;
         test_string = strtok(nullptr, "\r") + 1;
     }
@@ -357,7 +357,7 @@ void ItemTable::LoadPotionNotes(const Blob &potionNotes) {
             logger->error("Error Parsing Potion Table at Row: {} Column: {}", std::to_underlying(row) - std::to_underlying(ITEM_FIRST_REAL_POTION), 0);
             return;
         }
-        tokens = split(test_string, '\t');
+        tokens = split(test_string).by('\t');
     }
 }
 

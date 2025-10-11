@@ -341,7 +341,7 @@ void Localization::initializeSkillNames() {
         char *test_string = strtok(NULL, "\r") + 1;
 
         if (test_string != NULL && strlen(test_string) > 0) {
-            std::vector<std::string_view> tokens = split(test_string, '\t');
+            std::vector<std::string_view> tokens = split(test_string).by('\t');
             assert(tokens.size() >= 6 && "Invalid number of tokens");
 
             this->_skillDescriptions[i] = removeQuotes(tokens[1]);
@@ -403,7 +403,7 @@ void Localization::initializeClassNames() {
     strtok(this->_classDescRaw.data(), "\r");
     for (Class i : _classDescriptions.indices()) {
         char *test_string = strtok(NULL, "\r") + 1;
-        std::vector<std::string_view> tokens = split(test_string, '\t');
+        std::vector<std::string_view> tokens = split(test_string).by('\t');
         assert(tokens.size() == 3 && "Invalid number of tokens");
         _classDescriptions[i] = removeQuotes(tokens[1]);
     }
@@ -481,7 +481,7 @@ void Localization::initializeAttributeNames() {
     strtok(this->_attributeDescRaw.data(), "\r");
     for (int i = 0; i < 26; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
-        std::vector<std::string_view> tokens = split(test_string, '\t');
+        std::vector<std::string_view> tokens = split(test_string).by('\t');
         assert(tokens.size() == 2 && "Invalid number of tokens");
         switch (i) {
             case 0:

@@ -176,25 +176,6 @@ UNIT_TEST(FileSystemPath, AppendedEscaping) {
     testOne("aa/bb/cc", "../../..", "");
 }
 
-UNIT_TEST(FileSystemPath, TailAtByIterator) {
-    FileSystemPath path("a/b");
-
-    auto split = path.split();
-    auto pos = split.begin();
-    auto end = split.end();
-
-    EXPECT_EQ(*pos, "a");
-    EXPECT_EQ(path.split().tailAt(pos).string(), "a/b");
-
-    pos++;
-    EXPECT_EQ(*pos, "b");
-    EXPECT_EQ(path.split().tailAt(pos).string(), "b");
-
-    pos++;
-    EXPECT_EQ(path.split().tailAt(pos).string(), "");
-    EXPECT_EQ(pos, end);
-}
-
 UNIT_TEST(FileSystemPath, Components) {
     auto testOne = [](std::string_view path, std::string_view prefix, std::string_view name, std::string_view stem, std::string_view ext) {
         FileSystemPath fsPath(path);

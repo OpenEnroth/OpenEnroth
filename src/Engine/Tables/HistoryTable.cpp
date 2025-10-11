@@ -22,7 +22,7 @@ void HistoryTable::Initialize(const Blob &history) {
 
     for (int i = 0; i < 28; ++i) {
         char *test_string = strtok(nullptr, "\r") + 1;
-        std::vector<std::string_view> tokens = split(test_string, '\t');
+        std::vector<std::string_view> tokens = split(test_string).by('\t');
 
         historyLines[i + 1].pText = removeQuotes(tokens[1]);
         historyLines[i + 1].uTime = atoi(std::string(tokens[2]).c_str());  // TODO(captainurist): strange but in text here string not digit
