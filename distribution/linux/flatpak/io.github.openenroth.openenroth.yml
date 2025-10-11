@@ -21,7 +21,7 @@ cleanup-commands:
   - mkdir -p ${FLATPAK_DEST}/lib/ffmpeg
 
 sdk-extensions:
-  - org.freedesktop.Sdk.Extension.llvm18
+  - org.freedesktop.Sdk.Extension.llvm20
 
 add-extensions:
   org.freedesktop.Platform.ffmpeg-full:
@@ -56,8 +56,8 @@ modules:
     buildsystem: cmake-ninja
     builddir: true
     build-options:
-      append-path: /usr/lib/sdk/llvm18/bin
-      prepend-ld-library-path: /usr/lib/sdk/llvm18/lib
+      append-path: /usr/lib/sdk/llvm20/bin
+      prepend-ld-library-path: /usr/lib/sdk/llvm20/lib
       strip: false  # Do not strip binaries to keep debug symbols.
       no-debuginfo: false  # Ensure debug info is generated.
     cleanup:

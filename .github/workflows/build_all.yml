@@ -133,7 +133,7 @@ jobs:
           command: |
             if [[ "${{env.MATRIX_ARCHITECTURE}}" = "universal" || "${{env.MATRIX_ARCHITECTURE}}" = "armeabi-v7a" ]]; then
               sudo apt-get update
-              sudo apt-get install -y gcc-13-multilib g++-13-multilib
+              sudo apt-get install -y gcc-14-multilib g++-14-multilib
             fi
 
       - name: '[android] Setup Java'
@@ -157,7 +157,6 @@ jobs:
             if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86" ]; then
               sudo apt-get install -y gcc-14-multilib g++-14-multilib lld
               sudo apt-get install -y libglu1-mesa-dev:i386
-              sudo apt-get install -y aptitude
               sudo apt-get install -y libdwarf-dev:i386 libelf-dev:i386
             fi
             if [ "${{env.MATRIX_ARCHITECTURE}}" = "x86_64" ]; then
