@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 # - Associated data table-related enumerations.
 # TODO(captainurist): Game-related enums go to Engine/XYZ/....??? Engine/Model?
 set(ENGINE_DATA_SOURCES
+        HouseEnumFunctions.cpp
         TileEnums.cpp
         TileEnumFunctions.cpp)
 
@@ -13,6 +14,7 @@ set(ENGINE_DATA_HEADERS
         AutonoteEnums.h
         AwardData.h
         AwardEnums.h
+        AwardEnumFunctions.h
         ChestData.h
         FrameEnums.h
         HistoryData.h

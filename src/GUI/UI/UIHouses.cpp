@@ -354,7 +354,7 @@ bool enterHouse(HouseId uHouseID) {
         for (Character &player : pParty->pCharacters) {
             player.timeToRecovery = 0_ticks;
             player.uNumDivineInterventionCastsThisDay = 0;
-            player.SetVariable(VAR_Award, AWARD_PRISON_TERMS);
+            player.SetVariable(VAR_Award, std::to_underlying(AWARD_PRISON_TERMS));
         }
     }
 
@@ -373,7 +373,7 @@ bool enterHouse(HouseId uHouseID) {
             pParty->setActiveToFirstCanAct();
         }
 
-        if (!pParty->activeCharacter()._achievedAwardsBits[guildMembershipFlags[uHouseID]]) {
+        if (!pParty->activeCharacter()._achievedAwardsBits[membershipAwardForGuild(uHouseID)]) {
             playHouseSound(uHouseID, HOUSE_SOUND_MAGIC_GUILD_MEMBERS_ONLY);
             return true;
         }

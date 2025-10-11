@@ -623,3 +623,21 @@ enum class HouseType : uint16_t {
     HOUSE_TYPE_ADVENTURERS_INN = 35 // MM6 Adventurer's Inn
 };
 using enum HouseType;
+
+enum class GuildId : int32_t {
+    GUILD_OF_ELEMENTS = 0,
+    GUILD_OF_SELF = 1,
+    GUILD_OF_AIR = 2,
+    GUILD_OF_EARTH = 3,
+    GUILD_OF_FIRE = 4,
+    GUILD_OF_WATER = 5,
+    GUILD_OF_BODY = 6,
+    GUILD_OF_MIND = 7,
+    GUILD_OF_SPIRIT = 8,
+    GUILD_OF_LIGHT = 9,
+    GUILD_OF_DARK = 10,
+
+    GUILD_FIRST = GUILD_OF_ELEMENTS,
+    GUILD_LAST = GUILD_OF_DARK
+};
+using enum GuildId;

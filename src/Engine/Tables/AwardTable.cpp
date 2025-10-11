@@ -10,7 +10,7 @@
 #include "Utility/String/Split.h"
 #include "Utility/String/Transformations.h"
 
-std::array<AwardData, 105> pAwards;
+IndexedArray<AwardData, AWARD_FIRST, AWARD_LAST> pAwards;
 
 void initializeAwards(const Blob &awards) {
     std::vector<std::string_view> chunks;
@@ -22,7 +22,7 @@ void initializeAwards(const Blob &awards) {
         if (chunks.size() < 3)
             continue;
 
-        int awardId = fromString<int>(chunks[0]);
+        AwardId awardId = static_cast<AwardId>(fromString<int>(chunks[0]));
         pAwards[awardId].pText = removeQuotes(chunks[1]);
         pAwards[awardId].uPriority = fromString<int>(chunks[2]);
     }

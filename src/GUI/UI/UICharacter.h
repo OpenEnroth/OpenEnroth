@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 
+#include "Engine/Data/AwardEnums.h"
+
 #include "GUI/GUIWindow.h"
 
 class GUIWindow_CharacterRecord : public GUIWindow {
@@ -50,7 +52,7 @@ class GUIWindow_CharacterRecord : public GUIWindow {
     int _startAwardElem = 0;
     int _scrollableAwardSteps = 0;
     bool _awardLimitReached = false;
-    std::vector<int> _achievedAwardsList;
+    std::vector<AwardId> _achievedAwardsList;
 };
 
 bool ringscreenactive();
