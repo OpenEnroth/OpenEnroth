@@ -179,7 +179,7 @@ void GUIWindow_TownHall::bountyHuntingDialogueOptionClicked() {
 
             pParty->partyFindsGold(bounty, GOLD_RECEIVE_SHARE);
             for (Character &player : pParty->pCharacters) {
-                player.SetVariable(VAR_Award, AWARD_BOUNTIES_COLLECTED);
+                player.SetVariable(VAR_Award, std::to_underlying(AWARD_BOUNTIES_COLLECTED));
             }
             pParty->uNumBountiesCollected += bounty;
             pParty->monster_id_for_hunting[house] = MONSTER_INVALID;

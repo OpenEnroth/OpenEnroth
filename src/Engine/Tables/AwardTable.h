@@ -3,6 +3,9 @@
 #include <array>
 
 #include "Engine/Data/AwardData.h"
+#include "Engine/Data/AwardEnums.h"
+
+#include "Utility/IndexedArray.h"
 
 class Blob;
 
@@ -11,4 +14,4 @@ class Blob;
  */
 void initializeAwards(const Blob &awards);
 
-extern std::array<AwardData, 105> pAwards;
+extern IndexedArray<AwardData, AWARD_FIRST, AWARD_LAST> pAwards;

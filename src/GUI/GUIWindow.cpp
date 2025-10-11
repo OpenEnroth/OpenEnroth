@@ -787,7 +787,7 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
     std::string v1;
     Character *pPlayer;       // ebx@3
     int v29;               // eax@68
-    std::vector<int> addressingBits;
+    std::vector<AwardId> addressingBits;
     CivilTime time;
     std::string result;
 
@@ -837,17 +837,19 @@ std::string BuildDialogueString(std::string_view str, int uPlayerID, NPCData *np
                     result += localization->GetString(LSTR_SIR_CAPITALIZED);
                 break;
             case 8:
+                // #mm6 remnant, this code simply won't work in mm7, relevant bits don't look like they are related
+                // to titles.
+                assert(false);
                 for (int bit : possibleAddressingAwardBits) {
-                    if (pPlayer->_achievedAwardsBits[bit]) {
-                        addressingBits.push_back(bit);
+                    if (pPlayer->_achievedAwardsBits[static_cast<AwardId>(bit)]) {
+                        addressingBits.push_back(static_cast<AwardId>(bit));
                     }
                 }
-                if (addressingBits.size()) {
-                    if (currentAddressingAwardBit == -1)
-                        currentAddressingAwardBit = addressingBits[vrng->random(addressingBits.size())];
+                if (!addressingBits.empty()) {
+                    AwardId currentAddressingAwardBit = addressingBits[vrng->random(addressingBits.size())];
                     result += pAwards[currentAddressingAwardBit].pText;
                 } else {
-                    result += pNPCTopics[55].pText;
+                    result += pNPCTopics[55].pText; // #mm6 remnant, in mm7 that's a dialogue text for Thieves to Rogues promotion.
                 }
                 break;
             case 9:

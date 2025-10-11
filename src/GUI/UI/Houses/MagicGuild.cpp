@@ -15,6 +15,7 @@
 #include "Engine/Party.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/AssetsManager.h"
+#include "Engine/Data/HouseEnumFunctions.h"
 
 #include "GUI/GUIWindow.h"
 #include "GUI/GUIButton.h"
@@ -99,49 +100,13 @@ static constexpr IndexedArray<Mastery, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC
     {HOUSE_DARK_GUILD_PIT,              MASTERY_GRANDMASTER}
 };
 
-// Values are in fact indexes for Character::_achievedAwardsBits
-const IndexedArray<int, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildMembershipFlags = {
-    {HOUSE_FIRE_GUILD_EMERALD_ISLAND,   54},
-    {HOUSE_FIRE_GUILD_HARMONDALE,       54},
-    {HOUSE_FIRE_GUILD_TULAREAN_FOREST,  54},
-    {HOUSE_FIRE_GUILD_MOUNT_NIGHON,     54},
-    {HOUSE_AIR_GUILD_EMERALD_ISLAND,    52},
-    {HOUSE_AIR_GUILD_HARMONDALE,        52},
-    {HOUSE_AIR_GUILD_TULAREAN_FOREST,   52},
-    {HOUSE_AIR_GUILD_CELESTE,           52},
-    {HOUSE_WATER_GUILD_HARMONDALE,      55},
-    {HOUSE_WATER_GUILD_TULAREAN_FOREST, 55},
-    {HOUSE_WATER_GUILD_BRACADA_DESERT,  55},
-    {HOUSE_WATER_GUILD_EVENMORN_ISLAND, 55},
-    {HOUSE_EARTH_GUILD_HARMONDALE,      53},
-    {HOUSE_EARTH_GUILD_TULAREAN_FOREST, 53},
-    {HOUSE_EARTH_GUILD_STONE_CITY,      53},
-    {HOUSE_EARTH_GUILD_PIT,             53},
-    {HOUSE_SPIRIT_GUILD_EMERALD_ISLAND, 58},
-    {HOUSE_SPIRIT_GUILD_HARMONDALE,     58},
-    {HOUSE_SPIRIT_GUILD_DEYJA,          58},
-    {HOUSE_SPIRIT_GUILD_ERATHIA,        58},
-    {HOUSE_MIND_GUILD_HARMONDALE,       57},
-    {HOUSE_MIND_GUILD_ERATHIA,          57},
-    {HOUSE_MIND_GUILD_TATALIA,          57},
-    {HOUSE_MIND_GUILD_AVLEE,            57},
-    {HOUSE_BODY_GUILD_EMERALD_ISLAND,   56},
-    {HOUSE_BODY_GUILD_HARMONDALE,       56},
-    {HOUSE_BODY_GUILD_ERATHIA,          56},
-    {HOUSE_BODY_GUILD_AVLEE,            56},
-    {HOUSE_LIGHT_GUILD_BRACADA_DESERT,  59},
-    {HOUSE_LIGHT_GUILD_CELESTE,         59},
-    {HOUSE_DARK_GUILD_DEYJA,            60},
-    {HOUSE_DARK_GUILD_PIT,              60}
-};
-
 void GUIWindow_MagicGuild::mainDialogue() {
     GUIWindow working_window = *this;
     working_window.uFrameX = SIDE_TEXT_BOX_POS_X;
     working_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     working_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    if (!pParty->activeCharacter()._achievedAwardsBits[guildMembershipFlags[houseId()]]) {
+    if (!pParty->activeCharacter()._achievedAwardsBits[membershipAwardForGuild(houseId())]) {
         // you must be a member
         int textHeight = assets->pFontArrus->CalcTextHeight(pNPCTopics[121].pText, working_window.uFrameWidth, 0);
         working_window.DrawTitleText(assets->pFontArrus.get(), 0, (212 - textHeight) / 2 + 101, colorTable.PaleCanary, pNPCTopics[121].pText, 3);

@@ -2,6 +2,7 @@
 
 #include <utility>
 
+#include "AwardEnums.h"
 #include "HouseEnums.h"
 
 #include "Utility/Segment.h"
@@ -62,3 +63,7 @@ inline int arcomageTopicForTavern(HouseId houseId) {
     assert(isArcomageTavern(houseId));
     return std::to_underlying(houseId) - std::to_underlying(HOUSE_FIRST_ARCOMAGE_TAVERN) + 355;
 }
+
+AwardId membershipAwardForGuild(HouseId houseId);
+
+AwardId membershipAwardForGuild(GuildId guildId);

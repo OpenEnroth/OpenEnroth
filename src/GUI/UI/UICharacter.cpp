@@ -17,6 +17,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
+#include "Engine/Data/AwardEnumFunctions.h"
 #include "Engine/Spells/CastSpellInfo.h"
 #include "Engine/Time/Timer.h"
 #include "Engine/Tables/ItemTable.h"
@@ -879,37 +880,37 @@ std::string GUIWindow_CharacterRecord::getAchievedAwardsString(int idx) {
 
     // TODO(captainurist): fmt can throw
     switch (_achievedAwardsList[idx]) {
-      case AWARD_ARENA_PAGE_WINS:
+    case AWARD_ARENA_PAGE_WINS:
         str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[ARENA_LEVEL_PAGE]);
         break;
-      case AWARD_ARENA_SQUIRE_WINS:
+    case AWARD_ARENA_SQUIRE_WINS:
         str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[ARENA_LEVEL_SQUIRE]);
         break;
-      case AWARD_ARENA_KNIGHT_WINS:
+    case AWARD_ARENA_KNIGHT_WINS:
         str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[ARENA_LEVEL_KNIGHT]);
         break;
-      case AWARD_ARENA_LORD_WINS:
+    case AWARD_ARENA_LORD_WINS:
         str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArenaWins[ARENA_LEVEL_LORD]);
         break;
-      case AWARD_ARCOMAGE_WINS:
+    case AWARD_ARCOMAGE_WINS:
         str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArcomageWins);
         break;
-      case AWARD_ARCOMAGE_LOSES:
+    case AWARD_ARCOMAGE_LOSES:
         str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumArcomageLoses);
         break;
-      case AWARD_DEATHS:
+    case AWARD_DEATHS:
         str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumDeaths);
         break;
-      case AWARD_BOUNTIES_COLLECTED:
+    case AWARD_BOUNTIES_COLLECTED:
         str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumBountiesCollected);
         break;
-      case AWARD_FINE:
+    case AWARD_FINE:
         str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uFine);
         break;
-      case AWARD_PRISON_TERMS:
+    case AWARD_PRISON_TERMS:
         str = fmt::sprintf(pAwards[_achievedAwardsList[idx]].pText, pParty->uNumPrisonTerms);
         break;
-      default:
+    default:
         break;
     }
 
@@ -1671,13 +1672,13 @@ void GUIWindow_CharacterRecord::fillAwardsData() {
     _awardLimitReached = false;
 
     _achievedAwardsList.clear();
-    for (int i = 1; i < pAwards.size(); ++i) {
-        if (pPlayer->_achievedAwardsBits[i] && !pAwards[i].pText.empty()) {
-            _achievedAwardsList.push_back(i);
+    for (AwardId awardId : allAwards()) {
+        if (pPlayer->_achievedAwardsBits[awardId] && !pAwards[awardId].pText.empty()) {
+            _achievedAwardsList.push_back(awardId);
         }
     }
 
-    std::stable_sort(_achievedAwardsList.begin(), _achievedAwardsList.end(), [&] (int a, int b) { return pAwards[a].uPriority < pAwards[b].uPriority; });
+    std::stable_sort(_achievedAwardsList.begin(), _achievedAwardsList.end(), [&] (AwardId a, AwardId b) { return pAwards[a].uPriority < pAwards[b].uPriority; });
 
     GUIWindow window = prepareAwardsWindow();
     int y = 0;

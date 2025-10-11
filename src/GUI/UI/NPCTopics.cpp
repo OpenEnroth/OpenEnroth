@@ -19,6 +19,7 @@
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Party.h"
+#include "Engine/Data/HouseEnumFunctions.h"
 #include "Engine/Tables/ItemTable.h"
 #include "Engine/Evt/Processor.h"
 #include "Engine/Random/Random.h"
@@ -29,6 +30,7 @@
 #include "GUI/UI/UIStatusBar.h"
 
 #include "Media/Audio/AudioPlayer.h"
+
 #include "Utility/String/Ascii.h"
 
 int membershipOrTrainingApproved;
@@ -242,7 +244,7 @@ DialogueId arenaMainDialogue() {
     if (killedMonsters >= pActors.size() || pActors.size() <= 0) {
         pParty->uNumArenaWins[pParty->arenaLevel]++;
         for (Character &player : pParty->pCharacters) {
-            player.SetVariable(VAR_Award, awardTypeForArenaLevel(pParty->arenaLevel));
+            player.SetVariable(VAR_Award, std::to_underlying(awardForArenaLevel(pParty->arenaLevel)));
         }
         pParty->partyFindsGold(gold_transaction_amount, GOLD_RECEIVE_SHARE);
         pAudioPlayer->playUISound(SOUND_51heroism03);
@@ -437,7 +439,7 @@ void oracleDialogue() {
 const std::string &joinGuildOptionString() {
     GuildId guild_id = static_cast<GuildId>(topicEventId - 400);
     static const int dialogue_base = 110;
-    AwardType guildMembershipAwardBit = static_cast<AwardType>(AWARD_MEMBERSHIP_ELEMENTAL_GUILDS + std::to_underlying(guild_id));
+    AwardId guildMembershipAwardBit = membershipAwardForGuild(guild_id);
 
     membershipOrTrainingApproved = false;
     gold_transaction_amount = priceForMembership[guild_id];
@@ -733,10 +735,10 @@ void selectSpecialNPCTopicSelection(DialogueId topic, NPCData* npcData) {
         }
     } else if (topic == DIALOGUE_MAGIC_GUILD_JOIN) {
         if (membershipOrTrainingApproved) {
-            AwardType guildMembershipAwardBit = static_cast<AwardType>(AWARD_MEMBERSHIP_ELEMENTAL_GUILDS + topicEventId - 400);
+            AwardId guildMembershipAwardBit = membershipAwardForGuild(static_cast<GuildId>(topicEventId - 400));
             pParty->TakeGold(gold_transaction_amount, true);
             for (Character &player : pParty->pCharacters) {
-                player.SetVariable(VAR_Award, guildMembershipAwardBit);
+                player.SetVariable(VAR_Award, std::to_underlying(guildMembershipAwardBit));
             }
 
             switch (guildMembershipNPCTopicId) {

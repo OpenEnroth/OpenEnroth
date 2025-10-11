@@ -3607,7 +3607,7 @@ bool Character::CompareVariable(EvtVariable VarNum, int pValue) {
         case VAR_Age:
             return GetActualAge() >= pValue;
         case VAR_Award:
-            return _achievedAwardsBits[pValue];
+            return _achievedAwardsBits[static_cast<AwardId>(pValue)];
         case VAR_Experience:
             return this->experience >= pValue;  // TODO(_) change pValue to long long
         case VAR_QBits_QuestsDone:
@@ -4053,11 +4053,11 @@ void Character::SetVariable(EvtVariable var_type, int var_value) {
             this->sAgeModifier = var_value;
             return;
         case VAR_Award:
-            if (!this->_achievedAwardsBits[var_value] && !pAwards[var_value].pText.empty()) {
+            if (!this->_achievedAwardsBits[static_cast<AwardId>(var_value)] && !pAwards[static_cast<AwardId>(var_value)].pText.empty()) {
                 PlayAwardSound_Anim();
                 this->playReaction(SPEECH_AWARD_GOT);
             }
-            this->_achievedAwardsBits.set(var_value);
+            this->_achievedAwardsBits.set(static_cast<AwardId>(var_value));
             return;
         case VAR_Experience:
             this->experience = var_value;
@@ -4666,10 +4666,10 @@ void Character::AddVariable(EvtVariable var_type, signed int val) {
             this->sAgeModifier += val;
             return;
         case VAR_Award:
-            if (this->_achievedAwardsBits[val] && !pAwards[val].pText.empty()) {
+            if (this->_achievedAwardsBits[static_cast<AwardId>(val)] && !pAwards[static_cast<AwardId>(val)].pText.empty()) {
                 PlayAwardSound_Anim97_Face(SPEECH_AWARD_GOT);
             }
-            this->_achievedAwardsBits.set(val);
+            this->_achievedAwardsBits.set(static_cast<AwardId>(val));
             return;
         case VAR_Experience:
             this->experience = std::min((uint64_t)(this->experience + val), UINT64_C(4000000000));
@@ -5183,7 +5183,7 @@ void Character::SubtractVariable(EvtVariable VarNum, signed int pValue) {
             this->sAgeModifier -= (int16_t)pValue;
             return;
         case VAR_Award:
-            this->_achievedAwardsBits.reset(pValue);
+            this->_achievedAwardsBits.reset(static_cast<AwardId>(pValue));
             return;
         case VAR_Experience:
             this->experience -= pValue;

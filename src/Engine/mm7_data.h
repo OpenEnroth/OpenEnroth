@@ -6,6 +6,7 @@
 #include <string>
 #include <utility>
 
+#include "Engine/Data/AwardEnums.h"
 #include "Engine/Pid.h"
 #include "Engine/Objects/CharacterEnums.h"
 #include "Engine/Spells/SpellEnums.h"
@@ -15,7 +16,6 @@
 #include "GUI/GUIEnums.h"
 
 #include "Library/Color/Color.h"
-#include "Library/Geometry/Vec.h"
 
 #include "Utility/IndexedArray.h"
 
@@ -137,7 +137,6 @@ constexpr float maxPartyAxisDistance = 22528.0f;
 
 extern int uPlayerCreationUI_SelectedCharacter;
 extern int uPlayerCreationUI_NameEditCharacter;
-extern int currentAddressingAwardBit;
 extern std::string current_npc_text;  // F8B1E8
 extern char dialogue_show_profession_details;
 

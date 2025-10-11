@@ -13,7 +13,7 @@
 
 #include "Media/Audio/AudioPlayer.h"
 
-std::array<int16_t, 49> word_4F0754;
+std::array<AwardId, 49> word_4F0754;
 
 void GUIWindow_MercenaryGuild::houseSpecificDialogue() {
     GUIWindow dialog_window = *this;

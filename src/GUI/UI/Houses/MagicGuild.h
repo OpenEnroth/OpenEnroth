@@ -3,9 +3,6 @@
 #include <vector>
 
 #include "GUI/UI/UIHouses.h"
-#include "GUI/UI/UIHouseEnums.h"
-
-#include "Utility/IndexedArray.h"
 
 class GUIWindow_MagicGuild : public GUIWindow_House {
  public:
@@ -26,5 +23,3 @@ class GUIWindow_MagicGuild : public GUIWindow_House {
     void mainDialogue();
     void buyBooksDialogue();
 };
-
-extern const IndexedArray<int, HOUSE_FIRST_MAGIC_GUILD, HOUSE_LAST_MAGIC_GUILD> guildMembershipFlags;

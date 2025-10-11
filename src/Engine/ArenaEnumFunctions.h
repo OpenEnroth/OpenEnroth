@@ -27,7 +27,7 @@ inline DialogueId dialogueForArenaLevel(ArenaLevel level) {
     }
 }
 
-inline AwardType awardTypeForArenaLevel(ArenaLevel level) {
+inline AwardId awardForArenaLevel(ArenaLevel level) {
     switch (level) {
     default:                    assert(false); [[fallthrough]];
     case ARENA_LEVEL_PAGE:      return AWARD_ARENA_PAGE_WINS;
