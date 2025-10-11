@@ -502,17 +502,14 @@ int runLstrCodegen(const CodeGenOptions &options, GameResourceManager *resourceM
 
     std::string txt = std::string(resourceManager->getEventsFile("global.txt").string_view());
 
-    std::vector<std::string_view> lines = split(txt, '\n');
-    for (std::string_view &line : lines)
-        if (line.ends_with('\r'))
-            line = line.substr(0, line.size() - 1);
+    std::vector<std::string_view> lines = split(txt).byCrLf();
 
     std::vector<std::string_view> chunks;
     for (std::string_view line : std::views::drop(lines, 1)) {
         if (line.empty())
             continue;
 
-        split(line, '\t', &chunks);
+        split(line).by('\t').to(&chunks);
         if (chunks.size() != 2)
             throw Exception("Invalid localization file");
 

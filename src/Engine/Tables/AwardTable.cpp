@@ -14,11 +14,8 @@ std::array<AwardData, 105> pAwards;
 
 void initializeAwards(const Blob &awards) {
     std::vector<std::string_view> chunks;
-    for (std::string_view line : split(awards.string_view(), '\n') | std::views::drop(1)) {
-        if (line.ends_with('\r'))
-            line = line.substr(0, line.size() - 1);
-
-        split(line, '\t', &chunks);
+    for (std::string_view line : split(awards.string_view()).byCrLf() | std::views::drop(1)) {
+        split(line).by('\t').to(&chunks);
         if (chunks.size() < 3)
             continue;
 

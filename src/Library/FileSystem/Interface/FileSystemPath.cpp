@@ -41,7 +41,7 @@ FileSystemPath &FileSystemPath::operator/=(std::string_view tail) {
     }
 
     gch::small_vector<std::string_view, 32> stack;
-    for (std::string_view chunk : ::split(tail, '/')) {
+    for (std::string_view chunk : ::split(tail).by('/')) {
         if (chunk.empty())
             continue;
 
