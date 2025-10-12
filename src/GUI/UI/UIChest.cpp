@@ -20,7 +20,7 @@ GUIWindow_Chest::GUIWindow_Chest(int chestId) : GUIWindow(WINDOW_Chest, {0, 0}, 
     CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_CycleCharacters, 0, INPUT_ACTION_NEXT_CHAR);
 
     pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
-                                   localization->GetString(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
+                                   localization->str(LSTR_EXIT_DIALOGUE), {ui_exit_cancel_button_background});
     CreateButton({7, 8}, {460, 343}, 1, 0, UIMSG_CHEST_ClickItem, 0);
     current_screen_type = SCREEN_CHEST;
     pEventTimer->setPaused(true);

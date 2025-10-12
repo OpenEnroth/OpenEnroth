@@ -192,9 +192,9 @@ std::string Item::GetIdentifiedName() const {
         if (lichJarCharacterIndex >= 0 && lichJarCharacterIndex < pParty->pCharacters.size()) {
             const std::string &player_name = pParty->pCharacters[lichJarCharacterIndex].name;
             if (player_name.back() == 's')
-                return localization->FormatString(LSTR_S_JAR, player_name);
+                return localization->format(LSTR_S_JAR, player_name);
             else
-                return localization->FormatString(LSTR_SS_JAR, player_name);
+                return localization->format(LSTR_SS_JAR, player_name);
         }
     }
 

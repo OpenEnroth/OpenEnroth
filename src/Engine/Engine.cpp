@@ -631,7 +631,7 @@ void MM7_LoadLods() {
 
     // TODO(captainurist):
     // on error in `open` we had this:
-    // Error(localization->GetString(LSTR_MIGHT_AND_MAGIC_VII_IS_HAVING_TROUBLE), localization->GetString(LSTR_REINSTALL_NECESSARY));
+    // Error(localization->str(LSTR_MIGHT_AND_MAGIC_VII_IS_HAVING_TROUBLE), localization->str(LSTR_REINSTALL_NECESSARY));
     // however, at this point localization isn't initialized yet, so this was a guaranteed crash.
     // Implement proper user-facing error reporting!
 
@@ -661,7 +661,7 @@ void Engine::MM7_Initialize() {
     MM7_LoadLods();
 
     localization = new Localization();
-    localization->Initialize();
+    localization->initialize();
 
     auto triLoad = [](std::string_view name) {
         TriBlob result;

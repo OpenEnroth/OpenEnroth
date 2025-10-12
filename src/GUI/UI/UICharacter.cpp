@@ -556,29 +556,29 @@ GUIWindow_CharacterRecord::GUIWindow_CharacterRecord(int uActiveCharacter, Scree
 
     pCharacterScreen_StatsBtn = CreateButton({pViewport->viewportTL_X + 12, pViewport->viewportTL_Y + 308},
                                              paperdoll_dbrds[9]->size(), 1, 0,
-                                             UIMSG_ClickStatsBtn, 0, INPUT_ACTION_OPEN_STATS, localization->GetString(LSTR_STATS),
+                                             UIMSG_ClickStatsBtn, 0, INPUT_ACTION_OPEN_STATS, localization->str(LSTR_STATS),
                                              {{paperdoll_dbrds[10], paperdoll_dbrds[9]}});
     pCharacterScreen_SkillsBtn = CreateButton({pViewport->viewportTL_X + 102, pViewport->viewportTL_Y + 308},
                                               paperdoll_dbrds[7]->size(), 1, 0,
-                                              UIMSG_ClickSkillsBtn, 0, INPUT_ACTION_OPEN_SKILLS, localization->GetString(LSTR_SKILLS),
+                                              UIMSG_ClickSkillsBtn, 0, INPUT_ACTION_OPEN_SKILLS, localization->str(LSTR_SKILLS),
                                               {{paperdoll_dbrds[8], paperdoll_dbrds[7]}});
     pCharacterScreen_InventoryBtn = CreateButton({pViewport->viewportTL_X + 192, pViewport->viewportTL_Y + 308},
                                                  paperdoll_dbrds[5]->size(), 1, 0,
                                                  UIMSG_ClickInventoryBtn, 0, INPUT_ACTION_OPEN_INVENTORY,
-                                                 localization->GetString(LSTR_INVENTORY),
+                                                 localization->str(LSTR_INVENTORY),
                                                  {{paperdoll_dbrds[6], paperdoll_dbrds[5]}});
     pCharacterScreen_AwardsBtn = CreateButton({pViewport->viewportTL_X + 282, pViewport->viewportTL_Y + 308},
                                               paperdoll_dbrds[3]->size(), 1, 0,
-                                              UIMSG_ClickAwardsBtn, 0, INPUT_ACTION_OPEN_AWARDS, localization->GetString(LSTR_AWARDS),
+                                              UIMSG_ClickAwardsBtn, 0, INPUT_ACTION_OPEN_AWARDS, localization->str(LSTR_AWARDS),
                                               {{paperdoll_dbrds[4], paperdoll_dbrds[3]}});
     pCharacterScreen_ExitBtn = CreateButton({pViewport->viewportTL_X + 371, pViewport->viewportTL_Y + 308},
                                             paperdoll_dbrds[1]->size(), 1, 0,
                                             UIMSG_ClickExitCharacterWindowBtn, 0, INPUT_ACTION_INVALID,
-                                            localization->GetString(LSTR_EXIT_DIALOGUE),
+                                            localization->str(LSTR_EXIT_DIALOGUE),
                                             {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
     CreateButton({0, 0}, {476, 345}, 1, 122, UIMSG_InventoryLeftClick, 0);
     pCharacterScreen_DetalizBtn = CreateButton({600, 300}, {30, 30}, 1, 0,
-        UIMSG_ChangeDetaliz, 0, INPUT_ACTION_INVALID, localization->GetString(LSTR_DETAIL_TOGGLE));
+        UIMSG_ChangeDetaliz, 0, INPUT_ACTION_INVALID, localization->str(LSTR_DETAIL_TOGGLE));
     pCharacterScreen_DollBtn = CreateButton({476, 0}, {164, 345}, 1, 0, UIMSG_ClickPaperdoll, 0);
 
     CreateButton({61, 424}, {31, 0}, 2, 94, UIMSG_SelectCharacter, 1, INPUT_ACTION_SELECT_CHAR_1);
@@ -739,7 +739,7 @@ void GUIWindow_CharacterRecord::ToggleRingsOverlay() {
         x = 600;
     }
     pCharacterScreen_DetalizBtn = pGUIWindow_CurrentMenu->CreateButton({x, y}, {w, h}, 1, 0,
-        UIMSG_ChangeDetaliz, 0, INPUT_ACTION_INVALID, localization->GetString(LSTR_DETAIL_TOGGLE));
+        UIMSG_ChangeDetaliz, 0, INPUT_ACTION_INVALID, localization->str(LSTR_DETAIL_TOGGLE));
     pCharacterScreen_DollBtn = pGUIWindow_CurrentMenu->CreateButton({476, 0}, {164, 345}, 1, 0, UIMSG_ClickPaperdoll, 0);
 }
 
@@ -750,7 +750,7 @@ TargetedSpellUI *CastSpellInfo::GetCastSpellInInventoryWindow() {
     current_screen_type = SCREEN_CASTING;
     TargetedSpellUI *CS_inventory_window = new GUIWindow_Inventory_CastSpell({0, 0}, render->GetRenderDimensions(), this, "");
     pCharacterScreen_ExitBtn = CS_inventory_window->CreateButton({394, 318}, {75, 33}, 1, 0,
-        UIMSG_ClickExitCharacterWindowBtn, 0, INPUT_ACTION_INVALID, localization->GetString(LSTR_EXIT_DIALOGUE),
+        UIMSG_ClickExitCharacterWindowBtn, 0, INPUT_ACTION_INVALID, localization->str(LSTR_EXIT_DIALOGUE),
         {{paperdoll_dbrds[2], paperdoll_dbrds[1]}});
     CS_inventory_window->CreateButton({0, 0}, {0x1DCu, 0x159u}, 1, 122, UIMSG_InventoryLeftClick, 0);
     pCharacterScreen_DollBtn = CS_inventory_window->CreateButton({0x1DCu, 0}, {0xA4u, 0x159u}, 1, 0, UIMSG_ClickPaperdoll, 0);
@@ -768,7 +768,7 @@ static int drawSkillTable(Character *player, int x, int y, const std::initialize
     int y_offset = y;
     Pointi pt = mouse->position();
 
-    auto str = fmt::format("{}\r{:03}{}", skill_group_name, right_margin, localization->GetString(LSTR_LEVEL));
+    auto str = fmt::format("{}\r{:03}{}", skill_group_name, right_margin, localization->str(LSTR_LEVEL));
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {x, y}, ui_character_header_text_color, str);
 
     int num_skills_drawn = 0;
@@ -807,20 +807,20 @@ static int drawSkillTable(Character *player, int x, int y, const std::initialize
             if (skill_mastery == MASTERY_NOVICE) {
                 std::string Strsk;
                 if (skills_max_level[skill] == 1) { // Non-investable skill
-                    Strsk = fmt::format("{}\r{:03}-", localization->GetSkillName(skill), right_margin);
+                    Strsk = fmt::format("{}\r{:03}-", localization->skillName(skill), right_margin);
                 } else {
-                    Strsk = fmt::format("{}\r{:03}{}", localization->GetSkillName(skill), right_margin, skill_level);
+                    Strsk = fmt::format("{}\r{:03}{}", localization->skillName(skill), right_margin, skill_level);
                 }
                 pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, button->uY}, skill_color, Strsk);
             } else {
-                std::string skill_level_str = skill_mastery == MASTERY_NOVICE ? "" : localization->MasteryName(skill_mastery);
+                std::string skill_level_str = skill_mastery == MASTERY_NOVICE ? "" : localization->masteryName(skill_mastery);
 
                 if (skill_mastery_color == Color()) {
                     skill_mastery_color = ui_character_header_text_color;
                 }
 
                 auto Strsk = fmt::format("{} {::}{}{::}\r{:03}{}",
-                        localization->GetSkillName(skill), skill_mastery_color.tag(), skill_level_str, skill_color.tag(), right_margin, skill_level);
+                        localization->skillName(skill), skill_mastery_color.tag(), skill_level_str, skill_color.tag(), right_margin, skill_level);
                 pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, button->uY}, skill_color, Strsk);
             }
         }
@@ -828,7 +828,7 @@ static int drawSkillTable(Character *player, int x, int y, const std::initialize
 
     if (!num_skills_drawn) {
         y_offset += assets->pFontLucida->GetHeight() - 3;
-        pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, y_offset}, colorTable.White, localization->GetString(LSTR_NONE));
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontLucida.get(), {x, y_offset}, colorTable.White, localization->str(LSTR_NONE));
     }
 
     return y_offset;
@@ -840,25 +840,25 @@ void GUIWindow_CharacterRecord::CharacterUI_SkillsTab_Draw(Character *player) {
 
     auto str = fmt::format(
         "{} {::}{}\f00000\r177{}: {::}{}\f00000",  // ^Pv[]
-                     localization->GetString(LSTR_SKILLS_FOR),
+                     localization->str(LSTR_SKILLS_FOR),
                      ui_character_header_text_color.tag(), player->name,
-                     localization->GetString(LSTR_SKILL_POINTS),
+                     localization->str(LSTR_SKILL_POINTS),
                      player->uSkillPoints ? ui_character_bonus_text_color.tag()
                                           : ui_character_default_text_color.tag(),
                      player->uSkillPoints);
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {24, 18}, colorTable.White, str);
 
     int y = 2 * assets->pFontLucida->GetHeight() + 13;
-    y = drawSkillTable(player, 24, y, allWeaponSkills(), 400, localization->GetString(LSTR_WEAPONS));
+    y = drawSkillTable(player, 24, y, allWeaponSkills(), 400, localization->str(LSTR_WEAPONS));
 
     y += 2 * assets->pFontLucida->GetHeight() - 10;
-    drawSkillTable(player, 24, y, allMagicSkills(), 400, localization->GetString(LSTR_MAGIC));
+    drawSkillTable(player, 24, y, allMagicSkills(), 400, localization->str(LSTR_MAGIC));
 
     y = 2 * assets->pFontLucida->GetHeight() + 13;
-    y = drawSkillTable(player, 248, y, allArmorSkills(), 177, localization->GetString(LSTR_ARMOR));
+    y = drawSkillTable(player, 248, y, allArmorSkills(), 177, localization->str(LSTR_ARMOR));
 
     y += 2 * assets->pFontLucida->GetHeight() - 10;
-    y = drawSkillTable(player, 248, y, allMiscSkills(), 177, localization->GetString(LSTR_MISC));
+    y = drawSkillTable(player, 248, y, allMiscSkills(), 177, localization->str(LSTR_MISC));
 }
 
 GUIWindow GUIWindow_CharacterRecord::prepareAwardsWindow() {
@@ -948,7 +948,7 @@ void GUIWindow_CharacterRecord::CharacterUI_AwardsTab_Draw(Character *player) {
 
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_character_awards_background);
 
-    std::string str = fmt::format("{} {::}{}\f00000", localization->GetString(LSTR_AWARDS_FOR),
+    std::string str = fmt::format("{} {::}{}\f00000", localization->str(LSTR_AWARDS_FOR),
                                   ui_character_header_text_color.tag(), NameAndTitle(player->name, player->classType));
 
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {24, 18}, colorTable.White, str);
@@ -1514,7 +1514,7 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
         fmt::format("{::}{}\f00000\r180{}: {::}{}\f00000\n\n\n",
                     ui_character_header_text_color.tag(),
                     NameAndTitle(player->name, player->classType),
-                    localization->GetString(LSTR_SKILL_POINTS),
+                    localization->str(LSTR_SKILL_POINTS),
                     player->uSkillPoints ? ui_character_bonus_text_color.tag() : ui_character_default_text_color.tag(),
                     player->uSkillPoints);
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {26, 18}, colorTable.White, str1);
@@ -1523,9 +1523,9 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
     auto formatLeftCol = [] (LstrId lstr, int current, int max) {
         Color color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
         if (max < 1000) {
-            return fmt::format("{}{::}\r424{}\f00000 /\t185{}\n", localization->GetString(lstr), color16.tag(), current, max);
+            return fmt::format("{}{::}\r424{}\f00000 /\t185{}\n", localization->str(lstr), color16.tag(), current, max);
         } else {
-            return fmt::format("{}{::}\r388{}\f00000 / {}\n", localization->GetString(lstr), color16.tag(), current, max);
+            return fmt::format("{}{::}\r388{}\f00000 / {}\n", localization->str(lstr), color16.tag(), current, max);
         }
     };
 
@@ -1572,28 +1572,28 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
     pY += 2 * assets->pFontArrus->GetHeight() - 2;
     auto str12 =
         fmt::format("{}: {::}{}\n",
-                     localization->GetString(LSTR_CONDITION),
+                     localization->str(LSTR_CONDITION),
                      GetConditionDrawColor(player->GetMajorConditionIdx()).tag(),
-                     localization->GetCharacterConditionName(player->GetMajorConditionIdx()));
+                     localization->characterConditionName(player->GetMajorConditionIdx()));
     pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {26, pY}, colorTable.White, str12, 226, 0);
 
     pY += assets->pFontArrus->GetHeight() + -1;
-    std::string spellName = localization->GetString(LSTR_NONE);
+    std::string spellName = localization->str(LSTR_NONE);
     if (player->uQuickSpell != SPELL_NONE)
         spellName = pSpellStats->pInfos[player->uQuickSpell].pShortName;
-    auto str13 = fmt::format("{}: {}", localization->GetString(LSTR_QUICK_SPELL), spellName);
+    auto str13 = fmt::format("{}: {}", localization->str(LSTR_QUICK_SPELL), spellName);
     pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontArrus.get(), {26, pY}, colorTable.White, str13, 226, 0);
 
     // Right column
     auto formatRightCol = [] (LstrId lstr, int current, int max, bool immune = false) {
         Color color16 = UI_GetHealthManaAndOtherQualitiesStringColor(current, max);
         if (immune) {
-            return fmt::format("{}{::}\r180{}\n", localization->GetString(lstr), color16.tag(), localization->GetString(LSTR_IMMUNE));
+            return fmt::format("{}{::}\r180{}\n", localization->str(lstr), color16.tag(), localization->str(LSTR_IMMUNE));
         } else {
             if (current < 100 && max < 100) {
-                return fmt::format("{}{::}\t110{}\f00000 / {}\n", localization->GetString(lstr), color16.tag(), current, max);
+                return fmt::format("{}{::}\t110{}\f00000 / {}\n", localization->str(lstr), color16.tag(), current, max);
             } else {
-                return fmt::format("{}{::}\r180{}\f00000 / {}\n", localization->GetString(lstr), color16.tag(), current, max);
+                return fmt::format("{}{::}\r180{}\f00000 / {}\n", localization->str(lstr), color16.tag(), current, max);
             }
         }
     };
@@ -1609,25 +1609,25 @@ void GUIWindow_CharacterRecord::CharacterUI_StatsTab_Draw(Character *player) {
     pY += assets->pFontArrus->GetHeight() - 2;
     auto str16 =
         fmt::format("{}\r180{::}{}\f00000\n\n",
-                    localization->GetString(player->experience <= 9999999 ? LSTR_EXPERIENCE : LSTR_EXP),
+                    localization->str(player->experience <= 9999999 ? LSTR_EXPERIENCE : LSTR_EXP),
                     player->GetExperienceDisplayColor().tag(), player->experience);
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White, str16);
 
     pY += 2 * assets->pFontArrus->GetHeight();
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
-                                     fmt::format("{}\t100{:+}\n", localization->GetString(LSTR_ATTACK), player->GetActualAttack(false)));
+                                     fmt::format("{}\t100{:+}\n", localization->str(LSTR_ATTACK), player->GetActualAttack(false)));
 
     pY += assets->pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
-                                     fmt::format("{}\t100 {}\n", localization->GetString(LSTR_DAMAGE), player->GetMeleeDamageString()));
+                                     fmt::format("{}\t100 {}\n", localization->str(LSTR_DAMAGE), player->GetMeleeDamageString()));
 
     pY += assets->pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
-                                     fmt::format("{}\t100{:+}\n", localization->GetString(LSTR_SHOOT), player->GetRangedAttack()));
+                                     fmt::format("{}\t100{:+}\n", localization->str(LSTR_SHOOT), player->GetRangedAttack()));
 
     pY += assets->pFontArrus->GetHeight() - 2;
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,
-                                     fmt::format("{}\t100 {}\n\n", localization->GetString(LSTR_DAMAGE), player->GetRangedDamageString()));
+                                     fmt::format("{}\t100 {}\n\n", localization->str(LSTR_DAMAGE), player->GetRangedDamageString()));
 
     pY += 2 * assets->pFontArrus->GetHeight() - 4;
     pGUIWindow_CurrentMenu->DrawText(assets->pFontArrus.get(), {266, pY}, colorTable.White,

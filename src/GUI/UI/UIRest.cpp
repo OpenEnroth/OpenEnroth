@@ -135,16 +135,16 @@ void GUIWindow_Rest::Update() {
         tmp_button.uWidth = 171;
         tmp_button.uHeight = 37;
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
-        tmp_button.DrawLabel(localization->GetString(LSTR_REST_HEAL_8_HOURS), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
+        tmp_button.DrawLabel(localization->str(LSTR_REST_HEAL_8_HOURS), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
         tmp_button.pParent = 0;
 
         auto str1 = fmt::format("\r408{}", foodRequiredToRest);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {0, 164}, colorTable.Diesel, str1, 0, colorTable.StarkWhite);
 
-        pButton_RestUI_WaitUntilDawn->DrawLabel(localization->GetString(LSTR_WAIT_UNTIL_DAWN), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
-        pButton_RestUI_Wait1Hour->DrawLabel(localization->GetString(LSTR_WAIT_1_HOUR), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
-        pButton_RestUI_Wait5Minutes->DrawLabel(localization->GetString(LSTR_WAIT_5_MINUTES), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
-        pButton_RestUI_Exit->DrawLabel(localization->GetString(LSTR_EXIT_REST), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
+        pButton_RestUI_WaitUntilDawn->DrawLabel(localization->str(LSTR_WAIT_UNTIL_DAWN), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
+        pButton_RestUI_Wait1Hour->DrawLabel(localization->str(LSTR_WAIT_1_HOUR), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
+        pButton_RestUI_Wait5Minutes->DrawLabel(localization->str(LSTR_WAIT_5_MINUTES), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
+        pButton_RestUI_Exit->DrawLabel(localization->str(LSTR_EXIT_REST), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
         tmp_button.uX = 45;
         tmp_button.uY = 199;
 
@@ -155,23 +155,23 @@ void GUIWindow_Rest::Update() {
         tmp_button.uHeight = 30;
 
         tmp_button.pParent = pButton_RestUI_WaitUntilDawn->pParent;
-        tmp_button.DrawLabel(localization->GetString(LSTR_WAIT_WITHOUT_HEALING), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
+        tmp_button.DrawLabel(localization->str(LSTR_WAIT_WITHOUT_HEALING), assets->pFontCreate.get(), colorTable.Diesel, colorTable.StarkWhite);
         tmp_button.pParent = 0;
 
         CivilTime time = pParty->GetPlayingTime().toCivilTime();
 
-        std::string str2 = fmt::format("{}:{:02} {}", time.hourAmPm, time.minute, localization->GetAmPm(time.isPm));
+        std::string str2 = fmt::format("{}:{:02} {}", time.hourAmPm, time.minute, localization->amPm(time.isPm));
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {368, 168}, colorTable.Diesel, str2, 0, colorTable.StarkWhite);
-        std::string str3 = fmt::format("{}\r190{}", localization->GetString(LSTR_DAY_CAPITALIZED), time.day);
+        std::string str3 = fmt::format("{}\r190{}", localization->str(LSTR_DAY_CAPITALIZED), time.day);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {350, 190}, colorTable.Diesel, str3, 0, colorTable.StarkWhite);
-        std::string str4 = fmt::format("{}\r190{}", localization->GetString(LSTR_MONTH), time.month);
+        std::string str4 = fmt::format("{}\r190{}", localization->str(LSTR_MONTH), time.month);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {350, 222}, colorTable.Diesel, str4, 0, colorTable.StarkWhite);
-        std::string str5 = fmt::format("{}\r190{}", localization->GetString(LSTR_YEAR), time.year);
+        std::string str5 = fmt::format("{}\r190{}", localization->str(LSTR_YEAR), time.year);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {350, 254}, colorTable.Diesel, str5, 0, colorTable.StarkWhite);
         if (currentRestType != REST_NONE) {
             Party::restOneFrame();
         }
     } else {
-        new OnCancel({pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY}, {0, 0}, pButton_RestUI_Exit, localization->GetString(LSTR_EXIT_REST));
+        new OnCancel({pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY}, {0, 0}, pButton_RestUI_Exit, localization->str(LSTR_EXIT_REST));
     }
 }

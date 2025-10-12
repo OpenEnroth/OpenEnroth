@@ -9,18 +9,18 @@
 
 std::string displayNameForDamageType(DamageType damageType, Localization *localization) {
     switch (damageType) {
-    case DAMAGE_FIRE:       return localization->GetSpellSchoolName(MAGIC_SCHOOL_FIRE);
-    case DAMAGE_AIR:        return localization->GetSpellSchoolName(MAGIC_SCHOOL_AIR);
-    case DAMAGE_WATER:      return localization->GetSpellSchoolName(MAGIC_SCHOOL_WATER);
-    case DAMAGE_EARTH:      return localization->GetSpellSchoolName(MAGIC_SCHOOL_EARTH);
-    case DAMAGE_PHYSICAL:   return localization->GetString(LSTR_PHYSICAL);
-    case DAMAGE_MAGIC:      return localization->GetString(LSTR_MAGIC);
-    case DAMAGE_SPIRIT:     return localization->GetSpellSchoolName(MAGIC_SCHOOL_SPIRIT);
-    case DAMAGE_MIND:       return localization->GetSpellSchoolName(MAGIC_SCHOOL_MIND);
-    case DAMAGE_BODY:       return localization->GetSpellSchoolName(MAGIC_SCHOOL_BODY);
-    case DAMAGE_LIGHT:      return localization->GetSpellSchoolName(MAGIC_SCHOOL_LIGHT);
-    case DAMAGE_DARK:       return localization->GetSpellSchoolName(MAGIC_SCHOOL_DARK);
-    case DAMAGE_ENERGY:     return localization->GetString(LSTR_ENERGY);
+    case DAMAGE_FIRE:       return localization->spellSchoolName(MAGIC_SCHOOL_FIRE);
+    case DAMAGE_AIR:        return localization->spellSchoolName(MAGIC_SCHOOL_AIR);
+    case DAMAGE_WATER:      return localization->spellSchoolName(MAGIC_SCHOOL_WATER);
+    case DAMAGE_EARTH:      return localization->spellSchoolName(MAGIC_SCHOOL_EARTH);
+    case DAMAGE_PHYSICAL:   return localization->str(LSTR_PHYSICAL);
+    case DAMAGE_MAGIC:      return localization->str(LSTR_MAGIC);
+    case DAMAGE_SPIRIT:     return localization->spellSchoolName(MAGIC_SCHOOL_SPIRIT);
+    case DAMAGE_MIND:       return localization->spellSchoolName(MAGIC_SCHOOL_MIND);
+    case DAMAGE_BODY:       return localization->spellSchoolName(MAGIC_SCHOOL_BODY);
+    case DAMAGE_LIGHT:      return localization->spellSchoolName(MAGIC_SCHOOL_LIGHT);
+    case DAMAGE_DARK:       return localization->spellSchoolName(MAGIC_SCHOOL_DARK);
+    case DAMAGE_ENERGY:     return localization->str(LSTR_ENERGY);
     default:
         assert(false);
         return {};

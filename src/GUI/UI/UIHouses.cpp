@@ -325,9 +325,9 @@ bool enterHouse(HouseId uHouseID) {
 
         engine->_statusBar->setEvent(LSTR_THIS_PLACE_IS_OPEN_FROM_DS_TO_DS,
                                      openCivilTime.hourAmPm,
-                                     localization->GetAmPm(openCivilTime.isPm),
+                                     localization->amPm(openCivilTime.isPm),
                                      closeCivilTime.hourAmPm,
-                                     localization->GetAmPm(closeCivilTime.isPm));
+                                     localization->amPm(closeCivilTime.isPm));
         if (pParty->hasActiveCharacter()) {
             pParty->activeCharacter().playReaction(SPEECH_STORE_CLOSED);
         }
@@ -392,7 +392,7 @@ void prepareHouse(HouseId house) {
     if (proprietorId) {
         HouseNpcDesc desc;
         desc.type = HOUSE_PROPRIETOR;
-        desc.label = localization->FormatString(LSTR_CONVERSE_WITH_S, houseTable[house].pProprieterName);
+        desc.label = localization->format(LSTR_CONVERSE_WITH_S, houseTable[house].pProprieterName);
         desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", proprietorId));
 
         houseNpcs.push_back(desc);
@@ -404,7 +404,7 @@ void prepareHouse(HouseId house) {
             if (!(pNPCStats->pNPCData[i].uFlags & NPC_HIRED)) {
                 HouseNpcDesc desc;
                 desc.type = HOUSE_NPC;
-                desc.label = localization->FormatString(LSTR_CONVERSE_WITH_S, pNPCStats->pNPCData[i].name);
+                desc.label = localization->format(LSTR_CONVERSE_WITH_S, pNPCStats->pNPCData[i].name);
                 desc.icon = assets->getImage_ColorKey(fmt::format("npc{:03}", pNPCStats->pNPCData[i].uPortraitID));
                 desc.npc = &pNPCStats->pNPCData[i];
 
@@ -428,7 +428,7 @@ void prepareHouse(HouseId house) {
 
             HouseNpcDesc desc;
             desc.type = HOUSE_TRANSITION;
-            desc.label = localization->FormatString(LSTR_ENTER_S, pMapStats->pInfos[id].name);
+            desc.label = localization->format(LSTR_ENTER_S, pMapStats->pInfos[id].name);
             desc.icon = assets->getImage_ColorKey(pHouse_ExitPictures[static_cast<int>(id)]);
             desc.targetMapID = id;
 
@@ -449,17 +449,17 @@ void NPCHireableDialogPrepare() {
     pDialogueWindow->Release();
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetRenderDimensions().w, 350});
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0,
-        UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->GetString(LSTR_CANCEL), {ui_exit_cancel_button_background}
+        UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_CANCEL), {ui_exit_cancel_button_background}
     );
     pDialogueWindow->CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_HouseScreenClick, 0);
     if (!pNPCStats->pProfessions[v1->profession].pBenefits.empty()) {
         pDialogueWindow->CreateButton({480, 160}, {140, 30}, 1, 0,
-            UIMSG_SelectHouseNPCDialogueOption, std::to_underlying(DIALOGUE_PROFESSION_DETAILS), INPUT_ACTION_INVALID, localization->GetString(LSTR_MORE_INFORMATION)
+            UIMSG_SelectHouseNPCDialogueOption, std::to_underlying(DIALOGUE_PROFESSION_DETAILS), INPUT_ACTION_INVALID, localization->str(LSTR_MORE_INFORMATION)
         );
         v0 = 1;
     }
     pDialogueWindow->CreateButton({480, 30 * v0 + 160}, {140, 30}, 1, 0,
-        UIMSG_SelectHouseNPCDialogueOption, std::to_underlying(DIALOGUE_HIRE_FIRE), INPUT_ACTION_INVALID, localization->GetString(LSTR_HIRE));
+        UIMSG_SelectHouseNPCDialogueOption, std::to_underlying(DIALOGUE_HIRE_FIRE), INPUT_ACTION_INVALID, localization->str(LSTR_HIRE));
     pDialogueWindow->setKeyboardControlGroup(v0 + 1, false, 0, 2);
     window_SpeakInHouse->setCurrentDialogue(DIALOGUE_OTHER);
 }
@@ -523,7 +523,7 @@ void updateHouseNPCTopics(int npc) {
         pDialogueWindow->Release();
         // TODO(Nik-RE-dev): can use GUIWindow_Transition
         pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, render->GetRenderDimensions());
-        pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_TRANSITION_NO, localization->GetString(LSTR_CANCEL), {ui_buttdesc2});
+        pBtn_ExitCancel = pDialogueWindow->CreateButton({566, 445}, {75, 33}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_TRANSITION_NO, localization->str(LSTR_CANCEL), {ui_buttdesc2});
         pBtn_YES = pDialogueWindow->CreateButton({486, 445}, {75, 33}, 1, 0, UIMSG_HouseTransitionConfirmation, 1, INPUT_ACTION_TRANSITION_YES, houseNpcs[npc].label, {ui_buttyes2});
         pDialogueWindow->CreateButton({pNPCPortraits_x[0][0], pNPCPortraits_y[0][0]}, {63, 73}, 1, 0, UIMSG_HouseTransitionConfirmation, 1,
                                       INPUT_ACTION_INTERACT, houseNpcs[npc].label);
@@ -714,7 +714,7 @@ void GUIWindow_House::houseNPCDialogue() {
         house_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         house_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
         if (pTransitionStrings[std::to_underlying(id)].empty()) { // TODO(captainurist): this is a weird access into pTransitionStrings, investigate & add docs
-            auto str = localization->FormatString(LSTR_ENTER_S, pMapStats->pInfos[id].name);
+            auto str = localization->format(LSTR_ENTER_S, pMapStats->pInfos[id].name);
             house_window.DrawTitleText(assets->pFontCreate.get(), 0, (212 - assets->pFontCreate->CalcTextHeight(str, house_window.uFrameWidth, 0)) / 2 + 101, colorTable.White, str, 3);
             return;
         }
@@ -803,7 +803,7 @@ void GUIWindow_House::reinitDialogueWindow() {
 
     pDialogueWindow = new GUIWindow(WINDOW_Dialogue, {0, 0}, {render->GetPresentDimensions().w, 345});
     pBtn_ExitCancel = pDialogueWindow->CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
-        localization->GetString(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
+        localization->str(LSTR_END_CONVERSATION), {ui_exit_cancel_button_background});
     pDialogueWindow->CreateButton({8, 8}, {450, 320}, 1, 0, UIMSG_HouseScreenClick, 0, INPUT_ACTION_INVALID, "");
 }
 
@@ -827,7 +827,7 @@ bool GUIWindow_House::checkIfPlayerCanInteract() {
         window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
         window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-        std::string str = localization->FormatString(LSTR_S_IS_IN_NO_CONDITION_TO_S, pParty->activeCharacter().name, localization->GetString(LSTR_DO_ANYTHING));
+        std::string str = localization->format(LSTR_S_IS_IN_NO_CONDITION_TO_S, pParty->activeCharacter().name, localization->str(LSTR_DO_ANYTHING));
         window.DrawTitleText(assets->pFontArrus.get(), 0, (212 - assets->pFontArrus->CalcTextHeight(str, window.uFrameWidth, 0)) / 2 + 101, ui_house_player_cant_interact_color, str, 3);
         return false;
     }
@@ -1029,7 +1029,7 @@ void GUIWindow_House::learnSkillsDialogue(Color selectColor) {
         Skill skill = GetLearningDialogueSkill((DialogueId)pDialogueWindow->GetControl(i)->msg_param);
         if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != MASTERY_NONE &&
             !pParty->activeCharacter().pActiveSkills[skill]) {
-            optionsText.push_back(localization->GetSkillName(skill));
+            optionsText.push_back(localization->skillName(skill));
             haveLearnableSkills = true;
         } else {
             optionsText.push_back("");
@@ -1043,15 +1043,15 @@ void GUIWindow_House::learnSkillsDialogue(Color selectColor) {
 
     if (!haveLearnableSkills) {
         Character &player = pParty->activeCharacter();
-        std::string str = localization->FormatString(LSTR_SEEK_KNOWLEDGE_ELSEWHERE_S_THE_S, player.name, localization->GetClassName(player.classType));
-        str = str + "\n \n" + localization->GetString(LSTR_I_CAN_OFFER_YOU_NOTHING_FURTHER);
+        std::string str = localization->format(LSTR_SEEK_KNOWLEDGE_ELSEWHERE_S_THE_S, player.name, localization->className(player.classType));
+        str = str + "\n \n" + localization->str(LSTR_I_CAN_OFFER_YOU_NOTHING_FURTHER);
 
         int text_height = assets->pFontArrus->CalcTextHeight(str, dialogue.uFrameWidth, 0);
         dialogue.DrawTitleText(assets->pFontArrus.get(), 0, (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - text_height) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET, colorTable.PaleCanary, str, 3);
         return;
     }
 
-    std::string skill_price_label = localization->FormatString(LSTR_SKILL_COST_LU, cost);
+    std::string skill_price_label = localization->format(LSTR_SKILL_COST_LU, cost);
     dialogue.DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.White, skill_price_label, 3);
 
     drawOptions(optionsText, selectColor, 18);
@@ -1085,7 +1085,7 @@ GUIWindow_House::GUIWindow_House(HouseId houseId) : GUIWindow(WINDOW_HouseInteri
 
     current_screen_type = SCREEN_HOUSE;
     pBtn_ExitCancel = CreateButton({471, 445}, {169, 35}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID,
-                                   localization->GetString(LSTR_EXIT_BUILDING), {ui_exit_cancel_button_background});
+                                   localization->str(LSTR_EXIT_BUILDING), {ui_exit_cancel_button_background});
 
     if (buildingType() <= HOUSE_TYPE_MIRRORED_PATH_GUILD) {
         shop_ui_background = assets->getImage_ColorKey(shopBackgroundNames[buildingType()]);

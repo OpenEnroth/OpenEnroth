@@ -995,7 +995,7 @@ std::string Character::GetMeleeDamageString() {
     InventoryConstEntry mainHandItem = inventory.entry(ITEM_SLOT_MAIN_HAND);
 
     if (mainHandItem && mainHandItem->isWand() && mainHandItem->numCharges > 0) {
-        return std::string(localization->GetString(LSTR_WAND));
+        return std::string(localization->str(LSTR_WAND));
     } else if (mainHandItem && isAncientWeapon(mainHandItem->itemId)) {
         min_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MIN);  // blasters
         max_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MAX);
@@ -1019,7 +1019,7 @@ std::string Character::GetRangedDamageString() {
     InventoryConstEntry mainHandItem = inventory.entry(ITEM_SLOT_MAIN_HAND);
 
     if (mainHandItem && mainHandItem->isWand() && mainHandItem->numCharges > 0) {
-        return std::string(localization->GetString(LSTR_WAND));
+        return std::string(localization->str(LSTR_WAND));
     } else if (mainHandItem && isAncientWeapon(mainHandItem->itemId)) {
         min_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MIN, true);  // blasters
         max_damage = GetItemsBonus(ATTRIBUTE_MELEE_DMG_MAX, true);
@@ -2787,10 +2787,10 @@ enum Race Character::GetRace() const {
 
 std::string Character::GetRaceName() const {
     switch (GetRace()) {
-        case RACE_HUMAN: return localization->GetString(LSTR_RACE_HUMAN);
-        case RACE_ELF: return localization->GetString(LSTR_RACE_ELF);
-        case RACE_GOBLIN: return localization->GetString(LSTR_RACE_GOBLIN);
-        case RACE_DWARF: return localization->GetString(LSTR_RACE_DWARF);
+        case RACE_HUMAN: return localization->str(LSTR_RACE_HUMAN);
+        case RACE_ELF: return localization->str(LSTR_RACE_ELF);
+        case RACE_GOBLIN: return localization->str(LSTR_RACE_GOBLIN);
+        case RACE_DWARF: return localization->str(LSTR_RACE_DWARF);
         default:
             assert(false);
             return std::string();  // Make the compiler happy.
@@ -3315,7 +3315,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             return;
         }
         if (!playerAffected->CanAct()) {
-            engine->_statusBar->setEvent(LSTR_THAT_PLAYER_IS_S, localization->GetCharacterConditionName(playerAffected->GetMajorConditionIdx()));
+            engine->_statusBar->setEvent(LSTR_THAT_PLAYER_IS_S, localization->characterConditionName(playerAffected->GetMajorConditionIdx()));
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
@@ -3356,7 +3356,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             return;
         }
         if (!playerAffected->CanAct()) {
-            engine->_statusBar->setEvent(LSTR_THAT_PLAYER_IS_S, localization->GetCharacterConditionName(playerAffected->GetMajorConditionIdx()));
+            engine->_statusBar->setEvent(LSTR_THAT_PLAYER_IS_S, localization->characterConditionName(playerAffected->GetMajorConditionIdx()));
             pAudioPlayer->playUISound(SOUND_error);
             return;
         }
@@ -3404,7 +3404,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             return;
         }
 
-        engine->_statusBar->setEvent(LSTR_THAT_PLAYER_IS_S, localization->GetCharacterConditionName(playerAffected->GetMajorConditionIdx()));
+        engine->_statusBar->setEvent(LSTR_THAT_PLAYER_IS_S, localization->characterConditionName(playerAffected->GetMajorConditionIdx()));
         pAudioPlayer->playUISound(SOUND_error);
         return;
     }
@@ -3418,47 +3418,47 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
             switch (pParty->uCurrentMonth) {
                 case 0: // Jan
                     playerAffected->_stats[ATTRIBUTE_MIGHT] += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(ATTRIBUTE_MIGHT), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->attributeName(ATTRIBUTE_MIGHT), localization->str(LSTR_PERMANENT));
                     break;
                 case 1: // Feb
                     playerAffected->_stats[ATTRIBUTE_INTELLIGENCE] += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(ATTRIBUTE_INTELLIGENCE), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->attributeName(ATTRIBUTE_INTELLIGENCE), localization->str(LSTR_PERMANENT));
                     break;
                 case 2: // Mar
                     playerAffected->_stats[ATTRIBUTE_PERSONALITY] += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(ATTRIBUTE_PERSONALITY), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->attributeName(ATTRIBUTE_PERSONALITY), localization->str(LSTR_PERMANENT));
                     break;
                 case 3: // Apr
                     playerAffected->_stats[ATTRIBUTE_ENDURANCE] += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(ATTRIBUTE_ENDURANCE), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->attributeName(ATTRIBUTE_ENDURANCE), localization->str(LSTR_PERMANENT));
                     break;
                 case 4: // May
                     playerAffected->_stats[ATTRIBUTE_ACCURACY] += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(ATTRIBUTE_ACCURACY), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->attributeName(ATTRIBUTE_ACCURACY), localization->str(LSTR_PERMANENT));
                     break;
                 case 5: // Jun
                     playerAffected->_stats[ATTRIBUTE_SPEED] += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(ATTRIBUTE_SPEED), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->attributeName(ATTRIBUTE_SPEED), localization->str(LSTR_PERMANENT));
                     break;
                 case 6: // Jul
                     playerAffected->_stats[ATTRIBUTE_LUCK] += value;
-                    status = fmt::format("+{} {} {}", value, localization->GetAttirubteName(ATTRIBUTE_LUCK), localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, localization->attributeName(ATTRIBUTE_LUCK), localization->str(LSTR_PERMANENT));
                     break;
                 case 7: // Aug
                     pParty->partyFindsGold(1000 * value, GOLD_RECEIVE_SHARE);
-                    status = fmt::format("+{} {}", 1000 * value, localization->GetString(LSTR_GOLD));
+                    status = fmt::format("+{} {}", 1000 * value, localization->str(LSTR_GOLD));
                     break;
                 case 8: // Sep
                     pParty->GiveFood(5 * value);
-                    status = fmt::format("+{} {}", 5 * value, localization->GetString(LSTR_FOOD));
+                    status = fmt::format("+{} {}", 5 * value, localization->str(LSTR_FOOD));
                     break;
                 case 9: // Oct
                     playerAffected->uSkillPoints += 2 * value;
-                    status = fmt::format("+{} {}", 2 * value, localization->GetString(LSTR_SKILL_POINTS));
+                    status = fmt::format("+{} {}", 2 * value, localization->str(LSTR_SKILL_POINTS));
                     break;
                 case 10: // Nov
                     playerAffected->experience += 2500ll * value;
-                    status = fmt::format("+{} {}", 2500ll * value, localization->GetString(LSTR_EXPERIENCE));
+                    status = fmt::format("+{} {}", 2500ll * value, localization->str(LSTR_EXPERIENCE));
                     break;
                 case 11: { // Dec
                     static constexpr std::initializer_list<MagicSchool> possibleResistances = {
@@ -3473,7 +3473,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                     static_assert(possibleResistances.size() == 6);
                     MagicSchool res = grng->randomSample(possibleResistances);
 
-                    std::string spell_school_name = localization->GetSpellSchoolName(res);
+                    std::string spell_school_name = localization->spellSchoolName(res);
 
                     switch (res) {
                         case MAGIC_SCHOOL_FIRE:
@@ -3498,7 +3498,7 @@ void Character::useItem(int targetCharacter, bool isPortraitClick) {
                             assert(false);
                             return;
                     }
-                    status = fmt::format("+{} {} {}", value, spell_school_name, localization->GetString(LSTR_PERMANENT));
+                    status = fmt::format("+{} {} {}", value, spell_school_name, localization->str(LSTR_PERMANENT));
                     break;
                 }
             }

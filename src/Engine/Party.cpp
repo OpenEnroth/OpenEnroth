@@ -391,7 +391,7 @@ void Party::createDefaultParty() {
     pHirelings.fill(NPCData());
     pHirelingsSacrifice.fill(NPCSacrificeStatus());
 
-    this->pCharacters[0].name = localization->GetString(LSTR_NAME_ZOLTAN);
+    this->pCharacters[0].name = localization->str(LSTR_NAME_ZOLTAN);
     this->pCharacters[0].uPrevFace = 17;
     this->pCharacters[0].uCurrentFace = 17;
     this->pCharacters[0].uPrevVoiceID = 17;
@@ -408,7 +408,7 @@ void Party::createDefaultParty() {
     this->pCharacters[0].pActiveSkills[SKILL_BOW] = CombinedSkillValue::novice();
     this->pCharacters[0].pActiveSkills[SKILL_SWORD] = CombinedSkillValue::novice();
 
-    this->pCharacters[1].name = localization->GetString(LSTR_NAME_RODERICK);
+    this->pCharacters[1].name = localization->str(LSTR_NAME_RODERICK);
     this->pCharacters[1].uPrevFace = 3;
     this->pCharacters[1].uCurrentFace = 3;
     this->pCharacters[1].uPrevVoiceID = 3;
@@ -425,7 +425,7 @@ void Party::createDefaultParty() {
     this->pCharacters[1].pActiveSkills[SKILL_DAGGER] = CombinedSkillValue::novice();
     this->pCharacters[1].pActiveSkills[SKILL_TRAP_DISARM] = CombinedSkillValue::novice();
 
-    this->pCharacters[2].name = localization->GetString(LSTR_NAME_SERENA);
+    this->pCharacters[2].name = localization->str(LSTR_NAME_SERENA);
     this->pCharacters[2].uPrevFace = 14;
     this->pCharacters[2].uCurrentFace = 14;
     this->pCharacters[2].uPrevVoiceID = 14;
@@ -442,7 +442,7 @@ void Party::createDefaultParty() {
     this->pCharacters[2].pActiveSkills[SKILL_BODY] = CombinedSkillValue::novice();
     this->pCharacters[2].pActiveSkills[SKILL_MACE] = CombinedSkillValue::novice();
 
-    this->pCharacters[3].name = localization->GetString(LSTR_NAME_ALEXIS);
+    this->pCharacters[3].name = localization->str(LSTR_NAME_ALEXIS);
     this->pCharacters[3].uPrevFace = 10;
     this->pCharacters[3].uCurrentFace = 10;
     this->pCharacters[3].uPrevVoiceID = 10;
@@ -503,7 +503,7 @@ void Party::Reset() {
     pCharacters[0].uVoiceID = 17;
     pCharacters[0].SetInitialStats();
     pCharacters[0].uSex = pCharacters[0].GetSexByVoice();
-    pCharacters[0].name = localization->GetString(LSTR_NAME_ZOLTAN);
+    pCharacters[0].name = localization->str(LSTR_NAME_ZOLTAN);
 
     pCharacters[1].ChangeClass(CLASS_THIEF);
     pCharacters[1].uCurrentFace = 3;
@@ -511,7 +511,7 @@ void Party::Reset() {
     pCharacters[1].uVoiceID = 3;
     pCharacters[1].SetInitialStats();
     pCharacters[1].uSex = pCharacters[1].GetSexByVoice();
-    pCharacters[1].name = localization->GetString(LSTR_NAME_RODERICK);
+    pCharacters[1].name = localization->str(LSTR_NAME_RODERICK);
 
     pCharacters[2].ChangeClass(CLASS_CLERIC);
     pCharacters[2].uCurrentFace = 14;
@@ -519,7 +519,7 @@ void Party::Reset() {
     pCharacters[2].uVoiceID = 14;
     pCharacters[2].SetInitialStats();
     pCharacters[2].uSex = pCharacters[3].GetSexByVoice();
-    pCharacters[2].name = localization->GetString(LSTR_NAME_SERENA);
+    pCharacters[2].name = localization->str(LSTR_NAME_SERENA);
 
     pCharacters[3].ChangeClass(CLASS_SORCERER);
     pCharacters[3].uCurrentFace = 10;
@@ -527,7 +527,7 @@ void Party::Reset() {
     pCharacters[3].uVoiceID = 10;
     pCharacters[3].SetInitialStats();
     pCharacters[3].uSex = pCharacters[3].GetSexByVoice();
-    pCharacters[3].name = localization->GetString(LSTR_NAME_ALEXIS);
+    pCharacters[3].name = localization->str(LSTR_NAME_ALEXIS);
 
     for (Character &player : this->pCharacters) {
         player.timeToRecovery = 0_ticks;
@@ -875,7 +875,7 @@ void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {
     std::string status;
     if (policy == GOLD_RECEIVE_NOSHARE_SILENT) {
     } else if (policy == GOLD_RECEIVE_NOSHARE_MSG) {
-        status = localization->FormatString(LSTR_YOU_FOUND_LU_GOLD, amount);
+        status = localization->format(LSTR_YOU_FOUND_LU_GOLD, amount);
     } else {
         FlatHirelings buf;
         buf.Prepare();
@@ -900,9 +900,9 @@ void Party::partyFindsGold(int amount, GoldReceivePolicy policy) {
             if (hirelingSalaries < 1) {
                 hirelingSalaries = 1;
             }
-            status = localization->FormatString(LSTR_YOU_FOUND_LU_GOLD_FOLLOWERS_TAKE_LU, goldToGain, hirelingSalaries);
+            status = localization->format(LSTR_YOU_FOUND_LU_GOLD_FOLLOWERS_TAKE_LU, goldToGain, hirelingSalaries);
         } else {
-            status = localization->FormatString(LSTR_YOU_FOUND_LU_GOLD, amount);
+            status = localization->format(LSTR_YOU_FOUND_LU_GOLD, amount);
         }
     }
     AddGold(goldToGain - hirelingSalaries);

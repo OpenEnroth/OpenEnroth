@@ -231,12 +231,12 @@ SaveGameHeader SaveGame(bool isAutoSave, bool resetWorld, std::string_view path,
     // if (current_screen_type == SCREEN_SAVEGAME) {
     //    render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, saveload_ui_loadsave);
     //    render->DrawTextureNew(18 / 640.0f, 141 / 480.0f, saveload_ui_loadsave);
-    //    int text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(190));
-    //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0, localization->GetString(190), 0, 0, 0);  // Сохранение
+    //    int text_pos = pFontSmallnum->AlignText_Center(186, localization->str(190));
+    //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 219, 0, localization->str(190), 0, 0, 0);  // Сохранение
     //    text_pos = pFontSmallnum->AlignText_Center(186, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName);
     //    pGUIWindow_CurrentMenu->DrawTextInRect(pFontSmallnum, text_pos + 25, 259, 0, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].pName, 185, 0);
-    //    text_pos = pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT));
-    //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0, localization->GetString(LSTR_PLEASE_WAIT), 0, 0, 0);  // Пожалуйста, подождите
+    //    text_pos = pFontSmallnum->AlignText_Center(186, localization->str(LSTR_PLEASE_WAIT));
+    //    pGUIWindow_CurrentMenu->DrawText(pFontSmallnum, text_pos + 25, 299, 0, localization->str(LSTR_PLEASE_WAIT), 0, 0, 0);  // Пожалуйста, подождите
     //    render->Present();
     //}
 

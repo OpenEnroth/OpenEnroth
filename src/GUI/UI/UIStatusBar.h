@@ -26,15 +26,15 @@ class StatusBar {
     void clearEvent();
 
     template<class... Args> void setPermanent(LstrId locId, Args &&... args) {
-        setPermanent(localization->FormatString(locId, std::forward<Args>(args)...));
+        setPermanent(localization->format(locId, std::forward<Args>(args)...));
     }
 
     template<class... Args> void setEvent(LstrId locId, Args &&... args) {
-        setEvent(localization->FormatString(locId, std::forward<Args>(args)...));
+        setEvent(localization->format(locId, std::forward<Args>(args)...));
     }
 
     template<class... Args> void setEventShort(LstrId locId, Args &&... args) {
-        setEventShort(localization->FormatString(locId, std::forward<Args>(args)...));
+        setEventShort(localization->format(locId, std::forward<Args>(args)...));
     }
 
     void nothingHere();

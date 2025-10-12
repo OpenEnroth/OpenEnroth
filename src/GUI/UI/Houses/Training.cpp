@@ -38,17 +38,17 @@ void GUIWindow_Training::mainDialogue() {
     std::string trainText = "";
 
     if (pParty->activeCharacter().uLevel >= trainingHallMaxLevels[houseId()]) {
-        trainText = fmt::format("{}\n \n{}", localization->GetString(LSTR_WITH_YOUR_SKILLS_YOU_SHOULD_BE_WORKING), localization->GetString(LSTR_SORRY_BUT_WE_ARE_UNABLE_TO_TRAIN_YOU));
+        trainText = fmt::format("{}\n \n{}", localization->str(LSTR_WITH_YOUR_SKILLS_YOU_SHOULD_BE_WORKING), localization->str(LSTR_SORRY_BUT_WE_ARE_UNABLE_TO_TRAIN_YOU));
     } else {
         if (pParty->activeCharacter().experience < expForNextLevel) {
             uint64_t expDelta = expForNextLevel - pParty->activeCharacter().experience;
-            trainText = localization->FormatString(LSTR_YOU_NEED_D_MORE_EXPERIENCE_TO_TRAIN_TO, expDelta, pParty->activeCharacter().uLevel + 1);
+            trainText = localization->format(LSTR_YOU_NEED_D_MORE_EXPERIENCE_TO_TRAIN_TO, expDelta, pParty->activeCharacter().uLevel + 1);
         } else {
-            trainText = localization->FormatString(LSTR_TRAIN_TO_LEVEL_D_FOR_D_GOLD, pParty->activeCharacter().uLevel + 1, pPrice);
+            trainText = localization->format(LSTR_TRAIN_TO_LEVEL_D_FOR_D_GOLD, pParty->activeCharacter().uLevel + 1, pPrice);
         }
     }
 
-    std::vector<std::string> optionsText = {trainText, localization->GetString(LSTR_LEARN_SKILLS)};
+    std::vector<std::string> optionsText = {trainText, localization->str(LSTR_LEARN_SKILLS)};
 
     drawOptions(optionsText, colorTable.Sunflower);
 }

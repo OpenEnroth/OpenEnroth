@@ -18,9 +18,9 @@ GUIWindow_GameOver::GUIWindow_GameOver(UIMessageType releaseEvent) : GUIWindow(W
     GameOver_Setup();
     this->sHint = fmt::format(
         "{}\n \n{}\n \n{}",
-        localization->GetString(LSTR_CONGRATULATIONS_ADVENTURER),
-        localization->GetString(LSTR_WE_HOPE_THAT_YOUVE_ENJOYED_PLAYING_MIGHT),
-        localization->GetString(LSTR_THE_MIGHT_AND_MAGIC_VII_DEVELOPMENT_TEAM));
+        localization->str(LSTR_CONGRATULATIONS_ADVENTURER),
+        localization->str(LSTR_WE_HOPE_THAT_YOUVE_ENJOYED_PLAYING_MIGHT),
+        localization->str(LSTR_THE_MIGHT_AND_MAGIC_VII_DEVELOPMENT_TEAM));
 }
 
 void GUIWindow_GameOver::Update() {
@@ -31,7 +31,7 @@ void GUIWindow_GameOver::Update() {
     // draw pop up box
     if (_showPopUp) {
         GUIWindow pWindow;
-        pWindow.sHint = fmt::format("{}\n \n{}", pGameOverWindow->sHint, localization->GetString(LSTR_PRESS_ESCAPE));
+        pWindow.sHint = fmt::format("{}\n \n{}", pGameOverWindow->sHint, localization->str(LSTR_PRESS_ESCAPE));
         pWindow.uFrameWidth = 400;
         pWindow.uFrameHeight = 100;
         pWindow.uFrameX = 120;

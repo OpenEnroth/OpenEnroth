@@ -55,13 +55,13 @@ static std::string getDayPart(int hour) {
     assert(hour >= 0 && hour < 24);
 
     if (hour > 5 && hour < 20) {
-        return localization->GetString(LSTR_DAY_CAPITALIZED);
+        return localization->str(LSTR_DAY_CAPITALIZED);
     } else if (hour == 5) {
-        return localization->GetString(LSTR_DAWN);
+        return localization->str(LSTR_DAWN);
     } else if (hour == 20) {
-        return localization->GetString(LSTR_DUSK);
+        return localization->str(LSTR_DUSK);
     } else {
-        return localization->GetString(LSTR_NIGHT);
+        return localization->str(LSTR_NIGHT);
     }
 }
 
@@ -79,24 +79,24 @@ void GUIWindow_CalendarBook::Update() {
     calendar_window.uFrameY = pViewport->viewportTL_Y;
     calendar_window.uFrameZ = pViewport->viewportBR_X;
     calendar_window.uFrameW = pViewport->viewportBR_Y;
-    calendar_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_calendar_title_color, localization->GetString(LSTR_TIME_IN_ERATHIA), 3);
+    calendar_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_calendar_title_color, localization->str(LSTR_TIME_IN_ERATHIA), 3);
 
-    std::string str = fmt::format("{}\t100:\t110{}:{:02} {} - {}", localization->GetString(LSTR_TIME), time.hourAmPm,
-                                  time.minute, localization->GetAmPm(time.isPm), getDayPart(time.hour));
+    std::string str = fmt::format("{}\t100:\t110{}:{:02} {} - {}", localization->str(LSTR_TIME), time.hourAmPm,
+                                  time.minute, localization->amPm(time.isPm), getDayPart(time.hour));
     calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 55}, ui_book_calendar_time_color, str);
 
-    str = fmt::format("{}\t100:\t110{} - {}", localization->GetString(LSTR_DAY_CAPITALIZED), time.day,
-                      localization->GetDayName(time.dayOfWeek - 1));
+    str = fmt::format("{}\t100:\t110{} - {}", localization->str(LSTR_DAY_CAPITALIZED), time.day,
+                      localization->dayName(time.dayOfWeek - 1));
     calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 2 * assets->pFontBookCalendar->GetHeight() + 49}, ui_book_calendar_day_color, str);
 
-    str = fmt::format("{}\t100:\t110{} - {}", localization->GetString(LSTR_MONTH), time.month,
-                      localization->GetMonthName(time.month - 1));
+    str = fmt::format("{}\t100:\t110{} - {}", localization->str(LSTR_MONTH), time.month,
+                      localization->monthName(time.month - 1));
     calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 4 * assets->pFontBookCalendar->GetHeight() + 43}, ui_book_calendar_month_color, str);
 
-    str = fmt::format("{}\t100:\t110{}", localization->GetString(LSTR_YEAR), time.year);
+    str = fmt::format("{}\t100:\t110{}", localization->str(LSTR_YEAR), time.year);
     calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 6 * assets->pFontBookCalendar->GetHeight() + 37}, ui_book_calendar_year_color, str);
 
-    str = fmt::format("{}\t100:\t110{}", localization->GetString(LSTR_MOON), localization->GetMoonPhaseName(pDayMoonPhase[time.day - 1]));
+    str = fmt::format("{}\t100:\t110{}", localization->str(LSTR_MOON), localization->moonPhaseName(pDayMoonPhase[time.day - 1]));
     calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 8 * assets->pFontBookCalendar->GetHeight() + 31}, ui_book_calendar_moon_color, str);
 
     std::string pMapName = "Unknown";
@@ -104,6 +104,6 @@ void GUIWindow_CalendarBook::Update() {
         pMapName = pMapStats->pInfos[engine->_currentLoadedMapId].name;
     }
 
-    str = fmt::format("{}\t100:\t110{}", localization->GetString(LSTR_LOCATION), pMapName);
+    str = fmt::format("{}\t100:\t110{}", localization->str(LSTR_LOCATION), pMapName);
     calendar_window.DrawText(assets->pFontBookCalendar.get(), {70, 10 * assets->pFontBookCalendar->GetHeight() + 25}, ui_book_calendar_location_color, str);
 }

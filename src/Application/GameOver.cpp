@@ -55,9 +55,9 @@ void CreateWinnerCertificate() {
 
     std::string pInString;
     if (pParty->isPartyGood())
-        pInString = localization->GetString(LSTR_GOOD_ENDING);
+        pInString = localization->str(LSTR_GOOD_ENDING);
     else if (pParty->isPartyEvil())
-        pInString = localization->GetString(LSTR_EVIL_ENDING);
+        pInString = localization->str(LSTR_EVIL_ENDING);
     else
         assert(false);
 
@@ -73,7 +73,7 @@ void CreateWinnerCertificate() {
     int days = duration.days;
 
     pWindow.DrawTitleText(
-        pFont.get(), 1, 0x23, colorTable.Black, localization->GetString(LSTR_CONGRATULATIONS), 3
+        pFont.get(), 1, 0x23, colorTable.Black, localization->str(LSTR_CONGRATULATIONS), 3
     );
     uint64_t v23 = 0ull;
     int v20 = 0;
@@ -82,11 +82,11 @@ void CreateWinnerCertificate() {
             pFont.get(), 1,
             i * (pFont->GetHeight() - 2) + pFont->GetHeight() + 46,
             colorTable.Black,
-            localization->FormatString(
+            localization->format(
                 LSTR_S_THE_LEVEL_U_S,
                 pParty->pCharacters[i].name,
                 pParty->pCharacters[i].GetBaseLevel(),
-                localization->GetClassName(pParty->pCharacters[i].classType)),
+                localization->className(pParty->pCharacters[i].classType)),
             3);
         v23 += pParty->pCharacters[i].experience;
     }
@@ -94,21 +94,21 @@ void CreateWinnerCertificate() {
     std::string v6 = pFont->WrapText(pInString, pWindow.uFrameWidth, 12);
     pWindow.DrawTitleText(pFont.get(), 1, 5 * (pFont->GetHeight() + 11), colorTable.Black, v6, 0);
 
-    std::string v7 = localization->GetString(LSTR_DAY_CAPITALIZED);
-    if (days != 1) v7 = localization->GetString(LSTR_DAYS);
+    std::string v7 = localization->str(LSTR_DAY_CAPITALIZED);
+    if (days != 1) v7 = localization->str(LSTR_DAYS);
 
-    std::string v8 = localization->GetString(LSTR_MONTH);
-    if (months != 1) v8 = localization->GetString(LSTR_MONTHS);
+    std::string v8 = localization->str(LSTR_MONTH);
+    if (months != 1) v8 = localization->str(LSTR_MONTHS);
 
-    std::string v9 = localization->GetString(LSTR_YEAR);
-    if (years != 1) v9 = localization->GetString(LSTR_YEARS);
+    std::string v9 = localization->str(LSTR_YEAR);
+    if (years != 1) v9 = localization->str(LSTR_YEARS);
 
     pWindow.DrawTitleText(
         pFont.get(), 1, pWindow.uFrameHeight - 2 * pFont->GetHeight() - 5, colorTable.Black,
-        fmt::format("{} {} {}, {} {}, {} {} ", localization->GetString(LSTR_TOTAL_TIME), years, v9, months, v8, days, v7), 3);
+        fmt::format("{} {} {}, {} {}, {} {} ", localization->str(LSTR_TOTAL_TIME), years, v9, months, v8, days, v7), 3);
 
     pWindow.DrawTitleText(pFont.get(), 1, pWindow.uFrameHeight, colorTable.Black,
-        localization->FormatString(LSTR_YOUR_SCORE_LU, v23), 3);
+        localization->format(LSTR_YOUR_SCORE_LU, v23), 3);
 
     dword_6BE364_game_settings_1 |= GAME_SETTINGS_4000;
 

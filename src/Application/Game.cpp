@@ -1030,7 +1030,7 @@ void Game::processQueuedMessages() {
                     Character::_42ECB5_CharacterAttacksActor();
                 continue;
             case UIMSG_ExitRest:
-                new OnCancel({pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY}, {0, 0}, pButton_RestUI_Exit, localization->GetString(LSTR_EXIT_REST));
+                new OnCancel({pButton_RestUI_Exit->uX, pButton_RestUI_Exit->uY}, {0, 0}, pButton_RestUI_Exit, localization->str(LSTR_EXIT_REST));
                 continue;
             case UIMSG_Wait5Minutes:
                 if (currentRestType == REST_HEAL) {
@@ -1039,7 +1039,7 @@ void Game::processQueuedMessages() {
                     continue;
                 }
                 new OnButtonClick2({pButton_RestUI_Wait5Minutes->uX, pButton_RestUI_Wait5Minutes->uY}, {0, 0}, pButton_RestUI_Wait5Minutes,
-                    localization->GetString(LSTR_WAIT_5_MINUTES));
+                    localization->str(LSTR_WAIT_5_MINUTES));
                 currentRestType = REST_WAIT;
                 remainingRestTime = Duration::fromMinutes(5);
                 continue;
@@ -1050,7 +1050,7 @@ void Game::processQueuedMessages() {
                     continue;
                 }
                 new OnButtonClick2({pButton_RestUI_Wait1Hour->uX, pButton_RestUI_Wait1Hour->uY}, {0, 0}, pButton_RestUI_Wait1Hour,
-                    localization->GetString(LSTR_WAIT_1_HOUR));
+                    localization->str(LSTR_WAIT_1_HOUR));
                 currentRestType = REST_WAIT;
                 remainingRestTime = Duration::fromHours(1);
                 continue;
@@ -1191,7 +1191,7 @@ void Game::processQueuedMessages() {
                     continue;
                 }
                 new OnButtonClick2({pButton_RestUI_WaitUntilDawn->uX, pButton_RestUI_WaitUntilDawn->uY}, {0, 0}, pButton_RestUI_WaitUntilDawn,
-                                   localization->GetString(LSTR_WAIT_UNTIL_DAWN));
+                                   localization->str(LSTR_WAIT_UNTIL_DAWN));
                 currentRestType = REST_WAIT;
                 remainingRestTime = timeUntilDawn();
                 continue;

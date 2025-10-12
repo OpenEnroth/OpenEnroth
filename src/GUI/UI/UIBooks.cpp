@@ -79,7 +79,7 @@ void GUIWindow_Book::Release() {
 
 GUIWindow_Book::GUIWindow_Book() : GUIWindow(WINDOW_Book, {0, 0}, render->GetRenderDimensions()) {
     initializeFonts();
-    CreateButton({475, 445}, {158, 34}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->GetString(LSTR_EXIT_DIALOGUE));
+    CreateButton({475, 445}, {158, 34}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_EXIT_DIALOGUE));
     current_screen_type = SCREEN_BOOKS;
     pEventTimer->setPaused(true);
 }

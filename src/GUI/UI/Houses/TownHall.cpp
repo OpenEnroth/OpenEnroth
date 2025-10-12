@@ -32,12 +32,12 @@ void GUIWindow_TownHall::mainDialogue() {
     townHall_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     townHall_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    std::vector<std::string> optionsText = {localization->GetString(LSTR_BOUNTY_HUNT)};
-    std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
+    std::vector<std::string> optionsText = {localization->str(LSTR_BOUNTY_HUNT)};
+    std::string fine_str = fmt::format("{}: {}", localization->str(LSTR_CURRENT_FINE), pParty->uFine);
     townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3);
 
     if (pParty->uFine > 0) {
-        optionsText.push_back(localization->GetString(LSTR_PAY_FINE));
+        optionsText.push_back(localization->str(LSTR_PAY_FINE));
     }
 
     drawOptions(optionsText, colorTable.PaleCanary, 170, true);
@@ -49,7 +49,7 @@ void GUIWindow_TownHall::bountyHuntDialogue() {
     townHall_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     townHall_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
+    std::string fine_str = fmt::format("{}: {}", localization->str(LSTR_CURRENT_FINE), pParty->uFine);
     townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3);
 
     current_npc_text = bountyHuntingText();
@@ -73,12 +73,12 @@ void GUIWindow_TownHall::payFineDialogue() {
     townHall_window.uFrameWidth = SIDE_TEXT_BOX_WIDTH;
     townHall_window.uFrameZ = SIDE_TEXT_BOX_POS_Z;
 
-    std::string fine_str = fmt::format("{}: {}", localization->GetString(LSTR_CURRENT_FINE), pParty->uFine);
+    std::string fine_str = fmt::format("{}: {}", localization->str(LSTR_CURRENT_FINE), pParty->uFine);
     townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 260, colorTable.PaleCanary, fine_str, 3);
 
     if (keyboard_input_status == WINDOW_INPUT_IN_PROGRESS) {
         townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.PaleCanary,
-                                      fmt::format("{}\n{}", localization->GetString(LSTR_PAY), localization->GetString(LSTR_HOW_MUCH)), 3);
+                                      fmt::format("{}\n{}", localization->str(LSTR_PAY), localization->str(LSTR_HOW_MUCH)), 3);
         townHall_window.DrawTitleText(assets->pFontArrus.get(), 0, 186, colorTable.White, keyboardInputHandler->GetTextInput(), 3);
         townHall_window.DrawFlashingInputCursor(assets->pFontArrus->GetLineWidth(keyboardInputHandler->GetTextInput()) / 2 + 80, 185, assets->pFontArrus.get());
         return;
