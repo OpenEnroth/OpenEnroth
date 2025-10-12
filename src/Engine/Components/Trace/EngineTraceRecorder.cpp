@@ -4,12 +4,13 @@
 #include <memory>
 #include <utility>
 
-#include "Application/GameKeyboardController.h" // TODO(captainurist): Engine -> Application dependency
-
 #include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Random/Random.h"
+
+#include "Io/KeyboardController.h"
 
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
@@ -20,7 +21,6 @@
 
 #include "EngineTraceSimpleRecorder.h"
 #include "EngineTraceStateAccessor.h"
-#include "Engine/EngineFileSystem.h"
 
 EngineTraceRecorder::EngineTraceRecorder() {}
 
@@ -47,7 +47,7 @@ void EngineTraceRecorder::startRecording(EngineController *game, const Blob &sav
 
     // Reset all pressed buttons. It's important to do this before loading the game b/c game loading peeks into pressed
     // buttons and does all kinds of weird stuff.
-    component<GameKeyboardController>()->reset();
+    component<KeyboardController>()->reset();
 
     engine->config->graphics.FPSLimit.setValue(0);
     game->goToMainMenu(); // This might call into a random engine.

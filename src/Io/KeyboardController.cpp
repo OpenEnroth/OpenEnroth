@@ -1,10 +1,10 @@
-#include "GameKeyboardController.h"
+#include "KeyboardController.h"
 
 #include "Library/Platform/Interface/PlatformEvents.h"
 
-GameKeyboardController::GameKeyboardController() : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}) {}
+KeyboardController::KeyboardController() : PlatformEventFilter({EVENT_KEY_PRESS, EVENT_KEY_RELEASE}) {}
 
-bool GameKeyboardController::ConsumeKeyPress(PlatformKey key) {
+bool KeyboardController::ConsumeKeyPress(PlatformKey key) {
     if (key == PlatformKey::KEY_NONE)
         return false;
 
@@ -19,14 +19,14 @@ bool GameKeyboardController::ConsumeKeyPress(PlatformKey key) {
     return true;
 }
 
-bool GameKeyboardController::IsKeyDown(PlatformKey key) const {
+bool KeyboardController::IsKeyDown(PlatformKey key) const {
     if (key == PlatformKey::KEY_NONE)
         return false;
 
     return isKeyDown_[key] || isKeyDownThisFrame_[key];
 }
 
-bool GameKeyboardController::keyPressEvent(const PlatformKeyEvent *event) {
+bool KeyboardController::keyPressEvent(const PlatformKeyEvent *event) {
     if (isKeyDown_[event->key])
         return false; // Auto repeat
 
@@ -36,17 +36,17 @@ bool GameKeyboardController::keyPressEvent(const PlatformKeyEvent *event) {
     return false;
 }
 
-bool GameKeyboardController::keyReleaseEvent(const PlatformKeyEvent *event) {
+bool KeyboardController::keyReleaseEvent(const PlatformKeyEvent *event) {
     isKeyDown_[event->key] = false;
     return false;
 }
 
-void GameKeyboardController::processMessages(PlatformEventHandler *eventHandler) {
+void KeyboardController::processMessages(PlatformEventHandler *eventHandler) {
     isKeyDownThisFrame_.fill(false);
     ProxyEventLoop::processMessages(eventHandler);
 }
 
-void GameKeyboardController::reset() {
+void KeyboardController::reset() {
     isKeyDown_.fill(false);
     isKeyDownReportPending_.fill(false);
 }

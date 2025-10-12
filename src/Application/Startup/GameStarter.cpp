@@ -8,7 +8,6 @@
 
 #include "Application/GameConfig.h"
 #include "Application/Game.h"
-#include "Application/GameKeyboardController.h"
 #include "Application/GameWindowHandler.h"
 #include "Application/GameTraceHandler.h"
 
@@ -29,6 +28,8 @@
 #include "Engine/Components/Random/EngineRandomComponent.h"
 
 #include "GUI/Overlay/OverlaySystem.h"
+
+#include "Io/KeyboardController.h"
 
 #include "Library/Environment/Interface/Environment.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -146,7 +147,7 @@ void GameStarter::initialize() {
     // 3. `EngineTraceSimpleRecorder` should be placed in the chain after `EngineDeterministicComponent`. Deterministic
     //    component updates tick count in `swapBuffers()`, and then trace component stores the updated value in a
     //    recorded `PaintEvent`.
-    // 4. `GameKeyboardController` should be placed after GameWindowHandler.
+    // 4. `KeyboardController` should be placed after GameWindowHandler.
     // 5. `GameTraceHandler` should come before other input handlers, otherwise Ctrl+Shift+R will open up the rest menu.
     _application->installComponent(std::make_unique<EngineControlComponent>());
     _application->installComponent(std::make_unique<EngineTraceSimpleRecorder>());
@@ -155,7 +156,7 @@ void GameStarter::initialize() {
     _application->installComponent(std::make_unique<EngineTraceRecorder>());
     _application->installComponent(std::make_unique<EngineTracePlayer>());
     _application->installComponent(std::make_unique<EngineRandomComponent>());
-    _application->installComponent(std::make_unique<GameKeyboardController>());
+    _application->installComponent(std::make_unique<KeyboardController>());
     _application->installComponent(std::make_unique<GameWindowHandler>());
     _application->installComponent(std::make_unique<GameTraceHandler>());
     _application->component<EngineRandomComponent>()->setTracing(_options.tracingRng);
@@ -175,7 +176,7 @@ void GameStarter::initialize() {
 
     // Init io.
     ::keyboardActionMapping = std::make_shared<Io::KeyboardActionMapping>(_config);;
-    ::keyboardInputHandler = std::make_shared<Io::KeyboardInputHandler>(_application->component<GameKeyboardController>(),
+    ::keyboardInputHandler = std::make_shared<Io::KeyboardInputHandler>(_application->component<KeyboardController>(),
         keyboardActionMapping
     );
     ::mouse = EngineIocContainer::ResolveMouse();

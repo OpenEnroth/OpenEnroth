@@ -5,14 +5,12 @@
 #include "Library/Platform/Filters/PlatformEventFilter.h"
 #include "Library/Platform/Proxy/ProxyEventLoop.h"
 
-#include "Io/IKeyboardController.h"
-
-class GameKeyboardController: public Io::IKeyboardController, public PlatformEventFilter, public ProxyEventLoop {
+class KeyboardController: public PlatformEventFilter, public ProxyEventLoop {
  public:
-    GameKeyboardController();
+    KeyboardController();
 
-    virtual bool ConsumeKeyPress(PlatformKey key) override;
-    virtual bool IsKeyDown(PlatformKey key) const override;
+    bool ConsumeKeyPress(PlatformKey key);
+    bool IsKeyDown(PlatformKey key) const;
 
     void reset();
 

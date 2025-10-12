@@ -1,13 +1,14 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(IO_SOURCES
+        KeyboardController.cpp
         InputEnumFunctions.cpp
         KeyboardActionMapping.cpp
         KeyboardInputHandler.cpp
         Mouse.cpp)
 
 set(IO_HEADERS
-        IKeyboardController.h
+        KeyboardController.h
         InputEnums.h
         InputEnumFunctions.h
         KeyboardActionMapping.h

@@ -4,7 +4,7 @@
 #include <string>
 
 #include "Library/Platform/Interface/PlatformEnums.h"
-#include "Io/IKeyboardController.h"
+#include "Io/KeyboardController.h"
 #include "Io/KeyboardActionMapping.h"
 #include "Engine/Time/Duration.h"
 
@@ -23,7 +23,7 @@ namespace Io {
     //      and maps it to game actions/events using KeyboardActionMapping
 class KeyboardInputHandler {
  public:
-    KeyboardInputHandler(IKeyboardController *controller, std::shared_ptr<KeyboardActionMapping> actionMapping) {
+    KeyboardInputHandler(KeyboardController *controller, std::shared_ptr<KeyboardActionMapping> actionMapping) {
         this->controller = controller;
         this->actionMapping = actionMapping;
 
@@ -62,7 +62,7 @@ class KeyboardInputHandler {
     void ProcessPausedAction(InputAction action);
     void ProcessGameplayAction(InputAction action);
 
-    IKeyboardController *controller;
+    KeyboardController *controller;
     std::shared_ptr<KeyboardActionMapping> actionMapping;
 
     PlatformKey lastKeyPressed;

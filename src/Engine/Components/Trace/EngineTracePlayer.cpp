@@ -6,13 +6,13 @@
 #include <string>
 #include <vector>
 
-#include "Application/GameKeyboardController.h" // TODO(captainurist): Engine -> Application dependency
-
+#include "Engine/Engine.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Random/Random.h"
-#include "Engine/Engine.h"
-#include "Engine/EngineFileSystem.h"
+
+#include "Io/KeyboardController.h"
 
 #include "Library/Trace/PaintEvent.h"
 #include "Library/Trace/EventTrace.h"
@@ -59,7 +59,7 @@ void EngineTracePlayer::playTrace(EngineController *game, const EngineTraceRecor
     game->loadGame(recording.save);
     checkAfterLoadRng(recording, _trace->header.afterLoadRandomState);
     component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
-    component<GameKeyboardController>()->reset(); // Reset all pressed buttons.
+    component<KeyboardController>()->reset(); // Reset all pressed buttons.
 
     if (postLoadCallback)
         postLoadCallback();
