@@ -5,18 +5,18 @@
 #include <memory>
 #include <string>
 
-#include "Application/GameKeyboardController.h"
-
+#include "Engine/Engine.h"
+#include "Engine/EngineGlobals.h"
+#include "Engine/EngineFileSystem.h"
 #include "Engine/Components/Trace/EngineTracePlayer.h"
 #include "Engine/Components/Trace/EngineTraceStateAccessor.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Spells/CastSpellInfo.h"
-#include "Engine/EngineGlobals.h"
-#include "Engine/Engine.h"
-#include "Engine/EngineFileSystem.h"
 
 #include "GUI/GUIMessageQueue.h"
+
+#include "Io/KeyboardController.h"
 
 #include "Library/FileSystem/Interface/FileSystem.h"
 #include "Library/Platform/Application/PlatformApplication.h"
@@ -132,7 +132,7 @@ void TestController::prepareForNextTestInternal() {
 
     _callObserver.reset();
     _tapeCallbacks.clear();
-    ::application->component<GameKeyboardController>()->reset();
+    ::application->component<KeyboardController>()->reset();
     ::application->component<EngineDeterministicComponent>()->restart(frameTimeMs, rngType);
 
     // Clear the message queue, otherwise spells can roll over between test runs.
