@@ -589,8 +589,6 @@ void CollideWithParty(bool jagged_top) {
 }
 
 void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) {
-    constexpr float closestdist = 0.5f;
-
     collision_state.total_move_distance = 0;
     collision_state.check_hi = true;
     collision_state.radius_hi = actor.radius;
@@ -872,8 +870,6 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 }
 
 void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *faceId, int *faceEvent) {
-    constexpr float closestdist = 0.5f; // Closest allowed approach to collision surface - needs adjusting
-
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius;
@@ -1029,8 +1025,6 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 }
 
 void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *floorFaceId, bool *partyNotOnModel, bool *partyHasHitModel, int *triggerID) {
-    constexpr float closestdist = 0.5f;  // Closest allowed approach to collision surface - needs adjusting
-
     // --(Collisions)-------------------------------------------------------------------
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
