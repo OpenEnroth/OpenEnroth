@@ -141,7 +141,7 @@ var searchData=
   ['bmodelcount_138',['bmodelCount',['../structLocationHeader__MM7.html#a9e4572dae6a4c23f059638729774ace6',1,'LocationHeader_MM7']]],
   ['bnight_139',['bNight',['../classWeather.html#a6fd1f47e7bb79b6332c97880d5fd1676',1,'Weather']]],
   ['bnosky_140',['bNoSky',['../structODMRenderParams.html#acfc6f3f022a33b17e8ec135a0b765126',1,'ODMRenderParams']]],
-  ['body_5fres_5fdescription_141',['body_res_description',['../classLocalization.html#a102c220d5d9bea00022a58ae5457a3f2',1,'Localization']]],
+  ['bodyresistancedescription_141',['bodyResistanceDescription',['../classLocalization.html#a26ca14fd75c56ffd600b830e25917d45',1,'Localization']]],
   ['boltblue_142',['BoltBlue',['../classColorTable.html#a9f0180cb4d6d9c018c62b15d907555db',1,'ColorTable']]],
   ['bonusskilldamage_143',['bonusSkillDamage',['../classSpellData.html#a4676eb5661a72b83e72d2511fb3c339a',1,'SpellData']]],
   ['book_5fnext_5fpage_144',['BOOK_NEXT_PAGE',['../UIBooks_8h.html#abbda3eb2bdcb9adac18ddd95a07a17caac304e3a8ddca2eb5cc0a79b6a448f535',1,'UIBooks.h']]],
