@@ -905,7 +905,7 @@ void UpdateActors_BLV() {
                 actor.velocity.z *= 0.83923339843f;
         }
 
-		// TODO(pskelton): why 8? doesnt match party
+        // TODO(pskelton): why 8? doesnt match party
         if (!isFlying)
             actor.velocity.z += -8 * pEventTimer->dt().ticks() * GetGravityStrength();
 
@@ -1747,7 +1747,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     }
 
     pParty->velocity.z += -2.0f * pEventTimer->dt().ticks() * GetGravityStrength();
-    
+
     if (isAboveGround) {
         if (pParty->velocity.z < -500 && !bFeatherFall && pParty->pos.z - floorZ > 1000) {
             for (Character &character : pParty->pCharacters) {
