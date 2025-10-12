@@ -856,9 +856,7 @@ void UpdateActors_BLV() {
         if (!actor.CanAct())
             isFlying = false;
 
-        bool isAboveGround = false;
-        if (actor.pos.z > floorZ + 1)
-            isAboveGround = true;
+        bool isAboveGround = actor.pos.z > floorZ + 1;
 
         // make bloodsplat when the ground is hit
         if (!actor.donebloodsplat) {
@@ -907,19 +905,9 @@ void UpdateActors_BLV() {
                 actor.velocity.z *= 0.83923339843f;
         }
 
-        if (actor.pos.z <= floorZ) {
-            actor.pos.z = floorZ + 1;
-            if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
-                if (actor.velocity.z < 0)
-                    actor.velocity.z = 0;
-            } else {
-                if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.68664550781f) // was 45000 fixpoint
-                    actor.velocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
-            }
-        } else {
-            if (isAboveGround && !isFlying)
-                actor.velocity.z += -8 * pEventTimer->dt().ticks() * GetGravityStrength();
-        }
+		// TODO(pskelton): why 8? doesnt match party
+        if (!isFlying)
+            actor.velocity.z += -8 * pEventTimer->dt().ticks() * GetGravityStrength();
 
         if (actor.velocity.xy().lengthSqr() < 400) {
             actor.velocity.x = 0;
@@ -1637,7 +1625,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     bool isAboveGround = pParty->pos.z > floorZ + 1;
 
     if (!isAboveGround) {
-        pParty->pos.z = floorZ + 1; // Snap to floor if party is below.
         pParty->uFallStartZ = pParty->pos.z;
     } else if (pParty->pos.z <= floorZ + 32) {
         not_high_fall = true;
@@ -1759,8 +1746,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
     }
 
+    pParty->velocity.z += -2.0f * pEventTimer->dt().ticks() * GetGravityStrength();
+    
     if (isAboveGround) {
-        pParty->velocity.z += -2.0f * pEventTimer->dt().ticks() * GetGravityStrength();
         if (pParty->velocity.z < -500 && !bFeatherFall && pParty->pos.z - floorZ > 1000) {
             for (Character &character : pParty->pCharacters) {
                 if (!character.wearsEnchantedItem(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
@@ -1769,13 +1757,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     character.playReaction(SPEECH_FALLING);
                 }
             }
-        }
-    } else {
-        if (pIndoor->pFaces[faceId].facePlane.normal.z < 0.5) {
-            pParty->velocity.z -= 1.0f * pEventTimer->dt().ticks() * GetGravityStrength();
-        } else {
-            if (!(pParty->uFlags & PARTY_FLAG_LANDING))
-                pParty->velocity.z = 0;
         }
     }
 
