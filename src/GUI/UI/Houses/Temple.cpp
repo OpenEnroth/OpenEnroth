@@ -20,9 +20,9 @@
 
 void GUIWindow_Temple::mainDialogue() {
     int price = PriceCalculator::templeHealingCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()].fPriceMultiplier);
-    std::string healString = fmt::format("{} {} {}", localization->GetString(LSTR_HEAL), price, localization->GetString(LSTR_GOLD));
+    std::string healString = fmt::format("{} {} {}", localization->str(LSTR_HEAL), price, localization->str(LSTR_GOLD));
     std::vector<std::string> optionsText = {isPlayerHealableByTemple(pParty->activeCharacter()) ? healString : "",
-                                            localization->GetString(LSTR_DONATE), localization->GetString(LSTR_LEARN_SKILLS)};
+                                            localization->str(LSTR_DONATE), localization->str(LSTR_LEARN_SKILLS)};
 
     drawOptions(optionsText, colorTable.PaleCanary);
 }

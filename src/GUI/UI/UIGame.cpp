@@ -185,17 +185,17 @@ GUIWindow_GameMenu::GUIWindow_GameMenu()
     game_ui_menu_quit = assets->getImage_ColorKey("quit1");
 
     pBtn_NewGame = CreateButton({0x13u, 0x9Bu}, {0xD6u, 0x28u}, 1, 0,
-        UIMSG_StartNewGame, 0, INPUT_ACTION_NEW_GAME, localization->GetString(LSTR_NEW_GAME), {game_ui_menu_new});
+        UIMSG_StartNewGame, 0, INPUT_ACTION_NEW_GAME, localization->str(LSTR_NEW_GAME), {game_ui_menu_new});
     pBtn_SaveGame = CreateButton("GameMenu_SaveGame", {0x13u, 0xD1u}, {0xD6u, 0x28u}, 1, 0,
-        UIMSG_Game_OpenSaveGameDialog, 0, INPUT_ACTION_SAVE_GAME, localization->GetString(LSTR_SAVE_GAME), {game_ui_menu_save});
+        UIMSG_Game_OpenSaveGameDialog, 0, INPUT_ACTION_SAVE_GAME, localization->str(LSTR_SAVE_GAME), {game_ui_menu_save});
     pBtn_LoadGame = CreateButton("GameMenu_LoadGame", {19, 263}, {0xD6u, 0x28u}, 1, 0,
-        UIMSG_Game_OpenLoadGameDialog, 0, INPUT_ACTION_LOAD_GAME, localization->GetString(LSTR_LOAD_GAME), {game_ui_menu_load});
+        UIMSG_Game_OpenLoadGameDialog, 0, INPUT_ACTION_LOAD_GAME, localization->str(LSTR_LOAD_GAME), {game_ui_menu_load});
     pBtn_GameControls = CreateButton({241, 155}, {214, 40}, 1, 0,
-        UIMSG_Game_OpenOptionsDialog, 0, INPUT_ACTION_OPEN_OPTIONS, localization->GetString(LSTR_SOUND_KEYBOARD_GAME_OPTIONS), {game_ui_menu_controls});
+        UIMSG_Game_OpenOptionsDialog, 0, INPUT_ACTION_OPEN_OPTIONS, localization->str(LSTR_SOUND_KEYBOARD_GAME_OPTIONS), {game_ui_menu_controls});
     pBtn_QuitGame = CreateButton("GameMenu_Quit", {241, 209}, {214, 40}, 1, 0,
-        UIMSG_Quit, 0, INPUT_ACTION_EXIT_GAME, localization->GetString(LSTR_QUIT), {game_ui_menu_quit});
+        UIMSG_Quit, 0, INPUT_ACTION_EXIT_GAME, localization->str(LSTR_QUIT), {game_ui_menu_quit});
     pBtn_Resume = CreateButton({241, 263}, {214, 40}, 1, 0,
-        UIMSG_GameMenu_ReturnToGame, 0, INPUT_ACTION_BACK_TO_GAME, localization->GetString(LSTR_RETURN_TO_GAME), {game_ui_menu_resume});
+        UIMSG_GameMenu_ReturnToGame, 0, INPUT_ACTION_BACK_TO_GAME, localization->str(LSTR_RETURN_TO_GAME), {game_ui_menu_resume});
 
     setKeyboardControlGroup(6, false, 0, 0);
 }
@@ -435,7 +435,7 @@ void GUIWindow_GameVideoOptions::Update() {
         msg_window.uFrameW = 268;
         msg_window.DrawTitleText(
             assets->pFontSmallnum.get(), 0, 0, ui_gamemenu_video_gamma_title_color,
-            localization->GetString(LSTR_GAMMA_CONTROLS_THE_RELATIVE_BRIGHTNESS), 3
+            localization->str(LSTR_GAMMA_CONTROLS_THE_RELATIVE_BRIGHTNESS), 3
         );
     }
 
@@ -544,7 +544,7 @@ GUIWindow_GameOptions::GUIWindow_GameOptions()
         {options_menu_skin.uTextureID_ArrowRight});
     CreateButton({263, 270}, {172, 17}, 1, 0, UIMSG_ChangeVoiceVolume, 0);
 
-    CreateButton({241, 302}, {214, 40}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->GetString(LSTR_RETURN_TO_GAME));
+    CreateButton({241, 302}, {214, 40}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_INVALID, localization->str(LSTR_RETURN_TO_GAME));
     CreateButton({19, 140}, {214, 40}, 1, 0, UIMSG_OpenKeyMappingOptions, 0, INPUT_ACTION_PASS);
     CreateButton({19, 194}, {214, 40}, 1, 0, UIMSG_OpenVideoOptions, 0, INPUT_ACTION_OPEN_OPTIONS);
 }
@@ -1210,11 +1210,11 @@ void GameUI_WritePointedObjectStatusString() {
                              std::string str;
                              if (pParty->activeCharacter().uSkillPoints <
                              requiredSkillpoints)      str =
-                             localization->FormatString(
+                             localization->formatString(
                              LSTR_YOU_NEED_D_MORE_SKILL_POINTS_TO_ADVANCE, requiredSkillpoints -
                              pParty->activeCharacter().uSkillPoints);
                              else      str =
-                             localization->FormatString(
+                             localization->formatString(
                              LSTR_CLICKING_HERE_WILL_SPEND_D_SKILL_POINTS, requiredSkillpoints);
                              engine->_statusBar->setPermanent(str);
                              uLastPointedObjectID = 1;
@@ -1737,15 +1737,15 @@ Color GetConditionDrawColor(Condition uConditionIdx) {
 //----- (00495430) --------------------------------------------------------
 std::string GetReputationString(int reputation) {
     if (reputation >= 25)
-        return localization->GetString(LSTR_REPUTATION_HATED);
+        return localization->str(LSTR_REPUTATION_HATED);
     else if (reputation >= 6)
-        return localization->GetString(LSTR_REPUTATION_UNFRIENDLY);
+        return localization->str(LSTR_REPUTATION_UNFRIENDLY);
     else if (reputation >= -5)
-        return localization->GetString(LSTR_REPUTATION_NEUTRAL);
+        return localization->str(LSTR_REPUTATION_NEUTRAL);
     else if (reputation >= -24)
-        return localization->GetString(LSTR_REPUTATION_FRIENDLY);
+        return localization->str(LSTR_REPUTATION_FRIENDLY);
     else
-        return localization->GetString(LSTR_REPUTATION_LIKED);
+        return localization->str(LSTR_REPUTATION_LIKED);
 }
 
 void GameUI_handleHintMessage(UIMessageType type, int param) {
@@ -1784,10 +1784,10 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
                 "{}:{:02}{} {} {} {} {}",
                 time.hourAmPm,
                 time.minute,
-                localization->GetAmPm(time.isPm),
-                localization->GetDayName(time.dayOfWeek - 1),
+                localization->amPm(time.isPm),
+                localization->dayName(time.dayOfWeek - 1),
                 time.day,
-                localization->GetMonthName(time.month - 1),
+                localization->monthName(time.month - 1),
                 time.year);
             engine->_statusBar->setPermanent(status);
             break;
@@ -1796,15 +1796,15 @@ void GameUI_handleHintMessage(UIMessageType type, int param) {
         case UIMSG_ShowStatus_ManaHP: {
             Character* character = &pParty->pCharacters[param - 1];
             engine->_statusBar->setPermanent(fmt::format("{} / {} {}    {} / {} {}",
-                character->GetHealth(), character->GetMaxHealth(), localization->GetString(LSTR_HIT_POINTS),
-                character->GetMana(), character->GetMaxMana(), localization->GetString(LSTR_SPELL_POINTS)));
+                character->GetHealth(), character->GetMaxHealth(), localization->str(LSTR_HIT_POINTS),
+                character->GetMana(), character->GetMaxMana(), localization->str(LSTR_SPELL_POINTS)));
             break;
         }
 
         case UIMSG_ShowStatus_Player: {
             Character* character = &pParty->pCharacters[param - 1];
             engine->_statusBar->setPermanent(fmt::format("{}: {}", NameAndTitle(character->name, character->classType),
-                localization->GetCharacterConditionName(character->GetMajorConditionIdx())));
+                localization->characterConditionName(character->GetMajorConditionIdx())));
             engine->mouse->uPointingObjectID = Pid(OBJECT_Character, (unsigned char)(8 * param - 8) | 4);
             break;
         }

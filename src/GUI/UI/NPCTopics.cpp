@@ -273,7 +273,7 @@ void prepareArenaFight(ArenaLevel level) {
     GUIWindow window = *pDialogueWindow;
     window.uFrameWidth = pViewport->viewportWidth;
     window.uFrameZ = 452;
-    int textHeight = assets->pFontArrus->CalcTextHeight(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON_THE_MONSTERS), window.uFrameWidth, 13) + 7;
+    int textHeight = assets->pFontArrus->CalcTextHeight(localization->str(LSTR_PLEASE_WAIT_WHILE_I_SUMMON_THE_MONSTERS), window.uFrameWidth, 13) + 7;
 
     // TODO(pskelton): This doesnt work properly and we dont want draw calls here
     render->BeginScene3D();
@@ -286,7 +286,7 @@ void prepareArenaFight(ArenaLevel level) {
      render->BeginScene2D();
     render->DrawTextureCustomHeight(8 / 640.0f, (352 - textHeight) / 480.0f, ui_leather_mm7, textHeight);
     render->DrawTextureNew(8 / 640.0f, (347 - textHeight) / 480.0f, _591428_endcap);
-    std::string text = assets->pFontArrus->WrapText(localization->GetString(LSTR_PLEASE_WAIT_WHILE_I_SUMMON_THE_MONSTERS), window.uFrameWidth, 13);
+    std::string text = assets->pFontArrus->WrapText(localization->str(LSTR_PLEASE_WAIT_WHILE_I_SUMMON_THE_MONSTERS), window.uFrameWidth, 13);
     pDialogueWindow->DrawText(assets->pFontArrus.get(), {13, 354 - textHeight}, colorTable.White, text);
     render->Present();
 
@@ -479,18 +479,18 @@ std::string masteryTeacherOptionString() {
 
     if (currClassMaxMastery < masteryLevelBeingTaught) {
         if (skillMaxMasteryPerClass[getTier2Class(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->GetClassName(getTier2Class(pClassType)));
+            return localization->format(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->className(getTier2Class(pClassType)));
         } else if (skillMaxMasteryPerClass[getTier3LightClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught &&
                 skillMaxMasteryPerClass[getTier3DarkClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_OR_S_TO,
-                    localization->GetClassName(getTier3LightClass(pClassType)),
-                    localization->GetClassName(getTier3DarkClass(pClassType)));
+            return localization->format(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_OR_S_TO,
+                    localization->className(getTier3LightClass(pClassType)),
+                    localization->className(getTier3DarkClass(pClassType)));
         } else if (skillMaxMasteryPerClass[getTier3LightClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->GetClassName(getTier3LightClass(pClassType)));
+            return localization->format(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->className(getTier3LightClass(pClassType)));
         } else if (skillMaxMasteryPerClass[getTier3DarkClass(pClassType)][skillBeingTaught] >= masteryLevelBeingTaught) {
-            return localization->FormatString(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->GetClassName(getTier3DarkClass(pClassType)));
+            return localization->format(LSTR_YOU_HAVE_TO_BE_PROMOTED_TO_S_TO_LEARN, localization->className(getTier3DarkClass(pClassType)));
         } else {
-            return localization->FormatString(LSTR_THIS_SKILL_LEVEL_CAN_NOT_BE_LEARNED_BY, localization->GetClassName(pClassType));
+            return localization->format(LSTR_THIS_SKILL_LEVEL_CAN_NOT_BE_LEARNED_BY, localization->className(pClassType));
         }
     }
 
@@ -575,8 +575,8 @@ std::string masteryTeacherOptionString() {
 
     membershipOrTrainingApproved = true;
 
-    return localization->FormatString(LSTR_BECOME_S_IN_S_FOR_LU_GOLD, localization->MasteryNameLong(masteryLevelBeingTaught),
-                                      localization->GetSkillName(skillBeingTaught), gold_transaction_amount);
+    return localization->format(LSTR_BECOME_S_IN_S_FOR_LU_GOLD, localization->masteryNameLong(masteryLevelBeingTaught),
+                                      localization->skillName(skillBeingTaught), gold_transaction_amount);
 }
 
 std::string npcDialogueOptionString(DialogueId topic, NPCData *npcData) {
@@ -595,30 +595,30 @@ std::string npcDialogueOptionString(DialogueId topic, NPCData *npcData) {
         return pNPCTopics[npcData->dialogue_6_evt_id].pTopic;
       case DIALOGUE_HIRE_FIRE:
         if (npcData->Hired()) {
-            return localization->FormatString(LSTR_DISMISS_S, npcData->name);
+            return localization->format(LSTR_DISMISS_S, npcData->name);
         } else {
-            return localization->GetString(LSTR_HIRE);
+            return localization->str(LSTR_HIRE);
         }
       case DIALOGUE_13_hiring_related:
         if (npcData->Hired()) {
-            return localization->FormatString(LSTR_DISMISS_S, npcData->name);
+            return localization->format(LSTR_DISMISS_S, npcData->name);
         } else {
-            return localization->GetString(LSTR_JOIN);
+            return localization->str(LSTR_JOIN);
         }
       case DIALOGUE_PROFESSION_DETAILS:
-        return localization->GetString(LSTR_MORE_INFORMATION);
+        return localization->str(LSTR_MORE_INFORMATION);
       case DIALOGUE_MASTERY_TEACHER_LEARN:
         return masteryTeacherOptionString();
       case DIALOGUE_MAGIC_GUILD_JOIN:
         return joinGuildOptionString();
       case DIALOGUE_ARENA_SELECT_LORD:
-        return localization->GetString(LSTR_ARENA_DIFFICULTY_LORD);
+        return localization->str(LSTR_ARENA_DIFFICULTY_LORD);
       case DIALOGUE_ARENA_SELECT_KNIGHT:
-        return localization->GetString(LSTR_ARENA_DIFFICULTY_KNIGHT);
+        return localization->str(LSTR_ARENA_DIFFICULTY_KNIGHT);
       case DIALOGUE_ARENA_SELECT_SQUIRE:
-        return localization->GetString(LSTR_ARENA_DIFFICULTY_SQUIRE);
+        return localization->str(LSTR_ARENA_DIFFICULTY_SQUIRE);
       case DIALOGUE_ARENA_SELECT_PAGE:
-        return localization->GetString(LSTR_ARENA_DIFFICULTY_PAGE);
+        return localization->str(LSTR_ARENA_DIFFICULTY_PAGE);
       case DIALOGUE_USE_HIRED_NPC_ABILITY:
         return GetProfessionActionText(npcData->profession);
       default:

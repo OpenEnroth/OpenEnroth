@@ -315,9 +315,9 @@ void GUIWindow_PartyCreation::Update() {
     }
 
     pTextCenter = ui_partycreation_font->AlignText_Center(
-        640, localization->GetString(LSTR_C_R_E_A_T_E_P_A_R_T_Y));
+        640, localization->str(LSTR_C_R_E_A_T_E_P_A_R_T_Y));
     pGUIWindow_CurrentMenu->DrawText(ui_partycreation_font.get(), {pTextCenter + 1, 0}, colorTable.White,
-        localization->GetString(LSTR_C_R_E_A_T_E_P_A_R_T_Y));
+        localization->str(LSTR_C_R_E_A_T_E_P_A_R_T_Y));
 
     render->DrawTextureNew(17 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pCharacters[0].uCurrentFace]);
     render->DrawTextureNew(176 / oldDims.w, 35 / oldDims.h, ui_partycreation_portraits[pParty->pCharacters[1].uCurrentFace]);
@@ -332,7 +332,7 @@ void GUIWindow_PartyCreation::Update() {
     render->DrawTextureNew((uPosActiveItem->uZ - 4) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_l[arrowAnimTextureNum]);
     render->DrawTextureNew((uPosActiveItem->uX - 12) / oldDims.w, uPosActiveItem->uY / oldDims.h, ui_partycreation_arrow_r[arrowAnimTextureNum]);
 
-    pText = localization->GetString(LSTR_SKILLS);
+    pText = localization->str(LSTR_SKILLS);
     for (int i = pText.size() - 1; i >= 0; i--)
         pText[i] = toupper(pText[i]); // TODO(captainurist): #unicode this won't work with a Russian localization.
 
@@ -343,7 +343,7 @@ void GUIWindow_PartyCreation::Update() {
 
     for (int i = 0; i < 4; ++i) {
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pIntervalX + 73, 100}, colorTable.White,
-            localization->GetClassName(pParty->pCharacters[i].classType));
+            localization->className(pParty->pCharacters[i].classType));
         render->DrawTextureNew((pIntervalX + 77) / oldDims.w, 50 / oldDims.h, ui_partycreation_class_icons[std::to_underlying(pParty->pCharacters[i].classType) / 4]);
 
         if (pGUIWindow_CurrentMenu->keyboard_input_status != WINDOW_INPUT_NONE && uPlayerCreationUI_NameEditCharacter == i) {
@@ -384,57 +384,57 @@ void GUIWindow_PartyCreation::Update() {
 
         int posY = 169;
 
-        auto str1 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_MIGHT), pX_Numbers, pParty->pCharacters[i].GetActualMight());
+        auto str1 = fmt::format("{}\r{:03}{}", localization->str(LSTR_MIGHT), pX_Numbers, pParty->pCharacters[i].GetActualMight());
         pStatColor = pParty->pCharacters[i].GetStatColor(ATTRIBUTE_MIGHT);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, posY}, pStatColor, str1);
 
-        auto str2 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_INTELLECT), pX_Numbers, pParty->pCharacters[i].GetActualIntelligence());
+        auto str2 = fmt::format("{}\r{:03}{}", localization->str(LSTR_INTELLECT), pX_Numbers, pParty->pCharacters[i].GetActualIntelligence());
         pStatColor = pParty->pCharacters[i].GetStatColor(ATTRIBUTE_INTELLIGENCE);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, pIntervalY + posY}, pStatColor, str2);
 
-        auto str3 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_PERSONALITY), pX_Numbers, pParty->pCharacters[i].GetActualPersonality());
+        auto str3 = fmt::format("{}\r{:03}{}", localization->str(LSTR_PERSONALITY), pX_Numbers, pParty->pCharacters[i].GetActualPersonality());
         pStatColor = pParty->pCharacters[i].GetStatColor(ATTRIBUTE_PERSONALITY);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 2 * pIntervalY + posY}, pStatColor, str3);
 
-        auto str4 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_ENDURANCE), pX_Numbers, pParty->pCharacters[i].GetActualEndurance());
+        auto str4 = fmt::format("{}\r{:03}{}", localization->str(LSTR_ENDURANCE), pX_Numbers, pParty->pCharacters[i].GetActualEndurance());
         pStatColor = pParty->pCharacters[i].GetStatColor(ATTRIBUTE_ENDURANCE);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 3 * pIntervalY + posY}, pStatColor, str4);
 
-        auto str5 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_ACCURACY), pX_Numbers, pParty->pCharacters[i].GetActualAccuracy());
+        auto str5 = fmt::format("{}\r{:03}{}", localization->str(LSTR_ACCURACY), pX_Numbers, pParty->pCharacters[i].GetActualAccuracy());
         pStatColor = pParty->pCharacters[i].GetStatColor(ATTRIBUTE_ACCURACY);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 4 * pIntervalY + posY}, pStatColor, str5);
 
-        auto str6 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_SPEED), pX_Numbers, pParty->pCharacters[i].GetActualSpeed());
+        auto str6 = fmt::format("{}\r{:03}{}", localization->str(LSTR_SPEED), pX_Numbers, pParty->pCharacters[i].GetActualSpeed());
         pStatColor = pParty->pCharacters[i].GetStatColor(ATTRIBUTE_SPEED);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 5 * pIntervalY + posY}, pStatColor, str6);
 
-        auto str7 = fmt::format("{}\r{:03}{}", localization->GetString(LSTR_LUCK), pX_Numbers, pParty->pCharacters[i].GetActualLuck());
+        auto str7 = fmt::format("{}\r{:03}{}", localization->str(LSTR_LUCK), pX_Numbers, pParty->pCharacters[i].GetActualLuck());
         pStatColor = pParty->pCharacters[i].GetStatColor(ATTRIBUTE_LUCK);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX, 6 * pIntervalY + posY}, pStatColor, str7);
 
         posY = 311;
 
         pSkillsType = pParty->pCharacters[i].GetSkillIdxByOrder(0);
-        pTextCenter = assets->pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
-        auto str8 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
+        pTextCenter = assets->pFontCreate->AlignText_Center(150, localization->skillName(pSkillsType));
+        auto str8 = fmt::format("\t{:03}{}", pTextCenter, localization->skillName(pSkillsType));
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX - 24, posY}, colorTable.White, str8);
 
         pSkillsType = pParty->pCharacters[i].GetSkillIdxByOrder(1);
-        pTextCenter = assets->pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
-        auto str9 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
+        pTextCenter = assets->pFontCreate->AlignText_Center(150, localization->skillName(pSkillsType));
+        auto str9 = fmt::format("\t{:03}{}", pTextCenter, localization->skillName(pSkillsType));
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX - 24, pIntervalY + posY}, colorTable.White, str9);
 
         pSkillsType = pParty->pCharacters[i].GetSkillIdxByOrder(2);
-        pTextCenter = assets->pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
-        auto str10 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
+        pTextCenter = assets->pFontCreate->AlignText_Center(150, localization->skillName(pSkillsType));
+        auto str10 = fmt::format("\t{:03}{}", pTextCenter, localization->skillName(pSkillsType));
         pColorText = colorTable.Green;
         if (pSkillsType == SKILL_INVALID)
             pColorText = colorTable.Aqua;
         pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {uX - 24, 2 * pIntervalY + posY}, pColorText, str10);
 
         pSkillsType = pParty->pCharacters[i].GetSkillIdxByOrder(3);
-        pTextCenter = assets->pFontCreate->AlignText_Center(150, localization->GetSkillName(pSkillsType));
-        auto str11 = fmt::format("\t{:03}{}", pTextCenter, localization->GetSkillName(pSkillsType));
+        pTextCenter = assets->pFontCreate->AlignText_Center(150, localization->skillName(pSkillsType));
+        auto str11 = fmt::format("\t{:03}{}", pTextCenter, localization->skillName(pSkillsType));
         pColorText = colorTable.Green;
         if (pSkillsType == SKILL_INVALID)
             pColorText = colorTable.Aqua;
@@ -445,7 +445,7 @@ void GUIWindow_PartyCreation::Update() {
         uX += 158;
     }
 
-    pText = localization->GetString(LSTR_CLASS);
+    pText = localization->str(LSTR_CLASS);
     for (int i = pText.size() - 1; i >= 0; i--)
         pText[i] = toupper(pText[i]); // TODO(captainurist): #unicode this won't work for Russian localization.
 
@@ -456,70 +456,70 @@ void GUIWindow_PartyCreation::Update() {
     pColorText = colorTable.Aqua;
     if (uClassType != CLASS_KNIGHT)
         pColorText = colorTable.White;
-    pTextCenter = assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_KNIGHT));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 323, 417}, pColorText, localization->GetClassName(CLASS_KNIGHT));
+    pTextCenter = assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_KNIGHT));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 323, 417}, pColorText, localization->className(CLASS_KNIGHT));
 
     pColorText = colorTable.Aqua;
     if (uClassType != CLASS_PALADIN)
         pColorText = colorTable.White;
     pTextCenter =
-        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_PALADIN));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 323, pIntervalY + 417}, pColorText, localization->GetClassName(CLASS_PALADIN));
+        assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_PALADIN));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 323, pIntervalY + 417}, pColorText, localization->className(CLASS_PALADIN));
 
     pColorText = colorTable.Aqua;
     if (uClassType != CLASS_RANGER)
         pColorText = colorTable.White;
     pTextCenter =
-        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_RANGER));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 323, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(CLASS_RANGER));
+        assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_RANGER));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 323, 2 * pIntervalY + 417}, pColorText, localization->className(CLASS_RANGER));
 
     pColorText = colorTable.Aqua;
     if (uClassType != CLASS_CLERIC)
         pColorText = colorTable.White;
     pTextCenter =
-        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_CLERIC));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 388, 417}, pColorText, localization->GetClassName(CLASS_CLERIC));
+        assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_CLERIC));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 388, 417}, pColorText, localization->className(CLASS_CLERIC));
 
     pColorText = colorTable.Aqua;
     if (uClassType != CLASS_DRUID)
         pColorText = colorTable.White;
     pTextCenter =
-        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_DRUID));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 388, pIntervalY + 417}, pColorText, localization->GetClassName(CLASS_DRUID));
+        assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_DRUID));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 388, pIntervalY + 417}, pColorText, localization->className(CLASS_DRUID));
 
     pColorText = colorTable.Aqua;
     if (uClassType != CLASS_SORCERER)
         pColorText = colorTable.White;
     pTextCenter =
-        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_SORCERER));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 388, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(CLASS_SORCERER));
+        assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_SORCERER));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 388, 2 * pIntervalY + 417}, pColorText, localization->className(CLASS_SORCERER));
 
     pColorText = colorTable.Aqua;
     if (uClassType != CLASS_ARCHER)
         pColorText = colorTable.White;
     pTextCenter =
-        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_ARCHER));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 453, 417}, pColorText, localization->GetClassName(CLASS_ARCHER));
+        assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_ARCHER));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 453, 417}, pColorText, localization->className(CLASS_ARCHER));
 
     pColorText = colorTable.Aqua;
     if (uClassType != CLASS_MONK)
         pColorText = colorTable.White;
     pTextCenter =
-        assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_MONK));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 453, pIntervalY + 417}, pColorText, localization->GetClassName(CLASS_MONK));
+        assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_MONK));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 453, pIntervalY + 417}, pColorText, localization->className(CLASS_MONK));
 
     pColorText = colorTable.Aqua;
     if (uClassType != CLASS_THIEF)
         pColorText = colorTable.White;
-    pTextCenter = assets->pFontCreate->AlignText_Center(65, localization->GetClassName(CLASS_THIEF));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 453, 2 * pIntervalY + 417}, pColorText, localization->GetClassName(CLASS_THIEF));
+    pTextCenter = assets->pFontCreate->AlignText_Center(65, localization->className(CLASS_THIEF));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 453, 2 * pIntervalY + 417}, pColorText, localization->className(CLASS_THIEF));
 
     pTextCenter = assets->pFontCreate->AlignText_Center(
-        236, localization->GetString(LSTR_AVAILABLE_SKILLS));
-    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 37, 395}, colorTable.Tacha, localization->GetString(LSTR_AVAILABLE_SKILLS));
+        236, localization->str(LSTR_AVAILABLE_SKILLS));
+    pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 37, 395}, colorTable.Tacha, localization->str(LSTR_AVAILABLE_SKILLS));
     for (int i = 0; i < 9; ++i) {
         pSkillId = pParty->pCharacters[uPlayerCreationUI_SelectedCharacter].GetSkillIdxByOrder(i + 4);
-        pText = localization->GetSkillName(pSkillId);
+        pText = localization->skillName(pSkillId);
         // trim skills that are too long
         if (pText.size() > 13)
             pText.resize(12);
@@ -540,8 +540,8 @@ void GUIWindow_PartyCreation::Update() {
     }
 
     pTextCenter = assets->pFontCreate->AlignText_Center(
-                0x5C, localization->GetString(LSTR_BONUS_1));
-        pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 533, 394}, colorTable.Tacha, localization->GetString(LSTR_BONUS_1));
+                0x5C, localization->str(LSTR_BONUS_1));
+        pGUIWindow_CurrentMenu->DrawText(assets->pFontCreate.get(), {pTextCenter + 533, 394}, colorTable.Tacha, localization->str(LSTR_BONUS_1));
 
     // force draw so overlays dont get muddled
     render->DrawTwodVerts();
@@ -555,9 +555,9 @@ void GUIWindow_PartyCreation::Update() {
 
     if (errorMessageExpireTime > pMiscTimer->time()) {
         GUIWindow message_window;
-        message_window.sHint = localization->GetString(LSTR_CREATE_PARTY_CANNOT_BE_COMPLETED_UNLESS);
+        message_window.sHint = localization->str(LSTR_CREATE_PARTY_CANNOT_BE_COMPLETED_UNLESS);
         if (pBonusNum < 0)
-            message_window.sHint = localization->GetString(LSTR_YOU_CANT_SPEND_MORE_THAN_50_POINTS);
+            message_window.sHint = localization->str(LSTR_YOU_CANT_SPEND_MORE_THAN_50_POINTS);
         message_window.uFrameWidth = 300;
         message_window.uFrameHeight = 100;
         message_window.uFrameX = 170;

@@ -32,9 +32,9 @@ GUIWindow_QuestBook::GUIWindow_QuestBook() {
     ui_book_button2_off = assets->getImage_Alpha("tab-an-7a");
 
     pBtn_Book_1 = CreateButton({pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 1}, ui_book_button1_on->size(), 1, 0,
-                               UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), INPUT_ACTION_DIALOG_LEFT, localization->GetString(LSTR_SCROLL_UP), {ui_book_button1_on});
+                               UIMSG_ClickBooksBtn, std::to_underlying(BOOK_PREV_PAGE), INPUT_ACTION_DIALOG_LEFT, localization->str(LSTR_SCROLL_UP), {ui_book_button1_on});
     pBtn_Book_2 = CreateButton({pViewport->viewportTL_X + 398, pViewport->viewportTL_Y + 38}, ui_book_button2_on->size(), 1, 0,
-                               UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), INPUT_ACTION_DIALOG_RIGHT, localization->GetString(LSTR_SCROLL_DOWN), {ui_book_button2_on});
+                               UIMSG_ClickBooksBtn, std::to_underlying(BOOK_NEXT_PAGE), INPUT_ACTION_DIALOG_RIGHT, localization->str(LSTR_SCROLL_DOWN), {ui_book_button2_on});
 
     for (auto i : pQuestTable.indices()) {
         if (pParty->_questBits[i] && !pQuestTable[i].empty()) {
@@ -70,7 +70,7 @@ void GUIWindow_QuestBook::Update() {
     questbook_window.uFrameY = pViewport->viewportTL_Y;
     questbook_window.uFrameZ = pViewport->viewportBR_X;
     questbook_window.uFrameW = pViewport->viewportBR_Y;
-    questbook_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_quests_title_color, localization->GetString(LSTR_CURRENT_QUESTS), 3);
+    questbook_window.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, ui_book_quests_title_color, localization->str(LSTR_CURRENT_QUESTS), 3);
 
     // for other text
     questbook_window.uFrameX = 48;

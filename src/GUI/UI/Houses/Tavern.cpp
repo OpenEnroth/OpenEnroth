@@ -31,12 +31,12 @@ void GUIWindow_Tavern::mainDialogue() {
     int pPriceFood = PriceCalculator::tavernFoodCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
     int foodNum = houseTable[houseId()].fPriceMultiplier;
 
-    std::vector<std::string> optionsText = {localization->FormatString(LSTR_RENT_ROOM_FOR_D_GOLD, pPriceRoom),
-                                            localization->FormatString(LSTR_FILL_PACKS_TO_D_DAYS_FOR_D_GOLD, foodNum, pPriceFood),
-                                            localization->GetString(LSTR_LEARN_SKILLS)};
+    std::vector<std::string> optionsText = {localization->format(LSTR_RENT_ROOM_FOR_D_GOLD, pPriceRoom),
+                                            localization->format(LSTR_FILL_PACKS_TO_D_DAYS_FOR_D_GOLD, foodNum, pPriceFood),
+                                            localization->str(LSTR_LEARN_SKILLS)};
 
     if (houseId() != HOUSE_TAVERN_EMERALD_ISLAND) {
-        optionsText.push_back(localization->GetString(LSTR_PLAY_ARCOMAGE));
+        optionsText.push_back(localization->str(LSTR_PLAY_ARCOMAGE));
     }
 
     drawOptions(optionsText, colorTable.PaleCanary);
@@ -47,9 +47,9 @@ void GUIWindow_Tavern::arcomageMainDialogue() {
         return;
     }
 
-    std::vector<std::string> optionsText = {localization->GetString(LSTR_RULES), localization->GetString(LSTR_VICTORY_CONDITIONS)};
+    std::vector<std::string> optionsText = {localization->str(LSTR_RULES), localization->str(LSTR_VICTORY_CONDITIONS)};
     if (pParty->hasItem(ITEM_QUEST_ARCOMAGE_DECK))
-        optionsText.push_back(localization->GetString(LSTR_PLAY));
+        optionsText.push_back(localization->str(LSTR_PLAY));
 
     drawOptions(optionsText, colorTable.PaleCanary);
 }
@@ -108,11 +108,11 @@ void GUIWindow_Tavern::arcomageResultDialogue() {
     std::string pText;
     if (pArcomageGame->uGameWinner) {
         if (pArcomageGame->uGameWinner == 1)
-            pText = localization->GetString(LSTR_YOU_WON);
+            pText = localization->str(LSTR_YOU_WON);
         else
-            pText = localization->GetString(LSTR_YOU_LOST);
+            pText = localization->str(LSTR_YOU_LOST);
     } else {
-        pText = localization->GetString(LSTR_A_TIE);
+        pText = localization->str(LSTR_A_TIE);
     }
     int vertMargin = (SIDE_TEXT_BOX_BODY_TEXT_HEIGHT - assets->pFontArrus->CalcTextHeight(pText, dialog_window.uFrameWidth, 0)) / 2 + SIDE_TEXT_BOX_BODY_TEXT_OFFSET;
     dialog_window.DrawTitleText(assets->pFontArrus.get(), 0, vertMargin, colorTable.PaleCanary, pText, 3);

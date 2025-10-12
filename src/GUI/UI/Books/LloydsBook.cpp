@@ -54,8 +54,8 @@ GUIWindow_LloydsBook::GUIWindow_LloydsBook(Pid casterPid, SpellCastFlags castFla
     ui_book_button1_on = assets->getImage_Alpha("tab-an-6b");
     ui_book_button1_off = assets->getImage_Alpha("tab-an-6a");
 
-    pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, 1, 0, UIMSG_LloydBookFlipButton, 0, INPUT_ACTION_INVALID, localization->GetString(LSTR_SET_BEACON));
-    pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, 1, 0, UIMSG_LloydBookFlipButton, 1, INPUT_ACTION_INVALID, localization->GetString(LSTR_RECALL_BEACON));
+    pBtn_Book_1 = CreateButton({415, 13}, {39, 36}, 1, 0, UIMSG_LloydBookFlipButton, 0, INPUT_ACTION_INVALID, localization->str(LSTR_SET_BEACON));
+    pBtn_Book_2 = CreateButton({415, 48}, {39, 36}, 1, 0, UIMSG_LloydBookFlipButton, 1, INPUT_ACTION_INVALID, localization->str(LSTR_RECALL_BEACON));
 
     int casterId = casterPid.id();
     assert(casterId < pParty->pCharacters.size());
@@ -84,7 +84,7 @@ void GUIWindow_LloydsBook::Update() {
 
     Character *pPlayer = &pParty->pCharacters[_casterPid.id()];
     render->DrawTextureNew(8 / 640.0f, 8 / 480.0f, ui_book_lloyds_backgrounds[_recallingBeacon ? 1 : 0]);
-    std::string pText = localization->GetString(LSTR_RECALL_BEACON);
+    std::string pText = localization->str(LSTR_RECALL_BEACON);
 
     GUIWindow pWindow;
     pWindow.uFrameWidth = 428;
@@ -95,7 +95,7 @@ void GUIWindow_LloydsBook::Update() {
     pWindow.uFrameW = pViewport->viewportBR_Y;
 
     if (!_recallingBeacon) {
-        pText = localization->GetString(LSTR_SET_BEACON);
+        pText = localization->str(LSTR_SET_BEACON);
     }
 
     pWindow.DrawTitleText(assets->pFontBookTitle.get(), 0, 22, colorTable.White, pText, 3);
@@ -134,17 +134,17 @@ void GUIWindow_LloydsBook::Update() {
             CivilDuration d = remainingTime.toCivilDuration();
             std::string str;
             if (d.days > 0) {
-                str = fmt::format("{} {}", d.days, localization->GetString(d.days == 1 ? LSTR_DAY_CAPITALIZED : LSTR_DAYS));
+                str = fmt::format("{} {}", d.days, localization->str(d.days == 1 ? LSTR_DAY_CAPITALIZED : LSTR_DAYS));
             } else if (d.hours > 0) {
-                str = fmt::format("{} {}", d.hours, localization->GetString(d.hours == 1 ? LSTR_HOUR : LSTR_HOURS));
+                str = fmt::format("{} {}", d.hours, localization->str(d.hours == 1 ? LSTR_HOUR : LSTR_HOURS));
             } else {
-                str = fmt::format("{} {}", d.minutes, localization->GetString(d.minutes == 1 ? LSTR_MINUTE : LSTR_MINUTES));
+                str = fmt::format("{} {}", d.minutes, localization->str(d.minutes == 1 ? LSTR_MINUTE : LSTR_MINUTES));
             }
             pWindow.uFrameY = pWindow.uFrameY + pWindow.uFrameHeight + 4;
             pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, 0, colorTable.Black, str, 3);
         } else {
-            int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(localization->GetString(LSTR_AVAILABLE), pWindow.uFrameWidth, 0);
-            pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, (int)pWindow.uFrameHeight / 2 - pTextHeight / 2, colorTable.Black, localization->GetString(LSTR_AVAILABLE), 3);
+            int pTextHeight = assets->pFontBookLloyds->CalcTextHeight(localization->str(LSTR_AVAILABLE), pWindow.uFrameWidth, 0);
+            pWindow.DrawTitleText(assets->pFontBookLloyds.get(), 0, (int)pWindow.uFrameHeight / 2 - pTextHeight / 2, colorTable.Black, localization->str(LSTR_AVAILABLE), 3);
         }
     }
 }

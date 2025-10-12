@@ -1,12 +1,12 @@
 #include "LoadStep2State.h"
 
-#include <Engine/AssetsManager.h>
-#include <Engine/Engine.h>
-#include <Engine/Localization.h>
-#include <Engine/mm7_data.h>
-#include <Engine/Graphics/Renderer/Renderer.h>
-#include <Engine/Graphics/Image.h>
-#include <GUI/GUIWindow.h>
+#include "Engine/AssetsManager.h"
+#include "Engine/Engine.h"
+#include "Engine/Localization.h"
+#include "Engine/mm7_data.h"
+#include "Engine/Graphics/Renderer/Renderer.h"
+#include "Engine/Graphics/Image.h"
+#include "GUI/GUIWindow.h"
 
 FsmAction LoadStep2State::enter() {
     // TODO(Gerark) This specific value GAME_SETTINGS_4000 is checked only in UIPartyCreation.
@@ -48,7 +48,7 @@ void LoadStep2State::_drawMM7CopyrightWindow() {
     window.uFrameHeight = 256;
     window.uFrameX = 8;
     window.uFrameY = 30;
-    window.uFrameHeight = assets->pFontSmallnum->CalcTextHeight(localization->GetString(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), window.uFrameWidth, 24);
+    window.uFrameHeight = assets->pFontSmallnum->CalcTextHeight(localization->str(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), window.uFrameWidth, 24);
     window.uFrameHeight += 2 * assets->pFontSmallnum->GetHeight() + 24;
     window.uFrameY = 470 - window.uFrameHeight;
     window.uFrameZ = window.uFrameX + window.uFrameWidth - 1;
@@ -61,5 +61,5 @@ void LoadStep2State::_drawMM7CopyrightWindow() {
     window.uFrameHeight -= 12;
     window.uFrameZ = window.uFrameX + window.uFrameWidth - 1;
     window.uFrameW = window.uFrameY + window.uFrameHeight - 1;
-    window.DrawTitleText(assets->pFontSmallnum.get(), 0, 12, ui_mainmenu_copyright_color, localization->GetString(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), 3);
+    window.DrawTitleText(assets->pFontSmallnum.get(), 0, 12, ui_mainmenu_copyright_color, localization->str(LSTR_1999_THE_3DO_COMPANY_ALL_RIGHTS_RESERVED), 3);
 }

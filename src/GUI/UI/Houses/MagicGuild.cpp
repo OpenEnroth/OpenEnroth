@@ -124,12 +124,12 @@ void GUIWindow_MagicGuild::mainDialogue() {
     int buttonsLimit = pDialogueWindow->pStartingPosActiveItem + pDialogueWindow->pNumPresenceButton;
     for (int i = pDialogueWindow->pStartingPosActiveItem; i < buttonsLimit; ++i) {
         if (pDialogueWindow->GetControl(i)->msg_param == std::to_underlying(DIALOGUE_GUILD_BUY_BOOKS)) {
-            optionsText.push_back(localization->GetString(LSTR_BUY_SPELLS));
+            optionsText.push_back(localization->str(LSTR_BUY_SPELLS));
         } else {
             Skill skill = GetLearningDialogueSkill((DialogueId)pDialogueWindow->GetControl(i)->msg_param);
             if (skillMaxMasteryPerClass[pParty->activeCharacter().classType][skill] != MASTERY_NONE &&
                 !pParty->activeCharacter().pActiveSkills[skill]) {
-                optionsText.push_back(localization->GetSkillName(skill));
+                optionsText.push_back(localization->skillName(skill));
                 haveLearnableSkills = true;
             } else {
                 optionsText.push_back("");
@@ -140,7 +140,7 @@ void GUIWindow_MagicGuild::mainDialogue() {
     int pPrice = PriceCalculator::skillLearningCostForPlayer(&pParty->activeCharacter(), houseTable[houseId()]);
 
     if (haveLearnableSkills) {
-        std::string skill_price_label = localization->FormatString(LSTR_SKILL_COST_LU, pPrice);
+        std::string skill_price_label = localization->format(LSTR_SKILL_COST_LU, pPrice);
         working_window.DrawTitleText(assets->pFontArrus.get(), 0, 146, colorTable.White, skill_price_label, 3);
     }
 
@@ -175,7 +175,7 @@ void GUIWindow_MagicGuild::buyBooksDialogue() {
                 ++itemcount;
         }
 
-        engine->_statusBar->drawForced(localization->GetString(LSTR_SELECT_THE_ITEM_TO_BUY), colorTable.White);
+        engine->_statusBar->drawForced(localization->str(LSTR_SELECT_THE_ITEM_TO_BUY), colorTable.White);
 
         if (!itemcount) {  // shop empty
             Time nextGenTime = pParty->PartyTimes.guildNextRefreshTime[houseId()];

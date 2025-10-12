@@ -13,31 +13,31 @@
 
 Localization *localization = nullptr;
 
-const std::string &Localization::GetString(LstrId index) const {
-    return this->localization_strings[index];
+const std::string &Localization::str(LstrId index) const {
+    return this->_localizationStrings[index];
 }
 
-std::string Localization::SkillValueShortString(CombinedSkillValue skillValue) const {
+std::string Localization::skillValueShortString(CombinedSkillValue skillValue) const {
     if (skillValue.mastery() == MASTERY_NONE)
         return {};
 
-    return fmt::sprintf(this->skill_value_short_templates[skillValue.mastery()], skillValue.level()); // NOLINT: not std::sprintf.
+    return fmt::sprintf(this->_skillValueShortTemplates[skillValue.mastery()], skillValue.level()); // NOLINT: not std::sprintf.
 }
 
 //----- (00452C49) --------------------------------------------------------
-bool Localization::Initialize() {
+bool Localization::initialize() {
     char *tmp_pos;     // eax@3
     int step;          // ebp@4
     unsigned char c;   // dl@5
     int temp_str_len;  // ecx@5
     bool string_end;   // [sp+14h] [bp-4h]@4
 
-    this->localization_raw = engine->_gameResourceManager->getEventsFile("global.txt").string_view();
-    if (this->localization_raw.empty()) {
+    this->_localizationRaw = engine->_gameResourceManager->getEventsFile("global.txt").string_view();
+    if (this->_localizationRaw.empty()) {
         return false;
     }
 
-    strtok(this->localization_raw.data(), "\r");
+    strtok(this->_localizationRaw.data(), "\r");
     strtok(NULL, "\r");
 
     for (LstrId i : Segment(LSTR_FIRST_MM7, LSTR_LAST_MM7)) {
@@ -62,7 +62,7 @@ bool Localization::Initialize() {
                 string_end = true;
             } else {
                 if (step == 1)
-                    this->localization_strings[i] = removeQuotes(test_string);
+                    this->_localizationStrings[i] = removeQuotes(test_string);
             }
             ++step;
             test_string = tmp_pos + 1;
@@ -70,272 +70,272 @@ bool Localization::Initialize() {
     }
 
     // TODO(captainurist): should be moved to localization files eventually
-    this->localization_strings[LSTR_FMT_S_STOLE_D_ITEM] = "%s stole %s!";
-    this->localization_strings[LSTR_FMT_RECOVERY_TIME_D] = "Recovery time: %d";
-    this->localization_strings[LSTR_FMT_S_U_OUT_OF_U] = "%s: %lu out of %lu";
-    this->localization_strings[LSTR_NOBODY_IS_IN_CONDITION] = "Nobody is in a condition to do anything!";
-    this->localization_strings[LSTR_KEY_CONFLICT] = "Please resolve all key conflicts!";
-    this->localization_strings[LSTR_RECOVERY_TIME_NA] = "Recovery time: N/A";
-    this->localization_strings[LSTR_WAND_ALREADY_CHARGED] = "Wand already charged!";
-    this->localization_strings[LSTR_ENERGY] = "Energy";
-    this->localization_strings[LSTR_IMMOLATION_DAMAGE] = "Immolation deals %d damage to %d target(s)";
-    this->localization_strings[LSTR_REMAINING_POWER] = "Remaining power: %d";
-    this->localization_strings[LSTR_PLAYER_IS_NOT_ACTIVE] = "That player is not active";
+    this->_localizationStrings[LSTR_FMT_S_STOLE_D_ITEM] = "%s stole %s!";
+    this->_localizationStrings[LSTR_FMT_RECOVERY_TIME_D] = "Recovery time: %d";
+    this->_localizationStrings[LSTR_FMT_S_U_OUT_OF_U] = "%s: %lu out of %lu";
+    this->_localizationStrings[LSTR_NOBODY_IS_IN_CONDITION] = "Nobody is in a condition to do anything!";
+    this->_localizationStrings[LSTR_KEY_CONFLICT] = "Please resolve all key conflicts!";
+    this->_localizationStrings[LSTR_RECOVERY_TIME_NA] = "Recovery time: N/A";
+    this->_localizationStrings[LSTR_WAND_ALREADY_CHARGED] = "Wand already charged!";
+    this->_localizationStrings[LSTR_ENERGY] = "Energy";
+    this->_localizationStrings[LSTR_IMMOLATION_DAMAGE] = "Immolation deals %d damage to %d target(s)";
+    this->_localizationStrings[LSTR_REMAINING_POWER] = "Remaining power: %d";
+    this->_localizationStrings[LSTR_PLAYER_IS_NOT_ACTIVE] = "That player is not active";
 
-    this->special_attack_names[SPECIAL_ATTACK_CURSE] = "Curse";
-    this->special_attack_names[SPECIAL_ATTACK_WEAK] = "Weaken";
-    this->special_attack_names[SPECIAL_ATTACK_SLEEP] = "Sleep";
-    this->special_attack_names[SPECIAL_ATTACK_DRUNK] = "Drunk"; // "Inebriate"?
-    this->special_attack_names[SPECIAL_ATTACK_INSANE] = "Insanity";
-    this->special_attack_names[SPECIAL_ATTACK_POISON_WEAK] = "Poison";
-    this->special_attack_names[SPECIAL_ATTACK_POISON_MEDIUM] = "Poison";
-    this->special_attack_names[SPECIAL_ATTACK_POISON_SEVERE] = "Poison";
-    this->special_attack_names[SPECIAL_ATTACK_DISEASE_WEAK] = "Disease";
-    this->special_attack_names[SPECIAL_ATTACK_DISEASE_MEDIUM] = "Disease";
-    this->special_attack_names[SPECIAL_ATTACK_DISEASE_SEVERE] = "Disease";
-    this->special_attack_names[SPECIAL_ATTACK_PARALYZED] = "Paralyze";
-    this->special_attack_names[SPECIAL_ATTACK_UNCONSCIOUS] = "Knockout";
-    this->special_attack_names[SPECIAL_ATTACK_DEAD] = "Death";
-    this->special_attack_names[SPECIAL_ATTACK_PETRIFIED] = "Petrify";
-    this->special_attack_names[SPECIAL_ATTACK_ERADICATED] = "Eradicate";
-    this->special_attack_names[SPECIAL_ATTACK_BREAK_ANY] = "Break Item";
-    this->special_attack_names[SPECIAL_ATTACK_BREAK_ARMOR] = "Break Armor";
-    this->special_attack_names[SPECIAL_ATTACK_BREAK_WEAPON] = "Break Weapon";
-    this->special_attack_names[SPECIAL_ATTACK_STEAL] = "Steal";
-    this->special_attack_names[SPECIAL_ATTACK_AGING] = "Aging";
-    this->special_attack_names[SPECIAL_ATTACK_MANA_DRAIN] = "SP Drain";
-    this->special_attack_names[SPECIAL_ATTACK_FEAR] = "Fear";
+    this->_specialAttackNames[SPECIAL_ATTACK_CURSE] = "Curse";
+    this->_specialAttackNames[SPECIAL_ATTACK_WEAK] = "Weaken";
+    this->_specialAttackNames[SPECIAL_ATTACK_SLEEP] = "Sleep";
+    this->_specialAttackNames[SPECIAL_ATTACK_DRUNK] = "Drunk"; // "Inebriate"?
+    this->_specialAttackNames[SPECIAL_ATTACK_INSANE] = "Insanity";
+    this->_specialAttackNames[SPECIAL_ATTACK_POISON_WEAK] = "Poison";
+    this->_specialAttackNames[SPECIAL_ATTACK_POISON_MEDIUM] = "Poison";
+    this->_specialAttackNames[SPECIAL_ATTACK_POISON_SEVERE] = "Poison";
+    this->_specialAttackNames[SPECIAL_ATTACK_DISEASE_WEAK] = "Disease";
+    this->_specialAttackNames[SPECIAL_ATTACK_DISEASE_MEDIUM] = "Disease";
+    this->_specialAttackNames[SPECIAL_ATTACK_DISEASE_SEVERE] = "Disease";
+    this->_specialAttackNames[SPECIAL_ATTACK_PARALYZED] = "Paralyze";
+    this->_specialAttackNames[SPECIAL_ATTACK_UNCONSCIOUS] = "Knockout";
+    this->_specialAttackNames[SPECIAL_ATTACK_DEAD] = "Death";
+    this->_specialAttackNames[SPECIAL_ATTACK_PETRIFIED] = "Petrify";
+    this->_specialAttackNames[SPECIAL_ATTACK_ERADICATED] = "Eradicate";
+    this->_specialAttackNames[SPECIAL_ATTACK_BREAK_ANY] = "Break Item";
+    this->_specialAttackNames[SPECIAL_ATTACK_BREAK_ARMOR] = "Break Armor";
+    this->_specialAttackNames[SPECIAL_ATTACK_BREAK_WEAPON] = "Break Weapon";
+    this->_specialAttackNames[SPECIAL_ATTACK_STEAL] = "Steal";
+    this->_specialAttackNames[SPECIAL_ATTACK_AGING] = "Aging";
+    this->_specialAttackNames[SPECIAL_ATTACK_MANA_DRAIN] = "SP Drain";
+    this->_specialAttackNames[SPECIAL_ATTACK_FEAR] = "Fear";
 
-    this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_MULTI_SHOT] = "Multi-shot";
-    this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_SUMMON] = "Summoner";
-    this->monster_special_ability_names[MONSTER_SPECIAL_ABILITY_EXPLODE] = "Explodes";
+    this->_monsterSpecialAbilityNames[MONSTER_SPECIAL_ABILITY_MULTI_SHOT] = "Multi-shot";
+    this->_monsterSpecialAbilityNames[MONSTER_SPECIAL_ABILITY_SUMMON] = "Summoner";
+    this->_monsterSpecialAbilityNames[MONSTER_SPECIAL_ABILITY_EXPLODE] = "Explodes";
 
-    this->skill_value_short_templates[MASTERY_NOVICE] = "%d";
-    this->skill_value_short_templates[MASTERY_EXPERT] = "%dE";
-    this->skill_value_short_templates[MASTERY_MASTER] = "%dM";
-    this->skill_value_short_templates[MASTERY_GRANDMASTER] = "%dG";
+    this->_skillValueShortTemplates[MASTERY_NOVICE] = "%d";
+    this->_skillValueShortTemplates[MASTERY_EXPERT] = "%dE";
+    this->_skillValueShortTemplates[MASTERY_MASTER] = "%dM";
+    this->_skillValueShortTemplates[MASTERY_GRANDMASTER] = "%dG";
 
-    InitializeMm6ItemCategories();
+    initializeMm6ItemCategories();
 
-    InitializeMonthNames();
-    InitializeDayNames();
-    InitializeMoonPhaseNames();
+    initializeMonthNames();
+    initializeDayNames();
+    initializeMoonPhaseNames();
 
-    InitializeClassNames();
-    InitializeAttributeNames();
-    InitializeSkillNames();
-    InitializeCharacterConditionNames();
+    initializeClassNames();
+    initializeAttributeNames();
+    initializeSkillNames();
+    initializeCharacterConditionNames();
 
-    InitializeSpellSchoolNames();
-    InitializeSpellNames();
+    initializeSpellSchoolNames();
+    initializeSpellNames();
 
-    InitializeNpcProfessionNames();
+    initializeNpcProfessionNames();
 
     return true;
 }
 
-void Localization::InitializeSpellNames() {
-    this->party_buff_names[PARTY_BUFF_RESIST_AIR]               = this->localization_strings[LSTR_AIR_RES];
-    this->party_buff_names[PARTY_BUFF_RESIST_BODY]              = this->localization_strings[LSTR_BODY_RES];
-    this->party_buff_names[PARTY_BUFF_DAY_OF_GODS]              = this->localization_strings[LSTR_DAY_OF_THE_GODS];
-    this->party_buff_names[PARTY_BUFF_DETECT_LIFE]              = this->localization_strings[LSTR_DETECT_LIFE];
-    this->party_buff_names[PARTY_BUFF_RESIST_EARTH]             = this->localization_strings[LSTR_EARTH_RES];
-    this->party_buff_names[PARTY_BUFF_FEATHER_FALL]             = this->localization_strings[LSTR_FEATHER_FALL];
-    this->party_buff_names[PARTY_BUFF_RESIST_FIRE]              = this->localization_strings[LSTR_FIRE_RES];
-    this->party_buff_names[PARTY_BUFF_FLY]                      = this->localization_strings[LSTR_FLY];
-    this->party_buff_names[PARTY_BUFF_HASTE]                    = this->localization_strings[LSTR_HASTE];
-    this->party_buff_names[PARTY_BUFF_HEROISM]                  = this->localization_strings[LSTR_HEROISM];
-    this->party_buff_names[PARTY_BUFF_IMMOLATION]               = this->localization_strings[LSTR_IMMOLATION];
-    this->party_buff_names[PARTY_BUFF_INVISIBILITY]             = this->localization_strings[LSTR_INVISIBILITY];
-    this->party_buff_names[PARTY_BUFF_RESIST_MIND]              = this->localization_strings[LSTR_MIND_RES];
-    this->party_buff_names[PARTY_BUFF_PROTECTION_FROM_MAGIC]    = this->localization_strings[LSTR_PROT_MAGIC];
-    this->party_buff_names[PARTY_BUFF_SHIELD]                   = this->localization_strings[LSTR_SHIELD];
-    this->party_buff_names[PARTY_BUFF_STONE_SKIN]               = this->localization_strings[LSTR_STONESKIN];
-    this->party_buff_names[PARTY_BUFF_TORCHLIGHT]               = this->localization_strings[LSTR_TORCH_LIGHT];
-    this->party_buff_names[PARTY_BUFF_RESIST_WATER]             = this->localization_strings[LSTR_WATER_RES];
-    this->party_buff_names[PARTY_BUFF_WATER_WALK]               = this->localization_strings[LSTR_WATER_WALK];
-    this->party_buff_names[PARTY_BUFF_WIZARD_EYE]               = this->localization_strings[LSTR_WIZARD_EYE];
+void Localization::initializeSpellNames() {
+    this->_partyBuffNames[PARTY_BUFF_RESIST_AIR]               = this->_localizationStrings[LSTR_AIR_RES];
+    this->_partyBuffNames[PARTY_BUFF_RESIST_BODY]              = this->_localizationStrings[LSTR_BODY_RES];
+    this->_partyBuffNames[PARTY_BUFF_DAY_OF_GODS]              = this->_localizationStrings[LSTR_DAY_OF_THE_GODS];
+    this->_partyBuffNames[PARTY_BUFF_DETECT_LIFE]              = this->_localizationStrings[LSTR_DETECT_LIFE];
+    this->_partyBuffNames[PARTY_BUFF_RESIST_EARTH]             = this->_localizationStrings[LSTR_EARTH_RES];
+    this->_partyBuffNames[PARTY_BUFF_FEATHER_FALL]             = this->_localizationStrings[LSTR_FEATHER_FALL];
+    this->_partyBuffNames[PARTY_BUFF_RESIST_FIRE]              = this->_localizationStrings[LSTR_FIRE_RES];
+    this->_partyBuffNames[PARTY_BUFF_FLY]                      = this->_localizationStrings[LSTR_FLY];
+    this->_partyBuffNames[PARTY_BUFF_HASTE]                    = this->_localizationStrings[LSTR_HASTE];
+    this->_partyBuffNames[PARTY_BUFF_HEROISM]                  = this->_localizationStrings[LSTR_HEROISM];
+    this->_partyBuffNames[PARTY_BUFF_IMMOLATION]               = this->_localizationStrings[LSTR_IMMOLATION];
+    this->_partyBuffNames[PARTY_BUFF_INVISIBILITY]             = this->_localizationStrings[LSTR_INVISIBILITY];
+    this->_partyBuffNames[PARTY_BUFF_RESIST_MIND]              = this->_localizationStrings[LSTR_MIND_RES];
+    this->_partyBuffNames[PARTY_BUFF_PROTECTION_FROM_MAGIC]    = this->_localizationStrings[LSTR_PROT_MAGIC];
+    this->_partyBuffNames[PARTY_BUFF_SHIELD]                   = this->_localizationStrings[LSTR_SHIELD];
+    this->_partyBuffNames[PARTY_BUFF_STONE_SKIN]               = this->_localizationStrings[LSTR_STONESKIN];
+    this->_partyBuffNames[PARTY_BUFF_TORCHLIGHT]               = this->_localizationStrings[LSTR_TORCH_LIGHT];
+    this->_partyBuffNames[PARTY_BUFF_RESIST_WATER]             = this->_localizationStrings[LSTR_WATER_RES];
+    this->_partyBuffNames[PARTY_BUFF_WATER_WALK]               = this->_localizationStrings[LSTR_WATER_WALK];
+    this->_partyBuffNames[PARTY_BUFF_WIZARD_EYE]               = this->_localizationStrings[LSTR_WIZARD_EYE];
 
-    this->character_buff_names[CHARACTER_BUFF_RESIST_AIR]       = this->localization_strings[LSTR_AIR_RES];
-    this->character_buff_names[CHARACTER_BUFF_BLESS]            = this->localization_strings[LSTR_BLESS];
-    this->character_buff_names[CHARACTER_BUFF_RESIST_BODY]      = this->localization_strings[LSTR_BODY_RES];
-    this->character_buff_names[CHARACTER_BUFF_RESIST_EARTH]     = this->localization_strings[LSTR_EARTH_RES];
-    this->character_buff_names[CHARACTER_BUFF_FATE]             = this->localization_strings[LSTR_FATE];
-    this->character_buff_names[CHARACTER_BUFF_RESIST_FIRE]      = this->localization_strings[LSTR_FIRE_RES];
-    this->character_buff_names[CHARACTER_BUFF_HAMMERHANDS]      = this->localization_strings[LSTR_HAMMERHANDS];
-    this->character_buff_names[CHARACTER_BUFF_HASTE]            = this->localization_strings[LSTR_HASTE];
-    this->character_buff_names[CHARACTER_BUFF_HEROISM]          = this->localization_strings[LSTR_HEROISM];
-    this->character_buff_names[CHARACTER_BUFF_RESIST_MIND]      = this->localization_strings[LSTR_MIND_RES];
-    this->character_buff_names[CHARACTER_BUFF_PAIN_REFLECTION]  = this->localization_strings[LSTR_PAIN_REFLECTION];
-    this->character_buff_names[CHARACTER_BUFF_PRESERVATION]     = this->localization_strings[LSTR_PRESERVATION];
-    this->character_buff_names[CHARACTER_BUFF_REGENERATION]     = this->localization_strings[LSTR_REGENERATION];
-    this->character_buff_names[CHARACTER_BUFF_SHIELD]           = this->localization_strings[LSTR_SHIELD];
-    this->character_buff_names[CHARACTER_BUFF_STONESKIN]        = this->localization_strings[LSTR_STONESKIN];
-    this->character_buff_names[CHARACTER_BUFF_ACCURACY]         = this->localization_strings[LSTR_TEMP_ACCURACY];
-    this->character_buff_names[CHARACTER_BUFF_ENDURANCE]        = this->localization_strings[LSTR_TEMP_ENDURANCE];
-    this->character_buff_names[CHARACTER_BUFF_INTELLIGENCE]     = this->localization_strings[LSTR_TEMP_INTELLIGENCE];
-    this->character_buff_names[CHARACTER_BUFF_LUCK]             = this->localization_strings[LSTR_TEMP_LUCK];
-    this->character_buff_names[CHARACTER_BUFF_STRENGTH]         = this->localization_strings[LSTR_TEMP_MIGHT];
-    this->character_buff_names[CHARACTER_BUFF_PERSONALITY]      = this->localization_strings[LSTR_TEMP_PERSONALITY];
-    this->character_buff_names[CHARACTER_BUFF_SPEED]            = this->localization_strings[LSTR_TEMP_SPEED];
-    this->character_buff_names[CHARACTER_BUFF_RESIST_WATER]     = this->localization_strings[LSTR_WATER_RES];
-    this->character_buff_names[CHARACTER_BUFF_WATER_WALK]       = this->localization_strings[LSTR_WATER_BREATHING];
+    this->_characterBuffNames[CHARACTER_BUFF_RESIST_AIR]       = this->_localizationStrings[LSTR_AIR_RES];
+    this->_characterBuffNames[CHARACTER_BUFF_BLESS]            = this->_localizationStrings[LSTR_BLESS];
+    this->_characterBuffNames[CHARACTER_BUFF_RESIST_BODY]      = this->_localizationStrings[LSTR_BODY_RES];
+    this->_characterBuffNames[CHARACTER_BUFF_RESIST_EARTH]     = this->_localizationStrings[LSTR_EARTH_RES];
+    this->_characterBuffNames[CHARACTER_BUFF_FATE]             = this->_localizationStrings[LSTR_FATE];
+    this->_characterBuffNames[CHARACTER_BUFF_RESIST_FIRE]      = this->_localizationStrings[LSTR_FIRE_RES];
+    this->_characterBuffNames[CHARACTER_BUFF_HAMMERHANDS]      = this->_localizationStrings[LSTR_HAMMERHANDS];
+    this->_characterBuffNames[CHARACTER_BUFF_HASTE]            = this->_localizationStrings[LSTR_HASTE];
+    this->_characterBuffNames[CHARACTER_BUFF_HEROISM]          = this->_localizationStrings[LSTR_HEROISM];
+    this->_characterBuffNames[CHARACTER_BUFF_RESIST_MIND]      = this->_localizationStrings[LSTR_MIND_RES];
+    this->_characterBuffNames[CHARACTER_BUFF_PAIN_REFLECTION]  = this->_localizationStrings[LSTR_PAIN_REFLECTION];
+    this->_characterBuffNames[CHARACTER_BUFF_PRESERVATION]     = this->_localizationStrings[LSTR_PRESERVATION];
+    this->_characterBuffNames[CHARACTER_BUFF_REGENERATION]     = this->_localizationStrings[LSTR_REGENERATION];
+    this->_characterBuffNames[CHARACTER_BUFF_SHIELD]           = this->_localizationStrings[LSTR_SHIELD];
+    this->_characterBuffNames[CHARACTER_BUFF_STONESKIN]        = this->_localizationStrings[LSTR_STONESKIN];
+    this->_characterBuffNames[CHARACTER_BUFF_ACCURACY]         = this->_localizationStrings[LSTR_TEMP_ACCURACY];
+    this->_characterBuffNames[CHARACTER_BUFF_ENDURANCE]        = this->_localizationStrings[LSTR_TEMP_ENDURANCE];
+    this->_characterBuffNames[CHARACTER_BUFF_INTELLIGENCE]     = this->_localizationStrings[LSTR_TEMP_INTELLIGENCE];
+    this->_characterBuffNames[CHARACTER_BUFF_LUCK]             = this->_localizationStrings[LSTR_TEMP_LUCK];
+    this->_characterBuffNames[CHARACTER_BUFF_STRENGTH]         = this->_localizationStrings[LSTR_TEMP_MIGHT];
+    this->_characterBuffNames[CHARACTER_BUFF_PERSONALITY]      = this->_localizationStrings[LSTR_TEMP_PERSONALITY];
+    this->_characterBuffNames[CHARACTER_BUFF_SPEED]            = this->_localizationStrings[LSTR_TEMP_SPEED];
+    this->_characterBuffNames[CHARACTER_BUFF_RESIST_WATER]     = this->_localizationStrings[LSTR_WATER_RES];
+    this->_characterBuffNames[CHARACTER_BUFF_WATER_WALK]       = this->_localizationStrings[LSTR_WATER_BREATHING];
 
-    this->actor_buff_names[ACTOR_BUFF_CHARM]                    = this->localization_strings[LSTR_CHARMED];
-    this->actor_buff_names[ACTOR_BUFF_SUMMONED]                 = this->localization_strings[LSTR_SUMMONED];
-    this->actor_buff_names[ACTOR_BUFF_SHRINK]                   = this->localization_strings[LSTR_SHRUNK];
-    this->actor_buff_names[ACTOR_BUFF_AFRAID]                   = this->localization_strings[LSTR_AFRAID];
-    this->actor_buff_names[ACTOR_BUFF_STONED]                   = this->localization_strings[LSTR_STONED];
-    this->actor_buff_names[ACTOR_BUFF_PARALYZED]                = this->localization_strings[LSTR_PARALYZED];
-    this->actor_buff_names[ACTOR_BUFF_SLOWED]                   = this->localization_strings[LSTR_SLOWED];
-    this->actor_buff_names[ACTOR_BUFF_BERSERK]                  = this->localization_strings[LSTR_BERSERK];
-    this->actor_buff_names[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC] = {};
-    this->actor_buff_names[ACTOR_BUFF_MASS_DISTORTION]          = {};
-    this->actor_buff_names[ACTOR_BUFF_FATE]                     = this->localization_strings[LSTR_FATE];
-    this->actor_buff_names[ACTOR_BUFF_ENSLAVED]                 = this->localization_strings[LSTR_ENSLAVED];
-    this->actor_buff_names[ACTOR_BUFF_DAY_OF_PROTECTION]        = this->localization_strings[LSTR_DAY_OF_PROTECTION];
-    this->actor_buff_names[ACTOR_BUFF_HOUR_OF_POWER]            = this->localization_strings[LSTR_HOUR_OF_POWER];
-    this->actor_buff_names[ACTOR_BUFF_SHIELD]                   = this->localization_strings[LSTR_SHIELD];
-    this->actor_buff_names[ACTOR_BUFF_STONESKIN]                = this->localization_strings[LSTR_STONESKIN];
-    this->actor_buff_names[ACTOR_BUFF_BLESS]                    = this->localization_strings[LSTR_BLESS];
-    this->actor_buff_names[ACTOR_BUFF_HEROISM]                  = this->localization_strings[LSTR_HEROISM];
-    this->actor_buff_names[ACTOR_BUFF_HASTE]                    = this->localization_strings[LSTR_HASTE];
-    this->actor_buff_names[ACTOR_BUFF_PAIN_REFLECTION]          = this->localization_strings[LSTR_PAIN_REFLECTION];
-    this->actor_buff_names[ACTOR_BUFF_HAMMERHANDS]              = this->localization_strings[LSTR_HAMMERHANDS];
+    this->_actorBuffNames[ACTOR_BUFF_CHARM]                    = this->_localizationStrings[LSTR_CHARMED];
+    this->_actorBuffNames[ACTOR_BUFF_SUMMONED]                 = this->_localizationStrings[LSTR_SUMMONED];
+    this->_actorBuffNames[ACTOR_BUFF_SHRINK]                   = this->_localizationStrings[LSTR_SHRUNK];
+    this->_actorBuffNames[ACTOR_BUFF_AFRAID]                   = this->_localizationStrings[LSTR_AFRAID];
+    this->_actorBuffNames[ACTOR_BUFF_STONED]                   = this->_localizationStrings[LSTR_STONED];
+    this->_actorBuffNames[ACTOR_BUFF_PARALYZED]                = this->_localizationStrings[LSTR_PARALYZED];
+    this->_actorBuffNames[ACTOR_BUFF_SLOWED]                   = this->_localizationStrings[LSTR_SLOWED];
+    this->_actorBuffNames[ACTOR_BUFF_BERSERK]                  = this->_localizationStrings[LSTR_BERSERK];
+    this->_actorBuffNames[ACTOR_BUFF_SOMETHING_THAT_HALVES_AC] = {};
+    this->_actorBuffNames[ACTOR_BUFF_MASS_DISTORTION]          = {};
+    this->_actorBuffNames[ACTOR_BUFF_FATE]                     = this->_localizationStrings[LSTR_FATE];
+    this->_actorBuffNames[ACTOR_BUFF_ENSLAVED]                 = this->_localizationStrings[LSTR_ENSLAVED];
+    this->_actorBuffNames[ACTOR_BUFF_DAY_OF_PROTECTION]        = this->_localizationStrings[LSTR_DAY_OF_PROTECTION];
+    this->_actorBuffNames[ACTOR_BUFF_HOUR_OF_POWER]            = this->_localizationStrings[LSTR_HOUR_OF_POWER];
+    this->_actorBuffNames[ACTOR_BUFF_SHIELD]                   = this->_localizationStrings[LSTR_SHIELD];
+    this->_actorBuffNames[ACTOR_BUFF_STONESKIN]                = this->_localizationStrings[LSTR_STONESKIN];
+    this->_actorBuffNames[ACTOR_BUFF_BLESS]                    = this->_localizationStrings[LSTR_BLESS];
+    this->_actorBuffNames[ACTOR_BUFF_HEROISM]                  = this->_localizationStrings[LSTR_HEROISM];
+    this->_actorBuffNames[ACTOR_BUFF_HASTE]                    = this->_localizationStrings[LSTR_HASTE];
+    this->_actorBuffNames[ACTOR_BUFF_PAIN_REFLECTION]          = this->_localizationStrings[LSTR_PAIN_REFLECTION];
+    this->_actorBuffNames[ACTOR_BUFF_HAMMERHANDS]              = this->_localizationStrings[LSTR_HAMMERHANDS];
 }
 
-void Localization::InitializeNpcProfessionNames() {
-    this->npc_profession_names[NoProfession]    = this->localization_strings[LSTR_NONE];
-    this->npc_profession_names[Smith]           = this->localization_strings[LSTR_SMITH];
-    this->npc_profession_names[Armorer]         = this->localization_strings[LSTR_ARMORER];
-    this->npc_profession_names[Alchemist]       = this->localization_strings[LSTR_ALCHEMIST];
-    this->npc_profession_names[Scholar]         = this->localization_strings[LSTR_SCHOLAR];
-    this->npc_profession_names[Guide]           = this->localization_strings[LSTR_GUIDE];
-    this->npc_profession_names[Tracker]         = this->localization_strings[LSTR_TRACKER];
-    this->npc_profession_names[Pathfinder]      = this->localization_strings[LSTR_PATHFINDER];
-    this->npc_profession_names[Sailor]          = this->localization_strings[LSTR_SAILOR];
-    this->npc_profession_names[Navigator]       = this->localization_strings[LSTR_NAVIGATOR];
-    this->npc_profession_names[Healer]          = this->localization_strings[LSTR_HEALER];
-    this->npc_profession_names[ExpertHealer]    = this->localization_strings[LSTR_EXPERT_HEALER];
-    this->npc_profession_names[MasterHealer]    = this->localization_strings[LSTR_MASTER_HEALER];
-    this->npc_profession_names[Teacher]         = this->localization_strings[LSTR_TEACHER];
-    this->npc_profession_names[Instructor]      = this->localization_strings[LSTR_INSTRUCTOR];
-    this->npc_profession_names[Armsmaster]      = this->localization_strings[LSTR_ARMS_MASTER];
-    this->npc_profession_names[Weaponsmaster]   = this->localization_strings[LSTR_WEAPONS_MASTER];
-    this->npc_profession_names[Apprentice]      = this->localization_strings[LSTR_APPRENTICE];
-    this->npc_profession_names[Mystic]          = this->localization_strings[LSTR_MYSTIC];
-    this->npc_profession_names[Spellmaster]     = this->localization_strings[LSTR_SPELL_MASTER];
-    this->npc_profession_names[Trader]          = this->localization_strings[LSTR_TRADER];
-    this->npc_profession_names[Merchant]        = this->localization_strings[LSTR_MERCHANT];
-    this->npc_profession_names[Scout]           = this->localization_strings[LSTR_SCOUT];
-    this->npc_profession_names[Herbalist]       = this->localization_strings[LSTR_HERBALIST];
-    this->npc_profession_names[Apothecary]      = this->localization_strings[LSTR_APOTHECARY];
-    this->npc_profession_names[Tinker]          = this->localization_strings[LSTR_TINKER];
-    this->npc_profession_names[Locksmith]       = this->localization_strings[LSTR_LOCKSMITH];
-    this->npc_profession_names[Fool]            = this->localization_strings[LSTR_FOOL];
-    this->npc_profession_names[ChimneySweep]    = this->localization_strings[LSTR_CHIMNEY_SWEEP];
-    this->npc_profession_names[Porter]          = this->localization_strings[LSTR_PORTER];
-    this->npc_profession_names[QuarterMaster]   = this->localization_strings[LSTR_QUARTER_MASTER];
-    this->npc_profession_names[Factor]          = this->localization_strings[LSTR_FACTOR];
-    this->npc_profession_names[Banker]          = this->localization_strings[LSTR_BANKER];
-    this->npc_profession_names[Cook]            = this->localization_strings[LSTR_COOK];
-    this->npc_profession_names[Chef]            = this->localization_strings[LSTR_CHEF];
-    this->npc_profession_names[Horseman]        = this->localization_strings[LSTR_HORSEMAN];
-    this->npc_profession_names[Bard]            = this->localization_strings[LSTR_BARD];
-    this->npc_profession_names[Enchanter]       = this->localization_strings[LSTR_ENCHANTER];
-    this->npc_profession_names[Cartographer]    = this->localization_strings[LSTR_CARTOGRAPHER];
-    this->npc_profession_names[WindMaster]      = this->localization_strings[LSTR_WIND_MASTER];
-    this->npc_profession_names[WaterMaster]     = this->localization_strings[LSTR_WATER_MASTER];
-    this->npc_profession_names[GateMaster]      = this->localization_strings[LSTR_GATE_MASTER];
-    this->npc_profession_names[Acolyte]         = this->localization_strings[LSTR_CHAPLAIN]; // TODO(captainurist): why not LSTR_ACOLYTE?
-    this->npc_profession_names[Piper]           = this->localization_strings[LSTR_PIPER];
-    this->npc_profession_names[Explorer]        = this->localization_strings[LSTR_EXPLORER];
-    this->npc_profession_names[Pirate]          = this->localization_strings[LSTR_PIRATE];
-    this->npc_profession_names[Squire]          = this->localization_strings[LSTR_SQUIRE];
-    this->npc_profession_names[Psychic]         = this->localization_strings[LSTR_PSYCHIC];
-    this->npc_profession_names[Gypsy]           = this->localization_strings[LSTR_GYPSY];
-    this->npc_profession_names[Diplomat]        = this->localization_strings[LSTR_DIPLOMAT];
-    this->npc_profession_names[Duper]           = this->localization_strings[LSTR_DUPER];
-    this->npc_profession_names[Burglar]         = this->localization_strings[LSTR_BURGLAR];
-    this->npc_profession_names[FallenWizard]    = this->localization_strings[LSTR_FALLEN_WIZARD];
-    this->npc_profession_names[Acolyte2]        = this->localization_strings[LSTR_ACOLYTE];
-    this->npc_profession_names[Initiate]        = this->localization_strings[LSTR_INITIATE];
-    this->npc_profession_names[Prelate]         = this->localization_strings[LSTR_PRELATE];
-    this->npc_profession_names[Monk]            = this->localization_strings[LSTR_MONK];
-    this->npc_profession_names[Sage]            = this->localization_strings[LSTR_SAGE];
-    this->npc_profession_names[Hunter]          = this->localization_strings[LSTR_HUNTER];
+void Localization::initializeNpcProfessionNames() {
+    this->_npcProfessionNames[NoProfession]    = this->_localizationStrings[LSTR_NONE];
+    this->_npcProfessionNames[Smith]           = this->_localizationStrings[LSTR_SMITH];
+    this->_npcProfessionNames[Armorer]         = this->_localizationStrings[LSTR_ARMORER];
+    this->_npcProfessionNames[Alchemist]       = this->_localizationStrings[LSTR_ALCHEMIST];
+    this->_npcProfessionNames[Scholar]         = this->_localizationStrings[LSTR_SCHOLAR];
+    this->_npcProfessionNames[Guide]           = this->_localizationStrings[LSTR_GUIDE];
+    this->_npcProfessionNames[Tracker]         = this->_localizationStrings[LSTR_TRACKER];
+    this->_npcProfessionNames[Pathfinder]      = this->_localizationStrings[LSTR_PATHFINDER];
+    this->_npcProfessionNames[Sailor]          = this->_localizationStrings[LSTR_SAILOR];
+    this->_npcProfessionNames[Navigator]       = this->_localizationStrings[LSTR_NAVIGATOR];
+    this->_npcProfessionNames[Healer]          = this->_localizationStrings[LSTR_HEALER];
+    this->_npcProfessionNames[ExpertHealer]    = this->_localizationStrings[LSTR_EXPERT_HEALER];
+    this->_npcProfessionNames[MasterHealer]    = this->_localizationStrings[LSTR_MASTER_HEALER];
+    this->_npcProfessionNames[Teacher]         = this->_localizationStrings[LSTR_TEACHER];
+    this->_npcProfessionNames[Instructor]      = this->_localizationStrings[LSTR_INSTRUCTOR];
+    this->_npcProfessionNames[Armsmaster]      = this->_localizationStrings[LSTR_ARMS_MASTER];
+    this->_npcProfessionNames[Weaponsmaster]   = this->_localizationStrings[LSTR_WEAPONS_MASTER];
+    this->_npcProfessionNames[Apprentice]      = this->_localizationStrings[LSTR_APPRENTICE];
+    this->_npcProfessionNames[Mystic]          = this->_localizationStrings[LSTR_MYSTIC];
+    this->_npcProfessionNames[Spellmaster]     = this->_localizationStrings[LSTR_SPELL_MASTER];
+    this->_npcProfessionNames[Trader]          = this->_localizationStrings[LSTR_TRADER];
+    this->_npcProfessionNames[Merchant]        = this->_localizationStrings[LSTR_MERCHANT];
+    this->_npcProfessionNames[Scout]           = this->_localizationStrings[LSTR_SCOUT];
+    this->_npcProfessionNames[Herbalist]       = this->_localizationStrings[LSTR_HERBALIST];
+    this->_npcProfessionNames[Apothecary]      = this->_localizationStrings[LSTR_APOTHECARY];
+    this->_npcProfessionNames[Tinker]          = this->_localizationStrings[LSTR_TINKER];
+    this->_npcProfessionNames[Locksmith]       = this->_localizationStrings[LSTR_LOCKSMITH];
+    this->_npcProfessionNames[Fool]            = this->_localizationStrings[LSTR_FOOL];
+    this->_npcProfessionNames[ChimneySweep]    = this->_localizationStrings[LSTR_CHIMNEY_SWEEP];
+    this->_npcProfessionNames[Porter]          = this->_localizationStrings[LSTR_PORTER];
+    this->_npcProfessionNames[QuarterMaster]   = this->_localizationStrings[LSTR_QUARTER_MASTER];
+    this->_npcProfessionNames[Factor]          = this->_localizationStrings[LSTR_FACTOR];
+    this->_npcProfessionNames[Banker]          = this->_localizationStrings[LSTR_BANKER];
+    this->_npcProfessionNames[Cook]            = this->_localizationStrings[LSTR_COOK];
+    this->_npcProfessionNames[Chef]            = this->_localizationStrings[LSTR_CHEF];
+    this->_npcProfessionNames[Horseman]        = this->_localizationStrings[LSTR_HORSEMAN];
+    this->_npcProfessionNames[Bard]            = this->_localizationStrings[LSTR_BARD];
+    this->_npcProfessionNames[Enchanter]       = this->_localizationStrings[LSTR_ENCHANTER];
+    this->_npcProfessionNames[Cartographer]    = this->_localizationStrings[LSTR_CARTOGRAPHER];
+    this->_npcProfessionNames[WindMaster]      = this->_localizationStrings[LSTR_WIND_MASTER];
+    this->_npcProfessionNames[WaterMaster]     = this->_localizationStrings[LSTR_WATER_MASTER];
+    this->_npcProfessionNames[GateMaster]      = this->_localizationStrings[LSTR_GATE_MASTER];
+    this->_npcProfessionNames[Acolyte]         = this->_localizationStrings[LSTR_CHAPLAIN]; // TODO(captainurist): why not LSTR_ACOLYTE?
+    this->_npcProfessionNames[Piper]           = this->_localizationStrings[LSTR_PIPER];
+    this->_npcProfessionNames[Explorer]        = this->_localizationStrings[LSTR_EXPLORER];
+    this->_npcProfessionNames[Pirate]          = this->_localizationStrings[LSTR_PIRATE];
+    this->_npcProfessionNames[Squire]          = this->_localizationStrings[LSTR_SQUIRE];
+    this->_npcProfessionNames[Psychic]         = this->_localizationStrings[LSTR_PSYCHIC];
+    this->_npcProfessionNames[Gypsy]           = this->_localizationStrings[LSTR_GYPSY];
+    this->_npcProfessionNames[Diplomat]        = this->_localizationStrings[LSTR_DIPLOMAT];
+    this->_npcProfessionNames[Duper]           = this->_localizationStrings[LSTR_DUPER];
+    this->_npcProfessionNames[Burglar]         = this->_localizationStrings[LSTR_BURGLAR];
+    this->_npcProfessionNames[FallenWizard]    = this->_localizationStrings[LSTR_FALLEN_WIZARD];
+    this->_npcProfessionNames[Acolyte2]        = this->_localizationStrings[LSTR_ACOLYTE];
+    this->_npcProfessionNames[Initiate]        = this->_localizationStrings[LSTR_INITIATE];
+    this->_npcProfessionNames[Prelate]         = this->_localizationStrings[LSTR_PRELATE];
+    this->_npcProfessionNames[Monk]            = this->_localizationStrings[LSTR_MONK];
+    this->_npcProfessionNames[Sage]            = this->_localizationStrings[LSTR_SAGE];
+    this->_npcProfessionNames[Hunter]          = this->_localizationStrings[LSTR_HUNTER];
 }
 
-void Localization::InitializeCharacterConditionNames() {
-    this->character_conditions[CONDITION_CURSED]            = this->localization_strings[LSTR_CURSED];
-    this->character_conditions[CONDITION_WEAK]              = this->localization_strings[LSTR_WEAK];
-    this->character_conditions[CONDITION_SLEEP]             = this->localization_strings[LSTR_ASLEEP];
-    this->character_conditions[CONDITION_FEAR]              = this->localization_strings[LSTR_AFRAID];
-    this->character_conditions[CONDITION_DRUNK]             = this->localization_strings[LSTR_DRUNK];
-    this->character_conditions[CONDITION_INSANE]            = this->localization_strings[LSTR_INSANE];
-    this->character_conditions[CONDITION_POISON_WEAK]       = this->localization_strings[LSTR_POISON];
-    this->character_conditions[CONDITION_DISEASE_WEAK]      = this->localization_strings[LSTR_DISEASED];
-    this->character_conditions[CONDITION_POISON_MEDIUM]     = this->localization_strings[LSTR_POISON];
-    this->character_conditions[CONDITION_DISEASE_MEDIUM]    = this->localization_strings[LSTR_DISEASED];
-    this->character_conditions[CONDITION_POISON_SEVERE]     = this->localization_strings[LSTR_POISON];
-    this->character_conditions[CONDITION_DISEASE_SEVERE]    = this->localization_strings[LSTR_DISEASED];
-    this->character_conditions[CONDITION_PARALYZED]         = this->localization_strings[LSTR_PARALYZED];
-    this->character_conditions[CONDITION_UNCONSCIOUS]       = this->localization_strings[LSTR_UNCONSCIOUS];
-    this->character_conditions[CONDITION_DEAD]              = this->localization_strings[LSTR_DEAD];
-    this->character_conditions[CONDITION_PETRIFIED]         = this->localization_strings[LSTR_STONED];
-    this->character_conditions[CONDITION_ERADICATED]        = this->localization_strings[LSTR_ERADICATED];
-    this->character_conditions[CONDITION_ZOMBIE]            = this->localization_strings[LSTR_ZOMBIE];
-    this->character_conditions[CONDITION_GOOD]              = this->localization_strings[LSTR_GOOD];
+void Localization::initializeCharacterConditionNames() {
+    this->_characterConditions[CONDITION_CURSED]            = this->_localizationStrings[LSTR_CURSED];
+    this->_characterConditions[CONDITION_WEAK]              = this->_localizationStrings[LSTR_WEAK];
+    this->_characterConditions[CONDITION_SLEEP]             = this->_localizationStrings[LSTR_ASLEEP];
+    this->_characterConditions[CONDITION_FEAR]              = this->_localizationStrings[LSTR_AFRAID];
+    this->_characterConditions[CONDITION_DRUNK]             = this->_localizationStrings[LSTR_DRUNK];
+    this->_characterConditions[CONDITION_INSANE]            = this->_localizationStrings[LSTR_INSANE];
+    this->_characterConditions[CONDITION_POISON_WEAK]       = this->_localizationStrings[LSTR_POISON];
+    this->_characterConditions[CONDITION_DISEASE_WEAK]      = this->_localizationStrings[LSTR_DISEASED];
+    this->_characterConditions[CONDITION_POISON_MEDIUM]     = this->_localizationStrings[LSTR_POISON];
+    this->_characterConditions[CONDITION_DISEASE_MEDIUM]    = this->_localizationStrings[LSTR_DISEASED];
+    this->_characterConditions[CONDITION_POISON_SEVERE]     = this->_localizationStrings[LSTR_POISON];
+    this->_characterConditions[CONDITION_DISEASE_SEVERE]    = this->_localizationStrings[LSTR_DISEASED];
+    this->_characterConditions[CONDITION_PARALYZED]         = this->_localizationStrings[LSTR_PARALYZED];
+    this->_characterConditions[CONDITION_UNCONSCIOUS]       = this->_localizationStrings[LSTR_UNCONSCIOUS];
+    this->_characterConditions[CONDITION_DEAD]              = this->_localizationStrings[LSTR_DEAD];
+    this->_characterConditions[CONDITION_PETRIFIED]         = this->_localizationStrings[LSTR_STONED];
+    this->_characterConditions[CONDITION_ERADICATED]        = this->_localizationStrings[LSTR_ERADICATED];
+    this->_characterConditions[CONDITION_ZOMBIE]            = this->_localizationStrings[LSTR_ZOMBIE];
+    this->_characterConditions[CONDITION_GOOD]              = this->_localizationStrings[LSTR_GOOD];
 }
 
-void Localization::InitializeSkillNames() {
-    this->skill_names[SKILL_STAFF]       = this->localization_strings[LSTR_STAFF];
-    this->skill_names[SKILL_SWORD]       = this->localization_strings[LSTR_SWORD];
-    this->skill_names[SKILL_DAGGER]      = this->localization_strings[LSTR_DAGGER];
-    this->skill_names[SKILL_AXE]         = this->localization_strings[LSTR_AXE];
-    this->skill_names[SKILL_SPEAR]       = this->localization_strings[LSTR_SPEAR];
-    this->skill_names[SKILL_BOW]         = this->localization_strings[LSTR_BOW];
-    this->skill_names[SKILL_MACE]        = this->localization_strings[LSTR_MACE];
-    this->skill_names[SKILL_BLASTER]     = this->localization_strings[LSTR_BLASTER];
-    this->skill_names[SKILL_SHIELD]      = this->localization_strings[LSTR_SHIELD];
-    this->skill_names[SKILL_LEATHER]     = this->localization_strings[LSTR_LEATHER];
-    this->skill_names[SKILL_CHAIN]       = this->localization_strings[LSTR_CHAIN];
-    this->skill_names[SKILL_PLATE]       = this->localization_strings[LSTR_PLATE];
-    this->skill_names[SKILL_FIRE]        = this->localization_strings[LSTR_FIRE_MAGIC];
-    this->skill_names[SKILL_AIR]         = this->localization_strings[LSTR_AIR_MAGIC];
-    this->skill_names[SKILL_WATER]       = this->localization_strings[LSTR_WATER_MAGIC];
-    this->skill_names[SKILL_EARTH]       = this->localization_strings[LSTR_EARTH_MAGIC];
-    this->skill_names[SKILL_SPIRIT]      = this->localization_strings[LSTR_SPIRIT_MAGIC];
-    this->skill_names[SKILL_MIND]        = this->localization_strings[LSTR_MIND_MAGIC];
-    this->skill_names[SKILL_BODY]        = this->localization_strings[LSTR_BODY_MAGIC];
-    this->skill_names[SKILL_LIGHT]       = this->localization_strings[LSTR_LIGHT_MAGIC];
-    this->skill_names[SKILL_DARK]        = this->localization_strings[LSTR_DARK_MAGIC];
-    this->skill_names[SKILL_ITEM_ID]     = this->localization_strings[LSTR_IDENTIFY_ITEM];
-    this->skill_names[SKILL_MERCHANT]    = this->localization_strings[LSTR_MERCHANT];
-    this->skill_names[SKILL_REPAIR]      = this->localization_strings[LSTR_REPAIR_ITEM];
-    this->skill_names[SKILL_BODYBUILDING] = this->localization_strings[LSTR_BODY_BUILDING];
-    this->skill_names[SKILL_MEDITATION]  = this->localization_strings[LSTR_MEDITATION];
-    this->skill_names[SKILL_PERCEPTION]  = this->localization_strings[LSTR_PERCEPTION];
-    this->skill_names[SKILL_DIPLOMACY]   = this->localization_strings[LSTR_DIPLOMACY];
-    this->skill_names[SKILL_THIEVERY]    = this->localization_strings[LSTR_THIEVERY];
-    this->skill_names[SKILL_TRAP_DISARM] = this->localization_strings[LSTR_DISARM_TRAP];
-    this->skill_names[SKILL_DODGE]       = this->localization_strings[LSTR_DODGING];
-    this->skill_names[SKILL_UNARMED]     = this->localization_strings[LSTR_UNARMED];
-    this->skill_names[SKILL_MONSTER_ID]  = this->localization_strings[LSTR_IDENTIFY_MONSTER];
-    this->skill_names[SKILL_ARMSMASTER]  = this->localization_strings[LSTR_ARMSMASTER];
-    this->skill_names[SKILL_STEALING]    = this->localization_strings[LSTR_STEALING];
-    this->skill_names[SKILL_ALCHEMY]     = this->localization_strings[LSTR_ALCHEMY];
-    this->skill_names[SKILL_LEARNING]    = this->localization_strings[LSTR_LEARNING];
-    this->skill_names[SKILL_INVALID]     = this->localization_strings[LSTR_NONE]; // "None", used during character creation.
+void Localization::initializeSkillNames() {
+    this->_skillNames[SKILL_STAFF]       = this->_localizationStrings[LSTR_STAFF];
+    this->_skillNames[SKILL_SWORD]       = this->_localizationStrings[LSTR_SWORD];
+    this->_skillNames[SKILL_DAGGER]      = this->_localizationStrings[LSTR_DAGGER];
+    this->_skillNames[SKILL_AXE]         = this->_localizationStrings[LSTR_AXE];
+    this->_skillNames[SKILL_SPEAR]       = this->_localizationStrings[LSTR_SPEAR];
+    this->_skillNames[SKILL_BOW]         = this->_localizationStrings[LSTR_BOW];
+    this->_skillNames[SKILL_MACE]        = this->_localizationStrings[LSTR_MACE];
+    this->_skillNames[SKILL_BLASTER]     = this->_localizationStrings[LSTR_BLASTER];
+    this->_skillNames[SKILL_SHIELD]      = this->_localizationStrings[LSTR_SHIELD];
+    this->_skillNames[SKILL_LEATHER]     = this->_localizationStrings[LSTR_LEATHER];
+    this->_skillNames[SKILL_CHAIN]       = this->_localizationStrings[LSTR_CHAIN];
+    this->_skillNames[SKILL_PLATE]       = this->_localizationStrings[LSTR_PLATE];
+    this->_skillNames[SKILL_FIRE]        = this->_localizationStrings[LSTR_FIRE_MAGIC];
+    this->_skillNames[SKILL_AIR]         = this->_localizationStrings[LSTR_AIR_MAGIC];
+    this->_skillNames[SKILL_WATER]       = this->_localizationStrings[LSTR_WATER_MAGIC];
+    this->_skillNames[SKILL_EARTH]       = this->_localizationStrings[LSTR_EARTH_MAGIC];
+    this->_skillNames[SKILL_SPIRIT]      = this->_localizationStrings[LSTR_SPIRIT_MAGIC];
+    this->_skillNames[SKILL_MIND]        = this->_localizationStrings[LSTR_MIND_MAGIC];
+    this->_skillNames[SKILL_BODY]        = this->_localizationStrings[LSTR_BODY_MAGIC];
+    this->_skillNames[SKILL_LIGHT]       = this->_localizationStrings[LSTR_LIGHT_MAGIC];
+    this->_skillNames[SKILL_DARK]        = this->_localizationStrings[LSTR_DARK_MAGIC];
+    this->_skillNames[SKILL_ITEM_ID]     = this->_localizationStrings[LSTR_IDENTIFY_ITEM];
+    this->_skillNames[SKILL_MERCHANT]    = this->_localizationStrings[LSTR_MERCHANT];
+    this->_skillNames[SKILL_REPAIR]      = this->_localizationStrings[LSTR_REPAIR_ITEM];
+    this->_skillNames[SKILL_BODYBUILDING] = this->_localizationStrings[LSTR_BODY_BUILDING];
+    this->_skillNames[SKILL_MEDITATION]  = this->_localizationStrings[LSTR_MEDITATION];
+    this->_skillNames[SKILL_PERCEPTION]  = this->_localizationStrings[LSTR_PERCEPTION];
+    this->_skillNames[SKILL_DIPLOMACY]   = this->_localizationStrings[LSTR_DIPLOMACY];
+    this->_skillNames[SKILL_THIEVERY]    = this->_localizationStrings[LSTR_THIEVERY];
+    this->_skillNames[SKILL_TRAP_DISARM] = this->_localizationStrings[LSTR_DISARM_TRAP];
+    this->_skillNames[SKILL_DODGE]       = this->_localizationStrings[LSTR_DODGING];
+    this->_skillNames[SKILL_UNARMED]     = this->_localizationStrings[LSTR_UNARMED];
+    this->_skillNames[SKILL_MONSTER_ID]  = this->_localizationStrings[LSTR_IDENTIFY_MONSTER];
+    this->_skillNames[SKILL_ARMSMASTER]  = this->_localizationStrings[LSTR_ARMSMASTER];
+    this->_skillNames[SKILL_STEALING]    = this->_localizationStrings[LSTR_STEALING];
+    this->_skillNames[SKILL_ALCHEMY]     = this->_localizationStrings[LSTR_ALCHEMY];
+    this->_skillNames[SKILL_LEARNING]    = this->_localizationStrings[LSTR_LEARNING];
+    this->_skillNames[SKILL_INVALID]     = this->_localizationStrings[LSTR_NONE]; // "None", used during character creation.
 
     // TODO(captainurist): Not currently used anywhere
-    // this->skill_names[CHARACTER_SKILL_CLUB]        = this->localization_strings[LSTR_CLUB];
-    // this->skill_descriptions[CHARACTER_SKILL_CLUB] = "Everyone is able to wield a club without any prior training and bonk anything with it. "
+    // this->_skillNames[CHARACTER_SKILL_CLUB]        = this->_localizationStrings[LSTR_CLUB];
+    // this->_skillDescriptions[CHARACTER_SKILL_CLUB] = "Everyone is able to wield a club without any prior training and bonk anything with it. "
     //    "But there is not much room to improve finesse or mastery for such a rudimentary weapon though. "
     //    "So don't expect to become thwonking killer and devastating anyone beyond weaklings.";
 
-    skill_desc_raw = engine->_gameResourceManager->getEventsFile("skilldes.txt").string_view();
-    strtok(skill_desc_raw.data(), "\r");
+    _skillDescRaw = engine->_gameResourceManager->getEventsFile("skilldes.txt").string_view();
+    strtok(_skillDescRaw.data(), "\r");
     for (Skill i : allVisibleSkills()) {
         char *test_string = strtok(NULL, "\r") + 1;
 
@@ -343,141 +343,141 @@ void Localization::InitializeSkillNames() {
             auto tokens = tokenize(test_string, '\t');
             assert(tokens.size() >= 6 && "Invalid number of tokens");
 
-            this->skill_descriptions[i] = removeQuotes(tokens[1]);
-            this->skill_descriptions_normal[i] = removeQuotes(tokens[2]);
-            this->skill_descriptions_expert[i] = removeQuotes(tokens[3]);
-            this->skill_descriptions_master[i] = removeQuotes(tokens[4]);
-            this->skill_descriptions_grand[i] = removeQuotes(tokens[5]);
+            this->_skillDescriptions[i] = removeQuotes(tokens[1]);
+            this->_skillDescriptionsNormal[i] = removeQuotes(tokens[2]);
+            this->_skillDescriptionsExpert[i] = removeQuotes(tokens[3]);
+            this->_skillDescriptionsMaster[i] = removeQuotes(tokens[4]);
+            this->_skillDescriptionsGrand[i] = removeQuotes(tokens[5]);
         }
     }
 }
 
-void Localization::InitializeClassNames() {
-    this->class_names[CLASS_KNIGHT] = this->localization_strings[LSTR_KNIGHT];
-    this->class_names[CLASS_CAVALIER] = this->localization_strings[LSTR_CAVALIER];
-    this->class_names[CLASS_CHAMPION] = this->localization_strings[LSTR_CHAMPION];
-    this->class_names[CLASS_BLACK_KNIGHT] = this->localization_strings[LSTR_BLACK_KNIGHT];
+void Localization::initializeClassNames() {
+    this->_classNames[CLASS_KNIGHT] = this->_localizationStrings[LSTR_KNIGHT];
+    this->_classNames[CLASS_CAVALIER] = this->_localizationStrings[LSTR_CAVALIER];
+    this->_classNames[CLASS_CHAMPION] = this->_localizationStrings[LSTR_CHAMPION];
+    this->_classNames[CLASS_BLACK_KNIGHT] = this->_localizationStrings[LSTR_BLACK_KNIGHT];
 
-    this->class_names[CLASS_THIEF] = this->localization_strings[LSTR_THIEF];
-    this->class_names[CLASS_ROGUE] = this->localization_strings[LSTR_ROGUE];
-    this->class_names[CLASS_SPY] = this->localization_strings[LSTR_SPY];
-    this->class_names[CLASS_ASSASSIN] = this->localization_strings[LSTR_ASSASSIN];
+    this->_classNames[CLASS_THIEF] = this->_localizationStrings[LSTR_THIEF];
+    this->_classNames[CLASS_ROGUE] = this->_localizationStrings[LSTR_ROGUE];
+    this->_classNames[CLASS_SPY] = this->_localizationStrings[LSTR_SPY];
+    this->_classNames[CLASS_ASSASSIN] = this->_localizationStrings[LSTR_ASSASSIN];
 
-    this->class_names[CLASS_MONK] = this->localization_strings[LSTR_MONK];
-    this->class_names[CLASS_INITIATE] = this->localization_strings[LSTR_INITIATE];
-    this->class_names[CLASS_MASTER] = this->localization_strings[LSTR_MASTER];
-    this->class_names[CLASS_NINJA] = this->localization_strings[LSTR_NINJA];
+    this->_classNames[CLASS_MONK] = this->_localizationStrings[LSTR_MONK];
+    this->_classNames[CLASS_INITIATE] = this->_localizationStrings[LSTR_INITIATE];
+    this->_classNames[CLASS_MASTER] = this->_localizationStrings[LSTR_MASTER];
+    this->_classNames[CLASS_NINJA] = this->_localizationStrings[LSTR_NINJA];
 
-    this->class_names[CLASS_PALADIN] = this->localization_strings[LSTR_PALADIN];
-    this->class_names[CLASS_CRUSADER] = this->localization_strings[LSTR_CRUSADER];
-    this->class_names[CLASS_HERO] = this->localization_strings[LSTR_HERO];
-    this->class_names[CLASS_VILLIAN] = this->localization_strings[LSTR_VILLAIN];
+    this->_classNames[CLASS_PALADIN] = this->_localizationStrings[LSTR_PALADIN];
+    this->_classNames[CLASS_CRUSADER] = this->_localizationStrings[LSTR_CRUSADER];
+    this->_classNames[CLASS_HERO] = this->_localizationStrings[LSTR_HERO];
+    this->_classNames[CLASS_VILLIAN] = this->_localizationStrings[LSTR_VILLAIN];
 
-    this->class_names[CLASS_ARCHER] = this->localization_strings[LSTR_ARCHER];
-    this->class_names[CLASS_WARRIOR_MAGE] = this->localization_strings[LSTR_WARRIOR_MAGE];
-    this->class_names[CLASS_MASTER_ARCHER] = this->localization_strings[LSTR_MASTER_ARCHER];
-    this->class_names[CLASS_SNIPER] = this->localization_strings[LSTR_SNIPER];
+    this->_classNames[CLASS_ARCHER] = this->_localizationStrings[LSTR_ARCHER];
+    this->_classNames[CLASS_WARRIOR_MAGE] = this->_localizationStrings[LSTR_WARRIOR_MAGE];
+    this->_classNames[CLASS_MASTER_ARCHER] = this->_localizationStrings[LSTR_MASTER_ARCHER];
+    this->_classNames[CLASS_SNIPER] = this->_localizationStrings[LSTR_SNIPER];
 
-    this->class_names[CLASS_RANGER] = this->localization_strings[LSTR_RANGER];
-    this->class_names[CLASS_HUNTER] = this->localization_strings[LSTR_HUNTER];
-    this->class_names[CLASS_RANGER_LORD] = this->localization_strings[LSTR_RANGER_LORD];
-    this->class_names[CLASS_BOUNTY_HUNTER] = this->localization_strings[LSTR_BOUNTY_HUNTER];
+    this->_classNames[CLASS_RANGER] = this->_localizationStrings[LSTR_RANGER];
+    this->_classNames[CLASS_HUNTER] = this->_localizationStrings[LSTR_HUNTER];
+    this->_classNames[CLASS_RANGER_LORD] = this->_localizationStrings[LSTR_RANGER_LORD];
+    this->_classNames[CLASS_BOUNTY_HUNTER] = this->_localizationStrings[LSTR_BOUNTY_HUNTER];
 
-    this->class_names[CLASS_CLERIC] = this->localization_strings[LSTR_CLERIC];
-    this->class_names[CLASS_PRIEST] = this->localization_strings[LSTR_PRIEST];
-    this->class_names[CLASS_PRIEST_OF_SUN] = this->localization_strings[LSTR_PRIEST_OF_LIGHT];
-    this->class_names[CLASS_PRIEST_OF_MOON] = this->localization_strings[LSTR_PRIEST_OF_DARK];
+    this->_classNames[CLASS_CLERIC] = this->_localizationStrings[LSTR_CLERIC];
+    this->_classNames[CLASS_PRIEST] = this->_localizationStrings[LSTR_PRIEST];
+    this->_classNames[CLASS_PRIEST_OF_SUN] = this->_localizationStrings[LSTR_PRIEST_OF_LIGHT];
+    this->_classNames[CLASS_PRIEST_OF_MOON] = this->_localizationStrings[LSTR_PRIEST_OF_DARK];
 
-    this->class_names[CLASS_DRUID] = this->localization_strings[LSTR_DRUID];
-    this->class_names[CLASS_GREAT_DRUID] = this->localization_strings[LSTR_GREATER_DRUID];
-    this->class_names[CLASS_ARCH_DRUID] = this->localization_strings[LSTR_ARCH_DRUID];
-    this->class_names[CLASS_WARLOCK] = this->localization_strings[LSTR_WARLOCK];
+    this->_classNames[CLASS_DRUID] = this->_localizationStrings[LSTR_DRUID];
+    this->_classNames[CLASS_GREAT_DRUID] = this->_localizationStrings[LSTR_GREATER_DRUID];
+    this->_classNames[CLASS_ARCH_DRUID] = this->_localizationStrings[LSTR_ARCH_DRUID];
+    this->_classNames[CLASS_WARLOCK] = this->_localizationStrings[LSTR_WARLOCK];
 
-    this->class_names[CLASS_SORCERER] = this->localization_strings[LSTR_SORCERER];
-    this->class_names[CLASS_WIZARD] = this->localization_strings[LSTR_WIZARD];
-    this->class_names[CLASS_ARCHAMGE] = this->localization_strings[LSTR_ARCHMAGE];
-    this->class_names[CLASS_LICH] = this->localization_strings[LSTR_LICH];
+    this->_classNames[CLASS_SORCERER] = this->_localizationStrings[LSTR_SORCERER];
+    this->_classNames[CLASS_WIZARD] = this->_localizationStrings[LSTR_WIZARD];
+    this->_classNames[CLASS_ARCHAMGE] = this->_localizationStrings[LSTR_ARCHMAGE];
+    this->_classNames[CLASS_LICH] = this->_localizationStrings[LSTR_LICH];
 
-    this->class_desc_raw = engine->_gameResourceManager->getEventsFile("class.txt").string_view();
-    strtok(this->class_desc_raw.data(), "\r");
-    for (Class i : class_desciptions.indices()) {
+    this->_classDescRaw = engine->_gameResourceManager->getEventsFile("class.txt").string_view();
+    strtok(this->_classDescRaw.data(), "\r");
+    for (Class i : _classDescriptions.indices()) {
         char *test_string = strtok(NULL, "\r") + 1;
         auto tokens = tokenize(test_string, '\t');
         assert(tokens.size() == 3 && "Invalid number of tokens");
-        class_desciptions[i] = removeQuotes(tokens[1]);
+        _classDescriptions[i] = removeQuotes(tokens[1]);
     }
 }
 
 //----- (00452B95) --------------------------------------------------------
-void Localization::InitializeMm6ItemCategories() {
-    this->mm6_item_categories[0] = this->localization_strings[LSTR_CLUB];
-    this->mm6_item_categories[1] = this->localization_strings[LSTR_STAFF];
-    this->mm6_item_categories[2] = this->localization_strings[LSTR_SWORD];
-    this->mm6_item_categories[3] = this->localization_strings[LSTR_DAGGER];
-    this->mm6_item_categories[4] = this->localization_strings[LSTR_AXE];
-    this->mm6_item_categories[5] = this->localization_strings[LSTR_SPEAR];
-    this->mm6_item_categories[6] = this->localization_strings[LSTR_BOW];
-    this->mm6_item_categories[7] = this->localization_strings[LSTR_MACE];
-    this->mm6_item_categories[8] = this->localization_strings[LSTR_BLASTER];
-    this->mm6_item_categories[9] = this->localization_strings[LSTR_SHIELD];
-    this->mm6_item_categories[10] = this->localization_strings[LSTR_LEATHER];
-    this->mm6_item_categories[11] = this->localization_strings[LSTR_CHAIN];
-    this->mm6_item_categories[12] = this->localization_strings[LSTR_PLATE];
-    this->mm6_item_categories[13] = this->localization_strings[LSTR_MISC];
+void Localization::initializeMm6ItemCategories() {
+    this->_mm6ItemCategories[0] = this->_localizationStrings[LSTR_CLUB];
+    this->_mm6ItemCategories[1] = this->_localizationStrings[LSTR_STAFF];
+    this->_mm6ItemCategories[2] = this->_localizationStrings[LSTR_SWORD];
+    this->_mm6ItemCategories[3] = this->_localizationStrings[LSTR_DAGGER];
+    this->_mm6ItemCategories[4] = this->_localizationStrings[LSTR_AXE];
+    this->_mm6ItemCategories[5] = this->_localizationStrings[LSTR_SPEAR];
+    this->_mm6ItemCategories[6] = this->_localizationStrings[LSTR_BOW];
+    this->_mm6ItemCategories[7] = this->_localizationStrings[LSTR_MACE];
+    this->_mm6ItemCategories[8] = this->_localizationStrings[LSTR_BLASTER];
+    this->_mm6ItemCategories[9] = this->_localizationStrings[LSTR_SHIELD];
+    this->_mm6ItemCategories[10] = this->_localizationStrings[LSTR_LEATHER];
+    this->_mm6ItemCategories[11] = this->_localizationStrings[LSTR_CHAIN];
+    this->_mm6ItemCategories[12] = this->_localizationStrings[LSTR_PLATE];
+    this->_mm6ItemCategories[13] = this->_localizationStrings[LSTR_MISC];
 }
 
 //----- (00413FF1) --------------------------------------------------------
-void Localization::InitializeMonthNames() {
-    this->month_names[0] = this->localization_strings[LSTR_JANUARY];
-    this->month_names[1] = this->localization_strings[LSTR_FEBRUARY];
-    this->month_names[2] = this->localization_strings[LSTR_MARCH];
-    this->month_names[3] = this->localization_strings[LSTR_APRIL];
-    this->month_names[4] = this->localization_strings[LSTR_MAY];
-    this->month_names[5] = this->localization_strings[LSTR_JUNE];
-    this->month_names[6] = this->localization_strings[LSTR_JULY];
-    this->month_names[7] = this->localization_strings[LSTR_AUGUST];
-    this->month_names[8] = this->localization_strings[LSTR_SEPTEMBER];
-    this->month_names[9] = this->localization_strings[LSTR_OCTOBER];
-    this->month_names[10] = this->localization_strings[LSTR_NOVEMBER];
-    this->month_names[11] = this->localization_strings[LSTR_DECEMBER];
+void Localization::initializeMonthNames() {
+    this->_monthNames[0] = this->_localizationStrings[LSTR_JANUARY];
+    this->_monthNames[1] = this->_localizationStrings[LSTR_FEBRUARY];
+    this->_monthNames[2] = this->_localizationStrings[LSTR_MARCH];
+    this->_monthNames[3] = this->_localizationStrings[LSTR_APRIL];
+    this->_monthNames[4] = this->_localizationStrings[LSTR_MAY];
+    this->_monthNames[5] = this->_localizationStrings[LSTR_JUNE];
+    this->_monthNames[6] = this->_localizationStrings[LSTR_JULY];
+    this->_monthNames[7] = this->_localizationStrings[LSTR_AUGUST];
+    this->_monthNames[8] = this->_localizationStrings[LSTR_SEPTEMBER];
+    this->_monthNames[9] = this->_localizationStrings[LSTR_OCTOBER];
+    this->_monthNames[10] = this->_localizationStrings[LSTR_NOVEMBER];
+    this->_monthNames[11] = this->_localizationStrings[LSTR_DECEMBER];
 }
 
 //----- (0041406F) --------------------------------------------------------
-void Localization::InitializeDayNames() {
-    this->day_names[0] = this->localization_strings[LSTR_MONDAY];
-    this->day_names[1] = this->localization_strings[LSTR_TUESDAY];
-    this->day_names[2] = this->localization_strings[LSTR_WEDNESDAY];
-    this->day_names[3] = this->localization_strings[LSTR_THURSDAY];
-    this->day_names[4] = this->localization_strings[LSTR_FRIDAY];
-    this->day_names[5] = this->localization_strings[LSTR_SATURDAY];
-    this->day_names[6] = this->localization_strings[LSTR_SUNDAY];
+void Localization::initializeDayNames() {
+    this->_dayNames[0] = this->_localizationStrings[LSTR_MONDAY];
+    this->_dayNames[1] = this->_localizationStrings[LSTR_TUESDAY];
+    this->_dayNames[2] = this->_localizationStrings[LSTR_WEDNESDAY];
+    this->_dayNames[3] = this->_localizationStrings[LSTR_THURSDAY];
+    this->_dayNames[4] = this->_localizationStrings[LSTR_FRIDAY];
+    this->_dayNames[5] = this->_localizationStrings[LSTR_SATURDAY];
+    this->_dayNames[6] = this->_localizationStrings[LSTR_SUNDAY];
 }
 
 //----- (004140BB) --------------------------------------------------------
-void Localization::InitializeSpellSchoolNames() {
-    this->spell_school_names[MAGIC_SCHOOL_FIRE]   = this->localization_strings[LSTR_FIRE];
-    this->spell_school_names[MAGIC_SCHOOL_AIR]    = this->localization_strings[LSTR_AIR];
-    this->spell_school_names[MAGIC_SCHOOL_WATER]  = this->localization_strings[LSTR_WATER];
-    this->spell_school_names[MAGIC_SCHOOL_EARTH]  = this->localization_strings[LSTR_EARTH];
-    this->spell_school_names[MAGIC_SCHOOL_SPIRIT] = this->localization_strings[LSTR_SPIRIT];
-    this->spell_school_names[MAGIC_SCHOOL_MIND]   = this->localization_strings[LSTR_MIND];
-    this->spell_school_names[MAGIC_SCHOOL_BODY]   = this->localization_strings[LSTR_BODY];
-    this->spell_school_names[MAGIC_SCHOOL_LIGHT]  = this->localization_strings[LSTR_LIGHT];
-    this->spell_school_names[MAGIC_SCHOOL_DARK]   = this->localization_strings[LSTR_DARK];
+void Localization::initializeSpellSchoolNames() {
+    this->_spellSchoolNames[MAGIC_SCHOOL_FIRE]   = this->_localizationStrings[LSTR_FIRE];
+    this->_spellSchoolNames[MAGIC_SCHOOL_AIR]    = this->_localizationStrings[LSTR_AIR];
+    this->_spellSchoolNames[MAGIC_SCHOOL_WATER]  = this->_localizationStrings[LSTR_WATER];
+    this->_spellSchoolNames[MAGIC_SCHOOL_EARTH]  = this->_localizationStrings[LSTR_EARTH];
+    this->_spellSchoolNames[MAGIC_SCHOOL_SPIRIT] = this->_localizationStrings[LSTR_SPIRIT];
+    this->_spellSchoolNames[MAGIC_SCHOOL_MIND]   = this->_localizationStrings[LSTR_MIND];
+    this->_spellSchoolNames[MAGIC_SCHOOL_BODY]   = this->_localizationStrings[LSTR_BODY];
+    this->_spellSchoolNames[MAGIC_SCHOOL_LIGHT]  = this->_localizationStrings[LSTR_LIGHT];
+    this->_spellSchoolNames[MAGIC_SCHOOL_DARK]   = this->_localizationStrings[LSTR_DARK];
 }
 
 //----- (0041411B) --------------------------------------------------------
-void Localization::InitializeAttributeNames() {
-    this->attribute_names[ATTRIBUTE_MIGHT]        = this->localization_strings[LSTR_MIGHT];
-    this->attribute_names[ATTRIBUTE_INTELLIGENCE] = this->localization_strings[LSTR_INTELLECT];
-    this->attribute_names[ATTRIBUTE_PERSONALITY]  = this->localization_strings[LSTR_PERSONALITY];
-    this->attribute_names[ATTRIBUTE_ENDURANCE]    = this->localization_strings[LSTR_ENDURANCE];
-    this->attribute_names[ATTRIBUTE_ACCURACY]     = this->localization_strings[LSTR_ACCURACY];
-    this->attribute_names[ATTRIBUTE_SPEED]        = this->localization_strings[LSTR_SPEED];
-    this->attribute_names[ATTRIBUTE_LUCK]         = this->localization_strings[LSTR_LUCK];
+void Localization::initializeAttributeNames() {
+    this->_attributeNames[ATTRIBUTE_MIGHT]        = this->_localizationStrings[LSTR_MIGHT];
+    this->_attributeNames[ATTRIBUTE_INTELLIGENCE] = this->_localizationStrings[LSTR_INTELLECT];
+    this->_attributeNames[ATTRIBUTE_PERSONALITY]  = this->_localizationStrings[LSTR_PERSONALITY];
+    this->_attributeNames[ATTRIBUTE_ENDURANCE]    = this->_localizationStrings[LSTR_ENDURANCE];
+    this->_attributeNames[ATTRIBUTE_ACCURACY]     = this->_localizationStrings[LSTR_ACCURACY];
+    this->_attributeNames[ATTRIBUTE_SPEED]        = this->_localizationStrings[LSTR_SPEED];
+    this->_attributeNames[ATTRIBUTE_LUCK]         = this->_localizationStrings[LSTR_LUCK];
 
-    this->attribute_desc_raw = engine->_gameResourceManager->getEventsFile("stats.txt").string_view();
-    strtok(this->attribute_desc_raw.data(), "\r");
+    this->_attributeDescRaw = engine->_gameResourceManager->getEventsFile("stats.txt").string_view();
+    strtok(this->_attributeDescRaw.data(), "\r");
     for (int i = 0; i < 26; ++i) {
         char *test_string = strtok(NULL, "\r") + 1;
         std::vector<std::string_view> tokens = split(test_string, '\t');
@@ -490,76 +490,76 @@ void Localization::InitializeAttributeNames() {
             case 4:
             case 5:
             case 6:
-                this->attribute_descriptions[static_cast<Attribute>(i)] = removeQuotes(tokens[1]);
+                this->_attributeDescriptions[static_cast<Attribute>(i)] = removeQuotes(tokens[1]);
                 break;
             case 7:
-                this->hp_description = removeQuotes(tokens[1]);
+                this->_hpDescription = removeQuotes(tokens[1]);
                 break;
             case 8:
-                this->armour_class_description = removeQuotes(tokens[1]);
+                this->_armourClassDescription = removeQuotes(tokens[1]);
                 break;
             case 9:
-                this->sp_description = removeQuotes(tokens[1]);
+                this->_spDescription = removeQuotes(tokens[1]);
                 break;
             case 10:
-                this->character_condition_description = removeQuotes(tokens[1]);
+                this->_characterConditionDescription = removeQuotes(tokens[1]);
                 break;
             case 11:
-                this->fast_spell_description = removeQuotes(tokens[1]);
+                this->_fastSpellDescription = removeQuotes(tokens[1]);
                 break;
             case 12:
-                this->age_description = removeQuotes(tokens[1]);
+                this->_ageDescription = removeQuotes(tokens[1]);
                 break;
             case 13:
-                this->level_description = removeQuotes(tokens[1]);
+                this->_levelDescription = removeQuotes(tokens[1]);
                 break;
             case 14:
-                this->exp_description = removeQuotes(tokens[1]);
+                this->_expDescription = removeQuotes(tokens[1]);
                 break;
             case 15:
-                this->melee_attack_description = removeQuotes(tokens[1]);
+                this->_meleeAttackDescription = removeQuotes(tokens[1]);
                 break;
             case 16:
-                this->melee_damage_description = removeQuotes(tokens[1]);
+                this->_meleeDamageDescription = removeQuotes(tokens[1]);
                 break;
             case 17:
-                this->ranged_attack_description = removeQuotes(tokens[1]);
+                this->_rangedAttackDescription = removeQuotes(tokens[1]);
                 break;
             case 18:
-                this->ranged_damage_description = removeQuotes(tokens[1]);
+                this->_rangedDamageDescription = removeQuotes(tokens[1]);
                 break;
             case 19:
-                this->fire_res_description = removeQuotes(tokens[1]);
+                this->_fireResDescription = removeQuotes(tokens[1]);
                 break;
             case 20:
-                this->air_res_description = removeQuotes(tokens[1]);
+                this->_airResDescription = removeQuotes(tokens[1]);
                 break;
             case 21:
-                this->water_res_description = removeQuotes(tokens[1]);
+                this->_waterResDescription = removeQuotes(tokens[1]);
                 break;
             case 22:
-                this->earth_res_description = removeQuotes(tokens[1]);
+                this->_earthResDescription = removeQuotes(tokens[1]);
                 break;
             case 23:
-                this->mind_res_description = removeQuotes(tokens[1]);
+                this->_mindResDescription = removeQuotes(tokens[1]);
                 break;
             case 24:
-                this->body_res_description = removeQuotes(tokens[1]);
+                this->_bodyResDescription = removeQuotes(tokens[1]);
                 break;
             case 25:
-                this->skill_points_description = removeQuotes(tokens[1]);
+                this->_skillPointsDescription = removeQuotes(tokens[1]);
                 break;
         }
     }
 }
 
 //----- (00410AF5) --------------------------------------------------------
-void Localization::InitializeMoonPhaseNames() {
-    this->moon_phase_names[0] = this->localization_strings[LSTR_NEW];
-    this->moon_phase_names[1] = this->localization_strings[LSTR_QUARTER];
-    this->moon_phase_names[2] = this->localization_strings[LSTR_HALF];
-    this->moon_phase_names[3] = this->localization_strings[LSTR_THREE_QUARTER];
-    this->moon_phase_names[4] = this->localization_strings[LSTR_FULL];
+void Localization::initializeMoonPhaseNames() {
+    this->_moonPhaseNames[0] = this->_localizationStrings[LSTR_NEW];
+    this->_moonPhaseNames[1] = this->_localizationStrings[LSTR_QUARTER];
+    this->_moonPhaseNames[2] = this->_localizationStrings[LSTR_HALF];
+    this->_moonPhaseNames[3] = this->_localizationStrings[LSTR_THREE_QUARTER];
+    this->_moonPhaseNames[4] = this->_localizationStrings[LSTR_FULL];
 }
 
 /*

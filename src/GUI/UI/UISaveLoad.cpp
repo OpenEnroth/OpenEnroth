@@ -65,7 +65,7 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRen
         std::string str = fmt::format("saves/{}", file_name);
         if (!ufs->exists(str)) {
             pSavegameList->pSavegameUsedSlots[i] = false;
-            pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_EMPTY_SAVE);
+            pSavegameList->pSavegameHeader[i].name = localization->str(LSTR_EMPTY_SAVE);
         } else {
             pLODFile.open(ufs->read(str), LOD_ALLOW_DUPLICATES);
             deserialize(pLODFile.read("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
@@ -148,7 +148,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
     this->uFrameZ = uFrameX + uFrameWidth - 1;
     this->uFrameW = uFrameY + uFrameHeight - 1;
 
-    DrawText(assets->pFontSmallnum.get(), {25, 199}, colorTable.White, localization->GetString(LSTR_READING));
+    DrawText(assets->pFontSmallnum.get(), {25, 199}, colorTable.White, localization->str(LSTR_READING));
     render->Present();
 
     pSavegameList->Initialize();
@@ -158,7 +158,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
         std::string str = fmt::format("saves/{}", pSavegameList->pFileList[i]);
         if (!ufs->exists(str)) {
             pSavegameList->pSavegameUsedSlots[i] = false;
-            pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_EMPTY_SAVE);
+            pSavegameList->pSavegameHeader[i].name = localization->str(LSTR_EMPTY_SAVE);
             continue;
         }
 
@@ -173,8 +173,8 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
         pLODFile.open(ufs->read(str), LOD_ALLOW_DUPLICATES);
         deserialize(pLODFile.read("header.bin"), &pSavegameList->pSavegameHeader[i], tags::via<SaveGameHeader_MM7>);
 
-        if (ascii::noCaseEquals(pSavegameList->pFileList[i], localization->GetString(LSTR_AUTOSAVE_MM7))) { // TODO(captainurist): #unicode might not be ascii
-            pSavegameList->pSavegameHeader[i].name = localization->GetString(LSTR_AUTOSAVE);
+        if (ascii::noCaseEquals(pSavegameList->pFileList[i], localization->str(LSTR_AUTOSAVE_MM7))) { // TODO(captainurist): #unicode might not be ascii
+            pSavegameList->pSavegameHeader[i].name = localization->str(LSTR_AUTOSAVE);
         }
 
         if (pSavegameList->pSavegameHeader[i].name.empty()) {
@@ -260,12 +260,12 @@ static void UI_DrawSaveLoad(bool save) {
 
         std::string str = fmt::format(
             "{} {}:{:02} {}\n{} {} {}",
-            localization->GetDayName(time.dayOfWeek - 1),
+            localization->dayName(time.dayOfWeek - 1),
             time.hourAmPm,
             time.minute,
-            localization->GetAmPm(time.isPm),
+            localization->amPm(time.isPm),
             time.day,
-            localization->GetMonthName(time.month - 1),
+            localization->monthName(time.month - 1),
             time.year);
         save_load_window.DrawTitleText(assets->pFontSmallnum.get(), 0, 0, colorTable.White, str, 3);
     }
@@ -281,14 +281,14 @@ static void UI_DrawSaveLoad(bool save) {
 
     if (GetCurrentMenuID() == MENU_LoadingProcInMainMenu) {
         pGUIWindow_CurrentMenu->DrawText(assets->pFontSmallnum.get(),
-            {assets->pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_LOADING)) + 25, 220}, colorTable.White,
-            localization->GetString(LSTR_LOADING));
+            {assets->pFontSmallnum->AlignText_Center(186, localization->str(LSTR_LOADING)) + 25, 220}, colorTable.White,
+            localization->str(LSTR_LOADING));
         pGUIWindow_CurrentMenu->DrawTextInRect(assets->pFontSmallnum.get(),
                                                {assets->pFontSmallnum->AlignText_Center(186, pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name) + 25, 262}, colorTable.White,
                                                pSavegameList->pSavegameHeader[pSavegameList->selectedSlot].name, 185, 0);
         pGUIWindow_CurrentMenu->DrawText(assets->pFontSmallnum.get(),
-            {assets->pFontSmallnum->AlignText_Center(186, localization->GetString(LSTR_PLEASE_WAIT)) + 25, 304}, colorTable.White,
-            localization->GetString(LSTR_PLEASE_WAIT));
+            {assets->pFontSmallnum->AlignText_Center(186, localization->str(LSTR_PLEASE_WAIT)) + 25, 304}, colorTable.White,
+            localization->str(LSTR_PLEASE_WAIT));
     } else {
         int maxSaveFiles = MAX_SAVE_SLOTS;
         int framex = 0, framey = 0;

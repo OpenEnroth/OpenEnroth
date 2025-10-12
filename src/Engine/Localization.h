@@ -19,281 +19,281 @@
 
 class Localization {
  public:
-    bool Initialize();
+    bool initialize();
 
-    const std::string &GetString(LstrId index) const;
+    const std::string &str(LstrId index) const;
 
     template<class... Args>
-    std::string FormatString(LstrId index, Args &&... args) const {
+    std::string format(LstrId index, Args &&... args) const {
         // TODO(captainurist): what if fmt throws?
-        return fmt::sprintf(GetString(index), std::forward<Args>(args)...); // NOLINT: not std::sprintf.
+        return fmt::sprintf(str(index), std::forward<Args>(args)...); // NOLINT: not std::sprintf.
         // TODO(captainurist): there was also a call to sprintfex_internal after a call to vsprintf.
     }
 
-    const std::string &GetDayName(unsigned int index) const {
-        return this->day_names[index];
+    const std::string &dayName(unsigned int index) const {
+        return _dayNames[index];
     }
 
-    const std::string &GetMonthName(unsigned int index) const {
-        return this->month_names[index];
+    const std::string &monthName(unsigned int index) const {
+        return _monthNames[index];
     }
 
-    const std::string &GetMoonPhaseName(unsigned int index) const {
-        return this->moon_phase_names[index];
+    const std::string &moonPhaseName(unsigned int index) const {
+        return _moonPhaseNames[index];
     }
 
-    const std::string &GetSpellSchoolName(MagicSchool index) const {
-        return this->spell_school_names[index];
+    const std::string &spellSchoolName(MagicSchool index) const {
+        return _spellSchoolNames[index];
     }
 
-    const std::string &GetPartyBuffName(PartyBuff index) const {
-        return this->party_buff_names[index];
+    const std::string &partyBuffName(PartyBuff index) const {
+        return _partyBuffNames[index];
     }
 
-    const std::string &GetCharacterBuffName(CharacterBuff index) const {
-        return this->character_buff_names[index];
+    const std::string &characterBuffName(CharacterBuff index) const {
+        return _characterBuffNames[index];
     }
 
-    const std::string &GetActorBuffName(ActorBuff index) const {
-        return this->actor_buff_names[index];
+    const std::string &actorBuffName(ActorBuff index) const {
+        return _actorBuffNames[index];
     }
 
-    const std::string &GetClassName(Class index) const {
-        return this->class_names[index];
+    const std::string &className(Class index) const {
+        return _classNames[index];
     }
 
-    const std::string &GetClassDescription(Class index) const {
-        return this->class_desciptions[index];
+    const std::string &classDescription(Class index) const {
+        return _classDescriptions[index];
     }
 
-    const std::string &GetAttirubteName(Attribute index) const {
-        return this->attribute_names[index];
+    const std::string &attributeName(Attribute index) const {
+        return _attributeNames[index];
     }
 
-    const std::string &GetAttributeDescription(Attribute index) const {
-        return this->attribute_descriptions[index];
+    const std::string &attributeDescription(Attribute index) const {
+        return _attributeDescriptions[index];
     }
 
-    const std::string &GetSkillName(Skill index) const {
-        return this->skill_names[index];
+    const std::string &skillName(Skill index) const {
+        return _skillNames[index];
     }
 
-    std::string SkillValueShortString(CombinedSkillValue skillValue) const;
+    std::string skillValueShortString(CombinedSkillValue skillValue) const;
 
-    const std::string &MasteryName(Mastery mastery) const {
+    const std::string &masteryName(Mastery mastery) const {
         switch (mastery) {
-        case MASTERY_NOVICE: return GetString(LSTR_NORMAL);
-        case MASTERY_EXPERT: return GetString(LSTR_EXPERT);
-        case MASTERY_MASTER: return GetString(LSTR_MASTER);
-        case MASTERY_GRANDMASTER: return GetString(LSTR_GRAND_1);
+        case MASTERY_NOVICE: return str(LSTR_NORMAL);
+        case MASTERY_EXPERT: return str(LSTR_EXPERT);
+        case MASTERY_MASTER: return str(LSTR_MASTER);
+        case MASTERY_GRANDMASTER: return str(LSTR_GRAND_1);
         default:
             assert(false);
-            return dummy_string;
+            return _dummyString;
         }
     }
 
-    const std::string &MasteryNameLong(Mastery mastery) const {
-        return mastery == MASTERY_GRANDMASTER ? GetString(LSTR_GRANDMASTER) : MasteryName(mastery);
+    const std::string &masteryNameLong(Mastery mastery) const {
+        return mastery == MASTERY_GRANDMASTER ? str(LSTR_GRANDMASTER) : masteryName(mastery);
     }
 
-    const std::string &GetSkillDescription(Skill index) const {
-        return this->skill_descriptions[index];
+    const std::string &skillDescription(Skill index) const {
+        return _skillDescriptions[index];
     }
 
-    const std::string &GetSkillDescription(Skill index, Mastery mastery) const {
+    const std::string &skillDescription(Skill index, Mastery mastery) const {
         switch(mastery) {
-        case MASTERY_NOVICE: return GetSkillDescriptionNormal(index);
-        case MASTERY_EXPERT: return GetSkillDescriptionExpert(index);
-        case MASTERY_MASTER: return GetSkillDescriptionMaster(index);
-        case MASTERY_GRANDMASTER: return GetSkillDescriptionGrand(index);
+        case MASTERY_NOVICE: return skillDescriptionNormal(index);
+        case MASTERY_EXPERT: return skillDescriptionExpert(index);
+        case MASTERY_MASTER: return skillDescriptionMaster(index);
+        case MASTERY_GRANDMASTER: return skillDescriptionGrand(index);
         default:
             assert(false);
-            return dummy_string;
+            return _dummyString;
         }
     }
 
-    const std::string &GetSkillDescriptionNormal(Skill index) const {
-        return this->skill_descriptions_normal[index];
+    const std::string &skillDescriptionNormal(Skill index) const {
+        return _skillDescriptionsNormal[index];
     }
 
-    const std::string &GetSkillDescriptionExpert(Skill index) const {
-        return this->skill_descriptions_expert[index];
+    const std::string &skillDescriptionExpert(Skill index) const {
+        return _skillDescriptionsExpert[index];
     }
 
-    const std::string &GetSkillDescriptionMaster(Skill index) const {
-        return this->skill_descriptions_master[index];
+    const std::string &skillDescriptionMaster(Skill index) const {
+        return _skillDescriptionsMaster[index];
     }
 
-    const std::string &GetSkillDescriptionGrand(Skill index) const {
-        return this->skill_descriptions_grand[index];
+    const std::string &skillDescriptionGrand(Skill index) const {
+        return _skillDescriptionsGrand[index];
     }
 
-    const std::string &GetCharacterConditionName(Condition index) const {
-        return this->character_conditions[index];
+    const std::string &characterConditionName(Condition index) const {
+        return _characterConditions[index];
     }
 
-    const std::string &GetAmPm(bool isPm) const {
-        return this->GetString(isPm ? LSTR_PM : LSTR_AM);
+    const std::string &amPm(bool isPm) const {
+        return str(isPm ? LSTR_PM : LSTR_AM);
     }
 
-    const std::string &GetNpcProfessionName(NpcProfession prof) const {
-        return this->npc_profession_names[prof];
+    const std::string &npcProfessionName(NpcProfession prof) const {
+        return _npcProfessionNames[prof];
     }
 
-    const std::string &GetSpecialAttackName(MonsterSpecialAttack index) const {
-        return this->special_attack_names[index];
+    const std::string &specialAttackName(MonsterSpecialAttack index) const {
+        return _specialAttackNames[index];
     }
 
-    const std::string &GetMonsterSpecialAbilityName(MonsterSpecialAbility index) const {
-        return this->monster_special_ability_names[index];
+    const std::string &monsterSpecialAbilityName(MonsterSpecialAbility index) const {
+        return _monsterSpecialAbilityNames[index];
     }
 
-    const std::string &getHPDescription() const {
-        return this->hp_description;
+    const std::string &hpDescription() const {
+        return _hpDescription;
     }
 
-    const std::string &getSPDescription() const {
-        return this->sp_description;
+    const std::string &spDescription() const {
+        return _spDescription;
     }
 
-    const std::string &getArmourClassDescription() const {
-        return this->armour_class_description;
+    const std::string &armourClassDescription() const {
+        return _armourClassDescription;
     }
 
-    const std::string &getCharacterConditionDescription() const {
-        return this->character_condition_description;
+    const std::string &characterConditionDescription() const {
+        return _characterConditionDescription;
     }
 
-    const std::string &getFastSpellDescription() const {
-        return this->fast_spell_description;
+    const std::string &fastSpellDescription() const {
+        return _fastSpellDescription;
     }
 
-    const std::string &getAgeDescription() const {
-        return this->age_description;
+    const std::string &ageDescription() const {
+        return _ageDescription;
     }
 
-    const std::string &getLevelDescription() const {
-        return this->level_description;
+    const std::string &levelDescription() const {
+        return _levelDescription;
     }
 
-    const std::string &getExpDescription() const {
-        return this->exp_description;
+    const std::string &expDescription() const {
+        return _expDescription;
     }
 
-    const std::string &getMeleeAttackDescription() const {
-        return this->melee_attack_description;
+    const std::string &meleeAttackDescription() const {
+        return _meleeAttackDescription;
     }
 
-    const std::string &getMeleeDamageDescription() const {
-        return this->melee_damage_description;
+    const std::string &meleeDamageDescription() const {
+        return _meleeDamageDescription;
     }
 
-    const std::string &getRangedAttackDescription() const {
-        return this->ranged_attack_description;
+    const std::string &rangedAttackDescription() const {
+        return _rangedAttackDescription;
     }
 
-    const std::string &getRangedDamageDescription() const {
-        return this->ranged_damage_description;
+    const std::string &rangedDamageDescription() const {
+        return _rangedDamageDescription;
     }
 
-    const std::string &getFireResistanceDescription() const {
-        return this->fire_res_description;
+    const std::string &fireResistanceDescription() const {
+        return _fireResDescription;
     }
 
-    const std::string &getAirResistanceDescription() const {
-        return this->air_res_description;
+    const std::string &airResistanceDescription() const {
+        return _airResDescription;
     }
 
-    const std::string &getWaterResistanceDescription() const {
-        return this->water_res_description;
+    const std::string &waterResistanceDescription() const {
+        return _waterResDescription;
     }
 
-    const std::string &getEarthResistanceDescription() const {
-        return this->earth_res_description;
+    const std::string &earthResistanceDescription() const {
+        return _earthResDescription;
     }
 
-    const std::string &getMindResistanceDescription() const {
-        return this->mind_res_description;
+    const std::string &mindResistanceDescription() const {
+        return _mindResDescription;
     }
 
-    const std::string &getBodyResistanceDescription() const {
-        return this->body_res_description;
+    const std::string &bodyResistanceDescription() const {
+        return _bodyResDescription;
     }
 
-    const std::string &getSkillPointsDescription() const {
-        return this->skill_points_description;
+    const std::string &skillPointsDescription() const {
+        return _skillPointsDescription;
     }
 
  public:
-    Localization() {}
+    Localization() = default;
 
  private:
-    void InitializeMm6ItemCategories();
+    void initializeMm6ItemCategories();
 
-    void InitializeMonthNames();
-    void InitializeDayNames();
-    void InitializeMoonPhaseNames();
+    void initializeMonthNames();
+    void initializeDayNames();
+    void initializeMoonPhaseNames();
 
-    void InitializeSpellSchoolNames();
-    void InitializeSpellNames();
+    void initializeSpellSchoolNames();
+    void initializeSpellNames();
 
-    void InitializeClassNames();
-    void InitializeAttributeNames();
-    void InitializeSkillNames();
-    void InitializeCharacterConditionNames();
+    void initializeClassNames();
+    void initializeAttributeNames();
+    void initializeSkillNames();
+    void initializeCharacterConditionNames();
 
-    void InitializeNpcProfessionNames();
+    void initializeNpcProfessionNames();
 
  private:
-    std::string localization_raw;
-    IndexedArray<std::string, LSTR_FIRST, LSTR_LAST> localization_strings;
-    std::string class_desc_raw;
-    std::string attribute_desc_raw;
-    std::string skill_desc_raw;
+    std::string _localizationRaw;
+    IndexedArray<std::string, LSTR_FIRST, LSTR_LAST> _localizationStrings;
+    std::string _classDescRaw;
+    std::string _attributeDescRaw;
+    std::string _skillDescRaw;
 
-    std::array<std::string, 14> mm6_item_categories;
-    std::array<std::string, 12> month_names;
-    std::array<std::string, 7> day_names;
-    std::array<std::string, 5> moon_phase_names;
-    IndexedArray<std::string, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> spell_school_names;
-    IndexedArray<std::string, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> party_buff_names;
-    IndexedArray<std::string, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> character_buff_names;
-    IndexedArray<std::string, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> actor_buff_names;
-    IndexedArray<std::string, CLASS_FIRST, CLASS_LAST> class_names;
-    IndexedArray<std::string, CLASS_FIRST, CLASS_LAST> class_desciptions;
-    IndexedArray<std::string, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> attribute_names;
-    IndexedArray<std::string, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> attribute_descriptions;
-    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> skill_names;
-    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> skill_descriptions;
-    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> skill_descriptions_normal;
-    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> skill_descriptions_expert;
-    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> skill_descriptions_master;
-    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> skill_descriptions_grand;
-    IndexedArray<std::string, CONDITION_FIRST, CONDITION_LAST> character_conditions;
-    IndexedArray<std::string, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> npc_profession_names;
-    IndexedArray<std::string, SPECIAL_ATTACK_FIRST, SPECIAL_ATTACK_LAST> special_attack_names;
-    IndexedArray<std::string, MONSTER_SPECIAL_ABILITY_FIRST, MONSTER_SPECIAL_ABILITY_LAST> monster_special_ability_names;
-    IndexedArray<std::string, MASTERY_FIRST, MASTERY_LAST> skill_value_short_templates;
-    std::string hp_description;
-    std::string sp_description;
-    std::string armour_class_description;
-    std::string character_condition_description;
-    std::string fast_spell_description;
-    std::string age_description;
-    std::string level_description;
-    std::string exp_description;
-    std::string melee_attack_description;
-    std::string melee_damage_description;
-    std::string ranged_attack_description;
-    std::string ranged_damage_description;
-    std::string fire_res_description;
-    std::string air_res_description;
-    std::string water_res_description;
-    std::string earth_res_description;
-    std::string mind_res_description;
-    std::string body_res_description;
-    std::string skill_points_description;
-    std::string dummy_string;
+    std::array<std::string, 14> _mm6ItemCategories;
+    std::array<std::string, 12> _monthNames;
+    std::array<std::string, 7> _dayNames;
+    std::array<std::string, 5> _moonPhaseNames;
+    IndexedArray<std::string, MAGIC_SCHOOL_FIRST, MAGIC_SCHOOL_LAST> _spellSchoolNames;
+    IndexedArray<std::string, PARTY_BUFF_FIRST, PARTY_BUFF_LAST> _partyBuffNames;
+    IndexedArray<std::string, CHARACTER_BUFF_FIRST, CHARACTER_BUFF_LAST> _characterBuffNames;
+    IndexedArray<std::string, ACTOR_BUFF_FIRST, ACTOR_BUFF_LAST> _actorBuffNames;
+    IndexedArray<std::string, CLASS_FIRST, CLASS_LAST> _classNames;
+    IndexedArray<std::string, CLASS_FIRST, CLASS_LAST> _classDescriptions;
+    IndexedArray<std::string, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> _attributeNames;
+    IndexedArray<std::string, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> _attributeDescriptions;
+    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> _skillNames;
+    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> _skillDescriptions;
+    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> _skillDescriptionsNormal;
+    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> _skillDescriptionsExpert;
+    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> _skillDescriptionsMaster;
+    IndexedArray<std::string, SKILL_INVALID, SKILL_LAST_VISIBLE> _skillDescriptionsGrand;
+    IndexedArray<std::string, CONDITION_FIRST, CONDITION_LAST> _characterConditions;
+    IndexedArray<std::string, NPC_PROFESSION_FIRST, NPC_PROFESSION_LAST> _npcProfessionNames;
+    IndexedArray<std::string, SPECIAL_ATTACK_FIRST, SPECIAL_ATTACK_LAST> _specialAttackNames;
+    IndexedArray<std::string, MONSTER_SPECIAL_ABILITY_FIRST, MONSTER_SPECIAL_ABILITY_LAST> _monsterSpecialAbilityNames;
+    IndexedArray<std::string, MASTERY_FIRST, MASTERY_LAST> _skillValueShortTemplates;
+    std::string _hpDescription;
+    std::string _spDescription;
+    std::string _armourClassDescription;
+    std::string _characterConditionDescription;
+    std::string _fastSpellDescription;
+    std::string _ageDescription;
+    std::string _levelDescription;
+    std::string _expDescription;
+    std::string _meleeAttackDescription;
+    std::string _meleeDamageDescription;
+    std::string _rangedAttackDescription;
+    std::string _rangedDamageDescription;
+    std::string _fireResDescription;
+    std::string _airResDescription;
+    std::string _waterResDescription;
+    std::string _earthResDescription;
+    std::string _mindResDescription;
+    std::string _bodyResDescription;
+    std::string _skillPointsDescription;
+    std::string _dummyString;
 };
 
 extern Localization *localization;
