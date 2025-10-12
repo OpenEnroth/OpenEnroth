@@ -127,7 +127,7 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     } else {
         // how far do we need to move the sphere to touch infinite plane
         move_distance = (center_face_distance - radius) / -dir_normal_projection;
-        if (move_distance < -100.0f) {
+        if (move_distance < allowedCollisionOvershoot) {
             // this can happen when we are already closer than the radius
             return false;
         }
@@ -285,9 +285,8 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
             }
 
             if (have_collision && move_distance < collision_state.adjusted_move_distance) {
-                // TODO(pskelton): should this be a config value
                 // We allow for a bit of negative movement in case we are already too close to the surface and need pushback
-                if (move_distance > -10.0f) {
+                if (move_distance > allowedCollisionOvershoot) {
                     collision_state.adjusted_move_distance = move_distance;
                     collision_state.collisionPos = col_pos;
                     collision_state.pid = face_pid;
