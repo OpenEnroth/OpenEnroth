@@ -9,6 +9,8 @@
 struct BLVFace;
 class Actor;
 
+constexpr float allowedCollisionOvershoot = -100.0f;
+
 struct CollisionState {
     /**
      * @offset 0x0047050A.
