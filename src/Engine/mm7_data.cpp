@@ -4,7 +4,8 @@
 #include <vector>
 
 #include "Engine/Graphics/Viewport.h"
-#include "OurMath.h"
+
+#include "Library/Geometry/Vec.h"
 
 Viewport *pViewport = new Viewport;
 ViewingParams *viewparams = new ViewingParams;
@@ -2441,7 +2442,6 @@ int dword_6BE364_game_settings_1 = 0;
 
 int uPlayerCreationUI_SelectedCharacter;
 int uPlayerCreationUI_NameEditCharacter;
-int currentAddressingAwardBit;
 // int dword_F8B144; // nexindex [-1] to the following
 std::string current_npc_text;                        // F8B1E8
 char dialogue_show_profession_details = false;  // F8B1EC

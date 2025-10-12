@@ -6,6 +6,7 @@
 #include <utility>
 
 #include "Inventory.h"
+#include "Engine/Data/AwardEnums.h"
 #include "Engine/Data/HouseEnums.h"
 #include "Engine/Objects/NPCEnums.h"
 #include "Engine/Objects/ActorEnums.h"
@@ -296,7 +297,7 @@ class Character {
     int16_t sLevelModifier;
     int16_t sAgeModifier;
     IndexedArray<CombinedSkillValue, SKILL_FIRST, SKILL_LAST> pActiveSkills;
-    IndexedBitset<1, 512> _achievedAwardsBits;
+    IndexedBitset<AWARD_FIRST, AWARD_LAST> _achievedAwardsBits;
     IndexedArray<bool, SPELL_FIRST_REGULAR, SPELL_LAST_REGULAR> bHaveSpell;
     IndexedArray<bool, ATTRIBUTE_FIRST_STAT, ATTRIBUTE_LAST_STAT> _pureStatPotionUsed;
     CharacterInventory inventory;
