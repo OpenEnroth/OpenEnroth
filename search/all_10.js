@@ -234,7 +234,7 @@ var searchData=
   ['pauselooping_231',['pauseLooping',['../classAudioPlayer.html#ab1707273eb2bfa0f2108726beddeedf4',1,'AudioPlayer']]],
   ['pausetime_232',['pauseTime',['../structTimer__MM7.html#a44cddd03f4cbfaae66842f6e346cbbb6',1,'Timer_MM7']]],
   ['pautonotetxt_233',['pAutonoteTxt',['../AutonoteTable_8cpp.html#a6f1fb03ea5b2608f952d0b7d2b784d3b',1,'pAutonoteTxt():&#160;AutonoteTable.cpp'],['../AutonoteTable_8h.html#a6f1fb03ea5b2608f952d0b7d2b784d3b',1,'pAutonoteTxt():&#160;AutonoteTable.cpp']]],
-  ['pawards_234',['pAwards',['../AwardTable_8h.html#a991fa7b0a5a2de9a46e21127b347f4d0',1,'pAwards():&#160;AwardTable.cpp'],['../AwardTable_8cpp.html#a991fa7b0a5a2de9a46e21127b347f4d0',1,'pAwards():&#160;AwardTable.cpp']]],
+  ['pawards_234',['pAwards',['../AwardTable_8h.html#a63147555e6cd332c192b28d032e1aee9',1,'pAwards():&#160;AwardTable.cpp'],['../AwardTable_8cpp.html#a63147555e6cd332c192b28d032e1aee9',1,'pAwards():&#160;AwardTable.cpp']]],
   ['payfinedialogue_235',['payFineDialogue',['../classGUIWindow__TownHall.html#aeb035240d698cc390f0d815b2d8bba56',1,'GUIWindow_TownHall']]],
   ['pbasehealthbyclass_236',['pBaseHealthByClass',['../Character_8cpp.html#a453890b9f81a8df0847170e0ef764b6a',1,'Character.cpp']]],
   ['pbasehealthperlevelbyclass_237',['pBaseHealthPerLevelByClass',['../Character_8cpp.html#a392d5f431700caab64b3532da2e4f1cc',1,'Character.cpp']]],

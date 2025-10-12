@@ -307,8 +307,7 @@ var menudata={children:[
 {text:"v",url:"globals_enum.html#index_v"},
 {text:"w",url:"globals_enum.html#index_w"}]},
 {text:"Enumerator",url:"globals_eval.html",children:[
-{text:"a",url:"globals_eval.html#index_a"},
-{text:"m",url:"globals_eval_m.html#index_m"},
+{text:"m",url:"globals_eval.html#index_m"},
 {text:"p",url:"globals_eval_p.html#index_p"},
 {text:"u",url:"globals_eval_u.html#index_u"},
 {text:"w",url:"globals_eval_w.html#index_w"}]},

@@ -98,7 +98,7 @@ var searchData=
   ['paused_95',['paused',['../structTimer__MM7.html#adf4330e9e6dee81a0805994448271f18',1,'Timer_MM7']]],
   ['pausetime_96',['pauseTime',['../structTimer__MM7.html#a44cddd03f4cbfaae66842f6e346cbbb6',1,'Timer_MM7']]],
   ['pautonotetxt_97',['pAutonoteTxt',['../AutonoteTable_8cpp.html#a6f1fb03ea5b2608f952d0b7d2b784d3b',1,'pAutonoteTxt():&#160;AutonoteTable.cpp'],['../AutonoteTable_8h.html#a6f1fb03ea5b2608f952d0b7d2b784d3b',1,'pAutonoteTxt():&#160;AutonoteTable.cpp']]],
-  ['pawards_98',['pAwards',['../AwardTable_8h.html#a991fa7b0a5a2de9a46e21127b347f4d0',1,'pAwards():&#160;AwardTable.cpp'],['../AwardTable_8cpp.html#a991fa7b0a5a2de9a46e21127b347f4d0',1,'pAwards():&#160;AwardTable.cpp']]],
+  ['pawards_98',['pAwards',['../AwardTable_8h.html#a63147555e6cd332c192b28d032e1aee9',1,'pAwards():&#160;AwardTable.cpp'],['../AwardTable_8cpp.html#a63147555e6cd332c192b28d032e1aee9',1,'pAwards():&#160;AwardTable.cpp']]],
   ['pbasehealthbyclass_99',['pBaseHealthByClass',['../Character_8cpp.html#a453890b9f81a8df0847170e0ef764b6a',1,'Character.cpp']]],
   ['pbasehealthperlevelbyclass_100',['pBaseHealthPerLevelByClass',['../Character_8cpp.html#a392d5f431700caab64b3532da2e4f1cc',1,'Character.cpp']]],
   ['pbasemanabyclass_101',['pBaseManaByClass',['../Character_8cpp.html#ad564709f263307a1e27f6d1275094367',1,'Character.cpp']]],

@@ -13,5 +13,5 @@ var searchData=
   ['arenastate_10',['ArenaState',['../ArenaEnums_8h.html#aeddf7559601a08ff245a91274398b5c3',1,'ArenaEnums.h']]],
   ['attribute_11',['Attribute',['../CharacterEnums_8h.html#a15b1b83081915ae5239f81050ae0f550',1,'CharacterEnums.h']]],
   ['autonotetype_12',['AutonoteType',['../AutonoteEnums_8h.html#a5d96904f720a3716d4ab3347d7b9a82b',1,'AutonoteEnums.h']]],
-  ['awardtype_13',['AwardType',['../AwardEnums_8h.html#affb7937911d9f95cf70e26a581d989c7',1,'AwardEnums.h']]]
+  ['awardid_13',['AwardId',['../AwardEnums_8h.html#a427f995cacbef9933bf8dc9ccd87bffa',1,'AwardEnums.h']]]
 ];

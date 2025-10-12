@@ -46,7 +46,8 @@ var searchData=
   ['autonotetable_2ecpp_43',['AutonoteTable.cpp',['../AutonoteTable_8cpp.html',1,'']]],
   ['autonotetable_2eh_44',['AutonoteTable.h',['../AutonoteTable_8h.html',1,'']]],
   ['awarddata_2eh_45',['AwardData.h',['../AwardData_8h.html',1,'']]],
-  ['awardenums_2eh_46',['AwardEnums.h',['../AwardEnums_8h.html',1,'']]],
-  ['awardtable_2ecpp_47',['AwardTable.cpp',['../AwardTable_8cpp.html',1,'']]],
-  ['awardtable_2eh_48',['AwardTable.h',['../AwardTable_8h.html',1,'']]]
+  ['awardenumfunctions_2eh_46',['AwardEnumFunctions.h',['../AwardEnumFunctions_8h.html',1,'']]],
+  ['awardenums_2eh_47',['AwardEnums.h',['../AwardEnums_8h.html',1,'']]],
+  ['awardtable_2ecpp_48',['AwardTable.cpp',['../AwardTable_8cpp.html',1,'']]],
+  ['awardtable_2eh_49',['AwardTable.h',['../AwardTable_8h.html',1,'']]]
 ];
