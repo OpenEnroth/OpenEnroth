@@ -424,7 +424,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
             logger->warning("GetSector fail: {}, {}, {}", sX, sY, sZ);
             return 0;
         } else {
-            logger->warning("GetSector: Returning backup sector bounding!");
+            logger->warning("GetSector fail: {}, {}, {}  Returning backup sector bounding!", sX, sY, sZ);
             return backupboundingsector;
         }
     }
