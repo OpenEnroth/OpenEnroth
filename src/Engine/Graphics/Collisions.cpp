@@ -275,13 +275,6 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
             Vec3f col_pos;
             if (CollideSphereWithFace(face, old_pos, radius, dir, &move_distance, &col_pos, ignore_ethereal, model_idx)) {
                 have_collision = true;
-            } else {
-                move_distance = collision_state.move_distance + radius;
-                if (CollidePointWithFace(face, old_pos, dir, &move_distance, model_idx)) {
-                    have_collision = true;
-                    col_pos = move_distance * dir + old_pos;
-                    move_distance -= radius;
-                }
             }
 
             if (have_collision && move_distance < collision_state.adjusted_move_distance) {
