@@ -834,7 +834,7 @@ void switchDoorAnimation(unsigned int uDoorID, DoorAction action) {
 }
 
 //----- (0046F90C) --------------------------------------------------------
-void UpdateActors_BLV() {
+void BLV_UpdateActors() {
     if (engine->config->debug.NoActors.value())
         return;
 
@@ -1573,7 +1573,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
 //----- (0046BDF1) --------------------------------------------------------
 void BLV_UpdateUserInputAndOther() {
     BLV_ProcessPartyActions();
-    UpdateActors_BLV();
+    BLV_UpdateActors();
     BLV_UpdateDoors();
 }
 
