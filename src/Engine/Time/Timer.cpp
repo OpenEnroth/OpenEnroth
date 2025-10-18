@@ -4,8 +4,6 @@
 
 #include "Engine/EngineGlobals.h"
 
-#include "Io/KeyboardInputHandler.h"
-
 Timer *pMiscTimer = new Timer;
 Timer *pEventTimer;
 
@@ -37,7 +35,6 @@ void Timer::setPaused(bool paused) {
     _paused = paused;
 
     if (!_paused) {
-        keyboardInputHandler->ResetKeys(); // TODO(captainurist): doesn't belong here.
         _lastFrameTime = platformTime();
     }
 }
