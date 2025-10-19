@@ -79,8 +79,13 @@ struct EventTrace {
      * @param keys                      Set of keys for input actions that trigger continuously.
      * @param[in, out] trace            Trace to update.
      */
-    static void migrateCollapseKeyEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace);
+    static void migrateCollapseKeyPressReleaseEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace);
 
+    /**
+     * This migration drops a single paint event after an `EVENT_WINDOW_ACTIVATE` and fixes frame timings. We've
+     * dropped an out of place `swapBuffers` call after the `EVENT_WINDOW_ACTIVATE`, and this is how this migration
+     * came to be.
+     */
     static void migrateDropPaintAfterActivate(EventTrace *trace);
 
     EventTraceHeader header;

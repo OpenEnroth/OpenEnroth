@@ -290,7 +290,7 @@ void EventTrace::migrateDropRedundantKeyEvents(EventTrace *trace) {
     std::erase_if(trace->events, [](const auto &event) { return !event; });
 }
 
-void EventTrace::migrateCollapseKeyEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace) {
+void EventTrace::migrateCollapseKeyPressReleaseEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace) {
     // Non-negative value => in-frame index, negative value => pressed in another frame.
     std::unordered_map<PlatformKey, int> pressIndexByKey;
 

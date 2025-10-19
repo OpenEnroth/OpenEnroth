@@ -75,7 +75,7 @@ void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
         for (InputAction inputAction : allInputActions())
             if (triggerModeForInputAction(inputAction) != TRIGGER_ONCE)
                 keys.insert(keyboardActionMapping->keyFor(inputAction));
-        return EventTrace::migrateCollapseKeyEvents(keys, trace);
+        return EventTrace::migrateCollapseKeyPressReleaseEvents(keys, trace);
     case OpenEnrothOptions::MIGRATION_DROP_PAINT_AFTER_ACTIVATE:
         return EventTrace::migrateDropPaintAfterActivate(trace);
     }
