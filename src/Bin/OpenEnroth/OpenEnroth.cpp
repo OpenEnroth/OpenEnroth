@@ -58,9 +58,9 @@ static void printTraceDiff(std::string_view current, std::string_view canonical)
     size_t line = std::ranges::mismatch(canonicalLines, currentLines).in1 - canonicalLines.begin() + 1; // Lines are 1-indexed.
 
     fmt::println(stderr, "Canonical:");
-    printLines(canonicalLines, line, 2);
+    printLines(canonicalLines, line, 4);
     fmt::println(stderr, "Current:");
-    printLines(currentLines, line, 2);
+    printLines(currentLines, line, 4);
 }
 
 void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
