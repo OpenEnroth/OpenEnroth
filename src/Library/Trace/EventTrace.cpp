@@ -265,6 +265,30 @@ std::unique_ptr<PlatformEvent> EventTrace::cloneEvent(const PlatformEvent *event
     return result;
 }
 
+static std::vector<std::vector<std::unique_ptr<PlatformEvent>>> splitIntoFrames(std::vector<std::unique_ptr<PlatformEvent>> events) {
+    std::vector<std::vector<std::unique_ptr<PlatformEvent>>> result;
+    for (auto &event : events) {
+        if (event->type == EVENT_PAINT) {
+            result.emplace_back();
+            result.back().push_back(std::move(event)); // Paint is always the first in a frame when present.
+        } else {
+            if (result.empty())
+                result.emplace_back();
+            result.back().push_back(std::move(event));
+        }
+    }
+    return result;
+}
+
+static std::vector<std::unique_ptr<PlatformEvent>> mergeFromFrames(std::vector<std::vector<std::unique_ptr<PlatformEvent>>> frames) {
+    std::vector<std::unique_ptr<PlatformEvent>> result;
+    for (auto &frame : frames)
+        for (auto &event : frame)
+            if (event)
+                result.push_back(std::move(event));
+    return result;
+}
+
 void EventTrace::migrateDropRedundantKeyEvents(EventTrace *trace) {
     std::unordered_set<PlatformKey> pressedKeys;
     for (std::unique_ptr<PlatformEvent> &event : trace->events) {
@@ -294,12 +318,9 @@ void EventTrace::migrateCollapseKeyPressReleaseEvents(const std::unordered_set<P
     // Non-negative value => in-frame index, negative value => pressed in another frame.
     std::unordered_map<PlatformKey, int> pressIndexByKey;
 
-    auto pos = trace->events.begin();
-    while (true) {
-        auto next = std::find_if(pos, trace->events.end(), [](const auto &event) { return event->type == EVENT_PAINT; });
-
-        std::span frame(pos, next);
-        for (int i = 0; i < frame.size(); i++) {
+    auto frames = splitIntoFrames(std::move(trace->events));
+    for (auto &frame : frames) {
+        for (size_t i = 0; i < frame.size(); i++) {
             if (frame[i]->type != EVENT_KEY_PRESS && frame[i]->type != EVENT_KEY_RELEASE)
                 continue;
 
@@ -325,14 +346,8 @@ void EventTrace::migrateCollapseKeyPressReleaseEvents(const std::unordered_set<P
 
         for (auto &[_, index] : pressIndexByKey)
             index = -1;
-
-        pos = next;
-        if (pos == trace->events.end())
-            break;
-        pos++; // Skip EVENT_PAINT.
     }
-
-    std::erase_if(trace->events, [](const auto &event) { return !event; });
+    trace->events = mergeFromFrames(std::move(frames));
 }
 
 void EventTrace::migrateDropPaintAfterActivate(EventTrace *trace) {

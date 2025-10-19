@@ -61,30 +61,23 @@ struct EventTrace {
     static std::unique_ptr<PlatformEvent> cloneEvent(const PlatformEvent *event);
 
     /**
-     * Removes all keyboard events that have no effect from a trace. This includes autorepeat events (OE handles
-     * autorepeat internally), and key releases w/o a corresponding key press.
+     * Removes all keyboard events that have no effect from a trace. This includes autorepeat events, and key releases
+     * w/o a corresponding key press.
      *
      * @param[in, out] trace            Trace to update.
      */
     static void migrateDropRedundantKeyEvents(EventTrace *trace);
 
     /**
-     * This migration has to do with how OE handles key presses for input actions that trigger continuously.
-     * Originally, if a key was pressed and released inside a single frame, the continuous action would not trigger,
-     * so this key press was effectively ignored. We are changing that, but we already have a bunch of traces with
-     * keypresses that were ignored, so we need to drop them first.
+     * Drops key press & release events if they are inside a single frame.
      *
-     * Note that we pass in `keys` and don't resolve them dynamically. This is not 100% correct but work.
-     *
-     * @param keys                      Set of keys for input actions that trigger continuously.
+     * @param keys                      Set of keys to migrate events for.
      * @param[in, out] trace            Trace to update.
      */
     static void migrateCollapseKeyPressReleaseEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace);
 
     /**
-     * This migration drops a single paint event after an `EVENT_WINDOW_ACTIVATE` and fixes frame timings. We've
-     * dropped an out of place `swapBuffers` call after the `EVENT_WINDOW_ACTIVATE`, and this is how this migration
-     * came to be.
+     * Drops one paint event after each `EVENT_WINDOW_ACTIVATE` and fixes frame timings.
      */
     static void migrateDropPaintAfterActivate(EventTrace *trace);
 
