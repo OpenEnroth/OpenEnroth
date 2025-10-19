@@ -294,7 +294,6 @@ bool enterHouse(HouseId uHouseID) {
     engine->_statusBar->clearAll();
     engine->_messageQueue->clear();
     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
-    keyboardInputHandler->ResetKeys();
 
     if (uHouseID == HOUSE_THRONEROOM_WIN_GOOD || uHouseID == HOUSE_THRONEROOM_WIN_EVIL) {
         engine->_messageQueue->addMessageCurrentFrame(UIMSG_ShowGameOverWindow, 0, 0);
@@ -560,7 +559,6 @@ void selectProprietorDialogueOption(DialogueId option) {
 bool houseDialogPressEscape() {
     engine->_messageQueue->clear();
     keyboardInputHandler->SetWindowInputStatus(WINDOW_INPUT_CANCELLED);
-    keyboardInputHandler->ResetKeys();
     activeLevelDecoration = nullptr;
     current_npc_text.clear();
     pParty->placeHeldItemInInventoryOrDrop();

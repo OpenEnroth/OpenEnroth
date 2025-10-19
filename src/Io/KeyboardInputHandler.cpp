@@ -63,7 +63,7 @@ void Io::KeyboardInputHandler::GeneratePausedActions() {
         bool isTriggered = false;
         for (PlatformKey key : {actionMapping->keyFor(action), actionMapping->gamepadKeyFor(action)}) {
             if (triggerModeForInputAction(action) == TRIGGER_ONCE)
-                isTriggered = controller->ConsumeKeyPress(key);
+                isTriggered = controller->IsKeyPressedThisFrame(key);
             else
                 isTriggered = controller->IsKeyDown(key);
 
@@ -86,7 +86,7 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             switch (triggerModeForInputAction(action)) {
             default: assert(false); [[fallthrough]];
             case TRIGGER_ONCE:
-                isTriggered = controller->ConsumeKeyPress(key);
+                isTriggered = controller->IsKeyPressedThisFrame(key);
                 break;
             case TRIGGER_CONTINUOUSLY:
                 isTriggered = controller->IsKeyDown(key);
@@ -464,14 +464,6 @@ const std::string &Io::KeyboardInputHandler::GetTextInput() const {
 
 void Io::KeyboardInputHandler::SetTextInput(std::string_view text) {
     pPressedKeysBuffer = text;
-}
-
-//----- (00459E3F) --------------------------------------------------------
-void Io::KeyboardInputHandler::ResetKeys() {
-    for (auto action : allInputActions()) {
-        // requesting KeyPressed will consume all the events due to how logic is designed in GetAsyncKeyState
-        controller->ConsumeKeyPress(actionMapping->keyFor(action));
-    }
 }
 
 bool Io::KeyboardInputHandler::IsRunKeyToggled() const {

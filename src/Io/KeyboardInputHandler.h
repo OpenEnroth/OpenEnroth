@@ -30,7 +30,6 @@ class KeyboardInputHandler {
         lastKeyPressed = PlatformKey::KEY_NONE;
         inputType = TextInputType::None;
         window = nullptr;
-        ResetKeys();
     }
 
     bool IsRunKeyToggled() const;
@@ -47,7 +46,6 @@ class KeyboardInputHandler {
     inline PlatformKey LastPressedKey() const {
         return lastKeyPressed;
     }
-    void ResetKeys();
 
     void StartTextInput(TextInputType type, int max_string_len, GUIWindow *pWindow);
     bool ProcessTextInput(PlatformKey key, int c);
