@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 set(LIBRARY_TRACE_SOURCES
-        EventTrace.cpp)
+        EventTrace.cpp
+        EventTraceMigrations.cpp)
 
 set(LIBRARY_TRACE_HEADERS
         EventTrace.h
+        EventTraceMigrations.h
         PaintEvent.h)
 
 add_library(library_trace STATIC ${LIBRARY_TRACE_SOURCES} ${LIBRARY_TRACE_HEADERS})
