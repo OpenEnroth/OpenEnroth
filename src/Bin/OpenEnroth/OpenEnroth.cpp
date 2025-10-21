@@ -23,6 +23,7 @@
 #include "Library/StackTrace/StackTraceOnCrash.h"
 #include "Library/Platform/Application/PlatformApplication.h"
 #include "Library/Trace/EventTrace.h"
+#include "Library/Trace/EventTraceMigrations.h"
 
 #include "Utility/Streams/FileOutputStream.h"
 #include "Utility/String/Format.h"
@@ -58,9 +59,9 @@ static void printTraceDiff(std::string_view current, std::string_view canonical)
     size_t line = std::ranges::mismatch(canonicalLines, currentLines).in1 - canonicalLines.begin() + 1; // Lines are 1-indexed.
 
     fmt::println(stderr, "Canonical:");
-    printLines(canonicalLines, line, 2);
+    printLines(canonicalLines, line, 4);
     fmt::println(stderr, "Current:");
-    printLines(currentLines, line, 2);
+    printLines(currentLines, line, 4);
 }
 
 void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
@@ -70,14 +71,14 @@ void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
     case OpenEnrothOptions::MIGRATION_NONE:
         return;
     case OpenEnrothOptions::MIGRATION_DROP_REDUNDANT_KEY_EVENTS:
-        return EventTrace::migrateDropRedundantKeyEvents(trace);
+        return trace::migrateDropRedundantKeyEvents(trace);
     case OpenEnrothOptions::MIGRATION_COLLAPSE_KEY_EVENTS:
         for (InputAction inputAction : allInputActions())
             if (triggerModeForInputAction(inputAction) != TRIGGER_ONCE)
                 keys.insert(keyboardActionMapping->keyFor(inputAction));
-        return EventTrace::migrateCollapseKeyEvents(keys, trace);
+        return trace::migrateCollapseKeyPressReleaseEvents(keys, trace);
     case OpenEnrothOptions::MIGRATION_DROP_PAINT_AFTER_ACTIVATE:
-        return EventTrace::migrateDropPaintAfterActivate(trace);
+        return trace::migrateDropPaintAfterActivate(trace);
     }
 }
 

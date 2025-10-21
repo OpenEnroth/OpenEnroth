@@ -194,8 +194,6 @@ MM_DECLARE_SERIALIZATION_FUNCTIONS(TileVariant)
 
 /**
  * Tile set id.
- *
- * Most of these tile sets don't exist in mm7 data, see comments.
  */
 enum class Tileset {
     TILESET_INVALID,

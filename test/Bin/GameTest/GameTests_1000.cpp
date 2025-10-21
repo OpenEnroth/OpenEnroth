@@ -69,7 +69,9 @@ GAME_TEST(Issues, Issue1036) {
 }
 
 GAME_TEST(Issues, Issue1038) {
-    // Crash while fighting Eyes in Nighon Tunnels
+    // Crash while fighting Eyes in Nighon Tunnels.
+    // Was due to how iterating over a table of items blocking specific conditions was implemented, was tripping
+    // either on CONDITION_SLEEP or CONDITION_INSANE - exact condition that used to trigger the bug is now lost to time.
     auto conditionsTape = charTapes.conditions();
     test.playTraceFromTestData("issue_1038.mm7", "issue_1038.json");
     EXPECT_EQ(conditionsTape.frontBack(), tape({CONDITION_GOOD, CONDITION_INSANE, CONDITION_GOOD, CONDITION_INSANE},

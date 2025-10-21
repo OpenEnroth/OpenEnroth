@@ -535,7 +535,7 @@ GAME_TEST(Prs, Pr2157b) {
     EXPECT_EQ(inventory.size(), 126);
 }
 
-GAME_TEST(Issues, Issue2186) {
+GAME_TEST(Issues, Issue2186a) {
     // Consistent crashing in Grand Temple of the Sun Upper Level
     auto maps = tapes.map();
     test.playTraceFromTestData("issue_2186.mm7", "issue_2186.json");
