@@ -159,7 +159,7 @@ GAME_TEST(Issues, Issue1547) {
     game.tick();
     for (int i = 0; i < 4; i++) {
         game.pressAndReleaseKey(PlatformKey::KEY_A); // Attack with each char - this shouldn't crash.
-        game.tick(2);
+        game.tick();
     }
     test.stopTaping();
 
@@ -706,7 +706,7 @@ GAME_TEST(Prs, Pr1953) {
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_LEATHER_ARMOR);
     EXPECT_EQ(char0.inventory.size(), 1);
     game.pressAndReleaseButton(BUTTON_LEFT, 600, 60); // Wear it, replacing royal leather that's worn.
-    game.tick(1);
+    game.tick();
     EXPECT_EQ(pParty->pPickedItem.itemId, ITEM_ROYAL_LEATHER);
     EXPECT_EQ(char0.inventory.size(), 1);
     ASSERT_FALSE(char0.inventory.entry(Pointi(0, 0)));

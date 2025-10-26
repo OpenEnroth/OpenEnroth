@@ -260,16 +260,16 @@ GAME_TEST(Issues, Issue624) {
 
     for (int i = 0; i < 5; i++) {
         game.pressAndReleaseKey(PlatformKey::KEY_A);
-        game.tick(1);
+        game.tick();
     }
 
     EXPECT_EQ(keyboardInputHandler->GetTextInput(), "aaaaa");
 
     game.pressKey(PlatformKey::KEY_BACKSPACE);
-    game.tick(1);
+    game.tick();
     for (int i = 0; i < 4; i++) {
         game.pressAutoRepeatedKey(PlatformKey::KEY_BACKSPACE);
-        game.tick(1);
+        game.tick();
     }
 
     EXPECT_EQ(keyboardInputHandler->GetTextInput(), "");
@@ -481,7 +481,7 @@ GAME_TEST(Issues, Issue689) {
     game.tick(2);
     game.pressGuiButton("GameMenu_LoadGame");
     game.tick(10);
-    game.pressGuiButton("LoadMenu_Scroll"); // Sould not crash
+    game.pressGuiButton("LoadMenu_Scroll"); // Should not crash.
     game.tick(2);
     game.pressGuiButton("LoadMenu_Slot0");
     game.tick(2);

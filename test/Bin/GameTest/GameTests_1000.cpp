@@ -766,13 +766,11 @@ GAME_TEST(Issues, Issue1449) {
     auto iconsTape = tapes.hudTextures();
     game.startNewGame();
     test.startTaping();
-    game.pressKey(PlatformKey::KEY_RETURN); // Enter turn-based mode.
-    game.tick();
-    game.releaseKey(PlatformKey::KEY_RETURN);
+    game.pressAndReleaseKey(PlatformKey::KEY_RETURN); // Enter turn-based mode.
     game.tick(1000 / 20); // Wait 1s.
     for (int i = 0; i < 4; i++) {
         game.pressAndReleaseKey(PlatformKey::KEY_A); // Attack with each char.
-        game.tick(2);
+        game.tick();
     }
     game.pressKey(PlatformKey::KEY_DOWN); // Walk.
     game.tick(500 / 20);
