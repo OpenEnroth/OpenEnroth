@@ -65,20 +65,23 @@ static void printTraceDiff(std::string_view current, std::string_view canonical)
 }
 
 void migrateTrace(OpenEnrothOptions::Migration migration, EventTrace *trace) {
-    std::unordered_set<PlatformKey> keys;
+    std::unordered_set<PlatformKey> continuousKeys, onceKeys;
+    for (InputAction inputAction : allInputActions())
+        (triggerModeForInputAction(inputAction) == TRIGGER_ONCE ? onceKeys : continuousKeys).insert(keyboardActionMapping->keyFor(inputAction));
+    erase_if(onceKeys, [&] (PlatformKey key) { return continuousKeys.contains(key); });
+
     switch (migration) {
     default: assert(false); [[fallthrough]];
     case OpenEnrothOptions::MIGRATION_NONE:
         return;
     case OpenEnrothOptions::MIGRATION_DROP_REDUNDANT_KEY_EVENTS:
         return trace::migrateDropRedundantKeyEvents(trace);
-    case OpenEnrothOptions::MIGRATION_COLLAPSE_KEY_EVENTS:
-        for (InputAction inputAction : allInputActions())
-            if (triggerModeForInputAction(inputAction) != TRIGGER_ONCE)
-                keys.insert(keyboardActionMapping->keyFor(inputAction));
-        return trace::migrateCollapseKeyPressReleaseEvents(keys, trace);
+    case OpenEnrothOptions::MIGRATION_DROP_PRESS_RELEASE_FOR_CONTINUOUS_ACTIONS:
+        return trace::migrateDropKeyPressReleaseEvents(continuousKeys, trace);
     case OpenEnrothOptions::MIGRATION_DROP_PAINT_AFTER_ACTIVATE:
         return trace::migrateDropPaintAfterActivate(trace);
+    case OpenEnrothOptions::MIGRATION_TIGHTEN_KEY_EVENTS_FOR_ONCE_ACTIONS:
+        return trace::migrateTightenKeyEvents(onceKeys, trace);
     }
 }
 

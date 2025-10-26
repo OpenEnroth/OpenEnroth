@@ -9,6 +9,8 @@
 
 #include "Library/Platform/Interface/PlatformEvents.h"
 
+#include "Utility/MapAccess.h"
+
 #include "EventTrace.h"
 #include "PaintEvent.h"
 
@@ -61,9 +63,10 @@ void trace::migrateDropRedundantKeyEvents(EventTrace *trace) {
     std::erase_if(trace->events, [](const auto &event) { return !event; });
 }
 
-void trace::migrateCollapseKeyPressReleaseEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace) {
-    // Non-negative value => in-frame index, negative value => pressed in another frame.
+void trace::migrateDropKeyPressReleaseEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace) {
+    // Non-negative value => in-frame index, negative value => event happened in another frame.
     std::unordered_map<PlatformKey, int> pressIndexByKey;
+    std::unordered_map<PlatformKey, int> releaseIndexByKey;
 
     auto frames = splitIntoFrames(std::move(trace->events));
     for (auto &frame : frames) {
@@ -78,20 +81,34 @@ void trace::migrateCollapseKeyPressReleaseEvents(const std::unordered_set<Platfo
             if (frame[i]->type == EVENT_KEY_PRESS) {
                 assert(!pressIndexByKey.contains(key));
                 pressIndexByKey[key] = i;
-            } else {
-                assert(pressIndexByKey.contains(key));
-                int index = pressIndexByKey[key];
-                pressIndexByKey.erase(key);
 
-                if (index >= 0) {
-                    // Press & release inside a single frame, should drop.
-                    frame[index].reset();
+                int releaseIndex = valueOr(releaseIndexByKey, key, -1);
+                if (releaseIndex >= 0) {
+                    // Release & press inside a single frame, should drop.
+                    frame[releaseIndex].reset();
                     frame[i].reset();
                 }
+
+                releaseIndexByKey.erase(key);
+            } else {
+                assert(!releaseIndexByKey.contains(key));
+                assert(pressIndexByKey.contains(key)); // Every release must have a matching press.
+                releaseIndexByKey[key] = i;
+
+                int pressIndex = valueOr(pressIndexByKey, key, -1);
+                if (pressIndex >= 0) {
+                    // Press & release inside a single frame, should drop.
+                    frame[pressIndex].reset();
+                    frame[i].reset();
+                }
+
+                pressIndexByKey.erase(key);
             }
         }
 
         for (auto &[_, index] : pressIndexByKey)
+            index = -1;
+        for (auto &[_, index] : releaseIndexByKey)
             index = -1;
     }
     trace->events = mergeFromFrames(std::move(frames));
@@ -119,4 +136,40 @@ void trace::migrateDropPaintAfterActivate(EventTrace *trace) {
     }
 
     std::erase_if(trace->events, [](const auto &event) { return !event; });
+}
+
+void trace::migrateTightenKeyEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace) {
+    // Frame index for key presses.
+    std::unordered_map<PlatformKey, size_t> pressFrameByKey;
+
+    auto frames = splitIntoFrames(std::move(trace->events));
+    for (size_t i = 0; i < frames.size(); i++) {
+        auto &frame = frames[i];
+
+        for (auto &event : frame) {
+            if (event->type != EVENT_KEY_PRESS && event->type != EVENT_KEY_RELEASE)
+                continue;
+
+            PlatformKey key = static_cast<PlatformKeyEvent *>(event.get())->key;
+            if (!keys.contains(key))
+                continue;
+
+            if (event->type == EVENT_KEY_PRESS) {
+                pressFrameByKey[key] = i;
+            } else {
+                if (!pressFrameByKey.contains(key))
+                    continue; // No matching press recorded, skip.
+
+                size_t pressFrameIndex = pressFrameByKey[key];
+                pressFrameByKey.erase(key);
+
+                if (pressFrameIndex == i)
+                    continue; // Already tight enough.
+
+                frames[pressFrameIndex].push_back(std::move(event));
+            }
+        }
+    }
+
+    trace->events = mergeFromFrames(std::move(frames));
 }
