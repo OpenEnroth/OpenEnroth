@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;135c41f</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;3d489c4</span>
    </div>
   </td>
  </tr>
@@ -79,20 +79,22 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:a3c8ffa692e5d6348a16e56cc66d4f9e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetrace.html#a3c8ffa692e5d6348a16e56cc66d4f9e3">migrateDropRedundantKeyEvents</a> (<a class="el" href="structEventTrace.html">EventTrace</a> *trace)</td></tr>
 <tr class="separator:a3c8ffa692e5d6348a16e56cc66d4f9e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f42dc29db69c5ddd71d4245b5e3de14"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetrace.html#a0f42dc29db69c5ddd71d4245b5e3de14">migrateCollapseKeyPressReleaseEvents</a> (const std::unordered_set&lt; <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> &gt; &amp;keys, <a class="el" href="structEventTrace.html">EventTrace</a> *trace)</td></tr>
-<tr class="separator:a0f42dc29db69c5ddd71d4245b5e3de14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa57917fb1fcea375b4275febccbe495b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetrace.html#aa57917fb1fcea375b4275febccbe495b">migrateDropKeyPressReleaseEvents</a> (const std::unordered_set&lt; <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> &gt; &amp;keys, <a class="el" href="structEventTrace.html">EventTrace</a> *trace)</td></tr>
+<tr class="separator:aa57917fb1fcea375b4275febccbe495b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e91ab42e482ef3101bb0dd4b0b80afd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetrace.html#a2e91ab42e482ef3101bb0dd4b0b80afd">migrateDropPaintAfterActivate</a> (<a class="el" href="structEventTrace.html">EventTrace</a> *trace)</td></tr>
 <tr class="separator:a2e91ab42e482ef3101bb0dd4b0b80afd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2a3aeeb2bd35d07777cd290f71e4d0a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetrace.html#ab2a3aeeb2bd35d07777cd290f71e4d0a">migrateTightenKeyEvents</a> (const std::unordered_set&lt; <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> &gt; &amp;keys, <a class="el" href="structEventTrace.html">EventTrace</a> *trace)</td></tr>
+<tr class="separator:ab2a3aeeb2bd35d07777cd290f71e4d0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a0f42dc29db69c5ddd71d4245b5e3de14" name="a0f42dc29db69c5ddd71d4245b5e3de14"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0f42dc29db69c5ddd71d4245b5e3de14">&#9670;&#160;</a></span>migrateCollapseKeyPressReleaseEvents()</h2>
+<a id="aa57917fb1fcea375b4275febccbe495b" name="aa57917fb1fcea375b4275febccbe495b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa57917fb1fcea375b4275febccbe495b">&#9670;&#160;</a></span>migrateDropKeyPressReleaseEvents()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void trace::migrateCollapseKeyPressReleaseEvents </td>
+          <td class="memname">void trace::migrateDropKeyPressReleaseEvents </td>
           <td>(</td>
           <td class="paramtype">const std::unordered_set&lt; <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> &gt; &amp;&#160;</td>
           <td class="paramname"><em>keys</em>, </td>
@@ -110,7 +112,7 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Drops key press &amp; release events if they are inside a single frame.</p>
+<p >Drops key event pairs (press &amp; release OR release &amp; press) if they are inside a single frame.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir"></td><td class="paramname">keys</td><td>Set of keys to migrate events for. </td></tr>
@@ -136,7 +138,13 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Drops one paint event after each <code>EVENT_WINDOW_ACTIVATE</code> and fixes frame timings. </p>
+<p >Drops one paint event after each <code>EVENT_WINDOW_ACTIVATE</code> and fixes frame timings.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">trace</td><td>Trace to update. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -158,6 +166,42 @@ Functions</h2></td></tr>
 <p >Removes all keyboard events that have no effect from a trace. This includes autorepeat events, and key releases w/o a corresponding key press.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">trace</td><td>Trace to update. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab2a3aeeb2bd35d07777cd290f71e4d0a" name="ab2a3aeeb2bd35d07777cd290f71e4d0a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2a3aeeb2bd35d07777cd290f71e4d0a">&#9670;&#160;</a></span>migrateTightenKeyEvents()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void trace::migrateTightenKeyEvents </td>
+          <td>(</td>
+          <td class="paramtype">const std::unordered_set&lt; <a class="el" href="PlatformEnums_8h.html#a2ba59747730ab559dd1191f51081eecc">PlatformKey</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>keys</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structEventTrace.html">EventTrace</a> *&#160;</td>
+          <td class="paramname"><em>trace</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Moves all key release events into the frame where the corresponding key press event is.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir"></td><td class="paramname">keys</td><td>Set of keys to migrate events for. </td></tr>
     <tr><td class="paramdir">[in,out]</td><td class="paramname">trace</td><td>Trace to update. </td></tr>
   </table>
   </dd>
