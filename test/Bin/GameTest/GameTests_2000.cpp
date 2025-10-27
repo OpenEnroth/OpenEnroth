@@ -42,7 +42,7 @@ GAME_TEST(Issues, Issue2002) {
     game.tick(15);
     for (int i = 0; i < 3; ++i) {
         game.pressAndReleaseKey(PlatformKey::KEY_A); // Attack with 3 chars
-        game.tick(2);
+        game.tick();
     }
 
     // check recovery
@@ -335,7 +335,7 @@ GAME_TEST(Issues, Issue2116) {
     for (int i = 0; i < 10; i++) {
         game.pressAndReleaseKey(PlatformKey::KEY_B); // Pass.
         do {
-            game.tick(2);
+            game.tick();
         } while (!pParty->hasActiveCharacter());
     }
     EXPECT_CONTAINS(activeCharacterTape, 1);
@@ -348,10 +348,10 @@ GAME_TEST(Issues, Issue2116) {
     pParty->pCharacters[3].health = 1;
     game.tick();
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 20; i++) {
         game.pressAndReleaseKey(PlatformKey::KEY_B); // Pass.
         do {
-            game.tick(2);
+            game.tick();
         } while (!pParty->hasActiveCharacter());
     }
     EXPECT_CONTAINS(activeCharacterTape, 4);

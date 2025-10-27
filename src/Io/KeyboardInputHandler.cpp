@@ -96,9 +96,10 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
                 //                     Better way to implement this would be to generate the input actions from inside
                 //                     the event handler.
                 if (controller->IsKeyDown(key)) {
-                    resettimer = false;
-                    if (!this->keydelaytimer) {
+                    if (controller->IsKeyPressedThisFrame(key)) {
                         isTriggered = true;
+                    } else {
+                        resettimer = false;
                     }
                     // big delay after first press then small delay
                     if (this->keydelaytimer >= DELAY_TOGGLE_TIME_FIRST) {
@@ -118,8 +119,8 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             ProcessGameplayAction(action);
     }
 
-    if (resettimer == true) {
-        this->keydelaytimer = 0_ticks;
+    if (resettimer) {
+        this->keydelaytimer = pEventTimer->dt();
     } else {
         // use timer so pacing is consistent across framerates
         if (this->keydelaytimer < DELAY_TOGGLE_TIME_FIRST) this->keydelaytimer += pEventTimer->dt();

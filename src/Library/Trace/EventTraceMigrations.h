@@ -17,16 +17,26 @@ namespace trace {
 void migrateDropRedundantKeyEvents(EventTrace *trace);
 
 /**
- * Drops key press & release events if they are inside a single frame.
+ * Drops key event pairs (press & release OR release & press) if they are inside a single frame.
  *
  * @param keys                      Set of keys to migrate events for.
  * @param[in, out] trace            Trace to update.
  */
-void migrateCollapseKeyPressReleaseEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace);
+void migrateDropKeyPressReleaseEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace);
 
 /**
  * Drops one paint event after each `EVENT_WINDOW_ACTIVATE` and fixes frame timings.
+ *
+ * @param[in, out] trace            Trace to update.
  */
 void migrateDropPaintAfterActivate(EventTrace *trace);
+
+/**
+ * Moves all key release events into the frame where the corresponding key press event is.
+ *
+ * @param keys                      Set of keys to migrate events for.
+ * @param[in, out] trace            Trace to update.
+ */
+void migrateTightenKeyEvents(const std::unordered_set<PlatformKey> &keys, EventTrace *trace);
 
 } // namespace trace
