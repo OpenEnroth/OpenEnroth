@@ -63,9 +63,9 @@ void Io::KeyboardInputHandler::GeneratePausedActions() {
         bool isTriggered = false;
         for (PlatformKey key : {actionMapping->keyFor(action), actionMapping->gamepadKeyFor(action)}) {
             if (triggerModeForInputAction(action) == TRIGGER_ONCE)
-                isTriggered = controller->IsKeyPressedThisFrame(key);
+                isTriggered = controller->isKeyPressedThisFrame(key);
             else
-                isTriggered = controller->IsKeyDown(key);
+                isTriggered = controller->isKeyDownThisFrame(key);
 
             if (isTriggered) {
                 break;
@@ -86,17 +86,17 @@ void Io::KeyboardInputHandler::GenerateGameplayActions() {
             switch (triggerModeForInputAction(action)) {
             default: assert(false); [[fallthrough]];
             case TRIGGER_ONCE:
-                isTriggered = controller->IsKeyPressedThisFrame(key);
+                isTriggered = controller->isKeyPressedThisFrame(key);
                 break;
             case TRIGGER_CONTINUOUSLY:
-                isTriggered = controller->IsKeyDown(key);
+                isTriggered = controller->isKeyDownThisFrame(key);
                 break;
             case TRIGGER_WITH_KEYREPEAT:
                 // TODO(captainurist): This logic breaks down if we press & release a key every frame.
                 //                     Better way to implement this would be to generate the input actions from inside
                 //                     the event handler.
-                if (controller->IsKeyDown(key)) {
-                    if (controller->IsKeyPressedThisFrame(key)) {
+                if (controller->isKeyDownThisFrame(key)) {
+                    if (controller->isKeyPressedThisFrame(key)) {
                         isTriggered = true;
                     } else {
                         resettimer = false;
@@ -468,29 +468,29 @@ void Io::KeyboardInputHandler::SetTextInput(std::string_view text) {
 }
 
 bool Io::KeyboardInputHandler::IsRunKeyToggled() const {
-    return controller->IsKeyDown(PlatformKey::KEY_SHIFT);
+    return controller->isKeyDownThisFrame(PlatformKey::KEY_SHIFT);
 }
 
 bool Io::KeyboardInputHandler::IsTurnStrafingToggled() const {
-    return controller->IsKeyDown(PlatformKey::KEY_CONTROL);
+    return controller->isKeyDownThisFrame(PlatformKey::KEY_CONTROL);
 }
 
 bool Io::KeyboardInputHandler::IsStealingToggled() const {
-    return controller->IsKeyDown(PlatformKey::KEY_CONTROL);
+    return controller->isKeyDownThisFrame(PlatformKey::KEY_CONTROL);
 }
 
 bool Io::KeyboardInputHandler::IsTakeAllToggled() const {
-    return controller->IsKeyDown(PlatformKey::KEY_CONTROL);
+    return controller->isKeyDownThisFrame(PlatformKey::KEY_CONTROL);
 }
 
 bool Io::KeyboardInputHandler::IsAdventurerBackcycleToggled() const {
-    return controller->IsKeyDown(PlatformKey::KEY_SHIFT);
+    return controller->isKeyDownThisFrame(PlatformKey::KEY_SHIFT);
 }
 
 bool Io::KeyboardInputHandler::IsSpellBackcycleToggled() const {
-    return controller->IsKeyDown(PlatformKey::KEY_SHIFT);
+    return controller->isKeyDownThisFrame(PlatformKey::KEY_SHIFT);
 }
 
 bool Io::KeyboardInputHandler::IsCastOnClickToggled() const {
-    return controller->IsKeyDown(PlatformKey::KEY_SHIFT);
+    return controller->isKeyDownThisFrame(PlatformKey::KEY_SHIFT);
 }
