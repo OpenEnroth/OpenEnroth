@@ -663,42 +663,35 @@ void Engine::MM7_Initialize() {
     localization = new Localization();
     localization->initialize();
 
-    auto triLoad = [](std::string_view name) {
-        TriBlob result;
-        result.mm6 = pIcons_LOD_mm6 ? pIcons_LOD_mm6->LoadCompressedTexture(name) : Blob();
-        result.mm7 = engine->_gameResourceManager->getEventsFile(name);
-        return result;
-    };
-
     pSpriteFrameTable = new SpriteFrameTable;
-    deserialize(triLoad("dsft.bin"), pSpriteFrameTable);
+    deserialize(engine->_gameResourceManager->getEventsFile("dsft.bin"), pSpriteFrameTable);
 
     pTextureFrameTable = new TextureFrameTable;
-    deserialize(triLoad("dtft.bin"), pTextureFrameTable);
+    deserialize(engine->_gameResourceManager->getEventsFile("dtft.bin"), pTextureFrameTable);
 
     pTileTable = new TileTable;
-    deserialize(triLoad("dtile.bin"), pTileTable);
+    deserialize(engine->_gameResourceManager->getEventsFile("dtile.bin"), pTileTable);
 
     pPortraitFrameTable = new PortraitFrameTable;
-    deserialize(triLoad("dpft.bin"), pPortraitFrameTable);
+    deserialize(engine->_gameResourceManager->getEventsFile("dpft.bin"), pPortraitFrameTable);
 
     pIconsFrameTable = new IconFrameTable;
-    deserialize(triLoad("dift.bin"), pIconsFrameTable);
+    deserialize(engine->_gameResourceManager->getEventsFile("dift.bin"), pIconsFrameTable);
 
     pDecorationList = new DecorationList;
-    deserialize(triLoad("ddeclist.bin"), pDecorationList);
+    deserialize(engine->_gameResourceManager->getEventsFile("ddeclist.bin"), pDecorationList);
 
     pObjectList = new ObjectList;
-    deserialize(triLoad("dobjlist.bin"), pObjectList);
+    deserialize(engine->_gameResourceManager->getEventsFile("dobjlist.bin"), pObjectList);
 
     pMonsterList = new MonsterList;
-    deserialize(triLoad("dmonlist.bin"), pMonsterList);
+    deserialize(engine->_gameResourceManager->getEventsFile("dmonlist.bin"), pMonsterList);
 
     pOverlayList = new OverlayList;
-    deserialize(triLoad("doverlay.bin"), pOverlayList);
+    deserialize(engine->_gameResourceManager->getEventsFile("doverlay.bin"), pOverlayList);
 
     pSoundList = new SoundList;
-    deserialize(triLoad("dsounds.bin"), pSoundList);
+    deserialize(engine->_gameResourceManager->getEventsFile("dsounds.bin"), pSoundList);
 
     if (!config->debug.NoSound.value())
         pAudioPlayer->Initialize();

@@ -13,49 +13,43 @@ struct SpriteFrameTable;
 class TextureFrameTable;
 class TileTable;
 
-struct TriBlob {
-    Blob mm6;
-    Blob mm7;
-    Blob mm8;
-};
-
 /**
  * @offset 0x00494C0F
  */
-void deserialize(const TriBlob &src, PortraitFrameTable *dst);
+void deserialize(const Blob &src, PortraitFrameTable *dst);
 
 /**
  * @offset 0x0045864C
  */
-void deserialize(const TriBlob &src, DecorationList *dst);
+void deserialize(const Blob &src, DecorationList *dst);
 
 /**
  * @offset 0x00495056
  */
-void deserialize(const TriBlob &src, IconFrameTable *dst);
+void deserialize(const Blob &src, IconFrameTable *dst);
 
 /**
  * @offset 0x004598AF
  */
-void deserialize(const TriBlob &src, MonsterList *dst);
+void deserialize(const Blob &src, MonsterList *dst);
 
-void deserialize(const TriBlob &src, ObjectList *dst);
+void deserialize(const Blob &src, ObjectList *dst);
 
 /**
  * @offset 0x00458E08
  */
-void deserialize(const TriBlob &src, OverlayList *dst);
+void deserialize(const Blob &src, OverlayList *dst);
 
 /**
  * @offset 0x0044D9D7
  */
-void deserialize(const TriBlob &src, SpriteFrameTable *dst);
+void deserialize(const Blob &src, SpriteFrameTable *dst);
 
-void deserialize(const TriBlob &src, TextureFrameTable *dst);
+void deserialize(const Blob &src, TextureFrameTable *dst);
 
-void deserialize(const TriBlob &src, SoundList *dst);
+void deserialize(const Blob &src, SoundList *dst);
 
 /**
  * @offset 0x00488000
  */
-void deserialize(const TriBlob &src, TileTable *dst);
+void deserialize(const Blob &src, TileTable *dst);

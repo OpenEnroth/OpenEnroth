@@ -7,7 +7,7 @@
 #include "Engine/Time/Duration.h"
 
 class GraphicsImage;
-struct TriBlob;
+class Blob;
 
 class IconFrameTable {
  public:
@@ -15,7 +15,7 @@ class IconFrameTable {
     Duration animationLength(int animationId) const;
     GraphicsImage *animationFrame(int animationId, Duration frameTime);
 
-    friend void deserialize(const TriBlob &src, IconFrameTable *dst); // In TableSerialization.cpp.
+    friend void deserialize(const Blob &src, IconFrameTable *dst); // In TableSerialization.cpp.
 
  private:
     GraphicsImage *loadTexture(int frameId);

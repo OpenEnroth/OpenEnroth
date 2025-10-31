@@ -8,7 +8,7 @@
 
 #include "Utility/Hash.h"
 
-struct TriBlob;
+class Blob;
 
 class TileTable {
  public:
@@ -35,7 +35,7 @@ class TileTable {
 
     void addTile(TileData tileData);
 
-    friend void deserialize(const TriBlob &src, TileTable *dst); // In TableSerialization.cpp.
+    friend void deserialize(const Blob &src, TileTable *dst); // In TableSerialization.cpp.
 
  private:
     std::vector<TileData> _tiles; // Tile by id.

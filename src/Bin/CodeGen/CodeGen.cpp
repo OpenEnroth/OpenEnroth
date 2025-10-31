@@ -259,11 +259,10 @@ int runHouseIdCodeGen(const CodeGenOptions &options, GameResourceManager *resour
 }
 
 MonsterStats loadMonsterStats(GameResourceManager *resourceManager) {
-    TriBlob dmonBlobs;
-    dmonBlobs.mm7 = resourceManager->getEventsFile("dmonlist.bin");
+    Blob dmon = resourceManager->getEventsFile("dmonlist.bin");
 
     pMonsterList = new MonsterList;
-    deserialize(dmonBlobs, pMonsterList);
+    deserialize(dmon, pMonsterList);
 
     MonsterStats result;
     result.Initialize(resourceManager->getEventsFile("monsters.txt"));

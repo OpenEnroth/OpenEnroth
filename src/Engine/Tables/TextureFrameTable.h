@@ -5,8 +5,8 @@
 
 #include "Engine/Data/TextureFrameData.h"
 
-struct TriBlob;
 class GraphicsImage;
+class Blob;
 
 class TextureFrameTable {
  public:
@@ -30,7 +30,7 @@ class TextureFrameTable {
 
     GraphicsImage *animationFrame(int animationId, Duration frameTime);
 
-    friend void deserialize(const TriBlob &src, TextureFrameTable *dst); // In TableSerialization.cpp.
+    friend void deserialize(const Blob &src, TextureFrameTable *dst); // In TableSerialization.cpp.
 
  private:
     GraphicsImage *loadTexture(int frameId);
