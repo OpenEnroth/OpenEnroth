@@ -6,7 +6,7 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Party.h"
-#include "Engine/GameResourceManager.h"
+#include "Engine/ResourceManager.h"
 #include "Engine/Random/Random.h"
 
 #include "Utility/String/Transformations.h"
@@ -343,17 +343,17 @@ void NPCStats::InitializeNPCNews(const Blob &npcNews) {
 }
 
 //----- (0047702F) --------------------------------------------------------
-void NPCStats::Initialize(GameResourceManager *resourceManager) {
+void NPCStats::Initialize(ResourceManager *resourceManager) {
     pOriginalNPCData.fill(NPCData());
-    InitializeNPCData(resourceManager->getEventsFile("npcdata.txt"));
-    InitializeNPCGreets(resourceManager->getEventsFile("npcgreet.txt"));
-    InitializeNPCGroups(resourceManager->getEventsFile("npcgroup.txt"));
-    InitializeNPCNews(resourceManager->getEventsFile("npcnews.txt"));
-    InitializeNPCText(resourceManager->getEventsFile("npctext.txt"));
-    InitializeNPCTopics(resourceManager->getEventsFile("npctopic.txt"));
-    InitializeNPCDist(resourceManager->getEventsFile("npcdist.txt"));
-    InitializeNPCNames(resourceManager->getEventsFile("npcnames.txt"));
-    InitializeNPCProfs(resourceManager->getEventsFile("npcprof.txt"));
+    InitializeNPCData(resourceManager->eventsData("npcdata.txt"));
+    InitializeNPCGreets(resourceManager->eventsData("npcgreet.txt"));
+    InitializeNPCGroups(resourceManager->eventsData("npcgroup.txt"));
+    InitializeNPCNews(resourceManager->eventsData("npcnews.txt"));
+    InitializeNPCText(resourceManager->eventsData("npctext.txt"));
+    InitializeNPCTopics(resourceManager->eventsData("npctopic.txt"));
+    InitializeNPCDist(resourceManager->eventsData("npcdist.txt"));
+    InitializeNPCNames(resourceManager->eventsData("npcnames.txt"));
+    InitializeNPCProfs(resourceManager->eventsData("npcprof.txt"));
 }
 
 void NPCStats::InitializeNPCNames(const Blob &npcNames) {

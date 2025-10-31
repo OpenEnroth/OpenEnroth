@@ -14,7 +14,7 @@
 #include "Utility/Flags.h"
 
 class Blob;
-class GameResourceManager;
+class ResourceManager;
 
 // TODO(Nik-RE-dev): It seems that two greet flags are used purely because it's modification is performed
 //                   before greeting string is constructed. It is also ensures that NPC in multi-NPC houses
@@ -87,7 +87,7 @@ struct NPCStats {
         uNumNPCNames[SEX_MALE] = uNumNPCNames[SEX_FEMALE] = 0;
     }
 
-    void Initialize(GameResourceManager *resourceManager);
+    void Initialize(ResourceManager *resourceManager);
     void InitializeNPCNames(const Blob &npcNames);
     void InitializeNPCProfs(const Blob &npcProfs);
     void InitializeNPCText(const Blob &npcText);

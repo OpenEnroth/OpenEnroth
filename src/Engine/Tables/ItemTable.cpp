@@ -12,7 +12,7 @@
 #include "Engine/Engine.h"
 #include "Engine/EngineFileSystem.h"
 #include "Engine/Party.h"
-#include "Engine/GameResourceManager.h"
+#include "Engine/ResourceManager.h"
 
 #include "GUI/UI/UIHouses.h"
 
@@ -31,7 +31,7 @@ static void strtokSkipLines(int n) {
 }
 
 //----- (00456D84) --------------------------------------------------------
-void ItemTable::Initialize(GameResourceManager *resourceManager) {
+void ItemTable::Initialize(ResourceManager *resourceManager) {
     std::map<std::string, ItemType, ascii::NoCaseLess> equipStatMap; // TODO(captainurist): #enum use enum serialization
     equipStatMap["weapon"] = ITEM_TYPE_SINGLE_HANDED;
     equipStatMap["weapon2"] = ITEM_TYPE_TWO_HANDED;
@@ -79,12 +79,12 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
 
     char *lineContent;
 
-    LoadPotions(resourceManager->getEventsFile("potion.txt"));
-    LoadPotionNotes(resourceManager->getEventsFile("potnotes.txt"));
+    LoadPotions(resourceManager->eventsData("potion.txt"));
+    LoadPotionNotes(resourceManager->eventsData("potnotes.txt"));
 
     std::string txtRaw;
 
-    txtRaw = resourceManager->getEventsFile("stditems.txt").string_view();
+    txtRaw = resourceManager->eventsData("stditems.txt").string_view();
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
     // Standard Bonuses by Group
@@ -111,7 +111,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         standardEnchantmentRangeByTreasureLevel[i] = Segment(atoi(tokens[2]), atoi(tokens[3]));
     }
 
-    txtRaw = resourceManager->getEventsFile("spcitems.txt").string_view();
+    txtRaw = resourceManager->eventsData("spcitems.txt").string_view();
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
     for (ItemEnchantment i : specialEnchantments.indices()) {
@@ -138,7 +138,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         specialEnchantments[i].iTreasureLevel = (tolower(tokens[15][0]) - 'a') | mask;
     }
 
-    txtRaw = resourceManager->getEventsFile("items.txt").string_view();
+    txtRaw = resourceManager->eventsData("items.txt").string_view();
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(1);
     for (size_t line = 0; line < 799; line++) {
@@ -206,7 +206,7 @@ void ItemTable::Initialize(GameResourceManager *resourceManager) {
         items[item_counter].description = removeQuotes(tokens[16]);
     }
 
-    txtRaw = resourceManager->getEventsFile("rnditems.txt").string_view();
+    txtRaw = resourceManager->eventsData("rnditems.txt").string_view();
     strtok(txtRaw.data(), "\r");
     strtokSkipLines(3);
     for(size_t line = 0; line < 618; line++) {

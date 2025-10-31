@@ -1,14 +1,14 @@
-#include "GameResourceManager.h"
+#include "ResourceManager.h"
 
 #include "Engine.h"
 #include "EngineFileSystem.h"
 
 #include "Library/LodFormats/LodFormats.h"
 
-GameResourceManager::GameResourceManager() = default;
-GameResourceManager::~GameResourceManager() = default;
+ResourceManager::ResourceManager() = default;
+ResourceManager::~ResourceManager() = default;
 
-void GameResourceManager::openGameResources() {
+void ResourceManager::open() {
     _eventsLodReader.open(dfs->read("data/events.lod"));
     // TODO(captainurist):
     //  on exception:
@@ -16,6 +16,6 @@ void GameResourceManager::openGameResources() {
     // but we can't use localization object here cause it's not yet initialized.
 }
 
-Blob GameResourceManager::getEventsFile(std::string_view filename) {
+Blob ResourceManager::eventsData(std::string_view filename) {
     return lod::decodeMaybeCompressed(_eventsLodReader.read(filename));
 }

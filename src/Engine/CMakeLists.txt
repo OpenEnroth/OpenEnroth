@@ -22,7 +22,7 @@ set(ENGINE_SOURCES
         SaveLoad.cpp
         SpellFxRenderer.cpp
         TeleportPoint.cpp
-        GameResourceManager.cpp
+        ResourceManager.cpp
         mm7_data.cpp
         mm7text_ru.cpp
         Seasons.cpp)
@@ -52,7 +52,7 @@ set(ENGINE_HEADERS
         SaveLoad.h
         SpellFxRenderer.h
         TeleportPoint.h
-        GameResourceManager.h
+        ResourceManager.h
         mm7_data.h
         stru314.h
         Seasons.h)

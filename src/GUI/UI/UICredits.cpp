@@ -6,7 +6,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-#include "Engine/GameResourceManager.h"
+#include "Engine/ResourceManager.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"
@@ -19,7 +19,7 @@ GUICredits::GUICredits() : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDi
 
     _mm6TitleTexture = assets->getImage_PCXFromIconsLOD("mm6title.pcx");
 
-    std::string text{ engine->_gameResourceManager->getEventsFile("credits.txt").string_view() };
+    std::string text{ engine->resources()->eventsData("credits.txt").string_view() };
 
     int height = _fontQuick->GetStringHeightWithSecondFont(_fontCChar.get(), text, creditsRect.w, 0) + 2 * creditsRect.h;
     _creditsTexture = GraphicsImage::Create(creditsRect.w, height);

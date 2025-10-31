@@ -61,7 +61,7 @@
 #include "Engine/Tables/MessageScrollTable.h"
 #include "Engine/Time/Timer.h"
 #include "Engine/AttackList.h"
-#include "Engine/GameResourceManager.h"
+#include "Engine/ResourceManager.h"
 #include "Engine/MapInfo.h"
 #include "Engine/EngineFileSystem.h"
 #include "Graphics/TileGenerator.h"
@@ -433,6 +433,8 @@ Engine::Engine(std::shared_ptr<GameConfig> config, OverlaySystem &overlaySystem)
 
     keyboardInputHandler = ::keyboardInputHandler;
     keyboardActionMapping = ::keyboardActionMapping;
+
+    _resourceManager = std::make_unique<ResourceManager>();
 }
 
 //----- (0044E7F3) --------------------------------------------------------
@@ -617,8 +619,7 @@ void FinalInitialization() {
 }
 
 void MM7_LoadLods() {
-    engine->_gameResourceManager = std::make_unique<GameResourceManager>();
-    engine->_gameResourceManager->openGameResources();
+    engine->resources()->open();
 
     pIcons_LOD = new LodTextureCache;
     pIcons_LOD->open(dfs->read("data/icons.lod"));
@@ -664,34 +665,34 @@ void Engine::MM7_Initialize() {
     localization->initialize();
 
     pSpriteFrameTable = new SpriteFrameTable;
-    deserialize(engine->_gameResourceManager->getEventsFile("dsft.bin"), pSpriteFrameTable);
+    deserialize(engine->resources()->eventsData("dsft.bin"), pSpriteFrameTable);
 
     pTextureFrameTable = new TextureFrameTable;
-    deserialize(engine->_gameResourceManager->getEventsFile("dtft.bin"), pTextureFrameTable);
+    deserialize(engine->resources()->eventsData("dtft.bin"), pTextureFrameTable);
 
     pTileTable = new TileTable;
-    deserialize(engine->_gameResourceManager->getEventsFile("dtile.bin"), pTileTable);
+    deserialize(engine->resources()->eventsData("dtile.bin"), pTileTable);
 
     pPortraitFrameTable = new PortraitFrameTable;
-    deserialize(engine->_gameResourceManager->getEventsFile("dpft.bin"), pPortraitFrameTable);
+    deserialize(engine->resources()->eventsData("dpft.bin"), pPortraitFrameTable);
 
     pIconsFrameTable = new IconFrameTable;
-    deserialize(engine->_gameResourceManager->getEventsFile("dift.bin"), pIconsFrameTable);
+    deserialize(engine->resources()->eventsData("dift.bin"), pIconsFrameTable);
 
     pDecorationList = new DecorationList;
-    deserialize(engine->_gameResourceManager->getEventsFile("ddeclist.bin"), pDecorationList);
+    deserialize(engine->resources()->eventsData("ddeclist.bin"), pDecorationList);
 
     pObjectList = new ObjectList;
-    deserialize(engine->_gameResourceManager->getEventsFile("dobjlist.bin"), pObjectList);
+    deserialize(engine->resources()->eventsData("dobjlist.bin"), pObjectList);
 
     pMonsterList = new MonsterList;
-    deserialize(engine->_gameResourceManager->getEventsFile("dmonlist.bin"), pMonsterList);
+    deserialize(engine->resources()->eventsData("dmonlist.bin"), pMonsterList);
 
     pOverlayList = new OverlayList;
-    deserialize(engine->_gameResourceManager->getEventsFile("doverlay.bin"), pOverlayList);
+    deserialize(engine->resources()->eventsData("doverlay.bin"), pOverlayList);
 
     pSoundList = new SoundList;
-    deserialize(engine->_gameResourceManager->getEventsFile("dsounds.bin"), pSoundList);
+    deserialize(engine->resources()->eventsData("dsounds.bin"), pSoundList);
 
     if (!config->debug.NoSound.value())
         pAudioPlayer->Initialize();
@@ -711,25 +712,25 @@ void Engine::SecondaryInitialization() {
     mouse->Initialize();
 
     pMapStats = new MapStats();
-    pMapStats->Initialize(engine->_gameResourceManager->getEventsFile("MapStats.txt"));
+    pMapStats->Initialize(engine->resources()->eventsData("MapStats.txt"));
 
     pMonsterStats = new MonsterStats();
-    pMonsterStats->Initialize(engine->_gameResourceManager->getEventsFile("monsters.txt"));
-    pMonsterStats->InitializePlacements(engine->_gameResourceManager->getEventsFile("placemon.txt"));
+    pMonsterStats->Initialize(engine->resources()->eventsData("monsters.txt"));
+    pMonsterStats->InitializePlacements(engine->resources()->eventsData("placemon.txt"));
 
     pSpellStats = new SpellStats();
-    pSpellStats->Initialize(engine->_gameResourceManager->getEventsFile("spells.txt"));
+    pSpellStats->Initialize(engine->resources()->eventsData("spells.txt"));
 
     pFactionTable = new FactionTable();
-    pFactionTable->Initialize(engine->_gameResourceManager->getEventsFile("hostile.txt"));
+    pFactionTable->Initialize(engine->resources()->eventsData("hostile.txt"));
 
     pHistoryTable = new HistoryTable();
-    pHistoryTable->Initialize(engine->_gameResourceManager->getEventsFile("history.txt"));
+    pHistoryTable->Initialize(engine->resources()->eventsData("history.txt"));
 
     pItemTable = new ItemTable();
-    pItemTable->Initialize(engine->_gameResourceManager.get());
+    pItemTable->Initialize(engine->resources());
 
-    initializeHouses(engine->_gameResourceManager->getEventsFile("2dEvents.txt"));
+    initializeHouses(engine->resources()->eventsData("2dEvents.txt"));
 
     //pPaletteManager->SetMistColor(128, 128, 128);
     //pPaletteManager->RecalculateAll();
@@ -761,17 +762,17 @@ void Engine::SecondaryInitialization() {
     }
 
     pNPCStats = new NPCStats();
-    pNPCStats->Initialize(engine->_gameResourceManager.get());
+    pNPCStats->Initialize(engine->resources());
 
-    initializeQuests(engine->_gameResourceManager->getEventsFile("quests.txt"));
-    initializeAutonotes(engine->_gameResourceManager->getEventsFile("autonote.txt"));
-    initializeAwards(engine->_gameResourceManager->getEventsFile("awards.txt"));
-    initializeTransitions(engine->_gameResourceManager->getEventsFile("trans.txt"));
-    initializeMerchants(engine->_gameResourceManager->getEventsFile("merchant.txt"));
-    initializeMessageScrolls(engine->_gameResourceManager->getEventsFile("scroll.txt"));
+    initializeQuests(engine->resources()->eventsData("quests.txt"));
+    initializeAutonotes(engine->resources()->eventsData("autonote.txt"));
+    initializeAwards(engine->resources()->eventsData("awards.txt"));
+    initializeTransitions(engine->resources()->eventsData("trans.txt"));
+    initializeMerchants(engine->resources()->eventsData("merchant.txt"));
+    initializeMessageScrolls(engine->resources()->eventsData("scroll.txt"));
     initializeChests();
 
-    engine->_globalEventMap = EvtProgram::load(engine->_gameResourceManager->getEventsFile("global.evt"));
+    engine->_globalEventMap = EvtProgram::load(engine->resources()->eventsData("global.evt"));
 
     pBitmaps_LOD->reserveLoadedTextures();
     pSprites_LOD->reserveLoadedSprites();
@@ -1468,9 +1469,9 @@ void loadMapEventsAndStrings(MapId mapid) {
     std::string mapName = pMapStats->pInfos[mapid].fileName;
     std::string mapNameWithoutExt = mapName.substr(0, mapName.rfind('.'));
 
-    initLevelStrings(engine->_gameResourceManager->getEventsFile(fmt::format("{}.str", mapNameWithoutExt)));
+    initLevelStrings(engine->resources()->eventsData(fmt::format("{}.str", mapNameWithoutExt)));
 
-    engine->_localEventMap = EvtProgram::load(engine->_gameResourceManager->getEventsFile(fmt::format("{}.evt", mapNameWithoutExt)));
+    engine->_localEventMap = EvtProgram::load(engine->resources()->eventsData(fmt::format("{}.evt", mapNameWithoutExt)));
 }
 
 bool _44100D_should_alter_right_panel() {
