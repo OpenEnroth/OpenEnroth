@@ -2,7 +2,6 @@
 
 #include <memory>
 
-#include "Engine.h"
 #include "EngineFileSystem.h"
 
 std::unique_ptr<LodReader> pSave_LOD;

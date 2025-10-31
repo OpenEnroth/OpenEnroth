@@ -35,7 +35,7 @@
 #include "Engine/TurnEngine/TurnEngine.h"
 #include "Engine/Localization.h"
 #include "Engine/MapInfo.h"
-#include "Engine/LOD.h"
+#include "Engine/Resources/LOD.h"
 
 #include "GUI/GUIProgressBar.h"
 #include "GUI/GUIWindow.h"

@@ -17,7 +17,7 @@
 #include "Engine/AssetsManager.h"
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
-#include "Engine/LOD.h"
+#include "Engine/Resources/LOD.h"
 #include "Engine/PriceCalculator.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Graphics/ParticleEngine.h"

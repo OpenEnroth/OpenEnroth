@@ -7,8 +7,8 @@
 #include <utility>
 
 #include "Engine/Engine.h"
-#include "Engine/EngineFileSystem.h"
-#include "Engine/LOD.h"
+#include "Engine/Resources/EngineFileSystem.h"
+#include "Engine/Resources/LOD.h"
 #include "Engine/Localization.h"
 #include "Engine/Party.h"
 #include "Engine/MapInfo.h"

@@ -5,7 +5,7 @@
 #include <memory>
 
 #include "Engine/Engine.h"
-#include "Engine/EngineFileSystem.h"
+#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Graphics/Renderer/Renderer.h"

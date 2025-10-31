@@ -24,7 +24,7 @@ extern "C" {
 }
 
 #include "Engine/Engine.h"
-#include "Engine/EngineFileSystem.h"
+#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"

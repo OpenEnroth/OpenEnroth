@@ -22,9 +22,9 @@
 #include "Engine/Objects/Monsters.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Snapshots/TableSerialization.h"
-#include "Engine/ResourceManager.h"
+#include "Engine/Resources/ResourceManager.h"
 #include "Engine/MapInfo.h"
-#include "Engine/EngineFileSystem.h"
+#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/mm7_data.h"
 
 #include "GUI/UI/Houses/TownHall.h"

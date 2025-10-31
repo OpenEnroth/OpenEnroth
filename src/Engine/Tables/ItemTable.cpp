@@ -10,9 +10,9 @@
 #include "Engine/Spells/Spells.h"
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
-#include "Engine/EngineFileSystem.h"
+#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Party.h"
-#include "Engine/ResourceManager.h"
+#include "Engine/Resources/ResourceManager.h"
 
 #include "GUI/UI/UIHouses.h"
 

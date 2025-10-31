@@ -6,7 +6,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-#include "Engine/ResourceManager.h"
+#include "Engine/Resources/ResourceManager.h"
 
 #include "GUI/GUIFont.h"
 #include "GUI/GUIMessageQueue.h"

@@ -6,7 +6,7 @@
 #include <ranges>
 #include <string>
 
-#include "Engine/LodTextureCache.h"
+#include "Engine/Resources/LodTextureCache.h"
 
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"

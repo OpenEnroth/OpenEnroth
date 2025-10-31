@@ -5,12 +5,12 @@
 #include <memory>
 
 #include "Engine/Engine.h"
-#include "Engine/EngineFileSystem.h"
+#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Sprites.h"
 #include "Engine/Graphics/TileGenerator.h"
-#include "Engine/LodTextureCache.h"
-#include "Engine/LodSpriteCache.h"
+#include "Engine/Resources/LodTextureCache.h"
+#include "Engine/Resources/LodSpriteCache.h"
 #include "Engine/Graphics/PaletteManager.h"
 
 #include "Library/Image/ImageFunctions.h"

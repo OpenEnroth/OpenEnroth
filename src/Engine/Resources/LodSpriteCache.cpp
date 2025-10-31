@@ -10,7 +10,7 @@
 #include "Utility/String/Ascii.h"
 #include "Utility/MapAccess.h"
 
-#include "AssetsManager.h"
+#include "../AssetsManager.h" // TODO(captainurist): dependency doesn't belong here
 
 LodSpriteCache *pSprites_LOD = nullptr;
 LodSpriteCache *pSprites_LOD_mm6 = nullptr;

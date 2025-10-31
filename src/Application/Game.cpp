@@ -27,7 +27,7 @@
 #include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/TurnBasedOverlay.h"
 #include "Engine/Localization.h"
-#include "Engine/LodTextureCache.h"
+#include "Engine/Resources/LodTextureCache.h"
 #include "Engine/Objects/Actor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/ObjectList.h"

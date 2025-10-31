@@ -1,6 +1,6 @@
 #include "GameTraceHandler.h"
 
-#include "Engine/EngineFileSystem.h"
+#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Trace/EngineTraceRecorder.h"
 

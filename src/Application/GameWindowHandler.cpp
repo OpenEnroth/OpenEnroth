@@ -8,7 +8,7 @@
 #include "Arcomage/Arcomage.h"
 
 #include "Engine/Engine.h"
-#include "Engine/EngineFileSystem.h"
+#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Components/Control/EngineControlComponent.h"
 #include "Engine/Components/Control/EngineController.h"

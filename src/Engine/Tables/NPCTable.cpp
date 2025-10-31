@@ -6,7 +6,7 @@
 #include "Engine/Objects/NPC.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
 #include "Engine/Party.h"
-#include "Engine/ResourceManager.h"
+#include "Engine/Resources/ResourceManager.h"
 #include "Engine/Random/Random.h"
 
 #include "Utility/String/Transformations.h"

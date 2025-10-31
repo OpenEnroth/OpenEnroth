@@ -5,7 +5,7 @@
 #include <utility>
 
 #include "Engine/Engine.h"
-#include "Engine/EngineFileSystem.h"
+#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/Components/Control/EngineController.h"
 #include "Engine/Components/Deterministic/EngineDeterministicComponent.h"
 #include "Engine/Random/Random.h"

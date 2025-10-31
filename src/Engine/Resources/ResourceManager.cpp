@@ -1,9 +1,9 @@
 #include "ResourceManager.h"
 
-#include "Engine.h"
-#include "EngineFileSystem.h"
-
 #include "Library/LodFormats/LodFormats.h"
+#include "Library/FileSystem/Interface/FileSystem.h"
+
+#include "EngineFileSystem.h"
 
 ResourceManager::ResourceManager() = default;
 ResourceManager::~ResourceManager() = default;

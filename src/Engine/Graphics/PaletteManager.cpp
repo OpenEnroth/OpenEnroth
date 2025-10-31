@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <string>
 
-#include "Engine/LodTextureCache.h"
+#include "Engine/Resources/LodTextureCache.h"
 #include "Engine/Engine.h"
 
 #include "Library/Color/Color.h"

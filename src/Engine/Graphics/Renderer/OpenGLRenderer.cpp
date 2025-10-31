@@ -16,7 +16,7 @@
 #include <imgui/backends/imgui_impl_sdl3.h> // NOLINT: not a C system header.
 
 #include "Engine/Engine.h"
-#include "Engine/EngineFileSystem.h"
+#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/EngineGlobals.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/Graphics/Image.h"

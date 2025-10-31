@@ -6,7 +6,7 @@
 
 #include "Engine/Objects/CharacterEnumFunctions.h"
 #include "Engine/Engine.h"
-#include "Engine/ResourceManager.h"
+#include "Engine/Resources/ResourceManager.h"
 
 #include "Utility/String/Transformations.h"
 #include "Utility/String/Split.h"

@@ -9,7 +9,7 @@
 #include "Engine/Objects/DecorationList.h"
 #include "Engine/Graphics/PaletteManager.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/LodSpriteCache.h"
+#include "Engine/Resources/LodSpriteCache.h"
 #include "Engine/Seasons.h"
 
 #include "Library/Logger/Logger.h"
