@@ -13,7 +13,8 @@ var searchData=
   ['rendererfactory_10',['RendererFactory',['../classRendererFactory.html',1,'']]],
   ['rendervertexd3d3_11',['RenderVertexD3D3',['../structRenderVertexD3D3.html',1,'']]],
   ['rendervertexsoft_12',['RenderVertexSoft',['../structRenderVertexSoft.html',1,'']]],
-  ['retraceoptions_13',['RetraceOptions',['../structOpenEnrothOptions_1_1RetraceOptions.html',1,'OpenEnrothOptions']]],
-  ['reversebitordertag_14',['ReverseBitOrderTag',['../structReverseBitOrderTag.html',1,'']]],
-  ['rotatinglogsink_15',['RotatingLogSink',['../classRotatingLogSink.html',1,'']]]
+  ['resourcemanager_13',['ResourceManager',['../classResourceManager.html',1,'']]],
+  ['retraceoptions_14',['RetraceOptions',['../structOpenEnrothOptions_1_1RetraceOptions.html',1,'OpenEnrothOptions']]],
+  ['reversebitordertag_15',['ReverseBitOrderTag',['../structReverseBitOrderTag.html',1,'']]],
+  ['rotatinglogsink_16',['RotatingLogSink',['../classRotatingLogSink.html',1,'']]]
 ];

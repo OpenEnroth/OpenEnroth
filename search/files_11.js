@@ -20,7 +20,9 @@ var searchData=
   ['rendererenums_2eh_17',['RendererEnums.h',['../RendererEnums_8h.html',1,'']]],
   ['rendererfactory_2ecpp_18',['RendererFactory.cpp',['../RendererFactory_8cpp.html',1,'']]],
   ['rendererfactory_2eh_19',['RendererFactory.h',['../RendererFactory_8h.html',1,'']]],
-  ['rotatinglogsink_2ecpp_20',['RotatingLogSink.cpp',['../RotatingLogSink_8cpp.html',1,'']]],
-  ['rotatinglogsink_2eh_21',['RotatingLogSink.h',['../RotatingLogSink_8h.html',1,'']]],
-  ['rotatinglogsink_5fut_2ecpp_22',['RotatingLogSink_ut.cpp',['../RotatingLogSink__ut_8cpp.html',1,'']]]
+  ['resourcemanager_2ecpp_20',['ResourceManager.cpp',['../ResourceManager_8cpp.html',1,'']]],
+  ['resourcemanager_2eh_21',['ResourceManager.h',['../ResourceManager_8h.html',1,'']]],
+  ['rotatinglogsink_2ecpp_22',['RotatingLogSink.cpp',['../RotatingLogSink_8cpp.html',1,'']]],
+  ['rotatinglogsink_2eh_23',['RotatingLogSink.h',['../RotatingLogSink_8h.html',1,'']]],
+  ['rotatinglogsink_5fut_2ecpp_24',['RotatingLogSink_ut.cpp',['../RotatingLogSink__ut_8cpp.html',1,'']]]
 ];

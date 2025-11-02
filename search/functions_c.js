@@ -36,7 +36,7 @@ var searchData=
   ['loadimagedata_33',['LoadImageData',['../classGraphicsImage.html#a974f6dfcce6e58abba5416c358a6cf2e',1,'GraphicsImage']]],
   ['loaditemsizes_34',['LoadItemSizes',['../structItemTable.html#a970ba2e9c1de5ada5aac2805db0f7e00',1,'ItemTable']]],
   ['loadmapeventsandstrings_35',['loadMapEventsAndStrings',['../Engine_8cpp.html#a6485919d788437ec9191b35a704dfccc',1,'loadMapEventsAndStrings(MapId mapid):&#160;Engine.cpp'],['../Engine_8h.html#a6485919d788437ec9191b35a704dfccc',1,'loadMapEventsAndStrings(MapId mapid):&#160;Engine.cpp']]],
-  ['loadmonsterstats_36',['loadMonsterStats',['../CodeGen_8cpp.html#a89e4ddcf9cb6bbb620d5bacfc790bdd9',1,'CodeGen.cpp']]],
+  ['loadmonsterstats_36',['loadMonsterStats',['../CodeGen_8cpp.html#a70f81b4503b606bacf761e4313db2cae',1,'CodeGen.cpp']]],
   ['loadmovie_37',['LoadMovie',['../classMPlayer.html#adf3f8de143bcbb4d0d97a9a66c3b4809',1,'MPlayer']]],
   ['loadpartybufficons_38',['LoadPartyBuffIcons',['../GUIWindow_8cpp.html#a1ee385e81873672505e1eb405756b1e7',1,'GUIWindow.cpp']]],
   ['loadpotionnotes_39',['LoadPotionNotes',['../structItemTable.html#a3663d487f5809b408eae44fb0d001c91',1,'ItemTable']]],

@@ -41,10 +41,9 @@ var searchData=
   ['transparentstringhash_38',['TransparentStringHash',['../structTransparentStringHash.html',1,'']]],
   ['transparentstringless_39',['TransparentStringLess',['../structTransparentStringLess.html',1,'']]],
   ['transportinfo_40',['TransportInfo',['../structTransportInfo.html',1,'']]],
-  ['triblob_41',['TriBlob',['../structTriBlob.html',1,'']]],
-  ['trigtablelookup_42',['TrigTableLookup',['../classTrigTableLookup.html',1,'']]],
-  ['turnbased_5fqueueelem_43',['TurnBased_QueueElem',['../structTurnBased__QueueElem.html',1,'']]],
-  ['turnbasedoverlay_44',['TurnBasedOverlay',['../classTurnBasedOverlay.html',1,'']]],
-  ['twodverts_45',['twodverts',['../structtwodverts.html',1,'']]],
-  ['typedhandler_46',['TypedHandler',['../classdetail_1_1TypedHandler.html',1,'detail']]]
+  ['trigtablelookup_41',['TrigTableLookup',['../classTrigTableLookup.html',1,'']]],
+  ['turnbased_5fqueueelem_42',['TurnBased_QueueElem',['../structTurnBased__QueueElem.html',1,'']]],
+  ['turnbasedoverlay_43',['TurnBasedOverlay',['../classTurnBasedOverlay.html',1,'']]],
+  ['twodverts_44',['twodverts',['../structtwodverts.html',1,'']]],
+  ['typedhandler_45',['TypedHandler',['../classdetail_1_1TypedHandler.html',1,'detail']]]
 ];
