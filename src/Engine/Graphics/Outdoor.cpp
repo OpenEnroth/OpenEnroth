@@ -37,7 +37,7 @@
 #include "Engine/Graphics/Vis.h"
 #include "Engine/Graphics/BspRenderer.h"
 #include "Engine/MapInfo.h"
-#include "Engine/LOD.h"
+#include "Engine/Resources/LOD.h"
 #include "Engine/Seasons.h"
 #include "Engine/Data/TileEnumFunctions.h"
 

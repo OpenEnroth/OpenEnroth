@@ -15,7 +15,7 @@
 #include "Engine/Party.h"
 #include "Engine/Engine.h"
 #include "Engine/MapInfo.h"
-#include "Engine/EngineFileSystem.h"
+#include "Engine/Resources/EngineFileSystem.h"
 #include "Engine/EngineCallObserver.h"
 
 #include "GUI/GUIWindow.h"

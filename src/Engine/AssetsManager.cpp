@@ -5,8 +5,8 @@
 
 #include "Engine/Graphics/ImageLoader.h"
 #include "Engine/Graphics/Image.h"
-#include "Engine/LodTextureCache.h"
-#include "Engine/LodSpriteCache.h"
+#include "Engine/Resources/LodTextureCache.h"
+#include "Engine/Resources/LodSpriteCache.h"
 
 #include "GUI/GUIFont.h"
 

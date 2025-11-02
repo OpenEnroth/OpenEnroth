@@ -118,21 +118,21 @@ static void createSpriteTrailParticle(Vec3f pos, ObjectDescFlags flags) {
     particle.x = pos.x;
     particle.y = pos.y;
     particle.z = pos.z;
-    if (flags & OBJECT_DESC_TRIAL_FIRE) {
+    if (flags & OBJECT_DESC_TRAIL_FIRE) {
         particle.type = ParticleType_Bitmap | ParticleType_Rotating | ParticleType_Ascending;
         particle.uDiffuse = colorTable.OrangeyRed;
         particle.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2); // was either 1 or 2 secs, we made it into [1, 2).
         particle.texture = spell_fx_renderer->effpar01;
         particle.particle_size = 1.0f;
         particle_engine->AddParticle(&particle);
-    } else if (flags & OBJECT_DESC_TRIAL_LINE) {
+    } else if (flags & OBJECT_DESC_TRAIL_LINE) {
         particle.type = ParticleType_Line;
         particle.uDiffuse = Color(vrng->random(0x100), vrng->random(0x100), 0, 0); // TODO(captainurist): TBH this makes no sense, investigate
         particle.timeToLive = 64_ticks;
         particle.texture = nullptr;
         particle.particle_size = 1.0f;
         particle_engine->AddParticle(&particle);
-    } else if (flags & OBJECT_DESC_TRIAL_PARTICLE) {
+    } else if (flags & OBJECT_DESC_TRAIL_PARTICLE) {
         particle.type = ParticleType_Bitmap | ParticleType_Ascending;
         particle.uDiffuse = Color(vrng->random(0x100), vrng->random(0x100), 0, 0); // TODO(captainurist): TBH this makes no sense, investigate
         particle.timeToLive = Duration::randomRealtimeSeconds(vrng, 1, 2); // was either 1 or 2 secs, we made it into [1, 2).
@@ -406,7 +406,7 @@ LABEL_25:
             if (collision_state.adjusted_move_distance >= collision_state.move_distance) {
                 pSpriteObject->vPosition = (collision_state.new_position_lo - Vec3f(0, 0, collision_state.radius_lo + 1));
                 pSpriteObject->uSectorID = collision_state.uSectorID;
-                if (!(pObject->uFlags & OBJECT_DESC_TRIAL_PARTICLE)) {
+                if (!(pObject->uFlags & OBJECT_DESC_TRAIL_PARTICLE)) {
                     return;
                 }
                 createSpriteTrailParticle(pSpriteObject->vPosition, pObject->uFlags);
@@ -831,7 +831,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             object->spellSpriteStop();
             pushAoeAttack(Pid(OBJECT_Sprite, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
                     pSpriteObjects[uLayingItemID].vPosition, ABILITY_ATTACK1);
-            if (objectDesc->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
+            if (objectDesc->uFlags & OBJECT_DESC_TRAIL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(object->vPosition.x, object->vPosition.y, object->vPosition.z,
                                                                 objectDesc->uParticleTrailColor);
             }
@@ -1223,7 +1223,7 @@ bool processSpellImpact(unsigned int uLayingItemID, Pid pid) {
             object->spellSpriteStop();
             pushAoeAttack(Pid(OBJECT_Sprite, uLayingItemID), engine->config->gameplay.AoeDamageDistance.value(),
                     pSpriteObjects[uLayingItemID].vPosition, object->spellCasterAbility);
-            if (objectDesc->uFlags & OBJECT_DESC_TRIAL_PARTICLE) {
+            if (objectDesc->uFlags & OBJECT_DESC_TRAIL_PARTICLE) {
                 trail_particle_generator.GenerateTrailParticles(
                     object->vPosition.x, object->vPosition.y, object->vPosition.z,
                     objectDesc->uParticleTrailColor);

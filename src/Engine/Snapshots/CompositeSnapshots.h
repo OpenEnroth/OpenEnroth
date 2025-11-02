@@ -13,8 +13,6 @@
  * Struct fields are laid out in the order in which they are laid out in binary files.
  */
 
-// TODO(captainurist): snapshot/reconstruct functions belong to the classes themselves. Also drop raw* functions.
-
 class Blob;
 class BSPModel;
 struct IndoorLocation;

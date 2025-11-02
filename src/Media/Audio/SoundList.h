@@ -4,13 +4,11 @@
 
 #include "SoundInfo.h"
 
-struct TriBlob;
-
 class SoundList {
  public:
     SoundInfo *soundInfo(SoundId soundId); // TODO(captainurist): should be const
 
-    friend void deserialize(const TriBlob &src, SoundList *dst); // In TableSerialization.cpp.
+    friend void deserialize(const Blob &src, SoundList *dst); // In TableSerialization.cpp.
 
  private:
     std::unordered_map<SoundId, SoundInfo> _mapSounds;

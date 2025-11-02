@@ -7,13 +7,6 @@
 enum class SpriteId : uint16_t {
     SPRITE_NULL = 0,
 
-    SPRITE_REAGENT_PHIRNAROOT = 35,
-    SPRITE_REAGENT_WIDOWSWEEP = 36,
-    SPRITE_REAGENT = 37,
-    SPRITE_REAGENT_POPPYSNAPS = 38,
-
-    SPRITE_SPELL_0 = 10,
-
     // Monster bolt attacks. Note that these are different from bolt spells, which have separate sprite ids assigned.
     SPRITE_PROJECTILE_AIR_BOLT = 500,  // blue bolt projectile + smoke   e.g. blue dragon attack
     SPRITE_PROJECTILE_AIR_BOLT_IMPACT = 501,

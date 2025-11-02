@@ -6,7 +6,7 @@
 #include <utility>
 #include <unordered_map>
 
-#include "Engine/EngineFileSystem.h"
+#include "Engine/Resources/EngineFileSystem.h"
 
 #include "Library/Logger/Logger.h"
 #include "Library/Logger/DistLogSink.h"

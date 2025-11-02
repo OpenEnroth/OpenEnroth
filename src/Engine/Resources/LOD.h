@@ -4,6 +4,8 @@
 
 #include "Library/Lod/LodReader.h"
 
+class FileSystem;
+
 bool Initialize_GamesLOD_NewLOD();
 
 /** LOD reader for the current game being played. Used for accessing the per-map states, is updated on map change,

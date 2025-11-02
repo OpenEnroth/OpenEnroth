@@ -4,8 +4,8 @@
 #include <utility>
 
 #include "Engine/AssetsManager.h"
-#include "Engine/EngineFileSystem.h"
-#include "Engine/LodTextureCache.h"
+#include "Engine/Resources/EngineFileSystem.h"
+#include "Engine/Resources/LodTextureCache.h"
 #include "Engine/Data/TileEnumFunctions.h"
 #include "Engine/Tables/TileTable.h"
 #include "Engine/Graphics/Image.h"

@@ -10,7 +10,7 @@
 #include "Library/FileSystem/Merging/MergingFileSystem.h"
 #include "Library/FileSystem/Memory/MemoryFileSystem.h"
 
-#include "Engine/EngineFileSystem.h"
+#include "Engine/Resources/EngineFileSystem.h"
 
 CMRC_DECLARE(openenroth);
 

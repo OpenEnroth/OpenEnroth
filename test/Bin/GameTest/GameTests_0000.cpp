@@ -18,7 +18,7 @@
 #include "Engine/Party.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/Engine.h"
-#include "Engine/EngineFileSystem.h"
+#include "Engine/Resources/EngineFileSystem.h"
 
 #include "Utility/ScopeGuard.h"
 

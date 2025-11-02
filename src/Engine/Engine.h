@@ -31,7 +31,7 @@ class Vis;
 class ParticleEngine;
 struct ClippingFunctions;
 class GUIMessageQueue;
-class GameResourceManager;
+class ResourceManager;
 class StatusBar;
 class EngineCallObserver;
 struct IndoorLocation;
@@ -68,6 +68,10 @@ class Engine {
     virtual ~Engine();
 
     static void LogEngineBuildInfo();
+
+    ResourceManager *resources() const {
+        return _resourceManager.get();
+    }
 
     void Initialize();
     Vis_PIDAndDepth PickMouse(float fPickDepth, int uMouseX, int uMouseY,
@@ -132,12 +136,14 @@ class Engine {
     OverlaySystem &_overlaySystem;
 
     std::unique_ptr<GUIMessageQueue> _messageQueue;
-    std::unique_ptr<GameResourceManager> _gameResourceManager;
     std::unique_ptr<StatusBar> _statusBar;
     std::unique_ptr<IndoorLocation> _indoor;
     std::unique_ptr<OutdoorLocation> _outdoor;
     std::unique_ptr<LightsStack_StationaryLight_> _stationaryLights;
     std::unique_ptr<LightsStack_MobileLight_> _mobileLights;
+
+ private:
+    std::unique_ptr<ResourceManager> _resourceManager;
 };
 
 extern Engine *engine;

@@ -12,11 +12,11 @@
 #include "Utility/IndexedArray.h"
 #include "Utility/Segment.h"
 
-class GameResourceManager;
+class ResourceManager;
 class Blob;
 
 struct ItemTable {
-    void Initialize(GameResourceManager *resourceManager);
+    void Initialize(ResourceManager *resourceManager);
     void LoadPotions(const Blob &potions);
     void LoadPotionNotes(const Blob &potionNotes);
     void LoadItemSizes();

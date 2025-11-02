@@ -7,11 +7,7 @@ set(ENGINE_SOURCES
         Engine.cpp
         EngineGlobals.cpp
         EngineIocContainer.cpp
-        EngineFileSystem.cpp
         GpuHints.cpp
-        LOD.cpp
-        LodTextureCache.cpp
-        LodSpriteCache.cpp
         Localization.cpp
         MapEnums.cpp
         MapInfo.cpp
@@ -22,7 +18,6 @@ set(ENGINE_SOURCES
         SaveLoad.cpp
         SpellFxRenderer.cpp
         TeleportPoint.cpp
-        GameResourceManager.cpp
         mm7_data.cpp
         mm7text_ru.cpp
         Seasons.cpp)
@@ -37,10 +32,6 @@ set(ENGINE_HEADERS
         EngineCallObserver.h
         EngineGlobals.h
         EngineIocContainer.h
-        EngineFileSystem.h
-        LOD.h
-        LodTextureCache.h
-        LodSpriteCache.h
         Localization.h
         MapEnums.h
         MapInfo.h
@@ -52,7 +43,6 @@ set(ENGINE_HEADERS
         SaveLoad.h
         SpellFxRenderer.h
         TeleportPoint.h
-        GameResourceManager.h
         mm7_data.h
         stru314.h
         Seasons.h)
@@ -73,6 +63,7 @@ target_link_libraries(engine
         engine_events
         engine_random
         engine_time
+        engine_resources
         library_compression
         library_logger
         library_serialization
@@ -100,6 +91,7 @@ add_subdirectory(Evt)
 add_subdirectory(Graphics)
 add_subdirectory(Objects)
 add_subdirectory(Random)
+add_subdirectory(Resources)
 add_subdirectory(Snapshots)
 add_subdirectory(Spells)
 add_subdirectory(Tables)
