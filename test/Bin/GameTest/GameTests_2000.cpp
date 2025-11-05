@@ -457,6 +457,31 @@ GAME_TEST(Issues, Issue2142) {
     }
 }
 
+GAME_TEST(Issues, Issue2144) {
+    return;
+
+    // Elite Archers and Bowmans never fire flaming arrows.
+    for (MonsterId monsterId : {MONSTER_ARCHER_A, MONSTER_ARCHER_B, MONSTER_ARCHER_C}) {
+        test.prepareForNextTest(100, RANDOM_ENGINE_MERSENNE_TWISTER);
+        auto spritesTape = tapes.sprites();
+
+        engine->config->debug.NoActors.setValue(true);
+        game.startNewGame();
+        test.startTaping();
+        prepareForBattleTest();
+
+        engine->config->debug.NoActors.setValue(false);
+        for (int x = -1000; x <= 1000; x += 200) {
+            Actor *archer = game.spawnMonster(pParty->pos + Vec3f(x, 1500, 0), monsterId);
+            archer->moveSpeed = 1;
+            archer->monsterInfo.attack2Chance = 100;
+        }
+        game.tick(100);
+
+        EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_PROJECTILE_FLAMING_ARROW);
+    }
+}
+
 GAME_TEST(Prs, Pr2157a) {
     // Test that we can't equip items when inventory is full.
     auto soundsTape = tapes.sounds();
