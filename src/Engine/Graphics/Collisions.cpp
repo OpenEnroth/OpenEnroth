@@ -875,12 +875,12 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius;
     collision_state.check_hi = true;
+    collision_state.uSectorID = sectorId;
     for (unsigned i = 0; i < 5; i++) {
         collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);
         collision_state.position_lo = pParty->pos + Vec3f(0, 0, collision_state.radius_lo);
         collision_state.velocity = pParty->velocity;
 
-        collision_state.uSectorID = sectorId;
         Duration dt; // zero means use actual dt
         if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT)
             dt = 26_ticks;
