@@ -9,7 +9,6 @@
 struct BLVFace;
 class Actor;
 
-constexpr float allowedCollisionOvershoot = -100.0f; // Maximum allowed pushback from a collision surface - needs adjusting
 constexpr float closestdist = 0.5f; // Closest allowed approach to collision surface - needs adjusting
 
 struct CollisionState {
