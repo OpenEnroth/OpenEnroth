@@ -463,18 +463,18 @@ GAME_TEST(Issues, Issue1331) {
     auto rngTape = tapes.config(engine->config->debug.TraceRandomEngine);
 
     test.loadGameFromTestData("issue_1331.mm7");
-	// stop the titans from moving around and messing with the test
+    // stop the titans from moving around and messing with the test
     engine->config->debug.NoActors.setValue(true);
     engine->config->debug.NoDamage.setValue(true);
     engine->config->debug.TraceRandomEngine.setValue(RANDOM_ENGINE_SEQUENTIAL);
-	test.startTaping();
+    test.startTaping();
 
     for (int i = 0; i < 500; i++) {
         game.pressAndReleaseKey(PlatformKey::KEY_A);
         game.tick();
     }
-	test.stopTaping();
-    
+    test.stopTaping();
+
     EXPECT_EQ(deadTape.frontBack(), tape(std::initializer_list<int>{}, {31, 33})); // Both of the titans are dead.
 
     // Damage as stated in the character sheet is 41-45. Crossbow is 4d2+7. We're using sequential rng, so

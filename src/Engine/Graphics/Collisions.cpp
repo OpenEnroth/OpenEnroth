@@ -498,6 +498,7 @@ void CollideOutdoorWithDecorations(Vec2i gridPos) {
 
 bool CollideIndoorWithPortals() {
     // TODO(pskelton): disable this for time being - this appears to be a obselete legacy collision remnant
+    // Was meant to handle portal crossing to update sector id during movement
     // Causes issue where portal "collision" overrides actual wall collision
     return true;
 
@@ -591,10 +592,10 @@ void CollideWithParty(bool jagged_top) {
 
 void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) {
     collision_state.total_move_distance = 0;
-    collision_state.check_hi = true;
-    collision_state.radius_hi = actor.radius;
     collision_state.radius_lo = actor.radius;
-
+    collision_state.radius_hi = actor.radius;
+    collision_state.check_hi = true;
+    collision_state.uSectorID = actor.sectorId;
     // Dont bother with hi check if lo radius covers actor height anyway
     if (actor.radius * 2 > actor.height) collision_state.check_hi = false;
 
@@ -602,7 +603,6 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         collision_state.position_lo = actor.pos + Vec3f(0, 0, actor.radius);
         collision_state.position_hi = actor.pos + Vec3f(0, 0, actor.height - actor.radius);
         collision_state.velocity = actor.velocity;
-        collision_state.uSectorID = actor.sectorId;
 
         if (collision_state.PrepareAndCheckIfStationary())
             break;
@@ -877,8 +877,8 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
     collision_state.check_hi = true;
     collision_state.uSectorID = sectorId;
     for (unsigned i = 0; i < 5; i++) {
-        collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);
         collision_state.position_lo = pParty->pos + Vec3f(0, 0, collision_state.radius_lo);
+        collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);
         collision_state.velocity = pParty->velocity;
 
         Duration dt; // zero means use actual dt

@@ -843,7 +843,7 @@ void BLV_UpdateActors() {
             continue;
 
         int uFaceID;
-        float floorZ = GetIndoorFloorZ(actor.pos, &actor.sectorId, &uFaceID);
+        float floorZ = GetIndoorFloorZ(actor.pos + Vec3f(0, 0, actor.radius), &actor.sectorId, &uFaceID);
 
         if (actor.sectorId == 0 || floorZ <= -30000 || uFaceID == -1) {
             // TODO(pskelton): asserts trips on test 416 with Dragons OOB - consider running actor check on file load
@@ -934,6 +934,9 @@ void BLV_UpdateActors() {
         if (travel.lengthSqr() > 128.f) {
             actor.yawAngle = TrigLUT.atan2(travel.x, travel.y);
         }
+
+        // Update actor sector after movement
+        actor.sectorId = pIndoor->GetSector(actor.pos);
     }
 }
 
@@ -1587,15 +1590,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     bool on_water = false;
     bool bFeatherFall;
 
-    int sectorId = pBLVRenderParams->uPartySectorID;
     int faceId = -1;
-    float floorZ = GetIndoorFloorZ(pParty->pos + Vec3f(0, 0, pParty->radius), &sectorId, &faceId);
+    float floorZ = GetIndoorFloorZ(pParty->pos + Vec3f(0, 0, pParty->radius), &pBLVRenderParams->uPartySectorID, &faceId);
 
-    if (pParty->bFlying)  // disable flight
-        pParty->bFlying = false;
+    pParty->bFlying = false; // disable flight indoors
 
     if (floorZ == -30000 || faceId == -1) {
-        floorZ = GetApproximateIndoorFloorZ(pParty->pos + Vec3f(0, 0, pParty->radius), &sectorId, &faceId);
+        floorZ = GetApproximateIndoorFloorZ(pParty->pos + Vec3f(0, 0, pParty->radius), &pBLVRenderParams->uPartySectorID, &faceId);
         if (floorZ == -30000 || faceId == -1) {
             assert(false);  // level built with errors
             return;
@@ -1778,7 +1779,7 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     int faceEvent2 = 0; // dont overwrite faceEvent
     // horizontal
     pParty->velocity.z = 0;
-    ProcessPartyCollisionsBLV(sectorId, min_party_move_delta_sqr, &faceId, &faceEvent2);
+    ProcessPartyCollisionsBLV(pBLVRenderParams->uPartySectorID, min_party_move_delta_sqr, &faceId, &faceEvent2);
     // vertical -  only when horizonal motion hasnt caused height gain
     if (pParty->pos.z <= oldPos.z) {
         pParty->velocity = Vec3f(0, 0, savedspeed.z);
