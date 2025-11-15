@@ -6,10 +6,12 @@
 #include "Engine/Engine.h"
 #include "Engine/MapEnums.h"
 #include "Engine/Party.h"
+#include "Engine/Graphics/Image.h"
 #include "Engine/Graphics/Indoor.h"
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
+#include "Io/Mouse.h"
 
 void prepareForBattleTest() {
     assert(engine->_currentLoadedMapId == MAP_EMERALD_ISLAND);
@@ -672,4 +674,21 @@ GAME_TEST(Issues, Issue2255) {
     EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT);
     EXPECT_CONTAINS(spritesTape.flatten(), SPRITE_SPELL_FIRE_FIRE_BOLT_IMPACT);
     EXPECT_MISSES(spritesTape.flatten(), SPRITE_PROJECTILE_ARROW); // No arrows were fired, only fire bolts.
+}
+
+GAME_TEST(Issues, Issue2298) {
+    // Holding an item when entering a shop = it can not be dropped after
+    // This tests that the mouse cursor updates correctly when dropping an item
+    auto pickedItemTape = tapes.custom([] { return pParty->pPickedItem.itemId; });
+    auto mouseCursorTape = tapes.custom([] { return mouse->cursor_img->GetName(); });
+    game.startNewGame();
+    test.startTaping();
+    game.tick();
+    pParty->setHoldingItem(Item(ITEM_LEATHER_ARMOR));
+    game.tick();
+    pParty->placeHeldItemInInventoryOrDrop();
+    game.tick();
+
+    EXPECT_EQ(pickedItemTape, tape(ITEM_NULL, ITEM_LEATHER_ARMOR, ITEM_NULL));
+    EXPECT_EQ(mouseCursorTape, tape("micon1", "item066", "micon1"));
 }
