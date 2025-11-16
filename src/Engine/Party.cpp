@@ -200,8 +200,6 @@ void Party::setHoldingItem(const Item &item, Pointi offset) {
 
 Item Party::takeHoldingItem() {
     Item result = pPickedItem;
-    if (result.itemId == ITEM_NULL)
-        return result;
 
     pPickedItem.Reset();
     mouse->SetCursorImage("MICON1");
