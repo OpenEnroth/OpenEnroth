@@ -113,7 +113,7 @@ an "atomic"/"immutable" Linux distribution such as Bazzite or SteamOS.
      prebuilt [releases](https://github.com/OpenEnroth/OpenEnroth/releases).
    * Run `flatpak install --user /path/to/io.github.openenroth.openenroth_*.flatpak` to install the OpenEnroth
      package.
-   * Create `~/.var/app/io.github.openenroth/openenroth/data/mm7/data/`
+   * Create `~/.var/app/io.github.openenroth.openenroth/data/mm7/data/`
    * Move the game data (at least the `ANIMS`, `DATA`, `MUSIC` and `SOUNDS` directories) into this new directory
 3. Run OpenEnroth from your desktop's application menu or using `flatpak run io.github.openenroth.openenroth`
 
