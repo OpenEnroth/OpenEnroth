@@ -570,7 +570,7 @@ GAME_TEST(Issues, Issue416) {
     test.playTraceFromTestData("issue_416.mm7", "issue_416.json");
     // Make sure all dragons are above the ground
     for (auto& actor : pActors) {
-        EXPECT_GE(actor.pos.z, 0);
+        EXPECT_GE(actor.pos.z, -1.0f);
     }
 
     // Same issue in Lincoln

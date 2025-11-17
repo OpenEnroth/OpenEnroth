@@ -313,7 +313,7 @@ void BLV_UpdateDoors();
  */
 void BLV_UpdateDoorGeometry(BLVDoor *door, int distance);
 
-void UpdateActors_BLV();
+void BLV_UpdateActors();
 void BLV_ProcessPartyActions();
 
 /**
