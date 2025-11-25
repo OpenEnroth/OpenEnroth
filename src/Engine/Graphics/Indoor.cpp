@@ -424,7 +424,7 @@ int IndoorLocation::GetSector(float sX, float sY, float sZ) {
             logger->warning("GetSector fail: {}, {}, {}", sX, sY, sZ);
             return 0;
         } else {
-            logger->warning("GetSector: Returning backup sector bounding!");
+            logger->warning("GetSector fail: {}, {}, {}  Returning backup sector bounding!", sX, sY, sZ);
             return backupboundingsector;
         }
     }
@@ -834,7 +834,7 @@ void switchDoorAnimation(unsigned int uDoorID, DoorAction action) {
 }
 
 //----- (0046F90C) --------------------------------------------------------
-void UpdateActors_BLV() {
+void BLV_UpdateActors() {
     if (engine->config->debug.NoActors.value())
         return;
 
@@ -843,7 +843,7 @@ void UpdateActors_BLV() {
             continue;
 
         int uFaceID;
-        float floorZ = GetIndoorFloorZ(actor.pos, &actor.sectorId, &uFaceID);
+        float floorZ = GetIndoorFloorZ(actor.pos + Vec3f(0, 0, actor.radius), &actor.sectorId, &uFaceID);
 
         if (actor.sectorId == 0 || floorZ <= -30000 || uFaceID == -1) {
             // TODO(pskelton): asserts trips on test 416 with Dragons OOB - consider running actor check on file load
@@ -856,9 +856,7 @@ void UpdateActors_BLV() {
         if (!actor.CanAct())
             isFlying = false;
 
-        bool isAboveGround = false;
-        if (actor.pos.z > floorZ + 1)
-            isAboveGround = true;
+        bool isAboveGround = actor.pos.z > floorZ + 1;
 
         // make bloodsplat when the ground is hit
         if (!actor.donebloodsplat) {
@@ -907,19 +905,9 @@ void UpdateActors_BLV() {
                 actor.velocity.z *= 0.83923339843f;
         }
 
-        if (actor.pos.z <= floorZ) {
-            actor.pos.z = floorZ + 1;
-            if (pIndoor->pFaces[uFaceID].uPolygonType == POLYGON_Floor) {
-                if (actor.velocity.z < 0)
-                    actor.velocity.z = 0;
-            } else {
-                if (pIndoor->pFaces[uFaceID].facePlane.normal.z < 0.68664550781f) // was 45000 fixpoint
-                    actor.velocity.z -= pEventTimer->dt().ticks() * GetGravityStrength();
-            }
-        } else {
-            if (isAboveGround && !isFlying)
-                actor.velocity.z += -8 * pEventTimer->dt().ticks() * GetGravityStrength();
-        }
+        // TODO(pskelton): why 8? doesnt match party
+        if (!isFlying)
+            actor.velocity.z += -8 * pEventTimer->dt().ticks() * GetGravityStrength();
 
         if (actor.velocity.xy().lengthSqr() < 400) {
             actor.velocity.x = 0;
@@ -946,6 +934,9 @@ void UpdateActors_BLV() {
         if (travel.lengthSqr() > 128.f) {
             actor.yawAngle = TrigLUT.atan2(travel.x, travel.y);
         }
+
+        // Update actor sector after movement
+        actor.sectorId = pIndoor->GetSector(actor.pos);
     }
 }
 
@@ -1585,7 +1576,7 @@ char DoInteractionWithTopmostZObject(Pid pid) {
 //----- (0046BDF1) --------------------------------------------------------
 void BLV_UpdateUserInputAndOther() {
     BLV_ProcessPartyActions();
-    UpdateActors_BLV();
+    BLV_UpdateActors();
     BLV_UpdateDoors();
 }
 
@@ -1599,15 +1590,13 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     bool on_water = false;
     bool bFeatherFall;
 
-    int sectorId = pBLVRenderParams->uPartySectorID;
     int faceId = -1;
-    float floorZ = GetIndoorFloorZ(pParty->pos + Vec3f(0, 0, pParty->radius), &sectorId, &faceId);
+    float floorZ = GetIndoorFloorZ(pParty->pos + Vec3f(0, 0, pParty->radius), &pBLVRenderParams->uPartySectorID, &faceId);
 
-    if (pParty->bFlying)  // disable flight
-        pParty->bFlying = false;
+    pParty->bFlying = false; // disable flight indoors
 
     if (floorZ == -30000 || faceId == -1) {
-        floorZ = GetApproximateIndoorFloorZ(pParty->pos + Vec3f(0, 0, pParty->radius), &sectorId, &faceId);
+        floorZ = GetApproximateIndoorFloorZ(pParty->pos + Vec3f(0, 0, pParty->radius), &pBLVRenderParams->uPartySectorID, &faceId);
         if (floorZ == -30000 || faceId == -1) {
             assert(false);  // level built with errors
             return;
@@ -1637,7 +1626,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     bool isAboveGround = pParty->pos.z > floorZ + 1;
 
     if (!isAboveGround) {
-        pParty->pos.z = floorZ + 1; // Snap to floor if party is below.
         pParty->uFallStartZ = pParty->pos.z;
     } else if (pParty->pos.z <= floorZ + 32) {
         not_high_fall = true;
@@ -1759,8 +1747,9 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
         }
     }
 
+    pParty->velocity.z += -2.0f * pEventTimer->dt().ticks() * GetGravityStrength();
+
     if (isAboveGround) {
-        pParty->velocity.z += -2.0f * pEventTimer->dt().ticks() * GetGravityStrength();
         if (pParty->velocity.z < -500 && !bFeatherFall && pParty->pos.z - floorZ > 1000) {
             for (Character &character : pParty->pCharacters) {
                 if (!character.wearsEnchantedItem(ITEM_ENCHANTMENT_OF_FEATHER_FALLING) &&
@@ -1769,13 +1758,6 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
                     character.playReaction(SPEECH_FALLING);
                 }
             }
-        }
-    } else {
-        if (pIndoor->pFaces[faceId].facePlane.normal.z < 0.5) {
-            pParty->velocity.z -= 1.0f * pEventTimer->dt().ticks() * GetGravityStrength();
-        } else {
-            if (!(pParty->uFlags & PARTY_FLAG_LANDING))
-                pParty->velocity.z = 0;
         }
     }
 
@@ -1797,11 +1779,11 @@ void BLV_ProcessPartyActions() {  // could this be combined with odm process act
     int faceEvent2 = 0; // dont overwrite faceEvent
     // horizontal
     pParty->velocity.z = 0;
-    ProcessPartyCollisionsBLV(sectorId, min_party_move_delta_sqr, &faceId, &faceEvent2);
+    ProcessPartyCollisionsBLV(pBLVRenderParams->uPartySectorID, min_party_move_delta_sqr, &faceId, &faceEvent2);
     // vertical -  only when horizonal motion hasnt caused height gain
     if (pParty->pos.z <= oldPos.z) {
         pParty->velocity = Vec3f(0, 0, savedspeed.z);
-        ProcessPartyCollisionsBLV(sectorId, min_party_move_delta_sqr, &faceId, &faceEvent2);
+        ProcessPartyCollisionsBLV(pBLVRenderParams->uPartySectorID, min_party_move_delta_sqr, &faceId, &faceEvent2);
     }
 
     // walking / running sounds ------------------------

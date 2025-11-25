@@ -127,8 +127,9 @@ static bool CollideSphereWithFace(BLVFace* face, const Vec3f& pos, float radius,
     } else {
         // how far do we need to move the sphere to touch infinite plane
         move_distance = (center_face_distance - radius) / -dir_normal_projection;
-        if (move_distance < -100.0f) {
+        if (move_distance < -radius) {
             // this can happen when we are already closer than the radius
+            // we are interested edge collisions up to the point where the sphere center is touching the plane
             return false;
         }
         if (move_distance > 65536.0f) return false; // moving almost parallal - TODO(pskelton): should probably tweak EPS when finished moving to floats
@@ -275,19 +276,11 @@ static void CollideBodyWithFace(BLVFace *face, Pid face_pid, bool ignore_etherea
             Vec3f col_pos;
             if (CollideSphereWithFace(face, old_pos, radius, dir, &move_distance, &col_pos, ignore_ethereal, model_idx)) {
                 have_collision = true;
-            } else {
-                move_distance = collision_state.move_distance + radius;
-                if (CollidePointWithFace(face, old_pos, dir, &move_distance, model_idx)) {
-                    have_collision = true;
-                    col_pos = move_distance * dir + old_pos;
-                    move_distance -= radius;
-                }
             }
 
             if (have_collision && move_distance < collision_state.adjusted_move_distance) {
-                // TODO(pskelton): should this be a config value
                 // We allow for a bit of negative movement in case we are already too close to the surface and need pushback
-                if (move_distance > -10.0f) {
+                if (move_distance > allowedCollisionOvershoot) {
                     collision_state.adjusted_move_distance = move_distance;
                     collision_state.collisionPos = col_pos;
                     collision_state.pid = face_pid;
@@ -505,6 +498,7 @@ void CollideOutdoorWithDecorations(Vec2i gridPos) {
 
 bool CollideIndoorWithPortals() {
     // TODO(pskelton): disable this for time being - this appears to be a obselete legacy collision remnant
+    // Was meant to handle portal crossing to update sector id during movement
     // Causes issue where portal "collision" overrides actual wall collision
     return true;
 
@@ -597,13 +591,11 @@ void CollideWithParty(bool jagged_top) {
 }
 
 void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) {
-    constexpr float closestdist = 0.5f;
-
     collision_state.total_move_distance = 0;
-    collision_state.check_hi = true;
-    collision_state.radius_hi = actor.radius;
     collision_state.radius_lo = actor.radius;
-
+    collision_state.radius_hi = actor.radius;
+    collision_state.check_hi = true;
+    collision_state.uSectorID = actor.sectorId;
     // Dont bother with hi check if lo radius covers actor height anyway
     if (actor.radius * 2 > actor.height) collision_state.check_hi = false;
 
@@ -611,7 +603,6 @@ void ProcessActorCollisionsBLV(Actor &actor, bool isAboveGround, bool isFlying) 
         collision_state.position_lo = actor.pos + Vec3f(0, 0, actor.radius);
         collision_state.position_hi = actor.pos + Vec3f(0, 0, actor.height - actor.radius);
         collision_state.velocity = actor.velocity;
-        collision_state.uSectorID = actor.sectorId;
 
         if (collision_state.PrepareAndCheckIfStationary())
             break;
@@ -880,18 +871,16 @@ void ProcessActorCollisionsODM(Actor &actor, bool isFlying) {
 }
 
 void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *faceId, int *faceEvent) {
-    constexpr float closestdist = 0.5f; // Closest allowed approach to collision surface - needs adjusting
-
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
     collision_state.radius_hi = pParty->radius;
     collision_state.check_hi = true;
+    collision_state.uSectorID = sectorId;
     for (unsigned i = 0; i < 5; i++) {
-        collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);
         collision_state.position_lo = pParty->pos + Vec3f(0, 0, collision_state.radius_lo);
+        collision_state.position_hi = pParty->pos + Vec3f(0, 0, pParty->height - collision_state.radius_lo);
         collision_state.velocity = pParty->velocity;
 
-        collision_state.uSectorID = sectorId;
         Duration dt; // zero means use actual dt
         if (pParty->bTurnBasedModeOn && pTurnEngine->turn_stage == TE_MOVEMENT)
             dt = 26_ticks;
@@ -1037,8 +1026,6 @@ void ProcessPartyCollisionsBLV(int sectorId, int min_party_move_delta_sqr, int *
 }
 
 void ProcessPartyCollisionsODM(Vec3f *partyNewPos, Vec3f *partyInputSpeed, int *floorFaceId, bool *partyNotOnModel, bool *partyHasHitModel, int *triggerID) {
-    constexpr float closestdist = 0.5f;  // Closest allowed approach to collision surface - needs adjusting
-
     // --(Collisions)-------------------------------------------------------------------
     collision_state.total_move_distance = 0;
     collision_state.radius_lo = pParty->radius;
