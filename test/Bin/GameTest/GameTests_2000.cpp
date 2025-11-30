@@ -11,6 +11,7 @@
 #include "Engine/Graphics/Outdoor.h"
 #include "Engine/Objects/Chest.h"
 #include "Engine/Objects/MonsterEnumFunctions.h"
+#include "GUI/GUIWindow.h"
 #include "Io/Mouse.h"
 
 void prepareForBattleTest() {
@@ -603,6 +604,32 @@ GAME_TEST(Issues, Issue2201) {
 
     EXPECT_CONTAINS(statusTape, "Spell failed");
     EXPECT_EQ(mp3Tape.delta(), -5);
+}
+
+GAME_TEST(Issues, Issue2223) {
+    // tutorial spam excessive
+    auto screenTape = tapes.screen();
+    auto partyYPos = tapes.custom([] { return pParty->pos.y; });
+
+    game.startNewGame();
+    test.startTaping();
+    game.pressKey(PlatformKey::KEY_UP); // Move forward to trigger tutorial
+    game.tick(10);
+    game.releaseKey(PlatformKey::KEY_UP);
+    EXPECT_EQ(current_screen_type, SCREEN_NPC_DIALOGUE); // expect tutorial dialog
+    game.pressAndReleaseKey(PlatformKey::KEY_ESCAPE); // close tutorial
+    game.tick();
+    game.pressKey(PlatformKey::KEY_UP); // Move forward outside trigger area
+    game.tick(10);
+    game.releaseKey(PlatformKey::KEY_UP);
+    game.pressKey(PlatformKey::KEY_DOWN); // Move backwards through trigger area again
+    game.tick(45);
+    game.releaseKey(PlatformKey::KEY_DOWN);
+
+    // got back to original position
+    EXPECT_GT(partyYPos.max(), 2000.0f);
+    EXPECT_LE(partyYPos.back(), partyYPos.front());
+    EXPECT_EQ(screenTape, tape(SCREEN_GAME, SCREEN_NPC_DIALOGUE, SCREEN_GAME)); // only one tutorial shown
 }
 
 GAME_TEST(Issues, Issue2229) {
