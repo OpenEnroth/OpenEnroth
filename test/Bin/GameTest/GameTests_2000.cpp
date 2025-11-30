@@ -406,10 +406,9 @@ GAME_TEST(Issues, Issue2123) {
 
     // Spawn a dragon & wait.
     engine->config->debug.NoActors.setValue(false);
-    game.spawnMonster(pParty->pos + Vec3f(0, 1500, 0), MONSTER_DRAGON_A);
+    game.spawnMonster(problemPoint + Vec3f(0, 0 , 500), MONSTER_DRAGON_A);
     game.tick(300);
-    // TODO(pskelton): no longer hits the problem point
-    //EXPECT_LE(distTape.min(), pActors[0].radius + 5.0f); // weve been close enough to trigger the collision
+    EXPECT_LE(distTape.min(), pActors[0].radius + 5.0f); // weve been close enough to trigger the collision
     EXPECT_GT(distTape.max(), 2500.0f); // and managed to move away again without assert
     EXPECT_GT(distTape.back(), distTape.front()); // should be further out than spawn point
 }
