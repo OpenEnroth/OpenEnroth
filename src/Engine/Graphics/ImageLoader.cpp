@@ -54,71 +54,61 @@ static Palette MakePaletteColorKey(const Palette &palette, Color key) {
     return result;
 }
 
-bool Paletted_Img_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
+bool Paletted_Img_Loader::Load(RgbaImage *rgbaImage) {
     LodImage *tex = lod->loadTexture(resource_name);
     if (tex == nullptr)
         return false;
 
-    // TODO(captainurist): no need to copy here.
-    *indexedImage = GrayscaleImage::copy(tex->image.width(), tex->image.height(), tex->image.pixels().data());
-    *palette = tex->palette;
-    *rgbaImage = makeRgbaImage(*indexedImage, *palette);
+    *rgbaImage = makeRgbaImage(tex->image, tex->palette);
 
     return true;
 }
 
-bool ColorKey_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
+bool ColorKey_LOD_Loader::Load(RgbaImage *rgbaImage) {
     LodImage *tex = lod->loadTexture(resource_name);
     if (tex == nullptr)
         return false;
 
-    // TODO(captainurist): no need to copy here.
-    *indexedImage = GrayscaleImage::copy(tex->image.width(), tex->image.height(), tex->image.pixels().data());
-
+    Palette palette;
     if (tex->zeroIsTransparent) {
-        *palette = MakePaletteAlpha(tex->palette);
+        palette = MakePaletteAlpha(tex->palette);
     } else {
-        *palette = MakePaletteColorKey(tex->palette, colorkey);
+        palette = MakePaletteColorKey(tex->palette, colorkey);
     }
 
-    *rgbaImage = makeRgbaImage(*indexedImage, *palette);
+    *rgbaImage = makeRgbaImage(tex->image, palette);
 
     return true;
 }
 
-bool Image16bit_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
+bool Image16bit_LOD_Loader::Load(RgbaImage *rgbaImage) {
     LodImage *tex = lod->loadTexture(resource_name);
     if (tex == nullptr)
         return false;
 
-    // TODO(captainurist): no need to copy here.
-    *indexedImage = GrayscaleImage::copy(tex->image.width(), tex->image.height(), tex->image.pixels().data());
-
+    Palette palette;
     if (tex->zeroIsTransparent) {
-        *palette = MakePaletteAlpha(tex->palette);
+        palette = MakePaletteAlpha(tex->palette);
     } else {
-        *palette = tex->palette;
+        palette = tex->palette;
     }
 
-    *rgbaImage = makeRgbaImage(*indexedImage, *palette);
+    *rgbaImage = makeRgbaImage(tex->image, palette);
 
     return true;
 }
 
-bool Alpha_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
+bool Alpha_LOD_Loader::Load(RgbaImage *rgbaImage) {
     LodImage *tex = lod->loadTexture(resource_name);
     if (tex == nullptr)
         return false;
 
-    // TODO(captainurist): no need to copy here.
-    *indexedImage = GrayscaleImage::copy(tex->image.width(), tex->image.height(), tex->image.pixels().data());
-    *palette = MakePaletteAlpha(tex->palette);
-    *rgbaImage = makeRgbaImage(*indexedImage, *palette);
+    *rgbaImage = makeRgbaImage(tex->image, MakePaletteAlpha(tex->palette));
 
     return true;
 }
 
-bool Buff_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
+bool Buff_LOD_Loader::Load(RgbaImage *rgbaImage) {
     LodImage *tex = lod->loadTexture(resource_name);
     if (tex == nullptr)
         return false;
@@ -173,7 +163,7 @@ bool PCX_Loader::InternalLoad(const Blob &data, RgbaImage *rgbaImage) {
     return true;
 }
 
-bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
+bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage) {
     Blob data = lod->read(resource_name);
     if (!data) {
         logger->warning("Unable to load {}", this->resource_name);
@@ -183,7 +173,7 @@ bool PCX_LOD_Raw_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
     return InternalLoad(data, rgbaImage);
 }
 
-bool PCX_LOD_Compressed_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
+bool PCX_LOD_Compressed_Loader::Load(RgbaImage *rgbaImage) {
     Blob pcx_data = blob_func();
     if (!pcx_data) {
         logger->warning("Unable to load {}", resource_name);
@@ -238,32 +228,28 @@ static Color ProcessTransparentPixel(const GrayscaleImage &image, const Palette 
     return Color(static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b), 0);
 }
 
-bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
+bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage) {
     LodImage *tex = lod->loadTexture(this->resource_name);
 
     size_t w = tex->image.width();
     size_t h = tex->image.height();
 
-    // TODO(captainurist): no need to copy here.
-    *indexedImage = GrayscaleImage::copy(tex->image.width(), tex->image.height(), tex->image.pixels().data()); // NOLINT: this is not std::copy.
-
     // Desaturate bitmaps
-    tex->palette = PaletteManager::createLoadedPalette(tex->palette);
+    Palette palette = PaletteManager::createLoadedPalette(tex->palette);
 
     if (!transparentTextures.contains(this->resource_name)) {
-        *palette = tex->palette;
-        *rgbaImage = makeRgbaImage(*indexedImage, *palette);
+        *rgbaImage = makeRgbaImage(tex->image, palette);
     } else {
-        *palette = MakePaletteAlpha(tex->palette);
+        palette = MakePaletteAlpha(palette);
 
         *rgbaImage = RgbaImage::uninitialized(w, h);
         for (size_t y = 0; y < h; y++) {
             for (size_t x = 0; x < w; x++) {
-                uint8_t pal = (*indexedImage)[y][x];
+                uint8_t pal = tex->image[y][x];
                 if (pal == 0) {
-                    (*rgbaImage)[y][x] = ProcessTransparentPixel(*indexedImage, *palette, x, y);
+                    (*rgbaImage)[y][x] = ProcessTransparentPixel(tex->image, palette, x, y);
                 } else {
-                    (*rgbaImage)[y][x] = palette->colors[pal];
+                    (*rgbaImage)[y][x] = palette.colors[pal];
                 }
             }
         }
@@ -272,7 +258,7 @@ bool Bitmaps_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
     return true;
 }
 
-bool Bitmaps_GEN_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
+bool Bitmaps_GEN_Loader::Load(RgbaImage *rgbaImage) {
     pTileGenerator->ensureTile(this->resource_name);
     *rgbaImage = png::decode(ufs->read(this->resource_name));
 
@@ -285,7 +271,7 @@ bool Bitmaps_GEN_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage
     return true;
 }
 
-bool Sprites_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
+bool Sprites_LOD_Loader::Load(RgbaImage *rgbaImage) {
     Sprite *pSprite = lod->loadSprite(this->resource_name);
 
     size_t w = pSprite->sprite_header->image.width();

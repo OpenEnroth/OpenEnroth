@@ -16,7 +16,7 @@ class ImageLoader {
     virtual ~ImageLoader() = default;
     const std::string &GetResourceName() const { return this->resource_name; }
 
-    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) = 0;
+    virtual bool Load(RgbaImage *rgbaImage) = 0;
 
  protected:
     std::string resource_name;
@@ -29,7 +29,7 @@ class Paletted_Img_Loader : public ImageLoader {
         this->lod = lod;
     }
 
-    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
+    virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
     LodTextureCache *lod;
@@ -43,7 +43,7 @@ class ColorKey_LOD_Loader : public ImageLoader {
         this->lod = lod;
     }
 
-    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
+    virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
     Color colorkey;
@@ -57,7 +57,7 @@ class Image16bit_LOD_Loader : public ImageLoader {
         this->lod = lod;
     }
 
-    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
+    virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
     LodTextureCache *lod;
@@ -70,7 +70,7 @@ class Alpha_LOD_Loader : public ImageLoader {
         this->lod = lod;
     }
 
-    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
+    virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
     LodTextureCache *lod;
@@ -83,7 +83,7 @@ class Buff_LOD_Loader : public ImageLoader {
         this->lod = lod;
     }
 
-    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
+    virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
     LodTextureCache *lod;
@@ -101,7 +101,7 @@ class PCX_LOD_Raw_Loader : public PCX_Loader {
         this->lod = lod;
     }
 
-    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
+    virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
     LodReader *lod;
@@ -118,7 +118,7 @@ class PCX_LOD_Compressed_Loader : public PCX_Loader {
         };
     }
 
-    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
+    virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
     std::function<Blob()> blob_func;
@@ -131,7 +131,7 @@ class Bitmaps_LOD_Loader : public ImageLoader {
         this->lod = lod;
     }
 
-    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
+    virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
     LodTextureCache *lod;
@@ -143,7 +143,7 @@ class Bitmaps_GEN_Loader : public ImageLoader {
         this->resource_name = filename;
     }
 
-    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
+    virtual bool Load(RgbaImage *rgbaImage) override;
 };
 
 class Sprites_LOD_Loader : public ImageLoader {
@@ -153,7 +153,7 @@ class Sprites_LOD_Loader : public ImageLoader {
         this->lod = lod;
     }
 
-    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
+    virtual bool Load(RgbaImage *rgbaImage) override;
 
  protected:
     LodSpriteCache *lod;

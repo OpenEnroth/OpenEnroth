@@ -28,10 +28,6 @@ class GraphicsImage {
 
     RgbaImage &rgba();
 
-    const Palette &palette();
-
-    const GrayscaleImage &indexed();
-
     const std::string &GetName();
 
     void Release();
@@ -49,8 +45,6 @@ class GraphicsImage {
     std::string _name;
 
     RgbaImage _rgbaImage;
-    GrayscaleImage _indexedImage;
-    Palette _palette;
     TextureRenderId _renderId;
 
     bool LoadImageData();

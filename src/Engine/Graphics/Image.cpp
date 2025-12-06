@@ -54,16 +54,6 @@ RgbaImage &GraphicsImage::rgba() {
     return _rgbaImage;
 }
 
-const Palette &GraphicsImage::palette() {
-    LoadImageData();
-    return _palette;
-}
-
-const GrayscaleImage &GraphicsImage::indexed() {
-    LoadImageData();
-    return _indexedImage;
-}
-
 const std::string &GraphicsImage::GetName() {
     return _name;
 }
@@ -102,7 +92,7 @@ bool GraphicsImage::LoadImageData() {
     if (_initialized)
         return true;
 
-    _initialized = _loader->Load(&_rgbaImage, &_indexedImage, &_palette);
+    _initialized = _loader->Load(&_rgbaImage);
     // TODO(captainurist): _initialized == false happens, investigate
 
     if (_initialized)
