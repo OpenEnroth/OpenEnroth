@@ -99,7 +99,7 @@ void NullRenderer::BeginDecals() {}
 void NullRenderer::EndDecals() {}
 void NullRenderer::DrawDecal(Decal *pDecal, float z_bias) {}
 
-void NullRenderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, int blendMode) {}
+void NullRenderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) {}
 
 void NullRenderer::DrawIndoorFaces() {}
 

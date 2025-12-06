@@ -1191,7 +1191,7 @@ void OpenGLRenderer::DrawDecal(Decal *pDecal, float z_bias) {
     }
 }
 
-void OpenGLRenderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, int blendMode) {
+void OpenGLRenderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) {
     // want to draw psrcrect section @ point
 
     if (!texture) {
@@ -1199,8 +1199,8 @@ void OpenGLRenderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &sr
         return;
     }
 
-    float col = (blendMode == 2) ? 1.0f : 0.5f;
-    Colorf cf = Colorf(col, col, col);
+    //float col = (blendMode == 2) ? 1.0f : 0.5f;
+    Colorf cf = color.toColorf();
 
     int width = srcRect.w;
     int height = srcRect.h;

@@ -73,7 +73,7 @@ class NullRenderer : public BaseRenderer {
     virtual void EndDecals() override;
     virtual void DrawDecal(Decal *pDecal, float z_bias) override;
 
-    virtual void DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, int blendMode) override;
+    virtual void DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, Color color) override;
 
     virtual void DrawIndoorFaces() override;
 
