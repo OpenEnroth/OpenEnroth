@@ -37,7 +37,6 @@
 #include "Engine/OurMath.h"
 #include "Engine/Party.h"
 #include "Engine/SpellFxRenderer.h"
-#include "Arcomage/Arcomage.h"
 #include "Engine/AssetsManager.h"
 #include "Engine/EngineCallObserver.h"
 
@@ -49,7 +48,6 @@
 #include "Library/Image/ImageFunctions.h"
 
 #include "Utility/String/Format.h"
-#include "Utility/Memory/MemSet.h"
 
 #include "OpenGLShader.h"
 
@@ -1193,24 +1191,22 @@ void OpenGLRenderer::DrawDecal(Decal *pDecal, float z_bias) {
     }
 }
 
-void OpenGLRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode) {
+void OpenGLRenderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, int blendMode) {
     // want to draw psrcrect section @ point
-
-    GraphicsImage *texture = pArcomageGame->pSprites;
 
     if (!texture) {
         logger->trace("Missing Arcomage Sprite Sheet");
         return;
     }
 
-    float col = (blend_mode == 2) ? 1.0f : 0.5f;
+    float col = (blendMode == 2) ? 1.0f : 0.5f;
     Colorf cf = Colorf(col, col, col);
 
-    int width = pSrcRect->w;
-    int height = pSrcRect->h;
+    int width = srcRect.w;
+    int height = srcRect.h;
 
-    int x = pTargetPoint->x;
-    int y = pTargetPoint->y;
+    int x = targetPoint.x;
+    int y = targetPoint.y;
     int z = x + width;
     int w = y + height;
 
@@ -1219,7 +1215,7 @@ void OpenGLRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, 
         return;
 
     // check for overlap
-    if (!Recti(*pTargetPoint, pSrcRect->size()).intersects(this->clipRect))
+    if (!Recti(targetPoint, srcRect.size()).intersects(this->clipRect))
         return;
 
     float gltexid = static_cast<float>(texture->renderId().value());
@@ -1231,10 +1227,10 @@ void OpenGLRenderer::DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, 
     float draww = static_cast<float>(w);
     float drawz = static_cast<float>(z);
 
-    float texx = pSrcRect->x / float(texwidth);
-    float texy = pSrcRect->y / float(texheight);
-    float texz = (pSrcRect->x + pSrcRect->w) / float(texwidth);
-    float texw = (pSrcRect->y + pSrcRect->h) / float(texheight);
+    float texx = srcRect.x / float(texwidth);
+    float texy = srcRect.y / float(texheight);
+    float texz = (srcRect.x + srcRect.w) / float(texwidth);
+    float texw = (srcRect.y + srcRect.h) / float(texheight);
 
     // 0 1 2 / 0 2 3
 

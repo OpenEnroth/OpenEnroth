@@ -89,8 +89,7 @@ class OpenGLRenderer : public BaseRenderer {
     virtual void EndDecals() override;
     virtual void DrawDecal(Decal *pDecal, float z_bias) override;
 
-    virtual void DrawFromSpriteSheet(Recti *pSrcRect, Pointi *pTargetPoint, int a3,
-                               int blend_mode) override;
+    virtual void DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, int blendMode) override;
 
     virtual void DrawIndoorFaces() override;
 

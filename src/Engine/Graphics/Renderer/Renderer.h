@@ -147,9 +147,7 @@ class Renderer {
 
     virtual void DrawSpecialEffectsQuad(GraphicsImage *texture, int palette) = 0;
 
-    virtual void DrawFromSpriteSheet(Recti *pSrcRect,
-                               Pointi *pTargetPoint, int a3,
-                               int blend_mode) = 0;
+    virtual void DrawFromSpriteSheet(GraphicsImage *texture, const Recti &srcRect, Pointi targetPoint, int blendMode) = 0;
 
     virtual void DrawIndoorFaces() = 0;
 
