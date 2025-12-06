@@ -1,6 +1,7 @@
 #include "MapBook.h"
 
 #include <string>
+#include <bit>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Evt/Processor.h"
@@ -169,7 +170,7 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         int screenWidth = br_x - tl_x + 1;
         int screenHeight = br_y - tl_y + 1;
 
-        int loc_power = ImageHelper::GetWidthLn2(viewparams->location_minimap);
+        int loc_power = std::countr_zero(static_cast<unsigned int>(viewparams->location_minimap->width()));
         int scale_increment = (1 << (loc_power + 16)) / viewparams->uMapBookMapZoom;
         double MapSizeScale = (double)(1 << (16 - loc_power));
         int stepX_r_resets =

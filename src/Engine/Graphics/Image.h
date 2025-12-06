@@ -46,23 +46,3 @@ class GraphicsImage {
     RgbaImage _rgba;
     TextureRenderId _renderId;
 };
-
-class ImageHelper {
- public:
-    static int GetWidthLn2(GraphicsImage *img) {
-        return ImageHelper::GetPowerOf2(img->width());
-    }
-
-    static int GetHeightLn2(GraphicsImage *img) {
-        return ImageHelper::GetPowerOf2(img->height());
-    }
-
-    static int GetPowerOf2(int value) {
-        int power = 1;
-        while (1 << power != value) {
-            ++power;
-        }
-
-        return power;
-    }
-};
