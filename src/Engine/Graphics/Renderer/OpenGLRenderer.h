@@ -48,9 +48,6 @@ class OpenGLRenderer : public BaseRenderer {
 
     virtual TextureRenderId CreateTexture(RgbaImageView image) override;
     virtual void DeleteTexture(TextureRenderId id) override;
-    virtual void UpdateTexture(TextureRenderId id, RgbaImageView image) override;
-
-    virtual void Update_Texture(GraphicsImage *texture) override;
 
     virtual void BeginScene2D() override;
     virtual void ScreenFade(Color color, float t) override;

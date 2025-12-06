@@ -136,12 +136,12 @@ GraphicsImage *AssetsManager::getImage_Buff(std::string_view name) {
     return i->second;
 }
 
-GraphicsImage *AssetsManager::getImage_PCXFromIconsLOD(std::string_view name) {
+GraphicsImage *AssetsManager::getImage_PCXFromIconsLOD(std::string_view name, Color colorkey) {
     std::string filename = ascii::toLower(name);
 
     auto i = images.find(filename);
     if (i == images.end()) {
-        auto image = GraphicsImage::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pIcons_LOD, filename));
+        auto image = GraphicsImage::Create(std::make_unique<PCX_LOD_Compressed_Loader>(pIcons_LOD, filename, colorkey));
         images[filename] = image;
         return image;
     }

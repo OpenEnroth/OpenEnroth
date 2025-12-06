@@ -83,10 +83,6 @@ class Renderer {
 
     virtual TextureRenderId CreateTexture(RgbaImageView image) = 0;
     virtual void DeleteTexture(TextureRenderId id) = 0;
-    virtual void UpdateTexture(TextureRenderId id, RgbaImageView image) = 0;
-
-    virtual void Update_Texture(GraphicsImage *texture) = 0;
-
 
     virtual void BeginScene2D() = 0;
     virtual void ScreenFade(Color color, float t) = 0;

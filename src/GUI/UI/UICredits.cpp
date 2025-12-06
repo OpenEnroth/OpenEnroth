@@ -1,6 +1,7 @@
 #include "UICredits.h"
 
 #include <string>
+#include <utility>
 
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/Graphics/Image.h"
@@ -22,11 +23,10 @@ GUICredits::GUICredits() : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDi
     std::string text{ engine->resources()->eventsData("credits.txt").string_view() };
 
     int height = _fontQuick->GetStringHeightWithSecondFont(_fontCChar.get(), text, creditsRect.w, 0) + 2 * creditsRect.h;
-    _creditsTexture = GraphicsImage::Create(creditsRect.w, height);
 
-    _fontQuick->DrawCreditsEntry(_fontCChar.get(), 0, creditsRect.h, creditsRect.w, height, colorTable.CornFlowerBlue, colorTable.Primrose, colorTable.Black, text, _creditsTexture);
-
-    render->Update_Texture(_creditsTexture);
+    RgbaImage credits = RgbaImage::solid(creditsRect.w, height, Color(0, 0, 0, 0));
+    _fontQuick->DrawCreditsEntry(_fontCChar.get(), 0, creditsRect.h, creditsRect.w, height, colorTable.CornFlowerBlue, colorTable.Primrose, colorTable.Black, text, &credits);
+    _creditsTexture = GraphicsImage::Create(std::move(credits));
 
     CreateButton({0, 0}, {0, 0}, 1, 0, UIMSG_Escape, 0, INPUT_ACTION_ESCAPE);
 }

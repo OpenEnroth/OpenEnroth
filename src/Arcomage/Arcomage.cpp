@@ -556,14 +556,7 @@ bool ArcomageGame::MsgLoop(int a1, ArcomageGame_InputMSG *a2) {
 
 bool ArcomageGame::LoadSprites() {
     // load layout sprite
-    pArcomageGame->pSprites = assets->getImage_PCXFromIconsLOD("sprites.pcx");
-
-    // mask out blue
-    for (Color &pixel : pArcomageGame->pSprites->rgba().pixels())
-        if (pixel == colorTable.Blue)
-            pixel = Color();
-    render->Update_Texture(pArcomageGame->pSprites);
-
+    pArcomageGame->pSprites = assets->getImage_PCXFromIconsLOD("sprites.pcx", colorTable.Blue);
     return true;
 }
 

@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <ranges>
 #include <string>
+#include <utility>
 
 #include "Engine/Resources/LodTextureCache.h"
 
@@ -42,10 +43,10 @@ std::unique_ptr<GUIFont> GUIFont::LoadFont(std::string_view pFontFile) {
 void GUIFont::CreateFontTex() {
     ReleaseFontTex();
     // create blank textures
-    _mainTexture = GraphicsImage::Create(512, 512);
-    _shadowTexture = GraphicsImage::Create(512, 512);
-    Color *pPixelsfont = _mainTexture->rgba().pixels().data();
-    Color *pPixelsshadow = _shadowTexture->rgba().pixels().data();
+    RgbaImage main = RgbaImage::solid(512, 512, Color(0, 0, 0, 0));
+    RgbaImage shadow = RgbaImage::solid(512, 512, Color(0, 0, 0, 0));
+    Color *pPixelsfont = main.pixels().data();
+    Color *pPixelsshadow = shadow.pixels().data();
 
     // load in char pixels into squares within texture
     for (int l = 0; l < 256; l++) {
@@ -72,16 +73,18 @@ void GUIFont::CreateFontTex() {
         }
     }
 
-    render->Update_Texture(_mainTexture);
-    render->Update_Texture(_shadowTexture);
+    _mainTexture = GraphicsImage::Create(std::move(main));
+    _shadowTexture = GraphicsImage::Create(std::move(shadow));
 }
 
 void GUIFont::ReleaseFontTex() {
     if (_mainTexture) {
         _mainTexture->release();
+        _mainTexture = nullptr;
     }
     if (_shadowTexture) {
         _shadowTexture->release();
+        _shadowTexture = nullptr;
     }
 }
 
@@ -507,12 +510,12 @@ int GUIFont::DrawTextInRect(const Recti &rect, Pointi position, Color color, std
 
 void GUIFont::DrawCreditsEntry(GUIFont *pSecondFont, int uFrameX, int uFrameY, unsigned int w, unsigned int h,
                                Color firstColor, Color secondColor, Color shadowColor, std::string_view pString,
-                               GraphicsImage *image) {
+                               RgbaImage *image) {
     std::string work_string = FitTwoFontStringInWindow(pString, pSecondFont, w, 0);
     std::istringstream stream(work_string);
     std::getline(stream, work_string);
 
-    Color *pPixels = image->rgba().pixels().data();
+    Color *pPixels = image->pixels().data();
     Color *curr_pixel_pos = &pPixels[image->width() * uFrameY];
     if (!work_string.empty()) {
         int half_frameX = uFrameX >> 1;

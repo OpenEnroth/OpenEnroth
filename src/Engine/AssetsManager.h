@@ -26,7 +26,7 @@ class AssetsManager {
     GraphicsImage *getImage_Alpha(std::string_view name);
     GraphicsImage *getImage_Buff(std::string_view name);
 
-    GraphicsImage *getImage_PCXFromIconsLOD(std::string_view name);
+    GraphicsImage *getImage_PCXFromIconsLOD(std::string_view name, Color colorkey = Color());
 
     GraphicsImage *getBitmap(std::string_view name, bool generated = false);
     GraphicsImage *getSprite(std::string_view name);

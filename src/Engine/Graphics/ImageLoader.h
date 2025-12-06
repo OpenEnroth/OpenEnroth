@@ -111,7 +111,8 @@ class PCX_LOD_Compressed_Loader : public PCX_Loader {
  public:
     // TODO(captainurist): this is the next level of ugly, redo.
     template<class Lod>
-    inline PCX_LOD_Compressed_Loader(Lod *lod, std::string_view filename) {
+    inline PCX_LOD_Compressed_Loader(Lod *lod, std::string_view filename, Color colorkey) {
+        this->colorkey = colorkey;
         resource_name = filename;
         blob_func = [this, lod] {
             return lod->LoadCompressedTexture(resource_name);
@@ -122,6 +123,7 @@ class PCX_LOD_Compressed_Loader : public PCX_Loader {
 
  protected:
     std::function<Blob()> blob_func;
+    Color colorkey;
 };
 
 class Bitmaps_LOD_Loader : public ImageLoader {

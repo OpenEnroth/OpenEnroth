@@ -2,6 +2,7 @@
 
 #include <string>
 #include <bit>
+#include <utility>
 
 #include "Engine/AssetsManager.h"
 #include "Engine/Evt/Processor.h"
@@ -181,10 +182,12 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
         int scaled_posY = stepY_r >> 16;
 
         static GraphicsImage *minimaptemp = nullptr;
-        if (!minimaptemp) {
-            minimaptemp = GraphicsImage::Create(screenWidth, screenHeight);
+        if (minimaptemp) {
+            minimaptemp->release();
         }
-        Color *minitempix = minimaptemp->rgba().pixels().data();
+
+        RgbaImage minimapImage = RgbaImage::solid(screenWidth, screenHeight, Color());
+        Color *minitempix = minimapImage.pixels().data();
         const Color *minimap_pixels = viewparams->location_minimap->rgba().pixels().data();
         int textr_width = viewparams->location_minimap->width();
 
@@ -218,7 +221,7 @@ void DrawBook_Map_sub(int tl_x, int tl_y, int br_x, int br_y) {
             }
         }
 
-        render->Update_Texture(minimaptemp);
+        minimaptemp = GraphicsImage::Create(std::move(minimapImage));
         render->DrawTextureNew(tl_x / 640., tl_y / 480., minimaptemp);
     } else {  // indoors
         if (!pIndoor->pMapOutlines.empty()) {

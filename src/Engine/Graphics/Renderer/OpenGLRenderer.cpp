@@ -715,8 +715,7 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
 
         int w = imgin->width();
         int h = imgin->height();
-        GraphicsImage *temp = GraphicsImage::Create(w, h);
-        RgbaImage &dstImage = temp->rgba();
+        RgbaImage dstImage = RgbaImage::solid(w, h, Color());
 
         Color c = maskImage.pixels()[2700];  // guess at brightest pixel
         unsigned int rmax = c.r;
@@ -765,7 +764,7 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
         }
 
         // draw image
-        render->Update_Texture(temp);
+        GraphicsImage *temp = GraphicsImage::Create(std::move(dstImage));
         render->DrawTextureNew(x / float(outputRender.w), y / float(outputRender.h), temp);
 
         render->DrawTwodVerts();
@@ -1256,10 +1255,6 @@ void OpenGLRenderer::DrawFromSpriteSheet(GraphicsImage *texture, const Recti &sr
     return;
 }
 
-void OpenGLRenderer::Update_Texture(GraphicsImage *texture) {
-    UpdateTexture(texture->renderId(), texture->rgba());
-}
-
 TextureRenderId OpenGLRenderer::CreateTexture(RgbaImageView image) {
     assert(image);
 
@@ -1282,15 +1277,6 @@ void OpenGLRenderer::DeleteTexture(TextureRenderId id) {
 
     GLuint glId = id.value();
     glDeleteTextures(1, &glId);
-}
-
-void OpenGLRenderer::UpdateTexture(TextureRenderId id, RgbaImageView image) {
-    assert(image);
-    assert(id);
-
-    glBindTexture(GL_TEXTURE_2D, id.value());
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.width(), image.height(), GL_RGBA, GL_UNSIGNED_BYTE, image.pixels().data());
-    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 // TODO(pskelton): to camera?

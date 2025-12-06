@@ -47,9 +47,6 @@ TextureRenderId NullRenderer::CreateTexture(RgbaImageView image) {
 }
 
 void NullRenderer::DeleteTexture(TextureRenderId id) {}
-void NullRenderer::UpdateTexture(TextureRenderId id, RgbaImageView image) {}
-
-void NullRenderer::Update_Texture(GraphicsImage *texture) {}
 
 void NullRenderer::BeginScene2D() {}
 void NullRenderer::ScreenFade(Color color, float t) {}

@@ -180,7 +180,13 @@ bool PCX_LOD_Compressed_Loader::Load(RgbaImage *rgbaImage) {
         return false;
     }
 
-    return InternalLoad(pcx_data, rgbaImage);
+    bool result = InternalLoad(pcx_data, rgbaImage);
+
+    for (Color &pixel : rgbaImage->pixels())
+        if (pixel == colorkey)
+            pixel = Color();
+
+    return result;
 }
 
 static Color ProcessTransparentPixel(const GrayscaleImage &image, const Palette &palette, size_t x, size_t y) {
