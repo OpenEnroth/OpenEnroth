@@ -1105,7 +1105,7 @@ void reconstruct(const Character_MM7 &src, Character *dst, ContextTag<int> chara
 
     for (int z = 0; z < 5; z++) {
         if (dst->vBeacons[z])
-            dst->vBeacons[z]->image->Release();
+            dst->vBeacons[z]->image->release();
         dst->vBeacons[z].reset();
     }
 

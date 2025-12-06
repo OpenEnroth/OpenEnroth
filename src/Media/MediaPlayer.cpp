@@ -317,7 +317,7 @@ class Movie : public IMovie {
 
     virtual ~Movie() {
         if (_texture != nullptr) {
-            _texture->Release();
+            _texture->release();
         }
 
         while (!_binkBuffer.empty()) _binkBuffer.pop();
@@ -488,7 +488,7 @@ class Movie : public IMovie {
         //int err = av_seek_frame(format_ctx, -1, 0, AVSEEK_FLAG_BACKWARD | AVSEEK_FLAG_ANY);
         if (err < 0) {
             logger->warning("Seek to start failed! - Exit Movie");
-            tex->Release();
+            tex->release();
             return;
         }
         start_time = std::chrono::system_clock::now();
@@ -555,7 +555,7 @@ class Movie : public IMovie {
 
         // clean up
         while (!buffq.empty()) buffq.pop();
-        tex->Release();
+        tex->release();
 
         return;
     }
@@ -859,7 +859,7 @@ void MPlayer::PlayFullscreenMovie(std::string_view pFilename) {
 
             render->Present();
         }
-        tex->Release();
+        tex->release();
     }
 
     current_screen_type = SCREEN_GAME;

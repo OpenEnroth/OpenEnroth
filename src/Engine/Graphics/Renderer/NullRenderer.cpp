@@ -59,12 +59,12 @@ void NullRenderer::ResetUIClipRect() {}
 
 void NullRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color colourmask) {
     if (engine->callObserver)
-        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->GetName());
+        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->name());
 }
 
 void NullRenderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *tex, int height) {
     if (engine->callObserver)
-        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->GetName());
+        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->name());
 }
 
 void NullRenderer::DrawTextureOffset(int x, int y, int offset_x, int offset_y,

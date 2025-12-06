@@ -401,7 +401,7 @@ GUIWindow_GameVideoOptions::GUIWindow_GameVideoOptions()
 
     // update gamma preview
     if (gamma_preview_image) {
-        gamma_preview_image->Release();
+        gamma_preview_image->release();
         gamma_preview_image = nullptr;
     }
 
@@ -469,7 +469,7 @@ void OptionsMenuSkin::Release() {
 #define RELEASE(img)        \
     {                       \
         if (img) {          \
-            img->Release(); \
+            img->release(); \
             img = nullptr;  \
         }                   \
     }

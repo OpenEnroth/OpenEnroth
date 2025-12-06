@@ -15,8 +15,6 @@ class ImageLoader;
 
 class GraphicsImage {
  public:
-    explicit GraphicsImage(bool lazy_initialization = true);
-
     static GraphicsImage *Create(RgbaImage image);
     static GraphicsImage *Create(ssize_t width, ssize_t height);
     static GraphicsImage *Create(Sizei size);
@@ -28,26 +26,25 @@ class GraphicsImage {
 
     RgbaImage &rgba();
 
-    const std::string &GetName();
+    const std::string &name();
 
-    void Release();
+    void release(); // TODO(captainurist): drop
 
-    [[nodiscard]] TextureRenderId renderId(bool load = true);
+    [[nodiscard]] TextureRenderId renderId();
     void releaseRenderId();
 
- protected:
+ private:
+    GraphicsImage();
     ~GraphicsImage(); // Call Release() instead.
 
- protected:
-    bool _lazyInitialization = false;
+    bool initialize();
+
+ private:
     bool _initialized = false;
-    std::unique_ptr<ImageLoader> _loader;
     std::string _name;
-
-    RgbaImage _rgbaImage;
+    std::unique_ptr<ImageLoader> _loader;
+    RgbaImage _rgba;
     TextureRenderId _renderId;
-
-    bool LoadImageData();
 };
 
 class ImageHelper {

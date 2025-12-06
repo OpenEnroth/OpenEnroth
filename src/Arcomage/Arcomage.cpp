@@ -989,10 +989,10 @@ void ArcomageGame::Loop() {
         am_effects_array[i].explosion_eff->Free();
     }
 
-    pArcomageGame->pGameBackground->Release();
+    pArcomageGame->pGameBackground->release();
     pArcomageGame->pGameBackground = nullptr;
 
-    pArcomageGame->pSprites->Release();
+    pArcomageGame->pSprites->release();
     pArcomageGame->pSprites = nullptr;
 
     pArcomageGame->bGameInProgress = false;

@@ -78,12 +78,12 @@ void GUIWindow_Transition::Release() {
     // 0041C26A void GUIWindow::Release --- part
     // pVideoPlayer->Unload();
     if (transition_ui_icon) {
-        transition_ui_icon->Release();
+        transition_ui_icon->release();
         transition_ui_icon = nullptr;
     }
 
     if (game_ui_dialogue_background) {
-        game_ui_dialogue_background->Release();
+        game_ui_dialogue_background->release();
         game_ui_dialogue_background = nullptr;
     }
 

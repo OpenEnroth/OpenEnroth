@@ -72,17 +72,17 @@ void GUIProgressBar::Progress() {
 
 void GUIProgressBar::Release() {
     if (loading_bg != nullptr) {
-        loading_bg->Release();
+        loading_bg->release();
         loading_bg = nullptr;
     }
 
     if (progressbar_loading != nullptr) {
-        progressbar_loading->Release();
+        progressbar_loading->release();
         progressbar_loading = nullptr;
     }
 
     if (progressbar_dungeon != nullptr) {
-        progressbar_dungeon->Release();
+        progressbar_dungeon->release();
         progressbar_dungeon = nullptr;
     }
 

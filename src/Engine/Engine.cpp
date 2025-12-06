@@ -833,7 +833,7 @@ void Engine::ResetCursor_Palettes_LODs_Level_Audio_SFT_Windows() {
         mouse->SetCursorImage("MICON1");
 
     if (assets->winnerCert) {
-        assets->winnerCert->Release();
+        assets->winnerCert->release();
         assets->winnerCert = nullptr;
     }
 

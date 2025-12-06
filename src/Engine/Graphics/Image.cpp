@@ -9,15 +9,14 @@
 #include "Engine/Graphics/Renderer/Renderer.h"
 #include "Engine/AssetsManager.h"
 
-GraphicsImage::GraphicsImage(bool lazy_initialization): _lazyInitialization(lazy_initialization) {}
-
+GraphicsImage::GraphicsImage() = default;
 GraphicsImage::~GraphicsImage() = default;
 
 GraphicsImage *GraphicsImage::Create(RgbaImage image) {
-    GraphicsImage *result = new GraphicsImage(false);
+    GraphicsImage *result = new GraphicsImage();
     result->_initialized = true;
-    result->_rgbaImage = std::move(image);
-    result->_renderId = render->CreateTexture(result->_rgbaImage);
+    result->_rgba = std::move(image);
+    result->_renderId = render->CreateTexture(result->_rgba);
     return result;
 }
 
@@ -31,10 +30,10 @@ GraphicsImage *GraphicsImage::Create(Sizei size) {
 }
 
 GraphicsImage *GraphicsImage::Create(std::unique_ptr<ImageLoader> loader) {
-    GraphicsImage *img = new GraphicsImage();
-    img->_name = loader->GetResourceName();
-    img->_loader = std::move(loader);
-    return img;
+    GraphicsImage *result = new GraphicsImage();
+    result->_name = loader->GetResourceName();
+    result->_loader = std::move(loader);
+    return result;
 }
 
 ssize_t GraphicsImage::width() {
@@ -50,15 +49,15 @@ Sizei GraphicsImage::size() {
 }
 
 RgbaImage &GraphicsImage::rgba() {
-    LoadImageData();
-    return _rgbaImage;
+    initialize();
+    return _rgba;
 }
 
-const std::string &GraphicsImage::GetName() {
+const std::string &GraphicsImage::name() {
     return _name;
 }
 
-void GraphicsImage::Release() {
+void GraphicsImage::release() {
     if (_loader) {
         if (!assets->releaseSprite(_loader->GetResourceName()))
             if (!assets->releaseImage(_loader->GetResourceName()))
@@ -70,11 +69,10 @@ void GraphicsImage::Release() {
     delete this;
 }
 
-[[nodiscard]] TextureRenderId GraphicsImage::renderId(bool load) {
-    if (load) {
-        LoadImageData();
-        if (!_renderId)
-            _renderId = render->CreateTexture(_rgbaImage);
+[[nodiscard]] TextureRenderId GraphicsImage::renderId() {
+    if (!_renderId) {
+        initialize();
+        _renderId = render->CreateTexture(_rgba);
     }
 
     return _renderId;
@@ -88,15 +86,13 @@ void GraphicsImage::releaseRenderId() {
     _renderId = TextureRenderId();
 }
 
-bool GraphicsImage::LoadImageData() {
+bool GraphicsImage::initialize() {
     if (_initialized)
         return true;
 
-    _initialized = _loader->Load(&_rgbaImage);
+    assert(_loader);
+    _initialized = _loader->Load(&_rgba);
     // TODO(captainurist): _initialized == false happens, investigate
-
-    if (_initialized)
-        _renderId = render->CreateTexture(_rgbaImage);
 
     return _initialized;
 }

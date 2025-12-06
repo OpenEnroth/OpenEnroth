@@ -580,7 +580,7 @@ bool houseDialogPressEscape() {
             pDialogueWindow->Release();
         }
         if (shop_ui_background) {
-            shop_ui_background->Release();
+            shop_ui_background->release();
             shop_ui_background = nullptr;
         }
         window_SpeakInHouse->updateDialogueOnEscape();
@@ -1120,13 +1120,13 @@ void GUIWindow_House::Update() {
 void GUIWindow_House::Release() {
     for (HouseNpcDesc &desc : houseNpcs) {
         if (desc.icon) {
-            desc.icon->Release();
+            desc.icon->release();
         }
     }
     houseNpcs.clear();
 
     if (game_ui_dialogue_background) {
-        game_ui_dialogue_background->Release();
+        game_ui_dialogue_background->release();
         game_ui_dialogue_background = nullptr;
     }
 

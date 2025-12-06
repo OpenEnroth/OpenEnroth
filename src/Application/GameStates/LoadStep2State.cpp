@@ -37,7 +37,7 @@ FsmAction LoadStep2State::update() {
 }
 
 void LoadStep2State::exit() {
-    _fullscreenTexture->Release();
+    _fullscreenTexture->release();
     _fullscreenTexture = nullptr;
     _isFirstPass = false;
 }

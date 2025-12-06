@@ -79,7 +79,7 @@ GUIWindow_Save::GUIWindow_Save() : GUIWindow(WINDOW_Save, {0, 0}, render->GetRen
 
             pSavegameList->pSavegameThumbnails[i] = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(&pLODFile, "image.pcx"));
             if (pSavegameList->pSavegameThumbnails[i]->width() == 0) {
-                pSavegameList->pSavegameThumbnails[i]->Release();
+                pSavegameList->pSavegameThumbnails[i]->release();
                 pSavegameList->pSavegameThumbnails[i] = nullptr;
             }
 
@@ -187,7 +187,7 @@ GUIWindow_Load::GUIWindow_Load(bool ingame) : GUIWindow(WINDOW_Load, {0, 0}, {0,
         pSavegameList->pSavegameThumbnails[i] = GraphicsImage::Create(std::make_unique<PCX_LOD_Raw_Loader>(&pLODFile, "image.pcx"));
 
         if (pSavegameList->pSavegameThumbnails[i]->width() == 0) {
-            pSavegameList->pSavegameThumbnails[i]->Release();
+            pSavegameList->pSavegameThumbnails[i]->release();
             pSavegameList->pSavegameThumbnails[i] = nullptr;
         }
 

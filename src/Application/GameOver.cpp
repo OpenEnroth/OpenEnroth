@@ -121,7 +121,7 @@ void CreateWinnerCertificate() {
     ufs->write("MM7_Win.Pcx", pcx::encode(pixels));
     assets->winnerCert = GraphicsImage::Create(std::move(pixels));
 
-    background->Release();
+    background->release();
     background = nullptr;
     tempwindow_SpeakInHouse->Release();
 }

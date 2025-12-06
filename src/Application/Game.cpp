@@ -570,12 +570,12 @@ void Game::processQueuedMessages() {
                                         }
                                     }
                                     if (rest_ui_sky_frame_current) {
-                                        rest_ui_sky_frame_current->Release();
+                                        rest_ui_sky_frame_current->release();
                                         rest_ui_sky_frame_current = nullptr;
                                     }
 
                                     if (rest_ui_hourglass_frame_current) {
-                                        rest_ui_hourglass_frame_current->Release();
+                                        rest_ui_hourglass_frame_current->release();
                                         rest_ui_hourglass_frame_current = nullptr;
                                     }
 
@@ -1350,7 +1350,7 @@ void Game::processQueuedMessages() {
                 }
 
                 if (gamma_preview_image) {
-                    gamma_preview_image->Release();
+                    gamma_preview_image->release();
                     gamma_preview_image = nullptr;
                 }
                 gamma_preview_image = GraphicsImage::Create(render->MakeViewportScreenshot(155, 117));

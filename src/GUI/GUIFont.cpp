@@ -78,12 +78,10 @@ void GUIFont::CreateFontTex() {
 
 void GUIFont::ReleaseFontTex() {
     if (_mainTexture) {
-        _mainTexture->releaseRenderId();
-        _mainTexture->Release();
+        _mainTexture->release();
     }
     if (_shadowTexture) {
-        _shadowTexture->releaseRenderId();
-        _shadowTexture->Release();
+        _shadowTexture->release();
     }
 }
 

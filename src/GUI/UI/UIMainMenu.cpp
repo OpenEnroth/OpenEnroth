@@ -33,11 +33,11 @@ GUIWindow_MainMenu::GUIWindow_MainMenu() :
 }
 
 GUIWindow_MainMenu::~GUIWindow_MainMenu() {
-    ui_mainmenu_new->Release();
-    ui_mainmenu_load->Release();
-    ui_mainmenu_credits->Release();
-    ui_mainmenu_exit->Release();
-    main_menu_background->Release();
+    ui_mainmenu_new->release();
+    ui_mainmenu_load->release();
+    ui_mainmenu_credits->release();
+    ui_mainmenu_exit->release();
+    main_menu_background->release();
 }
 
 void GUIWindow_MainMenu::Update() {

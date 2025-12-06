@@ -32,8 +32,8 @@ GUICredits::GUICredits() : GUIWindow(WINDOW_Credits, {0, 0}, render->GetRenderDi
 }
 
 GUICredits::~GUICredits() {
-    _mm6TitleTexture->Release();
-    _creditsTexture->Release();
+    _mm6TitleTexture->release();
+    _creditsTexture->release();
 }
 
 void GUICredits::Update() {

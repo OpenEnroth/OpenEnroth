@@ -770,7 +770,7 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
 
         render->DrawTwodVerts();
 
-        temp->Release();
+        temp->release();
     }
 }
 
@@ -2634,7 +2634,7 @@ void OpenGLRenderer::DrawTextureNew(float u, float v, GraphicsImage *tex, Color 
     assert(tex);
 
     if (engine->callObserver)
-        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->GetName());
+        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, tex->name());
 
     Colorf cf = colourmask.toColorf();
 
@@ -2740,7 +2740,7 @@ void OpenGLRenderer::DrawTextureCustomHeight(float u, float v, GraphicsImage *im
     assert(img);
 
     if (engine->callObserver)
-        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, img->GetName());
+        engine->callObserver->notify(CALL_DRAW_2D_TEXTURE, img->name());
 
     Colorf cf(1.0f, 1.0f, 1.0f);
 
@@ -3175,14 +3175,14 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                         if (!face.GetTexture()) continue;
                         GraphicsImage *tex = face.GetTexture();
 
-                        std::string texname = tex->GetName();
+                        std::string texname = tex->name();
 
                         Duration animLength;
                         Duration frame;
                         if (face.IsAnimated()) {
                             tex = pTextureFrameTable->animationFrame(face.animationId, frame);
                             animLength = pTextureFrameTable->animationLength(face.animationId);
-                            texname = tex->GetName();
+                            texname = tex->name();
                         }
                         // gather up all texture and shaderverts data
 
@@ -3267,7 +3267,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
                                 frame += pTextureFrameTable->animationFrameLength(face.animationId);
                                 tex = pTextureFrameTable->animationFrame(face.animationId, frame);
                                 if (!tex) break;
-                                texname = tex->GetName();
+                                texname = tex->name();
                             }
                         } while (animLength > frame);
 
@@ -3395,7 +3395,7 @@ void OpenGLRenderer::DrawOutdoorBuildings() {
 
                                 if (texlayer == -1) { // texture has been reset - see if its in the map
                                     GraphicsImage *tex = face.GetTexture();
-                                    std::string texname = tex->GetName();
+                                    std::string texname = tex->name();
                                     auto mapiter = bsptexmap.find(texname);
                                     if (mapiter != bsptexmap.end()) {
                                         // if so, extract unit and layer
@@ -3795,14 +3795,14 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                 // TODO(pskelton): Same as outdoors. When ODM and BLV face is combined - seperate out function
                 GraphicsImage *tex = face->GetTexture();
-                std::string texname = tex->GetName();
+                std::string texname = tex->name();
 
                 Duration animLength;
                 Duration frame;
                 if (face->IsAnimated()) {
                     tex = pTextureFrameTable->animationFrame(face->animationId, frame);
                     animLength = pTextureFrameTable->animationLength(face->animationId);
-                    texname = tex->GetName();
+                    texname = tex->name();
                 }
 
                 int texunit = 0;
@@ -3866,7 +3866,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
                         frame += pTextureFrameTable->animationFrameLength(face->animationId);
                         tex = pTextureFrameTable->animationFrame(face->animationId, frame);
                         if (!tex) break;
-                        texname = tex->GetName();
+                        texname = tex->name();
                     }
                 } while (animLength > frame);
 
@@ -4015,7 +4015,7 @@ void OpenGLRenderer::DrawIndoorFaces() {
 
                 if (texlayer == -1) { // texture has been reset - see if its in the map
                     GraphicsImage *tex = face->GetTexture();
-                    std::string texname = tex->GetName();
+                    std::string texname = tex->name();
                     auto mapiter = bsptexmap.find(texname);
                     if (mapiter != bsptexmap.end()) {
                         // if so, extract unit and layer
