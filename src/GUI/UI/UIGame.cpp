@@ -1248,10 +1248,19 @@ void GameUI_DrawCharacterSelectionFrame() {
 void GameUI_DrawPartySpells() {
     for (int i = 0; i < spellBuffsAtRightPanel.size(); ++i) {
         if (pParty->pPartyBuffs[spellBuffsAtRightPanel[i]].Active()) {
-            render->TexturePixelRotateDraw(pPartySpellbuffsUI_XYs[i][0] / 640.,
-                                           pPartySpellbuffsUI_XYs[i][1] / 480.,
-                                           party_buff_icons[i],
-                                           pMiscTimer->time().realtimeMilliseconds() / 20 + 20 * pPartySpellbuffsUI_smthns[i]);
+            int time = (pMiscTimer->time().realtimeMilliseconds() / 20 + 20 * pPartySpellbuffsUI_smthns[i]) % 126;
+
+            Recti rect;
+            rect.w = party_buff_icons[i]->width() / 16;
+            rect.h = party_buff_icons[i]->height() / 8;
+            rect.x = time % 16 * rect.w;
+            rect.y = time / 16 * rect.h;
+
+            Pointi point;
+            point.x = pPartySpellbuffsUI_XYs[i][0];
+            point.y = pPartySpellbuffsUI_XYs[i][1];
+
+            render->DrawFromSpriteSheet(party_buff_icons[i], rect, point, colorTable.White);
         }
     }
 

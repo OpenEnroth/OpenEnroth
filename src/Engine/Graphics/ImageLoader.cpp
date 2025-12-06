@@ -3,6 +3,7 @@
 #include <unordered_set>
 #include <string_view>
 #include <memory>
+#include <utility>
 
 #include "Engine/Engine.h"
 #include "Engine/Resources/EngineFileSystem.h"
@@ -113,6 +114,56 @@ bool Alpha_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, 
     *indexedImage = GrayscaleImage::copy(tex->image.width(), tex->image.height(), tex->image.pixels().data());
     *palette = MakePaletteAlpha(tex->palette);
     *rgbaImage = makeRgbaImage(*indexedImage, *palette);
+
+    return true;
+}
+
+bool Buff_LOD_Loader::Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) {
+    LodImage *tex = lod->loadTexture(resource_name);
+    if (tex == nullptr)
+        return false;
+
+    // So, the way this works.
+    //
+    // Icons are made using a gradient of 64 different colors. E.g. for a feather (feather fall spell) the
+    // gradient literally goes along the length of the feather. The border of the icon is single color.
+    //
+    // Then, we have a palette that has a colored gradient that's 64 colors long, from lighter to darker colors.
+    // We extend this gradient by transposing it and adding it to itself, so we get a gradient 126 colors long.
+    // Why 126 colors? Because we don't duplicate the starting & ending colors. The nice thing about the
+    // resulting gradient is that it's looped.
+    //
+    // What we do next can be visualized like this:
+    //
+    // Color gradient: |-------------------------------------------------------------------------------|
+    // Palette:                      |-------------------------------------|
+    //
+    // We just slide the palette mapping along the gradient, wrapping around as necessary. This results in a nice
+    // animation.
+    //
+    // This used to be done on draw, we're just generating a texture atlas. Alternative is to do this in-shader,
+    // but generating an atlas is easier to do.
+
+    RgbaImage result = RgbaImage::uninitialized(tex->image.width() * 16, tex->image.height() * 8);
+
+    for (int i = 0; i < 126; i++) {
+        Palette palette;
+        palette.colors.fill(Color(0, 0, 0, 0));
+        for (int index = 0; index <= 63; index++) {
+            int remap = (index + i) % (2 * 63);
+            if (remap >= 63)
+                remap = (2 * 63) - remap;
+            palette.colors[index] = tex->palette.colors[remap];
+        }
+
+        int dx = (i % 16) * tex->image.width();
+        int dy = (i / 16) * tex->image.height();
+        for (int y = 0, maxy = tex->image.height(); y < maxy; y++)
+            for (int x = 0, maxx = tex->image.width(); x < maxx; x++)
+                result[y + dy][x + dx] = palette.colors[tex->image[y][x]];
+    }
+
+    *rgbaImage = std::move(result);
 
     return true;
 }

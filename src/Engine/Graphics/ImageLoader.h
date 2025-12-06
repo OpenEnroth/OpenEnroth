@@ -76,6 +76,19 @@ class Alpha_LOD_Loader : public ImageLoader {
     LodTextureCache *lod;
 };
 
+class Buff_LOD_Loader : public ImageLoader {
+ public:
+    inline Buff_LOD_Loader(LodTextureCache *lod, std::string_view filename) {
+        this->resource_name = filename;
+        this->lod = lod;
+    }
+
+    virtual bool Load(RgbaImage *rgbaImage, GrayscaleImage *indexedImage, Palette *palette) override;
+
+ protected:
+    LodTextureCache *lod;
+};
+
 class PCX_Loader : public ImageLoader {
  protected:
     bool InternalLoad(const Blob &data, RgbaImage *rgbaImage);

@@ -73,7 +73,6 @@ void NullRenderer::DrawImage(GraphicsImage *, const Recti &rect, int paletteid, 
 
 void NullRenderer::BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,
                                  int start_opacity, int end_opacity) {}
-void NullRenderer::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) {}
 
 void NullRenderer::BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) {}
 void NullRenderer::EndTextNew() {}

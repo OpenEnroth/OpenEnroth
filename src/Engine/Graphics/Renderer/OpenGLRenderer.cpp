@@ -775,50 +775,6 @@ void OpenGLRenderer::BlendTextures(int x, int y, GraphicsImage *imgin, GraphicsI
 }
 
 // TODO(pskelton): renderbase
-//----- (004A65CC) --------------------------------------------------------
-//_4A65CC(unsigned int x, unsigned int y, Texture_MM7 *a4, Texture_MM7 *a5, int a6, int a7, int a8)
-// a6 is time, a7 is 0, a8 is 63
-void OpenGLRenderer::TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) {
-    // TODO(pskelton): sort this - precalculate/ shader
-    static std::array<GraphicsImage *, 14> cachedtemp {};
-    static std::array<int, 14> cachetime { -1 };
-
-    if (img) {
-        std::string_view tempstr{ img->GetName() };
-        int number = tempstr[4] - 48;
-        int number2 = tempstr[5] - 48;
-
-        int thisslot = 10 * number + number2 - 1;
-        if (cachetime[thisslot] != time) {
-            int width = img->width();
-            int height = img->height();
-            if (!cachedtemp[thisslot]) {
-                cachedtemp[thisslot] = GraphicsImage::Create(width, height);
-            }
-
-            const Palette &palette = img->palette();
-            auto temppix = cachedtemp[thisslot]->rgba().pixels();
-            auto texpix24 = img->indexed().pixels();
-
-            for (size_t i = 0, size = temppix.size(); i < size; i++) {
-                int index = texpix24[i];
-                if (index >= 0 && index <= 63) {
-                    index = (time + index) % (2 * 63);
-                    if (index >= 63)
-                        index = (2 * 63) - index;
-                    temppix[i] = palette.colors[index];
-                }
-            }
-
-            cachetime[thisslot] = time;
-            render->Update_Texture(cachedtemp[thisslot]);
-        }
-
-        render->DrawTextureNew(u, v, cachedtemp[thisslot]);
-    }
-}
-
-// TODO(pskelton): renderbase
 void OpenGLRenderer::DrawIndoorSky(int /*uNumVertices*/, int uFaceID) {
     BLVFace *pFace = &pIndoor->pFaces[uFaceID];
     if (pFace->uNumVertices <= 0) return;

@@ -123,6 +123,19 @@ GraphicsImage *AssetsManager::getImage_Alpha(std::string_view name) {
     return i->second;
 }
 
+GraphicsImage *AssetsManager::getImage_Buff(std::string_view name) {
+    std::string filename = ascii::toLower(name);
+
+    auto i = images.find(filename);
+    if (i == images.end()) {
+        auto image = GraphicsImage::Create(std::make_unique<Buff_LOD_Loader>(pIcons_LOD, filename));
+        images[filename] = image;
+        return image;
+    }
+
+    return i->second;
+}
+
 GraphicsImage *AssetsManager::getImage_PCXFromIconsLOD(std::string_view name) {
     std::string filename = ascii::toLower(name);
 

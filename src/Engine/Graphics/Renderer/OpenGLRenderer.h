@@ -68,7 +68,6 @@ class OpenGLRenderer : public BaseRenderer {
 
     virtual void BlendTextures(int a2, int a3, GraphicsImage *a4, GraphicsImage *a5, int t,
                                int start_opacity, int end_opacity) override;
-    virtual void TexturePixelRotateDraw(float u, float v, GraphicsImage *img, int time) override;
 
     virtual void BeginTextNew(GraphicsImage *main, GraphicsImage *shadow) override;
     virtual void EndTextNew() override;
