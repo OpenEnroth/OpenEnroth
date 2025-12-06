@@ -495,7 +495,7 @@ GAME_TEST(Issues, Issue408_939_970_996) {
     // Trace enters throne room - resurecta - final task and exits gameover loop.
     auto screenTape = tapes.screen();
     auto mapTape = tapes.map();
-    auto certTape = tapes.custom([] { return assets->winnerCert; });
+    auto certTape = tapes.custom([] { return ufs->exists("MM7_Win.Pcx"); });
     auto messageBoxesTape = tapes.messageBoxes();
     test.playTraceFromTestData("issue_408.mm7", "issue_408.json");
     // we should return to game screen
