@@ -348,11 +348,10 @@ int EvtInterpreter::executeOneEvent(int step, bool isNpc) {
             if (_canShowMessages) {
                 // TODO(pskeltonm): Fix #2223 stop tutorial message spam - should be data mod
                 if (engine->_outdoor->level_filename == "out01.odm" && _eventId >= 200 && _eventId <= 218) {
-                    static std::bitset<218-200> triggeredEvents;
-                    if (triggeredEvents[_eventId - 200]) {
+                    if (engine->_OE_transientVariables[_eventId - 200]) {
                         break;
                     }
-                    triggeredEvents.set(_eventId - 200);
+                    engine->_OE_transientVariables[_eventId - 200] = 1;
                 }
 
                 initializeNPCDialogue(ir.data.npc_descr.npc_id, false);
