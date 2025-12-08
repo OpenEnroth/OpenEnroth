@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;731eccc</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7c70ca3</span>
    </div>
   </td>
  </tr>
@@ -107,6 +107,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2fc30ccfc37339bf640a685d407b83bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae781e057924005df3b4548c7105ccd92"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classBlob.html">Blob</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#ae781e057924005df3b4548c7105ccd92">read</a> (std::string_view filename) const</td></tr>
 <tr class="separator:ae781e057924005df3b4548c7105ccd92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95e49ff678dbc96f657687628d1b4f6d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a95e49ff678dbc96f657687628d1b4f6d">displayPath</a> (std::string_view filename) const</td></tr>
+<tr class="separator:a95e49ff678dbc96f657687628d1b4f6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80818bb3647a0dd4960bbab6c953b3d5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a80818bb3647a0dd4960bbab6c953b3d5">ls</a> () const</td></tr>
 <tr class="separator:a80818bb3647a0dd4960bbab6c953b3d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e7a9e230080a725ac8c54e803acf04b"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="structLodInfo.html">LodInfo</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classLodReader.html#a5e7a9e230080a725ac8c54e803acf04b">info</a> () const</td></tr>
@@ -239,6 +241,31 @@ Private Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p >Closes this LOD reader &amp; frees all associated resources. </p>
+
+</div>
+</div>
+<a id="a95e49ff678dbc96f657687628d1b4f6d" name="a95e49ff678dbc96f657687628d1b4f6d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95e49ff678dbc96f657687628d1b4f6d">&#9670;&#160;</a></span>displayPath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string LodReader::displayPath </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>filename</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>Name of the LOD file entry. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Display path for the given LOD entry. Same as <code>read(filename).<a class="el" href="classLodReader.html#a95e49ff678dbc96f657687628d1b4f6d">displayPath()</a></code> but also works for non-existent entries. </dd></dl>
 
 </div>
 </div>

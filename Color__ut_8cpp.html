@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;731eccc</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7c70ca3</span>
    </div>
   </td>
  </tr>
@@ -78,7 +78,8 @@ $(function() {
   <div class="headertitle"><div class="title">Color_ut.cpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="UnitTest_8h.html">Testing/Unit/UnitTest.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &lt;string&gt;</code><br />
+<code>#include &quot;<a class="el" href="UnitTest_8h.html">Testing/Unit/UnitTest.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Color_8h.html">Library/Color/Color.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ColorTable_8h.html">Library/Color/ColorTable.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Format_8h.html">Utility/String/Format.h</a>&quot;</code><br />
@@ -87,10 +88,130 @@ $(function() {
 Functions</h2></td></tr>
 <tr class="memitem:a863ee292e2aa38a587ffb923ea7ff329"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Color__ut_8cpp.html#a863ee292e2aa38a587ffb923ea7ff329">UNIT_TEST</a> (<a class="el" href="structColor.html">Color</a>, Tags)</td></tr>
 <tr class="separator:a863ee292e2aa38a587ffb923ea7ff329"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7039077fce61e865841a4cd371311d21"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Color__ut_8cpp.html#a7039077fce61e865841a4cd371311d21">UNIT_TEST</a> (<a class="el" href="structColor.html">Color</a>, DeserializeRGB)</td></tr>
+<tr class="separator:a7039077fce61e865841a4cd371311d21"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8d71a7eb08e3cd851dfc83826eb284a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Color__ut_8cpp.html#aa8d71a7eb08e3cd851dfc83826eb284a">UNIT_TEST</a> (<a class="el" href="structColor.html">Color</a>, DeserializeRGBA)</td></tr>
+<tr class="separator:aa8d71a7eb08e3cd851dfc83826eb284a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85c675c9f9e4a75a3e29a47cdabc21a0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Color__ut_8cpp.html#a85c675c9f9e4a75a3e29a47cdabc21a0">UNIT_TEST</a> (<a class="el" href="structColor.html">Color</a>, DeserializeInvalid)</td></tr>
+<tr class="separator:a85c675c9f9e4a75a3e29a47cdabc21a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11fdbe0c20cebb60558eaf2facd2fa4d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Color__ut_8cpp.html#a11fdbe0c20cebb60558eaf2facd2fa4d">UNIT_TEST</a> (<a class="el" href="structColor.html">Color</a>, SerializeDeserializeRoundTrip)</td></tr>
+<tr class="separator:a11fdbe0c20cebb60558eaf2facd2fa4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
+<a id="a85c675c9f9e4a75a3e29a47cdabc21a0" name="a85c675c9f9e4a75a3e29a47cdabc21a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85c675c9f9e4a75a3e29a47cdabc21a0">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[1/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UNIT_TEST </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structColor.html">Color</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">DeserializeInvalid&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7039077fce61e865841a4cd371311d21" name="a7039077fce61e865841a4cd371311d21"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7039077fce61e865841a4cd371311d21">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[2/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UNIT_TEST </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structColor.html">Color</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">DeserializeRGB&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa8d71a7eb08e3cd851dfc83826eb284a" name="aa8d71a7eb08e3cd851dfc83826eb284a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8d71a7eb08e3cd851dfc83826eb284a">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[3/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UNIT_TEST </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structColor.html">Color</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">DeserializeRGBA&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a11fdbe0c20cebb60558eaf2facd2fa4d" name="a11fdbe0c20cebb60558eaf2facd2fa4d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11fdbe0c20cebb60558eaf2facd2fa4d">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[4/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UNIT_TEST </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structColor.html">Color</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">SerializeDeserializeRoundTrip&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a863ee292e2aa38a587ffb923ea7ff329" name="a863ee292e2aa38a587ffb923ea7ff329"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a863ee292e2aa38a587ffb923ea7ff329">&#9670;&#160;</a></span>UNIT_TEST()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a863ee292e2aa38a587ffb923ea7ff329">&#9670;&#160;</a></span>UNIT_TEST() <span class="overload">[5/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

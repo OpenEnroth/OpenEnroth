@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;731eccc</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7c70ca3</span>
    </div>
   </td>
  </tr>
@@ -95,7 +95,7 @@ $(function() {
   <tr class="odd"><td class="entry"><a class="el" href="classRenderer.html#afaf2874378c5f9fb8a81e21d2750d0c9">DrawBillboards_And_MaybeRenderSpecialEffects_And_EndScene</a>()=0</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classRenderer.html#a68526fd75b5a5797aee8efeff83c1fea">drawcalls</a></td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classRenderer.html#af01054c75c458d8cd7a1141ce1dee234">DrawDecal</a>(Decal *pDecal, float z_bias)=0</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classRenderer.html#a0073b639907df4c15b69c26a37a99eff">DrawFromSpriteSheet</a>(Recti *pSrcRect, Pointi *pTargetPoint, int a3, int blend_mode)=0</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classRenderer.html#a228459cec194225a86eef04ed930bb0d">DrawFromSpriteSheet</a>(GraphicsImage *texture, const Recti &amp;srcRect, Pointi targetPoint, Color color)=0</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classRenderer.html#ac4bcd4358dea3c6a2d49cabb67498133">DrawImage</a>(GraphicsImage *, const Recti &amp;rect, int paletteid=0, Color colourmask32=colorTable.White)=0</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classRenderer.html#acab57bfd5dfa115cee2a950b0e0f5d7d">DrawIndoorFaces</a>()=0</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classRenderer.html#ac7566efbca9dcc848753489939319468">DrawIndoorSky</a>(int uNumVertices, int uFaceID=0)=0</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
@@ -153,14 +153,11 @@ $(function() {
   <tr class="odd"><td class="entry"><a class="el" href="classRenderer.html#a4ece22739eda7c1081a069cab665d176">SetUIClipRect</a>(const Recti &amp;rect)=0</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classRenderer.html#a060128594c5cf08d395c918c2b008158">spell_fx_renderer</a></td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="classRenderer.html#a154be94882d36db597ed4b0530125abe">swapBuffers</a>()=0</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classRenderer.html#a9b8262746a59e99d929a164193e51283">TexturePixelRotateDraw</a>(float u, float v, GraphicsImage *img, int time)=0</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classRenderer.html#acb55f0f862f68611f1a9f4bc05a4cce0">TransformBillboardsAndSetPalettesODM</a>()=0</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classRenderer.html#ab783d803aa6adc72a785737161f33fe5">uFogColor</a></td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classRenderer.html#a31aabb552aa94c72768f457d83c323b3">uNumBillboardsToDraw</a></td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classRenderer.html#a14a23e79421dbe1dcdb021290f030118">Update_Texture</a>(GraphicsImage *texture)=0</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classRenderer.html#a730bd0ca325cfa355f24576ac5de00e6">UpdateTexture</a>(TextureRenderId id, RgbaImageView image)=0</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classRenderer.html#a7ac79b2a2a7b33647b55389ac1805503">vis</a></td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="classRenderer.html#afeee408862d5bd6255a6882d47e6d5cd">~Renderer</a>()</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classRenderer.html#acb55f0f862f68611f1a9f4bc05a4cce0">TransformBillboardsAndSetPalettesODM</a>()=0</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">pure virtual</span></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classRenderer.html#ab783d803aa6adc72a785737161f33fe5">uFogColor</a></td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classRenderer.html#a31aabb552aa94c72768f457d83c323b3">uNumBillboardsToDraw</a></td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"></td></tr>
+  <tr class="odd"><td class="entry"><a class="el" href="classRenderer.html#a7ac79b2a2a7b33647b55389ac1805503">vis</a></td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classRenderer.html#afeee408862d5bd6255a6882d47e6d5cd">~Renderer</a>()</td><td class="entry"><a class="el" href="classRenderer.html">Renderer</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
 </table></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

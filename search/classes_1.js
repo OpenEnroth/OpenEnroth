@@ -40,5 +40,6 @@ var searchData=
   ['bsprenderer_37',['BspRenderer',['../structBspRenderer.html',1,'']]],
   ['bsprenderer_5fviewportnode_38',['BspRenderer_ViewportNode',['../structBspRenderer__ViewportNode.html',1,'']]],
   ['bstreamer_39',['bstreamer',['../structbstreamer.html',1,'']]],
-  ['bufferlogsink_40',['BufferLogSink',['../classBufferLogSink.html',1,'']]]
+  ['buff_5flod_5floader_40',['Buff_LOD_Loader',['../classBuff__LOD__Loader.html',1,'']]],
+  ['bufferlogsink_41',['BufferLogSink',['../classBufferLogSink.html',1,'']]]
 ];

@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;731eccc</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7c70ca3</span>
    </div>
   </td>
  </tr>
@@ -100,8 +100,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5d3f32548cc4f72d7030e0aefe7f43f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe974429896998d4871fcc7db247e1d0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAssetsManager.html#abe974429896998d4871fcc7db247e1d0">getImage_Alpha</a> (std::string_view name)</td></tr>
 <tr class="separator:abe974429896998d4871fcc7db247e1d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7f6ed80619aaa492d5036ed200b4103"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAssetsManager.html#aa7f6ed80619aaa492d5036ed200b4103">getImage_PCXFromIconsLOD</a> (std::string_view name)</td></tr>
-<tr class="separator:aa7f6ed80619aaa492d5036ed200b4103"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a495944e091ca7861f3c4d28312ef2a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAssetsManager.html#a0a495944e091ca7861f3c4d28312ef2a">getImage_Buff</a> (std::string_view name)</td></tr>
+<tr class="separator:a0a495944e091ca7861f3c4d28312ef2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae75ad8439af5df066b1fc735276b3633"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAssetsManager.html#ae75ad8439af5df066b1fc735276b3633">getImage_PCXFromIconsLOD</a> (std::string_view name, <a class="el" href="structColor.html">Color</a> colorkey=<a class="el" href="structColor.html">Color</a>())</td></tr>
+<tr class="separator:ae75ad8439af5df066b1fc735276b3633"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7cd6f3a72027c8f838156f1bf9e89746"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAssetsManager.html#a7cd6f3a72027c8f838156f1bf9e89746">getBitmap</a> (std::string_view name, bool generated=false)</td></tr>
 <tr class="separator:a7cd6f3a72027c8f838156f1bf9e89746"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ac51ed9b432c3b1b79bad5d3655d797"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAssetsManager.html#a6ac51ed9b432c3b1b79bad5d3655d797">getSprite</a> (std::string_view name)</td></tr>
@@ -109,8 +111,6 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a78540269d6cb10500a52bd00f0524104"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAssetsManager.html#a78540269d6cb10500a52bd00f0524104">winnerCert</a> { nullptr }</td></tr>
-<tr class="separator:a78540269d6cb10500a52bd00f0524104"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc6dab6087af7516ed46924b2c663d27"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classGUIFont.html">GUIFont</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAssetsManager.html#adc6dab6087af7516ed46924b2c663d27">pFontBookOnlyShadow</a></td></tr>
 <tr class="separator:adc6dab6087af7516ed46924b2c663d27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9b9e88d88b2750411ef9ff8fe28fb60"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classGUIFont.html">GUIFont</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classAssetsManager.html#ae9b9e88d88b2750411ef9ff8fe28fb60">pFontBookLloyds</a></td></tr>
@@ -214,6 +214,24 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a0a495944e091ca7861f3c4d28312ef2a" name="a0a495944e091ca7861f3c4d28312ef2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a495944e091ca7861f3c4d28312ef2a">&#9670;&#160;</a></span>getImage_Buff()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> * AssetsManager::getImage_Buff </td>
+          <td>(</td>
+          <td class="paramtype">std::string_view&#160;</td>
+          <td class="paramname"><em>name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a00e0308886e7b0a302db87c7f6df3817" name="a00e0308886e7b0a302db87c7f6df3817"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a00e0308886e7b0a302db87c7f6df3817">&#9670;&#160;</a></span>getImage_ColorKey()</h2>
 
@@ -260,8 +278,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="aa7f6ed80619aaa492d5036ed200b4103" name="aa7f6ed80619aaa492d5036ed200b4103"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa7f6ed80619aaa492d5036ed200b4103">&#9670;&#160;</a></span>getImage_PCXFromIconsLOD()</h2>
+<a id="ae75ad8439af5df066b1fc735276b3633" name="ae75ad8439af5df066b1fc735276b3633"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae75ad8439af5df066b1fc735276b3633">&#9670;&#160;</a></span>getImage_PCXFromIconsLOD()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -270,8 +288,18 @@ Protected Attributes</h2></td></tr>
           <td class="memname"><a class="el" href="classGraphicsImage.html">GraphicsImage</a> * AssetsManager::getImage_PCXFromIconsLOD </td>
           <td>(</td>
           <td class="paramtype">std::string_view&#160;</td>
-          <td class="paramname"><em>name</em></td><td>)</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="structColor.html">Color</a>&#160;</td>
+          <td class="paramname"><em>colorkey</em> = <code><a class="el" href="structColor.html">Color</a>()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -588,20 +616,6 @@ Protected Attributes</h2></td></tr>
 <span class="mlabels"><span class="mlabel">protected</span></span>  </td>
   </tr>
 </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="a78540269d6cb10500a52bd00f0524104" name="a78540269d6cb10500a52bd00f0524104"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a78540269d6cb10500a52bd00f0524104">&#9670;&#160;</a></span>winnerCert</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classGraphicsImage.html">GraphicsImage</a>* AssetsManager::winnerCert { nullptr }</td>
-        </tr>
-      </table>
 </div><div class="memdoc">
 
 </div>

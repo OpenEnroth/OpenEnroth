@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;731eccc</span>
+   <div id="projectname">OpenEnroth<span id="projectnumber">&#160;7c70ca3</span>
    </div>
   </td>
  </tr>
@@ -326,7 +326,7 @@ Friends</h2></td></tr>
 <p >For example: </p><div class="fragment"><div class="line">std::string <a class="code hl_variable" href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a> = fmt::format(<span class="stringliteral">&quot;{::}{}{::} more text&quot;</span>, <a class="code hl_function" href="structColor.html#a1f3353ab5941b4ff491ef2417e439fc5">Color</a>(255, 255, 255).<a class="code hl_function" href="structColor.html#ae7e75551d740e6f048e9857af967426c">tag</a>(), <span class="stringliteral">&quot;text&quot;</span>, <a class="code hl_function" href="structColor.html#a1f3353ab5941b4ff491ef2417e439fc5">Color</a>().<a class="code hl_function" href="structColor.html#ae7e75551d740e6f048e9857af967426c">tag</a>());</div>
 <div class="ttc" id="aJson__ut_8cpp_html_a3691308f2a4c2f6983f2880d32e29c84"><div class="ttname"><a href="Json__ut_8cpp.html#a3691308f2a4c2f6983f2880d32e29c84">s</a></div><div class="ttdeci">s</div><div class="ttdef"><b>Definition:</b> Json_ut.cpp:85</div></div>
 <div class="ttc" id="astructColor_html_a1f3353ab5941b4ff491ef2417e439fc5"><div class="ttname"><a href="structColor.html#a1f3353ab5941b4ff491ef2417e439fc5">Color::Color</a></div><div class="ttdeci">constexpr Color()=default</div></div>
-<div class="ttc" id="astructColor_html_ae7e75551d740e6f048e9857af967426c"><div class="ttname"><a href="structColor.html#ae7e75551d740e6f048e9857af967426c">Color::tag</a></div><div class="ttdeci">constexpr detail::ColorTag&lt; Color &gt; tag() const</div><div class="ttdef"><b>Definition:</b> Color.h:86</div></div>
+<div class="ttc" id="astructColor_html_ae7e75551d740e6f048e9857af967426c"><div class="ttname"><a href="structColor.html#ae7e75551d740e6f048e9857af967426c">Color::tag</a></div><div class="ttdeci">constexpr detail::ColorTag&lt; Color &gt; tag() const</div><div class="ttdef"><b>Definition:</b> Color.h:88</div></div>
 </div><!-- fragment --><p >The code above will set string <code>s</code> to <code>"\f65535text\f00000 more text"</code>.</p>
 <p >Note that the only supported format specifier for color tags is <code>"{::}"</code>. This is done intentionally so that the user won't accidentally mix up color introducers with other <code>fmt::format</code> args.</p>
 <dl class="section return"><dt>Returns</dt><dd>Tag that can be used with <code>fmt::format</code>. </dd></dl>
